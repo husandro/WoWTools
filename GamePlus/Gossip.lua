@@ -13,6 +13,7 @@ local function QuestInfo_GetQuestID()--取得任务ID
 		return GetQuestID();
 	end
 end
+
 local function QuestTrivial(questID)--其它任务,低等任务
     questID=questID or QuestInfo_GetQuestID()
     local trivial=C_QuestLog.IsQuestTrivial(questID)
