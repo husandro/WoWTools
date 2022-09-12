@@ -22,7 +22,15 @@
         "GossipOptionButtonMixin",
         "YELLOW_FONT_COLOR_CODE",
         "COMPLETE",
-        "SAVE"
+        "SAVE",
+        "QUICK_JOIN_IS_AUTO_ACCEPT_TOOLTIP",
+        "QUESTS_LABEL",
+        "MINIMAP_TRACKING_TRIVIAL_QUESTS",
+        "DAILY",
+        "GOSSIP_QUEST_OPTION_PREPEND",
+        "QuestFrameCompleteQuestButton",
+        "QuestProgressCompleteButton_OnClick",
+        "GossipSharedActiveQuestButtonMixin"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field"
