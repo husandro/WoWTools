@@ -21,8 +21,8 @@ local function Cbtn(self)
     b:SetPushedAtlas(Icon.setPushedAtlas)
     return b
 end
-local g=Cbtn(Frame2, 20);--闲话图标
-local q=Cbtn(Frame2, 20);--任务图标
+local g=Cbtn(Frame2);--闲话图标
+local q=Cbtn(Frame2);--任务图标
 
 local function Cstr(f)
     local b=f:CreateFontString(nil, 'OVERLAY')

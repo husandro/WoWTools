@@ -3,7 +3,8 @@
 ## Title: |A:Icon-WoW:0:0|aWoW |cff00ff00Tools|r
 ## Notes: WoW Tools
 ## Author: husandro
-## SavedVariables: WoWToolsSave, GossipSave
+## SavedVariables: WoWToolsSave, GossipSave, PaperDollSave
 WoWTools.lua
 
 GamePlus\Gossip.lua
+WoWPlus\PaperDoll.lua
