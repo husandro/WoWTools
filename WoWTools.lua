@@ -11,6 +11,17 @@ end)]]
 
 e.col='|c'..select(4,GetClassColor(UnitClassBase('player')))
 
+e.GetNpcID = function (unit)
+  if UnitExists(unit) then
+    local guid=UnitGUID(unit)
+    if guid then
+      return select(6,  strsplit("-", guid));
+    end
+  end
+end
+
+
+
 e.Icon={
     right='|A:newplayertutorial-icon-mouse-rightbutton:0:0|a',
     left='|A:newplayertutorial-icon-mouse-leftbutton:0:0|a',

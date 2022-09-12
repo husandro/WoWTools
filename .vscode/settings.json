@@ -1,0 +1,30 @@
+{
+    "Lua.diagnostics.globals": [
+        "GossipFrame",
+        "ObjectiveTrackerBlocksFrame",
+        "GameTooltip",
+        "QuestInfoFrame",
+        "GossipSharedAvailableQuestButtonMixin",
+        "DISABLE",
+        "GOSSIP_OPTIONS",
+        "RED_FONT_COLOR_CODE",
+        "GREEN_FONT_COLOR_CODE",
+        "ENABLE",
+        "StaticPopupDialogs",
+        "CLEAR_ALL",
+        "CUSTOM",
+        "CLEAR",
+        "KEY_NUMLOCK_MAC",
+        "CANCEL",
+        "StaticPopup_Show",
+        "NO",
+        "YES",
+        "GossipOptionButtonMixin",
+        "YELLOW_FONT_COLOR_CODE",
+        "COMPLETE",
+        "SAVE"
+    ],
+    "Lua.diagnostics.disable": [
+        "undefined-field"
+    ]
+}

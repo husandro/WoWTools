@@ -6,8 +6,6 @@ local tips= GameTooltip
 local q=e.Cbtn(Frame2, 20);
 local g=e.Cbtn(Frame2, 20);
 
-
-
 local function QuestInfo_GetQuestID()--取得任务ID
 	if ( QuestInfoFrame.questLog ) then
 		return C_QuestLog.GetSelectedQuest();
@@ -34,11 +32,6 @@ local function setTexture()
     else
         g:SetNormalAtlas(e.Icon.normal)
     end
-end
-
---取得NPC id
-local function NPC()
-    return UnitExists("npc") and select(6, strsplit("-", UnitGUID("npc"))) or nil--npc id            
 end
 
 --加载保存数据
@@ -138,7 +131,7 @@ Frame:SetScript('OnShow', function (self)
         end)
         self.sel:SetScript("OnLeave", function() tips:Hide() end)
     end
-    local npc=NPC()
+    local npc=e.GetNpcID('npc')
     self.sel.npc=npc
     self.sel.name=UnitName("npc")
     self.sel:SetChecked(Save.NPC[npc])
@@ -185,7 +178,7 @@ hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, info)--GossipFra
         end)
     end
 
-    local npc=NPC()
+    local npc=e.GetNpcID('npc')
     self.sel.npc=npc
     self.sel.name=UnitName("npc")
     self.sel.info=info
