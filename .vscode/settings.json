@@ -65,10 +65,29 @@
         "SortEquipmentSetIDs",
         "ERR_NOT_IN_COMBAT",
         "WoWToolsSave",
-        "InterfaceOptions_AddCategory"
+        "InterfaceOptions_AddCategory",
+        "CharacterLevelText",
+        "FRIENDS_LIST_REALM",
+        "INVENTORY_ALERT_STATUS_SLOTS",
+        "ReputationFrame",
+        "FACTION_BAR_COLORS",
+        "FACTION_ORANGE_COLOR",
+        "C_MajorFactions",
+        "RENOWN_LEVEL_LABEL",
+        "BLUE_FONT_COLOR",
+        "MAX_REPUTATION_REACTION",
+        "ReputationFrameStandingLabel",
+        "REPUTATION",
+        "ReputationFrameFactionLabel",
+        "ReputationFrame_Update",
+        "PROGENITOR_MATERIAL_TITLETEXT_COLOR",
+        "COMBAT_TEXT_SHOW_REPUTATION_TEXT",
+        "BINDING_NAME_TOGGLECHARACTER2",
+        "ToggleCharacter"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
-        "param-type-mismatch"
+        "param-type-mismatch",
+        "redundant-parameter"
     ]
 }

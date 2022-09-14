@@ -1,25 +1,29 @@
-local id, e=...
+local id, e= ...
 local Icon={
-    S='|A:GarrMission_EncounterBar-CheckMark:0:0|a',--√    
+    S='|A:GarrMission_EncounterBar-CheckMark:0:0|a',--√
     mago='|A:transmog-icon-hidden:0:0|a',
     magoOK='|T132288:0|t',
     no='|A:questlegendary:0:0|a',
     wow='|A:Icon-WoW:0:0|a',
-};
+}
 
 local HEX=function(r, g, b, a) r = r <= 1 and r >= 0 and r or 0 g = g <= 1 and g >= 0 and g or 0 b = b <= 1 and b >= 0 and b or 0 a=a or 1 a =  a <= 1 and a >= 0 and a or 1 return '|c'..string.format("%02x%02x%02x%02x",a*255, r*255, g*255, b*255) end
 local Magic=function(s)  local t={'%%', '%.', '%(','%)','%+', '%-', '%*', '%?', '%[', '%^', '%$'} for _,v in pairs(t) do s=s:gsub(v,'%%'..v) end return s end --  ( ) . % + - * ? [ ^ $
-
 local MK=function(k,b) if not b then b=1 end if k>=1e6 then k=string.format('%.'..b..'fm',k/1e6) elseif k>= 1e4 and GetLocale() == "zhCN" then k=string.format('%.'..b..'fw',k/1e4) elseif k>=1e3 then k=string.format('%.'..b..'fk',k/1e3) else k=string.format('%i',k) end return k end--加k 9.1
-
 local Race=function(u, race, sex2) local s =u and select(2,UnitRace(u)) or race local sex= u and UnitSex(u) or sex2 if s and (sex==2 or sex==3 ) then s= s=='Scourge' and 'Undead' or s=='HighmountainTauren' and 'highmountain' or s=='ZandalariTroll' and 'zandalari' or s=='LightforgedDraenei' and 'lightforged' or s s=string.lower(s) sex= sex==2 and 'male' or sex==3 and 'female' return '|A:raceicon-'..s..'-'..sex..':0:0|a' end end--角色图标
-
-local Class=function(u, class)  local c=u and select(2, UnitClass(u)) or class if c then local x1, x2, y1, y2 = unpack(CLASS_ICON_TCOORDS[strupper(c)]) if x1 and x2 and y1 and y2 then return ("|TInterface\\TargetingFrame\\UI-Classes-Circles:0:0:0:0:256:256:%d:%d:%d:%d|t"):format(x1*256, x2*256, y1*256, y2*256) end end end--职业图标
+local Class=function(u, c, icon) c=c or select(2, UnitClass(u)) c=c and 'groupfinder-icon-class-'..c or nil if c then if icon then return '|A:'..c ..':0:0|a' else return c end end end--职业图标
 
 local col='|c'..select(4,GetClassColor(UnitClassBase('player')));
 local Name=col..UnitName('player');
 
-local Channels={};--频道名称替换 
+local Channels={--频道名称替换 
+    ['大脚'] = '[世]',
+    ['Test'] = '[T]',
+    ['测试'] = '[测]',
+    [GENERAL]='['..GENERAL..']'
+};
+
+--[[
 for _, v in pairs(e.config.gsub) do
     local a=_G[v.a] or v.a;
     local b=_G[v.b] or v.b;
@@ -27,6 +31,8 @@ for _, v in pairs(e.config.gsub) do
         Channels[a]='['..b..']';        
     end
 end
+]]
+
 local function Channel(link)
     local name=link:match('%[(.-)]');
     if name then
@@ -81,7 +87,7 @@ local function Mount(id, item)
             if select(11, C_MountJournal.GetMountInfoByID(mountID)) then
                 return Icon.S;
             else 
-                return Icon.no;
+                return Icon.no;            
             end                    
         end     
     end    
@@ -94,7 +100,7 @@ local function PetType(petType)
     end    
 end
 
-local function Item(link)--超链接    
+local function Item(link)--物品超链接    
     local t=link;
     local icon=C_Item.GetItemIconByID(link);
     if icon then----加图标        
@@ -140,7 +146,7 @@ local function Item(link)--超链接
     end    
     local bag=GetItemCount(link, true);--数量
     if bag and bag>0 then
-        t=t..'|cff00ff00x'..MK(bag, 3)..'|r';
+        t=t..GREEN_FONT_COLOR_CODE..'[*'..MK(bag, 3)..']|r';
     end
     if t~=link then
         return t;    
@@ -355,7 +361,7 @@ local function DungeonScore(link)--史诗钥石评分
     if guid then
         local _, class, _, race, sex = GetPlayerInfoByGUID(guid);
         race=Race(nil, race, sex);
-        class=Class(nil, class);
+        class=Class(nil, class, true);
         t=class and class..t or t;
         t=race and race..t or t;        
     end
@@ -382,6 +388,7 @@ local function Journal(link)--冒险指南
 end
 
 local ColorText={};--内容加颜色
+--[[
 for _, v in pairs(e.config.color) do 
     local s=v.a..' ';
     s=s:gsub('\n', ' ');
@@ -390,6 +397,7 @@ for _, v in pairs(e.config.color) do
             ColorText[t]=HEX(v.b[1], v.b[2], v.b[3], v.b[4]);            
     end);
 end
+]]
 
 local function Instancelock(link)
     local guid, InstanceID, DifficultyID=link:match('Hinstancelock:(.-):(%d+):(%d+):');
@@ -397,7 +405,7 @@ local function Instancelock(link)
     if guid then
         local _, class, _, race, sex = GetPlayerInfoByGUID(guid);
         race=Race(nil, race, sex);
-        class=Class(nil, class);
+        class=Class(nil, class, true);
         t=class and class..t or t;
         t=race and race..t or t;        
     end
@@ -491,4 +499,6 @@ end
 
 local Frame=DEFAULT_CHAT_FRAME;
 if not Frame.ADD then Frame.ADD=Frame.AddMessage end
-Frame.AddMessage=Add;
+Frame.AddMessage=Add; 
+
+Frame.editBox:SetAltArrowKeyMode(false);--alt +方向= 移动

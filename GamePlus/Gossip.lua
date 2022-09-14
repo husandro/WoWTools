@@ -3,9 +3,10 @@ local Save
 local Frame = GossipFrame
 local Frame2=ObjectiveTrackerBlocksFrame
 local tips= GameTooltip
+
 local Icon={
     right='|A:newplayertutorial-icon-mouse-rightbutton:0:0|a',
-    left='|A:newplayertutorial-icon-mouse-leftbutton:0:0|a',    
+    left='|A:newplayertutorial-icon-mouse-leftbutton:0:0|a',
     setHighlightAtlas='bags-newitem',
     setPushedAtlas='bags-glow-heirloom',
     normal='Lightlink-ball',
@@ -109,14 +110,14 @@ Frame:SetScript('OnShow', function (self)
                 return
             end
             if d=='LeftButton' then
-                
+
                     if Save.NPC[self2.npc] then
                         Save.NPC[self2.npc]=nil
                     else
                         Save.NPC[self2.npc]=self2.name or true
                     end
                     print(GOSSIP_OPTIONS..(self2.name and '|cffff00ff'..self2.name..'|r' or '')..': '..(Save.NPC[self2.npc] and RED_FONT_COLOR_CODE..DISABLE..'|r' or GREEN_FONT_COLOR_CODE..ENABLE..'|r'))
-            
+
             elseif d=='RightButton' then
                 StaticPopupDialogs['husandro']={
                     text =CLEAR_ALL..'|n|n|cffff00ff'..(self2.name or self2.npc)..'|r|n|n'..GOSSIP_OPTIONS..': '..CUSTOM,
@@ -271,6 +272,34 @@ end)
 
 
 --任务图标
+
+QuestFrameGreetingPanel:HookScript('OnShow', function()--QuestFrame.lua QuestFrameGreetingPanel_OnShow
+    if not Save.qest or IsModifierKeyDown() then
+        return
+    end
+    local numActiveQuests = GetNumActiveQuests();
+	local numAvailableQuests = GetNumAvailableQuests();
+    if numActiveQuests > 0 then
+        for i=1, numActiveQuests do
+			local title, isComplete = GetActiveTitle(i);
+            if isComplete then
+                SelectActiveQuest(i)
+                return
+            end
+        end
+    end
+    if numAvailableQuests > 0 then
+        for i=(numActiveQuests + 1), (numActiveQuests + numAvailableQuests) do
+            local index = i - numActiveQuests
+            local isTrivial, frequency, isRepeatable, isLegendary, questID = GetAvailableQuestInfo(index);
+            if (isTrivial and GetQuestTrivialTracking()) or not isTrivial then
+                SelectAvailableQuest(index)
+                return
+            end
+        end
+   end
+end)
+
 --可选闲话(任务)GossipFrameShared.lua
 hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, optionInfo)
     if not optionInfo.gossipOptionID or not Save.qest or IsModifierKeyDown() or optionInfo.flags ~= Enum.GossipOptionRecFlags.QuestLabelPrepend then
@@ -302,7 +331,7 @@ hooksecurefunc(GossipSharedActiveQuestButtonMixin, 'Setup', function(self, info)
     C_GossipInfo.SelectActiveQuest(questID)
 end)
 --自动接取任务,多个任务GossipFrameShared.lua
-hooksecurefunc(GossipSharedAvailableQuestButtonMixin, 'Setup', function(self, info)    
+hooksecurefunc(GossipSharedAvailableQuestButtonMixin, 'Setup', function(self, info)
     if not Save.qest or IsModifierKeyDown() or not QuestTrivial(info.questID) then
         return
     end
