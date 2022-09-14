@@ -1,5 +1,5 @@
 local id, e =...
-local Save={btnStrHideCap=true, btnStrHideHeader=true, fancetionUptateTips}
+local Save={btnStrHideCap=true, btnStrHideHeader=true, fancetionUptateTips=true}
 local addName='Reputation'
 local Frame=ReputationFrame
 
@@ -145,7 +145,7 @@ hooksecurefunc('ReputationFrame_InitReputationRow', function (factionRow, elemen
 	local factionContainer = factionRow.Container
 	local factionBar = factionContainer.ReputationBar;
 	local watchedIcon=factionBar.watchedIcon--显示为经验条
-	local name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canSetInactive = GetFactionInfo(factionIndex);
+	local name, des_cription, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canSetInactive = GetFactionInfo(factionIndex);
 	if (isHeader and not hasRep) or not factionID then
 		if watchedIcon then
 			watchedIcon:SetShown(false)

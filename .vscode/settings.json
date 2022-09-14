@@ -83,7 +83,18 @@
         "PROGENITOR_MATERIAL_TITLETEXT_COLOR",
         "COMBAT_TEXT_SHOW_REPUTATION_TEXT",
         "BINDING_NAME_TOGGLECHARACTER2",
-        "ToggleCharacter"
+        "ToggleCharacter",
+        "GENERAL",
+        "COMBATLOG_FILTER_STRING_ME",
+        "PET_TYPE_SUFFIX",
+        "QuestFrameGreetingPanel",
+        "NUM_CHAT_WINDOWS",
+        "DEFAULT_CHAT_FRAME",
+        "UPDATE",
+        "GAME_VERSION_LABEL",
+        "QUEST_REWARDS",
+        "VIDEO_OPTIONS_ULTRA_HIGH",
+        "FACTION_STANDING_INCREASED"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
