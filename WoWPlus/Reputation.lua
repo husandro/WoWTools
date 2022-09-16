@@ -1,46 +1,15 @@
 local id, e =...
 local Save={btnStrHideCap=true, btnStrHideHeader=true, fancetionUptateTips=true}
-local addName='Reputation'
+local addName=REPUTATION
 local Frame=ReputationFrame
 
 local Icon={
-	show='orderhalltalents-done-glow',
-	no='talents-button-reset',--￠
-    isCapped='|A:orderhalltalents-done-glow:0:0|a',
-	isWatched='Adventures-Checkmark',
+    isCapped='|A:'..e.Icon.icon..':0:0|a',
 	up="Interface\\Buttons\\UI-PlusButton-Up",
 	down="Interface\\Buttons\\UI-MinusButton-Up",
-	left='|A:newplayertutorial-icon-mouse-leftbutton:0:0|a',
-	right='|A:newplayertutorial-icon-mouse-rightbutton:0:0|a',
-	mid='|A:newplayertutorial-icon-mouse-middlebutton:0:0|a',
-	set='Forge-ColorSwatchSelection',
-    pu='Forge-ColorSwatchHighlight',
 	reward='ParagonReputation_Bag',--奖励
 	reward2='|A:ParagonReputation_Bag:0:0|a'
 }
-local function GetEnabeleDisable(ed)--启用或禁用字符
-    if ed then
-      return '|cnGREEN_FONT_COLOR:'..ENABLE..'|r'
-    else
-      return '|cnRED_FONT_COLOR:'..DISABLE..'|r'
-    end
-end
-local function GetShowHide(sh)
-	if sh then
-		return '|cnGREEN_FONT_COLOR:'..SHOW..'|r/'..HIDE
-	else
-		return SHOW..'/|cnRED_FONT_COLOR:'..HIDE..'|r'
-	end
-end
-local Cstr=function(self)
-    self=self or Frame
-    local b=self:CreateFontString(nil, 'OVERLAY')
-    b:SetFont('Fonts\\ARHei.ttf', 12, 'OUTLINE')
-    b:SetShadowOffset(1, -1)
-    b:SetJustifyH('LEFT')
-    b:SetTextColor(1, 0.45, 0.04)
-    return b
-end
 
 local function GetFactionText()--监视声望内容
 	local m=''
@@ -131,7 +100,7 @@ local function GetFactionText()--监视声望内容
 	end
 	local btn=Frame.sel2.btn--监视声望按钮
 	if btn then
-		btn:SetNormalAtlas(hasRewardPending and Icon.reward or Icon.show)--有奖励
+		btn:SetNormalAtlas(hasRewardPending and Icon.reward or e.Icon.icon)--有奖励
 	end
 	return m
 end
@@ -204,7 +173,7 @@ hooksecurefunc('ReputationFrame_InitReputationRow', function (factionRow, elemen
 		if not watchedIcon then
 			watchedIcon=factionBar:CreateTexture(nil, 'OVERLAY')
 			watchedIcon:SetPoint('RIGHT', factionBar, 'LEFT',8, 0)
-			watchedIcon:SetAtlas(Icon.isWatched)
+			watchedIcon:SetAtlas(e.Icon.select2)
 			watchedIcon:SetSize(16, 16)
 			factionBar.watchedIcon=watchedIcon
 		end
@@ -222,8 +191,8 @@ Frame.sel:SetPoint("LEFT", ReputationFrameStandingLabel, 'RIGHT',5,0)
 Frame.sel:SetScript("OnEnter", function(self2)
 	tips:SetOwner(self2, "ANCHOR_LEFT")
     tips:ClearLines()
-	tips:AddDoubleLine(id, addName)
-	tips:AddDoubleLine(REPUTATION, GetEnabeleDisable(not Save.hide)..Icon.left)
+	tips:AddLine(id)
+	tips:AddDoubleLine(addName, e.GetEnabeleDisable(not Save.hide)..e.Icon.left)
     tips:Show()
 end)
 Frame.sel:SetScript('OnLeave', function ()
@@ -237,9 +206,9 @@ Frame.sel2:SetScript("OnEnter", function(self)
 	tips:SetOwner(self, "ANCHOR_LEFT")
     tips:ClearLines()
 	tips:AddDoubleLine(id, addName)
-	tips:AddDoubleLine(COMBAT_TEXT_SHOW_REPUTATION_TEXT, GetEnabeleDisable(Save.btn)..Icon.left)
+	tips:AddDoubleLine(COMBAT_TEXT_SHOW_REPUTATION_TEXT, e.GetEnabeleDisable(Save.btn)..e.Icon.left)
 	tips:AddLine(' ')
-	tips:AddDoubleLine(REPUTATION..UPDATE, GetEnabeleDisable(Save.fancetionUptateTips))
+	tips:AddDoubleLine(addName..UPDATE, e.GetEnabeleDisable(Save.fancetionUptateTips))
     tips:Show()
 end)
 Frame.sel2:SetScript('OnLeave', function ()
@@ -261,13 +230,13 @@ end
 hooksecurefunc('ReputationFrame_Update', btnstrSetText)--更新监视
 
 local function SetRe()--监视声望	
-	Frame.sel2:SetNormalAtlas(Save.btn and Icon.show or Icon.no)
+	Frame.sel2:SetNormalAtlas(Save.btn and e.Icon.icon or e.Icon.disabled)
 	local btn=Frame.sel2.btn--监视声望按钮
 	if Save.btn and not btn then
 			btn=CreateFrame("Button",nil, UIParent)--禁用,开启
-			btn:SetNormalAtlas(Icon.show)
+			btn:SetNormalAtlas(e.Icon.icon)
 			btn:SetHighlightAtlas(Icon.pu)
-			btn:SetPushedAtlas(Icon.set)
+			btn:SetPushedAtlas(e.Icon.pushed)
 			btn:SetSize(18, 18)
 			if Save.point then
 				btn:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
@@ -282,7 +251,7 @@ local function SetRe()--监视声望
 					ResetCursor()
 					self2:StopMovingOrSizing()
 					Save.point={self2:GetPoint(1)}
-					print(COMBAT_TEXT_SHOW_REPUTATION_TEXT..': |cnGREEN_FONT_COLOR:Alt+'..Icon.right..KEY_BUTTON2..'|r: '.. TRANSMOGRIFY_TOOLTIP_REVERT);
+					print(COMBAT_TEXT_SHOW_REPUTATION_TEXT..': |cnGREEN_FONT_COLOR:Alt+'..e.Icon.right..KEY_BUTTON2..'|r: '.. TRANSMOGRIFY_TOOLTIP_REVERT);
 			end)
 			btn:SetScript("OnMouseUp", function() ResetCursor() end)
 			btn:SetScript("OnMouseDown", function(self2, d)
@@ -301,7 +270,7 @@ local function SetRe()--监视声望
 					else
 						Save.btnstr=true
 					end
-					print(REPUTATION..': '..GetShowHide(Save.btnstr))
+					print(addName..': '..e.GetShowHide(Save.btnstr))
 					btnstrSetText()
 
 				elseif d=='LeftButton' and IsAltKeyDown() then
@@ -311,7 +280,7 @@ local function SetRe()--监视声望
 						Save.btnStrHideHeader=true
 					end
 					btnstrSetText()
-					print(GAME_VERSION_LABEL..'('..NO..Icon.reward2..QUEST_REWARDS..')'..REPUTATION..": "..GetShowHide(not Save.btnStrHideHeader))
+					print(GAME_VERSION_LABEL..'('..NO..Icon.reward2..QUEST_REWARDS..')'..addName..": "..e.GetShowHide(not Save.btnStrHideHeader))
 
 				elseif d=='LeftButton' and IsControlKeyDown() then--Ctrl+点击, 显示ID
 					if Save.btnStrShowID then
@@ -320,7 +289,7 @@ local function SetRe()--监视声望
 						Save.btnStrShowID=true
 					end
 					btnstrSetText()
-					print(REPUTATION..' ID: '..GetShowHide(Save.btnStrShowID))
+					print(addName..' ID: '..e.GetShowHide(Save.btnStrShowID))
 
 				elseif d=='LeftButton' and IsShiftKeyDown() then--Shift+点击, 隐藏最高级, 且没有奖励声望
 					if Save.btnStrHideCap then
@@ -329,7 +298,7 @@ local function SetRe()--监视声望
 						Save.btnStrHideCap=true
 					end
 					btnstrSetText()
-					print(VIDEO_OPTIONS_ULTRA_HIGH..'('..NO..Icon.reward2..QUEST_REWARDS..')'..REPUTATION..": "..GetShowHide(not Save.btnStrHideCap))
+					print(VIDEO_OPTIONS_ULTRA_HIGH..'('..NO..Icon.reward2..QUEST_REWARDS..')'..addName..": "..e.GetShowHide(not Save.btnStrHideCap))
 
 				elseif d=='RightButton' and IsShiftKeyDown() then--更新提示声望
 					if Save.fancetionUptateTips then
@@ -337,7 +306,7 @@ local function SetRe()--监视声望
 					else
 						Save.fancetionUptateTips=true
 					end
-					print(REPUTATION..UPDATE..": "..GetEnabeleDisable(Save.fancetionUptateTips))
+					print(addName..UPDATE..": "..e.GetEnabeleDisable(Save.fancetionUptateTips))
 				end
 			end)
 			btn:SetScript("OnEnter",function(self2)
@@ -348,15 +317,15 @@ local function SetRe()--监视声望
 				tips:ClearLines();
 				tips:AddDoubleLine(id, addName)
 				tips:AddLine(' ')
-				tips:AddDoubleLine(COMBAT_TEXT_SHOW_REPUTATION_TEXT..': '..GetShowHide(Save.btnstr), Icon.left)
-				tips:AddDoubleLine(BINDING_NAME_TOGGLECHARACTER2,Icon.mid)
-				tips:AddDoubleLine(NPE_MOVE, Icon.right)
+				tips:AddDoubleLine(COMBAT_TEXT_SHOW_REPUTATION_TEXT..': '..e.GetShowHide(Save.btnstr), e.Icon.left)
+				tips:AddDoubleLine(BINDING_NAME_TOGGLECHARACTER2, e.Icon.mid)
+				tips:AddDoubleLine(NPE_MOVE, e.Icon.right)
 				tips:AddLine(' ')
-				tips:AddDoubleLine(GAME_VERSION_LABEL..REPUTATION..': '..GetShowHide(not Save.btnStrHideHeader), 'Alt + '..Icon.left)
-				tips:AddDoubleLine(REPUTATION..' ID: '..GetShowHide(Save.btnStrShowID), 'Ctrl + '..Icon.left)
-				tips:AddDoubleLine(VIDEO_OPTIONS_ULTRA_HIGH..REPUTATION..': '..GetShowHide(not Save.btnStrHideCap), 'Shift + '..Icon.left)
+				tips:AddDoubleLine(GAME_VERSION_LABEL..addName..': '..e.GetShowHide(not Save.btnStrHideHeader), 'Alt + '..e.Icon.left)
+				tips:AddDoubleLine(addName..' ID: '..e.GetShowHide(Save.btnStrShowID), 'Ctrl + '..e.Icon.left)
+				tips:AddDoubleLine(VIDEO_OPTIONS_ULTRA_HIGH..addName..': '..e.GetShowHide(not Save.btnStrHideCap), 'Shift + '..e.Icon.left)
 				tips:AddLine(' ')
-				tips:AddDoubleLine(REPUTATION..UPDATE..': '..GetEnabeleDisable(Save.fancetionUptateTips), 'Shift + '..Icon.right)
+				tips:AddDoubleLine(addName..UPDATE..': '..e.GetEnabeleDisable(Save.fancetionUptateTips), 'Shift + '..e.Icon.right)
 				tips:Show();
 			end)
 			btn:SetScript("OnLeave", function() ResetCursor()  GameTooltip:Hide() end);
@@ -365,7 +334,7 @@ local function SetRe()--监视声望
 				ToggleCharacter("ReputationFrame")--打开声望
 			end)
 
-			btn.str=Cstr(btn)
+			btn.str=e.Cstr(btn)
 			btn.str:SetPoint('TOPLEFT',3,-3)
 			Frame.sel2.btn=btn
 	end
@@ -382,7 +351,7 @@ Frame.sel2:SetScript('OnClick', function(self)
 		Save.btn=true
 		Save.btnstr=true
 	end
-	print(SHOW..REPUTATION..': '..GetEnabeleDisable(Save.btn))
+	print(SHOW..addName..': '..e.GetEnabeleDisable(Save.btn))
 	SetRe();
 end)
 
@@ -459,7 +428,7 @@ local function FactionUpdate(self, env, text)--监视声望更新提示
 			if value then
 				m=m..' |cffffffff'..value..'|r'
 			end
-			m=REPUTATION..(icon or Icon.isCapped)..m
+			m=addName..(icon or Icon.isCapped)..m
 			if hasRewardPending then
 				m=m..' '..Icon.reward2
 			end
@@ -472,13 +441,13 @@ Frame.sel2:RegisterEvent('CHAT_MSG_COMBAT_FACTION_CHANGE')
 Frame.sel2:SetScript('OnEvent', FactionUpdate)
 
 local function SetAll()--收起,展开
-	Frame.sel:SetNormalAtlas(Save.hide and Icon.no or Icon.show)
+	Frame.sel:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
 	if Save.hide then
 		return
 	end
 	if not Frame.up then
 		Frame.up=CreateFrame("Button",nil, Frame, 'UIPanelButtonTemplate')--收起所有
-		Frame.up:SetNormalTexture(Icon.up)
+		Frame.up:SetNormalTexture(e.Icon.highlight)
 		Frame.up:SetSize(16, 16)
 		Frame.up:SetPoint("LEFT", ReputationFrameFactionLabel, 'RIGHT',5,0)
 		Frame.up:SetScript("OnClick", function()
@@ -499,7 +468,7 @@ local function SetAll()--收起,展开
 end
 
 Frame.sel:SetScript("OnClick", function()
-	local m=addName..':'..GetEnabeleDisable(Save.hide)
+	local m=addName..':'..e.GetEnabeleDisable(Save.hide)
 	if Save.hide then
 		Save.hide=nil
 	else
@@ -514,7 +483,7 @@ end)
 Frame.sel:RegisterEvent("ADDON_LOADED")
 Frame.sel:RegisterEvent("PLAYER_LOGOUT")
 Frame.sel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1 == id then
+    if event == "ADDON_LOADED" and arg1 == id then		
     	Save= ReputationSave or Save
 		SetAll()--收起,展开		
 		SetRe()--监视声望

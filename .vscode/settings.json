@@ -94,11 +94,30 @@
         "GAME_VERSION_LABEL",
         "QUEST_REWARDS",
         "VIDEO_OPTIONS_ULTRA_HIGH",
-        "FACTION_STANDING_INCREASED"
+        "FACTION_STANDING_INCREASED",
+        "AchievementFrame",
+        "ZoneAbilityFrame",
+        "ExtraActionButton1",
+        "MainMenuBar",
+        "TEXT_TO_SPEECH",
+        "HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT",
+        "COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK",
+        "EMBLEM_SYMBOL",
+        "RELOADUI",
+        "COLOR",
+        "KBASE_DEFAULT_SEARCH_TEXT",
+        "KEY_SPACE",
+        "CHANNEL_CHANNEL_NAME",
+        "COMMUNITIES_SETTINGS_SHORT_NAME_LABEL",
+        "SETTINGS_TITLE",
+        "CHARACTER",
+        "CHANNELS",
+        "REPLACE"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
         "param-type-mismatch",
-        "redundant-parameter"
+        "redundant-parameter",
+        "discard-returns"
     ]
 }

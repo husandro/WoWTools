@@ -1,6 +1,6 @@
-local id, e = ...
+local id = ...
 local Save={point={}}
-local Frame=CreateFrame("Frame")
+local addName=NPE_MOVE..'Frame'
 
 local Point=function(frame, name2)
     local p=Save.point
@@ -15,12 +15,14 @@ local Point=function(frame, name2)
 end
 
 local Move=function(F, tab)
-    local F2, click, save, enter, show, fun=tab.frame, tab.click, tab.save, tab.enter, tab.show, tab.fun;--, tab.hook;    
+    local F2, click, save, enter, show, fun, re=tab.frame, tab.click, tab.save, tab.enter, tab.show, tab.fun, tab.re;--, tab.hook;    
     local name;
     if F2 then
         name=F2:GetName();
         if not name then return true end
-        F2:SetClampedToScreen(save);
+        if save then
+            F2:SetClampedToScreen(true);
+        end
         F2:SetMovable(true);
     else
         F2=F;
@@ -89,7 +91,9 @@ local Move=function(F, tab)
             end
         end
     end
-
+if re then
+    F:SetResizable(true)
+end
     F:SetScript("OnMouseDown", function(self,d)
             if IsModifierKeyDown()
             or (click=='R' and d~='RightButton')
@@ -102,25 +106,100 @@ end
 
 
 local FrameTab={
-    ExtraActionButton1={save=true,},
+    AddonList={save=true},--插件
+    ClassTalentFrame={save=true,},--天赋
+    GameMenuFrame={save=true,},--菜单
+    ProfessionsFrame={save=true},--专业
+    CharacterFrame={},--角色
+    ReputationDetailFrame={save=true},--声望描述q
+    TokenFramePopup={save=true},--货币设置
+    SpellBookFrame={},--法术书
+    WorldMapFrame={},--世界地图
+    PVEFrame={},--地下城和团队副本
+    EncounterJournal={},--冒险指南
+    HelpFrame={},--客服支持
+    MacroFrame={},--宏
+    ExtraActionButton1={save=true, click='R' },--额外技能
+
+    ContainerFrameCombinedBags={save=true},
+    ChatConfigFrame={save=true},--聊天设置
+    SettingsPanel={},--选项
+    --ZoneAbilityFrame.SpellButtonContainer = {save=true, click='R'},
+};
+  --PlayerTalentFrame={},天赋
+if IsAddOnLoaded('BlizzMove') then
+    for k, v in pairs(FrameTab) do
+        if not v.save then FrameTab[k]=nil end
+    end
+end
+
+local function Set(arg1)
+    for k, v in pairs(FrameTab) do
+        local f= _G[k];
+        if f then
+            Move(f, v);
+            FrameTab[k]=nil
+        end
+    end
+
+    if arg1=='Blizzard_AchievementUI' then--成就
+        Move(AchievementFrame.Header,{frame=AchievementFrame})
+    --elseif arg1=='Blizzard_Communities' then--公会和社区            
+       --Move(CommunitiesFrame.TitleContainer, {freme=CommunitiesFrame.NineSlice})
+       --Move(CommunitiesFrameInset, {})
+    end
+   if arg1==id then
+       Move(ZoneAbilityFrame.SpellButtonContainer, {save=true, click='R'})
+    end
+end
+
+--加载保存数据
+local panel=CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        Save= FrameMoveSave or Save
+        if Save.disabled then
+            return
+        end
+        Set(arg1)
+    elseif event == "PLAYER_LOGOUT" then
+        FrameMoveSave=Save
+    end
+end)
+
+
+
+
+
+--[[
+     ContainerFrame1={save=true},
+    ContainerFrame2={save=true},
+    ContainerFrame3={save=true},
+    ContainerFrame4={save=true},
+    ContainerFrame5={save=true},
+    ContainerFrame6={save=true},
+
+    --ZoneAbilityFrame={save=true,enter=true},
+   
     UIWidgetPowerBarContainerFrame={save=true,},
     ChatConfigFrame={save=true,},
-    AddonList={save=true,},
-    GameMenuFrame={save=true,},
-    --ObjectiveTrackerBlocksFrame={click='R',},
     
+    
+    --ObjectiveTrackerBlocksFrame={click='R',},
     ClassTrainerFrame={},
-    CharacterFrame={},
-    EncounterJournal={},
-    SpellBookFrame={},
-    CommunitiesFrame={},
-    PVEFrame={},
+    
+ 
+    
+    
+    
     DressUpFrame={},
     MacroFrame={},
     GossipFrame={},
     AuctionHouseFrame={},
     --AchievementFrameHeader={frame=AchievementFrame,},--9.0
-    AchievementFrame={save=true},
+    AchievementFrame={},
     MerchantFrame={},
     WardrobeFrame={},
     BankFrame={},
@@ -139,7 +218,7 @@ local FrameTab={
     RaidInfoFrame={},
     GuildInviteFrame={},
     GuildRegistrarFrame={},
-    HelpFrame={},
+    
     InterfaceOptionsFrame={},
     ItemTextFrame={},
     --  LFGParentFrame={},
@@ -157,7 +236,7 @@ local FrameTab={
     TabardFrame={},
     TaxiFrame={save=true},
     VideoOptionsFrame={},
-    WorldMapFrame={save=true},
+    
     WorldStateScoreFrame={},
     AlliedRacesFrame={},
     AnimaDiversionFrame={},
@@ -205,7 +284,7 @@ local FrameTab={
     ScrappingMachineFrame={},
     SoulbindViewer={},
     TalentFrame={},
-    --PlayerTalentFrame={},天赋
+   
     TalkingHeadFrame={save=true},
     TorghastLevelPickerFrame={},
     TradeSkillFrame={},
@@ -219,40 +298,10 @@ local FrameTab={
     GarrisonLandingPage={},
     DurabilityFrame={save=true,enter=true,show=true},
     ExtraActionButton1={save=true, frame=ExtraActionFrame,click='R'},
-    --CollectionsJournal={},
+    CollectionsJournal={},
     --MountJournal={frame=_G.CollectionsJournal},
     --ZoneAbilityFrame={save=true,enter=true}
     PlayerPowerBarAltStatusFrame={save=true},
     CovenantMissionFrame={save=true},
 
-    ClassTalentFrame={save=true},--10.0天赋
-};
-
-if IsAddOnLoaded('BlizzMove') then
-    for k, v in pairs(FrameTab) do
-        if not v.save then FrameTab[k]=nil end
-    end
-end
-
-local function Set()
-    for k, v in pairs(FrameTab) do
-        local f= _G[k];
-        if f then
-            Move(f, v);
-            FrameTab[k]=nil
-        end
-    end
-end
-
---加载保存数据
-Frame:RegisterEvent("ADDON_LOADED")
-Frame:RegisterEvent("PLAYER_LOGOUT")
-Frame:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        Save= FrameMoveSave or Save
-        Set()
-    elseif event == "PLAYER_LOGOUT" then
-        FrameMoveSave=Save
-    end
-end)
-
+]]

@@ -3,9 +3,11 @@
 ## Title: |A:Icon-WoW:0:0|aWoW |cff00ff00Tools|r
 ## Notes: WoW Tools
 ## Author: husandro
-## SavedVariables:  GossipSave, PaperDollSave, ReputationSave, FrameMoveSave
+## SavedVariables: SetupSave ,GossipSave, PaperDollSave, ReputationSave, FrameMoveSave, HyperlinksIconSave
 
 WoWTools.lua
+
+Panel.lua
 
 GamePlus\Gossip.lua
 
@@ -13,3 +15,4 @@ WoWPlus\HyperlinksIcon.lua
 WoWPlus\PaperDoll.lua
 WoWPlus\Reputation.lua
 WoWPlus\FrameMove.lua
+WoWPlus\HideTexture.lua

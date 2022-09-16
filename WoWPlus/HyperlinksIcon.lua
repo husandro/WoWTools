@@ -1,47 +1,45 @@
-local id, e= ...
+local id, e = ...
+local addName = COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK..EMBLEM_SYMBOL
+local tips = GameTooltip
+local Frame = DEFAULT_CHAT_FRAME
+
+local Save={
+    channels={--频道名称替换 
+        ['大脚'] = '[世]',
+        ['Test'] = '[Test]',
+        ['测试'] = '[测]',
+        [GENERAL]='['..GENERAL..']',
+    },
+    text={--内容颜色,
+        ['来人']=true,
+        ['成就']=true,
+    }
+}
 local Icon={
-    S='|A:GarrMission_EncounterBar-CheckMark:0:0|a',--√
-    mago='|A:transmog-icon-hidden:0:0|a',
-    magoOK='|T132288:0|t',
     no='|A:questlegendary:0:0|a',
     wow='|A:Icon-WoW:0:0|a',
+    bag='|A:bag-main:0:0|a',
+    up='chatframe-button-up',
+    down='chatframe-button-down',
 }
 
-local HEX=function(r, g, b, a) r = r <= 1 and r >= 0 and r or 0 g = g <= 1 and g >= 0 and g or 0 b = b <= 1 and b >= 0 and b or 0 a=a or 1 a =  a <= 1 and a >= 0 and a or 1 return '|c'..string.format("%02x%02x%02x%02x",a*255, r*255, g*255, b*255) end
+--local HEX=function(r, g, b, a) r = r <= 1 and r >= 0 and r or 0 g = g <= 1 and g >= 0 and g or 0 b = b <= 1 and b >= 0 and b or 0 a=a or 1 a =  a <= 1 and a >= 0 and a or 1 return '|c'..string.format("%02x%02x%02x%02x",a*255, r*255, g*255, b*255) end
 local Magic=function(s)  local t={'%%', '%.', '%(','%)','%+', '%-', '%*', '%?', '%[', '%^', '%$'} for _,v in pairs(t) do s=s:gsub(v,'%%'..v) end return s end --  ( ) . % + - * ? [ ^ $
 local MK=function(k,b) if not b then b=1 end if k>=1e6 then k=string.format('%.'..b..'fm',k/1e6) elseif k>= 1e4 and GetLocale() == "zhCN" then k=string.format('%.'..b..'fw',k/1e4) elseif k>=1e3 then k=string.format('%.'..b..'fk',k/1e3) else k=string.format('%i',k) end return k end--加k 9.1
 local Race=function(u, race, sex2) local s =u and select(2,UnitRace(u)) or race local sex= u and UnitSex(u) or sex2 if s and (sex==2 or sex==3 ) then s= s=='Scourge' and 'Undead' or s=='HighmountainTauren' and 'highmountain' or s=='ZandalariTroll' and 'zandalari' or s=='LightforgedDraenei' and 'lightforged' or s s=string.lower(s) sex= sex==2 and 'male' or sex==3 and 'female' return '|A:raceicon-'..s..'-'..sex..':0:0|a' end end--角色图标
 local Class=function(u, c, icon) c=c or select(2, UnitClass(u)) c=c and 'groupfinder-icon-class-'..c or nil if c then if icon then return '|A:'..c ..':0:0|a' else return c end end end--职业图标
-
 local col='|c'..select(4,GetClassColor(UnitClassBase('player')))
 local Name=col..UnitName('player')
 
-local Channels={--频道名称替换 
-    ['大脚'] = '[世]',
-    ['Test'] = '[T]',
-    ['测试'] = '[测]',
-    [GENERAL]='['..GENERAL..']'
-}
-
---[[
-for _, v in pairs(e.config.gsub) do
-    local a=_G[v.a] or v.a
-    local b=_G[v.b] or v.b
-    if a:gsub(' ','')~='' and b:gsub(' ','')~='' then
-        Channels[a]='['..b..']'        
-    end
-end
-]]
-
-local function Channel(link)
+local function SetChannels(link)
     local name=link:match('%[(.-)]')
     if name then
-        for k, v in pairs(Channels) do
+        for k, v in pairs(Save.channels) do
             if name:find(k) then
                 return link:gsub('%[.-]', v)
             end
-        end    
-    end    
+        end
+    end
 end
 
 local Realms={}--多服务器
@@ -85,19 +83,19 @@ local function Mount(id, item)
         local mountID=item and C_MountJournal.GetMountFromItem(id) or C_MountJournal.GetMountFromSpell(id)
         if  mountID then
             if select(11, C_MountJournal.GetMountInfoByID(mountID)) then
-                return Icon.S
-            else 
-                return Icon.no            
-            end                    
-        end     
-    end    
+                return e.Icon.select
+            else
+                return Icon.no
+            end
+        end
+    end
 end
 
 local function PetType(petType)
     local type=PET_TYPE_SUFFIX[petType]
-    if type then 
+    if type then
         return '|TInterface\\Icons\\Icon_PetFamily_'..type..':0|t'
-    end    
+    end
 end
 
 local function Item(link)--物品超链接    
@@ -105,7 +103,7 @@ local function Item(link)--物品超链接
     local icon=C_Item.GetItemIconByID(link)
     if icon then----加图标        
         t='|T'..icon..':0|t'..t
-    end    
+    end
     local id, _, _, _, _, classID, subclassID=GetItemInfoInstant(link)
     id=id or link:match('Hitem:(%d+)')
     if classID==2 or classID==4 then
@@ -118,16 +116,16 @@ local function Item(link)--物品超链接
             local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
             if sourceInfo then                
                 if sourceInfo.isCollected then
-                    t=t..Icon.magoOK
+                    t=t..e.Icon.okTransmog
                 else
-                    t=t..Icon.mago
+                    t=t..e.Icon.transmogHide
                 end
                 local hasItemData, canCollect = C_TransmogCollection.PlayerCanCollectSource(sourceID)--玩家是否可收集
                 if hasItemData and not canCollect then
                     t=t..Icon.no
-                end                            
+                end
             end
-        end        
+        end
     elseif  classID==15 and (subclassID==2 or subclassID==5) then        
         if  subclassID==2 then----宠物数量
             local _, _, petType, _, _, _, _, _, _, _, _, _, speciesID=C_PetJournal.GetPetInfoByItemID(id)
@@ -140,17 +138,17 @@ local function Item(link)--物品超链接
             if nu then
                 t=t..nu
             end
-        end                            
+        end
     elseif C_ToyBox.GetToyInfo(id) then--玩具
-        t=PlayerHasToy(id) and t..Icon.S or t..Icon.no        
+        t=PlayerHasToy(id) and t..e.Icon.select or t..Icon.no        
     end    
     local bag=GetItemCount(link, true)--数量
     if bag and bag>0 then
-        t=t..GREEN_FONT_COLOR_CODE..'[*'..MK(bag, 3)..']|r'
+        t=t..Icon.bag..MK(bag, 3)
     end
     if t~=link then
-        return t    
-    end    
+        return t
+    end
 end
 
 local function Spell(link)--法术图标
@@ -214,7 +212,7 @@ local function Enchant(link)--附魔
         local icon = GetSpellTexture(id)
         if icon then 
             return '|T'..icon..':0|t'..link
-        end    
+        end
     end
 end
 
@@ -234,7 +232,7 @@ local function Achievement(link)--成就
     if id then
         local _, _, _, completed, _, _, _, _, _, icon = GetAchievementInfo(id)
         local texture=icon and '|T'..icon..':0|t' or ''
-        return texture..link..(completed and Icon.S or Icon.no)
+        return texture..link..(completed and e.Icon.select or Icon.no)
     end
 end
 
@@ -243,7 +241,7 @@ local function Quest(link)--任务
     if id then
         local wow= C_QuestLog.IsAccountQuest(id) and Icon.wow or ''--帐号通用        
         if C_QuestLog.IsQuestFlaggedCompleted(id) then
-            return wow..link..Icon.S
+            return wow..link..e.Icon.select
         else
             return wow..link..Icon.no
         end
@@ -255,7 +253,7 @@ local function Talent(link)--天赋
     if id then
         local _, _, icon, _, _, _, _, _ ,_, known=GetTalentInfoByID(id)
         if icon then
-            return '|T'..icon..':0|t'..link..(known and Icon.S or Icon.no)            
+            return '|T'..icon..':0|t'..link..(known and e.Icon.select or Icon.no)
         end
     end
 end
@@ -264,7 +262,7 @@ local function Pvptal(link)--pvp天赋
     local id=link:match('Hpvptal:(%d+)')
     if id then
         local _, _, icon, _, _, _, _, _ ,_, known=GetPvpTalentInfoByID(id)
-        return '|T'..icon..':0|t'..link..(known and Icon.S or Icon.no)
+        return '|T'..icon..':0|t'..link..(known and e.Icon.select or Icon.no)
     end
 end
 
@@ -299,7 +297,7 @@ local function Outfit(link)--外观方案链接
         end
         if to>0 then
             if to==co then
-                return link..Icon.S
+                return link..e.Icon.select
             elseif co>0 then
                 return link..YELLOW_FONT_COLOR_CODE..co..'/'..to..'|r'                 
             else                
@@ -314,7 +312,7 @@ local function Transmogillusion(link)--幻化
     if illusionID then
         local info=C_TransmogCollection.GetIllusionInfo(illusionID)
         if info then
-            return link..((info.isCollected and info.isUsable) and Icon.magoOK) or (info.isCollected and Icon.S) or Icon.mago            
+            return link..((info.isCollected and info.isUsable) and e.Icon.okTransmog) or (info.isCollected and e.Icon.select) or e.Icon.transmogHide            
         end
     end
 end
@@ -323,8 +321,8 @@ local function TransmogAppearance(link)--幻化
     local appearanceID=link:match('Htransmogillusion:(%d+)')
     if appearanceID then
         local has=C_TransmogCollection.PlayerHasTransmogItemModifiedAppearance(appearanceID)                    
-        if has then 
-            return link.Icon.S
+        if has then
+            return link.e.Icon.select
         else
             return link..Icon.no
         end
@@ -338,17 +336,17 @@ local function GetKeyAffix(affixs)--钥石
             local icon2=select(3, C_ChallengeMode.GetAffixInfo(v))
             if icon2 then icon=icon..'|T'..icon2..':0|t' end
         end
-    end    
+    end
     return icon
 end
 local function Keystone(link)
     local item, _, affix1, affix2, affix3, affix4= link:match('Hkeystone:(%d+):(%d+):%d+:(%d+):(%d+):(%d+):(%d+)')
-    if item then 
+    if item then
         local  icon=C_Item.GetItemIconByID(item)        
         if icon then
             local texture= '|T'..icon..':0|t'
             return texture..link..GetKeyAffix({affix1, affix2, affix3, affix4})            
-        end        
+        end
     end
 end
 
@@ -384,20 +382,8 @@ local function Journal(link)--冒险指南
         if buttonImage2 then
             return '|T'..buttonImage2..':0|t'..link
         end
-    end    
+    end
 end
-
-local ColorText={}--内容加颜色
---[[
-for _, v in pairs(e.config.color) do 
-    local s=v.a..' '
-    s=s:gsub('\n', ' ')
-    s=Magic(s)
-    s:gsub('(.-) ', function(t)
-            ColorText[t]=HEX(v.b[1], v.b[2], v.b[3], v.b[4])            
-    end)
-end
-]]
 
 local function Instancelock(link)
     local guid, InstanceID, DifficultyID=link:match('Hinstancelock:(.-):(%d+):(%d+):')
@@ -426,7 +412,7 @@ local function TransmogSet(link)--幻化套装
         --[[        local set = C_TransmogSets.GetSetInfo(setID)
         if set then
             if set.collected then
-                return link..Icon.S
+                return link..e.Icon.select
             elseif se.collected==false then
                 return link..Icon.no
             end
@@ -443,26 +429,26 @@ local function TransmogSet(link)--幻化套装
             end
             if to>0 then            
                 if n==to then
-                    return Icon.S
+                    return e.Icon.select
                 elseif n==0 then
                     return link..RED_FONT_COLOR_CODE..n..'/'..to..'|r'
                 else                
                     return link..YELLOW_FONT_COLOR_CODE..n..'/'..to..'|r'
                 end
-            end        
-        end        
+            end
+        end
     end
 end
 
 local function Add(self, s, ...)
-    s=s:gsub('|Hchannel:.-]|h', Channel)
+    s=s:gsub('|Hchannel:.-]|h', SetChannels)
     s=s:gsub('|Hplayer:.-]|h', Realm)
     s=s:gsub('|Hitem:.-]|h',Item)
     s=s:gsub('|Hspell:.-]|h',Spell)
-    
+
     s=s:gsub('|Hbattlepet:.-]|h',PetLink)
     s=s:gsub('|HbattlePetAbil:.-]|h',PetAblil)    
-    
+
     s=s:gsub('|Htrade:.-]|h', Trade)
     s=s:gsub('|Henchant:.-]|h', Enchant) 
     s=s:gsub('|Hcurrency:.-]|h', Currency) 
@@ -470,35 +456,190 @@ local function Add(self, s, ...)
     s=s:gsub('|Hquest:.-]|h', Quest)
     s=s:gsub('|Htalent:.-]|h', Talent)
     s=s:gsub('|Hpvptal:.-]|h', Pvptal)
-    
+
     s=s:gsub('|Houtfit:.-]|h', Outfit)----外观方案链接    
     s=s:gsub('|Htransmogillusion:.-]|h', Transmogillusion)    
     s=s:gsub('|Htransmogappearance:.-]|h', TransmogAppearance)    
     s=s:gsub('|Htransmogset:.-]|h', TransmogSet)
-    
+
     s=s:gsub('|Hkeystone:.-]|h', Keystone)
     s=s:gsub('|HdungeonScore:.-]|h', DungeonScore)
     s=s:gsub('|Hjournal:.-]|h', Journal)
     s=s:gsub('|Hinstancelock:.-]|h', Instancelock)
-    
-    
-    
-    for k, v in pairs(ColorText) do--内容加颜色
-        s=s:gsub(k, v..k..'|r')
-    end    
+
+    for k, _ in pairs(Save.text) do--内容加颜色
+        s=s:gsub(k, '|cnGREEN_FONT_COLOR:'..k..'|r')
+    end
     return self.ADD(self, s, ...)
 end
 
-for i = 3, NUM_CHAT_WINDOWS do--NUM_CHAT_WINDOWS
-    local frame = _G["ChatFrame"..i]
-    if frame then
-        if not frame.ADD then frame.ADD=frame.AddMessage end
-        frame.AddMessage=Add
-    end    
+Frame.ADD=Frame.AddMessage
+local sel=CreateFrame('Button',nil, Frame)
+local function Ini()
+    for i = 3, NUM_CHAT_WINDOWS do
+        local frame = _G["ChatFrame"..i]
+        if frame then
+            if Save.disabed then
+                if frame.ADD then
+                    frame.AddMessage=frame.ADD
+                end
+            else
+                if not frame.ADD then
+                    frame.ADD=frame.AddMessage
+                end
+                frame.AddMessage=Add
+            end
+        end
+    end
+    if Save.disabed then
+        Frame.AddMessage=Frame.ADD
+        sel:SetNormalAtlas(e.Icon.disabled)
+    else
+        Frame.AddMessage=Add
+        Frame.editBox:SetAltArrowKeyMode(false)--alt +方向= 移动
+        sel:SetNormalAtlas(e.Icon.icon)
+    end
 end
 
-local Frame=DEFAULT_CHAT_FRAME
-if not Frame.ADD then Frame.ADD=Frame.AddMessage end
-Frame.AddMessage=Add 
+sel:SetSize(28,24)
+sel:SetPoint('BOTTOMRIGHT',Frame, 'TOPLEFT', -5, 2)--ChatFrame1.ScrollToBottomButton
+sel:SetPushedAtlas(Icon.up)
+sel:SetHighlightAtlas(Icon.down)
+--sel:SetAlpha(0.5)
+sel:RegisterForClicks("LeftButtonDown","RightButtonDown")
+sel:SetScript('OnClick', function(self, d)
+    local key=IsModifierKeyDown()
+    if d=='LeftButton' and not key then
+        if Save.disabed then
+            Save.disabed=nil
+        else
+            Save.disabed=true
+        end
+        print(addName..' ('..id..'): '..e.GetEnabeleDisable(not Save.disabed))
+        Ini()
+    elseif d=='LeftButton' and IsAltKeyDown() then--文本转语音
+        if C_CVar.GetCVarBool('textToSpeech') then
+            C_CVar.SetCVar("textToSpeech", 0)
+        else
+            C_CVar.SetCVar("textToSpeech", 1)
+        end
+        print(TEXT_TO_SPEECH..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool('textToSpeech')))
+    elseif d=='RightButton' and not key then--/reload
+        if UnitAffectingCombat('player') then
+            print('|cnRED_FONT_COLOR:'..HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..' ...|r')
+        else
+            C_UI.Reload()
+        end
+    end
+end)
 
-Frame.editBox:SetAltArrowKeyMode(false)--alt +方向= 移动
+sel:SetScript("OnEnter", function (self)
+        tips:SetOwner(self, "ANCHOR_RIGHT")
+        tips:ClearLines()
+        tips:AddDoubleLine(id, addName)
+        tips:AddLine(' ')
+        tips:AddDoubleLine(addName..': '..e.GetEnabeleDisable(not Save.disabed),e.Icon.left)
+        tips:AddDoubleLine(TEXT_TO_SPEECH..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool('textToSpeech')), e.Icon.left)
+        tips:AddLine(' ')
+        tips:AddDoubleLine(RELOADUI, e.Icon.right, 1,0,1)
+        tips:Show()
+end)
+sel:SetScript("OnLeave",function(self)
+        tips:Hide()
+end)
+
+local function setPanel()
+    local panel = CreateFrame("FRAME");
+    panel.name = addName;
+    panel.parent =id;
+    InterfaceOptions_AddCategory(panel)
+
+    local str=e.Cstr(panel)--内容加颜色
+    str:SetPoint('TOPLEFT')
+    str:SetText(COLOR..': '..KBASE_DEFAULT_SEARCH_TEXT..'|cnGREEN_FONT_COLOR:( '..KEY_SPACE..' )|r')
+    local editBox=e.CeditBotx(panel)
+    editBox:SetPoint('TOPLEFT', str, 'BOTTOMLEFT',0,-5)
+    editBox:SetTextColor(0,1,0)
+    if Save.text then
+        local s=''
+        for k, _ in pairs(Save.text) do
+            if s~='' then s=s..' ' end
+            s=s..k
+        end
+        editBox:SetText(s)
+    end
+    local btn=e.Cbtn(editBox)
+    btn:SetText(UPDATE)
+    btn:SetPoint('TOPLEFT', editBox, 'TOPRIGHT',5, 0)
+    btn:SetScript('OnClick', function()
+        Save.text={}
+        local n=0
+        local s=editBox:GetText()
+        if s:gsub(' ','')~='' then
+            s=s..' '
+            s=s:gsub('\n', ' ')
+            s:gsub('.- ', function(t)
+                t=t:gsub(' ','')
+                if t and t~='' then
+                    t=Magic(t)
+                    Save.text[t]=true
+                    n=n+1
+                    print(n..')'..COLOR, t)
+                end
+            end)
+        end
+        print(COLOR,'|cnGREEN_FONT_COLOR:#'..n..COMPLETE..'|r ', SAVE..'/reload')
+    end)
+
+    local str2=e.Cstr(panel)--频道名称替换
+    str2:SetPoint('TOPLEFT', editBox, 'BOTTOMLEFT', 0,-20)
+    str2:SetText(CHANNEL_CHANNEL_NAME..': '..COMMUNITIES_SETTINGS_SHORT_NAME_LABEL..'  |cnGREEN_FONT_COLOR:= |r')
+    local editBox2=e.CeditBotx(panel)
+    editBox2:SetPoint('TOPLEFT', str2, 'BOTTOMLEFT',0,-5)
+    if Save.channels then
+        local t3=''
+        for k, v in pairs(Save.channels) do
+            if t3~='' then t3=t3..'\n' end
+            t3=t3..k..'='..v
+        end
+       editBox2:SetText(t3)
+    end
+    local btn2=e.Cbtn(editBox2)
+    btn2:SetText(UPDATE)
+    btn2:SetPoint('TOPLEFT', editBox2, 'TOPRIGHT',5, 0)
+    btn2:SetScript('OnClick', function()
+        Save.channels={}
+        local n=0
+        local s=editBox2:GetText()
+        if s:gsub(' ','')~='' then
+            s=s..' '
+            s=s:gsub('\n', ' ')
+            s:gsub('.-=.- ', function(t)
+                local name,name2=t:match('(.-)=(.-) ')
+                if name and name2 and name~='' and name2~='' then
+                    name=Magic(name)
+                    Save.channels[name]=name2
+                    n=n+1
+                    print(n..')'..CHANNELS..': ',name, REPLACE, name2)
+                end
+            end)
+        end
+        print(CHANNEL_CHANNEL_NAME, COMMUNITIES_SETTINGS_SHORT_NAME_LABEL,'|cnGREEN_FONT_COLOR:#'..n..COMPLETE..'|r ',SAVE..'/reload')
+    end)
+end
+
+sel:RegisterEvent("ADDON_LOADED")
+sel:RegisterEvent("PLAYER_LOGOUT")
+sel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" and arg1 == id then
+    	Save= HyperlinksIconSave or Save
+        if not Save.disabed then
+            Ini()
+        else
+            sel:SetNormalAtlas(e.Icon.disabled)
+        end
+        setPanel()
+    elseif event == "PLAYER_LOGOUT" then
+        HyperlinksIconSave = Save
+	end
+end)

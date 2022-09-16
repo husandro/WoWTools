@@ -1,35 +1,18 @@
 local id, e = ...
-local addName='PaperDoll'
+
+local addName=CHARACTER
 local Frame=PaperDollItemsFrame
 local tips= GameTooltip
 local Save={}
 
 local Icon={
-    enchant=463531,
-    use='soulbinds_tree_conduit_icon_utility',
-    set='Forge-ColorSwatchSelection',
-    no='talents-button-reset',
-    pu='Forge-ColorSwatchHighlight',
-    s='AlliedRace-UnlockingFrame-Checkmark',
-    equi='orderhalltalents-done-glow',--设置图标
-    right='|A:newplayertutorial-icon-mouse-rightbutton:0:0|a',
-    left='|A:newplayertutorial-icon-mouse-leftbutton:0:0|a',
-    mid='|A:newplayertutorial-icon-mouse-middlebutton:0:0|a',
+    enchant=463531,--附魔图标
+    use='soulbinds_tree_conduit_icon_utility',--物品 '使用' 图标
 }
 local Player={
     ser=GetRealmName(),
     col='|c'..select(4,GetClassColor(UnitClassBase('player'))),
 }
-
-local Cstr=function(self)
-    self=self or Frame
-    local b=self:CreateFontString(nil, 'OVERLAY')
-    b:SetFont('Fonts\\ARHei.ttf', 12, 'OUTLINE')
-    b:SetShadowOffset(2, -2)
-    b:SetJustifyH('CENTER')
-    b:SetTextColor(1, 0.45, 0.04)
-    return b
-end
 
 --local Lib=LibStub("LibCustomGlow-1.0",true)
 
@@ -37,15 +20,15 @@ local S=20
 local function Cbtn(self)
     local b=CreateFrame("Button",nil, self)
     b:SetSize(S, S)
-    b:SetHighlightAtlas(Icon.pu)
-    b:SetPushedAtlas(Icon.set)
+    b:SetHighlightAtlas(e.Icon.highlight)
+    b:SetPushedAtlas(e.Icon.pushed)
     return b
 end
 
 local function Sever()--显示服务名称
     local s=Frame.server
     if not Save.hide and not s then
-            s=Cstr(Frame)
+            s=e.Cstr(Frame)
             s:SetPoint('RIGHT', CharacterLevelText, 'LEFT')
             s:SetJustifyH('RIGHT')
             s:EnableMouse(true)
@@ -131,7 +114,7 @@ local function LvTo()--总装等
         if to and cu then
             lv=to-cu
             if not f.lv then
-                f.lv=Cstr(f)
+                f.lv=e.Cstr(f)
                 f.lv:SetPoint('BOTTOM')
             end
             f.lv:SetFormattedText('%i', to)
@@ -168,7 +151,7 @@ local function Lv(self, slot, link)--装等
     end
     if lv then
         if not self.lv then
-            self.lv=Cstr(self)
+            self.lv=e.Cstr(self)
             self.lv:SetPoint('BOTTOM', 0, 0)            
             self.lv:SetJustifyH('CENTER')
         end
@@ -323,7 +306,7 @@ local function Set(self, slot, link)--套装
                     self.set:SetPoint('TOPLEFT',self)
                 end
                 self.set:SetAllPoints(self)
-                self.set:SetAtlas(Icon.set)
+                self.set:SetAtlas(e.Icon.pushed)
             end
         end
     end
@@ -352,8 +335,8 @@ local function Sta(self, slot, link)--显示属性
         v=info['ITEM_MOD_VERSATILITY']
 
         if s then
-            if not self.s then 
-                self.s=Cstr(self)
+            if not self.s then
+                self.s=e.Cstr(self)
                 self.s:SetText(e.WA_Utf8Sub(STAT_CRITICAL_STRIKE, 1):upper())
             else
                 self.s:ClearAllPoints()
@@ -364,7 +347,7 @@ local function Sta(self, slot, link)--显示属性
 
         if h then
             if not self.h then
-                self.h=Cstr(self)
+                self.h=e.Cstr(self)
                 self.h:SetText(e.WA_Utf8Sub(STAT_HASTE, 1):upper())
             else
                 self.h:ClearAllPoints()
@@ -373,8 +356,8 @@ local function Sta(self, slot, link)--显示属性
             SetP(self.h, n)
         end
         if m  then
-            if not self.m then 
-                self.m=Cstr(self)            
+            if not self.m then
+                self.m=e.Cstr(self)
                 self.m:SetText(e.WA_Utf8Sub(STAT_MASTERY, 1):upper())
             else
                 self.m:ClearAllPoints()
@@ -383,8 +366,8 @@ local function Sta(self, slot, link)--显示属性
             SetP(self.m, n)
         end
         if v then
-            if not self.v then 
-                self.v=Cstr(self)            
+            if not self.v then
+                self.v=e.Cstr(self)
                 self.v:SetText(e.WA_Utf8Sub(STAT_VERSATILITY, 1):upper())            
             else
                 self.v:ClearAllPoints()
@@ -407,7 +390,7 @@ local function Title()--头衔数量
         nu= #to-1
         if nu>1 then
             if not f.nu then
-                f.nu=Cstr(f)
+                f.nu=e.Cstr(f)
                 f.nu:SetPoint('BOTTOM')
             end
             f.nu:SetText(nu)
@@ -452,7 +435,7 @@ local function Equipment()--装备管理
     end
     if name then
         if not f.set then
-            f.set=Cstr(f)
+            f.set=e.Cstr(f)
             f.set:SetPoint('BOTTOM', 2, 0)
             f.set:SetJustifyH('CENTER')
         end
@@ -484,7 +467,7 @@ local function Equipment()--装备管理
 
     if nu then--套装数量
         if not f.nu then
-            f.nu=Cstr(f)
+            f.nu=e.Cstr(f)
             f.nu:SetPoint('LEFT', f, 'RIGHT',0, 4)
             f.nu:SetJustifyH('RIGHT')
         end
@@ -499,7 +482,7 @@ local function EquipmentStr(self)--套装已装备数量
     local nu
     if setID and not Save.hide then
         if not self.nu then
-            self.nu=Cstr(self)
+            self.nu=e.Cstr(self)
             self.nu:SetJustifyH('RIGHT')            
             self.nu:SetPoint('BOTTOMLEFT', self.text, 'BOTTOMLEFT')
         end
@@ -538,7 +521,8 @@ local function ADDEquipment(equipmentSetsDirty)--添加装备管理框
 
     if not f then
         f=Cbtn(UIParent)--添加移动按钮
-        f:SetNormalAtlas(Icon.equi)
+        f:SetNormalAtlas(e.Icon.icon)
+        
         local p=Save.Equipment
         if p then
             f:SetPoint(p[1], UIParent, p[3], p[4], p[5])
@@ -546,15 +530,15 @@ local function ADDEquipment(equipmentSetsDirty)--添加装备管理框
             f:SetPoint('TOPLEFT', Frame, 'TOPRIGHT')
         end
         f:RegisterForDrag("RightButton")
-        f:SetClampedToScreen(true)        
-        f:SetMovable(true)        
+        f:SetClampedToScreen(true)
+        f:SetMovable(true)
         f:EnableMouseWheel(true)
         f:SetScript("OnDragStart", function(self) if not IsModifierKeyDown() then  self:StartMoving() end end)
         f:SetScript("OnDragStop", function(self)
                 ResetCursor()
                 self:StopMovingOrSizing()
                 Save.Equipment={self:GetPoint(1)}
-                print(addName..'\n'..    GEARSETS_TITLE..': .|cFF00FF00Alt+'..Icon.right..KEY_BUTTON2..'|r='.. TRANSMOGRIFY_TOOLTIP_REVERT)
+                print(addName..'\n'..    GEARSETS_TITLE..': .|cFF00FF00Alt+'..e.Icon.right..KEY_BUTTON2..'|r='.. TRANSMOGRIFY_TOOLTIP_REVERT)
         end)
         f:SetScript("OnMouseUp", function() ResetCursor() end)
         f:SetScript("OnMouseDown", function(self,d)
@@ -598,9 +582,9 @@ local function ADDEquipment(equipmentSetsDirty)--添加装备管理框
                 tips:ClearLines()
                 tips:AddDoubleLine(addName, nil, 1,1,1)        
                 tips:AddDoubleLine(ADD, EQUIPMENT_MANAGER)
-                tips:AddDoubleLine(Save.EquipmentH and BINDING_NAME_STRAFERIGHT or BINDING_NAME_PITCHDOWN, Icon.left)
-                tips:AddDoubleLine(NPE_MOVE, Icon.right)
-                tips:AddDoubleLine(ZOOM_IN..'/'..ZOOM_OUT..': '..(Save.zoom and Save.zoom or 1), Icon.mid)
+                tips:AddDoubleLine(Save.EquipmentH and BINDING_NAME_STRAFERIGHT or BINDING_NAME_PITCHDOWN, e.Icon.left)
+                tips:AddDoubleLine(NPE_MOVE, e.Icon.right)
+                tips:AddDoubleLine(ZOOM_IN..'/'..ZOOM_OUT..': '..(Save.zoom and Save.zoom or 1), e.Icon.mid)
                 tips:Show()
         end)
         f:SetScript("OnLeave", function()
@@ -620,7 +604,7 @@ local function ADDEquipment(equipmentSetsDirty)--添加装备管理框
         if not b then
             b=Cbtn(f)
             b.tex=b:CreateTexture(nil, 'OVERLAY')
-            b.tex:SetAtlas(Icon.s)
+            b.tex:SetAtlas(e.Icon.select)
             b.tex:SetAllPoints(b)            
             b:SetSize(S, S)
             EPoint(b, f ,b2)--设置位置
@@ -690,7 +674,7 @@ hooksecurefunc('GearSetButton_UpdateSpecInfo', EquipmentStr)--套装已装备数
 hooksecurefunc('PaperDollEquipmentManagerPane_Update',ADDEquipment)----添加装备管理框        
 
 Frame.sel = Cbtn(Frame)--总开关
-Frame.sel.Text=Cstr(Frame)
+Frame.sel.Text=e.Cstr(Frame)
 Frame.sel.Text:SetPoint('LEFT', Frame.sel, 'RIGHT')
 Frame.sel2 = Cbtn(Frame)--显示/隐藏装备管理框选项
 
@@ -725,9 +709,9 @@ end
 local function SetIni()
     ADDEquipment()--装备管理框
     GetDurationTotale()--装备总耐久度        
-    Frame.sel:SetNormalAtlas(Save.hide and Icon.no or Icon.equi)
+    Frame.sel:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
     Frame.sel:SetAlpha(Save.hide and 0.3 or 1)
-    Frame.sel2:SetNormalAtlas(Save.show and Icon.equi or Icon.no)
+    Frame.sel2:SetNormalAtlas(Save.show and e.Icon.icon or e.Icon.disabled)
     Frame.sel2:SetAlpha(Save.show and 0.3 or 1)
     Sever()--服务器名称
 end
@@ -750,6 +734,7 @@ Frame.sel:SetScript("OnEnter", function (self)
         tips:SetOwner(self, "ANCHOR_BOTTOMLEFT")
         tips:ClearLines()
         tips:AddDoubleLine(id, addName)
+        tips:AddLine(' ')
         if self.DuVal and self.DuVal~='' then
             tips:AddDoubleLine(DURABILITY, self.DuVal..'%')
         end
@@ -774,7 +759,8 @@ end)
 Frame.sel2:SetScript("OnEnter", function (self)
         tips:SetOwner(self, "ANCHOR_TOPLEFT")
         tips:ClearLines()
-        tips:AddDoubleLine(addName, nil, 1,1,1)        
+        tips:AddDoubleLine(id, addName)
+        tips:AddLine(' ')
         tips:AddDoubleLine(ADD, EQUIPMENT_MANAGER)
         tips:AddDoubleLine(SHOW..'/'..HIDE, Save.show and SHOW or HIDE, nil,nil,nil, 0,1,0)
         tips:Show()
@@ -790,9 +776,8 @@ Frame.sel:RegisterEvent("EQUIPMENT_SWAP_FINISHED")
 Frame.sel:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
 
 Frame.sel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1 == id then
+    if event == "ADDON_LOADED" and arg1 == id then        
        Save= PaperDollSave or Save
-       --Frame.sel:SetChecked(Save.hide)
        SetIni()
     elseif event == "PLAYER_LOGOUT" then
         PaperDollSave=Save

@@ -1,15 +1,20 @@
 local id, e = ...
-local Save
+local addName=GOSSIP_OPTIONS:gsub(SETTINGS_TITLE,'')
+
+local Save={
+    gossip=true,
+    Option={},
+    NPC={},
+}
 local Frame = GossipFrame
 local Frame2=ObjectiveTrackerBlocksFrame
 local tips= GameTooltip
 
 local Icon={
-    right='|A:newplayertutorial-icon-mouse-rightbutton:0:0|a',
-    left='|A:newplayertutorial-icon-mouse-leftbutton:0:0|a',
+    --right='|A:newplayertutorial-icon-mouse-rightbutton:0:0|a',
+    --left='|A:newplayertutorial-icon-mouse-leftbutton:0:0|a',
     setHighlightAtlas='bags-newitem',
     setPushedAtlas='bags-glow-heirloom',
-    normal='Lightlink-ball',
     gossip='transmog-icon-chat',--对话图标
     qest='campaignavailablequesticon',
     TrivialQuests='|A:TrivialQuests:0:0|a',
@@ -24,31 +29,6 @@ local function Cbtn(self)
 end
 local g=Cbtn(Frame2);--闲话图标
 local q=Cbtn(Frame2);--任务图标
-
-local function Cstr(f)
-    local b=f:CreateFontString(nil, 'OVERLAY')
-    b:SetFontObject('GameFontNormal')
-    b:SetShadowOffset(2, -2)
-    b:SetShadowColor(0, 0, 0)
-    return b
-end
-
-local function GetEnabeleDisable(ed)--启用或禁用字符
-    if ed then
-      return '|cnGREEN_FONT_COLOR:'..ENABLE..'|r'
-    else
-      return '|cnRED_FONT_COLOR:'..DISABLE..'|r'
-    end
-end
-
-local function GetNpcID(unit)--NPC ID
-    if UnitExists(unit) then
-      local guid=UnitGUID(unit)
-      if guid then
-        return select(6,  strsplit("-", guid));
-      end
-    end
-end
 
 local function QuestInfo_GetQuestID()--取得任务ID
 	if ( QuestInfoFrame.questLog ) then
@@ -74,28 +54,14 @@ local function setTexture()
     if Save.qest then
         q:SetNormalAtlas(Icon.qest)
     else
-        q:SetNormalAtlas(Icon.normal)
+        q:SetNormalAtlas(e.Icon.icon)
     end
     if Save.gossip then
        g:SetNormalAtlas(Icon.gossip)
     else
-        g:SetNormalAtlas(Icon.normal)
+        g:SetNormalAtlas(e.Icon.icon)
     end
 end
-
---加载保存数据
-g:RegisterEvent("ADDON_LOADED")
-g:RegisterEvent("PLAYER_LOGOUT")
-g:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1 == id then
-        Save=GossipSave or {gossip=true}
-        Save.Option=Save.Option or {}
-        Save.NPC =Save.NPC or {}
-        setTexture()
-    elseif event == "PLAYER_LOGOUT" then
-        GossipSave=Save
-    end
-end)
 
 --闲话选项
 --禁用此npc闲话选项
@@ -147,16 +113,16 @@ Frame:SetScript('OnShow', function (self)
                 tips:ClearLines()
 
                 tips:AddDoubleLine((self2.name and self2.name..' ' or ''), 'npc ID: '..self2.npc)
-                tips:AddDoubleLine(DISABLE..' NPC', GetEnabeleDisable(not Save.NPC[self2.npc])..Icon.left)
-                tips:AddDoubleLine(CLEAR_ALL, Icon.right)
+                tips:AddDoubleLine(DISABLE..' NPC', e.GetEnabeleDisable(not Save.NPC[self2.npc])..e.Icon.left)
+                tips:AddDoubleLine(CLEAR_ALL, e.Icon.right)
                 tips:AddDoubleLine(' ')
-                tips:AddDoubleLine(GOSSIP_OPTIONS, GetEnabeleDisable(Save.gossip))
+                tips:AddDoubleLine(GOSSIP_OPTIONS, e.GetEnabeleDisable(Save.gossip))
                 tips:Show()
             end
         end)
         self.sel:SetScript("OnLeave", function() tips:Hide() end)
     end
-    local npc=GetNpcID('npc')
+    local npc=e.GetNpcID('npc')
     self.sel.npc=npc
     self.sel.name=UnitName("npc")
     self.sel:SetChecked(Save.NPC[npc])
@@ -179,9 +145,9 @@ hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, info)--GossipFra
                 tips:AddDoubleLine(self2.name, self2.npc and 'npc ID: '..self2.npc or '')
                 tips:AddDoubleLine(self2.info.name, 'gossipOptionID: '..self2.info.gossipOptionID)
                 tips:AddDoubleLine(' ')
-                tips:AddDoubleLine(CUSTOM, GetEnabeleDisable(Save.Option[self2.info.gossipOptionID]))
-                tips:AddDoubleLine(self2.name, GetEnabeleDisable(not Save.NPC[self2.npc]))
-                tips:AddDoubleLine(GOSSIP_OPTIONS, GetEnabeleDisable(Save.gossip))
+                tips:AddDoubleLine(CUSTOM, e.GetEnabeleDisable(Save.Option[self2.info.gossipOptionID]))
+                tips:AddDoubleLine(self2.name, e.GetEnabeleDisable(not Save.NPC[self2.npc]))
+                tips:AddDoubleLine(GOSSIP_OPTIONS, e.GetEnabeleDisable(Save.gossip))
                 tips:Show()
             end
         end)
@@ -202,7 +168,7 @@ hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, info)--GossipFra
         end)
     end
 
-    local npc=GetNpcID('npc')
+    local npc=e.GetNpcID('npc')
     self.sel.npc=npc
     self.sel.name=UnitName("npc")
     self.sel.info=info
@@ -232,7 +198,7 @@ g:SetScript('OnClick', function(self, d)
         else
             Save.gossip=true
         end
-        print(GOSSIP_OPTIONS..': '..GetEnabeleDisable(Save.gossip))
+        print(GOSSIP_OPTIONS..': '..e.GetEnabeleDisable(Save.gossip))
         setTexture()
     elseif d=='LeftButton' and IsAltKeyDown() then--清除自定义闲话选       
         StaticPopupDialogs['husandro']={
@@ -260,10 +226,12 @@ g:SetScript('OnEnter', function(self2)
             n=n+1
         end
     end
-    tips:SetOwner(self2, "ANCHOR_LEFT")
+    tips:SetOwner(self2, "ANCHOR_LEFT")    
     tips:ClearLines()
-    tips:AddDoubleLine(GOSSIP_OPTIONS..Icon.left, GetEnabeleDisable(Save.gossip))
-    tips:AddDoubleLine(CLEAR_ALL..' Alt+'..Icon.left, GREEN_FONT_COLOR_CODE..n..'|r')
+    tips:AddDoubleLine(id, addName)
+    tips:AddLine(' ')
+    tips:AddDoubleLine(GOSSIP_OPTIONS, e.GetEnabeleDisable(Save.gossip)..e.Icon.left)
+    tips:AddDoubleLine(CLEAR_ALL, n..' Alt+'..e.Icon.left)
     tips:Show()
 end)
 g:SetScript('OnLeave', function ()
@@ -356,14 +324,16 @@ q:SetScript('OnClick', function ()
         Save.qest=true
     end
     setTexture()
-    print(QUICK_JOIN_IS_AUTO_ACCEPT_TOOLTIP..' ('..QUESTS_LABEL..'): '..GetEnabeleDisable(Save.qest))
+    print(QUICK_JOIN_IS_AUTO_ACCEPT_TOOLTIP..' ('..QUESTS_LABEL..'): '..e.GetEnabeleDisable(Save.qest))
 end)
 q:SetScript('OnEnter', function (self2)
     tips:SetOwner(self2, "ANCHOR_LEFT")
     tips:ClearLines()
-    tips:AddDoubleLine(QUICK_JOIN_IS_AUTO_ACCEPT_TOOLTIP..': '..QUESTS_LABEL, GetEnabeleDisable(Save.qest)..Icon.left)
-    tips:AddDoubleLine(	MINIMAP_TRACKING_TRIVIAL_QUESTS..Icon.TrivialQuests, GetEnabeleDisable(GetQuestTrivialTracking()))
-    tips:AddDoubleLine(' ')
+    tips:AddDoubleLine(id, addName)
+    tips:AddLine(' ')
+    tips:AddDoubleLine(QUICK_JOIN_IS_AUTO_ACCEPT_TOOLTIP..': '..QUESTS_LABEL, e.GetEnabeleDisable(Save.qest)..e.Icon.left)
+    tips:AddDoubleLine(	MINIMAP_TRACKING_TRIVIAL_QUESTS..Icon.TrivialQuests, e.GetEnabeleDisable(GetQuestTrivialTracking()))
+    tips:AddLine(' ')
     tips:AddDoubleLine(QUESTS_LABEL..' '..#C_QuestLog.GetAllCompletedQuestIDs()..' '..COMPLETE, GetDailyQuestsCompleted()..' '..DAILY)--已完成任务
     tips:Show()
 end)
@@ -375,7 +345,7 @@ q:RegisterEvent("PLAYER_LOGOUT")
 q:RegisterEvent("QUEST_LOG_UPDATE")
 q:SetScript("OnEvent", function(self, event, arg1)
     if not self.str then
-        self.str=Cstr(self)
+        self.str=e.Cstr(self)
         self.str:SetPoint('RIGHT', g, 'LEFT', 0, 0)
     end
     local n = select(2,C_QuestLog.GetNumQuestLogEntries()) or 0;
@@ -384,5 +354,17 @@ q:SetScript("OnEvent", function(self, event, arg1)
         self.str(RED_FONT_COLOR_CODE..n..'/'..max..'|r')
     else
         self.str:SetText(n..'/'..max..'|r')
+    end
+end)
+
+--加载保存数据
+g:RegisterEvent("ADDON_LOADED")
+g:RegisterEvent("PLAYER_LOGOUT")
+g:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" and arg1 == id then
+        Save=GossipSave or Save
+        setTexture()
+    elseif event == "PLAYER_LOGOUT" then
+        GossipSave=Save
     end
 end)
