@@ -284,6 +284,9 @@ end)
 
 --任务进度, 继续, 完成QuestFrame.lua
 hooksecurefunc('QuestFrameProgressItems_Update', function(self)
+    if not Save.qest or IsModifierKeyDown() then
+        return
+    end
     local b=QuestFrameCompleteQuestButton;
     if b and b:IsEnabled() then
         QuestProgressCompleteButton_OnClick()

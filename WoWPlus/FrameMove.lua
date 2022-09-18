@@ -1,5 +1,8 @@
-local id = ...
-local Save={point={}}
+local id, e = ...
+local Save={
+    disabled=true,
+    point={},
+}
 local addName=NPE_MOVE..'Frame'
 
 local Point=function(frame, name2)
@@ -114,7 +117,7 @@ local FrameTab={
     ReputationDetailFrame={save=true},--声望描述q
     TokenFramePopup={save=true},--货币设置
     SpellBookFrame={},--法术书
-    WorldMapFrame={},--世界地图
+    
     PVEFrame={},--地下城和团队副本
     EncounterJournal={},--冒险指南
     HelpFrame={},--客服支持
@@ -125,6 +128,36 @@ local FrameTab={
     ChatConfigFrame={save=true},--聊天设置
     SettingsPanel={},--选项
     --ZoneAbilityFrame.SpellButtonContainer = {save=true, click='R'},
+    UIWidgetPowerBarContainerFrame={save=true,},
+    FriendsFrame={},--好友列表
+
+    GossipFrame={},
+    QuestFrame={},
+    PlayerChoiceFrame={},--任务选择
+
+    CalendarFrame={},--日历
+    CalendarCreateEventFrame={save=true},
+    CalendarViewEventFrame={save=true},
+    CalendarViewHolidayFrame={save=true},
+
+    AuctionHouseFrame={},--拍卖行
+    BlackMarketFrame={},--黑市
+    BankFrame={save=true},--银行
+
+    MerchantFrame={},--货物
+    ClassTrainerFrame={},--专业训练师
+
+    WardrobeFrame={},--幻化
+
+    ColorPickerFrame={save=true},--颜色选择器
+
+    GarrisonShipyardFrame={},--海军行动
+    GarrisonMissionFrame={},--要塞任务
+    GarrisonCapacitiveDisplayFrame={},--要塞订单
+    BFAMissionFrame={},--侦查地图
+
+    FlightMapFrame={save=true},--飞行地图
+    WorldMapFrame={},--世界地图
 };
   --PlayerTalentFrame={},天赋
 if IsAddOnLoaded('BlizzMove') then
@@ -134,6 +167,10 @@ if IsAddOnLoaded('BlizzMove') then
 end
 
 local function Set(arg1)
+    if Save.disabled then
+        return
+    end
+
     for k, v in pairs(FrameTab) do
         local f= _G[k];
         if f then
@@ -153,24 +190,37 @@ local function Set(arg1)
     end
 end
 
+local function Set2()
+    Move(DressUpFrame.TitleContainer, {frame = DressUpFrame})--试衣间
+end
+
 --加载保存数据
 local panel=CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
-        Save= FrameMoveSave or Save
-        if Save.disabled then
-            return
+        if arg1==id then
+            Save= FrameMoveSave or Save
+            --添加控制面板        
+            local sel=e.CPanel(addName, not Save.disabled)
+            sel:SetScript('OnClick', function()
+                if Save.disabled then
+                    Save.disabled=nil
+                else
+                    Save.disabled=true
+                end
+                print(addName, e.GetEnabeleDisable(not Save.disabled), NEED..' /reload')
+            end)
+            Set2()
         end
+
         Set(arg1)
+        print(arg1,addName)
     elseif event == "PLAYER_LOGOUT" then
         FrameMoveSave=Save
     end
 end)
-
-
-
 
 
 --[[
@@ -182,27 +232,16 @@ end)
     ContainerFrame6={save=true},
 
     --ZoneAbilityFrame={save=true,enter=true},
-   
-    UIWidgetPowerBarContainerFrame={save=true,},
-    ChatConfigFrame={save=true,},
-    
-    
     --ObjectiveTrackerBlocksFrame={click='R',},
-    ClassTrainerFrame={},
+    
     
  
     
-    
-    
-    DressUpFrame={},
-    MacroFrame={},
-    GossipFrame={},
-    AuctionHouseFrame={},
+   
     --AchievementFrameHeader={frame=AchievementFrame,},--9.0
     AchievementFrame={},
-    MerchantFrame={},
-    WardrobeFrame={},
-    BankFrame={},
+  
+    
     CompanionFrame={},
     ReputationDetailFrame={},
     SkillFrame={},
@@ -214,7 +253,7 @@ end)
     PVPTeam2={},
     PVPTeam3={},
     DestinyFrame={},
-    FriendsFrame={},
+    
     RaidInfoFrame={},
     GuildInviteFrame={},
     GuildRegistrarFrame={},
@@ -226,7 +265,7 @@ end)
     PetitionFrame={},
     PetStableFrame={},
     ScenarioQueueFrameSpecific={},
-    QuestFrame={},
+    
     QuestLogFrame={},
     QuestLogPopupDetailFrame={},
     ReadyCheckFrame={},
@@ -247,11 +286,8 @@ end)
     AzeriteRespecFrame={},
     BarberShopFrame={},
     KeyBindingFrame={},
-    BlackMarketFrame={},
-    CalendarFrame={},
-    CalendarCreateEventFrame={},
-    CalendarViewEventFrame={},
-    CalendarViewHolidayFrame={},
+    
+   
     ChallengesKeystoneFrame={save=true, },
     ChannelFrame={},
     ClickBindingFrame={},
@@ -262,7 +298,7 @@ end)
     CovenantSanctumFrame={},
     CraftFrame={},
     DeathRecapFrame={},
-    FlightMapFrame={save=true},
+   
     GarrisonBuildingFrame={},
     OrderHallMissionFrame={},
     BFAMissionFrame={},
@@ -278,7 +314,7 @@ end)
     ItemUpgradeFrame={},
     LookingForGuildFrame={},
     OrderHallTalentFrame={},
-    PlayerChoiceFrame={},
+   
     ReforgingFrame={},
     RuneforgeFrame={},
     ScrappingMachineFrame={},

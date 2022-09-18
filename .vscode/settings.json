@@ -112,7 +112,8 @@
         "SETTINGS_TITLE",
         "CHARACTER",
         "CHANNELS",
-        "REPLACE"
+        "REPLACE",
+        "ReloadUI"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

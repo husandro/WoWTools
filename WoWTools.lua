@@ -93,8 +93,6 @@ end
 e.CeditBotx= function(self, width, height)
   width = width or 400
   height=height or 400
-  
-  
 
   local editBox = CreateFrame("EditBox", nil, self)
   editBox:SetSize(width, height)
