@@ -113,7 +113,9 @@
         "CHARACTER",
         "CHANNELS",
         "REPLACE",
-        "ReloadUI"
+        "ReloadUI",
+        "TOKENS",
+        "TokenFrame"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

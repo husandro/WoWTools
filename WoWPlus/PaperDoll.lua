@@ -9,12 +9,6 @@ local Icon={
     enchant=463531,--附魔图标
     use='soulbinds_tree_conduit_icon_utility',--物品 '使用' 图标
 }
-local Player={
-    ser=GetRealmName(),
-    col='|c'..select(4,GetClassColor(UnitClassBase('player'))),
-}
-
---local Lib=LibStub("LibCustomGlow-1.0",true)
 
 local S=20
 local function Cbtn(self)
@@ -27,7 +21,7 @@ end
 
 local function Sever()--显示服务名称
     local s=Frame.server
-    if not Save.hide and not s then
+    if not Save.disabled and not s then
             s=e.Cstr(Frame)
             s:SetPoint('RIGHT', CharacterLevelText, 'LEFT')
             s:SetJustifyH('RIGHT')
@@ -38,7 +32,7 @@ local function Sever()--显示服务名称
                     tips:AddDoubleLine(FRIENDS_LIST_REALM)
                     local ok2
                     for k, v in pairs(GetAutoCompleteRealms()) do
-                        if v==Player.ser then
+                        if v==e.Player.server then
                             tips:AddDoubleLine(v, k, 0,1,0)
                         else
                             tips:AddDoubleLine(v, k)
@@ -52,10 +46,10 @@ local function Sever()--显示服务名称
             end)
             s:SetScript("OnLeave",function() tips:Hide() end)
             Frame.server=s
-            s:SetText(Player.col..Player.ser..'|r')
+            s:SetText(e.Player.col..e.Player.server..'|r')
     end
     if s then
-        s:SetShown(not Save.hide)
+        s:SetShown(not Save.disabled)
     end
 end
 
@@ -65,7 +59,7 @@ end
 
 local function Du(self, slot, link) --耐久度    
     local du
-    if link and not Save.hide then
+    if link and not Save.disabled then
         local min, max=GetInventoryItemDurability(slot)
         if min and max and max>0 then
             du=min/max*100
@@ -109,7 +103,7 @@ local function LvTo()--总装等
         return
     end
     local lv
-    if not Save.hide then
+    if not Save.disabled then
         local to, cu=GetAverageItemLevel()
         if to and cu then
             lv=to-cu
@@ -125,7 +119,7 @@ end
 
 local function Lv(self, slot, link)--装等    
     local lv
-    if not Save.hide  then
+    if not Save.disabled  then
         local to=GetAverageItemLevel()
         if link then
             local quality = GetInventoryItemQuality("player", slot)--颜色            
@@ -171,7 +165,7 @@ local function Gem(self, slot, link)--宝石
     local n=1
     for _, v in pairs(gems) do        
         local b=self['gem'..n]
-        if v and not Save.hide then
+        if v and not Save.disabled then
             if not b then
                 local h=self:GetHeight()/3
                 b=self:CreateTexture()
@@ -196,7 +190,7 @@ local function Gem(self, slot, link)--宝石
             b:SetTexture(v)
             n=n+1
         end
-        if b then b:SetShown(v and not Save.hide) end
+        if b then b:SetShown(v and not Save.disabled) end
     end
 end
 
@@ -242,7 +236,7 @@ end
 local enchantStr=ENCHANTED_TOOLTIP_LINE:gsub('%%s','')--附魔
 local function Enchant(self, slot, link)--附魔, 使用, 属性
     local enchant, use
-    if link and not Save.hide then
+    if link and not Save.disabled then
         local tip = _G['ScannerTooltip'] or CreateFrame('GameTooltip', 'ScannerTooltip', self, 'GameTooltipTemplate')
         tip:SetOwner(self, "ANCHOR_NONE")
         tip:ClearLines()
@@ -295,7 +289,7 @@ end
 
 local function Set(self, slot, link)--套装
     local set
-    if link and not Save.hide then
+    if link and not Save.disabled then
         set=select(16 , GetItemInfo(link))
         if set then
             if set and not self.set then
@@ -327,7 +321,7 @@ end
 local function Sta(self, slot, link)--显示属性
     local s,h,m,v
     local n=0
-    if link and not Save.hide then
+    if link and not Save.disabled then
         local info=GetItemStats(link) or {}
         s=info['ITEM_MOD_CRIT_RATING_SHORT']
         h=info['ITEM_MOD_HASTE_RATING_SHORT']
@@ -385,7 +379,7 @@ end
 local function Title()--头衔数量
     local f=PaperDollSidebarTab2
     local nu
-    if f and PAPERDOLL_SIDEBARS[2].IsActive() and not Save.hide then
+    if f and PAPERDOLL_SIDEBARS[2].IsActive() and not Save.disabled then
         local to=GetKnownTitles() or {}
         nu= #to-1
         if nu>1 then
@@ -407,7 +401,7 @@ local function Equipment()--装备管理
         return
     end
     local name, icon, specIcon,nu
-    if not Save.hide then
+    if not Save.disabled then
         local setIDs=C_EquipmentSet.GetEquipmentSetIDs()
         for _, v in pairs(setIDs) do 
             local name2, icon2, _, isEquipped, numItems= C_EquipmentSet.GetEquipmentSetInfo(v)            
@@ -480,7 +474,7 @@ end
 local function EquipmentStr(self)--套装已装备数量
     local setID=self.setID    
     local nu
-    if setID and not Save.hide then
+    if setID and not Save.disabled then
         if not self.nu then
             self.nu=e.Cstr(self)
             self.nu:SetJustifyH('RIGHT')            
@@ -680,7 +674,7 @@ Frame.sel2 = Cbtn(Frame)--显示/隐藏装备管理框选项
 
 local function GetDurationTotale()--装备总耐久度
     local cu, max=0,0
-    if not Save.hide then
+    if not Save.disabled then
         for slot, _ in pairs(INVENTORY_ALERT_STATUS_SLOTS) do
             local cu2, max2= GetInventoryItemDurability(slot)
             if cu2 and max2 and max2>0 then
@@ -709,8 +703,8 @@ end
 local function SetIni()
     ADDEquipment()--装备管理框
     GetDurationTotale()--装备总耐久度        
-    Frame.sel:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
-    Frame.sel:SetAlpha(Save.hide and 0.3 or 1)
+    Frame.sel:SetNormalAtlas(Save.disabled and e.Icon.disabled or e.Icon.icon)
+    Frame.sel:SetAlpha(Save.disabled and 0.3 or 1)
     Frame.sel2:SetNormalAtlas(Save.show and e.Icon.icon or e.Icon.disabled)
     Frame.sel2:SetAlpha(Save.show and 0.3 or 1)
     Sever()--服务器名称
@@ -718,11 +712,11 @@ end
 Frame.sel:SetPoint('BOTTOMLEFT',5,7)
 Frame.sel:SetScript("OnClick", function ()
         local m
-        if Save.hide then
-            Save.hide=nil
+        if Save.disabled then
+            Save.disabled=nil
             m=addName..': '..GREEN_FONT_COLOR_CODE..SHOW..'|r '
         else
-            Save.hide=true
+            Save.disabled=true
             m=addName..': '..RED_FONT_COLOR_CODE..HIDE..'|r '
         end
         m=m..'('..YELLOW_FONT_COLOR_CODE..NEED..REFRESH..'|r)'
@@ -738,7 +732,7 @@ Frame.sel:SetScript("OnEnter", function (self)
         if self.DuVal and self.DuVal~='' then
             tips:AddDoubleLine(DURABILITY, self.DuVal..'%')
         end
-        tips:AddDoubleLine(SHOW..'/'..HIDE, Save.hide and HIDE or SHOW, nil,nil,nil, 0,1,0)
+        tips:AddDoubleLine(SHOW..'/'..HIDE, Save.disabled and HIDE or SHOW, nil,nil,nil, 0,1,0)
         tips:Show()
 end)
 Frame.sel:SetScript("OnLeave",function(self)
@@ -776,11 +770,12 @@ Frame.sel:RegisterEvent("EQUIPMENT_SWAP_FINISHED")
 Frame.sel:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
 
 Frame.sel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1 == id then        
-       Save= PaperDollSave or Save
+    if event == "ADDON_LOADED" and arg1 == id then
+       Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
        SetIni()
     elseif event == "PLAYER_LOGOUT" then
-        PaperDollSave=Save
+        if not WoWToolsSave then WoWToolsSave={} end
+		WoWToolsSave[addName]=Save
     elseif event == 'EQUIPMENT_SWAP_FINISHED' then
         C_Timer.After(0.6, ADDEquipment)
     elseif event=='UPDATE_INVENTORY_DURABILITY' then

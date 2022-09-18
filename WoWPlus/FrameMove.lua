@@ -1,8 +1,5 @@
 local id, e = ...
-local Save={
-    disabled=true,
-    point={},
-}
+local Save={point={},}
 local addName=NPE_MOVE..'Frame'
 
 local Point=function(frame, name2)
@@ -95,7 +92,7 @@ local Move=function(F, tab)
         end
     end
 if re then
-    F:SetResizable(true)
+    F2:SetResizable(true)
 end
     F:SetScript("OnMouseDown", function(self,d)
             if IsModifierKeyDown()
@@ -117,7 +114,7 @@ local FrameTab={
     ReputationDetailFrame={save=true},--声望描述q
     TokenFramePopup={save=true},--货币设置
     SpellBookFrame={},--法术书
-    
+
     PVEFrame={},--地下城和团队副本
     EncounterJournal={},--冒险指南
     HelpFrame={},--客服支持
@@ -158,6 +155,8 @@ local FrameTab={
 
     FlightMapFrame={save=true},--飞行地图
     WorldMapFrame={},--世界地图
+
+    CollectionsJournal={},
 };
   --PlayerTalentFrame={},天赋
 if IsAddOnLoaded('BlizzMove') then
@@ -201,7 +200,7 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            Save= FrameMoveSave or Save
+            Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
             --添加控制面板        
             local sel=e.CPanel(addName, not Save.disabled)
             sel:SetScript('OnClick', function()
@@ -216,9 +215,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
         Set(arg1)
-        print(arg1,addName)
     elseif event == "PLAYER_LOGOUT" then
-        FrameMoveSave=Save
+        if not WoWToolsSave then WoWToolsSave={} end
+		WoWToolsSave[addName]=Save
     end
 end)
 

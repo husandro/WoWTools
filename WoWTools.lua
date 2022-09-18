@@ -6,6 +6,7 @@ e.Icon={
   disabled='talents-button-reset',
   select='GarrMission_EncounterBar-CheckMark',--绿色√
   select2='Adventures-Checkmark',--黄色√
+  X2='|A:xmarksthespot:0:0|a',
 
   right='|A:newplayertutorial-icon-mouse-rightbutton:0:0|a',
   left='|A:newplayertutorial-icon-mouse-leftbutton:0:0|a',
@@ -17,8 +18,12 @@ e.Icon={
   transmogHide='|A:transmog-icon-hidden:0:0|a',--不可幻化
   okTransmog='|T132288:0|t',--可幻化
 }
-
-e.GetNpcID = function(unit)--NPC ID
+e.Player={
+  server=GetRealmName(),
+  col='|c'..select(4,GetClassColor(UnitClassBase('player'))),
+  zh= GetLocale() == "zhCN",
+}
+  e.GetNpcID = function(unit)--NPC ID
   if UnitExists(unit) then
     local guid=UnitGUID(unit)
     if guid then
@@ -27,11 +32,18 @@ e.GetNpcID = function(unit)--NPC ID
   end
 end
 
+e.MK=function(k,b)
+  b=b or 1
+  if k>=1e6 then
+    k=string.format('%.'..b..'fm',k/1e6)
+  elseif k>= 1e4 and GetLocale() == "zhCN" then
+    k=string.format('%.'..b..'fw',k/1e4) elseif k>=1e3 then k=string.format('%.'..b..'fk',k/1e3) else k=string.format('%i',k) end return k end--加k 9.1
+
 e.GetShowHide = function(sh)
 	if sh then
-		return '|cnGREEN_FONT_COLOR:'..SHOW..'|r/'..HIDE
+		return '|cnGREEN_FONT_COLOR:'..SHOW..'|r'
 	else
-		return SHOW..'/|cnRED_FONT_COLOR:'..HIDE..'|r'
+		return '|cnRED_FONT_COLOR:'..HIDE..'|r'
 	end
 end
 
@@ -106,8 +118,19 @@ e.CeditBotx= function(self, width, height)
   return editBox
 end
 
-e.Cbtn= function(self)
-  local b=CreateFrame('Button', nil, self, 'UIPanelButtonTemplate')
-  b:SetSize(80,28)
+e.Cbtn= function(self, Template, value)
+  local b
+  if Template then
+    b=CreateFrame('Button', nil, self, 'UIPanelButtonTemplate')
+  else
+    b=CreateFrame('Button', nil, self)
+    b:SetHighlightAtlas(e.Icon.highlight)
+    b:SetPushedAtlas(e.Icon.pushed)
+    if value then
+      b:SetNormalAtlas(e.Icon.icon)
+    else
+      b:SetNormalAtlas(e.Icon.disabled)
+    end
+  end
   return b
 end

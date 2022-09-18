@@ -568,7 +568,8 @@ local function setPanel()
         end
         editBox:SetText(s)
     end
-    local btn=e.Cbtn(editBox)
+    local btn=CreateFrame('Button', nil, editBox, 'UIPanelButtonTemplate')
+    btn:SetSize(80,28)
     btn:SetText(UPDATE)
     btn:SetPoint('TOPLEFT', editBox, 'TOPRIGHT',5, 0)
     btn:SetScript('OnClick', function()
@@ -604,7 +605,8 @@ local function setPanel()
         end
        editBox2:SetText(t3)
     end
-    local btn2=e.Cbtn(editBox2)
+    local btn2=CreateFrame('Button', nil, editBox2, 'UIPanelButtonTemplate')
+    btn2:SetSize(80,28)
     btn2:SetText(UPDATE)
     btn2:SetPoint('TOPLEFT', editBox2, 'TOPRIGHT',5, 0)
     btn2:SetScript('OnClick', function()
@@ -632,7 +634,7 @@ sel:RegisterEvent("ADDON_LOADED")
 sel:RegisterEvent("PLAYER_LOGOUT")
 sel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1 == id then
-    	Save= HyperlinksIconSave or Save
+    	Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
         if not Save.disabed then
             Ini()
         else
@@ -640,6 +642,7 @@ sel:SetScript("OnEvent", function(self, event, arg1)
         end
         setPanel()
     elseif event == "PLAYER_LOGOUT" then
-        HyperlinksIconSave = Save
+        if not WoWToolsSave then WoWToolsSave={} end
+		WoWToolsSave[addName]=Save
 	end
 end)
