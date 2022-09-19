@@ -115,12 +115,26 @@
         "REPLACE",
         "ReloadUI",
         "TOKENS",
-        "TokenFrame"
+        "TokenFrame",
+        "TEXTURES_SUBHEADER",
+        "DressUpFrame",
+        "getglobal",
+        "setglobal",
+        "SUMMONS",
+        "EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION",
+        "EquipmentManager_UnpackLocation",
+        "QUEST_OBJECTIVES",
+        "UIDropDownMenu_CreateInfo",
+        "ABANDON_QUEST",
+        "QuestMapQuestOptions_AbandonQuest",
+        "UIDropDownMenu_AddButton",
+        "UIDropDownMenu_AddSeparator"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
         "param-type-mismatch",
         "redundant-parameter",
-        "discard-returns"
+        "discard-returns",
+        "missing-parameter"
     ]
 }

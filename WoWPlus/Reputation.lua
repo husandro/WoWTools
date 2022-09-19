@@ -186,7 +186,7 @@ hooksecurefunc('ReputationFrame_InitReputationRow', function (factionRow, elemen
 		if not watchedIcon then
 			watchedIcon=factionBar:CreateTexture(nil, 'OVERLAY')
 			watchedIcon:SetPoint('RIGHT', factionBar, 'LEFT',8, 0)
-			watchedIcon:SetAtlas(e.Icon.select2)
+			watchedIcon:SetAtlas(e.Icon.selectYellow)
 			watchedIcon:SetSize(16, 16)
 			factionBar.watchedIcon=watchedIcon
 		end

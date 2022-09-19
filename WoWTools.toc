@@ -7,6 +7,18 @@
 
 WoWTools.lua
 
+Locales\deDE.lua
+Locales\enUS.lua
+Locales\esES.lua
+Locales\esMX.lua
+Locales\frFR.lua
+Locales\itIT.lua
+Locales\koKR.lua
+Locales\ptBR.lua
+Locales\ruRU.lua
+Locales\zhCN.lua
+Locales\zhTW.lua
+
 Panel.lua
 
 GamePlus\Gossip.lua
@@ -18,3 +30,5 @@ WoWPlus\Tokens.lua
 WoWPlus\HyperlinksIcon.lua
 WoWPlus\FrameMove.lua
 WoWPlus\HideTexture.lua
+WoWPlus\Flyout.lua
+WoWPlus\ObjectiveTrackerBlocks.lua

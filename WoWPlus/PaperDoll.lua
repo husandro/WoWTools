@@ -281,7 +281,7 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
             self.use:SetAtlas(Icon.use)
         end
         Engineering(self, slot, use)--地精滑翔,氮气推进器
-    end    
+    end
     if self.enchant then self.enchant:SetShown(enchant) end
     if self.use then self.use:SetShown(use) end    
     if self.engineering then self.engineering:SetShown(not use and link) end
@@ -635,7 +635,7 @@ local function ADDEquipment(equipmentSetsDirty)--添加装备管理框
 end
 
 hooksecurefunc('PaperDollItemSlotButton_Update',  function(self)--PaperDollFrame.lua
-            local slot= self:GetID()        
+            local slot= self:GetID()
             if slot<20 and slot~=4 and slot~=19 and slot~=0 then
                 local textureName = GetInventoryItemTexture("player", slot)
                 local hasItem = textureName ~= nil
@@ -651,19 +651,53 @@ hooksecurefunc('PaperDollItemSlotButton_Update',  function(self)--PaperDollFrame
             end
 end)
 
-    hooksecurefunc('PaperDollFrame_UpdateSidebarTabs', function()--头衔数量
-            Title()--总装等
-            Equipment()
-    end)
+local function setFlyoutLevel(button, level)--装备弹出 
+    if level and not button.level then
+        button.level=e.Cstr(button)
+        button.level:SetPoint('BOTTOM')
+    end
+    if button.level then
+        button.level:SetText(level or '')
+    end
+end
+hooksecurefunc('EquipmentFlyout_DisplayButton', function(button, paperDollItemSlot)--EquipmentFlyout.lua
+    local location = button.location;
+	if not location or location >= EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION then
+        setFlyoutLevel(button)
+		return;
+	end
+    local player, bank, bags, voidStorage, slot, bag, tab, voidSlot = EquipmentManager_UnpackLocation(location);
+	if ( not player and not bank and not bags and not voidStorage ) then--EquipmentManager.lua
+        setFlyoutLevel(button)
+		return;
+	end
+	local itemLink
+	if ( voidStorage ) then
+		itemLink = GetVoidItemHyperlinkString(tab, voidSlot);
 
-    hooksecurefunc('PaperDollEquipmentManagerPane_Update', function(slef, equipmentSetsDirty)--装备管理
-            Equipment()
-            LvTo()--总装等
-    end)
-    hooksecurefunc('GearSetButton_SetSpecInfo', function()----装备管理,修该专精
-            Equipment()
-            LvTo()--总装等
-    end)
+	elseif ( not bags ) then -- and (player or bank)
+		itemLink =GetInventoryItemLink("player",slot);
+	else -- bags
+		itemLink = GetContainerItemLink(bag, slot);
+	end
+    local level= itemLink and GetDetailedItemLevelInfo(itemLink)
+
+    setFlyoutLevel(button, level)
+end)
+
+hooksecurefunc('PaperDollFrame_UpdateSidebarTabs', function()--头衔数量
+        Title()--总装等
+        Equipment()
+end)
+
+hooksecurefunc('PaperDollEquipmentManagerPane_Update', function(slef, equipmentSetsDirty)--装备管理
+        Equipment()
+        LvTo()--总装等
+end)
+hooksecurefunc('GearSetButton_SetSpecInfo', function()----装备管理,修该专精
+        Equipment()
+        LvTo()--总装等
+end)
 hooksecurefunc('GearSetButton_UpdateSpecInfo', EquipmentStr)--套装已装备数量
 hooksecurefunc('PaperDollEquipmentManagerPane_Update',ADDEquipment)----添加装备管理框        
 

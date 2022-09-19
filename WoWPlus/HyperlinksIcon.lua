@@ -116,9 +116,9 @@ local function Item(link)--物品超链接
             local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
             if sourceInfo then                
                 if sourceInfo.isCollected then
-                    t=t..e.Icon.okTransmog
+                    t=t..e.Icon.okTransmog2
                 else
-                    t=t..e.Icon.transmogHide
+                    t=t..e.Icon.transmogHide2
                 end
                 local hasItemData, canCollect = C_TransmogCollection.PlayerCanCollectSource(sourceID)--玩家是否可收集
                 if hasItemData and not canCollect then
@@ -312,7 +312,7 @@ local function Transmogillusion(link)--幻化
     if illusionID then
         local info=C_TransmogCollection.GetIllusionInfo(illusionID)
         if info then
-            return link..((info.isCollected and info.isUsable) and e.Icon.okTransmog) or (info.isCollected and e.Icon.select) or e.Icon.transmogHide            
+            return link..((info.isCollected and info.isUsable) and e.Icon.okTransmog2) or (info.isCollected and e.Icon.select) or e.Icon.transmogHide2
         end
     end
 end
@@ -539,7 +539,7 @@ sel:SetScript("OnEnter", function (self)
         tips:AddDoubleLine(id, addName)
         tips:AddLine(' ')
         tips:AddDoubleLine(addName..': '..e.GetEnabeleDisable(not Save.disabed),e.Icon.left)
-        tips:AddDoubleLine(TEXT_TO_SPEECH..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool('textToSpeech')), e.Icon.left)
+        tips:AddDoubleLine(TEXT_TO_SPEECH..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool('textToSpeech')), 'Alt + '..e.Icon.left)
         tips:AddLine(' ')
         tips:AddDoubleLine(RELOADUI, e.Icon.right, 1,0,1)
         tips:Show()

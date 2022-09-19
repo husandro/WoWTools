@@ -1,6 +1,6 @@
 local id, e = ...
 local addName=TOKENS
-local Save={updateTips=true}
+local Save={updateTips=true, disabled=true}
 local tips= GameTooltip
 local Frame=TokenFrame
 local sel=CreateFrame("Button",nil, Frame, 'UIPanelButtonTemplate')--禁用,开启
@@ -155,8 +155,10 @@ local function Set()
 
 		sel.btn.str=e.Cstr(sel.btn)--内容显示文本
 		sel.btn.str:SetPoint('TOPLEFT',3,-3)
+		end
 
-		if not Save.disabled then--展开,合起
+		--展开,合起
+		if not Save.hideUpDown then
 			sel.down=e.Cbtn(sel, true);
 			sel.down:SetPoint('RIGHT', sel, 'LEFT', -2,0)
 			sel.down:SetSize(18,18);
@@ -184,7 +186,6 @@ local function Set()
 					WeakAuras.ScanEvents('Currency_ENV');
 					TokenFrame_Update();
 			end)
-		end
 	end
 
 	if sel.btn then
@@ -194,7 +195,7 @@ local function Set()
 	strSetText()
 end
 sel:SetScript('OnClick', function (self, d)
-	if d=='LeftButton' then
+	if d=='LeftButton' and not IsModifierKeyDown() then
 		if Save.disabled then
 			Save.disabled=nil
 		else
@@ -202,6 +203,13 @@ sel:SetScript('OnClick', function (self, d)
 		end
 		print(addName, e.GetEnabeleDisable(not Save.disabled))
 		Set()
+	elseif d=='LeftButton' and IsAltKeyDown then--展开所有
+		if Save.hideUpDown then
+			Save.hideUpDown=nil
+		else
+			Save.hideUpDown=true
+		end
+		print('|T'..Icon.up..':0|t|T'..Icon.down..':0|t', e.GetShowHide(not Save.hideUpDown), NEED..'/reload')
 	elseif d=='RightButton' then
 		if Save.updateTips then
 			Save.updateTips=nil
@@ -221,6 +229,8 @@ sel:SetScript("OnEnter", function(self2)
 	tips:AddLine(' ')
 	tips:AddDoubleLine(addName..': '..e.GetEnabeleDisable(not Save.disabled), e.Icon.left)
 	tips:AddDoubleLine(UPDATE..': '..e.GetEnabeleDisable(Save.updateTips), e.Icon.right)
+	tips:AddLine(' ')
+	tips:AddDoubleLine('|T'..Icon.up..':0|t|T'..Icon.down..':0|t '..e.GetShowHide(not Save.hideUpDown), 'Alt + '..e.Icon.left)
     tips:Show()
 end)
 sel:SetScript('OnLeave', function ()

@@ -1,11 +1,13 @@
 local id, e = ...
+e.L=e.L or {}--多语言
 
 e.Icon={
   icon='orderhalltalents-done-glow',
 
   disabled='talents-button-reset',
   select='GarrMission_EncounterBar-CheckMark',--绿色√
-  select2='Adventures-Checkmark',--黄色√
+  select2='|A:GarrMission_EncounterBar-CheckMark:0:0|a',--绿色√
+  selectYellow='Adventures-Checkmark',--黄色√
   X2='|A:xmarksthespot:0:0|a',
 
   right='|A:newplayertutorial-icon-mouse-rightbutton:0:0|a',
@@ -15,13 +17,21 @@ e.Icon={
   pushed='Forge-ColorSwatchHighlight',--移过时
   highlight='Forge-ColorSwatchSelection',--点击时
 
-  transmogHide='|A:transmog-icon-hidden:0:0|a',--不可幻化
-  okTransmog='|T132288:0|t',--可幻化
+  transmogHide2='|A:transmog-icon-hidden:0:0|a',--不可幻化
+  okTransmog2='|T132288:0|t',--可幻化
+
+  map2='|A:poi-islands-table:0:0|a',
+  wow2='|A:Icon-WoW:0:0|a',
+
+  horde2='|A:charcreatetest-logo-horde:0:0|a',
+  alliance2='|A:charcreatetest-logo-alliance:0:0|a',
 }
+local lo=GetLocale()
 e.Player={
   server=GetRealmName(),
   col='|c'..select(4,GetClassColor(UnitClassBase('player'))),
-  zh= GetLocale() == "zhCN",
+  zh= lo== "zhCN",
+  Lo=lo,
 }
   e.GetNpcID = function(unit)--NPC ID
   if UnitExists(unit) then
