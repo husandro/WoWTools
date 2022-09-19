@@ -25,6 +25,8 @@ e.Icon={
 
   horde2='|A:charcreatetest-logo-horde:0:0|a',
   alliance2='|A:charcreatetest-logo-alliance:0:0|a',
+
+  number='|A:services-number-%d:0:0|a',
 }
 local lo=GetLocale()
 e.Player={
@@ -32,6 +34,7 @@ e.Player={
   col='|c'..select(4,GetClassColor(UnitClassBase('player'))),
   zh= lo== "zhCN",
   Lo=lo,
+  class=UnitClassBase('player'),
 }
   e.GetNpcID = function(unit)--NPC ID
   if UnitExists(unit) then

@@ -1,6 +1,6 @@
 ## Interface: 100000
 ## Version: 1.0.0
-## Title: |A:Icon-WoW:0:0|aWoW |cff00ff00Tools|r
+## Title: |A:Icon-WoW:0:0|a|cffff00ffWoW|r |cff00ff00Tools|r
 ## Notes: WoW Tools
 ## Author: husandro
 ## SavedVariables: WoWToolsSave
@@ -32,3 +32,4 @@ WoWPlus\FrameMove.lua
 WoWPlus\HideTexture.lua
 WoWPlus\Flyout.lua
 WoWPlus\ObjectiveTrackerBlocks.lua
+WoWPlus\Collections.lua

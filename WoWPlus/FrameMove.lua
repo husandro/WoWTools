@@ -156,7 +156,7 @@ local FrameTab={
     FlightMapFrame={save=true},--飞行地图
     WorldMapFrame={},--世界地图
 
-    CollectionsJournal={},
+    --CollectionsJournal={},
 };
   --PlayerTalentFrame={},天赋
 if IsAddOnLoaded('BlizzMove') then
