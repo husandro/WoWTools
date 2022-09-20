@@ -26,14 +26,17 @@ e.Icon={
   horde2='|A:charcreatetest-logo-horde:0:0|a',
   alliance2='|A:charcreatetest-logo-alliance:0:0|a',
 
-  number='|A:services-number-%d:0:0|a',
+  number='services-number-',
+  number2='|A:services-number-%d:0:0|a',
+  clock='socialqueuing-icon-clock',
+  clock2='|A:socialqueuing-icon-clock:0:0|a',
 }
-local lo=GetLocale()
+
 e.Player={
   server=GetRealmName(),
   col='|c'..select(4,GetClassColor(UnitClassBase('player'))),
-  zh= lo== "zhCN",
-  Lo=lo,
+  zh= GetLocale()== "zhCN",
+  Lo=GetLocale(),
   class=UnitClassBase('player'),
 }
   e.GetNpcID = function(unit)--NPC ID
@@ -49,7 +52,7 @@ e.MK=function(k,b)
   b=b or 1
   if k>=1e6 then
     k=string.format('%.'..b..'fm',k/1e6)
-  elseif k>= 1e4 and GetLocale() == "zhCN" then
+  elseif k>= 1e4 and e.Player.zh then
     k=string.format('%.'..b..'fw',k/1e4) elseif k>=1e3 then k=string.format('%.'..b..'fk',k/1e3) else k=string.format('%i',k) end return k end--加k 9.1
 
 e.GetShowHide = function(sh)

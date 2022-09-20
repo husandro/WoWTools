@@ -31,5 +31,5 @@ WoWPlus\HyperlinksIcon.lua
 WoWPlus\FrameMove.lua
 WoWPlus\HideTexture.lua
 WoWPlus\Flyout.lua
-WoWPlus\ObjectiveTrackerBlocks.lua
+WoWPlus\ObjectiveTracker.lua
 WoWPlus\Collections.lua

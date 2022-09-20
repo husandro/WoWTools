@@ -282,7 +282,7 @@ hooksecurefunc(QUEST_TRACKER_MODULE,'SetBlockHeader', function(self, block, text
     local m=''
     block.r, block.g, block.b=nil, nil, nil
     if questID then
-        if C_QuestLog.IsComplete(questID) then m=m..e.Icon.select2 elseif C_QuestLog.IsFailed(questID) then m=m.e.Icon.X end
+        if C_QuestLog.IsComplete(questID) then m=m..e.Icon.select2 elseif C_QuestLog.IsFailed(questID) then m=m.e.Icon.X2 end
         local factionGroup = GetQuestFactionGroup(questID)
         if factionGroup == LE_QUEST_FACTION_HORDE then
             m=m..e.Icon.horde2
@@ -308,7 +308,7 @@ hooksecurefunc(QUEST_TRACKER_MODULE,'SetBlockHeader', function(self, block, text
             end
             if info.frequency then
                 if info.frequency==Enum.QuestFrequency.Daily then--日常
-                    m=m..e.Icon.day
+                    m=m..Icon.day
                     block.r, block.g, block.b=Color.Day[1],Color.Day[2],Color.Day[3]
                 elseif info.frequency==Enum.QuestFrequency.Weekly then--周常
                     m=m..Icon.week
