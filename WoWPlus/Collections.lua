@@ -41,7 +41,9 @@ hooksecurefunc(DressUpOutfitDetailsSlotMixin, 'OnEnter', function(self)--试衣�
 
         tips:SetHyperlink(link,nil, nil, nil, true)
 
-        if self.isHiddenVisual then return end
+        if self.isHiddenVisual then
+            return
+        end
         local frame2=WardrobeCollectionFrame
         if not frame2 then return end
 
@@ -294,7 +296,7 @@ local function InitWardrobe()
         local frame=frame2.SetsCollectionFrame.DetailsFrame
         local a, h, o=0, 0, 0--联盟, 部落, 其它
         for _, info in pairs(sets) do
-            if info and info.classMask then
+            if info and info.classMask and info.setID then
                 local c=info.classMask..''--bit.bor(v.classMask)
                 if tempSave[c] then
                     tempSave[c].collected=tempSave[c].collected or 0
@@ -327,7 +329,7 @@ local function InitWardrobe()
             end
         end
         if all>0 then
-            m=m.. ('%i%%'):format(collected/all*100) ..' '..LFG_LIST_CROSS_FACTION:format(CLASS)
+            m=m..collected..'/'..all..' '..('%i%%'):format(collected/all*100)..' '..LFG_LIST_CROSS_FACTION:format(CLASS)
         end
         if a > 0 or h>0 or o>0 then
             m=m..'\n\n'..h..' |A:communities-create-button-wow-horde:0:0|a'
