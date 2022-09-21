@@ -23,6 +23,7 @@ local Icon={
     start='|A:vignetteevent:0:0|a',
     campa='|A:campaignavailabledailyquesticon:0:0|a',
     x2='Interface\\AddOns\\WeakAuras\\Media\\Textures\\cancel-icon.tga',
+    clear='bags-button-autosort-up'
 }
 
 hooksecurefunc('QuestObjectiveItem_OnEnter', function(self)
@@ -137,6 +138,7 @@ local ObjectiveTrackerRemoveAll =function(self, tip)
     info.text = REMOVE_WORLD_MARKERS..' '..to
     info.notCheckable = 1
     info.checked = false
+    info.icon=Icon.clear
     if to<2 then info.disabled=true end
     info.func = function()
         local nu=C_QuestLog.GetNumQuestWatches()
@@ -180,7 +182,8 @@ hooksecurefunc('AchievementObjectiveTracker_OnOpenDropDown', function(self)--清
         local trackedAchievements = { GetTrackedAchievements() }
         info.text = REMOVE_WORLD_MARKERS..' '..#trackedAchievements
         info.notCheckable = 1
-        info.checked = false            
+        info.checked = false
+        info.icon=Icon.clear
         if #trackedAchievements<2 then info.disabled=true end            
         info.func = function ()                
             for i = 1, #trackedAchievements do
@@ -318,6 +321,9 @@ hooksecurefunc(QUEST_TRACKER_MODULE,'SetBlockHeader', function(self, block, text
             if info.isOnMap then
                 m=m..e.Icon.map2
             end
+            if info.level and info.level ~= MAX_PLAYER_LEVEL then
+                m=m..'['..info.level..']'
+            end
         end
     end
     setColor(block, questID)
@@ -405,7 +411,7 @@ hooksecurefunc('QuestMapLogTitleButton_OnClick',function(self, button)--任务�
             return
         end
         if not C_QuestLog.IsQuestDisabledForSession(self.questID) and button == "RightButton" then
-            UIDropDownMenu_AddSeparator() 
+            UIDropDownMenu_AddSeparator()
             local info= UIDropDownMenu_CreateInfo()
             info.notCheckable=true
             info.text=SHOW..'|A:campaign_headericon_open:0:0|a'..ALL
@@ -433,8 +439,9 @@ hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', function(S)
     local self=S.Texture
     if not id or not self then return end
     local lv = GetQuestLogRewardMoney(id)
-    if lv and lv ==0 then lv=nil end
-    if lv and lv>10000 then
+    if lv ==0 then
+        lv=nil
+    elseif lv and lv>10000 then
         lv=e.Player.col..('%i'):format(lv/10000)..'|r'
         self:SetAtlas('Front-Gold-Icon')
         self:SetSize(40, 40)
@@ -474,7 +481,7 @@ hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', function(S)
         end
     end
     if lv then
-        if not S.Str then 
+        if not S.Str then
             S.Str=e.Cstr(S)
             S.Str:SetPoint('TOP', self, 'BOTTOM', 0, 0)
         end

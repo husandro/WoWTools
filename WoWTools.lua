@@ -38,6 +38,9 @@ e.Player={
   zh= GetLocale()== "zhCN",
   Lo=GetLocale(),
   class=UnitClassBase('player'),
+  --MAX_PLAYER_LEVEL = GetMaxLevelForPlayerExpansion()
+
+
 }
   e.GetNpcID = function(unit)--NPC ID
   if UnitExists(unit) then

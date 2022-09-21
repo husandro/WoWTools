@@ -183,7 +183,6 @@ local function Set()
 							C_CurrencyInfo.ExpandCurrencyList(i, false);
 						end
 					end
-					WeakAuras.ScanEvents('Currency_ENV');
 					TokenFrame_Update();
 			end)
 	end

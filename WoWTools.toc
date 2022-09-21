@@ -32,4 +32,4 @@ WoWPlus\FrameMove.lua
 WoWPlus\HideTexture.lua
 WoWPlus\Flyout.lua
 WoWPlus\ObjectiveTracker.lua
-WoWPlus\Collections.lua
+WoWPlus\Wardrober.lua
