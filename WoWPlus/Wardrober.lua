@@ -473,6 +473,56 @@ local function InitWardrobe()
     frame.sel:SetScript('OnLeave', function()
         tips:Hide()
     end)
+
+
+    --传家宝Blizzard_HeirloomCollection.lua    
+    hooksecurefunc( HeirloomsJournal, 'UpdateButton', function(self, button)--
+        local name, itemEquipLoc, isPvP, itemTexture, upgradeLevel, source, searchFiltered, effectiveLevel, minLevel, maxLevel = C_Heirloom.GetHeirloomInfo(button.itemID);
+        local maxUp=C_Heirloom.GetHeirloomMaxUpgradeLevel(button.itemID) or 0;
+        local level=maxUp-upgradeLevel
+        local has = C_Heirloom.PlayerHasHeirloom(button.itemID)
+        if level >0 and has then--需要升级数
+            if not button.upLevel then
+                button.upLevel = button:CreateTexture(nil, 'OVERLAY')
+                button.upLevel:SetPoint('TOPLEFT', -1, 1)
+                button.upLevel:SetSize(26,26)
+            end
+            button.upLevel:SetAtlas(e.Icon.number..level)
+        end
+        if button.upLevel then
+            button.upLevel:SetShown(has and level>0)
+        end
+
+        if isPvP and not button.isPvP then
+            button.isPvP=button:CreateTexture(nil, 'OVERLAY')
+            button.isPvP:SetPoint('TOPRIGHT', 1, 1)
+            button.isPvP:SetSize(14, 14)
+            button.isPvP:SetAtlas('honorsystem-icon-prestige-6')
+        end
+        if button.isPvP then
+            button.isPvP:SetShown(isPvP)
+        end
+    end);
+
+    --玩具,是不可用Blizzard_ToyBox.lua
+    hooksecurefunc('ToySpellButton_UpdateButton', function(self)
+        local has=PlayerHasToy(self.itemID)
+        local isUas=C_ToyBox.IsToyUsable(self.itemID)
+        if not isUas and not self.notUasble then
+            self.notUasble=self:CreateTexture(nil, 'OVERLAY')
+            self.notUasble:SetPoint('TOPRIGHT', -4, -4)
+            self.notUasble:SetSize(20,20)
+            self.notUasble:SetAtlas(e.Icon.disabled)
+        end
+        if self.notUasble then
+            self.notUasble:SetShown(has and not isUas)
+        end
+        if isUas then
+            self.name:SetTextColor(1,0.82, 0)
+        else
+            self.name:SetTextColor(1,0,0)
+        end
+    end)
 end
 
 --加载保存数据

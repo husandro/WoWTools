@@ -152,6 +152,8 @@ local FrameTab={
     GarrisonMissionFrame={},--要塞任务
     GarrisonCapacitiveDisplayFrame={},--要塞订单
     BFAMissionFrame={},--侦查地图
+    GarrisonLandingPage={},--要塞报告
+    GarrisonLandingPage={},
 
     FlightMapFrame={save=true},--飞行地图
     WorldMapFrame={},--世界地图
@@ -330,7 +332,7 @@ end)
     ObliterumForgeFrame={},
 
     VehicleSeatIndicator={save=true, fun='VehicleSeatIndicator_Update',},
-    GarrisonLandingPage={},
+   
     DurabilityFrame={save=true,enter=true,show=true},
     ExtraActionButton1={save=true, frame=ExtraActionFrame,click='R'},
     CollectionsJournal={},
