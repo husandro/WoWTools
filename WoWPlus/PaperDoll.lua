@@ -2,7 +2,6 @@ local id, e = ...
 
 local addName=CHARACTER
 local Frame=PaperDollItemsFrame
-local tips= GameTooltip
 local Save={}
 
 local Icon={
@@ -27,24 +26,24 @@ local function Sever()--显示服务名称
             s:SetJustifyH('RIGHT')
             s:EnableMouse(true)
             s:SetScript("OnEnter",function(self)
-                    tips:SetOwner(self, "ANCHOR_LEFT")
-                    tips:ClearLines()
-                    tips:AddDoubleLine(FRIENDS_LIST_REALM)
+                    e.tips:SetOwner(self, "ANCHOR_LEFT")
+                    e.tips:ClearLines()
+                    e.tips:AddDoubleLine(FRIENDS_LIST_REALM)
                     local ok2
                     for k, v in pairs(GetAutoCompleteRealms()) do
                         if v==e.Player.server then
-                            tips:AddDoubleLine(v, k, 0,1,0)
+                            e.tips:AddDoubleLine(v, k, 0,1,0)
                         else
-                            tips:AddDoubleLine(v, k)
+                            e.tips:AddDoubleLine(v, k)
                         end
                         ok2=true
                     end
                     if not ok2 then
-                        tips:AddLine(ITEM_UNIQUE, SERVER_MESSAGE_PREFIX)
+                        e.tips:AddLine(ITEM_UNIQUE, SERVER_MESSAGE_PREFIX)
                     end
-                    tips:Show()
+                    e.tips:Show()
             end)
-            s:SetScript("OnLeave",function() tips:Hide() end)
+            s:SetScript("OnLeave",function() e.tips:Hide() end)
             Frame.server=s
             s:SetText(e.Player.col..e.Player.server..'|r')
     end
@@ -219,10 +218,10 @@ local function Engineering(self, slot, use)--增加 [潘达利亚工程学: 地�
             C_TradeSkillUI.CloseTradeSkill()
     end) 
     self.engineering:SetScript('OnEnter' ,function(self2)
-            tips:SetOwner(self2, "ANCHOR_LEFT")
-            tips:ClearLines()
-            tips:SetSpellByID(self2.spell)
-            tips:Show()
+            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:SetSpellByID(self2.spell)
+            e.tips:Show()
     end) 
     self.engineering:SetScript("OnMouseUp", function()
         local n=GetItemCount(90146, true)
@@ -231,7 +230,7 @@ local function Engineering(self, slot, use)--增加 [潘达利亚工程学: 地�
                 print(item..' '..RED_FONT_COLOR_CODE..NONE..'|r')                                    
             end
     end)
-    self.engineering:SetScript('OnLeave',function() tips:Hide() end)        
+    self.engineering:SetScript('OnLeave',function() e.tips:Hide() end)        
 end
 local enchantStr=ENCHANTED_TOOLTIP_LINE:gsub('%%s','')--附魔
 local function Enchant(self, slot, link)--附魔, 使用, 属性
@@ -572,18 +571,18 @@ local function ADDEquipment(equipmentSetsDirty)--添加装备管理框
                 print(addName..ZOOM_IN..': '..GREEN_FONT_COLOR_CODE..n..'|r')                
         end)
         f:SetScript("OnEnter", function (self)
-                tips:SetOwner(self, "ANCHOR_LEFT")
-                tips:ClearLines()
-                tips:AddDoubleLine(addName, nil, 1,1,1)        
-                tips:AddDoubleLine(ADD, EQUIPMENT_MANAGER)
-                tips:AddDoubleLine(Save.EquipmentH and BINDING_NAME_STRAFERIGHT or BINDING_NAME_PITCHDOWN, e.Icon.left)
-                tips:AddDoubleLine(NPE_MOVE, e.Icon.right)
-                tips:AddDoubleLine(ZOOM_IN..'/'..ZOOM_OUT..': '..(Save.zoom and Save.zoom or 1), e.Icon.mid)
-                tips:Show()
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(addName, nil, 1,1,1)        
+                e.tips:AddDoubleLine(ADD, EQUIPMENT_MANAGER)
+                e.tips:AddDoubleLine(Save.EquipmentH and BINDING_NAME_STRAFERIGHT or BINDING_NAME_PITCHDOWN, e.Icon.left)
+                e.tips:AddDoubleLine(NPE_MOVE, e.Icon.right)
+                e.tips:AddDoubleLine(ZOOM_IN..'/'..ZOOM_OUT..': '..(Save.zoom and Save.zoom or 1), e.Icon.mid)
+                e.tips:Show()
         end)
         f:SetScript("OnLeave", function()
                 ResetCursor()
-                tips:Hide()
+                e.tips:Hide()
         end)
         e.Equipmentframe=f
     end
@@ -613,11 +612,11 @@ local function ADDEquipment(equipmentSetsDirty)--添加装备管理框
             end)
             b:SetScript("OnEnter", function(self)
                     if ( self.setID ) then
-                        tips:SetOwner(self, "ANCHOR_LEFT")
-                        tips:SetEquipmentSet(self.setID)
+                        e.tips:SetOwner(self, "ANCHOR_LEFT")
+                        e.tips:SetEquipmentSet(self.setID)
                     end
             end)
-            b:SetScript("OnLeave",function() tips:Hide() end)                        
+            b:SetScript("OnLeave",function() e.tips:Hide() end)                        
         end
         b.setID=setID
         b.tex:SetShown(isEquipped and true or false)
@@ -759,18 +758,18 @@ Frame.sel:SetScript("OnClick", function ()
 end)
 Frame.sel:SetScript("OnEnter", function (self)
     GetDurationTotale()
-        tips:SetOwner(self, "ANCHOR_BOTTOMLEFT")
-        tips:ClearLines()
-        tips:AddDoubleLine(id, addName)
-        tips:AddLine(' ')
+        e.tips:SetOwner(self, "ANCHOR_BOTTOMLEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddLine(' ')
         if self.DuVal and self.DuVal~='' then
-            tips:AddDoubleLine(DURABILITY, self.DuVal..'%')
+            e.tips:AddDoubleLine(DURABILITY, self.DuVal..'%')
         end
-        tips:AddDoubleLine(SHOW..'/'..HIDE, Save.disabled and HIDE or SHOW, nil,nil,nil, 0,1,0)
-        tips:Show()
+        e.tips:AddDoubleLine(SHOW..'/'..HIDE, Save.disabled and HIDE or SHOW, nil,nil,nil, 0,1,0)
+        e.tips:Show()
 end)
 Frame.sel:SetScript("OnLeave",function(self)
-        tips:Hide()
+        e.tips:Hide()
 end)
 
 Frame.sel2:SetPoint('TOPRIGHT',-2,-40)
@@ -785,16 +784,16 @@ Frame.sel2:SetScript("OnClick", function(self)
         SetIni()
 end)
 Frame.sel2:SetScript("OnEnter", function (self)
-        tips:SetOwner(self, "ANCHOR_TOPLEFT")
-        tips:ClearLines()
-        tips:AddDoubleLine(id, addName)
-        tips:AddLine(' ')
-        tips:AddDoubleLine(ADD, EQUIPMENT_MANAGER)
-        tips:AddDoubleLine(SHOW..'/'..HIDE, Save.show and SHOW or HIDE, nil,nil,nil, 0,1,0)
-        tips:Show()
+        e.tips:SetOwner(self, "ANCHOR_TOPLEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(ADD, EQUIPMENT_MANAGER)
+        e.tips:AddDoubleLine(SHOW..'/'..HIDE, Save.show and SHOW or HIDE, nil,nil,nil, 0,1,0)
+        e.tips:Show()
 end)
 Frame.sel2:SetScript("OnLeave",function(self)
-        tips:Hide()
+        e.tips:Hide()
 end)
 
 --加载保存数据

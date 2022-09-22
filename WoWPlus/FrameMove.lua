@@ -152,8 +152,7 @@ local FrameTab={
     GarrisonMissionFrame={},--要塞任务
     GarrisonCapacitiveDisplayFrame={},--要塞订单
     BFAMissionFrame={},--侦查地图
-    GarrisonLandingPage={},--要塞报告
-    GarrisonLandingPage={},
+    GarrisonLandingPage={},--要塞报告   
 
     FlightMapFrame={save=true},--飞行地图
     WorldMapFrame={},--世界地图

@@ -1,7 +1,6 @@
 local id, e = ...
 local addName=TOKENS
 local Save={updateTips=true, disabled=true}
-local tips= GameTooltip
 local Frame=TokenFrame
 local sel=CreateFrame("Button",nil, Frame, 'UIPanelButtonTemplate')--禁用,开启
 
@@ -135,19 +134,19 @@ local function Set()
 			if UnitAffectingCombat('player') then
 				return
 			end
-			tips:SetOwner(self2, "ANCHOR_LEFT");
-			tips:ClearLines();
-			tips:AddDoubleLine(id, addName)
-			tips:AddLine(' ')
-			tips:AddDoubleLine(addName..': '..e.GetShowHide(Save.str), e.Icon.left)
-			tips:AddDoubleLine(BINDING_NAME_TOGGLECURRENCY, e.Icon.mid)
-			tips:AddDoubleLine(NPE_MOVE, e.Icon.right)
-			tips:AddLine(' ')
-			tips:AddDoubleLine(SHOW..NAME..': '..e.GetShowHide(Save.nameShow), 'Alt + '..e.Icon.left)
-			tips:AddDoubleLine(addName..' ID: '..e.GetShowHide(Save.showID), 'Ctrl + '..e.Icon.left)
-			tips:Show();
+			e.tips:SetOwner(self2, "ANCHOR_LEFT");
+			e.tips:ClearLines();
+			e.tips:AddDoubleLine(id, addName)
+			e.tips:AddLine(' ')
+			e.tips:AddDoubleLine(addName..': '..e.GetShowHide(Save.str), e.Icon.left)
+			e.tips:AddDoubleLine(BINDING_NAME_TOGGLECURRENCY, e.Icon.mid)
+			e.tips:AddDoubleLine(NPE_MOVE, e.Icon.right)
+			e.tips:AddLine(' ')
+			e.tips:AddDoubleLine(SHOW..NAME..': '..e.GetShowHide(Save.nameShow), 'Alt + '..e.Icon.left)
+			e.tips:AddDoubleLine(addName..' ID: '..e.GetShowHide(Save.showID), 'Ctrl + '..e.Icon.left)
+			e.tips:Show();
 		end)
-		sel.btn:SetScript("OnLeave", function() ResetCursor()  GameTooltip:Hide() end);
+		sel.btn:SetScript("OnLeave", function() ResetCursor()  e.tips:Hide() end);
 		sel.btn:EnableMouseWheel(true)
 		sel.btn:SetScript("OnMouseWheel", function (self2, d)
 			ToggleCharacter("TokenFrame")--打开货币
@@ -222,18 +221,18 @@ sel:RegisterForClicks("LeftButtonDown","RightButtonDown")
 sel:SetSize(18, 18)
 sel:SetPoint("TOPRIGHT", Frame, 'TOPRIGHT',-6,-35)
 sel:SetScript("OnEnter", function(self2)
-	tips:SetOwner(self2, "ANCHOR_LEFT")
-    tips:ClearLines()
-	tips:AddLine(id, addName)
-	tips:AddLine(' ')
-	tips:AddDoubleLine(addName..': '..e.GetEnabeleDisable(not Save.disabled), e.Icon.left)
-	tips:AddDoubleLine(UPDATE..': '..e.GetEnabeleDisable(Save.updateTips), e.Icon.right)
-	tips:AddLine(' ')
-	tips:AddDoubleLine('|T'..Icon.up..':0|t|T'..Icon.down..':0|t '..e.GetShowHide(not Save.hideUpDown), 'Alt + '..e.Icon.left)
-    tips:Show()
+	e.tips:SetOwner(self2, "ANCHOR_LEFT")
+    e.tips:ClearLines()
+	e.tips:AddLine(id, addName)
+	e.tips:AddLine(' ')
+	e.tips:AddDoubleLine(addName..': '..e.GetEnabeleDisable(not Save.disabled), e.Icon.left)
+	e.tips:AddDoubleLine(UPDATE..': '..e.GetEnabeleDisable(Save.updateTips), e.Icon.right)
+	e.tips:AddLine(' ')
+	e.tips:AddDoubleLine('|T'..Icon.up..':0|t|T'..Icon.down..':0|t '..e.GetShowHide(not Save.hideUpDown), 'Alt + '..e.Icon.left)
+    e.tips:Show()
 end)
 sel:SetScript('OnLeave', function ()
-	tips:Hide()
+	e.tips:Hide()
 end)
 
 local function setUpdat(currencyType)

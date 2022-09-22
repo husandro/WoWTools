@@ -8,7 +8,6 @@ local Save={
 }
 local Frame = GossipFrame
 local Frame2=ObjectiveTrackerBlocksFrame
-local tips= GameTooltip
 
 local Icon={
     --right='|A:newplayertutorial-icon-mouse-rightbutton:0:0|a',
@@ -109,18 +108,18 @@ Frame:SetScript('OnShow', function (self)
         end)
         self.sel:SetScript('OnEnter',function (self2)
             if self2.npc then
-                tips:SetOwner(self2, "ANCHOR_RIGHT")
-                tips:ClearLines()
+                e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+                e.tips:ClearLines()
 
-                tips:AddDoubleLine((self2.name and self2.name..' ' or ''), 'npc ID: '..self2.npc)
-                tips:AddDoubleLine(DISABLE..' NPC', e.GetEnabeleDisable(not Save.NPC[self2.npc])..e.Icon.left)
-                tips:AddDoubleLine(CLEAR_ALL, e.Icon.right)
-                tips:AddDoubleLine(' ')
-                tips:AddDoubleLine(GOSSIP_OPTIONS, e.GetEnabeleDisable(Save.gossip))
-                tips:Show()
+                e.tips:AddDoubleLine((self2.name and self2.name..' ' or ''), 'npc ID: '..self2.npc)
+                e.tips:AddDoubleLine(DISABLE..' NPC', e.GetEnabeleDisable(not Save.NPC[self2.npc])..e.Icon.left)
+                e.tips:AddDoubleLine(CLEAR_ALL, e.Icon.right)
+                e.tips:AddDoubleLine(' ')
+                e.tips:AddDoubleLine(GOSSIP_OPTIONS, e.GetEnabeleDisable(Save.gossip))
+                e.tips:Show()
             end
         end)
-        self.sel:SetScript("OnLeave", function() tips:Hide() end)
+        self.sel:SetScript("OnLeave", function() e.tips:Hide() end)
     end
     local npc=e.GetNpcID('npc')
     self.sel.npc=npc
@@ -140,19 +139,19 @@ hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, info)--GossipFra
         self.sel:SetSize(18, 18)
         self.sel:SetScript("OnEnter", function(self2)
             if self2.info.gossipOptionID then
-                tips:SetOwner(self2, "ANCHOR_RIGHT")
-                tips:ClearLines()
-                tips:AddDoubleLine(self2.name, self2.npc and 'npc ID: '..self2.npc or '')
-                tips:AddDoubleLine(self2.info.name, 'gossipOptionID: '..self2.info.gossipOptionID)
-                tips:AddDoubleLine(' ')
-                tips:AddDoubleLine(CUSTOM, e.GetEnabeleDisable(Save.Option[self2.info.gossipOptionID]))
-                tips:AddDoubleLine(self2.name, e.GetEnabeleDisable(not Save.NPC[self2.npc]))
-                tips:AddDoubleLine(GOSSIP_OPTIONS, e.GetEnabeleDisable(Save.gossip))
-                tips:Show()
+                e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(self2.name, self2.npc and 'npc ID: '..self2.npc or '')
+                e.tips:AddDoubleLine(self2.info.name, 'gossipOptionID: '..self2.info.gossipOptionID)
+                e.tips:AddDoubleLine(' ')
+                e.tips:AddDoubleLine(CUSTOM, e.GetEnabeleDisable(Save.Option[self2.info.gossipOptionID]))
+                e.tips:AddDoubleLine(self2.name, e.GetEnabeleDisable(not Save.NPC[self2.npc]))
+                e.tips:AddDoubleLine(GOSSIP_OPTIONS, e.GetEnabeleDisable(Save.gossip))
+                e.tips:Show()
             end
         end)
         self.sel:SetScript("OnLeave", function ()
-            tips:Hide()
+            e.tips:Hide()
         end)
         self.sel:SetScript("OnClick", function (self2)
             if Save.Option[self2.info.gossipOptionID] then
@@ -226,16 +225,16 @@ g:SetScript('OnEnter', function(self2)
             n=n+1
         end
     end
-    tips:SetOwner(self2, "ANCHOR_LEFT")    
-    tips:ClearLines()
-    tips:AddDoubleLine(id, addName)
-    tips:AddLine(' ')
-    tips:AddDoubleLine(GOSSIP_OPTIONS, e.GetEnabeleDisable(Save.gossip)..e.Icon.left)
-    tips:AddDoubleLine(CLEAR_ALL, n..' Alt+'..e.Icon.left)
-    tips:Show()
+    e.tips:SetOwner(self2, "ANCHOR_LEFT")    
+    e.tips:ClearLines()
+    e.tips:AddDoubleLine(id, addName)
+    e.tips:AddLine(' ')
+    e.tips:AddDoubleLine(GOSSIP_OPTIONS, e.GetEnabeleDisable(Save.gossip)..e.Icon.left)
+    e.tips:AddDoubleLine(CLEAR_ALL, n..' Alt+'..e.Icon.left)
+    e.tips:Show()
 end)
 g:SetScript('OnLeave', function ()
-    tips:Hide()
+    e.tips:Hide()
 end)
 
 
@@ -330,18 +329,18 @@ q:SetScript('OnClick', function ()
     print(QUICK_JOIN_IS_AUTO_ACCEPT_TOOLTIP..' ('..QUESTS_LABEL..'): '..e.GetEnabeleDisable(Save.qest))
 end)
 q:SetScript('OnEnter', function (self2)
-    tips:SetOwner(self2, "ANCHOR_LEFT")
-    tips:ClearLines()
-    tips:AddDoubleLine(id, addName)
-    tips:AddLine(' ')
-    tips:AddDoubleLine(QUICK_JOIN_IS_AUTO_ACCEPT_TOOLTIP..': '..QUESTS_LABEL, e.GetEnabeleDisable(Save.qest)..e.Icon.left)
-    tips:AddDoubleLine(	MINIMAP_TRACKING_TRIVIAL_QUESTS..Icon.TrivialQuests, e.GetEnabeleDisable(GetQuestTrivialTracking()))
-    tips:AddLine(' ')
-    tips:AddDoubleLine(QUESTS_LABEL..' '..#C_QuestLog.GetAllCompletedQuestIDs()..' '..COMPLETE, GetDailyQuestsCompleted()..' '..DAILY)--已完成任务
-    tips:Show()
+    e.tips:SetOwner(self2, "ANCHOR_LEFT")
+    e.tips:ClearLines()
+    e.tips:AddDoubleLine(id, addName)
+    e.tips:AddLine(' ')
+    e.tips:AddDoubleLine(QUICK_JOIN_IS_AUTO_ACCEPT_TOOLTIP..': '..QUESTS_LABEL, e.GetEnabeleDisable(Save.qest)..e.Icon.left)
+    e.tips:AddDoubleLine(	MINIMAP_TRACKING_TRIVIAL_QUESTS..Icon.TrivialQuests, e.GetEnabeleDisable(GetQuestTrivialTracking()))
+    e.tips:AddLine(' ')
+    e.tips:AddDoubleLine(QUESTS_LABEL..' '..#C_QuestLog.GetAllCompletedQuestIDs()..' '..COMPLETE, GetDailyQuestsCompleted()..' '..DAILY)--已完成任务
+    e.tips:Show()
 end)
 q:SetScript('OnLeave', function ()
-    tips:Hide()
+    e.tips:Hide()
 end)
 
 q:RegisterEvent("PLAYER_LOGOUT")

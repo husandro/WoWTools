@@ -1,7 +1,6 @@
 local id, e = ...
 local addName=QUEST_OBJECTIVES
 local Save={scale= 1, alpha=1, autoHide=true}
-local tips= GameTooltip
 local F=ObjectiveTrackerFrame--移动任务框
 local btn=ObjectiveTrackerFrame.HeaderMenu.MinimizeButton
 
@@ -27,9 +26,9 @@ local Icon={
 }
 
 hooksecurefunc('QuestObjectiveItem_OnEnter', function(self)
-        if not Save.disabled and self.setMove and tips:IsShown() then
-            tips:AddDoubleLine(NPE_MOVE, e.Icon.right)
-            tips:Show()
+        if not Save.disabled and self.setMove and e.tips:IsShown() then
+            e.tips:AddDoubleLine(NPE_MOVE, e.Icon.right)
+            e.tips:Show()
         end
 end)
 
@@ -315,7 +314,7 @@ hooksecurefunc(QUEST_TRACKER_MODULE,'SetBlockHeader', function(self, block, text
                     block.r, block.g, block.b=Color.Day[1],Color.Day[2],Color.Day[3]
                 elseif info.frequency==Enum.QuestFrequency.Weekly then--周常
                     m=m..Icon.week
-                    block.r, block.g, block.b= e.config.c.week[1], e.config.c.week[2], e.config.c.week[3]
+                    block.r, block.g, block.b= Color.Week[1], Color.Week[2], Color.Week[3]
                 end
             end
             if info.isOnMap then
@@ -392,7 +391,7 @@ hooksecurefunc("QuestMapLogTitleButton_OnEnter", function(self)--任务日志 �
         end
         local info = C_QuestLog.GetInfo(self.questLogIndex)
         if not info or not info.questID then return end
-        Quest(tips, info.questID)
+        Quest(e.tips, info.questID)
 end)
 
 local function Coll()
@@ -561,18 +560,18 @@ local function Ini()
     end)
     btn:SetScript("OnMouseUp", function(self,D) ResetCursor() end)        
     btn:SetScript("OnMouseDown", function(self,d) if d=='RightButton' and not IsAltKeyDown() then SetCursor('UI_MOVE_CURSOR') end end)
-    btn:SetScript("OnLeave", function(self) ResetCursor() tips:Hide() end)
+    btn:SetScript("OnLeave", function(self) ResetCursor() e.tips:Hide() end)
     btn:SetScript("OnEnter",function(self)
             if UnitAffectingCombat('player') then return end
-            tips:SetOwner(self, "ANCHOR_LEFT")
-            tips:ClearLines()
-            tips:AddDoubleLine(id, addName)
-            tips:AddLine(' ')
-            tips:AddDoubleLine(NPE_MOVE, '|A:newplayertutorial-icon-mouse-rightbutton:0:0|a')
-            tips:AddDoubleLine(SHOW..'/'..HIDE, '|A:newplayertutorial-icon-mouse-middlebutton:0:0|a')            
-            tips:AddDoubleLine(UI_SCALE..': '..Save.scale, 'Ctrl+|A:newplayertutorial-icon-mouse-middlebutton:0:0|a')
-            tips:AddDoubleLine(CHANGE_OPACITY..': '..Save.alpha, 'Shift+|A:newplayertutorial-icon-mouse-middlebutton:0:0|a')
-            tips:Show()
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(id, addName)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(NPE_MOVE, '|A:newplayertutorial-icon-mouse-rightbutton:0:0|a')
+            e.tips:AddDoubleLine(SHOW..'/'..HIDE, '|A:newplayertutorial-icon-mouse-middlebutton:0:0|a')            
+            e.tips:AddDoubleLine(UI_SCALE..': '..Save.scale, 'Ctrl+|A:newplayertutorial-icon-mouse-middlebutton:0:0|a')
+            e.tips:AddDoubleLine(CHANGE_OPACITY..': '..Save.alpha, 'Shift+|A:newplayertutorial-icon-mouse-middlebutton:0:0|a')
+            e.tips:Show()
     end)
     btn:SetScript('OnMouseWheel',function(self,d)
         if d == 1 and not IsModifierKeyDown() then

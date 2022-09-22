@@ -178,7 +178,14 @@
         "TokenFrame_Update",
         "CollectionsJournal",
         "ToggleCollectionsJournal",
-        "DRESSING_ROOM_APPEARANCE_LIST"
+        "DRESSING_ROOM_APPEARANCE_LIST",
+        "HEIRLOOMS",
+        "HeirloomsJournal",
+        "ToyBox",
+        "TOY",
+        "ITEMS",
+        "WEAPON_ENCHANTMENT",
+        "WARDROBE_SETS"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

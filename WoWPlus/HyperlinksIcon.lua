@@ -1,6 +1,5 @@
 local id, e = ...
 local addName = COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK..EMBLEM_SYMBOL
-local tips = GameTooltip
 local Frame = DEFAULT_CHAT_FRAME
 
 local Save={
@@ -534,18 +533,18 @@ sel:SetScript('OnClick', function(self, d)
 end)
 
 sel:SetScript("OnEnter", function (self)
-        tips:SetOwner(self, "ANCHOR_RIGHT")
-        tips:ClearLines()
-        tips:AddDoubleLine(id, addName)
-        tips:AddLine(' ')
-        tips:AddDoubleLine(addName..': '..e.GetEnabeleDisable(not Save.disabed),e.Icon.left)
-        tips:AddDoubleLine(TEXT_TO_SPEECH..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool('textToSpeech')), 'Alt + '..e.Icon.left)
-        tips:AddLine(' ')
-        tips:AddDoubleLine(RELOADUI, e.Icon.right, 1,0,1)
-        tips:Show()
+        e.tips:SetOwner(self, "ANCHOR_RIGHT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(addName..': '..e.GetEnabeleDisable(not Save.disabed),e.Icon.left)
+        e.tips:AddDoubleLine(TEXT_TO_SPEECH..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool('textToSpeech')), 'Alt + '..e.Icon.left)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(RELOADUI, e.Icon.right, 1,0,1)
+        e.tips:Show()
 end)
 sel:SetScript("OnLeave",function(self)
-        tips:Hide()
+        e.tips:Hide()
 end)
 
 local function setPanel()

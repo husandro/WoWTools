@@ -196,30 +196,28 @@ hooksecurefunc('ReputationFrame_InitReputationRow', function (factionRow, elemen
 	end
 end)
 
-local tips= GameTooltip
-
 Frame.sel=CreateFrame("Button",nil, Frame, 'UIPanelButtonTemplate')--禁用,开启
 Frame.sel:RegisterForClicks("LeftButtonDown","RightButtonDown")
 Frame.sel:SetSize(18, 18)
 Frame.sel:SetPoint("LEFT", ReputationFrameStandingLabel, 'RIGHT',5,0)
 Frame.sel:SetScript('OnLeave', function ()
-	tips:Hide()
+	e.tips:Hide()
 end)
 
 Frame.sel2=CreateFrame("Button",nil, Frame, 'UIPanelButtonTemplate')--监视声望按钮 禁用,开启
 Frame.sel2:SetSize(18, 18)
 Frame.sel2:SetPoint("LEFT", Frame.sel, 'RIGHT',2,0)
 Frame.sel2:SetScript("OnEnter", function(self)
-	tips:SetOwner(self, "ANCHOR_LEFT")
-    tips:ClearLines()
-	tips:AddDoubleLine(id, addName)
-	tips:AddLine(' ')
-	tips:AddDoubleLine(COMBAT_TEXT_SHOW_REPUTATION_TEXT, e.GetEnabeleDisable(Save.btn)..e.Icon.left)
---	tips:AddDoubleLine(addName..UPDATE, e.GetEnabeleDisable(Save.factionUpdateTips))
-    tips:Show()
+	e.tips:SetOwner(self, "ANCHOR_LEFT")
+    e.tips:ClearLines()
+	e.tips:AddDoubleLine(id, addName)
+	e.tips:AddLine(' ')
+	e.tips:AddDoubleLine(COMBAT_TEXT_SHOW_REPUTATION_TEXT, e.GetEnabeleDisable(Save.btn)..e.Icon.left)
+--	e.tips:AddDoubleLine(addName..UPDATE, e.GetEnabeleDisable(Save.factionUpdateTips))
+    e.tips:Show()
 end)
 Frame.sel2:SetScript('OnLeave', function ()
-	tips:Hide()
+	e.tips:Hide()
 end)
 
 hooksecurefunc('ReputationFrame_Update', btnstrSetText)--更新监视
@@ -308,22 +306,22 @@ local function SetRe()--监视声望
 				if UnitAffectingCombat('player') then
 					return
 				end
-				tips:SetOwner(self2, "ANCHOR_LEFT");
-				tips:ClearLines();
-				tips:AddDoubleLine(id, addName)
-				tips:AddLine(' ')
-				tips:AddDoubleLine(COMBAT_TEXT_SHOW_REPUTATION_TEXT..': '..e.GetShowHide(Save.btnstr), e.Icon.left)
-				tips:AddDoubleLine(BINDING_NAME_TOGGLECHARACTER2, e.Icon.mid)
-				tips:AddDoubleLine(NPE_MOVE, e.Icon.right)
-				tips:AddLine(' ')
-				tips:AddDoubleLine(GAME_VERSION_LABEL..addName..': '..e.GetShowHide(not Save.btnStrHideHeader), 'Alt + '..e.Icon.left)
-				tips:AddDoubleLine(addName..' ID: '..e.GetShowHide(Save.btnStrShowID), 'Ctrl + '..e.Icon.left)
-				tips:AddDoubleLine(VIDEO_OPTIONS_ULTRA_HIGH..addName..': '..e.GetShowHide(not Save.btnStrHideCap), 'Shift + '..e.Icon.left)
-				--tips:AddLine(' ')
-				--tips:AddDoubleLine(addName..UPDATE..': '..e.GetEnabeleDisable(Save.factionUpdateTips), 'Shift + '..e.Icon.right)
-				tips:Show();
+				e.tips:SetOwner(self2, "ANCHOR_LEFT");
+				e.tips:ClearLines();
+				e.tips:AddDoubleLine(id, addName)
+				e.tips:AddLine(' ')
+				e.tips:AddDoubleLine(COMBAT_TEXT_SHOW_REPUTATION_TEXT..': '..e.GetShowHide(Save.btnstr), e.Icon.left)
+				e.tips:AddDoubleLine(BINDING_NAME_TOGGLECHARACTER2, e.Icon.mid)
+				e.tips:AddDoubleLine(NPE_MOVE, e.Icon.right)
+				e.tips:AddLine(' ')
+				e.tips:AddDoubleLine(GAME_VERSION_LABEL..addName..': '..e.GetShowHide(not Save.btnStrHideHeader), 'Alt + '..e.Icon.left)
+				e.tips:AddDoubleLine(addName..' ID: '..e.GetShowHide(Save.btnStrShowID), 'Ctrl + '..e.Icon.left)
+				e.tips:AddDoubleLine(VIDEO_OPTIONS_ULTRA_HIGH..addName..': '..e.GetShowHide(not Save.btnStrHideCap), 'Shift + '..e.Icon.left)
+				--e.tips:AddLine(' ')
+				--e.tips:AddDoubleLine(addName..UPDATE..': '..e.GetEnabeleDisable(Save.factionUpdateTips), 'Shift + '..e.Icon.right)
+				e.tips:Show();
 			end)
-			btn:SetScript("OnLeave", function() ResetCursor()  GameTooltip:Hide() end);
+			btn:SetScript("OnLeave", function() ResetCursor()  e.tips:Hide() end);
 			btn:EnableMouseWheel(true)
 			btn:SetScript("OnMouseWheel", function (self2, d)
 				ToggleCharacter("ReputationFrame")--打开声望
@@ -485,14 +483,14 @@ Frame.sel:SetScript("OnClick", function(self, d)
 end)
 
 Frame.sel:SetScript("OnEnter", function(self2)
-	tips:SetOwner(self2, "ANCHOR_LEFT")
-    tips:ClearLines()
-	tips:AddLine(id, addName)
-	tips:AddLine(' ')
-	tips:AddDoubleLine(addName..': '..e.GetEnabeleDisable(not Save.disabled), e.Icon.left)
-	tips:AddLine(' ')
-	tips:AddDoubleLine(UPDATE..': '..e.GetEnabeleDisable(Save.factionUpdateTips), e.Icon.right)
-    tips:Show()
+	e.tips:SetOwner(self2, "ANCHOR_LEFT")
+    e.tips:ClearLines()
+	e.tips:AddLine(id, addName)
+	e.tips:AddLine(' ')
+	e.tips:AddDoubleLine(addName..': '..e.GetEnabeleDisable(not Save.disabled), e.Icon.left)
+	e.tips:AddLine(' ')
+	e.tips:AddDoubleLine(UPDATE..': '..e.GetEnabeleDisable(Save.factionUpdateTips), e.Icon.right)
+    e.tips:Show()
 end)
 
 Frame.sel:RegisterEvent("ADDON_LOADED")

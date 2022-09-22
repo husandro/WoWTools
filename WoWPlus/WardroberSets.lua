@@ -1,6 +1,5 @@
 local id, e = ...
-local tips=GameTooltip
-local addName=WARDROBE
+local addName=WARDROBE_SETS
 local Save={}
 
 --试衣间, 外观列表DressUpFrames.lua
@@ -22,17 +21,17 @@ hooksecurefunc(DressUpOutfitDetailsSlotMixin, 'SetDetails', function(self, trans
         self.btn:SetAlpha(0.3)
         self.btn:SetScript('OnEnter', function(self2, d)
             if self2.link and self2.link:find('item') then
-                tips:SetOwner(self2, "ANCHOR_RIGHT")
-                tips:ClearLines()
-                tips:SetHyperlink(self2.link)
-                tips:AddLine(' ')
-                tips:AddDoubleLine(COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, e.Icon.left)
-                tips:AddDoubleLine(WARDROBE, e.Icon.right)
-                tips:Show()
+                e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+                e.tips:ClearLines()
+                e.tips:SetHyperlink(self2.link)
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, e.Icon.left)
+                e.tips:AddDoubleLine(WARDROBE, e.Icon.right)
+                e.tips:Show()
             end
         end)
         self.btn:SetScript('OnLeave', function ()
-            tips:Hide()
+            e.tips:Hide()
         end)
         self.btn:SetScript('OnClick', function (self2, d)
             if self2.link then
@@ -84,57 +83,16 @@ dupframe.sel:SetScript('OnClick', function ()
     dupframe.sel:SetNormalAtlas(Save.disabledDressUpOutfit and e.Icon.disabled or e.Icon.icon)
 end)
 dupframe.sel:SetScript('OnEnter', function (self2)
-    tips:SetOwner(self2, "ANCHOR_RIGHT")
-    tips:ClearLines()
-    tips:AddDoubleLine(id, DRESSING_ROOM_APPEARANCE_LIST)
-    tips:AddDoubleLine(e.GetShowHide(not Save.disabledDressUpOutfit), e.Icon.left)
-    tips:Show()
+    e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+    e.tips:ClearLines()
+    e.tips:AddDoubleLine(id, DRESSING_ROOM_APPEARANCE_LIST)
+    e.tips:AddDoubleLine(e.GetShowHide(not Save.disabledDressUpOutfit), e.Icon.left)
+    e.tips:Show()
 end)
 dupframe.sel:SetScript('OnLeave', function ()
-    tips:Hide()
+    e.tips:Hide()
 end)
---[[
-hooksecurefunc(DressUpOutfitDetailsSlotMixin, 'SetDetails', function(self, transmogID, icon, name, useSmallIcon, slotState, isHiddenVisual)
-        if not self.Name or not self.item or not name then
-            return
-        end
-        local link=self.item:GetItemLink()
-        if link then
-            local t=''
 
-            local s=select(4,GetItemInfoInstant(link))            
-            if s and _G[s] then t='|cffffd000('.._G[s]..')|r '  end
-
-            if isHiddenVisual then
-                t=t..HIDE
-            else
-                if slotState == 3 then
-                    t=t..link..' |cffff0000'..NOT_COLLECTED..'|r'
-                else
-                    t=t..name
-                end
-            end
-            self.Name:SetScript("OnMouseDown", function(self2)
-                print(link,'a')
-                if ( link ) then
-                    local chat=SELECTED_DOCK_FRAME
-                    ChatFrame_OpenChat((chat.editBox:GetText() or '')..link, chat)
-                end
-            end)
-           self.Name:SetText(t)
-        end
-end)
-]]
---[[
-hooksecurefunc(DressUpOutfitDetailsSlotMixin, 'OnEnter', function(self)--试衣间
-        local link=(self and self.item) and self.item:GetItemLink()
-        if not link or self.isHiddenVisual then
-            return
-        end
-        tips:SetHyperlink(link,nil, nil, nil, true)
-        tips:Show()
-end)--DressUpFrames.lua
-]]
 --外观
 local wowSave = {
     ['1']={['class']='WARRIOR'},
@@ -200,7 +158,7 @@ local function InitWardrobe()
     local list=WardrobeSetsScrollFrameButtonMixin
 
     local function GetSetsCollectedNum(setID)
-        local info=C_TransmogSets.GetSetPrimaryAppearances(setID)
+        local info=C_TransmogSets.GetSetPrimaryAppearances(setID) or {}
         local numCollected,numAll=0,0
         for _,v in pairs(info) do
             numAll=numAll+1
@@ -248,12 +206,15 @@ local function InitWardrobe()
                 header= info.limitedTimeSet and header..'\n'..e.Icon.clock2..'|cnRED_FONT_COLOR:'..TRANSMOG_SET_LIMITED_TIME_SET..'|r' or header
                 header = info.label and header..'\n|cnBRIGHTBLUE_FONT_COLOR:'..info.label..'|r' or header
                 version=info.expansionID and _G['EXPANSION_NAME'..info.expansionID]
-                header = header ..(version and '\n'..'|cnGREEN_FONT_COLOR:'..version..'|r' or '')..(info.patchID and ' top v.'..info.patchID or '')
+                header = header ..(version and '\n'..'|cnGREEN_FONT_COLOR:'..version..'|r' or '')..(info.patchID and ' toc v.'..info.patchID or '')
 
             end
             lable=lable..numCollected..' '
-            tip=tip..numCollected..(info.description or info.name)..(info.limitedTimeSet and e.Icon.clock2 or '')..(info.setID and ' setID: '..info.setID or '')..'\n'
-            buttonTip=buttonTip..numCollected..(info.description or info.name)..(info.limitedTimeSet and e.Icon.clock2 or '')..'\n'
+
+            local num=numCollected..'/'..(numAll<=9 and e.Icon.number2:format(numAll) or numAll)
+            tip=tip..num..(info.description or info.name)..(info.limitedTimeSet and e.Icon.clock2 or '')..(info.setID and ' setID: '..info.setID or '')..'\n'
+            buttonTip=buttonTip..num..(info.description or info.name)..(info.limitedTimeSet and e.Icon.clock2 or '')..'\n'
+
             Limited= info.limitedTimeSet and true or Limited
         end
 
@@ -261,13 +222,13 @@ local function InitWardrobe()
 
         tip=(header and header..'\n\n' or '').. tip
         button:SetScript("OnEnter",function(self2)
-            tips:SetOwner(frame2, "ANCHOR_RIGHT",8,-300)
-            tips:ClearLines()
-            tips:SetText(tip)
-            tips:Show()
+            e.tips:SetOwner(frame2, "ANCHOR_RIGHT",8,-300)
+            e.tips:ClearLines()
+            e.tips:SetText(tip)
+            e.tips:Show()
         end)
         button:SetScript("OnLeave",function()
-                tips:Hide()
+                e.tips:Hide()
         end)
         if button.Label then button.Label:SetText(lable) end
 
@@ -351,10 +312,10 @@ local function InitWardrobe()
                              return
                         end
                         self2:SetAlpha(1)
-                        tips:ClearLines()
-                        tips:SetOwner(self2, "ANCHOR_RIGHT")
-                        tips:SetHyperlink(self2.link)
-                        tips:Show()
+                        e.tips:ClearLines()
+                        e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+                        e.tips:SetHyperlink(self2.link)
+                        e.tips:Show()
                 end)
                 btn:SetScript("OnMouseDown", function(self2)
                         if ( self2.link ) then
@@ -364,7 +325,7 @@ local function InitWardrobe()
                 end)
                 btn:SetScript("OnLeave",function(self2)
                         self2:SetAlpha(0.2)
-                        tips:Hide()
+                        e.tips:Hide()
                 end)
             end
             btn.link=link
@@ -445,9 +406,9 @@ local function InitWardrobe()
     setAllSets()--所以有套装情况
 
     frame.sel =e.Cbtn(frame, nil, not Save.disabled)--隐藏选项
-    frame.sel:SetPoint('TOPLEFT',5,-2)
+    frame.sel:SetPoint('BOTTOMRIGHT',-16, 28)
     frame.sel:SetSize(18,18)
-    frame.sel:SetAlpha(0.3)
+    frame.sel:SetAlpha(0.5)
     frame.sel:SetScript("OnClick", function(self2)
             if Save.disabled then
                 Save.disabled=nil;
@@ -463,66 +424,17 @@ local function InitWardrobe()
             self2:SetNormalAtlas(Save.disabled and e.Icon.disabled or e.Icon.icon)
     end)
     frame.sel:SetScript('OnEnter', function(self2)
-        tips:SetOwner(self2, "ANCHOR_LEFT")
-        tips:ClearLines()
-        tips:AddDoubleLine(id, addName)
-        tips:AddLine(' ')
-        tips:AddDoubleLine(e.GetShowHide(not Save.disabled), e.Icon.left)
-        tips:Show()
+        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.GetShowHide(not Save.disabled), e.Icon.left)
+        e.tips:Show()
     end)
     frame.sel:SetScript('OnLeave', function()
-        tips:Hide()
+        e.tips:Hide()
     end)
 
-
-    --传家宝Blizzard_HeirloomCollection.lua    
-    hooksecurefunc( HeirloomsJournal, 'UpdateButton', function(self, button)--
-        local name, itemEquipLoc, isPvP, itemTexture, upgradeLevel, source, searchFiltered, effectiveLevel, minLevel, maxLevel = C_Heirloom.GetHeirloomInfo(button.itemID);
-        local maxUp=C_Heirloom.GetHeirloomMaxUpgradeLevel(button.itemID) or 0;
-        local level=maxUp-upgradeLevel
-        local has = C_Heirloom.PlayerHasHeirloom(button.itemID)
-        if level >0 and has then--需要升级数
-            if not button.upLevel then
-                button.upLevel = button:CreateTexture(nil, 'OVERLAY')
-                button.upLevel:SetPoint('TOPLEFT', -1, 1)
-                button.upLevel:SetSize(26,26)
-            end
-            button.upLevel:SetAtlas(e.Icon.number..level)
-        end
-        if button.upLevel then
-            button.upLevel:SetShown(has and level>0)
-        end
-
-        if isPvP and not button.isPvP then
-            button.isPvP=button:CreateTexture(nil, 'OVERLAY')
-            button.isPvP:SetPoint('TOPRIGHT', 1, 1)
-            button.isPvP:SetSize(14, 14)
-            button.isPvP:SetAtlas('honorsystem-icon-prestige-6')
-        end
-        if button.isPvP then
-            button.isPvP:SetShown(isPvP)
-        end
-    end);
-
-    --玩具,是不可用Blizzard_ToyBox.lua
-    hooksecurefunc('ToySpellButton_UpdateButton', function(self)
-        local has=PlayerHasToy(self.itemID)
-        local isUas=C_ToyBox.IsToyUsable(self.itemID)
-        if not isUas and not self.notUasble then
-            self.notUasble=self:CreateTexture(nil, 'OVERLAY')
-            self.notUasble:SetPoint('TOPRIGHT', -4, -4)
-            self.notUasble:SetSize(20,20)
-            self.notUasble:SetAtlas(e.Icon.disabled)
-        end
-        if self.notUasble then
-            self.notUasble:SetShown(has and not isUas)
-        end
-        if isUas then
-            self.name:SetTextColor(1,0.82, 0)
-        else
-            self.name:SetTextColor(1,0,0)
-        end
-    end)
 end
 
 --加载保存数据
@@ -533,14 +445,14 @@ panel:RegisterEvent("TRANSMOG_SETS_UPDATE_FAVORITE")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
             Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
-            wowSave=WoWToolsSave and WoWToolsSave['WoW-WardrobeCollection'] or wowSave
+            wowSave=WoWToolsSave and WoWToolsSave['WoW-CollectionWardrobeSets'] or wowSave
             SetSaveWardroberColleced()--收集所有角色套装数据
             dupframe.sel:SetNormalAtlas(Save.disabledDressUpOutfit and e.Icon.disabled or e.Icon.icon)--试衣间, 外观列表
 
     elseif event == "PLAYER_LOGOUT" then
         if not WoWToolsSave then WoWToolsSave={} end
 		WoWToolsSave[addName]=Save
-        WoWToolsSave['WoW-WardrobeCollection']=wowSave
+        WoWToolsSave['WoW-CollectionWardrobeSets']=wowSave
 
     elseif event=='ADDON_LOADED' and arg1=='Blizzard_Collections' then
         InitWardrobe()

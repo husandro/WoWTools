@@ -1,5 +1,6 @@
 local id, e = ...
 e.L=e.L or {}--多语言
+e.tips=GameTooltip
 
 e.Icon={
   icon='orderhalltalents-done-glow',
@@ -39,8 +40,6 @@ e.Player={
   Lo=GetLocale(),
   class=UnitClassBase('player'),
   --MAX_PLAYER_LEVEL = GetMaxLevelForPlayerExpansion()
-
-
 }
   e.GetNpcID = function(unit)--NPC ID
   if UnitExists(unit) then

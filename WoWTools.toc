@@ -32,4 +32,8 @@ WoWPlus\FrameMove.lua
 WoWPlus\HideTexture.lua
 WoWPlus\Flyout.lua
 WoWPlus\ObjectiveTracker.lua
-WoWPlus\Wardrober.lua
+
+WoWPlus\Toy.lua
+WoWPlus\Heirloom.lua
+WoWPlus\WardroberItems.lua
+WoWPlus\WardroberSets.lua
