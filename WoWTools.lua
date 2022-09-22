@@ -41,7 +41,8 @@ e.Player={
   class=UnitClassBase('player'),
   --MAX_PLAYER_LEVEL = GetMaxLevelForPlayerExpansion()
 }
-  e.GetNpcID = function(unit)--NPC ID
+
+e.GetNpcID = function(unit)--NPC ID
   if UnitExists(unit) then
     local guid=UnitGUID(unit)
     if guid then
@@ -110,9 +111,9 @@ e.WA_Utf8Sub = function(input, size)
     return output
 end
 
-e.Cstr=function(self)
+e.Cstr=function(self, size)
   local b=self:CreateFontString(nil, 'OVERLAY')
-    b:SetFont('Fonts\\ARHei.ttf', 12, 'OUTLINE')
+    b:SetFont('Fonts\\ARHei.ttf', size or 12, 'OUTLINE')
     b:SetShadowOffset(2, -2)
     --b:SetShadowColor(0, 0, 0)
     b:SetJustifyH('LEFT')

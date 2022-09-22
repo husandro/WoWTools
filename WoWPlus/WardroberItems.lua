@@ -69,7 +69,9 @@ local function Set()
     end
     wowSave[e.Player.class]=List
 
-    if Save.disableditems then--禁用
+    if not Frame then
+        return
+    elseif Save.disableditems then--禁用
         for class, type in pairs (wowSave) do
             local str=Frame[addName..class]
             if str then
@@ -86,7 +88,7 @@ local function Set()
 
     --设置内容
     local last, initStr
-    local totaleCollected, totaleAll = 0, 0
+    local totaleCollected, totaleAll, totaleClass = 0, 0, 0--总数
     for class, type in pairs (wowSave) do
         local tip={}--提示用
         local collected, all = 0, 0
@@ -134,6 +136,7 @@ local function Set()
 
         totaleCollected=totaleCollected+collected
         totaleAll=totaleAll+ all
+        totaleClass=totaleClass+1
 
         local per=(' %i%%'):format(collected/all*100)
         collected, all = e.MK(collected,3), e.MK(all,3)
@@ -159,7 +162,7 @@ local function Set()
         Frame[addName..'All']=str
     end
     if str and totaleAll>0 then
-        str:SetText(('%i%%'):format(totaleCollected/totaleAll*100)..' '..e.MK(totaleCollected, 3)..'/'..e.MK(totaleCollected,3)..e.Icon.wow2)
+        str:SetText(totaleClass..CLASS..'  '..('%i%%'):format(totaleCollected/totaleAll*100)..'  '..e.MK(totaleCollected, 3)..'/'..e.MK(totaleAll,3)..e.Icon.wow2)
     end
 end
 

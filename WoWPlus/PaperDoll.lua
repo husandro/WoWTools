@@ -650,13 +650,44 @@ hooksecurefunc('PaperDollItemSlotButton_Update',  function(self)--PaperDollFrame
             end
 end)
 
-local function setFlyoutLevel(button, level)--装备弹出 
+local function setFlyoutLevel(button, level, paperDollItemSlot)--装备弹出 
     if level and not button.level then
         button.level=e.Cstr(button)
         button.level:SetPoint('BOTTOM')
     end
     if button.level then
         button.level:SetText(level or '')
+    end
+
+    local slotLevel--升级等级，比较
+    if paperDollItemSlot and level then
+        local slot=paperDollItemSlot:GetID()
+        if slot then
+            local itemLink = GetInventoryItemLink('player', slot)
+            if itemLink then
+                slotLevel = GetDetailedItemLevelInfo(itemLink)
+                if slotLevel then
+                    slotLevel=level-slotLevel
+                end
+            end
+        end
+    end
+    if slotLevel and not button.upLevel then
+        button.upLevel=e.Cstr(button, 16)
+        button.upLevel:SetPoint('TOP',0 ,5)
+    end
+    if button.upLevel then
+        if slotLevel then
+            if slotLevel>0 then
+                button.upLevel:SetText('|cnGREEN_FONT_COLOR:+'..slotLevel..'|r')
+            elseif slotLevel<0 then
+                button.upLevel:SetText('|cnRED_FONT_COLOR:'..slotLevel..'|r')
+            else
+                button.upLevel:SetText(slotLevel)
+            end
+        else
+            button.upLevel:SetText('')
+        end
     end
 end
 hooksecurefunc('EquipmentFlyout_DisplayButton', function(button, paperDollItemSlot)--EquipmentFlyout.lua
@@ -681,7 +712,7 @@ hooksecurefunc('EquipmentFlyout_DisplayButton', function(button, paperDollItemSl
 	end
     local level= itemLink and GetDetailedItemLevelInfo(itemLink)
 
-    setFlyoutLevel(button, level)
+    setFlyoutLevel(button, level, paperDollItemSlot)
 end)
 
 hooksecurefunc('PaperDollFrame_UpdateSidebarTabs', function()--头衔数量
