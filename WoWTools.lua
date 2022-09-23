@@ -2,6 +2,31 @@ local id, e = ...
 e.L=e.L or {}--多语言
 e.tips=GameTooltip
 
+e.Race=function(unit, race, sex)--玩家种族图标
+    race =unit and select(2,UnitRace(unit)) or race
+    if race=='Scourge' then
+      race='Undead'
+    elseif race=='HighmountainTauren' then
+      race='highmountain'
+    elseif race=='ZandalariTroll' then
+      race='zandalari'
+    elseif race=='LightforgedDraenei' then
+      race='lightforged'
+    end
+    sex= unit and UnitSex(unit) or sex
+    sex= sex==2 and 'male' or 'female'
+    return '|A:raceicon128-'..race..'-'..sex..':0:0|a'
+end
+
+e.Player={
+  server=GetRealmName(),
+  col='|c'..select(4,GetClassColor(UnitClassBase('player'))),
+  zh= GetLocale()== "zhCN",
+  Lo=GetLocale(),
+  class=UnitClassBase('player'),
+  --MAX_PLAYER_LEVEL = GetMaxLevelForPlayerExpansion()
+}
+
 e.Icon={
   icon='orderhalltalents-done-glow',
 
@@ -21,6 +46,7 @@ e.Icon={
   transmogHide2='|A:transmog-icon-hidden:0:0|a',--不可幻化
   okTransmog2='|T132288:0|t',--可幻化
 
+  map='poi-islands-table',
   map2='|A:poi-islands-table:0:0|a',
   wow2='|A:Icon-WoW:0:0|a',
 
@@ -31,15 +57,8 @@ e.Icon={
   number2='|A:services-number-%d:0:0|a',
   clock='socialqueuing-icon-clock',
   clock2='|A:socialqueuing-icon-clock:0:0|a',
-}
 
-e.Player={
-  server=GetRealmName(),
-  col='|c'..select(4,GetClassColor(UnitClassBase('player'))),
-  zh= GetLocale()== "zhCN",
-  Lo=GetLocale(),
-  class=UnitClassBase('player'),
-  --MAX_PLAYER_LEVEL = GetMaxLevelForPlayerExpansion()
+  player=e.Race('player'),
 }
 
 e.GetNpcID = function(unit)--NPC ID
@@ -111,14 +130,22 @@ e.WA_Utf8Sub = function(input, size)
     return output
 end
 
-e.Cstr=function(self, size)
-  local b=self:CreateFontString(nil, 'OVERLAY')
+e.Cstr=function(self, size, fontType, ChangeFont)
+  local b=ChangeFont or self:CreateFontString(nil, 'OVERLAY')
+  if fontType then
+    b:SetFont(fontType:GetFont())
+    b:SetTextColor(fontType:GetTextColor())
+    b:SetFontObject(fontType:GetFontObject())
+    b:SetShadowColor(fontType:GetShadowColor())
+    b:SetShadowOffset(fontType:GetShadowOffset())
+  else
     b:SetFont('Fonts\\ARHei.ttf', size or 12, 'OUTLINE')
     b:SetShadowOffset(2, -2)
     --b:SetShadowColor(0, 0, 0)
     b:SetJustifyH('LEFT')
     b:SetTextColor(1, 0.45, 0.04)
-    return b
+  end
+  return b
 end
 
 e.CeditBotx= function(self, width, height)

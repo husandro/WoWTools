@@ -756,7 +756,7 @@ local function GetDurationTotale()--装备总耐久度
         elseif to<60 then
             du=YELLOW_FONT_COLOR_CODE..du..'|r'
         end
-        Frame.sel.DuVal=floor(to)
+        Frame.sel.DuVal=math.modf(to)
     else
         Frame.sel.DuVal=nil
     end

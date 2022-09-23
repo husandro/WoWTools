@@ -37,3 +37,5 @@ WoWPlus\Toy.lua
 WoWPlus\Heirloom.lua
 WoWPlus\WardroberItems.lua
 WoWPlus\WardroberSets.lua
+
+WoWPlus\WorldMap.lua

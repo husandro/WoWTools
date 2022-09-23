@@ -135,7 +135,7 @@ local function SetSaveWardroberColleced()--收集所有角色套装数据
         if info.numCollected and info.numTotal and info.numTotal > 0 then
             numCollected = numCollected + info.numCollected
             numTotal = numTotal + info.numTotal
-            local value=floor(info.numCollected/info.numTotal*100)
+            local value=math.modf(info.numCollected/info.numTotal*100)
             local t='|A:classicon-'..info.class..':0:0|a'
             t=t..((value<10 and '  ') or (value<100 and ' ') or '')..value..'%'
             t=t..' '..info.numCollected..'/'..info.numTotal
@@ -376,7 +376,7 @@ local function InitWardrobe()
             local collected, all=0 , 0
             for _, info in pairs(tempSave) do
                 if info.collected and info.all and info.all>0 then
-                    local value=floor(info.collected/info.all*100)
+                    local value=math.modf(info.collected/info.all*100)
                     local t=info.collected..'/'..info.all..' '
                     t=t..((value<10 and '  ') or (value<100 and ' ') or '')..value..'%'
                     t=t..'|A:classicon-'..info.class..':0:0|a'
@@ -427,7 +427,6 @@ local function InitWardrobe()
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
-        e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.GetShowHide(not Save.disabled), e.Icon.left)
         e.tips:Show()
     end)

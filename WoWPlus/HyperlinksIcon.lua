@@ -72,7 +72,7 @@ local function Pet(speciesID)
                 return RED_FONT_COLOR_CODE..'['..numCollected ..'/'.. limit..']|r'
             else
                 return YELLOW_FONT_COLOR_CODE..'['..numCollected ..'/'.. limit..']|r'            
-            end            
+            end
         end
     end
 end
@@ -465,6 +465,7 @@ local function Add(self, s, ...)
     s=s:gsub('|HdungeonScore:.-]|h', DungeonScore)
     s=s:gsub('|Hjournal:.-]|h', Journal)
     s=s:gsub('|Hinstancelock:.-]|h', Instancelock)
+
 
     for k, _ in pairs(Save.text) do--内容加颜色
         s=s:gsub(k, '|cnGREEN_FONT_COLOR:'..k..'|r')
