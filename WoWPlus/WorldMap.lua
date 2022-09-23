@@ -34,7 +34,7 @@ local function sendPlayerPoint()--发送玩家位置
         local name=GetMinimapZoneText()
         local name2
         if mapID then
-            local info=C_Map.GetMapInfo(cid)
+            local info=C_Map.GetMapInfo(mapID)
             name2=info and info.name
         end
         if name  or name2 then
