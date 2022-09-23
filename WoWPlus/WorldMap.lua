@@ -141,7 +141,7 @@ local function CursorPositionInt()
             if x and y then
                 self.Text:SetText(x.. ' '..y)
             else
-                self.Text:SetText('')
+                self.Text:SetText('..')
             end
         end
     end)
