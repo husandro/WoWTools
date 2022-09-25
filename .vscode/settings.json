@@ -185,7 +185,22 @@
         "TOY",
         "ITEMS",
         "WEAPON_ENCHANTMENT",
-        "WARDROBE_SETS"
+        "WARDROBE_SETS",
+        "PROFESSION_RECIPE_TRACKER_MODULE",
+        "TRADE_SKILLS",
+        "BINDING_NAME_TOGGLECHARACTER0",
+        "WORLD_MAP",
+        "RESET_POSITION",
+        "RESET",
+        "PLAYER",
+        "UiMapPoint",
+        "WorldMapFrame",
+        "SEND_LABEL",
+        "FONT_SIZE",
+        "FLOOR",
+        "WorldMapFrameTitleText",
+        "PREVIOUS",
+        "REFORGE_CURRENT"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

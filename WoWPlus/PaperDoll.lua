@@ -9,15 +9,6 @@ local Icon={
     use='soulbinds_tree_conduit_icon_utility',--物品 '使用' 图标
 }
 
-local S=20
-local function Cbtn(self)
-    local b=CreateFrame("Button",nil, self)
-    b:SetSize(S, S)
-    b:SetHighlightAtlas(e.Icon.highlight)
-    b:SetPushedAtlas(e.Icon.pushed)
-    return b
-end
-
 local function Sever()--显示服务名称
     local s=Frame.server
     if not Save.disabled and not s then
@@ -71,7 +62,7 @@ local function Du(self, slot, link) --耐久度
                 self.du:SetPoint('LEFT', self, 'RIGHT', 2.5,0)
             else
                 self.du:SetPoint('RIGHT', self, 'LEFT', -2.5,0)
-            end            
+            end
             self.du:SetSize(4, self:GetHeight())--h37
             self.du:SetMinMaxValues(0, 100)
             self.du:SetOrientation("VERTICAL")
@@ -202,7 +193,7 @@ local function Engineering(self, slot, use)--增加 [潘达利亚工程学: 地�
     if not ((slot==15 and recipeLearned(126392)) or (slot==6 and recipeLearned(55016))) or use or self.engineering then
         return
     end
-    self.engineering=Cbtn(self)
+    self.engineering=e.Cbtn(self)
     local h=self:GetHeight()/3
     self.engineering:SetSize(h,h)
     self.engineering:SetNormalTexture(136243)
@@ -212,11 +203,17 @@ local function Engineering(self, slot, use)--增加 [潘达利亚工程学: 地�
         self.engineering:SetPoint('TOPRIGHT', self, 'TOPLEFT', -8, 0)
     end
     self.engineering.spell= slot==15 and 126392 or 55016
-    self.engineering:SetScript('OnClick' ,function(self2)
+    self.engineering:RegisterForClicks("LeftButtonDown","RightButtonDown")
+    self.engineering:SetScript('OnClick' ,function(self2,d)
+        if d=='LeftButton' then
             C_TradeSkillUI.OpenTradeSkill(202)
             C_TradeSkillUI.CraftRecipe(self2.spell)
             C_TradeSkillUI.CloseTradeSkill()
-    end) 
+            ToggleCharacter("PaperDollFrame", true)
+        elseif d=='RightButton' then
+            C_TradeSkillUI.OpenTradeSkill(202)
+        end
+    end)
     self.engineering:SetScript('OnEnter' ,function(self2)
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
@@ -227,10 +224,10 @@ local function Engineering(self, slot, use)--增加 [潘达利亚工程学: 地�
         local n=GetItemCount(90146, true)
             if n==0 then
                 local item=select(2, GetItemInfo(90146)) or SPELL_REAGENTS_OPTIONAL
-                print(item..' '..RED_FONT_COLOR_CODE..NONE..'|r')                                    
+                print(item..' '..RED_FONT_COLOR_CODE..NONE..'|r')
             end
     end)
-    self.engineering:SetScript('OnLeave',function() e.tips:Hide() end)        
+    self.engineering:SetScript('OnLeave',function() e.tips:Hide() end)
 end
 local enchantStr=ENCHANTED_TOOLTIP_LINE:gsub('%%s','')--附魔
 local function Enchant(self, slot, link)--附魔, 使用, 属性
@@ -259,10 +256,10 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
         end
         if enchant and not self.enchant then
             local h=self:GetHeight()/3
-            self.enchant=self:CreateTexture()               
-            self.enchant:SetSize(h,h)                            
-            if Slot(slot) then                                
-                self.enchant:SetPoint('LEFT', self, 'RIGHT', 8, 0)                                
+            self.enchant=self:CreateTexture()
+            self.enchant:SetSize(h,h)
+            if Slot(slot) then
+                self.enchant:SetPoint('LEFT', self, 'RIGHT', 8, 0)
             else
                 self.enchant:SetPoint('RIGHT', self, 'LEFT', -8, 0)
             end
@@ -270,10 +267,10 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
         end
         if use and not self.use then
             local h=self:GetHeight()/3
-            self.use=self:CreateTexture()               
-            self.use:SetSize(h,h)                            
-            if Slot(slot) then                                
-                self.use:SetPoint('TOPLEFT', self, 'TOPRIGHT', 8, 0)                                
+            self.use=self:CreateTexture()
+            self.use:SetSize(h,h)
+            if Slot(slot) then
+                self.use:SetPoint('TOPLEFT', self, 'TOPRIGHT', 8, 0)
             else
                 self.use:SetPoint('TOPRIGHT', self, 'TOPLEFT', -8, 0)
             end
@@ -282,7 +279,7 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
         Engineering(self, slot, use)--地精滑翔,氮气推进器
     end
     if self.enchant then self.enchant:SetShown(enchant) end
-    if self.use then self.use:SetShown(use) end    
+    if self.use then self.use:SetShown(use) end
     if self.engineering then self.engineering:SetShown(not use and link) end
 end
 
@@ -505,22 +502,34 @@ local function EPoint(self, f, b2)--添加装备管理框,设置位置
         end
     end
 end
+local function setEquipmentSize(self, index)--装备管理框,设置大小,隐然多除的
+    if not self.B then
+        return
+    end
+    for i=1, #self.B do
+        if index==i then
+            self.B[i]:SetShown(false)
+        end
+        self.B[i]:SetSize(Save.equipmentSize or 18, Save.equipmentSize or 18)
+    end
+end
+local Equipmentframe
 local function ADDEquipment(equipmentSetsDirty)--添加装备管理框
-    local f=e.Equipmentframe
-    if f then f:SetShown(Save.show) end    
-    if not Save.show or not PAPERDOLL_SIDEBARS[3].IsActive() then 
+    local f=Equipmentframe
+    if f then f:SetShown(Save.equipment) end
+    if not Save.equipment or not PAPERDOLL_SIDEBARS[3].IsActive() then
         return
     end
 
     if not f then
-        f=Cbtn(UIParent)--添加移动按钮
+        f=e.Cbtn(UIParent)--添加移动按钮
+        f:SetSize(14, 14)
         f:SetNormalAtlas(e.Icon.icon)
-        
         local p=Save.Equipment
         if p then
             f:SetPoint(p[1], UIParent, p[3], p[4], p[5])
         else
-            f:SetPoint('TOPLEFT', Frame, 'TOPRIGHT')
+            f:SetPoint('BOTTOMRIGHT', Frame, 'TOPRIGHT')
         end
         f:RegisterForDrag("RightButton")
         f:SetClampedToScreen(true)
@@ -545,61 +554,75 @@ local function ADDEquipment(equipmentSetsDirty)--添加装备管理框
                 elseif d=='RightButton' and not key then--移动图标
                     SetCursor('UI_MOVE_CURSOR')
 
-                elseif d=='LeftButton' and not key then--图标横,或 竖
-                    if Save.EquipmentH then Save.EquipmentH=nil else Save.EquipmentH=true end              
-                    local b3
-                    for _, v in pairs(self.B) do 
-                        v:ClearAllPoints()
-                        EPoint(v, self, b3)--设置位置
-                        b3=v
-                    end     
+                elseif d=='LeftButton' and alt then--图标横,或 竖
+                    if Save.EquipmentH then
+                        Save.EquipmentH=nil
+                    else
+                        Save.EquipmentH=true
+                    end
+                    if self.B then
+                        local b3
+                        for _, v in pairs(self.B) do
+                            v:ClearAllPoints()
+                            EPoint(v, self, b3)--设置位置
+                            b3=v
+                        end
+                    end
+                elseif d=='LeftButton' and not key then--打开/关闭角色界面
+                    ToggleCharacter("PaperDollFrame")
                 end
         end)
         f:SetScript('OnMouseWheel',function(self, d)--放大
-                local n=Save.zoom or 1
+                local n=Save.equipmentSize or 20
                 if d==1 then
-                    n=n+0.1
+                    n=n+2
                 elseif d==-1 then
-                    n=n-0.1
-                end                
-                if n>3 then
-                    n=3
-                elseif n<0.6 then
-                    n=0.6
+                    n=n-2
                 end
-                Save.zoom=n                
-                print(addName..ZOOM_IN..': '..GREEN_FONT_COLOR_CODE..n..'|r')                
+                if n>60 then
+                    n=60
+                elseif n<6 then
+                    n=6
+                end
+                Save.equipmentSize=n
+                setEquipmentSize(self)
+                print(addName..ZOOM_IN..': '..GREEN_FONT_COLOR_CODE..n..'|r')
         end)
         f:SetScript("OnEnter", function (self)
-                e.tips:SetOwner(self, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine(addName, nil, 1,1,1)        
-                e.tips:AddDoubleLine(ADD, EQUIPMENT_MANAGER)
-                e.tips:AddDoubleLine(Save.EquipmentH and BINDING_NAME_STRAFERIGHT or BINDING_NAME_PITCHDOWN, e.Icon.left)
-                e.tips:AddDoubleLine(NPE_MOVE, e.Icon.right)
-                e.tips:AddDoubleLine(ZOOM_IN..'/'..ZOOM_OUT..': '..(Save.zoom and Save.zoom or 1), e.Icon.mid)
-                e.tips:Show()
+            if UnitAffectingCombat('player') then
+                return
+            end
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(id, EQUIPMENT_MANAGER)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(BINDING_NAME_TOGGLECHARACTER0, e.Icon.left)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(Save.EquipmentH and BINDING_NAME_STRAFERIGHT or BINDING_NAME_PITCHDOWN, 'Alt + '..e.Icon.left)
+            e.tips:AddDoubleLine(NPE_MOVE, e.Icon.right)
+            e.tips:AddDoubleLine(ZOOM_IN..'/'..ZOOM_OUT..': '..(Save.equipmentSize and Save.equipmentSize or 1), e.Icon.mid)
+            e.tips:Show()
         end)
         f:SetScript("OnLeave", function()
                 ResetCursor()
                 e.tips:Hide()
         end)
-        e.Equipmentframe=f
+        Equipmentframe=f
     end
-    if Save.zoom and Save.zoom<=1 then f:SetScale(Save.zoom) end--放大
+    --if Save.equipmentSize and Save.equipmentSize<=1 then f:SetScale(Save.equipmentSize) end--放大
 
     f.B=f.B or {}--添加装备管理按钮
-    local b2, index=nil, 1 
+    local b2, index=nil, 1
     f.setIDs= (not f.setIDs or equipmentSetsDirty) and SortEquipmentSetIDs(C_EquipmentSet.GetEquipmentSetIDs()) or f.setIDs
-    for k, id in pairs(f.setIDs) do
-        local texture, setID, isEquipped= select(2, C_EquipmentSet.GetEquipmentSetInfo(id))
+    for k, id2 in pairs(f.setIDs) do
+        local texture, setID, isEquipped= select(2, C_EquipmentSet.GetEquipmentSetInfo(id2))
         local b=f.B[k]
         if not b then
-            b=Cbtn(f)
+            b=e.Cbtn(f)
             b.tex=b:CreateTexture(nil, 'OVERLAY')
             b.tex:SetAtlas(e.Icon.select)
-            b.tex:SetAllPoints(b)            
-            b:SetSize(S, S)
+            b.tex:SetAllPoints(b)
+           -- b:SetSize(20, 20)
             EPoint(b, f ,b2)--设置位置
 
             b:SetScript("OnClick",function(self)
@@ -607,7 +630,7 @@ local function ADDEquipment(equipmentSetsDirty)--添加装备管理框
                         C_EquipmentSet.UseEquipmentSet(self.setID)
                         C_Timer.After(0.5, function() LvTo() end)--修改总装等
                     else
-                        print(addName..': '..RED_FONT_COLOR_CODE..ERR_NOT_IN_COMBAT..'|r')                    
+                        print(addName..': '..RED_FONT_COLOR_CODE..ERR_NOT_IN_COMBAT..'|r')
                     end
             end)
             b:SetScript("OnEnter", function(self)
@@ -616,20 +639,17 @@ local function ADDEquipment(equipmentSetsDirty)--添加装备管理框
                         e.tips:SetEquipmentSet(self.setID)
                     end
             end)
-            b:SetScript("OnLeave",function() e.tips:Hide() end)                        
+            b:SetScript("OnLeave",function() e.tips:Hide() end)
         end
         b.setID=setID
         b.tex:SetShown(isEquipped and true or false)
         b:SetNormalTexture(texture)
         b:SetShown(true)--显示        
         f.B[k]=b
-        index=k+1        
+        index=k+1
         b2=b
-        if Save.zoom then b:SetScale(Save.zoom) end--放大
     end
-    for i=index, #f.B do 
-        f.B[i]:SetShown(false)--隐然多除的
-    end
+    setEquipmentSize(f, index)--隐然多除的, 设置大小
     LvTo()--总装等
 end
 
@@ -731,10 +751,11 @@ end)
 hooksecurefunc('GearSetButton_UpdateSpecInfo', EquipmentStr)--套装已装备数量
 hooksecurefunc('PaperDollEquipmentManagerPane_Update',ADDEquipment)----添加装备管理框        
 
-Frame.sel = Cbtn(Frame)--总开关
+Frame.sel = e.Cbtn(Frame, nil, not Save.disabled)--总开关
+Frame.sel:SetSize(20, 20)
 Frame.sel.Text=e.Cstr(Frame)
 Frame.sel.Text:SetPoint('LEFT', Frame.sel, 'RIGHT')
-Frame.sel2 = Cbtn(Frame)--显示/隐藏装备管理框选项
+Frame.sel2 = e.Cbtn(Frame, nil, Save.equipment)--显示/隐藏装备管理框选项
 
 local function GetDurationTotale()--装备总耐久度
     local cu, max=0,0
@@ -769,8 +790,8 @@ local function SetIni()
     GetDurationTotale()--装备总耐久度        
     Frame.sel:SetNormalAtlas(Save.disabled and e.Icon.disabled or e.Icon.icon)
     Frame.sel:SetAlpha(Save.disabled and 0.3 or 1)
-    Frame.sel2:SetNormalAtlas(Save.show and e.Icon.icon or e.Icon.disabled)
-    Frame.sel2:SetAlpha(Save.show and 0.3 or 1)
+    Frame.sel2:SetNormalAtlas(Save.equipment and e.Icon.icon or e.Icon.disabled)
+    Frame.sel2:SetAlpha(Save.equipment and 0.3 or 1)
     Sever()--服务器名称
 end
 Frame.sel:SetPoint('BOTTOMLEFT',5,7)
@@ -804,13 +825,13 @@ Frame.sel:SetScript("OnLeave",function(self)
 end)
 
 Frame.sel2:SetPoint('TOPRIGHT',-2,-40)
-Frame.sel2:SetSize(S,S)
+Frame.sel2:SetSize(20, 20)
 
 Frame.sel2:SetScript("OnClick", function(self)
-        if Save.show then
-            Save.show=nil
+        if Save.equipment then
+            Save.equipment=nil
         else
-            Save.show=true
+            Save.equipment=true
         end
         SetIni()
 end)
@@ -820,7 +841,7 @@ Frame.sel2:SetScript("OnEnter", function (self)
         e.tips:AddDoubleLine(id, addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(ADD, EQUIPMENT_MANAGER)
-        e.tips:AddDoubleLine(SHOW..'/'..HIDE, Save.show and SHOW or HIDE, nil,nil,nil, 0,1,0)
+        e.tips:AddDoubleLine(SHOW..'/'..HIDE, Save.equipment and SHOW or HIDE, nil,nil,nil, 0,1,0)
         e.tips:Show()
 end)
 Frame.sel2:SetScript("OnLeave",function(self)

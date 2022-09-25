@@ -4,7 +4,7 @@ local addName2=RESET_POSITION:gsub(RESET, PLAYER)
 local Save={}
 
 local function getPlayerXY()--当前世界地图位置
-    uiMapID= C_Map.GetBestMapForUnit("player")--当前地图        
+    local uiMapID= C_Map.GetBestMapForUnit("player")--当前地图        
     if uiMapID then
         local position = C_Map.GetPlayerMapPosition(uiMapID, "player")
         if position then
@@ -102,7 +102,7 @@ local function CursorPositionInt()
         e.tips:AddLine(' ')
         local can = C_Map.GetBestMapForUnit("player")
         can= can and C_Map.CanSetUserWaypointOnMap(can)
-        e.tips:AddDoubleLine('|A:Waypoint-MapPin-ChatIcon:0:0|a'..RESET_POSITION:gsub(RESET, SEND_LABEL), (not can and '|cnRED_FONT_COLOR:'..NONE..'|r' or '') ..e.Icon.left)
+        e.tips:AddDoubleLine('|A:Waypoint-MapPin-ChatIcon:0:0|a'..RESET_POSITION:gsub(RESET, SEND_LABEL), (not can and GetMinimapZoneText() or not can and '|cnRED_FONT_COLOR:'..NONE..'|r' or '') ..e.Icon.left)
         e.tips:AddDoubleLine(FONT_SIZE..': '..(Save.PlayerXYSize or 12), e.Icon.mid)
         e.tips:AddDoubleLine(NPE_MOVE, e.Icon.right)
         e.tips:Show()
@@ -285,7 +285,7 @@ local function setMapID(self)--显示地图ID
             e.tips:AddLine(' ')
             local can = C_Map.GetBestMapForUnit("player")
             can= can and C_Map.CanSetUserWaypointOnMap(can)
-            e.tips:AddDoubleLine('|A:Waypoint-MapPin-ChatIcon:0:0|a'..RESET_POSITION:gsub(RESET, SEND_LABEL), (not can and '|cnRED_FONT_COLOR:'..NONE..'|r' or '') ..e.Icon.left)
+            e.tips:AddDoubleLine('|A:Waypoint-MapPin-ChatIcon:0:0|a'..RESET_POSITION:gsub(RESET, SEND_LABEL), (not can and GetMinimapZoneText() or not can and '|cnRED_FONT_COLOR:'..NONE..'|r' or '')..e.Icon.left)
             e.tips:AddDoubleLine(PREVIOUS..REFORGE_CURRENT..WORLD_MAP, e.Icon.right)
             e.tips:Show()
         end)

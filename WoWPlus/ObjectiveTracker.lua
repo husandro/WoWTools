@@ -108,25 +108,25 @@ local ObjectiveTrackerRemoveAll =function(self, tip)
         return
     end
 
-    local id
+    local questID
     if tip=='W' then
-        if block.TrackedQuest then id=block.TrackedQuest.questID end
+        if block.TrackedQuest then questID=block.TrackedQuest.questID end
     else
-        id=block.id
+        questID=block.id
         local info = UIDropDownMenu_CreateInfo()--放弃任务
         info.text = ABANDON_QUEST
         info.notCheckable = 1
         info.checked = false
         info.icon=Icon.x2
-        if not C_QuestLog.CanAbandonQuest(id) then info.disabled=true end--不可放弃
-        info.arg1 = id
+        if not C_QuestLog.CanAbandonQuest(questID) then info.disabled=true end--不可放弃
+        info.arg1 = questID
         info.func = function(_, questID) QuestMapQuestOptions_AbandonQuest(questID) end
         UIDropDownMenu_AddButton(info)
     end
     UIDropDownMenu_AddSeparator()
-    if id then
+    if questID then
         local info = UIDropDownMenu_CreateInfo()
-        info.text = QUESTS_LABEL..' ID '..id
+        info.text = QUESTS_LABEL..' ID '..questID
         info.isTitle = 1
         info.notCheckable = 1
         UIDropDownMenu_AddButton(info)
@@ -173,6 +173,7 @@ hooksecurefunc('AchievementObjectiveTracker_OnOpenDropDown', function(self)--清
         if block and block.id then
             local info = UIDropDownMenu_CreateInfo()
             info.text = ACHIEVEMENTS..' ID '..block.id
+            info.icon=select(10,GetAchievementInfo(block.id))
             info.isTitle = 1
             info.notCheckable = 1
             UIDropDownMenu_AddButton(info)
@@ -183,15 +184,38 @@ hooksecurefunc('AchievementObjectiveTracker_OnOpenDropDown', function(self)--清
         info.notCheckable = 1
         info.checked = false
         info.icon=Icon.clear
-        if #trackedAchievements<2 then info.disabled=true end            
-        info.func = function ()                
+        if #trackedAchievements<2 then info.disabled=true end
+        info.func = function ()
             for i = 1, #trackedAchievements do
-                RemoveTrackedAchievement(trackedAchievements[i])                    
+                RemoveTrackedAchievement(trackedAchievements[i])
             end
         end
         UIDropDownMenu_AddButton(info)
 end)
+hooksecurefunc(PROFESSION_RECIPE_TRACKER_MODULE, 'OnBlockHeaderClick', function(self, block, mouseButton)--清除所有专业追踪
+    local recipeInfo =C_TradeSkillUI.GetRecipeInfo(block.id)
+    local info = UIDropDownMenu_CreateInfo()
+    info.text =((recipeInfo and recipeInfo.icon) and '|T'..recipeInfo.icon..':0|t' or '')..TRADE_SKILLS..' ID '..block.id
+    info.isTitle = true
+    info.notCheckable = true    
+    UIDropDownMenu_AddButton(info)
 
+    info = UIDropDownMenu_CreateInfo()
+    local tracked=C_TradeSkillUI.GetRecipesTracked() or {}
+    info.text ='|A:'..Icon.clear..':0:0|a'..REMOVE_WORLD_MARKERS..' '..#tracked
+    info.notCheckable = true
+    info.checked = false
+    --info.icon=Icon.clear
+    if #tracked<2 then
+        info.disabled=true
+    end
+    info.func = function ()
+        for _, recipeID in pairs(tracked) do
+            C_TradeSkillUI.SetRecipeTracked(recipeID, false);
+        end
+    end
+    UIDropDownMenu_AddButton(info)
+end)
 
 
 local mo={
@@ -202,6 +226,7 @@ local mo={
     CAMPAIGN_QUEST_TRACKER_MODULE,--战役
     QUEST_TRACKER_MODULE,
     ACHIEVEMENT_TRACKER_MODULE,
+    PROFESSION_RECIPE_TRACKER_MODULE,
 }
 local Colla=function(type)
     for _, self in pairs(mo) do
@@ -235,7 +260,7 @@ local function Alpha()
 end
 
 --任务颜色
-local function setColor(block, questID)    
+local function setColor(block, questID)
     questID=questID or block.id
     if Save.disabled or not block or not questID or C_QuestLog.IsFailed(questID) then
         return
@@ -336,22 +361,21 @@ hooksecurefunc('QuestObjectiveTracker_DoQuestObjectives', function(self, block, 
 end)
 
 --任务日志
-
 local Code=IN_GAME_NAVIGATION_RANGE:gsub('d','s')--%s码    
-local Quest=function(self,id)--任务
-    if not HaveQuestData(id) then return end
+local Quest=function(self, questID)--任务
+    if not HaveQuestData(questID) then return end
     local t=''
-    local lv=C_QuestLog.GetQuestDifficultyLevel(id)--ID
+    local lv=C_QuestLog.GetQuestDifficultyLevel(questID)--ID
     if lv then t=t..'['..lv..']' else t=t..' 'end
-    if C_QuestLog.IsComplete(id) then t=t..'|cFF00FF00'..COMPLETE..'|r' else t=t..INCOMPLETE end
+    if C_QuestLog.IsComplete(questID) then t=t..'|cFF00FF00'..COMPLETE..'|r' else t=t..INCOMPLETE end
     if t=='' then t=t..QUESTS_LABEL end    
     t=t..' ID:'
-    self:AddDoubleLine(t, id)
+    self:AddDoubleLine(t, questID)
 
-    local distanceSq= C_QuestLog.GetDistanceSqToQuest(id)--距离
+    local distanceSq= C_QuestLog.GetDistanceSqToQuest(questID)--距离
     if distanceSq then
         t= TRACK_QUEST_PROXIMITY_SORTING..': '
-        local _, x, y = QuestPOIGetIconInfo(id)
+        local _, x, y = QuestPOIGetIconInfo(questID)
         if x and y then
             x=math.modf(x*100) y=math.modf(y*100)
             if x and y then t=t..x..', '..y end
@@ -360,14 +384,14 @@ local Quest=function(self,id)--任务
     end
 
     if IsInGroup() then
-        if C_QuestLog.IsPushableQuest(id) then t='|cFF00FF00'..YES..'|r' else t=NO end--共享
+        if C_QuestLog.IsPushableQuest(questID) then t='|cFF00FF00'..YES..'|r' else t=NO end--共享
         local t2=SHARE_QUEST..': '
         local u if IsInRaid() then u='raid' else u='party' end
         local n,acceto=GetNumGroupMembers(), 0
         for i=1, n do
             local u2
             if u=='party' and i==n then u2='player' else u2=u..i end
-            if C_QuestLog.IsUnitOnQuest(u2, id) then acceto=acceto+1 end            
+            if C_QuestLog.IsUnitOnQuest(u2, questID) then acceto=acceto+1 end            
         end
         t2=t2..acceto..'/'..n
         self:AddDoubleLine(t2, t)
@@ -379,7 +403,7 @@ local Quest=function(self,id)--任务
         t=t..DAILY..' '..#all..QUESTS_LABEL
         self:AddDoubleLine(TRACKER_FILTER_COMPLETED_QUESTS..': ', t)
     end
-    --local info=C_QuestLog.GetQuestDetailsTheme(id)--POI图标
+    --local info=C_QuestLog.GetQuestDetailsTheme(questID)--POI图标
     --if info and info.poiIcon then e.playerTexSet(info.poiIcon, nil) end--设置图,像
 
     self:Show()
@@ -430,14 +454,13 @@ end)--QuestMapFrame.lua
 
 --世界地图任务
 hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', function(S)
-    if Save.disabled or not S then
+    local questID =S and S.questID
+    local self=S and S.Texture
+    if Save.disabled or not questID or not self then
         return
     end
     local mago=nil--幻化
-    local id =S.questID
-    local self=S.Texture
-    if not id or not self then return end
-    local lv = GetQuestLogRewardMoney(id)
+    local lv = GetQuestLogRewardMoney(questID)
     if lv ==0 then
         lv=nil
     elseif lv and lv>10000 then
@@ -445,9 +468,9 @@ hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', function(S)
         self:SetAtlas('Front-Gold-Icon')
         self:SetSize(40, 40)
     else
-        local _, icon, num, quality, _, itemID, lv2 = GetQuestLogRewardInfo(1, id)
+        local _, icon, num, quality, _, itemID, lv2 = GetQuestLogRewardInfo(1, questID)
         if not icon then
-            _, icon, num, quality, _, _, lv2=GetQuestLogRewardCurrencyInfo(1, id)
+            _, icon, num, quality, _, _, lv2=GetQuestLogRewardCurrencyInfo(1, questID)
         elseif itemID then--物品
             local classID = select(6, GetItemInfoInstant(itemID))--幻化                    
             if (classID==2 or classID==4 ) then
@@ -488,7 +511,7 @@ hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', function(S)
     elseif S.Str then
         S.Str:SetText('')
     end
-    local t2=C_TaskQuest.GetQuestTimeLeftSeconds(id)
+    local t2=C_TaskQuest.GetQuestTimeLeftSeconds(questID)
     if t2 and t2 >0 then
         local s,t=SecondsToTimeAbbrev(t2)
         t=s:format(t)
@@ -567,10 +590,10 @@ local function Ini()
             e.tips:ClearLines()
             e.tips:AddDoubleLine(id, addName)
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(NPE_MOVE, '|A:newplayertutorial-icon-mouse-rightbutton:0:0|a')
-            e.tips:AddDoubleLine(SHOW..'/'..HIDE, '|A:newplayertutorial-icon-mouse-middlebutton:0:0|a')            
-            e.tips:AddDoubleLine(UI_SCALE..': '..Save.scale, 'Ctrl+|A:newplayertutorial-icon-mouse-middlebutton:0:0|a')
-            e.tips:AddDoubleLine(CHANGE_OPACITY..': '..Save.alpha, 'Shift+|A:newplayertutorial-icon-mouse-middlebutton:0:0|a')
+            e.tips:AddDoubleLine(NPE_MOVE, e.Icon.right)
+            e.tips:AddDoubleLine(SHOW..'/'..HIDE, e.Icon.mid)
+            e.tips:AddDoubleLine(UI_SCALE..': '..Save.scale, 'Ctrl + '..e.Icon.mid)
+            e.tips:AddDoubleLine(CHANGE_OPACITY..': '..Save.alpha, 'Shift + '..e.Icon.mid)
             e.tips:Show()
     end)
     btn:SetScript('OnMouseWheel',function(self,d)
