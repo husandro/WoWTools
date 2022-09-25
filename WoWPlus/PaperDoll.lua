@@ -184,7 +184,6 @@ local function Gem(self, slot, link)--宝石
     end
 end
 
-
 local function recipeLearned(recipeSpellID)--是否已学配方
     local info= C_TradeSkillUI.GetRecipeInfo(recipeSpellID)
     return info and info.learned
@@ -219,7 +218,7 @@ local function Engineering(self, slot, use)--增加 [潘达利亚工程学: 地�
             e.tips:ClearLines()
             e.tips:SetSpellByID(self2.spell)
             e.tips:Show()
-    end) 
+    end)
     self.engineering:SetScript("OnMouseUp", function()
         local n=GetItemCount(90146, true)
             if n==0 then
@@ -388,7 +387,7 @@ local function Title()--头衔数量
             nu=nil
         end
     end
-    if f and f.nu then f.nu:SetShown(nu) end    
+    if f and f.nu then f.nu:SetShown(nu) end
 end
 
 local function Equipment()--装备管理

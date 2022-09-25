@@ -3,6 +3,16 @@ local addName=QUEST_OBJECTIVES
 local Save={scale= 1, alpha=1, autoHide=true}
 local F=ObjectiveTrackerFrame--移动任务框
 local btn=ObjectiveTrackerFrame.HeaderMenu.MinimizeButton
+local mo={
+    SCENARIO_CONTENT_TRACKER_MODULE,--1
+    UI_WIDGET_TRACKER_MODULE,--2
+    BONUS_OBJECTIVE_TRACKER_MODULE,--3
+    WORLD_QUEST_TRACKER_MODULE,--4世界任务
+    CAMPAIGN_QUEST_TRACKER_MODULE,--5战役
+    QUEST_TRACKER_MODULE,--6
+    ACHIEVEMENT_TRACKER_MODULE,--7
+    PROFESSION_RECIPE_TRACKER_MODULE,--
+}
 
 local Color={
     Day={0.10, 0.72, 1},--日常
@@ -192,42 +202,35 @@ hooksecurefunc('AchievementObjectiveTracker_OnOpenDropDown', function(self)--清
         end
         UIDropDownMenu_AddButton(info)
 end)
-hooksecurefunc(PROFESSION_RECIPE_TRACKER_MODULE, 'OnBlockHeaderClick', function(self, block, mouseButton)--清除所有专业追踪
-    local recipeInfo =C_TradeSkillUI.GetRecipeInfo(block.id)
-    local info = UIDropDownMenu_CreateInfo()
-    info.text =((recipeInfo and recipeInfo.icon) and '|T'..recipeInfo.icon..':0|t' or '')..TRADE_SKILLS..' ID '..block.id
-    info.isTitle = true
-    info.notCheckable = true    
-    UIDropDownMenu_AddButton(info)
+hooksecurefunc(mo[8], 'OnBlockHeaderClick', function(self, block, mouseButton)--清除所有专业追踪
+    if mouseButton=='RightButton' then
+        local recipeInfo =C_TradeSkillUI.GetRecipeInfo(block.id)
+        local info = UIDropDownMenu_CreateInfo()
+        info.text =((recipeInfo and recipeInfo.icon) and '|T'..recipeInfo.icon..':0|t' or '')..TRADE_SKILLS..' ID '..block.id
+        info.isTitle = true
+        info.notCheckable = true
+        UIDropDownMenu_AddButton(info)
 
-    info = UIDropDownMenu_CreateInfo()
-    local tracked=C_TradeSkillUI.GetRecipesTracked() or {}
-    info.text ='|A:'..Icon.clear..':0:0|a'..REMOVE_WORLD_MARKERS..' '..#tracked
-    info.notCheckable = true
-    info.checked = false
-    --info.icon=Icon.clear
-    if #tracked<2 then
-        info.disabled=true
-    end
-    info.func = function ()
-        for _, recipeID in pairs(tracked) do
-            C_TradeSkillUI.SetRecipeTracked(recipeID, false);
+        info = UIDropDownMenu_CreateInfo()
+        local tracked=C_TradeSkillUI.GetRecipesTracked() or {}
+        info.text ='|A:'..Icon.clear..':0:0|a'..REMOVE_WORLD_MARKERS..' '..#tracked
+        info.notCheckable = true
+        info.checked = false
+        --info.icon=Icon.clear
+        if #tracked<2 then
+            info.disabled=true
         end
+        info.func = function ()
+            for _, recipeID in pairs(tracked) do
+                C_TradeSkillUI.SetRecipeTracked(recipeID, false);
+            end
+        end
+        UIDropDownMenu_AddButton(info)
     end
-    UIDropDownMenu_AddButton(info)
 end)
 
 
-local mo={
-    SCENARIO_CONTENT_TRACKER_MODULE,
-    UI_WIDGET_TRACKER_MODULE,
-    BONUS_OBJECTIVE_TRACKER_MODULE,
-    WORLD_QUEST_TRACKER_MODULE,--世界任务
-    CAMPAIGN_QUEST_TRACKER_MODULE,--战役
-    QUEST_TRACKER_MODULE,
-    ACHIEVEMENT_TRACKER_MODULE,
-    PROFESSION_RECIPE_TRACKER_MODULE,
-}
+
 local Colla=function(type)
     for _, self in pairs(mo) do
         if self and self.Header and self.Header.MinimizeButton then            
@@ -452,89 +455,7 @@ hooksecurefunc('QuestMapLogTitleButton_OnClick',function(self, button)--任务�
         end
 end)--QuestMapFrame.lua
 
---世界地图任务
-hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', function(S)
-    local questID =S and S.questID
-    local self=S and S.Texture
-    if Save.disabled or not questID or not self then
-        return
-    end
-    local mago=nil--幻化
-    local lv = GetQuestLogRewardMoney(questID)
-    if lv ==0 then
-        lv=nil
-    elseif lv and lv>10000 then
-        lv=e.Player.col..('%i'):format(lv/10000)..'|r'
-        self:SetAtlas('Front-Gold-Icon')
-        self:SetSize(40, 40)
-    else
-        local _, icon, num, quality, _, itemID, lv2 = GetQuestLogRewardInfo(1, questID)
-        if not icon then
-            _, icon, num, quality, _, _, lv2=GetQuestLogRewardCurrencyInfo(1, questID)
-        elseif itemID then--物品
-            local classID = select(6, GetItemInfoInstant(itemID))--幻化                    
-            if (classID==2 or classID==4 ) then
-                if not  C_TransmogCollection.PlayerHasTransmog(itemID) then                                
-                    local sourceID=select(2,C_TransmogCollection.GetItemInfo(itemID))
-                    if sourceID then 
-                        local hasItemData, canCollect = C_TransmogCollection.PlayerCanCollectSource(sourceID)
-                        if hasItemData and canCollect then
-                            local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
-                            if sourceInfo and not sourceInfo.isCollected then
-                                mago=true
-                            end
-                        end
-                    end
-                end
-            end
-        end
-        if icon then
-            self:SetTexture(icon)
-            self:SetSize(40, 40)
-        end
-        lv=lv2
-        if lv and lv<=1 then lv=num end
-        if lv and lv <=1 then lv=nil end
-        if lv then
-            if quality then
-                local hex=select(4, GetItemQualityColor(quality))
-                if hex then lv='|c'..hex..lv..'|r' end
-            end
-        end
-    end
-    if lv then
-        if not S.Str then
-            S.Str=e.Cstr(S)
-            S.Str:SetPoint('TOP', self, 'BOTTOM', 0, 0)
-        end
-        S.Str:SetText(lv)
-    elseif S.Str then
-        S.Str:SetText('')
-    end
-    local t2=C_TaskQuest.GetQuestTimeLeftSeconds(questID)
-    if t2 and t2 >0 then
-        local s,t=SecondsToTimeAbbrev(t2)
-        t=s:format(t)
-        if not S.Tim then
-            S.Tim= e.Cstr(S)
-            S.Tim:SetPoint('BOTTOM', self, 'TOP', 0, -2)
-        end
-        S.Tim:SetText(t)
-    elseif S.Tim then
-        S.Tim:SetText('')
-    end
-    if mago then--幻化
-        if not self.mago then
-            self.mago=S:CreateTexture()
-            self.mago:SetSize(40, 40)
-            self.mago:SetPoint('RIGHT', self, 'LEFT', 20,0)
-            self.mago:SetAtlas(e.Icon.transmog)
-        end
-    end
-    if self.mago then
-        self.mago:SetShown(mago)
-    end
-end)--WorldQuestDataProvider.lua
+
 
 local function hideTrecker()--挑战,进入FB时, 隐藏Blizzard_ObjectiveTracker.lua
     if not Save.autoHide then
