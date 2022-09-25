@@ -228,8 +228,30 @@ hooksecurefunc(mo[8], 'OnBlockHeaderClick', function(self, block, mouseButton)--
         UIDropDownMenu_AddButton(info)
     end
 end)
+hooksecurefunc(mo[8], 'SetStringText', function(self, fontString, text, useFullHeight, colorStyle, useHighlight)
+    local te=text:gsub('%d+/%d+ ','')
+    if te then
+        local icon = C_Item.GetItemIconByID(te)
+        if icon and icon~=134400 then
+            local str='|T'..icon..':0|t'..te
 
+            local count, totale=text:match('(%d+)/(%d+)')
+            count, totale=count and tonumber(count), totale and tonumber(totale)
+            local ok
+            if count and totale and count>=totale then
+                str=str..e.Icon.select2
+                ok=true
+            end
 
+            str=text:gsub(te, str)
+            if ok then
+                str='|cnGREEN_FONT_COLOR:'..str..'|r'
+            end
+            fontString:SetText(str)
+            
+        end
+    end
+end)
 
 local Colla=function(type)
     for _, self in pairs(mo) do

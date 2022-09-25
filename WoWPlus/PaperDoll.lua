@@ -398,7 +398,7 @@ local function Equipment()--装备管理
     local name, icon, specIcon,nu
     if not Save.disabled then
         local setIDs=C_EquipmentSet.GetEquipmentSetIDs()
-        for _, v in pairs(setIDs) do 
+        for _, v in pairs(setIDs) do
             local name2, icon2, _, isEquipped, numItems= C_EquipmentSet.GetEquipmentSetInfo(v)            
             if isEquipped then                            
                 name=name2
@@ -467,7 +467,7 @@ end
 
 
 local function EquipmentStr(self)--套装已装备数量
-    local setID=self.setID    
+    local setID=self.setID
     local nu
     if setID and not Save.disabled then
         if not self.nu then
@@ -548,7 +548,7 @@ local function ADDEquipment(equipmentSetsDirty)--添加装备管理框
                 if d=='RightButton' and alt then--还原位置
                     Save.Equipment=nil
                     self:ClearAllPoints()
-                    self:SetPoint('TOPLEFT', Frame, 'TOPRIGHT')
+                    self:SetPoint('BOTTOMRIGHT', Frame, 'TOPRIGHT')
 
                 elseif d=='RightButton' and not key then--移动图标
                     SetCursor('UI_MOVE_CURSOR')

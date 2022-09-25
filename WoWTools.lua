@@ -164,10 +164,14 @@ e.CeditBotx= function(self, width, height)
   return editBox
 end
 
-e.Cbtn= function(self, Template, value)
+e.Cbtn= function(self, Template, value, SecureAction)
   local b
   if Template then
     b=CreateFrame('Button', nil, self, 'UIPanelButtonTemplate')
+  elseif SecureAction then
+    b=CreateFrame("Button", nil, self, "SecureActionButtonTemplate");
+    b:SetHighlightAtlas(e.Icon.highlight)
+    b:SetPushedAtlas(e.Icon.pushed)
   else
     b=CreateFrame('Button', nil, self)
     b:SetHighlightAtlas(e.Icon.highlight)

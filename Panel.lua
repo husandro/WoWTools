@@ -22,3 +22,5 @@ e.CPanel= function(name, value)
     lastFrame=sel
     return sel
 end
+
+--FrameUtil.RegisterFrameForEvents(self, table);
