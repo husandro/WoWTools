@@ -277,8 +277,10 @@ sel:SetScript("OnEvent", function(self, event, arg1)
 		Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
 		Set()
     elseif event == "PLAYER_LOGOUT" then
-		if not WoWToolsSave then WoWToolsSave={} end
-		WoWToolsSave[addName]=Save
+		if not e.ClearAllSave then
+			if not WoWToolsSave then WoWToolsSave={} end
+			WoWToolsSave[addName]=Save
+		end
 	elseif event=='CURRENCY_DISPLAY_UPDATE' then
 		setUpdat(arg1)
 	end

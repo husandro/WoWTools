@@ -200,7 +200,12 @@
         "FLOOR",
         "WorldMapFrameTitleText",
         "PREVIOUS",
-        "REFORGE_CURRENT"
+        "REFORGE_CURRENT",
+        "ProfessionsFrame",
+        "ProfessionsFrameTitleText",
+        "ENSCRIBE",
+        "LEFT_BUTTON_STRING",
+        "RIGHT_BUTTON_STRING"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

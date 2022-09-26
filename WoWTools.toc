@@ -39,5 +39,8 @@ WoWPlus\WardroberItems.lua
 WoWPlus\WardroberSets.lua
 
 WoWPlus\WorldMap.lua
+WoWPlus\MainMenuButton.lua
+
+WoWPlus\Tooltips.lua
 
 WoWPlus\Professions.lua

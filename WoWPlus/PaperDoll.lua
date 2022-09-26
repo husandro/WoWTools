@@ -2,7 +2,7 @@ local id, e = ...
 
 local addName=CHARACTER
 local Frame=PaperDollItemsFrame
-local Save={}
+local Save={EquipmentH=true}
 
 local Icon={
     enchant=463531,--附魔图标
@@ -89,7 +89,7 @@ end
 
 local function LvTo()--总装等
     local f=PaperDollSidebarTab1
-    if not f then 
+    if not f then
         return
     end
     local lv
@@ -136,12 +136,12 @@ local function Lv(self, slot, link)--装等
     if lv then
         if not self.lv then
             self.lv=e.Cstr(self)
-            self.lv:SetPoint('BOTTOM', 0, 0)            
+            self.lv:SetPoint('BOTTOM', 0, 0)
             self.lv:SetJustifyH('CENTER')
         end
         self.lv:SetText(lv)
     end     
-    if self.lv then self.lv:SetShown(lv) end    
+    if self.lv then self.lv:SetShown(lv) end
 end
 
 local function Gem(self, slot, link)--宝石
@@ -153,7 +153,7 @@ local function Gem(self, slot, link)--宝石
         end
     end
     local n=1
-    for _, v in pairs(gems) do        
+    for _, v in pairs(gems) do
         local b=self['gem'..n]
         if v and not Save.disabled then
             if not b then
@@ -399,8 +399,8 @@ local function Equipment()--装备管理
     if not Save.disabled then
         local setIDs=C_EquipmentSet.GetEquipmentSetIDs()
         for _, v in pairs(setIDs) do
-            local name2, icon2, _, isEquipped, numItems= C_EquipmentSet.GetEquipmentSetInfo(v)            
-            if isEquipped then                            
+            local name2, icon2, _, isEquipped, numItems= C_EquipmentSet.GetEquipmentSetInfo(v)
+            if isEquipped then
                 name=name2
                 if name:find('%w')  then
                     name=e.WA_Utf8Sub(name, 5)
@@ -413,7 +413,7 @@ local function Equipment()--装备管理
                 local specIndex=C_EquipmentSet.GetEquipmentSetAssignedSpec(v)
                 if specIndex then
                     local icon3=select(4, GetSpecializationInfo(specIndex))
-                    if icon3 then 
+                    if icon3 then
                         specIcon=icon3
                     end
                 end
@@ -782,8 +782,6 @@ local function GetDurationTotale()--装备总耐久度
     end
     Frame.sel.Text:SetText(du)
 end
-
-
 local function SetIni()
     ADDEquipment()--装备管理框
     GetDurationTotale()--装备总耐久度        
@@ -806,6 +804,7 @@ Frame.sel:SetScript("OnClick", function ()
         m=m..'('..YELLOW_FONT_COLOR_CODE..NEED..REFRESH..'|r)'
         print(m)
         SetIni()
+        setEquipmentLevel()--角色图标显示装等
 end)
 Frame.sel:SetScript("OnEnter", function (self)
     GetDurationTotale()
@@ -852,14 +851,15 @@ Frame.sel:RegisterEvent("ADDON_LOADED")
 Frame.sel:RegisterEvent("PLAYER_LOGOUT")
 Frame.sel:RegisterEvent("EQUIPMENT_SWAP_FINISHED")
 Frame.sel:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
-
 Frame.sel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1 == id then
        Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
        SetIni()
     elseif event == "PLAYER_LOGOUT" then
-        if not WoWToolsSave then WoWToolsSave={} end
-		WoWToolsSave[addName]=Save
+        if not e.ClearAllSave then
+            if not WoWToolsSave then WoWToolsSave={} end
+            WoWToolsSave[addName]=Save
+        end
     elseif event == 'EQUIPMENT_SWAP_FINISHED' then
         C_Timer.After(0.6, ADDEquipment)
     elseif event=='UPDATE_INVENTORY_DURABILITY' then

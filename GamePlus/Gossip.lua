@@ -367,7 +367,9 @@ g:SetScript("OnEvent", function(self, event, arg1)
         Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
         setTexture()
     elseif event == "PLAYER_LOGOUT" then
-        if not WoWToolsSave then WoWToolsSave={} end
-		WoWToolsSave[addName]=Save
+        if not e.ClearAllSave then
+            if not WoWToolsSave then WoWToolsSave={} end
+            WoWToolsSave[addName]=Save
+        end
     end
 end)

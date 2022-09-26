@@ -557,7 +557,7 @@ local function setPanel()
     local str=e.Cstr(panel)--内容加颜色
     str:SetPoint('TOPLEFT')
     str:SetText(COLOR..': '..KBASE_DEFAULT_SEARCH_TEXT..'|cnGREEN_FONT_COLOR:( '..KEY_SPACE..' )|r')
-    local editBox=e.CeditBotx(panel)
+    local editBox=e.CeditBox(panel)
     editBox:SetPoint('TOPLEFT', str, 'BOTTOMLEFT',0,-5)
     editBox:SetTextColor(0,1,0)
     if Save.text then
@@ -595,7 +595,7 @@ local function setPanel()
     local str2=e.Cstr(panel)--频道名称替换
     str2:SetPoint('TOPLEFT', editBox, 'BOTTOMLEFT', 0,-20)
     str2:SetText(CHANNEL_CHANNEL_NAME..': '..COMMUNITIES_SETTINGS_SHORT_NAME_LABEL..'  |cnGREEN_FONT_COLOR:= |r')
-    local editBox2=e.CeditBotx(panel)
+    local editBox2=e.CeditBox(panel)
     editBox2:SetPoint('TOPLEFT', str2, 'BOTTOMLEFT',0,-5)
     if Save.channels then
         local t3=''
@@ -642,7 +642,9 @@ sel:SetScript("OnEvent", function(self, event, arg1)
         end
         setPanel()
     elseif event == "PLAYER_LOGOUT" then
-        if not WoWToolsSave then WoWToolsSave={} end
-		WoWToolsSave[addName]=Save
+        if not e.ClearAllSave then
+            if not WoWToolsSave then WoWToolsSave={} end
+            WoWToolsSave[addName]=Save
+        end
 	end
 end)

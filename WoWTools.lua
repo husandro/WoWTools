@@ -130,7 +130,7 @@ e.WA_Utf8Sub = function(input, size)
     return output
 end
 
-e.Cstr=function(self, size, fontType, ChangeFont)
+e.Cstr=function(self, size, fontType, ChangeFont, color)
   local b=ChangeFont or self:CreateFontString(nil, 'OVERLAY')
   if fontType then
     b:SetFont(fontType:GetFont())
@@ -143,14 +143,18 @@ e.Cstr=function(self, size, fontType, ChangeFont)
     b:SetShadowOffset(2, -2)
     --b:SetShadowColor(0, 0, 0)
     b:SetJustifyH('LEFT')
-    b:SetTextColor(1, 0.45, 0.04)
+    if color then
+      b:SetTextColor(color.r, color.g, color.b)
+    else
+      b:SetTextColor(1, 0.45, 0.04)
+    end
   end
   return b
 end
 
-e.CeditBotx= function(self, width, height)
+e.CeditBox= function(self, width, height)
   width = width or 400
-  height=height or 400
+  height= height or 400
 
   local editBox = CreateFrame("EditBox", nil, self)
   editBox:SetSize(width, height)
@@ -164,16 +168,16 @@ e.CeditBotx= function(self, width, height)
   return editBox
 end
 
-e.Cbtn= function(self, Template, value, SecureAction)
+e.Cbtn= function(self, Template, value, SecureAction, name)
   local b
   if Template then
-    b=CreateFrame('Button', nil, self, 'UIPanelButtonTemplate')
+    b=CreateFrame('Button', name, self, 'UIPanelButtonTemplate')
   elseif SecureAction then
-    b=CreateFrame("Button", nil, self, "SecureActionButtonTemplate");
+    b=CreateFrame("Button", name, self, "SecureActionButtonTemplate");
     b:SetHighlightAtlas(e.Icon.highlight)
     b:SetPushedAtlas(e.Icon.pushed)
   else
-    b=CreateFrame('Button', nil, self)
+    b=CreateFrame('Button', name, self)
     b:SetHighlightAtlas(e.Icon.highlight)
     b:SetPushedAtlas(e.Icon.pushed)
     if value then
@@ -182,5 +186,28 @@ e.Cbtn= function(self, Template, value, SecureAction)
       b:SetNormalAtlas(e.Icon.disabled)
     end
   end
+  b:RegisterForClicks("LeftButtonDown","RightButtonDown")
   return b
+end
+
+e.Ccool=function(self, start, duration, modRate, HideCountdownNumbers, Reverse)--冷却条
+  if not self.cool then
+    self.cool= CreateFrame("Cooldown", nil, self, 'CooldownFrameTemplate')
+    self.cool:SetDrawEdge(true)
+    if HideCountdownNumbers then
+        self.cool:SetHideCountdownNumbers(true)
+    end
+    if Reverse then--控制冷却动画的方向
+      self.cool:SetReverse(true)
+    end
+  end
+  self.cool:SetCooldown(start, duration, modRate)
+end
+
+e.SetButtonKey = function(self, set, key, click)--设置清除快捷键
+  if set then
+    SetOverrideBindingClick(self, true, key, self:GetName(), click or 'LeftButton')
+  else
+    ClearOverrideBindings(self)
+  end
 end

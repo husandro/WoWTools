@@ -449,10 +449,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             dupframe.sel:SetNormalAtlas(Save.disabledDressUpOutfit and e.Icon.disabled or e.Icon.icon)--试衣间, 外观列表
 
     elseif event == "PLAYER_LOGOUT" then
-        if not WoWToolsSave then WoWToolsSave={} end
-		WoWToolsSave[addName]=Save
-        WoWToolsSave['WoW-CollectionWardrobeSets']=wowSave
-
+        if not e.ClearAllSave then
+            if not WoWToolsSave then WoWToolsSave={} end
+            WoWToolsSave[addName]=Save
+            WoWToolsSave['WoW-CollectionWardrobeSets']=wowSave
+        end
     elseif event=='ADDON_LOADED' and arg1=='Blizzard_Collections' then
         InitWardrobe()
         SetSaveWardroberColleced()

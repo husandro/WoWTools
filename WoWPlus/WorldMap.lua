@@ -25,7 +25,6 @@ hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', function(self)--self.tagInf
     end
     self.Texture:SetTexture(itemTexture)
     self.Texture:SetSize(45, 45)
-
     if not self.str then
         self.str=e.Cstr(self,26)
         self.str:SetPoint('TOP', self, 'BOTTOM', 0, 0)
@@ -34,98 +33,13 @@ hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', function(self)--self.tagInf
     if str and quality and quality~=1 then
         str='|c'..select(4, GetItemQualityColor(quality))..str..'|r'
     end
-
     local sourceID =itemID and select(2, C_TransmogCollection.GetItemInfo(itemID))
     local sourceInfo = sourceID and C_TransmogCollection.GetSourceInfo(sourceID)
     if sourceInfo then
         str=(str or '')..(sourceInfo.isCollected and e.Icon.okTransmog2 or e.Icon.transmogHide2)
     end
-
     self.str:SetText(str or '')
     self.str:SetShown(str and true or false)
-
---[[
-    local mago=nil--幻化
-    local lv = GetQuestLogRewardMoney(questID)
-    if lv ==0 then
-        lv=nil
-    elseif lv and lv>10000 then
-        lv=('%i'):format(lv/10000)
-        tex:SetAtlas('Front-Gold-Icon')
-        --tex.Background:SetAtlas('Front-Gold-Icon')
-        tex:SetSize(42, 42)
-    else
-
-        local _, icon, num, quality, _, itemID, lv2 = GetQuestLogRewardInfo(1, questID)
-        if not icon then
-            _, icon, num, quality, _, _, lv2=GetQuestLogRewardCurrencyInfo(1, questID)
-        elseif itemID then--物品
-            local classID = select(6, GetItemInfoInstant(itemID))--幻化                    
-            if (classID==2 or classID==4 ) then
-                if not  C_TransmogCollection.PlayerHasTransmog(itemID) then                                
-                    local sourceID=select(2,C_TransmogCollection.GetItemInfo(itemID))
-                    if sourceID then 
-                        local hasItemData, canCollect = C_TransmogCollection.PlayerCanCollectSource(sourceID)
-                        if hasItemData and canCollect then
-                            local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
-                            if sourceInfo and not sourceInfo.isCollected then
-                                mago=true
-                            end
-                        end
-                    end
-                end
-            end
-        end
-   
-        if icon then
-            tex:SetTexture(icon)
-            tex:SetSize(40, 40)
-        end
-        lv=lv2
-        if lv and lv<=1 then lv=num end
-        if lv and lv <=1 then lv=nil end
-        if lv then
-            if quality then
-                local hex=select(4, GetItemQualityColor(quality))
-                if hex then lv='|c'..hex..lv..'|r' end
-            end
-        end
-    end
-    if lv then
-        if not self.Str then
-            self.Str=e.Cstr(self,24)
-            self.Str:SetPoint('TOP', tex, 'BOTTOM', 0, 0)
-        end
-        self.Str:SetText(lv)
-    elseif self.Str then
-        self.Str:SetText('')
-    end
-
-    local t2=C_TaskQuest.GetQuestTimeLeftSeconds(questID)
-    if t2 and t2 >0 then
-        local s,t=SecondsToTimeAbbrev(t2)
-        t=s:format(t)
-        if not self.Tim then
-            self.Tim= e.Cstr(self,24)
-            self.Tim:SetPoint('BOTTOM', tex, 'TOP', 0, -2)
-        end
-        self.Tim:SetText(t)
-    elseif self.Tim then
-        self.Tim:SetText('')
-    end
-
-    if mago then--幻化
-        if not tex.mago then
-            tex.mago=self:CreateTexture()
-            tex.mago:SetSize(40, 40)
-            tex.mago:SetPoint('RIGHT', tex, 'LEFT', 20,0)
-            tex.mago:SetAtlas(e.Icon.transmog)
-        end
-    end
-    if tex.mago then
-        tex.mago:SetShown(mago)
-    end
-]]
 end)
 
 local function getPlayerXY()--当前世界地图位置
@@ -210,6 +124,7 @@ local function CursorPositionInt()
     end)
     frame.playerPostionBtn:SetScript("OnMouseUp", function(self2,d)
         if d=='RightButton' and IsAltKeyDown() then
+            self2.PlayerXYPoint=nil
             self2:ClearAllPoints();
             self2:SetPoint('BOTTOMRIGHT', frame, 'TOPRIGHT',-50, 5)
         elseif d=='LeftButton' and not IsModifierKeyDown() then
@@ -437,7 +352,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             CursorPositionInt()
 
     elseif event == "PLAYER_LOGOUT" then
-        if not WoWToolsSave then WoWToolsSave={} end
-		WoWToolsSave[addName]=Save
+        if not e.ClearAllSave then
+            if not WoWToolsSave then WoWToolsSave={} end
+            WoWToolsSave[addName]=Save
+        end
     end
 end)

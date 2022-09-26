@@ -206,10 +206,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         wowSave=WoWToolsSave and WoWToolsSave['WoW-CollectionWardrobeItems'] or wowSave
 
     elseif event == "PLAYER_LOGOUT" then
-        if not WoWToolsSave then WoWToolsSave={} end
-		WoWToolsSave[addName]=Save
-        WoWToolsSave['WoW-CollectionWardrobeItems']=wowSave
-
+        if not e.ClearAllSave then
+            if not WoWToolsSave then WoWToolsSave={} end
+            WoWToolsSave[addName]=Save
+            WoWToolsSave['WoW-CollectionWardrobeItems']=wowSave
+        end
     elseif event=='ADDON_LOADED' and arg1=='Blizzard_Collections' then
         Init()
 

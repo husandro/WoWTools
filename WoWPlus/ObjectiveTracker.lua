@@ -621,9 +621,10 @@ end)
         if Save.scale~=1 then Scale() end--缩放
         if Save.alpha~=1 then Alpha() end--透明度
     elseif event == "PLAYER_LOGOUT" then
-        if not WoWToolsSave then WoWToolsSave={} end
-		WoWToolsSave[addName]=Save
-
+        if not e.ClearAllSave then
+            if not WoWToolsSave then WoWToolsSave={} end
+            WoWToolsSave[addName]=Save
+        end
     elseif event=='PLAYER_ENTERING_WORLD' or event=='CHALLENGE_MODE_START' then--隐藏
         hideTrecker()
     end
