@@ -205,7 +205,13 @@
         "ProfessionsFrameTitleText",
         "ENSCRIBE",
         "LEFT_BUTTON_STRING",
-        "RIGHT_BUTTON_STRING"
+        "RIGHT_BUTTON_STRING",
+        "RESET_ALL_BUTTON_TEXT",
+        "MAINMENU_BUTTON",
+        "CharacterMicroButton",
+        "MONEY",
+        "EQUIPSET_EQUIP",
+        "LEVEL"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

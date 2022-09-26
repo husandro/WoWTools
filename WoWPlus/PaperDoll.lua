@@ -804,7 +804,6 @@ Frame.sel:SetScript("OnClick", function ()
         m=m..'('..YELLOW_FONT_COLOR_CODE..NEED..REFRESH..'|r)'
         print(m)
         SetIni()
-        setEquipmentLevel()--角色图标显示装等
 end)
 Frame.sel:SetScript("OnEnter", function (self)
     GetDurationTotale()
