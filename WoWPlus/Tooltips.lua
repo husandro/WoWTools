@@ -145,7 +145,7 @@ hooksecurefunc("BattlePetToolTip_Show",function(speciesID, level, breedQuality, 
     local speciesName, speciesIcon, petType, companionID, tooltipSource, tooltipDescription, isWild, canBattle, isTradeable, isUnique, obtainable, creatureDisplayID = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
     self:AddLine(PET..' ID: '..speciesID..'   '..MODEL..' ID: '..creatureDisplayID)
     if obtainable then
-        local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesId)
+        local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesID)
         if numCollected==limit then
             self.AddLine(COLLECTED.." ".. numCollected..'/'..limit, 0,1,0)
         else
