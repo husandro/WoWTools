@@ -110,8 +110,8 @@ local function Item(link)--物品超链接
         if lv and lv>10 then
             t=t..'['..lv..']'
         end
-        local sourceID=select(2,C_TransmogCollection.GetItemInfo(link))-- or select(2,C_TransmogCollection.GetItemInfo(id))--幻化
-        if sourceID then             
+        local sourceID=select(2,C_TransmogCollection.GetItemInfo(link))--幻化
+        if sourceID then
             local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
             if sourceInfo then                
                 if sourceInfo.isCollected then

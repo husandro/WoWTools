@@ -385,99 +385,6 @@ hooksecurefunc('QuestObjectiveTracker_DoQuestObjectives', function(self, block, 
         setColor(block)
 end)
 
---任务日志
-local Code=IN_GAME_NAVIGATION_RANGE:gsub('d','s')--%s码    
-local Quest=function(self, questID)--任务
-    if not HaveQuestData(questID) then return end
-    local t=''
-    local lv=C_QuestLog.GetQuestDifficultyLevel(questID)--ID
-    if lv then t=t..'['..lv..']' else t=t..' 'end
-    if C_QuestLog.IsComplete(questID) then t=t..'|cFF00FF00'..COMPLETE..'|r' else t=t..INCOMPLETE end
-    if t=='' then t=t..QUESTS_LABEL end    
-    t=t..' ID:'
-    self:AddDoubleLine(t, questID)
-
-    local distanceSq= C_QuestLog.GetDistanceSqToQuest(questID)--距离
-    if distanceSq then
-        t= TRACK_QUEST_PROXIMITY_SORTING..': '
-        local _, x, y = QuestPOIGetIconInfo(questID)
-        if x and y then
-            x=math.modf(x*100) y=math.modf(y*100)
-            if x and y then t=t..x..', '..y end
-        end
-        self:AddDoubleLine(t,  Code:format(e.MK(distanceSq)))
-    end
-
-    if IsInGroup() then
-        if C_QuestLog.IsPushableQuest(questID) then t='|cFF00FF00'..YES..'|r' else t=NO end--共享
-        local t2=SHARE_QUEST..': '
-        local u if IsInRaid() then u='raid' else u='party' end
-        local n,acceto=GetNumGroupMembers(), 0
-        for i=1, n do
-            local u2
-            if u=='party' and i==n then u2='player' else u2=u..i end
-            if C_QuestLog.IsUnitOnQuest(u2, questID) then acceto=acceto+1 end            
-        end
-        t2=t2..acceto..'/'..n
-        self:AddDoubleLine(t2, t)
-    end
-
-    local all=C_QuestLog.GetAllCompletedQuestIDs()--完成次数
-    if all and #all>0 then
-        t= GetDailyQuestsCompleted() or '0'
-        t=t..DAILY..' '..#all..QUESTS_LABEL
-        self:AddDoubleLine(TRACKER_FILTER_COMPLETED_QUESTS..': ', t)
-    end
-    --local info=C_QuestLog.GetQuestDetailsTheme(questID)--POI图标
-    --if info and info.poiIcon then e.playerTexSet(info.poiIcon, nil) end--设置图,像
-
-    self:Show()
-end
-
-hooksecurefunc("QuestMapLogTitleButton_OnEnter", function(self)--任务日志 显示ID
-        if Save.disabled or not self.questLogIndex then
-            return
-        end
-        local info = C_QuestLog.GetInfo(self.questLogIndex)
-        if not info or not info.questID then return end
-        Quest(e.tips, info.questID)
-end)
-
-local function Coll()
-    for i=1, C_QuestLog.GetNumQuestLogEntries() do
-        CollapseQuestHeader(i)
-    end
-end
-local function Exp()
-    for i=1, C_QuestLog.GetNumQuestLogEntries() do
-        ExpandQuestHeader(i)
-    end
-end
-
-hooksecurefunc('QuestMapLogTitleButton_OnClick',function(self, button)--任务日志 展开所有, 收起所有
-        if Save.disabled or ChatEdit_TryInsertQuestLinkForQuestID(self.questID) then
-            return
-        end
-        if not C_QuestLog.IsQuestDisabledForSession(self.questID) and button == "RightButton" then
-            UIDropDownMenu_AddSeparator()
-            local info= UIDropDownMenu_CreateInfo()
-            info.notCheckable=true
-            info.text=SHOW..'|A:campaign_headericon_open:0:0|a'..ALL
-            info.func=function()
-                Exp()
-            end
-            UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
-            info = UIDropDownMenu_CreateInfo()
-            info.notCheckable=true
-            info.text=HIDE..'|A:campaign_headericon_closed:0:0|a'..ALL
-            info.func=function()
-                Coll()
-            end
-            UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)            
-        end
-end)--QuestMapFrame.lua
-
-
 
 local function hideTrecker()--挑战,进入FB时, 隐藏Blizzard_ObjectiveTracker.lua
     if not Save.autoHide then
@@ -560,29 +467,6 @@ local function Ini()
             Alpha()
         end
     end)
-
-    local f=QuestScrollFrame--世界地图,任务, 加 - + 按钮
-    f.btn= CreateFrame("Button", nil, f)
-    f.btn:SetPoint('BOTTOMRIGHT', f, 'BOTTOMRIGHT', 0, 0)
-    f.btn:SetSize(20,20)
-    f.btn:SetNormalAtlas('campaign_headericon_open')
-    f.btn:SetPushedAtlas('campaign_headericon_openpressed')
-    f.btn:SetHighlightAtlas('Forge-ColorSwatchSelection')
-    f.btn:SetScript("OnMouseDown", function()
-            Exp()
-    end)
-    f.btn:SetFrameStrata('DIALOG')
-
-    f.btn2= CreateFrame("Button", nil, f.btn)
-    f.btn2:SetPoint('BOTTOMRIGHT', f.btn, 'BOTTOMLEFT', 2, 0)
-    f.btn2:SetSize(20,20)
-    f.btn2:SetNormalAtlas('campaign_headericon_closed')
-    f.btn2:SetPushedAtlas('campaign_headericon_closedpressed')
-    f.btn2:SetHighlightAtlas('Forge-ColorSwatchSelection')
-    f.btn2:SetScript("OnMouseDown", function()
-            Coll()
-    end)
-
 end
 --加载保存数据
 local panel=CreateFrame("Frame")

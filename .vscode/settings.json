@@ -211,7 +211,9 @@
         "CharacterMicroButton",
         "MONEY",
         "EQUIPSET_EQUIP",
-        "LEVEL"
+        "LEVEL",
+        "EditModeUtil",
+        "BankFrame"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

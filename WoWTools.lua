@@ -59,6 +59,13 @@ e.Icon={
   clock2='|A:socialqueuing-icon-clock:0:0|a',
 
   player=e.Race('player'),
+
+  bank2='|A:Banker:0:0|a',
+  bag2='|A:bag-main:0:0|a',
+  up2='|A:bags-greenarrow:0:0|a',--绿色向上
+  down2='|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a',--红色向下
+
+  unlocked='|A:Levelup-Icon-Lock:0:0|a',--没锁
 }
 
 e.GetNpcID = function(unit)--NPC ID
@@ -70,12 +77,30 @@ e.GetNpcID = function(unit)--NPC ID
   end
 end
 
-e.MK=function(k,b)
-  b=b or 1
-  if k>=1e6 then
-    k=string.format('%.'..b..'fm',k/1e6)
-  elseif k>= 1e4 and e.Player.zh then
-    k=string.format('%.'..b..'fw',k/1e4) elseif k>=1e3 then k=string.format('%.'..b..'fk',k/1e3) else k=string.format('%i',k) end return k end--加k 9.1
+e.MK=function(number,bit)
+  bit = bit or 1
+  if number>=1e6 then
+    if bit==0 then
+      return math.modf(number/1e6)..'m'
+    else
+      return ('%.'..bit..'fm'):format(number/1e6)
+    end
+  elseif number>= 1e4 and e.Player.zh then
+    if bit==0 then
+      return math.modf(number/1e4)..'w'
+    else
+      return ('%.'..bit..'fw'):format(number/1e4)
+    end
+  elseif number>=1e3 then
+    if bit==0 then
+        return math.modf(number/1e3)..'k'
+    else
+      return ('%.'..bit..'fk'):format(number/1e3)
+    end
+  else
+    return ('%i'):format(number)
+  end
+end
 
 e.GetShowHide = function(sh)
 	if sh then
@@ -211,3 +236,30 @@ e.SetButtonKey = function(self, set, key, click)--设置清除快捷键
     ClearOverrideBindings(self)
   end
 end
+
+e.itemSlotTable={
+  ['INVTYPE_HEAD']=1,
+  ['INVTYPE_NECK']=2,
+  ['INVTYPE_SHOULDER']=3,
+  ['INVTYPE_BODY']=4,
+  ['INVTYPE_CHEST']=5,
+  ['INVTYPE_WAIST']=6,
+  ['INVTYPE_LEGS']=7,
+  ['INVTYPE_FEET']=8,
+  ['INVTYPE_WRIST']=9,
+  ['INVTYPE_HAND']=10,
+  ['INVTYPE_FINGER']=11,
+  ['INVTYPE_TRINKET']=13,
+  ['INVTYPE_WEAPON']=16,
+  ['INVTYPE_SHIELD']=17,
+  ['INVTYPE_RANGED']=16,
+  ['INVTYPE_CLOAK']=15,
+  ['INVTYPE_2HWEAPON']=16,
+  ['INVTYPE_TABARD']=19,
+  ['INVTYPE_ROBE']=5,
+  ['INVTYPE_WEAPONMAINHAND']=16,
+  ['INVTYPE_WEAPONOFFHAND']=16,
+  ['INVTYPE_HOLDABLE']=17,
+  ['INVTYPE_THROWN']=16,
+  ['INVTYPE_RANGEDRIGHT']=16,
+};

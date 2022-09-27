@@ -2,16 +2,37 @@ local id, e = ...
 local addName =WORLD_MAP
 local addName2=RESET_POSITION:gsub(RESET, PLAYER)
 local Save={}
-
+local QuestTagTypeIcon = {
+    --Tag = 0,
+    --Profession = 1,
+    --Normal = 2,
+    [3]='worldquest-icon-pvp-ffa',--PvP = 3,
+    [4]='worldquest-icon-petbattle',--PetBattle = 4,
+    --Bounty = 5,
+    --Dungeon = 6,
+    --Invasion = 7,
+    --Raid = 8,
+    --Contribution = 9,
+    --RatedReward = 10,
+    --InvasionWrapper = 11,
+    --FactionAssault = 12,
+    --Islands = 13,
+    --Threat = 14,
+    [15]='Callings-Available',--CovenantCalling = 15,
+}
 --世界地图任务--WorldQuestDataProvider.lua
 hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', function(self)--self.tagInfo
     if Save.disabled then
         if self.str then
             self.str:SetShown(false)
         end
+        if self.worldQuestTypeTips then
+            self.worldQuestTypeTips:SetShown(false)
+        end
         return
     end
-    local itemName, itemTexture, numItems, quality, _, itemID, itemLevel
+    local tagInfo=self.tagInfo
+    local itemName, itemTexture, numItems, quality, _, itemID, itemLevel    
     itemName, itemTexture, numItems, quality, _, itemID, itemLevel = GetQuestLogRewardInfo(1, self.questID)
     if not itemName then
         itemName, itemTexture, numItems, _, quality = GetQuestLogRewardCurrencyInfo(1, self.questID)
@@ -29,18 +50,208 @@ hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', function(self)--self.tagInf
         self.str=e.Cstr(self,26)
         self.str:SetPoint('TOP', self, 'BOTTOM', 0, 0)
     end
-    local str= itemLevel or (numItems and numItems>1) and numItems or nil
-    if str and quality and quality~=1 then
-        str='|c'..select(4, GetItemQualityColor(quality))..str..'|r'
+    local str= itemLevel or numItems
+    if str then
+        if quality and quality~=1 then
+            str='|c'..select(4, GetItemQualityColor(quality))..str..'|r'
+        elseif tagInfo.quality==1 then
+            str='|cffa335ee'..str..'|r'
+        elseif tagInfo.quality==2 then
+            str='|cffe6cc80'..str..'|r'
+        end
     end
-    local sourceID =itemID and select(2, C_TransmogCollection.GetItemInfo(itemID))
+    local sourceID =itemID and select(2, C_TransmogCollection.GetItemInfo(itemID))--幻化
     local sourceInfo = sourceID and C_TransmogCollection.GetSourceInfo(sourceID)
     if sourceInfo then
         str=(str or '')..(sourceInfo.isCollected and e.Icon.okTransmog2 or e.Icon.transmogHide2)
     end
     self.str:SetText(str or '')
     self.str:SetShown(str and true or false)
+
+    if self.worldQuestType ~= Enum.QuestTagType.Normal then
+        
+        local inProgress = self.dataProvider:IsMarkingActiveQuests() and C_QuestLog.IsOnQuest(self.questID);
+        atlas= QuestUtil.GetWorldQuestAtlasInfo(self.worldQuestType, inProgress, tagInfo.tradeskillLineID, self.questID);
+        if not self.worldQuestTypeTips then
+            self.worldQuestTypeTips=self:CreateTexture(nil, 'OVERLAY')
+            self.worldQuestTypeTips:SetPoint('TOPRIGHT', self.Texture, 'TOPRIGHT', 5, 5)
+            self.worldQuestTypeTips:SetSize(30, 30)
+        end
+        self.worldQuestTypeTips:SetAtlas(atlas)
+    end
+    if self.worldQuestTypeTips then
+        self.worldQuestTypeTips:SetShown(self.worldQuestType ~= Enum.QuestTagType.Normal)
+    end
 end)
+--[[
+local WorldQustList=e.Cbtn(WorldMapFrame,nil, true)
+WorldQustList:SetPoint('TOPLEFT', WorldMapFrame, 'BOTTOMLEFT')
+WorldQustList:SetSize(20,20)
+hooksecurefunc(WorldQuestDataProviderMixin, 'RefreshAllData', function(self)
+    local pinsToRemove = {};
+	for questId in pairs(self.activePins) do
+		pinsToRemove[questId] = true;
+	end
+
+	local taskInfo;
+    local mapCanvas = self:GetMap();
+
+	local mapID = mapCanvas:GetMapID();
+	if (mapID) then
+		taskInfo = GetQuestsForPlayerByMapIDCached(mapID);
+		--self.matchWorldMapFilters = MapUtil.MapShouldShowWorldQuestFilters(mapID);
+	end
+
+	if taskInfo then
+		for i, info in ipairs(taskInfo) do
+			if self:ShouldOverrideShowQuest(mapID, info.questId) or self:ShouldShowQuest(info) and HaveQuestData(info.questId) then
+				if QuestUtils_IsQuestWorldQuest(info.questId) then
+					if self:DoesWorldQuestInfoPassFilters(info) then
+						pinsToRemove[info.questId] = nil;
+						local pin = self.activePins[info.questId];
+						if pin then
+							pin:RefreshVisuals();
+							pin.numObjectives = info.numObjectives;	-- Fix for quests with sequenced objectives
+							pin:SetPosition(info.x, info.y); -- Fix for WOW8-48605 - WQ starting location may move based on player location and viewed map
+
+							if self.pingPin and self.pingPin:IsAttachedToQuest(info.questId) then
+								self.pingPin:SetPosition(info.x, info.y);
+							end
+						else
+							self.activePins[info.questId] = self:AddWorldQuest(info);
+						end
+					end
+				end
+			end
+		end
+	end
+
+	for questId in pairs(pinsToRemove) do
+		if self.pingPin and self.pingPin:IsAttachedToQuest(questId) then
+			self.pingPin:Stop();
+		end
+
+		mapCanvas:RemovePin(self.activePins[questId]);
+		self.activePins[questId] = nil;
+	end
+
+	mapCanvas:TriggerEvent("WorldQuestsUpdate", mapCanvas:GetNumActivePinsByTemplate(self:GetPinTemplate()));
+end)
+]]
+--任务日志
+local Code=IN_GAME_NAVIGATION_RANGE:gsub('d','s')--%s码    
+local function Quest(self, questID)--任务
+    if not HaveQuestData(questID) then return end
+    local t=''
+    local lv=C_QuestLog.GetQuestDifficultyLevel(questID)--ID
+    if lv then t=t..'['..lv..']' else t=t..' 'end
+    if C_QuestLog.IsComplete(questID) then t=t..'|cFF00FF00'..COMPLETE..'|r' else t=t..INCOMPLETE end
+    if t=='' then t=t..QUESTS_LABEL end    
+    t=t..' ID:'
+    self:AddDoubleLine(t, questID)
+
+    local distanceSq= C_QuestLog.GetDistanceSqToQuest(questID)--距离
+    if distanceSq then
+        t= TRACK_QUEST_PROXIMITY_SORTING..': '
+        local _, x, y = QuestPOIGetIconInfo(questID)
+        if x and y then
+            x=math.modf(x*100) y=math.modf(y*100)
+            if x and y then t=t..x..', '..y end
+        end
+        self:AddDoubleLine(t,  Code:format(e.MK(distanceSq)))
+    end
+    if IsInGroup() then
+        if C_QuestLog.IsPushableQuest(questID) then t='|cFF00FF00'..YES..'|r' else t=NO end--共享
+        local t2=SHARE_QUEST..': '
+        local u if IsInRaid() then u='raid' else u='party' end
+        local n,acceto=GetNumGroupMembers(), 0
+        for i=1, n do
+            local u2
+            if u=='party' and i==n then u2='player' else u2=u..i end
+            if C_QuestLog.IsUnitOnQuest(u2, questID) then acceto=acceto+1 end            
+        end
+        t2=t2..acceto..'/'..n
+        self:AddDoubleLine(t2, t)
+    end
+    local all=C_QuestLog.GetAllCompletedQuestIDs()--完成次数
+    if all and #all>0 then
+        t= GetDailyQuestsCompleted() or '0'
+        t=t..DAILY..' '..#all..QUESTS_LABEL
+        self:AddDoubleLine(TRACKER_FILTER_COMPLETED_QUESTS..': ', t)
+    end
+    --local info=C_QuestLog.GetQuestDetailsTheme(questID)--POI图标
+    --if info and info.poiIcon then e.playerTexSet(info.poiIcon, nil) end--设置图,像
+    self:Show()
+end
+hooksecurefunc("QuestMapLogTitleButton_OnEnter", function(self)--任务日志 显示ID
+        if Save.disabled or not self.questLogIndex then
+            return
+        end
+        local info = C_QuestLog.GetInfo(self.questLogIndex)
+        if not info or not info.questID then return end
+        Quest(e.tips, info.questID)
+end)
+local function Coll()
+    for i=1, C_QuestLog.GetNumQuestLogEntries() do
+        CollapseQuestHeader(i)
+    end
+end
+local function Exp()
+    for i=1, C_QuestLog.GetNumQuestLogEntries() do
+        ExpandQuestHeader(i)
+    end
+end
+hooksecurefunc('QuestMapLogTitleButton_OnClick',function(self, button)--任务日志 展开所有, 收起所有
+        if Save.disabled or ChatEdit_TryInsertQuestLinkForQuestID(self.questID) then
+            return
+        end
+        if not C_QuestLog.IsQuestDisabledForSession(self.questID) and button == "RightButton" then
+            UIDropDownMenu_AddSeparator()
+            local info= UIDropDownMenu_CreateInfo()
+            info.notCheckable=true
+            info.text=SHOW..'|A:campaign_headericon_open:0:0|a'..ALL
+            info.func=function()
+                Exp()
+            end
+            UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
+            info = UIDropDownMenu_CreateInfo()
+            info.notCheckable=true
+            info.text=HIDE..'|A:campaign_headericon_closed:0:0|a'..ALL
+            info.func=function()
+                Coll()
+            end
+            UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)            
+        end
+end)--QuestMapFrame.lua
+local function setMapQuestList()--世界地图,任务, 加 - + 按钮
+    local f=QuestScrollFrame
+    if not Save.disabled and not f.btn then
+        f.btn= CreateFrame("Button", nil, f)
+        f.btn:SetPoint('BOTTOMRIGHT', f, 'BOTTOMRIGHT', 0, 0)
+        f.btn:SetSize(20,20)
+        f.btn:SetNormalAtlas('campaign_headericon_open')
+        f.btn:SetPushedAtlas('campaign_headericon_openpressed')
+        f.btn:SetHighlightAtlas('Forge-ColorSwatchSelection')
+        f.btn:SetScript("OnMouseDown", function()
+                Exp()
+        end)
+        f.btn:SetFrameStrata('DIALOG')
+
+        f.btn2= CreateFrame("Button", nil, f.btn)
+        f.btn2:SetPoint('BOTTOMRIGHT', f.btn, 'BOTTOMLEFT', 2, 0)
+        f.btn2:SetSize(20,20)
+        f.btn2:SetNormalAtlas('campaign_headericon_closed')
+        f.btn2:SetPushedAtlas('campaign_headericon_closedpressed')
+        f.btn2:SetHighlightAtlas('Forge-ColorSwatchSelection')
+        f.btn2:SetScript("OnMouseDown", function()
+                Coll()
+        end)
+    end
+    if f.btn then
+        f.btn:SetShown(not Save.disabled)
+        f.btn2:SetShown(not Save.disabled)
+    end
+end
 
 local function getPlayerXY()--当前世界地图位置
     local uiMapID= C_Map.GetBestMapForUnit("player")--当前地图        
@@ -314,10 +525,8 @@ local function setMapIDText(self)
         self.mapInfoBtn.mapID:SetText(m)
     end
     self.playerPosition:SetShown(not Save.disabled)
-
-    
 end
-    
+
 local function setMapID(self)--显示地图ID
     if not self.mapInfoBtn then
         self.mapInfoBtn=e.Cbtn(self.BorderFrame.TitleContainer)
@@ -335,6 +544,7 @@ local function setMapID(self)--显示地图ID
                     Save.disabled=true
                 end
                 setMapIDText(self)
+                setMapQuestList()--世界地图,任务, 加 - + 按钮
                 print(id, addName, e.GetShowHide(not Save.disabled))
                 self.mapInfoBtn:SetNormalAtlas(Save.disabled and e.Icon.disabled or e.Icon.map)
             elseif d=='RightButton' then--实时玩家当前坐标
@@ -391,7 +601,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
             Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
             CursorPositionInt()
-
+            setMapQuestList()--世界地图,任务, 加 - + 按钮
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end
