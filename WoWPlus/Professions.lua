@@ -150,9 +150,16 @@ local function setFMkey(self, set)--设置清除快捷键
     if set then
         e.SetButtonKey(panel.FM, true, 'F' )
         self.key:SetText('F')
+        panel.FM:RegisterEvent('BAG_UPDATE_DELAYED')
+        panel.FM:RegisterEvent('PLAYER_REGEN_DISABLED')
+        panel.FM:RegisterEvent('TRADE_SKILL_CLOSE')
+        panel.FM:SetShown(true)
+        self.bagNum:SetText(GetItemCount(38682))
     else
         e.SetButtonKey(panel.FM, false)
         self.key:SetText('')
+        panel.FM:UnregisterAllEvents()
+        panel.FM:SetShown(false)
     end
 end
 local function setFM()
@@ -160,7 +167,6 @@ local function setFM()
     local bat = UnitAffectingCombat('player')
     if Save.disabled or bat or not info or info.professionName~=ENSCRIBE then
         if panel.FM and not bat then
-            panel.FM:SetShown(false)
             setFMkey(panel.FM, false)
         end
         return
@@ -177,22 +183,17 @@ local function setFM()
         panel.FM.bagNum:SetText(GetItemCount(38682))
         panel.FM.key=e.Cstr(panel.FM, 20)
         panel.FM.key:SetPoint('TOPRIGHT')
-        panel.FM:RegisterEvent('BAG_UPDATE_DELAYED')
-        panel.FM:RegisterEvent('PLAYER_REGEN_DISABLED')
-        panel.FM:RegisterEvent('TRADE_SKILL_CLOSE')
         panel.FM:SetScript('OnEvent',function(self2, event)
             if event=='BAG_UPDATE_DELAYED' then
                 self2.bagNum:SetText(GetItemCount(38682))
             else
                 setFMkey(self2,false)--设置快捷键
-                self2:SetShown(false)
             end
         end)
         panel.FM:SetScript("OnMouseDown", function()
             ProfessionsFrame.CraftingPage.CreateButton:Click()
         end)
     end
-    panel.FM:SetShown(true)
     setFMkey(panel.FM, true)--设置快捷键
 end
 --加载保存数据

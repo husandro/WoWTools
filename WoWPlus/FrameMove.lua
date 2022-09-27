@@ -4,14 +4,11 @@ local addName=NPE_MOVE..'Frame'
 
 local Point=function(frame, name2)
     local p=Save.point
-    p=p[name2];
+    p=p[name2] and p[name2][1]
     if p and p[1] and p[3] and p[4] and p[5] then
-        local p2 = {frame:GetPoint(1)};
-        if p2 and (p[1]~=p2[1] or p[3]~=p2[3] or p[4]~=p2[4] or p[5]~=p2[5]) then
-            frame:ClearAllPoints();
-            frame:SetPoint(p[1], UIParent, p[3], p[4], p[5]);
-        end
-    end;
+        frame:ClearAllPoints()
+        frame:SetPoint(p[1], frame:GetParent() or UIParent, p[3], p[4], p[5])
+    end
 end
 
 local Move=function(F, tab)
@@ -45,23 +42,35 @@ local Move=function(F, tab)
             ResetCursor();
             F2:StopMovingOrSizing();
             if save then
-                Save.point[name]={F2:GetPoint(1)}
+                local point={}
+                local n=F2:GetNumPoints()
+                for i=1,n do
+                    table.insert(point, {F2:GetPoint(i)})
+                end
+                Save.point[name]=point
             end;
     end);
 
     if save then
         Point(F2,name);
-        local Re={F2:GetPoint(1)};
+        local Re={}
+        local n=F2:GetNumPoints()
+        for i=1,n do
+            table.insert(Re, {F2:GetPoint(i)})
+        end
         F:SetScript("OnMouseUp", function(self,D)--还原 Alt+右击
                 if D=='RightButton' and IsAltKeyDown() then
                     Save.point[name]=nil
                     F2:ClearAllPoints();
-                    F2:SetPoint(Re[1],Re[2],Re[3],Re[4],Re[5]);
+                    local point=Re[1]
+                    if point then
+                        F2:SetPoint(point[1], point[2], point[3], point[4], point[5]);
+                    end
                     --print(name..': '..TRANSMOGRIFY_TOOLTIP_REVERT..'('..LOCK_FOCUS_FRAME..')|cffff0000/reload|r');
                 end
                 ResetCursor();
         end);
-        if enter then 
+        if enter then
             F:SetScript("OnEnter", function() Point(F2,name) end);
         end
         if show  then
@@ -109,7 +118,7 @@ local FrameTab={
     AddonList={save=true},--插件
     ClassTalentFrame={save=true,},--天赋
     GameMenuFrame={save=true,},--菜单
-    ProfessionsFrame={save=true},--专业
+    ProfessionsFrame={},--专业
     CharacterFrame={},--角色
     ReputationDetailFrame={save=true},--声望描述q
     TokenFramePopup={save=true},--货币设置
@@ -121,7 +130,7 @@ local FrameTab={
     MacroFrame={},--宏
     ExtraActionButton1={save=true, click='R' },--额外技能
 
-    ContainerFrameCombinedBags={save=true},
+    ContainerFrameCombinedBags={save=true},--包
     ChatConfigFrame={save=true},--聊天设置
     SettingsPanel={},--选项
     --ZoneAbilityFrame.SpellButtonContainer = {save=true, click='R'},
@@ -191,8 +200,9 @@ local function Set(arg1)
 end
 
 local function Set2()
-    Move(DressUpFrame.TitleContainer, {frame = DressUpFrame})--试衣间
+    Move(DressUpFrame.TitleContainer, {frame = DressUpFrame})--试衣间    
 end
+
 
 --加载保存数据
 local panel=CreateFrame("Frame")

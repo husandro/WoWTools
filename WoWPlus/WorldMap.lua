@@ -58,33 +58,46 @@ local function getPlayerXY()--当前世界地图位置
 end
 local function sendPlayerPoint()--发送玩家位置
     local mapID = C_Map.GetBestMapForUnit("player")
-    if mapID and C_Map.CanSetUserWaypointOnMap(mapID) then
-        local point=C_Map.GetUserWaypoint()
-        local pos = C_Map.GetPlayerMapPosition(mapID, "player")
-        local mapPoint = UiMapPoint.CreateFromVector2D(mapID, pos)
-        C_Map.SetUserWaypoint(mapPoint)
-        ChatFrame_OpenChat(SELECTED_DOCK_FRAME.editBox:GetText()..C_Map.GetUserWaypointHyperlink())
-        if point then
-            C_Map.SetUserWaypoint(point)
-        else
-            C_Map.ClearUserWaypoint()
-        end
-    else
-        local name=GetMinimapZoneText()
-        local name2
-        if mapID then
-            local info=C_Map.GetMapInfo(mapID)
-            name2=info and info.name
-        end
-        if name  or name2 then
-            if name2 and name~=name2 then
-                name=name2..'('..name..')'
+    if mapID then
+        if  C_Map.CanSetUserWaypointOnMap(mapID) then
+            local point=C_Map.GetUserWaypoint()
+            local pos = C_Map.GetPlayerMapPosition(mapID, "player")
+            local mapPoint = UiMapPoint.CreateFromVector2D(mapID, pos)
+            C_Map.SetUserWaypoint(mapPoint)
+            ChatFrame_OpenChat(SELECTED_DOCK_FRAME.editBox:GetText()..C_Map.GetUserWaypointHyperlink())
+            if point then
+                C_Map.SetUserWaypoint(point)
+            else
+                C_Map.ClearUserWaypoint()
             end
-            name =name or name2
-            ChatFrame_OpenChat(SELECTED_DOCK_FRAME.editBox:GetText()..name)
+            return
         else
-            print("Cannot set waypoints on this map")
+            local x, y=getPlayerXY()
+            if x and y then
+                local pointText=x..' '..y
+                local info=C_Map.GetMapInfo(mapID)
+                if info and info.name then
+                    pointText=pointText..' '..info.name
+                end
+                ChatFrame_OpenChat(SELECTED_DOCK_FRAME.editBox:GetText()..pointText)
+                return
+            end
         end
+    end
+    local name=GetMinimapZoneText()
+    local name2
+    if mapID then
+        local info=C_Map.GetMapInfo(mapID)
+        name2=info and info.name
+    end
+    if name  or name2 then
+        if name2 and name~=name2 then
+            name=name2..'('..name..')'
+        end
+        name =name or name2
+        ChatFrame_OpenChat(SELECTED_DOCK_FRAME.editBox:GetText()..name)
+    else
+        print("Cannot set waypoints on this map")
     end
 end
 
@@ -220,8 +233,8 @@ local function setOnEnter(self)--地图ID提示
             local playerCursorMapName
             local uiMapIDPlayer= C_Map.GetBestMapForUnit("player")
             if uiMapIDPlayer and uiMapIDPlayer~=uiMapID then
-                local info = C_Map.GetMapInfo(uiMapIDPlayer)
-                playerCursorMapName=info and info.name
+                local info2 = C_Map.GetMapInfo(uiMapIDPlayer)
+                playerCursorMapName=info2 and info2.name
             end
             e.tips:AddLine(' ')
             if playerCursorMapName then
@@ -265,28 +278,52 @@ local function setMapIDText(self)
         local uiMapIDPlayer= C_Map.GetBestMapForUnit("player")--玩家当前坐标
         local x, y= getPlayerXY(self, uiMapID)
         local playerPositionText
-        if uiMapIDPlayer and uiMapIDPlayer==uiMapID and x and y then
-            if not self.playerPosition.Text then
-                self.playerPosition.Text=e.Cstr(self.playerPosition, nil ,WorldMapFrameTitleText)
-                self.playerPosition.Text:SetPoint('LEFT',self.playerPosition, 'RIGHT', 2, 0)
+        if uiMapIDPlayer and x and y then
+
+            playerPositionText=x..' '..y
+            if uiMapIDPlayer~=uiMapID then
+                local info = C_Map.GetMapInfo(uiMapIDPlayer)
+                if info and info.name then
+                    playerPositionText=playerPositionText.. '  '..info.name
+                end
             end
-            playerPositionText=x..' '..y..'  '
         end
         if self.playerPosition.Text then
             self.playerPosition.Text:SetText(playerPositionText or '')
+        end
+
+        if not self.playerPosition.cursorPointText then--光标在地图位置
+            self.playerPosition.cursorPointText=e.Cstr(self.playerPosition, nil ,WorldMapFrameTitleText)
+            self.playerPosition.cursorPointText:SetPoint('LEFT', self.playerPosition.Text, 'RIGHT', 10, 0)
+            local timeElapsed = 0
+            self.playerPosition:HookScript("OnUpdate", function (self2, elapsed)
+                timeElapsed = timeElapsed + elapsed
+                if timeElapsed > 0.14 then
+                    timeElapsed = 0
+                    local x2, y2 = WorldMapFrame.ScrollContainer:GetNormalizedCursorPosition()--当前世界地图位置            
+                    if x2 and y2 then
+                        self.playerPosition.cursorPointText:SetText(('%.1f'):format(x2*100)..' '..('%.1f'):format(y2*100))
+                    else
+                        self.playerPosition.cursorPointText:SetText('')
+                    end
+                end
+            end)
         end
     end
     if self.mapInfoBtn.mapID then
         self.mapInfoBtn.mapID:SetText(m)
     end
     self.playerPosition:SetShown(not Save.disabled)
+
+    
 end
+    
 local function setMapID(self)--显示地图ID
     if not self.mapInfoBtn then
         self.mapInfoBtn=e.Cbtn(self.BorderFrame.TitleContainer)
         self.mapInfoBtn:SetPoint('RIGHT', self.BorderFrame.TitleContainer, 'RIGHT', -50,0)
+        self.mapInfoBtn:SetNormalAtlas(Save.disabled and e.Icon.disabled or e.Icon.map)
         self.mapInfoBtn:SetSize(22,22)
-        self.mapInfoBtn:SetNormalAtlas(e.Icon.map)
         self.mapInfoBtn:RegisterForClicks("LeftButtonUp", "RightButtonUp")
         self.mapInfoBtn:SetScript('OnEnter', setOnEnter)
         self.mapInfoBtn:SetScript('OnLeave', function() e.tips:Hide() end)
@@ -299,6 +336,7 @@ local function setMapID(self)--显示地图ID
                 end
                 setMapIDText(self)
                 print(id, addName, e.GetShowHide(not Save.disabled))
+                self.mapInfoBtn:SetNormalAtlas(Save.disabled and e.Icon.disabled or e.Icon.map)
             elseif d=='RightButton' then--实时玩家当前坐标
                 if Save.PlayerXY then
                     Save.PlayerXY=nil
@@ -311,6 +349,7 @@ local function setMapID(self)--显示地图ID
             end
         end)
     end
+
     if not self.playerPosition then--玩家坐标
         self.playerPosition=e.Cbtn(self.BorderFrame.TitleContainer)
         self.playerPosition:SetPoint('LEFT', self.BorderFrame.TitleContainer, 'LEFT', 95, -2)
@@ -336,6 +375,8 @@ local function setMapID(self)--显示地图ID
                 sendPlayerPoint()--发送玩家位置
             end
         end)
+        self.playerPosition.Text=e.Cstr(self.playerPosition, nil ,WorldMapFrameTitleText)--玩家当前坐标
+        self.playerPosition.Text:SetPoint('LEFT',self.playerPosition, 'RIGHT', 2, 0)
     end
     setMapIDText(self)
 end
