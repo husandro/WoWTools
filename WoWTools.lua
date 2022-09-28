@@ -65,7 +65,10 @@ e.Icon={
   up2='|A:bags-greenarrow:0:0|a',--绿色向上
   down2='|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a',--红色向下
 
-  unlocked='|A:Levelup-Icon-Lock:0:0|a',--没锁
+  unlocked='Levelup-Icon-Lock',--没锁
+
+  --mask="Interface\\ChatFrame\\UI-ChatIcon-HotS",--菱形
+  --mask='Interface\\CHARACTERFRAME\\TempPortraitAlphaMask',--圆形 :SetMask()
 }
 
 e.GetNpcID = function(unit)--NPC ID

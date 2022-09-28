@@ -10,6 +10,31 @@ local function Set()
 
     MainMenuBar.EndCaps.LeftEndCap:Hide()
     MainMenuBar.EndCaps.RightEndCap:Hide()
+
+    PetBattleFrame.TopArtLeft:Hide()
+    PetBattleFrame.TopArtRight:Hide()
+    PetBattleFrame.TopVersus:Hide()
+    PetBattleFrame.TopVersusText:Hide()
+    PetBattleFrame.WeatherFrame.BackgroundArt:Hide()
+    PetBattleFrame.BottomFrame.LeftEndCap:Hide()
+    PetBattleFrame.BottomFrame.RightEndCap:Hide()
+    PetBattleFrame.BottomFrame.Background:Hide()
+    PetBattleFrame.BottomFrame.TurnTimer.ArtFrame2:Hide()
+    PetBattleFrame.BottomFrame.FlowFrame:Hide()
+    PetBattleFrame.BottomFrame.Delimiter:Hide()
+    --PetBattleFrame.BottomFrame.TurnTimer.ArtFrame2:Hide()
+    PetBattleFrameXPBarLeft:Hide()
+    PetBattleFrameXPBarRight:Hide()
+    PetBattleFrameXPBarMiddle:Hide()
+
+    --PetBattleFrame.BottomFrame.MicroButtonFrame.RightEndCap:Hide()
+    --PetBattleFrame.BottomFrame.MicroButtonFrame.LeftEndCap:Hide()
+    hooksecurefunc('PetBattleFrame_UpdatePassButtonAndTimer', function(self)--Blizzard_PetBattleUI.lua
+        self.BottomFrame.TurnTimer.TimerBG:SetShown(false);
+        --self.BottomFrame.TurnTimer.Bar:SetShown(true);
+        self.BottomFrame.TurnTimer.ArtFrame:SetShown(false);
+        self.BottomFrame.TurnTimer.ArtFrame2:SetShown(false);
+    end)
 end
 
 --加载保存数据

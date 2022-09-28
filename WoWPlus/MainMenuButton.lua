@@ -209,11 +209,12 @@ panel:SetScript('OnMouseDown', function(self, d)
         print(id,addName, EQUIPSET_EQUIP..LEVEL, e.GetShowHide(Save.equipmetLevel))
     end
 end)
+
 panel:SetScript('OnEnter', function()
     if UnitAffectingCombat('player') then
         return
     end
-    e.tips:SetOwner(panel.money, "ANCHOR_LEFT");
+    e.tips:SetOwner(panel.money, "ANCHOR_LEFT",0, 30);
     e.tips:ClearLines();
     e.tips:AddLine(id, addName)
     e.tips:AddLine(' ')
@@ -241,7 +242,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         setInit()
         setMoney()
         setDurabiliy()
-        setEquipmentLevel()--角色图标显示装等        
+       C_Timer.After(2, setEquipmentLevel) --角色图标显示装等        
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end

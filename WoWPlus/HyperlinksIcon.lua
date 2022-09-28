@@ -63,7 +63,7 @@ local function Realm(link)--去服务器为*
 end
 
 local function Pet(speciesID)
-    if speciesID then 
+    if speciesID then
         local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesID)
         if numCollected and limit then 
             if numCollected == limit then
@@ -77,9 +77,9 @@ local function Pet(speciesID)
     end
 end
 
-local function Mount(id, item)
-    if id then
-        local mountID=item and C_MountJournal.GetMountFromItem(id) or C_MountJournal.GetMountFromSpell(id)
+local function Mount(id2, item)
+    if id2 then
+        local mountID=item and C_MountJournal.GetMountFromItem(id2) or C_MountJournal.GetMountFromSpell(id2)
         if  mountID then
             if select(11, C_MountJournal.GetMountInfoByID(mountID)) then
                 return e.Icon.select
@@ -103,8 +103,8 @@ local function Item(link)--物品超链接
     if icon then----加图标        
         t='|T'..icon..':0|t'..t
     end
-    local id, _, _, _, _, classID, subclassID=GetItemInfoInstant(link)
-    id=id or link:match('Hitem:(%d+)')
+    local id2, _, _, _, _, classID, subclassID=GetItemInfoInstant(link)
+    id2=id2 or link:match('Hitem:(%d+)')
     if classID==2 or classID==4 then
         local lv=GetDetailedItemLevelInfo(link)--装等
         if lv and lv>10 then
@@ -127,19 +127,19 @@ local function Item(link)--物品超链接
         end
     elseif  classID==15 and (subclassID==2 or subclassID==5) then        
         if  subclassID==2 then----宠物数量
-            local _, _, petType, _, _, _, _, _, _, _, _, _, speciesID=C_PetJournal.GetPetInfoByItemID(id)
+            local _, _, petType, _, _, _, _, _, _, _, _, _, speciesID=C_PetJournal.GetPetInfoByItemID(id2)
             local nu=Pet(speciesID)
             if nu then
                 t=(PetType(petType) or '')..t..nu
             end
         elseif subclassID==5 then--坐骑是不收集            
-            local nu= Mount(id, true)
+            local nu= Mount(id2, true)
             if nu then
                 t=t..nu
             end
         end
-    elseif C_ToyBox.GetToyInfo(id) then--玩具
-        t=PlayerHasToy(id) and t..e.Icon.select or t..Icon.no        
+    elseif C_ToyBox.GetToyInfo(id2) then--玩具
+        t=PlayerHasToy(id2) and t..e.Icon.select or t..Icon.no        
     end    
     local bag=GetItemCount(link, true)--数量
     if bag and bag>0 then
@@ -153,18 +153,18 @@ end
 local function Spell(link)--法术图标
     local t=link
     local icon= select(3, GetSpellInfo(link))
-    local id=link:match('Hspell:(%d+)')
+    local id2=link:match('Hspell:(%d+)')
     if icon then
         return '|T'..icon..':0|t'..link
-    else        
-        if id then
-            icon = GetSpellTexture(id)
+    else
+        if id2 then
+            icon = GetSpellTexture(id2)
             if icon then 
                 t='|T'..icon..':0|t'..t
             end
         end
     end
-    local nu= Mount(id)
+    local nu= Mount(id2)
     if nu then
         t=t..nu
     end
@@ -184,21 +184,22 @@ local function PetLink(link)--宠物超链接
     end
 end
 
-local function PetAblil(link)--宠物技能
-    local id=link:match('HbattlePetAbil:(%d+)')
-    if id then 
-        local _, _, icon, _, _, _, petType=C_PetBattles.GetAbilityInfoByID(id)
-        if icon then 
-            local icon2=PetType(petType)
-            return (icon2 or '')..'|T'..icon..':0|t'..link
+local function PetAblil(link, petChannel)--宠物技能
+    local id2=link:match('HbattlePetAbil:(%d+)')
+    if id2 then
+        local _, _, icon, _, _, _, petType=C_PetBattles.GetAbilityInfoByID(id2)
+        if petChannel then
+            return PetType(petType)..link
+        elseif icon then
+            return (PetType(petType) or '')..'|T'..icon..':0|t'..link
         end
     end
 end
 
 local function Trade(link)--贸易技能
-    local id=link:match('Htrade:.-:(%d+):')
-    if id then
-        local icon = GetSpellTexture(id)
+    local id2=link:match('Htrade:.-:(%d+):')
+    if id2 then
+        local icon = GetSpellTexture(id2)
         if icon then 
             return '|T'..icon..':0|t'..link
         end
@@ -206,9 +207,9 @@ local function Trade(link)--贸易技能
 end
 
 local function Enchant(link)--附魔
-    local id=link:match('Henchant:(%d+)')
-    if id then
-        local icon = GetSpellTexture(id)
+    local id2=link:match('Henchant:(%d+)')
+    if id2 then
+        local icon = GetSpellTexture(id2)
         if icon then 
             return '|T'..icon..':0|t'..link
         end
@@ -227,19 +228,19 @@ local function Currency(link)--货币
 end
 
 local function Achievement(link)--成就
-    local id=link:match('Hachievement:(%d+)')
-    if id then
-        local _, _, _, completed, _, _, _, _, _, icon = GetAchievementInfo(id)
+    local id2=link:match('Hachievement:(%d+)')
+    if id2 then
+        local _, _, _, completed, _, _, _, _, _, icon = GetAchievementInfo(id2)
         local texture=icon and '|T'..icon..':0|t' or ''
         return texture..link..(completed and e.Icon.select or Icon.no)
     end
 end
 
 local function Quest(link)--任务
-    local id=link:match('Hquest:(%d+)')
-    if id then
-        local wow= C_QuestLog.IsAccountQuest(id) and Icon.wow or ''--帐号通用        
-        if C_QuestLog.IsQuestFlaggedCompleted(id) then
+    local id2=link:match('Hquest:(%d+)')
+    if id2 then
+        local wow= C_QuestLog.IsAccountQuest(id2) and Icon.wow or ''--帐号通用        
+        if C_QuestLog.IsQuestFlaggedCompleted(id2) then
             return wow..link..e.Icon.select
         else
             return wow..link..Icon.no
@@ -248,9 +249,9 @@ local function Quest(link)--任务
 end
 
 local function Talent(link)--天赋
-    local id=link:match('Htalent:(%d+)')
-    if id then
-        local _, _, icon, _, _, _, _, _ ,_, known=GetTalentInfoByID(id)
+    local id2=link:match('Htalent:(%d+)')
+    if id2 then
+        local _, _, icon, _, _, _, _, _ ,_, known=GetTalentInfoByID(id2)
         if icon then
             return '|T'..icon..':0|t'..link..(known and e.Icon.select or Icon.no)
         end
@@ -258,9 +259,9 @@ local function Talent(link)--天赋
 end
 
 local function Pvptal(link)--pvp天赋
-    local id=link:match('Hpvptal:(%d+)')
-    if id then
-        local _, _, icon, _, _, _, _, _ ,_, known=GetPvpTalentInfoByID(id)
+    local id2=link:match('Hpvptal:(%d+)')
+    if id2 then
+        local _, _, icon, _, _, _, _, _ ,_, known=GetPvpTalentInfoByID(id2)
         return '|T'..icon..':0|t'..link..(known and e.Icon.select or Icon.no)
     end
 end
@@ -440,18 +441,20 @@ local function TransmogSet(link)--幻化套装
 end
 
 local function Add(self, s, ...)
+    local petChannel=s:find('|Hchannel:.-'..PET_BATTLE_COMBAT_LOG..']|h') and true or false
+
     s=s:gsub('|Hchannel:.-]|h', SetChannels)
     s=s:gsub('|Hplayer:.-]|h', Realm)
     s=s:gsub('|Hitem:.-]|h',Item)
     s=s:gsub('|Hspell:.-]|h',Spell)
 
     s=s:gsub('|Hbattlepet:.-]|h',PetLink)
-    s=s:gsub('|HbattlePetAbil:.-]|h',PetAblil)    
+    s=s:gsub('|HbattlePetAbil:.-]|h',function(link) return PetAblil(link, petChannel) end)
 
     s=s:gsub('|Htrade:.-]|h', Trade)
-    s=s:gsub('|Henchant:.-]|h', Enchant) 
-    s=s:gsub('|Hcurrency:.-]|h', Currency) 
-    s=s:gsub('|Hachievement:.-]|h', Achievement) 
+    s=s:gsub('|Henchant:.-]|h', Enchant)
+    s=s:gsub('|Hcurrency:.-]|h', Currency)
+    s=s:gsub('|Hachievement:.-]|h', Achievement)
     s=s:gsub('|Hquest:.-]|h', Quest)
     s=s:gsub('|Htalent:.-]|h', Talent)
     s=s:gsub('|Hpvptal:.-]|h', Pvptal)
@@ -515,7 +518,7 @@ sel:SetScript('OnClick', function(self, d)
         else
             Save.disabed=true
         end
-        print(addName..' ('..id..'): '..e.GetEnabeleDisable(not Save.disabed))
+        print(id, addName, e.GetEnabeleDisable(not Save.disabed))
         Ini()
     elseif d=='LeftButton' and IsAltKeyDown() then--文本转语音
         if C_CVar.GetCVarBool('textToSpeech') then

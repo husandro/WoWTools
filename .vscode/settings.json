@@ -213,7 +213,8 @@
         "EQUIPSET_EQUIP",
         "LEVEL",
         "EditModeUtil",
-        "BankFrame"
+        "BankFrame",
+        "BattlePetTooltipTemplate_AddTextLine"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
