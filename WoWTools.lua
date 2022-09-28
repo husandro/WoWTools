@@ -109,12 +109,18 @@ e.GetShowHide = function(sh)
 		return '|cnRED_FONT_COLOR:'..HIDE..'|r'
 	end
 end
-
 e.GetEnabeleDisable = function (ed)--启用或禁用字符
   if ed then
     return '|cnGREEN_FONT_COLOR:'..ENABLE..'|r'
   else
     return '|cnRED_FONT_COLOR:'..DISABLE..'|r'
+  end
+end
+e.GetYesNo = function (yesno)
+  if yesno then
+    return '|cnGREEN_FONT_COLOR:'..YES..'|r'
+  else
+    return '|cnRED_FONT_COLOR:'..NO..'|r'
   end
 end
 

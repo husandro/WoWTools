@@ -45,3 +45,5 @@ WoWPlus\MainMenuButton.lua
 WoWPlus\Tooltips.lua
 
 WoWPlus\Professions.lua
+
+WoWPlus\UnitFrame.lua

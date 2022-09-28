@@ -139,18 +139,59 @@ end
 
 e.tips:SetScript('OnTooltipSetItem', setItem)--物品
 ItemRefTooltip:SetScript('OnTooltipSetItem', setItem)--物品
-
-hooksecurefunc("BattlePetToolTip_Show",function(speciesID, level, breedQuality, maxHealth, power, speed, customName)--BattlePetTooltip.lua
+local getPetTypeIcon=function(petType, str)
+    local s='BATTLE_PET_DAMAGE_NAME_'
+    local ids={[_G[s..1]]=1,[_G[s..10]]=10,[_G[s..2]]=2,[_G[s..3]]=3,[_G[s..4]]=4,[_G[s..5]]=5,[_G[s..6]]=6,[_G[s..7]]=7,[_G[s..8]]=8,[_G[s..9]]=9,}
+    if str then
+        if id2[str] then
+            petType=id2[str]
+        else
+            for i=1,10 do
+                if str:find(_G[s..i]) then
+                    petType=i
+                    break
+                end
+            end
+        end
+    end
+    if petType and PET_TYPE_SUFFIX[petType] then
+        return 'Interface\\Icons\\Icon_PetFamily_'..PET_TYPE_SUFFIX[petType]
+    end    
+end;
+hooksecurefunc("BattlePetToolTip_Show",function(speciesID, level, breedQuality, maxHealth, power, speed, customName)--BattlePetTooltip.lua FloatingPetBattleTooltip.lua
+    if IsShiftKeyDown() then
+        if Save.showPetSource then
+            Save.showPetSource=nil
+        else
+            Save.showPetSource=true
+        end
+    end
     local self=BattlePetTooltip
     local speciesName, speciesIcon, petType, companionID, tooltipSource, tooltipDescription, isWild, canBattle, isTradeable, isUnique, obtainable, creatureDisplayID = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
-    self:AddLine(PET..' ID: '..speciesID..'   '..MODEL..' ID: '..creatureDisplayID)
     if obtainable then
         local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesID)
-        if numCollected==limit then
-            self.AddLine(COLLECTED.." ".. numCollected..'/'..limit, 0,1,0)
-        else
-            self.AddLine(COLLECTED.." ".. numCollected..'/'..limit, 1,1,0)
+        if numCollected==0 then
+            BattlePetTooltipTemplate_AddTextLine(self, ITEM_PET_KNOWN:format(0, limit), 1,0,0)
         end
+    end
+    BattlePetTooltipTemplate_AddTextLine(self, PET..'ID: '..speciesID..'     '..MODEL..' ID: '..creatureDisplayID..'    |T'..speciesIcon..':0|t'..speciesIcon)
+    BattlePetTooltipTemplate_AddTextLine(self, 'NPCID: '..companionID..'    '..	WILD_PETS:gsub(PET,'')..': '..e.GetYesNo(isWild)..'         '..TRADE..': '..e.GetYesNo(isTradeable))
+    local tab = C_PetJournal.GetPetAbilityListTable(speciesID)--技能
+    table.sort(tab, function(a,b) return a.level< b.level end)
+    local abilityIcon=''
+    for k, info in pairs(tab) do
+        local name, icon, type = C_PetJournal.GetPetAbilityInfo(info.abilityID)
+        if abilityIcon~='' then
+            abilityIcon=abilityIcon..' '
+        end
+        abilityIcon=abilityIcon..'|TInterface\\Icons\\Icon_PetFamily_'..PET_TYPE_SUFFIX[type]..':0|t|T'..icon..':0|t'..info.level
+    end
+    BattlePetTooltipTemplate_AddTextLine(self, abilityIcon)
+    if Save.showPetSource then--来源提示
+        BattlePetTooltipTemplate_AddTextLine(self, ' ')
+        BattlePetTooltipTemplate_AddTextLine(self, tooltipSource)
+    else
+        BattlePetTooltipTemplate_AddTextLine(self, '                                         Shfit+'..SHOW..SOURCES, 1,0,1)
     end
 end)
 
