@@ -197,11 +197,26 @@ local function Set(arg1)
    if arg1==id then
        Move(ZoneAbilityFrame.SpellButtonContainer, {save=true, click='R'})
     end
+
+    hooksecurefunc(LootFrame,'Open', function(self)--物品拾取LootFrame.lua
+        if not GetCVarBool("autoLootDefault") and not GetCVarBool("lootUnderMouse") then
+            local p=Save.point.LootFrame and Save.point.LootFrame[1]
+            if p and p[1] and p[3] and p[4] and p[5] then
+                self:ClearAllPoints();
+                self:SetPoint(p[1], nil, p[3], p[4], p[5]);
+            end
+        end
+    end)
 end
 
 local function Set2()
+    if Save.disabled then
+        return
+    end
     Move(DressUpFrame.TitleContainer, {frame = DressUpFrame})--试衣间    
+    Move(LootFrame.TitleContainer, {frame=LootFrame, save=true})--物品拾取
 end
+
 
 
 --加载保存数据
@@ -233,7 +248,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
     end
 end)
-
 
 --[[
      ContainerFrame1={save=true},

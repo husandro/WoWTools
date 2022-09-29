@@ -27,6 +27,8 @@ local function Set()
     PetBattleFrameXPBarRight:Hide()
     PetBattleFrameXPBarMiddle:Hide()
 
+    LootFrameBg:Hide()--拾取
+
     --PetBattleFrame.BottomFrame.MicroButtonFrame.RightEndCap:Hide()
     --PetBattleFrame.BottomFrame.MicroButtonFrame.LeftEndCap:Hide()
     hooksecurefunc('PetBattleFrame_UpdatePassButtonAndTimer', function(self)--Blizzard_PetBattleUI.lua
@@ -35,6 +37,8 @@ local function Set()
         self.BottomFrame.TurnTimer.ArtFrame:SetShown(false);
         self.BottomFrame.TurnTimer.ArtFrame2:SetShown(false);
     end)
+
+  --  e.tips.IconBorder:Hide()--GameTooltip.xml
 end
 
 --加载保存数据

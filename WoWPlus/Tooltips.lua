@@ -10,29 +10,28 @@ local function setInitItem(self, hide)--创建物品
     end
     if not self.text2Left then--左上角字符2
         self.text2Left=e.Cstr(self, 18)
-        self.text2Left:SetPoint('LEFT', self.Text, 'RIGHT', 5, 0)
+        self.text2Left:SetPoint('LEFT', self.textLeft, 'RIGHT', 5, 0)
     end
     if not self.textRight then--右上角字符
         self.textRight=e.Cstr(self, 18)
         self.textRight:SetPoint('BOTTOMRIGHT', self, 'TOPRIGHT')
         --self.textRight:SetPoint('TOPRIGHT', self, 'BOTTOMRIGHT')--下
     end
-    if not self.backgroundQualityColor then--背景颜色
-        self.backgroundQualityColor=self:CreateTexture(nil,'BACKGROUND')
-        self.backgroundQualityColor:SetAllPoints(self)
-        self.backgroundQualityColor:SetAlpha(0.15)
+    if not self.backgroundColor then--背景颜色
+        self.backgroundColor=self:CreateTexture(nil,'BACKGROUND')
+        self.backgroundColor:SetAllPoints(self)
     end
     if not self.itemModel then--3D模型
-        self.itemModel=CreateFrame("PlayerModel", nil, self);
+        self.itemModel=CreateFrame("PlayerModel", nil, self)
         self.itemModel:SetFacing(0.35)
         self.itemModel:SetPoint("TOPRIGHT", self, 'TOPLEFT')
         self.itemModel:SetSize(250, 250)
     end
-    if not self.textureTopRight then--右上角图标
-        self.textureTopRight=self:CreateTexture()
-        self.textureTopRight:SetPoint('TOPRIGHT',-2, -3)
-        self.textureTopRight:SetSize(40,40)
-        --self.textureTopRight:SetMask(e.Icon.mask)
+    if not self.Portrait then--右上角图标
+        self.Portrait=self:CreateTexture(nil, 'BORDER')
+        self.Portrait:SetPoint('TOPRIGHT',-2, -3)
+        self.Portrait:SetSize(40,40)
+        --self.Portrait:SetMask(e.Icon.mask)
     end
 
     if hide then
@@ -41,8 +40,8 @@ local function setInitItem(self, hide)--创建物品
         self.textRight:SetText('')
         self.itemModel:ClearModel()
         self.itemModel:SetShown(false)
-        self.textureTopRight:SetShown(false)
-        self.backgroundQualityColor:SetShown(false)
+        self.Portrait:SetShown(false)
+        self.backgroundColor:SetShown(false)
         self.creatureDisplayID=nil--物品
     end
 end
@@ -68,17 +67,19 @@ local function GetSetsCollectedNum(setID)--套装收集数
 end
 local function setMount(self, mountID)--坐骑    
     local name, spellID, icon, isActive, isUsable, sourceType, isFavorite, isFactionSpecific, faction, shouldHideOnChar, isCollected=C_MountJournal.GetMountInfoByID(mountID)
+    
     self:AddDoubleLine(MOUNTS..' ID: '..mountID, SUMMON..ABILITIES..' ID: '..spellID)
     if isFactionSpecific then
-        self:AddDoubleLine(not faction and ' ' or LFG_LIST_CROSS_FACTION:format(faction==0 and e.Icon.horde2..THE_HORDE or e.Icon.alliance2..THE_ALLIANCE or ''), e.GetShowHide(not shouldHideOnChar) )
+        self:AddDoubleLine(not faction and ' ' or LFG_LIST_CROSS_FACTION:format(faction==0 and e.Icon.horde2..THE_HORDE or e.Icon.alliance2..THE_ALLIANCE or ''), ' ')
     end
     local creatureDisplayInfoID, description, source, isSelfMount, mountTypeID, uiModelSceneID, animID, spellVisualKitID, disablePlayerMountPreview = C_MountJournal.GetMountInfoExtraByID(mountID)
     self:AddDoubleLine(MODEL..' ID: '..creatureDisplayInfoID, TUTORIAL_TITLE61_DRUID..': '..(isSelfMount and YES or NO))
     self:AddDoubleLine(source,' ')
 
     if creatureDisplayInfoID and self.creatureDisplayID~=creatureDisplayInfoID then--3D模型
-        self.itemModel:SetDisplayInfo(creatureDisplayInfoID)
         self.itemModel:SetShown(true)
+        self.itemModel:SetDisplayInfo(creatureDisplayInfoID)
+        self.itemModel:SetAnimation(animID)
         self.creatureDisplayID=creatureDisplayInfoID
     end
 
@@ -120,8 +121,8 @@ local function setPet(self, speciesID)--宠物
         self:AddDoubleLine(' ', '|cffff00ffShfit+'..SHOW..SOURCES..'|r')
     end
 
-    self.textureTopRight:SetTexture('Interface\\Icons\\Icon_PetFamily_'..PET_TYPE_SUFFIX[petType])--宠物类型图标
-    self.textureTopRight:SetShown(true)
+    self.Portrait:SetTexture('Interface\\Icons\\Icon_PetFamily_'..PET_TYPE_SUFFIX[petType])--宠物类型图标
+    self.Portrait:SetShown(true)
 
     if creatureDisplayID and self.creatureDisplayID~=creatureDisplayID then--3D模型
         self.itemModel:SetDisplayInfo(creatureDisplayID)
@@ -144,47 +145,73 @@ local function setItem(self)--物品
         end
     end
     if not Save.showTips then
-        self:AddDoubleLine(addName, 'Ctrl+'..SHOW, 1,0,1, 1,0,1)
+        if not UnitAffectingCombat('player') then
+            self:AddDoubleLine(id, 'Ctrl+'..SHOW, 1,0,1, 1,0,1)
+        end
         return
     end
     local link=select(2, self:GetItem())
     setInitItem(self)--创建物品
     if not C_Item.IsItemDataCachedByID(link) then C_Item.RequestLoadItemDataByID(link) end
-    local _, _, itemQuality, _, _, _, _, _, _, itemTexture, _, _, _, bindType, expacID, setID, isCraftingReagent = GetItemInfo(link)
+    local itemName, itemLink, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, sellPrice, classID, subclassID, bindType, expacID, setID, isCraftingReagent = GetItemInfo(link)
     local itemID, itemType, itemSubType, itemEquipLoc, icon, classID, subclassID = GetItemInfoInstant(link)
     local r, g, b, hex = GetItemQualityColor(itemQuality)
     hex=hex and '|c'..hex or e.Player.col
 
     self:AddDoubleLine(expacID and _G['EXPANSION_NAME'..expacID], expacID and GAME_VERSION_LABEL..': '..expacID+1)--版本
-    self:AddDoubleLine(ITEMS..' ID: '.. itemID , itemTexture and '|T'..itemTexture..':0|t'..itemTexture)--ID, texture
+    self:AddDoubleLine(ITEMS..' ID: '.. itemID , itemTexture and EMBLEM_SYMBOL..'ID: '..itemTexture)--ID, texture
     self:AddDoubleLine((itemType and itemType..' classID'  or 'classID') ..': '..classID, (itemSubType and itemSubType..' subID' or 'subclassID')..': '..subclassID)
 
-    local itemLevel
-    if classID==2 or classID==4 then
-        itemLevel= GetDetailedItemLevelInfo(link)
-        local slot=itemEquipLoc and e.itemSlotTable[itemEquipLoc]--比较装等
-        if slot then
-            local slotLink=GetInventoryItemLink('player', slot)
-            if slotLink then
-                self:AddDoubleLine(_G[itemEquipLoc], TRADESKILL_FILTER_SLOTS..': '..slot)--栏位
-                local slotItemLevel= GetDetailedItemLevelInfo(slotLink)
-                if slotItemLevel then
-                    local num=itemLevel-slotItemLevel
-                    if num>0 then
-                        itemLevel=itemLevel..e.Icon.up2..'|cnGREEN_FONT_COLOR:+'..num..'|r'
-                    elseif num<0 then
-                        itemLevel=itemLevel..e.Icon.down2..'|cnRED_FONT_COLOR:'..num..'|r'
-                    end
-                end
-            else
-                itemLevel=itemLevel..e.Icon.up2
-            end
-        end
-    end
-    self.textLeft:SetText(itemLevel and hex..itemLevel..'|r' or '')
+    self.Portrait:SetTexture(itemTexture)
+    self.Portrait:SetShown(true)
 
-    if classID==2 or classID==4 then--幻化
-        local appearanceID, sourceID =C_TransmogCollection.GetItemInfo(link)
+    local specTable = GetItemSpecInfo(link) or {}--专精图标
+    local specTableNum=#specTable
+    if specTableNum>0 then
+        local num=math.modf(specTableNum/2)
+        local specA=''
+        local class
+        table.sort(specTable, function (a2, b2) return a2<b2 end)
+        for k,  specID in pairs(specTable) do
+            local icon2, _, classFile=select(4, GetSpecializationInfoByID(specID))
+            icon2='|T'..icon2..':0|t'
+            specA = specA..((k>1 and class~=classFile) and '  ' or '')..icon2
+            class=classFile
+        end
+        self:AddDoubleLine(specA, ' ')
+    end
+
+    local spellName, spellID = GetItemSpell(link)--物品法术
+    if spellName and spellID then
+        local spellTexture=GetSpellTexture(spellID)
+        self:AddDoubleLine((itemName~=spellName and spellName..'('..SPELLS..')' or SPELLS)..'ID: '..spellID, spellTexture~=itemTexture and '|T'..spellTexture..':0|t'..spellTexture or ' ')
+    end
+
+    if classID==2 or classID==4 then
+        itemLevel= GetDetailedItemLevelInfo(link) or itemLevel--装等
+        if itemLevel and itemLevel>1 then
+            local slot=itemEquipLoc and e.itemSlotTable[itemEquipLoc]--比较装等
+            if slot then
+                self:AddDoubleLine(_G[itemEquipLoc], TRADESKILL_FILTER_SLOTS..': '..slot)--栏位
+                local slotLink=GetInventoryItemLink('player', slot)
+                if slotLink then
+                    local slotItemLevel= GetDetailedItemLevelInfo(slotLink)
+                    if slotItemLevel then
+                        local num=itemLevel-slotItemLevel
+                        if num>0 then
+                            itemLevel=itemLevel..e.Icon.up2..'|cnGREEN_FONT_COLOR:+'..num..'|r'
+                        elseif num<0 then
+                            itemLevel=itemLevel..e.Icon.down2..'|cnRED_FONT_COLOR:'..num..'|r'
+                        end
+                    end
+                else
+                    itemLevel=itemLevel..e.Icon.up2
+                end
+            end
+            self.textLeft:SetText(itemLevel and hex..itemLevel..'|r' or '')
+        end
+
+        local appearanceID, sourceID =C_TransmogCollection.GetItemInfo(link)--幻化
         local visualID
         if sourceID then
             local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
@@ -199,8 +226,7 @@ local function setItem(self)--物品
             self.creatureDisplayID=appearanceID
         end
         if bindType==LE_ITEM_BIND_ON_EQUIP or bindType==LE_ITEM_BIND_ON_USE then--绑定装备,使用时绑定
-            self.textureTopRight:SetAtlas(e.Icon.unlocked)
-            self.textureTopRight:SetShown(true)
+            self.Portrait:SetAtlas(e.Icon.unlocked)
         end
     else
         if setID then--套装
@@ -214,24 +240,26 @@ local function setItem(self)--物品
             local mountID = C_MountJournal.GetMountFromItem(itemID)--坐骑物品
             local speciesID = select(13, C_PetJournal.GetPetInfoByItemID(itemID))
             if mountID then
-                hasTransmog = setMount(self, mountID, true)--坐骑
+                setMount(self, mountID)--坐骑
             elseif speciesID then
                 setPet(self, speciesID)--宠物
             end
         end
     end
-    
 
     local bag= GetItemCount(link)--物品数量
     local bank= GetItemCount(link,true) - bag
     self.textRight:SetText((bag>0 or bank>0) and hex..bank..e.Icon.bank2..' '..bag..e.Icon.bag2..'|r' or '')
 
-    self.backgroundQualityColor:SetColorTexture(r,g,b)--颜色
-    self.backgroundQualityColor:SetShown(true)
+    self.backgroundColor:SetColorTexture(r, g, b, 0.15)--颜色
+    self.backgroundColor:SetShown(true)
 end
 
 e.tips:SetScript('OnTooltipSetItem', setItem)--物品
-ItemRefTooltip:SetScript('OnTooltipSetItem', setItem)--物品
+ItemRefTooltip:SetScript('OnTooltipSetItem', function(self, ...)
+    setInitItem(self, true)
+    setItem(self, ...)
+end)--物品
 
 --宠物面板提示
 local function setBattlePet(self, speciesID, level, breedQuality, maxHealth, power, speed, customName)
@@ -252,7 +280,9 @@ local function setBattlePet(self, speciesID, level, breedQuality, maxHealth, pow
         end
     end
     if not Save.showTips then
-        BattlePetTooltipTemplate_AddTextLine(self, addName..': Ctrl+'..SHOW, 1,0,1)
+        if not UnitAffectingCombat('player') then
+            BattlePetTooltipTemplate_AddTextLine(self, id..': Ctrl+'..SHOW, 1,0,1)
+        end
         return
     end
     local speciesName, speciesIcon, _, companionID, tooltipSource, _, _, _, _, _, obtainable, creatureDisplayID = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
@@ -294,15 +324,15 @@ local function setBattlePet(self, speciesID, level, breedQuality, maxHealth, pow
     if PetJournalSearchBox and PetJournalSearchBox:IsVisible() then--设置搜索
         PetJournalSearchBox:SetText(speciesName)
     end
-    if not self.backgroundQualityColor then--背景颜色
-        self.backgroundQualityColor=self:CreateTexture(nil,'BACKGROUND')
-        self.backgroundQualityColor:SetAllPoints(self)
-        self.backgroundQualityColor:SetAlpha(0.15)
+    if not self.backgroundColor then--背景颜色
+        self.backgroundColor=self:CreateTexture(nil,'BACKGROUND')
+        self.backgroundColor:SetAllPoints(self)
+        self.backgroundColor:SetAlpha(0.15)
     end
     if (breedQuality ~= -1) then--设置背影颜色
-        self.backgroundQualityColor:SetColorTexture(ITEM_QUALITY_COLORS[breedQuality].r, ITEM_QUALITY_COLORS[breedQuality].g, ITEM_QUALITY_COLORS[breedQuality].b)
+        self.backgroundColor:SetColorTexture(ITEM_QUALITY_COLORS[breedQuality].r, ITEM_QUALITY_COLORS[breedQuality].g, ITEM_QUALITY_COLORS[breedQuality].b, 0.15)
     end
-    self.backgroundQualityColor:SetShown(breedQuality~=-1)
+    self.backgroundColor:SetShown(breedQuality~=-1)
 end
 hooksecurefunc("BattlePetToolTip_Show", function(...)--BattlePetTooltip.lua 
     setBattlePet(BattlePetTooltip, ...)
@@ -316,65 +346,53 @@ hooksecurefunc(e.tips, 'SetToyByItemID', function(self)--玩具
     self:Show()
 end)
 
-local function setBuff(type, self, ...)
-    setInitItem(self)
-    local name, icon, count, dispelType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod
-    if type=='Buff' then
-        type='Buff: '
-        name, icon, count, dispelType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod= UnitBuff(...)
-    elseif type=='Debuff' then
-        t=' |cffff0000Debuff|r: '
-        name, icon, count, dispelType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod = UnitDebuff(...)
-    elseif type=='Aura' then
-        name, icon, count, dispelType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod=UnitAura(...)
+local function setBuff(type, self, ...)--Buff
+    if IsControlKeyDown() then
+        if Save.showTips then
+            Save.showTips=nil
+        else
+            Save.showTips=true
+        end
     end
-    self:AddDoubleLine(type..'ID: '..spellId, '|T'..icon..':0|t'..icon)
+    if not Save.showTips then
+        if not UnitAffectingCombat('player') then
+            self:AddDoubleLine(id, 'Ctrl+'..SHOW, 1,0,1, 1,0,1)
+        end
+        return
+    end
+    setInitItem(self)
+    local name, icon, count, dispelType, duration, expirationTime, sourceUnit, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod
+    if type=='Buff' then
+        name, icon, count, dispelType, duration, expirationTime, sourceUnit, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod= UnitBuff(...)
+    elseif type=='Debuff' then
+        name, icon, count, dispelType, duration, expirationTime, sourceUnit, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod = UnitDebuff(...)
+    elseif type=='Aura' then
+        name, icon, count, dispelType, duration, expirationTime, sourceUnit, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod=UnitAura(...)
+    end
+    local unitInfo
+    if sourceUnit=='player' then
+        unitInfo=e.Player.col..COMBATLOG_FILTER_STRING_ME..'|r'
+    elseif sourceUnit=='pet' then
+        unitInfo = sourceUnit and '|c'..select(4,GetClassColor(UnitClassBase(sourceUnit)))..PET..'|r' or PET
+    elseif sourceUnit and UnitIsPlayer(sourceUnit) then
+        unitInfo = e.GetPlayerInfo(sourceUnit, nil, true)
+    end
+    self:AddDoubleLine((unitInfo or type)..'ID: '..spellId, EMBLEM_SYMBOL..'ID: '..icon)
 
     local mountID = C_MountJournal.GetMountFromSpell(spellId)
     if mountID then
         setMount(self, mountID)
     end
-    --self:Show()
---[[
-    local m='';
-    if source=='player' then
-        m=m..e.Ccol(COMBATLOG_FILTER_STRING_ME, source);
-    elseif source=='pet' then
-        m=m..e.Ccol(PET_TYPE_PET, source)
-    elseif source then        
-        m=m..e.Mark(source)..(e.Race(source) or '')..(e.Class(source) or '')..e.Role(source);
-        
-        local name=UnitName(source)--名字
-        if name then
-            m=m..e.Ccol(name, source)..' ';
-        else
-            source=source or source;
-            m=m..source..' ';
+
+    if sourceUnit then
+        local r, g ,b , hex= GetClassColor(UnitClassBase(sourceUnit))
+        if r and g and b then
+           self.backgroundColor:SetColorTexture(r, g, b, 0.3)
+            --self.backgroundColor:SetShown(true)
         end
+        SetPortraitTexture(self.Portrait, sourceUnit)
+        self.Portrait:SetShown(true)
     end
-    
-    m=m..t..spellId;
-    
-    local mountID = C_MountJournal.GetMountFromSpell(spellId);
-    if mountID then
-        model= select(2, e.Mount(self, mountID));
-    end
-    
-    if model then
-        local t=Tip.M1:GetDisplayInfo();
-        if not t or t~=model then Tip.M1:SetDisplayInfo(model) end
-        if not Tip.M1:IsShown() then Tip.M1:Show() end
-        
-    elseif Tip.M1:IsShown() then
-        Tip.M1:Hide();        
-        
-    end
-    
-    if icon then  icon=' |T'..icon..':0|t'..icon end   
-    
-    if isStealable  then m=m..' |cff00ff00'..ACTION_SPELL_STOLEN_DEBUFF..'|r' end
-    self:AddDoubleLine(m, icon);
-    self:Show();]]
 end
 hooksecurefunc(e.tips, "SetUnitBuff", function(...)
     setBuff('Buff', ...)
@@ -386,12 +404,54 @@ hooksecurefunc(e.tips, "SetUnitAura", function(...)
     setBuff('Aura', ...)
 end)
 
-e.tips:HookScript("OnHide", function(self)
+local function setSpell(self)--法术
+    if IsControlKeyDown() then
+        if Save.showTips then
+            Save.showTips=nil
+        else
+            Save.showTips=true
+        end
+    end
+    if not Save.showTips then
+        if not UnitAffectingCombat('player') then
+            self:AddDoubleLine(id, 'Ctrl+'..SHOW, 1,0,1, 1,0,1)
+        end
+        return
+    end
+    local spellID = select(2, self:GetSpell())
+    local spellTexture=spellID and  GetSpellTexture(spellID)
+    if not spellTexture then
+        return
+    end
+    self:AddDoubleLine(SPELLS..'ID: '..spellID, EMBLEM_SYMBOL..'ID: '..spellTexture)
+    setInitItem(self)--创建物品
+    self.Portrait:SetTexture(spellTexture)
+    self.Portrait:SetShown(true)
+end
+e.tips:HookScript('OnTooltipSetSpell', setSpell)--法术
+ItemRefTooltip:HookScript('OnTooltipSetSpell', function(self, ...)
     setInitItem(self, true)
-end);
-ItemRefTooltip:HookScript("OnHide", function (self)
-    setInitItem(self, true)
-end);
+    setSpell(self, ...)
+end)--法术
+
+
+
+local function setCurrency(self, currencyID)--货币
+    local info = C_CurrencyInfo.GetCurrencyInfo(currencyID)
+    if info then
+        self:AddDoubleLine(TOKENS..'ID: '..currencyID, EMBLEM_SYMBOL..'ID: '..info.iconFileID)
+        setInitItem(self)--创建物品
+        self.Portrait:SetTexture(info.iconFileID)
+        self.Portrait:SetShown(true)
+    end
+end
+hooksecurefunc(e.tips, "SetCurrencyToken", function(self, index)--角色货币栏
+    local currencyLink = C_CurrencyInfo.GetCurrencyListLink(index)
+    local currencyID = currencyLink and C_CurrencyInfo.GetCurrencyIDFromLink(currencyLink)
+    if currencyID then
+        setCurrency(self, currencyID)
+    end
+end)
 
 
 
@@ -400,29 +460,66 @@ end);
 
 
 
-hooksecurefunc('GameTooltip_AddQuestRewardsToTooltip', function(tooltip, questID, style)--世界任务ID
+--[[
+
+
+hooksecurefunc(e.tips, 'SetCurrencyByID', function(...)
+    print('SetCurrencyByID')
+    print(...)
+end)
+
+hooksecurefunc(ItemRefTooltip, 'SetCurrencyTokenByID', function(...)
+    print('SetCurrencyToken')
+    print(...)
+end)
+hooksecurefunc(e.tips, 'SetHyperlink', function(...)
+    print('SetHyperlink')
+    print(...)
+end)
+
+]]
+
+
+
+
+
+
+
+
+
+hooksecurefunc('GameTooltip_AddQuestRewardsToTooltip', function(tooltip, questID, style)--世界任务ID GameTooltip_AddQuest
     e.tips:AddDoubleLine(QUESTS_LABEL..' ID:', questID)
 end)
 
-hooksecurefunc('GameTooltip_AddWidgetSet', function(self, widgetSetID, verticalPadding)
+hooksecurefunc('GameTooltip_AddWidgetSet', function(self, widgetSetID, verticalPadding)--没测试
     e.tips:AddDoubleLine('widget ID:', widgetSetID)
 end)
-hooksecurefunc('GameTooltip_AddStatusBar', function(self, min, max, value, text)
-    print('GameTooltip_AddStatusBar',self, min, max, value, text)
-end)
-hooksecurefunc('GameTooltip_AddQuest', function(self, questID)
-    print('GameTooltip_AddQuest',self, questID)
-end)
 
+
+local function setClassTalentSpell(self, tooltip)--天赋
+    local spellID = self:GetSpellID()
+    local spellTexture=spellID and  GetSpellTexture(spellID)
+    if not spellTexture then
+        return
+    end
+    setInitItem(tooltip)--创建物品
+    tooltip:AddLine(SPELLS..'ID: '..spellID..'                ' ..EMBLEM_SYMBOL..'ID: '..spellTexture)
+    tooltip.Portrait:SetTexture(spellTexture)
+    tooltip.Portrait:SetShown(true)
+end
 
 --加载保存数据
 local panel=CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1==id then
+    if event == "ADDON_LOADED" then
+        if arg1==id then
             Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
-
+        elseif arg1=='Blizzard_ClassTalentUI' then
+            hooksecurefunc(ClassTalentSelectionChoiceMixin, 'AddTooltipInstructions', setClassTalentSpell)--Blizzard_ClassTalentButtonTemplates.lua--天赋
+            hooksecurefunc(ClassTalentButtonSpendMixin, 'AddTooltipInstructions', setClassTalentSpell)
+        end
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
@@ -430,4 +527,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave[addName]=Save
         end
     end
+end)
+
+
+--隐藏
+e.tips:HookScript("OnHide", function(self)
+    setInitItem(self, true)
+end)
+ItemRefTooltip:HookScript("OnHide", function (self)
+    setInitItem(self, true)
 end)
