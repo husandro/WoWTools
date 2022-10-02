@@ -127,7 +127,7 @@ hooksecurefunc('ReputationFrame_InitReputationRow', function (factionRow, elemen
 	local factionContainer = factionRow.Container
 	local factionBar = factionContainer.ReputationBar;
 	local watchedIcon=factionBar.watchedIcon--显示为经验条
-	local name, des_cription, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canSetInactive = GetFactionInfo(factionIndex);
+	local name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canSetInactive = GetFactionInfo(factionIndex);
 	if (isHeader and not hasRep) or not factionID then
 		if watchedIcon then
 			watchedIcon:SetShown(false)
@@ -152,7 +152,7 @@ hooksecurefunc('ReputationFrame_InitReputationRow', function (factionRow, elemen
 				barColor=FACTION_ORANGE_COLOR				
 			end
 		end
-	elseif isMajorFaction then--主要声望		
+	elseif isMajorFaction then-- 名望
 		local majorFactionData = C_MajorFactions.GetMajorFactionData(factionID)
 		local icon
 		if majorFactionData and majorFactionData.textureKit then
@@ -415,7 +415,7 @@ local function FactionUpdate(self, env, text)--监视声望更新提示
 				end
 			end
 			local m=name..(factionStandingtext and ' '..factionStandingtext or '')
-			if barColor then				
+			if barColor then
 				m=barColor:WrapTextInColorCode(m)
 			end
 			if value then

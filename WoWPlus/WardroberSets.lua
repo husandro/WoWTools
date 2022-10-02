@@ -1,6 +1,22 @@
 local id, e = ...
 local addName=WARDROBE_SETS
 local Save={}
+--外观保存数据wowSave={[1]={class=str,numCollected=number, numTotal=number}
+local wowSave = {
+    ['1']={['class']='WARRIOR'},
+    ['2']={['class']='PALADIN'},
+    ['4']={['class']='HUNTER'},
+    ['8']={['class']='ROGUE'},
+    ['16']={['class']='PRIEST'},
+    ['32']={['class']='DEATHKNIGHT'},
+    ['64']={['class']='SHAMAN'},
+    ['128']={['class']='MAGE'},
+    ['256']={['class']='WARLOCK'},
+    ['512']={['class']='MONK'},
+    ['1024']={['class']='DRUID'},
+    ['2048']={['class']='DEMONHUNTER'},
+    ['4096']={['class']='EVOKER'},
+}
 
 --试衣间, 外观列表DressUpFrames.lua
 hooksecurefunc(DressUpOutfitDetailsSlotMixin, 'SetDetails', function(self, transmogID, icon, name, useSmallIcon, slotState, isHiddenVisual)
@@ -94,23 +110,7 @@ dupframe.sel:SetScript('OnLeave', function ()
 end)
 
 --外观
-local wowSave = {
-    ['1']={['class']='WARRIOR'},
-    ['2']={['class']='PALADIN'},
-    ['4']={['class']='HUNTER'},
-    ['8']={['class']='ROGUE'},
-    ['16']={['class']='PRIEST'},
-    ['32']={['class']='DEATHKNIGHT'},
-    ['64']={['class']='SHAMAN'},
-    ['128']={['class']='MAGE'},
-    ['256']={['class']='WARLOCK'},
-    ['512']={['class']='MONK'},
-    ['1024']={['class']='DRUID'},
-    ['2048']={['class']='DEMONHUNTER'},
-    ['4096']={['class']='EVOKER'},
-}
 local wowSave2=wowSave
-
 local function SetSaveWardroberColleced()--收集所有角色套装数据
     local numCollected, numTotal = C_TransmogSets.GetBaseSetsCounts()
     for _,v in pairs(wowSave) do

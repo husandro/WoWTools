@@ -95,6 +95,7 @@ e.Icon={
     player=e.Race('player'),
 
     bank2='|A:Banker:0:0|a',
+    bag='bag-main',
     bag2='|A:bag-main:0:0|a',
     up2='|A:bags-greenarrow:0:0|a',--绿色向上
     down2='|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a',--红色向下

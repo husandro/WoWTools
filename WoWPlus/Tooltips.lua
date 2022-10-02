@@ -1,6 +1,8 @@
 local id, e = ...
 local addName='Tooltips'
-local Save={}
+local Save={setDefaultAnchor=true,}
+local wowItemsSave={}
+local wowCurrencySave={}
 
 local function setInitItem(self, hide)--创建物品
     if not self.textLeft then--左上角字符
@@ -68,12 +70,12 @@ end
 local function setMount(self, mountID)--坐骑    
     local name, spellID, icon, isActive, isUsable, sourceType, isFavorite, isFactionSpecific, faction, shouldHideOnChar, isCollected=C_MountJournal.GetMountInfoByID(mountID)
     
-    self:AddDoubleLine(MOUNTS..' ID: '..mountID, SUMMON..ABILITIES..' ID: '..spellID)
+    self:AddDoubleLine(MOUNTS..'ID: '..mountID, SUMMON..ABILITIES..'ID: '..spellID)
     if isFactionSpecific then
         self:AddDoubleLine(not faction and ' ' or LFG_LIST_CROSS_FACTION:format(faction==0 and e.Icon.horde2..THE_HORDE or e.Icon.alliance2..THE_ALLIANCE or ''), ' ')
     end
     local creatureDisplayInfoID, description, source, isSelfMount, mountTypeID, uiModelSceneID, animID, spellVisualKitID, disablePlayerMountPreview = C_MountJournal.GetMountInfoExtraByID(mountID)
-    self:AddDoubleLine(MODEL..' ID: '..creatureDisplayInfoID, TUTORIAL_TITLE61_DRUID..': '..(isSelfMount and YES or NO))
+    self:AddDoubleLine(MODEL..'ID: '..creatureDisplayInfoID, TUTORIAL_TITLE61_DRUID..': '..(isSelfMount and YES or NO))
     self:AddDoubleLine(source,' ')
 
     if creatureDisplayInfoID and self.creatureDisplayID~=creatureDisplayInfoID then--3D模型
@@ -90,7 +92,6 @@ local function setPet(self, speciesID)--宠物
     if not speciesID or speciesID <= 0 then
         return
     end
-
     local speciesName, speciesIcon, petType, companionID, tooltipSource, tooltipDescription, isWild, canBattle, isTradeable, isUnique, obtainable, creatureDisplayID = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
     self:AddLine(' ')
 
@@ -98,7 +99,7 @@ local function setPet(self, speciesID)--宠物
         local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesID)
         self:AddDoubleLine(numCollected==0 and '|cnRED_FONT_COLOR:'..ITEM_PET_KNOWN:format(0, limit)..'|r' or ' ', 'NPCID: '..companionID)
     end
-    self:AddDoubleLine(PET..' ID: '..speciesID, MODEL..' ID: '..creatureDisplayID)--ID
+    self:AddDoubleLine(PET..'ID: '..speciesID, MODEL..'ID: '..creatureDisplayID)--ID
 
     local tab = C_PetJournal.GetPetAbilityListTable(speciesID)--技能图标
     table.sort(tab, function(a,b) return a.level< b.level end)
@@ -130,6 +131,7 @@ local function setPet(self, speciesID)--宠物
         self.creatureDisplayID=creatureDisplayID
     end
 end
+
 local function setItem(self)--物品
     if IsShiftKeyDown() then
         if Save.showSource then
@@ -159,7 +161,7 @@ local function setItem(self)--物品
     hex=hex and '|c'..hex or e.Player.col
 
     self:AddDoubleLine(expacID and _G['EXPANSION_NAME'..expacID], expacID and GAME_VERSION_LABEL..': '..expacID+1)--版本
-    self:AddDoubleLine(ITEMS..' ID: '.. itemID , itemTexture and EMBLEM_SYMBOL..'ID: '..itemTexture)--ID, texture
+    self:AddDoubleLine(ITEMS..'ID: '.. itemID , itemTexture and EMBLEM_SYMBOL..'ID: '..itemTexture)--ID, texture
     self:AddDoubleLine((itemType and itemType..' classID'  or 'classID') ..': '..classID, (itemSubType and itemSubType..' subID' or 'subclassID')..': '..subclassID)
 
     self.Portrait:SetTexture(itemTexture)
@@ -255,13 +257,158 @@ local function setItem(self)--物品
     self.backgroundColor:SetShown(true)
 end
 
-e.tips:SetScript('OnTooltipSetItem', setItem)--物品
-ItemRefTooltip:SetScript('OnTooltipSetItem', function(self, ...)
-    setInitItem(self, true)
-    setItem(self, ...)
-end)--物品
+local function setSpell(self)--法术
+    if IsControlKeyDown() then
+        if Save.showTips then
+            Save.showTips=nil
+        else
+            Save.showTips=true
+        end
+    end
+    if not Save.showTips then
+        if not UnitAffectingCombat('player') then
+            self:AddDoubleLine(id, 'Ctrl+'..SHOW, 1,0,1, 1,0,1)
+        end
+        return
+    end
+    local spellID = select(2, self:GetSpell())
+    local spellTexture=spellID and  GetSpellTexture(spellID)
+    if not spellTexture then
+        return
+    end
+    self:AddDoubleLine(SPELLS..'ID: '..spellID, EMBLEM_SYMBOL..'ID: '..spellTexture)
+    setInitItem(self)--创建物品
+    self.Portrait:SetTexture(spellTexture)
+    self.Portrait:SetShown(true)
 
+    local mountID = C_MountJournal.GetMountFromSpell(spellID)--坐骑
+    if mountID then
+        setMount(self, mountID)
+    end
+end
+
+local function setCurrency(self, currencyID)--货币
+    if IsControlKeyDown() then
+        if Save.showTips then
+            Save.showTips=nil
+        else
+            Save.showTips=true
+        end
+    end
+    if not Save.showTips then
+        if not UnitAffectingCombat('player') then
+            self:AddDoubleLine(id, 'Ctrl+'..SHOW, 1,0,1, 1,0,1)
+        end
+        return
+    end
+    local info = C_CurrencyInfo.GetCurrencyInfo(currencyID)
+    if info then
+        self:AddDoubleLine(TOKENS..'ID: '..currencyID, EMBLEM_SYMBOL..'ID: '..info.iconFileID)
+        setInitItem(self)--创建物品
+        self.Portrait:SetTexture(info.iconFileID)
+        self.Portrait:SetShown(true)
+    end
+    local factionID = C_CurrencyInfo.GetFactionGrantedByCurrency(currencyID)--派系声望
+    if factionID and factionID>0 then
+        local name= GetFactionInfoByID(factionID)
+        if name then
+            self.AddDoubleLine(REPUTATION, name)
+        end
+    end
+end
+
+local function setAchievement(self, achievementID)--成就
+    local _, _, points, completed, _, _, _, _, flags, icon = GetAchievementInfo(achievementID)
+    self.textLeft:SetText(points..RESAMPLE_QUALITY_POINT)--点数
+    self.text2Left:SetText(completed and '|cnGREEN_FONT_COLOR:'..	CRITERIA_COMPLETED..'|r' or '|cnRED_FONT_COLOR:'..	ACHIEVEMENTFRAME_FILTER_INCOMPLETE..'|r')--否是完成
+    if flags== 0x20000 then
+        self.textRight:SetText(e.Icon.wow2)
+    end
+    local str= flags== 0x4000 and GUILD or flags==0x20000 and e.Icon.wow2..'WoW'..SHARE_QUEST_ABBREV
+    if str then
+        self:AddDoubleLine(ACHIEVEMENTS..'ID: '..achievementID..(icon and ' '..EMBLEM_SYMBOL..'ID: '..icon or ''), str, nil,nil,nil, 1,0,1)
+    else
+        self:AddDoubleLine(ACHIEVEMENTS..'ID: '..achievementID, icon and EMBLEM_SYMBOL..'ID: '..icon)
+    end
+    if icon then
+        setInitItem(self)--创建物品
+        self.Portrait:SetTexture(icon)
+        self.Portrait:SetShown(true)
+    end
+end
+
+local function setQuest(self, questID)
+    self:AddDoubleLine(QUESTS_LABEL..'ID:', questID)
+end
+
+
+--####################
+--物品, 法术, 货币, 成就
+--####################
+
+hooksecurefunc(e.tips, "SetCurrencyToken", function(self, index)--角色货币栏
+    local currencyLink = C_CurrencyInfo.GetCurrencyListLink(index)
+    local currencyID = currencyLink and C_CurrencyInfo.GetCurrencyIDFromLink(currencyLink)
+    if currencyID then
+        setCurrency(self, currencyID)
+    end
+end)
+hooksecurefunc(e.tips, 'SetBackpackToken', function(self, index)--包里货币
+    local info = C_CurrencyInfo.GetBackpackCurrencyInfo(index)
+    if info and info.currencyTypesID then
+        setCurrency(self, info.currencyTypesID)
+        self:Show()
+    end
+end)
+
+e.tips:SetScript('OnTooltipSetItem', setItem)--物品
+
+hooksecurefunc(e.tips, 'SetToyByItemID', function(self)--玩具
+    setItem(self)
+    self:Show()
+end)
+
+e.tips:HookScript('OnTooltipSetSpell', setSpell)--法术
+hooksecurefunc('GameTooltip_AddQuestRewardsToTooltip', setQuest)--世界任务ID GameTooltip_AddQuest
+
+hooksecurefunc(ItemRefTooltip, 'SetHyperlink', function(self, link)--ItemRef.lua ItemRefTooltipMixin:ItemRefSetHyperlink(link)
+    setInitItem(self, true)
+    local linkName, linkID = link:match('(.-):(%d+):')
+    linkID = (linkName and linkID) and tonumber(linkID)
+    if not linkID then
+        return
+    end
+    if linkName=='item' then--物品OnTooltipSetItem
+        setItem(self)
+        self:Show()
+    elseif linkName=='spell' then--法术OnTooltipSetSpell
+        setSpell(self)
+    elseif linkName=='currency' then--货币
+        setCurrency(self, linkID)
+        self:Show()
+    elseif linkName=='achievement' then--成就
+        setAchievement(self, linkID)
+        self:Show()
+    elseif linkName=='quest'then
+        setQuest(self, linkID)
+        self:Show()
+    end
+    --print(linkName, linkID)
+end)
+
+
+--####
+--widgetSet
+--####
+
+hooksecurefunc('GameTooltip_AddWidgetSet', function(self, widgetSetID, verticalPadding)--没测试
+    e.tips:AddDoubleLine('widgetID:', widgetSetID)
+end)
+
+
+--###########
 --宠物面板提示
+--###########
 local function setBattlePet(self, speciesID, level, breedQuality, maxHealth, power, speed, customName)
     if not speciesID or speciesID <= 0 then
         return
@@ -341,11 +488,9 @@ hooksecurefunc('FloatingBattlePet_Show', function(...)--FloatingPetBattleTooltip
     setBattlePet(FloatingBattlePetTooltip, ...)
 end)
 
-hooksecurefunc(e.tips, 'SetToyByItemID', function(self)--玩具
-    setItem(self)
-    self:Show()
-end)
-
+--####
+--Buff
+--####
 local function setBuff(type, self, ...)--Buff
     if IsControlKeyDown() then
         if Save.showTips then
@@ -361,13 +506,13 @@ local function setBuff(type, self, ...)--Buff
         return
     end
     setInitItem(self)
-    local name, icon, count, dispelType, duration, expirationTime, sourceUnit, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod
+    local _, icon, sourceUnit, spellId
     if type=='Buff' then
-        name, icon, count, dispelType, duration, expirationTime, sourceUnit, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod= UnitBuff(...)
+        _, icon, _, _, _, _, sourceUnit, _, _, spellId= UnitBuff(...)
     elseif type=='Debuff' then
-        name, icon, count, dispelType, duration, expirationTime, sourceUnit, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod = UnitDebuff(...)
+        _, icon, _, _, _, _, sourceUnit, _, _, spellId = UnitDebuff(...)
     elseif type=='Aura' then
-        name, icon, count, dispelType, duration, expirationTime, sourceUnit, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod=UnitAura(...)
+        _, icon, _, _, _, _, sourceUnit, _, _, spellId=UnitAura(...)
     end
     local unitInfo
     if sourceUnit=='player' then
@@ -404,7 +549,11 @@ hooksecurefunc(e.tips, "SetUnitAura", function(...)
     setBuff('Aura', ...)
 end)
 
-local function setSpell(self)--法术
+
+--####
+--声望
+--####
+local setFriendshipFaction=function(self, friendshipID)--friend声望
     if IsControlKeyDown() then
         if Save.showTips then
             Save.showTips=nil
@@ -418,96 +567,114 @@ local function setSpell(self)--法术
         end
         return
     end
-    local spellID = select(2, self:GetSpell())
-    local spellTexture=spellID and  GetSpellTexture(spellID)
-    if not spellTexture then
+    local repInfo = C_GossipInfo.GetFriendshipReputation(friendshipID);
+	if ( repInfo and repInfo.friendshipFactionID and repInfo.friendshipFactionID > 0) then
+        local icon = (repInfo.texture and repInfo.texture>0) and repInfo.texture
+        if icon then
+            setInitItem(self)
+            self.Portrait:SetShown(true)
+            self.Portrait:SetTexture(icon)
+            self:AddDoubleLine(INDIVIDUALS..REPUTATION..'ID: '..friendshipID, icon  and EMBLEM_SYMBOL..'ID: '..icon)
+        else
+            self:AddDoubleLine(INDIVIDUALS..REPUTATION..'ID: '..friendshipID)
+        end
+        self:Show()
+    end
+end
+hooksecurefunc(ReputationBarMixin, 'ShowFriendshipReputationTooltip', function(self, friendshipID)--个人声望ReputationFrame.lua
+    setFriendshipFaction(e.tips, friendshipID)
+end)
+
+local function setMajorFactionRenown(self, majorFactionID)--名望
+    if IsControlKeyDown() then
+        if Save.showTips then
+            Save.showTips=nil
+        else
+            Save.showTips=true
+        end
+    end
+    if not Save.showTips then
+        if not UnitAffectingCombat('player') then
+            self:AddDoubleLine(id, 'Ctrl+'..SHOW, 1,0,1, 1,0,1)
+        end
         return
     end
-    self:AddDoubleLine(SPELLS..'ID: '..spellID, EMBLEM_SYMBOL..'ID: '..spellTexture)
-    setInitItem(self)--创建物品
-    self.Portrait:SetTexture(spellTexture)
-    self.Portrait:SetShown(true)
+	local majorFactionData = C_MajorFactions.GetMajorFactionData(majorFactionID)
+    if majorFactionData then
+        local icon= majorFactionData.textureKit
+        if icon then
+            setInitItem(self)
+            self.Portrait:SetShown(true)
+            self.Portrait:SetTexture(icon)
+            self:AddLine(RENOWN_LEVEL_LABEL..'ID: '..majorFactionID, icon  and 	EMBLEM_SYMBOL..'ID: '..icon)
+        else
+            self:AddLine(RENOWN_LEVEL_LABEL..'ID: '..majorFactionID)
+        end
+        self:Show()
+    end
 end
-e.tips:HookScript('OnTooltipSetSpell', setSpell)--法术
-ItemRefTooltip:HookScript('OnTooltipSetSpell', function(self, ...)
+hooksecurefunc(ReputationBarMixin, 'ShowMajorFactionRenownTooltip', function(self)--Major名望, 没测试ReputationFrame.lua
+    setMajorFactionRenown(e.tips, self.factionID)
+end)
+
+
+hooksecurefunc(ReputationBarMixin, 'OnEnter', function(self)--角色栏,声望
+    if self.friendshipID or not self.factionID or (C_Reputation.IsMajorFaction(self.factionID) and not C_MajorFactions.HasMaximumRenown(self.factionID)) then
+        return
+    end
+    if IsControlKeyDown() then
+        if Save.showTips then
+            Save.showTips=nil
+        else
+            Save.showTips=true
+        end
+    end
+    if not Save.showTips then
+        if not UnitAffectingCombat('player') then
+            self:AddDoubleLine(id, 'Ctrl+'..SHOW, 1,0,1, 1,0,1)
+        end
+        return
+    end
+    if not self.Container.Name:IsTruncated() then
+        local name, description, standingID, _, barMax, barValue, _, _, isHeader, _, hasRep, _, _, factionID, _, _ = GetFactionInfoByID(self.factionID)
+        if factionID and not isHeader or (isHeader and hasRep) then
+            e.tips:SetOwner(self, "ANCHOR_RIGHT");
+            e.tips:AddLine(name..' '..standingID..'/'..MAX_REPUTATION_REACTION, 1,1,1)
+            e.tips:AddLine(description, nil,nil,nil, true)
+            local gender = UnitSex("player");
+            local factionStandingtext = GetText("FACTION_STANDING_LABEL"..standingID, gender)
+            local barColor = FACTION_BAR_COLORS[standingID]
+            factionStandingtext=barColor:WrapTextInColorCode(factionStandingtext)--颜色
+            e.tips:AddLine(factionStandingtext..' '..e.MK(barValue, 3)..'/'..e.MK(barMax, 3)..' '..('%i%%'):format(barValue/barMax*100), 1,1,1)
+            e.tips:AddLine(REPUTATION..'ID: '..self.factionID or factionID)
+            e.tips:Show();
+        end
+    else
+        e.tips:AddLine(REPUTATION..'ID: '..(self.factionID or factionID))
+        e.tips:Show()
+    end
+end)
+
+--****
+--隐藏
+--****
+e.tips:HookScript("OnHide", function(self)
     setInitItem(self, true)
-    setSpell(self, ...)
-end)--法术
+end)
+ItemRefTooltip:HookScript("OnHide", function (self)
+    setInitItem(self, true)
+end)
 
-
-
-local function setCurrency(self, currencyID)--货币
-    local info = C_CurrencyInfo.GetCurrencyInfo(currencyID)
-    if info then
-        self:AddDoubleLine(TOKENS..'ID: '..currencyID, EMBLEM_SYMBOL..'ID: '..info.iconFileID)
-        setInitItem(self)--创建物品
-        self.Portrait:SetTexture(info.iconFileID)
-        self.Portrait:SetShown(true)
+local GameTooltip_SetDefaultAnchor_WoW=GameTooltip_SetDefaultAnchor--GameTooltip.lua
+local function setPostion(self)--设置默认提示位置
+    if Save.setDefaultAnchor then
+        function GameTooltip_SetDefaultAnchor(tooltip, parent)--设置默认提示位置
+            tooltip:SetOwner(parent, 'ANCHOR_CURSOR_LEFT')
+        end
+    else
+        GameTooltip_SetDefaultAnchor=GameTooltip_SetDefaultAnchor_WoW
     end
 end
-hooksecurefunc(e.tips, "SetCurrencyToken", function(self, index)--角色货币栏
-    local currencyLink = C_CurrencyInfo.GetCurrencyListLink(index)
-    local currencyID = currencyLink and C_CurrencyInfo.GetCurrencyIDFromLink(currencyLink)
-    if currencyID then
-        setCurrency(self, currencyID)
-    end
-end)
-
-
-
-
-
-
-
-
---[[
-
-
-hooksecurefunc(e.tips, 'SetCurrencyByID', function(...)
-    print('SetCurrencyByID')
-    print(...)
-end)
-
-hooksecurefunc(ItemRefTooltip, 'SetCurrencyTokenByID', function(...)
-    print('SetCurrencyToken')
-    print(...)
-end)
-hooksecurefunc(e.tips, 'SetHyperlink', function(...)
-    print('SetHyperlink')
-    print(...)
-end)
-
-]]
-
-
-
-
-
-
-
-
-
-hooksecurefunc('GameTooltip_AddQuestRewardsToTooltip', function(tooltip, questID, style)--世界任务ID GameTooltip_AddQuest
-    e.tips:AddDoubleLine(QUESTS_LABEL..' ID:', questID)
-end)
-
-hooksecurefunc('GameTooltip_AddWidgetSet', function(self, widgetSetID, verticalPadding)--没测试
-    e.tips:AddDoubleLine('widget ID:', widgetSetID)
-end)
-
-
-local function setClassTalentSpell(self, tooltip)--天赋
-    local spellID = self:GetSpellID()
-    local spellTexture=spellID and  GetSpellTexture(spellID)
-    if not spellTexture then
-        return
-    end
-    setInitItem(tooltip)--创建物品
-    tooltip:AddLine(SPELLS..'ID: '..spellID..'                ' ..EMBLEM_SYMBOL..'ID: '..spellTexture)
-    tooltip.Portrait:SetTexture(spellTexture)
-    tooltip.Portrait:SetShown(true)
-end
-
 --加载保存数据
 local panel=CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
@@ -516,7 +683,23 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
+            wowItemsSave=WoWToolsSave and WoWToolsSave['WoW-Items'] or wowItemsSave
+            wowCurrencySave=WoWToolsSave and WoWToolsSave['WoW-Currency'] or wowCurrencySave
+            setPostion(self)--设置默认提示位置
+            self.setDefaultAnchor:SetChecked(Save.setDefaultAnchor)
+
         elseif arg1=='Blizzard_ClassTalentUI' then
+            local function setClassTalentSpell(self2, tooltip)--天赋
+                local spellID = self2:GetSpellID()
+                local spellTexture=spellID and  GetSpellTexture(spellID)
+                if not spellTexture then
+                    return
+                end
+                setInitItem(tooltip)--创建物品
+                tooltip:AddLine(SPELLS..'ID: '..spellID..'                ' ..EMBLEM_SYMBOL..'ID: '..spellTexture)
+                tooltip.Portrait:SetTexture(spellTexture)
+                tooltip.Portrait:SetShown(true)
+            end
             hooksecurefunc(ClassTalentSelectionChoiceMixin, 'AddTooltipInstructions', setClassTalentSpell)--Blizzard_ClassTalentButtonTemplates.lua--天赋
             hooksecurefunc(ClassTalentButtonSpendMixin, 'AddTooltipInstructions', setClassTalentSpell)
         end
@@ -529,11 +712,19 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     end
 end)
 
+panel.name = addName;--添加新控制面板
+panel.parent =id;
+InterfaceOptions_AddCategory(panel)
 
---隐藏
-e.tips:HookScript("OnHide", function(self)
-    setInitItem(self, true)
-end)
-ItemRefTooltip:HookScript("OnHide", function (self)
-    setInitItem(self, true)
+panel.setDefaultAnchor=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--设置默认提示位置
+panel.setDefaultAnchor.Text:SetText(DEFAULT..RESAMPLE_QUALITY_POINT..': '..FOLLOW..MOUSE_LABEL)
+panel.setDefaultAnchor:SetPoint('TOPLEFT')
+panel.setDefaultAnchor:SetScript('OnClick', function(self)
+    if Save.setDefaultAnchor then
+        Save.setDefaultAnchor=nil
+    else
+        Save.setDefaultAnchor=true
+    end
+    setPostion(self)
+    print(DEFAULT..RESAMPLE_QUALITY_POINT..': '..FOLLOW..MOUSE_LABEL, e.GetEnabeleDisable(Save.setDefaultAnchor))
 end)

@@ -154,38 +154,71 @@ local function Set()
 
 		sel.btn.str=e.Cstr(sel.btn)--内容显示文本
 		sel.btn.str:SetPoint('TOPLEFT',3,-3)
-		end
-
-		--展开,合起
-		if not Save.hideUpDown then
-			sel.down=e.Cbtn(sel, true);
-			sel.down:SetPoint('RIGHT', sel, 'LEFT', -2,0)
-			sel.down:SetSize(18,18);
-			sel.down:SetNormalTexture(Icon.down)
-			sel.down:SetScript("OnMouseDown", function(self)
-					for i=1, C_CurrencyInfo.GetCurrencyListSize() do--展开所有
-						local info = C_CurrencyInfo.GetCurrencyListInfo(i)
-						if info  and info.isHeader and not info.isHeaderExpanded then
-							C_CurrencyInfo.ExpandCurrencyList(i,true);
-						end
-					end
-					TokenFrame_Update()
-			end)
-			sel.up=e.Cbtn(sel, true)
-			sel.up:SetPoint('RIGHT', sel.down, 'LEFT',-2,0)
-			sel.up:SetSize(18,18);
-			sel.up:SetNormalTexture(Icon.up)
-			sel.up:SetScript("OnMouseDown", function(self)
-					for i=1, C_CurrencyInfo.GetCurrencyListSize() do--展开所有
-						local info = C_CurrencyInfo.GetCurrencyListInfo(i);
-						if info  and info.isHeader and info.isHeaderExpanded then
-							C_CurrencyInfo.ExpandCurrencyList(i, false);
-						end
-					end
-					TokenFrame_Update();
-			end)
 	end
 
+	--展开,合起
+	if not Save.hideUpDown and not sel.down then
+		sel.down=e.Cbtn(sel, true);
+		sel.down:SetPoint('RIGHT', sel, 'LEFT', -2,0)
+		sel.down:SetSize(18,18);
+		sel.down:SetNormalTexture(Icon.down)
+		sel.down:SetScript("OnMouseDown", function(self)
+				for i=1, C_CurrencyInfo.GetCurrencyListSize() do--展开所有
+					local info = C_CurrencyInfo.GetCurrencyListInfo(i)
+					if info  and info.isHeader and not info.isHeaderExpanded then
+						C_CurrencyInfo.ExpandCurrencyList(i,true);
+					end
+				end
+				TokenFrame_Update()
+		end)
+		sel.up=e.Cbtn(sel, true)
+		sel.up:SetPoint('RIGHT', sel.down, 'LEFT',-2,0)
+		sel.up:SetSize(18,18);
+		sel.up:SetNormalTexture(Icon.up)
+		sel.up:SetScript("OnMouseDown", function(self)
+				for i=1, C_CurrencyInfo.GetCurrencyListSize() do--展开所有
+					local info = C_CurrencyInfo.GetCurrencyListInfo(i);
+					if info  and info.isHeader and info.isHeaderExpanded then
+						C_CurrencyInfo.ExpandCurrencyList(i, false);
+					end
+				end
+				TokenFrame_Update();
+		end)
+		sel.bag=e.Cbtn(sel,true)
+		sel.bag:SetPoint('RIGHT', sel.up, 'LEFT',-2,0)
+		sel.bag:SetSize(18,18);
+		sel.bag:SetNormalAtlas(e.Icon.bag)
+		sel.bag:SetScript("OnMouseDown", function(self)
+				for index=1, BackpackTokenFrame:GetMaxTokensWatched() do--Blizzard_TokenUI.lua
+					local info = C_CurrencyInfo.GetBackpackCurrencyInfo(index)
+					if info then
+						local link=C_CurrencyInfo.GetCurrencyLink(info.currencyTypesID) or info.name
+						C_CurrencyInfo.SetCurrencyBackpack(index, false)
+						print(link)
+					end
+				end
+				TokenFrame_Update();
+		end)
+		sel.bag:SetScript('OnEnter', function(self2)
+			e.tips:SetOwner(self2, "ANCHOR_LEFT")
+			e.tips:ClearLines()
+			e.tips:AddLine(SHOW_ON_BACKPACK..': '..GetNumWatchedTokens())
+			for index=1, BackpackTokenFrame:GetMaxTokensWatched() do--Blizzard_TokenUI.lua
+				local info = C_CurrencyInfo.GetBackpackCurrencyInfo(index)
+				if info and info.name and info.iconFileID then
+					e.tips:AddLine('|T'..info.iconFileID..':0|t'..info.name)
+				end
+			end
+			e.tips:Show()
+		end)
+		sel.bag:SetScript('OnLeave', function() e.tips:Hide() end)
+	end
+
+	if sel.down then
+		sel.down:SetShown(not Save.hideUpDown)
+		sel.up:SetShown(not Save.hideUpDown)
+		sel.bag:SetShown(not Save.hideUpDown)
+	end
 	if sel.btn then
 		sel.btn:SetShown(not Save.disabled)
 		sel.btn:SetNormalAtlas(Save.str and e.Icon.icon or e.Icon.disabled)
@@ -207,7 +240,8 @@ sel:SetScript('OnClick', function (self, d)
 		else
 			Save.hideUpDown=true
 		end
-		print('|T'..Icon.up..':0|t|T'..Icon.down..':0|t', e.GetShowHide(not Save.hideUpDown), NEED..'/reload')
+		Set()
+		print('|T'..Icon.up..':0|t|T'..Icon.down..':0|t', e.GetShowHide(not Save.hideUpDown))
 	elseif d=='RightButton' then
 		if Save.updateTips then
 			Save.updateTips=nil
