@@ -6,15 +6,7 @@ PlayerCastingBarFrame:HookScript('OnShow', function()--CastingBarFrame.lua
     PlayerCastingBarFrame:SetFrameStrata('TOOLTIP')--设置施法条层
 end)
 
-local GameTooltip_UnitColor_WoW=GameTooltip_UnitColor--单位框架颜色
-function GameTooltip_UnitColor(unit)--GameTooltip.lua
-    local r, g ,b  = GetClassColor(UnitClassBase(unit))
-    if r and g and b then
-        return r, g ,b
-    else
-        return GameTooltip_UnitColor_WoW(unit)
-    end
-end
+
 --[[
 hooksecurefunc('UnitFrame_SetUnit', function(self, unit, healthbar, manabar)
 end)

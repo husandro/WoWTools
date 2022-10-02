@@ -1,8 +1,9 @@
 local id, e = ...
 local addName='Tooltips'
-local Save={setDefaultAnchor=true,}
+local Save={setDefaultAnchor=true, setUnit=true}
 local wowItemsSave={}
 local wowCurrencySave={}
+local panel=CreateFrame("Frame")
 
 local function setInitItem(self, hide)--创建物品
     if not self.textLeft then--左上角字符
@@ -29,6 +30,7 @@ local function setInitItem(self, hide)--创建物品
         self.itemModel:SetPoint("TOPRIGHT", self, 'TOPLEFT')
         self.itemModel:SetSize(250, 250)
     end
+    
     if not self.Portrait then--右上角图标
         self.Portrait=self:CreateTexture(nil, 'BORDER')
         self.Portrait:SetPoint('TOPRIGHT',-2, -3)
@@ -45,6 +47,11 @@ local function setInitItem(self, hide)--创建物品
         self.Portrait:SetShown(false)
         self.backgroundColor:SetShown(false)
         self.creatureDisplayID=nil--物品
+        if self.playerModel then
+            self.playerModel:ClearModel()
+            self.playerModel:SetShown(false)
+            self.playerModel.guid=nil
+        end
     end
 end
 
@@ -655,6 +662,168 @@ hooksecurefunc(ReputationBarMixin, 'OnEnter', function(self)--角色栏,声望
     end
 end)
 
+
+--#######
+--设置单位
+--#######
+local function setPlayerInfo(guid)--设置玩家信息
+    local info=e.UnitItemLevel[guid]
+    if info then
+        if info.itemLevel and info.itemLevel>1 then
+            e.tips.textLeft:SetText(info.col..info.itemLevel..'|r')--设置装等
+        end
+
+        local icon= info.specID and select(4, GetSpecializationInfoByID(info.specID))--设置天赋
+        if icon then
+            e.tips.text2Left:SetText("|T"..icon..':0|t')
+        end
+
+        if e.Player.servers[info.realm] then--设置服务器
+            e.tips.textRight:SetText('|cnGREEN_FONT_COLOR:*|r')
+        elseif info.realm and not e.Player.servers[info.realm] then
+            e.tips.textRight:SetText('|cnRED_FONT_COLOR:*|r')
+        end
+        if info.r and info.b and info.g then
+            e.tips.backgroundColor:SetColorTexture(info.r, info.g, info.b, 0.2)--背景颜色
+            e.tips.backgroundColor:SetShown(true)
+        end
+    end
+end
+
+local function getPlayerInfo(unit, guid, isPlayer)--取得玩家信息
+    if isPlayer then
+        local itemLevel=C_PaperDollInfo.GetInspectItemLevel(unit)
+        if (itemLevel and itemLevel>1) or not e.UnitItemLevel[guid] then
+            local name, realm= UnitFullName(unit)
+            local r,g,b, hex = GetClassColor(UnitClassBase(unit))
+            e.UnitItemLevel[guid] = {--玩家装等
+                itemLevel=itemLevel,
+                specID=GetInspectSpecialization(unit),
+                name=name,
+                realm=realm,
+                col='|c'..hex,
+                r=r,
+                g=g,
+                b=b,
+            }
+        end
+    end
+    if unit=='mouseover' or unit =='player' then
+        setPlayerInfo(guid)
+    end
+end
+
+local GameTooltip_UnitColor_WoW=GameTooltip_UnitColor--单位框架颜色
+local function GameTooltip_UnitColor_Init(unit)--GameTooltip.lua
+    setInitItem(e.tips)
+    local isPlayer=UnitIsPlayer(unit)
+    local englishFaction = isPlayer and UnitFactionGroup(unit)--设置单位图标    
+    if isPlayer and (englishFaction=='Alliance' or englishFaction=='Horde') then--派系
+        e.tips.Portrait:SetAtlas(englishFaction=='Alliance' and e.Icon.alliance or e.Icon.horde)
+    elseif UnitIsQuestBoss(unit) then--任务
+        e.tips.Portrait:SetAtlas(e.Icon.quest)
+    else
+        SetPortraitTexture(e.tips.Portrait, unit)
+    end
+    e.tips.Portrait:SetShown(true)
+
+    local guid=UnitGUID(unit)
+    if isPlayer then--取得装等
+        if CheckInteractDistance(unit, 1) then
+            NotifyInspect(unit);
+        end
+        getPlayerInfo(unit, guid, isPlayer)
+    end
+
+    if e.tips.playerModel.guid~=guid then--3D模型
+        e.tips.playerModel:SetUnit(unit)
+        e.tips.playerModel.guid=guid
+        e.tips.playerModel:SetShown(true)
+    end
+
+    local r, g ,b  = GetClassColor(UnitClassBase(unit))--设置颜色
+    if r and g and b then
+        return r, g ,b
+    else
+        return GameTooltip_UnitColor_WoW(unit)
+    end
+end
+
+local GameTooltip_SetDefaultAnchor_WoW=GameTooltip_SetDefaultAnchor--GameTooltip.lua
+local function setUnitInit(self)--设置默认提示位置
+    if Save.setUnit then
+        if not e.tips.playerModel then--单位3D模型
+            e.tips.playerModel=CreateFrame("PlayerModel", nil, e.tips)
+            e.tips.playerModel:SetFacing(-0.35)
+            e.tips.playerModel:SetPoint("BOTTOM", e.tips, 'TOP', 0, -12)
+            e.tips.playerModel:SetSize(100, 100)
+            e.tips.playerModel:SetShown(false)
+        end
+        panel:RegisterEvent('INSPECT_READY')
+        panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+        GameTooltip_UnitColor=GameTooltip_UnitColor_Init
+    else
+        panel:UnregisterEvent('INSPECT_READY')
+        panel:UnregisterEvent('PLAYER_ENTERING_WORLD')
+        GameTooltip_UnitColor=GameTooltip_UnitColor_WoW
+    end
+
+    if Save.setDefaultAnchor then
+        function GameTooltip_SetDefaultAnchor(tooltip, parent)--设置默认提示位置
+            tooltip:SetOwner(parent, 'ANCHOR_CURSOR_LEFT')
+        end
+    else
+        GameTooltip_SetDefaultAnchor=GameTooltip_SetDefaultAnchor_WoW
+    end
+end
+
+local function setUnitInfo(self)--设置单位提示信息
+    if not Save.setUnit then
+        return
+    end
+    local name, unit = self:GetUnit();
+    local isPlayer = UnitIsPlayer(unit)
+    local guid = UnitGUID(unit)
+    if isPlayer then
+        local isInGuild=IsPlayerInGuildFromGUID(guid)
+
+        local line=_G["GameTooltipTextLeft1"]--名称
+        local text=line:GetText()
+        text=text:gsub(name, e.Icon.toRight2..name..e.Icon.toLeft2)
+        line:SetText(text)
+
+        if isInGuild then
+            line=_G["GameTooltipTextLeft2"]
+            line:SetText(e.Icon.guild2..line:GetText())
+        end
+
+        line=isInGuild and _G["GameTooltipTextLeft3"] or _G["GameTooltipTextLeft2"]
+        text=line:GetText()
+        text=text:gsub(PLAYER, UnitIsPVP(unit) and '|cnRED_FONT_COLOR:PvP|r' or '|cnGREEN_FONT_COLOR:PvE|r')
+        line:SetText('|A:charactercreate-icon-dice:0:0|a'..text)
+
+        local num= isInGuild and 4 or 3
+        local player=UnitIsUnit('player', unit)
+        for i=num, e.tips:NumLines() do
+            local line2=_G["GameTooltipTextLeft"..i]
+            if line2 then
+                if i==num and player and e.Layer then
+                    line2:SetText((e.Player.zh and '位面ID: ' or 'LayerID: ')..e.Layer)
+                else
+                    line2:Hide()
+                end
+            end
+        end
+    elseif not UnitAffectingCombat('player') then
+        local _, _, server, _, zone, npc = strsplit("-",guid)
+        if zone then
+            self:AddDoubleLine((e.Player.zh and '位面ID: ' or 'LayerID: ')..zone..(npc and '  NPCID: '..npc or ''), server and FRIENDS_LIST_REALM..server)
+            e.Layer=zone
+        end
+    end
+end
+e.tips:HookScript("OnTooltipSetUnit", setUnitInfo)--设置单位提示信息
+
 --****
 --隐藏
 --****
@@ -665,28 +834,21 @@ ItemRefTooltip:HookScript("OnHide", function (self)
     setInitItem(self, true)
 end)
 
-local GameTooltip_SetDefaultAnchor_WoW=GameTooltip_SetDefaultAnchor--GameTooltip.lua
-local function setPostion(self)--设置默认提示位置
-    if Save.setDefaultAnchor then
-        function GameTooltip_SetDefaultAnchor(tooltip, parent)--设置默认提示位置
-            tooltip:SetOwner(parent, 'ANCHOR_CURSOR_LEFT')
-        end
-    else
-        GameTooltip_SetDefaultAnchor=GameTooltip_SetDefaultAnchor_WoW
-    end
-end
+
 --加载保存数据
-local panel=CreateFrame("Frame")
+
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
             wowItemsSave=WoWToolsSave and WoWToolsSave['WoW-Items'] or wowItemsSave
             wowCurrencySave=WoWToolsSave and WoWToolsSave['WoW-Currency'] or wowCurrencySave
-            setPostion(self)--设置默认提示位置
-            self.setDefaultAnchor:SetChecked(Save.setDefaultAnchor)
+            setUnitInit(self)--设置默认提示位置
+            self.setDefaultAnchor:SetChecked(Save.setDefaultAnchor)--提示位置
+            self.setUnit:SetChecked(Save.setUnit)--单位提示
 
         elseif arg1=='Blizzard_ClassTalentUI' then
             local function setClassTalentSpell(self2, tooltip)--天赋
@@ -709,6 +871,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not WoWToolsSave then WoWToolsSave={} end
             WoWToolsSave[addName]=Save
         end
+
+    elseif event=='INSPECT_READY' then--取得装等
+        local unit=UnitGUID("mouseover")==arg1 and 'mouseover' or e.GroupGuid[arg1]
+        if unit then
+            setInitItem(e.tips)
+            getPlayerInfo(unit, arg1, true)
+        end
+
+    elseif event=='PLAYER_ENTERING_WORLD' then
+        e.Layer=nil
     end
 end)
 
@@ -716,15 +888,28 @@ panel.name = addName;--添加新控制面板
 panel.parent =id;
 InterfaceOptions_AddCategory(panel)
 
+panel.setUnit=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--单位提示
+panel.setUnit.Text:SetText(UNITFRAME_LABEL)
+panel.setUnit:SetPoint('TOPLEFT')
+panel.setUnit:SetScript('OnClick', function(self)
+    if Save.setUnit then
+        Save.setUnit=nil
+    else
+        Save.setUnit=true
+    end
+    setUnitInit(self)
+    print(id, addName, UNITFRAME_LABEL, e.GetEnabeleDisable(Save.setUnit))
+end)
+
 panel.setDefaultAnchor=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--设置默认提示位置
 panel.setDefaultAnchor.Text:SetText(DEFAULT..RESAMPLE_QUALITY_POINT..': '..FOLLOW..MOUSE_LABEL)
-panel.setDefaultAnchor:SetPoint('TOPLEFT')
+panel.setDefaultAnchor:SetPoint('LEFT', panel.setUnit.Text, 'RIGHT', 20, 0)
 panel.setDefaultAnchor:SetScript('OnClick', function(self)
     if Save.setDefaultAnchor then
         Save.setDefaultAnchor=nil
     else
         Save.setDefaultAnchor=true
     end
-    setPostion(self)
+    setUnitInit(self)
     print(DEFAULT..RESAMPLE_QUALITY_POINT..': '..FOLLOW..MOUSE_LABEL, e.GetEnabeleDisable(Save.setDefaultAnchor))
 end)

@@ -2,6 +2,8 @@ local id, e = ...
 e.L=e.L or {}--多语言
 e.tips=GameTooltip
 
+e.GroupGuid={}--团队GUID,{GUID==unit}
+
 e.Race=function(unit, race, sex, reAtlas)--玩家种族图标
     race =race or select(2,UnitRace(unit))
     if not sex then
@@ -60,6 +62,20 @@ e.Player={
     class=UnitClassBase('player'),
     --MAX_PLAYER_LEVEL = GetMaxLevelForPlayerExpansion()
 }
+e.Player.servers={}--多服务器
+for k, v in pairs(GetAutoCompleteRealms()) do
+    e.Player.servers[v]=k
+end
+
+e.UnitItemLevel={--玩家装等
+    [UnitGUID('player')] ={
+        itemLeve= C_PaperDollInfo.GetInspectItemLevel('player'),
+        specID=GetInspectSpecialization('player'),
+        name=UnitName('player'),
+        realm=e.Player.server,
+        col=e.Player.col,
+    }
+}
 
 e.Icon={
     icon='orderhalltalents-done-glow',
@@ -84,6 +100,8 @@ e.Icon={
     map2='|A:poi-islands-table:0:0|a',
     wow2='|A:Icon-WoW:0:0|a',
 
+    horde='charcreatetest-logo-horde',
+    alliance='charcreatetest-logo-alliance',
     horde2='|A:charcreatetest-logo-horde:0:0|a',
     alliance2='|A:charcreatetest-logo-alliance:0:0|a',
 
@@ -99,11 +117,15 @@ e.Icon={
     bag2='|A:bag-main:0:0|a',
     up2='|A:bags-greenarrow:0:0|a',--绿色向上
     down2='|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a',--红色向下
+    toLeft2='|A:common-icon-rotateleft:0:0|a',--向左
+    toRight2='|A:common-icon-rotateright:0:0|a',--向右
 
     unlocked='Levelup-Icon-Lock',--没锁
-
+    quest='AutoQuest-Badge-Campaign',--任务
+    guild2='|A:communities-guildbanner-background:0:0|a'
     --mask="Interface\\ChatFrame\\UI-ChatIcon-HotS",--菱形
     --mask='Interface\\CHARACTERFRAME\\TempPortraitAlphaMask',--圆形 :SetMask()
+    
 }
 --Interface\Common\WhiteIconFrame 提示方形外框
 e.GetNpcID = function(unit)--NPC ID

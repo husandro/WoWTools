@@ -9,7 +9,7 @@ local Icon={
     use='soulbinds_tree_conduit_icon_utility',--物品 '使用' 图标
 }
 
-local function Sever()--显示服务名称
+local function Sever()--显示服务器名称
     local s=Frame.server
     if not Save.disabled and not s then
             s=e.Cstr(Frame)
