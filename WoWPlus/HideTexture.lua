@@ -27,7 +27,7 @@ local function Set()
     PetBattleFrameXPBarRight:Hide()
     PetBattleFrameXPBarMiddle:Hide()
 
-    LootFrameBg:Hide()--拾取
+
 
     --PetBattleFrame.BottomFrame.MicroButtonFrame.RightEndCap:Hide()
     --PetBattleFrame.BottomFrame.MicroButtonFrame.LeftEndCap:Hide()
@@ -37,7 +37,8 @@ local function Set()
         self.BottomFrame.TurnTimer.ArtFrame:SetShown(false);
         self.BottomFrame.TurnTimer.ArtFrame2:SetShown(false);
     end)
-
+    
+    LootFrameBg:Hide()--拾取
   --  e.tips.IconBorder:Hide()--GameTooltip.xml
 end
 

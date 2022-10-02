@@ -488,13 +488,14 @@ local function setBattlePet(self, speciesID, level, breedQuality, maxHealth, pow
     end
     self.backgroundColor:SetShown(breedQuality~=-1)
 end
+
 hooksecurefunc("BattlePetToolTip_Show", function(...)--BattlePetTooltip.lua 
     setBattlePet(BattlePetTooltip, ...)
 end)
+
 hooksecurefunc('FloatingBattlePet_Show', function(...)--FloatingPetBattleTooltip.lua
     setBattlePet(FloatingBattlePetTooltip, ...)
 end)
-
 --####
 --Buff
 --####
@@ -715,7 +716,6 @@ end
 
 local GameTooltip_UnitColor_WoW=GameTooltip_UnitColor--单位框架颜色
 local function GameTooltip_UnitColor_Init(unit)--GameTooltip.lua
-    setInitItem(e.tips)
     local isPlayer=UnitIsPlayer(unit)
     local englishFaction = isPlayer and UnitFactionGroup(unit)--设置单位图标    
     if isPlayer and (englishFaction=='Alliance' or englishFaction=='Horde') then--派系
@@ -763,10 +763,12 @@ local function setUnitInit(self)--设置默认提示位置
         panel:RegisterEvent('PLAYER_ENTERING_WORLD')
         GameTooltip_UnitColor=GameTooltip_UnitColor_Init
     else
+        
         panel:UnregisterEvent('INSPECT_READY')
         panel:UnregisterEvent('PLAYER_ENTERING_WORLD')
         GameTooltip_UnitColor=GameTooltip_UnitColor_WoW
     end
+    setInitItem(e.tips, not Save.setUnit)
 
     if Save.setDefaultAnchor then
         function GameTooltip_SetDefaultAnchor(tooltip, parent)--设置默认提示位置
@@ -836,10 +838,8 @@ end)
 
 
 --加载保存数据
-
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
-
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
