@@ -4,11 +4,31 @@ e.tips=GameTooltip
 
 e.GroupGuid={}--团队GUID,{GUID==unit}
 
+local function GetWeek()--周数
+    local d = date("*t")
+    local cd
+    if GetLocale() == "zhCN" then 
+        cd=4
+    else
+        cd=3
+    end
+    for d3=1,15 do
+        if date('*t', time({year=d.year, month=1, day=d3})).wday == cd then 
+            cd=d3
+            break
+        end
+    end
+    local week=ceil(floor((time() - time({year = d.year, month = 1, day = cd})) / (24*60*60)) /7)
+    if week==0 then
+        week=52
+    end
+    return week
+end
+
 e.Race=function(unit, race, sex, reAtlas)--玩家种族图标
     race =race or select(2,UnitRace(unit))
-    if not sex then
-        sex= UnitSex(unit)==2 and 'male' or 'female'
-    end
+    sex=sex or UnitSex(unit)
+    sex= sex==2 and 'male' or 'female'    
     if race=='Scourge' then
         race='Undead'
     elseif race=='HighmountainTauren' then
@@ -56,11 +76,13 @@ end
 
 e.Player={
     server=GetRealmName(),
+    name_server=UnitName('player')..'-'..GetRealmName(),
     col='|c'..select(4,GetClassColor(UnitClassBase('player'))),
     zh= GetLocale()== "zhCN",
     Lo=GetLocale(),
     class=UnitClassBase('player'),
     --MAX_PLAYER_LEVEL = GetMaxLevelForPlayerExpansion()
+    week=GetWeek(),--周数
 }
 e.Player.servers={}--多服务器
 for k, v in pairs(GetAutoCompleteRealms()) do

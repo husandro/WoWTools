@@ -1,10 +1,19 @@
 local id, e = ...
 local addName='Tooltips'
 local Save={setDefaultAnchor=true, setUnit=true}
-local wowItemsSave={}
-local wowCurrencySave={}
 local panel=CreateFrame("Frame")
-
+local wowSave={
+    [e.Player.name_server]={--重置数据
+        class=e.Player.class,
+        race=select(2,UnitRace('player')),
+        sex=UnitSex('player'),
+        items={},--{itemID={bag=包, bank=银行}},
+        keystones={itemLink={}},--{score=总分数,itemLink={超连接}, weekLevel=本周最高, weekNum=本周次数, all=总次数,week=周数},
+        currencys={},--{currencyID = 数量}
+        instance={},
+        worldboss={},
+    }
+}
 local function setInitItem(self, hide)--创建物品
     if not self.textLeft then--左上角字符
         self.textLeft=e.Cstr(self, 18)
@@ -152,13 +161,21 @@ local function setItem(self)--物品
         else
             Save.showTips=true
         end
+    elseif IsAltKeyDown() then
+        if Save.hideWoWInfo then
+            Save.hideWoWInfo=nil
+        else
+            Save.hideWoWInfo=true
+        end
     end
-    if not Save.showTips then
-        if not UnitAffectingCombat('player') then
+    local bat=UnitAffectingCombat('player')
+    if not Save.showTips or bat then
+        if not bat then
             self:AddDoubleLine(id, 'Ctrl+'..SHOW, 1,0,1, 1,0,1)
         end
         return
     end
+
     local link=select(2, self:GetItem())
     setInitItem(self)--创建物品
     if not C_Item.IsItemDataCachedByID(link) then C_Item.RequestLoadItemDataByID(link) end
@@ -260,11 +277,67 @@ local function setItem(self)--物品
     local bank= GetItemCount(link,true) - bag
     self.textRight:SetText((bag>0 or bank>0) and hex..bank..e.Icon.bank2..' '..bag..e.Icon.bag2..'|r' or '')
 
+    if C_Item.IsItemKeystoneByID(itemID) then--挑战, 没测试
+        if not Save.hideWoWInfo then
+            local numPlayer=0 --帐号数据 --{score=总分数,itemLink={超连接}, weekLevel=本周最高, weekNum=本周次数, all=总次数},
+            for name_server, info in pairs(wowSave) do
+                local tab=info.keystones
+                if #tab.itemLink > 0 then
+                    name_server=name_server:gsub('-'..e.Player.server, '')
+                    local r2,g2,b2=GetClassColor(info.class)
+                    local race=e.Race(nil, info.race, info.sex)
+                    self:AddDoubleLine(race..e.Class(nil,info.class)..name_server..(tab.score and ' '..tab.score or ''), (info.weekLevel and '(|cnGREEN_FONT_COLOR:'..info.weekLevel..'|r) ' or '')..(tab.weekNum or 0)..'/'..(tab.all or 0))
+                    local linka,linkb
+                    for _, linkc in pairs(tab.itemLink) do
+                        if not linka then
+                            linka=linkc
+                        elseif not linkb then
+                            linkb=linkc
+                        else
+                            self:AddDoubleLine(race..linkc,' ')
+                        end
+                    end
+                    if linka or link then
+                        self:AddDoubleLine(linka and race..linka or ' ', linkb and linkb..race)
+                    end
+                    numPlayer=numPlayer+1
+                end
+            end
+        end
+    else
+        local bagAll,bankAll,numPlayer=0,0,0--帐号数据
+        for name_server, info in pairs(wowSave) do
+            if name_server~=e.Player.name_server then
+                local tab=info.items[itemID]
+                if tab then
+                    if not Save.hideWoWInfo then
+                        name_server=name_server:gsub('-'..e.Player.server, '')
+                        local r2,g2,b2=GetClassColor(info.class)
+                        self:AddDoubleLine(e.Race(nil, info.race, info.sex)..e.Icon.bag2..tab.bag..' '..e.Icon.bank2..tab.bank, name_server..e.Class(nil,info.class), r2,g2,b2, r2,g2,b2)
+                    end
+                    bagAll=bagAll+tab.bag
+                    bankAll=bankAll+tab.bank
+                    numPlayer=numPlayer+1
+                end
+            end
+        end
+        if numPlayer>1 then
+            self:AddDoubleLine(e.Icon.wow2..e.Icon.bag2..e.MK(bagAll,3)..' '..e.Icon.bank2..e.MK(bankAll, 3), e.MK(bagAll+bankAll, 3)..' '..e.Icon.wow2..' '..numPlayer..' Alt+'..e.GetShowHide(Save.hideWoWInfo))
+        end
+    end
+
     self.backgroundColor:SetColorTexture(r, g, b, 0.15)--颜色
     self.backgroundColor:SetShown(true)
 end
 
 local function setSpell(self)--法术
+    local bat=UnitAffectingCombat('player')
+    if not Save.showTips or bat then
+        if not bat then
+            self:AddDoubleLine(id, 'Ctrl+'..SHOW, 1,0,1, 1,0,1)
+        end
+        return
+    end
     if IsControlKeyDown() then
         if Save.showTips then
             Save.showTips=nil
@@ -272,12 +345,7 @@ local function setSpell(self)--法术
             Save.showTips=true
         end
     end
-    if not Save.showTips then
-        if not UnitAffectingCombat('player') then
-            self:AddDoubleLine(id, 'Ctrl+'..SHOW, 1,0,1, 1,0,1)
-        end
-        return
-    end
+
     local spellID = select(2, self:GetSpell())
     local spellTexture=spellID and  GetSpellTexture(spellID)
     if not spellTexture then
@@ -301,6 +369,12 @@ local function setCurrency(self, currencyID)--货币
         else
             Save.showTips=true
         end
+    elseif IsAltKeyDown() then
+        if Save.hideWoWInfo then
+            Save.hideWoWInfo=nil
+        else
+            Save.hideWoWInfo=true
+        end
     end
     if not Save.showTips then
         if not UnitAffectingCombat('player') then
@@ -308,11 +382,11 @@ local function setCurrency(self, currencyID)--货币
         end
         return
     end
-    local info = C_CurrencyInfo.GetCurrencyInfo(currencyID)
-    if info then
-        self:AddDoubleLine(TOKENS..'ID: '..currencyID, EMBLEM_SYMBOL..'ID: '..info.iconFileID)
+    local info2 = C_CurrencyInfo.GetCurrencyInfo(currencyID)
+    if info2 then
+        self:AddDoubleLine(TOKENS..'ID: '..currencyID, EMBLEM_SYMBOL..'ID: '..info2.iconFileID)
         setInitItem(self)--创建物品
-        self.Portrait:SetTexture(info.iconFileID)
+        self.Portrait:SetTexture(info2.iconFileID)
         self.Portrait:SetShown(true)
     end
     local factionID = C_CurrencyInfo.GetFactionGrantedByCurrency(currencyID)--派系声望
@@ -322,6 +396,26 @@ local function setCurrency(self, currencyID)--货币
             self.AddDoubleLine(REPUTATION, name)
         end
     end
+
+    local all,numPlayer=0,0
+    for name_server, info in pairs(wowSave) do--帐号数据
+        if name_server~=e.Player.name_server then
+            local quantity=info.currencys[currencyID]
+            if quantity then
+                if not Save.hideWoWInfo then
+                    name_server=name_server:gsub('-'..e.Player.server, '')
+                    local r2,g2,b2=GetClassColor(info.class)
+                    self:AddDoubleLine(e.Race(nil, info.race, info.sex)..e.MK(quantity, 3), name_server..e.Class(nil,info.class), r2,g2,b2, r2,g2,b2)
+                end
+                all=all+quantity
+                numPlayer=numPlayer+1
+            end
+        end
+    end
+    if numPlayer>1 then
+        self:AddDoubleLine(e.Icon.wow2..e.MK(all,3), '#'..numPlayer..' Alt+'..e.GetShowHide(Save.hideWoWInfo))
+    end
+    
 end
 
 local function setAchievement(self, achievementID)--成就
@@ -639,7 +733,7 @@ hooksecurefunc(ReputationBarMixin, 'OnEnter', function(self)--角色栏,声望
     end
     if not Save.showTips then
         if not UnitAffectingCombat('player') then
-            self:AddDoubleLine(id, 'Ctrl+'..SHOW, 1,0,1, 1,0,1)
+            e.tips:AddDoubleLine(id, 'Ctrl+'..SHOW, 1,0,1, 1,0,1)
         end
         return
     end
@@ -749,7 +843,6 @@ local function GameTooltip_UnitColor_Init(unit)--GameTooltip.lua
     end
 end
 
-local GameTooltip_SetDefaultAnchor_WoW=GameTooltip_SetDefaultAnchor--GameTooltip.lua
 local function setUnitInit(self)--设置默认提示位置
     if Save.setUnit then
         if not e.tips.playerModel then--单位3D模型
@@ -763,27 +856,20 @@ local function setUnitInit(self)--设置默认提示位置
         panel:RegisterEvent('PLAYER_ENTERING_WORLD')
         GameTooltip_UnitColor=GameTooltip_UnitColor_Init
     else
-        
+
         panel:UnregisterEvent('INSPECT_READY')
         panel:UnregisterEvent('PLAYER_ENTERING_WORLD')
         GameTooltip_UnitColor=GameTooltip_UnitColor_WoW
     end
     setInitItem(e.tips, not Save.setUnit)
-
-    if Save.setDefaultAnchor then
-        function GameTooltip_SetDefaultAnchor(tooltip, parent)--设置默认提示位置
-            tooltip:SetOwner(parent, 'ANCHOR_CURSOR_LEFT')
-        end
-    else
-        GameTooltip_SetDefaultAnchor=GameTooltip_SetDefaultAnchor_WoW
-    end
 end
 
+
 local function setUnitInfo(self)--设置单位提示信息
-    if not Save.setUnit then
+    local name, unit = self:GetUnit()
+    if not Save.setUnit or not unit then
         return
     end
-    local name, unit = self:GetUnit();
     local isPlayer = UnitIsPlayer(unit)
     local guid = UnitGUID(unit)
     if isPlayer then
@@ -826,6 +912,17 @@ local function setUnitInfo(self)--设置单位提示信息
 end
 e.tips:HookScript("OnTooltipSetUnit", setUnitInfo)--设置单位提示信息
 
+
+--****
+--位置
+--****
+hooksecurefunc("GameTooltip_SetDefaultAnchor", function(self, parent)
+    if Save.setDefaultAnchor then
+        self:ClearAllPoints();
+        self:SetOwner(parent, 'ANCHOR_CURSOR_LEFT')
+    end
+end)
+
 --****
 --隐藏
 --****
@@ -836,19 +933,127 @@ ItemRefTooltip:HookScript("OnHide", function (self)
     setInitItem(self, true)
 end)
 
+--################
+--更新地下城挑战数据
+--################
+local function updateChallengeMode()--{score=总分数,itemLink={超连接}, weekLevel=本周最高, weekNum=本周次数, all=总次数,week=周数}
+    local tab={itemLink=wowSave[e.Player.name_server].keystones.itemLink}
+    local score=C_ChallengeMode.GetOverallDungeonScore();
+    if score and score>0 then
+        tab.score=score--总分数
+        tab.all=#C_MythicPlus.GetRunHistory(true, true)--总次数
+        tab.week=e.Player.week
+        local info = C_MythicPlus.GetRunHistory(false, true)
+        if info and info>0 then
+            tab.weekNum=#info--本周次数
+            local activities=C_WeeklyRewards.GetActivities(1)
+            if activities then
+                local lv=0
+                for _,v in pairs(activities) do
+                    if v and v.level then
+                        if v.level and v.level >lv then
+                            lv=v.level;
+                        end
+                    end
+                end
+                if lv > 0 then
+                    tab.weekLevel=lv--本周最高
+                end
+            end
+        end
+    end
+    wowSave[e.Player.name_server].keystones=tab
+end
+
+--###########
+--收集用户数据  wowCurrencySave={}
+--###########
+--[[
+local wowSave={
+    [e.Player.name_server]={--重置数据
+        class=e.Player.class,
+        race=select(2,UnitRace('player')),
+        sex=UnitSex('player'),
+        items={},--{itemID={bag=包, bank=银行}},
+        keystones={itemLink={}},--{score=总分数,itemLink={超连接}, weekLevel=本周最高, weekNum=本周次数, all=总次数,week=周数},
+        currencys={},--{currencyID = 数量}
+        instance={},
+        worldboss={},
+    }
+}
+]]
+
+local function SaveInit()--保存WOW数据
+    wowSave[e.Player.name_server].keystones.itemLink={}
+    wowSave[e.Player.name_server].items={}--{itemID={bag=包, bank=银行}}
+
+    for bagID=0, NUM_BAG_SLOTS do
+        for slotID=1,GetContainerNumSlots(bagID) do
+            local itemID = GetContainerItemID(bagID, slotID)
+            if itemID then
+                if C_Item.IsItemKeystoneByID(itemID) then--挑战
+                    local itemLink=GetContainerItemLink(bagID, slotID)
+                    if itemLink then
+                        table.insert(wowSave[e.Player.name_server].keystones.itemLink, itemLink)
+                    end
+                else
+                    local bag=GetItemCount(itemID)--物品ID
+                    wowSave[e.Player.name_server].items[itemID]={
+                        bag=bag,
+                        bank=GetItemCount(itemID,true)-bag,
+                    }
+                end
+            end
+        end
+    end
+
+    wowSave[e.Player.name_server].currencys={}
+    for i=1, C_CurrencyInfo.GetCurrencyListSize() do
+        local link =C_CurrencyInfo.GetCurrencyListLink(i)
+        local currencyID = link and C_CurrencyInfo.GetCurrencyIDFromLink(link)
+        local info = C_CurrencyInfo.GetCurrencyListInfo(i)
+        if currencyID and info then
+            wowSave[e.Player.name_server].currencys[currencyID]=info.quantity
+        end
+    end
+
+    wowSave[e.Player.name_server].money=GetMoney()
+
+    updateChallengeMode()--更新地下城挑战数据
+end
 
 --加载保存数据
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
+panel:RegisterEvent('CHALLENGE_MODE_COMPLETED')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
-            wowItemsSave=WoWToolsSave and WoWToolsSave['WoW-Items'] or wowItemsSave
-            wowCurrencySave=WoWToolsSave and WoWToolsSave['WoW-Currency'] or wowCurrencySave
+            wowSave=WoWToolsSave and WoWToolsSave['WoW-All-Save'] or wowSave
+
             setUnitInit(self)--设置默认提示位置
+
             self.setDefaultAnchor:SetChecked(Save.setDefaultAnchor)--提示位置
             self.setUnit:SetChecked(Save.setUnit)--单位提示
+
+            for name_server, info in pairs(wowSave) do--清队不是本周数据
+                local tab=info.keystones
+                if tab and tab.week~=e.Player.week then
+                    wowSave[name_server].keystones={}
+                end
+                tab=info.instance
+                if tab and tab.week~=e.Player.week then
+                    wowSave[name_server].instance={}
+                end
+                tab=info.worldboss
+                if tab and tab.week~=e.Player.week then
+                    wowSave[name_server].worldboss={}
+                end
+            end
+
+            C_MythicPlus.RequestMapInfo()
+            C_Timer.After(2, SaveInit)--更新地下城挑战数据
 
         elseif arg1=='Blizzard_ClassTalentUI' then
             local function setClassTalentSpell(self2, tooltip)--天赋
@@ -870,6 +1075,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end
             WoWToolsSave[addName]=Save
+            SaveInit()--保存数据
+            WoWToolsSave['WoW-All-Save'] = wowSave
         end
 
     elseif event=='INSPECT_READY' then--取得装等
@@ -881,6 +1088,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='PLAYER_ENTERING_WORLD' then
         e.Layer=nil
+
+    elseif event=='CHALLENGE_MODE_COMPLETED' then
+        C_MythicPlus.RequestMapInfo()
+        C_Timer.After(2, updateChallengeMode)--更新地下城挑战数据
     end
 end)
 
@@ -910,6 +1121,5 @@ panel.setDefaultAnchor:SetScript('OnClick', function(self)
     else
         Save.setDefaultAnchor=true
     end
-    setUnitInit(self)
-    print(DEFAULT..RESAMPLE_QUALITY_POINT..': '..FOLLOW..MOUSE_LABEL, e.GetEnabeleDisable(Save.setDefaultAnchor))
+    print(id, addName, DEFAULT..RESAMPLE_QUALITY_POINT, FOLLOW..MOUSE_LABEL, e.GetEnabeleDisable(Save.setDefaultAnchor))
 end)
