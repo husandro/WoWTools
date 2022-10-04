@@ -28,7 +28,7 @@ end
 e.Race=function(unit, race, sex, reAtlas)--玩家种族图标
     race =race or select(2,UnitRace(unit))
     sex=sex or UnitSex(unit)
-    sex= sex==2 and 'male' or 'female'    
+    sex= sex==2 and 'male' or 'female'
     if race=='Scourge' then
         race='Undead'
     elseif race=='HighmountainTauren' then

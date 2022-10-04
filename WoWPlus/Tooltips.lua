@@ -2,18 +2,7 @@ local id, e = ...
 local addName='Tooltips'
 local Save={setDefaultAnchor=true, setUnit=true}
 local panel=CreateFrame("Frame")
-local wowSave={
-    [e.Player.name_server]={--重置数据
-        class=e.Player.class,
-        race=select(2,UnitRace('player')),
-        sex=UnitSex('player'),
-        items={},--{itemID={bag=包, bank=银行}},
-        keystones={itemLink={}},--{score=总分数,itemLink={超连接}, weekLevel=本周最高, weekNum=本周次数, all=总次数,week=周数},
-        currencys={},--{currencyID = 数量}
-        instance={},
-        worldboss={},
-    }
-}
+local wowSave={}
 local function setInitItem(self, hide)--创建物品
     if not self.textLeft then--左上角字符
         self.textLeft=e.Cstr(self, 18)
@@ -179,8 +168,8 @@ local function setItem(self)--物品
     local link=select(2, self:GetItem())
     setInitItem(self)--创建物品
     if not C_Item.IsItemDataCachedByID(link) then C_Item.RequestLoadItemDataByID(link) end
-    local itemName, itemLink, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, sellPrice, classID, subclassID, bindType, expacID, setID, isCraftingReagent = GetItemInfo(link)
-    local itemID, itemType, itemSubType, itemEquipLoc, icon, classID, subclassID = GetItemInfoInstant(link)
+    local itemName, _, itemQuality, itemLevel, _, _, _, _, _, _, _, _, _, bindType, expacID, setID = GetItemInfo(link)
+    local itemID, itemType, itemSubType, itemEquipLoc, itemTexture, classID, subclassID = GetItemInfoInstant(link)
     local r, g, b, hex = GetItemQualityColor(itemQuality)
     hex=hex and '|c'..hex or e.Player.col
 
@@ -194,7 +183,7 @@ local function setItem(self)--物品
     local specTable = GetItemSpecInfo(link) or {}--专精图标
     local specTableNum=#specTable
     if specTableNum>0 then
-        local num=math.modf(specTableNum/2)
+        --local num=math.modf(specTableNum/2)
         local specA=''
         local class
         table.sort(specTable, function (a2, b2) return a2<b2 end)
@@ -331,13 +320,6 @@ local function setItem(self)--物品
 end
 
 local function setSpell(self)--法术
-    local bat=UnitAffectingCombat('player')
-    if not Save.showTips or bat then
-        if not bat then
-            self:AddDoubleLine(id, 'Ctrl+'..SHOW, 1,0,1, 1,0,1)
-        end
-        return
-    end
     if IsControlKeyDown() then
         if Save.showTips then
             Save.showTips=nil
@@ -345,7 +327,13 @@ local function setSpell(self)--法术
             Save.showTips=true
         end
     end
-
+    local bat=UnitAffectingCombat('player')
+    if not Save.showTips or bat then
+        if not bat then
+            self:AddDoubleLine(id, 'Ctrl+'..SHOW, 1,0,1, 1,0,1)
+        end
+        return
+    end
     local spellID = select(2, self:GetSpell())
     local spellTexture=spellID and  GetSpellTexture(spellID)
     if not spellTexture then
@@ -905,7 +893,7 @@ local function setUnitInfo(self)--设置单位提示信息
     elseif not UnitAffectingCombat('player') then
         local _, _, server, _, zone, npc = strsplit("-",guid)
         if zone then
-            self:AddDoubleLine((e.Player.zh and '位面ID: ' or 'LayerID: ')..zone..(npc and '  NPCID: '..npc or ''), server and FRIENDS_LIST_REALM..server)
+            self:AddDoubleLine((e.Player.zh and '位面ID: ' or 'LayerID: ')..zone, npc and 'NPCID: '..npc or ' ')--, server and FRIENDS_LIST_REALM..server)
             e.Layer=zone
         end
     end
@@ -933,10 +921,10 @@ ItemRefTooltip:HookScript("OnHide", function (self)
     setInitItem(self, true)
 end)
 
---################
---更新地下城挑战数据
---################
-local function updateChallengeMode()--{score=总分数,itemLink={超连接}, weekLevel=本周最高, weekNum=本周次数, all=总次数,week=周数}
+--#######
+--更新数据
+--#######
+local function updateChallengeMode()--{score=总分数,itemLink={超连接}, weekLevel=本周最高, weekNum=本周次数, all=总次数,week=周数} 地下城挑战
     local tab={itemLink=wowSave[e.Player.name_server].keystones.itemLink}
     local score=C_ChallengeMode.GetOverallDungeonScore();
     if score and score>0 then
@@ -965,28 +953,9 @@ local function updateChallengeMode()--{score=总分数,itemLink={超连接}, wee
     wowSave[e.Player.name_server].keystones=tab
 end
 
---###########
---收集用户数据  wowCurrencySave={}
---###########
---[[
-local wowSave={
-    [e.Player.name_server]={--重置数据
-        class=e.Player.class,
-        race=select(2,UnitRace('player')),
-        sex=UnitSex('player'),
-        items={},--{itemID={bag=包, bank=银行}},
-        keystones={itemLink={}},--{score=总分数,itemLink={超连接}, weekLevel=本周最高, weekNum=本周次数, all=总次数,week=周数},
-        currencys={},--{currencyID = 数量}
-        instance={},
-        worldboss={},
-    }
-}
-]]
-
-local function SaveInit()--保存WOW数据
+local function updateItems()--更新物品
     wowSave[e.Player.name_server].keystones.itemLink={}
     wowSave[e.Player.name_server].items={}--{itemID={bag=包, bank=银行}}
-
     for bagID=0, NUM_BAG_SLOTS do
         for slotID=1,GetContainerNumSlots(bagID) do
             local itemID = GetContainerItemID(bagID, slotID)
@@ -1007,30 +976,349 @@ local function SaveInit()--保存WOW数据
         end
     end
 
-    wowSave[e.Player.name_server].currencys={}
-    for i=1, C_CurrencyInfo.GetCurrencyListSize() do
-        local link =C_CurrencyInfo.GetCurrencyListLink(i)
-        local currencyID = link and C_CurrencyInfo.GetCurrencyIDFromLink(link)
-        local info = C_CurrencyInfo.GetCurrencyListInfo(i)
-        if currencyID and info then
-            wowSave[e.Player.name_server].currencys[currencyID]=info.quantity
+    wowSave[e.Player.name_server].money=GetMoney()
+end
+
+local function updateCurrency(arg1)--更新货币 {currencyID = 数量}
+    if arg1 then
+        local info = C_CurrencyInfo.GetCurrencyInfo(arg1)
+        if info and info.quantity then
+            wowSave[e.Player.name_server].currencys[arg1]=info.quantity
+        end
+    else
+        for i=1, C_CurrencyInfo.GetCurrencyListSize() do
+            local link =C_CurrencyInfo.GetCurrencyListLink(i)
+            local currencyID = link and C_CurrencyInfo.GetCurrencyIDFromLink(link)
+            local info = C_CurrencyInfo.GetCurrencyListInfo(i)
+            if currencyID and info and info.quantity then
+                wowSave[e.Player.name_server].currencys[currencyID]=info.quantity
+            end
         end
     end
-
-    wowSave[e.Player.name_server].money=GetMoney()
-
-    updateChallengeMode()--更新地下城挑战数据
 end
+
+local function undateInstance(encounterID, encounterName)
+    local tab=wowSave[e.Player.name_server].worldboss.boss or {}--已杀世界BOSS
+    for i=1, GetNumSavedWorldBosses() do--{week=周数, boss={name=true}}}
+        local bossName,_,reset=GetSavedWorldBossInfo(i)
+        if bossName and (not reset or reset>0) then
+            bossName=bossName:gsub(',.+','')
+            tab[bossName] = true
+        end
+    end
+    if encounterName  then
+        encounterName=encounterName:gsub(',.+','')
+        tab[encounterName]=true
+    end
+    wowSave[e.Player.name_server].worldboss={
+        week=e.Player.week,
+        boss=tab
+    }
+
+    tab={}
+    for i=1, GetNumSavedInstances() do--副本
+        local name, _, reset, _, _, _, _, _, _, difficultyName, numEncounters, encounterProgress, extendDisabled = GetSavedInstanceInfo(i)
+        if reset and reset>0 and numEncounters and encounterProgress and numEncounters>0 and encounterProgress>0 and difficultyName then
+            local killed = encounterProgress ..'/'..numEncounters;
+            killed = encounterProgress ==numEncounters and '|cnGREEN_FONT_COLOR:'..killed..'|r' or killed
+            tab[name] = tab[name] or {}
+            tab[name][difficultyName]=killed
+        end
+    end
+    wowSave[e.Player.name_server].instance = {
+        week=e.Player.week,
+        ins=tab
+    }
+end
+
+--#######
+--冒险指南
+--#######
+local function MoveFrame(self, savePoint)
+    self:RegisterForDrag("RightButton")
+    self:SetClampedToScreen(true)
+    self:SetMovable(true)
+    self:SetScript("OnDragStart", function(self2) self2:StartMoving() end);
+    self:SetScript("OnDragStop", function(self2)
+            ResetCursor()
+            self2:StopMovingOrSizing()
+            Save[savePoint]={self2:GetPoint(1)}
+    end);
+    self:SetScript('OnLeave', function() e.tips:Hide() end)
+end
+local function setWorldbossText()--显示世界BOSS击杀数据
+    if Save.showWorldBoss then
+        if not panel.WorldBoss then
+            panel.WorldBoss=e.Cbtn(UIParent, nil, not Save.hideWorldBossText)
+            if Save.WorldBossPoint then
+                panel.WorldBoss:SetPoint(Save.WorldBossPoint[1], UIParent, Save.WorldBossPoint[3], Save.WorldBossPoint[4], Save.WorldBossPoint[5])
+            else
+                if IsAddOnLoaded('Blizzard_EncounterJournal') then
+                    panel.WorldBoss:SetPoint('BOTTOMRIGHT',EncounterJournal, 'TOPRIGHT', -65,5)
+                else
+                    panel.WorldBoss:SetPoint('CENTER')
+                end
+            end
+            panel.WorldBoss:SetSize(14,14)
+            panel.WorldBoss:SetScript('OnEnter', function(self2)
+                if UnitAffectingCombat('player') then
+                    return
+                end
+                e.tips:SetOwner(self2, "ANCHOR_LEFT");
+                e.tips:ClearLines();
+                e.tips:AddDoubleLine(id, addName)
+                e.tips:AddDoubleLine(ADVENTURE_JOURNAL, CHANNEL_CATEGORY_WORLD..'BOSS')
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(e.GetShowHide(not Save.hideWorldBossText), e.Icon.left)
+                e.tips:AddDoubleLine(NPE_MOVE, e.Icon.right)
+                e.tips:Show()
+            end)
+            panel.WorldBoss:SetScript('OnClick', function(self2, d)
+                if d=='LeftButton' then
+                    if Save.hideWorldBossText then
+                        Save.hideWorldBossText=nil
+                    else
+                        Save.hideWorldBossText=true
+                    end
+                    panel.WorldBoss:SetNormalAtlas(Save.hideWorldBossText and e.Icon.disabled or e.Icon.icon)
+                    panel.WorldBoss.Text:SetShown(not Save.hideWorldBossText)
+                end
+            end)
+            MoveFrame(panel.WorldBoss, 'WorldBossPoint')
+            panel.WorldBoss.Text=e.Cstr(panel.WorldBoss)
+            panel.WorldBoss.Text:SetPoint('TOPLEFT')
+        end
+
+        local text2=''
+        for name_server, info in pairs(wowSave) do
+            local tab=info.worldboss and info.worldboss.boss
+            if tab then
+                local text=''
+                for bossName, _ in pairs(tab) do
+                    text= text~='' and text..' ' or text
+                    text=text.. bossName
+                end
+                if text~='' then
+                    name_server=name_server:gsub('-'..e.Player.server, '')
+                    local col='|c'..select(4, GetClassColor(info.class))
+                    text= text~='' and text..'\n' or text
+                    text2=e.Race(nil, info.race, info.sex)..e.Class(nil,info.class)..col..name_server..'\n      '.. text..'|r'
+                end
+            end
+        end
+        panel.WorldBoss.Text:SetText(text2~='' and text2 or NONE)
+    end
+    if panel.WorldBoss then
+        panel.WorldBoss:SetShown(Save.showWorldBoss)
+        panel.WorldBoss.Text:SetShown(not Save.hideWorldBossText)
+    end
+end
+
+local function setInstanceBossText()--显示副本击杀数据
+    if Save.showInstanceBoss then
+        if not panel.instanceBoss then
+            panel.instanceBoss=e.Cbtn(UIParent, nil, not Save.hideInstanceBossText)
+            if Save.instanceBossPoint then
+                panel.instanceBoss:SetPoint(Save.instanceBossPoint[1], UIParent, Save.instanceBossPoint[3], Save.instanceBossPoint[4], Save.instanceBossPoint[5])
+            else
+                if IsAddOnLoaded('Blizzard_EncounterJournal') then
+                    panel.instanceBoss:SetPoint('BOTTOMRIGHT',EncounterJournal, 'TOPRIGHT', -65,5)
+                else
+                    panel.instanceBoss:SetPoint('CENTER')
+                end
+            end
+            panel.instanceBoss:SetSize(14,14)
+            panel.instanceBoss:SetScript('OnEnter', function(self2)
+                if UnitAffectingCombat('player') then
+                    return
+                end
+                e.tips:SetOwner(self2, "ANCHOR_LEFT");
+                e.tips:ClearLines();
+                e.tips:AddDoubleLine(id, addName)
+                e.tips:AddDoubleLine(ADVENTURE_JOURNAL, INSTANCE)
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(e.GetShowHide(not Save.hideInstanceBossText), e.Icon.left)
+                e.tips:AddDoubleLine(NPE_MOVE, e.Icon.right)
+                e.tips:Show()
+            end)
+            panel.instanceBoss:SetScript('OnClick', function(self2, d)
+                if d=='LeftButton' then
+                    if Save.hideInstanceBossText then
+                        Save.hideInstanceBossText=nil
+                    else
+                        Save.hideInstanceBossText=true
+                    end
+                    panel.instanceBoss:SetNormalAtlas(Save.hideInstanceBossText and e.Icon.disabled or e.Icon.icon)
+                    panel.instanceBoss.Text:SetShown(not Save.hideInstanceBossText)
+                end
+            end)
+            MoveFrame(panel.instanceBoss, 'instanceBossPoint')
+            panel.instanceBoss.Text=e.Cstr(panel.instanceBoss)
+            panel.instanceBoss.Text:SetPoint('TOPLEFT')
+        end
+
+        local text=''
+        for name_server, info in pairs(wowSave) do
+            local tab= info.instance.ins
+            if tab then
+                local showName
+                local col='|c'..select(4, GetClassColor(info.class))
+                for name, instanceInfo in pairs(tab) do
+                    if instanceInfo then
+                        for difficultyName, killed in pairs(instanceInfo) do
+                            if not showName then
+                                name_server=name_server:gsub('-'..e.Player.server, '')
+                                text=text~='' and text..'\n' or text
+                                text=text..e.Race(nil, info.race, info.sex)..e.Class(nil,info.class)..col..name_server..'|r'
+                                showName=true
+                            end
+                            text=text..'\n      '..col..name..' '..difficultyName..' '.. killed..'|r'
+                        end
+                    end
+                end
+            end
+        end
+        panel.instanceBoss.Text:SetText(text~='' and text or NONE)
+    end
+    if panel.instanceBoss then
+        panel.instanceBoss:SetShown(Save.showInstanceBoss)
+        panel.instanceBoss.Text:SetShown(not Save.hideInstanceBossText)
+    end
+end
+
+local function setEncounterJournal()--冒险指南界面
+    local self=EncounterJournal
+    self.btn= e.Cbtn(self.TitleContainer, nil, not Save.hideEncounterJournal)
+    self.btn:SetPoint('RIGHT',-22, -2)
+    self.btn:SetSize(22, 22)
+    self.btn:SetScript('OnEnter',function(self2)
+        e.tips:SetOwner(self2, "ANCHOR_LEFT");
+        e.tips:ClearLines();
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(ADVENTURE_JOURNAL, e.GetEnabeleDisable(not Save.hideEncounterJournal))
+        e.tips:Show()
+    end)
+    self.btn:SetScript('OnClick', function()
+        if Save.hideEncounterJournal then
+            Save.hideEncounterJournal=nil
+        else
+            Save.hideEncounterJournal=true
+        end
+        self.instance:SetShown(not Save.hideEncounterJournal)
+        self.worldboss:SetShown(not Save.hideEncounterJournal)
+    end)
+    self.btn:SetScript("OnLeave",function() e.tips:Hide() end)
+
+    self.instance =e.Cbtn(self.TitleContainer, nil ,true)--所有角色副本
+    self.instance:SetPoint('RIGHT', self.btn, 'LEFT')
+    self.instance:SetNormalAtlas('animachannel-icon-kyrian-map')
+    self.instance:SetSize(22,22)
+    self.instance:SetScript('OnEnter',function(self2)
+        e.tips:SetOwner(self2, "ANCHOR_LEFT");
+        e.tips:ClearLines();
+        e.tips:AddDoubleLine(INSTANCE..e.Icon.left..e.GetShowHide(Save.showInstanceBoss), DUNGEON_ENCOUNTER_DEFEATED)
+        for name_server, info in pairs(wowSave) do
+            local tab= info.instance.ins
+            if tab then
+                local showName
+                local r2,g2,b2=GetClassColor(info.class)
+                for name, instanceInfo in pairs(tab) do
+                    if instanceInfo then
+                        for difficultyName, killed in pairs(instanceInfo) do
+                            if not showName then
+                                e.tips:AddDoubleLine(e.Race(nil, info.race, info.sex)..e.Class(nil,info.class)..name_server, ' ', r2,g2,b2)
+                                showName=true
+                            end
+                            e.tips:AddDoubleLine(name..' '..difficultyName, killed, r2,g2,b2, r2,g2,b2)
+                        end
+                    end
+                end
+            end
+        end
+        e.tips:Show()
+    end)
+    self.instance:SetScript('OnClick', function()
+        if  Save.showInstanceBoss then
+            Save.showInstanceBoss=nil
+        else
+            Save.showInstanceBoss=true
+        end
+        setInstanceBossText()
+    end)
+    self.instance:SetScript("OnLeave",function() e.tips:Hide() end)
+
+    self.worldboss =e.Cbtn(self.TitleContainer, nil ,true)--所有角色已击杀世界BOSS
+    self.worldboss:SetPoint('RIGHT', self.instance, 'LEFT')
+    self.worldboss:SetNormalAtlas('poi-soulspiritghost')
+    self.worldboss:SetSize(22,22)
+    self.worldboss:SetScript('OnEnter',function(self2)
+        e.tips:SetOwner(self2, "ANCHOR_LEFT");
+        e.tips:ClearLines();
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(ADVENTURE_JOURNAL, CHANNEL_CATEGORY_WORLD..'BOSS'..e.Icon.left..e.GetShowHide(Save.showWorldBoss))
+        local find
+        for name_server, info in pairs(wowSave) do
+            local tab=info.worldboss and info.worldboss.boss
+            if tab then
+                local text=''
+                for bossName, _ in pairs(tab) do
+                    text= text~='' and text..' ' or text
+                    text=text.. bossName
+                end
+                if text~='' then
+                    name_server=name_server:gsub('-'..e.Player.server, '')
+                    local r2,g2,b2=GetClassColor(info.class)
+                    e.tips:AddDoubleLine(e.Race(nil, info.race, info.sex)..e.Class(nil,info.class)..name_server, text, r2,g2,b2, r2,g2,b2)
+                    find=true
+                end
+            end
+        end
+        if not find then
+            e.tips:AddDoubleLine(NONE, ' ', 1,0,0)
+        end
+        e.tips:Show()
+    end)
+    self.worldboss:SetScript('OnClick', function()
+        if  Save.showWorldBoss then
+            Save.showWorldBoss=nil
+        else
+            Save.showWorldBoss=true
+        end
+        setWorldbossText()
+    end)
+    self.worldboss:SetScript("OnLeave",function() e.tips:Hide() end)
+
+    self.instance:SetShown(not Save.hideEncounterJournal)
+    self.worldboss:SetShown(not Save.hideEncounterJournal)
+    setWorldbossText()
+    setInstanceBossText()
+end
+
 
 --加载保存数据
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:RegisterEvent('CHALLENGE_MODE_COMPLETED')
-panel:SetScript("OnEvent", function(self, event, arg1)
+panel:RegisterEvent('BOSS_KILL')
+panel:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
+panel:RegisterEvent('BAG_UPDATE_DELAYED')
+panel:RegisterEvent('UPDATE_INSTANCE_INFO')
+panel:RegisterEvent('CHALLENGE_MODE_MAPS_UPDATE')
+panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
             wowSave=WoWToolsSave and WoWToolsSave['WoW-All-Save'] or wowSave
+            wowSave[e.Player.name_server] = wowSave[e.Player.name_server] or {--重置数据
+                class=e.Player.class,
+                race=select(2,UnitRace('player')),
+                sex=UnitSex('player'),
+                items={},--{itemID={bag=包, bank=银行}},
+                keystones={itemLink={}},--{score=总分数,itemLink={超连接}, weekLevel=本周最高, weekNum=本周次数, all=总次数,week=周数},
+                currencys={},--{currencyID = 数量}
+                instance={},
+                worldboss={},--{week=周数, boss=table}
+            }
 
             setUnitInit(self)--设置默认提示位置
 
@@ -1039,21 +1327,24 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             for name_server, info in pairs(wowSave) do--清队不是本周数据
                 local tab=info.keystones
-                if tab and tab.week~=e.Player.week then
-                    wowSave[name_server].keystones={}
+                if tab and tab.week and  tab.week~=e.Player.week then
+                    wowSave[name_server].keystones={itemLink={}}
                 end
                 tab=info.instance
-                if tab and tab.week~=e.Player.week then
+                if tab and tab.week and tab.week~=e.Player.week then
                     wowSave[name_server].instance={}
                 end
                 tab=info.worldboss
-                if tab and tab.week~=e.Player.week then
+                if tab and tab.week and tab.week~=e.Player.week then
                     wowSave[name_server].worldboss={}
                 end
             end
 
+            updateItems()
+            RequestRaidInfo()
             C_MythicPlus.RequestMapInfo()
-            C_Timer.After(2, SaveInit)--更新地下城挑战数据
+            setWorldbossText()--显示世界BOSS击杀数据
+            setInstanceBossText()--显示副本击杀数据
 
         elseif arg1=='Blizzard_ClassTalentUI' then
             local function setClassTalentSpell(self2, tooltip)--天赋
@@ -1069,13 +1360,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
             hooksecurefunc(ClassTalentSelectionChoiceMixin, 'AddTooltipInstructions', setClassTalentSpell)--Blizzard_ClassTalentButtonTemplates.lua--天赋
             hooksecurefunc(ClassTalentButtonSpendMixin, 'AddTooltipInstructions', setClassTalentSpell)
+
+        elseif arg1=='Blizzard_EncounterJournal' then---冒险指南
+            setEncounterJournal()
         end
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
+            updateCurrency()
             if not WoWToolsSave then WoWToolsSave={} end
             WoWToolsSave[addName]=Save
-            SaveInit()--保存数据
             WoWToolsSave['WoW-All-Save'] = wowSave
         end
 
@@ -1091,9 +1385,31 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='CHALLENGE_MODE_COMPLETED' then
         C_MythicPlus.RequestMapInfo()
-        C_Timer.After(2, updateChallengeMode)--更新地下城挑战数据
+
+    elseif event=='BOSS_KILL' then
+        if not IsInInstance() then
+            undateInstance(arg1, arg2)
+            setWorldbossText()--显示世界BOSS击杀数据
+        else
+            RequestRaidInfo()
+        end
+    elseif event=='CURRENCY_DISPLAY_UPDATE' then
+        updateCurrency(arg1)
+
+    elseif event=='BAG_UPDATE_DELAYED' then
+        updateItems()
+
+    elseif event=='UPDATE_INSTANCE_INFO' then
+        undateInstance()
+        setInstanceBossText()--显示副本击杀数据
+
+    elseif event=='CHALLENGE_MODE_MAPS_UPDATE' then
+        updateChallengeMode()
     end
 end)
+
+
+
 
 panel.name = addName;--添加新控制面板
 panel.parent =id;

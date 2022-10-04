@@ -83,61 +83,7 @@ hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', function(self)--self.tagInf
         self.worldQuestTypeTips:SetShown(self.worldQuestType ~= Enum.QuestTagType.Normal)
     end
 end)
---[[
-local WorldQustList=e.Cbtn(WorldMapFrame,nil, true)
-WorldQustList:SetPoint('TOPLEFT', WorldMapFrame, 'BOTTOMLEFT')
-WorldQustList:SetSize(20,20)
-hooksecurefunc(WorldQuestDataProviderMixin, 'RefreshAllData', function(self)
-    local pinsToRemove = {};
-	for questId in pairs(self.activePins) do
-		pinsToRemove[questId] = true;
-	end
 
-	local taskInfo;
-    local mapCanvas = self:GetMap();
-
-	local mapID = mapCanvas:GetMapID();
-	if (mapID) then
-		taskInfo = GetQuestsForPlayerByMapIDCached(mapID);
-		--self.matchWorldMapFilters = MapUtil.MapShouldShowWorldQuestFilters(mapID);
-	end
-
-	if taskInfo then
-		for i, info in ipairs(taskInfo) do
-			if self:ShouldOverrideShowQuest(mapID, info.questId) or self:ShouldShowQuest(info) and HaveQuestData(info.questId) then
-				if QuestUtils_IsQuestWorldQuest(info.questId) then
-					if self:DoesWorldQuestInfoPassFilters(info) then
-						pinsToRemove[info.questId] = nil;
-						local pin = self.activePins[info.questId];
-						if pin then
-							pin:RefreshVisuals();
-							pin.numObjectives = info.numObjectives;	-- Fix for quests with sequenced objectives
-							pin:SetPosition(info.x, info.y); -- Fix for WOW8-48605 - WQ starting location may move based on player location and viewed map
-
-							if self.pingPin and self.pingPin:IsAttachedToQuest(info.questId) then
-								self.pingPin:SetPosition(info.x, info.y);
-							end
-						else
-							self.activePins[info.questId] = self:AddWorldQuest(info);
-						end
-					end
-				end
-			end
-		end
-	end
-
-	for questId in pairs(pinsToRemove) do
-		if self.pingPin and self.pingPin:IsAttachedToQuest(questId) then
-			self.pingPin:Stop();
-		end
-
-		mapCanvas:RemovePin(self.activePins[questId]);
-		self.activePins[questId] = nil;
-	end
-
-	mapCanvas:TriggerEvent("WorldQuestsUpdate", mapCanvas:GetNumActivePinsByTemplate(self:GetPinTemplate()));
-end)
-]]
 --任务日志
 local Code=IN_GAME_NAVIGATION_RANGE:gsub('d','s')--%s码    
 local function Quest(self, questID)--任务

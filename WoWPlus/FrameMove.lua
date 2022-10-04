@@ -207,6 +207,70 @@ local function Set(arg1)
             end
         end
     end)
+
+--[[
+    local frame
+    if e.Player.class== 'PALADIN' then
+        frame = PaladinPowerBarFrame;--圣骑士能量条, 
+        if frame then
+            Move(frame, {save=true})
+            frame =PaladinPowerBarFrameBG if frame then frame:Hide() end
+            frame=PaladinPowerBarFrameBankBG if frame then frame:Hide() end
+        end
+
+    elseif e.Player.class=='DEATHKNIGHT' then--DK符文
+        Move(RuneFrame, {save=true})
+
+    elseif e.Player.class=='MONK' then--WS
+        frame= MonkHarmonyBarFrame;--DPS
+        if frame then
+            frame.moveFrame=CreateFrame('frame', nil, frame);
+            frame.moveFrame:SetSize(60,40);
+            frame.moveFrame:SetPoint('RIGHT', frame, 'LEFT', 0,0);
+            Move(frame, {save=true})
+        end
+        frame=MonkStaggerBar--T
+        if frame then
+           Move(frame, {save=true})
+        end
+
+    elseif e.Player.class=='WARLOCK' then
+        frame=WarlockPowerFrame
+        Move(WarlockPowerFrame, {save=true})
+
+    elseif e.Player.class=='MAGE' then--Fs
+        frame=MageArcaneChargesFrame
+        if frame then
+            Move(frame, {save=true})
+            if frame.Background then frame.Background:Hide() end
+            frame:SetScale(0.7);--缩放
+        end
+    elseif e.Player.class=='ROGUE' or e.Player.class=='DRUID' then --DZ , XD        
+        frame=ComboPointPlayerFrame
+        if frame then
+            Move(frame, {save=true})
+            UIParent.unit='player';
+            if frame.Background then frame.Background:Hide() end
+
+            if frame.ComboPoints then
+                for i = 1, #frame.ComboPoints do
+                    local self=frame.ComboPoints[i]
+                    if self then
+                        if self.PointOff then  self.PointOff:Hide() end--:SetAlpha(0) end
+                        if self.CircleBurst then self.CircleBurst:Hide() end
+                        if not self.tex then 
+                            self.tex=self:CreateTexture(nil, 'BACKGROUND');
+                            local setFrame=self.Point or self
+                            self.tex:SetPoint('BOTTOM', setFrame, 'BOTTOM',0,0);                           
+                            self.tex:SetSize(12, 12);
+                            self.tex:SetAtlas(e.Icon.num:format(i));                            
+                        end
+                    end
+                end
+            end
+        end
+    end
+    ]]
 end
 
 local function Set2()

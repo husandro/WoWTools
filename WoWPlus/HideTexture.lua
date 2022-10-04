@@ -37,9 +37,11 @@ local function Set()
         self.BottomFrame.TurnTimer.ArtFrame:SetShown(false);
         self.BottomFrame.TurnTimer.ArtFrame2:SetShown(false);
     end)
+
+    local frame =PaladinPowerBarFrameBG if frame then frame:Hide() end
+    frame=PaladinPowerBarFrameBankBG if frame then frame:Hide() end
     
     LootFrameBg:Hide()--拾取
-  --  e.tips.IconBorder:Hide()--GameTooltip.xml
 end
 
 --加载保存数据
