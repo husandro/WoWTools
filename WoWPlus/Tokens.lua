@@ -193,10 +193,11 @@ local function Set()
 					local info = C_CurrencyInfo.GetBackpackCurrencyInfo(index)
 					if info then
 						local link=C_CurrencyInfo.GetCurrencyLink(info.currencyTypesID) or info.name
-						C_CurrencyInfo.SetCurrencyBackpack(index, false)
+						--C_CurrencyInfo.SetCurrencyBackpack(index, false)
 						print(link)
 					end
 				end
+				ToggleAllBags()
 				TokenFrame_Update();
 		end)
 		sel.bag:SetScript('OnEnter', function(self2)
@@ -268,7 +269,7 @@ end)
 sel:SetScript('OnLeave', function ()
 	e.tips:Hide()
 end)
-
+--[[
 local function setUpdat(currencyType)
 	local info = currencyType and C_CurrencyInfo.GetCurrencyInfo(currencyType)
 	if not Save.updateTips or not info or not info.quantity then
@@ -302,9 +303,10 @@ local function setUpdat(currencyType)
 	end
 	print(m)
 end
+]]
 sel:RegisterEvent("ADDON_LOADED")
 sel:RegisterEvent("PLAYER_LOGOUT")
-sel:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
+--sel:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
 
 sel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1 == id then
@@ -315,7 +317,7 @@ sel:SetScript("OnEvent", function(self, event, arg1)
 			if not WoWToolsSave then WoWToolsSave={} end
 			WoWToolsSave[addName]=Save
 		end
-	elseif event=='CURRENCY_DISPLAY_UPDATE' then
-		setUpdat(arg1)
+	--elseif event=='CURRENCY_DISPLAY_UPDATE' then
+		--setUpdat(arg1)
 	end
 end)

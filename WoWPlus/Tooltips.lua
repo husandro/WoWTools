@@ -841,12 +841,12 @@ local function setUnitInit(self)--设置默认提示位置
             e.tips.playerModel:SetShown(false)
         end
         panel:RegisterEvent('INSPECT_READY')
-        panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+        --panel:RegisterEvent('PLAYER_ENTERING_WORLD')
         GameTooltip_UnitColor=GameTooltip_UnitColor_Init
     else
 
         panel:UnregisterEvent('INSPECT_READY')
-        panel:UnregisterEvent('PLAYER_ENTERING_WORLD')
+        --panel:UnregisterEvent('PLAYER_ENTERING_WORLD')
         GameTooltip_UnitColor=GameTooltip_UnitColor_WoW
     end
     setInitItem(e.tips, not Save.setUnit)
@@ -920,6 +920,310 @@ end)
 ItemRefTooltip:HookScript("OnHide", function (self)
     setInitItem(self, true)
 end)
+
+
+--#######
+--冒险指南
+--#######
+local function MoveFrame(self, savePoint)
+    self:RegisterForDrag("RightButton")
+    self:SetClampedToScreen(true)
+    self:SetMovable(true)
+    self:SetScript("OnDragStart", function(self2) self2:StartMoving() end);
+    self:SetScript("OnDragStop", function(self2)
+            ResetCursor()
+            self2:StopMovingOrSizing()
+            Save[savePoint]={self2:GetPoint(1)}
+    end);
+    self:SetScript('OnLeave', function() e.tips:Hide() end)
+end
+local function setWorldbossText()--显示世界BOSS击杀数据
+    if Save.showWorldBoss then
+        if not panel.WorldBoss then
+            panel.WorldBoss=e.Cbtn(UIParent, nil, not Save.hideWorldBossText)
+            if Save.WorldBossPoint then
+                panel.WorldBoss:SetPoint(Save.WorldBossPoint[1], UIParent, Save.WorldBossPoint[3], Save.WorldBossPoint[4], Save.WorldBossPoint[5])
+            else
+                if IsAddOnLoaded('Blizzard_EncounterJournal') then
+                    panel.WorldBoss:SetPoint('BOTTOMRIGHT',EncounterJournal, 'TOPRIGHT', -65,5)
+                else
+                    panel.WorldBoss:SetPoint('CENTER')
+                end
+            end
+            panel.WorldBoss:SetSize(14,14)
+            panel.WorldBoss:SetScript('OnEnter', function(self2)
+                if UnitAffectingCombat('player') then
+                    return
+                end
+                e.tips:SetOwner(self2, "ANCHOR_LEFT");
+                e.tips:ClearLines();
+                e.tips:AddDoubleLine(id, addName)
+                e.tips:AddDoubleLine(ADVENTURE_JOURNAL, CHANNEL_CATEGORY_WORLD..'BOSS/'..GARRISON_MISSION_RARE)
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(e.GetShowHide(not Save.hideWorldBossText), e.Icon.left)
+                e.tips:AddDoubleLine(NPE_MOVE, e.Icon.right)
+                e.tips:Show()
+            end)
+            panel.WorldBoss:SetScript('OnClick', function(self2, d)
+                if d=='LeftButton' then
+                    if Save.hideWorldBossText then
+                        Save.hideWorldBossText=nil
+                    else
+                        Save.hideWorldBossText=true
+                    end
+                    panel.WorldBoss:SetNormalAtlas(Save.hideWorldBossText and e.Icon.disabled or e.Icon.icon)
+                    panel.WorldBoss.Text:SetShown(not Save.hideWorldBossText)
+                end
+            end)
+            MoveFrame(panel.WorldBoss, 'WorldBossPoint')
+            panel.WorldBoss.Text=e.Cstr(panel.WorldBoss)
+            panel.WorldBoss.Text:SetPoint('TOPLEFT')
+        end
+
+        local text2=''
+        for name_server, info in pairs(wowSave) do
+            local showName
+            name_server=name_server:gsub('-'..e.Player.server, '')
+            local col='|c'..select(4, GetClassColor(info.class))
+            local tab=info.worldboss and info.worldboss.boss
+            if tab then
+                local text=''
+                for bossName, _ in pairs(tab) do
+                    text= text~='' and text..' ' or text
+                    text=text.. bossName
+                end
+                if text~='' then
+                    text2=e.Race(nil, info.race, info.sex)..e.Class(nil,info.class)..col..name_server.. '\n       '..text..'|r'
+                    showName=true
+                end
+            end
+
+            tab=info.rare.boss--稀有怪
+            if tab then
+                local text=''
+                for name, num in pairs(tab) do
+                    text=text~='' and text..' ' or text
+                    text=text..name..(num>1 and num or '')
+                end
+                if text~='' then
+                    if not showName then
+                        text2=e.Race(nil, info.race, info.sex)..e.Class(nil,info.class)..col..name_server..'\n       '
+                    else
+                        text2= text2~='' and text2..'\n       ' or text2
+                    end
+                    text2=text2..col..text..'|r'
+                end
+            end
+        end
+
+        panel.WorldBoss.Text:SetText(text2~='' and text2 or NONE)
+    end
+    if panel.WorldBoss then
+        panel.WorldBoss:SetShown(Save.showWorldBoss)
+        panel.WorldBoss.Text:SetShown(not Save.hideWorldBossText)
+    end
+end
+
+local function setInstanceBossText()--显示副本击杀数据
+    if Save.showInstanceBoss then
+        if not panel.instanceBoss then
+            panel.instanceBoss=e.Cbtn(UIParent, nil, not Save.hideInstanceBossText)
+            if Save.instanceBossPoint then
+                panel.instanceBoss:SetPoint(Save.instanceBossPoint[1], UIParent, Save.instanceBossPoint[3], Save.instanceBossPoint[4], Save.instanceBossPoint[5])
+            else
+                if IsAddOnLoaded('Blizzard_EncounterJournal') then
+                    panel.instanceBoss:SetPoint('BOTTOMRIGHT',EncounterJournal, 'TOPRIGHT', -45,20)
+                else
+                    panel.instanceBoss:SetPoint('CENTER')
+                end
+            end
+            panel.instanceBoss:SetSize(14,14)
+            panel.instanceBoss:SetScript('OnEnter', function(self2)
+                if UnitAffectingCombat('player') then
+                    return
+                end
+                e.tips:SetOwner(self2, "ANCHOR_LEFT");
+                e.tips:ClearLines();
+                e.tips:AddDoubleLine(id, addName)
+                e.tips:AddDoubleLine(ADVENTURE_JOURNAL, INSTANCE)
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(e.GetShowHide(not Save.hideInstanceBossText), e.Icon.left)
+                e.tips:AddDoubleLine(NPE_MOVE, e.Icon.right)
+                e.tips:Show()
+            end)
+            panel.instanceBoss:SetScript('OnClick', function(self2, d)
+                if d=='LeftButton' then
+                    if Save.hideInstanceBossText then
+                        Save.hideInstanceBossText=nil
+                    else
+                        Save.hideInstanceBossText=true
+                    end
+                    panel.instanceBoss:SetNormalAtlas(Save.hideInstanceBossText and e.Icon.disabled or e.Icon.icon)
+                    panel.instanceBoss.Text:SetShown(not Save.hideInstanceBossText)
+                end
+            end)
+            MoveFrame(panel.instanceBoss, 'instanceBossPoint')
+            panel.instanceBoss.Text=e.Cstr(panel.instanceBoss)
+            panel.instanceBoss.Text:SetPoint('TOPLEFT')
+        end
+
+        local text=''
+        for name_server, info in pairs(wowSave) do
+            local tab= info.instance.ins
+            if tab then
+                local showName
+                local col='|c'..select(4, GetClassColor(info.class))
+                for name, instanceInfo in pairs(tab) do
+                    if instanceInfo then
+                        for difficultyName, killed in pairs(instanceInfo) do
+                            if not showName then
+                                name_server=name_server:gsub('-'..e.Player.server, '')
+                                text=text~='' and text..'\n' or text
+                                text=text..e.Race(nil, info.race, info.sex)..e.Class(nil,info.class)..col..name_server..'|r'
+                                showName=true
+                            end
+                            text=text..'\n       '..col..name..' '..difficultyName..' '.. killed..'|r'
+                        end
+                    end
+                end
+            end
+        end
+        panel.instanceBoss.Text:SetText(text~='' and text or NONE)
+    end
+    if panel.instanceBoss then
+        panel.instanceBoss:SetShown(Save.showInstanceBoss)
+        panel.instanceBoss.Text:SetShown(not Save.hideInstanceBossText)
+    end
+end
+
+local function setEncounterJournal()--冒险指南界面
+    local self=EncounterJournal
+    self.btn= e.Cbtn(self.TitleContainer, nil, not Save.hideEncounterJournal)
+    self.btn:SetPoint('RIGHT',-22, -2)
+    self.btn:SetSize(22, 22)
+    self.btn:SetScript('OnEnter',function(self2)
+        e.tips:SetOwner(self2, "ANCHOR_LEFT");
+        e.tips:ClearLines();
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(ADVENTURE_JOURNAL, e.GetEnabeleDisable(not Save.hideEncounterJournal))
+        e.tips:Show()
+    end)
+    self.btn:SetScript('OnClick', function()
+        if Save.hideEncounterJournal then
+            Save.hideEncounterJournal=nil
+        else
+            Save.hideEncounterJournal=true
+        end
+        self.instance:SetShown(not Save.hideEncounterJournal)
+        self.worldboss:SetShown(not Save.hideEncounterJournal)
+    end)
+    self.btn:SetScript("OnLeave",function() e.tips:Hide() end)
+
+    self.instance =e.Cbtn(self.TitleContainer, nil ,true)--所有角色副本
+    self.instance:SetPoint('RIGHT', self.btn, 'LEFT')
+    self.instance:SetNormalAtlas('animachannel-icon-kyrian-map')
+    self.instance:SetSize(22,22)
+    self.instance:SetScript('OnEnter',function(self2)
+        e.tips:SetOwner(self2, "ANCHOR_LEFT");
+        e.tips:ClearLines();
+        e.tips:AddDoubleLine(INSTANCE..e.Icon.left..e.GetShowHide(Save.showInstanceBoss), DUNGEON_ENCOUNTER_DEFEATED)
+        for name_server, info in pairs(wowSave) do
+            local tab= info.instance.ins
+            if tab then
+                local showName
+                local r2,g2,b2=GetClassColor(info.class)
+                for name, instanceInfo in pairs(tab) do
+                    if instanceInfo then
+                        for difficultyName, killed in pairs(instanceInfo) do
+                            if not showName then
+                                e.tips:AddDoubleLine(e.Race(nil, info.race, info.sex)..e.Class(nil,info.class)..name_server, ' ', r2,g2,b2)
+                                showName=true
+                            end
+                            e.tips:AddDoubleLine('       '..name..' '..difficultyName, killed, r2,g2,b2, r2,g2,b2)
+                        end
+                    end
+                end
+            end
+        end
+        e.tips:Show()
+    end)
+    self.instance:SetScript('OnClick', function()
+            if  Save.showInstanceBoss then
+                Save.showInstanceBoss=nil
+            else
+                Save.showInstanceBoss=true
+            end
+            setInstanceBossText()
+    end)
+    self.instance:SetScript("OnLeave",function() e.tips:Hide() end)
+
+    self.worldboss =e.Cbtn(self.TitleContainer, nil ,true)--所有角色已击杀世界BOSS
+    self.worldboss:SetPoint('RIGHT', self.instance, 'LEFT')
+    self.worldboss:SetNormalAtlas('poi-soulspiritghost')
+    self.worldboss:SetSize(22,22)
+    self.worldboss:SetScript('OnEnter',function(self2)
+        e.tips:SetOwner(self2, "ANCHOR_LEFT");
+        e.tips:ClearLines();
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(ADVENTURE_JOURNAL, CHANNEL_CATEGORY_WORLD..'BOSS/'..GARRISON_MISSION_RARE..e.Icon.left..e.GetShowHide(Save.showWorldBoss))
+        local find
+        for name_server, info in pairs(wowSave) do
+            local showName
+            name_server=name_server:gsub('-'..e.Player.server, '')
+            local r2,g2,b2=GetClassColor(info.class)
+
+            local tab=info.worldboss and info.worldboss.boss--世界BOSS
+            if tab then
+                local text=''
+                for bossName, _ in pairs(tab) do
+                    text= text~='' and text..' ' or text
+                    text=text.. bossName
+                end
+                if text~='' then
+                    e.tips:AddDoubleLine(e.Race(nil, info.race, info.sex)..e.Class(nil,info.class)..name_server, text, r2,g2,b2, r2,g2,b2)
+                    find=true
+                    showName=true
+                end
+            end
+
+            tab=info.rare.boss--稀有怪
+            if tab then
+                local text=''
+                for name, num in pairs(tab) do
+                    text=text~='' and text..' ' or text
+                    text=text..name..(num>1 and num or '')
+                end
+                if text~='' then
+                    if not showName then
+                        e.tips:AddLine(e.Race(nil, info.race, info.sex)..e.Class(nil,info.class)..name_server, r2,g2,b2)
+                    end
+                    e.tips:AddLine(text, r2,g2,b2, true)
+                    find=true
+                end
+            end
+        end
+        
+        if not find then
+            e.tips:AddDoubleLine(NONE, ' ', 1,0,0)
+        end
+        e.tips:Show()
+    end)
+    self.worldboss:SetScript('OnClick', function(self2, d)
+        if  Save.showWorldBoss then
+            Save.showWorldBoss=nil
+        else
+            Save.showWorldBoss=true
+        end
+        setWorldbossText()
+    end)
+    self.worldboss:SetScript("OnLeave",function() e.tips:Hide() end)
+
+    self.instance:SetShown(not Save.hideEncounterJournal)
+    self.worldboss:SetShown(not Save.hideEncounterJournal)
+    setWorldbossText()
+    setInstanceBossText()
+end
+
 
 --#######
 --更新数据
@@ -997,7 +1301,7 @@ local function updateCurrency(arg1)--更新货币 {currencyID = 数量}
     end
 end
 
-local function undateInstance(encounterID, encounterName)
+local function undateInstance(encounterID, encounterName)--副本, 世界BOSS
     local tab=wowSave[e.Player.name_server].worldboss.boss or {}--已杀世界BOSS
     for i=1, GetNumSavedWorldBosses() do--{week=周数, boss={name=true}}}
         local bossName,_,reset=GetSavedWorldBossInfo(i)
@@ -1031,269 +1335,39 @@ local function undateInstance(encounterID, encounterName)
     }
 end
 
---#######
---冒险指南
---#######
-local function MoveFrame(self, savePoint)
-    self:RegisterForDrag("RightButton")
-    self:SetClampedToScreen(true)
-    self:SetMovable(true)
-    self:SetScript("OnDragStart", function(self2) self2:StartMoving() end);
-    self:SetScript("OnDragStop", function(self2)
-            ResetCursor()
-            self2:StopMovingOrSizing()
-            Save[savePoint]={self2:GetPoint(1)}
-    end);
-    self:SetScript('OnLeave', function() e.tips:Hide() end)
-end
-local function setWorldbossText()--显示世界BOSS击杀数据
-    if Save.showWorldBoss then
-        if not panel.WorldBoss then
-            panel.WorldBoss=e.Cbtn(UIParent, nil, not Save.hideWorldBossText)
-            if Save.WorldBossPoint then
-                panel.WorldBoss:SetPoint(Save.WorldBossPoint[1], UIParent, Save.WorldBossPoint[3], Save.WorldBossPoint[4], Save.WorldBossPoint[5])
-            else
-                if IsAddOnLoaded('Blizzard_EncounterJournal') then
-                    panel.WorldBoss:SetPoint('BOTTOMRIGHT',EncounterJournal, 'TOPRIGHT', -65,5)
-                else
-                    panel.WorldBoss:SetPoint('CENTER')
-                end
+local function setRareEliteKilled(unit)--稀有怪数据
+    if unit=='loot' then
+        unit='target'
+        local classification = UnitExists(unit) and UnitClassification(unit)
+        if classification == "rare" or classification == "rareelite" then
+            local name=UnitName(unit)
+            local num=name and wowSave[e.Player.name_server].rare.boss[name]
+            if name and not num then
+                name=name:gsub('·.+','')
+                name=name:gsub('%-.+','')
+                name=name:gsub('<.+>', '')
+                wowSave[e.Player.name_server].rare.boss[name]=1
+                setWorldbossText()
             end
-            panel.WorldBoss:SetSize(14,14)
-            panel.WorldBoss:SetScript('OnEnter', function(self2)
-                if UnitAffectingCombat('player') then
-                    return
-                end
-                e.tips:SetOwner(self2, "ANCHOR_LEFT");
-                e.tips:ClearLines();
-                e.tips:AddDoubleLine(id, addName)
-                e.tips:AddDoubleLine(ADVENTURE_JOURNAL, CHANNEL_CATEGORY_WORLD..'BOSS')
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(e.GetShowHide(not Save.hideWorldBossText), e.Icon.left)
-                e.tips:AddDoubleLine(NPE_MOVE, e.Icon.right)
-                e.tips:Show()
-            end)
-            panel.WorldBoss:SetScript('OnClick', function(self2, d)
-                if d=='LeftButton' then
-                    if Save.hideWorldBossText then
-                        Save.hideWorldBossText=nil
-                    else
-                        Save.hideWorldBossText=true
-                    end
-                    panel.WorldBoss:SetNormalAtlas(Save.hideWorldBossText and e.Icon.disabled or e.Icon.icon)
-                    panel.WorldBoss.Text:SetShown(not Save.hideWorldBossText)
-                end
-            end)
-            MoveFrame(panel.WorldBoss, 'WorldBossPoint')
-            panel.WorldBoss.Text=e.Cstr(panel.WorldBoss)
-            panel.WorldBoss.Text:SetPoint('TOPLEFT')
         end
-
-        local text2=''
-        for name_server, info in pairs(wowSave) do
-            local tab=info.worldboss and info.worldboss.boss
-            if tab then
-                local text=''
-                for bossName, _ in pairs(tab) do
-                    text= text~='' and text..' ' or text
-                    text=text.. bossName
-                end
-                if text~='' then
-                    name_server=name_server:gsub('-'..e.Player.server, '')
-                    local col='|c'..select(4, GetClassColor(info.class))
-                    text= text~='' and text..'\n' or text
-                    text2=e.Race(nil, info.race, info.sex)..e.Class(nil,info.class)..col..name_server..'\n      '.. text..'|r'
+    elseif UnitIsDead(unit) then
+        local classification = UnitClassification(unit)
+        if classification == "rare" or classification == "rareelite" then
+            local threat = UnitThreatSituation('player',unit)
+            if threat and threat>0 then
+                local name=UnitName(unit)
+                if name then
+                    name=name:gsub('·.+','')
+                    name=name:gsub('%-.+','')
+                    name=name:gsub('<.+>', '')
+                    local num=wowSave[e.Player.name_server].rare.boss[name]
+                    wowSave[e.Player.name_server].rare.boss[name]=num and num + 1 or 1
+                    setWorldbossText()--显示世界BOSS击杀数据
                 end
             end
         end
-        panel.WorldBoss.Text:SetText(text2~='' and text2 or NONE)
-    end
-    if panel.WorldBoss then
-        panel.WorldBoss:SetShown(Save.showWorldBoss)
-        panel.WorldBoss.Text:SetShown(not Save.hideWorldBossText)
     end
 end
-
-local function setInstanceBossText()--显示副本击杀数据
-    if Save.showInstanceBoss then
-        if not panel.instanceBoss then
-            panel.instanceBoss=e.Cbtn(UIParent, nil, not Save.hideInstanceBossText)
-            if Save.instanceBossPoint then
-                panel.instanceBoss:SetPoint(Save.instanceBossPoint[1], UIParent, Save.instanceBossPoint[3], Save.instanceBossPoint[4], Save.instanceBossPoint[5])
-            else
-                if IsAddOnLoaded('Blizzard_EncounterJournal') then
-                    panel.instanceBoss:SetPoint('BOTTOMRIGHT',EncounterJournal, 'TOPRIGHT', -65,5)
-                else
-                    panel.instanceBoss:SetPoint('CENTER')
-                end
-            end
-            panel.instanceBoss:SetSize(14,14)
-            panel.instanceBoss:SetScript('OnEnter', function(self2)
-                if UnitAffectingCombat('player') then
-                    return
-                end
-                e.tips:SetOwner(self2, "ANCHOR_LEFT");
-                e.tips:ClearLines();
-                e.tips:AddDoubleLine(id, addName)
-                e.tips:AddDoubleLine(ADVENTURE_JOURNAL, INSTANCE)
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(e.GetShowHide(not Save.hideInstanceBossText), e.Icon.left)
-                e.tips:AddDoubleLine(NPE_MOVE, e.Icon.right)
-                e.tips:Show()
-            end)
-            panel.instanceBoss:SetScript('OnClick', function(self2, d)
-                if d=='LeftButton' then
-                    if Save.hideInstanceBossText then
-                        Save.hideInstanceBossText=nil
-                    else
-                        Save.hideInstanceBossText=true
-                    end
-                    panel.instanceBoss:SetNormalAtlas(Save.hideInstanceBossText and e.Icon.disabled or e.Icon.icon)
-                    panel.instanceBoss.Text:SetShown(not Save.hideInstanceBossText)
-                end
-            end)
-            MoveFrame(panel.instanceBoss, 'instanceBossPoint')
-            panel.instanceBoss.Text=e.Cstr(panel.instanceBoss)
-            panel.instanceBoss.Text:SetPoint('TOPLEFT')
-        end
-
-        local text=''
-        for name_server, info in pairs(wowSave) do
-            local tab= info.instance.ins
-            if tab then
-                local showName
-                local col='|c'..select(4, GetClassColor(info.class))
-                for name, instanceInfo in pairs(tab) do
-                    if instanceInfo then
-                        for difficultyName, killed in pairs(instanceInfo) do
-                            if not showName then
-                                name_server=name_server:gsub('-'..e.Player.server, '')
-                                text=text~='' and text..'\n' or text
-                                text=text..e.Race(nil, info.race, info.sex)..e.Class(nil,info.class)..col..name_server..'|r'
-                                showName=true
-                            end
-                            text=text..'\n      '..col..name..' '..difficultyName..' '.. killed..'|r'
-                        end
-                    end
-                end
-            end
-        end
-        panel.instanceBoss.Text:SetText(text~='' and text or NONE)
-    end
-    if panel.instanceBoss then
-        panel.instanceBoss:SetShown(Save.showInstanceBoss)
-        panel.instanceBoss.Text:SetShown(not Save.hideInstanceBossText)
-    end
-end
-
-local function setEncounterJournal()--冒险指南界面
-    local self=EncounterJournal
-    self.btn= e.Cbtn(self.TitleContainer, nil, not Save.hideEncounterJournal)
-    self.btn:SetPoint('RIGHT',-22, -2)
-    self.btn:SetSize(22, 22)
-    self.btn:SetScript('OnEnter',function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_LEFT");
-        e.tips:ClearLines();
-        e.tips:AddDoubleLine(id, addName)
-        e.tips:AddDoubleLine(ADVENTURE_JOURNAL, e.GetEnabeleDisable(not Save.hideEncounterJournal))
-        e.tips:Show()
-    end)
-    self.btn:SetScript('OnClick', function()
-        if Save.hideEncounterJournal then
-            Save.hideEncounterJournal=nil
-        else
-            Save.hideEncounterJournal=true
-        end
-        self.instance:SetShown(not Save.hideEncounterJournal)
-        self.worldboss:SetShown(not Save.hideEncounterJournal)
-    end)
-    self.btn:SetScript("OnLeave",function() e.tips:Hide() end)
-
-    self.instance =e.Cbtn(self.TitleContainer, nil ,true)--所有角色副本
-    self.instance:SetPoint('RIGHT', self.btn, 'LEFT')
-    self.instance:SetNormalAtlas('animachannel-icon-kyrian-map')
-    self.instance:SetSize(22,22)
-    self.instance:SetScript('OnEnter',function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_LEFT");
-        e.tips:ClearLines();
-        e.tips:AddDoubleLine(INSTANCE..e.Icon.left..e.GetShowHide(Save.showInstanceBoss), DUNGEON_ENCOUNTER_DEFEATED)
-        for name_server, info in pairs(wowSave) do
-            local tab= info.instance.ins
-            if tab then
-                local showName
-                local r2,g2,b2=GetClassColor(info.class)
-                for name, instanceInfo in pairs(tab) do
-                    if instanceInfo then
-                        for difficultyName, killed in pairs(instanceInfo) do
-                            if not showName then
-                                e.tips:AddDoubleLine(e.Race(nil, info.race, info.sex)..e.Class(nil,info.class)..name_server, ' ', r2,g2,b2)
-                                showName=true
-                            end
-                            e.tips:AddDoubleLine(name..' '..difficultyName, killed, r2,g2,b2, r2,g2,b2)
-                        end
-                    end
-                end
-            end
-        end
-        e.tips:Show()
-    end)
-    self.instance:SetScript('OnClick', function()
-        if  Save.showInstanceBoss then
-            Save.showInstanceBoss=nil
-        else
-            Save.showInstanceBoss=true
-        end
-        setInstanceBossText()
-    end)
-    self.instance:SetScript("OnLeave",function() e.tips:Hide() end)
-
-    self.worldboss =e.Cbtn(self.TitleContainer, nil ,true)--所有角色已击杀世界BOSS
-    self.worldboss:SetPoint('RIGHT', self.instance, 'LEFT')
-    self.worldboss:SetNormalAtlas('poi-soulspiritghost')
-    self.worldboss:SetSize(22,22)
-    self.worldboss:SetScript('OnEnter',function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_LEFT");
-        e.tips:ClearLines();
-        e.tips:AddDoubleLine(id, addName)
-        e.tips:AddDoubleLine(ADVENTURE_JOURNAL, CHANNEL_CATEGORY_WORLD..'BOSS'..e.Icon.left..e.GetShowHide(Save.showWorldBoss))
-        local find
-        for name_server, info in pairs(wowSave) do
-            local tab=info.worldboss and info.worldboss.boss
-            if tab then
-                local text=''
-                for bossName, _ in pairs(tab) do
-                    text= text~='' and text..' ' or text
-                    text=text.. bossName
-                end
-                if text~='' then
-                    name_server=name_server:gsub('-'..e.Player.server, '')
-                    local r2,g2,b2=GetClassColor(info.class)
-                    e.tips:AddDoubleLine(e.Race(nil, info.race, info.sex)..e.Class(nil,info.class)..name_server, text, r2,g2,b2, r2,g2,b2)
-                    find=true
-                end
-            end
-        end
-        if not find then
-            e.tips:AddDoubleLine(NONE, ' ', 1,0,0)
-        end
-        e.tips:Show()
-    end)
-    self.worldboss:SetScript('OnClick', function()
-        if  Save.showWorldBoss then
-            Save.showWorldBoss=nil
-        else
-            Save.showWorldBoss=true
-        end
-        setWorldbossText()
-    end)
-    self.worldboss:SetScript("OnLeave",function() e.tips:Hide() end)
-
-    self.instance:SetShown(not Save.hideEncounterJournal)
-    self.worldboss:SetShown(not Save.hideEncounterJournal)
-    setWorldbossText()
-    setInstanceBossText()
-end
-
 
 --加载保存数据
 panel:RegisterEvent("ADDON_LOADED")
@@ -1304,12 +1378,15 @@ panel:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
 panel:RegisterEvent('BAG_UPDATE_DELAYED')
 panel:RegisterEvent('UPDATE_INSTANCE_INFO')
 panel:RegisterEvent('CHALLENGE_MODE_MAPS_UPDATE')
+
+panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+
 panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
             wowSave=WoWToolsSave and WoWToolsSave['WoW-All-Save'] or wowSave
-            wowSave[e.Player.name_server] = wowSave[e.Player.name_server] or {--重置数据
+            wowSave[e.Player.name_server] = wowSave[e.Player.name_server] or {--默认数据
                 class=e.Player.class,
                 race=select(2,UnitRace('player')),
                 sex=UnitSex('player'),
@@ -1318,6 +1395,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 currencys={},--{currencyID = 数量}
                 instance={},
                 worldboss={},--{week=周数, boss=table}
+                rare={day=date('%x'), boss={}},
             }
 
             setUnitInit(self)--设置默认提示位置
@@ -1337,6 +1415,13 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 tab=info.worldboss
                 if tab and tab.week and tab.week~=e.Player.week then
                     wowSave[name_server].worldboss={}
+                end
+                tab=info.rare
+                if tab then
+                    local day=date('%x')
+                    if tab.day~=day then
+                        wowSave[name_server].rare={day=day,boss={}}
+                    end
                 end
             end
 
@@ -1382,7 +1467,14 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
 
     elseif event=='PLAYER_ENTERING_WORLD' then
         e.Layer=nil
-
+        if IsInInstance() then--稀有怪
+            panel:UnregisterEvent('UNIT_FLAGS')
+            panel:UnregisterEvent('LOOT_OPENED')
+        else
+            panel:RegisterEvent('UNIT_FLAGS')
+            panel:RegisterEvent('LOOT_OPENED')
+        end
+        
     elseif event=='CHALLENGE_MODE_COMPLETED' then
         C_MythicPlus.RequestMapInfo()
 
@@ -1405,6 +1497,11 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
 
     elseif event=='CHALLENGE_MODE_MAPS_UPDATE' then
         updateChallengeMode()
+
+    elseif event=='UNIT_FLAGS' then--稀有怪
+        setRareEliteKilled(arg1)
+    elseif event=='LOOT_OPENED' then
+        setRareEliteKilled('loot')
     end
 end)
 
