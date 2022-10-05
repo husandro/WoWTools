@@ -257,9 +257,9 @@ e.Cstr=function(self, size, fontType, ChangeFont, color)
         --b:SetShadowColor(0, 0, 0)
         b:SetJustifyH('LEFT')
         if color then
-        b:SetTextColor(color.r, color.g, color.b)
+            b:SetTextColor(color.r, color.g, color.b)
         else
-        b:SetTextColor(1, 0.45, 0.04)
+            b:SetTextColor(1, 0.45, 0.04)
         end
     end
     return b

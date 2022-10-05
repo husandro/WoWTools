@@ -47,3 +47,4 @@ WoWPlus\Tooltips.lua
 WoWPlus\Professions.lua
 
 WoWPlus\UnitFrame.lua
+WowPlus\BattlePet.lua

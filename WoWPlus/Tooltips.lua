@@ -111,7 +111,7 @@ local function setPet(self, speciesID)--宠物
     local abilityIconA, abilityIconB = '', ''
     for k, info in pairs(tab) do
         local icon, type = select(2, C_PetJournal.GetPetAbilityInfo(info.abilityID))
-        icon='|TInterface\\Icons\\Icon_PetFamily_'..PET_TYPE_SUFFIX[type]..':0|t|T'..icon..':0|t'..info.level.. ((k~=3 or k~=6) and '  ' or '')
+        icon='|TInterface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[type]..':0|t|T'..icon..':0|t'..info.level.. ((k~=3 or k~=6) and '  ' or '')
         if k>3 then
             abilityIconA=abilityIconA..icon
         else
@@ -127,7 +127,8 @@ local function setPet(self, speciesID)--宠物
         self:AddDoubleLine(' ', '|cffff00ffShfit+'..SHOW..SOURCES..'|r')
     end
 
-    self.Portrait:SetTexture('Interface\\Icons\\Icon_PetFamily_'..PET_TYPE_SUFFIX[petType])--宠物类型图标
+    --self.Portrait:SetTexture('Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType])--宠物类型图标
+    self.Portrait:SetTexture("Interface\\TargetingFrame\\PetBadge-"..PET_TYPE_SUFFIX[petType])
     self.Portrait:SetShown(true)
 
     if creatureDisplayID and self.creatureDisplayID~=creatureDisplayID then--3D模型
@@ -548,7 +549,7 @@ local function setBattlePet(self, speciesID, level, breedQuality, maxHealth, pow
             end
             abilityIcon=abilityIcon..' '
         end
-        abilityIcon=abilityIcon..'|TInterface\\Icons\\Icon_PetFamily_'..PET_TYPE_SUFFIX[type]..':0|t|T'..icon..':0|t'..info.level
+        abilityIcon=abilityIcon..'|TInterface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[type]..':0|t|T'..icon..':0|t'..info.level
     end
     BattlePetTooltipTemplate_AddTextLine(self, abilityIcon)
     if Save.showSource then--来源提示
@@ -638,7 +639,6 @@ end)
 hooksecurefunc(e.tips, "SetUnitAura", function(...)
     setBuff('Aura', ...)
 end)
-
 
 --####
 --声望
@@ -890,7 +890,17 @@ local function setUnitInfo(self)--设置单位提示信息
                 end
             end
         end
-    elseif not UnitAffectingCombat('player') then
+    elseif (UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit)) then--宠物TargetFrame.lua
+        if IsShiftKeyDown() then
+            if Save.showSource then
+                Save.showSource=nil
+            else
+                Save.showSource=true
+            end
+        end
+        setPet(self, UnitBattlePetSpeciesID(unit))
+
+    elseif not IsPlayer and not UnitAffectingCombat('player') then--位面,NPCID
         local _, _, server, _, zone, npc = strsplit("-",guid)
         if zone then
             self:AddDoubleLine((e.Player.zh and '位面ID: ' or 'LayerID: ')..zone, npc and 'NPCID: '..npc or ' ')--, server and FRIENDS_LIST_REALM..server)
@@ -923,8 +933,56 @@ end)
 
 
 --#######
---冒险指南
+--冒险指南EncounterJournal
 --#######
+local function set_EncounterJournal_World_Tips(self2)--所有角色已击杀世界BOSS提示
+        e.tips:SetOwner(self2, "ANCHOR_LEFT");
+        e.tips:ClearLines();
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(ADVENTURE_JOURNAL, CHANNEL_CATEGORY_WORLD..'BOSS/'..GARRISON_MISSION_RARE..e.Icon.left..e.GetShowHide(Save.showWorldBoss))
+        local find
+        for name_server, info in pairs(wowSave) do
+            local showName
+            name_server=name_server:gsub('-'..e.Player.server, '')
+            local r2,g2,b2=GetClassColor(info.class)
+
+            local tab=info.worldboss and info.worldboss.boss--世界BOSS
+            if tab then
+                local text=''
+                for bossName, _ in pairs(tab) do
+                    text= text~='' and text..' ' or text
+                    text=text.. bossName
+                end
+                if text~='' then
+                    e.tips:AddDoubleLine(e.Race(nil, info.race, info.sex)..e.Class(nil,info.class)..name_server, text, r2,g2,b2, r2,g2,b2)
+                    find=true
+                    showName=true
+                end
+            end
+
+            tab=info.rare.boss--稀有怪
+            if tab then
+                local text, numAll='',0
+                for name, num in pairs(tab) do
+                    text=text~='' and text..' ' or text
+                    text=text..name..(num>1 and '|cnGREEN_FONT_COLOR:'..num..'|r' or '')
+                    numAll=numAll+1
+                end
+                if text~='' then
+                    if not showName then
+                        e.tips:AddLine(e.Race(nil, info.race, info.sex)..e.Class(nil,info.class)..name_server, r2,g2,b2)
+                    end
+                    e.tips:AddLine('(|cnGREEN_FONT_COLOR:'..numAll..'|r)'..text, r2,g2,b2, true)
+                    find=true
+                end
+            end
+        end
+
+        if not find then
+            e.tips:AddDoubleLine(NONE, ' ', 1,0,0)
+        end
+        e.tips:Show()
+    end
 local function MoveFrame(self, savePoint)
     self:RegisterForDrag("RightButton")
     self:SetClampedToScreen(true)
@@ -936,8 +994,22 @@ local function MoveFrame(self, savePoint)
             Save[savePoint]={self2:GetPoint(1)}
     end);
     self:SetScript('OnLeave', function() e.tips:Hide() end)
+    self:EnableMouseWheel(true)
+    self:SetScript('OnMouseWheel', function(self2, d)
+        local size=Save.EncounterJournalFontSize or 12
+        if d==1 then
+            size=size+1
+        else
+            size=size-1
+        end
+        size= size<6 and 6 or size
+        size= size>72 and 72 or size
+        Save.EncounterJournalFontSize=size
+        e.Cstr(nil, size, nil, self2.Text)
+        print(id, addName, 	FONT_SIZE, size)
+    end)
 end
-local function setWorldbossText()--显示世界BOSS击杀数据
+local function setWorldbossText()--显示世界BOSS击杀数据Text
     if Save.showWorldBoss then
         if not panel.WorldBoss then
             panel.WorldBoss=e.Cbtn(UIParent, nil, not Save.hideWorldBossText)
@@ -962,6 +1034,7 @@ local function setWorldbossText()--显示世界BOSS击杀数据
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(e.GetShowHide(not Save.hideWorldBossText), e.Icon.left)
                 e.tips:AddDoubleLine(NPE_MOVE, e.Icon.right)
+                e.tips:AddDoubleLine(FONT_SIZE, (Save.EncounterJournalFontSize or 12)..e.Icon.mid)
                 e.tips:Show()
             end)
             panel.WorldBoss:SetScript('OnClick', function(self2, d)
@@ -976,7 +1049,7 @@ local function setWorldbossText()--显示世界BOSS击杀数据
                 end
             end)
             MoveFrame(panel.WorldBoss, 'WorldBossPoint')
-            panel.WorldBoss.Text=e.Cstr(panel.WorldBoss)
+            panel.WorldBoss.Text=e.Cstr(panel.WorldBoss, Save.EncounterJournalFontSize)
             panel.WorldBoss.Text:SetPoint('TOPLEFT')
         end
 
@@ -987,31 +1060,42 @@ local function setWorldbossText()--显示世界BOSS击杀数据
             local col='|c'..select(4, GetClassColor(info.class))
             local tab=info.worldboss and info.worldboss.boss
             if tab then
-                local text=''
+                local text, numAll='',0
                 for bossName, _ in pairs(tab) do
-                    text= text~='' and text..' ' or text
+                    numAll=numAll+1
+                    if text~='' then
+                        text= select(2, math.modf(numAll/5))==0 and text..'\n       ' or text..' '
+                    end
                     text=text.. bossName
+                    
                 end
                 if text~='' then
-                    text2=e.Race(nil, info.race, info.sex)..e.Class(nil,info.class)..col..name_server.. '\n       '..text..'|r'
+                    text2=e.Race(nil, info.race, info.sex)..e.Class(nil,info.class)..col..name_server.. '\n'
+                    numAll='('..numAll..')'
+                    text2=text2..string.rep(' ', 6 - string.len(numAll))..'|cnGREEN_FONT_COLOR:'..numAll..'|r'..text..'|r'
                     showName=true
                 end
             end
 
             tab=info.rare.boss--稀有怪
             if tab then
-                local text=''
+                local text, numAll='', 0
                 for name, num in pairs(tab) do
-                    text=text~='' and text..' ' or text
-                    text=text..name..(num>1 and num or '')
+                    if text~='' then
+                        text= select(2, math.modf(numAll/5))==0 and text..'\n       ' or text..' '
+                    end
+                    text=text..name..(num>1 and '|cnGREEN_FONT_COLOR:'..num..'|r' or '')
+                    numAll=numAll+1
                 end
                 if text~='' then
                     if not showName then
-                        text2=e.Race(nil, info.race, info.sex)..e.Class(nil,info.class)..col..name_server..'\n       '
+                        text2=e.Race(nil, info.race, info.sex)..e.Class(nil,info.class)..col..name_server..'\n'
                     else
-                        text2= text2~='' and text2..'\n       ' or text2
+                        text2= text2~='' and text2..'\n' or text2
                     end
-                    text2=text2..col..text..'|r'
+                    numAll='('..numAll..')'
+                    text2=text2..string.rep(' ', 6 - string.len(numAll))
+                    text2=text2..'|cnGREEN_FONT_COLOR:'..numAll..'|r'..col..text..'|r'
                 end
             end
         end
@@ -1049,6 +1133,7 @@ local function setInstanceBossText()--显示副本击杀数据
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(e.GetShowHide(not Save.hideInstanceBossText), e.Icon.left)
                 e.tips:AddDoubleLine(NPE_MOVE, e.Icon.right)
+                e.tips:AddDoubleLine(FONT_SIZE, (Save.EncounterJournalFontSize or 12)..e.Icon.mid)
                 e.tips:Show()
             end)
             panel.instanceBoss:SetScript('OnClick', function(self2, d)
@@ -1063,7 +1148,7 @@ local function setInstanceBossText()--显示副本击杀数据
                 end
             end)
             MoveFrame(panel.instanceBoss, 'instanceBossPoint')
-            panel.instanceBoss.Text=e.Cstr(panel.instanceBoss)
+            panel.instanceBoss.Text=e.Cstr(panel.instanceBoss, Save.EncounterJournalFontSize)
             panel.instanceBoss.Text:SetPoint('TOPLEFT')
         end
 
@@ -1098,7 +1183,7 @@ end
 
 local function setEncounterJournal()--冒险指南界面
     local self=EncounterJournal
-    self.btn= e.Cbtn(self.TitleContainer, nil, not Save.hideEncounterJournal)
+    self.btn= e.Cbtn(self.TitleContainer, nil, not Save.hideEncounterJournal)--按钮, 总开关
     self.btn:SetPoint('RIGHT',-22, -2)
     self.btn:SetSize(22, 22)
     self.btn:SetScript('OnEnter',function(self2)
@@ -1146,7 +1231,7 @@ local function setEncounterJournal()--冒险指南界面
             end
         end
         e.tips:Show()
-    end)
+    end)--提示
     self.instance:SetScript('OnClick', function()
             if  Save.showInstanceBoss then
                 Save.showInstanceBoss=nil
@@ -1161,53 +1246,7 @@ local function setEncounterJournal()--冒险指南界面
     self.worldboss:SetPoint('RIGHT', self.instance, 'LEFT')
     self.worldboss:SetNormalAtlas('poi-soulspiritghost')
     self.worldboss:SetSize(22,22)
-    self.worldboss:SetScript('OnEnter',function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_LEFT");
-        e.tips:ClearLines();
-        e.tips:AddDoubleLine(id, addName)
-        e.tips:AddDoubleLine(ADVENTURE_JOURNAL, CHANNEL_CATEGORY_WORLD..'BOSS/'..GARRISON_MISSION_RARE..e.Icon.left..e.GetShowHide(Save.showWorldBoss))
-        local find
-        for name_server, info in pairs(wowSave) do
-            local showName
-            name_server=name_server:gsub('-'..e.Player.server, '')
-            local r2,g2,b2=GetClassColor(info.class)
-
-            local tab=info.worldboss and info.worldboss.boss--世界BOSS
-            if tab then
-                local text=''
-                for bossName, _ in pairs(tab) do
-                    text= text~='' and text..' ' or text
-                    text=text.. bossName
-                end
-                if text~='' then
-                    e.tips:AddDoubleLine(e.Race(nil, info.race, info.sex)..e.Class(nil,info.class)..name_server, text, r2,g2,b2, r2,g2,b2)
-                    find=true
-                    showName=true
-                end
-            end
-
-            tab=info.rare.boss--稀有怪
-            if tab then
-                local text=''
-                for name, num in pairs(tab) do
-                    text=text~='' and text..' ' or text
-                    text=text..name..(num>1 and num or '')
-                end
-                if text~='' then
-                    if not showName then
-                        e.tips:AddLine(e.Race(nil, info.race, info.sex)..e.Class(nil,info.class)..name_server, r2,g2,b2)
-                    end
-                    e.tips:AddLine(text, r2,g2,b2, true)
-                    find=true
-                end
-            end
-        end
-        
-        if not find then
-            e.tips:AddDoubleLine(NONE, ' ', 1,0,0)
-        end
-        e.tips:Show()
-    end)
+    self.worldboss:SetScript('OnEnter',set_EncounterJournal_World_Tips)--提示
     self.worldboss:SetScript('OnClick', function(self2, d)
         if  Save.showWorldBoss then
             Save.showWorldBoss=nil
@@ -1222,6 +1261,95 @@ local function setEncounterJournal()--冒险指南界面
     self.worldboss:SetShown(not Save.hideEncounterJournal)
     setWorldbossText()
     setInstanceBossText()
+
+
+    --Blizzard_EncounterJournal.lua
+    local function EncounterJournal_ListInstances_set_Instance(name,tips)
+        local n=GetNumSavedInstances();
+        local text,find='',nil
+        for i=1, n do
+            local name2, _, reset, _, _, _, _, _, _, difficultyName, numEncounters, encounterProgress = GetSavedInstanceInfo(i);
+            if name==name2 and (not reset or reset>0) and numEncounters and encounterProgress and numEncounters>0 and encounterProgress>0 then
+                local num=encounterProgress..'/'..numEncounters..'|r'
+                num= encounterProgress==numEncounters and '|cnGREEN_FONT_COLOR:'..num..'|r' or num
+                if tips then
+                    e.tips:AddDoubleLine(name..'(|cFF00FF00'..difficultyName..'|r): ',num);
+                    local t;
+                    for j=1,numEncounters do
+                        local bossName,_,isKilled = GetSavedInstanceEncounterInfo(i,j);
+                        local t2= bossName;
+                        if t then t2=t2..' ('..j else t2=j..') '..t2 end;
+                        if isKilled then t2='|cFFFF0000'..t2..'|r' end;                        
+                        if j==numEncounters or t then
+                            if not t then t=t2 t2=nil end;
+                            e.tips:AddDoubleLine(t,t2);
+                            t=nil;
+                        else
+                            t=t2;
+                        end;
+                    end;
+                    find=true
+                else
+                    text=text~='' and text..'\n' or text
+                    text=text..num.. ' '..difficultyName
+                end
+            end;
+        end;
+        if not tips then
+            return text
+        else
+            return find
+        end
+    end
+    hooksecurefunc('EncounterJournal_ListInstances', function()--界面, 副本击杀
+        if Save.hideEncounterJournal then
+            for _, button in pairs(self.instanceSelect.ScrollBox:GetFrames()) do
+                if button and button.tipsText then
+                    button.tipsText:SetText('')
+                end
+            end
+            return
+        end
+        setInitItem(e.tips)--创建物品
+        for _, button in pairs(self.instanceSelect.ScrollBox:GetFrames()) do
+            if button and button.tooltipTitle and button.instanceID then--button.bgImage:GetTexture() button.name:GetText()
+                local text=EncounterJournal_ListInstances_set_Instance(button.tooltipTitle)
+                if not button.tipsText and text~=''then
+                    button.tipsText=e.Cstr(button)
+                    button.tipsText:SetPoint('BOTTOMRIGHT', -1, 3)
+                end
+                if button.tipsText then
+                    button.tipsText:SetText(text)
+                end
+                
+                button:SetScript('OnEnter', function (self3)
+                    if Save.hideEncounterJournal then
+                        return
+                    end
+                    e.tips:SetOwner(self3, "ANCHOR_LEFT");
+                    e.tips:ClearLines();
+                    e.tips:AddDoubleLine(id, addName, ADVENTURE_JOURNAL)
+                    e.tips:AddLine(' ')
+                    if button.instanceID==1205 or button.instanceID==1192 or button.instanceID==1028 or button.instanceID==822 or button.instanceID==557 or button.instanceID==322 then--世界BOSS
+                        set_EncounterJournal_World_Tips(self3)--所有角色已击杀世界BOSS提示
+                    else
+                        local find=EncounterJournal_ListInstances_set_Instance(button.tooltipTitle, true)
+                        if find then
+                            e.tips:AddLine(' ')
+                        end
+                    end
+                    local texture=button.bgImage:GetTexture()
+                    e.tips:AddDoubleLine(INSTANCE..'ID: '..button.instanceID, texture and EMBLEM_SYMBOL..'ID: '..texture)
+                    if texture then
+                        e.tips.Portrait:SetTexture(texture)
+                        e.tips.Portrait:SetShown(true)
+                    end
+                    e.tips:Show()
+                end)
+                button:SetScript('OnLeave', function() e.tips:Hide() end)
+            end
+       end
+    end)
 end
 
 
