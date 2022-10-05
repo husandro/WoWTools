@@ -1291,7 +1291,7 @@ local function setEncounterJournal()--冒险指南界面
                     find=true
                 else
                     text=text~='' and text..'\n' or text
-                    text=text..num.. ' '..difficultyName
+                    text=text..num.. '    '..difficultyName
                 end
             end;
         end;
@@ -1315,7 +1315,7 @@ local function setEncounterJournal()--冒险指南界面
             if button and button.tooltipTitle and button.instanceID then--button.bgImage:GetTexture() button.name:GetText()
                 local text=EncounterJournal_ListInstances_set_Instance(button.tooltipTitle)
                 if not button.tipsText and text~=''then
-                    button.tipsText=e.Cstr(button)
+                    button.tipsText=e.Cstr(button,nil, button.name)
                     button.tipsText:SetPoint('BOTTOMRIGHT', -1, 3)
                 end
                 if button.tipsText then
