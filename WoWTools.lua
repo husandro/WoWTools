@@ -246,7 +246,12 @@ end
 e.Cstr=function(self, size, fontType, ChangeFont, color)
     local b=ChangeFont or self:CreateFontString(nil, 'OVERLAY')
     if fontType then
-        b:SetFont(fontType:GetFont())
+        if size then
+        local fontName, _, fontFlags = fontType:GetFont()
+            b:SetFont(fontName, size, fontFlags)
+        else
+            b:SetFont(fontType:GetFont())
+        end
         b:SetTextColor(fontType:GetTextColor())
         b:SetFontObject(fontType:GetFontObject())
         b:SetShadowColor(fontType:GetShadowColor())

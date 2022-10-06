@@ -1,6 +1,7 @@
 local id, e = ...
 local addName = TOOLTIP_BATTLE_PET
 local Save={}
+local name=ma
 
 --###########
 --加载保存数据

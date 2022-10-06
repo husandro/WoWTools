@@ -215,7 +215,9 @@
         "EditModeUtil",
         "BankFrame",
         "BattlePetTooltipTemplate_AddTextLine",
-        "BAGSLOT"
+        "BAGSLOT",
+        "TOOLTIP_BATTLE_PET",
+        "UNIT_NAMEPLATES_SHOW_FRIENDLY_CLASS_COLORS"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
@@ -224,6 +226,8 @@
         "discard-returns",
         "missing-parameter",
         "duplicate-set-field",
-        "cast-local-type"
+        "cast-local-type",
+        "undefined-global",
+        "assign-type-mismatch"
     ]
 }

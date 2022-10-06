@@ -983,7 +983,7 @@ local function set_EncounterJournal_World_Tips(self2)--所有角色已击杀世�
         end
         e.tips:Show()
     end
-local function MoveFrame(self, savePoint)
+local function MoveFrame(self, savePointName)
     self:RegisterForDrag("RightButton")
     self:SetClampedToScreen(true)
     self:SetMovable(true)
@@ -991,7 +991,7 @@ local function MoveFrame(self, savePoint)
     self:SetScript("OnDragStop", function(self2)
             ResetCursor()
             self2:StopMovingOrSizing()
-            Save[savePoint]={self2:GetPoint(1)}
+            Save[savePointName]={self2:GetPoint(1)}
     end);
     self:SetScript('OnLeave', function() e.tips:Hide() end)
     self:EnableMouseWheel(true)
@@ -1333,8 +1333,7 @@ local function setEncounterJournal()--冒险指南界面
                     if button.instanceID==1205 or button.instanceID==1192 or button.instanceID==1028 or button.instanceID==822 or button.instanceID==557 or button.instanceID==322 then--世界BOSS
                         set_EncounterJournal_World_Tips(self3)--所有角色已击杀世界BOSS提示
                     else
-                        local find=EncounterJournal_ListInstances_set_Instance(button.tooltipTitle, true)
-                        if find then
+                        if EncounterJournal_ListInstances_set_Instance(button.tooltipTitle, true) then
                             e.tips:AddLine(' ')
                         end
                     end
@@ -1349,6 +1348,18 @@ local function setEncounterJournal()--冒险指南界面
                 button:SetScript('OnLeave', function() e.tips:Hide() end)
             end
        end
+    end)
+
+    hooksecurefunc('EncounterJournal_DisplayEncounter', function(encounterID, noButton)
+        print(encounterID, noButton)
+        print(self.info.BossesScrollBox)
+    end)
+    hooksecurefunc('EncounterJournal_DisplayInstance', function(instanceID, noButton)
+        print(instanceID, noButton)
+        print(self.info.BossesScrollBox)
+    end)
+    hooksecurefunc('EJTierDropDown_Initialize', function(self, level)
+        print(self, level)
     end)
 end
 
