@@ -2,6 +2,7 @@ local id, e = ...
 local addName='Tooltips'
 local Save={setDefaultAnchor=true, setUnit=true}
 local panel=CreateFrame("Frame")
+
 local wowSave={}
 local function setInitItem(self, hide)--创建物品
     if not self.textLeft then--左上角字符
@@ -884,7 +885,7 @@ local function setUnitInfo(self)--设置单位提示信息
             local line2=_G["GameTooltipTextLeft"..i]
             if line2 then
                 if i==num and player and e.Layer then
-                    line2:SetText((e.Player.zh and '位面ID: ' or 'LayerID: ')..e.Layer)
+                    line2:SetText(e.L['LAYER']..'ID: '..e.Layer)
                 else
                     line2:Hide()
                 end
@@ -1067,7 +1068,7 @@ local function setWorldbossText()--显示世界BOSS击杀数据Text
                         text= select(2, math.modf(numAll/5))==0 and text..'\n       ' or text..' '
                     end
                     text=text.. bossName
-                    
+
                 end
                 if text~='' then
                     text2=e.Race(nil, info.race, info.sex)..e.Class(nil,info.class)..col..name_server.. '\n'
@@ -1264,38 +1265,65 @@ local function setEncounterJournal()--冒险指南界面
 
 
     --Blizzard_EncounterJournal.lua
-    local function EncounterJournal_ListInstances_set_Instance(name,tips)
-        local n=GetNumSavedInstances();
+    local function EncounterJournal_ListInstances_set_Instance(button,showTips)
         local text,find='',nil
-        for i=1, n do
-            local name2, _, reset, _, _, _, _, _, _, difficultyName, numEncounters, encounterProgress = GetSavedInstanceInfo(i);
-            if name==name2 and (not reset or reset>0) and numEncounters and encounterProgress and numEncounters>0 and encounterProgress>0 then
-                local num=encounterProgress..'/'..numEncounters..'|r'
-                num= encounterProgress==numEncounters and '|cnGREEN_FONT_COLOR:'..num..'|r' or num
-                if tips then
-                    e.tips:AddDoubleLine(name..'(|cFF00FF00'..difficultyName..'|r): ',num);
-                    local t;
-                    for j=1,numEncounters do
-                        local bossName,_,isKilled = GetSavedInstanceEncounterInfo(i,j);
-                        local t2= bossName;
-                        if t then t2=t2..' ('..j else t2=j..') '..t2 end;
-                        if isKilled then t2='|cFFFF0000'..t2..'|r' end;                        
-                        if j==numEncounters or t then
-                            if not t then t=t2 t2=nil end;
-                            e.tips:AddDoubleLine(t,t2);
-                            t=nil;
-                        else
-                            t=t2;
-                        end;
-                    end;
-                    find=true
-                else
-                    text=text~='' and text..'\n' or text
-                    text=text..num.. '    '..difficultyName
+        if button.instanceID==1205 or button.instanceID==1192 or button.instanceID==1028 or button.instanceID==822 or button.instanceID==557 or button.instanceID==322 then--世界BOSS
+            if showTips then
+                set_EncounterJournal_World_Tips(button)--角色世界BOSS提示
+                find=true
+            else
+                for name_server, info in pairs(wowSave) do
+                    if name_server==e.Player.name_server then
+                        local r2,g2,b2=GetClassColor(info.class)
+                        local tab=info.worldboss and info.worldboss.boss--世界BOSS
+                        local num=0
+                        if tab then
+                            for bossName, _ in pairs(tab) do
+                                num=num+1
+                                if select(2,math.modf(num/4))==0 then
+                                    text= text~='' and text..'\n' or text
+                                else
+                                    text= text~='' and text..' ' or text
+                                end
+                                
+                                text=text.. bossName
+                            end
+                        end
+                    end
                 end
+            end
+        else
+            local n=GetNumSavedInstances()
+            for i=1, n do
+                local name, _, reset, _, _, _, _, _, _, difficultyName, numEncounters, encounterProgress = GetSavedInstanceInfo(i);
+                if button.tooltipTitle==name and (not reset or reset>0) and numEncounters and encounterProgress and numEncounters>0 and encounterProgress>0 then
+                    local num=encounterProgress..'/'..numEncounters..'|r'
+                    num= encounterProgress==numEncounters and '|cnGREEN_FONT_COLOR:'..num..'|r' or num
+                    if showTips then
+                        e.tips:AddDoubleLine(name..'(|cFF00FF00'..difficultyName..'|r): ',num);
+                        local t;
+                        for j=1,numEncounters do
+                            local bossName,_,isKilled = GetSavedInstanceEncounterInfo(i,j);
+                            local t2= bossName;
+                            if t then t2=t2..' ('..j else t2=j..') '..t2 end;
+                            if isKilled then t2='|cFFFF0000'..t2..'|r' end;                        
+                            if j==numEncounters or t then
+                                if not t then t=t2 t2=nil end;
+                                e.tips:AddDoubleLine(t,t2);
+                                t=nil;
+                            else
+                                t=t2;
+                            end;
+                        end;
+                        find=true
+                    else
+                        text=text~='' and text..'\n' or text
+                        text=text..num.. '    '..difficultyName
+                    end
+                end;
             end;
-        end;
-        if not tips then
+        end
+        if not showTips then
             return text
         else
             return find
@@ -1313,15 +1341,18 @@ local function setEncounterJournal()--冒险指南界面
         setInitItem(e.tips)--创建物品
         for _, button in pairs(self.instanceSelect.ScrollBox:GetFrames()) do
             if button and button.tooltipTitle and button.instanceID then--button.bgImage:GetTexture() button.name:GetText()
-                local text=EncounterJournal_ListInstances_set_Instance(button.tooltipTitle)
+                local text=EncounterJournal_ListInstances_set_Instance(button)
                 if not button.tipsText and text~=''then
                     button.tipsText=e.Cstr(button,nil, button.name)
                     button.tipsText:SetPoint('BOTTOMRIGHT', -1, 3)
+                    button.tipsText:SetWidth(174)
+                    button.tipsText:SetJustifyH('RIGHT')
+                    button.tipsText:SetWordWrap(true)
                 end
                 if button.tipsText then
                     button.tipsText:SetText(text)
                 end
-                
+
                 button:SetScript('OnEnter', function (self3)
                     if Save.hideEncounterJournal then
                         return
@@ -1330,12 +1361,8 @@ local function setEncounterJournal()--冒险指南界面
                     e.tips:ClearLines();
                     e.tips:AddDoubleLine(id, addName, ADVENTURE_JOURNAL)
                     e.tips:AddLine(' ')
-                    if button.instanceID==1205 or button.instanceID==1192 or button.instanceID==1028 or button.instanceID==822 or button.instanceID==557 or button.instanceID==322 then--世界BOSS
-                        set_EncounterJournal_World_Tips(self3)--所有角色已击杀世界BOSS提示
-                    else
-                        if EncounterJournal_ListInstances_set_Instance(button.tooltipTitle, true) then
-                            e.tips:AddLine(' ')
-                        end
+                    if EncounterJournal_ListInstances_set_Instance(button,true) then
+                        e.tips:AddLine(' ')
                     end
                     local texture=button.bgImage:GetTexture()
                     e.tips:AddDoubleLine(INSTANCE..'ID: '..button.instanceID, texture and EMBLEM_SYMBOL..'ID: '..texture)

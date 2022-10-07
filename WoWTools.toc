@@ -7,19 +7,19 @@
 
 WoWTools.lua
 
-Locales\deDE.lua
-Locales\enUS.lua
-Locales\esES.lua
-Locales\esMX.lua
-Locales\frFR.lua
-Locales\itIT.lua
-Locales\koKR.lua
-Locales\ptBR.lua
-Locales\ruRU.lua
-Locales\zhCN.lua
-Locales\zhTW.lua
+Sesource\Locales\deDE.lua
+Sesource\Locales\enUS.lua
+Sesource\Locales\esES.lua
+Sesource\Locales\esMX.lua
+Sesource\Locales\frFR.lua
+Sesource\Locales\itIT.lua
+Sesource\Locales\koKR.lua
+Sesource\Locales\ptBR.lua
+Sesource\Locales\ruRU.lua
+Sesource\Locales\zhCN.lua
+Sesource\Locales\zhTW.lua
 
-Panel.lua
+Sesource\Panel.lua
 
 GamePlus\Gossip.lua
 
