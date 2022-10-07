@@ -115,6 +115,7 @@ e.Icon={
     pushed='Forge-ColorSwatchHighlight',--移过时
     highlight='Forge-ColorSwatchSelection',--点击时
 
+    transmogHide='transmog-icon-hidden',--不可幻化
     transmogHide2='|A:transmog-icon-hidden:0:0|a',--不可幻化
     okTransmog2='|T132288:0|t',--可幻化
 

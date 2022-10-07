@@ -73,9 +73,46 @@ local function GetSetsCollectedNum(setID)--套装收集数
         end
     end
 end
+local function GetPetCollected(speciesID)--宠物, 收集数量
+    local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesID)
+    if nunumCollected==0 then
+        return '|cnRED_FONT_COLOR:'..ITEM_PET_KNOWN:format(0, limit)..'|r'
+    elseif limit and numCollected==limit and limit>0 then
+        return '|cnGREEN_FONT_COLOR:'..ITEM_PET_KNOWN:format(numCollected, limit)..'|r'
+    else
+        return ITEM_PET_KNOWN:format(numCollected, limit)
+    end
+end
+local function GetMountCollected(mountID)--宠物, 收集数量
+    if select(11, C_MountJournal.GetMountInfoByID(mountID)) then
+        return '|cnGREEN_FONT_COLOR:'..COLLECTED..'|r'
+    else
+        return '|cnRED_FONT_COLOR:'..NOT_COLLECTED..'|r'
+    end
+end
+local function GetItemCollected(link, sourceID, icon)--物品是否收集
+    sourceID= sourceID or link and select(2,C_TransmogCollection.GetItemInfo(link))
+    local sourceInfo = sourceID and C_TransmogCollection.GetSourceInfo(sourceID)
+    if sourceInfo then
+        if sourceInfo.isCollected then
+            if icon then
+                return e.Icon.okTransmog2, sourceInfo.isCollected
+            else
+                return '|cnGREEN_FONT_COLOR:'..COLLECTED..'|r', sourceInfo.isCollected
+            end
+        else
+            if icon then
+                return e.Icon.transmogHide2, sourceInfo.isCollected
+            else
+                return '|cnRED_FONT_COLOR:'..NOT_COLLECTED..'|r', sourceInfo.isCollected
+            end
+        end
+    end
+end
+
 local function setMount(self, mountID)--坐骑    
     local name, spellID, icon, isActive, isUsable, sourceType, isFavorite, isFactionSpecific, faction, shouldHideOnChar, isCollected=C_MountJournal.GetMountInfoByID(mountID)
-    
+
     self:AddDoubleLine(MOUNTS..'ID: '..mountID, SUMMON..ABILITIES..'ID: '..spellID)
     if isFactionSpecific then
         self:AddDoubleLine(not faction and ' ' or LFG_LIST_CROSS_FACTION:format(faction==0 and e.Icon.horde2..THE_HORDE or e.Icon.alliance2..THE_ALLIANCE or ''), ' ')
@@ -102,8 +139,7 @@ local function setPet(self, speciesID)--宠物
     self:AddLine(' ')
 
     if obtainable then--收集数量
-        local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesID)
-        self:AddDoubleLine(numCollected==0 and '|cnRED_FONT_COLOR:'..ITEM_PET_KNOWN:format(0, limit)..'|r' or ' ', 'NPCID: '..companionID)
+        self:AddDoubleLine(GetPetCollected(speciesID), 'NPCID: '..companionID)
     end
     self:AddDoubleLine(PET..'ID: '..speciesID, MODEL..'ID: '..creatureDisplayID)--ID
 
@@ -484,7 +520,6 @@ hooksecurefunc(ItemRefTooltip, 'SetHyperlink', function(self, link)--ItemRef.lua
         setQuest(self, linkID)
         self:Show()
     end
-    --print(linkName, linkID)
 end)
 
 
@@ -904,7 +939,7 @@ local function setUnitInfo(self)--设置单位提示信息
     elseif not IsPlayer and not UnitAffectingCombat('player') then--位面,NPCID
         local _, _, server, _, zone, npc = strsplit("-",guid)
         if zone then
-            self:AddDoubleLine((e.Player.zh and '位面ID: ' or 'LayerID: ')..zone, npc and 'NPCID: '..npc or ' ')--, server and FRIENDS_LIST_REALM..server)
+            self:AddDoubleLine(e.L['LAYER']..'ID: '..zone, 'NPCID: '..npc)--, server and FRIENDS_LIST_REALM..server)
             e.Layer=zone
         end
     end
@@ -1238,6 +1273,7 @@ local function setEncounterJournal()--冒险指南界面
                 Save.showInstanceBoss=nil
             else
                 Save.showInstanceBoss=true
+                Save.hideInstanceBossText=nil
             end
             setInstanceBossText()
     end)
@@ -1253,6 +1289,7 @@ local function setEncounterJournal()--冒险指南界面
             Save.showWorldBoss=nil
         else
             Save.showWorldBoss=true
+            Save.hideWorldBossText=nil
         end
         setWorldbossText()
     end)
@@ -1280,12 +1317,7 @@ local function setEncounterJournal()--冒险指南界面
                         if tab then
                             for bossName, _ in pairs(tab) do
                                 num=num+1
-                                if select(2,math.modf(num/4))==0 then
-                                    text= text~='' and text..'\n' or text
-                                else
-                                    text= text~='' and text..' ' or text
-                                end
-                                
+                                text= text~='' and text..' ' or text
                                 text=text.. bossName
                             end
                         end
@@ -1300,7 +1332,11 @@ local function setEncounterJournal()--冒险指南界面
                     local num=encounterProgress..'/'..numEncounters..'|r'
                     num= encounterProgress==numEncounters and '|cnGREEN_FONT_COLOR:'..num..'|r' or num
                     if showTips then
-                        e.tips:AddDoubleLine(name..'(|cFF00FF00'..difficultyName..'|r): ',num);
+                        if find then
+                            e.tips:AddLine(' ')
+                        end
+
+                        e.tips:AddDoubleLine(name..'(|cnGREEN_FONT_COLOR:'..difficultyName..'|r): ',num);
                         local t;
                         for j=1,numEncounters do
                             local bossName,_,isKilled = GetSavedInstanceEncounterInfo(i,j);
@@ -1318,7 +1354,11 @@ local function setEncounterJournal()--冒险指南界面
                         find=true
                     else
                         text=text~='' and text..'\n' or text
-                        text=text..num.. '    '..difficultyName
+                        difficultyName=difficultyName:gsub('%(', '')
+                        difficultyName=difficultyName:gsub('%)', '')
+                        difficultyName=difficultyName:gsub('（', ' ')
+                        difficultyName=difficultyName:gsub('）', '')
+                        text=text..difficultyName..' '..num
                     end
                 end;
             end;
@@ -1339,12 +1379,12 @@ local function setEncounterJournal()--冒险指南界面
             return
         end
         setInitItem(e.tips)--创建物品
-        for _, button in pairs(self.instanceSelect.ScrollBox:GetFrames()) do
+        for _, button in pairs(self.instanceSelect.ScrollBox:GetFrames()) do--ScrollBox.lua
             if button and button.tooltipTitle and button.instanceID then--button.bgImage:GetTexture() button.name:GetText()
                 local text=EncounterJournal_ListInstances_set_Instance(button)
                 if not button.tipsText and text~=''then
-                    button.tipsText=e.Cstr(button,nil, button.name)
-                    button.tipsText:SetPoint('BOTTOMRIGHT', -1, 3)
+                    button.tipsText=e.Cstr(button,14, button.name)
+                    button.tipsText:SetPoint('BOTTOMRIGHT', -8, 8)
                     button.tipsText:SetWidth(174)
                     button.tipsText:SetJustifyH('RIGHT')
                     button.tipsText:SetWordWrap(true)
@@ -1378,16 +1418,211 @@ local function setEncounterJournal()--冒险指南界面
     end)
 
     hooksecurefunc('EncounterJournal_DisplayEncounter', function(encounterID, noButton)
-        print(encounterID, noButton)
-        print(self.info.BossesScrollBox)
+        if noButton or Save.hideEncounterJournal then
+            return
+        end
+        local self2=self.encounter
+        for i=1,9 do
+           local id2, name, description, displayInfo, iconImage, uiModelSceneID = EJ_GetCreatureInfo(i);
+            if id2 then
+                local button = EncounterJournal_GetCreatureButton(i);
+               --[[ SetPortraitTextureFromCreatureDisplayID(button.creature, displayInfo);
+                button.name = name;
+                button.id = id2;
+                button.description = description;
+                button.displayInfo = displayInfo;
+                button.uiModelSceneID = uiModelSceneID;
+               ]]
+               
+            end
+            --print(EJ_GetCreatureInfo(i))
+        end
+    print('EncounterJournal_DisplayEncounter')
     end)
-    hooksecurefunc('EncounterJournal_DisplayInstance', function(instanceID, noButton)
-        print(instanceID, noButton)
-        print(self.info.BossesScrollBox)
+    --Boss, 战利品, 信息
+    hooksecurefunc(EncounterJournalItemMixin,'Init',function(self2, elementData)--Blizzard_EncounterJournal.lua
+        if Save.hideEncounterJournal or not self2.link or not self2.itemID then
+            return
+        end
+        if self2.name then--幻化
+            local text, collected = GetItemCollected(self2.link, nil, true)--物品是否收集, 返回图标
+            if text then
+                if not collected then
+                    self2.name:SetText(self2.name:GetText()..text)
+                end
+            else
+                local mountID = C_MountJournal.GetMountFromItem(self2.itemID)--坐骑物品
+                local speciesID = select(13, C_PetJournal.GetPetInfoByItemID(self2.itemID))--宠物物品
+                text=speciesID and GetPetCollected(speciesID) or mountID and GetMountCollected(mountID)--宠物, 收集数量
+                if text then
+                    self2.name:SetText(self2.name:GetText()..text)
+                end
+            end
+        end
+        if self2.slot then--专精图标
+            local specTable = GetItemSpecInfo(self2.link) or {}
+            local specTableNum=#specTable
+            if specTableNum>0 then
+                local specA=''
+                local class
+                table.sort(specTable, function (a2, b2) return a2<b2 end)
+                for k,  specID in pairs(specTable) do
+                    local icon2, _, classFile=select(4, GetSpecializationInfoByID(specID))
+                    if icon2 and classFile then
+                        icon2='|T'..icon2..':0|t'
+                        specA = specA..((class and class~=classFile) and '  ' or '')..icon2
+                        class=classFile
+                    end
+                end
+                if specA~='' then
+                    self2.slot:SetText((self2.slot:GetText() or '')..specA)
+                end
+            end
+        end
     end)
-    hooksecurefunc('EJTierDropDown_Initialize', function(self, level)
-        print(self, level)
+    --boss, ID, 信息
+    hooksecurefunc('EncounterJournal_DisplayInstance', function(instanceID, noButton)--Blizzard_EncounterJournal.lua
+        if Save.hideEncounterJournal or not instanceID then
+            return
+        end
+        local self2 = self.encounter;
+        local _, description, bgImage, buttonImage1, loreImage, buttonImage, dungeonAreaMapID = EJ_GetInstanceInfo(instanceID)
+        if description then
+            local text='instanceID: '..instanceID
+            ..((dungeonAreaMapID and dungeonAreaMapID>0) and ' dungeonAreaMapID: '..dungeonAreaMapID or '')
+            ..(buttonImage and ' |T'..buttonImage..':0|t'..buttonImage or '')
+            ..((buttonImage1 and buttonImage1~=buttonImage) and ' |T'..buttonImage1..':0|t'..buttonImage1 or '')
+            ..(bgImage and ' |T'..bgImage..':0|t'..bgImage or '')
+            ..(loreImage and ' |T'..loreImage..':0|t'..loreImage or '')
+            self2.instance.LoreScrollingFont:SetText(description..'\n'..text)
+        end
+        if not noButton then
+            for _, button in pairs(self2.info.BossesScrollBox:GetFrames()) do
+                button:SetScript('OnEnter', function(self3)
+                    local index=self3.GetOrderIndex()
+                    if not Save.hideEncounterJournal and index then
+                        local name, _, journalEncounterID, rootSectionID, _, journalInstanceID, dungeonEncounterID, instanceID2= EJ_GetEncounterInfoByIndex(index)
+                        e.tips:SetOwner(self3, "ANCHOR_RIGHT")
+                        e.tips:ClearLines()
+                        e.tips:AddDoubleLine(id, addName)
+                        e.tips:AddLine(' ')
+                        e.tips:AddDoubleLine(name, INSTANCE..'ID: '..instanceID2)
+                        if journalEncounterID then
+                            e.tips:AddDoubleLine('journalEncounterID: '..'|cnGREEN_FONT_COLOR:'..journalEncounterID..'|r', (rootSectionID and rootSectionID>0) and 'JournalEncounterSectionID: '..rootSectionID or ' ')
+                        end
+                        if dungeonEncounterID then
+                            e.tips:AddDoubleLine('dungeonEncounterID: '..dungeonEncounterID, (journalInstanceID and journalInstanceID>0) and 'journalInstanceID: '..journalInstanceID or ' ' )
+                        end
+                        e.tips:Show()
+                    end
+                end)
+                button:SetScript('OnLeave', function() e.tips:Hide() end)
+            end
+        end
     end)
+    --战利品, 套装, 收集数
+    hooksecurefunc(self.LootJournalItems.ItemSetsFrame,'ConfigureItemButton', function(self2, button)--Blizzard_LootJournalItems.lua
+        local has = C_TransmogCollection.PlayerHasTransmogByItemInfo(button.itemID)
+        if has==false and not button.tex and not Save.hideEncounterJournal then
+            button.tex=button:CreateTexture()
+            button.tex:SetSize(16,16)
+            button.tex:SetPoint('BOTTOMRIGHT',2,-2)
+            button.tex:SetAtlas(e.Icon.transmogHide)
+        end
+        if button.tex then
+            button.tex:SetShown(has==false and not Save.hideEncounterJournal)
+        end
+    end)
+    --战利品, 套装 , 收集数量
+    local function lootSet(self2)
+        if Save.hideEncounterJournal then
+            return
+        end
+        local buttons = self2.buttons;
+        local offset = HybridScrollFrame_GetOffset(self2)
+        for i = 1, #buttons do
+            local button= buttons[i];
+            local index = offset + i;
+            if ( index <= #self2.itemSets ) then
+                local setID=self2.itemSets[index].setID
+                local collected= setID and GetSetsCollectedNum(setID)--收集数量
+                if collected and self2.itemSets[index].name then
+                    button.SetName:SetText(self2.itemSets[index].name..collected)
+                end
+            end
+        end
+    end
+    hooksecurefunc(self.LootJournalItems.ItemSetsFrame, 'UpdateList', lootSet);
+    hooksecurefunc('HybridScrollFrame_Update', function(self2)
+            if self2==self.LootJournalItems.ItemSetsFrame then
+                lootSet(self2)
+            end
+    end)
+
+    --BOSS技能,
+    hooksecurefunc("EncounterJournal_ToggleHeaders", function(self2)
+        if Save.hideEncounterJournal then
+            return
+        end
+        local des=self2.description and self2.description:GetText();
+        local link=self2.spellID and GetSpellLink(self2.spellID)
+        if des and link and not des:find(link) then
+            self2.description:SetText(des..link)
+        end
+    end)
+
+    --BOSS模型
+    hooksecurefunc('EncounterJournal_UpdatePortraits',function(self2)
+--        print(self2.creatureDisplayID, self2.uiModelSceneID)
+        if ( self:IsShown() ) then
+            local creatures = EncounterJournal.encounter.info.creatureButtons;
+            for i = 1, #creatures do
+                local button = creatures[i];
+                if ( button and button:IsShown() ) then
+                    print( button.displayInfo)
+                    SetPortraitTextureFromCreatureDisplayID(button.creature, button.displayInfo);
+                else
+                    break;
+                end
+            end
+            local usedHeaders = EncounterJournal.encounter.usedHeaders;
+            for _, header in pairs(usedHeaders) do
+                if ( header.button.portrait.displayInfo ) then
+                    SetPortraitTextureFromCreatureDisplayID(header.button.portrait.icon, header.button.portrait.displayInfo);
+                    print(header.button.portrait.displayInfo)
+                end
+            end
+        end
+    end)
+    hooksecurefunc('EncounterJournal_DisplayCreature', function(self2, forceUpdate)
+        if not Save.hideEncounterJournal and self.creatureDisplayID and not self.creatureDisplayIDText then
+            local modelScene = self.encounter.info.model;
+            self.creatureDisplayIDText=e.Cstr(modelScene,14, modelScene.imageTitle)
+            self.creatureDisplayIDText:SetPoint('BOTTOMLEFT', 5, 2)
+        end
+        if self.creatureDisplayIDText then
+            self.creatureDisplayIDText:SetText((self.creatureDisplayID and not Save.hideEncounterJournal) and MODEL..'ID: '..self.creatureDisplayID or '')
+        end
+    end)
+
+    --记录上次选择版本
+    hooksecurefunc('EncounterJournal_TierDropDown_Select', function(_, tier)
+        Save.EncounterJournalTier=tier
+    end)
+
+    --记录上次选择TAB
+    hooksecurefunc('EJ_ContentTab_Select', function(id2)
+        Save.EncounterJournalSelectTabID=id2
+    end)
+    if not Save.hideEncounterJournal then
+        local numTier=EJ_GetNumTiers()
+        if numTier and Save.EncounterJournalTier and Save.EncounterJournalTier<=numTier then
+            EJ_SelectTier(Save.EncounterJournalTier)
+        end
+        if Save.EncounterJournalSelectTabID then
+            EJ_ContentTab_Select(Save.EncounterJournalSelectTabID)
+        end
+    end
 end
 
 
@@ -1640,7 +1875,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             panel:RegisterEvent('UNIT_FLAGS')
             panel:RegisterEvent('LOOT_OPENED')
         end
-        
+
     elseif event=='CHALLENGE_MODE_COMPLETED' then
         C_MythicPlus.RequestMapInfo()
 

@@ -385,6 +385,13 @@ local function setOnEnter(self)--地图ID提示
                 end
             end
         end
+        if IsInInstance() then--副本数据
+            local instanceID, _, LfgDungeonID =select(8, GetInstanceInfo())
+            if instanceID then
+                e.tips:AddDoubleLine(INSTANCE..'ID:', instanceID)
+                e.tips:AddDoubleLine(SLASH_RANDOM3:gsub('/','')..INSTANCE..'ID:', LfgDungeonID)
+            end
+        end
         local x,y =getPlayerXY()
         if x and y then
             local playerCursorMapName
@@ -426,6 +433,15 @@ local function setMapIDText(self)
                     end
                 end
             end
+            if IsInInstance() then
+                local instanceID, _, LfgDungeonID =select(8, GetInstanceInfo())
+                if instanceID then
+                    m=INSTANCE..instanceID..'  '..m
+                    if LfgDungeonID then
+                        m=SLASH_RANDOM3:gsub('/','')..LfgDungeonID..'  '..m
+                    end
+                end
+            end
             if not self.mapInfoBtn.mapID then--字符
                 self.mapInfoBtn.mapID=e.Cstr(self.BorderFrame.TitleContainer, nil, WorldMapFrameTitleText)
                 self.mapInfoBtn.mapID:SetPoint('RIGHT', self.mapInfoBtn, 'LEFT')
@@ -434,21 +450,22 @@ local function setMapIDText(self)
 
         local uiMapIDPlayer= C_Map.GetBestMapForUnit("player")--玩家当前坐标
         local x, y= getPlayerXY(self, uiMapID)
-        local playerPositionText
+        local text=''
         if uiMapIDPlayer and x and y then
 
-            playerPositionText=x..' '..y
+            text=x..' '..y
             if uiMapIDPlayer~=uiMapID then
                 local info = C_Map.GetMapInfo(uiMapIDPlayer)
                 if info and info.name then
-                    playerPositionText=playerPositionText.. '  '..info.name
+                    text=text.. '  '..info.name
                 end
             end
         end
-        if self.playerPosition.Text then
-            self.playerPosition.Text:SetText(playerPositionText or '')
+        if e.Layer then
+            text = (text~='' and text..'  ' or '')..e.L['LAYER']..e.Layer
         end
-
+        self.playerPosition.Text:SetText(text)
+        
         if not self.playerPosition.cursorPointText then--光标在地图位置
             self.playerPosition.cursorPointText=e.Cstr(self.playerPosition, nil ,WorldMapFrameTitleText)
             self.playerPosition.cursorPointText:SetPoint('LEFT', self.playerPosition.Text, 'RIGHT', 10, 0)
