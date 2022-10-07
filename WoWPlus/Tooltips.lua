@@ -1237,6 +1237,7 @@ local function setEncounterJournal()--冒险指南界面
         end
         self.instance:SetShown(not Save.hideEncounterJournal)
         self.worldboss:SetShown(not Save.hideEncounterJournal)
+        self.btn:SetNormalAtlas(Save.hideEncounterJournal and e.Icon.disabled or e.Icon.icon )
     end)
     self.btn:SetScript("OnLeave",function() e.tips:Hide() end)
 
