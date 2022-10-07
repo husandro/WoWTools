@@ -1417,28 +1417,6 @@ local function setEncounterJournal()--冒险指南界面
        end
     end)
 
-    hooksecurefunc('EncounterJournal_DisplayEncounter', function(encounterID, noButton)
-        if noButton or Save.hideEncounterJournal then
-            return
-        end
-        local self2=self.encounter
-        for i=1,9 do
-           local id2, name, description, displayInfo, iconImage, uiModelSceneID = EJ_GetCreatureInfo(i);
-            if id2 then
-                local button = EncounterJournal_GetCreatureButton(i);
-               --[[ SetPortraitTextureFromCreatureDisplayID(button.creature, displayInfo);
-                button.name = name;
-                button.id = id2;
-                button.description = description;
-                button.displayInfo = displayInfo;
-                button.uiModelSceneID = uiModelSceneID;
-               ]]
-               
-            end
-            --print(EJ_GetCreatureInfo(i))
-        end
-    print('EncounterJournal_DisplayEncounter')
-    end)
     --Boss, 战利品, 信息
     hooksecurefunc(EncounterJournalItemMixin,'Init',function(self2, elementData)--Blizzard_EncounterJournal.lua
         if Save.hideEncounterJournal or not self2.link or not self2.itemID then
