@@ -130,7 +130,7 @@ local FrameTab={
     MacroFrame={},--宏
     ExtraActionButton1={save=true, click='R' },--额外技能
 
-    --ContainerFrameCombinedBags={save=true},--包
+  --  ContainerFrameCombinedBags={save=true},--包
     ChatConfigFrame={save=true},--聊天设置
     SettingsPanel={},--选项
     --ZoneAbilityFrame.SpellButtonContainer = {save=true, click='R'},

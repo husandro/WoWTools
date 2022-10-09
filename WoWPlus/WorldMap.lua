@@ -389,7 +389,9 @@ local function setOnEnter(self)--地图ID提示
             local instanceID, _, LfgDungeonID =select(8, GetInstanceInfo())
             if instanceID then
                 e.tips:AddDoubleLine(INSTANCE..'ID:', instanceID)
-                e.tips:AddDoubleLine(SLASH_RANDOM3:gsub('/','')..INSTANCE..'ID:', LfgDungeonID)
+                if LfgDungeonID then
+                    e.tips:AddDoubleLine(SLASH_RANDOM3:gsub('/','')..INSTANCE..'ID:', LfgDungeonID)
+                end
             end
         end
         local x,y =getPlayerXY()
