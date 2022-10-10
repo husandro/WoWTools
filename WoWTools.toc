@@ -40,7 +40,6 @@ WoWPlus\WardroberSets.lua
 
 WoWPlus\WorldMap.lua
 WoWPlus\MainMenuButton.lua
-#WoWPlus\Container.lua
 
 WoWPlus\Tooltips.lua
 

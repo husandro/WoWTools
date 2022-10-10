@@ -882,12 +882,9 @@ local function setUnitInit(self)--设置默认提示位置
             e.tips.playerModel:SetShown(false)
         end
         panel:RegisterEvent('INSPECT_READY')
-        --panel:RegisterEvent('PLAYER_ENTERING_WORLD')
         GameTooltip_UnitColor=GameTooltip_UnitColor_Init
     else
-
         panel:UnregisterEvent('INSPECT_READY')
-        --panel:UnregisterEvent('PLAYER_ENTERING_WORLD')
         GameTooltip_UnitColor=GameTooltip_UnitColor_WoW
     end
     setInitItem(e.tips, not Save.setUnit)
@@ -951,6 +948,72 @@ local function setUnitInfo(self)--设置单位提示信息
 end
 e.tips:HookScript("OnTooltipSetUnit", setUnitInfo)--设置单位提示信息
 
+--#########
+--生命条提示
+--#########
+GameTooltipStatusBar:SetScript("OnValueChanged", function(self, value) 
+    if Save.setUnit then
+        local text, textLeft, textRight = '', '', ''
+        if value then
+            local min, max = self:GetMinMaxValues();
+            if value >= min and value <= max then
+                if value <= 0 then
+                    text = '|A:poi-soulspiritghost:0:0|a'..'|cnRED_FONT_COLOR:'.. DEAD..'|r'
+                    textLeft = '0'
+                else
+                    local hp = value / max * 100;
+                    text = ('%i%%'):format(hp)..'  ';
+                    if hp<30 then
+                        text = '|A:GarrisonTroops-Health-Consume:0:0|a'..'|cnRED_FONT_COLOR:' .. text..'|r'
+                    elseif hp<60 then
+                        text='|cnGREEN_FONT_COLOR:'..text..'|r'
+                    elseif hp<90 then
+                        text='|cnYELLOW_FONT_COLOR:'..text..'|r'
+                    end
+                    textLeft = e.MK(value,3)
+                end
+                textRight = e.MK(max,3)
+            end
+        end
+        if not self.text then
+            self.text= e.Cstr(self)
+            self.text:SetPoint('CENTER', self, 'CENTER')--生命条
+            self.text:SetJustifyH("CENTER");
+        end
+        self.text:SetText(text);
+        if not self.textLeft then
+            self.textLeft = e.Cstr(self)
+            self.textLeft:SetPoint('TOPLEFT', self, 'BOTTOMLEFT')--生命条
+            self.textLeft:SetJustifyH("LEFT");
+            self.textRight = e.Cstr(self)
+            self.textRight:SetPoint('TOPRIGHT', self, 'BOTTOMRIGHT')--生命条
+            self.textRight:SetJustifyH("Right");
+        end
+        self.textLeft:SetText(textLeft)
+        self.textRight:SetText(textRight)
+
+        local unit = "mouseover";
+        local focus = GetMouseFocus();
+        if (focus and focus.unit) then
+            unit = focus.unit;
+        end
+        local r, g, b;
+        if (UnitIsPlayer(unit)) then
+            r, g, b = GetClassColor(select(2, UnitClass(unit)));
+        else
+            r, g, b = GameTooltip_UnitColor(unit);
+            if (g == 0.6) then g = 0.9 end
+            if (r == 1 and g == 1 and b == 1) then r, g, b = 0, 0.9, 0.1 end
+        end
+        self:SetStatusBarColor(r, g, b);
+    else
+        if self.textLeft then
+            self.text:SetText('')
+            self.textLeft:SetText('')
+            self.textRight:SetText('')
+        end
+    end
+end);
 
 --****
 --位置
@@ -976,6 +1039,29 @@ end)
 --#######
 --冒险指南EncounterJournal
 --#######
+
+local GetRewardText=function(type,level)--周奖励,副本,PVP,团本
+    if type == Enum.WeeklyRewardChestThresholdType.Raid then
+        return  DifficultyUtil.GetDifficultyName(level);
+    elseif type == Enum.WeeklyRewardChestThresholdType.MythicPlus then
+        return string.format(_G['WEEKLY_REWARDS_MYTHIC'], level);
+    elseif type == Enum.WeeklyRewardChestThresholdType.RankedPvP then
+        return PVPUtil.GetTierName(level);
+    elseif type== Enum.WeeklyRewardChestThresholdType.AlsoReceive then
+        return 'AlsoReceive';
+    elseif type== Enum.WeeklyRewardChestThresholdType.Concession then
+        return 'Concession';
+    end
+end
+local GetRewardTypeHead=function(type)
+    if type == Enum.WeeklyRewardChestThresholdType.Raid then
+        return  RAIDS
+    elseif type == Enum.WeeklyRewardChestThresholdType.MythicPlus then
+        return MYTHIC_DUNGEONS
+    elseif type == Enum.WeeklyRewardChestThresholdType.RankedPvP then
+        return PVP
+    end
+end
 local function EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示所数据
     local self=EncounterJournal
     if not self or Save.hideEncounterJournal_All_Info_Text then
@@ -984,111 +1070,88 @@ local function EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示�
         end
         return
     end
-
     if not self.AllText then
         self.AllText=e.Cstr(self)
         self.AllText:SetPoint('TOPLEFT', self, 'TOPRIGHT',40,0)
     end
-    --副本BOSS
-    local m=''
 
---[[    local F,Qok,q=UnitFactionGroup('player'),nil,nil--时光周任务
-    if F=='Horde' then--部落
-        q={40168, 40173, 40786, 45563, 55499, 64710}
-    elseif F =='Alliance' then
-        q={40168, 40173, 40787, 45563, 55498, 64710}
+    local text=''--副本
+    for i=1, GetNumSavedInstances() do
+        local name, _, reset, _, _, _, _, _, _, difficultyName, numEncounters, encounterProgress = GetSavedInstanceInfo(i);
+        if (not reset or reset>0) and numEncounters and encounterProgress and numEncounters>0 and encounterProgress>0 then
+            local num=encounterProgress..'/'..numEncounters..'|r'
+            num= encounterProgress==numEncounters and '|cnGREEN_FONT_COLOR:'..num..'|r' or num
+            text=text~='' and text..'\n' or text
+            text=text..num..' '..name ..' '..difficultyName
+        end;
+    end;
+    local m= text~='' and text or ''
+
+    text=''--世界BOSS
+    local tab=wowSave[e.Player.name_server].worldboss.boss
+    local num=0
+    for bossName, _ in pairs(tab) do
+        num=num+1
+        text= text~='' and text..' ' or text
+        text=text.. bossName
     end
-    if q then
-        local eid={623, 617, 629, 654, 1068, 1277}
-        local day=C_DateAndTime.GetCurrentCalendarTime().monthDay--日期
-        for i=1, C_Calendar.GetNumDayEvents(0, day) do--当前节日数量
-            local info = C_Calendar.GetDayEvent(0, day, i)--节日信息
-            for k,v in pairs(eid) do
-                if info.eventID==v and info.sequenceType~='END' then
-                    local name =info.title or C_QuestLog.GetTitleForQuestID(q[k]) or ''
-                    if C_QuestLog.IsQuestFlaggedCompleted(q[k]) then--完成
-                        Qok=name..': '..'|cnGREEN_FONT_COLOR:'..COMPLETE..'|r'
-                    else
-                        Qok=name..': '..'|cnRED_FONT_COLOR:'..INCOMPLETE..'|r'--未完成 
-                    end
-                    local info2=C_CurrencyInfo.GetCurrencyInfo(1166)
-                    if info2 then
-                        local Q=info2.quantity
-                        if Q and info2.iconFileID and Q>0 then
-                            Qok=Qok..'|T'..info2.iconFileID..':0|t'..Q
-                        end
-                    end
-                    break
-                end
-            end
-        end
+    if text~='' then
+        m= m~='' and m..'\n\n' or m
+        m=m..num..' |cnGREEN_FONT_COLOR:'..text..'|r'
+    end
 
-        if Qok then m= m~='' and m..'\n\n'..Qok or Qok end
-    end]]
+    tab=wowSave[e.Player.name_server].rare.boss--稀有怪
+    text, num='',0
+    for name, _ in pairs(tab) do
+        text=text~='' and text..' ' or text
+        name=name:gsub('·.+','')
+        name=name:gsub('%-.+','')
+        name=name:gsub('<.+>', '')
+        text=text..name
+        num=num+1
+    end
+    if text~='' then
+        m= m~='' and m..'\n\n' or m
+        m= m..num..' '..'|cnGREEN_FONT_COLOR:'..text..'|r'
+    end
 
-    -------副本PVP团本
+
+    --周奖励,副本,PVP,团本
+    text=''
     local R = {}
-    local GetRewardText=function(type,level)
-        if type == Enum.WeeklyRewardChestThresholdType.Raid then
-            return  DifficultyUtil.GetDifficultyName(level);
-            
-        elseif type == Enum.WeeklyRewardChestThresholdType.MythicPlus then
-            return string.format(_G['WEEKLY_REWARDS_MYTHIC'], level);
-            
-        elseif type == Enum.WeeklyRewardChestThresholdType.RankedPvP then
-            return PVPUtil.GetTierName(level);
-        elseif type== Enum.WeeklyRewardChestThresholdType.AlsoReceive then
-            return 'AlsoReceive';
-        elseif type== Enum.WeeklyRewardChestThresholdType.Concession then
-            return 'Concession';
-        end
-    end
-
     local activityInfo =  C_WeeklyRewards.GetActivities()
     for  i ,v in pairs(activityInfo) do
         if not R[v.type] then R[v.type] = {} end
-        local  text = GetRewardText(v.type,v.level) or NONE
         R[v.type][v.index] = {
             level = v.level,
-            difficulty = text,
+            difficulty = GetRewardText(v.type,v.level) or NONE ,
             progress = v.progress,
             threshold = v.threshold,
             unlocked = v.progress>=v.threshold,
         }
     end
-    local GetRewardTypeHead=function(type)
-        if type == Enum.WeeklyRewardChestThresholdType.Raid then
-            return  RAIDS
-        elseif type == Enum.WeeklyRewardChestThresholdType.MythicPlus then
-            return MYTHIC_DUNGEONS
-        elseif type == Enum.WeeklyRewardChestThresholdType.RankedPvP then
-            return PVP
-        end
-    end
-
-    local T=''
     for i,v in pairs(R) do
-        if T~='' then T=T..'\n' end
-        T=T..'\n'..'|T450908:0|t'
         local he=GetRewardTypeHead(i);
-        if he then T=T..he end
-
-        for x,r in pairs(v) do
-            if T~='' then T=T..'\n' end
-            T=T..'     '
-            if r.unlocked then 
-                T=T.. '|cFFFF0000'..x..')'..r.difficulty.. ' '..'|cnGREEN_FONT_COLOR:'..COMPLETE..'|r'..e.Icon.select2
-            else
-                T=T..'|cFF00FF00'..x..')'..r.difficulty.. ' '..r.progress.."/"..r.threshold..'|r'
+        if he then
+            text = text~='' and text..'\n' or text
+            text = text..'\n|T450908:0|t'..he
+            for x,r in pairs(v) do
+                text = text~='' and text..'\n' or text
+                text = text..'     '
+                if r.unlocked then 
+                    text = text..'|cnGREEN_FONT_COLOR:'..x..')'..r.difficulty.. ' '..'|cnGREEN_FONT_COLOR:'..COMPLETE..'|r'..e.Icon.select2
+                else
+                    text = text..x..')'..r.difficulty.. ' '..r.progress.."/"..r.threshold
+                end
             end
         end
     end
-    m= m~='' and m..'\n'..T or T
+    m= m~='' and m..'\n\n'..text or text
 
     --征服点数 Conquest 1602 1191/勇气点数
-    T={1602,1191,1792}
-    local currency=''
-    for _,v in pairs(T) do
+    tab={1602,1191,1792}
+    text=''
+    for _,v in pairs(tab) do
         local info=C_CurrencyInfo.GetCurrencyInfo(v)
         if info and info.quantity and info.quantity>=0 and info.name then
             local max=info.maxQuantity
@@ -1098,11 +1161,11 @@ local function EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示�
             if info.maxQuantity and info.maxQuantity>0 and info.maxQuantity==info.quantity then
                 t='|cnRED_FONT_COLOR:'..t..'|r'
             end
-            currency= currency~='' and currency..'\n'..t or t
+            text= text~='' and text..'\n'..t or t
         end
     end
-    if currency~='' then
-        m= m~='' and m..'\n\n'..currency or currency
+    if text~='' then
+        m= m~='' and m..'\n\n'..text or text
     end
     --本周还可获取奖励
     if C_WeeklyRewards.CanClaimRewards() then
@@ -2005,7 +2068,6 @@ panel:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
 panel:RegisterEvent('BAG_UPDATE_DELAYED')
 panel:RegisterEvent('UPDATE_INSTANCE_INFO')
 panel:RegisterEvent('CHALLENGE_MODE_MAPS_UPDATE')
-
 panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 panel:RegisterEvent('WEEKLY_REWARDS_UPDATE')
 panel:SetScript("OnEvent", function(self, event, arg1, arg2)

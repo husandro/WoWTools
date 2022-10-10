@@ -375,12 +375,34 @@ local function DungeonScore(link)--史诗钥石评分
     end
 end
 
-local function Journal(link)--冒险指南
-    local journalType, journalID=link:match('Hjournal:(%d+):(%d+):')
-    if journalID and journalType=='0' then--Instance
-        local buttonImage2 = select(6, EJ_GetInstanceInfo(journalID))
-        if buttonImage2 then
-            return '|T'..buttonImage2..':0|t'..link
+local function Journal(link)--冒险指南 |Hjournal:0:1031:14|h[Uldir]|h 0=Instance, 1=Encounter, 2=Section
+    local journalType, journalID, journalName=link:match('Hjournal:(%d+):(%d+):.-%[(.-)]')
+    if journalID then
+        if journalType=='2' then
+           local sectionID = select(3, EJ_HandleLinkPath(journalType, journalID))
+           if sectionID then
+                local info = C_EncounterJournal.GetSectionInfo(sectionID)
+                if info and info.abilityIcon then
+                    return '|T'..info.abilityIcon..':0|t'..link
+                end
+           end
+        elseif journalType=='1' and journalName then
+            local _, encounterID = EJ_HandleLinkPath(journalType, journalID)
+            for index=1,9 do
+                local _, name, _, _, iconImage = EJ_GetCreatureInfo(index, encounterID)
+                if name and iconImage then
+                    if name==journalName then
+                        return '|T'..iconImage..':0|t'..link
+                    end
+                else
+                    break
+                end
+            end
+        elseif journalType=='0' then--Instance
+            local buttonImage2 = select(6, EJ_GetInstanceInfo(journalID))
+            if buttonImage2 then
+                return '|T'..buttonImage2..':0|t'..link
+            end
         end
     end
 end
@@ -393,7 +415,7 @@ local function Instancelock(link)
         race=Race(nil, race, sex)
         class=Class(nil, class, true)
         t=class and class..t or t
-        t=race and race..t or t        
+        t=race and race..t or t
     end
     if DifficultyID and InstanceID then
         local name=GetDifficultyInfo(DifficultyID)
@@ -409,15 +431,6 @@ end
 local function TransmogSet(link)--幻化套装
     local setID=link:match('transmogset:(%d+)')
     if setID then
-        --[[        local set = C_TransmogSets.GetSetInfo(setID)
-        if set then
-            if set.collected then
-                return link..e.Icon.select
-            elseif se.collected==false then
-                return link..Icon.no
-            end
-        end]]
-        
         local info=C_TransmogSets.GetSetPrimaryAppearances(setID)
         if info then
             local n,to=0,0
@@ -468,7 +481,6 @@ local function Add(self, s, ...)
     s=s:gsub('|HdungeonScore:.-]|h', DungeonScore)
     s=s:gsub('|Hjournal:.-]|h', Journal)
     s=s:gsub('|Hinstancelock:.-]|h', Instancelock)
-
 
     for k, _ in pairs(Save.text) do--内容加颜色
         s=s:gsub(k, '|cnGREEN_FONT_COLOR:'..k..'|r')
