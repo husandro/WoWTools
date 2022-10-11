@@ -252,6 +252,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         setMoney(panel)
     elseif event=='UPDATE_INVENTORY_DURABILITY' then
         setDurabiliy()
+        setEquipmentLevel()--角色图标显示装等
     elseif event=='PLAYER_EQUIPMENT_CHANGED' then
         setEquipmentLevel()--角色图标显示装等
     end

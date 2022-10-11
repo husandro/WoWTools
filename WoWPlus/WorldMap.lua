@@ -362,9 +362,10 @@ local function setOnEnter(self)--地图ID提示
     e.tips:SetOwner(self, "ANCHOR_LEFT")
     e.tips:ClearLines()
     e.tips:AddDoubleLine(id, addName)
+    e.tips:AddLine(' ')
+    e.tips:AddDoubleLine(e.L['LAYER']..':', e.Layer and e.Layer or NONE)
     local uiMapID = frame.mapID or frame:GetMapID("current")
     if uiMapID then
-        e.tips:AddLine(' ')
         local info = C_Map.GetMapInfo(uiMapID)
         if info then
             e.tips:AddDoubleLine(info.name, 'mapID: '..info.mapID or uiMapID)--地图ID
@@ -449,41 +450,8 @@ local function setMapIDText(self)
                 self.mapInfoBtn.mapID:SetPoint('RIGHT', self.mapInfoBtn, 'LEFT')
             end
         end
-
-        local uiMapIDPlayer= C_Map.GetBestMapForUnit("player")--玩家当前坐标
-        local x, y= getPlayerXY(self, uiMapID)
-        local text=''
-        if uiMapIDPlayer and x and y then
-
-            text=x..' '..y
-            if uiMapIDPlayer~=uiMapID then
-                local info = C_Map.GetMapInfo(uiMapIDPlayer)
-                if info and info.name then
-                    text=text.. '  '..info.name
-                end
-            end
-        end
         if e.Layer then
-            text = (text~='' and text..'  ' or '')..e.L['LAYER']..e.Layer
-        end
-        self.playerPosition.Text:SetText(text)
-        
-        if not self.playerPosition.cursorPointText then--光标在地图位置
-            self.playerPosition.cursorPointText=e.Cstr(self.playerPosition, nil ,WorldMapFrameTitleText)
-            self.playerPosition.cursorPointText:SetPoint('LEFT', self.playerPosition.Text, 'RIGHT', 10, 0)
-            local timeElapsed = 0
-            self.playerPosition:HookScript("OnUpdate", function (self2, elapsed)
-                timeElapsed = timeElapsed + elapsed
-                if timeElapsed > 0.14 then
-                    timeElapsed = 0
-                    local x2, y2 = WorldMapFrame.ScrollContainer:GetNormalizedCursorPosition()--当前世界地图位置            
-                    if x2 and y2 then
-                        self.playerPosition.cursorPointText:SetText(('%.1f'):format(x2*100)..' '..('%.1f'):format(y2*100))
-                    else
-                        self.playerPosition.cursorPointText:SetText('')
-                    end
-                end
-            end)
+            m = e.Layer..' '..m
         end
     end
     if self.mapInfoBtn.mapID then
@@ -552,6 +520,24 @@ local function setMapID(self)--显示地图ID
         end)
         self.playerPosition.Text=e.Cstr(self.playerPosition, nil ,WorldMapFrameTitleText)--玩家当前坐标
         self.playerPosition.Text:SetPoint('LEFT',self.playerPosition, 'RIGHT', 2, 0)
+        local timeElapsed2=0
+        self.playerPosition:HookScript("OnUpdate", function (self2, elapsed)
+            timeElapsed2 = timeElapsed2 + elapsed
+            if timeElapsed2 > 0.15 then
+                timeElapsed2 = 0
+                local text=''
+                local x, y= getPlayerXY()--玩家当前坐标
+                if x and y then
+                    text=x..' '..y
+                end
+                x, y = WorldMapFrame.ScrollContainer:GetNormalizedCursorPosition()--当前世界地图位置            
+                if x and y then
+                    text = text~='' and text..'    ' or text
+                    text = text..('%.1f'):format(x*100)..' '..('%.1f'):format(y*100)
+                end
+                self.playerPosition.Text:SetText(text)
+            end
+        end)
     end
     setMapIDText(self)
 end

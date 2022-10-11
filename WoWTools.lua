@@ -244,6 +244,23 @@ e.WA_Utf8Sub = function(input, size)
     return output
 end
 
+e.GetDifficultyColor = function(string, difficultyID)--DifficultyUtil.lua
+    if difficultyID==17 or difficultyID==7 then--随机
+        return '|cFFE7E71F'..string..'|r'
+    elseif difficultyID==1 or difficultyID==3 or difficultyID==4 or difficultyID==9 or difficultyID==14 then--普通
+        return '|cFF01FF8C'..string..'|r'
+    elseif difficultyID==2 or difficultyID==5 or difficultyID==6 or difficultyID==16 then--英雄
+        return '|cFFFF9B01'..string..'|r'
+    elseif difficultyID==16 or difficultyID==23 then--史诗
+        return '|cFFB900FF'..string..'|r'
+    elseif difficultyID==8 then--挑战        
+        return '|cFFFF8000'..string..'|r'
+    elseif difficultyID==24 or difficultyID==33 then--时光
+        return '|cFF00B2FF'..string..'|r'
+    else
+        return string
+    end
+end
 e.Cstr=function(self, size, fontType, ChangeFont, color)
     local b=ChangeFont or self:CreateFontString(nil, 'OVERLAY')
     if fontType then

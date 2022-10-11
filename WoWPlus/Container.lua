@@ -1,7 +1,9 @@
 local id, e = ...
 local addName=BAGSLOT
 local Save={}
-
+hooksecurefunc(ContainerFrameMixin,'UpdateItems',function ()
+    print('aaaaaa')
+end)
 
 --加载保存数据
 local panel=CreateFrame("Frame")
