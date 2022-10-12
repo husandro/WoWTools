@@ -484,7 +484,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 else
                     Save.disabled=true
                 end
-                if not Settings then
+                if Settings then
                     print(id, addName, e.GetEnabeleDisable(not Save.disabled), NEED..' /reload')
                 end
                 Init()
