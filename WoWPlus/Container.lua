@@ -29,10 +29,11 @@ end)
 hooksecurefunc( 'UpdateNewItemList', function(containerFrame)
     print(' UpdateNewItemList(containerFrame)')
 end)
-hooksecurefunc('ContainerFrame_UpdateLockedItem',function(frame, slot)
-print('ContainerFrame_UpdateLockedItem(frame, slot)')
-end)
 
+hooksecurefunc('ContainerFrameFilterDropDown_Initialize', function ()
+    
+    print('aaaaaaaaaaaaaa')
+end)
 --加载保存数据
 local panel=CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
