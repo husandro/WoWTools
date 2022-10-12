@@ -452,7 +452,7 @@ local function Init()
         return
     end
     local menuList= CreateFrame("Frame",nil, LFDMicroButton, "UIDropDownMenuTemplate")--菜单列表
-    menuList:SetPoint('BOTTOMRIGHT', LFDMicroButton,'TOPLEFT',0, 110)
+    menuList:SetPoint('BOTTOMRIGHT', LFDMicroButton,'TOPLEFT',0, 160)
     UIDropDownMenu_Initialize(menuList, InitList, "MENU")
     LFDMicroButton:HookScript('OnEnter', function(self2) ToggleDropDownMenu(1, nil, menuList) end)
 
