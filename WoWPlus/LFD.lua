@@ -290,10 +290,14 @@ end
 --离开, 进入, 副本
 --###############
 
-local sec=5--离开时间
+local sec=3--离开时间
 
 local function setLFGDungeonReadyDialog(self)--自动进入FB LFGDungeonReadyDialog:HookScript("OnShow"
-    if not Save.enterInstance then
+    local afk=UnitIsAFK('player')
+    if not Save.enterInstance or afk then
+        if Save.enterInstance and afk then
+            print(id, addName, '|cnRED_FONT_COLOR:'..NO..'|r', BATTLEFIELD_CONFIRM_STATUS, '|cnRED_FONT_COLOR:'..CHAT_FLAG_AFK..'|r')
+        end
         return
     end
     local _, _, _, _, name, _, role, _, totalEncounters, completedEncounters, numMembers, isLeader2 = GetLFGProposal()
