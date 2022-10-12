@@ -145,10 +145,15 @@ e.Icon={
 
     unlocked='Levelup-Icon-Lock',--没锁
     quest='AutoQuest-Badge-Campaign',--任务
-    guild2='|A:communities-guildbanner-background:0:0|a'
+    guild2='|A:communities-guildbanner-background:0:0|a',
     --mask="Interface\\ChatFrame\\UI-ChatIcon-HotS",--菱形
     --mask='Interface\\CHARACTERFRAME\\TempPortraitAlphaMask',--圆形 :SetMask()
     
+    TANK='|A:groupfinder-icon-role-large-tank:0:0|a',
+    HEALER='|A:groupfinder-icon-role-large-heal:0:0|a',
+    DAMAGER='|A:groupfinder-icon-role-large-dps:0:0|a',
+    NONE='|A:groupfinder-icon-emptyslot:0:0|a',
+    leader='|A:UI-HUD-UnitFrame-Player-Group-GuideIcon:0:0|a',--队长
 }
 --Interface\Common\WhiteIconFrame 提示方形外框
 e.GetNpcID = function(unit)--NPC ID
@@ -205,43 +210,6 @@ e.GetYesNo = function (yesno)
     else
         return '|cnRED_FONT_COLOR:'..NO..'|r'
     end
-end
-
-e.WA_Utf8Sub = function(input, size)
-    local output = ""
-    if type(input) ~= "string" then
-      return output
-    end
-    local i = 1
-    while (size > 0) do
-      local byte = input:byte(i)
-      if not byte then
-        return output
-      end
-      if byte < 128 then
-        -- ASCII byte
-        output = output .. input:sub(i, i)
-        size = size - 1
-      elseif byte < 192 then
-        -- Continuation bytes
-        output = output .. input:sub(i, i)
-      elseif byte < 244 then
-        -- Start bytes
-        output = output .. input:sub(i, i)
-        size = size - 1
-      end
-      i = i + 1
-    end
-    while (true) do
-      local byte = input:byte(i)
-      if byte and byte >= 128 and byte < 192 then
-        output = output .. input:sub(i, i)
-      else
-        break
-      end
-      i = i + 1
-    end
-    return output
 end
 
 e.GetDifficultyColor = function(string, difficultyID)--DifficultyUtil.lua
@@ -374,3 +342,72 @@ e.itemSlotTable={
     ['INVTYPE_THROWN']=16,
     ['INVTYPE_RANGEDRIGHT']=16,
 };
+
+
+e.WA_GetUnitAura = function(unit, spell, filter)--AuraEnvironment.lua
+  for i = 1, 255 do
+    local name, _, _, _, _, _, _, _, _, spellId = UnitAura(unit, i, filter)
+    if not name then
+        return
+    elseif spell == spellId or spell == name then
+      return UnitAura(unit, i, filter)
+    end
+  end
+end
+e.WA_GetUnitBuff = function(unit, spell, filter)
+    for i = 1, 40 do
+        local name, _, _, _, _, _, _, _, _, spellId = UnitBuff(unit, i, filter)
+        if not name then
+            return
+        elseif spell == spellId or spell == name then
+          return UnitBuff(unit, i, filter)
+        end
+      end
+end
+
+e.WA_GetUnitDebuff = function(unit, spell, filter)
+    for i = 1, 40 do
+        local name, _, _, _, _, _, _, _, _, spellId = UnitDebuff(unit, i, filter)
+        if not name then
+            return
+        elseif spell == spellId or spell == name then
+          return UnitDebuff(unit, i, filter)
+        end
+      end
+end
+e.WA_Utf8Sub = function(input, size)
+    local output = ""
+    if type(input) ~= "string" then
+      return output
+    end
+    local i = 1
+    while (size > 0) do
+      local byte = input:byte(i)
+      if not byte then
+        return output
+      end
+      if byte < 128 then
+        -- ASCII byte
+        output = output .. input:sub(i, i)
+        size = size - 1
+      elseif byte < 192 then
+        -- Continuation bytes
+        output = output .. input:sub(i, i)
+      elseif byte < 244 then
+        -- Start bytes
+        output = output .. input:sub(i, i)
+        size = size - 1
+      end
+      i = i + 1
+    end
+    while (true) do
+      local byte = input:byte(i)
+      if byte and byte >= 128 and byte < 192 then
+        output = output .. input:sub(i, i)
+      else
+        break
+      end
+      i = i + 1
+    end
+    return output
+end

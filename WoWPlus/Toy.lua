@@ -63,7 +63,9 @@ local function Init()
     end)
 end
 
+--###########
 --加载保存数据
+--###########
 local panel=CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")

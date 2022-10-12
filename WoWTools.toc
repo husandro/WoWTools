@@ -37,12 +37,14 @@ WoWPlus\Toy.lua
 WoWPlus\Heirloom.lua
 WoWPlus\WardroberItems.lua
 WoWPlus\WardroberSets.lua
-##WoWPlus\Container.lua
+
 WoWPlus\WorldMap.lua
 WoWPlus\MainMenuButton.lua
 
 WoWPlus\Tooltips.lua
+##WoWPlus\Container.lua
 
 WoWPlus\Professions.lua
 
 WoWPlus\UnitFrame.lua
+WoWPlus\LFD.lua
