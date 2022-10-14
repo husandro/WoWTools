@@ -29,7 +29,7 @@ local function autoEnterLeavelInstance()--自动,离开, 进入, 副本
     info.tooltipOnButton=true
     info.tooltipTitle=LEAVE..' ('..SLASH_RANDOM3:gsub('/','')..') '..INSTANCE
     info.checked=Save.leaveInstance
-    info.tooltipText=GX_ADAPTER_AUTO_DETECT..': '..e.GetEnabeleDisable(Save.leaveInstance)
+    info.tooltipText=GX_ADAPTER_AUTO_DETECT..': '..e.GetEnabeleDisable(Save.leaveInstance)..'\n\n'..id..' '..addName
     info.func=function()
         if Save.leaveInstance then
             Save.leaveInstance=nil
@@ -49,7 +49,7 @@ local function autoEnterLeavelInstance()--自动,离开, 进入, 副本
     info.tooltipOnButton=true
     info.tooltipTitle=SPECIFIC_DUNGEON_IS_READY
     info.checked=Save.enterInstance
-    info.tooltipText=GX_ADAPTER_AUTO_DETECT..': '..e.GetEnabeleDisable(Save.enterInstance)
+    info.tooltipText=GX_ADAPTER_AUTO_DETECT..': '..e.GetEnabeleDisable(Save.enterInstance)..'\n\n'..id..' '..addName
     info.func=function()
         if Save.enterInstance then
             Save.enterInstance=nil
@@ -61,13 +61,15 @@ local function autoEnterLeavelInstance()--自动,离开, 进入, 副本
     UIDropDownMenu_AddButton(info)
 end
 
-local Re=function(ID)--FB奖励
+local getRewardInfo=function(dungeonID)--FB奖励
     local t=''
-    if not ID then return t end
-    local numRewards = select(6, GetLFGDungeonRewards(ID))
+    if not dungeonID then
+        return t
+    end
+    local numRewards = select(6, GetLFGDungeonRewards(dungeonID))
     if numRewards and numRewards>0 then--奖励物品
         for i=1 , numRewards do
-            local texturePath=select(2, GetLFGDungeonRewardInfo(ID, i))
+            local texturePath=select(2, GetLFGDungeonRewardInfo(dungeonID, i))
             if texturePath then
                 t=t..'|T'..texturePath..':0|t'
             end
@@ -76,10 +78,10 @@ local Re=function(ID)--FB奖励
     local T,H,D--额外奖励
     local canTank, canHealer, canDamage = C_LFGList.GetAvailableRoles()
     for ii=1, LFG_ROLE_NUM_SHORTAGE_TYPES do
-        local eligible, forTank, forHealer, forDamage= GetLFGRoleShortageRewards(ID, ii)
+        local eligible, forTank, forHealer, forDamage= GetLFGRoleShortageRewards(dungeonID, ii)
         if eligible and ( forTank or forHealer or forDamage) then
-            local rewardIcon = select(2, GetLFGDungeonShortageRewardInfo(ID, ii, 1))
-            local tankLocked, healerLocked, damageLocked = GetLFDRoleRestrictions(ID)
+            local rewardIcon = select(2, GetLFGDungeonShortageRewardInfo(dungeonID, ii, 1))
+            local tankLocked, healerLocked, damageLocked = GetLFDRoleRestrictions(dungeonID)
             if forTank and canTank and not tankLocked and rewardIcon then
                 T=(T or '')..'|T'..rewardIcon..':0|t'
             end
@@ -106,7 +108,7 @@ local function partyList()--随机 LFDFrame.lua
             info = UIDropDownMenu_CreateInfo()
             if isAvailableForAll then
                 local lfd=GetLFGQueueStats(LE_LFG_CATEGORY_LFD, dungeonID)--是否有排本
-                info.text = name..Re(dungeonID)
+                info.text = name..getRewardInfo(dungeonID)
                 info.value = dungeonID
                 info.isTitle = nil
                 info.func =function()
@@ -199,7 +201,7 @@ local raidList=function()--团队本
         local info = UIDropDownMenu_CreateInfo()
         if ( sortedDungeons[i].isAvailable ) then
             local sele=GetLFGQueueStats(LE_LFG_CATEGORY_RF, sortedDungeons[i].id)
-            info.text = sortedDungeons[i].name..e.Re(sortedDungeons[i].id)
+            info.text = sortedDungeons[i].name..getRewardInfo(sortedDungeons[i].id)
             if ScInsName==sortedDungeons[i].name then--当前副本
                 info.text='|A:auctionhouse-icon-favorite:0:0|a'..info.text
             end
@@ -215,7 +217,7 @@ local raidList=function()--团队本
             info.checked = sele
             info.tooltipOnButton = 1
             info.tooltipTitle = RAID_BOSSES
-            local encounters
+            local encounters=''
             local numEncounters = GetLFGDungeonNumEncounters(sortedDungeons[i].id)
             local kill=0
             local k2=''
@@ -451,10 +453,12 @@ local function Init()
     if Settings then
         return
     end
+
     local menuList= CreateFrame("Frame",nil, LFDMicroButton, "UIDropDownMenuTemplate")--菜单列表
-    menuList:SetPoint('BOTTOMRIGHT', LFDMicroButton,'TOPLEFT',0, 160)
+    menuList:SetPoint('BOTTOMRIGHT', LFDMicroButton,'TOPLEFT')
+    
     UIDropDownMenu_Initialize(menuList, InitList, "MENU")
-    LFDMicroButton:HookScript('OnEnter', function(self2) ToggleDropDownMenu(1, nil, menuList) end)
+    LFDMicroButton:HookScript('OnEnter', function(self2) ToggleDropDownMenu(1, nil, menuList, self2, 0 ,200) end)
 
     LFGDungeonReadyDialog:HookScript("OnShow", setLFGDungeonReadyDialog)--自动进入FB
     Settings=true

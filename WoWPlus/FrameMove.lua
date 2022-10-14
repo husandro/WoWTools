@@ -115,8 +115,9 @@ end
 
 
 local FrameTab={
-    AddonList={save=true},--插件
-    ClassTalentFrame={save=true,},--天赋
+    AddonList={},--插件
+
+
     GameMenuFrame={save=true,},--菜单
     ProfessionsFrame={},--专业
     CharacterFrame={},--角色
@@ -125,12 +126,11 @@ local FrameTab={
     SpellBookFrame={},--法术书
 
     PVEFrame={},--地下城和团队副本
-    EncounterJournal={},--冒险指南
     HelpFrame={},--客服支持
     MacroFrame={},--宏
     ExtraActionButton1={save=true, click='R' },--额外技能
 
-  --  ContainerFrameCombinedBags={save=true},--包
+    ContainerFrameCombinedBags={},--包
     ChatConfigFrame={save=true},--聊天设置
     SettingsPanel={},--选项
     --ZoneAbilityFrame.SpellButtonContainer = {save=true, click='R'},
@@ -146,14 +146,11 @@ local FrameTab={
     CalendarViewEventFrame={save=true},
     CalendarViewHolidayFrame={save=true},
 
-    AuctionHouseFrame={},--拍卖行
     BlackMarketFrame={},--黑市
     BankFrame={save=true},--银行
-
+    --UIWidgetBelowMinimapContainerFrame={save=true,click='RightButton'},
     MerchantFrame={},--货物
     ClassTrainerFrame={},--专业训练师
-
-    WardrobeFrame={},--幻化
 
     ColorPickerFrame={save=true},--颜色选择器
 
@@ -165,53 +162,22 @@ local FrameTab={
 
     FlightMapFrame={save=true},--飞行地图
     WorldMapFrame={},--世界地图
-
-    --CollectionsJournal={},
 };
-  --PlayerTalentFrame={},天赋
-if IsAddOnLoaded('BlizzMove') then
+
+local function setTabInit()
     for k, v in pairs(FrameTab) do
-        if not v.save then FrameTab[k]=nil end
-    end
-end
-
-local function Set(arg1)
-    if Save.disabled then
-        return
-    end
-
-    for k, v in pairs(FrameTab) do
-        local f= _G[k];
-        if f then
-            Move(f, v);
-            FrameTab[k]=nil
-        end
-    end
-
-    if arg1=='Blizzard_AchievementUI' then--成就
-        Move(AchievementFrame.Header,{frame=AchievementFrame})
-    --elseif arg1=='Blizzard_Communities' then--公会和社区            
-       --Move(CommunitiesFrame.TitleContainer, {freme=CommunitiesFrame.NineSlice})
-       --Move(CommunitiesFrameInset, {})
-    end
-   if arg1==id then
-       Move(ZoneAbilityFrame.SpellButtonContainer, {save=true, click='R'})
-    end
-
-    hooksecurefunc(LootFrame,'Open', function(self)--物品拾取LootFrame.lua
-        if not GetCVarBool("autoLootDefault") and not GetCVarBool("lootUnderMouse") then
-            local p=Save.point.LootFrame and Save.point.LootFrame[1]
-            if p and p[1] and p[3] and p[4] and p[5] then
-                self:ClearAllPoints();
-                self:SetPoint(p[1], nil, p[3], p[4], p[5]);
+        if v then
+            local f= _G[k];
+            if f then
+                Move(f, v);
+                FrameTab[k]=nil
             end
         end
-    end)
-
---[[
-    local frame
+    end
+end
+local function setClass()--职业,能量条
     if e.Player.class== 'PALADIN' then
-        frame = PaladinPowerBarFrame;--圣骑士能量条, 
+        local frame = PaladinPowerBarFrame;--圣骑士能量条, 
         if frame then
             Move(frame, {save=true})
             frame =PaladinPowerBarFrameBG if frame then frame:Hide() end
@@ -222,31 +188,54 @@ local function Set(arg1)
         Move(RuneFrame, {save=true})
 
     elseif e.Player.class=='MONK' then--WS
-        frame= MonkHarmonyBarFrame;--DPS
+        local frame= MonkHarmonyBarFrame;--DPS
         if frame then
-            frame.moveFrame=CreateFrame('frame', nil, frame);
-            frame.moveFrame:SetSize(60,40);
-            frame.moveFrame:SetPoint('RIGHT', frame, 'LEFT', 0,0);
-            Move(frame, {save=true})
+            if not frame.moveFrame then
+                frame.moveFrame=CreateFrame('Frame', nil, frame);
+                local h=frame:GetHeight() or 21
+                frame.moveFrame:SetSize(h, h);
+                frame.moveFrame:SetPoint('RIGHT', frame, 'LEFT', 0,0);
+                frame.moveFrame.textrue=frame.moveFrame:CreateTexture(nil, 'BACKGROUND')
+                frame.moveFrame.textrue:SetAllPoints(frame.moveFrame)
+                frame.moveFrame.textrue:SetAtlas(e.Icon.icon)
+                frame.moveFrame.textrue:SetShown(false)
+                frame.moveFrame:SetScript('OnEnter', function(self2)
+                    if not UnitAffectingCombat('player') then
+                        self2.textrue:SetShown(true)
+                        e.tips:ClearLines()
+                        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                        e.tips:AddDoubleLine(id, addName)
+                        e.tips:AddLine(' ')
+                        e.tips:AddDoubleLine(NPE_MOVE, e.Icon.left)
+                        e.tips:Show()
+                    end
+                end)
+                Move(frame.moveFrame, {save=true, frame=frame})
+                frame.moveFrame:SetScript('OnLeave', function(self2)
+                    ResetCursor()
+                    e.tips:Hide()
+                    self2.textrue:SetShown(false)
+                end)
+            end
         end
         frame=MonkStaggerBar--T
         if frame then
-           Move(frame, {save=true})
+            Move(frame, {save=true})
         end
 
     elseif e.Player.class=='WARLOCK' then
-        frame=WarlockPowerFrame
+        local frame=WarlockPowerFrame
         Move(WarlockPowerFrame, {save=true})
 
     elseif e.Player.class=='MAGE' then--Fs
-        frame=MageArcaneChargesFrame
+        local frame=MageArcaneChargesFrame
         if frame then
             Move(frame, {save=true})
             if frame.Background then frame.Background:Hide() end
             frame:SetScale(0.7);--缩放
         end
     elseif e.Player.class=='ROGUE' or e.Player.class=='DRUID' then --DZ , XD        
-        frame=ComboPointPlayerFrame
+        local frame=ComboPointPlayerFrame
         if frame then
             Move(frame, {save=true})
             UIParent.unit='player';
@@ -263,33 +252,70 @@ local function Set(arg1)
                             local setFrame=self.Point or self
                             self.tex:SetPoint('BOTTOM', setFrame, 'BOTTOM',0,0);                           
                             self.tex:SetSize(12, 12);
-                            self.tex:SetAtlas(e.Icon.num:format(i));                            
+                            self.tex:SetAtlas(e.Icon.number:format(i));
                         end
                     end
                 end
             end
         end
     end
-    ]]
 end
 
-local function Set2()
-    if Save.disabled then
-        return
+local function setAddLoad(arg1)
+    if arg1=='Blizzard_AchievementUI' then--成就
+        Move(AchievementFrame.Header,{frame=AchievementFrame})
+    elseif arg1=='Blizzard_EncounterJournal' then--冒险指南
+        Move(EncounterJournal, {})
+    elseif arg1=='Blizzard_ClassTalentUI' then--天赋
+        Move(ClassTalentFrame, {save=true})
+    elseif arg1=='Blizzard_AuctionHouseUI' then--拍卖行
+        Move(AuctionHouseFrame, {})
+    elseif arg1=='Blizzard_Communities' then--公会和社区
+        local dialog = CommunitiesFrame.NotificationSettingsDialog or nil;
+        if dialog then
+            dialog:ClearAllPoints();
+            dialog:SetAllPoints();
+        end
+        Move(CommunitiesFrame, {})
+    elseif arg1=='Blizzard_Collections' then
+        local checkbox = WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox;
+        checkbox.Label:ClearAllPoints();
+        checkbox.Label:SetPoint("LEFT", checkbox, "RIGHT", 2, 1);
+        checkbox.Label:SetPoint("RIGHT", checkbox, "RIGHT", 160, 1);
+        Move(CollectionsJournal, {})--藏品
+        Move(WardrobeFrame, {})--幻化
     end
+end
+
+local function setInit()
+    Move(ZoneAbilityFrame.SpellButtonContainer, {save=true, click='R'})
+    for k, v in pairs(FrameTab) do
+        local f= _G[k];
+        if f then
+            Move(f, v);
+            FrameTab[k]=nil
+        end
+    end
+    hooksecurefunc(LootFrame,'Open', function(self2)--物品拾取LootFrame.lua
+        if not GetCVarBool("autoLootDefault") and not GetCVarBool("lootUnderMouse") then
+            local p=Save.point.LootFrame and Save.point.LootFrame[1]
+            if p and p[1] and p[3] and p[4] and p[5] then
+                self2:ClearAllPoints();
+                self2:SetPoint(p[1], nil, p[3], p[4], p[5]);
+            end
+        end
+    end)
+
     Move(DressUpFrame.TitleContainer, {frame = DressUpFrame})--试衣间    
     Move(LootFrame.TitleContainer, {frame=LootFrame, save=true})--物品拾取
 end
-
-
 
 --加载保存数据
 local panel=CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1==id then
+    if event == "ADDON_LOADED" and arg1==id then
             Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
             --添加控制面板        
             local sel=e.CPanel(addName, not Save.disabled)
@@ -301,10 +327,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
                 print(addName, e.GetEnabeleDisable(not Save.disabled), NEED..' /reload')
             end)
-            Set2()
+            if not Save.disabled then
+                setInit()
+                setTabInit()
+                setClass()--职业,能量条
+            end
+    elseif event=='ADDON_LOADED' then
+        if not Save.disabled then
+            setAddLoad(arg1)
+            setTabInit()
         end
-
-        Set(arg1)
+        --print(arg1)
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end
@@ -328,8 +361,6 @@ end)
  
     
    
-    --AchievementFrameHeader={frame=AchievementFrame,},--9.0
-    AchievementFrame={},
   
     
     CompanionFrame={},

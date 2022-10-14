@@ -113,8 +113,7 @@ end
 
 local function setMount(self, mountID)--坐骑    
     local name, spellID, icon, isActive, isUsable, sourceType, isFavorite, isFactionSpecific, faction, shouldHideOnChar, isCollected=C_MountJournal.GetMountInfoByID(mountID)
-
-    self:AddDoubleLine(MOUNTS..'ID: '..mountID, SUMMON..ABILITIES..'ID: '..spellID)
+    self:AddDoubleLine(MOUNTS..'ID: '..mountID, spellID and SUMMON..ABILITIES..'ID: '..spellID)
     if isFactionSpecific then
         self:AddDoubleLine(not faction and ' ' or LFG_LIST_CROSS_FACTION:format(faction==0 and e.Icon.horde2..THE_HORDE or e.Icon.alliance2..THE_ALLIANCE or ''), ' ')
     end
