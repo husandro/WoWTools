@@ -46,6 +46,7 @@ local Move=function(F, tab)
                 local n=F2:GetNumPoints()
                 for i=1,n do
                     table.insert(point, {F2:GetPoint(i)})
+                    break
                 end
                 Save.point[name]=point
             end;
@@ -141,10 +142,6 @@ local FrameTab={
     QuestFrame={},
     PlayerChoiceFrame={},--任务选择
 
-    CalendarFrame={},--日历
-    CalendarCreateEventFrame={save=true},
-    CalendarViewEventFrame={save=true},
-    CalendarViewHolidayFrame={save=true},
 
     BlackMarketFrame={},--黑市
     BankFrame={save=true},--银行
@@ -282,6 +279,11 @@ local function setAddLoad(arg1)
         checkbox.Label:SetPoint("RIGHT", checkbox, "RIGHT", 160, 1);
         Move(CollectionsJournal, {})--藏品
         Move(WardrobeFrame, {})--幻化
+    elseif arg1=='Blizzard_Calendar' then--日历
+        Move(CalendarFrame, {})
+        --Move(CalendarCreateEventFrame, {save=true})
+        --Move(CalendarViewEventFrame, {save=true})
+        --Move(CalendarViewHolidayFrame, {save=true})
     end
 end
 
@@ -335,7 +337,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             setAddLoad(arg1)
             setTabInit()
         end
-        --print(arg1)
+        if arg1 then print(id, addName, arg1) end
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end
