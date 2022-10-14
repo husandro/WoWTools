@@ -7,7 +7,7 @@ local Point=function(frame, name2)
     p=p[name2] and p[name2][1]
     if p and p[1] and p[3] and p[4] and p[5] then
         frame:ClearAllPoints()
-        frame:SetPoint(p[1], frame:GetParent() or UIParent, p[3], p[4], p[5])
+        frame:SetPoint(p[1], UIParent, p[3], p[4], p[5])
     end
 end
 
@@ -134,7 +134,7 @@ local FrameTab={
     ChatConfigFrame={save=true},--聊天设置
     SettingsPanel={},--选项
     --ZoneAbilityFrame.SpellButtonContainer = {save=true, click='R'},
-    UIWidgetPowerBarContainerFrame={save=true,},
+    --UIWidgetPowerBarContainerFrame={save=true,},
     FriendsFrame={},--好友列表
 
     GossipFrame={},
@@ -192,10 +192,9 @@ local function setClass()--职业,能量条
         if frame then
             if not frame.moveFrame then
                 frame.moveFrame=CreateFrame('Frame', nil, frame);
-                local h=frame:GetHeight() or 21
-                frame.moveFrame:SetSize(h, h);
-                frame.moveFrame:SetPoint('RIGHT', frame, 'LEFT', 0,0);
-                frame.moveFrame.textrue=frame.moveFrame:CreateTexture(nil, 'BACKGROUND')
+                frame.moveFrame:SetSize(21, 21);
+                frame.moveFrame:SetPoint('RIGHT', frame, 'LEFT');
+                frame.moveFrame.textrue=frame.moveFrame:CreateTexture()
                 frame.moveFrame.textrue:SetAllPoints(frame.moveFrame)
                 frame.moveFrame.textrue:SetAtlas(e.Icon.icon)
                 frame.moveFrame.textrue:SetShown(false)
@@ -224,7 +223,6 @@ local function setClass()--职业,能量条
         end
 
     elseif e.Player.class=='WARLOCK' then
-        local frame=WarlockPowerFrame
         Move(WarlockPowerFrame, {save=true})
 
     elseif e.Player.class=='MAGE' then--Fs
