@@ -22,6 +22,7 @@ Sesource\Locales\zhTW.lua
 Sesource\Panel.lua
 
 GamePlus\Gossip.lua
+GamePlus\SellBuy.lua
 
 WoWPlus\PaperDoll.lua
 WoWPlus\Reputation.lua

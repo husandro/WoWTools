@@ -15,11 +15,14 @@ hooksecurefunc(ProfessionsFrame,'SetProfessionInfo', function(self, professionIn
 end)
 
 local function setProfessions()
-    if Save.disabled then
+    if Save.disabled or not ProfessionsFrame or not ProfessionsFrame:IsVisible() then
         for k=1,7 do
             if panel['profession'..k] then
                 panel['profession'..k]:SetShown(false)
             end
+        end
+        if panel.profession6 then
+            panel.profession6:UnregisterAllEvents()
         end
         return
     end
@@ -58,11 +61,12 @@ local function setProfessions()
                 else
                     panel['profession'..k]:UnlockHighlight()
                 end
-                panel['profession'..k]:SetShown(true)
+--[[
                 if k==5 and not UnitAffectingCombat('player') then
                     if not panel.profession6 then--烹饪用火
                         local spellID=818
                         panel.profession6 = e.Cbtn(panel, nil, nil, true)
+                        panel.profession6:RegisterForClicks('LeftButtonDown')
                         panel.profession6:SetPoint('LEFT', panel.profession5, 'RIGHT',2, 0)
                         panel.profession6:SetSize(32, 32)
                         panel.profession6:SetNormalTexture(135805)
@@ -74,15 +78,14 @@ local function setProfessions()
                         end)
                         panel.profession6:SetScript('OnLeave',function() e.tips:Hide() end)
                         local name2=GetSpellInfo(spellID)
-                        if name2 then
+                        if not name2 then
                             name2='/cast [@player]'..name2
-                            panel.profession6:SetAttribute("type*", "macro")
-                            panel.profession6:SetAttribute("macrotext*", name2)
+                            panel.profession6:SetAttribute("type", "macro")
+                            panel.profession6:SetAttribute("macrotext", name2)
                         else
-                            panel.profession6:SetAttribute('type*', 'spell')
-                            panel.profession6:SetAttribute('spell*', spellID)
+                            panel.profession6:SetAttribute('type', 'spell')
+                            panel.profession6:SetAttribute('spell', spellID)
                         end
-                        panel.profession6:RegisterUnitEvent('UNIT_SPELLCAST_SUCCEEDED', 'player')
                         panel.profession6:SetScript('OnEvent', function(self2, event, unitTarget, castGUID, spellID2)
                             if spellID2==spellID then
                                 C_Timer.After(0.4, function()
@@ -93,11 +96,9 @@ local function setProfessions()
                         end)
                         local start, duration, _ , modRate = GetSpellCooldown(818)
                         e.Ccool(panel.profession6, start, duration, modRate, nil, nil)--冷却条
-                    end
-                    panel.profession6:SetShown(true)
-                    if PlayerHasToy(134020) then
-                        if not panel.profession7 then--玩具,大厨的帽子
-                            local name2=C_Item.GetItemNameByID(134020)
+
+                        if PlayerHasToy(134020) and not panel.profession7 then--玩具,大厨的帽子
+                            name2=C_Item.GetItemNameByID(134020)
                             if name2 then
                                 panel.profession7 = e.Cbtn(panel.profession6, nil, nil, true)
                                 panel.profession7:SetPoint('LEFT', panel.profession6, 'RIGHT', 2,0)
@@ -115,11 +116,20 @@ local function setProfessions()
                                 panel.profession7:SetScript('OnLeave',function() e.tips:Hide() end)
                             end
                         end
+                    end
+                    if panel.profession7 then
                         panel.profession7:SetShown(true)
                     end
-                end
+                end]]
+            end
+            if panel['profession'..k] then
+                panel['profession'..k]:SetShown(name and icon)
             end
         end
+    end
+    if panel.profession6 then
+        panel.profession6:RegisterUnitEvent('UNIT_SPELLCAST_SUCCEEDED', 'player')
+        panel.profession6:SetShown(true)
     end
 end
 
@@ -145,7 +155,7 @@ panel:SetScript('OnEnter', function(self)
     e.tips:AddDoubleLine(e.GetEnabeleDisable(not Save.disabled),e.Icon.left)
     e.tips:Show()
 end)
-
+--[[
 local function setFMkey(self, set)--设置清除快捷键
     if set then
         e.SetButtonKey(panel.FM, true, 'F' )
@@ -196,10 +206,13 @@ local function setFM()
     end
     setFMkey(panel.FM, true)--设置快捷键
 end
+]]
+
 --加载保存数据
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:RegisterEvent("TRADE_SKILL_LIST_UPDATE")
+--panel:RegisterEvent('TRADE_SKILL_CLOSE')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
             Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
@@ -210,8 +223,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not WoWToolsSave then WoWToolsSave={} end
             WoWToolsSave[addName]=Save
         end
-    elseif event=='TRADE_SKILL_LIST_UPDATE' then
+    elseif event=='TRADE_SKILL_LIST_UPDATE' then-- or event=='TRADE_SKILL_CLOSE' then
         setProfessions()
-        setFM()
+        --setFM()
     end
 end)

@@ -13,6 +13,9 @@ end
 
 local Move=function(F, tab)
     local F2, click, save, enter, show, fun, re=tab.frame, tab.click, tab.save, tab.enter, tab.show, tab.fun, tab.re;--, tab.hook;    
+    if not F2 and not F then 
+        return
+    end
     local name;
     if F2 then
         name=F2:GetName();
@@ -24,7 +27,9 @@ local Move=function(F, tab)
     else
         F2=F;
         name=F:GetName();
-        if not name then return true end
+        if not name then
+            return
+        end
     end
     F:SetClampedToScreen(save and true or false);
     F:SetMovable(true);
@@ -131,7 +136,7 @@ local FrameTab={
     MacroFrame={},--宏
     ExtraActionButton1={save=true, click='R' },--额外技能
 
-    ContainerFrameCombinedBags={},--包
+    --ContainerFrameCombinedBags={},--包
     ChatConfigFrame={save=true},--聊天设置
     SettingsPanel={},--选项
     --ZoneAbilityFrame.SpellButtonContainer = {save=true, click='R'},
@@ -140,9 +145,7 @@ local FrameTab={
 
     GossipFrame={},
     QuestFrame={},
-    PlayerChoiceFrame={},--任务选择
-
-
+    
     BlackMarketFrame={},--黑市
     BankFrame={save=true},--银行
     --UIWidgetBelowMinimapContainerFrame={save=true,click='RightButton'},
@@ -151,11 +154,8 @@ local FrameTab={
 
     ColorPickerFrame={save=true},--颜色选择器
 
-    GarrisonShipyardFrame={},--海军行动
-    GarrisonMissionFrame={},--要塞任务
-    GarrisonCapacitiveDisplayFrame={},--要塞订单
+   
     BFAMissionFrame={},--侦查地图
-    GarrisonLandingPage={},--要塞报告   
 
     FlightMapFrame={save=true},--飞行地图
     WorldMapFrame={},--世界地图
@@ -281,9 +281,21 @@ local function setAddLoad(arg1)
         Move(WardrobeFrame, {})--幻化
     elseif arg1=='Blizzard_Calendar' then--日历
         Move(CalendarFrame, {})
-        --Move(CalendarCreateEventFrame, {save=true})
-        --Move(CalendarViewEventFrame, {save=true})
-        --Move(CalendarViewHolidayFrame, {save=true})
+
+    elseif arg1=='Blizzard_GarrisonUI' then--要塞
+        Move(GarrisonShipyardFrame,{})--海军行动
+        Move(GarrisonMissionFrame, {})--要塞任务
+        Move(GarrisonCapacitiveDisplayFrame, {})--要塞订单
+        Move(GarrisonLandingPage, {})--要塞报告
+
+    elseif arg1=='Blizzard_PlayerChoice' then
+        Move(PlayerChoiceFrame, {})--任务选择
+    elseif arg1=="Blizzard_GuildBankUI" then--公会银行
+        Move(GuildBankFrame.Emblem, {frame=GuildBankFrame})
+    else
+        if arg1 then
+            print(id, addName, arg1)
+        end
     end
 end
 
@@ -337,7 +349,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             setAddLoad(arg1)
             setTabInit()
         end
-        if arg1 then print(id, addName, arg1) end
+       -- if arg1 then print(id, addName, arg1) end
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end

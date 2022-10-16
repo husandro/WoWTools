@@ -363,9 +363,17 @@ end)
 g:RegisterEvent("ADDON_LOADED")
 g:RegisterEvent("PLAYER_LOGOUT")
 g:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1 == id then        
-        Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
-        setTexture()
+    if event == "ADDON_LOADED"  then
+        if arg1 == id then
+            Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
+            setTexture()
+        elseif arg1=='Blizzard_PlayerChoice' then--命运, 字符
+            hooksecurefunc(StaticPopupDialogs["CONFIRM_PLAYER_CHOICE_WITH_CONFIRMATION_STRING"],"OnShow",function(s)
+                if Save.gossip and s.editBox then
+                    s.editBox:SetText(SHADOWLANDS_EXPERIENCE_THREADS_OF_FATE_CONFIRMATION_STRING);
+                end
+            end)
+        end
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end

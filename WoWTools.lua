@@ -229,6 +229,7 @@ e.GetDifficultyColor = function(string, difficultyID)--DifficultyUtil.lua
         return string
     end
 end
+
 e.Cstr=function(self, size, fontType, ChangeFont, color)
     local b=ChangeFont or self:CreateFontString(nil, 'OVERLAY')
     if fontType then
@@ -285,9 +286,9 @@ e.Cbtn= function(self, Template, value, SecureAction, name)
         b:SetHighlightAtlas(e.Icon.highlight)
         b:SetPushedAtlas(e.Icon.pushed)
         if value then
-        b:SetNormalAtlas(e.Icon.icon)
+            b:SetNormalAtlas(e.Icon.icon)
         else
-        b:SetNormalAtlas(e.Icon.disabled)
+            b:SetNormalAtlas(e.Icon.disabled)
         end
     end
     b:RegisterForClicks("LeftButtonDown","RightButtonDown")
