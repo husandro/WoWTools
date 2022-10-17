@@ -266,7 +266,7 @@ e.CeditBox= function(self, width, height)
     editBox:SetAutoFocus(false)
     editBox:SetFontObject("ChatFontNormal")
     editBox:SetMultiLine(true)
-
+    --editBox:SetAltArrowKeyMode(false)
     local tex=editBox:CreateTexture(nil, "BACKGROUND")
     tex:SetAtlas('_Adventures-Mission-Highlight-Mid')
     tex:SetAllPoints(editBox)
