@@ -1,9 +1,10 @@
 local id, e = ...
 local Save={noSell={}, Sell={}, }
-local BossLoot={}
-local Buy={}--购买物品
+local bossSave={}
+local buySave={}--购买物品
 local addName=MERCHANT
 local panel=CreateFrame("Frame")
+local RepairSave={date=date('%x'), player=0, guild=0, num=0}
 
 --#########
 --设置耐久度
@@ -58,15 +59,20 @@ local function setAutoRepairAll()
     if Can and Co>0 then
         if CanGuildBankRepair() and GetGuildBankMoney()>=Co  then
             RepairAllItems(true);
+            RepairSave.guild=RepairSave.guild+Co
+            RepairSave.num=RepairSave.num+1
             print(id, addName, GUILDCONTROL_OPTION15_TOOLTIP, GetCoinTextureString(Co))
         else
             if GetMoney()>=Co then
+                RepairAllItems();
+                RepairSave.player=RepairSave.player+Co
+                RepairSave.num=RepairSave.num+1
                 print(id, addName, '|cnGREEN_FONT_COLOR:'..REPAIR_COST..'|r', GetCoinTextureString(Co));
             else
                 print(id, addName, '|cnRED_FONT_COLOR:'..FAILED..'|r', REPAIR_COST, GetCoinTextureString(Co));
             end
         end
-        RepairAllItems();
+        
     end
 end
 
@@ -85,7 +91,7 @@ local function bossLoot(itemID, itemLink)--BOSS掉落
     and (classID==2 or classID==3 or classID==4)--2武器 3宝石 4盔甲
     and bindType == LE_ITEM_BIND_ON_ACQUIRE--1     LE_ITEM_BIND_ON_ACQUIRE    拾取绑定
     and itemLevel and itemLevel>1 and avgItemLevel-itemLevel>=15 then
-        BossLoot[itemLink]=true
+        bossSave[itemLink]=true
     end
 end
 local itemPetID={--宠物对换, wow9.0
@@ -107,7 +113,7 @@ local function CheckItemSell(itemID, itemLink, quality)--检测是否是出售�
         if Save.Sell[itemID] and not Save.notSellCustom then
             return CUSTOM
         end
-        if BossLoot[itemLink] and not Save.notSellBoss then
+        if bossSave[itemLink] and not Save.notSellBoss then
             return BOSS
         end
     end
@@ -158,25 +164,70 @@ local function setBuyItems()--购买物品
     if IsModifierKeyDown() or Save.notAutoBuy or Save.disabled then
         return
     end
-    local tab={}
+    local Tab={}
     local merchantNum=GetMerchantNumItems()
     for index=1, merchantNum do
         local itemID=GetMerchantItemID(index)
-        local num= itemID and Buy[itemID]
+        local num= itemID and buySave[itemID]
         if num then
             local buyNum=num-GetItemCount(itemID, true)
             if buyNum>0 then
-                BuyMerchantItem(index, buyNum)
-                local itemLink=GetMerchantItemLink(index)
-                if itemLink then
-                    tab[itemLink]=num
+                local maxStack = GetMerchantItemMaxStack(index);
+                local _, _, price, stackCount, _, _, _, extendedCost = GetMerchantItemInfo(index)
+                local canAfford;
+                if (price and price > 0) then
+                    canAfford = floor(GetMoney() / (price / stackCount));
+                end
+                if (extendedCost) then
+                    for i = 1, MAX_ITEM_COST do
+                        local _, itemValue, itemLink, currencyName = GetMerchantItemCostItem(index, i);
+                        if itemLink and itemValue and itemValue>0 then
+                            if not currencyName then
+                                local myCount = GetItemCount(itemLink, false, false, true);
+                                local value= floor(myCount / (itemValue / stackCount))
+                                canAfford=not canAfford and value or min(canAfford, value)
+                            elseif currencyName then
+                               local info= C_CurrencyInfo.GetCurrencyInfoFromLink(itemLink)
+                               if info and info.quantity then
+                                    local value=floor(info.quantity / (itemValue / stackCount))
+                                    canAfford= not canAfford and value or min(canAfford, value)
+                                else
+                                    canAfford=0
+                               end
+                            end
+                        end
+                    end
+                end
+                if canAfford and canAfford>=buyNum and floor(buyNum/stackCount)>0 then
+                    while buyNum>0 do
+                        local stack=floor(buyNum/stackCount)
+                        if IsModifierKeyDown() or stack<1 then
+                            break
+                        end
+                        local buy=buyNum
+                        if stackCount>1 then
+                            if buy>=maxStack then
+                                buy=maxStack
+                            else
+                                buy=stack*stackCount
+                            end
+                        else
+                            buy=buy>maxStack and maxStack or buy
+                        end
+                        BuyMerchantItem(index, buy)
+                        buyNum=buyNum-buy
+                    end
+                    local itemLink=GetMerchantItemLink(index)
+                    if itemLink then
+                        Tab[itemLink]=num
+                    end
                 end
             end
         end
     end
-    C_Timer.After(0.3, function()
-        for itemLink, num in pairs(tab) do
-            print(id, addName, TUTORIAL_TITLE20, '|cnGREEN_FONT_COLOR:'..num..'|r', itemLink)
+    C_Timer.After(1.5, function()
+        for itemLink2, num2 in pairs(Tab) do
+            print(id, addName, TUTORIAL_TITLE20, '|cnGREEN_FONT_COLOR:'..num2..'|r', itemLink2)
         end
     end)
 end
@@ -220,7 +271,7 @@ local function setMerchantInfo()
                 else
                     itemID=C_MerchantFrame.GetBuybackItemID(index)
                 end
-                num=(not Save.notAutoBuy and itemID) and Buy[itemID]
+                num=(not Save.notAutoBuy and itemID) and buySave[itemID]
                 num= num and num..'|T236994:0|t'
                 if not Save.notShowBagNum then
                     local bag=itemID and GetItemCount(itemID,true)
@@ -256,6 +307,7 @@ local function setCustomItemMenu(level)--二级菜单, 自定义出售
     info.notCheckable=true
     info.func=function ()
         Save.Sell={}
+        CloseDropDownMenus();
     end
     UIDropDownMenu_AddButton(info, level)
     for itemID, boolean in pairs(Save.Sell) do
@@ -267,11 +319,7 @@ local function setCustomItemMenu(level)--二级菜单, 自定义出售
             info.icon= C_Item.GetItemIconByID(itemID)
             info.checked=boolean
             info.func=function()
-                if Save.Sell[itemID] then
-                    Save.Sell[itemID]=nil
-                else
-                    Save.Sell[itemID]=true
-                end
+                Save.Sell[itemID]=nil
                 print(id, addName, '|cnGREEN_FONT_COLOR:'..REMOVE..'|r'..AUCTION_HOUSE_SELL_TAB, itemLink)
             end
             UIDropDownMenu_AddButton(info, level)
@@ -283,21 +331,18 @@ local function setBossItemMenu(level)--二级菜单, BOSS
     info.text=CLEAR_ALL
     info.notCheckable=true
     info.func=function ()
-        BossLoot={}
+        bossSave={}
+        CloseDropDownMenus();
     end
     UIDropDownMenu_AddButton(info, level)
-    for itemLink, boolean in pairs(BossLoot) do
+    for itemLink, boolean in pairs(bossSave) do
         if itemLink then
             info = UIDropDownMenu_CreateInfo()
             info.text=itemLink
             info.checked=boolean
             info.icon= C_Item.GetItemIconByID(itemLink)
             info.func=function()
-                if Save.Sell[itemLink] then
-                    Save.Sell[itemLink]=nil
-                else
-                    Save.Sell[itemLink]=true
-                end
+                Save.Sell[itemLink]=nil
             end
             UIDropDownMenu_AddButton(info, level)
         end
@@ -308,11 +353,12 @@ local function setBuyItemMenu(level)--二级菜单, 购买物品
     info.text=CLEAR_ALL
     info.notCheckable=true
     info.func=function ()
-        Buy={}
+        buySave={}
         setMerchantInfo()
+        CloseDropDownMenus();
     end
     UIDropDownMenu_AddButton(info, level)
-    for itemID, num in pairs(Buy) do
+    for itemID, num in pairs(buySave) do
         if itemID and num then
             local bag=GetItemCount(itemID)
             local bank=GetItemCount(itemID, true)-bag
@@ -323,7 +369,7 @@ local function setBuyItemMenu(level)--二级菜单, 购买物品
             info.checked= true
             info.icon= C_Item.GetItemIconByID(itemID)
             info.func=function()
-                Buy[itemID]=nil
+                buySave[itemID]=nil
                 setMerchantInfo()
             end
             UIDropDownMenu_AddButton(info, level)
@@ -336,6 +382,7 @@ local function setBuybackItemMenu(level)--二级菜单, 购回物品
     info.notCheckable=true
     info.func=function ()
         Save.noSell={}
+        CloseDropDownMenus();
     end
     UIDropDownMenu_AddButton(info, level)
     for itemID, _ in pairs(Save.noSell) do
@@ -369,6 +416,7 @@ local function InitList(self, level, menuLit)
         setBuybackItemMenu(level)
         return
     end
+    local num
     local info = UIDropDownMenu_CreateInfo()--出售垃圾
     info.text=	AUCTION_HOUSE_SELL_TAB..BAG_FILTER_JUNK
     info.checked= not Save.notSellJunk
@@ -385,7 +433,13 @@ local function InitList(self, level, menuLit)
     UIDropDownMenu_AddButton(info)
 
     info = UIDropDownMenu_CreateInfo()--自定义出售
-    info.text=	AUCTION_HOUSE_SELL_TAB..CUSTOM
+    num=0
+    for _, boolean in pairs(Save.Sell) do
+        if boolean then
+            num=num+1
+        end
+    end
+    info.text=	AUCTION_HOUSE_SELL_TAB..CUSTOM..'|cnRED_FONT_COLOR: #'..num..'|r'
     info.checked= not Save.notSellCustom
     info.func=function ()
         if Save.notSellCustom then
@@ -399,7 +453,13 @@ local function InitList(self, level, menuLit)
     UIDropDownMenu_AddButton(info)
 
     info = UIDropDownMenu_CreateInfo()--出售BOSS掉落
-    info.text=	AUCTION_HOUSE_SELL_TAB..TRANSMOG_SOURCE_1
+    num=0
+    for _, boolean in pairs(bossSave) do
+        if boolean then
+            num=num+1
+        end
+    end
+    info.text=	AUCTION_HOUSE_SELL_TAB..TRANSMOG_SOURCE_1..'|cnRED_FONT_COLOR: #'..num..'|r'
     info.checked= not Save.notSellCustom
     info.func=function ()
         if Save.notSellBoss then
@@ -416,7 +476,13 @@ local function InitList(self, level, menuLit)
 
     UIDropDownMenu_AddSeparator()
     info = UIDropDownMenu_CreateInfo()--购回
-    info.text= BUYBACK
+    num=0
+    for _, boolean in pairs(Save.noSell) do
+        if boolean then
+            num=num+1
+        end
+    end
+    info.text= BUYBACK..'|cnRED_FONT_COLOR: #'..num..'|r'
     info.notCheckable=true
     info.menuList='BUYBACK'
     info.hasArrow=true
@@ -424,7 +490,13 @@ local function InitList(self, level, menuLit)
 
     UIDropDownMenu_AddSeparator()
     info=UIDropDownMenu_CreateInfo()--购买物品
-    info.text=AUTO_JOIN..PURCHASE
+    num=0
+    for _, boolean in pairs(buySave) do
+        if boolean then
+            num=num+1
+        end
+    end
+    info.text=AUTO_JOIN:gsub(JOIN,'')..PURCHASE..'|cnGREEN_FONT_COLOR: #'..num..'|r'
     info.checked=not Save.notAutoBuy
     info.func=function ()
         if Save.notAutoBuy then
@@ -450,14 +522,18 @@ local function InitList(self, level, menuLit)
         end
         setDurabiliy()
     end
-    if CanGuildBankRepair() then
-        local money=GetGuildBankMoney()
-        if money and money>0 then
-            info.tooltipOnButton=true
-            info.tooltipTitle=GUILDCONTROL_OPTION15_TOOLTIP
-            info.tooltipText=GUILDBANK_REPAIR..'\n'..GetCoinTextureString(money)
-        end
+    info.tooltipOnButton=true
+    info.tooltipTitle=GUILD_BANK_MONEY_LOG.. ' '..RepairSave.date
+    local text=	MINIMAP_TRACKING_REPAIR..': '..RepairSave.num..' '..VOICEMACRO_LABEL_CHARGE1
+                ..'\n'..GUILD..': '..GetCoinTextureString(RepairSave.guild)
+                ..'\n'..PLAYER..': '..GetCoinTextureString(RepairSave.player)
+    if RepairSave.guild>0 and RepairSave.player>0 then
+        text=text..'\n\n'..TOTAL..': '..GetCoinTextureString(RepairSave.guild+RepairSave.player)
     end
+    if CanGuildBankRepair() then
+        text=text..'\n\n'..GUILDBANK_REPAIR..'\n'..GetCoinTextureString(GetGuildBankMoney())
+    end
+    info.tooltipText=text
     UIDropDownMenu_AddButton(info)
 
     UIDropDownMenu_AddSeparator()
@@ -473,7 +549,7 @@ local function InitList(self, level, menuLit)
         setMerchantInfo()
     end
     UIDropDownMenu_AddButton(info)
-    
+
 
     info=UIDropDownMenu_CreateInfo()--删除字符
     info.text=RUNECARVER_SCRAPPING_CONFIRMATION_TEXT..': '..DELETE_ITEM_CONFIRM_STRING
@@ -539,8 +615,8 @@ local function setMenu()
                 end
             elseif infoType=='merchant' and itemID then--购买物品
                 itemID= GetMerchantItemID(itemID)
-                
-                e.tips:AddDoubleLine(PURCHASE..((itemID and Buy[itemID]) and '|cnRED_FONT_COLOR:'..SLASH_CHAT_MODERATE2..' '..Buy[itemID]..'|r' or '' ), ITEMS, 0,1,0, 0,1,0)
+
+                e.tips:AddDoubleLine(PURCHASE..((itemID and buySave[itemID]) and '|cnRED_FONT_COLOR:'..SLASH_CHAT_MODERATE2..' '..buySave[itemID]..'|r' or '' ), ITEMS, 0,1,0, 0,1,0)
             else
                 e.tips:AddDoubleLine(DRAG_MODEL..e.Icon.left..ITEMS, AUCTION_HOUSE_SELL_TAB..'/'..PURCHASE)
             end
@@ -570,6 +646,7 @@ local function setMenu()
             else
                 Save.Sell[itemID]=true
                 Save.noSell[itemID]=nil
+                buySave[itemID]=nil
                 print(id,addName, '|cnGREEN_FONT_COLOR:'..ADD..'|r'..AUCTION_HOUSE_SELL_TAB, itemLink )
                 C_Timer.After(0.2, function()
                     if MerchantFrame and MerchantFrame:IsShown() then --and MerchantFrame.selectedTab == 1 then
@@ -587,22 +664,21 @@ local function setMenu()
                 icon= icon and '|T'..icon..':0|t' or ''
                 StaticPopupDialogs[id..addName..'Buy']={
                     text =id..' '..addName
-                    ..'\n\n'..AUTO_JOIN..PURCHASE..': '..icon ..itemLink
+                    ..'\n\n'..AUTO_JOIN:gsub(JOIN,'')..PURCHASE..': '..icon ..itemLink
                     ..'\n\n'..e.Icon.player..e.Player.name_server..': ' ..AUCTION_HOUSE_QUANTITY_LABEL
                     ..'\n\n0: '..(CLEAR or KEY_NUMLOCK_MAC)
-                    ..(Save.notAutoBuy and '\n\n'..AUTO_JOIN..PURCHASE..': '..e.GetEnabeleDisable(flse) or ''),
+                    ..(Save.notAutoBuy and '\n\n'..AUTO_JOIN:gsub(JOIN,'')..PURCHASE..': '..e.GetEnabeleDisable(flse) or ''),
                     button1 = PURCHASE,
                     button2 = CANCEL,
                     hasEditBox=true,whileDead=true,timeout=60,hideOnEscape = 1,
                     OnAccept=function(s)
                         local num= s.editBox:GetNumber()
                         if num==0 then
-                            if Buy[itemID] then
-                                Buy[itemID]=nil
-                            end
+                            buySave[itemID]=nil
                             print('|cnGREEN_FONT_COLOR:'..(CLEAR or KEY_NUMLOCK_MAC)..'|r', itemLink)
                         else
-                            Buy[itemID]=num
+                            buySave[itemID]=num
+                            Save.Sell[itemID]=nil
                             print(PURCHASE, '|cnGREEN_FONT_COLOR:'..num..'|r', itemLink)
                             setBuyItems()
                         end
@@ -610,8 +686,8 @@ local function setMenu()
                     end,
                     OnShow=function(s)
                         s.editBox:SetNumeric(true);
-                        if Buy[itemID] then
-                            s.editBox:SetText(Buy[itemID])
+                        if buySave[itemID] then
+                            s.editBox:SetText(buySave[itemID])
                         end
                     end,
                     EditBoxOnEscapePressed = function(s) s:GetParent():Hide() end,
@@ -658,7 +734,7 @@ local function setMenu()
         e.tips:AddLine(' ')
         local infoType, itemID, itemLink = GetCursorInfo()
         if infoType=='item' and itemID and itemLink then
-            
+
             local icon=C_Item.GetItemIconByID(itemLink)
             e.tips:AddDoubleLine(itemLink, icon and '|T'..icon..':0|t' or ' ')
             if Save.noSell[itemID] then
@@ -676,59 +752,24 @@ local function setMenu()
 end
 --StackSplitFrame.lua 堆叠,数量,框架
 hooksecurefunc(StackSplitFrame,'OpenStackSplitFrame',function(self, maxStack, parent, anchor, anchorTo, stackCount)
-    if not self:IsShown() or Save.notStackSplit  or Save.disabled then
+    if Save.notStackSplit or Save.disabled then
         return
     end
-    if not self.MaxButton then
-        self.MaxButton=e.Cbtn(self.RightButton)
-        self.MaxButton:SetNormalAtlas('NPE_ArrowRight')
-        self.MaxButton:SetPoint('BOTTOM', self.RightButton, 'TOP',-4, 0)
-        self.MaxButton:SetSize(18, 18)
-        self.MaxButton:SetScript('OnClick', function()
-            local split=self.split
-            local num=maxStack/stackCount
-            if split < num/2 then
-                split= math.ceil(num/2)
-            elseif split<num then
-                split= num
-            else
-                split= split + num
-            end
-            self.split=split
-            self.LeftButton:SetEnabled(split>1)
-            StackSplitFrame:UpdateStackText()
-        end)
-
-        self.MinButton=e.Cbtn(self.LeftButton)--小
-        self.MinButton:SetNormalAtlas('NPE_ArrowLeft')
-        self.MinButton:SetPoint('BOTTOM', self.LeftButton, 'TOP',4, 0)
-        self.MinButton:SetSize(18, 18)
-        self.MinButton:SetScript('OnClick', function()
-            local split=self.split
-            local num=maxStack/stackCount
-            if split>num then
-                split=split - math.ceil(num)
-            elseif split>num/2 then
-                split=split - math.ceil(num/2)
-            else
-                split=split-10
-            end
-            if split<1 then
-                split=1
-            end
-            self.split=split
-            self.LeftButton:SetEnabled(split>1)
-            StackSplitFrame:UpdateStackText()
-        end)
-
-        self.restButton=e.Cbtn(self)--重置 1
+    if not self.restButton then
+        local function setButton()
+            self.RightButton:SetEnabled(self.split<self.maxStack)
+            self.LeftButton:SetEnabled(self.split>self.minSplit)
+        end
+        self.restButton=e.Cbtn(self)--重置
         self.restButton:SetPoint('TOP')
         self.restButton:SetSize(22, 22)
         self.restButton:SetNormalAtlas('characterundelete-RestoreButton')
         self.restButton:SetScript('OnClick', function(self2)
-            self.split=1
+            self.split=self.minSplit
             self.LeftButton:SetEnabled(false)
+            self.RightButton:SetEnabled(true)
             StackSplitFrame:UpdateStackText()
+            setButton()
         end)
         self.restButton:SetScript('OnEnter', function(self2)
             e.tips:SetOwner(self2, 'ANCHOR_LEFT')
@@ -739,6 +780,26 @@ hooksecurefunc(StackSplitFrame,'OpenStackSplitFrame',function(self, maxStack, pa
             e.tips:Show()
         end)
         self.restButton:SetScript('OnLeave', function() e.tips:Hide() end)
+        
+        self.MaxButton=e.Cbtn(self, nil, nil, nil,nil, true)
+        self.MaxButton:SetSize(40, 20)
+        self.MaxButton:SetNormalFontObject('NumberFontNormalYellow')
+        self.MaxButton:SetPoint('LEFT', self.restButton, 'RIGHT')
+        self.MaxButton:SetScript('OnMouseDown', function(self2)
+            self.split=self.maxStack
+            StackSplitFrame:UpdateStackText()
+            setButton()
+        end)
+
+        self.MetaButton=e.Cbtn(self, nil, nil, nil,nil, true)
+        self.MetaButton:SetSize(40, 20)
+        self.MetaButton:SetNormalFontObject('NumberFontNormalYellow')
+        self.MetaButton:SetPoint('RIGHT', self.restButton, 'LEFT')
+        self.MetaButton:SetScript('OnMouseDown', function(self2)
+            self.split=floor(self.maxStack/2)
+            StackSplitFrame:UpdateStackText()
+            setButton()
+        end)
 
         self.editBox=CreateFrame('EditBox', nil, self)--输入框
         self.editBox:SetSize(100, 23)
@@ -747,24 +808,29 @@ hooksecurefunc(StackSplitFrame,'OpenStackSplitFrame',function(self, maxStack, pa
         self.editBox:SetFontObject("ChatFontNormal")
         self.editBox:SetMultiLine(false)
         self.editBox:SetNumeric(true)
-        self.editBox:SetScript('OnEditFocusLost', function(self2)
+        self.editBox:SetScript('OnEditFocusLost', function(self2) self2:SetText('') end)
+        self.editBox:SetScript("OnEscapePressed",function(self2) self2:ClearFocus() end)
+        self.editBox:SetScript('OnEnterPressed', function(self2) self2:ClearFocus() end)
+        self.editBox:SetScript('OnTextChanged',function(self2, userInput)
+            if not userInput then
+                return
+            end
             local num=self2:GetNumber()
-            num= num<1 and 1 or num
-            self.editBox.split=num
-            self2:SetText('')
-        end)
-        self.editBox:SetScript("OnEscapePressed",function(self2)
-            self2:ClearFocus()
-        end)
-        self.editBox:SetScript('OnEnterPressed', function(self2)
-            local num=self2:GetNumber()
-            num= num<1 and 1 or num
-            self.StackSplitText:SetText(num);
+            if self.isMultiStack then
+                num=floor(num/self.minSplit) * self.minSplit
+            end
+            num= num<self.minSplit and self.minSplit or num
+            num= num>self.maxStack and self.maxStack or num
+            self.RightButton:SetEnabled(num<self.maxStack)
+            self.LeftButton:SetEnabled(num==self.minSplit)
             self.split=num
             StackSplitFrame:UpdateStackText()
-            self2:ClearFocus()
+            setButton()
         end)
-   end
+    end
+
+    self.MaxButton:SetText(self.maxStack)
+    self.MetaButton:SetText(floor(self.maxStack/2))
 end)
 --######
 --DELETE
@@ -800,16 +866,21 @@ panel:RegisterEvent('MERCHANT_UPDATE')--购回
 
 panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
     if event == "ADDON_LOADED" and arg1==id then
-            Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
-            Buy=WoWToolsSave.BuyItems and WoWToolsSave.BuyItems[e.Player.name_server] or Buy--购买物品
-            avgItemLevel= GetAverageItemLevel()--装等
+        if WoWToolsSave then
+            Save= WoWToolsSave[addName] or Save
+            buySave=WoWToolsSave.BuyItems and WoWToolsSave.BuyItems[e.Player.name_server] or buySave--购买物品
+            RepairSave=WoWToolsSave.Repair and WoWToolsSave.Repair[e.Player.name_server] or RepairSave--修理
+        end
+        avgItemLevel= GetAverageItemLevel()--装等
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end
             WoWToolsSave[addName]=Save
             WoWToolsSave.BuyItems=WoWToolsSave.BuyItems or {}--购买物品
-            WoWToolsSave.BuyItems[e.Player.name_server]=Buy
+            WoWToolsSave.BuyItems[e.Player.name_server]=buySave
+            WoWToolsSave.Repair=WoWToolsSave.Repair or {}--修理
+            WoWToolsSave.Repair[e.Player.name_server] = RepairSave
         end
     elseif event=='MERCHANT_SHOW' then
         setDurabiliy()--显示耐久度

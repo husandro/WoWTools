@@ -273,7 +273,7 @@ e.CeditBox= function(self, width, height)
     return editBox
 end
 
-e.Cbtn= function(self, Template, value, SecureAction, name)
+e.Cbtn= function(self, Template, value, SecureAction, name, notTexture)
     local b
     if Template then
         b=CreateFrame('Button', name, self, 'UIPanelButtonTemplate')
@@ -285,10 +285,12 @@ e.Cbtn= function(self, Template, value, SecureAction, name)
         b=CreateFrame('Button', name, self)
         b:SetHighlightAtlas(e.Icon.highlight)
         b:SetPushedAtlas(e.Icon.pushed)
-        if value then
-            b:SetNormalAtlas(e.Icon.icon)
-        else
-            b:SetNormalAtlas(e.Icon.disabled)
+        if not notTexture then
+            if value then
+                b:SetNormalAtlas(e.Icon.icon)
+            else
+                b:SetNormalAtlas(e.Icon.disabled)
+            end
         end
     end
     b:RegisterForClicks("LeftButtonDown","RightButtonDown")
