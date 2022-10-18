@@ -6,14 +6,18 @@ local Point=function(frame, name2)
     local p=Save.point
     p=p[name2] and p[name2][1]
     if p and p[1] and p[3] and p[4] and p[5] then
-        frame:ClearAllPoints()
-        frame:SetPoint(p[1], UIParent, p[3], p[4], p[5])
+        if frame == ContainerFrameCombinedBags then
+            frame:SetPoint(p[1], frame:GetParent(), p[3], p[4], p[5])--WorldFrame
+        else
+            frame:ClearAllPoints()
+            frame:SetPoint(p[1], UIParent, p[3], p[4], p[5])--WorldFrame
+        end
     end
 end
 
 local Move=function(F, tab)
     local F2, click, save, enter, show, fun, re=tab.frame, tab.click, tab.save, tab.enter, tab.show, tab.fun, tab.re;--, tab.hook;    
-    if not F2 and not F then 
+    if not F2 and not F then
         return
     end
     local name;
@@ -136,7 +140,8 @@ local FrameTab={
     MacroFrame={},--宏
     ExtraActionButton1={save=true, click='R' },--额外技能
 
-    --ContainerFrameCombinedBags={},--包
+    ContainerFrameCombinedBags={},--包
+
     ChatConfigFrame={save=true},--聊天设置
     SettingsPanel={},--选项
     --ZoneAbilityFrame.SpellButtonContainer = {save=true, click='R'},
@@ -157,7 +162,7 @@ local FrameTab={
    
     BFAMissionFrame={},--侦查地图
 
-    FlightMapFrame={save=true},--飞行地图
+    
     WorldMapFrame={},--世界地图
 };
 
@@ -292,6 +297,10 @@ local function setAddLoad(arg1)
         Move(PlayerChoiceFrame, {})--任务选择
     elseif arg1=="Blizzard_GuildBankUI" then--公会银行
         Move(GuildBankFrame.Emblem, {frame=GuildBankFrame})
+        
+    elseif arg1=='Blizzard_FlightMap' then--飞行地图
+        Move(FlightMapFrame, {})
+
     else
         if arg1 then
             print(id, addName, arg1)
@@ -301,6 +310,7 @@ end
 
 local function setInit()
     Move(ZoneAbilityFrame.SpellButtonContainer, {save=true, click='R'})
+
     for k, v in pairs(FrameTab) do
         local f= _G[k];
         if f then
@@ -320,6 +330,7 @@ local function setInit()
 
     Move(DressUpFrame.TitleContainer, {frame = DressUpFrame})--试衣间    
     Move(LootFrame.TitleContainer, {frame=LootFrame, save=true})--物品拾取
+
 end
 
 --加载保存数据

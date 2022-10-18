@@ -107,6 +107,7 @@ e.Icon={
     select2='|A:GarrMission_EncounterBar-CheckMark:0:0|a',--绿色√
     selectYellow='Adventures-Checkmark',--黄色√
     X2='|A:xmarksthespot:0:0|a',
+    O2='|TInterface\\AddOns\\WeakAuras\\Media\\Textures\\cancel-mark.tga:0|t',--￠
 
     right='|A:newplayertutorial-icon-mouse-rightbutton:0:0|a',
     left='|A:newplayertutorial-icon-mouse-leftbutton:0:0|a',
@@ -413,4 +414,13 @@ e.WA_Utf8Sub = function(input, size)
       i = i + 1
     end
     return output
+end
+
+e.HEX=function(r, g, b, a)
+    a=a or 1
+    r = r <= 1 and r >= 0 and r or 0
+    g = g <= 1 and g >= 0 and g or 0
+    b = b <= 1 and b >= 0 and b or 0
+    a = a <= 1 and a >= 0 and a or 0
+    return string.format("%02x%02x%02x%02x",a*255, r*255, g*255, b*255)
 end
