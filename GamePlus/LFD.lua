@@ -23,50 +23,13 @@ local function setRole()
 end
 setRole()
 
-local function autoEnterLeavelInstance()--自动,离开, 进入, 副本
-   local info=UIDropDownMenu_CreateInfo()--离开副本
-    info.text=LEAVE..'('..INSTANCE..')'
-    info.tooltipOnButton=true
-    info.tooltipTitle=LEAVE..' ('..SLASH_RANDOM3:gsub('/','')..') '..INSTANCE
-    info.checked=Save.leaveInstance
-    info.tooltipText=GX_ADAPTER_AUTO_DETECT..': '..e.GetEnabeleDisable(Save.leaveInstance)..'\n\n'..id..' '..addName
-    info.func=function()
-        if Save.leaveInstance then
-            Save.leaveInstance=nil
-        else
-            Save.leaveInstance=true
-        end
-    end
-    UIDropDownMenu_AddButton(info)
-
-    local isLeader, isTank, isHealer, isDPS = GetLFGRoles()--角色职责
-    info=UIDropDownMenu_CreateInfo()--准备进入
-    info.text=BATTLEFIELD_CONFIRM_STATUS..(isLeader and e.Icon.leader or '')
-                ..(isTank and e.Icon.TANK or '')
-                ..(isHealer and e.Icon.HEALER or '')
-                ..(isDPS and e.Icon.DAMAGER or '')
-                ..((not isTank and not isHealer and not isDPS) and ' |cnRED_FONT_COLOR:'..ROLE..'|r' or '')
-    info.tooltipOnButton=true
-    info.tooltipTitle=SPECIFIC_DUNGEON_IS_READY
-    info.checked=Save.enterInstance
-    info.tooltipText=GX_ADAPTER_AUTO_DETECT..': '..e.GetEnabeleDisable(Save.enterInstance)..'\n\n'..id..' '..addName
-    info.func=function()
-        if Save.enterInstance then
-            Save.enterInstance=nil
-        else
-            Save.enterInstance=true
-        end
-        print( Save.enterInstance,' Save.enterInstance')
-    end
-    UIDropDownMenu_AddButton(info)
-end
-
 local getRewardInfo=function(dungeonID)--FB奖励
     local t=''
     if not dungeonID then
         return t
     end
-    local numRewards = select(6, GetLFGDungeonRewards(dungeonID))
+    --local numRewards = select(6, GetLFGDungeonRewards(dungeonID))
+    local doneToday, moneyAmount, moneyVar, experienceGained, experienceVar, numRewards, spellID = GetLFGDungeonRewards(dungeonID)
     if numRewards and numRewards>0 then--奖励物品
         for i=1 , numRewards do
             local texturePath=select(2, GetLFGDungeonRewardInfo(dungeonID, i))
@@ -75,32 +38,144 @@ local getRewardInfo=function(dungeonID)--FB奖励
             end
         end
     end
+    if moneyAmount and moneyAmount>0 then--钱
+        t=t..'|A:Coin-Gold:0:0|a'
+    end
+    if experienceVar then
+        t=t..'|cffff00ffXP|r'
+    end
     local T,H,D--额外奖励
     local canTank, canHealer, canDamage = C_LFGList.GetAvailableRoles()
     for ii=1, LFG_ROLE_NUM_SHORTAGE_TYPES do
         local eligible, forTank, forHealer, forDamage= GetLFGRoleShortageRewards(dungeonID, ii)
         if eligible and ( forTank or forHealer or forDamage) then
             local rewardIcon = select(2, GetLFGDungeonShortageRewardInfo(dungeonID, ii, 1))
-            local tankLocked, healerLocked, damageLocked = GetLFDRoleRestrictions(dungeonID)
-            if forTank and canTank and not tankLocked and rewardIcon then
-                T=(T or '')..'|T'..rewardIcon..':0|t'
-            end
-            if forHealer and canHealer and not healerLocked and rewardIcon then
-                H=(H or '')..'|T'..rewardIcon..':0|t'
-            end
-            if forDamage and canDamage and not damageLocked and rewardIcon then
-                D=(D or '')..'|T'..rewardIcon..':0|t'
+            if rewardIcon then--local tankLocked, healerLocked, damageLocked = GetLFDRoleRestrictions(dungeonID)
+                if forTank and canTank and rewardIcon then
+                    T=(T or '')..'|T'..rewardIcon..':0|t'
+                end
+                if forHealer and canHealer and rewardIcon then
+                    H=(H or '')..'|T'..rewardIcon..':0|t'
+                end
+                if forDamage and canDamage and rewardIcon then
+                    D=(D or '')..'|T'..rewardIcon..':0|t'
+                end
             end
         end
     end
     if T or H  or D then
         t=t..' |cff00ff00('.. (T and e.Icon['TANK']..T or '').. (H and e.Icon['HEALER']..H or '').. (D and e.Icon['DAMAGER']..D or '') ..')|r'
     end
+
     return t
 end
 
+local function getQueuedList(type, raiTips)--排队情况
+    local list=GetLFGQueuedList(type)
+    if not GetLFGQueueStats(type) or not list then
+        return
+    end
+    local m, num= nil, 0
+    for dungeonID, _ in pairs(list) do
+        local name= GetLFGDungeonInfo(dungeonID)
+        if name then
+            num= num+1
+            if raiTips then
+                local boss=''
+                if type==LE_LFG_CATEGORY_RF then
+                    local numEncounters = GetLFGDungeonNumEncounters(dungeonID)
+                    local kill=0
+                    for index = 1, numEncounters do
+                        local isKilled = select(3, GetLFGDungeonEncounterInfo(dungeonID, index))
+                        if ( isKilled ) then
+                            kill=kill+1
+                        end
+                    end
+                    boss=' '..kill..'/'..numEncounters
+                    if kill==numEncounters then boss=RED_FONT_COLOR_CODE..boss..'|r' end
+                    local mapName=select(19, GetLFGDungeonInfo(dungeonID))
+                    if mapName then name=name.. '('..mapName..')' end
+                end
+                m=(m and m..'\n  ' or '  ').. num..') '..name..boss.. getRewardInfo(dungeonID)
+            end
+        end
+    end
+    return num, m
+end
+
+
+local function autoEnterLeavelInstance()--自动,离开, 进入, 副本
+    local info=UIDropDownMenu_CreateInfo()--离开副本
+     info.text=LEAVE..'('..INSTANCE..')'
+     info.tooltipOnButton=true
+     info.tooltipTitle=LEAVE..' ('..SLASH_RANDOM3:gsub('/','')..') '..INSTANCE
+     info.checked=Save.leaveInstance
+     info.tooltipText=AUTO_JOIN:gsub(JOIN, LEAVE)..': '..e.GetEnabeleDisable(Save.leaveInstance)..'\n\n'..id..' '..addName
+     info.func=function()
+         if Save.leaveInstance then
+             Save.leaveInstance=nil
+         else
+             Save.leaveInstance=true
+         end
+     end
+     UIDropDownMenu_AddButton(info)
+
+     local isLeader, isTank, isHealer, isDPS = GetLFGRoles()--角色职责
+     info=UIDropDownMenu_CreateInfo()--准备进入
+     info.text=BATTLEFIELD_CONFIRM_STATUS..(isLeader and e.Icon.leader or '')
+                 ..(isTank and e.Icon.TANK or '')
+                 ..(isHealer and e.Icon.HEALER or '')
+                 ..(isDPS and e.Icon.DAMAGER or '')
+                 ..((not isTank and not isHealer and not isDPS) and ' |cnRED_FONT_COLOR:'..ROLE..'|r' or '')
+     info.tooltipOnButton=true
+     info.tooltipTitle=SPECIFIC_DUNGEON_IS_READY
+     info.checked=Save.enterInstance
+     info.tooltipText=AUTO_JOIN:gsub(JOIN, ENTER_LFG)..': '..e.GetEnabeleDisable(Save.enterInstance)..'\n\n'..id..' '..addName
+     info.func=function()
+         if Save.enterInstance then
+             Save.enterInstance=nil
+         else
+             Save.enterInstance=true
+         end
+     end
+     UIDropDownMenu_AddButton(info)
+
+     local num, text=0, ''
+     for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
+        local listNum, listText=getQueuedList(i,true)
+        if listNum and listText then
+            text= text~='' and text..'\n'..listText or listText
+            num=num+listNum
+        end
+    end
+     info=UIDropDownMenu_CreateInfo()--离开所有副本
+     info.text=LEAVE_ALL_QUEUES..' #'..num..'|r'
+     info.notCheckable=true
+     info.disabled= num==0
+     info.func=function ()
+        for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
+            LeaveLFG(i)
+        end
+     end
+     info.tooltipOnButton=true
+     info.tooltipTitle=	BATTLEFIELD_QUEUE_STATUS
+     info.tooltipText=text
+     UIDropDownMenu_AddButton(info)
+ end
+
+local function printListInfo()--输出当前列表
+    C_Timer.After(1.2, function()
+        for i=1, NUM_LE_LFG_CATEGORYS  do--列表信息
+            local n, text =getQueuedList(i, true)--排5人本
+            if n and n>0 and text then
+                print(id, addName, date('%X'))
+                print(text)
+            end
+        end
+    end)
+end
 local function partyList()--随机 LFDFrame.lua
-    local info, find
+    local info
     for i=1, GetNumRandomDungeons() do
         local dungeonID, name = GetLFGRandomDungeonInfo(i)
         local isAvailableForAll, isAvailableForPlayer, hid2eIfNotJoinable = IsLFGDungeonJoinable(dungeonID)
@@ -110,23 +185,31 @@ local function partyList()--随机 LFDFrame.lua
                 local lfd=GetLFGQueueStats(LE_LFG_CATEGORY_LFD, dungeonID)--是否有排本
                 info.text = name..getRewardInfo(dungeonID)
                 info.value = dungeonID
-                info.isTitle = nil
                 info.func =function()
                     LFDQueueFrame_SetType(dungeonID)
                     if lfd then
                         LeaveSingleLFG(LE_LFG_CATEGORY_LFD, dungeonID)
                     else
                         LFDQueueFrame_Join()
+                        printListInfo()--输出当前列表
                     end
                 end
                 info.checked=lfd
-                if GetLFGDungeonRewards(dungeonID) then--local doneToday, moneyAmount, moneyVar, experienceGained, experienceVar, numRewards, spellID = GetLFGDungeonRewards(dungeonID)
+                local doneToday= GetLFGDungeonRewards(dungeonID)
+                if doneToday then--local doneToday, moneyAmount, moneyVar, experienceGained, experienceVar, numRewards, spellID = GetLFGDungeonRewards(dungeonID)
                     info.icon='Interface\\AddOns\\WeakAuras\\Media\\Textures\\ok-icon.tga'
                 end
                 info.tooltipOnButton=true
                 info.tooltipTitle='dungeonID: '..dungeonID
+                local text=''
                 if  lfd then
-                    info.tooltipText='|n|cnGREEN_FONT_COLOR:'..LEAVE_QUEUE..'|r'
+                    text='|cnGREEN_FONT_COLOR:'..LEAVE_QUEUE..'|r'
+                end
+                if doneToday then
+                    text=text..'\n'..GUILD_EVENT_TODAY..'|TInterface\\AddOns\\WeakAuras\\Media\\Textures\\ok-icon.tga:0|t'..COMPLETE
+                end
+                if text~='' then
+                    info.tooltipText=text
                 end
             else
                 info.text = name
@@ -137,11 +220,9 @@ local function partyList()--随机 LFDFrame.lua
 				info.tooltipTitle = YOU_MAY_NOT_QUEUE_FOR_THIS
 				info.tooltipText = LFGConstructDeclinedMessage(dungeonID)
             end
-            find=true
             UIDropDownMenu_AddButton(info)
         end
     end
-    return find
 end
 
 local function isRaidFinderDungeonDisplayable(dungeonID)--RaidFinder.lua
@@ -212,6 +293,7 @@ local raidList=function()--团队本
                 else
                     RaidFinderQueueFrame_SetRaid(sortedDungeons[i].id)
                     RaidFinderQueueFrame_Join()
+                    printListInfo()--输出当前列表
                 end
             end
             info.checked = sele
@@ -280,8 +362,9 @@ end
 local function InitList(self, level, arg1)--LFDFrame.lua
     autoEnterLeavelInstance()--自动,离开, 进入, 副本
     UIDropDownMenu_AddSeparator()
-
-    raidList()--团本
+    if  raidList() then --团本
+        UIDropDownMenu_AddSeparator()
+    end
     partyList()--随机
 end
 
@@ -447,7 +530,48 @@ local function setIslandButton(self)--离开海岛按钮
     end
 end
 
-
+--#####
+--小眼睛
+--#####
+local function setQueueStatus()--小眼睛, 信息
+    local self=QueueStatusButton
+    if Save.hideQueueStatus or not self then
+        if self and self.text then
+            self.text:SetShown(false)
+        end
+        return
+    end
+    if not self.text then
+        self.text=e.Cstr(self)
+        self.text:SetPoint('BOTTOMRIGHT', self, 'TOPRIGHT')
+    end
+    local num, text=0, ''
+    for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
+        local listNum, listText=getQueuedList(i,true)
+        if listNum and listText then
+            text= text~='' and text..'\n'..listText or listText
+            num=num+listNum
+        end
+    end
+    self.text:SetText(text)
+end
+local function setQueueStatusMenu(self, relativeTo)--小眼睛, 信息, 设置菜单 QueueStatusFrame.lua
+    UIDropDownMenu_AddSeparator()
+    local info=UIDropDownMenu_CreateInfo()--离开副本
+    info.text=	SOCIAL_QUEUE_TOOLTIP_HEADER..INFO
+    info.tooltipOnButton=true
+    info.tooltipTitle=id..' '..addName
+    info.checked=not Save.hideQueueStatus
+    info.func=function()
+        if Save.hideQueueStatus then
+            Save.hideQueueStatus=nil
+        else
+            Save.hideQueueStatus=true
+        end
+        setQueueStatus()
+    end
+    UIDropDownMenu_AddButton(info)
+end
 local Settings=nil--不是已启动
 local function Init()
     if Settings then
@@ -460,6 +584,8 @@ local function Init()
 
     LFGDungeonReadyDialog:HookScript("OnShow", setLFGDungeonReadyDialog)--自动进入FB
     Settings=true
+
+    hooksecurefunc('QueueStatusDropDown_Show', setQueueStatusMenu)--小眼睛, 信息, 设置菜单
 end
 --###########
 --加载保存数据
@@ -472,6 +598,9 @@ panel:RegisterEvent('LFG_COMPLETION_REWARD')
 panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 panel:RegisterEvent('ISLAND_COMPLETED')
 
+--panel:RegisterEvent('LFG_QUEUE_STATUS_UPDATE')--聊天框, 排队情况
+
+panel:RegisterEvent('LFG_UPDATE')--小眼睛, 信息
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
@@ -500,23 +629,49 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave[addName]=Save
             WoWToolsSave[INSTANCE]=wowSave
         end
-    elseif event=='LFG_COMPLETION_REWARD' or event=='LOOT_CLOSED' then
-        leaveInstance()--自动离开
+    elseif not Save.disabled then
+        if event=='LFG_COMPLETION_REWARD' or event=='LOOT_CLOSED' then
+            leaveInstance()--自动离开
 
-    elseif event=='PLAYER_ENTERING_WORLD' then
-        if IsInInstance() then--自动离开
-            panel:RegisterEvent('LOOT_CLOSED')
-        else
-            panel:UnregisterEvent('LOOT_CLOSED')
+        elseif event=='PLAYER_ENTERING_WORLD' then
+            if IsInInstance() then--自动离开
+                panel:RegisterEvent('LOOT_CLOSED')
+            else
+                panel:UnregisterEvent('LOOT_CLOSED')
+            end
+            C_Timer.After(2, function()
+                setIslandButton(self)--离开海岛按钮
+            end)
+        elseif event=='ISLAND_COMPLETED' then
+            levelIsland()--离开海岛
+
+        --[[
+elseif event=='LFG_QUEUE_STATUS_UPDATE' then
+            for i=1, NUM_LE_LFG_CATEGORYS  do--列表信息
+                local n, text =getQueuedList(i, true)--排5人本
+                if n and n>0 and text then
+                    print(id, addName, date('%X'))
+                    print(text)
+                end
+            end
+
+]]
+
+        elseif event=='LFG_UPDATE' then--小眼睛, 信息
+            setQueueStatus()
         end
-        C_Timer.After(2, function()
-            setIslandButton(self)--离开海岛按钮
-        end)
-    elseif event=='ISLAND_COMPLETED' then
-        levelIsland()--离开海岛
     end
 end)
 
 --test11
 --ToggleDropDownMenu(level, value, dropDownFrame, anchorName, xOffset, yOffset, menuList, button, autoHideDelay)
 --MainMenuBarMicroButtons.lua
+--[[
+local Category={--NUM_LE_LFG_CATEGORYS 
+    LE_LFG_CATEGORY_LFD,
+    LE_LFG_CATEGORY_RF ,
+    LE_LFG_CATEGORY_SCENARIO,
+    LE_LFG_CATEGORY_LFR,
+    LE_LFG_CATEGORY_WORLDPVP,
+}
+]]
