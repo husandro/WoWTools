@@ -66,7 +66,6 @@ local getRewardInfo=function(dungeonID)--FB奖励
     if T or H  or D then
         t=t..' |cff00ff00('.. (T and e.Icon['TANK']..T or '').. (H and e.Icon['HEALER']..H or '').. (D and e.Icon['DAMAGER']..D or '') ..')|r'
     end
-
     return t
 end
 
