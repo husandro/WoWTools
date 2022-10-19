@@ -141,8 +141,10 @@ e.Icon={
     bag2='|A:bag-main:0:0|a',
     up2='|A:bags-greenarrow:0:0|a',--绿色向上
     down2='|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a',--红色向下
-    toLeft2='|A:common-icon-rotateleft:0:0|a',--向左
-    toRight2='|A:common-icon-rotateright:0:0|a',--向右
+    toLeft='common-icon-rotateleft',--向左
+    toLeft2='|A:common-icon-rotateleft:0:0|a',
+    toRight='common-icon-rotateright',--向右
+    toRight2='|A:common-icon-rotateright:0:0|a',
 
     unlocked='Levelup-Icon-Lock',--没锁
     quest='AutoQuest-Badge-Campaign',--任务

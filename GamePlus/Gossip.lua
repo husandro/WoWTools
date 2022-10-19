@@ -94,9 +94,13 @@ Frame:SetScript('OnShow', function (self)
                             if v and v.npcid==self2.npc then
                                 Save.Option[k]=nil
                                 n=n+1
-                                if v.gossip then
+         --[[
+                       if v.gossip then
                                     print(n..')'..(CLEAR or KEY_NUMLOCK_MAC)..': '..GREEN_FONT_COLOR_CODE..v.gossip..'|r')
                                 end
+
+]]
+
                             end
                        end
                        print(CLEAR_ALL..' (|cffff00ff'..(self2.name or self2.npc)..'|r)'..CUSTOM..': '..GREEN_FONT_COLOR_CODE..n..' |r'..GOSSIP_OPTIONS)
@@ -160,7 +164,7 @@ hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, info)--GossipFra
                 Save.Option[self2.info.gossipOptionID]={
                     name=self2.name,
                     npcid=self2.npc,
-                    gossip=self2.info.name
+                    --gossip=self2.info.name
                 }
                 C_GossipInfo.SelectOption(self:GetID())
             end
