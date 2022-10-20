@@ -140,7 +140,7 @@ local FrameTab={
     MacroFrame={},--宏
     ExtraActionButton1={save=true, click='R' },--额外技能
 
-    ContainerFrameCombinedBags={},--包
+    --ContainerFrameCombinedBags={},--包
 
     ChatConfigFrame={save=true},--聊天设置
     SettingsPanel={},--选项

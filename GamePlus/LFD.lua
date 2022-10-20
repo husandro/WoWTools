@@ -104,7 +104,7 @@ local function setQueueStatus()--小眼睛, 信息
     end
     if not self.text then--提示信息
         self.text=e.Cstr(self)
-        self.text:SetPoint('BOTTOMRIGHT', self, 'TOPRIGHT')
+        self.text:SetPoint('BOTTOMRIGHT', self, 'TOP')
         self.text:SetTextColor(0.65,0.65,0.65)
     end
     local num, text=0, ''

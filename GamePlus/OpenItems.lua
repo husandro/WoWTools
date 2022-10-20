@@ -1,451 +1,543 @@
 local id, e = ...
-local Save
+local Save={use={}, no={}, pet=true, open=true, toy=true, mount=true, mago=true, ski=true}
 local addName=UNWRAP..ITEMS
-local Combat
+local Combat, Bag= nil, {}
+--[[
 local function clearAll()
-    Save={use={}, no={}, pet=true, open=true, toy=true, mount=true, mago=true, ski=true, alt=true};
+    Save={use={}, no={}, pet=true, open=true, toy=true, mount=true, mago=true, ski=true, alt=true}
 end
 clearAll()
+
+]]
+
+
 
 local panel= CreateFrame("Button", nil, CharacterReagentBag0Slot, "SecureActionButtonTemplate")
 panel:SetSize(30,30)
 panel:EnableMouseWheel(true)
-panel:RegisterForDrag("RightButton");
-panel:RegisterForClicks("LeftButtonDown");
-panel:SetMovable(true);
-panel:SetClampedToScreen(true);
+panel:RegisterForDrag("RightButton")
+panel:SetMovable(true)
+panel:SetClampedToScreen(true)
 panel:SetNormalAtlas('bag-reagent-border-empty')
-panel:SetHighlightAtlas('bag-border');
+panel:SetHighlightAtlas('bag-border')
 panel:SetPushedAtlas('bag-border-highlight')
 panel.texture=panel:CreateTexture(nil,'ARTWORK')
 panel.texture:SetPoint('CENTER')
-panel.texture:SetSize(20,20)
+panel.texture:SetSize(22,22)
 panel.texture:SetAtlas('bag-border')
 panel.mask= panel:CreateMaskTexture(nil, 'OVERLAY')
 panel.mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
 panel.mask:SetAllPoints(panel.texture)
 panel.texture:AddMaskTexture(panel.mask)
 panel.texture:SetShown(false)
+panel.count=e.Cstr(panel, 10)
+panel.count:SetPoint('BOTTOM',0,2)
+panel.count:SetTextColor(0.65, 0.65, 0.65)
+panel.tips=CreateFrame("GameTooltip", id..addName, panel, "GameTooltipTemplate")
+panel.Me=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
 
-local getTip=function(link,bag, slot)
-    e.Tips =e.Tips or CreateFrame("GameTooltip", "ScannerTooltip", e.region, "GameTooltipTemplate");
-    e.Tips:SetOwner(e.region, "ANCHOR_NONE")
-    e.Tips:SetBagItem(bag,slot);
-    for n=1, e.Tips:NumLines() do
-        local line=_G['ScannerTooltipTextLeft'..n];
+local function setPanelPostion()--设置按钮位置
+    local p=Save.Point
+    if p and p[1] and p[3] and p[4] and p[5] then
+        panel:SetPoint(p[1],  UIParent, p[3], p[4], p[5])
+    else
+        panel:SetPoint('RIGHT', CharacterReagentBag0Slot, 'LEFT')
+    end
+end
+
+local getTip=function(bag, slot)--取得提示内容
+    panel.tips:SetOwner(panel, "ANCHOR_NONE")
+    panel.tips:ClearLines()
+    panel.tips:SetBagItem(bag,slot)
+    for n=1, panel.tips:NumLines() do
+        local line=_G[id..addName..'TextLeft'..n]
         if line then
-            local rgb=e.HEX(line:GetTextColor());
-            if rgb=='fefe1f1f' or rgb=='fefe7f3f' then
+            local rgb=e.HEX(line:GetTextColor())
+            --print(rgb,line:GetText())
+            if rgb=='fefe1f1f' or rgb=='fefe7f3f' or rgb=='ffff2020'then
                 return
             end
         end
-
-        line=_G['ScannerTooltipTextRight'..n];
+        line=_G[id..addName..'TextRight'..n]
         if line and line:GetText() then
-            local rgb=e.HEX(line:GetTextColor());
-            if rgb=='fefe1f1f' or rgb=='fefe7f3f' then
-                return;
+            local rgb=e.HEX(line:GetTextColor())
+            if rgb=='fefe1f1f' or rgb=='fefe7f3f' or rgb=='ffff2020' then
+                return
             end
         end
     end
-    return true;
+    return true
 end
 
-
-local function setAtt(itemID, link, bag, slot, icon)
+local function setAtt(bag, slot, icon, itemID)--设置属性
     if UnitAffectingCombat('player') then
         Combat=true
         return
     end
-    local m='/use '..bag..' '..slot;
-    Bag={id=itemID, link=link, bag=bag, slot=slot, icon=icon};
-    if panel:GetAttribute('macrotext')~=m then
-        panel:SetAttribute("type", "macro");
-        panel:SetAttribute("macrotext", m);
+    local num=''
+    if bag and slot then
+        local m='/use '..bag..' '..slot
+        Bag={bag=bag, slot=slot}
+        panel:SetAttribute("type", "macro")
+        panel:SetAttribute("macrotext", m)
+        panel.texture:SetTexture(icon)
+        panel.texture:SetShown(true)
+        num = GetItemCount(itemID)
+        num=num>1 and num or ''
+    else
+        panel:SetAttribute("macrotext", nil)
+        panel.texture:SetShown(false)
     end
+    panel.count:SetText(num)
 end
 
-local function getItems()
-    Bag=nil;
+local function getItems()--取得背包物品信息
     if UnitAffectingCombat('player') then
         Combat=true
         return
     end
-    for bag=0, NUM_BAG_SLOTS do 
-        for slot=1,GetContainerNumSlots(bag) do             
-            local icon, _, locked, quality, _, lootable, link, _, _, id = GetContainerItemInfo(bag, slot)
-            if id and link and  not locked and not Save.no[link] then-- and not e.T3[link] and not e.T3[id] then
-                local classID, subclassID = select(6, GetItemInfoInstant(link));
-                
-                --[[local zhu=(e.T2[link] or e.T2[id]);
-                if zhu and GetItemCount(link)>=zhu then--组合物品
-                     setAtt(id, link, bag, slot, icon) 
+    Bag={}
+    for bag=0, NUM_BAG_SLOTS do
+        for slot=1,GetContainerNumSlots(bag) do
+            local icon, itemCount, locked, quality, _, lootable, itemLink, _, _, itemID, isBound = GetContainerItemInfo(bag, slot)
+            if itemID and Save.use[itemID] then
+                if Save.use[itemID]<=itemCount then
+                    setAtt(bag, slot, icon, itemID)
                     return
-                    
-                elseif Save.use[link] or e.T[link] or e.T[id] then--指定使用
-                     setAtt(id, link, bag, slot, icon)
-                    return
-                    
-                else]]
-                    if link:find("Hbattlepet:(%d+)") or (classID==15 and  subclassID==2) then--PET
-                    if Save.pet then
-                        local sid;
-                        if (classID==15 and  subclassID==2) then 
-                            sid=select(13,C_PetJournal.GetPetInfoByItemID(id));
-                        else
-                            sid= link:match("Hbattlepet:(%d+)");
-                        end                        
-                        if sid then
-                            local numCollected, limit = C_PetJournal.GetNumCollectedInfo(sid)--已收集数量
-                            if numCollected and limit and numCollected <  limit then 
-                                 setAtt(id, link, bag, slot, icon)
+                end
+            elseif not locked and itemLink and itemID and icon and not Save.no[itemID] then
+                local _, _, _, _, _, _, _,_, _, _, _, classID, subclassID, _,_, setID= GetItemInfo(itemLink)
+                if (classID==2 or classID==4 )  or setID then--幻化
+                    if Save.mago then
+                        if setID then
+                            local setInfo= C_TransmogSets.GetSetInfo(setID)
+                            if setInfo and not setInfo.collected then
+                                setAtt(bag, slot, icon, itemID)
                                 return
                             end
-                        end                        
-                    end
-                    
-                elseif id==187187 then--刻希亚军械
-                    local avgItemLevel= GetAverageItemLevel();
-                    if avgItemLevel<=190 then
-                         setAtt(id, link, bag, slot, icon) return true;                                 
-                    end
-                    
-                elseif quality and quality > 0 and classID and subclassID then
-                    
-                    
-                    if classID==9 and subclassID and subclassID >0 then--配方                    
-                        if Save.ski and getTip(link, bag, slot) then 
-                             setAtt(id, link, bag, slot, icon) 
-                            return
-                        end
-                        
-                    elseif lootable then--可打开
-                        if Save.open then
-                            if (not quality or (quality and quality <=4)) and getTip(link, bag, slot) then                            
-                                 setAtt(id, link, bag, slot, icon) 
-                                return
-                            end                        
-                        end
-                        
-                    elseif classID==15 and  subclassID==5 then--坐骑
-                        if Save.mount then
-                            local mountID = C_MountJournal.GetMountFromItem(id);
-                            if mountID then 
-                                local isCollected =select(11, C_MountJournal.GetMountInfoByID(mountID));
-                                if not isCollected then                                                    
-                                     setAtt(id, link, bag, slot, icon) 
-                                    return
-                                end                                
-                            end
-                        end
-                        
-                    elseif (classID==2 or classID==4 ) then
-                        if Save.mago then                            
-                            if  quality>1 and not  C_TransmogCollection.PlayerHasTransmog(id) then                                
-                                local sourceID=select(2,C_TransmogCollection.GetItemInfo(link));
-                                if sourceID then 
-                                    local hasItemData, canCollect = C_TransmogCollection.PlayerCanCollectSource(sourceID)
-                                    if hasItemData and canCollect then
-                                        local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID);
-                                        if sourceInfo and not sourceInfo.isCollected then
-                                             setAtt(id, link, bag, slot, icon) 
-                                            return
-                                        end                                        
+                        elseif not isBound and not C_TransmogCollection.PlayerHasTransmog(itemID) then
+                            local sourceID=select(2,C_TransmogCollection.GetItemInfo(itemLink))
+                            if sourceID then
+                                local hasItemData, canCollect =  select(2, C_TransmogCollection.PlayerCanCollectSource(sourceID))
+                                if hasItemData and canCollect then
+                                    local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
+                                    if sourceInfo and not sourceInfo.isCollected then
+                                        setAtt(bag, slot, icon, itemID)
+                                        return
                                     end
                                 end
                             end
                         end
-                        
-                    elseif classID==15 and subclassID==4 then
-                        if Save.alt and IsUsableItem(link) and not  C_Item.IsAnimaItemByID(link)  then                            
-                             setAtt(id, link, bag, slot, icon) 
+                    end
+                elseif not classID or (classID==15 and subclassID==2) then
+                    local speciesID = itemLink:match('Hbattlepet:(%d+)') or select(13, C_PetJournal.GetPetInfoByItemID(itemID))--宠物物品                        
+                    if speciesID then
+                        local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesID)--已收集数量
+                        if numCollected and limit and numCollected <  limit then
+                            setAtt(bag, slot, icon, itemID)
                             return
                         end
-                        
-                    elseif C_ToyBox.GetToyInfo(id) and not PlayerHasToy(id) then--玩具 
+                    end
+                elseif quality and quality > 0 and classID and subclassID then
+                    local speciesID = select(13, C_PetJournal.GetPetInfoByItemID(itemID))--宠物物品
+                    if speciesID  or (classID==15 and subclassID==2) then--PET
+                        if Save.pet then
+                            speciesID =speciesID  or select(13,C_PetJournal.GetPetInfoByItemID(itemID))
+                            if speciesID then
+                                local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesID)--已收集数量
+                                if numCollected and limit and numCollected <  limit then
+                                    setAtt(bag, slot, icon, itemID)
+                                    return
+                                end
+                            end
+                        end
+                    elseif classID==9 and subclassID >0 then--配方                    
+                            if Save.ski and getTip(bag, slot) then
+                                setAtt(bag, slot, icon, itemID)
+                                return
+                            end
+
+                    elseif lootable then--可打开
+                        if Save.open then
+                            if (not quality or (quality and quality <=4)) and getTip(bag, slot) then
+                                setAtt(bag, slot, icon, itemID)
+                                return
+                            end
+                        end
+
+                    elseif classID==15 and  subclassID==5 then--坐骑
+                        if Save.mount then
+                            local mountID = C_MountJournal.GetMountFromItem(itemID)
+                            if mountID then
+                                local isCollected =select(11, C_MountJournal.GetMountInfoByID(mountID))
+                                if not isCollected then
+                                    setAtt(bag, slot, icon, itemID)
+                                    return
+                                end
+                            end
+                        end
+
+                    
+                    elseif classID==15 and subclassID==4 then
+                        if Save.alt and IsUsableItem(itemLink) and not  C_Item.IsAnimaItemByID(itemLink)  then
+                            setAtt(bag, slot, icon, itemID)
+                            return
+                        end
+
+                    elseif C_ToyBox.GetToyInfo(itemID) and not PlayerHasToy(itemID) then--玩具 
                         if Save.toy then
-                             setAtt(id, link, bag, slot, icon) 
+                            setAtt(bag, slot, icon, itemID)
                             return
                         end
                     end
                 end
             end
+        end
+    end
+    setAtt()
+end
+
+local function setDisableCursorItem()--禁用当物品
+    if Bag.bag and Bag.slot then
+        local itemID=GetContainerItemID(Bag.bag, Bag.slot)
+        if itemID then
+            Save.no[itemID]=true
+            Save.use[itemID]=nil
+            getItems()
         end
     end
 end
 
-panel.Me=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate");
-UIDropDownMenu_Initialize(panel.Me, function(self, level, menuList)
-        local no,use= 0, 0;
-        for _, _ in pairs(Save.no) do no=no+1 end
-        for _,_ in pairs(Save.use) do use=use+1 end
-        local t=UIDropDownMenu_CreateInfo();
-
-        if menuList=='NO' or  menuList=='USE' then
-            t.text= SLASH_STOPWATCH_PARAM_STOP2..e.Icon.X2..ALL;--清除所有
-            t.notCheckable=true;
-            t.func=function() setClear() end
-            UIDropDownMenu_AddButton(t,level);
-
-            if menuList=='NO' then
-                for k,_ in pairs(Save.no) do
-                    t=UIDropDownMenu_CreateInfo();
-                    local icon=C_Item.GetItemIconByID(k);
-                    t.text=icon and '|T'..icon..':0|t'..k..e.Icon.O2 or k..e.Icon.O2;
-                    t.notCheckable=true;
-                    t.func=function()
-                        Save.no[k]=nil
-                        print('|cff00ff00'..REMOVE..':|r  '..t.text..DISABLE)
-                        getItems()
-                        CloseDropDownMenus() 
-                    end
-                    t.tooltipOnButton=true;
-                    t.tooltipTitle=REMOVE;
-                    UIDropDownMenu_AddButton(t,level);
-                end
-            else
-                for k,_ in pairs(Save.use) do
-                    t=UIDropDownMenu_CreateInfo();
-                    local icon=C_Item.GetItemIconByID(k);
-                    t.text=icon and '|T'..icon..':0|t'..k or k;
-                    t.notCheckable=true;
-                    t.text=t.text..e.Icon.select2;
-                    t.func=function()
-                        Save.use[k]=nil
-                        print('|cff00ff00'..REMOVE..':|r  '..t.text..USE)
-                        getItems()
-                        CloseDropDownMenus()
-                    end
-                    t.tooltipOnButton=true;
-                    t.tooltipTitle=REMOVE;
-                    UIDropDownMenu_AddButton(t,level);
-                end
-            end
-        else
-            if Bag and Bag.link then
-                t.text=Bag.link;
-                t.icon=Bag.icon;
-                t.isTitle=true;
-                t.notCheckable=true;
-                UIDropDownMenu_AddButton(t);
-
-                t=UIDropDownMenu_CreateInfo(); --禁用使用                
-                t.text= e.Icon.O2..DISABLE..'|A:newplayertutorial-icon-mouse-middlebutton:0:0|a /'..USE..e.Icon.select2;
-                if not Bag or  not Bag.link then t.disabled=true end
-                t.notCheckable=true;
-                t.func=function() 
-                    setUse(Bag.link) 
-                    getItems()
-                end
-                t.tooltipOnButton=true;
-                t.tooltipTitle='|A:newplayertutorial-icon-mouse-middlebutton:0:0|a'..KEY_MOUSEWHEELUP..e.Icon.O2..DISABLE;
-                UIDropDownMenu_AddButton(t);
-                UIDropDownMenu_AddSeparator();
-
-            else
-                t.text=USE..'|A:newplayertutorial-drag-slotgreen:0:0|a'..ITEMS;
-                t.isTitle=true;
-                t.notCheckable=true;
-                UIDropDownMenu_AddButton(t);
-            end
-
-            if no>0 then
-                t=UIDropDownMenu_CreateInfo();--自定义禁用列表
-                t.text= CUSTOM..e.Icon.O2..DISABLE..' #'..no
-                t.notCheckable=1;
-                t.menuList='NO';
-                t.hasArrow=true
-                UIDropDownMenu_AddButton(t);
-            end
-            if use>0 then
-                t=UIDropDownMenu_CreateInfo();--自定义使用列表
-                t.text= CUSTOM..e.Icon.select2..USE..' #'..use;
-                t.notCheckable=1;
-                t.menuList='USE';
-                t.hasArrow=true
-                UIDropDownMenu_AddButton(t);
-            end
-            if no>0 or use>0 then UIDropDownMenu_AddSeparator() end
-
-            t=UIDropDownMenu_CreateInfo();
-            t.text=ITEM_OPENABLE;
-            if Save.open then t.checked=true end
-            t.func=function()
-                if Save.open then
-                    Save.open=false
-                else
-                    Save.open=true
-                end
-                getItems()
-                --WeakAurasSaved[e.id..'Save']=Save WeakAuras.ScanEvents('ENV_Open_Item');
-            end
-            UIDropDownMenu_AddButton(t);
-
-            t=UIDropDownMenu_CreateInfo();
-            t.text=PET;
-            if Save.pet then t.checked=true end
-            t.func=function()
-                if Save.pet then
-                    Save.pet=false
-                else
-                    Save.pet=true
-                end
-                getItems()
-                --WeakAurasSaved[e.id..'Save']=Save WeakAuras.ScanEvents('ENV_Open_Item');
-            end
-            UIDropDownMenu_AddButton(t);
-
-            t=UIDropDownMenu_CreateInfo();
-            t.text=TOY;
-            if Save.toy then t.checked=true end
-            t.func=function()
-                if Save.toy then
-                    Save.toy=false
-                else
-                    Save.toy=true
-                end
-                getItems()
-                --WeakAurasSaved[e.id..'Save']=Save WeakAuras.ScanEvents('ENV_Open_Item');
-            end
-            UIDropDownMenu_AddButton(t);
-
-            t=UIDropDownMenu_CreateInfo();
-            t.text=MOUNTS;
-            t.checked=Save.mount
-            t.func=function()
-                if Save.mount then
-                    Save.mount=false
-                else
-                    Save.mount=true
-                end
-                getItems()
-                --WeakAurasSaved[e.id..'Save']=Save WeakAuras.ScanEvents('ENV_Open_Item');
-            end
-            UIDropDownMenu_AddButton(t);
-
-            t=UIDropDownMenu_CreateInfo();
-            t.text=TRANSMOGRIFY;
-            if Save.mago then t.checked=true end
-            t.func=function()
-                if Save.mago then
-                    Save.mago=false
-                else
-                    Save.mago=true
-                end
-                getItems()
-                --WeakAurasSaved[e.id..'Save']=Save WeakAuras.ScanEvents('ENV_Open_Item');
-            end
-            UIDropDownMenu_AddButton(t);
-
-            t=UIDropDownMenu_CreateInfo();
-            t.text=TRADESKILL_SERVICE_LEARN;
-            if Save.ski then t.checked=true end
-            t.func=function()
-                if Save.ski then
-                    Save.ski=false
-                else
-                    Save.ski=true
-                end
-                getItems()
-                -- WeakAurasSaved[e.id..'Save']=Save WeakAuras.ScanEvents('ENV_Open_Item');
-            end
-            UIDropDownMenu_AddButton(t);
-
-            t=UIDropDownMenu_CreateInfo();
-            t.text=BINDING_HEADER_OTHER;
-            if Save.alt then t.checked=true end
-            t.func=function()
-                if Save.alt then
-                    Save.alt=false
-                else
-                    Save.alt=true
-                end
-                getItems()
-                --WeakAuras.ScanEvents('ENV_Open_Item');
-            end
-            UIDropDownMenu_AddButton(t);
-
-            if no==0 and use==0 then
-                UIDropDownMenu_AddSeparator();
-                t=UIDropDownMenu_CreateInfo();
-                t.text=DRAG_MODEL..'|A:newplayertutorial-drag-cursor:0:0|a'..ITEMS;
-                t.isTitle=true;
-                t.notCheckable=true;
-                UIDropDownMenu_AddButton(t);
-            end
-
-            UIDropDownMenu_AddSeparator(); --清除所有数据
-            t=UIDropDownMenu_CreateInfo();
-            t.text=RED_FONT_COLOR_CODE..RESET;
-            t.tooltipOnButton=true;
-            t.notCheckable=true;
-            t.tooltipTitle=CLEAR_ALL..'('..    SAVE..')';
-            t.func=function()
-                clearAll()
-                print(id, addName, CLEAR_ALL, '|cff00ff00' ..DONE..'|r')
-                getItems()
-            end
-            UIDropDownMenu_AddButton(t);
-
-            t=UIDropDownMenu_CreateInfo();--还原位置
-            t.text=RRESET_POSITION or HUD_EDIT_MODE_RESET_POSITION;
-            t.func=function()
-                Save.Point=nil;
-                panel:ClearAllPoints();
-                panel:SetPoint('RIGHT', CharacterReagentBag0Slot, 'LEFT')
-            end
-            t.tooltipOnButton=true;
-            t.notCheckable=true;
-            t.tooltipTitle='Alt +'..e.Icon.right..' '..NPE_MOVE
-            UIDropDownMenu_AddButton(t);
+--####
+--菜单
+--####
+local function setUseMenu(level)--二级, 使用
+    local t=UIDropDownMenu_CreateInfo()
+    t.text= CLEAR_ALL--清除所有
+    t.notCheckable=true
+    t.func=function()
+        Save.use={}
+        getItems()
+        CloseDropDownMenus()
+    end
+    UIDropDownMenu_AddButton(t,level)
+    for itemID, num in pairs(Save.use) do
+        t=UIDropDownMenu_CreateInfo()
+        t.text= select(2, GetItemInfo(itemID)) or  ('itemID: '..itemID)
+        if num>1 then
+            t.text= t.text..' |cnGREEN_FONT_COLOR:x'..num..'|r'
         end
-end, 'MENU');
+        t.icon= C_Item.GetItemIconByID(itemID)
+        t.checked=true
+        t.func=function()
+            Save.use[itemID]=nil
+            getItems()
+        end
+        t.tooltipOnButton=true
+        t.tooltipTitle=REMOVE
+        if num>1 then
+           t.tooltipText='\n'..COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS)..'\n'..AUCTION_STACK_SIZE..': '..num
+        end
+        UIDropDownMenu_AddButton(t,level)
+    end
+end
+local function setNoMenu(level)--二级,禁用
+    local t=UIDropDownMenu_CreateInfo()
+    t.text= CLEAR_ALL--清除所有
+    t.notCheckable=true
+    t.func=function()
+        Save.no={}
+        getItems()
+        CloseDropDownMenus()
+    end
+    UIDropDownMenu_AddButton(t,level)
+    for itemID, _ in pairs(Save.no) do
+        t=UIDropDownMenu_CreateInfo()
+        t.text=select(2, GetItemInfo(itemID)) or  ('itemID: '..itemID)
+        t.icon=C_Item.GetItemIconByID(itemID)
+        t.checked=true
+        t.func=function()
+            Save.no[itemID]=nil
+            getItems()
+        end
+        t.tooltipOnButton=true
+        t.tooltipTitle=REMOVE
+        UIDropDownMenu_AddButton(t,level)
+    end
+end
+local function setMenuList(self, level, menuList)--主菜单
+    if menuList=='USE' then
+        setUseMenu(level)
+        return
+    elseif menuList=='NO' then
+        setNoMenu(level)
+        return
+    end
 
-panel:SetScript("OnEnter",function(self, d)
-    local link=select(3,GetCursorInfo());
-    if link then setUse(link) ClearCursor() return end
-
+    local t=UIDropDownMenu_CreateInfo()
+    t.notCheckable=true
+    if Bag.bag and Bag.slot then
+        t.text=GetContainerItemLink(Bag.bag, Bag.slot) or ('bag: '..bag ..' slot: '..slot)
+        t.icon=GetContainerItemInfo(Bag.bag, Bag.slot)
+        t.func=function()
+            setDisableCursorItem()--禁用当物品
+        end
+        t.tooltipOnButton=true
+        t.tooltipTitle='|cnRED_FONT_COLOR:'..DISABLE..'|r'..e.Icon.mid..KEY_MOUSEWHEELUP
+    else
+        t.text=TUTORIAL_TITLE9..': '..NONE
+        t.isTitle=true
+        
+        t.tooltipOnButton=true
+        t.tooltipTitle=USE..'/'..DISABLE
+        t.tooltipText=DRAG_MODEL..ITEMS
+    end
     
+    UIDropDownMenu_AddButton(t)
+    UIDropDownMenu_AddSeparator()
 
-    if not (Bag and Bag.bag and Bag.slot) then return end
-    GameTooltip:SetOwner(self, "ANCHOR_LEFT");
-    GameTooltip:ClearLines();
-    GameTooltip:SetBagItem(Bag.bag, Bag.slot);
-    GameTooltip:Show();
-end);
+    local no,use= 0, 0
+    for _ in pairs(Save.no) do
+        no=no+1
+    end
+    for _ in pairs(Save.use) do
+        use=use+1
+    end
+    t=UIDropDownMenu_CreateInfo()--自定义禁用列表
+    t.text= DISABLE..' #'..no
+    t.notCheckable=1
+    t.menuList='NO'
+    t.hasArrow=true
+    UIDropDownMenu_AddButton(t)
+
+    t=UIDropDownMenu_CreateInfo()--自定义使用列表
+    t.text= USE..' #'..use
+    t.notCheckable=1
+    t.menuList='USE'
+    t.hasArrow=true
+    UIDropDownMenu_AddButton(t)
+
+    t=UIDropDownMenu_CreateInfo()
+    t.text=ITEM_OPENABLE
+    if Save.open then t.checked=true end
+    t.func=function()
+        if Save.open then
+            Save.open=nil
+        else
+            Save.open=true
+        end
+        getItems()
+    end
+    UIDropDownMenu_AddButton(t)
+
+    t=UIDropDownMenu_CreateInfo()
+    t.text=PET
+    if Save.pet then t.checked=true end
+    t.func=function()
+        if Save.pet then
+            Save.pet=nil
+        else
+            Save.pet=true
+        end
+        getItems()
+    end
+    UIDropDownMenu_AddButton(t)
+
+    t=UIDropDownMenu_CreateInfo()
+    t.text=TOY
+    t.checked=Save.toy
+    t.func=function()
+        if Save.toy then
+            Save.toy=nil
+        else
+            Save.toy=true
+        end
+        getItems()
+    end
+    UIDropDownMenu_AddButton(t)
+
+    t=UIDropDownMenu_CreateInfo()
+    t.text=MOUNTS
+    t.checked=Save.mount
+    t.func=function()
+        if Save.mount then
+            Save.mount=nil
+        else
+            Save.mount=true
+        end
+        getItems()
+    end
+    UIDropDownMenu_AddButton(t)
+
+    t=UIDropDownMenu_CreateInfo()
+    t.text=TRANSMOGRIFY
+    t.checked=Save.mago
+    t.func=function()
+        if Save.mago then
+            Save.mago=nil
+        else
+            Save.mago=true
+        end
+        getItems()
+    end
+    UIDropDownMenu_AddButton(t)
+
+    t=UIDropDownMenu_CreateInfo()
+    t.text=TRADESKILL_SERVICE_LEARN
+    t.checked=Save.ski
+    t.func=function()
+        if Save.ski then
+            Save.ski=nil
+        else
+            Save.ski=true
+        end
+        getItems()
+    end
+    UIDropDownMenu_AddButton(t)
+
+    t=UIDropDownMenu_CreateInfo()
+    t.text=BINDING_HEADER_OTHER
+    t.checked=Save.alt
+    t.func=function()
+        if Save.alt then
+            Save.alt=nil
+        else
+            Save.alt=true
+        end
+        getItems()
+    end
+    UIDropDownMenu_AddButton(t)
+
+    t=UIDropDownMenu_CreateInfo()--还原位置
+    if Save.Point then
+        t.text=RRESET_POSITION or HUD_EDIT_MODE_RESET_POSITION
+    else
+        t.text='Alt +'..e.Icon.right..' '..NPE_MOVE
+        t.disabled=true
+    end
+    t.func=function()
+        Save.Point=nil
+        panel:ClearAllPoints()
+        setPanelPostion()--设置按钮位置
+    end
+    t.tooltipOnButton=true
+    t.notCheckable=true
+    
+    UIDropDownMenu_AddButton(t)
+end
+UIDropDownMenu_Initialize(panel.Me, setMenuList, 'MENU')
+
+--########
+--设置属性
+StaticPopupDialogs['OpenItmesUseOrDisableItem']={
+    text=id..' '..addName..'\n\n%s\n%s\n\n'..COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS)..' >1: ',
+    whileDead=1,
+    hideOnEscape=1,
+    exclusive=1,
+	timeout = 60,
+    hasEditBox=1,
+    button1='|cnGREEN_FONT_COLOR:'..USE..'|r',
+    button2=CANCEL,
+    button3='|cnRED_FONT_COLOR:'..DISABLE..'|r',
+    OnShow = function(self, data)
+        self.editBox:SetNumeric(true)
+        local num=Save.use[data.itemID]
+        if num and num>1 then
+            self.editBox:SetNumber(num)
+        end
+        --self.editBox:SetAutoFocus(false)
+	end,
+    OnAccept = function(self, data)
+		local num= self.editBox:GetNumber()
+        num = num<1 and 1 or num
+        Save.use[data.itemID]=num
+        Save.no[data.itemID]=nil
+        getItems()--取得背包物品信息
+        print(id, addName, '|cnGREEN_FONT_COLOR:'..TUTORIAL_TITLE9..'|r', num>1 and COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS)..': '..'|cnGREEN_FONT_COLOR:'..num..'|r' or '', data.itemLink)
+	end,
+    OnAlt = function(self, data)
+        Save.no[data.itemID]=true
+        Save.use[data.itemID]=nil
+        getItems()--取得背包物品信息
+        print(id, addName, '|cnRED_FONT_COLOR:'..DISABLE..'|r', data.itemlink)
+    end,
+    EditBoxOnTextChanged=function(self)
+       local num= self:GetNumber()
+        if num>1 then
+           self:GetParent().button1:SetText('|cnGREEN_FONT_COLOR:'..AUCTION_STACK_SIZE..num..'|r')
+        else
+            self:GetParent().button1:SetText('|cnGREEN_FONT_COLOR:'..USE..'|r');
+        end
+    end
+}
+
+local function shoTips(self)--显示提示
+    if e.tips:IsShown() then
+        e.tips:Hide()
+    end
+    if (BattlePetTooltip) then
+		BattlePetTooltip:Hide();
+	end
+    e.tips:SetOwner(self, "ANCHOR_LEFT")
+    e.tips:ClearLines()
+    if Bag.bag and Bag.slot then
+        local battlePetLink= GetContainerItemLink(Bag.bag, Bag.slot)
+        if battlePetLink and battlePetLink:find('Hbattlepet:%d+') then
+            BattlePetToolTip_Show(BattlePetToolTip_UnpackBattlePetLink(battlePetLink))
+        else
+            e.tips:SetBagItem(Bag.bag, Bag.slot)
+        end
+    else
+        e.tips:AddDoubleLine(id, addName)
+    end
+    e.tips:Show()
+end
+panel:SetScript("OnEnter",function(self)
+    local infoType, itemID, itemLink = GetCursorInfo()
+    if infoType == "item" and itemID and itemLink then
+        local icon= C_Item.GetItemIconByID(itemID)
+        icon = icon and '|T'..icon..':0|t'..itemLink or ''
+        local list=Save.use[itemID] and PROFESSIONS_CURRENT_LISTINGS..': |cff00ff00'..USE..'|r' or Save.no[itemID] and PROFESSIONS_CURRENT_LISTINGS..': |cffff0000'..DISABLE..'|r' or ''
+        StaticPopup_Show('OpenItmesUseOrDisableItem',icon,list, {itemID=itemID, itemLink=itemLink})
+        ClearCursor()
+        return
+    else
+        shoTips(self)--显示提示
+    end
+end)
 panel:SetScript("OnLeave",function()
-    GameTooltip:Hide();
-    ResetCursor();
+    e.tips:Hide()
+    BattlePetTooltip:Hide()
+    ResetCursor()
 end)
 panel:SetScript("OnMouseDown", function(self,d)
     if d=='RightButton' and IsAltKeyDown() then
-        SetCursor('UI_MOVE_CURSOR');
-    elseif d=='RightButton' and not IsModifierKeyDown() then
-        ToggleDropDownMenu(1,nil,panel.Me,self,self:GetWidth(),0);
+        SetCursor('UI_MOVE_CURSOR')
+    elseif (d=='RightButton' and not IsModifierKeyDown()) or not(Bag.bag and Bag.slot) then
+        ToggleDropDownMenu(1,nil,panel.Me,self,self:GetWidth(),0)
     end
-end);
+end)
 
 panel:SetScript("OnDragStart", function(self,d )
     if IsAltKeyDown() and d=='RightButton' then
         self:StartMoving()
     end
-end);
+end)
 panel:SetScript("OnDragStop", function(self)
-    ResetCursor();
-    self:StopMovingOrSizing();
-    Save.Point={self:GetPoint(1)};
-end);
-panel:SetScript("OnMouseUp", function(self,d)
-    ResetCursor();
-end);
+    ResetCursor()
+    self:StopMovingOrSizing()
+    Save.Point={self:GetPoint(1)}
+end)
+panel:SetScript("OnMouseUp", function()
+    ResetCursor()
+end)
 
 panel:SetScript('OnMouseWheel',function(self,d)
     if d == 1 and not IsModifierKeyDown() then
-        if Bag and Bag.link then
-            local link,icon=Bag.link, (Bag.icon and '|T'..Bag.icon..':0|t' or '');
-            Save.no[link]=true Save.use[link]=nil
-            --WeakAurasSaved[e.id..'Save']=Save WeakAuras.ScanEvents('ENV_Open_Item') 
-            print(id, addName, e.Icon.O2..'|cnRED_FONT_COLOR:'..DISABLE..'|r', link);
+        if Bag.slot and Bag.bag then
+            setDisableCursorItem()--禁用当物品
+            CloseDropDownMenus()
+            shoTips(self)--显示提示
         end
     end
 end)
@@ -464,14 +556,8 @@ panel:RegisterEvent('PLAYER_REGEN_ENABLED')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
             Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
-
-            local p=Save.Point;
-            if p and p[1] and p[3] and p[4] and p[5] then
-                self:SetPoint(p[1],  UIParent, p[3], p[4], p[5]);
-            else
-                self:SetPoint('RIGHT', CharacterReagentBag0Slot, 'LEFT')
-            end;
-            getItems()
+            setPanelPostion()--设置按钮位置
+            getItems()--设置属性
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then

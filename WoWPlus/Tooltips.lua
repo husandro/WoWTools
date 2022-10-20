@@ -84,7 +84,7 @@ local function GetPetCollected(speciesID)--宠物, 收集数量
         return ITEM_PET_KNOWN:format(numCollected, limit)
     end
 end
-local function GetMountCollected(mountID)--宠物, 收集数量
+local function GetMountCollected(mountID)--坐骑, 收集数量
     if select(11, C_MountJournal.GetMountInfoByID(mountID)) then
         return '|cnGREEN_FONT_COLOR:'..COLLECTED..'|r'
     else

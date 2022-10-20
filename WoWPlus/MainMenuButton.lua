@@ -254,6 +254,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         setDurabiliy()
         setEquipmentLevel()--角色图标显示装等
     elseif event=='PLAYER_EQUIPMENT_CHANGED' then
-        setEquipmentLevel()--角色图标显示装等
+        C_Timer.After(0.5, function()
+            setEquipmentLevel()--角色图标显示装等
+        end)
     end
 end)

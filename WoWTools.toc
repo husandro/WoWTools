@@ -23,7 +23,7 @@ Sesource\Panel.lua
 
 GamePlus\Gossip.lua
 GamePlus\SellBuy.lua
-##GamePlus\OpenItems.lua
+GamePlus\OpenItems.lua
 GamePlus\LFD.lua
 
 WoWPlus\PaperDoll.lua
@@ -50,5 +50,5 @@ WoWPlus\Tooltips.lua
 WoWPlus\Professions.lua
 
 WoWPlus\UnitFrame.lua
-WowPlus\GroupManager.lua
+##WowPlus\GroupManager.lua
 
