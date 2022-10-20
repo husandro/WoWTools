@@ -103,9 +103,8 @@ local function setQueueStatus()--小眼睛, 信息
         return
     end
     if not self.text then--提示信息
-        self.text=e.Cstr(self)
+        self.text=e.Cstr(self, nil, nil, nil, true)
         self.text:SetPoint('BOTTOMRIGHT', self, 'TOP')
-        self.text:SetTextColor(0.65,0.65,0.65)
     end
     local num, text=0, ''
     for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
@@ -511,7 +510,7 @@ local sec=3--离开时间
 local function setLFGDungeonReadyDialog(self)--自动进入FB LFGDungeonReadyDialog:HookScript("OnShow"
     local afk=UnitIsAFK('player')
     if not self.infoText then
-        self.infoText=e.Cstr(self,nil, LFGDungeonReadyDialogInstanceInfoFrame.name)
+        self.infoText=e.Cstr(self,nil, LFGDungeonReadyDialogInstanceInfoFrame.name, nil, true)
         self.infoText:SetPoint('LEFT', self, 'RIGHT')
         self.infoText:SetJustifyH('LEFT')
         self.infoText:SetShadowOffset(2, -2)

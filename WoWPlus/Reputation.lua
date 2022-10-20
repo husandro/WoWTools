@@ -30,7 +30,7 @@ local function btnstrSetText()--监视声望内容
 		if (hasRep or ((isHeader or isChild)  and not isCollapsed ) or (not isHeader and not isChild)) and factionID then
 			local isCapped= standingID == MAX_REPUTATION_REACTION
 			local factionStandingtext, value, icon
-			local barColor = FACTION_BAR_COLORS[standingID]
+			--local barColor = FACTION_BAR_COLORS[standingID]
 
 			local isMajorFaction = C_Reputation.IsMajorFaction(factionID)
 			local repInfo = C_GossipInfo.GetFriendshipReputation(factionID)
@@ -39,9 +39,9 @@ local function btnstrSetText()--监视声望内容
 				if ( repInfo.nextThreshold ) then
 					factionStandingtext = repInfo.reaction;
 					value=('%i%%'):format(repInfo.standing/repInfo.nextThreshold*100);
-					barColor = FACTION_BAR_COLORS[standingID]					
+					--barColor = FACTION_BAR_COLORS[standingID]					
 				else
-					barColor = FACTION_ORANGE_COLOR
+					--barColor = FACTION_ORANGE_COLOR
 					isCapped=true
 				end
 				if repInfo.texture then--图标
@@ -51,10 +51,10 @@ local function btnstrSetText()--监视声望内容
 				isCapped=C_MajorFactions.HasMaximumRenown(factionID)
 				local majorFactionData = C_MajorFactions.GetMajorFactionData(factionID);
 				if isCapped then
-					barColor = FACTION_ORANGE_COLOR
+					--barColor = FACTION_ORANGE_COLOR
 				else
 					--factionStandingtext = majorFactionData.renownLevel..'/'..majorFactionData.renownLevelThreshold--名望RENOWN_LEVEL_LABEL				
-					barColor = BLUE_FONT_COLOR
+					--barColor = BLUE_FONT_COLOR
 					if majorFactionData then
 						if majorFactionData.name and majorFactionData.name~=name then 
 							factionStandingtext=name
@@ -68,13 +68,13 @@ local function btnstrSetText()--监视声望内容
 				end
 			else
 				if isCapped then
-					barColor = FACTION_ORANGE_COLOR
+					--barColor = FACTION_ORANGE_COLOR
 				elseif (isHeader and hasRep) or not isHeader then
 					local gender = UnitSex("player");
 					factionStandingtext = GetText("FACTION_STANDING_LABEL"..standingID, gender)
 					value=('%i%%'):format(barValue/barMax*100)
 				elseif isHeader and not hasRep then
-					barColor=PROGENITOR_MATERIAL_TITLETEXT_COLOR
+					--barColor=PROGENITOR_MATERIAL_TITLETEXT_COLOR
 				end
 			end
 
@@ -99,8 +99,8 @@ local function btnstrSetText()--监视声望内容
 				if Save.btnStrShowID and not(isHeader and not hasRep ) then--显示ID
 				t=t..factionID..' '
 				end
-				t=t..(icon or '')..name..(factionStandingtext and ' '..factionStandingtext or '')..(value and ' |cffffffff'..value..'|r' or '')
-				t=barColor:WrapTextInColorCode(t)
+				t=t..(icon or '')..name..(factionStandingtext and ' '..factionStandingtext or '')..(value and ' '..value or '')
+				--t=barColor:WrapTextInColorCode(t)
 				if hasRewardPending then--有奖励
 					t=t..' '..Icon.reward2
 				end
@@ -327,7 +327,7 @@ local function SetRe()--监视声望
 				ToggleCharacter("ReputationFrame")--打开声望
 			end)
 
-			btn.str=e.Cstr(btn)
+			btn.str=e.Cstr(btn, nil, nil, nil, true)
 			btn.str:SetPoint('TOPLEFT',3,-3)
 			Frame.sel2.btn=btn
 	end

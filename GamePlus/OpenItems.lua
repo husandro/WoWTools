@@ -1,40 +1,17 @@
 local id, e = ...
 local Save={use={}, no={}, pet=true, open=true, toy=true, mount=true, mago=true, ski=true}
-local addName=UNWRAP..ITEMS
+local addName=TUTORIAL_TITLE9
 local Combat, Bag= nil, {}
---[[
-local function clearAll()
-    Save={use={}, no={}, pet=true, open=true, toy=true, mount=true, mago=true, ski=true, alt=true}
-end
-clearAll()
-
-]]
-
-
 
 local panel= CreateFrame("Button", nil, CharacterReagentBag0Slot, "SecureActionButtonTemplate")
-panel:SetSize(30,30)
-panel:EnableMouseWheel(true)
-panel:RegisterForDrag("RightButton")
-panel:SetMovable(true)
-panel:SetClampedToScreen(true)
-panel:SetNormalAtlas('bag-reagent-border-empty')
-panel:SetHighlightAtlas('bag-border')
-panel:SetPushedAtlas('bag-border-highlight')
 panel.texture=panel:CreateTexture(nil,'ARTWORK')
-panel.texture:SetPoint('CENTER')
-panel.texture:SetSize(22,22)
-panel.texture:SetAtlas('bag-border')
 panel.mask= panel:CreateMaskTexture(nil, 'OVERLAY')
-panel.mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
-panel.mask:SetAllPoints(panel.texture)
-panel.texture:AddMaskTexture(panel.mask)
-panel.texture:SetShown(false)
-panel.count=e.Cstr(panel, 10)
-panel.count:SetPoint('BOTTOM',0,2)
-panel.count:SetTextColor(0.65, 0.65, 0.65)
 panel.tips=CreateFrame("GameTooltip", id..addName, panel, "GameTooltipTemplate")
 panel.Me=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
+panel.count=e.Cstr(panel, 10, nil, nil, true)
+
+
+
 
 local function setPanelPostion()--设置按钮位置
     local p=Save.Point
@@ -74,7 +51,7 @@ local function setAtt(bag, slot, icon, itemID)--设置属性
         Combat=true
         return
     end
-    local num=''
+    local num
     if bag and slot then
         local m='/use '..bag..' '..slot
         Bag={bag=bag, slot=slot}
@@ -88,7 +65,7 @@ local function setAtt(bag, slot, icon, itemID)--设置属性
         panel:SetAttribute("macrotext", nil)
         panel.texture:SetShown(false)
     end
-    panel.count:SetText(num)
+    panel.count:SetText(num or '')
 end
 
 local function getItems()--取得背包物品信息
@@ -285,7 +262,7 @@ local function setMenuList(self, level, menuList)--主菜单
         t.tooltipOnButton=true
         t.tooltipTitle='|cnRED_FONT_COLOR:'..DISABLE..'|r'..e.Icon.mid..KEY_MOUSEWHEELUP
     else
-        t.text=TUTORIAL_TITLE9..': '..NONE
+        t.text=addName..': '..NONE
         t.isTitle=true
         
         t.tooltipOnButton=true
@@ -425,7 +402,7 @@ local function setMenuList(self, level, menuList)--主菜单
     
     UIDropDownMenu_AddButton(t)
 end
-UIDropDownMenu_Initialize(panel.Me, setMenuList, 'MENU')
+
 
 --########
 --设置属性
@@ -453,7 +430,7 @@ StaticPopupDialogs['OpenItmesUseOrDisableItem']={
         Save.use[data.itemID]=num
         Save.no[data.itemID]=nil
         getItems()--取得背包物品信息
-        print(id, addName, '|cnGREEN_FONT_COLOR:'..TUTORIAL_TITLE9..'|r', num>1 and COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS)..': '..'|cnGREEN_FONT_COLOR:'..num..'|r' or '', data.itemLink)
+        print(id, '|cnGREEN_FONT_COLOR:'..addName..'|r', num>1 and COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS)..': '..'|cnGREEN_FONT_COLOR:'..num..'|r' or '', data.itemLink)
 	end,
     OnAlt = function(self, data)
         Save.no[data.itemID]=true
@@ -556,8 +533,43 @@ panel:RegisterEvent('PLAYER_REGEN_ENABLED')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
             Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
-            setPanelPostion()--设置按钮位置
-            getItems()--设置属性
+            if not Save.disabled then
+                panel:SetSize(30,30)
+                panel:EnableMouseWheel(true)
+                panel:RegisterForDrag("RightButton")
+                panel:SetMovable(true)
+                panel:SetClampedToScreen(true)
+                panel:SetNormalAtlas('bag-reagent-border-empty')
+                panel:SetHighlightAtlas('bag-border')
+                panel:SetPushedAtlas('bag-border-highlight')
+
+                panel.texture:SetPoint('CENTER')
+                panel.texture:SetSize(22,22)
+                panel.texture:SetAtlas('bag-border')
+
+                panel.mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
+                panel.mask:SetAllPoints(panel.texture)
+                panel.texture:AddMaskTexture(panel.mask)
+                panel.texture:SetShown(false)
+
+                panel.count:SetPoint('BOTTOM',0,2)
+
+                UIDropDownMenu_Initialize(panel.Me, setMenuList, 'MENU')
+                setPanelPostion()--设置按钮位置
+                getItems()--设置属性
+            else
+                panel:UnregisterAllEvents()
+            end
+             --添加控制面板        
+             local sel=e.CPanel(addName, not Save.disabled)
+             sel:SetScript('OnClick', function()
+                 if Save.disabled then
+                     Save.disabled=nil
+                 else
+                     Save.disabled=true
+                 end
+                 print(addName, e.GetEnabeleDisable(not Save.disabled), NEED..' /reload')
+             end)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then

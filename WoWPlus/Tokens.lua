@@ -152,7 +152,8 @@ local function Set()
 			ToggleCharacter("TokenFrame")--打开货币
 		end)
 
-		sel.btn.str=e.Cstr(sel.btn)--内容显示文本
+		sel.btn.str=e.Cstr(sel.btn, nil, nil, nil, true)--内容显示文本
+		
 		sel.btn.str:SetPoint('TOPLEFT',3,-3)
 	end
 

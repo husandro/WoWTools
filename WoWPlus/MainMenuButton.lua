@@ -18,10 +18,9 @@ panel.durabiliy=e.Cstr(panel,Save.size)--耐久度
 panel.durabiliy:SetPoint('BOTTOMRIGHT', panel.money, 'BOTTOMLEFT', -4, 0)
 
 local function setStrColor()
-    local color= not Save.point and {r=0.65, g=0.65, b=0.65}
-    e.Cstr(nil,Save.size, nil ,panel.fpsms, color)
-    e.Cstr(nil,Save.size, nil ,panel.money, color)
-    e.Cstr(nil,Save.size, nil ,panel.durabiliy, color)
+    e.Cstr(nil,Save.size, nil ,panel.fpsms, true)
+    e.Cstr(nil,Save.size, nil ,panel.money, true)
+    e.Cstr(nil,Save.size, nil ,panel.durabiliy, true)
 end
 local function setInit()
     if Save.point then
@@ -118,8 +117,8 @@ panel:HookScript("OnUpdate", function (self, elapsed)--fpsms
             t='|cnRED_FONT_COLOR:'..t..'|r'
         elseif t>120 then
             t='|cnYELLOW_FONT_COLOR:'..t..'|r'
-        else
-            t='|cnGREEN_FONT_COLOR:'..t..'|r'
+        --else
+          --  t='|cnGREEN_FONT_COLOR:'..t..'|r'
         end
 
         local r=math.modf(GetFramerate())--fps
@@ -127,8 +126,8 @@ panel:HookScript("OnUpdate", function (self, elapsed)--fpsms
             r='|cff00ff00'..r..'|r'
         elseif r<20 then
             r='|cffffff00'..r..'|r'
-        elseif r>30 then
-            r='|cff00ff00'..r..'|r'
+        --elseif r>30 then
+          --  r='|cff00ff00'..r..'|r'
         end
         t=t..'ms  '..r..'fps'
 
@@ -138,20 +137,19 @@ end)
 
 local function setEquipmentLevel()--角色图标显示装等
     local to, cu=GetAverageItemLevel()
+    local text
     if to and cu and to>0 and Save.equipmetLevel then
         if not panel.playerEquipmentLevel then
-            panel.playerEquipmentLevel=e.Cstr(CharacterMicroButton)
-           -- panel.playerEquipmentLevel:SetPoint('BOTTOM', CharacterMicroButton ,'TOP',0,0)
-           panel.playerEquipmentLevel:SetPoint('TOP', CharacterMicroButton ,'BOTTOM',0,6)
+            panel.playerEquipmentLevel=e.Cstr(CharacterMicroButton, nil, nil, nil, true)
+            panel.playerEquipmentLevel:SetPoint('BOTTOM')
         end
-        panel.playerEquipmentLevel:SetText(math.modf(cu))
+        text=math.modf(cu)
         if to-cu>5 then
-            panel.playerEquipmentLevel:SetTextColor(1,0,0)
-        else
-            panel.playerEquipmentLevel:SetTextColor(0.65, 0.65, 0.65)
+            text='|cnRED_FONT_COLOR:'..text..'|r'
         end
-    else
-        if panel.playerEquipmentLevel then panel.playerEquipmentLevel:SetText('') end
+    end
+    if panel.playerEquipmentLevel then
+        panel.playerEquipmentLevel:SetText(text or '')
     end
 end
 
