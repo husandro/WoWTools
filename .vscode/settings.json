@@ -1,0 +1,25 @@
+{
+    "Lua.diagnostics.globals": [
+        "GOSSIP_OPTIONS",
+        "SETTINGS_TITLE",
+        "GossipFrame",
+        "ObjectiveTrackerBlocksFrame",
+        "QuestInfoFrame",
+        "DISABLE",
+        "RED_FONT_COLOR_CODE",
+        "GREEN_FONT_COLOR_CODE",
+        "ENABLE",
+        "QuestFrameGreetingPanel",
+        "StaticPopup_Show",
+        "SAVE",
+        "CLEAR_ALL",
+        "COMPLETE",
+        "StaticPopupDialogs",
+        "CLEAR",
+        "KEY_NUMLOCK_MAC"
+    ],
+    "Lua.diagnostics.disable": [
+        "undefined-field",
+        "undefined-global"
+    ]
+}

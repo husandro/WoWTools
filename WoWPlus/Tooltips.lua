@@ -1,6 +1,6 @@
 local id, e = ...
 local addName='Tooltips'
-local Save={setDefaultAnchor=true, showUnit=true, showTips=true, showSource=true, showWoWInfo=true}
+local Save={setDefaultAnchor=true, showUnit=true, showTips=true, showSource=true, showWoWInfo=true, showAchievement=true}
 local panel=CreateFrame("Frame")
 local wowSave={}
 local wowBossKilled={}
@@ -2081,6 +2081,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             panel.showSource:SetChecked(Save.showSource)
             panel.showWoWInfo:SetChecked(Save.showWoWInfo)
             panel.Anchor:SetChecked(Save.setAnchor)
+            panel.setAchievement:SetChecked(Save.showAchievement)
 
         elseif arg1=='Blizzard_ClassTalentUI' then
             local function setClassTalentSpell(self2, tooltip)--天赋
@@ -2100,6 +2101,21 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         elseif arg1=='Blizzard_EncounterJournal' then---冒险指南
             setEncounterJournal()
             EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示所数据
+
+        elseif arg1=='Blizzard_AchievementUI' then--成就ID
+            hooksecurefunc(AchievementTemplateMixin, 'Init', function(self2,elementData)--Blizzard_AchievementUI.lua
+                if not Save.showAchievement then
+                    return
+                end
+                local category = elementData.category;
+                local achievementID,  description, icon, _
+                if self2.index then
+                    achievementID, _, _, _, _, _, _, description, _, icon= GetAchievementInfo(category, self2.index);
+                else
+                    achievementID, _, _, _, _, _, _, description, _, icon = GetAchievementInfo(self2.id);
+                end
+                self2.HiddenDescription:SetText(description..' ID: '..achievementID..(icon and ' |T'..icon..':0|t'..icon or ''))
+            end)
         end
 
     elseif event == "PLAYER_LOGOUT" then
@@ -2204,6 +2220,7 @@ panel.showWoWInfo:SetScript('OnClick', function(self)
         Save.showWoWInfo=true
     end
 end)
+
 panel.setUnit=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--单位提示
 panel.setUnit.Text:SetText(COVENANT_MISSIONS_UNITS..INFO)
 panel.setUnit:SetPoint('TOPLEFT', panel.setTips, 'BOTTOMLEFT', 0, -2)
@@ -2216,9 +2233,20 @@ panel.setUnit:SetScript('OnClick', function(self)
     setUnitInit(self)
 end)
 
+panel.setAchievement=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--成就ID
+panel.setAchievement.Text:SetText(ACHIEVEMENTS..BINDING_HEADER_INTERFACE..' ID')
+panel.setAchievement:SetPoint('TOPLEFT', panel.setUnit, 'BOTTOMLEFT', 0, -2)
+panel.setAchievement:SetScript('OnClick', function()
+    if Save.showAchievement then
+        Save.showAchievement=nil
+    else
+        Save.showAchievement=true
+    end
+end)
+
 panel.setDefaultAnchor=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--设置默认提示位置
 panel.setDefaultAnchor.Text:SetText(DEFAULT..RESAMPLE_QUALITY_POINT..': '..FOLLOW..MOUSE_LABEL)
-panel.setDefaultAnchor:SetPoint('TOPLEFT', panel.setUnit, 'BOTTOMLEFT', 0, -2)
+panel.setDefaultAnchor:SetPoint('TOPLEFT', panel.setAchievement, 'BOTTOMLEFT', 0, -20)
 panel.setDefaultAnchor:SetScript('OnClick', function()
     if Save.setDefaultAnchor then
         Save.setDefaultAnchor=nil

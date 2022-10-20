@@ -51,4 +51,5 @@ WoWPlus\Professions.lua
 
 WoWPlus\UnitFrame.lua
 ##WowPlus\GroupManager.lua
+##WoWPlus\AchievementFrame.lua
 

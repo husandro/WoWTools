@@ -351,8 +351,6 @@ end)
 local factionStr=FACTION_STANDING_INCREASED:gsub("%%s", "(.-)")--你在%s中的声望值提高了%d点。
 factionStr = factionStr:gsub("%%d", ".-")
 
-local factionStr=FACTION_STANDING_INCREASED:gsub("%%s", "(.+)")--你在%s中的声望值提高了%d点。
-factionStr = factionStr:gsub("%%d", ".+")
 local function FactionUpdate(self, env, text)--监视声望更新提示
 	local name=text and text:match(factionStr)
 	if not Save.factionUpdateTips or not name then
