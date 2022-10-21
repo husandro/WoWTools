@@ -21,11 +21,6 @@ Sesource\Locales\zhTW.lua
 
 Sesource\Panel.lua
 
-GamePlus\Gossip.lua
-GamePlus\SellBuy.lua
-GamePlus\OpenItems.lua
-GamePlus\LFD.lua
-
 WoWPlus\PaperDoll.lua
 WoWPlus\Reputation.lua
 WoWPlus\Tokens.lua
@@ -53,3 +48,8 @@ WoWPlus\UnitFrame.lua
 ##WowPlus\GroupManager.lua
 ##WoWPlus\AchievementFrame.lua
 
+GamePlus\Gossip.lua
+GamePlus\SellBuy.lua
+GamePlus\OpenItems.lua
+GamePlus\LFD.lua
+GamePlus\PetBattle.lua

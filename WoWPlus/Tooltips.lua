@@ -2010,6 +2010,9 @@ local function setCVar(reset, tips)
         end
     end
 end
+
+
+
 --加载保存数据
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
@@ -2042,8 +2045,6 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             }
 
             setUnitInit(self)--设置默认提示位置
-
-            
 
             for name_server, info in pairs(wowSave) do--清队不是本周数据
                 local tab=info.keystones

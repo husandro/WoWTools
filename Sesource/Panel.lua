@@ -1,10 +1,10 @@
 local id, e = ...
 
-e.Panel = CreateFrame("Frame")--Panel
-e.Panel.name = id
-InterfaceOptions_AddCategory(e.Panel)
+local panel = CreateFrame("Frame")--Panel
+panel.name = id
+InterfaceOptions_AddCategory(panel)
 
-local btn=CreateFrame('Button', nil, e.Panel, 'UIPanelButtonTemplate')
+local btn=CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')
 btn:SetPoint('TOPLEFT')
 btn:SetText(RELOADUI)
 btn:SetSize(120, 28)
@@ -24,7 +24,7 @@ StaticPopupDialogs[id..'restAllSetup']={
     end,
 }
 
-local btn2=CreateFrame('Button', nil, e.Panel, 'UIPanelButtonTemplate')
+local btn2=CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')
 btn2:SetPoint('LEFT', btn, 'RIGHT', 10, 0)
 btn2:SetText('|cnRED_FONT_COLOR:'..RESET_ALL_BUTTON_TEXT..'|r')
 btn2:SetSize(120, 28)
@@ -32,20 +32,30 @@ btn2:SetScript('OnClick', function()
     StaticPopup_Show(id..'restAllSetup')
 end)
 
-local lastFrame=btn
 
+local gamePlus=e.Cstr(panel)
+gamePlus:SetPoint('TOPLEFT', panel,'TOP', 0, -14)
+gamePlus:SetText('Game Plus')
+
+local lastWoW=btn
+local lastGame=gamePlus
 --添加控制面板
-e.CPanel= function(name, value)
-    local sel=CreateFrame("CheckButton", nil, e.Panel, "InterfaceOptionsCheckButtonTemplate")
-    sel.Text:SetText(name)
-    sel:SetPoint('TOPLEFT', lastFrame, 'BOTTOMLEFT',0,0)
-    sel:SetChecked(value)
-    lastFrame=sel
-    return sel
+e.CPanel= function(name, value, game)
+    local check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    check.Text:SetText(name)
+    check:SetChecked(value)
+    if game then
+        check:SetPoint('TOPLEFT', lastGame, 'BOTTOMLEFT')
+        lastGame=check
+    else
+        check:SetPoint('TOPLEFT', lastWoW, 'BOTTOMLEFT')
+        lastWoW=check
+    end
+    return check
 end
 
-e.Panel:RegisterEvent("PLAYER_LOGOUT")
-e.Panel:SetScript("OnEvent", function(self, event, arg1)
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "PLAYER_LOGOUT" and e.ClearAllSave then
         WoWToolsSave={}
     end

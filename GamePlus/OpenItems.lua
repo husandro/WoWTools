@@ -1,5 +1,5 @@
 local id, e = ...
-local Save={use={}, no={}, pet=true, open=true, toy=true, mount=true, mago=true, ski=true}
+local Save={use={}, no={}, pet=true, open=true, toy=true, mount=true, mago=true, ski=true, noItemHide=true}
 local addName=TUTORIAL_TITLE9
 local Combat, Bag= nil, {}
 
@@ -61,11 +61,13 @@ local function setAtt(bag, slot, icon, itemID)--设置属性
         panel.texture:SetShown(true)
         num = GetItemCount(itemID)
         num=num>1 and num or ''
+        panel:SetShown(true)
     else
         panel:SetAttribute("macrotext", nil)
-        panel.texture:SetShown(false)
+        panel:SetShown(not Save.noItemHide)
     end
     panel.count:SetText(num or '')
+    Combat=nil
 end
 
 local function getItems()--取得背包物品信息
@@ -154,7 +156,6 @@ local function getItems()--取得背包物品信息
                             end
                         end
 
-                    
                     elseif classID==15 and subclassID==4 then
                         if Save.alt and IsUsableItem(itemLink) and not  C_Item.IsAnimaItemByID(itemLink)  then
                             setAtt(bag, slot, icon, itemID)
@@ -560,16 +561,31 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             else
                 panel:UnregisterAllEvents()
             end
+
              --添加控制面板        
-             local sel=e.CPanel(addName, not Save.disabled)
-             sel:SetScript('OnClick', function()
+             local check=e.CPanel(addName, not Save.disabled, true)
+             check:SetScript('OnClick', function()
                  if Save.disabled then
                      Save.disabled=nil
                  else
                      Save.disabled=true
                  end
-                 print(addName, e.GetEnabeleDisable(not Save.disabled), NEED..' /reload')
+                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), NEED..' /reload')
              end)
+            --未发现物品: 隐藏
+             check.noItemHide=CreateFrame("CheckButton", nil, check, "InterfaceOptionsCheckButtonTemplate")
+             check.noItemHide.Text:SetText(BROWSE_NO_RESULTS..': '..HIDE)
+             check.noItemHide:SetPoint('LEFT', check.Text, 'RIGHT')
+             check.noItemHide:SetChecked(Save.noItemHide)
+             check.noItemHide:SetScript('OnClick', function()
+                if Save.noItemHide then
+                    Save.noItemHide=nil
+                else
+                    Save.noItemHide=true
+                end
+                getItems()--取得背包物品信息
+                print(id, addName, e.GetEnabeleDisable(not Save.noItemHide))
+            end)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
@@ -583,9 +599,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         panel:SetShown(false)
 
     elseif event=='PLAYER_REGEN_ENABLED' then
-        panel:SetShown(true)
         if Combat then
             getItems()
+        else
+            panel:SetShown(Bag.bag and not Save.noItemHide)
         end
     end
 end)

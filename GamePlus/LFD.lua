@@ -728,9 +728,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
             Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
             wowSave=(WoWToolsSave and WoWToolsSave[INSTANCE]) or wowSave
-
+            local a=FRAMES_LABEL
             --添加控制面板        
-            local sel=e.CPanel(addName, not Save.disabled)
+            local sel=e.CPanel(addName, not Save.disabled, true)
             sel:SetScript('OnClick', function()
                 if Save.disabled then
                     Save.disabled=nil

@@ -132,7 +132,7 @@ e.Icon={
     number='services-number-',
     number2='|A:services-number-%d:0:0|a',
     clock='socialqueuing-icon-clock',
-    clock2='|A:socialqueuing-icon-clock:0:0|a',
+    clock2='|A:socialqueuing-icon-clock:0:0|a',--auctionhouse-icon-clock
 
     player=e.Race('player'),
 
@@ -233,8 +233,8 @@ e.GetDifficultyColor = function(string, difficultyID)--DifficultyUtil.lua
     end
 end
 
-e.Cstr=function(self, size, fontType, ChangeFont, color)
-    local b=ChangeFont or self:CreateFontString(nil, 'OVERLAY')
+e.Cstr=function(self, size, fontType, ChangeFont, color, layer, justifyH)
+    local b=ChangeFont or self:CreateFontString(nil, (layer or 'OVERLAY'))
     if fontType then
         if size then
         local fontName, _, fontFlags = fontType:GetFont()
@@ -247,10 +247,10 @@ e.Cstr=function(self, size, fontType, ChangeFont, color)
         b:SetShadowColor(fontType:GetShadowColor())
         b:SetShadowOffset(fontType:GetShadowOffset())
     else
-        b:SetFont('Fonts\\ARHei.ttf', size or 12, 'OUTLINE')
+        b:SetFont('Fonts\\ARHei.ttf', (size or 12), 'OUTLINE')
         b:SetShadowOffset(2, -2)
         --b:SetShadowColor(0, 0, 0)
-        b:SetJustifyH('LEFT')
+        b:SetJustifyH(justifyH or 'LEFT')
         if color then
             b:SetTextColor(0.8, 0.8, 0.8)
         else
@@ -425,4 +425,21 @@ e.HEX=function(r, g, b, a)
     b = b <= 1 and b >= 0 and b or 0
     a = a <= 1 and a >= 0 and a or 0
     return string.format("%02x%02x%02x%02x",a*255, r*255, g*255, b*255)
+end
+
+
+--取得对战宠物, 强弱 SharedPetBattleTemplates.lua
+e.GetPetStrongWeakHints= function(petType)
+    local strongTexture,weakHintsTexture, stringIndex, weakHintsIndex
+    for i=1, C_PetJournal.GetNumPetTypes() do
+        local modifier = C_PetBattles.GetAttackModifier(petType, i);
+        if ( modifier > 1 ) then
+            strongTexture='Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[i]--"Interface\\PetBattles\\PetIcon-"..PET_TYPE_SUFFIX[i]
+            weakHintsIndex=i
+        elseif ( modifier < 1 ) then
+            weakHintsTexture='Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[i]
+            weakHintsIndex=i
+        end
+    end
+    return strongTexture,weakHintsTexture, stringIndex, weakHintsIndex ----_G["BATTLE_PET_NAME_"..petType]
 end

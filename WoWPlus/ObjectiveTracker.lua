@@ -1,17 +1,17 @@
 local id, e = ...
-local addName=QUEST_OBJECTIVES
+local addName=HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL
 local Save={scale= 1, alpha=1, autoHide=true}
 local F=ObjectiveTrackerFrame--移动任务框
 local btn=ObjectiveTrackerFrame.HeaderMenu.MinimizeButton
 local mo={
-    SCENARIO_CONTENT_TRACKER_MODULE,--1
+    SCENARIO_CONTENT_TRACKER_MODULE,--1 场景战役 SCENARIOS
     UI_WIDGET_TRACKER_MODULE,--2
-    BONUS_OBJECTIVE_TRACKER_MODULE,--3
-    WORLD_QUEST_TRACKER_MODULE,--4世界任务
-    CAMPAIGN_QUEST_TRACKER_MODULE,--5战役
-    QUEST_TRACKER_MODULE,--6
-    ACHIEVEMENT_TRACKER_MODULE,--7
-    PROFESSION_RECIPE_TRACKER_MODULE,--
+    BONUS_OBJECTIVE_TRACKER_MODULE,--3 	奖励目标 SCENARIO_BONUS_OBJECTIVES
+    WORLD_QUEST_TRACKER_MODULE,--4世界任务 TRACKER_HEADER_WORLD_QUESTS
+    CAMPAIGN_QUEST_TRACKER_MODULE,--5战役 TRACKER_HEADER_CAMPAIGN_QUESTS
+    QUEST_TRACKER_MODULE,--6 	追踪任务 TRACK_QUEST
+    ACHIEVEMENT_TRACKER_MODULE,--7 追踪成就 TRACKING..
+    PROFESSION_RECIPE_TRACKER_MODULE,--追踪配方 PROFESSIONS_TRACK_RECIPE
 }
 
 local Color={
@@ -392,8 +392,8 @@ local function hideTrecker()--挑战,进入FB时, 隐藏Blizzard_ObjectiveTracke
     end
     local ins=IsInInstance()--local sc=C_Scenario.IsInScenario();   
     if ins then
-        for _, self in pairs(mo) do
-            if self and self.Header and self.Header.MinimizeButton then 
+        for index, self in pairs(mo) do
+            if index>2 and self and self.Header and self.Header.MinimizeButton then
                 if not self.collapsed  then
                     --local module = self.Header.MinimizeButton:GetParent().module;
                     self:SetCollapsed(true);
@@ -404,8 +404,8 @@ local function hideTrecker()--挑战,进入FB时, 隐藏Blizzard_ObjectiveTracke
             end
         end
     else
-        for _, self in pairs(mo) do
-            if self and self.Header and self.Header.MinimizeButton then 
+        for index, self in pairs(mo) do
+            if index>2 and self and self.Header and self.Header.MinimizeButton then 
                 if self.setColla then
                     if self.collapsed  then
                         self:SetCollapsed(false);
@@ -477,6 +477,7 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
         Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
+
         --添加控制面板        
         local sel=e.CPanel(addName, not Save.disabled)
         sel:SetScript('OnClick', function()
@@ -485,13 +486,27 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             else
                 Save.disabled=true
             end
-            print(addName, e.GetEnabeleDisable(not Save.disabled), NEED..' /reload')
+            print(id, addName, e.GetEnabeleDisable(not Save.disabled), NEED..' /reload')
         end)
         local sel2=CreateFrame("CheckButton", nil, sel, "InterfaceOptionsCheckButtonTemplate")
         sel2.Text:SetText(GX_ADAPTER_AUTO_DETECT..HIDE)
         sel2:SetPoint('LEFT', sel.Text, 'RIGHT')
         sel2:SetChecked(Save.autoHide)
-
+        sel2:SetScript('OnEnter', function(self2)
+            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(SCENARIOS, '...')
+            e.tips:AddDoubleLine('UI WIDGET', '...')
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(SCENARIO_BONUS_OBJECTIVES, e.GetShowHide(false))
+            e.tips:AddDoubleLine(TRACKER_HEADER_WORLD_QUESTS, e.GetShowHide(false))
+            e.tips:AddDoubleLine(TRACKER_HEADER_CAMPAIGN_QUESTS, e.GetShowHide(false))
+            e.tips:AddDoubleLine(TRACK_QUEST, e.GetShowHide(false))
+            e.tips:AddDoubleLine(TRACKING..ACHIEVEMENTS, e.GetShowHide(false))
+            e.tips:AddDoubleLine(PROFESSIONS_TRACK_RECIPE, e.GetShowHide(false))
+            e.tips:Show()
+        end)
+        sel2:SetScript('OnLeave', function() e.tips:Hide() end)
         Ini()
 sel2:SetScript('OnClick', function ()
     if Save.autoHide then
