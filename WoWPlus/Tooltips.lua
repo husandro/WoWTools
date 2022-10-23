@@ -159,7 +159,7 @@ local function setPet(self, speciesID)--宠物
 
     if Save.showSource then--来源提示
         self:AddLine(' ')
-        self:AddDoubleLine(tooltipSource,' ')
+        self:AddLine(tooltipSource,nil,nil,nil, true)
     end
 
     --self.Portrait:SetTexture('Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType])--宠物类型图标

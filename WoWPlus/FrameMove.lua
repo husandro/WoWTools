@@ -348,7 +348,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 else
                     Save.disabled=true
                 end
-                print(addName, e.GetEnabeleDisable(not Save.disabled), NEED..' /reload')
+               -- print(addName, e.GetEnabeleDisable(not Save.disabled), NEED..' /reload')
             end)
             if not Save.disabled then
                 setInit()
