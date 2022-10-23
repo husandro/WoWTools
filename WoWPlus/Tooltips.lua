@@ -77,11 +77,11 @@ end
 local function GetPetCollected(speciesID)--宠物, 收集数量
     local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesID)
     if nunumCollected==0 then
-        return '|cnRED_FONT_COLOR:'..ITEM_PET_KNOWN:format(0, limit)..'|r'
+        return '|cnRED_FONT_COLOR:'..ITEM_PET_KNOWN:format(0, limit)..'|r', numCollected
     elseif limit and numCollected==limit and limit>0 then
-        return '|cnGREEN_FONT_COLOR:'..ITEM_PET_KNOWN:format(numCollected, limit)..'|r'
+        return '|cnGREEN_FONT_COLOR:'..ITEM_PET_KNOWN:format(numCollected, limit)..'|r', numCollected
     else
-        return ITEM_PET_KNOWN:format(numCollected, limit)
+        return ITEM_PET_KNOWN:format(numCollected, limit), numCollected
     end
 end
 local function GetMountCollected(mountID)--坐骑, 收集数量
@@ -118,9 +118,12 @@ local function setMount(self, mountID)--坐骑
         self:AddDoubleLine(not faction and ' ' or LFG_LIST_CROSS_FACTION:format(faction==0 and e.Icon.horde2..THE_HORDE or e.Icon.alliance2..THE_ALLIANCE or ''), ' ')
     end
     local creatureDisplayInfoID, description, source, isSelfMount, mountTypeID, uiModelSceneID, animID, spellVisualKitID, disablePlayerMountPreview = C_MountJournal.GetMountInfoExtraByID(mountID)
-    self:AddDoubleLine(MODEL..'ID: '..creatureDisplayInfoID, TUTORIAL_TITLE61_DRUID..': '..(isSelfMount and YES or NO))
-    self:AddDoubleLine(source,' ')
-
+    if creatureDisplayInfoID then
+        self:AddDoubleLine(MODEL..'ID: '..creatureDisplayInfoID, TUTORIAL_TITLE61_DRUID..': '..(isSelfMount and YES or NO))
+    end
+    if source then
+        self:AddDoubleLine(source,' ')
+    end
     if creatureDisplayInfoID and self.creatureDisplayID~=creatureDisplayInfoID then--3D模型
         self.itemModel:SetShown(true)
         self.itemModel:SetDisplayInfo(creatureDisplayInfoID)
@@ -139,7 +142,28 @@ local function setPet(self, speciesID)--宠物
     self:AddLine(' ')
 
     if obtainable then--收集数量
-        self:AddDoubleLine(GetPetCollected(speciesID), 'NPCID: '..companionID)
+        local text, numCollected= GetPetCollected(speciesID)
+        local numPets, numOwned = C_PetJournal.GetNumPets()
+        self.textRight:SetText(e.MK(numOwned,3)..'/'..e.MK(numPets,3).. (' %i%%'):format(numOwned/numPets*100))
+        text= numCollected and numCollected==0 and  text or ' '
+        if numCollected and numCollected>0 and not UnitAffectingCombat('player') then
+            local text2
+            for index= 1 ,numOwned do
+                local petID, speciesID2, _, _, level = C_PetJournal.GetPetInfoByIndex(index)
+                if speciesID2==speciesID and petID and level then
+                    local rarity = select(5, C_PetJournal.GetPetStats(petID))
+                    local col= rarity and select(4, GetItemQualityColor(rarity-1))
+                    if col then
+                       text2= text2 and text2..' ' or ''
+                       text2= text2..'|c'..col..level..'|r'
+                    end
+                end
+            end
+            if text2 then
+                self.textLeft:SetText(text2)
+            end
+        end
+        self:AddDoubleLine(text, companionID and 'NPCID: '..companionID or ' ')
     end
     self:AddDoubleLine(PET..'ID: '..speciesID, MODEL..'ID: '..creatureDisplayID)--ID
 
@@ -163,9 +187,10 @@ local function setPet(self, speciesID)--宠物
     end
 
     --self.Portrait:SetTexture('Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType])--宠物类型图标
-    self.Portrait:SetTexture("Interface\\TargetingFrame\\PetBadge-"..PET_TYPE_SUFFIX[petType])
-    self.Portrait:SetShown(true)
-
+    if petType then
+        self.Portrait:SetTexture("Interface\\TargetingFrame\\PetBadge-"..PET_TYPE_SUFFIX[petType])
+        self.Portrait:SetShown(true)
+    end
     if creatureDisplayID and self.creatureDisplayID~=creatureDisplayID then--3D模型
         self.itemModel:SetDisplayInfo(creatureDisplayID)
         self.itemModel:SetShown(true)
