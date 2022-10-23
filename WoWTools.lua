@@ -251,7 +251,9 @@ e.Cstr=function(self, size, fontType, ChangeFont, color, layer, justifyH)
         b:SetShadowOffset(2, -2)
         --b:SetShadowColor(0, 0, 0)
         b:SetJustifyH(justifyH or 'LEFT')
-        if color then
+        if color and type(color)=='table' then
+            b:SetTextColor(color[1], color[2], color[3])
+        elseif color then
             b:SetTextColor(0.8, 0.8, 0.8)
         else
             b:SetTextColor(1, 0.45, 0.04)
@@ -259,6 +261,7 @@ e.Cstr=function(self, size, fontType, ChangeFont, color, layer, justifyH)
     end
     return b
 end
+
 
 e.CeditBox= function(self, width, height)
     width = width or 400
@@ -443,3 +446,31 @@ e.GetPetStrongWeakHints= function(petType)
     end
     return strongTexture,weakHintsTexture, stringIndex, weakHintsIndex ----_G["BATTLE_PET_NAME_"..petType]
 end
+
+--[[
+local R,G,B=4,GetClassColor(UnitClassBase('player'))
+e.CStatusBar = function(self,value, size, VERTICAL, color, min, max,ReverseFill)
+    if not self.Bar then
+        self.Bar = CreateFrame('StatusBar', nil, self);
+        if size then
+            self.Bar:SetSize(size[1], size[2])
+        else
+            self.Bar:SetAllPoints(slef)
+        end
+        if VERTICAL then--"HORIZONTAL","VERTICAL"垂直
+            self.Bar:SetOrientation('VERTICAL');
+        else
+            self.Bar:SetOrientation('HORIZONTAL');
+        end
+        self.Bar:SetMinMaxValues(min,max);
+        self.Bar:SetReverseFill(ReverseFill)
+    end
+    if color then
+        self.Bar:SetStatusBarColor(color[1], color[2], color[3]);
+    else
+        self.Bar:SetStatusBarColor(R, G, B);
+    end
+    self.Bar:SetValue(value);
+end
+
+]]

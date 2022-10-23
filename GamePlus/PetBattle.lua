@@ -1,6 +1,7 @@
 local id, e = ...
 local Save={}
 local addName= SHOW_PET_BATTLES_ON_MAP_TEXT
+local panel=CreateFrame("Frame")
 
 --宠物战斗界面收集数
 --Blizzard_PetBattleUI.lua
@@ -8,7 +9,7 @@ hooksecurefunc('PetBattleUnitFrame_UpdateDisplay',function(self)
     if Save.disabled then
         return
     end
-    local  petOwner = self.petOwner
+    local petOwner = self.petOwner
     local petIndex = self.petIndex
     local t
     if petOwner and petIndex then
@@ -36,7 +37,7 @@ hooksecurefunc('PetBattleUnitFrame_UpdateDisplay',function(self)
                 local power = C_PetBattles.GetPower(petOwner, petIndex)
                 if speed and power then
                     t=t and t..'\n' or ''
-                    t=t.. speed..'\n'..power
+                    t=t..'|A:Soulbinds_Tree_Conduit_Icon_Attack:0:0|a'..power..'\n'..'|A:Soulbinds_Tree_Conduit_Icon_Utility:0:0|a'..speed
                 end
                --[[ local petType = select(3, C_PetJournal.GetPetInfoBySpeciesID(speciesID))
                 if petType and petIndex>1 then
@@ -62,7 +63,7 @@ hooksecurefunc('PetBattleUnitTooltip_UpdateForUnit',function(self, petOwner, pet
          return
     end
     for i=1, NUM_BATTLE_PET_ABILITIES do
-        local abilityID,name, icon, maxCooldown, unparsedDescription, numTurns, petType= C_PetBattles.GetAbilityInfo(petOwner, petIndex, i);
+        local abilityID,name, icon, maxCooldown, _, numTurns, petType= C_PetBattles.GetAbilityInfo(petOwner, petIndex, i);
         local abilityName = self["AbilityName"..i];
         if ( abilityID and name and abilityName ) then
             local t='';
@@ -77,7 +78,7 @@ hooksecurefunc('PetBattleUnitTooltip_UpdateForUnit',function(self, petOwner, pet
             abilityName:SetText(t);
         end
     end
-end)  
+end)
 
 --Blizzard_PetBattleUIPetBattle-StatIconsI.lua
 --显示当前宠物, 速度指示, 力量数据
@@ -142,7 +143,7 @@ hooksecurefunc('PetBattleAbilityButton_UpdateBetterIcon' ,function(self)
     if self.BetterIcon then
         local activePet = C_PetBattles.GetActivePet(Enum.BattlePetOwner.Ally);
         if activePet then
-            local abilityID, _, _, maxCooldown, unparsedDescription, numTurns, petType, noStrongWeakHints = C_PetBattles.GetAbilityInfo(Enum.BattlePetOwner.Ally, activePet, self:GetID());
+            local _, _, _, maxCooldown, _, numTurns, petType = C_PetBattles.GetAbilityInfo(Enum.BattlePetOwner.Ally, activePet, self:GetID());
             if petType and PET_TYPE_SUFFIX[petType] then
                 typeTexture='Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType]--"Interface\\PetBattles\\PetIcon-"..PET_TYPE_SUFFIX[petType]
                 if numTurns and numTurns>1 then
@@ -152,9 +153,9 @@ hooksecurefunc('PetBattleAbilityButton_UpdateBetterIcon' ,function(self)
                     text= text and text..'/' or ''
                     text=text..'|cnRED_FONT_COLOR:'..maxCooldown..'|r'
                 end
-            
+
                 strongTexture, weakHintsTexture= e.GetPetStrongWeakHints(petType)--取得对战宠物, 强弱
-                
+
                 if not self.weakHints then
                     self.weakHints=self:CreateTexture(nil, 'ARTWORK')
                     self.weakHints:SetPoint('BOTTOMLEFT',-2,-2)
@@ -163,11 +164,11 @@ hooksecurefunc('PetBattleAbilityButton_UpdateBetterIcon' ,function(self)
                     self.weakHints.type:SetPoint('LEFT', self.weakHints, 'RIGHT',-4,0)
                     self.weakHints.type:SetSize(18,18)
                     self.weakHints.type:SetTexture('Interface\\PetBattles\\BattleBar-AbilityBadge-Weak')
-              
+
                     self.petType=self:CreateTexture(nil,'ARTWORK')
                     self.petType:SetPoint('BOTTOMLEFT', self.weakHints, 'TOPLEFT', 0, -3)
                     self.petType:SetSize(20,20)
-               
+
                     self.strong=self:CreateTexture(nil, 'ARTWORK')
                     self.strong:SetPoint('BOTTOMLEFT', self.petType, 'TOPLEFT',0, -3)
                     self.strong:SetSize(20,20)
@@ -175,7 +176,7 @@ hooksecurefunc('PetBattleAbilityButton_UpdateBetterIcon' ,function(self)
                     self.strong.type:SetPoint('LEFT', self.strong, 'RIGHT',-4,0)
                     self.strong.type:SetSize(18,18)
                     self.strong.type:SetTexture('Interface\\PetBattles\\BattleBar-AbilityBadge-Strong')
-               
+
                     self.text=e.Cstr(self)
                     self.text:SetPoint('RIGHT')
                 end
@@ -188,105 +189,237 @@ hooksecurefunc('PetBattleAbilityButton_UpdateBetterIcon' ,function(self)
         end
         self.weakHints:SetShown(weakHintsTexture)
         self.weakHints.type:SetShown(weakHintsTexture)
-   
-        if typeTexture then 
+
+        if typeTexture then
             self.petType:SetTexture(typeTexture)
         end
         self.petType:SetShown(typeTexture)
-    
+
         if strongTexture then
             self.strong:SetTexture(strongTexture)
         end
         self.strong:SetShown(strongTexture)
         self.strong:SetShown(strongTexture)
-    
+
         self.text:SetText(text or '')
     end
 end)
 
 --Blizzard_PetBattleUI.lua
---技能提示
+--对方, 我方， 技能提示， 框
 hooksecurefunc('PetBattleFrame_UpdateAllActionButtons', function(self)
-    local frame=PetBattleFrame.BottomFrame.EnemyFrame
-    if not frame then
-        frame=CreateFrame('Frame', nil, PetBattleFrame.BottomFrame)
+    if Save.disabled then
+        return
+    end
+    if not panel.EnemyFrame then
+        panel.EnemyFrame=CreateFrame('Frame', nil, PetBattleFrame.BottomFrame)
         if Save.EnemyFramePoint then
-            frame:SetPoint(Save.EnemyFramePoint[1], UIParent, Save.EnemyFramePoint[3], Save.EnemyFramePoint[4], Save.EnemyFramePoint[5])
+            panel.EnemyFrame:SetPoint(Save.EnemyFramePoint[1], UIParent, Save.EnemyFramePoint[3], Save.EnemyFramePoint[4], Save.EnemyFramePoint[5])
         else
-            frame:SetPoint('BOTTOMLEFT', PetBattleFrame.BottomFrame , 'TOPLEFT',40,40)
+            panel.EnemyFrame:SetPoint('BOTTOMLEFT', PetBattleFrame.BottomFrame , 'TOPLEFT',40,40)
         end
-        frame:SetSize(140, 50)
-        frame.textrue=frame:CreateTexture(nil, 'BACKGROUND')
-        frame.textrue:SetAllPoints(frame)
-        frame.textrue:SetAtlas('Adventures-Missions-Shadow')
-        frame.textrue:SetAlpha(0.7)
-        PetBattleFrame.BottomFrame.EnemyFrame=frame
-        for i=1, NUM_BATTLE_PET_ABILITIES do
-            frame[i]=e.Cbtn(frame, nil, true)
-            frame[i]:SetSize(40,40)
-            if i==1 then
-                frame[i]:SetPoint('LEFT',5, 0)
+        panel.EnemyFrame:SetSize(150, 50)
+        panel.EnemyFrame:SetClampedToScreen(true)
+        panel.EnemyFrame:SetMovable(true)
+        panel.EnemyFrame:RegisterForDrag('LeftButton', 'RightButton')
+        panel.EnemyFrame:SetScript('OnDragStart', function(self2,d) if not IsModifierKeyDown() then self2:StartMoving() end end)
+        panel.EnemyFrame:SetScript('OnDragStop', function(self2)
+            ResetCursor();
+            self2:StopMovingOrSizing();
+            Save.EnemyFramePoint={self2:GetPoint(1)}
+            Save.EnemyFramePoint[2]=nil
+            print(id, addName,'Alt+' ..e.Icon.right,TRANSMOGRIFY_TOOLTIP_REVERT)
+        end)
+        panel.EnemyFrame:SetScript('OnMouseDown', function(self2, d)
+            if d=='RightButton' and IsAltKeyDown() then
+                self2:ClearAllPoints()
+                self2:SetPoint('BOTTOMLEFT', PetBattleFrame.BottomFrame , 'TOPLEFT',40,40)
             else
-                frame[i]:SetPoint('LEFT', frame[i-1], 'RIGHT', 5, 0)
+                SetCursor('UI_MOVE_CURSOR')
             end
-            frame[i]:SetScript('OnEnter', function(self2)
-                if self2.abilityID then
-                    if ( self2.requiredLevel ) then
-                        PetBattleAbilityTooltip_SetAbilityByID(Enum.BattlePetOwner.Enemy, self2.petIndex, self2.abilityID, format(PET_ABILITY_REQUIRES_LEVEL, self2.requiredLevel));
+        end)
+        panel.EnemyFrame:SetScript('OnMouseUp', function() ResetCursor() end)
+        panel.EnemyFrame:SetScript('OnEnter', function(self2) self2.textrue:SetAlpha(1) end)
+        panel.EnemyFrame:SetScript('OnLeave', function(self2) self2.textrue:SetAlpha(0.5) end)
+        panel.EnemyFrame.textrue=panel.EnemyFrame:CreateTexture(nil, 'BACKGROUND')
+        panel.EnemyFrame.textrue:SetAllPoints(frame)
+        panel.EnemyFrame.textrue:SetAtlas('Adventures-Missions-Shadow')
+        panel.EnemyFrame.textrue:SetAlpha(0.5)
+        for index=1, NUM_BATTLE_PETS_IN_BATTLE +2 do
+            local frame
+            local allyIndex
+            if index==1 then
+                frame=panel.EnemyFrame
+            elseif index<=NUM_BATTLE_PETS_IN_BATTLE then
+                frame=PetBattleFrame['Enemy'..index]
+            else
+                allyIndex=(index-NUM_BATTLE_PETS_IN_BATTLE)+1
+                frame=PetBattleFrame['Ally'..allyIndex]
+            end
+            for i = 1, NUM_BATTLE_PET_ABILITIES do
+                if frame and not frame[i] then
+                    frame[i]=e.Cbtn(frame, nil, true)
+                    frame[i]:SetSize(40,40)
+                    if i==1 then
+                        if index==1 then
+                            frame[i]:SetPoint('LEFT',5, 0)
+                        else
+                            if allyIndex then
+                                frame[i]:SetPoint('RIGHT', frame, 'LEFT',-20,0)
+                            else
+                                frame[i]:SetPoint('LEFT', frame, 'RIGHT',20,0)
+                            end
+                        end
                     else
-                        PetBattleAbilityTooltip_SetAbilityByID(Enum.BattlePetOwner.Enemy, self2.petIndex, self2.abilityID);
+                        if allyIndex then
+                            frame[i]:SetPoint('RIGHT', frame[i-1], 'LEFT', -5, 0)
+                        else
+                            frame[i]:SetPoint('LEFT', frame[i-1], 'RIGHT', 5, 0)
+                        end
                     end
-                    PetBattleAbilityTooltip_Show("BOTTOMLEFT", self2, "TOPLEFT");
+                    frame[i]:SetScript('OnEnter', function(self2)
+                        if self2.abilityID then
+                            if ( self2.requiredLevel ) then
+                                PetBattleAbilityTooltip_SetAbilityByID(self2.petOwner, self2.petIndex, self2.abilityID, format(PET_ABILITY_REQUIRES_LEVEL, self2.requiredLevel));
+                            else
+                                PetBattleAbilityTooltip_SetAbilityByID(self2.petOwner, self2.petIndex, self2.abilityID);
+                            end
+                            PetBattleAbilityTooltip_Show("BOTTOMLEFT", self2, "TOPLEFT");
+                        end
+                    end)
+                    frame[i]:SetScript('OnLeave', function() PetBattlePrimaryAbilityTooltip:Hide() end)
+                    frame[i].texture=frame[i]:CreateTexture(nil,'OVERLAY')
+                    frame[i].texture:SetPoint('BOTTOMRIGHT', 10, -10)
+                    frame[i].texture:SetSize(30,30)
+    
+                    frame[i].strong=frame[i]:CreateTexture(nil,'OVERLAY')
+                    frame[i].strong:SetPoint('TOPLEFT', -5, 3)
+                    frame[i].strong:SetSize(20,20)
+                    frame[i].strong.type=frame[i]:CreateTexture(nil,'OVERLAY')
+                    frame[i].strong.type:SetPoint('LEFT', frame[i].strong, 'RIGHT', -5, 0)
+                    frame[i].strong.type:SetSize(15,15)
+                    frame[i].strong.type:SetTexture('Interface\\PetBattles\\BattleBar-AbilityBadge-Strong')
+    
+                    frame[i].petTypeTexture=frame[i]:CreateTexture(nil,'OVERLAY')
+                    frame[i].petTypeTexture:SetPoint('LEFT', -5, 0)
+                    frame[i].petTypeTexture:SetSize(20,20)
+    
+                    frame[i].weakHints=frame[i]:CreateTexture(nil,'OVERLAY')
+                    frame[i].weakHints:SetPoint('BOTTOMLEFT', -5, -3)
+                    frame[i].weakHints:SetSize(20,20)
+                    frame[i].weakHints.type=frame[i]:CreateTexture(nil,'OVERLAY')
+                    frame[i].weakHints.type:SetPoint('LEFT', frame[i].weakHints, 'RIGHT',-5,0)
+                    frame[i].weakHints.type:SetSize(15,15)
+                    frame[i].weakHints.type:SetTexture('Interface\\PetBattles\\BattleBar-AbilityBadge-Weak')
                 end
-            end)
-            frame[i]:SetScript('OnLeave', function() PetBattlePrimaryAbilityTooltip:Hide() end)
-            frame[i].texture=frame[i]:CreateTexture()
-            frame[i].texture:SetPoint('BOTTOMRIGHT')
-            frame[i].texture:SetSize(20,20)
+            end
         end
     end
-	local activeEnemy = C_PetBattles.GetActivePet(Enum.BattlePetOwner.Enemy);
-    for i = 1, NUM_BATTLE_PET_ABILITIES do
-        local abilityID, name, icon, maxCooldown, unparsedDescription, numTurns, petType, noStrongWeakHints = C_PetBattles.GetAbilityInfo(Enum.BattlePetOwner.Enemy, activeEnemy, i);
-        if abilityID and icon and petType then
-            local speciesID = C_PetBattles.GetPetSpeciesID(Enum.BattlePetOwner.Enemy, activeEnemy)
-            local abilities = speciesID and C_PetJournal.GetPetAbilityListTable(speciesID)
-            if not abilities and abilities[i] then
-                frame[i].requiredLevel=abilities[i] and abilities[i].level or nil
+
+	
+    --local activeEnemy = C_PetBattles.GetActivePet(target);
+    for index=1, NUM_BATTLE_PETS_IN_BATTLE +2 do
+        local frame,petIndex
+        local allyIndex,target=nil, Enum.BattlePetOwner.Enemy
+        if index==1 then
+            frame=panel.EnemyFrame
+            petIndex=C_PetBattles.GetActivePet(target)
+        elseif index<=NUM_BATTLE_PETS_IN_BATTLE then
+            frame=PetBattleFrame['Enemy'..index]
+            petIndex=frame.petIndex
+        else
+            allyIndex=(index-NUM_BATTLE_PETS_IN_BATTLE)+1
+            frame=PetBattleFrame['Ally'..allyIndex]
+            target=Enum.BattlePetOwner.Ally
+            petIndex=frame.petIndex
+        end
+        
+        for i = 1, NUM_BATTLE_PET_ABILITIES do
+            
+            local abilityID, _, icon, _, _, _, petType, noStrongWeakHints = C_PetBattles.GetAbilityInfo(target, petIndex, i);
+            local find
+            if abilityID and icon and petType then
+                local speciesID = C_PetBattles.GetPetSpeciesID(target, petIndex)
+                local abilities = speciesID and C_PetJournal.GetPetAbilityListTable(speciesID)
+                if not abilities and abilities[i] then
+                    frame[i].requiredLevel=abilities[i] and abilities[i].level or nil
+                else
+                    frame[i].requiredLevel=nil
+                end
+                frame[i].abilityID=abilityID
+                frame[i].petOwner=target
+                frame[i].petIndex=petIndex--提示用
+
+                frame[i]:SetNormalTexture(icon)--设置图标
+                frame[i].petTypeTexture:SetTexture('Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType])--设置类型
+                local strong, weakhints=e.GetPetStrongWeakHints(petType)
+                frame[i].strong:SetTexture(strong)
+                frame[i].weakHints:SetTexture(weakhints)
+                find=true
             else
                 frame[i].requiredLevel=nil
+                frame[i].petIndex=nil
+                frame[i].abilityID=nil
+                frame[i].petOwner=nil
+                frame[i]:SetNormalTexture(e.Icon.icon)
             end
-            frame[i].petIndex=activeEnemy
-            frame[i].abilityID=abilityID
-            frame[i]:SetNormalTexture(icon)
-        else
-            frame[i].requiredLevel=nil
-            frame[i].petIndex=nil
-            frame[i].abilityID=nil
-            frame[i]:SetNormalTexture(e.Icon.icon)
-        end
-        local find
-        if abilityID and icon and petType then
-            local playerPetSlot = C_PetBattles.GetActivePet(Enum.BattlePetOwner.Ally);
-            local playerType = playerPetSlot and C_PetBattles.GetPetType(Enum.BattlePetOwner.Ally, playerPetSlot);
-            local modifier = playerType and C_PetBattles.GetAttackModifier(petType, playerType);
-            if modifier then
-                if (modifier > 1) then
-                    frame[i].texture:SetTexture("Interface\\PetBattles\\BattleBar-AbilityBadge-Strong");
-                    find=true
-                elseif (modifier < 1) then
-                    frame[i].texture:SetTexture("Interface\\PetBattles\\BattleBar-AbilityBadge-Weak");
-                    find=true
+            frame[i].strong:SetShown(find)
+            frame[i].petTypeTexture:SetShown(find)
+            frame[i].weakHints:SetShown(find)
+            frame[i].weakHints.type:SetShown(find)
+            frame[i].strong.type:SetShown(find)
+
+            find=nil
+            local target2= target==Enum.BattlePetOwner.Ally and Enum.BattlePetOwner.Enemy or Enum.BattlePetOwner.Ally
+            if abilityID and icon and petType and not noStrongWeakHints then
+                local playerPetSlot = C_PetBattles.GetActivePet(target2);
+                local playerType = playerPetSlot and C_PetBattles.GetPetType(target2, playerPetSlot);
+                local modifier = playerType and C_PetBattles.GetAttackModifier(petType, playerType);
+                if modifier then
+                    if (modifier > 1) then
+                        frame[i].texture:SetTexture("Interface\\PetBattles\\BattleBar-AbilityBadge-Strong");
+                        find=true
+                    elseif (modifier < 1) then
+                        frame[i].texture:SetTexture("Interface\\PetBattles\\BattleBar-AbilityBadge-Weak");
+                        find=true
+                    end
                 end
             end
+            frame[i].texture:SetShown(find)
         end
-        frame[i].texture:SetShown(find)
+    end
+end)
+
+--对方，技能， 冷却
+hooksecurefunc('PetBattleActionButton_UpdateState', function(self)
+    if Save.disabled then
+        return
+    end
+    local activeEnemy = C_PetBattles.GetActivePet(Enum.BattlePetOwner.Enemy);
+    for i = 1, NUM_BATTLE_PET_ABILITIES do
+        local frame=PetBattleFrame.BottomFrame.EnemyFrame
+        if frame and frame[i] then
+            local text
+            local abilityID, name = C_PetBattles.GetAbilityInfo(Enum.BattlePetOwner.Enemy, activeEnemy, i);
+            if name and abilityID then
+                local isUsable, currentCooldown, currentLockdown = C_PetBattles.GetAbilityState(Enum.BattlePetOwner.Enemy, activeEnemy, i)
+                if currentCooldown and currentCooldown>0 then
+                    if not frame[i].cooldownText then
+                        frame[i].cooldownText=e.Cstr(frame[i], 20 , nil, nil, {1, 0, 0}, 'OVERLAY')
+                        frame[i].cooldownText:SetPoint('CENTER')
+                    end
+                    text=currentCooldown
+                end
+            end
+            if frame[i].cooldownText then
+                frame[i].cooldownText:SetText(text)
+            end
+        end
     end
 end)
 --###########
 --加载保存数据
 --###########
-local panel=CreateFrame("Frame")
 
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")

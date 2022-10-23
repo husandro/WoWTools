@@ -188,10 +188,12 @@ local function PetAblil(link, petChannel)--宠物技能
     local id2=link:match('HbattlePetAbil:(%d+)')
     if id2 then
         local _, _, icon, _, _, _, petType=C_PetBattles.GetAbilityInfoByID(id2)
-        if petChannel then
-            return PetType(petType)..link
-        elseif icon then
-            return (PetType(petType) or '')..'|T'..icon..':0|t'..link
+        if petType then
+            if petChannel then
+                return PetType(petType)..link
+            elseif icon then
+                return (PetType(petType) or '')..'|T'..icon..':0|t'..link
+            end
         end
     end
 end
