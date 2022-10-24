@@ -199,11 +199,10 @@ local function setPet(self, speciesID)--宠物
 end
 
 local function setItem(self)--物品
-    if not Save.showTips or UnitAffectingCombat('player') then
+    local link=select(2, self:GetItem())
+    if not Save.showTips or UnitAffectingCombat('player') or not link then
         return
     end
-
-    local link=select(2, self:GetItem())
     --setInitItem(self)--创建物品
     if not C_Item.IsItemDataCachedByID(link) then C_Item.RequestLoadItemDataByID(link) end
     local itemName, _, itemQuality, itemLevel, _, _, _, _, _, _, _, _, _, bindType, expacID, setID = GetItemInfo(link)
@@ -241,7 +240,7 @@ local function setItem(self)--物品
     local spellName, spellID = GetItemSpell(link)--物品法术
     if spellName and spellID then
         local spellTexture=GetSpellTexture(spellID)
-        self:AddDoubleLine((itemName~=spellName and spellName..'('..SPELLS..')' or SPELLS)..'ID: '..spellID, spellTexture~=itemTexture and '|T'..spellTexture..':0|t'..spellTexture or ' ')
+        self:AddDoubleLine((itemName~=spellName and spellName..'('..SPELLS..')' or SPELLS)..'ID: '..spellID, spellTexture and spellTexture~=itemTexture  and '|T'..spellTexture..':0|t'..spellTexture or ' ')
     end
 
     if classID==2 or classID==4 then

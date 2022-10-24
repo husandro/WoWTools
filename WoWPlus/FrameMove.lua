@@ -140,7 +140,7 @@ local FrameTab={
     MacroFrame={},--宏
     ExtraActionButton1={save=true, click='R' },--额外技能
 
-    --ContainerFrameCombinedBags={},--包
+    ContainerFrameCombinedBags={},--包
 
     ChatConfigFrame={save=true},--聊天设置
     SettingsPanel={},--选项
@@ -165,6 +165,7 @@ local FrameTab={
     
     WorldMapFrame={},--世界地图
 };
+
 
 local function setTabInit()
     for k, v in pairs(FrameTab) do
@@ -333,8 +334,20 @@ local function setInit()
 
 end
 
+--[[
+hooksecurefunc("UpdateContainerFrameAnchors", function()
+    for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
+        frame:ClearAllPoints();
+    end
+end)
+
+]]
+
+
+
 --加载保存数据
 local panel=CreateFrame("Frame")
+
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)

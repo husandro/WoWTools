@@ -157,6 +157,8 @@ e.Icon={
     DAMAGER='|A:groupfinder-icon-role-large-dps:0:0|a',
     NONE='|A:groupfinder-icon-emptyslot:0:0|a',
     leader='|A:UI-HUD-UnitFrame-Player-Group-GuideIcon:0:0|a',--队长
+
+    info2='|A:questlegendary:0:0|a',--黄色!
 }
 --Interface\Common\WhiteIconFrame 提示方形外框
 e.GetNpcID = function(unit)--NPC ID
@@ -384,12 +386,17 @@ e.WA_GetUnitDebuff = function(unit, spell, filter)
         end
       end
 end
-e.WA_Utf8Sub = function(input, size)
+e.WA_Utf8Sub = function(input, size, letterSize)
     local output = ""
     if type(input) ~= "string" then
       return output
     end
     local i = 1
+
+    if letterSize and input:find('%w')  then--英文
+        size=letterSize
+    end
+
     while (size > 0) do
       local byte = input:byte(i)
       if not byte then

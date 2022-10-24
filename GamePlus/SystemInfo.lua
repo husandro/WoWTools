@@ -1,5 +1,5 @@
 local id, e = ...
-local addName=MAINMENU_BUTTON
+local addName=SYSTEM_MESSAGES--MAINMENU_BUTTON
 local Save={equipmetLevel=true}
 
 local panel=CreateFrame('Button', nil, UIParent)
@@ -214,7 +214,7 @@ panel:SetScript('OnEnter', function()
     end
     e.tips:SetOwner(panel.money, "ANCHOR_LEFT",0, 30);
     e.tips:ClearLines();
-    e.tips:AddLine(id, addName)
+    e.tips:AddDoubleLine(id, addName)
     e.tips:AddLine(' ')
     e.tips:AddDoubleLine('FpsMs: '..e.GetShowHide(not Save.disabled), e.Icon.left)
     e.tips:AddDoubleLine(MONEY..': '..e.GetShowHide(Save.money), 'Alt+'..e.Icon.left)
@@ -247,7 +247,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave[addName]=Save
         end
     elseif event=='PLAYER_MONEY' then
-        setMoney(panel)
+        setMoney()
     elseif event=='UPDATE_INVENTORY_DURABILITY' then
         setDurabiliy()
         setEquipmentLevel()--角色图标显示装等

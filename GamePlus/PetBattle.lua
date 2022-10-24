@@ -428,10 +428,10 @@ hooksecurefunc('PetBattleActionButton_UpdateState', function(self)
         end
     end
 end)
+
 --###########
 --加载保存数据
 --###########
-
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)

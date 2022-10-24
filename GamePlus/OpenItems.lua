@@ -85,9 +85,9 @@ local function getItems()--取得背包物品信息
                     return
                 end
             elseif not locked and itemLink and itemID and icon and not Save.no[itemID] then
-                local _, _, _, _, _, _, _,_, _, _, _, classID, subclassID, _,_, setID= GetItemInfo(itemLink)
+                local _, _, _, _, itemMinLevel, _, _,_, _, _, _, classID, subclassID, _,_, setID= GetItemInfo(itemLink)
                 if (classID==2 or classID==4 )  or setID then--幻化
-                    if Save.mago then
+                    if Save.mago and not isBound then
                         if setID then
                             local setInfo= C_TransmogSets.GetSetInfo(setID)
                             if setInfo and not setInfo.collected then
@@ -97,12 +97,14 @@ local function getItems()--取得背包物品信息
                         elseif not isBound and not C_TransmogCollection.PlayerHasTransmog(itemID) then
                             local sourceID=select(2,C_TransmogCollection.GetItemInfo(itemLink))
                             if sourceID then
-                                local hasItemData, canCollect =  select(2, C_TransmogCollection.PlayerCanCollectSource(sourceID))
+                                local hasItemData, canCollect =  C_TransmogCollection.PlayerCanCollectSource(sourceID)
                                 if hasItemData and canCollect then
                                     local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
                                     if sourceInfo and not sourceInfo.isCollected then
-                                        setAtt(bag, slot, icon, itemID)
-                                        return
+                                        if itemMinLevel and itemMinLevel<=UnitLevel('player') or not itemMinLevel then
+                                            setAtt(bag, slot, icon, itemID)
+                                            return
+                                        end
                                     end
                                 end
                             end

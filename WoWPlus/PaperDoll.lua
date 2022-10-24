@@ -402,11 +402,7 @@ local function Equipment()--装备管理
             local name2, icon2, _, isEquipped, numItems= C_EquipmentSet.GetEquipmentSetInfo(v)
             if isEquipped then
                 name=name2
-                if name:find('%w')  then
-                    name=e.WA_Utf8Sub(name, 5)
-                else
-                    name=e.WA_Utf8Sub(name, 2)
-                end
+                name=e.WA_Utf8Sub(name, 2, 5)
                 if icon2 and icon2~=134400 then
                     icon=icon2
                 end

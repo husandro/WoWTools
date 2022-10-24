@@ -31,13 +31,14 @@ WoWPlus\HideTexture.lua
 WoWPlus\Flyout.lua
 WoWPlus\ObjectiveTracker.lua
 
+##WoWPlus\MountCollection.lua
 WoWPlus\Toy.lua
 WoWPlus\Heirloom.lua
 WoWPlus\WardroberItems.lua
 WoWPlus\WardroberSets.lua
 
 WoWPlus\WorldMap.lua
-WoWPlus\MainMenuButton.lua
+
 
 WoWPlus\Tooltips.lua
 ##WoWPlus\Container.lua
@@ -53,3 +54,5 @@ GamePlus\SellBuy.lua
 GamePlus\OpenItems.lua
 GamePlus\LFD.lua
 GamePlus\PetBattle.lua
+GamePlus\ItemInfo.lua
+GamePlus\SystemInfo.lua

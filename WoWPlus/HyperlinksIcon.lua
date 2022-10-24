@@ -14,13 +14,6 @@ local Save={
         ['成就']=true,
     }
 }
-local Icon={
-    no='|A:questlegendary:0:0|a',
-    wow='|A:Icon-WoW:0:0|a',
-    bag='|A:bag-main:0:0|a',
-    up='chatframe-button-up',
-    down='chatframe-button-down',
-}
 
 --local HEX=function(r, g, b, a) r = r <= 1 and r >= 0 and r or 0 g = g <= 1 and g >= 0 and g or 0 b = b <= 1 and b >= 0 and b or 0 a=a or 1 a =  a <= 1 and a >= 0 and a or 1 return '|c'..string.format("%02x%02x%02x%02x",a*255, r*255, g*255, b*255) end
 local Magic=function(s)  local t={'%%', '%.', '%(','%)','%+', '%-', '%*', '%?', '%[', '%^', '%$'} for _,v in pairs(t) do s=s:gsub(v,'%%'..v) end return s end --  ( ) . % + - * ? [ ^ $
@@ -82,9 +75,9 @@ local function Mount(id2, item)
         local mountID=item and C_MountJournal.GetMountFromItem(id2) or C_MountJournal.GetMountFromSpell(id2)
         if  mountID then
             if select(11, C_MountJournal.GetMountInfoByID(mountID)) then
-                return e.Icon.select
+                return e.Icon.select2
             else
-                return Icon.no
+                return e.Icon.info2
             end
         end
     end
@@ -121,7 +114,7 @@ local function Item(link)--物品超链接
                 end
                 local hasItemData, canCollect = C_TransmogCollection.PlayerCanCollectSource(sourceID)--玩家是否可收集
                 if hasItemData and not canCollect then
-                    t=t..Icon.no
+                    t=t..e.Icon.info2
                 end
             end
         end
@@ -139,11 +132,11 @@ local function Item(link)--物品超链接
             end
         end
     elseif C_ToyBox.GetToyInfo(id2) then--玩具
-        t=PlayerHasToy(id2) and t..e.Icon.select or t..Icon.no        
+        t=PlayerHasToy(id2) and t..e.Icon.select2 or t..e.Icon.info2        
     end    
     local bag=GetItemCount(link, true)--数量
     if bag and bag>0 then
-        t=t..Icon.bag..MK(bag, 3)
+        t=t..e.Icon.bag2..MK(bag, 3)
     end
     if t~=link then
         return t
@@ -202,7 +195,7 @@ local function Trade(link)--贸易技能
     local id2=link:match('Htrade:.-:(%d+):')
     if id2 then
         local icon = GetSpellTexture(id2)
-        if icon then 
+        if icon then
             return '|T'..icon..':0|t'..link
         end
     end
@@ -234,18 +227,18 @@ local function Achievement(link)--成就
     if id2 then
         local _, _, _, completed, _, _, _, _, _, icon = GetAchievementInfo(id2)
         local texture=icon and '|T'..icon..':0|t' or ''
-        return texture..link..(completed and e.Icon.select or Icon.no)
+        return texture..link..(completed and e.Icon.select2 or e.Icon.info2)
     end
 end
 
 local function Quest(link)--任务
     local id2=link:match('Hquest:(%d+)')
     if id2 then
-        local wow= C_QuestLog.IsAccountQuest(id2) and Icon.wow or ''--帐号通用        
+        local wow= C_QuestLog.IsAccountQuest(id2) and e.Icon.wow2 or ''--帐号通用        
         if C_QuestLog.IsQuestFlaggedCompleted(id2) then
-            return wow..link..e.Icon.select
+            return wow..link..e.Icon.select2
         else
-            return wow..link..Icon.no
+            return wow..link..e.Icon.info2
         end
     end
 end
@@ -255,7 +248,7 @@ local function Talent(link)--天赋
     if id2 then
         local _, _, icon, _, _, _, _, _ ,_, known=GetTalentInfoByID(id2)
         if icon then
-            return '|T'..icon..':0|t'..link..(known and e.Icon.select or Icon.no)
+            return '|T'..icon..':0|t'..link..(known and e.Icon.select2 or e.Icon.info2)
         end
     end
 end
@@ -264,7 +257,7 @@ local function Pvptal(link)--pvp天赋
     local id2=link:match('Hpvptal:(%d+)')
     if id2 then
         local _, _, icon, _, _, _, _, _ ,_, known=GetPvpTalentInfoByID(id2)
-        return '|T'..icon..':0|t'..link..(known and e.Icon.select or Icon.no)
+        return '|T'..icon..':0|t'..link..(known and e.Icon.select2 or e.Icon.info2)
     end
 end
 
@@ -299,7 +292,7 @@ local function Outfit(link)--外观方案链接
         end
         if to>0 then
             if to==co then
-                return link..e.Icon.select
+                return link..e.Icon.select2
             elseif co>0 then
                 return link..YELLOW_FONT_COLOR_CODE..co..'/'..to..'|r'                 
             else                
@@ -314,7 +307,7 @@ local function Transmogillusion(link)--幻化
     if illusionID then
         local info=C_TransmogCollection.GetIllusionInfo(illusionID)
         if info then
-            return link..((info.isCollected and info.isUsable) and e.Icon.okTransmog2) or (info.isCollected and e.Icon.select) or e.Icon.transmogHide2
+            return link..((info.isCollected and info.isUsable) and e.Icon.okTransmog2) or (info.isCollected and e.Icon.select2) or e.Icon.transmogHide2
         end
     end
 end
@@ -324,9 +317,9 @@ local function TransmogAppearance(link)--幻化
     if appearanceID then
         local has=C_TransmogCollection.PlayerHasTransmogItemModifiedAppearance(appearanceID)                    
         if has then
-            return link.e.Icon.select
+            return link.e.Icon.select2
         else
-            return link..Icon.no
+            return link..e.Icon.info2
         end
     end
 end
@@ -444,7 +437,7 @@ local function TransmogSet(link)--幻化套装
             end
             if to>0 then            
                 if n==to then
-                    return e.Icon.select
+                    return e.Icon.select2
                 elseif n==0 then
                     return link..RED_FONT_COLOR_CODE..n..'/'..to..'|r'
                 else                
@@ -520,8 +513,8 @@ end
 
 sel:SetSize(28,24)
 sel:SetPoint('BOTTOMRIGHT',Frame, 'TOPLEFT', -5, 2)--ChatFrame1.ScrollToBottomButton
-sel:SetPushedAtlas(Icon.up)
-sel:SetHighlightAtlas(Icon.down)
+sel:SetPushedAtlas('chatframe-button-up')
+sel:SetHighlightAtlas('chatframe-button-down')
 --sel:SetAlpha(0.5)
 sel:RegisterForClicks("LeftButtonDown","RightButtonDown")
 sel:SetScript('OnClick', function(self, d)
