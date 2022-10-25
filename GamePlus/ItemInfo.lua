@@ -4,7 +4,7 @@ local Save={}
 
 local panel=CreateFrame("Frame")
 panel.tips=CreateFrame("GameTooltip", id..addName, panel, "GameTooltipTemplate")
---local PlayerItemLevel=GetAverageItemLevel()
+
 local itemUseString =ITEM_SPELL_CHARGES:gsub('%%d', '%(%%d%+%)')--(%d+)次
 local tradeskill={
     [1]='|T136243:0|t',--工程零件
@@ -18,25 +18,15 @@ local tradeskill={
     [12]='|T4620672:0|t',--附魔
     [16]='|T4620676:0|t',--铭文
 }
-local function getItemStats(itemLink, bag)--返回物品的传业信息
-    if bag then
-       
-    end
-    local specTable = GetItemSpecInfo(itemLink)
-    if #specTable==0 then
 
-    end
-    return true
-end
 local function setItemInfo(self, itemLink, itemID, bag, merchantIndex)
     local isBound, equipmentName, bagID, slot
     local topLeftText, bottomRightText, leftText, bottomLeftText, topRightText, r, g ,b
     if bag then
         isBound, equipmentName, bagID, slot = bag.isBound, bag.equipmentName, bag.bagID, bag.slot
     end
+
     if itemLink then
-    
-        --topRightText=GetItemSpell(itemLink) and '|A:Soulbinds_Tree_Conduit_Icon_Utility:0:0|a'--使用图标
         local _, _, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, _, _, classID, subclassID, bindType, expacID, setID, isCraftingReagent = GetItemInfo(itemLink)
         itemLevel=GetDetailedItemLevelInfo(itemLink) or itemLevel
         if itemQuality then
@@ -50,7 +40,7 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex)
             if bag and not bag.isBound then--没有锁定
                 topRightText='|A:'..e.Icon.unlocked..':0:0|a'
             end
-            
+
         elseif itemEquipLoc and _G[itemEquipLoc] then--装备            
             if classID==2 and subclassID==20 then-- 鱼竿
                 topRightText='|A:worldquest-icon-fishing:0:0|a'
@@ -259,7 +249,10 @@ elseif spellName then--USE_COLON
     end
 end
 
-local function setBags(self)
+local function setBags(self)--背包设置
+    if Save.disabled then
+        return
+    end
     for i, itemButton in self:EnumerateValidItems() do
         local itemLink, itemID, isBound, _, equipmentName
         local slot, bagID= itemButton:GetSlotAndBagID()--:GetID() GetBagID()
@@ -284,7 +277,10 @@ hooksecurefunc('ContainerFrame_GenerateFrame',function (self, size, id2)
     end
 end)
 
-local function setMerchantInfo()--商人
+local function setMerchantInfo()--商人设置
+    if Save.disabled then
+        return
+    end
     local selectedTab= MerchantFrame.selectedTab
     local page= selectedTab == 1 and MERCHANT_ITEMS_PER_PAGE or BUYBACK_ITEMS_PER_PAGE
     for i=1, page do
@@ -311,6 +307,25 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
             Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
             
+            --添加控制面板        
+            local sel=e.CPanel(addName, not Save.disabled, true)
+            sel:SetScript('OnClick', function()
+                if Save.disabled then
+                    Save.disabled=nil
+                    Set()
+                    print(addName, e.GetEnabeleDisable(not Save.disabled))
+                else
+                    Save.disabled=true
+                    print(addName, e.GetEnabeleDisable(not Save.disabled), NEED..' /reload')
+                end
+            end)
+            sel:SetScript('OnEnter', function(self2)
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(BAGSLOT..' '..MERCHANT, EMBLEM_SYMBOL..INFO)
+                e.tips:Show()
+            end)
+            sel:SetScript('OnLeave', function() e.tips:Hide() end)
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end

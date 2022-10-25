@@ -40,11 +40,11 @@ gamePlus:SetText('Game Plus')
 local lastWoW=btn
 local lastGame=gamePlus
 --添加控制面板
-e.CPanel= function(name, value, game)
+e.CPanel= function(name, value, GamePlus)
     local check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     check.Text:SetText(name)
     check:SetChecked(value)
-    if game then
+    if GamePlus then
         check:SetPoint('TOPLEFT', lastGame, 'BOTTOMLEFT')
         lastGame=check
     else

@@ -48,6 +48,7 @@ WoWPlus\Professions.lua
 WoWPlus\UnitFrame.lua
 ##WowPlus\GroupManager.lua
 ##WoWPlus\AchievementFrame.lua
+##WowPlus\AuctionHouse.lua
 
 GamePlus\Gossip.lua
 GamePlus\SellBuy.lua
