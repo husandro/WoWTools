@@ -3,7 +3,7 @@ local Save={use={}, no={}, pet=true, open=true, toy=true, mount=true, mago=true,
 local addName=TUTORIAL_TITLE9
 local Combat, Bag= nil, {}
 
-local panel= CreateFrame("Button", nil, CharacterReagentBag0Slot, "SecureActionButtonTemplate")
+local panel= CreateFrame("Button", nil, UIParent, "SecureActionButtonTemplate")
 panel:RegisterForClicks('LeftButtonDown')
 panel.texture=panel:CreateTexture(nil,'ARTWORK')
 panel.mask= panel:CreateMaskTexture()
@@ -437,7 +437,7 @@ StaticPopupDialogs['OpenItmesUseOrDisableItem']={
         Save.no[data.itemID]=true
         Save.use[data.itemID]=nil
         getItems()--取得背包物品信息
-        print(id, addName, '|cnRED_FONT_COLOR:'..DISABLE..'|r', data.itemlink)
+        print(id, addName, '|cnRED_FONT_COLOR:'..DISABLE..'|r', data.itemLink)
     end,
     EditBoxOnTextChanged=function(self)
        local num= self:GetNumber()
@@ -473,12 +473,15 @@ end
 panel:SetScript("OnEnter",function(self)
     local infoType, itemID, itemLink = GetCursorInfo()
     if infoType == "item" and itemID and itemLink then
-        local icon= C_Item.GetItemIconByID(itemID)
+        if Bag.bag and Bag.slot and itemLink== GetContainerItemLink(Bag.bag, Bag.slot) then
+            return
+        end
+        local icon
+        icon= C_Item.GetItemIconByID(itemID)
         icon = icon and '|T'..icon..':0|t'..itemLink or ''
         local list=Save.use[itemID] and PROFESSIONS_CURRENT_LISTINGS..': |cff00ff00'..USE..'|r' or Save.no[itemID] and PROFESSIONS_CURRENT_LISTINGS..': |cffff0000'..DISABLE..'|r' or ''
         StaticPopup_Show('OpenItmesUseOrDisableItem',icon,list, {itemID=itemID, itemLink=itemLink})
         ClearCursor()
-        return
     else
         shoTips(self)--显示提示
     end
