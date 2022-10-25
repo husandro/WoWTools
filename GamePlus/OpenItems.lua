@@ -4,14 +4,12 @@ local addName=TUTORIAL_TITLE9
 local Combat, Bag= nil, {}
 
 local panel= CreateFrame("Button", nil, CharacterReagentBag0Slot, "SecureActionButtonTemplate")
+panel:RegisterForClicks('LeftButtonDown')
 panel.texture=panel:CreateTexture(nil,'ARTWORK')
-panel.mask= panel:CreateMaskTexture(nil, 'OVERLAY')
+panel.mask= panel:CreateMaskTexture()
 panel.tips=CreateFrame("GameTooltip", id..addName, panel, "GameTooltipTemplate")
 panel.Me=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
 panel.count=e.Cstr(panel, 10, nil, nil, true)
-
-
-
 
 local function setPanelPostion()--设置按钮位置
     local p=Save.Point
@@ -58,7 +56,6 @@ local function setAtt(bag, slot, icon, itemID)--设置属性
         panel:SetAttribute("type", "macro")
         panel:SetAttribute("macrotext", m)
         panel.texture:SetTexture(icon)
-        panel.texture:SetShown(true)
         num = GetItemCount(itemID)
         num=num>1 and num or ''
         panel:SetShown(true)
@@ -67,6 +64,7 @@ local function setAtt(bag, slot, icon, itemID)--设置属性
         panel:SetShown(not Save.noItemHide)
     end
     panel.count:SetText(num or '')
+    panel.texture:SetShown(bag and slot)
     Combat=nil
 end
 
@@ -183,9 +181,9 @@ local function setDisableCursorItem()--禁用当物品
         if itemID then
             Save.no[itemID]=true
             Save.use[itemID]=nil
-            getItems()
         end
     end
+    getItems()
 end
 
 --####
