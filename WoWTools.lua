@@ -326,24 +326,24 @@ e.Cbtn2= function ()
     b.texture:SetAtlas('bag-border')
 
     b.mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
-    b.mask:SetAllPoints(panel.texture)
-    b.texture:AddMaskTexture(panel.mask)
+    b.mask:SetAllPoints(b.texture)
+    b.texture:AddMaskTexture(b.mask)
     b.texture:SetShown(false)
 
     return b
 end
 e.Ccool=function(self, start, duration, modRate, HideCountdownNumbers, Reverse)--冷却条
-    if not self.cool then
-        self.cool= CreateFrame("Cooldown", nil, self, 'CooldownFrameTemplate')
-        self.cool:SetDrawEdge(true)
+    if not self.cooldown then
+        self.cooldown= CreateFrame("Cooldown", nil, self, 'CooldownFrameTemplate')
+        self.cooldown:SetDrawEdge(true)
         if HideCountdownNumbers then
-            self.cool:SetHideCountdownNumbers(true)
+            self.cooldown:SetHideCountdownNumbers(true)
         end
         if Reverse then--控制冷却动画的方向
-        self.cool:SetReverse(true)
+        self.cooldown:SetReverse(true)
         end
     end
-    self.cool:SetCooldown(start, duration, modRate)
+    self.cooldown:SetCooldown(start, duration, modRate)
 end
 
 e.SetButtonKey = function(self, set, key, click)--设置清除快捷键

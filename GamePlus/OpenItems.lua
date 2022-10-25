@@ -44,6 +44,19 @@ local getTip=function(bag, slot)--取得提示内容
     return true
 end
 
+local function setCooldown()--冷却条
+    if panel:IsShown() then
+        local start, duration, enable
+        if Bag.bag and Bag.slot then
+            local itemID = GetContainerItemID(Bag.bag, Bag.slot)
+            if itemID then
+                start, duration, enable = GetItemCooldown(itemID)
+            end
+        end
+        e.Ccool(panel, start, duration, nil, true)
+    end
+end
+
 local function setAtt(bag, slot, icon, itemID)--设置属性
     if UnitAffectingCombat('player') then
         Combat=true
@@ -57,11 +70,15 @@ local function setAtt(bag, slot, icon, itemID)--设置属性
         panel:SetAttribute("macrotext", m)
         panel.texture:SetTexture(icon)
         num = GetItemCount(itemID)
-        num=num>1 and num or ''
+        num= num~=1 and num or ''
         panel:SetShown(true)
+        setCooldown()--冷却条
     else
         panel:SetAttribute("macrotext", nil)
         panel:SetShown(not Save.noItemHide)
+        if panel.cooldown then
+            panel.cooldown:Clear()
+        end
     end
     panel.count:SetText(num or '')
     panel.texture:SetShown(bag and slot)
@@ -533,6 +550,7 @@ panel:RegisterEvent('BAG_UPDATE_DELAYED')
 
 panel:RegisterEvent('PLAYER_REGEN_DISABLED')
 panel:RegisterEvent('PLAYER_REGEN_ENABLED')
+panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
@@ -563,6 +581,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 getItems()--设置属性
             else
                 panel:UnregisterAllEvents()
+                panel:RegisterEvent("PLAYER_LOGOUT")
             end
 
              --添加控制面板        
@@ -599,13 +618,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='BAG_UPDATE_DELAYED' then
             getItems()
     elseif event=='PLAYER_REGEN_DISABLED' then
-        panel:SetShown(false)
-
+        if Save.noItemHide then
+            panel:SetShown(false)
+        end
     elseif event=='PLAYER_REGEN_ENABLED' then
         if Combat then
             getItems()
         else
-            panel:SetShown(Bag.bag and not Save.noItemHide)
+            panel:SetShown(Bag.bag or not Save.noItemHide)
         end
+    elseif event=='BAG_UPDATE_COOLDOWN' then
+        setCooldown()--冷却条
     end
 end)

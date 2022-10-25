@@ -1,7 +1,7 @@
 local id, e = ...
 local Save={Shift={}, Alt={}, Ctrl={}}
 local addName=MOUNT
-local panel=CreateFrame("Frame")
+e.MountFrame=e.Cbtn2()
 
 --Blizzard_MountCollection.lua
 local function setMountJournal_InitMountButton(button, elementData)
@@ -63,10 +63,10 @@ end
 --###########
 --加载保存数据
 --###########
-panel=CreateFrame('Frame')
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-panel:SetScript("OnEvent", function(self, event, arg1)
+e.MountFrame=CreateFrame('Frame')
+e.MountFrame:RegisterEvent("ADDON_LOADED")
+e.MountFrame:RegisterEvent("PLAYER_LOGOUT")
+e.MountFrame:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
             Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
 --[[            local check=e.CPanel(addName, not Save.disabled, true)
