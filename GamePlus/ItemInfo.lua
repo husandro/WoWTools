@@ -161,8 +161,7 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex)
                 if #specTable==0 then
                     topRightText=e.Icon.X2
                 end
-            --[[
-elseif spellName then--USE_COLON
+            elseif spellName then--USE_COLON
                 panel.tips:SetOwner(panel, "ANCHOR_NONE")
                 panel.tips:ClearLines()
                 if merchantIndex then
@@ -180,9 +179,6 @@ elseif spellName then--USE_COLON
                         end
                     end
                 end
-
-]]
-
             end
         end
         if bag then--仅显示背包

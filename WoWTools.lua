@@ -307,7 +307,31 @@ e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size)
     end
     return b
 end
+e.Cbtn2= function ()
+    local b= CreateFrame("Button", nil, UIParent, "SecureActionButtonTemplate")
+    b:RegisterForClicks('LeftButtonDown')
+    b:EnableMouseWheel(true)
+    b.texture=b:CreateTexture(nil,'ARTWORK')
+    b.mask= b:CreateMaskTexture()
+    b:SetSize(30,30)
+    --b:RegisterForDrag("RightButton")
+    --b:SetMovable(true)
+    --b:SetClampedToScreen(true)
+    b:SetNormalAtlas('bag-reagent-border-empty')
+    b:SetHighlightAtlas('bag-border')
+    b:SetPushedAtlas('bag-border-highlight')
 
+    b.texture:SetPoint('CENTER')
+    b.texture:SetSize(22,22)
+    b.texture:SetAtlas('bag-border')
+
+    b.mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
+    b.mask:SetAllPoints(panel.texture)
+    b.texture:AddMaskTexture(panel.mask)
+    b.texture:SetShown(false)
+
+    return b
+end
 e.Ccool=function(self, start, duration, modRate, HideCountdownNumbers, Reverse)--冷却条
     if not self.cool then
         self.cool= CreateFrame("Cooldown", nil, self, 'CooldownFrameTemplate')
