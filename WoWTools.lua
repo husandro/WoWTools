@@ -146,7 +146,7 @@ e.Icon={
     toRight='common-icon-rotateright',--向右
     toRight2='|A:common-icon-rotateright:0:0|a',
 
-    unlocked='Levelup-Icon-Lock',--没锁
+    unlocked='tradeskills-icon-locked',--'Levelup-Icon-Lock',--没锁
     quest='AutoQuest-Badge-Campaign',--任务
     guild2='|A:communities-guildbanner-background:0:0|a',
     --mask="Interface\\ChatFrame\\UI-ChatIcon-HotS",--菱形
@@ -281,7 +281,7 @@ e.CeditBox= function(self, width, height)
     return editBox
 end
 
-e.Cbtn= function(self, Template, value, SecureAction, name, notTexture)
+e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size)
     local b
     if Template then
         b=CreateFrame('Button', name, self, 'UIPanelButtonTemplate')
@@ -302,6 +302,9 @@ e.Cbtn= function(self, Template, value, SecureAction, name, notTexture)
         end
     end
     b:RegisterForClicks("LeftButtonDown","RightButtonDown")
+    if size then
+        b:SetSize(size[1], size[2])
+    end
     return b
 end
 

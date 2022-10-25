@@ -6,28 +6,47 @@ local Save={
     Option={},
     NPC={},
 }
-local Frame = GossipFrame
-local Frame2=ObjectiveTrackerBlocksFrame
 
 local Icon={
-    --right='|A:newplayertutorial-icon-mouse-rightbutton:0:0|a',
-    --left='|A:newplayertutorial-icon-mouse-leftbutton:0:0|a',
-    setHighlightAtlas='bags-newitem',
-    setPushedAtlas='bags-glow-heirloom',
-    gossip='transmog-icon-chat',--对话图标
-    qest='campaignavailablequesticon',
     TrivialQuests='|A:TrivialQuests:0:0|a',
 }
 
-local function Cbtn(self)
+--[[local function Cbtn(self)
     local b=CreateFrame("Button",nil, self)
     b:SetSize(20, 20)
     b:SetHighlightAtlas(Icon.setHighlightAtlas)
     b:SetPushedAtlas(Icon.setPushedAtlas)
     return b
+end]]
+
+local q=e.Cbtn(ObjectiveTrackerBlocksFrame, nil,nil,nil,nil, true);--任务图标
+local g=e.Cbtn(ObjectiveTrackerBlocksFrame, nil,nil,nil,nil, true);--闲话图标
+q:SetSize(20,20)
+g:SetSize(20,20)
+g:SetPoint('RIGHT', q, 'LEFT', -2, 0)
+
+--设置图标
+local function setTexture()
+    if Save.qest then
+        q:SetNormalAtlas('campaignavailablequesticon')
+    else
+        q:SetNormalAtlas(e.Icon.icon)
+    end
+    if Save.gossip then
+       g:SetNormalAtlas('transmog-icon-chat')
+    else
+        g:SetNormalAtlas(e.Icon.icon)
+    end
 end
-local g=Cbtn(Frame2);--闲话图标
-local q=Cbtn(Frame2);--任务图标
+local function setParent()--设置父级
+    if not Save.point then
+        q:SetParent(ObjectiveTrackerBlocksFrame)
+        g:SetParent(ObjectiveTrackerBlocksFrame)
+    else
+        q:SetParent(UIParent)
+        g:SetParent(UIParent)
+    end
+end
 
 local function QuestInfo_GetQuestID()--取得任务ID
 	if ( QuestInfoFrame.questLog ) then
@@ -48,25 +67,13 @@ local function QuestTrivial(questID)--其它任务,低等任务
     return (trivial and tracking) or not trivial
 end
 
---设置图标
-local function setTexture()
-    if Save.qest then
-        q:SetNormalAtlas(Icon.qest)
-    else
-        q:SetNormalAtlas(e.Icon.icon)
-    end
-    if Save.gossip then
-       g:SetNormalAtlas(Icon.gossip)
-    else
-        g:SetNormalAtlas(e.Icon.icon)
-    end
-end
+
 
 --闲话选项
 --禁用此npc闲话选项
-Frame:SetScript('OnShow', function (self)
+GossipFrame:SetScript('OnShow', function (self)
     if not self.sel then
-        self.sel=CreateFrame("CheckButton", nil, Frame, 'InterfaceOptionsCheckButtonTemplate')
+        self.sel=CreateFrame("CheckButton", nil, GossipFrame, 'InterfaceOptionsCheckButtonTemplate')
         self.sel:SetPoint("BOTTOMLEFT",5,2)
         self.sel.Text:SetText(DISABLE)
         self.sel:RegisterForClicks("LeftButtonUp", "RightButtonUp")
@@ -94,13 +101,6 @@ Frame:SetScript('OnShow', function (self)
                             if v and v.npcid==self2.npc then
                                 Save.Option[k]=nil
                                 n=n+1
-         --[[
-                       if v.gossip then
-                                    print(n..')'..(CLEAR or KEY_NUMLOCK_MAC)..': '..GREEN_FONT_COLOR_CODE..v.gossip..'|r')
-                                end
-
-]]
-
                             end
                        end
                        print(CLEAR_ALL..' (|cffff00ff'..(self2.name or self2.npc)..'|r)'..CUSTOM..': '..GREEN_FONT_COLOR_CODE..n..' |r'..GOSSIP_OPTIONS)
@@ -129,7 +129,7 @@ Frame:SetScript('OnShow', function (self)
     self.sel.npc=npc
     self.sel.name=UnitName("npc")
     self.sel:SetChecked(Save.NPC[npc])
-    Frame.sel:SetShown(npc)
+    GossipFrame.sel:SetShown(npc)
 end)
 --自定义闲话选项
 hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, info)--GossipFrameShared.lua
@@ -191,9 +191,9 @@ hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, info)--GossipFra
     end
 end)
 
---hooksecurefunc(Frame, 'Update', function()
+--hooksecurefunc(GossipFrame, 'Update', function()
 --对话图标
-g:SetPoint('RIGHT', q, 'LEFT', -2, 0)
+
 g:SetScript('OnClick', function(self, d)
     if d=='LeftButton' and not IsModifierKeyDown() then
         if Save.gossip then
@@ -322,15 +322,25 @@ hooksecurefunc('QuestInfo_Display', function(self, template, parentFrame, accept
     end
 end)
 
-q:SetPoint('TOPRIGHT', Frame2, 'TOPRIGHT', -45, -2)
-q:SetScript('OnClick', function ()
-    if Save.qest then
-        Save.qest=nil
-    else
-        Save.qest=true
+
+q:SetScript('OnClick', function(self, d)
+    local key=IsModifierKeyDown()
+    if d=='LeftButton' and not key then
+        if Save.qest then
+            Save.qest=nil
+        else
+            Save.qest=true
+        end
+        setTexture()
+        print(QUICK_JOIN_IS_AUTO_ACCEPT_TOOLTIP..' ('..QUESTS_LABEL..'): '..e.GetEnabeleDisable(Save.qest))
+    elseif d=='RightButton' and not key then
+        SetCursor('UI_MOVE_CURSOR')
+    elseif d=='RightButton' and IsAltKeyDown() then
+        self:ClearAllPoints()
+        Save.point=nil
+        setParent()--设置父级
+        self:SetPoint('TOPRIGHT', ObjectiveTrackerBlocksFrame, 'TOPRIGHT', -45, -2)--设置位置
     end
-    setTexture()
-    print(QUICK_JOIN_IS_AUTO_ACCEPT_TOOLTIP..' ('..QUESTS_LABEL..'): '..e.GetEnabeleDisable(Save.qest))
 end)
 q:SetScript('OnEnter', function (self2)
     e.tips:SetOwner(self2, "ANCHOR_LEFT")
@@ -338,13 +348,27 @@ q:SetScript('OnEnter', function (self2)
     e.tips:AddDoubleLine(id, addName)
     e.tips:AddLine(' ')
     e.tips:AddDoubleLine(QUICK_JOIN_IS_AUTO_ACCEPT_TOOLTIP..': '..QUESTS_LABEL, e.GetEnabeleDisable(Save.qest)..e.Icon.left)
-    e.tips:AddDoubleLine(	MINIMAP_TRACKING_TRIVIAL_QUESTS..Icon.TrivialQuests, e.GetEnabeleDisable(GetQuestTrivialTracking()))
+    e.tips:AddDoubleLine(NPE_MOVE, e.Icon.right)
+    e.tips:AddDoubleLine(MINIMAP_TRACKING_TRIVIAL_QUESTS..'|A:TrivialQuests:0:0|a', e.GetEnabeleDisable(GetQuestTrivialTracking()))--低等任务
     e.tips:AddLine(' ')
     e.tips:AddDoubleLine(QUESTS_LABEL..' '..#C_QuestLog.GetAllCompletedQuestIDs()..' '..COMPLETE, GetDailyQuestsCompleted()..' '..DAILY)--已完成任务
     e.tips:Show()
 end)
 q:SetScript('OnLeave', function ()
     e.tips:Hide()
+end)
+q:SetScript('OnMouseUp', function() ResetCursor() end)
+q:SetMovable(true)
+q:SetClampedToScreen(true)
+q:RegisterForDrag('RightButton')
+q:SetScript('OnDragStart',function(self) self:StartMoving() end)
+q:SetScript('OnDragStop', function(self)
+    self:StopMovingOrSizing()
+    ResetCursor()
+    setParent()--设置父级
+    Save.point={self:GetPoint(1)}
+    Save.point[2]=nil
+    print(id, addName, '|cFF00FF00Alt+'.. e.Icon.right..KEY_BUTTON2..'|r', TRANSMOGRIFY_TOOLTIP_REVERT)
 end)
 
 q:RegisterEvent("PLAYER_LOGOUT")
@@ -371,6 +395,12 @@ g:SetScript("OnEvent", function(self, event, arg1)
         if arg1 == id then
             Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
             setTexture()
+            if Save.point then
+                setParent()--设置父级
+                q:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
+            else
+                q:SetPoint('TOPRIGHT', ObjectiveTrackerBlocksFrame, 'TOPRIGHT', -45, -2)--设置位置
+            end
         elseif arg1=='Blizzard_PlayerChoice' then--命运, 字符
             hooksecurefunc(StaticPopupDialogs["CONFIRM_PLAYER_CHOICE_WITH_CONFIRMATION_STRING"],"OnShow",function(s)
                 if Save.gossip and s.editBox then
