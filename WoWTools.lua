@@ -331,10 +331,13 @@ e.Cbtn2= function(name)
     b.border:SetAtlas('bag-reagent-border')
     return b
 end
-e.Ccool=function(self, start, duration, modRate, HideCountdownNumbers, Reverse)--冷却条
+e.Ccool=function(self, start, duration, modRate, HideCountdownNumbers, Reverse, PositFrame)--冷却条
     if not self.cooldown then
         self.cooldown= CreateFrame("Cooldown", nil, self, 'CooldownFrameTemplate')
         self.cooldown:SetDrawEdge(true)
+        if PositFrame then
+            self.cooldown:SetAllPoints(PositFrame)
+        end
         if HideCountdownNumbers then
             self.cooldown:SetHideCountdownNumbers(true)
         end

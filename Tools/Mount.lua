@@ -36,6 +36,17 @@ panel.textureModifier:SetAllPoints(panel.texture)
 panel.textureModifier:AddMaskTexture(panel.mask)
 panel.textureModifier:SetShown(false)
 
+e.Ccool(panel, 0, 0, nil, true, nil, panel.texture)--冷却条
+
+local function setPanelPostion()--设置按钮位置
+    local p=Save.Point
+    if p and p[1] and p[3] and p[4] and p[5] then
+        panel:SetPoint(p[1], UIParent, p[3], p[4], p[5])
+    else
+        panel:SetPoint('RIGHT', CharacterReagentBag0Slot, 'LEFT')
+    end
+end
+
 local function setKEY()--设置捷键
     if Save.KEY then
         e.SetButtonKey(panel, true, Save.KEY)
@@ -241,14 +252,7 @@ local function setClickAtt(inCombat)--设置 Click属性
     setTextrue()--设置图标
 end
 
-local function setPanelPostion()--设置按钮位置
-    local p=Save.Point
-    if p and p[1] and p[3] and p[4] and p[5] then
-        panel:SetPoint(p[1], UIParent, p[3], p[4], p[5])
-    else
-        panel:SetPoint('RIGHT', CharacterReagentBag0Slot, 'LEFT')
-    end
-end
+
 
 --#####
 --对话框
@@ -464,7 +468,7 @@ local function InitMenu(self, level, menuList)--主菜单
             UIDropDownMenu_AddButton(info, level)
 
             info={
-                text=addName,
+                text=id,
                 isTitle=true,
                 notCheckable=true,
             }
@@ -614,7 +618,7 @@ local function InitMenu(self, level, menuList)--主菜单
 
         UIDropDownMenu_AddSeparator()
         info={
-            text=Save.KEY or id,
+            text=Save.KEY or addName,
             notCheckable=true,
             menuList=SETTINGS,
             hasArrow=true,
@@ -872,12 +876,11 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             end)
 
             if not Save.disabled then
-                Init()               
+                Init()
             else
                 panel:UnregisterAllEvents()
-                panel:RegisterEvent("PLAYER_LOGOUT")
-                panel:SetShown(false)
             end
+            panel:RegisterEvent("PLAYER_LOGOUT")
 
     elseif event=='ADDON_LOADED' and arg1=='Blizzard_Collections' then
         hooksecurefunc('MountJournal_InitMountButton',setMountJournal_InitMountButton)
@@ -919,9 +922,9 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     elseif event=='MODIFIER_STATE_CHANGED' then
         local icon
         if arg2==1 then
-            icon =arg1:find('SHIFT') and panel.textureModifier.Shift
-                        or arg1:find('CTRL') and panel.textureModifier.Ctrl
-                        or arg1:find('ALT') and panel.textureModifier.Alt
+            icon = arg1:find('SHIFT') and panel.textureModifier.Shift
+                or arg1:find('CTRL') and panel.textureModifier.Ctrl
+                or arg1:find('ALT') and panel.textureModifier.Alt
         end
         if icon then
             panel.textureModifier:SetTexture(icon)

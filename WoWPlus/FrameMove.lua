@@ -301,11 +301,14 @@ local function setAddLoad(arg1)
         
     elseif arg1=='Blizzard_FlightMap' then--飞行地图
         Move(FlightMapFrame, {})
-
+ --[[
     else
-        if arg1 then
+      
+ if arg1 then
             print(id, addName, arg1)
-        end
+        en
+
+]]
     end
 end
 
