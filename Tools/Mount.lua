@@ -24,6 +24,7 @@ local XD
 
 
 local panel=e.Cbtn2(id..addName..'button')
+--e.mountFrame=panel
 panel:SetAttribute("type1", "spell")
 panel:SetAttribute("target-spell", "cursor")
 panel:SetAttribute("alt-type1", "spell")
@@ -36,17 +37,16 @@ panel.textureModifier:SetAllPoints(panel.texture)
 panel.textureModifier:AddMaskTexture(panel.mask)
 panel.textureModifier:SetShown(false)
 
-e.Ccool(panel, 0, 0, nil, true, nil, panel.texture)--冷却条
 
 local function setPanelPostion()--设置按钮位置
     local p=Save.Point
     if p and p[1] and p[3] and p[4] and p[5] then
         panel:SetPoint(p[1], UIParent, p[3], p[4], p[5])
     else
-        panel:SetPoint('RIGHT', CharacterReagentBag0Slot, 'LEFT')
+        panel:SetPoint('RIGHT', CharacterReagentBag0Slot, 'LEFT',0,0)
     end
 end
-
+--print(CharacterReagentBag0Slot:GetParent():GetName())
 local function setKEY()--设置捷键
     if Save.KEY then
         e.SetButtonKey(panel, true, Save.KEY)
@@ -155,7 +155,7 @@ local function checkMount()--检测坐骑
                 if mountID then
                     mountID = mountID==678 and Faction==1 and 679 or mountID==679 and Faction==0 and 678 or mountID--[召唤司机]
                     local name, _, icon, isActive, isUsable, sourceType, isFavorite, isFactionSpecific, faction, shouldHideOnChar, isCollected =C_MountJournal.GetMountInfoByID(mountID)
-                    if not shouldHideOnChar and isCollected and (not isFactionSpecific or faction==Faction) and isUsable then
+                    if not shouldHideOnChar and isCollected and (not isFactionSpecific or faction==Faction) then
                         if type==FLOOR then
                             if uiMapID and mapID==uiMapID and not XD then
                                 table.insert(panel[type], spellID)
@@ -197,7 +197,7 @@ local function setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
     end
     panel.Combat=nil
 end
-local function setCooldown()--设置冷却
+local function setCooldown(aura)--设置冷却
     if panel.spellAtt then
         local start, duration, _, modRate = GetSpellCooldown(panel.spellAtt)
         e.Ccool(panel, start, duration, modRate, true)--冷却条
@@ -209,15 +209,25 @@ local function setCooldown()--设置冷却
     end
 end
 local function setTextrue()--设置图标
-    local icon=panel.iconAtt
+    local icon= panel.iconAtt
     if IsMounted() then
         icon=136116
-        panel.texture:SetTexture(icon)
     elseif icon then
         local spellID= panel.spellAtt or panel.itemID and select(2, GetItemSpell(panel.itemID))
-        if spellID  and e.WA_GetUnitBuff('player', spellID, 'PLAYER') then
-            icon=136116
+        if spellID  then --and e.WA_GetUnitBuff('player', spellID, 'PLAYER') then
+            local spellName=GetSpellInfo(spellID)
+            for i = 1, 40 do
+                local name, _, _, _, _, _, _, _, _, spell=UnitBuff('player', spellID, 'PLAYER')
+                if not name then
+                    break
+                elseif spell == spellID  or spellName == name then
+                    icon=136116
+                    break
+                end
+              end
         end
+    end
+    if icon then
         panel.texture:SetTexture(icon)
     end
     panel.texture:SetShown(icon and true or false)
@@ -727,6 +737,20 @@ end
 --初始化
 --######
 local function Init()
+    setPanelPostion()--设置按钮位置
+    panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
+    UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
+    XDInt()--德鲁伊设置
+    checkSpell()--检测法术
+    checkItem()--检测物品
+    checkMount()--检测坐骑
+    setClickAtt()--设置
+    setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
+    setCooldown()--设置冷却
+    if Save.KEY then
+        setKEY()--设置捷键
+    end
+
     panel:EnableMouseWheel(true)
     panel:RegisterForDrag("RightButton")
     panel:SetMovable(true)
@@ -803,35 +827,6 @@ local function Init()
         ResetCursor()
         self.border:SetAtlas('bag-reagent-border')
     end)
-
-    --[[
-panel:SetScript('OnEnter',function()
-        local infoType, itemID, itemLink = GetCursorInfo()
-        if infoType == "item" and itemID then
-            local exits=Save.Mounts[ITEMS][itemID] and ERR_ZONE_EXPLORED:format(PROFESSIONS_CURRENT_LISTINGS) or NEW
-            local icon = C_Item.GetItemIconByID(itemLink or itemID)
-            local text= (icon and '|T'..icon..':0|t' or '').. (itemLink or ('itemID: '..itemID))
-            StaticPopup_Show(id..addName..'ITEMS',text,exits , {itemID=itemID})
-        end
-    end)
-
-]]
-
-
-    panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
-    UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')--dropDown, initFunc, displayMode, level, menuList
-
-    XDInt()--德鲁伊设置
-    checkSpell()--检测法术
-    checkItem()--检测物品
-    checkMount()--检测坐骑
-    setPanelPostion()--设置按钮位置
-    setClickAtt()--设置
-    setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
-    setCooldown()--设置冷却
-    if Save.KEY then
-        setKEY()--设置捷键
-    end
 end
 --###########
 --加载保存数据

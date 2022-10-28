@@ -46,14 +46,17 @@ end
 
 local function setCooldown()--冷却条
     if panel:IsShown() then
-        local start, duration, enable
         if Bag.bag and Bag.slot then
             local itemID = GetContainerItemID(Bag.bag, Bag.slot)
             if itemID then
-                start, duration, enable = GetItemCooldown(itemID)
+                local start, duration, enable = GetItemCooldown(itemID)
+                e.Ccool(panel, start, duration, nil, true)
+                return
             end
         end
-        e.Ccool(panel, start, duration, nil, true)
+        if panel.cooldown then
+            panel.cooldown:Clear()
+        end
     end
 end
 
