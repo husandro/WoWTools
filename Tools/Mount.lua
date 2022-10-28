@@ -40,6 +40,7 @@ panel.textureModifier:SetShown(false)
 
 local function setPanelPostion()--设置按钮位置
     local p=Save.Point
+    --panel:ClearAllPoints()
     if p and p[1] and p[3] and p[4] and p[5] then
         panel:SetPoint(p[1], UIParent, p[3], p[4], p[5])
     else
