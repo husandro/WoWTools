@@ -307,29 +307,28 @@ e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size)
     end
     return b
 end
-e.Cbtn2= function ()
-    local b= CreateFrame("Button", nil, UIParent, "SecureActionButtonTemplate")
-    b:RegisterForClicks('LeftButtonDown')
-    b:EnableMouseWheel(true)
-    b.texture=b:CreateTexture(nil,'ARTWORK')
-    b.mask= b:CreateMaskTexture()
+e.Cbtn2= function(name)
+    local b= CreateFrame("Button", name, UIParent, "SecureActionButtonTemplate")
     b:SetSize(30,30)
-    --b:RegisterForDrag("RightButton")
-    --b:SetMovable(true)
-    --b:SetClampedToScreen(true)
     b:SetNormalAtlas('bag-reagent-border-empty')
     b:SetHighlightAtlas('bag-border')
     b:SetPushedAtlas('bag-border-highlight')
+    b:RegisterForClicks('LeftButtonDown')--, 'RightButtonDown')
 
-    b.texture:SetPoint('CENTER')
-    b.texture:SetSize(22,22)
+    b.texture=b:CreateTexture(nil,'ARTWORK')
+    b.texture:SetPoint("CENTER",-1,1)
+    b.texture:SetSize(23,23)
     b.texture:SetAtlas('bag-border')
 
+    b.mask= b:CreateMaskTexture()
     b.mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
     b.mask:SetAllPoints(b.texture)
     b.texture:AddMaskTexture(b.mask)
     b.texture:SetShown(false)
 
+    b.border=b:CreateTexture(nil,'OVERLAY')
+    b.border:SetAllPoints(b)
+    b.border:SetAtlas('bag-reagent-border')
     return b
 end
 e.Ccool=function(self, start, duration, modRate, HideCountdownNumbers, Reverse)--冷却条
@@ -340,7 +339,7 @@ e.Ccool=function(self, start, duration, modRate, HideCountdownNumbers, Reverse)-
             self.cooldown:SetHideCountdownNumbers(true)
         end
         if Reverse then--控制冷却动画的方向
-        self.cooldown:SetReverse(true)
+            self.cooldown:SetReverse(true)
         end
     end
     self.cooldown:SetCooldown(start, duration, modRate)
@@ -382,26 +381,32 @@ e.itemSlotTable={
 };
 
 
+--[[
 e.WA_GetUnitAura = function(unit, spell, filter)--AuraEnvironment.lua
   for i = 1, 255 do
-    local name, _, _, _, _, _, _, _, _, spellId = UnitAura(unit, i, filter)
-    if not name then
+    --local name, _, _, _, _, _, _, _, _, spellId = UnitAura(unit, i, filter)
+    local spellID = select(10, UnitAura(unit, i, filter))
+    if not spellID then
         return
-    elseif spell == spellId or spell == name then
+    elseif spell == spellID then
       return UnitAura(unit, i, filter)
     end
   end
 end
+
+]]
+
 e.WA_GetUnitBuff = function(unit, spell, filter)
     for i = 1, 40 do
-        local name, _, _, _, _, _, _, _, _, spellId = UnitBuff(unit, i, filter)
-        if not name then
+        local spellID = select(10, UnitBuff(unit, i, filter))
+        if not spellID then
             return
-        elseif spell == spellId or spell == name then
+        elseif spell == spellID then
           return UnitBuff(unit, i, filter)
         end
       end
 end
+--[[
 
 e.WA_GetUnitDebuff = function(unit, spell, filter)
     for i = 1, 40 do
@@ -413,6 +418,9 @@ e.WA_GetUnitDebuff = function(unit, spell, filter)
         end
       end
 end
+
+]]
+
 e.WA_Utf8Sub = function(input, size, letterSize)
     local output = ""
     if type(input) ~= "string" then

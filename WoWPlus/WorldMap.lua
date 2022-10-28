@@ -463,7 +463,12 @@ end
 local function setMapID(self)--显示地图ID
     if not self.mapInfoBtn then
         self.mapInfoBtn=e.Cbtn(self.BorderFrame.TitleContainer)
-        self.mapInfoBtn:SetPoint('RIGHT', self.BorderFrame.TitleContainer, 'RIGHT', -50,0)
+        if IsAddOnLoaded('Mapster') then
+            self.mapInfoBtn:SetPoint('RIGHT', self.BorderFrame.TitleContainer, 'RIGHT', -140,0)
+        else
+            self.mapInfoBtn:SetPoint('RIGHT', self.BorderFrame.TitleContainer, 'RIGHT', -50,0)
+        end
+        
         self.mapInfoBtn:SetNormalAtlas(Save.disabled and e.Icon.disabled or e.Icon.map)
         self.mapInfoBtn:SetSize(22,22)
         self.mapInfoBtn:RegisterForClicks("LeftButtonUp", "RightButtonUp")

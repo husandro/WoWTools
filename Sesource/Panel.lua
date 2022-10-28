@@ -1,14 +1,14 @@
 local id, e = ...
 
 local panel = CreateFrame("Frame")--Panel
-panel.name = id
+panel.name = id--'|cffff00ffWoW|r|cff00ff00Tools|r'
 InterfaceOptions_AddCategory(panel)
 
-local btn=CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')
-btn:SetPoint('TOPLEFT')
-btn:SetText(RELOADUI)
-btn:SetSize(120, 28)
-btn:SetScript('OnClick', function()
+local reloadButton=CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')
+reloadButton:SetPoint('TOPLEFT')
+reloadButton:SetText(RELOADUI)
+reloadButton:SetSize(120, 28)
+reloadButton:SetScript('OnClick', function()
     ReloadUI()
 end)
 
@@ -24,11 +24,11 @@ StaticPopupDialogs[id..'restAllSetup']={
     end,
 }
 
-local btn2=CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')
-btn2:SetPoint('LEFT', btn, 'RIGHT', 10, 0)
-btn2:SetText('|cnRED_FONT_COLOR:'..RESET_ALL_BUTTON_TEXT..'|r')
-btn2:SetSize(120, 28)
-btn2:SetScript('OnClick', function()
+local restButton=CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')
+restButton:SetPoint('LEFT', reloadButton, 'RIGHT', 10, 0)
+restButton:SetText('|cnRED_FONT_COLOR:'..RESET_ALL_BUTTON_TEXT..'|r')
+restButton:SetSize(120, 28)
+restButton:SetScript('OnClick', function()
     StaticPopup_Show(id..'restAllSetup')
 end)
 
@@ -37,7 +37,7 @@ local gamePlus=e.Cstr(panel)
 gamePlus:SetPoint('TOPLEFT', panel,'TOP', 0, -14)
 gamePlus:SetText('Game Plus')
 
-local lastWoW=btn
+local lastWoW=reloadButton
 local lastGame=gamePlus
 --添加控制面板
 e.CPanel= function(name, value, GamePlus)

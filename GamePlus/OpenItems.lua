@@ -8,7 +8,7 @@ panel:RegisterForClicks('LeftButtonDown')
 panel.texture=panel:CreateTexture(nil,'ARTWORK')
 panel.mask= panel:CreateMaskTexture()
 panel.tips=CreateFrame("GameTooltip", id..addName, panel, "GameTooltipTemplate")
-panel.Me=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
+panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
 panel.count=e.Cstr(panel, 10, nil, nil, true)
 
 local function setPanelPostion()--设置按钮位置
@@ -16,7 +16,7 @@ local function setPanelPostion()--设置按钮位置
     if p and p[1] and p[3] and p[4] and p[5] then
         panel:SetPoint(p[1],  UIParent, p[3], p[4], p[5])
     else
-        panel:SetPoint('RIGHT', CharacterReagentBag0Slot, 'LEFT')
+        panel:SetPoint('RIGHT', CharacterReagentBag0Slot, 'LEFT',-30, 0)
     end
 end
 
@@ -512,7 +512,7 @@ panel:SetScript("OnMouseDown", function(self,d)
     if d=='RightButton' and IsAltKeyDown() then
         SetCursor('UI_MOVE_CURSOR')
     elseif (d=='RightButton' and not IsModifierKeyDown()) or not(Bag.bag and Bag.slot) then
-        ToggleDropDownMenu(1,nil,panel.Me,self,self:GetWidth(),0)
+        ToggleDropDownMenu(1,nil,panel.Menu,self,self:GetWidth(),0)
     end
 end)
 
@@ -576,7 +576,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
                 panel.count:SetPoint('BOTTOM',0,2)
 
-                UIDropDownMenu_Initialize(panel.Me, setMenuList, 'MENU')
+                UIDropDownMenu_Initialize(panel.Menu, setMenuList, 'MENU')
                 setPanelPostion()--设置按钮位置
                 getItems()--设置属性
             else
