@@ -24,7 +24,6 @@ local XD
 
 
 local panel=e.Cbtn2(id..addName..'button')
---e.mountFrame=panel
 panel:SetAttribute("type1", "spell")
 panel:SetAttribute("target-spell", "cursor")
 panel:SetAttribute("alt-type1", "spell")
@@ -40,13 +39,14 @@ panel.textureModifier:SetShown(false)
 
 local function setPanelPostion()--设置按钮位置
     local p=Save.Point
-    --panel:ClearAllPoints()
+    panel:ClearAllPoints()
     if p and p[1] and p[3] and p[4] and p[5] then
         panel:SetPoint(p[1], UIParent, p[3], p[4], p[5])
     else
         panel:SetPoint('RIGHT', CharacterReagentBag0Slot, 'LEFT',0,0)
     end
 end
+
 --print(CharacterReagentBag0Slot:GetParent():GetName())
 local function setKEY()--设置捷键
     if Save.KEY then
@@ -309,7 +309,10 @@ StaticPopupDialogs[id..addName..'FLOOR']={--区域,设置对话框
         self:GetParent().button1:SetText(NONE)
        end
        self:GetParent().button1:SetEnabled(num>0 and num<2147483647) 
-    end
+    end,
+    EditBoxOnEscapePressed = function(s)
+        s:GetParent():Hide()
+    end,
 }
 StaticPopupDialogs[id..addName..'ITEMS']={--物品, 设置对话框
     text=id..' '..addName..' '..ITEMS..'\n\n%s\n%s',
@@ -334,6 +337,9 @@ StaticPopupDialogs[id..addName..'ITEMS']={--物品, 设置对话框
         checkItem()--检测物品
         setClickAtt()--设置 Click属性
     end,
+    EditBoxOnEscapePressed = function(s)
+        s:GetParent():Hide()
+    end,
 }
 StaticPopupDialogs[id..addName..'SPELLS']={--法术, 设置对话框
     text=id..' '..addName..' '..SPELLS..'\n\n%s\n%s',
@@ -357,6 +363,9 @@ StaticPopupDialogs[id..addName..'SPELLS']={--法术, 设置对话框
         Save.Mounts[SPELLS][data.spellID]=nil
         checkSpell()--检测法术
         setClickAtt()--设置 Click属性
+    end,
+    EditBoxOnEscapePressed = function(s)
+        s:GetParent():Hide()
     end,
 }
 StaticPopupDialogs[id..addName..'KEY']={--快捷键,设置对话框
@@ -393,7 +402,10 @@ StaticPopupDialogs[id..addName..'KEY']={--快捷键,设置对话框
         local text= self:GetText()
         text=text:gsub(' ','')
         self:GetParent().button1:SetEnabled(text~='')
-    end
+    end,
+    EditBoxOnEscapePressed = function(s)
+        s:GetParent():Hide()
+    end,
 }
 --#####
 --#####

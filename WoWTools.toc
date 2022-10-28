@@ -59,4 +59,5 @@ GamePlus\LFD.lua
 GamePlus\PetBattle.lua
 GamePlus\ItemInfo.lua
 GamePlus\SystemInfo.lua
+GamePlus\AddOns.lua
 

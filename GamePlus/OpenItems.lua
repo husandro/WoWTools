@@ -466,7 +466,10 @@ StaticPopupDialogs['OpenItmesUseOrDisableItem']={
         else
             self:GetParent().button1:SetText('|cnGREEN_FONT_COLOR:'..USE..'|r');
         end
-    end
+    end,
+    EditBoxOnEscapePressed = function(s)
+        s:GetParent():Hide()
+    end,
 }
 
 local function shoTips(self)--显示提示
