@@ -21,8 +21,6 @@ Sesource\Locales\zhTW.lua
 
 Sesource\Panel.lua
 
-Tools\Mount.lua
-
 WoWPlus\PaperDoll.lua
 WoWPlus\Reputation.lua
 WoWPlus\Tokens.lua
@@ -61,3 +59,4 @@ GamePlus\ItemInfo.lua
 GamePlus\SystemInfo.lua
 GamePlus\AddOns.lua
 
+GamePlus\Mount.lua

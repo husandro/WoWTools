@@ -246,9 +246,6 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex)
 end
 
 local function setBags(self)--背包设置
-    if Save.disabled then
-        return
-    end
     for i, itemButton in self:EnumerateValidItems() do
         local itemLink, itemID, isBound, _, equipmentName
         local slot, bagID= itemButton:GetSlotAndBagID()--:GetID() GetBagID()
@@ -274,9 +271,6 @@ hooksecurefunc('ContainerFrame_GenerateFrame',function (self, size, id2)
 end)
 
 local function setMerchantInfo()--商人设置
-    if Save.disabled then
-        return
-    end
     local selectedTab= MerchantFrame.selectedTab
     local page= selectedTab == 1 and MERCHANT_ITEMS_PER_PAGE or BUYBACK_ITEMS_PER_PAGE
     for i=1, page do
@@ -292,9 +286,33 @@ local function setMerchantInfo()--商人设置
         end
     end
 end
-hooksecurefunc('MerchantFrame_UpdateMerchantInfo',setMerchantInfo)--MerchantFrame.lua
-hooksecurefunc('MerchantFrame_UpdateBuybackInfo', setMerchantInfo)
 
+
+
+--####
+--初始
+--####
+local function Init()
+--[[    if Bagnon then
+        local item = Bagnon.ItemSlot  or Bagnon.Item
+        if (item) and (item.Update)  then
+            hooksecurefunc(item, 'Update', Update)
+        end
+    elseif Baggins then
+        hooksecurefunc(Baggins, 'UpdateItemButton',
+            function (self, bag, button, bagID, slotID)
+                Update(button,bagID, slotID)
+        end)
+
+    elseif Combuctor then
+        local item = Combuctor.ItemSlot or Combuctor.Item
+        if (item) and (item.Update)  then
+            hooksecurefunc(item, 'Update', Update)
+        end
+    els]]
+    hooksecurefunc('MerchantFrame_UpdateMerchantInfo',setMerchantInfo)--MerchantFrame.lua
+    hooksecurefunc('MerchantFrame_UpdateBuybackInfo', setMerchantInfo)
+end
 --加载保存数据
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
@@ -302,19 +320,18 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
             Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
-            
+
             --添加控制面板        
             local sel=e.CPanel(addName, not Save.disabled, true)
             sel:SetScript('OnClick', function()
                 if Save.disabled then
                     Save.disabled=nil
-                    Set()
-                    print(addName, e.GetEnabeleDisable(not Save.disabled))
                 else
                     Save.disabled=true
-                    print(addName, e.GetEnabeleDisable(not Save.disabled), NEED..' /reload')
                 end
+                print(addName, e.GetEnabeleDisable(not Save.disabled), NEED..' /reload')
             end)
+
             sel:SetScript('OnEnter', function(self2)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
@@ -322,6 +339,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 e.tips:Show()
             end)
             sel:SetScript('OnLeave', function() e.tips:Hide() end)
+
+            if not Save.disabled then
+                Init()
+            end
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end
@@ -329,17 +350,3 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
     end
 end)
---ContainerFrame.lua
-
---[[
-function ContainerFrameSettingsManager:SetupBagsCombined()
-	local container = ContainerFrameCombinedBags;
-	self:SetupBagsGeneric(container);
-	self:SetTokenTrackerOwner(container);
-	self:SetMoneyFrameOwner(container);
-end
-
-function ContainerFrameMixin:UpdateItemContextMatching()
-	EventRegistry:TriggerEvent("ItemButton.UpdateItemContextMatching", self:GetBagID());
-end
-]]

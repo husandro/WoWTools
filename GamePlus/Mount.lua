@@ -21,8 +21,6 @@ local Save={
 }
 local XD
 
-
-
 local panel=e.Cbtn2(id..addName..'button')
 panel:SetAttribute("type1", "spell")
 panel:SetAttribute("target-spell", "cursor")
@@ -37,6 +35,7 @@ panel.textureModifier:AddMaskTexture(panel.mask)
 panel.textureModifier:SetShown(false)
 
 
+
 local function setPanelPostion()--设置按钮位置
     local p=Save.Point
     panel:ClearAllPoints()
@@ -47,7 +46,6 @@ local function setPanelPostion()--设置按钮位置
     end
 end
 
---print(CharacterReagentBag0Slot:GetParent():GetName())
 local function setKEY()--设置捷键
     if Save.KEY then
         e.SetButtonKey(panel, true, Save.KEY)
@@ -263,7 +261,57 @@ local function setClickAtt(inCombat)--设置 Click属性
     setTextrue()--设置图标
 end
 
+--#######
+--坐骑展示
+--#######
+local function getMountShow()
+    C_MountJournal.SetCollectedFilterSetting(2,false)
+    C_MountJournal.SetCollectedFilterSetting(3,false)
+    local num=C_MountJournal.GetNumDisplayedMounts()
+    while not find and panel.showFrame:IsShown() do
+        if UnitAffectingCombat('player') or IsPlayerMoving() then
+            panel.showFrame:SetShown(false)
+        end
+        local _, _, _, isActive, isUsable, _, _, _, _, _, _, mountID = C_MountJournal.GetDisplayedMountInfo(math.random(1, num));
+        if not isActive and isUsable and mountID then
+            C_MountJournal.SummonByID(mountID)
+            return
+        end
+    end
+    panel.showFrame:SetShown(false)
+end
 
+local specialEffects
+local timeElapsed=3.1
+local function setMountShow()
+    if specialEffects and not IsMounted() then
+        print(id, addName, EMOTE171_CMD2, '|cnRED_FONT_COLOR:'..NEED..MOUNT..'|r')
+        specialEffects=nil
+        return
+    end
+    timeElapsed=3.1
+    print(id, addName, specialEffects and EMOTE171_CMD2:gsub('/','') or MOUNT, '3 '..SECONDS)
+    if not panel.showFrame then
+        panel.showFrame=CreateFrame('Frame')
+        panel.showFrame:HookScript('OnUpdate',function(self, elapsed)
+            timeElapsed= timeElapsed+ elapsed
+            if UnitAffectingCombat('player') or IsPlayerMoving() or UnitIsDeadOrGhost('player') then
+                panel.showFrame:SetShown(false)
+                specialEffects=nil
+                return
+            elseif timeElapsed>3 then
+                if specialEffects then
+                    DEFAULT_CHAT_FRAME.editBox:SetText(	EMOTE171_CMD2)
+                    ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox,0)
+                else
+                    getMountShow()
+                    timeElapsed=0
+                end
+            end
+        end)
+    end
+    panel.showFrame:SetShown(true)
+end
 
 --#####
 --对话框
@@ -472,6 +520,34 @@ local function InitMenu(self, level, menuList)--主菜单
                 }
                 UIDropDownMenu_AddButton(info,level)
             end
+
+            UIDropDownMenu_AddSeparator(level)
+            info={--坐骑展示,每3秒
+                text=SLASH_RANDOM3:gsub('/','')..SHOW,
+                notCheckable=true,
+                tooltipOnButton=true,
+                tooltipTitle='3 '..SECONDS..MOUNT,
+                tooltipText=KEY_MOUSEWHEELUP..e.Icon.mid,
+                func=function()
+                    specialEffects=nil
+                    setMountShow()
+                end,
+            }
+            UIDropDownMenu_AddButton(info, level)
+
+            info={--坐骑特效
+                text=	EMOTE171_CMD2:gsub('/','')..SHOW,
+                notCheckable=true,
+                tooltipOnButton=true,
+                tooltipTitle='3 '..SECONDS..MOUNT,
+                tooltipText=KEY_MOUSEWHEELDOWN..e.Icon.mid,
+                disabled=not IsMounted(),
+                func=function()
+                    specialEffects=true
+                    setMountShow()
+                end,
+            }
+            UIDropDownMenu_AddButton(info, level)
 
             UIDropDownMenu_AddSeparator(level)
             if Save.Point then--还原位置
@@ -746,6 +822,7 @@ local function setMountJournal_ShowMountDropdown(index)
     end
 end
 
+
 --######
 --初始化
 --######
@@ -778,6 +855,7 @@ local function Init()
         ResetCursor()
         self:StopMovingOrSizing()
         Save.Point={self:GetPoint(1)}
+        Save.Point[2]=nil
     end)
     panel:SetScript("OnMouseDown", function(self,d)
         local infoType, itemID, itemLink ,spellID= GetCursorInfo()
@@ -824,12 +902,17 @@ local function Init()
         end
         ResetCursor()
     end)
---[[
 
     panel:SetScript('OnMouseWheel',function(self,d)
+        if d==1 then--坐骑展示
+            specialEffects=nil
+            setMountShow()
+        elseif d==-1 then--坐骑特效
+            specialEffects=true
+            setMountShow()
+        end
     end)
 
-]]
     panel:SetScript('OnEnter', function (self)
         if Save.showMenuOnEnter then--即时显示菜单
             ToggleDropDownMenu(1,nil,self.Menu, self,15,0 )
