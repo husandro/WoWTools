@@ -283,8 +283,12 @@ end
 
 local specialEffects
 local timeElapsed=3.1
-local function setMountShow()
-    if specialEffects and not IsMounted() then
+local function setMountShow()--坐骑展示
+    if UnitAffectingCombat('player') then
+        specialEffects=nil
+        print(id, addName, '|cnRED_FONT_COLOR:'..COMBAT..'|r')
+        return
+    elseif specialEffects and not IsMounted() then
         print(id, addName, EMOTE171_CMD2, '|cnRED_FONT_COLOR:'..NEED..MOUNT..'|r')
         specialEffects=nil
         return
@@ -539,9 +543,8 @@ local function InitMenu(self, level, menuList)--主菜单
                 text=	EMOTE171_CMD2:gsub('/','')..SHOW,
                 notCheckable=true,
                 tooltipOnButton=true,
-                tooltipTitle='3 '..SECONDS..MOUNT,
+                tooltipTitle='3 '..SECONDS..EMOTE171_CMD2:gsub('/',''),
                 tooltipText=KEY_MOUSEWHEELDOWN..e.Icon.mid,
-                disabled=not IsMounted(),
                 func=function()
                     specialEffects=true
                     setMountShow()
@@ -953,6 +956,8 @@ panel:RegisterEvent('ZONE_CHANGED_NEW_AREA')
 panel:RegisterEvent('SPELL_UPDATE_COOLDOWN')
 panel:RegisterEvent('SPELL_UPDATE_USABLE')
 
+panel:RegisterEvent('CHAT_MSG_AFK')
+
 panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" and arg1==id then
             Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
@@ -1027,5 +1032,10 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
 
     elseif event=='SPELL_UPDATE_USABLE' then
         setTextrue()--设置图标
+
+    elseif event=='CHAT_MSG_AFK' then
+        if not UnitAffectingCombat('player') then
+            setMountShow()--坐骑展示
+        end
     end
 end)
