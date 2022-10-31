@@ -144,23 +144,25 @@ local function setPet(self, speciesID)--宠物
     if obtainable then--收集数量
         local text, numCollected= GetPetCollected(speciesID)
         local numPets, numOwned = C_PetJournal.GetNumPets()
-        self.textRight:SetText(e.MK(numOwned,3)..'/'..e.MK(numPets,3).. (' %i%%'):format(numOwned/numPets*100))
-        text= numCollected and numCollected==0 and  text or ' '
-        if numCollected and numCollected>0 and not UnitAffectingCombat('player') then
-            local text2
-            for index= 1 ,numOwned do
-                local petID, speciesID2, _, _, level = C_PetJournal.GetPetInfoByIndex(index)
-                if speciesID2==speciesID and petID and level then
-                    local rarity = select(5, C_PetJournal.GetPetStats(petID))
-                    local col= rarity and select(4, GetItemQualityColor(rarity-1))
-                    if col then
-                       text2= text2 and text2..' ' or ''
-                       text2= text2..'|c'..col..level..'|r'
+        if numPets and numOwned then
+            self.textRight:SetText(e.MK(numOwned,3)..'/'..e.MK(numPets,3).. (' %i%%'):format(numOwned/numPets*100))
+            text= numCollected and numCollected==0 and  text or ' '
+            if numCollected and numCollected>0 and not UnitAffectingCombat('player') then
+                local text2
+                for index= 1 ,numOwned do
+                    local petID, speciesID2, _, _, level = C_PetJournal.GetPetInfoByIndex(index)
+                    if speciesID2==speciesID and petID and level then
+                        local rarity = select(5, C_PetJournal.GetPetStats(petID))
+                        local col= rarity and select(4, GetItemQualityColor(rarity-1))
+                        if col then
+                        text2= text2 and text2..' ' or ''
+                        text2= text2..'|c'..col..level..'|r'
+                        end
                     end
                 end
-            end
-            if text2 then
-                self.textLeft:SetText(text2)
+                if text2 then
+                    self.textLeft:SetText(text2)
+                end
             end
         end
         self:AddDoubleLine(text, companionID and 'NPCID: '..companionID or ' ')
