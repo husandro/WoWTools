@@ -274,7 +274,7 @@ local function setClickAtt(inCombat)--设置 Click属性
         end
     elseif panel.itemID then
         panel:SetAttribute("type1", "item")
-        panel:SetAttribute("item1", panel.itemID)
+        panel:SetAttribute("item1", C_Item.GetItemNameByID(panel.itemID)  or panel.itemID)
     else
         panel:SetAttribute("item1", nil)
         panel:SetAttribute("spell1", nil)
