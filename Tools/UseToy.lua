@@ -40,16 +40,7 @@ for _, itemID in pairs(ModifiedTab) do
     end
 end
 
-local function setPanelPostion()--设置按钮位置
-    if Save.Point then
-        panel:SetParent(UIParent)
-        panel:SetPoint(Save.Point[1], UIParent, Save.Point[3], Save.Point[4],Save.Point[5])
-    else
-        panel:SetParent(e.toolsFrame)
-        panel:SetPoint('BOTTOMLEFT', (e.toolsFrame.last and e.toolsFrame.last~=panel and e.toolsFrame.last or e.toolsFrame), 'TOPLEFT')
-        e.toolsFrame.last=panel
-    end
-end
+
 
 --#########
 --主图标冷却
@@ -266,19 +257,22 @@ local function InitMenu(self, level, menuList)--主菜单
             UIDropDownMenu_AddButton(info, level)
 
             if Save.Point then--还原位置
-                info={text=RESET_POSITION}
+                info={
+                    text=RESET_POSITION,
+                    tooltipTitle=RELOADUI,
+                    tooltipOnButton=true,
+                    func=function()
+                        Save.Point=nil
+                        ReloadUI()
+                    end,
+                    disabled=UnitAffectingCombat('player'),
+                }
             else
-                info={text='Alt +'..e.Icon.right..' '..NPE_MOVE}
-                info.disabled=true
+                info={
+                    text='Alt +'..e.Icon.right..' '..NPE_MOVE,
+                    disabled=true,
+                }
             end
-            info.func=function()
-                Save.Point=nil
-                panel:ClearAllPoints()
-                CloseDropDownMenus()
-                setPanelPostion()--设置按钮位置
-                print(id ,addName, NEED, RELOADUI, SLASH_RELOAD1)
-            end
-            info.tooltipOnButton=true
             info.notCheckable=true
             UIDropDownMenu_AddButton(info, level)
 
@@ -335,7 +329,14 @@ local function Init()
     panel.count=e.Cstr(panel,10, nil,nil, true)
     panel.count:SetPoint('TOPRIGHT',-3, -2)
 
-    setPanelPostion()--设置按钮位置
+    if Save.Point then
+        panel:SetParent(UIParent)
+        panel:SetPoint(Save.Point[1], UIParent, Save.Point[3], Save.Point[4],Save.Point[5])
+    else
+        panel:SetPoint('BOTTOMLEFT', e.toolsFrame.last, 'TOPLEFT')
+        e.toolsFrame.last=panel
+    end
+
     getToy()--生成, 有效表格
     setAtt(true)--设置属性
     setCooldown()--主图标冷却
@@ -357,9 +358,13 @@ local function Init()
     panel:SetClampedToScreen(true)
     panel:SetScript("OnEnter",function(self)
         showTips(self)--显示提示
-        if not UnitAffectingCombat('player') then
+        --[[
+if not UnitAffectingCombat('player') then
             e.toolsFrame:SetShown(true)--设置, TOOLS 框架, 显示
         end
+
+]]
+
     end)
     panel:SetScript("OnLeave",function()
         e.tips:Hide()
@@ -398,6 +403,7 @@ local function Init()
         panel:SetParent(UIParent)
         Save.Point={self:GetPoint(1)}
         Save.Point[2]=nil
+        print(id, addName, NEED, RELOADUI)
     end)
 end
 --###########
@@ -409,6 +415,8 @@ panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
 
 panel:RegisterEvent('NEW_TOY_ADDED')
 panel:RegisterEvent('TOYS_UPDATED')
+
+panel:RegisterEvent("PLAYER_LOGOUT")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1== id then

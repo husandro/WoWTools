@@ -2,9 +2,6 @@ local id, e = ...
 e.L=e.L or {}--多语言
 e.tips=GameTooltip
 
-e.toolsFrame=CreateFrame('Frame', nil, UIParent)--TOOLS 框架
-e.toolsFrame:SetShown(false)
-
 e.GroupGuid={}--团队GUID,{GUID==unit}
 
 local function GetWeek()--周数

@@ -5,20 +5,45 @@ local panel=CreateFrame("Frame")
 --######
 --设置专业按钮
 local function setButton()
-    --local prof1, prof2, archaeology, fishing, cooking = GetProfessions()
-    local tab={GetProfessions()}
+    local tab={GetProfessions()}--local prof1, prof2, archaeology, fishing, cooking = GetProfessions()
     for index, type in pairs(tab) do
-        if type then
-            local name, icon, skillLevel, maxSkillLevel, numAbilities, spelloffset, skillLine, skillModifier, specializationIndex, specializationOffset = GetProfessionInfo(index)
-
+        if type and index~=4 and index~=3 then
+            local name, icon = GetProfessionInfo(type)
             if not panel.buttons[index] then
                 panel.buttons[index]=e.Cbtn2(nil, e.toolsFrame)
                 panel.buttons[index]:SetPoint('BOTTOMLEFT', e.toolsFrame.last or e.toolsFrame, 'TOPLEFT')
                 panel.buttons[index]:SetAttribute("type1", "spell")
-                panel.buttons[index]:SetAttribute("type2", "spell")
+                panel.buttons[index].texture:SetShown(true)
                 e.toolsFrame.last=panel.buttons[index]
             end
-
+            if index==5 then--烹饪用火
+                local name2=GetSpellInfo(818)
+                if name2 then
+                    local text=''
+                    if PlayerHasToy(134020) then--玩具,大厨的帽子
+                        local toyname=C_Item.GetItemNameByID('134020')
+                        if toyname then
+                            text= '/use '..toyname..'\n'
+                        end
+                    end
+                    text=text..'/cast [@player]'..name2
+                    if not panel.buttons[index].textureRight then
+                        panel.buttons[index].textureRight= panel.buttons[index]:CreateTexture(nil,'OVERLAY')
+                        panel.buttons[index].textureRight:SetPoint('RIGHT',panel.buttons[index].border,'RIGHT',-6,0)
+                        panel.buttons[index].textureRight:SetSize(8,8)
+                        panel.buttons[index].textureRight:SetTexture(135805)
+                        panel.buttons[index]:SetScript('OnShow',function(self)
+                            local start, duration, _, modRate = GetSpellCooldown(818)
+                            e.Ccool(self, start, duration, modRate)--冷却条
+                        end)
+                    end
+                    panel.buttons[index]:RegisterForClicks("LeftButtonDown","RightButtonDown")
+                    panel.buttons[index]:SetAttribute('type2', 'macro')
+                    panel.buttons[index]:SetAttribute("macrotext2", text)
+                end
+            end
+            panel.buttons[index]:SetAttribute("spell", name)
+            panel.buttons[index].texture:SetTexture(icon)
         end
         if panel.buttons[index] then
             panel.buttons[index]:SetShown(type)
@@ -43,7 +68,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1== id then
         Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
         if not e.toolsFrame.disabled then
-            Init()--初始
+            C_Timer.After(2, function()
+                if not UnitAffectingCombat('player') then
+                    Init()--初始
+                end
+            end)
         else
             panel:UnregisterAllEvents()
         end
