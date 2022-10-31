@@ -215,11 +215,11 @@ local function setBagHearthstone()
                 panel['texture'..type]=panel:CreateTexture(nil,'ARTWORK')
                 panel['texture'..type]:SetSize(8,8)
                 if type=='alt' then
-                    panel['texture'..type]:SetPoint('BOTTOMRIGHT')
+                    panel['texture'..type]:SetPoint('BOTTOMRIGHT',-2,0)
                 elseif type=='shift' then
-                    panel['texture'..type]:SetPoint('TOPLEFT')
+                    panel['texture'..type]:SetPoint('TOPLEFT',2,0)
                 else
-                    panel['texture'..type]:SetPoint('BOTTOMLEFT')
+                    panel['texture'..type]:SetPoint('BOTTOMLEFT',2,0)
                 end
                 --panel['texture'..type]:AddMaskTexture(panel.mask)
                 panel['texture'..type]:SetTexture(C_Item.GetItemIconByID(itemID))

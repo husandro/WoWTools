@@ -1864,7 +1864,7 @@ local function updateChallengeMode()--{score=总分数,itemLink={超连接}, wee
         tab.all=#C_MythicPlus.GetRunHistory(true, true)--总次数
         tab.week=e.Player.week
         local info = C_MythicPlus.GetRunHistory(false, true)
-        if info and info>0 then
+        if info and #info>0 then
             tab.weekNum=#info--本周次数
             local activities=C_WeeklyRewards.GetActivities(1)
             if activities then
