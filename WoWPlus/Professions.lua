@@ -7,6 +7,8 @@ panel:SetSize(20,20)
 panel.professionInfoStr=e.Cstr(panel)
 panel.professionInfoStr:SetPoint('RIGHT', panel, 'LEFT')
 
+if not C_Spell.IsSpellDataCached(818) then C_Spell.RequestLoadSpellData(818) end
+
 hooksecurefunc(ProfessionsFrame,'SetProfessionInfo', function(self, professionInfo)
     panel.professionID=professionInfo.professionID
     if not Save.disabled then
@@ -61,7 +63,7 @@ local function setProfessions()
                 else
                     panel['profession'..k]:UnlockHighlight()
                 end
---[[
+
                 if k==5 and not UnitAffectingCombat('player') then
                     if not panel.profession6 then--烹饪用火
                         local spellID=818
@@ -84,7 +86,9 @@ local function setProfessions()
                             panel.profession6:SetAttribute("macrotext", name2)
                         else
                             panel.profession6:SetAttribute('type', 'spell')
+                            panel.profession6:SetAttribute('unit', 'player')
                             panel.profession6:SetAttribute('spell', spellID)
+                            
                         end
                         panel.profession6:SetScript('OnEvent', function(self2, event, unitTarget, castGUID, spellID2)
                             if spellID2==spellID then
@@ -120,7 +124,7 @@ local function setProfessions()
                     if panel.profession7 then
                         panel.profession7:SetShown(true)
                     end
-                end]]
+                end
             end
             if panel['profession'..k] then
                 panel['profession'..k]:SetShown(name and icon)
