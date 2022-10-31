@@ -27,7 +27,6 @@ panel:SetAttribute("alt-type1", "item")
 panel:SetAttribute("shift-type1", "item")
 panel:SetAttribute("ctrl-type1", "item")
 
-
 local ModifiedTab={
     alt=140192,--达拉然炉石
     shift=6948,--炉石
@@ -275,8 +274,8 @@ local function Init()
     setCooldown()--主图标冷却
     setBagHearthstone()--设置Shift, Ctrl, Alt 提示
 
-    e.toolsFrame:SetPoint('BOTTOMLEFT', panel, 'TOPLEFT',0,4)--设置, TOOLS 位置
-    e.toolsFrame:Setsize(1,1)
+    e.toolsFrame:SetPoint('BOTTOMLEFT', panel, 'TOPLEFT')--设置, TOOLS 位置
+    e.toolsFrame:SetSize(1,1)
 
     for type, itemID in pairs(ModifiedTab) do
         panel:SetAttribute(type.."-item1",  C_Item.GetItemNameByID(itemID) or itemID)
