@@ -314,18 +314,16 @@ e.Cbtn2= function(name)
     b:SetHighlightAtlas('bag-border')
     b:SetPushedAtlas('bag-border-highlight')
     b:RegisterForClicks('LeftButtonDown')--, 'RightButtonDown')
-
+    
     b.texture=b:CreateTexture(nil,'ARTWORK')
     b.texture:SetPoint("CENTER",-1,1)
     b.texture:SetSize(23,23)
     b.texture:SetAtlas('bag-border')
 
-    
-b.mask= b:CreateMaskTexture()
+    b.mask= b:CreateMaskTexture()
     b.mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
     b.mask:SetAllPoints(b.texture)
     b.texture:AddMaskTexture(b.mask)
-
 
    -- b.texture:SetMask('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
     b.texture:SetShown(false)
@@ -336,7 +334,7 @@ b.mask= b:CreateMaskTexture()
     return b
 end
 
-e.Ccool=function(self, start, duration, modRate, HideCountdownNumbers, Reverse)--冷却条
+e.Ccool=function(self, start, duration, modRate, HideCountdownNumbers, Reverse, )--冷却条
     if not self.cooldown then
         self.cooldown= CreateFrame("Cooldown", nil, self, 'CooldownFrameTemplate')
         self.cooldown:SetUseCircularEdge(true)--设置边缘纹理是否应该遵循圆形图案而不是方形编辑框
@@ -344,6 +342,7 @@ e.Ccool=function(self, start, duration, modRate, HideCountdownNumbers, Reverse)-
         self.cooldown:SetDrawEdge(true)--冷却动画的移动边缘绘制亮线
         self.cooldown:SetHideCountdownNumbers(HideCountdownNumbers)--隐藏数字
         self.cooldown:SetReverse(Reverse)--控制冷却动画的方向
+        self.cooldown:SetSwipeTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
     end
     self.cooldown:SetCooldown(start, duration, modRate)
 end

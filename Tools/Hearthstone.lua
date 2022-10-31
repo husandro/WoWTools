@@ -197,8 +197,6 @@ local function InitMenu(self, level, menuList)--主菜单
     end
 end
 
-
-
 --########################
 --设置Shift, Ctrl, Alt 提示
 --########################
@@ -233,6 +231,14 @@ local function setBagHearthstone()
     end
 end
 
+--#########
+--主图标冷却
+--#########
+local function setCooldown()
+    local start, duration, enable = GetItemCooldown(panel.itemID)
+    e.Ccool(panel, start, duration, nil, true)--冷却条
+end
+
 --####
 --初始
 --####
@@ -264,6 +270,8 @@ local function Init()
     setPanelPostion()--设置按钮位置
     getToy()--生成, 有效表格
     setAtt(true)--设置属性
+    setCooldown()--主图标冷却
+    setBagHearthstone()--设置Shift, Ctrl, Alt 提示
 
     for type, itemID in pairs(ModifiedTab) do
         panel:SetAttribute(type.."-item1",  C_Item.GetItemNameByID(itemID) or itemID)
@@ -358,7 +366,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         getToy()--生成, 有效表格
         setAtt()--设置属性
 
-    elseif event=='BAG_UPDATE_COOLDOWN' or event=='BAG_UPDATE_DELAYED' then
+    elseif event=='BAG_UPDATE_COOLDOWN' then
+        setCooldown()--主图标冷却
         setBagHearthstone()--设置Shift, Ctrl, Alt 提示
+
+    elseif event=='BAG_UPDATE_DELAYED' then
+        if IsResting()  then
+            setBagHearthstone()--设置Shift, Ctrl, Alt 提示
+        end
     end
 end)
