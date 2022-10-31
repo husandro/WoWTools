@@ -61,7 +61,7 @@ local function setCooldown()--主图标冷却
             e.Ccool(panel, start, duration, nil, true, nil, true)--冷却条
         else
             if panel.cooldown then
-                panel.cooldown:Clera()
+                panel.cooldown:Clear()
             end
         end
     end
