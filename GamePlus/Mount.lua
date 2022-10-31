@@ -57,8 +57,8 @@ panel:SetAttribute("ctrl-type1", "spell")
 
 panel.textureModifier=panel:CreateTexture(nil,'OVERLAY')--提示 Shift, Ctrl, Alt
 panel.textureModifier:SetAllPoints(panel.texture)
-
 panel.textureModifier:AddMaskTexture(panel.mask)
+
 panel.textureModifier:SetShown(false)
 
 local function setPanelPostion()--设置按钮位置
@@ -222,10 +222,10 @@ end
 local function setCooldown(aura)--设置冷却
     if panel.spellAtt then
         local start, duration, _, modRate = GetSpellCooldown(panel.spellAtt)
-        e.Ccool(panel, start, duration, modRate, true)--冷却条
+        e.Ccool(panel, start, duration, modRate, true, nil, true)--冷却条
     elseif panel.itemID then
         local start, duration = GetItemCooldown(itemID)
-        e.Ccool(panel, start, duration, nil, true)--冷却条
+        e.Ccool(panel, start, duration, nil, true,nil, true)--冷却条
     elseif panel.cooldown then
         panel.cooldown:Clear()
     end

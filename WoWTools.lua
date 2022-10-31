@@ -151,6 +151,8 @@ e.Icon={
     guild2='|A:communities-guildbanner-background:0:0|a',
     --mask="Interface\\ChatFrame\\UI-ChatIcon-HotS",--菱形
     --mask='Interface\\CHARACTERFRAME\\TempPortraitAlphaMask',--圆形 :SetMask()
+    --mask='CircleMaskScalable',
+    
     
     TANK='|A:groupfinder-icon-role-large-tank:0:0|a',
     HEALER='|A:groupfinder-icon-role-large-heal:0:0|a',
@@ -319,22 +321,21 @@ e.Cbtn2= function(name)
     b.texture:SetPoint("CENTER",-1,1)
     b.texture:SetSize(23,23)
     b.texture:SetAtlas('bag-border')
+    b.texture:SetShown(false)
 
     b.mask= b:CreateMaskTexture()
     b.mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
     b.mask:SetAllPoints(b.texture)
     b.texture:AddMaskTexture(b.mask)
 
-   -- b.texture:SetMask('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
-    b.texture:SetShown(false)
-
     b.border=b:CreateTexture(nil,'OVERLAY')
     b.border:SetAllPoints(b)
     b.border:SetAtlas('bag-reagent-border')
+
     return b
 end
 
-e.Ccool=function(self, start, duration, modRate, HideCountdownNumbers, Reverse, )--冷却条
+e.Ccool=function(self, start, duration, modRate, HideCountdownNumbers, Reverse, SwipeTexture)--冷却条
     if not self.cooldown then
         self.cooldown= CreateFrame("Cooldown", nil, self, 'CooldownFrameTemplate')
         self.cooldown:SetUseCircularEdge(true)--设置边缘纹理是否应该遵循圆形图案而不是方形编辑框
@@ -342,7 +343,9 @@ e.Ccool=function(self, start, duration, modRate, HideCountdownNumbers, Reverse, 
         self.cooldown:SetDrawEdge(true)--冷却动画的移动边缘绘制亮线
         self.cooldown:SetHideCountdownNumbers(HideCountdownNumbers)--隐藏数字
         self.cooldown:SetReverse(Reverse)--控制冷却动画的方向
-        self.cooldown:SetSwipeTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
+        if SwipeTexture then
+            self.cooldown:SetSwipeTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
+        end
     end
     self.cooldown:SetCooldown(start, duration, modRate)
 end

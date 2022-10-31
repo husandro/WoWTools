@@ -1,7 +1,6 @@
 local id, e = ...
 local Save={
     items={
-        [190237]=true,--掮灵传送矩阵
         [193588]=true,--时光旅行者的炉石
         [188952]=true,--被统御的炉石
         [172179]=true,--永恒旅者的炉石
@@ -96,7 +95,7 @@ end
 --玩具界面, 菜单
 --#############
 local function setToyBox_ShowToyDropdown(itemID, anchorTo, offsetX, offsetY)
-    if Save.disabled then
+    if Save.disabled or not itemID then
         return
     end
     UIDropDownMenu_AddSeparator()
@@ -201,19 +200,16 @@ end
 --设置Shift, Ctrl, Alt 提示
 --########################
 local function setBagHearthstone()
-    if Save.disabled then
-        return
-    end
     for type, itemID in pairs(ModifiedTab) do
         local find
         if GetItemCount(itemID)~=0 then
             local _, duration, enable = GetItemCooldown(itemID)
-            find= duration==0 and enable==1
+            find= duration<2 and enable==1
         end
         if find then
             if not panel['texture'..type] then
                 panel['texture'..type]=panel:CreateTexture(nil,'ARTWORK')
-                panel['texture'..type]:SetSize(10,10)
+                panel['texture'..type]:SetSize(8,8)
                 if type=='alt' then
                     panel['texture'..type]:SetPoint('BOTTOMRIGHT')
                 elseif type=='shift' then
@@ -221,7 +217,7 @@ local function setBagHearthstone()
                 else
                     panel['texture'..type]:SetPoint('BOTTOMLEFT')
                 end
-                panel['texture'..type]:SetMask('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
+                --panel['texture'..type]:AddMaskTexture(panel.mask)
                 panel['texture'..type]:SetTexture(C_Item.GetItemIconByID(itemID))
             end
         end
@@ -235,8 +231,14 @@ end
 --主图标冷却
 --#########
 local function setCooldown()
-    local start, duration, enable = GetItemCooldown(panel.itemID)
-    e.Ccool(panel, start, duration, nil, true)--冷却条
+    if panel.itemID then
+        local start, duration = GetItemCooldown(panel.itemID)
+        e.Ccool(panel, start, duration, nil, true, nil, true)--冷却条
+    else
+        if panel.cooldown then
+            panel.cooldown:Clera()
+        end
+    end
 end
 
 --####
@@ -263,10 +265,6 @@ local function shoTips(self)--显示提示
     end
 end
 local function Init()
-    if Save.disabled then
-        return
-    end
-
     setPanelPostion()--设置按钮位置
     getToy()--生成, 有效表格
     setAtt(true)--设置属性
