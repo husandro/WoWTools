@@ -144,7 +144,7 @@ local function setPet(self, speciesID)--宠物
     if obtainable then--收集数量
         local text, numCollected= GetPetCollected(speciesID)
         local numPets, numOwned = C_PetJournal.GetNumPets()
-        if numPets and numOwned then
+        if numPets and numOwned and numPets>0 then
             self.textRight:SetText(e.MK(numOwned,3)..'/'..e.MK(numPets,3).. (' %i%%'):format(numOwned/numPets*100))
             text= numCollected and numCollected==0 and  text or ' '
             if numCollected and numCollected>0 and not UnitAffectingCombat('player') then
