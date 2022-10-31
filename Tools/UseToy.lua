@@ -416,7 +416,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if not e.toolsFrame.disabled then
             Init()--初始
         else
-            e.toolsFrame.disabled=true
             panel:UnregisterAllEvents()
         end
         panel:RegisterEvent("PLAYER_LOGOUT")
