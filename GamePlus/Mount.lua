@@ -9,13 +9,40 @@ local Save={
         [ITEMS]={[174464]=true, [168035]=true},--幽魂缰绳 噬渊鼠缰绳
         [SPELLS]={[2645]=true, [111400]=true, [343016]=true, [195072]=true, [2983]=true, [190784]=true, [48265]=true, [186257]=true, [6544]=true},
         [FLOOR]={},
-        [MOUNT_JOURNAL_FILTER_GROUND]={[232405]=true, },
-        [MOUNT_JOURNAL_FILTER_AQUATIC]={[127302]=true, },
-        [MOUNT_JOURNAL_FILTER_FLYING]={[142073]=true, },
-        [MOUNT_JOURNAL_FILTER_DRAGONRIDING]={},
-        Shift={[118089]=true, },
-        Alt={[122708]=true, },
-        Ctrl={[179244]=true, },--[179244]=true,[179245]=true},
+        [MOUNT_JOURNAL_FILTER_GROUND]={
+            [339588]=true,--[罪奔者布兰契]
+            [163024]=ture,--战火梦魇兽
+        },
+        [MOUNT_JOURNAL_FILTER_FLYING]={
+            [339588]=true,--[罪奔者布兰契]
+            [163024]=ture,--战火梦魇兽
+        },
+        [MOUNT_JOURNAL_FILTER_AQUATIC]={
+            [359379]=true,--闪光元水母
+            [376912]=true,--[热忱的载人奥獭]
+            [342680]=true,--[深星元水母]
+            [30174]=true,--[乌龟坐骑]
+            [64731]=true,--[海龟]
+        },
+        [MOUNT_JOURNAL_FILTER_DRAGONRIDING]={
+            [368896]=true,--[复苏始祖幼龙]
+            [368901]=true,--[崖际荒狂幼龙]
+            [368899]=true,--[载风迅疾幼龙]
+            [360954]=true,--[高地幼龙]
+        },
+        Shift={
+            [75973]=true,--X-53型观光火箭
+            [93326]=true,--沙石幼龙
+            [121820]=true,--黑耀夜之翼
+        },
+        Alt={[264058]=true,--雄壮商队雷龙
+            [122708]=true,--雄壮远足牦牛
+            [61425]=true,--旅行者的苔原猛犸象
+        },
+        Ctrl={
+            [118089]=true,--天蓝水黾
+            [127271]=true,--猩红水黾
+         },
     },
     XD=true
 }
@@ -34,18 +61,14 @@ panel.textureModifier:SetAllPoints(panel.texture)
 panel.textureModifier:AddMaskTexture(panel.mask)
 panel.textureModifier:SetShown(false)
 
-
-
 local function setPanelPostion()--设置按钮位置
     local p=Save.Point
-    panel:ClearAllPoints()
     if p and p[1] and p[3] and p[4] and p[5] then
         panel:SetPoint(p[1], UIParent, p[3], p[4], p[5])
     else
         panel:SetPoint('RIGHT', CharacterReagentBag0Slot, 'LEFT',0,0)
     end
 end
-
 local function setKEY()--设置捷键
     if Save.KEY then
         e.SetButtonKey(panel, true, Save.KEY)
@@ -61,7 +84,7 @@ local function setKEY()--设置捷键
         else
             if not panel.KEYtexture then
                 panel.KEYtexture=panel:CreateTexture(nil,'OVERLAY')
-                panel.KEYtexture:SetPoint('BOTTOM', panel.border,'BOTTOM',-1.5,-5.5)
+                panel.KEYtexture:SetPoint('BOTTOM', panel.border,'BOTTOM',-1,-5)
                 panel.KEYtexture:SetAtlas('NPE_ArrowDown')
                 --panel.KEYtexture:SetDesaturated(true)
                 panel.KEYtexture:SetSize(20,15)
@@ -831,6 +854,7 @@ end
 --######
 local function Init()
     setPanelPostion()--设置按钮位置
+
     panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
     XDInt()--德鲁伊设置

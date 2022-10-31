@@ -58,5 +58,6 @@ GamePlus\PetBattle.lua
 GamePlus\ItemInfo.lua
 GamePlus\SystemInfo.lua
 GamePlus\AddOns.lua
-
 GamePlus\Mount.lua
+
+Tools\Hearthstone.lua

@@ -16,7 +16,7 @@ local function setPanelPostion()--设置按钮位置
     if p and p[1] and p[3] and p[4] and p[5] then
         panel:SetPoint(p[1],  UIParent, p[3], p[4], p[5])
     else
-        panel:SetPoint('RIGHT', CharacterReagentBag0Slot, 'LEFT',-30, 0)
+        panel:SetPoint('RIGHT', CharacterReagentBag0Slot, 'LEFT',-60, 0)
     end
 end
 
@@ -531,6 +531,7 @@ panel:SetScript("OnDragStop", function(self)
     ResetCursor()
     self:StopMovingOrSizing()
     Save.Point={self:GetPoint(1)}
+    Save.Point[2]=nil
 end)
 panel:SetScript("OnMouseUp", function()
     ResetCursor()

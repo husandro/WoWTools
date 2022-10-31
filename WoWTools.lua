@@ -320,10 +320,14 @@ e.Cbtn2= function(name)
     b.texture:SetSize(23,23)
     b.texture:SetAtlas('bag-border')
 
-    b.mask= b:CreateMaskTexture()
+    
+b.mask= b:CreateMaskTexture()
     b.mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
     b.mask:SetAllPoints(b.texture)
     b.texture:AddMaskTexture(b.mask)
+
+
+   -- b.texture:SetMask('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
     b.texture:SetShown(false)
 
     b.border=b:CreateTexture(nil,'OVERLAY')
@@ -331,6 +335,7 @@ e.Cbtn2= function(name)
     b.border:SetAtlas('bag-reagent-border')
     return b
 end
+
 e.Ccool=function(self, start, duration, modRate, HideCountdownNumbers, Reverse)--冷却条
     if not self.cooldown then
         self.cooldown= CreateFrame("Cooldown", nil, self, 'CooldownFrameTemplate')
@@ -349,7 +354,7 @@ e.SetButtonKey = function(self, set, key, click)--设置清除快捷键
     else
         ClearOverrideBindings(self)
     end
-end
+end 
 
 e.itemSlotTable={
     ['INVTYPE_HEAD']=1,
@@ -514,3 +519,16 @@ e.CStatusBar = function(self,value, size, VERTICAL, color, min, max,ReverseFill)
 end
 
 ]]
+
+e.GetItemCooldown= function(itemID)--物品冷却
+    local startTime, duration, enable = GetItemCooldown(itemID)
+    if duration>0 and enable==1 then
+        local t=GetTime()
+        if startTime>t then t=t+86400 end
+        t=t-startTime
+        t=duration-t
+        return '|cnRED_FONT_COLOR:'..SecondsToTime(t)..'|r'
+    elseif enable==0 then
+        return '|cnRED_FONT_COLOR:'..SPELL_RECAST_TIME_INSTANT..'|r'
+    end
+end
