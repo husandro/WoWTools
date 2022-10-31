@@ -27,6 +27,7 @@ panel:SetAttribute("alt-type1", "item")
 panel:SetAttribute("shift-type1", "item")
 panel:SetAttribute("ctrl-type1", "item")
 
+
 local ModifiedTab={
     alt=140192,--达拉然炉石
     shift=6948,--炉石
@@ -112,6 +113,9 @@ local function setToyBox_ShowToyDropdown(itemID, anchorTo, offsetX, offsetY)
                 setAtt()--设置属性
                 ToySpellButton_UpdateButton(anchorTo)
             end,
+            tooltipOnButton=true,
+            tooltipTitle=addName,
+            tooltipText=id,
         }
     UIDropDownMenu_AddButton(info, 1)
 end
@@ -271,6 +275,9 @@ local function Init()
     setCooldown()--主图标冷却
     setBagHearthstone()--设置Shift, Ctrl, Alt 提示
 
+    e.toolsFrame:SetPoint('BOTTOMLEFT', panel, 'TOPLEFT',0,4)--设置, TOOLS 位置
+    e.toolsFrame:Setsize(1,1)
+
     for type, itemID in pairs(ModifiedTab) do
         panel:SetAttribute(type.."-item1",  C_Item.GetItemNameByID(itemID) or itemID)
     end
@@ -286,6 +293,9 @@ local function Init()
 
     panel:SetScript("OnEnter",function(self)
         shoTips(self)--显示提示
+        if not UnitAffectingCombat('player') then
+            e.toolsFrame:SetShown(true)--设置, TOOLS 框架, 显示
+        end
     end)
     panel:SetScript("OnLeave",function()
         e.tips:Hide()
@@ -325,16 +335,16 @@ end
 --###########
 panel:RegisterEvent("ADDON_LOADED")
 
-panel:RegisterEvent('TOYS_UPDATED')
+panel:RegisterEvent('NEW_TOY_ADDED')
 panel:RegisterEvent('TOYS_UPDATED')
 
 panel:RegisterEvent('BAG_UPDATE_DELAYED')
 panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
+panel:RegisterEvent('PLAYER_REGEN_DISABLED')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1== id then
         Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
-
             --添加控制面板        
             local sel=e.CPanel(addName, not Save.disabled, true)
             sel:SetScript('OnClick', function()
@@ -348,6 +358,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not Save.disabled then
                 Init()--初始
             else
+                e.toolsFrame.disabled=true
                 panel:UnregisterAllEvents()
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
@@ -372,5 +383,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if IsResting()  then
             setBagHearthstone()--设置Shift, Ctrl, Alt 提示
         end
+
+    elseif event=='PLAYER_REGEN_DISABLED' then
+        e.toolsFrame:SetShown(false)--设置, TOOLS 框架,隐藏
     end
 end)
