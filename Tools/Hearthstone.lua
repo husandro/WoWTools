@@ -392,7 +392,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             setBagHearthstone()--设置Shift, Ctrl, Alt 提示
         end
 
-    elseif event=='PLAYER_REGEN_DISABLED' or event=='PLAYER_STARTED_MOVING' then
-        e.toolsFrame:SetShown(false)--设置, TOOLS 框架,隐藏
+    elseif event=='PLAYER_REGEN_DISABLED' then
+        if e.toolsFrame:IsShown() then
+            e.toolsFrame:SetShown(false)--设置, TOOLS 框架,隐藏
+        end
+    elseif event=='PLAYER_STARTED_MOVING' then
+        if not UnitAffectingCombat('player') and e.toolsFrame:IsShown() then
+            e.toolsFrame:SetShown(false)--设置, TOOLS 框架,隐藏
+        end
     end
 end)
