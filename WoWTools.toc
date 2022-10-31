@@ -61,3 +61,4 @@ GamePlus\AddOns.lua
 GamePlus\Mount.lua
 
 Tools\Hearthstone.lua
+Tools\UseToy.lua

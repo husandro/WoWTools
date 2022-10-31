@@ -100,7 +100,7 @@ local function setToyBox_ShowToyDropdown(itemID, anchorTo, offsetX, offsetY)
     end
     UIDropDownMenu_AddSeparator()
     local info={
-            text=addName,
+            text='|T134414:0|t'..addName,
             checked=Save.items[itemID],
             func=function()
                 if Save.items[itemID] then
@@ -133,6 +133,7 @@ local function setToySpellButton_UpdateButton(self)--标记, 是否已选取
         self.hearthstone:SetShown(find)
     end
 end
+
 --#####
 --主菜单
 --#####
@@ -247,7 +248,7 @@ end
 --####
 --初始
 --####
-local function shoTips(self)--显示提示
+local function showTips(self)--显示提示
     if self.itemID then
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -267,13 +268,15 @@ local function shoTips(self)--显示提示
         e.tips:Hide()
     end
 end
+
 local function Init()
     setPanelPostion()--设置按钮位置
     getToy()--生成, 有效表格
     setAtt(true)--设置属性
     setCooldown()--主图标冷却
     setBagHearthstone()--设置Shift, Ctrl, Alt 提示
-
+    
+    e.toolsFrame:SetParent(panel)
     e.toolsFrame:SetPoint('BOTTOMLEFT', panel, 'TOPLEFT')--设置, TOOLS 位置
     e.toolsFrame:SetSize(1,1)
 
@@ -281,17 +284,15 @@ local function Init()
         panel:SetAttribute(type.."-item1",  C_Item.GetItemNameByID(itemID) or itemID)
     end
 
-
     panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
 
-    panel:EnableMouseWheel(true)
     panel:RegisterForDrag("RightButton")
     panel:SetMovable(true)
     panel:SetClampedToScreen(true)
 
     panel:SetScript("OnEnter",function(self)
-        shoTips(self)--显示提示
+        showTips(self)--显示提示
         if not UnitAffectingCombat('player') then
             e.toolsFrame:SetShown(true)--设置, TOOLS 框架, 显示
         end
@@ -319,14 +320,20 @@ local function Init()
     panel:SetScript("OnMouseUp", function(self, d)
         if d=='LeftButton' and not IsModifierKeyDown() then
             setAtt()--设置属性
-            shoTips(self)--显示提示
+            showTips(self)--显示提示
         end
         ResetCursor()
     end)
 
     panel:SetScript('OnMouseWheel',function(self,d)
-        setAtt(init)--设置属性
+        setAtt()--设置属性
     end)
+
+    panel.Up=panel:CreateTexture(nil,'OVERLAY')
+    panel.Up:SetPoint('TOP',-1, 9)
+    panel.Up:SetAtlas('NPE_ArrowUp')
+    panel.Up:SetSize(20,20)
+    --panel.Up:SetDesaturated(true)
 end
 
 --###########
@@ -339,7 +346,9 @@ panel:RegisterEvent('TOYS_UPDATED')
 
 panel:RegisterEvent('BAG_UPDATE_DELAYED')
 panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
+
 panel:RegisterEvent('PLAYER_REGEN_DISABLED')
+panel:RegisterEvent('PLAYER_STARTED_MOVING')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1== id then
@@ -383,7 +392,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             setBagHearthstone()--设置Shift, Ctrl, Alt 提示
         end
 
-    elseif event=='PLAYER_REGEN_DISABLED' then
+    elseif event=='PLAYER_REGEN_DISABLED' or event=='PLAYER_STARTED_MOVING' then
         e.toolsFrame:SetShown(false)--设置, TOOLS 框架,隐藏
     end
 end)

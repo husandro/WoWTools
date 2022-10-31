@@ -86,7 +86,7 @@ local function setKEY()--设置捷键
                 panel.KEYtexture=panel:CreateTexture(nil,'OVERLAY')
                 panel.KEYtexture:SetPoint('BOTTOM', panel.border,'BOTTOM',-1,-5)
                 panel.KEYtexture:SetAtlas('NPE_ArrowDown')
-                --panel.KEYtexture:SetDesaturated(true)
+                panel.KEYtexture:SetDesaturated(true)
                 panel.KEYtexture:SetSize(20,15)
             end
             panel.KEYtexture:SetShown(true)

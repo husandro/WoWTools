@@ -312,14 +312,15 @@ e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size)
     end
     return b
 end
-e.Cbtn2= function(name)
-    local b= CreateFrame("Button", name, UIParent, "SecureActionButtonTemplate")
+e.Cbtn2= function(name, parent)
+    local b= CreateFrame("Button", name, parent or UIParent, "SecureActionButtonTemplate")
     b:SetSize(30,30)
     b:SetNormalAtlas('bag-reagent-border-empty')
     b:SetHighlightAtlas('bag-border')
     b:SetPushedAtlas('bag-border-highlight')
     b:RegisterForClicks('LeftButtonDown')--, 'RightButtonDown')
-    
+    b:EnableMouseWheel(true)
+
     b.texture=b:CreateTexture(nil,'ARTWORK')
     b.texture:SetPoint("CENTER",-1,1)
     b.texture:SetSize(23,23)
