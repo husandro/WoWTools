@@ -70,36 +70,101 @@ for _, itemID in pairs(Save.equip) do
     getFind(itemID)
 end
 
+--###########
+--添加, 对话框
+--###########
 
+StaticPopupDialogs[id..addName..'REMOVE']={
+    text=id..' '..addName..'\n\n%s',
+    whileDead=1,
+    hideOnEscape=1,
+    exclusive=1,
+    timeout = 60,
+    button1='|cnRED_FONT_COLOR:'..REMOVE..'|r',
+    button2=CANCEL,
+    OnAccept = function(self, data)
+        if data.type=='ITEMS' then
+            if data.clearAll then
+                Save.item={}
+                print(id, addName, '|cnGREEN_FONT_COLOR:'..	CLEAR_ALL..'|r', COMPLETE, NEED,RELOADUI,'/reload')
+            else
+                if Save.item[data.index] and Save.item[data.index]==data.ID then
+                    table.remove(Save.item, data.index)
+                    print(id, addName, '|cnGREEN_FONT_COLOR:'..REMOVE..'|r'..COMPLETE, data.name, '|cnRED_FONT_COLOR:'..NEED..'|r'..RELOADUI,'/reload')
+                else
+                    print(id, addName,'|cnGREEN_FONT_COLOR:'..ERROR_CAPS..'|r',	BROWSE_NO_RESULTS, data.name)
+                end
+            end
+        end
+    end,
+}
+
+StaticPopupDialogs[id..addName..'ADD']={--快捷键,设置对话框
+    text=id..' '..addName..'\n\n%s',
+    whileDead=1,
+    hideOnEscape=1,
+    exclusive=1,
+    timeout = 60,
+    button1=SETTINGS,
+    button2=CANCEL,
+    button3=REMOVE,
+   
+    OnAccept = function(self, data)
+    
+    end,
+    OnAlt = function()
+       
+    end,
+}
 --#####
 --#####
 --主菜单
 --#####
-local mainMenuTable={
-    MOUNT_JOURNAL_FILTER_GROUND,
-    MOUNT_JOURNAL_FILTER_AQUATIC,
-    MOUNT_JOURNAL_FILTER_FLYING,
-    --MOUNT_JOURNAL_FILTER_DRAGONRIDING,
-    '-',
-    'Shift', 'Alt', 'Ctrl',
-    '-',
-    SPELLS,
-    FLOOR,
-    ITEMS,
-}
 
 local function InitMenu(self, level, menuList)--主菜单
     local info
     if menuList then
-        if menuList==SETTINGS then--设置菜单
-                --UIDropDownMenu_AddButton(info, level);
+        if menuList=='ITEMS' then
+            info={
+                text=CLEAR_ALL,
+                notCheckable=true,
+                func=function()
+                    local text=	CLEAR_ALL..' #'..'|cnGREEN_FONT_COLOR:'..#Save.item..'|r '.. ITEMS
+                    StaticPopup_Show(id..addName..'REMOVE',text ,nil, {type='ITEMS', clearAll=true})
+                end,
+
+            }
+            UIDropDownMenu_AddButton(info, level)
+            UIDropDownMenu_AddSeparator(level)
+            for index, itemID in pairs(Save.item) do
+                local name= C_Item.GetItemNameByID(itemID) or ('itemID: '..itemID)
+                local icon=C_Item.GetItemIconByID(itemID)
+                info={
+                    text= name,
+                    notCheckable=true,
+                    icon=icon,
+                    func=function()
+                        local text=(icon and '|T'..icon..':0|t' or '').. name
+                        StaticPopup_Show(id..addName..'REMOVE',text ,nil, {type='ITEMS', index=index, name=text, ID=itemID})
+                    end,
+                    tooltipOnButton=true,
+                    tooltipTitle=REMOVE,
+                }
+                if GetItemCount(itemID)==0 and not PlayerHasToy(itemID) then
+                    info.text= e.Icon.O2..info.text
+                    info.colorCode='|cff606060'
+                end
+                UIDropDownMenu_AddButton(info, level)
+            end
         end
     else
         info={
-            text=ITEMS
-            
-    }
-
+            text='|cnGREEN_FONT_COLOR:'..#Save.item..'|r'..ITEMS,
+            notCheckable=true,
+            hasArrow=true,
+            menuList='ITEMS',
+        }
+        UIDropDownMenu_AddButton(info, level);
         --UIDropDownMenu_AddSeparator()
     end
 end
@@ -324,7 +389,6 @@ local function Init()
 
     panel:SetScript('OnMouseDown',function(self, d)
         local infoType, itemID, itemLink = GetCursorInfo()
-    print('还在写中')
         if infoType == "item" and itemID and itemLink then
 
         elseif infoType =='spell' and spellID then
@@ -338,7 +402,7 @@ local function Init()
             e.tips:AddDoubleLine(MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
             e.tips:Show()
         elseif d=='RightButton' then
-
+            ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
         end
     end)
     panel:SetScript('OnEnter',function ()
