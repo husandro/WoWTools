@@ -212,8 +212,11 @@ local function setItem(self)--物品
     if not itemID then
         return
     end
-    local r, g, b, hex=GetItemQualityColor(itemQuality)
-    hex=hex and '|c'..hex or e.Player.col
+    local r, g, b, hex= 1,1,1,e.Player.col
+    if itemQuality then
+        r, g, b, hex= GetItemQualityColor(itemQuality)
+        hex=hex and '|c'..hex
+    end
 
     self:AddDoubleLine(expacID and _G['EXPANSION_NAME'..expacID], expacID and GAME_VERSION_LABEL..': '..expacID+1)--版本
     self:AddDoubleLine(itemID and ITEMS..'ID: '.. itemID or ' ' , itemTexture and EMBLEM_SYMBOL..'ID: '..itemTexture)--ID, texture
@@ -620,6 +623,7 @@ local function setBuff(type, self, ...)--Buff
         SetPortraitTexture(self.Portrait, sourceUnit)
         self.Portrait:SetShown(true)
     end
+    self:Show()
 end
 hooksecurefunc(e.tips, "SetUnitBuff", function(...)
     setBuff('Buff', ...)

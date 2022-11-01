@@ -2,6 +2,20 @@ local id, e = ...
 e.L=e.L or {}--多语言
 e.tips=GameTooltip
 
+local itemLoadTab={--加载法术,或物品数据
+        134020,
+    }
+local spellLoadTab={
+        818,
+    }
+for _, itemID in pairs(itemLoadTab) do
+    if not C_Item.IsItemDataCachedByID(itemID) then C_Item.RequestLoadItemDataByID(itemID) end
+end
+for _, spellID in pairs(spellLoadTab) do
+    if not C_Spell.IsSpellDataCached(spellID) then C_Spell.RequestLoadSpellData(spellID) end
+end
+
+
 e.GroupGuid={}--团队GUID,{GUID==unit}
 
 local function GetWeek()--周数
@@ -310,7 +324,7 @@ e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size)
     return b
 end
 e.Cbtn2= function(name, parent)
-    local b= CreateFrame("Button", name, parent or UIParent, "SecureActionButtonTemplate")
+    local b= CreateFrame("Button", name, (parent or UIParent), "SecureActionButtonTemplate")
     b:SetSize(30,30)
     b:SetNormalAtlas('bag-reagent-border-empty')
     b:SetHighlightAtlas('bag-border')

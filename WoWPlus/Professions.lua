@@ -7,8 +7,6 @@ panel:SetSize(20,20)
 panel.professionInfoStr=e.Cstr(panel)
 panel.professionInfoStr:SetPoint('RIGHT', panel, 'LEFT')
 
-if not C_Spell.IsSpellDataCached(818) then C_Spell.RequestLoadSpellData(818) end
-if not C_Item.IsItemDataCachedByID(134020) then C_Item.RequestLoadItemDataByID(134020) end
 
 hooksecurefunc(ProfessionsFrame,'SetProfessionInfo', function(self, professionInfo)
     panel.professionID=professionInfo.professionID

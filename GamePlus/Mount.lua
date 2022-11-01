@@ -48,7 +48,7 @@ local Save={
 }
 local XD
 
-local panel=e.Cbtn2(id..addName..'button')
+local panel=e.Cbtn2(id..'MountButton')
 panel:SetAttribute("type1", "spell")
 panel:SetAttribute("target-spell", "cursor")
 panel:SetAttribute("alt-type1", "spell")

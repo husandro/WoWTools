@@ -28,11 +28,23 @@ panel:SetAttribute("shift-type1", "item")
 panel:SetAttribute("ctrl-type1", "item")
 
 e.toolsFrame=CreateFrame('Frame', nil, panel)--TOOLS 框架
---e.toolsFrame:SetParent(panel)
-e.toolsFrame:SetPoint('BOTTOMLEFT', panel, 'TOPLEFT')--设置, TOOLS 位置
+e.toolsFrame:SetPoint('BOTTOMRIGHT', panel, 'TOPRIGHT',-1,0)--设置, TOOLS 位置
 e.toolsFrame:SetSize(1,1)
 e.toolsFrame:SetShown(false)
+
 e.toolsFrame.last=e.toolsFrame
+
+--[[
+
+e.toolsFrame.texture=e.toolsFrame:CreateTexture()
+e.toolsFrame.texture:SetAtlas(e.Icon.icon)
+e.toolsFrame.texture:SetAllPoints(e.toolsFrame)
+
+
+
+]]
+
+
 
 local ModifiedTab={
     alt=140192,--达拉然炉石
@@ -50,10 +62,8 @@ panel.items={}--存放有效
 local function setPanelPostion()--设置按钮位置
     local p=Save.Point
     if p and p[1] and p[3] and p[4] and p[5] then
-        
         panel:SetPoint(p[1],  UIParent, p[3], p[4], p[5])
     else
-        print(id,addName)
         panel:SetPoint('RIGHT', CharacterReagentBag0Slot, 'LEFT',-30, 0)
     end
 end
@@ -221,16 +231,17 @@ local function setBagHearthstone()
         end
         if find then
             if not panel['texture'..type] then
-                panel['texture'..type]=panel:CreateTexture(nil,'ARTWORK')
+                panel['texture'..type]=panel:CreateTexture(nil,'OVERLAY')
                 panel['texture'..type]:SetSize(8,8)
                 if type=='alt' then
-                    panel['texture'..type]:SetPoint('BOTTOMRIGHT',-2,0)
+                    panel['texture'..type]:SetPoint('BOTTOMRIGHT',-6,5)
                 elseif type=='shift' then
-                    panel['texture'..type]:SetPoint('TOPLEFT',2,0)
+                    panel['texture'..type]:SetPoint('TOPLEFT',5,-5)
                 else
-                    panel['texture'..type]:SetPoint('BOTTOMLEFT',2,0)
+                    panel['texture'..type]:SetPoint('BOTTOMLEFT',5,5)
                 end
-                --panel['texture'..type]:AddMaskTexture(panel.mask)
+                panel['texture'..type]:SetDrawLayer('OVERLAY',2)
+                panel['texture'..type]:SetAlpha(0.5)
                 panel['texture'..type]:SetTexture(C_Item.GetItemIconByID(itemID))
             end
         end

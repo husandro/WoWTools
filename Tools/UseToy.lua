@@ -1,6 +1,6 @@
 local id, e = ...
 local addName= SLASH_RANDOM3:gsub('/','').. TOY
-local panel=e.Cbtn2(id..addName..'button', e.toolsFrame)
+local panel=e.Cbtn2(id..'RandomToyButton', e.toolsFrame)
 panel.items={}--存放有效
 
 local Save={
@@ -39,8 +39,6 @@ for _, itemID in pairs(ModifiedTab) do
         C_Item.RequestLoadItemDataByID(itemID)
     end
 end
-
-
 
 --#########
 --主图标冷却
@@ -326,16 +324,16 @@ local function showTips(self)--显示提示
     end
 end
 local function Init()
-    panel.count=e.Cstr(panel,10, nil,nil, true)
-    panel.count:SetPoint('TOPRIGHT',-3, -2)
-
     if Save.Point then
         panel:SetParent(UIParent)
         panel:SetPoint(Save.Point[1], UIParent, Save.Point[3], Save.Point[4],Save.Point[5])
     else
-        panel:SetPoint('BOTTOMLEFT', e.toolsFrame.last, 'TOPLEFT')
+        panel:SetPoint('BOTTOMRIGHT', e.toolsFrame , 'TOPRIGHT')
         e.toolsFrame.last=panel
     end
+
+    panel.count=e.Cstr(panel,10, nil,nil, true)
+    panel.count:SetPoint('TOPRIGHT',-3, -2)
 
     getToy()--生成, 有效表格
     setAtt(true)--设置属性
@@ -358,13 +356,6 @@ local function Init()
     panel:SetClampedToScreen(true)
     panel:SetScript("OnEnter",function(self)
         showTips(self)--显示提示
-        --[[
-if not UnitAffectingCombat('player') then
-            e.toolsFrame:SetShown(true)--设置, TOOLS 框架, 显示
-        end
-
-]]
-
     end)
     panel:SetScript("OnLeave",function()
         e.tips:Hide()

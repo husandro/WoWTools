@@ -1,10 +1,11 @@
-## Interface: 100000
+## Interface: 100002
 ## Version: 0.0.1
 ## Title: |A:Icon-WoW:0:0|a|cffff00ffWoW|r |cff00ff00Tools|r
 ## Notes: WoW Tools
 ## Author: husandro
 ## SavedVariables: WoWToolsSave
 ## X-Wago-ID:baND1J6o
+
 WoWTools.lua
 
 Sesource\Locales\deDE.lua
