@@ -555,7 +555,7 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
-            Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
+            Save= WoWToolsSave and WoWToolsSave[addName] or Save
             CursorPositionInt()
             setMapQuestList()--世界地图,任务, 加 - + 按钮
     elseif event == "PLAYER_LOGOUT" then

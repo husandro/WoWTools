@@ -393,7 +393,7 @@ g:RegisterEvent("PLAYER_LOGOUT")
 g:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED"  then
         if arg1 == id then
-            Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
+            Save= WoWToolsSave and WoWToolsSave[addName] or Save
             setTexture()
             if Save.point then
                 setParent()--设置父级

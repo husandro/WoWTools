@@ -561,7 +561,7 @@ panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
-            Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
+            Save= WoWToolsSave and WoWToolsSave[addName] or Save
             if not Save.disabled then
                 panel:SetSize(30,30)
                 panel:EnableMouseWheel(true)

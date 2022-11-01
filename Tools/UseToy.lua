@@ -128,6 +128,11 @@ local function setToyBox_ShowToyDropdown(itemID, anchorTo, offsetX, offsetY)
             tooltipText=id,
         }
     UIDropDownMenu_AddButton(info, 1)
+    UIDropDownMenu_AddSeparator()
+    UIDropDownMenu_AddButton({
+        text=ITEMS..'ID: '..itemID,
+        isTitle=true,
+    }, 1)
 end
 local function setToySpellButton_UpdateButton(self)--标记, 是否已选取
     if e.toolsFrame.disabled or not self.itemID then
@@ -411,7 +416,7 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1== id then
-        Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
+        Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
         if not e.toolsFrame.disabled then
             Init()--初始
         else
@@ -426,7 +431,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end
-            WoWToolsSave[addName]=Save
+            WoWToolsSave[addName..'Tools']=Save
         end
 
     elseif event=='TOYS_UPDATED' or event=='NEW_TOY_ADDED' then

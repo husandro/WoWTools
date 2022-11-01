@@ -848,7 +848,7 @@ Frame.sel:RegisterEvent("EQUIPMENT_SWAP_FINISHED")
 Frame.sel:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
 Frame.sel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1 == id then
-       Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
+       Save= WoWToolsSave and WoWToolsSave[addName] or Save
        SetIni()
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then

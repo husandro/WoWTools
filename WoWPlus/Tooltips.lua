@@ -2057,7 +2057,7 @@ panel:RegisterEvent('WEEKLY_REWARDS_UPDATE')
 panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
+            Save= WoWToolsSave and WoWToolsSave[addName] or Save
             wowBossKilled= WoWToolsSave and WoWToolsSave['Boss_Killed'] or {}--{encounterID=数量}怪物击杀数量
 
             wowSave=WoWToolsSave and WoWToolsSave['WoW-All-Save'] or {}

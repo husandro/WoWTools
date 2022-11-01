@@ -61,7 +61,7 @@ panel:RegisterEvent("PLAYER_REGEN_ENABLED")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1== id then
-        Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
+        Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
         if not e.toolsFrame.disabled then
             C_Timer.After(2, function()
                 if UnitAffectingCombat('player') then
@@ -78,7 +78,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end
-            WoWToolsSave[addName]=Save
+            WoWToolsSave[addName..'Tools']=Save
         end
 
     elseif event=='PLAYER_REGEN_ENABLED' then

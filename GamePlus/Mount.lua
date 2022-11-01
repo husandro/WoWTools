@@ -984,7 +984,7 @@ panel:RegisterEvent('CHAT_MSG_AFK')
 
 panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" and arg1==id then
-            Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
+            Save= WoWToolsSave and WoWToolsSave[addName] or Save
             local check=e.CPanel(addName, not Save.disabled, true)
             check:SetScript('OnClick', function()
                 if Save.disabled then

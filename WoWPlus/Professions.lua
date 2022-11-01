@@ -218,7 +218,7 @@ panel:RegisterEvent("TRADE_SKILL_LIST_UPDATE")
 --panel:RegisterEvent('TRADE_SKILL_CLOSE')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
-            Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
+            Save= WoWToolsSave and WoWToolsSave[addName] or Save
             panel:SetNormalAtlas(Save.disabled and e.Icon.disabled or e.Icon.icon)
 
     elseif event == "PLAYER_LOGOUT" then

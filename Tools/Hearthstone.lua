@@ -368,7 +368,7 @@ panel:RegisterEvent('PLAYER_STARTED_MOVING')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1== id then
-        Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
+        Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
             --添加控制面板        
             local sel=e.CPanel(addName, not Save.disabled, true)
             sel:SetScript('OnClick', function()
@@ -393,7 +393,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end
-            WoWToolsSave[addName]=Save
+            WoWToolsSave[addName..'Tools']=Save
         end
     elseif event=='TOYS_UPDATED' or event=='NEW_TOY_ADDED' then
         getToy()--生成, 有效表格

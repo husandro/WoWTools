@@ -236,7 +236,7 @@ panel:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
 panel:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
-        Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
+        Save= WoWToolsSave and WoWToolsSave[addName] or Save
         setInit()
         setMoney()
         setDurabiliy()

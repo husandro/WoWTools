@@ -644,7 +644,7 @@ sel:RegisterEvent("ADDON_LOADED")
 sel:RegisterEvent("PLAYER_LOGOUT")
 sel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1 == id then
-    	Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
+    	Save= WoWToolsSave and WoWToolsSave[addName] or Save
         if not Save.disabed then
             Ini()
         else

@@ -495,7 +495,7 @@ Frame.sel:RegisterEvent("ADDON_LOADED")
 Frame.sel:RegisterEvent("PLAYER_LOGOUT")
 Frame.sel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1 == id then
-		Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
+		Save= WoWToolsSave and WoWToolsSave[addName] or Save
 		SetAll()--收起,展开		
 		SetRe()--监视声望
     elseif event == "PLAYER_LOGOUT" then

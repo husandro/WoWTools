@@ -443,7 +443,7 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:RegisterEvent("TRANSMOG_SETS_UPDATE_FAVORITE")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
-            Save= (WoWToolsSave and WoWToolsSave[addName]) and WoWToolsSave[addName] or Save
+            Save= WoWToolsSave and WoWToolsSave[addName] or Save
             wowSave=WoWToolsSave and WoWToolsSave['WoW-CollectionWardrobeSets'] or wowSave
             SetSaveWardroberColleced()--收集所有角色套装数据
             dupframe.sel:SetNormalAtlas(Save.disabledDressUpOutfit and e.Icon.disabled or e.Icon.icon)--试衣间, 外观列表
