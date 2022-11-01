@@ -4,7 +4,7 @@
 ## Notes: WoW Tools
 ## Author: husandro
 ## SavedVariables: WoWToolsSave
-## X-Wago-ID:kaNeWXK2
+## X-Wago-ID:Rn6VWqKd
 WoWTools.lua
 
 Sesource\Locales\deDE.lua
