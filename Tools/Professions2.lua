@@ -13,7 +13,8 @@ local function Init()
             local name, icon = GetProfessionInfo(type)
             if not panel.buttons[index] then
                 panel.buttons[index]=e.Cbtn2(nil, e.toolsFrame)
-                panel.buttons[index]:SetPoint('BOTTOMRIGHT', e.toolsFrame.last , 'TOPRIGHT')
+                --panel.buttons[index]:SetPoint('BOTTOMRIGHT', e.toolsFrame.last , 'TOPRIGHT')
+                e.ToolsSetButtonPoint(panel.buttons[index])--设置位置
                 panel.buttons[index]:SetAttribute("type1", "spell")
                 panel.buttons[index].texture:SetShown(true)
                 e.toolsFrame.last=panel.buttons[index]

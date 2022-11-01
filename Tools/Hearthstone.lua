@@ -27,7 +27,8 @@ panel:SetAttribute("alt-type1", "item")
 panel:SetAttribute("shift-type1", "item")
 panel:SetAttribute("ctrl-type1", "item")
 
-e.toolsFrame=CreateFrame('Frame', nil, panel)--TOOLS 框架
+--e.toolsFrame=CreateFrame('Frame', nil, panel)--TOOLS 框架
+e.toolsFrame:SetParent(panel)
 e.toolsFrame:SetPoint('BOTTOMRIGHT', panel, 'TOPRIGHT',-1,0)--设置, TOOLS 位置
 e.toolsFrame:SetSize(1,1)
 e.toolsFrame:SetShown(false)

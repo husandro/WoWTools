@@ -549,3 +549,19 @@ e.GetItemCooldown= function(itemID)--物品冷却
         return '|cnRED_FONT_COLOR:'..SPELL_RECAST_TIME_INSTANT..'|r'
     end
 end
+
+e.toolsFrame=CreateFrame('Frame')--TOOLS 框架
+e.toolsFrame.last=e.toolsFrame
+e.toolsFrame.line=1
+e.toolsFrame.index=1
+e.ToolsSetButtonPoint=function(self, line)--设置位置
+    if (index~=10 and select(2, math.modf(e.toolsFrame.index / 10))==0) or line then
+        local x= - (e.toolsFrame.line * 30)
+        self:SetPoint('BOTTOMRIGHT', e.toolsFrame , 'TOPRIGHT', x, 0)
+        e.toolsFrame.line=e.toolsFrame.line + 1
+    else
+        self:SetPoint('BOTTOMRIGHT', e.toolsFrame.last , 'TOPRIGHT')
+    end
+    e.toolsFrame.last=self
+    e.toolsFrame.index=e.toolsFrame.index+1
+end

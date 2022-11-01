@@ -259,7 +259,8 @@ local function InitMenu(self, level, menuList)--主菜单
             info.disabled=UnitAffectingCombat('player')
             UIDropDownMenu_AddButton(info, level)
 
-            if Save.Point then--还原位置
+            --[[
+if Save.Point then--还原位置
                 info={
                     text=RESET_POSITION,
                     tooltipTitle=RELOADUI,
@@ -285,6 +286,9 @@ local function InitMenu(self, level, menuList)--主菜单
                 notCheckable=true,
             }
             UIDropDownMenu_AddButton(info,level)
+
+]]
+
         end
     else
        info={
@@ -329,13 +333,20 @@ local function showTips(self)--显示提示
     end
 end
 local function Init()
-    if Save.Point then
+    --[[
+if Save.Point then
         panel:SetParent(UIParent)
         panel:SetPoint(Save.Point[1], UIParent, Save.Point[3], Save.Point[4],Save.Point[5])
     else
-        panel:SetPoint('BOTTOMRIGHT', e.toolsFrame , 'TOPRIGHT')
+
+]]
+
+       --[[
+ panel:SetPoint('BOTTOMRIGHT', e.toolsFrame , 'TOPRIGHT')
         e.toolsFrame.last=panel
-    end
+
+]]
+    e.ToolsSetButtonPoint(panel)--设置位置
 
     panel.count=e.Cstr(panel,10, nil,nil, true)
     panel.count:SetPoint('TOPRIGHT',-3, -2)
@@ -356,9 +367,13 @@ local function Init()
     panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
 
-    panel:RegisterForDrag("RightButton")
+    --[[
+panel:RegisterForDrag("RightButton")
     panel:SetMovable(true)
     panel:SetClampedToScreen(true)
+
+]]
+
     panel:SetScript("OnEnter",function(self)
         showTips(self)--显示提示
     end)
@@ -380,7 +395,7 @@ local function Init()
             end
         end
         self.border:SetAtlas('bag-reagent-border')
-        ResetCursor()
+       --ResetCursor()
     end)
 
     panel:SetScript('OnMouseWheel',function(self,d)
@@ -388,6 +403,7 @@ local function Init()
         showTips(self)--显示提示
     end)
 
+--[[
     panel:SetScript("OnDragStart", function(self,d )
         if IsAltKeyDown() and d=='RightButton' then
             self:StartMoving()
@@ -401,6 +417,9 @@ local function Init()
         Save.Point[2]=nil
         print(id, addName, NEED, RELOADUI)
     end)
+
+]]
+
 end
 --###########
 --加载保存数据
