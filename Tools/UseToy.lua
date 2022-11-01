@@ -128,11 +128,17 @@ local function setToyBox_ShowToyDropdown(itemID, anchorTo, offsetX, offsetY)
             tooltipText=id,
         }
     UIDropDownMenu_AddButton(info, 1)
-    UIDropDownMenu_AddSeparator()
+--[[
+  
+UIDropDownMenu_AddSeparator()
     UIDropDownMenu_AddButton({
         text=ITEMS..'ID: '..itemID,
         isTitle=true,
+        notCheckable=true,
     }, 1)
+
+]]
+
 end
 local function setToySpellButton_UpdateButton(self)--标记, 是否已选取
     if e.toolsFrame.disabled or not self.itemID then

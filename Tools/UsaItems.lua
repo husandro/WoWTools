@@ -1,8 +1,8 @@
 local id, e = ...
 local addName=USE..ITEMS
-local panel=e.Cbtn(e.toolsFrame, nil, true, nil, nil, nil, {16,16})
-panel:SetPoint('TOPRIGHT', e.toolsFrame, 'BOTTOMRIGHT',-30,0)
---panel:SetAlpha(0.1)
+local panel=e.Cbtn(e.toolsFrame, nil, true, nil, nil, nil, {20,20})
+panel:SetPoint('BOTTOMLEFT', e.toolsFrame, 'TOPRIGHT',-2,5)
+panel:SetAlpha(0.1)
 local Save= {
         item={
             49040,--[基维斯]
@@ -69,6 +69,42 @@ end
 for _, itemID in pairs(Save.equip) do
     getFind(itemID)
 end
+
+
+--#####
+--#####
+--主菜单
+--#####
+local mainMenuTable={
+    MOUNT_JOURNAL_FILTER_GROUND,
+    MOUNT_JOURNAL_FILTER_AQUATIC,
+    MOUNT_JOURNAL_FILTER_FLYING,
+    --MOUNT_JOURNAL_FILTER_DRAGONRIDING,
+    '-',
+    'Shift', 'Alt', 'Ctrl',
+    '-',
+    SPELLS,
+    FLOOR,
+    ITEMS,
+}
+
+local function InitMenu(self, level, menuList)--主菜单
+    local info
+    if menuList then
+        if menuList==SETTINGS then--设置菜单
+                --UIDropDownMenu_AddButton(info, level);
+        end
+    else
+        info={
+            text=ITEMS
+            
+    }
+
+        --UIDropDownMenu_AddSeparator()
+    end
+end
+
+
 --####
 --物品
 --####
@@ -167,7 +203,7 @@ local function setItemButton(self, equip)--设置按钮
     if equip then
         self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
         self:RegisterForClicks('LeftButtonDown', 'RightButtonDown')
-        self:SetScript('OnMouseDown',function()
+        self:SetScript('OnMouseUp',function()
             local frame=PaperDollFrame
             if frame and not frame:IsVisible() then
                 ToggleCharacter("PaperDollFrame");
@@ -230,7 +266,7 @@ local function Init()
             name = C_Item.GetItemNameByID(itemID)
             icon = C_Item.GetItemIconByID(itemID)
             if name and icon then
-                Button[index]=e.Cbtn2(nil, panel)
+                Button[index]=e.Cbtn2(nil, e.toolsFrame)
                 Button[index].texture:SetShown(true)
                 Button[index].itemID=itemID
                 setItemButton(Button[index])
@@ -247,7 +283,7 @@ local function Init()
             local name, _, icon = GetSpellInfo(spellID)
             if name and icon then
                 if name and icon then
-                    Button[index]=e.Cbtn2(nil, panel)
+                    Button[index]=e.Cbtn2(nil, e.toolsFrame)
                     Button[index].texture:SetShown(true)
                     Button[index].spellID=spellID
                     setSpellButton(Button[index])
@@ -268,26 +304,103 @@ local function Init()
             icon =icon2 or C_Item.GetItemIconByID(itemID)
             local slot=itemEquipLoc and e.itemSlotTable[itemEquipLoc]
             if name and icon and slot then
-                Button[index]=e.Cbtn2(nil, panel)
+                Button[index]=e.Cbtn2(nil, e.toolsFrame)
                 Button[index].texture:SetShown(true)
                 Button[index].itemID=itemID
                 Button[index].slot=slot
-                
-                
                 setItemButton(Button[index], true)
                 e.ToolsSetButtonPoint(Button[index])--设置位置
                 Button[index]:SetAttribute('type', 'item')
-                
                 Button[index]:SetAttribute('item', name)
-                --Button[index]:SetAttribute('target-slot', slot)
-                
                 Button[index]:SetAttribute('type2', 'item')
-                --Button[index]:SetAttribute('target-slot2', slot)
-
                 Button[index].texture:SetTexture(icon)
                 index=index+1
             end
         end
+    end
+
+    panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
+    UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
+
+    panel:SetScript('OnMouseDown',function(self, d)
+        local infoType, itemID, itemLink = GetCursorInfo()
+    print('还在写中')
+        if infoType == "item" and itemID and itemLink then
+
+        elseif infoType =='spell' and spellID then
+
+        elseif d=='LeftButton' then
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(id, addName)
+            e.tips:AddDoubleLine(DRAG_MODEL, ADD)
+            e.tips:AddDoubleLine(SPELLS, ITEMS, 0,1,0, 0,1,0)
+            e.tips:AddDoubleLine(MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+            e.tips:Show()
+        elseif d=='RightButton' then
+
+        end
+    end)
+    panel:SetScript('OnEnter',function ()
+        panel:SetAlpha(1.0)
+    
+    end)
+    panel:SetScript('OnLeave', function ()
+        panel:SetAlpha(0.1)
+        e.tips:Hide()
+    end)
+    panel:SetScript('OnMouseUp',function ()
+        panel:SetAlpha(0.1)
+    end)
+end
+
+
+--#############
+--玩具界面, 菜单
+--#############
+local function setToyBox_ShowToyDropdown(itemID, anchorTo, offsetX, offsetY)
+    if e.toolsFrame.disabled or not itemID then
+        return
+    end
+    local info={
+            text='|T133567:0|t'..addName,
+            checked=Save.items[itemID],
+            func=function()
+                if Save.items[itemID] then
+                    Save.items[itemID]=nil
+                else
+                    Save.items[itemID]=true
+                end
+                getToy()--生成, 有效表格
+                setAtt()--设置属性
+                ToySpellButton_UpdateButton(anchorTo)
+            end,
+            tooltipOnButton=true,
+            tooltipTitle=addName,
+            tooltipText=id,
+        }
+    UIDropDownMenu_AddButton(info, 1)
+  
+UIDropDownMenu_AddSeparator()
+    UIDropDownMenu_AddButton({
+        text=ITEMS..'ID: '..itemID,
+        isTitle=true,
+        notCheckable=true,
+    }, 1)
+end
+local function setToySpellButton_UpdateButton(self)--标记, 是否已选取
+    if e.toolsFrame.disabled or not self.itemID then
+        return
+    end
+    local find = Save.items[self.itemID]
+    if find and not self.toy then
+        self.toy=self:CreateTexture(nil, 'ARTWORK')
+        self.toy:SetPoint('TOPLEFT',self.name,'BOTTOMLEFT',12,0)
+        self.toy:SetTexture(133567)
+        self.toy:SetSize(12, 12)
+    end
+    if self.toy then
+        self.toy:SetShown(find)
     end
 end
 
