@@ -1,9 +1,9 @@
 local id, e = ...
-local addName='ChallengersPath'
+local addName=UNITNAME_SUMMON_TITLE14:format(PLAYER_DIFFICULTY5)--挑战的传送门 'ChallengersPath'
 local panel=CreateFrame("Frame")
 local buttons={}
 local Save={
-    list={
+    list={--{spell=数字, ins=副本ID 数字 journalInstanceID, name=自定义名称 字符}
         {spell=367416, ins=1194},--街头商贩之路(集市)
         {spell=354469, ins=1189},--石头守望者之路(雷文德斯)
         {spell=354465, ins=1185},--罪魂之路(雷文德斯) 
@@ -50,6 +50,137 @@ local function setSpellCooldown(self, spellID)--冷却
     local start, duration, _, modRate = GetSpellCooldown(spellID)
     e.Ccool(self, start, duration, modRate, true, nil)
 end
+
+--#####
+--对话框
+--#####
+local function getInstanceDate(text)--取得数据, 是否有效
+    local spell,ins=text:match('(%d+).-(%d+)')
+    local name=text:match('=(.+)')
+    spell= spell and tonumber(spell)
+    ins= ins and tonumber(ins)
+    if spell and ins then
+        local spellLink= GetSpellLink(spell)
+        local insName= EJ_GetInstanceInfo(ins)
+        if spellLink and insName then
+            print(spellLink, insName, name)
+            return spell, ins, name
+        end
+    end
+end
+StaticPopupDialogs[id..addName..'EDIT']={--修该,添加
+    text=id..' '..addName..'\n\n'..SPELLS..': %s\n'..INSTANCE..': %s\n\n'..'|cnGREEN_FONT_COLOR:'..SPELLS..' ID|r|cffff0000,|r '..INSTANCE..' |cnGREEN_FONT_COLOR:journalInstanceID|r|cffff0000=|r'..NAME..'('..OPTIONAL..')',
+    whileDead=1,
+    hideOnEscape=1,
+    exclusive=1,
+    hasEditBox=1,
+    button1='|cnGREEN_FONT_COLOR:'..SLASH_CHAT_MODERATE2:gsub('/','')..'|r',
+    button2=CANCEL,
+    button3='|cnRED_FONT_COLOR:'..REMOVE..'|r',
+    OnShow = function(self, data)
+        if not data.index then
+            self.button1:SetText(ADD)
+        end
+        self.editBox:SetText((data.spell or '')..', '..(data.ins or ' ')..' ='..(data.name or ''))
+        self.editBox:SetWidth(self:GetWidth())
+        self.button3:SetEnabled(data.index and data.spell and data.ins)
+	end,
+    OnAccept = function(self, data)
+        local find
+        local spell, ins, name= getInstanceDate(self.editBox:GetText())
+        if spell and ins then
+            if name and name:gsub(' ','')=='' then
+                name=nil
+            end
+            if data.index then
+                if Save.list[data.index] then
+                    Save.list[data.index].spell=spell
+                    Save.list[data.index].ins=ins
+                    Save.list[data.index].name=name
+                    find=SLASH_CHAT_MODERATE2:gsub('/','')
+                end
+            else
+                table.insert(Save.list, {spell=spell, ins=ins, name=name})
+                find=ADD
+            end
+        end
+        if find then
+            local spellLink=GetSpellLink(spell) or (SPELLS..spell)
+            local insName= EJ_GetInstanceInfo(ins) or (INSTANCE..ins)
+            print(id, addName,'|cnGREEN_FONT_COLOR:'..find..'|r', COMPLETE, spellLink, insName, name, '|cnRED_FONT_COLOR:'..RELOADUI..'|r')
+        else
+            print(id,addName, '|cnRED_FONT_COLOR:'..ERRORS..'|r')
+        end
+	end,
+    OnAlt = function(self, data)
+        if data and data.index and Save.list[data.index] then
+            local tab=Save.list[data.index]
+            local spellLink=GetSpellLink(tab.spell) or (SPELLS..tab.spell)
+            local insName= EJ_GetInstanceInfo(tab.ins) or (INSTANCE..tab.ins)
+            table.remove(Save.list, data.index)
+            print(id, addName, '|cnGREEN_FONT_COLOR:'..REMOVE..'|r', COMPLETE, spellLink, insName, '|cnRED_FONT_COLOR:'..RELOADUI..'|r')
+        else
+            print(id, addName, '|cnRED_FONT_COLOR:'..REMOVE..'|r', ERRORS)
+        end
+    end,
+    EditBoxOnTextChanged=function(self, data)
+        local spell, ins, name= getInstanceDate(self:GetText())
+        self:GetParent().button1:SetEnabled(spell and ins)
+    end,
+    EditBoxOnEscapePressed = function(self)
+        slef:GetParent():Hide()
+    end,
+}
+StaticPopupDialogs[id..addName..'RESET']={--重置
+    text=id..' '..addName..'\n\n'..RELOADUI,
+    whileDead=1,
+    hideOnEscape=1,
+    exclusive=1,
+    button1='|cnRED_FONT_COLOR:'..RESET..'|r',
+    button2=CANCEL,
+    OnAccept = function()
+      Save=nil
+      C_UI.Reload()
+	end,
+}
+--#####
+--主菜单
+--#####
+local function InitMenu(self, leve, tab)--主菜单
+    if not tab or not tab.spell or not tab.ins then
+        return
+    end
+    local info={
+        text= SLASH_CHAT_MODERATE2:gsub('/',''),
+        notCheckable=true,
+        func=function()
+            local name=GetSpellInfo(tab.spell)
+            name=name and name..' '..tab.spell or tab.spell
+            local insName=EJ_GetInstanceInfo(tab.ins)
+            insName = insName and insName.. ' '..tab.ins or tab.ins
+            StaticPopup_Show(id..addName..'EDIT',name ,insName , tab)
+        end,
+    }
+    UIDropDownMenu_AddButton(info, level)
+
+    info={
+        text= ADD,
+        notCheckable=true,
+        func=function()
+            StaticPopup_Show(id..addName..'EDIT', NEED ,NEED , {})
+        end,
+    }
+    UIDropDownMenu_AddButton(info, level)
+    UIDropDownMenu_AddSeparator(level)
+    info={
+        text= '|cnRED_FONT_COLOR:'..RESET..'|r',
+        notCheckable=true,
+        func=function()
+            StaticPopup_Show(id..addName..'RESET')
+        end,
+    }
+    UIDropDownMenu_AddButton(info, level)
+end
 --####
 --初始
 --####
@@ -57,8 +188,11 @@ local function Init()
     local find
     for index, tab in pairs(Save.list) do
         if IsSpellKnown(tab.spell) then
+            if not find then
+                panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
+                UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
+            end
             buttons[tab.spell]=e.Cbtn2(nil, e.toolsFrame, true)
-            buttons[tab.spell].index=index
 
             local name, _, icon = GetSpellInfo(tab.spell)
             buttons[tab.spell]:SetAttribute('type', 'spell')--设置属性
@@ -80,18 +214,22 @@ local function Init()
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:SetSpellByID(tab.spell)
+                e.tips:AddLine(' ')
                 local insName, _, _, buttonImage1 = EJ_GetInstanceInfo(tab.ins)
                 if tab.ins then
                     e.tips:AddDoubleLine((buttonImage1 and '|T'..buttonImage1..':0|t' or '')..(insName or ('journalInstanceID: '..tab.ins)), ADVENTURE_JOURNAL..e.Icon.right)
                 end
+                e.tips:AddDoubleLine(MAINMENU or SLASH_TEXTTOSPEECH_MENU, 'Alt+'..e.Icon.right)
                 e.tips:Show()
             end)
             buttons[tab.spell]:SetScript('OnLeave', function() e.tips:Hide() end)
 
             buttons[tab.spell]:SetScript('OnMouseDown', function(self, d)
-                if d=='RightButton' and tab.ins then
+                if d=='RightButton' and IsAltKeyDown() then
+                    ToggleDropDownMenu(1,nil, panel.Menu, self, 15,0 , {spell=tab.spell, ins=tab.ins, name=tab.name, index=index})
+                elseif d=='RightButton' and tab.ins then
                     local frame=EncounterJournal;
-                    if not frame or not frame:IsShown() then 
+                    if not frame or not frame:IsShown() then
                         ToggleEncounterJournal();
                     end
                     NavBar_Reset(EncounterJournal.navBar)
