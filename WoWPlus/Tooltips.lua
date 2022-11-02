@@ -55,6 +55,30 @@ local function setInitItem(self, hide)--创建物品
     end
 end
 
+local function setItemCooldown(self, itemID)--物品冷却
+    local startTime, duration, enable = GetItemCooldown(itemID)
+    if duration>0 and enable==1 then
+        local t=GetTime()
+        if startTime>t then t=t+86400 end
+        t=t-startTime
+        t=duration-t
+        self:AddDoubleLine(ON_COOLDOWN, SecondsToTime(t), 1,0,0, 1,0,0)
+    elseif enable==0 then
+        self:AddDoubleLine(ON_COOLDOWN, SPELL_RECAST_TIME_INSTANT, 1,0,0, 1,0,0)
+    end
+end
+local function setSpellCooldown(self, spellID)--法术冷却
+    local startTime, duration, enable = GetSpellCooldown(spellID)
+    if duration>0 and enable==1 then
+        local t=GetTime()
+        if startTime>t then t=t+86400 end
+        t=t-startTime
+        t=duration-t
+        self:AddDoubleLine(ON_COOLDOWN, SecondsToTime(t), 1,0,0, 1,0,0)
+    elseif enable==0 then
+        self:AddDoubleLine(ON_COOLDOWN, SPELL_RECAST_TIME_INSTANT, 1,0,0, 1,0,0)
+    end
+end
 local function GetSetsCollectedNum(setID)--套装收集数
     local info=C_TransmogSets.GetSetPrimaryAppearances(setID) or {}
     local numCollected,numAll=0,0
@@ -361,11 +385,14 @@ local function setItem(self)--物品
         end
     end
 
+    setItemCooldown(self, itemID)--物品冷却
+
     self.backgroundColor:SetColorTexture(r, g, b, 0.15)--颜色
     self.backgroundColor:SetShown(true)
 end
 
 local function setSpell(self)--法术
+--[[
     if IsControlKeyDown() then
         if Save.showTips then
             Save.showTips=nil
@@ -373,8 +400,11 @@ local function setSpell(self)--法术
             Save.showTips=true
         end
     end
+
+]]
+
     local bat=UnitAffectingCombat('player')
-    if not Save.showTips or bat then
+    if not Save.showTips then
         return
     end
     local spellID = select(2, self:GetSpell())
@@ -391,6 +421,8 @@ local function setSpell(self)--法术
     if mountID then
         setMount(self, mountID)
     end
+
+    setSpellCooldown(self, spellID)--法术冷却
 end
 
 local function setCurrency(self, currencyID)--货币

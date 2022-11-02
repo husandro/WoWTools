@@ -281,7 +281,7 @@ local function showTips(self)--显示提示
                 local icon = C_Item.GetItemIconByID(itemID)
                 name= (icon and '|T'..icon..':0|t' or '')..name
 
-                e.tips:AddDoubleLine(name..(e.GetItemCooldown(itemID) or ''), type..'+'..e.Icon.left)
+                e.tips:AddDoubleLine(name, type..'+'..e.Icon.left)
             end
         end
         e.tips:Show()

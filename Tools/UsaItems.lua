@@ -46,6 +46,14 @@ local Save= {
         }
 }
 
+local function findType(type, ID)
+    for index, ID2 in pairs(Save[type]) do
+        if ID2==ID then
+            return index
+        end
+    end
+end
+
 local function getFind(ID, spell)
     if spell then
         if IsSpellKnown(ID) then
@@ -59,7 +67,6 @@ local function getFind(ID, spell)
         end
     end
 end
-
 for _, itemID in pairs(Save.item) do
     getFind(itemID)
 end
@@ -73,7 +80,6 @@ end
 --###########
 --添加, 对话框
 --###########
-
 StaticPopupDialogs[id..addName..'REMOVE']={
     text=id..' '..addName..'\n\n%s',
     whileDead=1,
@@ -110,13 +116,7 @@ StaticPopupDialogs[id..addName..'RESETALL']={--重置所有
         C_UI.Reload()
     end,
 }
-local function findType(type, ID)
-    for index, ID2 in pairs(Save[type]) do
-        if ID2==ID then
-            return index
-        end
-    end
-end
+
 StaticPopupDialogs[id..addName..'ADD']={--添加, 移除
     text=id..' '..addName..'\n\n%s: %s',
     whileDead=1,
@@ -141,7 +141,7 @@ StaticPopupDialogs[id..addName..'ADD']={--添加, 移除
         print(id, addName, '|cnRED_FONT_COLOR:'..REMOVE..'|r', COMPLETE, data.name, REQUIRES_RELOAD)
     end,
 }
---#####
+
 --#####
 --主菜单
 --#####
@@ -273,11 +273,12 @@ local function setEquipSlot(self)--装备
     end
     self:UnregisterEvent('PLAYER_REGEN_ENABLED')
 end
+
 local function setItemCount(self)--数量
     if not PlayerHasToy(self.itemID) then
         local num = GetItemCount(self.itemID,nil,true,true)
         if num~=1 and not self.count then
-            self.count=e.Cstr(self,nil,nil,nil,true)
+            self.count=e.Cstr(self,10,nil,nil,true)
             self.count:SetPoint('BOTTOMRIGHT',-2, 9)
         end
         if self.count then
@@ -286,6 +287,7 @@ local function setItemCount(self)--数量
     end
     self.texture:SetDesaturated(num==0 and not PlayerHasToy(self.itemID))
 end
+
 local function setItemCooldown(self)--冷却
     local startTime, duration = GetItemCooldown(self.itemID)
     e.Ccool(self,startTime, duration,nil, true)
@@ -307,10 +309,6 @@ local function setItemButton(self, equip)--设置按钮
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:SetItemByID(self.itemID)
-        local cd=e.GetItemCooldown(self.itemID)--物品冷却
-        if cd then
-            e.tips:AddDoubleLine(ON_COOLDOWN, cd, 1,0,0)
-        end
         e.tips:Show()
     end)
     self:SetScript('OnLeave', function() e.tips:Hide() end)
@@ -343,6 +341,7 @@ local function setItemButton(self, equip)--设置按钮
         setBlingtron(self)
     end
 end
+
 --###
 --法术
 --###
@@ -499,17 +498,18 @@ local function setToyBox_ShowToyDropdown(itemID, anchorTo, offsetX, offsetY)
     if e.toolsFrame.disabled or not itemID then
         return
     end
+    local find = findType('item', itemID)
     local info={
-            text='|T133567:0|t'..addName,
-            checked=Save.items[itemID],
+            text='|A:'..e.Icon.icon..':0:0|a'..addName,
+            checked=find and true or nil,
             func=function()
-                if Save.items[itemID] then
-                    Save.items[itemID]=nil
+                if find then
+                    table.remove(Save.item, find)
                 else
-                    Save.items[itemID]=true
+                    table.insert(Save.item, itemID)
                 end
-                getToy()--生成, 有效表格
-                setAtt()--设置属性
+                local name= select(2, GetItemInfo(itemID)) or (ITEMS..' ID: '..itemID)
+                print(id, addName, find and '|cnRED_FONT_COLOR:'..REMOVE..'|r' or '|cnGREEN_FONT_COLOR:'..ADD..'|r', name, 	REQUIRES_RELOAD)
                 ToySpellButton_UpdateButton(anchorTo)
             end,
             tooltipOnButton=true,
@@ -517,8 +517,8 @@ local function setToyBox_ShowToyDropdown(itemID, anchorTo, offsetX, offsetY)
             tooltipText=id,
         }
     UIDropDownMenu_AddButton(info, 1)
-  
-UIDropDownMenu_AddSeparator()
+
+    UIDropDownMenu_AddSeparator()
     UIDropDownMenu_AddButton({
         text=ITEMS..'ID: '..itemID,
         isTitle=true,
@@ -529,15 +529,15 @@ local function setToySpellButton_UpdateButton(self)--标记, 是否已选取
     if e.toolsFrame.disabled or not self.itemID then
         return
     end
-    local find = Save.items[self.itemID]
-    if find and not self.toy then
-        self.toy=self:CreateTexture(nil, 'ARTWORK')
-        self.toy:SetPoint('TOPLEFT',self.name,'BOTTOMLEFT',12,0)
-        self.toy:SetTexture(133567)
-        self.toy:SetSize(12, 12)
+    local find = findType('item', self.itemID)
+    if find and not self.useitem then
+        self.useitem=self:CreateTexture(nil, 'ARTWORK')
+        self.useitem:SetPoint('TOPLEFT',self.name,'BOTTOMLEFT',24,0)
+        self.useitem:SetAtlas(e.Icon.icon)
+        self.useitem:SetSize(12, 12)
     end
-    if self.toy then
-        self.toy:SetShown(find)
+    if self.useitem then
+        self.useitem:SetShown(find)
     end
 end
 
@@ -550,7 +550,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1== id then
         Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
         if not e.toolsFrame.disabled then
-            C_Timer.After(2, function()
+            C_Timer.After(1.6, function()
                 if UnitAffectingCombat('player') then
                     panel.combat= true
                 else
@@ -574,5 +574,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Init()--初始
         end
         panel:UnregisterEvent("PLAYER_REGEN_ENABLED")
+
+    elseif event=='ADDON_LOADED' and arg1=='Blizzard_Collections' then
+        hooksecurefunc('ToyBox_ShowToyDropdown', setToyBox_ShowToyDropdown)
+        hooksecurefunc('ToySpellButton_UpdateButton', setToySpellButton_UpdateButton)
     end
 end)

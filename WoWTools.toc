@@ -65,3 +65,7 @@ Tools\Hearthstone.lua
 Tools\UseToy.lua
 Tools\Professions2.lua
 Tools\UsaItems.lua
+##诺格弗格药剂 Noggenfogger Elixir
+Tools\NoggenfoggerElixir.lua
+##挑战者之路
+Tools\ChallengerPath.lua

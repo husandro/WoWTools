@@ -323,7 +323,7 @@ e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size)
     end
     return b
 end
-e.Cbtn2= function(name, parent)
+e.Cbtn2= function(name, parent, showTexture)
     local b= CreateFrame("Button", name, (parent or UIParent), "SecureActionButtonTemplate")
     b:SetSize(30,30)
     b:SetNormalAtlas('bag-reagent-border-empty')
@@ -332,17 +332,18 @@ e.Cbtn2= function(name, parent)
     b:RegisterForClicks('LeftButtonDown')--, 'RightButtonDown')
     b:EnableMouseWheel(true)
 
+    
     b.texture=b:CreateTexture(nil,'ARTWORK')
     b.texture:SetPoint("CENTER",-1,1)
     b.texture:SetSize(23,23)
     b.texture:SetAtlas('bag-border')
-    b.texture:SetShown(false)
+    b.texture:SetShown(showTexture)
 
     b.mask= b:CreateMaskTexture()
     b.mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
     b.mask:SetAllPoints(b.texture)
     b.texture:AddMaskTexture(b.mask)
-
+    
     b.border=b:CreateTexture(nil,'OVERLAY')
     b.border:SetAllPoints(b)
     b.border:SetAtlas('bag-reagent-border')
@@ -353,6 +354,7 @@ end
 e.Ccool=function(self, start, duration, modRate, HideCountdownNumbers, Reverse, SwipeTexture)--冷却条
     if not self.cooldown then
         self.cooldown= CreateFrame("Cooldown", nil, self, 'CooldownFrameTemplate')
+        
         self.cooldown:SetUseCircularEdge(true)--设置边缘纹理是否应该遵循圆形图案而不是方形编辑框
         self.cooldown:SetDrawBling(true)--闪光
         self.cooldown:SetDrawEdge(true)--冷却动画的移动边缘绘制亮线
@@ -424,7 +426,7 @@ e.WA_GetUnitBuff = function(unit, spell, filter)
         elseif spell == spellID then
           return UnitBuff(unit, i, filter)
         end
-      end
+    end
 end
 --[[
 
@@ -549,6 +551,7 @@ e.GetItemCooldown= function(itemID)--物品冷却
         return '|cnRED_FONT_COLOR:'..SPELL_RECAST_TIME_INSTANT..'|r'
     end
 end
+
 
 e.toolsFrame=CreateFrame('Frame')--TOOLS 框架
 e.toolsFrame.last=e.toolsFrame
