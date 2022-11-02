@@ -50,7 +50,6 @@ local function setSpellCooldown(self, spellID)--冷却
     local start, duration, _, modRate = GetSpellCooldown(spellID)
     e.Ccool(self, start, duration, modRate, true, nil)
 end
-
 --####
 --初始
 --####
@@ -116,7 +115,7 @@ local function Init()
                 setSpellCooldown(self, tab.spell)--冷却
             end)
             setSpellCooldown(buttons[tab.spell], tab.spell)--冷却
-            buttons[tab.spell].cooldown:SetAlpha(0.3)
+            buttons[tab.spell].cooldown:SetAlpha(0.5)
         end
     end
 end
