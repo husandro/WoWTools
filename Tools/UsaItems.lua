@@ -1,5 +1,5 @@
 local id, e = ...
-local addName=USE..ITEMS
+local addName=USE_ITEM
 local panel=e.Cbtn(e.toolsFrame, nil, true, nil, nil, nil, {20,20})
 panel:SetPoint('BOTTOMLEFT', e.toolsFrame, 'TOPRIGHT',-2,5)
 panel:SetAlpha(0.1)
@@ -83,89 +83,151 @@ StaticPopupDialogs[id..addName..'REMOVE']={
     button1='|cnRED_FONT_COLOR:'..REMOVE..'|r',
     button2=CANCEL,
     OnAccept = function(self, data)
-        if data.type=='ITEMS' then
-            if data.clearAll then
-                Save.item={}
-                print(id, addName, '|cnGREEN_FONT_COLOR:'..	CLEAR_ALL..'|r', COMPLETE, NEED,RELOADUI,'/reload')
+        if data.clearAll then
+            Save[data.type]={}
+            C_UI.Reload()
+        else
+            if Save[data.type][data.index] and Save[data.type][data.index]==data.ID then
+                table.remove(Save[data.type], data.index)
+                print(id, addName, '|cnGREEN_FONT_COLOR:'..REMOVE..'|r'..COMPLETE, data.name, '|cnRED_FONT_COLOR:'..REQUIRES_RELOAD..'|r','/reload')
             else
-                if Save.item[data.index] and Save.item[data.index]==data.ID then
-                    table.remove(Save.item, data.index)
-                    print(id, addName, '|cnGREEN_FONT_COLOR:'..REMOVE..'|r'..COMPLETE, data.name, '|cnRED_FONT_COLOR:'..NEED..'|r'..RELOADUI,'/reload')
-                else
-                    print(id, addName,'|cnGREEN_FONT_COLOR:'..ERROR_CAPS..'|r',	BROWSE_NO_RESULTS, data.name)
-                end
+                print(id, addName,'|cnGREEN_FONT_COLOR:'..ERROR_CAPS..'|r',	BROWSE_NO_RESULTS, data.name)
             end
         end
     end,
 }
 
-StaticPopupDialogs[id..addName..'ADD']={--快捷键,设置对话框
-    text=id..' '..addName..'\n\n%s',
+StaticPopupDialogs[id..addName..'RESETALL']={--重置所有
+    text=id..' '..addName..'\n\n'..RESET_ALL_BUTTON_TEXT..'\n\n'..RELOADUI,
     whileDead=1,
     hideOnEscape=1,
     exclusive=1,
     timeout = 60,
-    button1=SETTINGS,
+    button1=RESET,
+    button2=CANCEL,
+    OnAccept = function(self, data)
+        Save=nil
+        C_UI.Reload()
+    end,
+}
+local function findType(type, ID)
+    for index, ID2 in pairs(Save[type]) do
+        if ID2==ID then
+            return index
+        end
+    end
+end
+StaticPopupDialogs[id..addName..'ADD']={--添加, 移除
+    text=id..' '..addName..'\n\n%s: %s',
+    whileDead=1,
+    hideOnEscape=1,
+    exclusive=1,
+    timeout = 60,
+    button1=ADD,
     button2=CANCEL,
     button3=REMOVE,
-   
-    OnAccept = function(self, data)
-    
+    OnShow = function(self, data)
+        local find=findType(data.type, data.ID)
+        data.index=find
+        self.button3:SetEnabled(find)
+        self.button1:SetEnabled(not find)
     end,
-    OnAlt = function()
-       
+    OnAccept = function(self, data)
+        table.insert(Save[data.type], data.ID)
+        print(id, addName, '|cnGREEN_FONT_COLOR:'..ADD..'|r', COMPLETE, data.name, REQUIRES_RELOAD)
+    end,
+    OnAlt = function(self, data)
+        table.remove(Save[data.type], data.index)
+        print(id, addName, '|cnRED_FONT_COLOR:'..REMOVE..'|r', COMPLETE, data.name, REQUIRES_RELOAD)
     end,
 }
 --#####
 --#####
 --主菜单
 --#####
-
-local function InitMenu(self, level, menuList)--主菜单
+local function InitMenu(self, level, type)--主菜单
     local info
-    if menuList then
-        if menuList=='ITEMS' then
-            info={
-                text=CLEAR_ALL,
-                notCheckable=true,
-                func=function()
-                    local text=	CLEAR_ALL..' #'..'|cnGREEN_FONT_COLOR:'..#Save.item..'|r '.. ITEMS
-                    StaticPopup_Show(id..addName..'REMOVE',text ,nil, {type='ITEMS', clearAll=true})
-                end,
-
+    if type then
+        info={--清除全部
+            text='|cnRED_FONT_COLOR:'..CLEAR_ALL..'|r'..(type=='spell' and SPELLS or type=='item' and ITEMS or EQUIPSET_EQUIP)..' '..#Save[type],
+            notCheckable=true,
+            func=function()
+                local text=	CLEAR_ALL..' #'..'|cnGREEN_FONT_COLOR:'..#Save[type]..'|r '
+                .. (type=='item' and ITEMS or type=='spell' and SPELLS or EQUIPSET_EQUIP)
+                StaticPopup_Show(id..addName..'REMOVE',text ,nil, {type=type, clearAll=true})
+            end,
+            tooltipOnButton=true,
+            tooltipTitle=RELOADUI
             }
-            UIDropDownMenu_AddButton(info, level)
-            UIDropDownMenu_AddSeparator(level)
-            for index, itemID in pairs(Save.item) do
-                local name= C_Item.GetItemNameByID(itemID) or ('itemID: '..itemID)
-                local icon=C_Item.GetItemIconByID(itemID)
-                info={
-                    text= name,
-                    notCheckable=true,
-                    icon=icon,
-                    func=function()
-                        local text=(icon and '|T'..icon..':0|t' or '').. name
-                        StaticPopup_Show(id..addName..'REMOVE',text ,nil, {type='ITEMS', index=index, name=text, ID=itemID})
-                    end,
-                    tooltipOnButton=true,
-                    tooltipTitle=REMOVE,
-                }
-                if GetItemCount(itemID)==0 and not PlayerHasToy(itemID) then
-                    info.text= e.Icon.O2..info.text
-                    info.colorCode='|cff606060'
-                end
-                UIDropDownMenu_AddButton(info, level)
+        UIDropDownMenu_AddButton(info, level)
+        UIDropDownMenu_AddSeparator(level)
+
+        for index, ID in pairs(Save[type]) do
+            local name, icon, _
+            if type=='spell' then
+                name, _, icon =GetSpellInfo(ID)
+            else
+                name= C_Item.GetItemNameByID(ID..'')
+                icon=C_Item.GetItemIconByID(ID..'')
             end
+            name=name or (type..'ID '..ID)
+            local text=(icon and '|T'..icon..':0|t' or '') ..name
+            info={
+                text= name,
+                notCheckable=true,
+                icon=icon,
+                func=function()
+                    StaticPopup_Show(id..addName..'REMOVE',text ,nil, {type=type, index=index, name=text, ID=ID})
+                end,
+                tooltipOnButton=true,
+                tooltipTitle='|cnRED_FONT_COLOR:'..REMOVE..'|r',
+            }
+            if (type=='spell' and not IsSpellKnown(ID)) or ((type=='item' or type=='equip') and GetItemCount(ID)==0 and not PlayerHasToy(ID)) then
+                info.text= e.Icon.O2..info.text
+                info.colorCode='|cff606060'
+            end
+            UIDropDownMenu_AddButton(info, level)
+
         end
     else
+        local tab={
+            [ITEMS]='item',
+            [SPELLS]='spell',
+            [EQUIPSET_EQUIP]='equip'
+        }
+        for text, type2 in pairs(tab) do
+            info={
+                text=text..' |cnGREEN_FONT_COLOR:'..#Save[type2]..'|r',
+                notCheckable=true,
+                hasArrow=true,
+                menuList=type2,
+            }
+            UIDropDownMenu_AddButton(info, level);
+        end
+        UIDropDownMenu_AddSeparator(level)
         info={
-            text='|cnGREEN_FONT_COLOR:'..#Save.item..'|r'..ITEMS,
+            text=RELOADUI,
             notCheckable=true,
-            hasArrow=true,
-            menuList='ITEMS',
+            tooltipOnButton=true,
+            tooltipTitle='/reload',
+            func=function()
+                C_UI.Reload()
+            end
         }
         UIDropDownMenu_AddButton(info, level);
-        --UIDropDownMenu_AddSeparator()
+        UIDropDownMenu_AddSeparator(level)
+        info={
+            text='|cnRED_FONT_COLOR:'..RESET..'|r',
+            notCheckable=true,
+            tooltipOnButton=true,
+            tooltipTitle=RESET_ALL_BUTTON_TEXT,
+            tooltipText=RELOADUI,
+            func=function()
+                StaticPopup_Show(id..addName..'RESETALL')
+            end
+        }
+        UIDropDownMenu_AddButton(info, level);
+        UIDropDownMenu_AddButton({text=addName, isTitle=true, notCheckable=true}, level);
     end
 end
 
@@ -179,12 +241,12 @@ local function setEquipSlot(self)--装备
         return
     end
     local slotItemID=GetInventoryItemID('player', self.slot)
-    local name= slotItemID and C_Item.GetItemNameByID(slotItemID)
+    local name= slotItemID and C_Item.GetItemNameByID(slotItemID..'')
 
     if name and slotItemID~=self.itemID and self:GetAttribute('item2')~=name then
         self:SetAttribute('item2', name)
         self.slotEquipName=name
-        local icon = C_Item.GetItemIconByID(slotItemID)
+        local icon = C_Item.GetItemIconByID(slotItemID..'')
         if icon and not self.slotTexture then--装备前的物品,提示
             self.slotequipedTexture=self:CreateTexture(nil, 'OVERLAY')
             self.slotequipedTexture:SetPoint('BOTTOMRIGHT',-7,9)
@@ -328,8 +390,8 @@ local function Init()
    for _, itemID in pairs(Save.item) do
         local name ,icon
         if getFind(itemID) then
-            name = C_Item.GetItemNameByID(itemID)
-            icon = C_Item.GetItemIconByID(itemID)
+            name = C_Item.GetItemNameByID(itemID..'')
+            icon = C_Item.GetItemIconByID(itemID..'')
             if name and icon then
                 Button[index]=e.Cbtn2(nil, e.toolsFrame)
                 Button[index].texture:SetShown(true)
@@ -364,9 +426,9 @@ local function Init()
    for _, itemID in pairs(Save.equip) do
         local name ,icon
         if GetItemCount(itemID)>0 then
-            name = C_Item.GetItemNameByID(itemID)
+            name = C_Item.GetItemNameByID(itemID..'')
             local itemEquipLoc, icon2 = select(4, GetItemInfoInstant(itemID))
-            icon =icon2 or C_Item.GetItemIconByID(itemID)
+            icon =icon2 or C_Item.GetItemIconByID(itemID..'')
             local slot=itemEquipLoc and e.itemSlotTable[itemEquipLoc]
             if name and icon and slot then
                 Button[index]=e.Cbtn2(nil, e.toolsFrame)
@@ -387,11 +449,22 @@ local function Init()
     panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
 
-    panel:SetScript('OnMouseDown',function(self, d)
-        local infoType, itemID, itemLink = GetCursorInfo()
+    panel:SetScript('OnMouseDown',function(self, d)--添加, 移除
+        local infoType, itemID, itemLink ,spellID= GetCursorInfo()
         if infoType == "item" and itemID and itemLink then
+            local itemEquipLoc= select(4, GetItemInfoInstant(itemLink))
+            local slot=itemEquipLoc and e.itemSlotTable[itemEquipLoc]
+            local type = slot and 'equip' or 'item'
+            local text = slot and EQUIPSET_EQUIP or ITEMS
+            local icon = C_Item.GetItemIconByID(itemLink)
+            StaticPopup_Show(id..addName..'ADD', text , (icon and '|T'..icon..':0|t' or '')..itemLink, {type=type, name=itemLink, ID=itemID})
+            ClearCursor()
 
         elseif infoType =='spell' and spellID then
+            local spellLink=GetSpellLink(spellID) or (SPELLS..' ID: '..spellID)
+            local icon=GetSpellTexture(spellID)
+            StaticPopup_Show(id..addName..'ADD', SPELLS , (icon and '|T'..icon..':0|t' or '')..spellLink, {type='spell', name=spellLink, ID=spellID})
+            ClearCursor()
 
         elseif d=='LeftButton' then
             e.tips:SetOwner(self, "ANCHOR_LEFT")

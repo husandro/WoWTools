@@ -102,7 +102,13 @@ local function setAtt(init)--设置属性
     panel.texture:SetShown(icon)
 end
 
-
+local function getAllSaveNum()--Save中玩具数量
+    local num=0
+    for _ in pairs(Save.items) do
+        num= num +1
+    end
+    return num
+end
 --#############
 --玩具界面, 菜单
 --#############
@@ -232,6 +238,21 @@ StaticPopupDialogs[id..addName..'KEY']={--快捷键,设置对话框
     end,
 }
 
+StaticPopupDialogs[id..addName..'RESETALL']={--重置所有,清除全部玩具
+    text=id..' '..addName..'\n'..	CLEAR_ALL..'\n\n'.. RELOADUI,
+    whileDead=1,
+    hideOnEscape=1,
+    exclusive=1,
+    timeout = 60,
+    button1='|cnRED_FONT_COLOR:'..RESET..'|r',
+    button2=CANCEL,
+    OnAccept = function(self, data)
+        Save=nil
+        C_UI.Reload()
+    end,
+}
+
+
 --#####
 --主菜单
 --#####
@@ -244,10 +265,11 @@ local function InitMenu(self, level, menuList)--主菜单
                     text= C_Item.GetItemNameByID(itemID) or ('itemID '..itemID),
                     notCheckable=true,
                     icon= C_Item.GetItemIconByID(itemID),
-                    func=function ()
+                    func=function()
                         Save.items[itemID]=nil
                         getToy()--生成, 有效表格
-                        setAtt()--设置属性
+                        setAtt()--设置属性                        
+                        print(id, addName, '|cnGREEN_FONT_COLOR:'..REMOVE..'|r', COMPLETE, select(2, GetItemInfo(itemID)) or (TOY..'ID: '..itemID))
                     end,
                     tooltipOnButton=true,
                     tooltipTitle=REMOVE,
@@ -263,6 +285,29 @@ local function InitMenu(self, level, menuList)--主菜单
                 end,
             }
             info.disabled=UnitAffectingCombat('player')
+            UIDropDownMenu_AddButton(info, level)
+
+            UIDropDownMenu_AddSeparator(level)
+            info={--清除
+                text='|cnRED_FONT_COLOR:'..(CLEAR or KEY_NUMLOCK_MAC).. TOY..'|r '..#panel.items..'/'..getAllSaveNum(),
+                notCheckable=true,
+                tooltipOnButton=true,
+                tooltipTitle=CLEAR_ALL,
+                func=function ()
+                    StaticPopup_Show(id..addName..'RESETALL')
+                end,
+            }
+            UIDropDownMenu_AddButton(info, level)
+
+            info={--重置所有
+                text='|cnRED_FONT_COLOR:'..RESET..'|r',
+                notCheckable=true,
+                tooltipOnButton=true,
+                tooltipTitle=RESET_ALL_BUTTON_TEXT,
+                func=function ()
+                    StaticPopup_Show(id..addName..'RESETALL')
+                end,
+            }
             UIDropDownMenu_AddButton(info, level)
 
             --[[
@@ -326,8 +371,8 @@ local function showTips(self)--显示提示
         e.tips:AddLine(' ')
         for type, itemID in pairs(ModifiedTab) do
             if PlayerHasToy(itemID) then
-                local name = C_Item.GetItemNameByID(itemID) or ('itemID: '..itemID)
-                local icon = C_Item.GetItemIconByID(itemID)
+                local name = C_Item.GetItemNameByID(itemID..'') or ('itemID: '..itemID)
+                local icon = C_Item.GetItemIconByID(itemID..'')
                 name= (icon and '|T'..icon..':0|t' or '')..name
 
                 e.tips:AddDoubleLine(name..(e.GetItemCooldown(itemID) or ''), type..'+'..e.Icon.left)
@@ -367,7 +412,7 @@ if Save.Point then
     panel:SetScript('OnShow', setCooldown)
 
     for type, itemID in pairs(ModifiedTab) do
-        panel:SetAttribute(type.."-item1",  C_Item.GetItemNameByID(itemID) or itemID)
+        panel:SetAttribute(type.."-item1",  C_Item.GetItemNameByID(itemID..'') or itemID)
     end
 
     panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
