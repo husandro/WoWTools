@@ -187,7 +187,7 @@ end
 local function Init()
     local find
     for index, tab in pairs(Save.list) do
-        --if IsSpellKnown(tab.spell) then
+        if IsSpellKnown(tab.spell) then
             if not find then
                 panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
                 UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
@@ -264,7 +264,7 @@ local function Init()
             end)
             setSpellCooldown(buttons[tab.spell], tab.spell)--冷却
             buttons[tab.spell].cooldown:SetAlpha(0.5)
-      --  end
+        end
     end
 end
 --###########
