@@ -1,3 +1,7 @@
+if GetItemCount(8529)==0 then--没有时,不加载
+    return
+end
+
 local id , e = ...
 local addName='NoggenfoggerElixir'
 local Save={
@@ -83,7 +87,7 @@ local function Init()
     end)
     panel:SetScript('OnLeave', function() e.tips:Hide() end)
     panel:SetScript('OnMouseDown',function(self,d)
-        if d=='RightButto' then
+        if d=='RightButton' then
             ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
         end
     end)
@@ -99,16 +103,10 @@ panel:RegisterEvent("PLAYER_REGEN_DISABLED")
 panel:RegisterEvent('BAG_UPDATE_DELAYED')
 panel:RegisterUnitEvent("UNIT_AURA", 'player')
 panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
-
-panel:RegisterEvent('PLAYER_REGEN_ENABLED')
+panel:RegisterEvent('PLAYER_LOGOUT')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1== id then
-        if GetItemCount(panel.itemID)==0 then--没有时,不加载
-            panel:UnregisterAllEvents()
-            return
-        end
-
         Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
         if not e.toolsFrame.disabled then
             C_Timer.After(1.7, function()
@@ -121,7 +119,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         else
             panel:UnregisterAllEvents()
         end
-        panel:RegisterEvent("PLAYER_LOGOUT")
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
