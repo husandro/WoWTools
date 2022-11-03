@@ -545,7 +545,9 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
 panel:RegisterEvent("PLAYER_REGEN_ENABLED")
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1== id then
         Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
@@ -560,7 +562,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         else
             panel:UnregisterAllEvents()
         end
-        panel:RegisterEvent("PLAYER_LOGOUT")
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then

@@ -21,31 +21,12 @@ local Save={
     }
 }
 local addName= SLASH_RANDOM3:gsub('/','').. TUTORIAL_TITLE31
-local panel=e.Cbtn2()
+local panel=e.Cbtn2('HearthstoneToolsButton',WoWToolsMountButton)
 panel:SetAttribute("type1", "item")
 panel:SetAttribute("alt-type1", "item")
 panel:SetAttribute("shift-type1", "item")
 panel:SetAttribute("ctrl-type1", "item")
-
---e.toolsFrame=CreateFrame('Frame', nil, panel)--TOOLS 框架
-e.toolsFrame:SetParent(panel)
-e.toolsFrame:SetPoint('BOTTOMRIGHT', panel, 'TOPRIGHT',-1,0)--设置, TOOLS 位置
-e.toolsFrame:SetSize(1,1)
-e.toolsFrame:SetShown(false)
-
-e.toolsFrame.last=e.toolsFrame
-
---[[
-
-e.toolsFrame.texture=e.toolsFrame:CreateTexture()
-e.toolsFrame.texture:SetAtlas(e.Icon.icon)
-e.toolsFrame.texture:SetAllPoints(e.toolsFrame)
-
-
-
-]]
-
-
+panel:SetPoint('RIGHT', WoWToolsMountButton, 'LEFT')
 
 local ModifiedTab={
     alt=140192,--达拉然炉石
@@ -60,14 +41,21 @@ end
 
 panel.items={}--存放有效
 
+--[[
 local function setPanelPostion()--设置按钮位置
     local p=Save.Point
+    panel:ClearAllPoints()
     if p and p[1] and p[3] and p[4] and p[5] then
         panel:SetPoint(p[1],  UIParent, p[3], p[4], p[5])
+        --panel:SetParent(UIParent)
     else
-        panel:SetPoint('RIGHT', CharacterReagentBag0Slot, 'LEFT',-30, 0)
+        panel:SetPoint('RIGHT', _G[id..'MountButton'], 'LEFT')
+        --panel:SetParent(CharacterReagentBag0Slot)
     end
 end
+
+]]
+
 
 local function getToy()--生成, 有效表格
     panel.items={}
@@ -160,46 +148,21 @@ end
 local function InitMenu(self, level, menuList)--主菜单
     local info
     if menuList then
-        if menuList=='TOY' then
-            for itemID, _ in pairs(Save.items) do
-                info={
-                    text= (C_Item.GetItemNameByID(itemID) or ('itemID '..itemID))..(not PlayerHasToy(itemID) and e.Icon.O2 or ''),
-                    textCode=not PlayerHasToy(itemID) and '|cff606060',
-                    notCheckable=true,
-                    icon= C_Item.GetItemIconByID(itemID),
-                    func=function ()
-                        Save.items[itemID]=nil
-                        getToy()--生成, 有效表格
-                        setAtt()--设置属性
-                    end,
-                    tooltipOnButton=true,
-                    tooltipTitle=REMOVE,
-                }
-                UIDropDownMenu_AddButton(info, level)
-            end
-        elseif menuList=='SETTINGS' then--设置菜单
-            if Save.Point then--还原位置
-                info={text=RESET_POSITION}
-            else
-                info={text='Alt +'..e.Icon.right..' '..NPE_MOVE}
-                info.disabled=true
-            end
-            info.func=function()
-                Save.Point=nil
-                panel:ClearAllPoints()
-                setPanelPostion()--设置按钮位置
-                CloseDropDownMenus()
-            end
-            info.tooltipOnButton=true
-            info.notCheckable=true
-            UIDropDownMenu_AddButton(info, level)
-
+        for itemID, _ in pairs(Save.items) do
             info={
-                text=id,
-                isTitle=true,
+                text= (C_Item.GetItemNameByID(itemID..'') or ('itemID '..itemID))..(not PlayerHasToy(itemID) and e.Icon.O2 or ''),
+                textCode=not PlayerHasToy(itemID) and '|cff606060',
                 notCheckable=true,
+                icon= C_Item.GetItemIconByID(itemID..''),
+                func=function ()
+                    Save.items[itemID]=nil
+                    getToy()--生成, 有效表格
+                    setAtt()--设置属性
+                end,
+                tooltipOnButton=true,
+                tooltipTitle=REMOVE,
             }
-            UIDropDownMenu_AddButton(info,level)
+            UIDropDownMenu_AddButton(info, level)
         end
     else
        info={
@@ -209,14 +172,6 @@ local function InitMenu(self, level, menuList)--主菜单
             hasArrow=true,
        }
        UIDropDownMenu_AddButton(info, level)
-       -- UIDropDownMenu_AddSeparator()
-        info={
-            text=SETTINGS,
-            notCheckable=true,
-            menuList='SETTINGS',
-            hasArrow=true,
-        }
-        UIDropDownMenu_AddButton(info, level)
     end
 end
 
@@ -291,12 +246,15 @@ local function showTips(self)--显示提示
 end
 
 local function Init()
-    setPanelPostion()--设置按钮位置
+    if e.toolsFrame.size and e.toolsFrame.size~=30 then--设置大小
+        panel:SetSize(e.toolsFrame.size, e.toolsFrame.size)
+    end
+
     getToy()--生成, 有效表格
     setAtt(true)--设置属性
     setCooldown()--主图标冷却
     setBagHearthstone()--设置Shift, Ctrl, Alt 提示
-    
+
     for type, itemID in pairs(ModifiedTab) do
         panel:SetAttribute(type.."-item1",  C_Item.GetItemNameByID(itemID) or itemID)
     end
@@ -304,15 +262,8 @@ local function Init()
     panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
 
-    panel:RegisterForDrag("RightButton")
-    panel:SetMovable(true)
-    panel:SetClampedToScreen(true)
-
     panel:SetScript("OnEnter",function(self)
         showTips(self)--显示提示
-        if not UnitAffectingCombat('player') then
-            e.toolsFrame:SetShown(true)--设置, TOOLS 框架, 显示
-        end
     end)
     panel:SetScript("OnLeave",function()
         e.tips:Hide()
@@ -323,17 +274,6 @@ local function Init()
         end
     end)
 
-    panel:SetScript("OnDragStart", function(self,d )
-        if IsAltKeyDown() and d=='RightButton' then
-            self:StartMoving()
-        end
-    end)
-    panel:SetScript("OnDragStop", function(self)
-        ResetCursor()
-        self:StopMovingOrSizing()
-        Save.Point={self:GetPoint(1)}
-        Save.Point[2]=nil
-    end)
     panel:SetScript("OnMouseUp", function(self, d)
         if d=='LeftButton' and not IsModifierKeyDown() then
             setAtt()--设置属性
@@ -345,12 +285,7 @@ local function Init()
     panel:SetScript('OnMouseWheel',function(self,d)
         setAtt()--设置属性
     end)
-
-    panel.Up=panel:CreateTexture(nil,'OVERLAY')
-    panel.Up:SetPoint('TOP',-1, 9)
-    panel.Up:SetAtlas('NPE_ArrowUp')
-    panel.Up:SetSize(20,20)
-    --panel.Up:SetDesaturated(true)
+   
 end
 
 --###########
@@ -363,30 +298,16 @@ panel:RegisterEvent('TOYS_UPDATED')
 
 panel:RegisterEvent('BAG_UPDATE_DELAYED')
 panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
-
-panel:RegisterEvent('PLAYER_REGEN_DISABLED')
-panel:RegisterEvent('PLAYER_STARTED_MOVING')
+panel:RegisterEvent("PLAYER_LOGOUT")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1== id then
         Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
-            --添加控制面板        
-            local sel=e.CPanel(addName, not Save.disabled, true)
-            sel:SetScript('OnClick', function()
-                if Save.disabled then
-                    Save.disabled=nil
-                else
-                    Save.disabled=true
-                end
-                print(addName, e.GetEnabeleDisable(not Save.disabled), NEED..' /reload')
-            end)
-            if not Save.disabled then
-                Init()--初始
-            else
-                e.toolsFrame.disabled=true
-                panel:UnregisterAllEvents()
-            end
-            panel:RegisterEvent("PLAYER_LOGOUT")
+        if not e.toolsFrame.disabled then
+            Init()--初始
+        else
+            panel:UnregisterAllEvents()
+        end
 
     elseif event=='ADDON_LOADED' and arg1=='Blizzard_Collections' then
         hooksecurefunc('ToyBox_ShowToyDropdown', setToyBox_ShowToyDropdown)
@@ -407,15 +328,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='BAG_UPDATE_DELAYED' then
         if IsResting()  then
             setBagHearthstone()--设置Shift, Ctrl, Alt 提示
-        end
-
-    elseif event=='PLAYER_REGEN_DISABLED' then
-        if e.toolsFrame:IsShown() then
-            e.toolsFrame:SetShown(false)--设置, TOOLS 框架,隐藏
-        end
-    elseif event=='PLAYER_STARTED_MOVING' then
-        if not UnitAffectingCombat('player') and e.toolsFrame:IsShown() then
-            e.toolsFrame:SetShown(false)--设置, TOOLS 框架,隐藏
         end
     end
 end)

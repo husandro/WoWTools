@@ -153,6 +153,8 @@ e.Icon={
     bank2='|A:Banker:0:0|a',
     bag='bag-main',
     bag2='|A:bag-main:0:0|a',
+    bagEmpty='bag-reagent-border-empty',
+
     up2='|A:bags-greenarrow:0:0|a',--绿色向上
     down2='|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a',--红色向下
     toLeft='common-icon-rotateleft',--向左
@@ -321,33 +323,6 @@ e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size)
     if size then
         b:SetSize(size[1], size[2])
     end
-    return b
-end
-e.Cbtn2= function(name, parent, showTexture)
-    local b= CreateFrame("Button", name, (parent or UIParent), "SecureActionButtonTemplate")
-    b:SetSize(30,30)
-    b:SetNormalAtlas('bag-reagent-border-empty')
-    b:SetHighlightAtlas('bag-border')
-    b:SetPushedAtlas('bag-border-highlight')
-    b:RegisterForClicks('LeftButtonDown')--, 'RightButtonDown')
-    b:EnableMouseWheel(true)
-
-    
-    b.texture=b:CreateTexture(nil,'ARTWORK')
-    b.texture:SetPoint("CENTER",-1,1)
-    b.texture:SetSize(23,23)
-    b.texture:SetAtlas('bag-border')
-    b.texture:SetShown(showTexture)
-
-    b.mask= b:CreateMaskTexture()
-    b.mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
-    b.mask:SetAllPoints(b.texture)
-    b.texture:AddMaskTexture(b.mask)
-    
-    b.border=b:CreateTexture(nil,'OVERLAY')
-    b.border:SetAllPoints(b)
-    b.border:SetAtlas('bag-reagent-border')
-
     return b
 end
 
@@ -553,13 +528,72 @@ e.GetItemCooldown= function(itemID)--物品冷却
 end
 
 
+e.Cbtn2= function(name, parent, showTexture)
+    local button= CreateFrame("Button", name, (parent or UIParent), "SecureActionButtonTemplate")
+
+    local size=e.toolsFrame.size or 30
+    button:SetSize(size,size)
+    button:RegisterForClicks('LeftButtonDown')--, 'RightButtonDown')
+    button:EnableMouseWheel(true)
+
+    button:SetHighlightAtlas('bag-border')
+    button:SetPushedAtlas('bag-border-highlight')
+
+    button.mask= button:CreateMaskTexture()
+    --button.mask:SetAllPoints(button)
+    --button.mask:SetAtlas('bags-roundhighlight')
+    button.mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
+    button.mask:SetPoint("TOPLEFT", button, "TOPLEFT", 4, -4);
+    button.mask:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -6, 6);
+
+    button.background=button:CreateTexture(nil,'BACKGROUND')
+    button.background:SetAllPoints(button)
+    button.background:SetAtlas(e.Icon.bagEmpty)
+    button.background:AddMaskTexture(button.mask)
+
+    button.texture=button:CreateTexture(nil, 'BORDER')
+    --button.texture:SetAllPoints(button)
+    button.texture:SetPoint("TOPLEFT", button, "TOPLEFT", 4, -4);
+	button.texture:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -12, 12);
+    button.texture:AddMaskTexture(button.mask)
+
+    button.border=button:CreateTexture(nil,'ARTWORK')
+    button.border:SetAllPoints(button)
+    button.border:SetAtlas('bag-reagent-border')
+
+
+   --[[
+ b.texture=b:CreateTexture(nil,'ARTWORK')
+    b.texture:SetPoint("CENTER",-1,1)
+    b.texture:SetSize(size-8, size-8)
+    --b.texture:SetAllPoints(b)
+    b.texture:SetAtlas('bag-border')
+    b.texture:SetShown(showTexture)
+
+    b.mask= b:CreateMaskTexture()
+    b.mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
+    b.mask:SetAllPoints(b.texture)
+    b.texture:AddMaskTexture(b.mask)
+
+]]
+
+    
+
+    return button
+end
+
 e.toolsFrame=CreateFrame('Frame')--TOOLS 框架
+e.toolsFrame:SetSize(1,1)
+e.toolsFrame:SetShown(false)
 e.toolsFrame.last=e.toolsFrame
 e.toolsFrame.line=1
-e.toolsFrame.index=1
+e.toolsFrame.index=0
 e.ToolsSetButtonPoint=function(self, line)--设置位置
-    if (index~=10 and select(2, math.modf(e.toolsFrame.index / 10))==0) or line then
-        local x= - (e.toolsFrame.line * 30)
+    if e.toolsFrame.size and e.toolsFrame.size~=30 then--设置大小
+        self:SetSize(e.toolsFrame.size, e.toolsFrame.size)
+    end
+    if (e.toolsFrame.index>0 and select(2, math.modf(e.toolsFrame.index / 10))==0) or line then
+        local x= - (e.toolsFrame.line * (e.toolsFrame.size or 30))
         self:SetPoint('BOTTOMRIGHT', e.toolsFrame , 'TOPRIGHT', x, 0)
         e.toolsFrame.line=e.toolsFrame.line + 1
     else

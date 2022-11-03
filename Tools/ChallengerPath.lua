@@ -262,6 +262,7 @@ end
 --###########
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
+panel:RegisterEvent('PLAYER_REGEN_ENABLED')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1== id then
@@ -285,5 +286,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not WoWToolsSave then WoWToolsSave={} end
             WoWToolsSave[addName..'Tools']=Save
         end
+
+    elseif event=='PLAYER_REGEN_ENABLED' then
+        if panel.combat then
+            Init()
+            panel.combat=nil
+        end
+        panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
     end
 end)

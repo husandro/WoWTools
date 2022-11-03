@@ -397,6 +397,9 @@ if Save.Point then
         e.toolsFrame.last=panel
 
 ]]
+    if e.toolsFrame.size and e.toolsFrame.size~=30 then--设置大小
+        panel:SetSize(e.toolsFrame.size, e.toolsFrame.size)
+    end
     e.ToolsSetButtonPoint(panel)--设置位置
 
     panel.count=e.Cstr(panel,10, nil,nil, true)
@@ -481,8 +484,6 @@ panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
 
 panel:RegisterEvent('NEW_TOY_ADDED')
 panel:RegisterEvent('TOYS_UPDATED')
-
-panel:RegisterEvent("PLAYER_LOGOUT")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1== id then

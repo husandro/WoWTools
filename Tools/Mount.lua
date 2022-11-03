@@ -48,7 +48,7 @@ local Save={
 }
 local XD
 
-local panel=e.Cbtn2(id..'MountButton')
+local panel=e.Cbtn2('WoWToolsMountButton')
 panel:SetAttribute("type1", "spell")
 panel:SetAttribute("target-spell", "cursor")
 panel:SetAttribute("alt-type1", "spell")
@@ -61,14 +61,33 @@ panel.textureModifier:AddMaskTexture(panel.mask)
 
 panel.textureModifier:SetShown(false)
 
+e.toolsFrame:SetParent(panel)--设置, TOOLS 位置
+e.toolsFrame:SetPoint('BOTTOMRIGHT', panel, 'TOPRIGHT',-1,0)
+panel.Up=panel:CreateTexture(nil,'OVERLAY')
+panel.Up:SetPoint('TOP',-1, 9)
+panel.Up:SetAtlas('NPE_ArrowUp')
+panel.Up:SetSize(20,20)
+
 local function setPanelPostion()--设置按钮位置
     local p=Save.Point
+    panel:ClearAllPoints()
     if p and p[1] and p[3] and p[4] and p[5] then
         panel:SetPoint(p[1], UIParent, p[3], p[4], p[5])
+        panel:SetParent(UIParent)
     else
-        panel:SetPoint('RIGHT', CharacterReagentBag0Slot, 'LEFT',0,0)
+        panel:SetPoint('RIGHT', CharacterReagentBag0Slot, 'LEFT', -60 ,0)
+       -- panel:SetParent(CharacterReagentBag0Slot)
+        
+        --panel:SetPoint('RIGHT', _G['HearthstoneToolsFrame'], 'LEFT',0,0)
     end
 end
+
+local function setButtonSize()--设置按钮大小
+    if e.toolsFrame.size then
+        panel:SetSize(e.toolsFrame.size, e.toolsFrame.size)
+    end
+end
+
 local function setKEY()--设置捷键
     if Save.KEY then
         e.SetButtonKey(panel, true, Save.KEY)
@@ -482,6 +501,36 @@ StaticPopupDialogs[id..addName..'KEY']={--快捷键,设置对话框
         s:GetParent():Hide()
     end,
 }
+
+StaticPopupDialogs[id..addName..'TEXTURESIZE']={--设置按钮大小
+    text=id..' Tools\n'..EMBLEM_SYMBOL..HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_HEIGHT..'\n\n'..DEFAULT..': 30 |cnGREEN_FONT_COLOR:'..	STATUS_TEXT_VALUE..': 8 - 200|r',
+    whileDead=1,
+    hideOnEscape=1,
+    exclusive=1,
+    timeout = 60,
+    hasEditBox=1,
+    button1=SETTINGS,
+    button2=CANCEL,
+    OnShow = function(self, data)
+        self.editBox:SetNumeric(true)
+        self.editBox:SetText(e.toolsFrame.size or 30)
+    end,
+    OnAccept = function(self, data)
+        local num= self.editBox:GetText()
+        e.toolsFrame.size=num
+        Save.size=num
+        setButtonSize()--设置按钮大小
+        print(id, addName, EMBLEM_SYMBOL..HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_HEIGHT, e.toolsFrame.size, '|cnRED_FONT_COLOR:'..RELOADUI..'|r')
+    end,
+
+    EditBoxOnTextChanged=function(self, data)
+        local num= self:GetNumber()
+        self:GetParent().button1:SetEnabled(num>=8 and num<=200)
+    end,
+    EditBoxOnEscapePressed = function(s)
+        s:GetParent():Hide()
+    end,
+}
 --#####
 --#####
 --主菜单
@@ -513,18 +562,14 @@ local function InitMenu(self, level, menuList)--主菜单
             info.disabled=UnitAffectingCombat('player')
             UIDropDownMenu_AddButton(info, level)
 
-            info={---即时显示菜单
-                text=SPELL_INSTANT_EFFECT,--即时效果
-                checked=Save.showMenuOnEnter,
+            info={
+                text=EMBLEM_SYMBOL..HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_HEIGHT,--设置按钮大小
                 tooltipOnButton=true,
-                tooltipTitle=SHOW..(MAINMENU or SLASH_TEXTTOSPEECH_MENU),
+                tooltipTitle=e.toolsFrame.size or 30,
+                notCheckable=true,
                 func=function()
-                    if Save.showMenuOnEnter then
-                        Save.showMenuOnEnter=nil
-                    else
-                        Save.showMenuOnEnter=true
-                    end
-                end
+                    StaticPopup_Show(id..addName..'TEXTURESIZE')
+                end,
             }
             UIDropDownMenu_AddButton(info, level)
 
@@ -576,24 +621,24 @@ local function InitMenu(self, level, menuList)--主菜单
             UIDropDownMenu_AddButton(info, level)
 
             UIDropDownMenu_AddSeparator(level)
-            if Save.Point then--还原位置
-                info={text=RESET_POSITION}
-            else
-                info={text='Alt +'..e.Icon.right..' '..NPE_MOVE}
-                info.disabled=true
+            info={
+                text=RESET_POSITION,--还原位置
+                func=function()
+                    Save.Point=nil
+                    setPanelPostion()--设置按钮位置
+                    CloseDropDownMenus()
+                end,
+                tooltipOnButton=true,
+                tooltipTitle='Alt +'..e.Icon.right..' '..NPE_MOVE,
+                notCheckable=true,
+            }
+            if not Save.Point then
+                info.colorCode='|cff606060'
             end
-            info.func=function()
-                Save.Point=nil
-                panel:ClearAllPoints()
-                setPanelPostion()--设置按钮位置
-                CloseDropDownMenus()
-            end
-            info.tooltipOnButton=true
-            info.notCheckable=true
             UIDropDownMenu_AddButton(info, level)
 
             info={
-                text=id,
+                text=id..' Tools',
                 isTitle=true,
                 notCheckable=true,
             }
@@ -743,10 +788,17 @@ local function InitMenu(self, level, menuList)--主菜单
 
         UIDropDownMenu_AddSeparator()
         info={
-            text=Save.KEY or addName,
+            text=Save.KEY or SETTINGS,
             notCheckable=true,
             menuList=SETTINGS,
             hasArrow=true,
+        }
+        UIDropDownMenu_AddButton(info)
+        
+        info={--提示移动
+            text='Alt+'..e.Icon.right..NPE_MOVE,
+            isTitle=true,
+            notCheckable=true
         }
         UIDropDownMenu_AddButton(info)
     end
@@ -854,7 +906,9 @@ end
 --######
 local function Init()
     setPanelPostion()--设置按钮位置
-
+    
+    setButtonSize()--设置按钮大小
+    
     panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
     XDInt()--德鲁伊设置
@@ -903,9 +957,8 @@ local function Init()
         elseif d=='RightButton' and IsAltKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         elseif d=='RightButton' and not IsModifierKeyDown() then
-            if not Save.showMenuOnEnter then--即时显示菜单
+           -- if not Save.showMenuOnEnter then--即时显示菜单
                 ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
-            end
             --(level, value, dropDownFrame, anchorName, xOffset, yOffset, menuList, button, autoHideDelay)
         elseif d=='LeftButton' then
             if IsSpellKnown(111400) and not UnitAffectingCombat('player') then--SS爆燃冲刺
@@ -941,8 +994,15 @@ local function Init()
     end)
 
     panel:SetScript('OnEnter', function (self)
-        if Save.showMenuOnEnter then--即时显示菜单
+       --[[
+ if Save.showMenuOnEnter then--即时显示菜单
             ToggleDropDownMenu(1,nil,self.Menu, self,15,0 )
+        end
+
+]]
+
+        if not UnitAffectingCombat('player') then
+            e.toolsFrame:SetShown(true)--设置, TOOLS 框架, 显示
         end
     end)
     panel:SetScript("OnLeave",function(self)
@@ -982,25 +1042,32 @@ panel:RegisterEvent('SPELL_UPDATE_USABLE')
 
 panel:RegisterEvent('CHAT_MSG_AFK')
 
+panel:RegisterEvent('PLAYER_STARTED_MOVING')
+
 panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" and arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
-            local check=e.CPanel(addName, not Save.disabled, true)
+
+            local check=e.CPanel('Tools', not Save.disabled, true)
             check:SetScript('OnClick', function()
                 if Save.disabled then
                     Save.disabled=nil
                 else
                     Save.disabled=true
                 end
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), NEED..RELOADUI)
+                print(id, 'Tools', e.GetEnabeleDisable(not Save.disabled), NEED..RELOADUI)
             end)
 
             if not Save.disabled then
-                Init()
+                if Save.size then
+                    e.toolsFrame.size=Save.size
+                end
+                Init()--初始
             else
+                e.toolsFrame.disabled=true
                 panel:UnregisterAllEvents()
+                panel:SetShown(false)
             end
-            panel:RegisterEvent("PLAYER_LOGOUT")
 
     elseif event=='ADDON_LOADED' and arg1=='Blizzard_Collections' then
         hooksecurefunc('MountJournal_InitMountButton',setMountJournal_InitMountButton)
@@ -1008,6 +1075,9 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
 
     elseif event=='PLAYER_REGEN_DISABLED' then
         setClickAtt(true)--设置属性
+        if e.toolsFrame:IsShown() then
+            e.toolsFrame:SetShown(false)--设置, TOOLS 框架,隐藏
+        end
 
     elseif event=='PLAYER_REGEN_ENABLED' then
         setClickAtt()--设置属性
@@ -1060,6 +1130,11 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     elseif event=='CHAT_MSG_AFK' then
         if not UnitAffectingCombat('player') then
             setMountShow()--坐骑展示
+        end
+
+    elseif event=='PLAYER_STARTED_MOVING' then
+        if not UnitAffectingCombat('player') and e.toolsFrame:IsShown() then
+            e.toolsFrame:SetShown(false)--设置, TOOLS 框架,隐藏
         end
     end
 end)

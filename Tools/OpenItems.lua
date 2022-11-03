@@ -1,24 +1,34 @@
 local id, e = ...
-local Save={use={}, no={}, pet=true, open=true, toy=true, mount=true, mago=true, ski=true, noItemHide=true}
+local Save={use={}, no={}, pet=true, open=true, toy=true, mount=true, mago=true, ski=true}
 local addName=UNWRAP..ITEMS
 local Combat, Bag= nil, {}
 
-local panel= CreateFrame("Button", nil, UIParent, "SecureActionButtonTemplate")
+--[[
+local panel= CreateFrame("Button", nil, HearthstoneToolsButton, "SecureActionButtonTemplate")
 panel:RegisterForClicks('LeftButtonDown')
 panel.texture=panel:CreateTexture(nil,'ARTWORK')
 panel.mask= panel:CreateMaskTexture()
-panel.tips=CreateFrame("GameTooltip", id..addName, panel, "GameTooltipTemplate")
-panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
-panel.count=e.Cstr(panel, 10, nil, nil, true)
 
+]]
+local panel=e.Cbtn2(nil, WoWToolsMountButton)
+panel:SetPoint('RIGHT', HearthstoneToolsButton, 'LEFT')
+
+
+--[[
 local function setPanelPostion()--设置按钮位置
     local p=Save.Point
+    panel:ClearAllPoints()
     if p and p[1] and p[3] and p[4] and p[5] then
         panel:SetPoint(p[1],  UIParent, p[3], p[4], p[5])
+        panel:SetParent(UIParent)
     else
-        panel:SetPoint('RIGHT', CharacterReagentBag0Slot, 'LEFT',-60, 0)
+        
+        panel:SetParent(_G[id..'MountButton'])
     end
 end
+
+
+]]
 
 local getTip=function(bag, slot)--取得提示内容
     panel.tips:SetOwner(panel, "ANCHOR_NONE")
@@ -54,9 +64,9 @@ local function setCooldown()--冷却条
                 return
             end
         end
-        if panel.cooldown then
-            panel.cooldown:Clear()
-        end
+    end
+    if panel.cooldown then
+        panel.cooldown:Clear()
     end
 end
 
@@ -75,14 +85,12 @@ local function setAtt(bag, slot, icon, itemID)--设置属性
         num = GetItemCount(itemID)
         num= num~=1 and num or ''
         panel:SetShown(true)
-        setCooldown()--冷却条
+        
     else
         panel:SetAttribute("macrotext", nil)
         panel:SetShown(not Save.noItemHide)
-        if panel.cooldown then
-            panel.cooldown:Clear()
-        end
     end
+    setCooldown()--冷却条
     panel.count:SetText(num or '')
     panel.texture:SetShown(bag and slot)
     Combat=nil
@@ -285,12 +293,11 @@ local function setMenuList(self, level, menuList)--主菜单
     else
         t.text=addName..': '..NONE
         t.isTitle=true
-        
         t.tooltipOnButton=true
         t.tooltipTitle=USE..'/'..DISABLE
         t.tooltipText=DRAG_MODEL..ITEMS
     end
-    
+
     UIDropDownMenu_AddButton(t)
     UIDropDownMenu_AddSeparator()
 
@@ -315,112 +322,119 @@ local function setMenuList(self, level, menuList)--主菜单
     t.hasArrow=true
     UIDropDownMenu_AddButton(t)
 
-    t=UIDropDownMenu_CreateInfo()
-    t.text=ITEM_OPENABLE
-    if Save.open then t.checked=true end
-    t.func=function()
-        if Save.open then
-            Save.open=nil
-        else
-            Save.open=true
+    t={
+        text=ITEM_OPENABLE,
+        checked=Save.open,
+        func=function()
+            if Save.open then
+                Save.open=nil
+            else
+                Save.open=true
+            end
+            getItems()
         end
-        getItems()
-    end
+    }
     UIDropDownMenu_AddButton(t)
 
-    t=UIDropDownMenu_CreateInfo()
-    t.text=PET
-    if Save.pet then t.checked=true end
-    t.func=function()
-        if Save.pet then
-            Save.pet=nil
-        else
-            Save.pet=true
+    t={
+        text=PET,
+        checked=Save.pet,
+        func=function()
+            if Save.pet then
+                Save.pet=nil
+            else
+                Save.pet=true
+            end
+
+            getItems()
         end
-        getItems()
-    end
+    }
     UIDropDownMenu_AddButton(t)
 
-    t=UIDropDownMenu_CreateInfo()
-    t.text=TOY
-    t.checked=Save.toy
-    t.func=function()
-        if Save.toy then
-            Save.toy=nil
-        else
-            Save.toy=true
+    t={
+        text=TOY,
+        checked=Save.toy,
+        func=function()
+            if Save.toy then
+                Save.toy=nil
+            else
+                Save.toy=true
+            end
+            getItems()
         end
-        getItems()
-    end
+    }
     UIDropDownMenu_AddButton(t)
 
-    t=UIDropDownMenu_CreateInfo()
-    t.text=MOUNTS
-    t.checked=Save.mount
-    t.func=function()
-        if Save.mount then
-            Save.mount=nil
-        else
-            Save.mount=true
+    t={
+        text=MOUNTS,
+        checked=Save.mount,
+        func=function()
+            if Save.mount then
+                Save.mount=nil
+            else
+                Save.mount=true
+            end
+            getItems()
         end
-        getItems()
-    end
+    }
     UIDropDownMenu_AddButton(t)
 
-    t=UIDropDownMenu_CreateInfo()
-    t.text=TRANSMOGRIFY
-    t.checked=Save.mago
-    t.func=function()
-        if Save.mago then
-            Save.mago=nil
-        else
-            Save.mago=true
-        end
-        getItems()
-    end
+    t={
+        text=TRANSMOGRIFY,
+        checked=Save.mago,
+        func=function()
+            if Save.mago then
+                Save.mago=nil
+            else
+                Save.mago=true
+            end
+            getItems()
+        end,
+    }
     UIDropDownMenu_AddButton(t)
 
-    t=UIDropDownMenu_CreateInfo()
-    t.text=TRADESKILL_SERVICE_LEARN
-    t.checked=Save.ski
-    t.func=function()
-        if Save.ski then
-            Save.ski=nil
-        else
-            Save.ski=true
-        end
-        getItems()
-    end
+    t={
+        text=TRADESKILL_SERVICE_LEARN,
+        checked=Save.ski,
+        func=function()
+            if Save.ski then
+                Save.ski=nil
+            else
+                Save.ski=true
+            end
+            getItems()
+        end,
+    }
     UIDropDownMenu_AddButton(t)
 
-    t=UIDropDownMenu_CreateInfo()
-    t.text=BINDING_HEADER_OTHER
-    t.checked=Save.alt
-    t.func=function()
-        if Save.alt then
-            Save.alt=nil
-        else
-            Save.alt=true
+    t={
+        text=BINDING_HEADER_OTHER,
+        checked=Save.alt,
+        func=function()
+            if Save.alt then
+                Save.alt=nil
+            else
+                Save.alt=true
+            end
+            getItems()
         end
-        getItems()
-    end
+    }
     UIDropDownMenu_AddButton(t)
 
-    t=UIDropDownMenu_CreateInfo()--还原位置
-    if Save.Point then
-        t.text=RRESET_POSITION or HUD_EDIT_MODE_RESET_POSITION
-    else
-        t.text='Alt +'..e.Icon.right..' '..NPE_MOVE
-        t.disabled=true
-    end
-    t.func=function()
-        Save.Point=nil
-        panel:ClearAllPoints()
-        setPanelPostion()--设置按钮位置
-    end
-    t.tooltipOnButton=true
-    t.notCheckable=true
-    
+    UIDropDownMenu_AddSeparator()
+    t={
+        text=CHAT_AUTO_JOIN:gsub(JOIN,'')..HIDE,
+        tooltipOnButton=true,
+        tooltipTitle=BROWSE_NO_RESULTS,
+        func=function()
+            if Save.noItemHide  then 
+                Save.noItemHide =nil
+            else
+                Save.noItemHide =true
+            end
+        end,
+        checked= Save.noItemHide
+    }
     UIDropDownMenu_AddButton(t)
 end
 
@@ -493,60 +507,59 @@ local function shoTips(self)--显示提示
     end
     e.tips:Show()
 end
-panel:SetScript("OnEnter",function(self)
-    local infoType, itemID, itemLink = GetCursorInfo()
-    if infoType == "item" and itemID and itemLink then
-        if Bag.bag and Bag.slot and itemLink== GetContainerItemLink(Bag.bag, Bag.slot) then
-            return
-        end
-        local icon
-        icon= C_Item.GetItemIconByID(itemID)
-        icon = icon and '|T'..icon..':0|t'..itemLink or ''
-        local list=Save.use[itemID] and PROFESSIONS_CURRENT_LISTINGS..': |cff00ff00'..USE..'|r' or Save.no[itemID] and PROFESSIONS_CURRENT_LISTINGS..': |cffff0000'..DISABLE..'|r' or ''
-        StaticPopup_Show('OpenItmesUseOrDisableItem',icon,list, {itemID=itemID, itemLink=itemLink})
-        ClearCursor()
-    else
-        shoTips(self)--显示提示
+--######
+--初始化
+--######
+local function Init()
+    if e.toolsFrame.size and e.toolsFrame.size~=30 then--设置大小
+        panel:SetSize(e.toolsFrame.size, e.toolsFrame.size)
     end
-end)
-panel:SetScript("OnLeave",function()
-    e.tips:Hide()
-    BattlePetTooltip:Hide()
-    ResetCursor()
-end)
-panel:SetScript("OnMouseDown", function(self,d)
-    if d=='RightButton' and IsAltKeyDown() then
-        SetCursor('UI_MOVE_CURSOR')
-    elseif (d=='RightButton' and not IsModifierKeyDown()) or not(Bag.bag and Bag.slot) then
-        ToggleDropDownMenu(1,nil,panel.Menu,self,self:GetWidth(),0)
-    end
-end)
+    panel.tips=CreateFrame("GameTooltip", id..addName, panel, "GameTooltipTemplate")
+    panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
+    panel.count=e.Cstr(panel, 10, nil, nil, true)
+    panel.count:SetPoint('BOTTOM',0,2)
 
-panel:SetScript("OnDragStart", function(self,d )
-    if IsAltKeyDown() and d=='RightButton' then
-        self:StartMoving()
-    end
-end)
-panel:SetScript("OnDragStop", function(self)
-    ResetCursor()
-    self:StopMovingOrSizing()
-    Save.Point={self:GetPoint(1)}
-    Save.Point[2]=nil
-end)
-panel:SetScript("OnMouseUp", function()
-    ResetCursor()
-end)
+    UIDropDownMenu_Initialize(panel.Menu, setMenuList, 'MENU')
+    --setPanelPostion()--设置按钮位置
+    getItems()--设置属性
 
-panel:SetScript('OnMouseWheel',function(self,d)
-    if d == 1 and not IsModifierKeyDown() then
-        if Bag.slot and Bag.bag then
-            setDisableCursorItem()--禁用当物品
-            CloseDropDownMenus()
+    panel:SetScript("OnEnter",function(self)
+        local infoType, itemID, itemLink = GetCursorInfo()
+        if infoType == "item" and itemID and itemLink then
+            if Bag.bag and Bag.slot and itemLink== GetContainerItemLink(Bag.bag, Bag.slot) then
+                return
+            end
+            local icon
+            icon= C_Item.GetItemIconByID(itemID)
+            icon = icon and '|T'..icon..':0|t'..itemLink or ''
+            local list=Save.use[itemID] and PROFESSIONS_CURRENT_LISTINGS..': |cff00ff00'..USE..'|r' or Save.no[itemID] and PROFESSIONS_CURRENT_LISTINGS..': |cffff0000'..DISABLE..'|r' or ''
+            StaticPopup_Show('OpenItmesUseOrDisableItem',icon,list, {itemID=itemID, itemLink=itemLink})
+            ClearCursor()
+        else
             shoTips(self)--显示提示
         end
-    end
-end)
+    end)
+    panel:SetScript("OnLeave",function()
+        e.tips:Hide()
+        BattlePetTooltip:Hide()
+        ResetCursor()
+    end)
+    panel:SetScript("OnMouseDown", function(self,d)
+        if (d=='RightButton' and not IsModifierKeyDown()) or not(Bag.bag and Bag.slot) then
+            ToggleDropDownMenu(1,nil,panel.Menu,self,self:GetWidth(),0)
+        end
+    end)
 
+    panel:SetScript('OnMouseWheel',function(self,d)
+        if d == 1 and not IsModifierKeyDown() then
+            if Bag.slot and Bag.bag then
+                setDisableCursorItem()--禁用当物品
+                CloseDropDownMenus()
+                shoTips(self)--显示提示
+            end
+        end
+    end)
+end
 
 --###########
 --加载保存数据
@@ -561,65 +574,17 @@ panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
-            Save= WoWToolsSave and WoWToolsSave[addName] or Save
-            if not Save.disabled then
-                panel:SetSize(30,30)
-                panel:EnableMouseWheel(true)
-                panel:RegisterForDrag("RightButton")
-                panel:SetMovable(true)
-                panel:SetClampedToScreen(true)
-                panel:SetNormalAtlas('bag-reagent-border-empty')
-                panel:SetHighlightAtlas('bag-border')
-                panel:SetPushedAtlas('bag-border-highlight')
-
-                panel.texture:SetPoint('CENTER')
-                panel.texture:SetSize(22,22)
-                panel.texture:SetAtlas('bag-border')
-
-                panel.mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
-                panel.mask:SetAllPoints(panel.texture)
-                panel.texture:AddMaskTexture(panel.mask)
-                panel.texture:SetShown(false)
-
-                panel.count:SetPoint('BOTTOM',0,2)
-
-                UIDropDownMenu_Initialize(panel.Menu, setMenuList, 'MENU')
-                setPanelPostion()--设置按钮位置
-                getItems()--设置属性
+            Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
+            if not e.toolsFrame.disabled then
+                Init()
             else
                 panel:UnregisterAllEvents()
-                panel:RegisterEvent("PLAYER_LOGOUT")
             end
-
-             --添加控制面板        
-             local check=e.CPanel(addName, not Save.disabled, true)
-             check:SetScript('OnClick', function()
-                 if Save.disabled then
-                     Save.disabled=nil
-                 else
-                     Save.disabled=true
-                 end
-                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), NEED..' /reload')
-             end)
-            --未发现物品: 隐藏
-             check.noItemHide=CreateFrame("CheckButton", nil, check, "InterfaceOptionsCheckButtonTemplate")
-             check.noItemHide.Text:SetText(BROWSE_NO_RESULTS..': '..HIDE)
-             check.noItemHide:SetPoint('LEFT', check.Text, 'RIGHT')
-             check.noItemHide:SetChecked(Save.noItemHide)
-             check.noItemHide:SetScript('OnClick', function()
-                if Save.noItemHide then
-                    Save.noItemHide=nil
-                else
-                    Save.noItemHide=true
-                end
-                getItems()--取得背包物品信息
-                print(id, addName, e.GetEnabeleDisable(not Save.noItemHide))
-            end)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end
-            WoWToolsSave[addName]=Save
+            WoWToolsSave[addName..'Tools']=Save
         end
 
     elseif event=='BAG_UPDATE_DELAYED' then

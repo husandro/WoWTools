@@ -53,15 +53,16 @@ WoWPlus\UnitFrame.lua
 
 GamePlus\Gossip.lua
 GamePlus\SellBuy.lua
-GamePlus\OpenItems.lua
+
 GamePlus\LFD.lua
 GamePlus\PetBattle.lua
 GamePlus\ItemInfo.lua
 GamePlus\SystemInfo.lua
 GamePlus\AddOns.lua
-GamePlus\Mount.lua
 
+Tools\Mount.lua
 Tools\Hearthstone.lua
+Tools\OpenItems.lua
 Tools\UseToy.lua
 Tools\Professions2.lua
 Tools\UsaItems.lua
@@ -69,3 +70,4 @@ Tools\UsaItems.lua
 Tools\NoggenfoggerElixir.lua
 ##挑战者之路
 Tools\ChallengerPath.lua
+

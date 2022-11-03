@@ -100,6 +100,8 @@ panel:RegisterEvent('BAG_UPDATE_DELAYED')
 panel:RegisterUnitEvent("UNIT_AURA", 'player')
 panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
 
+panel:RegisterEvent('PLAYER_REGEN_ENABLED')
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1== id then
         if GetItemCount(panel.itemID)==0 then--没有时,不加载
@@ -142,5 +144,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='BAG_UPDATE_COOLDOWN' then
         local startTime, duration = GetItemCooldown(self.itemID)
         e.Ccool(self,startTime, duration,nil, true)
+
+    elseif event=='PLAYER_REGEN_ENABLED' then
+        if panel.combat then
+            Init()
+            panel.combat=nil
+        end
+        panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
     end
 end)
