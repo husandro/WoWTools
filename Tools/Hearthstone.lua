@@ -194,11 +194,11 @@ local function setBagHearthstone()
                 local size=(e.toolsFrame.size or 30)/3
                 panel['texture'..type]:SetSize(size, size)
                 if type=='alt' then
-                    panel['texture'..type]:SetPoint('BOTTOMRIGHT',-5,5)
+                    panel['texture'..type]:SetPoint('BOTTOMRIGHT',-3,3)
                 elseif type=='shift' then
-                    panel['texture'..type]:SetPoint('TOPLEFT',5,-5)
+                    panel['texture'..type]:SetPoint('TOPLEFT',2,-2)
                 else
-                    panel['texture'..type]:SetPoint('BOTTOMLEFT',5,5)
+                    panel['texture'..type]:SetPoint('BOTTOMLEFT',2,2)
                 end
                 panel['texture'..type]:SetDrawLayer('OVERLAY',2)
                 panel['texture'..type]:AddMaskTexture(panel.mask)
