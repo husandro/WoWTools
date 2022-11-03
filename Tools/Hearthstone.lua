@@ -149,9 +149,10 @@ local function InitMenu(self, level, menuList)--主菜单
     local info
     if menuList then
         for itemID, _ in pairs(Save.items) do
+            local find=PlayerHasToy(itemID)
             info={
-                text= (C_Item.GetItemNameByID(itemID..'') or ('itemID '..itemID))..(not PlayerHasToy(itemID) and e.Icon.O2 or ''),
-                textCode=not PlayerHasToy(itemID) and '|cff606060',
+                text= (C_Item.GetItemNameByID(itemID..'') or ('itemID '..itemID))..(not find and e.Icon.O2 or ''),
+                colorCode=not find and '|cff606060',
                 notCheckable=true,
                 icon= C_Item.GetItemIconByID(itemID..''),
                 func=function ()

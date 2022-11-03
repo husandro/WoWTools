@@ -432,6 +432,7 @@ local function setMenuList(self, level, menuList)--主菜单
             else
                 Save.noItemHide =true
             end
+            panel:SetShown(Bag.bag or not Save.noItemHide)
         end,
         checked= Save.noItemHide
     }
