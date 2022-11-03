@@ -126,6 +126,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='PLAYER_REGEN_ENABLED' then
         panel:RegisterUnitEvent("UNIT_AURA", 'player')
+        if panel.combat then
+            Init()
+            panel.combat=nil
+        end
 
     elseif event=='PLAYER_REGEN_DISABLED' then
         panel:UnregisterEvent('UNIT_AURA')
@@ -138,13 +142,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='BAG_UPDATE_COOLDOWN' then
         local startTime, duration = GetItemCooldown(self.itemID)
-        e.Ccool(self,startTime, duration,nil, true)
-
-    elseif event=='PLAYER_REGEN_ENABLED' then
-        if panel.combat then
-            Init()
-            panel.combat=nil
-        end
-        panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
+        e.Ccool(self,startTime, duration,nil, true)        
     end
 end)

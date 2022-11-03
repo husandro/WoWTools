@@ -68,6 +68,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     panel.combat= true
                 else
                     Init()--初始
+                    panel:UnregisterEvent("PLAYER_REGEN_ENABLED")
                 end
             end)
         else
