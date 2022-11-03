@@ -164,6 +164,7 @@ local function InitMenu(self, level, menuList)--主菜单
             }
             UIDropDownMenu_AddButton(info, level)
         end
+
     else
        info={
             text='|cnGREEN_FONT_COLOR:'..#panel.items..'|r'.. addName,
@@ -172,6 +173,7 @@ local function InitMenu(self, level, menuList)--主菜单
             hasArrow=true,
        }
        UIDropDownMenu_AddButton(info, level)
+    
     end
 end
 

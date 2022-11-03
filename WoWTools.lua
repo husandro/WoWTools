@@ -540,8 +540,6 @@ e.Cbtn2= function(name, parent, showTexture)
     button:SetPushedAtlas('bag-border-highlight')
 
     button.mask= button:CreateMaskTexture()
-    --button.mask:SetAllPoints(button)
-    --button.mask:SetAtlas('bags-roundhighlight')
     button.mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
     button.mask:SetPoint("TOPLEFT", button, "TOPLEFT", 4, -4);
     button.mask:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -6, 6);
@@ -552,7 +550,6 @@ e.Cbtn2= function(name, parent, showTexture)
     button.background:AddMaskTexture(button.mask)
 
     button.texture=button:CreateTexture(nil, 'BORDER')
-    --button.texture:SetAllPoints(button)
     button.texture:SetPoint("TOPLEFT", button, "TOPLEFT", 4, -4);
 	button.texture:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -6, 6);
     button.texture:AddMaskTexture(button.mask)
@@ -560,24 +557,6 @@ e.Cbtn2= function(name, parent, showTexture)
     button.border=button:CreateTexture(nil,'ARTWORK')
     button.border:SetAllPoints(button)
     button.border:SetAtlas('bag-reagent-border')
-
-
-   --[[
- b.texture=b:CreateTexture(nil,'ARTWORK')
-    b.texture:SetPoint("CENTER",-1,1)
-    b.texture:SetSize(size-8, size-8)
-    --b.texture:SetAllPoints(b)
-    b.texture:SetAtlas('bag-border')
-    b.texture:SetShown(showTexture)
-
-    b.mask= b:CreateMaskTexture()
-    b.mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
-    b.mask:SetAllPoints(b.texture)
-    b.texture:AddMaskTexture(b.mask)
-
-]]
-
-    
 
     return button
 end
