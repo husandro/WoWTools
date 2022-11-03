@@ -525,8 +525,22 @@ e.GetItemCooldown= function(itemID)--物品冷却
     elseif enable==0 then
         return '|cnRED_FONT_COLOR:'..SPELL_RECAST_TIME_INSTANT..'|r'
     end
+    return ''
 end
 
+e.GetSpellCooldown = function(spellID)--法术冷却
+    local startTime, duration, enable = GetSpellCooldown(spellID)
+    if duration>0 and enable==1 then
+        local t=GetTime()
+        if startTime>t then t=t+86400 end
+        t=t-startTime
+        t=duration-t
+        return '|cnRED_FONT_COLOR:'..SecondsToTime(t)..'|r'
+    elseif enable==0 then
+        return '|cnRED_FONT_COLOR:'..SPELL_RECAST_TIME_INSTANT..'|r'
+    end
+    return ''
+end
 
 e.Cbtn2= function(name, parent, showTexture)
     local button= CreateFrame("Button", name, (parent or UIParent), "SecureActionButtonTemplate")
@@ -553,6 +567,7 @@ e.Cbtn2= function(name, parent, showTexture)
     button.texture:SetPoint("TOPLEFT", button, "TOPLEFT", 4, -4);
 	button.texture:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -6, 6);
     button.texture:AddMaskTexture(button.mask)
+    button.texture:SetShown(showTexture)
 
     button.border=button:CreateTexture(nil,'ARTWORK')
     button.border:SetAllPoints(button)
@@ -567,11 +582,11 @@ e.toolsFrame:SetShown(false)
 e.toolsFrame.last=e.toolsFrame
 e.toolsFrame.line=1
 e.toolsFrame.index=0
-e.ToolsSetButtonPoint=function(self, line)--设置位置
+e.ToolsSetButtonPoint=function(self, line, unoLine)--设置位置
     if e.toolsFrame.size and e.toolsFrame.size~=30 then--设置大小
         self:SetSize(e.toolsFrame.size, e.toolsFrame.size)
     end
-    if (e.toolsFrame.index>0 and select(2, math.modf(e.toolsFrame.index / 10))==0) or line then
+    if (not unoLine and e.toolsFrame.index>0 and select(2, math.modf(e.toolsFrame.index / 10))==0) or line then
         local x= - (e.toolsFrame.line * (e.toolsFrame.size or 30))
         self:SetPoint('BOTTOMRIGHT', e.toolsFrame , 'TOPRIGHT', x, 0)
         e.toolsFrame.line=e.toolsFrame.line + 1
@@ -584,3 +599,10 @@ e.ToolsSetButtonPoint=function(self, line)--设置位置
     e.toolsFrame.last=self
     e.toolsFrame.index=e.toolsFrame.index+1
 end
+
+--[[
+BACKGROUND
+BORDER
+ARTWORK
+OVERLAY
+]]

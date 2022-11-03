@@ -82,15 +82,13 @@ local function Init()
             name= (icon and '|T'..icon..':0|t' or '')..name
             e.tips:AddDoubleLine(name, type and	'|cnGREEN_FONT_COLOR:'..CANCEL..'|r' or '...')
         end
-        e.tips:AddDoubleLine(SETTINGS,e.Icon.right)
+        e.tips:AddDoubleLine(SETTINGS,e.Icon.mid)
         e.tips:Show()
     end)
     panel:SetScript('OnLeave', function() e.tips:Hide() end)
-    panel:SetScript('OnMouseDown',function(self,d)
-        if d=='RightButton' then
-            ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
-        end
-    end)
+    panel:SetScript('OnMouseWheel', function(self, d)
+        ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+   end)
 end
 
 --###########

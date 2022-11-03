@@ -71,5 +71,5 @@ Tools\NoggenfoggerElixir.lua
 ##挑战者之路
 Tools\ChallengerPath.lua
 ##法师传送门
-##Tools\MagePortal.lua
+Tools\MagePortal.lua
 
