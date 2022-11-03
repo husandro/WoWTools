@@ -542,12 +542,16 @@ e.GetSpellCooldown = function(spellID)--法术冷却
     return ''
 end
 
-e.Cbtn2= function(name, parent, showTexture)
+e.Cbtn2= function(name, parent, showTexture, rightClick)
     local button= CreateFrame("Button", name, (parent or UIParent), "SecureActionButtonTemplate")
 
     local size=e.toolsFrame.size or 30
     button:SetSize(size,size)
-    button:RegisterForClicks('LeftButtonDown')--, 'RightButtonDown')
+    if rightClick then
+        button:RegisterForClicks('LeftButtonDown', 'RightButtonDown')
+    elseif rightClick~=false then
+        button:RegisterForClicks('LeftButtonDown')
+    end
     button:EnableMouseWheel(true)
 
     button:SetHighlightAtlas('bag-border')

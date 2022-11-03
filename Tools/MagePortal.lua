@@ -126,7 +126,7 @@ local function Init()
     local find
     for index, tab in pairs(Tab) do
         if IsSpellKnown(tab.spell) then
-            local button=e.Cbtn2(nil, e.toolsFrame, true)
+            local button=e.Cbtn2(nil, e.toolsFrame, true, true)
             panel.button[index]=button
             e.ToolsSetButtonPoint(button, not find, true)--设置位置
             find=true
@@ -148,8 +148,6 @@ local function Init()
 
             local rightSpell= tab.spell2 and IsSpellKnown(tab.spell2)
             if rightSpell then--右击
-                button:RegisterForClicks('LeftButtonDown','RightButtonDown')
-
                 name,_,icon = GetSpellInfo(tab.spell2)
                 button:SetAttribute('type2', 'spell')
                 button:SetAttribute('spell2', name or tab.spell2)

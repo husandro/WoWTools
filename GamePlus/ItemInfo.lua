@@ -113,7 +113,8 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex)
 
         elseif classID==7 then--贸易材料
             if subclassID and tradeskill[subclassID] then
-                bottomLeftText=tradeskill[subclassID]
+                --bottomLeftText=tradeskill[subclassID]
+                topLeftText=tradeskill[subclassID]
             end
         elseif classID==12 then--任务
             if bag then
@@ -184,7 +185,7 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex)
         if bag then--仅显示背包
             local num=GetItemCount(itemLink)--银行数量
             leftText=GetItemCount(itemLink, true)-num
-            leftText= leftText and leftText>0 and hex and '|c'..hex..'+'..e.MK(leftText, 2)..'|r' or nil
+            leftText= (leftText and leftText>0 ) and '+'..e.MK(leftText, 2) or nil
             if equipmentName then--装备管理, 名称
                 bottomLeftText=e.WA_Utf8Sub(equipmentName,3,5)
             end

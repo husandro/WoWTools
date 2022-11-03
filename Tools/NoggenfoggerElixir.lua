@@ -11,7 +11,7 @@ local Save={
         [16593]=true,
     }
 }
-local panel=e.Cbtn2(nil, e.toolsFrame)
+local panel=e.Cbtn2(nil, e.toolsFrame, true)
 panel.itemID=8529
 
 local function setAura()--光环取消
@@ -61,7 +61,7 @@ end
 --####
 local function Init()
     e.ToolsSetButtonPoint(panel)--设置位置
-    panel.texture:SetShown(true)
+    --panel.texture:SetShown(true)
     panel:SetAttribute('type','item')
     panel:SetAttribute('item',GetItemInfo(panel.itemID) or panel.itemID)
     panel.texture:SetTexture(C_Item.GetItemIconByID(panel.itemID..''))
