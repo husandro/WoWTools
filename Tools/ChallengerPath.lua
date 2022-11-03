@@ -187,7 +187,7 @@ end
 local function Init()
     local find
     for index, tab in pairs(Save.list) do
-        if IsSpellKnown(tab.spell) then
+        --if IsSpellKnown(tab.spell) then
             if not find then
                 panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
                 UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
@@ -205,7 +205,17 @@ local function Init()
             name = tab.ins and EJ_GetInstanceInfo(tab.ins) or name--设置名称
             if name then
                 name = tab.name or e.WA_Utf8Sub(name, 2, 5)
-                buttons[tab.spell].name=e.Cstr(buttons[tab.spell], 8, nil, nil, true, nil,'CENTER')
+                if not buttons[tab.spell].name then
+                    local size=8
+                    if e.toolsFrame.size and e.toolsFrame.size>30 then
+                        if e.toolsFrame.size>40 then
+                            size=12
+                        elseif e.toolsFrame.size>30 then
+                            size=10
+                        end
+                    end
+                    buttons[tab.spell].name=e.Cstr(buttons[tab.spell], 8, nil, nil, true, nil,'CENTER')
+                end
                 buttons[tab.spell].name:SetPoint('CENTER',0,-5)
                 buttons[tab.spell].name:SetText(name)
             end
@@ -254,7 +264,7 @@ local function Init()
             end)
             setSpellCooldown(buttons[tab.spell], tab.spell)--冷却
             buttons[tab.spell].cooldown:SetAlpha(0.5)
-        end
+      --  end
     end
 end
 --###########

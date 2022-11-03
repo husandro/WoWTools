@@ -575,6 +575,9 @@ e.ToolsSetButtonPoint=function(self, line)--设置位置
         local x= - (e.toolsFrame.line * (e.toolsFrame.size or 30))
         self:SetPoint('BOTTOMRIGHT', e.toolsFrame , 'TOPRIGHT', x, 0)
         e.toolsFrame.line=e.toolsFrame.line + 1
+        if line then
+            e.toolsFrame.index=0
+        end
     else
         self:SetPoint('BOTTOMRIGHT', e.toolsFrame.last , 'TOPRIGHT')
     end

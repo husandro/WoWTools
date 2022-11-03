@@ -516,7 +516,7 @@ StaticPopupDialogs[id..addName..'TEXTURESIZE']={--设置按钮大小
         self.editBox:SetText(e.toolsFrame.size or 30)
     end,
     OnAccept = function(self, data)
-        local num= self.editBox:GetText()
+        local num= self.editBox:GetNumber()
         e.toolsFrame.size=num
         Save.size=num
         setButtonSize()--设置按钮大小
