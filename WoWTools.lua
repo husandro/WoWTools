@@ -554,7 +554,7 @@ e.Cbtn2= function(name, parent, showTexture)
     button.texture=button:CreateTexture(nil, 'BORDER')
     --button.texture:SetAllPoints(button)
     button.texture:SetPoint("TOPLEFT", button, "TOPLEFT", 4, -4);
-	button.texture:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -12, 12);
+	button.texture:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -6, 6);
     button.texture:AddMaskTexture(button.mask)
 
     button.border=button:CreateTexture(nil,'ARTWORK')
