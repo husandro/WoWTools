@@ -73,4 +73,4 @@ Tools\ChallengerPath.lua
 ##法师传送门
 Tools\MagePortal.lua
 ##黛西
-##Tools\Daisy.lua
+Tools\Daisy.lua

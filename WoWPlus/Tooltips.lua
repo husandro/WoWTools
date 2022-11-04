@@ -223,6 +223,10 @@ local function setPet(self, speciesID)--宠物
         self.creatureDisplayID=creatureDisplayID
     end
 end
+hooksecurefunc(e.tips,"SetCompanionPet", function(self, petGUID)--设置宠物信息
+    local speciesID= petGUID and C_PetJournal.GetPetInfoByPetID(petGUID)
+    setPet(self, speciesID)--宠物
+end)
 
 local function setItem(self)--物品
     local link=select(2, self:GetItem())
@@ -392,17 +396,6 @@ local function setItem(self)--物品
 end
 
 local function setSpell(self)--法术
---[[
-    if IsControlKeyDown() then
-        if Save.showTips then
-            Save.showTips=nil
-        else
-            Save.showTips=true
-        end
-    end
-
-]]
-
     local bat=UnitAffectingCombat('player')
     if not Save.showTips then
         return
@@ -940,6 +933,8 @@ local function setUnitInfo(self)--设置单位提示信息
 end
 e.tips:HookScript("OnTooltipSetUnit", setUnitInfo)--设置单位提示信息
 
+
+
 local function setUnitInit(self)--设置默认提示位置
     if Save.showUnit then
         if not e.tips.playerModel then--单位3D模型
@@ -954,8 +949,6 @@ local function setUnitInit(self)--设置默认提示位置
         panel:UnregisterEvent('INSPECT_READY')
     end
 end
-
-
 --****
 --位置
 --****
@@ -968,6 +961,7 @@ hooksecurefunc("GameTooltip_SetDefaultAnchor", function(self, parent)
         self:SetPoint(Save.AnchorPoint[1], UIParent, Save.AnchorPoint[3], Save.AnchorPoint[4], Save.AnchorPoint[5])
     end
 end)
+
 
 --****
 --隐藏/

@@ -214,7 +214,7 @@ local function Init()
                             size=10
                         end
                     end
-                    buttons[tab.spell].name=e.Cstr(buttons[tab.spell], 8, nil, nil, true, nil,'CENTER')
+                    buttons[tab.spell].name=e.Cstr(buttons[tab.spell], size, nil, nil, true, nil,'CENTER')
                 end
                 buttons[tab.spell].name:SetPoint('CENTER',0,-5)
                 buttons[tab.spell].name:SetText(name)
@@ -229,15 +229,13 @@ local function Init()
                 if tab.ins then
                     e.tips:AddDoubleLine((buttonImage1 and '|T'..buttonImage1..':0|t' or '')..(insName or ('journalInstanceID: '..tab.ins)), ADVENTURE_JOURNAL..e.Icon.right)
                 end
-                e.tips:AddDoubleLine(MAINMENU or SLASH_TEXTTOSPEECH_MENU, 'Alt+'..e.Icon.right)
+                e.tips:AddDoubleLine(MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.mid)
                 e.tips:Show()
             end)
             buttons[tab.spell]:SetScript('OnLeave', function() e.tips:Hide() end)
 
             buttons[tab.spell]:SetScript('OnMouseDown', function(self, d)
-                if d=='RightButton' and IsAltKeyDown() then
-                    ToggleDropDownMenu(1,nil, panel.Menu, self, 15,0 , {spell=tab.spell, ins=tab.ins, name=tab.name, index=index})
-                elseif d=='RightButton' and tab.ins then
+                if d=='RightButton' and tab.ins then
                     local frame=EncounterJournal;
                     if not frame or not frame:IsShown() then
                         ToggleEncounterJournal();
@@ -246,7 +244,9 @@ local function Init()
                     EncounterJournal_DisplayInstance(tab.ins)
                 end
             end)
-
+            buttons[tab.spell]:SetScript('OnMouseWheel', function(self, d)
+                ToggleDropDownMenu(1,nil, panel.Menu, self, 15,0 , {spell=tab.spell, ins=tab.ins, name=tab.name, index=index})
+            end)
             buttons[tab.spell]:RegisterEvent('PLAYER_REGEN_DISABLED')--设置, 冷却
             buttons[tab.spell]:RegisterEvent('PLAYER_REGEN_ENABLED')
             buttons[tab.spell]:RegisterEvent('SPELL_UPDATE_COOLDOWN')

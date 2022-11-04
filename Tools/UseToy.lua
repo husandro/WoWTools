@@ -309,37 +309,6 @@ local function InitMenu(self, level, menuList)--主菜单
                 end,
             }
             UIDropDownMenu_AddButton(info, level)
-
-            --[[
-if Save.Point then--还原位置
-                info={
-                    text=RESET_POSITION,
-                    tooltipTitle=RELOADUI,
-                    tooltipOnButton=true,
-                    func=function()
-                        Save.Point=nil
-                        ReloadUI()
-                    end,
-                    disabled=UnitAffectingCombat('player'),
-                }
-            else
-                info={
-                    text='Alt +'..e.Icon.right..' '..NPE_MOVE,
-                    disabled=true,
-                }
-            end
-            info.notCheckable=true
-            UIDropDownMenu_AddButton(info, level)
-
-            info={
-                text=id,
-                isTitle=true,
-                notCheckable=true,
-            }
-            UIDropDownMenu_AddButton(info,level)
-
-]]
-
         end
     else
        info={
@@ -378,25 +347,14 @@ local function showTips(self)--显示提示
                 e.tips:AddDoubleLine(name..(e.GetItemCooldown(itemID) or ''), type..'+'..e.Icon.left)
             end
         end
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         e.tips:Show()
     else
         e.tips:Hide()
     end
 end
 local function Init()
-    --[[
-if Save.Point then
-        panel:SetParent(UIParent)
-        panel:SetPoint(Save.Point[1], UIParent, Save.Point[3], Save.Point[4],Save.Point[5])
-    else
-
-]]
-
-       --[[
- panel:SetPoint('BOTTOMRIGHT', e.toolsFrame , 'TOPRIGHT')
-        e.toolsFrame.last=panel
-
-]]
     if e.toolsFrame.size and e.toolsFrame.size~=30 then--设置大小
         panel:SetSize(e.toolsFrame.size, e.toolsFrame.size)
     end
@@ -420,13 +378,6 @@ if Save.Point then
 
     panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
-
-    --[[
-panel:RegisterForDrag("RightButton")
-    panel:SetMovable(true)
-    panel:SetClampedToScreen(true)
-
-]]
 
     panel:SetScript("OnEnter",function(self)
         showTips(self)--显示提示
@@ -456,23 +407,6 @@ panel:RegisterForDrag("RightButton")
         setAtt()--设置属性
         showTips(self)--显示提示
     end)
-
---[[
-    panel:SetScript("OnDragStart", function(self,d )
-        if IsAltKeyDown() and d=='RightButton' then
-            self:StartMoving()
-        end
-    end)
-    panel:SetScript("OnDragStop", function(self)
-        ResetCursor()
-        self:StopMovingOrSizing()
-        panel:SetParent(UIParent)
-        Save.Point={self:GetPoint(1)}
-        Save.Point[2]=nil
-        print(id, addName, NEED, RELOADUI)
-    end)
-
-]]
 
 end
 --###########

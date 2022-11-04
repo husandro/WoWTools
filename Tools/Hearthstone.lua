@@ -237,14 +237,21 @@ local function showTips(self)--显示提示
         e.tips:AddLine(' ')
         for type, itemID in pairs(ModifiedTab) do
             if GetItemCount(itemID)~=0 then
-                local name = C_Item.GetItemNameByID(itemID) or ('itemID: '..itemID)
-                local icon = C_Item.GetItemIconByID(itemID)
+                local name = C_Item.GetItemNameByID(itemID..'') or ('itemID: '..itemID)
+                local icon = C_Item.GetItemIconByID(itemID..'')
                 name= (icon and '|T'..icon..':0|t' or '')..name
-
                 e.tips:AddDoubleLine(name, type..'+'..e.Icon.left)
             end
         end
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         e.tips:Show()
+        if e.tips.textRight then
+            local text=GetBindLocation()--显示,绑定位置
+            if text then
+                e.tips.textRight:SetText(text)
+            end
+        end
     else
         e.tips:Hide()
     end

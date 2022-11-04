@@ -82,7 +82,7 @@ local function Init()
             name= (icon and '|T'..icon..':0|t' or '')..name
             e.tips:AddDoubleLine(name, type and	'|cnGREEN_FONT_COLOR:'..CANCEL..'|r' or '...')
         end
-        e.tips:AddDoubleLine(SETTINGS,e.Icon.mid)
+        e.tips:AddDoubleLine(MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.mid)
         e.tips:Show()
     end)
     panel:SetScript('OnLeave', function() e.tips:Hide() end)
