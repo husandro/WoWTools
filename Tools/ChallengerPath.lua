@@ -128,7 +128,7 @@ StaticPopupDialogs[id..addName..'EDIT']={--修该,添加
         self:GetParent().button1:SetEnabled(spell and ins)
     end,
     EditBoxOnEscapePressed = function(self)
-        slef:GetParent():Hide()
+        self:GetParent():Hide()
     end,
 }
 StaticPopupDialogs[id..addName..'RESET']={--重置
