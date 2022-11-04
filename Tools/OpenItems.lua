@@ -437,6 +437,8 @@ local function setMenuList(self, level, menuList)--主菜单
         checked= Save.noItemHide
     }
     UIDropDownMenu_AddButton(t)
+
+    UIDropDownMenu_AddButton({text=DRAG_MODEL..ITEMS..'('..USE..'/'..DISABLE..')', isTitle=true, notCheckable=true})
 end
 
 
