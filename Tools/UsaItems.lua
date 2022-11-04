@@ -228,6 +228,7 @@ local function InitMenu(self, level, type)--主菜单
         }
         UIDropDownMenu_AddButton(info, level);
         UIDropDownMenu_AddButton({text=addName, isTitle=true, notCheckable=true}, level);
+        UIDropDownMenu_AddButton({text=DRAG_MODEL..' '..SPELLS..' '..ITEMS, isTitle=true, notCheckable=true}, level);
     end
 end
 
