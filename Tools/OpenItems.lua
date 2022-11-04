@@ -1,34 +1,13 @@
 local id, e = ...
-local Save={use={}, no={}, pet=true, open=true, toy=true, mount=true, mago=true, ski=true}
+local Save={use={
+    [190198]=5,
+},no={}, pet=true, open=true, toy=true, mount=true, mago=true, ski=true}
 local addName=UNWRAP..ITEMS
 local Combat, Bag= nil, {}
 
---[[
-local panel= CreateFrame("Button", nil, HearthstoneToolsButton, "SecureActionButtonTemplate")
-panel:RegisterForClicks('LeftButtonDown')
-panel.texture=panel:CreateTexture(nil,'ARTWORK')
-panel.mask= panel:CreateMaskTexture()
-
-]]
 local panel=e.Cbtn2(nil, WoWToolsMountButton)
 panel:SetPoint('RIGHT', HearthstoneToolsButton, 'LEFT')
 
-
---[[
-local function setPanelPostion()--设置按钮位置
-    local p=Save.Point
-    panel:ClearAllPoints()
-    if p and p[1] and p[3] and p[4] and p[5] then
-        panel:SetPoint(p[1],  UIParent, p[3], p[4], p[5])
-        panel:SetParent(UIParent)
-    else
-        
-        panel:SetParent(_G[id..'MountButton'])
-    end
-end
-
-
-]]
 
 local getTip=function(bag, slot)--取得提示内容
     panel.tips:SetOwner(panel, "ANCHOR_NONE")
