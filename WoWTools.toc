@@ -59,6 +59,7 @@ GamePlus\PetBattle.lua
 GamePlus\ItemInfo.lua
 GamePlus\SystemInfo.lua
 GamePlus\AddOns.lua
+GamePlus\Talking.lua
 
 Tools\Mount.lua
 Tools\Hearthstone.lua
@@ -75,3 +76,5 @@ Tools\Daisy.lua
 ##法师传送门
 Tools\MagePortal.lua
 
+##Chat Button
+##ChatButton\ChatButton.lua
