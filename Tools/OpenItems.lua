@@ -1,7 +1,7 @@
 local id, e = ...
 local Save={use={
     [190198]=5,
-},no={}, pet=true, open=true, toy=true, mount=true, mago=true, ski=true}
+},no={}, pet=true, open=true, toy=true, mount=true, mago=true, ski=true, noItemHide=true}
 local addName=UNWRAP..ITEMS
 local Combat, Bag= nil, {}
 
