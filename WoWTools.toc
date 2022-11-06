@@ -77,5 +77,5 @@ Tools\Daisy.lua
 Tools\MagePortal.lua
 
 ##Chat Button
-ChatButton\ChatButton.lua
-ChatButton\Markers.lua
+##ChatButton\ChatButton.lua
+##ChatButton\Markers.lua
