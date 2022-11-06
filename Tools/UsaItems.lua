@@ -328,7 +328,6 @@ local function setItemButton(self, equip)--设置按钮
     setItemCount(self)
     if equip then
         self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
-        self:RegisterForClicks('LeftButtonDown', 'RightButtonDown')
         self:SetScript('OnMouseUp',function()
             local frame=PaperDollFrame
             if frame and not frame:IsVisible() then
@@ -393,8 +392,7 @@ local function Init()
             name = C_Item.GetItemNameByID(itemID..'')
             icon = C_Item.GetItemIconByID(itemID..'')
             if name and icon then
-                Button[index]=e.Cbtn2(nil, e.toolsFrame)
-                Button[index].texture:SetShown(true)
+                Button[index]=e.Cbtn2(nil, e.toolsFrame, true, true)
                 Button[index].itemID=itemID
                 setItemButton(Button[index])
                 e.ToolsSetButtonPoint(Button[index])--设置位置
@@ -410,8 +408,7 @@ local function Init()
             local name, _, icon = GetSpellInfo(spellID)
             if name and icon then
                 if name and icon then
-                    Button[index]=e.Cbtn2(nil, e.toolsFrame)
-                    Button[index].texture:SetShown(true)
+                    Button[index]=e.Cbtn2(nil, e.toolsFrame, true, true)
                     Button[index].spellID=spellID
                     setSpellButton(Button[index])
                     e.ToolsSetButtonPoint(Button[index])--设置位置
@@ -431,8 +428,7 @@ local function Init()
             icon =icon2 or C_Item.GetItemIconByID(itemID..'')
             local slot=itemEquipLoc and e.itemSlotTable[itemEquipLoc]
             if name and icon and slot then
-                Button[index]=e.Cbtn2(nil, e.toolsFrame)
-                Button[index].texture:SetShown(true)
+                Button[index]=e.Cbtn2(nil, e.toolsFrame, true, true)
                 Button[index].itemID=itemID
                 Button[index].slot=slot
                 setItemButton(Button[index], true)

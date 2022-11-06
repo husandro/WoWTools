@@ -922,7 +922,7 @@ local function Init()
         setKEY()--设置捷键
     end
 
-    panel:EnableMouseWheel(true)
+    --panel:EnableMouseWheel(true)
     panel:RegisterForDrag("RightButton")
     panel:SetMovable(true)
     panel:SetClampedToScreen(true)

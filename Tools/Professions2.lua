@@ -39,7 +39,7 @@ local function Init()
                             e.Ccool(self, start, duration, modRate)--冷却条
                         end)
                     end
-                    panel.buttons[index]:RegisterForClicks("LeftButtonDown","RightButtonDown")
+                    panel.buttons[index]:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
                     panel.buttons[index]:SetAttribute('type2', 'macro')
                     panel.buttons[index]:SetAttribute("macrotext2", text)
                 end

@@ -2,6 +2,10 @@ local id, e = ...
 e.L=e.L or {}--多语言
 e.tips=GameTooltip
 
+local ActionButtonUseKeyDown=C_CVar.GetCVarBool("ActionButtonUseKeyDown")
+e.LeftButtonDown = ActionButtonUseKeyDown and 'LeftButtonDown' or 'LeftButtonUp'
+e.RightButtonDown= ActionButtonUseKeyDown and 'RightButtonDown' or 'RightButtonUp'
+
 local itemLoadTab={--加载法术,或物品数据
         134020,
     }
@@ -319,7 +323,7 @@ e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size)
             end
         end
     end
-    b:RegisterForClicks("LeftButtonDown","RightButtonDown")
+    b:RegisterForClicks(e.LeftButtonDown,e.RightButtonDown)
     if size then
         b:SetSize(size[1], size[2])
     end
@@ -548,9 +552,9 @@ e.Cbtn2= function(name, parent, showTexture, rightClick)
     local size=e.toolsFrame.size or 30
     button:SetSize(size,size)
     if rightClick then
-        button:RegisterForClicks('LeftButtonDown', 'RightButtonDown')
+        button:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
     elseif rightClick~=false then
-        button:RegisterForClicks('LeftButtonDown')
+        button:RegisterForClicks(e.LeftButtonDown)
     end
     button:EnableMouseWheel(true)
 

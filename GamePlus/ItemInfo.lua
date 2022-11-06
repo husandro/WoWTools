@@ -314,7 +314,10 @@ local function Init()
     hooksecurefunc('MerchantFrame_UpdateMerchantInfo',setMerchantInfo)--MerchantFrame.lua
     hooksecurefunc('MerchantFrame_UpdateBuybackInfo', setMerchantInfo)
 end
+
+--###########
 --加载保存数据
+--###########
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 
