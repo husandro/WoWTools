@@ -863,13 +863,15 @@ local function setUnitInfo(self)--设置单位提示信息
        if isPlayer then
            if (englishFaction=='Alliance' or englishFaction=='Horde') then--派系
                e.tips.Portrait:SetAtlas(englishFaction=='Alliance' and e.Icon.alliance or e.Icon.horde)
+               e.tips.Portrait:SetShown(true)
            end
        elseif UnitIsQuestBoss(unit) then--任务
            e.tips.Portrait:SetAtlas(e.Icon.quest)
-       else
-           SetPortraitTexture(e.tips.Portrait, unit)
+           e.tips.Portrait:SetShown(true)
+       --else
+         --  SetPortraitTexture(e.tips.Portrait, unit)
        end
-       e.tips.Portrait:SetShown(true)
+       
 
        --取得装等
        if isPlayer then
