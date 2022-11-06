@@ -83,7 +83,10 @@ local function btnstrSetText()--监视声望内容
 				local currentValue, threshold, rewardQuestID, hasRewardPending2, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID);
 				hasRewardPending=hasRewardPending2
 				if not tooLowLevelForParagon then
+					local completed= math.modf(currentValue/threshold)--完成次数
+					currentValue= completed>0 and currentValue - threshold * completed or currentValue
 					value=('%i%%'):format(currentValue/threshold*100)
+					--value = completed>0 and value.. ' '..completed or value
 				end
 			end
 			if not ((Save.btnStrHideCap and isCapped and not isParagon and not isHeader) or (Save.btnStrHideHeader and isHeader and not isParagon and not hasRep))then
@@ -97,7 +100,7 @@ local function btnstrSetText()--监视声望内容
 					t='  '..t
 				end
 				if Save.btnStrShowID and not(isHeader and not hasRep ) then--显示ID
-				t=t..factionID..' '
+					t=t..factionID..' '
 				end
 				t=t..(icon or '')..name..(factionStandingtext and ' '..factionStandingtext or '')..(value and ' '..value or '')
 				--t=barColor:WrapTextInColorCode(t)
@@ -149,7 +152,7 @@ hooksecurefunc('ReputationFrame_InitReputationRow', function (factionRow, elemen
 				text=name..(icon or '')..rankInfo.currentLevel..'/'..rankInfo.maxLevel
 			else
 				text=(icon or Icon.isCapped).. name
-				barColor=FACTION_ORANGE_COLOR				
+				barColor=FACTION_ORANGE_COLOR
 			end
 		end
 	elseif isMajorFaction then-- 名望
@@ -176,12 +179,14 @@ hooksecurefunc('ReputationFrame_InitReputationRow', function (factionRow, elemen
 			barColor = FACTION_BAR_COLORS[standingID]
 		end
 	end
+
 	if text then
 		if barColor then
 			text=barColor:WrapTextInColorCode(text)--颜色	
 		end
 		factionTitle:SetText(text)
 	end
+
 	if isWatched then
 		if not watchedIcon then
 			watchedIcon=factionBar:CreateTexture(nil, 'OVERLAY')
@@ -193,6 +198,25 @@ hooksecurefunc('ReputationFrame_InitReputationRow', function (factionRow, elemen
 		watchedIcon:SetShown(true)
 	elseif watchedIcon then
 		watchedIcon:SetShown(false)
+	end
+
+	local isParagon = C_Reputation.IsFactionParagon(factionID)--奖励			
+	local completedParagon--完成次数
+	if ( isParagon ) then--奖励
+		local currentValue, threshold, _, _, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID)
+		if not tooLowLevelForParagon then
+			local completed= math.modf(currentValue/threshold)--完成次数
+			if completed>0 then
+				completedParagon=completed
+			end
+		end
+	end
+	if completedParagon and not factionBar.completed then
+		factionBar.completed=e.Cstr(factionBar, nil, nil, nil, nil, nil, 'RIGHT')
+		factionBar.completed:SetPoint('RIGHT',- 5,0)
+	end
+	if factionBar.completed then
+		factionBar.completed:SetText(completedParagon or '')
 	end
 end)
 
@@ -292,14 +316,6 @@ local function SetRe()--监视声望
 					end
 					btnstrSetText()
 					print(VIDEO_OPTIONS_ULTRA_HIGH..'('..NO..Icon.reward2..QUEST_REWARDS..')'..addName..": "..e.GetShowHide(not Save.btnStrHideCap))
-
-				--[[elseif d=='RightButton' and IsShiftKeyDown() then--更新提示声望
-					if Save.factionUpdateTips then
-						Save.factionUpdateTips=nil
-					else
-						Save.factionUpdateTips=true
-					end
-					print(addName..UPDATE..": "..e.GetEnabeleDisable(Save.factionUpdateTips))]]
 				end
 			end)
 			btn:SetScript("OnEnter",function(self2)
@@ -317,8 +333,6 @@ local function SetRe()--监视声望
 				e.tips:AddDoubleLine(GAME_VERSION_LABEL..addName..': '..e.GetShowHide(not Save.btnStrHideHeader), 'Alt + '..e.Icon.left)
 				e.tips:AddDoubleLine(addName..' ID: '..e.GetShowHide(Save.btnStrShowID), 'Ctrl + '..e.Icon.left)
 				e.tips:AddDoubleLine(VIDEO_OPTIONS_ULTRA_HIGH..addName..': '..e.GetShowHide(not Save.btnStrHideCap), 'Shift + '..e.Icon.left)
-				--e.tips:AddLine(' ')
-				--e.tips:AddDoubleLine(addName..UPDATE..': '..e.GetEnabeleDisable(Save.factionUpdateTips), 'Shift + '..e.Icon.right)
 				e.tips:Show();
 			end)
 			btn:SetScript("OnLeave", function() ResetCursor()  e.tips:Hide() end);
@@ -409,6 +423,8 @@ local function FactionUpdate(self, env, text)--监视声望更新提示
 				local currentValue, threshold, rewardQuestID, hasRewardPending2, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID);
 				hasRewardPending=hasRewardPending2
 				if not tooLowLevelForParagon then
+					local completed= math.modf(currentValue/threshold)
+					currentValue= completed>0 and currentValue - threshold*completed or currentValue
 					value=('%i%%'):format(currentValue/threshold*100)
 				end
 			end

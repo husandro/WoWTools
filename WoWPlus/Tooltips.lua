@@ -712,6 +712,19 @@ hooksecurefunc(ReputationBarMixin, 'OnEnter', function(self)--角色栏,声望
     if not Save.showTips or self.friendshipID or not self.factionID or (C_Reputation.IsMajorFaction(self.factionID) and not C_MajorFactions.HasMaximumRenown(self.factionID)) then
         return
     end
+
+    local isParagon = C_Reputation.IsFactionParagon(self.factionID)--奖励			
+	local completedParagon--完成次数
+	if ( isParagon ) then--奖励
+		local currentValue, threshold, _, _, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(self.factionID)
+		if not tooLowLevelForParagon then
+			local completed= math.modf(currentValue/threshold)--完成次数
+			if completed>0 then
+				completedParagon=QUEST_REWARDS.. ' '..completed..' '..VOICEMACRO_LABEL_CHARGE1
+			end
+		end
+	end
+
     if not self.Container.Name:IsTruncated() then
         local name, description, standingID, _, barMax, barValue, _, _, isHeader, _, hasRep, _, _, factionID, _, _ = GetFactionInfoByID(self.factionID)
         if factionID and not isHeader or (isHeader and hasRep) then
@@ -725,11 +738,11 @@ hooksecurefunc(ReputationBarMixin, 'OnEnter', function(self)--角色栏,声望
             factionStandingtext=barColor:WrapTextInColorCode(factionStandingtext)--颜色
             e.tips:AddLine(factionStandingtext..' '..e.MK(barValue, 3)..'/'..e.MK(barMax, 3)..' '..('%i%%'):format(barValue/barMax*100), 1,1,1)
             e.tips:AddLine(' ')
-            e.tips:AddLine(REPUTATION..'ID: '..self.factionID or factionID)
+            e.tips:AddDoubleLine(REPUTATION..'ID: '..self.factionID or factionID, completedParagon)
             e.tips:Show();
         end
     else
-        e.tips:AddLine(REPUTATION..'ID: '..(self.factionID or factionID))
+        e.tips:AddDoubleLine(REPUTATION..'ID: '..(self.factionID or factionID), completedParagon)
         e.tips:Show()
     end
 end)
