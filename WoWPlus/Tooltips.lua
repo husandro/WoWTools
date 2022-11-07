@@ -922,7 +922,7 @@ local function setUnitInfo(self)--设置单位提示信息
             if line2 then
                 if i==num and player and e.Layer then
                     line2:SetText(e.L['LAYER']..'ID: '..e.Layer)
-                else
+                --else
                     --line2:Hide()
                 end
             end
