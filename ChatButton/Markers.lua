@@ -3,15 +3,8 @@ local addName= BINDING_HEADER_RAID_TARGET
 local Save={ autoSet=true, tank=2, tank2=6, healer=1,}
 
 local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
+WoWToolsChatButtonFrame.last=panel
 
-local colorCode={
-    [1]='|cffffff00',
-    [2]='|cffE29114',
-    [3]='|cffff00ff',
-    [4]='|cff00ff00',
-    [6]='|cff03BBFA',
-    [7]='|cffff0000',
-}
 local color={
     [1]={r=1, g=1, b=0},--星星, 黄色
     [2]={r=1, g=0.45, b=0.04},--圆形, 金色
@@ -353,6 +346,14 @@ end
 --主菜单
 --#####
 local function InitMenu(self, level, type)--主菜单
+    local colorCode={
+        [1]='|cffffff00',
+        [2]='|cffE29114',
+        [3]='|cffff00ff',
+        [4]='|cff00ff00',
+        [6]='|cff03BBFA',
+        [7]='|cffff0000',
+    }
     local info
     if type then
         local num= NUM_RAID_ICONS+1
@@ -472,12 +473,16 @@ local function Init()
             setTankHealer()--设置队伍标记
         end
       end)
-      panel:SetScript("OnMouseUp", function(self, d)
+    --[[
+  panel:SetScript("OnMouseUp", function(self, d)
       end)
       panel:SetScript('OnEnter', function (self)
       end)
       panel:SetScript("OnLeave",function(self)
       end)
+
+]]
+
 end
 
 --###########
@@ -517,32 +522,4 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
     end
 end)
---[[
-TANK='|A:groupfinder-icon-role-large-tank:0:0|a',
-HEALER='|A:groupfinder-icon-role-large-heal:0:0|a',
-DAMAGER='|A:groupfinder-icon-role-large-dps:0:0|a',
-NONE='|A:groupfinder-icon-emptyslot:0:0|a',
-leader='
-
-NUM_WORLD_RAID_MARKERS = 8;
-NUM_RAID_ICONS = 8;
-
-WORLD_RAID_MARKER_ORDER = {};
-WORLD_RAID_MARKER_ORDER[1] = 8;
-WORLD_RAID_MARKER_ORDER[2] = 4;
-WORLD_RAID_MARKER_ORDER[3] = 1;
-WORLD_RAID_MARKER_ORDER[4] = 7;
-WORLD_RAID_MARKER_ORDER[5] = 2;
-WORLD_RAID_MARKER_ORDER[6] = 3;
-WORLD_RAID_MARKER_ORDER[7] = 6;
-WORLD_RAID_MARKER_ORDER[8] = 5;
-
-MAX_RAID_MEMBERS = 40;
-NUM_RAID_GROUPS = 8;
-MEMBERS_PER_RAID_GROUP = 5;
-MAX_RAID_INFOS = 20;
-
-MAX_PARTY_MEMBERS = 4;
-]]
-    
 --Blizzard_CompactRaidFrameManager.lua

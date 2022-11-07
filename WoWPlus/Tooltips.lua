@@ -2200,7 +2200,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         end
 
     elseif event=='INSPECT_READY' then--取得装等
-        local unit=UnitGUID("mouseover")==arg1 and 'mouseover' or e.GroupGuid[arg1]
+        local unit=UnitGUID("mouseover")==arg1 and 'mouseover' or (e.GroupGuid[arg1] and e.GroupGuid[arg1].unit)
         if unit then
             --setInitItem(e.tips)
             getPlayerInfo(unit, arg1)

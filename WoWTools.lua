@@ -19,19 +19,16 @@ for _, spellID in pairs(spellLoadTab) do
     if not C_Spell.IsSpellDataCached(spellID) then C_Spell.RequestLoadSpellData(spellID) end
 end
 
-
-e.GroupGuid={}--团队GUID,{GUID==unit}
-
 local function GetWeek()--周数
     local d = date("*t")
     local cd
-    if GetLocale() == "zhCN" then 
+    if GetLocale() == "zhCN" then
         cd=4
     else
         cd=3
     end
     for d3=1,15 do
-        if date('*t', time({year=d.year, month=1, day=d3})).wday == cd then 
+        if date('*t', time({year=d.year, month=1, day=d3})).wday == cd then
             cd=d3
             break
         end
@@ -172,8 +169,8 @@ e.Icon={
     --mask="Interface\\ChatFrame\\UI-ChatIcon-HotS",--菱形
     --mask='Interface\\CHARACTERFRAME\\TempPortraitAlphaMask',--圆形 :SetMask()
     --mask='CircleMaskScalable',
-    
-    
+
+
     TANK='|A:groupfinder-icon-role-large-tank:0:0|a',
     HEALER='|A:groupfinder-icon-role-large-heal:0:0|a',
     DAMAGER='|A:groupfinder-icon-role-large-dps:0:0|a',
@@ -352,7 +349,7 @@ e.SetButtonKey = function(self, set, key, click)--设置清除快捷键
     else
         ClearOverrideBindings(self)
     end
-end 
+end
 
 e.itemSlotTable={
     ['INVTYPE_HEAD']=1,
@@ -608,6 +605,62 @@ e.ToolsSetButtonPoint=function(self, line, unoLine)--设置位置
     e.toolsFrame.index=e.toolsFrame.index+1
 end
 
+e.GroupGuid={}--团队GUID,{GUID==unit}
+local panel=CreateFrame("Frame")
+panel:RegisterEvent('GROUP_ROSTER_UPDATE')
+panel:RegisterEvent('GROUP_LEFT')
+panel:RegisterEvent('ADDON_LOADED')
+panel:SetScript('OnEvent', function(self, event, arg1)
+    if event=='GROUP_LEFT' then
+        e.GroupGuid={}
+    elseif event=='GROUP_ROSTER_UPDATE' or (event=='ADDON_LOADED' and arg1==id) then
+        e.GroupGuid={}
+        if IsInRaid() then
+            for index= 1, GetNumGroupMembers() do
+                local unit='raid'..index
+                local guid=UnitGUID(unit)
+              --  local name, rank, subgroup, level, class, fileName, zone, online, isDead, role, isML, combatRole = GetRaidRosterInfo(index)
+                if guid then
+                    e.GroupGuid[guid]={unit=unit}
+                    e.GroupGuid[UnitName(unit)]={unit=unit}
+                end
+            end
+        else
+            for index= 1, GetNumGroupMembers()-1 do
+                local unit='party'..index
+                local guid=UnitGUID(unit)
+                if guid then
+                    e.GroupGuid[guid]={unit=unit}
+                    e.GroupGuid[UnitName(unit)]={unit=unit}
+                end
+            end
+            e.GroupGuid[UnitGUID('player')]={unit='player'}
+            e.GroupGuid[UnitName('player')]={unit='player'}
+        end
+    end
+end)
+
+e.Chat=function(text,name)
+    if text then
+        if name then
+            SendChatMessage(text, 'WHISPER',nil, name);
+
+        elseif UnitAffectingCombat('player') and IsInInstance() then
+            SendChatMessage(text, 'SAY');
+
+        elseif IsInRaid() then
+            SendChatMessage(text, 'RAID')
+
+        elseif IsInGroup(LE_PARTY_CATEGORY_HOME) then
+            SendChatMessage(text,'PARTY');
+
+        elseif IsInInstance() and IsInGroup() then
+            SendChatMessage(text, 'INSTANCE_CHAT');
+
+        elseif not UnitIsDeadOrGhost('player') and not IsResting() then
+            SendChatMessage(text, 'SAY');
+
+end end end--925
 --[[
 BACKGROUND
 BORDER
