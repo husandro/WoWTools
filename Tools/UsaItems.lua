@@ -295,13 +295,11 @@ local function setItemCooldown(self)--冷却
 end
 local function setBlingtron(self)--布林顿任务
     local complete=C_QuestLog.IsQuestFlaggedCompleted(56042)
-    if complete and not self.quest then
+    if not self.quest then
         self.quest=e.Cstr(self, 8)
         self.quest:SetPoint('BOTTOM',0,8)
     end
-    if self.quest then
-        self.quest:SetText(complete and '|cnGREEN_FONT_COLOR:'..COMPLETE..'|r' or '')
-    end
+    self.quest:SetText(complete and '|cnGREEN_FONT_COLOR:'..COMPLETE..'|r' or e.Icon.info2)
 end
 local function setItemButton(self, equip)--设置按钮
     self:RegisterEvent("BAG_UPDATE_DELAYED")
