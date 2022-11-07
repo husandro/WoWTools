@@ -67,7 +67,7 @@ local function setProfessions()
                     if not panel.profession6 then--烹饪用火
                         local spellID=818
                         panel.profession6 = e.Cbtn(panel, nil, nil, true)
-                        panel.profession6:RegisterForClicks('LeftButtonDown')
+                        panel.profession6:RegisterForClicks(e.LeftButtonDown)
                         panel.profession6:SetPoint('LEFT', panel.profession5, 'RIGHT',2, 0)
                         panel.profession6:SetSize(32, 32)
                         panel.profession6:SetNormalTexture(135805)

@@ -298,18 +298,18 @@ end)
 
 --完成已激活任务,多个任务GossipFrameShared.lua
 hooksecurefunc(GossipSharedActiveQuestButtonMixin, 'Setup', function(self, info)
-    local questID=self:GetID() or info.questID
-    if not questID or not Save.qest or IsModifierKeyDown() then
+    local questID=info.questID or self:GetID()
+    if not questID or not Save.qest or IsModifierKeyDown() or not C_QuestLine.IsComplete(questID) then
         return
     end
     C_GossipInfo.SelectActiveQuest(questID)
 end)
 --自动接取任务,多个任务GossipFrameShared.lua
 hooksecurefunc(GossipSharedAvailableQuestButtonMixin, 'Setup', function(self, info)
-    if not Save.qest or IsModifierKeyDown() or not QuestTrivial(info.questID) then
+    if not info.questID or not Save.qest or IsModifierKeyDown() or not QuestTrivial(info.questID) then
         return
     end
-    C_GossipInfo.SelectAvailableQuest(info.questID or self:GetID());
+    C_GossipInfo.SelectAvailableQuest(info.questID);--or self:GetID()
 end)
 --自动接取任务, 仅一个任务
 hooksecurefunc('QuestInfo_Display', function(self, template, parentFrame, acceptButton, material, mapView)--QuestInfo.lua

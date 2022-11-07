@@ -563,7 +563,7 @@ local function InitMenu(self, level, menuList)--主菜单
             UIDropDownMenu_AddButton(info, level)
 
             info={
-                text=EMBLEM_SYMBOL..HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_HEIGHT,--设置按钮大小
+                text=HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE,--HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_HEIGHT,--设置按钮大小
                 tooltipOnButton=true,
                 tooltipTitle=e.toolsFrame.size or 30,
                 notCheckable=true,

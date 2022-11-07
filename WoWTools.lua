@@ -131,7 +131,7 @@ e.Icon={
     left='|A:newplayertutorial-icon-mouse-leftbutton:0:0|a',
     mid='|A:newplayertutorial-icon-mouse-middlebutton:0:0|a',
 
-    pushed='Forge-ColorSwatchHighlight',--移过时
+    pushed='UI-HUD-MicroMenu-Highlightalert',--'bag-border-highlight',--Forge-ColorSwatchHighlight',--移过时
     highlight='Forge-ColorSwatchSelection',--点击时
 
     transmogHide='transmog-icon-hidden',--不可幻化
@@ -323,7 +323,8 @@ e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size)
             end
         end
     end
-    b:RegisterForClicks(e.LeftButtonDown,e.RightButtonDown)
+    b:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
+    b:EnableMouseWheel(true)
     if size then
         b:SetSize(size[1], size[2])
     end
@@ -333,7 +334,6 @@ end
 e.Ccool=function(self, start, duration, modRate, HideCountdownNumbers, Reverse, SwipeTexture)--冷却条
     if not self.cooldown then
         self.cooldown= CreateFrame("Cooldown", nil, self, 'CooldownFrameTemplate')
-        
         self.cooldown:SetUseCircularEdge(true)--设置边缘纹理是否应该遵循圆形图案而不是方形编辑框
         self.cooldown:SetDrawBling(true)--闪光
         self.cooldown:SetDrawEdge(true)--冷却动画的移动边缘绘制亮线
@@ -577,7 +577,7 @@ e.Cbtn2= function(name, parent, showTexture, rightClick)
     button.texture:AddMaskTexture(button.mask)
     button.texture:SetShown(showTexture)
 
-    button.border=button:CreateTexture(nil,'ARTWORK')
+    button.border=button:CreateTexture(nil, 'ARTWORK')
     button.border:SetAllPoints(button)
     button.border:SetAtlas('bag-reagent-border')
 

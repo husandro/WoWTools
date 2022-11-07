@@ -17,7 +17,8 @@
         "StaticPopupDialogs",
         "CLEAR",
         "KEY_NUMLOCK_MAC",
-        "AUTO_JOIN"
+        "AUTO_JOIN",
+        "UI_SCALE"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
