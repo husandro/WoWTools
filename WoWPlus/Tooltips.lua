@@ -858,33 +858,32 @@ local function setUnitInfo(self)--设置单位提示信息
     end
     local isPlayer = UnitIsPlayer(unit)
     local guid = UnitGUID(unit)
-       --设置单位图标  
-       local englishFaction = isPlayer and UnitFactionGroup(unit)
-       if isPlayer then
-           if (englishFaction=='Alliance' or englishFaction=='Horde') then--派系
-               e.tips.Portrait:SetAtlas(englishFaction=='Alliance' and e.Icon.alliance or e.Icon.horde)
-               e.tips.Portrait:SetShown(true)
-           end
-       elseif UnitIsQuestBoss(unit) then--任务
-           e.tips.Portrait:SetAtlas(e.Icon.quest)
-           e.tips.Portrait:SetShown(true)
-       --else
-         --  SetPortraitTexture(e.tips.Portrait, unit)
-       end
-       
+    --设置单位图标  
+    local englishFaction = isPlayer and UnitFactionGroup(unit)
+    if isPlayer then
+        if (englishFaction=='Alliance' or englishFaction=='Horde') then--派系
+            e.tips.Portrait:SetAtlas(englishFaction=='Alliance' and e.Icon.alliance or e.Icon.horde)
+            e.tips.Portrait:SetShown(true)
+        end
+    elseif UnitIsQuestBoss(unit) then--任务
+        e.tips.Portrait:SetAtlas(e.Icon.quest)
+        e.tips.Portrait:SetShown(true)
+    --else
+        --  SetPortraitTexture(e.tips.Portrait, unit)
+    end
 
-       --取得装等
-       if isPlayer then
-           if CheckInteractDistance(unit, 1) then
-               NotifyInspect(unit);
-           end
-           getPlayerInfo(unit, guid)
-       end
-       if e.tips.playerModel.guid~=guid then--3D模型
-           e.tips.playerModel:SetUnit(unit)
-           e.tips.playerModel.guid=guid
-       end
-       e.tips.playerModel:SetShown(true)
+    --取得装等
+    if isPlayer then
+        if CheckInteractDistance(unit, 1) then
+            NotifyInspect(unit);
+        end
+        getPlayerInfo(unit, guid)
+    end
+    if e.tips.playerModel.guid~=guid then--3D模型
+        e.tips.playerModel:SetUnit(unit)
+        e.tips.playerModel.guid=guid
+    end
+    e.tips.playerModel:SetShown(true)
 
     if isPlayer then
         local isInGuild=IsPlayerInGuildFromGUID(guid)
@@ -924,10 +923,23 @@ local function setUnitInfo(self)--设置单位提示信息
                 if i==num and player and e.Layer then
                     line2:SetText(e.L['LAYER']..'ID: '..e.Layer)
                 else
-                    line2:Hide()
+                    --line2:Hide()
                 end
             end
         end
+        --[[
+if not UnitIsUnit('player',unit) and e.GroupGuid[guid] then--队友位置
+            local mapID= C_Map.GetBestMapForUnit(unit)--地图ID
+            if mapID then
+                local mapName=C_Map.GetMapInfo(mapID).name;
+                if mapName then
+                    self:AddDoubleLine(e.Icon.map2, mapName)
+                end
+            end
+        end
+
+]]
+
     elseif (UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit)) then--宠物TargetFrame.lua
         setPet(self, UnitBattlePetSpeciesID(unit))
 
