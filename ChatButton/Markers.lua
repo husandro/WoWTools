@@ -1,6 +1,6 @@
 local id, e = ...
 local addName= BINDING_HEADER_RAID_TARGET
-local Save={ autoSet=true, tank=2, tank2=6, healer=1, countdown=7}
+local Save={ autoSet=true, tank=2, tank2=6, healer=1, countdown=7, groupReadyTips=true}
 
 local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
 WoWToolsChatButtonFrame.last=panel
@@ -98,6 +98,144 @@ local function setTankHealer(autoSet)--设置队伍标记
         end
     else
         setPartyTarget()--设置队伍标记
+    end
+end
+
+local function setReadyTexureTips()--自动就绪, 主图标, 提示
+    if Save.autoReady and not panel.ReadyTextrueTips then
+        panel.ReadyTextrueTips=panel:CreateTexture(nil,'OVERLAY')
+        panel.ReadyTextrueTips:SetPoint('TOP')
+        local size=panel:GetWidth()/2
+        panel.ReadyTextrueTips:SetSize(size, size)
+    end
+    if panel.ReadyTextrueTips then
+        if Save.autoReady then
+            panel.ReadyTextrueTips:SetAtlas(Save.autoReady==1 and e.Icon.select or 'auctionhouse-ui-filter-redx')
+        end
+        panel.ReadyTextrueTips:SetShown(Save.autoReady and true or false)
+    end
+end
+
+--################
+--队员,就绪,提示信息
+--################
+local function setGroupReadyTipsEvent()--注册事件, 就绪,队员提示信息
+    if Save.groupReadyTips then
+        panel:RegisterEvent('READY_CHECK_CONFIRM')
+        panel:RegisterEvent('CHAT_MSG_SYSTEM')
+    else
+        panel:UnregisterEvent('READY_CHECK_CONFIRM')
+        panel:UnregisterEvent('CHAT_MSG_SYSTEM')
+    end
+end
+local function getReadyCheckStatus(unit, index)
+    local stat=GetReadyCheckStatus(unit)
+    if stat=='ready' then
+        return index..")"..e.Icon.select2..e.GetPlayerInfo(unit, nil, true)
+    elseif stat=='waiting' then
+        return index..")   "..e.GetPlayerInfo(unit, nil, true)
+    elseif stat=='notready' then
+        return index..")"..e.Icon.O2..e.GetPlayerInfo(unit, nil, true)..(UnitIsAFK(unit) and '|cff606060<'..AFK..'>|r' or not UnitIsConnected(unit) and 	'|cff606060<'..PLAYER_OFFLINE..'>|r' or '')
+    end
+end
+local function setGroupReadyTips(event, arg1, arg2)
+    local text=''
+    if event=='READY_CHECK' or event=='READY_CHECK_CONFIRM'  then
+        local isInRaid=IsInRaid()
+        local unit=isInRaid and 'raid' or 'party'
+        local num=GetNumGroupMembers()
+        if isInRaid then
+            for index= 1, num do
+                local text2=getReadyCheckStatus(unit..index, index)
+                if text2 then
+                        text= (text~='' and text..'\n' or text)..text2
+                end
+            end
+        else
+            for index= 1, num-1 do
+                local text2=getReadyCheckStatus(unit..index, index)
+                if text2 then
+                    text= (text~='' and text..'\n' or text)..text2
+                end
+            end
+            local text2=getReadyCheckStatus('player', num)
+            if text2 then
+                text= (text~='' and text..'\n' or text)..text2
+            end
+        end
+        if text~='' and not panel.groupReadyTips then
+            panel.groupReadyTips=e.Cbtn(UIParent, nil, nil, nil, nil, true,{20,20})
+            if Save.groupReadyTipsPoint then
+                panel.groupReadyTips:SetPoint(Save.groupReadyTipsPoint[1], UIParent, Save.groupReadyTipsPoint[3], Save.groupReadyTipsPoint[4], Save.groupReadyTipsPoint[5])
+            else
+                panel.groupReadyTips:SetPoint('BOTTOMLEFT', panel, 'TOPLEFT', 0, 20)
+            end
+            panel.groupReadyTips:SetScript('OnMouseDown', function(self,d)
+                local key=IsModifierKeyDown()
+                if d=='LeftButton' and not key then
+                    self.text:SetText('')
+                    self:SetShown(false)
+                elseif d=='RightButton' and not key then
+
+                elseif d=='RightButton' and IsAltKeyDown() then
+                    self:ClearAllPoints()
+                    self:SetPoint('BOTTOMLEFT', panel, 'TOPLEFT', 0, 20)
+                end
+            end)
+            panel.groupReadyTips:SetScript('OnEnter', function(self)
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(addName, PLAYERS_IN_GROUP..READY..INFO)
+                e.tips:AddDoubleLine(CLEAR_ALL,e.Icon.left)
+                e.tips:AddDoubleLine(NPE_MOVE, e.Icon.right)
+                e.tips:Show()
+            end)
+            panel.groupReadyTips:SetScript('OnLeave', function()
+                ResetCursor()
+                e.tips:Hide()
+            end)
+            panel.groupReadyTips:SetScript("OnMouseUp", function(self, d)
+                ResetCursor()
+            end)
+            panel.groupReadyTips:SetScript('OnLeave', function()
+                ResetCursor()
+            end)
+
+            panel.groupReadyTips:RegisterForDrag("RightButton")
+            panel.groupReadyTips:SetMovable(true)
+            panel.groupReadyTips:SetClampedToScreen(true)
+
+            panel.groupReadyTips:SetScript("OnDragStart", function(self,d )
+                if not IsModifierKeyDown() and d=='RightButton' then
+                    self:StartMoving()
+                end
+            end)
+            panel.groupReadyTips:SetScript("OnDragStop", function(self)
+                ResetCursor()
+                self:StopMovingOrSizing()
+                Save.groupReadyTipsPoint={self:GetPoint(1)}
+                Save.groupReadyTipsPoint[2]=nil
+                print(id, addName, RESET_POSITION, 'Alt+'..e.Icon.right)
+            end)
+            panel.groupReadyTips:SetScript('OnHide', function(self)
+                if self.timer then
+                    self.timer:Cancel()
+                end
+            end)
+            panel.groupReadyTips.text=e.Cstr(panel.groupReadyTips)
+            panel.groupReadyTips.text:SetPoint('BOTTOMLEFT', panel.groupReadyTips, 'BOTTOMRIGHT')
+        end
+        if event=='READY_CHECK' and text~='' then
+            panel.groupReadyTips.timer=C_Timer.NewTimer(arg2 or 35, function()
+                panel.groupReadyTips.text:SetText('')
+                panel.groupReadyTips:SetShown(false)
+            end)
+            e.Ccool(panel.groupReadyTips,nil, arg2 or 35, nil,nil,true )
+        end
+    end
+    if panel.groupReadyTips then
+        panel.groupReadyTips:SetShown(text~='')
+        panel.groupReadyTips.text:SetText(text)
     end
 end
 
@@ -451,8 +589,6 @@ local function setMarkersFrame()--设置标记, 框架
         end
     end
     frame2:SetShown(true)
-
-   
 end
 
 --#####
@@ -469,41 +605,87 @@ local function InitMenu(self, level, type)--主菜单
     }
     local info
     if type then
-        local num= NUM_RAID_ICONS+1
-        for index=1, num do
-            if index==num then
-                UIDropDownMenu_AddSeparator(level)
-            end
+        if type=='ready' then
             info={
-                text= index==num and NONE or _G['RAID_TARGET_'..index],
-                icon= index==num and nil or 'Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index,
-                checked= Save[type]==index,
-                colorCode=colorCode[index],
+                text=e.Icon.select2..AUTO_JOIN:gsub(JOIN,'')..READY,--就绪
+                colorCode='|cff00ff00',
+                checked=Save.autoReady==1,
                 func=function()
-                    Save[type]=index
-                    CloseDropDownMenus()
-                    if type=='tank' then
-                        setTexture()--图标, 自动标记
-                    end
+                    Save.autoReady=1
+                    setReadyTexureTips()--自动就绪, 主图标, 提示
+                    CloseDropDownMenus();
                 end
             }
-            if index~=0 then
-                if type=='tank' then
-                    info.disabled= Save.healer==index or Save.tank2==index
-                elseif type=='tank2' then
-                    info.disabled= Save.tank==index or Save.tank==0
-                elseif type=='healer' then
-                    info.disabled= Save.tank==index
+            UIDropDownMenu_AddButton(info, level)
+            info={
+                text=e.Icon.O2..AUTO_JOIN:gsub(JOIN,'')..NOT_READY_FEMALE,--未就绪
+                colorCode='|cffff0000',
+                checked=Save.autoReady==2,
+                func=function()
+                    Save.autoReady=2
+                    setReadyTexureTips()--自动就绪, 主图标, 提示
+                    CloseDropDownMenus();
                 end
+            }
+            UIDropDownMenu_AddButton(info, level)
+            info={--无
+                text=NONE,
+                checked=not Save.autoReady,
+                func=function()
+                    Save.autoReady=nil
+                    setReadyTexureTips()--自动就绪, 主图标, 提示
+                    CloseDropDownMenus();
+                end
+            }
+            UIDropDownMenu_AddButton(info, level)
+
+            UIDropDownMenu_AddSeparator(level)--队员提示信息
+            info={
+                text=PLAYERS_IN_GROUP..READY..INFO,
+                checked=Save.groupReadyTips,
+                func=function()
+                    Save.groupReadyTips= not Save.groupReadyTips and true or false
+                    setGroupReadyTipsEvent()--注册事件, 就绪,队员提示信息
+                end
+            }
+            UIDropDownMenu_AddButton(info, level)
+        else
+            local num= NUM_RAID_ICONS+1
+            for index=1, num do
+                if index==num then
+                    UIDropDownMenu_AddSeparator(level)
+                end
+                info={
+                    text= index==num and NONE or _G['RAID_TARGET_'..index],
+                    icon= index==num and nil or 'Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index,
+                    checked= Save[type]==index,
+                    colorCode=colorCode[index],
+                    func=function()
+                        Save[type]=index
+                        CloseDropDownMenus()
+                        if type=='tank' then
+                            setTexture()--图标, 自动标记
+                        end
+                    end
+                }
+                if index~=0 then
+                    if type=='tank' then
+                        info.disabled= Save.healer==index or Save.tank2==index
+                    elseif type=='tank2' then
+                        info.disabled= Save.tank==index or Save.tank==0
+                    elseif type=='healer' then
+                        info.disabled= Save.tank==index
+                    end
+                end
+                UIDropDownMenu_AddButton(info, level)
             end
+            info={
+                text=LFG_LIST_CROSS_FACTION:format(type=='tank2' and RAID or type=='healer' and GROUP or (HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS)),
+                notCheckable=true,
+                isTitle=true,
+            }
             UIDropDownMenu_AddButton(info, level)
         end
-        info={
-            text=LFG_LIST_CROSS_FACTION:format(type=='tank2' and RAID or type=='healer' and GROUP or (HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS)),
-            notCheckable=true,
-            isTitle=true,
-        }
-        UIDropDownMenu_AddButton(info, level)
     else
         info={
             text=AUTO_JOIN:gsub(JOIN,'')..EVENTTRACE_MARKER..e.Icon.TANK..e.Icon.HEALER,
@@ -562,6 +744,15 @@ local function InitMenu(self, level, type)--主菜单
             disabled=not getAllSet(),--是不有权限
         }
         UIDropDownMenu_AddButton(info, level)
+
+        info={
+            text=(Save.autoReady==1 and e.Icon.select2 or Save.autoReady==2 and e.Icon.O2 or NONE)..AUTO_JOIN:gsub(JOIN,'')..((not Save.autoReady or Save.autoReady==1) and READY or Save.autoReady==2 and NOT_READY_FEMALE or ''),
+            checked= Save.autoReady==1 or Save.autoReady==2,
+            colorCode= Save.autoReady==1 and '|cff00ff00' or Save.autoReady==2 and '|cffff0000',
+            menuList='ready',
+            hasArrow=true,
+        }
+        UIDropDownMenu_AddButton(info, level)
     end
 end
 
@@ -572,6 +763,8 @@ local function Init()
     setTexture()--设置,按钮图片
     setAllTextrue()--主图标,是否有权限
     setMarkersFrame()--设置标记, 框架
+    setReadyTexureTips()--自动就绪, 主图标, 提示
+    setGroupReadyTipsEvent()--注册事件, 就绪,队员提示信息
 
     panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
@@ -586,16 +779,30 @@ local function Init()
             setTankHealer()--设置队伍标记
         end
       end)
-    --[[
-  panel:SetScript("OnMouseUp", function(self, d)
-      end)
-      panel:SetScript('OnEnter', function (self)
-      end)
-      panel:SetScript("OnLeave",function(self)
-      end)
 
-]]
-
+    local readyFrame=ReadyCheckListenerFrame--自动就绪事件, 提示
+    if readyFrame then
+        readyFrame:SetScript('OnHide',function ()
+            if panel.autoReadyTime then
+                panel.autoReadyTime:Cancel()
+            end
+        end)
+        readyFrame:SetScript('OnShow',function(self)
+            if Save.autoReady  and not self.autoReadyText then
+                self.autoReadyText=e.Cstr(self)
+                self.autoReadyText:SetPoint('TOPLEFT', self, 'TOPRIGHT')
+            end
+            if self.autoReadyText then
+                local text=''
+                if Save.autoReady==1 then
+                    text=id..' '..addName..'\n|cnGREEN_FONT_COLOR:'..AUTO_JOIN:gsub(JOIN, '')..READY..'|r'..e.Icon.select2
+                elseif Save.autoReady==2 then
+                    text=id..' '..addName..'\n|cnRED_FONT_COLOR:'..AUTO_JOIN:gsub(JOIN, '')..NOT_READY_FEMALE..'|r'..e.Icon.O2
+                end
+               self.autoReadyText:SetText(text)
+            end
+        end)
+    end
 end
 
 --###########
@@ -605,9 +812,10 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:RegisterEvent('GROUP_ROSTER_UPDATE')--'PLAYER_ROLES_ASSIGNED')--GROUP_ROSTER_UPDATE
 panel:RegisterEvent('GROUP_LEFT')
+panel:RegisterEvent('READY_CHECK')
 
---panel:RegisterEvent('GROUP_LEFT')
-panel:SetScript("OnEvent", function(self, event, arg1)
+
+panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" and arg1==id then
         if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
             panel:UnregisterAllEvents()
@@ -633,6 +841,30 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             self.combat=nil
             self.UnregisterEvent('PLAYER_REGEN_ENABLED')
         end
+
+    elseif event=='READY_CHECK' then--自动就绪事件
+        if Save.autoReady then
+            if arg1 and arg1~=UnitName('player') then
+                self.autoReadyTime= C_Timer.NewTimer(3, function()
+                    ConfirmReadyCheck(Save.autoReady==1 and 1)
+                end)
+                e.Ccool(ReadyCheckListenerFrame, nil, 3, nil, true)--冷却条
+            end
+        else
+            e.Ccool(ReadyCheckListenerFrame, nil, arg2 or 35, nil, true,true)--冷却条
+        end
+        if Save.groupReadyTips then
+            setGroupReadyTips(event, arg1, arg2)--队员,就绪,提示信息
+        end
+    elseif event=='READY_CHECK_CONFIRM' then
+            setGroupReadyTips(event, arg1, arg2)--队员,就绪,提示信息
+        
+    elseif event=='CHAT_MSG_SYSTEM' then
+        if arg1==READY_CHECK_ALL_READY then
+            setGroupReadyTips(event, arg1, arg2)--队员,就绪,提示信息
+        end
     end
 end)
+
+
 --Blizzard_CompactRaidFrameManager.lua

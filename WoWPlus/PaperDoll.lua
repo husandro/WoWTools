@@ -135,7 +135,7 @@ local function Lv(self, slot, link)--装等
     end
     if lv then
         if not self.lv then
-            self.lv=e.Cstr(self)
+            self.lv=e.Cstr(self,10)
             self.lv:SetPoint('BOTTOM', 0, 0)
             self.lv:SetJustifyH('CENTER')
         end
@@ -325,7 +325,7 @@ local function Sta(self, slot, link)--显示属性
 
         if s then
             if not self.s then
-                self.s=e.Cstr(self)
+                self.s=e.Cstr(self, 10)
                 self.s:SetText(e.WA_Utf8Sub(STAT_CRITICAL_STRIKE, 1):upper())
             else
                 self.s:ClearAllPoints()
@@ -336,7 +336,7 @@ local function Sta(self, slot, link)--显示属性
 
         if h then
             if not self.h then
-                self.h=e.Cstr(self)
+                self.h=e.Cstr(self, 10)
                 self.h:SetText(e.WA_Utf8Sub(STAT_HASTE, 1):upper())
             else
                 self.h:ClearAllPoints()
@@ -346,7 +346,7 @@ local function Sta(self, slot, link)--显示属性
         end
         if m  then
             if not self.m then
-                self.m=e.Cstr(self)
+                self.m=e.Cstr(self, 10)
                 self.m:SetText(e.WA_Utf8Sub(STAT_MASTERY, 1):upper())
             else
                 self.m:ClearAllPoints()
@@ -356,7 +356,7 @@ local function Sta(self, slot, link)--显示属性
         end
         if v then
             if not self.v then
-                self.v=e.Cstr(self)
+                self.v=e.Cstr(self, 10)
                 self.v:SetText(e.WA_Utf8Sub(STAT_VERSATILITY, 1):upper())            
             else
                 self.v:ClearAllPoints()
@@ -667,7 +667,7 @@ end)
 
 local function setFlyoutLevel(button, level, paperDollItemSlot)--装备弹出 
     if level and not button.level then
-        button.level=e.Cstr(button)
+        button.level=e.Cstr(button, 10)
         button.level:SetPoint('BOTTOM')
     end
     if button.level then
@@ -688,7 +688,7 @@ local function setFlyoutLevel(button, level, paperDollItemSlot)--装备弹出
         end
     end
     if slotLevel and not button.upLevel then
-        button.upLevel=e.Cstr(button, 16)
+        button.upLevel=e.Cstr(button, 10)
         button.upLevel:SetPoint('TOP',0 ,5)
     end
     if button.upLevel then

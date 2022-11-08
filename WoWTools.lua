@@ -119,7 +119,7 @@ e.Icon={
 
     disabled='talents-button-reset',
     select='AlliedRace-UnlockingFrame-Checkmark',--'GarrMission_EncounterBar-CheckMark',--绿色√
-    select2='|A:GarrMission_EncounterBar-CheckMark:0:0|a',--绿色√
+    select2='|A:AlliedRace-UnlockingFrame-Checkmark:0:0|a',--绿色√
     selectYellow='Adventures-Checkmark',--黄色√
     X2='|A:xmarksthespot:0:0|a',
     O2='|TInterface\\AddOns\\WeakAuras\\Media\\Textures\\cancel-mark.tga:0|t',--￠
@@ -329,6 +329,9 @@ e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size)
 end
 
 e.Ccool=function(self, start, duration, modRate, HideCountdownNumbers, Reverse, SwipeTexture)--冷却条
+    if not self then
+        return
+    end
     if not self.cooldown then
         self.cooldown= CreateFrame("Cooldown", nil, self, 'CooldownFrameTemplate')
         self.cooldown:SetUseCircularEdge(true)--设置边缘纹理是否应该遵循圆形图案而不是方形编辑框
@@ -340,6 +343,7 @@ e.Ccool=function(self, start, duration, modRate, HideCountdownNumbers, Reverse, 
             self.cooldown:SetSwipeTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
         end
     end
+    start=start or GetTime()
     self.cooldown:SetCooldown(start, duration, modRate)
 end
 
