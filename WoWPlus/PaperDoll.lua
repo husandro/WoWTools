@@ -36,7 +36,8 @@ local function Sever()--显示服务器名称
             end)
             s:SetScript("OnLeave",function() e.tips:Hide() end)
             Frame.server=s
-            s:SetText(e.Player.col..e.Player.server..'|r')
+            local ser=GetAutoCompleteRealms() or {}
+            s:SetText((#ser>1 and #ser..' ' or '')..e.Player.col..e.Player.server..'|r')
     end
     if s then
         s:SetShown(not Save.disabled)

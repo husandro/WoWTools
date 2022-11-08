@@ -252,7 +252,7 @@ local function setTexture()--图标, 自动标记
         panel.border:SetAtlas('bag-border')
     else
         panel.border:SetAtlas('bag-reagent-border')
-    end 
+    end
 end
 local function setAllTextrue()--主图标,是否有权限
     panel.texture:SetDesaturated(GetNumGroupMembers() <2  or not getAllSet())
@@ -790,7 +790,7 @@ local function Init()
         readyFrame:SetScript('OnShow',function(self)
             if Save.autoReady  and not self.autoReadyText then
                 self.autoReadyText=e.Cstr(self)
-                self.autoReadyText:SetPoint('TOPLEFT', self, 'TOPRIGHT')
+                self.autoReadyText:SetPoint('BOTTOM', self, 'TOP')
             end
             if self.autoReadyText then
                 local text=''

@@ -72,6 +72,7 @@ local function setAutoClearRegisterEvent()--注册自动清除事件
         panel:UnregisterEvent('PLAYER_REGEN_DISABLED')
     end
 end
+
 --#####
 --主菜单
 --#####
