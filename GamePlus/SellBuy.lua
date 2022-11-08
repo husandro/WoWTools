@@ -94,17 +94,7 @@ local function bossLoot(itemID, itemLink)--BOSS掉落
         bossSave[itemLink]=true
     end
 end
-local itemPetID={--宠物对换, wow9.0
-    [11406]=true,
-    [11944]=true,
-    [25402]=true,
-    [3300]=true,
-    [3670]=true,
-    [6150]=true,
-    [36812]=true,
-    [62072]=true,
-    [67410]=true,
-}
+
 local function CheckItemSell(itemID, itemLink, quality)--检测是否是出售物品
     if itemID then
         if Save.noSell[itemID] then
@@ -117,7 +107,7 @@ local function CheckItemSell(itemID, itemLink, quality)--检测是否是出售�
             return BOSS
         end
     end
-    if itemPetID[itemID] then--宠物对换
+    if e.itemPetID[itemID] then--宠物对换
         return
     end
     if quality==0 and not Save.notSellJunk then--垃圾
@@ -619,6 +609,7 @@ local function setMenu()
                 e.tips:AddDoubleLine(PURCHASE..((itemID and buySave[itemID]) and '|cnRED_FONT_COLOR:'..SLASH_CHAT_MODERATE2..' '..buySave[itemID]..'|r' or '' ), ITEMS, 0,1,0, 0,1,0)
             else
                 e.tips:AddDoubleLine(DRAG_MODEL..e.Icon.left..ITEMS, AUCTION_HOUSE_SELL_TAB..'/'..PURCHASE)
+                e.tips:AddDoubleLine(MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
             end
         end
         e.tips:Show()

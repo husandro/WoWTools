@@ -18,6 +18,17 @@ end
 for _, spellID in pairs(spellLoadTab) do
     if not C_Spell.IsSpellDataCached(spellID) then C_Spell.RequestLoadSpellData(spellID) end
 end
+e.itemPetID={--宠物对换, wow9.0
+    [11406]=true,
+    [11944]=true,
+    [25402]=true,
+    [3300]=true,
+    [3670]=true,
+    [6150]=true,
+    [36812]=true,
+    [62072]=true,
+    [67410]=true,
+}
 
 local function GetWeek()--周数
     local d = date("*t")

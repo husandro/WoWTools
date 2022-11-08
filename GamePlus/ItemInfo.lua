@@ -32,8 +32,11 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex)
         if itemQuality then
             r,g,b = GetItemQualityColor(itemQuality)
         end
-
-        if classID==1 then--背包
+        if e.itemPetID[itemID] then
+            topRightText='|A:WildBattlePetCapturable:0:0|a'
+        elseif itemQuality and itemQuality==0 then
+            topRightText='|A:Coin-Silver:0:0|a'
+        elseif classID==1 then--背包
             if subclassID~=0 then
                 bottomLeftText= e.WA_Utf8Sub(itemSubType, 2,5)
             end
@@ -47,7 +50,9 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex)
             elseif itemQuality and itemQuality>1 and itemLevel and itemLevel>1 then--装等
                 local invSlot = e.itemSlotTable[itemEquipLoc]
                 if invSlot then
-                    topLeftText=itemLevel
+                    if itemQuality>2 then
+                        topLeftText=itemLevel
+                    end
                     local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
                     local upLevel
                     if itemLinkPlayer then
@@ -59,7 +64,7 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex)
                         upLevel=true
                     end
                     if upLevel and (itemMinLevel and itemMinLevel<=UnitLevel('player') or not itemMinLevel) then
-                        topLeftText= topLeftText..e.Icon.up2
+                        topLeftText= (topLeftText or '')..e.Icon.up2
                     end
                 end
 
@@ -116,7 +121,7 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex)
                 --bottomLeftText=tradeskill[subclassID]
                 topLeftText=tradeskill[subclassID]
             end
-        elseif classID==12 then--任务
+        elseif classID==12 and itemQuality and itemQuality>0 then--任务
             if bag then
                 local questId, isActive = select(2, GetContainerItemQuestInfo(bag.bagID, bag.slot))
                 if questId then
