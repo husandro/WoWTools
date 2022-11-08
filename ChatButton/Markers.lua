@@ -1,6 +1,6 @@
 local id, e = ...
 local addName= BINDING_HEADER_RAID_TARGET
-local Save={ autoSet=true, tank=2, tank2=6, healer=1,}
+local Save={ autoSet=true, tank=2, tank2=6, healer=1, countdown=7}
 
 local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
 WoWToolsChatButtonFrame.last=panel
@@ -120,6 +120,37 @@ local function setAllTextrue()--主图标,是否有权限
     panel.texture:SetDesaturated(GetNumGroupMembers() <2  or not getAllSet())
 end
 
+
+--#####
+--对话框
+--#####
+StaticPopupDialogs[id..addName..'COUNTDOWN']={--区域,设置对话框
+    text=id..' '..addName..'\n'..READY..'\n\n1 - 3600',
+    whileDead=1,
+    hideOnEscape=1,
+    exclusive=1,
+	timeout = 60,
+    hasEditBox=1,
+    button1=SETTINGS,
+    button2=CANCEL,
+    OnShow = function(self, data)
+        self.editBox:SetNumeric(true)
+        self.editBox:SetNumber(Save.countdown or 7)
+	end,
+    OnAccept = function(self, data)
+		local num= self.editBox:GetNumber()
+        Save.countdown=num
+	end,
+    EditBoxOnTextChanged=function(self, data)
+       local num= self:GetNumber()
+       self:GetParent().button1:SetEnabled(num>0 and num<=3600)
+       self:GetParent().button1:SetText(SecondsToClock(num))
+    end,
+    EditBoxOnEscapePressed = function(s)
+        s:GetParent():Hide()
+    end,
+}
+
 --#############
 --设置标记, 框架
 --#############
@@ -151,15 +182,23 @@ local function Clear(index)--取消标记标
 end
 
 local frame, frame2
-
 local function setMarkersFrame()--设置标记, 框架
+    local combat=UnitAffectingCombat('player')
+
     if not Save.markersFrame or not getAllSet() then
-        if frame then
-            frame:SetShown(false)
+        if combat and frame2 then
+            panel:RegisterEvent('PLAYER_REGEN_ENABLED')
+            panel.combat=true
+        else
+            if frame then
+                frame:SetShown(false)
+            end
         end
         return
     end
+
     if not frame then
+        local last
         frame=CreateFrame("Frame",nil, UIParent)-- e.Cbtn(UIParent, nil, nil, nil, nil, true, {30,30})
         frame:SetFrameStrata('HIGH')
         if Save.markersFramePoint then
@@ -173,7 +212,7 @@ local function setMarkersFrame()--设置标记, 框架
         if Save.markersScale and Save.markersScale~=1 then--缩放
             frame:SetScale(Save.markersScale)
         end
-        local last
+
         for index = 0, NUM_RAID_ICONS do
             local button=e.Cbtn(frame, nil, nil, nil, nil, true, {25,25})
             if Save.H then
@@ -181,7 +220,6 @@ local function setMarkersFrame()--设置标记, 框架
             else
                 button:SetPoint('BOTTOMRIGHT', last or frame, 'BOTTOMLEFT')
             end
-            --button:SetPoint('BOTTOMRIGHT', last or frame, 'BOTTOMLEFT')
             if index==0 then
                 button:SetNormalTexture('Interface\\AddOns\\WeakAuras\\Media\\Textures\\cancel-mark.tga')
                 button:RegisterForDrag("RightButton")
@@ -253,12 +291,11 @@ local function setMarkersFrame()--设置标记, 框架
                     end
                 end)
                 button:SetScript('OnEnter', function(self)
-                    e.tips:SetOwner(frame, "ANCHOR_RIGHT")
+                    e.tips:SetOwner(self, "ANCHOR_RIGHT")
                     e.tips:ClearLines()
                     e.tips:AddDoubleLine(id, addName)
                     e.tips:AddDoubleLine(getTexture(index)..SETTINGS, e.Icon.left, color[index].r, color[index].g, color[index].b)
                     e.tips:AddDoubleLine(getTexture(index)..(CLEAR or KEY_NUMLOCK_MAC), e.Icon.right, color[index].r, color[index].g, color[index].b)
-                    
                     e.tips:Show()
                 end)
             end
@@ -270,8 +307,85 @@ local function setMarkersFrame()--设置标记, 框架
     end
     frame:SetShown(true)
 
-    local combat=UnitAffectingCombat('player')--世界标记
-    local isInGroup=IsInGroup()
+    if not frame.check then--就绪
+        frame.check=e.Cbtn(frame, nil, nil, nil, nil, true, {25,25})
+        frame.check:SetNormalAtlas(e.Icon.select)
+        if Save.H then
+            frame.check:SetPoint('TOPLEFT')
+        else
+            frame.check:SetPoint('BOTTOMLEFT', frame, 'BOTTOMLEFT')
+        end
+        frame.check:SetScript('OnMouseDown', function()
+            DoReadyCheck()
+        end)
+        frame.check:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_RIGHT")
+            e.tips:ClearLines()
+            e.tips:AddLine(addName)
+            e.tips:AddLine(EMOTE127_CMD1)
+            e.tips:Show()
+        end)
+        frame.check:SetScript('OnLeave', function() e.tips:Hide() end)
+
+        frame.countdown=e.Cbtn(frame.check, nil, nil, nil, nil, true, {25,25})--倒计时10秒
+        frame.countdown:SetNormalAtlas('countdown-swords')
+        if Save.H then
+            frame.countdown:SetPoint('TOPRIGHT',frame.check, 'TOPLEFT')
+        else
+            frame.countdown:SetPoint('BOTTOMLEFT', frame.check, 'TOPLEFT')
+        end
+        frame.countdown:SetScript('OnMouseDown', function(self, d)
+            local key=IsModifierKeyDown()
+            if d=='LeftButton' and not key then
+                if not self.star then
+                    C_PartyInfo.DoCountdown(Save.countdown or 7)
+                end
+            elseif d=='RightButton' and not key then
+                if self.star then
+                    C_PartyInfo.DoCountdown(0)
+                end
+                e.Chat(BINDING_NAME_STOPATTACK)
+            elseif d=='RightButton' and IsControlKeyDown() then--设置时间
+                StaticPopup_Show(id..addName..'COUNTDOWN')
+            end
+        end)
+        frame.countdown:SetScript('OnEvent', function(self, event, timerType, timeRemaining, totalTime)
+            if timerType==3 and event=='START_TIMER' then
+                if totalTime==0 then
+                   self.star=nil
+                   if self.timer then
+                        self.timer:Cancel()
+                   end
+                elseif totalTime>0 then
+                    self.timer=C_Timer.NewTimer(totalTime, function() self.star=nil end)
+                    self.star=true
+                end
+            end
+        end)
+        frame.countdown:RegisterEvent('START_TIMER')
+        frame.countdown:SetScript('OnShow', function(self)
+            self:RegisterEvent('START_TIMER')
+        end)
+        frame.countdown:SetScript('OnHide', function(self)
+            self:UnregisterEvent('START_TIMER')
+        end)
+        frame.countdown:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_RIGHT")
+            e.tips:ClearLines()
+            e.tips:AddLine(addName)
+            e.tips:AddLine(e.Icon.left..SLASH_COUNTDOWN2..' '..(Save.countdown or 7))
+            e.tips:AddLine(e.Icon.right..BINDING_NAME_STOPATTACK)
+            e.tips:AddLine(' ')
+            e.tips:AddLine(ERR_GENERIC_THROTTLE, 1,0,0)
+            e.tips:AddLine('Ctrl+'..e.Icon.right..SETTINGS)
+            e.tips:Show()
+        end)
+        frame.countdown:SetScript('OnLeave', function() e.tips:Hide() end)
+    end
+    frame.check:SetShown(GetNumGroupMembers()>1 and (IsInRaid() and getIsLeader()) or UnitIsGroupLeader('player'))
+
+
+    local isInGroup=IsInGroup()--世界标记
     if combat then
        if not isInGroup or not frame2 or not fram2:IsShown() then
             panel:RegisterEvent('PLAYER_REGEN_ENABLED')
@@ -319,7 +433,7 @@ local function setMarkersFrame()--设置标记, 框架
                 e.tips:Hide()
             end)
             button:SetScript('OnEnter', function(self)
-                e.tips:SetOwner(frame, "ANCHOR_RIGHT")
+                e.tips:SetOwner(self, "ANCHOR_RIGHT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(id, addName)
                 if index==0 then
@@ -340,6 +454,8 @@ local function setMarkersFrame()--设置标记, 框架
         end
     end
     frame2:SetShown(true)
+
+   
 end
 
 --#####

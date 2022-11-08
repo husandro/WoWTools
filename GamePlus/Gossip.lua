@@ -299,7 +299,7 @@ end)
 --完成已激活任务,多个任务GossipFrameShared.lua
 hooksecurefunc(GossipSharedActiveQuestButtonMixin, 'Setup', function(self, info)
     local questID=info.questID or self:GetID()
-    if not questID or not Save.qest or IsModifierKeyDown() or not C_QuestLine.IsComplete(questID) then
+    if not questID or not Save.qest or IsModifierKeyDown() then --or not C_QuestLine.IsComplete(questID) then
         return
     end
     C_GossipInfo.SelectActiveQuest(questID)

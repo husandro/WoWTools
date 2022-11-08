@@ -118,7 +118,7 @@ e.Icon={
     icon='orderhalltalents-done-glow',
 
     disabled='talents-button-reset',
-    select='GarrMission_EncounterBar-CheckMark',--绿色√
+    select='AlliedRace-UnlockingFrame-Checkmark',--'GarrMission_EncounterBar-CheckMark',--绿色√
     select2='|A:GarrMission_EncounterBar-CheckMark:0:0|a',--绿色√
     selectYellow='Adventures-Checkmark',--黄色√
     X2='|A:xmarksthespot:0:0|a',
