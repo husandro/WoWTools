@@ -82,14 +82,15 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
             --添加控制面板        
-            local sel=e.CPanel(addName, not Save.disabled, true)
-            sel:SetScript('OnClick', function()
+            panel.sel=e.CPanel(addName, not Save.disabled, true)
+            panel.sel:SetScript('OnClick', function()
                 if Save.disabled then
                     Save.disabled=nil
                 else
                     Save.disabled=true
                 end
-                print(addName, e.GetEnabeleDisable(not Save.disabled), NEED..' /reload')
+                panel.disabled=Save.disabled
+                print(addName, e.GetEnabeleDisable(not Save.disabled), REQUIRES_RELOAD)
             end)
             if not Save.disabled then
                 Init()

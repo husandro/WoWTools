@@ -8,16 +8,16 @@
 
 WoWTools.lua
 
-Sesource\Locales\deDE.lua
+Sesource\Locales\zhCN.lua
 Sesource\Locales\enUS.lua
-Sesource\Locales\esES.lua
+Sesource\Locales\deDE.lua
+##Sesource\Locales\esES.lua
 Sesource\Locales\esMX.lua
 Sesource\Locales\frFR.lua
 Sesource\Locales\itIT.lua
 Sesource\Locales\koKR.lua
 Sesource\Locales\ptBR.lua
 Sesource\Locales\ruRU.lua
-Sesource\Locales\zhCN.lua
 Sesource\Locales\zhTW.lua
 
 Sesource\Panel.lua
@@ -80,3 +80,4 @@ Tools\MagePortal.lua
 ChatButton\ChatButton.lua
 ChatButton\Markers.lua
 ChatButton\Roll.lua
+##ChatButton\Emoji.lua

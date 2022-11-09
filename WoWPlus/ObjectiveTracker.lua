@@ -419,7 +419,10 @@ local function hideTrecker()--挑战,进入FB时, 隐藏Blizzard_ObjectiveTracke
     end
 end
 
-local function Ini()
+--####
+--初始
+--####
+local function Init()
     if Save.disabled then
         return
     end
@@ -489,7 +492,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             print(id, addName, e.GetEnabeleDisable(not Save.disabled), NEED..' /reload')
         end)
         local sel2=CreateFrame("CheckButton", nil, sel, "InterfaceOptionsCheckButtonTemplate")
-        sel2.Text:SetText(GX_ADAPTER_AUTO_DETECT..HIDE)
+        sel2.Text:SetText(AUTO_JOIN:gsub(JOIN, '')..HIDE)
         sel2:SetPoint('LEFT', sel.Text, 'RIGHT')
         sel2:SetChecked(Save.autoHide)
         sel2:SetScript('OnEnter', function(self2)
@@ -507,15 +510,15 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             e.tips:Show()
         end)
         sel2:SetScript('OnLeave', function() e.tips:Hide() end)
-        Ini()
-sel2:SetScript('OnClick', function ()
-    if Save.autoHide then
-        Save.autoHide=nil
-    else
-        Save.autoHide=true
-    end
-    print(GX_ADAPTER_AUTO_DETECT,HIDE, QUEST_OBJECTIVES,e.GetEnabeleDisable(Save.autoHide))
-end)
+        Init()
+        sel2:SetScript('OnClick', function ()
+            if Save.autoHide then
+                Save.autoHide=nil
+            else
+                Save.autoHide=true
+            end
+            print(id, addName, AUTO_JOIN:gsub(JOIN, '')..HIDE, QUEST_OBJECTIVES,e.GetEnabeleDisable(Save.autoHide))
+        end)
 
         if Save.scale~=1 then Scale() end--缩放
         if Save.alpha~=1 then Alpha() end--透明度
