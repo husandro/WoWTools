@@ -80,4 +80,6 @@ ChatButton\ChatButton.lua
 ChatButton\HyperlinksIcon.lua
 ChatButton\Markers.lua
 ChatButton\Roll.lua
-##ChatButton\Emoji.lua
+
+
+ChatButton\Emoji.lua

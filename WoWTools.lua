@@ -655,7 +655,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
     end
 end)
 
-e.Chat=function(text,name)
+e.Chat=function(text,name)--v9.25设置
     if text then
         if name then
             SendChatMessage(text, 'WHISPER',nil, name);
@@ -674,8 +674,9 @@ e.Chat=function(text,name)
 
         elseif not UnitIsDeadOrGhost('player') and not IsResting() then
             SendChatMessage(text, 'SAY');
-
-end end end--925
+        end 
+    end 
+end
 --[[
 BACKGROUND
 BORDER
