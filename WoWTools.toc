@@ -81,5 +81,5 @@ ChatButton\HyperlinksIcon.lua
 ChatButton\Markers.lua
 ChatButton\Roll.lua
 
-
+##ChatButton\WorldChannel.lua
 ChatButton\Emoji.lua

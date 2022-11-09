@@ -505,12 +505,13 @@ local function setUseDisabled()
     end
     if Save.disabed then
         DEFAULT_CHAT_FRAME.AddMessage=DEFAULT_CHAT_FRAME.ADD
-        panel.texture:SetAtlas(e.Icon.disabled)
+        --panel.texture:SetAtlas(e.Icon.disabled)
     else
         DEFAULT_CHAT_FRAME.AddMessage=setAddMessageFunc
         DEFAULT_CHAT_FRAME.editBox:SetAltArrowKeyMode(false)--alt +方向= 移动
-        panel.texture:SetAtlas(e.Icon.icon)
+        --panel.texture:SetAtlas(e.Icon.icon)
     end
+    panel.texture:SetDesaturated(Save.disabed)
 end
 local function setFunc()--使用，禁用
     Save.disabed= not Save.disabed and true or nil
@@ -640,7 +641,7 @@ local function InitMenu(self, level, type)
         tooltipOnButton=true,
         tooltipTitle='/reload',
         colorCode='|cffff0000',
-        function()
+        func=function()
             C_UI.Reload()
         end
     }
@@ -655,7 +656,7 @@ local function Init()
 
     panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
-
+    panel.texture:SetAtlas(e.Icon.icon)
     panel:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
             setFunc()--使用，禁用
@@ -667,7 +668,7 @@ local function Init()
     if not Save.disabed then--使用，禁用
         setUseDisabled()
     else
-        panel.texture:SetAtlas(e.Icon.disabled)
+        panel.texture:SetDesaturated(true)
     end
 
     setPanel()--设置控制面板

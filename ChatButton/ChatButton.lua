@@ -1,5 +1,5 @@
 local id, e = ...
-local Save={scale=0.8}
+local Save={scale=1}
 local addName='ChatButton'
 local panel=e.Cbtn(UIParent, nil, nil, nil, 'WoWToolsChatButtonFrame', true, {30,30})
 WoWToolsChatButtonFrame.last=panel
