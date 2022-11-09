@@ -2,22 +2,23 @@ local id, e = ...
 local Save={scale=0.8}
 local addName='ChatButton'
 local panel=e.Cbtn(UIParent, nil, nil, nil, 'WoWToolsChatButtonFrame', true, {30,30})
---e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size)
-
+WoWToolsChatButtonFrame.last=panel
 
 --####
 --初始
 --####
 local function Init()
     panel:SetSize(10,30)
-    if Save.scale and Save.scale~=1 then--缩放
-        panel:SetScale(Save.scale)
-    end
+
     if Save.Point then
         panel:SetPoint(Save.Point[1], UIParent, Save.Point[3], Save.Point[4], Save.Point[5])
     else
-        panel:SetPoint('BOTTOMRIGHT', SELECTED_CHAT_FRAME, 'TOPLEFT',0,10)
+        panel:SetPoint('BOTTOMRIGHT', SELECTED_CHAT_FRAME, 'TOPLEFT',4,28)
     end
+    if Save.scale and Save.scale~=1 then--缩放
+        panel:SetScale(Save.scale)
+    end
+
     panel:RegisterForDrag("RightButton")
     panel:SetMovable(true)
     panel:SetClampedToScreen(true)
@@ -36,7 +37,7 @@ local function Init()
     end)
     panel:SetScript("OnMouseDown", function(self,d)
         if d=='LeftButton' then--提示移动
-            print(id, addName, NPE_MOVE..e.Icon.right, UI_SCALE..'Alt+'..e.Icon.mid)
+            print(id, addName, NPE_MOVE..e.Icon.right, UI_SCALE..'Alt+'..e.Icon.mid,Save.scale)
 
         elseif d=='RightButton' and not IsModifierKeyDown() then--移动光标
             SetCursor('UI_MOVE_CURSOR')

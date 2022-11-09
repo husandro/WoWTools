@@ -46,6 +46,11 @@ local Save={
     },
     XD=true
 }
+
+if UnitName('player')=='活就好' then
+    Save.KEY='BUTTON5'
+end
+
 local XD
 
 local panel=e.Cbtn2('WoWToolsMountButton')

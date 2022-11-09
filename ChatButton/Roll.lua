@@ -1,7 +1,12 @@
 local id, e = ...
-local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
+local addName=ROLL
 local Save={autoClear=true}
+
 local Tab={}
+
+local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
+panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
+WoWToolsChatButtonFrame.last=panel
 
 local rollText=RANDOM_ROLL_RESULT:gsub('%%d','%(%%d%+)')
 rollText=rollText:gsub("%%s", "%(%.%-)")
@@ -26,7 +31,6 @@ local function setCHAT_MSG_SYSTEM(text)
                 name=e.GetPlayerInfo(unit,nil, true)
             end
         end
-
         if not findRolled(name) then
             if not Max or roll>Max then
                 if Max then
@@ -49,7 +53,6 @@ local function setCHAT_MSG_SYSTEM(text)
                 panel.rightBottomText:SetText(Min)
             end
         end
-
         table.insert(Tab, {name=name, roll=roll, date=date('%X'), text=text})
     end
 end
@@ -167,9 +170,7 @@ local function Init()
     setRegisterEvent()--注册事件
     setAutoClearRegisterEvent()--注册自动清除事件
 
-    panel:SetPoint('BOTTOMLEFT', WoWToolsChatButtonFrame.last, 'BOTTOMRIGHT')
     panel.texture:SetTexture('Interface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47')
-
     panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
 

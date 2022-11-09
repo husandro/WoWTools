@@ -1,7 +1,5 @@
 local id, e = ...
 local addName = COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK..EMBLEM_SYMBOL
-local Frame = DEFAULT_CHAT_FRAME
-
 local Save={
     channels={--频道名称替换 
         ['大脚'] = '[世]',
@@ -15,7 +13,10 @@ local Save={
     }
 }
 
---local HEX=function(r, g, b, a) r = r <= 1 and r >= 0 and r or 0 g = g <= 1 and g >= 0 and g or 0 b = b <= 1 and b >= 0 and b or 0 a=a or 1 a =  a <= 1 and a >= 0 and a or 1 return '|c'..string.format("%02x%02x%02x%02x",a*255, r*255, g*255, b*255) end
+local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
+panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')
+WoWToolsChatButtonFrame.last=panel
+
 local Magic=function(s)  local t={'%%', '%.', '%(','%)','%+', '%-', '%*', '%?', '%[', '%^', '%$'} for _,v in pairs(t) do s=s:gsub(v,'%%'..v) end return s end --  ( ) . % + - * ? [ ^ $
 local MK=function(k,b) if not b then b=1 end if k>=1e6 then k=string.format('%.'..b..'fm',k/1e6) elseif k>= 1e4 and GetLocale() == "zhCN" then k=string.format('%.'..b..'fw',k/1e4) elseif k>=1e3 then k=string.format('%.'..b..'fk',k/1e3) else k=string.format('%i',k) end return k end--加k 9.1
 local Race=function(u, race, sex2) local s =u and select(2,UnitRace(u)) or race local sex= u and UnitSex(u) or sex2 if s and (sex==2 or sex==3 ) then s= s=='Scourge' and 'Undead' or s=='HighmountainTauren' and 'highmountain' or s=='ZandalariTroll' and 'zandalari' or s=='LightforgedDraenei' and 'lightforged' or s s=string.lower(s) sex= sex==2 and 'male' or sex==3 and 'female' return '|A:raceicon-'..s..'-'..sex..':0:0|a' end end--角色图标
@@ -448,7 +449,7 @@ local function TransmogSet(link)--幻化套装
     end
 end
 
-local function Add(self, s, ...)
+local function setAddMessageFunc(self, s, ...)
     local petChannel=s:find('|Hchannel:.-'..PET_BATTLE_COMBAT_LOG..']|h') and true or false
 
     s=s:gsub('|Hchannel:.-]|h', SetChannels)
@@ -483,9 +484,10 @@ local function Add(self, s, ...)
     return self.ADD(self, s, ...)
 end
 
-Frame.ADD=Frame.AddMessage
-local sel=CreateFrame('Button',nil, Frame)
-local function Ini()
+--#########
+--使用，禁用
+--#########
+local function setUseDisabled()
     for i = 3, NUM_CHAT_WINDOWS do
         local frame = _G["ChatFrame"..i]
         if frame then
@@ -497,77 +499,38 @@ local function Ini()
                 if not frame.ADD then
                     frame.ADD=frame.AddMessage
                 end
-                frame.AddMessage=Add
+                frame.AddMessage=setAddMessageFunc
             end
         end
     end
     if Save.disabed then
-        Frame.AddMessage=Frame.ADD
-        sel:SetNormalAtlas(e.Icon.disabled)
+        DEFAULT_CHAT_FRAME.AddMessage=DEFAULT_CHAT_FRAME.ADD
+        panel.texture:SetAtlas(e.Icon.disabled)
     else
-        Frame.AddMessage=Add
-        Frame.editBox:SetAltArrowKeyMode(false)--alt +方向= 移动
-        sel:SetNormalAtlas(e.Icon.icon)
+        DEFAULT_CHAT_FRAME.AddMessage=setAddMessageFunc
+        DEFAULT_CHAT_FRAME.editBox:SetAltArrowKeyMode(false)--alt +方向= 移动
+        panel.texture:SetAtlas(e.Icon.icon)
     end
 end
+local function setFunc()--使用，禁用
+    Save.disabed= not Save.disabed and true or nil
+    print(id, addName, e.GetEnabeleDisable(not Save.disabed))
+    setUseDisabled()
+end
 
-sel:SetSize(28,24)
-sel:SetPoint('BOTTOMRIGHT',Frame, 'TOPLEFT', -5, 2)--ChatFrame1.ScrollToBottomButton
-sel:SetPushedAtlas('chatframe-button-up')
-sel:SetHighlightAtlas('chatframe-button-down')
---sel:SetAlpha(0.5)
-sel:RegisterForClicks("LeftButtonDown","RightButtonDown")
-sel:SetScript('OnClick', function(self, d)
-    local key=IsModifierKeyDown()
-    if d=='LeftButton' and not key then
-        if Save.disabed then
-            Save.disabed=nil
-        else
-            Save.disabed=true
-        end
-        print(id, addName, e.GetEnabeleDisable(not Save.disabed))
-        Ini()
-    elseif d=='LeftButton' and IsAltKeyDown() then--文本转语音
-        if C_CVar.GetCVarBool('textToSpeech') then
-            C_CVar.SetCVar("textToSpeech", 0)
-        else
-            C_CVar.SetCVar("textToSpeech", 1)
-        end
-        print(TEXT_TO_SPEECH..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool('textToSpeech')))
-    elseif d=='RightButton' and not key then--/reload
-        if UnitAffectingCombat('player') then
-            print('|cnRED_FONT_COLOR:'..HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..' ...|r')
-        else
-            C_UI.Reload()
-        end
-    end
-end)
-
-sel:SetScript("OnEnter", function (self)
-        e.tips:SetOwner(self, "ANCHOR_RIGHT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, addName)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(addName..': '..e.GetEnabeleDisable(not Save.disabed),e.Icon.left)
-        e.tips:AddDoubleLine(TEXT_TO_SPEECH..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool('textToSpeech')), 'Alt + '..e.Icon.left)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(RELOADUI, e.Icon.right, 1,0,1)
-        e.tips:Show()
-end)
-sel:SetScript("OnLeave",function(self)
-        e.tips:Hide()
-end)
-
+--###########
+--设置控制面板
+--###########
 local function setPanel()
-    local panel = CreateFrame("FRAME");
-    panel.name = addName;
-    panel.parent =id;
-    InterfaceOptions_AddCategory(panel)
+    local frame = CreateFrame("FRAME");
+    frame.name = addName;
+    frame.parent =id;
+    InterfaceOptions_AddCategory(frame)
 
-    local str=e.Cstr(panel)--内容加颜色
+    local str=e.Cstr(frame)--内容加颜色
     str:SetPoint('TOPLEFT')
     str:SetText(COLOR..': '..KBASE_DEFAULT_SEARCH_TEXT..'|cnGREEN_FONT_COLOR:( '..KEY_SPACE..' )|r')
-    local editBox=e.CeditBox(panel)
+    local editBox=e.CeditBox(frame)
     editBox:SetPoint('TOPLEFT', str, 'BOTTOMLEFT',0,-5)
     editBox:SetTextColor(0,1,0)
     if Save.text then
@@ -602,10 +565,10 @@ local function setPanel()
         print(COLOR,'|cnGREEN_FONT_COLOR:#'..n..COMPLETE..'|r ', SAVE..'/reload')
     end)
 
-    local str2=e.Cstr(panel)--频道名称替换
+    local str2=e.Cstr(frame)--频道名称替换
     str2:SetPoint('TOPLEFT', editBox, 'BOTTOMLEFT', 0,-20)
     str2:SetText(CHANNEL_CHANNEL_NAME..': '..COMMUNITIES_SETTINGS_SHORT_NAME_LABEL..'  |cnGREEN_FONT_COLOR:= |r')
-    local editBox2=e.CeditBox(panel)
+    local editBox2=e.CeditBox(frame)
     editBox2:SetPoint('TOPLEFT', str2, 'BOTTOMLEFT',0,-5)
     if Save.channels then
         local t3=''
@@ -640,17 +603,87 @@ local function setPanel()
     end)
 end
 
-sel:RegisterEvent("ADDON_LOADED")
-sel:RegisterEvent("PLAYER_LOGOUT")
-sel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1 == id then
-    	Save= WoWToolsSave and WoWToolsSave[addName] or Save
-        if not Save.disabed then
-            Ini()
-        else
-            sel:SetNormalAtlas(e.Icon.disabled)
+
+--#####
+--主菜单
+--#####
+local function InitMenu(self, level, type)
+    local info={
+        text=addName..e.Icon.left..e.GetEnabeleDisable(not Save.disabed),
+        checked=not Save.disabed,
+        func=function()
+            setFunc()--使用，禁用
+        end,
+        --colorCode= Save.disabed and '|cff606060',
+    }
+    UIDropDownMenu_AddButton(info, level)
+
+    local bool= C_CVar.GetCVarBool('textToSpeech')--文本转语音
+    info={
+        text=TEXT_TO_SPEECH..e.GetEnabeleDisable(bool),
+        checked=bool,
+        func=function()
+            if C_CVar.GetCVarBool('textToSpeech') then
+                C_CVar.SetCVar("textToSpeech", 0)
+            else
+                C_CVar.SetCVar("textToSpeech", 1)
+            end
+            print(TEXT_TO_SPEECH..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool('textToSpeech')))
         end
-        setPanel()
+    }
+    UIDropDownMenu_AddButton(info, level)
+
+    UIDropDownMenu_AddSeparator(level)
+    info={--重载
+        text=RELOADUI,
+        notCheckable=true,
+        tooltipOnButton=true,
+        tooltipTitle='/reload',
+        colorCode='|cffff0000',
+        function()
+            C_UI.Reload()
+        end
+    }
+    UIDropDownMenu_AddButton(info, level)
+end
+
+--####
+--初始
+--####
+local function Init()
+    DEFAULT_CHAT_FRAME.ADD=DEFAULT_CHAT_FRAME.AddMessage
+
+    panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
+    UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
+
+    panel:SetScript('OnMouseDown', function(self, d)
+        if d=='LeftButton' then
+            setFunc()--使用，禁用
+        elseif d=='RightButton' then
+            ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+        end
+    end)
+
+    if not Save.disabed then--使用，禁用
+        setUseDisabled()
+    else
+        panel.texture:SetAtlas(e.Icon.disabled)
+    end
+
+    setPanel()--设置控制面板
+end
+
+panel:RegisterEvent("ADDON_LOADED")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" and arg1 == id then
+        if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
+            panel:UnregisterAllEvents()
+        else
+            Save= WoWToolsSave and WoWToolsSave[addName] or Save
+            Init()
+        end
+        panel:RegisterEvent("PLAYER_LOGOUT")
+
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end

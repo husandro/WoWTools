@@ -950,7 +950,7 @@ if not UnitIsUnit('player',unit) and e.GroupGuid[guid] then--队友位置
         if not UnitAffectingCombat('player') then--位面,NPCID
             local _, _, server, _, zone, npc = strsplit("-",guid)
             if zone then
-                self:AddDoubleLine(e.L['LAYER']..'ID: '..zone, 'NPCID: '..npc)--, server and FRIENDS_LIST_REALM..server)
+                self:AddDoubleLine(e.L['LAYER']..': '..zone, 'NPCID: '..npc)--, server and FRIENDS_LIST_REALM..server)
                 e.Layer=zone
             end
         end

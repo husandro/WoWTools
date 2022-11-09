@@ -1,11 +1,7 @@
 local id, e = ...
 local addName=GOSSIP_OPTIONS:gsub(SETTINGS_TITLE,'')
 
-local Save={
-    gossip=true,
-    Option={},
-    NPC={},
-}
+local Save={gossip=true, qest=true, Option={}, NPC={},}
 
 local Icon={
     TrivialQuests='|A:TrivialQuests:0:0|a',
@@ -243,7 +239,6 @@ end)
 
 
 --任务图标
-
 QuestFrameGreetingPanel:HookScript('OnShow', function()--QuestFrame.lua QuestFrameGreetingPanel_OnShow
     if not Save.qest or IsModifierKeyDown() then
         return
@@ -276,6 +271,7 @@ hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, optionInfo)
     if not optionInfo.gossipOptionID or not Save.qest or IsModifierKeyDown() or optionInfo.flags ~= Enum.GossipOptionRecFlags.QuestLabelPrepend then
         return
     end
+    
     local spell=optionInfo.spellID and GetSpellLink(optionInfo.spellID) or ''
     local icon=self.Icon:GetTexture()
     icon = icon and '|T'..icon..':0|t' or ''
@@ -317,6 +313,7 @@ hooksecurefunc('QuestInfo_Display', function(self, template, parentFrame, accept
     if not Save.qest or IsModifierKeyDown() or not frame or not QuestTrivial() then
         return
     end
+    
     if frame.acceptButton and frame.acceptButton:IsEnabled() then
         frame.acceptButton:Click()
     end

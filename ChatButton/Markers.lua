@@ -3,6 +3,7 @@ local addName= BINDING_HEADER_RAID_TARGET
 local Save={ autoSet=true, tank=2, tank2=6, healer=1, countdown=7, groupReadyTips=true}
 
 local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
+panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
 WoWToolsChatButtonFrame.last=panel
 
 local color={
@@ -769,7 +770,6 @@ local function Init()
     panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
 
-    panel:SetPoint('LEFT',WoWToolsChatButtonFrame, 'RIGHT')
     panel:SetScript("OnMouseDown", function(self,d)
         local key=IsModifierKeyDown()
         if d=='RightButton' and not key then

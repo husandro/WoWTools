@@ -26,7 +26,6 @@ WoWPlus\PaperDoll.lua
 WoWPlus\Reputation.lua
 WoWPlus\Tokens.lua
 
-WoWPlus\HyperlinksIcon.lua
 WoWPlus\FrameMove.lua
 WoWPlus\HideTexture.lua
 WoWPlus\Flyout.lua
@@ -78,6 +77,7 @@ Tools\MagePortal.lua
 
 ##Chat Button
 ChatButton\ChatButton.lua
+ChatButton\HyperlinksIcon.lua
 ChatButton\Markers.lua
 ChatButton\Roll.lua
 ##ChatButton\Emoji.lua
