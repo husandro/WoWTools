@@ -63,8 +63,6 @@ local function setItemCooldown(self, itemID)--物品冷却
         t=t-startTime
         t=duration-t
         self:AddDoubleLine(ON_COOLDOWN, SecondsToTime(t), 1,0,0, 1,0,0)
-    elseif enable==0 then
-        self:AddDoubleLine(ON_COOLDOWN, SPELL_RECAST_TIME_INSTANT, 1,0,0, 1,0,0)
     end
 end
 local function setSpellCooldown(self, spellID)--法术冷却
@@ -75,8 +73,6 @@ local function setSpellCooldown(self, spellID)--法术冷却
         t=t-startTime
         t=duration-t
         self:AddDoubleLine(ON_COOLDOWN, SecondsToTime(t), 1,0,0, 1,0,0)
-    elseif enable==0 then
-        self:AddDoubleLine(ON_COOLDOWN, SPELL_RECAST_TIME_INSTANT, 1,0,0, 1,0,0)
     end
 end
 local function GetSetsCollectedNum(setID)--套装收集数
