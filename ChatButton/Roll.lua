@@ -178,7 +178,7 @@ local function Init()
         if d=='LeftButton' then
             RandomRoll(1, 100)
         elseif d=='RightButton' then
-            ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+            ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
         end
     end)
 end

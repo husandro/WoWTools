@@ -677,6 +677,22 @@ e.Chat=function(text,name)--v9.25设置
         end 
     end 
 end
+
+e.Say=function(type, name, wow)   
+    local chat=SELECTED_DOCK_FRAME;
+    local text = chat.editBox:GetText() or '';
+    if text:find('/') then text='' end 
+    text=' '..text;    
+    if name then     
+        if wow then 
+            ChatFrame_SendBNetTell(name..text)
+        else
+            ChatFrame_OpenChat("/w " ..name..text, chat);        
+        end
+    else
+        ChatFrame_OpenChat(type..  text, chat)
+    end
+end
 --[[
 BACKGROUND
 BORDER

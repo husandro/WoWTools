@@ -378,7 +378,7 @@ q:SetScript("OnEvent", function(self, event, arg1)
     local n = select(2,C_QuestLog.GetNumQuestLogEntries()) or 0;
     local max = C_QuestLog.GetMaxNumQuestsCanAccept() or 25;
     if max == n then
-        self.str(RED_FONT_COLOR_CODE..n..'/'..max..'|r')
+        self.str:SetText(RED_FONT_COLOR_CODE..n..'/'..max..'|r')
     else
         self.str:SetText(n..'/'..max..'|r')
     end
