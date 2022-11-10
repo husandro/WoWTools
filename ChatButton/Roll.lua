@@ -177,7 +177,7 @@ local function Init()
     panel:SetScript('OnMouseDown',function(self, d)
         if d=='LeftButton' then
             RandomRoll(1, 100)
-        elseif d=='RightButton' then
+        else
             ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
         end
     end)

@@ -1133,7 +1133,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         setTextrue()--设置图标
 
     elseif event=='CHAT_MSG_AFK' then
-        if not UnitAffectingCombat('player') then
+        if not UnitAffectingCombat('player') and UnitIsAFK('player') and IsOutdoors() then
             setMountShow()--坐骑展示
         end
 

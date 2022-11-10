@@ -107,7 +107,7 @@ local function addMenu(name, channelNumber, level)--添加菜单
     text=((channelNumber and channelNumber>0) and channelNumber..' ' or '')..text--频道数字
     text=text..(panel.channelNumber==channelNumber and e.Icon.left or '')--当前点击提示
 
-    local info={
+    info={
         text= text,
         checked= check==1,
         colorCode= check==0 and '|cffff0000' or check==2 and '|cff606060',
@@ -161,13 +161,9 @@ local function Init()
     UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
 
     panel:SetScript("OnMouseDown",function(self,d)
-        if d=='LeftButton' then
-            if panel.channelNumber and panel.channelNumber>0 then
+        if d=='LeftButton' and panel.channelNumber and panel.channelNumber>0 then
                 e.Say('/'..panel.channelNumber)
-            else
-                ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)    
-            end
-        elseif d=='RightButton' then
+        else
             ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
         end
     end)

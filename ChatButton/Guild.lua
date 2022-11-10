@@ -18,6 +18,7 @@ local function setMembers()--在线人数
         panel.membersText:SetText(num or '')
     end
 end
+
 --####
 --初始
 --####
@@ -27,7 +28,7 @@ local function Init()
     panel:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
             e.Say('/g')
-        elseif d=='RightButton' then
+        else
             ToggleGuildFrame();
         end
     end)

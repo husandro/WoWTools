@@ -634,9 +634,10 @@ panel:SetScript('OnEvent', function(self, event, arg1)
             for index= 1, GetNumGroupMembers() do
                 local unit='raid'..index
                 local guid=UnitGUID(unit)
-              --  local name, rank, subgroup, level, class, fileName, zone, online, isDead, role, isML, combatRole = GetRaidRosterInfo(index)
+                local name, rank, subgroup, level, class, fileName, zone, online, isDead, role, isML, combatRole = GetRaidRosterInfo(index)
+
                 if guid then
-                    e.GroupGuid[guid]={unit=unit}
+                    e.GroupGuid[guid]={unit=unit, subgroup=subgroup, combatRole=combatRole or role}
                     e.GroupGuid[UnitName(unit)]={unit=unit}
                 end
             end

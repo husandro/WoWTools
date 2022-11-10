@@ -236,7 +236,7 @@ local function Init()
     panel:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
             frame:SetShown(not frame:IsShown())
-        elseif d=='RightButton' then
+        else
             ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)--主菜单
         end
     end)

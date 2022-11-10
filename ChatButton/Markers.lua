@@ -771,14 +771,12 @@ local function Init()
     UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
 
     panel:SetScript("OnMouseDown", function(self,d)
-        local key=IsModifierKeyDown()
-        if d=='RightButton' and not key then
-            ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
-
-        elseif d=='LeftButton' and not key then
+        if d=='LeftButton' then
             setTankHealer()--设置队伍标记
+        else
+            ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
         end
-      end)
+    end)
 
     local readyFrame=ReadyCheckListenerFrame--自动就绪事件, 提示
     if readyFrame then

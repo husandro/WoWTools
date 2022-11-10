@@ -660,7 +660,7 @@ local function Init()
     panel:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
             setFunc()--使用，禁用
-        elseif d=='RightButton' then
+        else
             ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
         end
     end)

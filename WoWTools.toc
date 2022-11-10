@@ -80,7 +80,7 @@ ChatButton\ChatButton.lua
 ChatButton\HyperlinksIcon.lua
 ChatButton\Markers.lua
 ChatButton\Roll.lua
-
 ChatButton\Guild.lua
 ChatButton\WorldChannel.lua
+ChatButton\Group.lua
 ChatButton\Emoji.lua
