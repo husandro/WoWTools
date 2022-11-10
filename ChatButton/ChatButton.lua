@@ -1,5 +1,5 @@
 local id, e = ...
-local Save={scale=1}
+local Save={scale=0.8}
 local addName='ChatButton'
 local panel=e.Cbtn(UIParent, nil, nil, nil, 'WoWToolsChatButtonFrame', true, {30,30})
 WoWToolsChatButtonFrame.last=panel
@@ -9,16 +9,14 @@ WoWToolsChatButtonFrame.last=panel
 --####
 local function Init()
     panel:SetSize(10,30)
-
-    if Save.Point then
-        panel:SetPoint(Save.Point[1], UIParent, Save.Point[3], Save.Point[4], Save.Point[5])
-    else
-        panel:SetPoint('BOTTOMRIGHT', SELECTED_CHAT_FRAME, 'TOPLEFT',4,28)
-    end
     if Save.scale and Save.scale~=1 then--缩放
         panel:SetScale(Save.scale)
     end
-
+    if Save.Point then
+        panel:SetPoint(Save.Point[1], UIParent, Save.Point[3], Save.Point[4], Save.Point[5])
+    else
+        panel:SetPoint('BOTTOMLEFT', SELECTED_CHAT_FRAME, 'TOPLEFT', -5, 30)
+    end
     panel:RegisterForDrag("RightButton")
     panel:SetMovable(true)
     panel:SetClampedToScreen(true)
@@ -44,7 +42,7 @@ local function Init()
 
         elseif d=='RightButton' and IsAltKeyDown() then--还原
             panel:ClearAllPoints()
-            panel:SetPoint('BOTTOMLEFT', SELECTED_CHAT_FRAME, 'TOPLEFT', -5, 25)
+            panel:SetPoint('BOTTOMLEFT', SELECTED_CHAT_FRAME, 'TOPLEFT', -5, 30)
         end
     end)
     panel:SetScript("OnMouseUp", function(self, d)

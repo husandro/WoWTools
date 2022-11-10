@@ -49,7 +49,7 @@ local function setLeftClickTips(name, channelNumber)--设置点击提示,频道�
         panel.channelNumber=channelNumber
     end
     if channelNumber and not panel.leftClickTips then
-        panel.leftClickTips=e.Cstr(panel,8, nil, nil, true)
+        panel.leftClickTips=e.Cstr(panel,10, nil, nil, true)
         panel.leftClickTips:SetPoint('BOTTOM',0,7)
     end
     if panel.leftClickTips and channelNumber then
