@@ -24,7 +24,7 @@ end
 --####
 local function Init()
     setMembers()--在线人数
-    panel.texture:SetAtlas('UI-HUD-MicroMenu-GuildCommunities-Up')
+    panel.texture:SetAtlas('UI-HUD-MicroMenu-GuildCommunities-Mouseover')
     panel:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
             e.Say('/g')

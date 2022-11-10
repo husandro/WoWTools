@@ -55,7 +55,7 @@ local function Init()
     setType(SAY)--使用,提示
     
 
-    panel.texture:SetAtlas('WoWShare-TwitterLogo')
+    panel.texture:SetAtlas('PlayerPartyBlip')
     panel:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' and panel.type then
             e.Say(panel.type)
