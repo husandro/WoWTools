@@ -37,24 +37,29 @@ local function setJoin(name, join, leave, remove)--加入,移除, 屏蔽
     elseif join then
         JoinPermanentChannel(name);
         ChatFrame_AddChannel(SELECTED_CHAT_FRAME, name);
-    elseif remove then        
+    elseif remove then
         ChatFrame_RemoveChannel(SELECTED_CHAT_FRAME, name);
     end
     C_Timer.After(1, function() Check(name) end)
 end
 
-local function setLeftClickTips(name, channelNumber)--设置点击提示,频道字符
+local function setLeftClickTips(name, channelNumber, texture)--设置点击提示,频道字符
     channelNumber= (channelNumber and channelNumber>0) and channelNumber or nil
     if channelNumber then
         panel.channelNumber=channelNumber
     end
     if channelNumber and not panel.leftClickTips then
-        panel.leftClickTips=e.Cstr(panel,10, nil, nil, true)
+        panel.leftClickTips=e.Cstr(panel, 10, nil, nil, true, nil, 'CENTER')
         panel.leftClickTips:SetPoint('BOTTOM',0,7)
     end
     if panel.leftClickTips and channelNumber then
         panel.channelNumber=channelNumber
-        local text= name=='大脚世界频道' and '世' or e.WA_Utf8Sub(name, 1, 4)
+        local text
+        if texture then
+            text='|T'..texture..':0|t'
+        else
+            text=name=='大脚世界频道' and '世' or e.WA_Utf8Sub(name, 1, 4)
+        end
         panel.leftClickTips:SetText(text)
     end
 end
@@ -73,9 +78,6 @@ local function sendSay(name, channelNumber)--发送
             end
         end)
     else
-        if SELECTED_CHAT_FRAME:GetID()==2 then
-            print('a')
-        end
         if check==2 and SELECTED_CHAT_FRAME:GetID()~=2 then
             setJoin(name, true)
         end
@@ -87,6 +89,7 @@ local function sendSay(name, channelNumber)--发送
         end
     end    
 end
+
 --#####
 --主菜单
 --#####
@@ -94,11 +97,12 @@ local function addMenu(name, channelNumber, level)--添加菜单
     local check=Check(name)
     local text=name
     local clubId=name:match('Community:(%d+)');
-    local communityName
+    local communityName, communityTexture
     local info= clubId and C_Club.GetClubInfo(clubId)--社区名称
     if info and (info.shortName or info.name) then 
         text='|cnGREEN_FONT_COLOR:'..(info.shortName or info.name)..'|r'
         communityName=info.shortName or info.name
+        communityTexture=info.avatarId
     end
     text=((channelNumber and channelNumber>0) and channelNumber..' ' or '')..text--频道数字
     text=text..(panel.channelNumber==channelNumber and e.Icon.left or '')--当前点击提示
@@ -110,12 +114,13 @@ local function addMenu(name, channelNumber, level)--添加菜单
         tooltipOnButton=true,
         tooltipTitle=IGNORE..' Alt+'..e.Icon.left,
         tooltipText= check==2 and IGNORED,
+        icon=communityTexture,
         func=function()
             if IsAltKeyDown() then
                 setJoin(name, nil, nil, true)--加入,移除,屏蔽
             else
                 sendSay(name, channelNumber)
-                setLeftClickTips(communityName or name, channelNumber)--设置点击提示,频道字符
+                setLeftClickTips(communityName or name, channelNumber, communityTexture)--设置点击提示,频道字符
             end
         end
     }
