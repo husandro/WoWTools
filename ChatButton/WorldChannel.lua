@@ -50,7 +50,7 @@ local function setLeftClickTips(name, channelNumber, texture)--设置点击提�
     end
     if channelNumber and not panel.leftClickTips then
         panel.leftClickTips=e.Cstr(panel, 10, nil, nil, true, nil, 'CENTER')
-        panel.leftClickTips:SetPoint('BOTTOM',0,7)
+        panel.leftClickTips:SetPoint('BOTTOM',0,2)
     end
     if panel.leftClickTips and channelNumber then
         panel.channelNumber=channelNumber

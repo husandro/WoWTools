@@ -646,11 +646,11 @@ panel:SetScript('OnEvent', function(self, event, arg1)
                 local unit='party'..index
                 local guid=UnitGUID(unit)
                 if guid then
-                    e.GroupGuid[guid]={unit=unit}
+                    e.GroupGuid[guid]={unit=unit, combatRole=UnitGroupRolesAssigned(unit)}
                     e.GroupGuid[UnitName(unit)]={unit=unit}
                 end
             end
-            e.GroupGuid[UnitGUID('player')]={unit='player'}
+            e.GroupGuid[UnitGUID('player')]={unit='player', combatRole=UnitGroupRolesAssigned('player')}
             e.GroupGuid[UnitName('player')]={unit='player'}
         end
     end

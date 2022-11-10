@@ -24,13 +24,14 @@ local function setGroupTips()--队伍信息提示
         panel.membersText:SetText(isInGroup and num or '')
     end
 
-    local subgroup, combatRole--小队号
+    local subgroup, combatRole
     local tab=e.GroupGuid[UnitGUID('player')]
     if tab then
         subgroup= tab and tab.subgroup
         combatRole=tab.combatRole
     end
-    if subgroup and not panel.subgroupTexture then
+    
+    if subgroup and not panel.subgroupTexture then--小队号
         panel.subgroupTexture=e.Cstr(panel, 10, nil, nil, true, nil, 'RIGHT')
         panel.subgroupTexture:SetPoint('TOPRIGHT',-6,-3)
         panel.subgroupTexture:SetTextColor(0,1,0)
@@ -49,8 +50,8 @@ local function setGroupTips()--队伍信息提示
         panel.textureNotInstance:SetShown(isInRaid and not isInInstance)
     end
 
-    if isInGroup then
-        panel.texture:SetAtlas(roleAtlas[combatRole] or roleAtlas['NONE'])
+    if isInGroup then--职责提示
+        panel.texture:SetAtlas( roleAtlas[combatRole] or roleAtlas['NONE'])
     end
     panel.texture:SetShown(isInGroup)
 
@@ -62,7 +63,7 @@ end
 local function setType(text)--使用,提示
     if not panel.typeText then
         panel.typeText=e.Cstr(panel, 10, nil, nil, true)
-        panel.typeText:SetPoint('BOTTOM',0,7)
+        panel.typeText:SetPoint('BOTTOM',0,2)
     end
     if panel.type and text:find('%w') then--处理英文
         text=panel.type:gsub('/','')
