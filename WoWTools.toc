@@ -83,4 +83,5 @@ ChatButton\Roll.lua
 ChatButton\Guild.lua
 ChatButton\WorldChannel.lua
 ChatButton\Group.lua
+ChatButton\Say.lua
 ChatButton\Emoji.lua
