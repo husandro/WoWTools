@@ -13,11 +13,38 @@ local roleAtlas={
     NONE='socialqueuing-icon-group',
 }
 
+local function setType(text)--使用,提示
+    if not panel.typeText then
+        panel.typeText=e.Cstr(panel, 10, nil, nil, true)
+        panel.typeText:SetPoint('BOTTOM',0,2)
+    end
+    if panel.type and text:find('%w') then--处理英文
+        text=panel.type:gsub('/','')
+    else
+        text= text==RAID_WARNING and COMMUNITIES_NOTIFICATION_SETTINGS_DIALOG_SETTINGS_LABEL or text--团队通知->通知
+        text=e.WA_Utf8Sub(text, 1)
+    end
+
+    panel.typeText:SetText(text)
+    panel.typeText:SetShown(IsInGroup())
+end
+
 local function setGroupTips()--队伍信息提示
     local isInGroup= IsInGroup()
     local isInRaid= IsInRaid()
     local isInInstance= IsInInstance()
     local num=GetNumGroupMembers()
+
+    if not panel.type then
+        if isInRaid then
+            panel.type=SLASH_RAID2
+            setType(RAID)--使用,提示
+        elseif isInGroup then
+            panel.type=SLASH_PARTY1
+            setType(HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS)--使用,提示
+        end
+    end
+
     if isInGroup and not panel.membersText then--人数
         panel.membersText=e.Cstr(panel, 10, nil, nil, true)
         panel.membersText:SetPoint('TOPLEFT', 3, -3)
@@ -61,22 +88,6 @@ local function setGroupTips()--队伍信息提示
     end
 end
 
-local function setType(text)--使用,提示
-    if not panel.typeText then
-        panel.typeText=e.Cstr(panel, 10, nil, nil, true)
-        panel.typeText:SetPoint('BOTTOM',0,2)
-    end
-    if panel.type and text:find('%w') then--处理英文
-        text=panel.type:gsub('/','')
-    else
-        text= text==RAID_WARNING and COMMUNITIES_NOTIFICATION_SETTINGS_DIALOG_SETTINGS_LABEL or text--团队通知->通知
-        text=e.WA_Utf8Sub(text, 1)
-    end
-
-    panel.typeText:SetText(text)
-    panel.typeText:SetShown(IsInGroup())
-end
-
 local function setText(text)--处理%s
     local groupTab=e.GroupGuid[UnitGUID('player')]
     if text:find('%%s') and groupTab.subgroup then
@@ -86,6 +97,7 @@ local function setText(text)--处理%s
     end
     return text
 end
+
 
 --#####
 --对话框

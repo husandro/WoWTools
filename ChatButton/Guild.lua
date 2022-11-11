@@ -32,6 +32,12 @@ local function Init()
             ToggleGuildFrame();
         end
     end)
+
+    if CanReplaceGuildMaster() then--弹劾
+        panel.canReplaceGuildMaster=e.Cstr(panel, 10, nil, nil, true, nil, 'CENTER')
+        panel.canReplaceGuildMaster:SetPoint('TOP')
+        panel.canReplaceGuildMaster:SetText('|cnGREEN_FONT_COLOR:'..GUILD_IMPEACH_POPUP_CONFIRM..'|r')
+    end
 end
 --###########
 --加载保存数据
