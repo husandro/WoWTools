@@ -81,20 +81,20 @@ e.Class=function(unit, class, reAltlas)--职业图标
     end
 end
 
-e.GetPlayerInfo=function (unit, guid, reName)
+e.GetPlayerInfo=function (unit, guid, showName)
     if unit then
-        if reName then
+        if showName then
             return e.Race(unit)..e.Class(unit)..'|c'..select(4,GetClassColor(UnitClassBase(unit)))..GetUnitName(unit, true)..'|r'
         else
             return e.Race(unit)..e.Class(unit)
         end
     elseif guid then
         local _, englishClass, _, englishRace, sex, name, realm = GetPlayerInfoByGUID(guid)
-        if reName then
-            return e.Race(nil, englishRace, sex)..e.Class(nil, englishClass)
-        else
+        if showName then
             realm = (realm and realm~=e.Player.server) and '|cnGREEN_FONT_COLOR:*|r' or ''
             return e.Race(nil, englishRace, sex)..e.Class(nil, englishClass)..'|c'..select(4,GetClassColor(englishClass))..name..realm..'|r'
+        else
+            return e.Race(nil, englishRace, sex)..e.Class(nil, englishClass)
         end
     end
     return ''
@@ -196,6 +196,16 @@ e.GetNpcID = function(unit)--NPC ID
         local guid=UnitGUID(unit)
         if guid then
         return select(6,  strsplit("-", guid));
+        end
+    end
+end
+
+e.GetUnitMapName=function(unit)--单位, 地图名称
+    local uiMapID= C_Map.GetBestMapForUnit(unit)
+    if uiMapID then
+        local info = C_Map.GetMapInfo(uiMapID)
+        if info and info.name then 
+            return info.name
         end
     end
 end
@@ -679,7 +689,7 @@ e.Chat=function(text,name)--v9.25设置
     end 
 end
 
-e.Say=function(type, name, wow)   
+e.Say=function(type, name, wow)
     local chat=SELECTED_DOCK_FRAME;
     local text = chat.editBox:GetText() or '';
     if text:find('/') then text='' end 

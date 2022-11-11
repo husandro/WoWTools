@@ -1,4 +1,6 @@
 local id, e = ...
+local addName= 'ChatButtonGroup'
+local Save={mouseUP='%s求拉, 3Q'}
 
 local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
 panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
@@ -40,11 +42,10 @@ local function setGroupTips()--队伍信息提示
         panel.subgroupTexture:SetText(subgroup or '')
     end
 
-    if isInRaid and not isInInstance and not panel.textureNotInstance then
-       panel.textureNotInstance=panel:CreateTexture(nil,'BACKGROUND')
-       panel.textureNotInstance:SetAllPoints(panel)
-       panel.textureNotInstance:SetAtlas('WhiteCircle-RaidBlips')
-       panel.textureNotInstance:SetColorTexture(1,0,0)
+    if isInRaid and not isInInstance and not panel.textureNotInstance then--在副本外, 在团时, 提示
+        panel.textureNotInstance=panel:CreateTexture(nil,'BACKGROUND')
+        panel.textureNotInstance:SetAllPoints(panel)
+        panel.textureNotInstance:SetAtlas('socket-punchcard-red-background')
     end
     if panel.textureNotInstance then
         panel.textureNotInstance:SetShown(isInRaid and not isInInstance)
@@ -71,10 +72,60 @@ local function setType(text)--使用,提示
         text= text==RAID_WARNING and COMMUNITIES_NOTIFICATION_SETTINGS_DIALOG_SETTINGS_LABEL or text--团队通知->通知
         text=e.WA_Utf8Sub(text, 1)
     end
-    
+
     panel.typeText:SetText(text)
     panel.typeText:SetShown(IsInGroup())
 end
+
+local function setText(text)--处理%s
+    local groupTab=e.GroupGuid[UnitGUID('player')]
+    if text:find('%%s') and groupTab.subgroup then
+        text= text:format(groupTab.subgroup..' '..GROUP..' ')
+    else
+        text= text:gsub('%%s','')
+    end
+    return text
+end
+
+--#####
+--对话框
+--#####
+StaticPopupDialogs[id..addName..'CUSTOM']={--区域,设置对话框
+    text=id..'    '..addName..'\n\n'..CUSTOM..SEND_MESSAGE..'\n\n|cnGREEN_FONT_COLOR:%s\n%%s|r '..AUTOCOMPLETE_LABEL_GROUP..LFG_LIST_CROSS_FACTION:format(RAID),
+    whileDead=1,
+    hideOnEscape=1,
+    exclusive=1,
+	timeout = 60,
+    hasEditBox=1,
+    button1=SLASH_CHAT_MODERATE2:gsub('/',''),
+    button2=CANCEL,
+    OnShow = function(self, data)
+        self.editBox:SetWidth(self:GetWidth()-30)
+        if Save[data.type] then
+            self.editBox:SetText(Save[data.type])
+        end
+	end,
+    OnAccept = function(self, data)
+		local text= self.editBox:GetText()
+        if text:gsub(' ','')=='' then
+            Save[data.type]=nil
+        else
+            Save[data.type]=text
+        end
+    end,
+    EditBoxOnTextChanged=function(self, data)
+        local text= self:GetText()
+        if text:gsub(' ','')=='' then
+            self:GetParent().button1:SetText(REMOVE)
+        else
+            self:GetParent().button1:SetText(SLASH_CHAT_MODERATE2:gsub('/',''))
+        end
+    end,
+    EditBoxOnEscapePressed = function(s)
+        s:GetParent():Hide()
+    end,
+}
+
 --#####
 --主菜单
 --#####
@@ -85,31 +136,66 @@ local chatType={
     {text= INSTANCE, type= SLASH_INSTANCE_CHAT1},--/i
 }
 local function InitMenu(self, level, type)--主菜单
-    local isInGroup= IsInGroup()
-    local isInRaid= IsInRaid()
-    local isInInstance= IsInInstance()
-    local num=GetNumGroupMembers()
-    local le=UnitIsGroupAssistant('player') or  UnitIsGroupLeader('player')
     local info
-    for _, tab in pairs(chatType) do
-        info={
-            text=tab.text,
-            notCheckable=true,
-            tooltipOnButton=true,
-            tooltipTitle=tab.type,
-            func=function()
-                e.Say(tab.type)
-                panel.type=tab.type
-                setType(tab.text)--使用,提示
-            end
+    if type then
+        local tab2={
+            {type= 'mouseUP', text= KEY_MOUSEWHEELUP},
+            {type= 'mouseDown', text= KEY_MOUSEWHEELDOWN},
         }
-        if (tab.text==RAID and not isInRaid)--设置颜色
-            or (tab.text==HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS and not isInGroup)
-            or (tab.text== INSTANCE and (not isInInstance or num<2))
-            or (tab.text==RAID_WARNING and (not isInRaid or not le))
-        then
-            info.colorCode='|cff606060'
+        for _, tab in pairs(tab2) do
+            local text=(Save[tab.type] or tab.text)
+            if Save[tab.type] then
+                text=setText(text)--处理%s
+            end
+            info={
+                text= text,
+                notCheckable=true,
+                tooltipOnButton=true,
+                tooltipTitle=tab.text,
+                func=function()
+                    StaticPopup_Show(id..addName..'CUSTOM', tab.text, nil , {type=tab.type})
+                end
+            }
+            UIDropDownMenu_AddButton(info, level)
         end
+    else
+        local isInGroup= IsInGroup()
+        local isInRaid= IsInRaid()
+        local isInInstance= IsInInstance()
+        local num=GetNumGroupMembers()
+        local le=UnitIsGroupAssistant('player') or  UnitIsGroupLeader('player')
+        
+        for _, tab in pairs(chatType) do
+            info={
+                text=tab.text,
+                notCheckable=true,
+                tooltipOnButton=true,
+                tooltipTitle=tab.type,
+                func=function()
+                    e.Say(tab.type)
+                    panel.type=tab.type
+                    setType(tab.text)--使用,提示
+                end
+            }
+            if (tab.text==RAID and not isInRaid)--设置颜色
+                or (tab.text==HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS and not isInGroup)
+                or (tab.text== INSTANCE and (not isInInstance or num<2))
+                or (tab.text==RAID_WARNING and (not isInRaid or not le))
+            then
+                info.colorCode='|cff606060'
+            elseif tab.text==RAID and not isInInstance then--在副本外,团
+                info.colorCode='|cffff0000'
+            end
+            UIDropDownMenu_AddButton(info, level)
+        end
+
+        UIDropDownMenu_AddSeparator(level)
+        info={
+            text=((Save.mouseDown or Save.mouseUP) and e.Icon.mid or '')..CUSTOM,
+            notCheckable=true,
+            menuList='CUSTOM',
+            hasArrow=true,
+        }
         UIDropDownMenu_AddButton(info, level)
     end
 end
@@ -137,29 +223,45 @@ local function Init()
         end
     end)
 
+    panel:SetScript('OnMouseWheel', function(self, d)--发送自定义信息
+        local text= d==1 and Save.mouseUP or d==-1 and Save.mouseDown
+        if text then
+            text=setText(text)--处理%s
+            e.Chat(text)
+        end
+    end)
+
     C_Timer.After(0.3, function() setGroupTips() end)--队伍信息提示
 end
-
-
-
 
 --###########
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+
 panel:RegisterEvent('GROUP_LEFT')
 panel:RegisterEvent('GROUP_ROSTER_UPDATE')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
+        Save= WoWToolsSave and WoWToolsSave[addName] or Save
+
         if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
             panel:SetShown(false)
             panel:UnregisterAllEvents()
         else
             Init()
         end
+
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            if not WoWToolsSave then WoWToolsSave={} end
+            WoWToolsSave[addName]=Save
+        end
+
     elseif event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' then
          C_Timer.After(0.3, function() setGroupTips() end)--队伍信息提示
-         
+
     end
 end)

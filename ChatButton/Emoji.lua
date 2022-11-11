@@ -42,7 +42,7 @@ end
 
 local function setButtons()--设置按钮
     local size= e.toolsFrame.size or 30
-    local last, index, line=frame, 0
+    local last, index, line=frame, 0, nil
     local function send(text, d)--发送信息
         text='{'..text..'}'
         if d =='LeftButton' then

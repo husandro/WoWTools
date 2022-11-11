@@ -5,28 +5,27 @@ local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
 panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
 WoWToolsChatButtonFrame.last=panel
 
+local function setChinesTips(name, type)--大脚世界频道, 提示
+    if name=='大脚世界频道' then
+        panel.texture:SetDesaturated(type==2)
+        panel.texture:SetShown(type~=0)
+    end
+end
+
 local Check=function(name)
     if not select(2,GetChannelName(name)) then
-        if name=='大脚世界频道' then
-            panel.texture:SetShown(false)
-        end
+        setChinesTips(name, 0)--大脚世界频道, 提示
         return 0--不存存在
     else
         local tab={GetChatWindowChannels(SELECTED_CHAT_FRAME:GetID())}
         for i= 1, #tab, 2 do
             if tab[i]==name then
-                if name=='大脚世界频道' then
-                    panel.texture:SetDesaturated(false)
-                    panel.texture:SetShown(true)
-                end
+                setChinesTips(name, 1)--大脚世界频道, 提示
                 return 1--存在2
             end
         end
 
-        if name=='大脚世界频道' then
-            panel.texture:SetDesaturated(true)
-            panel.texture:SetShown(true)
-        end
+        setChinesTips(name, 2)--大脚世界频道, 提示
         return 2--屏蔽
     end
 end
@@ -52,15 +51,18 @@ local function setLeftClickTips(name, channelNumber, texture)--设置点击提�
         panel.leftClickTips=e.Cstr(panel, 10, nil, nil, true, nil, 'CENTER')
         panel.leftClickTips:SetPoint('BOTTOM',0,2)
     end
-    if panel.leftClickTips and channelNumber then
-        panel.channelNumber=channelNumber
+    if panel.leftClickTips then
         local text
-        if texture then
-            text='|T'..texture..':0|t'
-        else
-            text=name=='大脚世界频道' and '世' or e.WA_Utf8Sub(name, 1, 4)
+        if channelNumber then
+            panel.channelNumber=channelNumber
+            
+            if texture then
+                text='|T'..texture..':0|t'
+            else
+                text=name=='大脚世界频道' and '世' or e.WA_Utf8Sub(name, 1, 4)
+            end
         end
-        panel.leftClickTips:SetText(text)
+        panel.leftClickTips:SetText(text or '')
     end
 end
 
@@ -126,22 +128,22 @@ local function addMenu(name, channelNumber, level)--添加菜单
     }
     UIDropDownMenu_AddButton(info, level)
 
-    if not panel.channelNumber then
-        setLeftClickTips(communityName or name, channelNumber)--设置点击提示,频道字符
+    if not panel.channelNumber or panel.channelNumber==0 then
+        setLeftClickTips(name, channelNumber)--设置点击提示,频道字符
     end
 end
 
 local function InitMenu(self, level, type)--主菜单
-    local info
     if e.Player.zh then
         local channelNumbern = GetChannelName('大脚世界频道')
         addMenu('大脚世界频道' , channelNumbern, level)
         UIDropDownMenu_AddSeparator(level)
     end
+
     local channels = {GetChannelList()}
     for i = 1, #channels, 3 do
         local channelNumber, name, disabled = channels[i], channels[i+1], channels[i+2]
-        if not disabled and name~='大脚世界频道' then
+        if not disabled and channelNumber and name~='大脚世界频道' then
             addMenu(name, channelNumber, level)
         end
     end
@@ -150,9 +152,9 @@ end
 --####
 --初始
 --####
-local function Init()  
+local function Init()
     if e.Player.zh then
-        panel.texture:SetAtlas('WildBattlePetCapturable')
+        panel.texture:SetAtlas('WildBattlePet')
     else
         panel.texture:SetAtlas('128-Store-Main')
     end
@@ -162,11 +164,13 @@ local function Init()
 
     panel:SetScript("OnMouseDown",function(self,d)
         if d=='LeftButton' and panel.channelNumber and panel.channelNumber>0 then
-                e.Say('/'..panel.channelNumber)
+            e.Say('/'..panel.channelNumber)
         else
             ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
         end
     end)
+    
+    panel.texture:SetShown(true)
 end
 
 --###########
@@ -182,7 +186,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
         Save= WoWToolsSave and WoWToolsSave[addName] or Save
         Init()
-
+        
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end
