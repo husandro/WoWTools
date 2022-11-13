@@ -244,7 +244,6 @@ local function setEquipSlot(self)--装备
     local slotItemID=GetInventoryItemID('player', self.slot)
     local slotItemLink=GetInventoryItemLink('player', self.slot)
     local name= slotItemLink and GetItemInfo(slotItemLink) or slotItemID and C_Item.GetItemNameByID(slotItemID..'')
-    
     if name and slotItemID~=self.itemID and self:GetAttribute('item2')~=name then
         self:SetAttribute('item2', name)
         self.slotEquipName=name
