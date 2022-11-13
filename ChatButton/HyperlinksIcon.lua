@@ -510,7 +510,7 @@ local function setUseDisabled()
         DEFAULT_CHAT_FRAME.AddMessage=setAddMessageFunc
         DEFAULT_CHAT_FRAME.editBox:SetAltArrowKeyMode(false)--alt +方向= 移动
     end
-    panel.texture:SetDesaturated(Save.disabed)
+    panel.texture:SetShown(not Save.disabed)--SetDesaturated(Save.disabed)
 end
 local function setFunc()--使用，禁用
     Save.disabed= not Save.disabed and true or nil

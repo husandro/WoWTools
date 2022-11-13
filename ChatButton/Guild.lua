@@ -95,7 +95,7 @@ local function Init()
     UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
 
     setMembers()--在线人数
-    panel.texture:SetAtlas('UI-HUD-MicroMenu-GuildCommunities-Mouseover')
+    panel.texture:SetAtlas('UI-HUD-MicroMenu-GuildCommunities-Up')
     panel:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
             e.Say('/g')

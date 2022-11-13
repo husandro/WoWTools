@@ -77,8 +77,8 @@ Tools\MagePortal.lua
 ##Chat Button
 ChatButton\ChatButton.lua
 ChatButton\HyperlinksIcon.lua
-ChatButton\Markers.lua
 ChatButton\Roll.lua
+ChatButton\Markers.lua
 ChatButton\LFD.lua
 ChatButton\WorldChannel.lua
 ChatButton\Guild.lua
