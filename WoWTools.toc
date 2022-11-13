@@ -49,6 +49,8 @@ WoWPlus\UnitFrame.lua
 ##WowPlus\GroupManager.lua
 ##WoWPlus\AchievementFrame.lua
 ##WowPlus\AuctionHouse.lua
+WowPlus\QuickJoin.lua
+
 
 GamePlus\Gossip.lua
 GamePlus\SellBuy.lua
