@@ -3,14 +3,15 @@ local addName = COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK..EMBLEM_SYMBOL
 local Save={
     channels={--频道名称替换 
         ['大脚'] = '[世]',
-        ['Test'] = '[Test]',
-        ['测试'] = '[测]',
         [GENERAL]='['..GENERAL..']',
+        ['本地']='[本地]'
     },
     text={--内容颜色,
         ['来人']=true,
         ['成就']=true,
-    }
+    },
+    guildWelcome=true,
+    groupWelcome=true,
 }
 
 local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
@@ -505,11 +506,9 @@ local function setUseDisabled()
     end
     if Save.disabed then
         DEFAULT_CHAT_FRAME.AddMessage=DEFAULT_CHAT_FRAME.ADD
-        --panel.texture:SetAtlas(e.Icon.disabled)
     else
         DEFAULT_CHAT_FRAME.AddMessage=setAddMessageFunc
         DEFAULT_CHAT_FRAME.editBox:SetAltArrowKeyMode(false)--alt +方向= 移动
-        --panel.texture:SetAtlas(e.Icon.icon)
     end
     panel.texture:SetDesaturated(Save.disabed)
 end
@@ -604,48 +603,173 @@ local function setPanel()
     end)
 end
 
+--#############
+--欢迎加入, 信息
+--#############
+local function set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
+    if (not Save.guildWelcome or not IsInGuild()) and not Save.groupWelcome then
+        panel:UnregisterEvent('CHAT_MSG_SYSTEM')
+    else
+        panel:RegisterEvent('CHAT_MSG_SYSTEM')
+    end
+end
+
+local raidMS=ERR_RAID_MEMBER_ADDED_S:gsub("%%s", "(.+)")--%s加入了团队。
+local partyMS= JOINED_PARTY:gsub("%%s", "(.+)")--%s加入了队伍。
+local guildMS= ERR_GUILD_JOIN_S:gsub("%%s", "(.+)")--加入了公会
+
+local function setMsg_CHAT_MSG_SYSTEM(text)--欢迎加入, 信息
+    if not text or (not Save.guildWelcome and not Save.groupWelcome) then
+        return
+    end
+    if text:find(raidMS) or text:find(partyMS) then
+        if Save.groupWelcome then
+            local name=text:match(raidMS) or text:match(partyMS)
+            if name then
+                e.Chat(Save.groupWelcomeText or EMOTE103_CMD1:gsub('/',''), name)
+            end
+        end
+    elseif text:find(guildMS) then
+        if Save.guildWelcome then
+            local name=text:match(guildMS)
+            if name then
+                C_Timer.After(2, function()
+                    SendChatMessage((Save.guildWelcomeText or EMOTE103_CMD1:gsub('/',''))..' '.. name.. ' ' ..GUILD_INVITE_JOIN, "GUILD");
+                end)
+            end
+        end
+    end
+end
+
+--#####
+--对话框
+--#####
+StaticPopupDialogs[id..addName..'WELCOME']={--区域,设置对话框
+    text=id..' '..addName..'\n\n'..	EMOTE103_CMD1:gsub('/','').. JOIN..' |cnGREEN_FONT_COLOR:%s|r',
+    whileDead=1,
+    hideOnEscape=1,
+    exclusive=1,
+	timeout = 60,
+    hasEditBox=1,
+    button1= SLASH_CHAT_MODERATE2:gsub('/', ''),
+    button2=CANCEL,
+    button3=DISABLE,
+    OnShow = function(self, data)
+        local text=data.guild and Save.guildWelcomeText or data.group and Save.groupWelcomeText 
+        text=text or EMOTE103_CMD1:gsub('/','')
+        self.editBox:SetText(text)
+        self.button3:SetEnabled(data.guild and Save.guildWelcome  or  data.group and Save.groupWelcome)
+	end,
+    OnAccept = function(self, data)
+		local text= self.editBox:GetText()
+        if data.guild then
+            Save.guildWelcomeText= text
+            Save.guildWelcome=true
+        elseif data.group then
+            Save.groupWelcomeText= text
+            Save.groupWelcome=true
+        end
+        CloseDropDownMenus()
+        set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
+	end,
+    OnAlt = function(self, data)
+        if data.guild then
+            Save.guildWelcome=nil    
+        else
+            Save.groupWelcome=nil
+        end
+        CloseDropDownMenus()
+        set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
+    end,
+    EditBoxOnTextChanged=function(self, data)
+        local text= self:GetText()
+        self:GetParent().button1:SetEnabled(text:gsub(' ', '')~='')
+    end,
+    EditBoxOnEscapePressed = function(s)
+        s:GetParent():Hide()
+    end,
+}
 
 --#####
 --主菜单
 --#####
 local function InitMenu(self, level, type)
-    local info={
-        text=addName..e.Icon.left..e.GetEnabeleDisable(not Save.disabed),
-        checked=not Save.disabed,
-        func=function()
-            setFunc()--使用，禁用
-        end,
-        --colorCode= Save.disabed and '|cff606060',
-    }
-    UIDropDownMenu_AddButton(info, level)
+    local info
+    if type=='Welcome' then--欢迎
+        info={
+            text=SPELL_TARGET_TYPE14_DESC,--队伍新成员
+            checked=Save.groupWelcome,
+            tooltipOnButton=true,
+            tooltipTitle=LFG_LIST_CROSS_FACTION:format(PARTY_PROMOTE),
+            tooltipText=Save.groupWelcomeText or EMOTE103_CMD1:gsub('/',''),
+            func=function()
+                StaticPopup_Show(id..addName..'WELCOME', SPELL_TARGET_TYPE14_DESC, nil, {group= true})
+            end,
+        }
+        UIDropDownMenu_AddButton(info, level)
+        info={
+            text=LFG_LIST_GUILD_MEMBER,--公会新成员
+            checked=Save.guildWelcome,
+            tooltipOnButton=true,
+            tooltipTitle=Save.guildWelcomeText or EMOTE103_CMD1:gsub('/',''),
+            colorCode= not IsInGuild() and '|cff606060',--不在公会
+            func=function()
+                StaticPopup_Show(id..addName..'WELCOME', 	LFG_LIST_GUILD_MEMBER, nil, {guild= true})
+            end,
+        }
+        UIDropDownMenu_AddButton(info, level)
+    else
+        info={
+            text=addName..e.Icon.left..e.GetEnabeleDisable(not Save.disabed),
+            checked=not Save.disabed,
+            func=function()
+                setFunc()--使用，禁用
+            end,
+            --colorCode= Save.disabed and '|cff606060',
+        }
+        UIDropDownMenu_AddButton(info, level)
 
-    local bool= C_CVar.GetCVarBool('textToSpeech')--文本转语音
-    info={
-        text=TEXT_TO_SPEECH..e.GetEnabeleDisable(bool),
-        checked=bool,
-        func=function()
-            if C_CVar.GetCVarBool('textToSpeech') then
-                C_CVar.SetCVar("textToSpeech", 0)
-            else
-                C_CVar.SetCVar("textToSpeech", 1)
+        info={--欢迎
+            text=EMOTE103_CMD1:gsub('/','')..JOIN,
+            checked= Save.guildWelcome or Save.groupWelcome,
+            func=function()
+                Save.guildWelcome=nil
+                Save.groupWelcome=nil
+                set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
+            end,
+            menuList='Welcome',
+            hasArrow=true,
+        }
+        UIDropDownMenu_AddButton(info, level)
+
+        local bool= C_CVar.GetCVarBool('textToSpeech')--文本转语音
+        info={
+            text=TEXT_TO_SPEECH..e.GetEnabeleDisable(bool),
+            checked=bool,
+            func=function()
+                if C_CVar.GetCVarBool('textToSpeech') then
+                    C_CVar.SetCVar("textToSpeech", 0)
+                else
+                    C_CVar.SetCVar("textToSpeech", 1)
+                end
+                print(TEXT_TO_SPEECH..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool('textToSpeech')))
             end
-            print(TEXT_TO_SPEECH..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool('textToSpeech')))
-        end
-    }
-    UIDropDownMenu_AddButton(info, level)
+        }
+        UIDropDownMenu_AddButton(info, level)
 
-    UIDropDownMenu_AddSeparator(level)
-    info={--重载
-        text=RELOADUI,
-        notCheckable=true,
-        tooltipOnButton=true,
-        tooltipTitle='/reload',
-        colorCode='|cffff0000',
-        func=function()
-            C_UI.Reload()
-        end
-    }
-    UIDropDownMenu_AddButton(info, level)
+        UIDropDownMenu_AddSeparator(level)
+        info={--重载
+            text=RELOADUI,
+            notCheckable=true,
+            tooltipOnButton=true,
+            tooltipTitle='/reload',
+            colorCode='|cffff0000',
+            func=function()
+                C_UI.Reload()
+            end
+        }
+        UIDropDownMenu_AddButton(info, level)
+    end
 end
 
 --####
@@ -653,7 +777,7 @@ end
 --####
 local function Init()
     DEFAULT_CHAT_FRAME.ADD=DEFAULT_CHAT_FRAME.AddMessage
-
+    
     panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
     panel.texture:SetAtlas(e.Icon.icon)
@@ -672,6 +796,7 @@ local function Init()
     end
 
     setPanel()--设置控制面板
+    set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
 end
 
 panel:RegisterEvent("ADDON_LOADED")
@@ -690,5 +815,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not WoWToolsSave then WoWToolsSave={} end
             WoWToolsSave[addName]=Save
         end
+    elseif event=='CHAT_MSG_SYSTEM' then
+        setMsg_CHAT_MSG_SYSTEM(arg1)--欢迎加入, 信息
 	end
 end)

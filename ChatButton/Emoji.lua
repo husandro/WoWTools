@@ -183,7 +183,7 @@ local function Init()
     if Save.Point then
         frame:SetPoint(Save.Point[1], UIParent, Save.Point[3], Save.Point[4], Save.Point[5])
     else
-        frame:SetPoint('BOTTOMRIGHT',panel, 'TOPLEFT', -87,2)
+        frame:SetPoint('BOTTOMRIGHT',panel, 'TOPLEFT', -120,2)
     end
     frame:SetShown(false)
     frame:RegisterForDrag("RightButton")
@@ -208,7 +208,7 @@ local function Init()
         if d=='RightButton' and IsAltKeyDown() then--还原
             Save.Point=nil
             self:ClearAllPoints()
-            self:SetPoint('BOTTOMRIGHT',panel, 'TOPLEFT', -87,2)
+            self:SetPoint('BOTTOMRIGHT',panel, 'TOPLEFT', -120,2)
         elseif d=='RightButton' and not key then--移动光标
             SetCursor('UI_MOVE_CURSOR')
         elseif d=='LeftButton' then--提示信息
@@ -270,6 +270,7 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
         Save= WoWToolsSave and WoWToolsSave[addName] or Save
+        Save.Channels= Save.Channels or {}
 
         local sel2=CreateFrame("CheckButton", nil, WoWToolsChatButtonFrame.sel, "InterfaceOptionsCheckButtonTemplate")
         sel2.Text:SetText('emoji')

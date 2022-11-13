@@ -53,7 +53,6 @@ WoWPlus\UnitFrame.lua
 GamePlus\Gossip.lua
 GamePlus\SellBuy.lua
 
-GamePlus\LFD.lua
 GamePlus\PetBattle.lua
 GamePlus\ItemInfo.lua
 GamePlus\SystemInfo.lua
@@ -80,6 +79,7 @@ ChatButton\ChatButton.lua
 ChatButton\HyperlinksIcon.lua
 ChatButton\Markers.lua
 ChatButton\Roll.lua
+ChatButton\LFD.lua
 ChatButton\WorldChannel.lua
 ChatButton\Guild.lua
 ChatButton\Group.lua

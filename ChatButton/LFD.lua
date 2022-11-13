@@ -2,7 +2,10 @@ local id, e = ...
 local addName =	DUNGEONS_BUTTON
 local Save={leaveInstance=true, enterInstance=true}
 local wowSave={[INSTANCE]={}}--{[ISLANDS_HEADER]=次数, [副本名称..难度=次数]}
-local panel=CreateFrame("Frame")
+
+local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
+panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
+WoWToolsChatButtonFrame.last=panel
 
 local getRewardInfo=function(dungeonID)--FB奖励
     local t=''
@@ -87,215 +90,182 @@ end
 --小眼睛
 --#####
 local function setQueueStatus()--小眼睛, 信息
-    local self=QueueStatusButton
-    if Save.hideQueueStatus or not self then
-        if self then
-            if self.text then
-                self.text:SetText('')
+    local text=''
+    if not Save.hideQueueStatus then
+        if not panel.tipsFrame then
+            panel.tipsFrame=e.Cbtn(panel, nil, nil, nil, nil, true, {20,20})
+            if Save.tipsFramePoint then
+                panel.tipsFrame:SetPoint(Save.tipsFramePoint[1], UIParent, Save.tipsFramePoint[3], Save.tipsFramePoint[4], Save.tipsFramePoint[5])
+            else
+                panel.tipsFrame:SetPoint('BOTTOMLEFT', panel, 'TOPLEFT',0,2)
             end
-            if self.enterInstance then
-                self.enterInstance:SetShown(false)
-            end
-            if self.leaveInstance then
-                self.leaveInstance:SetShown(false)
+            panel.tipsFrame:RegisterForDrag("RightButton")
+            panel.tipsFrame:SetMovable(true)
+            panel.tipsFrame:SetClampedToScreen(true)
+
+            panel.tipsFrame:SetScript("OnDragStart", function(self,d )
+                if not IsModifierKeyDown() and d=='RightButton' then
+                    self:StartMoving()
+                end
+            end)
+            panel.tipsFrame:SetScript("OnDragStop", function(self)
+                ResetCursor()
+                self:StopMovingOrSizing()
+                Save.tipsFramePoint={self:GetPoint(1)}
+                Save.tipsFramePoint[2]=nil
+                print(id, addName, RESET_POSITION, SOCIAL_QUEUE_TOOLTIP_HEADER..INFO,'Alt+'..e.Icon.right)
+            end)
+            panel.tipsFrame:SetScript("OnMouseDown", function(self,d)
+                if d=='LeftButton' then--提示移动
+                    print(id, addName, SOCIAL_QUEUE_TOOLTIP_HEADER..INFO,NPE_MOVE..e.Icon.right)
+
+                elseif d=='RightButton' and not IsModifierKeyDown() then--移动光标
+                    SetCursor('UI_MOVE_CURSOR')
+
+                elseif d=='RightButton' and IsAltKeyDown() then--还原
+                    self:ClearAllPoints()
+                    self:SetPoint('BOTTOMLEFT', panel, 'TOPLEFT',0,2)
+                end
+            end)
+            panel.tipsFrame:SetScript("OnMouseUp", function(self, d)
+                ResetCursor()
+            end)
+
+            panel.tipsFrame.text=e.Cstr(panel.tipsFrame, nil, nil, nil, true)
+            panel.tipsFrame.text:SetPoint('BOTTOMLEFT')
+        end
+        
+        local num= 0
+        for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
+            local listNum, listText=getQueuedList(i,true)
+            if listNum and listText then
+                text= text~='' and text..'\n'..listText or listText
+                num=num+listNum
             end
         end
-        return
-    end
-    if not self.text then--提示信息
-        self.text=e.Cstr(self, nil, nil, nil, true)
-        self.text:SetPoint('BOTTOMRIGHT', self, 'TOP')
-    end
-    local num, text=0, ''
-    for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
-        local listNum, listText=getQueuedList(i,true)
-        if listNum and listText then
-            text= text~='' and text..'\n'..listText or listText
-            num=num+listNum
-        end
-    end
 
-    local pvp='';
-    for i=1,  GetMaxBattlefieldID() do --PVP
-        local status, mapName, teamSize, _, _, _, gameType = GetBattlefieldStatus(i);
-        if (status=='queued' or status=='confirm') and mapName then
-            if pvp~='' then pvp=pvp..'\n' end;
-            if status=='confirm' then pvp=pvp..'(|cFF00FF00'..COVENANT_MISSIONS_CONFIRM_START_MISSION..'|r)' end
-            pvp=pvp..mapName;
-            if (teamSize and teamSize>0) or (gameType and gameType~='') then
-                pvp=pvp..'(' if teamSize and teamSize >0 then pvp=pvp..teamSize end;
-                if gameType then pvp=pvp..gameType end;
-                pvp=pvp..')';
-            end;
-        end;
-    end;
-    if pvp~='' then
-        text=text~='' and text..'\n' or text
-        text=text..'|cFF00FF00*PvP|r'..pvp
-        local tank, healer, dps = GetPVPRoles()
-        if tank or healer or dps then
-            text=text..(tank and e.Icon.TANK or '')..(healer and e.Icon.HEALER or '')..(dps and e.Icon.DAMAGER or '')
-        end;
-    end;
-
-    local sta=C_PetBattles.GetPVPMatchmakingInfo()--PET
-    if sta=='queued' then
-        text=text~='' and  text..'\n' or text
-        text=text..PET_BATTLE_PVP_QUEUE ..'|A:worldquest-icon-petbattle:0:0|a'
-    end;
-
-    if C_LFGList.HasActiveEntryInfo() then--已激活LFG
-        local list
-        local info =C_LFGList.GetActiveEntryInfo();
-        if info and info.name then
-            list=info.name;--名称
-            local ap=C_LFGList.GetApplicants()--申请人数
-             if ap and #ap>0 then
-                list=list..' |cFF00FF00#'..#ap..'|r'
-            end;
-            if info.autoAccept then 
-                list=list..'|A:runecarving-icon-reagent-empty:0:0|a' 
-            end;--自动邀请
-            if info.activityID then--名称
-                local name2=C_LFGList.GetActivityFullName(info.activityID);                            
-                if name2 then
-                    list=list..' ('..name2..')'
+        local pvp='';
+        for i=1,  GetMaxBattlefieldID() do --PVP
+            local status, mapName, teamSize, _, _, _, gameType = GetBattlefieldStatus(i);
+            if (status=='queued' or status=='confirm') and mapName then
+                if pvp~='' then pvp=pvp..'\n' end;
+                if status=='confirm' then pvp=pvp..'(|cFF00FF00'..COVENANT_MISSIONS_CONFIRM_START_MISSION..'|r)' end
+                pvp=pvp..mapName;
+                if (teamSize and teamSize>0) or (gameType and gameType~='') then
+                    pvp=pvp..'(' if teamSize and teamSize >0 then pvp=pvp..teamSize end;
+                    if gameType then pvp=pvp..gameType end;
+                    pvp=pvp..')';
                 end;
             end;
-            if info.duration then--时长
-                local time=SecondsToClock(1800-info.duration);
-                time=time:gsub('：',':');
-                time=time:gsub(' ','');
-                list=list..' '..time
-            end;
-            if info.privateGroup then--私人
-                list=list..LFG_LIST_PRIVATE
+        end;
+        if pvp~='' then
+            text=text~='' and text..'\n' or text
+            text=text..'|cFF00FF00*PvP|r'..pvp
+            local tank, healer, dps = GetPVPRoles()
+            if tank or healer or dps then
+                text=text..(tank and e.Icon.TANK or '')..(healer and e.Icon.HEALER or '')..(dps and e.Icon.DAMAGER or '')
             end;
         end;
-        if list then
-            text=text~='' and text..'\n'..list or list
-        end
-    end;
 
-    local sea='';--LFG申请列表
-    local apps = C_LFGList.GetApplications() or {};
-    for i=1, #apps do
-        local _, appStatus = C_LFGList.GetApplicationInfo(apps[i]);
-        if ( appStatus == "applied" or appStatus == "invited" ) then
-            local searchResultInfo = C_LFGList.GetSearchResultInfo(apps[i]);
-            local activityName = C_LFGList.GetActivityFullName(searchResultInfo.activityID, nil, searchResultInfo.isWarMode);
-            sea=sea..'\n'..searchResultInfo.name..'('.. activityName..')|cFF00FF00*|r';
+        local sta=C_PetBattles.GetPVPMatchmakingInfo()--PET
+        if sta=='queued' then
+            text=text~='' and  text..'\n' or text
+            text=text..PET_BATTLE_PVP_QUEUE ..'|A:worldquest-icon-petbattle:0:0|a'
         end;
-    end;
-    if sea~='' then
-        text=text~='' and text..'\n'..QUEUED_STATUS_SIGNED_UP..'(|cFF00FF00LFG|r)'..sea or sea
-    end
 
-    self.text:SetText(text)
+        if C_LFGList.HasActiveEntryInfo() then--已激活LFG
+            local list
+            local info =C_LFGList.GetActiveEntryInfo();
+            if info and info.name then
+                list=info.name;--名称
+                local ap=C_LFGList.GetApplicants()--申请人数
+                if ap and #ap>0 then
+                    list=list..' |cFF00FF00#'..#ap..'|r'
+                end;
+                if info.autoAccept then 
+                    list=list..'|A:runecarving-icon-reagent-empty:0:0|a' 
+                end;--自动邀请
+                if info.activityID then--名称
+                    local name2=C_LFGList.GetActivityFullName(info.activityID);                            
+                    if name2 then
+                        list=list..' ('..name2..')'
+                    end;
+                end;
+                if info.duration then--时长
+                    local time=SecondsToClock(1800-info.duration);
+                    time=time:gsub('：',':');
+                    time=time:gsub(' ','');
+                    list=list..' '..time
+                end;
+                if info.privateGroup then--私人
+                    list=list..LFG_LIST_PRIVATE
+                end;
+            end;
+            if list then
+                text=text~='' and text..'\n'..list or list
+            end
+        end;
 
-    if not self.enterInstance and Save.enterInstance then--自动进入,指示图标
-        self.enterInstance=self:CreateTexture(nil, 'ARTWORK')
-        self.enterInstance:SetPoint('BOTTOMLEFT',6,-6)
-        self.enterInstance:SetSize(12,12)
-        self.enterInstance:SetAtlas(e.Icon.toRight)
-        self.enterInstance:SetDesaturated(true)
-    end
-    if self.enterInstance then
-        self.enterInstance:SetShown(Save.enterInstance)
-    end
-    if not self.leaveInstance and Save.leaveInstance then--自动离开,指示图标
-        self.leaveInstance=self:CreateTexture(nil, 'ARTWORK')
-        self.leaveInstance:SetPoint('BOTTOMRIGHT',-6,-6)
-        self.leaveInstance:SetSize(12,12)
-        self.leaveInstance:SetAtlas(e.Icon.toLeft)
-        self.leaveInstance:SetDesaturated(true)
-    end
-    if self.leaveInstance then
-        self.leaveInstance:SetShown(Save.leaveInstance)
-    end
-end
-local function setQueueStatusMenu(self, relativeTo)--小眼睛, 信息, 设置菜单 QueueStatusFrame.lua
-    UIDropDownMenu_AddSeparator()
-    local info=UIDropDownMenu_CreateInfo()--离开副本
-    info.text=	SOCIAL_QUEUE_TOOLTIP_HEADER..INFO
-    info.tooltipOnButton=true
-    info.tooltipTitle=id..' '..addName
-    info.checked=not Save.hideQueueStatus
-    info.func=function()
-        if Save.hideQueueStatus then
-            Save.hideQueueStatus=nil
-        else
-            Save.hideQueueStatus=true
+        local sea='';--LFG申请列表
+        local apps = C_LFGList.GetApplications() or {};
+        for i=1, #apps do
+            local _, appStatus = C_LFGList.GetApplicationInfo(apps[i]);
+            if ( appStatus == "applied" or appStatus == "invited" ) then
+                local searchResultInfo = C_LFGList.GetSearchResultInfo(apps[i]);
+                local activityName = C_LFGList.GetActivityFullName(searchResultInfo.activityID, nil, searchResultInfo.isWarMode);
+                sea=sea..'\n'..searchResultInfo.name..'('.. activityName..')|cFF00FF00*|r';
+            end;
+        end;
+        if sea~='' then
+            text=text~='' and text..'\n'..QUEUED_STATUS_SIGNED_UP..'(|cFF00FF00LFG|r)'..sea or sea
         end
-        setQueueStatus()
     end
-    UIDropDownMenu_AddButton(info)
+    if panel.tipsFrame then
+        panel.tipsFrame.text:SetText(text)
+        panel.tipsFrame:SetShown(text~='' and true or nil)
+    end
+
+    if not panel.enterInstance and Save.enterInstance then--自动进入,指示图标
+        panel.enterInstance=panel:CreateTexture(nil, 'ARTWORK')
+        panel.enterInstance:SetPoint('BOTTOMLEFT',3,3)
+        panel.enterInstance:SetSize(10,10)
+        panel.enterInstance:SetAtlas(e.Icon.toRight)
+        panel.enterInstance:SetDesaturated(true)
+    end
+    if panel.enterInstance then
+        panel.enterInstance:SetShown(Save.enterInstance)
+    end
+    if not panel.leaveInstance and Save.leaveInstance then--自动离开,指示图标
+        panel.leaveInstance=panel:CreateTexture(nil, 'ARTWORK')
+        panel.leaveInstance:SetPoint('BOTTOMRIGHT',-7,3)
+        panel.leaveInstance:SetSize(10,10)
+        panel.leaveInstance:SetAtlas(e.Icon.toLeft)
+        panel.leaveInstance:SetDesaturated(true)
+    end
+    if panel.leaveInstance then
+        panel.leaveInstance:SetShown(Save.leaveInstance)
+    end
 end
 
 --####
 --菜单
 --####
-local function autoEnterLeavelInstance()--自动,离开, 进入, 副本
-    local info
-    local isLeader, isTank, isHealer, isDPS = GetLFGRoles()--角色职责
-    info=UIDropDownMenu_CreateInfo()--准备进入
-    info.text=e.Icon.toRight2..BATTLEFIELD_CONFIRM_STATUS..(isLeader and e.Icon.leader or '')
-                ..(isTank and e.Icon.TANK or '')
-                ..(isHealer and e.Icon.HEALER or '')
-                ..(isDPS and e.Icon.DAMAGER or '')
-                ..((not isTank and not isHealer and not isDPS) and ' |cnRED_FONT_COLOR:'..ROLE..'|r' or '')
-    info.tooltipOnButton=true
-    info.tooltipTitle=SPECIFIC_DUNGEON_IS_READY
-    info.checked=Save.enterInstance
-    info.tooltipText=AUTO_JOIN:gsub(JOIN, ENTER_LFG)..': '..e.GetEnabeleDisable(Save.enterInstance)..'\n\n'..id..' '..addName
-    info.func=function()
-        if Save.enterInstance then
-            Save.enterInstance=nil
+local function setTexture(dungeonID, RaidID, name, texture)--设置图标, 点击,提示
+    if dungeonID or RaidID then
+        panel.dungeonID=dungeonID
+        panel.name=name
+        panel.RaidID=RaidID
+    end
+    if texture then
+        panel.texture:SetTexture(texture)
+    else
+        if not Save.hideQueueStatus then
+            panel.texture:SetAtlas('groupfinder-eye-frame')
         else
-            Save.enterInstance=true
-        end
-        setQueueStatus()--小眼睛, 信息
-    end
-    UIDropDownMenu_AddButton(info)
-
-    info=UIDropDownMenu_CreateInfo()--离开副本
-    info.text=e.Icon.toLeft2..LEAVE..'('..INSTANCE..')'
-    info.tooltipOnButton=true
-    info.tooltipTitle=LEAVE..' ('..SLASH_RANDOM3:gsub('/','')..') '..INSTANCE
-    info.checked=Save.leaveInstance
-    info.tooltipText=AUTO_JOIN:gsub(JOIN, LEAVE)..': '..e.GetEnabeleDisable(Save.leaveInstance)..'\n\n'..id..' '..addName
-    info.func=function()
-         if Save.leaveInstance then
-             Save.leaveInstance=nil
-         else
-             Save.leaveInstance=true
-         end
-         setQueueStatus()--小眼睛, 信息
-    end
-    UIDropDownMenu_AddButton(info)
-
-    local num, text=0, ''
-    for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
-        local listNum, listText=getQueuedList(i,true)
-        if listNum and listText then
-            text= text~='' and text..'\n'..listText or listText
-            num=num+listNum
+            panel.texture:SetAtlas('UI-HUD-MicroMenu-Groupfinder-Mouseover')
         end
     end
-     info=UIDropDownMenu_CreateInfo()--离开所有副本
-     info.text=LEAVE_ALL_QUEUES..' #'..num..'|r'
-     info.notCheckable=true
-     info.disabled= num==0
-     info.func=function ()
-        for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
-            LeaveLFG(i)
-        end
-     end
-     info.tooltipOnButton=true
-     info.tooltipTitle=	BATTLEFIELD_QUEUE_STATUS
-     info.tooltipText=text
-     UIDropDownMenu_AddButton(info)
- end
+end
 
 local function printListInfo()--输出当前列表
     C_Timer.After(1.2, function()
@@ -308,7 +278,7 @@ local function printListInfo()--输出当前列表
         end
     end)
 end
-local function partyList()--随机 LFDFrame.lua
+local function partyList(self, level, type)--随机 LFDFrame.lua
     local info
     for i=1, GetNumRandomDungeons() do
         local dungeonID, name = GetLFGRandomDungeonInfo(i)
@@ -326,6 +296,8 @@ local function partyList()--随机 LFDFrame.lua
                     else
                         LFDQueueFrame_Join()
                         printListInfo()--输出当前列表
+
+                        setTexture(dungeonID, nil, name, nil)--设置图标, 点击,提示
                     end
                 end
                 info.checked=lfd
@@ -354,7 +326,7 @@ local function partyList()--随机 LFDFrame.lua
 				info.tooltipTitle = YOU_MAY_NOT_QUEUE_FOR_THIS
 				info.tooltipText = LFGConstructDeclinedMessage(dungeonID)
             end
-            UIDropDownMenu_AddButton(info)
+            UIDropDownMenu_AddButton(info, level)
         end
     end
 end
@@ -364,7 +336,7 @@ local function isRaidFinderDungeonDisplayable(dungeonID)--RaidFinder.lua
     local myLevel = UnitLevel("player")
     return myLevel >= minLevel and myLevel <= maxLevel and EXPANSION_LEVEL >= expansionLevel
 end
-local raidList=function()--团队本
+local raidList=function(self, level, type)--团队本
     local sortedDungeons, find = {}, nil
     local function InsertDungeonData(dungeonID, name, mapName, isAvailable, mapID)
         local t = { id = dungeonID, name = name, mapName = mapName, isAvailable = isAvailable, mapID = mapID }
@@ -410,7 +382,7 @@ local raidList=function()--团队本
             info.text = sortedDungeons[i].mapName
             info.isTitle = 1
             info.notCheckable = 1
-            UIDropDownMenu_AddButton(info)
+            UIDropDownMenu_AddButton(info, level)
         end
 
         local info = UIDropDownMenu_CreateInfo()
@@ -428,6 +400,8 @@ local raidList=function()--团队本
                     RaidFinderQueueFrame_SetRaid(sortedDungeons[i].id)
                     RaidFinderQueueFrame_Join()
                     printListInfo()--输出当前列表
+
+                    setTexture(nil, sortedDungeons[i].id, sortedDungeons[i].name, nil)--设置图标, 点击,提示
                 end
             end
             info.checked = sele
@@ -487,19 +461,102 @@ local raidList=function()--团队本
 			info.tooltipTitle = YOU_MAY_NOT_QUEUE_FOR_THIS
 			info.tooltipText = LFGConstructDeclinedMessage(sortedDungeons[i].id) .. modifiedInstanceTooltipText
         end
-        UIDropDownMenu_AddButton(info)
+        UIDropDownMenu_AddButton(info, level)
     end
     return find
 end
 
 
-local function InitList(self, level, arg1)--LFDFrame.lua
-    autoEnterLeavelInstance()--自动,离开, 进入, 副本
-    UIDropDownMenu_AddSeparator()
-    if  raidList() then --团本
-        UIDropDownMenu_AddSeparator()
+local function InitList(self, level, type)--LFDFrame.lua
+    local info
+    if type then        
+        info={}--自动, 准备进入,选英
+        info.text=e.Icon.toRight2..BATTLEFIELD_CONFIRM_STATUS
+        info.tooltipOnButton=true
+        info.tooltipTitle=SPECIFIC_DUNGEON_IS_READY
+        info.checked=Save.enterInstance
+        info.tooltipText=AUTO_JOIN:gsub(JOIN, ENTER_LFG)..': '..e.GetEnabeleDisable(Save.enterInstance)..'\n\n'..id..' '..addName
+        info.func=function()
+            if Save.enterInstance then
+                Save.enterInstance=nil
+            else
+                Save.enterInstance=true
+            end
+            setQueueStatus()--小眼睛, 信息
+        end
+        UIDropDownMenu_AddButton(info, level)
+    
+        info={}--自动, 离开副本,选项
+        info.text=e.Icon.toLeft2..LEAVE..'('..INSTANCE..')'
+        info.tooltipOnButton=true
+        info.tooltipTitle=LEAVE..' ('..SLASH_RANDOM3:gsub('/','')..') '..INSTANCE
+        info.checked=Save.leaveInstance
+        info.tooltipText=AUTO_JOIN:gsub(JOIN, LEAVE)..': '..e.GetEnabeleDisable(Save.leaveInstance)..'\n\n'..id..' '..addName
+        info.func=function()
+             if Save.leaveInstance then
+                 Save.leaveInstance=nil
+             else
+                 Save.leaveInstance=true
+             end
+             setQueueStatus()--小眼睛, 信息
+        end
+        UIDropDownMenu_AddButton(info, level)
+    
+        local num, text=0, ''
+        for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
+            local listNum, listText=getQueuedList(i,true)
+            if listNum and listText then
+                text= text~='' and text..'\n'..listText or listText
+                num=num+listNum
+            end
+        end
+        UIDropDownMenu_AddSeparator(level)
+
+        info={}--离开所有副本
+        info.text=LEAVE_ALL_QUEUES..' #'..num..'|r'
+        info.notCheckable=true
+        info.disabled= num==0
+        info.func=function ()
+        for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
+            LeaveLFG(i)
+        end
+        end
+        info.tooltipOnButton=true
+        info.tooltipTitle=	BATTLEFIELD_QUEUE_STATUS
+        info.tooltipText=text
+        UIDropDownMenu_AddButton(info, level)
+
+
+        UIDropDownMenu_AddSeparator(level)
+        info={}--信息 QueueStatusFrame.lua
+        info.text='|A:groupfinder-eye-frame:0:0|a'..SOCIAL_QUEUE_TOOLTIP_HEADER..INFO
+        info.checked=not Save.hideQueueStatus
+        info.func=function()
+            Save.hideQueueStatus = not Save.hideQueueStatus and true or nil
+            setQueueStatus()
+        end
+        UIDropDownMenu_AddButton(info, level)
+        
+    else
+        local isLeader, isTank, isHealer, isDPS = GetLFGRoles()--角色职责
+        info={
+            text=SETTINGS..(isLeader and e.Icon.leader or '')
+            ..(isTank and e.Icon.TANK or '')
+            ..(isHealer and e.Icon.HEALER or '')
+            ..(isDPS and e.Icon.DAMAGER or '')
+            ..((not isTank and not isHealer and not isDPS) and ' |cnRED_FONT_COLOR:'..ROLE..'|r' or '')
+            ..(not Save.hideQueueStatus and '|A:groupfinder-eye-frame:0:0|a' or ''),--提示信息
+            notCheckable=true,
+            menuList='SETTINGS',
+            hasArrow=true,
+        }
+        UIDropDownMenu_AddButton(info, level)
+        UIDropDownMenu_AddSeparator(level)
+        if  raidList(self, level, type) then --团本
+            UIDropDownMenu_AddSeparator(level)
+        end
+        partyList(self, level, type)--随机
     end
-    partyList()--随机
 end
 
 
@@ -677,24 +734,68 @@ local function setIslandButton(self)--离开海岛按钮
 end
 
 
-
---#######
---Init
---#######
-local Settings=nil--不是已启动
-local function Init()
-    if Settings then
-        return
+local function setHoliday()--节日, 提示, panel.texture
+    panel.dungeonID=nil
+    panel.name=nil
+    for i=1, GetNumRandomDungeons() do
+        local dungeonID, name = GetLFGRandomDungeonInfo(i)
+        if dungeonID then
+            local isAvailableForAll, isAvailableForPlayer, hid2eIfNotJoinable = IsLFGDungeonJoinable(dungeonID)
+            if (isAvailableForPlayer or not hid2eIfNotJoinable) and isAvailableForAll then
+                local isHoliday= select(15, GetLFGDungeonInfo(dungeonID))
+                if isHoliday then
+                    local numRewards = select(6, GetLFGDungeonRewards(dungeonID))
+                    if numRewards and numRewards>0 then--奖励物品
+                        for i2=1 , numRewards do
+                            local texturePath=select(2, GetLFGDungeonRewardInfo(dungeonID, i2))
+                            if texturePath then
+                                setTexture(dungeonID, nil, name, texturePath)--设置图标, 点击,提示
+                                return
+                            end
+                        end
+                    end
+                end
+            end
+        end
     end
 
-    local menuList= CreateFrame("Frame",nil, LFDMicroButton, "UIDropDownMenuTemplate")--菜单列表
-    UIDropDownMenu_Initialize(menuList, InitList, "MENU")
-    LFDMicroButton:HookScript('OnEnter', function(self2) ToggleDropDownMenu(1, nil, menuList, self2, -250,250) end)
+    setTexture()--设置图标
+end
+
+--####
+--初始
+--####
+local function Init()
+    panel.Menu= CreateFrame("Frame",nil, LFDMicroButton, "UIDropDownMenuTemplate")--菜单列表
+    UIDropDownMenu_Initialize(panel.Menu, InitList, "MENU")
+    
+    panel:SetScript('OnMouseDown', function(self, d)
+        if d=='LeftButton' and (self.dungeonID or self.RaidID) then
+            if self.dungeonID then
+                LFDQueueFrame_SetType(self.dungeonID)
+                LFDQueueFrame_Join()
+                printListInfo()--输出当前列表
+            else
+                RaidFinderQueueFrame_SetRaid(self.RaidID)
+                RaidFinderQueueFrame_Join()
+                printListInfo()--输出当前列表
+            end
+        else
+            ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+        end
+    end)
+    panel:SetScript('OnEnter',function(self)
+        if self.name and (self.dungeonID or self.RaidID) then
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddLine(self.name..e.Icon.left)
+            e.tips:Show()
+        end
+    end)
+    panel:SetScript('OnLeave', function() e.tips:Hide() end)
 
     LFGDungeonReadyDialog:HookScript("OnShow", setLFGDungeonReadyDialog)--自动进入FB
-    Settings=true
 
-    hooksecurefunc('QueueStatusDropDown_Show', setQueueStatusMenu)--小眼睛, 信息, 设置菜单
     hooksecurefunc(QueueStatusFrame, 'Update', setQueueStatus)--小眼睛, 更新信息, QueueStatusFrame.lua
 
     local isLeader, isTank, isHealer, isDPS = GetLFGRoles()--检测是否选定角色pve
@@ -713,35 +814,36 @@ local function Init()
         end
         SetLFGRoles(isLeader, isTank, isHealer, isDPS)
     end
+
+    setHoliday()--节日, 提示, panel.texture
+    
+    --hooksecurefunc('QueueStatusDropDown_Show', setQueueStatusMenu)--小眼睛, 信息, 设置菜单
+    --LFDMicroButton:HookScript('OnEnter', function(self2) ToggleDropDownMenu(1, nil, menuList, self2, -250,250) end)
 end
+
 --###########
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
+panel:RegisterEvent('PLAYER_LOGOUT') 
 
 panel:RegisterEvent('LFG_COMPLETION_REWARD')
 panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 panel:RegisterEvent('ISLAND_COMPLETED')
 
+panel:RegisterEvent('LFG_UPDATE_RANDOM_INFO')
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
             wowSave=WoWToolsSave and WoWToolsSave[INSTANCE] or wowSave
-            --添加控制面板        
-            local sel=e.CPanel(addName, not Save.disabled, true)
-            sel:SetScript('OnClick', function()
-                if Save.disabled then
-                    Save.disabled=nil
-                else
-                    Save.disabled=true
-                end
-                if Settings then
-                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), NEED..' /reload')
-                end
-                Init()
-            end)
-            if not Save.disabled then
+
+            if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
+                panel:SetShown(false)
+                panel:UnregisterAllEvents()
+            else
+                Save= WoWToolsSave and WoWToolsSave[addName] or Save
                 Init()
             end
     elseif event == "PLAYER_LOGOUT" then
@@ -750,23 +852,25 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave[addName]=Save
             WoWToolsSave[INSTANCE]=wowSave
         end
-    elseif not Save.disabled then
 
-        if event=='LFG_COMPLETION_REWARD' or event=='LOOT_CLOSED' then
+    elseif event=='LFG_COMPLETION_REWARD' or event=='LOOT_CLOSED' then
             leaveInstance()--自动离开
 
-        elseif event=='PLAYER_ENTERING_WORLD' then
-            if IsInInstance() then--自动离开
-                panel:RegisterEvent('LOOT_CLOSED')
-            else
-                panel:UnregisterEvent('LOOT_CLOSED')
-            end
-            C_Timer.After(2, function()
-                setIslandButton(self)--离开海岛按钮
-            end)
-        elseif event=='ISLAND_COMPLETED' then
-            levelIsland()--离开海岛
+    elseif event=='PLAYER_ENTERING_WORLD' then
+        if IsInInstance() then--自动离开
+            panel:RegisterEvent('LOOT_CLOSED')
+        else
+            panel:UnregisterEvent('LOOT_CLOSED')
         end
+        C_Timer.After(2, function()
+            setIslandButton(self)--离开海岛按钮
+        end)
+
+    elseif event=='ISLAND_COMPLETED' then
+        levelIsland()--离开海岛
+
+    elseif event=='LFG_UPDATE_RANDOM_INFO' then
+        setHoliday()--节日, 提示, panel.texture
     end
 end)
 
