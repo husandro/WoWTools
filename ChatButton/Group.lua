@@ -80,8 +80,11 @@ local function setGroupTips()--队伍信息提示
 
     if isInGroup then--职责提示
         panel.texture:SetAtlas( roleAtlas[combatRole] or roleAtlas['NONE'])
+    else
+        panel.texture:SetAtlas('socialqueuing-icon-group')
     end
-    panel.texture:SetShown(isInGroup)
+    --panel.texture:SetDesaturated(not isInGroup)
+    --panel.texture:SetShown(isInGroup)
 
     if panel.typeText then
         panel.typeText:SetShown(isInGroup)
@@ -239,7 +242,7 @@ local function Init()
         local text= d==1 and Save.mouseUP or d==-1 and Save.mouseDown
         if text then
             text=setText(text)--处理%s
-            e.Chat(text)
+            e.Chat(text, nil, true)
         end
     end)
 

@@ -86,7 +86,7 @@ local function InitMenu(self, level, type)--主菜单
                                 end
                             end
                         end
-                        if gameAccountInfo.characterLevel then--等级
+                        if gameAccountInfo.characterLevel and gameAccountInfo.characterLevel~=MAX_PLAYER_LEVEL then--等级
                             text=text ..' |cff00ff00'..gameAccountInfo.characterLevel..'|r'
                         end              
                     end
@@ -113,7 +113,7 @@ local function InitMenu(self, level, type)--主菜单
                 local game=C_FriendList.GetFriendInfoByIndex(i)
                 if game and game.connected and (game.guid or game.name) and not game.mobile then--and not game.afk and not game.dnd then 
                     local text=game.guid and e.GetPlayerInfo(nil, game.guid, true) or game.name--角色信息
-                    text= game.level and text .. ' |cff00ff00'..game.level..'|r' or text--等级
+                    text= (game.level and game.level~=MAX_PLAYER_LEVEL) and text .. ' |cff00ff00'..game.level..'|r' or text--等级
                     if game.area then
                         if game.area == map then--地区
                             text= text..e.Icon.map2
@@ -121,12 +121,12 @@ local function InitMenu(self, level, type)--主菜单
                             text= text..' '..game.area
                         end
                     end
-                    text= game.afk and text..'|cnRED_FONT_COLOR:'..CHAT_FLAG_AFK..'|r' or text--AFK
                     info={
                         text=text, 
                         notCheckable=true, 
                         tooltipOnButton=true,
                         tooltipTitle=game.notes,
+                        icon= game.afk and FRIENDS_TEXTURE_AFK or game.dnd and FRIENDS_TEXTURE_DND,
                         func=function()
                             e.Say('/w', game.name)
                             panel.type='/w'
@@ -193,7 +193,7 @@ local function InitMenu(self, level, type)--主菜单
                         end
                         local t2='';                    
                         if zone.level then 
-                            if lv and zone.level<lv then
+                            if zone.level~=MAX_PLAYER_LEVEL then
                                 info.text=info.text..' |cffff0000'..zone.level..'|r'
                                 t2=t2..LEVEL..': |cffff0000'..zone.level..'|r';
                             else
@@ -266,12 +266,12 @@ local function InitMenu(self, level, type)--主菜单
                 info.menuList='WHISPER'
                 info.hasArrow=true
             end
-            
             UIDropDownMenu_AddButton(info, level)
         end
 
         UIDropDownMenu_AddSeparator(level)
-        local numOline= 0;--战网在线数量
+        local numOline
+        numOline= 0;--战网在线数量
         for i=1 ,BNGetNumFriends() do
             local wow=C_BattleNet.GetFriendAccountInfo(i)
             if wow and wow.gameAccountInfo and wow.gameAccountInfo.isOnline  then

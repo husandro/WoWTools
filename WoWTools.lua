@@ -81,23 +81,42 @@ e.Class=function(unit, class, reAltlas)--职业图标
     end
 end
 
-e.GetPlayerInfo=function (unit, guid, showName)
+e.GetPlayerInfo=function (unit, guid, showName)--, hideClassTexture)
     if unit then
         if showName then
-            return e.Race(unit)..e.Class(unit)..'|c'..select(4,GetClassColor(UnitClassBase(unit)))..GetUnitName(unit, true)..'|r'
+            return e.Race(unit)..(not showName and e.Class(unit) or '')..'|c'..select(4,GetClassColor(UnitClassBase(unit)))..GetUnitName(unit, true)..'|r'
         else
-            return e.Race(unit)..e.Class(unit)
+            return e.Race(unit)..(not showName and e.Class(unit) or '')
         end
     elseif guid then
         local _, englishClass, _, englishRace, sex, name, realm = GetPlayerInfoByGUID(guid)
         if showName then
             realm = (realm and realm~=e.Player.server) and '|cnGREEN_FONT_COLOR:*|r' or ''
-            return e.Race(nil, englishRace, sex)..e.Class(nil, englishClass)..'|c'..select(4,GetClassColor(englishClass))..name..realm..'|r'
+            return e.Race(nil, englishRace, sex)..(not showName and  e.Class(nil, englishClass) or '')..'|c'..select(4,GetClassColor(englishClass))..name..realm..'|r'
         else
-            return e.Race(nil, englishRace, sex)..e.Class(nil, englishClass)
+            return e.Race(nil, englishRace, sex)..(not showName and  e.Class(nil, englishClass) or '')
         end
     end
     return ''
+end
+
+e.GetNpcID = function(unit)--NPC ID
+    if UnitExists(unit) then
+        local guid=UnitGUID(unit)
+        if guid then
+        return select(6,  strsplit("-", guid));
+        end
+    end
+end
+
+e.GetUnitMapName=function(unit)--单位, 地图名称
+    local uiMapID= C_Map.GetBestMapForUnit(unit)
+    if uiMapID then
+        local info = C_Map.GetMapInfo(uiMapID)
+        if info and info.name then 
+            return info.name
+        end
+    end
 end
 
 e.Player={
@@ -190,26 +209,12 @@ e.Icon={
 
     info2='|A:questlegendary:0:0|a',--黄色!
 }
---Interface\Common\WhiteIconFrame 提示方形外框
-e.GetNpcID = function(unit)--NPC ID
-    if UnitExists(unit) then
-        local guid=UnitGUID(unit)
-        if guid then
-        return select(6,  strsplit("-", guid));
-        end
-    end
-end
-
-e.GetUnitMapName=function(unit)--单位, 地图名称
-    local uiMapID= C_Map.GetBestMapForUnit(unit)
-    if uiMapID then
-        local info = C_Map.GetMapInfo(uiMapID)
-        if info and info.name then 
-            return info.name
-        end
-    end
-end
-
+--[[
+    Interface\Common\WhiteIconFrame 提示方形外框
+    FRIENDS_TEXTURE_DND 忙碌texture FRIENDS_LIST_BUSY
+    FRIENDS_TEXTURE_AFK 离开 AFK FRIENDS_LIST_AWAY 
+    FRIENDS_TEXTURE_ONLINE 	有空 FRIENDS_LIST_AVAILABLE
+]]
 e.MK=function(number,bit)
     bit = bit or 1
     if number>=1e6 then
@@ -666,7 +671,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
     end
 end)
 
-e.Chat=function(text,name)--v9.25设置
+e.Chat=function(text,name, setPrint)--v9.25设置
     if text then
         if name then
             SendChatMessage(text, 'WHISPER',nil, name);
@@ -685,6 +690,9 @@ e.Chat=function(text,name)--v9.25设置
 
         elseif not UnitIsDeadOrGhost('player') and not IsResting() then
             SendChatMessage(text, 'SAY');
+
+        elseif setPrint then
+            print(text)
         end 
     end 
 end
