@@ -132,11 +132,11 @@ end
 local function getReadyCheckStatus(unit, index)
     local stat=GetReadyCheckStatus(unit)
     if stat=='ready' then
-        return index..")"..e.Icon.select2..e.GetPlayerInfo(unit, nil, true)
+        return '|cnGREEN_FONT_COLOR:'..index..")|r"..e.Icon.select2..e.GetPlayerInfo(unit, nil, true)
     elseif stat=='waiting' then
         return index..")   "..e.GetPlayerInfo(unit, nil, true)
     elseif stat=='notready' then
-        return index..")"..e.Icon.O2..e.GetPlayerInfo(unit, nil, true)..(UnitIsAFK(unit) and '|cff606060<'..AFK..'>|r' or not UnitIsConnected(unit) and 	'|cff606060<'..PLAYER_OFFLINE..'>|r' or '')
+        return '|cnRED_FONT_COLOR:'..index..")|r"..e.Icon.O2..e.GetPlayerInfo(unit, nil, true)..(UnitIsAFK(unit) and '|cff606060<'..AFK..'>|r' or not UnitIsConnected(unit) and 	'|cff606060<'..PLAYER_OFFLINE..'>|r' or '')
     end
 end
 local function setGroupReadyTips(event, arg1, arg2)
@@ -149,7 +149,7 @@ local function setGroupReadyTips(event, arg1, arg2)
             for index= 1, num do
                 local text2=getReadyCheckStatus(unit..index, index)
                 if text2 then
-                        text= (text~='' and text..'\n' or text)..text2
+                    text= (text~='' and text..'\n' or text)..text2
                 end
             end
         else
