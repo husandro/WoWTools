@@ -338,7 +338,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 else
                     Save.disabled=true
                 end
-                print(addName, e.GetEnabeleDisable(not Save.disabled), NEED..' /reload')
+                print(addName, e.GetEnabeleDisable(not Save.disabled), 	REQUIRES_RELOAD)
             end)
 
             sel:SetScript('OnEnter', function(self2)

@@ -46,7 +46,7 @@ WoWPlus\UnitFrame.lua
 ##WowPlus\AuctionHouse.lua
 WowPlus\QuickJoin.lua
 WoWPlus\FriendsList.lua
-
+WowPlus\Minimap.lua
 
 GamePlus\Gossip.lua
 GamePlus\SellBuy.lua
