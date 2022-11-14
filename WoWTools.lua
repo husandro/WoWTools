@@ -104,7 +104,7 @@ e.GetNpcID = function(unit)--NPC ID
     if UnitExists(unit) then
         local guid=UnitGUID(unit)
         if guid then
-        return select(6,  strsplit("-", guid));
+            return select(6,  strsplit("-", guid));
         end
     end
 end
@@ -671,7 +671,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
     end
 end)
 
-e.Chat=function(text,name, setPrint)--v9.25设置
+e.Chat=function(text, name, setPrint)--v9.25设置
     if text then
         if name then
             SendChatMessage(text, 'WHISPER',nil, name);

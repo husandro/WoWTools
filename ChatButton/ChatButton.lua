@@ -41,6 +41,7 @@ local function Init()
             SetCursor('UI_MOVE_CURSOR')
 
         elseif d=='RightButton' and IsAltKeyDown() then--还原
+            Save.Point=nil
             panel:ClearAllPoints()
             panel:SetPoint('BOTTOMLEFT', SELECTED_CHAT_FRAME, 'TOPLEFT', -5, 30)
         end
