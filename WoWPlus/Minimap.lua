@@ -14,7 +14,6 @@ local function Init()
     end
     frame.ScaleIn=e.Cbtn(Minimap, nil, nil, nil, nil, true, {20,20})
     frame.ScaleIn:SetPoint('TOP',-2, 13)
-    --frame.ScaleIn:SetPoint('TOP')
     frame.ScaleIn:SetScript('OnMouseDown', function(self, d)
         local scale = Save.scale or 1
         scale= scale+0.1
@@ -23,6 +22,14 @@ local function Init()
         Save.scale=scale
         print(id, addName, UI_SCALE, scale)
     end)
+    frame.ScaleIn:SetScript('OnEnter', function(self2)
+        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(ZOOM_IN, UI_SCALE..(Save.scale or 1))
+        e.tips:Show()
+    end)
+    frame.ScaleIn:SetScript('OnLeave', function() e.tips:Hide() end)
 
     frame.ScaleOut=e.Cbtn(Minimap, nil, nil, nil, nil, true, {20,20})
     frame.ScaleOut:SetPoint('BOTTOM', -1, -13)
@@ -34,7 +41,14 @@ local function Init()
         Save.scale=scale
         print(id, addName, UI_SCALE, scale)
     end)
-
+    frame.ScaleOut:SetScript('OnEnter', function(self2)
+        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(ZOOM_OUT, UI_SCALE..(Save.scale or 1))
+        e.tips:Show()
+    end)
+    frame.ScaleOut:SetScript('OnLeave', function() e.tips:Hide() end)
 end
 
 --###########
@@ -58,6 +72,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                  end
                  print(id, addName, e.GetEnabeleDisable(not Save.disabled), 	REQUIRES_RELOAD)
              end)
+             sel:SetScript('OnEnter', function(self2)
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(id, addName)
+                e.tips:AddDoubleLine(UI_SCALE, Save.scale or 1)
+                e.tips:Show()
+            end)
+            sel:SetScript('OnLeave', function() e.tips:Hide() end)
 
             if not Save.disabled then
                 Init()
