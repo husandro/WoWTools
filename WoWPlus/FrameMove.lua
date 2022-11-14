@@ -91,48 +91,35 @@ end
     F:SetScript("OnLeave", function() ResetCursor() end);
 end
 
-
 local FrameTab={
     AddonList={},--插件
-
     GameMenuFrame={save=true,},--菜单
     ProfessionsFrame={},--专业
     CharacterFrame={},--角色
     ReputationDetailFrame={save=true},--声望描述q
     TokenFramePopup={save=true},--货币设置
     SpellBookFrame={},--法术书
-
     PVEFrame={},--地下城和团队副本
     HelpFrame={},--客服支持
     MacroFrame={},--宏
     ExtraActionButton1={save=true, click='R' },--额外技能
-
-    --ContainerFrameCombinedBags={},--包
-
     ChatConfigFrame={save=true},--聊天设置
     SettingsPanel={},--选项
-    --ZoneAbilityFrame.SpellButtonContainer = {save=true, click='R'},
     UIWidgetPowerBarContainerFrame={},
     FriendsFrame={},--好友列表
-
     GossipFrame={},
     QuestFrame={},
-    
     BlackMarketFrame={},--黑市
     BankFrame={save=true},--银行
-    --UIWidgetBelowMinimapContainerFrame={save=true,click='RightButton'},
     MerchantFrame={},--货物
     ClassTrainerFrame={},--专业训练师
-
     ColorPickerFrame={save=true},--颜色选择器
-
-   
-    BFAMissionFrame={},--侦查地图
-
-    
+    BFAMissionFrame={},--侦查地图    
     WorldMapFrame={},--世界地图
 };
-
+--UIWidgetBelowMinimapContainerFrame={save=true,click='RightButton'},
+--ZoneAbilityFrame.SpellButtonContainer = {save=true, click='R'},
+--ContainerFrameCombinedBags={},--包
 
 local function setTabInit()
     for k, v in pairs(FrameTab) do
