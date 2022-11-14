@@ -4,19 +4,15 @@ local addName=NPE_MOVE..'Frame'
 
 local Point=function(frame, name2)
     local p=Save.point
-    p=p[name2] and p[name2][1]
+    p=p[name2]
     if p and p[1] and p[3] and p[4] and p[5] then
-        if frame == ContainerFrameCombinedBags then
-            frame:SetPoint(p[1], frame:GetParent(), p[3], p[4], p[5])--WorldFrame
-        else
-            frame:ClearAllPoints()
-            frame:SetPoint(p[1], UIParent, p[3], p[4], p[5])--WorldFrame
-        end
+        frame:ClearAllPoints()
+        frame:SetPoint(p[1], UIParent, p[3], p[4], p[5])
     end
 end
 
 local Move=function(F, tab)
-    local F2, click, save, enter, show, fun, re=tab.frame, tab.click, tab.save, tab.enter, tab.show, tab.fun, tab.re;--, tab.hook;    
+    local F2, click, save, enter, show,  re =tab.frame, tab.click, tab.save, tab.enter, tab.show, tab.re;--, tab.hook;    
     if not F2 and not F then
         return
     end
@@ -51,13 +47,8 @@ local Move=function(F, tab)
             ResetCursor();
             F2:StopMovingOrSizing();
             if save then
-                local point={}
-                local n=F2:GetNumPoints()
-                for i=1,n do
-                    table.insert(point, {F2:GetPoint(i)})
-                    break
-                end
-                Save.point[name]=point
+                Save.point[name]={F2:GetPoint(1)}
+                Save.point[name][2]=nil
             end;
     end);
 
@@ -76,7 +67,6 @@ local Move=function(F, tab)
                     if point then
                         F2:SetPoint(point[1], point[2], point[3], point[4], point[5]);
                     end
-                    --print(name..': '..TRANSMOGRIFY_TOOLTIP_REVERT..'('..LOCK_FOCUS_FRAME..')|cffff0000/reload|r');
                 end
                 ResetCursor();
         end);
@@ -86,29 +76,7 @@ local Move=function(F, tab)
         if show  then
             F:SetScript("OnShow", function() Point(F2,name) end);
         end
-        --[[if hook then
-            hook=hook:gsub(' ','');
-            local  fr, ev=hook:match('(.+):(.+)');
-            if fr and ev and _G[fr] then
-                if _G[fr]:HasScript(ev) then                    
-                    _G[fr]:HookScript(ev, function()
-                            Point(F2,name);
-                    end) 
-                else
-                    print(name..'('..NONE..')'..ev);                    
-                end
-            end            
-        else]]if fun then
-            fun=fun:gsub(' ','');
-            local  fr, ev=fun:match('(.+):(.+)');
-            if fr and ev and _G[fr] then
-                hooksecurefunc(_G[fr], ev, function()
-                        Point(F2,name);
-                end)
-            elseif _G[fun]  then
-                hooksecurefunc(fun, function() Point(F2,name) end);
-            end
-        end
+        
     end
 if re then
     F2:SetResizable(true)
@@ -126,7 +94,6 @@ end
 
 local FrameTab={
     AddonList={},--插件
-
 
     GameMenuFrame={save=true,},--菜单
     ProfessionsFrame={},--专业
@@ -178,6 +145,7 @@ local function setTabInit()
         end
     end
 end
+
 local function setClass()--职业,能量条
     if e.Player.class== 'PALADIN' then
         local frame = PaladinPowerBarFrame;--圣骑士能量条, 
@@ -301,16 +269,9 @@ local function setAddLoad(arg1)
         
     elseif arg1=='Blizzard_FlightMap' then--飞行地图
         Move(FlightMapFrame, {})
- --[[
-    else
-      
- if arg1 then
-            print(id, addName, arg1)
-        en
-
-]]
     end
 end
+
 
 local function setInit()
     Move(ZoneAbilityFrame.SpellButtonContainer, {save=true, click='R'})
@@ -335,24 +296,36 @@ local function setInit()
     Move(DressUpFrame.TitleContainer, {frame = DressUpFrame})--试衣间    
     Move(LootFrame.TitleContainer, {frame=LootFrame, save=true})--物品拾取
 
-end
-
---[[
-hooksecurefunc("UpdateContainerFrameAnchors", function()
-    for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
-        frame:ClearAllPoints();
+    if QueueStatusButton then--小眼睛, 信息, 设置菜单,移动
+        hooksecurefunc('QueueStatusDropDown_Show', function()
+            UIDropDownMenu_AddSeparator()
+            local info={
+                text=NPE_MOVE..e.Icon.left,
+                notCheckable=true,
+                tooltipOnButton=true,
+                tooltipTitle=REQUIRES_RELOAD,
+                tooltipText=id..'\n'..addName,
+                func= function()
+                    Move(QueueStatusButton, {save=true})
+                    print(id, addName, '|cnGREEN_FONT_COLOR:'..REQUIRES_RELOAD..'|r', 'Alt+'..e.Icon.right..RESET_POSITION )
+                end
+            }
+            UIDropDownMenu_AddButton(info)
+        end)
+        local p=Save.point['QueueStatusButton']
+        if p and p[1] and p[3] and p[4] and p[5] then 
+            QueueStatusButton:ClearAllPoints()
+            QueueStatusButton:SetPoint(p[1],UIParent, p[3], p[4], p[5])
+        end
     end
-end)
-
-]]
-
-
+end
 
 --加载保存数据
 local panel=CreateFrame("Frame")
 
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
@@ -364,19 +337,20 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 else
                     Save.disabled=true
                 end
-               -- print(addName, e.GetEnabeleDisable(not Save.disabled), NEED..' /reload')
+                print(addName, e.GetEnabeleDisable(not Save.disabled), REQUIRES_RELOAD)
             end)
             if not Save.disabled then
                 setInit()
                 setTabInit()
                 setClass()--职业,能量条
             end
+
     elseif event=='ADDON_LOADED' then
         if not Save.disabled then
             setAddLoad(arg1)
             setTabInit()
         end
-       -- if arg1 then print(id, addName, arg1) end
+        
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end
@@ -384,120 +358,3 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
     end
 end)
-
---[[
-     ContainerFrame1={save=true},
-    ContainerFrame2={save=true},
-    ContainerFrame3={save=true},
-    ContainerFrame4={save=true},
-    ContainerFrame5={save=true},
-    ContainerFrame6={save=true},
-
-    --ZoneAbilityFrame={save=true,enter=true},
-    --ObjectiveTrackerBlocksFrame={click='R',},
-    
-    
- 
-    
-   
-  
-    
-    CompanionFrame={},
-    ReputationDetailFrame={},
-    SkillFrame={},
-    --  HonorFrame={},
-    PVPFrame={},
-    PVPFrameHonor={},
-    PVPFrameArena={},
-    PVPTeam1={},
-    PVPTeam2={},
-    PVPTeam3={},
-    DestinyFrame={},
-    
-    RaidInfoFrame={},
-    GuildInviteFrame={},
-    GuildRegistrarFrame={},
-    
-    InterfaceOptionsFrame={},
-    ItemTextFrame={},
-    --  LFGParentFrame={},
-    LootFrame={},
-    PetitionFrame={},
-    PetStableFrame={},
-    ScenarioQueueFrameSpecific={},
-    
-    QuestLogFrame={},
-    QuestLogPopupDetailFrame={},
-    ReadyCheckFrame={},
-    RecruitAFriendRecruitmentFrame={},
-    RecruitAFriendRewardsFrame={},
-    SplashFrame={},
-    TabardFrame={},
-    TaxiFrame={save=true},
-    VideoOptionsFrame={},
-    
-    WorldStateScoreFrame={},
-    AlliedRacesFrame={},
-    AnimaDiversionFrame={},
-    ArchaeologyFrame={},
-    ArcheologyDigsiteProgressBar={},
-    ArtifactFrame={},
-    AuctionFrame={},
-    AzeriteRespecFrame={},
-    BarberShopFrame={},
-    KeyBindingFrame={},
-    
-   
-    ChallengesKeystoneFrame={save=true, },
-    ChannelFrame={},
-    ClickBindingFrame={},
-    ClubFinderGuildFinderFrame={},
-    ContributionCollectionFrame={},
-    CovenantPreviewFrame={},
-    CovenantRenownFrame={},
-    CovenantSanctumFrame={},
-    CraftFrame={},
-    DeathRecapFrame={},
-   
-    GarrisonBuildingFrame={},
-    OrderHallMissionFrame={},
-    BFAMissionFrame={},
-    GMSurveyFrame={},
-    GuildBankFrame={},
-    GuildFrame={},
-    InspectFrame={},
-    IslandsPartyPoseFrame={},
-    IslandsQueueFrame={},
-    TransmogrifyFrame={},
-    ItemInteractionFrame={},
-    ItemSocketingFrame={},
-    ItemUpgradeFrame={},
-    LookingForGuildFrame={},
-    OrderHallTalentFrame={},
-   
-    ReforgingFrame={},
-    RuneforgeFrame={},
-    ScrappingMachineFrame={},
-    SoulbindViewer={},
-    TalentFrame={},
-   
-    TalkingHeadFrame={save=true},
-    TorghastLevelPickerFrame={},
-    TradeSkillFrame={},
-    UIWidgetBelowMinimapContainerFrame={},
-    WarboardQuestChoiceFrame={},
-    WarfrontsPartyPoseFrame={},
-    WeeklyRewardsFrame={},
-    ObliterumForgeFrame={},
-
-    VehicleSeatIndicator={save=true, fun='VehicleSeatIndicator_Update',},
-   
-    DurabilityFrame={save=true,enter=true,show=true},
-    ExtraActionButton1={save=true, frame=ExtraActionFrame,click='R'},
-    CollectionsJournal={},
-    --MountJournal={frame=_G.CollectionsJournal},
-    --ZoneAbilityFrame={save=true,enter=true}
-    PlayerPowerBarAltStatusFrame={save=true},
-    CovenantMissionFrame={save=true},
-
-]]
