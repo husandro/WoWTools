@@ -4,7 +4,9 @@ local addName=	QUICK_JOIN
 
 local function set_SOCIAL_QUEUE_UPDATE()
     local self=QuickJoinToastButton
-    if not self or not self:IsVisible() then return end
+    if not self then
+        return
+    end
     
     if not self.quickJoinText then
         self.quickJoinText= self:CreateFontString()
@@ -17,14 +19,24 @@ local function set_SOCIAL_QUEUE_UPDATE()
                 elseif b=='LeftButton' then
                     ToggleFriendsPanel();
                 end            
-        end);
+        end)
         self:SetScript("OnMouseWheel", function(self2, b)
                 if b==1 then
                     ToggleFriendsFrame(2);
                 elseif b==-1 then                
                     ToggleRaidFrame();
                 end            
-        end);
+        end)
+        self:SetScript('OnEnter', function(self2)
+            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddLine(e.Icon.left..FRIENDS)
+            e.tips:AddLine(e.Icon.mid..WHO)
+            e.tips:AddLine(e.Icon.mid..RAID)
+            e.tips:AddLine(e.Icon.right..QUICK_JOIN)
+            e.tips:Show()
+        end)
+        self:SetScript('OnLeave', function() e.tips:Hide() end)
     end
     
     local n=#C_SocialQueue.GetAllGroups();
@@ -45,44 +57,45 @@ local function Init()
             
             local icon, icon2 = nil, '';--角色图标
             if self.guid then
-                local p= select(8, C_SocialQueue.GetGroupInfo(self.guid));            
-                if p then
-                    local _, class, _, race, sex = GetPlayerInfoByGUID(p);
-                    
-                    icon=e.Race(nil, race, sex, true);
+                local guid= select(8, C_SocialQueue.GetGroupInfo(self.guid));            
+                if guid then
+                    local _, class, _, race, sex = GetPlayerInfoByGUID(guid);
+                    if race and sex then
+                        icon=e.Race(nil, race, sex, true);
+                    end
                     if class then 
                         icon2='groupfinder-icon-class-'..class;
-                        if not frame.class then
-                            frame.class=frame:CreateTexture();
-                            frame.class:SetSize(20,20);
-                            frame.class:SetPoint('RIGHT', frame, 'RIGHT', 0,0);
-                        end
-                        
                     end
                 end
-                icon=icon or 'communities-icon-chat';
                 
                 if not frame.chat then--悄悄话
                     frame.chat=e.Cbtn(frame, nil, nil, nil, nil, true, {20,20})
-                    frame.chat:SetPoint('RIGHT', (frame.Icon or frame), 'LEFT', 0,0);
+                    frame.chat:SetPoint('RIGHT', (frame.Icon or frame), 'LEFT')
                     frame.chat:SetScript('OnClick',function()
-                            local player=frame.Members[1].playerLink
-                            if player then
-                                local link, text = LinkUtil.SplitLink(player);
-                                SetItemRef(link, text, "LeftButton");
-                            end
-                    end);   
-                    
+                        local player=frame.Members[1].playerLink
+                        if player then
+                            local link, text = LinkUtil.SplitLink(player);
+                            SetItemRef(link, text, "LeftButton");
+                        end
+                    end)
                     frame:HookScript("OnDoubleClick", function()
-                            QuickJoinFrame:JoinQueue();
+                        QuickJoinFrame:JoinQueue();
                     end);                
                 end
-                
+                icon=icon or 'communities-icon-chat';
                 frame.chat:SetNormalAtlas(icon);            
                 
-                if frame.class then
-                    icon2=icon2 or '';
-                    frame.class:SetAtlas(icon2);                
+                if not frame.class and icon2 then--角色职业图标
+                    frame.class=frame:CreateTexture();
+                    frame.class:SetSize(20,20);
+                    frame.class:SetPoint('RIGHT', frame, 'RIGHT', 0,0);
+                end
+
+                if frame.class then--种族图标
+                    if icon2 then
+                        frame.class:SetAtlas(icon2)
+                    end
+                    frame.class:SetShown(icon2 and true or false)
                 end            
             end            
     end)   
