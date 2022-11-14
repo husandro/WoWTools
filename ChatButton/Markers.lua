@@ -179,6 +179,7 @@ local function setGroupReadyTips(event, arg1, arg2)
                 elseif d=='RightButton' and not key then
 
                 elseif d=='RightButton' and IsAltKeyDown() then
+                    Save.groupReadyTipsPoint=nil
                     self:ClearAllPoints()
                     self:SetPoint('BOTTOMLEFT', panel, 'TOPLEFT', 0, 20)
                 end

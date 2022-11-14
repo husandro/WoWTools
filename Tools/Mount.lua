@@ -81,9 +81,6 @@ local function setPanelPostion()--设置按钮位置
         panel:SetParent(UIParent)
     else
         panel:SetPoint('RIGHT', CharacterReagentBag0Slot, 'LEFT', -60 ,0)
-       -- panel:SetParent(CharacterReagentBag0Slot)
-        
-        --panel:SetPoint('RIGHT', _G['HearthstoneToolsFrame'], 'LEFT',0,0)
     end
 end
 

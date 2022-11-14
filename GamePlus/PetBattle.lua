@@ -232,6 +232,7 @@ hooksecurefunc('PetBattleFrame_UpdateAllActionButtons', function(self)
         end)
         panel.EnemyFrame:SetScript('OnMouseDown', function(self2, d)
             if d=='RightButton' and IsAltKeyDown() then
+                Save.EnemyFramePoint=nil
                 self2:ClearAllPoints()
                 self2:SetPoint('BOTTOMLEFT', PetBattleFrame.BottomFrame , 'TOPLEFT',40,40)
             else
