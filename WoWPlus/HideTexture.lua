@@ -1,10 +1,12 @@
 local id, e= ...
 local addName=HIDE..TEXTURES_SUBHEADER
 local Save={}
-local function Set()
-    if Save.disabled then
-        return
-    end
+
+
+--######
+--初始化
+--######
+local function Init()
     ExtraActionButton1.style:Hide()--额外技能
     ZoneAbilityFrame.Style:Hide()--区域技能
 
@@ -43,12 +45,33 @@ local function Set()
     
     LootFrameBg:Hide()--拾取
 end
+
+local function set_UNIT_ENTERED_VEHICLE()
+    OverrideActionBarEndCapL:Hide()
+    OverrideActionBarEndCapR:Hide()
+    OverrideActionBarBorder:Hide()
+    OverrideActionBarBG:Hide()
+    OverrideActionBarButtonBGMid:Hide()     
+    OverrideActionBarButtonBGR:Hide()
+    OverrideActionBarButtonBGL:Hide()
+    
+    OverrideActionBarMicroBGMid:Hide()
+    OverrideActionBarMicroBGR:Hide()
+    OverrideActionBarMicroBGL:Hide()
+    OverrideActionBarLeaveFrameExitBG:Hide()
+    
+    OverrideActionBarDivider2:Hide()
+    OverrideActionBarLeaveFrameDivider3:Hide()
+end
 --###########
 --加载保存数据
 --###########
 local panel=CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+
+
+panel:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1== id then
         Save= WoWToolsSave and WoWToolsSave[addName] or Save
@@ -58,19 +81,25 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             sel:SetScript('OnClick', function()
                 if Save.disabled then
                     Save.disabled=nil
-                    Set()
-                    print(addName, e.GetEnabeleDisable(not Save.disabled))
                 else
                     Save.disabled=true
-                    print(addName, e.GetEnabeleDisable(not Save.disabled), NEED..' /reload')
                 end
+                print(addName, e.GetEnabeleDisable(not Save.disabled), REQUIRES_RELOAD)
             end)
-            Set()
+
+            if Save.disabled then
+                panel:UnregisterAllEvents()
+            else
+                Init()
+            end
+            panel:RegisterEvent("PLAYER_LOGOUT")
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end
             WoWToolsSave[addName]=Save
         end
+    elseif event=='UNIT_ENTERED_VEHICLE' then
+        set_UNIT_ENTERED_VEHICLE()
     end
 end)

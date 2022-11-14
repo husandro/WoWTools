@@ -1,5 +1,6 @@
 local id, e = ...
-local addName= INTERRUPT..DISPELS
+local addName= 	INTERRUPTS..DISPELS..ACTION_SPELL_STOLEN
+
 local Save={}
 local panel=CreateFrame("Frame")
 
@@ -20,49 +21,47 @@ local UMark={--'|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..t..':0|t'
     [128]='{rt8}',
 }
 
-
---######
---初始化
---######
---[[
-local function Init()
-    
-end
-
-]]
-
-local function setEvent()--注册事件
-    if Save.disabled then
-        panel:UnregisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
-    else
-        panel:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
+local function set_COMBAT_LOG_EVENT_UNFILTERED()
+    local _, eventType, _, sourceGUID, _, _, sourceRaidFlags, _, _, _, destRaidFlags ,spellID, _,_, extraSpellID= CombatLogGetCurrentEventInfo()
+    if (eventType=="SPELL_INTERRUPT" or eventType=="SPELL_DISPEL" or eventType=="SPELL_STOLEN") and sourceGUID==playerGUID and spellID and extraSpellID then
+        local text=(UMark[sourceRaidFlags] or '')..GetSpellLink(spellID)..de..GetSpellLink(extraSpellID)..(UMark[destRaidFlags] or '')
+        e.Chat(text, nil, true)
     end
 end
 
 
 panel:RegisterEvent('ADDON_LOADED')
-panel:RegisterEvent('PLAYER_LOGOUT')
+panel:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
 
-panel:SetScript("OnEvent", function(self, event, arg1, ...)
+panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
             --添加控制面板        
-            local sel=e.CPanel(addName, Save.disabled, true)
+            local sel=e.CPanel(addName, not Save.disabled, true)
             sel:SetScript('OnClick', function()
                 if Save.disabled then
                     Save.disabled=nil
+                    panel:UnregisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
                 else
                     Save.disabled=true
+                    panel:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
                 end
-                setEvent()--注册事件
                 print(id, addName, e.GetEnabeleDisable(Save.disabled))
+            end)
+            sel:SetScript('OnEnter', function(self2)
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(addName, SAY, nil,nil,nil, 0,1,0)
+                e.tips:AddDoubleLine(LFG_LIST_CROSS_FACTION:format(COMBATLOG_FILTER_STRING_ME), LFG_LIST_CROSS_FACTION:format(HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS))--仅限我, 仅限队伍
+                e.tips:Show()
+            end)
+            sel:SetScript('OnLeave', function()
+                e.tips:Hide()
             end)
 
             if Save.disabled then
                 panel:UnregisterAllEvents()
-            else
-                setEvent()--注册事件
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
@@ -72,32 +71,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, ...)
             WoWToolsSave[addName]=Save
         end
 
-    elseif event=='COMBAT_LOG_EVENT_UNFILTERED' then
-        local eventType, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags = ...
-   
-        if eventType=="SPELL_INTERRUPT" or eventType=="SPELL_DISPEL" or eventType=="SPELL_STOLEN"   then
-    
-            local petGUID = UnitGUID("pet")
-            local m=''
-            local spellId, _,_, extraSpellId= select(12, ...)
-    
-            if sourceGUID ~=playerGUID and sourceGUID~=petGUID then--源名称
-                m=sourceName
-            end
-    
-            m=m..(UMark(sourceRaidFlags) or '')
-            m=m..GetSpellLink(spellId)
-    
-            m=m..de
-    
-            m=m..GetSpellLink(extraSpellId)--法术
-            m=m..(UMark(destRaidFlags) or '')
-    
-            if e.config.DN then--目标名称
-                m=m..destName
-            end
-    
-            e.Chat(m)
-        end
+    elseif event=='COMBAT_LOG_EVENT_UNFILTERED' and IsInGroup() then
+        set_COMBAT_LOG_EVENT_UNFILTERED()
     end
 end)

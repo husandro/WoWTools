@@ -56,7 +56,7 @@ GamePlus\ItemInfo.lua
 GamePlus\SystemInfo.lua
 GamePlus\AddOns.lua
 GamePlus\Talking.lua
-##GamePlus\InterruptStolenDispel.lua
+GamePlus\InterruptStolenDispel.lua
 
 Tools\Mount.lua
 Tools\Hearthstone.lua
