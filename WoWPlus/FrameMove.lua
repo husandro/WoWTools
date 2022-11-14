@@ -145,7 +145,7 @@ local FrameTab={
     ChatConfigFrame={save=true},--聊天设置
     SettingsPanel={},--选项
     --ZoneAbilityFrame.SpellButtonContainer = {save=true, click='R'},
-    --UIWidgetPowerBarContainerFrame={save=true,},
+    UIWidgetPowerBarContainerFrame={},
     FriendsFrame={},--好友列表
 
     GossipFrame={},
