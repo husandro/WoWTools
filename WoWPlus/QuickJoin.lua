@@ -63,12 +63,7 @@ local function Init()
                 icon=icon or 'communities-icon-chat';
                 
                 if not frame.chat then--悄悄话
-                    --e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size)
                     frame.chat=e.Cbtn(frame, nil, nil, nil, nil, true, {20,20})
-                    --frame.chat=CreateFrame("Button", nil, frame);
-                    --frame.chat:SetHighlightAtlas('Forge-ColorSwatchSelection');
-                    --frame.chat:SetPushedTexture('Interface\\Buttons\\UI-Quickslot-Depress');
-                    --frame.chat:SetSize(20,20);
                     frame.chat:SetPoint('RIGHT', (frame.Icon or frame), 'LEFT', 0,0);
                     frame.chat:SetScript('OnClick',function()
                             local player=frame.Members[1].playerLink
@@ -90,7 +85,7 @@ local function Init()
                     frame.class:SetAtlas(icon2);                
                 end            
             end            
-    end);--  print(self.canJoin, self.guid, frame.Members[1].name)      
+    end)   
     
     hooksecurefunc(QuickJoinRoleSelectionFrame, 'ShowForGroup', function(self, guid)--职责选择框
         local t, h ,dps=self.RoleButtonTank.CheckButton, self.RoleButtonHealer.CheckButton, self.RoleButtonDPS.CheckButton;--选择职责

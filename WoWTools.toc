@@ -36,20 +36,16 @@ WoWPlus\Toy.lua
 WoWPlus\Heirloom.lua
 WoWPlus\WardroberItems.lua
 WoWPlus\WardroberSets.lua
-
 WoWPlus\WorldMap.lua
-
-
 WoWPlus\Tooltips.lua
 ##WoWPlus\Container.lua
-
 WoWPlus\Professions.lua
-
 WoWPlus\UnitFrame.lua
 ##WowPlus\GroupManager.lua
 ##WoWPlus\AchievementFrame.lua
 ##WowPlus\AuctionHouse.lua
 WowPlus\QuickJoin.lua
+WoWPlus\FriendsList.lua
 
 
 GamePlus\Gossip.lua
