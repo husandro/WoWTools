@@ -804,7 +804,7 @@ GameTooltipStatusBar:SetScript("OnValueChanged", set_Unit_Health_Bar);
 --#######
 --设置单位
 --#######
-local function setPlayerInfo(guid)--设置玩家信息
+local function setPlayerInfo(unit, guid)--设置玩家信息
     local info=e.UnitItemLevel[guid]
     if info then
         if info.itemLevel and info.itemLevel>1 then
@@ -817,9 +817,13 @@ local function setPlayerInfo(guid)--设置玩家信息
         end
 
         if e.Player.servers[info.realm] then--设置服务器
-            e.tips.textRight:SetText(info.col..info.realm..'|r|cnGREEN_FONT_COLOR:*|r')
-        elseif info.realm and not e.Player.servers[info.realm] then
+            e.tips.textRight:SetText(info.col..info.realm..'|r'..(info.realm~=e.Player.server and '|cnGREEN_FONT_COLOR:*|r' or''))
+
+        elseif info.realm and not e.Player.servers[info.realm] then--不同
             e.tips.textRight:SetText(info.col..info.realm..'|r|cnRED_FONT_COLOR:*|r')
+
+        elseif UnitIsUnit('player', unit) or UnitIsSameServer(unit) then--同
+            e.tips.textRight:SetText(info.col..e.Player.server..'|r')
         end
         if info.r and info.b and info.g then
             e.tips.backgroundColor:SetColorTexture(info.r, info.g, info.b, 0.2)--背景颜色
@@ -844,7 +848,7 @@ local function getPlayerInfo(unit, guid)--取得玩家信息
             b=b,
         }
     end
-    setPlayerInfo(guid)
+    setPlayerInfo(unit, guid)
 end
 
 local function setUnitInfo(self)--设置单位提示信息
