@@ -123,6 +123,7 @@ local function setQueueStatus()--小眼睛, 信息
                     SetCursor('UI_MOVE_CURSOR')
 
                 elseif d=='RightButton' and IsAltKeyDown() then--还原
+                    Save.tipsFramePoint=nil
                     self:ClearAllPoints()
                     self:SetPoint('BOTTOMLEFT', panel, 'TOPLEFT',0,2)
                 end

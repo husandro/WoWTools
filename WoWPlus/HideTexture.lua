@@ -46,7 +46,7 @@ local function Init()
     LootFrameBg:Hide()--拾取
 end
 
-local function set_UNIT_ENTERED_VEHICLE()
+local function set_UNIT_ENTERED_VEHICLE()--载具
     OverrideActionBarEndCapL:Hide()
     OverrideActionBarEndCapR:Hide()
     OverrideActionBarBorder:Hide()
@@ -68,7 +68,6 @@ end
 --###########
 local panel=CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-
 
 panel:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')
 
