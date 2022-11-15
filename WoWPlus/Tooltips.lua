@@ -963,7 +963,7 @@ local function setUnitInfo(self)--设置单位提示信息
         GameTooltipTextLeft1:SetTextColor(r,g,b)
 
         --if not UnitAffectingCombat('player') then--位面,NPCID
-            local _, _, server, _, zone, npc = strsplit("-",guid)
+            local zone, npc = select(5, strsplit("-",guid))
             if zone then
                 self:AddDoubleLine(e.L['LAYER']..' '..zone, 'NPC '..npc)--, server and FRIENDS_LIST_REALM..server)
                 e.Layer=zone
