@@ -920,49 +920,35 @@ local function setUnitInfo(self)--设置单位提示信息
 
         
         local isSelf=UnitIsUnit('player', unit)--我
---[[
-        line=isInGuild and GameTooltipTextLeft4 or GameTooltipTextLeft3
-        if line then
-            if e.Layer and isSelf then--显示位面,隐然,部落,联盟
-                line:SetText(e.L['LAYER']..' '..e.Layer)
-            else
-                --line:Hide()
-            end
-        end
-
-
-]]
+        local isGroupPlayer= (not isSelf and e.GroupGuid[guid]) and true or nil--队友
 
         local num= isInGuild and 4 or 3
         for i=num, e.tips:NumLines() do
             local line=_G["GameTooltipTextLeft"..i]
             if line then
-                if i==num and isSelf and (e.Layer or isWarModeDesired) then
-                    line:SetText(e.Layer and e.L['LAYER']..' '..e.Layer or ' ')
-                    if isWarModeDesired then
-                        line=_G["GameTooltipTextRight"..i]
-                        if line then
-                            line:SetText(PVP_LABEL_WAR_MODE)
+                if i==num then
+                    if isSelf and (e.Layer or isWarModeDesired) then--位面ID, 战争模式
+                        line:SetText(e.Layer and e.L['LAYER']..' '..e.Layer or ' ')
+                        if isWarModeDesired then
+                            line=_G["GameTooltipTextRight"..i]
+                            if line then
+                                line:SetText(PVP_LABEL_WAR_MODE)
+                                line:SetShown(true)
+                            end
+                        end
+                    elseif isGroupPlayer then----队友位置
+                        local mapID= C_Map.GetBestMapForUnit(unit)--地图ID
+                        local mapInfo= mapID and C_Map.GetMapInfo(mapID)
+                        if mapInfo and mapInfo.name and mapInfo.name ~=e.GetUnitMapName('player') and _G["GameTooltipTextRight"..i] then
+                            line=_G["GameTooltipTextRight"..i]
+                            line:SetText(mapInfo.name..e.Icon.map2)
                             line:SetShown(true)
                         end
+                    else
+                        line:Hide()
                     end
-                elseif not UnitInParty(unit) or isSelf then
-                    line:Hide()
-                end
-            end
-        end
-
-        
-        if not isSelf and e.GroupGuid[guid]  then--队友位置
-            local mapID= C_Map.GetBestMapForUnit(unit)--地图ID
-            if mapID then
-                local mapName=C_Map.GetMapInfo(mapID).name;
-                if mapName then
-                    line=isInGuild and GameTooltipTextRight4 or GameTooltipTextRight3
-                    if line then
-                        line:SetText(mapName..e.Icon.map2)
-                        line:SetShown(true)
-                    end
+                else
+                   line:Hide()
                 end
             end
         end
@@ -976,13 +962,13 @@ local function setUnitInfo(self)--设置单位提示信息
         hex= hex and '|c'..hex or ''
         GameTooltipTextLeft1:SetTextColor(r,g,b)
 
-        if not UnitAffectingCombat('player') then--位面,NPCID
+        --if not UnitAffectingCombat('player') then--位面,NPCID
             local _, _, server, _, zone, npc = strsplit("-",guid)
             if zone then
-                self:AddDoubleLine(e.L['LAYER']..' '..zone, 'NPCID '..npc)--, server and FRIENDS_LIST_REALM..server)
+                self:AddDoubleLine(e.L['LAYER']..' '..zone, 'NPC '..npc)--, server and FRIENDS_LIST_REALM..server)
                 e.Layer=zone
             end
-        end
+        --end
 
         --怪物, 图标
         if UnitIsQuestBoss(unit) then--任务
@@ -990,7 +976,7 @@ local function setUnitInfo(self)--设置单位提示信息
             e.tips.Portrait:SetShown(true)
 
         elseif UnitIsBossMob(unit) then--世界BOSS
-            self.textLeft:SetText(hex..RAID_INFO_WORLD_BOSS..'|r')
+            --self.textLeft:SetText(hex..BOSS..'|r')
             e.tips.Portrait:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare')
             e.tips.Portrait:SetShown(true)
         else
