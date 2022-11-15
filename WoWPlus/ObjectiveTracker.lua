@@ -266,22 +266,26 @@ local Colla=function(type)
     end
 end
 
-local function Scale()
+local function Scale(setPrint)
     if Save.disabled then
         return
     end
     if Save.scale<0.5 then Save.scale=0.5 elseif Save.scale>1.5 then Save.scale=1.5 end
     F:SetScale(Save.scale)
-    print(addName..': '..UI_SCALE..' |cff00ff00'..Save.scale..'|r')
+    if setPrint then
+        print(addName..': '..UI_SCALE..' |cff00ff00'..Save.scale..'|r')
+    end
 end
 
-local function Alpha()
+local function Alpha(setPrint)
     if Save.disabled then
         return
     end
     if Save.alpha<0.3 then Save.alpha=0.3 elseif Save.alpha>1 then Save.alpha=1 end
     F:SetAlpha(Save.alpha)
-    print(addName..' ('..CHANGE_OPACITY..'0.1 - 1): |cff00ff00'..Save.alpha..'|r')
+    if setPrint then
+        print(addName..' ('..CHANGE_OPACITY..'0.1 - 1): |cff00ff00'..Save.alpha..'|r')
+    end
 end
 
 --任务颜色
@@ -458,16 +462,16 @@ local function Init()
             print(addName..': |cff00ff00'..SHOW..'|r'..ALL)
         elseif d==1 and IsControlKeyDown() then
             Save.scale=Save.scale+0.05
-            Scale()
+            Scale(true)
         elseif d==-1 and IsControlKeyDown() then
             Save.scale=Save.scale-0.05
-            Scale()
+            Scale(true)
         elseif d==1 and IsShiftKeyDown() then
             Save.alpha=Save.alpha+0.1
-            Alpha()
+            Alpha(true)
         elseif d==-1 and IsShiftKeyDown() then
             Save.alpha=Save.alpha-0.1
-            Alpha()
+            Alpha(true)
         end
     end)
 end

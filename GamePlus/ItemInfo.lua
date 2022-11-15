@@ -44,12 +44,13 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex)
                 topRightText='|A:'..e.Icon.unlocked..':0:0|a'
             end
 
-        elseif itemEquipLoc and _G[itemEquipLoc] then--装备            
+        elseif itemEquipLoc and _G[itemEquipLoc] then--装备  
+                  
             if classID==2 and subclassID==20 then-- 鱼竿
                 topRightText='|A:worldquest-icon-fishing:0:0|a'
-            elseif itemQuality and itemQuality>1 and itemLevel and itemLevel>1 then--装等
+            elseif itemQuality and itemQuality>1 then
                 local invSlot = e.itemSlotTable[itemEquipLoc]
-                if invSlot then
+                if invSlot and itemLevel and itemLevel>1 then--装等
                     if itemQuality>2 then
                         topLeftText=itemLevel
                     end
@@ -68,7 +69,8 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex)
                     end
                 end
 
-                local sourceID = not isBound and select(2,C_TransmogCollection.GetItemInfo(itemLink))
+                local sourceID = (not isBound or merchantIndex) and select(2,C_TransmogCollection.GetItemInfo(itemLink))
+                
                 if sourceID and not C_TransmogCollection.PlayerKnowsSource(sourceID) then
                     bottomRightText = select(2, C_TransmogCollection.PlayerCanCollectSource(sourceID)) and  e.Icon.okTransmog2 or e.Icon.transmogHide2
                 end

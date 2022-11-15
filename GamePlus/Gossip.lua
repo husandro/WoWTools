@@ -35,7 +35,7 @@ local function setTexture()
     end
 end
 local function setParent()--设置父级
-    if not Save.point then
+    if not Save.point and ObjectiveTrackerBlocksFrame then
         q:SetParent(ObjectiveTrackerBlocksFrame)
         g:SetParent(ObjectiveTrackerBlocksFrame)
     else
@@ -44,28 +44,10 @@ local function setParent()--设置父级
     end
 end
 
-local function QuestInfo_GetQuestID()--取得任务ID
-	if ( QuestInfoFrame.questLog ) then
-		return C_QuestLog.GetSelectedQuest();
-	else
-		return GetQuestID();
-	end
-end
-
-local function GetQuestTrivialTracking()--其它任务追踪
-    return select(3, C_Minimap.GetTrackingInfo(25))
-end
-
-local function QuestTrivial(questID)--其它任务,低等任务
-    questID=questID or QuestInfo_GetQuestID()
-    local trivial=C_QuestLog.IsQuestTrivial(questID)
-    local tracking = GetQuestTrivialTracking()
-    return (trivial and tracking) or not trivial
-end
-
-
-
+--################
 --闲话选项
+--################
+
 --禁用此npc闲话选项
 GossipFrame:SetScript('OnShow', function (self)
     if not self.sel then
@@ -127,6 +109,7 @@ GossipFrame:SetScript('OnShow', function (self)
     self.sel:SetChecked(Save.NPC[npc])
     GossipFrame.sel:SetShown(npc)
 end)
+
 --自定义闲话选项
 hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, info)--GossipFrameShared.lua
     if not info.gossipOptionID then
@@ -237,10 +220,34 @@ g:SetScript('OnLeave', function ()
     e.tips:Hide()
 end)
 
-
+--#######
 --任务图标
+--#######
+local isQuestTrivialTracking--其它任务,低等任务,追踪
+local function GetIsQuestTrivialTracking()
+    for trackingID=1, C_Minimap.GetNumTrackingTypes() do
+        name, texture, active, category, nested = C_Minimap.GetTrackingInfo(trackingID)
+        if name==MINIMAP_TRACKING_TRIVIAL_QUESTS then
+            isQuestTrivialTracking = active
+            break
+        end
+    end
+end
+
+local function getQuestTrivial(questID)--其它任务,低等任务
+    questID=questID or QuestInfoFrame.questLog and C_QuestLog.GetSelectedQuest() or GetQuestID()--取得任务ID
+    if questID then
+        local trivial=C_QuestLog.IsQuestTrivial(questID)
+        return (trivial and isQuestTrivialTracking) or not trivial
+    end
+end
+
+local function getMaxQuest()--任务，是否已满
+    return select(2,C_QuestLog.GetNumQuestLogEntries())==C_QuestLog.GetMaxNumQuestsCanAccept()
+end
+
 QuestFrameGreetingPanel:HookScript('OnShow', function()--QuestFrame.lua QuestFrameGreetingPanel_OnShow
-    if not Save.qest or IsModifierKeyDown() then
+    if not Save.qest or IsModifierKeyDown() or getMaxQuest() then
         return
     end
     local numActiveQuests = GetNumActiveQuests();
@@ -258,7 +265,7 @@ QuestFrameGreetingPanel:HookScript('OnShow', function()--QuestFrame.lua QuestFra
         for i=(numActiveQuests + 1), (numActiveQuests + numAvailableQuests) do
             local index = i - numActiveQuests
             local isTrivial, frequency, isRepeatable, isLegendary, questID = GetAvailableQuestInfo(index);
-            if (isTrivial and GetQuestTrivialTracking()) or not isTrivial then
+            if (isTrivial and isQuestTrivialTracking) or not isTrivial then
                 SelectAvailableQuest(index)
                 return
             end
@@ -288,6 +295,7 @@ hooksecurefunc('QuestFrameProgressItems_Update', function(self)
     end
     local b=QuestFrameCompleteQuestButton;
     if b and b:IsEnabled() then
+        
         QuestProgressCompleteButton_OnClick()
     end
 end)
@@ -295,22 +303,24 @@ end)
 --完成已激活任务,多个任务GossipFrameShared.lua
 hooksecurefunc(GossipSharedActiveQuestButtonMixin, 'Setup', function(self, info)
     local questID=info.questID or self:GetID()
-    if not questID or not Save.qest or IsModifierKeyDown() then --or not C_QuestLine.IsComplete(questID) then
+    if not questID or not Save.qest or IsModifierKeyDown() or not C_QuestLog.IsComplete(questID) then
         return
     end
     C_GossipInfo.SelectActiveQuest(questID)
 end)
 --自动接取任务,多个任务GossipFrameShared.lua
 hooksecurefunc(GossipSharedAvailableQuestButtonMixin, 'Setup', function(self, info)
-    if not info.questID or not Save.qest or IsModifierKeyDown() or not QuestTrivial(info.questID) then
+   -- print(not info.questID , not Save.qest , IsModifierKeyDown() , not getQuestTrivial(info.questID) , getMaxQuest())
+    if not info.questID or not Save.qest or IsModifierKeyDown() or not getQuestTrivial(info.questID) or getMaxQuest() then
         return
     end
+    
     C_GossipInfo.SelectAvailableQuest(info.questID);--or self:GetID()
 end)
 --自动接取任务, 仅一个任务
 hooksecurefunc('QuestInfo_Display', function(self, template, parentFrame, acceptButton, material, mapView)--QuestInfo.lua
     local frame=QuestInfoFrame
-    if not Save.qest or IsModifierKeyDown() or not frame or not QuestTrivial() then
+    if not Save.qest or IsModifierKeyDown() or not frame or not getQuestTrivial() or getMaxQuest() then
         return
     end
     
@@ -320,7 +330,7 @@ hooksecurefunc('QuestInfo_Display', function(self, template, parentFrame, accept
 end)
 
 
-q:SetScript('OnClick', function(self, d)
+q:SetScript('OnMouseDown', function(self, d)
     local key=IsModifierKeyDown()
     if d=='LeftButton' and not key then
         if Save.qest then
@@ -342,23 +352,28 @@ end)
 q:SetScript('OnEnter', function (self2)
     e.tips:SetOwner(self2, "ANCHOR_LEFT")
     e.tips:ClearLines()
-    e.tips:AddDoubleLine(id, addName)
+    e.tips:AddDoubleLine(id, 	QUESTS_LABEL)
     e.tips:AddLine(' ')
     e.tips:AddDoubleLine(QUICK_JOIN_IS_AUTO_ACCEPT_TOOLTIP..': '..QUESTS_LABEL, e.GetEnabeleDisable(Save.qest)..e.Icon.left)
     e.tips:AddDoubleLine(NPE_MOVE, e.Icon.right)
-    e.tips:AddDoubleLine(MINIMAP_TRACKING_TRIVIAL_QUESTS..'|A:TrivialQuests:0:0|a', e.GetEnabeleDisable(GetQuestTrivialTracking()))--低等任务
     e.tips:AddLine(' ')
+    e.tips:AddDoubleLine(MINIMAP_TRACKING_TRIVIAL_QUESTS..'|A:TrivialQuests:0:0|a', Save.qest and e.GetEnabeleDisable(isQuestTrivialTracking))--低等任务
     e.tips:AddDoubleLine(QUESTS_LABEL..' '..#C_QuestLog.GetAllCompletedQuestIDs()..' '..COMPLETE, GetDailyQuestsCompleted()..' '..DAILY)--已完成任务
     e.tips:Show()
 end)
 q:SetScript('OnLeave', function ()
     e.tips:Hide()
 end)
-q:SetScript('OnMouseUp', function() ResetCursor() end)
+
 q:SetMovable(true)
 q:SetClampedToScreen(true)
 q:RegisterForDrag('RightButton')
-q:SetScript('OnDragStart',function(self) self:StartMoving() end)
+q:SetScript('OnDragStart',function(self)
+    if not IsModifierKeyDown() then
+        self:StartMoving()
+        SetCursor('UI_MOVE_CURSOR')
+    end
+end)
 q:SetScript('OnDragStop', function(self)
     self:StopMovingOrSizing()
     ResetCursor()
@@ -367,26 +382,39 @@ q:SetScript('OnDragStop', function(self)
     Save.point[2]=nil
     print(id, addName, '|cFF00FF00Alt+'.. e.Icon.right..KEY_BUTTON2..'|r', TRANSMOGRIFY_TOOLTIP_REVERT)
 end)
+q:SetScript('OnMouseUp', function()
+    ResetCursor()
+end)
 
 q:RegisterEvent("PLAYER_LOGOUT")
 q:RegisterEvent("QUEST_LOG_UPDATE")
+q:RegisterEvent('MINIMAP_UPDATE_TRACKING')
 q:SetScript("OnEvent", function(self, event, arg1)
-    if not self.str then
-        self.str=e.Cstr(self)
-        self.str:SetPoint('RIGHT', g, 'LEFT', 0, 0)
-    end
-    local n = select(2,C_QuestLog.GetNumQuestLogEntries()) or 0;
-    local max = C_QuestLog.GetMaxNumQuestsCanAccept() or 25;
-    if max == n then
-        self.str:SetText(RED_FONT_COLOR_CODE..n..'/'..max..'|r')
+    if event=='MINIMAP_UPDATE_TRACKING' then
+        GetIsQuestTrivialTracking()--其它任务,低等任务,追踪
+        
     else
-        self.str:SetText(n..'/'..max..'|r')
+        if not self.str then
+            self.str=e.Cstr(self)
+            self.str:SetPoint('RIGHT', g, 'LEFT', 0, 0)
+        end
+        local n = select(2,C_QuestLog.GetNumQuestLogEntries()) or 0;
+        local max = C_QuestLog.GetMaxNumQuestsCanAccept() or 25;
+        if max == n then
+            self.str:SetText(RED_FONT_COLOR_CODE..n..'/'..max..'|r')
+        else
+            self.str:SetText(n..'/'..max..'|r')
+        end
     end
 end)
 
 --加载保存数据
+
 g:RegisterEvent("ADDON_LOADED")
 g:RegisterEvent("PLAYER_LOGOUT")
+
+g:RegisterEvent('QUEST_ACCEPTED')
+
 g:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED"  then
         if arg1 == id then
@@ -398,6 +426,9 @@ g:SetScript("OnEvent", function(self, event, arg1)
             else
                 q:SetPoint('TOPRIGHT', ObjectiveTrackerBlocksFrame, 'TOPRIGHT', -45, -2)--设置位置
             end
+
+            GetIsQuestTrivialTracking()--其它任务,低等任务,追踪
+
         elseif arg1=='Blizzard_PlayerChoice' then--命运, 字符
             hooksecurefunc(StaticPopupDialogs["CONFIRM_PLAYER_CHOICE_WITH_CONFIRMATION_STRING"],"OnShow",function(s)
                 if Save.gossip and s.editBox then
@@ -409,6 +440,13 @@ g:SetScript("OnEvent", function(self, event, arg1)
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end
             WoWToolsSave[addName]=Save
+        end
+    elseif event=='QUEST_ACCEPTED' then--共享任务
+        if IsInGroup() and arg1 and Save.qest then
+            if C_QuestLog.IsPushableQuest(arg1) then
+                C_QuestLog.SetSelectedQuest(arg1)
+                QuestLogPushQuest()
+            end
         end
     end
 end)
