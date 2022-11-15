@@ -628,7 +628,7 @@ local function setBuff(type, self, ...)--Buff
     elseif sourceUnit and UnitIsPlayer(sourceUnit) then
         unitInfo = e.GetPlayerInfo(sourceUnit, nil, true)
     end
-    self:AddDoubleLine((unitInfo or type)..'ID: '..spellId, EMBLEM_SYMBOL..'ID: '..icon)
+    self:AddDoubleLine((unitInfo or type)..' ID: '..spellId, EMBLEM_SYMBOL..'ID: '..icon)
 
     local mountID = C_MountJournal.GetMountFromSpell(spellId)
     if mountID then
@@ -641,8 +641,10 @@ local function setBuff(type, self, ...)--Buff
            self.backgroundColor:SetColorTexture(r, g, b, 0.3)
             --self.backgroundColor:SetShown(true)
         end
-        SetPortraitTexture(self.Portrait, sourceUnit)
-        self.Portrait:SetShown(true)
+        if not UnitIsUnit(sourceUnit, 'player') then
+            SetPortraitTexture(self.Portrait, sourceUnit)
+            self.Portrait:SetShown(true)
+        end
     end
     self:Show()
 end
@@ -865,11 +867,6 @@ local function setUnitInfo(self)--设置单位提示信息
             e.tips.Portrait:SetAtlas(englishFaction=='Alliance' and e.Icon.alliance or e.Icon.horde)
             e.tips.Portrait:SetShown(true)
         end
-    elseif UnitIsQuestBoss(unit) then--任务
-        e.tips.Portrait:SetAtlas(e.Icon.quest)
-        e.tips.Portrait:SetShown(true)
-    --else
-        --  SetPortraitTexture(e.tips.Portrait, unit)
     end
 
     --取得装等
@@ -877,7 +874,7 @@ local function setUnitInfo(self)--设置单位提示信息
         if CheckInteractDistance(unit, 1) then
             NotifyInspect(unit);
         end
-        getPlayerInfo(unit, guid)
+        getPlayerInfo(unit, guid)--取得玩家信息
     end
     if e.tips.playerModel.guid~=guid then--3D模型
         e.tips.playerModel:SetUnit(unit)
@@ -944,7 +941,8 @@ if not UnitIsUnit('player',unit) and e.GroupGuid[guid] then--队友位置
         setPet(self, UnitBattlePetSpeciesID(unit))
 
     else
-        local r,g,b = GetClassColor(UnitClassBase(unit))--颜色
+        local r,g,b, hex = GetClassColor(UnitClassBase(unit))--颜色
+        hex= hex and '|c'..hex or ''
         GameTooltipTextLeft1:SetTextColor(r,g,b)
 
         if not UnitAffectingCombat('player') then--位面,NPCID
@@ -954,8 +952,35 @@ if not UnitIsUnit('player',unit) and e.GroupGuid[guid] then--队友位置
                 e.Layer=zone
             end
         end
-    end
 
+        --怪物, 图标
+        if UnitIsQuestBoss(unit) then--任务
+            e.tips.Portrait:SetAtlas(UI-HUD-UnitFrame-Target-PortraitOn-Boss-Quest)
+            e.tips.Portrait:SetShown(true)
+
+        elseif UnitIsBossMob(unit) then--世界BOSS
+            self.textLeft:SetText(hex..RAID_INFO_WORLD_BOSS..'|r')
+            e.tips.Portrait:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare')
+            e.tips.Portrait:SetShown(true)
+        else
+            local classification = UnitClassification(unit);--TargetFrame.lua
+            if classification == "rareelite" then--稀有, 精英
+                self.textLeft:SetText(hex..GARRISON_MISSION_RARE..'|r')
+                self.Portrait:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare')
+                e.tips.Portrait:SetShown(true)
+
+            elseif classification == "rare" then--稀有
+                self.textLeft:SetText(hex..GARRISON_MISSION_RARE..'|r')
+                e.tips.Portrait:SetAtlas('UUnitFrame-Target-PortraitOn-Boss-Rare-Star')
+                e.tips.Portrait:SetShown(true)
+            end
+        end
+
+        local type=UnitCreatureType(unit)--生物类型
+        if type and not type:find(COMBAT_ALLY_START_MISSION) then
+            self.textRight:SetText(hex..type..'|r') 
+        end
+    end
     set_Unit_Health_Bar(GameTooltipStatusBar, UnitHealth(unit))--生命条提示
 end
 e.tips:HookScript("OnTooltipSetUnit", setUnitInfo)--设置单位提示信息
@@ -2107,6 +2132,9 @@ panel:RegisterEvent('UPDATE_INSTANCE_INFO')
 panel:RegisterEvent('CHALLENGE_MODE_MAPS_UPDATE')
 panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 panel:RegisterEvent('WEEKLY_REWARDS_UPDATE')
+
+panel:RegisterEvent('ZONE_CHANGED_NEW_AREA')--e.Layer=nil
+
 panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" then
         if arg1==id then
@@ -2217,6 +2245,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             --setInitItem(e.tips)
             getPlayerInfo(unit, arg1)
         end
+    elseif event=='ZONE_CHANGED_NEW_AREA' then
+        e.Layer=nil 
 
     elseif event=='PLAYER_ENTERING_WORLD' then
         e.Layer=nil

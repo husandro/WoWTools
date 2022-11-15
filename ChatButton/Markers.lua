@@ -838,7 +838,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         if self.combat then
             setMarkersFrame()--设置标记, 框架
             self.combat=nil
-            self.UnregisterEvent('PLAYER_REGEN_ENABLED')
+            self:UnregisterEvent('PLAYER_REGEN_ENABLED')
         end
 
     elseif event=='READY_CHECK' then--自动就绪事件
