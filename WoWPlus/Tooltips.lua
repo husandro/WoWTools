@@ -860,6 +860,7 @@ local function setUnitInfo(self)--设置单位提示信息
     end
     local isPlayer = UnitIsPlayer(unit)
     local guid = UnitGUID(unit)
+
     --设置单位图标  
     local englishFaction = isPlayer and UnitFactionGroup(unit)
     if isPlayer then
@@ -867,22 +868,26 @@ local function setUnitInfo(self)--设置单位提示信息
             e.tips.Portrait:SetAtlas(englishFaction=='Alliance' and e.Icon.alliance or e.Icon.horde)
             e.tips.Portrait:SetShown(true)
         end
-    end
-
-    --取得装等
-    if isPlayer then
-        if CheckInteractDistance(unit, 1) then
+        
+        if CheckInteractDistance(unit, 1) then--取得装等
             NotifyInspect(unit);
         end
         getPlayerInfo(unit, guid)--取得玩家信息
-    end
-    if e.tips.playerModel.guid~=guid then--3D模型
-        e.tips.playerModel:SetUnit(unit)
-        e.tips.playerModel.guid=guid
-    end
-    e.tips.playerModel:SetShown(true)
 
-    if isPlayer then
+        local isWarModeDesired=C_PvP.IsWarModeDesired()
+        local reason=UnitPhaseReason(unit)
+        if reason then
+            if reason==0 then--不同了阶段
+                self.textLeft:SetText(ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1','')))
+            elseif reason==1 then--不在同位面
+                self.textLeft:SetText(ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', e.L['LAYER']))
+            elseif reason==2 then--战争模式
+                self.textLeft:SetText(isWarModeDesired and ERR_PVP_WARMODE_TOGGLE_OFF or ERR_PVP_WARMODE_TOGGLE_ON)
+            elseif reason==3 then
+                self.textLeft:SetText(PLAYER_DIFFICULTY_TIMEWALKER)
+            end
+        end
+    
         local isInGuild=IsPlayerInGuildFromGUID(guid)
         local col = e.UnitItemLevel[guid] and e.UnitItemLevel[guid].col
         local line=GameTooltipTextLeft1--名称
@@ -912,30 +917,56 @@ local function setUnitInfo(self)--设置单位提示信息
             --text= col and col..text..'|r' or text
             line:SetText(text)
         end
-        local num= isInGuild and 4 or 3
-        local player=UnitIsUnit('player', unit)
-        for i=num, e.tips:NumLines() do
-            local line2=_G["GameTooltipTextLeft"..i]
-            if line2 then
-                if i==num and player and e.Layer then
-                    line2:SetText(e.L['LAYER']..'ID: '..e.Layer)
-                elseif not UnitInParty(unit) then
-                    line2:Hide()
-                end
+
+        
+        local isSelf=UnitIsUnit('player', unit)--我
+--[[
+        line=isInGuild and GameTooltipTextLeft4 or GameTooltipTextLeft3
+        if line then
+            if e.Layer and isSelf then--显示位面,隐然,部落,联盟
+                line:SetText(e.L['LAYER']..' '..e.Layer)
+            else
+                --line:Hide()
             end
         end
-        --[[
-if not UnitIsUnit('player',unit) and e.GroupGuid[guid] then--队友位置
-            local mapID= C_Map.GetBestMapForUnit(unit)--地图ID
-            if mapID then
-                local mapName=C_Map.GetMapInfo(mapID).name;
-                if mapName then
-                    self:AddDoubleLine(e.Icon.map2, mapName)
+
+
+]]
+
+        local num= isInGuild and 4 or 3
+        for i=num, e.tips:NumLines() do
+            local line=_G["GameTooltipTextLeft"..i]
+            if line then
+                if i==num and isSelf and (e.Layer or isWarModeDesired) then
+                    line:SetText(e.Layer and e.L['LAYER']..' '..e.Layer or ' ')
+                    if isWarModeDesired then
+                        line=_G["GameTooltipTextRight"..i]
+                        if line then
+                            line:SetText(PVP_LABEL_WAR_MODE)
+                            line:SetShown(true)
+                        end
+                    end
+                elseif not UnitInParty(unit) or isSelf then
+                    line:Hide()
                 end
             end
         end
 
-]]
+        
+        if not isSelf and e.GroupGuid[guid]  then--队友位置
+            local mapID= C_Map.GetBestMapForUnit(unit)--地图ID
+            if mapID then
+                local mapName=C_Map.GetMapInfo(mapID).name;
+                if mapName then
+                    line=isInGuild and GameTooltipTextRight4 or GameTooltipTextRight3
+                    if line then
+                        line:SetText(mapName..e.Icon.map2)
+                        line:SetShown(true)
+                    end
+                end
+            end
+        end
+
 
     elseif (UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit)) then--宠物TargetFrame.lua
         setPet(self, UnitBattlePetSpeciesID(unit))
@@ -948,7 +979,7 @@ if not UnitIsUnit('player',unit) and e.GroupGuid[guid] then--队友位置
         if not UnitAffectingCombat('player') then--位面,NPCID
             local _, _, server, _, zone, npc = strsplit("-",guid)
             if zone then
-                self:AddDoubleLine(e.L['LAYER']..': '..zone, 'NPCID: '..npc)--, server and FRIENDS_LIST_REALM..server)
+                self:AddDoubleLine(e.L['LAYER']..' '..zone, 'NPCID '..npc)--, server and FRIENDS_LIST_REALM..server)
                 e.Layer=zone
             end
         end
@@ -981,7 +1012,14 @@ if not UnitIsUnit('player',unit) and e.GroupGuid[guid] then--队友位置
             self.textRight:SetText(hex..type..'|r') 
         end
     end
+
     set_Unit_Health_Bar(GameTooltipStatusBar, UnitHealth(unit))--生命条提示
+
+    if e.tips.playerModel.guid~=guid then--3D模型
+        e.tips.playerModel:SetUnit(unit)
+        e.tips.playerModel.guid=guid
+    end
+    e.tips.playerModel:SetShown(true)
 end
 e.tips:HookScript("OnTooltipSetUnit", setUnitInfo)--设置单位提示信息
 
