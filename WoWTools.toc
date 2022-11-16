@@ -4,7 +4,10 @@
 ## Notes: WoW Tools
 ## Author: husandro
 ## SavedVariables: WoWToolsSave
+
 ## X-Wago-ID:baND1J6o
+## Version: @project-version@
+
 
 WoWTools.lua
 
