@@ -276,8 +276,9 @@ local function setTextrue()--设置图标
     panel.texture:SetShown(icon and true or false)
     setCooldown()--设置冷却
 end
-local function setClickAtt(inCombat)--设置 Click属性
-    if UnitAffectingCombat('player') and not inCombat then
+local function setClickAtt()--设置 Click属性
+    if UnitAffectingCombat('player') then
+        panel.Combat=true
         return
     end
     local spellID= (inCombat or IsIndoors()) and panel.spellID--进入战斗, 室内
@@ -1076,14 +1077,14 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         hooksecurefunc('MountJournal_ShowMountDropdown',setMountJournal_ShowMountDropdown)
 
     elseif event=='PLAYER_REGEN_DISABLED' then
-        setClickAtt(true)--设置属性
+        setClickAtt()--设置属性
         if e.toolsFrame:IsShown() then
             e.toolsFrame:SetShown(false)--设置, TOOLS 框架,隐藏
         end
 
     elseif event=='PLAYER_REGEN_ENABLED' then
-        setClickAtt()--设置属性
         if panel.Combat then
+            setClickAtt()--设置属性
             setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
         end
     elseif event == "PLAYER_LOGOUT" then
