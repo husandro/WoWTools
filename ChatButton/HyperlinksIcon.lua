@@ -35,15 +35,6 @@ local function SetChannels(link)
     end
 end
 
---[[
-local Realms={}--多服务器
-for _, v in pairs(GetAutoCompleteRealms()) do 
-    Realms[v]=true
-end
-
-
-]]
-
 local function Realm(link)--去服务器为*, 加队友种族图标,和N,T
     local name=link:match('|Hplayer:.-|h%[|cff......(.-)|r]') or link:match('|Hplayer:.-|h%[(.-)]|h')
     if name == Name then
