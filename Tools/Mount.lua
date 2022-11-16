@@ -304,6 +304,8 @@ local function setClickAtt()--设置 Click属性
     panel.spellAtt=spellID
     panel.iconAtt=icon
     setTextrue()--设置图标
+
+    panel.Combat=nil
 end
 
 --#######
