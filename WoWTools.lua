@@ -654,7 +654,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
                 if guid then
                     local tab={unit=unit, subgroup=subgroup, combatRole=combatRole or role}
                     e.GroupGuid[guid]=tab
-                    e.GroupGuid[UnitName(unit)]=tab
+                    e.GroupGuid[GetUnitName(unit, true)]=tab
                 end
             end
         else
@@ -665,7 +665,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
                 if guid then
                     tab={unit=unit, combatRole=UnitGroupRolesAssigned(unit)}
                     e.GroupGuid[guid]=tab
-                    e.GroupGuid[UnitName(unit)]=tab
+                    e.GroupGuid[GetUnitName(unit, true)]=tab
                 end
             end
             tab={unit='player', combatRole=UnitGroupRolesAssigned('player')}

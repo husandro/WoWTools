@@ -22,7 +22,7 @@ local Magic=function(s)  local t={'%%', '%.', '%(','%)','%+', '%-', '%*', '%?', 
 local MK=function(k,b) if not b then b=1 end if k>=1e6 then k=string.format('%.'..b..'fm',k/1e6) elseif k>= 1e4 and GetLocale() == "zhCN" then k=string.format('%.'..b..'fw',k/1e4) elseif k>=1e3 then k=string.format('%.'..b..'fk',k/1e3) else k=string.format('%i',k) end return k end--加k 9.1
 local Race=function(u, race, sex2) local s =u and select(2,UnitRace(u)) or race local sex= u and UnitSex(u) or sex2 if s and (sex==2 or sex==3 ) then s= s=='Scourge' and 'Undead' or s=='HighmountainTauren' and 'highmountain' or s=='ZandalariTroll' and 'zandalari' or s=='LightforgedDraenei' and 'lightforged' or s s=string.lower(s) sex= sex==2 and 'male' or sex==3 and 'female' return '|A:raceicon-'..s..'-'..sex..':0:0|a' end end--角色图标
 local Class=function(u, c, icon) c=c or select(2, UnitClass(u)) c=c and 'groupfinder-icon-class-'..c or nil if c then if icon then return '|A:'..c ..':0:0|a' else return c end end end--职业图标
-local Name=e.Player.col..UnitName('player')
+local Name=UnitName('player')
 
 local function SetChannels(link)
     local name=link:match('%[(.-)]')
@@ -35,37 +35,38 @@ local function SetChannels(link)
     end
 end
 
+--[[
 local Realms={}--多服务器
 for _, v in pairs(GetAutoCompleteRealms()) do 
     Realms[v]=true
 end
 
+
+]]
+
 local function Realm(link)--去服务器为*, 加队友种族图标,和N,T
-    local name=link:match('|Hplayer:.-|h%[(.-)|r]|h')
-    if name ==Name then
-        return link:gsub(name, col..COMBATLOG_FILTER_STRING_ME)        
+    local name=link:match('|Hplayer:.-|h%[|cff......(.-)|r]') or link:match('|Hplayer:.-|h%[(.-)]|h')
+    if name == Name then
+        return link:gsub(name, COMBATLOG_FILTER_STRING_ME)        
     else
-        local server=link:match('|Hplayer:.-|h%[.-%-(.-)|r]|h')
-        local link2, text
+        local server=link:match('|Hplayer:.-|h%[.-%-(.-)|r]|h') or link:match('|Hplayer:.-|h%[(.-)]|h')
+        local  text
         local tab=e.GroupGuid[name]--队伍成员
         if tab and tab.unit then--玩家种族图标
             local race=e.Race(tab.unit)
             text= race
-            if tab.combatRole then--职业图标
-                local class=e.Class(tab.unit)
-                text= class and (text or '')..class or text
+            if tab.combatRole and tab.combatRole~=NONE and e.Icon[tab.combatRole] then--职业图标
+                text= (text or '')..e.Icon[tab.combatRole]
             end
-            link2=  text and link:gsub(name, text..name)
         end
         if server then
-            link = link2 or link
-            if Realms[server] then
-                return link:gsub('%-'..server..'|r]|h', GREEN_FONT_COLOR_CODE..'*|r|r]|h')
+            if e.Player.server[server] then
+                return (text or '')..link:gsub('%-'..server..'|r]|h', GREEN_FONT_COLOR_CODE..'*|r|r]|h')
             else
-                return link:gsub('%-'..server..'|r]|h', '*|r]|h')
+                return (text or '')..link:gsub('%-'..server..'|r]|h', '*|r]|h')
             end
-        elseif link2 then
-            return link2
+        elseif text then
+            return text..link
         end
     end
 end
