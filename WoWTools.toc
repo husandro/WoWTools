@@ -5,6 +5,7 @@
 ## Author: husandro
 ## SavedVariables: WoWToolsSave
 
+## X-Curse-Project-ID:695149
 ## X-Wago-ID:baND1J6o
 ## Version: @project-version@
 
