@@ -652,21 +652,25 @@ panel:SetScript('OnEvent', function(self, event, arg1)
                 local name, rank, subgroup, level, class, fileName, zone, online, isDead, role, isML, combatRole = GetRaidRosterInfo(index)
 
                 if guid then
-                    e.GroupGuid[guid]={unit=unit, subgroup=subgroup, combatRole=combatRole or role}
-                    e.GroupGuid[UnitName(unit)]={unit=unit}
+                    local tab={unit=unit, subgroup=subgroup, combatRole=combatRole or role}
+                    e.GroupGuid[guid]=tab
+                    e.GroupGuid[UnitName(unit)]=tab
                 end
             end
         else
+            local tab
             for index= 1, GetNumGroupMembers()-1 do
                 local unit='party'..index
                 local guid=UnitGUID(unit)
                 if guid then
-                    e.GroupGuid[guid]={unit=unit, combatRole=UnitGroupRolesAssigned(unit)}
-                    e.GroupGuid[UnitName(unit)]={unit=unit}
+                    tab={unit=unit, combatRole=UnitGroupRolesAssigned(unit)}
+                    e.GroupGuid[guid]=tab
+                    e.GroupGuid[UnitName(unit)]=tab
                 end
             end
-            e.GroupGuid[UnitGUID('player')]={unit='player', combatRole=UnitGroupRolesAssigned('player')}
-            e.GroupGuid[UnitName('player')]={unit='player'}
+            tab={unit='player', combatRole=UnitGroupRolesAssigned('player')}
+            e.GroupGuid[UnitGUID('player')]=tab
+            e.GroupGuid[UnitName('player')]=tab
         end
     end
 end)

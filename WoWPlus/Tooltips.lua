@@ -972,7 +972,7 @@ local function setUnitInfo(self)--设置单位提示信息
 
         --怪物, 图标
         if UnitIsQuestBoss(unit) then--任务
-            e.tips.Portrait:SetAtlas(UI-HUD-UnitFrame-Target-PortraitOn-Boss-Quest)
+            e.tips.Portrait:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Quest')
             e.tips.Portrait:SetShown(true)
 
         elseif UnitIsBossMob(unit) then--世界BOSS
