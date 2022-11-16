@@ -1,6 +1,6 @@
 local id, e = ...
 local addName =	DUNGEONS_BUTTON
-local Save={leaveInstance=true, enterInstance=true}
+local Save={leaveInstance=true, enterInstance=true, autoROLL=true}
 local wowSave={[INSTANCE]={}}--{[ISLANDS_HEADER]=次数, [副本名称..难度=次数]}
 
 local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
@@ -471,12 +471,12 @@ end
 local function InitList(self, level, type)--LFDFrame.lua
     local info
     if type then        
-        info={}--自动, 准备进入,选英
+        info={}--自动, 准备进入,选项
         info.text=e.Icon.toRight2..BATTLEFIELD_CONFIRM_STATUS
         info.tooltipOnButton=true
         info.tooltipTitle=SPECIFIC_DUNGEON_IS_READY
         info.checked=Save.enterInstance
-        info.tooltipText=AUTO_JOIN:gsub(JOIN, ENTER_LFG)..': '..e.GetEnabeleDisable(Save.enterInstance)..'\n\n'..id..' '..addName
+        info.tooltipText=AUTO_JOIN:gsub(JOIN, ENTER_LFG)..'\n'..ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('',AFK).. '\n\n'..id..' '..addName
         info.func=function()
             if Save.enterInstance then
                 Save.enterInstance=nil
@@ -492,7 +492,7 @@ local function InitList(self, level, type)--LFDFrame.lua
         info.tooltipOnButton=true
         info.tooltipTitle=LEAVE..' ('..SLASH_RANDOM3:gsub('/','')..') '..INSTANCE
         info.checked=Save.leaveInstance
-        info.tooltipText=AUTO_JOIN:gsub(JOIN, LEAVE)..': '..e.GetEnabeleDisable(Save.leaveInstance)..'\n\n'..id..' '..addName
+        info.tooltipText=AUTO_JOIN:gsub(JOIN, LEAVE)..'\n'..AUTO_JOIN:gsub(JOIN,'')..LOOT_ROLL.. '\n\n'..id..' '..addName
         info.func=function()
              if Save.leaveInstance then
                  Save.leaveInstance=nil
@@ -502,7 +502,9 @@ local function InitList(self, level, type)--LFDFrame.lua
              setQueueStatus()--小眼睛, 信息
         end
         UIDropDownMenu_AddButton(info, level)
-    
+        
+       
+
         local num, text=0, ''
         for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
             local listNum, listText=getQueuedList(i,true)
@@ -527,7 +529,6 @@ local function InitList(self, level, type)--LFDFrame.lua
         info.tooltipText=text
         UIDropDownMenu_AddButton(info, level)
 
-
         UIDropDownMenu_AddSeparator(level)
         info={}--信息 QueueStatusFrame.lua
         info.text='|A:groupfinder-eye-frame:0:0|a'..SOCIAL_QUEUE_TOOLTIP_HEADER..INFO
@@ -537,7 +538,17 @@ local function InitList(self, level, type)--LFDFrame.lua
             setQueueStatus()
         end
         UIDropDownMenu_AddButton(info, level)
-        
+
+        info={--自动,战利品掷骰
+        text='|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t'..LOOT_ROLL,
+        checked=Save.autoROLL,
+        tooltipOnButton=true,
+        tooltipTitle=AUTO_JOIN:gsub(JOIN,''),
+        func= function()
+            Save.autoROLL= not Save.autoROLL and true or nil
+        end
+    }
+    UIDropDownMenu_AddButton(info, level)
     else
         local isLeader, isTank, isHealer, isDPS = GetLFGRoles()--角色职责
         info={
@@ -546,7 +557,8 @@ local function InitList(self, level, type)--LFDFrame.lua
             ..(isHealer and e.Icon.HEALER or '')
             ..(isDPS and e.Icon.DAMAGER or '')
             ..((not isTank and not isHealer and not isDPS) and ' |cnRED_FONT_COLOR:'..ROLE..'|r' or '')
-            ..(not Save.hideQueueStatus and '|A:groupfinder-eye-frame:0:0|a' or ''),--提示信息
+            ..(not Save.hideQueueStatus and '|A:groupfinder-eye-frame:0:0|a' or '')
+            ..(Save.autoROLL and '|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t' or ''),--提示信息
             notCheckable=true,
             menuList='SETTINGS',
             hasArrow=true,
@@ -564,7 +576,7 @@ end
 --###############
 --离开, 进入, 副本
 --###############
-local sec=3--离开时间
+local sec=5--离开时间
 local function setLFGDungeonReadyDialog(self)--自动进入FB LFGDungeonReadyDialog:HookScript("OnShow"
     local afk=UnitIsAFK('player')
     if not self.infoText then
@@ -727,7 +739,6 @@ local function setIslandButton(self)--离开海岛按钮
                 e.tips:Hide()
             end)
         end
-    else
     end
     if self.island then
         self.island:SetShown(find)
@@ -822,6 +833,80 @@ local function Init()
     --LFDMicroButton:HookScript('OnEnter', function(self2) ToggleDropDownMenu(1, nil, menuList, self2, -250,250) end)
 end
 
+local function setSTART_LOOT_ROLL(rollID, rollTime, lootHandle)--自动ROLL
+    if Save.autoROLL and (Save.leaveInstance and select(10, GetInstanceInfo())) and rollID then
+        local _, _, _, quality, bindO_nPickUp, canNeed, canGreed, _, reasonNeed, reasonGreed = GetLootRollItemInfo(rollID)
+        local rollType=canNeed and 1 or canGreed and 2
+        local text= canNeed and NEED or canGreed and GREED or NONE--贪婪
+        local link = GetLootRollItemLink(rollID)
+
+        if rollType then
+            if (quality and quality>=4) or not canNeed then
+                RollOnLoot(rollID, rollType)
+                print(id, addName, link, text)
+            else
+                if not C_TransmogCollection.PlayerHasTransmogByItemInfo(link) then--幻化
+                    local sourceID=select(2,C_TransmogCollection.GetItemInfo(itemLink))
+                    if sourceID then
+                        local hasItemData, canCollect =  C_TransmogCollection.PlayerCanCollectSource(sourceID)
+                        if hasItemData and canCollect then
+                            local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
+                            if sourceInfo and not sourceInfo.isCollected then
+                                RollOnLoot(rollID, rollType)
+                                print(id, addName, link, text)
+                                return
+                            end
+                        end
+                    end
+                end
+
+                local itemID, _, itemSubType, itemEquipLoc, _, classID, subclassID = GetItemInfoInstant(link)
+                local slot=itemEquipLoc and e.itemSlotTable[itemEquipLoc]--比较装等
+                if slot then
+                    local slotLink=GetInventoryItemLink('player', slot)
+                    if slotLink then
+                        local slotItemLevel= GetDetailedItemLevelInfo(slotLink)
+                        if slotItemLevel then
+                            local num=itemLevel-slotItemLevel
+                            if num>0 then
+                                RollOnLoot(rollID, rollType)
+                                print(id, addName, link, text)
+                                return
+                            end
+                        end
+                    else--没有装备
+                        RollOnLoot(rollID, rollType)
+                        print(id, addName, link, text)
+                        return
+                    end
+
+                elseif classID==15 and subclassID==2 then--宠物物品
+                    RollOnLoot(rollID, rollType)
+
+                elseif classID==15 and  subclassID==5 then--坐骑
+                    local mountID = C_MountJournal.GetMountFromItem(itemID)
+                    if mountID then
+                        local isCollected =select(11, C_MountJournal.GetMountInfoByID(mountID))
+                        if not isCollected then
+                            RollOnLoot(rollID, rollType)
+                            print(id, addName, link, text)
+                            return
+                        end
+                    end
+
+                elseif C_ToyBox.GetToyInfo(itemID) and not PlayerHasToy(itemID) then--玩具 
+                    RollOnLoot(rollID, rollType)
+                    print(id, addName, link, text)
+                    return
+                end
+            end
+        end
+    else
+        RollOnLoot(rollID, rollType)
+        print(id, addName, link, text)
+    end
+end
+
 --###########
 --加载保存数据
 --###########
@@ -834,8 +919,9 @@ panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 panel:RegisterEvent('ISLAND_COMPLETED')
 
 panel:RegisterEvent('LFG_UPDATE_RANDOM_INFO')
+panel:RegisterEvent('START_LOOT_ROLL')
 
-panel:SetScript("OnEvent", function(self, event, arg1)
+panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
     if event == "ADDON_LOADED" and arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
             wowSave=WoWToolsSave and WoWToolsSave[INSTANCE] or wowSave
@@ -872,6 +958,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='LFG_UPDATE_RANDOM_INFO' then
         setHoliday()--节日, 提示, panel.texture
+    
+    elseif event=='START_LOOT_ROLL' then
+        setSTART_LOOT_ROLL(arg1, arg2, arg3)
     end
 end)
 

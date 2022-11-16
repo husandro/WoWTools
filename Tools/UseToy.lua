@@ -91,7 +91,8 @@ local function setAtt(init)--设置属性
             if icon then
                 panel.texture:SetTexture(icon)
             end
-            panel:SetAttribute('item1', C_Item.GetItemNameByID(itemID) or itemID)
+            local  name= select(2, C_ToyBox.GetToyInfo(itemID)) or C_Item.GetItemNameByID(itemID) or itemID
+            panel:SetAttribute('item1', name)
             panel.itemID=itemID
         end
     else
@@ -134,17 +135,6 @@ local function setToyBox_ShowToyDropdown(itemID, anchorTo, offsetX, offsetY)
             tooltipText=id,
         }
     UIDropDownMenu_AddButton(info, 1)
---[[
-  
-UIDropDownMenu_AddSeparator()
-    UIDropDownMenu_AddButton({
-        text=ITEMS..'ID: '..itemID,
-        isTitle=true,
-        notCheckable=true,
-    }, 1)
-
-]]
-
 end
 local function setToySpellButton_UpdateButton(self)--标记, 是否已选取
     if e.toolsFrame.disabled or not self.itemID then
