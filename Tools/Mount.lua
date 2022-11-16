@@ -998,14 +998,7 @@ local function Init()
         end
     end)
 
-    panel:SetScript('OnEnter', function (self)
-       --[[
- if Save.showMenuOnEnter then--即时显示菜单
-            ToggleDropDownMenu(1,nil,self.Menu, self,15,0 )
-        end
-
-]]
-
+    panel:SetScript('OnEnter', function(self)
         if not UnitAffectingCombat('player') then
             e.toolsFrame:SetShown(true)--设置, TOOLS 框架, 显示
         end
