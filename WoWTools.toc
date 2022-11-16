@@ -1,12 +1,12 @@
 ## Interface: 100002
-## Version: 0.0.1
+## Version: 0.1
 ## Title: |A:Icon-WoW:0:0|a|cffff00ffWoW|r |cff00ff00Tools|r
 ## Notes: WoW Tools
 ## Author: husandro
 ## SavedVariables: WoWToolsSave
 
-## X-Curse-Project-ID:695149
-## X-Wago-ID:baND1J6o
+## X-Curse-Project-ID: 695149
+## X-Wago-ID: baND1J6o
 ## Version: @project-version@
 
 
