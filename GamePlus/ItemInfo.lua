@@ -70,9 +70,8 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex)
                 end
 
                 local sourceID = (not isBound or merchantIndex) and select(2,C_TransmogCollection.GetItemInfo(itemLink))
-                
-                if sourceID and not C_TransmogCollection.PlayerKnowsSource(sourceID) then
-                    bottomRightText = select(2, C_TransmogCollection.PlayerCanCollectSource(sourceID)) and  e.Icon.okTransmog2 or e.Icon.transmogHide2
+                if sourceID and not C_TransmogCollection.PlayerHasTransmogByItemInfo(itemLink) then
+                    bottomRightText = e.Icon.okTransmog2
                 end
                 if itemQuality and itemQuality>1 then
                     if bag and not bag.isBound then--没有锁定
@@ -295,6 +294,7 @@ local function setMerchantInfo()--商人设置
         local itemButton= _G["MerchantItem"..i..'ItemButton']
         if itemButton then
             local itemLink,itemID
+            
             if itemButton:IsShown() then
                 itemLink= GetMerchantItemLink(index)
                 itemID= GetMerchantItemID(index)
