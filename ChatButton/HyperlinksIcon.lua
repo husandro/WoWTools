@@ -48,7 +48,7 @@ local function Realm(link)--去服务器为*, 加队友种族图标,和N,T
             local race=e.Race(tab.unit)
             text= race
             if tab.combatRole=='HEALER' or tab.combatRole=='TANK' then--职业图标
-                text= (text or '')..e.Icon[tab.combatRole]
+                text= (text or '')..e.Icon[tab.combatRole]..(tab.subgroup or '')
             end
         end
         if server then

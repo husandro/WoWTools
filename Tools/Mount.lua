@@ -80,7 +80,7 @@ local function setPanelPostion()--设置按钮位置
         panel:SetPoint(p[1], UIParent, p[3], p[4], p[5])
         panel:SetParent(UIParent)
     else
-        panel:SetPoint('RIGHT', CharacterReagentBag0Slot, 'LEFT', -60 ,0)
+        panel:SetPoint('RIGHT', CharacterReagentBag0Slot, 'LEFT', -10 ,0)
     end
 end
 
