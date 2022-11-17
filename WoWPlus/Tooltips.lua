@@ -7,16 +7,16 @@ local wowBossKilled={}
 
 local function setInitItem(self, hide)--创建物品
     if not self.textLeft then--左上角字符
-        self.textLeft=e.Cstr(self, 18)
+        self.textLeft=e.Cstr(self, 12)
         self.textLeft:SetPoint('BOTTOMLEFT', self, 'TOPLEFT')
         --self.textLeft:SetPoint('TOPLEFT', self, 'BOTTOMLEFT')下
     end
     if not self.text2Left then--左上角字符2
-        self.text2Left=e.Cstr(self, 18)
+        self.text2Left=e.Cstr(self, 12)
         self.text2Left:SetPoint('LEFT', self.textLeft, 'RIGHT', 5, 0)
     end
     if not self.textRight then--右上角字符
-        self.textRight=e.Cstr(self, 18)
+        self.textRight=e.Cstr(self, 12)
         self.textRight:SetPoint('BOTTOMRIGHT', self, 'TOPRIGHT')
         --self.textRight:SetPoint('TOPRIGHT', self, 'BOTTOMRIGHT')--下
     end
@@ -1002,17 +1002,18 @@ local num= isInGuild and 4 or 3
     else
         local r,g,b, hex = GetClassColor(UnitClassBase(unit))--颜色
         hex= hex and '|c'..hex or ''
-        GameTooltipTextLeft1:SetTextColor(r,g,b)
+        --GameTooltipTextLeft1:SetTextColor(r,g,b)
 
         
-        if not UnitAffectingCombat('player') or not e.Layer then--位面,NPCID
-            local zone, npc = select(5, strsplit("-",guid))
+        --if not UnitAffectingCombat('player') or not e.Layer then--位面,NPCID
+            local zone, npc = select(5, strsplit("-",guid))--位面,NPCID
             if zone then
                -- self:AddDoubleLine(e.L['LAYER']..' '..zone, 'NPC '..npc)--, server and FRIENDS_LIST_REALM..server)
+                self.textLeft:SetText(hex..npc..' npc|r')
                 e.Layer=zone
             end
-        end
-
+        --end
+--[[
         --怪物, 图标
         if UnitIsQuestBoss(unit) then--任务
             e.tips.Portrait:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Quest')
@@ -1035,7 +1036,7 @@ local num= isInGuild and 4 or 3
                 e.tips.Portrait:SetShown(true)
             end
         end
-
+]]
         local type=UnitCreatureType(unit)--生物类型
         if type and not type:find(COMBAT_ALLY_START_MISSION) then
             self.textRight:SetText(hex..type..'|r') 
