@@ -853,8 +853,10 @@ local function getPlayerInfo(unit, guid)--取得玩家信息
     setPlayerInfo(unit, guid)
 end
 
-local function setUnitInfo(self)--设置单位提示信息
-    local name, unit = self:GetUnit()
+local function setUnitInfo(unit)--设置单位提示信息
+    --local name, unit = self:GetUnit()
+    local self=e.tips
+    local name=GetUnitName(unit)
     if not Save.showUnit or not unit then
         return
     end
@@ -875,7 +877,8 @@ local function setUnitInfo(self)--设置单位提示信息
         getPlayerInfo(unit, guid)--取得玩家信息
 
         local isWarModeDesired=C_PvP.IsWarModeDesired()
-        local reason=UnitPhaseReason(unit)
+        --[[
+local reason=UnitPhaseReason(unit)
         if reason then
             if reason==0 then--不同了阶段
                 self.textLeft:SetText(ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1','')))
@@ -887,18 +890,26 @@ local function setUnitInfo(self)--设置单位提示信息
                 self.textLeft:SetText(PLAYER_DIFFICULTY_TIMEWALKER)
             end
         end
+
+]]
+
     
         local isInGuild=IsPlayerInGuildFromGUID(guid)
         local col = e.UnitItemLevel[guid] and e.UnitItemLevel[guid].col
         local line=GameTooltipTextLeft1--名称
+        
         local text=line:GetText()
-        text=text:gsub('(%-.+)','')
-        text=text:gsub(name, e.Icon.toRight2..(col and col..name..'|r' or name)..e.Icon.toLeft2)
-        line:SetText(text)
-
+        if text then
+            text=text:gsub('(%-.+)','')
+            text=text:gsub(name, e.Icon.toRight2..(col and col..name..'|r' or name)..e.Icon.toLeft2)
+            line:SetText(text)
+        end
         line=isInGuild and GameTooltipTextLeft2
         if line then
-            line:SetText(e.Icon.guild2..line:GetText())
+            local text=line:GetText()
+            if text then
+                line:SetText(e.Icon.guild2..text)
+            end
         end
 
         line=isInGuild and GameTooltipTextLeft3 or GameTooltipTextLeft2
@@ -922,7 +933,8 @@ local function setUnitInfo(self)--设置单位提示信息
         local isSelf=UnitIsUnit('player', unit)--我
         local isGroupPlayer= (not isSelf and e.GroupGuid[guid]) and true or nil--队友
 
-        local num= isInGuild and 4 or 3
+        --[[
+local num= isInGuild and 4 or 3
         for i=num, e.tips:NumLines() do
             local line=_G["GameTooltipTextLeft"..i]
             if line then
@@ -945,17 +957,20 @@ local function setUnitInfo(self)--设置单位提示信息
                                 line:SetText(mapInfo.name..e.Icon.map2)
                                 line:SetShown(true)
                             else
-                                line:Hide()
+                               -- line:Hide()
                             end
                         end
                     else
-                        line:Hide()
+                       -- line:Hide()
                     end
                 else
-                   line:Hide()
+                 --  line:Hide()
                 end
             end
         end
+
+]]
+
 
 
     elseif (UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit)) then--宠物TargetFrame.lua
@@ -969,7 +984,7 @@ local function setUnitInfo(self)--设置单位提示信息
         --if not UnitAffectingCombat('player') then--位面,NPCID
             local zone, npc = select(5, strsplit("-",guid))
             if zone then
-                self:AddDoubleLine(e.L['LAYER']..' '..zone, 'NPC '..npc)--, server and FRIENDS_LIST_REALM..server)
+               -- self:AddDoubleLine(e.L['LAYER']..' '..zone, 'NPC '..npc)--, server and FRIENDS_LIST_REALM..server)
                 e.Layer=zone
             end
         --end
@@ -1012,7 +1027,7 @@ local function setUnitInfo(self)--设置单位提示信息
     e.tips.playerModel:SetShown(true)
 end
 --e.tips:HookScript("OnTooltipSetUnit", setUnitInfo)--设置单位提示信息
-
+hooksecurefunc('GameTooltip_UnitColor', setUnitInfo)
 
 
 local function setUnitInit(self)--设置默认提示位置
