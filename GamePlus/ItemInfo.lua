@@ -125,7 +125,7 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex)
             end
         elseif classID==12 and itemQuality and itemQuality>0 then--任务
             if bag then
-                local questId, isActive = select(2, GetContainerItemQuestInfo(bag.bagID, bag.slot))
+                local questId, isActive = select(2, C_Container.GetContainerItemQuestInfo(bag.bagID, bag.slot))
                 if questId then
                     if IsQuestCompletable(questId) then
                         bottomLeftText=DONE
@@ -258,8 +258,8 @@ local function setBags(self)--背包设置
         local itemLink, itemID, isBound, _, equipmentName
         local slot, bagID= itemButton:GetSlotAndBagID()--:GetID() GetBagID()
         if itemButton.hasItem then
-            itemLink, _, _, itemID, isBound = select(7, GetContainerItemInfo(bagID, slot))
-            equipmentName= select(2, GetContainerItemEquipmentSetInfo(bagID,slot))
+            itemLink, _, _, itemID, isBound = select(7, C_Container.GetContainerItemInfo(bagID, slot))
+            equipmentName= select(2, C_Container.GetContainerItemEquipmentSetInfo(bagID,slot))
         end
         setItemInfo(itemButton, itemLink, itemID, {isBound=isBound, equipmentName=equipmentName, bagID=bagID, slot=slot})
     end

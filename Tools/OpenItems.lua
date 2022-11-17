@@ -36,7 +36,7 @@ end
 local function setCooldown()--冷却条
     if panel:IsShown() then
         if Bag.bag and Bag.slot then
-            local itemID = GetContainerItemID(Bag.bag, Bag.slot)
+            local itemID = C_Container.GetContainerItemID(Bag.bag, Bag.slot)
             if itemID then
                 local start, duration, enable = GetItemCooldown(itemID)
                 e.Ccool(panel, start, duration, nil, true,nil, true)
@@ -82,8 +82,8 @@ local function getItems()--取得背包物品信息
     end
     Bag={}
     for bag=0, NUM_BAG_SLOTS do
-        for slot=1,GetContainerNumSlots(bag) do
-            local icon, itemCount, locked, quality, _, lootable, itemLink, _, _, itemID, isBound = GetContainerItemInfo(bag, slot)
+        for slot=1, C_Container.GetContainerNumSlots(bag) do
+            local icon, itemCount, locked, quality, _, lootable, itemLink, _, _, itemID, isBound = C_Container.GetContainerItemInfo(bag, slot)
             if itemID and Save.use[itemID] then
                 if Save.use[itemID]<=itemCount then
                     setAtt(bag, slot, icon, itemID)
@@ -184,7 +184,7 @@ end
 
 local function setDisableCursorItem()--禁用当物品
     if Bag.bag and Bag.slot then
-        local itemID=GetContainerItemID(Bag.bag, Bag.slot)
+        local itemID=C_Container.GetContainerItemID(Bag.bag, Bag.slot)
         if itemID then
             Save.no[itemID]=true
             Save.use[itemID]=nil
@@ -262,8 +262,8 @@ local function setMenuList(self, level, menuList)--主菜单
     local t=UIDropDownMenu_CreateInfo()
     t.notCheckable=true
     if Bag.bag and Bag.slot then
-        t.text=GetContainerItemLink(Bag.bag, Bag.slot) or ('bag: '..bag ..' slot: '..slot)
-        t.icon=GetContainerItemInfo(Bag.bag, Bag.slot)
+        t.text=C_Container.GetContainerItemLink(Bag.bag, Bag.slot) or ('bag: '..bag ..' slot: '..slot)
+        t.icon=C_Container.GetContainerItemInfo(Bag.bag, Bag.slot)
         t.func=function()
             setDisableCursorItem()--禁用当物品
         end
@@ -478,7 +478,7 @@ local function shoTips(self)--显示提示
     e.tips:SetOwner(self, "ANCHOR_LEFT")
     e.tips:ClearLines()
     if Bag.bag and Bag.slot then
-        local battlePetLink= GetContainerItemLink(Bag.bag, Bag.slot)
+        local battlePetLink= C_Container.GetContainerItemLink(Bag.bag, Bag.slot)
         if battlePetLink and battlePetLink:find('Hbattlepet:%d+') then
             BattlePetToolTip_Show(BattlePetToolTip_UnpackBattlePetLink(battlePetLink))
         else

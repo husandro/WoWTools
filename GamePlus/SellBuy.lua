@@ -120,8 +120,8 @@ local function setSellItems()--出售物品
     end
     local num, gruop, preceTotale= 0, 0, 0
     for bag=0, NUM_BAG_SLOTS do--背包        
-        for slot=0, GetContainerNumSlots(bag) do--背包数量
-            local _, itemCount, locked, quality, _, _, itemLink, _, noValue, itemID = GetContainerItemInfo(bag,slot);--物品信息
+        for slot=0, C_Container.GetContainerNumSlots(bag) do--背包数量
+            local _, itemCount, locked, quality, _, _, itemLink, _, noValue, itemID = C_Container.GetContainerItemInfo(bag,slot);--物品信息
             local checkText=CheckItemSell(itemID, itemLink, quality)--检察 ,boss掉落, 指定 或 出售灰色,宠物
             if itemID and itemLink and itemLink and not locked and checkText then
                 UseContainerItem(bag, slot);--买出

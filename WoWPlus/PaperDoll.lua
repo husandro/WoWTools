@@ -724,7 +724,7 @@ hooksecurefunc('EquipmentFlyout_DisplayButton', function(button, paperDollItemSl
 	elseif ( not bags ) then -- and (player or bank)
 		itemLink =GetInventoryItemLink("player",slot);
 	else -- bags
-		itemLink = GetContainerItemLink(bag, slot);
+		itemLink = C_Container.GetContainerItemLink(bag, slot);
 	end
     local level= itemLink and GetDetailedItemLevelInfo(itemLink)
 

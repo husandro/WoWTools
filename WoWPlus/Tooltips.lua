@@ -498,14 +498,14 @@ hooksecurefunc(e.tips, 'SetBackpackToken', function(self, index)--包里货币
     end
 end)
 
-e.tips:SetScript('OnTooltipSetItem', setItem)--物品
+--e.tips:SetScript('OnTooltipSetItem', setItem)--物品
 
 hooksecurefunc(e.tips, 'SetToyByItemID', function(self)--玩具
     setItem(self)
     self:Show()
 end)
 
-e.tips:HookScript('OnTooltipSetSpell', setSpell)--法术
+--e.tips:HookScript('OnTooltipSetSpell', setSpell)--法术
 hooksecurefunc('GameTooltip_AddQuestRewardsToTooltip', setQuest)--世界任务ID GameTooltip_AddQuest
 
 hooksecurefunc(ItemRefTooltip, 'SetHyperlink', function(self, link)--ItemRef.lua ItemRefTooltipMixin:ItemRefSetHyperlink(link)
@@ -1011,7 +1011,7 @@ local function setUnitInfo(self)--设置单位提示信息
     end
     e.tips.playerModel:SetShown(true)
 end
-e.tips:HookScript("OnTooltipSetUnit", setUnitInfo)--设置单位提示信息
+--e.tips:HookScript("OnTooltipSetUnit", setUnitInfo)--设置单位提示信息
 
 
 
@@ -2001,11 +2001,11 @@ local function updateItems()--更新物品
     wowSave[e.Player.name_server].keystones.itemLink={}
     wowSave[e.Player.name_server].items={}--{itemID={bag=包, bank=银行}}
     for bagID=0, NUM_BAG_SLOTS do
-        for slotID=1,GetContainerNumSlots(bagID) do
-            local itemID = GetContainerItemID(bagID, slotID)
+        for slotID=1, C_Container.GetContainerNumSlots(bagID) do
+            local itemID = C_Container.GetContainerItemID(bagID, slotID)
             if itemID then
                 if C_Item.IsItemKeystoneByID(itemID) then--挑战
-                    local itemLink=GetContainerItemLink(bagID, slotID)
+                    local itemLink=C_Container.GetContainerItemLink(bagID, slotID)
                     if itemLink then
                         table.insert(wowSave[e.Player.name_server].keystones.itemLink, itemLink)
                     end
