@@ -83,7 +83,12 @@ local function getItems()--取得背包物品信息
     Bag={}
     for bag=0, NUM_BAG_SLOTS do
         for slot=1, C_Container.GetContainerNumSlots(bag) do
-            local icon, itemCount, locked, quality, _, lootable, itemLink, _, _, itemID, isBound = C_Container.GetContainerItemInfo(bag, slot)
+            --local icon, itemCount, locked, quality, _, lootable, itemLink, _, _, itemID, isBound = C_Container.GetContainerItemInfo(bag, slot)
+            local icon, itemCount, locked, quality, lootable, itemLink, itemID, isBound
+            local info = C_Container.GetContainerItemInfo(bag, slot)
+            if info then
+                icon, itemCount, locked, quality, lootable, itemLink, itemID, isBound= info.iconFileID, info.stackCount, info.isLocked,info.quality, info.hasLoot, info.hyperlink, info.itemID, info.isBound
+            end
             if itemID and Save.use[itemID] then
                 if Save.use[itemID]<=itemCount then
                     setAtt(bag, slot, icon, itemID)
