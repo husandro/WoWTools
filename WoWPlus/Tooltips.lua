@@ -902,8 +902,8 @@ local function setUnitInfo(unit)--设置单位提示信息
         getPlayerInfo(unit, guid)--取得玩家信息
 
         local isWarModeDesired=C_PvP.IsWarModeDesired()
-        --[[
-local reason=UnitPhaseReason(unit)
+        
+        local reason=UnitPhaseReason(unit)
         if reason then
             if reason==0 then--不同了阶段
                 self.textLeft:SetText(ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1','')))
@@ -915,8 +915,6 @@ local reason=UnitPhaseReason(unit)
                 self.textLeft:SetText(PLAYER_DIFFICULTY_TIMEWALKER)
             end
         end
-
-]]
 
     
         local isInGuild=IsPlayerInGuildFromGUID(guid)
@@ -936,6 +934,7 @@ local reason=UnitPhaseReason(unit)
                 line:SetText(e.Icon.guild2..text)
             end
         end
+--[[
 
         line=isInGuild and GameTooltipTextLeft3 or GameTooltipTextLeft2
         if line then
@@ -943,9 +942,6 @@ local reason=UnitPhaseReason(unit)
             local sex = UnitSex(unit)
             local raceName, raceFile= UnitRace(unit)
             local level=UnitLevel(unit)
-            --[[text=line:GetText()
-            text=text:gsub(PLAYER, UnitIsPVP(unit) and '|cnRED_FONT_COLOR:PvP|r' or '|cnGREEN_FONT_COLOR:PvE|r')
-            line:SetText('|A:charactercreate-icon-customize-body-selected:0:0|a'..text)]]
             text= sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a'
             level= MAX_PLAYER_LEVEL>level and '|cnGREEN_FONT_COLOR:'..level..'|r' or level
             className= col and col..className..'|r' or className
@@ -954,11 +950,13 @@ local reason=UnitPhaseReason(unit)
             line:SetText(text)
         end
 
+
+
+
         
         local isSelf=UnitIsUnit('player', unit)--我
         local isGroupPlayer= (not isSelf and e.GroupGuid[guid]) and true or nil--队友
 
-        --[[
 local num= isInGuild and 4 or 3
         for i=num, e.tips:NumLines() do
             local line=_G["GameTooltipTextLeft"..i]
@@ -1006,13 +1004,14 @@ local num= isInGuild and 4 or 3
         hex= hex and '|c'..hex or ''
         GameTooltipTextLeft1:SetTextColor(r,g,b)
 
-        --if not UnitAffectingCombat('player') then--位面,NPCID
+        
+        if not UnitAffectingCombat('player') or not e.Layer then--位面,NPCID
             local zone, npc = select(5, strsplit("-",guid))
             if zone then
                -- self:AddDoubleLine(e.L['LAYER']..' '..zone, 'NPC '..npc)--, server and FRIENDS_LIST_REALM..server)
                 e.Layer=zone
             end
-        --end
+        end
 
         --怪物, 图标
         if UnitIsQuestBoss(unit) then--任务
@@ -1020,7 +1019,7 @@ local num= isInGuild and 4 or 3
             e.tips.Portrait:SetShown(true)
 
         elseif UnitIsBossMob(unit) then--世界BOSS
-            --self.textLeft:SetText(hex..BOSS..'|r')
+            self.textLeft:SetText(hex..BOSS..'|r')
             e.tips.Portrait:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare')
             e.tips.Portrait:SetShown(true)
         else
@@ -1051,7 +1050,7 @@ local num= isInGuild and 4 or 3
     end
     e.tips.playerModel:SetShown(true)
 end
---e.tips:HookScript("OnTooltipSetUnit", setUnitInfo)--设置单位提示信息
+
 hooksecurefunc('GameTooltip_UnitColor', setUnitInfo)
 
 
