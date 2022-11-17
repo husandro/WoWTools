@@ -121,24 +121,27 @@ local function setSellItems()--出售物品
     local num, gruop, preceTotale= 0, 0, 0
     for bag=0, NUM_BAG_SLOTS do--背包        
         for slot=0, C_Container.GetContainerNumSlots(bag) do--背包数量
-            local _, itemCount, locked, quality, _, _, itemLink, _, noValue, itemID = C_Container.GetContainerItemInfo(bag,slot);--物品信息
-            local checkText=CheckItemSell(itemID, itemLink, quality)--检察 ,boss掉落, 指定 或 出售灰色,宠物
-            if itemID and itemLink and itemLink and not locked and checkText then
-                UseContainerItem(bag, slot);--买出
-                local prece =0
-                if not noValue then--卖出钱
-                    prece = (select(11, GetItemInfo(itemLink)) or 0)*itemCount;--价格
-                    preceTotale = preceTotale + prece
+            --local _, itemCount, locked, quality, _, _, itemLink, _, noValue, itemID = C_Container.GetContainerItemInfo(bag,slot);--物品信息
+            local containerInfo = C_Container.GetContainerItemInfo(bag,slot)
+            if containerInfo and containerInfo.hyperlink and containerInfo.itemID then
+                local checkText=CheckItemSell(containerInfo.itemID, containerInfo.hyperlink, containerInfo.quality)--检察 ,boss掉落, 指定 或 出售灰色,宠物
+                if not containerInfo.isLocked and checkText then
+                    C_Container.UseContainerItem(bag, slot);--买出
+                    local prece =0
+                    if not noValue then--卖出钱
+                        prece = (select(11, GetItemInfo(containerInfo.hyperlink)) or 0) * (C_Container.stackCount or 1);--价格
+                        preceTotale = preceTotale + prece
+                    end
+                    num=num+ (C_Container.stackCount or 1)--数量
+                    gruop=gruop+1--组
+                    print(AUCTION_HOUSE_SELL_TAB, checkText or '', containerInfo.hyperlink, GetCoinTextureString(prece))
+                    if gruop>= 12 then
+                        break
+                    end
                 end
-                num=num+itemCount--数量
-                gruop=gruop+1--组
-                print(AUCTION_HOUSE_SELL_TAB, checkText or '', itemLink, GetCoinTextureString(prece))
                 if gruop>= 12 then
                     break
                 end
-            end
-            if gruop>= 12 then
-                break
             end
         end
     end
