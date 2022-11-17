@@ -255,11 +255,20 @@ end
 
 local function setBags(self)--背包设置
     for i, itemButton in self:EnumerateValidItems() do
-        local itemLink, itemID, isBound, _, equipmentName
+        local itemLink, itemID, isBound, equipmentName
         local slot, bagID= itemButton:GetSlotAndBagID()--:GetID() GetBagID()
         if itemButton.hasItem then
-            itemLink, _, _, itemID, isBound = select(7, C_Container.GetContainerItemInfo(bagID, slot))
-            equipmentName= select(2, C_Container.GetContainerItemEquipmentSetInfo(bagID,slot))
+            local info=C_Container.GetContainerItemInfo(bagID, slot)
+            if info then
+                itemLink= info.hyperlink
+                itemID= info.itemID
+                isBound= info.isBound
+            end
+            local inSet, setList = C_Container.GetContainerItemEquipmentSetInfo(bagID,slot)
+            if inSet then
+                equipmentName= setList
+            end
+            
         end
         setItemInfo(itemButton, itemLink, itemID, {isBound=isBound, equipmentName=equipmentName, bagID=bagID, slot=slot})
     end
