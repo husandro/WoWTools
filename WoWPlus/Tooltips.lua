@@ -65,6 +65,7 @@ local function setItemCooldown(self, itemID)--物品冷却
         self:AddDoubleLine(ON_COOLDOWN, SecondsToTime(t), 1,0,0, 1,0,0)
     end
 end
+--[[
 local function setSpellCooldown(self, spellID)--法术冷却
     local startTime, duration, enable = GetSpellCooldown(spellID)
     if duration>0 and enable==1 then
@@ -75,6 +76,9 @@ local function setSpellCooldown(self, spellID)--法术冷却
         self:AddDoubleLine(ON_COOLDOWN, SecondsToTime(t), 1,0,0, 1,0,0)
     end
 end
+
+]]
+
 local function GetSetsCollectedNum(setID)--套装收集数
     local info=C_TransmogSets.GetSetPrimaryAppearances(setID) or {}
     local numCollected,numAll=0,0
@@ -224,13 +228,11 @@ hooksecurefunc(e.tips,"SetCompanionPet", function(self, petGUID)--设置宠物�
     setPet(self, speciesID)--宠物
 end)
 
-local function setItem(self)--物品
-    local link=select(2, self:GetItem())
-    if not Save.showTips or UnitAffectingCombat('player') or not link then
+local function setItem(self, link)--物品
+    if not Save.showTips then
         return
     end
-    --setInitItem(self)--创建物品
-    if not C_Item.IsItemDataCachedByID(link) then C_Item.RequestLoadItemDataByID(link) end
+--    if not C_Item.IsItemDataCachedByID(link) then C_Item.RequestLoadItemDataByID(link) end
     local itemName, _, itemQuality, itemLevel, _, _, _, _, _, _, _, _, _, bindType, expacID, setID = GetItemInfo(link)
     local itemID, itemType, itemSubType, itemEquipLoc, itemTexture, classID, subclassID = GetItemInfoInstant(link)
     if not itemID then
@@ -242,7 +244,7 @@ local function setItem(self)--物品
         hex=hex and '|c'..hex
     end
 
-    self:AddDoubleLine(expacID and _G['EXPANSION_NAME'..expacID], expacID and GAME_VERSION_LABEL..': '..expacID+1)--版本
+    --[[self:AddDoubleLine(expacID and _G['EXPANSION_NAME'..expacID], expacID and GAME_VERSION_LABEL..': '..expacID+1)--版本
     self:AddDoubleLine(itemID and ITEMS..'ID: '.. itemID or ' ' , itemTexture and EMBLEM_SYMBOL..'ID: '..itemTexture)--ID, texture
     if classID and subclassID then
         self:AddDoubleLine((itemType and itemType..' classID'  or 'classID') ..': '..classID, (itemSubType and itemSubType..' subID' or 'subclassID')..': '..subclassID)
@@ -271,7 +273,7 @@ local function setItem(self)--物品
         local spellTexture=GetSpellTexture(spellID)
         self:AddDoubleLine((itemName~=spellName and spellName..'('..SPELLS..')' or SPELLS)..'ID: '..spellID, spellTexture and spellTexture~=itemTexture  and '|T'..spellTexture..':0|t'..spellTexture or ' ')
     end
-
+]]
     if classID==2 or classID==4 then
         itemLevel= GetDetailedItemLevelInfo(link) or itemLevel--装等
         if itemLevel and itemLevel>1 then
@@ -332,9 +334,14 @@ local function setItem(self)--物品
         end
     end
 
+    --[[
     local bag= GetItemCount(link)--物品数量
     local bank= GetItemCount(link,true) - bag
     self.textRight:SetText((bag>0 or bank>0) and hex..bank..e.Icon.bank2..' '..bag..e.Icon.bag2..'|r' or '')
+
+]]
+
+    self.textRight:SetText(itemID)
 
     if C_Item.IsItemKeystoneByID(itemID) then--挑战, 没测试
         if Save.showWoWInfo then
@@ -380,29 +387,35 @@ local function setItem(self)--物品
                 end
             end
         end
+        --[[
         if numPlayer>1 then
             self:AddDoubleLine(e.Icon.wow2..e.Icon.bag2..e.MK(bagAll,3)..' '..e.Icon.bank2..e.MK(bankAll, 3), e.MK(bagAll+bankAll, 3)..' '..e.Icon.wow2..' '..numPlayer)
         end
+
+]]
+
     end
 
     setItemCooldown(self, itemID)--物品冷却
 
     self.backgroundColor:SetColorTexture(r, g, b, 0.15)--颜色
     self.backgroundColor:SetShown(true)
+    self:Show()
 end
 
-local function setSpell(self)--法术
-    local bat=UnitAffectingCombat('player')
+local function setSpell(self, spellID)--法术
     if not Save.showTips then
         return
     end
-    local spellID = select(2, self:GetSpell())
+    self.textRight:SetText(spellID)
+    
+    --[[
+--local spellID = select(2, self:GetSpell())
     local spellTexture=spellID and  GetSpellTexture(spellID)
     if not spellTexture then
         return
     end
     self:AddDoubleLine(SPELLS..'ID: '..spellID, EMBLEM_SYMBOL..'ID: '..spellTexture)
-    --setInitItem(self)--创建物品
     self.Portrait:SetTexture(spellTexture)
     self.Portrait:SetShown(true)
 
@@ -412,6 +425,9 @@ local function setSpell(self)--法术
     end
 
     setSpellCooldown(self, spellID)--法术冷却
+
+]]
+
 end
 
 local function setCurrency(self, currencyID)--货币
@@ -501,8 +517,11 @@ end)
 --e.tips:SetScript('OnTooltipSetItem', setItem)--物品
 
 hooksecurefunc(e.tips, 'SetToyByItemID', function(self)--玩具
-    setItem(self)
-    self:Show()
+    local link=select(2, self:GetItem())
+    if link then
+        setItem(self, link)
+        --self:Show()
+    end
 end)
 
 --e.tips:HookScript('OnTooltipSetSpell', setSpell)--法术
@@ -516,10 +535,10 @@ hooksecurefunc(ItemRefTooltip, 'SetHyperlink', function(self, link)--ItemRef.lua
         return
     end
     if linkName=='item' then--物品OnTooltipSetItem
-        setItem(self)
+        setItem(self, link)
         self:Show()
     elseif linkName=='spell' then--法术OnTooltipSetSpell
-        setSpell(self)
+        setSpell(self, linkID)
     elseif linkName=='currency' then--货币
         setCurrency(self, linkID)
         self:Show()
@@ -1065,14 +1084,23 @@ end)
 
 
 --****
---隐藏/
+--隐藏
 --****
 setInitItem(e.tips)
 e.tips:HookScript("OnShow", function(self)
     if Save.inCombatHideTips and UnitAffectingCombat('player') then 
         self:Hide()
+    else
+        local itemLink=select(2, self:GetItem())
+        local spellID = select(2, self:GetSpell())
+        if itemLink then
+            setItem(self, itemLink)--物品
+        elseif spellID then
+            setSpell(self, spellID)--法术
+        end
     end
 end)
+
 ItemRefTooltip:HookScript("OnShow", function(self)
     setInitItem(self)
 end)
