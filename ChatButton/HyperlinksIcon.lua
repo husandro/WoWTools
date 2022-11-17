@@ -113,14 +113,8 @@ local function Item(link)--物品超链接
         if sourceID then
             local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
             if sourceInfo then                
-                if sourceInfo.isCollected then
+                if not sourceInfo.isCollected then
                     t=t..e.Icon.okTransmog2
-                else
-                    t=t..e.Icon.transmogHide2
-                end
-                local hasItemData, canCollect = C_TransmogCollection.PlayerCanCollectSource(sourceID)--玩家是否可收集
-                if hasItemData and not canCollect then
-                    t=t..e.Icon.info2
                 end
             end
         end
