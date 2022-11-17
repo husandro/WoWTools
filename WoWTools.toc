@@ -1,4 +1,4 @@
-## Interface: 100002
+## Interface: 100000
 ## Version: 0.1
 ## Title: |A:Icon-WoW:0:0|a|cffff00ffWoW|r |cff00ff00Tools|r
 ## Notes: WoW Tools
