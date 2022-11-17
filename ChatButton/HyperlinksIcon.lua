@@ -10,7 +10,6 @@ local Save={
         ['来人']=true,
         ['成就']=true,
     },
-    guildWelcome=true,
     groupWelcome=true,
 }
 
