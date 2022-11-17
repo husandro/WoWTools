@@ -752,6 +752,7 @@ local function set_Unit_Health_Bar(self, value)
     if not Save.showUnit then
         return
     end
+--[[
     local text, textLeft, textRight = '', '', ''
     if value then
         local min, max = self:GetMinMaxValues();
@@ -788,17 +789,22 @@ local function set_Unit_Health_Bar(self, value)
         self.textRight:SetPoint('TOPRIGHT', self, 'BOTTOMRIGHT')--生命条
         self.textRight:SetJustifyH("Right");
     end
-
+]]
     local unit = "mouseover";
     local focus = GetMouseFocus();
     if (focus and focus.unit) then
         unit = focus.unit;
     end
+
     local r, g, b = GetClassColor(select(2, UnitClass(unit)));
-    self.textLeft:SetText(textLeft)
+ --[[
+   self.textLeft:SetText(textLeft)
     self.textRight:SetText(textRight)
     self.textLeft:SetTextColor(r,g,b)
     self.textRight:SetTextColor(r,g,b)
+
+]]
+
     self:SetStatusBarColor(r, g, b)
 end
 GameTooltipStatusBar:SetScript("OnValueChanged", set_Unit_Health_Bar);
