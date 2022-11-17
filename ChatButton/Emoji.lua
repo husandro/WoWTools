@@ -1,6 +1,7 @@
 local id, e = ...
 local addName= 'Emoji'
 local Save={disabled= not e.Player.zh, Channels={} }
+
 local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
 panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
 WoWToolsChatButtonFrame.last=panel
@@ -266,28 +267,29 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
-        Save= WoWToolsSave and WoWToolsSave[addName] or Save
-        Save.Channels= Save.Channels or {}
-
-        local sel2=CreateFrame("CheckButton", nil, WoWToolsChatButtonFrame.sel, "InterfaceOptionsCheckButtonTemplate")
-        sel2.Text:SetText('emoji')
-        sel2:SetPoint('LEFT', WoWToolsChatButtonFrame.sel.Text, 'RIGHT')
-        sel2:SetChecked(not Save.disabled)
-        sel2:SetScript('OnClick', function()
-            Save.disabled= not Save.disabled and true or nil
-            print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.GetEnabeleDisable(not WoWToolsChatButtonFrame.disabled), REQUIRES_RELOAD)
-        end)
-
         if WoWToolsChatButtonFrame.disabled or Save.disabled then--禁用Chat Button
-            panel:SetShown(false)
+            slef:SetShown(false)
             panel:UnregisterAllEvents()
         else
-            Init()
+            Save= WoWToolsSave and WoWToolsSave[addName] or Save
+            Save.Channels= Save.Channels or {}
+
+            local sel2=CreateFrame("CheckButton", nil, WoWToolsChatButtonFrame.sel, "InterfaceOptionsCheckButtonTemplate")
+            sel2.Text:SetText('emoji')
+            sel2:SetPoint('LEFT', WoWToolsChatButtonFrame.sel.Text, 'RIGHT')
+            sel2:SetChecked(not Save.disabled)
+            sel2:SetScript('OnClick', function()
+                Save.disabled= not Save.disabled and true or nil
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.GetEnabeleDisable(not WoWToolsChatButtonFrame.disabled), REQUIRES_RELOAD)
+            end)
+            if not Save.disabled then
+                Init()
+            end
         end
-        panel:RegisterEvent("PLAYER_LOGOUT")
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then

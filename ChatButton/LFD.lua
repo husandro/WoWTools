@@ -248,9 +248,9 @@ local function setQueueStatus()--小眼睛, 信息
     end
 end
 
---####
---菜单
---####
+--#######
+--初始菜单
+--#######
 local function setTexture(dungeonID, RaidID, name, texture)--设置图标, 点击,提示
     if dungeonID or RaidID then
         panel.dungeonID=dungeonID
@@ -912,7 +912,6 @@ end
 --###########
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
-panel:RegisterEvent('PLAYER_LOGOUT') 
 
 panel:RegisterEvent('LFG_COMPLETION_REWARD')
 panel:RegisterEvent('PLAYER_ENTERING_WORLD')
@@ -923,16 +922,14 @@ panel:RegisterEvent('START_LOOT_ROLL')
 
 panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
     if event == "ADDON_LOADED" and arg1==id then
-            Save= WoWToolsSave and WoWToolsSave[addName] or Save
-            wowSave=WoWToolsSave and WoWToolsSave[INSTANCE] or wowSave
-
             if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
-                panel:SetShown(false)
                 panel:UnregisterAllEvents()
             else
                 Save= WoWToolsSave and WoWToolsSave[addName] or Save
+                wowSave=WoWToolsSave and WoWToolsSave[INSTANCE] or wowSave
                 Init()
             end
+
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end

@@ -118,15 +118,14 @@ end
 --###########
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent('GUILD_ROSTER_UPDATE')
+panel:RegisterEvent('PLAYER_LOGOUT')
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
         if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
-            panel:SetShown(false)
             panel:UnregisterAllEvents()
         else
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
-            panel:RegisterEvent('PLAYER_LOGOUT')
-            
             Init()
         end
 

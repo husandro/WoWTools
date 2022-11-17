@@ -352,11 +352,11 @@ panel:RegisterEvent("CHAT_MSG_BN_WHISPER_INFORM")
 panel:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
     if event == "ADDON_LOADED" and arg1==id then
         if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
-            panel:SetShown(false)
             panel:UnregisterAllEvents()
         else
             Init()
         end
+
     elseif event=='CHAT_MSG_WHISPER_INFORM' or event=='CHAT_MSG_WHISPER' or event=='CHAT_MSG_BN_WHISPER' or event=='CHAT_MSG_BN_WHISPER_INFORM' then
         getWhisper(event, arg1, arg2, ...)
     end

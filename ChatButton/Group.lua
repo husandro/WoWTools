@@ -260,12 +260,10 @@ panel:RegisterEvent('GROUP_ROSTER_UPDATE')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
-        Save= WoWToolsSave and WoWToolsSave[addName] or Save
-
         if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
-            panel:SetShown(false)
             panel:UnregisterAllEvents()
         else
+            Save= WoWToolsSave and WoWToolsSave[addName] or Save
             Init()
         end
 

@@ -100,6 +100,17 @@ e.GetPlayerInfo=function (unit, guid, showName)--, hideClassTexture)
     return ''
 end
 
+e.PlayerLink=function(name, guid) --玩家超链接
+    local class
+    if guid then
+        local _, class2, _, _, _, name2 = GetPlayerInfoByGUID(guid)
+        name = name or name2
+        class= class2
+    end
+    local colorName= class and '|c'..select(4,GetClassColor(class))..name ..'|r'
+    return '|Hplayer:'..name..'|h['..(colorName or name)..']|h'
+ end
+
 e.GetNpcID = function(unit)--NPC ID
     if UnitExists(unit) then
         local guid=UnitGUID(unit)

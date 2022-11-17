@@ -95,6 +95,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not Save.disabled then
                 Init()
             else
+                self:SetShown(false)
                 panel.disabled=true
             end
     elseif event == "PLAYER_LOGOUT" then
