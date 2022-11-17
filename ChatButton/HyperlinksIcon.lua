@@ -23,6 +23,8 @@ local Race=function(u, race, sex2) local s =u and select(2,UnitRace(u)) or race 
 local Class=function(u, c, icon) c=c or select(2, UnitClass(u)) c=c and 'groupfinder-icon-class-'..c or nil if c then if icon then return '|A:'..c ..':0:0|a' else return c end end end--职业图标
 local Name=UnitName('player')
 
+local set_LOOT_ITEM= LOOT_ITEM:gsub('%%s', '(.+)')--%s获得了战利品：%s。
+
 local function SetChannels(link)
     local name=link:match('%[(.-)]')
     if name then
@@ -114,10 +116,11 @@ local function Item(link)--物品超链接
             local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
             if sourceInfo then                
                 if not sourceInfo.isCollected then
-                    t=t..e.Icon.okTransmog2
                     local hasItemData, canCollect = C_TransmogCollection.PlayerCanCollectSource(sourceID)--玩家是否可收集
-                    if hasItemData and not canCollect then
-                        t=t..e.Icon.info2
+                    if hasItemData and canCollect then
+                        t=t..e.Icon.okTransmog2
+                    else
+                        t=t..e.Icon.transmogHide2
                     end
                 end
             end
@@ -481,6 +484,12 @@ local function setAddMessageFunc(self, s, ...)
     s=s:gsub('|Hjournal:.-]|h', Journal)
     s=s:gsub('|Hinstancelock:.-]|h', Instancelock)
 
+    if s:find(set_LOOT_ITEM) then--	%s获得了战利品：%s。
+        local playerName= s:match(set_LOOT_ITEM)
+        if playerName then
+            s=s:gsub(Magic(playerName), e.PlayerLink(playerName))
+        end
+    end
     for k, _ in pairs(Save.text) do--内容加颜色
         s=s:gsub(k, '|cnGREEN_FONT_COLOR:'..k..'|r')
     end

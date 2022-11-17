@@ -69,10 +69,30 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex)
                     end
                 end
 
-                local sourceID = (not isBound or merchantIndex) and select(2,C_TransmogCollection.GetItemInfo(itemLink))
+                --[[
+local sourceID = (not isBound or merchantIndex) and select(2,C_TransmogCollection.GetItemInfo(itemLink))
                 if sourceID and not C_TransmogCollection.PlayerHasTransmogByItemInfo(itemLink) then
                     bottomRightText = e.Icon.okTransmog2
                 end
+
+]]
+
+
+                local sourceID = (not isBound or merchantIndex) and select(2,C_TransmogCollection.GetItemInfo(itemLink))
+                if sourceID then
+                    local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
+                    if sourceInfo then                
+                        if not sourceInfo.isCollected then
+                            local hasItemData, canCollect = C_TransmogCollection.PlayerCanCollectSource(sourceID)--玩家是否可收集
+                            if hasItemData and canCollect then
+                                bottomRightText = e.Icon.okTransmog2
+                            else
+                                bottomRightText = e.Icon.transmogHide2
+                            end
+                        end
+                    end
+                end
+
                 if itemQuality and itemQuality>1 then
                     if bag and not bag.isBound then--没有锁定
                         topRightText='|A:'..e.Icon.unlocked..':0:0|a'

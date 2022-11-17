@@ -12,6 +12,7 @@ local Point=function(frame, name2)
 end
 
 local Move=function(F, tab)
+    tab=tab or {}
     local F2, click, save, enter, show,  re =tab.frame, tab.click, tab.save, tab.enter, tab.show, tab.re;--, tab.hook;    
     if not F2 and not F then
         return
@@ -238,6 +239,7 @@ local function setAddLoad(arg1)
         checkbox.Label:ClearAllPoints();
         checkbox.Label:SetPoint("LEFT", checkbox, "RIGHT", 2, 1);
         checkbox.Label:SetPoint("RIGHT", checkbox, "RIGHT", 160, 1);
+
         Move(CollectionsJournal, {})--藏品
         Move(WardrobeFrame, {})--幻化
     elseif arg1=='Blizzard_Calendar' then--日历

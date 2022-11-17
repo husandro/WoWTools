@@ -1009,7 +1009,7 @@ local num= isInGuild and 4 or 3
             local zone, npc = select(5, strsplit("-",guid))--位面,NPCID
             if zone then
                -- self:AddDoubleLine(e.L['LAYER']..' '..zone, 'NPC '..npc)--, server and FRIENDS_LIST_REALM..server)
-                self.textLeft:SetText(hex..npc..' npc|r')
+                self.textLeft:SetText(hex..npc..'|r')
                 e.Layer=zone
             end
         --end
