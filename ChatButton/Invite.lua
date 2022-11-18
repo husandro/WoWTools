@@ -33,7 +33,7 @@ local function isInLFG()--是否有FB, 排除中
     end
 end
 
-local function setTexture()--设置图标颜色, 是否有权限, 是否转团
+local function setTexture()--设置图标颜色, 是否有权限, 是否转团, 邀请选项提示
     panel.texture:SetDesaturated(not getLeader() and true or false)
 
     if Save.PartyToRaid then
@@ -41,6 +41,28 @@ local function setTexture()--设置图标颜色, 是否有权限, 是否转团
     else
         panel.border:SetAtlas('bag-reagent-border')
     end
+
+    if not panel.LFGAutoInv and Save.LFGAutoInv then--自动进入,指示图标
+        panel.LFGAutoInv=panel:CreateTexture(nil, 'ARTWORK')
+        panel.LFGAutoInv:SetPoint('BOTTOMLEFT',3,3)
+        panel.LFGAutoInv:SetSize(10,10)
+        panel.LFGAutoInv:SetAtlas(e.Icon.toRight)
+        panel.LFGAutoInv:SetDesaturated(true)
+    end
+    if panel.LFGAutoInv then
+        panel.LFGAutoInv:SetShown(Save.LFGAutoInv)
+    end
+    if not panel.InvTar and Save.InvTar then--自动离开,指示图标
+        panel.InvTar=panel:CreateTexture(nil, 'ARTWORK')
+        panel.InvTar:SetPoint('BOTTOMRIGHT',-7,3)
+        panel.InvTar:SetSize(10,10)
+        panel.InvTar:SetAtlas(e.Icon.toLeft)
+        panel.InvTar:SetDesaturated(true)
+    end
+    if panel.InvTar then
+        panel.InvTar:SetShown(Save.InvTar)
+    end
+
 end
 
 --#######
@@ -344,6 +366,7 @@ local function InitList(self, level, type)
                     if f then 
                         f:SetChecked(Save.LFGAutoInv)
                     end
+                    setTexture()--设置图标颜色, 是否有权限, 是否转团, 邀请选项提示
                 end,
                 checked=Save.LFGAutoInv,
                 tooltipOnButton=true,
@@ -361,6 +384,7 @@ local function InitList(self, level, type)
                     Save.InvTar= not Save.InvTar and true or nil
                     set_event_PLAYER_TARGET_CHANGED()--设置, 邀请目标事件
                     set_PLAYER_TARGET_CHANGED()--设置, 邀请目标事件
+                    setTexture()--设置图标颜色, 是否有权限, 是否转团, 邀请选项提示
                 end,
                 tooltipOnButton=true,
                 tooltipTitle=GROUP_FINDER_CROSS_FACTION_LISTING_WITHOUT_PLAYSTLE:format('|cff00ff00'..LEADER..'|r'..NO..'|cnRED_FONT_COLOR:'..INSTANCE..'|r'),
