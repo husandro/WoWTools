@@ -245,6 +245,7 @@ local function set_LFGListInviteDialog(self)--队伍查找器, 自动接受邀�
         if self.LFGListInviteDialogTimer and not self.LFGListInviteDialogTimer:IsCancelled() then
             self.LFGListInviteDialogTimer:Cancel()
         end
+        e.Ccool(self, nil, 3, nil, true, true, nil)--冷却条
         self.LFGListInviteDialogTimer=C_Timer.NewTicker(3, function()
             self.AcknowledgeButton:Click();
         end, 1)
