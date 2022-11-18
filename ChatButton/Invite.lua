@@ -1,6 +1,6 @@
 local id, e = ...
 local addName= INVITE
-local Save={InvNoFriend={}, LFGListAceInvite=true, FriendAceInvite=true, InvNoFriendNum=0}
+local Save={InvNoFriend={}, LFGListAceInvite=true, FriendAceInvite=true, InvNoFriendNum=0, restingTips=true}
 local InvPlateGuid={}
 
 local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
@@ -343,6 +343,24 @@ local function set_PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNati
     end
 end
 
+--#########
+--休息区提示
+--#########
+local function set_event_PLAYER_UPDATE_RESTING()--设置, 休息区提示事件
+    if Save.restingTips then
+        panel:RegisterEvent('PLAYER_UPDATE_RESTING')
+    else
+        panel:UnregisterEvent('PLAYER_UPDATE_RESTING')
+    end
+end
+local function set_PLAYER_UPDATE_RESTING()--设置, 休息区提示
+    if IsResting() then
+        print(id, addName, ENTER_LFG, '|cnRED_FONT_COLOR:'..CALENDAR_STATUS_OUT..'|r'..ZONE)
+    else
+        print(id, addName, LEAVE, '|cnRED_FONT_COLOR:'..CALENDAR_STATUS_OUT..'|r'..ZONE)
+    end
+end
+
 --#######
 --初始菜单
 --#######
@@ -529,6 +547,17 @@ info={--预创建队伍增强
             }
             UIDropDownMenu_AddButton(info, level)
 
+            UIDropDownMenu_AddSeparator(level)
+            info={
+                text=CALENDAR_STATUS_OUT..ZONE..INFO,
+                checked=Save.restingTips,
+                func=function()
+                    Save.restingTips= not Save.restingTips and true or nil
+                    set_PLAYER_UPDATE_RESTING()--设置, 休息区提示
+                end,
+            }
+            UIDropDownMenu_AddButton(info, level)
+
         elseif type=='NoInvList' then--三级列表，拒绝邀请列表
             local all=0;
             for guid, nu in pairs(Save.InvNoFriend) do        
@@ -621,6 +650,7 @@ local function Init()
     end)
 
     set_event_PLAYER_TARGET_CHANGED()--设置, 邀请目标事件
+    set_event_PLAYER_UPDATE_RESTING()--设置, 休息区提示事件
 
     LFGListInviteDialog:SetScript("OnHide", function(self)--LFG,,自动接受邀请
         if self.LFGListInviteDialogTimer and not self.LFGListInviteDialogTimer:IsCancelled() then
@@ -667,7 +697,7 @@ panel:RegisterEvent('GROUP_LEFT')
 panel:RegisterEvent('GROUP_ROSTER_UPDATE')
 
 panel:RegisterEvent('PARTY_INVITE_REQUEST')
---panel:RegisterEvent('GROUP_INVITE_CONFIRMATION')
+panel:RegisterEvent('PLAYER_UPDATE_RESTING')----休息区提示
 
 panel:SetScript("OnEvent", function(self, event, arg1, ...)
     if event == "ADDON_LOADED" and arg1==id then
@@ -697,5 +727,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, ...)
     
     elseif event=='PARTY_INVITE_REQUEST' then
         set_PARTY_INVITE_REQUEST(arg1, ...)--邀请, 对话框
+
+    elseif event=='PLAYER_UPDATE_RESTING' then
+        set_PLAYER_UPDATE_RESTING()--设置, 休息区提示
     end
 end)
