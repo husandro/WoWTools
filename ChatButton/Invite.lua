@@ -70,7 +70,6 @@ end
 --#######
 local InvPlateTimer
 local InvUnitFunc=function()--邀请，周围玩家
-    local le=UnitIsGroupAssistant('player') or  UnitIsGroupLeader('player') or not IsInGroup();
     if not getLeader() then--取得权限
         print(id,addName, ERR_GUILD_PERMISSIONS)
         return
@@ -128,7 +127,7 @@ end
 
 local Time
 local function set_LFGListApplicationViewer_UpdateApplicantMember(self, appID, memberIdx, status, pendingStatus)--自动清邀请, 队伍查找器, LFGList.lua
-    if not  Save.LFGAutoInv or getLeader() then
+    if not  Save.LFGAutoInv or not getLeader() then
         return
     end
     
