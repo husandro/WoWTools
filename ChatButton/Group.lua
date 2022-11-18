@@ -1,6 +1,9 @@
 local id, e = ...
 local addName= 'ChatButtonGroup'
-local Save={mouseUP='%s求拉, 3Q'}
+local Save={
+    mouseUP='%s求拉, 3Q',
+    mouseDown='1',
+}
 
 local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
 panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置

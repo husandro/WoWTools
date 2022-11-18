@@ -1,16 +1,41 @@
 local id, e = ...
 local addName= INVITE
-local Save={InvNoFriend={}}
+local Save={InvNoFriend={}, LFGListAceInvite=true, FriendAceInvite=true, InvNoFriendNum=0}
 local InvPlateGuid={}
 
 local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
 panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
 WoWToolsChatButtonFrame.last=panel
 
+
 local function getLeader()--取得权限
     return UnitIsGroupAssistant('player') or  UnitIsGroupLeader('player') or not IsInGroup()
 end
+local function toRaidOrParty(number)--自动, 转团
+    if Save.PartyToRaid then
+        number= number or GetNumGroupMembers()
+        local raid= IsInRaid()
+        if number>=5 and not raid then 
+            C_PartyInfo.ConvertToRaid();
+            print(id, addName, '|cnGREEN_FONT_COLOR:'..CONVERT_TO_RAID..'|r')
+        elseif number<6 and raid then 
+            C_PartyInfo.ConvertToParty();
+            print(id, addName, '|cnGREEN_FONT_COLOR:'..CONVERT_TO_PARTY..'|r')
+        end
+    end
+end
 
+local function isInLFG()--是否有FB, 排除中
+    for type=1, NUM_LE_LFG_CATEGORYS do
+        if GetLFGQueueStats(type) then 
+            return true 
+        end
+    end
+    
+end
+--#######
+--邀请玩家
+--#######
 local InvPlateTimer
 local InvUnitFunc=function()--邀请，周围玩家
     local le=UnitIsGroupAssistant('player') or  UnitIsGroupLeader('player') or not IsInGroup();
@@ -32,12 +57,13 @@ local InvUnitFunc=function()--邀请，周围玩家
             local n=0;
             local co=GetNumGroupMembers();
             local raid=IsInRaid();
-            if (not raid and co==5) then 
+            if (not raid and co==5) and not Save.PartyToRaid then 
                 print(id, addName, PETITION_TITLE:format('|cff00ff00'..CONVERT_TO_RAID..'|r'))
                 return
             elseif co==40 then
-                print(id, addName, RED_FONT_COLOR_CODE..'|r',co,PLAYERS_IN_GROUP)        
+                print(id, addName, RED_FONT_COLOR_CODE..'|r', co, PLAYERS_IN_GROUP)        
             else 
+                toRaidOrParty(number)--自动, 转团
                 for _, v in pairs(C_NamePlate.GetNamePlates()) do
                     local u = v.namePlateUnitToken or (v.UnitFrame and v.UnitFrame.unit);                
                     local name=GetUnitName(u,true);
@@ -49,7 +75,7 @@ local InvUnitFunc=function()--邀请，周围玩家
                         
                         C_PartyInfo.InviteUnit(name); 
                         InvPlateGuid[guid]=name;                    
-                        print(n..')',e.PlayerLink(nil, guid));
+                        print(n..')',INVITE ,e.PlayerLink(nil, guid));
                         
                         if not raid and n +co>=5  then 
                             print(id, addName, PETITION_TITLE:format('|cff00ff00'..CONVERT_TO_RAID..'|r'))
@@ -68,22 +94,220 @@ local InvUnitFunc=function()--邀请，周围玩家
     end,1)
 end
 
+local Time
+local function set_LFGListApplicationViewer_UpdateApplicantMember(self, appID, memberIdx, status, pendingStatus)--自动清邀请, 队伍查找器, LFGList.lua
+    if not  Save.LFGAutoInv or getLeader() then
+        return
+    end
+    
+    local applicantInfo = C_LFGList.GetApplicantInfo(appID);            
+    local status = applicantInfo and applicantInfo.applicationStatus;
+    local numInvited = C_LFGList.GetNumInvitedApplicantMembers() --已邀请人数
+    local currentCount = GetNumGroupMembers(LE_PARTY_CATEGORY_HOME) --队伍人数            
+    
+    if status == 'applied'  and self:GetParent().numMembers then
+        local to=numInvited + currentCount;
+        local raid=IsInRaid();            
+        if to>=40 or (not raid and currentCount==5 and not Save.PartyToRaid) then
+            return
+        end
+        toRaidOrParty(to)--自动, 转团,转小队
+        button:GetParent().InviteButton:Click();
+        
+        local applicantID=applicantInfo.applicantID;
+        
+        if not Time or GetTime() > Time + 1 then--刷新 
+            local name, class, _, level, itemLevel, honorLevel, tank, healer, damage, assignedRole, relationship, dungeonScore= C_LFGList.GetApplicantMemberInfo(applicantID, memberIdx)
+            print(id, addName, 
+                level and MAX_PLAYER_LEVEL~=level and '|cff00ff00'..level..'|r' or '',--等级
+                e.Class(nil, class) or '',--职业图标
+                (tank and e.Icon.TANK or '')..(healer and e.Icon.HEALER or '')..(damage and e.Icon.DAMAGER or ''),
+                itemLevel and itemLevel>1 and BAG_FILTER_EQUIPMENT..'|cnGREEN_FONT_COLOR:'..('%i'):format(itemLevel)..'|r' or '',
+                e.PlayerLink(name) or '',
+                dungeonScore and e.GetKeystoneScorsoColor(dungeonScore) or '',
+                honorLevel and honorLevel>0 and '|A:pvptalents-warmode-swords:0:0|a|cnRED_FONT_COLOR:'..honorLevel or ''
+            )
+            
+            C_Timer.After(1,function()
+                    LFGListFrame.ApplicationViewer.RefreshButton:Click();
+            end);                    
+            Time= GetTime();
+        end
+    end 
+end
+
+local function set_event_PLAYER_TARGET_CHANGED()--设置, 邀请目标事件
+    if Save.InvTar and not IsInInstance() then
+        panel:RegisterEvent('PLAYER_TARGET_CHANGED')
+    else
+        panel:UnregisterEvent('PLAYER_TARGET_CHANGED')
+    end
+end
+local function set_PLAYER_TARGET_CHANGED()--设置, 邀请目标事件
+    if not Save.InvTar 
+    or not UnitExists('target') 
+    or not getLeader()--取得权限
+    or UnitInAnyGroup('target') 
+    or UnitIsAFK('target')
+    or not UnitIsConnected('target') 
+    or not UnitIsPlayer('target')
+    or not UnitIsFriend('target', 'player') 
+    or UnitIsUnit('player',u)
+    then 
+        return 
+    end
+    
+    local raid=IsInRaid();
+    local co=GetNumGroupMembers();
+    if (raid and co==40) or (not raid and co==5 and not Save.PartyToRaid) then 
+        return 
+    end
+    
+    local name=GetUnitName(u, true);
+    if not name then 
+        return
+    end
+    
+    toRaidOrParty(number)--自动, 转团
+
+    C_PartyInfo.InviteUnit(name); 
+    
+    local guid=UnitGUID(u);
+    
+    InvPlateGuid[guid]=name;--保存到已邀请列表
+    
+    local info=e.GUID(guid);
+    print(addName, INVITE..TARGET, e.GetPlayerInfo(nil, guid, true))
+end
+
 local function InvPlateGuidFunc()--从已邀请过列表里, 再次邀请 
-    local le=UnitIsGroupAssistant('player') or  UnitIsGroupLeader('player') or not IsInGroup();
     if not getLeader() then--取得权限
         print(id, addName, ERR_GUILD_PERMISSIONS) 
         return
     end 
     local n=0;
     local co=GetNumGroupMembers();
-    for guid, name in pairs(InvPlateGuid) do 
-        C_PartyInfo.InviteUnit(name);         
-        n=n+1;
-        print(n..')'..e.PlayerLink(name, guid));
-        if not raid and n +co>=5  then 
-            print(PETITION_TITLE:format('|cff00ff00'..CONVERT_TO_RAID..'|r'))
-            break
-        end        
+    for guid, name in pairs(InvPlateGuid) do
+        local num=n+co
+        if num==40 then
+            return
+        elseif not IsInRaid() and num==5 and not Save.PartyToRaid then 
+            print(id, addName, PETITION_TITLE:format('|cff00ff00'..CONVERT_TO_RAID..'|r'))
+            return
+        end
+
+        toRaidOrParty(num)--自动, 转团,转小队
+
+        C_PartyInfo.InviteUnit(name)
+        n=n+1
+        print(n..')'..e.PlayerLink(name, guid))
+    end
+end
+
+--#######
+--接受邀请
+--#######
+local function set_LFGListInviteDialog(self)--队伍查找器, 自动接受邀请
+    if not Save.LFGListAceInvite or not self.resultID then
+        return
+    end
+    local status, _, _, role= select(2,C_LFGList.GetApplicationInfo(self.resultID));
+    if status=="invited" then 
+        local info=C_LFGList.GetSearchResultInfo(self.resultID);
+        if self.AcceptButton and self.AcceptButton:IsEnabled() and info then
+            print(id, ACCEPT, addName,
+                info.leaderOverallDungeonScore and info.leaderOverallDungeonScore>0 and '|T4352494:0|t'..e.GetKeystoneScorsoColor(info.leaderOverallDungeonScore) or '',--地下城史诗,分数
+                info.leaderPvpRatingInfo and  info.leaderPvpRatingInfo.rating and info.leaderPvpRatingInfo.rating>0 and '|A:pvptalents-warmode-swords:0:0|a|cnRED_FONT_COLOR:'..info.leaderPvpRatingInfo.rating..'|r' or '',--PVP 分数
+                info.leaderName and COMMUNITY_INVITATION_FRAME_INVITATION_TEXT:format(e.PlayerLink(info.leaderName)..' ') or '',--	%s邀请你加入
+                info.name and info.name or '',--名称
+                e.Icon[role] or '',
+                info.numMembers and PLAYERS_IN_GROUP..'|cff00ff00'..info.numMembers..'|r' or '',--队伍成员数量
+                info.autoAccept and '|cnGREEN_FONT_COLOR:'..AUTO_JOIN:gsub(JOIN,INVITE)..'|r' or '',--对方是否开启, 自动邀请
+                info.activityID and '|cffff00ff'..C_LFGList.GetActivityFullName(info.activityID)..'|r' or '',--查找器,类型
+                info.isWarMode~=nil and info.isWarMode ~= C_PvP.IsWarModeDesired() and '|cnGREEN_FONT_COLOR:'..TALENT_FRAME_LABEL_WARMODE..'|r' or ''
+            )
+            e.Ccool(self, nil, 3, nil, true, true, nil)--冷却条
+            self.LFGListInviteDialogTimer=C_Timer.NewTicker(3, function()
+                    self.AcceptButton:Click()
+            end, 1)
+        end
+    elseif status=="inviteaccepted" then
+        if self.LFGListInviteDialogTimer and not self.LFGListInviteDialogTimer:IsCancelled() then
+            self.LFGListInviteDialogTimer:Cancel()
+        end
+        self.LFGListInviteDialogTimer=C_Timer.NewTicker(3, function()
+            self.AcknowledgeButton:Click();
+        end, 1)
+    end
+end
+
+--###########
+--邀请, 对话框
+--###########
+local notInviterGUID--邀请,对话框, guid
+local function set_PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNativeRealm, allowMultipleRoles, inviterGUID, questSessionActive)
+    if not inviterGUID or not name then
+        return
+    end
+    local F=StaticPopup1
+    if not F or not F:IsShown() then
+        return
+    end
+    --local tex=StaticPopup1Text;  
+    local playerInfo= e.GetPlayerInfo(nil, inviterGUID, true)
+
+    local function setPrint(sec, text)
+        print(id, addName, text,
+            '|cnGREEN_FONT_COLOR:'..sec.. ' |r'..SECONDS,
+            e.PlayerLink(nil, inviterGUID),
+            (isTank and e.Icon.TANK or '')..(isHealer and e.Icon.HEALER or '')..(isDamage and e.Icon.DAMAGER or ''),
+            questSessionActive and SCENARIOS or '',--场景战役
+            isNativeRealm and '|cnGREEN_FONT_COLOR:'..BLIZZARD_STORE_VAS_TRANSFER_REALM..'|r' or ''--转服务器
+        )
+        e.Ccool(F, nil, sec, nil, true, true, nil)--冷却条    
+    end
+        
+    local friend=e.GetFriend(name, inviterGUID)
+    if friend then--好友
+        if not Save.FriendAceInvite then
+            e.Ccool(F, nil, STATICPOPUP_TIMEOUT, nil, true, true, nil)--冷却条  
+            return
+        end
+        local sec=isInLFG() and 10 or 3--是否有FB, 排除中
+        setPrint(sec, '|cnGREEN_FONT_COLOR:'..ACCEPT..'|r'..FRIENDS)
+        F.InvTimer = C_Timer.NewTicker(sec, function()
+                AcceptGroup()
+                StaticPopup_Hide("PARTY_INVITE")
+        end, 1)
+        
+    elseif Save.InvNoFriend[inviterGUID] then--拒绝
+        setPrint(3, '|cnRED_FONT_COLOR:'..DECLINE..'|r',Save.InvNoFriend[inviterGUID]..'/'..Save.InvNoFriendNum)
+        F.button3:SetText('|cnRED_FONT_COLOR:'..REMOVE..'|r'..ACCEPT)
+        notInviterGUID=inviterGUID
+        F.InvTimer = C_Timer.NewTicker(3, function()
+            DeclineGroup();
+            StaticPopup_Hide("PARTY_INVITE")
+            Save.InvNoFriendNum=Save.InvNoFriendNum+1
+            Save.InvNoFriend[inviterGUID]=Save.InvNoFriend[inviterGUID]+1
+        end, 1)
+        
+    elseif IsResting() and Save.NoInvInResting and not questSessionActive then--休息区不组队
+        setPrint(3, '|cnRED_FONT_COLOR:'..DECLINE..'|r'..CALENDAR_STATUS_OUT..ZONE)
+
+        F.button3:SetText('|cnGREEN_FONT_COLOR:'..ADD..'|r'..DECLINE)
+        notInviterGUID=inviterGUID
+
+        F.InvTimer = C_Timer.NewTicker(3, function()
+            DeclineGroup()
+            StaticPopup_Hide("PARTY_INVITE");
+            Save.InvNoFriendNum=Save.InvNoFriendNum+1
+        end, 1)
+        
+    else--添加 拒绝 陌生人
+        F.button3:SetText('|cnGREEN_FONT_COLOR:'..ADD..'|r'..DECLINE)
+        notInviterGUID=inviterGUID
+
+        e.Ccool(F, nil, STATICPOPUP_TIMEOUT, nil, true, true, nil)--冷却条
     end
 end
 
@@ -93,7 +317,6 @@ end
 local function InitList(self, level, type)
     local info
     if type then
-
         if type=='InvUnit' then--邀请单位    
             info={
                 text=GUILDCONTROL_OPTION7,
@@ -118,17 +341,21 @@ local function InitList(self, level, type)
             UIDropDownMenu_AddButton(info, level);
             
             
+           
             info={--邀请目标
                 text=INVITE..TARGET,
+                checked=Save.InvTar,
+                disabled=IsInInstance() and true or nil,
                 func=function()
                     Save.InvTar= not Save.InvTar and true or nil
-                    checked=Save.InvTar
+                    set_event_PLAYER_TARGET_CHANGED()--设置, 邀请目标事件
+                    set_PLAYER_TARGET_CHANGED()--设置, 邀请目标事件
                 end,
-                disabled=IsInInstance() and true or nil,
                 tooltipOnButton=true,
-                tooltipTitle=GROUP_FINDER_CROSS_FACTION_LISTING_WITHOUT_PLAYSTLE:format('|cff00ff00'..LEADER..'|r')..AGGRO_WARNING_IN_PARTY,
+                tooltipTitle=GROUP_FINDER_CROSS_FACTION_LISTING_WITHOUT_PLAYSTLE:format('|cff00ff00'..LEADER..'|r'..NO..'|cnRED_FONT_COLOR:'..INSTANCE..'|r'),
             }
             UIDropDownMenu_AddButton(info, level)
+
             
             info={--已邀请列表
                 text= LFG_LIST_APP_INVITED,--三级列表，已邀请列表
@@ -157,7 +384,8 @@ local function InitList(self, level, type)
             }
             UIDropDownMenu_AddButton(info, level);
             
-            info={--预创建队伍增强
+            --[[
+info={--预创建队伍增强
                 text=LFGLIST_NAME..' Plus+',
                 func=function()
                     Save.LFGPlus = not Save.LFGPlus and true or nil
@@ -170,10 +398,13 @@ local function InitList(self, level, type)
             }
             UIDropDownMenu_AddButton(info, level)
 
+]]
+
+
         elseif type=='InvUnitAll' then--三级列表，已邀请列表
             local n, all=0, 0;
             for guid, name in pairs(InvPlateGuid) do
-                if not IsGUIDInGroup(guid) then
+                if not e.GroupGuid[guid] then
                     info={
                         text=e.GetPlayerInfo(nil, guid, true),
                         notCheckable=true,
@@ -196,6 +427,7 @@ local function InitList(self, level, type)
                 }
                 UIDropDownMenu_AddButton(info, level)
             else
+                UIDropDownMenu_AddSeparator(level)
                 info={
                     text='|cff00ff00'..CALENDAR_INVITE_ALL..'|r',
                     notCheckable=true,
@@ -204,13 +436,13 @@ local function InitList(self, level, type)
                 UIDropDownMenu_AddButton(info, level)
                 
                 info={
-                    text='|cff00ff00'..CLEAR_ALL..'|r '..n..'/'..all,
+                    text='|cffff0000'..CLEAR_ALL..'|r',
                     notCheckable=true,
                     func=function()
                         InvPlateGuid={}
                     end,
                 }
-                UIDropDownMenu_AddButton(info, lv);     
+                UIDropDownMenu_AddButton(info, level);     
             end
         
         elseif type=='ACEINVITE' then--自动接爱邀请
@@ -226,8 +458,6 @@ local function InitList(self, level, type)
                 checked=Save.LFGListAceInvite,
                 func=function()
                     Save.LFGListAceInvite= not Save.LFGListAceInvite and true or nil
-                    CloseDropDownMenus()
-                    --if LFGListFrame.SearchPanel.ace then LFGListFrame.SearchPanel.ace:SetChecked(Save.LFGListAceInvite) end
                 end,
             }
             UIDropDownMenu_AddButton(info, level)
@@ -239,7 +469,7 @@ local function InitList(self, level, type)
                 tooltipTitle=COMMUNITY_COMMAND_BATTLENET..', '..FRIENDS..', '..GUILD,
                 func=function()
                     Save.FriendAceInvite= not Save.FriendAceInvite and true or nil
-                    CloseDropDownMenus()
+                    
                 end,
             }
             UIDropDownMenu_AddButton(info, level)  
@@ -257,13 +487,12 @@ local function InitList(self, level, type)
                 text=RED_FONT_COLOR_CODE..CALENDAR_STATUS_OUT..'|r'..ZONE,--休息区拒绝组队  
                 checked=Save.NoInvInResting,
                 tooltipOnButton=true,
-                tooltipTitle=RED_FONT_COLOR_CODE..SPELL_FAILED_CUSTOM_ERROR_464..'|r',
-                tooltipText=CALENDAR_DECLINE_INVITATION..'|n'.. RED_FONT_COLOR_CODE.. VOICEMACRO_15_Ni_2..'|r'..TUTORIAL_TITLE22,
+                tooltipTitle=DECLINE..RED_FONT_COLOR_CODE..NO..'|r'..TUTORIAL_TITLE22,
                 func=function()
                     Save.NoInvInResting= not Save.NoInvInResting and true or nil
                 end,
             }
-            UIDropDownMenu_AddButton(info, lv)
+            UIDropDownMenu_AddButton(info, level)
 
         elseif type=='NoInvList' then--三级列表，拒绝邀请列表
             local all=0;
@@ -272,7 +501,7 @@ local function InitList(self, level, type)
                 if text then
                     all=all+1
                     info={
-                        text='|cff00ff00'..all..'|r)'..text..' |cff00ff00'..nu..'|r';
+                        text=all..') '..text..' |cff00ff00'..nu..'|r';
                         notCheckable=true,
                         func=function() 
                             Save.InvNoFriend[guid]=nil
@@ -280,6 +509,7 @@ local function InitList(self, level, type)
                         end,
                         tooltipOnButton=true,
                         tooltipTitle=REMOVE,
+                        tooltipText= ITEM_SPELL_CHARGES:format(nu)
                     }
                     UIDropDownMenu_AddButton(info, level)            
                 end
@@ -292,8 +522,9 @@ local function InitList(self, level, type)
                 }
                 UIDropDownMenu_AddButton(info, level)
             else
+                UIDropDownMenu_AddSeparator(level)
                 info={
-                    text='|cff00ff00'..CLEAR_ALL..'|r '.. all,
+                    text='|cff00ff00'..CLEAR_ALL..'|r ',
                     notCheckable=true,
                     func=function()
                         Save.InvNoFriend={}
@@ -305,16 +536,17 @@ local function InitList(self, level, type)
         end
     else
         info={--邀请成员
-            text=GUILDCONTROL_OPTION7,
+            text=e.Icon.left..GUILDCONTROL_OPTION7,
             notCheckable=true,
             menuList='InvUnit',
             func=InvUnitFunc,--邀请，周围玩家
             tooltipOnButton=true,
             tooltipTitle=INVITE..e.Icon.left..SPELL_RANGE_AREA:gsub(SPELL_TARGET_CENTER_CASTER,''),
             hasArrow=true,
+            colorCode=not getLeader() and '|cff606060',
         }
         UIDropDownMenu_AddButton(info, level)
-        
+        UIDropDownMenu_AddSeparator(level)
         info = {--接受邀请
             text= CALENDAR_ACCEPT_INVITATION,
             notCheckable=true,
@@ -322,14 +554,14 @@ local function InitList(self, level, type)
             hasArrow=true,
         }
         UIDropDownMenu_AddButton(info, level)
-        
+        UIDropDownMenu_AddSeparator(level)
         info = {--拒绝邀请
             text=GUILD_INVITE_DECLINE,
             notCheckable=true,
             menuList='NoInv',
             hasArrow=true,
             tooltipOnButton=true,
-            tooltipTitle=GUILD_INVITE_DECLINE..' |cff00ff00'..(Save.InvNoFriendNum or 0)..'|r '..VOICEMACRO_LABEL_CHARGE1,
+            tooltipTitle=DECLINE..' '..ITEM_SPELL_CHARGES:format(Save.InvNoFriendNum)
         }
         UIDropDownMenu_AddButton(info, level)
     end
@@ -337,8 +569,12 @@ end
 --####
 --初始
 --####
+local function setTexture()--设置图标颜色, 是否有权限
+    panel.texture:SetDesaturated(not getLeader() and true or false)
+end
 local function Init()
     panel.texture:SetAtlas('communities-icon-addgroupplus')
+    setTexture()--设置图标颜色, 是否有权限
 
     panel.Menu= CreateFrame("Frame",nil, LFDMicroButton, "UIDropDownMenuTemplate")--菜单列表
     UIDropDownMenu_Initialize(panel.Menu, InitList, "MENU")
@@ -350,6 +586,42 @@ local function Init()
             ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
         end
     end)
+
+    set_event_PLAYER_TARGET_CHANGED()--设置, 邀请目标事件
+
+    LFGListInviteDialog:SetScript("OnHide", function(self)--LFG,,自动接受邀请
+        if self.LFGListInviteDialogTimer and not self.LFGListInviteDialogTimer:IsCancelled() then
+            self.LFGListInviteDialogTimer:Cancel()
+        end
+    end)
+    LFGListInviteDialog:SetScript("OnShow", set_LFGListInviteDialog)--队伍查找器, 自动接受邀请
+    
+    hooksecurefunc("LFGListApplicationViewer_UpdateApplicantMember", set_LFGListApplicationViewer_UpdateApplicantMember)--自动清邀请, 队伍查找器, LFGList.lua
+
+    StaticPopup1:SetScript('OnHide', function(self)--被邀请, 对话框, 取消记时器
+        if self.InvTimer and not self.InvTimer:IsCancelled() then
+            self.InvTimer:Cancel()
+        end
+        notInviterGUID=nil
+    end)
+
+    StaticPopupDialogs["PARTY_INVITE"].button3= '|cff00ff00'..ALWAYS..'|r'..DECLINE..'|r'--添加总是拒绝按钮
+    StaticPopupDialogs["PARTY_INVITE"].OnAlt=function()
+        if notInviterGUID then
+            if Save.InvNoFriend[notInviterGUID] then
+                Save.InvNoFriend[notInviterGUID] =nil
+                print(id, addName, '|cnRED_FONT_COLOR:'..REMOVE..'|r', e.PlayerLink(nil, notInviterGUID) or '', '|cnRED_FONT_COLOR:'..DECLINE..'|r'..INVITE)
+                AcceptGroup()
+                StaticPopup_Hide("PARTY_INVITE");
+            else
+                Save.InvNoFriend[notInviterGUID] =Save.InvNoFriend[notInviterGUID] and Save.InvNoFriend[notInviterGUID]+1 or 1
+                Save.InvNoFriendNum=Save.InvNoFriendNum+1;
+                DeclineGroup();
+                StaticPopup_Hide("PARTY_INVITE");
+                print(id,addName, '|cnGREEN_FONT_COLOR:'..ADD..'|r', e.PlayerLink(nil, notInviterGUID) or '', '|cnRED_FONT_COLOR:'..DECLINE..'|r'..INVITE)
+            end
+        end
+    end
 end
 
 --###########
@@ -357,7 +629,14 @@ end
 --###########
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
-panel:SetScript("OnEvent", function(self, event, arg1)
+
+panel:RegisterEvent('GROUP_LEFT')
+panel:RegisterEvent('GROUP_ROSTER_UPDATE')
+
+panel:RegisterEvent('PARTY_INVITE_REQUEST')
+--panel:RegisterEvent('GROUP_INVITE_CONFIRMATION')
+
+panel:SetScript("OnEvent", function(self, event, arg1, ...)
     if event == "ADDON_LOADED" and arg1==id then
         if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
             panel:UnregisterAllEvents()
@@ -371,5 +650,19 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not WoWToolsSave then WoWToolsSave={} end
             WoWToolsSave[addName]=Save
         end
+
+    elseif event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' then
+        setTexture()--设置图标颜色, 是否有权限
+
+    elseif event=='PLAYER_ENTERING_WORLD' then
+        if Save.InvTar then
+            set_event_PLAYER_TARGET_CHANGED()--设置, 邀请目标事件
+        end
+
+    elseif event=='PLAYER_TARGET_CHANGED' then
+        set_PLAYER_TARGET_CHANGED()--设置, 邀请目标事件
+    
+    elseif event=='PARTY_INVITE_REQUEST' then
+        set_PARTY_INVITE_REQUEST(arg1, ...)--邀请, 对话框
     end
 end)

@@ -18,6 +18,7 @@ end
 for _, spellID in pairs(spellLoadTab) do
     if not C_Spell.IsSpellDataCached(spellID) then C_Spell.RequestLoadSpellData(spellID) end
 end
+
 e.itemPetID={--宠物对换, wow9.0
     [11406]=true,
     [11944]=true,
@@ -107,9 +108,11 @@ e.PlayerLink=function(name, guid) --玩家超链接
         name = name or name2
         class= class2
     end
-    local colorName= class and '|c'..select(4,GetClassColor(class))..name ..'|r'
-    return '|Hplayer:'..name..'|h['..(colorName or name)..']|h'
- end
+    if name then
+        local colorName= class and '|c'..select(4,GetClassColor(class))..name ..'|r'
+        return (class and e.Class(nil,class) or '')..'|Hplayer:'..name..'|h['..(colorName or name)..']|h'
+    end
+end
 
 e.GetNpcID = function(unit)--NPC ID
     if UnitExists(unit) then
@@ -226,6 +229,22 @@ e.Icon={
     FRIENDS_TEXTURE_AFK 离开 AFK FRIENDS_LIST_AWAY 
     FRIENDS_TEXTURE_ONLINE 	有空 FRIENDS_LIST_AVAILABLE
 ]]
+e.GetFriend = function(name, guid)--检测, 是否好友 
+    if guid then 
+        if C_FriendList.IsFriend(guid) then 
+            return '|A:groupfinder-icon-friend:0:0|a', nil--好友
+        elseif IsGuildMember(guid) then 
+            return '|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a'--公会
+        elseif C_BattleNet.GetAccountInfoByGUID(guid) or C_BattleNet.GetGameAccountInfoByGUID(guid) then 
+            return e.Icon.wow2, true; 
+        end
+    else 
+        if C_FriendList.GetFriendInfo(name) or C_FriendList.GetFriendInfo(name:gsub('%-.+','')) then 
+            return '|A:groupfinder-icon-friend:0:0|a', nil--好友
+        end
+    end
+end
+
 e.MK=function(number,bit)
     bit = bit or 1
     if number>=1e6 then
@@ -726,6 +745,12 @@ e.Say=function(type, name, wow)
     else
         ChatFrame_OpenChat(type..  text, chat)
     end
+end
+
+e.GetKeystoneScorsoColor= function(score)--地下城史诗, 分数,颜色
+    score = score==0 and nil or score
+    local color= score and C_ChallengeMode.GetDungeonScoreRarityColor(score) or nil
+    return color and color:WrapTextInColorCode(score) or score or ''
 end
 --[[
 BACKGROUND

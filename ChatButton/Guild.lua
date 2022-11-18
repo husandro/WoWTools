@@ -85,6 +85,21 @@ local function InitMenu(self, level, type)--主菜单
         end
     }
     UIDropDownMenu_AddButton(info, level)
+
+    --[[
+if CanReplaceGuildMaster() then--弹劾,污染
+        info={
+            text=GUILD_IMPEACH_POPUP_CONFIRM,
+            notCheckable=true,
+            func=function()
+                ReplaceGuildMaster()
+            end
+        }
+        UIDropDownMenu_AddButton(info, level)
+    end
+
+]]
+
 end
 
 --####

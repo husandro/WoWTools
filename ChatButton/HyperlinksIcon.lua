@@ -11,6 +11,7 @@ local Save={
         ['成就']=true,
     },
     groupWelcome=true,
+    guildWelcome=true,
 }
 
 local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)

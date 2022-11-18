@@ -81,7 +81,9 @@ ChatButton\ChatButton.lua
 ChatButton\HyperlinksIcon.lua
 ChatButton\Roll.lua
 ChatButton\Markers.lua
-##ChatButton\Invite.lua
+ChatButton\Invite.lua
+
+
 ChatButton\LFD.lua
 ChatButton\WorldChannel.lua
 ChatButton\Guild.lua
