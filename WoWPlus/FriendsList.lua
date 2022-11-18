@@ -18,10 +18,6 @@ local function Init()--FriendsFrame.lua
                     local m='';
                     if info.level and info.level~=MAX_PLAYER_LEVEL then m=m..'|cff00ff00'..info.level ..'|r' end                    
                     if info.guid then
-                        --local _, class, _, race, sex, _, realm = GetPlayerInfoByGUID(info.guid);                        
-                        --if race and sex then m=m..e.Race(nil, race, sex) end
-                        --if class then m=m..e.Class(nil, class) end
-                        --e.GetPlayerInfo=function (unit, guid, showName)--, hideClassTexture)
                         m=m..e.GetPlayerInfo(nil, info.guid)
                         if info.area then m=m..info.area end
                         if realm and realm~='' then m=m..(info.area and '-' or '')..realm end

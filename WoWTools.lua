@@ -53,6 +53,9 @@ local function GetWeek()--周数
 end
 
 e.Race=function(unit, race, sex, reAtlas)--玩家种族图标
+    if not unit and race and sex then
+        return
+    end
     race =race or select(2,UnitRace(unit))
     sex=sex or UnitSex(unit)
     sex= sex==2 and 'male' or 'female'
@@ -64,6 +67,8 @@ e.Race=function(unit, race, sex, reAtlas)--玩家种族图标
         race='zandalari'
     elseif race=='LightforgedDraenei' then
         race='lightforged'
+    elseif race=='Dracthyr' then
+        race='dracthyrvisage'
     end
     if reAtlas then
         return 'raceicon128-'..race..'-'..sex
@@ -74,7 +79,11 @@ end
 
 e.Class=function(unit, class, reAltlas)--职业图标
     class=class or select(2, UnitClass(unit))
-    class=class and 'groupfinder-icon-class-'..class or 'groupfinder-icon-emptyslot'
+    if class=='EVOKER' then
+        class='classicon-evoker'
+    else
+        class=class and 'groupfinder-icon-class-'..class or 'groupfinder-icon-emptyslot'
+    end
     if reAltlas then
         return class
     else
@@ -91,11 +100,12 @@ e.GetPlayerInfo=function (unit, guid, showName)--, hideClassTexture)
         end
     elseif guid then
         local _, englishClass, _, englishRace, sex, name, realm = GetPlayerInfoByGUID(guid)
+        
         if showName then
             realm = (realm and realm~=e.Player.server) and '|cnGREEN_FONT_COLOR:*|r' or ''
-            return e.Race(nil, englishRace, sex)..(not showName and  e.Class(nil, englishClass) or '')..'|c'..select(4,GetClassColor(englishClass))..name..realm..'|r'
+            return (e.Race(nil, englishRace, sex) or '')..(not showName and  e.Class(nil, englishClass) or '')..'|c'..select(4,GetClassColor(englishClass))..name..realm..'|r'
         else
-            return e.Race(nil, englishRace, sex)..(not showName and  e.Class(nil, englishClass) or '')
+            return (e.Race(nil, englishRace, sex) or '')..(not showName and  e.Class(nil, englishClass) or '')
         end
     end
     return ''
