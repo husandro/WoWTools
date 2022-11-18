@@ -31,8 +31,18 @@ local function isInLFG()--是否有FB, 排除中
             return true 
         end
     end
-    
 end
+
+local function setTexture()--设置图标颜色, 是否有权限, 是否转团
+    panel.texture:SetDesaturated(not getLeader() and true or false)
+
+    if Save.PartyToRaid then
+        panel.border:SetAtlas('bag-border')
+    else
+        panel.border:SetAtlas('bag-reagent-border')
+    end
+end
+
 --#######
 --邀请玩家
 --#######
@@ -112,7 +122,7 @@ local function set_LFGListApplicationViewer_UpdateApplicantMember(self, appID, m
             return
         end
         toRaidOrParty(to)--自动, 转团,转小队
-        button:GetParent().InviteButton:Click();
+        self:GetParent().InviteButton:Click();
         
         local applicantID=applicantInfo.applicantID;
         
@@ -377,6 +387,7 @@ local function InitList(self, level, type)
                     if f then 
                         f:SetChecked(Save.PartyToRaid) 
                     end
+                    setTexture()--设置图标颜色, 是否有权限, 是否转团
                 end,
                 tooltipOnButton=true,
                 ooltipTitle=GROUP_FINDER_CROSS_FACTION_LISTING_WITHOUT_PLAYSTLE:format('|cff00ff00'..DUNGEONS_BUTTON..'|r'),
@@ -569,9 +580,7 @@ end
 --####
 --初始
 --####
-local function setTexture()--设置图标颜色, 是否有权限
-    panel.texture:SetDesaturated(not getLeader() and true or false)
-end
+
 local function Init()
     panel.texture:SetAtlas('communities-icon-addgroupplus')
     setTexture()--设置图标颜色, 是否有权限
