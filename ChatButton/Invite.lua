@@ -366,10 +366,10 @@ end
 --############
 local function set_LFGPlus()--预创建队伍增强
 
-    local f=LFGListFrame.SearchPanel;--界面, 添加, 选项    
+    local f=LFGListFrame.SearchPanel.RefreshButton;--界面, 添加, 选项    
     f.ace = CreateFrame("CheckButton", nil, f, "InterfaceOptionsCheckButtonTemplate");--自动进组  选项
-    f.ace:SetPoint("TOP", f, "TOP", 40, 0)
-    f.ace.Text:SetText('|cFFFFD000'..CALENDAR_ACCEPT_INVITATION..'|r');
+    f.ace:SetPoint('RIGHT',f, 'LEFT',-90,0)
+    f.ace.Text:SetText('|cFFFFD000'..AUTO_JOIN:gsub(JOIN, ACCEPT)..'|r');
     f.ace:SetChecked(Save.LFGListAceInvite);    
     f.ace:SetScript("OnClick", function (s)
             Save.LFGListAceInvite=s:GetChecked();
@@ -378,7 +378,7 @@ local function set_LFGPlus()--预创建队伍增强
     f=LFGListFrame.ApplicationViewer.DataDisplay; --自动邀请 选项
     f.inv = CreateFrame("CheckButton",nil, f, "InterfaceOptionsCheckButtonTemplate");
     f.inv:SetPoint("BOTTOMLEFT", f, "TOPLEFT", 0, -10)
-    f.inv.Text:SetText('|cFFFFD000'..GROUP_INVITE..'|r');
+    f.inv.Text:SetText('|cFFFFD000'..AUTO_JOIN:gsub(JOIN, INVITE)..'|r');
     f.inv:SetChecked(Save.LFGAutoInv);
     f.inv:SetScript("OnClick", function(s)
             Save.LFGAutoInv=s:GetChecked();
@@ -390,7 +390,7 @@ local function set_LFGPlus()--预创建队伍增强
     f.raid:SetChecked(Save.PartyToRaid);
     
     f.raid:SetScript("OnClick", function(s)
-            e.Save.PartyToRaid=s:GetChecked()
+        e.Save.PartyToRaid=s:GetChecked()
     end)    
 
     hooksecurefunc("LFGListSearchEntry_Update", function(self)----查询,自定义, 预创建队伍, LFG队长分数, 双击加入
@@ -403,7 +403,7 @@ local function set_LFGPlus()--预创建队伍增强
                 local activityName = searchResultInfo and C_LFGList.GetActivityFullName(searchResultInfo.activityID, nil, searchResultInfo.isWarMode);            
                 self.ActivityName:SetText(text..(activityName or ''));
             end
-            self:SetAlpha(text=='' and 0.8 or 1)
+            self:SetAlpha(text=='' and 0.7 or 1)
 
             self:SetScript('OnDoubleClick', function(self2)--LFGListApplicationDialogSignUpButton_OnClick(button) LFG队长分数, 双击加入 LFGListSearchPanel_UpdateResults
                 if LFGListFrame.SearchPanel.SignUpButton:IsEnabled() then
