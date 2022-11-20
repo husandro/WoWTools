@@ -63,6 +63,7 @@ local function setTexture()--设置图标颜色, 是否有权限, 是否转团, 
         panel.InvTar:SetShown(Save.InvTar)
     end
 
+    panel.texture:SetDesaturated(not (Save.LFGListAceInvite and Save.FriendAceInvite))
 end
 
 --#######
@@ -583,6 +584,7 @@ local function InitList(self, level, type)
                 checked=Save.LFGListAceInvite,
                 func=function()
                     Save.LFGListAceInvite= not Save.LFGListAceInvite and true or nil
+                    setTexture()--设置图标颜色, 是否有权限, 是否转团, 邀请选项提示
                 end,
             }
             UIDropDownMenu_AddButton(info, level)
@@ -594,7 +596,7 @@ local function InitList(self, level, type)
                 tooltipTitle=COMMUNITY_COMMAND_BATTLENET..', '..FRIENDS..', '..GUILD,
                 func=function()
                     Save.FriendAceInvite= not Save.FriendAceInvite and true or nil
-                    
+                    setTexture()--设置图标颜色, 是否有权限, 是否转团, 邀请选项提示
                 end,
             }
             UIDropDownMenu_AddButton(info, level)  
