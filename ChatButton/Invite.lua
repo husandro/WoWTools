@@ -184,7 +184,7 @@ local function set_PLAYER_TARGET_CHANGED()--设置, 邀请目标事件
     or not UnitIsConnected('target') 
     or not UnitIsPlayer('target')
     or not UnitIsFriend('target', 'player') 
-    or UnitIsUnit('player',u)
+    or UnitIsUnit('player','target')
     then 
         return 
     end
