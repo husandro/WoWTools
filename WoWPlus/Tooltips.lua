@@ -54,14 +54,7 @@ local function setInitItem(self, hide)--创建物品
         end
     end
 end
-setInitItem(ItemRefTooltip)
-setInitItem(e.tips)
-e.tips:HookScript("OnHide", function(self)
-    setInitItem(self, true)
-end)
-ItemRefTooltip:HookScript("OnHide", function (self)
-    setInitItem(self, true)
-end)
+
 
 local function setItemCooldown(self, itemID)--物品冷却
     local startTime, duration, enable = GetItemCooldown(itemID)
@@ -237,11 +230,7 @@ end)
 --############
 --设置,物品信息
 --############
-local function setItem(self, ItemLink)
-    if not Save.showTips  or not ItemLink then
-        return
-    end
-    
+local function setItem(self, ItemLink)    
     local itemName, _, itemQuality, itemLevel, _, _, _, _, _, _, _, _, _, bindType, expacID, setID = GetItemInfo(ItemLink)
     local itemID, itemType, itemSubType, itemEquipLoc, itemTexture, classID, subclassID = GetItemInfoInstant(ItemLink)
 
@@ -408,10 +397,7 @@ local function setItem(self, ItemLink)
 end
 
 local function setSpell(self, spellID)--法术
-    if not Save.showTips then
-        return
-    end
-    self.textRight:SetText(spellID)
+     self.textRight:SetText(spellID)
     
     
     local spellID = select(2, self:GetSpell())
@@ -433,9 +419,6 @@ local function setSpell(self, spellID)--法术
 end
 
 local function setCurrency(self, currencyID)--货币
-    if not Save.showTips then
-        return
-    end
     local info2 = C_CurrencyInfo.GetCurrencyInfo(currencyID)
     if info2 then
         self:AddDoubleLine(TOKENS..'ID: '..currencyID, EMBLEM_SYMBOL..'ID: '..info2.iconFileID)
@@ -502,7 +485,7 @@ end
 --宠物面板提示
 --###########
 local function setBattlePet(self, speciesID, level, breedQuality, maxHealth, power, speed, customName)
-    if not speciesID or speciesID <= 0 or not Save.showTips then
+    if not speciesID or speciesID <= 0 then
         return
     end
     local speciesName, speciesIcon, _, companionID, tooltipSource, _, _, _, _, _, obtainable, creatureDisplayID = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
@@ -564,10 +547,6 @@ end)
 --Buff
 --####
 local function setBuff(type, self, ...)--Buff
-    if not Save.showTips then
-        return
-    end
-    --setInitItem(self)
     local _, icon, sourceUnit, spellId
     if type=='Buff' then
         _, icon, _, _, _, _, sourceUnit, _, _, spellId= UnitBuff(...)
@@ -618,14 +597,10 @@ end)
 --声望
 --####
 local setFriendshipFaction=function(self, friendshipID)--friend声望
-    if not Save.showTips then
-        return
-    end
     local repInfo = C_GossipInfo.GetFriendshipReputation(friendshipID);
 	if ( repInfo and repInfo.friendshipFactionID and repInfo.friendshipFactionID > 0) then
         local icon = (repInfo.texture and repInfo.texture>0) and repInfo.texture
         if icon then
-            --setInitItem(self)
             self.Portrait:SetShown(true)
             self.Portrait:SetTexture(icon)
             self:AddDoubleLine(INDIVIDUALS..REPUTATION..'ID: '..friendshipID, icon  and EMBLEM_SYMBOL..'ID: '..icon)
@@ -635,14 +610,11 @@ local setFriendshipFaction=function(self, friendshipID)--friend声望
         self:Show()
     end
 end
-hooksecurefunc(ReputationBarMixin, 'ShowFriendshipReputationTooltip', function(self, friendshipID)--个人声望ReputationFrame.lua
+hooksecurefunc(ReputationBarMixin, 'ShowFriendshipReputationTooltip', function(self, friendshipID)--个人声望 ReputationFrame.lua
     setFriendshipFaction(e.tips, friendshipID)
 end)
 
 local function setMajorFactionRenown(self, majorFactionID)--名望
-    if not Save.showTips then
-        return
-    end
 	local majorFactionData = C_MajorFactions.GetMajorFactionData(majorFactionID)
     if majorFactionData then
         local icon= majorFactionData.textureKit
@@ -663,7 +635,7 @@ end)
 
 
 hooksecurefunc(ReputationBarMixin, 'OnEnter', function(self)--角色栏,声望
-    if not Save.showTips or self.friendshipID or not self.factionID or (C_Reputation.IsMajorFaction(self.factionID) and not C_MajorFactions.HasMaximumRenown(self.factionID)) then
+    if self.friendshipID or not self.factionID or (C_Reputation.IsMajorFaction(self.factionID) and not C_MajorFactions.HasMaximumRenown(self.factionID)) then
         return
     end
 
@@ -2110,17 +2082,30 @@ end
 --初始
 --###
 local function Init()
+    setInitItem(ItemRefTooltip)
+    setInitItem(e.tips)
+    e.tips:HookScript("OnHide", function(self)
+        setInitItem(self, true)
+    end)
+    ItemRefTooltip:HookScript("OnHide", function (self)
+        setInitItem(self, true)
+    end)
+
     --####################
     --物品, 法术, 货币, 成就
     --####################
 
-    hooksecurefunc(e.tips, "SetCurrencyToken", function(self, index)--角色货币栏
+ --[[
+   hooksecurefunc(e.tips, "SetCurrencyToken", function(self, index)--角色货币栏
         local currencyLink = C_CurrencyInfo.GetCurrencyListLink(index)
         local currencyID = currencyLink and C_CurrencyInfo.GetCurrencyIDFromLink(currencyLink)
         if currencyID then
             setCurrency(self, currencyID)
         end
     end)
+
+]]
+
     hooksecurefunc(e.tips, 'SetBackpackToken', function(self, index)--包里货币
         local info = C_CurrencyInfo.GetBackpackCurrencyInfo(index)
         if info and info.currencyTypesID then
@@ -2179,16 +2164,22 @@ local function Init()
             setUnitInfo(tooltip, unit)
         end
     end)
-    --[[
-    --####
-    --widgetSet
-    --####
-    hooksecurefunc('GameTooltip_AddWidgetSet', function(self, widgetSetID, verticalPadding)--没测试
-        e.tips:AddDoubleLine('widgetID:', widgetSetID)
+    
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Mount, function(tooltip,date)
+        if date and date.id then
+            setMount(tooltip, date.id)--坐骑   
+        end
     end)
-]]
-
-
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Toy, function(tooltip,date)
+            if date and date.id then
+                setItem(tooltip, date.id)
+            end
+    end)
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Currency,  function(tooltip,date)
+        if date and date.id then
+            setCurrency(tooltip, date.id)--货币
+        end
+    end)
     --****
     --位置
     --****

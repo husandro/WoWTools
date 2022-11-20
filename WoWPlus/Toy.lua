@@ -25,7 +25,7 @@ local function Init()
         end]]
         local _, duration, enable = GetItemCooldown(self.itemID)
         if not isUas then
-            self:SetAlpha(0.1)
+            self:SetAlpha(0.5)
         elseif enable==1 and duration>0 then
             self:SetAlpha(0.4)
             self.name:SetTextColor(1,0,0)
