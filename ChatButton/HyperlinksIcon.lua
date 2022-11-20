@@ -635,7 +635,7 @@ local function setMsg_CHAT_MSG_SYSTEM(text)--欢迎加入, 信息
         return
     end
     if text:find(raidMS) or text:find(partyMS) then
-        if Save.groupWelcome then
+        if Save.groupWelcome and UnitIsGroupLeader('player') then
             local name=text:match(raidMS) or text:match(partyMS)
             if name then
                 e.Chat(Save.groupWelcomeText or EMOTE103_CMD1:gsub('/',''), name)

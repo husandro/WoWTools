@@ -758,10 +758,17 @@ e.Say=function(type, name, wow)
     end
 end
 
-e.GetKeystoneScorsoColor= function(score)--地下城史诗, 分数,颜色
-    score = score==0 and nil or score
-    local color= score and C_ChallengeMode.GetDungeonScoreRarityColor(score) or nil
-    return color and color:WrapTextInColorCode(score) or score or ''
+e.GetKeystoneScorsoColor= function(score, texture)--地下城史诗, 分数,颜色
+    if not score or score==0 then
+        return ''
+    else
+        local color= C_ChallengeMode.GetDungeonScoreRarityColor(score)
+        local score= color:WrapTextInColorCode(score)
+        if score~='' and texture then
+            score= '|T4352494:0|t'..score
+        end
+        return score
+    end
 end
 --[[
 BACKGROUND

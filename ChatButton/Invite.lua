@@ -1,6 +1,6 @@
 local id, e = ...
 local addName= INVITE
-local Save={InvNoFriend={}, LFGListAceInvite=true, FriendAceInvite=true, InvNoFriendNum=0, restingTips=true}
+local Save={InvNoFriend={}, LFGListAceInvite=true, FriendAceInvite=true, InvNoFriendNum=0, restingTips=true, LFGPlus=true}
 local InvPlateGuid={}
 
 local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
@@ -9,7 +9,7 @@ WoWToolsChatButtonFrame.last=panel
 
 
 local function getLeader()--取得权限
-    return UnitIsGroupAssistant('player') or  UnitIsGroupLeader('player') or not IsInGroup()
+    return UnitIsGroupAssistant('player') or UnitIsGroupLeader('player') or not IsInGroup()
 end
 local function toRaidOrParty(number)--自动, 转团
     if Save.PartyToRaid then
@@ -127,7 +127,7 @@ end
 
 local Time
 local function set_LFGListApplicationViewer_UpdateApplicantMember(self, appID, memberIdx, status, pendingStatus)--自动清邀请, 队伍查找器, LFGList.lua
-    if not  Save.LFGAutoInv or not getLeader() then
+    if not  Save.LFGAutoInv or not UnitIsGroupLeader('player') then
         return
     end
     
@@ -361,7 +361,84 @@ local function set_PLAYER_UPDATE_RESTING()--设置, 休息区提示
     end
 end
 
---#######
+--############
+--预创建队伍增强
+--############
+local function set_LFGPlus()--预创建队伍增强
+
+    local f=LFGListFrame.SearchPanel;--界面, 添加, 选项    
+    f.ace = CreateFrame("CheckButton", nil, f, "InterfaceOptionsCheckButtonTemplate");--自动进组  选项
+    f.ace:SetPoint("TOP", f, "TOP", 40, 0)
+    f.ace.Text:SetText('|cFFFFD000'..CALENDAR_ACCEPT_INVITATION..'|r');
+    f.ace:SetChecked(Save.LFGListAceInvite);    
+    f.ace:SetScript("OnClick", function (s)
+            Save.LFGListAceInvite=s:GetChecked();
+    end);
+    
+    f=LFGListFrame.ApplicationViewer.DataDisplay; --自动邀请 选项
+    f.inv = CreateFrame("CheckButton",nil, f, "InterfaceOptionsCheckButtonTemplate");
+    f.inv:SetPoint("BOTTOMLEFT", f, "TOPLEFT", 0, -10)
+    f.inv.Text:SetText('|cFFFFD000'..GROUP_INVITE..'|r');
+    f.inv:SetChecked(Save.LFGAutoInv);
+    f.inv:SetScript("OnClick", function(s)
+            Save.LFGAutoInv=s:GetChecked();
+    end)
+    
+    f.raid = CreateFrame("CheckButton",nil, f, "InterfaceOptionsCheckButtonTemplate");--转化为团队 选项
+    f.raid:SetPoint("TOPLEFT", f, "BOTTOMLEFT", 0, 8);
+    f.raid.Text:SetText('|cFFFFD000'..CONVERT_TO_RAID..'|r');
+    f.raid:SetChecked(Save.PartyToRaid);
+    
+    f.raid:SetScript("OnClick", function(s)
+            e.Save.PartyToRaid=s:GetChecked()
+    end)    
+
+    hooksecurefunc("LFGListSearchEntry_Update", function(self)----查询,自定义, 预创建队伍, LFG队长分数, 双击加入
+        local info = Save.LFGPlus and self.resultID and  C_LFGList.GetSearchResultInfo(self.resultID);
+        if info and not info.isDelisted then
+            local text=e.GetKeystoneScorsoColor(info.leaderOverallDungeonScore, true);--分数
+            text= info.leaderPvpRatingInfo and info.leaderPvpRatingInfo.rating and text..'|A:pvptalents-warmode-swords:0:0|a'..info.leaderPvpRatingInfo.rating or text
+            if text~='' then
+                local searchResultInfo = C_LFGList.GetSearchResultInfo(self.resultID);
+                local activityName = searchResultInfo and C_LFGList.GetActivityFullName(searchResultInfo.activityID, nil, searchResultInfo.isWarMode);            
+                self.ActivityName:SetText(text..(activityName or ''));
+            end
+            self:SetAlpha(text=='' and 0.8 or 1)
+
+            self:SetScript('OnDoubleClick', function(self2)--LFGListApplicationDialogSignUpButton_OnClick(button) LFG队长分数, 双击加入 LFGListSearchPanel_UpdateResults
+                if LFGListFrame.SearchPanel.SignUpButton:IsEnabled() then
+                    LFGListFrame.SearchPanel.SignUpButton:Click();
+                end                    
+                local frame=LFGListApplicationDialog;
+                if not frame.TankButton.CheckButton:GetChecked() and not frame.HealerButton.CheckButton:GetChecked() and not frame.DamagerButton.CheckButton:GetChecked() then
+                    local id=GetSpecialization()--当前专精
+                    if id then 
+                        local role = select(5, GetSpecializationInfo(id));
+                        if role=='DAMAGER' and frame.DamagerButton:IsShown() then
+                            frame.DamagerButton.CheckButton:SetChecked(true);
+                            
+                        elseif role=='TANK' and frame.TankButton:IsShown() then
+                            frame.TankButton.CheckButton:SetChecked(true);
+                            
+                        elseif role=='HEALER' and frame.HealerButton:IsShown() then
+                            frame.HealerButton.CheckButton:SetChecked(true);
+                        end    
+                        LFGListApplicationDialog_UpdateValidState(frame);
+                    end
+                end                    
+                if frame:IsShown() and frame.SignUpButton:IsEnabled() then
+                    frame.SignUpButton:Click();
+                end 
+            end)
+        end
+    end)
+--[[local buttons= self.ScrollBox and self --LFGListSearchPanel_UpdateResults'
+self.ScrollBox:GetFrames() or {}
+if not self.searching or self.totalResults~=0  and #buttons~=0 then
+for _, button in pairs(buttons) do
+]]
+end
+
 --初始菜单
 --#######
 local function InitList(self, level, type)
@@ -437,22 +514,17 @@ local function InitList(self, level, type)
             }
             UIDropDownMenu_AddButton(info, level);
             
-            --[[
-info={--预创建队伍增强
-                text=LFGLIST_NAME..' Plus+',
+            
+            info={--预创建队伍增强
+                text=SCORE_POWER_UPS:gsub(ITEMS,LFGLIST_NAME),
                 func=function()
                     Save.LFGPlus = not Save.LFGPlus and true or nil
-                    print(id, addName, REQUIRES_RELOAD)
                 end,
                 checked=Save.LFGPlus,
                 tooltipOnButton=true,
-                tooltipTitle=PLAYER_DIFFICULTY5..', 2'..e.Icon.left,
-                tooltipText=REQUIRES_RELOAD..' /reload'
+                tooltipTitle=LFGLIST_NAME,
             }
             UIDropDownMenu_AddButton(info, level)
-
-]]
-
 
         elseif type=='InvUnitAll' then--三级列表，已邀请列表
             local n, all=0, 0;
@@ -630,6 +702,7 @@ info={--预创建队伍增强
         UIDropDownMenu_AddButton(info, level)
     end
 end
+
 --####
 --初始
 --####
@@ -651,6 +724,7 @@ local function Init()
 
     set_event_PLAYER_TARGET_CHANGED()--设置, 邀请目标事件
     set_event_PLAYER_UPDATE_RESTING()--设置, 休息区提示事件
+    set_LFGPlus()--预创建队伍增强
 
     LFGListInviteDialog:SetScript("OnHide", function(self)--LFG,,自动接受邀请
         if self.LFGListInviteDialogTimer and not self.LFGListInviteDialogTimer:IsCancelled() then
@@ -685,6 +759,8 @@ local function Init()
             end
         end
     end
+
+    
 end
 
 --###########
