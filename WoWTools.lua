@@ -53,11 +53,8 @@ local function GetWeek()--周数
 end
 
 e.Race=function(unit, race, sex, reAtlas)--玩家种族图标
-    if not unit and race and sex then
-        return
-    end
-    race =race or select(2,UnitRace(unit))
-    sex=sex or UnitSex(unit)
+    race =race or unit and select(2,UnitRace(unit))
+    sex=sex or unit and UnitSex(unit)
     sex= sex==2 and 'male' or 'female'
     if race=='Scourge' then
         race='Undead'
@@ -70,10 +67,14 @@ e.Race=function(unit, race, sex, reAtlas)--玩家种族图标
     elseif race=='Dracthyr' then
         race='dracthyrvisage'
     end
-    if reAtlas then
-        return 'raceicon128-'..race..'-'..sex
+    if race and sex then
+        if reAtlas then
+            return 'raceicon128-'..race..'-'..sex
+        else
+            return '|A:raceicon128-'..race..'-'..sex..':0:0|a'
+        end
     else
-        return '|A:raceicon128-'..race..'-'..sex..':0:0|a'
+        return ''
     end
 end
 

@@ -40,12 +40,8 @@ local function Init()--FriendsFrame.lua
                     end
                 end
                 
-                local guid=info.playerGuid;
-                if guid then
-                   -- local _, class, _, race, sex = GetPlayerInfoByGUID(guid);                
-                    --if race and sex then m=m..Race(nil, race, sex) end
-                    --if class then m=m..e.Class(nil, class) end                    
-                    m=e.GetPlayerInfo(nil, guid)
+                if info.playerGuid then            
+                    m=e.GetPlayerInfo(nil, info.playerGuid)
                 else
                     if info.raceName then m=m..info.raceName end
                 end                
