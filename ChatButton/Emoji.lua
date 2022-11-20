@@ -272,7 +272,7 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
         if WoWToolsChatButtonFrame.disabled or Save.disabled then--禁用Chat Button
-            slef:SetShown(false)
+            self:SetShown(false)
             panel:UnregisterAllEvents()
         else
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
