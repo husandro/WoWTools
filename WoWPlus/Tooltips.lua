@@ -393,13 +393,13 @@ local function setSpell(self, spellID)--法术
     
     
     local spellID = select(2, self:GetSpell())
-    local spellTexture=spellID and  GetSpellTexture(spellID)
-    if not spellTexture then
+    local spellTexture= spellID and  GetSpellTexture(spellID)
+    if not spellID then
         return
     end
-    self:AddDoubleLine(SPELLS..'ID: '..spellID, EMBLEM_SYMBOL..'ID: '..spellTexture)
-    self.Portrait:SetTexture(spellTexture)
-    self.Portrait:SetShown(true)
+    self:AddDoubleLine(SPELLS..'ID: '..spellID, spellTexture and '|T'..spellTexture..':0|t'..spellTexture)
+    --self.Portrait:SetTexture(spellTexture)
+    --self.Portrait:SetShown(true)
 
     local mountID = C_MountJournal.GetMountFromSpell(spellID)--坐骑
     if mountID then
@@ -2046,12 +2046,14 @@ local function set_Tooltips_Init()--初始
             setCurrency(tooltip, date.id)--货币
         end
     end)
-    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Auras,  function(tooltip,date)
-        print(date, date.id)
-        if date and date.id then
-            
-        end
+ --[[
+   TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType,  function(tooltip,date)
+        print(tooltip,date)
+        
     end)
+
+]]
+
     --****
     --位置
     --****
