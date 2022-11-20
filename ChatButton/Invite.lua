@@ -63,7 +63,7 @@ local function setTexture()--设置图标颜色, 是否有权限, 是否转团, 
         panel.InvTar:SetShown(Save.InvTar)
     end
 
-    panel.texture:SetDesaturated(not (Save.LFGListAceInvite and Save.FriendAceInvite))
+    panel.texture:SetDesaturated(not (Save.LFGListAceInvite and Save.FriendAceInvite))--自动接受,LFD, 好友, 邀请
 end
 
 --#######
@@ -571,7 +571,7 @@ local function InitList(self, level, type)
                 UIDropDownMenu_AddButton(info, level);     
             end
         
-        elseif type=='ACEINVITE' then--自动接爱邀请
+        elseif type=='ACEINVITE' then--自动接受邀请
             info={--队伍查找器
                 text=CALENDAR_ACCEPT_INVITATION,
                 isTitle=true;
