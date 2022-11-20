@@ -1,6 +1,6 @@
 local id, e = ...
-local addName='Tooltips'
-local Save={setDefaultAnchor=true, showUnit=true, showTips=true, showSource=true, showWoWInfo=true, showAchievement=true}
+local addName=MOUSE_LABEL..INFO
+local Save={setDefaultAnchor=true,  }
 local panel=CreateFrame("Frame")
 local wowSave={}
 local wowBossKilled={}
@@ -206,10 +206,10 @@ local function setPet(self, speciesID)--宠物
     end
     self:AddDoubleLine(abilityIconA, abilityIconB)
 
-    if Save.showSource then--来源提示
+    
         self:AddLine(' ')
         self:AddLine(tooltipSource,nil,nil,nil, true)
-    end
+    
 
     --self.Portrait:SetTexture('Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType])--宠物类型图标
     if petType then
@@ -222,10 +222,7 @@ local function setPet(self, speciesID)--宠物
         self.creatureDisplayID=creatureDisplayID
     end
 end
-hooksecurefunc(e.tips,"SetCompanionPet", function(self, petGUID)--设置宠物信息
-    local speciesID= petGUID and C_PetJournal.GetPetInfoByPetID(petGUID)
-    setPet(self, speciesID)--宠物
-end)
+
 
 --############
 --设置,物品信息
@@ -331,50 +328,47 @@ local function setItem(self, ItemLink)
         end
     end
 
-
     local bag= GetItemCount(ItemLink)--物品数量
     local bank= GetItemCount(ItemLink,true) - bag
     self.textRight:SetText((bag>0 or bank>0) and hex..bank..e.Icon.bank2..' '..bag..e.Icon.bag2..'|r' or '')
 
-
     if C_Item.IsItemKeystoneByID(itemID) then--挑战, 没测试
-        if Save.showWoWInfo then
-            local numPlayer=0 --帐号数据 --{score=总分数,itemLink={超连接}, weekLevel=本周最高, weekNum=本周次数, all=总次数},
-            for name_server, info in pairs(wowSave) do
-                local tab=info.keystones
-                if #tab.itemLink > 0 then
-                    name_server=name_server:gsub('-'..e.Player.server, '')
-                    local r2,g2,b2=GetClassColor(info.class)
-                    local race=e.Race(nil, info.race, info.sex)
-                    self:AddDoubleLine(race..e.Class(nil,info.class)..name_server..(tab.score and ' '..tab.score or ''), (info.weekLevel and '(|cnGREEN_FONT_COLOR:'..info.weekLevel..'|r) ' or '')..(tab.weekNum or 0)..'/'..(tab.all or 0))
-                    local linka,linkb
-                    for _, linkc in pairs(tab.itemLink) do
-                        if not linka then
-                            linka=linkc
-                        elseif not linkb then
-                            linkb=linkc
-                        else
-                            self:AddDoubleLine(race..linkc,' ')
-                        end
+        local numPlayer=0 --帐号数据 --{score=总分数,itemLink={超连接}, weekLevel=本周最高, weekNum=本周次数, all=总次数},
+        for name_server, info in pairs(wowSave) do
+            local tab=info.keystones
+            if #tab.itemLink > 0 then
+                name_server=name_server:gsub('-'..e.Player.server, '')
+                local r2,g2,b2=GetClassColor(info.class)
+                local race=e.Race(nil, info.race, info.sex)
+                self:AddDoubleLine(race..e.Class(nil,info.class)..name_server..(tab.score and ' '..tab.score or ''), (info.weekLevel and '(|cnGREEN_FONT_COLOR:'..info.weekLevel..'|r) ' or '')..(tab.weekNum or 0)..'/'..(tab.all or 0))
+                local linka,linkb
+                for _, linkc in pairs(tab.itemLink) do
+                    if not linka then
+                        linka=linkc
+                    elseif not linkb then
+                        linkb=linkc
+                    else
+                        self:AddDoubleLine(race..linkc,' ')
                     end
-                    if linka or ItemLink then
-                        self:AddDoubleLine(linka and race..linka or ' ', linkb and linkb..race)
-                    end
-                    numPlayer=numPlayer+1
                 end
+                if linka or ItemLink then
+                    self:AddDoubleLine(linka and race..linka or ' ', linkb and linkb..race)
+                end
+                numPlayer=numPlayer+1
             end
         end
+       
     else
         local bagAll,bankAll,numPlayer=0,0,0--帐号数据
         for name_server, info in pairs(wowSave) do
             if name_server~=e.Player.name_server then
                 local tab=info.items[itemID]
                 if tab then
-                    if Save.showWoWInfo then
+                    
                         name_server=name_server:gsub('-'..e.Player.server, '')
                         local r2,g2,b2=GetClassColor(info.class)
                         self:AddDoubleLine(e.Race(nil, info.race, info.sex)..e.Icon.bag2..tab.bag..' '..e.Icon.bank2..tab.bank, name_server..e.Class(nil,info.class), r2,g2,b2, r2,g2,b2)
-                    end
+                    
                     bagAll=bagAll+tab.bag
                     bankAll=bankAll+tab.bank
                     numPlayer=numPlayer+1
@@ -385,8 +379,6 @@ local function setItem(self, ItemLink)
         if numPlayer>1 then
             self:AddDoubleLine(e.Icon.wow2..e.Icon.bag2..e.MK(bagAll,3)..' '..e.Icon.bank2..e.MK(bankAll, 3), e.MK(bagAll+bankAll, 3)..' '..e.Icon.wow2..' '..numPlayer)
         end
-
-
     end
 
     setItemCooldown(self, itemID)--物品冷却
@@ -422,7 +414,6 @@ local function setCurrency(self, currencyID)--货币
     local info2 = C_CurrencyInfo.GetCurrencyInfo(currencyID)
     if info2 then
         self:AddDoubleLine(TOKENS..'ID: '..currencyID, EMBLEM_SYMBOL..'ID: '..info2.iconFileID)
-        --setInitItem(self)--创建物品
         self.Portrait:SetTexture(info2.iconFileID)
         self.Portrait:SetShown(true)
     end
@@ -439,11 +430,11 @@ local function setCurrency(self, currencyID)--货币
         if name_server~=e.Player.name_server then
             local quantity=info.currencys[currencyID]
             if quantity then
-                if Save.showWoWInfo then
+                
                     name_server=name_server:gsub('-'..e.Player.server, '')
                     local r2,g2,b2=GetClassColor(info.class)
                     self:AddDoubleLine(e.Race(nil, info.race, info.sex)..e.MK(quantity, 3), name_server..e.Class(nil,info.class), r2,g2,b2, r2,g2,b2)
-                end
+                
                 all=all+quantity
                 numPlayer=numPlayer+1
             end
@@ -469,7 +460,6 @@ local function setAchievement(self, achievementID)--成就
         self:AddDoubleLine(ACHIEVEMENTS..'ID: '..achievementID, icon and EMBLEM_SYMBOL..'ID: '..icon)
     end
     if icon then
-        --setInitItem(self)--创建物品
         self.Portrait:SetTexture(icon)
         self.Portrait:SetShown(true)
     end
@@ -518,10 +508,10 @@ local function setBattlePet(self, speciesID, level, breedQuality, maxHealth, pow
         abilityIcon=abilityIcon..'|TInterface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[type]..':0|t|T'..icon..':0|t'..info.level
     end
     BattlePetTooltipTemplate_AddTextLine(self, abilityIcon)
-    if Save.showSource then--来源提示
-        BattlePetTooltipTemplate_AddTextLine(self, ' ')
+    
+        BattlePetTooltipTemplate_AddTextLine(self, ' ')--来源提示
         BattlePetTooltipTemplate_AddTextLine(self, tooltipSource)
-    end
+    
     if PetJournalSearchBox and PetJournalSearchBox:IsVisible() then--设置搜索
         PetJournalSearchBox:SetText(speciesName)
     end
@@ -536,13 +526,6 @@ local function setBattlePet(self, speciesID, level, breedQuality, maxHealth, pow
     self.backgroundColor:SetShown(breedQuality~=-1)
 end
 
-hooksecurefunc("BattlePetToolTip_Show", function(...)--BattlePetTooltip.lua 
-    setBattlePet(BattlePetTooltip, ...)
-end)
-
-hooksecurefunc('FloatingBattlePet_Show', function(...)--FloatingPetBattleTooltip.lua
-    setBattlePet(FloatingBattlePetTooltip, ...)
-end)
 --####
 --Buff
 --####
@@ -583,15 +566,7 @@ local function setBuff(type, self, ...)--Buff
     end
     self:Show()
 end
-hooksecurefunc(e.tips, "SetUnitBuff", function(...)
-    setBuff('Buff', ...)
-end)
-hooksecurefunc(e.tips, "SetUnitDebuff", function(...)
-    setBuff('Debuff', ...)
-end)
-hooksecurefunc(e.tips, "SetUnitAura", function(...)
-    setBuff('Aura', ...)
-end)
+
 
 --####
 --声望
@@ -610,16 +585,12 @@ local setFriendshipFaction=function(self, friendshipID)--friend声望
         self:Show()
     end
 end
-hooksecurefunc(ReputationBarMixin, 'ShowFriendshipReputationTooltip', function(self, friendshipID)--个人声望 ReputationFrame.lua
-    setFriendshipFaction(e.tips, friendshipID)
-end)
 
 local function setMajorFactionRenown(self, majorFactionID)--名望
 	local majorFactionData = C_MajorFactions.GetMajorFactionData(majorFactionID)
     if majorFactionData then
         local icon= majorFactionData.textureKit
         if icon then
-            --setInitItem(self)
             self.Portrait:SetShown(true)
             self.Portrait:SetTexture(icon)
             self:AddLine(RENOWN_LEVEL_LABEL..'ID: '..majorFactionID, icon  and 	EMBLEM_SYMBOL..'ID: '..icon)
@@ -629,49 +600,7 @@ local function setMajorFactionRenown(self, majorFactionID)--名望
         self:Show()
     end
 end
-hooksecurefunc(ReputationBarMixin, 'ShowMajorFactionRenownTooltip', function(self)--Major名望, 没测试ReputationFrame.lua
-    setMajorFactionRenown(e.tips, self.factionID)
-end)
 
-
-hooksecurefunc(ReputationBarMixin, 'OnEnter', function(self)--角色栏,声望
-    if self.friendshipID or not self.factionID or (C_Reputation.IsMajorFaction(self.factionID) and not C_MajorFactions.HasMaximumRenown(self.factionID)) then
-        return
-    end
-
-    local isParagon = C_Reputation.IsFactionParagon(self.factionID)--奖励			
-	local completedParagon--完成次数
-	if ( isParagon ) then--奖励
-		local currentValue, threshold, _, _, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(self.factionID)
-		if not tooLowLevelForParagon then
-			local completed= math.modf(currentValue/threshold)--完成次数
-			if completed>0 then
-				completedParagon=QUEST_REWARDS.. ' '..completed..' '..VOICEMACRO_LABEL_CHARGE1
-			end
-		end
-	end
-
-    if not self.Container.Name:IsTruncated() then
-        local name, description, standingID, _, barMax, barValue, _, _, isHeader, _, hasRep, _, _, factionID, _, _ = GetFactionInfoByID(self.factionID)
-        if factionID and not isHeader or (isHeader and hasRep) then
-            e.tips:SetOwner(self, "ANCHOR_RIGHT");
-            e.tips:AddLine(name..' '..standingID..'/'..MAX_REPUTATION_REACTION, 1,1,1)
-            e.tips:AddLine(description, nil,nil,nil, true)
-            e.tips:AddLine(' ')
-            local gender = UnitSex("player");
-            local factionStandingtext = GetText("FACTION_STANDING_LABEL"..standingID, gender)
-            local barColor = FACTION_BAR_COLORS[standingID]
-            factionStandingtext=barColor:WrapTextInColorCode(factionStandingtext)--颜色
-            e.tips:AddLine(factionStandingtext..' '..e.MK(barValue, 3)..'/'..e.MK(barMax, 3)..' '..('%i%%'):format(barValue/barMax*100), 1,1,1)
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(REPUTATION..'ID: '..self.factionID or factionID, completedParagon)
-            e.tips:Show();
-        end
-    else
-        e.tips:AddDoubleLine(REPUTATION..'ID: '..(self.factionID or factionID), completedParagon)
-        e.tips:Show()
-    end
-end)
 
 --#########
 --生命条提示
@@ -726,12 +655,6 @@ local function set_Unit_Health_Bar(self, unit)
         end
     end
 end
-GameTooltipStatusBar:SetScript("OnValueChanged", function(self)
-    local unit= select(2, TooltipUtil.GetDisplayedUnit(GameTooltip))
-    if unit then
-        set_Unit_Health_Bar(self, unit)
-    end
-end);
 
 --#######
 --设置单位
@@ -946,7 +869,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
 end
 
 local function setUnitInit(self)--设置默认提示位置
-    if Save.showUnit then
+    if not Save.disabledTooltip then
         if not e.tips.playerModel then--单位3D模型
             e.tips.playerModel=CreateFrame("PlayerModel", nil, e.tips)
             e.tips.playerModel:SetFacing(-0.35)
@@ -963,41 +886,9 @@ end
 
 
 
---****
---隐藏
---****
-
---[[
-e.tips:HookScript("OnShow", function(self)
-    if Save.inCombatHideTips and UnitAffectingCombat('player') then 
-        self:Hide()
-    else
-        local itemLink=select(2, self:GetItem())
-        local spellID = select(2, self:GetSpell())
-        if itemLink then
-            setItem(self, itemLink)--物品
-        elseif spellID then
-            setSpell(self, spellID)--法术
-        end
-    end
-end)
-
-]]
-
-
-
---[[
-ItemRefTooltip:HookScript("OnShow", function(self)
-    setInitItem(self)
-end)
-]]
-
-
-
-
---#######
---冒险指南EncounterJournal
---#######
+--###############################################################################################
+--冒险指南  EncounterJournal
+--###############################################################################################
 
 local function EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示所数据
     local self=EncounterJournal
@@ -1402,7 +1293,7 @@ local function setInstanceBossText()--显示副本击杀数据
     end
 end
 
-local function setEncounterJournal()--冒险指南界面
+local function set_EncounterJournal_Init()--冒险指南界面
     local self=EncounterJournal
     self.btn= e.Cbtn(self.TitleContainer, nil, not Save.hideEncounterJournal)--按钮, 总开关
     self.btn:SetPoint('RIGHT',-22, -2)
@@ -2078,48 +1969,23 @@ local function setCVar(reset, tips)
         end
     end
 end
+
 --###
 --初始
 --###
-local function Init()
+local function set_Tooltips_Init()--初始
     setInitItem(ItemRefTooltip)
     setInitItem(e.tips)
-    e.tips:HookScript("OnHide", function(self)
+    e.tips:HookScript("OnHide", function(self)--隐藏
         setInitItem(self, true)
     end)
-    ItemRefTooltip:HookScript("OnHide", function (self)
+    ItemRefTooltip:HookScript("OnHide", function (self)--隐藏
         setInitItem(self, true)
     end)
 
     --####################
     --物品, 法术, 货币, 成就
     --####################
-
-  --[[
-  hooksecurefunc(e.tips, "SetCurrencyToken", function(self, index)--角色货币栏
-        local currencyLink = C_CurrencyInfo.GetCurrencyListLink(index)
-        local currencyID = currencyLink and C_CurrencyInfo.GetCurrencyIDFromLink(currencyLink)
-        if currencyID then
-            setCurrency(self, currencyID)
-        end
-    end)
-    hooksecurefunc(e.tips, 'SetBackpackToken', function(self, index)--包里货币
-        local info = C_CurrencyInfo.GetBackpackCurrencyInfo(index)
-        if info and info.currencyTypesID then
-            setCurrency(self, info.currencyTypesID)
-            self:Show()
-        end
-    end)
-
-]]
-
-
-    --e.tips:SetScript('OnTooltipSetItem', setItem)--物品
-
-    --hooksecurefunc(e.tips, 'SetToyByItemID', setItem)--玩具
-    
-
-    --e.tips:HookScript('OnTooltipSetSpell', setSpell)--法术
     hooksecurefunc('GameTooltip_AddQuestRewardsToTooltip', setQuest)--世界任务ID GameTooltip_AddQuest
     hooksecurefunc(ItemRefTooltip, 'SetHyperlink', function(self, link)--ItemRef.lua ItemRefTooltipMixin:ItemRefSetHyperlink(link)
         local linkName, linkID = link:match('(.-):(%d+):')
@@ -2180,6 +2046,7 @@ local function Init()
             setCurrency(tooltip, date.id)--货币
         end
     end)
+
     --****
     --位置
     --****
@@ -2192,11 +2059,218 @@ local function Init()
             self:SetPoint(Save.AnchorPoint[1], UIParent, Save.AnchorPoint[3], Save.AnchorPoint[4], Save.AnchorPoint[5])
         end
     end)
+
+    --#########
+    --生命条提示
+    --#########
+    GameTooltipStatusBar:SetScript("OnValueChanged", function(self)
+        local unit= select(2, TooltipUtil.GetDisplayedUnit(GameTooltip))
+        if unit then
+            set_Unit_Health_Bar(self, unit)
+        end
+    end);
+
+    --####
+    --声望
+    --####
+    hooksecurefunc(ReputationBarMixin, 'ShowMajorFactionRenownTooltip', function(self)--Major名望, 没测试ReputationFrame.lua
+        setMajorFactionRenown(e.tips, self.factionID)
+    end)
+    hooksecurefunc(ReputationBarMixin, 'ShowFriendshipReputationTooltip', function(self, friendshipID)--个人声望 ReputationFrame.lua
+        setFriendshipFaction(e.tips, friendshipID)
+    end)
+    hooksecurefunc(ReputationBarMixin, 'OnEnter', function(self)--角色栏,声望
+        if self.friendshipID or not self.factionID or (C_Reputation.IsMajorFaction(self.factionID) and not C_MajorFactions.HasMaximumRenown(self.factionID)) then
+            return
+        end
+
+        local isParagon = C_Reputation.IsFactionParagon(self.factionID)--奖励			
+        local completedParagon--完成次数
+        if ( isParagon ) then--奖励
+            local currentValue, threshold, _, _, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(self.factionID)
+            if not tooLowLevelForParagon then
+                local completed= math.modf(currentValue/threshold)--完成次数
+                if completed>0 then
+                    completedParagon=QUEST_REWARDS.. ' '..completed..' '..VOICEMACRO_LABEL_CHARGE1
+                end
+            end
+        end
+
+        if not self.Container.Name:IsTruncated() then
+            local name, description, standingID, _, barMax, barValue, _, _, isHeader, _, hasRep, _, _, factionID, _, _ = GetFactionInfoByID(self.factionID)
+            if factionID and not isHeader or (isHeader and hasRep) then
+                e.tips:SetOwner(self, "ANCHOR_RIGHT");
+                e.tips:AddLine(name..' '..standingID..'/'..MAX_REPUTATION_REACTION, 1,1,1)
+                e.tips:AddLine(description, nil,nil,nil, true)
+                e.tips:AddLine(' ')
+                local gender = UnitSex("player");
+                local factionStandingtext = GetText("FACTION_STANDING_LABEL"..standingID, gender)
+                local barColor = FACTION_BAR_COLORS[standingID]
+                factionStandingtext=barColor:WrapTextInColorCode(factionStandingtext)--颜色
+                e.tips:AddLine(factionStandingtext..' '..e.MK(barValue, 3)..'/'..e.MK(barMax, 3)..' '..('%i%%'):format(barValue/barMax*100), 1,1,1)
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(REPUTATION..'ID: '..self.factionID or factionID, completedParagon)
+                e.tips:Show();
+            end
+        else
+            e.tips:AddDoubleLine(REPUTATION..'ID: '..(self.factionID or factionID), completedParagon)
+            e.tips:Show()
+        end
+    end)
+
+    
+    --####
+    --Buff
+    --####
+    hooksecurefunc(e.tips, "SetUnitBuff", function(...)
+        setBuff('Buff', ...)
+    end)
+    hooksecurefunc(e.tips, "SetUnitDebuff", function(...)
+        setBuff('Debuff', ...)
+    end)
+    hooksecurefunc(e.tips, "SetUnitAura", function(...)
+        setBuff('Aura', ...)
+    end)
+
+    --###########
+    --宠物面板提示
+    --###########
+    hooksecurefunc("BattlePetToolTip_Show", function(...)--BattlePetTooltip.lua 
+        setBattlePet(BattlePetTooltip, ...)
+    end)
+
+    hooksecurefunc('FloatingBattlePet_Show', function(...)--FloatingPetBattleTooltip.lua
+        setBattlePet(FloatingBattlePetTooltip, ...)
+    end)
+
+    hooksecurefunc(e.tips,"SetCompanionPet", function(self, petGUID)--设置宠物信息
+        local speciesID= petGUID and C_PetJournal.GetPetInfoByPetID(petGUID)
+        setPet(self, speciesID)--宠物
+    end)
+
+
+    --##########
+    --设置 panel
+    --##########
+    
+    panel.name = addName;--添加新控制面板
+    panel.parent =id;
+    InterfaceOptions_AddCategory(panel)
+    
+    panel.setDefaultAnchor=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--设置默认提示位置
+    panel.setDefaultAnchor.Text:SetText(DEFAULT..RESAMPLE_QUALITY_POINT..': '..FOLLOW..MOUSE_LABEL)
+    panel.setDefaultAnchor:SetPoint('TOPLEFT')
+    panel.setDefaultAnchor:SetChecked(Save.setDefaultAnchor)--提示位置            
+    panel.setDefaultAnchor:SetScript('OnClick', function()
+        if Save.setDefaultAnchor then
+            Save.setDefaultAnchor=nil
+        else
+            Save.setDefaultAnchor=true
+            Save.setAnchor=nil
+            panel.Anchor:SetChecked(false)
+        end
+    end)
+
+    panel.Anchor=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--指定提示位置
+    panel.Anchor.Text:SetText(COMBAT_ALLY_START_MISSION)--指定
+    panel.Anchor:SetPoint('LEFT', panel.setDefaultAnchor.Text, 'RIGHT', 20, 0)
+    panel.Anchor:SetChecked(Save.setAnchor)
+    panel.Anchor:SetScript('OnClick', function(self)
+        if Save.setAnchor then
+            Save.setAnchor=nil
+        else
+            Save.setAnchor=true
+            Save.setDefaultAnchor=nil
+            panel.setDefaultAnchor:SetChecked(false)
+        end
+    end)
+    panel.Anchor.select=e.Cbtn(panel,true)
+    panel.Anchor.select:SetPoint('LEFT', panel.Anchor.Text, 'RIGHT')
+    panel.Anchor.select:SetSize(80, 25)
+    panel.Anchor.select:SetText(SETTINGS)
+    
+    panel.Anchor.select:SetScript('OnClick',function(self)
+        if not self.frame then
+            self.frame=CreateFrame('Frame',nil, UIParent)
+            if Save.AnchorPoint and Save.AnchorPoint[1] and Save.AnchorPoint[3] and Save.AnchorPoint[4] and Save.AnchorPoint[5] then
+                self.frame:SetPoint(Save.AnchorPoint[1], UIParent, Save.AnchorPoint[3], Save.AnchorPoint[4], Save.AnchorPoint[5])
+            else
+                self.frame:SetPoint('BOTTOMRIGHT', 0, 90)
+            end
+            self.frame:SetSize(140,140)
+            self.frame.texture=self.frame:CreateTexture(nil,'ARTWORK')
+            self.frame.texture:SetAllPoints(self.frame)
+            self.frame.texture:SetAtlas('ForgeBorder-CornerBottomRight')
+            self.frame.texture2=self.frame:CreateTexture(nil, 'BACKGROUND')
+            self.frame.texture2:SetAllPoints(self.frame)
+            self.frame.texture2:SetAtlas('Adventures-Missions-Shadow')
+        else
+            if self.frame:IsShown() then
+                self.frame:SetShown(false)
+            else
+                self.frame:SetShown(true)
+            end
+        end
+        self.frame:RegisterForDrag("LeftButton", "RightButton")
+        self.frame:SetClampedToScreen(true)
+        self.frame:SetMovable(true)
+        self.frame:SetScript("OnDragStart", function(self2) self2:StartMoving() end);
+        self.frame:SetScript("OnDragStop", function(self2)
+                ResetCursor();
+                self2:StopMovingOrSizing();
+                Save.AnchorPoint={self2:GetPoint(1)}
+        end);
+        self.frame:SetScript('OnMouseUp',function()
+            ResetCursor()
+        end)
+    end)
+
+    panel.inCombatHideTips=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--设置默认提示位置
+    panel.inCombatHideTips.Text:SetText(HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..HIDE)
+    panel.inCombatHideTips:SetPoint('TOPLEFT', panel.setDefaultAnchor, 'BOTTOMLEFT', 0, -2)
+    panel.inCombatHideTips:SetScript('OnClick', function()
+        if Save.inCombatHideTips then
+            Save.inCombatHideTips=nil
+        else
+            Save.inCombatHideTips=true
+        end
+    end)
+
+
+    --设置CVar
+    panel.CVar=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    panel.CVar.Text:SetText(SETTINGS..' CVar')
+    panel.CVar:SetPoint('TOPLEFT', panel.inCombatHideTips, 'BOTTOMLEFT', 0, -30)
+    panel.CVar:SetChecked(Save.setCVar)
+    panel.CVar:SetScript('OnClick', function()
+        if Save.setCVar then
+            Save.setCVar=nil
+            setCVar(true)
+        else
+            Save.setCVar=true
+            setCVar()
+        end
+    end)
+    panel.CVar:SetScript('OnEnter',function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddLine(' ')
+        setCVar(nil, true)
+        e.tips:Show()
+    end)
+    panel.CVar:SetScript('OnLeave', function() e.tips:Hide() end)
+    
+    
+    setUnitInit(self)--设置默认提示位置
+    setCVar()--设置CVar
 end
 
 --加载保存数据
 panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent('ZONE_CHANGED_NEW_AREA')--e.Layer=nil
 panel:RegisterEvent("PLAYER_LOGOUT")
+
 panel:RegisterEvent('CHALLENGE_MODE_COMPLETED')
 panel:RegisterEvent('BOSS_KILL')
 panel:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
@@ -2206,16 +2280,13 @@ panel:RegisterEvent('CHALLENGE_MODE_MAPS_UPDATE')
 panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 panel:RegisterEvent('WEEKLY_REWARDS_UPDATE')
 
-panel:RegisterEvent('ZONE_CHANGED_NEW_AREA')--e.Layer=nil
 
 panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
             wowBossKilled= WoWToolsSave and WoWToolsSave['Boss_Killed'] or {}--{encounterID=数量}怪物击杀数量
-
             wowSave=WoWToolsSave and WoWToolsSave['WoW-All-Save'] or {}
-
             wowSave[e.Player.name_server] = wowSave[e.Player.name_server] or {--默认数据
                 class=e.Player.class,
                 race=select(2,UnitRace('player')),
@@ -2227,11 +2298,24 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 worldboss={},--{week=周数, boss=table}
                 rare={day=date('%x'), boss={}},
             }
+            local sel=e.CPanel(addName, not Save.disabledTooltip)
+            sel:SetScript('OnClick', function()
+                Save.disabledTooltip= not Save.disabledTooltip and true or nil               
+                print(id, addName, e.GetEnabeleDisable(not Save.disabledTooltip), REQUIRES_RELOAD, '/reload')
+            end)
+            sel:SetScript('OnEnter', function(self2)
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine('Tooltip')
+                e.tips:Show()
+            end)
+            sel:SetScript('OnLeave', function() e.tips:Hide() end)
             
-            Init()--初始
 
-            setUnitInit(self)--设置默认提示位置
-
+            
+            if not Save.disabledTooltip then
+                set_Tooltips_Init()--初始
+            end
             for name_server, info in pairs(wowSave) do--清队不是本周数据
                 local tab=info.keystones
                 if tab and tab.week and  tab.week~=e.Player.week then
@@ -2260,49 +2344,39 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             setWorldbossText()--显示世界BOSS击杀数据
             setInstanceBossText()--显示副本击杀数据
 
-            setCVar()--设置CVar
-            panel.setUnit:SetChecked(Save.showUnit)--单位提示
-            panel.setDefaultAnchor:SetChecked(Save.setDefaultAnchor)--提示位置            
-            panel.CVar:SetChecked(Save.setCVar)
-            panel.setTips:SetChecked(Save.showTips)
-            panel.showSource:SetChecked(Save.showSource)
-            panel.showWoWInfo:SetChecked(Save.showWoWInfo)
-            panel.Anchor:SetChecked(Save.setAnchor)
-            panel.setAchievement:SetChecked(Save.showAchievement)
-
         elseif arg1=='Blizzard_ClassTalentUI' then
-            local function setClassTalentSpell(self2, tooltip)--天赋
-                local spellID = self2:GetSpellID()
-                local spellTexture=spellID and  GetSpellTexture(spellID)
-                if not spellTexture then
-                    return
+            if not Save.disabledTooltip then
+                local function setClassTalentSpell(self2, tooltip)--天赋
+                    local spellID = self2:GetSpellID()
+                    local spellTexture=spellID and  GetSpellTexture(spellID)
+                    if not spellTexture then
+                        return
+                    end
+                    tooltip:AddLine(SPELLS..'ID: '..spellID..'                ' ..EMBLEM_SYMBOL..'ID: '..spellTexture)
+                    tooltip.Portrait:SetTexture(spellTexture)
+                    tooltip.Portrait:SetShown(true)
                 end
-                --setInitItem(tooltip)--创建物品
-                tooltip:AddLine(SPELLS..'ID: '..spellID..'                ' ..EMBLEM_SYMBOL..'ID: '..spellTexture)
-                tooltip.Portrait:SetTexture(spellTexture)
-                tooltip.Portrait:SetShown(true)
+                hooksecurefunc(ClassTalentSelectionChoiceMixin, 'AddTooltipInstructions', setClassTalentSpell)--Blizzard_ClassTalentButtonTemplates.lua--天赋
+                hooksecurefunc(ClassTalentButtonSpendMixin, 'AddTooltipInstructions', setClassTalentSpell)
             end
-            hooksecurefunc(ClassTalentSelectionChoiceMixin, 'AddTooltipInstructions', setClassTalentSpell)--Blizzard_ClassTalentButtonTemplates.lua--天赋
-            hooksecurefunc(ClassTalentButtonSpendMixin, 'AddTooltipInstructions', setClassTalentSpell)
 
         elseif arg1=='Blizzard_EncounterJournal' then---冒险指南
-            setEncounterJournal()
+            set_EncounterJournal_Init()--冒险指南界面
             EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示所数据
 
         elseif arg1=='Blizzard_AchievementUI' then--成就ID
-            hooksecurefunc(AchievementTemplateMixin, 'Init', function(self2,elementData)--Blizzard_AchievementUI.lua
-                if not Save.showAchievement then
-                    return
-                end
-                local category = elementData.category;
-                local achievementID,  description, icon, _
-                if self2.index then
-                    achievementID, _, _, _, _, _, _, description, _, icon= GetAchievementInfo(category, self2.index);
-                else
-                    achievementID, _, _, _, _, _, _, description, _, icon = GetAchievementInfo(self2.id);
-                end
-                self2.HiddenDescription:SetText(description..' ID: '..achievementID..(icon and ' |T'..icon..':0|t'..icon or ''))
-            end)
+            if not Save.disabledTooltip then
+                hooksecurefunc(AchievementTemplateMixin, 'Init', function(self2,elementData)--Blizzard_AchievementUI.lua
+                    local category = elementData.category;
+                    local achievementID,  description, icon, _
+                    if self2.index then
+                        achievementID, _, _, _, _, _, _, description, _, icon= GetAchievementInfo(category, self2.index);
+                    else
+                        achievementID, _, _, _, _, _, _, description, _, icon = GetAchievementInfo(self2.id);
+                    end
+                    self2.HiddenDescription:SetText(description..' ID: '..achievementID..(icon and ' |T'..icon..':0|t'..icon or ''))
+                end)
+            end
         end
 
     elseif event == "PLAYER_LOGOUT" then
@@ -2359,176 +2433,11 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
 
     elseif event=='UNIT_FLAGS' then--稀有怪
         setRareEliteKilled(arg1)
+
     elseif event=='LOOT_OPENED' then
         setRareEliteKilled('loot')
+
     elseif event=='WEEKLY_REWARDS_UPDATE' then
         EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示所数据
     end
 end)
-
-
-
-
-panel.name = addName;--添加新控制面板
-panel.parent =id;
-InterfaceOptions_AddCategory(panel)
-
-
-
-panel.setTips=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--提示
-panel.setTips.Text:SetText(ITEMS..INFO..':')
-panel.setTips:SetPoint('TOPLEFT')
-
-panel.setTips:SetScript('OnClick', function(self)
-    if Save.showTips then
-        Save.showTips=nil
-    else
-        Save.showTips=true
-    end
-end)
-
-panel.showSource=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--来源
-panel.showSource.Text:SetText(SOURCES)
-panel.showSource:SetPoint('LEFT', panel.setTips.Text, 'RIGHT', 20, 0)
-panel.showSource:SetScript('OnClick', function(self)
-    if Save.showSource then
-        Save.showSource=nil
-    else
-        Save.showSource=true
-    end
-end)
-
-panel.showWoWInfo=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--帐号提示信息
-panel.showWoWInfo.Text:SetText('WOW'..CHARACTER)
-panel.showWoWInfo:SetPoint('LEFT', panel.showSource.Text, 'RIGHT', 20, 0)
-panel.showWoWInfo:SetScript('OnClick', function(self)
-    if Save.showWoWInfo then
-        Save.showWoWInfo=nil
-    else
-        Save.showWoWInfo=true
-    end
-end)
-
-panel.setUnit=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--单位提示
-panel.setUnit.Text:SetText(COVENANT_MISSIONS_UNITS..INFO)
-panel.setUnit:SetPoint('TOPLEFT', panel.setTips, 'BOTTOMLEFT', 0, -2)
-panel.setUnit:SetScript('OnClick', function(self)
-    if Save.showUnit then
-        Save.showUnit=nil
-    else
-        Save.showUnit=true
-    end
-    setUnitInit(self)
-end)
-
-panel.setAchievement=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--成就ID
-panel.setAchievement.Text:SetText(ACHIEVEMENTS..BINDING_HEADER_INTERFACE..' ID')
-panel.setAchievement:SetPoint('TOPLEFT', panel.setUnit, 'BOTTOMLEFT', 0, -2)
-panel.setAchievement:SetScript('OnClick', function()
-    if Save.showAchievement then
-        Save.showAchievement=nil
-    else
-        Save.showAchievement=true
-    end
-end)
-
-panel.setDefaultAnchor=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--设置默认提示位置
-panel.setDefaultAnchor.Text:SetText(DEFAULT..RESAMPLE_QUALITY_POINT..': '..FOLLOW..MOUSE_LABEL)
-panel.setDefaultAnchor:SetPoint('TOPLEFT', panel.setAchievement, 'BOTTOMLEFT', 0, -20)
-panel.setDefaultAnchor:SetScript('OnClick', function()
-    if Save.setDefaultAnchor then
-        Save.setDefaultAnchor=nil
-    else
-        Save.setDefaultAnchor=true
-        Save.setAnchor=nil
-        panel.Anchor:SetChecked(false)
-    end
-end)
-
-panel.Anchor=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--指定提示位置
-panel.Anchor.Text:SetText(COMBAT_ALLY_START_MISSION)
-panel.Anchor:SetPoint('LEFT', panel.setDefaultAnchor.Text, 'RIGHT', 20, 0)
-panel.Anchor:SetScript('OnClick', function(self)
-    if Save.setAnchor then
-        Save.setAnchor=nil
-    else
-        Save.setAnchor=true
-        Save.setDefaultAnchor=nil
-        panel.setDefaultAnchor:SetChecked(false)
-    end
-end)
-panel.Anchor.select=e.Cbtn(panel,true)
-panel.Anchor.select:SetPoint('LEFT', panel.Anchor.Text, 'RIGHT')
-panel.Anchor.select:SetSize(80, 25)
-panel.Anchor.select:SetText(SETTINGS)
-panel.Anchor.select:SetScript('OnClick',function(self)
-    if not self.frame then
-        self.frame=CreateFrame('Frame',nil, UIParent)
-        if Save.AnchorPoint and Save.AnchorPoint[1] and Save.AnchorPoint[3] and Save.AnchorPoint[4] and Save.AnchorPoint[5] then
-            self.frame:SetPoint(Save.AnchorPoint[1], UIParent, Save.AnchorPoint[3], Save.AnchorPoint[4], Save.AnchorPoint[5])
-        else
-            self.frame:SetPoint('BOTTOMRIGHT', 0, 90)
-        end
-        self.frame:SetSize(140,140)
-        self.frame.texture=self.frame:CreateTexture(nil,'ARTWORK')
-        self.frame.texture:SetAllPoints(self.frame)
-        self.frame.texture:SetAtlas('ForgeBorder-CornerBottomRight')
-        self.frame.texture2=self.frame:CreateTexture(nil, 'BACKGROUND')
-        self.frame.texture2:SetAllPoints(self.frame)
-        --self.frame.texture2:SetAlpha(0.5)
-        self.frame.texture2:SetAtlas('Adventures-Missions-Shadow')
-    else
-        if self.frame:IsShown() then
-            self.frame:SetShown(false)
-        else
-            self.frame:SetShown(true)
-        end
-    end
-    self.frame:RegisterForDrag("LeftButton", "RightButton")
-    self.frame:SetClampedToScreen(true)
-    self.frame:SetMovable(true)
-    self.frame:SetScript("OnDragStart", function(self2) self2:StartMoving() end);
-    self.frame:SetScript("OnDragStop", function(self2)
-            ResetCursor();
-            self2:StopMovingOrSizing();
-            Save.AnchorPoint={self2:GetPoint(1)}
-    end);
-    self.frame:SetScript('OnMouseUp',function()
-        ResetCursor()
-    end)
-end)
-
-panel.inCombatHideTips=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--设置默认提示位置
-panel.inCombatHideTips.Text:SetText(HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..HIDE)
-panel.inCombatHideTips:SetPoint('TOPLEFT', panel.setDefaultAnchor, 'BOTTOMLEFT', 0, -2)
-panel.inCombatHideTips:SetScript('OnClick', function()
-    if Save.inCombatHideTips then
-        Save.inCombatHideTips=nil
-    else
-        Save.inCombatHideTips=true
-    end
-end)
-
-
---设置CVar
-panel.CVar=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-panel.CVar.Text:SetText(SETTINGS..' CVar')
-panel.CVar:SetPoint('TOPLEFT', panel.inCombatHideTips, 'BOTTOMLEFT', 0, -30)
-panel.CVar:SetScript('OnClick', function()
-    if Save.setCVar then
-        Save.setCVar=nil
-        setCVar(true)
-    else
-        Save.setCVar=true
-        setCVar()
-    end
-end)
-panel.CVar:SetScript('OnEnter',function(self)
-    e.tips:SetOwner(self, "ANCHOR_LEFT")
-    e.tips:ClearLines()
-    e.tips:AddDoubleLine(id, addName)
-    e.tips:AddLine(' ')
-    setCVar(nil, true)
-    e.tips:Show()
-end)
-panel.CVar:SetScript('OnLeave', function() e.tips:Hide() end)
