@@ -83,10 +83,11 @@ local function Mount(id2, item)
     if id2 then
         local mountID=item and C_MountJournal.GetMountFromItem(id2) or C_MountJournal.GetMountFromSpell(id2)
         if  mountID then
+            local _, _, icon, _, _, _, _, _, _, _, isCollected =C_MountJournal.GetMountInfoByID(mountID)
             if select(11, C_MountJournal.GetMountInfoByID(mountID)) then
-                return e.Icon.select2
+                return e.Icon.select2, icon
             else
-                return e.Icon.info2
+                return e.Icon.info2, icon
             end
         end
     end
@@ -157,15 +158,14 @@ local function Spell(link)--法术图标
     local id2=link:match('Hspell:(%d+)')
     if icon then
         return '|T'..icon..':0|t'..link
-    else
-        if id2 then
-            icon = GetSpellTexture(id2)
-            if icon then 
-                t='|T'..icon..':0|t'..t
-            end
+    elseif id2 then
+        icon = GetSpellTexture(id2)
+        if icon then 
+            t='|T'..icon..':0|t'..t
         end
     end
-    local nu= Mount(id2)
+    
+    local nu=Mount(id2)
     if nu then
         t=t..nu
     end
@@ -456,6 +456,15 @@ local function TransmogSet(link)--幻化套装
     end
 end
 
+local function setMount(link)--设置,坐骑
+    local spellID= link:match('mount:(%d+)')
+    if spellID then
+        local mount,icon= Mount(spellID)
+        if mount then
+            return (icon and '|T'..icon..':0|t' or '')..link..mount
+        end
+    end
+end
 local function setAddMessageFunc(self, s, ...)
     local petChannel=s:find('|Hchannel:.-'..PET_BATTLE_COMBAT_LOG..']|h') and true or false
 
@@ -463,7 +472,8 @@ local function setAddMessageFunc(self, s, ...)
     s=s:gsub('|Hplayer:.-]|h', Realm)
     s=s:gsub('|Hitem:.-]|h',Item)
     s=s:gsub('|Hspell:.-]|h',Spell)
-
+    s=s:gsub('|Hmount:.-]|h',setMount)
+    
     s=s:gsub('|Hbattlepet:.-]|h',PetLink)
     s=s:gsub('|HbattlePetAbil:.-]|h',function(link) return PetAblil(link, petChannel) end)
 
