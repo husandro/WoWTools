@@ -2095,17 +2095,14 @@ local function Init()
     --物品, 法术, 货币, 成就
     --####################
 
- --[[
-   hooksecurefunc(e.tips, "SetCurrencyToken", function(self, index)--角色货币栏
+  --[[
+  hooksecurefunc(e.tips, "SetCurrencyToken", function(self, index)--角色货币栏
         local currencyLink = C_CurrencyInfo.GetCurrencyListLink(index)
         local currencyID = currencyLink and C_CurrencyInfo.GetCurrencyIDFromLink(currencyLink)
         if currencyID then
             setCurrency(self, currencyID)
         end
     end)
-
-]]
-
     hooksecurefunc(e.tips, 'SetBackpackToken', function(self, index)--包里货币
         local info = C_CurrencyInfo.GetBackpackCurrencyInfo(index)
         if info and info.currencyTypesID then
@@ -2113,6 +2110,9 @@ local function Init()
             self:Show()
         end
     end)
+
+]]
+
 
     --e.tips:SetScript('OnTooltipSetItem', setItem)--物品
 
