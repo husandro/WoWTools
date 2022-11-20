@@ -7,16 +7,16 @@ local wowBossKilled={}
 
 local function setInitItem(self, hide)--创建物品
     if not self.textLeft then--左上角字符
-        self.textLeft=e.Cstr(self, 12)
+        self.textLeft=e.Cstr(self, 16)
         self.textLeft:SetPoint('BOTTOMLEFT', self, 'TOPLEFT')
         --self.textLeft:SetPoint('TOPLEFT', self, 'BOTTOMLEFT')下
     end
     if not self.text2Left then--左上角字符2
-        self.text2Left=e.Cstr(self, 12)
+        self.text2Left=e.Cstr(self, 16)
         self.text2Left:SetPoint('LEFT', self.textLeft, 'RIGHT', 5, 0)
     end
     if not self.textRight then--右上角字符
-        self.textRight=e.Cstr(self, 12)
+        self.textRight=e.Cstr(self, 16)
         self.textRight:SetPoint('BOTTOMRIGHT', self, 'TOPRIGHT')
         --self.textRight:SetPoint('TOPRIGHT', self, 'BOTTOMRIGHT')--下
     end
@@ -54,6 +54,14 @@ local function setInitItem(self, hide)--创建物品
         end
     end
 end
+setInitItem(ItemRefTooltip)
+setInitItem(e.tips)
+e.tips:HookScript("OnHide", function(self)
+    setInitItem(self, true)
+end)
+ItemRefTooltip:HookScript("OnHide", function (self)
+    setInitItem(self, true)
+end)
 
 local function setItemCooldown(self, itemID)--物品冷却
     local startTime, duration, enable = GetItemCooldown(itemID)
@@ -65,10 +73,10 @@ local function setItemCooldown(self, itemID)--物品冷却
         self:AddDoubleLine(ON_COOLDOWN, SecondsToTime(t), 1,0,0, 1,0,0)
     end
 end
---[[
+
 local function setSpellCooldown(self, spellID)--法术冷却
     local startTime, duration, enable = GetSpellCooldown(spellID)
-    if duration>0 and enable==1 then
+    if duration and duration>4 and enable==1 and gcdMS~=duration then
         local t=GetTime()
         if startTime>t then t=t+86400 end
         t=t-startTime
@@ -76,8 +84,6 @@ local function setSpellCooldown(self, spellID)--法术冷却
         self:AddDoubleLine(ON_COOLDOWN, SecondsToTime(t), 1,0,0, 1,0,0)
     end
 end
-
-]]
 
 local function GetSetsCollectedNum(setID)--套装收集数
     local info=C_TransmogSets.GetSetPrimaryAppearances(setID) or {}
@@ -228,23 +234,25 @@ hooksecurefunc(e.tips,"SetCompanionPet", function(self, petGUID)--设置宠物�
     setPet(self, speciesID)--宠物
 end)
 
-local function setItem(self, link)--物品
-    if not Save.showTips then
+--############
+--设置,物品信息
+--############
+local function setItem(self, ItemLink)
+    if not Save.showTips  or not ItemLink then
         return
     end
---    if not C_Item.IsItemDataCachedByID(link) then C_Item.RequestLoadItemDataByID(link) end
-    local itemName, _, itemQuality, itemLevel, _, _, _, _, _, _, _, _, _, bindType, expacID, setID = GetItemInfo(link)
-    local itemID, itemType, itemSubType, itemEquipLoc, itemTexture, classID, subclassID = GetItemInfoInstant(link)
-    if not itemID then
-        return
-    end
+    
+    local itemName, _, itemQuality, itemLevel, _, _, _, _, _, _, _, _, _, bindType, expacID, setID = GetItemInfo(ItemLink)
+    local itemID, itemType, itemSubType, itemEquipLoc, itemTexture, classID, subclassID = GetItemInfoInstant(ItemLink)
+
     local r, g, b, hex= 1,1,1,e.Player.col
     if itemQuality then
         r, g, b, hex= GetItemQualityColor(itemQuality)
         hex=hex and '|c'..hex
     end
-
-    --[[self:AddDoubleLine(expacID and _G['EXPANSION_NAME'..expacID], expacID and GAME_VERSION_LABEL..': '..expacID+1)--版本
+    if expacID then--版本
+        self:AddDoubleLine(_G['EXPANSION_NAME'..expacID], GAME_VERSION_LABEL..': '..expacID+1)
+    end
     self:AddDoubleLine(itemID and ITEMS..'ID: '.. itemID or ' ' , itemTexture and EMBLEM_SYMBOL..'ID: '..itemTexture)--ID, texture
     if classID and subclassID then
         self:AddDoubleLine((itemType and itemType..' classID'  or 'classID') ..': '..classID, (itemSubType and itemSubType..' subID' or 'subclassID')..': '..subclassID)
@@ -252,7 +260,7 @@ local function setItem(self, link)--物品
     self.Portrait:SetTexture(itemTexture)
     self.Portrait:SetShown(true)
 
-    local specTable = GetItemSpecInfo(link) or {}--专精图标
+    local specTable = GetItemSpecInfo(ItemLink) or {}--专精图标
     local specTableNum=#specTable
     if specTableNum>0 then
         --local num=math.modf(specTableNum/2)
@@ -268,14 +276,14 @@ local function setItem(self, link)--物品
         self:AddDoubleLine(specA, ' ')
     end
 
-    local spellName, spellID = GetItemSpell(link)--物品法术
+    local spellName, spellID = GetItemSpell(ItemLink)--物品法术
     if spellName and spellID then
         local spellTexture=GetSpellTexture(spellID)
         self:AddDoubleLine((itemName~=spellName and spellName..'('..SPELLS..')' or SPELLS)..'ID: '..spellID, spellTexture and spellTexture~=itemTexture  and '|T'..spellTexture..':0|t'..spellTexture or ' ')
     end
-]]
+
     if classID==2 or classID==4 then
-        itemLevel= GetDetailedItemLevelInfo(link) or itemLevel--装等
+        itemLevel= GetDetailedItemLevelInfo(ItemLink) or itemLevel--装等
         if itemLevel and itemLevel>1 then
             local slot=itemEquipLoc and e.itemSlotTable[itemEquipLoc]--比较装等
             if slot then
@@ -298,7 +306,7 @@ local function setItem(self, link)--物品
             self.textLeft:SetText(itemLevel and hex..itemLevel..'|r' or '')
         end
 
-        local appearanceID, sourceID =C_TransmogCollection.GetItemInfo(link)--幻化
+        local appearanceID, sourceID =C_TransmogCollection.GetItemInfo(ItemLink)--幻化
         local visualID
         if sourceID then
             local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
@@ -334,14 +342,11 @@ local function setItem(self, link)--物品
         end
     end
 
-    --[[
-    local bag= GetItemCount(link)--物品数量
-    local bank= GetItemCount(link,true) - bag
+
+    local bag= GetItemCount(ItemLink)--物品数量
+    local bank= GetItemCount(ItemLink,true) - bag
     self.textRight:SetText((bag>0 or bank>0) and hex..bank..e.Icon.bank2..' '..bag..e.Icon.bag2..'|r' or '')
 
-]]
-
-    self.textRight:SetText(itemID)
 
     if C_Item.IsItemKeystoneByID(itemID) then--挑战, 没测试
         if Save.showWoWInfo then
@@ -363,7 +368,7 @@ local function setItem(self, link)--物品
                             self:AddDoubleLine(race..linkc,' ')
                         end
                     end
-                    if linka or link then
+                    if linka or ItemLink then
                         self:AddDoubleLine(linka and race..linka or ' ', linkb and linkb..race)
                     end
                     numPlayer=numPlayer+1
@@ -387,12 +392,11 @@ local function setItem(self, link)--物品
                 end
             end
         end
-        --[[
+        
         if numPlayer>1 then
             self:AddDoubleLine(e.Icon.wow2..e.Icon.bag2..e.MK(bagAll,3)..' '..e.Icon.bank2..e.MK(bankAll, 3), e.MK(bagAll+bankAll, 3)..' '..e.Icon.wow2..' '..numPlayer)
         end
 
-]]
 
     end
 
@@ -409,8 +413,8 @@ local function setSpell(self, spellID)--法术
     end
     self.textRight:SetText(spellID)
     
-    --[[
---local spellID = select(2, self:GetSpell())
+    
+    local spellID = select(2, self:GetSpell())
     local spellTexture=spellID and  GetSpellTexture(spellID)
     if not spellTexture then
         return
@@ -425,8 +429,6 @@ local function setSpell(self, spellID)--法术
     end
 
     setSpellCooldown(self, spellID)--法术冷却
-
-]]
 
 end
 
@@ -494,71 +496,6 @@ local function setQuest(self, questID)
     self:AddDoubleLine(QUESTS_LABEL..'ID:', questID)
 end
 
-
---####################
---物品, 法术, 货币, 成就
---####################
-
-hooksecurefunc(e.tips, "SetCurrencyToken", function(self, index)--角色货币栏
-    local currencyLink = C_CurrencyInfo.GetCurrencyListLink(index)
-    local currencyID = currencyLink and C_CurrencyInfo.GetCurrencyIDFromLink(currencyLink)
-    if currencyID then
-        setCurrency(self, currencyID)
-    end
-end)
-hooksecurefunc(e.tips, 'SetBackpackToken', function(self, index)--包里货币
-    local info = C_CurrencyInfo.GetBackpackCurrencyInfo(index)
-    if info and info.currencyTypesID then
-        setCurrency(self, info.currencyTypesID)
-        self:Show()
-    end
-end)
-
---e.tips:SetScript('OnTooltipSetItem', setItem)--物品
-
-hooksecurefunc(e.tips, 'SetToyByItemID', function(self)--玩具
-    local link=select(2, self:GetItem())
-    if link then
-        setItem(self, link)
-        --self:Show()
-    end
-end)
-
---e.tips:HookScript('OnTooltipSetSpell', setSpell)--法术
-hooksecurefunc('GameTooltip_AddQuestRewardsToTooltip', setQuest)--世界任务ID GameTooltip_AddQuest
-
-hooksecurefunc(ItemRefTooltip, 'SetHyperlink', function(self, link)--ItemRef.lua ItemRefTooltipMixin:ItemRefSetHyperlink(link)
-    --setInitItem(self, true)
-    local linkName, linkID = link:match('(.-):(%d+):')
-    linkID = (linkName and linkID) and tonumber(linkID)
-    if not linkID then
-        return
-    end
-    if linkName=='item' then--物品OnTooltipSetItem
-        setItem(self, link)
-        self:Show()
-    elseif linkName=='spell' then--法术OnTooltipSetSpell
-        setSpell(self, linkID)
-    elseif linkName=='currency' then--货币
-        setCurrency(self, linkID)
-        self:Show()
-    elseif linkName=='achievement' then--成就
-        setAchievement(self, linkID)
-        self:Show()
-    elseif linkName=='quest'then
-        setQuest(self, linkID)
-        self:Show()
-    end
-end)
-
-
---####
---widgetSet
---####
-
-hooksecurefunc('GameTooltip_AddWidgetSet', function(self, widgetSetID, verticalPadding)--没测试
-    e.tips:AddDoubleLine('widgetID:', widgetSetID)
-end)
 
 
 --###########
@@ -767,40 +704,40 @@ end)
 --#########
 --生命条提示
 --#########
-local function set_Unit_Health_Bar(self, value)
-    if not Save.showUnit then
-        return
-    end
---[[
-    local text, textLeft, textRight = '', '', ''
-    if value then
-        local min, max = self:GetMinMaxValues();
-        if value >= min and value <= max then
-            if value <= 0 then
-                text = '|A:poi-soulspiritghost:0:0|a'..'|cnRED_FONT_COLOR:'.. DEAD..'|r'
-                textLeft = '0'
-            else
-                local hp = value / max * 100;
-                text = ('%i%%'):format(hp)..'  ';
-                if hp<30 then
-                    text = '|A:GarrisonTroops-Health-Consume:0:0|a'..'|cnRED_FONT_COLOR:' .. text..'|r'
-                elseif hp<60 then
-                    text='|cnGREEN_FONT_COLOR:'..text..'|r'
-                elseif hp<90 then
-                    text='|cnYELLOW_FONT_COLOR:'..text..'|r'
-                end
-                textLeft = e.MK(value,3)
+local function set_Unit_Health_Bar(self, unit)
+    local value= unit and UnitHealth(unit)
+    local max= unit and UnitHealthMax(unit)
+    local r, g, b, left, right
+    if value and max then
+
+        if value <= 0 then
+            text = '|A:poi-soulspiritghost:0:0|a'..'|cnRED_FONT_COLOR:'.. DEAD..'|r'
+        else
+            local hp = value / max * 100;
+            text = ('%i%%'):format(hp)..'  ';
+            if hp<30 then
+                text = '|A:GarrisonTroops-Health-Consume:0:0|a'..'|cnRED_FONT_COLOR:' .. text..'|r'
+            elseif hp<60 then
+                text='|cnGREEN_FONT_COLOR:'..text..'|r'
+            elseif hp<90 then
+                text='|cnYELLOW_FONT_COLOR:'..text..'|r'
             end
-            textRight = e.MK(max,3)
+            left =e.MK(value, 3)
         end
+        right = e.MK(max, 2)
+        r, g, b = GetClassColor(select(2, UnitClass(unit)))
+        self:SetStatusBarColor(r, g, b)
     end
-    if not self.text then
+    if not self.text and text then
         self.text= e.Cstr(self)
         self.text:SetPoint('CENTER', self, 'CENTER')--生命条
         self.text:SetJustifyH("CENTER");
     end
-    self.text:SetText(text);
-    if not self.textLeft then
+    if self.text then
+        self.text:SetText(text or '');
+        
+    end
+    if not self.textLeft and right then
         self.textLeft = e.Cstr(self)
         self.textLeft:SetPoint('TOPLEFT', self, 'BOTTOMLEFT')--生命条
         self.textLeft:SetJustifyH("LEFT");
@@ -808,25 +745,21 @@ local function set_Unit_Health_Bar(self, value)
         self.textRight:SetPoint('TOPRIGHT', self, 'BOTTOMRIGHT')--生命条
         self.textRight:SetJustifyH("Right");
     end
-]]
-    local unit = "mouseover";
-    local focus = GetMouseFocus();
-    if (focus and focus.unit) then
-        unit = focus.unit;
+    if self.textLeft then 
+        self.textLeft:SetText(left or '')
+        self.textRight:SetText(right or '')
+        if r and g and b then
+            self.textLeft:SetTextColor(r,g,b)
+            self.textRight:SetTextColor(r,g,b)
+        end
     end
-
-    local r, g, b = GetClassColor(select(2, UnitClass(unit)));
- --[[
-   self.textLeft:SetText(textLeft)
-    self.textRight:SetText(textRight)
-    self.textLeft:SetTextColor(r,g,b)
-    self.textRight:SetTextColor(r,g,b)
-
-]]
-
-    self:SetStatusBarColor(r, g, b)
 end
-GameTooltipStatusBar:SetScript("OnValueChanged", set_Unit_Health_Bar);
+GameTooltipStatusBar:SetScript("OnValueChanged", function(self)
+    local unit= select(2, TooltipUtil.GetDisplayedUnit(GameTooltip))
+    if unit then
+        set_Unit_Health_Bar(self, unit)
+    end
+end);
 
 --#######
 --设置单位
@@ -878,13 +811,8 @@ local function getPlayerInfo(unit, guid)--取得玩家信息
     setPlayerInfo(unit, guid)
 end
 
-local function setUnitInfo(unit)--设置单位提示信息
-    --local name, unit = self:GetUnit()
-    local self=e.tips
-    local name=GetUnitName(unit)
-    if not Save.showUnit or not unit then
-        return
-    end
+local function setUnitInfo(self, unit)--设置单位提示信息
+    local name=UnitName(unit)
     local isPlayer = UnitIsPlayer(unit)
     local guid = UnitGUID(unit)
 
@@ -892,8 +820,8 @@ local function setUnitInfo(unit)--设置单位提示信息
     local englishFaction = isPlayer and UnitFactionGroup(unit)
     if isPlayer then
         if (englishFaction=='Alliance' or englishFaction=='Horde') then--派系
-            e.tips.Portrait:SetAtlas(englishFaction=='Alliance' and e.Icon.alliance or e.Icon.horde)
-            e.tips.Portrait:SetShown(true)
+            self.Portrait:SetAtlas(englishFaction=='Alliance' and e.Icon.alliance or e.Icon.horde)
+            self.Portrait:SetShown(true)
         end
         
         if CheckInteractDistance(unit, 1) then--取得装等
@@ -924,17 +852,17 @@ local function setUnitInfo(unit)--设置单位提示信息
         local text=line:GetText()
         if text then
             text=text:gsub('(%-.+)','')
-            text=text:gsub(name, e.Icon.toRight2..(col and col..name..'|r' or name)..e.Icon.toLeft2)
-            line:SetText(text)
+            text=text:gsub(name, e.Icon.toRight2..name..e.Icon.toLeft2)
+            line:SetText(col..text..'|r')
         end
         line=isInGuild and GameTooltipTextLeft2
         if line then
             local text=line:GetText()
             if text then
-                line:SetText(e.Icon.guild2..text)
+                line:SetText(e.Icon.guild2..col..text:gsub('(%-.+)','')..'|r')
             end
         end
---[[
+
 
         line=isInGuild and GameTooltipTextLeft3 or GameTooltipTextLeft2
         if line then
@@ -946,18 +874,15 @@ local function setUnitInfo(unit)--设置单位提示信息
             level= MAX_PLAYER_LEVEL>level and '|cnGREEN_FONT_COLOR:'..level..'|r' or level
             className= col and col..className..'|r' or className
             text= text..LEVEL..' '..level..'  '..e.Race(nil, raceFile, sex)..raceName..' '..e.Class(nil, classFilename)..className..(UnitIsPVP(unit) and  '  (|cnRED_FONT_COLOR:PvP|r)' or '  (|cnGREEN_FONT_COLOR:PvE|r)')
-            --text= col and col..text..'|r' or text
+            text= col and col..text..'|r' or text
             line:SetText(text)
         end
-
-
-
 
         
         local isSelf=UnitIsUnit('player', unit)--我
         local isGroupPlayer= (not isSelf and e.GroupGuid[guid]) and true or nil--队友
 
-local num= isInGuild and 4 or 3
+        local num= isInGuild and 4 or 3
         for i=num, e.tips:NumLines() do
             local line=_G["GameTooltipTextLeft"..i]
             if line then
@@ -979,22 +904,18 @@ local num= isInGuild and 4 or 3
                                 line=_G["GameTooltipTextRight"..i]
                                 line:SetText(mapInfo.name..e.Icon.map2)
                                 line:SetShown(true)
-                            else
+                           -- else
                                -- line:Hide()
                             end
                         end
                     else
-                       -- line:Hide()
+                        line:Hide()
                     end
-                else
+               -- else
                  --  line:Hide()
                 end
             end
         end
-
-]]
-
-
 
     elseif (UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit)) then--宠物TargetFrame.lua
         setPet(self, UnitBattlePetSpeciesID(unit))
@@ -1002,18 +923,18 @@ local num= isInGuild and 4 or 3
     else
         local r,g,b, hex = GetClassColor(UnitClassBase(unit))--颜色
         hex= hex and '|c'..hex or ''
-        --GameTooltipTextLeft1:SetTextColor(r,g,b)
-
-        
+        GameTooltipTextLeft1:SetTextColor(r,g,b)
+        GameTooltipTextLeft2:SetTextColor(r,g,b)
+        GameTooltipTextLeft3:SetTextColor(r,g,b)
         --if not UnitAffectingCombat('player') or not e.Layer then--位面,NPCID
             local zone, npc = select(5, strsplit("-",guid))--位面,NPCID
             if zone then
-               -- self:AddDoubleLine(e.L['LAYER']..' '..zone, 'NPC '..npc)--, server and FRIENDS_LIST_REALM..server)
-                self.textLeft:SetText(hex..npc..'|r')
+                self:AddDoubleLine(e.L['LAYER']..' '..zone, 'NPC '..npc, r,g,b, r,g,b)--, server and FRIENDS_LIST_REALM..server)
+                --self.textLeft:SetText(hex..npc..'|r')
                 e.Layer=zone
             end
         --end
---[[
+
         --怪物, 图标
         if UnitIsQuestBoss(unit) then--任务
             e.tips.Portrait:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Quest')
@@ -1036,14 +957,14 @@ local num= isInGuild and 4 or 3
                 e.tips.Portrait:SetShown(true)
             end
         end
-]]
+
         local type=UnitCreatureType(unit)--生物类型
         if type and not type:find(COMBAT_ALLY_START_MISSION) then
             self.textRight:SetText(hex..type..'|r') 
         end
     end
 
-    set_Unit_Health_Bar(GameTooltipStatusBar, UnitHealth(unit))--生命条提示
+    set_Unit_Health_Bar(GameTooltipStatusBar,unit)--生命条提示
 
     if e.tips.playerModel.guid~=guid then--3D模型
         e.tips.playerModel:SetUnit(unit)
@@ -1051,9 +972,6 @@ local num= isInGuild and 4 or 3
     end
     e.tips.playerModel:SetShown(true)
 end
-
-hooksecurefunc('GameTooltip_UnitColor', setUnitInfo)
-
 
 local function setUnitInit(self)--设置默认提示位置
     if Save.showUnit then
@@ -1069,24 +987,15 @@ local function setUnitInit(self)--设置默认提示位置
         panel:UnregisterEvent('INSPECT_READY')
     end
 end
---****
---位置
---****
-hooksecurefunc("GameTooltip_SetDefaultAnchor", function(self, parent)
-    if Save.setDefaultAnchor then
-        self:ClearAllPoints();
-        self:SetOwner(parent, 'ANCHOR_CURSOR_LEFT')
-    elseif Save.setAnchor and Save.AnchorPoint then
-        self:ClearAllPoints();
-        self:SetPoint(Save.AnchorPoint[1], UIParent, Save.AnchorPoint[3], Save.AnchorPoint[4], Save.AnchorPoint[5])
-    end
-end)
+
+
 
 
 --****
 --隐藏
 --****
-setInitItem(e.tips)
+
+--[[
 e.tips:HookScript("OnShow", function(self)
     if Save.inCombatHideTips and UnitAffectingCombat('player') then 
         self:Hide()
@@ -1101,15 +1010,17 @@ e.tips:HookScript("OnShow", function(self)
     end
 end)
 
+]]
+
+
+
+--[[
 ItemRefTooltip:HookScript("OnShow", function(self)
     setInitItem(self)
 end)
-e.tips:HookScript("OnHide", function(self)
-    setInitItem(self, true)
-end)
-ItemRefTooltip:HookScript("OnHide", function (self)
-    setInitItem(self, true)
-end)
+]]
+
+
 
 
 --#######
@@ -1691,7 +1602,7 @@ local function setEncounterJournal()--冒险指南界面
             end
             return
         end
-        --setInitItem(e.tips)--创建物品
+
         for _, button in pairs(self.instanceSelect.ScrollBox:GetFrames()) do--ScrollBox.lua
             if button and button.tooltipTitle and button.instanceID then--button.bgImage:GetTexture() button.name:GetText()
                 local text=EncounterJournal_ListInstances_set_Instance(button)
@@ -2195,8 +2106,102 @@ local function setCVar(reset, tips)
         end
     end
 end
+--###
+--初始
+--###
+local function Init()
+    --####################
+    --物品, 法术, 货币, 成就
+    --####################
+
+    hooksecurefunc(e.tips, "SetCurrencyToken", function(self, index)--角色货币栏
+        local currencyLink = C_CurrencyInfo.GetCurrencyListLink(index)
+        local currencyID = currencyLink and C_CurrencyInfo.GetCurrencyIDFromLink(currencyLink)
+        if currencyID then
+            setCurrency(self, currencyID)
+        end
+    end)
+    hooksecurefunc(e.tips, 'SetBackpackToken', function(self, index)--包里货币
+        local info = C_CurrencyInfo.GetBackpackCurrencyInfo(index)
+        if info and info.currencyTypesID then
+            setCurrency(self, info.currencyTypesID)
+            self:Show()
+        end
+    end)
+
+    --e.tips:SetScript('OnTooltipSetItem', setItem)--物品
+
+    --hooksecurefunc(e.tips, 'SetToyByItemID', setItem)--玩具
+    
+
+    --e.tips:HookScript('OnTooltipSetSpell', setSpell)--法术
+    hooksecurefunc('GameTooltip_AddQuestRewardsToTooltip', setQuest)--世界任务ID GameTooltip_AddQuest
+    hooksecurefunc(ItemRefTooltip, 'SetHyperlink', function(self, link)--ItemRef.lua ItemRefTooltipMixin:ItemRefSetHyperlink(link)
+        local linkName, linkID = link:match('(.-):(%d+):')
+        linkID = (linkName and linkID) and tonumber(linkID)
+        if not linkID then
+            return
+        end
+        if linkName=='item' then--物品OnTooltipSetItem
+            setItem(self, link)
+            self:Show()
+        elseif linkName=='spell' then--法术OnTooltipSetSpell
+            setSpell(self, linkID)
+        elseif linkName=='currency' then--货币
+            setCurrency(self, linkID)
+            self:Show()
+        elseif linkName=='achievement' then--成就
+            setAchievement(self, linkID)
+            self:Show()
+        elseif linkName=='quest'then
+            setQuest(self, linkID)
+            self:Show()
+        end
+    end)
+    --TooltipUtil.lua
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(tooltip,date)
+        local itemLink=select(2, TooltipUtil.GetDisplayedItem(tooltip))
+        if tooltip == GameTooltip and itemLink then
+            if itemLink then
+                setItem(tooltip, itemLink)
+            end
+        end
+    end)
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Spell, function(tooltip,date)
+        local spellID= select(2, TooltipUtil.GetDisplayedSpell(tooltip))
+        if tooltip == GameTooltip and spellID then
+            setSpell(tooltip, linkID)
+        end
+    end)
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(tooltip,date)
+        local unit= select(2, TooltipUtil.GetDisplayedUnit(tooltip))
+        if tooltip == GameTooltip and unit then
+            setUnitInfo(tooltip, unit)
+        end
+    end)
+    --[[
+    --####
+    --widgetSet
+    --####
+    hooksecurefunc('GameTooltip_AddWidgetSet', function(self, widgetSetID, verticalPadding)--没测试
+        e.tips:AddDoubleLine('widgetID:', widgetSetID)
+    end)
+]]
 
 
+    --****
+    --位置
+    --****
+    hooksecurefunc("GameTooltip_SetDefaultAnchor", function(self, parent)
+        if Save.setDefaultAnchor then
+            self:ClearAllPoints();
+            self:SetOwner(parent, 'ANCHOR_CURSOR_LEFT')
+        elseif Save.setAnchor and Save.AnchorPoint then
+            self:ClearAllPoints();
+            self:SetPoint(Save.AnchorPoint[1], UIParent, Save.AnchorPoint[3], Save.AnchorPoint[4], Save.AnchorPoint[5])
+        end
+    end)
+end
 
 --加载保存数据
 panel:RegisterEvent("ADDON_LOADED")
@@ -2231,6 +2236,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 worldboss={},--{week=周数, boss=table}
                 rare={day=date('%x'), boss={}},
             }
+            
+            Init()--初始
 
             setUnitInit(self)--设置默认提示位置
 
@@ -2319,7 +2326,6 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     elseif event=='INSPECT_READY' then--取得装等
         local unit=UnitGUID("mouseover")==arg1 and 'mouseover' or (e.GroupGuid[arg1] and e.GroupGuid[arg1].unit)
         if unit then
-            --setInitItem(e.tips)
             getPlayerInfo(unit, arg1)
         end
     elseif event=='ZONE_CHANGED_NEW_AREA' then

@@ -220,7 +220,7 @@ e.Icon={
 
     unlocked='tradeskills-icon-locked',--'Levelup-Icon-Lock',--没锁
     quest='AutoQuest-Badge-Campaign',--任务
-    guild2='|A:communities-guildbanner-background:0:0|a',
+    guild2='|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a',--guild2='|A:communities-guildbanner-background:0:0|a',
     --mask="Interface\\ChatFrame\\UI-ChatIcon-HotS",--菱形
     --mask='Interface\\CHARACTERFRAME\\TempPortraitAlphaMask',--圆形 :SetMask()
     --mask='CircleMaskScalable',
