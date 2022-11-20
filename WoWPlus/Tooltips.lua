@@ -2046,7 +2046,12 @@ local function set_Tooltips_Init()--初始
             setCurrency(tooltip, date.id)--货币
         end
     end)
-
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Auras,  function(tooltip,date)
+        print(date, date.id)
+        if date and date.id then
+            
+        end
+    end)
     --****
     --位置
     --****
@@ -2152,7 +2157,6 @@ local function set_Tooltips_Init()--初始
     --##########
     --设置 panel
     --##########
-    
     panel.name = addName;--添加新控制面板
     panel.parent =id;
     InterfaceOptions_AddCategory(panel)
