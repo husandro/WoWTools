@@ -783,7 +783,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             if line then
                 if i==num then
                     if isSelf and (e.Layer or isWarModeDesired) then--位面ID, 战争模式
-                        line:SetText(e.Layer and col..e.L['LAYER']..' '..e.Layer..'|r' or ' ')
+                        line:SetText(e.Layer and '|A:nameplates-holypower2-on:0:0|a'..col..e.L['LAYER']..' '..e.Layer..'|r' or ' ')
                         if isWarModeDesired then
                             line=_G["GameTooltipTextRight"..i]
                             if line then
