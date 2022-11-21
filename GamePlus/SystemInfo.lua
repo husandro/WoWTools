@@ -1,6 +1,6 @@
 local id, e = ...
 local addName=SYSTEM_MESSAGES--MAINMENU_BUTTON
-local Save={equipmetLevel=true}
+local Save={equipmetLevel=true, durabiliy=true}
 
 local panel=CreateFrame('Button', nil, UIParent)
 

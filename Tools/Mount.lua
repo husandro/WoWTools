@@ -46,9 +46,11 @@ local Save={
     },
     XD=true
 }
-
-if UnitName('player')=='活就好' then
-    Save.KEY='BUTTON5'
+--###############
+--为我自定义, 战网,
+--###############
+if select(2, BNGetInfo()) == '古月剑龙#5972' then
+    Save.KEY='BUTTON5'--按键
 end
 
 local XD
