@@ -145,21 +145,12 @@ end
 --注册事件
 --#######
 local function setRegisterEvent()--注册事件
-    local isInGroup=IsInGroup()
-    if isInGroup then
-        if not panel.set then
-            panel:RegisterEvent('CHAT_MSG_SYSTEM')
-            panel:RegisterEvent('PLAYER_REGEN_DISABLED')
-            panel.set=true
-            setRest()--重置
-        end
+    if IsInGroup() then
+        panel:RegisterEvent('CHAT_MSG_SYSTEM')
+        panel:RegisterEvent('PLAYER_REGEN_DISABLED')
     else
-        if panel.set then
-            panel:UnregisterEvent('CHAT_MSG_SYSTEM')
-            panel:UnregisterEvent('PLAYER_REGEN_DISABLED')
-            panel.set=nil
-            setRest()--重置
-        end
+        panel:UnregisterEvent('CHAT_MSG_SYSTEM')
+        panel:UnregisterEvent('PLAYER_REGEN_DISABLED')
     end
 end
 
@@ -188,6 +179,9 @@ end
 --###########
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
+panel:RegisterEvent('GROUP_LEFT')
+panel:RegisterEvent('GROUP_ROSTER_UPDATE')
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
         if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
