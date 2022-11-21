@@ -230,14 +230,14 @@ end
 local function setItem(self, ItemLink)    
     local itemName, _, itemQuality, itemLevel, _, _, _, _, _, _, _, _, _, bindType, expacID, setID = GetItemInfo(ItemLink)
     local itemID, itemType, itemSubType, itemEquipLoc, itemTexture, classID, subclassID = GetItemInfoInstant(ItemLink)
-
+    itemID = itemID or ItemLink:match(':(%d+):')
     local r, g, b, hex= 1,1,1,e.Player.col
     if itemQuality then
         r, g, b, hex= GetItemQualityColor(itemQuality)
         hex=hex and '|c'..hex
     end
     if expacID then--版本
-        self:AddDoubleLine(_G['EXPANSION_NAME'..expacID], GAME_VERSION_LABEL..': '..expacID+1)
+        self:AddDoubleLine(_G['EXPANSION_NAME'..expacID], GAME_VERSION_LABEL..': '..expacID+1, 1,1,1, 1,1,1)
     end
     self:AddDoubleLine(itemID and ITEMS..'ID: '.. itemID or ' ' , itemTexture and EMBLEM_SYMBOL..'ID: '..itemTexture)--ID, texture
     if classID and subclassID then
@@ -332,15 +332,15 @@ local function setItem(self, ItemLink)
     local bank= GetItemCount(ItemLink,true) - bag
     self.textRight:SetText((bag>0 or bank>0) and hex..bank..e.Icon.bank2..' '..bag..e.Icon.bag2..'|r' or '')
 
-    if C_Item.IsItemKeystoneByID(itemID) then--挑战, 没测试
-        local numPlayer=0 --帐号数据 --{score=总分数,itemLink={超连接}, weekLevel=本周最高, weekNum=本周次数, all=总次数},
+    if C_Item.IsItemKeystoneByID(itemID) then--挑战
+        local numPlayer=1 --帐号数据 --{score=总分数,itemLink={超连接}, weekLevel=本周最高, weekNum=本周次数, all=总次数},
         for name_server, info in pairs(wowSave) do
             local tab=info.keystones
             if #tab.itemLink > 0 then
                 name_server=name_server:gsub('-'..e.Player.server, '')
                 local r2,g2,b2=GetClassColor(info.class)
                 local race=e.Race(nil, info.race, info.sex)
-                self:AddDoubleLine(race..e.Class(nil,info.class)..name_server..(tab.score and ' '..tab.score or ''), (info.weekLevel and '(|cnGREEN_FONT_COLOR:'..info.weekLevel..'|r) ' or '')..(tab.weekNum or 0)..'/'..(tab.all or 0))
+                self:AddDoubleLine(numPlayer..')'..race..e.Class(nil,info.class)..name_server..(tab.score and e.GetKeystoneScorsoColor(tab.score,true) or ''), (info.weekLevel and '(|cnGREEN_FONT_COLOR:'..info.weekLevel..'|r) ' or '')..(tab.weekNum or 0)..'/'..(tab.all or 0)..' '..VOICEMACRO_LABEL_CHARGE1, r2,g2,b2, r2,g2,b2)
                 local linka,linkb
                 for _, linkc in pairs(tab.itemLink) do
                     if not linka then
@@ -348,11 +348,11 @@ local function setItem(self, ItemLink)
                     elseif not linkb then
                         linkb=linkc
                     else
-                        self:AddDoubleLine(race..linkc,' ')
+                        self:AddDoubleLine(race..linkc,' ',r2,g2,b2)
                     end
                 end
                 if linka or ItemLink then
-                    self:AddDoubleLine(linka and race..linka or ' ', linkb and linkb..race)
+                    self:AddDoubleLine(linka and race..linka or ' ', linkb and linkb..race, r2,g2,b2, r2,g2,b2)
                 end
                 numPlayer=numPlayer+1
             end
@@ -365,9 +365,9 @@ local function setItem(self, ItemLink)
                 local tab=info.items[itemID]
                 if tab then
                     
-                        name_server=name_server:gsub('-'..e.Player.server, '')
-                        local r2,g2,b2=GetClassColor(info.class)
-                        self:AddDoubleLine(e.Race(nil, info.race, info.sex)..e.Icon.bag2..tab.bag..' '..e.Icon.bank2..tab.bank, name_server..e.Class(nil,info.class), r2,g2,b2, r2,g2,b2)
+                    name_server=name_server:gsub('-'..e.Player.server, '')
+                    local r2,g2,b2=GetClassColor(info.class)
+                    self:AddDoubleLine(e.Race(nil, info.race, info.sex)..e.Icon.bag2..tab.bag..' '..e.Icon.bank2..tab.bank, name_server..e.Class(nil,info.class), r2,g2,b2, r2,g2,b2)
                     
                     bagAll=bagAll+tab.bag
                     bankAll=bankAll+tab.bank
@@ -1294,6 +1294,41 @@ local function setInstanceBossText()--显示副本击杀数据
     end
 end
 
+local function set_EncounterJournal_Keystones_Tips(self)--险指南界面, 挑战
+    e.tips:SetOwner(self, "ANCHOR_LEFT");
+    e.tips:ClearLines();
+    local find
+    for name_server, info in pairs(wowSave) do
+        local tab=info.keystones
+        numPlayer=1
+        if #tab.itemLink > 0 then
+            name_server=name_server:gsub('-'..e.Player.server, '')
+            local r2,g2,b2=GetClassColor(info.class)
+            local race=e.Race(nil, info.race, info.sex)
+            e.tips:AddDoubleLine(numPlayer..')'..race..e.Class(nil,info.class)..name_server..(tab.score and e.GetKeystoneScorsoColor(tab.score,true) or ''), (info.weekLevel and '(|cnGREEN_FONT_COLOR:'..info.weekLevel..'|r) ' or '')..(tab.weekNum or 0)..'/'..(tab.all or 0)..' '..VOICEMACRO_LABEL_CHARGE1, r2,g2,b2, r2,g2,b2)
+            local linka,linkb
+            for _, linkc in pairs(tab.itemLink) do
+                if not linka then
+                    linka=linkc
+                elseif not linkb then
+                    linkb=linkc
+                else
+                    e.tips:AddDoubleLine(race..linkc,' ',r2,g2,b2)
+                end
+            end
+            if linka or ItemLink then
+                e.tips:AddDoubleLine(linka and race..linka or ' ', linkb and linkb..race, r2,g2,b2, r2,g2,b2)
+            end
+            numPlayer=numPlayer+1
+            find=true
+        end
+    end
+    if not find then
+        e.tips.AddDoubleLine(CHALLENGES, NONE)
+    end
+    e.tips:Show()
+end
+
 local function set_EncounterJournal_Init()--冒险指南界面
     local self=EncounterJournal
     self.btn= e.Cbtn(self.TitleContainer, nil, not Save.hideEncounterJournal)--按钮, 总开关
@@ -1316,6 +1351,7 @@ local function set_EncounterJournal_Init()--冒险指南界面
             end
             self.instance:SetShown(not Save.hideEncounterJournal)
             self.worldboss:SetShown(not Save.hideEncounterJournal)
+            self.keystones:SetShown(not Save.hideEncounterJournal)
             self.btn:SetNormalAtlas(Save.hideEncounterJournal and e.Icon.disabled or e.Icon.icon )
         elseif d=='RightButton' then
             if Save.hideEncounterJournal_All_Info_Text then
@@ -1383,12 +1419,20 @@ local function set_EncounterJournal_Init()--冒险指南界面
     end)
     self.worldboss:SetScript("OnLeave",function() e.tips:Hide() end)
 
+
+    self.keystones =e.Cbtn(self.TitleContainer, nil ,true)--所有角色已击杀世界BOSS
+    self.keystones:SetPoint('RIGHT', self.worldboss, 'LEFT')
+    self.keystones:SetNormalTexture(4352494)
+    self.keystones:SetSize(22,22)
+    self.keystones:SetScript('OnEnter',set_EncounterJournal_Keystones_Tips)--提示
+    self.keystones:SetScript("OnLeave",function() e.tips:Hide() end)
+
     self.instance:SetShown(not Save.hideEncounterJournal)
     self.worldboss:SetShown(not Save.hideEncounterJournal)
+    self.keystones:SetShown(not Save.hideEncounterJournal)
     setWorldbossText()
     setInstanceBossText()
-
-
+    
     --Blizzard_EncounterJournal.lua
     local function EncounterJournal_ListInstances_set_Instance(button,showTips)
         local text,find='',nil

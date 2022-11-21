@@ -6,6 +6,7 @@ local panel=CreateFrame("Frame")
 panel.tips=CreateFrame("GameTooltip", id..addName, panel, "GameTooltipTemplate")
 
 local itemUseString =ITEM_SPELL_CHARGES:gsub('%%d', '%(%%d%+%)')--(%d+)次
+local KeyStone=CHALLENGE_MODE_KEYSTONE_NAME:gsub('%%s','(.+) ')--钥石
 local tradeskill={
     [1]='|T136243:0|t',--工程零件
     [4]='|T4620677:0|t',--珠宝加工	
@@ -19,7 +20,7 @@ local tradeskill={
     [16]='|T4620676:0|t',--铭文
 }
 
-local function setItemInfo(self, itemLink, itemID, bag, merchantIndex)
+local function setItemInfo(self, itemLink, itemID, bag, merchantIndex, guildBank)
     local isBound, equipmentName, bagID, slot
     local topLeftText, bottomRightText, leftText, bottomLeftText, topRightText, r, g ,b
     if bag then
@@ -32,7 +33,26 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex)
         if itemQuality then
             r,g,b = GetItemQualityColor(itemQuality)
         end
-        if e.itemPetID[itemID] then
+        
+        if C_Item.IsItemKeystoneByID(itemID) then--挑战
+            topLeftText=itemLink:match('%((%d+)%)') or C_MythicPlus.GetOwnedKeystoneLevel() --等级
+            local name=itemLink:match('（(.-)）') or itemLink:match('%((.-)%)') or itemLink:match(KeyStone)--名称
+            if name then
+                bottomLeftText=e.WA_Utf8Sub(name, 2,5)
+            end
+            local activities=C_WeeklyRewards.GetActivities(1)--本周完成
+            if activities then
+                local t=0
+                for _,v in pairs(activities) do
+                    if v and v.level then
+                        if v.level >t then t=v.level end
+                    end
+                end
+                if t>0 then 
+                    leftText='|cnRED_FONT_COLOR:'..t..'|r'
+                end
+            end
+        elseif e.itemPetID[itemID] then
             topRightText='|A:WildBattlePetCapturable:0:0|a'
         elseif itemQuality and itemQuality==0 then
             topRightText='|A:Coin-Silver:0:0|a'
@@ -69,16 +89,7 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex)
                     end
                 end
 
-                --[[
-local sourceID = (not isBound or merchantIndex) and select(2,C_TransmogCollection.GetItemInfo(itemLink))
-                if sourceID and not C_TransmogCollection.PlayerHasTransmogByItemInfo(itemLink) then
-                    bottomRightText = e.Icon.okTransmog2
-                end
-
-]]
-
-
-                local sourceID = (not isBound or merchantIndex) and select(2,C_TransmogCollection.GetItemInfo(itemLink))
+                local sourceID = (not isBound or merchantIndex or guildBank) and select(2,C_TransmogCollection.GetItemInfo(itemLink))--幻化
                 if sourceID then
                     local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
                     if sourceInfo then                
@@ -89,6 +100,8 @@ local sourceID = (not isBound or merchantIndex) and select(2,C_TransmogCollectio
                             else
                                 bottomRightText = e.Icon.transmogHide2
                             end
+                        elseif guildBank then
+                            bottomRightText= e.Icon.select2
                         end
                     end
                 end
@@ -163,6 +176,8 @@ local sourceID = (not isBound or merchantIndex) and select(2,C_TransmogCollectio
                 panel.tips:ClearLines()
                 if merchantIndex then
                     panel.tips:SetMerchantItem(merchantIndex)
+                elseif guildBank then
+                    panel.tips:SetGuildBankItem(guildBank[1], guildBank[2])
                 else
                     panel.tips:SetBagItem(bagID,slot)
                 end
@@ -198,6 +213,8 @@ local sourceID = (not isBound or merchantIndex) and select(2,C_TransmogCollectio
                 panel.tips:ClearLines()
                 if merchantIndex then
                     panel.tips:SetMerchantItem(merchantIndex)
+                elseif guildBank then
+                    panel.tips:SetGuildBankItem(guildBank[1], guildBank[2])
                 else
                     panel.tips:SetBagItem(bagID,slot)
                 end
@@ -214,9 +231,10 @@ local sourceID = (not isBound or merchantIndex) and select(2,C_TransmogCollectio
             end
         end
         if bag then--仅显示背包
-            local num=GetItemCount(itemLink)--银行数量
-            leftText=GetItemCount(itemLink, true)-num
-            leftText= (leftText and leftText>0 ) and '+'..e.MK(leftText, 2) or nil
+            local num=GetItemCount(itemLink, true)-GetItemCount(itemLink)--银行数量
+            if num>0 then
+                leftText= '+'..e.MK(num, 2)
+            end
             if equipmentName then--装备管理, 名称
                 bottomLeftText=e.WA_Utf8Sub(equipmentName,3,5)
             end
@@ -289,7 +307,7 @@ local function setBags(self)--背包设置
                 isBound= info.isBound
             end
             local inSet, setList = C_Container.GetContainerItemEquipmentSetInfo(bagID,slot)
-            if inSet then
+            if inSet and setList then
                 equipmentName= setList
             end
             
@@ -297,19 +315,7 @@ local function setBags(self)--背包设置
         setItemInfo(itemButton, itemLink, itemID, {isBound=isBound, equipmentName=equipmentName, bagID=bagID, slot=slot})
     end
 end
-hooksecurefunc(ContainerFrameCombinedBags,'Update', function(self)
-    setBags(self)
-end)
-ContainerFrameCombinedBags.SetBagInfo=true
-hooksecurefunc('ContainerFrame_GenerateFrame',function (self, size, id2)
-    for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
-        if not frame.SetBagInfo then
-            setBags(frame)
-            hooksecurefunc(frame, 'UpdateItems', setBags)
-            frame.SetBagInfo=true
-       end
-    end
-end)
+
 
 local function setMerchantInfo()--商人设置
     local selectedTab= MerchantFrame.selectedTab
@@ -329,7 +335,22 @@ local function setMerchantInfo()--商人设置
     end
 end
 
-
+local MAX_GUILDBANK_SLOTS_PER_TAB = 98;
+local NUM_SLOTS_PER_GUILDBANK_GROUP = 14;
+local function setGuildBank()--公会银行,设置
+    local tab = GetCurrentGuildBankTab();--Blizzard_GuildBankUI.lua
+    for i=1, MAX_GUILDBANK_SLOTS_PER_TAB do
+        index = mod(i, NUM_SLOTS_PER_GUILDBANK_GROUP);
+        if ( index == 0 ) then
+            index = NUM_SLOTS_PER_GUILDBANK_GROUP;
+        end
+        column = ceil((i-0.5)/NUM_SLOTS_PER_GUILDBANK_GROUP);
+        button = GuildBankFrame.Columns[column].Buttons[index];
+        local itemLink= GetGuildBankItemLink(tab, i)
+        local itemID= itemLink and GetItemInfoInstant(itemLink)
+        setItemInfo(button, itemLink, itemID, nil, nil, {tab, i})
+	end
+end
 
 --####
 --初始
@@ -352,6 +373,32 @@ local function Init()
             hooksecurefunc(item, 'Update', Update)
         end
     els]]
+  --[[
+  if IsAddOnLoaded('Inventorian') then
+        C_Timer.After(3, function()
+            local frame=InventorianBagFrame
+            if frame then
+                
+            end
+        end)
+    else
+
+]]
+
+    hooksecurefunc(ContainerFrameCombinedBags,'Update', function(self)
+        setBags(self)
+    end)
+    ContainerFrameCombinedBags.SetBagInfo=true
+    hooksecurefunc('ContainerFrame_GenerateFrame',function (self, size, id2)
+        for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
+            if not frame.SetBagInfo then
+                setBags(frame)
+                hooksecurefunc(frame, 'UpdateItems', setBags)
+                frame.SetBagInfo=true
+            end
+        end
+    end)
+    
     hooksecurefunc('MerchantFrame_UpdateMerchantInfo',setMerchantInfo)--MerchantFrame.lua
     hooksecurefunc('MerchantFrame_UpdateBuybackInfo', setMerchantInfo)
 end
@@ -360,7 +407,9 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+
+panel:RegisterEvent("GUILDBANKBAGSLOTS_CHANGED");
+panel:RegisterEvent("GUILDBANK_ITEM_LOCK_CHANGED");
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
@@ -374,7 +423,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 else
                     Save.disabled=true
                 end
-                print(addName, e.GetEnabeleDisable(not Save.disabled), 	REQUIRES_RELOAD)
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), 	REQUIRES_RELOAD)
             end)
 
             sel:SetScript('OnEnter', function(self2)
@@ -385,13 +434,20 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end)
             sel:SetScript('OnLeave', function() e.tips:Hide() end)
 
-            if not Save.disabled then
+            if Save.disabled then
+                panel:UnregisterAllEvents()
+            else
                 Init()
             end
+            panel:RegisterEvent("PLAYER_LOGOUT")
+
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end
             WoWToolsSave[addName]=Save
         end
+
+    elseif event == "GUILDBANKBAGSLOTS_CHANGED" or event =="GUILDBANK_ITEM_LOCK_CHANGED" then
+        setGuildBank()--公会银行,设置
     end
 end)
