@@ -82,7 +82,7 @@ local InvUnitFunc=function()--邀请，周围玩家
     if not p then C_CVar.SetCVar('nameplateShowFriends', 1) end
     
     if InvPlateTimer and not InvPlateTimer:IsCancelled() then
-        return
+        InvPlateTimer:Cancel()
     end
     
     InvPlateTimer=C_Timer.NewTicker(0.3, function()
@@ -91,7 +91,7 @@ local InvUnitFunc=function()--邀请，周围玩家
             local raid=IsInRaid();
             if (not raid and co==5) and not Save.PartyToRaid then 
                 print(id, addName, PETITION_TITLE:format('|cff00ff00'..CONVERT_TO_RAID..'|r'))
-                return
+                
             elseif co==40 then
                 print(id, addName, RED_FONT_COLOR_CODE..'|r', co, PLAYERS_IN_GROUP)        
             else 
@@ -107,7 +107,7 @@ local InvUnitFunc=function()--邀请，周围玩家
                         
                         C_PartyInfo.InviteUnit(name); 
                         InvPlateGuid[guid]=name;                    
-                        print(n..')',INVITE ,e.PlayerLink(nil, guid));
+                        print(n..')',INVITE ,e.PlayerLink(name, guid));
                         
                         if not raid and n +co>=5  then 
                             print(id, addName, PETITION_TITLE:format('|cff00ff00'..CONVERT_TO_RAID..'|r'))

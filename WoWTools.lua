@@ -113,15 +113,16 @@ e.GetPlayerInfo=function (unit, guid, showName)--, hideClassTexture)
 end
 
 e.PlayerLink=function(name, guid) --玩家超链接
-    local class
+    local class, race,sex
     if guid then
-        local _, class2, _, _, _, name2 = GetPlayerInfoByGUID(guid)
+        local _, class2, _, englishRace, sex2, name2 = GetPlayerInfoByGUID(guid)
         name = name or name2
+        race= englishRace
+        sex= sex2
         class= class2
     end
     if name then
-        local colorName= class and '|c'..select(4,GetClassColor(class))..name ..'|r'
-        return (class and e.Class(nil,class) or '')..'|Hplayer:'..name..'|h['..(colorName or name)..']|h'
+        return ((race and sex) and e.Race(nil, race, sex) or '')..'|Hplayer:'..name..'|h['..(class and '|c'..select(4,GetClassColor(class))..name ..'|r' or name)..']|h'
     end
 end
 
