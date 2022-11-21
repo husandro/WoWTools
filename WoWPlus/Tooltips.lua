@@ -1350,7 +1350,7 @@ local function set_EncounterJournal_Money_Tips(self)--险指南界面, 钱
         e.tips:AddDoubleLine(MONEY, NONE)
     else
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(FROM_TOTAL..e.MK(allMoney/10000, 0), GetCoinTextureString(allMoney))
+        e.tips:AddDoubleLine(FROM_TOTAL..e.MK(allMoney/10000, 3), GetCoinTextureString(allMoney))
     end
     e.tips:Show()
 end
