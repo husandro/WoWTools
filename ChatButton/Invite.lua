@@ -101,10 +101,14 @@ local InvUnitFunc=function()--邀请，周围玩家
                     local name=GetUnitName(u,true);
                     local guid=UnitGUID(u);
                     if name and guid and not UnitInAnyGroup(u) and not UnitIsAFK(u) and UnitIsConnected(u) and UnitIsPlayer(u) and UnitIsFriend(u, 'player') and not UnitIsUnit('player',u) then
-                        if not InvPlateGuid[guid] then 
-                            n=n+1 
+                        --[[
+if not InvPlateGuid[guid] then 
+                           
                         end
-                        
+
+]]
+
+                        n=n+1 
                         C_PartyInfo.InviteUnit(name); 
                         InvPlateGuid[guid]=name;                    
                         print('|cnGREEN_FONT_COLOR:'..n..'|r)',INVITE ,e.PlayerLink(name, guid));
@@ -118,7 +122,7 @@ local InvUnitFunc=function()--邀请，周围玩家
             end
             if not all then C_CVar.SetCVar('nameplateShowAll', 0) end
             if not p then C_CVar.SetCVar('nameplateShowFriends', 0) end
-            if n==0 then print(GUILDCONTROL_OPTION7..': '..RED_FONT_COLOR_CODE..NONE..'|r') end
+            if n==1 then print(GUILDCONTROL_OPTION7..': '..RED_FONT_COLOR_CODE..NONE..'|r') end
             
             if InvPlateTimer and InvPlateTimer:IsCancelled() then 
                 InvPlateTimer:Cancel() 
