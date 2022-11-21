@@ -8,9 +8,9 @@
 ## X-Wago-ID: baND1J6o
 ## Version: @project-version@
 
-
+##主要，不能删除
 WoWTools.lua
-
+##语言，不能删除
 Sesource\Locales\zhCN.lua
 Sesource\Locales\enUS.lua
 Sesource\Locales\deDE.lua
@@ -22,50 +22,81 @@ Sesource\Locales\koKR.lua
 Sesource\Locales\ptBR.lua
 Sesource\Locales\ruRU.lua
 Sesource\Locales\zhTW.lua
-
+##面板，不能删除
 Sesource\Panel.lua
 
+
+##角色面板
 WoWPlus\PaperDoll.lua
+##声望面板
 WoWPlus\Reputation.lua
+##货币面板
 WoWPlus\Tokens.lua
-
+##移动框架
 WoWPlus\FrameMove.lua
+##隐藏材质
 WoWPlus\HideTexture.lua
+##法术弹出框，加名称
 WoWPlus\Flyout.lua
+##任务框，增强
 WoWPlus\ObjectiveTracker.lua
-
 ##WoWPlus\MountCollection.lua
+##玩具面板
 WoWPlus\Toy.lua
+##试衣间， 境加物品超接接
 WoWPlus\Heirloom.lua
+##幻化，物品
 WoWPlus\WardroberItems.lua
+##幻化，套装
 WoWPlus\WardroberSets.lua
+##地图，增强
 WoWPlus\WorldMap.lua
+##鼠标，和冒险指南，两个模块
 WoWPlus\Tooltips.lua
 ##WoWPlus\Container.lua
+##专业面板，增加专业按钮，没有其它
 WoWPlus\Professions.lua
+##单位框，没完成
 WoWPlus\UnitFrame.lua
 ##WowPlus\GroupManager.lua
 ##WoWPlus\AchievementFrame.lua
 ##WowPlus\AuctionHouse.lua
+##快速加入，面板
 WowPlus\QuickJoin.lua
+##好友，面板
 WoWPlus\FriendsList.lua
+##小地图，增加缩放
 WowPlus\Minimap.lua
 
+##自动对话，任务
 GamePlus\Gossip.lua
+##卖买
 GamePlus\SellBuy.lua
-
+##宠物对战
 GamePlus\PetBattle.lua
+##物品信息，显示包里，和商人，物品信息，现仅支持系统，以后有空再增加
 GamePlus\ItemInfo.lua
+##fps ms 
 GamePlus\SystemInfo.lua
+##插件，方案
 GamePlus\AddOns.lua
+##自动隐藏，弹出NPC说话，
 GamePlus\Talking.lua
+##断， 驱，散
 GamePlus\InterruptStolenDispel.lua
 
+##坐骑， Tools 主要的，
+##如果要使用Tools中的一个模块，必须开启坐骑模块
 Tools\Mount.lua
+##随机炉石
 Tools\Hearthstone.lua
+##打开物品，各种物品
 Tools\OpenItems.lua
+##随机玩具
 Tools\UseToy.lua
+##专业按钮
 Tools\Professions2.lua
+##各种专送门
 Tools\UsaItems.lua
 ##诺格弗格药剂 Noggenfogger Elixir
 Tools\NoggenfoggerElixir.lua
@@ -77,16 +108,25 @@ Tools\Daisy.lua
 Tools\MagePortal.lua
 
 ##Chat Button
+##这是Chat主要，如果需要其中一个功能，这个不能关
 ChatButton\ChatButton.lua
+##超链接， 欢迎
 ChatButton\HyperlinksIcon.lua
+##ROLL
 ChatButton\Roll.lua
+##标记
 ChatButton\Markers.lua
+##邀请， 自动接受， 拒绝，屏蔽
 ChatButton\Invite.lua
-
-
+##查找器， 地下城和团队， 自动退出，进入，Roll装
 ChatButton\LFD.lua
+##世界频道
 ChatButton\WorldChannel.lua
+##公会
 ChatButton\Guild.lua
+##队伍
 ChatButton\Group.lua
+##说
 ChatButton\Say.lua
+##表情，如不是中文，默认关闭
 ChatButton\Emoji.lua
