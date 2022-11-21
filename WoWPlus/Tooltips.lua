@@ -1298,9 +1298,10 @@ local function set_EncounterJournal_Keystones_Tips(self)--险指南界面, 挑�
     e.tips:SetOwner(self, "ANCHOR_LEFT");
     e.tips:ClearLines();
     local find
+    local numPlayer=1
     for name_server, info in pairs(wowSave) do
         local tab=info.keystones
-        numPlayer=1
+        
         if #tab.itemLink > 0 then
             name_server=name_server:gsub('-'..e.Player.server, '')
             local r2,g2,b2=GetClassColor(info.class)
@@ -1329,6 +1330,30 @@ local function set_EncounterJournal_Keystones_Tips(self)--险指南界面, 挑�
     e.tips:Show()
 end
 
+local function set_EncounterJournal_Money_Tips(self)--险指南界面, 钱
+    e.tips:SetOwner(self, "ANCHOR_LEFT");
+    e.tips:ClearLines();
+    local numPlayer, allMoney  = 1, 0
+    for name_server, info in pairs(wowSave) do
+        local money=info.money
+        if money and money>0 then
+            name_server=name_server:gsub('-'..e.Player.server, '')
+            local r2,g2,b2=GetClassColor(info.class)
+            local race=e.Race(nil, info.race, info.sex)
+            e.tips:AddDoubleLine(numPlayer..')'..race..e.Class(nil,info.class)..name_server, GetCoinTextureString(money), r2,g2,b2, r2,g2,b2)
+            numPlayer=numPlayer+1
+            allMoney= allMoney + money
+        end
+    end
+
+    if allMoney==1 then
+        e.tips:AddDoubleLine(MONEY, NONE)
+    else
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(FROM_TOTAL..e.MK(allMoney/10000, 0), GetCoinTextureString(allMoney))
+    end
+    e.tips:Show()
+end
 local function set_EncounterJournal_Init()--冒险指南界面
     local self=EncounterJournal
     self.btn= e.Cbtn(self.TitleContainer, nil, not Save.hideEncounterJournal)--按钮, 总开关
@@ -1344,14 +1369,11 @@ local function set_EncounterJournal_Init()--冒险指南界面
     end)
     self.btn:SetScript('OnClick', function(self2, d)
         if d=='LeftButton' then
-            if Save.hideEncounterJournal then
-                Save.hideEncounterJournal=nil
-            else
-                Save.hideEncounterJournal=true
-            end
+            Save.hideEncounterJournal= not Save.hideEncounterJournal and true or nil
             self.instance:SetShown(not Save.hideEncounterJournal)
             self.worldboss:SetShown(not Save.hideEncounterJournal)
             self.keystones:SetShown(not Save.hideEncounterJournal)
+            self.money:SetShown(not Save.hideEncounterJournal)
             self.btn:SetNormalAtlas(Save.hideEncounterJournal and e.Icon.disabled or e.Icon.icon )
         elseif d=='RightButton' then
             if Save.hideEncounterJournal_All_Info_Text then
@@ -1420,13 +1442,21 @@ local function set_EncounterJournal_Init()--冒险指南界面
     self.worldboss:SetScript("OnLeave",function() e.tips:Hide() end)
 
 
-    self.keystones =e.Cbtn(self.TitleContainer, nil ,true)--所有角色已击杀世界BOSS
+    self.keystones =e.Cbtn(self.TitleContainer, nil ,true)--所有角色,挑战
     self.keystones:SetPoint('RIGHT', self.worldboss, 'LEFT')
     self.keystones:SetNormalTexture(4352494)
     self.keystones:SetSize(22,22)
-    self.keystones:SetScript('OnEnter',set_EncounterJournal_Keystones_Tips)--提示
+    self.keystones:SetScript('OnEnter',set_EncounterJournal_Keystones_Tips)
     self.keystones:SetScript("OnLeave",function() e.tips:Hide() end)
 
+    self.money =e.Cbtn(self.TitleContainer, nil ,true)--钱
+    self.money:SetPoint('RIGHT', self.keystones, 'LEFT')
+    self.money:SetNormalAtlas('Front-Gold-Icon')
+    self.money:SetSize(22,22)
+    self.money:SetScript('OnEnter',set_EncounterJournal_Money_Tips)
+    self.money:SetScript("OnLeave",function() e.tips:Hide() end)
+
+    self.money:SetShown(not Save.hideEncounterJournal)
     self.instance:SetShown(not Save.hideEncounterJournal)
     self.worldboss:SetShown(not Save.hideEncounterJournal)
     self.keystones:SetShown(not Save.hideEncounterJournal)
