@@ -45,6 +45,12 @@ local function Init()
     frame=PaladinPowerBarFrameBankBG if frame then frame:Hide() end
     
     LootFrameBg:Hide()--拾取
+
+    hooksecurefunc(HelpTip,'Show', function(self, parent, info, relativeRegion)--隐藏所有HelpTip HelpTip.lua
+        --e.Ccool(parent,nil, 2, nil, nil, true, nil, true)
+        HelpTip:HideAll(parent)
+    end)
+
 end
 
 local function set_UNIT_ENTERED_VEHICLE()--载具

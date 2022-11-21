@@ -779,6 +779,28 @@ local function InitMenu(self, level, type)
         }
         UIDropDownMenu_AddButton(info, level)
 
+--[[
+        info={
+            text=HIDE..(HELP or SLASH_TEXTTOSPEECH_HELP)..INFO,
+            checked=C_CVar.GetCVarBool("hideHelptips"),
+            tooltipOnButton=true,
+            tooltipTitle='CVar: hideHelptips',
+            func=function ()
+                if C_CVar.GetCVarBool("hideHelptips") then
+                    C_CVar.SetCVar("hideHelptips", 0)
+                    print(0)
+                else
+                    C_CVar.SetCVar("hideHelptips", 1)
+                    print(1)
+                end
+                print(C_CVar.GetCVarBool("hideHelptips"))
+            end
+        }
+        UIDropDownMenu_AddButton(info, level)
+
+]]
+
+
         UIDropDownMenu_AddSeparator(level)
         info={--重载
             text=RELOADUI,

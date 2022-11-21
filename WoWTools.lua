@@ -396,14 +396,14 @@ e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size)
     return b
 end
 
-e.Ccool=function(self, start, duration, modRate, HideCountdownNumbers, Reverse, SwipeTexture)--冷却条
+e.Ccool=function(self, start, duration, modRate, HideCountdownNumbers, Reverse, SwipeTexture, hideDrawBling)--冷却条
     if not self then
         return
     end
     if not self.cooldown then
         self.cooldown= CreateFrame("Cooldown", nil, self, 'CooldownFrameTemplate')
         self.cooldown:SetUseCircularEdge(true)--设置边缘纹理是否应该遵循圆形图案而不是方形编辑框
-        self.cooldown:SetDrawBling(true)--闪光
+        self.cooldown:SetDrawBling(not hideDrawBling)--闪光
         self.cooldown:SetDrawEdge(true)--冷却动画的移动边缘绘制亮线
         self.cooldown:SetHideCountdownNumbers(HideCountdownNumbers)--隐藏数字
         self.cooldown:SetReverse(Reverse)--控制冷却动画的方向

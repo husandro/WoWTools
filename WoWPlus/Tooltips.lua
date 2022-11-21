@@ -799,8 +799,8 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                                 line=_G["GameTooltipTextRight"..i]
                                 line:SetText(mapInfo.name..e.Icon.map2)
                                 line:SetShown(true)
-                           -- else
-                               -- line:Hide()
+                            else
+                                line:Hide()
                             end
                         end
                     else
