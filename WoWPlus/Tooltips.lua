@@ -58,7 +58,7 @@ end
 
 local function setItemCooldown(self, itemID)--物品冷却
     local startTime, duration, enable = GetItemCooldown(itemID)
-    if duration>0 and enable==1 then
+    if duration>4 and enable==1 then
         local t=GetTime()
         if startTime>t then t=t+86400 end
         t=t-startTime
@@ -623,7 +623,7 @@ local function set_Unit_Health_Bar(self, unit)
             elseif hp<90 then
                 text='|cnYELLOW_FONT_COLOR:'..text..'|r'
             end
-            left =e.MK(value, 3)
+            left =e.MK(value, 0)
         end
         right = e.MK(max, 2)
         r, g, b = GetClassColor(select(2, UnitClass(unit)))
