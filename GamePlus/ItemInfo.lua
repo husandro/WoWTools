@@ -112,9 +112,13 @@ local sourceID = (not isBound or merchantIndex) and select(2,C_TransmogCollectio
                 bottomRightText=not sets.collected and e.Icon.okTransmog2
            end
 
-        elseif classID==8 or classID==3 or classID==9 then--附魔, 宝石
-            bottomLeftText= e.WA_Utf8Sub(itemSubType, 2,5)
-
+        elseif classID==8 or classID==3 or classID==9 or (classID==0 and (subclassID==1 or subclassID==3 or subclassID==5))then--附魔, 宝石
+            --bottomLeftText= e.WA_Utf8Sub(itemSubType, 2,5)
+            if classID==0 and subclassID==5 then
+                topRightText= e.WA_Utf8Sub(POWER_TYPE_FOOD, 2,5)
+            else
+                topRightText= e.WA_Utf8Sub(itemSubType, 2,5)
+            end
         elseif classID==17 or (classID==15 and subclassID==2) or itemLink:find('Hbattlepet:(%d+)') then--宠物
             local speciesID = itemLink:match('Hbattlepet:(%d+)') or select(13, C_PetJournal.GetPetInfoByItemID(itemID))--宠物
             if speciesID then
@@ -128,7 +132,8 @@ local sourceID = (not isBound or merchantIndex) and select(2,C_TransmogCollectio
                 end
                 local petType= select(3, C_PetJournal.GetPetInfoBySpeciesID(speciesID))
                 if petType then
-                    bottomLeftText='|TInterface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType]..':0|t'
+                    --bottomLeftText='|TInterface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType]..':0|t'
+                    topRightText='|TInterface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType]..':0|t'
                 end
             end
         elseif classID==15 and subclassID==5 then--坐骑
