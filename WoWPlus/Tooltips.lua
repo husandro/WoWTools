@@ -1121,6 +1121,7 @@ local function MoveFrame(self, savePointName)
         print(id, addName, 	FONT_SIZE, size)
     end)
 end
+
 local function setWorldbossText()--显示世界BOSS击杀数据Text
     if Save.showWorldBoss then
         if not panel.WorldBoss then
@@ -1983,10 +1984,8 @@ local function set_Tooltips_Init()--初始
         setInitItem(self, true)
     end)
 
-    --####################
-    --物品, 法术, 货币, 成就
-    --####################
     hooksecurefunc('GameTooltip_AddQuestRewardsToTooltip', setQuest)--世界任务ID GameTooltip_AddQuest
+
     hooksecurefunc(ItemRefTooltip, 'SetHyperlink', function(self, link)--ItemRef.lua ItemRefTooltipMixin:ItemRefSetHyperlink(link)
         local linkName, linkID = link:match('(.-):(%d+):')
         linkID = (linkName and linkID) and tonumber(linkID)
@@ -2009,6 +2008,7 @@ local function set_Tooltips_Init()--初始
             self:Show()
         end
     end)
+
     --TooltipUtil.lua
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(tooltip,date)
         local itemLink=select(2, TooltipUtil.GetDisplayedItem(tooltip))
@@ -2046,13 +2046,7 @@ local function set_Tooltips_Init()--初始
             setCurrency(tooltip, date.id)--货币
         end
     end)
- --[[
-   TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType,  function(tooltip,date)
-        print(tooltip,date)
-        
-    end)
-
-]]
+   
 
     --****
     --位置

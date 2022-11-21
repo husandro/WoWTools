@@ -268,7 +268,8 @@ local function setMenuList(self, level, menuList)--主菜单
     t.notCheckable=true
     if Bag.bag and Bag.slot then
         t.text=C_Container.GetContainerItemLink(Bag.bag, Bag.slot) or ('bag: '..bag ..' slot: '..slot)
-        t.icon=C_Container.GetContainerItemInfo(Bag.bag, Bag.slot)
+        local bagInfo=C_Container.GetContainerItemInfo(Bag.bag, Bag.slot)
+        t.icon= bagInfo and bagInfo.iconFileID
         t.func=function()
             setDisableCursorItem()--禁用当物品
         end
@@ -488,11 +489,13 @@ local function shoTips(self)--显示提示
             BattlePetToolTip_Show(BattlePetToolTip_UnpackBattlePetLink(battlePetLink))
         else
             e.tips:SetBagItem(Bag.bag, Bag.slot)
+            e.tips:Show()
         end
     else
         e.tips:AddDoubleLine(id, addName)
+        e.tips:Show()
     end
-    e.tips:Show()
+    
 end
 --######
 --初始化
@@ -503,6 +506,7 @@ local function Init()
     end
     panel.tips=CreateFrame("GameTooltip", id..addName, panel, "GameTooltipTemplate")
     panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
+
     panel.count=e.Cstr(panel, 10, nil, nil, true)
     panel.count:SetPoint('BOTTOM',0,2)
 
