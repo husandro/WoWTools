@@ -86,7 +86,7 @@ local InvUnitFunc=function()--邀请，周围玩家
     end
     
     InvPlateTimer=C_Timer.NewTicker(0.3, function()
-            local n=0;
+            local n=1;
             local co=GetNumGroupMembers();
             local raid=IsInRaid();
             if (not raid and co==5) and not Save.PartyToRaid then 
@@ -107,7 +107,7 @@ local InvUnitFunc=function()--邀请，周围玩家
                         
                         C_PartyInfo.InviteUnit(name); 
                         InvPlateGuid[guid]=name;                    
-                        print(n..')',INVITE ,e.PlayerLink(name, guid));
+                        print('|cnGREEN_FONT_COLOR:'..n..'|r)',INVITE ,e.PlayerLink(name, guid));
                         
                         if not raid and n +co>=5  then 
                             print(id, addName, PETITION_TITLE:format('|cff00ff00'..CONVERT_TO_RAID..'|r'))
