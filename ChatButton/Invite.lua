@@ -100,22 +100,16 @@ local InvUnitFunc=function()--邀请，周围玩家
                     local u = v.namePlateUnitToken or (v.UnitFrame and v.UnitFrame.unit);                
                     local name=GetUnitName(u,true);
                     local guid=UnitGUID(u);
-                    if name and guid and not UnitInAnyGroup(u) and not UnitIsAFK(u) and UnitIsConnected(u) and UnitIsPlayer(u) and UnitIsFriend(u, 'player') and not UnitIsUnit('player',u) then
-                        --[[
-if not InvPlateGuid[guid] then 
-                           
-                        end
-
-]]
-
-                        n=n+1 
-                        C_PartyInfo.InviteUnit(name); 
-                        InvPlateGuid[guid]=name;                    
-                        print('|cnGREEN_FONT_COLOR:'..n..'|r)',INVITE ,e.PlayerLink(name, guid));
-                        
-                        if not raid and n +co>=5  then 
-                            print(id, addName, PETITION_TITLE:format('|cff00ff00'..CONVERT_TO_RAID..'|r'))
-                            break
+                    if name and name~=UNKNOWNOBJECT and guid and not UnitInAnyGroup(u) and not UnitIsAFK(u) and UnitIsConnected(u) and UnitIsPlayer(u) and UnitIsFriend(u, 'player') and not UnitIsUnit('player',u) then
+                        if not InvPlateGuid[guid] then 
+                            C_PartyInfo.InviteUnit(name);
+                            InvPlateGuid[guid]=name;
+                            print('|cnGREEN_FONT_COLOR:'..n..'|r)',INVITE ,e.PlayerLink(name, guid));
+                            if not raid and n +co>=5  then 
+                                print(id, addName, PETITION_TITLE:format('|cff00ff00'..CONVERT_TO_RAID..'|r'))
+                                break
+                            end
+                            n=n+1
                         end
                     end
                 end
@@ -537,12 +531,14 @@ local function InitList(self, level, type)
                 if not e.GroupGuid[guid] then
                     info={
                         text=e.GetPlayerInfo(nil, guid, true),
+                        tooltipOnButton=true,
+                        tooltipTitle=INVITE,
+                        tooltipText=name,
                         notCheckable=true,
                         func=function() 
                             C_PartyInfo.InviteUnit(name)
                         end,
-                        tooltipOnButton=true,
-                        tooltipTitle=INVITE,
+                        
                     }
                     UIDropDownMenu_AddButton(info, level);
                     n=n+1;
@@ -780,6 +776,7 @@ panel:RegisterEvent('GROUP_ROSTER_UPDATE')
 
 panel:RegisterEvent('PARTY_INVITE_REQUEST')
 panel:RegisterEvent('PLAYER_UPDATE_RESTING')----休息区提示
+panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 
 panel:SetScript("OnEvent", function(self, event, arg1, ...)
     if event == "ADDON_LOADED" and arg1==id then
@@ -812,5 +809,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, ...)
 
     elseif event=='PLAYER_UPDATE_RESTING' then
         set_PLAYER_UPDATE_RESTING()--设置, 休息区提示
+
+    elseif event=='PLAYER_ENTERING_WORLD' then
+        InvPlateGuid={}
     end
 end)
