@@ -18,7 +18,9 @@ local Save={
         172179,-- 
         6948,-- 
         188952,--]]
-    }
+    },
+    showBindNameShort=true,
+    showBindName=true,
 }
 local addName= SLASH_RANDOM3:gsub('/','').. TUTORIAL_TITLE31
 local panel=e.Cbtn2('HearthstoneToolsButton',WoWToolsMountButton)
@@ -142,12 +144,29 @@ local function setToySpellButton_UpdateButton(self)--标记, 是否已选取
     end
 end
 
+local function set_BindLocation()--显示, 炉石, 绑定位置
+    local text
+    if Save.showBindName then
+        text= GetBindLocation()
+        if text and Save.showBindNameShort then
+            text= e.WA_Utf8Sub(text, 2, 5)
+        end
+    end
+    if not panel.showBindNameText and text then
+        panel.showBindNameText=e.Cstr(panel, 10, nil, nil, true, nil, 'CENTER')
+        panel.showBindNameText:SetPoint('TOP', panel, 'BOTTOM',0,5)
+    end
+    if panel.showBindNameText then
+        panel.showBindNameText:SetText(text or '')
+    end
+end
+
 --#####
 --主菜单
 --#####
 local function InitMenu(self, level, menuList)--主菜单
     local info
-    if menuList then
+    if menuList=='TOY' then
         for itemID, _ in pairs(Save.items) do
             local find=PlayerHasToy(itemID)
             info={
@@ -165,7 +184,16 @@ local function InitMenu(self, level, menuList)--主菜单
             }
             UIDropDownMenu_AddButton(info, level)
         end
-
+    elseif menuList=='BIND' then--炉石, 绑定位置, 截取名称SHORT
+        info={
+            text=SHORT..NAME,
+            checked=Save.showBindNameShort,
+            func=function()
+                Save.showBindNameShort= not Save.showBindNameShort and true or nil
+                set_BindLocation()--显示, 炉石, 绑定位置
+            end
+        }
+        UIDropDownMenu_AddButton(info, level)
     else
        info={
             text='|cnGREEN_FONT_COLOR:'..#panel.items..'|r'.. addName,
@@ -174,7 +202,17 @@ local function InitMenu(self, level, menuList)--主菜单
             hasArrow=true,
        }
        UIDropDownMenu_AddButton(info, level)
-    
+       info={
+            text=TUTORIAL_TITLE31..NAME,
+            checked=Save.showBindName,
+            menuList='BIND',
+            hasArrow=true,
+            func=function()
+                Save.showBindName = not Save.showBindName and true or nil
+                set_BindLocation()--显示, 炉石, 绑定位置
+            end
+        }
+        UIDropDownMenu_AddButton(info, level)
     end
 end
 
@@ -202,7 +240,6 @@ local function setBagHearthstone()
                 end
                 panel['texture'..type]:SetDrawLayer('OVERLAY',2)
                 panel['texture'..type]:AddMaskTexture(panel.mask)
-                --panel['texture'..type]:SetAlpha(0.5)
                 panel['texture'..type]:SetTexture(C_Item.GetItemIconByID(itemID))
             end
         end
@@ -266,6 +303,7 @@ local function Init()
     setAtt(true)--设置属性
     setCooldown()--主图标冷却
     setBagHearthstone()--设置Shift, Ctrl, Alt 提示
+    set_BindLocation()--显示, 炉石, 绑定位置
 
     for type, itemID in pairs(ModifiedTab) do
         panel:SetAttribute(type.."-item1",  C_Item.GetItemNameByID(itemID) or itemID)
@@ -297,7 +335,8 @@ local function Init()
     panel:SetScript('OnMouseWheel',function(self,d)
         setAtt()--设置属性
     end)
-   
+    
+
 end
 
 --###########
@@ -311,6 +350,7 @@ panel:RegisterEvent('TOYS_UPDATED')
 panel:RegisterEvent('BAG_UPDATE_DELAYED')
 panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
 panel:RegisterEvent("PLAYER_LOGOUT")
+panel:RegisterEvent('HEARTHSTONE_BOUND')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1== id then
@@ -341,5 +381,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if IsResting()  then
             setBagHearthstone()--设置Shift, Ctrl, Alt 提示
         end
+    
+    elseif event=='HEARTHSTONE_BOUND' then
+        set_BindLocation()--显示, 炉石, 绑定位置
+
     end
 end)
