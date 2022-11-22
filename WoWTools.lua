@@ -137,13 +137,24 @@ e.GetNpcID = function(unit)--NPC ID
 end
 
 e.GetUnitMapName=function(unit)--单位, 地图名称
-    local uiMapID= C_Map.GetBestMapForUnit(unit)
-    if uiMapID then
-        local info = C_Map.GetMapInfo(uiMapID)
-        if info and info.name then 
-            return info.name
+    local text
+    if unit=='player' and IsInInstance() then
+        local name, _, _, difficultyName= GetInstanceInfo()
+        if name then
+            text= name .. (difficultyName and '('..difficultyName..')' or '')
+        else
+            text=GetMinimapZoneText()
+        end
+    else
+        local uiMapID= C_Map.GetBestMapForUnit(unit)
+        if uiMapID then
+            local info = C_Map.GetMapInfo(uiMapID)
+            if info and info.name then
+                text=info.name
+            end
         end
     end
+    return text
 end
 
 e.Player={
@@ -243,16 +254,16 @@ e.Icon={
     FRIENDS_TEXTURE_ONLINE 	有空 FRIENDS_LIST_AVAILABLE
 ]]
 e.GetFriend = function(name, guid)--检测, 是否好友 
-    if guid then 
-        if C_FriendList.IsFriend(guid) then 
+    if guid then
+        if C_FriendList.IsFriend(guid) then
             return '|A:groupfinder-icon-friend:0:0|a', nil--好友
-        elseif IsGuildMember(guid) then 
+        elseif IsGuildMember(guid) then
             return '|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a'--公会
-        elseif C_BattleNet.GetAccountInfoByGUID(guid) or C_BattleNet.GetGameAccountInfoByGUID(guid) then 
-            return e.Icon.wow2, true; 
+        elseif C_BattleNet.GetAccountInfoByGUID(guid) or C_BattleNet.GetGameAccountInfoByGUID(guid) then
+            return e.Icon.wow2, true;
         end
-    else 
-        if C_FriendList.GetFriendInfo(name) or C_FriendList.GetFriendInfo(name:gsub('%-.+','')) then 
+    else
+        if C_FriendList.GetFriendInfo(name) or C_FriendList.GetFriendInfo(name:gsub('%-.+','')) then
             return '|A:groupfinder-icon-friend:0:0|a', nil--好友
         end
     end
@@ -740,20 +751,20 @@ e.Chat=function(text, name, setPrint)--v9.25设置
 
         elseif setPrint then
             print(text)
-        end 
-    end 
+        end
+    end
 end
 
 e.Say=function(type, name, wow)
     local chat=SELECTED_DOCK_FRAME;
     local text = chat.editBox:GetText() or '';
-    if text:find('/') then text='' end 
-    text=' '..text;    
-    if name then     
-        if wow then 
+    if text:find('/') then text='' end
+    text=' '..text;
+    if name then
+        if wow then
             ChatFrame_SendBNetTell(name..text)
         else
-            ChatFrame_OpenChat("/w " ..name..text, chat);        
+            ChatFrame_OpenChat("/w " ..name..text, chat);
         end
     else
         ChatFrame_OpenChat(type..  text, chat)
