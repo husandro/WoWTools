@@ -101,12 +101,13 @@ e.GetPlayerInfo=function (unit, guid, showName)--, hideClassTexture)
         end
     elseif guid then
         local _, englishClass, _, englishRace, sex, name, realm = GetPlayerInfoByGUID(guid)
-        
-        if showName then
-            realm = (realm and realm~=e.Player.server) and '|cnGREEN_FONT_COLOR:*|r' or ''
-            return (e.Race(nil, englishRace, sex) or '')..(not showName and  e.Class(nil, englishClass) or '')..'|c'..select(4,GetClassColor(englishClass))..name..realm..'|r'
-        else
-            return (e.Race(nil, englishRace, sex) or '')..(not showName and  e.Class(nil, englishClass) or '')
+        if name and englishClass and englishRace and sex then
+            if showName then
+                realm = (realm and realm~=e.Player.server) and '|cnGREEN_FONT_COLOR:*|r' or ''
+                return (e.Race(nil, englishRace, sex) or '')..(not showName and  e.Class(nil, englishClass) or '')..'|c'..select(4,GetClassColor(englishClass))..name..realm..'|r'
+            else
+                return (e.Race(nil, englishRace, sex) or '')..(not showName and  e.Class(nil, englishClass) or '')
+            end
         end
     end
     return ''
