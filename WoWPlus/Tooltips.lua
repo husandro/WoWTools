@@ -1175,14 +1175,15 @@ local function setWorldbossText()--显示世界BOSS击杀数据Text
             if tab then
                 local text, numAll='',0
                 for bossName, _ in pairs(tab) do
-                    numAll=numAll+1
-                    if text~='' then
-                        text= select(2, math.modf(numAll/5))==0 and text..'\n       ' or text..' '
-                    end
                     bossName=bossName:gsub('(,.+)','')
                     bossName=bossName:gsub('(，.+)','')
-                    text=text.. bossName
-
+                    if not text:find(bossName) then
+                        numAll=numAll+1
+                        if text~='' then
+                            text= select(2, math.modf(numAll/5))==0 and text..'\n       ' or text..' '
+                        end
+                        text=text.. bossName
+                    end
                 end
                 if text~='' then
                     text2= text2~='' and text2..'\n' or text2
@@ -1198,7 +1199,7 @@ local function setWorldbossText()--显示世界BOSS击杀数据Text
                 local text, numAll='', 0
                 for name, num in pairs(tab) do
                     if text~='' then
-                        --text= select(2, math.modf(numAll/5))==0 and text..'\n       ' or text..' '
+                        text= select(2, math.modf(numAll/5))==0 and text..'\n       ' or text..' '
                     end
                     name=name:gsub('(,.+)','')
                     name=name:gsub('(，.+)','')

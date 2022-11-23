@@ -78,7 +78,7 @@ local function InitMenu(self, level, type)--主菜单
         checked=Save.guildInfo,
         tooltipOnButton=true,
         tooltipTitle=guildInfoText or NONE,
-        --tooltipText=
+        colorCode=not IsInGuild(),
         func=function()
             Save.guildInfo= not Save.guildInfo and true or nil
             set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
