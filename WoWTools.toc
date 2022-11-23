@@ -131,4 +131,4 @@ ChatButton\Say.lua
 ##表情，如不是中文，默认关闭
 ChatButton\Emoji.lua
 ##各种, 战斗时间
-##ChatButton\CombatTimer.lua
+ChatButton\CombatTimer.lua
