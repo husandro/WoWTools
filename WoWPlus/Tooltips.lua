@@ -1179,13 +1179,16 @@ local function setWorldbossText()--显示世界BOSS击杀数据Text
                     if text~='' then
                         text= select(2, math.modf(numAll/5))==0 and text..'\n       ' or text..' '
                     end
+                    bossName=bossName:gsub('(,.+)','')
+                    bossName=bossName:gsub('(，.+)','')
                     text=text.. bossName
 
                 end
                 if text~='' then
-                    text2=e.Race(nil, info.race, info.sex)..e.Class(nil,info.class)..col..name_server.. '\n'
-                    numAll='('..numAll..')'
-                    text2=text2..string.rep(' ', 6 - string.len(numAll))..'|cnGREEN_FONT_COLOR:'..numAll..'|r'..text..'|r'
+                    text2= text2~='' and text2..'\n' or text2
+                    text2= text2.. e.Race(nil, info.race, info.sex)..e.Class(nil,info.class)..col..name_server.. '\n'
+                    numAll= '('..numAll..')'
+                    text2= text2..string.rep(' ', 6 - string.len(numAll))..'|cnGREEN_FONT_COLOR:'..numAll..'|r'..text..'|r'
                     showName=true
                 end
             end
@@ -1195,14 +1198,16 @@ local function setWorldbossText()--显示世界BOSS击杀数据Text
                 local text, numAll='', 0
                 for name, num in pairs(tab) do
                     if text~='' then
-                        text= select(2, math.modf(numAll/5))==0 and text..'\n       ' or text..' '
+                        --text= select(2, math.modf(numAll/5))==0 and text..'\n       ' or text..' '
                     end
+                    name=name:gsub('(,.+)','')
+                    name=name:gsub('(，.+)','')
                     text=text..name..(num>1 and '|cnGREEN_FONT_COLOR:'..num..'|r' or '')
                     numAll=numAll+1
                 end
                 if text~='' then
                     if not showName then
-                        text2=e.Race(nil, info.race, info.sex)..e.Class(nil,info.class)..col..name_server..'\n'
+                        text2=text2..e.Race(nil, info.race, info.sex)..e.Class(nil,info.class)..col..name_server..'\n'
                     else
                         text2= text2~='' and text2..'\n' or text2
                     end
@@ -1213,7 +1218,7 @@ local function setWorldbossText()--显示世界BOSS击杀数据Text
             end
         end
 
-        panel.WorldBoss.Text:SetText(text2~='' and text2 or NONE)
+        panel.WorldBoss.Text:SetText(text2)
     end
     if panel.WorldBoss then
         panel.WorldBoss:SetShown(Save.showWorldBoss)
@@ -1325,7 +1330,7 @@ local function set_EncounterJournal_Keystones_Tips(self)--险指南界面, 挑�
         end
     end
     if not find then
-        e.tips.AddDoubleLine(CHALLENGES, NONE)
+        e.tips:AddDoubleLine(CHALLENGES, NONE)
     end
     e.tips:Show()
 end

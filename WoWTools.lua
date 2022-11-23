@@ -783,6 +783,17 @@ e.GetKeystoneScorsoColor= function(score, texture)--地下城史诗, 分数,颜�
         return score
     end
 end
+
+e.GetTimeInfo= function(value, chat, time)
+    time= time or GetTime()
+    time= time < value and time + 86400 or time
+    time= time - value;
+    if chat then 
+        return SecondsToClock(time):gsub('：',':'), time;
+    else
+        return SecondsToTime(time), time;
+    end
+end
 --[[
 BACKGROUND
 BORDER

@@ -175,7 +175,7 @@ local function set_event_PLAYER_TARGET_CHANGED()--设置, 邀请目标事件
 end
 local function set_PLAYER_TARGET_CHANGED()--设置, 邀请目标
     if not Save.InvTar
-    or InvPlateGuid[guid]--已邀请
+    --or InvPlateGuid[guid]--已邀请
     or not UnitExists('target')
     or not getLeader()--取得权限
     or UnitInAnyGroup('target')
@@ -708,7 +708,6 @@ end
 --####
 --初始
 --####
-
 local function Init()
     panel.texture:SetAtlas('communities-icon-addgroupplus')
     setTexture()--设置图标颜色, 是否有权限
