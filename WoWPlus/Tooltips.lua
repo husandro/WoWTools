@@ -889,6 +889,14 @@ end
 --###############################################################################################
 --冒险指南  EncounterJournal
 --###############################################################################################
+local function getBossNameSort(name)--取得怪物名称, 短名称
+    name=name:gsub('(,.+)','')
+    name=name:gsub('(，.+)','')
+    name=name:gsub('·.+','')
+    name=name:gsub('%-.+','')
+    name=name:gsub('<.+>', '')
+    return name
+end
 
 local function EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示所数据
     local self=EncounterJournal
@@ -923,7 +931,7 @@ local function EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示�
     for bossName, _ in pairs(tab) do
         num=num+1
         text= text~='' and text..' ' or text
-        text=text.. bossName
+        text=text.. getBossNameSort(bossName)
     end
     if text~='' then
         m= m~='' and m..'\n\n' or m
@@ -934,10 +942,7 @@ local function EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示�
     text, num='',0
     for name, _ in pairs(tab) do
         text=text~='' and text..' ' or text
-        name=name:gsub('·.+','')
-        name=name:gsub('%-.+','')
-        name=name:gsub('<.+>', '')
-        text=text..name
+        text=text..getBossNameSort(name)
         num=num+1
     end
     if text~='' then
@@ -1049,18 +1054,18 @@ local function set_EncounterJournal_World_Tips(self2)--所有角色已击杀世�
     local find
     for name_server, info in pairs(wowSave) do
         local showName
-        name_server=name_server:gsub('-'..e.Player.server, '')
+        name_server=name_server:gsub('-'..e.Player.server, '')..(name_server==e.Player.name_server and '|A:auctionhouse-icon-favorite:0:0|a' or '')
         local r2,g2,b2=GetClassColor(info.class)
 
         local tab=info.worldboss and info.worldboss.boss--世界BOSS
         if tab then
             local text=''
             for bossName, _ in pairs(tab) do
-                text= text~='' and text..' ' or text
-                bossName=bossName:gsub('·.+','')
-                bossName=bossName:gsub('%-.+','')
-                bossName=bossName:gsub('<.+>', '')
-                text=text.. bossName
+                bossName=getBossNameSort(bossName)
+                if not text:find(bossName) then
+                    text= text~='' and text..' ' or text
+                    text=text.. bossName
+                end
             end
             if text~='' then
                 e.tips:AddDoubleLine(e.Race(nil, info.race, info.sex)..e.Class(nil,info.class)..name_server, text, r2,g2,b2, r2,g2,b2)
@@ -1073,12 +1078,12 @@ local function set_EncounterJournal_World_Tips(self2)--所有角色已击杀世�
         if tab then
             local text, numAll='',0
             for name, num in pairs(tab) do
-                text=text~='' and text..' ' or text
-                name=name:gsub('·.+','')
-                name=name:gsub('%-.+','')
-                name=name:gsub('<.+>', '')
-                text=text..name..(num>1 and '|cnGREEN_FONT_COLOR:'..num..'|r' or '')
-                numAll=numAll+1
+                name= getBossNameSort(name)
+                if not text:find(name) then
+                    text=text~='' and text..' ' or text
+                    text=text..name..(num>1 and '|cnGREEN_FONT_COLOR:'..num..'|r' or '')
+                    numAll=numAll+1
+                end
             end
             if text~='' then
                 if not showName then
@@ -1175,8 +1180,7 @@ local function setWorldbossText()--显示世界BOSS击杀数据Text
             if tab then
                 local text, numAll='',0
                 for bossName, _ in pairs(tab) do
-                    bossName=bossName:gsub('(,.+)','')
-                    bossName=bossName:gsub('(，.+)','')
+                    bossName= getBossNameSort(bossName)
                     if not text:find(bossName) then
                         numAll=numAll+1
                         if text~='' then
@@ -1198,13 +1202,14 @@ local function setWorldbossText()--显示世界BOSS击杀数据Text
             if tab then
                 local text, numAll='', 0
                 for name, num in pairs(tab) do
-                    if text~='' then
-                        text= select(2, math.modf(numAll/5))==0 and text..'\n       ' or text..' '
+                    name= getBossNameSort(name)
+                    if not text:find(name) then
+                        if text~='' then
+                            text= select(2, math.modf(numAll/5))==0 and text..'\n       ' or text..' '
+                        end
+                        text=text..name..(num>1 and '|cnGREEN_FONT_COLOR:'..num..'|r' or '')
+                        numAll=numAll+1
                     end
-                    name=name:gsub('(,.+)','')
-                    name=name:gsub('(，.+)','')
-                    text=text..name..(num>1 and '|cnGREEN_FONT_COLOR:'..num..'|r' or '')
-                    numAll=numAll+1
                 end
                 if text~='' then
                     if not showName then
@@ -1281,7 +1286,7 @@ local function setInstanceBossText()--显示副本击杀数据
                     if instanceInfo then
                         for difficultyName, killed in pairs(instanceInfo) do
                             if not showName then
-                                name_server=name_server:gsub('-'..e.Player.server, '')
+                                name_server=name_server:gsub('-'..e.Player.server, '')..(name_server==e.Player.name_server and '|A:auctionhouse-icon-favorite:0:0|a' or '')
                                 text=text~='' and text..'\n' or text
                                 text=text..e.Race(nil, info.race, info.sex)..e.Class(nil,info.class)..col..name_server..'|r'
                                 showName=true

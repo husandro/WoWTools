@@ -38,11 +38,6 @@ local function check_Event()--检测事件
 
     local time=GetTime()
     if UnitIsAFK('player') then
-      --[[
-  if not OnAFKTime then
-            PlaySoundFile('Applause')
-        end
-]]
         OnAFKTime= OnAFKTime or time 
         LastText=nil
 
