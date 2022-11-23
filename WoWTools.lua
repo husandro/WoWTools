@@ -8,6 +8,9 @@ e.RightButtonDown= ActionButtonUseKeyDown and 'RightButtonDown' or 'RightButtonU
 
 local itemLoadTab={--加载法术,或物品数据
         134020,
+        6948,--炉石
+        140192,--达拉然炉石
+        110560,--要塞炉石
     }
 local spellLoadTab={
         818,

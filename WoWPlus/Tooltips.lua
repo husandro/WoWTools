@@ -413,6 +413,9 @@ end
 local function setCurrency(self, currencyID)--货币
     local info2 = C_CurrencyInfo.GetCurrencyInfo(currencyID)
     if info2 then
+        if not self.Portrait then
+            setInitItem(self, hide)--创建物品
+        end
         self:AddDoubleLine(TOKENS..'ID: '..currencyID, EMBLEM_SYMBOL..'ID: '..info2.iconFileID)
         self.Portrait:SetTexture(info2.iconFileID)
         self.Portrait:SetShown(true)
@@ -2071,7 +2074,8 @@ local function set_Tooltips_Init()--初始
 
     hooksecurefunc('GameTooltip_AddQuestRewardsToTooltip', setQuest)--世界任务ID GameTooltip_AddQuest
 
-    hooksecurefunc(ItemRefTooltip, 'SetHyperlink', function(self, link)--ItemRef.lua ItemRefTooltipMixin:ItemRefSetHyperlink(link)
+    --[[
+hooksecurefunc(ItemRefTooltip, 'SetHyperlink', function(self, link)--ItemRef.lua ItemRefTooltipMixin:ItemRefSetHyperlink(link)
         local linkName, linkID = link:match('(.-):(%d+):')
         linkID = (linkName and linkID) and tonumber(linkID)
         if not linkID then
@@ -2094,10 +2098,13 @@ local function set_Tooltips_Init()--初始
         end
     end)
 
+
+]]
+
     --TooltipUtil.lua
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(tooltip,date)
         local itemLink=select(2, TooltipUtil.GetDisplayedItem(tooltip))
-        if tooltip == GameTooltip and itemLink then
+        if itemLink and (tooltip==e.tips or tooltip==ItemRefTooltip) then
             if itemLink then
                 setItem(tooltip, itemLink)
             end
@@ -2105,29 +2112,29 @@ local function set_Tooltips_Init()--初始
     end)
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Spell, function(tooltip,date)
         local spellID= select(2, TooltipUtil.GetDisplayedSpell(tooltip))
-        if tooltip == GameTooltip and spellID then
+        if spellID and (tooltip==e.tips or tooltip==ItemRefTooltip) then
             setSpell(tooltip, linkID)
         end
     end)
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(tooltip,date)
         local unit= select(2, TooltipUtil.GetDisplayedUnit(tooltip))
-        if tooltip == GameTooltip and unit then
+        if unit and (tooltip==e.tips or tooltip==ItemRefTooltip) then
             setUnitInfo(tooltip, unit)
         end
     end)
     
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Mount, function(tooltip,date)
-        if date and date.id then
+        if date and date.id and (tooltip==e.tips or tooltip==ItemRefTooltip) then
             setMount(tooltip, date.id)--坐骑   
         end
     end)
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Toy, function(tooltip,date)
-            if date and date.id then
+            if date and date.id and (tooltip==e.tips or tooltip==ItemRefTooltip) then
                 setItem(tooltip, date.id)
             end
     end)
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Currency,  function(tooltip,date)
-        if date and date.id then
+        if date and date.id and (tooltip==e.tips or tooltip==ItemRefTooltip) then
             setCurrency(tooltip, date.id)--货币
         end
     end)
@@ -2429,7 +2436,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             setWorldbossText()--显示世界BOSS击杀数据
             setInstanceBossText()--显示副本击杀数据
 
-        elseif arg1=='Blizzard_ClassTalentUI' then
+       --[[
+ elseif arg1=='Blizzard_ClassTalentUI' then
             if not Save.disabledTooltip then
                 local function setClassTalentSpell(self2, tooltip)--天赋
                     local spellID = self2:GetSpellID()
@@ -2444,6 +2452,9 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 hooksecurefunc(ClassTalentSelectionChoiceMixin, 'AddTooltipInstructions', setClassTalentSpell)--Blizzard_ClassTalentButtonTemplates.lua--天赋
                 hooksecurefunc(ClassTalentButtonSpendMixin, 'AddTooltipInstructions', setClassTalentSpell)
             end
+
+]]
+
 
         elseif arg1=='Blizzard_EncounterJournal' then---冒险指南
             set_EncounterJournal_Init()--冒险指南界面

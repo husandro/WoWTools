@@ -35,29 +35,8 @@ local ModifiedTab={
     shift=6948,--炉石
     ctrl=110560,--要塞炉石
 }
-for _, itemID in pairs(ModifiedTab) do
-    if not C_Item.IsItemDataCachedByID(itemID) then
-        C_Item.RequestLoadItemDataByID(itemID)
-    end
-end
 
 panel.items={}--存放有效
-
---[[
-local function setPanelPostion()--设置按钮位置
-    local p=Save.Point
-    panel:ClearAllPoints()
-    if p and p[1] and p[3] and p[4] and p[5] then
-        panel:SetPoint(p[1],  UIParent, p[3], p[4], p[5])
-        --panel:SetParent(UIParent)
-    else
-        panel:SetPoint('RIGHT', _G[id..'MountButton'], 'LEFT')
-        --panel:SetParent(CharacterReagentBag0Slot)
-    end
-end
-
-]]
-
 
 local function getToy()--生成, 有效表格
     panel.items={}
@@ -75,6 +54,7 @@ local function getToy()--生成, 有效表格
         panel.items={6948}
     end
 end
+
 local function setAtt(init)--设置属性
     if UnitAffectingCombat('player') and not init then
         return

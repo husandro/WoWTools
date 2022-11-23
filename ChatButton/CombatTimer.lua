@@ -1,12 +1,19 @@
 local id, e = ...
 local addName= COMBAT..TIME_LABEL:gsub(':','')
-local Save= {textScale=1.2, classColor=true, Say=120}--Say=120, insTime=true, insKill=true, insDead=true, col=true}
+local Save= {textScale=1.2, classColor=true, Say=120, pet={}}
 local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
 
 local OnLineTime--在线时间
 local OnCombatTime--战斗时间
 local OnAFKTime--AFK时间
+local OnPetTime--宠物战斗
 local LastText--最后时间提示
+
+local Bat={--数据
+    bat={},--战斗
+    ins={},--副本
+    pet={pet={}},--宠物战斗
+}
 
 local chatStarTime
 local function setText()--设置显示内容
@@ -14,7 +21,7 @@ local function setText()--设置显示内容
     if OnCombatTime then--战斗时间
         local combat, sec = e.GetTimeInfo(OnCombatTime, not Save.timeTypeText)
         if Save.Say then--喊话
-            sec=math.floor(sec);
+            sec=math.floor(sec)
             if sec ~= chatStarTime and sec > 0 and sec%Save.Say==0  then
                 chatStarTime=sec
                 e.Chat(COMBAT..' '..SecondsToClock(sec):gsub('：',':'), nil, true)
@@ -23,11 +30,17 @@ local function setText()--设置显示内容
         text= text and text..'\n' or ''
         text= text .. COMBAT..'|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a'..combat
     end
+
     if OnAFKTime then
         text= text and text..'\n' or ''
         text= text .. AFK..e.Icon.clock2..e.GetTimeInfo(OnAFKTime, not Save.timeTypeText)
     end
     
+    if OnPetTime then
+        text= text and text..'\n' or ''
+        text= text ..(Bat.pet.S or '|TInterface\\Icons\\PetJournalPortrait:0|t')..e.GetTimeInfo(OnPetTime, not Save.timeTypeText)
+    end
+
     panel.text:SetText(text or LastText or '')
 end
 
@@ -40,11 +53,10 @@ local function check_Event()--检测事件
     if UnitIsAFK('player') then
         OnAFKTime= OnAFKTime or time 
         LastText=nil
-
     elseif OnAFKTime then 
         LastText= e.Icon.clock2..'|cnGREEN_FONT_COLOR:'..AFK..e.GetTimeInfo(OnAFKTime, not Save.timeTypeText)..'|r'
-        print(id, addName, LastText);
-        OnAFKTime=nil;
+        print(id, addName, LastText)
+        OnAFKTime=nil
     end
 
     if UnitAffectingCombat('player') then
@@ -54,13 +66,38 @@ local function check_Event()--检测事件
         local text, sec=e.GetTimeInfo(OnCombatTime, not Save.timeTypeText)
         LastText= '|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a|cnGREEN_FONT_COLOR:'..COMBAT..text..'|r'
         if sec>8 then
-            print(id, addName, LastText);
+            print(id, addName, LastText)
         end
         OnCombatTime=nil
         chatStarTime=nil
     end
 
-    panel.updatFrame:SetShown((OnAFKTime or OnCombatTime) and true or false)--设置更新数据,显示/隐藏 panel.updatFrame
+    if C_PetBattles.IsInBattle() then--宠物战斗
+        OnPetTime= OnPetTime or time
+        LastText=nil
+    elseif OnPetTime then
+        local pet=''
+        pet=Bat.pet.S and pet..Bat.pet.S or pet
+        pet=pet..e.GetTimeInfo(OnPetTime)
+        if Bat.pet.C2 then
+            pet=pet..'|T638662:0|t'
+            if Bat.pet.pet then
+                local i=#Bat.pet.pet;
+                if Bat.pet.pet[i] and Bat.pet.pet[i].pet then
+                    Bat.pet.pet[i].pet='|T638662:0|t' ..Bat.pet.pet[i].pet;                    
+                end
+            end            
+        end
+        LastText='|cff00ff00'..pet..'|r'
+        print(id, addName, PET_BATTLE_PVP_QUEUE, pet);
+        
+        Bat.pet.PVP=nil;
+        Bat.pet.C2=nil;
+        OnPetTime=nil;
+        Bat.pet.R=nil;
+    end
+
+    panel.updatFrame:SetShown((OnAFKTime or OnCombatTime or OnPetTime) and true or false)--设置更新数据,显示/隐藏 panel.updatFrame
     setText()--设置显示内容
 end
 
@@ -183,11 +220,16 @@ local function setTextFrame()--设置显示内容, 父框架panel.textFrame, 内
         end
     end)
 
-    check_Event()--检测事件
+    panel:RegisterEvent('PLAYER_FLAGS_CHANGED')--AFK
 
-    C_Timer.After(2, function()
-        setTexture()--设置,图标, 颜色
-    end)
+    panel:RegisterEvent('PET_BATTLE_OPENING_DONE')--宠物战斗
+    panel:RegisterEvent('PET_BATTLE_CLOSE')
+    panel:RegisterEvent('PET_BATTLE_PET_ROUND_RESULTS')
+    panel:RegisterEvent('PET_BATTLE_FINAL_ROUND')
+    panel:RegisterEvent('PET_BATTLE_CAPTURED')
+    panel:RegisterEvent('PET_BATTLE_PET_ROUND_PLAYBACK_COMPLETE')
+   
+    check_Event()--检测事件
 end
 --#####
 --主菜单
@@ -278,7 +320,7 @@ local function InitMenu(self, level, type)--主菜单
         
         info={
             text=INFO,
-            checked=Save.disabledText,
+            checked= not Save.disabledText,
             func=function()
                 Save.disabledText= not Save.disabledText and true or nil
                 print(id, addName, '|cnRED_FONT_COLOR:'..REQUIRES_RELOAD)
@@ -315,8 +357,31 @@ local function Init()
 
    
     setTextFrame()--设置显示内容,框架 panel.textFrame,内容 panel.text
+    C_Timer.After(2, function()
+        setTexture()--设置,图标, 颜色
+    end)
+
+    
 end
 
+local function setPetText()--宠物战斗, 设置显示内容
+    local m=''--Last        
+    if Bat.pet.Totale then 
+        m=m..(Bat.pet.Win and Bat.pet.Win or 0)..'/'..Bat.pet.Totale
+    end
+    if Bat.pet.R then
+        if Bat.pet.Totale then m=m..' ' end 
+        m=m..string.format(PET_BATTLE_COMBAT_LOG_NEW_ROUND, Bat.pet.R)--第几回合           
+    end
+    if  C_PetBattles.IsWildBattle() then 
+        m=m..'|A:worldquest-icon-petbattle:0:0|a'
+    elseif Bat.pet.PVP then 
+        m=m..'|A:pvptalents-warmode-swords:0:0|a'
+    else 
+        m=m..'|A:jailerstower-animapowerlist-offense:0:0|a'
+    end        
+    Bat.pet.S=m
+end
 
 --###########
 --加载保存数据
@@ -326,7 +391,7 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 
 panel:RegisterEvent('PLAYER_REGEN_DISABLED')
 panel:RegisterEvent('PLAYER_REGEN_ENABLED')
-panel:RegisterEvent('PLAYER_FLAGS_CHANGED')--AFK
+
 
 panel:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED')
 --panel:RegisterEvent('PLAYER_ENTERING_WORLD')
@@ -361,7 +426,83 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     --elseif event=='PLAYER_ENTERING_WORLD' then
 
-    elseif event=='PLAYER_FLAGS_CHANGED' then
+    elseif event=='PLAYER_FLAGS_CHANGED' then--AFK
+        check_Event()--检测事件
+
+    
+    elseif event=='PET_BATTLE_OPENING_DONE' then
+        check_Event()--检测事件
+
+    elseif event=='PET_BATTLE_PVP_DUEL_REQUESTED' then--宠物战斗
+        Bat.pet.PVP =true
+        setPetText()--宠物战斗, 设置显示内容
+        
+    elseif (event=='PET_BATTLE_PET_ROUND_RESULTS' or event=='PET_BATTLE_PET_ROUND_PLAYBACK_COMPLETE') and arg1 then         
+        Bat.pet.R=arg1
+        setPetText()--宠物战斗, 设置显示内容
+
+    elseif event=='PET_BATTLE_CAPTURED' and arg1 and arg1==2 then--捕获
+        OnPetTime= OnPetTime or GetTime()
+        
+        Bat.pet.C = Bat.pet.C or 0
+        Bat.pet.C= Bat.pet.C + 1
+        Bat.pet.C2=true
+        
+        Save.pet.C= Save.pet.C or 0
+        Save.pet.C=Save.pet.C + 1
+        setPetText()--宠物战斗, 设置显示内容        
+        
+    elseif event=='PET_BATTLE_FINAL_ROUND' and arg1 then--结束
+        if arg1==1 then--赢
+            if not Bat.pet.Win then Bat.pet.Win=0 end--Win
+            Bat.pet.Win=Bat.pet.Win+1                
+            if not Save.pet.Win then Save.pet.Win=0 end
+            Save.pet.Win=Save.pet.Win+1
+        end
+        
+        Bat.pet.Totale= Bat.pet.Totale or 0--Totale
+        Bat.pet.Totale= Bat.pet.Totale + 1            
+        Save.pet.Totale= Save.pet.Totale or 0
+        Save.pet.Totale= Save.pet.Totale + 1
+        
+        local time, sec= e.GetTimeInfo(OnPetTime)
+        
+        Save.pet.Time= Save.pet.Time or 0
+        Save.pet.Time= Save.pet.Time + sec
+        Bat.pet.TimeT= Bat.pet.TimeT or 0--Time
+        Bat.pet.TimeT=Bat.pet.TimeT + sec
+        
+        local pet=''
+        if C_PetBattles.IsWildBattle() then 
+            pet=pet..'|A:worldquest-icon-petbattle:0:0|a' 
+        elseif Bat.pet.PVP then 
+            pet=pet..'|A:pvptalents-warmode-swords:0:0|a'
+        end
+        
+        pet=pet..time
+        if arg1==1 then
+            pet=pet..e.Icon.select2
+        else
+            pet=pet..e.Icon.O2
+        end
+        if Bat.pet.R then--R
+            pet=pet..string.format(PET_BATTLE_AURA_TURNS_REMAINING, Bat.pet.R)
+            
+            Bat.pet.RT= Bat.pet.RT or 0
+            Bat.pet.RT=Bat.pet.RT+Bat.pet.R
+            
+            Save.pet.R= Save.pet.R or 0
+            Save.pet.R=Save.pet.R + Bat.pet.R
+            
+        end
+        table.insert(Bat.pet.pet, {
+            name=e.GetUnitMapName('player')..date('%d')..'/'..date('%m')..' '..date("%H")..':'..date("%M")..':'..date("%S"), 
+            pet=pet
+        })
+        setPetText()--宠物战斗, 设置显示内容
+       
+
+    elseif event=='PET_BATTLE_CLOSE' then
         check_Event()--检测事件
     end
 end)
