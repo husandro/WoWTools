@@ -1169,7 +1169,7 @@ local function setWorldbossText()--显示世界BOSS击杀数据Text
         local text2=''
         for name_server, info in pairs(wowSave) do
             local showName
-            name_server=name_server:gsub('-'..e.Player.server, '')
+            name_server=name_server:gsub('-'..e.Player.server, '')..(name_server==e.Player.name_server and '|A:auctionhouse-icon-favorite:0:0|a' or '')
             local col='|c'..select(4, GetClassColor(info.class))
             local tab=info.worldboss and info.worldboss.boss
             if tab then
