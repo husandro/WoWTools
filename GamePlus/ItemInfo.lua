@@ -35,8 +35,10 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex, guildBank
         end
         
         if C_Item.IsItemKeystoneByID(itemID) then--挑战
-            topLeftText=itemLink:match('%((%d+)%)') or C_MythicPlus.GetOwnedKeystoneLevel() --等级
-            local name=itemLink:match('（(.-)）') or itemLink:match('%((.-)%)') or itemLink:match(KeyStone)--名称
+            local name=itemLink:match('%[(.-)]') or itemLink
+            topLeftText=name:match('%((%d+)%)') or C_MythicPlus.GetOwnedKeystoneLevel() --等级
+            name=name:gsub('%((%d+)%)','')
+            name=name:match('（(.-)）') or name:match('%((.-)%)') or name:match('%- (.+)') name:match(KeyStone)--名称
             if name then
                 bottomLeftText=e.WA_Utf8Sub(name, 2,5)
             end

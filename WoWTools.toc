@@ -45,7 +45,7 @@ WoWPlus\ObjectiveTracker.lua
 ##WoWPlus\MountCollection.lua
 ##玩具面板
 WoWPlus\Toy.lua
-##试衣间， 境加物品超接接
+##试衣间， 增加物品超接接
 WoWPlus\Heirloom.lua
 ##幻化，物品
 WoWPlus\WardroberItems.lua
@@ -69,6 +69,9 @@ WowPlus\QuickJoin.lua
 WoWPlus\FriendsList.lua
 ##小地图，增加缩放
 WowPlus\Minimap.lua
+
+##史诗钥石地下城,挑战增强
+##WoWPlus\Challenges.lua
 
 ##自动对话，任务
 GamePlus\Gossip.lua
