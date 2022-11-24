@@ -10,6 +10,8 @@
 
 ##主要，不能删除
 WoWTools.lua
+Sesource\WoWDate.lua
+
 ##语言，不能删除
 Sesource\Locales\zhCN.lua
 Sesource\Locales\enUS.lua

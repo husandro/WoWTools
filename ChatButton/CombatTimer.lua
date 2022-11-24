@@ -1,6 +1,6 @@
 local id, e = ...
 local addName= COMBAT..TIME_LABEL:gsub(':','')
-local Save= {textScale=1.2, classColor=true, Say=120, 
+local Save= {textScale=1.2, classColor=true, Say=120, AllOnlineTime=true, 
     bat={num= 0, time= 0},
     pet={num= 0,  win=0, capture=0},
     ins={num= 0, time= 0, kill=0, dead=0},
@@ -295,6 +295,21 @@ local function setTextFrame()--设置显示内容, 父框架panel.textFrame, 内
     panel:RegisterEvent('PLAYER_ENTERING_WORLD')--副本,杀怪,死亡
     check_Event()--检测事件
 end
+
+--#############
+--总游戏时间：%s
+--#############
+local function set_event_RequestTimePlayed()
+    if Save.AllOnlineTime then
+        panel:RegisterEvent('TIME_PLAYED_MSG')
+    else
+        panel:UnregisterEvent('TIME_PLAYED_MSG')
+    end
+end
+
+local function set_TIME_PLAYED_MSG(totalTimePlayed, timePlayedThisLevel)
+
+end
 --#####
 --主菜单
 --#####
@@ -349,6 +364,24 @@ local function InitMenu(self, level, type)--主菜单
         }
         UIDropDownMenu_AddButton(info, level)
 
+        local totalTimeTab=e.WoWSave['Player-All-Time'][e.Player.name_server]
+
+        info={--总游戏时间：%s
+            text= TIME_PLAYED_TOTAL:format((totalTimeTab or totalTimeTab.totalTime) and SecondsToTime(totalTimeTab.totalTime) or ''),
+            checked= Save.AllOnlineTime,
+            tooltipOnButton= true,
+            tooltipTitle= TIME_PLAYED_LEVEL:format((totalTimeTab or totalTimeTab.levelTime) and '\n'..SecondsToTime(totalTimeTab.levelTime) or ''),
+            menuList='AllOnlineTime',
+            hasArrow=true,
+            func= function()
+                Save.AllOnlineTime = not Save.AllOnlineTime and true or nil
+                if Save.AllOnlineTime then
+                    RequestTimePlayed()
+                end
+            end
+        }
+        UIDropDownMenu_AddButton(info, level)
+
         UIDropDownMenu_AddSeparator(level)
         info={--重置所有
             text=RESET..ALL,
@@ -363,7 +396,22 @@ local function InitMenu(self, level, type)--主菜单
             end
         }
         UIDropDownMenu_AddButton(info, level)
-        
+
+    elseif type=='AllOnlineTime' then--3级,所有角色时间
+        for name, tab in pairs(e.WoWSave['Player-All-Time']) do
+            if name~=e.Player.name_server then
+                name= name:gsub('%-'..e.Player.server, '')
+                info= {
+                    text=e.Race(nil, tab.race, tab.sex).. name..e.Icon.clock2..SecondsToTime(tab.totalTime or 0),
+                    notCheckable=true,
+                    tooltipOnButton=true,
+                    tooltipTitle=TIME_PLAYED_LEVEL:format('\n'..SecondsToTime(tab.levelTime or 0)),
+                    colorCode='|c'..select(4,GetClassColor(tab.class)),
+                }
+                UIDropDownMenu_AddButton(info, level)
+            end
+        end
+
     else
         info={--在线时间
             text=GUILD_ONLINE_LABEL..e.Icon.clock2..e.GetTimeInfo(OnLineTime, not Save.timeTypeText),
@@ -371,6 +419,16 @@ local function InitMenu(self, level, type)--主菜单
             notCheckable=true
         }
         UIDropDownMenu_AddButton(info, level)
+        
+        local totalTimeTab=e.WoWSave['Player-All-Time'][e.Player.name_server]
+        if totalTimeTab and totalTimeTab.totalTime then
+            info={
+                text=TOTAL..e.Icon.clock2..SecondsToTime(totalTimeTab.totalTime),
+                isTitle=true,
+                notCheckable=true
+            }
+            UIDropDownMenu_AddButton(info, level)
+        end
         UIDropDownMenu_AddSeparator(level)
 
         info={
@@ -425,6 +483,9 @@ local function Init()
         setTexture()--设置,图标, 颜色
     end)
     
+    if Save.AllOnlineTime then--总游戏时间
+        RequestTimePlayed()
+    end
 end
 
 local function setPetText()--宠物战斗, 设置显示内容
@@ -453,7 +514,7 @@ panel:RegisterEvent('PLAYER_REGEN_ENABLED')
 
 panel:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED')
 
-panel:SetScript("OnEvent", function(self, event, arg1)
+panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" and arg1==id then
         if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
             panel:UnregisterAllEvents()
