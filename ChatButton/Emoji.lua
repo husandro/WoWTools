@@ -1,6 +1,6 @@
 local id, e = ...
 local addName= 'Emoji'
-local Save={disabled= not e.Player.zh, Channels={} }
+local Save={Channels={}}
 
 local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
 panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
