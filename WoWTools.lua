@@ -164,7 +164,7 @@ e.Player={
     server=GetRealmName(),
     name_server=UnitName('player')..'-'..GetRealmName(),
     col='|c'..select(4,GetClassColor(UnitClassBase('player'))),
-    zh= GetLocale()== "zhCN",
+    zh= GetLocale()== ("zhCN" or 'zhTW'),
     Lo=GetLocale(),
     class=UnitClassBase('player'),
     --MAX_PLAYER_LEVEL = GetMaxLevelForPlayerExpansion()
