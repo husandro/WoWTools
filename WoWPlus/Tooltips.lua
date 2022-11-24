@@ -821,9 +821,9 @@ local function setUnitInfo(self, unit)--设置单位提示信息
     else
         local r,g,b, hex = GetClassColor(UnitClassBase(unit))--颜色
         hex= hex and '|c'..hex or ''
-        GameTooltipTextLeft1:SetTextColor(r,g,b)
-        GameTooltipTextLeft2:SetTextColor(r,g,b)
-        GameTooltipTextLeft3:SetTextColor(r,g,b)
+        if GameTooltipTextLeft1 then GameTooltipTextLeft1:SetTextColor(r,g,b) end
+        if GameTooltipTextLeft2 then GameTooltipTextLeft2:SetTextColor(r,g,b) end
+        if GameTooltipTextLeft3 then GameTooltipTextLeft3:SetTextColor(r,g,b) end
         --if not UnitAffectingCombat('player') or not e.Layer then--位面,NPCID
             local zone, npc = select(5, strsplit("-",guid))--位面,NPCID
             if zone then

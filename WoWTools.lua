@@ -141,6 +141,7 @@ end
 
 e.GetUnitMapName=function(unit)--单位, 地图名称
     local text
+    local uiMapID= C_Map.GetBestMapForUnit(unit)
     if unit=='player' and IsInInstance() then
         local name, _, _, difficultyName= GetInstanceInfo()
         if name then
@@ -148,16 +149,13 @@ e.GetUnitMapName=function(unit)--单位, 地图名称
         else
             text=GetMinimapZoneText()
         end
-    else
-        local uiMapID= C_Map.GetBestMapForUnit(unit)
-        if uiMapID then
-            local info = C_Map.GetMapInfo(uiMapID)
-            if info and info.name then
-                text=info.name
-            end
+    elseif uiMapID then
+        local info = C_Map.GetMapInfo(uiMapID)
+        if info and info.name then
+            text=info.name
         end
     end
-    return text
+    return text, uiMapID
 end
 
 e.Player={
@@ -174,16 +172,6 @@ e.Player.servers={}--多服务器
 for k, v in pairs(GetAutoCompleteRealms()) do
     e.Player.servers[v]=k
 end
-
-e.UnitItemLevel={--玩家装等
-    [UnitGUID('player')] ={
-        itemLeve= C_PaperDollInfo.GetInspectItemLevel('player'),
-        specID=GetInspectSpecialization('player'),
-        name=UnitName('player'),
-        realm=e.Player.server,
-        col=e.Player.col,
-    }
-}
 
 e.Icon={
     icon='orderhalltalents-done-glow',

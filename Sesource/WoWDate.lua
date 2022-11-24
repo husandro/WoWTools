@@ -3,7 +3,19 @@ local panel=CreateFrame("Frame")
 e.WoWSave={
     ['Player-All-Time']={},
 }
---wowSave[e.Player.name_server].keystones=tab
+
+--########
+--玩家装等
+--########
+e.UnitItemLevel={
+    [UnitGUID('player')] ={
+        itemLeve= C_PaperDollInfo.GetInspectItemLevel('player'),
+        specID=GetInspectSpecialization('player'),
+        name=UnitName('player'),
+        realm=e.Player.server,
+        col=e.Player.col,
+    }
+}
 
 --###########
 --队伍数据收集
@@ -73,6 +85,7 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
             if WoWToolsSave then
                 e.WoWSave['Player-All-Time']= WoWToolsSave['Player-All-Time'] or e.WoWSave['Player-All-Time']
             end
+            set_GroupGuid()
         end
     elseif event=='PLAYER_LOGOUT' then
         if not e.ClearAllSave then
