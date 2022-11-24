@@ -235,7 +235,7 @@ local function setTextFrame()--设置显示内容, 父框架panel.textFrame, 内
             e.tips:AddDoubleLine(AFK..e.Icon.clock2..SecondsToTime(Save.afk.time), Save.afk.num..' '..VOICEMACRO_LABEL_CHARGE1)
         --end
         --if Save.ins.num>0 then
-           e.tips:AddDoubleLine('|A:BuildanAbomination-32x32:0:0|a'..Save.ins.kill..'|A:poi-soulspiritghost:0:0|a'..Save.ins.dead, Save.ins.num..' '..VOICEMACRO_LABEL_CHARGE1..' |A:CrossedFlagsWithTimer:0:0|a'..e.GetTimeInfo(Save.ins.time, not Save.timeTypeText))
+           e.tips:AddDoubleLine(INSTANCE..'|A:BuildanAbomination-32x32:0:0|a'..Save.ins.kill..'|A:poi-soulspiritghost:0:0|a'..Save.ins.dead, Save.ins.num..' '..VOICEMACRO_LABEL_CHARGE1..' |A:CrossedFlagsWithTimer:0:0|a'..e.GetTimeInfo(Save.ins.time, not Save.timeTypeText))
         --end
         e.tips:Show()
     end)
