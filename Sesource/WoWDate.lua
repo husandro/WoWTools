@@ -7,21 +7,29 @@ e.WoWSave={}
 --########
 e.UnitItemLevel={}
 local function getPlayerInfo(unit, guid)--取得玩家信息
-    local itemLevel=C_PaperDollInfo.GetInspectItemLevel(unit)
-    if itemLevel and itemLevel>1 and guid then
-        local name, realm= UnitFullName(unit)
-        local r, g, b, hex = GetClassColor(UnitClassBase(unit))
-        
-        e.UnitItemLevel[guid] = {--玩家装等
-            itemLevel=itemLevel,
-            specID=GetInspectSpecialization(unit),
-            name=name,
-            realm=realm,
-            col='|c'..hex,
-            r=r,
-            g=g,
-            b=b,
-        }
+    if not unit and guid then
+        unit= e.GroupGuid[guid] and e.GroupGuid[guid].unit 
+                or guid== e.Player.guid and 'player'
+                or guid== UnitGUID("mouseover") and "mouseover"
+                or guid== UnitGUID('target') and 'target'
+    end
+    if unit then
+        local itemLevel=C_PaperDollInfo.GetInspectItemLevel(unit)
+        if itemLevel and itemLevel>1 and guid then
+            local name, realm= UnitFullName(unit)
+            local r, g, b, hex = GetClassColor(UnitClassBase(unit))
+            
+            e.UnitItemLevel[guid] = {--玩家装等
+                itemLevel=itemLevel,
+                specID=GetInspectSpecialization(unit),
+                name=name,
+                realm=realm,
+                col='|c'..hex,
+                r=r,
+                g=g,
+                b=b,
+            }
+        end
     end
 end
 
