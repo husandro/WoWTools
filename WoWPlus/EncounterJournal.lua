@@ -383,7 +383,7 @@ local function set_EncounterJournal_Keystones_Tips(self)--险指南界面, 挑�
             find=true
         end
         if find then
-            e.tips:AddDoubleLine(e.GetPlayerInfo(nil, guid, true), (guid==e.Player.guid and e.Icon.star2 or ''))
+            e.tips:AddDoubleLine(e.GetPlayerInfo(nil, guid, true), guid==e.Player.guid and e.Icon.star2)
         end
     end
     e.tips:Show()
