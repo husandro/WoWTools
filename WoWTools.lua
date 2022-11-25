@@ -238,7 +238,7 @@ e.Icon={
     leader='|A:UI-HUD-UnitFrame-Player-Group-GuideIcon:0:0|a',--队长
 
     info2='|A:questlegendary:0:0|a',--黄色!
-    star='|A:auctionhouse-icon-favorite:0:0|a',--星星
+    star2='|A:auctionhouse-icon-favorite:0:0|a',--星星
 }
 --[[
     Interface\Common\WhiteIconFrame 提示方形外框
