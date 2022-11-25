@@ -2,17 +2,17 @@ local id, e = ...
 local addName= SPELLS..'Flyout'
 local Save={}
 
-local Vstr=function(t)--垂直文字
-    local len = select(2, t:gsub("[^\128-\193]", ""))
-    if(len == #t) then
-        return t:gsub(".", "%1\n")
-    else
-        return t:gsub("([%z\1-\127\194-\244][\128-\191]*)", "%1\n")
-    end
-end
-local function Set()
-    if Save.disabled then
-        return
+--######
+--初始化
+--######
+local function Init()
+    local Vstr=function(t)--垂直文字
+        local len = select(2, t:gsub("[^\128-\193]", ""))
+        if(len == #t) then
+            return t:gsub(".", "%1\n")
+        else
+            return t:gsub("([%z\1-\127\194-\244][\128-\191]*)", "%1\n")
+        end
     end
     hooksecurefunc('SpellFlyoutButton_UpdateGlyphState', function(self, reason)
             if self.spellID then
@@ -66,7 +66,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
                 print(addName, e.GetEnabeleDisable(not Save.disabled), NEED..' /reload')
             end)
-            Set()
+
+            if not Save.disabled then
+                Init()
+            end
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end

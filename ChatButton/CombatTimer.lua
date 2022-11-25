@@ -296,20 +296,6 @@ local function setTextFrame()--设置显示内容, 父框架panel.textFrame, 内
     check_Event()--检测事件
 end
 
---#############
---总游戏时间：%s
---#############
-local function set_event_RequestTimePlayed()
-    if Save.AllOnlineTime then
-        panel:RegisterEvent('TIME_PLAYED_MSG')
-    else
-        panel:UnregisterEvent('TIME_PLAYED_MSG')
-    end
-end
-
-local function set_TIME_PLAYED_MSG(totalTimePlayed, timePlayedThisLevel)
-
-end
 --#####
 --主菜单
 --#####
@@ -364,13 +350,13 @@ local function InitMenu(self, level, type)--主菜单
         }
         UIDropDownMenu_AddButton(info, level)
 
-        local totalTimeTab=e.WoWSave['Player-All-Time'][e.Player.name_server]
-
+       
+        local tab=e.WoWSave[e.Player.guid].Time
         info={--总游戏时间：%s
-            text= TIME_PLAYED_TOTAL:format((totalTimeTab or totalTimeTab.totalTime) and SecondsToTime(totalTimeTab.totalTime) or ''),
+            text= TIME_PLAYED_TOTAL:format((tab or tab.totalTime) and SecondsToTime(tab.totalTime) or ''),
             checked= Save.AllOnlineTime,
             tooltipOnButton= true,
-            tooltipTitle= TIME_PLAYED_LEVEL:format((totalTimeTab or totalTimeTab.levelTime) and '\n'..SecondsToTime(totalTimeTab.levelTime) or ''),
+            tooltipTitle= TIME_PLAYED_LEVEL:format((tab or tab.levelTime) and '\n'..SecondsToTime(tab.levelTime) or ''),
             menuList='AllOnlineTime',
             hasArrow=true,
             func= function()
@@ -398,32 +384,42 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddButton(info, level)
 
     elseif type=='AllOnlineTime' then--3级,所有角色时间
-        for name, tab in pairs(e.WoWSave['Player-All-Time']) do
-            if name~=e.Player.name_server then
-                name= name:gsub('%-'..e.Player.server, '')
+        local timeAll=0
+        for guid, tab in pairs(e.WoWSave) do
+            local time= tab.Time and tab.Time.totalTime
+            if time and time>0 then
+                timeAll= timeAll + time
                 info= {
-                    text=e.Race(nil, tab.race, tab.sex).. name..e.Icon.clock2..SecondsToTime(tab.totalTime or 0),
+                    text=e.GetPlayerInfo(nil, guid, true)..e.Icon.clock2..SecondsToTime(time),
                     notCheckable=true,
                     tooltipOnButton=true,
-                    tooltipTitle=TIME_PLAYED_LEVEL:format('\n'..SecondsToTime(tab.levelTime or 0)),
-                    colorCode='|c'..select(4,GetClassColor(tab.class)),
+                    tooltipTitle= tab.Time.levelTime and TIME_PLAYED_LEVEL:format('\n'..SecondsToTime(tab.Time.levelTime)),
                 }
                 UIDropDownMenu_AddButton(info, level)
             end
         end
+        if timeAll>0 then
+            UIDropDownMenu_AddSeparator(level)
+            info={
+                text=FROM_TOTAL.. SecondsToTime(timeAll),
+                notCheckable=true,
+                isTitle=true
+            }
+            UIDropDownMenu_AddButton(info, level)
+        end
 
     else
         info={--在线时间
-            text=GUILD_ONLINE_LABEL..e.Icon.clock2..e.GetTimeInfo(OnLineTime, not Save.timeTypeText),
+            text=GUILD_ONLINE_LABEL..e.Icon.clock2..e.GetTimeInfo(OnLineTime),
             isTitle=true,
             notCheckable=true
         }
         UIDropDownMenu_AddButton(info, level)
         
-        local totalTimeTab=e.WoWSave['Player-All-Time'][e.Player.name_server]
-        if totalTimeTab and totalTimeTab.totalTime then
+        local tab=e.WoWSave[e.Player.guid].Time
+        if tab and tab.totalTime then
             info={
-                text=TOTAL..e.Icon.clock2..SecondsToTime(totalTimeTab.totalTime),
+                text=TOTAL..e.Icon.clock2..SecondsToTime(tab.totalTime),
                 isTitle=true,
                 notCheckable=true
             }

@@ -20,6 +20,7 @@ StaticPopupDialogs[id..'restAllSetup']={
     OnAccept=function(self)
         e.ClearAllSave=true
         WoWToolsSave={}
+        WoWDate={}
         ReloadUI()
     end,
 }

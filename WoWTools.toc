@@ -2,7 +2,7 @@
 ## Title: |A:Icon-WoW:0:0|a|cffff00ffWoW|r |cff00ff00Tools|r
 ## Notes: WoW Tools
 ## Author: husandro
-## SavedVariables: WoWToolsSave
+## SavedVariables: WoWToolsSave, WoWDate
 
 ## X-Curse-Project-ID: 695149
 ## X-Wago-ID: baND1J6o
@@ -67,11 +67,13 @@ WoWPlus\UnitFrame.lua
 WowPlus\QuickJoin.lua
 ##好友，面板
 WoWPlus\FriendsList.lua
-##小地图，增加缩放
+##小地图，增强缩放
 WowPlus\Minimap.lua
+##冒险指南, 增强
+WoWPlus\EncounterJournal.lua
 
 ##史诗钥石地下城,挑战增强
-##WoWPlus\Challenges.lua
+WoWPlus\Challenges.lua
 
 ##自动对话，任务
 GamePlus\Gossip.lua

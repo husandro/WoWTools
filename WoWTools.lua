@@ -167,6 +167,7 @@ e.Player={
     class=UnitClassBase('player'),
     --MAX_PLAYER_LEVEL = GetMaxLevelForPlayerExpansion()
     week=GetWeek(),--周数
+    guid=UnitGUID('player'),
 }
 e.Player.servers={}--多服务器
 for k, v in pairs(GetAutoCompleteRealms()) do
@@ -237,6 +238,7 @@ e.Icon={
     leader='|A:UI-HUD-UnitFrame-Player-Group-GuideIcon:0:0|a',--队长
 
     info2='|A:questlegendary:0:0|a',--黄色!
+    star='|A:auctionhouse-icon-favorite:0:0|a',--星星
 }
 --[[
     Interface\Common\WhiteIconFrame 提示方形外框
@@ -751,6 +753,53 @@ e.GetTimeInfo= function(value, chat, time)
         else
             return SecondsToTime(0), 0;
         end
+    end
+end
+
+e.GetItemCollected= function(link, sourceID, icon)--物品是否收集 
+    sourceID= sourceID or link and select(2,C_TransmogCollection.GetItemInfo(link))
+    local sourceInfo = sourceID and C_TransmogCollection.GetSourceInfo(sourceID)
+    if sourceInfo then
+        if sourceInfo.isCollected then
+            if icon then
+                if select(2, C_TransmogCollection.PlayerCanCollectSource(sourceID)) then
+                    return e.Icon.select2, sourceInfo.isCollected
+                else
+                    return '|A:Adventures-Checkmark:0:0|a', sourceInfo.isCollected--黄色√
+                end
+            else
+                return '|cnGREEN_FONT_COLOR:'..COLLECTED..'|r', sourceInfo.isCollected
+            end
+        else
+            if icon then
+                if select(2, C_TransmogCollection.PlayerCanCollectSource(sourceID)) then
+                    return e.Icon.okTransmog2, sourceInfo.isCollected
+                else
+                    return e.Icon.transmogHide2, sourceInfo.isCollected
+                end
+            else
+                return '|cnRED_FONT_COLOR:'..NOT_COLLECTED..'|r', sourceInfo.isCollected
+            end
+        end
+    end
+end
+
+e.GetPetCollected= function(speciesID)--宠物, 收集数量
+    local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesID)
+    if nunumCollected==0 then
+        return '|cnRED_FONT_COLOR:'..ITEM_PET_KNOWN:format(0, limit)..'|r', numCollected
+    elseif limit and numCollected==limit and limit>0 then
+        return '|cnGREEN_FONT_COLOR:'..ITEM_PET_KNOWN:format(numCollected, limit)..'|r', numCollected
+    else
+        return ITEM_PET_KNOWN:format(numCollected, limit), numCollected
+    end
+end
+
+e.GetMountCollected= function(mountID)--坐骑, 收集数量
+    if select(11, C_MountJournal.GetMountInfoByID(mountID)) then
+        return '|cnGREEN_FONT_COLOR:'..COLLECTED..'|r'
+    else
+        return '|cnRED_FONT_COLOR:'..NOT_COLLECTED..'|r'
     end
 end
 
