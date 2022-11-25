@@ -91,6 +91,9 @@ GamePlus\AddOns.lua
 GamePlus\Talking.lua
 ##断， 驱，散
 GamePlus\InterruptStolenDispel.lua
+##日历, 显示
+##GamePlus\Holiday.lua
+
 
 ##坐骑， Tools 主要的，
 ##如果要使用Tools中的一个模块，必须开启坐骑模块

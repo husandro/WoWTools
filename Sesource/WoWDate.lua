@@ -13,9 +13,9 @@ local function getPlayerInfo(unit, guid)--取得玩家信息
                 or guid== UnitGUID("mouseover") and "mouseover"
                 or guid== UnitGUID('target') and 'target'
     end
-    if unit then
+    if unit and UnitExists(unit) and guid then
         local itemLevel=C_PaperDollInfo.GetInspectItemLevel(unit)
-        if itemLevel and itemLevel>1 and guid then
+        if itemLevel and itemLevel>1 then
             local name, realm= UnitFullName(unit)
             local r, g, b, hex = GetClassColor(UnitClassBase(unit))
             
