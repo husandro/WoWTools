@@ -941,14 +941,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 else
                     Save.disabled=true
                 end
-                print(addName, e.GetEnabeleDisable(not Save.disabled), NEED..' /reload')
+                print(addName, e.GetEnabeleDisable(not Save.disabled), REQUIRES_RELOAD)
             end)
             
             if Save.disabled then
-                panel:UnregisterAllEvents()    
-            else
-                setWorldbossText()--显示世界BOSS击杀数据
-                setInstanceBossText()--显示副本击杀数据
+                panel:UnregisterAllEvents()  
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
@@ -966,6 +963,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='UPDATE_INSTANCE_INFO' then
         C_Timer.After(2, function()
             setInstanceBossText()--显示副本击杀数据
+            setWorldbossText()--显示世界BOSS击杀数据Text
             EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示所数据
         end)
         
