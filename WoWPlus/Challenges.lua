@@ -2,12 +2,7 @@ local id, e = ...
 local addName= CHALLENGES
 local Save= {}
 local panel=CreateFrame("Frame")
---［［
-local Ins={
-    {journalEncounterID=536, },
-}
-］］
---［［
+--[[
 
 local spellIDs={--法术, 传送门, {mapChallengeModeID = 法术 SPELL ID}
     [166]=159900,--暗轨之路(车站)
