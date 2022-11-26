@@ -2,12 +2,12 @@ local id, e = ...
 local addName= CHALLENGES
 local Save= {}
 local panel=CreateFrame("Frame")
-
+--［［
 local Ins={
     {journalEncounterID=536, },
 }
 
---[[
+
 local spellIDs={--法术, 传送门, {mapChallengeModeID = 法术 SPELL ID}
     [166]=159900,--暗轨之路(车站)
     [391]=367416,--街头商贩之路(天街)
@@ -910,9 +910,9 @@ end
 --####
 --初始
 --####
-local function Init()
+--local function Init()
 
-end
+
 
 --###########
 --加载保存数据
@@ -938,8 +938,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if Save.disabled then
                 panel:UnregisterAllEvents()
-            else
-                Init()
+            --else
+              --  Init()
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
