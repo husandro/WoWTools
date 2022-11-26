@@ -895,11 +895,11 @@ end
         if ChallengesFrame.WeeklyInfo.Child.SeasonBest then--隐藏, 赛季最佳
             ChallengesFrame.WeeklyInfo.Child.SeasonBest:SetText('')
         end
-  
+  --[[
         if IsAddOnLoaded("AngryKeystones") and Frame.WeeklyInfo.Child.WeeklyChest and Frame.WeeklyInfo.Child.WeeklyChest.RunStatus then--完成史诗钥石地下城即可获得
             Frame.WeeklyInfo.Child.WeeklyChest.RunStatus:ClearAllPoints();
             Frame.WeeklyInfo.Child.WeeklyChest.RunStatus:SetPoint('TOP', Frame.WeeklyInfo.Child.WeeklyChest ,0,0)
-        end
+        end]]
     end
     
     --hooksecurefunc(ChallengesDungeonIconMixin, 'OnEnter', function(self)
