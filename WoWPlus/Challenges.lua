@@ -589,7 +589,7 @@ local function set_UI_Blizzard_ChallengesUI()--史诗钥石地下城, 界面
             end
             if m2~='' then m=(m~='' and m..'|n' or '')..CHALLENGE_MODE_THIS_WEEK..': |cff00ff00'..n..'/'..n2..'|r  (|cffffffff'..(n2-n)..'|r)|n'..m2 end
         end      
-     
+     --[[
         local text--所有角色KEY
         for name_server, info in pairs(e.wowSave) do
             local tab=info.keystones
@@ -606,7 +606,7 @@ local function set_UI_Blizzard_ChallengesUI()--史诗钥石地下城, 界面
         end
         if self.WoWKeystones then 
             self.all:SetText(text or '')
-        end
+        end]]
     end
     
     local function Bag(self)--包里KEY
