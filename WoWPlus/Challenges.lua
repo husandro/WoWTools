@@ -2,12 +2,8 @@ local id, e = ...
 local addName= CHALLENGES
 local Save= {}
 local panel=CreateFrame("Frame")
-
-local Ins={
-    {journalEncounterID=536, },
-}
-
 --[[
+
 local spellIDs={--法术, 传送门, {mapChallengeModeID = 法术 SPELL ID}
     [166]=159900,--暗轨之路(车站)
     [391]=367416,--街头商贩之路(天街)
@@ -539,226 +535,214 @@ local function Kill(self)--副本PVP团本
     end
 end
     
-local function HistorySort(a,b)
-    if a.mapChallengeModeID == b.mapChallengeModeID then 
-        return a.level > b.level;
-    else
-        return a.mapChallengeModeID< b.mapChallengeModeID;
-    end        
-end;
-local function All(self)--所有记录   
-    if Save.hide then-- or Save.hideAll then 
-        if self.WoWKeystones then
-            self.WoWKeystones:SetText('')
+    local function HistorySort(a,b)
+        if a.mapChallengeModeID == b.mapChallengeModeID then 
+            return a.level > b.level;
+        else
+            return a.mapChallengeModeID< b.mapChallengeModeID;
+        end        
+    end;
+    local function All(self)--所有记录   
+        if Save.hide then-- or Save.hideAll then 
+            if self.all then self.all:SetText('') end
+            return;
         end
-        return;
-    end
-    local m=""; 
-    local info= C_MythicPlus.GetRunHistory(true, true);--全部
-    if info then
-        local nu=#C_MythicPlus.GetRunHistory(true) or {};
-        local nu2=#info;            
-        m=HISTORY..': |cff00ff00'..nu.. '/'.. nu2.. ' |r(|cffffffff'..nu2-nu..'|r)';
-    end
-    
-    info = C_MythicPlus.GetRunHistory(false, true)--本周记录
-    if info then
-        table.sort(info,HistorySort);
-        local n,n2=0,0;
-        local ids={};
-        for _, v in pairs(info) do
-            if v.level and v.mapChallengeModeID then                                
-                local name, _, _, texture = C_ChallengeMode.GetMapUIInfo(v.mapChallengeModeID);            
-                ids[name]=ids[name] or {
-                    texture=texture and '|T'..texture..':0|t' or '', 
-                    lv={},
-                    co=0,
-                    to=0,
-                };
-                if v.completed then                        
-                    table.insert(ids[name].lv, '|cff00ff00'..v.level..'|r');
-                    n=n+1;
-                    ids[name].co=ids[name].co+1;
-                else
-                    table.insert(ids[name].lv, '|cffffffff'..v.level..'|r');                        
-                end
-                ids[name].to=ids[name].to+1;
-                n2=n2+1;                    
+        local m=""; 
+        local info= C_MythicPlus.GetRunHistory(true, true);--全部
+        if info then
+            local nu=#C_MythicPlus.GetRunHistory(true) or {};
+            local nu2=#info;            
+            m=HISTORY..': |cff00ff00'..nu.. '/'.. nu2.. ' |r(|cffffffff'..nu2-nu..'|r)';
+        end
+        
+        info = C_MythicPlus.GetRunHistory(false, true)--本周记录
+        if info then
+            table.sort(info,HistorySort);
+            local n,n2=0,0;
+            local ids={};
+            for _, v in pairs(info) do
+                if v.level and v.mapChallengeModeID then                                
+                    local name, _, _, texture = C_ChallengeMode.GetMapUIInfo(v.mapChallengeModeID);            
+                    ids[name]=ids[name] or {
+                        texture=texture and '|T'..texture..':0|t' or '', 
+                        lv={},
+                        co=0,
+                        to=0,
+                    };
+                    if v.completed then                        
+                        table.insert(ids[name].lv, '|cff00ff00'..v.level..'|r');
+                        n=n+1;
+                        ids[name].co=ids[name].co+1;
+                    else
+                        table.insert(ids[name].lv, '|cffffffff'..v.level..'|r');                        
+                    end
+                    ids[name].to=ids[name].to+1;
+                    n2=n2+1;                    
+                end;
             end;
-        end;
-        local m2='';
-        for k, v in pairs(ids) do 
-            if m2~='' then m2=m2..'|n' end
-            m2=m2..v.texture..' |cff00ff00'..v.co..'/'..v.to..'|r'..k;
-            for _,v2 in pairs(v.lv) do 
-                m2=m2..' '..v2;
-            end
-        end
-        if m2~='' then m=(m~='' and m..'|n' or '')..CHALLENGE_MODE_THIS_WEEK..': |cff00ff00'..n..'/'..n2..'|r  (|cffffffff'..(n2-n)..'|r)|n'..m2 end
-    end      
-    
-    local text= m..'\n'--所有角色KEY
-    for guid, tab in pairs(e.WoWSave) do
-        if guid~=e.Player.guid then
-            local find
-            for itemLink, _ in pairs(tab.Keystone.itemLink) do
-                text= text and text..'\n    ' or '    '
-                text= text..itemLink
-                find=true
-            end
-            if find then
-                text=text.. '\n'.. e.GetPlayerInfo(nil, guid, true)
-            end
-        end
-    end
-    if  text and not self.WoWKeystones then
-        self.WoWKeystones=e.Cstr(self);
-        self.WoWKeystones:SetPoint('TOPLEFT', self, 'TOPRIGHT',0, -10)
-    end
-    if self.WoWKeystones then 
-        self.WoWKeystones:SetText(text or '')
-    end
-end
-
-local function Bag(self)--包里KEY
-    if Save.hide then return end
-    getBagKey(self, 'BOTTOMLEFT', 10, 90);
-end    
-
-
-local function Nu(self)--副本 完成/总次数 (本周, 全部)
-    if Save.hide then 
-        if self.nu then self.nu:SetText('') end
-        if self.nu2 then self.nu2:SetText('') end
-        return;
-    end
-    local to=GetNum(self.mapID, true);--全部
-    if to then
-        if not self.nu then                
-            self.nu=e.Cstr(self);
-            self.nu:SetPoint('TOPLEFT',0,0);
-        end
-        self.nu:SetText(to);
-    end            
-    
-    to=GetNum(self.mapID);--本周
-    if to then
-        if not self.nu2 then
-            self.nu2=e.Cstr(self);
-            self.nu2:SetPoint('TOPRIGHT',0,0);
-        end
-        self.nu2:SetText(to);
-    end
-end
-
-local function Cur(self)--货币数量
-    local ids={1602, 1191};
-    for k, v in pairs(ids) do
-        local info=C_CurrencyInfo.GetCurrencyInfo(v);
-        if info and info.discovered and info.quantity and info.maxQuantity  and not Save.hide then
-            local t='';
-            if info.maxQuantity>0  then
-                if info.useTotalEarnedForMaxQty then--本周还可获取                        
-                    local q=info.maxQuantity - info.totalEarned;
-                    if q>0 then q='|cff00ff00'..q..'|r' end                        
-                    t=t..'('..q..'+) ';
-                end            
-                if info.quantity==info.maxQuantity then
-                    t=t..'|cff00ff00'..info.quantity.. '/'..info.maxQuantity..'|r ';
-                else
-                    t=t..info.quantity.. '/'..info.maxQuantity..' ';
+            local m2='';
+            for k, v in pairs(ids) do 
+                if m2~='' then m2=m2..'|n' end
+                m2=m2..v.texture..' |cff00ff00'..v.co..'/'..v.to..'|r'..k;
+                for _,v2 in pairs(v.lv) do 
+                    m2=m2..' '..v2;
                 end
-            else
-                if info.maxQuantity==0 then
-                    t=t..info.quantity..'/'.. UNLIMITED..' ';
-                else
+            end
+            if m2~='' then m=(m~='' and m..'|n' or '')..CHALLENGE_MODE_THIS_WEEK..': |cff00ff00'..n..'/'..n2..'|r  (|cffffffff'..(n2-n)..'|r)|n'..m2 end
+        end      
+     
+        local text--所有角色KEY
+        for name_server, info in pairs(e.wowSave) do
+            local tab=info.keystones
+            if tab and tab.itemLink and #tab.itemLink > 0 then
+                local m= '|c'..GetClassColor(info.class)..e.Race(nil, info.race, info.sex)..name_server:gsub('-'..e.Player.server, '')..(tab.score and e.GetKeystoneScorsoColor(tab.score,true) or '')..' '..(info.weekLevel and '(|cnGREEN_FONT_COLOR:'..info.weekLevel..'|r) ' or '')..' '..(tab.weekNum or 0)..'/'..(tab.all or 0)
+                for _, link in pairs(tab.itemLink) do
+                    m=m..'\n'..link
+                end
+            end
+        end
+        if  text and not self.WoWKeystones then
+            self.WoWKeystones=e.Cstr(self);
+            self.WoWKeystones:SetPoint('TOPLEFT', self, 'TOPRIGHT',0, -10)
+        end
+        if self.WoWKeystones then 
+            self.all:SetText(text or '')
+        end
+    end
+    
+    local function Bag(self)--包里KEY
+        if Save.hide then return end
+        getBagKey(self, 'BOTTOMLEFT', 10, 90);
+    end    
+    
+    
+    local function Nu(self)--副本 完成/总次数 (本周, 全部)
+        if Save.hide then 
+            if self.nu then self.nu:SetText('') end
+            if self.nu2 then self.nu2:SetText('') end
+            return;
+        end
+        local to=GetNum(self.mapID, true);--全部
+        if to then
+            if not self.nu then                
+                self.nu=e.Cstr(self);
+                self.nu:SetPoint('TOPLEFT',0,0);
+            end
+            self.nu:SetText(to);
+        end            
+        
+        to=GetNum(self.mapID);--本周
+        if to then
+            if not self.nu2 then
+                self.nu2=e.Cstr(self);
+                self.nu2:SetPoint('TOPRIGHT',0,0);
+            end
+            self.nu2:SetText(to);
+        end
+    end
+    
+    local function Cur(self)--货币数量
+        if Save.hide then return end        
+        local ids={1602, 1191};
+        for k, v in pairs(ids) do
+            local info=C_CurrencyInfo.GetCurrencyInfo(v);
+            if info and info.discovered and info.quantity and info.maxQuantity then
+                local t='';
+                if info.maxQuantity>0  then
+                    if info.useTotalEarnedForMaxQty then--本周还可获取                        
+                        local q=info.maxQuantity - info.totalEarned;
+                        if q>0 then q='|cff00ff00'..q..'|r' end                        
+                        t=t..'('..q..'+) ';
+                    end            
                     if info.quantity==info.maxQuantity then
                         t=t..'|cff00ff00'..info.quantity.. '/'..info.maxQuantity..'|r ';
                     else
-                        t=t..info.quantity..'/'..info.maxQuantity..' ';
+                        t=t..info.quantity.. '/'..info.maxQuantity..' ';
                     end
-                end                    
-            end
-            t=t..info.name;
-            
-            if not self['cur'..k] then
-                self['cur'..k]=CreateFrame("Button", nil, self);                    
-                self['cur'..k]:SetHighlightAtlas('Forge-ColorSwatchSelection');
-                self['cur'..k]:SetPushedTexture('Interface\\Buttons\\UI-Quickslot-Depress');
-                self['cur'..k]:SetNormalTexture(info.iconFileID);                    
-                if k==1 then
-                    self['cur'..k]:SetPoint('BOTTOMRIGHT',-10, 90);
                 else
-                    self['cur'..k]:SetPoint('BOTTOMRIGHT', self['cur'..(k-1)], 'TOPRIGHT', 0,0);
+                    if info.maxQuantity==0 then
+                        t=t..info.quantity..'/'.. UNLIMITED..' ';
+                    else
+                        if info.quantity==info.maxQuantity then
+                            t=t..'|cff00ff00'..info.quantity.. '/'..info.maxQuantity..'|r ';
+                        else
+                            t=t..info.quantity..'/'..info.maxQuantity..' ';
+                        end
+                    end                    
                 end
-                self['cur'..k]:SetSize(h+4, h+4);
+                t=t..info.name;
                 
-                self['cur'..k]:SetScript("OnEnter",function(self2)                            
-                        GameTooltip:SetOwner(self2, "ANCHOR_RIGHT")
-                        GameTooltip:ClearLines()
-                        GameTooltip:SetCurrencyByID(v);
-                        GameTooltip:Show();
-                end);
-                self['cur'..k]:SetScript("OnLeave",function()
-                        GameTooltip:Hide();
-                end);        
+                if not self['cur'..k] then
+                    self['cur'..k]=CreateFrame("Button", nil, self);                    
+                    self['cur'..k]:SetHighlightAtlas('Forge-ColorSwatchSelection');
+                    self['cur'..k]:SetPushedTexture('Interface\\Buttons\\UI-Quickslot-Depress');
+                    self['cur'..k]:SetNormalTexture(info.iconFileID);                    
+                    if k==1 then
+                        self['cur'..k]:SetPoint('BOTTOMRIGHT',-10, 90);
+                    else
+                        self['cur'..k]:SetPoint('BOTTOMRIGHT', self['cur'..(k-1)], 'TOPRIGHT', 0,0);
+                    end
+                    self['cur'..k]:SetSize(h+4, h+4);
+                    
+                    self['cur'..k]:SetScript("OnEnter",function(self2)                            
+                            GameTooltip:SetOwner(self2, "ANCHOR_RIGHT")
+                            GameTooltip:ClearLines()
+                            GameTooltip:SetCurrencyByID(v);
+                            GameTooltip:Show();
+                    end);
+                    self['cur'..k]:SetScript("OnLeave",function()
+                            GameTooltip:Hide();
+                    end);        
+                    
+                    self['cur'..k].text=e.Cstr(self['cur'..k]);
+                    self['cur'..k].text:SetPoint('RIGHT', self['cur'..k], 'LEFT', 0, 0);
+                    self['cur'..k].text:SetJustifyH('RIGHT');                                        
+                end
                 
-                self['cur'..k].text=e.Cstr(self['cur'..k]);
-                self['cur'..k].text:SetPoint('RIGHT', self['cur'..k], 'LEFT', 0, 0);
-                self['cur'..k].text:SetJustifyH('RIGHT');                                        
+                self['cur'..k].text:SetText(t);
+                
             end
-            
-            self['cur'..k].text:SetText(t);
-        end
-        if self['cur'..k] then
-            self['cur'..k]:SetShown(not Save.hide)
-        end
-    end        
-end
-
-local function set2(self)
-    Kill(self); 
-    All(self);
-    Bag(self);
-    Cur(self);
-    self:Update()
-end
-
-local function set(self)
-    if not self.maps or #self.maps==0 then 
-        return
+        end        
     end
-    for i=1, #self.maps do            
-        local frame = self.DungeonIcons[i];
-        if frame then
-            if not frame.tips then
-                frame:HookScript('OnEnter', function()--提示
-                    GameTooltip:AddDoubleLine(' ');
-                    local a=GetNum(frame.mapID, true) or RED_FONT_COLOR_CODE..NONE..'|r';--所有
-                    local w=GetNum(frame.mapID) or RED_FONT_COLOR_CODE..NONE..'|r';--本周
-                    GameTooltip:AddDoubleLine(HISTORY..': '..a, CHALLENGE_MODE_THIS_WEEK..': '..w);
-                    GameTooltip:AddDoubleLine('mapChallengeModeID:', frame.mapID);
-                    GameTooltip:Show();
-                end);
-                frame.tips=true;
-            end
-            
-            if Save.hide then 
-                if frame.nameStr then 
-                    frame.nameStr:SetText('') 
+    
+    local function set2(self)
+        Kill(self); 
+        All(self);
+        Bag(self);
+        Cur(self);     
+    end
+    
+    local function set()
+        local self=ChallengesFrame;
+        if not self.maps or #self.maps==0 then 
+            return
+        end
+        for i=1, #self.maps do            
+            local frame = self.DungeonIcons[i];
+            if frame then
+                if not frame.tips then
+                    frame:HookScript('OnEnter', function()--提示
+                            --local _, _, _, _, backgroundTexture = C_ChallengeMode.GetMapUIInfo(frame.mapID);
+                            GameTooltip:AddDoubleLine(' ');
+                            local a=GetNum(frame.mapID, true) or RED_FONT_COLOR_CODE..NONE..'|r';--所有
+                            local w=GetNum(frame.mapID) or RED_FONT_COLOR_CODE..NONE..'|r';--本周
+                            GameTooltip:AddDoubleLine(HISTORY..': '..a, CHALLENGE_MODE_THIS_WEEK..': '..w);
+                            GameTooltip:AddDoubleLine('mapChallengeModeID:', frame.mapID);
+                            --GameTooltip:AddDoubleLine('|T'..texture..':0|t'..texture, '|T'..backgroundTexture..':0|t'..backgroundTexture);            
+                            GameTooltip:Show();
+                    end);
+                    frame.tips=true;
                 end
-                if frame.sc then 
-                    frame.sc:SetText('') 
-                end
-                if frame['affixInfo1'] then 
-                    frame['affixInfo1']:SetText('') 
-                end
-                if frame['affixInfo2'] then 
-                    frame['affixInfo2']:SetText('') 
-                end
-            else
-                local name = C_ChallengeMode.GetMapUIInfo(frame.mapID);--名称                        
-                if name then
+                
+                if Save.hide then 
+                    if frame.nameStr then frame.nameStr:SetText('') end
+                    if frame.sc then frame.sc:SetText('') end
+                    if frame['affixInfo1'] then frame['affixInfo1']:SetText('') end
+                    if frame['affixInfo2'] then frame['affixInfo2']:SetText('') end
+                else
+   
+                 local name = C_ChallengeMode.GetMapUIInfo(frame.mapID);--名称                        
+                 if name then
                     if not frame.nameStr then                
                         frame.nameStr=e.Cstr(frame)
                         frame.nameStr:SetPoint('BOTTOM',frame, 'TOP', 0,0);
@@ -906,7 +890,23 @@ local function Init()
         if self.WeeklyInfo.Child.SeasonBest then--隐藏, 赛季最佳
             self.WeeklyInfo.Child.SeasonBest:SetText('')
         end
+  
+        if IsAddOnLoaded("AngryKeystones") and Frame.WeeklyInfo.Child.WeeklyChest and Frame.WeeklyInfo.Child.WeeklyChest.RunStatus then--完成史诗钥石地下城即可获得
+            Frame.WeeklyInfo.Child.WeeklyChest.RunStatus:ClearAllPoints();
+            Frame.WeeklyInfo.Child.WeeklyChest.RunStatus:SetPoint('TOP', Frame.WeeklyInfo.Child.WeeklyChest ,0,0)
+        end
     end
+    
+    --hooksecurefunc(ChallengesDungeonIconMixin, 'OnEnter', function(self)
+ end
+
+
+
+--####
+--初始
+--####
+local function Init()
+
 end
 
 --###########
@@ -933,6 +933,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if Save.disabled then
                 panel:UnregisterAllEvents()
+            else
+                Init()
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
