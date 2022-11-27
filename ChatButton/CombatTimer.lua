@@ -488,7 +488,7 @@ local function setPetText()--宠物战斗, 设置显示内容
     local text= PET_BATTLE_COMBAT_LOG_NEW_ROUND:format(PetRound.round or 0)
     if  C_PetBattles.IsWildBattle() then 
         text=text..'|A:worldquest-icon-petbattle:0:0|a'
-    elseif PetTab.PVP then 
+    elseif PetRound.PVP then 
         text=text..'|A:pvptalents-warmode-swords:0:0|a'
     else 
         text=text..'|A:jailerstower-animapowerlist-offense:0:0|a'

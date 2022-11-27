@@ -92,7 +92,7 @@ GamePlus\Talking.lua
 ##断， 驱，散
 GamePlus\InterruptStolenDispel.lua
 ##日历, 显示
-##GamePlus\Holiday.lua
+GamePlus\Holiday.lua
 
 
 ##坐骑， Tools 主要的，
@@ -116,6 +116,8 @@ Tools\ChallengerPath.lua
 Tools\Daisy.lua
 ##法师传送门
 Tools\MagePortal.lua
+##侦察地图, 玩具
+Tools\ScoutingMapToy.lua
 
 ##Chat Button
 ##这是Chat主要，如果需要其中一个功能，这个不能关

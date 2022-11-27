@@ -342,12 +342,12 @@ local NUM_SLOTS_PER_GUILDBANK_GROUP = 14;
 local function setGuildBank()--公会银行,设置
     local tab = GetCurrentGuildBankTab();--Blizzard_GuildBankUI.lua
     for i=1, MAX_GUILDBANK_SLOTS_PER_TAB do
-        index = mod(i, NUM_SLOTS_PER_GUILDBANK_GROUP);
+        local index = mod(i, NUM_SLOTS_PER_GUILDBANK_GROUP);
         if ( index == 0 ) then
             index = NUM_SLOTS_PER_GUILDBANK_GROUP;
         end
-        column = ceil((i-0.5)/NUM_SLOTS_PER_GUILDBANK_GROUP);
-        button = GuildBankFrame.Columns[column].Buttons[index];
+        local column = ceil((i-0.5)/NUM_SLOTS_PER_GUILDBANK_GROUP);
+        local button = GuildBankFrame.Columns[column].Buttons[index];
         local itemLink= GetGuildBankItemLink(tab, i)
         local itemID= itemLink and GetItemInfoInstant(itemLink)
         setItemInfo(button, itemLink, itemID, nil, nil, {tab, i})
