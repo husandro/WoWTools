@@ -66,8 +66,7 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex, guildBank
                 topRightText='|A:'..e.Icon.unlocked..':0:0|a'
             end
 
-        elseif itemEquipLoc and _G[itemEquipLoc] then--装备  
-                  
+        elseif itemEquipLoc and _G[itemEquipLoc] then--装备 
             if classID==2 and subclassID==20 then-- 鱼竿
                 topRightText='|A:worldquest-icon-fishing:0:0|a'
             elseif itemQuality and itemQuality>1 then
