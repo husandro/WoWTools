@@ -512,17 +512,30 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 --CalendarFrame:Hide()
             end
 
-        elseif arg1=='Blizzard_Calendar' then
-            
-            hooksecurefunc('CalendarViewHolidayFrame_Update', function ()
+        elseif arg1=='Blizzard_Calendar' then            
+            Init()
+
+            hooksecurefunc('CalendarViewHolidayFrame_Update', function()                
                 local indexInfo = C_Calendar.GetEventIndex();
                 if(indexInfo) then
                     local holidayInfo = C_Calendar.GetHolidayInfo(indexInfo.offsetMonths, indexInfo.monthDay, indexInfo.eventIndex);
-                    if (holidayInfo) then
+                    local info= C_Calendar.GetDayEvent(indexInfo.offsetMonths, indexInfo.monthDay, indexInfo.eventIndex)
+                    
+                    if (holidayInfo and info and info.eventID) then
+                        local description = holidayInfo.description;
+                        if (holidayInfo.startTime and holidayInfo.endTime) then
+                            description = format(CALENDAR_HOLIDAYFRAME_BEGINSENDS, description, FormatShortDate(holidayInfo.startTime.monthDay, holidayInfo.startTime.month), GameTime_GetFormattedTime(holidayInfo.startTime.hour, holidayInfo.startTime.minute, true), FormatShortDate(holidayInfo.endTime.monthDay, holidayInfo.endTime.month), GameTime_GetFormattedTime(holidayInfo.endTime.hour, holidayInfo.endTime.minute, true));
+                        end
+                        
+                        description=description..'\n\n'..CALENDAR_FILTER_HOLIDAYS..'ID '..info.eventID..(info.iconTexture and '    |T'..info.iconTexture..':0|t'..info.iconTexture or '')
+                        CalendarViewHolidayFrame.ScrollingFont:SetText(description);
+                        
+                        if info.iconTexture then
+                            CalendarViewHolidayFrame.Texture:SetTexture(info.iconTexture) 
+                        end
                     end
                 end
             end)
-            Init()
         end
 
     elseif event == "PLAYER_LOGOUT" then
