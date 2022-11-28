@@ -75,7 +75,7 @@ local function Init()
 
     local x= -(e.toolsFrame.size or 30)
     panel:SetPoint('RIGHT', HearthstoneToolsButton, 'LEFT',  x, 0)
-
+print('a')
     Get_Use_Toy()
 end
 
@@ -83,6 +83,7 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
+
 panel:RegisterEvent("PLAYER_REGEN_ENABLED")
 panel:RegisterEvent('PLAYER_REGEN_DISABLED')
 panel:RegisterEvent('UI_ERROR_MESSAGE')
@@ -93,8 +94,12 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" then
         if arg1== id then
             if not e.toolsFrame.disabled then
-                ToggleAchievementFrame()
-                --AchievementFrame:Hide()
+                C_Timer.After(2, function()
+                    if not IsAddOnLoaded('Blizzard_AchievementUI') then LoadAddOn("Blizzard_AchievementUI") end
+                    if not IsAddOnLoaded('Blizzard_ToyBox') then LoadAddOn("Blizzard_ToyBox") end
+                    ToggleAchievementFrame()
+                    AchievementFrame:Hide()
+                end)
             else
                 panel:UnregisterAllEvents()
             end

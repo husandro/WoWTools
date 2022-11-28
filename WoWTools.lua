@@ -658,7 +658,7 @@ e.Cbtn2= function(name, parent, showTexture, rightClick)
     return button
 end
 
-e.toolsFrame=CreateFrame('Frame')--TOOLS 框架
+e.toolsFrame=CreateFrame('Frame', nil, UIParent)--TOOLS 框架
 e.toolsFrame:SetSize(1,1)
 e.toolsFrame:SetShown(false)
 e.toolsFrame.last=e.toolsFrame

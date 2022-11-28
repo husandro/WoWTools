@@ -226,7 +226,7 @@ end)
 local isQuestTrivialTracking--其它任务,低等任务,追踪
 local function GetIsQuestTrivialTracking()
     for trackingID=1, C_Minimap.GetNumTrackingTypes() do
-        name, texture, active, category, nested = C_Minimap.GetTrackingInfo(trackingID)
+        local name, texture, active, category, nested = C_Minimap.GetTrackingInfo(trackingID)
         if name==MINIMAP_TRACKING_TRIVIAL_QUESTS then
             isQuestTrivialTracking = active
             break

@@ -557,8 +557,8 @@ local function set_Unit_Health_Bar(self, unit)
     local value= unit and UnitHealth(unit)
     local max= unit and UnitHealthMax(unit)
     local r, g, b, left, right
+    local text
     if value and max then
-
         if value <= 0 then
             text = '|A:poi-soulspiritghost:0:0|a'..'|cnRED_FONT_COLOR:'.. DEAD..'|r'
         else
