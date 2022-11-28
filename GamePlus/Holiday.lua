@@ -253,12 +253,16 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
             msg= msg..' '..eventTime
         end
 
+        local find_Item, find_Quest, find_Currency
+
         if event.calendarType=='HOLIDAY' and event.eventID then
             if event.eventID==617 or event.eventID==623 or event.eventID==629 or event.eventID==654 or event.eventID==1068 or event.eventID==1277 or event.eventID==1269 then--时光
                 local text= get_Currency_Info(1166)--1166[时空扭曲徽章]
                 msg= text and msg..text or msg
                 local tab={40168, 40173, 40786, 45563, 55499, 40168, 40173, 40787, 45563, 55498, 64710,64709}
                 msg= msg..set_Quest_Completed(tab)--任务是否完成
+                find_Currency=true
+                find_Quest=true
 
             elseif event.eventID==479 then--暗月
                 msg=msg ..(set_Item_Numeri(515) or '')--515[暗月奖券]
@@ -267,13 +271,32 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
                 else
                     msg= msg..e.Icon.info2
                 end
-            
+                find_Item=true
+                find_Quest=true
+
             elseif event.eventID==324 then--万圣节                
                 msg=msg ..(set_Item_Numeri(33226) or '')--33226[奶糖]
+                find_Item=true
             end
-
             msg= Save.showID and msg..' '..event.eventID or msg--显示 ID
         end
+
+        if find_Item then
+            panel:RegisterEvent('BAG_UPDATE_DELAYED')
+        else
+            panel:UnregisterEvent('BAG_UPDATE_DELAYED')
+        end
+        if find_Quest then
+            panel:RegisterEvent('QUEST_COMPLETE')
+        else
+            panel:UnregisterEvent('QUEST_COMPLETE')
+        end
+        if find_Currency then
+            panel:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
+        else
+            panel:UnregisterEvent('CURRENCY_DISPLAY_UPDATE')
+        end
+
 	end
     msg= msg and msg..'\n'
     panel.Text:SetText(msg or '')
@@ -330,9 +353,9 @@ local function set_event()--设置事件
         panel:RegisterEvent('CALENDAR_OPEN_EVENT')
         --panel:RegisterEvent('LFG_UPDATE_RANDOM_INFO')
         panel:RegisterEvent('CALENDAR_CLOSE_EVENT')
-        panel:RegisterEvent('BAG_UPDATE_DELAYED')
-        panel:RegisterEvent('QUEST_COMPLETE')
         
+        
+
     end
     panel:RegisterEvent('ADDON_LOADED')
     panel:RegisterEvent("PLAYER_LOGOUT")
