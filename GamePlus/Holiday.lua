@@ -180,14 +180,6 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
     local msg
 	local eventTime
 
-    --[=[
-if #events>0 and info2 and day~= info2.monthDay and monthOffset~=0 then
-        msg= format(FULLDATE, _CalendarFrame_GetFullDateFromDay(panel))
-    end
-
-]=]
-
-
 	for _, event in ipairs(events) do
 		local title = event.title;
         msg =msg and msg..'\n' or ''
@@ -224,6 +216,8 @@ if #events>0 and info2 and day~= info2.monthDay and monthOffset~=0 then
 			msg=msg..text           
 		end
 
+        msg= event.iconTexture and '|T'..event.iconTexture..':0|t' or msg
+
         if ( event.calendarType == "RAID_LOCKOUT" ) then
 			title = GetDungeonNameWithDifficulty(title, event.difficultyName);
             msg=msg..format(CALENDAR_CALENDARTYPE_TOOLTIP_NAMEFORMAT[event.calendarType][event.sequenceType], title)
@@ -245,6 +239,8 @@ if #events>0 and info2 and day~= info2.monthDay and monthOffset~=0 then
             end
             msg= msg..' '..eventTime
         end
+
+        msg= (Save.showID and event.eventID and event.calendarType=='HOLIDAY' ) and msg..' '..event.eventID or msg--显示 ID
 	end
     panel.Text:SetText(msg or '')
 end
@@ -366,6 +362,15 @@ local function InitMenu(self, level, type)--主菜单
             checked= Save.showDate,
             func= function() 
                 Save.showDate= not Save.showDate and true or nil
+                set_Text()
+            end
+        }
+        UIDropDownMenu_AddButton(info, level)
+        info={
+            text= CALENDAR_FILTER_HOLIDAYS..' ID',--时间
+            checked= Save.showID,
+            func= function() 
+                Save.showID= not Save.showID and true or nil
                 set_Text()
             end
         }
