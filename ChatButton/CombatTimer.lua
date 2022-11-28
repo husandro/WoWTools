@@ -271,7 +271,7 @@ local function setTextFrame()--设置显示内容, 父框架panel.textFrame, 内
         panel.text:SetScale(Save.textScale)
     end
 
-    panel.updatFrame=CreateFrame("Frame")
+    panel.updatFrame=CreateFrame("Frame", nil, panel)
     panel.updatFrame:SetShown(true)
 
     local timeElapsed = 0
@@ -475,9 +475,7 @@ local function Init()
 
    
     setTextFrame()--设置显示内容,框架 panel.textFrame,内容 panel.text
-    C_Timer.After(2, function()
-        setTexture()--设置,图标, 颜色
-    end)
+    C_Timer.After(2, setTexture)--设置,图标, 颜色
     
     if Save.AllOnlineTime then--总游戏时间
         RequestTimePlayed()
