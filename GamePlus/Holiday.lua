@@ -505,9 +505,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if not Save.disabled and not IsAddOnLoaded("Blizzard_Calendar") then--加载
                 LoadAddOn("Blizzard_Calendar")
+                
                 Calendar_Toggle()
                 C_Calendar.OpenCalendar()
-                CalendarFrame:Hide()
+                Calendar_Toggle()
+                --CalendarFrame:Hide()
             end
 
         elseif arg1=='Blizzard_Calendar' then

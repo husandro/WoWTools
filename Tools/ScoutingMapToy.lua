@@ -2,6 +2,7 @@ local id, e = ...
 --local addName= ADVENTURE_MAP_TITLE..TOY
 
 local panel=e.Cbtn2(nil, WoWToolsMountButton, true)
+panel:SetAttribute("type", "item")
 
 local Toy={
     [187869]={14663, 14303, 14304, 14305, 14306},--暗影界
@@ -41,7 +42,7 @@ local function Get_Use_Toy()
         end
         Toy[itemID]=nil
     end
-   -- panel:SetShown(false)
+    panel:SetShown(false)
     panel:UnregisterAllEvents()
 end
 
@@ -50,17 +51,6 @@ end
 --初始
 --####
 local function Init()
-    for itemID, _ in pairs(Toy) do
-        if PlayerHasToy(itemID) and C_ToyBox.IsToyUsable(itemID) then
-            if not C_Item.IsItemDataCachedByID(itemID) then
-                C_Item.RequestLoadItemDataByID(k);
-            end
-        else
-            Toy[itemID]=nil
-        end
-    end
-
-    panel:SetAttribute("type", "item")
     panel:SetScript('OnEnter', function(self)
         if self.itemID then
             e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -73,6 +63,16 @@ local function Init()
 
     local x= -(e.toolsFrame.size or 30) *2
     panel:SetPoint('RIGHT', WoWToolsMountButton, 'LEFT',  x, 0)
+
+    for itemID, _ in pairs(Toy) do
+        if PlayerHasToy(itemID) and C_ToyBox.IsToyUsable(itemID) then
+            if not C_Item.IsItemDataCachedByID(itemID) then
+                C_Item.RequestLoadItemDataByID(k);
+            end
+        else
+            Toy[itemID]=nil
+        end
+    end
 
     Get_Use_Toy()
 end
@@ -95,15 +95,13 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                     if not IsAddOnLoaded('Blizzard_AchievementUI') then
                         LoadAddOn("Blizzard_AchievementUI")
                     end
---[=[
+
                     if not IsAddOnLoaded('Blizzard_ToyBox') then
                         LoadAddOn("Blizzard_ToyBox")
                     end
 
-]=]
-
                     ToggleAchievementFrame()
-                    AchievementFrame:Hide()
+                    ToggleAchievementFrame()
             else
                 panel:UnregisterAllEvents()
             end
