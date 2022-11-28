@@ -42,7 +42,7 @@ local function setTexture()--设置图标颜色, 是否有权限, 是否转团, 
         panel.border:SetAtlas('bag-reagent-border')
     end
 
-    if not panel.LFGAutoInv and Save.LFGAutoInv then--自动进入,指示图标
+    if not panel.LFGAutoInv and Save.LFGAutoInv then--邀请LFG,指示图标
         panel.LFGAutoInv=panel:CreateTexture(nil, 'ARTWORK')
         panel.LFGAutoInv:SetPoint('BOTTOMLEFT',3,3)
         panel.LFGAutoInv:SetSize(10,10)
@@ -52,7 +52,7 @@ local function setTexture()--设置图标颜色, 是否有权限, 是否转团, 
     if panel.LFGAutoInv then
         panel.LFGAutoInv:SetShown(Save.LFGAutoInv)
     end
-    if not panel.InvTar and Save.InvTar then--自动离开,指示图标
+    if not panel.InvTar and (Save.InvTar or (Save.Channel and Save.ChannelText)) then--邀请目标, 频道, 指示图标
         panel.InvTar=panel:CreateTexture(nil, 'ARTWORK')
         panel.InvTar:SetPoint('BOTTOMRIGHT',-7,3)
         panel.InvTar:SetSize(10,10)
@@ -60,7 +60,7 @@ local function setTexture()--设置图标颜色, 是否有权限, 是否转团, 
         panel.InvTar:SetDesaturated(true)
     end
     if panel.InvTar then
-        panel.InvTar:SetShown(Save.InvTar)
+        panel.InvTar:SetShown((Save.Channel and Save.ChannelText))
     end
 
     panel.texture:SetDesaturated(not (Save.LFGListAceInvite and Save.FriendAceInvite))--自动接受,LFD, 好友, 邀请
@@ -442,7 +442,7 @@ end
 --设置,内容,频道, 邀请,事件
 --#######################
 local function set_Chanell_Event()--设置,内容,频道, 邀请,事件
-    if Save.Channel and UnitIsGroupLeader('player') and Save.ChannelText and not IsInRaid() then
+    if Save.Channel and UnitIsGroupLeader('player') and Save.ChannelText and not IsInInstance() then
         panel:RegisterEvent('CHAT_MSG_SAY')
         panel:RegisterEvent('CHAT_MSG_WHISPER')
         panel:RegisterEvent('CHAT_MSG_YELL')
@@ -540,6 +540,7 @@ local function InitList(self, level, type)
             func= function()
                 Save.Channel = not Save.Channel and true or nil
                 set_Chanell_Event()--设置,频道,事件
+                setTexture()--设置图标颜色, 是否有权限, 是否转团, 邀请选项提示
             end    
         }
         UIDropDownMenu_AddButton(info, level)

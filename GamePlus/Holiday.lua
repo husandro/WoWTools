@@ -513,6 +513,15 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
 
         elseif arg1=='Blizzard_Calendar' then
+            
+            hooksecurefunc('CalendarViewHolidayFrame_Update', function ()
+                local indexInfo = C_Calendar.GetEventIndex();
+                if(indexInfo) then
+                    local holidayInfo = C_Calendar.GetHolidayInfo(indexInfo.offsetMonths, indexInfo.monthDay, indexInfo.eventIndex);
+                    if (holidayInfo) then
+                    end
+                end
+            end)
             Init()
         end
 
