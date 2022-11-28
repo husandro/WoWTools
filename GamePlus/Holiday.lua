@@ -185,7 +185,15 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
 	for _, event in ipairs(events) do
 		local title = event.title;
         msg =msg and msg..'\n' or ''
-        msg = event.calendarType=='HOLIDAY' and msg..e.Icon.star2 or msg--节日
+
+        if  (event.calendarType=='HOLIDAY' and not event.iconTexture) then
+            if title:find(PVP) then
+                msg=msg..'|A:pvptalents-warmode-swords:0:0|a'--pvp
+            else
+                msg= msg..e.Icon.star2--节日
+            end
+        end
+
         if ( _CalendarFrame_IsPlayerCreatedEvent(event.calendarType) ) then--自定义,事件
 			local text;
 			if ( UnitIsUnit("player", event.invitedBy) ) then
@@ -244,6 +252,7 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
 
         msg= (Save.showID and event.eventID and event.calendarType=='HOLIDAY' ) and msg..' '..event.eventID or msg--显示 ID
 	end
+    msg= msg and msg..'\n'
     panel.Text:SetText(msg or '')
 end
 
@@ -439,6 +448,8 @@ local function Init()
     btn:SetScript('OnLeave', function() e.tips:Hide() end)
 
     panel.Text=e.Cstr(panel)
+    --panel.Text:SetIndentedWordWrap(true)
+
     panel.texture=panel:CreateTexture()
     panel.texture:SetAllPoints(panel)
     panel.texture:SetAtlas(e.Icon.icon)
