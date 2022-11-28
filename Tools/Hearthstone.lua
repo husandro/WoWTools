@@ -279,12 +279,6 @@ local function Init()
         panel:SetSize(e.toolsFrame.size, e.toolsFrame.size)
     end
 
-    getToy()--生成, 有效表格
-    setAtt(true)--设置属性
-    setCooldown()--主图标冷却
-    setBagHearthstone()--设置Shift, Ctrl, Alt 提示
-    set_BindLocation()--显示, 炉石, 绑定位置
-
     for type, itemID in pairs(ModifiedTab) do
         panel:SetAttribute(type.."-item1",  C_Item.GetItemNameByID(itemID) or itemID)
     end
@@ -316,7 +310,11 @@ local function Init()
         setAtt()--设置属性
     end)
     
-
+    getToy()--生成, 有效表格
+    setAtt(true)--设置属性
+    setCooldown()--主图标冷却
+    setBagHearthstone()--设置Shift, Ctrl, Alt 提示
+    C_Timer.After(2, set_BindLocation)--显示, 炉石, 绑定位置
 end
 
 --###########
