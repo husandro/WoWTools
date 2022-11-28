@@ -179,7 +179,9 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
 
     local msg
 	local eventTime
-
+    if day and info2.monthDay~=day then
+        msg='|A:UI-HUD-Calendar-'..day..'-Up:0:0|a'
+    end
 	for _, event in ipairs(events) do
 		local title = event.title;
         msg =msg and msg..'\n' or ''
@@ -216,7 +218,7 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
 			msg=msg..text           
 		end
 
-        msg= event.iconTexture and '|T'..event.iconTexture..':0|t' or msg
+        msg= event.iconTexture and msg..'|T'..event.iconTexture..':0|t' or msg
 
         if ( event.calendarType == "RAID_LOCKOUT" ) then
 			title = GetDungeonNameWithDifficulty(title, event.difficultyName);
