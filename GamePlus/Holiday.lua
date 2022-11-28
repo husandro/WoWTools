@@ -113,28 +113,29 @@ local function set_Time_Color(eventTime, hour, minute, init)
     return eventTime
 end
 
---[=[
-local function _CalendarFrame_GetWeekdayIndex(index)
-	-- the expanded form for the left input to mod() is:
-	-- (index - 1) + (CALENDAR_FIRST_WEEKDAY - 1)
-	-- why the - 1 and then + 1 before return? because lua has 1-based indexes! awesome!
-	return mod(index - 2 + CALENDAR_FIRST_WEEKDAY, 7) + 1;
+local function get_Currency_Info(currencyID)--货币,数量
+    local info = C_CurrencyInfo.GetCurrencyInfo(currencyID)
+    if info and info.quantity and info.quantity>0  then
+        return (info.iconFileID and '|T'..info.iconFileID..':0|t' or '').. e.MK(info.quality, 0)
+    end                       
 end
 
-local function _CalendarFrame_GetFullDate(weekday, month, day, year)
-	local weekdayName = CALENDAR_WEEKDAY_NAMES[weekday];
-	local monthName = CALENDAR_FULLDATE_MONTH_NAMES[month];
-	return weekdayName, monthName, day, year, month;
+local function set_Quest_Completed(tab)--任务是否完成
+    for _, questID in pairs(tab) do 
+        if C_QuestLog.IsQuestFlaggedCompleted(questID) then
+            return e.Icon.select2
+        end                    
+    end
+    return e.Icon.info2
 end
 
-local function _CalendarFrame_GetFullDateFromDay(dayButton)
-	local weekday = _CalendarFrame_GetWeekdayIndex(dayButton:GetID());
-	local monthInfo = C_Calendar.GetMonthInfo(dayButton.monthOffset);
-	local day = dayButton.day;
-	return _CalendarFrame_GetFullDate(weekday, monthInfo.month, day, monthInfo.year);
+local function set_Item_Numeri(itemID) 
+    local texture = C_Item.GetItemIconByID(itemID)
+    local num= GetItemCount(itemID, true)
+    if num and num>0 then
+        return (texture and '|T'..texture..':0|t' or '')..num
+    end
 end
-
-]=]
 
 
 local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDayButton_OnEnter(self)
@@ -231,8 +232,10 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
         if ( event.calendarType == "RAID_LOCKOUT" ) then
 			title = GetDungeonNameWithDifficulty(title, event.difficultyName);
             msg=msg..format(CALENDAR_CALENDARTYPE_TOOLTIP_NAMEFORMAT[event.calendarType][event.sequenceType], title)
+        elseif event.calendarType=='HOLIDAY' and title:find(PLAYER_DIFFICULTY_TIMEWALKER) then--时空漫游
+            msg= msg..PLAYER_DIFFICULTY_TIMEWALKER
         else
-            msg=msg.. title
+            msg= msg.. title
         end
 
         if Save.showDate then
@@ -250,7 +253,27 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
             msg= msg..' '..eventTime
         end
 
-        msg= (Save.showID and event.eventID and event.calendarType=='HOLIDAY' ) and msg..' '..event.eventID or msg--显示 ID
+        if event.calendarType=='HOLIDAY' and event.eventID then
+            if event.eventID==617 or event.eventID==623 or event.eventID==629 or event.eventID==654 or event.eventID==1068 or event.eventID==1277 or event.eventID==1269 then--时光
+                local text= get_Currency_Info(1166)--1166[时空扭曲徽章]
+                msg= text and msg..text or msg
+                local tab={40168, 40173, 40786, 45563, 55499, 40168, 40173, 40787, 45563, 55498, 64710,64709}
+                msg= msg..set_Quest_Completed(tab)--任务是否完成
+
+            elseif event.eventID==479 then--暗月
+                msg=msg ..(set_Item_Numeri(515) or '')--515[暗月奖券]
+                if C_QuestLog.IsQuestFlaggedCompleted(36471) and C_QuestLog.IsQuestFlaggedCompleted(32175) then
+                    msg= msg..e.Icon.select2
+                else
+                    msg= msg..e.Icon.info2
+                end
+            
+            elseif event.eventID==324 then--万圣节                
+                msg=msg ..(set_Item_Numeri(33226) or '')--33226[奶糖]
+            end
+
+            msg= Save.showID and msg..' '..event.eventID or msg--显示 ID
+        end
 	end
     msg= msg and msg..'\n'
     panel.Text:SetText(msg or '')
@@ -307,10 +330,13 @@ local function set_event()--设置事件
         panel:RegisterEvent('CALENDAR_OPEN_EVENT')
         --panel:RegisterEvent('LFG_UPDATE_RANDOM_INFO')
         panel:RegisterEvent('CALENDAR_CLOSE_EVENT')
-
+        panel:RegisterEvent('BAG_UPDATE_DELAYED')
+        panel:RegisterEvent('QUEST_COMPLETE')
+        
     end
     panel:RegisterEvent('ADDON_LOADED')
     panel:RegisterEvent("PLAYER_LOGOUT")
+    
 end
 
 local function Text_Settings()--设置Text
