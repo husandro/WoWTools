@@ -3,9 +3,6 @@ local id, e = ...
 
 local panel=e.Cbtn2(nil, WoWToolsMountButton, true)
 
---####
---初始
---####
 local Toy={
     [187869]={14663, 14303, 14304, 14305, 14306},--暗影界
     [187875]={10665,10666, 10667, 10668, 10669, 11543},--破碎群岛
@@ -23,34 +20,35 @@ local Toy={
     [150745]={858, 859, 627, 776, 775, 768, 765, 802, 782, 766, 772, 777, 779, 770, 774, 780, 769, 773, 778, 841, 4995, 761, 771, 781, 868},--东部王国
 }
 
-local function set_Att(itemID)
-    if UnitAffectingCombat('player') then
-        panel.bat=true
-        return
-    end
-    panel.bat=nil
-
-    panel.texture:SetTexture(C_Item.GetItemIconByID(itemID))
-    panel:SetAttribute("item", C_Item.GetItemNameByID(itemID) or itemID)
-    panel:SetShown(true)
-end
-
 local function Get_Use_Toy()
     panel.itemID=nil
     for itemID, tab in pairs(Toy) do
         for _, achievementID  in pairs(tab) do
             if not select(13,GetAchievementInfo(achievementID)) then
                 panel.itemID=itemID
-                set_Att(itemID)
+                if UnitAffectingCombat('player') then
+                    panel.bat=true
+                    return
+                end
+                panel.bat=nil
+
+                panel.texture:SetTexture(C_Item.GetItemIconByID(itemID))
+                panel:SetAttribute("item", C_Item.GetItemNameByID(itemID) or itemID)
+                panel:SetShown(true)
+
                 return
             end
         end
         Toy[itemID]=nil
     end
-    panel:SetShown(false)
+   -- panel:SetShown(false)
     panel:UnregisterAllEvents()
 end
 
+
+--####
+--初始
+--####
 local function Init()
     for itemID, _ in pairs(Toy) do
         if PlayerHasToy(itemID) and C_ToyBox.IsToyUsable(itemID) then
@@ -73,8 +71,8 @@ local function Init()
     end)
     panel:SetScript('OnLeave', function() e.tips:Hide() end)
 
-    local x= -(e.toolsFrame.size or 30)
-    panel:SetPoint('RIGHT', HearthstoneToolsButton, 'LEFT',  x, 0)
+    local x= -(e.toolsFrame.size or 30) *2
+    panel:SetPoint('RIGHT', WoWToolsMountButton, 'LEFT',  x, 0)
 
     Get_Use_Toy()
 end
@@ -94,8 +92,16 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" then
         if arg1== id then
             if not e.toolsFrame.disabled then
-                    if not IsAddOnLoaded('Blizzard_AchievementUI') then LoadAddOn("Blizzard_AchievementUI") end
-                    if not IsAddOnLoaded('Blizzard_ToyBox') then LoadAddOn("Blizzard_ToyBox") end
+                    if not IsAddOnLoaded('Blizzard_AchievementUI') then
+                        LoadAddOn("Blizzard_AchievementUI")
+                    end
+--[=[
+                    if not IsAddOnLoaded('Blizzard_ToyBox') then
+                        LoadAddOn("Blizzard_ToyBox")
+                    end
+
+]=]
+
                     ToggleAchievementFrame()
                     AchievementFrame:Hide()
             else
