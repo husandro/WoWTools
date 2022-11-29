@@ -1,6 +1,6 @@
 local id, e = ...
 local addName=HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL
-local Save={scale= 1, alpha=1, autoHide=true}
+local Save={scale= 0.85, alpha=1, autoHide=true}
 local F=ObjectiveTrackerFrame--移动任务框
 local btn=ObjectiveTrackerFrame.HeaderMenu.MinimizeButton
 local mo={
