@@ -1,10 +1,14 @@
 local id, e = ...
 local addName= COMBAT..TIME_LABEL:gsub(':','')
-local Save= {textScale=1.2, Say=120, AllOnlineTime=true, 
-    bat={num= 0, time= 0},
-    pet={num= 0,  win=0, capture=0},
-    ins={num= 0, time= 0, kill=0, dead=0},
-    afk={num= 0, time= 0},
+local Save= {textScale=1.2,
+        Say=120,
+        AllOnlineTime=true,--进入游戏时,提示游戏,时间
+        combatScale=true,--战斗中缩放
+
+        bat={num= 0, time= 0},--战斗数据
+        pet={num= 0,  win=0, capture=0},
+        ins={num= 0, time= 0, kill=0, dead=0},
+        afk={num= 0, time= 0},
 }
 local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
 
@@ -181,7 +185,7 @@ local function setTextFrame()--设置显示内容, 父框架panel.textFrame, 内
     if Save.disabledText then
         return
     end
-    panel.textFrame=e.Cbtn(panel, nil, nil, nil, nil, true, {20,20})
+    panel.textFrame=e.Cbtn(WoWToolsChatButtonFrame, nil, nil, nil, nil, true, {20,20})
     if Save.textFramePoint then
         panel.textFrame:SetPoint(Save.textFramePoint[1], UIParent, Save.textFramePoint[3], Save.textFramePoint[4], Save.textFramePoint[5])
     else
@@ -264,7 +268,7 @@ local function setTextFrame()--设置显示内容, 父框架panel.textFrame, 内
             Save.textScale=sacle
         end
     end)
-   
+
     panel.text=e.Cstr(panel.textFrame)
     panel.text:SetPoint('BOTTOMLEFT')
     if Save.textScale and Save.textScale~=1 then
@@ -327,6 +331,19 @@ local function InitMenu(self, level, type)--主菜单
         }
         UIDropDownMenu_AddButton(info, level)
 
+        info={
+            text= COMBAT..UI_SCALE..' 1.5',
+            checked= Save.combatScale,
+            func= function()
+                Save.combatScale= not Save.combatScale and true or nil
+                if Save.combatScale and UnitAffectingCombat('player') then--战斗中缩放
+                    panel:SetScale(1.5)
+                else
+                    panel:SetScale(1)
+                end
+            end
+        }
+        UIDropDownMenu_AddButton(info, level)
 
         info={--职业颜色
             text=CLASS_COLORS,
@@ -526,11 +543,17 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     elseif event=='PLAYER_REGEN_ENABLED' then
         panel.texture2:SetShown(false)
         check_Event()--检测事件
+        if Save.combatScale then--战斗中缩放
+            panel:SetScale(1)
+        end
 
     elseif event=='PLAYER_REGEN_DISABLED' then
         panel.texture2:SetShown(true)
         check_Event()--检测事件
-
+        if Save.combatScale then--战斗中缩放
+            panel:SetScale(1.5)
+        end
+        
     elseif event=='PLAYER_SPECIALIZATION_CHANGED' then
         setTexture()--设置,图标
 
