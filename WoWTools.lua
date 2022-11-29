@@ -266,21 +266,21 @@ e.MK=function(number,bit)
     bit = bit or 1
     if number>=1e6 then
         if bit==0 then
-        return math.modf(number/1e6)..'m'
+            return math.modf(number/1e6)..'m'
         else
-        return ('%.'..bit..'fm'):format(number/1e6)
+            return ('%.'..bit..'fm'):format(number/1e6)
         end
     elseif number>= 1e4 and e.Player.zh then
         if bit==0 then
-        return math.modf(number/1e4)..'w'
+            return math.modf(number/1e4)..'w'
         else
-        return ('%.'..bit..'fw'):format(number/1e4)
+            return ('%.'..bit..'fw'):format(number/1e4)
         end
     elseif number>=1e3 then
         if bit==0 then
             return math.modf(number/1e3)..'k'
         else
-        return ('%.'..bit..'fk'):format(number/1e3)
+            return ('%.'..bit..'fk'):format(number/1e3)
         end
     else
         return ('%i'):format(number)

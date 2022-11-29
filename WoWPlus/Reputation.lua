@@ -50,21 +50,23 @@ local function btnstrSetText()--监视声望内容
 			elseif ( isMajorFaction ) then--名望
 				isCapped=C_MajorFactions.HasMaximumRenown(factionID)
 				local majorFactionData = C_MajorFactions.GetMajorFactionData(factionID);
-				if isCapped then
+				--if isCapped then
 					--barColor = FACTION_ORANGE_COLOR
-				else
+				--else
+				if not isCapped then
 					--factionStandingtext = majorFactionData.renownLevel..'/'..majorFactionData.renownLevelThreshold--名望RENOWN_LEVEL_LABEL				
 					--barColor = BLUE_FONT_COLOR
 					if majorFactionData then
 						if majorFactionData.name and majorFactionData.name~=name then 
 							factionStandingtext=name
 						end
-						value= majorFactionData.renownLevel..'/'..majorFactionData.renownLevelThreshold--名望RENOWN_LEVEL_LABEL
+						value= e.MK(majorFactionData.renownLevel,1)..'/'..e.MK(majorFactionData.renownLevelThreshold, 1)--名望RENOWN_LEVEL_LABEL
 					end
-					--value=('%i%%'):format(majorFactionData.renownReputationEarned/majorFactionData.renownLevelThreshold*100)
+					value=(value and value..' ' or '') ..('%i%%'):format(majorFactionData.renownReputationEarned/majorFactionData.renownLevelThreshold*100)
 				end
+				
 				if majorFactionData and majorFactionData.textureKit then
-					icon='|T'..majorFactionData.textureKit..':0|t'
+					icon='|A:MajorFactions_Icons_'..majorFactionData.textureKit..'512:0:0|a'
 				end
 			else
 				if isCapped then
@@ -90,10 +92,10 @@ local function btnstrSetText()--监视声望内容
 				end
 			end
 			if not ((Save.btnStrHideCap and isCapped and not isParagon and not isHeader) or (Save.btnStrHideHeader and isHeader and not isParagon and not hasRep))then
-				local t
+				local t=''
 				if isHeader then
 					t=Icon.isCapped
-				else
+				elseif not isMajorFaction then
 					t='    '
 				end
 				if isChild then
@@ -159,14 +161,14 @@ hooksecurefunc('ReputationFrame_InitReputationRow', function (factionRow, elemen
 		local majorFactionData = C_MajorFactions.GetMajorFactionData(factionID)
 		local icon
 		if majorFactionData and majorFactionData.textureKit then
-			icon='|T'..majorFactionData.textureKit..':0|t'
+			icon='|A:MajorFactions_Icons_'..majorFactionData.textureKit..'512:0:0|a'
 		end
 		if C_MajorFactions.HasMaximumRenown(factionID) then
 			text=(icon or Icon.isCapped)..name
 			barColor=FACTION_ORANGE_COLOR
 		else
 			if majorFactionData then
-				text=(icon or '')..majorFactionData.renownLevel..'/'..majorFactionData.renownLevelThreshold
+				text=(icon or '')..name.. ('%i%%'):format(majorFactionData.renownLevel..'/'..majorFactionData.renownLevelThreshold*100)
 			end
 			barColor = BLUE_FONT_COLOR
 		end
@@ -399,14 +401,15 @@ local function FactionUpdate(self, env, text)--监视声望更新提示
 				else
 					barColor = BLUE_FONT_COLOR
 					if majorFactionData then
-						if majorFactionData.name and majorFactionData.name~=name then
+						if majorFactionData.name and majorFactionData.name~=name then 
 							factionStandingtext=name
 						end
-						value= majorFactionData.renownLevel..'/'..majorFactionData.renownLevelThreshold--名望RENOWN_LEVEL_LABEL
+						value= e.MK(majorFactionData.renownLevel,1)..'/'..e.MK(majorFactionData.renownLevelThreshold, 1)--名望RENOWN_LEVEL_LABEL
 					end
+					value=(value and value..' ' or '') ..('%i%%'):format(majorFactionData.renownReputationEarned/majorFactionData.renownLevelThreshold*100)
 				end
 				if majorFactionData and majorFactionData.textureKit then
-					icon='|T'..majorFactionData.textureKit..':0|t'
+					icon='|A:MajorFactions_Icons_'..majorFactionData.textureKit..'512:0:0|a'
 				end
 			else
 				local gender = UnitSex("player");

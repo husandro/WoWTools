@@ -540,11 +540,12 @@ local function setMajorFactionRenown(self, majorFactionID)--名望
         local icon= majorFactionData.textureKit
         if icon then
             self.Portrait:SetShown(true)
-            self.Portrait:SetTexture(icon)
-            self:AddLine(RENOWN_LEVEL_LABEL..'ID: '..majorFactionID, icon  and 	EMBLEM_SYMBOL..'ID: '..icon)
+            self.Portrait:SetAtlas('MajorFactions_Icons_'..majorFactionData.textureKit..'512')
+            self:AddDoubleLine(RENOWN_LEVEL_LABEL..'ID: '..majorFactionID, icon  and 'Atlst: '..'MajorFactions_Icons_'..majorFactionData.textureKit..'512')
         else
             self:AddLine(RENOWN_LEVEL_LABEL..'ID: '..majorFactionID)
         end
+        self:AddDoubleLine(RENOWN_LEVEL_LABEL..': '..e.MK(majorFactionData.renownLevel, 3)..'/'..e.MK(majorFactionData.renownLevelThreshold, 3), 	BATTLEGROUND_RATING..': '..('%i%%'):format(majorFactionData.renownReputationEarned/majorFactionData.renownLevelThreshold*100))
         self:Show()
     end
 end
