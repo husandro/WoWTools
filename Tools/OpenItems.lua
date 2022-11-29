@@ -1,7 +1,13 @@
 local id, e = ...
-local Save={use={
-    [190198]=5,
-},no={}, pet=true, open=true, toy=true, mount=true, mago=true, ski=true, noItemHide=true}
+local Save={
+    use={--定义,使用物品, [ID]=数量(或组合数量)
+        [190198]=5,
+        [190315]=10,
+    },
+    no={--禁用使用
+
+    }, 
+    pet=true, open=true, toy=true, mount=true, mago=true, ski=true, noItemHide=true}
 local addName=UNWRAP..ITEMS
 local Combat, Bag= nil, {}
 
