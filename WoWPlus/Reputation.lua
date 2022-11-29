@@ -438,11 +438,14 @@ local function FactionUpdate(self, env, text)--监视声望更新提示
 			if value then
 				m=m..' |cffffffff'..value..'|r'
 			end
-			m=addName..(icon or Icon.isCapped)..m
+			m=(icon or Icon.isCapped)..m
 			if hasRewardPending then
 				m=m..' '..Icon.reward2
 			end
-			C_Timer.After(0.3, function() print(m) end)
+
+			C_Timer.After(0.3, function()
+				print(id, addName, m)
+			end)
 			return
 		end
 	end
