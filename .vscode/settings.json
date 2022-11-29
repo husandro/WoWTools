@@ -19,7 +19,8 @@
         "KEY_NUMLOCK_MAC",
         "AUTO_JOIN",
         "UI_SCALE",
-        "TIME_LABEL"
+        "TIME_LABEL",
+        "QUESTS_LABEL"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

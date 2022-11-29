@@ -162,7 +162,9 @@ hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, info)--GossipFra
     if Save.Option[info.gossipOptionID]  then
         print(GREEN_FONT_COLOR_CODE..GOSSIP_OPTIONS..' |r(Alt '..RED_FONT_COLOR_CODE..DISABLE..'|r): |cffff00ff'..(self.sel.name or '')..'|r')
         local text=C_GossipInfo.GetText()--内容
-        if text then print(YELLOW_FONT_COLOR_CODE..text..'|r') end
+        if text then
+            print(YELLOW_FONT_COLOR_CODE..text..'|r')
+        end
         local icon=self.Icon:GetTexture()--图标
         local spell=self.spellID and GetSpellLink(self.spellID) or ''
         print((icon and '|T'..icon..':0|t' or '')..'|cnBRIGHTBLUE_FONT_COLOR:'..info.name..'|r'..spell)--选项信息
@@ -273,9 +275,12 @@ QuestFrameGreetingPanel:HookScript('OnShow', function()--QuestFrame.lua QuestFra
    end
 end)
 
+
+local printText
 --可选闲话(任务)GossipFrameShared.lua
 hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, optionInfo)
-    if not optionInfo.gossipOptionID or not Save.qest or IsModifierKeyDown() or optionInfo.flags ~= Enum.GossipOptionRecFlags.QuestLabelPrepend then
+    
+    if not optionInfo.gossipOptionID or not Save.qest or IsModifierKeyDown() or (optionInfo.flags ~= Enum.GossipOptionRecFlags.QuestLabelPrepend and not optionInfo.name:find(QUESTS_LABEL)) then
         return
     end
     
@@ -283,8 +288,12 @@ hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, optionInfo)
     local icon=self.Icon:GetTexture()
     icon = icon and '|T'..icon..':0|t' or ''
     local text=GOSSIP_QUEST_OPTION_PREPEND:format(optionInfo.name)
-    print(GREEN_FONT_COLOR_CODE..QUESTS_LABEL..' |r(Alt '..RED_FONT_COLOR_CODE..DISABLE..'|r): |cffff00ff'..icon..text..'|r'..spell)
-
+    
+    
+    if printText~=optionInfo.name then
+        printText=optionInfo.name
+        print(GREEN_FONT_COLOR_CODE..QUESTS_LABEL..' |r(Alt '..RED_FONT_COLOR_CODE..DISABLE..'|r): |cffff00ff'..icon..text..'|r'..spell)
+    end
     C_GossipInfo.SelectOption(optionInfo.gossipOptionID)
 end)
 
