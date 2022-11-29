@@ -1,6 +1,6 @@
 local id, e = ...
 local addName= HUD_EDIT_MODE_MINIMAP_LABEL
-local Save={}
+local Save={scale=0.85}
 
 
 --####
@@ -16,7 +16,7 @@ local function Init()
     frame.ScaleIn:SetPoint('TOP',-2, 13)
     frame.ScaleIn:SetScript('OnMouseDown', function(self, d)
         local scale = Save.scale or 1
-        scale= scale+0.1
+        scale= scale+0.05
         scale= scale>2 and 2 or scale<0.4 and 0.4 or scale
         frame:SetScale(scale)
         Save.scale=scale
@@ -35,7 +35,7 @@ local function Init()
     frame.ScaleOut:SetPoint('BOTTOM', -1, -13)
     frame.ScaleOut:SetScript('OnMouseDown', function(self, d)
         local scale = Save.scale or 1
-        scale= scale-0.1
+        scale= scale-0.05
         scale= scale>2 and 2 or scale<0.4 and 0.4 or scale
         frame:SetScale(scale)
         Save.scale=scale
