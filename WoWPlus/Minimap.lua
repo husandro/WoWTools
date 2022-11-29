@@ -49,6 +49,19 @@ local function Init()
         e.tips:Show()
     end)
     frame.ScaleOut:SetScript('OnLeave', function() e.tips:Hide() end)
+
+    
+    ExpansionLandingPageMinimapButton:SetScale(0.6)
+    ExpansionLandingPageMinimapButton:SetAlpha(0.3)
+    ExpansionLandingPageMinimapButton:SetScript('OnEnter', function(self)
+        self:SetAlpha(1)
+    end)
+    ExpansionLandingPageMinimapButton:SetScript('OnLeave', function(self)
+        self:SetAlpha(0.3)
+    end)
+    C_Timer.After(10, function()--盟约图标停止闪烁
+        ExpansionLandingPageMinimapButton.MinimapLoopPulseAnim:Stop()
+    end)
 end
 
 --###########
