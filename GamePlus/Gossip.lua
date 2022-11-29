@@ -279,8 +279,8 @@ end)
 local printText
 --可选闲话(任务)GossipFrameShared.lua
 hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, optionInfo)
-    
-    if not optionInfo.gossipOptionID or not Save.qest or IsModifierKeyDown() or (optionInfo.flags ~= Enum.GossipOptionRecFlags.QuestLabelPrepend and not optionInfo.name:find(QUESTS_LABEL)) then
+    local info=C_GossipInfo.GetOptions()
+    if not optionInfo.gossipOptionID or not Save.qest or IsModifierKeyDown() or (optionInfo.flags ~= Enum.GossipOptionRecFlags.QuestLabelPrepend and not optionInfo.name:find(QUESTS_LABEL) and #info>1)  then
         return
     end
     
