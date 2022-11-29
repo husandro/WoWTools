@@ -4,6 +4,15 @@ local id, e = ...
 local panel=e.Cbtn2(nil, WoWToolsMountButton, true)
 panel:SetAttribute("type", "item")
 panel:SetPoint('RIGHT', WoWToolsOpenItemsButton, 'LEFT')
+panel:SetScript('OnEnter', function(self)
+    if self.itemID then
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:SetToyByItemID(self.itemID)
+        e.tips:Show()
+    end
+end)
+panel:SetScript('OnLeave', function() e.tips:Hide() end)
 
 local Toy={
     [187869]={14663, 14303, 14304, 14305, 14306},--暗影界
@@ -23,15 +32,17 @@ local Toy={
 }
 
 local function Get_Use_Toy()
+    if UnitAffectingCombat('player') then
+        panel.bat=true
+        return
+    end
+
     panel.itemID=nil
     for itemID, tab in pairs(Toy) do
         for _, achievementID  in pairs(tab) do
             if not select(13,GetAchievementInfo(achievementID)) then
                 panel.itemID=itemID
-                if UnitAffectingCombat('player') then
-                    panel.bat=true
-                    return
-                end
+
                 panel.bat=nil
 
                 panel.texture:SetTexture(C_Item.GetItemIconByID(itemID))
@@ -43,6 +54,7 @@ local function Get_Use_Toy()
         end
         Toy[itemID]=nil
     end
+
     panel:SetShown(false)
     panel:UnregisterAllEvents()
 end
@@ -52,15 +64,6 @@ end
 --初始
 --####
 local function Init()
-    panel:SetScript('OnEnter', function(self)
-        if self.itemID then
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:SetToyByItemID(self.itemID)
-            e.tips:Show()
-        end
-    end)
-    panel:SetScript('OnLeave', function() e.tips:Hide() end)
     
 
     for itemID, _ in pairs(Toy) do
