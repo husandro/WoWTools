@@ -11,7 +11,7 @@ local Save={
         [FLOOR]={},
         [MOUNT_JOURNAL_FILTER_GROUND]={
             [339588]=true,--[罪奔者布兰契]
-            [163024]=ture,--战火梦魇兽
+            [163024]=true,--战火梦魇兽
         },
         [MOUNT_JOURNAL_FILTER_FLYING]={
             [339588]=true,--[罪奔者布兰契]
@@ -40,6 +40,7 @@ local Save={
             [61425]=true,--旅行者的苔原猛犸象
         },
         Ctrl={
+            [368896]=true,--[复苏始祖幼龙]
             [118089]=true,--天蓝水黾
             [127271]=true,--猩红水黾
          },
@@ -867,7 +868,7 @@ local function setMountJournal_ShowMountDropdown(index)
     UIDropDownMenu_AddSeparator()
     local info
     for _, type in pairs(tabMenuList) do
-        if (type==MOUNT_JOURNAL_FILTER_DRAGONRIDING and isForDragonriding) or (type~=MOUNT_JOURNAL_FILTER_DRAGONRIDING and not isForDragonriding) then
+        --if (type==MOUNT_JOURNAL_FILTER_DRAGONRIDING and isForDragonriding) or (type~=MOUNT_JOURNAL_FILTER_DRAGONRIDING and not isForDragonriding) then
             if type=='Shift'  or type==FLOOR then
                 UIDropDownMenu_AddSeparator()
             end
@@ -904,7 +905,7 @@ local function setMountJournal_ShowMountDropdown(index)
             info.tooltipTitle=id
             info.tooltipText=addName
             UIDropDownMenu_AddButton(info, level);
-        end
+--end
     end
 end
 
