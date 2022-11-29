@@ -13,7 +13,7 @@ local Save={
 local addName=UNWRAP..ITEMS
 local Combat, Bag= nil, {}
 
-local panel=e.Cbtn2(nil, WoWToolsMountButton)
+local panel=e.Cbtn2('WoWToolsOpenItemsButton', WoWToolsMountButton)
 panel:SetPoint('RIGHT', HearthstoneToolsButton, 'LEFT')
 
 
@@ -138,6 +138,7 @@ local function getItems()--取得背包物品信息
                         end
                     end
                 elseif quality and quality > 0 and classID and subclassID then
+                    
                     local speciesID = select(13, C_PetJournal.GetPetInfoByItemID(itemID))--宠物物品
                     if speciesID  or (classID==15 and subclassID==2) then--PET
                         if Save.pet then
@@ -183,6 +184,7 @@ local function getItems()--取得背包物品信息
                         end
 
                     elseif C_ToyBox.GetToyInfo(itemID) and not PlayerHasToy(itemID) then--玩具 
+                        
                         if Save.toy then
                             setAtt(bag, slot, icon, itemID)
                             return

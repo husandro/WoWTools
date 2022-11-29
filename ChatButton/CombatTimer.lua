@@ -1,6 +1,6 @@
 local id, e = ...
 local addName= COMBAT..TIME_LABEL:gsub(':','')
-local Save= {textScale=1.2, classColor=true, Say=120, AllOnlineTime=true, 
+local Save= {textScale=1.2, Say=120, AllOnlineTime=true, 
     bat={num= 0, time= 0},
     pet={num= 0,  win=0, capture=0},
     ins={num= 0, time= 0, kill=0, dead=0},
