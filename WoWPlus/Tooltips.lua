@@ -393,7 +393,7 @@ local function setCurrency(self, currencyID)--货币
     end
     self:Show()
 end
-
+--[[
 local function setAchievement(self, achievementID)--成就
     local _, _, points, completed, _, _, _, _, flags, icon = GetAchievementInfo(achievementID)
     self.textLeft:SetText(points..RESAMPLE_QUALITY_POINT)--点数
@@ -412,7 +412,7 @@ local function setAchievement(self, achievementID)--成就
         self.Portrait:SetShown(true)
     end
 end
-
+]]
 local function setQuest(self, questID)
     self:AddDoubleLine(QUESTS_LABEL..'ID:', questID)
 end

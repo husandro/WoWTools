@@ -264,7 +264,7 @@ local function setWorldbossText()--显示世界BOSS击杀数据Text
         end)
         MoveFrame(panel.WorldBoss, 'WorldBossPoint')
 
-        panel.WorldBoss.Text=e.Cstr(panel.WorldBoss, Save.EncounterJournalFontSize)
+        panel.WorldBoss.Text=e.Cstr(panel.WorldBoss, Save.EncounterJournalFontSize, nil,nil,true)
         panel.WorldBoss.Text:SetPoint('TOPLEFT')
         
         panel.WorldBoss.texture=panel.WorldBoss:CreateTexture()
@@ -302,12 +302,12 @@ local function setWorldbossText()--显示世界BOSS击杀数据Text
             msg= msg..'\n'..e.GetPlayerInfo(nil, guid, true)..(guid==e.Player.guid and e.Icon.star2 or '')
         end
     end
-    panel.WorldBoss.Text:SetText(msg or '')
+    panel.WorldBoss.Text:SetText(msg or '..')
     panel.WorldBoss:SetShown(true)
 end
 
 local function setInstanceBossText()--显示副本击杀数据
-    if Save.showInstanceBoss then
+    if not Save.showInstanceBoss then
         if panel.instanceBoss then
             panel.instanceBoss.Text:SetText('')
             panel.instanceBoss:SetShown(false)
@@ -345,7 +345,7 @@ local function setInstanceBossText()--显示副本击杀数据
             end
         end)
         MoveFrame(panel.instanceBoss, 'instanceBossPoint')
-        panel.instanceBoss.Text=e.Cstr(panel.instanceBoss, Save.EncounterJournalFontSize)
+        panel.instanceBoss.Text=e.Cstr(panel.instanceBoss, Save.EncounterJournalFontSize, nil, nil, true)
         panel.instanceBoss.Text:SetPoint('TOPLEFT')
 
         panel.instanceBoss.texture=panel.instanceBoss:CreateTexture()
@@ -368,7 +368,7 @@ local function setInstanceBossText()--显示副本击杀数据
             msg= msg ..e.GetPlayerInfo(nil, guid, true)..(guid==e.Player.guid and e.Icon.star2 or '')
         end
     end
-    panel.instanceBoss.Text:SetText(msg or '')
+    panel.instanceBoss.Text:SetText(msg or '..')
     panel.instanceBoss:SetShown(true)
 end
 
@@ -755,7 +755,7 @@ local function set_EncounterJournal_Init()--冒险指南界面
         end
 
         if not self2.instance.Killed then--综述, 添加副本击杀情况
-            self2.instance.Killed=e.Cstr(self2.instance, 14, self2.instance.title)
+            self2.instance.Killed=e.Cstr(self2.instance, 14, self2.instance.title, nil,nil,true)
             self2.instance.Killed:SetPoint('BOTTOMRIGHT', -33, 126)
             self2.instance.Killed:SetJustifyH('RIGHT')
         end
