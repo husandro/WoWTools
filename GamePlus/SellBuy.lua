@@ -858,6 +858,9 @@ panel:RegisterEvent('PLAYER_AVG_ITEM_LEVEL_UPDATE')
 
 panel:RegisterEvent('MERCHANT_UPDATE')--购回
 
+panel:RegisterEvent('LOOT_READY')--自动拾取加强 
+
+
 panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
     if event == "ADDON_LOADED" and arg1==id then
         if WoWToolsSave then
@@ -893,6 +896,13 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
 
     elseif event=='MERCHANT_UPDATE' then
         setBuyBackItems()--回购
+
+    elseif event=='LOOT_READY' then
+        if arg1 then
+            for i = GetNumLootItems(), 1, -1 do
+                LootSlot(i);
+            end
+        end
     end
 end)
 
