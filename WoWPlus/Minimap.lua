@@ -51,7 +51,7 @@ local function Init()
     frame.ScaleOut:SetScript('OnLeave', function() e.tips:Hide() end)
 
     if ExpansionLandingPageMinimapButton then
-        ExpansionLandingPageMinimapButton:SetScale(0.6)
+        ExpansionLandingPageMinimapButton:SetScale(0.6)--透明度
         ExpansionLandingPageMinimapButton:SetAlpha(0.3)
         ExpansionLandingPageMinimapButton:SetScript('OnEnter', function(self)
             self:SetAlpha(1)
@@ -62,6 +62,12 @@ local function Init()
         C_Timer.After(10, function()--盟约图标停止闪烁
             ExpansionLandingPageMinimapButton.MinimapLoopPulseAnim:Stop()
         end)
+
+        ExpansionLandingPageMinimapButton:SetMovable(true)--移动
+        ExpansionLandingPageMinimapButton:RegisterForDrag("RightButton")
+        ExpansionLandingPageMinimapButton:SetClampedToScreen(true)
+        ExpansionLandingPageMinimapButton:SetScript("OnDragStart", ExpansionLandingPageMinimapButton.StartMoving)        
+        ExpansionLandingPageMinimapButton:SetScript("OnDragStop", ExpansionLandingPageMinimapButton.StopMovingOrSizing)
     end
 end
 
