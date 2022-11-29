@@ -866,14 +866,19 @@ local function setMountJournal_ShowMountDropdown(index)
         return
     end
     UIDropDownMenu_AddSeparator()
-    local info
+    --local info
     for _, type in pairs(tabMenuList) do
         --if (type==MOUNT_JOURNAL_FILTER_DRAGONRIDING and isForDragonriding) or (type~=MOUNT_JOURNAL_FILTER_DRAGONRIDING and not isForDragonriding) then
             if type=='Shift'  or type==FLOOR then
                 UIDropDownMenu_AddSeparator()
             end
-            info={text=SETTINGS..' '..type..' #'..getTableNum(type)}
-            info.checked=Save.Mounts[type][spellID] and true or nil
+            local info={
+                        text=SETTINGS..' '..type..' #'..getTableNum(type),
+                        checked=Save.Mounts[type][spellID] and true or nil,
+                        tooltipOnButton=true,
+                        tooltipTitle=id,
+                        tooltipText=addName,
+                    }
             if type==FLOOR then
                 info.func=function ()
                     local exits=Save.Mounts[FLOOR][spellID] and ERR_ZONE_EXPLORED:format(PROFESSIONS_CURRENT_LISTINGS) or NEW
@@ -901,9 +906,6 @@ local function setMountJournal_ShowMountDropdown(index)
                     MountJournal_UpdateMountList()
                 end
             end
-            info.tooltipOnButton=true
-            info.tooltipTitle=id
-            info.tooltipText=addName
             UIDropDownMenu_AddButton(info, level);
 --end
     end
@@ -970,7 +972,9 @@ local function Init()
                 ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
             --(level, value, dropDownFrame, anchorName, xOffset, yOffset, menuList, button, autoHideDelay)
         elseif d=='LeftButton' then
-            if IsSpellKnown(111400) and not UnitAffectingCombat('player') then--SS爆燃冲刺
+            if IsMounted() then
+                C_MountJournal.Dismiss()
+            elseif IsSpellKnown(111400) and not UnitAffectingCombat('player') then--SS爆燃冲刺
                 for i = 1, 40 do
                     local spell = select(10, UnitBuff('player', i, 'PLAYER'))
                     if not spell then
