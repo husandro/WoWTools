@@ -373,7 +373,7 @@ local function setCurrency(self, currencyID)--货币
     if factionID and factionID>0 then
         local name= GetFactionInfoByID(factionID)
         if name then
-            self.AddDoubleLine(REPUTATION, name)
+            self:AddDoubleLine(REPUTATION, name)
         end
     end
 
