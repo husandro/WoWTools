@@ -11,24 +11,24 @@ local Save={
         [FLOOR]={},
         [MOUNT_JOURNAL_FILTER_GROUND]={
             [339588]=true,--[罪奔者布兰契]
-            [163024]=true,--战火梦魇兽
+            --[163024]=true,--战火梦魇兽
         },
         [MOUNT_JOURNAL_FILTER_FLYING]={
             [339588]=true,--[罪奔者布兰契]
-            [163024]=ture,--战火梦魇兽
+            --[163024]=ture,--战火梦魇兽
         },
         [MOUNT_JOURNAL_FILTER_AQUATIC]={
-            [359379]=true,--闪光元水母
-            [376912]=true,--[热忱的载人奥獭]
-            [342680]=true,--[深星元水母]
-            [30174]=true,--[乌龟坐骑]
+            --[359379]=true,--闪光元水母
+            --[376912]=true,--[热忱的载人奥獭]
+            --[342680]=true,--[深星元水母]
+            --[30174]=true,--[乌龟坐骑]
             [64731]=true,--[海龟]
         },
         [MOUNT_JOURNAL_FILTER_DRAGONRIDING]={
             [368896]=true,--[复苏始祖幼龙]
-            [368901]=true,--[崖际荒狂幼龙]
-            [368899]=true,--[载风迅疾幼龙]
-            [360954]=true,--[高地幼龙]
+            --[368901]=true,--[崖际荒狂幼龙]
+            --[368899]=true,--[载风迅疾幼龙]
+            --[360954]=true,--[高地幼龙]
         },
         Shift={
             [75973]=true,--X-53型观光火箭
@@ -40,9 +40,9 @@ local Save={
             [61425]=true,--旅行者的苔原猛犸象
         },
         Ctrl={
-            [368896]=true,--[复苏始祖幼龙]
+            --[368896]=true,--[复苏始祖幼龙]
             [118089]=true,--天蓝水黾
-            [127271]=true,--猩红水黾
+            --[127271]=true,--猩红水黾
          },
     },
     XD=true
@@ -244,7 +244,7 @@ local function setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
     end
     panel.Combat=nil
 end
-local function setCooldown(aura)--设置冷却
+local function setCooldown()--设置冷却
     if panel.spellAtt then
         local start, duration, _, modRate = GetSpellCooldown(panel.spellAtt)
         e.Ccool(panel, start, duration, modRate, true, nil, true)--冷却条
@@ -281,12 +281,14 @@ local function setTextrue()--设置图标
     setCooldown()--设置冷却
 end
 local function setClickAtt()--设置 Click属性
-    if UnitAffectingCombat('player') then
+    local inCombat=UnitAffectingCombat('player')
+    if inCombat then
         panel.Combat=true
         return
     end
     local spellID= (inCombat or IsIndoors()) and panel.spellID--进入战斗, 室内
                     or #panel[FLOOR]>0 and getRandomRoll(FLOOR)--区域
+                    or select(5, C_MountJournal.GetMountInfoByID(1589)) and getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING)
                     or IsSubmerged() and getRandomRoll(MOUNT_JOURNAL_FILTER_AQUATIC)--水平中
                     or IsFlyableArea() and getRandomRoll(MOUNT_JOURNAL_FILTER_FLYING)--飞行区域
                     or IsOutdoors() and getRandomRoll(MOUNT_JOURNAL_FILTER_GROUND)--室外
@@ -548,7 +550,7 @@ local mainMenuTable={
     MOUNT_JOURNAL_FILTER_GROUND,
     MOUNT_JOURNAL_FILTER_AQUATIC,
     MOUNT_JOURNAL_FILTER_FLYING,
-    --MOUNT_JOURNAL_FILTER_DRAGONRIDING,
+    MOUNT_JOURNAL_FILTER_DRAGONRIDING,
     '-',
     'Shift', 'Alt', 'Ctrl',
     '-',
@@ -820,7 +822,7 @@ local tabMenuList={
     MOUNT_JOURNAL_FILTER_GROUND,
     MOUNT_JOURNAL_FILTER_AQUATIC,
     MOUNT_JOURNAL_FILTER_FLYING,
-    --MOUNT_JOURNAL_FILTER_DRAGONRIDING,
+    MOUNT_JOURNAL_FILTER_DRAGONRIDING,
     'Shift', 'Alt', 'Ctrl',
     FLOOR,
 }
@@ -868,7 +870,7 @@ local function setMountJournal_ShowMountDropdown(index)
     UIDropDownMenu_AddSeparator()
     --local info
     for _, type in pairs(tabMenuList) do
-        --if (type==MOUNT_JOURNAL_FILTER_DRAGONRIDING and isForDragonriding) or (type~=MOUNT_JOURNAL_FILTER_DRAGONRIDING and not isForDragonriding) then
+        if (type==MOUNT_JOURNAL_FILTER_DRAGONRIDING and isForDragonriding) or (type~=MOUNT_JOURNAL_FILTER_DRAGONRIDING and not isForDragonriding) then
             if type=='Shift'  or type==FLOOR then
                 UIDropDownMenu_AddSeparator()
             end
@@ -907,7 +909,7 @@ local function setMountJournal_ShowMountDropdown(index)
                 end
             end
             UIDropDownMenu_AddButton(info, level);
---end
+        end
     end
 end
 
