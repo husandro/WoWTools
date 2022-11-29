@@ -404,7 +404,7 @@ local function FactionUpdate(self, env, text)--监视声望更新提示
 						if majorFactionData.name and majorFactionData.name~=name then 
 							factionStandingtext=name
 						end
-						value= e.MK(majorFactionData.renownLevel,1)..'/'..e.MK(majorFactionData.renownLevelThreshold, 1)--名望RENOWN_LEVEL_LABEL
+						value= e.MK(majorFactionData.renownLevel,3)..'/'..e.MK(majorFactionData.renownLevelThreshold, 3)--名望RENOWN_LEVEL_LABEL
 					end
 					value=(value and value..' ' or '') ..('%i%%'):format(majorFactionData.renownReputationEarned/majorFactionData.renownLevelThreshold*100)
 				end
