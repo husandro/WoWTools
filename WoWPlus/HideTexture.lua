@@ -53,9 +53,6 @@ local function Init()
 
 end
 
-hooksecurefunc(UIWidgetPowerBarContainerMixin,'OnLoad', function()
-    print('a')
-end)
 local function set_UNIT_ENTERED_VEHICLE()--载具
     OverrideActionBarEndCapL:Hide()
     OverrideActionBarEndCapR:Hide()
