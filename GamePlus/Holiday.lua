@@ -443,7 +443,7 @@ local function InitMenu(self, level, type)--主菜单
             func=function()
                 Save.point=nil
                 panel:ClearAllPoints()
-                panel:SetPoint('TOPRIGHT', Minimap, 'BOTTOMLEFT',45,20)
+                panel:SetPoint('TOPRIGHT', Minimap, 'BOTTOMLEFT',45,10)
             end,
             tooltipOnButton=true,
             tooltipTitle='Alt +'..e.Icon.right..' '..NPE_MOVE,
@@ -506,7 +506,7 @@ local function Init()
     if Save.point then
         panel:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
     else
-        panel:SetPoint('TOPRIGHT', Minimap, 'BOTTOMLEFT',45,20)
+        panel:SetPoint('TOPRIGHT', Minimap, 'BOTTOMLEFT',45,10)
     end
 
     panel:RegisterForDrag("RightButton")
