@@ -536,8 +536,8 @@ local function Init()
         local key= IsModifierKeyDown()
         if (d=='RightButton' and not key) or not(Bag.bag and Bag.slot) then
             ToggleDropDownMenu(1,nil,panel.Menu,self,self:GetWidth(),0)
-        elseif d=='RightButton' and not key and equipItem then
-            if not PaperDollFrame:IsShown() then
+        elseif d=='LeftButton' and not key and equipItem then
+            if not PaperDollFrame:IsVisible() then
                 ToggleCharacter("PaperDollFrame")
             end
         end
