@@ -33,7 +33,7 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex, guildBank
         if itemQuality then
             r,g,b = GetItemQualityColor(itemQuality)
         end
-        
+
         if C_Item.IsItemKeystoneByID(itemID) then--挑战
             local name=itemLink:match('%[(.-)]') or itemLink
             topLeftText=name:match('%((%d+)%)') or C_MythicPlus.GetOwnedKeystoneLevel() --等级
@@ -56,6 +56,7 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex, guildBank
             end
         elseif e.itemPetID[itemID] then
             topRightText='|A:WildBattlePetCapturable:0:0|a'
+
         elseif itemQuality and itemQuality==0 then
             topRightText='|A:Coin-Silver:0:0|a'
         elseif classID==1 then--背包
@@ -64,6 +65,14 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex, guildBank
             end
             if bag and not bag.isBound then--没有锁定
                 topRightText='|A:'..e.Icon.unlocked..':0:0|a'
+            end
+
+        elseif classID==8 or classID==3 or classID==9 or (classID==0 and (subclassID==1 or subclassID==3 or subclassID==5)) or classID==19 then--附魔, 宝石
+            --bottomLeftText= e.WA_Utf8Sub(itemSubType, 2,5)
+            if classID==0 and subclassID==5 then
+                topRightText= e.WA_Utf8Sub(POWER_TYPE_FOOD, 2,5)
+            else
+                topRightText= e.WA_Utf8Sub(itemSubType, 2,5)
             end
 
         elseif itemEquipLoc and _G[itemEquipLoc] then--装备 
@@ -126,13 +135,7 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex, guildBank
                 bottomRightText=not sets.collected and e.Icon.okTransmog2
            end
 
-        elseif classID==8 or classID==3 or classID==9 or (classID==0 and (subclassID==1 or subclassID==3 or subclassID==5))then--附魔, 宝石
-            --bottomLeftText= e.WA_Utf8Sub(itemSubType, 2,5)
-            if classID==0 and subclassID==5 then
-                topRightText= e.WA_Utf8Sub(POWER_TYPE_FOOD, 2,5)
-            else
-                topRightText= e.WA_Utf8Sub(itemSubType, 2,5)
-            end
+        
         elseif classID==17 or (classID==15 and subclassID==2) or itemLink:find('Hbattlepet:(%d+)') then--宠物
             local speciesID = itemLink:match('Hbattlepet:(%d+)') or select(13, C_PetJournal.GetPetInfoByItemID(itemID))--宠物
             if speciesID then
