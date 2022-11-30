@@ -6,7 +6,7 @@ url: https://github.com/wildstarnasa/LibDialog.git
 tag: latest # if this line is left out, the latest version (even if it's not a tag) is assumed    
 libs/GeminiAddon:        
 url: https://github.com/wildstarnasa/GeminiAddon.git        
-tag: v0.1 # This is an example. Please use an actual tag if you are targeting a specific 
+tag: v1.0.0 # This is an example. Please use an actual tag if you are targeting a specific 
 version.move-folders:    
 KillerCupcakes/Modules/Fire: 
 KillerCupcakesOnFire # This moves KillerCupcakes/Modules/Fire to the same level as KillerCupcakes, as KillerCupCakesOnFire    
