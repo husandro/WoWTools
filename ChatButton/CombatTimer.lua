@@ -82,11 +82,11 @@ local function check_Event()--检测事件
         LastText=nil
     elseif OnCombatTime then
         local text, sec=e.GetTimeInfo(OnCombatTime, not Save.timeTypeText)
-        LastText= '|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a|cnGREEN_FONT_COLOR:'..COMBAT..text..'|r'
+        LastText= '|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a|cnGREEN_FONT_COLOR:'..text..'|r'
         if sec>10 then
             Save.bat.num= Save.bat.num + 1
             Save.bat.time= Save.bat.time + sec
-            print(id, addName, LastText)
+            --print(id, addName, LastText)
         end
         OnCombatTime=nil
         chatStarTime=nil
