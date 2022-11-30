@@ -1,12 +1,15 @@
 ## Interface: 100002
 ## Title: |A:Icon-WoW:0:0|a|cffff00ffWoW|r |cff00ff00Tools|r
-## Notes: WoW Tools
 ## Author: husandro
+## Version: @project-version@
+## Notes: WoW Tools
+## X-Category: Interface Enhancements
+## X-Flavor: Mainline
+## X-Website https://www.curseforge.com/wow/addons/wowtools
 ## SavedVariables: WoWToolsSave, WoWDate
-
+## DefaultState: Enabled
 ## X-Curse-Project-ID: 695149
 ## X-Wago-ID: baND1J6o
-## Version: @project-version@
 
 ##主要，不能删除
 WoWTools.lua
