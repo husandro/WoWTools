@@ -2,7 +2,6 @@
 ## Title: |A:Icon-WoW:0:0|a|cffff00ffWoW|r |cff00ff00Tools|r
 ## Notes: WoW Tools
 ## Author: husandro
-## Authorization: Bearer E9LV37oTBe2GBv6oP40FK2KiVbLZ8WjbtFXZZ9pz
 ## SavedVariables: WoWToolsSave, WoWDate
 
 ## X-Curse-Project-ID: 695149
