@@ -10,7 +10,8 @@ local Save={
     no={--禁用使用
 
     },
-    pet=true, open=true, toy=true, mount=true, mago=true, ski=true, noItemHide=true, alt=true
+    pet=true, open=true, toy=true, mount=true, mago=true, ski=true, alt=true
+    --noItemHide=true,
 }
 
 local addName=UNWRAP..ITEMS

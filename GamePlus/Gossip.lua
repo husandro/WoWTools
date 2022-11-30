@@ -276,25 +276,33 @@ QuestFrameGreetingPanel:HookScript('OnShow', function()--QuestFrame.lua QuestFra
 end)
 
 
-local printText
+local printText, selectGissipIDTab= nil, {}
 --可选闲话(任务)GossipFrameShared.lua
+GossipFrame:HasScript('OnHide', function ()
+    selectGissipIDTab={}
+end)
 hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, optionInfo)
     local info=C_GossipInfo.GetOptions()
-    if not optionInfo.gossipOptionID or not Save.qest or IsModifierKeyDown() or (optionInfo.flags ~= Enum.GossipOptionRecFlags.QuestLabelPrepend and not optionInfo.name:find(QUESTS_LABEL) and #info>1)  then
+    if not optionInfo.gossipOptionID
+        or not Save.qest
+        or IsModifierKeyDown()
+        or (optionInfo.flags ~= Enum.GossipOptionRecFlags.QuestLabelPrepend and not optionInfo.name:find(QUESTS_LABEL) and #info>1)
+        or selectGissipIDTab[optionInfo]
+    then
         return
     end
-    
+
     local spell=optionInfo.spellID and GetSpellLink(optionInfo.spellID) or ''
     local icon=self.Icon:GetTexture()
     icon = icon and '|T'..icon..':0|t' or ''
     local text=GOSSIP_QUEST_OPTION_PREPEND:format(optionInfo.name)
-    
-    
+
     if printText~=optionInfo.name then
         printText=optionInfo.name
         print(GREEN_FONT_COLOR_CODE..QUESTS_LABEL..' |r(Alt '..RED_FONT_COLOR_CODE..DISABLE..'|r): |cffff00ff'..icon..text..'|r'..spell)
     end
     C_GossipInfo.SelectOption(optionInfo.gossipOptionID)
+    selectGissipIDTab[optionInfo.gossipOptionID]=true
 end)
 
 --任务进度, 继续, 完成QuestFrame.lua
