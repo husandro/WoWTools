@@ -760,38 +760,42 @@ e.GetItemCollected= function(link, sourceID, icon)--物品是否收集
     sourceID= sourceID or link and select(2,C_TransmogCollection.GetItemInfo(link))
     local sourceInfo = sourceID and C_TransmogCollection.GetSourceInfo(sourceID)
     if sourceInfo then
+        local isSelf= select(2, C_TransmogCollection.PlayerCanCollectSource(sourceID))
         if sourceInfo.isCollected then
             if icon then
-                if select(2, C_TransmogCollection.PlayerCanCollectSource(sourceID)) then
-                    return e.Icon.select2, sourceInfo.isCollected
+                if isSelf then
+                    return e.Icon.select2, sourceInfo.isCollected, isSelf
                 else
-                    return '|A:Adventures-Checkmark:0:0|a', sourceInfo.isCollected--黄色√
+                    return '|A:Adventures-Checkmark:0:0|a', sourceInfo.isCollected, isSelf--黄色√
                 end
             else
-                return '|cnGREEN_FONT_COLOR:'..COLLECTED..'|r', sourceInfo.isCollected
+                return '|cnGREEN_FONT_COLOR:'..COLLECTED..'|r', sourceInfo.isCollected, isSelf
             end
         else
             if icon then
-                if select(2, C_TransmogCollection.PlayerCanCollectSource(sourceID)) then
-                    return e.Icon.okTransmog2, sourceInfo.isCollected
+                if isSelf then
+                    return e.Icon.okTransmog2, sourceInfo.isCollected, isSelf
                 else
-                    return e.Icon.transmogHide2, sourceInfo.isCollected
+                    return e.Icon.transmogHide2, sourceInfo.isCollected, isSelf
                 end
             else
-                return '|cnRED_FONT_COLOR:'..NOT_COLLECTED..'|r', sourceInfo.isCollected
+                return '|cnRED_FONT_COLOR:'..NOT_COLLECTED..'|r', sourceInfo.isCollected, isSelf
             end
         end
     end
 end
 
-e.GetPetCollected= function(speciesID)--宠物, 收集数量
-    local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesID)
-    if nunumCollected==0 then
-        return '|cnRED_FONT_COLOR:'..ITEM_PET_KNOWN:format(0, limit)..'|r', numCollected
-    elseif limit and numCollected==limit and limit>0 then
-        return '|cnGREEN_FONT_COLOR:'..ITEM_PET_KNOWN:format(numCollected, limit)..'|r', numCollected
-    else
-        return ITEM_PET_KNOWN:format(numCollected, limit), numCollected
+e.GetPetCollected= function(speciesID, itemID)--宠物, 收集数量
+    speciesID = speciesID or (itemID and select(13, C_PetJournal.GetPetInfoByItemID(itemID)))--宠物物品
+    if speciesID then
+        local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesID)
+        if nunumCollected==0 then
+            return '|cnRED_FONT_COLOR:'..ITEM_PET_KNOWN:format(0, limit)..'|r', numCollected, limit
+        elseif limit and numCollected==limit and limit>0 then
+            return '|cnGREEN_FONT_COLOR:'..ITEM_PET_KNOWN:format(numCollected, limit)..'|r', numCollected, limit
+        else
+            return ITEM_PET_KNOWN:format(numCollected, limit), numCollected, limit
+        end
     end
 end
 
