@@ -87,11 +87,13 @@ local function setAtt(bag, slot, icon, itemID)--设置属性
     Combat=nil
 end
 
+local equipItem--是装备时, 打开角色界面
 local function getItems()--取得背包物品信息
     if UnitAffectingCombat('player') then
         Combat=true
         return
     end
+    equipItem=nil
     Bag={}
     local levelPlayer=UnitLevel('player')
     for bag=0, NUM_BAG_SLOTS do
@@ -113,6 +115,7 @@ local function getItems()--取得背包物品信息
                             local setInfo= C_TransmogSets.GetSetInfo(setID)
                             if setInfo and not setInfo.collected then
                                 setAtt(bag, slot, info.iconFileID, info.itemID)
+                                equipItem=true
                                 return
                             end
                         end
@@ -121,6 +124,7 @@ local function getItems()--取得背包物品信息
                             local  isCollected, isSelf= select(2, e.GetItemCollected(info.hyperlink))
                             if not isCollected and isSelf then
                                 setAtt(bag, slot, info.iconFileID, info.itemID)
+                                equipItem=true
                                 return
                             end
                         end
@@ -529,8 +533,13 @@ local function Init()
         ResetCursor()
     end)
     panel:SetScript("OnMouseDown", function(self,d)
-        if (d=='RightButton' and not IsModifierKeyDown()) or not(Bag.bag and Bag.slot) then
+        local key= IsModifierKeyDown()
+        if (d=='RightButton' and not key) or not(Bag.bag and Bag.slot) then
             ToggleDropDownMenu(1,nil,panel.Menu,self,self:GetWidth(),0)
+        elseif d=='RightButton' and not key and equipItem then
+            if not PaperDollFrame:IsShown() then
+                ToggleCharacter("PaperDollFrame")
+            end
         end
     end)
 
