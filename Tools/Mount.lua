@@ -281,6 +281,7 @@ local function setTextrue()--设置图标
     setCooldown()--设置冷却
 end
 
+--[[
 local mapIDs={
     [1978]=true,
     [2022]=true,
@@ -290,6 +291,8 @@ local mapIDs={
     [2112]=true,
     [2093]=true
 }
+]]
+
 local function setClickAtt()--设置 Click属性
     local inCombat=UnitAffectingCombat('player')
     if inCombat then
