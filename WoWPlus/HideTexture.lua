@@ -7,33 +7,33 @@ local Save={}
 --初始化
 --######
 local function Init()
-    ExtraActionButton1.style:Hide()--额外技能
-    ZoneAbilityFrame.Style:Hide()--区域技能
+    ExtraActionButton1.style:SetShown(false)--额外技能
+    ZoneAbilityFrame.Style:SetShown(false)--区域技能
 
   
-    MainMenuBar.EndCaps.LeftEndCap:Hide()
-    MainMenuBar.EndCaps.RightEndCap:Hide()
+    MainMenuBar.EndCaps.LeftEndCap:SetShown(false)
+    MainMenuBar.EndCaps.RightEndCap:SetShown(false)
 
-    PetBattleFrame.TopArtLeft:Hide()
-    PetBattleFrame.TopArtRight:Hide()
-    PetBattleFrame.TopVersus:Hide()
-    PetBattleFrame.TopVersusText:Hide()
-    PetBattleFrame.WeatherFrame.BackgroundArt:Hide()
-    PetBattleFrame.BottomFrame.LeftEndCap:Hide()
-    PetBattleFrame.BottomFrame.RightEndCap:Hide()
-    PetBattleFrame.BottomFrame.Background:Hide()
-    PetBattleFrame.BottomFrame.TurnTimer.ArtFrame2:Hide()
-    PetBattleFrame.BottomFrame.FlowFrame:Hide()
-    PetBattleFrame.BottomFrame.Delimiter:Hide()
-    --PetBattleFrame.BottomFrame.TurnTimer.ArtFrame2:Hide()
-    PetBattleFrameXPBarLeft:Hide()
-    PetBattleFrameXPBarRight:Hide()
-    PetBattleFrameXPBarMiddle:Hide()
+    PetBattleFrame.TopArtLeft:SetShown(false)
+    PetBattleFrame.TopArtRight:SetShown(false)
+    PetBattleFrame.TopVersus:SetShown(false)
+    PetBattleFrame.TopVersusText:SetShown(false)
+    PetBattleFrame.WeatherFrame.BackgroundArt:SetShown(false)
+    PetBattleFrame.BottomFrame.LeftEndCap:SetShown(false)
+    PetBattleFrame.BottomFrame.RightEndCap:SetShown(false)
+    PetBattleFrame.BottomFrame.Background:SetShown(false)
+    PetBattleFrame.BottomFrame.TurnTimer.ArtFrame2:SetShown(false)
+    PetBattleFrame.BottomFrame.FlowFrame:SetShown(false)
+    PetBattleFrame.BottomFrame.Delimiter:SetShown(false)
+    --PetBattleFrame.BottomFrame.TurnTimer.ArtFrame2:SetShown(false)
+    PetBattleFrameXPBarLeft:SetShown(false)
+    PetBattleFrameXPBarRight:SetShown(false)
+    PetBattleFrameXPBarMiddle:SetShown(false)
 
 
 
-    --PetBattleFrame.BottomFrame.MicroButtonFrame.RightEndCap:Hide()
-    --PetBattleFrame.BottomFrame.MicroButtonFrame.LeftEndCap:Hide()
+    --PetBattleFrame.BottomFrame.MicroButtonFrame.RightEndCap:SetShown(false)
+    --PetBattleFrame.BottomFrame.MicroButtonFrame.LeftEndCap:SetShown(false)
     hooksecurefunc('PetBattleFrame_UpdatePassButtonAndTimer', function(self)--Blizzard_PetBattleUI.lua
         self.BottomFrame.TurnTimer.TimerBG:SetShown(false);
         --self.BottomFrame.TurnTimer.Bar:SetShown(true);
@@ -41,10 +41,10 @@ local function Init()
         self.BottomFrame.TurnTimer.ArtFrame2:SetShown(false);
     end)
 
-    local frame =PaladinPowerBarFrameBG if frame then frame:Hide() end
-    frame=PaladinPowerBarFrameBankBG if frame then frame:Hide() end
+    local frame =PaladinPowerBarFrameBG if frame then frame:SetShown(false) end
+    frame=PaladinPowerBarFrameBankBG if frame then frame:SetShown(false) end
     
-    LootFrameBg:Hide()--拾取
+    LootFrameBg:SetShown(false)--拾取
 
     hooksecurefunc(HelpTip,'Show', function(self, parent, info, relativeRegion)--隐藏所有HelpTip HelpTip.lua
         --e.Ccool(parent,nil, 2, nil, nil, true, nil, true)
@@ -54,21 +54,30 @@ local function Init()
 end
 
 local function set_UNIT_ENTERED_VEHICLE()--载具
-    OverrideActionBarEndCapL:Hide()
-    OverrideActionBarEndCapR:Hide()
-    OverrideActionBarBorder:Hide()
-    OverrideActionBarBG:Hide()
-    OverrideActionBarButtonBGMid:Hide()     
-    OverrideActionBarButtonBGR:Hide()
-    OverrideActionBarButtonBGL:Hide()
-    
-    OverrideActionBarMicroBGMid:Hide()
-    OverrideActionBarMicroBGR:Hide()
-    OverrideActionBarMicroBGL:Hide()
-    OverrideActionBarLeaveFrameExitBG:Hide()
-    
-    OverrideActionBarDivider2:Hide()
-    OverrideActionBarLeaveFrameDivider3:Hide()
+    if OverrideActionBarEndCapL then
+        OverrideActionBarEndCapL:SetShown(false)
+        OverrideActionBarEndCapR:SetShown(false)
+        OverrideActionBarBorder:SetShown(false)
+        OverrideActionBarBG:SetShown(false)
+        OverrideActionBarButtonBGMid:SetShown(false)     
+        OverrideActionBarButtonBGR:SetShown(false)
+        OverrideActionBarButtonBGL:SetShown(false)
+    end
+    if OverrideActionBarMicroBGMid then
+        OverrideActionBarMicroBGMid:SetShown(false)
+        OverrideActionBarMicroBGR:SetShown(false)
+        OverrideActionBarMicroBGL:SetShown(false)
+        OverrideActionBarLeaveFrameExitBG:SetShown(false)
+
+        OverrideActionBarDivider2:SetShown(false)
+        OverrideActionBarLeaveFrameDivider3:SetShown(false)
+    end
+    if OverrideActionBarExpBar then
+        --OverrideActionBarExpBarXpMid:SetShown(false)
+        --OverrideActionBarExpBarXpR:SetShown(false)
+        --OverrideActionBarExpBarXpL:SetShown(false)
+        OverrideActionBarExpBar:SetShown(false)
+    end
 end
 --###########
 --加载保存数据
