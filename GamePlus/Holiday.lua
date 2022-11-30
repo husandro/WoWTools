@@ -2,64 +2,6 @@ local id, e = ...
 local addName=	CALENDAR_FILTER_HOLIDAYS
 local Save={}
 local panel= e.Cbtn(UIParent, nil, nil, nil, nil, true, {20,20})
---[[
-
-local TimewarpedBadgeDayID={40168, 40173, 40786, 45563, 55499, 40168, 40173, 40787, 45563, 55498, 64710,64709}--任务是否完成
-local Get=function(ID, name)
-    local info = C_CurrencyInfo.GetCurrencyInfo(ID)
-    local Q, icon
-    if info then
-        Q=info.quantity--数量
-        icon=info.iconFileID--图标
-    elseif GetItemInfoInstant(ID) then
-        Q=GetItemCount(ID,true)
-        icon=GetItemIcon(ID)
-    end
-    if not Q or  Q==0 then
-        return name
-    end
-    local text= (icon and '|T'.. icon..':0|t' or '')..(name.. '')..e.MK(Q)
-    if ID==1166 then --时空扭曲徽章                  
-        local t
-        for _,v in pairs(TimewarpedBadgeDayID) do
-            if C_QuestLog.IsQuestFlaggedCompleted(v) then
-                t=true
-                break
-            end
-        end
-        if t then
-            text= text..'|cnGREEN_FONT_COLOR:'..COMPLETE..'|r'..e.Icon.select2
-        else
-            text= text..'|cnRED_FONT_COLOR:'..INCOMPLETE..'|r'..e.Icon.X2
-        end
-    elseif ID==515 then--暗月
-        if C_QuestLog.IsQuestFlaggedCompleted(36471) and C_QuestLog.IsQuestFlaggedCompleted(32175) then
-            text= text..e.Icon.select2
-        else
-            text= text..e.Icon.O2
-        end
-    elseif ID==33226 then--万圣节
-        for i=1 ,GetNumRandomDungeons() do--随机地下城
-            local Eid = GetLFGRandomDungeonInfo(i)
-            if Eid and Eid==285 then --285 无头骑士
-                local N=GetLFGDungeonInfo(Eid)
-                if N then
-                    text= text..' ('.. N ..')'
-                end
-                if GetLFGDungeonRewards(Eid)  then
-                    text= text..e.Icon.select2
-                else
-                    text= text..O2
-                end
-                break
-            end
-        end
-    end
-    return text
-end
-
-]]
-
 
 local function _CalendarFrame_SafeGetName(name)
 	if ( not name or name == "" ) then
@@ -302,64 +244,18 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
     panel.Text:SetText(msg or '')
 end
 
-   --[[
-    local currentCalendarTime= C_Calendar.GetEventIndex() or C_DateAndTime.GetCurrentCalendarTime()
- local month=currentCalendarTime.month 0;
-
-    local day=currentCalendarTime.monthDay
-    --local hour=currentCalendarTime.hour
-    --local minute= currentCalendarTime.minute
-    --local HolidayInfo= C_Calendar.GetHolidayInfo(monthOffset, monthDay, index)
-
-    local n=C_Calendar.GetNumDayEvents(month, day) or 0--当前节日数量
-    for i=1, n do
-        local event = C_Calendar.GetDayEvent(month, day, i)--节日信息
-        if event and event.eventID  and event.title then
-            
---            if event.sequenceType~='END' then -- and event.calendarType=='HOLIDAY' then
-                text= text and text..'\n' or ''
-                if (event.eventID==617 or event.eventID==623 or event.eventID==629 or event.eventID==654 or event.eventID==1068 or event.eventID==1277)  then--时光
-                    text= text.. Get(1166, event.title)--1166[时空扭曲徽章]
-                elseif event.eventID==479 then--暗月
-                    text= text.. Get(515, event.title)--515[暗月奖券]
-                elseif event.eventID==324 then--万圣节                
-                    text= text.. Get(33226, event.title)-- 33226[奶糖]
-                elseif event.eventID==1225 then--十七周年
-                    text= text.. event.title
-                    local t=C_QuestLog.IsQuestFlaggedCompleted(60215)--周任务是否完成
-                    if t then
-                        text=text..e.Icon.select2
-                    elseif t==false then
-                        text= text ..e.Icon.X2
-                    end
-                else
-                    text= text..event.title
-                end
-        end
-    end
-
-]]
-
-
 local function set_event()--设置事件
     if Save.disabled then
         panel:UnregisterAllEvents()
     else
         panel:RegisterEvent('CALENDAR_UPDATE_EVENT_LIST')
-        --panel:RegisterEvent('QUEST_COMPLETE')
         panel:RegisterEvent('CALENDAR_UPDATE_EVENT')
         panel:RegisterEvent('CALENDAR_NEW_EVENT')
-        --panel:RegisterEvent('BAG_UPDATE_DELAYED')
         panel:RegisterEvent('CALENDAR_OPEN_EVENT')
-        --panel:RegisterEvent('LFG_UPDATE_RANDOM_INFO')
         panel:RegisterEvent('CALENDAR_CLOSE_EVENT')
-        
-        
-
     end
     panel:RegisterEvent('ADDON_LOADED')
     panel:RegisterEvent("PLAYER_LOGOUT")
-    
 end
 
 local function Text_Settings()--设置Text
@@ -407,7 +303,7 @@ local function InitMenu(self, level, type)--主菜单
             end
         }
         UIDropDownMenu_AddButton(info, level)
-        
+
         info={
             text= LFG_LIST_CROSS_FACTION:format(CALENDAR_TOOLTIP_ONGOING),--仅限,正在活动
             checked= Save.ongoing,
@@ -443,7 +339,7 @@ local function InitMenu(self, level, type)--主菜单
             func=function()
                 Save.point=nil
                 panel:ClearAllPoints()
-                panel:SetPoint('TOPRIGHT', Minimap, 'BOTTOMLEFT',45,10)
+                panel:SetPoint('TOP', Minimap, 'BOTTOM',-20,0)
             end,
             tooltipOnButton=true,
             tooltipTitle='Alt +'..e.Icon.right..' '..NPE_MOVE,
@@ -451,7 +347,6 @@ local function InitMenu(self, level, type)--主菜单
         }
         UIDropDownMenu_AddButton(info, level)
 
-        
     else
         info={
             text=SETTINGS,
@@ -506,7 +401,7 @@ local function Init()
     if Save.point then
         panel:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
     else
-        panel:SetPoint('TOPRIGHT', Minimap, 'BOTTOMLEFT',45,10)
+        panel:SetPoint('TOP', Minimap, 'BOTTOM',-20,0)
     end
 
     panel:RegisterForDrag("RightButton")
