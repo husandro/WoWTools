@@ -37,7 +37,7 @@ local function setText()--设置显示内容
             end            
         end
         text= text and text..'\n' or ''
-        text= text .. COMBAT..'|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a'..combat
+        text= text ..'|cnRED_FONT_COLOR:'..COMBAT..'|r|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a'..combat
     end
 
     if OnAFKTime then
