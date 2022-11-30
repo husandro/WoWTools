@@ -280,6 +280,16 @@ local function setTextrue()--设置图标
     panel.texture:SetShown(icon and true or false)
     setCooldown()--设置冷却
 end
+
+local mapIDs={
+    [1978]=true,
+    [2022]=true,
+    [2023]=true,
+    [2024]=true,
+    [2025]=true,
+    [2112]=true,
+    [2093]=true
+}
 local function setClickAtt()--设置 Click属性
     local inCombat=UnitAffectingCombat('player')
     if inCombat then
@@ -288,7 +298,7 @@ local function setClickAtt()--设置 Click属性
     end
     local spellID= (inCombat or IsIndoors()) and panel.spellID--进入战斗, 室内
                     or #panel[FLOOR]>0 and getRandomRoll(FLOOR)--区域
-                    or select(5, C_MountJournal.GetMountInfoByID(1589)) and getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING)
+                    or (IsUsableSpell(368896) and select(5, C_MountJournal.GetMountInfoByID(1589))) and getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING)
                     or IsSubmerged() and getRandomRoll(MOUNT_JOURNAL_FILTER_AQUATIC)--水平中
                     or IsFlyableArea() and getRandomRoll(MOUNT_JOURNAL_FILTER_FLYING)--飞行区域
                     or IsOutdoors() and getRandomRoll(MOUNT_JOURNAL_FILTER_GROUND)--室外
