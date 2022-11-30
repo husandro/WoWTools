@@ -10,8 +10,8 @@ local Save={
     no={--禁用使用
 
     },
-    pet=true, open=true, toy=true, mount=true, mago=true, ski=true, alt=true
-    --noItemHide=true,
+    pet=true, open=true, toy=true, mount=true, mago=true, ski=true, alt=true,
+    noItemHide=true,
 }
 
 local addName=UNWRAP..ITEMS
@@ -510,7 +510,7 @@ local function Init()
     panel:SetScript("OnEnter",function(self)
         local infoType, itemID, itemLink = GetCursorInfo()
         if infoType == "item" and itemID and itemLink then
-            if Bag.bag and Bag.slot and itemLink== GetContainerItemLink(Bag.bag, Bag.slot) then
+            if Bag.bag and Bag.slot and itemLink== C_Container.GetContainerItemLink(Bag.bag, Bag.slot) then
                 return
             end
             local icon

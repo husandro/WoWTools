@@ -344,6 +344,8 @@ local function showTips(self)--显示提示
         e.tips:Hide()
     end
 end
+
+
 local function Init()
     if e.toolsFrame.size and e.toolsFrame.size~=30 then--设置大小
         panel:SetSize(e.toolsFrame.size, e.toolsFrame.size)
