@@ -373,8 +373,7 @@ local function FactionUpdate(self, env, text)--监视声望更新提示
 		return
 	end
 	for i=1, GetNumFactions() do
-		local name2, _, standingID, _, barMax, barValue, _, _, _, _, _, _, _, factionID = GetFactionInfo(i)		
-		if not factionID then break end--隐藏声望
+		local name2, _, standingID, _, barMax, barValue, _, _, _, _, _, _, _, factionID = GetFactionInfo(i)
 		if name2==name then
 			local isCapped= standingID == MAX_REPUTATION_REACTION
 			local factionStandingtext, value, icon
@@ -416,7 +415,7 @@ local function FactionUpdate(self, env, text)--监视声望更新提示
 				factionStandingtext = GetText("FACTION_STANDING_LABEL"..standingID, gender)
 				if isCapped then
 					barColor = FACTION_ORANGE_COLOR
-				else
+				elseif barValue and barMax then
 					value=('%i%%'):format(barValue/barMax*100)
 				end
 			end
