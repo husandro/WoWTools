@@ -304,8 +304,11 @@ local function setItem(self, ItemLink)
 
     local bag= GetItemCount(ItemLink)--物品数量
     local bank= GetItemCount(ItemLink,true) - bag
-    self.textRight:SetText((bag>0 or bank>0) and hex..bank..e.Icon.bank2..' '..bag..e.Icon.bag2..'|r' or '')
-
+    if bag==0 and bank==0 then
+        self.textRight:SetText('|cnRED_FONT_COLOR:0|r'..e.Icon.bank2..' |cnRED_FONT_COLOR:'..bag..e.Icon.bag2..'|r')
+    else
+        self.textRight:SetText(hex..bank..e.Icon.bank2..' '..bag..e.Icon.bag2..'|r')
+    end
     if C_Item.IsItemKeystoneByID(itemID) then--挑战
         local numPlayer=1 --帐号数据 --{score=总分数,itemLink={超连接}, weekLevel=本周最高, weekNum=本周次数, all=总次数},
         for guid, info in pairs(e.WoWSave) do
