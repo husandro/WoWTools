@@ -199,57 +199,57 @@ end
 --菜单
 --####
 local function setUseMenu(level)--二级, 使用
-    local t=UIDropDownMenu_CreateInfo()
-    t.text= CLEAR_ALL--清除所有
-    t.notCheckable=true
-    t.func=function()
-        Save.use={}
-        getItems()
-        CloseDropDownMenus()
-    end
-    UIDropDownMenu_AddButton(t,level)
-    for itemID, num in pairs(Save.use) do
-        t=UIDropDownMenu_CreateInfo()
-        t.text= select(2, GetItemInfo(itemID)) or  ('itemID: '..itemID)
-        if num>1 then
-            t.text= t.text..' |cnGREEN_FONT_COLOR:x'..num..'|r'
-        end
-        t.icon= C_Item.GetItemIconByID(itemID)
-        t.checked=true
-        t.func=function()
-            Save.use[itemID]=nil
+    local info={
+        text= CLEAR_ALL,--清除所有
+        notCheckable=true,
+        func=function()
+            Save.use={}
             getItems()
+            CloseDropDownMenus()
         end
-        t.tooltipOnButton=true
-        t.tooltipTitle=REMOVE
-        if num>1 then
-           t.tooltipText='\n'..COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS)..'\n'..AUCTION_STACK_SIZE..': '..num
-        end
-        UIDropDownMenu_AddButton(t,level)
+    }
+    UIDropDownMenu_AddButton(info,level)
+    for itemID, num in pairs(Save.use) do
+        info={
+            text= (select(2, GetItemInfo(itemID)) or  ('itemID: '..itemID)).. (num>1 and ' |cnGREEN_FONT_COLOR:x'..num..'|r' or ''),
+            icon= C_Item.GetItemIconByID(itemID),
+            checked=true,
+            tooltipOnButton=true,
+            tooltipTitle=REMOVE,
+            tooltipText=num>1 and '\n'..COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS)..'\n'..AUCTION_STACK_SIZE..': '..num,
+            func=function()
+                Save.use[itemID]=nil
+                getItems()
+            end,
+        }
+        UIDropDownMenu_AddButton(info,level)
     end
 end
 local function setNoMenu(level)--二级,禁用
-    local t=UIDropDownMenu_CreateInfo()
-    t.text= CLEAR_ALL--清除所有
-    t.notCheckable=true
-    t.func=function()
-        Save.no={}
-        getItems()
-        CloseDropDownMenus()
-    end
-    UIDropDownMenu_AddButton(t,level)
-    for itemID, _ in pairs(Save.no) do
-        t=UIDropDownMenu_CreateInfo()
-        t.text=select(2, GetItemInfo(itemID)) or  ('itemID: '..itemID)
-        t.icon=C_Item.GetItemIconByID(itemID)
-        t.checked=true
-        t.func=function()
-            Save.no[itemID]=nil
+    local info={
+        text= CLEAR_ALL,--清除所有
+        notCheckable=true,
+        func=function()
+            Save.no={}
             getItems()
-        end
-        t.tooltipOnButton=true
-        t.tooltipTitle=REMOVE
-        UIDropDownMenu_AddButton(t,level)
+            CloseDropDownMenus()
+        end,
+    }
+    UIDropDownMenu_AddButton(info, level)
+
+    for itemID, _ in pairs(Save.no) do
+        info={
+            text=select(2, GetItemInfo(itemID)) or  ('itemID: '..itemID),
+            icon=C_Item.GetItemIconByID(itemID),
+            checked=true,
+            tooltipOnButton=true,
+            tooltipTitle=REMOVE,
+            func=function()
+                Save.no[itemID]=nil
+                getItems()
+            end,
+        }
+        UIDropDownMenu_AddButton(info, level)
     end
 end
 local function setMenuList(self, level, menuList)--主菜单
@@ -492,7 +492,6 @@ local function shoTips(self)--显示提示
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
     end
-    
 end
 --######
 --初始化

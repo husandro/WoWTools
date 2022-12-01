@@ -7,6 +7,7 @@ panel.tips=CreateFrame("GameTooltip", id..addName, panel, "GameTooltipTemplate")
 
 local itemUseString =ITEM_SPELL_CHARGES:gsub('%%d', '%(%%d%+%)')--(%d+)次
 local KeyStone=CHALLENGE_MODE_KEYSTONE_NAME:gsub('%%s','(.+) ')--钥石
+--[=[
 local tradeskill={
     [1]='|T136243:0|t',--工程零件
     [4]='|T4620677:0|t',--珠宝加工	
@@ -19,6 +20,9 @@ local tradeskill={
     [12]='|T4620672:0|t',--附魔
     [16]='|T4620676:0|t',--铭文
 }
+
+]=]
+
 
 local function setItemInfo(self, itemLink, itemID, bag, merchantIndex, guildBank)
     local isBound, equipmentName, bagID, slot
@@ -33,7 +37,9 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex, guildBank
         if itemQuality then
             r,g,b = GetItemQualityColor(itemQuality)
         end
-
+        if itemID==188652 then
+            print(bindType)
+        end
         if C_Item.IsItemKeystoneByID(itemID) then--挑战
             local name=itemLink:match('%[(.-)]') or itemLink
             topLeftText=name:match('%((%d+)%)') or C_MythicPlus.GetOwnedKeystoneLevel() --等级
@@ -67,7 +73,7 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex, guildBank
                 topRightText='|A:'..e.Icon.unlocked..':0:0|a'
             end
 
-        elseif classID==8 or classID==3 or classID==9 or (classID==0 and (subclassID==1 or subclassID==3 or subclassID==5)) or classID==19 then--附魔, 宝石
+        elseif classID==8 or classID==3 or classID==9 or (classID==0 and (subclassID==1 or subclassID==3 or subclassID==5)) or classID==19 or classID==7 then--附魔, 宝石,19专业装备 ,7商业技能
             if classID==0 and subclassID==5 then
                 topRightText= e.WA_Utf8Sub(POWER_TYPE_FOOD, 2,5)
             else
@@ -152,11 +158,15 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex, guildBank
                 bottomRightText= select(11, C_MountJournal.GetMountInfoByID(mountID)) and e.Icon.X2 or e.Icon.info2
             end
 
+--[[
         elseif classID==7 then--贸易材料
             if subclassID and tradeskill[subclassID] then
                 --bottomLeftText=tradeskill[subclassID]
                 topLeftText=tradeskill[subclassID]
             end
+
+]]
+
         elseif classID==12 and itemQuality and itemQuality>0 then--任务
             if bag then
                 local questId, isActive = select(2, C_Container.GetContainerItemQuestInfo(bag.bagID, bag.slot))
@@ -190,7 +200,8 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex, guildBank
                 end
             end
         elseif itemQuality==7 or itemQuality==8 then
-            bottomLeftText=e.Icon.wow2
+            topRightText=e.icon.wow2
+            --bottomLeftText=e.Icon.wow2
 
         elseif C_ToyBox.GetToyInfo(itemID) then--玩具
             bottomRightText= PlayerHasToy(itemID) and e.Icon.X2 or e.Icon.info2
