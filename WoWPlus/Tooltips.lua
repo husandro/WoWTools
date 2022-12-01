@@ -967,7 +967,7 @@ local function Init()
         end
 
         if not self.Container.Name:IsTruncated() then
-            local name, description, standingID, _, barMax, barValue, _, _, isHeader, _, hasRep, _, _, factionID, _, _ = GetFactionInfoByID(self.factionID)
+            local name, description, standingID, barMin, barMax, barValue, _, _, isHeader, _, hasRep, _, _, factionID, _, _ = GetFactionInfoByID(self.factionID)
             if factionID and not isHeader or (isHeader and hasRep) then
                 e.tips:SetOwner(self, "ANCHOR_RIGHT");
                 e.tips:AddLine(name..' '..standingID..'/'..MAX_REPUTATION_REACTION, 1,1,1)
@@ -977,8 +977,12 @@ local function Init()
                 local factionStandingtext = GetText("FACTION_STANDING_LABEL"..standingID, gender)
                 local barColor = FACTION_BAR_COLORS[standingID]
                 factionStandingtext=barColor:WrapTextInColorCode(factionStandingtext)--颜色
-                if barValue and barMax and barMax>0 then
-                    e.tips:AddLine(factionStandingtext..' '..e.MK(barValue, 3)..'/'..e.MK(barMax, 3)..' '..('%i%%'):format(barValue/barMax*100), 1,1,1)
+                if barValue and barMax then
+                    if barMax==0 then
+                        e.tips:AddLine(factionStandingtext..' '..('%i%%'):format( (barMin-barValue)/barMin*100), 1,1,1)
+                    else
+                        e.tips:AddLine(factionStandingtext..' '..e.MK(barValue, 3)..'/'..e.MK(barMax, 3)..' '..('%i%%'):format(barValue/barMax*100), 1,1,1)
+                    end
                     e.tips:AddLine(' ')
                 end
                 
