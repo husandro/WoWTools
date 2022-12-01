@@ -134,6 +134,11 @@ local function Init()
             end            
         end
     end);
+
+    if QuickJoinToastButton.Toast then
+        QuickJoinToastButton.Toast:ClearAllPoints()
+        QuickJoinToastButton.Toast:SetPoint('BOTTOMLEFT', QuickJoinToastButton, 'TOPLEFT')
+    end
 end
 
 --###########
