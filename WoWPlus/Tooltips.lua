@@ -206,12 +206,12 @@ local function setItem(self, ItemLink)
     end
     if expacID then--版本
         if expansionLevel==expacID then
-            self:AddDoubleLine(_G['EXPANSION_NAME'..expacID], GAME_VERSION_LABEL..': '..expacID+1, 0,1,0, 0,1,0)
+            self:AddDoubleLine(_G['EXPANSION_NAME'..expacID], GAME_VERSION_LABEL..': '..expacID+1, r,g,b, r,g,b)
         else
-            self:AddDoubleLine(_G['EXPANSION_NAME'..expacID], GAME_VERSION_LABEL..': '..expacID+1, 0.8,0.8,0.8, 0.8,0.8,0.8)
+            self:AddDoubleLine(_G['EXPANSION_NAME'..expacID], GAME_VERSION_LABEL..': '..expacID+1, 0.85,0.85,0.85, 0.85,0.85,0.85)
         end
     end
-    self:AddDoubleLine(itemID and ITEMS..'ID: '.. itemID or ' ' , itemTexture and '|T'..itemTexture..':0|t'..itemTexture)--ID, texture
+    self:AddDoubleLine(itemID and ITEMS..': '.. itemID or ' ' , itemTexture and '|T'..itemTexture..':0|t'..itemTexture)--ID, texture
     if classID and subclassID then
         self:AddDoubleLine((itemType and itemType..' classID'  or 'classID') ..': '..classID, (itemSubType and itemSubType..' subID' or 'subclassID')..': '..subclassID)
     end
@@ -237,7 +237,7 @@ local function setItem(self, ItemLink)
     local spellName, spellID = GetItemSpell(ItemLink)--物品法术
     if spellName and spellID then
         local spellTexture=GetSpellTexture(spellID)
-        self:AddDoubleLine((itemName~=spellName and spellName..'('..SPELLS..')' or SPELLS)..'ID: '..spellID, spellTexture and spellTexture~=itemTexture  and '|T'..spellTexture..':0|t'..spellTexture or ' ')
+        self:AddDoubleLine((itemName~=spellName and hex..'['..spellName..']|r'..SPELLS or SPELLS)..': '..spellID, spellTexture and spellTexture~=itemTexture  and '|T'..spellTexture..':0|t'..spellTexture or ' ')
     end
 
     if classID==2 or classID==4 then
