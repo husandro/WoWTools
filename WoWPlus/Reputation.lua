@@ -68,8 +68,12 @@ local function btnstrSetText()--监视声望内容
 				if (isHeader and hasRep) or not isHeader then
 					local gender = UnitSex("player");
 					factionStandingtext = GetText("FACTION_STANDING_LABEL"..standingID, gender)
-					if barValue and barMax and barMax>0 then
-						value=('%i%%'):format(barValue/barMax*100)
+					if barValue and barMax then
+						if barMax==0 then
+							value=('%i%%'):format( (barMin-barValue)/barMin*100)
+						else
+							value=('%i%%'):format(barValue/barMax*100)
+						end
 					end
 				end
 			end
@@ -314,9 +318,6 @@ local function SetRe()--监视声望
 				end
 			end)
 			btn:SetScript("OnEnter",function(self2)
-				if UnitAffectingCombat('player') then
-					return
-				end
 				e.tips:SetOwner(self2, "ANCHOR_LEFT");
 				e.tips:ClearLines();
 				e.tips:AddDoubleLine(id, addName)
@@ -408,8 +409,13 @@ local function FactionUpdate(self, env, text)--监视声望更新提示
 				factionStandingtext = GetText("FACTION_STANDING_LABEL"..standingID, gender)
 				if isCapped then
 					barColor = FACTION_ORANGE_COLOR
-				elseif barValue and barMax and barMax>0 then
-					value=('%i%%'):format(barValue/barMax*100)
+				elseif barValue and barMax then
+					if barMax==0 then
+						value=('%i%%'):format( (barMin-barValue)/barMin*100)
+					else
+						value=('%i%%'):format(barValue/barMax*100)
+					end
+					
 				end
 			end
 			local isParagon = C_Reputation.IsFactionParagon(factionID)--奖励
