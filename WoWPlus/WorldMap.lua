@@ -173,7 +173,7 @@ local function setMapQuestList()--世界地图,任务, 加 - + 按钮
     local f=QuestScrollFrame
     if not Save.disabled and not f.btn then
         f.btn= CreateFrame("Button", nil, f)
-        f.btn:SetPoint('BOTTOMRIGHT', f, 'BOTTOMRIGHT', 0, 0)
+        f.btn:SetPoint('BOTTOM')
         f.btn:SetSize(20,20)
         f.btn:SetNormalAtlas('campaign_headericon_open')
         f.btn:SetPushedAtlas('campaign_headericon_openpressed')

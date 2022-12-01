@@ -248,7 +248,6 @@ hooksecurefunc(mo[8], 'SetStringText', function(self, fontString, text, useFullH
                 str='|cnGREEN_FONT_COLOR:'..str..'|r'
             end
             fontString:SetText(str)
-            
         end
     end
 end)
