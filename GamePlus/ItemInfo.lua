@@ -81,7 +81,7 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex, guildBank
             elseif itemQuality and itemQuality>1 then
                 local invSlot = e.itemSlotTable[itemEquipLoc]
                 if invSlot and itemLevel and itemLevel>1 then--装等
-                    if itemQuality>2 then
+                    if itemQuality>2 or (not e.Player.levelMax and itemQuality==2) then
                         topLeftText=itemLevel
                     end
                     local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
@@ -453,5 +453,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "GUILDBANKBAGSLOTS_CHANGED" or event =="GUILDBANK_ITEM_LOCK_CHANGED" then
         setGuildBank()--公会银行,设置
+
     end
 end)

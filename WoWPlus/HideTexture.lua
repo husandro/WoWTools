@@ -73,10 +73,9 @@ local function set_UNIT_ENTERED_VEHICLE()--载具
         OverrideActionBarLeaveFrameDivider3:SetShown(false)
     end
     if OverrideActionBarExpBar then
-        --OverrideActionBarExpBarXpMid:SetShown(false)
-        --OverrideActionBarExpBarXpR:SetShown(false)
-        --OverrideActionBarExpBarXpL:SetShown(false)
-        OverrideActionBarExpBar:SetShown(false)
+        OverrideActionBarExpBarXpMid:SetShown(false)
+        OverrideActionBarExpBarXpR:SetShown(false)
+        OverrideActionBarExpBarXpL:SetShown(false)
     end
 end
 --###########
@@ -86,6 +85,7 @@ local panel=CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 
 panel:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')
+panel:RegisterEvent('VEHICLE_PASSENGERS_CHANGED')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1== id then

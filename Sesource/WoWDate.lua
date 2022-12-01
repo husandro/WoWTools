@@ -261,6 +261,8 @@ panel:RegisterEvent('BAG_UPDATE_DELAYED')--物品
 
 panel:RegisterEvent('UPDATE_INSTANCE_INFO')--副本
 
+panel:RegisterEvent('PLAYER_LEVEL_UP')--更新玩家等级
+
 panel:SetScript('OnEvent', function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" and arg1==id then
         local day= date('%x')--日期
@@ -288,7 +290,7 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
             if tab.Worldboss.week~=e.Player.week then
                 e.WoWSave[guid].Worldboss={boss={}}
             end
-           
+
             if tab.Rare.day~=day then
                 e.WoWSave[guid].Rare={day=day,boss={}}
             end
@@ -366,5 +368,7 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
     elseif event=='PLAYER_MONEY' then--钱
         set_Money()--钱
 
+    elseif event=='PLAYER_LEVEL_UP' then--玩家是否最高等级
+        e.Player.levelMax= UnitLevel('player')==MAX_PLAYER_LEVEL--玩家是否最高等级
     end
 end)

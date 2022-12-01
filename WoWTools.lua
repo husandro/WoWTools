@@ -168,6 +168,7 @@ e.Player={
     --MAX_PLAYER_LEVEL = GetMaxLevelForPlayerExpansion()
     week=GetWeek(),--周数
     guid=UnitGUID('player'),
+    levelMax=UnitLevel('player')==MAX_PLAYER_LEVEL,--玩家是否最高等级
 }
 e.Player.servers={}--多服务器
 for k, v in pairs(GetAutoCompleteRealms()) do
