@@ -831,7 +831,6 @@ e.GetExpansionText= function(expacID, questID)--版本数据
         end
     end
 end
---self:AddDoubleLine(e.GetExpansionText(nil, questID))--任务版本
 
 --[[
 BACKGROUND
