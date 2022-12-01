@@ -548,7 +548,7 @@ local function setMajorFactionRenown(self, majorFactionID)--名望
         if icon then
             self.Portrait:SetShown(true)
             self.Portrait:SetAtlas('MajorFactions_Icons_'..majorFactionData.textureKit..'512')
-            self:AddDoubleLine(RENOWN_LEVEL_LABEL..'ID: '..majorFactionID, icon  and 'Atlst: '..'MajorFactions_Icons_'..majorFactionData.textureKit..'512')
+            self:AddDoubleLine(RENOWN_LEVEL_LABEL..'ID: '..majorFactionID, icon  and 'Atlas: '..'MajorFactions_Icons_'..majorFactionData.textureKit..'512')
         else
             self:AddLine(RENOWN_LEVEL_LABEL..'ID: '..majorFactionID)
         end
@@ -981,8 +981,11 @@ local function Init()
                 local factionStandingtext = GetText("FACTION_STANDING_LABEL"..standingID, gender)
                 local barColor = FACTION_BAR_COLORS[standingID]
                 factionStandingtext=barColor:WrapTextInColorCode(factionStandingtext)--颜色
-                e.tips:AddLine(factionStandingtext..' '..e.MK(barValue, 3)..'/'..e.MK(barMax, 3)..' '..('%i%%'):format(barValue/barMax*100), 1,1,1)
-                e.tips:AddLine(' ')
+                if barValue and barMax and barMax>0 then
+                    e.tips:AddLine(factionStandingtext..' '..e.MK(barValue, 3)..'/'..e.MK(barMax, 3)..' '..('%i%%'):format(barValue/barMax*100), 1,1,1)
+                    e.tips:AddLine(' ')
+                end
+                
                 e.tips:AddDoubleLine(REPUTATION..'ID: '..self.factionID or factionID, completedParagon)
                 e.tips:Show();
             end
