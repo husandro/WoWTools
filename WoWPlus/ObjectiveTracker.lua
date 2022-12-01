@@ -117,53 +117,66 @@ local ObjectiveTrackerRemoveAll =function(self, tip)
     if Save.disabled or not block then
         return
     end
+    local questID= tip=='Q' and block.id or block.TrackedQuest and block.TrackedQuest.questID
+    if not questID then
+        return
+    end
 
-    local questID
-    if tip=='W' then
-        if block.TrackedQuest then questID=block.TrackedQuest.questID end
-    else
-        questID=block.id
-        local info = UIDropDownMenu_CreateInfo()--放弃任务
-        info.text = ABANDON_QUEST
-        info.notCheckable = 1
-        info.checked = false
-        info.icon=Icon.x2
-        if not C_QuestLog.CanAbandonQuest(questID) then info.disabled=true end--不可放弃
-        info.arg1 = questID
-        info.func = function(_, questID) QuestMapQuestOptions_AbandonQuest(questID) end
+    local info
+    if tip=='Q' then
+        info={
+            text = ABANDON_QUEST,
+            notCheckable = 1,
+            icon= Icon.x2,
+            disabled= not C_QuestLog.CanAbandonQuest(questID),
+            arg1 = questID,
+            func = function(_, arg1)
+                QuestMapQuestOptions_AbandonQuest(arg1)
+            end
+        }
         UIDropDownMenu_AddButton(info)
     end
     UIDropDownMenu_AddSeparator()
-    if questID then
-        local info = UIDropDownMenu_CreateInfo()
-        info.text = QUESTS_LABEL..' ID '..questID
-        info.isTitle = 1
-        info.notCheckable = 1
+    local verText, verLevel=e.GetExpansionText(nil, questID)--任务版本
+    if verLevel and verText then
+        info={
+            text=verText..' '..verLevel,
+            isTitle=true,
+            notCheckable=true,
+        }
         UIDropDownMenu_AddButton(info)
     end
+    info={
+        text = QUESTS_LABEL..' '..questID,
+        isTitle = true,
+        notCheckable = true,
+    }
+    UIDropDownMenu_AddButton(info)
 
-    local info = UIDropDownMenu_CreateInfo()
-    local to=C_QuestLog.GetNumQuestWatches()+C_QuestLog.GetNumWorldQuestWatches()
-    info.text = REMOVE_WORLD_MARKERS..' '..to
-    info.notCheckable = 1
-    info.checked = false
-    info.icon=Icon.clear
-    if to<2 then info.disabled=true end
-    info.func = function()
-        local nu=C_QuestLog.GetNumQuestWatches()
-        while nu>0 do
-            local questID=C_QuestLog.GetQuestIDForQuestWatchIndex(1)
-            if not questID then questID= C_SuperTrack.GetSuperTrackedQuestID() end
-            if questID then C_QuestLog.RemoveQuestWatch(questID) end
-            nu=C_QuestLog.GetNumQuestWatches()
-        end
-        nu=C_QuestLog.GetNumWorldQuestWatches()
-        while nu>0 do
-            local questID= C_QuestLog.GetQuestIDForWorldQuestWatchIndex(1)
-            if questID then C_QuestLog.RemoveWorldQuestWatch(questID) end
+    info = UIDropDownMenu_CreateInfo()
+    local totaleQest= C_QuestLog.GetNumQuestWatches()+C_QuestLog.GetNumWorldQuestWatches()
+    info={
+        text = REMOVE_WORLD_MARKERS..' '..totaleQest,
+        notCheckable = true,
+        checked = false,
+        icon=Icon.clear,
+        disabled= totaleQest<20,
+        func = function()
+            local nu=C_QuestLog.GetNumQuestWatches()
+            while nu>0 do
+                questID=C_QuestLog.GetQuestIDForQuestWatchIndex(1)
+                if not questID then questID= C_SuperTrack.GetSuperTrackedQuestID() end
+                if questID then C_QuestLog.RemoveQuestWatch(questID) end
+                nu=C_QuestLog.GetNumQuestWatches()
+            end
             nu=C_QuestLog.GetNumWorldQuestWatches()
-        end
-    end
+            while nu>0 do
+                questID= C_QuestLog.GetQuestIDForWorldQuestWatchIndex(1)
+                if questID then C_QuestLog.RemoveWorldQuestWatch(questID) end
+                nu=C_QuestLog.GetNumWorldQuestWatches()
+            end
+        end,
+    }
     UIDropDownMenu_AddButton(info)
 end
 
@@ -378,6 +391,7 @@ hooksecurefunc(QUEST_TRACKER_MODULE,'SetBlockHeader', function(self, block, text
             end
         end
     end
+
     setColor(block, questID)
     if m~='' then block.HeaderText:SetText(m..text) end
 end)

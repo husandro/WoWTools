@@ -88,6 +88,9 @@ end)
 local Code=IN_GAME_NAVIGATION_RANGE:gsub('d','s')--%s码    
 local function Quest(self, questID)--任务
     if not HaveQuestData(questID) then return end
+
+    self:AddDoubleLine(e.GetExpansionText(nil, questID))--任务版本
+
     local t=''
     local lv=C_QuestLog.GetQuestDifficultyLevel(questID)--ID
     if lv then t=t..'['..lv..']' else t=t..' 'end

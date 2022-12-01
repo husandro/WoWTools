@@ -194,7 +194,7 @@ end
 --############
 --设置,物品信息
 --############
-local expansionLevel= GetExpansionLevel()
+
 local function setItem(self, ItemLink)    
     local itemName, _, itemQuality, itemLevel, _, _, _, _, _, _, _, _, _, bindType, expacID, setID = GetItemInfo(ItemLink)
     local itemID, itemType, itemSubType, itemEquipLoc, itemTexture, classID, subclassID = GetItemInfoInstant(ItemLink)
@@ -204,12 +204,8 @@ local function setItem(self, ItemLink)
         r, g, b, hex= GetItemQualityColor(itemQuality)
         hex=hex and '|c'..hex
     end
-    if expacID then--版本
-        if expansionLevel==expacID then
-            self:AddDoubleLine(_G['EXPANSION_NAME'..expacID], GAME_VERSION_LABEL..': '..expacID+1, r,g,b, r,g,b)
-        else
-            self:AddDoubleLine(_G['EXPANSION_NAME'..expacID], GAME_VERSION_LABEL..': '..expacID+1, 0.85,0.85,0.85, 0.85,0.85,0.85)
-        end
+    if expacID then--版本数据
+        self:AddDoubleLine(e.GetExpansionText(expacID))
     end
     self:AddDoubleLine(itemID and ITEMS..': '.. itemID or ' ' , itemTexture and '|T'..itemTexture..':0|t'..itemTexture)--ID, texture
     if classID and subclassID then
@@ -424,6 +420,7 @@ local function setAchievement(self, achievementID)--成就
 end
 ]]
 local function setQuest(self, questID)
+    self:AddDoubleLine(e.GetExpansionText(nil, questID))--任务版本
     self:AddDoubleLine(QUESTS_LABEL..'ID:', questID)
 end
 
