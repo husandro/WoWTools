@@ -37,9 +37,7 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex, guildBank
         if itemQuality then
             r,g,b = GetItemQualityColor(itemQuality)
         end
-        if itemID==188652 then
-            print(bindType)
-        end
+
         if C_Item.IsItemKeystoneByID(itemID) then--挑战
             local name=itemLink:match('%[(.-)]') or itemLink
             topLeftText=name:match('%((%d+)%)') or C_MythicPlus.GetOwnedKeystoneLevel() --等级
