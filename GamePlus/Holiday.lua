@@ -307,7 +307,7 @@ local function InitMenu(self, level, type)--主菜单
         info={
             text= LFG_LIST_CROSS_FACTION:format(CALENDAR_TOOLTIP_ONGOING),--仅限,正在活动
             checked= Save.onGoing,
-            func= function() 
+            func= function()
                 Save.onGoing= not Save.onGoing and true or nil
                 set_Text()
             end
