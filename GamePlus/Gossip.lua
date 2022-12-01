@@ -3,18 +3,6 @@ local addName=GOSSIP_OPTIONS:gsub(SETTINGS_TITLE,'')
 
 local Save={gossip=true, qest=true, Option={}, NPC={},}
 
-local Icon={
-    TrivialQuests='|A:TrivialQuests:0:0|a',
-}
-
---[[local function Cbtn(self)
-    local b=CreateFrame("Button",nil, self)
-    b:SetSize(20, 20)
-    b:SetHighlightAtlas(Icon.setHighlightAtlas)
-    b:SetPushedAtlas(Icon.setPushedAtlas)
-    return b
-end]]
-
 local q=e.Cbtn(ObjectiveTrackerBlocksFrame, nil,nil,nil,nil, true);--任务图标
 local g=e.Cbtn(ObjectiveTrackerBlocksFrame, nil,nil,nil,nil, true);--闲话图标
 q:SetSize(20,20)
@@ -210,7 +198,7 @@ g:SetScript('OnEnter', function(self2)
             n=n+1
         end
     end
-    e.tips:SetOwner(self2, "ANCHOR_LEFT")    
+    e.tips:SetOwner(self2, "ANCHOR_LEFT")
     e.tips:ClearLines()
     e.tips:AddDoubleLine(id, addName)
     e.tips:AddLine(' ')
@@ -409,7 +397,6 @@ q:RegisterEvent('MINIMAP_UPDATE_TRACKING')
 q:SetScript("OnEvent", function(self, event, arg1)
     if event=='MINIMAP_UPDATE_TRACKING' then
         GetIsQuestTrivialTracking()--其它任务,低等任务,追踪
-        
     else
         if not self.str then
             self.str=e.Cstr(self)
