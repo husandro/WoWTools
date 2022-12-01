@@ -211,12 +211,12 @@ local function setItem(self, ItemLink)
             self:AddDoubleLine(_G['EXPANSION_NAME'..expacID], GAME_VERSION_LABEL..': '..expacID+1, 0.8,0.8,0.8, 0.8,0.8,0.8)
         end
     end
-    self:AddDoubleLine(itemID and ITEMS..'ID: '.. itemID or ' ' , itemTexture and EMBLEM_SYMBOL..'ID: '..itemTexture)--ID, texture
+    self:AddDoubleLine(itemID and ITEMS..'ID: '.. itemID or ' ' , itemTexture and '|T'..itemTexture..':0|t'..itemTexture)--ID, texture
     if classID and subclassID then
         self:AddDoubleLine((itemType and itemType..' classID'  or 'classID') ..': '..classID, (itemSubType and itemSubType..' subID' or 'subclassID')..': '..subclassID)
     end
-    self.Portrait:SetTexture(itemTexture)
-    self.Portrait:SetShown(true)
+    --self.Portrait:SetTexture(itemTexture)
+    --self.Portrait:SetShown(true)
 
     local specTable = GetItemSpecInfo(ItemLink) or {}--专精图标
     local specTableNum=#specTable
