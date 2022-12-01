@@ -40,9 +40,8 @@ local Save={
             [61425]=true,--旅行者的苔原猛犸象
         },
         Ctrl={
-            --[368896]=true,--[复苏始祖幼龙]
             [118089]=true,--天蓝水黾
-            --[127271]=true,--猩红水黾
+            [127271]=true,--猩红水黾
          },
     },
     XD=true
@@ -881,28 +880,28 @@ local function setMountJournal_ShowMountDropdown(index)
         return
     end
     UIDropDownMenu_AddSeparator()
-    --local info
+
+    local info
     for _, type in pairs(tabMenuList) do
         if (type==MOUNT_JOURNAL_FILTER_DRAGONRIDING and isForDragonriding) or (type~=MOUNT_JOURNAL_FILTER_DRAGONRIDING and not isForDragonriding) then
             if type=='Shift'  or type==FLOOR then
                 UIDropDownMenu_AddSeparator()
             end
-            local info={
-                        text=SETTINGS..' '..type..' #'..getTableNum(type),
-                        checked=Save.Mounts[type][spellID] and true or nil,
-                        tooltipOnButton=true,
-                        tooltipTitle=id,
-                        tooltipText=addName,
-                    }
-            if type==FLOOR then
-                info.func=function ()
+            info={
+                text=SETTINGS..' '..type..' #'..getTableNum(type),
+                checked=Save.Mounts[type][spellID] and true or nil,
+                tooltipOnButton=true,
+                tooltipTitle=id,
+                tooltipText=addName,
+                func= type==FLOOR and
+                function ()
                     local exits=Save.Mounts[FLOOR][spellID] and ERR_ZONE_EXPLORED:format(PROFESSIONS_CURRENT_LISTINGS) or NEW
                     exits= exits.. '\n\n'..WORLD_MAP..' uiMapID: '..(C_Map.GetBestMapForUnit("player") or '')
                     local text= (icon and '|T'..icon..':0|t' or '').. (creatureName or ('spellID: '..spellID))
                     StaticPopup_Show(id..addName..'FLOOR',text,exits , {spellID=spellID})
                 end
-            else
-                info.func=function()
+                or
+                function()
                     if Save.Mounts[type][spellID] then
                         Save.Mounts[type][spellID]=nil
                     else
@@ -916,14 +915,19 @@ local function setMountJournal_ShowMountDropdown(index)
                     checkMount()--检测坐骑
                     setClickAtt()--设置属性
                     setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
-                    local spellLink=GetSpellLink(spellID)
-                    print(id, addName, 'Shift + '..e.Icon.left, find and '|cnRED_FONT_COLOR:'..REMOVE..'|r' or '|cnGREEN_FONT_COLOR:'..ADD..'|r', spellLink)
                     MountJournal_UpdateMountList()
                 end
-            end
+            }
             UIDropDownMenu_AddButton(info, level);
         end
     end
+    UIDropDownMenu_AddSeparator()
+    info={
+        text=id..' '..addName,
+        isTitle=true,
+        notCheckable=true,
+    }
+    UIDropDownMenu_AddButton(info, level);
 end
 
 
