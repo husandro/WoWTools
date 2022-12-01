@@ -1,6 +1,6 @@
 local id, e = ...
 local addName=	CALENDAR_FILTER_HOLIDAYS
-local Save={}
+local Save={onGoing=true}
 local panel= e.Cbtn(UIParent, nil, nil, nil, nil, true, {20,20})
 
 local function _CalendarFrame_SafeGetName(name)
@@ -102,7 +102,7 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
 	local events = {};
 	for i = 1, C_Calendar.GetNumDayEvents(monthOffset, day) do
 		local event = C_Calendar.GetDayEvent(monthOffset, day, i);
-		if event and (not Save.ongoing or (Save.ongoing and (event.sequenceType == "ONGOING" or _CalendarFrame_IsPlayerCreatedEvent(event.calendarType)))) then
+		if event and (not Save.onGoing or (Save.onGoing and (event.sequenceType == "ONGOING" or _CalendarFrame_IsPlayerCreatedEvent(event.calendarType)))) then
 			tinsert(events, event);
 		end
 	end
@@ -306,9 +306,9 @@ local function InitMenu(self, level, type)--主菜单
 
         info={
             text= LFG_LIST_CROSS_FACTION:format(CALENDAR_TOOLTIP_ONGOING),--仅限,正在活动
-            checked= Save.ongoing,
+            checked= Save.onGoing,
             func= function() 
-                Save.ongoing= not Save.ongoing and true or nil
+                Save.onGoing= not Save.onGoing and true or nil
                 set_Text()
             end
         }

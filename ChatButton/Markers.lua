@@ -1,6 +1,6 @@
 local id, e = ...
 local addName= BINDING_HEADER_RAID_TARGET
-local Save={ autoSet=true, tank=2, tank2=6, healer=1, countdown=7, groupReadyTips=true}
+local Save={ autoSet=true, tank=2, tank2=6, healer=1, countdown=7, groupReadyTips=true, markersScale=0.85}
 
 local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
 panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
@@ -325,8 +325,8 @@ local frame, frame2
 local function setMarkersFrame()--设置标记, 框架
     local combat=UnitAffectingCombat('player')
 
-    if not Save.markersFrame or not getAllSet() then
-        if combat and frame2 then
+    if not Save.markersFrame or not getAllSet() or combat then
+        if combat then
             panel:RegisterEvent('PLAYER_REGEN_ENABLED')
             panel.combat=true
         else
