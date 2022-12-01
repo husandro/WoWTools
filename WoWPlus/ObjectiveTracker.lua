@@ -440,11 +440,16 @@ end
 --初始
 --####
 local function Init()
-    if Save.disabled then
-        return
-    end
+    if Save.scale and Save.scale~=1 then
+        Scale()
+    end--缩放
+    if Save.alpha and Save.alpha~=1 then
+        Alpha()
+    end--透明度
+
     F:SetMovable(true)
     F:EnableMouse(true)
+
     btn:RegisterForDrag("RightButton")
     btn:SetScript("OnDragStart", function() F:StartMoving() end)    
     btn:SetScript("OnDragStop", function() 
@@ -496,7 +501,10 @@ local function Init()
         end
     end)
 end
+
+--###########
 --加载保存数据
+--###########
 local panel=CreateFrame("Frame")
 panel:RegisterEvent("PLAYER_ENTERING_WORLD")
 panel:RegisterEvent("CHALLENGE_MODE_START")
@@ -509,44 +517,44 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         --添加控制面板        
         local sel=e.CPanel(addName, not Save.disabled)
         sel:SetScript('OnClick', function()
-            if Save.disabled then
-                Save.disabled=nil
-            else
-                Save.disabled=true
-            end
+            Save.disabled = not Save.disabled and true or nil
             print(id, addName, e.GetEnabeleDisable(not Save.disabled), NEED..' /reload')
         end)
-        local sel2=CreateFrame("CheckButton", nil, sel, "InterfaceOptionsCheckButtonTemplate")
-        sel2.Text:SetText(AUTO_JOIN:gsub(JOIN, '')..HIDE)
-        sel2:SetPoint('LEFT', sel.Text, 'RIGHT')
-        sel2:SetChecked(Save.autoHide)
-        sel2:SetScript('OnEnter', function(self2)
-            e.tips:SetOwner(self2, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(SCENARIOS, '...')
-            e.tips:AddDoubleLine('UI WIDGET', '...')
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(SCENARIO_BONUS_OBJECTIVES, e.GetShowHide(false))
-            e.tips:AddDoubleLine(TRACKER_HEADER_WORLD_QUESTS, e.GetShowHide(false))
-            e.tips:AddDoubleLine(TRACKER_HEADER_CAMPAIGN_QUESTS, e.GetShowHide(false))
-            e.tips:AddDoubleLine(TRACK_QUEST, e.GetShowHide(false))
-            e.tips:AddDoubleLine(TRACKING..ACHIEVEMENTS, e.GetShowHide(false))
-            e.tips:AddDoubleLine(PROFESSIONS_TRACK_RECIPE, e.GetShowHide(false))
-            e.tips:Show()
-        end)
-        sel2:SetScript('OnLeave', function() e.tips:Hide() end)
-        Init()
-        sel2:SetScript('OnClick', function ()
-            if Save.autoHide then
-                Save.autoHide=nil
-            else
-                Save.autoHide=true
-            end
-            print(id, addName, AUTO_JOIN:gsub(JOIN, '')..HIDE, QUEST_OBJECTIVES,e.GetEnabeleDisable(Save.autoHide))
-        end)
 
-        if Save.scale~=1 then Scale() end--缩放
-        if Save.alpha~=1 then Alpha() end--透明度
+        if not Save.disabled then
+            local sel2=CreateFrame("CheckButton", nil, sel, "InterfaceOptionsCheckButtonTemplate")
+            sel2.Text:SetText(AUTO_JOIN:gsub(JOIN, '')..HIDE)
+            sel2:SetPoint('LEFT', sel.Text, 'RIGHT')
+            sel2:SetChecked(Save.autoHide)
+            sel2:SetScript('OnEnter', function(self2)
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(SCENARIOS, '...')
+                e.tips:AddDoubleLine('UI WIDGET', '...')
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(SCENARIO_BONUS_OBJECTIVES, e.GetShowHide(false))
+                e.tips:AddDoubleLine(TRACKER_HEADER_WORLD_QUESTS, e.GetShowHide(false))
+                e.tips:AddDoubleLine(TRACKER_HEADER_CAMPAIGN_QUESTS, e.GetShowHide(false))
+                e.tips:AddDoubleLine(TRACK_QUEST, e.GetShowHide(false))
+                e.tips:AddDoubleLine(TRACKING..ACHIEVEMENTS, e.GetShowHide(false))
+                e.tips:AddDoubleLine(PROFESSIONS_TRACK_RECIPE, e.GetShowHide(false))
+                e.tips:Show()
+            end)
+            sel2:SetScript('OnLeave', function() e.tips:Hide() end)        
+            
+            sel2:SetScript('OnClick', function ()
+                if Save.autoHide then
+                    Save.autoHide=nil
+                else
+                    Save.autoHide=true
+                end
+                print(id, addName, AUTO_JOIN:gsub(JOIN, '')..HIDE, QUEST_OBJECTIVES,e.GetEnabeleDisable(Save.autoHide))
+            end)
+
+            
+
+            Init()
+        end
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end
