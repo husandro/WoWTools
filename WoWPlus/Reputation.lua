@@ -64,7 +64,7 @@ local function btnstrSetText()--监视声望内容
 					end
 					value=(value and value..' ' or '') ..('%i%%'):format(majorFactionData.renownReputationEarned/majorFactionData.renownLevelThreshold*100)
 				end
-				
+
 				if majorFactionData and majorFactionData.textureKit then
 					icon='|A:MajorFactions_Icons_'..majorFactionData.textureKit..'512:0:0|a'
 				end
@@ -74,7 +74,9 @@ local function btnstrSetText()--监视声望内容
 				elseif (isHeader and hasRep) or not isHeader then
 					local gender = UnitSex("player");
 					factionStandingtext = GetText("FACTION_STANDING_LABEL"..standingID, gender)
-					value=('%i%%'):format(barValue/barMax*100)
+					if barValue and barMax and barMax>0 then
+						value=('%i%%'):format(barValue/barMax*100)
+					end
 				elseif isHeader and not hasRep then
 					--barColor=PROGENITOR_MATERIAL_TITLETEXT_COLOR
 				end
@@ -415,7 +417,7 @@ local function FactionUpdate(self, env, text)--监视声望更新提示
 				factionStandingtext = GetText("FACTION_STANDING_LABEL"..standingID, gender)
 				if isCapped then
 					barColor = FACTION_ORANGE_COLOR
-				elseif barValue and barMax then
+				elseif barValue and barMax and barMax>0 then
 					value=('%i%%'):format(barValue/barMax*100)
 				end
 			end
