@@ -68,7 +68,6 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex, guildBank
             end
 
         elseif classID==8 or classID==3 or classID==9 or (classID==0 and (subclassID==1 or subclassID==3 or subclassID==5)) or classID==19 then--附魔, 宝石
-            --bottomLeftText= e.WA_Utf8Sub(itemSubType, 2,5)
             if classID==0 and subclassID==5 then
                 topRightText= e.WA_Utf8Sub(POWER_TYPE_FOOD, 2,5)
             else
@@ -98,11 +97,13 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex, guildBank
                         topLeftText= (topLeftText or '')..e.Icon.up2
                     end
                 end
-
+                --e.GetItemCollected= function(link, sourceID, icon)--物品是否收集 
                 local sourceID = (not isBound or merchantIndex or guildBank) and select(2,C_TransmogCollection.GetItemInfo(itemLink))--幻化
                 if sourceID then
+                    bottomRightText = e.GetItemCollected(nil, sourceID, true) or bottomRightText
+                    --[[
                     local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
-                    if sourceInfo then                
+                    if sourceInfo then
                         if not sourceInfo.isCollected then
                             local hasItemData, canCollect = C_TransmogCollection.PlayerCanCollectSource(sourceID)--玩家是否可收集
                             if hasItemData and canCollect then
@@ -113,7 +114,7 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex, guildBank
                         elseif guildBank then
                             bottomRightText= e.Icon.select2
                         end
-                    end
+                    end]]
                 end
 
                 if itemQuality and itemQuality>1 then
@@ -135,24 +136,16 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex, guildBank
                 bottomRightText=not sets.collected and e.Icon.okTransmog2
            end
 
-        
         elseif classID==17 or (classID==15 and subclassID==2) or itemLink:find('Hbattlepet:(%d+)') then--宠物
             local speciesID = itemLink:match('Hbattlepet:(%d+)') or select(13, C_PetJournal.GetPetInfoByItemID(itemID))--宠物
             if speciesID then
-                local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesID)
-                if numCollected and limit and limit>0 then
-                    if numCollected==limit then
-                        topLeftText= '|cnGREEN_FONT_COLOR:'..numCollected..'/'..limit..'|r'
-                    else
-                        topLeftText='|cnRED_FONT_COLOR:'..numCollected..'/'..limit..'|r'
-                    end
-                end
+                topLeftText= e.GetPetCollected(speciesID, nil, true) or topLeftText--宠物, 收集数量
                 local petType= select(3, C_PetJournal.GetPetInfoBySpeciesID(speciesID))
                 if petType then
-                    --bottomLeftText='|TInterface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType]..':0|t'
                     topRightText='|TInterface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType]..':0|t'
                 end
             end
+
         elseif classID==15 and subclassID==5 then--坐骑
             local mountID = C_MountJournal.GetMountFromItem(itemID)
             if mountID then

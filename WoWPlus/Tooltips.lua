@@ -194,6 +194,7 @@ end
 --############
 --设置,物品信息
 --############
+local expansionLevel= GetExpansionLevel()
 local function setItem(self, ItemLink)    
     local itemName, _, itemQuality, itemLevel, _, _, _, _, _, _, _, _, _, bindType, expacID, setID = GetItemInfo(ItemLink)
     local itemID, itemType, itemSubType, itemEquipLoc, itemTexture, classID, subclassID = GetItemInfoInstant(ItemLink)
@@ -204,7 +205,11 @@ local function setItem(self, ItemLink)
         hex=hex and '|c'..hex
     end
     if expacID then--版本
-        self:AddDoubleLine(_G['EXPANSION_NAME'..expacID], GAME_VERSION_LABEL..': '..expacID+1, 1,1,1, 1,1,1)
+        if expansionLevel==expacID then
+            self:AddDoubleLine(_G['EXPANSION_NAME'..expacID], GAME_VERSION_LABEL..': '..expacID+1, 0,1,0, 0,1,0)
+        else
+            self:AddDoubleLine(_G['EXPANSION_NAME'..expacID], GAME_VERSION_LABEL..': '..expacID+1, 0.8,0.8,0.8, 0.8,0.8,0.8)
+        end
     end
     self:AddDoubleLine(itemID and ITEMS..'ID: '.. itemID or ' ' , itemTexture and EMBLEM_SYMBOL..'ID: '..itemTexture)--ID, texture
     if classID and subclassID then

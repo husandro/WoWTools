@@ -786,16 +786,28 @@ e.GetItemCollected= function(link, sourceID, icon)--物品是否收集
     end
 end
 
-e.GetPetCollected= function(speciesID, itemID)--宠物, 收集数量
+e.GetPetCollected= function(speciesID, itemID, numShow)--宠物, 收集数量
     speciesID = speciesID or (itemID and select(13, C_PetJournal.GetPetInfoByItemID(itemID)))--宠物物品
     if speciesID then
         local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesID)
         if nunumCollected==0 then
-            return '|cnRED_FONT_COLOR:'..ITEM_PET_KNOWN:format(0, limit)..'|r', numCollected, limit
+            if numShow then
+                return '|cnRED_FONT_COLOR:'..numCollected..'/'..limit..'|r', numCollected, limit
+            else
+                return '|cnRED_FONT_COLOR:'..ITEM_PET_KNOWN:format(0, limit)..'|r', numCollected, limit
+            end
         elseif limit and numCollected==limit and limit>0 then
-            return '|cnGREEN_FONT_COLOR:'..ITEM_PET_KNOWN:format(numCollected, limit)..'|r', numCollected, limit
+            if numShow then
+                return '|cnGREEN_FONT_COLOR:'..numCollected..'/'..limit..'|r', numCollected, limit
+            else
+                return '|cnGREEN_FONT_COLOR:'..ITEM_PET_KNOWN:format(numCollected, limit)..'|r', numCollected, limit
+            end
         else
-            return ITEM_PET_KNOWN:format(numCollected, limit), numCollected, limit
+            if numShow then
+                return numCollected..'/'..limit, numCollected, limit
+            else
+                return ITEM_PET_KNOWN:format(numCollected, limit), numCollected, limit
+            end
         end
     end
 end
