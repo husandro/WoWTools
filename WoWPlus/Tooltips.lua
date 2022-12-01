@@ -159,9 +159,9 @@ local function setPet(self, speciesID)--宠物
                 end
             end
         end
-        self:AddDoubleLine(text, companionID and 'NPCID: '..companionID or ' ')
+        self:AddDoubleLine(text, companionID and 'NPC: '..companionID or ' ')
     end
-    self:AddDoubleLine(PET..'ID: '..speciesID, MODEL..'ID: '..creatureDisplayID)--ID
+    self:AddDoubleLine(PET..': '..speciesID, MODEL..': '..creatureDisplayID)--ID
 
     local tab = C_PetJournal.GetPetAbilityListTable(speciesID)--技能图标
     table.sort(tab, function(a,b) return a.level< b.level end)
@@ -247,21 +247,23 @@ local function setItem(self, ItemLink)
             if slot then
                 self:AddDoubleLine(_G[itemEquipLoc], TRADESKILL_FILTER_SLOTS..': '..slot)--栏位
                 local slotLink=GetInventoryItemLink('player', slot)
+                local text
                 if slotLink then
                     local slotItemLevel= GetDetailedItemLevelInfo(slotLink)
                     if slotItemLevel then
                         local num=itemLevel-slotItemLevel
                         if num>0 then
-                            itemLevel=itemLevel..e.Icon.up2..'|cnGREEN_FONT_COLOR:+'..num..'|r'
+                            text=itemLevel..e.Icon.up2..'|cnGREEN_FONT_COLOR:+'..num..'|r'
                         elseif num<0 then
-                            itemLevel=itemLevel..e.Icon.down2..'|cnRED_FONT_COLOR:'..num..'|r'
+                            text=itemLevel..e.Icon.down2..'|cnRED_FONT_COLOR:'..num..'|r'
                         end
                     end
                 else
-                    itemLevel=itemLevel..e.Icon.up2
+                    text=itemLevel..e.Icon.up2
                 end
+                text= text and hex..text..'|r' or ''
+                self.textLeft:SetText(text)
             end
-            self.textLeft:SetText(itemLevel and hex..itemLevel..'|r' or '')
         end
 
         local appearanceID, sourceID =C_TransmogCollection.GetItemInfo(ItemLink)--幻化
