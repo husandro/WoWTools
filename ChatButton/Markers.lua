@@ -525,7 +525,7 @@ local function setMarkersFrame()--设置标记, 框架
 
     local isInGroup=IsInGroup()--世界标记
     if combat then
-       if not isInGroup or not frame2 or not fram2:IsShown() then
+       if not isInGroup or not frame2 or not frame2:IsShown() then
             panel:RegisterEvent('PLAYER_REGEN_ENABLED')
             panel.combat=true
             return
