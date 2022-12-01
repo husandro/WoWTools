@@ -542,17 +542,13 @@ local setFriendshipFaction=function(self, friendshipID)--friend声望
 end
 
 local function setMajorFactionRenown(self, majorFactionID)--名望
-	local majorFactionData = C_MajorFactions.GetMajorFactionData(majorFactionID)
-    if majorFactionData then
-        local icon= majorFactionData.textureKit
-        if icon then
+	local info = C_MajorFactions.GetMajorFactionData(majorFactionID)
+    if info then
+        if info.textureKit then
             self.Portrait:SetShown(true)
-            self.Portrait:SetAtlas('MajorFactions_Icons_'..majorFactionData.textureKit..'512')
-            self:AddDoubleLine(RENOWN_LEVEL_LABEL..'ID: '..majorFactionID, icon  and 'Atlas: '..'MajorFactions_Icons_'..majorFactionData.textureKit..'512')
-        else
-            self:AddLine(RENOWN_LEVEL_LABEL..'ID: '..majorFactionID)
+            self.Portrait:SetAtlas('MajorFactions_Icons_'..info.textureKit..'512')
         end
-        self:AddDoubleLine(RENOWN_LEVEL_LABEL..': '..e.MK(majorFactionData.renownLevel, 3)..'/'..e.MK(majorFactionData.renownLevelThreshold, 3), 	BATTLEGROUND_RATING..': '..('%i%%'):format(majorFactionData.renownReputationEarned/majorFactionData.renownLevelThreshold*100))
+        self:AddDoubleLine(RENOWN_LEVEL_LABEL..'ID '..majorFactionID, MAJOR_FACTION_RENOWN_LEVEL_TOAST:format(info.renownLevel)..' '..('%i%%'):format(info.renownReputationEarned/info.renownLevelThreshold*100))
         self:Show()
     end
 end
