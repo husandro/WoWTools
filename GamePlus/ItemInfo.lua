@@ -200,7 +200,7 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex, guildBank
                 end
             end
         elseif itemQuality==7 or itemQuality==8 then
-            topRightText=e.icon.wow2
+            topRightText=e.Icon.wow2
             --bottomLeftText=e.Icon.wow2
 
         elseif C_ToyBox.GetToyInfo(itemID) then--玩具
