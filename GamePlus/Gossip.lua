@@ -542,6 +542,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
                 Init_Gossip()--对话，初始化
                 Init_Quest()--任务，初始化
+
+                Save.QuestNPC= Save.QuestNPC or {}
             else
                 panel:UnregisterAllEvents()
                 questFrame:UnregisterAllEvents()
