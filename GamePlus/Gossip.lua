@@ -485,12 +485,12 @@ local function Init_Quest()
     end)
 
     --任务框, 自动选任务    
-    QuestFrameGreetingPanel:HookScript('OnShow', function()--QuestFrame.lua QuestFrameGreetingPanel_OnShow
+    QuestFrameGreetingPanel:HookScript('OnShow', function(self)--QuestFrame.lua QuestFrameGreetingPanel_OnShow
         local npc=e.GetNpcID('npc')
         if not Save.quest or IsModifierKeyDown() or Save.QuestNPC[npc] then--getMaxQuest()
             return
         end
-        
+
         self.sel.npc=npc
         self.sel.name=UnitName("npc")
         self.sel:SetChecked(Save.QuestNPC[npc])
