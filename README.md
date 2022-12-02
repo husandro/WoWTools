@@ -1,3 +1,6 @@
+# 下载
+https://www.curseforge.com/wow/addons/wowtools
+
 # WoWTools
 World of Warcraft 正式服 自己专用 插件
 
