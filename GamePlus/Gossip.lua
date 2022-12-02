@@ -228,7 +228,7 @@ local function Init_Gossip()
     end)
 
     --可选闲话(任务)
-    local selectGissipIDTab= {}
+    local printText, selectGissipIDTab=nil, {}
     GossipFrame:HasScript('OnHide', function ()
         selectGissipIDTab={}
     end)
@@ -301,7 +301,8 @@ local function Init_Gossip()
             end
         end
 
-        if find then
+        if find and printText~=name then
+            printText=name
             print(id, ENABLE_DIALOG, '|cffff00ff'..name)
         end
     end)
