@@ -342,7 +342,7 @@ local function InitMenu(self, level, type)--主菜单
                 panel:SetPoint('TOP', Minimap, 'BOTTOM',-20,0)
             end,
             tooltipOnButton=true,
-            tooltipTitle='Alt +'..e.Icon.right..' '..NPE_MOVE,
+            tooltipTitle=e.Icon.right..' '..NPE_MOVE,
             notCheckable=true,
         }
         UIDropDownMenu_AddButton(info, level)
@@ -357,13 +357,13 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddButton(info, level)
         UIDropDownMenu_AddSeparator(level)
         info={--提示移动
-            text='Alt+'..e.Icon.right..NPE_MOVE,
+            text=e.Icon.right..NPE_MOVE,
             isTitle=true,
             notCheckable=true
         }
         UIDropDownMenu_AddButton(info, level)
         info={
-            text='Alt+'..e.Icon.mid..UI_SCALE..(Save.scale or ''),
+            text=e.Icon.mid..UI_SCALE..(Save.scale or ''),
             isTitle=true,
             notCheckable=true
         }
@@ -408,9 +408,7 @@ local function Init()
     panel:SetMovable(true)
     panel:SetClampedToScreen(true)
     panel:SetScript("OnDragStart", function(self,d )
-        if IsAltKeyDown() and d=='RightButton' then
             self:StartMoving()
-        end
     end)
     panel:SetScript("OnDragStop", function(self)
         ResetCursor()
@@ -429,22 +427,20 @@ local function Init()
         end
     end)
     panel:SetScript('OnMouseWheel', function(self, d)--缩放
-        if IsAltKeyDown() then
-            local sacle=Save.scale or 1
-            if d==1 then
-                sacle=sacle+0.1
-            elseif d==-1 then
-                sacle=sacle-0.1
-            end
-            if sacle>3 then
-                sacle=3
-            elseif sacle<0.6 then
-                sacle=0.6
-            end
-            print(id, addName, UI_SCALE, sacle)
-            Save.scale=sacle
-            Text_Settings()--设置Text
+        local sacle=Save.scale or 1
+        if d==1 then
+            sacle=sacle+0.1
+        elseif d==-1 then
+            sacle=sacle-0.1
         end
+        if sacle>3 then
+            sacle=3
+        elseif sacle<0.6 then
+            sacle=0.6
+        end
+        print(id, addName, UI_SCALE, sacle)
+        Save.scale=sacle
+        Text_Settings()--设置Text
     end)
     panel:SetScript('OnMouseUp',function() ResetCursor() end)
 
