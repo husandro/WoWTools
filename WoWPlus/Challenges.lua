@@ -679,7 +679,7 @@ local function Cur(self)--货币数量
                 else
                     self['cur'..k]:SetPoint('BOTTOMRIGHT', self['cur'..(k-1)], 'TOPRIGHT', 0,0)
                 end
-                self['cur'..k]:SetSize(h+4, h+4)
+                self['cur'..k]:SetSize(16, 16)
                 
                 self['cur'..k]:SetScript("OnEnter",function(self2)                            
                         GameTooltip:SetOwner(self2, "ANCHOR_RIGHT")
