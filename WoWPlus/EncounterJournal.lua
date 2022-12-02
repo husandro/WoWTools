@@ -413,11 +413,10 @@ end
 --初始化
 --######
 local function set_EncounterJournal_Init()--冒险指南界面
-    local self=EncounterJournal
-    self.btn= e.Cbtn(self.TitleContainer, nil, not Save.hideEncounterJournal)--按钮, 总开关
-    self.btn:SetPoint('RIGHT',-22, -2)
-    self.btn:SetSize(22, 22)
-    self.btn:SetScript('OnEnter',function(self2)
+    EncounterJournal.btn= e.Cbtn(EncounterJournal.TitleContainer, nil, not Save.hideEncounterJournal)--按钮, 总开关
+    EncounterJournal.btn:SetPoint('RIGHT',-22, -2)
+    EncounterJournal.btn:SetSize(22, 22)
+    EncounterJournal.btn:SetScript('OnEnter',function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT");
         e.tips:ClearLines();
         e.tips:AddDoubleLine(id, addName)
@@ -425,14 +424,14 @@ local function set_EncounterJournal_Init()--冒险指南界面
         e.tips:AddDoubleLine(QUEST_REWARDS, e.GetShowHide(not Save.hideEncounterJournal_All_Info_Text))
         e.tips:Show()
     end)
-    self.btn:SetScript('OnMouseDown', function(self2, d)
+    EncounterJournal.btn:SetScript('OnMouseDown', function(self2, d)
         if d=='LeftButton' then
             Save.hideEncounterJournal= not Save.hideEncounterJournal and true or nil
-            self.instance:SetShown(not Save.hideEncounterJournal)
-            self.Worldboss:SetShown(not Save.hideEncounterJournal)
-            self.keystones:SetShown(not Save.hideEncounterJournal)
-            self.money:SetShown(not Save.hideEncounterJournal)
-            self.btn:SetNormalAtlas(Save.hideEncounterJournal and e.Icon.disabled or e.Icon.icon )
+            EncounterJournal.instance:SetShown(not Save.hideEncounterJournal)
+            EncounterJournal.Worldboss:SetShown(not Save.hideEncounterJournal)
+            EncounterJournal.keystones:SetShown(not Save.hideEncounterJournal)
+            EncounterJournal.money:SetShown(not Save.hideEncounterJournal)
+            EncounterJournal.btn:SetNormalAtlas(Save.hideEncounterJournal and e.Icon.disabled or e.Icon.icon )
         elseif d=='RightButton' then
             if Save.hideEncounterJournal_All_Info_Text then
                 Save.hideEncounterJournal_All_Info_Text=nil
@@ -442,13 +441,13 @@ local function set_EncounterJournal_Init()--冒险指南界面
             EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示所数据
         end
     end)
-    self.btn:SetScript("OnLeave",function() e.tips:Hide() end)
+    EncounterJournal.btn:SetScript("OnLeave",function() e.tips:Hide() end)
 
-    self.instance =e.Cbtn(self.TitleContainer, nil ,true)--所有角色副本
-    self.instance:SetPoint('RIGHT', self.btn, 'LEFT')
-    self.instance:SetNormalAtlas('animachannel-icon-kyrian-map')
-    self.instance:SetSize(22,22)
-    self.instance:SetScript('OnEnter',function(self2)
+    EncounterJournal.instance =e.Cbtn(EncounterJournal.TitleContainer, nil ,true)--所有角色副本
+    EncounterJournal.instance:SetPoint('RIGHT', EncounterJournal.btn, 'LEFT')
+    EncounterJournal.instance:SetNormalAtlas('animachannel-icon-kyrian-map')
+    EncounterJournal.instance:SetSize(22,22)
+    EncounterJournal.instance:SetScript('OnEnter',function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT");
         e.tips:ClearLines();
         e.tips:AddDoubleLine(INSTANCE..e.Icon.left..e.GetShowHide(Save.showInstanceBoss), DUNGEON_ENCOUNTER_DEFEATED)
@@ -469,7 +468,7 @@ local function set_EncounterJournal_Init()--冒险指南界面
         end
         e.tips:Show()
     end)--提示
-    self.instance:SetScript('OnClick', function()
+    EncounterJournal.instance:SetScript('OnClick', function()
             if  Save.showInstanceBoss then
                 Save.showInstanceBoss=nil
             else
@@ -478,14 +477,14 @@ local function set_EncounterJournal_Init()--冒险指南界面
             end
             setInstanceBossText()
     end)
-    self.instance:SetScript("OnLeave",function() e.tips:Hide() end)
+    EncounterJournal.instance:SetScript("OnLeave",function() e.tips:Hide() end)
 
-    self.Worldboss =e.Cbtn(self.TitleContainer, nil ,true)--所有角色已击杀世界BOSS
-    self.Worldboss:SetPoint('RIGHT', self.instance, 'LEFT')
-    self.Worldboss:SetNormalAtlas('poi-soulspiritghost')
-    self.Worldboss:SetSize(22,22)
-    self.Worldboss:SetScript('OnEnter',set_EncounterJournal_World_Tips)--提示
-    self.Worldboss:SetScript('OnClick', function(self2, d)
+    EncounterJournal.Worldboss =e.Cbtn(EncounterJournal.TitleContainer, nil ,true)--所有角色已击杀世界BOSS
+    EncounterJournal.Worldboss:SetPoint('RIGHT', EncounterJournal.instance, 'LEFT')
+    EncounterJournal.Worldboss:SetNormalAtlas('poi-soulspiritghost')
+    EncounterJournal.Worldboss:SetSize(22,22)
+    EncounterJournal.Worldboss:SetScript('OnEnter',set_EncounterJournal_World_Tips)--提示
+    EncounterJournal.Worldboss:SetScript('OnClick', function(self2, d)
         if  Save.showWorldBoss then
             Save.showWorldBoss=nil
         else
@@ -494,27 +493,27 @@ local function set_EncounterJournal_Init()--冒险指南界面
         end
         setWorldbossText()
     end)
-    self.Worldboss:SetScript("OnLeave",function() e.tips:Hide() end)
+    EncounterJournal.Worldboss:SetScript("OnLeave",function() e.tips:Hide() end)
 
 
-    self.keystones =e.Cbtn(self.TitleContainer, nil ,true)--所有角色,挑战
-    self.keystones:SetPoint('RIGHT', self.Worldboss, 'LEFT')
-    self.keystones:SetNormalTexture(4352494)
-    self.keystones:SetSize(22,22)
-    self.keystones:SetScript('OnEnter',set_EncounterJournal_Keystones_Tips)
-    self.keystones:SetScript("OnLeave",function() e.tips:Hide() end)
+    EncounterJournal.keystones =e.Cbtn(EncounterJournal.TitleContainer, nil ,true)--所有角色,挑战
+    EncounterJournal.keystones:SetPoint('RIGHT', EncounterJournal.Worldboss, 'LEFT')
+    EncounterJournal.keystones:SetNormalTexture(4352494)
+    EncounterJournal.keystones:SetSize(22,22)
+    EncounterJournal.keystones:SetScript('OnEnter',set_EncounterJournal_Keystones_Tips)
+    EncounterJournal.keystones:SetScript("OnLeave",function() e.tips:Hide() end)
 
-    self.money =e.Cbtn(self.TitleContainer, nil ,true)--钱
-    self.money:SetPoint('RIGHT', self.keystones, 'LEFT')
-    self.money:SetNormalAtlas('Front-Gold-Icon')
-    self.money:SetSize(22,22)
-    self.money:SetScript('OnEnter',set_EncounterJournal_Money_Tips)
-    self.money:SetScript("OnLeave",function() e.tips:Hide() end)
+    EncounterJournal.money =e.Cbtn(EncounterJournal.TitleContainer, nil ,true)--钱
+    EncounterJournal.money:SetPoint('RIGHT', EncounterJournal.keystones, 'LEFT')
+    EncounterJournal.money:SetNormalAtlas('Front-Gold-Icon')
+    EncounterJournal.money:SetSize(22,22)
+    EncounterJournal.money:SetScript('OnEnter',set_EncounterJournal_Money_Tips)
+    EncounterJournal.money:SetScript("OnLeave",function() e.tips:Hide() end)
 
-    self.money:SetShown(not Save.hideEncounterJournal)
-    self.instance:SetShown(not Save.hideEncounterJournal)
-    self.Worldboss:SetShown(not Save.hideEncounterJournal)
-    self.keystones:SetShown(not Save.hideEncounterJournal)
+    EncounterJournal.money:SetShown(not Save.hideEncounterJournal)
+    EncounterJournal.instance:SetShown(not Save.hideEncounterJournal)
+    EncounterJournal.Worldboss:SetShown(not Save.hideEncounterJournal)
+    EncounterJournal.keystones:SetShown(not Save.hideEncounterJournal)
     setWorldbossText()
     setInstanceBossText()
     
@@ -587,7 +586,7 @@ local function set_EncounterJournal_Init()--冒险指南界面
     end
     hooksecurefunc('EncounterJournal_ListInstances', function()--界面, 副本击杀
         if Save.hideEncounterJournal then
-            for _, button in pairs(self.instanceSelect.ScrollBox:GetFrames()) do
+            for _, button in pairs(EncounterJournal.instanceSelect.ScrollBox:GetFrames()) do
                 if button and button.tipsText then
                     button.tipsText:SetText('')
                 end
@@ -595,7 +594,7 @@ local function set_EncounterJournal_Init()--冒险指南界面
             return
         end
 
-        for _, button in pairs(self.instanceSelect.ScrollBox:GetFrames()) do--ScrollBox.lua
+        for _, button in pairs(EncounterJournal.instanceSelect.ScrollBox:GetFrames()) do--ScrollBox.lua
             if button and button.tooltipTitle and button.instanceID then--button.bgImage:GetTexture() button.name:GetText()
                 local text=EncounterJournal_ListInstances_set_Instance(button)
                 if not button.tipsText and text~=''then
@@ -676,7 +675,7 @@ local function set_EncounterJournal_Init()--冒险指南界面
     end)
     --boss, ID, 信息
     hooksecurefunc('EncounterJournal_DisplayInstance', function(instanceID, noButton)--Blizzard_EncounterJournal.lua
-        local self2 = self.encounter;
+        local self2 = EncounterJournal.encounter;
         if Save.hideEncounterJournal or not instanceID then
             if self2.instance.Killed then
                 self2.instance.Killed:SetText('')
@@ -739,32 +738,39 @@ local function set_EncounterJournal_Init()--冒险指南界面
                 button:SetScript('OnLeave', function() e.tips:Hide() end)
             end
         end
-        if self2.instance.mapButton then
-            self2.instance.mapButton:SetScript('OnEnter', function(self3)--综述,小地图提示
-                local instanceName, description2, _, _, _, _, dungeonAreaMapID2 = EJ_GetInstanceInfo();
-                if dungeonAreaMapID2 and instanceName then
-                    e.tips:SetOwner(self3, "ANCHOR_LEFT")
-                    e.tips:ClearLines()
-                    e.tips:AddDoubleLine(instanceName, 'UiMapID: '..dungeonAreaMapID2)
-                    e.tips:AddLine(' ')
-                    e.tips:AddLine(description2, nil,nil,nil, true)
-                    e.tips:Show()
-                end
-            end)
-            self2.instance.mapButton:SetScript('OnLeave', function() e.tips:Hide() end)
-        end
 
-        if not self2.instance.Killed then--综述, 添加副本击杀情况
-            self2.instance.Killed=e.Cstr(self2.instance, 14, nil, nil,nil,true)
-            self2.instance.Killed:SetPoint('BOTTOMRIGHT', -33, 126)
-            self2.instance.Killed:SetJustifyH('RIGHT')
-        end
-        self2.instance.Killed.instanceID=instanceID
-        self2.instance.Killed.tooltipTitle=name
-        self2.instance.Killed:SetText(EncounterJournal_ListInstances_set_Instance(self2.instance.Killed))
+            if self2.instance.mapButton then
+                self2.instance.mapButton:SetScript('OnEnter', function(self3)--综述,小地图提示
+                    local instanceName, description2, _, _, _, _, dungeonAreaMapID2 = EJ_GetInstanceInfo();
+                    if dungeonAreaMapID2 and instanceName then
+                        e.tips:SetOwner(self3, "ANCHOR_LEFT")
+                        e.tips:ClearLines()
+                        e.tips:AddDoubleLine(instanceName, 'UiMapID: '..dungeonAreaMapID2)
+                        e.tips:AddLine(' ')
+                        e.tips:AddLine(description2, nil,nil,nil, true)
+                        e.tips:Show()
+                    end
+                end)
+                self2.instance.mapButton:SetScript('OnLeave', function() e.tips:Hide() end)
+            end
+
+--[=[
+            if not self2.instance.Killed then--综述, 添加副本击杀情况
+                --e.Cstr=function(self, size, fontType, ChangeFont, color, layer, justifyH)
+                self2.instance.Killed=e.Cstr(self2.instance, 14, nil, nil,nil,true)
+                self2.instance.Killed:SetPoint('BOTTOMRIGHT', -33, 126)
+                self2.instance.Killed:SetJustifyH('RIGHT')
+            end
+            self2.instance.Killed.instanceID=instanceID
+            self2.instance.Killed.tooltipTitle=name
+            self2.instance.Killed:SetText(EncounterJournal_ListInstances_set_Instance(self2.instance.Killed))
+
+]=]
+
+        
     end)
     --战利品, 套装, 收集数
-    hooksecurefunc(self.LootJournalItems.ItemSetsFrame,'ConfigureItemButton', function(self2, button)--Blizzard_LootJournalItems.lua
+    hooksecurefunc(EncounterJournal.LootJournalItems.ItemSetsFrame,'ConfigureItemButton', function(self2, button)--Blizzard_LootJournalItems.lua
         local has = C_TransmogCollection.PlayerHasTransmogByItemInfo(button.itemID)
         if has==false and not button.tex and not Save.hideEncounterJournal then
             button.tex=button:CreateTexture()
@@ -795,7 +801,7 @@ local function set_EncounterJournal_Init()--冒险指南界面
             end
         end
     end
-    hooksecurefunc(self.LootJournalItems.ItemSetsFrame, 'UpdateList', lootSet);
+    hooksecurefunc(EncounterJournal.LootJournalItems.ItemSetsFrame, 'UpdateList', lootSet);
     hooksecurefunc('HybridScrollFrame_Update', function(self2)
             if self2==self.LootJournalItems.ItemSetsFrame then
                 lootSet(self2)
@@ -886,13 +892,13 @@ local function set_EncounterJournal_Init()--冒险指南界面
     end)
     --BOSS模型
     hooksecurefunc('EncounterJournal_DisplayCreature', function(self2, forceUpdate)
-        if not Save.hideEncounterJournal and self.creatureDisplayID and not self.creatureDisplayIDText then
-            local modelScene = self.encounter.info.model;
-            self.creatureDisplayIDText=e.Cstr(modelScene,14, modelScene.imageTitle)
-            self.creatureDisplayIDText:SetPoint('BOTTOMLEFT', 5, 2)
+        if not Save.hideEncounterJournal and EncounterJournal.creatureDisplayID and not EncounterJournal.creatureDisplayIDText then
+            local modelScene = EncounterJournal.encounter.info.model;
+            EncounterJournal.creatureDisplayIDText=e.Cstr(modelScene,14, modelScene.imageTitle)
+            EncounterJournal.creatureDisplayIDText:SetPoint('BOTTOMLEFT', 5, 2)
         end
-        if self.creatureDisplayIDText then
-            self.creatureDisplayIDText:SetText((self.creatureDisplayID and not Save.hideEncounterJournal) and MODEL..'ID: '..self.creatureDisplayID or '')
+        if EncounterJournal.creatureDisplayIDText then
+            EncounterJournal.creatureDisplayIDText:SetText((EncounterJournal.creatureDisplayID and not Save.hideEncounterJournal) and MODEL..'ID: '..EncounterJournal.creatureDisplayID or '')
         end
     end)
 
