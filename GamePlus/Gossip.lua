@@ -231,6 +231,7 @@ local function Init_Gossip()
     local printText, selectGissipIDTab=nil, {}
     GossipFrame:HasScript('OnHide', function ()
         selectGissipIDTab={}
+        printText=nil
     end)
     --自定义闲话选项, 按钮 GossipFrameShared.lua
     hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, info)--GossipFrameShared.lua
