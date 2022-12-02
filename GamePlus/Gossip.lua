@@ -307,58 +307,6 @@ local function Init_Gossip()
     end)
 end
 
-    
-    --[=[
-panel:SetScript('OnClick', function(self, d)
-        if d=='LeftButton' and not IsModifierKeyDown() then
-            if Save.gossip then
-                Save.gossip=nil
-            else
-                Save.gossip=true
-            end
-            print(GOSSIP_OPTIONS..': '..e.GetEnabeleDisable(Save.gossip))
-            setTexture()
-        elseif d=='LeftButton' and IsAltKeyDown() then--清除自定义闲话选       
-            StaticPopupDialogs['husandro']={
-                text =CLEAR_ALL..'|n|n'..GOSSIP_OPTIONS,
-                button1 =CLEAR or KEY_NUMLOCK_MAC,
-                button2 = CANCEL,
-                OnAccept=function(s)
-                    Save.Option={}
-                    Save.NPC={}
-                    print('('..GOSSIP_OPTIONS..') '..CLEAR_ALL..": "..GREEN_FONT_COLOR_CODE..COMPLETE..'|r|n/reload: '..GREEN_FONT_COLOR_CODE..SAVE..'|r')
-                end,
-                whileDead=true,timeout=10,hideOnEscape = true,}
-            StaticPopup_Show('husandro');
-        end
-    end)
-    panel:SetScript('OnEnter', function(self2)
-        local n=0
-        for k,_ in pairs(Save.Option) do
-            if k then
-                n=n+1
-            end
-        end
-        for k,_ in pairs(Save.NPC) do
-            if k then
-                n=n+1
-            end
-        end
-        e.tips:SetOwner(self2, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, addName)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(GOSSIP_OPTIONS, e.GetEnabeleDisable(Save.gossip)..e.Icon.left)
-        e.tips:AddDoubleLine(CLEAR_ALL, n..' Alt+'..e.Icon.left)
-        e.tips:Show()
-    end)
-    panel:SetScript('OnLeave', function ()
-        e.tips:Hide()
-    end)
-
-]=]
-
-
 --###########
 --任务，主菜单
 --###########
@@ -507,67 +455,6 @@ local function Init_Quest()
     end)
 end
 
---#####
---初始化
---#####
-local function Init()
-    setPoint()--设置位置
-    setTexture()
-    get_set_IsQuestTrivialTracking()--其它任务,低等任务,追踪
-
-
-
-  
-
-    --可选闲话
-    --hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, optionInfo)
-     --[=[
-   local info=C_GossipInfo.GetOptions() or {}
-        if not optionInfo.gossipOptionID
-            or not Save.quest
-            or IsModifierKeyDown()
-            or (optionInfo.flags ~= Enum.GossipOptionRecFlags.QuestLabelPrepend and not optionInfo.name:find(QUESTS_LABEL))
-            or (#info~=1)
-            or selectGissipIDTab[optionInfo]
-        then
-            return
-        end
-
-]=]
-
-        --local icon=self.Icon:GetTexture()
-
---[[
-        local quest= (optionInfo.flags == Enum.GossipOptionRecFlags.QuestLabelPrepend or optionInfo.name:find(QUESTS_LABEL)) and Save.quest
-        local info= C_GossipInfo.GetOptions()
-        local select= Save.Option[optionInfo.gossipOptionID] or (#info==1 and Save.unique) or quest
-        local npc=e.GetNpcID('npc')
-        if Save.gossip
-            and not IsModifierKeyDown()
-            and not Save.NPC[]
-            and select
-        then
-
-            local text=GOSSIP_QUEST_OPTION_PREPEND:format(optionInfo.name)
-            if printText~=optionInfo.name then
-                printText=optionInfo.name
-                print(id, ENABLE_DIALOG, 'Alt'..RED_FONT_COLOR_CODE..DISABLE, optionInfo.icon and '|T'..optionInfo.icon..':0|t', '|cffff00ff'..text..'|r', optionInfo.spellID and GetSpellLink(optionInfo.spellID))
-            end
-            C_GossipInfo.SelectOption(optionInfo.gossipOptionID)
-            selectGissipIDTab[optionInfo.gossipOptionID]=true
-
-        end
-    end)
-
-]]
-
-    
-
-   
-
-    
-end
-
 --###########
 --加载保存数据
 --###########
@@ -579,7 +466,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1 == id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
             if not Save.disabled then
-                Init()--初始化
+                setPoint()--设置位置
+                setTexture()
+                get_set_IsQuestTrivialTracking()--其它任务,低等任务,追踪
+
                 Init_Gossip()--对话，初始化
                 Init_Quest()--任务，初始化
             else
