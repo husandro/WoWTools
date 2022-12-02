@@ -1,6 +1,6 @@
 local id, e = ...
 local addName=ENABLE_DIALOG..QUESTS_LABEL
-local Save={gossip=true, quest=true, unique=true, Option={}, NPC={},}
+local Save={gossip=true, quest=true, unique=true, autoSortQuest=true, Option={}, NPC={},QuestNPC={}}
 --[[
     Save.Option[self2.info.gossipOptionID]={
         name=self2.name,
@@ -8,6 +8,23 @@ local Save={gossip=true, quest=true, unique=true, Option={}, NPC={},}
         gossipText=self2.info.name
     }
 ]]
+
+local function set_Only_Show_Zone_Quest()--显示本区域任务
+    if Save.autoSortQuest then
+        for index=1, select(2,C_QuestLog.GetNumQuestLogEntries()) do
+            local info = C_QuestLog.GetInfo(index)
+            if info and info.questID and info.frequency==0 and not info.isHeader then
+                if info.isOnMap then
+                    C_QuestLog.AddQuestWatch(info.questID)
+                else
+                    C_QuestLog.RemoveQuestWatch(info.questID)
+                end
+            end
+        end
+        C_QuestLog.SortQuestWatches()
+    end
+end
+
 local panel=e.Cbtn(UIParent, nil,nil,nil,nil, true, {20,20});--闲话图标
 local questFrame=e.Cbtn(UIParent, nil,nil,nil,nil, true, {20,20});--任务图标
 
@@ -58,9 +75,9 @@ local function InitMenu_Gossip(self, level, type)
     if type=='Option' then
         for gossipOptionID, tab in pairs(Save.Option) do
             info={
-                text= tab.gossipText,
+                text= tab.name,
                 tooltipOnButton=true,
-                tooltipTitle=tab.name,
+                tooltipTitle= tab.gossipText,
                 tooltipText='NPC '..tab.npcID..'\ngossipOptionID '..gossipOptionID..'\n\n'..e.Icon.left..REMOVE,
                 func=function()
                     Save.Option[gossipOptionID]=nil
@@ -312,55 +329,89 @@ end
 --###########
 --任务，主菜单
 --###########
+local function set_Auto_QuestWatch_Event()--仅显示本地图任务,事件
+    if Save.autoSortQuest then
+        questFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
+        questFrame:RegisterEvent('ZONE_CHANGED')
+        questFrame:RegisterEvent('ZONE_CHANGED_NEW_AREA')
+    else
+        questFrame:UnregisterEvent('PLAYER_ENTERING_WORLD')
+        questFrame:UnregisterEvent('ZONE_CHANGED')
+        questFrame:UnregisterEvent('ZONE_CHANGED_NEW_AREA')
+    end
+end
 local function InitMenu_Quest(self, level, type)
-    local info={
-        text=e.Icon.left..QUICK_JOIN_IS_AUTO_ACCEPT_TOOLTIP,--自动接受
-        checked=Save.quest,
-        func= function()
-            Save.quest= not Save.quest and true or nil
-            setTexture()--设置图标
-        end
-    }
-    UIDropDownMenu_AddButton(info, level)
+    local info
+    if type then--追踪
+        info={--自动任务追踪
+            text=AUTO_QUEST_WATCH_TEXT,
+            checked=C_CVar.GetCVarBool("autoQuestWatch"),
+            tooltipOnButton=true,
+            tooltipTitle=ERR_QUEST_ACCEPTED_S:format('Cvar autoQuestWatch'),
+            func=function()
+                C_CVar.SetCVar("autoQuestWatch", C_CVar.GetCVarBool("autoQuestWatch") and '0' or '1')
+            end
+        }
+        UIDropDownMenu_AddButton(info, level)
 
-    info={
-        text='|A:TrivialQuests:0:0|a'..MINIMAP_TRACKING_TRIVIAL_QUESTS,--低等任务
-        checked= isQuestTrivialTracking,
-        tooltipOnButton= true,
-        tooltipTitle= TRACKING,
-        func= function ()
-            get_set_IsQuestTrivialTracking(true)--其它任务,低等任务,追踪
-        end,
-    }
-    UIDropDownMenu_AddButton(info, level)
+        info={--当前地图
+            text=REFORGE_CURRENT..WORLD_MAP,
+            checked=Save.autoSortQuest,
+            tooltipOnButton=true,
+            tooltipTitle=EVENTS_LABEL..':' ..UPDATE..FLOOR,
+            func=function()
+                Save.autoSortQuest= not Save.autoSortQuest and true or nil
+                set_Auto_QuestWatch_Event()--仅显示本地图任务,事件
+            end
+        }
+        UIDropDownMenu_AddButton(info, level)
+    else
+        info={
+            text=e.Icon.left..QUICK_JOIN_IS_AUTO_ACCEPT_TOOLTIP,--自动接受
+            checked=Save.quest,
+            func= function()
+                Save.quest= not Save.quest and true or nil
+                setTexture()--设置图标
+            end
+        }
+        UIDropDownMenu_AddButton(info, level)
 
-    info={--共享任务
-        text=SHARE_QUEST,
-        checked=Save.pushable,
-        func= function()
-            Save.pushable= not Save.pushable and true or nil
-        end
-    }
-    UIDropDownMenu_AddButton(info, level)
+        info={
+            text='|A:TrivialQuests:0:0|a'..MINIMAP_TRACKING_TRIVIAL_QUESTS,--低等任务
+            checked= isQuestTrivialTracking,
+            tooltipOnButton= true,
+            tooltipTitle= TRACKING,
+            func= function ()
+                get_set_IsQuestTrivialTracking(true)--其它任务,低等任务,追踪
+            end,
+        }
+        UIDropDownMenu_AddButton(info, level)
 
-    info={--自动任务追踪
-        text=AUTO_QUEST_WATCH_TEXT,
-        checked=C_CVar.GetCVarBool("autoQuestWatch"),
-        tooltipOnButton=true,
-        tooltipTitle=ERR_QUEST_ACCEPTED_S:format('\n'..AUTO_QUEST_WATCH_TEXT),
-        func=function()
-            C_CVar.SetCVar("autoQuestWatch", C_CVar.GetCVarBool("autoQuestWatch") and '0' or '1') 
-        end
-    }
-    UIDropDownMenu_AddButton(info, level)
+        info={--共享任务
+            text=SHARE_QUEST,
+            checked=Save.pushable,
+            func= function()
+                Save.pushable= not Save.pushable and true or nil
+            end
+        }
+        UIDropDownMenu_AddButton(info, level)
 
-    UIDropDownMenu_AddSeparator(level)
-    info={
-        text=id..' '..QUESTS_LABEL,
-        notCheckable=true,
-        isTitle=true,
-    }
-    UIDropDownMenu_AddButton(info, level)
+        info={
+            text=TRACKING,
+            notCheckable=true,
+            hasArrow=true,
+            menuList='TRACKING'
+        }
+        UIDropDownMenu_AddButton(info, level)
+
+        UIDropDownMenu_AddSeparator(level)
+        info={
+            text=id..' '..QUESTS_LABEL,
+            notCheckable=true,
+            isTitle=true,
+        }
+        UIDropDownMenu_AddButton(info, level)
+    end
 end
 
 --###########
@@ -372,6 +423,10 @@ local function Init_Quest()
 
     questFrame:SetPoint('RIGHT', panel, 'LEFT')
 
+    if Save.autoSortQuest then--仅显示本地图任务,事件
+        set_Auto_QuestWatch_Event()
+    end
+
     questFrame.Text=e.Cstr(questFrame, nil, nil,nil, true,nil, 'RIGHT')--任务数量
     questFrame.Text:SetPoint('RIGHT', questFrame, 'LEFT')
     questFrame:SetScript('OnMouseDown', function(self, d)
@@ -382,13 +437,15 @@ local function Init_Quest()
             ToggleDropDownMenu(1, nil, self.MenuQest, self, 15,0)
         end
     end)
+    questFrame:SetScript('OnEnter', set_Only_Show_Zone_Quest)
 
     questFrame:RegisterEvent("QUEST_LOG_UPDATE")
     questFrame:RegisterEvent('MINIMAP_UPDATE_TRACKING')
     questFrame:SetScript("OnEvent", function(self, event)
         if event=='MINIMAP_UPDATE_TRACKING' then
             get_set_IsQuestTrivialTracking()--其它任务,低等任务,追踪
-        else
+
+        elseif event=='QUEST_LOG_UPDATE' then--更新数量
             local n = select(2,C_QuestLog.GetNumQuestLogEntries()) or 0;
             local max = C_QuestLog.GetMaxNumQuestsCanAccept() or 25;
             if max == n then
@@ -396,6 +453,8 @@ local function Init_Quest()
             else
                 self.Text:SetText(n..'/'..max)
             end
+        else
+            set_Auto_QuestWatch_Event()--仅显示本地图任务,事件
         end
     end)
 
@@ -490,6 +549,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 questFrame:UnregisterAllEvents()
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
+            set_Only_Show_Zone_Quest()
 
         elseif arg1=='Blizzard_PlayerChoice' then--命运, 字符
             hooksecurefunc(StaticPopupDialogs["CONFIRM_PLAYER_CHOICE_WITH_CONFIRMATION_STRING"],"OnShow",function(s)

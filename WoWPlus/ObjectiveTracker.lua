@@ -102,9 +102,11 @@ local ObjectiveTrackerRemoveAll =function(self, tip)
     info={
         text = REMOVE_WORLD_MARKERS..' '..totaleQest,
         notCheckable = true,
-        checked = false,
+        tooltipOnButton=true,
+        tooltipTitle=QUESTS_LABEL..' +',
+        tooltipText= TRACKER_HEADER_WORLD_QUESTS,
         icon=Icon.clear,
-        disabled= totaleQest<20,
+        colorCode= totaleQest==0 and '|cff606060',
         func = function()
             local nu=C_QuestLog.GetNumQuestWatches()
             while nu>0 do
@@ -240,26 +242,6 @@ local function hideTrecker()--挑战,进入FB时, 隐藏Blizzard_ObjectiveTracke
         end
     end
 end
-
-
---[=[
-local function set_Only_Show_Zone_Quest()
-    for index=1, select(2,C_QuestLog.GetNumQuestLogEntries()) do
-        local info = C_QuestLog.GetInfo(index)
-        if info and info.questID and info.frequency==0 and not info.isHeader then
-           
-          --  if info.isOnMap then
-             --   C_QuestLog.AddQuestWatch(info.questID)
-           -- else
-                C_QuestLog.RemoveQuestWatch(info.questID)
-                print(info.isOnMap, info.title)
-           -- end
-        end
-    end
-   -- C_QuestLog.SortQuestWatches()
-end
-
-]=]
 
 --####
 --初始
