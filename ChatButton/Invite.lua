@@ -888,7 +888,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, ...)
     
     elseif event=='CHAT_MSG_SAY' or event=='CHAT_MSG_YELL' or  event=='CHAT_MSG_WHISPER' and arg1 then
         local text=string.upper(arg1)
-        if text:find(Save.ChannelText) then
+        if text and Save.ChannelText and text:find(Save.ChannelText) then
             local co= GetNumGroupMembers()            
             toRaidOrParty(co)--自动, 转团
             if co<5 or (IsInRaid() and co<40) then
