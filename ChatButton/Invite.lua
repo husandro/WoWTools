@@ -886,8 +886,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, ...)
         InvPlateGuid={}
         set_Chanell_Event()--设置,内容,频道, 邀请,事件
     
-    elseif event=='CHAT_MSG_SAY' or event=='CHAT_MSG_YELL' or  event=='CHAT_MSG_WHISPER' and arg1 then
-        local text=string.upper(arg1)
+    elseif event=='CHAT_MSG_SAY' or event=='CHAT_MSG_YELL' or  event=='CHAT_MSG_WHISPER' then
+        local text= arg1 and string.upper(arg1)
         if text and Save.ChannelText and text:find(Save.ChannelText) then
             local co= GetNumGroupMembers()            
             toRaidOrParty(co)--自动, 转团
