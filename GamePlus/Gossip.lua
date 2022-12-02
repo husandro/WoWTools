@@ -173,7 +173,8 @@ local function InitMenu_Gossip(self, level, type)
                 setPoint()
             end
         }
-
+        UIDropDownMenu_AddButton(info, level)
+        
         UIDropDownMenu_AddSeparator(level)
         info={
             text=id..' '..ENABLE_DIALOG,
