@@ -245,10 +245,9 @@ local function Init_Gossip()
     end)
 
     --可选闲话(任务)
-    local printText, selectGissipIDTab=nil, {}
+    local selectGissipIDTab= {}
     GossipFrame:HasScript('OnHide', function ()
         selectGissipIDTab={}
-        printText=nil
     end)
     --自定义闲话选项, 按钮 GossipFrameShared.lua
     hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, info)--GossipFrameShared.lua
@@ -295,7 +294,7 @@ local function Init_Gossip()
         self.sel.info=info
         self.sel:SetChecked(Save.Option[info.gossipOptionID])
 
-        if IsModifierKeyDown() or (npc and Save.NPC[npc]) then
+        if IsModifierKeyDown() or (npc and Save.NPC[npc]) or selectGissipIDTab[info.gossipOptionID] then
             return
         end
 
@@ -309,18 +308,18 @@ local function Init_Gossip()
                 name=GOSSIP_QUEST_OPTION_PREPEND:format(info.name)
             end
             find=true
-        elseif Save.gossip then
+        elseif Save.gossip  then
             if Save.Option[info.gossipOptionID] then--自定义
                 C_GossipInfo.SelectOption(index)
                 find=true
-            elseif #gossip==1 and Save.unique and not selectGissipIDTab[info.gossipOptionID] then--仅一个
+            elseif #gossip==1 and Save.unique then--仅一个
                 C_GossipInfo.SelectOption(index)
                 find=true
             end
         end
 
-        if find and printText~=name then
-            printText=name
+        if find then
+            selectGissipIDTab[info.gossipOptionID]=true
             print(id, ENABLE_DIALOG, '|cffff00ff'..name)
         end
     end)
@@ -458,11 +457,43 @@ local function Init_Quest()
         end
     end)
 
-    --任务框, 自动选任务
-    QuestFrameGreetingPanel:HookScript('OnShow', function()--QuestFrame.lua QuestFrameGreetingPanel_OnShow
-        if not Save.quest or IsModifierKeyDown() then--getMaxQuest()
+    --禁用此npc,任务,选项
+    QuestFrameGreetingPanel.sel=CreateFrame("CheckButton", nil, GossipFrame, 'InterfaceOptionsCheckButtonTemplate')
+    QuestFrameGreetingPanel.sel:SetPoint("BOTTOMLEFT",5,2)
+    QuestFrameGreetingPanel.sel.Text:SetText(DISABLE)
+    QuestFrameGreetingPanel.sel:SetScript("OnClick", function (self, d)
+        if not self.npc and self.name then
             return
         end
+        Save.QuestNPC[self.npc]= not Save.QuestNPC[self.npc] and self.name or nil
+        print(id, ENABLE_DIALOG, self.name, self.npc, e.GetEnabeleDisable(Save.QuestNPC[self.npc]))
+    end)
+    QuestFrameGreetingPanel.sel:SetScript('OnEnter',function (self)
+        e.tips:SetOwner(self, "ANCHOR_RIGHT")
+        e.tips:ClearLines()
+        if self.npc and self.name then
+            e.tips:AddDoubleLine(id, QUESTS_LABEL)
+            e.tips:AddDoubleLine(self.name, 'NPC '..self.npc)
+            e.tips:AddDoubleLine(DISABLE..' NPC', e.GetEnabeleDisable(not Save.QuestNPC[self.npc]))
+        else
+            e.tips:AddDoubleLine(NONE, 'NPC ID')
+        end
+        e.tips:Show()
+    end)
+    QuestFrameGreetingPanel.sel:SetScript("OnLeave", function()
+        e.tips:Hide()
+    end)
+
+    --任务框, 自动选任务    
+    QuestFrameGreetingPanel:HookScript('OnShow', function()--QuestFrame.lua QuestFrameGreetingPanel_OnShow
+        local npc=e.GetNpcID('npc')
+        if not Save.quest or IsModifierKeyDown() or Save.QuestNPC[npc] then--getMaxQuest()
+            return
+        end
+        
+        self.sel.npc=npc
+        self.sel.name=UnitName("npc")
+        self.sel:SetChecked(Save.QuestNPC[npc])
 
         local numActiveQuests = GetNumActiveQuests();
         local numAvailableQuests = GetNumAvailableQuests();
