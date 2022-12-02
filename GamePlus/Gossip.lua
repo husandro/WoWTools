@@ -552,7 +552,7 @@ local function Init_Quest()
     QuestFrameGreetingPanel.sel:SetScript("OnLeave", function()
         e.tips:Hide()
     end)
-b
+
     --任务框, 自动选任务    
     QuestFrameGreetingPanel:HookScript('OnShow', function(self)--QuestFrame.lua QuestFrameGreetingPanel_OnShow
         local npc=e.GetNpcID('npc')
