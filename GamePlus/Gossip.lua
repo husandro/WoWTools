@@ -341,6 +341,17 @@ local function InitMenu_Quest(self, level, type)
     }
     UIDropDownMenu_AddButton(info, level)
 
+    info={--自动任务追踪
+        text=AUTO_QUEST_WATCH_TEXT,
+        checked=C_CVar.GetCVarBool("autoQuestWatch"),
+        tooltipOnButton=true,
+        tooltipTitle=ERR_QUEST_ACCEPTED_S:format('\n'..AUTO_QUEST_WATCH_TEXT),
+        func=function()
+            C_CVar.SetCVar("autoQuestWatch", C_CVar.GetCVarBool("autoQuestWatch") and '0' or '1') 
+        end
+    }
+    UIDropDownMenu_AddButton(info, level)
+
     UIDropDownMenu_AddSeparator(level)
     info={
         text=id..' '..QUESTS_LABEL,
@@ -393,7 +404,7 @@ local function Init_Quest()
         if not Save.quest or IsModifierKeyDown() then--getMaxQuest()
             return
         end
-        
+
         local numActiveQuests = GetNumActiveQuests();
         local numAvailableQuests = GetNumAvailableQuests();
         if numActiveQuests > 0 then
