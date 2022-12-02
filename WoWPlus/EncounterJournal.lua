@@ -319,7 +319,7 @@ local function setInstanceBossText()--显示副本击杀数据
         if Save.instanceBossPoint then
             panel.instanceBoss:SetPoint(Save.instanceBossPoint[1], UIParent, Save.instanceBossPoint[3], Save.instanceBossPoint[4], Save.instanceBossPoint[5])
         else
-            if IsAddOnLoaded('Blizzard_EncounterJournal') then
+            if EncounterJournal then
                 panel.instanceBoss:SetPoint('BOTTOMRIGHT',EncounterJournal, 'TOPRIGHT', -45,20)
             else
                 panel.instanceBoss:SetPoint('CENTER')
@@ -755,7 +755,7 @@ local function set_EncounterJournal_Init()--冒险指南界面
         end
 
         if not self2.instance.Killed then--综述, 添加副本击杀情况
-            self2.instance.Killed=e.Cstr(self2.instance, 14, self2.instance.title, nil,nil,true)
+            self2.instance.Killed=e.Cstr(self2.instance, 14, nil, nil,nil,true)
             self2.instance.Killed:SetPoint('BOTTOMRIGHT', -33, 126)
             self2.instance.Killed:SetJustifyH('RIGHT')
         end
