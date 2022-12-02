@@ -652,7 +652,7 @@ local function InitMenu(self, level, menuList)--主菜单
                     CloseDropDownMenus()
                 end,
                 tooltipOnButton=true,
-                tooltipTitle='Alt +'..e.Icon.right..' '..NPE_MOVE,
+                tooltipTitle=e.Icon.right..NPE_MOVE,
                 notCheckable=true,
             }
             if not Save.Point then
@@ -819,7 +819,7 @@ local function InitMenu(self, level, menuList)--主菜单
         UIDropDownMenu_AddButton(info)
         
         info={--提示移动
-            text='Alt+'..e.Icon.right..NPE_MOVE,
+            text=e.Icon.right..NPE_MOVE,
             isTitle=true,
             notCheckable=true
         }
@@ -958,9 +958,9 @@ local function Init()
     panel:SetClampedToScreen(true)
 
     panel:SetScript("OnDragStart", function(self,d )
-        if IsAltKeyDown() and d=='RightButton' then
+--        if IsAltKeyDown() and d=='RightButton' then
             self:StartMoving()
-        end
+  --      end
     end)
     panel:SetScript("OnDragStop", function(self)
         ResetCursor()
