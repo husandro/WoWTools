@@ -1,6 +1,6 @@
 local id, e = ...
 local addName=ENABLE_DIALOG..QUESTS_LABEL
-local Save={gossip=true, quest=true, unique=true, autoSortQuest=true, Option={}, NPC={},QuestNPC={}}
+local Save={gossip=true, quest=true, unique=true, autoSortQuest=true, Option={}, NPC={}, QuestNPC={}}
 --[[
     Save.Option[self2.info.gossipOptionID]={
         name=self2.name,
@@ -460,8 +460,6 @@ local function Init_Quest()
 
     --任务框, 自动选任务
     QuestFrameGreetingPanel:HookScript('OnShow', function()--QuestFrame.lua QuestFrameGreetingPanel_OnShow
-      --hooksecurefunc('QuestFrameGreetingPanel_OnShow',function()
-        print('a')
         if not Save.quest or IsModifierKeyDown() then--getMaxQuest()
             return
         end
