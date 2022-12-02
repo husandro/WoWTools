@@ -174,7 +174,7 @@ local function InitMenu_Gossip(self, level, type)
             end
         }
         UIDropDownMenu_AddButton(info, level)
-        
+
         UIDropDownMenu_AddSeparator(level)
         info={
             text=id..' '..ENABLE_DIALOG,
@@ -425,6 +425,7 @@ local function InitMenu_Quest(self, level, type)
         info={--共享任务
             text=SHARE_QUEST,
             checked=Save.pushable,
+            colorCode= not IsInGroup() and '|cff606060',
             func= function()
                 Save.pushable= not Save.pushable and true or nil
             end
