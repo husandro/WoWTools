@@ -143,6 +143,7 @@ local function InitMenu_Gossip(self, level, type)
         info={--自定义,闲话,选项
             text=CUSTOM,
             menuList='Option',
+            notCheckable=true,
             hasArrow=true,
         }
         UIDropDownMenu_AddButton(info, level)
@@ -150,6 +151,7 @@ local function InitMenu_Gossip(self, level, type)
         info={--禁用NPC, 闲话, 选项
             text=DISABLE,
             menuList='NPC',
+            notCheckable=true,
             hasArrow=true,
         }
         UIDropDownMenu_AddButton(info, level)
@@ -170,6 +172,13 @@ local function InitMenu_Gossip(self, level, type)
                 panel:ClearAllPoints()
                 setPoint()
             end
+        }
+
+        UIDropDownMenu_AddSeparator(level)
+        info={
+            text=id..' '..ENABLE_DIALOG,
+            isTitle=true,
+            notCheckable=true,
         }
         UIDropDownMenu_AddButton(info, level)
     end
@@ -341,7 +350,7 @@ local function set_Auto_QuestWatch_Event()--仅显示本地图任务,事件
 end
 local function InitMenu_Quest(self, level, type)
     local info
-    if type then--追踪
+    if type=='TRACKING' then--追踪
         info={--自动任务追踪
             text=AUTO_QUEST_WATCH_TEXT,
             checked=C_CVar.GetCVarBool("autoQuestWatch"),
@@ -361,6 +370,32 @@ local function InitMenu_Quest(self, level, type)
             func=function()
                 Save.autoSortQuest= not Save.autoSortQuest and true or nil
                 set_Auto_QuestWatch_Event()--仅显示本地图任务,事件
+            end
+        }
+        UIDropDownMenu_AddButton(info, level)
+
+    elseif type=='DISABLE' then--禁用, NPC, 任务
+        for npcID, name in pairs(Save.QuestNPC) do
+            info={
+                text=name,
+                notCheckable=true,
+                tooltipOnButton=true,
+                tooltipTitle= 'NPC '..npcID,
+                tooltipText= e.Icon.left..REMOVE,
+                func= function()
+                    Save.QuestNPC[npcID]=nil
+                    print(id, QUESTS_LABEL, REMOVE, name, 'NPC '..npcID)
+                end
+            }
+            UIDropDownMenu_AddButton(info, level)
+        end
+        UIDropDownMenu_AddSeparator(level)
+        info={
+            text=CLEAR_ALL,
+            notCheckable=true,
+            func= function()
+                Save.QuestNPC={}
+                print(id, QUESTS_LABEL, DISABLE, CLEAR_ALL)
             end
         }
         UIDropDownMenu_AddButton(info, level)
@@ -400,6 +435,14 @@ local function InitMenu_Quest(self, level, type)
             notCheckable=true,
             hasArrow=true,
             menuList='TRACKING'
+        }
+        UIDropDownMenu_AddButton(info, level)
+
+        info={--禁用, NPC, 任务
+            text=DISABLE,
+            notCheckable=true,
+            menuList='DISABLE',
+            hasArrow=true,
         }
         UIDropDownMenu_AddButton(info, level)
 
