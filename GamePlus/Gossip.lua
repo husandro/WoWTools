@@ -9,22 +9,6 @@ local Save={gossip=true, quest=true, unique=true, autoSortQuest=true, Option={},
     }
 ]]
 
-local function set_Only_Show_Zone_Quest()--显示本区域任务
-    if Save.autoSortQuest then
-        for index=1, select(2,C_QuestLog.GetNumQuestLogEntries()) do
-            local info = C_QuestLog.GetInfo(index)
-            if info and info.questID and info.frequency==0 and not info.isHeader then
-                if info.isOnMap then
-                    C_QuestLog.AddQuestWatch(info.questID)
-                else
-                    C_QuestLog.RemoveQuestWatch(info.questID)
-                end
-            end
-        end
-        C_QuestLog.SortQuestWatches()
-    end
-end
-
 local panel=e.Cbtn(UIParent, nil,nil,nil,nil, true, {20,20});--闲话图标
 local questFrame=e.Cbtn(UIParent, nil,nil,nil,nil, true, {20,20});--任务图标
 
@@ -190,7 +174,6 @@ end
 --对话，初始化
 --###########
 local function Init_Gossip()
-
     panel.MenuGossip=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(panel.MenuGossip, InitMenu_Gossip, 'MENU')
 
@@ -236,6 +219,7 @@ local function Init_Gossip()
     GossipFrame.sel:SetScript('OnEnter',function (self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, ENABLE_DIALOG)
         if self.npc and self.name then
             e.tips:AddDoubleLine(self.name, 'NPC '..self.npc)
             e.tips:AddDoubleLine(DISABLE..' NPC', e.GetEnabeleDisable(not Save.NPC[self.npc]))
@@ -338,7 +322,36 @@ end
 --###########
 --任务，主菜单
 --###########
-local function set_Auto_QuestWatch_Event()--仅显示本地图任务,事件
+local function set_Only_Show_Zone_Quest()--显示本区域任务
+    if Save.autoSortQuest then
+        for index=1, select(2,C_QuestLog.GetNumQuestLogEntries()) do
+            local info = C_QuestLog.GetInfo(index)
+            if info and info.questID and not info.isHeader then
+                if info.isOnMap then
+                    C_QuestLog.AddQuestWatch(info.questID)
+                else
+                    C_QuestLog.RemoveQuestWatch(info.questID)
+                end
+            end
+        end
+        C_QuestLog.SortQuestWatches()
+    end
+end
+
+local function set_PushableQuest()--共享,任务
+    if Save.pushable and IsInGroup() then
+        for index=1, select(2,C_QuestLog.GetNumQuestLogEntries()) do
+            local info = C_QuestLog.GetInfo(index)
+            if info and info.questID and not info.isHeader then
+                C_QuestLog.SetSelectedQuest(info.questID)
+                QuestLogPushQuest()
+            end
+        end
+        C_QuestLog.SortQuestWatches()
+    end
+end
+
+local function set_Auto_QuestWatch_Event()--设置事件, 仅显示本地图任务, 共享任务, 
     if Save.autoSortQuest then
         questFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
         questFrame:RegisterEvent('ZONE_CHANGED')
@@ -348,7 +361,13 @@ local function set_Auto_QuestWatch_Event()--仅显示本地图任务,事件
         questFrame:UnregisterEvent('ZONE_CHANGED')
         questFrame:UnregisterEvent('ZONE_CHANGED_NEW_AREA')
     end
+    if Save.pushable then
+        questFrame:RegisterEvent('GROUP_ROSTER_UPDATE')
+    else
+        questFrame:UnregisterEvent('GROUP_ROSTER_UPDATE')
+    end
 end
+
 local function InitMenu_Quest(self, level, type)
     local info
     if type=='TRACKING' then--追踪
@@ -426,8 +445,11 @@ local function InitMenu_Quest(self, level, type)
             text=SHARE_QUEST,
             checked=Save.pushable,
             colorCode= not IsInGroup() and '|cff606060',
+            tooltipOnButton=true,
+            tooltipTitle=LFG_LIST_CROSS_FACTION:format(AGGRO_WARNING_IN_PARTY),
             func= function()
                 Save.pushable= not Save.pushable and true or nil
+                set_PushableQuest()--共享,任务
             end
         }
         UIDropDownMenu_AddButton(info, level)
@@ -497,6 +519,8 @@ local function Init_Quest()
             else
                 self.Text:SetText(n..'/'..max)
             end
+        elseif event=='GROUP_ROSTER_UPDATE' then
+            set_PushableQuest()--共享,任务
         else
             set_Auto_QuestWatch_Event()--仅显示本地图任务,事件
         end
@@ -528,7 +552,7 @@ local function Init_Quest()
     QuestFrameGreetingPanel.sel:SetScript("OnLeave", function()
         e.tips:Hide()
     end)
-
+b
     --任务框, 自动选任务    
     QuestFrameGreetingPanel:HookScript('OnShow', function(self)--QuestFrame.lua QuestFrameGreetingPanel_OnShow
         local npc=e.GetNpcID('npc')
@@ -642,7 +666,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event=='QUEST_ACCEPTED' then--共享任务
-        if IsInGroup() and arg1 and Save.quest and Save.pushable then
+        if IsInGroup() and arg1 and Save.pushable then
             if C_QuestLog.IsPushableQuest(arg1) then
                 C_QuestLog.SetSelectedQuest(arg1)
                 QuestLogPushQuest()
