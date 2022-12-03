@@ -935,6 +935,17 @@ end
 --初始化
 --######
 local function Init()
+    for type, spellID in pairs(Save.spell) do
+        if type==ITEMS then
+            if not C_Item.IsItemDataCachedByID(spellID) then
+                C_Item.RequestLoadItemDataByID(spellID)
+            end
+        else
+            if not C_Spell.IsSpellDataCached(spellID) then
+                C_Spell.RequestLoadSpellData(spellID)
+            end
+        end
+    end
     setPanelPostion()--设置按钮位置
     
     setButtonSize()--设置按钮大小
