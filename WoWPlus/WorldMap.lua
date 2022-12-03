@@ -156,19 +156,17 @@ hooksecurefunc('QuestMapLogTitleButton_OnClick',function(self, button)--任务�
         end
         if not C_QuestLog.IsQuestDisabledForSession(self.questID) and button == "RightButton" then
             UIDropDownMenu_AddSeparator()
-            local info= UIDropDownMenu_CreateInfo()
-            info.notCheckable=true
-            info.text=SHOW..'|A:campaign_headericon_open:0:0|a'..ALL
-            info.func=function()
-                Exp()
-            end
+                local info= {
+                text=SHOW..'|A:campaign_headericon_open:0:0|a'..ALL,
+                notCheckable=true,
+                func= Exp,
+            }
             UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
-            info = UIDropDownMenu_CreateInfo()
-            info.notCheckable=true
-            info.text=HIDE..'|A:campaign_headericon_closed:0:0|a'..ALL
-            info.func=function()
-                Coll()
-            end
+            info ={
+                notCheckable=true,
+                text=HIDE..'|A:campaign_headericon_closed:0:0|a'..ALL,
+                func= Coll,
+            }
             UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)            
         end
 end)--QuestMapFrame.lua
