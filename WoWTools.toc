@@ -10,6 +10,7 @@
 ## DefaultState: Enabled
 ## X-Curse-Project-ID: 695149
 ## X-Wago-ID: baND1J6o
+## OptionalDependencies: WagoAnalytics
 
 ##主要，不能删除
 WoWTools.lua
@@ -149,3 +150,6 @@ ChatButton\Say.lua
 ChatButton\Emoji.lua
 ##各种, 战斗时间
 ChatButton\CombatTimer.lua
+
+
+##libs/WagoAnalytics/Shim.lua
