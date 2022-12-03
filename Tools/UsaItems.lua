@@ -56,26 +56,18 @@ end
 
 local function getFind(ID, spell)
     if spell then
+        if not C_Spell.IsSpellDataCached(ID) then C_Spell.RequestLoadSpellData(ID) end
         if IsSpellKnown(ID) then
-            if not C_Spell.IsSpellDataCached(ID) then C_Spell.RequestLoadSpellData(ID) end
             return true
         end
     else
-        if GetItemCount(ID)>0 or (PlayerHasToy(ID) and C_ToyBox.IsToyUsable(ID)) then
-            if not C_Item.IsItemDataCachedByID(ID) then C_Item.RequestLoadItemDataByID(ID) end
+        if not C_Item.IsItemDataCachedByID(ID) then C_Item.RequestLoadItemDataByID(ID) end
+        if GetItemCount(ID)>0 or (PlayerHasToy(ID) and C_ToyBox.IsToyUsable(ID)) then          
             return true
         end
     end
 end
-for _, itemID in pairs(Save.item) do
-    getFind(itemID)
-end
-for _, itemID in pairs(Save.spell) do
-    getFind(itemID, true)
-end
-for _, itemID in pairs(Save.equip) do
-    getFind(itemID)
-end
+
 
 --###########
 --添加, 对话框
@@ -547,6 +539,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1== id then
         Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
         if not e.toolsFrame.disabled then
+
+for _, itemID in pairs(Save.item) do
+    getFind(itemID)
+end
+for _, itemID in pairs(Save.spell) do
+    getFind(itemID, true)
+end
+for _, itemID in pairs(Save.equip) do
+    getFind(itemID)
+end
+
             C_Timer.After(1.6, function()
                 if UnitAffectingCombat('player') then
                     panel.combat= true
