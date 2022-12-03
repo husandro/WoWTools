@@ -17,3 +17,9 @@ Some/File.txtrequired-dependencies:
 - 220002-junkitmanual-changelog: 
 CHANGELOG.txtlicense-output: 
 LICENSE.txttools-used:    - data-tools
+
+
+externals:
+  libs/WagoAnalytics:
+    url: https://github.com/methodgg/WagoAnalytics.git
+    branch: main
