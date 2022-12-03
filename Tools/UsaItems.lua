@@ -56,12 +56,10 @@ end
 
 local function getFind(ID, spell)
     if spell then
-        if not C_Spell.IsSpellDataCached(ID) then C_Spell.RequestLoadSpellData(ID) end
         if IsSpellKnown(ID) then
             return true
         end
     else
-        if not C_Item.IsItemDataCachedByID(ID) then C_Item.RequestLoadItemDataByID(ID) end
         if GetItemCount(ID)>0 or (PlayerHasToy(ID) and C_ToyBox.IsToyUsable(ID)) then          
             return true
         end
@@ -540,14 +538,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
         if not e.toolsFrame.disabled then
 
-for _, itemID in pairs(Save.item) do
-    getFind(itemID)
+for _, ID in pairs(Save.item) do
+    if not C_Item.IsItemDataCachedByID(ID) then C_Item.RequestLoadItemDataByID(ID) end
 end
-for _, itemID in pairs(Save.spell) do
-    getFind(itemID, true)
+for _, ID in pairs(Save.spell) do
+    if not C_Spell.IsSpellDataCached(ID) then C_Spell.RequestLoadSpellData(ID) end
 end
-for _, itemID in pairs(Save.equip) do
-    getFind(itemID)
+for _, ID in pairs(Save.equip) do
+    if not C_Item.IsItemDataCachedByID(ID) then C_Item.RequestLoadItemDataByID(ID) end
 end
 
             C_Timer.After(1.6, function()
