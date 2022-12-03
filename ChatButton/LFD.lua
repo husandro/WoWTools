@@ -470,37 +470,39 @@ end
 
 local function InitList(self, level, type)--LFDFrame.lua
     local info
-    if type then        
-        info={}--自动, 准备进入,选项
-        info.text=e.Icon.toRight2..BATTLEFIELD_CONFIRM_STATUS
-        info.tooltipOnButton=true
-        info.tooltipTitle=SPECIFIC_DUNGEON_IS_READY
-        info.checked=Save.enterInstance
-        info.tooltipText=AUTO_JOIN:gsub(JOIN, ENTER_LFG)..'\n'..ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('',AFK).. '\n\n'..id..' '..addName
-        info.func=function()
-            if Save.enterInstance then
-                Save.enterInstance=nil
-            else
-                Save.enterInstance=true
+    if type then
+        info={--自动, 准备进入,选项
+            text=e.Icon.toRight2..BATTLEFIELD_CONFIRM_STATUS,
+            tooltipOnButton=true,
+            tooltipTitle=SPECIFIC_DUNGEON_IS_READY,
+            checked=Save.enterInstance,
+            tooltipText=AUTO_JOIN:gsub(JOIN, ENTER_LFG)..'\n'..ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('',AFK).. '\n\n'..id..' '..addName,
+            func=function()
+                if Save.enterInstance then
+                    Save.enterInstance=nil
+                else
+                    Save.enterInstance=true
+                end
+                setQueueStatus()--小眼睛, 信息
             end
-            setQueueStatus()--小眼睛, 信息
-        end
+        }
         UIDropDownMenu_AddButton(info, level)
     
-        info={}--自动, 离开副本,选项
-        info.text=e.Icon.toLeft2..LEAVE..'('..INSTANCE..')'
-        info.tooltipOnButton=true
-        info.tooltipTitle=LEAVE..' ('..SLASH_RANDOM3:gsub('/','')..') '..INSTANCE
-        info.checked=Save.leaveInstance
-        info.tooltipText=AUTO_JOIN:gsub(JOIN, LEAVE)..'\n'..AUTO_JOIN:gsub(JOIN,'')..LOOT_ROLL.. '\n\n'..id..' '..addName
-        info.func=function()
-             if Save.leaveInstance then
-                 Save.leaveInstance=nil
-             else
-                 Save.leaveInstance=true
-             end
-             setQueueStatus()--小眼睛, 信息
-        end
+        info={--自动, 离开副本,选项
+            text=e.Icon.toLeft2..LEAVE..'('..INSTANCE..')',
+            tooltipOnButton=true,
+            tooltipTitle=LEAVE..' ('..SLASH_RANDOM3:gsub('/','')..') '..INSTANCE,
+            checked=Save.leaveInstance,
+            tooltipText=AUTO_JOIN:gsub(JOIN, LEAVE)..'\n'..AUTO_JOIN:gsub(JOIN,'')..LOOT_ROLL.. '\n\n'..id..' '..addName,
+            func=function()
+                if Save.leaveInstance then
+                    Save.leaveInstance=nil
+                else
+                    Save.leaveInstance=true
+                end
+                setQueueStatus()--小眼睛, 信息
+            end
+        }
         UIDropDownMenu_AddButton(info, level)
         
        
@@ -515,40 +517,42 @@ local function InitList(self, level, type)--LFDFrame.lua
         end
         UIDropDownMenu_AddSeparator(level)
 
-        info={}--离开所有副本
-        info.text=LEAVE_ALL_QUEUES..' #'..num..'|r'
-        info.notCheckable=true
-        info.disabled= num==0
-        info.func=function ()
-        for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
-            LeaveLFG(i)
-        end
-        end
-        info.tooltipOnButton=true
-        info.tooltipTitle=	BATTLEFIELD_QUEUE_STATUS
-        info.tooltipText=text
+        info={--离开所有副本
+            text=LEAVE_ALL_QUEUES..' #'..num..'|r',
+            notCheckable=true,
+            disabled= num==0,
+            func=function ()
+                for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
+                    LeaveLFG(i)
+                end
+            end,
+            tooltipOnButton=true,
+            tooltipTitle=	BATTLEFIELD_QUEUE_STATUS,
+            tooltipText=text,
+        }
         UIDropDownMenu_AddButton(info, level)
 
         UIDropDownMenu_AddSeparator(level)
-        info={}--信息 QueueStatusFrame.lua
-        info.text='|A:groupfinder-eye-frame:0:0|a'..SOCIAL_QUEUE_TOOLTIP_HEADER..INFO
-        info.checked=not Save.hideQueueStatus
-        info.func=function()
-            Save.hideQueueStatus = not Save.hideQueueStatus and true or nil
-            setQueueStatus()
-        end
+        info={--信息 QueueStatusFrame.lua
+            text='|A:groupfinder-eye-frame:0:0|a'..SOCIAL_QUEUE_TOOLTIP_HEADER..INFO,
+            checked=not Save.hideQueueStatus,
+            func=function()
+                Save.hideQueueStatus = not Save.hideQueueStatus and true or nil
+                setQueueStatus()
+            end,
+        }
         UIDropDownMenu_AddButton(info, level)
 
         info={--自动,战利品掷骰
-        text='|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t'..LOOT_ROLL,
-        checked=Save.autoROLL,
-        tooltipOnButton=true,
-        tooltipTitle=AUTO_JOIN:gsub(JOIN,''),
-        func= function()
-            Save.autoROLL= not Save.autoROLL and true or nil
-        end
-    }
-    UIDropDownMenu_AddButton(info, level)
+            text='|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t'..LOOT_ROLL,
+            checked=Save.autoROLL,
+            tooltipOnButton=true,
+            tooltipTitle=AUTO_JOIN:gsub(JOIN,''),
+            func= function()
+                Save.autoROLL= not Save.autoROLL and true or nil
+            end
+        }
+        UIDropDownMenu_AddButton(info, level)
     else
         local isLeader, isTank, isHealer, isDPS = GetLFGRoles()--角色职责
         info={

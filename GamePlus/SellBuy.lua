@@ -410,97 +410,98 @@ local function InitList(self, level, menuLit)
         return
     end
     local num
-    local info = UIDropDownMenu_CreateInfo()--出售垃圾
-    info.text=	AUCTION_HOUSE_SELL_TAB..BAG_FILTER_JUNK
-    info.checked= not Save.notSellJunk
-    info.func=function ()
-        if Save.notSellJunk then
-            Save.notSellJunk=nil
-        else
-            Save.notSellJunk=true
-        end
-    end
-    info.tooltipOnButton=true
-    info.tooltipTitle=id..' '.. addName
-    info.tooltipText='\n'..PROFESSIONS_CRAFTING_QUALITY:format('|cff606060'..ITEM_QUALITY0_DESC..'|r')
+    local info ={--出售垃圾
+        text=AUCTION_HOUSE_SELL_TAB..BAG_FILTER_JUNK,
+        checked= not Save.notSellJunk,
+        func=function ()
+            Save.notSellJunk= not Save.notSellJunk and true or nil
+        end,
+        tooltipOnButton=true,
+        tooltipTitle=id..' '.. addName,
+        tooltipText='\n'..PROFESSIONS_CRAFTING_QUALITY:format('|cff606060'..ITEM_QUALITY0_DESC..'|r'),
+    }
     UIDropDownMenu_AddButton(info)
 
-    info = UIDropDownMenu_CreateInfo()--自定义出售
-    num=0
+      num=0
     for _, boolean in pairs(Save.Sell) do
         if boolean then
             num=num+1
         end
     end
-    info.text=	AUCTION_HOUSE_SELL_TAB..CUSTOM..'|cnRED_FONT_COLOR: #'..num..'|r'
-    info.checked= not Save.notSellCustom
-    info.func=function ()
-        if Save.notSellCustom then
-            Save.notSellCustom=nil
-        else
-            Save.notSellCustom=true
-        end
-    end
-    info.menuList='CUSTOM'
-    info.hasArrow=true
+    info = {
+        text=	AUCTION_HOUSE_SELL_TAB..CUSTOM..'|cnRED_FONT_COLOR: #'..num..'|r',
+        checked= not Save.notSellCustom,
+        func=function ()
+            if Save.notSellCustom then
+                Save.notSellCustom=nil
+            else
+                Save.notSellCustom=true
+            end
+        end,
+        menuList='CUSTOM',
+        hasArrow=true,
+    }
     UIDropDownMenu_AddButton(info)
 
-    info = UIDropDownMenu_CreateInfo()--出售BOSS掉落
     num=0
     for _, boolean in pairs(bossSave) do
         if boolean then
             num=num+1
         end
     end
-    info.text=	AUCTION_HOUSE_SELL_TAB..TRANSMOG_SOURCE_1..'|cnRED_FONT_COLOR: #'..num..'|r'
-    info.checked= not Save.notSellCustom
-    info.func=function ()
-        if Save.notSellBoss then
-            Save.notSellBoss=nil
-        else
-            Save.notSellBoss=true
-        end
-    end
-    info.menuList='BOSS'
-    info.hasArrow=true
-    info.tooltipOnButton=true
-    info.tooltipTitle=STAT_AVERAGE_ITEM_LEVEL..' < ' ..(avgItemLevel and math.ceil(avgItemLevel)-15 or 15)
+    info = {--出售BOSS掉落
+        text= AUCTION_HOUSE_SELL_TAB..TRANSMOG_SOURCE_1..'|cnRED_FONT_COLOR: #'..num..'|r',
+        checked= not Save.notSellCustom,
+        func=function ()
+            if Save.notSellBoss then
+                Save.notSellBoss=nil
+            else
+                Save.notSellBoss=true
+            end
+        end,
+        menuList='BOSS',
+        hasArrow=true,
+        tooltipOnButton=true,
+        tooltipTitle=STAT_AVERAGE_ITEM_LEVEL..' < ' ..(avgItemLevel and math.ceil(avgItemLevel)-15 or 15)
+    }
     UIDropDownMenu_AddButton(info)
 
     UIDropDownMenu_AddSeparator()
-    info = UIDropDownMenu_CreateInfo()--购回
     num=0
     for _, boolean in pairs(Save.noSell) do
         if boolean then
             num=num+1
         end
     end
-    info.text= BUYBACK..'|cnRED_FONT_COLOR: #'..num..'|r'
-    info.notCheckable=true
-    info.menuList='BUYBACK'
-    info.hasArrow=true
+    info ={--购回
+        text= BUYBACK..'|cnRED_FONT_COLOR: #'..num..'|r',
+        notCheckable=true,
+        menuList='BUYBACK',
+        hasArrow=true,
+    }
     UIDropDownMenu_AddButton(info)
 
-    UIDropDownMenu_AddSeparator()
-    info=UIDropDownMenu_CreateInfo()--购买物品
     num=0
     for _, boolean in pairs(buySave) do
         if boolean then
             num=num+1
         end
     end
-    info.text=AUTO_JOIN:gsub(JOIN,'')..PURCHASE..'|cnGREEN_FONT_COLOR: #'..num..'|r'
-    info.checked=not Save.notAutoBuy
-    info.func=function ()
-        if Save.notAutoBuy then
-            Save.notAutoBuy=nil
-        else
-            Save.notAutoBuy=true
-        end
-        setMerchantInfo()
-    end
-    info.menuList='BUY'
-    info.hasArrow=true
+    UIDropDownMenu_AddSeparator()
+    info={--购买物品
+        text=AUTO_JOIN:gsub(JOIN,'')..PURCHASE..'|cnGREEN_FONT_COLOR: #'..num..'|r',
+        checked=not Save.notAutoBuy,
+        func=function ()
+            if Save.notAutoBuy then
+                Save.notAutoBuy=nil
+            else
+                Save.notAutoBuy=true
+            end
+            setMerchantInfo()
+        end,
+        menuList='BUY',
+        hasArrow=true,
+    }
     UIDropDownMenu_AddButton(info)
 
     UIDropDownMenu_AddSeparator()
