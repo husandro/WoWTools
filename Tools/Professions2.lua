@@ -2,6 +2,13 @@ local id, e = ...
 local addName= PROFESSIONS_TRACKER_HEADER_PROFESSION
 local panel=CreateFrame("Frame")
 
+if not C_Item.IsItemDataCachedByID(134020) then
+    C_Item.RequestLoadItemDataByID(134020)
+end
+if not C_Spell.IsSpellDataCached(818) then
+    C_Spell.RequestLoadSpellData(818)
+end
+
 --####
 --初始
 --####

@@ -31,6 +31,12 @@ local Toy={
     [150745]={858, 859, 627, 776, 775, 768, 765, 802, 782, 766, 772, 777, 779, 770, 774, 780, 769, 773, 778, 841, 4995, 761, 771, 781, 868},--东部王国
 }
 
+for itemID, _ in pairs(Toy) do
+    if not C_Item.IsItemDataCachedByID(itemID) then
+        C_Item.RequestLoadItemDataByID(itemID);
+    end
+end
+
 local function Get_Use_Toy()
     if UnitAffectingCombat('player') then
         panel.bat=true
@@ -64,14 +70,8 @@ end
 --初始
 --####
 local function Init()
-    
-
     for itemID, _ in pairs(Toy) do
-        if PlayerHasToy(itemID) and C_ToyBox.IsToyUsable(itemID) then
-            if not C_Item.IsItemDataCachedByID(itemID) then
-                C_Item.RequestLoadItemDataByID(k);
-            end
-        else
+        if not(PlayerHasToy(itemID) and C_ToyBox.IsToyUsable(itemID)) then
             Toy[itemID]=nil
         end
     end

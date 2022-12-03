@@ -60,10 +60,10 @@ end
 local function getToy()--生成, 有效表格
     panel.items={}
     for itemID ,_ in pairs(Save.items) do
+        if not C_Item.IsItemDataCachedByID(itemID) then
+            C_Item.RequestLoadItemDataByID(itemID)
+        end
         if PlayerHasToy(itemID) then
-            if not C_Item.IsItemDataCachedByID(itemID) then
-                C_Item.RequestLoadItemDataByID(itemID)
-            end
             table.insert(panel.items, itemID)
         end
     end
