@@ -35,7 +35,11 @@ local ModifiedTab={
     shift=6948,--炉石
     ctrl=110560,--要塞炉石
 }
-
+for _, itemID in pairs(ModifiedTab) do
+    if not C_Item.IsItemDataCachedByID(itemID) then
+        C_Item.RequestLoadItemDataByID(itemID)
+    end
+end
 panel.items={}--存放有效
 
 local function getToy()--生成, 有效表格
@@ -43,9 +47,6 @@ local function getToy()--生成, 有效表格
     local find
     for itemID ,_ in pairs(Save.items) do
         if PlayerHasToy(itemID) then
-            if not C_Item.IsItemDataCachedByID(itemID) then
-                C_Item.RequestLoadItemDataByID(itemID)
-            end
             find=true
             table.insert(panel.items, itemID)
         end
@@ -275,6 +276,12 @@ local function showTips(self)--显示提示
 end
 
 local function Init()
+    for itemID, _ in pairs(Save.items) do
+        if not C_Item.IsItemDataCachedByID(itemID) then
+            C_Item.RequestLoadItemDataByID(itemID)
+        end
+    end
+
     if e.toolsFrame.size and e.toolsFrame.size~=30 then--设置大小
         panel:SetSize(e.toolsFrame.size, e.toolsFrame.size)
     end
