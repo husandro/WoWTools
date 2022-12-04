@@ -12,7 +12,7 @@ World of Warcraft 正式服 自己专用 插件
 
 *GamePlus: 增加常用功能
 
-*Tools: 工具集
+*Tools: 工具合集
 
 *ChatBotton: 聊天按钮和常用功能
 
