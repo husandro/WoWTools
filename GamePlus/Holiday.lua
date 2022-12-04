@@ -415,6 +415,7 @@ local function Init()
         self:StopMovingOrSizing()
         Save.point={self:GetPoint(1)}
         Save.point[2]=nil
+        CloseDropDownMenus()
     end)
     panel:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' and not IsModifierKeyDown() then

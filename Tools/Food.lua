@@ -1,12 +1,12 @@
 local id, e = ...
 local addName= POWER_TYPE_FOOD
 local Save={
-    type={},
+    itemClass={},
     noUseItems={}
 }
 
 local panel=e.Cbtn2(nil, WoWToolsMountButton, true, nil)
-panel.itemID=5512--治疗石
+panel.itemID= 5512--治疗石
 
 local function setPanelPostion()--设置按钮位置
     if Save.point then
@@ -16,9 +16,6 @@ local function setPanelPostion()--设置按钮位置
     end
 end
 
---#######
---图标冷却
---#######
 local function set_Cooldown(self)--图标冷却
     if self.itemID then
         local start, duration = GetItemCooldown(self.itemID)
@@ -26,9 +23,12 @@ local function set_Cooldown(self)--图标冷却
     end
 end
 
-local function set_Item_Count(self)
-    self.count:SetText(GetItemCount(self.itemID))
-    self.texture:SetDesaturated(self.count==0)
+local function set_Item_Count(self)--设置, 数量
+    if self.itemID then
+        local num=GetItemCount(self.itemID, nil, true, true)
+        self.count:SetText(num>0 and num or '')
+        self.texture:SetDesaturated(num==0)
+    end
 end
 
 --#########
@@ -38,9 +38,14 @@ local function set_Button_Init(self)
     if self.itemID then
         e.LoadSpellItemData(self.itemID)--加载法术, 物品数据
 
-        panel:SetAttribute("type", "item")
-        panel:SetAttribute("item", C_Item.GetItemNameByID(self.itemID))
-        panel.texture:SetTexture(C_Item.GetItemIconByID(self.itemID))
+        self:SetAttribute("type", "item")
+        self:SetAttribute("item", C_Item.GetItemNameByID(self.itemID))
+        self.texture:SetTexture(C_Item.GetItemIconByID(self.itemID))
+
+        if not self.count then--设置, 数量
+            self.count= e.Cstr(self,10, nil,nil, true)
+            self.count:SetPoint('BOTTOMRIGHT', -4,4)
+        end
 
         self:SetScript("OnEnter",function(self2)
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
@@ -56,7 +61,6 @@ local function set_Button_Init(self)
         end)
         self:SetScript("OnLeave",function() e.tips:Hide() end)
 
-        self.count= self.count or e.Cstr(self,nil, nil,nil, true)
         self:RegisterEvent('BAG_UPDATE_DELAYED')
         self:RegisterEvent('BAG_UPDATE_COOLDOWN')
         if self~=panel then
@@ -70,12 +74,13 @@ local function set_Button_Init(self)
             self:SetScript('OnMouseDown',function(self2, d)
                 if d=='RightButton' and IsShiftKeyDown() then
                     Save.noUseItems[self2.itemID]=true
-                    print(id, addName, DISABLE, ITEMS, self2.itemID, REQUIRES_RELOAD)
+                    local link= select(2, GetItemInfo(self2.itemID))
+                    print(id, addName, DISABLE, link or self2.itemID, '|cnRED_FONT_COLOR:'..REQUIRES_RELOAD)
                 end
             end)
         end
 
-        set_Item_Count(self2)
+        set_Item_Count(self)
         set_Cooldown(self)--图标冷却
     else
         self:UnregisterAllEvents()
@@ -88,9 +93,8 @@ local function find_Item_Type(class, subclass)
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local info = C_Container.GetContainerItemInfo(bag, slot)
             if info and info.hyperlink and info.itemID then
-                local classID, subclassID = GetItemInfo(info.hyperlink)
-                if classID==class and subclassID==subclass then
-                    e.LoadSpellItemData(info.itemID)--加载法术, 物品数据
+                local classID, subClassID = select(12, GetItemInfo(info.hyperlink))
+                if classID==class and subClassID==subclass then
                     table.insert(tab, info.itemID)
                 end
             end
@@ -102,29 +106,46 @@ end
 local function create_Button(self)
     self= self or panel
     local button= e.Cbtn2(nil, self, true, nil)
+
     button:SetPoint('RIGHT', self, 'LEFT')
     return button
 end
 
-local itemClass={
-    {clasType=Consumable, type=Generic, class=0, subClass=0},
-    {clasType=Consumable, type=Potion, class=0, subClass=1},
-    {clasType=Consumable, type=Elixir, class=0, subClass=2},
-    {clasType=Consumable, type=Scroll, class=0, subClass=3},
-    {clasType=Consumable, type=Fooddrink, class=0, subClass=4},
-    {clasType=Consumable, type=Itemenhancement, class=0, subClass=5},
-    {clasType=Consumable, type=Bandage, class=0, subClass=6},
-    {clasType=Consumable, type=Other, class=0, subClass=7},
-}
+
+local itemClass={}--物品列表
+
+for classID=0, 20 do
+    if classID~=10 then
+        local className=GetItemClassInfo(classID)--生成,物品列表
+        if className then
+            for subClassID= 0, 20 do
+                local subclassName=GetItemSubClassInfo(classID, subClassID)
+                if subclassName and subclassName~='' then
+                    local tab={
+                        className=className,
+                        subclassName=subclassName,
+                        classID=classID,
+                        subClassID=subClassID
+                    }
+                    table.insert(itemClass, tab)
+                else
+                    break
+                end
+            end
+        else
+            break
+        end
+    end
+end
 
 local Button={}
-local function set_Item_Button()
+local function set_Item_Button()--检查,物品
     local index=1
-    for _, tab in pairst(itemClass) do
-        if Save.type[tab.type] then
-            local itemIDs=find_Item_Type(tab.class, tasb.subclass)
-            for _, itemID in pairs(itemIDs) do
-                if not Save.noUseItems[itemID] then
+    for _, tab in pairs(itemClass) do
+        if Save.itemClass[tab.className..tab.subclassName] then
+            local Tabs=find_Item_Type(tab.classID, tab.subClassID)
+            for _, itemID in pairs(Tabs) do
+                if not Save.noUseItems[itemID] and itemID~=panel.itemID then
                     local button= Button[index]
                     button= button or create_Button(Button[index-1])
                     button.itemID= itemID
@@ -148,45 +169,99 @@ end
 --#####
 --主菜单
 --#####
+local function get_Save_Numer_SubClass(name)--子类, 选中数量
+    local num=0
+    for className,_ in pairs(Save.itemClass) do
+        if className:find(name..'(.+)') then
+            num= num+1
+        end
+    end
+    return num==0 and '' or '|cnGREEN_FONT_COLOR:'..num..'|r'
+end
+
 local function InitMenu(self, level, type)--主菜单
     local info
     local bat= UnitAffectingCombat('player')
 
     if type=='DISABLE' then
         for itemID, _ in pairs(Save.noUseItems) do
+            local itemLink, _, _, _, _, _,_, _, itemTexture = select(2, GetItemInfo(itemID))
             info={
-                text= C_Item.GetItemNameByID(itemID) or ('itemID '..itemID),
+                text= itemLink or ('itemID '..itemID),
                 notCheckable=true,
                 disable= bat,
+                icon=itemTexture,
+                tooltipOnButton=true,
+                tooltipTitle=e.Icon.left..REMOVE,
                 func=function()
                     Save.noUseItems[itemID]=nil
                     set_Item_Button()
                 end
             }
             UIDropDownMenu_AddButton(info, level)
-            find[tab.clasType]=true
         end
+
+        UIDropDownMenu_AddSeparator(level)
+        info={--清除全部
+            text=CLEAR_ALL,
+            notCheckable=true,
+            disable=bat,
+            func= function()
+                Save.noUseItems={}
+                set_Item_Button()
+                print(id, addName, CLEAR_ALL, DISABLE, ITEMS, DONE)
+            end
+        }
+        UIDropDownMenu_AddButton(info, level)
+
+    elseif type=='SETTINGS' then
+        info= {--登录游戏,时,查询
+            text= (LOGIN or SOCIAL_TWITTER_SIGN_IN)..GAME,
+            tooltipOnButton=true,
+            tooltipTitle=AUTO_JOIN:gsub(JOIN,WHO),
+            checked=Save.autoEnable,
+            func= function()
+                Save.autoEnable= not Save.autoEnable and true or nil
+            end
+        }
+        UIDropDownMenu_AddButton(info, level)
+
+        info={
+            text=RESET_POSITION,--还原位置
+            notCheckable=true,
+            colorCode= not Save.point and'|cff606060',
+            func=function()
+                Save.point=nil
+                panel:ClearAllPoints()
+                setPanelPostion()--设置按钮位置
+            end,
+        }
+        UIDropDownMenu_AddButton(info, level)
 
     elseif type then
         for _, tab in pairs(itemClass) do
-            if tab.clasType==type then
+            if type==tab.className then
                 info={
-                    text=tab.type,
-                    checked= Save.type[tab.type],
+                    text=tab.subclassName,
+                    checked= Save.itemClass[tab.className..tab.subclassName],
                     disable= bat,
+                    tooltipOnButton=true,
+                    tooltipTitle= tab.className.. ' classID |cnGREEN_FONT_COLOR:'..tab.classID..'|r',
+                    tooltipText= tab.subclassName..' subClassID |cnGREEN_FONT_COLOR:'..tab.subClassID..'|r',
                     func=function()
-                        Save.type[tab.type]= not Save.type[tab.type] and ture or nil
+                        Save.itemClass[tab.className..tab.subclassName]= not Save.itemClass[tab.className..tab.subclassName] and true or nil
                         set_Item_Button()
                     end
                 }
                 UIDropDownMenu_AddButton(info, level)
-                find[tab.clasType]=true
             end
         end
     else
         info={
-            text='CHECK',
+            text=WHO,
+            colorCode='|cff00ff00',
             notCheckable=true,
+            disable=bat,
             func= function()
                 set_Item_Button()
             end
@@ -196,18 +271,32 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddSeparator(level)
         local find={}
         for _, tab in pairs(itemClass) do
-            if not find[tab.clasType] then
+            if not find[tab.className] then
                 info={
-                    text=tab.clasType,
+                    text=get_Save_Numer_SubClass(tab.className)..tab.className,
                     notCheckable=true,
-                    menuList=tab.clasType,
-                    hasArrow=ture,
+                    menuList=tab.className,
+                    hasArrow=true,
                 }
                 UIDropDownMenu_AddButton(info, level)
-                find[tab.clasType]=true
+                find[tab.className]=true
             end
         end
 
+        info={--全部取消
+            text=e.Icon.up2..CALENDAR_EVENT_REMOVED_MAIL_SUBJECT:format(ALL),
+            colorCode= '|cffff0000',
+            notCheckable=true,
+            disable=bat,
+            func= function()
+                Save.itemClass={}
+                set_Item_Button()
+                print(id, addName, CALENDAR_EVENT_REMOVED_MAIL_SUBJECT:format(ALL), DONE)
+            end
+        }
+        UIDropDownMenu_AddButton(info, level)
+
+        UIDropDownMenu_AddSeparator(level)
         info= {
             text=DISABLE,
             notCheckable=true,
@@ -217,33 +306,24 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddButton(info, level)
 
         UIDropDownMenu_AddSeparator(level)
-        info= {
-            text= AUTO_JOIN:gsub(JOIN, ENABLE),
-            checked=Save.autoEnable,
-            func= function()
-                Save.autoEnable= not Save.autoEnable and true or nil
-            end
-        }
-        UIDropDownMenu_AddButton(info, level)
+        
 
         info= {
             text= e.Icon.right..NPE_MOVE,
-            isTitle= ture,
+            isTitle= true,
             notCheckable= true,
         }
         UIDropDownMenu_AddButton(info, level)
 
-        info={
-            text=RESET_POSITION,--还原位置
+        info= {
+            text=SETTINGS,
             notCheckable=true,
-            colorCode= not Save.Point and'|cff606060',
-            func=function()
-                Save.point=nil
-                panel:ClearAllPoints()
-                setPanelPostion()--设置按钮位置
-            end,
+            hasArrow=true,
+            menuList='SETTINGS'
         }
         UIDropDownMenu_AddButton(info, level)
+
+       
     end
 end
 
@@ -251,13 +331,16 @@ end
 --初始
 --####
 local function Init()
-  
+    for itemID, _ in pairs(Save.noUseItems) do
+        e.LoadSpellItemData(itemID)--加载法术, 物品数据
+    end
+
     setPanelPostion()--设置按钮位置
     local size=e.toolsFrame.size or 30
     panel:SetSize(size,size)
-    
+
     set_Button_Init(panel)--提示, 事件
-    
+
     if Save.autoEnable then
         set_Item_Button()
     end
@@ -276,6 +359,7 @@ local function Init()
         self:StopMovingOrSizing()
         Save.point={self:GetPoint(1)}
         Save.point[2]=nil
+        CloseDropDownMenus()
     end)
     panel:SetScript("OnMouseDown", function(self,d)
         ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)

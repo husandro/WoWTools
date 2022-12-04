@@ -56,10 +56,11 @@ end
 --###########
 local function InitMenu_Gossip(self, level, type)
     local info
-    if type=='Option' then
+    if type=='CUSTOM' then
         for gossipOptionID, tab in pairs(Save.Option) do
             info={
                 text= tab.name,
+                notCheckable=true,
                 tooltipOnButton=true,
                 tooltipTitle= tab.gossipText,
                 tooltipText='NPC '..tab.npcID..'\ngossipOptionID '..gossipOptionID..'\n\n'..e.Icon.left..REMOVE,
@@ -126,7 +127,7 @@ local function InitMenu_Gossip(self, level, type)
 
         info={--自定义,闲话,选项
             text=CUSTOM,
-            menuList='Option',
+            menuList='CUSTOM',
             notCheckable=true,
             hasArrow=true,
         }
@@ -191,6 +192,7 @@ local function Init_Gossip()
         ResetCursor()
         Save.point={self:GetPoint(1)}
         Save.point[2]=nil
+        CloseDropDownMenus()
     end)
     panel:SetScript('OnMouseDown', function(self, d)
         local key=IsModifierKeyDown()
@@ -231,18 +233,16 @@ local function Init_Gossip()
     GossipFrame.sel:SetScript("OnLeave", function()
         e.tips:Hide()
     end)
+
+    local selectGissipIDTab= {}
     GossipFrame:SetScript('OnShow', function (self)
+        selectGissipIDTab={}
         local npc=e.GetNpcID('npc')
         self.sel.npc=npc
         self.sel.name=UnitName("npc")
         self.sel:SetChecked(Save.NPC[npc])
     end)
 
-    --可选闲话(任务)
-    local selectGissipIDTab= {}
-    GossipFrame:HasScript('OnHide', function ()
-        selectGissipIDTab={}
-    end)
     --自定义闲话选项, 按钮 GossipFrameShared.lua
     hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, info)--GossipFrameShared.lua
         if not info.gossipOptionID then
@@ -256,8 +256,8 @@ local function Init_Gossip()
                 if self2.info.gossipOptionID then
                     e.tips:SetOwner(self2, "ANCHOR_RIGHT")
                     e.tips:ClearLines()
-                    e.tips:AddDoubleLine(self2.name, self2.npc and 'npc ID: '..self2.npc or '')
-                    e.tips:AddDoubleLine(self2.info.name, 'gossipOptionID: '..self2.info.gossipOptionID)
+                    e.tips:AddDoubleLine(self2.name, self2.npc and 'NPC: '..self2.npc or '')
+                    e.tips:AddDoubleLine(self2.info.name, 'gossipOption: '..self2.info.gossipOptionID)
                     e.tips:AddDoubleLine(' ')
                     e.tips:AddDoubleLine(CUSTOM, e.GetEnabeleDisable(Save.Option[self2.info.gossipOptionID]))
                     e.tips:AddDoubleLine(self2.name, e.GetEnabeleDisable(not Save.NPC[self2.npc]))
@@ -317,7 +317,25 @@ local function Init_Gossip()
             print(id, ENABLE_DIALOG, '|cffff00ff'..name)
         end
     end)
+
+      --完成已激活任务,多个任务GossipFrameShared.lua
+      hooksecurefunc(GossipSharedActiveQuestButtonMixin, 'Setup', function(self, info)
+        local questID=info.questID or self:GetID()
+        if not questID or not Save.quest or IsModifierKeyDown() or not C_QuestLog.IsComplete(questID) or (Save.NPC[GossipFrame.sel.npc]) then
+            return
+        end
+        C_GossipInfo.SelectActiveQuest(questID)
+    end)
+
+    --自动接取任务,多个任务GossipFrameShared.lua
+    hooksecurefunc(GossipSharedAvailableQuestButtonMixin, 'Setup', function(self, info)
+        if not info.questID or not Save.quest or IsModifierKeyDown() or not getQuestTrivial(info.questID) or getMaxQuest() or (Save.NPC[GossipFrame.sel.npc]) then
+            return
+        end
+        C_GossipInfo.SelectAvailableQuest(info.questID);--or self:GetID()
+    end)
 end
+
 
 --###########
 --任务，主菜单
@@ -386,7 +404,8 @@ local function InitMenu_Quest(self, level, type)
             text=REFORGE_CURRENT..WORLD_MAP,
             checked=Save.autoSortQuest,
             tooltipOnButton=true,
-            tooltipTitle=EVENTS_LABEL..':' ..UPDATE..FLOOR,
+            tooltipTitle=	GROUP_FINDER_CROSS_FACTION_LISTING_WITH_PLAYSTLE:format(SHOW,FLOOR..QUESTS_LABEL),--仅限-本区域任务
+            tooltipText=EVENTS_LABEL..':' ..UPDATE..FLOOR,
             func=function()
                 Save.autoSortQuest= not Save.autoSortQuest and true or nil
                 set_Auto_QuestWatch_Event()--仅显示本地图任务,事件
@@ -526,18 +545,17 @@ local function Init_Quest()
         end
     end)
 
-    --禁用此npc,任务,选项
-    QuestFrameGreetingPanel.sel=CreateFrame("CheckButton", nil, GossipFrame, 'InterfaceOptionsCheckButtonTemplate')
-    QuestFrameGreetingPanel.sel:SetPoint("BOTTOMLEFT",5,2)
-    QuestFrameGreetingPanel.sel.Text:SetText(DISABLE)
-    QuestFrameGreetingPanel.sel:SetScript("OnClick", function (self, d)
+    QuestFrame.sel=CreateFrame("CheckButton", nil, QuestFrame, 'InterfaceOptionsCheckButtonTemplate')--禁用此npc,任务,选项
+    QuestFrame.sel:SetPoint("TOPLEFT", QuestFrame, 40, 20)
+    QuestFrame.sel.Text:SetText(DISABLE)
+    QuestFrame.sel:SetScript("OnClick", function (self, d)
         if not self.npc and self.name then
             return
         end
         Save.QuestNPC[self.npc]= not Save.QuestNPC[self.npc] and self.name or nil
-        print(id, ENABLE_DIALOG, self.name, self.npc, e.GetEnabeleDisable(Save.QuestNPC[self.npc]))
+        print(id, QUESTS_LABEL, self.name, self.npc, DISABLE..QUESTS_LABEL..':',  e.GetEnabeleDisable(Save.QuestNPC[self.npc]))
     end)
-    QuestFrameGreetingPanel.sel:SetScript('OnEnter',function (self)
+    QuestFrame.sel:SetScript('OnEnter',function (self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
         if self.npc and self.name then
@@ -549,20 +567,22 @@ local function Init_Quest()
         end
         e.tips:Show()
     end)
-    QuestFrameGreetingPanel.sel:SetScript("OnLeave", function()
+    QuestFrame.sel:SetScript("OnLeave", function()
         e.tips:Hide()
+    end)
+
+    QuestFrame:SetScript('OnShow', function (self)
+        local npc=e.GetNpcID('npc')
+        self.sel.npc=npc
+        self.sel.name=UnitName("npc")
+        self.sel:SetChecked(Save.NPC[npc])
     end)
 
     --任务框, 自动选任务    
     QuestFrameGreetingPanel:HookScript('OnShow', function(self)--QuestFrame.lua QuestFrameGreetingPanel_OnShow
-        local npc=e.GetNpcID('npc')
-        if not Save.quest or IsModifierKeyDown() or Save.QuestNPC[npc] then--getMaxQuest()
+        if not Save.quest or IsModifierKeyDown() or Save.QuestNPC[QuestFrame.sel.npc] then--getMaxQuest()
             return
         end
-
-        self.sel.npc=npc
-        self.sel.name=UnitName("npc")
-        self.sel:SetChecked(Save.QuestNPC[npc])
 
         local numActiveQuests = GetNumActiveQuests();
         local numAvailableQuests = GetNumAvailableQuests();
@@ -586,9 +606,10 @@ local function Init_Quest()
        end
     end)
 
-    --任务进度, 继续, 完成QuestFrame.lua
+    --任务进度, 继续, 完成 QuestFrame.lua
     hooksecurefunc('QuestFrameProgressItems_Update', function(self)
-        if not Save.quest or IsModifierKeyDown() then
+
+        if not Save.quest or IsModifierKeyDown() or  Save.QuestNPC[QuestFrame.sel.npc] then
             return
         end
         local b=QuestFrameCompleteQuestButton;
@@ -597,32 +618,27 @@ local function Init_Quest()
         end
     end)
     --自动接取任务, 仅一个任务
-    hooksecurefunc('QuestInfo_Display', function(self, template, parentFrame, acceptButton, material, mapView)--QuestInfo.lua
-        local frame=QuestInfoFrame
-        if not Save.quest or IsModifierKeyDown() or not frame or not getQuestTrivial() or getMaxQuest() then
+    hooksecurefunc('QuestInfo_Display', function(template, parentFrame, acceptButton, material, mapView)--QuestInfo.lua
+        local questID;
+        if ( template.questLog ) then
+            questID = questFrame.questID;
+        else
+            questID = GetQuestID();
+        end
+        
+        if not Save.quest
+            or IsModifierKeyDown()
+            or (not (questID and C_QuestLog.IsComplete(questID)) and  (not getQuestTrivial() or getMaxQuest()))
+            or  Save.QuestNPC[QuestFrame.sel.npc]
+        then
             return
         end
-        if frame.acceptButton and frame.acceptButton:IsEnabled() then
-            frame.acceptButton:Click()
+        if acceptButton and acceptButton:IsEnabled() then
+            acceptButton:Click()
         end
     end)
 
-    --完成已激活任务,多个任务GossipFrameShared.lua
-    hooksecurefunc(GossipSharedActiveQuestButtonMixin, 'Setup', function(self, info)
-        local questID=info.questID or self:GetID()
-        if not questID or not Save.quest or IsModifierKeyDown() or not C_QuestLog.IsComplete(questID) then
-            return
-        end
-        C_GossipInfo.SelectActiveQuest(questID)
-    end)
-
-    --自动接取任务,多个任务GossipFrameShared.lua
-    hooksecurefunc(GossipSharedAvailableQuestButtonMixin, 'Setup', function(self, info)
-        if not info.questID or not Save.quest or IsModifierKeyDown() or not getQuestTrivial(info.questID) or getMaxQuest() then
-            return
-        end
-        C_GossipInfo.SelectAvailableQuest(info.questID);--or self:GetID()
-    end)
+  
 end
 
 --###########

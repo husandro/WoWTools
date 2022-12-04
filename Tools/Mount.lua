@@ -679,7 +679,6 @@ local function InitMenu(self, level, menuList)--主菜单
         elseif menuList==ITEMS or menuList==SPELLS then
             for ID, _ in pairs(Save.Mounts[menuList]) do
                 if menuList==ITEMS then--物品, 二级菜单
-                    e.LoadSpellItemData(ID)--加载法术, 物品数据
                     local name = C_Item.GetItemNameByID(ID)
                     name=name or ('itemID: '..ID)
                     local icon= C_Item.GetItemIconByID(ID)
@@ -705,7 +704,6 @@ local function InitMenu(self, level, menuList)--主菜单
                     }
 
                 else--法术, 二级菜单
-                    e.LoadSpellItemData(ID, true)--加载法术, 物品数据
                     local name, _, icon = GetSpellInfo(ID)
                     name=name or ('spellID: '..ID)
                     local known= IsSpellKnown(ID)
@@ -983,6 +981,7 @@ local function Init()
         self:StopMovingOrSizing()
         Save.Point={self:GetPoint(1)}
         Save.Point[2]=nil
+        CloseDropDownMenus()
     end)
     panel:SetScript("OnMouseDown", function(self,d)
         local infoType, itemID, itemLink ,spellID= GetCursorInfo()
