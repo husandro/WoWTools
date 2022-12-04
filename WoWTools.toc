@@ -2,7 +2,7 @@
 ## Title: |A:Icon-WoW:0:0|a|cffff00ffWoW|r|cff00ff00Tools|r
 ## Author: husandro
 ## Version: @project-version@
-## Notes: WoW Plus
+## Notes: WoW |cffff0000Plus|r
 ## X-Category: Interface Enhancements
 ## X-Flavor: Mainline
 ## X-Website https://www.curseforge.com/wow/addons/wowtools
