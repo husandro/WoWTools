@@ -25,3 +25,6 @@ https://bbs.nga.cn/read.php?tid=34084034
 
 # wago.io 主页
 https://wago.io/p/husandro2
+
+# Wiki
+https://github.com/husandro/WoWTools/wiki
