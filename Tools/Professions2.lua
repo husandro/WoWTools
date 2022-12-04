@@ -25,15 +25,31 @@ local function Init()
                         e.tips:SetOwner(self, "ANCHOR_LEFT")
                         e.tips:ClearLines()
                         e.tips:SetSpellByID(self.spellID)
+                        if self.index==5 then
+                            local link= GetSpellLink(818)
+                            local texture= GetSpellTexture(818)
+                            if link and texture then
+                                local text= '|T'..texture..':0|t'.. link
+                                if PlayerHasToy(134020) then--玩具,大厨的帽子
+                                    local link2,_,_,_,_,_,_,_, texture2 = select(2, GetItemInfo(134020))
+                                    if link2 and texture2 then
+                                        text=text..'|T'..texture2..':0|t'..link2
+                                    end
+                                end
+                                e.tips:AddLine(' ')
+                                e.tips:AddDoubleLine(text, e.Icon.right)
+                            end
+                        end
                         e.tips:Show()
                     end
                 end)
                 panel.buttons[index]:SetScript('OnLeave', function() e.tips:Hide() end)
             end
             panel.buttons[index].spellID = select(7, GetSpellInfo(spelloffset+1, 'spell'))
+            panel.buttons[index].index= index
 
             if index==5 then--烹饪用火
-                local name2=GetSpellInfo(818)
+                local name2=IsSpellKnown(818) and GetSpellInfo(818)
                 if name2 then
                     local text=''
                     if PlayerHasToy(134020) then--玩具,大厨的帽子
@@ -57,6 +73,8 @@ local function Init()
                     panel.buttons[index]:SetAttribute('type2', 'macro')
                     panel.buttons[index]:SetAttribute("macrotext2", text)
                 end
+            else
+                panel.buttons[index].index=nil
             end
             panel.buttons[index]:SetAttribute("spell", name)
             panel.buttons[index].texture:SetTexture(icon)

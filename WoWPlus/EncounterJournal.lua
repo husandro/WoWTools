@@ -274,35 +274,38 @@ local function setWorldbossText()--显示世界BOSS击杀数据Text
     end
 
     local msg
-    for guid, info in pairs(e.WoWSave) do
-        local text, numAll, find= nil, 0, nil
-        for bossName, _ in pairs(info.Worldboss.boss) do--世界BOSS
-            numAll=numAll+1
-            text= text and text ..' ' or '   '
-            text= text..'|cnGREEN_FONT_COLOR:'..numAll..')|r'..getBossNameSort(bossName)
-        end
-        if text then
-            msg= msg and msg..'\n' or ''
-            msg= msg..text
-            find= true
-        end
+    if not Save.hideWorldBossText then
+        for guid, info in pairs(e.WoWSave) do
+            local text, numAll, find= nil, 0, nil
+            for bossName, _ in pairs(info.Worldboss.boss) do--世界BOSS
+                numAll=numAll+1
+                text= text and text ..' ' or '   '
+                text= text..'|cnGREEN_FONT_COLOR:'..numAll..')|r'..getBossNameSort(bossName)
+            end
+            if text then
+                msg= msg and msg..'\n' or ''
+                msg= msg..text
+                find= true
+            end
 
-        text, numAll= nil, 0
-        for bossName, _ in pairs(info.Rare.boss) do--稀有怪
-            numAll=numAll+1
-            text= text and text ..' ' or '   '
-            text= text..'|cnGREEN_FONT_COLOR:'..numAll..')|r'..getBossNameSort(bossName)
+            text, numAll= nil, 0
+            for bossName, _ in pairs(info.Rare.boss) do--稀有怪
+                numAll=numAll+1
+                text= text and text ..' ' or '   '
+                text= text..'|cnGREEN_FONT_COLOR:'..numAll..')|r'..getBossNameSort(bossName)
+            end
+            if text then
+                msg= msg and msg..'\n' or ''
+                msg= msg..text
+                find= true
+            end
+            if find then
+                msg= msg..'\n'..e.GetPlayerInfo(nil, guid, true)..(guid==e.Player.guid and e.Icon.star2 or '')
+            end
         end
-        if text then
-            msg= msg and msg..'\n' or ''
-            msg= msg..text
-            find= true
-        end
-        if find then
-            msg= msg..'\n'..e.GetPlayerInfo(nil, guid, true)..(guid==e.Player.guid and e.Icon.star2 or '')
-        end
+        msg= msg or '...'
     end
-    panel.WorldBoss.Text:SetText(msg or '..')
+    panel.WorldBoss.Text:SetText(msg or '')
     panel.WorldBoss:SetShown(true)
 end
 
@@ -355,20 +358,23 @@ local function setInstanceBossText()--显示副本击杀数据
     end
 
     local msg
-    for guid, info in pairs(e.WoWSave) do
-        local text
-        for bossName, tab in pairs(info.Instance.ins) do----ins={[名字]={[难度]=已击杀数}}
-            text= text and text..'\n   '..bossName or '   '..bossName
-            for difficultyName, killed in pairs(tab) do
-                text= text..' '..difficultyName..killed
+    if not Save.hideInstanceBossText then
+        for guid, info in pairs(e.WoWSave) do
+            local text
+            for bossName, tab in pairs(info.Instance.ins) do----ins={[名字]={[难度]=已击杀数}}
+                text= text and text..'\n   '..bossName or '   '..bossName
+                for difficultyName, killed in pairs(tab) do
+                    text= text..' '..difficultyName..killed
+                end
+            end
+            if text then
+                msg=msg and msg..'\n' or ''
+                msg= msg ..e.GetPlayerInfo(nil, guid, true)..(guid==e.Player.guid and e.Icon.star2 or '')
             end
         end
-        if text then
-            msg=msg and msg..'\n' or ''
-            msg= msg ..e.GetPlayerInfo(nil, guid, true)..(guid==e.Player.guid and e.Icon.star2 or '')
-        end
+        msg=msg or '...'
     end
-    panel.instanceBoss.Text:SetText(msg or '..')
+    panel.instanceBoss.Text:SetText(msg or '')
     panel.instanceBoss:SetShown(true)
 end
 
