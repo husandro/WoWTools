@@ -364,7 +364,6 @@ end
 --预创建队伍增强
 --############
 local function set_LFGPlus()--预创建队伍增强
-
     local f=LFGListFrame.SearchPanel.RefreshButton;--界面, 添加, 选项    
     f.ace = CreateFrame("CheckButton", nil, f, "InterfaceOptionsCheckButtonTemplate");--自动进组  选项
     f.ace:SetPoint('RIGHT',f, 'LEFT',-90,0)
@@ -442,7 +441,7 @@ end
 --设置,内容,频道, 邀请,事件
 --#######################
 local function set_Chanell_Event()--设置,内容,频道, 邀请,事件
-    if Save.Channel and UnitIsGroupLeader('player') and Save.ChannelText and not IsInInstance() then
+    if Save.Channel and Save.ChannelText and UnitIsGroupLeader('player') and not IsInInstance() then
         panel:RegisterEvent('CHAT_MSG_SAY')
         panel:RegisterEvent('CHAT_MSG_WHISPER')
         panel:RegisterEvent('CHAT_MSG_YELL')
@@ -714,7 +713,7 @@ local function InitList(self, level, type)
             end
         end
         if all==0 then
-            local info={
+            info={
                 text=NONE,
                 notCheckable=true,
                 isTitle=true,
@@ -888,7 +887,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, ...)
     
     elseif event=='CHAT_MSG_SAY' or event=='CHAT_MSG_YELL' or  event=='CHAT_MSG_WHISPER' then
         local text= arg1 and string.upper(arg1)
-        if text and Save.ChannelText and text:find(Save.ChannelText) then
+        if Save.Channel and text and Save.ChannelText and text:find(Save.ChannelText) then
             local co= GetNumGroupMembers()            
             toRaidOrParty(co)--自动, 转团
             if co<5 or (IsInRaid() and co<40) then

@@ -62,11 +62,11 @@ local function set_Button_Init(self)
         end)
         self:SetScript("OnLeave",function() e.tips:Hide() end)
 
-        self:RegisterEvent('BAG_UPDATE_DELAYED')
+        self:RegisterEvent('BAG_UPDATE')
         self:RegisterEvent('BAG_UPDATE_COOLDOWN')
         if self~=panel then
             self:SetScript("OnEvent", function(self2, event)
-            if event=='BAG_UPDATE_DELAYED' then
+            if event=='BAG_UPDATE' then
                     set_Item_Count(self2)
                 elseif event=='BAG_UPDATE_COOLDOWN' then
                     set_Cooldown(self2)--图标冷却
@@ -360,7 +360,9 @@ local function Init()
         CloseDropDownMenus()
     end)
     panel:SetScript("OnMouseDown", function(self,d)
-        ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+        if d=='RightButton' then
+            ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+        end
     end)
     panel:SetScript("OnMouseUp", function(self, d)
         ResetCursor()
@@ -388,7 +390,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave[addName..'Tools']=Save
         end
 
-    elseif event=='BAG_UPDATE_DELAYED' then
+    elseif event=='BAG_UPDATE' then
         set_Item_Count(self)
 
     elseif event=='BAG_UPDATE_COOLDOWN' then
