@@ -78,7 +78,7 @@ WoWPlus\EncounterJournal.lua
 ##史诗钥石地下城,挑战增强
 WoWPlus\Challenges.lua
 ##距离, 去掉小数点
-##WowPlus\SuperTracked.lua
+WowPlus\SuperTracked.lua
 
 ##自动对话，任务
 GamePlus\Gossip.lua

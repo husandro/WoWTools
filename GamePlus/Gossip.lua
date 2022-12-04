@@ -651,6 +651,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED"  then
         if arg1 == id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
+
+             --添加控制面板        
+            local sel=e.CPanel(addName, not Save.disabled, true)
+            sel:SetScript('OnClick', function()
+                if Save.disabled then
+                    Save.disabled=nil
+                else
+                    Save.disabled=true
+                end
+                print(addName, e.GetEnabeleDisable(not Save.disabled), '|cnRED_FONT_COLOR:'..REQUIRES_RELOAD)
+            end)
+            
             if not Save.disabled then
                 setPoint()--设置位置
                 setTexture()
