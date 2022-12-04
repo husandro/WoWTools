@@ -14,17 +14,13 @@ local Save={
 local panel=e.Cbtn2(nil, e.toolsFrame, true)
 panel.itemID=8529
 
-if not C_Item.IsItemDataCachedByID(8529) then
-    C_Item.RequestLoadItemDataByID(8529)
-end
-
 local function setAura()--光环取消
     for i = 1, 40 do
         local spellID = select(10, UnitBuff('player', i))--, 'CANCELABLE'))
         if not spellID then
             break
         elseif Save.aura[spellID] then
-            CancelUnitBuff("player", i)--, 'CANCELABLE')
+            CancelUnitBuff("player", i)-- 'CANCELABLE')
             print(id, CANCEL, AURAS, GetSpellLink(spellID) or spellID)
             break
         end

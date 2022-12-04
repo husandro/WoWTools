@@ -7,7 +7,6 @@ local Save={
 
 local panel=e.Cbtn2(nil, WoWToolsMountButton, true, nil)
 panel.itemID=5512--治疗石
-if not C_Item.IsItemDataCachedByID(panel.itemID) then C_Item.RequestLoadItemDataByID(panel.itemID) end
 
 local function setPanelPostion()--设置按钮位置
     if Save.point then
@@ -37,7 +36,7 @@ end
 --#########
 local function set_Button_Init(self)
     if self.itemID then
-        if not C_Item.IsItemDataCachedByID(self.itemID) then C_Item.RequestLoadItemDataByID(self.itemID) end
+        e.LoadSpellItemData(self.itemID)--加载法术, 物品数据
 
         panel:SetAttribute("type", "item")
         panel:SetAttribute("item", C_Item.GetItemNameByID(self.itemID))
@@ -91,7 +90,7 @@ local function find_Item_Type(class, subclass)
             if info and info.hyperlink and info.itemID then
                 local classID, subclassID = GetItemInfo(info.hyperlink)
                 if classID==class and subclassID==subclass then
-                    if not C_Item.IsItemDataCachedByID(info.itemID) then C_Item.RequestLoadItemDataByID(info.itemID) end
+                    e.LoadSpellItemData(info.itemID)--加载法术, 物品数据
                     table.insert(tab, info.itemID)
                 end
             end

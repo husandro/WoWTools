@@ -36,9 +36,7 @@ local ModifiedTab={
     ctrl=110560,--要塞炉石
 }
 for _, itemID in pairs(ModifiedTab) do
-    if not C_Item.IsItemDataCachedByID(itemID) then
-        C_Item.RequestLoadItemDataByID(itemID)
-    end
+    e.LoadSpellItemData(itemID)--加载法术, 物品数据
 end
 panel.items={}--存放有效
 
@@ -277,9 +275,7 @@ end
 
 local function Init()
     for itemID, _ in pairs(Save.items) do
-        if not C_Item.IsItemDataCachedByID(itemID) then
-            C_Item.RequestLoadItemDataByID(itemID)
-        end
+        e.LoadSpellItemData(itemID)--加载法术, 物品数据
     end
 
     if e.toolsFrame.size and e.toolsFrame.size~=30 then--设置大小

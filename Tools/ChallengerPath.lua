@@ -43,7 +43,7 @@ local Save={
 
 for _, tab in pairs(Save.list) do
     if IsSpellKnown(tab.spell) then
-        if not C_Spell.IsSpellDataCached(tab.spell) then C_Spell.RequestLoadSpellData(tab.spell) end
+        e.LoadSpellItemData(tab.spell, true)--加载法术, 物品数据
     end
 end
 local function setSpellCooldown(self, spellID)--冷却

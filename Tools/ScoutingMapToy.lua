@@ -32,9 +32,7 @@ local Toy={
 }
 
 for itemID, _ in pairs(Toy) do
-    if not C_Item.IsItemDataCachedByID(itemID) then
-        C_Item.RequestLoadItemDataByID(itemID);
-    end
+    e.LoadSpellItemData(itemID)--加载法术, 物品数据
 end
 
 local function Get_Use_Toy()

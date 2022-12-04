@@ -46,9 +46,9 @@ end
 local find2
 for _, tab in pairs(Tab) do
     if IsSpellKnown(tab.spell) then
-        if not C_Spell.IsSpellDataCached(tab.spell) then C_Spell.RequestLoadSpellData(tab.spell) end
+        e.LoadSpellItemData(tab.spell, true)--加载法术, 物品数据
         if tab.spell2 and IsSpellKnown(tab.spell2) then
-            if not C_Spell.IsSpellDataCached(tab.spell2) then C_Spell.RequestLoadSpellData(tab.spell2) end
+            e.LoadSpellItemData(tab.spell2, true)--加载法术, 物品数据
         end
         find2=true
     end

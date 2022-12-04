@@ -36,9 +36,7 @@ local ModifiedTab={
     ctrl=109183,--[世界缩小器]
 }
 for _, itemID in pairs(ModifiedTab) do
-    if not C_Item.IsItemDataCachedByID(itemID) then
-        C_Item.RequestLoadItemDataByID(itemID)
-    end
+    e.LoadSpellItemData(itemID)--加载法术, 物品数据
 end
 
 --#########
@@ -60,9 +58,7 @@ end
 local function getToy()--生成, 有效表格
     panel.items={}
     for itemID ,_ in pairs(Save.items) do
-        if not C_Item.IsItemDataCachedByID(itemID) then
-            C_Item.RequestLoadItemDataByID(itemID)
-        end
+        e.LoadSpellItemData(itemID)--加载法术, 物品数据
         if PlayerHasToy(itemID) then
             table.insert(panel.items, itemID)
         end
@@ -121,6 +117,9 @@ local function setToyBox_ShowToyDropdown(itemID, anchorTo, offsetX, offsetY)
     local info={
             text='|T133567:0|t'..addName,
             checked=Save.items[itemID],
+            tooltipOnButton=true,
+            tooltipTitle=addName,
+            tooltipText=id,
             func=function()
                 if Save.items[itemID] then
                     Save.items[itemID]=nil
@@ -131,9 +130,6 @@ local function setToyBox_ShowToyDropdown(itemID, anchorTo, offsetX, offsetY)
                 setAtt()--设置属性
                 ToySpellButton_UpdateButton(anchorTo)
             end,
-            tooltipOnButton=true,
-            tooltipTitle=addName,
-            tooltipText=id,
         }
     UIDropDownMenu_AddButton(info, 1)
 end

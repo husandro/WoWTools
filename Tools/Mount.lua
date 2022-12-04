@@ -238,6 +238,8 @@ local function setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
             if name and icon then
                 panel:SetAttribute(type.."-spell1", name)
                 panel.textureModifier[type]=icon
+                panel.typeSpell=true--提示用
+                panel.typeID=panel[type][1]
             end
         end
     end
@@ -311,13 +313,20 @@ local function setClickAtt(entreCombat)--设置 Click属性
         if name and icon then
             panel:SetAttribute("type1", "spell")
             panel:SetAttribute("spell1", name)
+            panel.typeSpell=true--提示用
+            panel.typeID=spellID
         end
     elseif panel.itemID then
         panel:SetAttribute("type1", "item")
         panel:SetAttribute("item1", C_Item.GetItemNameByID(panel.itemID)  or panel.itemID)
+        panel.typeID=panel[type][1]
+        panel.typeSpell=nil--提示用
+        panel.typeID=spellID
     else
         panel:SetAttribute("item1", nil)
         panel:SetAttribute("spell1", nil)
+        panel.typeSpell=nil--提示用
+        panel.typeID=nil
     end
     panel.spellAtt=spellID
     panel.iconAtt=icon
@@ -670,12 +679,12 @@ local function InitMenu(self, level, menuList)--主菜单
         elseif menuList==ITEMS or menuList==SPELLS then
             for ID, _ in pairs(Save.Mounts[menuList]) do
                 if menuList==ITEMS then--物品, 二级菜单
-                    if not C_Item.IsItemDataCachedByID(ID) then C_Item.RequestLoadItemDataByID(ID) end
+                    e.LoadSpellItemData(ID)--加载法术, 物品数据
                     local name = C_Item.GetItemNameByID(ID)
                     name=name or ('itemID: '..ID)
                     local icon= C_Item.GetItemIconByID(ID)
                     local num=GetItemCount(ID , nil, true, true)
-                    num = num>0 and ' |cnGREEN_FONT_COLOR:x'..num..'|r' or ' x'..num
+                    local numText = num>0 and ' |cnGREEN_FONT_COLOR:x'..num..'|r' or ' x'..num
                     local hex
                     local itemQuality= select(3, GetItemInfo(ID))
                     if itemQuality then
@@ -683,10 +692,10 @@ local function InitMenu(self, level, menuList)--主菜单
                         hex= hex and '|c'..hex
                     end
                     info={
-                        text= name..num,
+                        text= name..numText,
                         notCheckable=true,
                         func=function()
-                            local text= (icon and '|T'..icon..':0|t' or '').. name.. num
+                            local text= (icon and '|T'..icon..':0|t' or '').. name.. numText
                             text= hex and hex..text..'|r' or text
                             local exits=Save.Mounts[ITEMS][ID] and ERR_ZONE_EXPLORED:format(PROFESSIONS_CURRENT_LISTINGS) or NEW
                             StaticPopup_Show(id..addName..'ITEMS',text,exits , {itemID=ID})
@@ -696,7 +705,7 @@ local function InitMenu(self, level, menuList)--主菜单
                     }
 
                 else--法术, 二级菜单
-                    if not C_Spell.IsSpellDataCached(ID) then C_Spell.RequestLoadSpellData(ID) end
+                    e.LoadSpellItemData(ID, true)--加载法术, 物品数据
                     local name, _, icon = GetSpellInfo(ID)
                     name=name or ('spellID: '..ID)
                     local known= IsSpellKnown(ID)
@@ -935,14 +944,12 @@ end
 --初始化
 --######
 local function Init()
-    for type, spellID in pairs(Save.spell) do
-        if type==ITEMS then
-            if not C_Item.IsItemDataCachedByID(spellID) then
-                C_Item.RequestLoadItemDataByID(spellID)
-            end
-        else
-            if not C_Spell.IsSpellDataCached(spellID) then
-                C_Spell.RequestLoadSpellData(spellID)
+    for type, tab in pairs(Save.Mounts) do
+        for ID, _ in pairs(tab) do
+            if type==ITEMS then
+                e.LoadSpellItemData(ID)--加载法术, 物品数据
+            else
+                e.LoadSpellItemData(ID, true)--加载法术, 物品数据
             end
         end
     end
@@ -969,9 +976,7 @@ local function Init()
     panel:SetClampedToScreen(true)
 
     panel:SetScript("OnDragStart", function(self,d )
---        if IsAltKeyDown() and d=='RightButton' then
-            self:StartMoving()
-  --      end
+        self:StartMoving()
     end)
     panel:SetScript("OnDragStop", function(self)
         ResetCursor()
@@ -997,10 +1002,10 @@ local function Init()
 
         elseif d=='RightButton' and IsAltKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
+
         elseif d=='RightButton' and not IsModifierKeyDown() then
-           -- if not Save.showMenuOnEnter then--即时显示菜单
-                ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
-            --(level, value, dropDownFrame, anchorName, xOffset, yOffset, menuList, button, autoHideDelay)
+           ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+
         elseif d=='LeftButton' then
             if IsMounted() then
                 C_MountJournal.Dismiss()
@@ -1039,6 +1044,18 @@ local function Init()
     panel:SetScript('OnEnter', function(self)
         if not UnitAffectingCombat('player') then
             e.toolsFrame:SetShown(true)--设置, TOOLS 框架, 显示
+        end
+        if self.typeID then
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            if self.typeSpell then
+                e.tips:SetSpellByID(self.typeID)
+            else
+                e.tips:SetItemByID(self.typeID)
+            end
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+            e.tips:Show()
         end
     end)
     panel:SetScript("OnLeave",function(self)

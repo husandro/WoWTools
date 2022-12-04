@@ -6,20 +6,30 @@ local ActionButtonUseKeyDown=C_CVar.GetCVarBool("ActionButtonUseKeyDown")
 e.LeftButtonDown = ActionButtonUseKeyDown and 'LeftButtonDown' or 'LeftButtonUp'
 e.RightButtonDown= ActionButtonUseKeyDown and 'RightButtonDown' or 'RightButtonUp'
 
+e.LoadSpellItemData= function(ID, spell)--加载法术, 物品数据
+    if spell then
+        if not C_Spell.IsSpellDataCached(ID) then C_Spell.RequestLoadSpellData(ID) end
+    else
+        if not C_Item.IsItemDataCachedByID(ID) then C_Item.RequestLoadItemDataByID(ID) end
+    end
+end
+
 local itemLoadTab={--加载法术,或物品数据
-        134020,
+        134020,--玩具,大厨的帽子
         6948,--炉石
         140192,--达拉然炉石
         110560,--要塞炉石
+        5512,--治疗石
+        8529,--诺格弗格药剂
     }
 local spellLoadTab={
         818,--火
     }
 for _, itemID in pairs(itemLoadTab) do
-    if not C_Item.IsItemDataCachedByID(itemID) then C_Item.RequestLoadItemDataByID(itemID) end
+    e.LoadSpellItemData(itemID)--加载法术, 物品数据
 end
 for _, spellID in pairs(spellLoadTab) do
-    if not C_Spell.IsSpellDataCached(spellID) then C_Spell.RequestLoadSpellData(spellID) end
+    e.LoadSpellItemData(spellID, true)
 end
 
 e.itemPetID={--宠物对换, wow9.0
@@ -331,9 +341,7 @@ e.GetDifficultyColor = function(string, difficultyID)--DifficultyUtil.lua
 end
 
 e.Cstr=function(self, size, fontType, ChangeFont, color, layer, justifyH)
-    if not self then
-        print('a')
-    end
+    self= self or UIParent
     local b=ChangeFont or self:CreateFontString(nil, (layer or 'OVERLAY'))
     if fontType then
         if size then

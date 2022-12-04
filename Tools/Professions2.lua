@@ -2,13 +2,6 @@ local id, e = ...
 local addName= PROFESSIONS_TRACKER_HEADER_PROFESSION
 local panel=CreateFrame("Frame")
 
-if not C_Item.IsItemDataCachedByID(134020) then
-    C_Item.RequestLoadItemDataByID(134020)
-end
-if not C_Spell.IsSpellDataCached(818) then
-    C_Spell.RequestLoadSpellData(818)
-end
-
 --####
 --初始
 --####
@@ -17,14 +10,28 @@ local function Init()
     local tab={GetProfessions()}--local prof1, prof2, archaeology, fishing, cooking = GetProfessions()
     for index, type in pairs(tab) do
         if type and index~=4 and index~=3 then
-            local name, icon = GetProfessionInfo(type)
+            --local name, icon = GetProfessionInfo(type)
+            local name, icon, skillLevel, maxSkillLevel, numAbilities, spelloffset, skillLine, skillModifier, specializationIndex, specializationOffset = GetProfessionInfo(type)
+
             if not panel.buttons[index] then
                 panel.buttons[index]=e.Cbtn2(nil, e.toolsFrame)
                 e.ToolsSetButtonPoint(panel.buttons[index])--设置位置
                 panel.buttons[index]:SetAttribute("type1", "spell")
                 panel.buttons[index].texture:SetShown(true)
                 e.toolsFrame.last=panel.buttons[index]
+
+                panel.buttons[index]:SetScript('OnEnter', function(self)
+                    if self.spellID then
+                        e.tips:SetOwner(self, "ANCHOR_LEFT")
+                        e.tips:ClearLines()
+                        e.tips:SetSpellByID(self.spellID)
+                        e.tips:Show()
+                    end
+                end)
+                panel.buttons[index]:SetScript('OnLeave', function() e.tips:Hide() end)
             end
+            panel.buttons[index].spellID = select(7, GetSpellInfo(spelloffset+1, 'spell'))
+
             if index==5 then--烹饪用火
                 local name2=GetSpellInfo(818)
                 if name2 then
@@ -53,7 +60,9 @@ local function Init()
             end
             panel.buttons[index]:SetAttribute("spell", name)
             panel.buttons[index].texture:SetTexture(icon)
+
         end
+
         if panel.buttons[index] then
             panel.buttons[index]:SetShown(type)
         end

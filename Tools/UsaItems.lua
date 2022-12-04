@@ -60,7 +60,7 @@ local function getFind(ID, spell)
             return true
         end
     else
-        if GetItemCount(ID)>0 or (PlayerHasToy(ID) and C_ToyBox.IsToyUsable(ID)) then          
+        if GetItemCount(ID)>0 or (PlayerHasToy(ID) and C_ToyBox.IsToyUsable(ID)) then
             return true
         end
     end
@@ -487,6 +487,9 @@ local function setToyBox_ShowToyDropdown(itemID, anchorTo, offsetX, offsetY)
     local info={
             text='|A:'..e.Icon.icon..':0:0|a'..addName,
             checked=find and true or nil,
+            tooltipOnButton=true,
+            tooltipTitle=addName,
+            tooltipText=id..'\n\n|cnRED_FONT_COLOR:'..REQUIRES_RELOAD..'|r',
             func=function()
                 if find then
                     table.remove(Save.item, find)
@@ -497,9 +500,6 @@ local function setToyBox_ShowToyDropdown(itemID, anchorTo, offsetX, offsetY)
                 print(id, addName, find and '|cnRED_FONT_COLOR:'..REMOVE..'|r' or '|cnGREEN_FONT_COLOR:'..ADD..'|r', name, 	REQUIRES_RELOAD)
                 ToySpellButton_UpdateButton(anchorTo)
             end,
-            tooltipOnButton=true,
-            tooltipTitle=addName,
-            tooltipText=id,
         }
     UIDropDownMenu_AddButton(info, 1)
 
@@ -539,13 +539,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if not e.toolsFrame.disabled then
 
             for _, ID in pairs(Save.item) do
-                if not C_Item.IsItemDataCachedByID(ID) then C_Item.RequestLoadItemDataByID(ID) end
+                e.LoadSpellItemData(ID)--加载法术, 物品数据
             end
             for _, ID in pairs(Save.spell) do
-                if not C_Spell.IsSpellDataCached(ID) then C_Spell.RequestLoadSpellData(ID) end
+                e.LoadSpellItemData(ID, true)--加载法术, 物品数据
             end
             for _, ID in pairs(Save.equip) do
-                if not C_Item.IsItemDataCachedByID(ID) then C_Item.RequestLoadItemDataByID(ID) end
+                e.LoadSpellItemData(ID)--加载法术, 物品数据
             end
 
             C_Timer.After(1.6, function()

@@ -12,9 +12,7 @@ local function setMountJournal_UpdateMountDisplay()
     end
 end
 
-local function setMenuMontJournal(self, level)
-    print(self.spellID,'a')
-end
+
 --###########
 --加载保存数据
 --###########
