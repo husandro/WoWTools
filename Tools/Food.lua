@@ -148,11 +148,7 @@ local function InitMenu(self, level, type)--主菜单
             notCheckable= true,
         }
         UIDropDownMenu_AddButton(info, level)
-        info= {
-            text= e.Icon.right..NPE_MOVE,
-            isTitle= ture,
-            notCheckable= true,
-        }   info={
+        info={
             text=RESET_POSITION,--还原位置
             notCheckable=true,
             colorCode= not Save.Point and'|cff606060',
