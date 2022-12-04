@@ -8,7 +8,7 @@ World of Warcraft 正式服 自己专用 插件
 
 功能包含四大模块
 
-*WoWPlus: 系统增强
+*WoWPlus: 系统功能增强
 
 *GamePlus: 常用功能
 
