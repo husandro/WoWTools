@@ -195,7 +195,6 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddButton(info, level)
 
         UIDropDownMenu_AddSeparator(level)
-
         local find={}
         for _, tab in pairs(itemClass) do
             if not find[tab.clasType] then
