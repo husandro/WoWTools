@@ -4,9 +4,11 @@ https://www.curseforge.com/wow/addons/wowtools
 https://addons.wago.io/addons/wowtools
 
 # WoWTools
-World of Warcraft 正式服 自己专用 插件
+World of Warcraft 正式服 插件
 
-功能包含四大模块
+<自己专用>
+
+# 功能包含四大模块
 
 *WoWPlus: 系统功能增强
 
@@ -16,7 +18,7 @@ World of Warcraft 正式服 自己专用 插件
 
 *ChatButton: 聊天按钮和常用功能
 
-*语言跟随游戏语言
+语言跟随游戏语言
 
 # bbs
 https://bbs.nga.cn/read.php?tid=34084034
