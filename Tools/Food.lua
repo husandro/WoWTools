@@ -1,7 +1,7 @@
 local id, e = ...
 local addName= POWER_TYPE_FOOD
 local Save={
-    items={},
+    type={},
     noUseItems={}
 }
 
@@ -108,21 +108,33 @@ local function create_Button(self)
 end
 
 local itemClass={
-    Potion={0,1}
+    {clasType=Consumable, type=Generic, class=0, subClass=0},
+    {clasType=Consumable, type=Potion, class=0, subClass=1},
+    {clasType=Consumable, type=Elixir, class=0, subClass=2},
+    {clasType=Consumable, type=Scroll, class=0, subClass=3},
+    {clasType=Consumable, type=Fooddrink, class=0, subClass=4},
+    {clasType=Consumable, type=Itemenhancement, class=0, subClass=5},
+    {clasType=Consumable, type=Bandage, class=0, subClass=6},
+    {clasType=Consumable, type=Other, class=0, subClass=7},
 }
+
 local Button={}
 local function set_Item_Button()
     local index=1
-    for type, tab in pairst(itemClass) do
-        local itemIDs=find_Item_Type(tab[1], tab[2])
-        for _, itemID in pairs(itemIDs) do
-            local button= Button[index]
-            button= button or create_Button(Button[index-1])
-            button.itemID= itemID
-            Button[index]=button
-            set_Button_Init(button)
-            button:SetShown(true)
-            index= index +1
+    for _, tab in pairst(itemClass) do
+        if Save.type[tab.type] then
+            local itemIDs=find_Item_Type(tab.class, tasb.subclass)
+            for _, itemID in pairs(itemIDs) do
+                if not Save.noUseItems[itemID] then
+                    local button= Button[index]
+                    button= button or create_Button(Button[index-1])
+                    button.itemID= itemID
+                    Button[index]=button
+                    set_Button_Init(button)
+                    button:SetShown(true)
+                    index= index +1
+                end
+            end
         end
     end
 
@@ -139,15 +151,66 @@ end
 --#####
 local function InitMenu(self, level, type)--主菜单
     local info
+    local bat= UnitAffectingCombat('player')
     if type then
+        for _, tab in pairs(itemClass) do
+            if tab.clasType==type then
+                info={
+                    text=tab.type,
+                    checked= Save.type[tab.type],
+                    disable= bat,
+                    func=function()
+                        Save.type[tab.type]= not Save.type[tab.type] and ture or nil
+                        set_Item_Button()
+                    end
+                }
+                UIDropDownMenu_AddButton(info, level)
+                find[tab.clasType]=true
+            end
+        end
     else
+        info={
+            text='',
+            notCheckable=true,
+            func= function()
+     
+            end
+        }
+        UIDropDownMenu_AddButton(info, level)
+
         UIDropDownMenu_AddSeparator(level)
+
+        local find={}
+        for _, tab in pairs(itemClass) do
+            if not find[tab.clasType] then
+                info={
+                    text=tab.clasType,
+                    notCheckable=true,
+                    menuList=tab.clasType,
+                    hasArrow=ture,
+                }
+                UIDropDownMenu_AddButton(info, level)
+                find[tab.clasType]=true
+            end
+        end
+
+        UIDropDownMenu_AddSeparator(level)
+        info= {
+            text= AUTO_JOIN:gsub(JOIN, ENABLE),
+            checked=Save.autoEnable,
+            func= function()
+                Save.autoEnable= not Save.autoEnable and true or nil
+            end
+        }
+        UIDropDownMenu_AddButton(info, level)
+
         info= {
             text= e.Icon.right..NPE_MOVE,
             isTitle= ture,
             notCheckable= true,
         }
         UIDropDownMenu_AddButton(info, level)
+
         info={
             text=RESET_POSITION,--还原位置
             notCheckable=true,
@@ -173,7 +236,7 @@ local function Init()
     
     set_Button_Init(panel)--提示, 事件
     
-    if Save.autoAdd then
+    if Save.autoEnable then
         set_Item_Button()
     end
 
