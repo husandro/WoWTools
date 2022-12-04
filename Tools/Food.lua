@@ -1,9 +1,11 @@
 local id, e = ...
 local addName= POWER_TYPE_FOOD
-local Save={items={}}
+local Save={
+    items={},
+    noUseItems={}
+}
 
 local panel=e.Cbtn2(nil, WoWToolsMountButton, true, nil)
-panel:SetAttribute("type", "item")
 panel.itemID=5512--治疗石
 if not C_Item.IsItemDataCachedByID(panel.itemID) then C_Item.RequestLoadItemDataByID(panel.itemID) end
 
@@ -26,13 +28,21 @@ end
 --提示, 事件
 --#########
 local function set_Button_Init(self)
+    if not C_Item.IsItemDataCachedByID(self.itemID) then C_Item.RequestLoadItemDataByID(self.itemID) end
+
+    panel:SetAttribute("type", "item")
+    panel:SetAttribute("item", C_Item.GetItemNameByID(self.itemID))
+    panel.texture:SetTexture(C_Item.GetItemIconByID(self.itemID))
+
     self:SetScript("OnEnter",function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:SetItemByID(self2.itemID)
+        e.tips:AddLine(' ')
         if self==panel then
-            e.tips:AddLine(' ')
             e.tips:AddDoubleLine(MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+        else
+            e.tips:AddDoubleLine(DISABLE, 'Shift+'..e.Icon.right)
         end
         e.tips:Show()
     end)
@@ -42,17 +52,44 @@ local function set_Button_Init(self)
     self:RegisterEvent('BAG_UPDATE_DELAYED')
     self:RegisterEvent('BAG_UPDATE_COOLDOWN')
     if self~=panel then
-        panel:SetScript("OnEvent", function(self2, event)
+        self:SetScript("OnEvent", function(self2, event)
            if event=='BAG_UPDATE_DELAYED' then
                 set_Item_Count(self2)
             elseif event=='BAG_UPDATE_COOLDOWN' then
                 set_Cooldown(self2)--图标冷却
             end
         end)
+        self:SetScript('OnMouseDown',function(self2, d)
+            if d=='RightButton' and IsShiftKeyDown() then
+                Save.noUseItems[self2.itemID]=true
+                print(id, addName, DISABLE, ITEMS, REQUIRES_RELOAD)
+            end
+        end)
     end
 
     set_Item_Count(self2)
     set_Cooldown(self)--图标冷却
+end
+
+local function find_Item_Type(class, subclass)
+    local tab={}
+    for bag=0, NUM_BAG_SLOTS do
+        for slot=1, C_Container.GetContainerNumSlots(bag) do
+            local info = C_Container.GetContainerItemInfo(bag, slot)
+            if info and info.hyperlink and info.itemID then
+                local classID, subclassID = GetItemInfo(info.hyperlink)
+                if classID==class and subclassID==subclass then
+                    if not C_Item.IsItemDataCachedByID(info.itemID) then C_Item.RequestLoadItemDataByID(info.itemID) end
+                    table.insert(tab, info.itemID)
+                end
+            end
+        end
+    end
+    return tab
+end
+local Button={}
+local function set_Item_Button()
+    local tab=find_Item_Type()
 end
 
 --#####
@@ -73,9 +110,12 @@ local function Init()
     end
     local size=e.toolsFrame.size or 30
     panel:SetSize(size,size)
-    panel:SetAttribute("item", C_Item.GetItemNameByID(panel.itemID))
+    
     set_Button_Init(panel)--提示, 事件
     
+    if Save.autoAdd then
+        set_Item_Button()
+    end
 
     panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
