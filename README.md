@@ -10,7 +10,7 @@ World of Warcraft 正式服 自己专用 插件
 
 *WoWPlus: 系统增强
 
-*GamePlus: 增加常用功能
+*GamePlus: 常用功能
 
 *Tools: 工具合集
 
