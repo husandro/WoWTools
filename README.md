@@ -18,7 +18,7 @@ World of Warcraft 正式服 插件
 
 *ChatButton: 聊天按钮和常用功能
 
-语言跟随游戏语言
+# 语言跟随游戏语言
 
 # bbs
 https://bbs.nga.cn/read.php?tid=34084034
