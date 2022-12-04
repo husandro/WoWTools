@@ -9,6 +9,14 @@ local panel=e.Cbtn2(nil, WoWToolsMountButton, true, nil)
 panel.itemID=5512--治疗石
 if not C_Item.IsItemDataCachedByID(panel.itemID) then C_Item.RequestLoadItemDataByID(panel.itemID) end
 
+local function setPanelPostion()--设置按钮位置
+    if Save.point then
+        panel:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
+    else
+        panel:SetPoint('RIGHT', WoWToolsOpenItemsButton, 'LEFT')
+    end
+end
+
 --#######
 --图标冷却
 --#######
@@ -130,18 +138,40 @@ end
 --主菜单
 --#####
 local function InitMenu(self, level, type)--主菜单
-
+    local info
+    if type then
+    else
+        UIDropDownMenu_AddSeparator(level)
+        info= {
+            text= e.Icon.right..NPE_MOVE,
+            isTitle= ture,
+            notCheckable= true,
+        }
+        UIDropDownMenu_AddButton(info, level)
+        info= {
+            text= e.Icon.right..NPE_MOVE,
+            isTitle= ture,
+            notCheckable= true,
+        }   info={
+            text=RESET_POSITION,--还原位置
+            notCheckable=true,
+            colorCode= not Save.Point and'|cff606060',
+            func=function()
+                Save.point=nil
+                panel:ClearAllPoints()
+                setPanelPostion()--设置按钮位置
+            end,
+        }
+        UIDropDownMenu_AddButton(info, level)
+    end
 end
 
 --####
 --初始
 --####
 local function Init()
-    if Save.point then
-        panel:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
-    else
-        panel:SetPoint('RIGHT', WoWToolsOpenItemsButton, 'LEFT')
-    end
+  
+    setPanelPostion()--设置按钮位置
     local size=e.toolsFrame.size or 30
     panel:SetSize(size,size)
     
