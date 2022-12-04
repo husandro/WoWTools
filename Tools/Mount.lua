@@ -655,6 +655,8 @@ local function InitMenu(self, level, menuList)--主菜单
             UIDropDownMenu_AddSeparator(level)
             info={
                 text=RESET_POSITION,--还原位置
+                disabled=UnitAffectingCombat('player'),
+                colorCode=not Save.Point and '|cff606060',
                 func=function()
                     Save.Point=nil
                     setPanelPostion()--设置按钮位置
@@ -664,9 +666,6 @@ local function InitMenu(self, level, menuList)--主菜单
                 tooltipTitle=e.Icon.right..NPE_MOVE,
                 notCheckable=true,
             }
-            if not Save.Point then
-                info.colorCode='|cff606060'
-            end
             UIDropDownMenu_AddButton(info, level)
 
             info={

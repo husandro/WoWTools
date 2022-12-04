@@ -190,7 +190,7 @@ local function InitMenu(self, level, type)--主菜单
             info={
                 text= itemLink or ('itemID '..itemID),
                 notCheckable=true,
-                disable= bat,
+                disabled= bat,
                 icon=itemTexture,
                 tooltipOnButton=true,
                 tooltipTitle=e.Icon.left..REMOVE,
@@ -206,7 +206,7 @@ local function InitMenu(self, level, type)--主菜单
         info={--清除全部
             text=CLEAR_ALL,
             notCheckable=true,
-            disable=bat,
+            disabled=bat,
             func= function()
                 Save.noUseItems={}
                 set_Item_Button()
@@ -231,6 +231,7 @@ local function InitMenu(self, level, type)--主菜单
             text=RESET_POSITION,--还原位置
             notCheckable=true,
             colorCode= not Save.point and'|cff606060',
+            disabled=bat,
             func=function()
                 Save.point=nil
                 panel:ClearAllPoints()
@@ -245,7 +246,7 @@ local function InitMenu(self, level, type)--主菜单
                 info={
                     text=tab.subclassName,
                     checked= Save.itemClass[tab.className..tab.subclassName],
-                    disable= bat,
+                    disabled= bat,
                     tooltipOnButton=true,
                     tooltipTitle= tab.className.. ' classID |cnGREEN_FONT_COLOR:'..tab.classID..'|r',
                     tooltipText= tab.subclassName..' subClassID |cnGREEN_FONT_COLOR:'..tab.subClassID..'|r',
@@ -262,7 +263,7 @@ local function InitMenu(self, level, type)--主菜单
             text=WHO,
             colorCode='|cff00ff00',
             notCheckable=true,
-            disable=bat,
+            disabled=bat,
             func= function()
                 set_Item_Button()
             end
@@ -288,7 +289,7 @@ local function InitMenu(self, level, type)--主菜单
             text=e.Icon.up2..CALENDAR_EVENT_REMOVED_MAIL_SUBJECT:format(ALL),
             colorCode= '|cffff0000',
             notCheckable=true,
-            disable=bat,
+            disabled=bat,
             func= function()
                 Save.itemClass={}
                 set_Item_Button()
@@ -307,8 +308,6 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddButton(info, level)
 
         UIDropDownMenu_AddSeparator(level)
-        
-
         info= {
             text= e.Icon.right..NPE_MOVE,
             isTitle= true,
@@ -323,8 +322,6 @@ local function InitMenu(self, level, type)--主菜单
             menuList='SETTINGS'
         }
         UIDropDownMenu_AddButton(info, level)
-
-       
     end
 end
 
