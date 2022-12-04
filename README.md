@@ -9,8 +9,11 @@ World of Warcraft 正式服 自己专用 插件
 功能包含几大模块
 
 *WoWPlus: 系统增强
+
 *GamePlus: 增加常用功能
+
 *Tools: 工具集
+
 *ChatBotton: 聊天按钮和常用功能
 
 *语言跟随游戏语言
