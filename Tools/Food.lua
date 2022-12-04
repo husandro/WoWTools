@@ -28,47 +28,51 @@ end
 --提示, 事件
 --#########
 local function set_Button_Init(self)
-    if not C_Item.IsItemDataCachedByID(self.itemID) then C_Item.RequestLoadItemDataByID(self.itemID) end
+    if self.itemID then
+        if not C_Item.IsItemDataCachedByID(self.itemID) then C_Item.RequestLoadItemDataByID(self.itemID) end
 
-    panel:SetAttribute("type", "item")
-    panel:SetAttribute("item", C_Item.GetItemNameByID(self.itemID))
-    panel.texture:SetTexture(C_Item.GetItemIconByID(self.itemID))
+        panel:SetAttribute("type", "item")
+        panel:SetAttribute("item", C_Item.GetItemNameByID(self.itemID))
+        panel.texture:SetTexture(C_Item.GetItemIconByID(self.itemID))
 
-    self:SetScript("OnEnter",function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:SetItemByID(self2.itemID)
-        e.tips:AddLine(' ')
-        if self==panel then
-            e.tips:AddDoubleLine(MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
-        else
-            e.tips:AddDoubleLine(DISABLE, 'Shift+'..e.Icon.right)
+        self:SetScript("OnEnter",function(self2)
+            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:SetItemByID(self2.itemID)
+            e.tips:AddLine(' ')
+            if self==panel then
+                e.tips:AddDoubleLine(MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+            else
+                e.tips:AddDoubleLine(DISABLE, 'Shift+'..e.Icon.right)
+            end
+            e.tips:Show()
+        end)
+        self:SetScript("OnLeave",function() e.tips:Hide() end)
+
+        self.count= self.count or e.Cstr(self,nil, nil,nil, true)
+        self:RegisterEvent('BAG_UPDATE_DELAYED')
+        self:RegisterEvent('BAG_UPDATE_COOLDOWN')
+        if self~=panel then
+            self:SetScript("OnEvent", function(self2, event)
+            if event=='BAG_UPDATE_DELAYED' then
+                    set_Item_Count(self2)
+                elseif event=='BAG_UPDATE_COOLDOWN' then
+                    set_Cooldown(self2)--图标冷却
+                end
+            end)
+            self:SetScript('OnMouseDown',function(self2, d)
+                if d=='RightButton' and IsShiftKeyDown() then
+                    Save.noUseItems[self2.itemID]=true
+                    print(id, addName, DISABLE, ITEMS, REQUIRES_RELOAD)
+                end
+            end)
         end
-        e.tips:Show()
-    end)
-    self:SetScript("OnLeave",function() e.tips:Hide() end)
 
-    self.count= e.Cstr(self,nil, nil,nil, true)
-    self:RegisterEvent('BAG_UPDATE_DELAYED')
-    self:RegisterEvent('BAG_UPDATE_COOLDOWN')
-    if self~=panel then
-        self:SetScript("OnEvent", function(self2, event)
-           if event=='BAG_UPDATE_DELAYED' then
-                set_Item_Count(self2)
-            elseif event=='BAG_UPDATE_COOLDOWN' then
-                set_Cooldown(self2)--图标冷却
-            end
-        end)
-        self:SetScript('OnMouseDown',function(self2, d)
-            if d=='RightButton' and IsShiftKeyDown() then
-                Save.noUseItems[self2.itemID]=true
-                print(id, addName, DISABLE, ITEMS, REQUIRES_RELOAD)
-            end
-        end)
+        set_Item_Count(self2)
+        set_Cooldown(self)--图标冷却
+    else
+        self:UnregisterAllEvents()
     end
-
-    set_Item_Count(self2)
-    set_Cooldown(self)--图标冷却
 end
 
 local function find_Item_Type(class, subclass)
@@ -87,9 +91,39 @@ local function find_Item_Type(class, subclass)
     end
     return tab
 end
+
+local function create_Button(self)
+    self= self or panel
+    local button= e.Cbtn2(nil, self, true, nil)
+    button:SetPoint('RIGHT', self, 'LEFT')
+    return button
+end
+
+local itemClass={
+    Potion={0,1}
+}
 local Button={}
 local function set_Item_Button()
-    local tab=find_Item_Type()
+    local index=1
+    for type, tab in pairst(itemClass) do
+        local itemIDs=find_Item_Type(tab[1], tab[2])
+        for _, itemID in pairs(itemIDs) do
+            local button= Button[index]
+            button= button or create_Button(Button[index-1])
+            button.itemID= itemID
+            Button[index]=button
+            set_Button_Init(button)
+            button:SetShown(true)
+            index= index +1
+        end
+    end
+
+    for i= index , #Button do
+        local button= Button[i]
+        button.itemID=nil
+        set_Button_Init(button)
+        button:SetShown(false)
+    end
 end
 
 --#####
