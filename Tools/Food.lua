@@ -71,7 +71,7 @@ local function set_Button_Init(self)
             self:SetScript('OnMouseDown',function(self2, d)
                 if d=='RightButton' and IsShiftKeyDown() then
                     Save.noUseItems[self2.itemID]=true
-                    print(id, addName, DISABLE, ITEMS, REQUIRES_RELOAD)
+                    print(id, addName, DISABLE, ITEMS, self2.itemID, REQUIRES_RELOAD)
                 end
             end)
         end
@@ -152,7 +152,23 @@ end
 local function InitMenu(self, level, type)--主菜单
     local info
     local bat= UnitAffectingCombat('player')
-    if type then
+
+    if type=='DISABLE' then
+        for itemID, _ in pairs(Save.noUseItems) do
+            info={
+                text= C_Item.GetItemNameByID(itemID) or ('itemID '..itemID),
+                notCheckable=true,
+                disable= bat,
+                func=function()
+                    Save.noUseItems[itemID]=nil
+                    set_Item_Button()
+                end
+            }
+            UIDropDownMenu_AddButton(info, level)
+            find[tab.clasType]=true
+        end
+
+    elseif type then
         for _, tab in pairs(itemClass) do
             if tab.clasType==type then
                 info={
@@ -170,10 +186,10 @@ local function InitMenu(self, level, type)--主菜单
         end
     else
         info={
-            text='',
+            text='CHECK',
             notCheckable=true,
             func= function()
-     
+                set_Item_Button()
             end
         }
         UIDropDownMenu_AddButton(info, level)
@@ -193,6 +209,14 @@ local function InitMenu(self, level, type)--主菜单
                 find[tab.clasType]=true
             end
         end
+
+        info= {
+            text=DISABLE,
+            notCheckable=true,
+            menuList='DISABLE',
+            hasArrow=true,
+        }
+        UIDropDownMenu_AddButton(info, level)
 
         UIDropDownMenu_AddSeparator(level)
         info= {
