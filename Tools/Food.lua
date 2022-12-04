@@ -1,8 +1,9 @@
 local id, e = ...
 local addName= POWER_TYPE_FOOD
 local Save={
-    itemClass={},
-    noUseItems={}
+    itemClass={},--物品类型
+    noUseItems={},--禁用物品
+    autoEnable=true,--启动,查询
 }
 
 local panel=e.Cbtn2(nil, WoWToolsMountButton, true, nil)
