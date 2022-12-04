@@ -4,6 +4,8 @@ if classId~=8 or not englishFaction or englishFaction=='Neutral' then--不是法
     return
 end
 
+local id, e= ...
+
 local Tab
 if englishFaction=='Horde' then--部落
     Tab={
@@ -20,6 +22,7 @@ if englishFaction=='Horde' then--部落
         {spell=224869, spell2=224871,},--传送门：达拉然-破碎群岛
         {spell=281404, spell2=281402,},--传送门：达萨罗
         {spell=344587, spell2=344597,},--传送门：奥利波斯
+        {spell=395277, spell2=395289, luce=true},--传送门-瓦德拉肯
         {spell=120145,},--远古传送：达拉然
         {spell=193759,},--传送：守护者圣殿
     }
@@ -38,6 +41,7 @@ else
         {spell=224869, spell2=224871,},--传送门：达拉然-破碎群岛
         {spell=281403, spell2=281400,},--传送门：伯拉勒斯
         {spell=344587, spell2=344597,},--传送门：奥利波斯
+        {spell=395277, spell2=395289, luce=true},--传送门-瓦德拉肯
         {spell=120145,},--远古传送：达拉然,
         {spell=193759,},--传送：守护者圣殿,
     }
@@ -57,7 +61,6 @@ if not find2 then
     return
 end
 
-local id , e = ...
 local addName=UNITNAME_SUMMON_TITLE14:format(className)
 local Save={}
 local panel=CreateFrame("Frame")
