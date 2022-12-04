@@ -6,7 +6,7 @@ https://addons.wago.io/addons/wowtools
 # WoWTools
 World of Warcraft 正式服 自己专用 插件
 
-功能包含几大模块
+功能包含四大模块
 
 *WoWPlus: 系统增强
 
