@@ -344,7 +344,7 @@ local function Init_Gossip()
     local selectQeust
     --自动接取任务,多个任务GossipFrameShared.lua questInfo.questID, questInfo.title, questInfo.isIgnored, questInfo.isTrivial
     hooksecurefunc(GossipSharedAvailableQuestButtonMixin, 'Setup', function(self, info)
-        local questID=inf and info.questID or self:GetID()
+        local questID=info and info.questID or self:GetID()
         if not questID then
             return
         end
