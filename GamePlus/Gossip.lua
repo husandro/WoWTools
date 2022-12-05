@@ -392,7 +392,7 @@ local function Init_Gossip()
         elseif Save.QuestOption[questID] then--or  C_QuestLog.IsComplete(questID) then
            C_GossipInfo.SelectAvailableQuest(questID);--or self:GetID()
         
-
+find=true
         elseif not Save.quest or not getQuestTrivial(questID) or getMaxQuest() or (npc and Save.NPC[npc]) then
             return
 
