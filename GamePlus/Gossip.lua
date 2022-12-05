@@ -517,7 +517,7 @@ local function InitMenu_Quest(self, level, type)
             text=CLEAR_ALL,
             notCheckable=true,
             func= function()
-                Save.Option={}
+                Save.QuestOption={}
                 print(id, ENABLE_DIALOG,CUSTOM,CLEAR_ALL)
             end
         }
