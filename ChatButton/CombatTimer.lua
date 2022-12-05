@@ -517,6 +517,7 @@ end
 --###########
 --加载保存数据
 --###########
+local isInPvPInstance
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 
@@ -582,7 +583,9 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         check_Event()--检测事件
 
     elseif event=='PLAYER_ENTERING_WORLD' then--副本,杀怪,死亡
+        isInPvPInstance=C_PvP.IsBattleground() or C_PvP.IsArena()
         check_Event()--检测事件
+        
 
     elseif event=='PLAYER_DEAD' or event=='PLAYER_UNGHOST' or event=='PLAYER_ALIVE' then
         if event=='PLAYER_DEAD' and not OnInstanceDeadCheck then
@@ -595,11 +598,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         --local InstanceDate={num= 0, time= 0, kill=0, dead=0}--副本数据{dead死亡,kill杀怪, map地图}
 
     elseif event=='UNIT_FLAGS' and arg1 then--杀怪,数量
-        if not arg1:find('nameplate') and UnitIsEnemy(arg1, 'player') and UnitIsDead(arg1) then
-            local threat = UnitThreatSituation('player', arg1)
-            if (threat and threat>0) or
-            ((C_PvP.IsBattleground() or C_PvP.IsArena()) and UnitIsPlayer(arg1) and UnitAffectingCombat('player'))
-            then
+        if arg1:find('nameplate') and UnitIsEnemy(arg1, 'player') and UnitIsDead(arg1) then
+            if isInPvPInstance and UnitIsPlayer(arg1) or not isInPvPInstance then                
                 InstanceDate.kill= InstanceDate.kill +1
                 Save.ins.kill= Save.ins.kill +1
             end
