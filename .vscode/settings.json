@@ -20,7 +20,8 @@
         "AUTO_JOIN",
         "UI_SCALE",
         "TIME_LABEL",
-        "QUESTS_LABEL"
+        "QUESTS_LABEL",
+        "NPE_MOVE"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

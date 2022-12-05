@@ -1105,13 +1105,9 @@ local function Init()
     panel.inCombatHideTips.Text:SetText(HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..HIDE)
     panel.inCombatHideTips:SetPoint('TOPLEFT', panel.setDefaultAnchor, 'BOTTOMLEFT', 0, -2)
     panel.inCombatHideTips:SetScript('OnClick', function()
-        if Save.inCombatHideTips then
-            Save.inCombatHideTips=nil
-        else
-            Save.inCombatHideTips=true
-        end
+        Save.inCombatHideTips = not  Save.inCombatHideTips and true or nil
     end)
-
+    panel.inCombatHideTips:SetChecked( Save.inCombatHideTips)
 
     --设置CVar
     panel.CVar=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")

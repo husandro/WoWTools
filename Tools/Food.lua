@@ -27,7 +27,7 @@ end
 local function set_Item_Count(self)--设置, 数量
     if self.itemID then
         local num=GetItemCount(self.itemID, nil, true, true)
-        self.count:SetText(num>0 and num or '')
+        self.count:SetText(num>1 and num or (num==1 and Save.autoWho) and num or '')
         self.texture:SetDesaturated(num==0)
     end
 end
@@ -141,12 +141,19 @@ end
 
 local Button={}
 local function set_Item_Button()--检查,物品
+    if UnitAffectingCombat('player') then
+        panel.bat=true
+        panel:RegisterEvent('PLAYER_REGEN_ENABLED')
+        return
+    end
+
     local index=1
+    local created={}
     for _, tab in pairs(itemClass) do
         if Save.itemClass[tab.className..tab.subclassName] then
             local Tabs=find_Item_Type(tab.classID, tab.subClassID)
             for _, itemID in pairs(Tabs) do
-                if not Save.noUseItems[itemID] and itemID~=panel.itemID then
+                if not Save.noUseItems[itemID] and itemID~=panel.itemID and not created[itemID] then
                     local button= Button[index]
                     button= button or create_Button(Button[index-1])
                     button.itemID= itemID
@@ -154,6 +161,7 @@ local function set_Item_Button()--检查,物品
                     set_Button_Init(button)
                     button:SetShown(true)
                     index= index +1
+                    created[itemID]=true
                 end
             end
         end
@@ -170,6 +178,21 @@ end
 --#####
 --主菜单
 --#####
+local function get_Save_itemClass_Select()--已选中类别, 数量
+    local num=0
+    for _ in pairs(Save.itemClass) do
+        num=num+1
+    end
+    return num
+end
+
+local function set_auto_Who_Event()--设置事件,自动更新
+    if Save.autoWho and get_Save_itemClass_Select()>0 then
+        panel:RegisterEvent('BAG_UPDATE_DELAYED')
+    else
+        panel:UnregisterEvent('BAG_UPDATE_DELAYED')
+    end
+end
 local function get_Save_Numer_SubClass(name)--子类, 选中数量
     local num=0
     for className,_ in pairs(Save.itemClass) do
@@ -215,11 +238,12 @@ local function InitMenu(self, level, type)--主菜单
         }
         UIDropDownMenu_AddButton(info, level)
 
-    elseif type=='SETTINGS' then
+    elseif type=='WHO' then
         info= {--登录游戏,时,查询
             text= (LOGIN or SOCIAL_TWITTER_SIGN_IN)..GAME,
             tooltipOnButton=true,
             tooltipTitle=AUTO_JOIN:gsub(JOIN,WHO),
+            tooltipText='1 '..VOICEMACRO_LABEL_CHARGE1,
             checked=Save.autoEnable,
             func= function()
                 Save.autoEnable= not Save.autoEnable and true or nil
@@ -227,16 +251,19 @@ local function InitMenu(self, level, type)--主菜单
         }
         UIDropDownMenu_AddButton(info, level)
 
-        info={
-            text=RESET_POSITION,--还原位置
-            notCheckable=true,
-            colorCode= not Save.point and'|cff606060',
-            disabled=bat,
-            func=function()
-                Save.point=nil
-                panel:ClearAllPoints()
-                setPanelPostion()--设置按钮位置
-            end,
+        
+        info= {--自动, 更新物品, 查询
+            text= UPDATE..ITEMS,
+            tooltipOnButton=true,
+            tooltipTitle=EVENTS_LABEL..': BAG_UPDATE_DELAYED',
+            checked=Save.autoWho,
+            func= function()
+                Save.autoWho= not Save.autoWho and true or nil
+                if Save.autoWho then
+                    set_Item_Button()
+                end
+                set_auto_Who_Event()--设置事件,自动更新
+            end
         }
         UIDropDownMenu_AddButton(info, level)
 
@@ -259,11 +286,14 @@ local function InitMenu(self, level, type)--主菜单
             end
         end
     else
+        local classNum=get_Save_itemClass_Select()
         info={
-            text=WHO,
+            text=WHO.. ' '..classNum,
             colorCode='|cff00ff00',
             notCheckable=true,
-            disabled=bat,
+            disabled=bat or classNum==0,
+            menuList='WHO',
+            hasArrow=true,
             func= function()
                 set_Item_Button()
             end
@@ -315,11 +345,16 @@ local function InitMenu(self, level, type)--主菜单
         }
         UIDropDownMenu_AddButton(info, level)
 
-        info= {
-            text=SETTINGS,
+        info={
+            text=RESET_POSITION,--还原位置
             notCheckable=true,
-            hasArrow=true,
-            menuList='SETTINGS'
+            colorCode= not Save.point and'|cff606060',
+            disabled=bat,
+            func=function()
+                Save.point=nil
+                panel:ClearAllPoints()
+                setPanelPostion()--设置按钮位置
+            end,
         }
         UIDropDownMenu_AddButton(info, level)
     end
@@ -339,7 +374,10 @@ local function Init()
 
     set_Button_Init(panel)--提示, 事件
 
-    if Save.autoEnable then
+    if Save.autoWho then
+        set_auto_Who_Event()--设置事件,自动更新
+    end
+    if  get_Save_itemClass_Select()>0 and (Save.autoEnable or Save.autoWho) then
         set_Item_Button()
     end
 
@@ -390,9 +428,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave[addName..'Tools']=Save
         end
 
-    elseif event=='BAG_UPDATE' then
-        set_Item_Count(self)
+    elseif event=='BAG_UPDATE' then--
+        set_Item_Count(self)--更新物品,次数
 
+    elseif event=='BAG_UPDATE_DELAYED' then
+        set_Item_Button()--检查,物品
+        
+    elseif event=='PLAYER_REGEN_ENABLED' then
+        if panel.bat then
+            set_Item_Count(self)--更新物品
+            panel.bat=nil
+        end
+        panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
     elseif event=='BAG_UPDATE_COOLDOWN' then
         set_Cooldown(self)--图标冷却
     end

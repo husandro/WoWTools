@@ -41,6 +41,10 @@ local function Init()
             SetCursor('UI_MOVE_CURSOR')
 
         elseif d=='RightButton' and IsAltKeyDown() then--还原
+            if UnitAffectingCombat('player') then
+                print(id ,addName, NPE_MOVE, '|cnRED_FONT_COLOR:'..COMBAT)
+                return
+            end
             Save.Point=nil
             panel:ClearAllPoints()
             panel:SetPoint('BOTTOMLEFT', SELECTED_CHAT_FRAME, 'TOPLEFT', -5, 30)

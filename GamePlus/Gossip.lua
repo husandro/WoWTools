@@ -1,6 +1,6 @@
 local id, e = ...
 local addName=ENABLE_DIALOG..QUESTS_LABEL
-local Save={gossip=true, quest=true, unique=true, autoSortQuest=true, Option={}, NPC={}, QuestNPC={}}
+local Save={gossip=true, quest=true, unique=true, autoSortQuest=true, Option={}, NPC={}, QuestNPC={}, autoSelectReward=true}
 --[[
     Save.Option[self2.info.gossipOptionID]={
         name=self2.name,
@@ -296,7 +296,8 @@ local function Init_Gossip()
         local index=self:GetID()
         local gossip= C_GossipInfo.GetOptions()
         local name=info.name
-        if (info.flags == Enum.GossipOptionRecFlags.QuestLabelPrepend or info.name:find(QUESTS_LABEL)) and Save.quest then--任务
+       
+        if (info.flags == Enum.GossipOptionRecFlags.QuestLabelPrepend or name:find(QUESTS_LABEL)) and Save.quest then--任务
             C_GossipInfo.SelectOption(index)
             if info.flags == Enum.GossipOptionRecFlags.QuestLabelPrepend then
                 name=GOSSIP_QUEST_OPTION_PREPEND:format(info.name)
@@ -454,9 +455,22 @@ local function InitMenu_Quest(self, level, type)
             checked= isQuestTrivialTracking,
             tooltipOnButton= true,
             tooltipTitle= TRACKING,
+            tooltipText= LOW..LEVEL..QUESTS_LABEL,
             func= function ()
                 get_set_IsQuestTrivialTracking(true)--其它任务,低等任务,追踪
             end,
+        }
+        UIDropDownMenu_AddButton(info, level)
+
+        info={--自动:选择奖励
+            text= TITLE_REWARD:format(AUTO_JOIN:gsub(JOIN, CHOOSE)),
+            checked= Save.autoSelectReward,
+            tooltipOnButton=true,
+            tooltipTitle= PROFESSIONS_CRAFTING_QUALITY:format(VIDEO_OPTIONS_ULTRA_HIGH),
+            tooltipText= '|cff0000ff'..GARRISON_MISSION_RARE..'|r',
+            func= function()
+                Save.autoSelectReward= not Save.autoSelectReward and true or nil
+            end
         }
         UIDropDownMenu_AddButton(info, level)
 
@@ -480,6 +494,7 @@ local function InitMenu_Quest(self, level, type)
             menuList='TRACKING'
         }
         UIDropDownMenu_AddButton(info, level)
+        UIDropDownMenu_AddSeparator(level)
 
         info={--禁用, NPC, 任务
             text=DISABLE,
@@ -578,6 +593,61 @@ local function Init_Quest()
         self.sel:SetChecked(Save.NPC[npc])
     end)
 
+    local function select_Reward()--自动:选择奖励
+        if Save.autoSelectReward then
+            local firstItem = QuestInfoRewardsFrameQuestInfoItem1
+            
+            if firstItem then
+                local numQuests = GetNumQuestChoices()
+                if numQuests and numQuests >1 then
+                    local bestValue, bestItem = 0, nil
+                    local bestLevel, bestLevelItem= 0,nil
+                    local selectItemLink
+                    for i = 1, numQuests do
+                        local  itemLink = GetQuestItemLink('choice', i)
+                        if itemLink then
+                            local amount = select(3, GetQuestItemInfo('choice', i))--钱
+                            local _, _, itemQuality, itemLevel, _, _,_,_, itemEquipLoc, _, sellPrice= GetItemInfo(itemLink)
+                            if itemQuality and itemQuality<4 then--最高 稀有的 3
+                                
+                                if amount and sellPrice then
+                                    local totalValue = (sellPrice and sellPrice * amount) or 0
+                                    if totalValue > bestValue then
+                                        bestValue = totalValue
+                                        bestItem = i
+                                    
+                                    end
+                                end
+                                
+                                local invSlot = itemEquipLoc and  e.itemSlotTable[itemEquipLoc]
+                                if invSlot and itemLevel and itemLevel>1 then--装等
+                                    local itemLinkPlayer = GetInventoryItemLink('player', invSlot)
+                                    if itemLinkPlayer then
+                                        local lv=GetDetailedItemLevelInfo(itemLinkPlayer)
+                                        if lv and lv>0 and itemLevel-lv>0 then
+                                            if bestLevel and bestLevel<lv or not bestLevel then
+                                                bestLevel=lv
+                                                bestLevelItem=i
+                                                selectItemLink=itemLink
+                                            end
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                    end
+                    bestItem= bestLevelItem or bestItem
+                    if bestItem then
+                        _G['QuestInfoRewardsFrameQuestInfoItem'..bestItem]:Click()
+                        if selectItemLink then
+                            print(id, QUESTS_LABEL, CHOOSE, selectItemLink)
+                        end
+                    end
+                end
+            end
+        end
+    end
+
     --任务框, 自动选任务    
     QuestFrameGreetingPanel:HookScript('OnShow', function(self)--QuestFrame.lua QuestFrameGreetingPanel_OnShow
         if not Save.quest or IsModifierKeyDown() or Save.QuestNPC[QuestFrame.sel.npc] then--getMaxQuest()
@@ -589,6 +659,7 @@ local function Init_Quest()
         if numActiveQuests > 0 then
             for index=1, numActiveQuests do
                 if select(2,GetActiveTitle(index)) then
+                    
                     SelectActiveQuest(index)
                     return
                 end
@@ -608,10 +679,11 @@ local function Init_Quest()
 
     --任务进度, 继续, 完成 QuestFrame.lua
     hooksecurefunc('QuestFrameProgressItems_Update', function(self)
-
         if not Save.quest or IsModifierKeyDown() or  Save.QuestNPC[QuestFrame.sel.npc] then
             return
         end
+
+       
         local b=QuestFrameCompleteQuestButton;
         if b and b:IsEnabled() then
             QuestProgressCompleteButton_OnClick()
@@ -625,15 +697,19 @@ local function Init_Quest()
         else
             questID = GetQuestID();
         end
-        
+
+        local complete= questID and C_QuestLog.IsComplete(questID)
         if not Save.quest
             or IsModifierKeyDown()
-            or (not (questID and C_QuestLog.IsComplete(questID)) and  (not getQuestTrivial() or getMaxQuest()))
+            or (not complete and  (not getQuestTrivial() or getMaxQuest()))
             or  Save.QuestNPC[QuestFrame.sel.npc]
         then
             return
         end
         if acceptButton and acceptButton:IsEnabled() then
+            if complete then
+                select_Reward()--自动:选择奖励
+            end
             acceptButton:Click()
         end
     end)
