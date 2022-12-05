@@ -65,6 +65,7 @@ hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', function(self)--self.tagInf
     if sourceInfo then
         str=(str or '')..(sourceInfo.isCollected and e.Icon.okTransmog2 or e.Icon.transmogHide2)
     end
+    
     self.str:SetText(str or '')
     self.str:SetShown(str and true or false)
 
