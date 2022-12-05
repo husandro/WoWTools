@@ -398,6 +398,7 @@ local function Init_Gossip()
 
 else
 C_GossipInfo.SelectAvailableQuest(questID)
+find=true
         end
 
         
