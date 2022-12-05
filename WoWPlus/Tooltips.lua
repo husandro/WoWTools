@@ -714,7 +714,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
 
         local num= isInGuild and 4 or 3
         for i=num, e.tips:NumLines() do
-            local line=_G["GameTooltipTextLeft"..i]
+            line=_G["GameTooltipTextLeft"..i]
             if line then
                 if i==num then
                     if isSelf and (e.Layer or isWarModeDesired) then--位面ID, 战争模式

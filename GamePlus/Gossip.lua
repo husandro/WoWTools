@@ -1,6 +1,10 @@
 local id, e = ...
 local addName=ENABLE_DIALOG..QUESTS_LABEL
-local Save={gossip=true, quest=true, unique=true, autoSortQuest=true, Option={}, NPC={}, QuestNPC={}, autoSelectReward=true}
+local Save={
+        gossip=true, quest=true, unique=true, autoSortQuest=true, autoSelectReward=true,
+        Option={}, NPC={},
+        QuestOption={}, QuestNPC={},
+}
 --[[
     Save.Option[self2.info.gossipOptionID]={
         name=self2.name,
@@ -63,7 +67,7 @@ local function InitMenu_Gossip(self, level, type)
                 notCheckable=true,
                 tooltipOnButton=true,
                 tooltipTitle= tab.gossipText,
-                tooltipText='NPC '..tab.npcID..'\ngossipOptionID '..gossipOptionID..'\n\n'..e.Icon.left..REMOVE,
+                tooltipText='\ngossipOptionID '..gossipOptionID..'\n\n'..e.Icon.left..REMOVE,
                 func=function()
                     Save.Option[gossipOptionID]=nil
                     print(id, ENABLE_DIALOG, REMOVE, tab.gossipText, tab.name, 'gossipOptionID:', gossipOptionID)
@@ -245,23 +249,22 @@ local function Init_Gossip()
 
     --自定义闲话选项, 按钮 GossipFrameShared.lua
     hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, info)--GossipFrameShared.lua
-        if not info.gossipOptionID then
+        if not info or not info.gossipOptionID then
             return
         end
+
         if not self.sel then
             self.sel=CreateFrame("CheckButton", nil, self, 'InterfaceOptionsCheckButtonTemplate')
             self.sel:SetPoint("RIGHT", -2, 0)
             self.sel:SetSize(18, 18)
             self.sel:SetScript("OnEnter", function(self2)
-                if self2.info.gossipOptionID then
+                if self2.info and self2.info.gossipOptionID then
                     e.tips:SetOwner(self2, "ANCHOR_RIGHT")
                     e.tips:ClearLines()
+                    e.tips:AddDoubleLine(' ')
+                    e.tips:AddDoubleLine(id, GOSSIP_OPTIONS)
                     e.tips:AddDoubleLine(self2.name, self2.npc and 'NPC: '..self2.npc or '')
                     e.tips:AddDoubleLine(self2.info.name, 'gossipOption: '..self2.info.gossipOptionID)
-                    e.tips:AddDoubleLine(' ')
-                    e.tips:AddDoubleLine(CUSTOM, e.GetEnabeleDisable(Save.Option[self2.info.gossipOptionID]))
-                    e.tips:AddDoubleLine(self2.name, e.GetEnabeleDisable(not Save.NPC[self2.npc]))
-                    e.tips:AddDoubleLine(GOSSIP_OPTIONS, e.GetEnabeleDisable(Save.gossip))
                     e.tips:Show()
                 end
             end)
@@ -269,71 +272,150 @@ local function Init_Gossip()
                 e.tips:Hide()
             end)
             self.sel:SetScript("OnClick", function (self2)
-                if Save.Option[self2.info.gossipOptionID] then
-                    Save.Option[self2.info.gossipOptionID]=nil
-                else
-                    Save.Option[self2.info.gossipOptionID]={
-                        name=self2.name,
-                        npcID=self2.npc,
-                        gossipText=self2.info.name
-                    }
-                    C_GossipInfo.SelectOption(self:GetID())
+                if self2.info and self2.info.gossipOptionID then
+                    if Save.Option[self2.info.gossipOptionID] then
+                        Save.Option[self2.info.gossipOptionID]=nil
+                    else
+                        Save.Option[self2.info.gossipOptionID]={
+                            name=self2.name,
+                            --npcID=self2.npc,
+                            gossipText=self2.info.name
+                        }
+                        C_GossipInfo.SelectOption(self:GetID())
+                    end
                 end
             end)
         end
 
         local npc=e.GetNpcID('npc')
-        self.sel.npc=npc
         self.sel.name=UnitName("npc")
         self.sel.info=info
         self.sel:SetChecked(Save.Option[info.gossipOptionID])
 
-        if IsModifierKeyDown() or (npc and Save.NPC[npc]) or selectGissipIDTab[info.gossipOptionID] then
-            return
-        end
-
-        local find
         local index=self:GetID()
         local gossip= C_GossipInfo.GetOptions()
         local name=info.name
-       
-        if (info.flags == Enum.GossipOptionRecFlags.QuestLabelPrepend or name:find(QUESTS_LABEL)) and Save.quest then--任务
+        
+        local find
+        if IsModifierKeyDown() then
+            return
+
+        elseif Save.Option[info.gossipOptionID] then--自定义
             C_GossipInfo.SelectOption(index)
+            find=true
+        
+        elseif (npc and Save.NPC[npc]) or not Save.gossip then
+            return
+
+        elseif (info.flags == Enum.GossipOptionRecFlags.QuestLabelPrepend or name:find(QUESTS_LABEL)) and Save.quest then--任务
             if info.flags == Enum.GossipOptionRecFlags.QuestLabelPrepend then
                 name=GOSSIP_QUEST_OPTION_PREPEND:format(info.name)
             end
+            C_GossipInfo.SelectOption(index)
             find=true
-        elseif Save.gossip  then
-            if Save.Option[info.gossipOptionID] then--自定义
-                C_GossipInfo.SelectOption(index)
-                find=true
-            elseif #gossip==1 and Save.unique then--仅一个
-                C_GossipInfo.SelectOption(index)
-                find=true
+
+        elseif #gossip==1 and Save.unique then--仅一个
+            if not getMaxQuest() then
+                local tab= C_GossipInfo.GetActiveQuests() or {}
+                for _, questInfo in pairs(tab) do
+                    if questInfo.questID and questInfo.isComplete and (Save.quest or Save.QuestOption[questInfo.questID]) then
+                        return
+                    end
+                end
+
+                tab= C_GossipInfo.GetAvailableQuests() or {}
+                for _, questInfo in pairs(tab) do
+                    if questInfo.questID and (Save.quest or Save.QuestOption[questInfo.questID]) and (isQuestTrivialTracking and questInfo.isTrivial or not questInfo.isTrivial) then
+                        return
+                    end
+                end
             end
+
+            C_GossipInfo.SelectOption(index)
+            find=true
         end
 
-        if find then
+        if find and not selectGissipIDTab[info.gossipOptionID] then
             selectGissipIDTab[info.gossipOptionID]=true
-            print(id, ENABLE_DIALOG, '|cffff00ff'..name)
+            print(id, ENABLE_DIALOG, '|T'..(info.overrideIconID or info.icon or '')..':0|t', '|cffff00ff'..name)
         end
     end)
 
-      --完成已激活任务,多个任务GossipFrameShared.lua
-      hooksecurefunc(GossipSharedActiveQuestButtonMixin, 'Setup', function(self, info)
+    local selectQeust
+    --自动接取任务,多个任务GossipFrameShared.lua questInfo.questID, questInfo.title, questInfo.isIgnored, questInfo.isTrivial
+    hooksecurefunc(GossipSharedAvailableQuestButtonMixin, 'Setup', function(self, info)
+        local questID=inf and info.questID or self:GetID()
+        if not questID then
+            return
+        end
+
+        if not self.sel then
+            self.sel=CreateFrame("CheckButton", nil, self, 'InterfaceOptionsCheckButtonTemplate')
+            self.sel:SetPoint("RIGHT", -2, 0)
+            self.sel:SetSize(18, 18)
+            self.sel:SetScript("OnEnter", function(self2)
+                if self2.questID then
+                    e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+                    e.tips:ClearLines()
+                    e.tips:AddDoubleLine(id, QUESTS_LABEL)
+                    e.tips:AddDoubleLine(self2.info.title, 'ID '..self2.questID)
+                    e.tips:Show()
+                end
+            end)
+            self.sel:SetScript("OnLeave", function ()
+                e.tips:Hide()
+            end)
+            self.sel:SetScript("OnClick", function (self2)
+                if Save.QuestOption[self2.questID] then
+                    Save.QuestOption[self2.questID]=nil
+                else
+                    Save.QuestOption[self2.questID]={
+                        name= self2.name,
+                        title= self2.title,
+                    }
+                    C_GossipInfo.SelectAvailableQuest(self2.questID);
+                    if self2.title then
+                        print(id, QUESTS_LABEL, '|cnGREEN_FONT_COLOR:'..self2.title)
+                    end
+                end
+            end)
+        end
+        local npc=e.GetNpcID('npc')
+        self.sel.name= UnitName("npc")
+        self.sel.questID= questID
+        self.sel.title= info.title
+        
+        
+        if IsModifierKeyDown() then
+            return
+
+        --elseif Save.QuestOption[questID] or  C_QuestLog.IsComplete(questID) then
+          --  C_GossipInfo.SelectAvailableQuest(questID);--or self:GetID()
+        
+
+        elseif not Save.quest or not getQuestTrivial(questID) or getMaxQuest() or (npc and Save.NPC[npc]) then
+            return
+        end
+
+        C_GossipInfo.SelectAvailableQuest(questID)
+        
+
+        if info.title and find and (not selectQeust or selectQeust~=info.title) then
+            selectQeust=info.title
+            print(id, QUESTS_LABEL, '|cnGREEN_FONT_COLOR:'..info.title, questID)
+        end
+    end)
+
+    --完成已激活任务,多个任务GossipFrameShared.lua
+    hooksecurefunc(GossipSharedActiveQuestButtonMixin, 'Setup', function(self, info)
         local questID=info.questID or self:GetID()
-        if not questID or not Save.quest or IsModifierKeyDown() or not C_QuestLog.IsComplete(questID) or (Save.NPC[GossipFrame.sel.npc]) then
+        if not questID or (not Save.quest and not Save.QuestOption[questID]) or IsModifierKeyDown() or not C_QuestLog.IsComplete(questID) or (Save.NPC[GossipFrame.sel.npc]) then
             return
         end
         C_GossipInfo.SelectActiveQuest(questID)
-    end)
-
-    --自动接取任务,多个任务GossipFrameShared.lua
-    hooksecurefunc(GossipSharedAvailableQuestButtonMixin, 'Setup', function(self, info)
-        if not info.questID or not Save.quest or IsModifierKeyDown() or not getQuestTrivial(info.questID) or getMaxQuest() or (Save.NPC[GossipFrame.sel.npc]) then
-            return
+        if info.title then            
+            print(id, QUESTS_LABEL,'|T'..(info.overrideIconID or info.icon or '')..':0|t', '|cnGREEN_FONT_COLOR:'..info.title)
         end
-        C_GossipInfo.SelectAvailableQuest(info.questID);--or self:GetID()
     end)
 end
 
@@ -414,6 +496,33 @@ local function InitMenu_Quest(self, level, type)
         }
         UIDropDownMenu_AddButton(info, level)
 
+    elseif type=='CUSTOM' then
+        for questID, tab in pairs(Save.QuestOption) do
+            info={
+                text= tab.title,
+                notCheckable=true,
+                tooltipOnButton=true,
+                tooltipTitle= tab.name,
+                tooltipText='questID  '..questID..'\n\n'..e.Icon.left..REMOVE,
+                func=function()
+                    Save.QuestOption[questID]=nil
+                    print(id, QUESTS_LABEL, REMOVE, tab.title, tab.name, 'ID', tab.questID)
+                end
+            }
+            UIDropDownMenu_AddButton(info, level)
+        end
+
+        UIDropDownMenu_AddSeparator(level)
+        info={
+            text=CLEAR_ALL,
+            notCheckable=true,
+            func= function()
+                Save.Option={}
+                print(id, ENABLE_DIALOG,CUSTOM,CLEAR_ALL)
+            end
+        }
+        UIDropDownMenu_AddButton(info, level)
+
     elseif type=='DISABLE' then--禁用, NPC, 任务
         for npcID, name in pairs(Save.QuestNPC) do
             info={
@@ -439,6 +548,7 @@ local function InitMenu_Quest(self, level, type)
             end
         }
         UIDropDownMenu_AddButton(info, level)
+
     else
         info={
             text=e.Icon.left..QUICK_JOIN_IS_AUTO_ACCEPT_TOOLTIP,--自动接受
@@ -496,6 +606,12 @@ local function InitMenu_Quest(self, level, type)
         UIDropDownMenu_AddButton(info, level)
         UIDropDownMenu_AddSeparator(level)
 
+        info={--自定义,任务,选项
+            text=CUSTOM,
+            menuList='CUSTOM',
+            notCheckable=true,
+            hasArrow=true,
+        }
         info={--禁用, NPC, 任务
             text=DISABLE,
             notCheckable=true,
@@ -727,6 +843,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED"  then
         if arg1 == id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
+            Save.QuestOption = not Save.QuestOption or {}
 
              --添加控制面板        
             local sel=e.CPanel(addName, not Save.disabled, true)

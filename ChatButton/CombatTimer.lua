@@ -19,6 +19,7 @@ local OnPetTime--宠物战斗
 local LastText--最后时间提示
 local OnInstanceTime--副本
 local OnInstanceDeadCheck--副本,死亡,测试点
+local isInPvPInstance--是否在战场
 
 local PetAll={num= 0,  win=0, capture=0}--宠物战斗,全部,数据
 local PetRound={}--宠物战斗, 本次,数据
@@ -34,7 +35,7 @@ local function setText()--设置显示内容
             if sec ~= chatStarTime and sec > 0 and sec%Save.Say==0  then
                 chatStarTime=sec
                 e.Chat(COMBAT..' '..SecondsToClock(sec):gsub('：',':'), nil, true)
-            end            
+            end
         end
         text= text and text..'\n' or ''
         text= text ..'|cnRED_FONT_COLOR:'..COMBAT..'|r|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a'..combat
@@ -53,7 +54,6 @@ local function setText()--设置显示内容
     if OnInstanceTime then
         text= text and text..'\n' or (LastText and LastText..'\n' or '')
         text=text..'|A:BuildanAbomination-32x32:0:0|a'..InstanceDate.kill..'|A:poi-soulspiritghost:0:0|a'..InstanceDate.dead..'|A:CrossedFlagsWithTimer:0:0|a'..e.GetTimeInfo(OnInstanceTime, not Save.timeTypeText)
-      
     end
     panel.text:SetText(text or LastText or '')
 end
@@ -298,6 +298,8 @@ local function setTextFrame()--设置显示内容, 父框架panel.textFrame, 内
    
     panel:RegisterEvent('PLAYER_ENTERING_WORLD')--副本,杀怪,死亡
     check_Event()--检测事件
+    
+    isInPvPInstance=C_PvP.IsBattleground() or C_PvP.IsArena()--是否在战场
 end
 
 --#####
@@ -517,7 +519,7 @@ end
 --###########
 --加载保存数据
 --###########
-local isInPvPInstance
+
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 
@@ -583,7 +585,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         check_Event()--检测事件
 
     elseif event=='PLAYER_ENTERING_WORLD' then--副本,杀怪,死亡
-        isInPvPInstance=C_PvP.IsBattleground() or C_PvP.IsArena()
+        isInPvPInstance=C_PvP.IsBattleground() or C_PvP.IsArena()--是否在战场
         check_Event()--检测事件
         
 
