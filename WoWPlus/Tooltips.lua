@@ -837,6 +837,10 @@ local function setCVar(reset, tips)
         ['UberTooltips']={
             value='1',
             msg=SPELL_MESSAGES..': '..SHOW,
+        },
+        ["alwaysCompareItems"]={--总是比较物品
+             value= "1",
+             msg=ALWAYS..COMPARE_ACHIEVEMENTS:gsub(ACHIEVEMENTS, ITEMS)
         }
     }
     if tips then
