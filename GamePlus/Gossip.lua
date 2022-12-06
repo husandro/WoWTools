@@ -384,25 +384,22 @@ local function Init_Gossip()
         self.sel.name= UnitName("npc")
         self.sel.questID= questID
         self.sel.title= info.title
-        
+        local find
         
         if IsModifierKeyDown() then
             return
 
         elseif Save.QuestOption[questID] then--or  C_QuestLog.IsComplete(questID) then
            C_GossipInfo.SelectAvailableQuest(questID);--or self:GetID()
-        
-find=true
+            find=true
+
         elseif not Save.quest or not getQuestTrivial(questID) or getMaxQuest() or (npc and Save.NPC[npc]) then
             return
 
-else
-C_GossipInfo.SelectAvailableQuest(questID)
-find=true
+        else
+            C_GossipInfo.SelectAvailableQuest(questID)
+            find=true
         end
-
-        
-        
 
         if info.title and find and (not selectQeust or selectQeust~=info.title) then
             selectQeust=info.title
