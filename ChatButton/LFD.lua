@@ -821,18 +821,18 @@ local function Init()
         local role = sid and  select(5, GetSpecializationInfo(sid))
         if role then
             if role=='TANK' then
-                isTank, isHealer, isDPS=true, nil, nil
+                isTank, isHealer, isDPS=true, false, false
             elseif role=='HEALER' then
-                isTank, isHealer, isDPS=nil, true, nil
+                isTank, isHealer, isDPS=false, true, false
             elseif role=='DAMAGER' then
-                isTank, isHealer, isDPS=nil, nil ,true
+                isTank, isHealer, isDPS=false, false ,true
             end
         end
         SetLFGRoles(isLeader, isTank, isHealer, isDPS)
     end
 
     setHoliday()--节日, 提示, panel.texture
-    
+
     --hooksecurefunc('QueueStatusDropDown_Show', setQueueStatusMenu)--小眼睛, 信息, 设置菜单
     --LFDMicroButton:HookScript('OnEnter', function(self2) ToggleDropDownMenu(1, nil, menuList, self2, -250,250) end)
 end

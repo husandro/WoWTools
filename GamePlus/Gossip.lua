@@ -219,9 +219,8 @@ local function Init_Gossip()
     GossipFrame.sel:SetScript('OnEnter',function (self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, ENABLE_DIALOG)
+        e.tips:AddDoubleLine(id, addName)
         if self.npc and self.name then
-            e.tips:AddDoubleLine(id, QUESTS_LABEL..' '..ENABLE_DIALOG)
             e.tips:AddDoubleLine(self.name, 'NPC '..self.npc)
         else
             e.tips:AddDoubleLine(NONE, 'NPC ID')
@@ -270,7 +269,7 @@ local function Init_Gossip()
                 if self2.id and self2.text then
                     Save.gossipOption[self2.id]= not Save.gossipOption[self2.id] and self2.text or nil
                     if Save.gossipOption[self2.id] then
-                        C_GossipInfo.SelectOption(self:GetID())
+                        C_GossipInfo.SelectOption(self2.id)
                     end
                 else
                     print(id, addName, '|cnRED_FONT_COLOR:'..NONE..'|r', ENABLE_DIALOG,'ID')
@@ -288,7 +287,7 @@ local function Init_Gossip()
         self.sel:SetChecked(Save.gossipOption[info.gossipOptionID])
  
         local find
-        if IsModifierKeyDown() then
+        if IsModifierKeyDown() or selectGissipIDTab[info.gossipOptionID] then
             return
 
         elseif Save.gossipOption[info.gossipOptionID] then--自定义
@@ -326,7 +325,7 @@ local function Init_Gossip()
             find=true
         end
 
-        if find and not selectGissipIDTab[info.gossipOptionID] then
+        if find then
             selectGissipIDTab[info.gossipOptionID]=true
             print(id, ENABLE_DIALOG, '|T'..(info.overrideIconID or info.icon or '')..':0|t', '|cffff00ff'..name)
         end
@@ -349,7 +348,7 @@ local function Init_Gossip()
                 e.tips:AddDoubleLine(id, QUESTS_LABEL)
                 e.tips:AddDoubleLine(' ')
                 if self2.id and self2.text then
-                    e.tips:AddDoubleLine(self2.Text, 'ID '..self2.id)
+                    e.tips:AddDoubleLine(self2.text, 'ID '..self2.id)
                 else
                     e.tips:AddDoubleLine(NON, QUESTS_LABEL..' ID',1,0,0)
                 end
@@ -362,7 +361,7 @@ local function Init_Gossip()
                 if self2.id and self2.text then
                     Save.questOption[self2.id]= not Save.questOption[self2.id] and self2.text or nil
                     if Save.questOption[self2.id] then
-                        C_GossipInfo.SelectAvailableQuest(self2.questID);
+                        C_GossipInfo.SelectAvailableQuest(self2.id);
                     end
                 else
                     print(id, addName, '|cnRED_FONT_COLOR:'..NONE..'|r',QUESTS_LABEL,'ID')
@@ -487,13 +486,12 @@ local function InitMenu_Quest(self, level, type)
         UIDropDownMenu_AddButton(info, level)
 
     elseif type=='CUSTOM' then
-        for questID, tab in pairs(Save.questOption) do
+        for questID, text in pairs(Save.questOption) do
             info={
-                text= tab.text,
+                text= text,
                 notCheckable=true,
                 tooltipOnButton=true,
-                tooltipTitle= tab.name,
-                tooltipText='questID  '..questID..'\n\n'..e.Icon.left..REMOVE,
+                tooltipTitle='questID  '..questID..'\n\n'..e.Icon.left..REMOVE,
                 func=function()
                     Save.questOption[questID]=nil
                     print(id, QUESTS_LABEL, REMOVE, tab.title, tab.name, 'ID', tab.questID)
@@ -576,6 +574,7 @@ local function InitMenu_Quest(self, level, type)
             notCheckable=true,
             hasArrow=true,
         }
+        UIDropDownMenu_AddButton(info, level)
       --[[
   info={--禁用, NPC, 任务
             text=DISABLE,
@@ -583,7 +582,7 @@ local function InitMenu_Quest(self, level, type)
             menuList='DISABLE',
             hasArrow=true,
         }
-        UIDropDownMenu_AddButton(info, level)
+       
 
 ]]
 
@@ -657,8 +656,8 @@ local function Init_Quest()
     QuestFrame.sel:SetScript('OnEnter',function (self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, addName)
         if self.npc and self.name then
-            e.tips:AddDoubleLine(id, QUESTS_LABEL..' '..ENABLE_DIALOG)
             e.tips:AddDoubleLine(self.name, 'NPC '..self.npc)
         else
             e.tips:AddDoubleLine(NONE, 'NPC ID')
@@ -820,7 +819,10 @@ local function Init_Quest()
         end
         questID= questID or GetQuestID()
 
-        if not questID or IsModifierKeyDown() or Save.NPC[npc] or (not Save.quest and not Save.questOption[questID]) then
+        if not questID or IsModifierKeyDown() then
+            return
+
+        elseif (Save.NPC[npc] or not Save.quest) and not Save.questOption[questID] then
             return
         end
 
@@ -853,7 +855,7 @@ local function Init_Quest()
                             print(id, QUESTS_LABEL, link, '|cnGREEN_FONT_COLOR:'..acceptButton:GetText()..'|r')
                         end
                     end)
-                questSelect=questID
+                    questSelect=questID
                 end
             end
         end

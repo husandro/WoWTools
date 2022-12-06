@@ -50,7 +50,9 @@ hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', function(self)--self.tagInf
         self.str=e.Cstr(self,26)
         self.str:SetPoint('TOP', self, 'BOTTOM', 0, 0)
     end
-    local str= itemLevel or numItems
+    
+    local str
+    str= itemLevel or numItems
     if str then
         if quality and quality~=1 then
             str='|c'..select(4, GetItemQualityColor(quality))..str..'|r'
@@ -66,6 +68,18 @@ hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', function(self)--self.tagInf
         str=(str or '')..(sourceInfo.isCollected and e.Icon.okTransmog2 or e.Icon.transmogHide2)
     end
     
+    local itemEquipLoc= itemID and select(4, GetItemInfoInstant(itemID))
+    local invSlot = itemEquipLoc and e.itemSlotTable[itemEquipLoc]
+    if invSlot and itemLevel and itemLevel>1 then--装等
+        local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
+        if itemLinkPlayer then
+            local lv=GetDetailedItemLevelInfo(itemLinkPlayer)
+            if lv and itemLevel-lv>0 then
+                str= (str or '')..e.Icon.up2
+            end
+        end
+    end
+
     self.str:SetText(str or '')
     self.str:SetShown(str and true or false)
 
@@ -549,7 +563,6 @@ local function setMapID(self)--显示地图ID
     setMapIDText(self)
 end
 hooksecurefunc(WorldMapFrame, 'OnMapChanged', setMapID)--Blizzard_WorldMap.lua
-
 
 --加载保存数据
 local panel=CreateFrame("Frame")
