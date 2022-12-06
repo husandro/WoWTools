@@ -341,7 +341,6 @@ local function Init_Gossip()
         end
     end)
 
-    local selectQeust
     --自动接取任务,多个任务GossipFrameShared.lua questInfo.questID, questInfo.title, questInfo.isIgnored, questInfo.isTrivial
     hooksecurefunc(GossipSharedAvailableQuestButtonMixin, 'Setup', function(self, info)
         local questID=info and info.questID or self:GetID()
@@ -385,7 +384,7 @@ local function Init_Gossip()
         self.sel.questID= questID
         self.sel.title= info.title
         local find
-        
+
         if IsModifierKeyDown() then
             return
 
@@ -401,9 +400,9 @@ local function Init_Gossip()
             find=true
         end
 
-        if info.title and find and (not selectQeust or selectQeust~=info.title) then
-            selectQeust=info.title
-            print(id, QUESTS_LABEL, '|cnGREEN_FONT_COLOR:'..info.title, questID)
+        if info.title and find and selectGissipIDTab[questID]  then
+            selectGissipIDTab[questID]=true
+            print(id, QUESTS_LABEL, '|cnGREEN_FONT_COLOR:'..info.title..'|r', questID)
         end
     end)
 
@@ -414,7 +413,8 @@ local function Init_Gossip()
             return
         end
         C_GossipInfo.SelectActiveQuest(questID)
-        if info.title then            
+        if info.title and not selectGissipIDTab[questID] then
+            selectGissipIDTab[questID]=true
             print(id, QUESTS_LABEL,'|T'..(info.overrideIconID or info.icon or '')..':0|t', '|cnGREEN_FONT_COLOR:'..info.title)
         end
     end)
@@ -685,7 +685,7 @@ local function Init_Quest()
             return
         end
         Save.QuestNPC[self.npc]= not Save.QuestNPC[self.npc] and self.name or nil
-        print(id, QUESTS_LABEL, self.name, self.npc, DISABLE..QUESTS_LABEL..':',  e.GetEnabeleDisable(Save.QuestNPC[self.npc]))
+        print(id, QUESTS_LABEL, '|cffff00ff'..self.name..'|r', 'NPC'..self.npc, e.GetEnabeleDisable(not Save.QuestNPC[self.npc]))
     end)
     QuestFrame.sel:SetScript('OnEnter',function (self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
@@ -693,7 +693,6 @@ local function Init_Quest()
         if self.npc and self.name then
             e.tips:AddDoubleLine(id, QUESTS_LABEL)
             e.tips:AddDoubleLine(self.name, 'NPC '..self.npc)
-            e.tips:AddDoubleLine(DISABLE..' NPC', e.GetEnabeleDisable(not Save.QuestNPC[self.npc]))
         else
             e.tips:AddDoubleLine(NONE, 'NPC ID')
         end
@@ -703,12 +702,16 @@ local function Init_Quest()
         e.tips:Hide()
     end)
 
+--[[
     QuestFrame:SetScript('OnShow', function (self)
         local npc=e.GetNpcID('npc')
         self.sel.npc=npc
         self.sel.name=UnitName("npc")
-        self.sel:SetChecked(Save.NPC[npc])
+        self.sel:SetChecked(Save.QuestNPC[npc])
     end)
+
+]]
+
 
     local function select_Reward()--自动:选择奖励
         if Save.autoSelectReward then
@@ -767,7 +770,12 @@ local function Init_Quest()
 
     --任务框, 自动选任务    
     QuestFrameGreetingPanel:HookScript('OnShow', function(self)--QuestFrame.lua QuestFrameGreetingPanel_OnShow
-        if not Save.quest or IsModifierKeyDown() or Save.QuestNPC[QuestFrame.sel.npc] then--getMaxQuest()
+        local npc=e.GetNpcID('npc')
+        QuestFrame.sel.npc=npc
+        QuestFrame.sel.name=UnitName("npc")
+        QuestFrame.sel:SetChecked(Save.QuestNPC[npc])
+
+        if not npc or not Save.quest or IsModifierKeyDown() or Save.QuestNPC[npc] then
             return
         end
 
@@ -776,7 +784,8 @@ local function Init_Quest()
         if numActiveQuests > 0 then
             for index=1, numActiveQuests do
                 if select(2,GetActiveTitle(index)) then
-                    
+                    print(GetActiveTitle(index))
+                    print('show')
                     SelectActiveQuest(index)
                     return
                 end
@@ -787,6 +796,8 @@ local function Init_Quest()
                 local index = i - numActiveQuests
                 local isTrivial= GetAvailableQuestInfo(index);
                 if (isTrivial and isQuestTrivialTracking) or not isTrivial then
+                    print(GetAvailableQuestInfo(index))
+                    print('shwo2')
                     SelectAvailableQuest(index)
                     return
                 end
@@ -796,42 +807,72 @@ local function Init_Quest()
 
     --任务进度, 继续, 完成 QuestFrame.lua
     hooksecurefunc('QuestFrameProgressItems_Update', function(self)
-        if not Save.quest or IsModifierKeyDown() or  Save.QuestNPC[QuestFrame.sel.npc] then
+        local questID=GetQuestID()
+
+        local npc=e.GetNpcID('npc')
+        QuestFrame.sel.npc=npc
+        QuestFrame.sel.name=UnitName("npc")
+        QuestFrame.sel:SetChecked(Save.QuestNPC[npc])
+
+        if not Save.quest or IsModifierKeyDown() or  Save.QuestNPC[npc] then
             return
         end
-
-       
-        local b=QuestFrameCompleteQuestButton;
-        if b and b:IsEnabled() then
-            QuestProgressCompleteButton_OnClick()
+        
+        if not IsQuestCompletable() then
+            print(id, addName, '|cffff00ff'..GetProgressText(), questID and GetQuestLink(questID))
+            QuestGoodbyeButton_OnClick()
+        else
+           
+            print(id, addName, questID and GetQuestLink(questID))
+            QuestProgressCompleteButton_OnClick()--local b=QuestFrameCompleteQuestButton;
         end
     end)
     --自动接取任务, 仅一个任务
     hooksecurefunc('QuestInfo_Display', function(template, parentFrame, acceptButton, material, mapView)--QuestInfo.lua
-        local questID;
-        if ( template.questLog ) then
-            questID = questFrame.questID;
-        else
-            questID = GetQuestID();
-        end
+        local npc=e.GetNpcID('npc')
+        QuestFrame.sel.npc=npc
+        QuestFrame.sel.name=UnitName("npc")
+        QuestFrame.sel:SetChecked(Save.QuestNPC[npc])
 
-        local complete= questID and C_QuestLog.IsComplete(questID)
-        if not Save.quest
-            or IsModifierKeyDown()
-            or (not complete and  (not getQuestTrivial() or getMaxQuest()))
-            or  Save.QuestNPC[QuestFrame.sel.npc]
-        then
+        local questID;
+        if template.canHaveSealMaterial and not QuestUtil.QuestTextContrastEnabled() and template.questLog then
+                local frame = parentFrame:GetParent():GetParent();
+                questID = frame.questID;
+        end
+        questID= questID or GetQuestID()
+
+        if not questID or IsModifierKeyDown() or  Save.QuestNPC[npc] or not Save.quest then
             return
         end
+
+        local complete= C_QuestLog.IsComplete(questID)
+        if (not complete and  (not getQuestTrivial() or getMaxQuest())) or Save.QuestNPC[npc] then
+            return
+        end
+
         if acceptButton and acceptButton:IsEnabled() then
             if complete then
                 select_Reward()--自动:选择奖励
             end
+            if complete then
+                local link=GetQuestLink(questID)
+                if link then
+                    print(id, QUESTS_LABEL, link, '|cnGREEN_FONT_COLOR:'..acceptButton:GetText()..'|r')
+                end
+            end
+
             acceptButton:Click()
+
+            if not complete then
+                C_Timer.After(0.5, function()
+                    local link=GetQuestLink(questID)
+                    if link then
+                        print(id, QUESTS_LABEL, link, '|cnGREEN_FONT_COLOR:'..acceptButton:GetText()..'|r')
+                    end
+                end)
+            end
         end
     end)
-
-  
 end
 
 --###########

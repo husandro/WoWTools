@@ -482,7 +482,6 @@ e.WA_GetUnitAura = function(unit, spell, filter)--AuraEnvironment.lua
     end
   end
 end
-
 ]]
 
 e.WA_GetUnitBuff = function(unit, spell, filter)

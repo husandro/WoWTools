@@ -421,7 +421,7 @@ end
 ]]
 local function setQuest(self, questID)
     self:AddDoubleLine(e.GetExpansionText(nil, questID))--任务版本
-    self:AddDoubleLine(QUESTS_LABEL..'ID:', questID)
+    self:AddDoubleLine(QUESTS_LABEL, questID)
 end
 
 
@@ -484,42 +484,36 @@ end
 --####
 --Buff
 --####
+
 local function setBuff(type, self, ...)--Buff
-    local _, icon, sourceUnit, spellId
-    if type=='Buff' then
-        _, icon, _, _, _, _, sourceUnit, _, _, spellId= UnitBuff(...)
-    elseif type=='Debuff' then
-        _, icon, _, _, _, _, sourceUnit, _, _, spellId = UnitDebuff(...)
-    elseif type=='Aura' then
-        _, icon, _, _, _, _, sourceUnit, _, _, spellId=UnitAura(...)
-    end
-    local unitInfo
-    if sourceUnit=='player' then
-        unitInfo=e.Player.col..COMBATLOG_FILTER_STRING_ME..'|r'
-    elseif sourceUnit=='pet' then
-        unitInfo = sourceUnit and '|c'..select(4,GetClassColor(UnitClassBase(sourceUnit)))..PET..'|r' or PET
-    elseif sourceUnit and UnitIsPlayer(sourceUnit) then
-        unitInfo = e.GetPlayerInfo(sourceUnit, nil, true)
-    end
-    self:AddDoubleLine((unitInfo or type)..' ID: '..spellId, EMBLEM_SYMBOL..'ID: '..icon)
+    local source= type=='Buff' and select(7, UnitBuff(...)) or type=='Debuff' and select(7, UnitDebuff(...)) or select(7, UnitAura(...))
+    if source then
+        local r, g ,b , hex= GetClassColor(UnitClassBase(source))
 
-    local mountID = C_MountJournal.GetMountFromSpell(spellId)
-    if mountID then
-        setMount(self, mountID)
-    end
-
-    if sourceUnit then
-        local r, g ,b , hex= GetClassColor(UnitClassBase(sourceUnit))
         if r and g and b then
-           self.backgroundColor:SetColorTexture(r, g, b, 0.3)
-            --self.backgroundColor:SetShown(true)
+            self.backgroundColor:SetColorTexture(r, g, b, 0.3)
+            self.backgroundColor:SetShown(true)
         end
-        if not UnitIsUnit(sourceUnit, 'player') then
-            SetPortraitTexture(self.Portrait, sourceUnit)
-            self.Portrait:SetShown(true)
-        end
+
+        SetPortraitTexture(self.Portrait, source)
+        self.Portrait:SetShown(true)
+
+        local text= source=='player' and COMBATLOG_FILTER_STRING_ME or source=='pet' and PET or UnitIsPlayer(source) and e.GetPlayerInfo(source, nil, true) or _G[source] or source
+        self:AddDoubleLine('|c'..(hex or 'ffffff')..RUNEFORGE_LEGENDARY_POWER_SOURCE_FORMAT:format(text)..'|r')
+        self:Show()
     end
-    self:Show()
+end
+
+local function set_Aura(self, auraID)--Aura
+    local _, _, icon, _, _, _, spellID = GetSpellInfo(auraID)
+   if icon and spellID then
+        self:AddDoubleLine(	AURAS..' '..spellID, '|T'..icon..':0|t'..icon)
+        local mountID = C_MountJournal.GetMountFromSpell(spellID)
+        if mountID then
+            setMount(self, mountID)
+        end
+        --self:Show()
+    end
 end
 
 
@@ -883,7 +877,8 @@ local function Init()
     hooksecurefunc('GameTooltip_AddQuestRewardsToTooltip', setQuest)--世界任务ID GameTooltip_AddQuest
 
     --TooltipUtil.lua
-    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(tooltip,date)
+--[[
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(tooltip,date)--0
         local itemLink=select(2, TooltipUtil.GetDisplayedItem(tooltip))
         if itemLink and (tooltip==e.tips or tooltip==ItemRefTooltip) then
             if itemLink then
@@ -891,36 +886,78 @@ local function Init()
             end
         end
     end)
-    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Spell, function(tooltip,date)
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Spell, function(tooltip,date)--1
         local spellID= select(2, TooltipUtil.GetDisplayedSpell(tooltip))
         if spellID and (tooltip==e.tips or tooltip==ItemRefTooltip) then
             setSpell(tooltip, linkID)
         end
     end)
-    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(tooltip,date)
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(tooltip,date)--2
         local unit= select(2, TooltipUtil.GetDisplayedUnit(tooltip))
         if unit and (tooltip==e.tips or tooltip==ItemRefTooltip) then
-            setUnitInfo(tooltip, unit)
+            setUnitInfo(tooltip, unit)--单位
         end
     end)
     
-    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Mount, function(tooltip,date)
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Mount, function(tooltip,date)--10
         if date and date.id and (tooltip==e.tips or tooltip==ItemRefTooltip) then
             setMount(tooltip, date.id)--坐骑   
         end
     end)
-    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Toy, function(tooltip,date)
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Toy, function(tooltip,date)--19
             if date and date.id and (tooltip==e.tips or tooltip==ItemRefTooltip) then
-                setItem(tooltip, date.id)
+                setItem(tooltip, date.id)-- 玩具
             end
     end)
-    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Currency,  function(tooltip,date)
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Currency,  function(tooltip,date)--5
         if date and date.id and (tooltip==e.tips or tooltip==ItemRefTooltip) then
             setCurrency(tooltip, date.id)--货币
         end
     end)
    
-  
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Quest,  function(tooltip,date)--23
+        if date and date.id and (tooltip==e.tips or tooltip==ItemRefTooltip) then
+            setQuest(tooltip, date.id)--任务
+        end
+    end)
+
+]]
+
+    TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes,  function(tooltip,date)
+        if (tooltip==e.tips or tooltip==ItemRefTooltip) then
+            if date.type==2 then--单位
+                local unit= select(2, TooltipUtil.GetDisplayedUnit(tooltip))
+                if unit then
+                    setUnitInfo(tooltip, unit)
+                end
+
+            elseif date.id and date.type then
+                if date.type==0 then
+                    setItem(tooltip, date.id)--物品
+                elseif date.type==1 then
+                    setSpell(tooltip, date.id)--法术
+
+                elseif date.type==5 then
+                    setCurrency(tooltip, date.id)--货币
+
+                elseif date.type==7 then--Aura
+                    set_Aura(tooltip, date.id)
+
+                elseif date.type==10 then
+                    setMount(tooltip, date.id)--坐骑
+
+                elseif date.type==19 then
+                    setItem(tooltip, date.id)-- 玩具
+
+                elseif date.type==23 then
+                    setQuest(tooltip, date.id)--任务
+
+                else
+                    tooltip:AddDoubleLine('ID '..date.id, 'type '..date.type)
+                end
+            end
+        end
+    end)
     --****
     --位置
     --****
@@ -1003,6 +1040,7 @@ local function Init()
     --####
     --Buff
     --####
+
     hooksecurefunc(e.tips, "SetUnitBuff", function(...)
         setBuff('Buff', ...)
     end)
@@ -1012,6 +1050,7 @@ local function Init()
     hooksecurefunc(e.tips, "SetUnitAura", function(...)
         setBuff('Aura', ...)
     end)
+
 
     --###########
     --宠物面板提示
