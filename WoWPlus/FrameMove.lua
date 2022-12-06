@@ -117,10 +117,11 @@ local FrameTab={
     ColorPickerFrame={save=true},--颜色选择器
     BFAMissionFrame={},--侦查地图    
     WorldMapFrame={},--世界地图
+    ContainerFrameCombinedBags={},--包
 };
 --UIWidgetBelowMinimapContainerFrame={save=true,click='RightButton'},
 --ZoneAbilityFrame.SpellButtonContainer = {save=true, click='R'},
---ContainerFrameCombinedBags={},--包
+
 
 local function setTabInit()
     for k, v in pairs(FrameTab) do
