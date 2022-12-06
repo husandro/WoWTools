@@ -51,6 +51,20 @@ local function Init()
         HelpTip:HideAll(parent)
     end)
 
+    C_CVar.SetCVar("showNPETutorials",'0')
+
+    --Blizzard_TutorialPointerFrame.lua 隐藏新手,教程
+    hooksecurefunc(TutorialPointerFrame, 'Show',function(self, content, direction, anchorFrame, ofsX, ofsY, relativePoint, backupDirection, showMovieName, loopMovie, resolution)
+        if not anchorFrame or not self.DirectionData[direction] then
+            --TutorialPointerFrame:Hide()
+            return
+        end
+        local ID=self.NextID
+        if ID then
+            TutorialPointerFrame:Hide(ID-1)
+            print(id, addName, content)
+        end
+    end)
 end
 
 local function set_UNIT_ENTERED_VEHICLE()--载具
