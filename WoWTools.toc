@@ -59,7 +59,9 @@ WoWPlus\WardroberSets.lua
 WoWPlus\WorldMap.lua
 ##鼠标，和冒险指南，两个模块
 WoWPlus\Tooltips.lua
-##WoWPlus\Container.lua
+
+WoWPlus\Container.lua
+
 ##专业面板，增加专业按钮，没有其它
 WoWPlus\Professions.lua
 ##单位框，没完成

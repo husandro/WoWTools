@@ -85,7 +85,7 @@ StaticPopupDialogs[id..addName..'REMOVE']={
         else
             if Save[data.type][data.index] and Save[data.type][data.index]==data.ID then
                 table.remove(Save[data.type], data.index)
-                print(id, addName, '|cnGREEN_FONT_COLOR:'..REMOVE..'|r'..COMPLETE, data.name, '|cnRED_FONT_COLOR:'..REQUIRES_RELOAD..'|r','/reload')
+                print(id, addName, '|cnGREEN_FONT_COLOR:'..REMOVE..'|r'..COMPLETE, data.name, '|cnRED_FONT_COLOR:'..REQUIRES_RELOAD..'|r')
             else
                 print(id, addName,'|cnGREEN_FONT_COLOR:'..ERROR_CAPS..'|r',	BROWSE_NO_RESULTS, data.name)
             end
@@ -200,6 +200,7 @@ local function InitMenu(self, level, type)--主菜单
             notCheckable=true,
             tooltipOnButton=true,
             tooltipTitle='/reload',
+            tooltipText=RELOADUI,
             func=function()
                 C_UI.Reload()
             end

@@ -14,7 +14,7 @@ local function setTargetChaged()
     --and UnitIsBattlePetCompanion('target')
     --UnitIsBattlePet('target')
     --and not IsMounted()
-        DoEmote('beckon')
+        DoEmote('BECKON')--beckon
     end
 end
 

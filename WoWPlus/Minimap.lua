@@ -2,7 +2,6 @@ local id, e = ...
 local addName= HUD_EDIT_MODE_MINIMAP_LABEL
 local Save={scale=0.85}
 
-
 --####
 --初始
 --####

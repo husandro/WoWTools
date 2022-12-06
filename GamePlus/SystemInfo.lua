@@ -251,7 +251,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             else
                 Save.disabled=true
             end
-            print(id, addName, e.GetEnabeleDisable(not Save.disabled), REQUIRES_RELOAD, '/reload')
+            print(id, addName, e.GetEnabeleDisable(not Save.disabled), REQUIRES_RELOAD)
         end)
         check:SetScript('OnEnter', function(self2)
             e.tips:SetOwner(self2, "ANCHOR_RIGHT");

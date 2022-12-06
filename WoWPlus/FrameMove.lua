@@ -222,12 +222,16 @@ end
 local function setAddLoad(arg1)
     if arg1=='Blizzard_AchievementUI' then--成就
         Move(AchievementFrame.Header,{frame=AchievementFrame})
+
     elseif arg1=='Blizzard_EncounterJournal' then--冒险指南
         Move(EncounterJournal, {})
+
     elseif arg1=='Blizzard_ClassTalentUI' then--天赋
         Move(ClassTalentFrame, {save=true})
+
     elseif arg1=='Blizzard_AuctionHouseUI' then--拍卖行
         Move(AuctionHouseFrame, {})
+
     elseif arg1=='Blizzard_Communities' then--公会和社区
         local dialog = CommunitiesFrame.NotificationSettingsDialog or nil;
         if dialog then
@@ -235,14 +239,15 @@ local function setAddLoad(arg1)
             dialog:SetAllPoints();
         end
         Move(CommunitiesFrame, {})
+
     elseif arg1=='Blizzard_Collections' then
         local checkbox = WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox;
         checkbox.Label:ClearAllPoints();
         checkbox.Label:SetPoint("LEFT", checkbox, "RIGHT", 2, 1);
         checkbox.Label:SetPoint("RIGHT", checkbox, "RIGHT", 160, 1);
-
         Move(CollectionsJournal, {})--藏品
         Move(WardrobeFrame, {})--幻化
+
     elseif arg1=='Blizzard_Calendar' then--日历
         Move(CalendarFrame, {})
 
@@ -256,7 +261,7 @@ local function setAddLoad(arg1)
         Move(PlayerChoiceFrame, {})--任务选择
     elseif arg1=="Blizzard_GuildBankUI" then--公会银行
         Move(GuildBankFrame.Emblem, {frame=GuildBankFrame})
-        
+
     elseif arg1=='Blizzard_FlightMap' then--飞行地图
         Move(FlightMapFrame, {})
     end

@@ -584,7 +584,7 @@ local function setPanel()
                 end
             end)
         end
-        print(COLOR,'|cnGREEN_FONT_COLOR:#'..n..COMPLETE..'|r ', SAVE..'/reload')
+        print(COLOR,'|cnGREEN_FONT_COLOR:#'..n..COMPLETE..'|r ', REQUIRES_RELOAD)
     end)
 
     local str2=e.Cstr(frame)--频道名称替换
@@ -621,7 +621,7 @@ local function setPanel()
                 end
             end)
         end
-        print(CHANNEL_CHANNEL_NAME, COMMUNITIES_SETTINGS_SHORT_NAME_LABEL,'|cnGREEN_FONT_COLOR:#'..n..COMPLETE..'|r ',SAVE..'/reload')
+        print(CHANNEL_CHANNEL_NAME, COMMUNITIES_SETTINGS_SHORT_NAME_LABEL,'|cnGREEN_FONT_COLOR:#'..n..COMPLETE..'|r ', REQUIRES_RELOAD)
     end)
 end
 

@@ -386,7 +386,7 @@ local function setMarkersFrame()--设置标记, 框架
                         frame:SetPoint('BOTTOMLEFT', MultiBarBottomLeftButton12, 'TOPRIGHT')
                     elseif d=='RightButton' and IsControlKeyDown() then
                         Save.H = not Save.H and true or nil
-                        print(id,addName,HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION..(Save.H and e.Icon.up2 or e.Icon.toLeft2), REQUIRES_RELOAD,'/reload')
+                        print(id,addName,HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION..(Save.H and e.Icon.up2 or e.Icon.toLeft2), REQUIRES_RELOAD)
                     end
                 end)
                 button:SetScript('OnMouseUp', function()
