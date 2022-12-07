@@ -107,13 +107,13 @@ end
 
 local function setMount(self, mountID)--坐骑    
     local name, spellID, icon, isActive, isUsable, sourceType, isFavorite, isFactionSpecific, faction, shouldHideOnChar, isCollected=C_MountJournal.GetMountInfoByID(mountID)
-    self:AddDoubleLine(MOUNTS..'ID: '..mountID, spellID and SUMMON..ABILITIES..'ID: '..spellID)
+    self:AddDoubleLine(MOUNTS..' '..mountID, spellID and SUMMON..ABILITIES..' '..spellID)
     if isFactionSpecific then
         self:AddDoubleLine(not faction and ' ' or LFG_LIST_CROSS_FACTION:format(faction==0 and e.Icon.horde2..THE_HORDE or e.Icon.alliance2..THE_ALLIANCE or ''), ' ')
     end
     local creatureDisplayInfoID, description, source, isSelfMount, mountTypeID, uiModelSceneID, animID, spellVisualKitID, disablePlayerMountPreview = C_MountJournal.GetMountInfoExtraByID(mountID)
     if creatureDisplayInfoID then
-        self:AddDoubleLine(MODEL..'ID: '..creatureDisplayInfoID, TUTORIAL_TITLE61_DRUID..': '..(isSelfMount and YES or NO))
+        self:AddDoubleLine(MODEL..' '..creatureDisplayInfoID, TUTORIAL_TITLE61_DRUID..': '..(isSelfMount and YES or NO))
     end
     if source then
         self:AddDoubleLine(source,' ')
@@ -352,7 +352,7 @@ local function setSpell(self, spellID)--法术
     if not spellID then
         return
     end
-    self:AddDoubleLine(SPELLS..'ID: '..spellID, spellTexture and '|T'..spellTexture..':0|t'..spellTexture)
+    self:AddDoubleLine(SPELLS..' '..spellID, spellTexture and '|T'..spellTexture..':0|t'..spellTexture)
     --self.Portrait:SetTexture(spellTexture)
     --self.Portrait:SetShown(true)
 
@@ -371,9 +371,13 @@ local function setCurrency(self, currencyID)--货币
         if not self.Portrait then
             setInitItem(self, hide)--创建物品
         end
-        self:AddDoubleLine(TOKENS..'ID: '..currencyID, EMBLEM_SYMBOL..'ID: '..info2.iconFileID)
+        self:AddDoubleLine(TOKENS..' '..currencyID, info2.iconFileID and '|T'..info2.iconFileID..':0|t'..info2.iconFileID)
+--[[
         self.Portrait:SetTexture(info2.iconFileID)
         self.Portrait:SetShown(true)
+
+]]
+
     end
     local factionID = C_CurrencyInfo.GetFactionGrantedByCurrency(currencyID)--派系声望
     if factionID and factionID>0 then
@@ -409,9 +413,9 @@ local function setAchievement(self, achievementID)--成就
     end
     local str= flags== 0x4000 and GUILD or flags==0x20000 and e.Icon.wow2..'WoW'..SHARE_QUEST_ABBREV
     if str then
-        self:AddDoubleLine(ACHIEVEMENTS..'ID: '..achievementID..(icon and ' '..EMBLEM_SYMBOL..'ID: '..icon or ''), str, nil,nil,nil, 1,0,1)
+        self:AddDoubleLine(ACHIEVEMENTS..' '..achievementID..(icon and ' '..EMBLEM_SYMBOL..' '..icon or ''), str, nil,nil,nil, 1,0,1)
     else
-        self:AddDoubleLine(ACHIEVEMENTS..'ID: '..achievementID, icon and EMBLEM_SYMBOL..'ID: '..icon)
+        self:AddDoubleLine(ACHIEVEMENTS..' '..achievementID, icon and EMBLEM_SYMBOL..' '..icon)
     end
     if icon then
         self.Portrait:SetTexture(icon)
@@ -447,8 +451,8 @@ local function setBattlePet(self, speciesID, level, breedQuality, maxHealth, pow
             BattlePetTooltipTemplate_AddTextLine(self, ITEM_PET_KNOWN:format(0, limit), 1,0,0)
         end
     end
-    BattlePetTooltipTemplate_AddTextLine(self, PET..'ID: '..speciesID..'                  |T'..speciesIcon..':0|t'..speciesIcon)
-    BattlePetTooltipTemplate_AddTextLine(self, 'NPCID: '..companionID..'                  '..MODEL..'ID: '..creatureDisplayID)--..'    '..	WILD_PETS:gsub(PET,'')..': '..e.GetYesNo(isWild)..'         '..TRADE..': '..e.GetYesNo(isTradeable))
+    BattlePetTooltipTemplate_AddTextLine(self, PET..' '..speciesID..'                  |T'..speciesIcon..':0|t'..speciesIcon)
+    BattlePetTooltipTemplate_AddTextLine(self, 'NPC '..companionID..'                  '..MODEL..' '..creatureDisplayID)--..'    '..	WILD_PETS:gsub(PET,'')..': '..e.GetYesNo(isWild)..'         '..TRADE..': '..e.GetYesNo(isTradeable))
     local tab = C_PetJournal.GetPetAbilityListTable(speciesID)--技能图标
     table.sort(tab, function(a,b) return a.level< b.level end)
     local abilityIcon=''
@@ -494,10 +498,10 @@ local function setBuff(type, self, ...)--Buff
             self.backgroundColor:SetColorTexture(r, g, b, 0.3)
             self.backgroundColor:SetShown(true)
         end
-
-        SetPortraitTexture(self.Portrait, source)
-        self.Portrait:SetShown(true)
-
+        if source~='player' then
+            SetPortraitTexture(self.Portrait, source)
+            self.Portrait:SetShown(true)
+        end
         local text= source=='player' and COMBATLOG_FILTER_STRING_ME or source=='pet' and PET or UnitIsPlayer(source) and e.GetPlayerInfo(source, nil, true) or _G[source] or source
         self:AddDoubleLine('|c'..(hex or 'ffffff')..RUNEFORGE_LEGENDARY_POWER_SOURCE_FORMAT:format(text)..'|r')
         self:Show()
@@ -525,11 +529,15 @@ local setFriendshipFaction=function(self, friendshipID)--friend声望
 	if ( repInfo and repInfo.friendshipFactionID and repInfo.friendshipFactionID > 0) then
         local icon = (repInfo.texture and repInfo.texture>0) and repInfo.texture
         if icon then
+--[[
             self.Portrait:SetShown(true)
             self.Portrait:SetTexture(icon)
-            self:AddDoubleLine(INDIVIDUALS..REPUTATION..'ID: '..friendshipID, icon  and EMBLEM_SYMBOL..'ID: '..icon)
+
+]]
+
+            self:AddDoubleLine(INDIVIDUALS..REPUTATION..' '..friendshipID, icon and '|T'..icon..':0|t'..icon)
         else
-            self:AddDoubleLine(INDIVIDUALS..REPUTATION..'ID: '..friendshipID)
+            self:AddDoubleLine(INDIVIDUALS..REPUTATION..' '..friendshipID)
         end
         self:Show()
     end
@@ -542,7 +550,7 @@ local function setMajorFactionRenown(self, majorFactionID)--名望
             self.Portrait:SetShown(true)
             self.Portrait:SetAtlas('MajorFactions_Icons_'..info.textureKit..'512')
         end
-        self:AddDoubleLine(RENOWN_LEVEL_LABEL..'ID '..majorFactionID, MAJOR_FACTION_RENOWN_LEVEL_TOAST:format(info.renownLevel)..' '..('%i%%'):format(info.renownReputationEarned/info.renownLevelThreshold*100))
+        self:AddDoubleLine(RENOWN_LEVEL_LABEL..' '..majorFactionID, MAJOR_FACTION_RENOWN_LEVEL_TOAST:format(info.renownLevel)..' '..('%i%%'):format(info.renownReputationEarned/info.renownLevelThreshold*100))
         self:Show()
     end
 end
@@ -1046,11 +1054,11 @@ local function Init()
                     e.tips:AddLine(' ')
                 end
                 
-                e.tips:AddDoubleLine(REPUTATION..'ID: '..self.factionID or factionID, completedParagon)
+                e.tips:AddDoubleLine(REPUTATION..' '..self.factionID or factionID, completedParagon)
                 e.tips:Show();
             end
         else
-            e.tips:AddDoubleLine(REPUTATION..'ID: '..(self.factionID or factionID), completedParagon)
+            e.tips:AddDoubleLine(REPUTATION..' '..(self.factionID or factionID), completedParagon)
             e.tips:Show()
         end
     end)
@@ -1255,7 +1263,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                     else
                         achievementID, _, _, _, _, _, _, description, _, icon = GetAchievementInfo(self2.id);
                     end
-                    self2.HiddenDescription:SetText(description..' ID: '..achievementID..(icon and ' |T'..icon..':0|t'..icon or ''))
+                    self2.HiddenDescription:SetText(description..' '..achievementID..(icon and ' |T'..icon..':0|t'..icon or ''))
                 end)
             end
         end

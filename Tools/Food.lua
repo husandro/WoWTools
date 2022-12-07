@@ -4,6 +4,7 @@ local Save={
     itemClass={},--物品类型
     noUseItems={},--禁用物品
     autoEnable=true,--启动,查询
+    onlyMaxExpansion=true,--仅本版本物品
 }
 
 local panel=e.Cbtn2(nil, WoWToolsMountButton, true, nil)
@@ -94,8 +95,8 @@ local function find_Item_Type(class, subclass)
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local info = C_Container.GetContainerItemInfo(bag, slot)
             if info and info.hyperlink and info.itemID then
-                local classID, subClassID = select(12, GetItemInfo(info.hyperlink))
-                if classID==class and subClassID==subclass then
+                local classID, subClassID, _, expacID = select(12, GetItemInfo(info.hyperlink))
+                if classID==class and subClassID==subclass and (Save.onlyMaxExpansion and e.ExpansionLevel==expacID or not Save.onlyMaxExpansion) then
                     table.insert(tab, info.itemID)
                 end
             end
@@ -267,6 +268,18 @@ local function InitMenu(self, level, type)--主菜单
         }
         UIDropDownMenu_AddButton(info, level)
 
+        info={
+            text= e.onlyChinse and '仅当前版本物品' or 	LFG_LIST_CROSS_FACTION:format(REFORGE_CURRENT..(VERSION or GAME_VERSION_LABEL)),
+            checked= Save.onlyMaxExpansion,
+            disabled= bat,
+            tooltipOnButton=true,
+            tooltipTitle= e.ExpansionLevel,
+            func= function()
+                Save.onlyMaxExpansion= not Save.onlyMaxExpansion and true or nil
+                set_Item_Button()
+            end,
+        }
+        UIDropDownMenu_AddButton(info, level)
     elseif type then
         for _, tab in pairs(itemClass) do
             if type==tab.className then

@@ -7,9 +7,11 @@ local function set_ZoomOut_Event()--更新地区时,缩小化地图, 事件
     if Save.ZoomOut then
         panel:RegisterEvent('PLAYER_ENTERING_WORLD')
         panel:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+        panel:RegisterEvent('ZONE_CHANGED')
     else
         panel:UnregisterEvent('PLAYER_ENTERING_WORLD')
         panel:UnregisterEvent("ZONE_CHANGED_NEW_AREA")
+        panel:UnregisterEvent('ZONE_CHANGED')
     end
 end
 local function set_ZoomOut()--更新地区时,缩小化地图
