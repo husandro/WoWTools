@@ -391,7 +391,7 @@ local function setCurrency(self, currencyID)--货币
     for guid, info in pairs(e.WoWSave) do--帐号数据
         if guid~=e.Player.guid then
             local quantity=info.Currency[currencyID]
-            if quantity then
+            if quantity and quantity>0 then
                 self:AddDoubleLine(e.GetPlayerInfo(nil, guid, true), e.MK(quantity, 3))
                 all=all+quantity
                 numPlayer=numPlayer+1
@@ -949,6 +949,20 @@ local function Init()
     end)
 
 ]]
+local function set_FlyoutInfo(self, flyoutID)
+--[[
+    local name, description, numSlots, isKnown= GetFlyoutInfo(flyoutID)
+    
+    for slot= 1, numSlots do
+        local flyoutSpellID, overrideSpellID, isKnown2, spellName, slotSpecID = GetFlyoutSlotInfo(flyoutID, slot)
+print(GetSpellInfo(overrideSpellID))
+print(GetSpellInfo)
+        self:AddDoubleLine(flyoutSpellID,spellName)
+    end
+
+]]
+
+end
 
     TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes,  function(tooltip,date)
         if (tooltip==e.tips or tooltip==ItemRefTooltip) then
@@ -975,6 +989,9 @@ local function Init()
 
                 elseif date.type==19 then
                     setItem(tooltip, date.id)-- 玩具
+
+                elseif date.type==22 then 
+                    set_FlyoutInfo(tooltip, date.id)
 
                 elseif date.type==23 then
                     setQuest(tooltip, date.id)--任务
@@ -1245,7 +1262,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 e.tips:Show()
             end)
             sel:SetScript('OnLeave', function() e.tips:Hide() end)
-            
+
             if Save.disabled then
                 panel:UnregisterAllEvents()
             else
