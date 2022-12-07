@@ -310,7 +310,8 @@ local function InitMenu(self, level, type)--主菜单
     if type=='SETTINGS' then
         info={--图标类型
             text=EMBLEM_SYMBOL..': |cnGREEN_FONT_COLOR:'..(not Save.specializationTexture and FACTION or SPECIALIZATION)..'|r',
-            notCheckable=true,
+            --notCheckable=true,
+checked= Save.specializationTexture,
             tooltipOnButton=true,
             tooltipTitle=TYPE,
             tooltipText= FACTION..'\n'..SPECIALIZATION,
@@ -323,7 +324,8 @@ local function InitMenu(self, level, type)--主菜单
 
         info={--时间类型
             text=TIME_LABEL..' |cnGREEN_FONT_COLOR:'..(Save.timeTypeText and SecondsToTime(35) or '00:35')..'|r',
-            notCheckable=true,
+            --notCheckable=true,
+checked= Save.timeTypeText,
             tooltipOnButton=true,
             tooltipTitle=TYPE,
             tooltipText='00:35\n'..SecondsToTime(35),
