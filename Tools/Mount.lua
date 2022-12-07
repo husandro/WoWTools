@@ -296,7 +296,7 @@ local mapIDs={
 
 local function setClickAtt(entreCombat)--设置 Click属性
     local inCombat=UnitAffectingCombat('player')
-    if inCombat and not entreCombat then
+    if (inCombat and not entreCombat) or UnitIsDead('player') then
         panel.Combat=true
         return
     end

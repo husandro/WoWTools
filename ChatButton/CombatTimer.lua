@@ -2,7 +2,7 @@ local id, e = ...
 local addName= COMBAT..TIME_LABEL:gsub(':','')
 local Save= {textScale=1.2,
         Say=120,
-        AllOnlineTime=true,--进入游戏时,提示游戏,时间
+        --AllOnlineTime=true,--进入游戏时,提示游戏,时间
         combatScale=true,--战斗中缩放
 
         bat={num= 0, time= 0},--战斗数据

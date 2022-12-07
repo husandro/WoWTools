@@ -91,7 +91,7 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex, guildBank
                     local upLevel
                     if itemLinkPlayer then
                         local lv=GetDetailedItemLevelInfo(itemLinkPlayer)
-                        if lv and itemLevel-lv>=5 then
+                        if lv and itemLevel-lv>1 then
                             upLevel=true
                         end
                     else

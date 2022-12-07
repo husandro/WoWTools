@@ -693,7 +693,9 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             local className, classFilename= UnitClass(unit);--职业名称
             local sex = UnitSex(unit)
             local raceName, raceFile= UnitRace(unit)
-            local level=UnitLevel(unit)
+            local level
+
+            level= UnitLevel(unit)
             text= sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a'
             level= MAX_PLAYER_LEVEL>level and '|cnGREEN_FONT_COLOR:'..level..'|r' or level
             className= col and col..className..'|r' or className
@@ -702,7 +704,6 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             line:SetText(text)
         end
 
-        
         local isSelf=UnitIsUnit('player', unit)--我
         local isGroupPlayer= (not isSelf and e.GroupGuid[guid]) and true or nil--队友
 
@@ -732,11 +733,13 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                                 line:Hide()
                             end
                         end
+                   
                     else
                         line:Hide()
+
                     end
-               -- else
-                 --  line:Hide()
+                else
+                   line:Hide()
                 end
             end
         end
@@ -814,48 +817,64 @@ local function setUnitInit(self)--设置默认提示位置
 end
 
 
+
 local function setCVar(reset, tips)
     local tab={
         ['missingTransmogSourceInItemTooltips']={
             value='1',
-            msg=TRANSMOGRIFY..SOURCES..': '..SHOW,
+            msg= e.onlyChinse and '显示装备幻化来源' or TRANSMOGRIFY..SOURCES..': '..SHOW,
         },
         ['nameplateOccludedAlphaMult']={
             value='0.15',
-            msg=SPELL_FAILED_LINE_OF_SIGHT..'('..SHOW_TARGET_CASTBAR_IN_V_KEY..')'..CHANGE_OPACITY,
+            msg= e.onlyChinse and '不在视野里, 姓名板透明度: 0.15' or SPELL_FAILED_LINE_OF_SIGHT..'('..SHOW_TARGET_CASTBAR_IN_V_KEY..')'..CHANGE_OPACITY,
         },
         ['dontShowEquipmentSetsOnItems']={
             value='0',
-            msg=EQUIPMENT_SETS:format(SHOW)
+            msg= e.onlyChinse and '显法装备方案' or EQUIPMENT_SETS:format(SHOW),
         },
         ['UberTooltips']={
             value='1',
-            msg=SPELL_MESSAGES..': '..SHOW,
+            msg= e.onlyChinse and '显示法术信息' or SPELL_MESSAGES..': '..SHOW,
         },
-        ["alwaysCompareItems"]={--总是比较物品
+        ["alwaysCompareItems"]={
              value= "1",
-             msg=ALWAYS..COMPARE_ACHIEVEMENTS:gsub(ACHIEVEMENTS, ITEMS)
-        }
+             msg= e.onlyChinse and '总是比较装备' or ALWAYS..COMPARE_ACHIEVEMENTS:gsub(ACHIEVEMENTS, ITEMS)
+        },
+       --[[
+ ["minimapTrackingShowAll"]={
+            value= '1',
+            msg= e.onlyChinse and '追踪: 镇民' or TRACKING..': '..TOWNSFOLK_TRACKING_TEXT,
+        },
+
+]]
+
+        ["profanityFilter"]={value= '0',msg= '禁用语言过虑 /reload', zh=true},
+        ["overrideArchive"]={value= '0',msg= '反和谐 /reload', zh=true},
+        ['cameraDistanceMaxZoomFactor']={value= '2.6', msg= e.onlyChinse and '距离' or FARCLIP}
     }
+
     if tips then
         for name, info in pairs(tab) do
             e.tips:AddDoubleLine(name..': '..info.value..' (|cff00ff00'..C_CVar.GetCVar(name)..'|r)', info.msg)
         end
         return
     end
+
     for name, info in pairs(tab) do
-        if reset then
-            local defaultValue = C_CVar.GetCVarDefault(name)
-            local value = C_CVar.GetCVar(name)
-            if defaultValue~=value then
-                C_CVar.SetCVar(name, defaultValue)
-                print(id, addName, '|cnGREEN_FONT_COLOR:'..RESET_TO_DEFAULT..'|r', name, defaultValue, info.msg)
-            end
-        elseif Save.setCVar then
-            local value = C_CVar.GetCVar(name)
-            if value~=info.value then
-                C_CVar.SetCVar(name, info.value)
-                print(id,addName ,name, info.value..'('..value..')', info.msg)
+        if info.zh and e.Player.zh or not info.zh then
+            if reset then
+                local defaultValue = C_CVar.GetCVarDefault(name)
+                local value = C_CVar.GetCVar(name)
+                if defaultValue~=value then
+                    C_CVar.SetCVar(name, defaultValue)
+                    print(id, addName, '|cnGREEN_FONT_COLOR:'..RESET_TO_DEFAULT..'|r', name, defaultValue, info.msg)
+                end
+            elseif Save.setCVar then
+                local value = C_CVar.GetCVar(name)
+                if value~=info.value then
+                    C_CVar.SetCVar(name, info.value)
+                    print(id,addName ,name, info.value..'('..value..')', info.msg)
+                end
             end
         end
     end
@@ -1152,7 +1171,8 @@ local function Init()
     end)
     panel.inCombatHideTips:SetChecked( Save.inCombatHideTips)
 
-    --设置CVar
+  
+--设置CVar
     panel.CVar=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     panel.CVar.Text:SetText(SETTINGS..' CVar')
     panel.CVar:SetPoint('TOPLEFT', panel.inCombatHideTips, 'BOTTOMLEFT', 0, -30)
@@ -1175,10 +1195,21 @@ local function Init()
         e.tips:Show()
     end)
     panel.CVar:SetScript('OnLeave', function() e.tips:Hide() end)
-    
-    
+
     setUnitInit(self)--设置默认提示位置
     setCVar()--设置CVar
+
+    if Save.setCVar and e.Player.zh then
+        ConsoleExec("portal TW")
+        SetCVar("profanityFilter", '0')
+
+        local pre = C_BattleNet.GetFriendGameAccountInfo
+        C_BattleNet.GetFriendGameAccountInfo = function(...)
+            local gameAccountInfo = pre(...)
+            gameAccountInfo.isInCurrentRegion = true
+            return gameAccountInfo;
+        end
+    end
 end
 
 --加载保存数据

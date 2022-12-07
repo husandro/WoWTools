@@ -663,6 +663,7 @@ local function setMsg_CHAT_MSG_SYSTEM(text)--欢迎加入, 信息
     end
 end
 
+
 --#####
 --对话框
 --#####
@@ -740,6 +741,7 @@ local function InitMenu(self, level, type)
             end,
         }
         UIDropDownMenu_AddButton(info, level)
+
     else
         info={
             text=addName..e.Icon.left..e.GetEnabeleDisable(not Save.disabed),
@@ -747,7 +749,23 @@ local function InitMenu(self, level, type)
             func=function()
                 setFunc()--使用，禁用
             end,
-            --colorCode= Save.disabed and '|cff606060',
+        }
+        UIDropDownMenu_AddButton(info, level)
+
+        local bool= C_CVar.GetCVarBool('textToSpeech')--文本转语音
+        info={
+            text=TEXT_TO_SPEECH..e.GetEnabeleDisable(bool),
+            checked=bool,
+            tooltipOnButton=true,
+            tooltipTitle='CVar: textToSpeech',
+            func=function()
+                if C_CVar.GetCVarBool('textToSpeech') then
+                    C_CVar.SetCVar("textToSpeech", 0)
+                else
+                    C_CVar.SetCVar("textToSpeech", 1)
+                end
+                print(id, addName, TEXT_TO_SPEECH..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool('textToSpeech')))
+            end
         }
         UIDropDownMenu_AddButton(info, level)
 
@@ -763,44 +781,7 @@ local function InitMenu(self, level, type)
             hasArrow=true,
         }
         UIDropDownMenu_AddButton(info, level)
-
-        local bool= C_CVar.GetCVarBool('textToSpeech')--文本转语音
-        info={
-            text=TEXT_TO_SPEECH..e.GetEnabeleDisable(bool),
-            checked=bool,
-            func=function()
-                if C_CVar.GetCVarBool('textToSpeech') then
-                    C_CVar.SetCVar("textToSpeech", 0)
-                else
-                    C_CVar.SetCVar("textToSpeech", 1)
-                end
-                print(TEXT_TO_SPEECH..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool('textToSpeech')))
-            end
-        }
-        UIDropDownMenu_AddButton(info, level)
-
---[[
-        info={
-            text=HIDE..(HELP or SLASH_TEXTTOSPEECH_HELP)..INFO,
-            checked=C_CVar.GetCVarBool("hideHelptips"),
-            tooltipOnButton=true,
-            tooltipTitle='CVar: hideHelptips',
-            func=function ()
-                if C_CVar.GetCVarBool("hideHelptips") then
-                    C_CVar.SetCVar("hideHelptips", 0)
-                    print(0)
-                else
-                    C_CVar.SetCVar("hideHelptips", 1)
-                    print(1)
-                end
-                print(C_CVar.GetCVarBool("hideHelptips"))
-            end
-        }
-        UIDropDownMenu_AddButton(info, level)
-
-]]
-
-
+        
         UIDropDownMenu_AddSeparator(level)
         info={--重载
             text=RELOADUI,
@@ -821,7 +802,7 @@ end
 --####
 local function Init()
     DEFAULT_CHAT_FRAME.ADD=DEFAULT_CHAT_FRAME.AddMessage
-    
+
     panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
     panel.texture:SetAtlas(e.Icon.icon)

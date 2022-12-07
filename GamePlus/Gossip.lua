@@ -668,17 +668,12 @@ local function Init_Quest()
         e.tips:Hide()
     end)
 
---[[
-    QuestFrame:SetScript('OnShow', function (self)
-        local npc=e.GetNpcID('npc')
-        self.sel.npc=npc
-        self.sel.name=UnitName("npc")
-        self.sel:SetChecked(Save.NPC[npc])
+    local questSelect={}
+    --[[
+QuestFrame:SetScript('OnShow', function (self)
+        questSelect=nil
     end)
-
 ]]
-
-
 
     local function select_Reward()--自动:选择奖励
         if Save.autoSelectReward then
@@ -768,7 +763,6 @@ local function Init_Quest()
        end
     end)
 
-    local questSelect
     --任务进度, 继续, 完成 QuestFrame.lua
     hooksecurefunc('QuestFrameProgressItems_Update', function(self)
         local npc=e.GetNpcID('npc')
@@ -776,35 +770,36 @@ local function Init_Quest()
         QuestFrame.sel.name=UnitName("npc")
         QuestFrame.sel:SetChecked(Save.NPC[npc])
 
-        if not Save.quest or IsModifierKeyDown() or  Save.NPC[npc] then
+        local questID=GetQuestID()
+
+        if not Save.quest or IsModifierKeyDown() or (Save.NPC[npc] and Save.questOption[qeustID]) then
             return
         end
 
-        local questID=GetQuestID()
-        if not IsQuestCompletable() then
-            if questSelect ~=questID then
+        if not IsQuestCompletable() then--or not C_QuestOffer.GetHideRequiredItemsOnTurnIn() then
+            if not questSelect[questID] then
                 local link=questID and GetQuestLink(questID)
-                if link then
-                    C_Timer.After(0.3, function()
-                        print(id, addName, '|cffff00ff'..GetProgressText(), link)
+                local text=GetProgressText()
+                    C_Timer.After(0.5, function()
+                        print(id, QUESTS_LABEL, '|cffff00ff'..text..'|r', link or questID, QuestFrameGoodbyeButton and '|cnRED_FONT_COLOR:'..QuestFrameGoodbyeButton:GetText())
                     end)
-                end
-                questSelect=questID
+                    questSelect[questID]=true
             end
             QuestGoodbyeButton_OnClick()
         else
-            if questSelect ~=questID then
+            if not questSelect[questID] then
                 local link= questID and GetQuestLink(questID)
                 if link then
-                    C_Timer.After(0.3, function()
+                    C_Timer.After(0.5, function()
                         print(id, addName, link)
                     end)
                 end
-                questSelect=questID
+                questSelect[questID]=true
             end
             QuestProgressCompleteButton_OnClick()--local b=QuestFrameCompleteQuestButton;
         end
     end)
+
     --自动接取任务, 仅一个任务
     hooksecurefunc('QuestInfo_Display', function(template, parentFrame, acceptButton, material, mapView)--QuestInfo.lua
         local npc=e.GetNpcID('npc')
@@ -827,37 +822,39 @@ local function Init_Quest()
         end
 
         local complete= C_QuestLog.IsComplete(questID)
-        if (not complete and getMaxQuest()) or (not_Ace_QuestTrivial(questID) and not Save.questOption[questID]) then
+        if (not_Ace_QuestTrivial(questID) and not Save.questOption[questID]) then--(not complete and getMaxQuest()) or
             return
         end
 
         if acceptButton and acceptButton:IsEnabled() then
             if complete then
                 select_Reward()--自动:选择奖励
-                if questSelect ~=questID then
+                if not questSelect[questID] then
                     local link=GetQuestLink(questID)
                     if link then
                         C_Timer.After(0.3, function()
                             print(id, QUESTS_LABEL, link, '|cnGREEN_FONT_COLOR:'..acceptButton:GetText()..'|r')
                         end)
                     end
-                    questSelect= questID
+                    questSelect[questID]=true
                 end
             end
 
             acceptButton:Click()
 
             if not complete then
-                if questSelect ~=questID then
+                
+                if not questSelect[questID] then
                     C_Timer.After(0.5, function()
                         local link=GetQuestLink(questID)
                         if link then
                             print(id, QUESTS_LABEL, link, '|cnGREEN_FONT_COLOR:'..acceptButton:GetText()..'|r')
                         end
                     end)
-                    questSelect=questID
+                    questSelect[questID]=true
                 end
             end
+            questSelect={}
         end
     end)
 end

@@ -21,7 +21,8 @@
         "UI_SCALE",
         "TIME_LABEL",
         "QUESTS_LABEL",
-        "NPE_MOVE"
+        "NPE_MOVE",
+        "QUEUED_STATUS_LOCKED_EXPLANATION"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

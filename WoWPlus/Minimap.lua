@@ -1,12 +1,27 @@
 local id, e = ...
 local addName= HUD_EDIT_MODE_MINIMAP_LABEL
 local Save={scale=0.85}
+local panel=CreateFrame("Frame")
 
+local function set_ZoomOut_Event()--更新地区时,缩小化地图, 事件
+    if Save.ZoomOut then
+        panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+        panel:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+    else
+        panel:UnregisterEvent('PLAYER_ENTERING_WORLD')
+        panel:UnregisterEvent("ZONE_CHANGED_NEW_AREA")
+    end
+end
+local function set_ZoomOut()--更新地区时,缩小化地图
+    local value= Minimap:GetZoomLevels()
+    if value~=0 then
+        Minimap:SetZoom(0)
+    end
+end
 --####
 --初始
 --####
 local function Init()
-    
     local frame=MinimapCluster
     if Save.scale and Save.scale~=1 then
         frame:SetScale(Save.scale)
@@ -68,12 +83,56 @@ local function Init()
         ExpansionLandingPageMinimapButton:SetScript("OnDragStart", ExpansionLandingPageMinimapButton.StartMoving)        
         ExpansionLandingPageMinimapButton:SetScript("OnDragStop", ExpansionLandingPageMinimapButton.StopMovingOrSizing)
     end
+
+local function set_minimapTrackingShowAll()--追踪,镇民
+    if Save.minimapTrackingShowAll~=nil then
+        C_CVar.SetCVar('minimapTrackingShowAll', not Save.minimapTrackingShowAll and '0' or '1' )
+    end
+end
+    
+    if MinimapCluster and MinimapCluster.Tracking and MinimapCluster.Tracking.Button then
+        MinimapCluster.Tracking.Button:HookScript( 'OnMouseDown', function()
+            UIDropDownMenu_AddSeparator(1)
+            local info={
+                text=e.onlyChinse and '镇民' or TOWNSFOLK_TRACKING_TEXT,
+                checked= C_CVar.GetCVarBool("minimapTrackingShowAll"),
+                tooltipOnButton=true,
+                tooltipTitle= e.onlyChinse and '显示: 追踪' or SHOW..': '..TRACKING,
+                func= function()
+                    Save.minimapTrackingShowAll= not C_CVar.GetCVarBool("minimapTrackingShowAll") and true or false
+                    set_minimapTrackingShowAll()--追踪,镇民
+                end
+            }
+            UIDropDownMenu_AddButton(info, 1)
+
+            info={
+                text= e.onlyChinse and '缩小地图' or BINDING_NAME_MINIMAPZOOMOUT,
+                checked= Save.ZoomOut,
+                tooltipOnButton=true,
+                tooltipTitle=id..' '..addName,
+                tooltipText= e.onlyChinse and '更新地区时' or UPDATE..ZONE,
+                func= function()
+                    Save.ZoomOut= not Save.ZoomOut and true or nil
+                    set_ZoomOut_Event()--更新地区时,缩小化地图
+                    set_ZoomOut()--更新地区时,缩小化地图
+                end
+            }
+            UIDropDownMenu_AddButton(info, 1)
+        end)
+    end
+
+    if Save.ZoomOut then
+        set_ZoomOut_Event()--更新地区时,缩小化地图
+    end
+
+    if Save.minimapTrackingShowAll~=nil then
+        set_minimapTrackingShowAll()--追踪,镇民
+    end
 end
 
 --###########
 --加载保存数据
 --###########
-local panel=CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 
@@ -108,5 +167,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not WoWToolsSave then WoWToolsSave={} end
             WoWToolsSave[addName]=Save
         end
+    else
+        set_ZoomOut()--更新地区时,缩小化地图
     end
 end)

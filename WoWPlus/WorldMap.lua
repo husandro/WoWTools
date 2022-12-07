@@ -63,11 +63,13 @@ hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', function(self)--self.tagInf
         end
     end
     local sourceID =itemID and select(2, C_TransmogCollection.GetItemInfo(itemID))--幻化
-    local sourceInfo = sourceID and C_TransmogCollection.GetSourceInfo(sourceID)
-    if sourceInfo then
-        str=(str or '')..(sourceInfo.isCollected and e.Icon.okTransmog2 or e.Icon.transmogHide2)
+    if sourceID then
+        local collected=e.GetItemCollected(nil, sourceID, true)--物品是否收集 
+        if collected then
+            str=(str or '')..collected
+        end
     end
-    
+
     local itemEquipLoc= itemID and select(4, GetItemInfoInstant(itemID))
     local invSlot = itemEquipLoc and e.itemSlotTable[itemEquipLoc]
     if invSlot and itemLevel and itemLevel>1 then--装等
@@ -84,7 +86,6 @@ hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', function(self)--self.tagInf
     self.str:SetShown(str and true or false)
 
     if self.worldQuestType ~= Enum.QuestTagType.Normal then
-        
         local inProgress = self.dataProvider:IsMarkingActiveQuests() and C_QuestLog.IsOnQuest(self.questID);
         local atlas= QuestUtil.GetWorldQuestAtlasInfo(self.worldQuestType, inProgress, tagInfo.tradeskillLineID, self.questID);
         if not self.worldQuestTypeTips then
