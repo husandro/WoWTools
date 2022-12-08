@@ -45,6 +45,63 @@ local function getMaxQuest()--任务，是否已满
     return select(2,C_QuestLog.GetNumQuestLogEntries())==C_QuestLog.GetMaxNumQuestsCanAccept()
 end
 
+local function select_Reward()--自动:选择奖励
+    if Save.autoSelectReward then
+        local firstItem = QuestInfoRewardsFrameQuestInfoItem1
+        
+        if firstItem then
+            local numQuests = GetNumQuestChoices()
+            if numQuests and numQuests >1 then
+                local bestValue, bestItem = 0, nil
+                local bestLevel, bestLevelItem= 0,nil
+                local selectItemLink
+                for i = 1, numQuests do
+                    local  itemLink = GetQuestItemLink('choice', i)
+                    if itemLink then
+                        local amount = select(3, GetQuestItemInfo('choice', i))--钱
+                        local _, _, itemQuality, itemLevel, _, _,_,_, itemEquipLoc, _, sellPrice, classID, subclassID = GetItemInfo(itemLink)
+                            if not((classID==4 and subclassID==5) or (classID==2 and subclassID==14)) then--化妆品
+                    
+                            if itemQuality and itemQuality<4 then--最高 稀有的 3
+                                
+                                if amount and sellPrice then
+                                    local totalValue = (sellPrice and sellPrice * amount) or 0
+                                    if totalValue > bestValue then
+                                        bestValue = totalValue
+                                        bestItem = i
+                                    end
+                                end
+                                
+                                local invSlot = itemEquipLoc and  e.itemSlotTable[itemEquipLoc]
+                                if invSlot and itemLevel and itemLevel>1 then--装等
+                                    local itemLinkPlayer = GetInventoryItemLink('player', invSlot)
+                                    if itemLinkPlayer then
+                                        local lv=GetDetailedItemLevelInfo(itemLinkPlayer)
+                                        if lv and lv>0 and itemLevel-lv>0 then
+                                            if bestLevel and bestLevel<lv or not bestLevel then
+                                                bestLevel=lv
+                                                bestLevelItem=i
+                                                selectItemLink=itemLink
+                                            end
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+
+                bestItem= bestLevelItem or bestItem
+                if bestItem then
+                    _G['QuestInfoRewardsFrameQuestInfoItem'..bestItem]:Click()
+                    if selectItemLink then
+                        print(id, QUESTS_LABEL, CHOOSE, selectItemLink)
+                    end
+                end
+            end
+        end
+    end
+end
 
 --###########
 --对话，主菜单
@@ -577,17 +634,6 @@ local function InitMenu_Quest(self, level, type)
             hasArrow=true,
         }
         UIDropDownMenu_AddButton(info, level)
-      --[[
-  info={--禁用, NPC, 任务
-            text=DISABLE,
-            notCheckable=true,
-            menuList='DISABLE',
-            hasArrow=true,
-        }
-       
-
-]]
-
 
         UIDropDownMenu_AddSeparator(level)
         info={
@@ -669,68 +715,6 @@ local function Init_Quest()
     QuestFrame.sel:SetScript("OnLeave", function()
         e.tips:Hide()
     end)
-
-   
-    --[[
-QuestFrame:SetScript('OnShow', function (self)
-        questSelect=nil
-    end)
-]]
-
-    local function select_Reward()--自动:选择奖励
-        if Save.autoSelectReward then
-            local firstItem = QuestInfoRewardsFrameQuestInfoItem1
-            
-            if firstItem then
-                local numQuests = GetNumQuestChoices()
-                if numQuests and numQuests >1 then
-                    local bestValue, bestItem = 0, nil
-                    local bestLevel, bestLevelItem= 0,nil
-                    local selectItemLink
-                    for i = 1, numQuests do
-                        local  itemLink = GetQuestItemLink('choice', i)
-                        if itemLink then
-                            local amount = select(3, GetQuestItemInfo('choice', i))--钱
-                            local _, _, itemQuality, itemLevel, _, _,_,_, itemEquipLoc, _, sellPrice= GetItemInfo(itemLink)
-                            if itemQuality and itemQuality<4 then--最高 稀有的 3
-                                
-                                if amount and sellPrice then
-                                    local totalValue = (sellPrice and sellPrice * amount) or 0
-                                    if totalValue > bestValue then
-                                        bestValue = totalValue
-                                        bestItem = i
-                                    
-                                    end
-                                end
-                                
-                                local invSlot = itemEquipLoc and  e.itemSlotTable[itemEquipLoc]
-                                if invSlot and itemLevel and itemLevel>1 then--装等
-                                    local itemLinkPlayer = GetInventoryItemLink('player', invSlot)
-                                    if itemLinkPlayer then
-                                        local lv=GetDetailedItemLevelInfo(itemLinkPlayer)
-                                        if lv and lv>0 and itemLevel-lv>0 then
-                                            if bestLevel and bestLevel<lv or not bestLevel then
-                                                bestLevel=lv
-                                                bestLevelItem=i
-                                                selectItemLink=itemLink
-                                            end
-                                        end
-                                    end
-                                end
-                            end
-                        end
-                    end
-                    bestItem= bestLevelItem or bestItem
-                    if bestItem then
-                        _G['QuestInfoRewardsFrameQuestInfoItem'..bestItem]:Click()
-                        if selectItemLink then
-                            print(id, QUESTS_LABEL, CHOOSE, selectItemLink)
-                        end
-                    end
-                end
-            end
-        end
-    end
 
     --任务框, 自动选任务    
     QuestFrameGreetingPanel:HookScript('OnShow', function(self)--QuestFrame.lua QuestFrameGreetingPanel_OnShow

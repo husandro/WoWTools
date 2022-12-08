@@ -344,40 +344,25 @@ local function setItem(self, ItemLink)
 end
 
 local function setSpell(self, spellID)--法术
-     self.textRight:SetText(spellID)
-    
-    
-    local spellID = select(2, self:GetSpell())
+    spellID = spellID or select(2, self:GetSpell())
     local spellTexture= spellID and  GetSpellTexture(spellID)
     if not spellID then
         return
     end
     self:AddDoubleLine(SPELLS..' '..spellID, spellTexture and '|T'..spellTexture..':0|t'..spellTexture)
-    --self.Portrait:SetTexture(spellTexture)
-    --self.Portrait:SetShown(true)
-
     local mountID = C_MountJournal.GetMountFromSpell(spellID)--坐骑
     if mountID then
         setMount(self, mountID)
     end
-
-    --setSpellCooldown(self, spellID)--法术冷却
-
 end
 
 local function setCurrency(self, currencyID)--货币
-    local info2 = C_CurrencyInfo.GetCurrencyInfo(currencyID)
+    local info2 = currencyID and C_CurrencyInfo.GetCurrencyInfo(currencyID)
     if info2 then
         if not self.Portrait then
             setInitItem(self, hide)--创建物品
         end
         self:AddDoubleLine(TOKENS..' '..currencyID, info2.iconFileID and '|T'..info2.iconFileID..':0|t'..info2.iconFileID)
---[[
-        self.Portrait:SetTexture(info2.iconFileID)
-        self.Portrait:SetShown(true)
-
-]]
-
     end
     local factionID = C_CurrencyInfo.GetFactionGrantedByCurrency(currencyID)--派系声望
     if factionID and factionID>0 then
