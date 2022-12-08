@@ -48,7 +48,6 @@ end
 local function select_Reward()--自动:选择奖励
     if Save.autoSelectReward then
         local firstItem = QuestInfoRewardsFrameQuestInfoItem1
-        
         if firstItem then
             local numQuests = GetNumQuestChoices()
             if numQuests and numQuests >1 then
@@ -60,29 +59,31 @@ local function select_Reward()--自动:选择奖励
                     if itemLink then
                         local amount = select(3, GetQuestItemInfo('choice', i))--钱
                         local _, _, itemQuality, itemLevel, _, _,_,_, itemEquipLoc, _, sellPrice, classID, subclassID = GetItemInfo(itemLink)
-                            if not((classID==4 and subclassID==5) or (classID==2 and subclassID==14)) then--化妆品
-                    
-                            if itemQuality and itemQuality<4 then--最高 稀有的 3
-                                
-                                if amount and sellPrice then
-                                    local totalValue = (sellPrice and sellPrice * amount) or 0
-                                    if totalValue > bestValue then
-                                        bestValue = totalValue
-                                        bestItem = i
-                                    end
+                        if (classID==4 and subclassID==5) or (classID==2 and subclassID==14) then--化妆品
+                            local isCollected= e.GetItemCollected(itemLink)--物品是否收集 
+                            if isCollected==false then
+                                bestItem = i
+                            end
+
+                        elseif itemQuality and itemQuality<4 then--最高 稀有的 3                                
+                            if amount and sellPrice then
+                                local totalValue = (sellPrice and sellPrice * amount) or 0
+                                if totalValue > bestValue then
+                                    bestValue = totalValue
+                                    bestItem = i
                                 end
-                                
-                                local invSlot = itemEquipLoc and  e.itemSlotTable[itemEquipLoc]
-                                if invSlot and itemLevel and itemLevel>1 then--装等
-                                    local itemLinkPlayer = GetInventoryItemLink('player', invSlot)
-                                    if itemLinkPlayer then
-                                        local lv=GetDetailedItemLevelInfo(itemLinkPlayer)
-                                        if lv and lv>0 and itemLevel-lv>0 then
-                                            if bestLevel and bestLevel<lv or not bestLevel then
-                                                bestLevel=lv
-                                                bestLevelItem=i
-                                                selectItemLink=itemLink
-                                            end
+                            end
+
+                            local invSlot = itemEquipLoc and  e.itemSlotTable[itemEquipLoc]
+                            if invSlot and itemLevel and itemLevel>1 then--装等
+                                local itemLinkPlayer = GetInventoryItemLink('player', invSlot)
+                                if itemLinkPlayer then
+                                    local lv=GetDetailedItemLevelInfo(itemLinkPlayer)
+                                    if lv and lv>0 and itemLevel-lv>0 then
+                                        if bestLevel and bestLevel<lv or not bestLevel then
+                                            bestLevel=lv
+                                            bestLevelItem=i
+                                            selectItemLink=itemLink
                                         end
                                     end
                                 end
@@ -344,7 +345,7 @@ local function Init_Gossip()
         self.sel.id=info.gossipOptionID
         self.sel.text=info.name
         self.sel:SetChecked(Save.gossipOption[info.gossipOptionID])
- 
+
         local find
         if IsModifierKeyDown() or selectGissipIDTab[info.gossipOptionID] then
             return
@@ -866,7 +867,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
                 print(addName, e.GetEnabeleDisable(not Save.disabled), '|cnRED_FONT_COLOR:'..REQUIRES_RELOAD)
             end)
-            
+
             if not Save.disabled then
                 setPoint()--设置位置
                 setTexture()
