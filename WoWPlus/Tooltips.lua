@@ -888,6 +888,24 @@ local function setCVar(reset, tips)
     end
 end
 
+local function set_FlyoutInfo(self, flyoutID)--法术, 弹出框
+    local _, _, numSlots, isKnown= GetFlyoutInfo(flyoutID)
+    self:AddDoubleLine((not isKnown and '|cnRED_FONT_COLOR:' or '')..'flyoutID|r '..flyoutID, numSlots..' '..(e.onlyChinse and '数量' or AUCTION_HOUSE_QUANTITY_LABEL))
+    for slot= 1, numSlots do
+        local flyoutSpellID, overrideSpellID, isKnown2, spellName = GetFlyoutSlotInfo(flyoutID, slot)
+        local spellID= overrideSpellID or flyoutSpellID
+        if spellID then
+            e.LoadSpellItemData(spellID, true)
+            local name2, _, icon = GetSpellInfo(spellID)
+            if name2 and icon then
+                self:AddDoubleLine('|T'..icon..':0|t'..(not isKnown2 and ' |cnRED_FONT_COLOR:' or '')..name2..'|r', spellID..' '..(e.onlyChinse and '法术' or SPELLS))
+            else
+                self:AddDoubleLine((not isKnown2 and ' |cnRED_FONT_COLOR:' or '')..spellName..'|r', spellID..' '..(e.onlyChinse and '法术' or SPELLS))
+            end
+        end
+    end
+end
+
 --####
 --初始
 --####
@@ -949,23 +967,7 @@ local function Init()
     end)
 
 ]]
-local function set_FlyoutInfo(self, flyoutID)--法术, 弹出框
-    local _, _, numSlots, isKnown= GetFlyoutInfo(flyoutID)
-    self:AddDoubleLine((not isKnown and '|cnRED_FONT_COLOR:' or '')..'flyoutID|r '..flyoutID, numSlots..' '..(e.onlyChinse and '数量' or AUCTION_HOUSE_QUANTITY_LABEL))
-    for slot= 1, numSlots do
-        local flyoutSpellID, overrideSpellID, isKnown2, spellName = GetFlyoutSlotInfo(flyoutID, slot)
-        local spellID= overrideSpellID or flyoutSpellID
-        if spellID then
-            e.LoadSpellItemData(spellID, true)
-            local name2, _, icon = GetSpellInfo(spellID)
-            if name2 and icon then
-                self:AddDoubleLine('|T'..icon..':0|t'..(not isKnown2 and ' |cnRED_FONT_COLOR:' or '')..name2..'|r', spellID..' '..(e.onlyChinse and '法术' or SPELLS))
-            else
-                self:AddDoubleLine((not isKnown2 and ' |cnRED_FONT_COLOR:' or '')..spellName..'|r', spellID..' '..(e.onlyChinse and '法术' or SPELLS))
-            end
-        end
-    end
-end
+
 
     TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes,  function(tooltip,date)
         if (tooltip==e.tips or tooltip==ItemRefTooltip) then
@@ -993,7 +995,7 @@ end
                 elseif date.type==19 then
                     setItem(tooltip, date.id)-- 玩具
 
-                elseif date.type==22 then 
+                elseif date.type==22 then--法术弹出框
                     set_FlyoutInfo(tooltip, date.id)
 
                 elseif date.type==23 then
