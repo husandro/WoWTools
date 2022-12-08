@@ -78,8 +78,12 @@ local InvUnitFunc=function()--邀请，周围玩家
 
     local p=C_CVar.GetCVarBool('nameplateShowFriends');
     local all=C_CVar.GetCVarBool('nameplateShowAll');
-    if not all then C_CVar.SetCVar('nameplateShowAll', 1) end
-    if not p then C_CVar.SetCVar('nameplateShowFriends', 1) end
+    if not all then
+        C_CVar.SetCVar('nameplateShowAll', '1')
+    end
+    if not p then
+        C_CVar.SetCVar('nameplateShowFriends', '1')
+    end
 
     if InvPlateTimer and not InvPlateTimer:IsCancelled() then
         InvPlateTimer:Cancel()
@@ -114,8 +118,12 @@ local InvUnitFunc=function()--邀请，周围玩家
                     end
                 end
             end
-            if not all then C_CVar.SetCVar('nameplateShowAll', 0) end
-            if not p then C_CVar.SetCVar('nameplateShowFriends', 0) end
+            if not all then
+                C_CVar.SetCVar('nameplateShowAll', '0')
+            end
+            if not p then
+                C_CVar.SetCVar('nameplateShowFriends', '0')
+            end
             if n==1 then print(GUILDCONTROL_OPTION7..': '..RED_FONT_COLOR_CODE..NONE..'|r') end
 
             if InvPlateTimer and InvPlateTimer:IsCancelled() then
