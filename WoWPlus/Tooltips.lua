@@ -949,19 +949,22 @@ local function Init()
     end)
 
 ]]
-local function set_FlyoutInfo(self, flyoutID)
---[[
-    local name, description, numSlots, isKnown= GetFlyoutInfo(flyoutID)
-    
+local function set_FlyoutInfo(self, flyoutID)--法术, 弹出框
+    local _, _, numSlots, isKnown= GetFlyoutInfo(flyoutID)
+    self:AddDoubleLine((not isKnown and '|cnRED_FONT_COLOR:' or '')..'flyoutID|r '..flyoutID, numSlots..' '..(e.onlyChinse and '数量' or AUCTION_HOUSE_QUANTITY_LABEL))
     for slot= 1, numSlots do
-        local flyoutSpellID, overrideSpellID, isKnown2, spellName, slotSpecID = GetFlyoutSlotInfo(flyoutID, slot)
-print(GetSpellInfo(overrideSpellID))
-print(GetSpellInfo)
-        self:AddDoubleLine(flyoutSpellID,spellName)
+        local flyoutSpellID, overrideSpellID, isKnown2, spellName = GetFlyoutSlotInfo(flyoutID, slot)
+        local spellID= overrideSpellID or flyoutSpellID
+        if spellID then
+            e.LoadSpellItemData(spellID, true)
+            local name2, _, icon = GetSpellInfo(spellID)
+            if name2 and icon then
+                self:AddDoubleLine('|T'..icon..':0|t'..(not isKnown2 and ' |cnRED_FONT_COLOR:' or '')..name2..'|r', spellID..' '..(e.onlyChinse and '法术' or SPELLS))
+            else
+                self:AddDoubleLine((not isKnown2 and ' |cnRED_FONT_COLOR:' or '')..spellName..'|r', spellID..' '..(e.onlyChinse and '法术' or SPELLS))
+            end
+        end
     end
-
-]]
-
 end
 
     TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes,  function(tooltip,date)

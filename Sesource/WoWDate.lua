@@ -278,6 +278,7 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
                 Rare={day=day, boss={}},--稀有
                 Time={},--{totalTime=总游戏时间, levelTime=当前等级时间}总游戏时间
                 --Money=钱
+                --GuildInfo=公会信息,
             }
 
         for guid, tab in pairs(e.WoWSave) do--清除不是本周数据

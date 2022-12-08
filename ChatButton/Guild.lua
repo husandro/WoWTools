@@ -1,3 +1,7 @@
+if not IsInGuild() then--仅有公会时加载
+    return
+end
+
 local id, e = ...
 local Save={}
 local addName='ChatButtonGuild'
@@ -7,7 +11,7 @@ panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
 WoWToolsChatButtonFrame.last=panel
 
 local function setMembers()--在线人数
-    local num = IsInGuild() and select(2, GetNumGuildMembers())
+    local num = select(2, GetNumGuildMembers())
     num = (num and num>1) and num-1 or nil
     if not panel.membersText and num then
         panel.membersText=e.Cstr(panel, 10, nil, nil, true, nil, 'CENTER')
@@ -21,20 +25,19 @@ end
 --#######
 --公会信息
 --#######
-local guildInfoText--公会信息
 local guildMS= GUILD_INFO_TEMPLATE:gsub('(%%.+)', '')--公会创立
 local function set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
-    if not Save.guildInfo then
-        panel:UnregisterEvent('CHAT_MSG_SYSTEM')
-    else
+    if Save.guildInfo or not e.WoWSave[e.Player.guid].GuildInfo then
         panel:RegisterEvent('CHAT_MSG_SYSTEM')
         GuildInfo()
+    else
+        panel:UnregisterEvent('CHAT_MSG_SYSTEM')
     end
 end
 
 local function setMsg_CHAT_MSG_SYSTEM(text)--欢迎加入, 信息
     if text:find(guildMS) then
-        guildInfoText=text
+        e.WoWSave[e.Player.guid].GuildInfo= text
         panel:UnregisterEvent('CHAT_MSG_SYSTEM')
     end
 end
@@ -77,8 +80,7 @@ local function InitMenu(self, level, type)--主菜单
         text=GUILD_INFORMATION,
         checked=Save.guildInfo,
         tooltipOnButton=true,
-        tooltipTitle=guildInfoText or NONE,
-        colorCode=not IsInGuild() and '|cff606060',
+        tooltipTitle=e.WoWSave[e.Player.guid].GuildInfo or NONE,
         func=function()
             Save.guildInfo= not Save.guildInfo and true or nil
             set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员

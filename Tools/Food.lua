@@ -3,7 +3,7 @@ local addName= POWER_TYPE_FOOD
 local Save={
     itemClass={},--物品类型
     noUseItems={},--禁用物品
-    autoEnable=true,--启动,查询
+    --autoLogin=true,--启动,查询
     onlyMaxExpansion=true,--仅本版本物品
 }
 
@@ -96,7 +96,7 @@ local function find_Item_Type(class, subclass)
             local info = C_Container.GetContainerItemInfo(bag, slot)
             if info and info.hyperlink and info.itemID then
                 local classID, subClassID, _, expacID = select(12, GetItemInfo(info.hyperlink))
-                if classID==class and subClassID==subclass and (Save.onlyMaxExpansion and e.ExpansionLevel==expacID or not Save.onlyMaxExpansion) then
+                if classID==class and subClassID==subclass and (Save.onlyMaxExpansion and (info.itemID==113509 or e.ExpansionLevel==expacID) or not Save.onlyMaxExpansion) then
                     table.insert(tab, info.itemID)
                 end
             end
@@ -245,9 +245,9 @@ local function InitMenu(self, level, type)--主菜单
             tooltipOnButton=true,
             tooltipTitle=AUTO_JOIN:gsub(JOIN,WHO),
             tooltipText='1 '..VOICEMACRO_LABEL_CHARGE1,
-            checked=Save.autoEnable,
+            checked=Save.autoLogin,
             func= function()
-                Save.autoEnable= not Save.autoEnable and true or nil
+                Save.autoLogin= not Save.autoLogin and true or nil
             end
         }
         UIDropDownMenu_AddButton(info, level)
@@ -284,7 +284,7 @@ local function InitMenu(self, level, type)--主菜单
         for _, tab in pairs(itemClass) do
             if type==tab.className then
                 info={
-                    text=tab.subclassName,
+                    text=tab.subClassID..' '..tab.subclassName,
                     checked= Save.itemClass[tab.className..tab.subclassName],
                     disabled= bat,
                     tooltipOnButton=true,
@@ -301,7 +301,7 @@ local function InitMenu(self, level, type)--主菜单
     else
         local classNum=get_Save_itemClass_Select()
         info={
-            text=WHO.. ' '..classNum,
+            text='|A:common-icon-zoomin:0:0|a'..(e.onlyChinse and '查找' or WHO).. ' '..classNum,
             colorCode='|cff00ff00',
             notCheckable=true,
             disabled=bat or classNum==0,
@@ -390,7 +390,7 @@ local function Init()
     if Save.autoWho then
         set_auto_Who_Event()--设置事件,自动更新
     end
-    if  get_Save_itemClass_Select()>0 and (Save.autoEnable or Save.autoWho) then
+    if  get_Save_itemClass_Select()>0 and (Save.autoLogin or Save.autoWho) then
         set_Item_Button()
     end
 
@@ -427,6 +427,16 @@ panel:RegisterEvent("ADDON_LOADED")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1== id then
+        if WoWToolsSave and not WoWToolsSave[addName..'Tools'] then--初始,类, 设置
+            local className=GetItemClassInfo(0)
+            Save.itemClass={
+                [className..GetItemSubClassInfo(0, 1)]=true,--药水
+                [className..GetItemSubClassInfo(0, 2)]=true,--药剂
+                [className..GetItemSubClassInfo(0, 3)]=true,--合计
+                [className..GetItemSubClassInfo(0, 5)]=true,--食物
+            }
+        end
+
         Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
         if not e.toolsFrame.disabled then
             Init()--初始

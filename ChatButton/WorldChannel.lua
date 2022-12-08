@@ -170,7 +170,6 @@ local function Init()
             ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
         end
     end)
-    
     panel.texture:SetShown(true)
 end
 

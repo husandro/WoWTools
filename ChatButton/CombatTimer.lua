@@ -45,7 +45,7 @@ local function setText()--设置显示内容
         text= text and text..'\n' or ''
         text= text .. AFK..e.Icon.clock2..e.GetTimeInfo(OnAFKTime, not Save.timeTypeText)
     end
-    
+
     if OnPetTime then
         text= text and text..'\n' or ''
         text= text ..(PetRound.text or '|TInterface\\Icons\\PetJournalPortrait:0|t')..' '..e.GetTimeInfo(OnPetTime, not Save.timeTypeText)
@@ -65,10 +65,10 @@ local function check_Event()--检测事件
 
     local time=GetTime()
     if UnitIsAFK('player') then
-        OnAFKTime= OnAFKTime or time 
+        OnAFKTime= OnAFKTime or time
         LastText=nil
 
-    elseif OnAFKTime then 
+    elseif OnAFKTime then
         local text, sec = e.GetTimeInfo(OnAFKTime, not Save.timeTypeText)
         LastText= e.Icon.clock2..'|cnGREEN_FONT_COLOR:'..AFK..text..'|r'
         Save.afk.num= Save.afk.num + 1
@@ -161,12 +161,12 @@ local function setTexture()--设置,图标, 颜色
             texture = select(4, GetSpecializationInfo(specializationID))
         end
     end
-    if texture then 
+    if texture then
         panel.texture:SetTexture(texture)
     else
         panel.texture:SetAtlas('Mobile-MechanicIcon-Powerful')
     end
-    
+
     if Save.classColor then
         local r,g,b= GetClassColor(UnitClassBase('player'))
         if panel.text then
@@ -295,10 +295,10 @@ local function setTextFrame()--设置显示内容, 父框架panel.textFrame, 内
     panel:RegisterEvent('PET_BATTLE_FINAL_ROUND')
     panel:RegisterEvent('PET_BATTLE_CAPTURED')
     panel:RegisterEvent('PET_BATTLE_PET_ROUND_PLAYBACK_COMPLETE')
-   
+
     panel:RegisterEvent('PLAYER_ENTERING_WORLD')--副本,杀怪,死亡
     check_Event()--检测事件
-    
+
     isInPvPInstance=C_PvP.IsBattleground() or C_PvP.IsArena()--是否在战场
 end
 
@@ -309,9 +309,8 @@ local function InitMenu(self, level, type)--主菜单
     local info
     if type=='SETTINGS' then
         info={--图标类型
-            text=EMBLEM_SYMBOL..': |cnGREEN_FONT_COLOR:'..(not Save.specializationTexture and FACTION or SPECIALIZATION)..'|r',
-            --notCheckable=true,
-checked= Save.specializationTexture,
+            text= e.onlyChinse and '图标类型: |cnGREEN_FONT_COLOR'..(not Save.specializationTexture and '派系' or '专精') or EMBLEM_SYMBOL..': |cnGREEN_FONT_COLOR:'..(not Save.specializationTexture and FACTION or SPECIALIZATION)..'|r',
+            checked= Save.specializationTexture,
             tooltipOnButton=true,
             tooltipTitle=TYPE,
             tooltipText= FACTION..'\n'..SPECIALIZATION,
@@ -323,9 +322,8 @@ checked= Save.specializationTexture,
         UIDropDownMenu_AddButton(info, level)
 
         info={--时间类型
-            text=TIME_LABEL..' |cnGREEN_FONT_COLOR:'..(Save.timeTypeText and SecondsToTime(35) or '00:35')..'|r',
-            --notCheckable=true,
-checked= Save.timeTypeText,
+            text= (e.onlyChinse and '时间类型' or TIME_LABEL)..' |cnGREEN_FONT_COLOR:'..(Save.timeTypeText and SecondsToTime(35) or '00:35')..'|r',
+            checked= Save.timeTypeText,
             tooltipOnButton=true,
             tooltipTitle=TYPE,
             tooltipText='00:35\n'..SecondsToTime(35),
@@ -336,7 +334,7 @@ checked= Save.timeTypeText,
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text= COMBAT..UI_SCALE..' 1.5',
+            text= e.onlyChinse and '战斗中缩放 1.5' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..UI_SCALE..' 1.5',
             checked= Save.combatScale,
             func= function()
                 Save.combatScale= not Save.combatScale and true or nil
@@ -349,8 +347,8 @@ checked= Save.timeTypeText,
         }
         UIDropDownMenu_AddButton(info, level)
 
-        info={--职业颜色
-            text=CLASS_COLORS,
+        info={
+            text= e.onlyChinse and '职业颜色' or CLASS_COLORS,
             checked= Save.classColor,
             colorCode= Save.classColor and e.Player.col or '|cffd0d0d0',
             func=function()
@@ -360,8 +358,8 @@ checked= Save.timeTypeText,
         }
         UIDropDownMenu_AddButton(info, level)
 
-        info={--战斗时间,时间戳
-            text=COMBAT..'|A:communities-icon-chat:0:0|a'..EVENTTRACE_TIMESTAMP..'120',
+        info={--
+            text= (e.onlyChinse and '战斗时间|A:communities-icon-chat:0:0|a 每: ' or COMBAT..'|A:communities-icon-chat:0:0|a'..EVENTTRACE_TIMESTAMP..Save.Say),
             checked= Save.Say and true or nil,
             tooltipOnButton=true,
             tooltipTitle=SAY,
@@ -371,13 +369,13 @@ checked= Save.timeTypeText,
         }
         UIDropDownMenu_AddButton(info, level)
 
-       
+
         local tab=e.WoWSave[e.Player.guid].Time
-        info={--总游戏时间：%s
-            text= TIME_PLAYED_TOTAL:format((tab or tab.totalTime) and SecondsToTime(tab.totalTime) or ''),
+        info={
+            text= e.onlyChinse and '总游戏时间'..((tab and tab.totalTime) and ': '..SecondsToTime(tab.totalTime) or '') or TIME_PLAYED_TOTAL:format((tab and tab.totalTime) and SecondsToTime(tab.totalTime) or ''),
             checked= Save.AllOnlineTime,
             tooltipOnButton= true,
-            tooltipTitle= TIME_PLAYED_LEVEL:format((tab or tab.levelTime) and '\n'..SecondsToTime(tab.levelTime) or ''),
+            tooltipTitle= e.onlyChinse and ('你在这个等级的游戏时间：%s'):format((tab and tab.levelTime) and '\n'..SecondsToTime(tab.levelTime) or '') or TIME_PLAYED_LEVEL:format((tab and tab.levelTime) and '\n'..SecondsToTime(tab.levelTime) or ''),
             menuList='AllOnlineTime',
             hasArrow=true,
             func= function()
@@ -436,7 +434,7 @@ checked= Save.timeTypeText,
             notCheckable=true
         }
         UIDropDownMenu_AddButton(info, level)
-        
+
         local tab=e.WoWSave[e.Player.guid].Time
         if tab and tab.totalTime then
             info={
@@ -456,7 +454,7 @@ checked= Save.timeTypeText,
             colorCode= Save.disabledText and '|cff606060',
         }
         UIDropDownMenu_AddButton(info, level)
-        
+
         info={
             text=INFO,
             checked= not Save.disabledText,
@@ -494,22 +492,22 @@ local function Init()
         ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
     end)
 
-   
+
     setTextFrame()--设置显示内容,框架 panel.textFrame,内容 panel.text
     C_Timer.After(2, setTexture)--设置,图标, 颜色
-    
-    if Save.AllOnlineTime then--总游戏时间
+
+    if Save.AllOnlineTime or not e.WoWSave[e.Player.guid].Time.levelTime then--总游戏时间
         RequestTimePlayed()
     end
 end
 
 local function setPetText()--宠物战斗, 设置显示内容
     local text= PET_BATTLE_COMBAT_LOG_NEW_ROUND:format(PetRound.round or 0)
-    if  C_PetBattles.IsWildBattle() then 
+    if  C_PetBattles.IsWildBattle() then
         text=text..'|A:worldquest-icon-petbattle:0:0|a'
-    elseif PetRound.PVP then 
+    elseif PetRound.PVP then
         text=text..'|A:pvptalents-warmode-swords:0:0|a'
-    else 
+    else
         text=text..'|A:jailerstower-animapowerlist-offense:0:0|a'
     end
     if PetAll.num>0 then
@@ -558,21 +556,21 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         if Save.combatScale then--战斗中缩放
             panel:SetScale(1.5)
         end
-        
+
     elseif event=='PLAYER_SPECIALIZATION_CHANGED' then
         setTexture()--设置,图标
 
     elseif event=='PLAYER_FLAGS_CHANGED' then--AFK
         check_Event()--检测事件
 
-    
+
     elseif event=='PET_BATTLE_OPENING_DONE' then
         check_Event()--检测事件
 
     elseif event=='PET_BATTLE_PVP_DUEL_REQUESTED' then--宠物战斗
         PetRound.PVP =true
         setPetText()--宠物战斗, 设置显示内容
-    elseif (event=='PET_BATTLE_PET_ROUND_RESULTS' or event=='PET_BATTLE_PET_ROUND_PLAYBACK_COMPLETE') and arg1 then        
+    elseif (event=='PET_BATTLE_PET_ROUND_RESULTS' or event=='PET_BATTLE_PET_ROUND_PLAYBACK_COMPLETE') and arg1 then
         PetRound.round=arg1
         setPetText()--宠物战斗, 设置显示内容
     elseif event=='PET_BATTLE_CAPTURED' and arg1 and arg1==2 then--捕获
@@ -589,7 +587,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     elseif event=='PLAYER_ENTERING_WORLD' then--副本,杀怪,死亡
         isInPvPInstance=C_PvP.IsBattleground() or C_PvP.IsArena()--是否在战场
         check_Event()--检测事件
-        
+
 
     elseif event=='PLAYER_DEAD' or event=='PLAYER_UNGHOST' or event=='PLAYER_ALIVE' then
         if event=='PLAYER_DEAD' and not OnInstanceDeadCheck then
@@ -598,12 +596,12 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             OnInstanceDeadCheck= true
         else
             OnInstanceDeadCheck=nil
-        end    
+        end
         --local InstanceDate={num= 0, time= 0, kill=0, dead=0}--副本数据{dead死亡,kill杀怪, map地图}
 
     elseif event=='UNIT_FLAGS' and arg1 then--杀怪,数量
         if arg1:find('nameplate') and UnitIsEnemy(arg1, 'player') and UnitIsDead(arg1) then
-            if isInPvPInstance and UnitIsPlayer(arg1) or not isInPvPInstance then                
+            if isInPvPInstance and UnitIsPlayer(arg1) or not isInPvPInstance then
                 InstanceDate.kill= InstanceDate.kill +1
                 Save.ins.kill= Save.ins.kill +1
             end
