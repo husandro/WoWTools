@@ -217,7 +217,7 @@ local function InitMenu(self, level, type)--主菜单
                 disabled= bat,
                 icon=itemTexture,
                 tooltipOnButton=true,
-                tooltipTitle=e.Icon.left..REMOVE,
+                tooltipTitle=e.Icon.left..(e.onlyChinse and '移除' or REMOVE),
                 func=function()
                     Save.noUseItems[itemID]=nil
                     set_Item_Button()
@@ -227,8 +227,8 @@ local function InitMenu(self, level, type)--主菜单
         end
 
         UIDropDownMenu_AddSeparator(level)
-        info={--清除全部
-            text=CLEAR_ALL,
+        info={
+            text= e.onlyChinse and '清除全部' or CLEAR_ALL,
             notCheckable=true,
             disabled=bat,
             func= function()
@@ -240,8 +240,8 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddButton(info, level)
 
     elseif type=='WHO' then
-        info= {--登录游戏,时,查询
-            text= (LOGIN or SOCIAL_TWITTER_SIGN_IN)..GAME,
+        info= {
+            text= e.onlyChinse and '登录游戏时: 查找' or (LOGIN or SOCIAL_TWITTER_SIGN_IN)..GAME,
             tooltipOnButton=true,
             tooltipTitle=AUTO_JOIN:gsub(JOIN,WHO),
             tooltipText='1 '..VOICEMACRO_LABEL_CHARGE1,
@@ -254,7 +254,7 @@ local function InitMenu(self, level, type)--主菜单
 
         
         info= {--自动, 更新物品, 查询
-            text= UPDATE..ITEMS,
+            text= e.onlyChinse and '自动查找' or UPDATE..ITEMS,
             tooltipOnButton=true,
             tooltipTitle=EVENTS_LABEL..': BAG_UPDATE_DELAYED',
             checked=Save.autoWho,
@@ -328,8 +328,8 @@ local function InitMenu(self, level, type)--主菜单
             end
         end
 
-        info={--全部取消
-            text=e.Icon.up2..CALENDAR_EVENT_REMOVED_MAIL_SUBJECT:format(ALL),
+        info={
+            text=e.Icon.up2.. (e.onlyChinse and '全部取消' or CALENDAR_EVENT_REMOVED_MAIL_SUBJECT:format(ALL)),
             colorCode= '|cffff0000',
             notCheckable=true,
             disabled=bat,
@@ -343,7 +343,7 @@ local function InitMenu(self, level, type)--主菜单
 
         UIDropDownMenu_AddSeparator(level)
         info= {
-            text=DISABLE,
+            text= e.onlyChinse and '禁用' or DISABLE,
             notCheckable=true,
             menuList='DISABLE',
             hasArrow=true,
@@ -352,14 +352,14 @@ local function InitMenu(self, level, type)--主菜单
 
         UIDropDownMenu_AddSeparator(level)
         info= {
-            text= e.Icon.right..NPE_MOVE,
+            text= e.Icon.right.. (e.onlyChinse and '移动' or NPE_MOVE),
             isTitle= true,
             notCheckable= true,
         }
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text=RESET_POSITION,--还原位置
+            text= e.onlyChinse and '还原位置' or RESET_POSITION,
             notCheckable=true,
             colorCode= not Save.point and'|cff606060',
             disabled=bat,

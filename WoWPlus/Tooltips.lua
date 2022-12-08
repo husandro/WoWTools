@@ -968,9 +968,8 @@ local function Init()
 
 ]]
 
-
     TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes,  function(tooltip,date)
-        if (tooltip==e.tips or tooltip==ItemRefTooltip) then
+        if (tooltip==e.tips or tooltip==ItemRefTooltip) and date.type~=25 then--25 宏
             if date.type==2 then--单位
                 local unit= select(2, TooltipUtil.GetDisplayedUnit(tooltip))
                 if unit then
