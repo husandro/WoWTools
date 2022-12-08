@@ -27,6 +27,7 @@ local function btnstrSetText()--监视声望内容
 	for i=1, GetNumFactions() do
 		local name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canBeLFGBonus =GetFactionInfo(i)
 		if name==HIDE then break end--隐藏 '隐藏声望'
+
 		if (hasRep or ((isHeader or isChild)  and not isCollapsed ) or (not isHeader and not isChild)) and factionID then
 			local isCapped= standingID == MAX_REPUTATION_REACTION
 			local factionStandingtext, value, icon
@@ -37,14 +38,18 @@ local function btnstrSetText()--监视声望内容
 
 			if (repInfo and repInfo.friendshipFactionID > 0) then--个人声望
 				if ( repInfo.nextThreshold ) then
-					factionStandingtext = repInfo.reaction;
+					factionStandingtext = repInfo.reaction
+					local rankInfo = C_GossipInfo.GetFriendshipReputationRanks(factionID)
+					if rankInfo and rankInfo.maxLevel>0  and rankInfo.currentLevel~=rankInfo.maxLevel then
+						factionStandingtext= factionStandingtext..' '..rankInfo.currentLevel..'/'..rankInfo.maxLevel
+					end
 					value=('%i%%'):format(repInfo.standing/repInfo.nextThreshold*100);
 					--barColor = FACTION_BAR_COLORS[standingID]					
 				else
 					--barColor = FACTION_ORANGE_COLOR
 					isCapped=true
 				end
-				if repInfo.texture then--图标
+				if repInfo.texture and repInfo.texture~=0 then--图标
 					icon='|T'..repInfo.texture..':0|t'
 				end
 			elseif ( isMajorFaction ) then--名望
@@ -89,22 +94,29 @@ local function btnstrSetText()--监视声望内容
 					--value = completed>0 and value.. ' '..completed or value
 				end
 			end
-			if not ((Save.btnStrHideCap and isCapped and not isParagon and not isHeader) or (Save.btnStrHideHeader and isHeader and not isParagon and not hasRep))then
+
+			local verHeader= isHeader and not isParagon and not hasRep and not isChild--版本声望
+			if not ((Save.btnStrHideCap and isCapped and not isParagon and not isHeader) or (Save.btnStrHideHeader and verHeader))then
 				local t=''
-				if isHeader then
-					t=Icon.isCapped
-				elseif not isMajorFaction then
-					t='    '
+				
+				if verHeader then
+					t= t.. e.Icon.star2
 				end
-				if isChild then
-					t='  '..t
+
+				if isChild and not isHeader then
+					t= t..e.Icon.toRight2..(icon or '')
+				elseif not verHeader then
+					t= t.. (icon or Icon.isCapped)
 				end
-				if Save.btnStrShowID and not(isHeader and not hasRep ) then--显示ID
-					t=t..factionID..' '
-				end
-				t=t..(icon or '')..name..(factionStandingtext and ' '..factionStandingtext or '')..(value and ' '..value or '')
+					
+				t=t..name..(factionStandingtext and ' '..factionStandingtext or '')..(value and ' '..value or '')
+
 				if hasRewardPending then--有奖励
 					t=t..' '..Icon.reward2
+				end
+
+				if verHeader then 
+					t='|cnGREEN_FONT_COLOR:'..t..'|r'
 				end
 				if m~='' then m=m..'|n' end
 				m=m..t
@@ -236,7 +248,6 @@ Frame.sel2:SetScript("OnEnter", function(self)
 	e.tips:AddDoubleLine(id, addName)
 	e.tips:AddLine(' ')
 	e.tips:AddDoubleLine(COMBAT_TEXT_SHOW_REPUTATION_TEXT, e.GetEnabeleDisable(Save.btn)..e.Icon.left)
---	e.tips:AddDoubleLine(addName..UPDATE, e.GetEnabeleDisable(Save.factionUpdateTips))
     e.tips:Show()
 end)
 Frame.sel2:SetScript('OnLeave', function ()
@@ -298,15 +309,6 @@ local function SetRe()--监视声望
 					btnstrSetText()
 					print(GAME_VERSION_LABEL..'('..NO..Icon.reward2..QUEST_REWARDS..')'..addName..": "..e.GetShowHide(not Save.btnStrHideHeader))
 
-				elseif d=='LeftButton' and IsControlKeyDown() then--Ctrl+点击, 显示ID
-					if Save.btnStrShowID then
-						Save.btnStrShowID=nil
-					else
-						Save.btnStrShowID=true
-					end
-					btnstrSetText()
-					print(addName..' ID: '..e.GetShowHide(Save.btnStrShowID))
-
 				elseif d=='LeftButton' and IsShiftKeyDown() then--Shift+点击, 隐藏最高级, 且没有奖励声望
 					if Save.btnStrHideCap then
 						Save.btnStrHideCap=nil
@@ -326,8 +328,7 @@ local function SetRe()--监视声望
 				e.tips:AddDoubleLine(BINDING_NAME_TOGGLECHARACTER2, e.Icon.mid)
 				e.tips:AddDoubleLine(NPE_MOVE, e.Icon.right)
 				e.tips:AddLine(' ')
-				e.tips:AddDoubleLine(GAME_VERSION_LABEL..addName..': '..e.GetShowHide(not Save.btnStrHideHeader), 'Alt + '..e.Icon.left)
-				e.tips:AddDoubleLine(addName..' ID: '..e.GetShowHide(Save.btnStrShowID), 'Ctrl + '..e.Icon.left)
+				e.tips:AddDoubleLine(GAME_VERSION_LABEL..': '..e.GetShowHide(not Save.btnStrHideHeader), 'Alt + '..e.Icon.left)
 				e.tips:AddDoubleLine(VIDEO_OPTIONS_ULTRA_HIGH..addName..': '..e.GetShowHide(not Save.btnStrHideCap), 'Shift + '..e.Icon.left)
 				e.tips:Show();
 			end)
@@ -415,7 +416,6 @@ local function FactionUpdate(self, env, text)--监视声望更新提示
 					else
 						value=('%i%%'):format(barValue/barMax*100)
 					end
-					
 				end
 			end
 			local isParagon = C_Reputation.IsFactionParagon(factionID)--奖励
