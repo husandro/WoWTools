@@ -52,7 +52,7 @@ hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', function(self)--self.tagInf
     end
     
     local str
-    str= itemLevel or numItems
+    str= itemLevel or numItems--数量
     if str then
         if quality and quality~=1 then
             str='|c'..select(4, GetItemQualityColor(quality))..str..'|r'
@@ -62,25 +62,31 @@ hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', function(self)--self.tagInf
             str='|cffe6cc80'..str..'|r'
         end
     end
-    local sourceID =itemID and select(2, C_TransmogCollection.GetItemInfo(itemID))--幻化
-    if sourceID then
-        local collected=e.GetItemCollected(nil, sourceID, true)--物品是否收集 
-        if collected then
-            str=(str or '')..collected
-        end
-    end
 
+    local setLevelUp
     local itemEquipLoc= itemID and select(4, GetItemInfoInstant(itemID))
     local invSlot = itemEquipLoc and e.itemSlotTable[itemEquipLoc]
-    if invSlot and itemLevel and itemLevel>1 then--装等
+    if invSlot and itemName and itemLevel and itemLevel>1 then--装等
         local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
         if itemLinkPlayer then
             local lv=GetDetailedItemLevelInfo(itemLinkPlayer)
             if lv and itemLevel-lv>0 then
                 str= (str or '')..e.Icon.up2
+                setLevelUp=true
             end
         end
     end
+
+    if not setLevelUp then
+        local sourceID =itemID and select(2, C_TransmogCollection.GetItemInfo(itemID))--幻化
+        if sourceID then
+            local collectedText, isCollected=e.GetItemCollected(nil, sourceID, true)--物品是否收集 
+            if collectedText and not isCollected then
+                str=(str or '')..collectedText
+            end
+        end
+    end
+   
 
     self.str:SetText(str or '')
     self.str:SetShown(str and true or false)
