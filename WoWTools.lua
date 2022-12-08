@@ -712,7 +712,7 @@ e.Chat=function(text, name, setPrint)--v9.25设置
         elseif IsInInstance() and IsInGroup() then
             SendChatMessage(text, 'INSTANCE_CHAT');
 
-        elseif not UnitIsDeadOrGhost('player') and not IsResting() then
+        elseif not UnitIsDeadOrGhost('player') and not IsResting() and not IsOutdoors() then
             SendChatMessage(text, 'SAY');
 
         elseif setPrint then

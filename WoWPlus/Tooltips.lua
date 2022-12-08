@@ -502,8 +502,8 @@ local function setBuff(type, self, ...)--Buff
             SetPortraitTexture(self.Portrait, source)
             self.Portrait:SetShown(true)
         end
-        local text= source=='player' and COMBATLOG_FILTER_STRING_ME or source=='pet' and PET or UnitIsPlayer(source) and e.GetPlayerInfo(source, nil, true) or _G[source] or source
-        self:AddDoubleLine('|c'..(hex or 'ffffff')..RUNEFORGE_LEGENDARY_POWER_SOURCE_FORMAT:format(text)..'|r')
+        local text= source=='player' and (e.onlyChinse and '我' or COMBATLOG_FILTER_STRING_ME) or source=='pet' and PET or UnitIsPlayer(source) and e.GetPlayerInfo(source, nil, true) or _G[source] or source
+        self:AddDoubleLine('|c'..(hex or 'ffffff')..(e.onlyChinse and '来原: '..text or RUNEFORGE_LEGENDARY_POWER_SOURCE_FORMAT:format(text)..'|r'))
         self:Show()
     end
 end

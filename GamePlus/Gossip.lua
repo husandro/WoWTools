@@ -9,6 +9,7 @@ local Save={
 
 local panel=e.Cbtn(UIParent, nil,nil,nil,nil, true, {20,20});--闲话图标
 local questFrame=e.Cbtn(UIParent, nil,nil,nil,nil, true, {20,20});--任务图标
+local questSelect={}--已选任务, 提示用
 
 local function setTexture()--设置图标
     questFrame:SetNormalAtlas(Save.quest and 'campaignavailablequesticon' or e.Icon.icon)
@@ -233,6 +234,7 @@ local function Init_Gossip()
 
     local selectGissipIDTab= {}
     GossipFrame:SetScript('OnShow', function (self)
+        questSelect={}--已选任务, 提示用
         selectGissipIDTab={}
         local npc=e.GetNpcID('npc')
         self.sel.npc=npc
@@ -402,7 +404,7 @@ local function Init_Gossip()
         elseif not Save.quest or Save.NPC[npc] then--禁用任务, 禁用NPC
             return
 
-        else
+        elseif C_QuestLog.IsComplete(questID) then
             C_GossipInfo.SelectActiveQuest(questID)
         end
     end)
@@ -668,7 +670,7 @@ local function Init_Quest()
         e.tips:Hide()
     end)
 
-    local questSelect={}
+   
     --[[
 QuestFrame:SetScript('OnShow', function (self)
         questSelect=nil
@@ -843,7 +845,6 @@ QuestFrame:SetScript('OnShow', function (self)
             acceptButton:Click()
 
             if not complete then
-                
                 if not questSelect[questID] then
                     C_Timer.After(0.5, function()
                         local link=GetQuestLink(questID)
@@ -854,7 +855,6 @@ QuestFrame:SetScript('OnShow', function (self)
                     questSelect[questID]=true
                 end
             end
-            questSelect={}
         end
     end)
 end
