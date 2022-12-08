@@ -1,6 +1,6 @@
 local id, e= ...
 local addName= INVTYPE_BAG
-local Save= {sortRightToLeft= true}
+local Save= {}
 
 
 local function set_Sort_Rigth_To_Left()--排序:从右到左
