@@ -2,7 +2,7 @@ local id, e = ...
 local addName = COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK..EMBLEM_SYMBOL
 local Save={
     channels={--频道名称替换 
-        ['大脚'] = '[世]',
+        ['世界'] = '[世]',
         [GENERAL]='['..GENERAL..']',
         ['本地']='[本地]'
     },
