@@ -78,8 +78,8 @@ local function select_Reward()--自动:选择奖励
                     local isCollected, isSelf= select(2, e.GetItemCollected(itemLink))--物品是否收集 
                     if isCollected==false and isSelf then
                         bestItem = i
-                        notColleced=true
                         selectItemLink=itemLink
+                        notColleced=true
                     end
                 end
 
