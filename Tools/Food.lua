@@ -301,12 +301,14 @@ local function InitMenu(self, level, type)--主菜单
     else
         local classNum=get_Save_itemClass_Select()
         info={
-            text='|A:common-icon-zoomin:0:0|a'..(e.onlyChinse and '查找' or WHO).. ' '..classNum,
+            text='|A:common-icon-zoomin:0:0|a'..(e.onlyChinse and '查找' or WHO).. e.Icon.mid..' '..classNum,
             colorCode='|cff00ff00',
             notCheckable=true,
             disabled=bat or classNum==0,
             menuList='WHO',
             hasArrow=true,
+            tooltipOnButton=true,
+            tooltipTitle= e.onlyChinse and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN,
             func= function()
                 set_Item_Button()
             end
@@ -419,8 +421,12 @@ local function Init()
         ResetCursor()
     end)
     panel:SetScript('OnMouseWheel',function(self,d)
-        if d==1 and not IsModifierKeyDown() then
-            set_Item_Button()
+        if d==-1 and not IsModifierKeyDown() then
+            if UnitAffectingCombat('player') then
+                print(id, e.onlyChinse and '查询' or WHO, '|cnRED_FONT_COLOR:'..COMBAT )
+            else
+                set_Item_Button()
+            end
         end
     end)
 end
