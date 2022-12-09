@@ -46,60 +46,62 @@ local function getMaxQuest()--任务，是否已满
 end
 
 local function select_Reward()--自动:选择奖励
-    if Save.autoSelectReward then
-        local firstItem = QuestInfoRewardsFrameQuestInfoItem1
-        if firstItem then
-            local numQuests = GetNumQuestChoices()
-            if numQuests and numQuests >1 then
-                local bestValue, bestItem = 0, nil
-                local bestLevel, bestLevelItem= 0,nil
-                local selectItemLink
-                for i = 1, numQuests do
-                    local  itemLink = GetQuestItemLink('choice', i)
-                    if itemLink then
-                        local amount = select(3, GetQuestItemInfo('choice', i))--钱
-                        local _, _, itemQuality, itemLevel, _, _,_,_, itemEquipLoc, _, sellPrice, classID, subclassID = GetItemInfo(itemLink)
-                        if (classID==4 and subclassID==5) or (classID==2 and subclassID==14) then--化妆品
-                            local isCollected= e.GetItemCollected(itemLink)--物品是否收集 
-                            if isCollected==false then
-                                bestItem = i
-                            end
+    local numQuests = GetNumQuestChoices()
+    if not Save.autoSelectReward or not QuestInfoRewardsFrameQuestInfoItem1 or not numQuests or numQuests <2 then
+        return
+    end
 
-                        elseif itemQuality and itemQuality<4 then--最高 稀有的 3                                
-                            if amount and sellPrice then
-                                local totalValue = (sellPrice and sellPrice * amount) or 0
-                                if totalValue > bestValue then
-                                    bestValue = totalValue
-                                    bestItem = i
-                                end
-                            end
+    local bestValue, bestLevel= 0, 0
+    local notColleced, upItem, selectItemLink, bestItem
+    for i = 1, numQuests do
+        local  itemLink = GetQuestItemLink('choice', i)
+        if itemLink then
+            local amount = select(3, GetQuestItemInfo('choice', i))--钱
+            local _, _, itemQuality, itemLevel, _, _,_,_, itemEquipLoc, _, sellPrice = GetItemInfo(itemLink)
 
-                            local invSlot = itemEquipLoc and  e.itemSlotTable[itemEquipLoc]
-                            if invSlot and itemLevel and itemLevel>1 then--装等
-                                local itemLinkPlayer = GetInventoryItemLink('player', invSlot)
-                                if itemLinkPlayer then
-                                    local lv=GetDetailedItemLevelInfo(itemLinkPlayer)
-                                    if lv and lv>0 and itemLevel-lv>0 then
-                                        if bestLevel and bestLevel<lv or not bestLevel then
-                                            bestLevel=lv
-                                            bestLevelItem=i
-                                            selectItemLink=itemLink
-                                        end
-                                    end
-                                end
-                            end
+            if itemQuality and itemQuality<4 then--最高 稀有的 3                                
+                local invSlot = itemEquipLoc and  e.itemSlotTable[itemEquipLoc]
+                if invSlot and itemLevel and itemLevel>1 then--装等
+                    local itemLinkPlayer = GetInventoryItemLink('player', invSlot)
+                    if itemLinkPlayer then
+                        local lv=GetDetailedItemLevelInfo(itemLinkPlayer)
+                        if lv and lv>1 and itemLevel-lv>0 and (bestLevel and bestLevel<lv or not bestLevel) then
+                            bestLevel=lv
+                            bestItem = i
+                            selectItemLink=itemLink
+                            upItem=true
                         end
                     end
                 end
 
-                bestItem= bestLevelItem or bestItem
-                if bestItem then
-                    _G['QuestInfoRewardsFrameQuestInfoItem'..bestItem]:Click()
-                    if selectItemLink then
-                        print(id, QUESTS_LABEL, CHOOSE, selectItemLink)
+                if not upItem then
+                    local isCollected, isSelf= select(2, e.GetItemCollected(itemLink))--物品是否收集 
+                    if isCollected==false and isSelf then
+                        bestItem = i
+                        notColleced=true
+                        selectItemLink=itemLink
+                    end
+                end
+
+                if not (notColleced and upItem) then
+                    if amount and sellPrice then
+                        local totalValue = (sellPrice and sellPrice * amount) or 0
+                        if totalValue > bestValue then
+                            bestValue = totalValue
+                            bestItem = i
+                            selectItemLink=itemLink
+                        end
                     end
                 end
             end
+        end
+    end
+
+    bestItem= bestLevelItem or bestItem
+    if bestItem then
+        _G['QuestInfoRewardsFrameQuestInfoItem'..bestItem]:Click()
+        if selectItemLink then
+            print(id, QUESTS_LABEL, CHOOSE, selectItemLink)
         end
     end
 end
@@ -814,8 +816,9 @@ local function Init_Quest()
         end
 
         if acceptButton and acceptButton:IsEnabled() then
+            select_Reward()--自动:选择奖励
+
             if complete then
-                select_Reward()--自动:选择奖励
                 if not questSelect[questID] then
                     local link=GetQuestLink(questID)
                     if link then

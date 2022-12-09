@@ -3,10 +3,11 @@ local addName=ITEMS..INFO
 local Save={}
 
 local panel=CreateFrame("Frame")
-panel.tips=CreateFrame("GameTooltip", id..addName, panel, "GameTooltipTemplate")
+--panel.tips=CreateFrame("GameTooltip", id..addName, panel, "GameTooltipTemplate")
 
 local itemUseString =ITEM_SPELL_CHARGES:gsub('%%d', '%(%%d%+%)')--(%d+)次
 local KeyStone=CHALLENGE_MODE_KEYSTONE_NAME:gsub('%%s','(.+) ')--钥石
+local text_EQUIPMENT_SETS= 	EQUIPMENT_SETS:gsub('%%s','(.+)')
 --[=[
 local tradeskill={
     [1]='|T136243:0|t',--工程零件
@@ -24,12 +25,17 @@ local tradeskill={
 ]=]
 
 
-local function setItemInfo(self, itemLink, itemID, bag, merchantIndex, guildBank)
-    local isBound, equipmentName, bagID, slot
+local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBank)
+   -- local isBound, equipmentName, bagID, slotID
     local topLeftText, bottomRightText, leftText, bottomLeftText, topRightText, r, g ,b
+
+--[[
     if bag then
-        isBound, equipmentName, bagID, slot = bag.isBound, bag.equipmentName, bag.bagID, bag.slot
+        isBound, equipmentName, bagID, slotID = bag.isBound, bag.equipmentName, bag.bagID, bag.slotID
     end
+
+]]
+
 
     if itemLink then
         local _, _, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, _, _, classID, subclassID, bindType, expacID, setID, isCraftingReagent = GetItemInfo(itemLink)
@@ -78,9 +84,10 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex, guildBank
                 topRightText= e.WA_Utf8Sub(itemSubType, 2,5)
             end
 
-        elseif itemEquipLoc and _G[itemEquipLoc] then--装备 
+        elseif itemEquipLoc and _G[itemEquipLoc] then--装备
             if classID==2 and subclassID==20 then-- 鱼竿
                 topRightText='|A:worldquest-icon-fishing:0:0|a'
+
             elseif itemQuality and itemQuality>1 then
                 local invSlot = e.itemSlotTable[itemEquipLoc]
                 if invSlot and itemLevel and itemLevel>1 then--装等
@@ -101,24 +108,10 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex, guildBank
                         topLeftText= (topLeftText or '')..e.Icon.up2
                     end
                 end
-                --e.GetItemCollected= function(link, sourceID, icon)--物品是否收集 
-                local sourceID = (not isBound or merchantIndex or guildBank) and select(2,C_TransmogCollection.GetItemInfo(itemLink))--幻化
+
+                local sourceID = ((not bag or not bag.isBound) or merchantIndex or guildBank) and select(2,C_TransmogCollection.GetItemInfo(itemLink))--幻化
                 if sourceID then
                     bottomRightText = e.GetItemCollected(nil, sourceID, true) or bottomRightText
-                    --[[
-                    local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
-                    if sourceInfo then
-                        if not sourceInfo.isCollected then
-                            local hasItemData, canCollect = C_TransmogCollection.PlayerCanCollectSource(sourceID)--玩家是否可收集
-                            if hasItemData and canCollect then
-                                bottomRightText = e.Icon.okTransmog2
-                            else
-                                bottomRightText = e.Icon.transmogHide2
-                            end
-                        elseif guildBank then
-                            bottomRightText= e.Icon.select2
-                        end
-                    end]]
                 end
 
                 if itemQuality and itemQuality>1 then
@@ -134,6 +127,22 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex, guildBank
                     end
                 end
             end
+
+            if bag and bag.isBound then
+                local tooltipData  = C_TooltipInfo.GetBagItem(bag.bagID, bag.slotID)--套装，名称
+                if tooltipData and tooltipData.lines then
+                    local num=#tooltipData.lines
+                    local line= tooltipData.lines[num-1]
+                    TooltipUtil.SurfaceArgs(line)
+                    local text= line.leftText
+                    text= text and text:match(text_EQUIPMENT_SETS)
+                    if text then
+                        text= text:match('(.+),') or text:match('(.+)，') or text
+                        bottomLeftText=e.WA_Utf8Sub(text,3,5)
+                    end
+                end
+            end
+
         elseif setID then--装饰品
            local sets=C_TransmogSets.GetVariantSets(setID)
            if sets then
@@ -156,18 +165,10 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex, guildBank
                 bottomRightText= select(11, C_MountJournal.GetMountInfoByID(mountID)) and e.Icon.X2 or e.Icon.info2
             end
 
---[[
-        elseif classID==7 then--贸易材料
-            if subclassID and tradeskill[subclassID] then
-                --bottomLeftText=tradeskill[subclassID]
-                topLeftText=tradeskill[subclassID]
-            end
-
-]]
 
         elseif classID==12 and itemQuality and itemQuality>0 then--任务
             if bag then
-                local questId, isActive = select(2, C_Container.GetContainerItemQuestInfo(bag.bagID, bag.slot))
+                local questId, isActive = select(2, C_Container.GetContainerItemQuestInfo(bag.bagID, bag.slotID))
                 if questId then
                     if IsQuestCompletable(questId) then
                         bottomLeftText=DONE
@@ -177,6 +178,8 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex, guildBank
                         topRightText=e.Icon.O2
                     end
                 end
+            end
+--[[
                 panel.tips:SetOwner(panel, "ANCHOR_NONE")
                 panel.tips:ClearLines()
                 if merchantIndex then
@@ -184,7 +187,7 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex, guildBank
                 elseif guildBank then
                     panel.tips:SetGuildBankItem(guildBank[1], guildBank[2])
                 else
-                    panel.tips:SetBagItem(bagID,slot)
+                    panel.tips:SetBagItem(bag.bagID, bag.slotID)
                 end
                 for n=3, 4 do--panel.tips:NumLines() do
                     local lineText=_G[id..addName..'TextLeft'..n] and _G[id..addName..'TextLeft'..n]:GetText()
@@ -197,9 +200,11 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex, guildBank
                     end
                 end
             end
+
+]]
+
         elseif itemQuality==7 or itemQuality==8 then
             topRightText=e.Icon.wow2
-            --bottomLeftText=e.Icon.wow2
 
         elseif C_ToyBox.GetToyInfo(itemID) then--玩具
             bottomRightText= PlayerHasToy(itemID) and e.Icon.X2 or e.Icon.info2
@@ -214,24 +219,14 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex, guildBank
                 if #specTable==0 then
                     topRightText=e.Icon.X2
                 end
-            elseif spellName then--USE_COLON
-                panel.tips:SetOwner(panel, "ANCHOR_NONE")
-                panel.tips:ClearLines()
-                if merchantIndex then
-                    panel.tips:SetMerchantItem(merchantIndex)
-                elseif guildBank then
-                    panel.tips:SetGuildBankItem(guildBank[1], guildBank[2])
-                else
-                    panel.tips:SetBagItem(bagID,slot)
-                end
-                for n=3, 4 do--panel.tips:NumLines() do
-                    local lineText=_G[id..addName..'TextLeft'..n] and _G[id..addName..'TextLeft'..n]:GetText()
-                    if lineText then
-                        local useNum=lineText:match(itemUseString)
-                        if useNum then
-                            bottomLeftText=useNum
-                            break
-                        end
+            elseif spellName and bag then--USE_COLON 仅限使用次数
+                local tooltipData= C_TooltipInfo.GetBagItem(bag.bagID, bag.slotID)--套装，名称
+                for _, line in ipairs(tooltipData.lines) do
+                    TooltipUtil.SurfaceArgs(line)
+                    local text= line.leftText and line.leftText:match(itemUseString)
+                    if text then
+                        bottomLeftText=text
+                        break
                     end
                 end
             end
@@ -240,9 +235,6 @@ local function setItemInfo(self, itemLink, itemID, bag, merchantIndex, guildBank
             local num=GetItemCount(itemLink, true)-GetItemCount(itemLink)--银行数量
             if num>0 then
                 leftText= '+'..e.MK(num, 2)
-            end
-            if equipmentName then--装备管理, 名称
-                bottomLeftText=e.WA_Utf8Sub(equipmentName,3,5)
             end
         end
     end
@@ -303,22 +295,27 @@ end
 
 local function setBags(self)--背包设置
     for i, itemButton in self:EnumerateValidItems() do
-        local itemLink, itemID, isBound, equipmentName
-        local slot, bagID= itemButton:GetSlotAndBagID()--:GetID() GetBagID()
+        local itemLink, itemID, isBound--, equipmentName
+        local slotID, bagID= itemButton:GetSlotAndBagID()--:GetID() GetBagID()
         if itemButton.hasItem then
-            local info=C_Container.GetContainerItemInfo(bagID, slot)
+            local info=C_Container.GetContainerItemInfo(bagID, slotID)
             if info then
                 itemLink= info.hyperlink
                 itemID= info.itemID
                 isBound= info.isBound
             end
-            local inSet, setList = C_Container.GetContainerItemEquipmentSetInfo(bagID,slot)
+
+--[[
+            local inSet, setList = C_Container.GetContainerItemEquipmentSetInfo(bagID,slotID)
             if inSet and setList then
                 equipmentName= setList
             end
-            
+
+]]
+        
         end
-        setItemInfo(itemButton, itemLink, itemID, {isBound=isBound, equipmentName=equipmentName, bagID=bagID, slot=slot})
+
+        set_Item_Info(itemButton, itemLink, itemID, {isBound=isBound, bagID=bagID, slotID=slotID})
     end
 end
 
@@ -336,7 +333,7 @@ local function setMerchantInfo()--商人设置
                 itemLink= GetMerchantItemLink(index)
                 itemID= GetMerchantItemID(index)
             end
-            setItemInfo(itemButton, itemLink, itemID, nil, index)
+            set_Item_Info(itemButton, itemLink, itemID, nil, index)
         end
     end
 end
@@ -354,7 +351,7 @@ local function setGuildBank()--公会银行,设置
         local button = GuildBankFrame.Columns[column].Buttons[index];
         local itemLink= GetGuildBankItemLink(tab, i)
         local itemID= itemLink and GetItemInfoInstant(itemLink)
-        setItemInfo(button, itemLink, itemID, nil, nil, {tab, i})
+        set_Item_Info(button, itemLink, itemID, nil, nil, {tab, i})
 	end
 end
 
