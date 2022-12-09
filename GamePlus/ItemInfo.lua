@@ -139,7 +139,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
         elseif classID==15 and subclassID==5 then--坐骑
             local mountID = C_MountJournal.GetMountFromItem(itemID)
             if mountID then
-                bottomRightText= select(11, C_MountJournal.GetMountInfoByID(mountID)) and e.Icon.X2 or e.Icon.info2
+                bottomRightText= select(11, C_MountJournal.GetMountInfoByID(mountID)) and e.Icon.X2 or e.Icon.star2
             end
 
 
@@ -150,7 +150,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
             topRightText=e.Icon.wow2
 
         elseif C_ToyBox.GetToyInfo(itemID) then--玩具
-            bottomRightText= PlayerHasToy(itemID) and e.Icon.X2 or e.Icon.info2
+            bottomRightText= PlayerHasToy(itemID) and e.Icon.X2 or e.Icon.star2
 
         elseif itemStackCount==1 then
             local spellName=GetItemSpell(itemLink)
