@@ -66,6 +66,25 @@ local function Init()
             end)
         end
     end)
+
+    local function hideTexture(self)
+       -- if self then
+            self:SetTexture(0)
+            self:SetShown(flase)
+        --end
+    end
+
+    if MainMenuBar and MainMenuBar.BorderArt then
+        hideTexture(MainMenuBar.BorderArt.TopEdge)
+        hideTexture(MainMenuBar.BorderArt.BottomEdge)
+        hideTexture(MainMenuBar.BorderArt.LeftEdge)
+        hideTexture(MainMenuBar.BorderArt.RightEdge)
+        hideTexture(MainMenuBar.BorderArt.TopLeftCorner)
+        hideTexture(MainMenuBar.BorderArt.BottomLeftCorner)
+        hideTexture(MainMenuBar.BorderArt.TopRightCorner)
+        hideTexture(MainMenuBar.BorderArt.BottomRightCorner)
+    end
+    hideTexture(MultiBarBottomLeftButton10.SlotBackground)
 end
 
 local function set_UNIT_ENTERED_VEHICLE()--载具
