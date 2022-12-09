@@ -1,42 +1,15 @@
 local id, e = ...
 local addName=ITEMS..INFO
 local Save={}
-
 local panel=CreateFrame("Frame")
---panel.tips=CreateFrame("GameTooltip", id..addName, panel, "GameTooltipTemplate")
 
 local itemUseString =ITEM_SPELL_CHARGES:gsub('%%d', '%(%%d%+%)')--(%d+)次
 local KeyStone=CHALLENGE_MODE_KEYSTONE_NAME:gsub('%%s','(.+) ')--钥石
 local text_EQUIPMENT_SETS= 	EQUIPMENT_SETS:gsub('%%s','(.+)')
---[=[
-local tradeskill={
-    [1]='|T136243:0|t',--工程零件
-    [4]='|T4620677:0|t',--珠宝加工	
-    [5]='|T4620681:0|t',--布
-    [6]='|T4620680:0|t',--皮革
-    [7]='|T4620670:0|t',--金属与石材
-    [8]='|T4620671:0|t',--烹饪
-    [9]='|T4620675:0|t',--草药
-    [10]='|A:DemonInvasion1:0:0|a',--元素	
-    [12]='|T4620672:0|t',--附魔
-    [16]='|T4620676:0|t',--铭文
-}
-
-]=]
-
 
 local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBank)
    -- local isBound, equipmentName, bagID, slotID
     local topLeftText, bottomRightText, leftText, bottomLeftText, topRightText, r, g ,b
-
---[[
-    if bag then
-        isBound, equipmentName, bagID, slotID = bag.isBound, bag.equipmentName, bag.bagID, bag.slotID
-    end
-
-]]
-
-
     if itemLink then
         local _, _, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, _, _, classID, subclassID, bindType, expacID, setID, isCraftingReagent = GetItemInfo(itemLink)
         itemLevel=GetDetailedItemLevelInfo(itemLink) or itemLevel
@@ -83,17 +56,14 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
             else
                 topRightText= e.WA_Utf8Sub(itemSubType, 2,5)
             end
-
-        elseif itemEquipLoc and _G[itemEquipLoc] then--装备
-            if classID==2 and subclassID==20 then-- 鱼竿
+        elseif classID==2 and subclassID==20 then-- 鱼竿
                 topRightText='|A:worldquest-icon-fishing:0:0|a'
 
-            elseif itemQuality and itemQuality>1 then
+        elseif classID==2 or classID==4 then--装备
+            if itemQuality and itemQuality>1 then
                 local invSlot = e.itemSlotTable[itemEquipLoc]
-                if invSlot and itemLevel and itemLevel>1 then--装等
-                    if itemQuality>2 or (not e.Player.levelMax and itemQuality==2) then
-                        topLeftText=itemLevel
-                    end
+                local isEquippable= IsEquippableItem(itemLink)
+                if invSlot and itemLevel and itemLevel>1 and isEquippable then--装等
                     local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
                     local upLevel
                     if itemLinkPlayer then
@@ -105,7 +75,10 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
                         upLevel=true
                     end
                     if upLevel and (itemMinLevel and itemMinLevel<=UnitLevel('player') or not itemMinLevel) then
-                        topLeftText= (topLeftText or '')..e.Icon.up2
+                        topLeftText=e.Icon.up2
+                    end
+                    if itemQuality>2 or (not e.Player.levelMax and itemQuality==2) or upLevel then
+                        topLeftText=itemLevel ..(topLeftText or '')
                     end
                 end
 
@@ -114,31 +87,28 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
                     bottomRightText = e.GetItemCollected(nil, sourceID, true) or bottomRightText
                 end
 
-                if itemQuality and itemQuality>1 then
-                    if bag and not bag.isBound then--没有锁定
+                if itemQuality and itemQuality>1 and bag then
+                    if not bag.isBound then--没有锁定
                         topRightText='|A:'..e.Icon.unlocked..':0:0|a'
-                    else
-                        local specTable = GetItemSpecInfo(itemLink) or {}
-                        if subclassID~=0 and not (classID==4 and subclassID==1) and #specTable==0 then
-                            topRightText=e.Icon.X2
-                        elseif GetItemSpell(itemLink) then
-                            topRightText='|A:Soulbinds_Tree_Conduit_Icon_Utility:0:0|a'--使用图标
-                        end
+                    elseif not isEquippable then
+                        --local specTable = GetItemSpecInfo(itemLink) or {}
+                        --if subclassID~=0 and not (classID==4 and subclassID==1) and #specTable==0 then
+                        topRightText=e.Icon.X2
                     end
                 end
-            end
 
-            if bag and bag.isBound then
-                local tooltipData  = C_TooltipInfo.GetBagItem(bag.bagID, bag.slotID)--套装，名称
-                if tooltipData and tooltipData.lines then
-                    local num=#tooltipData.lines
-                    local line= tooltipData.lines[num-1]
-                    TooltipUtil.SurfaceArgs(line)
-                    local text= line.leftText
-                    text= text and text:match(text_EQUIPMENT_SETS)
-                    if text then
-                        text= text:match('(.+),') or text:match('(.+)，') or text
-                        bottomLeftText=e.WA_Utf8Sub(text,3,5)
+                if bag and bag.isBound then
+                    local tooltipData  = C_TooltipInfo.GetBagItem(bag.bagID, bag.slotID)--套装，名称
+                    if tooltipData and tooltipData.lines then
+                        local num=#tooltipData.lines
+                        local line= tooltipData.lines[num-1]
+                        TooltipUtil.SurfaceArgs(line)
+                        local text= line.leftText
+                        text= text and text:match(text_EQUIPMENT_SETS)
+                        if text then
+                            text= text:match('(.+),') or text:match('(.+)，') or text
+                            bottomLeftText=e.WA_Utf8Sub(text,3,5)
+                        end
                     end
                 end
             end
@@ -186,9 +156,6 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
         elseif C_ToyBox.GetToyInfo(itemID) then--玩具
             bottomRightText= PlayerHasToy(itemID) and e.Icon.X2 or e.Icon.info2
 
-        elseif bag and IsUsableItem(itemLink)==false then--不可使用
-            topRightText=e.Icon.info2
-
         elseif itemStackCount==1 then
             local spellName=GetItemSpell(itemLink)
             if spellName==LOOT_JOURNAL_LEGENDARIES_SOURCE_CRAFTED_ITEM then
@@ -213,6 +180,10 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
             if num>0 then
                 leftText= '+'..e.MK(num, 2)
             end
+        end
+
+        if not topRightText and GetItemSpell(itemLink) then
+            topRightText='|A:Soulbinds_Tree_Conduit_Icon_Utility:0:0|a'--使用图标
         end
     end
     if topRightText and not self.topRightText then

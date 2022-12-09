@@ -101,7 +101,7 @@ local function select_Reward()--自动:选择奖励
     if bestItem then
         _G['QuestInfoRewardsFrameQuestInfoItem'..bestItem]:Click()
         if selectItemLink then
-            print(id, QUESTS_LABEL, CHOOSE, selectItemLink)
+            print(id, QUESTS_LABEL, '|cffff00ff'..CHOOSE..'|r', selectItemLink)
         end
     end
 end
