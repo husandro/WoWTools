@@ -77,12 +77,22 @@ local InvUnitFunc=function()--邀请，周围玩家
     end
 
     local p=C_CVar.GetCVarBool('nameplateShowFriends');
-    local all=C_CVar.GetCVarBool('nameplateShowAll');
-    if not all then
+    --local all=C_CVar.GetCVarBool('nameplateShowAll');
+    
+    --[[
+if not all then
         C_CVar.SetCVar('nameplateShowAll', '1')
     end
+
+]]
+
     if not p then
-        C_CVar.SetCVar('nameplateShowFriends', '1')
+        if UnitAffectingCombat('player') then
+            print(id, addName, '|cnRED_FONT_COLOR:'..COMBAT)
+            return
+        else
+            C_CVar.SetCVar('nameplateShowFriends', '1')
+        end
     end
 
     if InvPlateTimer and not InvPlateTimer:IsCancelled() then
@@ -118,10 +128,14 @@ local InvUnitFunc=function()--邀请，周围玩家
                     end
                 end
             end
-            if not all then
+           --[[
+ if not all then
                 C_CVar.SetCVar('nameplateShowAll', '0')
             end
-            if not p then
+
+]]
+
+            if not p and not UnitAffectingCombat('player') then
                 C_CVar.SetCVar('nameplateShowFriends', '0')
             end
             if n==1 then print(GUILDCONTROL_OPTION7..': '..RED_FONT_COLOR_CODE..NONE..'|r') end

@@ -418,6 +418,11 @@ local function Init()
     panel:SetScript("OnMouseUp", function(self, d)
         ResetCursor()
     end)
+    panel:SetScript('OnMouseWheel',function(self,d)
+        if d==1 and not IsModifierKeyDown() then
+            set_Item_Button()
+        end
+    end)
 end
 
 --###########

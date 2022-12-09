@@ -697,23 +697,18 @@ end
 
 e.Chat=function(text, name, setPrint)--v9.25设置
     if text then
+        local ins=IsInInstance()
         if name then
             SendChatMessage(text, 'WHISPER',nil, name);
 
-        elseif UnitAffectingCombat('player') and IsInInstance() then
+        elseif not UnitIsDeadOrGhost('player') and ins then
             SendChatMessage(text, 'SAY');
 
         elseif IsInRaid() then
             SendChatMessage(text, 'RAID')
 
-        elseif IsInGroup(LE_PARTY_CATEGORY_HOME) then
+        elseif IsInGroup() then
             SendChatMessage(text,'PARTY');
-
-        elseif IsInInstance() and IsInGroup() then
-            SendChatMessage(text, 'INSTANCE_CHAT');
-
-        elseif not UnitIsDeadOrGhost('player') and not IsResting() and not IsOutdoors() then
-            SendChatMessage(text, 'SAY');
 
         elseif setPrint then
             print(text)

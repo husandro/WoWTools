@@ -179,29 +179,6 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
                     end
                 end
             end
---[[
-                panel.tips:SetOwner(panel, "ANCHOR_NONE")
-                panel.tips:ClearLines()
-                if merchantIndex then
-                    panel.tips:SetMerchantItem(merchantIndex)
-                elseif guildBank then
-                    panel.tips:SetGuildBankItem(guildBank[1], guildBank[2])
-                else
-                    panel.tips:SetBagItem(bag.bagID, bag.slotID)
-                end
-                for n=3, 4 do--panel.tips:NumLines() do
-                    local lineText=_G[id..addName..'TextLeft'..n] and _G[id..addName..'TextLeft'..n]:GetText()
-                    if lineText then
-                        local useNum=lineText:match(itemUseString)
-                        if useNum then
-                            bottomLeftText=useNum
-                            break
-                        end
-                    end
-                end
-            end
-
-]]
 
         elseif itemQuality==7 or itemQuality==8 then
             topRightText=e.Icon.wow2
@@ -304,15 +281,6 @@ local function setBags(self)--背包设置
                 itemID= info.itemID
                 isBound= info.isBound
             end
-
---[[
-            local inSet, setList = C_Container.GetContainerItemEquipmentSetInfo(bagID,slotID)
-            if inSet and setList then
-                equipmentName= setList
-            end
-
-]]
-        
         end
 
         set_Item_Info(itemButton, itemLink, itemID, {isBound=isBound, bagID=bagID, slotID=slotID})
