@@ -17,7 +17,15 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
             r,g,b = GetItemQualityColor(itemQuality)
         end
 
-        if C_Item.IsItemKeystoneByID(itemID) then--挑战
+        if bag and bag.hasLoot then--宝箱
+            local tooltipData  = C_TooltipInfo.GetBagItem(bag.bagID, bag.slotID)
+            if tooltipData and tooltipData.lines then
+                local line= tooltipData.lines[2]
+                TooltipUtil.SurfaceArgs(line)
+                topRightText= line.leftText==LOCKED and '|A:Monuments-Lock:0:0|a' or '|A:talents-button-undo:0:0|a'
+            end
+
+        elseif C_Item.IsItemKeystoneByID(itemID) then--挑战
             local name=itemLink:match('%[(.-)]') or itemLink
             topLeftText=name:match('%((%d+)%)') or C_MythicPlus.GetOwnedKeystoneLevel() --等级
             name=name:gsub('%((%d+)%)','')
@@ -42,6 +50,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
 
         elseif itemQuality and itemQuality==0 then
             topRightText='|A:Coin-Silver:0:0|a'
+
         elseif classID==1 then--背包
             if subclassID~=0 then
                 bottomLeftText= e.WA_Utf8Sub(itemSubType, 2,5)
@@ -90,9 +99,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
                 if itemQuality and itemQuality>1 and bag then
                     if not bag.isBound then--没有锁定
                         topRightText='|A:'..e.Icon.unlocked..':0:0|a'
-                    elseif not isEquippable then
-                        --local specTable = GetItemSpecInfo(itemLink) or {}
-                        --if subclassID~=0 and not (classID==4 and subclassID==1) and #specTable==0 then
+                    elseif not isEquippable then--不可装备, 设置不成功,不知什么,情况
                         topRightText=e.Icon.X2
                     end
                 end
@@ -137,18 +144,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
 
 
         elseif classID==12 and itemQuality and itemQuality>0 then--任务
-            if bag then
-                local questId, isActive = select(2, C_Container.GetContainerItemQuestInfo(bag.bagID, bag.slotID))
-                if questId then
-                    if IsQuestCompletable(questId) then
-                        bottomLeftText=DONE
-                    elseif isActive then--已激活
-                        bottomLeftText= e.WA_Utf8Sub(itemSubType, 2,5)
-                    elseif not IsUsableItem(itemLink) then
-                        topRightText=e.Icon.O2
-                    end
-                end
-            end
+            topRightText= e.onlyChinse and '任务' or e.WA_Utf8Sub(itemSubType, 2,5)
 
         elseif itemQuality==7 or itemQuality==8 then
             topRightText=e.Icon.wow2
@@ -245,16 +241,19 @@ local function setBags(self)--背包设置
     for i, itemButton in self:EnumerateValidItems() do
         local itemLink, itemID, isBound--, equipmentName
         local slotID, bagID= itemButton:GetSlotAndBagID()--:GetID() GetBagID()
+        local info
         if itemButton.hasItem then
-            local info=C_Container.GetContainerItemInfo(bagID, slotID)
-            if info then
+            info=C_Container.GetContainerItemInfo(bagID, slotID)
+            if info and info.hyperlink and info.itemID then
                 itemLink= info.hyperlink
                 itemID= info.itemID
-                isBound= info.isBound
+                
+                info.bagID=bagID
+                info.slotID=slotID
             end
         end
 
-        set_Item_Info(itemButton, itemLink, itemID, {isBound=isBound, bagID=bagID, slotID=slotID})
+        set_Item_Info(itemButton, itemLink, itemID, info, nil, nil)
     end
 end
 
@@ -272,7 +271,7 @@ local function setMerchantInfo()--商人设置
                 itemLink= GetMerchantItemLink(index)
                 itemID= GetMerchantItemID(index)
             end
-            set_Item_Info(itemButton, itemLink, itemID, nil, index)
+            set_Item_Info(itemButton, itemLink, itemID, nil, index, nil)
         end
     end
 end
