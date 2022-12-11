@@ -182,6 +182,7 @@ hooksecurefunc('ReputationFrame_InitReputationRow', function (factionRow, elemen
 			barColor = BLUE_FONT_COLOR
 		end
 	elseif (isHeader and hasRep) or not isHeader then
+		
 		if (standingID == MAX_REPUTATION_REACTION) then--已满
 			text=Icon.isCapped..name
 			barColor=FACTION_ORANGE_COLOR
