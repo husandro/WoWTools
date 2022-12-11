@@ -9,11 +9,13 @@ local function Init()
     panel.buttons={}
     local tab={GetProfessions()}--local prof1, prof2, archaeology, fishing, cooking = GetProfessions()
     for index, type in pairs(tab) do
+        local spellID, icon
         if type then --and index~=4 and index~=3 then
             --local name, icon = GetProfessionInfo(type)
-            local name, icon, skillLevel, maxSkillLevel, numAbilities, spelloffset, skillLine, skillModifier, specializationIndex, specializationOffset = GetProfessionInfo(type)
+            local name, _, skillLevel, maxSkillLevel, numAbilities, spelloffset, skillLine, skillModifier, specializationIndex, specializationOffset = GetProfessionInfo(type)
+            _, _, icon, _, _, _, spellID= GetSpellInfo(spelloffset+ 1, 'spell')
 
-            if not panel.buttons[index] then
+            if not panel.buttons[index] and spellID and icon then
                 panel.buttons[index]=e.Cbtn2(nil, e.toolsFrame)
                 e.ToolsSetButtonPoint(panel.buttons[index])--设置位置
                 panel.buttons[index]:SetAttribute("type1", "spell")
@@ -52,72 +54,71 @@ local function Init()
                 end)
                 panel.buttons[index]:SetScript('OnLeave', function() e.tips:Hide() end)
             end
-
-            local spellID= select(7, GetSpellInfo(spelloffset+1, 'spell'))
-            panel.buttons[index].spellID = spellID
-            panel.buttons[index].index= index
-
-            if index==5 then--烹饪用火
-                local name2=IsSpellKnown(818) and GetSpellInfo(818)
-                if name2 then
-                    local text=''
-                    if PlayerHasToy(134020) then--玩具,大厨的帽子
-                        local toyname=C_Item.GetItemNameByID('134020')
-                        if toyname then
-                            text= '/use '..toyname..'\n'
-                        end
-                    end
-                    text=text..'/cast [@player]'..name2
-                    if not panel.buttons[index].textureRight then
-                        panel.buttons[index].textureRight= panel.buttons[index]:CreateTexture(nil,'OVERLAY')
-                        panel.buttons[index].textureRight:SetPoint('RIGHT',panel.buttons[index].border,'RIGHT',-6,0)
-                        panel.buttons[index].textureRight:SetSize(8,8)
-                        panel.buttons[index].textureRight:SetTexture(135805)
-                        panel.buttons[index]:SetScript('OnShow',function(self)
-                            local start, duration, _, modRate = GetSpellCooldown(818)
-                            e.Ccool(self, start, duration, modRate)--冷却条
-                        end)
-                    end
-                    panel.buttons[index]:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
-                    panel.buttons[index]:SetAttribute('type2', 'macro')
-                    panel.buttons[index]:SetAttribute("macrotext2", text)
-                end
-            elseif numAbilities and numAbilities>1 then
-                local _, _, icon2, _, _, _, spellID2= GetSpellInfo(spelloffset+ 2, 'spell')
-                if icon2 and spellID2 and icon2~=icon then
-                    if not panel.buttons[index].textureRight then
-                        panel.buttons[index].textureRight= panel.buttons[index]:CreateTexture(nil,'OVERLAY')
-                        panel.buttons[index].textureRight:SetPoint('RIGHT',panel.buttons[index].border,'RIGHT',-6,0)
-                        panel.buttons[index].textureRight:SetSize(8,8)
-                        panel.buttons[index]:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
-                    end
-                    panel.buttons[index].textureRight:SetTexture(icon2)
-                end
-                panel.buttons[index]:SetAttribute("type2","spell")
-                panel.buttons[index]:SetAttribute("spell2", spellID2)
-                panel.buttons[index].spellID2= spellID2
-            else
-                panel.buttons[index].spellID2=nil
-                panel.buttons[index].index=nil
-            end
-            panel.buttons[index]:SetAttribute("spell", spellID)
-            --[[
-
-            if index==1 or index==2 then
-                
-            else
-                panel.buttons[index]:SetAttribute("spell", name)
-            end
+            if panel.buttons[index] then
+                panel.buttons[index].spellID = spellID
+                panel.buttons[index].index= index
             
+                if index==5 then--烹饪用火
+                    local name2=IsSpellKnown(818) and GetSpellInfo(818)
+                    if name2 then
+                        local text=''
+                        if PlayerHasToy(134020) then--玩具,大厨的帽子
+                            local toyname=C_Item.GetItemNameByID('134020')
+                            if toyname then
+                                text= '/use '..toyname..'\n'
+                            end
+                        end
+                        text=text..'/cast [@player]'..name2
+                        if not panel.buttons[index].textureRight then
+                            panel.buttons[index].textureRight= panel.buttons[index]:CreateTexture(nil,'OVERLAY')
+                            panel.buttons[index].textureRight:SetPoint('RIGHT',panel.buttons[index].border,'RIGHT',-6,0)
+                            panel.buttons[index].textureRight:SetSize(8,8)
+                            panel.buttons[index].textureRight:SetTexture(135805)
+                            panel.buttons[index]:SetScript('OnShow',function(self)
+                                local start, duration, _, modRate = GetSpellCooldown(818)
+                                e.Ccool(self, start, duration, modRate)--冷却条
+                            end)
+                        end
+                        panel.buttons[index]:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
+                        panel.buttons[index]:SetAttribute('type2', 'macro')
+                        panel.buttons[index]:SetAttribute("macrotext2", text)
+                    end
+                elseif numAbilities and numAbilities>1 then
+                    local _, _, icon2, _, _, _, spellID2= GetSpellInfo(spelloffset+ 2, 'spell')
+                    if icon2 and spellID2 and icon2~=icon then
+                        if not panel.buttons[index].textureRight then
+                            panel.buttons[index].textureRight= panel.buttons[index]:CreateTexture(nil,'OVERLAY')
+                            panel.buttons[index].textureRight:SetPoint('RIGHT',panel.buttons[index].border,'RIGHT',-6,0)
+                            panel.buttons[index].textureRight:SetSize(8,8)
+                            panel.buttons[index]:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
+                        end
+                        panel.buttons[index].textureRight:SetTexture(icon2)
+                    end
+                    panel.buttons[index]:SetAttribute("type2","spell")
+                    panel.buttons[index]:SetAttribute("spell2", spellID2)
+                    panel.buttons[index].spellID2= spellID2
+                else
+                    panel.buttons[index].spellID2=nil
+                    panel.buttons[index].index=nil
+                end
+                panel.buttons[index]:SetAttribute("spell", spellID)
+                --[[
 
-]]
+                if index==1 or index==2 then
+                    
+                else
+                    panel.buttons[index]:SetAttribute("spell", name)
+                end
+                
 
-            panel.buttons[index].texture:SetTexture(icon)
+    ]]
 
+                panel.buttons[index].texture:SetTexture(icon)
+
+            end
         end
-
         if panel.buttons[index] then
-            panel.buttons[index]:SetShown(type)
+            panel.buttons[index]:SetShown(spellID and icon)
         end
     end
 end
