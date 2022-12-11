@@ -171,106 +171,122 @@ end)
 
 local function InitMenu(self, level, type)--主菜单
     local info
-    info={
-        text= 'fps ms',
-        checked= not Save.hideFpsMs,
-        tooltipOnButton=true,
-        tooltipTitle=MAINMENUBAR_LATENCY_LABEL:format(select(3, GetNetStats())),
-        func= function()
-            Save.hideFpsMs= not Save.hideFpsMs and true or nil
-            set_Fps_Ms()--设置, fps, ms, 数值
-        end
-    }
-    UIDropDownMenu_AddButton(info,level)
+    if type=='wowMony' then
+        info={
+            text='WoW',
+            checked= Save.moneyWoW,
+            func= function()
+                Save.moneyWoW= not Save.moneyWoW and true or nil
+                if Save.money then
+                    setMoney()
+                end
+            end
+        }
+        UIDropDownMenu_AddButton(info,level)
+    else
+        info={
+            text= 'fps ms',
+            checked= not Save.hideFpsMs,
+            tooltipOnButton=true,
+            tooltipTitle=MAINMENUBAR_LATENCY_LABEL:format(select(3, GetNetStats())),
+            func= function()
+                Save.hideFpsMs= not Save.hideFpsMs and true or nil
+                set_Fps_Ms()--设置, fps, ms, 数值
+            end
+        }
+        UIDropDownMenu_AddButton(info,level)
 
-    info={
-        text= (e.onlyChinse and '系统' or SYSTEM).. ' fps ms',
-        checked= Save.SystemFpsMs,
-        func= function()
-            Save.SystemFpsMs= not Save.SystemFpsMs and true or nil
-            set_System_FPSMS()--设置系统fps ms
-        end
-    }
-    UIDropDownMenu_AddButton(info,level)
+        info={
+            text= (e.onlyChinse and '系统' or SYSTEM).. ' fps ms',
+            checked= Save.SystemFpsMs,
+            func= function()
+                Save.SystemFpsMs= not Save.SystemFpsMs and true or nil
+                set_System_FPSMS()--设置系统fps ms
+            end
+        }
+        UIDropDownMenu_AddButton(info,level)
 
-    local numPlayer, allMoney, text  = 0, 0, ''
-    for guid, infoMoney in pairs(e.WoWSave) do
-        if infoMoney.Money then
-            text= text~='' and text..'\n' or text
-            text= text..e.GetPlayerInfo(nil, guid, true)..(guid==e.Player.guid and e.Icon.star2 or '')..'  '.. GetCoinTextureString(infoMoney.Money, true)
-            numPlayer=numPlayer+1
-            allMoney= allMoney + infoMoney.Money
+        local numPlayer, allMoney, text  = 0, 0, ''
+        for guid, infoMoney in pairs(e.WoWSave) do
+            if infoMoney.Money then
+                text= text~='' and text..'\n' or text
+                text= text..e.GetPlayerInfo(nil, guid, true)..(guid==e.Player.guid and e.Icon.star2 or '')..'  '.. GetCoinTextureString(infoMoney.Money, true)
+                numPlayer=numPlayer+1
+                allMoney= allMoney + infoMoney.Money
+            end
         end
+        --e.tips:AddDoubleLine(CHARACTER..numPlayer..' '..FROM_TOTAL..e.MK(allMoney/10000, 3), GetCoinTextureString(allMoney))
+
+        info={
+            text= (e.onlyChinse and '钱' or MONEY),
+            checked=Save.money,
+            menuList='wowMony',
+            hasArrow=true,
+            tooltipOnButton=true,
+            tooltipTitle= (e.onlyChinse and '角色' or CHARACTER)..'|cnGREEN_FONT_COLOR:'..numPlayer..'|r '..FROM_TOTAL..'|cnGREEN_FONT_COLOR:'..(allMoney >=10000 and e.MK(allMoney/10000, 3) or GetCoinTextureString(allMoney, true))..'|r',
+            tooltipText= text,
+            func= function()
+                Save.money= not Save.money and true or nil
+                set_Money_Event()--设置, 钱, 事件
+            end
+        }
+        UIDropDownMenu_AddButton(info,level)
+
+        info={
+            text= (e.onlyChinse and '耐久度' or DURABILITY)..': '..setDurabiliy(true),
+            checked= Save.durabiliy,
+            func= function()
+                Save.durabiliy = not  Save.durabiliy and true or nil
+                set_Durabiliy_EquipLevel_Event()--设置装等,耐久度,事件
+            end
+        }
+        UIDropDownMenu_AddButton(info,level)
+
+        info={
+            text= (e.onlyChinse and '装备等级' or EQUIPSET_EQUIP..LEVEL),
+            checked=Save.equipmetLevel,
+            func= function()
+                Save.equipmetLevel= not Save.equipmetLevel and true or nil
+                set_Durabiliy_EquipLevel_Event()--设置装等,耐久度,事件
+            end
+        }
+        UIDropDownMenu_AddButton(info,level)
+
+        UIDropDownMenu_AddSeparator(level)
+        info={
+            text=e.Icon.mid..(e.onlyChinse and '缩放' or UI_SCALE)..': '..(Save.size or 12),
+            isTitle=true,
+            notCheckable=true,
+        }
+        UIDropDownMenu_AddButton(info,level)
+
+        info={
+            text=e.Icon.right..(e.onlyChinse and '移动' or NPE_MOVE),
+            isTitle=true,
+            notCheckable=true,
+        }
+        UIDropDownMenu_AddButton(info,level)
+
+        info={
+            text= (e.onlyChinse and '重置位置' or RESET_POSITION),
+            colorCode= not Save.point and '|cff606060',
+            notCheckable=true,
+            func= function()
+                Save.point=nil
+                panel:ClearAllPoints()
+                set_Point()--设置位置
+            end
+        }
+        UIDropDownMenu_AddButton(info,level)
+
+        UIDropDownMenu_AddSeparator(level)
+        info={
+            text= id ..' '.. addName,
+            isTitle=true,
+            notCheckable=true,
+        }
+        UIDropDownMenu_AddButton(info,level)
     end
-    --e.tips:AddDoubleLine(CHARACTER..numPlayer..' '..FROM_TOTAL..e.MK(allMoney/10000, 3), GetCoinTextureString(allMoney))
-
-    info={
-        text= (e.onlyChinse and '钱' or MONEY),
-        checked=Save.money,
-        tooltipOnButton=true,
-        tooltipTitle= (e.onlyChinse and '角色' or CHARACTER)..'|cnGREEN_FONT_COLOR:'..numPlayer..'|r '..FROM_TOTAL..'|cnGREEN_FONT_COLOR:'..(allMoney >=10000 and e.MK(allMoney/10000, 3) or GetCoinTextureString(allMoney, true))..'|r',
-        tooltipText= text,
-        func= function()
-            Save.money= not Save.money and true or nil
-            set_Money_Event()--设置, 钱, 事件
-        end
-    }
-    UIDropDownMenu_AddButton(info,level)
-
-    info={
-        text= (e.onlyChinse and '耐久度' or DURABILITY)..': '..setDurabiliy(true),
-        checked= Save.durabiliy,
-        func= function()
-            Save.durabiliy = not  Save.durabiliy and true or nil
-            set_Durabiliy_EquipLevel_Event()--设置装等,耐久度,事件
-        end
-    }
-    UIDropDownMenu_AddButton(info,level)
-
-    info={
-        text= (e.onlyChinse and '装备等级' or EQUIPSET_EQUIP..LEVEL),
-        checked=Save.equipmetLevel,
-        func= function()
-            Save.equipmetLevel= not Save.equipmetLevel and true or nil
-            set_Durabiliy_EquipLevel_Event()--设置装等,耐久度,事件
-        end
-    }
-    UIDropDownMenu_AddButton(info,level)
-
-    UIDropDownMenu_AddSeparator(level)
-    info={
-        text=e.Icon.mid..(e.onlyChinse and '缩放' or UI_SCALE)..': '..(Save.size or 12),
-        isTitle=true,
-        notCheckable=true,
-    }
-    UIDropDownMenu_AddButton(info,level)
-
-    info={
-        text=e.Icon.right..(e.onlyChinse and '移动' or NPE_MOVE),
-        isTitle=true,
-        notCheckable=true,
-    }
-    UIDropDownMenu_AddButton(info,level)
-
-    info={
-        text= (e.onlyChinse and '重置位置' or RESET_POSITION),
-        colorCode= not Save.point and '|cff606060',
-        notCheckable=true,
-        func= function()
-            Save.point=nil
-            panel:ClearAllPoints()
-            set_Point()--设置位置
-        end
-    }
-    UIDropDownMenu_AddButton(info,level)
-
-    UIDropDownMenu_AddSeparator(level)
-    info={
-        text= id ..' '.. addName,
-        isTitle=true,
-        notCheckable=true,
-    }
-    UIDropDownMenu_AddButton(info,level)
 end
 
 --######
