@@ -15,7 +15,7 @@
 # 语言跟随游戏语言
 
 # bbs
-* https://bbs.nga.cn/read.php?tid=34084034
+* https://bbs.nga.cn/read.php?tid=34652328
 
 # wago.io 主页
 * https://wago.io/p/husandro2
