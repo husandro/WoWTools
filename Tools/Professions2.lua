@@ -76,7 +76,12 @@ local function Init()
             else
                 panel.buttons[index].index=nil
             end
-            panel.buttons[index]:SetAttribute("spell", name)
+            if index==1 or index==2 then
+                panel.buttons[index]:SetAttribute("spell", select(7, GetSpellInfo(spelloffset, 'spell')))
+            else
+                panel.buttons[index]:SetAttribute("spell", name)
+            end
+            
             panel.buttons[index].texture:SetTexture(icon)
 
         end
