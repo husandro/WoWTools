@@ -12,7 +12,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
     local topLeftText, bottomRightText, leftText, bottomLeftText, topRightText, r, g ,b, setIDItem--setIDItem套装
     if itemLink then
         local _, _, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, _, _, classID, subclassID, bindType, expacID, setID, isCraftingReagent = GetItemInfo(itemLink)
-        setIDItem= setID and true or nil
+        setIDItem= setID and true or nil--套装
         itemLevel=GetDetailedItemLevelInfo(itemLink) or itemLevel
         if itemQuality then
             r,g,b = GetItemQualityColor(itemQuality)
