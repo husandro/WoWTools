@@ -31,18 +31,18 @@ local function Init()
         self:StopMovingOrSizing()
         Save.Point={self:GetPoint(1)}
         Save.Point[2]=nil
-        print(id, addName, RESET_POSITION, 'Alt+'..e.Icon.right)
+        print(id, addName, (e.onlyChinse and '重置位置' or RESET_POSITION), 'Alt+'..e.Icon.right)
     end)
     panel:SetScript("OnMouseDown", function(self,d)
         if d=='LeftButton' then--提示移动
-            print(id, addName, NPE_MOVE..e.Icon.right, UI_SCALE..'Alt+'..e.Icon.mid,Save.scale)
+            print(id, addName, (e.onlyChinse and '移动' or NPE_MOVE)..e.Icon.right, (e.onlyChinse and '缩放' or UI_SCALE)..'Alt+'..e.Icon.mid,Save.scale)
 
         elseif d=='RightButton' and not IsModifierKeyDown() then--移动光标
             SetCursor('UI_MOVE_CURSOR')
 
         elseif d=='RightButton' and IsAltKeyDown() then--还原
             if UnitAffectingCombat('player') then
-                print(id ,addName, NPE_MOVE, '|cnRED_FONT_COLOR:'..COMBAT)
+                print(id ,addName, (e.onlyChinse and '移动' or NPE_MOVE), '|cnRED_FONT_COLOR:'..(e.onlyChinse and '战斗中' or COMBAT))
                 return
             end
             Save.Point=nil
@@ -53,8 +53,9 @@ local function Init()
     panel:SetScript("OnMouseUp", function(self, d)
         ResetCursor()
     end)
-    panel:SetScript("OnLeave",function()
+    panel:SetScript("OnLeave",function(self)
         ResetCursor()
+        self:SetButtonState('NORMAL')
     end)
     panel:SetScript('OnMouseWheel', function(self, d)--缩放
         if IsAltKeyDown() then
@@ -69,7 +70,7 @@ local function Init()
             elseif sacle<0.6 then
                 sacle=0.6
             end
-            print(id, addName, UI_SCALE, sacle)
+            print(id, addName, (e.onlyChinse and '缩放' or UI_SCALE), sacle)
             self:SetScale(sacle)
             Save.scale=sacle
         end

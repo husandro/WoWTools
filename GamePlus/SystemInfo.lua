@@ -2,7 +2,12 @@ local id, e = ...
 local addName=SYSTEM_MESSAGES--MAINMENU_BUTTON
 local Save={equipmetLevel=true, durabiliy=true}
 
-local panel=CreateFrame('Button', nil, UIParent)
+local panel=e.Cbtn(nil, nil, nil,nil,nil,true,{12,12})
+panel.fpsms=e.Cstr(panel, Save.size)--fpsms
+panel.money=e.Cstr(panel, Save.size)--钱
+panel.durabiliy=e.Cstr(panel,Save.size)--耐久度
+panel.fpsmsFrame=CreateFrame("Frame",nil, panel)--fps,ms,框架
+panel.fpsmsFrame:SetShown(false)
 
 local function setStrColor()
     e.Cstr(nil,Save.size, nil ,panel.fpsms, true)
@@ -35,7 +40,7 @@ local function setDurabiliy(re)
             m =m + max;
         end
     end
-    local du='';
+    local du;
     if m>0 then
         du = floor((c/m) * 100)
         if du<30 then
@@ -53,7 +58,7 @@ local function setDurabiliy(re)
         panel.durabiliy:SetText(du)
     end
     if re then
-       return du
+       return du or ''
     end
 end
 
@@ -75,27 +80,182 @@ local function setEquipmentLevel()--角色图标显示装等
     end
 end
 
-local timeElapsed = 0
-local function setInit()
+local function set_Point()--设置位置
     if Save.point then
         panel:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
     else
         panel:SetPoint('BOTTOMRIGHT',-24, 0)
     end
+end
 
-    panel:SetSize(12,12)
+local function set_System_FPSMS()--设置系统fps ms
+    local frame=FramerateLabel
+    if Save.SystemFpsMs then
+        if not frame or not frame:IsShown() then
+            ToggleFramerate()
+        end
+    else
+        if frame and frame:IsShown() then
+            ToggleFramerate()
+        end
+    end
+end
+
+local timeElapsed = 0
+local function set_Fps_Ms()--设置, fps, ms, 数值
+    panel.fpsmsFrame:SetShown(not Save.hideFpsMs)
+    if not Save.hideFpsMs then
+        timeElapsed=0
+    else
+        panel.fpsms:SetText('')
+    end
+end
+panel.fpsmsFrame:HookScript("OnUpdate", function (self, elapsed)--fpsms
+    timeElapsed = timeElapsed + elapsed
+    if timeElapsed > 0.4 then
+        timeElapsed = 0
+        local t = select(4, GetNetStats())--ms
+        if t>400 then
+            t='|cnRED_FONT_COLOR:'..t..'|r'
+        elseif t>120 then
+            t='|cnYELLOW_FONT_COLOR:'..t..'|r'
+        end
+
+        local r=GetFramerate() or 0
+        r=math.modf(r)--fps
+        if r then
+            if r<10 then
+                r='|cff00ff00'..r..'|r'
+            elseif r<20 then
+                r='|cffffff00'..r..'|r'
+            end
+            t=t..'ms  '..r..'fps'
+        end
+        panel.fpsms:SetText(t)
+    end
+end)
+
+--#####
+--主菜单
+--#####
+
+local function InitMenu(self, level, type)--主菜单
+    local info
+    info={
+        text= 'fps ms',
+        checked= not Save.hideFpsMs,
+        tooltipOnButton=true,
+        tooltipTitle=MAINMENUBAR_LATENCY_LABEL:format(select(3, GetNetStats())),
+        func= function()
+            Save.hideFpsMs= not Save.hideFpsMs and true or nil
+            set_Fps_Ms()--设置, fps, ms, 数值
+        end
+    }
+    UIDropDownMenu_AddButton(info,level)
+
+    info={
+        text= (e.onlyChinse and '系统' or SYSTEM).. ' fps ms',
+        checked= Save.SystemFpsMs,
+        func= function()
+            Save.SystemFpsMs= not Save.SystemFpsMs and true or nil
+            set_System_FPSMS()--设置系统fps ms
+        end
+    }
+    UIDropDownMenu_AddButton(info,level)
+
+    info={
+        text= (e.onlyChinse and '钱' or MONEY),
+        checked=Save.money,
+        func= function()
+            if Save.money then
+                Save.money=nil
+                panel.money:SetText('')
+            else
+                Save.money=true
+                setMoney()
+            end
+        end
+    }
+    UIDropDownMenu_AddButton(info,level)
+
+    info={
+        text= (e.onlyChinse and '耐久度' or DURABILITY)..': '..setDurabiliy(true),
+        checked= Save.durabiliy,
+        func= function()
+            if Save.durabiliy then
+                Save.durabiliy=nil
+                panel.durabiliy:SetText("")
+            else
+                Save.durabiliy=true
+                setDurabiliy()
+            end
+        end
+    }
+    UIDropDownMenu_AddButton(info,level)
+
+    info={
+        text= (e.onlyChinse and '装备等级' or EQUIPSET_EQUIP..LEVEL),
+        checked=Save.equipmetLevel,
+        func= function()
+            Save.equipmetLevel= not Save.equipmetLevel and true or nil
+            setEquipmentLevel()
+        end
+    }
+    UIDropDownMenu_AddButton(info,level)
+
+    UIDropDownMenu_AddSeparator(level)
+    info={
+        text=e.Icon.mid..(e.onlyChinse and '缩放' or UI_SCALE)..': '..(Save.size or 12),
+        isTitle=true,
+        notCheckable=true,
+    }
+    UIDropDownMenu_AddButton(info,level)
+
+    info={
+        text=e.Icon.right..(e.onlyChinse and '移动' or NPE_MOVE),
+        isTitle=true,
+        notCheckable=true,
+    }
+    UIDropDownMenu_AddButton(info,level)
+
+    info={
+        text= (e.onlyChinse and '重置位置' or RESET_POSITION),
+        colorCode= not Save.point and '|cff606060',
+        notCheckable=true,
+        func= function()
+            Save.point=nil
+            panel:ClearAllPoints()
+            set_Point()--设置位置
+        end
+    }
+    UIDropDownMenu_AddButton(info,level)
+
+    UIDropDownMenu_AddSeparator(level)
+    info={
+        text= id ..' '.. addName,
+        isTitle=true,
+        notCheckable=true,
+    }
+    UIDropDownMenu_AddButton(info,level)
+end
+
+--######
+--初始化
+--######
+local function Init()
+    set_Point()--设置位置
     panel:SetHighlightAtlas(e.Icon.highlight)
     panel:SetPushedAtlas(e.Icon.pushed)
     panel:SetFrameStrata('HIGH')
 
-    panel.fpsms=e.Cstr(panel, Save.size)--fpsms
+    panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
+    UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
+
     panel.fpsms:SetPoint('BOTTOMRIGHT')
-
-    panel.money=e.Cstr(panel, Save.size)--钱
     panel.money:SetPoint('BOTTOMRIGHT', panel.fpsms, 'BOTTOMLEFT', -4, 0)
-
-    panel.durabiliy=e.Cstr(panel,Save.size)--耐久度
     panel.durabiliy:SetPoint('BOTTOMRIGHT', panel.money, 'BOTTOMLEFT', -4, 0)
+    panel.fpsmsFrame:SetPoint('RIGHT')
+    panel.fpsmsFrame:SetSize(1,1)
 
     panel:SetMovable(true)
     panel:RegisterForDrag("RightButton");
@@ -109,44 +269,11 @@ local function setInit()
     panel:SetScript("OnDragStop", function(self2)
         self2:StopMovingOrSizing()
         Save.point={self2:GetPoint(1)}
-        print(id, addName, '|cFF00FF00Alt+'..e.Icon.right..KEY_BUTTON2..'|r: '.. TRANSMOGRIFY_TOOLTIP_REVERT)
         ResetCursor()
         setStrColor()
     end)
     panel:SetScript("OnMouseUp", function(self2,d)
-        if d=='RightButton' and IsAltKeyDown() then
-            self2:ClearAllPoints();
-            self2:SetPoint('BOTTOMRIGHT',-24, 0)
-            Save.point=nil
-            setStrColor()
-        end
         ResetCursor()
-    end)
-
-    panel.fpsmsFrame=CreateFrame("Frame",nil,panel)
-    panel.fpsmsFrame:SetPoint('RIGHT')
-    panel.fpsmsFrame:SetSize(1,1)
-    panel.fpsmsFrame:HookScript("OnUpdate", function (self, elapsed)--fpsms
-        timeElapsed = timeElapsed + elapsed        
-        if timeElapsed > 0.5 then
-            timeElapsed = 0
-            local t = select(4, GetNetStats())--ms
-            if t>400 then 
-                t='|cnRED_FONT_COLOR:'..t..'|r'
-            elseif t>120 then
-                t='|cnYELLOW_FONT_COLOR:'..t..'|r'
-            end
-            local r=math.modf(GetFramerate())--fps
-            if r then
-                if r<10 then
-                    r='|cff00ff00'..r..'|r'
-                elseif r<20 then
-                    r='|cffffff00'..r..'|r'
-                end
-                t=t..'ms  '..r..'fps'
-            end
-            panel.fpsms:SetText(t)
-        end
     end)
 
     panel:SetScript('OnMouseWheel',function(self, d)
@@ -167,90 +294,39 @@ local function setInit()
     end)
 
     panel:SetScript('OnMouseDown', function(self, d)
-        local key=IsModifierKeyDown()
-        if d=='LeftButton' and not key then--fpsms
-            if Save.hideFpsMs then
-                Save.hideFpsMs=nil
-                timeElapsed=0
-            else
-                Save.hideFpsMs=true
-                panel.fpsms:SetText('')
-            end
-            panel.fpsmsFrame:SetShown(not Save.hideFpsMs)
-            print(id, addName, 'FpsMs', e.GetShowHide(not Save.hideFpsMs))
-
-        elseif d=='LeftButton' and IsAltKeyDown() then--money
-            if Save.money then
-                Save.money=nil
-                panel.money:SetText('')
-            else
-                Save.money=true
-                setMoney()
-            end
-            print(id, addName, MONEY, e.GetShowHide(Save.money))
-        elseif d=='LeftButton' and IsControlKeyDown() then--耐久度
-            if Save.durabiliy then
-                Save.durabiliy=nil
-                panel.durabiliy:SetText("")
-            else
-                Save.durabiliy=true
-                setDurabiliy()
-            end
-            print(id, addName, DURABILITY, e.GetShowHide(Save.durabiliy))
-        elseif d=='LeftButton' and IsShiftKeyDown() then--角色图标显示装等
-            if Save.equipmetLevel then
-                Save.equipmetLevel=nil
-            else
-                Save.equipmetLevel=true
-            end
-            setEquipmentLevel()
-            print(id,addName, EQUIPSET_EQUIP..LEVEL, e.GetShowHide(Save.equipmetLevel))
+        if d=='RightButton' then--移动光标
+            SetCursor('UI_MOVE_CURSOR')
+        else
+            ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
         end
     end)
-    panel:SetScript('OnEnter', function()
-        if UnitAffectingCombat('player') then
-            return
-        end
-        e.tips:SetOwner(panel.money, "ANCHOR_LEFT",0, 30);
-        e.tips:ClearLines();
-        e.tips:AddDoubleLine(id, addName)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine('FpsMs: '..e.GetShowHide(not Save.disabled), e.Icon.left)
-        e.tips:AddDoubleLine(MONEY..': '..e.GetShowHide(Save.money), 'Alt+'..e.Icon.left)
-        local du=setDurabiliy(true)
-        du = du and ' '..du or ''
-        e.tips:AddDoubleLine(DURABILITY..du..': '..e.GetShowHide(Save.durabiliy), 'Ctrl+'..e.Icon.left)
-        e.tips:AddDoubleLine(EQUIPSET_EQUIP..LEVEL..': '..e.GetShowHide(Save.equipmetLevel), 'Shift+'..e.Icon.left)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(UI_SCALE..': '..(Save.size or 12), e.Icon.mid)
-        e.tips:AddDoubleLine(NPE_MOVE,e.Icon.right)
-        e.tips:Show();
+    panel:SetScript('OnLeave', function (self)
+        self:SetButtonState('NORMAL')
     end)
-    panel:SetScript('OnLeave', function() e.tips:Hide() end)
 
     setStrColor()
     setMoney()
     setDurabiliy()
+    set_System_FPSMS()--设置系统fps ms
+    set_Fps_Ms()--设置, fps, ms, 数值
    C_Timer.After(2, setEquipmentLevel) --角色图标显示装等   
 end
 
 panel:RegisterEvent("ADDON_LOADED")
-
 panel:RegisterEvent("PLAYER_MONEY")
 panel:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
 panel:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
+        if WoWToolsSave and not WoWToolsSave[addName] then
+            panel:SetButtonState('PUSHED')
+        end
         Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
         local check=e.CPanel(addName, not Save.disabled, true)
         check:SetScript('OnClick', function()
-            if Save.disabled then
-                Save.disabled=nil
-            else
-                Save.disabled=true
-            end
+            Save.disabled= not Save.disabled and true or nil
             print(id, addName, e.GetEnabeleDisable(not Save.disabled), REQUIRES_RELOAD)
         end)
         check:SetScript('OnEnter', function(self2)
@@ -265,7 +341,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if Save.disabled then
             panel:UnregisterAllEvents()
         else
-            setInit()
+            Init()
         end
         panel:RegisterEvent("PLAYER_LOGOUT")
 

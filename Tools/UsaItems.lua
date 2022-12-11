@@ -463,12 +463,11 @@ local function Init()
             ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
         end
     end)
-    panel:SetScript('OnEnter',function ()
-        panel:SetAlpha(1.0)
-    
+    panel:SetScript('OnEnter',function (self)
+        self:SetAlpha(1.0)
     end)
-    panel:SetScript('OnLeave', function ()
-        panel:SetAlpha(0.1)
+    panel:SetScript('OnLeave', function (self)
+        self:SetAlpha(0.1)
         e.tips:Hide()
     end)
     panel:SetScript('OnMouseUp',function ()
@@ -537,7 +536,6 @@ panel:RegisterEvent("PLAYER_REGEN_ENABLED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1== id then
         if WoWToolsSave and not WoWToolsSave[addName..'Tools'] then
-            --panel:SetButtonState('PUSHED')
             panel:SetAlpha(1)
         end
 

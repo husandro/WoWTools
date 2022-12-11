@@ -563,7 +563,7 @@ StaticPopupDialogs[id..addName..'TEXTURESIZE']={--设置按钮大小
         s:GetParent():Hide()
     end,
 }
---#####
+
 --#####
 --主菜单
 --#####

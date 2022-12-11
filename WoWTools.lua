@@ -388,6 +388,7 @@ e.CeditBox= function(self, width, height)
 end
 
 e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size)
+    self= self or UIParent
     local b
     if Template then
         b=CreateFrame('Button', name, self, 'UIPanelButtonTemplate')

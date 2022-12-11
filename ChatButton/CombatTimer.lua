@@ -11,6 +11,7 @@ local Save= {textScale=1.2,
         afk={num= 0, time= 0},
 }
 local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
+panel.textFrame=e.Cbtn(WoWToolsChatButtonFrame, nil, nil, nil, nil, true, {20,20})
 
 local OnLineTime--在线时间
 local OnCombatTime--战斗时间
@@ -185,7 +186,7 @@ local function setTextFrame()--设置显示内容, 父框架panel.textFrame, 内
     if Save.disabledText then
         return
     end
-    panel.textFrame=e.Cbtn(WoWToolsChatButtonFrame, nil, nil, nil, nil, true, {20,20})
+    
     if Save.textFramePoint then
         panel.textFrame:SetPoint(Save.textFramePoint[1], UIParent, Save.textFramePoint[3], Save.textFramePoint[4], Save.textFramePoint[5])
     else
@@ -245,6 +246,7 @@ local function setTextFrame()--设置显示内容, 父框架panel.textFrame, 内
     end)
     panel.textFrame:SetScript("OnLeave", function(self, d)
         e.tips:Hide()
+        self:SetButtonState('NORMAL')
     end)
     panel.textFrame:SetScript('OnMouseWheel', function(self, d)--缩放
         if IsAltKeyDown() then
@@ -533,6 +535,9 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
             panel:UnregisterAllEvents()
         else
+            if WoWToolsSave and not WoWToolsSave[addName] then
+                panel.textFrame:SetButtonState('PUSHED')
+            end
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
             Init()
         end
