@@ -320,6 +320,7 @@ local function Init()
         if d=='RightButton' and not IsModifierKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
             self2:StartMoving()
+            CloseDropDownMenus()
         end
     end)
     panel:SetScript("OnDragStop", function(self2)
@@ -350,11 +351,10 @@ local function Init()
     end)
 
     panel:SetScript('OnMouseDown', function(self, d)
-        if d=='RightButton' then--移动光标
+        if d=='RightButton' and not IsAltKeyDown() then--移动光标
             SetCursor('UI_MOVE_CURSOR')
-        else
-            ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
         end
+        ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
     end)
     panel:SetScript('OnLeave', function (self)
         self:SetButtonState('NORMAL')
