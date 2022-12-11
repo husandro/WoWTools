@@ -84,7 +84,12 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
+            if WoWToolsSave and not WoWToolsSave[addName] then
+                panel:SetButtonState('PUSHED')
+            end
+
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
+
             --添加控制面板        
             panel.sel=e.CPanel(addName, not Save.disabled, true)
             panel.sel:SetScript('OnClick', function()

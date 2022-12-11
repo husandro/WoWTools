@@ -536,6 +536,11 @@ panel:RegisterEvent("PLAYER_REGEN_ENABLED")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1== id then
+        if WoWToolsSave and not WoWToolsSave[addName..'Tools'] then
+            --panel:SetButtonState('PUSHED')
+            panel:SetAlpha(1)
+        end
+
         Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
         if not e.toolsFrame.disabled then
 
