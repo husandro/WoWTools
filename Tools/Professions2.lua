@@ -57,7 +57,6 @@ local function Init()
             if panel.buttons[index] then
                 panel.buttons[index].spellID = spellID
                 panel.buttons[index].index= index
-            
                 if index==5 then--烹饪用火
                     local name2=IsSpellKnown(818) and GetSpellInfo(818)
                     if name2 then
@@ -102,19 +101,7 @@ local function Init()
                     panel.buttons[index].index=nil
                 end
                 panel.buttons[index]:SetAttribute("spell", spellID)
-                --[[
-
-                if index==1 or index==2 then
-                    
-                else
-                    panel.buttons[index]:SetAttribute("spell", name)
-                end
-                
-
-    ]]
-
                 panel.buttons[index].texture:SetTexture(icon)
-
             end
         end
         if panel.buttons[index] then
