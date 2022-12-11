@@ -2,7 +2,7 @@ local id, e = ...
 local Save={}
 local addName=TRADE_SKILLS
 local panel=e.Cbtn(ProfessionsFrame.TitleContainer, nil, true)
-panel:SetPoint('RIGHT', ProfessionsFrameTitleText, 'RIGHT', 10, 2)
+panel:SetPoint('RIGHT', ProfessionsFrameTitleText, 'RIGHT', 0, 2)
 panel:SetSize(20,20)
 panel.professionInfoStr=e.Cstr(panel)
 panel.professionInfoStr:SetPoint('RIGHT', panel, 'LEFT')
