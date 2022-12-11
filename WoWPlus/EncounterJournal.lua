@@ -401,7 +401,7 @@ local function set_EncounterJournal_Money_Tips(self)--险指南界面, 钱
     local numPlayer, allMoney  = 0, 0
     for guid, info in pairs(e.WoWSave) do
         if info.Money then
-            e.tips:AddDoubleLine(e.GetPlayerInfo(nil, guid, true)..(guid==e.Player.guid and e.Icon.star2 or ''), GetCoinTextureString(info.Money))
+            e.tips:AddDoubleLine(e.GetPlayerInfo(nil, guid, true)..(guid==e.Player.guid and e.Icon.star2 or ''), GetCoinTextureString(info.Money,true))
             numPlayer=numPlayer+1
             allMoney= allMoney + info.Money
         end

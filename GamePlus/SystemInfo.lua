@@ -5,32 +5,48 @@ local Save={equipmetLevel=true, durabiliy=true}
 local panel=e.Cbtn(nil, nil, nil,nil,nil,true,{12,12})
 panel.fpsms=e.Cstr(panel, Save.size)--fpsms
 panel.money=e.Cstr(panel, Save.size)--钱
-panel.durabiliy=e.Cstr(panel,Save.size)--耐久度
+panel.durabiliy=e.Cstr(panel, Save.size)--耐久度
+panel.equipmentLevel=e.Cstr(panel, Save.size)--装等
 panel.fpsmsFrame=CreateFrame("Frame",nil, panel)--fps,ms,框架
 panel.fpsmsFrame:SetShown(false)
 
+local equipmentLevelIcon= ''
+
 local function setStrColor()
-    e.Cstr(nil,Save.size, nil ,panel.fpsms, true)
-    e.Cstr(nil,Save.size, nil ,panel.money, true)
-    e.Cstr(nil,Save.size, nil ,panel.durabiliy, true)
+    e.Cstr(nil, Save.size, nil , panel.fpsms, true)
+    e.Cstr(nil, Save.size, nil , panel.money, true)
+    e.Cstr(nil, Save.size, nil , panel.durabiliy, true)
+    e.Cstr(nil, Save.size, nil , panel.equipmentLevel, true)
 end
 
 local function setMoney()
-    if not Save.money then
-        return
+    local money=0
+    if Save.moneyWoW then
+        for _, info in pairs(e.WoWSave) do
+            if info.Money then
+                money= money+ info.Money
+            end
+        end
+    else
+        money= GetMoney()
     end
-    local money = GetMoney()
-    if money>10000 then
+    if money>=10000 then
         panel.money:SetText(e.MK(money/1e4, 3)..'|TInterface/moneyframe/ui-silvericon:6|t')
     else
+        panel.money:SetText(GetMoneyString(money,true))
+    end
+end
+local function set_Money_Event()--设置, 钱, 事件
+    if Save.money then
+        panel:RegisterEvent('PLAYER_MONEY')
+        setMoney()
+    else
+        panel:UnregisterEvent('PLAYER_MONEY')
         panel.money:SetText('')
     end
 end
 
 local function setDurabiliy(re)
-    if not Save.durabiliy and not re then
-        return
-    end
     local c = 0;
     local m = 0;
     for i = 1, 18 do
@@ -54,29 +70,43 @@ local function setDurabiliy(re)
         end
         du=du..'|T132281:8|t';
     end
-    if Save.durabiliy then
+    if not re then
         panel.durabiliy:SetText(du)
-    end
-    if re then
-       return du or ''
+    else
+        return du
     end
 end
-
 local function setEquipmentLevel()--角色图标显示装等
-    local to, cu=GetAverageItemLevel()
+    local to, cu= GetAverageItemLevel()
     local text
-    if to and cu and to>0 and Save.equipmetLevel then
-        if not panel.playerEquipmentLevel then
-            panel.playerEquipmentLevel=e.Cstr(CharacterMicroButton, nil, nil, nil, true)
-            panel.playerEquipmentLevel:SetPoint('BOTTOM')
-        end
+    if to and cu and to>0 then
         text=math.modf(cu)
         if to-cu>5 then
             text='|cnRED_FONT_COLOR:'..text..'|r'
         end
+        text=text..equipmentLevelIcon
     end
-    if panel.playerEquipmentLevel then
-        panel.playerEquipmentLevel:SetText(text or '')
+    panel.equipmentLevel:SetText(text or '')
+end
+local function set_Durabiliy_EquipLevel_Event()--设置装等,耐久度,事件
+    if Save.equipmetLevel or Save.durabiliy then
+        panel:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
+    else
+        panel:UnregisterEvent('PLAYER_EQUIPMENT_CHANGED')
+    end
+
+    if Save.equipmetLevel then
+        C_Timer.After(2, setEquipmentLevel) --角色图标显示装等  
+    else
+        panel.equipmentLevel:SetText('')
+    end
+
+    if Save.durabiliy then
+        panel:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
+        setDurabiliy()
+    else
+        panel:UnregisterEvent("UPDATE_INVENTORY_DURABILITY")
+        panel.durabiliy:SetText('')
     end
 end
 
@@ -163,17 +193,26 @@ local function InitMenu(self, level, type)--主菜单
     }
     UIDropDownMenu_AddButton(info,level)
 
+    local numPlayer, allMoney, text  = 0, 0, ''
+    for guid, infoMoney in pairs(e.WoWSave) do
+        if infoMoney.Money then
+            text= text~='' and text..'\n' or text
+            text= text..e.GetPlayerInfo(nil, guid, true)..(guid==e.Player.guid and e.Icon.star2 or '')..'  '.. GetCoinTextureString(infoMoney.Money, true)
+            numPlayer=numPlayer+1
+            allMoney= allMoney + infoMoney.Money
+        end
+    end
+    --e.tips:AddDoubleLine(CHARACTER..numPlayer..' '..FROM_TOTAL..e.MK(allMoney/10000, 3), GetCoinTextureString(allMoney))
+
     info={
         text= (e.onlyChinse and '钱' or MONEY),
         checked=Save.money,
+        tooltipOnButton=true,
+        tooltipTitle= (e.onlyChinse and '角色' or CHARACTER)..'|cnGREEN_FONT_COLOR:'..numPlayer..'|r '..FROM_TOTAL..'|cnGREEN_FONT_COLOR:'..(allMoney >=10000 and e.MK(allMoney/10000, 3) or GetCoinTextureString(allMoney, true))..'|r',
+        tooltipText= text,
         func= function()
-            if Save.money then
-                Save.money=nil
-                panel.money:SetText('')
-            else
-                Save.money=true
-                setMoney()
-            end
+            Save.money= not Save.money and true or nil
+            set_Money_Event()--设置, 钱, 事件
         end
     }
     UIDropDownMenu_AddButton(info,level)
@@ -182,13 +221,8 @@ local function InitMenu(self, level, type)--主菜单
         text= (e.onlyChinse and '耐久度' or DURABILITY)..': '..setDurabiliy(true),
         checked= Save.durabiliy,
         func= function()
-            if Save.durabiliy then
-                Save.durabiliy=nil
-                panel.durabiliy:SetText("")
-            else
-                Save.durabiliy=true
-                setDurabiliy()
-            end
+            Save.durabiliy = not  Save.durabiliy and true or nil
+            set_Durabiliy_EquipLevel_Event()--设置装等,耐久度,事件
         end
     }
     UIDropDownMenu_AddButton(info,level)
@@ -198,7 +232,7 @@ local function InitMenu(self, level, type)--主菜单
         checked=Save.equipmetLevel,
         func= function()
             Save.equipmetLevel= not Save.equipmetLevel and true or nil
-            setEquipmentLevel()
+            set_Durabiliy_EquipLevel_Event()--设置装等,耐久度,事件
         end
     }
     UIDropDownMenu_AddButton(info,level)
@@ -254,6 +288,12 @@ local function Init()
     panel.fpsms:SetPoint('BOTTOMRIGHT')
     panel.money:SetPoint('BOTTOMRIGHT', panel.fpsms, 'BOTTOMLEFT', -4, 0)
     panel.durabiliy:SetPoint('BOTTOMRIGHT', panel.money, 'BOTTOMLEFT', -4, 0)
+    if CharacterMicroButton and CharacterMicroButton:IsVisible() then
+        panel.equipmentLevel:SetPoint('BOTTOM', CharacterMicroButton)
+    else
+        panel.equipmentLevel:SetPoint('BOTTOMRIGHT', panel.durabiliy, 'BOTTOMLEFT', -4, 0)
+        equipmentLevelIcon= UnitSex('player')==2 and '|A:charactercreate-gendericon-male:0:0|a' or  '|A:charactercreate-gendericon-female:0:0|a'--e.Icon.player--'|T1030900:0|t'--'|A:charactercreate-icon-customize-torso-selected:0:0|a'
+    end
     panel.fpsmsFrame:SetPoint('RIGHT')
     panel.fpsmsFrame:SetSize(1,1)
 
@@ -305,17 +345,15 @@ local function Init()
     end)
 
     setStrColor()
-    setMoney()
-    setDurabiliy()
+    if Save.money then set_Money_Event() end--设置,钱,事件
     set_System_FPSMS()--设置系统fps ms
     set_Fps_Ms()--设置, fps, ms, 数值
-   C_Timer.After(2, setEquipmentLevel) --角色图标显示装等   
+    if Save.equipmetLevel or Save.durabiliy then
+        set_Durabiliy_EquipLevel_Event()--设置装等,耐久度,事件
+    end
 end
 
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_MONEY")
-panel:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
-panel:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
@@ -351,13 +389,19 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave[addName]=Save
         end
     elseif event=='PLAYER_MONEY' then
-        setMoney()
+        C_Timer.After(0.5, setMoney)
+
     elseif event=='UPDATE_INVENTORY_DURABILITY' then
         setDurabiliy()
-        setEquipmentLevel()--角色图标显示装等
+
     elseif event=='PLAYER_EQUIPMENT_CHANGED' then
-        C_Timer.After(0.5, function()
-            setEquipmentLevel()--角色图标显示装等
-        end)
+        if Save.durabiliy then
+            setDurabiliy()
+        end
+        if Save.equipmetLevel then
+            C_Timer.After(0.5, function()
+                setEquipmentLevel()--角色图标显示装等
+            end)
+        end
     end
 end)
