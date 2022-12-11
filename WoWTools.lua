@@ -710,6 +710,9 @@ e.Chat=function(text, name, setPrint)--v9.25设置
         elseif IsInGroup() then
             SendChatMessage(text,'PARTY');
 
+        elseif not IsResting() and not UnitAffectingCombat('player') then
+            SendChatMessage(text, 'SAY');
+
         elseif setPrint then
             print(text)
         end
