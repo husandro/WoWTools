@@ -203,7 +203,7 @@ local function Engineering(self, slot, use)--增加 [潘达利亚工程学: 地�
         self.engineering:SetPoint('TOPRIGHT', self, 'TOPLEFT', -8, 0)
     end
     self.engineering.spell= slot==15 and 126392 or 55016
-    self.engineering:RegisterForClicks("LeftButtonDown","RightButtonDown")
+    self.engineering:RegisterForClicks(e.LeftButtonDown,e.RightButtonDown)
     self.engineering:SetScript('OnClick' ,function(self2,d)
         if d=='LeftButton' then
             C_TradeSkillUI.OpenTradeSkill(202)
