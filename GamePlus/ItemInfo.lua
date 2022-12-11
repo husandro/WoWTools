@@ -12,6 +12,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
     local topLeftText, bottomRightText, leftText, bottomLeftText, topRightText, r, g ,b, setIDItem--setIDItem套装
     if itemLink then
         local _, _, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, _, _, classID, subclassID, bindType, expacID, setID, isCraftingReagent = GetItemInfo(itemLink)
+
         setIDItem= setID and true or nil--套装
         itemLevel=GetDetailedItemLevelInfo(itemLink) or itemLevel
         if itemQuality then
@@ -265,6 +266,7 @@ end
 local function setMerchantInfo()--商人设置
     local selectedTab= MerchantFrame.selectedTab
     local page= selectedTab == 1 and MERCHANT_ITEMS_PER_PAGE or BUYBACK_ITEMS_PER_PAGE
+
     for i=1, page do
         local index = selectedTab==1 and (((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i) or i
         local itemButton= _G["MerchantItem"..i..'ItemButton']
@@ -272,13 +274,20 @@ local function setMerchantInfo()--商人设置
             local itemLink,itemID
             
             if itemButton:IsShown() then
-                itemLink= GetMerchantItemLink(index)
-                itemID= GetMerchantItemID(index)
+                if selectedTab==1 then
+                    itemLink= GetMerchantItemLink(index)
+                    itemID= GetMerchantItemID(index)
+                else
+                    itemLink= GetBuybackItemInfo(index)
+                    itemID= C_MerchantFrame.GetBuybackItemID(index)
+                end
+
             end
             set_Item_Info(itemButton, itemLink, itemID, nil, index, nil)
         end
     end
 end
+
 
 local MAX_GUILDBANK_SLOTS_PER_TAB = 98;
 local NUM_SLOTS_PER_GUILDBANK_GROUP = 14;
