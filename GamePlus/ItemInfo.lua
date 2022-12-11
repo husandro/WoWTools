@@ -155,7 +155,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
                     topRightText=e.Icon.X2
                 end
             elseif spellName and bag then--USE_COLON 仅限使用次数
-                local tooltipData= C_TooltipInfo.GetBagItem(bag.bagID, bag.slotID)--套装，名称
+                local tooltipData= C_TooltipInfo.GetBagItem(bag.bagID, bag.slotID)--使用次数
                 for _, line in ipairs(tooltipData.lines) do
                     TooltipUtil.SurfaceArgs(line)
                     local text= line.leftText and line.leftText:match(itemUseString)
