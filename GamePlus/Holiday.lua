@@ -379,8 +379,16 @@ local function Init()
     btn:SetPoint('TOPRIGHT', CalendarFrame, 'TOPRIGHT', -20, -18)
     btn:SetScript('OnMouseDown', function()
         Save.disabled= not Save.disabled and true or nil
+        if Save.disabled and Save.hide then
+            Save.hide=nil
+        end
         set_event()--设置事件
         Text_Settings()--设置Text
+        if Save.disabled then
+            btn:SetNormalAtlas(e.Icon.disabled)
+        else
+            btn:SetNormalAtlas(e.Icon.icon)
+        end
     end)
     btn:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
