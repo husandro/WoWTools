@@ -9,9 +9,10 @@ local text_EQUIPMENT_SETS= 	EQUIPMENT_SETS:gsub('%%s','(.+)')
 
 local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBank)
    -- local isBound, equipmentName, bagID, slotID
-    local topLeftText, bottomRightText, leftText, bottomLeftText, topRightText, r, g ,b
+    local topLeftText, bottomRightText, leftText, bottomLeftText, topRightText, r, g ,b, setIDItem--setIDItem套装
     if itemLink then
         local _, _, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, _, _, classID, subclassID, bindType, expacID, setID, isCraftingReagent = GetItemInfo(itemLink)
+        setIDItem= setID and true or nil
         itemLevel=GetDetailedItemLevelInfo(itemLink) or itemLevel
         if itemQuality then
             r,g,b = GetItemQualityColor(itemQuality)
@@ -41,7 +42,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
                         if v.level >t then t=v.level end
                     end
                 end
-                if t>0 then 
+                if t>0 then
                     leftText='|cnRED_FONT_COLOR:'..t..'|r'
                 end
             end
@@ -119,12 +120,6 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
                     end
                 end
             end
-
-        elseif setID then--装饰品
-           local sets=C_TransmogSets.GetVariantSets(setID)
-           if sets then
-                bottomRightText=not sets.collected and e.Icon.okTransmog2
-           end
 
         elseif classID==17 or (classID==15 and subclassID==2) or itemLink:find('Hbattlepet:(%d+)') then--宠物
             local speciesID = itemLink:match('Hbattlepet:(%d+)') or select(13, C_PetJournal.GetPetInfoByItemID(itemID))--宠物
@@ -234,6 +229,15 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
         if r and g and b and bottomLeftText then
             self.bottomLeftText:SetTextColor(r,g,b)
         end
+    end
+
+    if setIDItem and not self.setIDItem then
+        self.setIDItem=self:CreateTexture()
+        self.setIDItem:SetAllPoints(self)
+        self.setIDItem:SetAtlas(e.Icon.pushed)
+    end
+    if self.setIDItem then
+        self.setIDItem:SetShown(setIDItem)
     end
 end
 
