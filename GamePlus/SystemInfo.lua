@@ -73,7 +73,7 @@ local function setDurabiliy(re)
     if not re then
         panel.durabiliy:SetText(du)
     else
-        return du
+        return du or ''
     end
 end
 local function setEquipmentLevel()--角色图标显示装等
