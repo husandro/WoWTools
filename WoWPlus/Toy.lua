@@ -12,7 +12,7 @@ local function Init()
             self:SetAlpha(1)
             return
         end
-        local has=PlayerHasToy(self.itemID)
+        --local has=PlayerHasToy(self.itemID)
         local isUas=C_ToyBox.IsToyUsable(self.itemID)
       --[[if not isUas and not self.notUasble then
             self.notUasble=self:CreateTexture(nil, 'OVERLAY')
