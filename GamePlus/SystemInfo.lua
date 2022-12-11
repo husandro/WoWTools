@@ -1,6 +1,6 @@
 local id, e = ...
 local addName=SYSTEM_MESSAGES--MAINMENU_BUTTON
-local Save={equipmetLevel=true, durabiliy=true}
+local Save={equipmetLevel=true, durabiliy=true, moneyWoW=true}
 
 local panel=e.Cbtn(nil, nil, nil,nil,nil,true,{12,12})
 panel.fpsms=e.Cstr(panel, Save.size)--fpsms
