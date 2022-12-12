@@ -62,7 +62,7 @@ local function setGroupTips()--队伍信息提示
         subgroup= tab and tab.subgroup
         combatRole=tab.combatRole
     end
-    
+
     if subgroup and not panel.subgroupTexture then--小队号
         panel.subgroupTexture=e.Cstr(panel, 10, nil, nil, true, nil, 'RIGHT')
         panel.subgroupTexture:SetPoint('TOPRIGHT',-6,-3)
@@ -144,6 +144,8 @@ StaticPopupDialogs[id..addName..'CUSTOM']={--区域,设置对话框
     end,
 }
 
+
+
 --#####
 --主菜单
 --#####
@@ -182,7 +184,7 @@ local function InitMenu(self, level, type)--主菜单
         local isInInstance= IsInInstance()
         local num=GetNumGroupMembers()
         local le=UnitIsGroupAssistant('player') or  UnitIsGroupLeader('player')
-        
+
         for _, tab in pairs(chatType) do
             info={
                 text=tab.text,
@@ -209,7 +211,7 @@ local function InitMenu(self, level, type)--主菜单
 
         UIDropDownMenu_AddSeparator(level)
         info={
-            text=((Save.mouseDown or Save.mouseUP) and e.Icon.mid or '')..CUSTOM,
+            text=((Save.mouseDown or Save.mouseUP) and e.Icon.mid or '').. (e.onlyChinse and '自定义' or CUSTOM),
             notCheckable=true,
             menuList='CUSTOM',
             hasArrow=true,
@@ -277,7 +279,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' then
-         C_Timer.After(0.3, function() setGroupTips() end)--队伍信息提示
+        C_Timer.After(0.3, function() setGroupTips() end)--队伍信息提示
 
+    elseif event=='PLAYER_REGEN_ENABLED' then
+        set_Shift_Click_facur()--Shift+点击设置焦点
     end
 end)

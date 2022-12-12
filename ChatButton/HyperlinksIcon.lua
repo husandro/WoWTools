@@ -663,6 +663,50 @@ local function setMsg_CHAT_MSG_SYSTEM(text)--欢迎加入, 信息
     end
 end
 
+--#################
+--Shift+点击设置焦点
+--#################
+local Frame = {
+    ['PlayerFrame']=true,
+    ['PetFrame']=true,
+    ['PartyMemberFrame1']=true,
+    ['PartyMemberFrame2']=true,
+    ['PartyMemberFrame3']=true,
+    ['PartyMemberFrame4']=true,
+    ['PartyMemberFrame1PetFrame']=true,
+    ['PartyMemberFrame2PetFrame']=true,
+    ['PartyMemberFrame3PetFrame']=true,
+    ['PartyMemberFrame4PetFrame']=true,
+    ['TargetFrame']=true,
+    ['TargetofTargetFrame']=true,
+    ['Boss1TargetFrame']=true,
+    ['Boss2TargetFrame']=true,
+    ['Boss3TargetFrame']=true,
+    ['Boss4TargetFrame']=true,
+    ['Boss5TargetFrame']=true,
+    ['FocusFrameToT']=true,
+    ['TargetFrameToT']=true,
+    ['FocusFrame']=true,
+}
+local function set_Shift_Click_facur()
+    if UnitAffectingCombat('player') then
+        panel:RegisterEvent('PLAYER_REGEN_ENABLED')
+        return
+    end
+    local key = 'shift'--设置快快捷键
+    for frame, _ in pairs(Frame) do--设置焦点
+        if _G[frame] and _G[frame]:CanChangeAttribute() then
+            if frame=='FocusFrame' then--取消焦点
+                _G[frame]:SetAttribute(key..'-type1','macro')
+                _G[frame]:SetAttribute(key..'-macrotext1','/clearfocus')
+            else
+                _G[frame]:SetAttribute(key..'-type1', 'focus')
+            end
+            Frame[frame]=nil
+        end
+    end
+    panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
+end
 
 --#####
 --对话框
@@ -783,6 +827,25 @@ local function InitMenu(self, level, type)
         UIDropDownMenu_AddButton(info, level)
         
         UIDropDownMenu_AddSeparator(level)
+        info={
+            text=SET_FOCUS,
+            checked=Save.setFucus,
+            tooltipOnButton=true,
+            tooltipTitle='Shift + '..e.Icon.left,
+            tooltipText=e.onlyChinse and '仅限系统\n\n如果出现错误: 请取消' or LFG_LIST_CROSS_FACTION:format(SYSTEM)..'\n\n'..ENABLE_ERROR_SPEECH..': '..CANCEL,
+            func= function()
+                if Save.setFucus then
+                    Save.setFucus=nil
+                    print(id,addName, e.onlyChinse and '设置' or  SETTINGS, e.onlyChinse and '|cnRED_FONT_COLOR:重新加载UI|r' or '|cnGREEN_FONT_COLOR:'..RELOADUI..'|r')
+                else
+                    Save.setFucus=true
+                    set_Shift_Click_facur()--Shift+点击设置焦点
+                end
+            end,
+        }
+        UIDropDownMenu_AddButton(info, level)
+
+        UIDropDownMenu_AddSeparator(level)
         info={--重载
             text=RELOADUI,
             notCheckable=true,
@@ -822,6 +885,10 @@ local function Init()
 
     setPanel()--设置控制面板
     set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
+    if Save.setFucus then--Shift+点击设置焦点
+        set_Shift_Click_facur()
+        panel:RegisterEvent('GROUP_ROSTER_UPDATE')
+    end
 end
 
 panel:RegisterEvent("ADDON_LOADED")
@@ -842,5 +909,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
     elseif event=='CHAT_MSG_SYSTEM' then
         setMsg_CHAT_MSG_SYSTEM(arg1)--欢迎加入, 信息
+        
+    elseif event=='GROUP_ROSTER_UPDATE' or event=='PLAYER_REGEN_ENABLED' then
+        set_Shift_Click_facur()--Shift+点击设置焦点
 	end
 end)
