@@ -110,7 +110,7 @@ local function getItems()--取得背包物品信息
                 elseif not Save.no[info.itemID] then--不出售
                     local itemName, _, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, sellPrice, classID, subclassID, bindType, expacID, setID, isCraftingReagent= GetItemInfo(info.hyperlink)
 
-                    if setID then--幻化
+                    --[[[if setID then--幻化
                         if Save.mago then
                             local setInfo= C_TransmogSets.GetSetInfo(setID)
                             if setInfo and not setInfo.collected then
@@ -119,7 +119,8 @@ local function getItems()--取得背包物品信息
                                 return
                             end
                         end
-                    elseif itemEquipLoc and _G[itemEquipLoc] then--幻化
+                    else]]
+if itemEquipLoc and _G[itemEquipLoc] then--幻化
                         if Save.mago and (itemMinLevel and itemMinLevel<=levelPlayer or not itemMinLevel) and info.quality and info.quality>1 then--and (not info.isBound or (classID==4 and (subclassID==0 or subclassID==5))) then
                             local  isCollected, isSelf= select(2, e.GetItemCollected(info.hyperlink))
                             if not isCollected and isSelf then
