@@ -708,6 +708,8 @@ local function set_Shift_Click_facur()
     panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
 end
 
+
+
 --#####
 --对话框
 --#####
@@ -898,6 +900,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             panel:UnregisterAllEvents()
         else
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
+            Save.Cvar= Save.Cvar or {}
             Init()
         end
         panel:RegisterEvent("PLAYER_LOGOUT")
