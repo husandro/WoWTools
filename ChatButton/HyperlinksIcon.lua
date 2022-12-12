@@ -40,7 +40,7 @@ end
 local function Realm(link)--去服务器为*, 加队友种族图标,和N,T
     local name=link:match('|Hplayer:.-|h%[|cff......(.-)|r]') or link:match('|Hplayer:.-|h%[(.-)]|h')
     if name == Name then
-        return link:gsub(name, COMBATLOG_FILTER_STRING_ME)        
+        return link:gsub(name, COMBATLOG_FILTER_STRING_ME)
     else
         local server=link:match('|Hplayer:.-|h%[.-%-(.-)|r]|h') or link:match('|Hplayer:.-|h%[(.-)]|h')
         local  text
@@ -67,13 +67,13 @@ end
 local function Pet(speciesID)
     if speciesID then
         local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesID)
-        if numCollected and limit then 
+        if numCollected and limit then
             if numCollected == limit then
                 return GREEN_FONT_COLOR_CODE..'['..numCollected ..'/'.. limit..']|r'
             elseif numCollected==0 then
                 return RED_FONT_COLOR_CODE..'['..numCollected ..'/'.. limit..']|r'
             else
-                return YELLOW_FONT_COLOR_CODE..'['..numCollected ..'/'.. limit..']|r'            
+                return YELLOW_FONT_COLOR_CODE..'['..numCollected ..'/'.. limit..']|r'
             end
         end
     end
@@ -116,7 +116,7 @@ local function Item(link)--物品超链接
         local sourceID=select(2,C_TransmogCollection.GetItemInfo(link))--幻化
         if sourceID then
             local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
-            if sourceInfo then                
+            if sourceInfo then
                 if not sourceInfo.isCollected then
                     local hasItemData, canCollect = C_TransmogCollection.PlayerCanCollectSource(sourceID)--玩家是否可收集
                     if hasItemData and canCollect then
@@ -127,7 +127,7 @@ local function Item(link)--物品超链接
                 end
             end
         end
-    elseif  classID==15 and (subclassID==2 or subclassID==5) then        
+    elseif  classID==15 and (subclassID==2 or subclassID==5) then
         if  subclassID==2 then----宠物数量
             local _, _, petType, _, _, _, _, _, _, _, _, _, speciesID=C_PetJournal.GetPetInfoByItemID(id2)
             local nu=Pet(speciesID)
@@ -141,8 +141,8 @@ local function Item(link)--物品超链接
             end
         end
     elseif C_ToyBox.GetToyInfo(id2) then--玩具
-        t=PlayerHasToy(id2) and t..e.Icon.select2 or t..e.Icon.info2        
-    end    
+        t=PlayerHasToy(id2) and t..e.Icon.select2 or t..e.Icon.info2
+    end
     local bag=GetItemCount(link, true)--数量
     if bag and bag>0 then
         t=t..e.Icon.bag2..MK(bag, 3)
@@ -160,11 +160,11 @@ local function Spell(link)--法术图标
         return '|T'..icon..':0|t'..link
     elseif id2 then
         icon = GetSpellTexture(id2)
-        if icon then 
+        if icon then
             t='|T'..icon..':0|t'..t
         end
     end
-    
+
     local nu=Mount(id2)
     if nu then
         t=t..nu
@@ -176,7 +176,7 @@ end
 
 local function PetLink(link)--宠物超链接
     local speciesID =link:match('Hbattlepet:(%d+)')
-    if speciesID  then 
+    if speciesID  then
         local nu=Pet(speciesID )
         if nu then
             local _, icon, petType= C_PetJournal.GetPetInfoBySpeciesID(speciesID)
@@ -213,7 +213,7 @@ local function Enchant(link)--附魔
     local id2=link:match('Henchant:(%d+)')
     if id2 then
         local icon = GetSpellTexture(id2)
-        if icon then 
+        if icon then
             return '|T'..icon..':0|t'..link
         end
     end
@@ -226,7 +226,7 @@ local function Currency(link)--货币
         if info.quantity and info.quantity>0 then
             nu=MK(info.quantity, 3)
         end
-        return  '|T'..info.iconFileID..':0|t'..link..nu            
+        return  '|T'..info.iconFileID..':0|t'..link..nu
     end
 end
 
@@ -271,23 +271,23 @@ end
 
 
 local function Outfit(link)--外观方案链接
-    local list = C_TransmogCollection.GetItemTransmogInfoListFromOutfitHyperlink(link)    
+    local list = C_TransmogCollection.GetItemTransmogInfoListFromOutfitHyperlink(link)
     if list then
         local co,to=0,0
         for _,v in pairs(list) do
             local appearanceID=v.appearanceID--v.illusionID
-            local illusionID=v.illusionID            
+            local illusionID=v.illusionID
             if appearanceID and appearanceID>0 then
                 local hide=C_TransmogCollection.IsAppearanceHiddenVisual(appearanceID)
                 if not hide then
-                    local has=C_TransmogCollection.PlayerHasTransmogItemModifiedAppearance(appearanceID)                    
+                    local has=C_TransmogCollection.PlayerHasTransmogItemModifiedAppearance(appearanceID)
                     if has then
                         co=co+1
-                    end                
-                    to=to+1                    
+                    end
+                    to=to+1
                 end
             end
-            
+
             if illusionID and illusionID>0 then
                 local info = C_TransmogCollection.GetIllusionInfo(illusionID)
                 if info then
@@ -295,16 +295,16 @@ local function Outfit(link)--外观方案链接
                         co=co+1
                     end
                     to=to+1
-                end                
+                end
             end
         end
         if to>0 then
             if to==co then
                 return link..e.Icon.select2
             elseif co>0 then
-                return link..YELLOW_FONT_COLOR_CODE..co..'/'..to..'|r'                 
-            else                
-                return link..RED_FONT_COLOR_CODE..co..'/'..to..'|r'                 
+                return link..YELLOW_FONT_COLOR_CODE..co..'/'..to..'|r'
+            else
+                return link..RED_FONT_COLOR_CODE..co..'/'..to..'|r'
             end
         end
     end
@@ -323,7 +323,7 @@ end
 local function TransmogAppearance(link)--幻化
     local appearanceID=link:match('Htransmogillusion:(%d+)')
     if appearanceID then
-        local has=C_TransmogCollection.PlayerHasTransmogItemModifiedAppearance(appearanceID)                    
+        local has=C_TransmogCollection.PlayerHasTransmogItemModifiedAppearance(appearanceID)
         if has then
             return link.e.Icon.select2
         else
@@ -345,10 +345,10 @@ end
 local function Keystone(link)
     local item, _, affix1, affix2, affix3, affix4= link:match('Hkeystone:(%d+):(%d+):%d+:(%d+):(%d+):(%d+):(%d+)')
     if item then
-        local  icon=C_Item.GetItemIconByID(item)        
+        local  icon=C_Item.GetItemIconByID(item)
         if icon then
             local texture= '|T'..icon..':0|t'
-            return texture..link..GetKeyAffix({affix1, affix2, affix3, affix4})            
+            return texture..link..GetKeyAffix({affix1, affix2, affix3, affix4})
         end
     end
 end
@@ -364,15 +364,15 @@ local function DungeonScore(link)--史诗钥石评分
         race=Race(nil, race, sex)
         class=Class(nil, class, true)
         t=class and class..t or t
-        t=race and race..t or t        
+        t=race and race..t or t
     end
     if itemLv and itemLv~='0' then
         t=t..itemLv
-    end 
+    end
     local nu=#C_MythicPlus.GetRunHistory()
     if nu>0 then
         t=t..' |cff00ff00'..nu..'/'..#C_MythicPlus.GetRunHistory(false, true)..'|r'
-    end    
+    end
     if t~=link then
         return t
     end
@@ -422,7 +422,7 @@ local function Instancelock(link)
     end
     if DifficultyID and InstanceID then
         local name=GetDifficultyInfo(DifficultyID)
-        if name then 
+        if name then
             t=t..'|Hjournal:0:'..InstanceID..':'..DifficultyID..'|h['..name..']|h'
         end
     end
@@ -443,12 +443,12 @@ local function TransmogSet(link)--幻化套装
                     n=n+1
                 end
             end
-            if to>0 then            
+            if to>0 then
                 if n==to then
                     return e.Icon.select2
                 elseif n==0 then
                     return link..RED_FONT_COLOR_CODE..n..'/'..to..'|r'
-                else                
+                else
                     return link..YELLOW_FONT_COLOR_CODE..n..'/'..to..'|r'
                 end
             end
@@ -473,7 +473,7 @@ local function setAddMessageFunc(self, s, ...)
     s=s:gsub('|Hitem:.-]|h',Item)
     s=s:gsub('|Hspell:.-]|h',Spell)
     s=s:gsub('|Hmount:.-]|h',setMount)
-    
+
     s=s:gsub('|Hbattlepet:.-]|h',PetLink)
     s=s:gsub('|HbattlePetAbil:.-]|h',function(link) return PetAblil(link, petChannel) end)
 
@@ -486,8 +486,8 @@ local function setAddMessageFunc(self, s, ...)
     s=s:gsub('|Hpvptal:.-]|h', Pvptal)
 
     s=s:gsub('|Houtfit:.-]|h', Outfit)----外观方案链接    
-    s=s:gsub('|Htransmogillusion:.-]|h', Transmogillusion)    
-    s=s:gsub('|Htransmogappearance:.-]|h', TransmogAppearance)    
+    s=s:gsub('|Htransmogillusion:.-]|h', Transmogillusion)
+    s=s:gsub('|Htransmogappearance:.-]|h', TransmogAppearance)
     s=s:gsub('|Htransmogset:.-]|h', TransmogSet)
 
     s=s:gsub('|Hkeystone:.-]|h', Keystone)
@@ -722,7 +722,7 @@ StaticPopupDialogs[id..addName..'WELCOME']={--区域,设置对话框
     button2=CANCEL,
     button3=DISABLE,
     OnShow = function(self, data)
-        local text=data.guild and Save.guildWelcomeText or data.group and Save.groupWelcomeText 
+        local text=data.guild and Save.guildWelcomeText or data.group and Save.groupWelcomeText
         text=text or EMOTE103_CMD1:gsub('/','')
         self.editBox:SetText(text)
         self.button3:SetEnabled(data.guild and Save.guildWelcome  or  data.group and Save.groupWelcome)
@@ -741,7 +741,7 @@ StaticPopupDialogs[id..addName..'WELCOME']={--区域,设置对话框
 	end,
     OnAlt = function(self, data)
         if data.guild then
-            Save.guildWelcome=nil    
+            Save.guildWelcome=nil
         else
             Save.groupWelcome=nil
         end
@@ -825,7 +825,7 @@ local function InitMenu(self, level, type)
             hasArrow=true,
         }
         UIDropDownMenu_AddButton(info, level)
-        
+
         UIDropDownMenu_AddSeparator(level)
         info={
             text=SET_FOCUS,
@@ -909,7 +909,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
     elseif event=='CHAT_MSG_SYSTEM' then
         setMsg_CHAT_MSG_SYSTEM(arg1)--欢迎加入, 信息
-        
+
     elseif event=='GROUP_ROSTER_UPDATE' or event=='PLAYER_REGEN_ENABLED' then
         set_Shift_Click_facur()--Shift+点击设置焦点
 	end
