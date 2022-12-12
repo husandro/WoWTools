@@ -389,25 +389,42 @@ local function setCurrency(self, currencyID)--货币
     self:Show()
 end
 --[[
+local AchievementFlasgs={
+    [1] = 'COUNTER',
+    [4] = 'PLAY_NO_VISUAL',
+    [8] = 'SUM',
+    [16] = 'MAX_USED',
+    [32] = 'REQ_COUNT',
+    [64] = 'AVERAGE',
+    [128] = 'PROGRESS_BAR',
+    [256] = 'REALM_FIRST_REACH',
+    [512] = 'REALM_FIRST_KILL',
+    [2048] = 'HIDE_INCOMPLETE',
+    [4096] = 'SHOW_IN_GUILD_NEWS',
+    [8192] = 'SHOW_IN_GUILD_HEADER',
+    [16384] = 'GUILD',
+    [28672]= e.onlyChinse and '公会综合' or GUILD..GENERAL,
+    [32768] = 'SHOW_GUILD_MEMBERS',
+    [53248] = e.onlyChinse and '公会PvP' or GUILD..' PvP',
+    [65536] = 'SHOW_CRITERIA_MEMBERS',
+    [94208]= e.onlyChinse and '公会声望' or GUILD..REPUTATION,
+    [131072] = 'ACCOUNT_WIDE',
+    [262144] = 'UNK5',
+    [524288] = 'HIDE_ZERO_COUNTER',
+    [1048576] = 'TRACKING_FLAG',
+}
+
+]]
+
 local function setAchievement(self, achievementID)--成就
-    local _, _, points, completed, _, _, _, _, flags, icon = GetAchievementInfo(achievementID)
+    local _, name, points, completed, month, day, year, description, flags, icon, rewardText, isGuild, wasEarnedByMe, earnedBy, isStatistic = GetAchievementInfo(achievementID)
     self.textLeft:SetText(points..RESAMPLE_QUALITY_POINT)--点数
     self.text2Left:SetText(completed and '|cnGREEN_FONT_COLOR:'..	CRITERIA_COMPLETED..'|r' or '|cnRED_FONT_COLOR:'..	ACHIEVEMENTFRAME_FILTER_INCOMPLETE..'|r')--否是完成
-    if flags== 0x20000 then
-        self.textRight:SetText(e.Icon.wow2)
-    end
-    local str= flags== 0x4000 and GUILD or flags==0x20000 and e.Icon.wow2..'WoW'..SHARE_QUEST_ABBREV
-    if str then
-        self:AddDoubleLine(ACHIEVEMENTS..' '..achievementID..(icon and ' '..EMBLEM_SYMBOL..' '..icon or ''), str, nil,nil,nil, 1,0,1)
-    else
-        self:AddDoubleLine(ACHIEVEMENTS..' '..achievementID, icon and EMBLEM_SYMBOL..' '..icon)
-    end
-    if icon then
-        self.Portrait:SetTexture(icon)
-        self.Portrait:SetShown(true)
-    end
+    self.textRight:SetText(isGuild and (e.onlyChinse and '公会' or GUILD) or flags==131072 and e.Icon.wow2..(e.onlyChinse and '战网' or COMMUNITY_COMMAND_BATTLENET)  or '')
+
+    self:AddDoubleLine(ACHIEVEMENTS..' '..achievementID, icon and '|T'..icon..':0|t'..icon)
 end
-]]
+
 local function setQuest(self, questID)
     self:AddDoubleLine(e.GetExpansionText(nil, questID))--任务版本
     self:AddDoubleLine(QUESTS_LABEL, questID)
@@ -966,6 +983,9 @@ local function Init()
                 elseif date.type==10 then
                     setMount(tooltip, date.id)--坐骑
 
+                elseif date.type==12 then--成就
+                    setAchievement(tooltip, date.id)
+
                 elseif date.type==19 then
                     setItem(tooltip, date.id)-- 玩具
 
@@ -1007,7 +1027,7 @@ local function Init()
     --####
     --声望
     --####
-    hooksecurefunc(ReputationBarMixin, 'ShowMajorFactionRenownTooltip', function(self)--Major名望, 没测试ReputationFrame.lua
+    hooksecurefunc(ReputationBarMixin, 'ShowMajorFactionRenownTooltip', function(self)--Major名望, ReputationFrame.lua
         setMajorFactionRenown(e.tips, self.factionID)
     end)
     hooksecurefunc(ReputationBarMixin, 'ShowFriendshipReputationTooltip', function(self, friendshipID)--个人声望 ReputationFrame.lua
@@ -1253,13 +1273,13 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             if not Save.disabled then
                 hooksecurefunc(AchievementTemplateMixin, 'Init', function(self2,elementData)--Blizzard_AchievementUI.lua
                     local category = elementData.category;
-                    local achievementID,  description, icon, _
+                    local achievementID,  description, icon, _, flags
                     if self2.index then
-                        achievementID, _, _, _, _, _, _, description, _, icon= GetAchievementInfo(category, self2.index);
+                        achievementID, _, _, _, _, _, _, description, flags, icon= GetAchievementInfo(category, self2.index);
                     else
-                        achievementID, _, _, _, _, _, _, description, _, icon = GetAchievementInfo(self2.id);
+                        achievementID, _, _, _, _, _, _, description, flags, icon = GetAchievementInfo(self2.id);
                     end
-                    self2.HiddenDescription:SetText(description..' '..achievementID..(icon and ' |T'..icon..':0|t'..icon or ''))
+                    self2.HiddenDescription:SetText(description..' '..(flags==131072 and e.Icon.wow2 ..'|cnGREEN_FONT_COLOR:'..achievementID..'|r' or achievementID)..(icon and ' |T'..icon..':0|t'..icon or ''))
                 end)
             end
         end

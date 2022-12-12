@@ -8,13 +8,13 @@ local KeyStone=CHALLENGE_MODE_KEYSTONE_NAME:gsub('%%s','(.+) ')--钥石
 local text_EQUIPMENT_SETS= 	EQUIPMENT_SETS:gsub('%%s','(.+)')
 
 local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBank)
-   -- local isBound, equipmentName, bagID, slotID
     local topLeftText, bottomRightText, leftText, bottomLeftText, topRightText, r, g ,b, setIDItem--setIDItem套装
     if itemLink then
         local _, _, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, _, _, classID, subclassID, bindType, expacID, setID, isCraftingReagent = GetItemInfo(itemLink)
 
         setIDItem= setID and true or nil--套装
         itemLevel=GetDetailedItemLevelInfo(itemLink) or itemLevel
+
         if itemQuality then
             r,g,b = GetItemQualityColor(itemQuality)
         end
@@ -76,17 +76,23 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
                 local isEquippable= IsEquippableItem(itemLink)
                 if invSlot and itemLevel and itemLevel>1 and isEquippable then--装等
                     local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
-                    local upLevel
+                    local upLevel, downLevel
                     if itemLinkPlayer then
                         local lv=GetDetailedItemLevelInfo(itemLinkPlayer)
-                        if lv and itemLevel-lv>1 then
-                            upLevel=true
+                        if lv then
+                            if itemLevel-lv>1 then
+                                upLevel=true
+                            elseif itemLevel-lv<4 and itemLevel>30 and bag and bag.isBound and not setID then
+                                downLevel=true
+                            end
                         end
                     else
                         upLevel=true
                     end
                     if upLevel and (itemMinLevel and itemMinLevel<=UnitLevel('player') or not itemMinLevel) then
                         topLeftText=e.Icon.up2
+                    elseif downLevel then
+                        topLeftText= e.Icon.down2
                     end
                     if itemQuality>2 or (not e.Player.levelMax and itemQuality==2) or upLevel then
                         topLeftText=itemLevel ..(topLeftText or '')
@@ -252,7 +258,7 @@ local function setBags(self)--背包设置
             if info and info.hyperlink and info.itemID then
                 itemLink= info.hyperlink
                 itemID= info.itemID
-                
+
                 info.bagID=bagID
                 info.slotID=slotID
             end
@@ -272,7 +278,7 @@ local function setMerchantInfo()--商人设置
         local itemButton= _G["MerchantItem"..i..'ItemButton']
         if itemButton then
             local itemLink,itemID
-            
+
             if itemButton:IsShown() then
                 if selectedTab==1 then
                     itemLink= GetMerchantItemLink(index)
@@ -352,7 +358,7 @@ local function Init()
             end
         end
     end)
-    
+
     hooksecurefunc('MerchantFrame_UpdateMerchantInfo',setMerchantInfo)--MerchantFrame.lua
     hooksecurefunc('MerchantFrame_UpdateBuybackInfo', setMerchantInfo)
 end
