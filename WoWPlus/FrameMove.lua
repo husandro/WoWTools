@@ -264,6 +264,9 @@ local function setAddLoad(arg1)
 
     elseif arg1=='Blizzard_FlightMap' then--飞行地图
         Move(FlightMapFrame, {})
+
+    elseif arg1=='Blizzard_OrderHallUI' then
+        Move(OrderHallTalentFrame,{})
     end
 end
 
