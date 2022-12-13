@@ -8,11 +8,11 @@ local Save={
 }
 
 local panel=e.Cbtn(UIParent, nil,nil,nil,nil, true, {20,20});--闲话图标
-local questFrame=e.Cbtn(UIParent, nil,nil,nil,nil, true, {20,20});--任务图标
+local questPanel=e.Cbtn(UIParent, nil,nil,nil,nil, true, {20,20});--任务图标
 local questSelect={}--已选任务, 提示用
 
 local function setTexture()--设置图标
-    questFrame:SetNormalAtlas(Save.quest and 'campaignavailablequesticon' or e.Icon.icon)
+    questPanel:SetNormalAtlas(Save.quest and 'campaignavailablequesticon' or e.Icon.icon)
     panel:SetNormalAtlas(Save.gossip and 'transmog-icon-chat' or e.Icon.icon)
 end
 
@@ -122,7 +122,7 @@ local function InitMenu_Gossip(self, level, type)
                 tooltipTitle='gossipOptionID '..gossipOptionID..'\n\n'..e.Icon.left..REMOVE,
                 func=function()
                     Save.gossipOption[gossipOptionID]=nil
-                    print(id, ENABLE_DIALOG, REMOVE, tab.gossipText, tab.name, 'gossipOptionID:', gossipOptionID)
+                    print(id, ENABLE_DIALOG, REMOVE, text, 'gossipOptionID:', gossipOptionID)
                 end
             }
             UIDropDownMenu_AddButton(info, level)
@@ -507,18 +507,18 @@ end
 
 local function set_Auto_QuestWatch_Event()--设置事件, 仅显示本地图任务, 共享任务, 
     if Save.autoSortQuest then
-        questFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
-        questFrame:RegisterEvent('ZONE_CHANGED')
-        questFrame:RegisterEvent('ZONE_CHANGED_NEW_AREA')
+        questPanel:RegisterEvent('PLAYER_ENTERING_WORLD')
+        questPanel:RegisterEvent('ZONE_CHANGED')
+        questPanel:RegisterEvent('ZONE_CHANGED_NEW_AREA')
     else
-        questFrame:UnregisterEvent('PLAYER_ENTERING_WORLD')
-        questFrame:UnregisterEvent('ZONE_CHANGED')
-        questFrame:UnregisterEvent('ZONE_CHANGED_NEW_AREA')
+        questPanel:UnregisterEvent('PLAYER_ENTERING_WORLD')
+        questPanel:UnregisterEvent('ZONE_CHANGED')
+        questPanel:UnregisterEvent('ZONE_CHANGED_NEW_AREA')
     end
     if Save.pushable then
-        questFrame:RegisterEvent('GROUP_ROSTER_UPDATE')
+        questPanel:RegisterEvent('GROUP_ROSTER_UPDATE')
     else
-        questFrame:UnregisterEvent('GROUP_ROSTER_UPDATE')
+        questPanel:UnregisterEvent('GROUP_ROSTER_UPDATE')
     end
 end
 
@@ -640,6 +640,7 @@ local function InitMenu_Quest(self, level, type)
         }
         UIDropDownMenu_AddButton(info, level)
 
+--[[
         UIDropDownMenu_AddSeparator(level)
         info={
             text=id..' '..QUESTS_LABEL,
@@ -647,6 +648,9 @@ local function InitMenu_Quest(self, level, type)
             isTitle=true,
         }
         UIDropDownMenu_AddButton(info, level)
+
+]]
+
     end
 end
 
@@ -654,18 +658,18 @@ end
 --任务，初始化
 --###########
 local function Init_Quest()
-    questFrame.MenuQest=CreateFrame("Frame",nil, questFrame, "UIDropDownMenuTemplate")
-    UIDropDownMenu_Initialize(questFrame.MenuQest, InitMenu_Quest, 'MENU')
+    questPanel.MenuQest=CreateFrame("Frame",nil, questPanel, "UIDropDownMenuTemplate")
+    UIDropDownMenu_Initialize(questPanel.MenuQest, InitMenu_Quest, 'MENU')
 
-    questFrame:SetPoint('RIGHT', panel, 'LEFT')
+    questPanel:SetPoint('RIGHT', panel, 'LEFT')
 
     if Save.autoSortQuest then--仅显示本地图任务,事件
         set_Auto_QuestWatch_Event()
     end
 
-    questFrame.Text=e.Cstr(questFrame, nil, nil,nil, true,nil, 'RIGHT')--任务数量
-    questFrame.Text:SetPoint('RIGHT', questFrame, 'LEFT')
-    questFrame:SetScript('OnMouseDown', function(self, d)
+    questPanel.Text=e.Cstr(questPanel, nil, nil,nil, true,nil, 'RIGHT')--任务数量
+    questPanel.Text:SetPoint('RIGHT', questPanel, 'LEFT')
+    questPanel:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
             Save.quest= not Save.quest and true or nil
             setTexture()--设置图标
@@ -673,11 +677,25 @@ local function Init_Quest()
             ToggleDropDownMenu(1, nil, self.MenuQest, self, 15,0)
         end
     end)
-    questFrame:SetScript('OnEnter', set_Only_Show_Zone_Quest)
+    questPanel:SetScript('OnEnter', function(self)
+        local all=C_QuestLog.GetAllCompletedQuestIDs()--完成次数
+        if all and #all>0 then
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine((e.onlyChinse and '今天' or GUILD_EVENT_TODAY)..' '..(GetDailyQuestsCompleted() or '0'), (e.onlyChinse and '总计: ' or  FROM_TOTAL)..#all)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(e.onlyChinse and '任务菜单' or QUESTS_LABEL..SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+            e.tips:AddDoubleLine(id, addName)
+            e.tips:Show()
+        end
 
-    questFrame:RegisterEvent("QUEST_LOG_UPDATE")
-    questFrame:RegisterEvent('MINIMAP_UPDATE_TRACKING')
-    questFrame:SetScript("OnEvent", function(self, event)
+        set_Only_Show_Zone_Quest()
+    end)
+    questPanel:SetScript('OnLeave', function() e.tips:Hide() end)
+
+    questPanel:RegisterEvent("QUEST_LOG_UPDATE")
+    questPanel:RegisterEvent('MINIMAP_UPDATE_TRACKING')
+    questPanel:SetScript("OnEvent", function(self, event)
         if event=='MINIMAP_UPDATE_TRACKING' then
             get_set_IsQuestTrivialTracking()--其它任务,低等任务,追踪
 
@@ -884,7 +902,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Save.NPC= Save.NPC or {}
             else
                 panel:UnregisterAllEvents()
-                questFrame:UnregisterAllEvents()
+                questPanel:UnregisterAllEvents()
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
             set_Only_Show_Zone_Quest()
