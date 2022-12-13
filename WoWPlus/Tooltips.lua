@@ -194,8 +194,10 @@ end
 --############
 --设置,物品信息
 --############
-
-local function setItem(self, ItemLink)    
+local function setItem(self, ItemLink)
+    if not ItemLink then
+        return
+    end
     local itemName, _, itemQuality, itemLevel, _, _, _, _, _, _, _, _, _, bindType, expacID, setID = GetItemInfo(ItemLink)
     local itemID, itemType, itemSubType, itemEquipLoc, itemTexture, classID, subclassID = GetItemInfoInstant(ItemLink)
     itemID = itemID or ItemLink:match(':(%d+):')
@@ -961,7 +963,7 @@ local function Init()
 ]]
 
     TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes,  function(tooltip,date)
-        if (tooltip==e.tips or tooltip==ItemRefTooltip) and date.type~=25 then--25 宏
+        if (tooltip==e.tips or tooltip==ItemRefTooltip) and date.type~=25 then--25宏 ,11宠物技能
             if date.type==2 then--单位
                 local unit= select(2, TooltipUtil.GetDisplayedUnit(tooltip))
                 if unit then
@@ -969,8 +971,11 @@ local function Init()
                 end
 
             elseif date.id and date.type then
-                if date.type==0 then
-                    setItem(tooltip, date.id)--物品
+                if date.type==0 or date.type==19 then--TooltipUtil.lua 0物品 19玩具
+                    local itemID, itemLink=select(2,TooltipUtil.GetDisplayedItem(tooltip))
+                    itemID= itemLink or itemID or date.id
+                    setItem(tooltip, itemID)
+
                 elseif date.type==1 then
                     setSpell(tooltip, date.id)--法术
 
@@ -985,9 +990,6 @@ local function Init()
 
                 elseif date.type==12 then--成就
                     setAchievement(tooltip, date.id)
-
-                elseif date.type==19 then
-                    setItem(tooltip, date.id)-- 玩具
 
                 elseif date.type==22 then--法术弹出框
                     set_FlyoutInfo(tooltip, date.id)
