@@ -1,7 +1,7 @@
 local id, e = ...
 local addName=	CALENDAR_FILTER_HOLIDAYS
 local Save={onGoing=true}
-local panel= e.Cbtn(UIParent, nil, nil, nil, nil, true, {20,20})
+local panel= e.Cbtn(UIParent, nil, nil, nil, nil, true, {18,18})
 
 local function _CalendarFrame_SafeGetName(name)
 	if ( not name or name == "" ) then
@@ -59,19 +59,19 @@ local function get_Currency_Info(currencyID)--货币,数量
     local info = C_CurrencyInfo.GetCurrencyInfo(currencyID)
     if info and info.quantity and info.quantity>0  then
         return (info.iconFileID and '|T'..info.iconFileID..':0|t' or '').. e.MK(info.quality, 0)
-    end                       
+    end
 end
 
 local function set_Quest_Completed(tab)--任务是否完成
-    for _, questID in pairs(tab) do 
+    for _, questID in pairs(tab) do
         if C_QuestLog.IsQuestFlaggedCompleted(questID) then
             return e.Icon.select2
-        end                    
+        end
     end
     return e.Icon.info2
 end
 
-local function set_Item_Numeri(itemID) 
+local function set_Item_Numeri(itemID)
     local texture = C_Item.GetItemIconByID(itemID)
     local num= GetItemCount(itemID, true)
     if num and num>0 then
@@ -166,7 +166,7 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
 					end
 				end
 			end
-			msg=msg..text           
+			msg=msg..text
 		end
 
         msg= event.iconTexture and msg..'|T'..event.iconTexture..':0|t' or msg
@@ -183,7 +183,7 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
         if Save.showDate then
             if (event.sequenceType == "ONGOING") then
                 --msg=msg..CALENDAR_TOOLTIP_ONGOING
-                
+
                 eventTime = format(CALENDAR_TOOLTIP_DATE_RANGE, FormatShortDate(event.startTime.monthDay, event.startTime.month), FormatShortDate(event.endTime.monthDay, event.endTime.month));
             elseif (event.sequenceType == "END") then
                 eventTime = GameTime_GetFormattedTime(event.endTime.hour, event.endTime.minute, true);
@@ -285,9 +285,9 @@ local function InitMenu(self, level, type)--主菜单
     local info
     if type then
         info={
-            text= BINDING_NAME_STRAFELEFT,--向左平移
+            text= e.onlyChinse and '内容靠左' or BINDING_NAME_STRAFELEFT,--向左平移
             checked= Save.left,
-            func= function() 
+            func= function()
                 Save.left= not Save.left and true or nil
                 Text_Settings()--设置Tex
             end
@@ -295,9 +295,9 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text= CLASS_COLORS,--	职业颜色
+            text= e.onlyChinse and '职业颜色' or CLASS_COLORS,
             checked= Save.classColor,
-            func= function() 
+            func= function()
                 Save.classColor= not Save.classColor and true or nil
                 Text_Settings()--设置Tex
             end
@@ -305,7 +305,7 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text= LFG_LIST_CROSS_FACTION:format(CALENDAR_TOOLTIP_ONGOING),--仅限,正在活动
+            text= e.onlyChinse and '仅限: 正在活动' or LFG_LIST_CROSS_FACTION:format(CALENDAR_TOOLTIP_ONGOING),
             checked= Save.onGoing,
             func= function()
                 Save.onGoing= not Save.onGoing and true or nil
@@ -314,18 +314,18 @@ local function InitMenu(self, level, type)--主菜单
         }
         UIDropDownMenu_AddButton(info, level)
         info={
-            text= TIME_LABEL,--时间
+            text= e.onlyChinse and '时间' or TIME_LABEL,
             checked= Save.showDate,
-            func= function() 
+            func= function()
                 Save.showDate= not Save.showDate and true or nil
                 set_Text()
             end
         }
         UIDropDownMenu_AddButton(info, level)
         info={
-            text= CALENDAR_FILTER_HOLIDAYS..' ID',--时间
+            text= e.onlyChinse and '节日' or CALENDAR_FILTER_HOLIDAYS..' ID',--时间
             checked= Save.showID,
-            func= function() 
+            func= function()
                 Save.showID= not Save.showID and true or nil
                 set_Text()
             end
@@ -334,7 +334,7 @@ local function InitMenu(self, level, type)--主菜单
 
         UIDropDownMenu_AddSeparator(level)
         info={
-            text=RESET_POSITION,--还原位置
+            text=e.onlyChinse and '还原位置' or RESET_POSITION,
             colorCode=not Save.point and '|cff606060',
             func=function()
                 Save.point=nil
@@ -349,7 +349,7 @@ local function InitMenu(self, level, type)--主菜单
 
     else
         info={
-            text=SETTINGS,
+            text=e.onlyChinse and '设置' or SETTINGS,
             notCheckable=true,
             menuList='SETTINGS',
             hasArrow=true,
@@ -357,13 +357,21 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddButton(info, level)
         UIDropDownMenu_AddSeparator(level)
         info={--提示移动
-            text=e.Icon.right..NPE_MOVE,
+            text=e.Icon.right..(e.onlyChinse and '移动' or NPE_MOVE),
             isTitle=true,
             notCheckable=true
         }
         UIDropDownMenu_AddButton(info, level)
         info={
             text=e.Icon.mid..UI_SCALE..(Save.scale or ''),
+            isTitle=true,
+            notCheckable=true
+        }
+        UIDropDownMenu_AddButton(info, level)
+
+        UIDropDownMenu_AddSeparator(level)
+        info={
+            text=id..' '..addName,
             isTitle=true,
             notCheckable=true
         }
@@ -415,23 +423,20 @@ local function Init()
     panel:RegisterForDrag("RightButton")
     panel:SetMovable(true)
     panel:SetClampedToScreen(true)
-    panel:SetScript("OnDragStart", function(self,d )
-            self:StartMoving()
+    panel:SetScript("OnDragStart", function(self)
+        self:StartMoving()
     end)
     panel:SetScript("OnDragStop", function(self)
-        ResetCursor()
         self:StopMovingOrSizing()
         Save.point={self:GetPoint(1)}
         Save.point[2]=nil
         CloseDropDownMenus()
     end)
     panel:SetScript('OnMouseDown', function(self, d)
-        if d=='LeftButton' and not IsModifierKeyDown() then
+        if d=='LeftButton' then
             Save.hide= not Save.hide and true or nil
             set_Text()
-        elseif d=='RightButton' and IsAltKeyDown() then
-            SetCursor('UI_MOVE_CURSOR')
-        else
+        elseif d=='RightButton' then
             ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
         end
     end)
@@ -451,7 +456,9 @@ local function Init()
         Save.scale=sacle
         Text_Settings()--设置Text
     end)
-    panel:SetScript('OnMouseUp',function() ResetCursor() end)
+    panel:SetScript('OnLeave',function(self)
+        self:SetButtonState('NORMAL')
+    end)
 
     panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
@@ -466,39 +473,43 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
+            if WoWToolsSave and not WoWToolsSave[addName] then
+                panel:SetButtonState('PUSHED')
+            end
+
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
             set_event()
 
             if not Save.disabled and not IsAddOnLoaded("Blizzard_Calendar") then--加载
                 LoadAddOn("Blizzard_Calendar")
-                
+
                 Calendar_Toggle()
                 C_Calendar.OpenCalendar()
                 Calendar_Toggle()
                 --CalendarFrame:Hide()
             end
 
-        elseif arg1=='Blizzard_Calendar' then            
+        elseif arg1=='Blizzard_Calendar' then
             Init()
 
-            hooksecurefunc('CalendarViewHolidayFrame_Update', function()                
+            hooksecurefunc('CalendarViewHolidayFrame_Update', function()
                 local indexInfo = C_Calendar.GetEventIndex();
                 if(indexInfo) then
                     local holidayInfo = C_Calendar.GetHolidayInfo(indexInfo.offsetMonths, indexInfo.monthDay, indexInfo.eventIndex);
                     local info= C_Calendar.GetDayEvent(indexInfo.offsetMonths, indexInfo.monthDay, indexInfo.eventIndex)
-                    
+
                     if (holidayInfo and info and info.eventID) then
                         local description = holidayInfo.description;
                         if (holidayInfo.startTime and holidayInfo.endTime) then
                             description = format(CALENDAR_HOLIDAYFRAME_BEGINSENDS, description, FormatShortDate(holidayInfo.startTime.monthDay, holidayInfo.startTime.month), GameTime_GetFormattedTime(holidayInfo.startTime.hour, holidayInfo.startTime.minute, true), FormatShortDate(holidayInfo.endTime.monthDay, holidayInfo.endTime.month), GameTime_GetFormattedTime(holidayInfo.endTime.hour, holidayInfo.endTime.minute, true));
                         end
-                        
+
                         description=description..'\n\n'..CALENDAR_FILTER_HOLIDAYS..'ID '..info.eventID..(info.iconTexture and '    |T'..info.iconTexture..':0|t'..info.iconTexture or '')
                         CalendarViewHolidayFrame.ScrollingFont:SetText(description);
-                        
+
                         if info.iconTexture then
-                            CalendarViewHolidayFrame.Texture:SetTexture(info.iconTexture) 
+                            CalendarViewHolidayFrame.Texture:SetTexture(info.iconTexture)
                         end
                     end
                 end
