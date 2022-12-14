@@ -7,8 +7,8 @@ local Save={
         questOption={},
 }
 
-local panel=e.Cbtn(UIParent, nil,nil,nil,nil, true, {20,20});--闲话图标
-local questPanel=e.Cbtn(UIParent, nil,nil,nil,nil, true, {20,20});--任务图标
+local panel=e.Cbtn(nil, nil,nil,nil,nil, true, {18,18});--闲话图标
+local questPanel=e.Cbtn(panel, nil,nil,nil,nil, true, {18,18});--任务图标
 local questSelect={}--已选任务, 提示用
 
 local function setTexture()--设置图标
@@ -20,7 +20,11 @@ local function setPoint()--设置位置
     if Save.point then
         panel:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
     else
-        panel:SetPoint('TOPRIGHT', ObjectiveTrackerBlocksFrame, 'TOPRIGHT', -45, -2)
+        if _G['!KalielsTrackerFrame'] then
+            panel:SetPoint('BOTTOMRIGHT',_G['!KalielsTrackerFrame'] , 'TOPRIGHT')
+        else
+            panel:SetPoint('TOPRIGHT', ObjectiveTrackerBlocksFrame, 'TOPRIGHT', -45, -2)
+        end
     end
 end
 
