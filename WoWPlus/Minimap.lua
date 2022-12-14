@@ -1,6 +1,6 @@
 local id, e = ...
 local addName= HUD_EDIT_MODE_MINIMAP_LABEL
-local Save={scale=0.85}
+local Save={scale=0.85, ZoomOut=true}
 local panel=CreateFrame("Frame")
 
 local function set_ZoomOut_Event()--更新地区时,缩小化地图, 事件
