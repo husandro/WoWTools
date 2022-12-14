@@ -29,6 +29,10 @@ local function Init()
     end)
 
     set_Sort_Rigth_To_Left()--排序:从右到左
+
+    if C_CVar.GetCVarBool("expandBagBar") and C_CVar.GetCVarBool("combinedBags") then--MainMenuBarBagButtons.lua
+        C_CVar.SetCVar("expandBagBar", '0')
+    end
 end
 
 --###########
