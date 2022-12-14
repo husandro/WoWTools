@@ -119,6 +119,7 @@ local FrameTab={
     WorldMapFrame={},--世界地图
     ContainerFrameCombinedBags={},--包
     VehicleSeatIndicator={},--车辆，指示
+    ExpansionLandingPage={},--要塞
 };
 --UIWidgetBelowMinimapContainerFrame={save=true,click='RightButton'},
 --ZoneAbilityFrame.SpellButtonContainer = {save=true, click='R'},
@@ -268,6 +269,9 @@ local function setAddLoad(arg1)
 
     elseif arg1=='Blizzard_OrderHallUI' then
         Move(OrderHallTalentFrame,{})
+
+    elseif arg1=='Blizzard_GenericTraitUI' then--欲龙术
+        Move(GenericTraitFrame,{})
     end
 end
 
