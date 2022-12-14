@@ -568,5 +568,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     else
         set_Pet_Type(arg1)
+        if event=='PET_BATTLE_CLOSE' and IsUsableSpell(125439) then
+            if CollectionsJournal and (PetJournal and PetJournal:IsVisible()) or not CollectionsJournal then
+                ToggleCollectionsJournal(2)
+            end
+        end
     end
 end)
