@@ -272,7 +272,6 @@ local function setAddLoad(arg1)
 
     elseif arg1=='Blizzard_GenericTraitUI' then--欲龙术
         Move(GenericTraitFrame,{})
-
         Move(GenericTraitFrame.ButtonsParent,{frame=GenericTraitFrame})
         
     end
