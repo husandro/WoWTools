@@ -1236,6 +1236,7 @@ local function Init()
             return gameAccountInfo;
         end
     end
+   
 end
 
 --加载保存数据
@@ -1284,6 +1285,12 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                     self2.HiddenDescription:SetText(description..' '..(flags==131072 and e.Icon.wow2 ..'|cnGREEN_FONT_COLOR:'..achievementID..'|r' or achievementID)..(icon and ' |T'..icon..':0|t'..icon or ''))
                 end)
             end
+        
+        elseif arg1=='Blizzard_Collections' then--宠物手册， 召唤随机，偏好宠物，技能ID    
+            hooksecurefunc('PetJournalSummonRandomFavoritePetButton_OnEnter', function()--PetJournalSummonRandomFavoritePetButton
+                setSpell(e.tips, 243819)
+                e.tips:Show()
+            end)
         end
 
     elseif event == "PLAYER_LOGOUT" then
