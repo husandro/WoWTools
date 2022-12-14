@@ -118,6 +118,7 @@ local FrameTab={
     BFAMissionFrame={},--侦查地图    
     WorldMapFrame={},--世界地图
     ContainerFrameCombinedBags={},--包
+    VehicleSeatIndicator={},--车辆，指示
 };
 --UIWidgetBelowMinimapContainerFrame={save=true,click='RightButton'},
 --ZoneAbilityFrame.SpellButtonContainer = {save=true, click='R'},
