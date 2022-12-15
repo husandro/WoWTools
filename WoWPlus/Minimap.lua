@@ -67,30 +67,64 @@ local function Init()
     frame.ScaleOut:SetScript('OnLeave', function() e.tips:Hide() end)
 
     if ExpansionLandingPageMinimapButton then
+        local OpenWR=function()
+            if not WeeklyRewardsFrame then
+                return
+            end
+            if WeeklyRewardsFrame:IsShown() then
+                HideUIPanel(WeeklyRewardsFrame);
+            else
+                WeeklyRewardsFrame:Show()
+                tinsert(UISpecialFrames, WeeklyRewardsFrame:GetName())
+            end
+        end
         ExpansionLandingPageMinimapButton:SetScale(0.6)--透明度
-        ExpansionLandingPageMinimapButton:SetAlpha(0.3)
-        ExpansionLandingPageMinimapButton:SetScript('OnEnter', function(self)
-            self:SetAlpha(1)
-        end)
-        ExpansionLandingPageMinimapButton:SetScript('OnLeave', function(self)
-            self:SetAlpha(0.3)
-        end)
-        C_Timer.After(10, function()--盟约图标停止闪烁
-            ExpansionLandingPageMinimapButton.MinimapLoopPulseAnim:Stop()
-        end)
-
+        ExpansionLandingPageMinimapButton:SetFrameStrata('TOOLTIP')
         ExpansionLandingPageMinimapButton:SetMovable(true)--移动
         ExpansionLandingPageMinimapButton:RegisterForDrag("RightButton")
         ExpansionLandingPageMinimapButton:SetClampedToScreen(true)
-        ExpansionLandingPageMinimapButton:SetScript("OnDragStart", ExpansionLandingPageMinimapButton.StartMoving)        
-        ExpansionLandingPageMinimapButton:SetScript("OnDragStop", ExpansionLandingPageMinimapButton.StopMovingOrSizing)
+        ExpansionLandingPageMinimapButton:SetScript("OnDragStart", function(self, d)
+            if d=='RightButton' and IsAltKeyDown() then
+                self:StartMoving()
+            end
+        end)
+        ExpansionLandingPageMinimapButton:SetScript("OnDragStop", function(self)
+            self:StopMovingOrSizing()
+        end)
+        ExpansionLandingPageMinimapButton:SetScript('OnMouseDown', function(self, d)
+           if d=='RightButton' and not IsModifierKeyDown() then--周奖励面板
+                if not WeeklyRewardsFrame then
+                    LoadAddOn("Blizzard_WeeklyRewards")
+                end
+                OpenWR()
+           end
+        end)
+        ExpansionLandingPageMinimapButton:SetScript('OnEnter',function(self)
+            self:SetAlpha(1)
+            e.tips:SetOwner(self, "ANCHOR_LEFT");
+            e.tips:ClearLines();
+            e.tips:AddDoubleLine(e.onlyChinse and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , e.Icon.right)
+            e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(id, addName)
+            e.tips:Show()
+        end)
+        ExpansionLandingPageMinimapButton:SetScript('OnLeave', function(self)
+            e.tips:Hide()
+            self:SetAlpha(0.3)
+        end)
+
+        C_Timer.After(8, function()--盟约图标停止闪烁
+            ExpansionLandingPageMinimapButton.MinimapLoopPulseAnim:Stop()
+            ExpansionLandingPageMinimapButton:SetAlpha(0.3)
+        end)
     end
 
-local function set_minimapTrackingShowAll()--追踪,镇民
-    if Save.minimapTrackingShowAll~=nil then
-        C_CVar.SetCVar('minimapTrackingShowAll', not Save.minimapTrackingShowAll and '0' or '1' )
+    local function set_minimapTrackingShowAll()--追踪,镇民
+        if Save.minimapTrackingShowAll~=nil then
+            C_CVar.SetCVar('minimapTrackingShowAll', not Save.minimapTrackingShowAll and '0' or '1' )
+        end
     end
-end
     
     if MinimapCluster and MinimapCluster.Tracking and MinimapCluster.Tracking.Button then
         MinimapCluster.Tracking.Button:HookScript( 'OnMouseDown', function()
@@ -169,6 +203,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not WoWToolsSave then WoWToolsSave={} end
             WoWToolsSave[addName]=Save
         end
+
     else
         set_ZoomOut()--更新地区时,缩小化地图
     end

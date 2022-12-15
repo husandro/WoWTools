@@ -273,11 +273,19 @@ local function setAddLoad(arg1)
     elseif arg1=='Blizzard_GenericTraitUI' then--欲龙术
         Move(GenericTraitFrame,{})
         Move(GenericTraitFrame.ButtonsParent,{frame=GenericTraitFrame})
+
+    elseif arg1=='Blizzard_WeeklyRewards' then--'Blizzard_EventTrace' then--周奖励面板
+        Move(WeeklyRewardsFrame, {})
     end
 end
 
 
 local function setInit()
+--[[
+        --修正，在战斗中，打开收藏界面，错误
+        ToggleCollectionsJournal(1)
+        --HideUIPanel(CollectionsJournal)]]
+
     Move(ZoneAbilityFrame.SpellButtonContainer, {save=true, click='R'})
 
     for k, v in pairs(FrameTab) do
@@ -342,6 +350,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 setInit()
                 setTabInit()
                 setClass()--职业,能量条
+
             else
                 panel:UnregisterAllEvents()
             end

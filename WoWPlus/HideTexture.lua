@@ -68,12 +68,9 @@ local function Init()
     end)
 
     local function hideTexture(self)
-       -- if self then
-            self:SetTexture(0)
-            self:SetShown(flase)
-        --end
+        self:SetTexture(0)
+        self:SetShown(flase)
     end
-
     if MainMenuBar and MainMenuBar.BorderArt then
         hideTexture(MainMenuBar.BorderArt.TopEdge)
         hideTexture(MainMenuBar.BorderArt.BottomEdge)
@@ -146,5 +143,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
     elseif event=='UNIT_ENTERED_VEHICLE' then
         set_UNIT_ENTERED_VEHICLE()
+    
+    elseif arg1=='Blizzard_WeeklyRewards' then
+        if WeeklyRewardExpirationWarningDialog and WeeklyRewardExpirationWarningDialog:IsShown() then
+            if WeeklyRewardExpirationWarningDialog.Description then
+                print(id, addName, '|cffff00ff'..WeeklyRewardExpirationWarningDialog.Description:GetText())
+                WeeklyRewardExpirationWarningDialog:Hide()
+            else
+                C_Timer.After(5, function()
+                    WeeklyRewardExpirationWarningDialog:Hide()
+                end)
+            end
+        end
     end
 end)

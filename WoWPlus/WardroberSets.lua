@@ -143,7 +143,9 @@ local function SetSaveWardroberColleced()--收集所有角色套装数据
             m=m..t..'\n'
         end
     end
-    m=m..ITEM_PET_KNOWN:format(numCollected, numTotal)..' '.. ('%i%%'):format(numCollected/numTotal*100)
+    if numTotal>0 then
+        m=m..ITEM_PET_KNOWN:format(numCollected, numTotal)..' '.. ('%i%%'):format(numCollected/numTotal*100)
+    end
     if not frame.PlayerCoollectedStr then
         frame.PlayerCoollectedStr=e.Cstr(frame)
         frame.PlayerCoollectedStr:SetPoint('BOTTOMLEFT', 10, 60)

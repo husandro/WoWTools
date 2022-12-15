@@ -612,7 +612,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     else
         set_Pet_Type()
-        if event=='PET_BATTLE_CLOSE' and not UnitAffectingCombat('player') then
+        if event=='PET_BATTLE_CLOSE' and not UnitAffectingCombat('player') then--UIParent.lua
             local duration = select(2, GetSpellCooldown(125439))
             if duration and duration<=2  or not duration then
                 if (CollectionsJournal and not PetJournal:IsVisible()) or not CollectionsJournal then
