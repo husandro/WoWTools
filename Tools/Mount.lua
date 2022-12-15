@@ -77,13 +77,16 @@ panel.Up:SetAtlas('NPE_ArrowUp')
 panel.Up:SetSize(20,20)
 
 local function setPanelPostion()--设置按钮位置
-    local p=Save.Point
-    panel:ClearAllPoints()
-    if p and p[1] and p[3] and p[4] and p[5] then
-        panel:SetPoint(p[1], UIParent, p[3], p[4], p[5])
-        panel:SetParent(UIParent)
+    if Save.Point and Save.Point[1] and Save.Point[3] and Save.Point[4] and Save.Point[5] then
+        panel:SetPoint(Save.Point[1], UIParent, Save.Point[3], Save.Point[4], Save.Point[5])
+        ---panel:SetParent(UIParent)
     else
-        panel:SetPoint('RIGHT', CharacterReagentBag0Slot, 'LEFT', -10 ,0)
+        if CharacterReagentBag0Slot and CharacterReagentBag0Slot:IsVisible() then
+            panel:SetPoint('RIGHT', CharacterReagentBag0Slot, 'LEFT', -10 ,0)
+        else
+            panel:SetPoint('CENTER')
+        end
+       
     end
 end
 
@@ -659,6 +662,7 @@ local function InitMenu(self, level, menuList)--主菜单
                 colorCode=not Save.Point and '|cff606060',
                 func=function()
                     Save.Point=nil
+                    panel:ClearAllPoints()
                     setPanelPostion()--设置按钮位置
                     CloseDropDownMenus()
                 end,
