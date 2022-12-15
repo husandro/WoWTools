@@ -531,7 +531,7 @@ local function Init()
         ResetCursor()
     end)
 
-    
+
     set_Pet_Type(arg1)
 end
 
@@ -568,7 +568,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     else
         set_Pet_Type(arg1)
-        if event=='PET_BATTLE_CLOSE' then
+        if event=='PET_BATTLE_CLOSE' and not UnitAffectingCombat('player') then
             local duration = select(2, GetSpellCooldown(125439))
             if duration and duration<=2  or not duration then
                 if (CollectionsJournal and not PetJournal:IsVisible()) or not CollectionsJournal then

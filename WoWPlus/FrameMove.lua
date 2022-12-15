@@ -77,7 +77,7 @@ local Move=function(F, tab)
         if show  then
             F:SetScript("OnShow", function() Point(F2,name) end);
         end
-        
+
     end
 if re then
     F2:SetResizable(true)
@@ -207,10 +207,10 @@ local function setClass()--职业,能量条
                     if self then
                         if self.PointOff then  self.PointOff:Hide() end--:SetAlpha(0) end
                         if self.CircleBurst then self.CircleBurst:Hide() end
-                        if not self.tex then 
+                        if not self.tex then
                             self.tex=self:CreateTexture(nil, 'BACKGROUND');
                             local setFrame=self.Point or self
-                            self.tex:SetPoint('BOTTOM', setFrame, 'BOTTOM',0,0);                           
+                            self.tex:SetPoint('BOTTOM', setFrame, 'BOTTOM',0,0);
                             self.tex:SetSize(12, 12);
                             self.tex:SetAtlas(e.Icon.number:format(i));
                         end
@@ -273,7 +273,6 @@ local function setAddLoad(arg1)
     elseif arg1=='Blizzard_GenericTraitUI' then--欲龙术
         Move(GenericTraitFrame,{})
         Move(GenericTraitFrame.ButtonsParent,{frame=GenericTraitFrame})
-        
     end
 end
 
@@ -318,7 +317,7 @@ local function setInit()
             UIDropDownMenu_AddButton(info)
         end)
         local p=Save.point['QueueStatusButton']
-        if p and p[1] and p[3] and p[4] and p[5] then 
+        if p and p[1] and p[3] and p[4] and p[5] then
             QueueStatusButton:ClearAllPoints()
             QueueStatusButton:SetPoint(p[1],UIParent, p[3], p[4], p[5])
         end
