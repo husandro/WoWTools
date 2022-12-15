@@ -918,12 +918,11 @@ local function Init()
     --战斗宠物，技能 SharedPetBattleTemplates.lua
     hooksecurefunc('SharedPetBattleAbilityTooltip_SetAbility', function(self, abilityInfo, additionalText)
         local abilityID = abilityInfo:GetAbilityID();
-        if ( not abilityID ) then
-            return;
+        if abilityID then
+            local _, _, icon, _, unparsedDescription = C_PetBattles.GetAbilityInfoByID(abilityID)
+            local description = SharedPetAbilityTooltip_ParseText(abilityInfo, unparsedDescription)
+            self.Description:SetText(description..'\n\n'..(e.onlyChinse and '技能' or ABILITIES)..' '..abilityID..(icon and '  |T'..icon..':0|t'..icon or ''))
         end
-        local _, _, icon, _, unparsedDescription = C_PetBattles.GetAbilityInfoByID(abilityID)
-        local description = SharedPetAbilityTooltip_ParseText(abilityInfo, unparsedDescription)
-        self.Description:SetText(description..'\n\n'..(e.onlyChinse and '技能' or ABILITIES)..' '..abilityID..(icon and '  |T'..icon..':0|t'..icon or ''))
     end)
     --TooltipUtil.lua
 --[[
