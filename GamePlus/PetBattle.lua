@@ -430,17 +430,29 @@ local function get_Strong_WeakHints(petType, strong)
         if modifier then
             if strong then
                 if modifier > 1  then
-                    return 'Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[i]--"Interface\\PetBattles\\PetIcon-"..PET_TYPE_SUFFIX[i]
+                    return 'Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[i], i--"Interface\\PetBattles\\PetIcon-"..PET_TYPE_SUFFIX[i]
                 end
             else
                 if modifier < 1 then
-                    return 'Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[i]
+                    return 'Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[i], i
                 end
             end
         end
     end
 end
 
+local PetTypeAbility={
+    [1]=238,
+    [2]=245,
+    [3]=239,
+    [4]=424,
+    [5]=236,
+    [6]=243,
+    [7]=241,
+    [8]=237,
+    [9]=240,
+    [10]=244,
+}
 local function set_Pet_Type()--提示,类型, 
     local petBat= C_PetBattles.IsInBattle()
     if not panel.setFrame and petBat then
@@ -455,29 +467,61 @@ local function set_Pet_Type()--提示,类型,
             texture:SetSize(25, 25)
             texture:SetPoint('LEFT', last, 'RIGHT')
             texture:SetTexture('Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[i])
+            texture.abilityID= PetTypeAbility[i]
+            texture:EnableMouse(true)
+            texture:SetScript('OnEnter', function(self)
+                if self.abilityID then
+                    FloatingPetBattleAbility_Show(self.abilityID)
+                end
+            end)
+            texture:SetScript('OnLeave', function()
+                FloatingPetBattleAbilityTooltip:Hide()
+            end)
 
-            local strong=get_Strong_WeakHints(i, true) or 0
-            texture.indicatoUp=panel:CreateTexture()
-            texture.indicatoUp:SetAtlas('bags-greenarrow')
-            texture.indicatoUp:SetSize(10,10)
-            texture.indicatoUp:SetPoint('BOTTOM', texture,'TOP')
+            local strong, index=get_Strong_WeakHints(i, true)
+            if strong then
+                texture.indicatoUp=panel:CreateTexture()
+                texture.indicatoUp:SetAtlas('bags-greenarrow')
+                texture.indicatoUp:SetSize(10,10)
+                texture.indicatoUp:SetPoint('BOTTOM', texture,'TOP')
 
-            texture.strong= panel:CreateTexture()
-            texture.strong:SetSize(20,20)
-            texture.strong:SetPoint('BOTTOM', texture.indicatoUp, 'TOP')
-            texture.strong:SetTexture(strong)
+                texture.strong= panel:CreateTexture()
+                texture.strong:SetSize(25,25)
+                texture.strong:SetPoint('BOTTOM', texture.indicatoUp, 'TOP')
+                texture.strong:SetTexture(strong)
+                texture.strong.abilityID= PetTypeAbility[index]
+                texture.strong:EnableMouse(true)
+                texture.strong:SetScript('OnEnter', function(self)
+                    if self.abilityID then
+                        FloatingPetBattleAbility_Show(self.abilityID)
+                    end
+                end)
+                texture.strong:SetScript('OnLeave', function()
+                    FloatingPetBattleAbilityTooltip:Hide()
+                end)
+            end
+            local weakHints, index2=get_Strong_WeakHints(i)
+            if weakHints then
+                texture.indicatoDown=panel:CreateTexture()
+                texture.indicatoDown:SetAtlas('UI-HUD-MicroMenu-StreamDLRed-Up')
+                texture.indicatoDown:SetSize(10,10)
+                texture.indicatoDown:SetPoint('TOP', texture,'BOTTOM')
 
-            local weakHints=get_Strong_WeakHints(i) or 0
-            texture.indicatoDown=panel:CreateTexture()
-            texture.indicatoDown:SetAtlas('UI-HUD-MicroMenu-StreamDLRed-Up')
-            texture.indicatoDown:SetSize(10,10)
-            texture.indicatoDown:SetPoint('TOP', texture,'BOTTOM')
-
-            texture.weakHints= panel:CreateTexture()
-            texture.weakHints:SetSize(20,20)
-            texture.weakHints:SetPoint('TOP', texture.indicatoDown, 'BOTTOM')
-            texture.weakHints:SetTexture(weakHints)
-
+                texture.weakHints= panel:CreateTexture()
+                texture.weakHints:SetSize(25,25)
+                texture.weakHints:SetPoint('TOP', texture.indicatoDown, 'BOTTOM')
+                texture.weakHints:SetTexture(weakHints)
+                texture.weakHints.abilityID= PetTypeAbility[index2]
+                texture.weakHints:EnableMouse(true)
+                texture.weakHints:SetScript('OnEnter', function(self)
+                    if self.abilityID then
+                        FloatingPetBattleAbility_Show(self.abilityID)
+                    end
+                end)
+                texture.weakHints:SetScript('OnLeave', function()
+                    FloatingPetBattleAbilityTooltip:Hide()
+                end)
+            end
 
             last=texture
         end
