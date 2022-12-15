@@ -441,7 +441,7 @@ local function get_Strong_WeakHints(petType, strong)
     end
 end
 
-local function set_Pet_Type(arg1)--提示,类型, 
+local function set_Pet_Type()--提示,类型, 
     local petBat= C_PetBattles.IsInBattle()
     if not panel.setFrame and petBat then
         if Save.point then
@@ -532,7 +532,7 @@ local function Init()
     end)
 
 
-    set_Pet_Type(arg1)
+    set_Pet_Type()
 end
 
 
@@ -567,7 +567,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     else
-        set_Pet_Type(arg1)
+        set_Pet_Type()
         if event=='PET_BATTLE_CLOSE' and not UnitAffectingCombat('player') then
             local duration = select(2, GetSpellCooldown(125439))
             if duration and duration<=2  or not duration then
