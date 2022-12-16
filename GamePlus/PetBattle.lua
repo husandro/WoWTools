@@ -453,7 +453,7 @@ local PetTypeAbility={
     [9]=240,
     [10]=244,
 }
-local function set_Pet_Type()--提示,类型, 
+local function set_Pet_Type(show)--提示,类型, 
     local petBat= C_PetBattles.IsInBattle()
     if not panel.setFrame and petBat then
         if Save.point then
@@ -618,9 +618,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     else
         set_Pet_Type()
         if event=='PET_BATTLE_CLOSE' then
-            if FloatingPetBattleAbilityTooltip  and FloatingPetBattleAbilityTooltip:IsShown() then
-                FloatingPetBattleAbilityTooltip:Hide()
-            end
             if not UnitAffectingCombat('player') then--UIParent.lua
                 local duration = select(2, GetSpellCooldown(125439))
                 if duration and duration<=2  or not duration then
