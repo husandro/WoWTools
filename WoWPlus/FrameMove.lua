@@ -280,12 +280,7 @@ local function setAddLoad(arg1)
 end
 
 
-local function setInit()
---[[
-        --修正，在战斗中，打开收藏界面，错误
-        ToggleCollectionsJournal(1)
-        --HideUIPanel(CollectionsJournal)]]
-
+local function Init()
     Move(ZoneAbilityFrame.SpellButtonContainer, {save=true, click='R'})
 
     for k, v in pairs(FrameTab) do
@@ -330,6 +325,12 @@ local function setInit()
             QueueStatusButton:SetPoint(p[1],UIParent, p[3], p[4], p[5])
         end
     end
+
+    --修正，在战斗中，打开收藏界面，错误
+    if not CollectionsJournal then
+        ToggleCollectionsJournal(1)
+        HideUIPanel(CollectionsJournal)
+    end
 end
 
 --加载保存数据
@@ -347,7 +348,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end)
 
             if not Save.disabled then
-                setInit()
+                Init()
                 setTabInit()
                 setClass()--职业,能量条
 
