@@ -471,14 +471,14 @@ local function set_Pet_Type()--提示,类型,
             texture:EnableMouse(true)
             texture:SetScript('OnEnter', function(self)
                 if self.abilityID then
-                    FloatingPetBattleAbilityTooltip:SetOwner(self, "ANCHOR_LEFT")
+                    FloatingPetBattleAbilityTooltip:ClearAllPoints()
+                    FloatingPetBattleAbilityTooltip:SetPoint("BOTTOMRIGHT", self, "TOPLEFT");
                     FloatingPetBattleAbility_Show(self.abilityID)
                 end
             end)
             texture:SetScript('OnLeave', function()
                 FloatingPetBattleAbilityTooltip:Hide()
             end)
-
             local strong, index=get_Strong_WeakHints(i, true)
             if strong then
                 texture.indicatoUp=panel:CreateTexture()
@@ -494,6 +494,8 @@ local function set_Pet_Type()--提示,类型,
                 texture.strong:EnableMouse(true)
                 texture.strong:SetScript('OnEnter', function(self)
                     if self.abilityID then
+                        FloatingPetBattleAbilityTooltip:ClearAllPoints()
+                        FloatingPetBattleAbilityTooltip:SetPoint("BOTTOMRIGHT", self, "TOPLEFT");
                         FloatingPetBattleAbility_Show(self.abilityID)
                     end
                 end)
@@ -516,6 +518,8 @@ local function set_Pet_Type()--提示,类型,
                 texture.weakHints:EnableMouse(true)
                 texture.weakHints:SetScript('OnEnter', function(self)
                     if self.abilityID then
+                        FloatingPetBattleAbilityTooltip:ClearAllPoints()
+                        FloatingPetBattleAbilityTooltip:SetPoint("BOTTOMRIGHT", self, "TOPLEFT");
                         FloatingPetBattleAbility_Show(self.abilityID)
                     end
                 end)
@@ -613,11 +617,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     else
         set_Pet_Type()
-        if event=='PET_BATTLE_CLOSE' and not UnitAffectingCombat('player') then--UIParent.lua
-            local duration = select(2, GetSpellCooldown(125439))
-            if duration and duration<=2  or not duration then
-                if (CollectionsJournal and not PetJournal:IsVisible()) or not CollectionsJournal then
-                    ToggleCollectionsJournal(2)
+        if event=='PET_BATTLE_CLOSE' then
+            if FloatingPetBattleAbilityTooltip  and FloatingPetBattleAbilityTooltip:IsShown() then
+                FloatingPetBattleAbilityTooltip:Hide()
+            end
+            if not UnitAffectingCombat('player') then--UIParent.lua
+                local duration = select(2, GetSpellCooldown(125439))
+                if duration and duration<=2  or not duration then
+                    if (CollectionsJournal and not PetJournal:IsVisible()) or not CollectionsJournal then
+                        ToggleCollectionsJournal(2)
+                    end
                 end
             end
         end
