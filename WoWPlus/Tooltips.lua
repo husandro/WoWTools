@@ -7,7 +7,6 @@ local function setInitItem(self, hide)--创建物品
     if not self.textLeft then--左上角字符
         self.textLeft=e.Cstr(self, 16)
         self.textLeft:SetPoint('BOTTOMLEFT', self, 'TOPLEFT')
-        --self.textLeft:SetPoint('TOPLEFT', self, 'BOTTOMLEFT')下
     end
     if not self.text2Left then--左上角字符2
         self.text2Left=e.Cstr(self, 16)
@@ -16,7 +15,6 @@ local function setInitItem(self, hide)--创建物品
     if not self.textRight then--右上角字符
         self.textRight=e.Cstr(self, 16)
         self.textRight:SetPoint('BOTTOMRIGHT', self, 'TOPRIGHT')
-        --self.textRight:SetPoint('TOPRIGHT', self, 'BOTTOMRIGHT')--下
     end
     if not self.backgroundColor then--背景颜色
         self.backgroundColor=self:CreateTexture(nil,'BACKGROUND')
@@ -128,40 +126,56 @@ local function setMount(self, mountID)--坐骑
     self.text2Left:SetText(isCollected and '|cnGREEN_FONT_COLOR:'..COLLECTED..'|r' or '|cnRED_FONT_COLOR:'..NOT_COLLECTED..'|r')
 end
 
+local function get_Pet_Collected_Num(speciesID)--收集数量
+    local AllCollected, CollectedNum, CollectedText
+    local numPets, numOwned = C_PetJournal.GetNumPets()
+    if numPets and numOwned and numPets>0 then
+        if numPets<numOwned or numPets<3 then
+            AllCollected= e.MK(numOwned, 3)
+        else
+            AllCollected= e.MK(numOwned,3)..'/'..e.MK(numPets,3).. (' %i%%'):format(numOwned/numPets*100)
+        end
+    end
+
+    local text, numCollected, limit= e.GetPetCollected(speciesID)
+    if limit and limit>0 then
+        if numCollected and numCollected>0 then
+            local text2
+            for index= 1 ,numOwned do
+                local petID, speciesID2, _, _, level = C_PetJournal.GetPetInfoByIndex(index)
+                if speciesID2==speciesID and petID and level then
+                    local rarity = select(5, C_PetJournal.GetPetStats(petID))
+                    local col= rarity and select(4, GetItemQualityColor(rarity-1))
+                    if col then
+                    text2= text2 and text2..' ' or ''
+                    text2= text2..'|c'..col..level..'|r'
+                    end
+                end
+            end
+            CollectedNum= text2
+        end
+        CollectedText= text
+    end
+    return AllCollected, CollectedNum, CollectedText--总收集数量， 25 25 25， 已收集3/3
+end
 local function setPet(self, speciesID)--宠物
-    if not speciesID or speciesID <= 0 then
+    if not speciesID or speciesID< 1 then
         return
     end
     local speciesName, speciesIcon, petType, companionID, tooltipSource, tooltipDescription, isWild, canBattle, isTradeable, isUnique, obtainable, creatureDisplayID = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
+--[[
+    if speciesName and PetJournalSearchBox and PetJournalSearchBox:IsVisible() then--宠物手册，设置名称
+        PetJournalSearchBox:SetText(speciesName)
+    end
+]]
     self:AddLine(' ')
 
-    if obtainable then--收集数量
-        local text, numCollected= e.GetPetCollected(speciesID)
-        local numPets, numOwned = C_PetJournal.GetNumPets()
-        if numPets and numOwned and numPets>0 then
-            self.textRight:SetText(e.MK(numOwned,3)..(numPets>3 and '/'..e.MK(numPets,3).. (' %i%%'):format(numOwned/numPets*100) or ''))
-            text= numCollected and numCollected==0 and  text or ' '
-            if numCollected and numCollected>0 and not UnitAffectingCombat('player') then
-                local text2
-                for index= 1 ,numOwned do
-                    local petID, speciesID2, _, _, level = C_PetJournal.GetPetInfoByIndex(index)
-                    if speciesID2==speciesID and petID and level then
-                        local rarity = select(5, C_PetJournal.GetPetStats(petID))
-                        local col= rarity and select(4, GetItemQualityColor(rarity-1))
-                        if col then
-                        text2= text2 and text2..' ' or ''
-                        text2= text2..'|c'..col..level..'|r'
-                        end
-                    end
-                end
-                if text2 then
-                    self.textLeft:SetText(text2)
-                end
-            end
-        end
-        self:AddDoubleLine(text, companionID and 'NPC: '..companionID or ' ')
-    end
-    self:AddDoubleLine(PET..': '..speciesID, MODEL..': '..creatureDisplayID)--ID
+    local AllCollected, CollectedNum, CollectedText= get_Pet_Collected_Num(speciesID)--收集数量
+    self.textLeft:SetText(CollectedNum or '')
+    self.text2Left:SetText(CollectedText or '')
+    self.textRight:SetText(AllCollected or '')
+
+    self:AddDoubleLine(PET..' '..speciesID..(speciesIcon and '  |T'..speciesIcon..':0|t'..speciesIcon), (creatureDisplayID and (MODEL..' '..creatureDisplayID) or '')..(companionID and ' NPC '..companionID or ''))--ID
 
     local tab = C_PetJournal.GetPetAbilityListTable(speciesID)--技能图标
     table.sort(tab, function(a,b) return a.level< b.level end)
@@ -175,10 +189,10 @@ local function setPet(self, speciesID)--宠物
             abilityIconB=abilityIconB..icon
         end
     end
-    self:AddDoubleLine(abilityIconA, abilityIconB)    
-    self:AddLine(' ')
-    self:AddLine(tooltipSource,nil,nil,nil, true)
-    --self.Portrait:SetTexture('Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType])--宠物类型图标
+    self:AddDoubleLine(abilityIconA, abilityIconB)
+
+    self:AddLine(tooltipSource,nil,nil,nil, true)--来源
+
     if petType then
         self.Portrait:SetTexture("Interface\\TargetingFrame\\PetBadge-"..PET_TYPE_SUFFIX[petType])
         self.Portrait:SetShown(true)
@@ -189,7 +203,6 @@ local function setPet(self, speciesID)--宠物
         self.creatureDisplayID=creatureDisplayID
     end
 end
-
 
 --############
 --设置,物品信息
@@ -361,9 +374,6 @@ end
 local function setCurrency(self, currencyID)--货币
     local info2 = currencyID and C_CurrencyInfo.GetCurrencyInfo(currencyID)
     if info2 then
-        if not self.Portrait then
-            setInitItem(self, hide)--创建物品
-        end
         self:AddDoubleLine(TOKENS..' '..currencyID, info2.iconFileID and '|T'..info2.iconFileID..':0|t'..info2.iconFileID)
     end
     local factionID = C_CurrencyInfo.GetFactionGrantedByCurrency(currencyID)--派系声望
@@ -405,63 +415,6 @@ local function setQuest(self, questID)
     self:AddDoubleLine(QUESTS_LABEL, questID)
 end
 
-
-
---###########
---宠物面板提示
---###########
-local function setBattlePet(self, speciesID, level, breedQuality, maxHealth, power, speed, customName)
-    if not speciesID or speciesID <= 0 then
-        return
-    end
-    local speciesName, speciesIcon, _, companionID, tooltipSource, _, _, _, _, _, obtainable, creatureDisplayID = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
-    if not self.model then--3D模型
-        self.model=CreateFrame("PlayerModel", nil, self)
-        self.model:SetFacing(0.35)
-        self.model:SetPoint("TOPRIGHT", self, 'TOPLEFT')
-        self.model:SetSize(260, 260)
-    end
-    self.model:SetDisplayInfo(creatureDisplayID)
-    if obtainable then
-        local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesID)
-        if numCollected==0 then
-            BattlePetTooltipTemplate_AddTextLine(self, ITEM_PET_KNOWN:format(0, limit), 1,0,0)
-        end
-    end
-    BattlePetTooltipTemplate_AddTextLine(self, PET..' '..speciesID..'                  |T'..speciesIcon..':0|t'..speciesIcon)
-    BattlePetTooltipTemplate_AddTextLine(self, 'NPC '..companionID..'                  '..MODEL..' '..creatureDisplayID)--..'    '..	WILD_PETS:gsub(PET,'')..': '..e.GetYesNo(isWild)..'         '..TRADE..': '..e.GetYesNo(isTradeable))
-    local tab = C_PetJournal.GetPetAbilityListTable(speciesID)--技能图标
-    table.sort(tab, function(a,b) return a.level< b.level end)
-    local abilityIcon=''
-    for k, info in pairs(tab) do
-        local icon, type = select(2, C_PetJournal.GetPetAbilityInfo(info.abilityID))
-        if abilityIcon~='' then
-            if k==4 then
-                abilityIcon=abilityIcon..'   '
-            end
-            abilityIcon=abilityIcon..' '
-        end
-        abilityIcon=abilityIcon..'|TInterface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[type]..':0|t|T'..icon..':0|t'..info.level
-    end
-    BattlePetTooltipTemplate_AddTextLine(self, abilityIcon)
-    
-        BattlePetTooltipTemplate_AddTextLine(self, ' ')--来源提示
-        BattlePetTooltipTemplate_AddTextLine(self, tooltipSource)
-    
-    if PetJournalSearchBox and PetJournalSearchBox:IsVisible() then--设置搜索
-        PetJournalSearchBox:SetText(speciesName)
-    end
-    if not self.backgroundColor then--背景颜色
-        self.backgroundColor=self:CreateTexture(nil,'BACKGROUND')
-        self.backgroundColor:SetAllPoints(self)
-        self.backgroundColor:SetAlpha(0.15)
-    end
-    if (breedQuality ~= -1) then--设置背影颜色
-        self.backgroundColor:SetColorTexture(ITEM_QUALITY_COLORS[breedQuality].r, ITEM_QUALITY_COLORS[breedQuality].g, ITEM_QUALITY_COLORS[breedQuality].b, 0.15)
-    end
-    self.backgroundColor:SetShown(breedQuality~=-1)
-end
-
 --####
 --Buff
 --####
@@ -493,7 +446,6 @@ local function set_Aura(self, auraID)--Aura
         if mountID then
             setMount(self, mountID)
         end
-        --self:Show()
     end
 end
 
@@ -557,7 +509,6 @@ local function set_Unit_Health_Bar(self, unit)
     end
     if self.text then
         self.text:SetText(text or '');
-        
     end
     if not self.textLeft and right then
         self.textLeft = e.Cstr(self)
@@ -621,7 +572,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             self.Portrait:SetAtlas(englishFaction=='Alliance' and e.Icon.alliance or e.Icon.horde)
             self.Portrait:SetShown(true)
         end
-        
+
         if CheckInteractDistance(unit, 1) then--取得装等
             NotifyInspect(unit);
         end
@@ -629,7 +580,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
         setPlayerInfo(unit, guid)--取得玩家信息
 
         local isWarModeDesired=C_PvP.IsWarModeDesired()
-        
+
         local reason=UnitPhaseReason(unit)
         if reason then
             if reason==0 then--不同了阶段
@@ -706,7 +657,6 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                                 line:Hide()
                             end
                         end
-                   
                     else
                         line:Hide()
 
@@ -858,6 +808,65 @@ local function set_FlyoutInfo(self, flyoutID)--法术, 弹出框
             end
         end
     end
+end
+
+--###########
+--宠物面板提示
+--###########
+local function setBattlePet(self, speciesID, level, breedQuality, maxHealth, power, speed, customName)
+    if not speciesID or speciesID < 1 then
+        return
+    end
+    local speciesName, speciesIcon, _, companionID, tooltipSource, _, _, _, _, _, obtainable, creatureDisplayID = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
+    if not self.Portrait then
+        setInitItem(self, true)--创建物品
+    end
+
+    self.itemModel:SetDisplayInfo(creatureDisplayID)
+    if obtainable then
+        local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesID)
+        if numCollected==0 then
+            BattlePetTooltipTemplate_AddTextLine(self, ITEM_PET_KNOWN:format(0, limit), 1,0,0)
+        end
+    end
+    BattlePetTooltipTemplate_AddTextLine(self, PET..' '..speciesID..'                  |T'..speciesIcon..':0|t'..speciesIcon)
+    BattlePetTooltipTemplate_AddTextLine(self, 'NPC '..companionID..'                  '..MODEL..' '..creatureDisplayID)
+
+    local tab = C_PetJournal.GetPetAbilityListTable(speciesID)--技能图标
+    table.sort(tab, function(a,b) return a.level< b.level end)
+    local abilityIcon=''
+    for k, info in pairs(tab) do
+        local icon, type = select(2, C_PetJournal.GetPetAbilityInfo(info.abilityID))
+        if abilityIcon~='' then
+            if k==4 then
+                abilityIcon=abilityIcon..'   '
+            end
+            abilityIcon=abilityIcon..' '
+        end
+        abilityIcon=abilityIcon..'|TInterface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[type]..':0|t|T'..icon..':0|t'..info.level
+    end
+    BattlePetTooltipTemplate_AddTextLine(self, abilityIcon)
+
+    BattlePetTooltipTemplate_AddTextLine(self, tooltipSource)--来源提示
+
+    if PetJournalSearchBox and PetJournalSearchBox:IsVisible() then--设置搜索
+        PetJournalSearchBox:SetText(speciesName)
+    end
+    if not self.backgroundColor then--背景颜色
+        self.backgroundColor=self:CreateTexture(nil,'BACKGROUND')
+        self.backgroundColor:SetAllPoints(self)
+        self.backgroundColor:SetAlpha(0.15)
+    end
+    if (breedQuality ~= -1) then--设置背影颜色
+        self.backgroundColor:SetColorTexture(ITEM_QUALITY_COLORS[breedQuality].r, ITEM_QUALITY_COLORS[breedQuality].g, ITEM_QUALITY_COLORS[breedQuality].b, 0.15)
+    end
+    self.backgroundColor:SetShown(breedQuality~=-1)
+
+    local AllCollected, CollectedNum, CollectedText= get_Pet_Collected_Num(speciesID)--收集数量
+    self.textLeft:SetText(CollectedNum or '')
+    self.text2Left:SetText(CollectedText or '')
+    self.textRight:SetText(AllCollected or '')
+
 end
 
 --####
@@ -1016,7 +1025,6 @@ local function Init()
     hooksecurefunc(e.tips, "SetUnitAura", function(...)
         setBuff('Aura', ...)
     end)
-
 
     --###########
     --宠物面板提示
