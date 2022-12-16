@@ -51,37 +51,6 @@ local function setInitItem(self, hide)--创建物品
     end
 end
 
---[[
-
-local function setItemCooldown(self, itemID)--物品冷却
-    local startTime, duration, enable = GetItemCooldown(itemID)
-    if duration>4 and enable==1 then
-        local t=GetTime()
-        if startTime>t then t=t+86400 end
-        t=t-startTime
-        t=duration-t
-        self:AddDoubleLine(ON_COOLDOWN, SecondsToTime(t), 1,0,0, 1,0,0)
-    end
-end
-
-]]
-
---[[
-
-local function setSpellCooldown(self, spellID)--法术冷却
-    local startTime, duration, enable = GetSpellCooldown(spellID)
-    if duration and duration>4 and enable==1 and gcdMS~=duration then
-        local t=GetTime()
-        if startTime>t then t=t+86400 end
-        t=t-startTime
-        t=duration-t
-        self:AddDoubleLine(ON_COOLDOWN, SecondsToTime(t), 1,0,0, 1,0,0)
-    end
-end
-
-]]
-
-
 local function GetSetsCollectedNum(setID)--套装收集数
     local info=C_TransmogSets.GetSetPrimaryAppearances(setID) or {}
     local numCollected,numAll=0,0
@@ -1296,5 +1265,27 @@ local AchievementFlasgs={
             setQuest(tooltip, date.id)--任务
         end
     end)
+
+local function setItemCooldown(self, itemID)--物品冷却
+    local startTime, duration, enable = GetItemCooldown(itemID)
+    if duration>4 and enable==1 then
+        local t=GetTime()
+        if startTime>t then t=t+86400 end
+        t=t-startTime
+        t=duration-t
+        self:AddDoubleLine(ON_COOLDOWN, SecondsToTime(t), 1,0,0, 1,0,0)
+    end
+end
+
+local function setSpellCooldown(self, spellID)--法术冷却
+    local startTime, duration, enable = GetSpellCooldown(spellID)
+    if duration and duration>4 and enable==1 and gcdMS~=duration then
+        local t=GetTime()
+        if startTime>t then t=t+86400 end
+        t=t-startTime
+        t=duration-t
+        self:AddDoubleLine(ON_COOLDOWN, SecondsToTime(t), 1,0,0, 1,0,0)
+    end
+end
 
 ]]

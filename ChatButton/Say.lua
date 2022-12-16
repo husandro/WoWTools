@@ -1,4 +1,5 @@
 local id, e = ...
+local Save= {}
 
 local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
 panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
@@ -17,7 +18,7 @@ local function setType(text)--使用,提示
     else
         text=e.WA_Utf8Sub(text, 1)
     end
-    
+
     panel.typeText:SetText(text)
     panel.typeText:SetShown(IsInGroup())
 end
@@ -48,6 +49,14 @@ local function getWhisper(event, text, name, _, _, _, _, _, _, _, _, _, guid)
     end
 end
 
+local function set_CVar_chatBubbles()--聊天泡泡
+    if Save.chatBubbles~=nil then
+        local value= Save.chatBubbles and '1' or '0'
+        if C_CVar.GetCVar("chatBubbles")~=value then
+            C_CVar.SetCVar("chatBubbles", value)
+        end
+    end
+end
 --#####
 --主菜单
 --#####
@@ -302,12 +311,28 @@ local function InitMenu(self, level, type)--主菜单
         numOline = C_FriendList.GetNumWhoResults()
         numOline = (numOline and numOline>0)  and '|cnGREEN_FONT_COLOR:'..numOline..'|r' or ''
         info={--区域列表
-            text=numOline..FLOOR,
+            text=numOline..(e.onlyChinse and '区域' or FLOOR),
             notCheckable=true,
             menuList='FLOOR',
             hasArrow=true,
             func=function()
                 ToggleFriendsFrame(2)
+            end
+        }
+        UIDropDownMenu_AddButton(info, level)
+        UIDropDownMenu_AddSeparator(level)
+
+        info={
+            text= e.onlyChinse and '聊天泡泡' or CHAT_BUBBLES_TEXT,
+            tooltipOnButton=true,
+            --tooltipTitle= e.onlyChinse and '战斗中：禁用' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..DISABLE,
+            --tooltipText= (e.onlyChinse and '仅限副本' or LFG_LIST_CROSS_FACTION:format(INSTANCE))..'\n\n
+            tooltipTitle= 'CVar chatBubbles',
+            checked= C_CVar.GetCVarBool("chatBubbles"),
+            disabled= UnitAffectingCombat('player'),
+            func= function ()
+                Save.chatBubbles= not C_CVar.GetCVarBool("chatBubbles") and true or false
+                set_CVar_chatBubbles()
             end
         }
         UIDropDownMenu_AddButton(info, level)
@@ -336,6 +361,8 @@ local function Init()
             ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
         end
     end)
+
+    set_CVar_chatBubbles()--聊天泡泡
 end
 
 
@@ -343,6 +370,7 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
 
 panel:RegisterEvent("CHAT_MSG_WHISPER_INFORM")
 panel:RegisterEvent("CHAT_MSG_WHISPER")
@@ -359,5 +387,11 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
 
     elseif event=='CHAT_MSG_WHISPER_INFORM' or event=='CHAT_MSG_WHISPER' or event=='CHAT_MSG_BN_WHISPER' or event=='CHAT_MSG_BN_WHISPER_INFORM' then
         getWhisper(event, arg1, arg2, ...)
+
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            if not WoWToolsSave then WoWToolsSave={} end
+            WoWToolsSave[addName]=Save
+        end
     end
 end)
