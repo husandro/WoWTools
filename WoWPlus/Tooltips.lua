@@ -834,8 +834,7 @@ local function setBattlePet(self, speciesID, level, breedQuality, maxHealth, pow
     local AllCollected, CollectedNum, CollectedText= get_Pet_Collected_Num(speciesID)--收集数量
     self.textLeft:SetText(CollectedNum or '')
     self.text2Left:SetText(CollectedText or '')
-    self.textRight:SetText(AllCollected or '')
-
+    self.textRight:SetText(not CollectedNum and AllCollected or '')
 end
 
 --####

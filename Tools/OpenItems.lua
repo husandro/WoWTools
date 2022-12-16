@@ -22,24 +22,13 @@ panel:SetPoint('RIGHT', HearthstoneToolsButton, 'LEFT')
 
 
 local getTip=function(bag, slot)--取得提示内容
-    panel.tips:SetOwner(panel, "ANCHOR_NONE")
-    panel.tips:ClearLines()
-    panel.tips:SetBagItem(bag,slot)
-    for n=1, panel.tips:NumLines() do
-        local line=_G[id..addName..'TextLeft'..n]
-        if line then
-            local rgb=e.HEX(line:GetTextColor())
-            --print(rgb,line:GetText())
-            if rgb=='fefe1f1f' or rgb=='fefe7f3f' or rgb=='ffff2020'then
-                return
-            end
-        end
-        line=_G[id..addName..'TextRight'..n]
-        if line and line:GetText() then
-            local rgb=e.HEX(line:GetTextColor())
-            if rgb=='fefe1f1f' or rgb=='fefe7f3f' or rgb=='ffff2020' then
-                return
-            end
+    local tooltipData= C_TooltipInfo.GetBagItem(bag, slot)
+    TooltipUtil.SurfaceArgs(tooltipData)
+    for _, line in ipairs(tooltipData.lines) do
+        TooltipUtil.SurfaceArgs(line)
+        local hex=line.leftColor and line.leftColor and line.leftColor:GenerateHexColor()
+        if hex=='ffff2020' or hex=='fefe1f1f' then-- or hex=='fefe7f3f' then
+            return
         end
     end
     return true
@@ -76,7 +65,6 @@ local function setAtt(bag, slot, icon, itemID)--设置属性
         num = GetItemCount(itemID)
         num= num~=1 and num or ''
         panel:SetShown(true)
-        
     else
         panel:SetAttribute("macrotext", nil)
         panel:SetShown(not Save.noItemHide)
@@ -96,11 +84,12 @@ local function getItems()--取得背包物品信息
     equipItem=nil
     Bag={}
     local levelPlayer=UnitLevel('player')
+    
     for bag=0, NUM_BAG_SLOTS do
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local info = C_Container.GetContainerItemInfo(bag, slot)
             if info and info.itemID and info.hyperlink and not info.isLocked and info.iconFileID then
-
+       
                 if Save.use[info.itemID] then--自定义
                     if Save.use[info.itemID]<=info.stackCount then
                         setAtt(bag, slot, info.iconFileID, info.itemID)
@@ -109,18 +98,7 @@ local function getItems()--取得背包物品信息
 
                 elseif not Save.no[info.itemID] then--不出售
                     local itemName, _, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, sellPrice, classID, subclassID, bindType, expacID, setID, isCraftingReagent= GetItemInfo(info.hyperlink)
-
-                    --[[[if setID then--幻化
-                        if Save.mago then
-                            local setInfo= C_TransmogSets.GetSetInfo(setID)
-                            if setInfo and not setInfo.collected then
-                                setAtt(bag, slot, info.iconFileID, info.itemID)
-                                equipItem=true
-                                return
-                            end
-                        end
-                    else]]
-if itemEquipLoc and _G[itemEquipLoc] then--幻化
+                    if itemEquipLoc and _G[itemEquipLoc] then--幻化
                         if Save.mago and (itemMinLevel and itemMinLevel<=levelPlayer or not itemMinLevel) and info.quality and info.quality>1 then--and (not info.isBound or (classID==4 and (subclassID==0 or subclassID==5))) then
                             local  isCollected, isSelf= select(2, e.GetItemCollected(info.hyperlink))
                             if not isCollected and isSelf then
@@ -166,8 +144,8 @@ if itemEquipLoc and _G[itemEquipLoc] then--幻化
                             end
                         end
 
-                    elseif classID==15 and subclassID==4 then--其它
-                        if Save.alt and IsUsableItem(info.hyperlink) and not  C_Item.IsAnimaItemByID(info.hyperlink)  then
+                    elseif classID==15 and subclassID==4 then--其它 
+                        if Save.alt and IsUsableItem(info.hyperlink) and not C_Item.IsAnimaItemByID(info.hyperlink) and getTip(bag, slot) then
                             setAtt(bag, slot, info.iconFileID, info.itemID)
                             return
                         end
@@ -501,14 +479,14 @@ local function Init()
     if e.toolsFrame.size and e.toolsFrame.size~=30 then--设置大小
         panel:SetSize(e.toolsFrame.size, e.toolsFrame.size)
     end
-    panel.tips=CreateFrame("GameTooltip", id..addName, panel, "GameTooltipTemplate")
+    --panel.tips=CreateFrame("GameTooltip", id..addName, panel, "GameTooltipTemplate")
     panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
 
     panel.count=e.Cstr(panel, 10, nil, nil, true)
     panel.count:SetPoint('BOTTOM',0,2)
 
     UIDropDownMenu_Initialize(panel.Menu, setMenuList, 'MENU')
-    --setPanelPostion()--设置按钮位置
+
     getItems()--设置属性
 
     panel:SetScript("OnEnter",function(self)
