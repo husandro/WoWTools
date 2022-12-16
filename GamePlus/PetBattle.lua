@@ -424,7 +424,9 @@ local function set_PetBattleActionButton_UpdateState(self)
     end
 end
 
-
+--#####################
+--宠物， 类型，强弱，提示
+--#####################
 local function get_Strong_WeakHints(petType, strong)
     for i=1, C_PetJournal.GetNumPetTypes() do
         local modifier = C_PetBattles.GetAttackModifier(petType, i);
@@ -441,7 +443,6 @@ local function get_Strong_WeakHints(petType, strong)
         end
     end
 end
-
 local PetTypeAbility={
     [1]=238,
     [2]=245,
@@ -497,15 +498,14 @@ local function set_Pet_Type(show)--提示,类型,
             texture:EnableMouse(true)
             show_FloatingPetBattleAbilityTooltip(texture)
 
-            local strong, index=get_Strong_WeakHints(i, true)
+            local strong, index=get_Strong_WeakHints(i, true)--强
             if strong then
                 texture.indicatoUp=panel.setFrame:CreateTexture()
                 texture.indicatoUp:SetAtlas('bags-greenarrow')
                 texture.indicatoUp:SetSize(10,10)
                 texture.indicatoUp:SetPoint('BOTTOM', texture,'TOP')
 
-                texture.strong= e.Cbtn(panel.setFrame, nil,nil,nil,nil,true,{25,25})--panel.setFrame:CreateTexture()
-                --texture.strong:SetSize(25,25)
+                texture.strong= e.Cbtn(panel.setFrame, nil,nil,nil,nil,true,{25,25})
                 texture.strong:SetPoint('BOTTOM', texture.indicatoUp, 'TOP')
                 texture.strong:SetNormalTexture(strong)
                 texture.strong.abilityID= PetTypeAbility[index]
@@ -513,15 +513,14 @@ local function set_Pet_Type(show)--提示,类型,
                 texture.strong:EnableMouse(true)
                 show_FloatingPetBattleAbilityTooltip(texture.strong)
             end
-            local weakHints, index2=get_Strong_WeakHints(i)
+            local weakHints, index2=get_Strong_WeakHints(i)--弱
             if weakHints then
                 texture.indicatoDown=panel.setFrame:CreateTexture()
                 texture.indicatoDown:SetAtlas('UI-HUD-MicroMenu-StreamDLRed-Up')
                 texture.indicatoDown:SetSize(10,10)
                 texture.indicatoDown:SetPoint('TOP', texture,'BOTTOM')
 
-                texture.weakHints= e.Cbtn(panel.setFrame, nil,nil,nil,nil,true,{25,25})--panel.setFrame:CreateTexture()
-                --texture.weakHints:SetSize(25,25)
+                texture.weakHints= e.Cbtn(panel.setFrame, nil,nil,nil,nil,true,{25,25})
                 texture.weakHints:SetPoint('TOP', texture.indicatoDown, 'BOTTOM')
                 texture.weakHints:SetNormalTexture(weakHints)
                 texture.weakHints.abilityID= PetTypeAbility[index2]
@@ -538,6 +537,30 @@ local function set_Pet_Type(show)--提示,类型,
         panel.setFrame:SetShown(not Save.setFrameHide)
     end
     panel:SetShown(show)--提示,类型, 
+end
+
+local function set_Button_setFrame_PetJournal()--宠物手册，增加按钮
+    if IsAddOnLoaded('Rematch') then--RematchJournal
+        return
+    end
+    local frame= e.Cbtn(PetJournal, nil, true,nil,nil,nil,{25, 25}) --e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size) --PetJournal
+    frame:SetPoint('TOPLEFT', PetJournal,'TOPRIGHT',3,-29)
+    frame:SetScript('OnMouseDown', function()
+        if panel.setFrame then
+            set_Pet_Type(not panel:IsShown() and true or false)
+        else
+            set_Pet_Type(true)
+        end
+    end)
+    frame:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.onlyChinse and '宠物类型' or PET_FAMILIES, e.Icon.left)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:Show()
+    end)
+    frame:SetScript('OnLeave', function() e.tips:Hide() end)
 end
 
 --####
@@ -597,6 +620,9 @@ local function Init()
         e.tips:AddDoubleLine(e.onlyChinse and '显示/隐藏' or SHOW..'/'..HIDE, e.Icon.left)
         e.tips:AddDoubleLine(e.onlyChinse and '宠物手册' or PET_JOURNAL, e.Icon.mid)
         e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
+        if not IsAddOnLoaded('Rematch') then
+            e.tips:AddDoubleLine(e.Icon.left..(e.onlyChinse and '图标' or EMBLEM_SYMBOL), e.onlyChinse and '过滤器: 宠物类型' or FILTER..": "..PET_FAMILIES)
+        end
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
@@ -606,7 +632,6 @@ local function Init()
     end)
     set_Pet_Type(C_PetBattles.IsInBattle())
 end
-
 
 --###########
 --加载保存数据
@@ -632,6 +657,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Init()
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
+        elseif arg1=='Blizzard_Collections' then
+            set_Button_setFrame_PetJournal()
         end
 
     elseif event == "PLAYER_LOGOUT" then
@@ -639,11 +666,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not WoWToolsSave then WoWToolsSave={} end
             WoWToolsSave[addName]=Save
         end
-
     else
 
         set_Pet_Type(C_PetBattles.IsInBattle())
-
         if event=='PET_BATTLE_CLOSE' then
             if not UnitAffectingCombat('player') then--UIParent.lua
                 local duration = select(2, GetSpellCooldown(125439))
