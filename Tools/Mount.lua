@@ -47,13 +47,6 @@ local Save={
     XD=true
 }
 
---###############
---为我自定义, 战网,
---###############
-if select(2, BNGetInfo()) == '古月剑龙#5972' then
-    Save.KEY='BUTTON5'--按键
-end
-
 local XD
 
 local panel=e.Cbtn2('WoWToolsMountButton')
@@ -1100,6 +1093,13 @@ panel:RegisterEvent('PLAYER_STARTED_MOVING')
 panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" and arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
+
+            --###############
+            --为我自定义, 战网
+            --###############
+            if select(2, BNGetInfo()) == '古月剑龙#5972'  then
+                Save.KEY='BUTTON5'--按键
+            end
 
             local check=e.CPanel('Tools', not Save.disabled, true)
             check:SetScript('OnClick', function()

@@ -540,11 +540,14 @@ local function set_Pet_Type(show)--提示,类型,
 end
 
 local function set_Button_setFrame_PetJournal()--宠物手册，增加按钮
+--[[
     if IsAddOnLoaded('Rematch') then--RematchJournal
         return
     end
-    local frame= e.Cbtn(PetJournal, nil, true,nil,nil,nil,{25, 25}) --e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size) --PetJournal
-    frame:SetPoint('TOPLEFT', PetJournal,'TOPRIGHT',3,-29)
+]]
+
+    local frame= e.Cbtn(RematchJournal or PetJournal, nil, true,nil,nil,nil,{25, 25}) --e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size) --PetJournal
+    frame:SetPoint('TOPLEFT', RematchJournal or PetJournal,'TOPRIGHT',3,-29)
     frame:SetScript('OnMouseDown', function()
         if panel.setFrame then
             set_Pet_Type(not panel:IsShown() and true or false)
