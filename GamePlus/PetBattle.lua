@@ -471,6 +471,7 @@ local function set_Pet_Type()--提示,类型,
             texture:EnableMouse(true)
             texture:SetScript('OnEnter', function(self)
                 if self.abilityID then
+                    FloatingPetBattleAbilityTooltip:SetOwner(self, "ANCHOR_LEFT")
                     FloatingPetBattleAbility_Show(self.abilityID)
                 end
             end)
