@@ -8,7 +8,6 @@ local de='->'--分隔符
 if e.Player.Lo== "zhCN" or e.Player.Lo == "zhTW" or e.Player.Lo=='koKR' then
     de='→'
 end
-local playerGUID = UnitGUID("player")
 
 local UMark={--'|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..t..':0|t'
     [1]='{rt1}',
@@ -23,7 +22,7 @@ local UMark={--'|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..t..':0|t'
 
 local function set_COMBAT_LOG_EVENT_UNFILTERED()
     local _, eventType, _, sourceGUID, _, _, sourceRaidFlags, _, _, _, destRaidFlags ,spellID, _,_, extraSpellID= CombatLogGetCurrentEventInfo()
-    if (eventType=="SPELL_INTERRUPT" or eventType=="SPELL_DISPEL" or eventType=="SPELL_STOLEN") and sourceGUID==playerGUID and spellID and extraSpellID then
+    if (eventType=="SPELL_INTERRUPT" or eventType=="SPELL_DISPEL" or eventType=="SPELL_STOLEN") and sourceGUID==e.Player.guid and spellID and extraSpellID then
         local text=(UMark[sourceRaidFlags] or '')..GetSpellLink(spellID)..de..GetSpellLink(extraSpellID)..(UMark[destRaidFlags] or '')
         e.Chat(text, nil, true)
     end

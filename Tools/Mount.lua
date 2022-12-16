@@ -79,14 +79,12 @@ panel.Up:SetSize(20,20)
 local function setPanelPostion()--设置按钮位置
     if Save.Point and Save.Point[1] and Save.Point[3] and Save.Point[4] and Save.Point[5] then
         panel:SetPoint(Save.Point[1], UIParent, Save.Point[3], Save.Point[4], Save.Point[5])
-        ---panel:SetParent(UIParent)
     else
         if CharacterReagentBag0Slot and CharacterReagentBag0Slot:IsVisible() then
             panel:SetPoint('RIGHT', CharacterReagentBag0Slot, 'LEFT', -10 ,0)
         else
             panel:SetPoint('CENTER')
         end
-       
     end
 end
 

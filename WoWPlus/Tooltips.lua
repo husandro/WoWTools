@@ -390,33 +390,6 @@ local function setCurrency(self, currencyID)--货币
     end
     self:Show()
 end
---[[
-local AchievementFlasgs={
-    [1] = 'COUNTER',
-    [4] = 'PLAY_NO_VISUAL',
-    [8] = 'SUM',
-    [16] = 'MAX_USED',
-    [32] = 'REQ_COUNT',
-    [64] = 'AVERAGE',
-    [128] = 'PROGRESS_BAR',
-    [256] = 'REALM_FIRST_REACH',
-    [512] = 'REALM_FIRST_KILL',
-    [2048] = 'HIDE_INCOMPLETE',
-    [4096] = 'SHOW_IN_GUILD_NEWS',
-    [8192] = 'SHOW_IN_GUILD_HEADER',
-    [16384] = 'GUILD',
-    [28672]= e.onlyChinse and '公会综合' or GUILD..GENERAL,
-    [32768] = 'SHOW_GUILD_MEMBERS',
-    [53248] = e.onlyChinse and '公会PvP' or GUILD..' PvP',
-    [65536] = 'SHOW_CRITERIA_MEMBERS',
-    [94208]= e.onlyChinse and '公会声望' or GUILD..REPUTATION,
-    [131072] = 'ACCOUNT_WIDE',
-    [262144] = 'UNK5',
-    [524288] = 'HIDE_ZERO_COUNTER',
-    [1048576] = 'TRACKING_FLAG',
-}
-
-]]
 
 local function setAchievement(self, achievementID)--成就
     local _, name, points, completed, month, day, year, description, flags, icon, rewardText, isGuild, wasEarnedByMe, earnedBy, isStatistic = GetAchievementInfo(achievementID)
@@ -670,11 +643,10 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             end
         end
 
-    
         local isInGuild=IsPlayerInGuildFromGUID(guid)
         local col = e.UnitItemLevel[guid] and e.UnitItemLevel[guid].col or '|c'..select(4,GetClassColor(UnitClassBase(unit)))
         local line=GameTooltipTextLeft1--名称
-        
+
         local text=line:GetText()
         if text then
             text=text:gsub('(%-.+)','')
@@ -688,7 +660,6 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                 line:SetText(e.Icon.guild2..col..text:gsub('(%-.+)','')..'|r')
             end
         end
-
 
         line=isInGuild and GameTooltipTextLeft3 or GameTooltipTextLeft2
         if line then
@@ -756,14 +727,11 @@ local function setUnitInfo(self, unit)--设置单位提示信息
         if GameTooltipTextLeft2 then GameTooltipTextLeft2:SetTextColor(r,g,b) end
         if GameTooltipTextLeft3 then GameTooltipTextLeft3:SetTextColor(r,g,b) end
         if GameTooltipTextLeft4 then GameTooltipTextLeft4:SetTextColor(r,g,b) end
-        --if not UnitAffectingCombat('player') or not e.Layer then--位面,NPCID
             local zone, npc = select(5, strsplit("-",guid))--位面,NPCID
             if zone then
-                self:AddDoubleLine(e.L['LAYER']..' '..zone, 'NPC '..npc, r,g,b, r,g,b)--, server and FRIENDS_LIST_REALM..server)
-                --self.textLeft:SetText(hex..npc..'|r')
+                self:AddDoubleLine(e.L['LAYER']..' '..zone, 'NPC '..npc, r,g,b, r,g,b)
                 e.Layer=zone
             end
-        --end
 
         --怪物, 图标
         if UnitIsQuestBoss(unit) then--任务
@@ -842,14 +810,6 @@ local function setCVar(reset, tips)
              value= "1",
              msg= e.onlyChinse and '总是比较装备' or ALWAYS..COMPARE_ACHIEVEMENTS:gsub(ACHIEVEMENTS, ITEMS)
         },
-       --[[
- ["minimapTrackingShowAll"]={
-            value= '1',
-            msg= e.onlyChinse and '追踪: 镇民' or TRACKING..': '..TOWNSFOLK_TRACKING_TEXT,
-        },
-
-]]
-
         ["profanityFilter"]={value= '0',msg= '禁用语言过虑 /reload', zh=true},
         ["overrideArchive"]={value= '0',msg= '反和谐 /reload', zh=true},
         ['cameraDistanceMaxZoomFactor']={value= '2.6', msg= e.onlyChinse and '距离' or FARCLIP}
@@ -924,52 +884,6 @@ local function Init()
             self.Description:SetText(description..'\n\n'..(e.onlyChinse and '技能' or ABILITIES)..' '..abilityID..(icon and '  |T'..icon..':0|t'..icon or ''))
         end
     end)
-    --TooltipUtil.lua
---[[
-    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(tooltip,date)--0
-        local itemLink=select(2, TooltipUtil.GetDisplayedItem(tooltip))
-        if itemLink and (tooltip==e.tips or tooltip==ItemRefTooltip) then
-            if itemLink then
-                setItem(tooltip, itemLink)
-            end
-        end
-    end)
-    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Spell, function(tooltip,date)--1
-        local spellID= select(2, TooltipUtil.GetDisplayedSpell(tooltip))
-        if spellID and (tooltip==e.tips or tooltip==ItemRefTooltip) then
-            setSpell(tooltip, linkID)
-        end
-    end)
-    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(tooltip,date)--2
-        local unit= select(2, TooltipUtil.GetDisplayedUnit(tooltip))
-        if unit and (tooltip==e.tips or tooltip==ItemRefTooltip) then
-            setUnitInfo(tooltip, unit)--单位
-        end
-    end)
-    
-    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Mount, function(tooltip,date)--10
-        if date and date.id and (tooltip==e.tips or tooltip==ItemRefTooltip) then
-            setMount(tooltip, date.id)--坐骑   
-        end
-    end)
-    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Toy, function(tooltip,date)--19
-            if date and date.id and (tooltip==e.tips or tooltip==ItemRefTooltip) then
-                setItem(tooltip, date.id)-- 玩具
-            end
-    end)
-    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Currency,  function(tooltip,date)--5
-        if date and date.id and (tooltip==e.tips or tooltip==ItemRefTooltip) then
-            setCurrency(tooltip, date.id)--货币
-        end
-    end)
-   
-    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Quest,  function(tooltip,date)--23
-        if date and date.id and (tooltip==e.tips or tooltip==ItemRefTooltip) then
-            setQuest(tooltip, date.id)--任务
-        end
-    end)
-
-]]
 
     TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes,  function(tooltip,date)
         if (tooltip==e.tips or tooltip==ItemRefTooltip) and date.type~=25 then--25宏 ,11宠物技能
@@ -1016,7 +930,7 @@ local function Init()
     --位置
     --****
     hooksecurefunc("GameTooltip_SetDefaultAnchor", function(self, parent)
-        if Save.setDefaultAnchor then
+        if Save.setDefaultAnchor and not(Save.inCombatDefaultAnchor and UnitAffectingCombat('player')) then
             self:ClearAllPoints();
             self:SetOwner(parent, 'ANCHOR_CURSOR_LEFT')
         elseif Save.setAnchor and Save.AnchorPoint then
@@ -1080,7 +994,7 @@ local function Init()
                     end
                     e.tips:AddLine(' ')
                 end
-                
+
                 e.tips:AddDoubleLine(REPUTATION..' '..self.factionID or factionID, completedParagon)
                 e.tips:Show();
             end
@@ -1090,11 +1004,9 @@ local function Init()
         end
     end)
 
-    
     --####
     --Buff
     --####
-
     hooksecurefunc(e.tips, "SetUnitBuff", function(...)
         setBuff('Buff', ...)
     end)
@@ -1129,9 +1041,9 @@ local function Init()
     panel.name = addName;--添加新控制面板
     panel.parent =id;
     InterfaceOptions_AddCategory(panel)
-    
+
     panel.setDefaultAnchor=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--设置默认提示位置
-    panel.setDefaultAnchor.Text:SetText(DEFAULT..RESAMPLE_QUALITY_POINT..': '..FOLLOW..MOUSE_LABEL)
+    panel.setDefaultAnchor.Text:SetText('1) '..(e.onlyChinse and '跟随鼠标' or FOLLOW..MOUSE_LABEL))
     panel.setDefaultAnchor:SetPoint('TOPLEFT')
     panel.setDefaultAnchor:SetChecked(Save.setDefaultAnchor)--提示位置            
     panel.setDefaultAnchor:SetScript('OnClick', function()
@@ -1142,11 +1054,22 @@ local function Init()
             Save.setAnchor=nil
             panel.Anchor:SetChecked(false)
         end
+        panel.inCombatDefaultAnchor:SetEnabled(Save.setDefaultAnchor)
     end)
 
+    panel.inCombatDefaultAnchor=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    panel.inCombatDefaultAnchor.Text:SetText(e.onlyChinse and '战斗中：默认' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..DEFAULT)
+    panel.inCombatDefaultAnchor:SetPoint('LEFT', panel.setDefaultAnchor.Text, 'RIGHT', 20, 0)
+    panel.inCombatDefaultAnchor:SetScript('OnClick', function()
+        Save.inCombatDefaultAnchor= not Save.inCombatDefaultAnchor and true or nil
+    end)
+    panel.inCombatDefaultAnchor:SetEnabled(Save.setDefaultAnchor)
+    panel.inCombatDefaultAnchor:SetChecked(Save.inCombatDefaultAnchor)
+
     panel.Anchor=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--指定提示位置
-    panel.Anchor.Text:SetText(COMBAT_ALLY_START_MISSION)--指定
-    panel.Anchor:SetPoint('LEFT', panel.setDefaultAnchor.Text, 'RIGHT', 20, 0)
+    panel.Anchor.Text:SetText('2)' ..(e.onlyChinse and '指定' or COMBAT_ALLY_START_MISSION))
+    panel.Anchor:SetPoint('TOPLEFT', panel.setDefaultAnchor, 'BOTTOMLEFT', 0, -2)
+
     panel.Anchor:SetChecked(Save.setAnchor)
     panel.Anchor:SetScript('OnClick', function(self)
         if Save.setAnchor then
@@ -1156,12 +1079,12 @@ local function Init()
             Save.setDefaultAnchor=nil
             panel.setDefaultAnchor:SetChecked(false)
         end
+        panel.inCombatDefaultAnchor:SetEnabled(Save.setDefaultAnchor)
     end)
     panel.Anchor.select=e.Cbtn(panel,true)
     panel.Anchor.select:SetPoint('LEFT', panel.Anchor.Text, 'RIGHT')
     panel.Anchor.select:SetSize(80, 25)
-    panel.Anchor.select:SetText(SETTINGS)
-    
+    panel.Anchor.select:SetText(e.onlyChinse and '设置' or SETTINGS)
     panel.Anchor.select:SetScript('OnClick',function(self)
         if not self.frame then
             self.frame=CreateFrame('Frame',nil, UIParent)
@@ -1198,19 +1121,12 @@ local function Init()
         end)
     end)
 
-    panel.inCombatHideTips=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--设置默认提示位置
-    panel.inCombatHideTips.Text:SetText(HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..HIDE)
-    panel.inCombatHideTips:SetPoint('TOPLEFT', panel.setDefaultAnchor, 'BOTTOMLEFT', 0, -2)
-    panel.inCombatHideTips:SetScript('OnClick', function()
-        Save.inCombatHideTips = not  Save.inCombatHideTips and true or nil
-    end)
-    panel.inCombatHideTips:SetChecked( Save.inCombatHideTips)
 
-  
+
 --设置CVar
     panel.CVar=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    panel.CVar.Text:SetText(SETTINGS..' CVar')
-    panel.CVar:SetPoint('TOPLEFT', panel.inCombatHideTips, 'BOTTOMLEFT', 0, -30)
+    panel.CVar.Text:SetText((e.onlyChinse and '设置' or SETTINGS)..' CVar')
+    panel.CVar:SetPoint('TOPLEFT', panel.Anchor, 'BOTTOMLEFT', 0, -30)
     panel.CVar:SetChecked(Save.setCVar)
     panel.CVar:SetScript('OnClick', function()
         if Save.setCVar then
@@ -1245,7 +1161,6 @@ local function Init()
             return gameAccountInfo;
         end
     end
-   
 end
 
 --加载保存数据
@@ -1256,14 +1171,9 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         if arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
-            if  WoWToolsSave then--清除旧版本数据
-                WoWToolsSave['Boss_Killed']=nil
-                WoWToolsSave['WoW-All-Save']=nil
-            end
-
             local sel=e.CPanel(addName, not Save.disabled)
             sel:SetScript('OnClick', function()
-                Save.disabled= not Save.disabled and true or nil               
+                Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), REQUIRES_RELOAD)
             end)
             sel:SetScript('OnEnter', function(self2)
@@ -1294,7 +1204,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                     self2.HiddenDescription:SetText(description..' '..(flags==131072 and e.Icon.wow2 ..'|cnGREEN_FONT_COLOR:'..achievementID..'|r' or achievementID)..(icon and ' |T'..icon..':0|t'..icon or ''))
                 end)
             end
-        
+
         elseif arg1=='Blizzard_Collections' then--宠物手册， 召唤随机，偏好宠物，技能ID    
             hooksecurefunc('PetJournalSummonRandomFavoritePetButton_OnEnter', function()--PetJournalSummonRandomFavoritePetButton
                 setSpell(e.tips, 243819)
@@ -1309,3 +1219,74 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         end
     end
 end)
+
+--[[
+local AchievementFlasgs={
+    [1] = 'COUNTER',
+    [4] = 'PLAY_NO_VISUAL',
+    [8] = 'SUM',
+    [16] = 'MAX_USED',
+    [32] = 'REQ_COUNT',
+    [64] = 'AVERAGE',
+    [128] = 'PROGRESS_BAR',
+    [256] = 'REALM_FIRST_REACH',
+    [512] = 'REALM_FIRST_KILL',
+    [2048] = 'HIDE_INCOMPLETE',
+    [4096] = 'SHOW_IN_GUILD_NEWS',
+    [8192] = 'SHOW_IN_GUILD_HEADER',
+    [16384] = 'GUILD',
+    [28672]= e.onlyChinse and '公会综合' or GUILD..GENERAL,
+    [32768] = 'SHOW_GUILD_MEMBERS',
+    [53248] = e.onlyChinse and '公会PvP' or GUILD..' PvP',
+    [65536] = 'SHOW_CRITERIA_MEMBERS',
+    [94208]= e.onlyChinse and '公会声望' or GUILD..REPUTATION,
+    [131072] = 'ACCOUNT_WIDE',
+    [262144] = 'UNK5',
+    [524288] = 'HIDE_ZERO_COUNTER',
+    [1048576] = 'TRACKING_FLAG',
+}
+    --TooltipUtil.lua
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(tooltip,date)--0
+        local itemLink=select(2, TooltipUtil.GetDisplayedItem(tooltip))
+        if itemLink and (tooltip==e.tips or tooltip==ItemRefTooltip) then
+            if itemLink then
+                setItem(tooltip, itemLink)
+            end
+        end
+    end)
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Spell, function(tooltip,date)--1
+        local spellID= select(2, TooltipUtil.GetDisplayedSpell(tooltip))
+        if spellID and (tooltip==e.tips or tooltip==ItemRefTooltip) then
+            setSpell(tooltip, linkID)
+        end
+    end)
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(tooltip,date)--2
+        local unit= select(2, TooltipUtil.GetDisplayedUnit(tooltip))
+        if unit and (tooltip==e.tips or tooltip==ItemRefTooltip) then
+            setUnitInfo(tooltip, unit)--单位
+        end
+    end)
+    
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Mount, function(tooltip,date)--10
+        if date and date.id and (tooltip==e.tips or tooltip==ItemRefTooltip) then
+            setMount(tooltip, date.id)--坐骑   
+        end
+    end)
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Toy, function(tooltip,date)--19
+            if date and date.id and (tooltip==e.tips or tooltip==ItemRefTooltip) then
+                setItem(tooltip, date.id)-- 玩具
+            end
+    end)
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Currency,  function(tooltip,date)--5
+        if date and date.id and (tooltip==e.tips or tooltip==ItemRefTooltip) then
+            setCurrency(tooltip, date.id)--货币
+        end
+    end)
+   
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Quest,  function(tooltip,date)--23
+        if date and date.id and (tooltip==e.tips or tooltip==ItemRefTooltip) then
+            setQuest(tooltip, date.id)--任务
+        end
+    end)
+
+]]
