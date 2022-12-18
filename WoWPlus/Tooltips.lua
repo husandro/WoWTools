@@ -132,11 +132,6 @@ local function setPet(self, speciesID)--宠物
         return
     end
     local speciesName, speciesIcon, petType, companionID, tooltipSource, tooltipDescription, isWild, canBattle, isTradeable, isUnique, obtainable, creatureDisplayID = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
---[[
-    if speciesName and PetJournalSearchBox and PetJournalSearchBox:IsVisible() then--宠物手册，设置名称
-        PetJournalSearchBox:SetText(speciesName)
-    end
-]]
     self:AddLine(' ')
 
     local AllCollected, CollectedNum, CollectedText= get_Pet_Collected_Num(speciesID)--收集数量
@@ -899,6 +894,19 @@ local function Init()
 
                 else
                     tooltip:AddDoubleLine('ID '..date.id, 'type '..date.type)
+                end
+            end
+        end
+    end)
+
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(tooltip,date)--宠物手册，设置名称
+        local unit= select(2, TooltipUtil.GetDisplayedUnit(tooltip))
+        if unit and tooltip==e.tips  and (UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit)) and PetJournalSearchBox and PetJournalSearchBox:IsVisible()  then
+            local speciesID = UnitBattlePetSpeciesID(unit)
+            if speciesID then
+                local speciesName= C_PetJournal.GetPetInfoBySpeciesID(speciesID)
+                if speciesName then--宠物手册，设置名称
+                    PetJournalSearchBox:SetText(speciesName)
                 end
             end
         end

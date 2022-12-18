@@ -32,14 +32,15 @@ hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', function(self)--self.tagInf
         return
     end
     local tagInfo=self.tagInfo
-    local itemName, itemTexture, numItems, quality, _, itemID, itemLevel    
+    local itemName, itemTexture, numItems, quality, _, itemID, itemLevel
     itemName, itemTexture, numItems, quality, _, itemID, itemLevel = GetQuestLogRewardInfo(1, self.questID)
+    itemLevel= (itemLevel and itemLevel>1) and itemLevel
     if not itemName then
         itemName, itemTexture, numItems, _, quality = GetQuestLogRewardCurrencyInfo(1, self.questID)
     end
     if not itemName then
         itemLevel=GetQuestLogRewardMoney(self.questID)
-        if itemLevel and itemLevel >2 then
+        if itemLevel then
             itemLevel=e.MK(itemLevel/10000,1)
             itemTexture='interface\\moneyframe\\ui-goldicon'
         end
@@ -53,6 +54,7 @@ hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', function(self)--self.tagInf
 
     local str
     str= itemLevel or (numItems and numItems>1) and numItems--数量
+    
     if str then
         if quality and quality~=1 then
             str='|c'..select(4, GetItemQualityColor(quality))..str..'|r'
