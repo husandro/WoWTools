@@ -370,6 +370,8 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
         set_Money()--钱
 
     elseif event=='PLAYER_LEVEL_UP' then--玩家是否最高等级
-        e.Player.levelMax= UnitLevel('player')==MAX_PLAYER_LEVEL--玩家是否最高等级
+        local level=UnitLevel('player')
+        e.Player.levelMax= level==MAX_PLAYER_LEVEL--玩家是否最高等级
+        e.Player.level=level
     end
 end)

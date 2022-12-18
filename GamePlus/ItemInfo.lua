@@ -62,7 +62,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
                 topRightText= e.WA_Utf8Sub(itemSubType, 2,5)
             end
             if classID==0 and expacID and expacID< e.ExpansionLevel and itemID~='5512' and itemID~='113509' then--低版本，5512糖 食物,113509[魔法汉堡]
-                r,g,b= 1, 0, 0
+                topRightText= '|cnRED_FONT_COLOR:'..topRightText..'|r'
             end
 
         elseif classID==2 and subclassID==20 then-- 鱼竿
@@ -74,6 +74,8 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
                 if text then--套装名称，
                     text= text:match('(.+),') or text:match('(.+)，') or text
                     bottomLeftText=e.WA_Utf8Sub(text,3,5)
+                elseif itemMinLevel>e.Player.level then--低装等
+                    bottomLeftText='|cnRED_FONT_COLOR:'..itemMinLevel..'|r'
                 end
                 if wow then--战网
                     topRightText= e.Icon.wow2
@@ -90,14 +92,14 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
                         if lv then
                             if itemLevel-lv>1 then
                                 upLevel=true
-                            elseif itemLevel-lv<4 and itemLevel>30 and bag and bag.isBound and not setID then
+                            elseif itemLevel-lv<4 and itemLevel>30 and bag and bag.isBound then
                                 downLevel=true
                             end
                         end
                     else
                         upLevel=true
                     end
-                    if upLevel and (itemMinLevel and itemMinLevel<=UnitLevel('player') or not itemMinLevel) then
+                    if upLevel and (itemMinLevel and itemMinLevel<=e.Player.level or not itemMinLevel) then
                         topLeftText=e.Icon.up2
                     elseif downLevel then
                         topLeftText= e.Icon.down2
@@ -113,7 +115,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
                 end
 
                 if itemQuality and itemQuality>1 and bag and not bag.isBound then--没有锁定
-                    topRightText='|A:'..e.Icon.unlocked..':0:0|a'
+                    topRightText=itemSubType and e.WA_Utf8Sub(itemSubType,3,5) or '|A:'..e.Icon.unlocked..':0:0|a'
                 end
             end
 
