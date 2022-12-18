@@ -115,9 +115,6 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
                 if itemQuality and itemQuality>1 and bag and not bag.isBound then--没有锁定
                     topRightText=itemSubType and e.WA_Utf8Sub(itemSubType,3,5) or '|A:'..e.Icon.unlocked..':0:0|a'
                 end
-                if IsEquippedItemType(itemType) then
-                    print(itemLink)
-                end
             end
 
         elseif classID==17 or (classID==15 and subclassID==2) or itemLink:find('Hbattlepet:(%d+)') then--宠物
