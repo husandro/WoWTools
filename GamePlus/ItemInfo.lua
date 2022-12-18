@@ -55,14 +55,14 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
                 topRightText='|A:'..e.Icon.unlocked..':0:0|a'
             end
 
-        elseif classID==8 or classID==3 or classID==9 or (classID==0 and (subclassID==1 or subclassID==3 or subclassID==5)) or classID==19 or classID==7 then--附魔, 宝石,19专业装备 ,7商业技能
+        elseif isCraftingReagent or classID==8 or classID==3 or classID==9 or (classID==0 and (subclassID==1 or subclassID==3 or subclassID==5)) or classID==19 or classID==7 then--附魔, 宝石,19专业装备 ,7商业技能
             if classID==0 and subclassID==5 then
-                topRightText= e.WA_Utf8Sub(POWER_TYPE_FOOD, 2,5)
+                topRightText= e.WA_Utf8Sub(POWER_TYPE_FOOD, 2,5)--食物
             else
                 topRightText= e.WA_Utf8Sub(itemSubType, 2,5)
             end
-            if classID==0 and expacID and expacID< e.ExpansionLevel and itemID~='5512' and itemID~='113509' then--低版本，5512糖 食物,113509[魔法汉堡]
-                topRightText= '|cnRED_FONT_COLOR:'..topRightText..'|r'
+            if expacID and expacID< e.ExpansionLevel and itemID~='5512' and itemID~='113509' then--低版本，5512糖 食物,113509[魔法汉堡]
+                topRightText= '|cff606060'..topRightText..'|r'
             end
 
         elseif classID==2 and subclassID==20 then-- 鱼竿
