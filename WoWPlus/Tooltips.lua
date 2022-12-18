@@ -132,31 +132,36 @@ local function setPet(self, speciesID)--宠物
         return
     end
     local speciesName, speciesIcon, petType, companionID, tooltipSource, tooltipDescription, isWild, canBattle, isTradeable, isUnique, obtainable, creatureDisplayID = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
-    self:AddLine(' ')
+    if obtainable then--可得到的
+        self:AddLine(' ')
 
-    local AllCollected, CollectedNum, CollectedText= get_Pet_Collected_Num(speciesID)--收集数量
-    self.textLeft:SetText(CollectedNum or '')
-    self.text2Left:SetText(CollectedText or '')
-    self.textRight:SetText(AllCollected or '')
+        local AllCollected, CollectedNum, CollectedText= get_Pet_Collected_Num(speciesID)--收集数量
+        self.textLeft:SetText(CollectedNum or '')
+        self.text2Left:SetText(CollectedText or '')
+        self.textRight:SetText(AllCollected or '')
 
-    self:AddDoubleLine(PET..' '..speciesID..(speciesIcon and '  |T'..speciesIcon..':0|t'..speciesIcon), (creatureDisplayID and (MODEL..' '..creatureDisplayID) or '')..(companionID and ' NPC '..companionID or ''))--ID
+        self:AddDoubleLine(PET..' '..speciesID..(speciesIcon and '  |T'..speciesIcon..':0|t'..speciesIcon), (creatureDisplayID and (MODEL..' '..creatureDisplayID) or '')..(companionID and ' NPC '..companionID or ''))--ID
 
-    local tab = C_PetJournal.GetPetAbilityListTable(speciesID)--技能图标
-    table.sort(tab, function(a,b) return a.level< b.level end)
-    local abilityIconA, abilityIconB = '', ''
-    for k, info in pairs(tab) do
-        local icon, type = select(2, C_PetJournal.GetPetAbilityInfo(info.abilityID))
-        icon='|TInterface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[type]..':0|t|T'..icon..':0|t'..info.level.. ((k~=3 or k~=6) and '  ' or '')
-        if k>3 then
-            abilityIconA=abilityIconA..icon
-        else
-            abilityIconB=abilityIconB..icon
+        local tab = C_PetJournal.GetPetAbilityListTable(speciesID)--技能图标
+        table.sort(tab, function(a,b) return a.level< b.level end)
+        local abilityIconA, abilityIconB = '', ''
+        for k, info in pairs(tab) do
+            local icon, type = select(2, C_PetJournal.GetPetAbilityInfo(info.abilityID))
+            icon='|TInterface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[type]..':0|t|T'..icon..':0|t'..info.level.. ((k~=3 or k~=6) and '  ' or '')
+            if k>3 then
+                abilityIconA=abilityIconA..icon
+            else
+                abilityIconB=abilityIconB..icon
+            end
+        end
+        self:AddDoubleLine(abilityIconA, abilityIconB)
+        if not isTradeable then
+            self:AddLine(e.onlyChinse and '该宠物不可交易' or BATTLE_PET_NOT_TRADABLE, 1,0,0)
         end
     end
-    self:AddDoubleLine(abilityIconA, abilityIconB)
-
-    self:AddLine(tooltipSource,nil,nil,nil, true)--来源
-
+    if tooltipSource then
+        self:AddLine(tooltipSource,nil,nil,nil, true)--来源
+    end
     if petType then
         self.Portrait:SetTexture("Interface\\TargetingFrame\\PetBadge-"..PET_TYPE_SUFFIX[petType])
         self.Portrait:SetShown(true)

@@ -2,34 +2,41 @@ local id, e= ...
 local addName=HIDE..TEXTURES_SUBHEADER
 local Save={}
 
+local function hideTexture(self)
+    if self then
+        self:SetTexture(0)
+        self:SetShown(flase)
+    end
+end
 
 --######
 --初始化
 --######
 local function Init()
-    ExtraActionButton1.style:SetShown(false)--额外技能
-    ZoneAbilityFrame.Style:SetShown(false)--区域技能
+    
+    if ExtraActionButton1 then hideTexture(ExtraActionButton1.style) end--额外技能
+    if ZoneAbilityFrame then hideTexture(ZoneAbilityFrame.Style) end--区域技能
 
-  
-    MainMenuBar.EndCaps.LeftEndCap:SetShown(false)
-    MainMenuBar.EndCaps.RightEndCap:SetShown(false)
+    if MainMenuBar and MainMenuBar.EndCaps then hideTexture(MainMenuBar.EndCaps.LeftEndCap) end
+    if MainMenuBar and MainMenuBar.EndCaps then hideTexture(MainMenuBar.EndCaps.RightEndCap) end
 
-    PetBattleFrame.TopArtLeft:SetShown(false)
-    PetBattleFrame.TopArtRight:SetShown(false)
-    PetBattleFrame.TopVersus:SetShown(false)
-    PetBattleFrame.TopVersusText:SetShown(false)
-    PetBattleFrame.WeatherFrame.BackgroundArt:SetShown(false)
-    PetBattleFrame.BottomFrame.LeftEndCap:SetShown(false)
-    PetBattleFrame.BottomFrame.RightEndCap:SetShown(false)
-    PetBattleFrame.BottomFrame.Background:SetShown(false)
-    PetBattleFrame.BottomFrame.TurnTimer.ArtFrame2:SetShown(false)
-    PetBattleFrame.BottomFrame.FlowFrame:SetShown(false)
-    PetBattleFrame.BottomFrame.Delimiter:SetShown(false)
-    --PetBattleFrame.BottomFrame.TurnTimer.ArtFrame2:SetShown(false)
-    PetBattleFrameXPBarLeft:SetShown(false)
-    PetBattleFrameXPBarRight:SetShown(false)
-    PetBattleFrameXPBarMiddle:SetShown(false)
-
+    if PetBattleFrame then
+        PetBattleFrame.TopArtLeft:SetShown(false)
+        PetBattleFrame.TopArtRight:SetShown(false)
+        PetBattleFrame.TopVersus:SetShown(false)
+        PetBattleFrame.TopVersusText:SetShown(false)
+        PetBattleFrame.WeatherFrame.BackgroundArt:SetShown(false)
+        PetBattleFrame.BottomFrame.LeftEndCap:SetShown(false)
+        PetBattleFrame.BottomFrame.RightEndCap:SetShown(false)
+        PetBattleFrame.BottomFrame.Background:SetShown(false)
+        PetBattleFrame.BottomFrame.TurnTimer.ArtFrame2:SetShown(false)
+        PetBattleFrame.BottomFrame.FlowFrame:SetShown(false)
+        PetBattleFrame.BottomFrame.Delimiter:SetShown(false)
+        --PetBattleFrame.BottomFrame.TurnTimer.ArtFrame2:SetShown(false)
+        PetBattleFrameXPBarLeft:SetShown(false)
+        PetBattleFrameXPBarRight:SetShown(false)
+        PetBattleFrameXPBarMiddle:SetShown(false)
+    end
 
 
     --PetBattleFrame.BottomFrame.MicroButtonFrame.RightEndCap:SetShown(false)
@@ -67,10 +74,6 @@ local function Init()
         end
     end)
 
-    local function hideTexture(self)
-        self:SetTexture(0)
-        self:SetShown(flase)
-    end
     if MainMenuBar and MainMenuBar.BorderArt then
         hideTexture(MainMenuBar.BorderArt.TopEdge)
         hideTexture(MainMenuBar.BorderArt.BottomEdge)
@@ -81,7 +84,7 @@ local function Init()
         hideTexture(MainMenuBar.BorderArt.TopRightCorner)
         hideTexture(MainMenuBar.BorderArt.BottomRightCorner)
     end
-    hideTexture(MultiBarBottomLeftButton10.SlotBackground)
+    if MultiBarBottomLeftButton10 then hideTexture(MultiBarBottomLeftButton10.SlotBackground) end
 end
 
 local function set_UNIT_ENTERED_VEHICLE()--载具
@@ -90,7 +93,7 @@ local function set_UNIT_ENTERED_VEHICLE()--载具
         OverrideActionBarEndCapR:SetShown(false)
         OverrideActionBarBorder:SetShown(false)
         OverrideActionBarBG:SetShown(false)
-        OverrideActionBarButtonBGMid:SetShown(false)     
+        OverrideActionBarButtonBGMid:SetShown(false)
         OverrideActionBarButtonBGR:SetShown(false)
         OverrideActionBarButtonBGL:SetShown(false)
     end
@@ -109,6 +112,7 @@ local function set_UNIT_ENTERED_VEHICLE()--载具
         OverrideActionBarExpBarXpL:SetShown(false)
     end
 end
+
 --###########
 --加载保存数据
 --###########
@@ -117,6 +121,7 @@ panel:RegisterEvent("ADDON_LOADED")
 
 panel:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')
 panel:RegisterEvent('VEHICLE_PASSENGERS_CHANGED')
+panel:RegisterEvent('UPDATE_OVERRIDE_ACTIONBAR')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1== id then
@@ -141,7 +146,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not WoWToolsSave then WoWToolsSave={} end
             WoWToolsSave[addName]=Save
         end
-    elseif event=='UNIT_ENTERED_VEHICLE' then
+    elseif event=='UNIT_ENTERED_VEHICLE' or event=='UPDATE_OVERRIDE_ACTIONBAR' then
         set_UNIT_ENTERED_VEHICLE()
     
     elseif arg1=='Blizzard_WeeklyRewards' then
