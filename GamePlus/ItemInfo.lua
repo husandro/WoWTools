@@ -76,46 +76,47 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
                     bottomLeftText=e.WA_Utf8Sub(text,3,5)
                 elseif itemMinLevel>e.Player.level then--低装等
                     bottomLeftText='|cnRED_FONT_COLOR:'..itemMinLevel..'|r'
-                end
-                if wow then--战网
-                    topRightText= e.Icon.wow2
-                elseif noUse then--不可使用
-                    topRightText=e.Icon.X2
+                elseif wow then--战网
+                    bottomLeftText= e.Icon.wow2
                 end
 
                 local invSlot = e.itemSlotTable[itemEquipLoc]
-                if invSlot and itemLevel and itemLevel>1 and not noUse then--装等
-                    local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
-                    local upLevel, downLevel
-                    if itemLinkPlayer then
-                        local lv=GetDetailedItemLevelInfo(itemLinkPlayer)
-                        if lv then
-                            if itemLevel-lv>1 then
-                                upLevel=true
-                            elseif itemLevel-lv<4 and itemLevel>30 and bag and bag.isBound then
-                                downLevel=true
+                if invSlot and itemLevel and itemLevel>1 then
+                    if not noUse then--装等
+                        local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
+                        local upLevel, downLevel
+                        if itemLinkPlayer then
+                            local lv=GetDetailedItemLevelInfo(itemLinkPlayer)
+                            if lv then
+                                if itemLevel-lv>1 then
+                                    upLevel=true
+                                elseif itemLevel-lv<4 and itemLevel>30 and bag and bag.isBound then
+                                    downLevel=true
+                                end
                             end
+                        else
+                            upLevel=true
                         end
-                    else
-                        upLevel=true
-                    end
-                    if upLevel and (itemMinLevel and itemMinLevel<=e.Player.level or not itemMinLevel) then
-                        topLeftText=e.Icon.up2
-                    elseif downLevel then
-                        topLeftText= e.Icon.down2
-                    end
-                    if itemQuality>2 or (not e.Player.levelMax and itemQuality==2) or upLevel then
-                        topLeftText=itemLevel ..(topLeftText or '')
+                        if upLevel and (itemMinLevel and itemMinLevel<=e.Player.level or not itemMinLevel) then
+                            topLeftText=e.Icon.up2
+                        elseif downLevel then
+                            topLeftText= e.Icon.down2
+                        end
+                        if itemQuality>2 or (not e.Player.levelMax and itemQuality==2) or upLevel then
+                            topLeftText=itemLevel ..(topLeftText or '')
+                        end
+                    elseif itemMinLevel and itemMinLevel<=e.Player.level then--不可使用
+                        topLeftText=e.Icon.X2
                     end
                 end
 
-                local sourceID = ((not bag or not bag.isBound) or merchantIndex or guildBank) and select(2,C_TransmogCollection.GetItemInfo(itemLink))--幻化
-                if sourceID then
-                    bottomRightText = e.GetItemCollected(nil, sourceID, true)
-                end
+                bottomRightText = e.GetItemCollected(itemLink, nil, true)--幻化
 
                 if itemQuality and itemQuality>1 and bag and not bag.isBound then--没有锁定
                     topRightText=itemSubType and e.WA_Utf8Sub(itemSubType,3,5) or '|A:'..e.Icon.unlocked..':0:0|a'
+                end
+                if IsEquippedItemType(itemType) then
+                    print(itemLink)
                 end
             end
 
