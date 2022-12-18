@@ -20,20 +20,6 @@ local Combat, Bag= nil, {}
 local panel=e.Cbtn2('WoWToolsOpenItemsButton', WoWToolsMountButton)
 panel:SetPoint('RIGHT', HearthstoneToolsButton, 'LEFT')
 
-
-local getTip=function(bag, slot)--取得提示内容
-    local tooltipData= C_TooltipInfo.GetBagItem(bag, slot)
-    --TooltipUtil.SurfaceArgs(tooltipData)
-    for _, line in ipairs(tooltipData.lines) do
-        TooltipUtil.SurfaceArgs(line)
-        local hex=line.leftColor and line.leftColor and line.leftColor:GenerateHexColor()
-        if hex=='ffff2020' or hex=='fefe1f1f' then-- or hex=='fefe7f3f' then
-            return
-        end
-    end
-    return true
-end
-
 local function setCooldown()--冷却条
     if panel:IsShown() then
         if Bag.bag and Bag.slot then
@@ -89,14 +75,13 @@ local function getItems()--取得背包物品信息
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local info = C_Container.GetContainerItemInfo(bag, slot)
             if info and info.itemID and info.hyperlink and not info.isLocked and info.iconFileID then
-       
                 if Save.use[info.itemID] then--自定义
                     if Save.use[info.itemID]<=info.stackCount then
                         setAtt(bag, slot, info.iconFileID, info.itemID)
                         return
                     end
 
-                elseif not Save.no[info.itemID] then--不出售
+                elseif not Save.no[info.itemID]  and not e.GetTooltipData(true, nil, nil, {bag=bag, slot=slot}) then--不出售, 可以使用
                     local itemName, _, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, sellPrice, classID, subclassID, bindType, expacID, setID, isCraftingReagent= GetItemInfo(info.hyperlink)
                     if itemEquipLoc and _G[itemEquipLoc] then--幻化
                         if Save.mago and (itemMinLevel and itemMinLevel<=levelPlayer or not itemMinLevel) and info.quality and info.quality>1 then--and (not info.isBound or (classID==4 and (subclassID==0 or subclassID==5))) then
@@ -120,14 +105,12 @@ local function getItems()--取得背包物品信息
 
                     elseif info.hasLoot then--可打开
                         if Save.open then
-                            if (not info.quality or (info.quality and info.quality <=4)) and getTip(bag, slot) then
-                                setAtt(bag, slot, info.iconFileID, info.itemID)
-                                return
-                            end
+                            setAtt(bag, slot, info.iconFileID, info.itemID)
+                            return
                         end
 
                     elseif classID==9 and subclassID >0 then--配方                    
-                        if Save.ski and getTip(bag, slot) then
+                        if Save.ski then
                             setAtt(bag, slot, info.iconFileID, info.itemID)
                             return
                         end
@@ -145,7 +128,7 @@ local function getItems()--取得背包物品信息
                         end
 
                     elseif classID==15 and subclassID==4 then--其它 
-                        if Save.alt and IsUsableItem(info.hyperlink) and not C_Item.IsAnimaItemByID(info.hyperlink) and getTip(bag, slot) then
+                        if Save.alt and IsUsableItem(info.hyperlink) and not C_Item.IsAnimaItemByID(info.hyperlink) then
                             setAtt(bag, slot, info.iconFileID, info.itemID)
                             return
                         end
