@@ -110,8 +110,9 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
                     end
                 end
 
-                bottomRightText = e.GetItemCollected(itemLink, nil, true)--幻化
-
+                if bag and not bag.isBound or not bag then
+                    bottomRightText = e.GetItemCollected(itemLink, nil, true)--幻化
+                end
                 if itemQuality and itemQuality>1 and bag and not bag.isBound then--没有锁定
                     topRightText=itemSubType and e.WA_Utf8Sub(itemSubType,3,5) or '|A:'..e.Icon.unlocked..':0:0|a'
                 end
