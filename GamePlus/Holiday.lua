@@ -82,6 +82,7 @@ end
 
 local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDayButton_OnEnter(self)
     panel.texture:SetShown(Save.hide)
+
     if Save.hide or Save.disabled then
         if panel.Text then
             panel.Text:SetText('')
@@ -99,8 +100,23 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
         monthOffset=0
         day= info2.monthDay
     end
-	local events = {};
-	for i = 1, C_Calendar.GetNumDayEvents(monthOffset, day) do
+    if not day or not monthOffset then
+        if panel.Text then
+            panel.Text:SetText('')
+        end
+        return
+    end
+
+    local numEvents = C_Calendar.GetNumDayEvents(monthOffset, day);
+    if ( numEvents <= 0 ) then
+        if panel.Text then
+            panel.Text:SetText('')
+        end
+		return;
+	end
+
+    local events = {};
+	for i = 1, numEvents do
 		local event = C_Calendar.GetDayEvent(monthOffset, day, i);
 		if event and (not Save.onGoing or (Save.onGoing and (event.sequenceType == "ONGOING" or _CalendarFrame_IsPlayerCreatedEvent(event.calendarType)))) then
 			tinsert(events, event);
@@ -137,16 +153,16 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
             end
         end
 
-        if ( _CalendarFrame_IsPlayerCreatedEvent(event.calendarType) ) then--自定义,事件
+        if event.calendarType=='PLAYER' then --or  ( _CalendarFrame_IsPlayerCreatedEvent(event.calendarType) ) then--自定义,事件
 			local text;
-			if ( UnitIsUnit("player", event.invitedBy) ) then
+			if event.invitedBy and UnitIsUnit("player", event.invitedBy) then
 				if ( event.calendarType == "GUILD_ANNOUNCEMENT" ) then
 					text = e.Icon.player;
 				elseif ( event.calendarType == "GUILD_EVENT" ) then
 					text = '|cnGREEN_FONT_COLOR:'..GUILD..'|r'
 				elseif ( event.calendarType == "COMMUNITY_EVENT") then--社区
 					text = '|cnGREEN_FONT_COLOR:'..COMMUNITIES..'|r';
-				else
+                else
 					text = e.Icon.player
 				end
 			else

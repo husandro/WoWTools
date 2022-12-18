@@ -23,7 +23,7 @@ panel:SetPoint('RIGHT', HearthstoneToolsButton, 'LEFT')
 
 local getTip=function(bag, slot)--取得提示内容
     local tooltipData= C_TooltipInfo.GetBagItem(bag, slot)
-    TooltipUtil.SurfaceArgs(tooltipData)
+    --TooltipUtil.SurfaceArgs(tooltipData)
     for _, line in ipairs(tooltipData.lines) do
         TooltipUtil.SurfaceArgs(line)
         local hex=line.leftColor and line.leftColor and line.leftColor:GenerateHexColor()

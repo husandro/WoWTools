@@ -809,7 +809,7 @@ local function set_EncounterJournal_Init()--冒险指南界面
     end
     hooksecurefunc(EncounterJournal.LootJournalItems.ItemSetsFrame, 'UpdateList', lootSet);
     hooksecurefunc('HybridScrollFrame_Update', function(self2)
-            if self2==self.LootJournalItems.ItemSetsFrame then
+            if EncounterJournal and self2==EncounterJournal.LootJournalItems.ItemSetsFrame then
                 lootSet(self2)
             end
     end)

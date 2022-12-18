@@ -8,7 +8,7 @@ local KeyStone=CHALLENGE_MODE_KEYSTONE_NAME:gsub('%%s','(.+) ')--钥石
 local text_EQUIPMENT_SETS= 	EQUIPMENT_SETS:gsub('%%s','(.+)')
 
 local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBank)
-    local topLeftText, bottomRightText, leftText, bottomLeftText, topRightText, r, g ,b, setIDItem--setIDItem套装
+    local topLeftText, bottomRightText, leftText, bottomLeftText, topRightText, r, g ,b, setIDItem, isWoWItem--setIDItem套装
     if itemLink then
         local _, _, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, _, _, classID, subclassID, bindType, expacID, setID, isCraftingReagent = GetItemInfo(itemLink)
 
@@ -20,12 +20,8 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
         end
 
         if bag and bag.hasLoot then--宝箱
-            local tooltipData  = C_TooltipInfo.GetBagItem(bag.bagID, bag.slotID)
-            if tooltipData and tooltipData.lines then
-                local line= tooltipData.lines[2]
-                TooltipUtil.SurfaceArgs(line)
-                topRightText= line.leftText==LOCKED and '|A:Monuments-Lock:0:0|a' or '|A:talents-button-undo:0:0|a'
-            end
+            local noUse= e.GetTooltipData(true, nil, itemLink, bag and {bag=bag.bagID, slot=bag.slotID}, guildBank and {tab= guildBank[1], slot=guildBank[2]}, merchantIndex)--物品提示，信息
+            topRightText= noUse and '|A:Monuments-Lock:0:0|a' or '|A:talents-button-undo:0:0|a'
 
         elseif C_Item.IsItemKeystoneByID(itemID) then--挑战
             local name=itemLink:match('%[(.-)]') or itemLink
@@ -54,9 +50,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
             topRightText='|A:Coin-Silver:0:0|a'
 
         elseif classID==1 then--背包
-            if subclassID~=0 then
-                bottomLeftText= e.WA_Utf8Sub(itemSubType, 2,5)
-            end
+            bottomLeftText= e.WA_Utf8Sub(itemSubType, 2,5)
             if bag and not bag.isBound then--没有锁定
                 topRightText='|A:'..e.Icon.unlocked..':0:0|a'
             end
@@ -67,14 +61,28 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
             else
                 topRightText= e.WA_Utf8Sub(itemSubType, 2,5)
             end
+            if classID==0 and expacID and expacID< e.ExpansionLevel and itemID~='5512' and itemID~='113509' then--低版本，5512糖 食物,113509[魔法汉堡]
+                r,g,b= 1, 0, 0
+            end
+
         elseif classID==2 and subclassID==20 then-- 鱼竿
                 topRightText='|A:worldquest-icon-fishing:0:0|a'
 
         elseif classID==2 or classID==4 then--装备
             if itemQuality and itemQuality>1 then
+                local noUse, text, wow= e.GetTooltipData(true, text_EQUIPMENT_SETS, itemLink, bag and {bag=bag.bagID, slot=bag.slotID}, guildBank and {tab= guildBank[1], slot=guildBank[2]}, merchantIndex)--物品提示，信息
+                if text then--套装名称，
+                    text= text:match('(.+),') or text:match('(.+)，') or text
+                    bottomLeftText=e.WA_Utf8Sub(text,3,5)
+                end
+                if wow then--战网
+                    topRightText= e.Icon.wow2
+                elseif noUse then--不可使用
+                    topRightText=e.Icon.X2
+                end
+
                 local invSlot = e.itemSlotTable[itemEquipLoc]
-                local isEquippable= IsEquippableItem(itemLink)
-                if invSlot and itemLevel and itemLevel>1 and isEquippable then--装等
+                if invSlot and itemLevel and itemLevel>1 and not noUse then--装等
                     local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
                     local upLevel, downLevel
                     if itemLinkPlayer then
@@ -101,30 +109,11 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
 
                 local sourceID = ((not bag or not bag.isBound) or merchantIndex or guildBank) and select(2,C_TransmogCollection.GetItemInfo(itemLink))--幻化
                 if sourceID then
-                    bottomRightText = e.GetItemCollected(nil, sourceID, true) or bottomRightText
+                    bottomRightText = e.GetItemCollected(nil, sourceID, true)
                 end
 
-                if itemQuality and itemQuality>1 and bag then
-                    if not bag.isBound then--没有锁定
-                        topRightText='|A:'..e.Icon.unlocked..':0:0|a'
-                    elseif not isEquippable then--不可装备, 设置不成功,不知什么,情况
-                        topRightText=e.Icon.X2
-                    end
-                end
-
-                if bag and bag.isBound then
-                    local tooltipData  = C_TooltipInfo.GetBagItem(bag.bagID, bag.slotID)--套装，名称
-                    if tooltipData and tooltipData.lines then
-                        local num=#tooltipData.lines
-                        local line= tooltipData.lines[num-1]
-                        TooltipUtil.SurfaceArgs(line)
-                        local text= line.leftText
-                        text= text and text:match(text_EQUIPMENT_SETS)
-                        if text then
-                            text= text:match('(.+),') or text:match('(.+)，') or text
-                            bottomLeftText=e.WA_Utf8Sub(text,3,5)
-                        end
-                    end
+                if itemQuality and itemQuality>1 and bag and not bag.isBound then--没有锁定
+                    topRightText='|A:'..e.Icon.unlocked..':0:0|a'
                 end
             end
 
@@ -155,23 +144,9 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
             bottomRightText= PlayerHasToy(itemID) and e.Icon.X2 or e.Icon.star2
 
         elseif itemStackCount==1 then
-            local spellName=GetItemSpell(itemLink)
-            if spellName==LOOT_JOURNAL_LEGENDARIES_SOURCE_CRAFTED_ITEM then
-                local specTable = GetItemSpecInfo(itemLink)
-                if #specTable==0 then
-                    topRightText=e.Icon.X2
-                end
-            elseif spellName and bag then--USE_COLON 仅限使用次数
-                local tooltipData= C_TooltipInfo.GetBagItem(bag.bagID, bag.slotID)--使用次数
-                for _, line in ipairs(tooltipData.lines) do
-                    TooltipUtil.SurfaceArgs(line)
-                    local text= line.leftText and line.leftText:match(itemUseString)
-                    if text then
-                        bottomLeftText=text
-                        break
-                    end
-                end
-            end
+            local noUse, text, wow= e.GetTooltipData(true, itemUseString, itemLink, bag and {bag=bag.bagID, slot=bag.slotID}, guildBank and {tab= guildBank[1], slot=guildBank[2]}, merchantIndex)--物品提示，信息
+            bottomLeftText=text
+            topRightText= wow and e.Icon.wow2 or noUse and e.Icon.X2
         end
         if bag then--仅显示背包
             local num=GetItemCount(itemLink, true)-GetItemCount(itemLink)--银行数量
@@ -179,11 +154,8 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
                 leftText= '+'..e.MK(num, 2)
             end
         end
-
-        if not topRightText and GetItemSpell(itemLink) then
-            topRightText='|A:Soulbinds_Tree_Conduit_Icon_Utility:0:0|a'--使用图标
-        end
     end
+
     if topRightText and not self.topRightText then
         self.topRightText=e.Cstr(self, nil, nil, nil, nil, 'OVERLAY')
         self.topRightText:SetPoint('TOPRIGHT',2,0)
@@ -298,18 +270,22 @@ end
 local MAX_GUILDBANK_SLOTS_PER_TAB = 98;
 local NUM_SLOTS_PER_GUILDBANK_GROUP = 14;
 local function setGuildBank()--公会银行,设置
-    local tab = GetCurrentGuildBankTab();--Blizzard_GuildBankUI.lua
-    for i=1, MAX_GUILDBANK_SLOTS_PER_TAB do
-        local index = mod(i, NUM_SLOTS_PER_GUILDBANK_GROUP);
-        if ( index == 0 ) then
-            index = NUM_SLOTS_PER_GUILDBANK_GROUP;
+    if GuildBankFrame and GuildBankFrame:IsVisible() then
+        local tab = GetCurrentGuildBankTab() or 1;--Blizzard_GuildBankUI.lua
+        for i=1, MAX_GUILDBANK_SLOTS_PER_TAB do
+            local index = mod(i, NUM_SLOTS_PER_GUILDBANK_GROUP);
+            if ( index == 0 ) then
+                index = NUM_SLOTS_PER_GUILDBANK_GROUP;
+            end
+            local column = ceil((i-0.5)/NUM_SLOTS_PER_GUILDBANK_GROUP);
+            local button = (GuildBankFrame.Columns[column] and GuildBankFrame.Columns[column].Buttons) and GuildBankFrame.Columns[column].Buttons[index];
+            if button then
+                local itemLink= GetGuildBankItemLink(tab, i)
+                local itemID= itemLink and GetItemInfoInstant(itemLink)
+                set_Item_Info(button, itemLink, itemID, nil, nil, {tab, i})
+            end
         end
-        local column = ceil((i-0.5)/NUM_SLOTS_PER_GUILDBANK_GROUP);
-        local button = GuildBankFrame.Columns[column].Buttons[index];
-        local itemLink= GetGuildBankItemLink(tab, i)
-        local itemID= itemLink and GetItemInfoInstant(itemLink)
-        set_Item_Info(button, itemLink, itemID, nil, nil, {tab, i})
-	end
+    end
 end
 
 --####

@@ -843,6 +843,41 @@ e.GetExpansionText= function(expacID, questID)--版本数据
     end
 end
 
+
+e.GetTooltipData= function(colorRed, text, hyperLink, bag, guidBank, merchant)--物品提示，信息
+    local tooltipData
+    if bag then
+        tooltipData= C_TooltipInfo.GetBagItem(bag.bag, bag.slot)
+    elseif guidBank then
+        tooltipData= C_TooltipInfo.GetGuildBankItem(guidBank.tab, guidBank.slot)
+    elseif merchant then
+        tooltipData= C_TooltipInfo.GetMerchantItem(merchant)--slot
+    elseif hyperLink then
+        tooltipData= C_TooltipInfo.GetHyperlink(hyperLink)
+    end
+    if tooltipData and tooltipData.lines then
+        local noUse, findText, wow
+        for _, line in ipairs(tooltipData.lines) do--是否
+            TooltipUtil.SurfaceArgs(line)
+            if colorRed and noUse==nil then
+                local leftHex=line.leftColor and line.leftColor:GenerateHexColor()
+                local rightHex=line.rightColor and line.rightColor:GenerateHexColor()
+                if leftHex == ('ffff2020' or 'fefe1f1f') or rightHex== ('ffff2020' or 'fefe1f1f') then-- or hex=='fefe7f3f' then
+                    noUse=true
+                end
+            end
+            if line.leftText then
+                if text and line.leftText:find(text) then--字符
+                    findText= line.leftText:match(text) or line.leftText
+                elseif line.leftText==ITEM_BNETACCOUNTBOUND or line.leftText==ITEM_ACCOUNTBOUND then--暴雪游戏通行证绑定, 账号绑定
+                    wow=true
+                end
+            end
+        end
+        return noUse, findText, wow
+    end
+end
+
 --[[
 BACKGROUND
 BORDER
