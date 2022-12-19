@@ -151,11 +151,10 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
             bottomLeftText=text
             topRightText= wow and e.Icon.wow2 or noUse and e.Icon.X2
         end
-        if bag then--仅显示背包
-            local num=GetItemCount(itemLink, true)-GetItemCount(itemLink)--银行数量
-            if num>0 then
-                leftText= '+'..e.MK(num, 2)
-            end
+
+        local num=GetItemCount(itemLink, true)-GetItemCount(itemLink)--银行数量
+        if num>0 then
+            leftText= '+'..e.MK(num, 0)
         end
     end
 
@@ -286,7 +285,6 @@ local function setGuildBank()--公会银行,设置
                 local itemLink= GetGuildBankItemLink(tab, i)
                 local itemID= itemLink and GetItemInfoInstant(itemLink)
                 set_Item_Info(button, itemLink, itemID, nil, nil, {tab, i})
-                print(button:GetName())
             end
         end
     end
