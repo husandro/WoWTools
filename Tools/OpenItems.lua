@@ -132,7 +132,6 @@ local function getItems()--取得背包物品信息
                             setAtt(bag, slot, info.iconFileID, info.itemID)
                             return
                         end
-
                     elseif C_ToyBox.GetToyInfo(info.itemID) then 
                         if Save.toy and not PlayerHasToy(info.itemID) then--玩具 
                             setAtt(bag, slot, info.iconFileID, info.itemID)

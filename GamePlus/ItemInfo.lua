@@ -57,6 +57,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
             end
 
         elseif isCraftingReagent or classID==8 or classID==3 or classID==9 or (classID==0 and (subclassID==1 or subclassID==3 or subclassID==5)) or classID==19 or classID==7 then--附魔, 宝石,19专业装备 ,7商业技能
+            local noUse,findText, wow= e.GetTooltipData(true, ITEM_SPELL_KNOWN , itemLink, bag and {bag=bag.bagID, slot=bag.slotID}, guildBank and {tab= guildBank[1], slot=guildBank[2]}, merchantIndex, buyBack)--物品提示，信息
             if not (classID==15 and (subclassID== 0 or subclassID==4)) then
                 if classID==0 and subclassID==5 then
                     topRightText= e.WA_Utf8Sub(POWER_TYPE_FOOD, 2,5)--食物
@@ -66,6 +67,13 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
                 if expacID and expacID< e.ExpansionLevel and itemID~='5512' and itemID~='113509' then--低版本，5512糖 食物,113509[魔法汉堡]
                     topRightText= '|cff606060'..topRightText..'|r'
                 end
+            end
+            if findText then
+                bottomRightText= e.Icon.X2
+            elseif noUse then
+                bottomRightText= e.Icon.O2
+            elseif wow then
+                bottomRightText= e.Icon.wow2
             end
         elseif classID==2 and subclassID==20 then-- 鱼竿
                 topRightText='|A:worldquest-icon-fishing:0:0|a'

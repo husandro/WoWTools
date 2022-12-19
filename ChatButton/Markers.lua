@@ -302,7 +302,8 @@ local function C(unit, index)
 end
 local function Clear(index)--取消标记标    
     local u;--取消怪物标记
-    for _, v in pairs(C_NamePlate.GetNamePlates()) do
+    local tab= C_NamePlate.GetNamePlates() or {}
+    for _, v in pairs(tab) do
         u = v.namePlateUnitToken or (v.UnitFrame and v.UnitFrame.unit)
         C(u, index);
     end
@@ -322,6 +323,17 @@ local function Clear(index)--取消标记标
 end
 
 local frame, frame2
+local function setMarkersFrame_Postion()--设置标记框架, 位置
+    if frame then
+        if Save.markersFramePoint then
+            frame:SetPoint(Save.markersFramePoint[1], UIParent, Save.markersFramePoint[3], Save.markersFramePoint[4], Save.markersFramePoint[5])
+        elseif MultiBarBottomLeftButton12 and MultiBarBottomLeftButton12:IsVisible() then
+            frame:SetPoint('BOTTOMLEFT', MultiBarBottomLeftButton12, 'TOPRIGHT')
+        else
+            frame:SetPoint('TOPRIGHT', panel, 'BOTTOMRIGHT', 150,100)
+        end
+    end
+end
 local function setMarkersFrame()--设置标记, 框架
     local combat=UnitAffectingCombat('player')
 
@@ -340,12 +352,8 @@ local function setMarkersFrame()--设置标记, 框架
     if not frame then
         local last
         frame=CreateFrame("Frame",nil, UIParent)-- e.Cbtn(UIParent, nil, nil, nil, nil, true, {30,30})
-        frame:SetFrameStrata('HIGH')
-        if Save.markersFramePoint then
-            frame:SetPoint(Save.markersFramePoint[1], UIParent, Save.markersFramePoint[3], Save.markersFramePoint[4], Save.markersFramePoint[5])
-        else
-            frame:SetPoint('BOTTOMLEFT', MultiBarBottomLeftButton12, 'TOPRIGHT')
-        end
+        frame:SetFrameStrata('MEDIUM')
+        setMarkersFrame_Postion()--设置标记框架, 位置
         frame:SetSize(1, 25)
         frame:SetMovable(true)
         frame:SetClampedToScreen(true)
@@ -373,7 +381,6 @@ local function setMarkersFrame()--设置标记, 框架
                     frame:StopMovingOrSizing()
                     Save.markersFramePoint={frame:GetPoint(1)}
                     Save.markersFramePoint[2]=nil
-                    print(id, addName, 	RESET_POSITION, 'Alt+'..e.Icon.right)
                 end)
                 button:SetScript('OnMouseDown', function(self, d)
                     local key=IsModifierKeyDown()
@@ -381,9 +388,6 @@ local function setMarkersFrame()--设置标记, 框架
                         Clear()--取消标记标
                     elseif d=='RightButton' and not key then
                         SetCursor('UI_MOVE_CURSOR')
-                    elseif d=='RightButton' and IsAltKeyDown() then
-                        frame:ClearAllPoints()
-                        frame:SetPoint('BOTTOMLEFT', MultiBarBottomLeftButton12, 'TOPRIGHT')
                     elseif d=='RightButton' and IsControlKeyDown() then
                         Save.H = not Save.H and true or nil
                         print(id,addName,HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION..(Save.H and e.Icon.up2 or e.Icon.toLeft2), REQUIRES_RELOAD)
@@ -651,6 +655,20 @@ local function InitMenu(self, level, type)--主菜单
                 end
             }
             UIDropDownMenu_AddButton(info, level)
+
+        elseif type=='MakerFrameResetPost' then--重置位置， 队伍标记工具
+            info={
+                text= e.onlyChinse and '重置位置' or RESET_POSITION,
+                notCheckable=true,
+                colorCode= not Save.markersFramePoint and '|cff606060',
+                func= function()
+                    frame:ClearAllPoints()
+                    Save.markersFramePoint=nil
+                    setMarkersFrame_Postion()--设置标记框架, 位置
+                end
+            }
+            UIDropDownMenu_AddButton(info, level)
+
         else
             local num= NUM_RAID_ICONS+1
             for index=1, num do
@@ -733,8 +751,13 @@ local function InitMenu(self, level, type)--主菜单
 
         UIDropDownMenu_AddSeparator()
         info={
-            text=PROFESSION_TOOL_TOOLTIP_LINE:format(BINDING_HEADER_RAID_TARGET),
+            text=e.onlyChinse and '队伍标记工具' or  PROFESSION_TOOL_TOOLTIP_LINE:format(BINDING_HEADER_RAID_TARGET),
             checked=Save.markersFrame,
+            tooltipOnButton=true,
+            tooltipTitle= e.onlyChinse and '世界标记' or SLASH_WORLD_MARKER3:gsub('/',''),
+            tooltipText= e.onlyChinse and '需求：队伍和权限' or NEED..": "..COVENANT_RENOWN_TOAST_REWARD_COMBINER:format(HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS,CALENDAR_INVITELIST_SETMODERATOR),
+            menuList= 'MakerFrameResetPost',
+            hasArrow=true,
             func=function()
                 if UnitAffectingCombat('player') then
                     print(id, addName, '|cnRED_FONT_COLOR:'..COMBAT..'|r')
@@ -748,7 +771,7 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text=(Save.autoReady==1 and e.Icon.select2 or Save.autoReady==2 and e.Icon.O2 or NONE)..AUTO_JOIN:gsub(JOIN,'')..((not Save.autoReady or Save.autoReady==1) and READY or Save.autoReady==2 and NOT_READY_FEMALE or ''),
+            text=(Save.autoReady==1 and e.Icon.select2 or Save.autoReady==2 and e.Icon.O2 or (e.onlyChinse and '无' or NONE)).. (e.onlyChinse and '自动' or AUTO_JOIN:gsub(JOIN,''))..((not Save.autoReady or Save.autoReady==1) and (e.onlyChinse and '就绪' or READY) or Save.autoReady==2 and (e.onlyChinse and '未就绪' or NOT_READY_FEMALE) or ''),
             checked= Save.autoReady==1 or Save.autoReady==2,
             colorCode= Save.autoReady==1 and '|cff00ff00' or Save.autoReady==2 and '|cffff0000',
             menuList='ready',
