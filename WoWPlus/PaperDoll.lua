@@ -625,20 +625,38 @@ local function ADDEquipment(equipmentSetsDirty)--添加装备管理框
     LvTo()--总装等
 end
 
+local InventSlot_To_ContainerSlot={}-背包数
+for i=1, NUM_BAG_SLOTS+1 do
+    local bag=C_Container.ContainerIDToInventoryID(i)
+    if bag then
+        InventSlot_To_ContainerSlot[bag]=i
+    end
+end
 hooksecurefunc('PaperDollItemSlotButton_Update',  function(self)--PaperDollFrame.lua
             local slot= self:GetID()
-            if slot<20 and slot~=4 and slot~=19 and slot~=0 then
-                local textureName = GetInventoryItemTexture("player", slot)
-                local hasItem = textureName ~= nil
-                local link=hasItem and GetInventoryItemLink('player', slot) or nil--装等                
-                Lv(self, slot, link)
-                Du(self, slot, link)
-                Gem(self, slot, link)
-                Enchant(self, slot, link)
-                Set(self, slot, link)
-                Sta(self, slot, link)
-                Equipment()
-                LvTo()--总装等
+            if slot then
+                if slot<20 and slot~=4 and slot~=19 and slot~=0 then
+                    local textureName = GetInventoryItemTexture("player", slot)
+                    local hasItem = textureName ~= nil
+                    local link=hasItem and GetInventoryItemLink('player', slot) or nil--装等                
+                    Lv(self, slot, link)
+                    Du(self, slot, link)
+                    Gem(self, slot, link)
+                    Enchant(self, slot, link)
+                    Set(self, slot, link)
+                    Sta(self, slot, link)
+                    Equipment()
+                    LvTo()--总装等
+                elseif InventSlot_To_ContainerSlot[slot] then--背包数
+                    local numFreeSlots = C_Container.GetContainerNumFreeSlots(InventSlot_To_ContainerSlot[slot])
+                    if numFreeSlots and not self.numFreeSlots then
+                        self.numFreeSlots=e.Cstr(self,nil, nil, nil, true,nil, 'CENTER')
+                        self.numFreeSlots:SetPoint('BOTTOM',0 ,6)
+                    end
+                    if self.numFreeSlots then
+                        self.numFreeSlots:SetText(numFreeSlots or '')
+                    end
+                end
             end
 end)
 

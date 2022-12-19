@@ -88,9 +88,9 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
                         if itemLinkPlayer then
                             local lv=GetDetailedItemLevelInfo(itemLinkPlayer)
                             if lv then
-                                if itemLevel-lv>1 then
+                                if itemLevel-lv>0 then
                                     upLevel=true
-                                elseif itemLevel-lv<4 and itemLevel>30 and bag and bag.isBound then
+                                elseif itemLevel-lv< 0 and itemLevel>1 then
                                     downLevel=true
                                 end
                             end

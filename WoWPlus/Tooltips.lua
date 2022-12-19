@@ -195,8 +195,6 @@ local function setItem(self, ItemLink)
     if classID and subclassID then
         self:AddDoubleLine((itemType and itemType..' classID'  or 'classID') ..': '..classID, (itemSubType and itemSubType..' subID' or 'subclassID')..': '..subclassID)
     end
-    --self.Portrait:SetTexture(itemTexture)
-    --self.Portrait:SetShown(true)
 
     local specTable = GetItemSpecInfo(ItemLink) or {}--专精图标
     local specTableNum=#specTable
@@ -241,7 +239,7 @@ local function setItem(self, ItemLink)
                 else
                     text=itemLevel..e.Icon.up2
                 end
-                text= text and hex..text..'|r' or ''
+                text= hex..(text or itemLevel)..'|r'
                 self.textLeft:SetText(text)
             end
         end
@@ -882,9 +880,9 @@ local function Init()
 
             elseif date.id and date.type then
                 if date.type==0 or date.type==19 then--TooltipUtil.lua 0物品 19玩具
-                    local itemID, itemLink=select(2,TooltipUtil.GetDisplayedItem(tooltip))
-                    itemID= itemLink or itemID or date.id
-                    setItem(tooltip, itemID)
+                    local itemID, itemLink=TooltipUtil.GetDisplayedItem(tooltip)
+                    itemLink= itemLink or itemID or date.id
+                    setItem(tooltip, itemLink)
 
                 elseif date.type==1 then
                     setSpell(tooltip, date.id)--法术
@@ -1161,6 +1159,12 @@ local function Init()
             gameAccountInfo.isInCurrentRegion = true
             return gameAccountInfo;
         end
+    end
+
+    if ExtraActionButton1 then
+        ExtraActionButton1:SetScript('OnLeave', function()
+            e.tips:Hide()
+        end)
     end
 end
 
