@@ -644,7 +644,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
         if GameTooltipTextLeft2 then GameTooltipTextLeft2:SetTextColor(r,g,b) end
         if GameTooltipTextLeft3 then GameTooltipTextLeft3:SetTextColor(r,g,b) end
         if GameTooltipTextLeft4 then GameTooltipTextLeft4:SetTextColor(r,g,b) end
-            local zone, npc = select(5, strsplit("-",guid))--位面,NPCID
+            local zone, npc = select(5, strsplit("-", guid))--位面,NPCID
             if zone then
                 self:AddDoubleLine(e.L['LAYER']..' '..zone, 'NPC '..npc, r,g,b, r,g,b)
                 e.Layer=zone

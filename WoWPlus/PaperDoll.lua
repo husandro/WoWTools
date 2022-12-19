@@ -713,8 +713,7 @@ hooksecurefunc('EquipmentFlyout_DisplayButton', function(button, paperDollItemSl
 	end
 	local itemLink
 	if ( voidStorage ) then
-		itemLink = GetVoidItemHyperlinkString(tab, voidSlot);
-
+		itemLink = GetVoidItemHyperlinkString(voidSlot)
 	elseif ( not bags ) then -- and (player or bank)
 		itemLink =GetInventoryItemLink("player",slot);
 	else -- bags

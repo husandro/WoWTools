@@ -401,7 +401,7 @@ local function set_EncounterJournal_Money_Tips(self)--险指南界面, 钱
     local numPlayer, allMoney  = 0, 0
     for guid, info in pairs(e.WoWSave) do
         if info.Money then
-            e.tips:AddDoubleLine(e.GetPlayerInfo(nil, guid, true)..(guid==e.Player.guid and e.Icon.star2 or ''), GetCoinTextureString(info.Money,true))
+            e.tips:AddDoubleLine(e.GetPlayerInfo(nil, guid, true)..(guid==e.Player.guid and e.Icon.star2 or ''), GetCoinTextureString(info.Money))
             numPlayer=numPlayer+1
             allMoney= allMoney + info.Money
         end
@@ -561,11 +561,17 @@ local function set_EncounterJournal_Init()--冒险指南界面
                         local t;
                         for j=1,numEncounters do
                             local bossName,_,isKilled = GetSavedInstanceEncounterInfo(i,j);
-                            local t2= bossName;
-                            if t then t2=t2..' ('..j else t2=j..') '..t2 end;
+                            local t2
+                            t2= bossName;
+                            if t then
+                                t2=t2..' ('..j else t2=j..') '..t2
+                            end;
                             if isKilled then t2='|cFFFF0000'..t2..'|r' end;
                             if j==numEncounters or t then
-                                if not t then t=t2 t2=nil end;
+                                if not t then
+                                    t=t2
+                                    t2=nil
+                                end;
                                 e.tips:AddDoubleLine(t,t2);
                                 t=nil;
                             else
