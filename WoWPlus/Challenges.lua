@@ -317,7 +317,7 @@ local affixSchedule = {-- AngryKeystones Schedule Dragonflight Season 1
 }
 local function makeAffix(parent, id2)
     local frame = CreateFrame("Frame", nil, parent)
-    frame:SetSize(26, 26)
+    frame:SetSize(20, 20)
 
     local border = frame:CreateTexture(nil, "OVERLAY")
     border:SetAllPoints()
@@ -325,7 +325,7 @@ local function makeAffix(parent, id2)
     frame.Border = border
 
     local portrait = frame:CreateTexture(nil, "ARTWORK")
-    portrait:SetSize(24, 24)
+    portrait:SetSize(18, 18)
     portrait:SetPoint("CENTER", border)
     frame.Portrait = portrait
 
@@ -366,7 +366,7 @@ local function Affix()
                 if not ChallengesFrame['AffixOne'..k..i] then
                     ChallengesFrame['AffixOne'..k..i]= makeAffix(ChallengesFrame, v[i])
                     if not last then
-                        ChallengesFrame['AffixOne'..k..i]:SetPoint('RIGHT', -10, -((k-1)*(32)))
+                        ChallengesFrame['AffixOne'..k..i]:SetPoint('RIGHT', -10, -((k-1)*(22)))
                     else
                         ChallengesFrame['AffixOne'..k..i]:SetPoint('RIGHT', last, 'LEFT', 0, 0)
                     end
@@ -892,6 +892,15 @@ local function Init()
    Affix()
    All(self)--所有记录   
    Cur(self)--货币数量
+
+    if ChallengesFrame.WeeklyInfo and ChallengesFrame.WeeklyInfo.Child and ChallengesFrame.WeeklyInfo.Child.Description then
+        local text= ChallengesFrame.WeeklyInfo.Child.Description:GetText()
+        if text==MYTHIC_PLUS_MISSING_KEYSTONE_MESSAGE then
+            ChallengesFrame.WeeklyInfo.Child.Description:SetText()
+            print(id, addName)
+            print('|cffff00ff',text)
+        end
+    end
 end
 
 
