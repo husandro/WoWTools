@@ -338,6 +338,37 @@ local function Init()
 
     hooksecurefunc('MerchantFrame_UpdateMerchantInfo',setMerchantInfo)--MerchantFrame.lua
     hooksecurefunc('MerchantFrame_UpdateBuybackInfo', setMerchantInfo)
+
+    --############
+    --排序:从右到左
+    --############
+    local function set_Sort_Rigth_To_Left()
+        C_Container.SetSortBagsRightToLeft(Save.sortRightToLeft or false)
+    end
+    ContainerFrameCombinedBagsPortraitButton:HookScript('OnMouseDown',function ()
+        UIDropDownMenu_AddSeparator()
+
+        local info={--排序:从右到左
+            text= e.onlyChinse and '排序: 从右到左' or CLUB_FINDER_SORT_BY..': '..	INT_SPELL_POINTS_SPREAD_TEMPLATE:format(HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_RIGHT,HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_LEFT),
+            checked= C_Container.GetSortBagsRightToLeft(),
+            tooltipOnButton=true,
+            tooltipTitle=id,
+            tooltipText=addName,
+            func= function()
+                Save.sortRightToLeft= not C_Container.GetSortBagsRightToLeft() and true or nil
+                set_Sort_Rigth_To_Left()--排序:从右到左
+            end,
+        }
+        UIDropDownMenu_AddButton(info, 1)
+    end)
+    set_Sort_Rigth_To_Left()--排序:从右到左
+
+    --###############
+    --收起，背包小按钮
+    --###############
+    if C_CVar.GetCVarBool("expandBagBar") and C_CVar.GetCVarBool("combinedBags") then--MainMenuBarBagButtons.lua
+        C_CVar.SetCVar("expandBagBar", '0')
+    end
 end
 
 --###########
@@ -389,3 +420,19 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     end
 end)
+
+--[[
+if MainMenuBarBackpackButton then--背包，数量
+        hooksecurefunc(MainMenuBarBackpackButton, 'UpdateFreeSlots', function(self)
+            local totalFree=0
+            for i = BACKPACK_CONTAINER, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
+                local freeSlots, bagFamily = C_Container.GetContainerNumFreeSlots(i);
+                print(bagFamily, i)
+                if ( bagFamily == 0 ) then
+                    totalFree = totalFree + freeSlots;
+                end
+            end
+            self.Count:SetText(totalFree)
+        end)
+    end
+]]

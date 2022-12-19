@@ -626,7 +626,7 @@ local function ADDEquipment(equipmentSetsDirty)--添加装备管理框
 end
 
 local InventSlot_To_ContainerSlot={}--背包数
-for i=1, NUM_BAG_SLOTS+1 do
+for i=1, NUM_TOTAL_EQUIPPED_BAG_SLOTS  do
     local bag=C_Container.ContainerIDToInventoryID(i)
     if bag then
         InventSlot_To_ContainerSlot[bag]=i

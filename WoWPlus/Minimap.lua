@@ -125,7 +125,7 @@ local function Init()
             C_CVar.SetCVar('minimapTrackingShowAll', not Save.minimapTrackingShowAll and '0' or '1' )
         end
     end
-    
+
     if MinimapCluster and MinimapCluster.Tracking and MinimapCluster.Tracking.Button then
         MinimapCluster.Tracking.Button:HookScript( 'OnMouseDown', function()
             UIDropDownMenu_AddSeparator(1)

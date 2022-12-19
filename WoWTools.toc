@@ -46,7 +46,6 @@ WoWPlus\HideTexture.lua
 WoWPlus\Flyout.lua
 ##任务框，增强
 WoWPlus\ObjectiveTracker.lua
-##WoWPlus\MountCollection.lua
 ##玩具面板
 WoWPlus\Toy.lua
 ##试衣间， 增加物品超接接
@@ -57,18 +56,12 @@ WoWPlus\WardroberItems.lua
 WoWPlus\WardroberSets.lua
 ##地图，增强
 WoWPlus\WorldMap.lua
-##鼠标，和冒险指南，两个模块
+##鼠标，提示
 WoWPlus\Tooltips.lua
-
-WoWPlus\Container.lua
-
 ##专业面板，增加专业按钮，没有其它
 WoWPlus\Professions.lua
 ##单位框，没完成
 WoWPlus\UnitFrame.lua
-##WowPlus\GroupManager.lua
-##WoWPlus\AchievementFrame.lua
-##WowPlus\AuctionHouse.lua
 ##快速加入，面板
 WowPlus\QuickJoin.lua
 ##好友，面板
@@ -77,10 +70,14 @@ WoWPlus\FriendsList.lua
 WowPlus\Minimap.lua
 ##冒险指南, 增强
 WoWPlus\EncounterJournal.lua
-##史诗钥石地下城,挑战增强
+##史诗钥石地下城, 挑战增强
 WoWPlus\Challenges.lua
 ##距离, 去掉小数点
 WowPlus\SuperTracked.lua
+##WowPlus\GroupManager.lua
+##WoWPlus\AchievementFrame.lua
+##WowPlus\AuctionHouse.lua
+##WoWPlus\MountCollection.lua
 
 ##自动对话，任务
 GamePlus\Gossip.lua
@@ -127,6 +124,7 @@ Tools\MagePortal.lua
 Tools\ScoutingMapToy.lua
 ##食物
 Tools\Food.lua
+
 
 ##Chat Button
 ##这是Chat主要，如果需要其中一个功能，这个不能关

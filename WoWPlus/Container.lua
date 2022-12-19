@@ -3,14 +3,15 @@ local addName= INVTYPE_BAG
 local Save= {}
 
 
-local function set_Sort_Rigth_To_Left()--排序:从右到左
-    C_Container.SetSortBagsRightToLeft(Save.sortRightToLeft or false)
-end
+
 
 --####
 --初始
 --####
 local function Init()
+    local function set_Sort_Rigth_To_Left()--排序:从右到左
+        C_Container.SetSortBagsRightToLeft(Save.sortRightToLeft or false)
+    end
     ContainerFrameCombinedBagsPortraitButton:HookScript('OnMouseDown',function ()
         UIDropDownMenu_AddSeparator()
 
@@ -58,11 +59,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
               print(addName, e.GetEnabeleDisable(not Save.disabled), REQUIRES_RELOAD)
           end)
 
-]]
 
-
-        if not Save.disabled then
-            Init()--初始
-        end
+        if not Save.disabled then]]
+        Init()--初始
     end
 end)
