@@ -13,29 +13,37 @@ end
 --初始化
 --######
 local function Init()
-    
+
     if ExtraActionButton1 then hideTexture(ExtraActionButton1.style) end--额外技能
     if ZoneAbilityFrame then hideTexture(ZoneAbilityFrame.Style) end--区域技能
 
     if MainMenuBar and MainMenuBar.EndCaps then hideTexture(MainMenuBar.EndCaps.LeftEndCap) end
     if MainMenuBar and MainMenuBar.EndCaps then hideTexture(MainMenuBar.EndCaps.RightEndCap) end
 
-    if PetBattleFrame then
+    if PetBattleFrame then--宠物
         PetBattleFrame.TopArtLeft:SetShown(false)
         PetBattleFrame.TopArtRight:SetShown(false)
         PetBattleFrame.TopVersus:SetShown(false)
         PetBattleFrame.TopVersusText:SetShown(false)
         PetBattleFrame.WeatherFrame.BackgroundArt:SetShown(false)
-        PetBattleFrame.BottomFrame.LeftEndCap:SetShown(false)
-        PetBattleFrame.BottomFrame.RightEndCap:SetShown(false)
-        PetBattleFrame.BottomFrame.Background:SetShown(false)
-        PetBattleFrame.BottomFrame.TurnTimer.ArtFrame2:SetShown(false)
-        PetBattleFrame.BottomFrame.FlowFrame:SetShown(false)
-        PetBattleFrame.BottomFrame.Delimiter:SetShown(false)
+
         --PetBattleFrame.BottomFrame.TurnTimer.ArtFrame2:SetShown(false)
         PetBattleFrameXPBarLeft:SetShown(false)
         PetBattleFrameXPBarRight:SetShown(false)
         PetBattleFrameXPBarMiddle:SetShown(false)
+        if PetBattleFrame.BottomFrame then
+            --[[if PetBattleFrame.BottomFrame.MicroButtonFrame then
+                hideTexture(PetBattleFrame.BottomFrame.MicroButtonFrame.LeftEndCap)
+                hideTexture(PetBattleFrame.BottomFrame.MicroButtonFrame.RightEndCap)
+            end]]
+            PetBattleFrame.BottomFrame.LeftEndCap:SetShown(false)
+            PetBattleFrame.BottomFrame.RightEndCap:SetShown(false)
+            PetBattleFrame.BottomFrame.Background:SetShown(false)
+            PetBattleFrame.BottomFrame.TurnTimer.ArtFrame2:SetShown(false)
+            PetBattleFrame.BottomFrame.FlowFrame:SetShown(false)
+            PetBattleFrame.BottomFrame.Delimiter:SetShown(false)
+
+        end
     end
 
 
@@ -50,7 +58,7 @@ local function Init()
 
     local frame =PaladinPowerBarFrameBG if frame then frame:SetShown(false) end
     frame=PaladinPowerBarFrameBankBG if frame then frame:SetShown(false) end
-    
+
     LootFrameBg:SetShown(false)--拾取
 
     hooksecurefunc(HelpTip,'Show', function(self, parent, info, relativeRegion)--隐藏所有HelpTip HelpTip.lua
@@ -148,8 +156,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
     elseif event=='UNIT_ENTERED_VEHICLE' or event=='UPDATE_OVERRIDE_ACTIONBAR' then
         set_UNIT_ENTERED_VEHICLE()
-    
-    elseif arg1=='Blizzard_WeeklyRewards' then
+
+    elseif arg1=='Blizzard_WeeklyRewards' then--周奖励提示
         if WeeklyRewardExpirationWarningDialog and WeeklyRewardExpirationWarningDialog:IsShown() then
             if WeeklyRewardExpirationWarningDialog.Description then
                 print(id, addName, '|cffff00ff'..WeeklyRewardExpirationWarningDialog.Description:GetText())

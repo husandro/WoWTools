@@ -79,11 +79,6 @@ local function Du(self, slot, link) --耐久度
         self.du:SetValue(du)
     end
     if self.du then
-        --[[if du and du<=50 then
-            Lib.AutoCastGlow_Start(self.du, {0,1,0},  1, 0.10, 0.5)
-        else
-            Lib.AutoCastGlow_Stop(self.du)
-        end]]
         self.du:SetShown(du and true or false)
     end
 end
@@ -229,31 +224,11 @@ local function Engineering(self, slot, use)--增加 [潘达利亚工程学: 地�
     end)
     self.engineering:SetScript('OnLeave',function() e.tips:Hide() end)
 end
-local enchantStr=ENCHANTED_TOOLTIP_LINE:gsub('%%s','')--附魔
+local enchantStr=ENCHANTED_TOOLTIP_LINE:gsub('%%s','(.+)')--附魔
 local function Enchant(self, slot, link)--附魔, 使用, 属性
     local enchant, use
     if link and not Save.disabled then
-        local tip = _G['ScannerTooltip'] or CreateFrame('GameTooltip', 'ScannerTooltip', self, 'GameTooltipTemplate')
-        tip:SetOwner(self, "ANCHOR_NONE")
-        tip:ClearLines()
-        tip:SetHyperlink(link)
-
-        for i=1, tip:NumLines() do
-            local  line = _G['ScannerTooltipTextLeft'..i]
-            if line then
-                local msg = line:GetText()
-                if msg then
-                    if not enchant and msg:find(enchantStr) then--附魔
-                        enchant=true
-                    elseif not use and msg:find(ITEM_SPELL_TRIGGER_ONUSE) then--使用:
-                        use=true
-                    end
-                end
-            end
-            if enchant and use then
-                break
-            end
-        end
+        enchant=select(2, e.GetTooltipData(nil, enchantStr, link, nil, nil, nil, nil, slot)) and true or false--物品提示，信息
         if enchant and not self.enchant then
             local h=self:GetHeight()/3
             self.enchant=self:CreateTexture()
@@ -265,6 +240,7 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
             end
             self.enchant:SetTexture(Icon.enchant)
         end
+        use=GetItemSpell(link) and true or false--物品是否可使用
         if use and not self.use then
             local h=self:GetHeight()/3
             self.use=self:CreateTexture()

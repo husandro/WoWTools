@@ -127,7 +127,7 @@ local function getItems()--取得背包物品信息
                             end
                         end
 
-                    elseif classID==15 and subclassID==4 then--其它 
+                    elseif classID==15 and subclassID==4 then--其它
                         if Save.alt and IsUsableItem(info.hyperlink) and not C_Item.IsAnimaItemByID(info.hyperlink) then
                             setAtt(bag, slot, info.iconFileID, info.itemID)
                             return
@@ -448,6 +448,8 @@ local function shoTips(self)--显示提示
             BattlePetToolTip_Show(BattlePetToolTip_UnpackBattlePetLink(battlePetLink))
         else
             e.tips:SetBagItem(Bag.bag, Bag.slot)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(e.Icon.mid..(e.onlyChinse and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP), e.onlyChinse and '禁用' or DISABLE, 1,0,0, 1,0,0 )
             e.tips:Show()
         end
     else

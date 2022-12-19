@@ -7,7 +7,7 @@ local itemUseString =ITEM_SPELL_CHARGES:gsub('%%d', '%(%%d%+%)')--(%d+)次
 local KeyStone=CHALLENGE_MODE_KEYSTONE_NAME:gsub('%%s','(.+) ')--钥石
 local text_EQUIPMENT_SETS= 	EQUIPMENT_SETS:gsub('%%s','(.+)')
 
-local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBank)
+local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBank, buyBack)
     local topLeftText, bottomRightText, leftText, bottomLeftText, topRightText, r, g ,b, setIDItem, isWoWItem--setIDItem套装
     if itemLink then
         local _, _, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, _, _, classID, subclassID, bindType, expacID, setID, isCraftingReagent = GetItemInfo(itemLink)
@@ -20,7 +20,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
         end
 
         if bag and bag.hasLoot then--宝箱
-            local noUse= e.GetTooltipData(true, nil, itemLink, bag and {bag=bag.bagID, slot=bag.slotID}, guildBank and {tab= guildBank[1], slot=guildBank[2]}, merchantIndex)--物品提示，信息
+            local noUse= e.GetTooltipData(true, nil, itemLink, bag and {bag=bag.bagID, slot=bag.slotID}, guildBank and {tab= guildBank[1], slot=guildBank[2]}, merchantIndex, buyBack)--物品提示，信息
             topRightText= noUse and '|A:Monuments-Lock:0:0|a' or '|A:talents-button-undo:0:0|a'
 
         elseif C_Item.IsItemKeystoneByID(itemID) then--挑战
@@ -70,7 +70,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
 
         elseif classID==2 or classID==4 then--装备
             if itemQuality and itemQuality>1 then
-                local noUse, text, wow= e.GetTooltipData(true, text_EQUIPMENT_SETS, itemLink, bag and {bag=bag.bagID, slot=bag.slotID}, guildBank and {tab= guildBank[1], slot=guildBank[2]}, merchantIndex)--物品提示，信息
+                local noUse, text, wow= e.GetTooltipData(true, text_EQUIPMENT_SETS, itemLink, bag and {bag=bag.bagID, slot=bag.slotID}, guildBank and {tab= guildBank[1], slot=guildBank[2]}, merchantIndex, buyBack)--物品提示，信息
                 if text then--套装名称，
                     text= text:match('(.+),') or text:match('(.+)，') or text
                     bottomLeftText=e.WA_Utf8Sub(text,3,5)
@@ -145,7 +145,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
             bottomRightText= PlayerHasToy(itemID) and e.Icon.X2 or e.Icon.star2
 
         elseif itemStackCount==1 then
-            local noUse, text, wow= e.GetTooltipData(true, itemUseString, itemLink, bag and {bag=bag.bagID, slot=bag.slotID}, guildBank and {tab= guildBank[1], slot=guildBank[2]}, merchantIndex)--物品提示，信息
+            local noUse, text, wow= e.GetTooltipData(true, itemUseString, itemLink, bag and {bag=bag.bagID, slot=bag.slotID}, guildBank and {tab= guildBank[1], slot=guildBank[2]}, merchantIndex, buyBack)--物品提示，信息
             bottomLeftText=text
             topRightText= wow and e.Icon.wow2 or noUse and e.Icon.X2
         end
@@ -237,7 +237,7 @@ local function setBags(self)--背包设置
             end
         end
 
-        set_Item_Info(itemButton, itemLink, itemID, info, nil, nil)
+        set_Item_Info(itemButton, itemLink, itemID, info)
     end
 end
 
@@ -262,7 +262,7 @@ local function setMerchantInfo()--商人设置
                 end
 
             end
-            set_Item_Info(itemButton, itemLink, itemID, nil, index, nil)
+            set_Item_Info(itemButton, itemLink, itemID, nil, selectedTab == 1 and index, nil, selectedTab ~= 1 and index)
         end
     end
 end

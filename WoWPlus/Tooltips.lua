@@ -837,6 +837,16 @@ local function setBattlePet(self, speciesID, level, breedQuality, maxHealth, pow
     self.textRight:SetText(not CollectedNum and AllCollected or '')
 end
 
+local function set_Azerite(self, powerID)--艾泽拉斯之心
+    if powerID then
+        self:AddLine(' ')
+        self:AddDoubleLine('powerID', powerID)
+        local info = C_AzeriteEmpoweredItem.GetPowerInfo(powerID)
+        if info and info.spellID then
+            setSpell(self, info.spellID)--法术
+        end
+    end
+end
 --####
 --初始
 --####
@@ -885,6 +895,9 @@ local function Init()
                 elseif date.type==7 then--Aura
                     set_Aura(tooltip, date.id)
 
+                elseif date.type==8 then--艾泽拉斯之心
+                    set_Azerite(tooltip, date.id)
+
                 elseif date.type==10 then
                     setMount(tooltip, date.id)--坐骑
 
@@ -903,7 +916,6 @@ local function Init()
             end
         end
     end)
-
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(tooltip,date)--宠物手册，设置名称
         local unit= select(2, TooltipUtil.GetDisplayedUnit(tooltip))
         if unit and tooltip==e.tips  and (UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit)) and PetJournalSearchBox and PetJournalSearchBox:IsVisible()  then

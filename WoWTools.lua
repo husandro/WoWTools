@@ -845,7 +845,7 @@ e.GetExpansionText= function(expacID, questID)--版本数据
 end
 
 
-e.GetTooltipData= function(colorRed, text, hyperLink, bag, guidBank, merchant)--物品提示，信息
+e.GetTooltipData= function(colorRed, text, hyperLink, bag, guidBank, merchant, buyBack, inventory)--物品提示，信息
     local tooltipData
     if bag then
         tooltipData= C_TooltipInfo.GetBagItem(bag.bag, bag.slot)
@@ -853,9 +853,12 @@ e.GetTooltipData= function(colorRed, text, hyperLink, bag, guidBank, merchant)--
         tooltipData= C_TooltipInfo.GetGuildBankItem(guidBank.tab, guidBank.slot)
     elseif merchant then
         tooltipData= C_TooltipInfo.GetMerchantItem(merchant)--slot
-    elseif hyperLink then
-        tooltipData= C_TooltipInfo.GetHyperlink(hyperLink)
+    elseif buyBack then
+        tooltipData= C_TooltipInfo.GetBuybackItem(buyBack)
+    elseif inventory then
+        tooltipData= C_TooltipInfo.GetInventoryItem('player', inventory)
     end
+    tooltipData=  tooltipData or (hyperLink and C_TooltipInfo.GetHyperlink(hyperLink))
     if tooltipData and tooltipData.lines then
         local noUse, findText, wow
         for _, line in ipairs(tooltipData.lines) do--是否
@@ -865,11 +868,17 @@ e.GetTooltipData= function(colorRed, text, hyperLink, bag, guidBank, merchant)--
                 local rightHex=line.rightColor and line.rightColor:GenerateHexColor()
                 if leftHex == ('ffff2020' or 'fefe1f1f') or rightHex== ('ffff2020' or 'fefe1f1f') then-- or hex=='fefe7f3f' then
                     noUse=true
+                    if not text then
+                        break
+                    end
                 end
             end
             if line.leftText then
                 if text and line.leftText:find(text) then--字符
                     findText= line.leftText:match(text) or line.leftText
+                    if not colorRed then
+                        break
+                    end
                 elseif line.leftText==ITEM_BNETACCOUNTBOUND or line.leftText==ITEM_ACCOUNTBOUND then--暴雪游戏通行证绑定, 账号绑定
                     wow=true
                 end
