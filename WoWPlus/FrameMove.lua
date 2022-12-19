@@ -326,11 +326,30 @@ local function Init()
         end
     end
 
-    --修正，在战斗中，打开收藏界面，错误
-    if not CollectionsJournal then
-        ToggleCollectionsJournal(1)
-        HideUIPanel(CollectionsJournal)
+
+
+    --########
+    --小，背包
+    --########
+    for i=1 ,NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS+1 do
+        local frame= _G['ContainerFrame'..i]
+        if frame then
+            if frame.TitleContainer then
+                Move(frame.TitleContainer, {frame=frame})
+            end
+            Move(frame.TitleContainer, {})
+        end
     end
+
+    --###############################
+    --修正，在战斗中，打开收藏界面，错误
+    --##############################
+     C_Timer.After(1, function()
+        if not CollectionsJournal then
+            ToggleCollectionsJournal(2)
+            HideUIPanel(CollectionsJournal)
+        end
+    end)
 end
 
 --加载保存数据

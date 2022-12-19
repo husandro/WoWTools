@@ -866,7 +866,7 @@ e.GetTooltipData= function(colorRed, text, hyperLink, bag, guidBank, merchant, b
             if colorRed and noUse==nil then
                 local leftHex=line.leftColor and line.leftColor:GenerateHexColor()
                 local rightHex=line.rightColor and line.rightColor:GenerateHexColor()
-                if leftHex == ('ffff2020' or 'fefe1f1f') or rightHex== ('ffff2020' or 'fefe1f1f') then-- or hex=='fefe7f3f' then
+                if leftHex == 'ffff2020' or leftHex=='fefe1f1f' or rightHex== 'ffff2020' or rightHex=='fefe1f1f' then-- or hex=='fefe7f3f' then
                     noUse=true
                     if not text then
                         break

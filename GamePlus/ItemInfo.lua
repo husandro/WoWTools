@@ -6,6 +6,7 @@ local panel=CreateFrame("Frame")
 local itemUseString =ITEM_SPELL_CHARGES:gsub('%%d', '%(%%d%+%)')--(%d+)次
 local KeyStone=CHALLENGE_MODE_KEYSTONE_NAME:gsub('%%s','(.+) ')--钥石
 local text_EQUIPMENT_SETS= 	EQUIPMENT_SETS:gsub('%%s','(.+)')
+local size= 10--字体大小
 
 local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBank, buyBack)
     local topLeftText, bottomRightText, leftText, bottomLeftText, topRightText, r, g ,b, setIDItem, isWoWItem--setIDItem套装
@@ -56,15 +57,16 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
             end
 
         elseif isCraftingReagent or classID==8 or classID==3 or classID==9 or (classID==0 and (subclassID==1 or subclassID==3 or subclassID==5)) or classID==19 or classID==7 then--附魔, 宝石,19专业装备 ,7商业技能
-            if classID==0 and subclassID==5 then
-                topRightText= e.WA_Utf8Sub(POWER_TYPE_FOOD, 2,5)--食物
-            else
-                topRightText= e.WA_Utf8Sub(itemSubType, 2,5)
+            if not (classID==15 and (subclassID== 0 or subclassID==4)) then
+                if classID==0 and subclassID==5 then
+                    topRightText= e.WA_Utf8Sub(POWER_TYPE_FOOD, 2,5)--食物
+                else
+                    topRightText= e.WA_Utf8Sub(itemSubType, 2,5)
+                end
+                if expacID and expacID< e.ExpansionLevel and itemID~='5512' and itemID~='113509' then--低版本，5512糖 食物,113509[魔法汉堡]
+                    topRightText= '|cff606060'..topRightText..'|r'
+                end
             end
-            if expacID and expacID< e.ExpansionLevel and itemID~='5512' and itemID~='113509' then--低版本，5512糖 食物,113509[魔法汉堡]
-                topRightText= '|cff606060'..topRightText..'|r'
-            end
-
         elseif classID==2 and subclassID==20 then-- 鱼竿
                 topRightText='|A:worldquest-icon-fishing:0:0|a'
 
@@ -90,7 +92,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
                             if lv then
                                 if itemLevel-lv>0 then
                                     upLevel=true
-                                elseif itemLevel-lv< 0 and itemLevel>1 then
+                                elseif itemLevel-lv< 0 and itemLevel>29 then
                                     downLevel=true
                                 end
                             end
@@ -158,7 +160,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
     end
 
     if topRightText and not self.topRightText then
-        self.topRightText=e.Cstr(self, nil, nil, nil, nil, 'OVERLAY')
+        self.topRightText=e.Cstr(self, size, nil, nil, nil, 'OVERLAY')
         self.topRightText:SetPoint('TOPRIGHT',2,0)
     end
     if self.topRightText then
@@ -168,7 +170,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
         end
     end
     if topLeftText and not self.topLeftText then
-        self.topLeftText=e.Cstr(self, nil, nil, nil, nil, 'OVERLAY')
+        self.topLeftText=e.Cstr(self, size, nil, nil, nil, 'OVERLAY')
         self.topLeftText:SetPoint('TOPLEFT')
     end
     if self.topLeftText then
@@ -179,7 +181,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
     end
     if bottomRightText then
         if not self.bottomRightText then
-            self.bottomRightText=e.Cstr(self, nil, nil, nil, nil, 'OVERLAY')
+            self.bottomRightText=e.Cstr(self, size, nil, nil, nil, 'OVERLAY')
             self.bottomRightText:SetPoint('BOTTOMRIGHT')
         end
     end
@@ -191,7 +193,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
     end
 
     if leftText and not self.leftText then
-        self.leftText=e.Cstr(self, nil, nil, nil, nil, 'OVERLAY')
+        self.leftText=e.Cstr(self, size, nil, nil, nil, 'OVERLAY')
         self.leftText:SetPoint('LEFT')
     end
     if self.leftText then
@@ -201,7 +203,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
         end
     end
     if bottomLeftText and not self.bottomLeftText then
-        self.bottomLeftText=e.Cstr(self)
+        self.bottomLeftText=e.Cstr(self, size)
         self.bottomLeftText:SetPoint('BOTTOMLEFT')
     end
     if self.bottomLeftText then
@@ -284,11 +286,24 @@ local function setGuildBank()--公会银行,设置
                 local itemLink= GetGuildBankItemLink(tab, i)
                 local itemID= itemLink and GetItemInfoInstant(itemLink)
                 set_Item_Info(button, itemLink, itemID, nil, nil, {tab, i})
+                print(button:GetName())
             end
         end
     end
 end
 
+local function set_BankFrameItemButton_Update(button)--银行, BankFrame.lua
+    local container = button:GetParent():GetID();
+    if not button.isBag then
+        local buttonID = button:GetID();
+        local itemInfo = C_Container.GetContainerItemInfo(container, buttonID) or {};
+        local info={
+            bagID=container,
+            slotID=buttonID,
+        }
+        set_Item_Info(button, itemInfo.hyperlink, itemInfo.itemID, info)
+    end
+end
 --####
 --初始
 --####
@@ -338,6 +353,7 @@ local function Init()
 
     hooksecurefunc('MerchantFrame_UpdateMerchantInfo',setMerchantInfo)--MerchantFrame.lua
     hooksecurefunc('MerchantFrame_UpdateBuybackInfo', setMerchantInfo)
+    hooksecurefunc('BankFrameItemButton_Update',set_BankFrameItemButton_Update)--银行
 
     --############
     --排序:从右到左
@@ -378,6 +394,7 @@ panel:RegisterEvent("ADDON_LOADED")
 
 panel:RegisterEvent("GUILDBANKBAGSLOTS_CHANGED");
 panel:RegisterEvent("GUILDBANK_ITEM_LOCK_CHANGED");
+panel:RegisterEvent('BANKFRAME_OPENED')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
@@ -418,6 +435,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event == "GUILDBANKBAGSLOTS_CHANGED" or event =="GUILDBANK_ITEM_LOCK_CHANGED" then
         setGuildBank()--公会银行,设置
 
+    elseif event=='BANKFRAME_OPENED' then--打开所有银行，背包
+        for i=NUM_TOTAL_EQUIPPED_BAG_SLOTS+1, (NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS), 1 do
+            ToggleBag(i);
+        end
     end
 end)
 
