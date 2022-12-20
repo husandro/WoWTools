@@ -17,7 +17,7 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local info = C_Container.GetContainerItemInfo(bag, slot)
             if info and info.hyperlink then
-                local classID, subclassID = select(6, GetItemInfoInstant(info.hyperlink))
+                local classID = select(6, GetItemInfoInstant(info.hyperlink))
                 if classID==3 then
                     local btn=Buttons[index]
                     if not btn then
