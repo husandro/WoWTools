@@ -588,7 +588,11 @@ local function All(self)--所有记录
     end
     if  text and not self.WoWKeystones then
         self.WoWKeystones=e.Cstr(self)
-        self.WoWKeystones:SetPoint('TOPLEFT', self, 'TOPRIGHT',0, -10)
+        if IsAddOnLoaded('RaiderIO') and RaiderIO_ProfileTooltip then
+            self.WoWKeystones:SetPoint('TOPLEFT', RaiderIO_ProfileTooltip, 'BOTTOMLEFT')
+        else
+            self.WoWKeystones:SetPoint('TOPLEFT', self, 'TOPRIGHT',0, -10)
+        end
     end
     if self.WoWKeystones then
         self.WoWKeystones:SetText(text)
