@@ -706,7 +706,6 @@ local function set_Update()--Blizzard_ChallengesUI.lua
         local frame = self.DungeonIcons[i]
         if frame and frame.mapID then
             if not frame.tips then
-               
                 frame:SetScript("OnMouseDown",function(self2)
                     if not EncounterJournal or not EncounterJournal:IsShown() then
                         ToggleEncounterJournal()
@@ -762,7 +761,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                 local affixScores, overAllScore = C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(frame.mapID)
                 if(overAllScore and inTimeInfo or overtimeInfo) then
                     if not frame.sc then--分数
-                        frame.sc=e.Cstr(frame)
+                        frame.sc=e.Cstr(frame, 10)
                         frame.sc:SetPoint('CENTER', 0,-3)
                         if frame.HighestLevel then--移动层数位置
                             frame.HighestLevel:ClearAllPoints()
@@ -801,7 +800,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
     end
 
     if ChallengesFrame.WeeklyInfo.Child.WeeklyChest and ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus and ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus:GetText()==MYTHIC_PLUS_COMPLETE_MYTHIC_DUNGEONS then
-        ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus:SetText('')
+        ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus:SetText('')--隐藏，完成史诗钥石地下城即可获得
     end
 end
 
