@@ -59,7 +59,7 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua
                     text= text>1 and text or ''
                     if text~='' and info. quality then
                         local hex = select(4, GetItemQualityColor(quality))
-                        text= hex and '|c'..hex..text or text
+                        text= hex and '|c'..hex..text..'|r' or text
                     end
                     btn.text:SetText(text)
 
