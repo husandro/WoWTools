@@ -16,7 +16,7 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua
     for bag=0, NUM_BAG_SLOTS do
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local info = C_Container.GetContainerItemInfo(bag, slot)
-            if info and info.hyperlink then
+            if info and info.hyperlink and info.iconFileID then
                 local classID = select(6, GetItemInfoInstant(info.hyperlink))
                 if classID==3 then
                     local btn=Buttons[index]
@@ -53,7 +53,7 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua
 
                     btn.bag=bag
                     btn.slot=slot
-                    btn:SetNormalTexture(info.iconFileID or 0)
+                    btn:SetNormalTexture(info.iconFileID)
                     btn:SetShown(true)
 
                     index= index+1
