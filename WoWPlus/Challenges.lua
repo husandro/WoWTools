@@ -762,7 +762,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                         frame.sc:SetPoint('CENTER', 0,-3)
                         if frame.HighestLevel then--移动层数位置
                             frame.HighestLevel:ClearAllPoints()
-                            frame.HighestLevel:SetPoint('CENTER',0, h+2)
+                            frame.HighestLevel:SetPoint('CENTER',0, 12)
                         end
                     end
                     local rgb=C_ChallengeMode.GetSpecificDungeonOverallScoreRarityColor(overAllScore) or HIGHLIGHT_FONT_COLOR--副本分数颜色
