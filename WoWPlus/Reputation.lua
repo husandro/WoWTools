@@ -427,7 +427,7 @@ local function FactionUpdate(self, env, text)--监视声望更新提示
 				if not tooLowLevelForParagon then
 					local completed= math.modf(currentValue/threshold)
 					currentValue= completed>0 and currentValue - threshold*completed or currentValue
-					value=('%i%%'):format(currentValue/threshold*100).. (completed>0 and ' '..QUEST_REWARDS..'|cnGREEN_FONT_COLOR:'..completed..'|r'..VOICEMACRO_LABEL_CHARGE1)
+					value=('%i%%'):format(currentValue/threshold*100).. (completed>0 and ' '..QUEST_REWARDS..'|cnGREEN_FONT_COLOR:'..completed..'|r'..VOICEMACRO_LABEL_CHARGE1 or '')
 				end
 			end
 			local m=name..(factionStandingtext and ' '..factionStandingtext or '')
