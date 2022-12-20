@@ -367,7 +367,7 @@ local function Init()
     --排序:从右到左
     --############
     local function set_Sort_Rigth_To_Left()
-        C_Container.SetSortBagsRightToLeft(Save.sortRightToLeft or false)
+        C_Container.SetSortBagsRightToLeft(Save.sortRightToLeft)
     end
     ContainerFrameCombinedBagsPortraitButton:HookScript('OnMouseDown',function ()
         UIDropDownMenu_AddSeparator()
@@ -379,14 +379,15 @@ local function Init()
             tooltipTitle=id,
             tooltipText=addName,
             func= function()
-                Save.sortRightToLeft= not C_Container.GetSortBagsRightToLeft() and true or nil
+                Save.sortRightToLeft= not C_Container.GetSortBagsRightToLeft() and true or false
                 set_Sort_Rigth_To_Left()--排序:从右到左
             end,
         }
         UIDropDownMenu_AddButton(info, 1)
     end)
-    set_Sort_Rigth_To_Left()--排序:从右到左
-
+    if Save.sortRightToLeft~=nil then
+        set_Sort_Rigth_To_Left()--排序:从右到左
+    end
     --###############
     --收起，背包小按钮
     --###############
