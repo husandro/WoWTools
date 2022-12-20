@@ -54,12 +54,7 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua
                         table.insert(Buttons, btn)
                     end
 
-                    btn.bag=bag
-                    btn.slot=slot
-                    btn:SetNormalTexture(info.iconFileID)
-                    btn:SetShown(true)
-
-                    local text
+                    local text--数量
                     text= GetItemCount(info.itemID)
                     text= text>1 and text or ''
                     if text~='' and info. quality then
@@ -68,6 +63,10 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua
                     end
                     btn.text:SetText(text)
 
+                    btn.bag=bag
+                    btn.slot=slot
+                    btn:SetNormalTexture(info.iconFileID)--图标
+                    btn:SetShown(true)
 
                     index= index+1
                     items[info.itemID]=true
