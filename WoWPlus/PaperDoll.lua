@@ -661,6 +661,15 @@ hooksecurefunc('PaperDollItemSlotButton_Update',  function(self)--PaperDollFrame
 end)
 
 local function setFlyoutLevel(button, level, paperDollItemSlot)--装备弹出 
+    if Save.disabled then
+        if button.level then
+            button.level:SetText('')
+        end
+        if button.upLevel then
+            button.upLevel:SetText('')
+        end
+        return
+    end
     if level and not button.level then
         button.level=e.Cstr(button, 10)
         button.level:SetPoint('BOTTOM')
