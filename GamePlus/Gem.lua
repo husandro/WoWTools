@@ -12,16 +12,16 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua
     if not ItemSocketingFrame or not ItemSocketingFrame:IsVisible() then
         return
     end
-    local index=1
+    local index=17
+    local items={}
     for bag=0, NUM_BAG_SLOTS do
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local info = C_Container.GetContainerItemInfo(bag, slot)
-            if info and info.hyperlink and info.iconFileID then
+            if info and info.hyperlink and info.iconFileID and info.itemID then
                 local classID = select(6, GetItemInfoInstant(info.hyperlink))
-                if classID==3 then
+                if classID==3 and not items[info.itemID] then
                     local btn=Buttons[index]
                     if not btn then
-                        --e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size)
                         btn= e.Cbtn(ItemSocketingFrame, nil,nil,nil,nil, true,{25, 25})
                         if index==1 then
                             btn:SetPoint('TOPRIGHT', ItemSocketingFrame, 'BOTTOMRIGHT')
@@ -48,6 +48,9 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua
                             end
                         end)
                         btn:SetScript('OnLeave', function() e.tips:Hide() end)
+
+                        btn.text=e.Cstr(btn)
+                        btn.text:SetPoint('BOTTOMRIGHT')
                         table.insert(Buttons, btn)
                     end
 
@@ -56,7 +59,18 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua
                     btn:SetNormalTexture(info.iconFileID)
                     btn:SetShown(true)
 
+                    local text
+                    text= GetItemCount(info.itemID)
+                    text= text>1 and text or ''
+                    if text~='' and info. quality then
+                        local hex = GetItemQualityColor(quality)
+                        text= hex and '|cff'..hex..text..'|r' or text
+                    end
+                    btn.text:SetText(text)
+
+
                     index= index+1
+                    items[info.itemID]=true
                 end
             end
         end
