@@ -541,7 +541,7 @@ local function All(self)--所有记录
 
     info = C_MythicPlus.GetRunHistory(false, true)--本周记录
     if info then
-        table.sort(info,HistorySort)
+        table.sort(info, HistorySort)
         local n,n2=0,0
         local IDs={}
         for _, v in pairs(info) do

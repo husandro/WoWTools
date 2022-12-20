@@ -26,22 +26,24 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
 
         elseif C_Item.IsItemKeystoneByID(itemID) then--挑战
             local name=itemLink:match('%[(.-)]') or itemLink
-            topLeftText=name:match('%((%d+)%)') or C_MythicPlus.GetOwnedKeystoneLevel() --等级
-            name=name:gsub('%((%d+)%)','')
-            name=name:match('（(.-)）') or name:match('%((.-)%)') or name:match('%- (.+)') name:match(KeyStone)--名称
             if name then
-                bottomLeftText=e.WA_Utf8Sub(name, 2,5)
-            end
-            local activities=C_WeeklyRewards.GetActivities(1)--本周完成
-            if activities then
-                local t=0
-                for _,v in pairs(activities) do
-                    if v and v.level then
-                        if v.level >t then t=v.level end
-                    end
+                topLeftText=name:match('%((%d+)%)') or C_MythicPlus.GetOwnedKeystoneLevel() --等级
+                name=name:gsub('%((%d+)%)','')
+                name=name:match('（(.-)）') or name:match('%((.-)%)') or name:match('%- (.+)') or name:match(KeyStone)--名称
+                if name then
+                    bottomLeftText=e.WA_Utf8Sub(name, 2,5)
                 end
-                if t>0 then
-                    leftText='|cnRED_FONT_COLOR:'..t..'|r'
+                local activities=C_WeeklyRewards.GetActivities(1)--本周完成
+                if activities then
+                    local t=0
+                    for _,v in pairs(activities) do
+                        if v and v.level then
+                            if v.level >t then t=v.level end
+                        end
+                    end
+                    if t>0 then
+                        leftText='|cnGREEN_FONT_COLOR:'..t..'|r'
+                    end
                 end
             end
         elseif e.itemPetID[itemID] then

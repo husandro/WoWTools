@@ -297,14 +297,15 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
             end
         end
 
-        set_GroupGuid()--队伍数据收集
-        NotifyInspect('player')--取得,自已, 装等
-        C_MythicPlus.RequestMapInfo()
-        RequestRaidInfo()
+        C_Timer.After(2, function()
+            set_GroupGuid()--队伍数据收集
+            NotifyInspect('player')--取得,自已, 装等
+            C_MythicPlus.RequestMapInfo()
+            RequestRaidInfo()
 
-        set_Money()--钱
-        updateCurrency()--{currencyID = 数量}
-
+            set_Money()--钱
+            updateCurrency()--{currencyID = 数量}
+        end)
     elseif event=='PLAYER_LOGOUT' then
         if not e.ClearAllSave then
             WoWDate=e.WoWSave
@@ -327,13 +328,14 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
         local unit= UnitGUID("mouseover")==arg1 and 'mouseover'
                     or e.GroupGuid[arg1] and e.GroupGuid[arg1].unit 
                     or arg1==e.Player.guid and 'player'
-                    or arg1==UnitGUID('target'), 'target'
+                    or arg1==UnitGUID('target') and 'target'
         if unit then
             getPlayerInfo(unit, arg1)
         end
 
     elseif event=='CHALLENGE_MODE_MAPS_UPDATE' or event=='WEEKLY_REWARDS_UPDATE' then--地下城挑战
         updateChallengeMode()
+
     elseif event=='CHALLENGE_MODE_COMPLETED' then
         C_MythicPlus.RequestMapInfo()
 

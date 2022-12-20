@@ -288,7 +288,7 @@ local function setItem(self, ItemLink)
         self.textRight:SetText(hex..bank..e.Icon.bank2..' '..bag..e.Icon.bag2..'|r')
     end
     if C_Item.IsItemKeystoneByID(itemID) then--挑战
-        local numPlayer=1 --帐号数据 --{score=总分数,itemLink={超连接}, weekLevel=本周最高, weekNum=本周次数, all=总次数},
+        --local numPlayer=1 --帐号数据 --{score=总分数,itemLink={超连接}, weekLevel=本周最高, weekNum=本周次数, all=总次数},
         for guid, info in pairs(e.WoWSave) do
             local find
             for linkItem, _ in pairs(info.Keystone.itemLink) do
@@ -299,7 +299,16 @@ local function setItem(self, ItemLink)
                 self:AddDoubleLine(e.GetPlayerInfo(nil, guid, true), guid==e.Player.guid and e.Icon.star2)
             end
         end
-       
+        if e.WoWSave[e.Player.guid] and e.WoWSave[e.Player.guid].Keystone then--挑战分数
+            local score= e.WoWSave[e.Player.guid].Keystone.score
+            if score and score>0 then
+                local numAll= e.WoWSave[e.Player.guid].Keystone.all or 0
+                local weekNum= e.WoWSave[e.Player.guid].Keystone.weekNum or 0
+                local weekLevel= e.WoWSave[e.Player.guid].Keystone.weekLevel or 0
+                self.textLeft:SetText(weekLevel.. e.GetKeystoneScorsoColor(score, true))
+                self.text2Left:SetText(weekNum..'/'..numAll)
+            end
+        end
     else
         local bagAll,bankAll,numPlayer=0,0,0--帐号数据
         for guid, info in pairs(e.WoWSave) do
@@ -599,7 +608,8 @@ local function setUnitInfo(self, unit)--设置单位提示信息
         local isGroupPlayer= (not isSelf and e.GroupGuid[guid]) and true or nil--队友
 
         local num= isInGuild and 4 or 3
-        for i=num, e.tips:NumLines() do
+        local allNum= self:NumLines()
+        for i=num, allNum do
             line=_G["GameTooltipTextLeft"..i]
             if line then
                 if i==num then
@@ -608,7 +618,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                         if isWarModeDesired then
                             line=_G["GameTooltipTextRight"..i]
                             if line then
-                                line:SetText(PVP_LABEL_WAR_MODE)
+                                line:SetText(col..PVP_LABEL_WAR_MODE)
                                 line:SetShown(true)
                             end
                         end
@@ -618,7 +628,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                         if mapInfo and mapInfo.name and _G["GameTooltipTextRight"..i] then
                             if mapInfo.name ~=e.GetUnitMapName('player') then
                                 line=_G["GameTooltipTextRight"..i]
-                                line:SetText(mapInfo.name..e.Icon.map2)
+                                line:SetText(col..mapInfo.name..e.Icon.map2)
                                 line:SetShown(true)
                             else
                                 line:Hide()
@@ -626,13 +636,31 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                         end
                     else
                         line:Hide()
-
                     end
                 else
-                   line:Hide()
+                    if allNum==i and isSelf and e.WoWSave[e.Player.guid] and e.WoWSave[e.Player.guid].Keystone then--挑战分数
+                        local score= e.WoWSave[e.Player.guid].Keystone.score
+                        local numAll= e.WoWSave[e.Player.guid].Keystone.all or 0
+                        local weekNum= e.WoWSave[e.Player.guid].Keystone.weekNum or 0
+                        local weekLevel= e.WoWSave[e.Player.guid].Keystone.weekLevel or 0
+                        
+                        if score and score>0 then
+                            line:SetText(col..weekLevel..e.GetKeystoneScorsoColor(score, true))
+                            if _G["GameTooltipTextRight"..i] then
+                                _G["GameTooltipTextRight"..i]:SetText(col..weekNum..'/'..numAll)
+                                _G["GameTooltipTextRight"..i]:SetShown(true)
+                            end
+                        else
+                            line:Hide()
+                        end
+                    else
+                        line:Hide()
+                    end
                 end
             end
         end
+
+        
 
     elseif (UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit)) then--宠物TargetFrame.lua
         setPet(self, UnitBattlePetSpeciesID(unit))
