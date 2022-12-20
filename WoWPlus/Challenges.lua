@@ -799,6 +799,10 @@ local function set_Update()--Blizzard_ChallengesUI.lua
             Nu(frame)--副本 完成/总次数 (全部)
         end
     end
+
+    if ChallengesFrame.WeeklyInfo.Child.WeeklyChest and ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus and ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus:GetText()==MYTHIC_PLUS_COMPLETE_MYTHIC_DUNGEONS then
+        ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus:SetText('')
+    end
 end
 
 --####
@@ -897,13 +901,16 @@ local function Init()
    All(self)--所有记录   
    Cur(self)--货币数量
 
-    if ChallengesFrame.WeeklyInfo and ChallengesFrame.WeeklyInfo.Child and ChallengesFrame.WeeklyInfo.Child.Description then
-        local text= ChallengesFrame.WeeklyInfo.Child.Description:GetText()
-        if text==MYTHIC_PLUS_MISSING_KEYSTONE_MESSAGE then
-            ChallengesFrame.WeeklyInfo.Child.Description:SetText()
-            print(id, addName)
-            print('|cffff00ff',text)
+    if ChallengesFrame.WeeklyInfo and ChallengesFrame.WeeklyInfo.Child then
+        if ChallengesFrame.WeeklyInfo.Child.Description then
+            local text= ChallengesFrame.WeeklyInfo.Child.Description:GetText()
+            if text==MYTHIC_PLUS_MISSING_KEYSTONE_MESSAGE then
+                ChallengesFrame.WeeklyInfo.Child.Description:SetText()
+                print(id, addName)
+                print('|cffff00ff',text)
+            end
         end
+        
     end
 end
 
