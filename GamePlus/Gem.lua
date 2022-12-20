@@ -42,6 +42,8 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua
                                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                                 e.tips:ClearLines()
                                 e.tips:SetBagItem(self.bag, self.slot)
+                                e.tips:AddLine(' ')
+                                e.tips:AddDoubleLine(id, addName)
                                 e.tips:Show()
                             end
                         end)
