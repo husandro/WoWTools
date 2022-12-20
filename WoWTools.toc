@@ -97,7 +97,8 @@ GamePlus\Talking.lua
 GamePlus\InterruptStolenDispel.lua
 ##日历, 显示
 GamePlus\Holiday.lua
-
+##镶嵌宝石
+GamePlus\Gem.lua
 
 ##坐骑， Tools 主要的，
 ##如果要使用Tools中的一个模块，必须开启坐骑模块

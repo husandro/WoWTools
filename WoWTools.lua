@@ -742,7 +742,9 @@ e.GetKeystoneScorsoColor= function(score, texture)--地下城史诗, 分数,颜�
         return ''
     else
         local color= C_ChallengeMode.GetDungeonScoreRarityColor(score)
-        score= color:WrapTextInColorCode(score)
+        if color  then
+            score= color:WrapTextInColorCode(score)
+        end
         if texture then
             score= '|T4352494:0|t'..score
         end
