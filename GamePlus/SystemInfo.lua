@@ -1,5 +1,5 @@
 local id, e = ...
-local addName= e.onlyChinse and '系统信息' and SYSTEM_MESSAGES--MAINMENU_BUTTON
+local addName= e.onlyChinse and '系统信息' or SYSTEM_MESSAGES--MAINMENU_BUTTON
 local Save={equipmetLevel=true, durabiliy=true, moneyWoW=true}
 
 local panel=e.Cbtn(nil, nil, nil,nil,nil,true,{12,12})
