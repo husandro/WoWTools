@@ -1,5 +1,5 @@
 local id, e = ...
-local addName=ITEMS..INFO
+local addName= e.onlyChinse and '物品信息' or ITEMS..INFO
 local Save={}
 local panel=CreateFrame("Frame")
 
