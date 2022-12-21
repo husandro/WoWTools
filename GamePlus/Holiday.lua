@@ -1,5 +1,5 @@
 local id, e = ...
-local addName=	CALENDAR_FILTER_HOLIDAYS
+local addName= e.onlyChinse and '节日' or CALENDAR_FILTER_HOLIDAYS
 local Save={onGoing=true}
 local panel= e.Cbtn(UIParent, nil, nil, nil, nil, true, {18,18})
 
