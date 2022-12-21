@@ -3,10 +3,6 @@ local Save={}
 local addName= e.onlyChinse and "镶嵌宝石" or SOCKET_GEMS
 local panel=CreateFrame("Frame")
 
-panel:RegisterEvent('ADDON_LOADED')
-panel:RegisterEvent('SOCKET_INFO_CLOSE')
-panel:RegisterEvent('SOCKET_INFO_UPDATE')
-
 local Buttons={}
 local function set_Gem()--Blizzard_ItemSocketingUI.lua
     if not ItemSocketingFrame or not ItemSocketingFrame:IsVisible() then
@@ -85,6 +81,10 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua
     items=nil
 end
 
+panel:RegisterEvent('ADDON_LOADED')
+panel:RegisterEvent('SOCKET_INFO_CLOSE')
+panel:RegisterEvent('SOCKET_INFO_UPDATE')
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
         Save= WoWToolsSave and WoWToolsSave[addName] or Save
@@ -100,6 +100,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             panel:UnregisterAllEvents()
         end
         panel:RegisterEvent("PLAYER_LOGOUT")
+    elseif event=='PLAYER_LOGOUT' then
+        if not e.ClearAllSave then
+            if not WoWToolsSave then WoWToolsSave={} end
+            WoWToolsSave[addName]=Save
+        end
 
     elseif event=='SOCKET_INFO_UPDATE' then
         panel:RegisterEvent('BAG_UPDATE_DELAYED')
