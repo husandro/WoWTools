@@ -1,6 +1,6 @@
 local id, e = ...
 local Save={disabled=true}
-local addName=HIDE..'NPC'..VOICE_TALKING
+local addName= e.onlyChinse and '隐藏NPC发言' or HIDE..'NPC'..VOICE_TALKING
 local panel=CreateFrame('Frame')
 
 local function setRegister()--设置事件
