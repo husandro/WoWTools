@@ -1,5 +1,5 @@
 local id, e = ...
-local addName=ADDONS..CHAT_MODERATE
+local addName= e.onlyChinse and '插件管理' or ADDONS..CHAT_MODERATE
 local panel=e.Cbtn(AddonList, true, nil, nil, nil, true,{80,22})
 
 local Save={

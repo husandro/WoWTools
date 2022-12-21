@@ -1,5 +1,5 @@
 local id, e = ...
-local addName=ENABLE_DIALOG..QUESTS_LABEL
+local addName= e.onlyChinse and '对话和任务' or ENABLE_DIALOG..QUESTS_LABEL
 local Save={
         gossip=true, quest=true, unique=true, autoSortQuest=true, autoSelectReward=true,
         NPC={},
