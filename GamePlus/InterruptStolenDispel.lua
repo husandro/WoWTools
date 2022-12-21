@@ -1,5 +1,5 @@
 local id, e = ...
-local addName= 	INTERRUPTS..DISPELS..ACTION_SPELL_STOLEN
+local addName= e.onlyChinse and '断驱散' or INTERRUPTS..DISPELS..ACTION_SPELL_STOLEN
 
 local Save={}
 local panel=CreateFrame("Frame")
