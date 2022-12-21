@@ -26,11 +26,9 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua
                         btn:SetSize(25,25)
                         if index==1 then
                             btn:SetPoint('TOPRIGHT', ItemSocketingFrame, 'BOTTOMRIGHT',-10,-6)
-
                         elseif select(2, math.modf(index / 9))==0 then
                             local y=math.modf(index / 9)
                             btn:SetPoint('TOPRIGHT', ItemSocketingFrame, 'BOTTOMRIGHT',-10, -y*44)
-
                         else
                             btn:SetPoint('RIGHT', Buttons[index-1], 'LEFT', -13,0)
                         end
