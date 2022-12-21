@@ -2,7 +2,7 @@ local id, e = ...
 local Save={noSell={}, Sell={}, }
 local bossSave={}
 local buySave={}--购买物品
-local addName=MERCHANT
+local addName= e.onlyChinse and '商人' or MERCHANT
 local panel=CreateFrame("Frame")
 local RepairSave={date=date('%x'), player=0, guild=0, num=0}
 
