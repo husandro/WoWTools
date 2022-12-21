@@ -382,6 +382,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
         if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
             panel:UnregisterAllEvents()
         else
+            Save= WoWToolsSave and WoWToolsSave[addName] or Save
             Init()
         end
 

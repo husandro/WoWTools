@@ -140,8 +140,8 @@ ChatButton\Markers.lua
 ChatButton\Invite.lua
 ##查找器， 地下城和团队， 自动退出，进入，Roll装
 ChatButton\LFD.lua
-## 战场
-ChatButton\Battlefield.lua
+##战场
+##ChatButton\Battlefield.lua
 ##世界频道
 ChatButton\WorldChannel.lua
 ##公会

@@ -140,6 +140,18 @@ e.PlayerLink=function(name, guid) --玩家超链接
     end
 end
 
+e.PlayerOnlineInfo=function(unit)--单位，状态信息
+    if unit and UnitExists(unit) then
+        if not UnitIsConnected(unit) then
+            return '|TInterface\\FriendsFrame\\StatusIcon-Offline:0|t'
+        elseif UnitIsAFK(unit) then
+            return '|TInterface\\FriendsFrame\\StatusIcon-Away:0|t'
+        elseif UnitIsDeadOrGhost(unit) then
+            return '|A:poi-soulspiritghost:0:0|a'
+        end
+    end
+end
+
 e.GetNpcID = function(unit)--NPC ID
     if UnitExists(unit) then
         local guid=UnitGUID(unit)
@@ -346,7 +358,7 @@ e.Cstr=function(self, size, fontType, ChangeFont, color, layer, justifyH)
     local b=ChangeFont or self:CreateFontString(nil, (layer or 'OVERLAY'))
     if fontType then
         if size then
-        local fontName, _, fontFlags = fontType:GetFont()
+            local fontName, _, fontFlags = fontType:GetFont()
             b:SetFont(fontName, size, fontFlags)
         else
             b:SetFont(fontType:GetFont())

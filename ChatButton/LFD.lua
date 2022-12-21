@@ -1,7 +1,12 @@
 local id, e = ...
 local addName =	DUNGEONS_BUTTON
-local Save={leaveInstance=true, enterInstance=true, autoROLL=true}
+local Save={
+    leaveInstance=true, enterInstance=true, autoROLL=true,
+    ReMe=true,--仅限战场，释放，复活
+    autoSetPvPRole=true,--自动职责确认， 排副本
+}
 local wowSave={[INSTANCE]={}}--{[ISLANDS_HEADER]=次数, [副本名称..难度=次数]}
+local sec=5--离开时间
 
 local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
 panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
@@ -135,7 +140,7 @@ local function setQueueStatus()--小眼睛, 信息
             panel.tipsFrame.text=e.Cstr(panel.tipsFrame, nil, nil, nil, true)
             panel.tipsFrame.text:SetPoint('BOTTOMLEFT')
         end
-        
+
         local num= 0
         for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
             local listNum, listText=getQueuedList(i,true)
@@ -470,7 +475,7 @@ end
 
 local function InitList(self, level, type)--LFDFrame.lua
     local info
-    if type then
+    if type=='SETTINGS' then
         info={--自动, 准备进入,选项
             text=e.Icon.toRight2..BATTLEFIELD_CONFIRM_STATUS,
             tooltipOnButton=true,
@@ -487,13 +492,13 @@ local function InitList(self, level, type)--LFDFrame.lua
             end
         }
         UIDropDownMenu_AddButton(info, level)
-    
+
         info={--自动, 离开副本,选项
-            text=e.Icon.toLeft2..LEAVE..'('..INSTANCE..')',
+            text=e.Icon.toLeft2..(e.onlyChinse and '离开副本' or LEAVE..INSTANCE),
             tooltipOnButton=true,
-            tooltipTitle=LEAVE..' ('..SLASH_RANDOM3:gsub('/','')..') '..INSTANCE,
+            tooltipTitle= e.onlyChinse and '离开副本和战场' or LEAVE..INSTANCE..' '..BATTLEFIELDS,
             checked=Save.leaveInstance,
-            tooltipText=AUTO_JOIN:gsub(JOIN, LEAVE)..'\n'..AUTO_JOIN:gsub(JOIN,'')..LOOT_ROLL.. '\n\n'..id..' '..addName,
+            tooltipText= (e.onlyChinse and '离开随机(自动 Roll)' or  AUTO_JOIN:gsub(JOIN, LEAVE)..' ('..AUTO_JOIN:gsub(JOIN,'')..LOOT_ROLL) .. ')\n\n'..id..' '..addName,
             func=function()
                 if Save.leaveInstance then
                     Save.leaveInstance=nil
@@ -504,8 +509,6 @@ local function InitList(self, level, type)--LFDFrame.lua
             end
         }
         UIDropDownMenu_AddButton(info, level)
-        
-       
 
         local num, text=0, ''
         for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
@@ -517,8 +520,8 @@ local function InitList(self, level, type)--LFDFrame.lua
         end
         UIDropDownMenu_AddSeparator(level)
 
-        info={--离开所有副本
-            text=LEAVE_ALL_QUEUES..' #'..num..'|r',
+        info={
+            text= (e.onlyChinse and '离开所有副本' or LEAVE_ALL_QUEUES)..' #'..num..'|r',
             notCheckable=true,
             disabled= num==0,
             func=function ()
@@ -534,7 +537,7 @@ local function InitList(self, level, type)--LFDFrame.lua
 
         UIDropDownMenu_AddSeparator(level)
         info={--信息 QueueStatusFrame.lua
-            text='|A:groupfinder-eye-frame:0:0|a'..SOCIAL_QUEUE_TOOLTIP_HEADER..INFO,
+            text='|A:groupfinder-eye-frame:0:0|a'.. (e.onlyChinse and '列表信息' or SOCIAL_QUEUE_TOOLTIP_HEADER..INFO),
             checked=not Save.hideQueueStatus,
             func=function()
                 Save.hideQueueStatus = not Save.hideQueueStatus and true or nil
@@ -544,19 +547,39 @@ local function InitList(self, level, type)--LFDFrame.lua
         UIDropDownMenu_AddButton(info, level)
 
         info={--自动,战利品掷骰
-            text='|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t'..LOOT_ROLL,
+            text='|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t'..(e.onlyChinse and '战利品掷骰' or LOOT_ROLL),
             checked=Save.autoROLL,
             tooltipOnButton=true,
-            tooltipTitle=AUTO_JOIN:gsub(JOIN,''),
+            tooltipTitle= e.onlyChinse and '自动' or AUTO_JOIN:gsub(JOIN,''),
             func= function()
                 Save.autoROLL= not Save.autoROLL and true or nil
             end
         }
         UIDropDownMenu_AddButton(info, level)
+
+    elseif type=='BATTLEFIELDS' then--战场
+        info={
+            text= e.onlyChinse and '释放, 复活' or BATTLE_PET_RELEASE..', '..RESURRECT,
+            checked= Save.ReMe,
+            func= function()
+                Save.ReMe= not Save.ReMe and true or nil
+            end
+        }
+        UIDropDownMenu_AddButton(info, level)
+
+        info={
+            text= e.onlyChinse and '职责确认' or ROLE_POLL,
+            checked= Save.autoSetPvPRole,
+            func= function()
+                Save.autoSetPvPRole= not Save.autoSetPvPRole and true or nil 
+            end
+        }
+        UIDropDownMenu_AddButton(info, level)
+
     else
         local isLeader, isTank, isHealer, isDPS = GetLFGRoles()--角色职责
         info={
-            text=SETTINGS..(isLeader and e.Icon.leader or '')
+            text= (e.onlyChinse and '设置' or SETTINGS)..(isLeader and e.Icon.leader or '')
             ..(isTank and e.Icon.TANK or '')
             ..(isHealer and e.Icon.HEALER or '')
             ..(isDPS and e.Icon.DAMAGER or '')
@@ -568,6 +591,19 @@ local function InitList(self, level, type)--LFDFrame.lua
             hasArrow=true,
         }
         UIDropDownMenu_AddButton(info, level)
+
+        isTank, isHealer, isDPS = GetPVPRoles()--检测是否选定角色pve
+        info={
+            text=e.onlyChinse and '战场' or BATTLEFIELDS
+            ..(isTank and e.Icon.TANK or '')
+            ..(isHealer and e.Icon.HEALER or '')
+            ..(isDPS and e.Icon.DAMAGER or ''),
+            notCheckable=true,
+            menuList='BATTLEFIELDS',
+            hasArrow=true,
+        }
+        UIDropDownMenu_AddButton(info, level)
+
         UIDropDownMenu_AddSeparator(level)
         if  raidList(self, level, type) then --团本
             UIDropDownMenu_AddSeparator(level)
@@ -580,7 +616,6 @@ end
 --###############
 --离开, 进入, 副本
 --###############
-local sec=5--离开时间
 local function setLFGDungeonReadyDialog(self)--自动进入FB LFGDungeonReadyDialog:HookScript("OnShow"
     local afk=UnitIsAFK('player')
     if not self.infoText then
@@ -600,7 +635,7 @@ local function setLFGDungeonReadyDialog(self)--自动进入FB LFGDungeonReadyDia
     end
     self.infoText:SetText(text)
     if not Save.enterInstance or afk then
-        e.Ccool(self, GetTime(), 38, nil, true, true)
+        e.Ccool(self, nil, 38, nil, true, true)
         if Save.enterInstance and afk then
             print(id, addName, '|cnRED_FONT_COLOR:'..NO..'|r', BATTLEFIELD_CONFIRM_STATUS, '|cnRED_FONT_COLOR:'..CHAT_FLAG_AFK..'|r')
         end
@@ -613,7 +648,7 @@ local function setLFGDungeonReadyDialog(self)--自动进入FB LFGDungeonReadyDia
             print(text)
         end
     end
-    e.Ccool(self, GetTime(), sec, nil, true, true)
+    e.Ccool(self, nil, sec, nil, true, true)
     C_Timer.After(sec, function()
         if self and self.enterButton and self:IsShown() and self.enterButton:IsEnabled() then
             self.enterButton:Click()
@@ -623,7 +658,8 @@ end
 
 local ExitIns
 local function exitInstance()
-    local ins=IsInInstance()
+    local ins
+    ins= IsInInstance()
     local name, _, _, difficultyName, _, _, _, instanceID = GetInstanceInfo()
     ins = ins and name and difficultyName
     if ins then
@@ -671,28 +707,6 @@ StaticPopupDialogs[addName..'ExitIns']={
         s:GetParent():Hide()
     end,
 whileDead=true,timeout=sec, hideOnEscape =true,}
-
-local function leaveInstance()--自动离开
-    if not Save.leaveInstance or not IsLFGComplete() then
-        return
-    end
-    ExitIns=true
-    StaticPopup_Show(addName..'ExitIns')
-    e.Ccool(StaticPopup1, GetTime(), sec, nil, true)--冷却条
-    C_Timer.After(sec, function()
-        exitInstance()
-    end)
-end
-
-local function levelIsland()--离开海岛
-    wowSave[ISLANDS_HEADER]=wowSave[ISLANDS_HEADER] and wowSave[ISLANDS_HEADER]+1 or 1
-    if not Save.leaveInstance then
-        return
-    end
-    C_PartyInfo.LeaveParty(LE_PARTY_CATEGORY_INSTANC)
-    LFGTeleport(true)
-    print(id, addName, 	ISLAND_LEAVE, '|cnGREEN_FONT_COLOR:'..wowSave[ISLANDS_HEADER]..'|r'..	VOICEMACRO_LABEL_CHARGE1)
-end
 
 local function setIslandButton(self)--离开海岛按钮
     local find
@@ -830,6 +844,48 @@ local function Init()
         end
         SetLFGRoles(isLeader, isTank, isHealer, isDPS)
     end
+    local function set_PvPRoles()--检测是否选定角色pvp
+        local tank, healer, dps = GetPVPRoles()
+        if  not tank and not  healer and not dps then
+            tank, healer, dps=true,true,true
+            local sid=GetSpecialization()
+            if sid then
+                local role = select(5, GetSpecializationInfo(sid))
+                if role then
+                    if role=='TANK' then
+                        tank, healer, dps = true, false, false
+                    elseif role=='HEALER' then
+                        tank, healer, dps= false, true, false
+                    elseif role=='DAMAGER' then
+                        tank, healer, dps= false, false,true
+                    end
+                end
+            end
+            SetPVPRoles(tank, healer, dps)
+        end
+    end
+    set_PvPRoles()
+
+    LFDRoleCheckPopup:SetScript("OnShow",function(self)--副本职责
+        if not Save.autoSetPvPRole then
+            return
+        end
+        set_PvPRoles()--检测是否选定角色pvp
+        if not LFDRoleCheckPopupAcceptButton:IsEnabled() then
+            LFDRoleCheckPopup_UpdateAcceptButton();
+        end
+        print(id, addName, ROLE_POLL,'|cff00ff00'..ACCEPT, SecondsToTime(sec))
+        e.Ccool(self, nil, sec, nil, true, true)--设置冷却
+        C_Timer.After(sec, function()
+            if LFDRoleCheckPopupAcceptButton:IsEnabled() then
+                local t=LFDRoleCheckPopupDescriptionText:GetText()
+                if t then
+                    print(id, addName, '|cffff00ff'.. t)
+                end
+                LFDRoleCheckPopupAcceptButton:Click()
+            end
+        end)
+    end)
 
     setHoliday()--节日, 提示, panel.texture
 
@@ -924,7 +980,179 @@ panel:RegisterEvent('ISLAND_COMPLETED')
 panel:RegisterEvent('LFG_UPDATE_RANDOM_INFO')
 panel:RegisterEvent('START_LOOT_ROLL')
 
-panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
+panel:RegisterEvent('PVP_MATCH_COMPLETE')
+
+panel:RegisterEvent('CORPSE_IN_RANGE')--仅限战场，释放, 复活
+panel:RegisterEvent('PLAYER_DEAD')
+panel:RegisterEvent('AREA_SPIRIT_HEALER_IN_RANGE')
+
+panel:RegisterEvent('LFG_ROLE_CHECK_ROLE_CHOSEN')
+panel:RegisterEvent('LFG_ROLE_CHECK_DECLINED')
+panel:RegisterEvent('LFG_QUEUE_STATUS_UPDATE')
+panel:RegisterEvent('UPDATE_BATTLEFIELD_STATUS')
+panel:RegisterEvent('GROUP_LEFT')
+panel:RegisterEvent('PLAYER_ROLES_ASSIGNED')--职责确认
+
+
+local RoleC
+local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
+    if env=='LFG_ROLE_CHECK_DECLINED' then
+        if panel.RoleInfo then
+            panel.RoleInfo.text:SetText('')
+            panel.RoleInfo:Hide()
+        end
+        local co=GetNumGroupMembers();
+        if co and co>0 then
+            local find
+            local raid=IsInRaid()
+            local u= raid and 'raid' or 'party'
+            for i=1, co do
+                local u2=u..i;
+                if not raid and i==co then
+                    u2='player'
+                end
+                local guid=UnitGUID(u2);
+                local line=e.PlayerOnlineInfo(u2)
+                if line and guid then
+                    print(line, e.GetPlayerInfo(nil, guid, true), e.Icon.map2, e.GetUnitMapName(u2))
+                    find=true
+                end
+            end
+            if find then
+                print(id, addName)
+            end
+        end
+        return
+
+    elseif env=='UPDATE_BATTLEFIELD_STATUS' or env=='LFG_QUEUE_STATUS_UPDATE' or env=='GROUP_LEFT' or env=='PLAYER_ROLES_ASSIGNED' then
+        if panel.RoleInfo then
+            panel.RoleInfo.text:SetText('')
+            panel.RoleInfo:Hide()
+            RoleC=nil;
+        end
+        return;
+    end
+
+    if not Name or not (isT or  isH or  isD) then
+        return
+    end
+
+    if env=='LFG_ROLE_CHECK_ROLE_CHOSEN' then--队长重新排本
+        if RoleC and RoleC[Name] then
+            local u=RoleC[Name].unit;
+            if u and UnitIsGroupLeader(u) then
+                RoleC=nil;
+            end
+        end
+    end
+    
+    local co=GetNumGroupMembers();
+    if co and co>0 then
+        if not RoleC then
+            RoleC={};
+            local raid=IsInRaid()
+            local u= raid and 'raid' or 'party'
+            for i=1, co do
+                local u2=u..i
+                if not raid and i==co then
+                    u2='player'
+                end
+                local guid=UnitGUID(u2);
+                if guid then
+                    local info=(e.PlayerOnlineInfo(u2) or '')..e.GetPlayerInfo(nil, guid, true)
+                    local name=GetUnitName(u2,true);
+                    local player=UnitIsUnit('player', u2);
+                    RoleC[name]={
+                        info=info,
+                        index=i,
+                        unit=u2,
+                        player=player,
+                    }
+                end
+            end
+        end
+
+        local all=0;
+        local role='';
+        if RoleC[Name] then
+            if isT then role=role..INLINE_TANK_ICON end
+            if isH then role=role..INLINE_HEALER_ICON end
+            if isD then role=role..INLINE_DAMAGER_ICON end
+            RoleC[Name].role=role;
+        else
+            all=1;
+        end
+
+        local m='';
+        local playerMapID=select(2, e.GetUnitMapName('player'))
+        for k, v in pairs(RoleC) do
+            if v then
+                if m~='' then m=m..'\n' end
+                m=m..(v.role and v.role or v.index..')')..(v.info or k)
+                if v.role then
+                    all=all+1
+                end
+                local text, unitMapID=e.GetUnitMapName(v.unit)
+                if text and unitMapID~= playerMapID then
+                    m=m..RED_FONT_COLOR_CODE..e.Icon.map2..text..'|r'
+                end
+            end
+        end
+
+        if m~='' and not panel.RoleInfo then
+            panel.RoleInfo=e.Cbtn(nil, nil, nil, nil, nil, true, {20,20})
+            if Save.RoleInfoPoint then
+                panel.RoleInfo:SetPoint(Save.RoleInfoPoint[1], UIParent, Save.RoleInfoPoint[3], Save.RoleInfoPoint[4], Save.RoleInfoPoint[5])
+            else
+                panel.RoleInfo:SetPoint('TOPLEFT', panel, 'BOTTOMLEFT', 40, 40)
+            end
+            panel.RoleInfo:RegisterForDrag("RightButton")
+            panel.RoleInfo:SetMovable(true)
+            panel.RoleInfo:SetClampedToScreen(true)
+            panel:SetScript("OnDragStart", function(self)
+                self:StartMoving()
+            end)
+            panel:SetScript("OnDragStop", function(self)
+                ResetCursor()
+                self:StopMovingOrSizing()
+                Save.RoleInfoPoint={self:GetPoint(1)}
+                Save.RoleInfoPoint[2]=nil
+            end)
+            panel.RoleInfo:SetScript('OnEnter', function(self)
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(id, addName)
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(e.onlyChinse and '全部清除' or CLEAR_ALL, e.Icon.left)
+                e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
+            end)
+            panel.RoleInfo:SetScript('OnLeave', function() e.tips:Hide() end)
+            panel.RoleInfo:SetScript('OnMouseDown', function(self, d)
+                if d=='RightButton' then--移动光标
+                    SetCursor('UI_MOVE_CURSOR')
+                elseif d=='LeftButton' then
+                    self.text:SetText('')
+                    self:SetShown(false)
+                end
+            end)
+            panel:SetScript("OnMouseUp", function(self)
+                ResetCursor()
+            end)
+            panel.RoleInfo.text=e.Cstr(panel.RoleInfo)
+            panel.RoleInfo.text:SetPoint('BOTTOMLEFT', panel.RoleInfo, 'BOTTOMRIGHT')
+            panel.RoleInfo:SetShown(false)
+        end
+        if panel.RoleInfo then
+            panel.RoleInfo.text:SetText(m)
+            panel.RoleInfo:SetShown(m~='')
+        end
+
+    elseif panel.RoleInfo then
+        panel.RoleInfo:SetShown(false)
+    end
+end
+
+panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
     if event == "ADDON_LOADED" and arg1==id then
             if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
                 panel:UnregisterAllEvents()
@@ -941,9 +1169,15 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
             WoWToolsSave[INSTANCE]=wowSave
         end
 
-    elseif event=='LFG_COMPLETION_REWARD' or event=='LOOT_CLOSED' then
-            leaveInstance()--自动离开
-
+    elseif event=='LFG_COMPLETION_REWARD' or event=='LOOT_CLOSED' then--自动离开
+        if Save.leaveInstance and IsLFGComplete() then
+            ExitIns=true
+            StaticPopup_Show(addName..'ExitIns')
+            e.Ccool(StaticPopup1, nil, sec, nil, true)--冷却条
+            C_Timer.After(sec, function()
+                exitInstance()
+            end)
+        end
     elseif event=='PLAYER_ENTERING_WORLD' then
         if IsInInstance() then--自动离开
             panel:RegisterEvent('LOOT_CLOSED')
@@ -954,14 +1188,48 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
             setIslandButton(self)--离开海岛按钮
         end)
 
-    elseif event=='ISLAND_COMPLETED' then
-        levelIsland()--离开海岛
+    elseif event=='ISLAND_COMPLETED' then--离开海岛
+        wowSave[ISLANDS_HEADER]=wowSave[ISLANDS_HEADER] and wowSave[ISLANDS_HEADER]+1 or 1
+        if not Save.leaveInstance then
+            return
+        end
+        C_PartyInfo.LeaveParty(LE_PARTY_CATEGORY_INSTANC)
+        LFGTeleport(true)
+        print(id, addName, 	ISLAND_LEAVE, '|cnGREEN_FONT_COLOR:'..wowSave[ISLANDS_HEADER]..'|r'..	VOICEMACRO_LABEL_CHARGE1)
 
     elseif event=='LFG_UPDATE_RANDOM_INFO' then
         setHoliday()--节日, 提示, panel.texture
-    
+
     elseif event=='START_LOOT_ROLL' then
         setSTART_LOOT_ROLL(arg1, arg2, arg3)
+
+    elseif event=='CORPSE_IN_RANGE' or event=='PLAYER_DEAD' or event=='AREA_SPIRIT_HEALER_IN_RANGE' then--仅限战场，释放, 复活
+        if Save.ReMe and (C_PvP.IsBattleground() or C_PvP.IsArena()) then
+            if event=='PLAYER_DEAD' then
+                print(id, addName,'|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '释放, 复活' or BATTLE_PET_RELEASE..', '..RESURRECT))
+            end
+            RepopMe()--死后将你的幽灵释放到墓地。
+            RetrieveCorpse()--当玩家站在它的尸体附近时复活。
+            AcceptAreaSpiritHeal()--在范围内时在战场上注册灵魂治疗师的复活计时器
+        end
+
+    elseif event=='PVP_MATCH_COMPLETE' then--离开战场
+        if Save.leaveInstance then
+            if PVPMatchResults and PVPMatchResults.buttonContainer and PVPMatchResults.buttonContainer.leaveButton then
+                e.Ccool(PVPMatchResults.buttonContainer.leaveButton, nil, sec, nil, true, true)
+            end
+            print(id, addName, '|cnGREEN_FONT_COLOR:'..LEAVE_BATTLEGROUND, SecondsToTime(sec))
+            C_Timer.After(sec, function()
+                if IsInLFDBattlefield() then
+                    ConfirmOrLeaveLFGParty();
+                else
+                    ConfirmOrLeaveBattlefield();
+                end
+            end)
+        end
+
+    elseif event=='LFG_ROLE_CHECK_ROLE_CHOSEN' or event=='LFG_ROLE_CHECK_DECLINED' or event=='LFG_QUEUE_STATUS_UPDATE' or event=='UPDATE_BATTLEFIELD_STATUS' or event=='GROUP_LEFT,PLAYER_ROLES_ASSIGNED' then
+        get_Role_Info(event, arg1, arg2, arg3, arg4)--职责确认
     end
 end)
 
