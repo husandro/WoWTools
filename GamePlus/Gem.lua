@@ -17,17 +17,22 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua
     for bag=0, NUM_BAG_SLOTS do
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local info = C_Container.GetContainerItemInfo(bag, slot)
-            if info and info.hyperlink and info.iconFileID and info.itemID then
+            if info and info.hyperlink and info.itemID then
                 local classID = select(6, GetItemInfoInstant(info.hyperlink))
-                
                 if classID==3 and not items[info.itemID] then
                     local btn=Buttons[index]
                     if not btn then
-                        btn= e.Cbtn(ItemSocketingFrame, nil,nil,nil,nil, true,{25, 25})
+                        btn=CreateFrame('ItemButton',nil, ItemSocketingFrame)
+                        btn:SetSize(25,25)
                         if index==1 then
-                            btn:SetPoint('TOPRIGHT', ItemSocketingFrame, 'BOTTOMRIGHT')
+                            btn:SetPoint('TOPRIGHT', ItemSocketingFrame, 'BOTTOMRIGHT',-10,-6)
+
+                        elseif select(2, math.modf(index / 9))==0 then
+                            local y=math.modf(index / 9)
+                            btn:SetPoint('TOPRIGHT', ItemSocketingFrame, 'BOTTOMRIGHT',-10, -y*44)
+
                         else
-                            btn:SetPoint('RIGHT', Buttons[index-1], 'LEFT')
+                            btn:SetPoint('RIGHT', Buttons[index-1], 'LEFT', -13,0)
                         end
                         btn:SetScript('OnMouseDown', function(self, d)
                             if self.bag and self.slot then
@@ -57,7 +62,7 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua
 
                     local text--数量
                     text= GetItemCount(info.itemID)
-                    text= text>0 and text or ''
+                    text= text>1 and text or ''
                     if text~='' and info.quality then
                         local hex = select(4, GetItemQualityColor(info.quality))
                         text= hex and '|c'..hex..text..'|r' or text
@@ -66,7 +71,7 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua
 
                     btn.bag=bag
                     btn.slot=slot
-                    btn:SetNormalTexture(info.iconFileID)--图标
+                    btn:SetItem(info.hyperlink)
                     btn:SetShown(true)
 
                     index= index+1
@@ -77,7 +82,9 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua
     end
     for i= index, #Buttons do
         Buttons[i]:SetShown(false)
+        Buttons[i]:Reset()
     end
+    items=nil
 end
 
 panel:SetScript("OnEvent", function(self, event, arg1)
