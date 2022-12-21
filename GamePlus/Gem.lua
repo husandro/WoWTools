@@ -12,13 +12,14 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua
     if not ItemSocketingFrame or not ItemSocketingFrame:IsVisible() then
         return
     end
-    local index=17
+    local index=1
     local items={}
     for bag=0, NUM_BAG_SLOTS do
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local info = C_Container.GetContainerItemInfo(bag, slot)
             if info and info.hyperlink and info.iconFileID and info.itemID then
                 local classID = select(6, GetItemInfoInstant(info.hyperlink))
+                
                 if classID==3 and not items[info.itemID] then
                     local btn=Buttons[index]
                     if not btn then
@@ -56,9 +57,9 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua
 
                     local text--数量
                     text= GetItemCount(info.itemID)
-                    text= text>1 and text or ''
-                    if text~='' and info. quality then
-                        local hex = select(4, GetItemQualityColor(quality))
+                    text= text>0 and text or ''
+                    if text~='' and info.quality then
+                        local hex = select(4, GetItemQualityColor(info.quality))
                         text= hex and '|c'..hex..text..'|r' or text
                     end
                     btn.text:SetText(text)
@@ -84,10 +85,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
         --添加控制面板        
-        local sel=e.CPanel(addName, Save.disabled, true)
+        local sel=e.CPanel(addName, not Save.disabled, true)
         sel:SetScript('OnClick', function()
             Save.disabled = not Save.disabled and true or nil
-            print(id, addName, e.GetEnabeleDisable(Save.disabled), e.onlyChinse and '重新加载UI' or RELOADUI)
+            print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '重新加载UI' or RELOADUI)
         end)
 
         if Save.disabled then
