@@ -693,7 +693,7 @@ local function Init_Quest()
             e.tips:Show()
         end
 
-        set_Only_Show_Zone_Quest()
+       -- set_Only_Show_Zone_Quest()
     end)
     questPanel:SetScript('OnLeave', function() e.tips:Hide() end)
 
@@ -790,18 +790,33 @@ local function Init_Quest()
         end
 
         if not IsQuestCompletable() then--or not C_QuestOffer.GetHideRequiredItemsOnTurnIn() then
-            if not questSelect[questID] then
-                local link=questID and GetQuestLink(questID)
+            if questID and not questSelect[questID] then
+                local link--C_QuestLog.RequestLoadQuestByID(questID)
+                local buttonIndex = 1;--物品数量
+                for i=1, GetNumQuestItems() do
+                    local hidden = IsQuestItemHidden(i);
+                    if (hidden == 0) then
+                        local requiredItem = _G["QuestProgressItem"..buttonIndex];
+                        if requiredItem and requiredItem.type then
+                            local itemLink = GetQuestItemLink(requiredItem.type, i)
+                            local name,_ , numItems = GetQuestItemInfo(requiredItem.type, i)
+                            if itemLink or name then
+                                link=(link or '')..(numItems and '|cnRED_FONT_COLOR:'..numItems..'x|r' or '')..(itemLink or name)
+                            end
+                        end
+                        buttonIndex = buttonIndex+1;
+                    end
+                end
                 local text=GetProgressText()
-                    C_Timer.After(0.5, function()
-                        print(id, QUESTS_LABEL, '|cffff00ff'..text..'|r', link or questID, QuestFrameGoodbyeButton and '|cnRED_FONT_COLOR:'..QuestFrameGoodbyeButton:GetText())
-                    end)
-                    questSelect[questID]=true
+                C_Timer.After(0.5, function()
+                    print(id, QUESTS_LABEL, GetQuestLink(questID) or ('|cnGREEN_FONT_COLOR:'..questID..'|r'), text and '|cffff00ff'..text..'|r', link, QuestFrameGoodbyeButton and '|cnRED_FONT_COLOR:'..QuestFrameGoodbyeButton:GetText())
+                end)
+                questSelect[questID]=true
             end
             QuestGoodbyeButton_OnClick()
         else
-            if not questSelect[questID] then
-                local link= questID and GetQuestLink(questID)
+            if questID and not questSelect[questID] then
+                local link= GetQuestLink(questID)
                 if link then
                     C_Timer.After(0.5, function()
                         print(id, addName, link)
