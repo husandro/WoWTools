@@ -51,7 +51,6 @@ local function Init()
                         end
 
                         if self.index==3 or self.index==4 then
-                            e.tips:AddLine(' ')
                             e.tips:AddDoubleLine(e.onlyChinse and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, 'F', 0,1,0, 0,1,0)
                             e.tips:AddDoubleLine(e.onlyChinse and '设置' or SETTINGS, e.Icon.mid..(e.onlyChinse and '滚轮向上滚动' or KEY_MOUSEWHEELUP))
                             e.tips:AddDoubleLine(e.onlyChinse and '清除' or SLASH_STOPWATCH_PARAM_STOP2, e.Icon.mid..(e.onlyChinse and '轮向下滚动' or KEY_MOUSEWHEELDOWN))
