@@ -67,7 +67,7 @@ local function Init()
                             e.SetButtonKey(self, true,'F', 'RightButton')
                             panel.buttons[index]:RegisterEvent('PLAYER_REGEN_ENABLED')
                             panel.buttons[index]:RegisterEvent('PLAYER_REGEN_DISABLED')
-                            print(id, addName,'|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '设置' or SETTINGS), self.name, e.onlyChinse and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, 'F')
+                            print(id, addName,'|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '设置' or SETTINGS), self.name, e.onlyChinse and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, '|cffff00ffF')
                             self.text:SetText('F')
                         elseif d==-1 then
                             e.SetButtonKey(self)
@@ -77,10 +77,10 @@ local function Init()
                             print(id, addName,'|cnRED_FONT_COLOR:'..(e.onlyChinse and '清除' or SLASH_STOPWATCH_PARAM_STOP2), self.name, e.onlyChinse and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)
                         end
                     end)
-                    panel:SetScript("OnEvent", function(self, event)
+                    panel.buttons[index]:SetScript("OnEvent", function(self, event)
                         if event=='PLAYER_REGEN_ENABLED' then
                             e.SetButtonKey(self, true,'F', 'RightButton')
-                            print(id, addName,'|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '设置' or SETTINGS), self.name, e.onlyChinse and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, 'F')
+                            print(id, addName,'|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '设置' or SETTINGS), self.name, e.onlyChinse and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, '|cffff00ffF|r')
                         elseif event=='PLAYER_REGEN_DISABLED' then
                             e.SetButtonKey(self)
                             print(id, addName,'|cnRED_FONT_COLOR:'..(e.onlyChinse and '清除' or SLASH_STOPWATCH_PARAM_STOP2), self.name, e.onlyChinse and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)
