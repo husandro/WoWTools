@@ -229,12 +229,12 @@ local function setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
         panel.textureModifier[type]=nil
         if panel[type] and panel[type][1] then
             name, _, icon=GetSpellInfo(panel[type][1])
-            if name and icon then
-                panel:SetAttribute(type.."-spell1", name)
+            --if name and icon then
+                panel:SetAttribute(type.."-spell1", name or panel[type][1])
                 panel.textureModifier[type]=icon
                 panel.typeSpell=true--提示用
                 panel.typeID=panel[type][1]
-            end
+            --end
         end
     end
     panel.Combat=nil

@@ -15,8 +15,8 @@ local function Init()
             local name, _, skillLevel, maxSkillLevel, numAbilities, spelloffset, skillLine, skillModifier, specializationIndex, specializationOffset = GetProfessionInfo(type)
             _, _, icon, _, _, _, spellID= GetSpellInfo(spelloffset+ 1, 'spell')
 
-            if not panel.buttons[index] and spellID and icon then
-                panel.buttons[index]=e.Cbtn2(nil, e.toolsFrame)
+            if not panel.buttons[index] and spellID and icon and name then
+                panel.buttons[index]=e.Cbtn2(id..addName..name, e.toolsFrame)
                 e.ToolsSetButtonPoint(panel.buttons[index])--设置位置
                 panel.buttons[index]:SetAttribute("type1", "spell")
                 panel.buttons[index].texture:SetShown(true)
@@ -49,13 +49,50 @@ local function Init()
                                 e.tips:AddDoubleLine('|T'..texture..':0|t'.. link, e.Icon.right)
                             end
                         end
+
+                        if self.index==3 or self.index==4 then
+                            e.tips:AddLine(' ')
+                            e.tips:AddDoubleLine(e.onlyChinse and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, 'F', 0,1,0, 0,1,0)
+                            e.tips:AddDoubleLine(e.onlyChinse and '设置' or SETTINGS, e.Icon.mid..(e.onlyChinse and '滚轮向上滚动' or KEY_MOUSEWHEELUP))
+                            e.tips:AddDoubleLine(e.onlyChinse and '清除' or SLASH_STOPWATCH_PARAM_STOP2, e.Icon.mid..(e.onlyChinse and '轮向下滚动' or KEY_MOUSEWHEELDOWN))
+                        end
                         e.tips:Show()
                     end
                 end)
                 panel.buttons[index]:SetScript('OnLeave', function() e.tips:Hide() end)
+
+                if index==3 or index==4 then--钓鱼，考古， 设置清除快捷键
+                    panel.buttons[index]:SetScript('OnMouseWheel', function(self, d)
+                        if d==1 then
+                            e.SetButtonKey(self, true,'F', 'RightButton')
+                            panel.buttons[index]:RegisterEvent('PLAYER_REGEN_ENABLED')
+                            panel.buttons[index]:RegisterEvent('PLAYER_REGEN_DISABLED')
+                            print(id, addName,'|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '设置' or SETTINGS), self.name, e.onlyChinse and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, 'F')
+                            self.text:SetText('F')
+                        elseif d==-1 then
+                            e.SetButtonKey(self)
+                            panel.buttons[index]:UnregisterEvent('PLAYER_REGEN_DISABLED')
+                            panel.buttons[index]:UnregisterEvent('PLAYER_REGEN_ENABLED')
+                            self.text:SetText('')
+                            print(id, addName,'|cnRED_FONT_COLOR:'..(e.onlyChinse and '清除' or SLASH_STOPWATCH_PARAM_STOP2), self.name, e.onlyChinse and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)
+                        end
+                    end)
+                    panel:SetScript("OnEvent", function(self, event)
+                        if event=='PLAYER_REGEN_ENABLED' then
+                            e.SetButtonKey(self, true,'F', 'RightButton')
+                            print(id, addName,'|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '设置' or SETTINGS), self.name, e.onlyChinse and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, 'F')
+                        elseif event=='PLAYER_REGEN_DISABLED' then
+                            e.SetButtonKey(self)
+                            print(id, addName,'|cnRED_FONT_COLOR:'..(e.onlyChinse and '清除' or SLASH_STOPWATCH_PARAM_STOP2), self.name, e.onlyChinse and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)
+                        end
+                    end)
+                    panel.buttons[index].text=e.Cstr(panel.buttons[index], nil,nil,nil,{1,0,0})
+                    panel.buttons[index].text:SetPoint('TOPRIGHT',-4,0)
+                end
             end
             if panel.buttons[index] then
                 panel.buttons[index].spellID = spellID
+                panel.buttons[index].name = name
                 panel.buttons[index].index= index
                 if index==5 then--烹饪用火
                     local name2=IsSpellKnown(818) and GetSpellInfo(818)
