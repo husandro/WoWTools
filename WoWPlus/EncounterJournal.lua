@@ -1,5 +1,5 @@
 local id, e = ...
-local addName= 	ADVENTURE_JOURNAL
+local addName= e.onlyChinse and '冒险指南' or ADVENTURE_JOURNAL
 local Save={wowBossKill={}}
 local panel=CreateFrame("Frame")
 
@@ -178,7 +178,7 @@ local function set_EncounterJournal_World_Tips(self2)--所有角色已击杀世�
             e.tips:AddLine(text, nil,nil,nil, true)
             find=true
         end
-        
+
         text, num= nil, 0
         for bossName, _ in pairs(info.Rare.boss) do--稀有怪
             num= num+1
@@ -266,7 +266,7 @@ local function setWorldbossText()--显示世界BOSS击杀数据Text
 
         panel.WorldBoss.Text=e.Cstr(panel.WorldBoss, Save.EncounterJournalFontSize, nil,nil,true)
         panel.WorldBoss.Text:SetPoint('TOPLEFT')
-        
+
         panel.WorldBoss.texture=panel.WorldBoss:CreateTexture()
         panel.WorldBoss.texture:SetAllPoints(panel.WorldBoss)
         panel.WorldBoss.texture:SetAtlas(e.Icon.disabled)
@@ -361,15 +361,16 @@ local function setInstanceBossText()--显示副本击杀数据
     if not Save.hideInstanceBossText then
         for guid, info in pairs(e.WoWSave) do
             local text
-            for bossName, tab in pairs(info.Instance.ins) do----ins={[名字]={[难度]=已击杀数}}
+            for bossName, tab in pairs(info.Instance.ins) do--ins={[名字]={[难度]=已击杀数}}
                 text= text and text..'\n   '..bossName or '   '..bossName
                 for difficultyName, killed in pairs(tab) do
-                    text= text..' '..difficultyName..killed
+                    text= text..' '..difficultyName..' '..killed
                 end
             end
             if text then
                 msg=msg and msg..'\n' or ''
-                msg= msg ..e.GetPlayerInfo(nil, guid, true)..(guid==e.Player.guid and e.Icon.star2 or '')
+                msg= msg ..e.GetPlayerInfo(nil, guid, true)..(guid==e.Player.guid and e.Icon.star2 or '')..'\n'
+                msg= msg.. text
             end
         end
         msg=msg or '...'
@@ -381,7 +382,7 @@ end
 local function set_EncounterJournal_Keystones_Tips(self)--险指南界面, 挑战
     e.tips:SetOwner(self, "ANCHOR_LEFT");
     e.tips:ClearLines();
-    e.tips:AddDoubleLine(CHALLENGES)
+    e.tips:AddDoubleLine(e.onlyChinse and '史诗钥石地下城' or CHALLENGES, e.Icon.left)
     for guid, info in pairs(e.WoWSave) do
         local find
         for itemLink, _ in pairs(info.Keystone.itemLink) do
@@ -418,7 +419,7 @@ end
 --######
 --初始化
 --######
-local function set_EncounterJournal_Init()--冒险指南界面
+local function Init()--冒险指南界面
     EncounterJournal.btn= e.Cbtn(EncounterJournal.TitleContainer, nil, not Save.hideEncounterJournal)--按钮, 总开关
     EncounterJournal.btn:SetPoint('RIGHT',-22, -2)
     EncounterJournal.btn:SetSize(22, 22)
@@ -438,6 +439,7 @@ local function set_EncounterJournal_Init()--冒险指南界面
             EncounterJournal.keystones:SetShown(not Save.hideEncounterJournal)
             EncounterJournal.money:SetShown(not Save.hideEncounterJournal)
             EncounterJournal.btn:SetNormalAtlas(Save.hideEncounterJournal and e.Icon.disabled or e.Icon.icon )
+            print(id, addName, e.GetShowHide(not Save.hideEncounterJournal), e.onlyChinse and '需要刷新' or NEED..REFRESH)
         elseif d=='RightButton' then
             if Save.hideEncounterJournal_All_Info_Text then
                 Save.hideEncounterJournal_All_Info_Text=nil
@@ -463,7 +465,7 @@ local function set_EncounterJournal_Init()--冒险指南界面
             for bossName, tab in pairs(info.Instance.ins) do----ins={[名字]={[难度]=已击杀数}}
                 local text
                 for difficultyName, killed in pairs(tab) do
-                    text= text..' '..difficultyName..killed
+                    text= (text and text..' ' or '')..difficultyName..killed
                 end
                 e.tips:AddDoubleLine(bossName,text)
                 find= true
@@ -508,6 +510,9 @@ local function set_EncounterJournal_Init()--冒险指南界面
     EncounterJournal.keystones:SetSize(22,22)
     EncounterJournal.keystones:SetScript('OnEnter',set_EncounterJournal_Keystones_Tips)
     EncounterJournal.keystones:SetScript("OnLeave",function() e.tips:Hide() end)
+    EncounterJournal.keystones:SetScript('OnMouseDown', function()
+        PVEFrame_ToggleFrame('ChallengesFrame',3)
+    end)
 
     EncounterJournal.money =e.Cbtn(EncounterJournal.TitleContainer, nil ,true)--钱
     EncounterJournal.money:SetPoint('RIGHT', EncounterJournal.keystones, 'LEFT')
@@ -522,7 +527,7 @@ local function set_EncounterJournal_Init()--冒险指南界面
     EncounterJournal.keystones:SetShown(not Save.hideEncounterJournal)
     setWorldbossText()
     setInstanceBossText()
-    
+
     --Blizzard_EncounterJournal.lua
     local function EncounterJournal_ListInstances_set_Instance(button,showTips)--界面,
         local text,find
@@ -580,7 +585,7 @@ local function set_EncounterJournal_Init()--冒险指南界面
                         end;
                         find=true
                     else
-                        text=text~='' and text..'\n' or text
+                        text= text and text..'\n' or ''
                         difficultyName=difficultyName:gsub('%(', '')
                         difficultyName=difficultyName:gsub('%)', '')
                         difficultyName=difficultyName:gsub('（', ' ')
@@ -609,7 +614,7 @@ local function set_EncounterJournal_Init()--冒险指南界面
         for _, button in pairs(EncounterJournal.instanceSelect.ScrollBox:GetFrames()) do--ScrollBox.lua
             if button and button.tooltipTitle and button.instanceID then--button.bgImage:GetTexture() button.name:GetText()
                 local text=EncounterJournal_ListInstances_set_Instance(button)
-                if not button.tipsText and text~=''then
+                if not button.tipsText and text then
                     button.tipsText=e.Cstr(button,14, button.name)
                     button.tipsText:SetPoint('BOTTOMRIGHT', -8, 8)
                     button.tipsText:SetWidth(174)
@@ -617,7 +622,7 @@ local function set_EncounterJournal_Init()--冒险指南界面
                     button.tipsText:SetWordWrap(true)
                 end
                 if button.tipsText then
-                    button.tipsText:SetText(text)
+                    button.tipsText:SetText(text or '')
                 end
 
                 button:SetScript('OnEnter', function (self3)
@@ -687,6 +692,9 @@ local function set_EncounterJournal_Init()--冒险指南界面
     end)
     --boss, ID, 信息
     hooksecurefunc('EncounterJournal_DisplayInstance', function(instanceID, noButton)--Blizzard_EncounterJournal.lua
+        if not EncounterJournal.encounter then
+            return
+        end
         local self2 = EncounterJournal.encounter;
         if Save.hideEncounterJournal or not instanceID then
             if self2.instance.Killed then
@@ -751,36 +759,31 @@ local function set_EncounterJournal_Init()--冒险指南界面
             end
         end
 
-            if self2.instance.mapButton then
-                self2.instance.mapButton:SetScript('OnEnter', function(self3)--综述,小地图提示
-                    local instanceName, description2, _, _, _, _, dungeonAreaMapID2 = EJ_GetInstanceInfo();
-                    if dungeonAreaMapID2 and instanceName then
-                        e.tips:SetOwner(self3, "ANCHOR_LEFT")
-                        e.tips:ClearLines()
-                        e.tips:AddDoubleLine(instanceName, 'UiMapID: '..dungeonAreaMapID2)
-                        e.tips:AddLine(' ')
-                        e.tips:AddLine(description2, nil,nil,nil, true)
-                        e.tips:Show()
-                    end
-                end)
-                self2.instance.mapButton:SetScript('OnLeave', function() e.tips:Hide() end)
-            end
+        if self2.instance.mapButton then
+            self2.instance.mapButton:SetScript('OnEnter', function(self3)--综述,小地图提示
+                local instanceName, description2, _, _, _, _, dungeonAreaMapID2 = EJ_GetInstanceInfo();
+                if dungeonAreaMapID2 and instanceName then
+                    e.tips:SetOwner(self3, "ANCHOR_LEFT")
+                    e.tips:ClearLines()
+                    e.tips:AddDoubleLine(instanceName, 'UiMapID: '..dungeonAreaMapID2)
+                    e.tips:AddLine(' ')
+                    e.tips:AddLine(description2, nil,nil,nil, true)
+                    e.tips:Show()
+                end
+            end)
+            self2.instance.mapButton:SetScript('OnLeave', function() e.tips:Hide() end)
+        end
 
---[=[
-            if not self2.instance.Killed then--综述, 添加副本击杀情况
-                --e.Cstr=function(self, size, fontType, ChangeFont, color, layer, justifyH)
-                self2.instance.Killed=e.Cstr(self2.instance, 14, nil, nil,nil,true)
-                self2.instance.Killed:SetPoint('BOTTOMRIGHT', -33, 126)
-                self2.instance.Killed:SetJustifyH('RIGHT')
-            end
-            self2.instance.Killed.instanceID=instanceID
-            self2.instance.Killed.tooltipTitle=name
-            self2.instance.Killed:SetText(EncounterJournal_ListInstances_set_Instance(self2.instance.Killed))
-
-]=]
-
-        
+        if not self2.instance.Killed then--综述, 添加副本击杀情况
+            self2.instance.Killed=e.Cstr(self2.instance, nil, nil,nil,nil,nil,'RIGHT')
+            self2.instance.Killed:SetPoint('BOTTOMRIGHT', -33, 126)
+        end
+        self2.instance.Killed.instanceID=instanceID
+        self2.instance.Killed.tooltipTitle=name
+        local text= EncounterJournal_ListInstances_set_Instance(self2.instance.Killed)
+        self2.instance.Killed:SetText(text or '')
     end)
+
     --战利品, 套装, 收集数
     hooksecurefunc(EncounterJournal.LootJournalItems.ItemSetsFrame,'ConfigureItemButton', function(self2, button)--Blizzard_LootJournalItems.lua
         local has = C_TransmogCollection.PlayerHasTransmogByItemInfo(button.itemID)
@@ -794,6 +797,7 @@ local function set_EncounterJournal_Init()--冒险指南界面
             button.tex:SetShown(has==false and not Save.hideEncounterJournal)
         end
     end)
+
     --战利品, 套装 , 收集数量
     local function lootSet(self2)
         if Save.hideEncounterJournal then
@@ -934,11 +938,9 @@ local function set_EncounterJournal_Init()--冒险指南界面
     end
 end
 
-
 --###########
 --加载保存数据
 --###########
-
 panel:RegisterEvent("ADDON_LOADED")
 
 panel:RegisterEvent('BOSS_KILL')
@@ -946,29 +948,25 @@ panel:RegisterEvent('UPDATE_INSTANCE_INFO')
 panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 panel:RegisterEvent('WEEKLY_REWARDS_UPDATE')
 
-
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
+
             --添加控制面板        
             local sel=e.CPanel(addName, not Save.disabled)
             sel:SetScript('OnClick', function()
-                if Save.disabled then
-                    Save.disabled=nil
-                else
-                    Save.disabled=true
-                end
-                print(addName, e.GetEnabeleDisable(not Save.disabled), REQUIRES_RELOAD)
+                Save.disabled= not Save.disabled and true or nil
+                print(addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end)
-            
+
             if Save.disabled then
-                panel:UnregisterAllEvents()  
+                panel:UnregisterAllEvents()
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
-        elseif arg1=='Blizzard_EncounterJournal' then---冒险指南
-            set_EncounterJournal_Init()--冒险指南界面
+        elseif arg1=='Blizzard_EncounterJournal' and not Save.disabled then---冒险指南
+            Init()--冒险指南界面
             EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示所数据
         end
 
@@ -984,10 +982,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             setWorldbossText()--显示世界BOSS击杀数据Text
             EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示所数据
         end)
-        
+
     elseif event=='BOSS_KILL' and arg1 then
         Save.wowBossKill[arg1]= Save.wowBossKill[arg1] and Save.wowBossKill[arg1] +1 or 1--Boss击杀数量
-            
+
     elseif event=='WEEKLY_REWARDS_UPDATE' then
         C_Timer.After(2, function()
             EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示所数据

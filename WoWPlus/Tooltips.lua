@@ -1194,6 +1194,25 @@ local function Init()
             e.tips:Hide()
         end)
     end
+
+    hooksecurefunc(AreaPOIPinMixin,'TryShowTooltip', function(poiInfo)--POI提示
+        if poiInfo then
+            if poiInfo.areaPoiID then
+                GameTooltip:AddDoubleLine('areaPoiID: ', poiInfo.areaPoiID)
+            end
+            if poiInfo.widgetSetID then
+                GameTooltip:AddDoubleLine('widgetID: ', poiInfo.widgetSetID)
+            end
+            local id2 = poiInfo:GetMap():GetMapID();
+            if id2 then
+                GameTooltip:AddDoubleLine('mapID: ', id2)
+            end
+            if poiInfo.textureKit then
+                GameTooltip:AddDoubleLine('textureKit: ', poiInfo.textureKit)
+            end
+            GameTooltip:Show()
+        end
+    end)
 end
 
 --加载保存数据
@@ -1204,10 +1223,11 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         if arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
+            --添加控制面板 
             local sel=e.CPanel(addName, not Save.disabled)
             sel:SetScript('OnClick', function()
                 Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), REQUIRES_RELOAD)
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end)
             sel:SetScript('OnEnter', function(self2)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")

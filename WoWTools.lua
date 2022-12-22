@@ -313,23 +313,23 @@ end
 
 e.GetShowHide = function(sh)
 	if sh then
-		return '|cnGREEN_FONT_COLOR:'..SHOW..'|r'
+		return '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '显示' or SHOW)..'|r'
 	else
-		return '|cnRED_FONT_COLOR:'..HIDE..'|r'
+		return '|cnRED_FONT_COLOR:'..(e.onlyChinse and '隐藏' or HIDE)..'|r'
 	end
 end
 e.GetEnabeleDisable = function (ed)--启用或禁用字符
     if ed then
-        return '|cnGREEN_FONT_COLOR:'..ENABLE..'|r'
+        return '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '启用' or ENABLE)..'|r'
     else
-        return '|cnRED_FONT_COLOR:'..DISABLE..'|r'
+        return '|cnRED_FONT_COLOR:'..(e.onlyChinse and '禁用' or DISABLE)..'|r'
     end
 end
 e.GetYesNo = function (yesno)
     if yesno then
-        return '|cnGREEN_FONT_COLOR:'..YES..'|r'
+        return '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '是' or YES)..'|r'
     else
-        return '|cnRED_FONT_COLOR:'..NO..'|r'
+        return '|cnRED_FONT_COLOR:'..(e.onlyChinse and '否' or NO)..'|r'
     end
 end
 
