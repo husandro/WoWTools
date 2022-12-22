@@ -1,6 +1,7 @@
 local id, e = ...
 local Save={point={},}
 local addName=NPE_MOVE..'Frame'
+local panel=CreateFrame("Frame")
 
 local Point=function(frame, name2)
     local p=Save.point
@@ -221,6 +222,7 @@ local function setClass()--职业,能量条
     end
 end
 
+local combatCollectionsJournal--藏品
 local function setAddLoad(arg1)
     if arg1=='Blizzard_AchievementUI' then--成就
         Move(AchievementFrame.Header,{frame=AchievementFrame})
@@ -247,9 +249,13 @@ local function setAddLoad(arg1)
         checkbox.Label:ClearAllPoints();
         checkbox.Label:SetPoint("LEFT", checkbox, "RIGHT", 2, 1);
         checkbox.Label:SetPoint("RIGHT", checkbox, "RIGHT", 160, 1);
-        Move(CollectionsJournal, {})--藏品
-        Move(WardrobeFrame, {})--幻化
-
+        if not UnitAffectingCombat('player') then
+            Move(CollectionsJournal, {})--藏品
+            Move(WardrobeFrame, {})--幻化
+        else
+            combatCollectionsJournal=true
+            panel:RegisterEvent('PLAYER_REGEN_ENABLED')
+        end
     elseif arg1=='Blizzard_Calendar' then--日历
         Move(CalendarFrame, {})
 
@@ -349,17 +355,14 @@ local function Init()
 
     --###############################
     --修正，在战斗中，打开收藏界面，错误
-    --##############################
-     C_Timer.After(1, function()
-        if not CollectionsJournal then
-            ToggleCollectionsJournal(2)
-            HideUIPanel(CollectionsJournal)
-        end
-    end)
+    --###############################
+    if not CollectionsJournal then
+        ToggleCollectionsJournal(2)
+        HideUIPanel(CollectionsJournal)
+    end
 end
 
 --加载保存数据
-local panel=CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
@@ -391,5 +394,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not WoWToolsSave then WoWToolsSave={} end
             WoWToolsSave[addName]=Save
         end
+
+    elseif event=='PLAYER_REGEN_ENABLED' then
+        if combatCollectionsJournal then
+            Move(CollectionsJournal, {})--藏品
+            Move(WardrobeFrame, {})--幻化
+        end
+        panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
     end
 end)

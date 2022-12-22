@@ -1,5 +1,5 @@
 local id, e = ...
-local addName=MOUNT
+local addName= e.onlyChinse and '坐骑' or MOUNT
 local Faction =  UnitFactionGroup('player')=='Horde' and 0 or UnitFactionGroup('player')=='Alliance' and 1
 local ClassID = select(2, UnitClassBase('player'))
 local ShiJI= Faction==0 and IsSpellKnown(179244) and 179244 or Faction==1 and IsSpellKnown(179245) and 179245--[召唤司机]
@@ -931,7 +931,6 @@ local function setMountJournal_ShowMountDropdown(index)
     UIDropDownMenu_AddButton(info, level);
 end
 
-
 --######
 --初始化
 --######
@@ -946,9 +945,9 @@ local function Init()
         end
     end
     setPanelPostion()--设置按钮位置
-    
+
     setButtonSize()--设置按钮大小
-    
+
     panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
     XDInt()--德鲁伊设置
@@ -1055,6 +1054,10 @@ local function Init()
         e.tips:Hide()
         ResetCursor()
         self.border:SetAtlas('bag-reagent-border')
+    end)
+
+    C_Timer.After(2, function()
+        setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
     end)
 end
 --###########
