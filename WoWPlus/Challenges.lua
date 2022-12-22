@@ -554,7 +554,7 @@ local function All(self)--所有记录
     if info then
         local nu=#C_MythicPlus.GetRunHistory(true) or {}
         local nu2=#info
-        m= (m~='' and m..'\n\n' or m)..HISTORY..': |cff00ff00'..nu.. '/'.. nu2.. ' |r(|cffffffff'..nu2-nu..'|r)'
+        m= (m~='' and m..'\n\n' or m)..(e.onlyChinse and '历史' or HISTORY)..': |cff00ff00'..nu.. '/'.. nu2.. ' |r(|cffffffff'..nu2-nu..'|r)'
     end
 
     info = C_MythicPlus.GetRunHistory(false, true)--本周记录
@@ -563,23 +563,25 @@ local function All(self)--所有记录
         local n,n2=0,0
         local IDs={}
         for _, v in pairs(info) do
-            if v.level and v.mapChallengeModeID then
-                local name, _, _, texture = C_ChallengeMode.GetMapUIInfo(v.mapChalqblengeModeID)
-                IDs[name]=IDs[name] or {
-                    texture=texture and '|T'..texture..':0|t' or '',
-                    lv={},
-                    co=0,
-                    to=0,
-                }
-                if v.completed then
-                    table.insert(IDs[name].lv, '|cff00ff00'..v.level..'|r')
-                    n=n+1
-                    IDs[name].co=IDs[name].co+1
-                else
-                    table.insert(IDs[name].lv, '|cffffffff'..v.level..'|r')
+            if v and v.level and v.mapChallengeModeID then
+                local name, _, _, texture = C_ChallengeMode.GetMapUIInfo(v.mapChallengeModeID)
+                if name then
+                    IDs[name]=IDs[name] or {
+                        texture=texture and '|T'..texture..':0|t' or '',
+                        lv={},
+                        co=0,
+                        to=0,
+                    }
+                    if v.completed then
+                        table.insert(IDs[name].lv, '|cff00ff00'..v.level..'|r')
+                        n=n+1
+                        IDs[name].co=IDs[name].co+1
+                    else
+                        table.insert(IDs[name].lv, '|cffffffff'..v.level..'|r')
+                    end
+                    IDs[name].to=IDs[name].to+1
+                    n2=n2+1
                 end
-                IDs[name].to=IDs[name].to+1
-                n2=n2+1
             end
         end
         local m2=''

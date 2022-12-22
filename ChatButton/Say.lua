@@ -1,6 +1,6 @@
 local id, e = ...
 local Save= {}
-
+local addName= SAY
 local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
 panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
 WoWToolsChatButtonFrame.last=panel
