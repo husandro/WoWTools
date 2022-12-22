@@ -466,6 +466,9 @@ local function setMount(link)--设置,坐骑
         end
     end
 end
+
+local showTimestamps--聊天中时间戳
+local playerName=UnitName('player')
 local function setAddMessageFunc(self, s, ...)
     local petChannel=s:find('|Hchannel:.-'..PET_BATTLE_COMBAT_LOG..']|h') and true or false
 
@@ -496,10 +499,15 @@ local function setAddMessageFunc(self, s, ...)
     s=s:gsub('|Hjournal:.-]|h', Journal)
     s=s:gsub('|Hinstancelock:.-]|h', Instancelock)
 
-    if s:find(set_LOOT_ITEM) then--	%s获得了战利品：%s。
-        local playerName= s:match(set_LOOT_ITEM)
-        if playerName then
-            s=s:gsub(Magic(playerName), e.PlayerLink(playerName))
+    if not showTimestamps and s:find(set_LOOT_ITEM) then--	%s获得了战利品：%s。
+        local unitName= s:match(set_LOOT_ITEM)
+        if unitName then
+            if unitName==playerName then
+                s=s:gsub(unitName..'['..e.Player.col..(e.onlyChinse and '我' or COMBATLOG_FILTER_STRING_ME)..'|r]')
+            else
+                s=s:gsub(Magic(unitName), e.PlayerLink(unitName))
+            end
+            
         end
     end
     for k, _ in pairs(Save.text) do--内容加颜色
@@ -892,10 +900,14 @@ local function Init()
         set_Shift_Click_facur()
         panel:RegisterEvent('GROUP_ROSTER_UPDATE')
     end
+
+    showTimestamps= C_CVar.GetCVar("showTimestamps")~='none' and true or nil
 end
 
 panel:RegisterEvent("ADDON_LOADED")
-panel:SetScript("OnEvent", function(self, event, arg1)
+panel:RegisterEvent('CVAR_UPDATE')
+
+panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" and arg1 == id then
         if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
             panel:UnregisterAllEvents()
@@ -916,5 +928,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='GROUP_ROSTER_UPDATE' or event=='PLAYER_REGEN_ENABLED' then
         set_Shift_Click_facur()--Shift+点击设置焦点
+
+    elseif event=='CVAR_UPDATE' then
+        if arg1=='showTimestamps' then
+            showTimestamps= arg2~='none' and true or nil
+        end
 	end
 end)
