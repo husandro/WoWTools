@@ -301,8 +301,9 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
             set_GroupGuid()--队伍数据收集
             NotifyInspect('player')--取得,自已, 装等
             C_MythicPlus.RequestMapInfo()
+            C_MythicPlus.RequestRewards()
+            C_MythicPlus.RequestCurrentAffixes()
             RequestRaidInfo()
-
             set_Money()--钱
             updateCurrency()--{currencyID = 数量}
         end)

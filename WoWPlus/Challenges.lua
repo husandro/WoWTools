@@ -532,11 +532,29 @@ local function All(self)--所有记录
         return
     end
     local m=""
+
+    local currentWeekBestLevel, weeklyRewardLevel, nextDifficultyWeeklyRewardLevel, nextBestLevel = C_MythicPlus.GetWeeklyChestRewardLevel()
+    if currentWeekBestLevel and weeklyRewardLevel and weeklyRewardLevel>0 and currentWeekBestLevel>0 then
+        m=m..format(e.onlyChinse and '%d级的当前奖励是%d。%d级的奖励是%d。' or MYTHIC_PLUS_CURR_WEEK_REWARD, currentWeekBestLevel,weeklyRewardLevel, nextDifficultyWeeklyRewardLevel, nextBestLevel)
+    end
+    --[[m=m..(e.onlyChinse and '每周最佳纪录: ' or CHALLENGE_MODE_WEEKLY_BEST..': ')..currentWeekBestLevel.. ' ('..weeklyRewardLevel..')'
+    if nextDifficultyWeeklyRewardLevel and nextBestLevel and nextDifficultyWeeklyRewardLevel>0 and nextBestLevel>0 and currentWeekBestLevel<nextDifficultyWeeklyRewardLevel then
+        m=m..'\n'..(e.onlyChinse and '下一级：' or NEXT_RANK_COLON)..nextDifficultyWeeklyRewardLevel..' ('..nextBestLevel..')'
+    end]]
+
+    local mapChallengeModeID, level = C_MythicPlus.GetLastWeeklyBestInformation()
+    if mapChallengeModeID and level and level>0 and mapChallengeModeID>0 then
+        local name, _, _, texture, _ = C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
+        if name then
+            m= (m~='' and m..'\n\n' or m)..(e.onlyChinse and '上周' or HONOR_LASTWEEK)..': '.. (texture and '|T'..texturqbe..':0|t' or '')..name..' '..level
+        end
+    end
+
     local info= C_MythicPlus.GetRunHistory(true, true)--全部
     if info then
         local nu=#C_MythicPlus.GetRunHistory(true) or {}
         local nu2=#info
-        m=HISTORY..': |cff00ff00'..nu.. '/'.. nu2.. ' |r(|cffffffff'..nu2-nu..'|r)'
+        m= (m~='' and m..'\n\n' or m)..HISTORY..': |cff00ff00'..nu.. '/'.. nu2.. ' |r(|cffffffff'..nu2-nu..'|r)'
     end
 
     info = C_MythicPlus.GetRunHistory(false, true)--本周记录
@@ -546,7 +564,7 @@ local function All(self)--所有记录
         local IDs={}
         for _, v in pairs(info) do
             if v.level and v.mapChallengeModeID then
-                local name, _, _, texture = C_ChallengeMode.GetMapUIInfo(v.mapChallengeModeID)
+                local name, _, _, texture = C_ChallengeMode.GetMapUIInfo(v.mapChalqblengeModeID)
                 IDs[name]=IDs[name] or {
                     texture=texture and '|T'..texture..':0|t' or '',
                     lv={},
