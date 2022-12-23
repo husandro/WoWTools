@@ -1141,7 +1141,7 @@ local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
                 ResetCursor()
             end)
             panel.RoleInfo.text=e.Cstr(panel.RoleInfo)
-            panel.RoleInfo.text:SetPoint('BOTTOMLEFT', panel.RoleInfo, 'BOTTOMRIGHT')
+            panel.RoleInfo.text:SetPoint('BOTTOMLEFT')--, panel.RoleInfo, 'BOTTOMRIGHT')
             panel.RoleInfo:SetShown(false)
         end
         if panel.RoleInfo then
