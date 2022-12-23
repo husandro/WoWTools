@@ -645,7 +645,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                         local weekLevel= e.WoWSave[e.Player.guid].Keystone.weekLevel or 0
                         
                         if score and score>0 then
-                            line:SetText(col..weekLevel..e.GetKeystoneScorsoColor(score, true))
+                            line:SetText(e.GetKeystoneScorsoColor(score, true)..'  '..col..weekLevel)
                             if _G["GameTooltipTextRight"..i] then
                                 _G["GameTooltipTextRight"..i]:SetText(col..weekNum..'/'..numAll)
                                 _G["GameTooltipTextRight"..i]:SetShown(true)
