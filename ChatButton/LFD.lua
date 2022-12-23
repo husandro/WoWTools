@@ -1126,6 +1126,7 @@ local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(e.onlyChinse and '全部清除' or CLEAR_ALL, e.Icon.left)
                 e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
+                e.tips:Show()
             end)
             panel.RoleInfo:SetScript('OnLeave', function() e.tips:Hide() end)
             panel.RoleInfo:SetScript('OnMouseDown', function(self, d)
