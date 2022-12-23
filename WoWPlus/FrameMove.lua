@@ -121,7 +121,9 @@ local FrameTab={
     ContainerFrameCombinedBags={},--包
     VehicleSeatIndicator={},--车辆，指示
     ExpansionLandingPage={},--要塞
+    MainMenuBarBackpackButton={save=true, click='R', frame=MicroButtonAndBagsBar},--主菜单
 };
+
 --UIWidgetBelowMinimapContainerFrame={save=true,click='RightButton'},
 --ZoneAbilityFrame.SpellButtonContainer = {save=true, click='R'},
 
@@ -352,6 +354,15 @@ local function Init()
             Move(frame.TitleContainer, {})
         end
     end
+    --
+    --移动，主菜单，背包提示
+    hooksecurefunc(MainMenuBarBackpackButton, 'OnEnterInternal', function ()
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinse and '重置位置' or RESET_POSITION, 'alt+'..e.Icon.right)
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:Show()
+    end)
 
     --###############################
     --修正，在战斗中，打开收藏界面，错误
