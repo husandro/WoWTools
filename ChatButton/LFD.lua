@@ -6,7 +6,8 @@ local Save={
     autoSetPvPRole=true,--自动职责确认， 排副本
 }
 local wowSave={[INSTANCE]={}}--{[ISLANDS_HEADER]=次数, [副本名称..难度=次数]}
-local sec=5--离开时间
+
+local sec=3--时间 timer
 
 local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
 panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
@@ -1109,10 +1110,10 @@ local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
             panel.RoleInfo:RegisterForDrag("RightButton")
             panel.RoleInfo:SetMovable(true)
             panel.RoleInfo:SetClampedToScreen(true)
-            panel:SetScript("OnDragStart", function(self)
+            panel.RoleInfo:SetScript("OnDragStart", function(self)
                 self:StartMoving()
             end)
-            panel:SetScript("OnDragStop", function(self)
+            ppanel.RoleInfo:SetScript("OnDragStop", function(self)
                 ResetCursor()
                 self:StopMovingOrSizing()
                 Save.RoleInfoPoint={self:GetPoint(1)}
@@ -1135,7 +1136,7 @@ local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
                     self:SetShown(false)
                 end
             end)
-            panel:SetScript("OnMouseUp", function(self)
+            panel.RoleInfo:SetScript("OnMouseUp", function(self)
                 ResetCursor()
             end)
             panel.RoleInfo.text=e.Cstr(panel.RoleInfo)
