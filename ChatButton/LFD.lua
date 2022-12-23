@@ -1113,7 +1113,7 @@ local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
             panel.RoleInfo:SetScript("OnDragStart", function(self)
                 self:StartMoving()
             end)
-            ppanel.RoleInfo:SetScript("OnDragStop", function(self)
+            panel.RoleInfo:SetScript("OnDragStop", function(self)
                 ResetCursor()
                 self:StopMovingOrSizing()
                 Save.RoleInfoPoint={self:GetPoint(1)}
