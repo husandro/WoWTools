@@ -1106,6 +1106,7 @@ local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
                 panel.RoleInfo:SetPoint(Save.RoleInfoPoint[1], UIParent, Save.RoleInfoPoint[3], Save.RoleInfoPoint[4], Save.RoleInfoPoint[5])
             else
                 panel.RoleInfo:SetPoint('TOPLEFT', panel, 'BOTTOMLEFT', 40, 40)
+                panel.RoleInfo:SetButtonState('PUSHED')
             end
             panel.RoleInfo:RegisterForDrag("RightButton")
             panel.RoleInfo:SetMovable(true)
