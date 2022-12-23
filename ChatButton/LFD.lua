@@ -1045,7 +1045,7 @@ local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
             end
         end
     end
-    
+
     local co=GetNumGroupMembers();
     if co and co>0 then
         if not RoleC then

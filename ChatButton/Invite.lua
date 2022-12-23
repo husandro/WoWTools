@@ -1,5 +1,5 @@
 local id, e = ...
-local addName= o.onlyChinse and '邀请' or INVITE
+local addName= e.onlyChinse and '邀请' or INVITE
 local Save={InvNoFriend={}, LFGListAceInvite=true, FriendAceInvite=true, InvNoFriendNum=0, restingTips=true, LFGPlus=true ,ChannelText=e.Player.zh and '1' or 'inv'}
 local InvPlateGuid={}
 
