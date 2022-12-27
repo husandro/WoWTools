@@ -548,7 +548,7 @@ local function setMapID(self)--显示地图ID
     setMapIDText(self)
 end
 
-local function set_AreaPOIPinMixin_OnAcquired(poiInfo)--地图POI提示
+local function set_AreaPOIPinMixin_OnAcquired(poiInfo)--地图POI提示 AreaPOIDataProvider.lua
     if not poiInfo or Save.hide then
         if poiInfo and poiInfo.Str then
             poiInfo.Str:SetText('')
@@ -609,7 +609,7 @@ local function Init()
     hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', set_WorldQuestPinMixin_RefreshVisuals)--世界地图任务
     hooksecurefunc(WorldMapFrame, 'OnMapChanged', setMapID)--Blizzard_WorldMap.lua
     CursorPositionInt()
-    hooksecurefunc(AreaPOIPinMixin,'OnAcquired', set_AreaPOIPinMixin_OnAcquired)--地图POI提示
+    hooksecurefunc(AreaPOIPinMixin,'OnAcquired', set_AreaPOIPinMixin_OnAcquired)--地图POI提示 AreaPOIDataProvider.lua
 
     --#######
     --任务日志
