@@ -1,7 +1,6 @@
 local id, e = ...
 
 local addName=CHARACTER
-local Frame=PaperDollItemsFrame
 local Save={EquipmentH=true}
 
 local Icon={
@@ -10,38 +9,35 @@ local Icon={
 }
 
 local function Sever()--显示服务器名称
-    local s=Frame.server
-    if not Save.disabled and not s then
-            s=e.Cstr(Frame)
-            s:SetPoint('RIGHT', CharacterLevelText, 'LEFT')
-            s:SetJustifyH('RIGHT')
-            s:EnableMouse(true)
-            s:SetScript("OnEnter",function(self)
-                    e.tips:SetOwner(self, "ANCHOR_LEFT")
-                    e.tips:ClearLines()
-                    e.tips:AddDoubleLine(FRIENDS_LIST_REALM)
-                    local ok2
-                    for k, v in pairs(GetAutoCompleteRealms()) do
-                        if v==e.Player.server then
-                            e.tips:AddDoubleLine(v, k, 0,1,0)
-                        else
-                            e.tips:AddDoubleLine(v, k)
-                        end
-                        ok2=true
-                    end
-                    if not ok2 then
-                        e.tips:AddLine(ITEM_UNIQUE, SERVER_MESSAGE_PREFIX)
-                    end
-                    e.tips:Show()
-            end)
-            s:SetScript("OnLeave",function() e.tips:Hide() end)
-            Frame.server=s
-            local ser=GetAutoCompleteRealms() or {}
-            s:SetText((#ser>1 and #ser..' ' or '')..e.Player.col..e.Player.server..'|r')
+    if PaperDollItemsFrame.server then
+        return
     end
-    if s then
-        s:SetShown(not Save.disabled)
-    end
+    PaperDollItemsFrame.server=e.Cstr(PaperDollItemsFrame)
+    PaperDollItemsFrame.server:SetPoint('RIGHT', CharacterLevelText, 'LEFT')
+    PaperDollItemsFrame.server:SetJustifyH('RIGHT')
+    PaperDollItemsFrame.server:EnableMouse(true)
+    PaperDollItemsFrame.server:SetScript("OnEnter",function(self)
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(FRIENDS_LIST_REALM)
+            local ok2
+            for k, v in pairs(GetAutoCompleteRealms()) do
+                if v==e.Player.server then
+                    e.tips:AddDoubleLine(v, k, 0,1,0)
+                else
+                    e.tips:AddDoubleLine(v, k)
+                end
+                ok2=true
+            end
+            if not ok2 then
+                e.tips:AddLine(ITEM_UNIQUE, SERVER_MESSAGE_PREFIX)
+            end
+            e.tips:Show()
+    end)
+    PaperDollItemsFrame.server:SetScript("OnLeave",function() e.tips:Hide() end)
+
+    local ser=GetAutoCompleteRealms() or {}
+    PaperDollItemsFrame.server:SetText((#ser>1 and #ser..' ' or '')..e.Player.col..e.Player.server..'|r')
 end
 
 local function Slot(slot)--左边插曹
@@ -198,7 +194,6 @@ local function Engineering(self, slot, use)--增加 [潘达利亚工程学: 地�
         self.engineering:SetPoint('TOPRIGHT', self, 'TOPLEFT', -8, 0)
     end
     self.engineering.spell= slot==15 and 126392 or 55016
-    --self.engineering:RegisterForClicks(e.LeftButtonDown,e.RightButtonDown)
     self.engineering:SetScript('OnMouseDown' ,function(self2,d)
         if d=='LeftButton' then
             C_TradeSkillUI.OpenTradeSkill(202)
@@ -501,7 +496,7 @@ local function ADDEquipment(equipmentSetsDirty)--添加装备管理框
         if p then
             f:SetPoint(p[1], UIParent, p[3], p[4], p[5])
         else
-            f:SetPoint('BOTTOMRIGHT', Frame, 'TOPRIGHT')
+            f:SetPoint('BOTTOMRIGHT', PaperDollItemsFrame, 'TOPRIGHT')
         end
         f:RegisterForDrag("RightButton")
         f:SetClampedToScreen(true)
@@ -521,7 +516,7 @@ local function ADDEquipment(equipmentSetsDirty)--添加装备管理框
                 if d=='RightButton' and alt then--还原位置
                     Save.Equipment=nil
                     self:ClearAllPoints()
-                    self:SetPoint('BOTTOMRIGHT', Frame, 'TOPRIGHT')
+                    self:SetPoint('BOTTOMRIGHT', PaperDollItemsFrame, 'TOPRIGHT')
 
                 elseif d=='RightButton' and not key then--移动图标
                     SetCursor('UI_MOVE_CURSOR')
@@ -749,11 +744,11 @@ end)
 hooksecurefunc('GearSetButton_UpdateSpecInfo', EquipmentStr)--套装已装备数量
 hooksecurefunc('PaperDollEquipmentManagerPane_Update',ADDEquipment)----添加装备管理框        
 
-Frame.sel = e.Cbtn(Frame, nil, not Save.disabled)--总开关
-Frame.sel:SetSize(20, 20)
-Frame.sel.Text=e.Cstr(Frame)
-Frame.sel.Text:SetPoint('LEFT', Frame.sel, 'RIGHT')
-Frame.sel2 = e.Cbtn(Frame, nil, Save.equipment)--显示/隐藏装备管理框选项
+local panel = e.Cbtn(PaperDollItemsFrame, nil, not Save.disabled)--总开关
+panel:SetSize(20, 20)
+panel.Text=e.Cstr(PaperDollItemsFrame)
+panel.Text:SetPoint('LEFT', panel, 'RIGHT')
+PaperDollItemsFrame.sel2 = e.Cbtn(PaperDollItemsFrame, nil, Save.equipment)--显示/隐藏装备管理框选项
 
 local function GetDurationTotale()--装备总耐久度
     local cu, max=0,0
@@ -775,23 +770,24 @@ local function GetDurationTotale()--装备总耐久度
         elseif to<60 then
             du=YELLOW_FONT_COLOR_CODE..du..'|r'
         end
-        Frame.sel.DuVal=math.modf(to)
+        panel.DuVal=math.modf(to)
     else
-        Frame.sel.DuVal=nil
+        panel.DuVal=nil
     end
-    Frame.sel.Text:SetText(du)
+    panel.Text:SetText(du)
 end
 local function SetIni()
     ADDEquipment()--装备管理框
     GetDurationTotale()--装备总耐久度        
-    Frame.sel:SetNormalAtlas(Save.disabled and e.Icon.disabled or e.Icon.icon)
-    Frame.sel:SetAlpha(Save.disabled and 0.3 or 1)
-    Frame.sel2:SetNormalAtlas(Save.equipment and e.Icon.icon or e.Icon.disabled)
-    Frame.sel2:SetAlpha(Save.equipment and 0.3 or 1)
+    panel:SetNormalAtlas(Save.disabled and e.Icon.disabled or e.Icon.icon)
+    panel:SetAlpha(Save.disabled and 0.3 or 1)
+    PaperDollItemsFrame.sel2:SetNormalAtlas(Save.equipment and e.Icon.icon or e.Icon.disabled)
+    PaperDollItemsFrame.sel2:SetAlpha(Save.equipment and 0.3 or 1)
     Sever()--服务器名称
 end
-Frame.sel:SetPoint('BOTTOMLEFT',5,7)
-Frame.sel:SetScript("OnClick", function ()
+
+panel:SetPoint('BOTTOMLEFT',5,7)
+panel:SetScript("OnClick", function ()
         local m
         if Save.disabled then
             Save.disabled=nil
@@ -804,7 +800,7 @@ Frame.sel:SetScript("OnClick", function ()
         print(m)
         SetIni()
 end)
-Frame.sel:SetScript("OnEnter", function (self)
+panel:SetScript("OnEnter", function (self)
     GetDurationTotale()
         e.tips:SetOwner(self, "ANCHOR_BOTTOMLEFT")
         e.tips:ClearLines()
@@ -816,14 +812,14 @@ Frame.sel:SetScript("OnEnter", function (self)
         e.tips:AddDoubleLine(SHOW..'/'..HIDE, Save.disabled and HIDE or SHOW, nil,nil,nil, 0,1,0)
         e.tips:Show()
 end)
-Frame.sel:SetScript("OnLeave",function(self)
+panel:SetScript("OnLeave",function(self)
         e.tips:Hide()
 end)
 
-Frame.sel2:SetPoint('TOPRIGHT',-2,-40)
-Frame.sel2:SetSize(20, 20)
+PaperDollItemsFrame.sel2:SetPoint('TOPRIGHT',-2,-40)
+PaperDollItemsFrame.sel2:SetSize(20, 20)
 
-Frame.sel2:SetScript("OnClick", function(self)
+PaperDollItemsFrame.sel2:SetScript("OnClick", function(self)
         if Save.equipment then
             Save.equipment=nil
         else
@@ -831,7 +827,7 @@ Frame.sel2:SetScript("OnClick", function(self)
         end
         SetIni()
 end)
-Frame.sel2:SetScript("OnEnter", function (self)
+PaperDollItemsFrame.sel2:SetScript("OnEnter", function (self)
         e.tips:SetOwner(self, "ANCHOR_TOPLEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
@@ -840,16 +836,16 @@ Frame.sel2:SetScript("OnEnter", function (self)
         e.tips:AddDoubleLine(SHOW..'/'..HIDE, Save.equipment and SHOW or HIDE, nil,nil,nil, 0,1,0)
         e.tips:Show()
 end)
-Frame.sel2:SetScript("OnLeave",function(self)
+PaperDollItemsFrame.sel2:SetScript("OnLeave",function(self)
         e.tips:Hide()
 end)
 
 --加载保存数据
-Frame.sel:RegisterEvent("ADDON_LOADED")
-Frame.sel:RegisterEvent("PLAYER_LOGOUT")
-Frame.sel:RegisterEvent("EQUIPMENT_SWAP_FINISHED")
-Frame.sel:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
-Frame.sel:SetScript("OnEvent", function(self, event, arg1)
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:RegisterEvent("EQUIPMENT_SWAP_FINISHED")
+panel:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
+panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1 == id then
        Save= WoWToolsSave and WoWToolsSave[addName] or Save
        SetIni()
