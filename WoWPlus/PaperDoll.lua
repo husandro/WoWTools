@@ -112,9 +112,9 @@ local function Lv(self, slot, link)--装等
             lv=GetDetailedItemLevelInfo(link)
             if lv and to then
                 local val=lv-to
-                if val>3 then 
+                if val>3 then
                     lv= GREEN_FONT_COLOR_CODE..lv..'|r'
-                elseif quality and quality< 5 then                
+                elseif quality and quality< 5 then
                     if val < -9  then
                         lv =RED_FONT_COLOR_CODE..lv..'|r'
                     elseif val < -3 then
@@ -136,7 +136,7 @@ local function Lv(self, slot, link)--装等
             self.lv:SetJustifyH('CENTER')
         end
         self.lv:SetText(lv)
-    end     
+    end
     if self.lv then self.lv:SetShown(lv) end
 end
 
@@ -193,7 +193,7 @@ local function Engineering(self, slot, use)--增加 [潘达利亚工程学: 地�
     self.engineering:SetSize(h,h)
     self.engineering:SetNormalTexture(136243)
     if Slot(slot) then
-        self.engineering:SetPoint('TOPLEFT', self, 'TOPRIGHT', 8, 0)                                
+        self.engineering:SetPoint('TOPLEFT', self, 'TOPRIGHT', 8, 0)
     else
         self.engineering:SetPoint('TOPRIGHT', self, 'TOPLEFT', -8, 0)
     end
@@ -334,7 +334,7 @@ local function Sta(self, slot, link)--显示属性
         if v then
             if not self.v then
                 self.v=e.Cstr(self, 10)
-                self.v:SetText(e.WA_Utf8Sub(STAT_VERSATILITY, 1):upper())            
+                self.v:SetText(e.WA_Utf8Sub(STAT_VERSATILITY, 1):upper())
             else
                 self.v:ClearAllPoints()
             end
@@ -413,7 +413,7 @@ local function Equipment()--装备管理
             f.tex:SetSize(w-4, h-4)
         end
         f.tex:SetTexture(icon)
-    end    
+    end
     if f.tex then f.tex:SetShown(icon) end
 
     if specIcon then--天赋图标
@@ -434,7 +434,7 @@ local function Equipment()--装备管理
             f.nu:SetJustifyH('RIGHT')
         end
         f.nu:SetText(nu)
-    end    
+    end
     if f.nu then f.nu:SetShown(nu) end
 end
 
@@ -445,10 +445,10 @@ local function EquipmentStr(self)--套装已装备数量
     if setID and not Save.disabled then
         if not self.nu then
             self.nu=e.Cstr(self)
-            self.nu:SetJustifyH('RIGHT')            
+            self.nu:SetJustifyH('RIGHT')
             self.nu:SetPoint('BOTTOMLEFT', self.text, 'BOTTOMLEFT')
         end
-        local  numItems, numEquipped= select(5, C_EquipmentSet.GetEquipmentSetInfo(setID))        
+        local  numItems, numEquipped= select(5, C_EquipmentSet.GetEquipmentSetInfo(setID))
         if numItems and numEquipped then
             nu=numEquipped..'/'..numItems
         end
@@ -598,7 +598,7 @@ local function ADDEquipment(equipmentSetsDirty)--添加装备管理框
             EPoint(b, f ,b2)--设置位置
 
             b:SetScript("OnClick",function(self)
-                    if not UnitAffectingCombat('player') then                        
+                    if not UnitAffectingCombat('player') then
                         C_EquipmentSet.UseEquipmentSet(self.setID)
                         C_Timer.After(0.5, function() LvTo() end)--修改总装等
                     else
