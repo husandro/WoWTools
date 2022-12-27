@@ -790,7 +790,7 @@ local function Init_Quest()
             return
         end
 
-        if not IsQuestCompletable() or not C_QuestOffer.GetHideRequiredItemsOnTurnIn() then
+        if not IsQuestCompletable() then--or not C_QuestOffer.GetHideRequiredItemsOnTurnIn() then
             if questID then--and not questSelect[questID] then
                 local link--C_QuestLog.RequestLoadQuestByID(questID)
                 local buttonIndex = 1;--物品数量
