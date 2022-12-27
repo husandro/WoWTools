@@ -253,10 +253,13 @@ local function setItem(self, ItemLink)
                 self.text2Left:SetText(sourceInfo.isCollected and '|cnGREEN_FONT_COLOR:'..COLLECTED..'|r' or '|cnRED_FONT_COLOR:'..NOT_COLLECTED..'|r')
             end
         end
-        if appearanceID and self.creatureDisplayID~=appearanceID then
-            self.itemModel:SetItemAppearance(appearanceID, visualID)
-            self.itemModel:SetShown(true)
-            self.creatureDisplayID=appearanceID
+        if appearanceID then
+            if self.creatureDisplayID~=appearanceID then
+                self.itemModel:SetItemAppearance(appearanceID, visualID)
+                --self.itemModel:SetItem(itemID, appearanceModID, itemVisualID)
+                self.itemModel:SetShown(true)
+                self.creatureDisplayID=appearanceID
+            end
         end
         if bindType==LE_ITEM_BIND_ON_EQUIP or bindType==LE_ITEM_BIND_ON_USE then--绑定装备,使用时绑定
             self.Portrait:SetAtlas(e.Icon.unlocked)
@@ -494,7 +497,7 @@ local function set_Unit_Health_Bar(self, unit)
         self.textRight:SetPoint('TOPRIGHT', self, 'BOTTOMRIGHT')--生命条
         self.textRight:SetJustifyH("Right");
     end
-    if self.textLeft then 
+    if self.textLeft then
         self.textLeft:SetText(left or '')
         self.textRight:SetText(right or '')
         if r and g and b then
@@ -643,7 +646,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                         local numAll= e.WoWSave[e.Player.guid].Keystone.all or 0
                         local weekNum= e.WoWSave[e.Player.guid].Keystone.weekNum or 0
                         local weekLevel= e.WoWSave[e.Player.guid].Keystone.weekLevel or 0
-                        
+
                         if score and score>0 then
                             line:SetText(e.GetKeystoneScorsoColor(score, true)..'  '..col..weekLevel)
                             if _G["GameTooltipTextRight"..i] then
@@ -659,8 +662,6 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                 end
             end
         end
-
-        
 
     elseif (UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit)) then--宠物TargetFrame.lua
         setPet(self, UnitBattlePetSpeciesID(unit))
@@ -680,58 +681,46 @@ local function setUnitInfo(self, unit)--设置单位提示信息
 
         --怪物, 图标
         if UnitIsQuestBoss(unit) then--任务
-            e.tips.Portrait:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Quest')
-            e.tips.Portrait:SetShown(true)
+            self.Portrait:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Quest')
+            self.Portrait:SetShown(true)
 
         elseif UnitIsBossMob(unit) then--世界BOSS
             self.textLeft:SetText(hex..BOSS..'|r')
-            e.tips.Portrait:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare')
-            e.tips.Portrait:SetShown(true)
+            self.Portrait:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare')
+            self.Portrait:SetShown(true)
         else
             local classification = UnitClassification(unit);--TargetFrame.lua
             if classification == "rareelite" then--稀有, 精英
                 self.textLeft:SetText(hex..GARRISON_MISSION_RARE..'|r')
                 self.Portrait:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare')
-                e.tips.Portrait:SetShown(true)
+                self.Portrait:SetShown(true)
 
             elseif classification == "rare" then--稀有
                 self.textLeft:SetText(hex..GARRISON_MISSION_RARE..'|r')
-                e.tips.Portrait:SetAtlas('UUnitFrame-Target-PortraitOn-Boss-Rare-Star')
-                e.tips.Portrait:SetShown(true)
+                self.Portrait:SetAtlas('UUnitFrame-Target-PortraitOn-Boss-Rare-Star')
+                self.Portrait:SetShown(true)
+            else
+                SetPortraitTexture(self.Portrait, unit)
+                self.Portrait:SetShown(true)
             end
         end
 
         local type=UnitCreatureType(unit)--生物类型
         if type and not type:find(COMBAT_ALLY_START_MISSION) then
-            self.textRight:SetText(hex..type..'|r') 
+            self.textRight:SetText(hex..type..'|r')
         end
     end
 
     set_Unit_Health_Bar(GameTooltipStatusBar,unit)--生命条提示
 
-    if e.tips.playerModel.guid~=guid then--3D模型
-        e.tips.playerModel:SetUnit(unit)
-        e.tips.playerModel.guid=guid
-    end
-    e.tips.playerModel:SetShown(true)
-end
-
-local function setUnitInit(self)--设置默认提示位置
-    if not Save.disabled then
-        if not e.tips.playerModel then--单位3D模型
-            e.tips.playerModel=CreateFrame("PlayerModel", nil, e.tips)
-            e.tips.playerModel:SetFacing(-0.35)
-            e.tips.playerModel:SetPoint("BOTTOM", e.tips, 'TOP', 0, -12)
-            e.tips.playerModel:SetSize(100, 100)
-            e.tips.playerModel:SetShown(false)
+    if self.playerModel:CanSetUnit(unit) then
+        if self.playerModel.guid~=guid then--3D模型
+            self.playerModel:SetUnit(unit)
+            self.playerModel.guid=guid
         end
-        panel:RegisterEvent('INSPECT_READY')
-    else
-        panel:UnregisterEvent('INSPECT_READY')
+        self.playerModel:SetShown(true)
     end
 end
-
-
 
 local function setCVar(reset, tips)
     local tab={
@@ -877,6 +866,15 @@ end
 --初始
 --####
 local function Init()
+    if not e.tips.playerModel then--单位3D模型
+        e.tips.playerModel=CreateFrame("PlayerModel", nil, e.tips)
+        e.tips.playerModel:SetFacing(-0.35)
+        e.tips.playerModel:SetPoint("BOTTOM", e.tips, 'TOP', 0, -12)
+        e.tips.playerModel:SetSize(100, 100)
+        e.tips.playerModel:SetShown(false)
+    end
+    panel:RegisterEvent('INSPECT_READY')
+
     setInitItem(ItemRefTooltip)
     setInitItem(e.tips)
     e.tips:HookScript("OnHide", function(self)--隐藏
@@ -899,46 +897,46 @@ local function Init()
     end)
 
     TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes,  function(tooltip,date)
-        if (tooltip==e.tips or tooltip==ItemRefTooltip) and date.type~=25 then--25宏 ,11宠物技能
-            if date.type==2 then--单位
+        if date.type==2 then--单位
+            if tooltip==e.tips then
                 local unit= select(2, TooltipUtil.GetDisplayedUnit(tooltip))
                 if unit then
                     setUnitInfo(tooltip, unit)
                 end
+            end
 
-            elseif date.id and date.type then
-                if date.type==0 or date.type==19 then--TooltipUtil.lua 0物品 19玩具
-                    local itemID, itemLink=TooltipUtil.GetDisplayedItem(tooltip)
-                    itemLink= itemLink or itemID or date.id
-                    setItem(tooltip, itemLink)
+        elseif date.id and date.type and (tooltip==e.tips or tooltip==ItemRefTooltip) and date.type~=25 then--25宏 ,11宠物技能
+            if date.type==0 or date.type==19 then--TooltipUtil.lua 0物品 19玩具
+                local itemID, itemLink=TooltipUtil.GetDisplayedItem(tooltip)
+                itemLink= itemLink or itemID or date.id
+                setItem(tooltip, itemLink)
 
-                elseif date.type==1 then
-                    setSpell(tooltip, date.id)--法术
+            elseif date.type==1 then
+                setSpell(tooltip, date.id)--法术
 
-                elseif date.type==5 then
-                    setCurrency(tooltip, date.id)--货币
+            elseif date.type==5 then
+                setCurrency(tooltip, date.id)--货币
 
-                elseif date.type==7 then--Aura
-                    set_Aura(tooltip, date.id)
+            elseif date.type==7 then--Aura
+                set_Aura(tooltip, date.id)
 
-                elseif date.type==8 then--艾泽拉斯之心
-                    set_Azerite(tooltip, date.id)
+            elseif date.type==8 then--艾泽拉斯之心
+                set_Azerite(tooltip, date.id)
 
-                elseif date.type==10 then
-                    setMount(tooltip, date.id)--坐骑
+            elseif date.type==10 then
+                setMount(tooltip, date.id)--坐骑
 
-                elseif date.type==12 then--成就
-                    setAchievement(tooltip, date.id)
+            elseif date.type==12 then--成就
+                setAchievement(tooltip, date.id)
 
-                elseif date.type==22 then--法术弹出框
-                    set_FlyoutInfo(tooltip, date.id)
+            elseif date.type==22 then--法术弹出框
+                set_FlyoutInfo(tooltip, date.id)
 
-                elseif date.type==23 then
-                    setQuest(tooltip, date.id)--任务
+            elseif date.type==23 then
+                setQuest(tooltip, date.id)--任务
 
-                else
-                    tooltip:AddDoubleLine('ID '..date.id, 'type '..date.type)
-                end
+            else
+                tooltip:AddDoubleLine('ID '..date.id, 'type '..date.type)
             end
         end
     end)
@@ -1174,7 +1172,6 @@ local function Init()
     end)
     panel.CVar:SetScript('OnLeave', function() e.tips:Hide() end)
 
-    setUnitInit(self)--设置默认提示位置
     setCVar()--设置CVar
 
     if Save.setCVar and e.Player.zh then
@@ -1245,18 +1242,16 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             panel:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_AchievementUI' then--成就ID
-            if not Save.disabled then
-                hooksecurefunc(AchievementTemplateMixin, 'Init', function(self2,elementData)--Blizzard_AchievementUI.lua
-                    local category = elementData.category;
-                    local achievementID,  description, icon, _, flags
-                    if self2.index then
-                        achievementID, _, _, _, _, _, _, description, flags, icon= GetAchievementInfo(category, self2.index);
-                    else
-                        achievementID, _, _, _, _, _, _, description, flags, icon = GetAchievementInfo(self2.id);
-                    end
-                    self2.HiddenDescription:SetText(description..' '..(flags==131072 and e.Icon.wow2 ..'|cnGREEN_FONT_COLOR:'..achievementID..'|r' or achievementID)..(icon and ' |T'..icon..':0|t'..icon or ''))
-                end)
-            end
+            hooksecurefunc(AchievementTemplateMixin, 'Init', function(self2,elementData)--Blizzard_AchievementUI.lua
+                local category = elementData.category;
+                local achievementID,  description, icon, _, flags
+                if self2.index then
+                    achievementID, _, _, _, _, _, _, description, flags, icon= GetAchievementInfo(category, self2.index);
+                else
+                    achievementID, _, _, _, _, _, _, description, flags, icon = GetAchievementInfo(self2.id);
+                end
+                self2.HiddenDescription:SetText(description..' '..(flags==131072 and e.Icon.wow2 ..'|cnGREEN_FONT_COLOR:'..achievementID..'|r' or achievementID)..(icon and ' |T'..icon..':0|t'..icon or ''))
+            end)
 
         elseif arg1=='Blizzard_Collections' then--宠物手册， 召唤随机，偏好宠物，技能ID    
             hooksecurefunc('PetJournalSummonRandomFavoritePetButton_OnEnter', function()--PetJournalSummonRandomFavoritePetButton
@@ -1272,96 +1267,3 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         end
     end
 end)
-
---[[
-local AchievementFlasgs={
-    [1] = 'COUNTER',
-    [4] = 'PLAY_NO_VISUAL',
-    [8] = 'SUM',
-    [16] = 'MAX_USED',
-    [32] = 'REQ_COUNT',
-    [64] = 'AVERAGE',
-    [128] = 'PROGRESS_BAR',
-    [256] = 'REALM_FIRST_REACH',
-    [512] = 'REALM_FIRST_KILL',
-    [2048] = 'HIDE_INCOMPLETE',
-    [4096] = 'SHOW_IN_GUILD_NEWS',
-    [8192] = 'SHOW_IN_GUILD_HEADER',
-    [16384] = 'GUILD',
-    [28672]= e.onlyChinse and '公会综合' or GUILD..GENERAL,
-    [32768] = 'SHOW_GUILD_MEMBERS',
-    [53248] = e.onlyChinse and '公会PvP' or GUILD..' PvP',
-    [65536] = 'SHOW_CRITERIA_MEMBERS',
-    [94208]= e.onlyChinse and '公会声望' or GUILD..REPUTATION,
-    [131072] = 'ACCOUNT_WIDE',
-    [262144] = 'UNK5',
-    [524288] = 'HIDE_ZERO_COUNTER',
-    [1048576] = 'TRACKING_FLAG',
-}
-    --TooltipUtil.lua
-    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(tooltip,date)--0
-        local itemLink=select(2, TooltipUtil.GetDisplayedItem(tooltip))
-        if itemLink and (tooltip==e.tips or tooltip==ItemRefTooltip) then
-            if itemLink then
-                setItem(tooltip, itemLink)
-            end
-        end
-    end)
-    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Spell, function(tooltip,date)--1
-        local spellID= select(2, TooltipUtil.GetDisplayedSpell(tooltip))
-        if spellID and (tooltip==e.tips or tooltip==ItemRefTooltip) then
-            setSpell(tooltip, linkID)
-        end
-    end)
-    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(tooltip,date)--2
-        local unit= select(2, TooltipUtil.GetDisplayedUnit(tooltip))
-        if unit and (tooltip==e.tips or tooltip==ItemRefTooltip) then
-            setUnitInfo(tooltip, unit)--单位
-        end
-    end)
-    
-    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Mount, function(tooltip,date)--10
-        if date and date.id and (tooltip==e.tips or tooltip==ItemRefTooltip) then
-            setMount(tooltip, date.id)--坐骑   
-        end
-    end)
-    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Toy, function(tooltip,date)--19
-            if date and date.id and (tooltip==e.tips or tooltip==ItemRefTooltip) then
-                setItem(tooltip, date.id)-- 玩具
-            end
-    end)
-    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Currency,  function(tooltip,date)--5
-        if date and date.id and (tooltip==e.tips or tooltip==ItemRefTooltip) then
-            setCurrency(tooltip, date.id)--货币
-        end
-    end)
-   
-    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Quest,  function(tooltip,date)--23
-        if date and date.id and (tooltip==e.tips or tooltip==ItemRefTooltip) then
-            setQuest(tooltip, date.id)--任务
-        end
-    end)
-
-local function setItemCooldown(self, itemID)--物品冷却
-    local startTime, duration, enable = GetItemCooldown(itemID)
-    if duration>4 and enable==1 then
-        local t=GetTime()
-        if startTime>t then t=t+86400 end
-        t=t-startTime
-        t=duration-t
-        self:AddDoubleLine(ON_COOLDOWN, SecondsToTime(t), 1,0,0, 1,0,0)
-    end
-end
-
-local function setSpellCooldown(self, spellID)--法术冷却
-    local startTime, duration, enable = GetSpellCooldown(spellID)
-    if duration and duration>4 and enable==1 and gcdMS~=duration then
-        local t=GetTime()
-        if startTime>t then t=t+86400 end
-        t=t-startTime
-        t=duration-t
-        self:AddDoubleLine(ON_COOLDOWN, SecondsToTime(t), 1,0,0, 1,0,0)
-    end
-end
-
-]]

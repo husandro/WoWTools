@@ -464,7 +464,7 @@ local function Init()
         panel:SetSize(e.toolsFrame.size, e.toolsFrame.size)
     end
     --panel.tips=CreateFrame("GameTooltip", id..addName, panel, "GameTooltipTemplate")
-    panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
+    panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")--菜单列表
 
     panel.count=e.Cstr(panel, 10, nil, nil, true)
     panel.count:SetPoint('BOTTOM',0,2)

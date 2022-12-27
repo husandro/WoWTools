@@ -648,6 +648,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
+            --添加控制面板
             local check=e.CPanel(addName, not Save.disabled, true)
             check:SetScript('OnClick', function()
                 Save.disabled= not Save.disabled and true or nil
