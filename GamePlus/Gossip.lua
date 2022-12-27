@@ -786,11 +786,12 @@ local function Init_Quest()
         local questID=GetQuestID()
 
         if not Save.quest or IsModifierKeyDown() or (Save.NPC[npc] and Save.questOption[qeustID]) then
+            print(id)
             return
         end
 
-        if not IsQuestCompletable() then--or not C_QuestOffer.GetHideRequiredItemsOnTurnIn() then
-            if questID and not questSelect[questID] then
+        if not IsQuestCompletable() or not C_QuestOffer.GetHideRequiredItemsOnTurnIn() then
+            if questID then--and not questSelect[questID] then
                 local link--C_QuestLog.RequestLoadQuestByID(questID)
                 local buttonIndex = 1;--物品数量
                 for i=1, GetNumQuestItems() do
