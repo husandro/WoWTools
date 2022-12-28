@@ -336,12 +336,14 @@ local function getMountShow()
     C_MountJournal.SetCollectedFilterSetting(2,false)
     C_MountJournal.SetCollectedFilterSetting(3,false)
     local num=C_MountJournal.GetNumDisplayedMounts()
-    while panel.showFrame:IsShown() and IsOutdoors() and not UnitIsDeadOrGhost('player') and not UnitAffectingCombat('player') and not IsPlayerMoving() do
+    local n=1
+    while n<num and panel.showFrame:IsShown() and IsOutdoors() and not UnitIsDeadOrGhost('player') and not UnitAffectingCombat('player') and not IsPlayerMoving() do
         local _, _, _, isActive, isUsable, _, _, _, _, _, _, mountID = C_MountJournal.GetDisplayedMountInfo(math.random(1, num));
         if not isActive and isUsable and mountID then
             C_MountJournal.SummonByID(mountID)
             return
         end
+        n=n+1
     end
     panel.showFrame:SetShown(false)
 end
