@@ -307,7 +307,7 @@ local function set_PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNati
         return
     end
     --local tex=StaticPopup1Text;  
-    local playerInfo= e.GetPlayerInfo(nil, inviterGUID, true)
+    --local playerInfo= e.GetPlayerInfo(nil, inviterGUID, true)
 
     local function setPrint(sec, text)
         print(id, addName, text,

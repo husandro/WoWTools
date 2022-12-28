@@ -1111,8 +1111,16 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 else
                     Save.disabled=true
                 end
-                print(id, 'Tools', e.GetEnabeleDisable(not Save.disabled), NEED..RELOADUI)
+                print(id, 'Tools', e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end)
+            check:SetScript('OnEnter', function (self2)
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(e.onlyChinse and '物品升级界面' or ITEM_UPGRADE..' UI',ERRORS,1,0,0,1,0,0)
+                e.tips:Show()
+            end)
+            check.text:SetTextColor(1,0,0)
+            check:SetScript('OnLeave', function() e.tips:Hide() end)
 
             if not Save.disabled then
                 if Save.size then

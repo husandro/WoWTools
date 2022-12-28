@@ -252,7 +252,6 @@ local function InitMenu(self, level, type)--主菜单
         }
         UIDropDownMenu_AddButton(info, level)
 
-        
         info= {--自动, 更新物品, 查询
             text= e.onlyChinse and '自动查找' or UPDATE..ITEMS,
             tooltipOnButton=true,
@@ -437,6 +436,7 @@ end
 panel:RegisterEvent("ADDON_LOADED")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
+  
     if event == "ADDON_LOADED" and arg1== id then
         if WoWToolsSave and not WoWToolsSave[addName..'Tools'] then--初始,类, 设置
             local className=GetItemClassInfo(0)
@@ -467,13 +467,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='BAG_UPDATE_DELAYED' then
         set_Item_Button()--检查,物品
-        
+
     elseif event=='PLAYER_REGEN_ENABLED' then
         if panel.bat then
             set_Item_Count(self)--更新物品
             panel.bat=nil
         end
         panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
+
     elseif event=='BAG_UPDATE_COOLDOWN' then
         set_Cooldown(self)--图标冷却
     end

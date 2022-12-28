@@ -290,6 +290,14 @@ local function setAddLoad(arg1)
         if ItemSocketingFrame.TitleContainer then
             Move(ItemSocketingFrame.TitleContainer, {frame=ItemSocketingFrame})
         end
+
+    elseif arg1=='Blizzard_ItemUpgradeUI' then
+        if ItemUpgradeFrame then
+            if ItemUpgradeFrame.TitleContainer then
+                Move(ItemUpgradeFrame.TitleContainer,{frame=ItemUpgradeFrame})
+            end
+            Move(ItemUpgradeFrame,{})
+        end
     end
 end
 
@@ -383,7 +391,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             local sel=e.CPanel(addName, not Save.disabled)
             sel:SetScript('OnClick', function()
                 Save.disabled= not Save.disabled and true or nil
-                print(addName, e.GetEnabeleDisable(not Save.disabled), REQUIRES_RELOAD)
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end)
 
             if not Save.disabled then
