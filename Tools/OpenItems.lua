@@ -8,7 +8,10 @@ local Save={
         --[190320]=10,--[活力之火]
     },
     no={--禁用使用
-
+        [139590]=true,--[传送卷轴：拉文霍德]
+        [141605]=true,--[飞行管理员的哨子]
+        [163604]=true,--[撒网器5000型]
+        [199900]=true,--[二手勘测工具]
     },
     pet=true, open=true, toy=true, mount=true, mago=true, ski=true, alt=true,
     noItemHide=true,
