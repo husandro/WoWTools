@@ -11,6 +11,7 @@ local Save={
         [144392]=true,--拳手的重击指环
     },
     Sell={
+        [34498]=true,--[纸飞艇工具包]
     },
 }
 local bossSave={}
