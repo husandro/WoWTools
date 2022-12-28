@@ -498,7 +498,7 @@ local function Init()
     setTextFrame()--设置显示内容,框架 panel.textFrame,内容 panel.text
     C_Timer.After(2, setTexture)--设置,图标, 颜色
 
-    if Save.AllOnlineTime or not e.WoWSave[e.Player.guid].Time.levelTime then--总游戏时间
+    if Save.AllOnlineTime or not e.WoWSave[e.Player.guid].Time.totalTime then--总游戏时间
         RequestTimePlayed()
     end
 end

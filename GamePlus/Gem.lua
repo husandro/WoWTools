@@ -1,10 +1,10 @@
 local id, e = ...
 local Save={}
-local addName= e.onlyChinse and "镶嵌宝石" or SOCKET_GEMS
+local addName= SOCKET_GEMS
 local panel=CreateFrame("Frame")
 
 local Buttons={}
-local function set_Gem()--Blizzard_ItemSocketingUI.lua
+local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
     if not ItemSocketingFrame or not ItemSocketingFrame:IsVisible() then
         return
     end

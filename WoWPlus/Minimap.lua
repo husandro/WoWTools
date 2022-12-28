@@ -179,12 +179,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
              --添加控制面板        
              local sel=e.CPanel(addName, not Save.disabled)
              sel:SetScript('OnClick', function()
-                 if Save.disabled then
-                     Save.disabled=nil
-                 else
-                     Save.disabled=true
-                 end
-                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), 	REQUIRES_RELOAD)
+                Save.disabled = not Save.disabled and true or nil
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需求重新加载' or REQUIRES_RELOAD)
              end)
              sel:SetScript('OnEnter', function(self2)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")

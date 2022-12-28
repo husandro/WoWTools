@@ -1,5 +1,5 @@
 local id, e = ...
-local addName= e.onlyChinse and '插件管理' or ADDONS..CHAT_MODERATE
+local addName= ADDONS..CHAT_MODERATE
 local panel=e.Cbtn(AddonList, true, nil, nil, nil, true,{80,22})
 
 local Save={
@@ -201,6 +201,7 @@ local function Init()
         panel.text:SetText(text)
     end)
 end
+
 --###########
 --加载保存数据
 --###########
@@ -214,12 +215,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
         --添加控制面板        
         local sel=e.CPanel(addName, not Save.disabled, true)
         sel:SetScript('OnClick', function()
-            if Save.disabled then
-                Save.disabled=nil
-            else
-                Save.disabled=true
-            end
-            print(addName, e.GetEnabeleDisable(not Save.disabled), NEED..' /reload')
+            Save.disabled = not Save.disabled and true or nil
+            print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需求重新加载' or REQUIRES_RELOAD)
         end)
         if not Save.disabled then
             Init()
