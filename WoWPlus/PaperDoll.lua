@@ -211,14 +211,20 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
         end
         Engineering(self, slot, use)--地精滑翔,氮气推进器
     end
-    if self.enchant then self.enchant:SetShown(enchant) end
-    if self.use then self.use:SetShown(use) end
-    if self.engineering then self.engineering:SetShown(not use and link) end
+    if self.enchant then
+        self.enchant:SetShown(enchant)
+    end
+    if self.use then
+        self.use:SetShown(use)
+    end
+    if self.engineering then
+        self.engineering:SetShown(not use and link)
+    end
 end
 
 local function Set(self, slot, link)--套装
     local set
-    if link and not Save.disabled then
+    if link then
         set=select(16 , GetItemInfo(link))
         if set then
             if set and not self.set then
