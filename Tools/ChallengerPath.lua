@@ -38,11 +38,22 @@ local Save={
 
         {spell=373262, ins=860},--堕落守护者之路(卡拉赞)
         {spell=373274, ins=1178},--机械王子之路(麦卡贡)
+
+        {spell=393764, ins=721},--[英灵殿]
+        {spell=393283, ins=1204},--[注能大厅]
+        {spell=393279, ins=1203},--[碧蓝魔馆]
+        {spell=393276, ins=1199},--[奈萨鲁斯]
+        {spell=393267, ins=1196},--[蕨皮山谷]
+        {spell=393262, ins=1198},--[诺库德阻击战]
+        {spell=393256, ins=1202},--利爪防御者之路[红玉新生法池]
+        {spell=393222, ins=1197},--看护者遗产之路 [奥达曼：提尔的遗产]
+        {spell=393766, ins=800},--大魔导师之路(群星庭院)
+        {spell=393273, ins=1201},--巨龙学位之路(艾杰斯亚学院)
     }
 }
 
 for _, tab in pairs(Save.list) do
-    if IsSpellKnown(tab.spell) then
+    if tab and tab.spell and IsSpellKnown(tab.spell) then
         e.LoadSpellItemData(tab.spell, true)--加载法术, 物品数据
     end
 end
