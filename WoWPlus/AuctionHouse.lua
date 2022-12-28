@@ -18,14 +18,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             sel:SetScript('OnClick', function()
                 if Save.disabled then
                     Save.disabled=nil
-                    Set()
-                    print(addName, e.GetEnabeleDisable(not Save.disabled))
+                    
                 else
                     Save.disabled=true
-                    print(addName, e.GetEnabeleDisable(not Save.disabled), NEED..' /reload')
                 end
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end)
-            Set()
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then

@@ -908,7 +908,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 else
                     Save.disabled=true
                 end
-                print(addName, e.GetEnabeleDisable(not Save.disabled), '|cnRED_FONT_COLOR:'..REQUIRES_RELOAD)
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end)
 
             if not Save.disabled then

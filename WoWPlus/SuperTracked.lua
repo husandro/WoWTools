@@ -17,7 +17,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             local sel=e.CPanel(addName, not Save.disabled)
             sel:SetScript('OnClick', function()
                 Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), '|cnRED_FONT_COLOR:'..REQUIRES_RELOAD)
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end)
             sel:SetScript('OnEnter', function(self2)
                 e.tips:SetOwner(self2, "ANCHOR_TOPLEFT")

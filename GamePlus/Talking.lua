@@ -23,13 +23,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             --添加控制面板        
             local sel=e.CPanel(addName, Save.disabled, true)
             sel:SetScript('OnClick', function()
-                if Save.disabled then
-                    Save.disabled=nil
-                else
-                    Save.disabled=true
-                end
+                Save.disabled= not Save.disabled and true or nil
                 setRegister()--设置事件
-                print(id, addName, e.GetEnabeleDisable(Save.disabled))
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled))
             end)
             setRegister()--设置事件
 

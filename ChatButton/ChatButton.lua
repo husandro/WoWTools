@@ -100,7 +100,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     Save.disabled=true
                 end
                 panel.disabled=Save.disabled
-                print(addName, e.GetEnabeleDisable(not Save.disabled), REQUIRES_RELOAD)
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end)
             if not Save.disabled then
                 Init()
