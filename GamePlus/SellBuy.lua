@@ -1,9 +1,11 @@
 local id, e = ...
-local Save={noSell={
-        [144341]=true,
+local Save={
+    noSell={
+        [144341]=true,--[可充电的里弗斯电池]
+        [49040]=true,--[基维斯]
+        [114943]=true,--[终极版侏儒军刀]
     },
     Sell={
-
     },
 }
 local bossSave={}
