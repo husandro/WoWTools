@@ -165,7 +165,8 @@ local function Engineering(self, slot, use)--增加 [潘达利亚工程学: 地�
 
     if not self.engineering then
         self.engineering=e.Cbtn(self)
-        self.engineering:SetSize(self.use:GetSize())
+        local h=self:GetHeight()/3
+        self.engineering:SetSize(h,h)
         self.engineering:SetNormalTexture(136243)
         if Slot(slot) then
             self.engineering:SetPoint('TOPLEFT', self, 'TOPRIGHT', 8, 0)
