@@ -20,11 +20,9 @@ local function Du(self, slot, link) --耐久度
         if not self.du then
             self.du=CreateFrame('StatusBar', nil, self)
             if Slot(slot) then
-               -- self.du:SetPoint('LEFT', self, 'RIGHT', 2.5,0)
                self.du:SetPoint('RIGHT', self, 'LEFT', -2.5,0)
             else
                 self.du:SetPoint('LEFT', self, 'RIGHT', 2.5,0)
-                --self.du:SetPoint('RIGHT', self, 'LEFT', -2.5,0)
             end
             self.du:SetSize(4, self:GetHeight())--h37
             self.du:SetMinMaxValues(0, 100)
@@ -98,11 +96,6 @@ local function Lv(self, slot, link)--装等
                 end
             end
         end
-
-       -- pvp= slot and select(2, e.GetTooltipData(nil, PvPItemLevel, link, nil, nil, nil, nil, slot))--"装备：在竞技场和战场中将物品等级提高至%d。"
-        --[[if PvPLevel and hex then
-            PvPLevel= '|c'..hex..PvPLevel..'|r'
-        end]]
     end
     if not self.lv and lv then
         self.lv= e.Cstr(self, 10, nil, nil,nil,nil, 'CENTER')
@@ -111,31 +104,6 @@ local function Lv(self, slot, link)--装等
     if self.lv then
         self.lv:SetText(lv or '')
     end
-
-    --[[if not self.PvPLevel and PvPLevel then
-        self.PvPLevel= e.Cstr(self, 10, nil, nil,nil,nil, 'RIGHT')
-        self.PvPLevel:SetPoint('RIGHT', 0, 0)
-    end
-    if self.PvPLevel then
-        self.PvPLevel:SetText(PvPLevel or '')
-        self.PvPLevel:SetShown(PvPLevel and true or false)
-    end]]
-
---[[
-    if pvp and not self.pvpItem then
-        self.pvpItem=self:CreateTexture()
-        self.pvpItem:SetPoint('RIGHT')
-        local size= self:GetSize()
-        size= size/3
-        self.pvpItem:SetSize(size, size)
-        self.pvpItem:SetAtlas('pvptalents-warmode-swords')
-    end
-    if self.pvpItem then
-        self.pvpItem:SetShown(pvp and true or false)
-    end
-
-]]
-
 end
 
 local function Gem(self, slot, link)--宝石
@@ -199,7 +167,6 @@ local function Engineering(self, slot, use)--增加 [潘达利亚工程学: 地�
         self.engineering=e.Cbtn(self)
         self.engineering:SetSize(self.use:GetSize())
         self.engineering:SetNormalTexture(136243)
-        --self.engineering:SetPoint('CENTER', self.use, 'CENTER')
         if Slot(slot) then
             self.engineering:SetPoint('TOPLEFT', self, 'TOPRIGHT', 8, 0)
         else
