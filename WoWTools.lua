@@ -859,7 +859,7 @@ e.GetExpansionText= function(expacID, questID)--版本数据
 end
 
 
-e.GetTooltipData= function(colorRed, text, hyperLink, bag, guidBank, merchant, buyBack, inventory)--物品提示，信息
+e.GetTooltipData= function(colorRed, text, hyperLink, bag, guidBank, merchant, buyBack, inventory, text2)--物品提示，信息
     local tooltipData
     if bag then
         tooltipData= C_TooltipInfo.GetBagItem(bag.bag, bag.slot)
@@ -874,7 +874,7 @@ e.GetTooltipData= function(colorRed, text, hyperLink, bag, guidBank, merchant, b
     end
     tooltipData=  tooltipData or (hyperLink and C_TooltipInfo.GetHyperlink(hyperLink))
     if tooltipData and tooltipData.lines then
-        local noUse, findText, wow
+        local noUse, findText, wow, findText2
         for _, line in ipairs(tooltipData.lines) do--是否
             TooltipUtil.SurfaceArgs(line)
             if colorRed and noUse==nil then
@@ -890,7 +890,12 @@ e.GetTooltipData= function(colorRed, text, hyperLink, bag, guidBank, merchant, b
             if line.leftText then
                 if text and line.leftText:find(text) then--字符
                     findText= line.leftText:match(text) or line.leftText
-                    if not colorRed then
+                    if not colorRed   then
+                        break
+                    end
+                elseif text2 and line.leftText:find(text2) then--字符2
+                    findText2= line.leftText:match(text2) or line.leftText
+                    if not colorRed and findText then
                         break
                     end
                 elseif line.leftText==ITEM_BNETACCOUNTBOUND or line.leftText==ITEM_ACCOUNTBOUND then--暴雪游戏通行证绑定, 账号绑定
@@ -898,7 +903,7 @@ e.GetTooltipData= function(colorRed, text, hyperLink, bag, guidBank, merchant, b
                 end
             end
         end
-        return noUse, findText, wow
+        return noUse, findText, wow, findText2
     end
 end
 

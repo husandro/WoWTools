@@ -786,7 +786,6 @@ local function Init_Quest()
         local questID=GetQuestID()
 
         if not Save.quest or IsModifierKeyDown() or (Save.NPC[npc] and Save.questOption[qeustID]) then
-            print(id)
             return
         end
 
@@ -817,12 +816,9 @@ local function Init_Quest()
             QuestGoodbyeButton_OnClick()
         else
             if questID and not questSelect[questID] then
-                local link= GetQuestLink(questID)
-                if link then
-                    C_Timer.After(0.5, function()
-                        print(id, addName, link)
-                    end)
-                end
+                C_Timer.After(0.5, function()
+                    print(id, addName, GetQuestLink(questID) or questID)
+                end)
                 questSelect[questID]=true
             end
             QuestProgressCompleteButton_OnClick()--local b=QuestFrameCompleteQuestButton;
@@ -860,12 +856,9 @@ local function Init_Quest()
 
             if complete then
                 if not questSelect[questID] then
-                    local link=GetQuestLink(questID)
-                    if link then
-                        C_Timer.After(0.3, function()
-                            print(id, QUESTS_LABEL, link, '|cnGREEN_FONT_COLOR:'..acceptButton:GetText()..'|r')
-                        end)
-                    end
+                    C_Timer.After(0.3, function()
+                        print(id, QUESTS_LABEL, GetQuestLink(questID) or questID, '|cnGREEN_FONT_COLOR:'..acceptButton:GetText()..'|r')
+                    end)
                     questSelect[questID]=true
                 end
             end
@@ -875,10 +868,7 @@ local function Init_Quest()
             if not complete then
                 if not questSelect[questID] then
                     C_Timer.After(0.5, function()
-                        local link=GetQuestLink(questID)
-                        if link then
-                            print(id, QUESTS_LABEL, link, '|cnGREEN_FONT_COLOR:'..acceptButton:GetText()..'|r')
-                        end
+                        print(id, QUESTS_LABEL, GetQuestLink(questID) or questID, '|cnGREEN_FONT_COLOR:'..acceptButton:GetText()..'|r')
                     end)
                     questSelect[questID]=true
                 end

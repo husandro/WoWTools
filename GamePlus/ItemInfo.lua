@@ -6,10 +6,11 @@ local panel=CreateFrame("Frame")
 local itemUseString =ITEM_SPELL_CHARGES:gsub('%%d', '%(%%d%+%)')--(%d+)次
 local KeyStone=CHALLENGE_MODE_KEYSTONE_NAME:gsub('%%s','(.+) ')--钥石
 local text_EQUIPMENT_SETS= 	EQUIPMENT_SETS:gsub('%%s','(.+)')
+local PvPItemLevel=PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在竞技场和战场中将物品等级提高至%d。"
 local size= 10--字体大小
 
 local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBank, buyBack)
-    local topLeftText, bottomRightText, leftText, bottomLeftText, topRightText, r, g ,b, setIDItem, isWoWItem--setIDItem套装
+    local topLeftText, bottomRightText, leftText, rightText, bottomLeftText, topRightText, r, g ,b, setIDItem, isWoWItem--setIDItem套装
     if itemLink then
         local _, _, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, _, _, classID, subclassID, bindType, expacID, setID, isCraftingReagent = GetItemInfo(itemLink)
 
@@ -82,7 +83,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
 
         elseif classID==2 or classID==4 then--装备
             if itemQuality and itemQuality>1 then
-                local noUse, text, wow= e.GetTooltipData(true, text_EQUIPMENT_SETS, itemLink, bag and {bag=bag.bagID, slot=bag.slotID}, guildBank and {tab= guildBank[1], slot=guildBank[2]}, merchantIndex, buyBack)--物品提示，信息
+                local noUse, text, wow, text2= e.GetTooltipData(true, text_EQUIPMENT_SETS, itemLink, bag and {bag=bag.bagID, slot=bag.slotID}, guildBank and {tab= guildBank[1], slot=guildBank[2]}, merchantIndex, buyBack, nil, PvPItemLevel)--物品提示，信息
                 if text then--套装名称，
                     text= text:match('(.+),') or text:match('(.+)，') or text
                     bottomLeftText=e.WA_Utf8Sub(text,3,5)
@@ -90,6 +91,9 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
                     bottomLeftText='|cnRED_FONT_COLOR:'..itemMinLevel..'|r'
                 elseif wow then--战网
                     bottomLeftText= e.Icon.wow2
+                end
+                if text2 then--PvP装备
+                  rightText="|A:pvptalents-warmode-swords:0:0|a"
                 end
 
                 local invSlot = e.itemSlotTable[itemEquipLoc]
@@ -211,6 +215,18 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
             self.leftText:SetTextColor(r,g,b)
         end
     end
+
+    if rightText and not self.rightText then
+        self.rightText=e.Cstr(self, size, nil, nil, nil, 'OVERLAY')
+        self.rightText:SetPoint('RIGHT')
+    end
+    if self.rightText then
+        self.rightText:SetText(rightText or '')
+        if r and g and b and rightText then
+            self.rightText:SetTextColor(r,g,b)
+        end
+    end
+
     if bottomLeftText and not self.bottomLeftText then
         self.bottomLeftText=e.Cstr(self, size)
         self.bottomLeftText:SetPoint('BOTTOMLEFT')

@@ -20,9 +20,11 @@ local function Du(self, slot, link) --耐久度
         if not self.du then
             self.du=CreateFrame('StatusBar', nil, self)
             if Slot(slot) then
-                self.du:SetPoint('LEFT', self, 'RIGHT', 2.5,0)
+               -- self.du:SetPoint('LEFT', self, 'RIGHT', 2.5,0)
+               self.du:SetPoint('RIGHT', self, 'LEFT', -2.5,0)
             else
-                self.du:SetPoint('RIGHT', self, 'LEFT', -2.5,0)
+                self.du:SetPoint('LEFT', self, 'RIGHT', 2.5,0)
+                --self.du:SetPoint('RIGHT', self, 'LEFT', -2.5,0)
             end
             self.du:SetSize(4, self:GetHeight())--h37
             self.du:SetMinMaxValues(0, 100)
@@ -47,22 +49,37 @@ local function LvTo()--总装等
     if not PaperDollSidebarTab1 then
         return
     end
-    local avgItemLevel=GetAverageItemLevel()
-    if avgItemLevel and not PaperDollSidebarTab1.itemLevelText then
+    local avgItemLevel,_, avgItemLevelPvp = GetAverageItemLevel()
+    if avgItemLevel and not PaperDollSidebarTab1.itemLevelText then--PVE
         PaperDollSidebarTab1.itemLevelText=e.Cstr(PaperDollSidebarTab1, nil, nil, nil,{1,0.82,0},nil, 'CENTER')
         PaperDollSidebarTab1.itemLevelText:SetPoint('BOTTOM')
     end
     if PaperDollSidebarTab1.itemLevelText then
-        PaperDollSidebarTab1.itemLevelText:SetFormattedText('%i', avgItemLevel)
+        if avgItemLevel then
+            PaperDollSidebarTab1.itemLevelText:SetFormattedText('%i', avgItemLevel)
+        end
         PaperDollSidebarTab1.itemLevelText:SetShown(avgItemLevel and true or false)
+    end
+
+    if avgItemLevel~= avgItemLevelPvp and avgItemLevelPvp and not PaperDollSidebarTab1.itemLevelPvPText then--PVP
+        PaperDollSidebarTab1.itemLevelPvPText=e.Cstr(PaperDollSidebarTab1, nil, nil, nil,{1,0.82,0},nil, 'CENTER')
+        PaperDollSidebarTab1.itemLevelPvPText:SetPoint('TOP',0,-2)
+    end
+    if PaperDollSidebarTab1.itemLevelPvPText then
+        if avgItemLevel~= avgItemLevelPvp and avgItemLevelPvp then
+            PaperDollSidebarTab1.itemLevelPvPText:SetFormattedText('%i', avgItemLevelPvp)
+            PaperDollSidebarTab1.itemLevelPvPText:SetShown(true)
+        else
+            PaperDollSidebarTab1.itemLevelText:SetShown(false)
+        end
     end
 end
 
 local function Lv(self, slot, link)--装等    
-    local lv
+    local lv--, pvp
     local to=GetAverageItemLevel()
     if link then
-        local quality = GetInventoryItemQuality("player", slot)--颜色            
+        local quality = GetInventoryItemQuality("player", slot)--颜色
         lv=GetDetailedItemLevelInfo(link)
         if lv and to then
             local val=lv-to
@@ -74,13 +91,18 @@ local function Lv(self, slot, link)--装等
                 elseif val < -3 then
                     lv =YELLOW_FONT_COLOR_CODE..lv..'|r'
                 else
-                    local hex=select(4, GetItemQualityColor(quality))
+                    local hex=quality and select(4, GetItemQualityColor(quality))
                     if hex then
                         lv='|c'..hex..lv..'|r'
                     end
                 end
             end
         end
+
+       -- pvp= slot and select(2, e.GetTooltipData(nil, PvPItemLevel, link, nil, nil, nil, nil, slot))--"装备：在竞技场和战场中将物品等级提高至%d。"
+        --[[if PvPLevel and hex then
+            PvPLevel= '|c'..hex..PvPLevel..'|r'
+        end]]
     end
     if not self.lv and lv then
         self.lv= e.Cstr(self, 10, nil, nil,nil,nil, 'CENTER')
@@ -88,8 +110,32 @@ local function Lv(self, slot, link)--装等
     end
     if self.lv then
         self.lv:SetText(lv or '')
-        self.lv:SetShown(lv)
     end
+
+    --[[if not self.PvPLevel and PvPLevel then
+        self.PvPLevel= e.Cstr(self, 10, nil, nil,nil,nil, 'RIGHT')
+        self.PvPLevel:SetPoint('RIGHT', 0, 0)
+    end
+    if self.PvPLevel then
+        self.PvPLevel:SetText(PvPLevel or '')
+        self.PvPLevel:SetShown(PvPLevel and true or false)
+    end]]
+
+--[[
+    if pvp and not self.pvpItem then
+        self.pvpItem=self:CreateTexture()
+        self.pvpItem:SetPoint('RIGHT')
+        local size= self:GetSize()
+        size= size/3
+        self.pvpItem:SetSize(size, size)
+        self.pvpItem:SetAtlas('pvptalents-warmode-swords')
+    end
+    if self.pvpItem then
+        self.pvpItem:SetShown(pvp and true or false)
+    end
+
+]]
+
 end
 
 local function Gem(self, slot, link)--宝石
@@ -142,51 +188,59 @@ local function recipeLearned(recipeSpellID)--是否已学配方
     return info and info.learned
 end
 local function Engineering(self, slot, use)--增加 [潘达利亚工程学: 地精滑翔器][诺森德工程学: 氮气推进器]    
-    if not ((slot==15 and recipeLearned(126392)) or (slot==6 and recipeLearned(55016))) or use or self.engineering then
+    if not ((slot==15 and recipeLearned(126392)) or (slot==6 and recipeLearned(55016))) or use then
+        if self.engineering  then
+            self.engineering:SetShown(false)
+        end
         return
     end
-    self.engineering=e.Cbtn(self)
-    local h=self:GetHeight()/3
-    self.engineering:SetSize(h,h)
-    self.engineering:SetNormalTexture(136243)
-    if Slot(slot) then
-        self.engineering:SetPoint('TOPLEFT', self, 'TOPRIGHT', 8, 0)
-    else
-        self.engineering:SetPoint('TOPRIGHT', self, 'TOPLEFT', -8, 0)
-    end
-    self.engineering.spell= slot==15 and 126392 or 55016
-    self.engineering:SetScript('OnMouseDown' ,function(self2,d)
-        if d=='LeftButton' then
-            C_TradeSkillUI.OpenTradeSkill(202)
-            C_TradeSkillUI.CraftRecipe(self2.spell)
-            C_TradeSkillUI.CloseTradeSkill()
-            ToggleCharacter("PaperDollFrame", true)
-        elseif d=='RightButton' then
-            C_TradeSkillUI.OpenTradeSkill(202)
+
+    if not self.engineering then
+        self.engineering=e.Cbtn(self)
+        self.engineering:SetSize(self.use:GetSize())
+        self.engineering:SetNormalTexture(136243)
+        --self.engineering:SetPoint('CENTER', self.use, 'CENTER')
+        if Slot(slot) then
+            self.engineering:SetPoint('TOPLEFT', self, 'TOPRIGHT', 8, 0)
+        else
+            self.engineering:SetPoint('TOPRIGHT', self, 'TOPLEFT', -8, 0)
         end
-    end)
-    self.engineering:SetScript('OnEnter' ,function(self2)
-            e.tips:SetOwner(self2, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:SetSpellByID(self2.spell)
-            e.tips:Show()
-    end)
-    self.engineering:SetScript("OnMouseUp", function()
-        local n=GetItemCount(90146, true)
-            if n==0 then
-                local item=select(2, GetItemInfo(90146)) or SPELL_REAGENTS_OPTIONAL
-                print(item..' '..RED_FONT_COLOR_CODE..NONE..'|r')
+        self.engineering.spell= slot==15 and 126392 or 55016
+        self.engineering:SetScript('OnMouseDown' ,function(self2,d)
+            if d=='LeftButton' then
+                C_TradeSkillUI.OpenTradeSkill(202)
+                C_TradeSkillUI.CraftRecipe(self2.spell)
+                C_TradeSkillUI.CloseTradeSkill()
+                ToggleCharacter("PaperDollFrame", true)
+            elseif d=='RightButton' then
+                C_TradeSkillUI.OpenTradeSkill(202)
             end
-    end)
-    self.engineering:SetScript('OnLeave',function() e.tips:Hide() end)
+        end)
+        self.engineering:SetScript('OnEnter' ,function(self2)
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:SetSpellByID(self2.spell)
+                e.tips:Show()
+        end)
+        self.engineering:SetScript("OnMouseUp", function()
+            local n=GetItemCount(90146, true)
+                if n==0 then
+                    local item=select(2, GetItemInfo(90146)) or SPELL_REAGENTS_OPTIONAL
+                    print(item..' '..RED_FONT_COLOR_CODE..NONE..'|r')
+                end
+        end)
+        self.engineering:SetScript('OnLeave',function() e.tips:Hide() end)
+    end
+    self.engineering:SetShown(true)
 end
 
+local PvPItemLevelStr=PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在竞技场和战场中将物品等级提高至%d。"
 local enchantStr=ENCHANTED_TOOLTIP_LINE:gsub('%%s','(.+)')--附魔
 local function Enchant(self, slot, link)--附魔, 使用, 属性
-    local enchant, use
+    local enchant, use, pvpItem, _
     if link then
-        enchant=select(2, e.GetTooltipData(nil, enchantStr, link, nil, nil, nil, nil, slot)) and true or false--物品提示，信息
-        if enchant and not self.enchant then
+        _, enchant, _ , pvpItem= e.GetTooltipData(nil, enchantStr, link, nil, nil, nil, nil, slot, PvPItemLevelStr)--物品提示，信息
+        if enchant and not self.enchant then--附魔
             local h=self:GetHeight()/3
             self.enchant=self:CreateTexture()
             self.enchant:SetSize(h,h)
@@ -197,7 +251,8 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
             end
             self.enchant:SetTexture(463531)
         end
-        use=GetItemSpell(link) and true or false--物品是否可使用
+
+        use=GetItemSpell(link)--物品是否可使用
         if use and not self.use then
             local h=self:GetHeight()/3
             self.use=self:CreateTexture()
@@ -209,16 +264,30 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
             end
             self.use:SetAtlas('soulbinds_tree_conduit_icon_utility')
         end
+
         Engineering(self, slot, use)--地精滑翔,氮气推进器
+
+        if pvpItem and not self.pvpItem then--提示PvP装备
+            local h=self:GetHeight()/3
+            self.pvpItem=self:CreateTexture()
+            self.pvpItem:SetSize(h,h)
+            if Slot(slot) then
+                self.pvpItem:SetPoint('LEFT', self, 'RIGHT', -2.5,0)
+            else
+                self.pvpItem:SetPoint('RIGHT', self, 'LEFT', 2.5,0)
+            end
+            self.pvpItem:SetAtlas('pvptalents-warmode-swords')
+        end
     end
+
     if self.enchant then
-        self.enchant:SetShown(enchant)
+        self.enchant:SetShown(enchant and true or false)
     end
     if self.use then
-        self.use:SetShown(use)
+        self.use:SetShown(use and true or false)
     end
-    if self.engineering then
-        self.engineering:SetShown(not use and link)
+    if self.pvpItem then
+        self.pvpItem:SetShown(pvpItem and true or false)
     end
 end
 
