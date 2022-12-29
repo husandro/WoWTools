@@ -4,14 +4,15 @@
 ## Author: husandro
 ## Version: @project-version@
 ## Notes: WoW |cffff0000Plus|r
-##X-Category: Interface Enhancements
-##X-Flavor: Mainline
-##X-Website https://www.curseforge.com/wow/addons/wowtools
 ## SavedVariables: WoWToolsSave, WoWDate
 ## DefaultState: Enabled
-## X-Curse-Project-ID: 695149
+
 ## X-Wago-ID: baND1J6o
 
+## X-Curse-Project-ID: 695149
+## X-Website https://www.curseforge.com/wow/addons/wowtools
+## X-Category: Interface Enhancements
+## X-Flavor: Mainline
 
 ##主要，不能删除
 WoWTools.lua
