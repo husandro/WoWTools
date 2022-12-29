@@ -60,8 +60,8 @@ local function LvTo()--总装等
     end
 
     if avgItemLevel~= avgItemLevelPvp and avgItemLevelPvp and not PaperDollSidebarTab1.itemLevelPvPText then--PVP
-        PaperDollSidebarTab1.itemLevelPvPText=e.Cstr(PaperDollSidebarTab1, nil, nil, nil,{1,0.82,0},nil, 'CENTER')
-        PaperDollSidebarTab1.itemLevelPvPText:SetPoint('TOP',0,-2)
+        PaperDollSidebarTab1.itemLevelPvPText=e.Cstr(PaperDollSidebarTab1, 10, nil, nil,{1,0.82,0},nil, 'CENTER')
+        PaperDollSidebarTab1.itemLevelPvPText:SetPoint('RIGHT', PaperDollSidebarTab1, 'LEFT')
     end
     if PaperDollSidebarTab1.itemLevelPvPText then
         if avgItemLevel~= avgItemLevelPvp and avgItemLevelPvp then
