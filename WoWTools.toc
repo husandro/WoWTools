@@ -8,7 +8,7 @@
 ## DefaultState: Enabled
 ## X-Wago-ID: baND1J6o
 ## X-Curse-Project-ID: 695149
-## X-Category: Interface Enhancements
+## X-Category: Plugins
 ## X-Flavor: Mainline
 ## X-Website https://www.curseforge.com/wow/addons/wowtools
 
