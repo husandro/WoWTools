@@ -1,4 +1,5 @@
 ## Interface: 100002
+## Interface-Retail: Incompatible
 ## Title: |A:Icon-WoW:0:0|a|cffff00ffWoW|r|cff00ff00Tools|r
 ## Author: husandro
 ## Version: @project-version@
