@@ -316,7 +316,13 @@ local function Transmogillusion(link)--幻化
     if illusionID then
         local info=C_TransmogCollection.GetIllusionInfo(illusionID)
         if info then
-            return link..((info.isCollected and info.isUsable) and e.Icon.okTransmog2) or (info.isCollected and e.Icon.select2) or e.Icon.transmogHide2
+            local icon=e.Icon.transmogHide2
+            if info.isCollected and info.isUsable then
+                icon=e.Icon.okTransmog2
+            elseif info.isCollected then
+                icon=e.Icon.select2
+            end
+            return link..icon
         end
     end
 end
