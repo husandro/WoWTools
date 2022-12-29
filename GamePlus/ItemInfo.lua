@@ -166,9 +166,11 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
             topRightText= wow and e.Icon.wow2 or noUse and e.Icon.X2
         end
 
-        local num=GetItemCount(itemLink, true)-GetItemCount(itemLink)--银行数量
-        if num>0 then
-            leftText= '+'..e.MK(num, 0)
+        if (bag and bag.bagID<=NUM_BAG_SLOTS+1 and bag.bagID>=0) or not bag then
+            local num=GetItemCount(itemLink, true)-GetItemCount(itemLink)--银行数量
+            if num>0  then
+                leftText= '+'..e.MK(num, 0)
+            end
         end
     end
 
