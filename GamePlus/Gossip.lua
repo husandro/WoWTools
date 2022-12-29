@@ -852,9 +852,9 @@ local function Init_Quest()
         end
 
         if acceptButton and acceptButton:IsEnabled() then
-            select_Reward()--自动:选择奖励
-
             if complete then
+                select_Reward()--自动:选择奖励
+
                 if not questSelect[questID] then
                     C_Timer.After(0.3, function()
                         print(id, QUESTS_LABEL, GetQuestLink(questID) or questID, '|cnGREEN_FONT_COLOR:'..acceptButton:GetText()..'|r')
