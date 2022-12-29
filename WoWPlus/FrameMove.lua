@@ -291,12 +291,20 @@ local function setAddLoad(arg1)
             Move(ItemSocketingFrame.TitleContainer, {frame=ItemSocketingFrame})
         end
 
-    elseif arg1=='Blizzard_ItemUpgradeUI' then
+    elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级,界面
         if ItemUpgradeFrame then
             if ItemUpgradeFrame.TitleContainer then
                 Move(ItemUpgradeFrame.TitleContainer,{frame=ItemUpgradeFrame})
             end
             Move(ItemUpgradeFrame,{})
+        end
+
+    elseif arg1=='Blizzard_InspectUI' then--玩家, 观察角色, 界面
+        if InspectFrame then 
+            if InspectFrame.TitleContainer then
+                Move(InspectFrame.TitleContainer,{frame=InspectFrame})
+            end
+            Move(InspectFrame,{})
         end
     end
 end
