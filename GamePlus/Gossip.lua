@@ -9,7 +9,7 @@ local Save={
 
 local panel=e.Cbtn(nil, nil,nil,nil,nil, true, {18,18});--闲话图标
 local questPanel=e.Cbtn(panel, nil,nil,nil,nil, true, {18,18});--任务图标
-local questSelect={}--已选任务, 提示用
+--local questSelect={}--已选任务, 提示用
 
 local function setTexture()--设置图标
     questPanel:SetNormalAtlas(Save.quest and 'campaignavailablequesticon' or e.Icon.icon)
@@ -300,7 +300,7 @@ local function Init_Gossip()
 
     local selectGissipIDTab= {}
     GossipFrame:SetScript('OnShow', function (self)
-        questSelect={}--已选任务, 提示用
+        --questSelect={}--已选任务, 提示用
         selectGissipIDTab={}
         local npc=e.GetNpcID('npc')
         self.sel.npc=npc
@@ -785,7 +785,7 @@ local function Init_Quest()
 
         local questID=GetQuestID()
 
-        if not Save.quest or IsModifierKeyDown() or (Save.NPC[npc] and Save.questOption[qeustID]) then
+        if not questID or not Save.quest or IsModifierKeyDown() or (Save.NPC[npc] and Save.questOption[qeustID]) then
             return
         end
 
@@ -811,16 +811,16 @@ local function Init_Quest()
                 C_Timer.After(0.5, function()
                     print(id, QUESTS_LABEL, GetQuestLink(questID) or ('|cnGREEN_FONT_COLOR:'..questID..'|r'), text and '|cffff00ff'..text..'|r', link, QuestFrameGoodbyeButton and '|cnRED_FONT_COLOR:'..QuestFrameGoodbyeButton:GetText())
                 end)
-                questSelect[questID]=true
+               -- questSelect[questID]=true
             end
             QuestGoodbyeButton_OnClick()
         else
-            if questID and not questSelect[questID] then
+            --if questID and not questSelect[questID] then
                 C_Timer.After(0.5, function()
                     print(id, addName, GetQuestLink(questID) or questID)
                 end)
-                questSelect[questID]=true
-            end
+              --  questSelect[questID]=true
+            --end
             QuestProgressCompleteButton_OnClick()--local b=QuestFrameCompleteQuestButton;
         end
     end)
@@ -839,40 +839,77 @@ local function Init_Quest()
         end
         questID= questID or GetQuestID()
 
-        if not questID or IsModifierKeyDown() then
+        if not questID or IsModifierKeyDown() or not_Ace_QuestTrivial(questID)  then
             return
 
         elseif (Save.NPC[npc] or not Save.quest) and not Save.questOption[questID] then
             return
         end
 
-        local complete= C_QuestLog.IsComplete(questID)
-        if (not_Ace_QuestTrivial(questID) and not Save.questOption[questID]) then--(not complete and getMaxQuest()) or
-            return
-        end
+        --if not_Ace_QuestTrivial(questID) then--and not Save.questOption[questID]) then--(not complete and getMaxQuest()) or
+        --  return
+        --end
 
         if acceptButton and acceptButton:IsEnabled() then
-            if complete then
-                select_Reward()--自动:选择奖励
-
-                if not questSelect[questID] then
-                    C_Timer.After(0.3, function()
-                        print(id, QUESTS_LABEL, GetQuestLink(questID) or questID, '|cnGREEN_FONT_COLOR:'..acceptButton:GetText()..'|r')
-                    end)
-                    questSelect[questID]=true
+            local itemLink=''
+            local numRequiredItems = GetNumQuestItems()
+            local numRequiredCurrencies = GetNumQuestCurrencies();
+            if numRequiredItems>0 then--物品
+                local questItemName = "QuestProgressItem";
+                for i=1, numRequiredItems do
+                    local requiredItem = _G[questItemName..buttonIndex];
+                    if requiredItem and requiredItem.type and requiredItem.objectType == "item" then
+                        local link=GetQuestItemLink(requiredItem.type, i)
+                        if link then
+                            itemLink= itemLink  or ''
+                            itemLink= itemLink.. link
+                        end
+                    end
                 end
             end
+
+            if numRequiredCurrencies>0 then--货币
+                local questItemName = "QuestProgressItem"
+                for i=1, numRequiredCurrencies do
+                    local requiredItem = _G[questItemName..buttonIndex];
+                    if requiredItem and requiredItem.type and requiredItem.objectType == "currency" then
+                        local link=GetQuestItemLink(requiredItem.type, i)
+                        if link then
+                            itemLink= itemLink.. link
+                        end
+                    end
+                end
+            end
+
+            local complete=IsQuestCompletable()--QuestFrame.lua QuestFrameProgressPanel_OnShow(self) C_QuestLog.IsComplete(questID)
+            if complete then
+                select_Reward()--自动:选择奖励
+            --if not questSelect[questID] then
+                C_Timer.After(0.3, function()
+                    print(id, QUESTS_LABEL, GetQuestLink(questID) or questID, '|cnGREEN_FONT_COLOR:'..acceptButton:GetText()..'|r', itemLink)
+                end)
+            --   questSelect[questID]=true
+            end
+            --end
+
+            C_Timer.After(0.3, function()
+                print(id, QUESTS_LABEL, GetQuestLink(questID) or questID, '|cnGREEN_FONT_COLOR:'..acceptButton:GetText()..'|r', itemLink)
+            end)
 
             acceptButton:Click()
 
-            if not complete then
-                if not questSelect[questID] then
+           --[[
+ if not complete then
+              -- if not questSelect[questID] then
                     C_Timer.After(0.5, function()
-                        print(id, QUESTS_LABEL, GetQuestLink(questID) or questID, '|cnGREEN_FONT_COLOR:'..acceptButton:GetText()..'|r')
+                        print(id, QUESTS_LABEL, itemLink or '', GetQuestLink(questID) or questID, '|cnRED_FONT_COLOR:'..acceptButton:GetText()..'|r')
                     end)
-                    questSelect[questID]=true
-                end
+                  --  questSelect[questID]=true
+                --end
             end
+
+]]
+
         end
     end)
 end

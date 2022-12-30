@@ -1,8 +1,8 @@
 local id, e = ...
 local addName=	TRACK_QUEST
 local Save={scale= 0.85, alpha=1, autoHide=true}
-local F=ObjectiveTrackerFrame--移动任务框
-local btn=ObjectiveTrackerFrame.HeaderMenu.MinimizeButton
+--local F=ObjectiveTrackerFrame--移动任务框
+--local btn=ObjectiveTrackerFrame.HeaderMenu.MinimizeButton
 local mo={
     SCENARIO_CONTENT_TRACKER_MODULE,--1 场景战役 SCENARIOS
     UI_WIDGET_TRACKER_MODULE,--2
@@ -149,7 +149,7 @@ local function Scale(setPrint)
     elseif Save.scale>1.5 then
         Save.scale=1.5
     end
-    F:SetScale(Save.scale)
+    ObjectiveTrackerFrame:SetScale(Save.scale)
     if setPrint then
         print(addName..': '..UI_SCALE..' |cff00ff00'..Save.scale..'|r')
     end
@@ -161,7 +161,7 @@ local function Alpha(setPrint)
     elseif Save.alpha>1 then
          Save.alpha=1
     end
-    F:SetAlpha(Save.alpha)
+    ObjectiveTrackerFrame:SetAlpha(Save.alpha)
     if setPrint then
         print(addName..' ('..CHANGE_OPACITY..'0.1 - 1): |cff00ff00'..Save.alpha..'|r')
     end
@@ -254,14 +254,15 @@ local function Init()
         Alpha()
     end--透明度
 
-    F:SetMovable(true)
-    F:EnableMouse(true)
+    ObjectiveTrackerFrame:SetMovable(true)
+    ObjectiveTrackerFrame:EnableMouse(true)
 
+    local btn=ObjectiveTrackerFrame.HeaderMenu.MinimizeButton
     btn:RegisterForDrag("RightButton")
-    btn:SetScript("OnDragStart", function() F:StartMoving() end)    
+    btn:SetScript("OnDragStart", function() ObjectiveTrackerFrame:StartMoving() end)    
     btn:SetScript("OnDragStop", function() 
             ResetCursor()
-            F:StopMovingOrSizing()
+            ObjectiveTrackerFrame:StopMovingOrSizing()
     end)
     btn:SetScript("OnMouseUp", function(self)
         ResetCursor()

@@ -21,7 +21,9 @@ local Move=function(F, tab)
     local name;
     if F2 then
         name=F2:GetName();
-        if not name then return true end
+        if not name then
+            return true
+        end
         if save then
             F2:SetClampedToScreen(true);
         end
@@ -313,13 +315,8 @@ end
 local function Init()
     Move(ZoneAbilityFrame.SpellButtonContainer, {save=true, click='R'})
 
-    for k, v in pairs(FrameTab) do
-        local f= _G[k];
-        if f then
-            Move(f, v);
-            FrameTab[k]=nil
-        end
-    end
+    setTabInit()
+
     hooksecurefunc(LootFrame,'Open', function(self2)--物品拾取LootFrame.lua
         if not GetCVarBool("autoLootDefault") and not GetCVarBool("lootUnderMouse") then
             local p=Save.point.LootFrame and Save.point.LootFrame[1]
@@ -393,7 +390,8 @@ end
 panel:RegisterEvent("ADDON_LOADED")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1==id then
+    if event == "ADDON_LOADED" then
+        if arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
             --添加控制面板        
             local sel=e.CPanel(addName, not Save.disabled)
@@ -412,9 +410,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
-    elseif event=='ADDON_LOADED' then
-            setAddLoad(arg1)
-            setTabInit()
+        elseif event=='ADDON_LOADED' then
+                setAddLoad(arg1)
+                setTabInit()
+        end
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
@@ -430,3 +429,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
     end
 end)
+--[[
+if UIPanelWindows[name] then
+UIPanelWindows[name]=nil
+end
+]]
