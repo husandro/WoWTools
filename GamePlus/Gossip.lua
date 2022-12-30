@@ -839,16 +839,14 @@ local function Init_Quest()
         end
         questID= questID or GetQuestID()
 
-        if not questID or IsModifierKeyDown() or not_Ace_QuestTrivial(questID) or not acceptButton or not acceptButton:IsEnabled() then
-            return
-
-        elseif not Save.quest or (Save.NPC[npc] and not Save.questOption[questID]) then
-            return
-        end
-
-        --if not_Ace_QuestTrivial(questID) then--and not Save.questOption[questID]) then--(not complete and getMaxQuest()) or
-        --  return
-        --end
+        if not questID
+            or not Save.quest
+            or (Save.NPC[npc] and not Save.questOption[questID])
+            or IsModifierKeyDown()
+            or not_Ace_QuestTrivial(questID)
+            or not acceptButton
+            or not acceptButton:IsEnabled()
+        then return end
 
         local complete=IsQuestCompletable()--QuestFrame.lua QuestFrameProgressPanel_OnShow(self) C_QuestLog.IsComplete(questID)
         if complete then
@@ -856,22 +854,30 @@ local function Init_Quest()
         end
 
         local itemLink=''
-        local numRequiredItems = GetNumQuestItems()
-        local numRequiredCurrencies = GetNumQuestCurrencies();
+        local numRequiredItems = GetNumQuestItems() + GetNumQuestCurrencies()
         if numRequiredItems>0 then--物品
             local questItemName = "QuestProgressItem";
             for i=1, numRequiredItems do
                 local requiredItem = _G[questItemName..buttonIndex];
-                if requiredItem and requiredItem.type and requiredItem.objectType == "item" then
+                if requiredItem and requiredItem:IsShown() and requiredItem.type then
                     local link=GetQuestItemLink(requiredItem.type, i)
                     if link then
-                        itemLink= itemLink  or ''
                         itemLink= itemLink.. link
                     end
                 end
             end
         end
 
+        if not questSelect[questID] then
+            C_Timer.After(0.5, function()
+                print(id, QUESTS_LABEL, GetQuestLink(questID) or questID, (complete and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..acceptButton:GetText()..'|r', itemLink)
+            end)
+            questSelect[questID]=true
+        end
+
+        acceptButton:Click()
+
+--[[--local numRequiredCurrencies = GetNumQuestCurrencies();
         if numRequiredCurrencies>0 then--货币
             local questItemName = "QuestProgressItem"
             for i=1, numRequiredCurrencies do
@@ -885,14 +891,9 @@ local function Init_Quest()
             end
         end
 
-        if not questSelect[questID] then
-            C_Timer.After(0.5, function()
-                print(id, QUESTS_LABEL, GetQuestLink(questID) or questID, (complete and '|cnGREEN_FONT_COLOR:' or  )..acceptButton:GetText()..'|r', itemLink)
-            end)
-            questSelect[questID]=true
-        end
+]]
 
-        acceptButton:Click()
+        
 
        --[[ if not complete then
             if not questSelect[questID] then
