@@ -126,8 +126,7 @@ local function setQueueStatus()--小眼睛, 信息
                     n=n-1
                 end
                 Save.tipsFrameTextSize= n>30 and 30 or n<6 and 6 or n
-                --e.Cstr=function(self, size, fontType, ChangeFont, color, layer, justifyH)
-                    e.Cstr(nil, Save.tipsFrameTextSize, nil, self.text, true)
+                e.Cstr(nil, Save.tipsFrameTextSize, nil, self.text, true)
                 print(id, addName, e.onlyChinse and '字体大小' or FONT_SIZE, '|cnGREEN_FONT_COLOR:'..Save.tipsFrameTextSize)
             end)
             panel.tipsFrame:SetScript("OnMouseDown", function(self,d)
@@ -141,7 +140,7 @@ local function setQueueStatus()--小眼睛, 信息
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.left)
-                e.tips:AddDoubleLine(e.onlyChinse and '字体大小' or FONT_SIZE, e.Icon.mid)
+                e.tips:AddDoubleLine(e.onlyChinse and '字体大小' or FONT_SIZE, (Save.tipsFrameTextSize or 12).. e.Icon.mid)
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(e.onlyChinse and '列表信息' or (SOCIAL_QUEUE_TOOLTIP_HEADER..INFO), '|A:groupfinder-eye-frame:0:0|a')
                 e.tips:AddDoubleLine(id, addName)
