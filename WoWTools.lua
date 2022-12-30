@@ -167,7 +167,7 @@ e.GetUnitMapName=function(unit)--单位, 地图名称
     if unit=='player' and IsInInstance() then
         local name, _, _, difficultyName= GetInstanceInfo()
         if name then
-            text= name .. (difficultyName and '('..difficultyName..')' or '')
+            text= name .. ((difficultyName and difficultyName~='') and '('..difficultyName..')' or '')
         else
             text=GetMinimapZoneText()
         end

@@ -359,7 +359,7 @@ local function Init()
         end
     end)
 
-    panel:SetScript('OnLeave', function() e.tips:Hide() end)
+    --panel:SetScript('OnLeave', function() e.tips:Hide() end)
 
     set_CVar_chatBubblesParty()--聊天泡泡
 
