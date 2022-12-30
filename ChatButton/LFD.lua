@@ -873,7 +873,7 @@ local function Init()
         if not LFDRoleCheckPopupAcceptButton:IsEnabled() then
             LFDRoleCheckPopup_UpdateAcceptButton();
         end
-        print(id, addName, ROLE_POLL,'|cff00ff00'..ACCEPT, SecondsToTime(sec))
+        print(id, addName, e.onlyChinse and '职责确认' or ROLE_POLL,'|cff00ff00'..ACCEPT, SecondsToTime(sec))
         e.Ccool(self, nil, sec, nil, true, true)--设置冷却
         C_Timer.After(sec, function()
             if LFDRoleCheckPopupAcceptButton:IsEnabled() and not IsModifierKeyDown() then
@@ -1200,7 +1200,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
         end
         C_PartyInfo.LeaveParty(LE_PARTY_CATEGORY_INSTANC)
         LFGTeleport(true)
-        print(id, addName, 	ISLAND_LEAVE, '|cnGREEN_FONT_COLOR:'..wowSave[ISLANDS_HEADER]..'|r'..	VOICEMACRO_LABEL_CHARGE1)
+        print(id, addName, 	e.onlyChinse and '离开海岛' or ISLAND_LEAVE, '|cnGREEN_FONT_COLOR:'..wowSave[ISLANDS_HEADER]..'|r'..	VOICEMACRO_LABEL_CHARGE1)
 
     elseif event=='LFG_UPDATE_RANDOM_INFO' then
         setHoliday()--节日, 提示, panel.texture
@@ -1211,7 +1211,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
     elseif event=='CORPSE_IN_RANGE' or event=='PLAYER_DEAD' or event=='AREA_SPIRIT_HEALER_IN_RANGE' then--仅限战场，释放, 复活
         if Save.ReMe and (C_PvP.IsBattleground() or C_PvP.IsArena()) then
             if event=='PLAYER_DEAD' then
-                print(id, addName,'|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '释放, 复活' or BATTLE_PET_RELEASE..', '..RESURRECT))
+                print(id, addName,'|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '释放, 复活' or (BATTLE_PET_RELEASE..', '..RESURRECT)))
             end
             RepopMe()--死后将你的幽灵释放到墓地。
             RetrieveCorpse()--当玩家站在它的尸体附近时复活。
@@ -1223,7 +1223,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
             if PVPMatchResults and PVPMatchResults.buttonContainer and PVPMatchResults.buttonContainer.leaveButton then
                 e.Ccool(PVPMatchResults.buttonContainer.leaveButton, nil, sec, nil, true, true)
             end
-            print(id, addName, '|cnGREEN_FONT_COLOR:'..LEAVE_BATTLEGROUND, SecondsToTime(sec))
+            print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '离开战场' or LEAVE_BATTLEGROUND), SecondsToTime(sec))
             C_Timer.After(sec, function()
                 if not IsModifierKeyDown() then
                     if IsInLFDBattlefield() then
