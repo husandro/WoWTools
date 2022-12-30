@@ -127,7 +127,7 @@ local function setQueueStatus()--小眼睛, 信息
                 end
                 Save.tipsFrameTextSize= n>30 and 30 or n<6 and 6 or n
                 --e.Cstr=function(self, size, fontType, ChangeFont, color, layer, justifyH)
-                    e.Cstr(nil, Save.tipsFrameTextSize, nil, true, true)
+                    e.Cstr(nil, Save.tipsFrameTextSize, nil, self.text, true)
                 print(id, addName, e.onlyChinse and '字体大小' or FONT_SIZE, '|cnGREEN_FONT_COLOR:'..Save.tipsFrameTextSize)
             end)
             panel.tipsFrame:SetScript("OnMouseDown", function(self,d)
