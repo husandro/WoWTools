@@ -105,40 +105,49 @@ local function setQueueStatus()--小眼睛, 信息
             else
                 panel.tipsFrame:SetPoint('BOTTOMLEFT', panel, 'TOPLEFT',0,2)
             end
-            panel.tipsFrame:RegisterForDrag("RightButton")
+            panel.tipsFrame:RegisterForDrag("RightButton",'LeftButton')
             panel.tipsFrame:SetMovable(true)
             panel.tipsFrame:SetClampedToScreen(true)
 
             panel.tipsFrame:SetScript("OnDragStart", function(self,d )
-                if not IsModifierKeyDown() and d=='RightButton' then
-                    self:StartMoving()
-                end
+                self:StartMoving()
             end)
             panel.tipsFrame:SetScript("OnDragStop", function(self)
                 ResetCursor()
                 self:StopMovingOrSizing()
                 Save.tipsFramePoint={self:GetPoint(1)}
                 Save.tipsFramePoint[2]=nil
-                print(id, addName, e.onlyChinse and '' or RESET_POSITION, SOCIAL_QUEUE_TOOLTIP_HEADER..INFO,'Alt+'..e.Icon.right)
+            end)
+            panel.tipsFrame:SetScript('OnMouseWheel', function(self, d)
+                local n= Save.tipsFrameTextSize or 12
+                if d==1 then
+                    n=n+1
+                elseif d==-1 then
+                    n=n-1
+                end
+                Save.tipsFrameTextSize= n>30 and 30 or n<6 and 6 or n
+                --e.Cstr=function(self, size, fontType, ChangeFont, color, layer, justifyH)
+                    e.Cstr(nil, Save.tipsFrameTextSize, nil, true, true)
+                print(id, addName, e.onlyChinse and '字体大小' or FONT_SIZE, '|cnGREEN_FONT_COLOR:'..Save.tipsFrameTextSize)
             end)
             panel.tipsFrame:SetScript("OnMouseDown", function(self,d)
-                if d=='LeftButton' then--提示移动
-                    print(id, addName, SOCIAL_QUEUE_TOOLTIP_HEADER..INFO,NPE_MOVE..e.Icon.right)
-
-                elseif d=='RightButton' and not IsModifierKeyDown() then--移动光标
-                    SetCursor('UI_MOVE_CURSOR')
-
-                elseif d=='RightButton' and IsAltKeyDown() then--还原
-                    Save.tipsFramePoint=nil
-                    self:ClearAllPoints()
-                    self:SetPoint('BOTTOMLEFT', panel, 'TOPLEFT',0,2)
-                end
+                SetCursor('UI_MOVE_CURSOR')
             end)
-            panel.tipsFrame:SetScript("OnMouseUp", function(self, d)
+            panel.tipsFrame:SetScript("OnLeave", function()
+                e.tips:Hide()
                 ResetCursor()
             end)
-
-            panel.tipsFrame.text=e.Cstr(panel.tipsFrame, nil, nil, nil, true)
+            panel.tipsFrame:SetScript('OnEnter', function(self)
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.left)
+                e.tips:AddDoubleLine(e.onlyChinse and '字体大小' or FONT_SIZE, e.Icon.mid)
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(e.onlyChinse and '列表信息' or (SOCIAL_QUEUE_TOOLTIP_HEADER..INFO), '|A:groupfinder-eye-frame:0:0|a')
+                e.tips:AddDoubleLine(id, addName)
+                e.tips:Show()
+            end)
+            panel.tipsFrame.text=e.Cstr(panel.tipsFrame, Save.tipsFrameTextSize, nil, nil, true)
             panel.tipsFrame.text:SetPoint('BOTTOMLEFT')
         end
 
