@@ -119,7 +119,7 @@ local function setQueueStatus()--小眼睛, 信息
                 self:StopMovingOrSizing()
                 Save.tipsFramePoint={self:GetPoint(1)}
                 Save.tipsFramePoint[2]=nil
-                print(id, addName, RESET_POSITION, SOCIAL_QUEUE_TOOLTIP_HEADER..INFO,'Alt+'..e.Icon.right)
+                print(id, addName, e.onlyChinse and '' or RESET_POSITION, SOCIAL_QUEUE_TOOLTIP_HEADER..INFO,'Alt+'..e.Icon.right)
             end)
             panel.tipsFrame:SetScript("OnMouseDown", function(self,d)
                 if d=='LeftButton' then--提示移动
