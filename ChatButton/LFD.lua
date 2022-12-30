@@ -488,13 +488,9 @@ local function InitList(self, level, type)--LFDFrame.lua
             tooltipOnButton=true,
             tooltipTitle=SPECIFIC_DUNGEON_IS_READY,
             checked=Save.enterInstance,
-            tooltipText=AUTO_JOIN:gsub(JOIN, ENTER_LFG)..'\n'..ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('',AFK).. '\n\n'..id..' '..addName,
+            tooltipText=AUTO_JOIN:gsub(JOIN, ENTER_LFG)..'\n'..ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('',AFK).. '\n\n|cnGREEN_FONT_COLOR:Alt '..(e.onlyChinse and '取消' or CANCEL)..'|r\n\n'..id..' '..addName,
             func=function()
-                if Save.enterInstance then
-                    Save.enterInstance=nil
-                else
-                    Save.enterInstance=true
-                end
+                Save.enterInstance= not Save.enterInstance and true or nil
                 setQueueStatus()--小眼睛, 信息
             end
         }
@@ -505,13 +501,9 @@ local function InitList(self, level, type)--LFDFrame.lua
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinse and '离开副本和战场' or LEAVE..INSTANCE..' '..BATTLEFIELDS,
             checked=Save.leaveInstance,
-            tooltipText= (e.onlyChinse and '离开随机(自动 Roll)' or  AUTO_JOIN:gsub(JOIN, LEAVE)..' ('..AUTO_JOIN:gsub(JOIN,'')..LOOT_ROLL) .. ')\n\n'..id..' '..addName,
+            tooltipText= (e.onlyChinse and '离开随机(自动 Roll)' or  AUTO_JOIN:gsub(JOIN, LEAVE)..' ('..AUTO_JOIN:gsub(JOIN,'')..LOOT_ROLL) .. ')\n\n|cnGREEN_FONT_COLOR:Alt '..(e.onlyChinse and '取消' or CANCEL)..'|r\n\n'..id..' '..addName,
             func=function()
-                if Save.leaveInstance then
-                    Save.leaveInstance=nil
-                else
-                    Save.leaveInstance=true
-                end
+                Save.leaveInstance= not Save.leaveInstance and true or nil
                 setQueueStatus()--小眼睛, 信息
             end
         }
@@ -657,7 +649,7 @@ local function setLFGDungeonReadyDialog(self)--自动进入FB LFGDungeonReadyDia
     end
     e.Ccool(self, nil, sec, nil, true, true)
     C_Timer.After(sec, function()
-        if self and self.enterButton and self:IsShown() and self.enterButton:IsEnabled() then
+        if self and self.enterButton and self:IsShown() and self.enterButton:IsEnabled() and not IsModifierKeyDown() then
             self.enterButton:Click()
         end
     end)
@@ -884,7 +876,7 @@ local function Init()
         print(id, addName, ROLE_POLL,'|cff00ff00'..ACCEPT, SecondsToTime(sec))
         e.Ccool(self, nil, sec, nil, true, true)--设置冷却
         C_Timer.After(sec, function()
-            if LFDRoleCheckPopupAcceptButton:IsEnabled() then
+            if LFDRoleCheckPopupAcceptButton:IsEnabled() and not IsModifierKeyDown() then
                 local t=LFDRoleCheckPopupDescriptionText:GetText()
                 if t then
                     print(id, addName, '|cffff00ff'.. t)
@@ -1184,7 +1176,9 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
             StaticPopup_Show(addName..'ExitIns')
             e.Ccool(StaticPopup1, nil, sec, nil, true)--冷却条
             C_Timer.After(sec, function()
-                exitInstance()
+                if not IsModifierKeyDown() then
+                    exitInstance()
+                end
             end)
         end
     elseif event=='PLAYER_ENTERING_WORLD' then
@@ -1193,8 +1187,10 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
         else
             panel:UnregisterEvent('LOOT_CLOSED')
         end
-        C_Timer.After(2, function()
-            setIslandButton(self)--离开海岛按钮
+        C_Timer.After(sec, function()
+            if not IsModifierKeyDown() then
+                setIslandButton(self)--离开海岛按钮
+            end
         end)
 
     elseif event=='ISLAND_COMPLETED' then--离开海岛
@@ -1229,10 +1225,12 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
             end
             print(id, addName, '|cnGREEN_FONT_COLOR:'..LEAVE_BATTLEGROUND, SecondsToTime(sec))
             C_Timer.After(sec, function()
-                if IsInLFDBattlefield() then
-                    ConfirmOrLeaveLFGParty();
-                else
-                    ConfirmOrLeaveBattlefield();
+                if not IsModifierKeyDown() then
+                    if IsInLFDBattlefield() then
+                        ConfirmOrLeaveLFGParty();
+                    else
+                        ConfirmOrLeaveBattlefield();
+                    end
                 end
             end)
         end
