@@ -147,6 +147,7 @@ local function setQueueStatus()--小眼睛, 信息
             local listNum, listText=getQueuedList(i,true)
             if listNum and listText then
                 text= text~='' and text..'\n'..listText or listText
+                text=text..' '
                 num=num+listNum
             end
         end
@@ -172,12 +173,14 @@ local function setQueueStatus()--小眼睛, 信息
             if tank or healer or dps then
                 text=text..(tank and e.Icon.TANK or '')..(healer and e.Icon.HEALER or '')..(dps and e.Icon.DAMAGER or '')
             end;
+            text=text..' '
         end;
 
         local sta=C_PetBattles.GetPVPMatchmakingInfo()--PET
         if sta=='queued' then
             text=text~='' and  text..'\n' or text
             text=text..PET_BATTLE_PVP_QUEUE ..'|A:worldquest-icon-petbattle:0:0|a'
+            text=text..' '
         end;
 
         if C_LFGList.HasActiveEntryInfo() then--已激活LFG
@@ -210,6 +213,7 @@ local function setQueueStatus()--小眼睛, 信息
             end;
             if list then
                 text=text~='' and text..'\n'..list or list
+                text=text..' '
             end
         end;
 
@@ -221,10 +225,12 @@ local function setQueueStatus()--小眼睛, 信息
                 local searchResultInfo = C_LFGList.GetSearchResultInfo(apps[i]);
                 local activityName = C_LFGList.GetActivityFullName(searchResultInfo.activityID, nil, searchResultInfo.isWarMode);
                 sea=sea..'\n'..searchResultInfo.name..'('.. activityName..')|cFF00FF00*|r';
+                text=text..' '
             end;
         end;
         if sea~='' then
             text=text~='' and text..'\n'..QUEUED_STATUS_SIGNED_UP..'(|cFF00FF00LFG|r)'..sea or sea
+            text=text..' '
         end
     end
     if panel.tipsFrame then

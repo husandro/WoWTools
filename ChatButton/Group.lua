@@ -240,6 +240,92 @@ local function InitMenu(self, level, type)--主菜单
 
     end
 end
+
+local function show_Group_Info_Toolstip()--玩家,信息, 提示
+    local co=GetNumGroupMembers()
+    if not IsInGroup() or co<2 then
+        return
+    end
+
+    local raid=IsInRaid()
+    local u= raid and 'raid' or 'party'
+    local tabT, tabN, tabDPS, totaleHP = {}, {}, {}, 0
+    local mapName, uiMapID=e.GetUnitMapName('player')
+
+    for i=1, co do
+        local unit=u..i
+        local info={}
+        if not raid and i==co then
+            unit='player'
+        end
+
+        local guid=UnitGUID(unit)
+        local maxHP= UnitHealthMax(unit)
+        local role=  raid and select(10, GetRaidRosterInfo(i)) or UnitGroupRolesAssigned(unit)
+        if guid and maxHP and role and _G['INLINE_'..role..'_ICON'] then
+            info.name= _G['INLINE_'..role..'_ICON']..(e.PlayerOnlineInfo(unit) or '')..e.GetPlayerInfo(nil, guid, true)
+            info.maxHP= maxHP
+            info.isSelf= UnitIsUnit(unit, "player")
+
+            if not info.isSelf then--地图名称
+                local text, mapID=e.GetUnitMapName(unit)
+                if text and mapID and mapID~=uiMapID then
+                    info.name= info.name..e.Icon.map2..'|cnRED_FONT_COLOR:'..text..'|r'
+                elseif text then
+                    info.name= info.name..e.Icon.map2..e.Icon.select2
+                end
+            else
+                info.name= info.name..e.Icon.star2
+            end
+
+            if role=='TANK' then
+                table.insert(tabT, info)
+            elseif role=='HEALER' then
+                table.insert(tabN, info)
+            elseif role=='DAMAGER' then
+                table.insert(tabDPS, info)
+            end
+
+            totaleHP= totaleHP+ maxHP
+        end
+    end
+
+    if totaleHP==0 then
+        return
+    end
+
+    table.sort(tabT, function(a, b) if a and b then  return a.maxHP> b.maxHP end return false end)
+    table.sort(tabN, function(a, b) if a and b then  return a.maxHP> b.maxHP end return false end)
+    table.sort(tabDPS, function(a, b) if a and b then  return a.maxHP> b.maxHP end return false end)
+
+    e.tips:SetOwner(panel, "ANCHOR_LEFT")
+    e.tips:ClearLines()
+    e.tips:AddDoubleLine(format(e.onlyChinse and '%s玩家' or COMMUNITIES_CROSS_FACTION_BUTTON_TOOLTIP_TITLE, co)..(mapName and ' '..e.Icon.map2..mapName..(uiMapID or '') or ''), e.MK(totaleHP,3))
+    e.tips:AddLine(' ')
+
+    local find
+    for _, info in pairs(tabT) do
+        e.tips:AddDoubleLine(info.name, (info.isSelf and e.Icon.star2 or '')..e.MK(info.maxHP, 3))
+        find=true
+    end
+    if find then
+        e.tips:AddLine(' ')
+        find=nil
+    end
+    for _, info in pairs(tabN) do
+        e.tips:AddDoubleLine(info.name, (info.isSelf and e.Icon.star2 or '')..e.MK(info.maxHP, 3))
+        find=true
+    end
+    if find then
+        e.tips:AddLine(' ')
+        find=nil
+    end
+    for _, info in pairs(tabDPS) do
+        e.tips:AddDoubleLine(info.name, (info.isSelf and e.Icon.star2 or '')..e.MK(info.maxHP, 3))
+    end
+    e.tips:Show()
+end
+
 --####
 --初始
 --####
@@ -260,6 +346,7 @@ local function Init()
         if d=='LeftButton' and panel.type then
             e.Say(panel.type)
         else
+            show_Group_Info_Toolstip()--玩家,信息, 提示
             ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
         end
     end)
@@ -271,6 +358,8 @@ local function Init()
             e.Chat(text, nil, true)
         end
     end)
+
+    panel:SetScript('OnLeave', function() e.tips:Hide() end)
 
     set_CVar_chatBubblesParty()--聊天泡泡
 

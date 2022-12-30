@@ -260,6 +260,9 @@ e.Icon={
     DAMAGER='|A:groupfinder-icon-role-large-dps:0:0|a',
     NONE='|A:groupfinder-icon-emptyslot:0:0|a',
     leader='|A:UI-HUD-UnitFrame-Player-Group-GuideIcon:0:0|a',--队长
+    --INLINE_TANK_ICON
+    --INLINE_HEALER_ICON
+    --INLINE_DAMAGER_ICON
 
     info2='|A:questlegendary:0:0|a',--黄色!
     star2='|A:auctionhouse-icon-favorite:0:0|a',--星星
