@@ -165,7 +165,7 @@ local function setGroupReadyTips(event, arg1, arg2)
             end
         end
         if text~='' and not panel.groupReadyTips then
-            panel.groupReadyTips=e.Cbtn(UIParent, nil, nil, nil, nil, true,{20,20})
+            panel.groupReadyTips=e.Cbtn(nil, nil, nil, nil, nil, true,{20,20})
             if Save.groupReadyTipsPoint then
                 panel.groupReadyTips:SetPoint(Save.groupReadyTipsPoint[1], UIParent, Save.groupReadyTipsPoint[3], Save.groupReadyTipsPoint[4], Save.groupReadyTipsPoint[5])
             else
