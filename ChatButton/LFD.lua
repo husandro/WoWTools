@@ -99,7 +99,7 @@ local function setQueueStatus()--小眼睛, 信息
     local text=''
     if not Save.hideQueueStatus then
         if not panel.tipsFrame then
-            panel.tipsFrame=e.Cbtn(panel, nil, nil, nil, nil, true, {20,20})
+            panel.tipsFrame=e.Cbtn(nil, nil, nil, nil, nil, true, {20,20})
             if Save.tipsFramePoint then
                 panel.tipsFrame:SetPoint(Save.tipsFramePoint[1], UIParent, Save.tipsFramePoint[3], Save.tipsFramePoint[4], Save.tipsFramePoint[5])
             else
