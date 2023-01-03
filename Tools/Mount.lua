@@ -623,7 +623,7 @@ local function InitMenu(self, level, menuList)--主菜单
                 text= e.onlyChinse and '坐骑展示' or (SLASH_RANDOM3:gsub('/','')..SHOW),
                 notCheckable=true,
                 tooltipOnButton=true,
-                tooltipTitle= e.onlyChinse and '坐骑展示,每隔3秒, 召唤' or ('3 '..SECONDS..MOUNT),
+                tooltipTitle= e.onlyChinse and '每隔 3 秒, 召唤' or ('3 '..SECONDS..MOUNT),
                 tooltipText= (e.onlyChinse and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP)..e.Icon.mid,
                 func=function()
                     specialEffects=nil
@@ -636,7 +636,7 @@ local function InitMenu(self, level, menuList)--主菜单
                 text= e.onlyChinse and '坐骑特效' or (EMOTE171_CMD2:gsub('/','')..SHOW),
                 notCheckable=true,
                 tooltipOnButton=true,
-                tooltipTitle= e.onlyChinse and '每隔3秒' or ('3 '..SECONDS..EMOTE171_CMD2:gsub('/','')),
+                tooltipTitle= e.onlyChinse and '每隔 3 秒' or ('3 '..SECONDS..EMOTE171_CMD2:gsub('/','')),
                 tooltipText= (e.onlyChinse and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN)..e.Icon.mid,
                 func=function()
                     specialEffects=true

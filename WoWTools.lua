@@ -800,7 +800,7 @@ e.GetItemCollected= function(link, sourceID, icon)--物品是否收集
                     return '|A:Adventures-Checkmark:0:0|a', sourceInfo.isCollected, isSelf--黄色√
                 end
             else
-                return '|cnGREEN_FONT_COLOR:'..COLLECTED..'|r', sourceInfo.isCollected, isSelf
+                return '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '已收集' or COLLECTED)..'|r', sourceInfo.isCollected, isSelf
             end
         else
             if icon then
@@ -810,7 +810,7 @@ e.GetItemCollected= function(link, sourceID, icon)--物品是否收集
                     return e.Icon.transmogHide2, sourceInfo.isCollected, isSelf
                 end
             else
-                return '|cnRED_FONT_COLOR:'..NOT_COLLECTED..'|r', sourceInfo.isCollected, isSelf
+                return '|cnRED_FONT_COLOR:'..(e.onlyChinse and '未收集' or NOT_COLLECTED)..'|r', sourceInfo.isCollected, isSelf
             end
         end
     end
@@ -824,19 +824,19 @@ e.GetPetCollected= function(speciesID, itemID, numShow)--宠物, 收集数量
             if numShow then
                 return '|cnRED_FONT_COLOR:'..numCollected..'/'..limit..'|r', numCollected, limit
             else
-                return '|cnRED_FONT_COLOR:'..ITEM_PET_KNOWN:format(0, limit)..'|r', numCollected, limit
+                return '|cnRED_FONT_COLOR:'..format(e.onlyChinse and '已收集（%d/%d）' or ITEM_PET_KNOWN, numCollected, limit)..'|r', numCollected, limit
             end
         elseif limit and numCollected==limit and limit>0 then
             if numShow then
                 return '|cnGREEN_FONT_COLOR:'..numCollected..'/'..limit..'|r', numCollected, limit
             else
-                return '|cnGREEN_FONT_COLOR:'..ITEM_PET_KNOWN:format(numCollected, limit)..'|r', numCollected, limit
+                return '|cnGREEN_FONT_COLOR:'..format(e.onlyChinse and '已收集（%d/%d）' or ITEM_PET_KNOWN, numCollected, limit)..'|r', numCollected, limit
             end
         else
             if numShow then
                 return numCollected..'/'..limit, numCollected, limit
             else
-                return ITEM_PET_KNOWN:format(numCollected, limit), numCollected, limit
+                return format(e.onlyChinse and '已收集（%d/%d）' or ITEM_PET_KNOWN, numCollected, limit), numCollected, limit
             end
         end
     end
@@ -844,9 +844,9 @@ end
 
 e.GetMountCollected= function(mountID)--坐骑, 收集数量
     if select(11, C_MountJournal.GetMountInfoByID(mountID)) then
-        return '|cnGREEN_FONT_COLOR:'..COLLECTED..'|r'
+        return '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '已收集' or COLLECTED)..'|r'
     else
-        return '|cnRED_FONT_COLOR:'..NOT_COLLECTED..'|r'
+        return '|cnRED_FONT_COLOR:'..(e.onlyChinse and '未收集' or NOT_COLLECTED)..'|r'
     end
 end
 

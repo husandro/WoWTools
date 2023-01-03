@@ -62,11 +62,11 @@ local function GetSetsCollectedNum(setID)--套装收集数
     end
     if numAll>0 then
         if numCollected==numAll then
-            return '|cnGREEN_FONT_COLOR:'..COLLECTED..'|r'
+            return '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '已收集' or COLLECTED)..'|r'
         elseif numCollected>0 and numCollected~=numAll then
-            return '|cnYELLOW_FONT_COLOR:'..numCollected..'/'..numAll..COLLECTED..'|r'
+            return '|cnYELLOW_FONT_COLOR:'..numCollected..'/'..numAll..(e.onlyChinse and '已收集' or COLLECTED)..'|r'
         elseif numCollected==0 then
-            return  '|cnRED_FONT_COLOR:'..NOT_COLLECTED..'|r'
+            return  '|cnRED_FONT_COLOR:'..(e.onlyChinse and '未收集' or NOT_COLLECTED)..'|r'
         end
     end
 end
@@ -74,16 +74,16 @@ end
 
 local function setMount(self, mountID)--坐骑    
     local name, spellID, icon, isActive, isUsable, sourceType, isFavorite, isFactionSpecific, faction, shouldHideOnChar, isCollected=C_MountJournal.GetMountInfoByID(mountID)
-    self:AddDoubleLine(MOUNTS..' '..mountID, spellID and SUMMON..ABILITIES..' '..spellID)
+    self:AddDoubleLine((e.onlyChinse and '坐骑' or MOUNTS)..' '..mountID, spellID and (e.onlyChinse and '召唤技能' or (SUMMON..ABILITIES))..' '..spellID)
     if isFactionSpecific then
-        self:AddDoubleLine(not faction and ' ' or LFG_LIST_CROSS_FACTION:format(faction==0 and e.Icon.horde2..THE_HORDE or e.Icon.alliance2..THE_ALLIANCE or ''), ' ')
+        self:AddDoubleLine(not faction and ' ' or format(e.onlyChinse and '仅限%s' or LFG_LIST_CROSS_FACTION, faction==0 and e.Icon.horde2..(e.onlyChinse and '部落' or THE_HORDE) or e.Icon.alliance2..(e.onlyChinse and '联盟' or THE_ALLIANCE) or ''), ' ')
     end
     local creatureDisplayInfoID, description, source, isSelfMount, mountTypeID, uiModelSceneID, animID, spellVisualKitID, disablePlayerMountPreview = C_MountJournal.GetMountInfoExtraByID(mountID)
     if creatureDisplayInfoID then
-        self:AddDoubleLine(MODEL..' '..creatureDisplayInfoID, TUTORIAL_TITLE61_DRUID..': '..(isSelfMount and YES or NO))
+        self:AddDoubleLine((e.onlyChinse and '模型' or MODEL)..' '..creatureDisplayInfoID, (e.onlyChinse and '变形' or TUTORIAL_TITLE61_DRUID)..': '..e.GetYesNo(isSelfMount))
     end
     if source then
-        self:AddDoubleLine(source,' ')
+        self:AddLine(source,nil,nil,nil,true)
     end
     if creatureDisplayInfoID and self.creatureDisplayID~=creatureDisplayInfoID then--3D模型
         self.itemModel:SetShown(true)
@@ -92,7 +92,7 @@ local function setMount(self, mountID)--坐骑
         self.creatureDisplayID=creatureDisplayInfoID
     end
 
-    self.text2Left:SetText(isCollected and '|cnGREEN_FONT_COLOR:'..COLLECTED..'|r' or '|cnRED_FONT_COLOR:'..NOT_COLLECTED..'|r')
+    self.text2Left:SetText(isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinse and '未收集' or NOT_COLLECTED)..'|r')
 end
 
 local function get_Pet_Collected_Num(speciesID)--收集数量
