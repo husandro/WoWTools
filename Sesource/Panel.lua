@@ -74,6 +74,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         check:SetPoint('TOPLEFT', restButton, 'TOPRIGHT')
         check:SetScript('OnMouseDown',function()
             e.onlyChinse= not e.onlyChinse and true or nil
+            Save.onlyChinse = e.onlyChinse
             print(id, addName, e.GetEnabeleDisable(e.onlyChinse), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
         end)
         check:SetScript('OnEnter', function(self)
@@ -88,6 +89,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if e.ClearAllSave then
             WoWToolsSave={}
         else
+            if not WoWToolsSave then WoWToolsSave={} end
             WoWToolsSave[addName]=Save
         end
     end
