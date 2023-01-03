@@ -490,11 +490,11 @@ local function InitList(self, level, type)--LFDFrame.lua
     local info
     if type=='SETTINGS' then
         info={--自动, 准备进入,选项
-            text=e.Icon.toRight2..BATTLEFIELD_CONFIRM_STATUS,
+            text=e.Icon.toRight2..(e.onlyChinse and '准备进入' or BATTLEFIELD_CONFIRM_STATUS),
             tooltipOnButton=true,
-            tooltipTitle=SPECIFIC_DUNGEON_IS_READY,
+            tooltipTitle= e.onlyChinse and '已经建好了一个队伍，准备前往' or SPECIFIC_DUNGEON_IS_READY,
             checked=Save.enterInstance,
-            tooltipText=AUTO_JOIN:gsub(JOIN, ENTER_LFG)..'\n'..ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('',AFK).. '\n\n|cnGREEN_FONT_COLOR:Alt '..(e.onlyChinse and '取消' or CANCEL)..'|r\n\n'..id..' '..addName,
+            tooltipText= (e.onlyChinse and '自动进入' or AUTO_JOIN:gsub(JOIN, ENTER_LFG))..'\n'..(e.onlyChinse and '不能在 AFK 中' or format(ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS, '',AFK)).. '\n\n|cnGREEN_FONT_COLOR:Alt '..(e.onlyChinse and '取消' or CANCEL)..'|r\n\n'..id..' '..addName,
             func=function()
                 Save.enterInstance= not Save.enterInstance and true or nil
                 setQueueStatus()--小眼睛, 信息
@@ -503,9 +503,9 @@ local function InitList(self, level, type)--LFDFrame.lua
         UIDropDownMenu_AddButton(info, level)
 
         info={--自动, 离开副本,选项
-            text=e.Icon.toLeft2..(e.onlyChinse and '离开副本' or LEAVE..INSTANCE),
+            text=e.Icon.toLeft2..(e.onlyChinse and '离开副本' or (LEAVE..INSTANCE)),
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinse and '离开副本和战场' or LEAVE..INSTANCE..' '..BATTLEFIELDS,
+            tooltipTitle= e.onlyChinse and '离开副本和战场' or (LEAVE..INSTANCE..' '..BATTLEFIELDS),
             checked=Save.leaveInstance,
             tooltipText= (e.onlyChinse and '离开随机(自动 Roll)' or  AUTO_JOIN:gsub(JOIN, LEAVE)..' ('..AUTO_JOIN:gsub(JOIN,'')..LOOT_ROLL) .. ')\n\n|cnGREEN_FONT_COLOR:Alt '..(e.onlyChinse and '取消' or CANCEL)..'|r\n\n'..id..' '..addName,
             func=function()
@@ -535,7 +535,7 @@ local function InitList(self, level, type)--LFDFrame.lua
                 end
             end,
             tooltipOnButton=true,
-            tooltipTitle=	BATTLEFIELD_QUEUE_STATUS,
+            tooltipTitle= e.onlyChinse and '在队列中' or BATTLEFIELD_QUEUE_STATUS,
             tooltipText=text,
         }
         UIDropDownMenu_AddButton(info, level)
