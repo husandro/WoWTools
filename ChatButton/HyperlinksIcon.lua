@@ -802,7 +802,7 @@ local function InitMenu(self, level, type)
 
     else
         info={
-            text= (e.onlyChinse and '超链接图标') or addName..e.Icon.left..e.GetEnabeleDisable(not Save.disabed),
+            text= (e.onlyChinse and '超链接图标'or addName)..e.Icon.left..e.GetEnabeleDisable(not Save.disabed),
             checked=not Save.disabed,
             func=function()
                 setFunc()--使用，禁用
