@@ -395,7 +395,7 @@ local function setMarkersFrame()--设置标记, 框架
                     e.tips:SetOwner(self, "ANCHOR_RIGHT")
                     e.tips:ClearLines()
                     e.tips:AddDoubleLine(id, addName)
-                    e.tips:AddDoubleLine(e.Icon.O2..CLEAR_ALL, e.Icon.left)
+                    e.tips:AddDoubleLine(e.Icon.O2..(e.onlyChinse and '清除全部' or CLEAR_ALL), e.Icon.left)
                     e.tips:AddLine(' ')
                     e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE,e.Icon.right)
                     e.tips:AddDoubleLine(e.onlyChinse and '缩放' or  UI_SCALE, (Save.markersScale or 1)..' Alt+'..e.Icon.mid)
@@ -416,7 +416,7 @@ local function setMarkersFrame()--设置标记, 框架
                         elseif sacle<0.6 then
                             sacle=0.6
                         end
-                        print(id, addName, UI_SCALE, sacle)
+                        print(id, addName, e.onlyChinse and '缩放' or UI_SCALE, sacle)
                         frame:SetScale(sacle)
                         Save.markersScale=sacle
                     end
