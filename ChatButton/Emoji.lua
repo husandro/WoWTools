@@ -2,7 +2,7 @@ local id, e = ...
 local addName= 'Emoji'
 local Save={disabled= not e.Player.zh, Channels={} }
 
-local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
+local panel=e.Cbtn2('WoWToolsChatButtonEmoji', WoWToolsChatButtonFrame, true, false)
 panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
 WoWToolsChatButtonFrame.last=panel
 
@@ -272,16 +272,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
         Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
-        if not WoWToolsChatButtonFrame.disabled then
-            local sel2=CreateFrame("CheckButton", nil, WoWToolsChatButtonFrame.sel, "InterfaceOptionsCheckButtonTemplate")
-            sel2.Text:SetText('emoji')
-            sel2:SetPoint('LEFT', WoWToolsChatButtonFrame.sel.Text, 'RIGHT')
-            sel2:SetChecked(not Save.disabled)
-            sel2:SetScript('OnClick', function()
-                Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.GetEnabeleDisable(not WoWToolsChatButtonFrame.disabled), REQUIRES_RELOAD)
-            end)
-        end
+        local sel2=CreateFrame("CheckButton", nil, WoWToolsChatButtonFrame.sel, "InterfaceOptionsCheckButtonTemplate")
+        sel2.Text:SetText('emoji')
+        sel2:SetPoint('LEFT', WoWToolsChatButtonFrame.sel.Text, 'RIGHT')
+        sel2:SetChecked(not Save.disabled)
+        sel2:SetScript('OnClick', function()
+            Save.disabled= not Save.disabled and true or nil
+            print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.GetEnabeleDisable(not WoWToolsChatButtonFrame.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+        end)
 
         if WoWToolsChatButtonFrame.disabled or Save.disabled then--禁用Chat Button
             self:SetShown(false)

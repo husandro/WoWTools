@@ -186,7 +186,7 @@ local function setTextFrame()--设置显示内容, 父框架panel.textFrame, 内
     if Save.disabledText then
         return
     end
-    
+
     if Save.textFramePoint then
         panel.textFrame:SetPoint(Save.textFramePoint[1], UIParent, Save.textFramePoint[3], Save.textFramePoint[4], Save.textFramePoint[5])
     else
