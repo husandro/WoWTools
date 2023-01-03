@@ -1,6 +1,6 @@
 local className, _, classId = UnitClass('player')
 local englishFaction = UnitFactionGroup('player')
-if classId~=8 or not englishFaction or englishFaction=='Neutral' then--不是法师, 不加载
+if classId~=8 then--不是法师, 不加载
     return
 end
 
@@ -26,7 +26,7 @@ if englishFaction=='Horde' then--部落
         {spell=120145,},--远古传送：达拉然
         {spell=193759,},--传送：守护者圣殿
     }
-else
+elseif englishFaction=='Alliance' then
     Tab={
         {spell=3561, spell2=10059, luce=true,},--传送门：暴风城
         {spell=3562, spell2=11416,},--传送门：铁炉堡
@@ -45,20 +45,15 @@ else
         {spell=120145,},--远古传送：达拉然,
         {spell=193759,},--传送：守护者圣殿,
     }
+else
+    return
 end
 
-local find2
 for _, tab in pairs(Tab) do
     if IsSpellKnown(tab.spell) then
         e.LoadSpellItemData(tab.spell, true)--加载法术, 物品数据
-        if tab.spell2 and IsSpellKnown(tab.spell2) then
-            e.LoadSpellItemData(tab.spell2, true)--加载法术, 物品数据
-        end
-        find2=true
+        e.LoadSpellItemData(tab.spell2, true)--加载法术, 物品数据
     end
-end
-if not find2 then
-    return
 end
 
 local addName=UNITNAME_SUMMON_TITLE14:format(className)
