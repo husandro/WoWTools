@@ -3,7 +3,7 @@ local addName= 'panelSettings'
 local Save={OnlyChinse= e.Player.husandro}
 local panel = CreateFrame("Frame")--Panel
 
-panel.name = e.Icon.wow2..id--'|cffff00ffWoW|r|cff00ff00Tools|r'
+panel.name = id--'|cffff00ffWoW|r|cff00ff00Tools|r'
 InterfaceOptions_AddCategory(panel)
 
 local reloadButton=CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')
