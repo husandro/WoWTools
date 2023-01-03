@@ -248,7 +248,7 @@ Frame.sel2:SetScript("OnEnter", function(self)
     e.tips:ClearLines()
 	e.tips:AddDoubleLine(id, addName)
 	e.tips:AddLine(' ')
-	e.tips:AddDoubleLine(COMBAT_TEXT_SHOW_REPUTATION_TEXT, e.GetEnabeleDisable(Save.btn)..e.Icon.left)
+	e.tips:AddDoubleLine('|A:communities-icon-chat:0:0|a'..(e.onlyChinse and '声望变化' or COMBAT_TEXT_SHOW_REPUTATION_TEXT), e.GetEnabeleDisable(Save.btn)..e.Icon.left)
     e.tips:Show()
 end)
 Frame.sel2:SetScript('OnLeave', function ()
@@ -279,17 +279,12 @@ local function SetRe()--监视声望
 					ResetCursor()
 					self2:StopMovingOrSizing()
 					Save.point={self2:GetPoint(1)}
-					print(COMBAT_TEXT_SHOW_REPUTATION_TEXT..': |cnGREEN_FONT_COLOR:Alt+'..e.Icon.right..KEY_BUTTON2..'|r: '.. TRANSMOGRIFY_TOOLTIP_REVERT);
+					Save.point[2]=nil
 			end)
 			btn:SetScript("OnMouseUp", function() ResetCursor() end)
 			btn:SetScript("OnMouseDown", function(self2, d)
 				local key=IsModifierKeyDown()
-				if d=='RightButton' and IsAltKeyDown() then--alt+右击, 还原位置
-					Save.point=nil
-					self2:ClearAllPoints()
-					self2:SetPoint('TOPLEFT', Frame, 'TOPRIGHT',0, -40)
-
-				elseif d=='RightButton' and not key then--右击,移动
+				if d=='RightButton' and not key then--右击,移动
 					SetCursor('UI_MOVE_CURSOR')
 
 				elseif d=='LeftButton' and not key then--点击,显示隐藏
@@ -298,7 +293,7 @@ local function SetRe()--监视声望
 					else
 						Save.btnstr=true
 					end
-					print(addName..': '..e.GetShowHide(Save.btnstr))
+					print(id, addName, e.GetShowHide(Save.btnstr))
 					btnstrSetText()
 
 				elseif d=='LeftButton' and IsAltKeyDown() then
@@ -308,7 +303,7 @@ local function SetRe()--监视声望
 						Save.btnStrHideHeader=true
 					end
 					btnstrSetText()
-					print(GAME_VERSION_LABEL..'('..NO..Icon.reward2..QUEST_REWARDS..')'..addName..": "..e.GetShowHide(not Save.btnStrHideHeader))
+					print(id,addName, e.onlyChinse and '版本' or GAME_VERSION_LABEL,'('..NO..Icon.reward2..(e.onlyChinse and '奖励' or QUEST_REWARDS)..')', e.GetShowHide(not Save.btnStrHideHeader))
 
 				elseif d=='LeftButton' and IsShiftKeyDown() then--Shift+点击, 隐藏最高级, 且没有奖励声望
 					if Save.btnStrHideCap then
@@ -325,12 +320,12 @@ local function SetRe()--监视声望
 				e.tips:ClearLines();
 				e.tips:AddDoubleLine(id, addName)
 				e.tips:AddLine(' ')
-				e.tips:AddDoubleLine(COMBAT_TEXT_SHOW_REPUTATION_TEXT..': '..e.GetShowHide(Save.btnstr), e.Icon.left)
-				e.tips:AddDoubleLine(BINDING_NAME_TOGGLECHARACTER2, e.Icon.mid)
-				e.tips:AddDoubleLine(NPE_MOVE, e.Icon.right)
+				e.tips:AddDoubleLine('|A:communities-icon-chat:0:0|a'..(e.onlyChinse and '声望变化' or COMBAT_TEXT_SHOW_REPUTATION_TEXT)..': '..e.GetShowHide(Save.btnstr), e.Icon.left)
+				e.tips:AddDoubleLine(e.onlyChinse and '打开/关闭声望界面' or BINDING_NAME_TOGGLECHARACTER2, e.Icon.mid)
+				e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
 				e.tips:AddLine(' ')
-				e.tips:AddDoubleLine(GAME_VERSION_LABEL..': '..e.GetShowHide(not Save.btnStrHideHeader), 'Alt + '..e.Icon.left)
-				e.tips:AddDoubleLine(VIDEO_OPTIONS_ULTRA_HIGH..addName..': '..e.GetShowHide(not Save.btnStrHideCap), 'Shift + '..e.Icon.left)
+				e.tips:AddDoubleLine((e.onlyChinse and '版本' or GAME_VERSION_LABEL)..': '..e.GetShowHide(not Save.btnStrHideHeader), 'Alt + '..e.Icon.left)
+				e.tips:AddDoubleLine((e.onlyChinse and '隐藏最高声望' or (VIDEO_OPTIONS_ULTRA_HIGH..addName))..': '..e.GetShowHide(not Save.btnStrHideCap), 'Shift + '..e.Icon.left)
 				e.tips:Show();
 			end)
 			btn:SetScript("OnLeave", function() ResetCursor()  e.tips:Hide() end);
@@ -481,14 +476,8 @@ end
 
 Frame.sel:SetScript("OnClick", function(self, d)
 	if d=='LeftButton' then
-		local m=addName..':'..e.GetEnabeleDisable(Save.disabled)
-		if Save.disabled then
-			Save.disabled=nil
-		else
-			Save.disabled=true
-			m=m..' '..NEED..'|cnGREEN_FONT_COLOR:/reload'..'|r'
-		end
-		print(m)
+		Save.disabled= not Save.disabled and true or nil
+		print(id, addName, e.GetEnabeleDisable(Save.disabled), e.onlyChinse and '需要重新加载"' or REQUIRES_RELOAD)
 		SetAll()--收起,展开
 		ReputationFrame_Update()
 	elseif d=='RightButton' then
@@ -497,7 +486,7 @@ Frame.sel:SetScript("OnClick", function(self, d)
 		else
 			Save.factionUpdateTips=true
 		end
-		print(addName, UPDATE..': '..e.GetEnabeleDisable(Save.factionUpdateTips))
+		print(addName, e.onlyChinse and '更新' or UPDATE, e.GetEnabeleDisable(Save.factionUpdateTips))
 	end
 end)
 
@@ -508,7 +497,7 @@ Frame.sel:SetScript("OnEnter", function(self2)
 	e.tips:AddLine(' ')
 	e.tips:AddDoubleLine(addName..': '..e.GetEnabeleDisable(not Save.disabled), e.Icon.left)
 	e.tips:AddLine(' ')
-	e.tips:AddDoubleLine(UPDATE..': '..e.GetEnabeleDisable(Save.factionUpdateTips), e.Icon.right)
+	e.tips:AddDoubleLine((e.onlyChinse and '更新' or UPDATE)..': '..e.GetEnabeleDisable(Save.factionUpdateTips), e.Icon.right)
     e.tips:Show()
 end)
 

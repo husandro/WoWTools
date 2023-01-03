@@ -61,5 +61,3 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         WoWToolsSave={}
     end
 end)
-
---FrameUtil.RegisterFrameForEvents(self, table);

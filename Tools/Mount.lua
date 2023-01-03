@@ -578,7 +578,7 @@ local function InitMenu(self, level, menuList)--主菜单
     if menuList then
         if menuList==SETTINGS then--设置菜单
             info={--快捷键,设置对话框
-                text=SETTINGS_KEYBINDINGS_LABEL,--..(Save.KEY and ' |cnGREEN_FONT_COLOR:'..Save.KEY..'|r' or ''),
+                text= e.onlyChinse and '快捷键' or SETTINGS_KEYBINDINGS_LABEL,--..(Save.KEY and ' |cnGREEN_FONT_COLOR:'..Save.KEY..'|r' or ''),
                 checked=Save.KEY and true or nil,
                 func=function ()
                     StaticPopup_Show(id..addName..'KEY')
@@ -588,7 +588,7 @@ local function InitMenu(self, level, menuList)--主菜单
             UIDropDownMenu_AddButton(info, level)
 
             info={
-                text=HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE,--HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_HEIGHT,--设置按钮大小
+                text= e.onlyChinse and '图标大小' or HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE,--HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_HEIGHT,--设置按钮大小
                 tooltipOnButton=true,
                 tooltipTitle=e.toolsFrame.size or 30,
                 notCheckable=true,
@@ -620,11 +620,11 @@ local function InitMenu(self, level, menuList)--主菜单
 
             UIDropDownMenu_AddSeparator(level)
             info={--坐骑展示,每3秒
-                text=SLASH_RANDOM3:gsub('/','')..SHOW,
+                text= e.onlyChinse and '坐骑展示' or (SLASH_RANDOM3:gsub('/','')..SHOW),
                 notCheckable=true,
                 tooltipOnButton=true,
-                tooltipTitle='3 '..SECONDS..MOUNT,
-                tooltipText=KEY_MOUSEWHEELUP..e.Icon.mid,
+                tooltipTitle= e.onlyChinse and '坐骑展示,每隔3秒, 召唤' or ('3 '..SECONDS..MOUNT),
+                tooltipText= (e.onlyChinse and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP)..e.Icon.mid,
                 func=function()
                     specialEffects=nil
                     setMountShow()
@@ -633,11 +633,11 @@ local function InitMenu(self, level, menuList)--主菜单
             UIDropDownMenu_AddButton(info, level)
 
             info={--坐骑特效
-                text=	EMOTE171_CMD2:gsub('/','')..SHOW,
+                text= e.onlyChinse and '坐骑特效' or (EMOTE171_CMD2:gsub('/','')..SHOW),
                 notCheckable=true,
                 tooltipOnButton=true,
-                tooltipTitle='3 '..SECONDS..EMOTE171_CMD2:gsub('/',''),
-                tooltipText=KEY_MOUSEWHEELDOWN..e.Icon.mid,
+                tooltipTitle= e.onlyChinse and '每隔3秒' or ('3 '..SECONDS..EMOTE171_CMD2:gsub('/','')),
+                tooltipText= (e.onlyChinse and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN)..e.Icon.mid,
                 func=function()
                     specialEffects=true
                     setMountShow()
@@ -647,7 +647,7 @@ local function InitMenu(self, level, menuList)--主菜单
 
             UIDropDownMenu_AddSeparator(level)
             info={
-                text=RESET_POSITION,--还原位置
+                text= e.onlyChinse and '还原位置' or RESET_POSITION,
                 disabled=UnitAffectingCombat('player'),
                 colorCode=not Save.Point and '|cff606060',
                 func=function()
@@ -657,7 +657,7 @@ local function InitMenu(self, level, menuList)--主菜单
                     CloseDropDownMenus()
                 end,
                 tooltipOnButton=true,
-                tooltipTitle=e.Icon.right..NPE_MOVE,
+                tooltipTitle=e.Icon.right..(e.onlyChinse and '移动' or NPE_MOVE),
                 notCheckable=true,
             }
             UIDropDownMenu_AddButton(info, level)
@@ -708,7 +708,6 @@ local function InitMenu(self, level, menuList)--主菜单
                             local text= (icon and '|T'..icon..':0|t' or '').. name
                             local exits=Save.Mounts[SPELLS][ID] and ERR_ZONE_EXPLORED:format(PROFESSIONS_CURRENT_LISTINGS) or NEW
                             StaticPopup_Show(id..addName..'SPELLS',text,exits , {spellID=ID})
-                            
                         end,
                         icon=icon,
                         colorCode= not known and '|cff606060',
@@ -811,7 +810,7 @@ local function InitMenu(self, level, menuList)--主菜单
 
         UIDropDownMenu_AddSeparator()
         info={
-            text=Save.KEY or SETTINGS,
+            text=Save.KEY or (e.onlyChinse and '快捷键' or SETTINGS_KEYBINDINGS_LABEL),
             notCheckable=true,
             menuList=SETTINGS,
             hasArrow=true,
@@ -819,7 +818,7 @@ local function InitMenu(self, level, menuList)--主菜单
         UIDropDownMenu_AddButton(info)
         
         info={--提示移动
-            text=e.Icon.right..NPE_MOVE,
+            text=e.Icon.right..(e.onlyChinse and '移动' or NPE_MOVE),
             isTitle=true,
             notCheckable=true
         }
@@ -888,7 +887,7 @@ local function setMountJournal_ShowMountDropdown(index)
                 UIDropDownMenu_AddSeparator()
             end
             info={
-                text=SETTINGS..' '..type..' #'..getTableNum(type),
+                text= (e.onlyChinse and '设置' or SETTINGS)..' '..type..' #'..getTableNum(type),
                 checked=Save.Mounts[type][spellID] and true or nil,
                 tooltipOnButton=true,
                 tooltipTitle=id,
@@ -1045,7 +1044,7 @@ local function Init()
                 e.tips:SetItemByID(self.typeID)
             end
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+            e.tips:AddDoubleLine(e.onlyChinse and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
             e.tips:Show()
         end
     end)
@@ -1099,7 +1098,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             --###############
             --为我自定义, 战网
             --###############
-            if select(2, BNGetInfo()) == '古月剑龙#5972'  then
+            if e.Player.husandro then
                 Save.KEY='BUTTON5'--按键
             end
 
@@ -1115,7 +1114,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             check:SetScript('OnEnter', function (self2)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine(e.onlyChinse and '物品升级界面' or ITEM_UPGRADE..' UI',ERRORS,1,0,0,1,0,0)
+                e.tips:AddDoubleLine(e.onlyChinse and '物品升级界面' or (ITEM_UPGRADE..' UI'), e.onlyChinse and '错误' or ERRORS, 1,0,0,1,0,0)
                 e.tips:Show()
             end)
             check.text:SetTextColor(1,0,0)

@@ -41,8 +41,8 @@ hooksecurefunc(DressUpOutfitDetailsSlotMixin, 'SetDetails', function(self, trans
                 e.tips:ClearLines()
                 e.tips:SetHyperlink(self2.link)
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, e.Icon.left)
-                e.tips:AddDoubleLine(WARDROBE, e.Icon.right)
+                e.tips:AddDoubleLine(e.onlyChinse and '链接' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, e.Icon.left)
+                e.tips:AddDoubleLine(e.onlyChinse and '外观' or WARDROBE, e.Icon.right)
                 e.tips:Show()
             end
         end)
@@ -95,14 +95,14 @@ dupframe.sel:SetScript('OnClick', function ()
     else
         Save.disabledDressUpOutfit=true
     end
-    print(id, DRESSING_ROOM_APPEARANCE_LIST, e.GetShowHide(not Save.disabledDressUpOutfit))
+    print(id, addName, e.onlyChinse and '外观列表' or DRESSING_ROOM_APPEARANCE_LIST, e.GetShowHide(not Save.disabledDressUpOutfit))
     dupframe.sel:SetNormalAtlas(Save.disabledDressUpOutfit and e.Icon.disabled or e.Icon.icon)
 end)
 dupframe.sel:SetScript('OnEnter', function (self2)
     e.tips:SetOwner(self2, "ANCHOR_RIGHT")
     e.tips:ClearLines()
-    e.tips:AddDoubleLine(id, DRESSING_ROOM_APPEARANCE_LIST)
-    e.tips:AddDoubleLine(e.GetShowHide(not Save.disabledDressUpOutfit), e.Icon.left)
+    e.tips:AddDoubleLine(id, addName)
+    e.tips:AddDoubleLine(e.onlyChinse and '外观列表' or DRESSING_ROOM_APPEARANCE_LIST, e.GetShowHide(not Save.disabledDressUpOutfit)..e.Icon.left)
     e.tips:Show()
 end)
 dupframe.sel:SetScript('OnLeave', function ()
@@ -420,7 +420,7 @@ local function InitWardrobe()
                     frame.str:SetShown(false)
                 end
             end
-            print(id,addName, e.GetShowHide(not Save.disabled))
+            print(id, addName, e.GetShowHide(not Save.disabled))
             setAllSets()--所以有套装情况
             SetSaveWardroberColleced()--收集所有角色套装数据
             self2:SetNormalAtlas(Save.disabled and e.Icon.disabled or e.Icon.icon)

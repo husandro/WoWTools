@@ -154,18 +154,18 @@ end
 --#####
 --主菜单
 --#####
-local chatType={
-    {text= RAID, type= SLASH_RAID2},--/raid
-    {text= HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS, type= SLASH_PARTY1},--/p
-    {text= RAID_WARNING, type= 	SLASH_RAID_WARNING1},--/rw
-    {text= INSTANCE, type= SLASH_INSTANCE_CHAT1},--/i
-}
 local function InitMenu(self, level, type)--主菜单
+    local chatType={
+        {text= e.onlyChinse and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS, type= SLASH_PARTY1},--/p
+        {text= e.onlyChinse and '团队' or RAID, type= SLASH_RAID2},--/raid
+        {text= e.onlyChinse and '副本' or INSTANCE, type= SLASH_INSTANCE_CHAT1},--/i
+        {text= e.onlyChinse and '团队通知' or RAID_WARNING, type= 	SLASH_RAID_WARNING1},--/rw
+    }
     local info
     if type then
         local tab2={
-            {type= 'mouseUP', text= KEY_MOUSEWHEELUP},
-            {type= 'mouseDown', text= KEY_MOUSEWHEELDOWN},
+            {type= 'mouseUP', text= e.onlyChinse and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP},
+            {type= 'mouseDown', text= e.onlyChinse and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN},
         }
         for _, tab in pairs(tab2) do
             local text=(Save[tab.type] or tab.text)
@@ -202,13 +202,13 @@ local function InitMenu(self, level, type)--主菜单
                     setType(tab.text)--使用,提示
                 end
             }
-            if (tab.text==RAID and not isInRaid)--设置颜色
-                or (tab.text==HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS and not isInGroup)
-                or (tab.text== INSTANCE and (not isInInstance or num<2))
-                or (tab.text==RAID_WARNING and (not isInRaid or not le))
+            if ((tab.text==HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS or tab.text=='队伍') and not isInGroup)
+                or ((tab.text==RAID or tab.text=='团队') and not isInRaid)--设置颜色
+                or ((tab.text== INSTANCE or tab.text=='副本') and (not isInInstance or num<2))
+                or ((tab.text==RAID_WARNING or tab.text=='团队通知') and (not isInRaid or not le))
             then
                 info.colorCode='|cff606060'
-            elseif tab.text==RAID and not isInInstance then--在副本外,团
+            elseif (tab.text==RAID or tab.text=='团队') and not isInInstance then--在副本外,团
                 info.colorCode='|cffff0000'
             end
             UIDropDownMenu_AddButton(info, level)

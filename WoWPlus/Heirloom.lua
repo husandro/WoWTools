@@ -51,13 +51,13 @@ local function Init()
         else
             Save.disabledHeirloom=true
         end
-        print(id, HEIRLOOMS, e.GetEnabeleDisable(not Save.disabledHeirloom))
+        print(id, addName, e.GetEnabeleDisable(not Save.disabledHeirloom))
         self2:SetNormalAtlas(Save.disabledHeirloom and e.Icon.disabled or e.Icon.icon)
     end)
     Heirloomframe.sel:SetScript('OnEnter', function (self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, HEIRLOOMS)
+        e.tips:AddDoubleLine(id, addName)
         e.tips:AddDoubleLine(e.GetEnabeleDisable(not Save.disabledHeirloom), e.Icon.left)
         e.tips:Show()
     end)

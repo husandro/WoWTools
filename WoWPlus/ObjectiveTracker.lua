@@ -69,7 +69,7 @@ local ObjectiveTrackerRemoveAll =function(self, tip)
     local info
     if tip=='Q' then
         info={
-            text = ABANDON_QUEST,
+            text = e.onlyChinse and '放弃任务' or ABANDON_QUEST,
             notCheckable = 1,
             icon= Icon.x2,
             disabled= not C_QuestLog.CanAbandonQuest(questID),
@@ -91,7 +91,7 @@ local ObjectiveTrackerRemoveAll =function(self, tip)
         UIDropDownMenu_AddButton(info)
     end
     info={
-        text = QUESTS_LABEL..' '..questID,
+        text = (e.onlyChinse and '任务' or QUESTS_LABEL)..' '..questID,
         isTitle = true,
         notCheckable = true,
     }
@@ -100,11 +100,11 @@ local ObjectiveTrackerRemoveAll =function(self, tip)
     info = UIDropDownMenu_CreateInfo()
     local totaleQest= C_QuestLog.GetNumQuestWatches()+C_QuestLog.GetNumWorldQuestWatches()
     info={
-        text = REMOVE_WORLD_MARKERS..' '..totaleQest,
+        text = (e.onlyChinse and '全部清除' or REMOVE_WORLD_MARKERS)..' '..totaleQest,
         notCheckable = true,
         tooltipOnButton=true,
-        tooltipTitle=QUESTS_LABEL..' +',
-        tooltipText= TRACKER_HEADER_WORLD_QUESTS,
+        tooltipTitle= e.onlyChinse and '任务 +' or (QUESTS_LABEL..' +'),
+        tooltipText= e.onlyChinse and '世界任务' or TRACKER_HEADER_WORLD_QUESTS,
         icon=Icon.clear,
         colorCode= totaleQest==0 and '|cff606060',
         func = function()
@@ -151,7 +151,7 @@ local function Scale(setPrint)
     end
     ObjectiveTrackerFrame:SetScale(Save.scale)
     if setPrint then
-        print(addName..': '..UI_SCALE..' |cff00ff00'..Save.scale..'|r')
+        print(id, addName, e.onlyChinse and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:',Save.scale)
     end
 end
 
@@ -163,7 +163,7 @@ local function Alpha(setPrint)
     end
     ObjectiveTrackerFrame:SetAlpha(Save.alpha)
     if setPrint then
-        print(addName..' ('..CHANGE_OPACITY..'0.1 - 1): |cff00ff00'..Save.alpha..'|r')
+        print(id, addName, e.onlyChinse and '改变透明度' or CHANGE_OPACITY, '(0.1 - 1)', '|cnGREEN_FONT_COLOR:'..Save.alpha)
     end
 end
 
@@ -281,19 +281,19 @@ local function Init()
             e.tips:ClearLines()
             e.tips:AddDoubleLine(id, addName)
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(NPE_MOVE, e.Icon.right)
-            e.tips:AddDoubleLine(SHOW..'/'..HIDE, e.Icon.mid)
-            e.tips:AddDoubleLine(UI_SCALE..': '..Save.scale, 'Ctrl + '..e.Icon.mid)
-            e.tips:AddDoubleLine(CHANGE_OPACITY..': '..Save.alpha, 'Shift + '..e.Icon.mid)
+            e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
+            e.tips:AddDoubleLine(e.onlyChinse and '显示/隐藏' or (SHOW..'/'..HIDE), e.Icon.mid)
+            e.tips:AddDoubleLine((e.onlyChinse and '缩放' or UI_SCALE)..': '..(Save.scale or 1), 'Ctrl + '..e.Icon.mid)
+            e.tips:AddDoubleLine((e.onlyChinse and '透明度' or CHANGE_OPACITY)..': '..(Save.alpha or 1), 'Shift + '..e.Icon.mid)
             e.tips:Show()
     end)
     btn:SetScript('OnMouseWheel',function(self,d)
         if d == 1 and not IsModifierKeyDown() then
             Colla(true)
-            print(addName..': '..RED_FONT_COLOR_CODE..HIDE..'|r'..ALL)
+            print(id, addName,'|cnRED_FONT_COLOR:', e.onlyChinse and '全部隐藏' or (HIDE..ALL))
         elseif d == -1 and not IsModifierKeyDown() then
             Colla()
-            print(addName..': |cff00ff00'..SHOW..'|r'..ALL)
+            print(id, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinse and '显示全部' or (SHOW..ALL))
         elseif d==1 and IsControlKeyDown() then
             Save.scale=Save.scale+0.05
             Scale(true)
@@ -378,7 +378,7 @@ local function Init()
         local block = self.activeFrame
         if block and block.id then
             local info = UIDropDownMenu_CreateInfo()
-            info.text = ACHIEVEMENTS..' ID '..block.id
+            info.text = (e.onlyChinse and '成就 ' or ACHIEVEMENTS)..' '..block.id
             info.icon=select(10,GetAchievementInfo(block.id))
             info.isTitle = 1
             info.notCheckable = 1
@@ -386,7 +386,7 @@ local function Init()
         end
         local info = UIDropDownMenu_CreateInfo()
         local trackedAchievements = { GetTrackedAchievements() }
-        info.text = REMOVE_WORLD_MARKERS..' '..#trackedAchievements
+        info.text = (e.onlyChinse and '全部清除' or REMOVE_WORLD_MARKERS)..' '..#trackedAchievements
         info.notCheckable = 1
         info.checked = false
         info.icon=Icon.clear
@@ -402,14 +402,14 @@ local function Init()
         if mouseButton=='RightButton' then
             local recipeInfo =C_TradeSkillUI.GetRecipeInfo(block.id)
             local info = UIDropDownMenu_CreateInfo()
-            info.text =((recipeInfo and recipeInfo.icon) and '|T'..recipeInfo.icon..':0|t' or '')..TRADE_SKILLS..' ID '..block.id
+            info.text =((recipeInfo and recipeInfo.icon) and '|T'..recipeInfo.icon..':0|t' or '')..(e.onlyChinse and '专业' or TRADE_SKILLS)..' '..block.id
             info.isTitle = true
             info.notCheckable = true
             UIDropDownMenu_AddButton(info)
 
             info = UIDropDownMenu_CreateInfo()
             local tracked=C_TradeSkillUI.GetRecipesTracked() or {}
-            info.text ='|A:'..Icon.clear..':0:0|a'..REMOVE_WORLD_MARKERS..' '..#tracked
+            info.text ='|A:'..Icon.clear..':0:0|a'..(e.onlyChinse and '全部清除' or REMOVE_WORLD_MARKERS)..' '..#tracked
             info.notCheckable = true
             info.checked = false
             --info.icon=Icon.clear
@@ -451,7 +451,7 @@ local function Init()
 
     hooksecurefunc('QuestObjectiveItem_OnEnter', function(self)
         if self.setMove and e.tips:IsShown() then
-            e.tips:AddDoubleLine(NPE_MOVE, e.Icon.right)
+            e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
             e.tips:Show()
         end
     end)
@@ -480,7 +480,7 @@ local function Init()
             button:SetScript("OnDragStop", function(self)
                     self:StopMovingOrSizing()
                     self.point={self:GetPoint(1)}
-                    print(addName..'|cFF00FF00Alt+'..e.Icon.right..KEY_BUTTON2..'|r: '.. TRANSMOGRIFY_TOOLTIP_REVERT)
+                    print(id, addName, '|cFF00FF00Alt+'..e.Icon.right..(e.onlyChinse and '鼠标右键' or KEY_BUTTON2)..'|r', e.onlyChinse and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
             end)
             button:SetScript("OnMouseDown", function(self, d)
                     if d=='RightButton' and IsAltKeyDown() and not self.Moving then
@@ -535,32 +535,29 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         if not Save.disabled then
             local sel2=CreateFrame("CheckButton", nil, sel, "InterfaceOptionsCheckButtonTemplate")
-            sel2.Text:SetText(AUTO_JOIN:gsub(JOIN, '')..HIDE)
+            sel2.Text:SetText(e.onlyChinse and '自动隐藏' or (AUTO_JOIN:gsub(JOIN, '')..HIDE))
             sel2:SetPoint('LEFT', sel.Text, 'RIGHT')
             sel2:SetChecked(Save.autoHide)
             sel2:SetScript('OnEnter', function(self2)
+                local text=e.GetShowHide(false)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine(SCENARIOS, '...')
+                e.tips:AddDoubleLine(e.onlyChinse and '场景战役' or SCENARIOS, '...')
                 e.tips:AddDoubleLine('UI WIDGET', '...')
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(SCENARIO_BONUS_OBJECTIVES, e.GetShowHide(false))
-                e.tips:AddDoubleLine(TRACKER_HEADER_WORLD_QUESTS, e.GetShowHide(false))
-                e.tips:AddDoubleLine(TRACKER_HEADER_CAMPAIGN_QUESTS, e.GetShowHide(false))
-                e.tips:AddDoubleLine(TRACK_QUEST, e.GetShowHide(false))
-                e.tips:AddDoubleLine(TRACKING..ACHIEVEMENTS, e.GetShowHide(false))
-                e.tips:AddDoubleLine(PROFESSIONS_TRACK_RECIPE, e.GetShowHide(false))
+                e.tips:AddDoubleLine(e.onlyChinse and '奖励目标' or SCENARIO_BONUS_OBJECTIVES, text)
+                e.tips:AddDoubleLine(e.onlyChinse and '世界任务' or TRACKER_HEADER_WORLD_QUESTS, text)
+                e.tips:AddDoubleLine(e.onlyChinse and '战役' or TRACKER_HEADER_CAMPAIGN_QUESTS, text)
+                e.tips:AddDoubleLine(e.onlyChinse and '追踪任务' or TRACK_QUEST, text)
+                e.tips:AddDoubleLine(e.onlyChinse and '追踪成就' or (TRACKING..ACHIEVEMENTS), text)
+                e.tips:AddDoubleLine(e.onlyChinse and '追踪配方' or PROFESSIONS_TRACK_RECIPE, text)
                 e.tips:Show()
             end)
             sel2:SetScript('OnLeave', function() e.tips:Hide() end)        
 
             sel2:SetScript('OnClick', function ()
-                if Save.autoHide then
-                    Save.autoHide=nil
-                else
-                    Save.autoHide=true
-                end
-                print(id, addName, AUTO_JOIN:gsub(JOIN, '')..HIDE, QUEST_OBJECTIVES,e.GetEnabeleDisable(Save.autoHide))
+                Save.autoHide= not Save.autoHide and true or nil
+                print(id, addName, e.onlyChinse and '自动隐藏' or (AUTO_JOIN:gsub(JOIN, '')..HIDE), e.onlyChinse and '任务追踪栏' or QUEST_OBJECTIVES, e.GetEnabeleDisable(Save.autoHide))
             end)
 
             Init()

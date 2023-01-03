@@ -43,11 +43,7 @@ local function Init()
     toyframe.sel:SetSize(18,18)
     toyframe.sel:SetAlpha(0.5)
     toyframe.sel:SetScript('OnClick',function (self2)
-        if Save.disabledToy then
-            Save.disabledToy=nil
-        else
-            Save.disabledToy=true
-        end
+        Save.disabledToy= not Save.disabledToy and true and nil
         print(id, addName,e.GetEnabeleDisable(not Save.disabledToy))
         self2:SetNormalAtlas(Save.disabledToy and e.Icon.disabled or e.Icon.icon)
     end)

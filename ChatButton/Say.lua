@@ -58,23 +58,22 @@ end
 --#####
 --主菜单
 --#####
-local chatType={
-    {text= SAY, type= SLASH_SAY1},--/s
-    {text= YELL, type= 	SLASH_YELL1},--/p
-    {text= SLASH_TEXTTOSPEECH_WHISPER, type= SLASH_SMART_WHISPER1}--/w
-}
-
 local function InitMenu(self, level, type)--主菜单    
+    local chatType={
+        {text= e.onlyChinse and '说' or SAY, type= SLASH_SAY1},--/s
+        {text= e.onlyChinse and '喊' or YELL, type= SLASH_YELL1},--/p
+        {text= e.onlyChinse and '密语' or SLASH_TEXTTOSPEECH_WHISPER, type= SLASH_SMART_WHISPER1}--/w
+    }
     local info
     if type then
         if type=='WOW' then--战网
             local map=e.GetUnitMapName('player');--玩家区域名称
             for i=1 ,BNGetNumFriends() do
                 local wow=C_BattleNet.GetFriendAccountInfo(i);
-                if wow and wow.accountName then
+                if wow and wow.accountName and wow.gameAccountInfo and wow.gameAccountInfo.isOnline then
                     local color, icon=select(2, FriendsFrame_GetBNetAccountNameAndStatus(wow,true))
                     local text=wow.accountName
-                    text= color and color:WrapTextInColorCode(wow.accountName) or text                   
+                    text= color and color:WrapTextInColorCode(wow.accountName) or text
                     local gameAccountInfo= wow.gameAccountInfo
                     if gameAccountInfo then
                         if gameAccountInfo.clientProgram then
@@ -95,11 +94,11 @@ local function InitMenu(self, level, type)--主菜单
                         end
                         if gameAccountInfo.characterLevel and gameAccountInfo.characterLevel~=MAX_PLAYER_LEVEL then--等级
                             text=text ..' |cff00ff00'..gameAccountInfo.characterLevel..'|r'
-                        end              
+                        end
                     end
                     info={
                         text=text,
-                        notCheckable=true, 
+                        notCheckable=true,
                         icon=icon,
                         tooltipOnButton=true,
                         tooltipTitle=wow.note,
@@ -108,7 +107,7 @@ local function InitMenu(self, level, type)--主菜单
                             panel.type=nil
                             panel.name=wow.accountName
                             panel.wow=true
-                            setType(COMMUNITY_COMMAND_BATTLENET)--使用,提示
+                            setType(e.onlyChinse and '战' or COMMUNITY_COMMAND_BATTLENET)--使用,提示
                         end
                     }
                     UIDropDownMenu_AddButton(info, level)
@@ -129,8 +128,8 @@ local function InitMenu(self, level, type)--主菜单
                         end
                     end
                     info={
-                        text=text, 
-                        notCheckable=true, 
+                        text=text,
+                        notCheckable=true,
                         tooltipOnButton=true,
                         tooltipTitle=game.notes,
                         icon= game.afk and FRIENDS_TEXTURE_AFK or game.dnd and FRIENDS_TEXTURE_DND,
@@ -139,7 +138,7 @@ local function InitMenu(self, level, type)--主菜单
                             panel.type='/w'
                             panel.name=game.name
                             panel.wow=nil
-                            setType(SLASH_TEXTTOSPEECH_WHISPER)--使用,提示
+                            setType(e.onlyChinse and '密' or SLASH_TEXTTOSPEECH_WHISPER)--使用,提示
                         end
                     }
                     UIDropDownMenu_AddButton(info, level)
@@ -162,14 +161,14 @@ local function InitMenu(self, level, type)--主菜单
                     text=(tab.wow and e.Icon.wow2 or '')..(tab.guid and e.GetPlayerInfo(nil, tab.guid, true) or tab.name),
                     notCheckable=true,
                     tooltipOnButton=true,
-                    tooltipTitle=PVP_RECORD..SLASH_TEXTTOSPEECH_WHISPER,
+                    tooltipTitle= e.onlyChinse and '记录: 密语' or (PVP_RECORD..SLASH_TEXTTOSPEECH_WHISPER),
                     tooltipText=text,
                     func=function()
                         e.Say(nil, tab.name, tab.wow)
                         panel.type='/w'
                         panel.name=tab.name
                         panel.wow=tab.wow
-                        setType(SLASH_TEXTTOSPEECH_WHISPER)--使用,提示
+                        setType(e.onlyChinse and '密' or SLASH_TEXTTOSPEECH_WHISPER)--使用,提示
                     end
                 }
                 UIDropDownMenu_AddButton(info, level)
@@ -182,10 +181,10 @@ local function InitMenu(self, level, type)--主菜单
                     local zone= C_FriendList.GetWhoInfo(i)
                     if zone and zone.fullName and zone.fullName~= e.Player.name_server then
                         info={
-                            text=zone.fullName, 
-                            notCheckable=true, 
+                            text=zone.fullName,
+                            notCheckable=true,
                             tooltipOnButton=true,
-                            func=function(s, d) 
+                            func=function(s, d)
                                 e.Say(nil, zone.fullName)
                                 panel.type='/w'
                                 panel.name=zone.fullGuildName
@@ -198,29 +197,29 @@ local function InitMenu(self, level, type)--主菜单
                                 info.text=inf.text..'|A:socialqueuing-icon-group:0:0|a'
                             end
                         end
-                        local t2='';                    
-                        if zone.level then 
+                        local t2='';
+                        if zone.level then
                             if zone.level~=MAX_PLAYER_LEVEL then
                                 info.text=info.text..' |cffff0000'..zone.level..'|r'
                                 t2=t2..LEVEL..': |cffff0000'..zone.level..'|r';
                             else
                                 t2=t2..LEVEL..': '..zone.level;
-                            end                        
+                            end
                             if zone.raceStr then--种族                      
                                 t2=t2..' '..zone.raceStr;
                             end
                         end--等级
-                        
+
                         if zone.fullGuildName then--公会
                             if t2~='' then t2=t2..'\n' end
                             if zone.fullGuildName==guild then --同公会
                                 info.text=info.text..'|A:communities-guildbanner-background:0:0|a';
-                                t2=t2..'|A:communities-guildbanner-background:0:0|a'; 
+                                t2=t2..'|A:communities-guildbanner-background:0:0|a';
                             end
                             t2=t2..GUILD..': '..zone.fullGuildName;
-                        end                    
+                        end
                         if zone.area then --区域
-                            if t2~='' then t2=t2..'\n' end 
+                            if t2~='' then t2=t2..'\n' end
                             if zone.area==map then
                                 info.text=info.text..e.Icon.map2
                                 t2=t2..e.Icon.map2;
@@ -228,7 +227,7 @@ local function InitMenu(self, level, type)--主菜单
                                 info.text=info.text.. ' '..zone.area;
                             end
                             t2=t2..FLOOR..': '..zone.area;
-                            
+
                         end
                         info.tooltipText=t2
                         UIDropDownMenu_AddButton(info, level)
@@ -288,7 +287,7 @@ local function InitMenu(self, level, type)--主菜单
         numOline=numOline>0 and '|cnGREEN_FONT_COLOR:'..numOline..'|r' or ''
 
         info={--战网
-            text=numOline..COMMUNITY_COMMAND_BATTLENET,
+            text=numOline..(e.onlyChinse and '战网' or COMMUNITY_COMMAND_BATTLENET),
             notCheckable=true,
             menuList='WOW',
             hasArrow=true
@@ -298,7 +297,7 @@ local function InitMenu(self, level, type)--主菜单
         numOline= C_FriendList.GetNumOnlineFriends()--好友列表
         numOline= (numOline and numOline>0) and '|cnGREEN_FONT_COLOR:'..numOline..'|r' or ''
         info={
-            text=numOline..FRIENDS,
+            text=numOline..(e.onlyChinse and '好友' or FRIENDS),
             notCheckable=true,
             menuList='GAME',
             hasArrow=true

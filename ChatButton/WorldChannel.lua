@@ -54,7 +54,7 @@ local function setLeftClickTips(name, channelNumber, texture)--设置点击提�
         local text
         if channelNumber then
             panel.channelNumber=channelNumber
-            
+
             if texture then
                 text='|T'..texture..':0|t'
             else
@@ -88,7 +88,7 @@ local function sendSay(name, channelNumber)--发送
         else
             e.Say(SLASH_JOIN4..' '..name)
         end
-    end    
+    end
 end
 
 --#####
@@ -100,7 +100,7 @@ local function addMenu(name, channelNumber, level)--添加菜单
     local clubId=name:match('Community:(%d+)');
     local communityName, communityTexture
     local info= clubId and C_Club.GetClubInfo(clubId)--社区名称
-    if info and (info.shortName or info.name) then 
+    if info and (info.shortName or info.name) then
         text='|cnGREEN_FONT_COLOR:'..(info.shortName or info.name)..'|r'
         communityName=info.shortName or info.name
         communityTexture=info.avatarId
@@ -113,8 +113,8 @@ local function addMenu(name, channelNumber, level)--添加菜单
         checked= check==1,
         colorCode= check==0 and '|cffff0000' or check==2 and '|cff606060',
         tooltipOnButton=true,
-        tooltipTitle=IGNORE..' Alt+'..e.Icon.left,
-        tooltipText= check==2 and IGNORED,
+        tooltipTitle=(e.onlyChinse and '屏蔽' or IGNORE)..' Alt+'..e.Icon.left,
+        tooltipText= check==2 and (e.onlyChinse and '已屏蔽' or IGNORED),
         icon=communityTexture,
         func=function()
             if IsAltKeyDown() then

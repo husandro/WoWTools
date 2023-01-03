@@ -44,7 +44,7 @@ end
 local function InitMenu(self, level)--主菜单
     for spellID, type in pairs(Save.aura) do
         local name, _, icon = GetSpellInfo(spellID)
-        name= name or AURAS..' '..spellID
+        name= name or (e.onlyChinse and '光环' or AURAS)..' '..spellID
         local info={
             text=name,
             icon=icon,
@@ -80,9 +80,9 @@ local function Init()
             local name, _, icon = GetSpellInfo(spellID)
             name= name or (AURAS..' ID'..spellID)
             name= (icon and '|T'..icon..':0|t' or '')..name
-            e.tips:AddDoubleLine(name, type and	'|cnGREEN_FONT_COLOR:'..CANCEL..'|r' or '...')
+            e.tips:AddDoubleLine(name, type and	'|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '取消' or CANCEL)..'|r' or '...')
         end
-        e.tips:AddDoubleLine(MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.mid)
+        e.tips:AddDoubleLine(e.onlyChinse and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.mid)
         e.tips:Show()
     end)
     panel:SetScript('OnLeave', function() e.tips:Hide() end)

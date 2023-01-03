@@ -4,15 +4,6 @@ local id, e = ...
 local panel=e.Cbtn2(nil, WoWToolsMountButton, true)
 panel:SetAttribute("type", "item")
 panel:SetPoint('RIGHT', WoWToolsOpenItemsButton, 'LEFT')
-panel:SetScript('OnEnter', function(self)
-    if self.itemID then
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:SetToyByItemID(self.itemID)
-        e.tips:Show()
-    end
-end)
-panel:SetScript('OnLeave', function() e.tips:Hide() end)
 
 local Toy={
     [187869]={14663, 14303, 14304, 14305, 14306},--暗影界
@@ -68,6 +59,16 @@ end
 --初始
 --####
 local function Init()
+    panel:SetScript('OnEnter', function(self)
+        if self.itemID then
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:SetToyByItemID(self.itemID)
+            e.tips:Show()
+        end
+    end)
+    panel:SetScript('OnLeave', function() e.tips:Hide() end)
+
     for itemID, _ in pairs(Toy) do
         if not(PlayerHasToy(itemID) and C_ToyBox.IsToyUsable(itemID)) then
             Toy[itemID]=nil

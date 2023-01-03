@@ -32,8 +32,8 @@ local function strSetText()
 				t= Save.nameShow and '   ' or t
                 if Save.showID then--显示ID
 					local link=C_CurrencyInfo.GetCurrencyListLink(i)
-					local id =link and C_CurrencyInfo.GetCurrencyIDFromLink(link)
-					t= id and t..id..' ' or t
+					local id2 =link and C_CurrencyInfo.GetCurrencyIDFromLink(link)
+					t= id2 and t..id2..' ' or t
 				end
                 t=info.iconFileID and t..'|T'..info.iconFileID..':0|t' or t --图标
 				t=Save.nameShow and t..info.name..' ' or t--名称
@@ -90,60 +90,42 @@ local function Set()
 				ResetCursor()
 				self2:StopMovingOrSizing()
 				Save.point={self2:GetPoint(1)}
-				print(addName..': |cnGREEN_FONT_COLOR:Alt+'..e.Icon.right..KEY_BUTTON2..'|r: '.. TRANSMOGRIFY_TOOLTIP_REVERT);
+				Save.point[2]=nil
 		end)
 		sel.btn:SetScript("OnMouseUp", function() ResetCursor() end)
 		sel.btn:SetScript("OnMouseDown", function(self2, d)
 			local key=IsModifierKeyDown()
-			if d=='RightButton' and IsAltKeyDown() then--alt+右击, 还原位置
-				Save.point=nil
-				self2:ClearAllPoints()
-				self2:SetPoint('TOPLEFT', Frame, 'TOPRIGHT',0, -40)
-
-			elseif d=='RightButton' and not key then--右击,移动
+			if d=='RightButton' and not key then--右击,移动
 				SetCursor('UI_MOVE_CURSOR')
 
 			elseif d=='LeftButton' and not key then--点击,显示隐藏
-				if Save.str then
-					Save.str=nil
-				else
-					Save.str=true
-				end
+				Save.str= not Save.str and true or nil
 				sel.btn:SetNormalAtlas(Save.str and e.Icon.icon or e.Icon.disabled)
-				print(addName..': '..e.GetShowHide(Save.str))
+				print(id, addName, e.GetShowHide(Save.str))
 				strSetText()
+
 			elseif d=='LeftButton' and IsAltKeyDown() then--显示名称
-				if Save.nameShow then
-					Save.nameShow=nil
-				else
-					Save.nameShow=true
-				end
+				Save.nameShow= not Save.nameShow and true or nil
 				strSetText()
-				print(SHOW..NAME..': ', e.GetShowHide(Save.nameShow))
+				print(id, addName, SHOW, NAME, e.GetShowHide(Save.nameShow))
+
 			elseif d=='LeftButton' and IsControlKeyDown() then --显示ID
-				if Save.showID then
-					Save.showID=nil
-				else
-					Save.showID=true
-				end
-				print(SHOW..' ID: ', e.GetShowHide(Save.showID))
+				Save.showID= not Save.showID and true or nil
+				print(id, addName, SHOW, 'ID', e.GetShowHide(Save.showID))
 				strSetText()
 			end
 		end)
 		sel.btn:SetScript("OnEnter",function(self2)
-			if UnitAffectingCombat('player') then
-				return
-			end
 			e.tips:SetOwner(self2, "ANCHOR_LEFT");
 			e.tips:ClearLines();
 			e.tips:AddDoubleLine(id, addName)
 			e.tips:AddLine(' ')
-			e.tips:AddDoubleLine(addName..': '..e.GetShowHide(Save.str), e.Icon.left)
-			e.tips:AddDoubleLine(BINDING_NAME_TOGGLECURRENCY, e.Icon.mid)
-			e.tips:AddDoubleLine(NPE_MOVE, e.Icon.right)
+			e.tips:AddDoubleLine(e.onlyChinse and '货币' or addName, e.GetShowHide(Save.str)..e.Icon.left)
+			e.tips:AddDoubleLine(e.onlyChinse and '打开/关闭货币页面' or BINDING_NAME_TOGGLECURRENCY, e.Icon.mid)
+			e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
 			e.tips:AddLine(' ')
-			e.tips:AddDoubleLine(SHOW..NAME..': '..e.GetShowHide(Save.nameShow), 'Alt + '..e.Icon.left)
-			e.tips:AddDoubleLine(addName..' ID: '..e.GetShowHide(Save.showID), 'Ctrl + '..e.Icon.left)
+			e.tips:AddDoubleLine(e.onlyChinse and '显示名称' or (SHOW..NAME), e.GetShowHide(Save.nameShow)..' Alt+'..e.Icon.left)
+			e.tips:AddDoubleLine('ID',e.GetShowHide(Save.showID)..' Ctrl+'..e.Icon.left)
 			e.tips:Show();
 		end)
 		sel.btn:SetScript("OnLeave", function() ResetCursor()  e.tips:Hide() end);
@@ -153,7 +135,7 @@ local function Set()
 		end)
 
 		sel.btn.str=e.Cstr(sel.btn, nil, nil, nil, true)--内容显示文本
-		
+
 		sel.btn.str:SetPoint('TOPLEFT',3,-3)
 	end
 
@@ -204,11 +186,11 @@ local function Set()
 		sel.bag:SetScript('OnEnter', function(self2)
 			e.tips:SetOwner(self2, "ANCHOR_LEFT")
 			e.tips:ClearLines()
-			e.tips:AddLine(SHOW_ON_BACKPACK..': '..GetNumWatchedTokens())
+			e.tips:AddDoubleLine(e.onlyChinse and '在行囊上显示' or SHOW_ON_BACKPACK, GetNumWatchedTokens())
 			for index=1, BackpackTokenFrame:GetMaxTokensWatched() do--Blizzard_TokenUI.lua
 				local info = C_CurrencyInfo.GetBackpackCurrencyInfo(index)
 				if info and info.name and info.iconFileID then
-					e.tips:AddLine('|T'..info.iconFileID..':0|t'..info.name)
+					e.tips:AddDoubleLine(info.name, '|T'..info.iconFileID..':0|t')
 				end
 			end
 			e.tips:Show()
@@ -234,7 +216,7 @@ sel:SetScript('OnClick', function (self, d)
 		else
 			Save.disabled=true
 		end
-		print(addName, e.GetEnabeleDisable(not Save.disabled))
+		print(id, addName, e.GetEnabeleDisable(not Save.disabled))
 		Set()
 	elseif d=='LeftButton' and IsAltKeyDown then--展开所有
 		if Save.hideUpDown then
@@ -243,14 +225,10 @@ sel:SetScript('OnClick', function (self, d)
 			Save.hideUpDown=true
 		end
 		Set()
-		print('|T'..Icon.up..':0|t|T'..Icon.down..':0|t', e.GetShowHide(not Save.hideUpDown))
+		print(id, addName, '|T'..Icon.up..':0|t|T'..Icon.down..':0|t', e.GetShowHide(not Save.hideUpDown))
 	elseif d=='RightButton' then
-		if Save.updateTips then
-			Save.updateTips=nil
-		else
-			Save.updateTips=true
-		end
-		print(addName, UPDATE..': ', e.GetEnabeleDisable(Save.updateTips))
+		Save.updateTips= not Save.updateTips and true or nil
+		print(id, addName, UPDATE, e.GetEnabeleDisable(Save.updateTips))
 	end
 end)
 sel:RegisterForClicks("LeftButtonDown","RightButtonDown")
@@ -261,10 +239,10 @@ sel:SetScript("OnEnter", function(self2)
     e.tips:ClearLines()
 	e.tips:AddLine(id, addName)
 	e.tips:AddLine(' ')
-	e.tips:AddDoubleLine(addName..': '..e.GetEnabeleDisable(not Save.disabled), e.Icon.left)
-	e.tips:AddDoubleLine(UPDATE..': '..e.GetEnabeleDisable(Save.updateTips), e.Icon.right)
+	e.tips:AddDoubleLine(e.onlyChinse and '货币' or  addName, e.GetEnabeleDisable(not Save.disabled)..e.Icon.left)
+	e.tips:AddDoubleLine(e.onlyChinse and '更新' or UPDATE, e.GetEnabeleDisable(Save.updateTips)..e.Icon.right)
 	e.tips:AddLine(' ')
-	e.tips:AddDoubleLine('|T'..Icon.up..':0|t|T'..Icon.down..':0|t '..e.GetShowHide(not Save.hideUpDown), 'Alt + '..e.Icon.left)
+	e.tips:AddDoubleLine('|T'..Icon.up..':0|t|T'..Icon.down..':0|t ',e.GetShowHide(not Save.hideUpDown).. ' Alt+'..e.Icon.left)
     e.tips:Show()
 end)
 sel:SetScript('OnLeave', function ()

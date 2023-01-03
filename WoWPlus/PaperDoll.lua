@@ -728,12 +728,12 @@ local function Init()
     --#############
     --显示服务器名称
     --#############
-    panel.serverText:SetPoint('RIGHT', CharacterLevelText, 'LEFT')
+    panel.serverText:SetPoint('RIGHT', CharacterLevelText, 'LEFT',-30,0)
     panel.serverText:EnableMouse(true)
     panel.serverText:SetScript("OnEnter",function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(FRIENDS_LIST_REALM)
+            e.tips:AddLine(e.onlyChinse and '服务器:' or FRIENDS_LIST_REALM)
             local ok2
             for k, v in pairs(GetAutoCompleteRealms()) do
                 if v==e.Player.server then

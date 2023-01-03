@@ -78,7 +78,7 @@ end
 --#####
 local function InitMenu(self, level, type)--主菜单
     local info={
-        text=CLEAR_ALL,
+        text= e.onlyChinse and '清除全部' or CLEAR_ALL,
         notCheckable=true,
         func=function()
             setRest()--重置
@@ -89,11 +89,11 @@ local function InitMenu(self, level, type)--主菜单
     end
     UIDropDownMenu_AddButton(info, level)
     info={
-        text=AUTO_JOIN:gsub(JOIN,'')..(	CLEAR or KEY_NUMLOCK_MAC),
+        text= e.onlyChinse and '自动清除' or (AUTO_JOIN:gsub(JOIN,'')..(	CLEAR or KEY_NUMLOCK_MAC)),
         checked=Save.autoClear,
         tooltipOnButton=true,
-        tooltipTitle=ENTERING_COMBAT..': '..(CLEAR or KEY_NUMLOCK_MAC),
-        tooltipText=PVP_RECORD..LFG_LIST_CROSS_FACTION:format(HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS),
+        tooltipTitle= e.onlyChinse and '进入战斗时: 清除' or (ENTERING_COMBAT..': '..(CLEAR or KEY_NUMLOCK_MAC)),
+        tooltipText= e.onlyChinse and '记录仅限有队伍' or (PVP_RECORD..LFG_LIST_CROSS_FACTION:format(HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS)),
         func=function()
             Save.autoClear= not Save.autoClear and true or false
             setAutoClearRegisterEvent()--注册自动清除事件
@@ -109,7 +109,7 @@ local function InitMenu(self, level, type)--主菜单
             notCheckable=true,
             tooltipOnButton=true,
             tooltipTitle=tab.text,
-            tooltipText=tab.date..'\n\n'..SEND_MESSAGE..e.Icon.left,
+            tooltipText=tab.date..'\n\n'..(e.onlyChinse and '发送信息' or SEND_MESSAGE)..e.Icon.left,
             func=function()
                 e.Chat(tab.text)
             end,
@@ -128,7 +128,7 @@ local function InitMenu(self, level, type)--主菜单
     if #Tab>20 then
         UIDropDownMenu_AddSeparator(level)
         info={
-            text=CLEAR_ALL,
+            text= e.onlyChinse and '全清' or CLEAR_ALL,
             notCheckable=true,
             func=function()
                 setRest()--重置

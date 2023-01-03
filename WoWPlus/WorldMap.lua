@@ -307,18 +307,16 @@ local function CursorPositionInt()
         ResetCursor();
     end);
     frame.playerPostionBtn:SetScript("OnEnter",function(self2)
-        if UnitAffectingCombat('player') then
-            return
-        end
         e.tips:ClearLines()
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:AddDoubleLine(id, addName2)
         e.tips:AddLine(' ')
-        local can = C_Map.GetBestMapForUnit("player")
+        local can
+        can= C_Map.GetBestMapForUnit("player")
         can= can and C_Map.CanSetUserWaypointOnMap(can)
-        e.tips:AddDoubleLine('|A:Waypoint-MapPin-ChatIcon:0:0|a'..RESET_POSITION:gsub(RESET, SEND_LABEL), (not can and GetMinimapZoneText() or not can and '|cnRED_FONT_COLOR:'..NONE..'|r' or '') ..e.Icon.left)
-        e.tips:AddDoubleLine(FONT_SIZE..': '..(Save.PlayerXYSize or 12), e.Icon.mid)
-        e.tips:AddDoubleLine(NPE_MOVE, e.Icon.right)
+        e.tips:AddDoubleLine('|A:Waypoint-MapPin-ChatIcon:0:0|a'..(e.onlyChinse and '发送位置' or RESET_POSITION:gsub(RESET, SEND_LABEL)), (not can and GetMinimapZoneText() or not can and '|cnRED_FONT_COLOR:'..(e.onlyChinse and '无' or NONE)..'|r' or '') ..e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinse and '大小' or FONT_SIZE, (Save.PlayerXYSize or 12)..e.Icon.mid)
+        e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
         e.tips:Show()
     end)
     frame.playerPostionBtn:SetScript("OnLeave", function()
@@ -340,7 +338,7 @@ local function CursorPositionInt()
         end
         Save.PlayerXYSize=size
         e.Cstr(nil, size, nil, self.Text)
-        print(id,FONT_SIZE..': '..size)
+        print(id,addName, e.onlyChinse and '大小' or FONT_SIZE, size)
     end)
 
     frame.playerPostionBtn.Text=e.Cstr(frame.playerPostionBtn, Save.PlayerXYSize)
@@ -367,7 +365,7 @@ local function setOnEnter(self)--地图ID提示
     e.tips:ClearLines()
     e.tips:AddDoubleLine(id, addName)
     e.tips:AddLine(' ')
-    e.tips:AddDoubleLine(e.L['LAYER']..':', e.Layer and e.Layer or NONE)
+    e.tips:AddDoubleLine(e.L['LAYER']..':', e.Layer and e.Layer or e.onlyChinse and '无' or NONE)
     local uiMapID = frame.mapID or frame:GetMapID("current")
     if uiMapID then
         local info = C_Map.GetMapInfo(uiMapID)
@@ -375,7 +373,7 @@ local function setOnEnter(self)--地图ID提示
             e.tips:AddDoubleLine(info.name, 'mapID: '..info.mapID or uiMapID)--地图ID
             local uiMapGroupID = C_Map.GetMapGroupID(uiMapID)
             if uiMapGroupID then
-                e.tips:AddDoubleLine(FLOOR, 'uiMapGroupID: '..uiMapGroupID)
+                e.tips:AddDoubleLine(e.onlyChinse and '区域' or FLOOR, 'uiMapGroupID: g'..uiMapGroupID)
             end
         end
         local areaPoiIDs=C_AreaPoiInfo.GetAreaPOIForMap(uiMapID)
@@ -393,9 +391,9 @@ local function setOnEnter(self)--地图ID提示
         if IsInInstance() then--副本数据
             local instanceID, _, LfgDungeonID =select(8, GetInstanceInfo())
             if instanceID then
-                e.tips:AddDoubleLine(INSTANCE..'ID:', instanceID)
+                e.tips:AddDoubleLine(e.onlyChinse and '副本' or INSTANCE, instanceID)
                 if LfgDungeonID then
-                    e.tips:AddDoubleLine(SLASH_RANDOM3:gsub('/','')..INSTANCE..'ID:', LfgDungeonID)
+                    e.tips:AddDoubleLine(e.onlyChinse and '随机副本ID' or (SLASH_RANDOM3:gsub('/','')..INSTANCE..'ID'), LfgDungeonID)
                 end
             end
         end
@@ -411,13 +409,13 @@ local function setOnEnter(self)--地图ID提示
             if playerCursorMapName then
                 e.tips:AddDoubleLine(e.Icon.player..playerCursorMapName, 'XY: '..x..' '..y)
             else
-                e.tips:AddDoubleLine(RESET_POSITION:gsub(RESET, e.Icon.player), 'XY: '..x..' '..y)
+                e.tips:AddDoubleLine(e.onlyChinse and '位置' or (RESET_POSITION:gsub(RESET, e.Icon.player)), 'XY: '..x..' '..y)
             end
         end
     end
     e.tips:AddLine(' ')
-    e.tips:AddDoubleLine(addName..": "..e.GetEnabeleDisable(not Save.hide), e.Icon.left)
-    e.tips:AddDoubleLine(addName2..': '..e.GetEnabeleDisable(Save.PlayerXY), e.Icon.right)
+    e.tips:AddDoubleLine(addName, e.GetEnabeleDisable(not Save.hide)..e.Icon.left)
+    e.tips:AddDoubleLine(addName2, e.GetEnabeleDisable(Save.PlayerXY)..e.Icon.right)
     e.tips:Show()
 end
 
@@ -478,7 +476,7 @@ local function setMapID(self)--显示地图ID
         self.mapInfoBtn:RegisterForClicks("LeftButtonUp", "RightButtonUp")
         self.mapInfoBtn:SetScript('OnEnter', setOnEnter)
         self.mapInfoBtn:SetScript('OnLeave', function() e.tips:Hide() end)
-        self.mapInfoBtn:SetScript('OnClick', function(self2, d)
+        self.mapInfoBtn:SetScript('OnMouseDown', function(self2, d)
             if d=="LeftButton" then
                 Save.hide= not Save.hide and true or nil
                 setMapIDText(self)
@@ -513,11 +511,11 @@ local function setMapID(self)--显示地图ID
             local can
             can= C_Map.GetBestMapForUnit("player")
             can= can and C_Map.CanSetUserWaypointOnMap(can)
-            e.tips:AddDoubleLine('|A:Waypoint-MapPin-ChatIcon:0:0|a'..RESET_POSITION:gsub(RESET, SEND_LABEL), (not can and GetMinimapZoneText() or not can and '|cnRED_FONT_COLOR:'..NONE..'|r' or '')..e.Icon.left)
-            e.tips:AddDoubleLine(PREVIOUS..REFORGE_CURRENT..WORLD_MAP, e.Icon.right)
+            e.tips:AddDoubleLine('|A:Waypoint-MapPin-ChatIcon:0:0|a'..(e.onlyChinse and '发送位置' or RESET_POSITION:gsub(RESET, SEND_LABEL)), (not can and GetMinimapZoneText() or not can and '|cnRED_FONT_COLOR:'..(e.onlyChinse and '无' or NONE)..'|r' or '')..e.Icon.left)
+            e.tips:AddDoubleLine(e.onlyChinse and '返回当前地图' or (PREVIOUS..REFORGE_CURRENT..WORLD_MAP), e.Icon.right)
             e.tips:Show()
         end)
-        self.playerPosition:SetScript('OnClick', function(self2, d)
+        self.playerPosition:SetScript('OnMouseDown', function(self2, d)
             if d=='RightButton' then--返回当前地图                
 	            self:SetMapID(MapUtil.GetDisplayableMapForPlayer())
             elseif d=='LeftButton' then
@@ -587,10 +585,12 @@ local function set_AreaPOIPinMixin_OnAcquired(poiInfo)--地图POI提示 AreaPOID
         end
         t=t:match('%((.+)%)') or t;
         t=t:match('（(.+)）') or t;
+        t=t:match('(.+),') or t
         t=t:match(UNITNAME_SUMMON_TITLE14:gsub('%%s','%(%.%+%)')) or t;
         t=t:gsub(PET_ACTION_MOVE_TO,'');
         t=t:gsub(SPLASH_BATTLEFORAZEROTH_8_1_0_FEATURE2_TITLE..':','');
         t=t:gsub(SPLASH_BATTLEFORAZEROTH_8_1_0_FEATURE2_TITLE..'：','');
+        
     end;
 
     if t~='' and not poiInfo.Str then

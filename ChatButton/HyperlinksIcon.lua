@@ -511,7 +511,6 @@ local function setAddMessageFunc(self, s, ...)
             else
                 s=s:gsub(Magic(unitName), e.PlayerLink(unitName))
             end
-            
         end
     end
     for k, _ in pairs(Save.text) do--内容加颜色
@@ -779,24 +778,24 @@ local function InitMenu(self, level, type)
     local info
     if type=='Welcome' then--欢迎
         info={
-            text=SPELL_TARGET_TYPE14_DESC,--队伍新成员
+            text= e.onlyChinse and '队伍新成员' or SPELL_TARGET_TYPE14_DESC,--队伍新成员
             checked=Save.groupWelcome,
             tooltipOnButton=true,
             tooltipTitle=LFG_LIST_CROSS_FACTION:format(PARTY_PROMOTE),
             tooltipText=Save.groupWelcomeText or EMOTE103_CMD1:gsub('/',''),
             func=function()
-                StaticPopup_Show(id..addName..'WELCOME', SPELL_TARGET_TYPE14_DESC, nil, {group= true})
+                StaticPopup_Show(id..addName..'WELCOME', e.onlyChinse and '队伍新成员' or SPELL_TARGET_TYPE14_DESC, nil, {group= true})
             end,
         }
         UIDropDownMenu_AddButton(info, level)
         info={
-            text=LFG_LIST_GUILD_MEMBER,--公会新成员
+            text= e.onlyChinse and '公会新成员' or LFG_LIST_GUILD_MEMBER,--公会新成员
             checked=Save.guildWelcome,
             tooltipOnButton=true,
             tooltipTitle=Save.guildWelcomeText or EMOTE103_CMD1:gsub('/',''),
             colorCode= not IsInGuild() and '|cff606060',--不在公会
             func=function()
-                StaticPopup_Show(id..addName..'WELCOME', 	LFG_LIST_GUILD_MEMBER, nil, {guild= true})
+                StaticPopup_Show(id..addName..'WELCOME', e.onlyChinse and '公会新成员' or LFG_LIST_GUILD_MEMBER, nil, {guild= true})
             end,
         }
         UIDropDownMenu_AddButton(info, level)
@@ -813,7 +812,7 @@ local function InitMenu(self, level, type)
 
         local bool= C_CVar.GetCVarBool('textToSpeech')--文本转语音
         info={
-            text=TEXT_TO_SPEECH..e.GetEnabeleDisable(bool),
+            text= (e.onlyChinse and '文本转语音' or TEXT_TO_SPEECH)..e.GetEnabeleDisable(bool),
             checked=bool,
             tooltipOnButton=true,
             tooltipTitle='CVar: textToSpeech',
@@ -823,13 +822,13 @@ local function InitMenu(self, level, type)
                 else
                     C_CVar.SetCVar("textToSpeech", 1)
                 end
-                print(id, addName, TEXT_TO_SPEECH..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool('textToSpeech')))
+                print(id, addName, e.onlyChinse and '文本转语音' or TEXT_TO_SPEECH..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool('textToSpeech')))
             end
         }
         UIDropDownMenu_AddButton(info, level)
 
-        info={--欢迎
-            text=EMOTE103_CMD1:gsub('/','')..JOIN,
+        info={
+            text= e.onlyChinse and '欢迎加入' or (EMOTE103_CMD1:gsub('/','')..JOIN),
             checked= Save.guildWelcome or Save.groupWelcome,
             func=function()
                 Save.guildWelcome=nil
@@ -843,11 +842,11 @@ local function InitMenu(self, level, type)
 
         UIDropDownMenu_AddSeparator(level)
         info={
-            text=SET_FOCUS,
+            text= e.onlyChinse and '设置焦点' or SET_FOCUS,
             checked=Save.setFucus,
             tooltipOnButton=true,
             tooltipTitle='Shift + '..e.Icon.left,
-            tooltipText=e.onlyChinse and '仅限系统\n\n如果出现错误: 请取消' or LFG_LIST_CROSS_FACTION:format(SYSTEM)..'\n\n'..ENABLE_ERROR_SPEECH..': '..CANCEL,
+            tooltipText= e.onlyChinse and '仅限系统\n\n如果出现错误: 请取消' or LFG_LIST_CROSS_FACTION:format(SYSTEM)..'\n\n'..ENABLE_ERROR_SPEECH..': '..CANCEL,
             func= function()
                 if Save.setFucus then
                     Save.setFucus=nil
@@ -862,7 +861,7 @@ local function InitMenu(self, level, type)
 
         UIDropDownMenu_AddSeparator(level)
         info={--重载
-            text=RELOADUI,
+            text= e.onlyChinse and '重新加载UI' or RELOADUI,
             notCheckable=true,
             tooltipOnButton=true,
             tooltipTitle='/reload',
@@ -875,14 +874,14 @@ local function InitMenu(self, level, type)
     end
 end
 
+DEFAULT_CHAT_FRAME.ADD=DEFAULT_CHAT_FRAME.AddMessage
+
 --####
 --初始
 --####
 local function Init()
     panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')
     WoWToolsChatButtonFrame.last=panel
-
-    DEFAULT_CHAT_FRAME.ADD=DEFAULT_CHAT_FRAME.AddMessage
 
     panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')

@@ -136,7 +136,7 @@ e.PlayerLink=function(name, guid) --玩家超链接
         class= class2
     end
     if name then
-        return ((race and sex) and e.Race(nil, race, sex) or '')..'|Hplayer:'..name..'|h['..(class and '|c'..select(4,GetClassColor(class))..name ..'|r' or name)..']|h'
+        return ((race and sex) and e.Race(nil, race, sex) or '')..'|Hplayer:'..(name==COMBATLOG_FILTER_STRING_ME and e.Player.name_server or name)..'|h['..(class and '|c'..select(4,GetClassColor(class))..name ..'|r' or name)..']|h'
     end
 end
 
@@ -192,6 +192,7 @@ e.Player={
     guid=UnitGUID('player'),
     levelMax=UnitLevel('player')==MAX_PLAYER_LEVEL,--玩家是否最高等级
     level=UnitLevel('player'),
+    husandro= select(2, BNGetInfo()) == '古月剑龙#5972' or select(2, BNGetInfo())=='SandroChina#2690',
 }
 e.Player.servers={}--多服务器
 for k, v in pairs(GetAutoCompleteRealms()) do
@@ -917,4 +918,5 @@ ARTWORK
 OVERLAY
 DRAG_MODEL拖曳
 UIPanelWindows[]
+FrameUtil.RegisterFrameForEvents(self, table);
 ]]

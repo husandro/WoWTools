@@ -164,7 +164,7 @@ end
 --####
 local function setUseMenu(level)--二级, 使用
     local info={
-        text= CLEAR_ALL,--清除所有
+        text= e.onlyChinse and '全部清除' or CLEAR_ALL,
         notCheckable=true,
         func=function()
             Save.use={}
@@ -179,8 +179,8 @@ local function setUseMenu(level)--二级, 使用
             icon= C_Item.GetItemIconByID(itemID),
             checked=true,
             tooltipOnButton=true,
-            tooltipTitle=REMOVE,
-            tooltipText=num>1 and '\n'..COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS)..'\n'..AUCTION_STACK_SIZE..': '..num,
+            tooltipTitle= e.onlyChinse and '移除' or REMOVE,
+            tooltipText=num>1 and '\n'..(e.onlyChinse and '组合物品' or COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS))..'\n'..(e.onlyChinse and '数量' or AUCTION_STACK_SIZE)..': '..num,
             func=function()
                 Save.use[itemID]=nil
                 getItems()
@@ -191,7 +191,7 @@ local function setUseMenu(level)--二级, 使用
 end
 local function setNoMenu(level)--二级,禁用
     local info={
-        text= CLEAR_ALL,--清除所有
+        text= e.onlyChinse and '全部清除' or CLEAR_ALL,
         notCheckable=true,
         func=function()
             Save.no={}
@@ -235,13 +235,13 @@ local function setMenuList(self, level, menuList)--主菜单
             setDisableCursorItem()--禁用当物品
         end
         t.tooltipOnButton=true
-        t.tooltipTitle='|cnRED_FONT_COLOR:'..DISABLE..'|r'..e.Icon.mid..KEY_MOUSEWHEELUP
+        t.tooltipTitle='|cnRED_FONT_COLOR:'..(e.onlyChinse and '禁用' or DISABLE)..'|r'..e.Icon.mid..(e.onlyChinse and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP)
     else
-        t.text=addName..': '..NONE
+        t.text=addName..': '..(e.onlyChinse and '无' or  NONE)
         t.isTitle=true
         t.tooltipOnButton=true
-        t.tooltipTitle=USE..'/'..DISABLE
-        t.tooltipText=DRAG_MODEL..ITEMS
+        t.tooltipTitle= e.onlyChinse and '使用/禁用' or (USE..'/'..DISABLE)
+        t.tooltipText= e.onlyChinse and '拖曳物品到这里' or (DRAG_MODEL..ITEMS)
     end
 
     UIDropDownMenu_AddButton(t)
@@ -255,21 +255,21 @@ local function setMenuList(self, level, menuList)--主菜单
         use=use+1
     end
     t=UIDropDownMenu_CreateInfo()--自定义禁用列表
-    t.text= DISABLE..' #'..no
+    t.text= (e.onlyChinse and '禁用' or DISABLE)..' #'..no
     t.notCheckable=1
     t.menuList='NO'
     t.hasArrow=true
     UIDropDownMenu_AddButton(t)
 
     t=UIDropDownMenu_CreateInfo()--自定义使用列表
-    t.text= USE..' #'..use
+    t.text= (e.onlyChinse and '使用' or USE)..' #'..use
     t.notCheckable=1
     t.menuList='USE'
     t.hasArrow=true
     UIDropDownMenu_AddButton(t)
 
     t={
-        text=ITEM_OPENABLE,
+        text= e.onlyChinse and '<右键点击打开>' or ITEM_OPENABLE,
         checked=Save.open,
         func=function()
             if Save.open then
@@ -283,7 +283,9 @@ local function setMenuList(self, level, menuList)--主菜单
     UIDropDownMenu_AddButton(t)
 
     t={
-        text=PET,
+        text= e.onlyChinse and '宠物' or PET,
+        tooltipOnButton=true,
+        tooltipTitle= '<3',
         checked=Save.pet,
         func=function()
             if Save.pet then
@@ -291,14 +293,13 @@ local function setMenuList(self, level, menuList)--主菜单
             else
                 Save.pet=true
             end
-
             getItems()
         end
     }
     UIDropDownMenu_AddButton(t)
 
     t={
-        text=TOY,
+        text= e.onlyChinse and '玩具' or TOY,
         checked=Save.toy,
         func=function()
             if Save.toy then
@@ -312,7 +313,7 @@ local function setMenuList(self, level, menuList)--主菜单
     UIDropDownMenu_AddButton(t)
 
     t={
-        text=MOUNTS,
+        text= e.onlyChinse and '坐骑' or MOUNTS,
         checked=Save.mount,
         func=function()
             if Save.mount then
@@ -326,7 +327,7 @@ local function setMenuList(self, level, menuList)--主菜单
     UIDropDownMenu_AddButton(t)
 
     t={
-        text=TRANSMOGRIFY,
+        text= e.onlyChinse and '幻化' or TRANSMOGRIFY,
         checked=Save.mago,
         func=function()
             if Save.mago then
@@ -340,7 +341,7 @@ local function setMenuList(self, level, menuList)--主菜单
     UIDropDownMenu_AddButton(t)
 
     t={
-        text=TRADESKILL_SERVICE_LEARN,
+        text= e.onlyChinse and '配方' or TRADESKILL_SERVICE_LEARN,
         checked=Save.ski,
         func=function()
             if Save.ski then
@@ -354,7 +355,7 @@ local function setMenuList(self, level, menuList)--主菜单
     UIDropDownMenu_AddButton(t)
 
     t={
-        text=BINDING_HEADER_OTHER,
+        text= e.onlyChinse and '其它' or BINDING_HEADER_OTHER,
         checked=Save.alt,
         func=function()
             if Save.alt then
@@ -369,9 +370,9 @@ local function setMenuList(self, level, menuList)--主菜单
 
     UIDropDownMenu_AddSeparator()
     t={
-        text=CHAT_AUTO_JOIN:gsub(JOIN,'')..HIDE,
+        text= e.onlyChinse and '自动隐藏' or (AUTO_JOIN:gsub(JOIN,'')..HIDE),
         tooltipOnButton=true,
-        tooltipTitle=BROWSE_NO_RESULTS,
+        tooltipTitle= e.onlyChinse and '未发现物品' or BROWSE_NO_RESULTS,
         func=function()
             if Save.noItemHide  then 
                 Save.noItemHide =nil
@@ -384,7 +385,7 @@ local function setMenuList(self, level, menuList)--主菜单
     }
     UIDropDownMenu_AddButton(t)
 
-    UIDropDownMenu_AddButton({text=DRAG_MODEL..ITEMS..'('..USE..'/'..DISABLE..')', isTitle=true, notCheckable=true})
+    UIDropDownMenu_AddButton({text= e.onlyChinse and '拖曳物品: 使用/禁用' or (DRAG_MODEL..ITEMS..'('..USE..'/'..DISABLE..')'), isTitle=true, notCheckable=true})
 end
 
 
@@ -485,7 +486,7 @@ local function Init()
             local icon
             icon= C_Item.GetItemIconByID(itemID)
             icon = icon and '|T'..icon..':0|t'..itemLink or ''
-            local list=Save.use[itemID] and PROFESSIONS_CURRENT_LISTINGS..': |cff00ff00'..USE..'|r' or Save.no[itemID] and PROFESSIONS_CURRENT_LISTINGS..': |cffff0000'..DISABLE..'|r' or ''
+            local list=Save.use[itemID] and (e.onlyChinse and '当前列表' or PROFESSIONS_CURRENT_LISTINGS)..': |cff00ff00'..(e.onlyChinse and '使用' or USE)..'|r' or Save.no[itemID] and (e.onlyChinse and '当前列表' or PROFESSIONS_CURRENT_LISTINGS)..': |cffff0000'..(e.onlyChinse and '禁用' or DISABLE)..'|r' or ''
             StaticPopup_Show('OpenItmesUseOrDisableItem',icon,list, {itemID=itemID, itemLink=itemLink})
             ClearCursor()
         else

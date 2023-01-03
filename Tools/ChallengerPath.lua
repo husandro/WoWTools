@@ -162,7 +162,7 @@ local function InitMenu(self, leve, tab)--主菜单
         return
     end
     local info={
-        text= SLASH_CHAT_MODERATE2:gsub('/',''),
+        text= e.onlyChinse and '修改' or SLASH_CHAT_MODERATE2:gsub('/',''),
         notCheckable=true,
         func=function()
             local name=GetSpellInfo(tab.spell)
@@ -178,13 +178,14 @@ local function InitMenu(self, leve, tab)--主菜单
         text= ADD,
         notCheckable=true,
         func=function()
-            StaticPopup_Show(id..addName..'EDIT', NEED ,NEED , {})
+            StaticPopup_Show(id..addName..'EDIT', e.onlyChinse and '必需' or NEED , e.onlyChinse and '必需' or NEED , {})
         end,
     }
     UIDropDownMenu_AddButton(info, level)
     UIDropDownMenu_AddSeparator(level)
     info={
-        text= '|cnRED_FONT_COLOR:'..RESET..'|r',
+        text= e.onlyChinse and '重置' or RESET,
+        colorCode='|cffff0000',
         notCheckable=true,
         func=function()
             StaticPopup_Show(id..addName..'RESET')
@@ -240,7 +241,7 @@ local function Init()
                 if tab.ins then
                     e.tips:AddDoubleLine((buttonImage1 and '|T'..buttonImage1..':0|t' or '')..(insName or ('journalInstanceID: '..tab.ins)), ADVENTURE_JOURNAL..e.Icon.right)
                 end
-                e.tips:AddDoubleLine(MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.mid)
+                e.tips:AddDoubleLine(e.onlyChinse and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.mid)
                 e.tips:Show()
             end)
             buttons[tab.spell]:SetScript('OnLeave', function() e.tips:Hide() end)

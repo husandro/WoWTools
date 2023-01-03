@@ -608,7 +608,7 @@ local function InitMenu(self, level, type)--主菜单
     if type then
         if type=='ready' then
             info={
-                text=e.Icon.select2..AUTO_JOIN:gsub(JOIN,'')..READY,--就绪
+                text=e.Icon.select2..(e.onlyChinse and '就绪' or READY),--就绪
                 colorCode='|cff00ff00',
                 checked=Save.autoReady==1,
                 func=function()
@@ -619,7 +619,7 @@ local function InitMenu(self, level, type)--主菜单
             }
             UIDropDownMenu_AddButton(info, level)
             info={
-                text=e.Icon.O2..AUTO_JOIN:gsub(JOIN,'')..NOT_READY_FEMALE,--未就绪
+                text=e.Icon.O2..(e.onlyChinse and '未就绪' or NOT_READY_FEMALE),--未就绪
                 colorCode='|cffff0000',
                 checked=Save.autoReady==2,
                 func=function()
@@ -630,7 +630,7 @@ local function InitMenu(self, level, type)--主菜单
             }
             UIDropDownMenu_AddButton(info, level)
             info={--无
-                text=NONE,
+                text= e.onlyChinse and '无' or NONE,
                 checked=not Save.autoReady,
                 func=function()
                     Save.autoReady=nil
@@ -642,7 +642,7 @@ local function InitMenu(self, level, type)--主菜单
 
             UIDropDownMenu_AddSeparator(level)--队员提示信息
             info={
-                text=PLAYERS_IN_GROUP..READY..INFO,
+                text= e.onlyChinse and '队员就绪信息' or (PLAYERS_IN_GROUP..READY..INFO),
                 checked=Save.groupReadyTips,
                 func=function()
                     Save.groupReadyTips= not Save.groupReadyTips and true or false
@@ -671,7 +671,7 @@ local function InitMenu(self, level, type)--主菜单
                     UIDropDownMenu_AddSeparator(level)
                 end
                 info={
-                    text= index==num and NONE or _G['RAID_TARGET_'..index],
+                    text= index==num and (e.onlyChinse and '无' or NONE) or _G['RAID_TARGET_'..index],
                     icon= index==num and nil or 'Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index,
                     checked= Save[type]==index,
                     colorCode=colorCode[index],
@@ -695,7 +695,7 @@ local function InitMenu(self, level, type)--主菜单
                 UIDropDownMenu_AddButton(info, level)
             end
             info={
-                text=LFG_LIST_CROSS_FACTION:format(type=='tank2' and RAID or type=='healer' and GROUP or (HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS)),
+                text=format(e.onlyChinse and '仅限%s' or LFG_LIST_CROSS_FACTION, type=='tank2' and (e.onlyChinse and '团队' or RAID) or type=='healer' and (e.onlyChinse and '小队' or GROUP) or (e.onlyChinse and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS)),
                 notCheckable=true,
                 isTitle=true,
             }
@@ -703,7 +703,7 @@ local function InitMenu(self, level, type)--主菜单
         end
     else
         info={
-            text=AUTO_JOIN:gsub(JOIN,'')..EVENTTRACE_MARKER..e.Icon.TANK..e.Icon.HEALER,
+            text= e.onlyChinse and '自动标记' or (AUTO_JOIN:gsub(JOIN,'')..EVENTTRACE_MARKER)..e.Icon.TANK..e.Icon.HEALER,
             checked= Save.autoSet,
             disabled= Save.tank==0 and Save.healer==0,
             func=function()
@@ -720,9 +720,9 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddSeparator()
 
         local tab={
-                {text= e.Icon.TANK..TANK, type='tank'},
-                {text= e.Icon.HEALER..HEALER, type='healer'},
-                {text= e.Icon.TANK..TANK..'2', type='tank2'},
+                {text= e.Icon.TANK..(e.onlyChinse and '坦克' or TANK), type='tank'},
+                {text= e.Icon.HEALER..(e.onlyChinse and '治疗' or HEALER), type='healer'},
+                {text= e.Icon.TANK..(e.onlyChinse and '坦克' or TANK)..'2', type='tank2'},
             }
         for _, tab2 in pairs(tab) do
             info={

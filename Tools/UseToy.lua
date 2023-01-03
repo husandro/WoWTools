@@ -258,16 +258,16 @@ local function InitMenu(self, level, menuList)--主菜单
                         Save.items[itemID]=nil
                         getToy()--生成, 有效表格
                         setAtt()--设置属性                        
-                        print(id, addName, '|cnGREEN_FONT_COLOR:'..REMOVE..'|r', COMPLETE, select(2, GetItemInfo(itemID)) or (TOY..'ID: '..itemID))
+                        print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '移除' or REMOVE)..'|r', e.onlyChinse and '完成' or COMPLETE, select(2, GetItemInfo(itemID)) or (TOY..'ID: '..itemID))
                     end,
                     tooltipOnButton=true,
-                    tooltipTitle=REMOVE,
+                    tooltipTitle= e.onlyChinse and '移除' or REMOVE,
                 }
                 UIDropDownMenu_AddButton(info, level)
             end
         elseif menuList=='SETTINGS' then--设置菜单
             info={--快捷键,设置对话框
-                text=SETTINGS_KEYBINDINGS_LABEL,--..(Save.KEY and ' |cnGREEN_FONT_COLOR:'..Save.KEY..'|r' or ''),
+                text= e.onlyChinse and '快捷键' or SETTINGS_KEYBINDINGS_LABEL,--..(Save.KEY and ' |cnGREEN_FONT_COLOR:'..Save.KEY..'|r' or ''),
                 checked=Save.KEY and true or niil,
                 func=function ()
                     StaticPopup_Show(id..addName..'KEY')
@@ -278,10 +278,10 @@ local function InitMenu(self, level, menuList)--主菜单
 
             UIDropDownMenu_AddSeparator(level)
             info={--清除
-                text='|cnRED_FONT_COLOR:'..(CLEAR or KEY_NUMLOCK_MAC).. TOY..'|r '..#panel.items..'/'..getAllSaveNum(),
+                text='|cnRED_FONT_COLOR:'..(e.onlyChinse and '清除' or CLEAR or KEY_NUMLOCK_MAC)..(e.onlyChinse and '玩具' or TOY)..'|r '..#panel.items..'/'..getAllSaveNum(),
                 notCheckable=true,
                 tooltipOnButton=true,
-                tooltipTitle=CLEAR_ALL,
+                tooltipTitle= e.onlyChinse and '清除全部' or CLEAR_ALL,
                 func=function ()
                     StaticPopup_Show(id..addName..'RESETALL')
                 end,
@@ -289,10 +289,11 @@ local function InitMenu(self, level, menuList)--主菜单
             UIDropDownMenu_AddButton(info, level)
 
             info={--重置所有
-                text='|cnRED_FONT_COLOR:'..RESET..'|r',
+                text= e.onlyChinse and '重置' or RESET,
+                colorCode="|cffff0000",
                 notCheckable=true,
                 tooltipOnButton=true,
-                tooltipTitle=RESET_ALL_BUTTON_TEXT,
+                tooltipTitle= e.onlyChinse and '全部重置' or RESET_ALL_BUTTON_TEXT,
                 func=function ()
                     StaticPopup_Show(id..addName..'RESETALL')
                 end,
@@ -309,7 +310,7 @@ local function InitMenu(self, level, menuList)--主菜单
        UIDropDownMenu_AddButton(info, level)
        -- UIDropDownMenu_AddSeparator()
         info={
-            text=Save.KEY or SETTINGS,
+            text=Save.KEY or (e.onlyChinse and '快捷键' or SETTINGS_KEYBINDINGS_LABEL),
             notCheckable=true,
             menuList='SETTINGS',
             hasArrow=true,
@@ -337,7 +338,7 @@ local function showTips(self)--显示提示
             end
         end
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinse and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         e.tips:Show()
     else
         e.tips:Hide()

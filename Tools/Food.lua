@@ -55,9 +55,9 @@ local function set_Button_Init(self)
             e.tips:SetItemByID(self2.itemID)
             e.tips:AddLine(' ')
             if self==panel then
-                e.tips:AddDoubleLine(MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+                e.tips:AddDoubleLine(e.onlyChinse and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
             else
-                e.tips:AddDoubleLine(DISABLE, 'Shift+'..e.Icon.right)
+                e.tips:AddDoubleLine(e.onlyChinse and '禁用' or DISABLE, 'Shift+'..e.Icon.right)
             end
             e.tips:Show()
         end)
@@ -77,7 +77,7 @@ local function set_Button_Init(self)
                 if d=='RightButton' and IsShiftKeyDown() then
                     Save.noUseItems[self2.itemID]=true
                     local link= select(2, GetItemInfo(self2.itemID))
-                    print(id, addName, DISABLE, link or self2.itemID, '|cnRED_FONT_COLOR:'..REQUIRES_RELOAD)
+                    print(id, addName, e.onlyChinse and '禁用' or DISABLE, link or self2.itemID, '|cnRED_FONT_COLOR:', e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
                 end
             end)
         end

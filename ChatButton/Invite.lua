@@ -507,14 +507,14 @@ local function InitList(self, level, type)
     local info
     if type=='InvUnit' then--邀请单位    
         info={
-            text=GUILDCONTROL_OPTION7,
+            text= e.onlyChinse and '邀请成员' or GUILDCONTROL_OPTION7,
             notCheckable=true,
             isTitle=true,
         }
         UIDropDownMenu_AddButton(info, level)
 
         info={--邀请LFD
-            text=DUNGEONS_BUTTON,
+            text= e.onlyChinse and '队伍查找器' or DUNGEONS_BUTTON,
             func=function()
                 Save.LFGAutoInv= not Save.LFGAutoInv and true or nil
                 local f=(LFGListFrame and LFGListFrame.ApplicationViewer) and LFGListFrame.ApplicationViewer.DataDisplay.inv
@@ -525,12 +525,12 @@ local function InitList(self, level, type)
             end,
             checked=Save.LFGAutoInv,
             tooltipOnButton=true,
-            tooltipTitle=GROUP_FINDER_CROSS_FACTION_LISTING_WITHOUT_PLAYSTLE:format('|cff00ff00'..LEADER..'|r'),
+            tooltipTitle= e.onlyChinse and '仅限: |cnRED_FONT_COLOR:队长|r' or format(GROUP_FINDER_CROSS_FACTION_LISTING_WITHOUT_PLAYSTLE, '|cff00ff00'..LEADER..'|r'),
         }
         UIDropDownMenu_AddButton(info, level);
 
-        info={--邀请目标
-            text=INVITE..TARGET,
+        info={
+            text= e.onlyChinse and '邀请目标' or INVITE..TARGET,
             checked=Save.InvTar,
             disabled=IsInInstance() and true or nil,
 
@@ -541,18 +541,18 @@ local function InitList(self, level, type)
                 setTexture()--设置图标颜色, 是否有权限, 是否转团, 邀请选项提示
             end,
             tooltipOnButton=true,
-            tooltipTitle=GROUP_FINDER_CROSS_FACTION_LISTING_WITHOUT_PLAYSTLE:format('|cff00ff00'..LEADER..'|r'..NO..'|cnRED_FONT_COLOR:'..INSTANCE..'|r'),
+            tooltipTitle= e.onlyChinse and '仅限: 队长 |cnRED_FONT_COLOR:不在副本|r' or format(GROUP_FINDER_CROSS_FACTION_LISTING_WITHOUT_PLAYSTLE, '|cff00ff00'..LEADER..'|r'..NO..'|cnRED_FONT_COLOR:'..INSTANCE..'|r'),
         }
         UIDropDownMenu_AddButton(info, level)
         
 
         info={--设置,频道,事件
-            text= CHANNEL..(Save.ChannelText and '|cnGREEN_FONT_COLOR: '..Save.ChannelText..'|r' or ''),--内容,频道, 邀请
+            text= (e.onlyChinse and '频道' or CHANNEL)..(Save.ChannelText and '|cnGREEN_FONT_COLOR: '..Save.ChannelText..'|r' or ''),--内容,频道, 邀请
             checked=Save.Channel,
             colorCode=not Save.ChannelText and '|cff606060',
             tooltipOnButton=true,
-            tooltipTitle=Save.ChannelText or NONE,
-            tooltipText=SAY..' '..YELL..' '..WHISPER,
+            tooltipTitle=Save.ChannelText or (e.onlyChinse and '无' or NONE),
+            tooltipText= e.onlyChinse and '说, 喊, 密语' or (SAY..', '..YELL..', '..WHISPER),
             hasArrow=true,
             menuList='ChannelText',
             func= function()
@@ -565,19 +565,19 @@ local function InitList(self, level, type)
 
 
         info={--已邀请列表
-            text= LFG_LIST_APP_INVITED,--三级列表，已邀请列表
+            text= e.onlyChinse and '已邀请' or LFG_LIST_APP_INVITED,--三级列表，已邀请列表
             notCheckable=true,
             menuList='InvUnitAll',
             hasArrow=true,
             func=InvPlateGuidFunc,
             tooltipOnButton=true;
-            tooltipTitle=CALENDAR_INVITE_ALL,
+            tooltipTitle= e.onlyChinse and '邀请全部' or CALENDAR_INVITE_ALL,
         }
         UIDropDownMenu_AddButton(info, level);
         UIDropDownMenu_AddSeparator(level)
 
         info={--转团
-            text=CONVERT_TO_RAID,
+            text=e.onlyChinse and '转团' or CONVERT_TO_RAID,
             func=function()
                 Save.PartyToRaid= not Save.PartyToRaid and true or nil
                 local f=(LFGListFrame and LFGListFrame.ApplicationViewer and LFGListFrame.ApplicationViewer.DataDisplay) and LFGListFrame.ApplicationViewer.DataDisplay.raid
@@ -587,20 +587,20 @@ local function InitList(self, level, type)
                 setTexture()--设置图标颜色, 是否有权限, 是否转团
             end,
             tooltipOnButton=true,
-            ooltipTitle=GROUP_FINDER_CROSS_FACTION_LISTING_WITHOUT_PLAYSTLE:format('|cff00ff00'..DUNGEONS_BUTTON..'|r'),
+            tooltipTitle= e.onlyChinse and '仅限队伍查找器' or format(GROUP_FINDER_CROSS_FACTION_LISTING_WITHOUT_PLAYSTLE, '|cff00ff00'..DUNGEONS_BUTTON..'|r'),
             checked= Save.PartyToRaid,
         }
         UIDropDownMenu_AddButton(info, level);
 
 
-        info={--预创建队伍增强
-            text=SCORE_POWER_UPS:gsub(ITEMS,LFGLIST_NAME),
+        info={
+            text= e.onlyChinse and '预创建队伍增强' or SCORE_POWER_UPS:gsub(ITEMS,LFGLIST_NAME),
             func=function()
                 Save.LFGPlus = not Save.LFGPlus and true or nil
             end,
             checked=Save.LFGPlus,
             tooltipOnButton=true,
-            tooltipTitle=LFGLIST_NAME,
+            tooltipTitle= e.onlyChinse and '预创建队伍' or LFGLIST_NAME,
         }
         UIDropDownMenu_AddButton(info, level)
 
@@ -611,7 +611,7 @@ local function InitList(self, level, type)
                 info={
                     text=e.GetPlayerInfo(nil, guid, true),
                     tooltipOnButton=true,
-                    tooltipTitle=INVITE,
+                    tooltipTitle= e.onlyChinse and '邀请' or INVITE,
                     tooltipText=name,
                     notCheckable=true,
                     func=function()
@@ -626,7 +626,7 @@ local function InitList(self, level, type)
         end
         if n==0 then
             info={
-                text=NONE;
+                text= e.onlyChinse and '无' or NONE;
                 notCheckable=true,
                 isTitle=true,
             }
@@ -634,14 +634,14 @@ local function InitList(self, level, type)
         else
             UIDropDownMenu_AddSeparator(level)
             info={
-                text='|cff00ff00'..CALENDAR_INVITE_ALL..'|r',
+                text= '|cff00ff00'..(e.onlyChinse and '邀请全部' or CALENDAR_INVITE_ALL)..'|r',
                 notCheckable=true,
                 func= InvPlateGuidFunc,
             }
             UIDropDownMenu_AddButton(info, level)
 
             info={
-                text='|cffff0000'..CLEAR_ALL..'|r',
+                text='|cffff0000'..(e.onlyChinse and '全部清除' or CLEAR_ALL)..'|r',
                 notCheckable=true,
                 func=function()
                     InvPlateGuid={}
@@ -652,14 +652,14 @@ local function InitList(self, level, type)
 
     elseif type=='ACEINVITE' then--自动接受邀请
         info={--队伍查找器
-            text=CALENDAR_ACCEPT_INVITATION,
+            text= e.onlyChinse and '接受邀请' or CALENDAR_ACCEPT_INVITATION,
             isTitle=true;
             notCheckable=true;
         }
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text=DUNGEONS_BUTTON,
+            text= e.onlyChinse and '队伍查找器' or DUNGEONS_BUTTON,
             checked=Save.LFGListAceInvite,
             func=function()
                 Save.LFGListAceInvite= not Save.LFGListAceInvite and true or nil
@@ -668,11 +668,11 @@ local function InitList(self, level, type)
         }
         UIDropDownMenu_AddButton(info, level)
 
-        info={--好友
-            text=FRIENDS,
+        info={
+            text= e.onlyChinse and '好友' or FRIENDS,
             checked=Save.FriendAceInvite,
             tooltipOnButton=true,
-            tooltipTitle=COMMUNITY_COMMAND_BATTLENET..', '..FRIENDS..', '..GUILD,
+            tooltipTitle= e.onlyChinse and '战网, 好友, 公会' or (COMMUNITY_COMMAND_BATTLENET..', '..FRIENDS..', '..GUILD),
             func=function()
                 Save.FriendAceInvite= not Save.FriendAceInvite and true or nil
                 setTexture()--设置图标颜色, 是否有权限, 是否转团, 邀请选项提示
@@ -680,9 +680,9 @@ local function InitList(self, level, type)
         }
         UIDropDownMenu_AddButton(info, level)
 
-    elseif type=='NoInv' then--拒绝邀请
+    elseif type=='NoInv' then
         info={
-            text=LFG_LIST_APP_INVITE_DECLINED,--三级列表，拒绝邀请列表
+            text= e.onlyChinse and '拒绝邀请' or LFG_LIST_APP_INVITE_DECLINED,--三级列表，拒绝邀请列表
             notCheckable=true,
             menuList='NoInvList',
             hasArrow=true,
@@ -690,10 +690,11 @@ local function InitList(self, level, type)
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text=RED_FONT_COLOR_CODE..CALENDAR_STATUS_OUT..'|r'..ZONE,--休息区拒绝组队  
+            text= e.onlyChinse and '|cnRED_FONT_COLOR:休息|r区' or ('|cnRED_FONT_COLOR:'..CALENDAR_STATUS_OUT..'|r'..ZONE),--休息区拒绝组队  
             checked=Save.NoInvInResting,
             tooltipOnButton=true,
-            tooltipTitle=DECLINE..RED_FONT_COLOR_CODE..NO..'|r'..TUTORIAL_TITLE22,
+            tooltipTitle= e.onlyChinse and '拒绝' or DECLINE,
+            tooltipText= e.onlyChinse and '好友 |cnRED_FONT_COLOR:否|r' or ('|cnRED_FONT_COLOR:'..NO..'|r'..TUTORIAL_TITLE22),
             func=function()
                 Save.NoInvInResting= not Save.NoInvInResting and true or nil
             end,
@@ -702,7 +703,7 @@ local function InitList(self, level, type)
 
         UIDropDownMenu_AddSeparator(level)
         info={
-            text=CALENDAR_STATUS_OUT..ZONE..INFO,
+            text= e.onlyChinse and '休息区信息' or CALENDAR_STATUS_OUT..ZONE..INFO,
             checked=Save.restingTips,
             func=function()
                 Save.restingTips= not Save.restingTips and true or nil
@@ -725,15 +726,15 @@ local function InitList(self, level, type)
                         print(id, addName, '|cff00ff00'..REMOVE..'|r: '..text);
                     end,
                     tooltipOnButton=true,
-                    tooltipTitle=REMOVE,
-                    tooltipText= ITEM_SPELL_CHARGES:format(nu)..'\n\n'..(select(7,GetPlayerInfoByGUID(guid)) or ''),
+                    tooltipTitle= e.onlyChinse and '移除' or REMOVE,
+                    tooltipText= format(e.onlyChinse and '%d次' or ITEM_SPELL_CHARGES, nu)..'\n\n'..(select(7,GetPlayerInfoByGUID(guid)) or ''),
                 }
                 UIDropDownMenu_AddButton(info, level)
             end
         end
         if all==0 then
             info={
-                text=NONE,
+                text= e.onlyChinse and '无' or NONE,
                 notCheckable=true,
                 isTitle=true,
             }
@@ -741,11 +742,12 @@ local function InitList(self, level, type)
         else
             UIDropDownMenu_AddSeparator(level)
             info={
-                text='|cff00ff00'..CLEAR_ALL..'|r ',
+                text=e.onlyChinse and '全部清除' or CLEAR_ALL,
+                colorCode= '|cff00ff00',
                 notCheckable=true,
                 func=function()
                     Save.InvNoFriend={}
-                    print(id, addName, '|cff00ff00'..CLEAR_ALL..'|r: ', DONE)
+                    print(id, addName, '|cff00ff00'..(e.onlyChinse and '全部清除' or CLEAR_ALL)..'|r', e.onlyChinse and '完成' or DONE)
                 end,
             }
             UIDropDownMenu_AddButton(info, level)
@@ -753,7 +755,7 @@ local function InitList(self, level, type)
 
     elseif type=='ChannelText' then--三级列表,修改,频道,关键词
         info={
-            text= KBASE_DEFAULT_SEARCH_TEXT,--在这里输入关键字。
+            text= e.onlyChinse and '关键词' or KBASE_DEFAULT_SEARCH_TEXT,--在这里输入关键字。
             notCheckable=true,
             func= function()
                 StaticPopup_Show(id..addName..'CHANNEL')
@@ -762,33 +764,33 @@ local function InitList(self, level, type)
         UIDropDownMenu_AddButton(info, level)
 
     else
-        info={--邀请成员
-            text=e.Icon.left..GUILDCONTROL_OPTION7,
+        info={
+            text=e.Icon.left..(e.onlyChinse and '邀请成员' or GUILDCONTROL_OPTION7),
             notCheckable=true,
             menuList='InvUnit',
             func=InvUnitFunc,--邀请，周围玩家
             tooltipOnButton=true,
-            tooltipTitle=INVITE..e.Icon.left..SPELL_RANGE_AREA:gsub(SPELL_TARGET_CENTER_CASTER,''),
+            tooltipTitle= e.onlyChinse and '邀请周围玩家' or (INVITE..e.Icon.left..SPELL_RANGE_AREA:gsub(SPELL_TARGET_CENTER_CASTER,'')),
             hasArrow=true,
             colorCode=not getLeader() and '|cff606060',
         }
         UIDropDownMenu_AddButton(info, level)
         UIDropDownMenu_AddSeparator(level)
-        info = {--接受邀请
-            text= CALENDAR_ACCEPT_INVITATION,
+        info = {
+            text= e.onlyChinse and '接受邀请' or CALENDAR_ACCEPT_INVITATION,
             notCheckable=true,
             menuList='ACEINVITE',
             hasArrow=true,
         }
         UIDropDownMenu_AddButton(info, level)
         UIDropDownMenu_AddSeparator(level)
-        info = {--拒绝邀请
-            text=GUILD_INVITE_DECLINE,
+        info = {
+            text= e.onlyChinse and '拒绝邀请' or GUILD_INVITE_DECLINE,
             notCheckable=true,
             menuList='NoInv',
             hasArrow=true,
             tooltipOnButton=true,
-            tooltipTitle=DECLINE..' '..ITEM_SPELL_CHARGES:format(Save.InvNoFriendNum)
+            tooltipTitle= e.onlyChinse and ('拒绝 '..Save.InvNoFriendNum..' 次') or (DECLINE..' '..format(ITEM_SPELL_CHARGES, Save.InvNoFriendNum))
         }
         UIDropDownMenu_AddButton(info, level)
     end

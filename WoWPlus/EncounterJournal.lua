@@ -1,5 +1,5 @@
 local id, e = ...
-local addName= e.onlyChinse and '冒险指南' or ADVENTURE_JOURNAL
+local addName= ADVENTURE_JOURNAL
 local Save={wowBossKill={}}
 local panel=CreateFrame("Frame")
 
@@ -248,11 +248,11 @@ local function setWorldbossText()--显示世界BOSS击杀数据Text
             e.tips:SetOwner(self2, "ANCHOR_LEFT");
             e.tips:ClearLines();
             e.tips:AddDoubleLine(id, addName)
-            e.tips:AddDoubleLine(ADVENTURE_JOURNAL, CHANNEL_CATEGORY_WORLD..'BOSS/'..GARRISON_MISSION_RARE)
+            e.tips:AddDoubleLine(e.onlyChinse and '冒险指南' or ADVENTURE_JOURNAL, e.onlyChinse and '世界BOSS和稀有怪' or (CHANNEL_CATEGORY_WORLD..'BOSS/'..GARRISON_MISSION_RARE))
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(e.GetShowHide(not Save.hideWorldBossText), e.Icon.left)
-            e.tips:AddDoubleLine(NPE_MOVE, e.Icon.right)
-            e.tips:AddDoubleLine(FONT_SIZE, (Save.EncounterJournalFontSize or 12)..e.Icon.mid)
+            e.tips:AddDoubleLine(e.onlyChinse and '移动' or  NPE_MOVE, e.Icon.right)
+            e.tips:AddDoubleLine(e.onlyChinse and '大小' or FONT_SIZE, (Save.EncounterJournalFontSize or 12)..e.Icon.mid)
             e.tips:Show()
         end)
         panel.WorldBoss:SetScript('OnClick', function(self2, d)
@@ -333,11 +333,11 @@ local function setInstanceBossText()--显示副本击杀数据
             e.tips:SetOwner(self2, "ANCHOR_LEFT");
             e.tips:ClearLines();
             e.tips:AddDoubleLine(id, addName)
-            e.tips:AddDoubleLine(ADVENTURE_JOURNAL, INSTANCE)
+            e.tips:AddDoubleLine(e.onlyChinse and '冒险指南' or ADVENTURE_JOURNAL, e.onlyChinse and '副本' or INSTANCE)
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(e.GetShowHide(not Save.hideInstanceBossText), e.Icon.left)
-            e.tips:AddDoubleLine(NPE_MOVE, e.Icon.right)
-            e.tips:AddDoubleLine(FONT_SIZE, (Save.EncounterJournalFontSize or 12)..e.Icon.mid)
+            e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
+            e.tips:AddDoubleLine(e.onlyChinse and '大小' or FONT_SIZE, (Save.EncounterJournalFontSize or 12)..e.Icon.mid)
             e.tips:Show()
         end)
         panel.instanceBoss:SetScript('OnMouseDown', function(self2, d)
@@ -427,8 +427,8 @@ local function Init()--冒险指南界面
         e.tips:SetOwner(self2, "ANCHOR_LEFT");
         e.tips:ClearLines();
         e.tips:AddDoubleLine(id, addName)
-        e.tips:AddDoubleLine(ADVENTURE_JOURNAL, e.GetEnabeleDisable(not Save.hideEncounterJournal))
-        e.tips:AddDoubleLine(QUEST_REWARDS, e.GetShowHide(not Save.hideEncounterJournal_All_Info_Text))
+        e.tips:AddDoubleLine(e.onlyChinse and '冒险指南' or ADVENTURE_JOURNAL, e.GetEnabeleDisable(not Save.hideEncounterJournal))
+        e.tips:AddDoubleLine(e.onlyChinse and '奖励' or QUEST_REWARDS, e.GetShowHide(not Save.hideEncounterJournal_All_Info_Text))
         e.tips:Show()
     end)
     EncounterJournal.btn:SetScript('OnMouseDown', function(self2, d)
@@ -458,7 +458,7 @@ local function Init()--冒险指南界面
     EncounterJournal.instance:SetScript('OnEnter',function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT");
         e.tips:ClearLines();
-        e.tips:AddDoubleLine(INSTANCE..e.Icon.left..e.GetShowHide(Save.showInstanceBoss), DUNGEON_ENCOUNTER_DEFEATED)
+        e.tips:AddDoubleLine((e.onlyChinse and '副本' or INSTANCE)..e.Icon.left..e.GetShowHide(Save.showInstanceBoss), e.onlyChinse and '已击杀' or DUNGEON_ENCOUNTER_DEFEATED)
         e.tips:AddLine(' ')
         for guid, info in pairs(e.WoWSave) do
             local find
@@ -748,7 +748,7 @@ local function Init()--冒险指南界面
                             e.tips:AddDoubleLine('dungeonEncounterID: '..dungeonEncounterID, (journalInstanceID and journalInstanceID>0) and 'journalInstanceID: '..journalInstanceID or ' ' )
                             local numKill=Save.wowBossKill[dungeonEncounterID]
                             if numKill then
-                                e.tips:AddDoubleLine(KILLS, '|cnGREEN_FONT_COLOR:'..numKill..' |r'..VOICEMACRO_LABEL_CHARGE1)
+                                e.tips:AddDoubleLine(e.onlyChinse and '击杀' or KILLS, '|cnGREEN_FONT_COLOR:'..numKill..' |r'..(e.onlyChinse and '次' or VOICEMACRO_LABEL_CHARGE1))
                             end
                         end
 

@@ -85,14 +85,6 @@ local function setName(self)--设置名称
     end
 end
 
-local function setLuce(self)--设置高亮
-    if self.luce then
-        self.border:SetAtlas('bag-border')
-    else
-        self.border:SetAtlas('bag-reagent-border')
-    end
-end
-
 --#####
 --主菜单
 --#####
@@ -100,8 +92,8 @@ local function InitMenu(self, level, type)--主菜单
     if not type then
         return
     end
-    local info={--显示名称
-        text=PROFESSIONS_FLYOUT_SHOW_NAME,
+    local info={
+        text= e.onlyChinse and '显示名称' or PROFESSIONS_FLYOUT_SHOW_NAME,
         checked= not Save.notShowName,
         func=function()
             if not Save.notShowName then
@@ -115,7 +107,6 @@ local function InitMenu(self, level, type)--主菜单
         end,
     }
     UIDropDownMenu_AddButton(info, level)
-
 end
 
 --####
@@ -184,7 +175,7 @@ local function Init()
                     e.tips:AddLine(' ')
                     e.tips:AddDoubleLine((icon and '|T'..icon..':0|t' or '').. name..e.GetSpellCooldown(tab.spell2), e.Icon.right)
                 end
-                e.tips:AddDoubleLine(PROFESSIONS_FLYOUT_SHOW_NAME, e.Icon.mid)
+                e.tips:AddDoubleLine(e.onlyChinse and '显示名称' or PROFESSIONS_FLYOUT_SHOW_NAME, e.Icon.mid)
                 e.tips:Show()
             end)
            button:SetScript('OnLeave', function() e.tips:Hide() end)
@@ -192,8 +183,6 @@ local function Init()
            button:SetScript('OnMouseWheel', function(self, d)
                 ToggleDropDownMenu(1,nil, panel.Menu, self, 0,0, {button=self})
            end)
-
-           
         end
     end
 end

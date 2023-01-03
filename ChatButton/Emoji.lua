@@ -92,7 +92,7 @@ local function InitMenu(self, level, type)
     local info
     if type then
         info={
-            text= MENU_EDIT_SELECT_ALL or ALL,--全选
+            text= e.onlyChinse and '全选' or  MENU_EDIT_SELECT_ALL or ALL,--全选
             notCheckable=true,
             func=function()
                 Save.Channels={}
@@ -101,7 +101,7 @@ local function InitMenu(self, level, type)
         }
         UIDropDownMenu_AddButton(info, level)
         info={
-            text= CLEAR or KEY_NUMLOCK_MAC,--全清
+            text= e.onlyChinse and '清除' or  CLEAR or KEY_NUMLOCK_MAC,--全清
             notCheckable=true,
             func=function()
                 for _, channel in pairs(Channels) do

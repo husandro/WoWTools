@@ -70,7 +70,7 @@ local function setAtt(init)--设置属性
                 panel.texture:SetTexture(icon)
             end
             panel:SetAttribute('item1', C_Item.GetItemNameByID(itemID) or itemID)
-            
+
             panel.itemID=itemID
         end
     else
@@ -261,7 +261,7 @@ local function showTips(self)--显示提示
             end
         end
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinse and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         e.tips:Show()
         if e.tips.textRight then
             local text=GetBindLocation()--显示,绑定位置
@@ -313,7 +313,7 @@ local function Init()
     panel:SetScript('OnMouseWheel',function(self,d)
         setAtt()--设置属性
     end)
-    
+
     getToy()--生成, 有效表格
     setAtt(true)--设置属性
     setCooldown()--主图标冷却
@@ -363,7 +363,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if IsResting()  then
             setBagHearthstone()--设置Shift, Ctrl, Alt 提示
         end
-    
+
     elseif event=='HEARTHSTONE_BOUND' then
         set_BindLocation()--显示, 炉石, 绑定位置
 

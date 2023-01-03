@@ -173,11 +173,7 @@ local function Init()
     Frame.sel:SetSize(18,18)
     Frame.sel:SetAlpha(0.5)
     Frame.sel:SetScript('OnClick',function (self2)
-        if Save.disableditems then
-            Save.disableditems=nil
-        else
-            Save.disableditems=true
-        end
+        Save.disableditems= not Save.disableditems and true or nil
         print(id, addName,e.GetEnabeleDisable(not Save.disableditems))
         self2:SetNormalAtlas(Save.disableditems and e.Icon.disabled or e.Icon.icon)
         Set()
