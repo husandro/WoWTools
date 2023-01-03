@@ -1,6 +1,6 @@
 local id, e = ...
 local addName= 'panelSettings'
-local Save={OnlyChinse= e.Player.husandro}
+local Save={onlyChinse=e.Player.husandro}
 local panel = CreateFrame("Frame")--Panel
 
 panel.name = id--'|cffff00ffWoW|r|cff00ff00Tools|r'
@@ -67,11 +67,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event=='ADDON_LOADED' and arg1==id then
 
         Save= WoWToolsSave and WoWToolsSave[addName] or Save
+        
+        
         e.onlyChinse= Save.onlyChinse
 
         local check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--仅中文
         check:SetChecked(Save.onlyChinse)
-        check.text:SetText('onlyChinse')
+        check.text:SetText('Chinse')
         check:SetPoint('TOPLEFT', restButton, 'TOPRIGHT')
         check:SetScript('OnMouseDown',function()
             e.onlyChinse= not e.onlyChinse and true or nil

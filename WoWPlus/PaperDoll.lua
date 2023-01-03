@@ -504,7 +504,7 @@ local function add_Equipment_Frame(equipmentSetsDirty)--添加装备管理框
 
     if not panel.equipmentFrame then
         panel.equipmentFrame=e.Cbtn(UIParent)--添加移动按钮
-        panel.equipmentFrame:SetSize(12, 12)
+        panel.equipmentFrame:SetSize(14, 14)
         panel.equipmentFrame:SetNormalAtlas(e.Icon.icon)
         if Save.Equipment then
             panel.equipmentFrame:SetPoint(Save.Equipment[1], UIParent, Save.Equipment[3], Save.Equipment[4], Save.Equipment[5])

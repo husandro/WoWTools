@@ -194,6 +194,7 @@ e.Player={
     level=UnitLevel('player'),
     husandro= select(2, BNGetInfo()) == '古月剑龙#5972' or select(2, BNGetInfo())=='SandroChina#2690',
 }
+
 e.Player.servers={}--多服务器
 for k, v in pairs(GetAutoCompleteRealms()) do
     e.Player.servers[v]=k

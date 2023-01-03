@@ -4,6 +4,8 @@ local Faction =  UnitFactionGroup('player')=='Horde' and 0 or UnitFactionGroup('
 local ClassID = select(2, UnitClassBase('player'))
 local ShiJI= Faction==0 and IsSpellKnown(179244) and 179244 or Faction==1 and IsSpellKnown(179245) and 179245--[召唤司机]
 
+
+
 local Save={
     Mounts={
         [ITEMS]={[174464]=true, [168035]=true},--幽魂缰绳 噬渊鼠缰绳
@@ -44,9 +46,9 @@ local Save={
             [127271]=true,--猩红水黾
          },
     },
-    XD=true
+    XD= true,
+    KEY= e.Player.husandro and 'BUTTON5', --为我自定义, 按键
 }
-
 local XD
 
 local panel=e.Cbtn2('WoWToolsMountButton')
@@ -1094,13 +1096,6 @@ panel:RegisterEvent('PLAYER_STARTED_MOVING')
 panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" and arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
-
-            --###############
-            --为我自定义, 战网
-            --###############
-            if e.Player.husandro then
-                Save.KEY='BUTTON5'--按键
-            end
 
             local check=e.CPanel('Tools', not Save.disabled, true)
             check:SetScript('OnClick', function()

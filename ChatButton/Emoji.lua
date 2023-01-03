@@ -1,6 +1,6 @@
 local id, e = ...
 local addName= 'Emoji'
-local Save={Channels={}}--disabled= not e.Player.zh
+local Save={Channels={}, disabled= not e.Player.zh}
 
 local panel=e.Cbtn2('WoWToolsChatButtonEmoji', WoWToolsChatButtonFrame, true, false)
 
