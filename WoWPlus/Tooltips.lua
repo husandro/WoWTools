@@ -280,7 +280,7 @@ local function setItem(self, ItemLink)
     local spellName, spellID = GetItemSpell(ItemLink)--物品法术
     if spellName and spellID then
         local spellTexture=GetSpellTexture(spellID)
-        self:AddDoubleLine((itemName~=spellName and hex..'['..spellName..']|r'..SPELLS or SPELLS)..': '..spellID, spellTexture and spellTexture~=itemTexture  and '|T'..spellTexture..':0|t'..spellTexture or ' ')
+        self:AddDoubleLine((itemName~=spellName and hex..'['..spellName..']|r' or '')..(e.onlyChinse and '法术' or SPELLS)..': '..spellID, spellTexture and spellTexture~=itemTexture  and '|T'..spellTexture..':0|t'..spellTexture or ' ')
     end
     
     local bag= GetItemCount(ItemLink)--物品数量
@@ -326,7 +326,7 @@ local function setItem(self, ItemLink)
             end
         end
         if numPlayer>1 then
-            self:AddDoubleLine(numPlayer..CHARACTER..e.Icon.wow2..e.MK(bagAll+bankAll, 3), e.Icon.bag2..e.MK(bagAll,3)..(bankAll>0 and ' '..e.Icon.bank2..e.MK(bankAll, 3) or ''))
+            self:AddDoubleLine(numPlayer..(e.onlyChinse and '角色' or CHARACTER)..e.Icon.wow2..e.MK(bagAll+bankAll, 3), e.Icon.bag2..e.MK(bagAll,3)..(bankAll>0 and ' '..e.Icon.bank2..e.MK(bankAll, 3) or ''))
         end
     end
 
@@ -343,7 +343,7 @@ local function setSpell(self, spellID)--法术
     if not spellID then
         return
     end
-    self:AddDoubleLine(SPELLS..' '..spellID, spellTexture and '|T'..spellTexture..':0|t'..spellTexture)
+    self:AddDoubleLine((e.onlyChinse and '法术' or SPELLS)..' '..spellID, spellTexture and '|T'..spellTexture..':0|t'..spellTexture)
     local mountID = C_MountJournal.GetMountFromSpell(spellID)--坐骑
     if mountID then
         setMount(self, mountID)
@@ -353,13 +353,13 @@ end
 local function setCurrency(self, currencyID)--货币
     local info2 = currencyID and C_CurrencyInfo.GetCurrencyInfo(currencyID)
     if info2 then
-        self:AddDoubleLine(TOKENS..' '..currencyID, info2.iconFileID and '|T'..info2.iconFileID..':0|t'..info2.iconFileID)
+        self:AddDoubleLine((e.onlyChinse and '货币' or TOKENS)..' '..currencyID, info2.iconFileID and '|T'..info2.iconFileID..':0|t'..info2.iconFileID)
     end
     local factionID = C_CurrencyInfo.GetFactionGrantedByCurrency(currencyID)--派系声望
     if factionID and factionID>0 then
         local name= GetFactionInfoByID(factionID)
         if name then
-            self:AddDoubleLine(REPUTATION, name)
+            self:AddDoubleLine(e.onlyChinse and '声望' or REPUTATION, name)
         end
     end
 
@@ -375,23 +375,23 @@ local function setCurrency(self, currencyID)--货币
         end
     end
     if numPlayer>1 then
-        self:AddDoubleLine(e.Icon.wow2..numPlayer..CHARACTER, e.MK(all,3))
+        self:AddDoubleLine(e.Icon.wow2..numPlayer..(e.onlyChinse and '角色' or CHARACTER), e.MK(all,3))
     end
     self:Show()
 end
 
 local function setAchievement(self, achievementID)--成就
     local _, name, points, completed, month, day, year, description, flags, icon, rewardText, isGuild, wasEarnedByMe, earnedBy, isStatistic = GetAchievementInfo(achievementID)
-    self.textLeft:SetText(points..RESAMPLE_QUALITY_POINT)--点数
-    self.text2Left:SetText(completed and '|cnGREEN_FONT_COLOR:'..	CRITERIA_COMPLETED..'|r' or '|cnRED_FONT_COLOR:'..	ACHIEVEMENTFRAME_FILTER_INCOMPLETE..'|r')--否是完成
+    self.textLeft:SetText(points..(e.onlyChinse and '点' or RESAMPLE_QUALITY_POINT))--点数
+    self.text2Left:SetText(completed and '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '已完成' or CRITERIA_COMPLETED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinse and '未完成' or ACHIEVEMENTFRAME_FILTER_INCOMPLETE)..'|r')--否是完成
     self.textRight:SetText(isGuild and (e.onlyChinse and '公会' or GUILD) or flags==131072 and e.Icon.wow2..(e.onlyChinse and '战网' or COMMUNITY_COMMAND_BATTLENET)  or '')
 
-    self:AddDoubleLine(ACHIEVEMENTS..' '..achievementID, icon and '|T'..icon..':0|t'..icon)
+    self:AddDoubleLine((e.onlyChinse and '成就' or ACHIEVEMENTS)..' '..achievementID, icon and '|T'..icon..':0|t'..icon)
 end
 
 local function setQuest(self, questID)
     self:AddDoubleLine(e.GetExpansionText(nil, questID))--任务版本
-    self:AddDoubleLine(QUESTS_LABEL, questID)
+    self:AddDoubleLine(e.onlyChinse and '任务' or QUESTS_LABEL, questID)
 end
 
 --####
@@ -412,7 +412,7 @@ local function setBuff(type, self, ...)--Buff
             self.Portrait:SetShown(true)
         end
         local text= source=='player' and (e.onlyChinse and '我' or COMBATLOG_FILTER_STRING_ME) or source=='pet' and PET or UnitIsPlayer(source) and e.GetPlayerInfo(source, nil, true) or _G[source] or source
-        self:AddDoubleLine('|c'..(hex or 'ffffff')..(e.onlyChinse and '来原: '..text or RUNEFORGE_LEGENDARY_POWER_SOURCE_FORMAT:format(text)..'|r'))
+        self:AddDoubleLine('|c'..(hex or 'ffffff')..(e.onlyChinse and '来原: '..text or format(e.onlyChinse and '"来源：%s' or RUNEFORGE_LEGENDARY_POWER_SOURCE_FORMAT, text)..'|r'))
         self:Show()
     end
 end
@@ -420,7 +420,7 @@ end
 local function set_Aura(self, auraID)--Aura
     local _, _, icon, _, _, _, spellID = GetSpellInfo(auraID)
    if icon and spellID then
-        self:AddDoubleLine(	AURAS..' '..spellID, '|T'..icon..':0|t'..icon)
+        self:AddDoubleLine((e.onlyChinse and '光环' or AURAS)..' '..spellID, '|T'..icon..':0|t'..icon)
         local mountID = C_MountJournal.GetMountFromSpell(spellID)
         if mountID then
             setMount(self, mountID)
@@ -436,7 +436,7 @@ local setFriendshipFaction=function(self, friendshipID)--friend声望
     local repInfo = C_GossipInfo.GetFriendshipReputation(friendshipID);
 	if ( repInfo and repInfo.friendshipFactionID and repInfo.friendshipFactionID > 0) then
         local icon = (repInfo.texture and repInfo.texture>0) and repInfo.texture
-        self:AddDoubleLine(INDIVIDUALS..REPUTATION..' '..friendshipID, icon and '|T'..icon..':0|t'..icon)
+        self:AddDoubleLine((e.onlyChinse and '个人声望' or INDIVIDUALS..REPUTATION)..' '..friendshipID, icon and '|T'..icon..':0|t'..icon)
         self:Show()
     end
 end
@@ -448,7 +448,7 @@ local function setMajorFactionRenown(self, majorFactionID)--名望
             self.Portrait:SetShown(true)
             self.Portrait:SetAtlas('MajorFactions_Icons_'..info.textureKit..'512')
         end
-        self:AddDoubleLine(RENOWN_LEVEL_LABEL..' '..majorFactionID, MAJOR_FACTION_RENOWN_LEVEL_TOAST:format(info.renownLevel)..' '..('%i%%'):format(info.renownReputationEarned/info.renownLevelThreshold*100))
+        self:AddDoubleLine((e.onlyChinse and '名望' or RENOWN_LEVEL_LABEL)..' '..majorFactionID, format(e.onlyChinse and '名望等级 %d' or MAJOR_FACTION_RENOWN_LEVEL_TOAST, info.renownLevel)..' '..('%i%%'):format(info.renownReputationEarned/info.renownLevelThreshold*100))
         self:Show()
     end
 end
@@ -464,7 +464,7 @@ local function set_Unit_Health_Bar(self, unit)
     local text
     if value and max then
         if value <= 0 then
-            text = '|A:poi-soulspiritghost:0:0|a'..'|cnRED_FONT_COLOR:'.. DEAD..'|r'
+            text = '|A:poi-soulspiritghost:0:0|a'..'|cnRED_FONT_COLOR:'..(e.onlyChinse and '死亡' or DEAD)..'|r'
         else
             local hp = value / max * 100;
             text = ('%i%%'):format(hp)..'  ';
@@ -562,14 +562,14 @@ local function setUnitInfo(self, unit)--设置单位提示信息
 
         local reason=UnitPhaseReason(unit)
         if reason then
-            if reason==0 then--不同了阶段
-                self.textLeft:SetText(ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1','')))
-            elseif reason==1 then--不在同位面
-                self.textLeft:SetText(ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', e.L['LAYER']))
-            elseif reason==2 then--战争模式
-                self.textLeft:SetText(isWarModeDesired and ERR_PVP_WARMODE_TOGGLE_OFF or ERR_PVP_WARMODE_TOGGLE_ON)
+            if reason==0 then
+                self.textLeft:SetText(e.onlyChinse and '不同了阶段' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1','')))
+            elseif reason==1 then
+                self.textLeft:SetText(e.onlyChinse and '不在同位面' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', e.L['LAYER']))
+            elseif reason==2 then--战争模
+                self.textLeft:SetText(isWarModeDesired and (e.onlyChinse and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF) or (e.onlyChinse and '开启战争模式' or ERR_PVP_WARMODE_TOGGLE_ON))
             elseif reason==3 then
-                self.textLeft:SetText(PLAYER_DIFFICULTY_TIMEWALKER)
+                self.textLeft:SetText(e.onlyChinse and '时空漫游' or PLAYER_DIFFICULTY_TIMEWALKER)
             end
         end
 
@@ -685,18 +685,18 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             self.Portrait:SetShown(true)
 
         elseif UnitIsBossMob(unit) then--世界BOSS
-            self.textLeft:SetText(hex..BOSS..'|r')
+            self.textLeft:SetText(hex..(e.onlyChinse and '首领' or BOSS)..'|r')
             self.Portrait:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare')
             self.Portrait:SetShown(true)
         else
             local classification = UnitClassification(unit);--TargetFrame.lua
             if classification == "rareelite" then--稀有, 精英
-                self.textLeft:SetText(hex..GARRISON_MISSION_RARE..'|r')
+                self.textLeft:SetText(hex..(e.onlyChinse and '稀有' or GARRISON_MISSION_RARE)..'|r')
                 self.Portrait:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare')
                 self.Portrait:SetShown(true)
 
             elseif classification == "rare" then--稀有
-                self.textLeft:SetText(hex..GARRISON_MISSION_RARE..'|r')
+                self.textLeft:SetText(hex..(e.onlyChinse and '稀有' or GARRISON_MISSION_RARE)..'|r')
                 self.Portrait:SetAtlas('UUnitFrame-Target-PortraitOn-Boss-Rare-Star')
                 self.Portrait:SetShown(true)
             else
@@ -763,7 +763,7 @@ local function setCVar(reset, tips)
                 local value = C_CVar.GetCVar(name)
                 if defaultValue~=value then
                     C_CVar.SetCVar(name, defaultValue)
-                    print(id, addName, '|cnGREEN_FONT_COLOR:'..RESET_TO_DEFAULT..'|r', name, defaultValue, info.msg)
+                    print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '恢复默认设置' or RESET_TO_DEFAULT)..'|r', name, defaultValue, info.msg)
                 end
             elseif Save.setCVar then
                 local value = C_CVar.GetCVar(name)
@@ -810,11 +810,11 @@ local function setBattlePet(self, speciesID, level, breedQuality, maxHealth, pow
     if obtainable then
         local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesID)
         if numCollected==0 then
-            BattlePetTooltipTemplate_AddTextLine(self, ITEM_PET_KNOWN:format(0, limit), 1,0,0)
+            BattlePetTooltipTemplate_AddTextLine(self, format(e.onlyChinse and '已收集（%d/%d）' or ITEM_PET_KNOWN, 0, limit), 1,0,0)
         end
     end
-    BattlePetTooltipTemplate_AddTextLine(self, PET..' '..speciesID..'                  |T'..speciesIcon..':0|t'..speciesIcon)
-    BattlePetTooltipTemplate_AddTextLine(self, 'NPC '..companionID..'                  '..MODEL..' '..creatureDisplayID)
+    BattlePetTooltipTemplate_AddTextLine(self, (e.onlyChinse and '宠物' or PET)..' '..speciesID..'                  |T'..speciesIcon..':0|t'..speciesIcon)
+    BattlePetTooltipTemplate_AddTextLine(self, 'NPC '..companionID..'                  '..(e.onlyChinse and '' or MODEL)..' '..creatureDisplayID)
 
     local tab = C_PetJournal.GetPetAbilityListTable(speciesID)--技能图标
     table.sort(tab, function(a,b) return a.level< b.level end)
