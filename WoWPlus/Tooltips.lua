@@ -814,7 +814,7 @@ local function setBattlePet(self, speciesID, level, breedQuality, maxHealth, pow
         end
     end
     BattlePetTooltipTemplate_AddTextLine(self, (e.onlyChinse and '宠物' or PET)..' '..speciesID..'                  |T'..speciesIcon..':0|t'..speciesIcon)
-    BattlePetTooltipTemplate_AddTextLine(self, 'NPC '..companionID..'                  '..(e.onlyChinse and '' or MODEL)..' '..creatureDisplayID)
+    BattlePetTooltipTemplate_AddTextLine(self, 'NPC '..companionID..'                  '..(e.onlyChinse and '模型' or MODEL)..' '..creatureDisplayID)
 
     local tab = C_PetJournal.GetPetAbilityListTable(speciesID)--技能图标
     table.sort(tab, function(a,b) return a.level< b.level end)
@@ -1021,11 +1021,11 @@ local function Init()
                     e.tips:AddLine(' ')
                 end
 
-                e.tips:AddDoubleLine(REPUTATION..' '..self.factionID or factionID, completedParagon)
+                e.tips:AddDoubleLine((e.onlyChinse and '声望' or REPUTATION)..' '..self.factionID or factionID, completedParagon)
                 e.tips:Show();
             end
         else
-            e.tips:AddDoubleLine(REPUTATION..' '..(self.factionID or factionID), completedParagon)
+            e.tips:AddDoubleLine((e.onlyChinse and '声望' or REPUTATION)..' '..(self.factionID or factionID), completedParagon)
             e.tips:Show()
         end
     end)
