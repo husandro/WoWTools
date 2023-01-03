@@ -573,7 +573,7 @@ local function setMarkersFrame()--设置标记, 框架
                 e.tips:SetOwner(self, "ANCHOR_RIGHT")
                 e.tips:ClearLines()
                 if index==0 then
-                    e.tips:AddLine(e.Icon.O2..CLEAR_ALL..e.Icon.left)
+                    e.tips:AddLine(e.Icon.O2..(e.onlyChinse and '清除全部' or CLEAR_ALL)..e.Icon.left)
                 else
                     e.tips:AddLine(getTexture(index)..(e.onlyChinse and '设置' or SETTINGS)..e.Icon.left, color[index].r, color[index].g, color[index].b)
                     e.tips:AddLine(getTexture(index)..(e.onlyChinse and '清除' or CLEAR or KEY_NUMLOCK_MAC)..e.Icon.right, color[index].r, color[index].g, color[index].b)
