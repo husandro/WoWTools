@@ -748,7 +748,7 @@ local function InitMenu(self, level, type)--主菜单
 
         UIDropDownMenu_AddSeparator()
         info={
-            text=e.onlyChinse and '队伍标记工具' or  PROFESSION_TOOL_TOOLTIP_LINE:format(BINDING_HEADER_RAID_TARGET),
+            text=e.onlyChinse and '队伍标记工具' or format(BINDING_HEADER_RAID_TARGET, PROFESSION_TOOL_TOOLTIP_LINE),
             checked=Save.markersFrame,
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinse and '世界标记' or SLASH_WORLD_MARKER3:gsub('/',''),

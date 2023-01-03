@@ -19,12 +19,12 @@ local Channels={
     "CHAT_MSG_GUILD",-- 公会
     "CHAT_MSG_AFK", -- AFK玩家自动回复
     "CHAT_MSG_DND", -- 切勿打扰自动回复
-    "CHAT_MSG_INSTANCE_CHAT", 
+    "CHAT_MSG_INSTANCE_CHAT",
     "CHAT_MSG_INSTANCE_CHAT_LEADER",
     "CHAT_MSG_WHISPER",
     "CHAT_MSG_WHISPER_INFORM",
     "CHAT_MSG_BN_WHISPER",
-    "CHAT_MSG_BN_WHISPER_INFORM", 
+    "CHAT_MSG_BN_WHISPER_INFORM",
     "CHAT_MSG_COMMUNITIES_CHANNEL", --社区聊天内容        
 }
 
@@ -98,7 +98,7 @@ local function InitMenu(self, level, type)
             notCheckable=true,
             func=function()
                 Save.Channels={}
-                print(id, addName, CHAT_CHANNELS, REQUIRES_RELOAD)
+                print(id, addName, e.onlyChinse and '聊天频道' or CHAT_CHANNELS,  e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end
         }
         UIDropDownMenu_AddButton(info, level)
@@ -109,7 +109,7 @@ local function InitMenu(self, level, type)
                 for _, channel in pairs(Channels) do
                     Save.Channels[channel]=true
                 end
-                print(id, addName, CHAT_CHANNELS, REQUIRES_RELOAD)
+                print(id, addName, e.onlyChinse and '聊天频道' or CHAT_CHANNELS,  e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end
         }
         UIDropDownMenu_AddButton(info, level)
@@ -119,57 +119,57 @@ local function InitMenu(self, level, type)
                 text=_G[channel] or channel,
                 checked=not Save.Channels[channel],
                 tooltipOnButton=true,
-                tooltipTitle=REQUIRES_RELOAD,
+                tooltipTitle= e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD,
                 tooltipText=channel,
                 func=function()
                     Save.Channels[channel]= not Save.Channels[channel] and true or nil
-                    print(id, addName, CHAT_CHANNELS, REQUIRES_RELOAD)
+                    print(id, addName, e.onlyChinse and '聊天频道' or CHAT_CHANNELS,  e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
                 end
             }
             UIDropDownMenu_AddButton(info, level)
         end
     else
         info={
-            text=ENTERING_COMBAT,--进入战斗时, 隐藏
+            text= e.onlyChinse and '进入战斗' or ENTERING_COMBAT,--进入战斗时, 隐藏
             checked=not Save.notHideCombat,
             func=function() Save.notHideCombat = not Save.notHideCombat and true or nil setframeEvent() end,
             tooltipOnButton=true,
-            tooltipTitle=HIDE,
+            tooltipTitle= e.onlyChinse and '隐藏' or HIDE,
         }
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text=NPE_MOVE,--移动时, 隐藏
+            text= e.onlyChinse and '移动' or NPE_MOVE,--移动时, 隐藏
             checked=not Save.notHideMoving,
             func=function() Save.notHideMoving = not Save.notHideMoving and true or nil setframeEvent() end,
             tooltipOnButton=true,
-            tooltipTitle=HIDE,
+            tooltipTitle= e.onlyChinse and '隐藏' or HIDE,
         }
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text=ENTER_LFG..EMBLEM_SYMBOL,--过移图标时,显示
+            text= e.onlyChinse and '过移图标时' or ENTER_LFG..EMBLEM_SYMBOL,--过移图标时,显示
             checked=Save.showEnter,
             func=function() Save.showEnter = not Save.showEnter and true or nil end,
             tooltipOnButton=true,
-            tooltipTitle=SHOW,
+            tooltipTitle= e.onlyChinse and '显示' or SHOW,
         }
         UIDropDownMenu_AddButton(info, level)
-        
+
         UIDropDownMenu_AddSeparator(level)
-        info={--聊天频道
-            text=CHAT_CHANNELS,
+        info={
+            text= e.onlyChinse and '聊天频道' or CHAT_CHANNELS,
             notCheckable=true,
             menuList='Channels',
             hasArrow=true,
         }
         UIDropDownMenu_AddButton(info, level)
         info={
-            text=RESET,
+            text= e.onlyChinse and '重置' or RESET,
             notCheckable=true,
             func=function() Save=nil C_UI.Reload() end,
             tooltipOnButton=true,
-            tooltipTitle=RELOADUI,
+            tooltipTitle= e.onlyChinse and '重新加载UI' or RELOADUI,
             colorCode='|cffff0000'
         }
         UIDropDownMenu_AddButton(info, level)
@@ -251,11 +251,11 @@ local function Init()
         for text, icon in pairs(Tab) do
             str= str:gsub(text, icon)
         end
-        if str ~=msg then 
+        if str ~=msg then
             return false, str, ...
-        end    
+        end
     end
-    
+
     for _, channel in pairs(Channels) do
         if not Save.Channels[channel] then
             ChatFrame_AddMessageEventFilter(channel, ChatEmoteFilter)
@@ -267,17 +267,12 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
-        if WoWToolsChatButtonFrame.disabled or Save.disabled then--禁用Chat Button
-            self:SetShown(false)
-            panel:UnregisterAllEvents()
-        else
-            Save= WoWToolsSave and WoWToolsSave[addName] or Save
-            Save.Channels= Save.Channels or {}
+        Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
+        if not WoWToolsChatButtonFrame.disabled then
             local sel2=CreateFrame("CheckButton", nil, WoWToolsChatButtonFrame.sel, "InterfaceOptionsCheckButtonTemplate")
             sel2.Text:SetText('emoji')
             sel2:SetPoint('LEFT', WoWToolsChatButtonFrame.sel.Text, 'RIGHT')
@@ -286,10 +281,19 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.GetEnabeleDisable(not WoWToolsChatButtonFrame.disabled), REQUIRES_RELOAD)
             end)
+        end
+
+        if WoWToolsChatButtonFrame.disabled or Save.disabled then--禁用Chat Button
+            self:SetShown(false)
+            panel:UnregisterAllEvents()
+
+        else
+            Save.Channels= Save.Channels or {}
             if not Save.disabled then
                 Init()
             end
         end
+        panel:RegisterEvent("PLAYER_LOGOUT")
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
