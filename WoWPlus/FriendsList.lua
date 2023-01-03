@@ -134,7 +134,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
             --添加控制面板        
             local sel=e.CPanel(addName, not Save.disabled)
-            sel:SetScript('OnClick', function()
+            sel:SetScript('OnMouseDown', function()
                 if Save.disabled then
                     Save.disabled=nil
                 else

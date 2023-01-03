@@ -74,7 +74,7 @@ local function setButtons()--设置按钮, 和位置
         if num>0 then
             if not panel.buttons[name] then
                 panel.buttons[name]=e.Cbtn(panel, true, nil, nil, nil, true,{80,22})
-                panel.buttons[name]:SetScript('OnClick',function(self, d)
+                panel.buttons[name]:SetScript('OnMouseDown',function(self, d)
                     if d=='LeftButton' then--加载
                         for i=1, GetNumAddOns() do
                             local name2= GetAddOnInfo(i);
@@ -157,7 +157,7 @@ StaticPopupDialogs[id..addName..'NEW']={
 local function Init()
     panel:SetPoint('TOPLEFT', AddonList ,'TOPRIGHT',-2, -20)
     panel:SetText(NEW)
-    panel:SetScript('OnClick',function()
+    panel:SetScript('OnMouseDown',function()
         local text= select(3, getAddList())--检查列表, 选取数量, 总数, 数量/总数
         StaticPopup_Show(id..addName..'NEW', text, nil)--新建按钮
     end)
@@ -214,7 +214,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
 
         --添加控制面板        
         local sel=e.CPanel(addName, not Save.disabled, true)
-        sel:SetScript('OnClick', function()
+        sel:SetScript('OnMouseDown', function()
             Save.disabled = not Save.disabled and true or nil
             print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需求重新加载' or REQUIRES_RELOAD)
         end)

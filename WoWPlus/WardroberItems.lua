@@ -172,7 +172,7 @@ local function Init()
     Frame.sel:SetPoint('BOTTOMRIGHT',-19, 30)
     Frame.sel:SetSize(18,18)
     Frame.sel:SetAlpha(0.5)
-    Frame.sel:SetScript('OnClick',function (self2)
+    Frame.sel:SetScript('OnMouseDown',function (self2)
         Save.disableditems= not Save.disableditems and true or nil
         print(id, addName,e.GetEnabeleDisable(not Save.disableditems))
         self2:SetNormalAtlas(Save.disableditems and e.Icon.disabled or e.Icon.icon)

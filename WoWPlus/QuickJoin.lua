@@ -13,7 +13,7 @@ local function set_SOCIAL_QUEUE_UPDATE()
         self.quickJoinText:SetFontObject('NumberFontNormal');
         self.quickJoinText:SetPoint('TOPRIGHT', -6, -3);
 
-        self:SetScript("OnClick", function(self2, b)
+        self:SetScript("OnMouseDown", function(self2, b)
                 if b=='RightButton' then
                     ToggleQuickJoinPanel()
                 elseif b=='LeftButton' then
@@ -71,7 +71,7 @@ local function Init()
                 if not frame.chat then--悄悄话
                     frame.chat=e.Cbtn(frame, nil, nil, nil, nil, true, {20,20})
                     frame.chat:SetPoint('RIGHT', (frame.Icon or frame), 'LEFT')
-                    frame.chat:SetScript('OnClick',function()
+                    frame.chat:SetScript('OnMouseDown',function()
                         local player=frame.Members[1].playerLink
                         if player then
                             local link, text = LinkUtil.SplitLink(player);
@@ -153,7 +153,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
             --添加控制面板        
             local sel=e.CPanel(addName, not Save.disabled)
-            sel:SetScript('OnClick', function()
+            sel:SetScript('OnMouseDown', function()
                 if Save.disabled then
                     Save.disabled=nil
                 else

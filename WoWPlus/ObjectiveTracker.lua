@@ -555,7 +555,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end)
             sel2:SetScript('OnLeave', function() e.tips:Hide() end)        
 
-            sel2:SetScript('OnClick', function ()
+            sel2:SetScript('OnMouseDown', function ()
                 Save.autoHide= not Save.autoHide and true or nil
                 print(id, addName, e.onlyChinse and '自动隐藏' or (AUTO_JOIN:gsub(JOIN, '')..HIDE), e.onlyChinse and '任务追踪栏' or QUEST_OBJECTIVES, e.GetEnabeleDisable(Save.autoHide))
             end)

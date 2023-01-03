@@ -155,7 +155,7 @@ local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     frame.ready:SetText(READY..e.Icon.select2)
     frame.ready:SetPoint('LEFT', frame.StartButton, 'RIGHT',2, 0)
     frame.ready:SetSize(100,24)
-    frame.ready:SetScript("OnClick",function()
+    frame.ready:SetScript("OnMouseDown",function()
             DoReadyCheck()
     end)
 
@@ -163,7 +163,7 @@ local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     frame.mark:SetText(e.Icon['TANK']..EVENTTRACE_MARKER..e.Icon['HEALER'])
     frame.mark:SetPoint('RIGHT', frame.StartButton, 'LEFT',-2, 0)
     frame.mark:SetSize(100,24)
-    frame.mark:SetScript("OnClick",function()
+    frame.mark:SetScript("OnMouseDown",function()
         local n=GetNumGroupMembers()
         for i=1,n  do
             local u='party'..i
@@ -186,7 +186,7 @@ local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     frame.clear:SetPoint('RIGHT', -15, -50)
     frame.clear:SetSize(70,24)
     frame.clear:SetText(CLEAR or KEY_NUMLOCK_MAC)
-    frame.clear:SetScript("OnClick",function()
+    frame.clear:SetScript("OnMouseDown",function()
             C_ChallengeMode.RemoveKeystone()
             frame:Reset()
             ItemButtonUtil.CloseFilteredBags(frame)
@@ -197,7 +197,7 @@ local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     frame.ins:SetPoint('BOTTOMRIGHT', frame.clear, 'TOPRIGHT', 0, 2)
     frame.ins:SetSize(70,24)
     frame.ins:SetText(COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
-    frame.ins:SetScript("OnClick",function()
+    frame.ins:SetScript("OnMouseDown",function()
             ItemButtonUtil.OpenAndFilterBags(frame)
             if ItemButtonUtil.GetItemContext() == nil then return end
             for bagID=0, NUM_BAG_FRAMES do--ContainerFrame.lua
@@ -834,7 +834,7 @@ local function Init()
         self.sel:SetPoint('TOPLEFT',60,-20)
         self.sel:SetChecked(Save.hide)
         self.sel.Text:SetText(HIDE)
-        self.sel:SetScript("OnClick", function ()
+        self.sel:SetScript("OnMouseDown", function ()
             Save.hide = not Save.hide and true or nil
             Kill(self)--副本PVP团本
             self:Update()
@@ -947,7 +947,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
             --添加控制面板        
             local sel=e.CPanel(addName, not Save.disabled)
-            sel:SetScript('OnClick', function()
+            sel:SetScript('OnMouseDown', function()
                 if Save.disabled then
                     Save.disabled=nil
                 else

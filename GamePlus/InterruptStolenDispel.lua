@@ -38,7 +38,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             --添加控制面板        
             local sel=e.CPanel(addName, not Save.disabled, true)
-            sel:SetScript('OnClick', function()
+            sel:SetScript('OnMouseDown', function()
                 if Save.disabled then
                     Save.disabled=nil
                     panel:UnregisterEvent('COMBAT_LOG_EVENT_UNFILTERED')

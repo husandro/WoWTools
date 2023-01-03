@@ -650,7 +650,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             --添加控制面板
             local check=e.CPanel(addName, not Save.disabled, true)
-            check:SetScript('OnClick', function()
+            check:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '重新加载UI' or RELOADUI)
             end)

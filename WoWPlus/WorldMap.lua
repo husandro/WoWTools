@@ -98,8 +98,8 @@ local function set_WorldQuestPinMixin_RefreshVisuals(self)----WorldQuestDataProv
     self.str:SetShown(str and true or false)
 
     if self.worldQuestType ~= Enum.QuestTagType.Normal then
-        local inProgress = self.dataProvider:IsMarkingActiveQuests() and C_QuestLog.IsOnQuest(self.questID);
-        local atlas= QuestUtil.GetWorldQuestAtlasInfo(self.worldQuestType, inProgress, tagInfo.tradeskillLineID, self.questID);
+        local inProgress = self.dataProvider:IsMarkingActiveQuests() and C_QuestLog.IsOnQuest(self.questID)
+        local atlas= QuestUtil.GetWorldQuestAtlasInfo(self.worldQuestType, inProgress, tagInfo.tradeskillLineID, self.questID)
         if not self.worldQuestTypeTips then
             self.worldQuestTypeTips=self:CreateTexture(nil, 'OVERLAY')
             self.worldQuestTypeTips:SetPoint('TOPRIGHT', self.Texture, 'TOPRIGHT', 5, 5)
@@ -124,14 +124,14 @@ local function Quest(self, questID)--任务
     local t=''
     local lv=C_QuestLog.GetQuestDifficultyLevel(questID)--ID
     if lv then t=t..'['..lv..']' else t=t..' 'end
-    if C_QuestLog.IsComplete(questID) then t=t..'|cFF00FF00'..COMPLETE..'|r' else t=t..INCOMPLETE end
-    if t=='' then t=t..QUESTS_LABEL end
+    if C_QuestLog.IsComplete(questID) then t=t..'|cFF00FF00'..(e.onlyChinse and '完成' or COMPLETE)..'|r' else t=t..(e.onlyChinse and '未完成' or INCOMPLETE) end
+    if t=='' then t=t..(e.onlyChinse and '任务' or QUESTS_LABEL) end
     t=t..' ID:'
     self:AddDoubleLine(t, questID)
 
     local distanceSq= C_QuestLog.GetDistanceSqToQuest(questID)--距离
     if distanceSq then
-        t= TRACK_QUEST_PROXIMITY_SORTING..': '
+        t= (e.onlyChinse and '距离' or TRACK_QUEST_PROXIMITY_SORTING)..': '
         local _, x, y = QuestPOIGetIconInfo(questID)
         if x and y then
             x=math.modf(x*100) y=math.modf(y*100)
@@ -140,8 +140,8 @@ local function Quest(self, questID)--任务
         self:AddDoubleLine(t,  Code:format(e.MK(distanceSq)))
     end
     if IsInGroup() then
-        if C_QuestLog.IsPushableQuest(questID) then t='|cFF00FF00'..YES..'|r' else t=NO end--共享
-        local t2=SHARE_QUEST..': '
+        t= e.GetYesNo(C_QuestLog.IsPushableQuest(questID))--共享
+        local t2= (e.onlyChinse and '共享' or SHARE_QUEST)..': '
         local u if IsInRaid() then u='raid' else u='party' end
         local n,acceto=GetNumGroupMembers(), 0
         for i=1, n do
@@ -155,8 +155,8 @@ local function Quest(self, questID)--任务
     local all=C_QuestLog.GetAllCompletedQuestIDs()--完成次数
     if all and #all>0 then
         t= GetDailyQuestsCompleted() or '0'
-        t=t..DAILY..' '..#all..QUESTS_LABEL
-        self:AddDoubleLine(TRACKER_FILTER_COMPLETED_QUESTS..': ', t)
+        t=t..(e.onlyChinse and '日常' or DAILY)..' '..#all..(e.onlyChinse and '任务' or QUESTS_LABEL)
+        self:AddDoubleLine(e.onlyChinse and '已完成任务' or TRACKER_FILTER_COMPLETED_QUESTS, t)
     end
     --local info=C_QuestLog.GetQuestDetailsTheme(questID)--POI图标
     --if info and info.poiIcon then e.playerTexSet(info.poiIcon, nil) end--设置图,像
@@ -208,7 +208,8 @@ local function getPlayerXY()--当前世界地图位置
     if uiMapID then
         local position = C_Map.GetPlayerMapPosition(uiMapID, "player")
         if position then
-            local x,y=position:GetXY()
+            local x,y
+            x,y=position:GetXY()
             if x and y then
                 x=('%.1f'):format(x*100)
                 y=('%.1f'):format(y*100)
@@ -282,8 +283,8 @@ local function CursorPositionInt()
     frame.playerPostionBtn:RegisterForClicks("LeftButtonDown","RightButtonDown")
     frame.playerPostionBtn:EnableMouseWheel(true)
     frame.playerPostionBtn:SetMovable(true)
-    frame.playerPostionBtn:RegisterForDrag("RightButton");
-    frame.playerPostionBtn:SetClampedToScreen(true);
+    frame.playerPostionBtn:RegisterForDrag("RightButton")
+    frame.playerPostionBtn:SetClampedToScreen(true)
     frame.playerPostionBtn:SetScript("OnDragStart", function(self2, d)
         if d=='RightButton' and not IsModifierKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
@@ -293,19 +294,15 @@ local function CursorPositionInt()
     frame.playerPostionBtn:SetScript("OnDragStop", function(self2, d)
         self2:StopMovingOrSizing()
         Save.PlayerXYPoint={self2:GetPoint(1)}
-        print(id, addName, addName2, '|cFF00FF00Alt+'..e.Icon.right..KEY_BUTTON2..'|r: '.. TRANSMOGRIFY_TOOLTIP_REVERT)
+        Save.PlayerXYPoint[2]=nil
         ResetCursor()
     end)
     frame.playerPostionBtn:SetScript("OnMouseUp", function(self2,d)
-        if d=='RightButton' and IsAltKeyDown() then
-            self2.PlayerXYPoint=nil
-            self2:ClearAllPoints();
-            self2:SetPoint('BOTTOMRIGHT', frame, 'TOPRIGHT',-50, 5)
-        elseif d=='LeftButton' and not IsModifierKeyDown() then
+       if d=='LeftButton' and not IsModifierKeyDown() then
             sendPlayerPoint()--发送玩家位置
         end
-        ResetCursor();
-    end);
+        ResetCursor()
+    end)
     frame.playerPostionBtn:SetScript("OnEnter",function(self2)
         e.tips:ClearLines()
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
@@ -559,42 +556,42 @@ local function set_AreaPOIPinMixin_OnAcquired(poiInfo)--地图POI提示 AreaPOID
         local R={}
         local sets = C_UIWidgetManager.GetAllWidgetsBySetID(399) or {}
         for _,v in ipairs(sets) do
-            local widgetInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(v.widgetID);
+            local widgetInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(v.widgetID)
             if widgetInfo and widgetInfo.shownState == Enum.WidgetShownState.Shown then
-                R[widgetInfo.orderIndex] = widgetInfo.text;
-            end;
+                R[widgetInfo.orderIndex] = widgetInfo.text
+            end
         end
         for i,v in pairs(R) do
             if i%2 ==0 then
-                local name = string.gsub(v,'|n','');
-                local leveltext =string.gsub(R[i+1],'|n','');
-                R[i] = string.format("%s-%s",name,leveltext);
-                R[i+1] = nil;
-            end;
-        end;
-        t=C_AreaPoiInfo.GetAreaPOIInfo(1543,6640).name;
+                local name = string.gsub(v,'|n','')
+                local leveltext =string.gsub(R[i+1],'|n','')
+                R[i] = string.format("%s-%s",name,leveltext)
+                R[i+1] = nil
+            end
+        end
+        t=C_AreaPoiInfo.GetAreaPOIInfo(1543,6640).name
         for _,v in pairs(R) do
-            t=t..'\n '..v;
-        end;
+            t=t..'\n '..v
+        end
     elseif poiInfo.name then
-        t=poiInfo.name;
-        local ds=poiInfo.description;
+        t=poiInfo.name
+        local ds=poiInfo.description
         if not t or #t<1 or t:find(COVENANT_UNLOCK_TRANSPORT_NETWORK) or (ds and ds:find(ANIMA_DIVERSION_ORIGIN_TOOLTIP )) then
             if poiInfo.Str then poiInfo.Str:SetText('') end
-            return;
+            return
         end
-        t=t:match('%((.+)%)') or t;
-        t=t:match('（(.+)）') or t;
+        t=t:match('%((.+)%)') or t
+        t=t:match('（(.+)）') or t
         t=t:match('(.+),') or t
-        t=t:match(UNITNAME_SUMMON_TITLE14:gsub('%%s','%(%.%+%)')) or t;
-        t=t:gsub(PET_ACTION_MOVE_TO,'');
-        t=t:gsub(SPLASH_BATTLEFORAZEROTH_8_1_0_FEATURE2_TITLE..':','');
-        t=t:gsub(SPLASH_BATTLEFORAZEROTH_8_1_0_FEATURE2_TITLE..'：','');
-        
-    end;
+        t=t:match(UNITNAME_SUMMON_TITLE14:gsub('%%s','%(%.%+%)')) or t
+        t=t:gsub(PET_ACTION_MOVE_TO,'')
+        t=t:gsub(SPLASH_BATTLEFORAZEROTH_8_1_0_FEATURE2_TITLE..':','')
+        t=t:gsub(SPLASH_BATTLEFORAZEROTH_8_1_0_FEATURE2_TITLE..'：','')
+
+    end
 
     if t~='' and not poiInfo.Str then
-        poiInfo.Str=e.Cstr(poiInfo, 10);
+        poiInfo.Str=e.Cstr(poiInfo, 10)
         poiInfo.Str:SetPoint('BOTTOM', poiInfo, 'TOP', 0, -3)
     end
     if poiInfo.Str then
@@ -653,7 +650,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             --添加控制面板        
             local sel=e.CPanel(addName, not Save.disabled)
-            sel:SetScript('OnClick', function()
+            sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end)

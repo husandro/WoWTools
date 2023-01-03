@@ -255,7 +255,7 @@ local function setWorldbossText()--显示世界BOSS击杀数据Text
             e.tips:AddDoubleLine(e.onlyChinse and '大小' or FONT_SIZE, (Save.EncounterJournalFontSize or 12)..e.Icon.mid)
             e.tips:Show()
         end)
-        panel.WorldBoss:SetScript('OnClick', function(self2, d)
+        panel.WorldBoss:SetScript('OnMouseDown', function(self2, d)
             if d=='LeftButton' then
                 Save.hideWorldBossText= not Save.hideWorldBossText and true or nil
                 panel.WorldBoss.texture:SetShown(Save.hideWorldBossText)
@@ -476,7 +476,7 @@ local function Init()--冒险指南界面
         end
         e.tips:Show()
     end)--提示
-    EncounterJournal.instance:SetScript('OnClick', function()
+    EncounterJournal.instance:SetScript('OnMouseDown', function()
             if  Save.showInstanceBoss then
                 Save.showInstanceBoss=nil
             else
@@ -492,7 +492,7 @@ local function Init()--冒险指南界面
     EncounterJournal.Worldboss:SetNormalAtlas('poi-soulspiritghost')
     EncounterJournal.Worldboss:SetSize(22,22)
     EncounterJournal.Worldboss:SetScript('OnEnter',set_EncounterJournal_World_Tips)--提示
-    EncounterJournal.Worldboss:SetScript('OnClick', function(self2, d)
+    EncounterJournal.Worldboss:SetScript('OnMouseDown', function(self2, d)
         if  Save.showWorldBoss then
             Save.showWorldBoss=nil
         else
@@ -955,7 +955,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             --添加控制面板        
             local sel=e.CPanel(addName, not Save.disabled)
-            sel:SetScript('OnClick', function()
+            sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 print(addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end)

@@ -344,7 +344,7 @@ local function SetRe()--监视声望
 	end
 end
 
-Frame.sel2:SetScript('OnClick', function(self, d)
+Frame.sel2:SetScript('OnMouseDown', function(self, d)
 	if Save.btn then
 		Save.btn=nil
 	else
@@ -457,7 +457,7 @@ local function SetAll()--收起,展开
 		Frame.up:SetNormalTexture(Icon.up)
 		Frame.up:SetSize(16, 16)
 		Frame.up:SetPoint("LEFT", ReputationFrameFactionLabel, 'RIGHT',5,0)
-		Frame.up:SetScript("OnClick", function()
+		Frame.up:SetScript("OnMouseDown", function()
 			for i=GetNumFactions(), 1, -1 do
 				CollapseFactionHeader(i)
 			end
@@ -474,7 +474,7 @@ local function SetAll()--收起,展开
 	end
 end
 
-Frame.sel:SetScript("OnClick", function(self, d)
+Frame.sel:SetScript("OnMouseDown", function(self, d)
 	if d=='LeftButton' then
 		Save.disabled= not Save.disabled and true or nil
 		print(id, addName, e.GetEnabeleDisable(Save.disabled), e.onlyChinse and '需要重新加载"' or REQUIRES_RELOAD)

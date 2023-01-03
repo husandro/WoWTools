@@ -93,7 +93,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             --添加控制面板        
             panel.sel=e.CPanel(addName, not Save.disabled, true)
-            panel.sel:SetScript('OnClick', function()
+            panel.sel:SetScript('OnMouseDown', function()
                 if Save.disabled then
                     Save.disabled=nil
                 else

@@ -42,7 +42,7 @@ local function Init()
     toyframe.sel:SetPoint('BOTTOMRIGHT',-25, 35)
     toyframe.sel:SetSize(18,18)
     toyframe.sel:SetAlpha(0.5)
-    toyframe.sel:SetScript('OnClick',function (self2)
+    toyframe.sel:SetScript('OnMouseDown',function (self2)
         Save.disabledToy= not Save.disabledToy and true and nil
         print(id, addName,e.GetEnabeleDisable(not Save.disabledToy))
         self2:SetNormalAtlas(Save.disabledToy and e.Icon.disabled or e.Icon.icon)

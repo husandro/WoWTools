@@ -276,7 +276,7 @@ local function Init_Gossip()
     GossipFrame.sel=CreateFrame("CheckButton", nil, GossipFrame, 'InterfaceOptionsCheckButtonTemplate')
     GossipFrame.sel:SetPoint("BOTTOMLEFT",5,2)
     GossipFrame.sel.Text:SetText(DISABLE)
-    GossipFrame.sel:SetScript("OnClick", function (self, d)
+    GossipFrame.sel:SetScript("OnMouseDown", function (self, d)
         if not self.npc and self.name then
             return
         end
@@ -333,7 +333,7 @@ local function Init_Gossip()
             self.sel:SetScript("OnLeave", function ()
                 e.tips:Hide()
             end)
-            self.sel:SetScript("OnClick", function (self2)
+            self.sel:SetScript("OnMouseDown", function (self2)
                 if self2.id and self2.text then
                     Save.gossipOption[self2.id]= not Save.gossipOption[self2.id] and self2.text or nil
                     if Save.gossipOption[self2.id] then
@@ -425,14 +425,14 @@ local function Init_Gossip()
             self.sel:SetScript("OnLeave", function ()
                 e.tips:Hide()
             end)
-            self.sel:SetScript("OnClick", function (self2)
+            self.sel:SetScript("OnMouseDown", function (self2)
                 if self2.id and self2.text then
                     Save.questOption[self2.id]= not Save.questOption[self2.id] and self2.text or nil
                     if Save.questOption[self2.id] then
                         C_GossipInfo.SelectAvailableQuest(self2.id);
                     end
                 else
-                    print(id, addName, '|cnRED_FONT_COLOR:'..NONE..'|r',QUESTS_LABEL,'ID')
+                    print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinse and '无' or NONE)..'|r', e.onlyChinse and '任务' or QUESTS_LABEL,'ID')
                 end
             end)
         end
@@ -721,7 +721,7 @@ local function Init_Quest()
     QuestFrame.sel=CreateFrame("CheckButton", nil, QuestFrame, 'InterfaceOptionsCheckButtonTemplate')--禁用此npc,任务,选项
     QuestFrame.sel:SetPoint("TOPLEFT", QuestFrame, 40, 20)
     QuestFrame.sel.Text:SetText(DISABLE)
-    QuestFrame.sel:SetScript("OnClick", function (self, d)
+    QuestFrame.sel:SetScript("OnMouseDown", function (self, d)
         if not self.npc and self.name then
             return
         end
@@ -921,7 +921,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
              --添加控制面板        
             local sel=e.CPanel(addName, not Save.disabled, true)
-            sel:SetScript('OnClick', function()
+            sel:SetScript('OnMouseDown', function()
                 if Save.disabled then
                     Save.disabled=nil
                 else

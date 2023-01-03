@@ -41,7 +41,7 @@ local function setProfessions()
                         panel['profession'..k]:SetPoint('BOTTOMLEFT', last, 'TOPLEFT',0,2)
                     end
                     panel['profession'..k]:SetSize(32,32)
-                    panel['profession'..k]:SetScript('OnClick', function(self2)
+                    panel['profession'..k]:SetScript('OnMouseDown', function(self2)
                         C_TradeSkillUI.OpenTradeSkill(self2.skillLine)
                     end)
                     panel['profession'..k]:SetScript('OnEnter', function(self2)
@@ -136,7 +136,7 @@ local function setProfessions()
     end
 end
 
-panel:SetScript('OnClick', function(self, d)
+panel:SetScript('OnMouseDown', function(self, d)
     if d=='LeftButton' then
         if Save.disabled then
             Save.disabled=nil

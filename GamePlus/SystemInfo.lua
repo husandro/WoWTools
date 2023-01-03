@@ -379,7 +379,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
         local check=e.CPanel(addName, not Save.disabled, true)
-        check:SetScript('OnClick', function()
+        check:SetScript('OnMouseDown', function()
             Save.disabled= not Save.disabled and true or nil
             print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
         end)

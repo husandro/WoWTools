@@ -746,7 +746,7 @@ local function set_StackSplitFrame_OpenStackSplitFrame(self, maxStack, parent, a
         self.restButton:SetPoint('TOP')
         self.restButton:SetSize(22, 22)
         self.restButton:SetNormalAtlas('characterundelete-RestoreButton')
-        self.restButton:SetScript('OnClick', function(self2)
+        self.restButton:SetScript('OnMouseDown', function(self2)
             self.split=self.minSplit
             self.LeftButton:SetEnabled(false)
             self.RightButton:SetEnabled(true)
@@ -869,7 +869,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
 
         --添加控制面板
         local check=e.CPanel(addName, not Save.disabled, true)
-        check:SetScript('OnClick', function()
+        check:SetScript('OnMouseDown', function()
             Save.disabled= not Save.disabled and true or nil
             print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '重新加载UI' or RELOADUI)
         end)

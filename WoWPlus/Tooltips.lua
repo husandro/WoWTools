@@ -196,22 +196,6 @@ local function setItem(self, ItemLink)
         self:AddDoubleLine((itemType and itemType..' classID'  or 'classID') ..': '..classID, (itemSubType and itemSubType..' subID' or 'subclassID')..': '..subclassID)
     end
 
-    local specTable = GetItemSpecInfo(ItemLink) or {}--专精图标
-    local specTableNum=#specTable
-    if specTableNum>0 then
-        --local num=math.modf(specTableNum/2)
-        local specA=''
-        local class
-        table.sort(specTable, function (a2, b2) return a2<b2 end)
-        for k,  specID in pairs(specTable) do
-            local icon2, _, classFile=select(4, GetSpecializationInfoByID(specID))
-            icon2='|T'..icon2..':0|t'
-            specA = specA..((k>1 and class~=classFile) and '  ' or '')..icon2
-            class=classFile
-        end
-        self:AddDoubleLine(specA, ' ')
-    end
-
     local spellName, spellID = GetItemSpell(ItemLink)--物品法术
     if spellName and spellID then
         local spellTexture=GetSpellTexture(spellID)
@@ -263,6 +247,22 @@ local function setItem(self, ItemLink)
         end
         if bindType==LE_ITEM_BIND_ON_EQUIP or bindType==LE_ITEM_BIND_ON_USE then--绑定装备,使用时绑定
             self.Portrait:SetAtlas(e.Icon.unlocked)
+        end
+
+        local specTable = GetItemSpecInfo(ItemLink) or {}--专精图标
+        local specTableNum=#specTable
+        if specTableNum>0 then
+            --local num=math.modf(specTableNum/2)
+            local specA=''
+            local class
+            table.sort(specTable, function (a2, b2) return a2<b2 end)
+            for k,  specID in pairs(specTable) do
+                local icon2, _, classFile=select(4, GetSpecializationInfoByID(specID))
+                icon2='|T'..icon2..':0|t'
+                specA = specA..((k>1 and class~=classFile) and '  ' or '')..icon2
+                class=classFile
+            end
+            self:AddDoubleLine(specA, ' ')
         end
     else
         if setID then--套装
@@ -1071,7 +1071,7 @@ local function Init()
     panel.setDefaultAnchor.Text:SetText('1) '..(e.onlyChinse and '跟随鼠标' or FOLLOW..MOUSE_LABEL))
     panel.setDefaultAnchor:SetPoint('TOPLEFT')
     panel.setDefaultAnchor:SetChecked(Save.setDefaultAnchor)--提示位置            
-    panel.setDefaultAnchor:SetScript('OnClick', function()
+    panel.setDefaultAnchor:SetScript('OnMouseDown', function()
         if Save.setDefaultAnchor then
             Save.setDefaultAnchor=nil
         else
@@ -1085,7 +1085,7 @@ local function Init()
     panel.inCombatDefaultAnchor=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     panel.inCombatDefaultAnchor.Text:SetText(e.onlyChinse and '战斗中：默认' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..DEFAULT)
     panel.inCombatDefaultAnchor:SetPoint('LEFT', panel.setDefaultAnchor.Text, 'RIGHT', 20, 0)
-    panel.inCombatDefaultAnchor:SetScript('OnClick', function()
+    panel.inCombatDefaultAnchor:SetScript('OnMouseDown', function()
         Save.inCombatDefaultAnchor= not Save.inCombatDefaultAnchor and true or nil
     end)
     panel.inCombatDefaultAnchor:SetEnabled(Save.setDefaultAnchor)
@@ -1096,7 +1096,7 @@ local function Init()
     panel.Anchor:SetPoint('TOPLEFT', panel.setDefaultAnchor, 'BOTTOMLEFT', 0, -2)
 
     panel.Anchor:SetChecked(Save.setAnchor)
-    panel.Anchor:SetScript('OnClick', function(self)
+    panel.Anchor:SetScript('OnMouseDown', function(self)
         if Save.setAnchor then
             Save.setAnchor=nil
         else
@@ -1110,7 +1110,7 @@ local function Init()
     panel.Anchor.select:SetPoint('LEFT', panel.Anchor.Text, 'RIGHT')
     panel.Anchor.select:SetSize(80, 25)
     panel.Anchor.select:SetText(e.onlyChinse and '设置' or SETTINGS)
-    panel.Anchor.select:SetScript('OnClick',function(self)
+    panel.Anchor.select:SetScript('OnMouseDown',function(self)
         if not self.frame then
             self.frame=CreateFrame('Frame',nil, UIParent)
             if Save.AnchorPoint and Save.AnchorPoint[1] and Save.AnchorPoint[3] and Save.AnchorPoint[4] and Save.AnchorPoint[5] then
@@ -1153,7 +1153,7 @@ local function Init()
     panel.CVar.Text:SetText((e.onlyChinse and '设置' or SETTINGS)..' CVar')
     panel.CVar:SetPoint('TOPLEFT', panel.Anchor, 'BOTTOMLEFT', 0, -30)
     panel.CVar:SetChecked(Save.setCVar)
-    panel.CVar:SetScript('OnClick', function()
+    panel.CVar:SetScript('OnMouseDown', function()
         if Save.setCVar then
             Save.setCVar=nil
             setCVar(true)
@@ -1222,7 +1222,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
 
             --添加控制面板 
             local sel=e.CPanel(addName, not Save.disabled)
-            sel:SetScript('OnClick', function()
+            sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end)

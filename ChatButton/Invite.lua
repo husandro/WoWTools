@@ -388,7 +388,7 @@ local function set_LFGPlus()--预创建队伍增强
     f.ace:SetPoint('RIGHT',f, 'LEFT',-90,0)
     f.ace.Text:SetText('|cFFFFD000'..AUTO_JOIN:gsub(JOIN, ACCEPT)..'|r');
     f.ace:SetChecked(Save.LFGListAceInvite);
-    f.ace:SetScript("OnClick", function (s)
+    f.ace:SetScript("OnMouseDown", function (s)
             Save.LFGListAceInvite=s:GetChecked();
     end);
 
@@ -397,7 +397,7 @@ local function set_LFGPlus()--预创建队伍增强
     f.inv:SetPoint("BOTTOMLEFT", f, "TOPLEFT", 0, -10)
     f.inv.Text:SetText('|cFFFFD000'..AUTO_JOIN:gsub(JOIN, INVITE)..'|r');
     f.inv:SetChecked(Save.LFGAutoInv);
-    f.inv:SetScript("OnClick", function(s)
+    f.inv:SetScript("OnMouseDown", function(s)
             Save.LFGAutoInv=s:GetChecked();
     end)
 
@@ -406,7 +406,7 @@ local function set_LFGPlus()--预创建队伍增强
     f.raid.Text:SetText('|cFFFFD000'..CONVERT_TO_RAID..'|r');
     f.raid:SetChecked(Save.PartyToRaid);
 
-    f.raid:SetScript("OnClick", function(s)
+    f.raid:SetScript("OnMouseDown", function(s)
         e.Save.PartyToRaid=s:GetChecked()
     end)
 

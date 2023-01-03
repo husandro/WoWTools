@@ -99,7 +99,8 @@ local function Lv(self, slot, link)--装等
     end
     if not self.lv and lv then
         self.lv= e.Cstr(self, 10, nil, nil,nil,nil, 'CENTER')
-        self.lv:SetPoint('BOTTOM', 0, 0)
+        self.lv:SetPoint('CENTER')
+        --self.lv:SetPoint('BOTTOM', 0, 0)
     end
     if self.lv then
         self.lv:SetText(lv or '')
@@ -303,7 +304,7 @@ local function Sta(self, slot, link)--显示属性
         if s then
             if not self.s then
                 self.s=e.Cstr(self, 10)
-                self.s:SetText(e.WA_Utf8Sub(STAT_CRITICAL_STRIKE, 1):upper())
+                self.s:SetText( e.onlyChinse and '爆' or e.WA_Utf8Sub(STAT_CRITICAL_STRIKE, 1, 2):upper())
             else
                 self.s:ClearAllPoints()
             end
@@ -314,7 +315,7 @@ local function Sta(self, slot, link)--显示属性
         if h then
             if not self.h then
                 self.h=e.Cstr(self, 10)
-                self.h:SetText(e.WA_Utf8Sub(STAT_HASTE, 1):upper())
+                self.h:SetText(e.onlyChinse and '急' or e.WA_Utf8Sub(STAT_HASTE, 1,2):upper())
             else
                 self.h:ClearAllPoints()
             end
@@ -324,7 +325,7 @@ local function Sta(self, slot, link)--显示属性
         if m  then
             if not self.m then
                 self.m=e.Cstr(self, 10)
-                self.m:SetText(e.WA_Utf8Sub(STAT_MASTERY, 1):upper())
+                self.m:SetText(e.onlyChinse and '精' or e.WA_Utf8Sub(STAT_MASTERY, 1,2):upper())
             else
                 self.m:ClearAllPoints()
             end
@@ -334,7 +335,7 @@ local function Sta(self, slot, link)--显示属性
         if v then
             if not self.v then
                 self.v=e.Cstr(self, 10)
-                self.v:SetText(e.WA_Utf8Sub(STAT_VERSATILITY, 1):upper())
+                self.v:SetText(e.onlyChinse and '全' or e.WA_Utf8Sub(STAT_VERSATILITY, 1,2):upper())
             else
                 self.v:ClearAllPoints()
             end
@@ -600,7 +601,7 @@ local function add_Equipment_Frame(equipmentSetsDirty)--添加装备管理框
            -- b:SetSize(20, 20)
             EPoint(b, panel.equipmentFrame ,b2)--设置位置
 
-            b:SetScript("OnClick",function(self)
+            b:SetScript("OnMouseDown",function(self)
                     if not UnitAffectingCombat('player') then
                         C_EquipmentSet.UseEquipmentSet(self.setID)
                         C_Timer.After(0.5, function() LvTo() end)--修改总装等
@@ -701,19 +702,26 @@ local function GetDurationTotale()
         panel.durabilityText:SetScript('OnLeave', function() e.tips:Hide() end)
     end
     local cu, max=0,0
-    for slot, _ in pairs(INVENTORY_ALERT_STATUS_SLOTS) do
+    for slot=1, 17 do
         local cu2, max2= GetInventoryItemDurability(slot)
         if cu2 and max2 and max2>0 then
             cu = cu+ cu2
             max= max + max2
         end
     end
+    --[[for slot, _ in pairs(INVENTORY_ALERT_STATUS_SLOTS) do
+        local cu2, max2= GetInventoryItemDurability(slot)
+        if cu2 and max2 and max2>0 then
+            cu = cu+ cu2
+            max= max + max2
+        end
+    end]]
     local du
     if max>0 then
         local to=cu/max*100
         du=('%i%%'):format(to)
         if to<30 then
-            du= RED_FONT_COLOR_CODE..du..'|r'
+            du= '|cnRED_FONT_COLOR:'..du..'|r'
         end
     end
     panel.durabilityText.value=du or '100%'
@@ -744,11 +752,7 @@ local function Init()
                 ok2=true
             end
             if not ok2 then
-                if e.onlyChinse then
-                    e.tips:AddDoubleLine('唯一', '服务器')
-                else
-                    e.tips:AddDoubleLine(ITEM_UNIQUE, SERVER_MESSAGE_PREFIX)
-                end
+                e.tips:AddDoubleLine(e.onlyChinse and '唯一' or ITEM_UNIQUE, e.Player.server)
             end
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(id, addName)
@@ -866,7 +870,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         --添加控制面板        
         local sel=e.CPanel(addName, not Save.disabled)
-        sel:SetScript('OnClick', function()
+        sel:SetScript('OnMouseDown', function()
             Save.disabled = not Save.disabled and true or nil
             print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需求重新加载' or REQUIRES_RELOAD)
         end)

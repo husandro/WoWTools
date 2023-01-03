@@ -23,7 +23,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 --[[            local check=e.CPanel(addName, not Save.disabled, true)
-            check:SetScript('OnClick', function()
+            check:SetScript('OnMouseDown', function()
             if Save.disabled then
                 Save.disabled=nil
             else

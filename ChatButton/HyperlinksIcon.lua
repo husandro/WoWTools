@@ -579,7 +579,7 @@ local function setPanel()
     btn:SetSize(80,28)
     btn:SetText(UPDATE)
     btn:SetPoint('TOPLEFT', editBox, 'TOPRIGHT',5, 0)
-    btn:SetScript('OnClick', function()
+    btn:SetScript('OnMouseDown', function()
         Save.text={}
         local n=0
         local s=editBox:GetText()

@@ -49,7 +49,7 @@ hooksecurefunc(DressUpOutfitDetailsSlotMixin, 'SetDetails', function(self, trans
         self.btn:SetScript('OnLeave', function ()
             e.tips:Hide()
         end)
-        self.btn:SetScript('OnClick', function (self2, d)
+        self.btn:SetScript('OnMouseDown', function (self2, d)
             if self2.link then
                 if d=='LeftButton' then
                     local chat=SELECTED_DOCK_FRAME
@@ -89,7 +89,7 @@ dupframe.sel=e.Cbtn(dupframe)
 dupframe.sel:SetPoint('BOTTOMRIGHT', -5, 10)
 dupframe.sel:SetSize(16,16)
 dupframe.sel:SetAlpha(0.3)
-dupframe.sel:SetScript('OnClick', function ()
+dupframe.sel:SetScript('OnMouseDown', function ()
     if Save.disabledDressUpOutfit then
         Save.disabledDressUpOutfit=nil
     else
@@ -411,7 +411,7 @@ local function InitWardrobe()
     frame.sel:SetPoint('BOTTOMRIGHT',-16, 28)
     frame.sel:SetSize(18,18)
     frame.sel:SetAlpha(0.5)
-    frame.sel:SetScript("OnClick", function(self2)
+    frame.sel:SetScript("OnMouseDown", function(self2)
             if Save.disabled then
                 Save.disabled=nil;
             else
