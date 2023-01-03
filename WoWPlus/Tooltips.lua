@@ -191,7 +191,7 @@ local function setItem(self, ItemLink)
     if expacID then--版本数据
         self:AddDoubleLine(e.GetExpansionText(expacID))
     end
-    self:AddDoubleLine(itemID and ITEMS..': '.. itemID or ' ' , itemTexture and '|T'..itemTexture..':0|t'..itemTexture)--ID, texture
+    self:AddDoubleLine(itemID and (e.onlyChinse and '物品' or ITEMS)..': '.. itemID or ' ' , itemTexture and '|T'..itemTexture..':0|t'..itemTexture)--ID, texture
     if classID and subclassID then
         self:AddDoubleLine((itemType and itemType..' classID'  or 'classID') ..': '..classID, (itemSubType and itemSubType..' subID' or 'subclassID')..': '..subclassID)
     end
