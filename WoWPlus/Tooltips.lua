@@ -201,7 +201,7 @@ local function setItem(self, ItemLink)
         if itemLevel and itemLevel>1 then
             local slot=itemEquipLoc and e.itemSlotTable[itemEquipLoc]--比较装等
             if slot then
-                self:AddDoubleLine(_G[itemEquipLoc], TRADESKILL_FILTER_SLOTS..': '..slot)--栏位
+                self:AddDoubleLine(_G[itemEquipLoc], (e.onlyChinse and '栏位' or TRADESKILL_FILTER_SLOTS)..': '..slot)--栏位
                 local slotLink=GetInventoryItemLink('player', slot)
                 local text
                 if slotLink then
@@ -228,7 +228,7 @@ local function setItem(self, ItemLink)
             local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
             if sourceInfo then
                 visualID=sourceInfo.visualID
-                self.text2Left:SetText(sourceInfo.isCollected and '|cnGREEN_FONT_COLOR:'..COLLECTED..'|r' or '|cnRED_FONT_COLOR:'..NOT_COLLECTED..'|r')
+                self.text2Left:SetText(sourceInfo.isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinse and '未收集' or NOT_COLLECTED)..'|r')
             end
         end
         if appearanceID then
