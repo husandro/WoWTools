@@ -10,8 +10,6 @@ local wowSave={[INSTANCE]={}}--{[ISLANDS_HEADER]=次数, [副本名称..难度=�
 local sec=3--时间 timer
 
 local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
-panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
-WoWToolsChatButtonFrame.last=panel
 
 local getRewardInfo=function(dungeonID)--FB奖励
     local t=''
@@ -803,6 +801,9 @@ end
 --初始
 --####
 local function Init()
+    panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
+    WoWToolsChatButtonFrame.last=panel
+
     panel.Menu= CreateFrame("Frame",nil, LFDMicroButton, "UIDropDownMenuTemplate")--菜单列表
     UIDropDownMenu_Initialize(panel.Menu, InitList, "MENU")
     

@@ -3,10 +3,7 @@ local addName=ROLL
 local Save={autoClear=true}
 
 local Tab={}
-
 local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
-panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
-WoWToolsChatButtonFrame.last=panel
 
 local rollText=RANDOM_ROLL_RESULT:gsub('%%d','%(%%d%+)')
 rollText=rollText:gsub("%%s", "%(%.%-)")
@@ -158,6 +155,9 @@ end
 --初始
 --####
 local function Init()
+    panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
+    WoWToolsChatButtonFrame.last=panel
+
     setRegisterEvent()--注册事件
     setAutoClearRegisterEvent()--注册自动清除事件
 

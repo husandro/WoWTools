@@ -16,8 +16,6 @@ local Save={
 }
 
 local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
-panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')
-WoWToolsChatButtonFrame.last=panel
 
 local Magic=function(s)  local t={'%%', '%.', '%(','%)','%+', '%-', '%*', '%?', '%[', '%^', '%$'} for _,v in pairs(t) do s=s:gsub(v,'%%'..v) end return s end --  ( ) . % + - * ? [ ^ $
 local MK=function(k,b) if not b then b=1 end if k>=1e6 then k=string.format('%.'..b..'fm',k/1e6) elseif k>= 1e4 and GetLocale() == "zhCN" then k=string.format('%.'..b..'fw',k/1e4) elseif k>=1e3 then k=string.format('%.'..b..'fk',k/1e3) else k=string.format('%i',k) end return k end--加k 9.1
@@ -881,6 +879,9 @@ end
 --初始
 --####
 local function Init()
+    panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')
+    WoWToolsChatButtonFrame.last=panel
+
     DEFAULT_CHAT_FRAME.ADD=DEFAULT_CHAT_FRAME.AddMessage
 
     panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")

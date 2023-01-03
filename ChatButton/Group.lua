@@ -6,8 +6,6 @@ local Save={
 }
 
 local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
-panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
-WoWToolsChatButtonFrame.last=panel
 
 local roleAtlas={
     TANK='groupfinder-icon-role-large-tank',
@@ -330,6 +328,9 @@ end
 --初始
 --####
 local function Init()
+    panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
+    WoWToolsChatButtonFrame.last=panel
+
     panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
 

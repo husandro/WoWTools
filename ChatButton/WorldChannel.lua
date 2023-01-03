@@ -3,8 +3,6 @@ local id, e = ...
 local Save={}
 local addName='ChatButtonWorldChannel'
 local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
-panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
-WoWToolsChatButtonFrame.last=panel
 
 local function setChinesTips(name, type)--大脚世界频道, 提示
     if name=='大脚世界频道' then
@@ -154,6 +152,9 @@ end
 --初始
 --####
 local function Init()
+    panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
+    WoWToolsChatButtonFrame.last=panel
+
     if e.Player.zh then
         panel.texture:SetAtlas('WildBattlePet')
     else

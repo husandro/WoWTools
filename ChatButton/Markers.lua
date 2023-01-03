@@ -3,8 +3,6 @@ local addName= BINDING_HEADER_RAID_TARGET
 local Save={ autoSet=true, tank=2, tank2=6, healer=1, countdown=7, groupReadyTips=true, markersScale=0.85, markersFrame=true}
 
 local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
-panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
-WoWToolsChatButtonFrame.last=panel
 
 local color={
     [1]={r=1, g=1, b=0},--星星, 黄色
@@ -782,6 +780,9 @@ end
 --初始
 --####
 local function Init()
+    panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
+    WoWToolsChatButtonFrame.last=panel
+
     setTexture()--设置,按钮图片
     setAllTextrue()--主图标,是否有权限
     setMarkersFrame()--设置标记, 框架

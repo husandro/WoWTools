@@ -1,10 +1,8 @@
 local id, e = ...
 local addName= 'Emoji'
-local Save={disabled= not e.Player.zh, Channels={} }
+local Save={Channels={}}--disabled= not e.Player.zh
 
 local panel=e.Cbtn2('WoWToolsChatButtonEmoji', WoWToolsChatButtonFrame, true, false)
-panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
-WoWToolsChatButtonFrame.last=panel
 
 local frame--控制图标,显示,隐藏
 local File={'Angel','Angry','Biglaugh','Clap','Cool','Cry','Cutie','Despise','Dreamsmile','Embarrass','Evil','Excited','Faint','Fight','Flu','Freeze','Frown','Greet','Grimace','Growl','Happy','Heart','Horror','Ill','Innocent','Kongfu','Love','Mail','Makeup','Meditate','Miserable','Okay','Pretty','Puke','Shake','Shout','Shuuuu','Shy','Sleep','Smile','Suprise','Surrender','Sweat','Tear','Tears','Think','Titter','Ugly','Victory','Volunteer','Wronged','Mario',}
@@ -180,6 +178,9 @@ end
 --初始
 --####
 local function Init()
+    panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
+    WoWToolsChatButtonFrame.last=panel
+
     frame=e.Cbtn(panel,nil,nil,nil,nil, true,{10, e.toolsFrame.size or 30})--控制图标,显示,隐藏
     if Save.Point then
         frame:SetPoint(Save.Point[1], UIParent, Save.Point[3], Save.Point[4], Save.Point[5])

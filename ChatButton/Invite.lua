@@ -4,9 +4,6 @@ local Save={InvNoFriend={}, LFGListAceInvite=true, FriendAceInvite=true, InvNoFr
 local InvPlateGuid={}
 
 local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
-panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
-WoWToolsChatButtonFrame.last=panel
-
 
 local function getLeader()--取得权限
     return UnitIsGroupAssistant('player') or UnitIsGroupLeader('player') or not IsInGroup()
@@ -801,6 +798,9 @@ end
 --初始
 --####
 local function Init()
+    panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
+    WoWToolsChatButtonFrame.last=panel
+
     panel.texture:SetAtlas('communities-icon-addgroupplus')
     setTexture()--设置图标颜色, 是否有权限
 
