@@ -31,7 +31,7 @@ Sesource\Locales\zhTW.lua
 ##面板，不能删除
 Sesource\Panel.lua
 ##仅显示中文，选项
-Sesource\OnlyChinese.lua
+##Sesource\OnlyChinese.lua
 
 
 ##角色面板

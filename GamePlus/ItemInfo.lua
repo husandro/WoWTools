@@ -1,5 +1,5 @@
 local id, e = ...
-local addName= e.onlyChinse and '物品信息' or ITEMS..INFO
+local addName= ITEMS..INFO
 local Save={}
 local panel=CreateFrame("Frame")
 
@@ -428,7 +428,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
             --添加控制面板        
-            local sel=e.CPanel(addName, not Save.disabled, true)
+            local sel=e.CPanel(e.onlyChinse and '物品信息' or addName, not Save.disabled, true)
             sel:SetScript('OnClick', function()
                 if Save.disabled then
                     Save.disabled=nil

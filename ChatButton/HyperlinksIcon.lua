@@ -563,7 +563,7 @@ local function setPanel()
 
     local str=e.Cstr(frame)--内容加颜色
     str:SetPoint('TOPLEFT')
-    str:SetText(COLOR..': '..KBASE_DEFAULT_SEARCH_TEXT..'|cnGREEN_FONT_COLOR:( '..KEY_SPACE..' )|r')
+    str:SetText(e.onlyChinse and '颜色: 关键词 (|cnGREEN_FONT_COLOR:空格|r) 分开' or (COLOR..': '..KBASE_DEFAULT_SEARCH_TEXT..'|cnGREEN_FONT_COLOR:( '..KEY_SPACE..' )|r'))
     local editBox=e.CeditBox(frame)
     editBox:SetPoint('TOPLEFT', str, 'BOTTOMLEFT',0,-5)
     editBox:SetTextColor(0,1,0)
@@ -577,7 +577,7 @@ local function setPanel()
     end
     local btn=CreateFrame('Button', nil, editBox, 'UIPanelButtonTemplate')
     btn:SetSize(80,28)
-    btn:SetText(UPDATE)
+    btn:SetText(e.onlyChinse and '更新' or UPDATE)
     btn:SetPoint('TOPLEFT', editBox, 'TOPRIGHT',5, 0)
     btn:SetScript('OnMouseDown', function()
         Save.text={}
@@ -596,12 +596,12 @@ local function setPanel()
                 end
             end)
         end
-        print(COLOR,'|cnGREEN_FONT_COLOR:#'..n..COMPLETE..'|r ', REQUIRES_RELOAD)
+        print(id, addName, e.onlyChinse and '颜色' or COLOR, '|cnGREEN_FONT_COLOR:#'..n..(e.onlyChinse and '完成' or COMPLETE)..'|r', e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
     local str2=e.Cstr(frame)--频道名称替换
     str2:SetPoint('TOPLEFT', editBox, 'BOTTOMLEFT', 0,-20)
-    str2:SetText(CHANNEL_CHANNEL_NAME..': '..COMMUNITIES_SETTINGS_SHORT_NAME_LABEL..'  |cnGREEN_FONT_COLOR:= |r')
+    str2:SetText(e.onlyChinse and '频道名称替换: 关键词|cnGREEN_FONT_COLOR:=|r替换' or (CHANNEL_CHANNEL_NAME..': '..COMMUNITIES_SETTINGS_SHORT_NAME_LABEL..'  |cnGREEN_FONT_COLOR:= |r'))
     local editBox2=e.CeditBox(frame)
     editBox2:SetPoint('TOPLEFT', str2, 'BOTTOMLEFT',0,-5)
     if Save.channels then
@@ -614,9 +614,9 @@ local function setPanel()
     end
     local btn2=CreateFrame('Button', nil, editBox2, 'UIPanelButtonTemplate')
     btn2:SetSize(80,28)
-    btn2:SetText(UPDATE)
+    btn2:SetText(e.onlyChinse and '更新' or UPDATE)
     btn2:SetPoint('TOPLEFT', editBox2, 'TOPRIGHT',5, 0)
-    btn2:SetScript('OnClick', function()
+    btn2:SetScript('OnMouseDown', function()
         Save.channels={}
         local n=0
         local s=editBox2:GetText()
@@ -633,7 +633,7 @@ local function setPanel()
                 end
             end)
         end
-        print(CHANNEL_CHANNEL_NAME, COMMUNITIES_SETTINGS_SHORT_NAME_LABEL,'|cnGREEN_FONT_COLOR:#'..n..COMPLETE..'|r ', REQUIRES_RELOAD)
+        print(id, addName, e.onlyChinse and '频道名称替换' or (CHANNEL_CHANNEL_NAME..COMMUNITIES_SETTINGS_SHORT_NAME_LABEL), '|cnGREEN_FONT_COLOR:#'..n..(e.onlyChinse and '完成' or COMPLETE)..'|r',  e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
     end)
 end
 

@@ -17,7 +17,7 @@ local Save={
 }
 local bossSave={}
 local buySave={}--购买物品
-local addName= e.onlyChinse and '商人' or MERCHANT
+local addName= MERCHANT
 local panel=CreateFrame("Frame")
 local RepairSave={date=date('%x'), player=0, guild=0, num=0}
 
@@ -868,7 +868,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
         Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
         --添加控制面板
-        local check=e.CPanel(addName, not Save.disabled, true)
+        local check=e.CPanel(e.onlyChinse and '商人' or addName, not Save.disabled, true)
         check:SetScript('OnMouseDown', function()
             Save.disabled= not Save.disabled and true or nil
             print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '重新加载UI' or RELOADUI)

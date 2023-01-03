@@ -1,5 +1,5 @@
 local id, e = ...
-local addName= e.onlyChinse and '对话和任务' or ENABLE_DIALOG..QUESTS_LABEL
+local addName= ENABLE_DIALOG..QUESTS_LABEL
 local Save={
         gossip=true, quest=true, unique=true, autoSortQuest=true, autoSelectReward=true,
         NPC={},
@@ -920,13 +920,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save.gossipOption= Save.gossipOption or {}
 
              --添加控制面板        
-            local sel=e.CPanel(addName, not Save.disabled, true)
+            local sel=e.CPanel(e.onlyChinse and '对话和任务' or addName, not Save.disabled, true)
             sel:SetScript('OnMouseDown', function()
-                if Save.disabled then
-                    Save.disabled=nil
-                else
-                    Save.disabled=true
-                end
+                Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end)
 

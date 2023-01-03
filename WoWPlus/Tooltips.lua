@@ -196,12 +196,6 @@ local function setItem(self, ItemLink)
         self:AddDoubleLine((itemType and itemType..' classID'  or 'classID') ..': '..classID, (itemSubType and itemSubType..' subID' or 'subclassID')..': '..subclassID)
     end
 
-    local spellName, spellID = GetItemSpell(ItemLink)--物品法术
-    if spellName and spellID then
-        local spellTexture=GetSpellTexture(spellID)
-        self:AddDoubleLine((itemName~=spellName and hex..'['..spellName..']|r'..SPELLS or SPELLS)..': '..spellID, spellTexture and spellTexture~=itemTexture  and '|T'..spellTexture..':0|t'..spellTexture or ' ')
-    end
-
     if classID==2 or classID==4 then
         itemLevel= GetDetailedItemLevelInfo(ItemLink) or itemLevel--装等
         if itemLevel and itemLevel>1 then
@@ -283,6 +277,12 @@ local function setItem(self, ItemLink)
         end
     end
 
+    local spellName, spellID = GetItemSpell(ItemLink)--物品法术
+    if spellName and spellID then
+        local spellTexture=GetSpellTexture(spellID)
+        self:AddDoubleLine((itemName~=spellName and hex..'['..spellName..']|r'..SPELLS or SPELLS)..': '..spellID, spellTexture and spellTexture~=itemTexture  and '|T'..spellTexture..':0|t'..spellTexture or ' ')
+    end
+    
     local bag= GetItemCount(ItemLink)--物品数量
     local bank= GetItemCount(ItemLink,true) - bag
     if bag==0 and bank==0 then
@@ -1221,7 +1221,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
             --添加控制面板 
-            local sel=e.CPanel(addName, not Save.disabled)
+            local sel=e.CPanel(e.onlyChinse and 'Tootips' or addName, not Save.disabled)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)

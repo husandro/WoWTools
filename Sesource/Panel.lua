@@ -1,12 +1,13 @@
 local id, e = ...
-
 local panel = CreateFrame("Frame")--Panel
+local Save={OnlyChinse= select(2, BNGetInfo())~='SandroChina#2690'}
+
 panel.name = id--'|cffff00ffWoW|r|cff00ff00Tools|r'
 InterfaceOptions_AddCategory(panel)
 
 local reloadButton=CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')
 reloadButton:SetPoint('TOPLEFT')
-reloadButton:SetText(RELOADUI)
+reloadButton:SetText(e.onlyChinse and '重新加载UI' or RELOADUI)
 reloadButton:SetSize(120, 28)
 reloadButton:SetScript('OnMouseDown', function()
     ReloadUI()
@@ -27,11 +28,14 @@ StaticPopupDialogs[id..'restAllSetup']={
 
 local restButton=CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')
 restButton:SetPoint('LEFT', reloadButton, 'RIGHT', 10, 0)
-restButton:SetText('|cnRED_FONT_COLOR:'..RESET_ALL_BUTTON_TEXT..'|r')
+restButton:SetText('|cnRED_FONT_COLOR:'..(e.onlyChinse and '全部重置' or RESET_ALL_BUTTON_TEXT)..'|r')
 restButton:SetSize(120, 28)
 restButton:SetScript('OnMouseDown', function()
     StaticPopup_Show(id..'restAllSetup')
 end)
+
+
+
 
 
 local gamePlus=e.Cstr(panel)
@@ -55,9 +59,36 @@ e.CPanel= function(name, value, GamePlus)
     return check
 end
 
+panel:RegisterEvent('ADDON_LOADED')
 panel:RegisterEvent("PLAYER_LOGOUT")
+
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "PLAYER_LOGOUT" and e.ClearAllSave then
-        WoWToolsSave={}
+    if event=='ADDON_LOADED' and arg1==id then
+
+        Save= WoWToolsSave and WoWToolsSave[addName] or Save
+        e.onlyChinse= Save.onlyChinse
+
+        local check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--仅中文
+        check:SetChecked(e.onlyChinse)
+        check.text:SetText('onlyChinse')
+        check:SetPoint('TOPLEFT', restButton, 'TOPRIGHT')
+        check:SetScript('OnMouseDown',function()
+            e.onlyChinse= not e.onlyChinse and true or nil
+            print(id, addName, e.GetEnabeleDisable(e.onlyChinse), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+        end)
+        check:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(LANGUAGE..'('..SHOW..')', LFG_LIST_LANGUAGE_ZHCN)
+            e.tips:Show()
+        end)
+        check:SetScript('OnLeave', function() e.tips:Hide() end)
+
+    elseif event == "PLAYER_LOGOUT" then
+        if e.ClearAllSave then
+            WoWToolsSave={}
+        else
+            WoWToolsSave[addName]=Save
+        end
     end
 end)

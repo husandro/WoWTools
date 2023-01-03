@@ -1,5 +1,5 @@
 local id, e = ...
-local addName= e.onlyChinse and '系统信息' or SYSTEM_MESSAGES--MAINMENU_BUTTON
+local addName= SYSTEM_MESSAGES--MAINMENU_BUTTON
 local Save={equipmetLevel=true, durabiliy=true, moneyWoW=true}
 
 local panel=e.Cbtn(nil, nil, nil,nil,nil,true,{12,12})
@@ -378,7 +378,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
         Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
-        local check=e.CPanel(addName, not Save.disabled, true)
+        local check=e.CPanel(e.onlyChinse and '系统信息' or addName, not Save.disabled, true)
         check:SetScript('OnMouseDown', function()
             Save.disabled= not Save.disabled and true or nil
             print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)

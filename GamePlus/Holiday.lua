@@ -1,5 +1,5 @@
 local id, e = ...
-local addName= e.onlyChinse and '节日' or CALENDAR_FILTER_HOLIDAYS
+local addName= CALENDAR_FILTER_HOLIDAYS
 local Save={onGoing=true}
 local panel= e.Cbtn(UIParent, nil, nil, nil, nil, true, {18,18})
 
@@ -371,15 +371,30 @@ local function InitMenu(self, level, type)--主菜单
             hasArrow=true,
         }
         UIDropDownMenu_AddButton(info, level)
-        UIDropDownMenu_AddSeparator(level)
-        info={--提示移动
-            text=e.Icon.right..(e.onlyChinse and '移动' or NPE_MOVE),
+
+        info={
+            text=e.Icon.left..(e.onlyChinse and '显示/隐藏' or (SHOW..'/'..HIDE)),
             isTitle=true,
             notCheckable=true
         }
         UIDropDownMenu_AddButton(info, level)
+        info={--点击这里显示日历
+            text=e.Icon.mid..(e.onlyChinse and '打开/关闭日历' or GAMETIME_TOOLTIP_TOGGLE_CALENDAR ),
+            isTitle=true,
+            notCheckable=true
+        }
+        UIDropDownMenu_AddButton(info, level)
+
+        UIDropDownMenu_AddSeparator(level)
+        info={--提示移动
+            text='Alt+'..e.Icon.right..(e.onlyChinse and '移动' or NPE_MOVE),
+            isTitle=true,
+            notCheckable=true
+        }
+        UIDropDownMenu_AddButton(info, level)
+
         info={
-            text=e.Icon.mid..UI_SCALE..(Save.scale or ''),
+            text='Alt+'..e.Icon.mid..(e.onlyChinse and '缩放' or UI_SCALE)..(Save.scale or 1),
             isTitle=true,
             notCheckable=true
         }
@@ -439,8 +454,10 @@ local function Init()
     panel:RegisterForDrag("RightButton")
     panel:SetMovable(true)
     panel:SetClampedToScreen(true)
-    panel:SetScript("OnDragStart", function(self)
-        self:StartMoving()
+    panel:SetScript("OnDragStart", function(self,d)
+        if IsAltKeyDown() then
+            self:StartMoving()
+        end
     end)
     panel:SetScript("OnDragStop", function(self)
         self:StopMovingOrSizing()
@@ -457,20 +474,24 @@ local function Init()
         end
     end)
     panel:SetScript('OnMouseWheel', function(self, d)--缩放
-        local sacle=Save.scale or 1
-        if d==1 then
-            sacle=sacle+0.1
-        elseif d==-1 then
-            sacle=sacle-0.1
+        if IsAltKeyDown() then
+            local sacle=Save.scale or 1
+            if d==1 then
+                sacle=sacle+0.1
+            elseif d==-1 then
+                sacle=sacle-0.1
+            end
+            if sacle>3 then
+                sacle=3
+            elseif sacle<0.6 then
+                sacle=0.6
+            end
+            print(id, addName, e.onlyChinse and '缩放' or UI_SCALE, sacle)
+            Save.scale=sacle
+            Text_Settings()--设置Text
+        else
+            Calendar_Toggle()
         end
-        if sacle>3 then
-            sacle=3
-        elseif sacle<0.6 then
-            sacle=0.6
-        end
-        print(id, addName, UI_SCALE, sacle)
-        Save.scale=sacle
-        Text_Settings()--设置Text
     end)
     panel:SetScript('OnLeave',function(self)
         self:SetButtonState('NORMAL')

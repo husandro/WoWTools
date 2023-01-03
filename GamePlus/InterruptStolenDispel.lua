@@ -1,5 +1,5 @@
 local id, e = ...
-local addName= e.onlyChinse and '断驱散' or INTERRUPTS..DISPELS..ACTION_SPELL_STOLEN
+local addName= INTERRUPTS..DISPELS..ACTION_SPELL_STOLEN
 
 local Save={}
 local panel=CreateFrame("Frame")
@@ -37,7 +37,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
             --添加控制面板        
-            local sel=e.CPanel(addName, not Save.disabled, true)
+            local sel=e.CPanel(e.onlyChinse and '断驱散' or addName, not Save.disabled, true)
             sel:SetScript('OnMouseDown', function()
                 if Save.disabled then
                     Save.disabled=nil
@@ -51,8 +51,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             sel:SetScript('OnEnter', function(self2)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine(addName, SAY, nil,nil,nil, 0,1,0)
-                e.tips:AddDoubleLine(LFG_LIST_CROSS_FACTION:format(COMBATLOG_FILTER_STRING_ME), LFG_LIST_CROSS_FACTION:format(HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS))--仅限我, 仅限队伍
+                e.tips:AddDoubleLine(addName, e.onlyChinse and '说' or SAY, nil,nil,nil, 0,1,0)
+                e.tips:AddDoubleLine(e.onlyChinse and '仅限我' or LFG_LIST_CROSS_FACTION:format(COMBATLOG_FILTER_STRING_ME), e.onlyChinse and '仅限队伍' or LFG_LIST_CROSS_FACTION:format(HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS))--仅限我, 仅限队伍
                 e.tips:Show()
             end)
             sel:SetScript('OnLeave', function()

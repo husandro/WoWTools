@@ -1,6 +1,6 @@
 local id, e = ...
 local Save={disabled=true}
-local addName= e.onlyChinse and '隐藏NPC发言' or HIDE..'NPC'..VOICE_TALKING
+local addName= HIDE..'NPC'..VOICE_TALKING
 local panel=CreateFrame('Frame')
 
 local function setRegister()--设置事件
@@ -21,7 +21,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
             --添加控制面板        
-            local sel=e.CPanel(addName, Save.disabled, true)
+            local sel=e.CPanel( e.onlyChinse and '隐藏NPC发言' or addName, Save.disabled, true)
             sel:SetScript('OnClick', function()
                 Save.disabled= not Save.disabled and true or nil
                 setRegister()--设置事件
