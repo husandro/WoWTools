@@ -441,7 +441,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             sel:SetScript('OnEnter', function(self2)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine(BAGSLOT..' '..MERCHANT, EMBLEM_SYMBOL..INFO)
+                if e.onlyChinse then
+                    e.tips:AddDoubleLine('系统背包, 商人', '物品信息')
+                else
+                    e.tips:AddDoubleLine(BAGSLOT..' '..MERCHANT, EMBLEM_SYMBOL..INFO)
+                end
                 e.tips:Show()
             end)
             sel:SetScript('OnLeave', function() e.tips:Hide() end)
