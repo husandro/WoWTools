@@ -45,13 +45,9 @@ local function Init()
     Heirloomframe.sel:SetPoint('BOTTOMRIGHT',-25, 35)
     Heirloomframe.sel:SetSize(18,18)
     Heirloomframe.sel:SetAlpha(0.5)
-    Heirloomframe.sel:SetScript('OnClick',function (self2)
-        if Save.disabledHeirloom then
-            Save.disabledHeirloom=nil
-        else
-            Save.disabledHeirloom=true
-        end
-        print(id, addName, e.GetEnabeleDisable(not Save.disabledHeirloom))
+    Heirloomframe.sel:SetScript('OnMouseDown',function (self2)
+        Save.disabledHeirloom= not Save.disabledHeirloom and true or nil
+        print(id, addName, e.GetEnabeleDisable(not Save.disabledHeirloom), e.onlyChinse and '刷新' or REFRESH)
         self2:SetNormalAtlas(Save.disabledHeirloom and e.Icon.disabled or e.Icon.icon)
     end)
     Heirloomframe.sel:SetScript('OnEnter', function (self2)
