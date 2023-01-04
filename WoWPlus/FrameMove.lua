@@ -268,7 +268,7 @@ local function setAddLoad(arg1)
         Move(GarrisonMissionFrame, {})--要塞任务
         Move(GarrisonCapacitiveDisplayFrame, {})--要塞订单
         Move(GarrisonLandingPage, {})--要塞报告
-
+        Move(OrderHallMissionFrame, {})
     elseif arg1=='Blizzard_PlayerChoice' then
         Move(PlayerChoiceFrame, {})--任务选择
     elseif arg1=="Blizzard_GuildBankUI" then--公会银行
