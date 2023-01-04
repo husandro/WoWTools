@@ -436,7 +436,7 @@ local setFriendshipFaction=function(self, friendshipID)--friend声望
     local repInfo = C_GossipInfo.GetFriendshipReputation(friendshipID);
 	if ( repInfo and repInfo.friendshipFactionID and repInfo.friendshipFactionID > 0) then
         local icon = (repInfo.texture and repInfo.texture>0) and repInfo.texture
-        self:AddDoubleLine((e.onlyChinse and '个人声望' or INDIVIDUALS..REPUTATION)..' '..friendshipID, icon and '|T'..icon..':0|t'..icon)
+        self:AddDoubleLine((e.onlyChinse and '个人声望' or (INDIVIDUALS..REPUTATION))..' '..friendshipID, icon and '|T'..icon..':0|t'..icon)
         self:Show()
     end
 end
