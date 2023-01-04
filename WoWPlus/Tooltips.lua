@@ -80,7 +80,7 @@ local function setMount(self, mountID)--坐骑
     end
     local creatureDisplayInfoID, description, source, isSelfMount, mountTypeID, uiModelSceneID, animID, spellVisualKitID, disablePlayerMountPreview = C_MountJournal.GetMountInfoExtraByID(mountID)
     if creatureDisplayInfoID then
-        self:AddDoubleLine((e.onlyChinse and '模型' or MODEL)..' '..creatureDisplayInfoID, (e.onlyChinse and '变形' or TUTORIAL_TITLE61_DRUID)..': '..e.GetYesNo(isSelfMount))
+        self:AddDoubleLine((e.onlyChinse and '模型' or MODEL)..' '..creatureDisplayInfoID, (e.onlyChinse and '变形' or TUTORIAL_TITLE61_DRUID)..' '..e.GetYesNo(isSelfMount))
     end
     if source then
         self:AddLine(source,nil,nil,nil,true)
@@ -191,9 +191,9 @@ local function setItem(self, ItemLink)
     if expacID then--版本数据
         self:AddDoubleLine(e.GetExpansionText(expacID))
     end
-    self:AddDoubleLine(itemID and (e.onlyChinse and '物品' or ITEMS)..': '.. itemID or ' ' , itemTexture and '|T'..itemTexture..':0|t'..itemTexture)--ID, texture
+    self:AddDoubleLine(itemID and (e.onlyChinse and '物品' or ITEMS)..' '.. itemID or ' ' , itemTexture and '|T'..itemTexture..':0|t'..itemTexture)--ID, texture
     if classID and subclassID then
-        self:AddDoubleLine((itemType and itemType..' classID'  or 'classID') ..': '..classID, (itemSubType and itemSubType..' subID' or 'subclassID')..': '..subclassID)
+        self:AddDoubleLine((itemType and itemType..' classID'  or 'classID') ..' '..classID, (itemSubType and itemSubType..' subID' or 'subclassID')..' '..subclassID)
     end
 
     if classID==2 or classID==4 then
@@ -201,7 +201,7 @@ local function setItem(self, ItemLink)
         if itemLevel and itemLevel>1 then
             local slot=itemEquipLoc and e.itemSlotTable[itemEquipLoc]--比较装等
             if slot then
-                self:AddDoubleLine(_G[itemEquipLoc], (e.onlyChinse and '栏位' or TRADESKILL_FILTER_SLOTS)..': '..slot)--栏位
+                self:AddDoubleLine(_G[itemEquipLoc], (e.onlyChinse and '栏位' or TRADESKILL_FILTER_SLOTS)..' '..slot)--栏位
                 local slotLink=GetInventoryItemLink('player', slot)
                 local text
                 if slotLink then
@@ -265,7 +265,7 @@ local function setItem(self, ItemLink)
                 self.text2Left:SetText(collectedNum)
             end
         elseif C_ToyBox.GetToyInfo(itemID) then--玩具
-            self.text2Left:SetText(PlayerHasToy(itemID) and '|cnGREEN_FONT_COLOR:'..COLLECTED..'|r' or '|cnRED_FONT_COLOR:'..NOT_COLLECTED..'|r')
+            self.text2Left:SetText(PlayerHasToy(itemID) and '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinse and '未收集' or NOT_COLLECTED)..'|r')
         else
             local mountID = C_MountJournal.GetMountFromItem(itemID)--坐骑物品
             local speciesID = select(13, C_PetJournal.GetPetInfoByItemID(itemID))
@@ -280,7 +280,7 @@ local function setItem(self, ItemLink)
     local spellName, spellID = GetItemSpell(ItemLink)--物品法术
     if spellName and spellID then
         local spellTexture=GetSpellTexture(spellID)
-        self:AddDoubleLine((itemName~=spellName and hex..'['..spellName..']|r' or '')..(e.onlyChinse and '法术' or SPELLS)..': '..spellID, spellTexture and spellTexture~=itemTexture  and '|T'..spellTexture..':0|t'..spellTexture or ' ')
+        self:AddDoubleLine((itemName~=spellName and hex..'['..spellName..']|r' or '')..(e.onlyChinse and '法术' or SPELLS)..' '..spellID, spellTexture and spellTexture~=itemTexture  and '|T'..spellTexture..':0|t'..spellTexture or ' ')
     end
     
     local bag= GetItemCount(ItemLink)--物品数量

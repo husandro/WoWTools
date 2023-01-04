@@ -12,12 +12,12 @@ local Save={
         [SPELLS]={[2645]=true, [111400]=true, [343016]=true, [195072]=true, [2983]=true, [190784]=true, [48265]=true, [186257]=true, [6544]=true},
         [FLOOR]={},
         [MOUNT_JOURNAL_FILTER_GROUND]={
-            [339588]=true,--[罪奔者布兰契]
-            --[163024]=true,--战火梦魇兽
+            --[339588]=true,--[罪奔者布兰契]
+            [163024]=true,--战火梦魇兽
         },
         [MOUNT_JOURNAL_FILTER_FLYING]={
-            [339588]=true,--[罪奔者布兰契]
-            --[163024]=ture,--战火梦魇兽
+            --[339588]=true,--[罪奔者布兰契]
+            [163024]=ture,--战火梦魇兽
         },
         [MOUNT_JOURNAL_FILTER_AQUATIC]={
             --[359379]=true,--闪光元水母
