@@ -72,7 +72,7 @@ local function set_GroupGuid()--队伍数据收集
         end
         tab={unit='player', combatRole=UnitGroupRolesAssigned('player')}
         e.GroupGuid[e.Player.guid]=tab
-        e.GroupGuid[UnitName('player')]=tab        
+        e.GroupGuid[UnitName('player')]=tab
     end
 end
 

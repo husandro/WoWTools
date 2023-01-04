@@ -128,6 +128,9 @@ end
 
 e.PlayerLink=function(name, guid) --玩家超链接
     local class, race,sex
+    if not guid and name and e.GroupGuid[name] and e.GroupGuid[name].unit then
+        guid= UnitGUID(e.GroupGuid[name].unit)
+    end
     if guid then
         local _, class2, _, englishRace, sex2, name2 = GetPlayerInfoByGUID(guid)
         name = name or name2
