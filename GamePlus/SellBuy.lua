@@ -575,14 +575,12 @@ local function InitList(self, level, menuLit)
     info= {--堆叠数量
         text= (e.onlyChinse and '堆叠数量' or AUCTION_STACK_SIZE).. ' Plus',
         checked= not Save.notStackSplit,
+        tooltipOnButton=true,
+        tooltipTitle= e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD,
         func=function ()
             Save.notStackSplit = not Save.notStackSplit and true or nil
         end,
     }
-    if not Save.notStackSplit then
-        info.tooltipOnButton=true
-        info.tooltipTitle=	NEED..' /reload'
-    end
     UIDropDownMenu_AddButton(info)
 end
 
