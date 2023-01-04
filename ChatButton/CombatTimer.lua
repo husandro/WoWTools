@@ -42,7 +42,11 @@ local function setText()--设置显示内容
             end
         end
         text= text and text..'\n' or ''
-        text= text ..(Save.hideCombatText and '' or '|cnRED_FONT_COLOR:'..(e.onlyChinse and '战斗' or COMBAT))..'|r|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a'..combat
+        if Save.hideCombatText then
+            text= text ..'|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a|cnRED_FONT_COLOR:'..combat..'|r'
+        else
+            text= text ..'|cnRED_FONT_COLOR:'..(e.onlyChinse and '战斗' or COMBAT)..'|r|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a'..combat
+        end
     end
 
     if OnAFKTime then
@@ -341,6 +345,7 @@ local function InitMenu(self, level, type)--主菜单
         info={
             text= e.onlyChinse and '战斗中缩放 1.5' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..UI_SCALE..' 1.5',
             checked= Save.combatScale,
+            disabled= UnitAffectingCombat('player'),
             func= function()
                 Save.combatScale= not Save.combatScale and true or nil
                 if Save.combatScale and UnitAffectingCombat('player') then--战斗中缩放
