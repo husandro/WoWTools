@@ -9,6 +9,7 @@ local Save= {textScale=1.2,
         pet={num= 0,  win=0, capture=0},
         ins={num= 0, time= 0, kill=0, dead=0},
         afk={num= 0, time= 0},
+        hideCombatText= not e.Player.husandro,--隐藏, 战斗, 文本
 }
 local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
 panel.textFrame=e.Cbtn(WoWToolsChatButtonFrame, nil, nil, nil, nil, true, {20,20})
@@ -41,7 +42,7 @@ local function setText()--设置显示内容
             end
         end
         text= text and text..'\n' or ''
-        text= text ..'|cnRED_FONT_COLOR:'..(e.onlyChinse and '战斗' or COMBAT)..'|r|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a'..combat
+        text= text ..(Save.hideCombatText and '' or '|cnRED_FONT_COLOR:'..(e.onlyChinse and '战斗' or COMBAT))..'|r|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a'..combat
     end
 
     if OnAFKTime then
@@ -347,6 +348,15 @@ local function InitMenu(self, level, type)--主菜单
                 else
                     panel:SetScale(1)
                 end
+            end
+        }
+        UIDropDownMenu_AddButton(info, level)
+
+        info={
+            text= e.onlyChinse and '隐藏|cnRED_FONT_COLOR:战斗|r文本' or (HIDE..'|cnRED_FONT_COLOR:'..COMBAT..'|r'..LOCALE_TEXT_LABEL),
+            checked= Save.hideCombatText,
+            func= function()
+                Save.hideCombatText= not Save.hideCombatText and true or nil
             end
         }
         UIDropDownMenu_AddButton(info, level)
