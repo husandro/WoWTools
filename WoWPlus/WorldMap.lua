@@ -126,22 +126,22 @@ local function Quest(self, questID)--任务
     if lv then t=t..'['..lv..']' else t=t..' 'end
     if C_QuestLog.IsComplete(questID) then t=t..'|cFF00FF00'..(e.onlyChinse and '完成' or COMPLETE)..'|r' else t=t..(e.onlyChinse and '未完成' or INCOMPLETE) end
     if t=='' then t=t..(e.onlyChinse and '任务' or QUESTS_LABEL) end
-    t=t..' ID:'
+    t=t..' ID'
     self:AddDoubleLine(t, questID)
 
     local distanceSq= C_QuestLog.GetDistanceSqToQuest(questID)--距离
     if distanceSq then
-        t= (e.onlyChinse and '距离' or TRACK_QUEST_PROXIMITY_SORTING)..': '
+        t= ''
         local _, x, y = QuestPOIGetIconInfo(questID)
         if x and y then
             x=math.modf(x*100) y=math.modf(y*100)
-            if x and y then t=t..x..', '..y end
+            if x and y then t='XY '..x..', '..y end
         end
-        self:AddDoubleLine(t,  Code:format(e.MK(distanceSq)))
+        self:AddDoubleLine(t,  (e.onlyChinse and '距离' or TRACK_QUEST_PROXIMITY_SORTING)..format(Code, e.MK(distanceSq)))
     end
     if IsInGroup() then
         t= e.GetYesNo(C_QuestLog.IsPushableQuest(questID))--共享
-        local t2= (e.onlyChinse and '共享' or SHARE_QUEST)..': '
+        local t2= (e.onlyChinse and '共享' or SHARE_QUEST)..' '
         local u if IsInRaid() then u='raid' else u='party' end
         local n,acceto=GetNumGroupMembers(), 0
         for i=1, n do
@@ -362,15 +362,17 @@ local function setOnEnter(self)--地图ID提示
     e.tips:ClearLines()
     e.tips:AddDoubleLine(id, addName)
     e.tips:AddLine(' ')
-    e.tips:AddDoubleLine(e.L['LAYER']..':', e.Layer and e.Layer or e.onlyChinse and '无' or NONE)
+    if e.Layer then
+        e.tips:AddDoubleLine(e.L['LAYER'], e.Layer)
+    end
     local uiMapID = frame.mapID or frame:GetMapID("current")
     if uiMapID then
         local info = C_Map.GetMapInfo(uiMapID)
         if info then
-            e.tips:AddDoubleLine(info.name, 'mapID: '..info.mapID or uiMapID)--地图ID
+            e.tips:AddDoubleLine(info.name, 'mapID '..info.mapID or uiMapID)--地图ID
             local uiMapGroupID = C_Map.GetMapGroupID(uiMapID)
             if uiMapGroupID then
-                e.tips:AddDoubleLine(e.onlyChinse and '区域' or FLOOR, 'uiMapGroupID: g'..uiMapGroupID)
+                e.tips:AddDoubleLine(e.onlyChinse and '区域' or FLOOR, 'uiMapGroupID g'..uiMapGroupID)
             end
         end
         local areaPoiIDs=C_AreaPoiInfo.GetAreaPOIForMap(uiMapID)
@@ -380,8 +382,8 @@ local function setOnEnter(self)--地图ID提示
                 if poiInfo and (poiInfo.areaPoiID or poiInfo.widgetSetID) then
                     e.tips:AddDoubleLine((poiInfo.atlasName and '|A:'..poiInfo.atlasName..':0:0|a' or '')
                     .. poiInfo.name
-                    ..(poiInfo.widgetSetID and 'widgetSetID: '..poiInfo.widgetSetID or ''),
-                    'areaPoiID: '..(poiInfo.areaPoiID or NONE))
+                    ..(poiInfo.widgetSetID and 'widgetSetID '..poiInfo.widgetSetID or ''),
+                    'areaPoiID '..(poiInfo.areaPoiID or NONE))
                 end
             end
         end
@@ -390,7 +392,7 @@ local function setOnEnter(self)--地图ID提示
             if instanceID then
                 e.tips:AddDoubleLine(e.onlyChinse and '副本' or INSTANCE, instanceID)
                 if LfgDungeonID then
-                    e.tips:AddDoubleLine(e.onlyChinse and '随机副本ID' or (SLASH_RANDOM3:gsub('/','')..INSTANCE..'ID'), LfgDungeonID)
+                    e.tips:AddDoubleLine(e.onlyChinse and '随机副本' or (SLASH_RANDOM3:gsub('/','')..INSTANCE), LfgDungeonID)
                 end
             end
         end
