@@ -603,7 +603,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             level= MAX_PLAYER_LEVEL>level and '|cnGREEN_FONT_COLOR:'..level..'|r' or level
             --className= col and col..className..'|r' or className
             --text= text..LEVEL..' '..level..'  '..e.Race(nil, raceFile, sex)..raceName..' '..e.Class(nil, classFilename)..className..(UnitIsPVP(unit) and  '  (|cnRED_FONT_COLOR:PvP|r)' or '  (|cnGREEN_FONT_COLOR:PvE|r)')
-            text= text..level..'   '..e.Class(nil, classFilename)..' '..e.Race(nil, raceFile, sex)..raceName..'   '..(UnitIsPVP(unit) and  '   (|cnRED_FONT_COLOR:PvP|r)' or '   (|cnGREEN_FONT_COLOR:PvE|r)')
+            text= text..level..'  '..e.Class(nil, classFilename)..'  '..e.Race(nil, raceFile, sex)..raceName..'  '..(UnitIsPVP(unit) and  '(|cnRED_FONT_COLOR:PvP|r)' or '(|cnGREEN_FONT_COLOR:PvE|r)')
             text= col and col..text..'|r' or text
             line:SetText(text)
         end
