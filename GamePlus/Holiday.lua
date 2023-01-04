@@ -339,7 +339,7 @@ local function InitMenu(self, level, type)--主菜单
         }
         UIDropDownMenu_AddButton(info, level)
         info={
-            text= e.onlyChinse and '节日' or CALENDAR_FILTER_HOLIDAYS..' ID',--时间
+            text= e.onlyChinse and '节日 ID' or CALENDAR_FILTER_HOLIDAYS..' ID',--时间
             checked= Save.showID,
             func= function()
                 Save.showID= not Save.showID and true or nil
