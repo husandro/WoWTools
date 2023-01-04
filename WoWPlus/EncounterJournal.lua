@@ -408,10 +408,10 @@ local function set_EncounterJournal_Money_Tips(self)--险指南界面, 钱
         end
     end
     if allMoney==0 then
-        e.tips:AddDoubleLine(MONEY, NONE)
+        e.tips:AddDoubleLine(e.onlyChinse and '钱' or MONEY, e.onlyChinse and '无' or NONE)
     else
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(CHARACTER..numPlayer..' '..FROM_TOTAL..e.MK(allMoney/10000, 3), GetCoinTextureString(allMoney))
+        e.tips:AddDoubleLine((e.onlyChinse and '角色' or CHARACTER)..' '..numPlayer..' '..(e.onlyChinse and '总计：' or FROM_TOTAL)..e.MK(allMoney/10000, 3), GetCoinTextureString(allMoney))
     end
     e.tips:Show()
 end
@@ -436,7 +436,9 @@ local function Init()--冒险指南界面
             Save.hideEncounterJournal= not Save.hideEncounterJournal and true or nil
             EncounterJournal.instance:SetShown(not Save.hideEncounterJournal)
             EncounterJournal.Worldboss:SetShown(not Save.hideEncounterJournal)
-            EncounterJournal.keystones:SetShown(not Save.hideEncounterJournal)
+            if EncounterJournal.keystones then
+                EncounterJournal.keystones:SetShown(not Save.hideEncounterJournal)
+            end
             EncounterJournal.money:SetShown(not Save.hideEncounterJournal)
             EncounterJournal.btn:SetNormalAtlas(Save.hideEncounterJournal and e.Icon.disabled or e.Icon.icon )
             print(id, addName, e.GetShowHide(not Save.hideEncounterJournal), e.onlyChinse and '需要刷新' or NEED..REFRESH)
@@ -503,19 +505,19 @@ local function Init()--冒险指南界面
     end)
     EncounterJournal.Worldboss:SetScript("OnLeave",function() e.tips:Hide() end)
 
-
-    EncounterJournal.keystones =e.Cbtn(EncounterJournal.TitleContainer, nil ,true)--所有角色,挑战
-    EncounterJournal.keystones:SetPoint('RIGHT', EncounterJournal.Worldboss, 'LEFT')
-    EncounterJournal.keystones:SetNormalTexture(4352494)
-    EncounterJournal.keystones:SetSize(22,22)
-    EncounterJournal.keystones:SetScript('OnEnter',set_EncounterJournal_Keystones_Tips)
-    EncounterJournal.keystones:SetScript("OnLeave",function() e.tips:Hide() end)
-    EncounterJournal.keystones:SetScript('OnMouseDown', function()
-        PVEFrame_ToggleFrame('ChallengesFrame',3)
-    end)
-
+    if e.Player.levelMax then--UnitLevel("player") >= GetMaxLevelForPlayerExpansion()
+        EncounterJournal.keystones =e.Cbtn(EncounterJournal.TitleContainer, nil ,true)--所有角色,挑战
+        EncounterJournal.keystones:SetPoint('RIGHT', EncounterJournal.Worldboss, 'LEFT')
+        EncounterJournal.keystones:SetNormalTexture(4352494)
+        EncounterJournal.keystones:SetSize(22,22)
+        EncounterJournal.keystones:SetScript('OnEnter',set_EncounterJournal_Keystones_Tips)
+        EncounterJournal.keystones:SetScript("OnLeave",function() e.tips:Hide() end)
+        EncounterJournal.keystones:SetScript('OnMouseDown', function()
+            PVEFrame_ToggleFrame('ChallengesFrame',3)
+        end)
+    end
     EncounterJournal.money =e.Cbtn(EncounterJournal.TitleContainer, nil ,true)--钱
-    EncounterJournal.money:SetPoint('RIGHT', EncounterJournal.keystones, 'LEFT')
+    EncounterJournal.money:SetPoint('RIGHT', EncounterJournal.keystones or EncounterJournal.Worldboss, 'LEFT')
     EncounterJournal.money:SetNormalAtlas('Front-Gold-Icon')
     EncounterJournal.money:SetSize(22,22)
     EncounterJournal.money:SetScript('OnEnter',set_EncounterJournal_Money_Tips)
@@ -524,7 +526,9 @@ local function Init()--冒险指南界面
     EncounterJournal.money:SetShown(not Save.hideEncounterJournal)
     EncounterJournal.instance:SetShown(not Save.hideEncounterJournal)
     EncounterJournal.Worldboss:SetShown(not Save.hideEncounterJournal)
-    EncounterJournal.keystones:SetShown(not Save.hideEncounterJournal)
+    if EncounterJournal.keystones then
+        EncounterJournal.keystones:SetShown(not Save.hideEncounterJournal)
+    end
     setWorldbossText()
     setInstanceBossText()
 
@@ -637,11 +641,7 @@ local function Init()--冒险指南界面
                         e.tips:AddLine(' ')
                     end
                     local texture=button.bgImage:GetTexture()
-                    e.tips:AddDoubleLine('journalInstanceID: '..button.instanceID, texture and EMBLEM_SYMBOL..'ID: '..texture)
-                    if texture and e.tips.Portrait then
-                        e.tips.Portrait:SetTexture(texture)
-                        e.tips.Portrait:SetShown(true)
-                    end
+                    e.tips:AddDoubleLine('journalInstanceID: '..button.instanceID, texture and '|T'..texture..':0|t'..texture)
                     e.tips:Show()
                 end)
                 button:SetScript('OnLeave', function() e.tips:Hide() end)
@@ -810,7 +810,7 @@ local function Init()--冒险指南界面
             local index = offset + i;
             if ( index <= #self2.itemSets ) then
                 local setID=self2.itemSets[index].setID
-                local collected= setID and GetSetsCollectedNum(setID)--收集数量
+                local collected= e.GetSetsCollectedNum(setID)--收集数量
                 if collected and self2.itemSets[index].name then
                     button.SetName:SetText(self2.itemSets[index].name..collected)
                 end

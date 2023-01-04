@@ -788,6 +788,32 @@ e.GetTimeInfo= function(value, chat, time)
     end
 end
 
+e.GetSetsCollectedNum= function(setID)--套装 , 收集数量
+    local info= setID and C_TransmogSets.GetSetPrimaryAppearances(setID)
+    local numCollected,numAll=0,0
+    if info then
+        for _,v in pairs(info) do
+            numAll=numAll+1
+            if v.collected then
+                numCollected=numCollected + 1
+            end
+        end
+    end
+    if numAll>0 then
+        if numCollected==numAll then
+            return '|A:transmog-icon-checkmark:6:6|a', numCollected, numAll
+        elseif numAll <=9 then
+            return e.Icon.number2:format(numAll-numCollected), numCollected, numAll
+        else
+            if numCollected==0 then
+                return '|cnRED_FONT_COLOR:'..numAll-numCollected..'|r ', numCollected, numAll
+            else
+                return ' |cffffff00'..numAll-numCollected..'|r ', numCollected, numAll
+            end
+        end
+    end
+end
+
 e.GetItemCollected= function(link, sourceID, icon)--物品是否收集 
     sourceID= sourceID or link and select(2,C_TransmogCollection.GetItemInfo(link))
     local sourceInfo = sourceID and C_TransmogCollection.GetSourceInfo(sourceID)

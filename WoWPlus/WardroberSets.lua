@@ -199,25 +199,28 @@ local function InitWardrobe()
         local header, Limited, version
         local lable, tip, buttonTip= '', '',''
         local maxNum=0
-        for k,info in pairs(sets) do
-            local numCollected, numAll = GetSetsCollectedNum(info.setID)
+        for _, info in pairs(sets) do
+            if info then
+                local numCollected, _, numAll = e.GetSetsCollectedNum(info.setID)
+                if numCollected and numAll then
+                    maxNum= (not maxNum or maxNum<numAll) and numAll or maxNum
+                    if not header then
+                        header= info.name
+                        header= info.limitedTimeSet and header..'\n'..e.Icon.clock2..'|cnRED_FONT_COLOR:'..TRANSMOG_SET_LIMITED_TIME_SET..'|r' or header
+                        header = info.label and header..'\n|cnBRIGHTBLUE_FONT_COLOR:'..info.label..'|r' or header
+                        version=info.expansionID and _G['EXPANSION_NAME'..info.expansionID]
+                        header = header ..(version and '\n'..'|cnGREEN_FONT_COLOR:'..version..'|r' or '')..(info.patchID and ' toc v.'..info.patchID or '')
 
-            maxNum= (not maxNum or maxNum<numAll) and numAll or maxNum
-            if not header then
-                header= info.name
-                header= info.limitedTimeSet and header..'\n'..e.Icon.clock2..'|cnRED_FONT_COLOR:'..TRANSMOG_SET_LIMITED_TIME_SET..'|r' or header
-                header = info.label and header..'\n|cnBRIGHTBLUE_FONT_COLOR:'..info.label..'|r' or header
-                version=info.expansionID and _G['EXPANSION_NAME'..info.expansionID]
-                header = header ..(version and '\n'..'|cnGREEN_FONT_COLOR:'..version..'|r' or '')..(info.patchID and ' toc v.'..info.patchID or '')
+                    end
+                    lable=lable..numCollected..' '
 
+                    local num=numCollected..'/'..(numAll<=9 and e.Icon.number2:format(numAll) or numAll)
+                    tip=tip..num..(info.description or info.name)..(info.limitedTimeSet and e.Icon.clock2 or '')..(info.setID and ' setID: '..info.setID or '')..'\n'
+                    buttonTip=buttonTip..num..(info.description or info.name)..(info.limitedTimeSet and e.Icon.clock2 or '')..'\n'
+
+                    Limited= info.limitedTimeSet and true or Limited
+                end
             end
-            lable=lable..numCollected..' '
-
-            local num=numCollected..'/'..(numAll<=9 and e.Icon.number2:format(numAll) or numAll)
-            tip=tip..num..(info.description or info.name)..(info.limitedTimeSet and e.Icon.clock2 or '')..(info.setID and ' setID: '..info.setID or '')..'\n'
-            buttonTip=buttonTip..num..(info.description or info.name)..(info.limitedTimeSet and e.Icon.clock2 or '')..'\n'
-
-            Limited= info.limitedTimeSet and true or Limited
         end
 
         button.tips=(version and version..'\n\n' or '')..buttonTip--点击，显示套装情况
