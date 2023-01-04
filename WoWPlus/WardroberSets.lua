@@ -159,23 +159,6 @@ local function InitWardrobe()
     local frame=frame2.SetsCollectionFrame.DetailsFrame
     local list=WardrobeSetsScrollFrameButtonMixin
 
-    local function GetSetsCollectedNum(setID)
-        local info=C_TransmogSets.GetSetPrimaryAppearances(setID) or {}
-        local numCollected,numAll=0,0
-        for _,v in pairs(info) do
-            numAll=numAll+1
-            if v.collected then
-                numCollected=numCollected + 1
-            end
-        end
-        if numCollected==numAll then
-            return ' |A:transmog-icon-checkmark:6:6|a ', numAll
-        elseif numAll <=9 then
-            return e.Icon.number2:format(numAll-numCollected), numAll
-        else
-            return ' '..numAll-numCollected..' ', numAll
-        end
-    end
     hooksecurefunc(list, 'Init', function(button, displayData)--外观列表    
         local setID=displayData.setID
         local sets = C_TransmogSets.GetVariantSets(setID)
