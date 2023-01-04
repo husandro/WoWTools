@@ -14,7 +14,7 @@ local Save={
         [199900]=true,--[二手勘测工具]
     },
     pet=true, open=true, toy=true, mount=true, mago=true, ski=true, alt=true,
-    noItemHide=true,
+    noItemHide=not e.Player.husandro,
 }
 
 local addName=UNWRAP..ITEMS
@@ -73,7 +73,7 @@ local function getItems()--取得背包物品信息
     equipItem=nil
     Bag={}
     local levelPlayer=UnitLevel('player')
-    
+
     for bag=0, NUM_BAG_SLOTS do
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local info = C_Container.GetContainerItemInfo(bag, slot)
@@ -112,9 +112,15 @@ local function getItems()--取得背包物品信息
                             return
                         end
 
-                    elseif classID==9 and subclassID >0 then--配方                    
+                    elseif classID==9 then--配方                    
                         if Save.ski then
-                            setAtt(bag, slot, info.iconFileID, info.itemID)
+                            if subclassID == 0 then
+                                if GetItemSpell(info.hyperlink) then
+                                    setAtt(bag, slot, info.iconFileID, info.itemID)
+                                end
+                            else
+                                setAtt(bag, slot, info.iconFileID, info.itemID)
+                            end
                             return
                         end
 
@@ -135,7 +141,7 @@ local function getItems()--取得背包物品信息
                             setAtt(bag, slot, info.iconFileID, info.itemID)
                             return
                         end
-                    elseif C_ToyBox.GetToyInfo(info.itemID) then 
+                    elseif C_ToyBox.GetToyInfo(info.itemID) then
                         if Save.toy and not PlayerHasToy(info.itemID) then--玩具 
                             setAtt(bag, slot, info.iconFileID, info.itemID)
                             return
@@ -374,7 +380,7 @@ local function setMenuList(self, level, menuList)--主菜单
         tooltipOnButton=true,
         tooltipTitle= e.onlyChinse and '未发现物品' or BROWSE_NO_RESULTS,
         func=function()
-            if Save.noItemHide  then 
+            if Save.noItemHide  then
                 Save.noItemHide =nil
             else
                 Save.noItemHide =true

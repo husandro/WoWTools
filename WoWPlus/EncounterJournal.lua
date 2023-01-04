@@ -650,33 +650,16 @@ local function Init()--冒险指南界面
     end)
 
     --Boss, 战利品, 信息
-    hooksecurefunc(EncounterJournalItemMixin,'Init',function(self2, elementData)--Blizzard_EncounterJournal.lua
-        if Save.hideEncounterJournal or not self2.link or not self2.itemID then
-            return
-        end
-        if self2.name then--幻化
-            local text, collected = e.GetItemCollected(self2.link, nil, true)--物品是否收集, 返回图标
-            if text then
-                if not collected then
-                    self2.name:SetText(self2.name:GetText()..text)
-                end
-            else
-                local mountID = C_MountJournal.GetMountFromItem(self2.itemID)--坐骑物品
-                local speciesID = select(13, C_PetJournal.GetPetInfoByItemID(self2.itemID))--宠物物品
-                text=speciesID and e.GetPetCollected(speciesID) or mountID and e.GetMountCollected(mountID)--宠物, 收集数量
-                if text then
-                    self2.name:SetText(self2.name:GetText()..text)
-                end
-            end
-        end
-        if self2.slot then--专精图标
-            local specTable = GetItemSpecInfo(self2.link) or {}
+    hooksecurefunc(EncounterJournalItemMixin,'Init',function(self, elementData)--Blizzard_EncounterJournal.lua
+        local text
+        if not Save.hideEncounterJournal and self.link and self.itemID and self.slot then
+            local specTable = GetItemSpecInfo(self.link) or {}--专精图标
             local specTableNum=#specTable
             if specTableNum>0 then
                 local specA=''
                 local class
                 table.sort(specTable, function (a2, b2) return a2<b2 end)
-                for k,  specID in pairs(specTable) do
+                for _,  specID in pairs(specTable) do
                     local icon2, _, classFile=select(4, GetSpecializationInfoByID(specID))
                     if icon2 and classFile then
                         icon2='|T'..icon2..':0|t'
@@ -685,9 +668,33 @@ local function Init()--冒险指南界面
                     end
                 end
                 if specA~='' then
-                    self2.slot:SetText((self2.slot:GetText() or '')..specA)
+                    text= text or ''
+                    text= text..specA
                 end
             end
+
+            local item, collected = e.GetItemCollected(self.link, nil, true)--物品是否收集, 返回图标, 幻化
+            if item  then
+                if not collected then
+                    text= text and '' or '   '
+                    text= text..item
+                end
+            else
+                local mountID = C_MountJournal.GetMountFromItem(self.itemID)--坐骑物品
+                local speciesID = select(13, C_PetJournal.GetPetInfoByItemID(self.itemID))--宠物物品
+                local str= speciesID and e.GetPetCollected(speciesID) or mountID and e.GetMountCollected(mountID)--宠物, 收集数量
+                if str then
+                    text= text and '' or '   '
+                    text= text..str
+                end
+            end
+        end
+        if text and not self.collectedText and self.slot then
+            self.collectedText= e.Cstr(self, nil,nil,nil,nil,nil,'CENTER')
+            self.collectedText:SetPoint('CENTER', self.slot, 'CENTER', 5, 0)
+        end
+        if self.collectedText then
+            self.collectedText:SetText(text or '')
         end
     end)
     --boss, ID, 信息
@@ -906,15 +913,28 @@ local function Init()--冒险指南界面
         end)
         self2:SetScript('OnLeave', function() e.tips:Hide() end)
     end)
-    --BOSS模型
-    hooksecurefunc('EncounterJournal_DisplayCreature', function(self2, forceUpdate)
-        if not Save.hideEncounterJournal and EncounterJournal.creatureDisplayID and not EncounterJournal.creatureDisplayIDText then
-            local modelScene = EncounterJournal.encounter.info.model;
-            EncounterJournal.creatureDisplayIDText=e.Cstr(modelScene,14, modelScene.imageTitle)
-            EncounterJournal.creatureDisplayIDText:SetPoint('BOTTOMLEFT', 5, 2)
+    --BOSS模型 Blizzard_EncounterJournal.lua
+    hooksecurefunc('EncounterJournal_DisplayCreature', function(self, forceUpdate)
+        local text
+        if not Save.hideEncounterJournal and self.displayInfo and EncounterJournal.encounter and EncounterJournal.encounter.info and EncounterJournal.encounter.info.model and EncounterJournal.encounter.info.model.imageTitle then
+            if not EncounterJournal.creatureDisplayIDText then
+                EncounterJournal.creatureDisplayIDText=e.Cstr(self,10, EncounterJournal.encounter.info.model.imageTitle)
+                EncounterJournal.creatureDisplayIDText:SetPoint('BOTTOM', EncounterJournal.encounter.info.model.imageTitle, 'TOP', 0 , 10)
+            end
+            
+            if EncounterJournal.iconImage  then
+                text= (text or '')..'|T'..EncounterJournal.iconImage..':0|t'..iconImage..'\n'
+            end
+            if self.id then
+                text= (text or '')..'JournalEncounterCreatureID '.. self.id..'\n'
+            end
+            if self.uiModelSceneID  then
+                text= (text or '')..'uiModelSceneID '..self.uiModelSceneID..'\n'
+            end
+            text= (text or '')..'CreatureDisplayID ' .. self.displayInfo
         end
         if EncounterJournal.creatureDisplayIDText then
-            EncounterJournal.creatureDisplayIDText:SetText((EncounterJournal.creatureDisplayID and not Save.hideEncounterJournal) and MODEL..'ID: '..EncounterJournal.creatureDisplayID or '')
+            EncounterJournal.creatureDisplayIDText:SetText(text or '')
         end
     end)
 

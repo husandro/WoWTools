@@ -1,7 +1,6 @@
 local id, e = ...
 local addName= 'Emoji'
-local Save={Channels={}, disabled= not e.Player.zh}
-
+local Save={Channels={}, disabled= not e.Player.zh and not e.Player.husandro }
 local panel=e.Cbtn2('WoWToolsChatButtonEmoji', WoWToolsChatButtonFrame, true, false)
 
 local frame--控制图标,显示,隐藏
@@ -274,7 +273,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
         local sel2=CreateFrame("CheckButton", nil, WoWToolsChatButtonFrame.sel, "InterfaceOptionsCheckButtonTemplate")
-        sel2.Text:SetText('emoji')
+        sel2.Text:SetText('Emoji')
         sel2:SetPoint('LEFT', WoWToolsChatButtonFrame.sel.Text, 'RIGHT')
         sel2:SetChecked(not Save.disabled)
         sel2:SetScript('OnClick', function()
