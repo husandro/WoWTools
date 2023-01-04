@@ -478,11 +478,7 @@ end
 local function Init()
     OnLineTime=GetTime()
 
-    if Save.point then
-        panel:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
-    else
-        panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
-    end
+    panel:SetPoint('BOTTOMLEFT',WoWToolsChatButtonFrame.last, 'BOTTOMRIGHT')--设置位置
 
     panel.texture2=panel:CreateTexture(nil, 'OVERLAY')
     panel.texture2:SetAllPoints(panel)

@@ -177,7 +177,7 @@ end
 --初始
 --####
 local function Init()
-    panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
+    panel:SetPoint('LEFT', WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
     WoWToolsChatButtonFrame.last=panel
 
     frame=e.Cbtn(panel,nil,nil,nil,nil, true,{10, e.toolsFrame.size or 30})--控制图标,显示,隐藏
