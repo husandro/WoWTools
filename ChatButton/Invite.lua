@@ -386,7 +386,7 @@ local function set_LFGPlus()--预创建队伍增强
     local f=LFGListFrame.SearchPanel.RefreshButton;--界面, 添加, 选项    
     f.ace = CreateFrame("CheckButton", nil, f, "InterfaceOptionsCheckButtonTemplate");--自动进组  选项
     f.ace:SetPoint('RIGHT',f, 'LEFT',-90,0)
-    f.ace.Text:SetText('|cFFFFD000'..AUTO_JOIN:gsub(JOIN, ACCEPT)..'|r');
+    f.ace.Text:SetText('|cFFFFD000'..(e.onlyChinse and '自动接受' or AUTO_JOIN:gsub(JOIN, ACCEPT))..'|r');
     f.ace:SetChecked(Save.LFGListAceInvite);
     f.ace:SetScript("OnMouseDown", function (s)
             Save.LFGListAceInvite=s:GetChecked();
@@ -395,7 +395,7 @@ local function set_LFGPlus()--预创建队伍增强
     f=LFGListFrame.ApplicationViewer.DataDisplay; --自动邀请 选项
     f.inv = CreateFrame("CheckButton",nil, f, "InterfaceOptionsCheckButtonTemplate");
     f.inv:SetPoint("BOTTOMLEFT", f, "TOPLEFT", 0, -10)
-    f.inv.Text:SetText('|cFFFFD000'..AUTO_JOIN:gsub(JOIN, INVITE)..'|r');
+    f.inv.Text:SetText('|cFFFFD000'..(e.onlyChinse and '自动邀请' or AUTO_JOIN:gsub(JOIN, INVITE))..'|r');
     f.inv:SetChecked(Save.LFGAutoInv);
     f.inv:SetScript("OnMouseDown", function(s)
             Save.LFGAutoInv=s:GetChecked();
@@ -403,7 +403,7 @@ local function set_LFGPlus()--预创建队伍增强
 
     f.raid = CreateFrame("CheckButton",nil, f, "InterfaceOptionsCheckButtonTemplate");--转化为团队 选项
     f.raid:SetPoint("TOPLEFT", f, "BOTTOMLEFT", 0, 8);
-    f.raid.Text:SetText('|cFFFFD000'..CONVERT_TO_RAID..'|r');
+    f.raid.Text:SetText('|cFFFFD000'..(e.onlyChinse and '转团' or CONVERT_TO_RAID)..'|r');
     f.raid:SetChecked(Save.PartyToRaid);
 
     f.raid:SetScript("OnMouseDown", function(s)
