@@ -622,22 +622,66 @@ local function Init()
         if not info or not info.questID then return end
         Quest(e.tips, info.questID)
     end)
+
     hooksecurefunc('QuestMapLogTitleButton_OnClick',function(self, button)--任务日志 展开所有, 收起所有--QuestMapFrame.lua
         if Save.hide or ChatEdit_TryInsertQuestLinkForQuestID(self.questID) then
             return
         end
         if not C_QuestLog.IsQuestDisabledForSession(self.questID) and button == "RightButton" then
             UIDropDownMenu_AddSeparator()
-                local info= {
-                text =SHOW..'|A:campaign_headericon_open:0:0|a'..ALL,
+            local info= {
+                text= (e.onlyChinse and '显示' or SHOW)..'|A:campaign_headericon_open:0:0|a'..(e.onlyChinse and '全部' or ALL),
                 notCheckable=true,
                 func= Exp,
             }
             UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
             info ={
                 notCheckable=true,
-                text=HIDE..'|A:campaign_headericon_closed:0:0|a'..ALL,
+                text= (e.onlyChinse and '隐藏' or HIDE)..'|A:campaign_headericon_closed:0:0|a'..(e.onlyChinse and '全部' or ALL),
                 func= Coll,
+            }
+            UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
+
+            UIDropDownMenu_AddSeparator()
+            local text= '|cnRED_FONT_COLOR:'..(e.onlyChinse and '放弃|A:groupfinder-icon-redx:0:0|a所有任务' or (ABANDON_QUEST..'|A:groupfinder-icon-redx:0:0|a'..ALL))..' #'..select(2, C_QuestLog.GetNumQuestLogEntries())..'|r'
+            info={
+                text= text,
+                tooltipOnButton=true,
+                tooltipTitle= '|cffff0000'..(e.onlyChinse and '危险！' or VOICEMACRO_1_Sc_0)..'|r',
+                tooltipText= id..' '..addName,
+                notCheckable=true,
+                func= function()
+                    StaticPopupDialogs[id..addName.."ABANDON_QUEST"] = {
+                        text = ABANDON_QUEST_CONFIRM,
+                        button1 = text,
+                        button2 = e.onlyChinse and '取消' or CANCEL,
+                        OnAccept = function(self2)
+                            local n=0
+                            for index=1 , C_QuestLog.GetNumQuestLogEntries() do
+                                local questInfo=C_QuestLog.GetInfo(index)
+                                if questInfo and questInfo.questID and C_QuestLog.CanAbandonQuest(questInfo.questID) then
+                                    local linkQuest=GetQuestLink(questInfo.questID)
+                                    C_QuestLog.SetSelectedQuest(questInfo.questID)
+                                    C_QuestLog.SetAbandonQuest();
+                                    C_QuestLog.AbandonQuest()
+                                    n=n+1
+                                    if linkQuest then
+                                        print(id, addName,  e.onlyChinse and '放弃|A:groupfinder-icon-redx:0:0|a' or (ABANDON_QUEST_ABBREV..'|A:groupfinder-icon-redx:0:0|a'), linkQuest, n)
+                                    end
+                                end
+                                if IsModifierKeyDown() then
+                                    break
+                                end
+                            end
+                            PlaySound(SOUNDKIT.IG_QUEST_LOG_ABANDON_QUEST);
+                        end,
+                        timeout = 0,
+                        whileDead = 1,
+                        exclusive = 1,
+                        hideOnEscape = 1
+                    }
+                    StaticPopup_Show(id..addName.."ABANDON_QUEST", '\n'..text)
+                end
             }
             UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
         end

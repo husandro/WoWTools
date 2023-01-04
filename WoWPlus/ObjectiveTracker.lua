@@ -75,7 +75,7 @@ local ObjectiveTrackerRemoveAll =function(self, tip)
             disabled= not C_QuestLog.CanAbandonQuest(questID),
             arg1 = questID,
             func = function(_, arg1)
-                QuestMapQuestOptions_AbandonQuest(arg1)
+                QuestMapQuestOptions_AbandonQuest(arg1)--QuestMapFrame.lua
             end
         }
         UIDropDownMenu_AddButton(info)

@@ -640,7 +640,8 @@ local function setMenu()
             itemID= GetMerchantItemID(index)
             itemLink=GetMerchantItemLink(index)
             if itemID and itemLink then
-                local icon= C_Item.GetItemIconByID(itemLink)
+                local icon
+                icon= C_Item.GetItemIconByID(itemLink)
                 icon= icon and '|T'..icon..':0|t' or ''
                 StaticPopupDialogs[id..addName..'Buy']={
                     text =id..' '..addName
