@@ -140,7 +140,7 @@ local function setPet(self, speciesID)--宠物
         self.text2Left:SetText(CollectedText or '')
         self.textRight:SetText(AllCollected or '')
 
-        self:AddDoubleLine(PET..' '..speciesID..(speciesIcon and '  |T'..speciesIcon..':0|t'..speciesIcon), (creatureDisplayID and (MODEL..' '..creatureDisplayID) or '')..(companionID and ' NPC '..companionID or ''))--ID
+        self:AddDoubleLine((e.onlyChinse and '宠物' or PET)..' '..speciesID..(speciesIcon and '  |T'..speciesIcon..':0|t'..speciesIcon or ''), (creatureDisplayID and (e.onlyChinse and '模型' or MODEL)..' '..creatureDisplayID or '')..(companionID and ' NPC '..companionID or ''))--ID
 
         local tab = C_PetJournal.GetPetAbilityListTable(speciesID)--技能图标
         table.sort(tab, function(a,b) return a.level< b.level end)
