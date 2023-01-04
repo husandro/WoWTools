@@ -493,7 +493,7 @@ local function InitList(self, level, menuLit)
         end
     end
     info ={--购回
-        text= (e.onlyChinse and '购回' or BUYBACK)..'|cnRED_FONT_COLOR: #'..num..'|r',
+        text= (e.onlyChinse and '回购' or BUYBACK)..'|cnRED_FONT_COLOR: #'..num..'|r',
         notCheckable=true,
         menuList='BUYBACK',
         hasArrow=true,
@@ -690,11 +690,11 @@ local function setMenu()
         if infoType=='item' and itemID then
             if Save.noSell[itemID] then
                 Save.noSell[itemID]=nil
-                print(id, addName,'|cnGREEN_FONT_COLOR:'.. REMOVE..'|r', BUYBACK, itemLink)
+                print(id, addName,'|cnGREEN_FONT_COLOR:', e.onlyChinse and '移除' or REMOVE, e.onlyChinse and '回购' or BUYBACK, itemLink)
             else
                 Save.noSell[itemID]=true
                 Save.Sell[itemID]=nil
-                print(id,addName, '|cnGREEN_FONT_COLOR:'..ADD..'|r', BUYBACK, itemLink )
+                print(id,addName, '|cnGREEN_FONT_COLOR:', e.onlyChinse and '添加' or ADD, e.onlyChinse and '回购' or BUYBACK, itemLink )
                 C_Timer.After(0.2, function()
                     if MerchantFrame and MerchantFrame:IsShown() then --and MerchantFrame.selectedTab == 1 then
                         setBuyBackItems()--购回物品
