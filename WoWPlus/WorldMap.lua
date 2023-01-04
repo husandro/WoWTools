@@ -629,7 +629,7 @@ local function Init()
         if not C_QuestLog.IsQuestDisabledForSession(self.questID) and button == "RightButton" then
             UIDropDownMenu_AddSeparator()
                 local info= {
-                text=SHOW..'|A:campaign_headericon_open:0:0|a'..ALL,
+                text =SHOW..'|A:campaign_headericon_open:0:0|a'..ALL,
                 notCheckable=true,
                 func= Exp,
             }
