@@ -601,8 +601,9 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             level= UnitLevel(unit)
             text= sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a'
             level= MAX_PLAYER_LEVEL>level and '|cnGREEN_FONT_COLOR:'..level..'|r' or level
-            className= col and col..className..'|r' or className
-            text= text..LEVEL..' '..level..'  '..e.Race(nil, raceFile, sex)..raceName..' '..e.Class(nil, classFilename)..className..(UnitIsPVP(unit) and  '  (|cnRED_FONT_COLOR:PvP|r)' or '  (|cnGREEN_FONT_COLOR:PvE|r)')
+            --className= col and col..className..'|r' or className
+            --text= text..LEVEL..' '..level..'  '..e.Race(nil, raceFile, sex)..raceName..' '..e.Class(nil, classFilename)..className..(UnitIsPVP(unit) and  '  (|cnRED_FONT_COLOR:PvP|r)' or '  (|cnGREEN_FONT_COLOR:PvE|r)')
+            text= text..level..'   '..e.Class(nil, classFilename)..' '..e.Race(nil, raceFile, sex)..raceName..'   '..(UnitIsPVP(unit) and  '   (|cnRED_FONT_COLOR:PvP|r)' or '   (|cnGREEN_FONT_COLOR:PvE|r)')
             text= col and col..text..'|r' or text
             line:SetText(text)
         end
@@ -621,7 +622,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                         if isWarModeDesired then
                             line=_G["GameTooltipTextRight"..i]
                             if line then
-                                line:SetText(col..PVP_LABEL_WAR_MODE)
+                                line:SetText(col..(e.onlyChinse and '战争模式' or PVP_LABEL_WAR_MODE))
                                 line:SetShown(true)
                             end
                         end
