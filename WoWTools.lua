@@ -302,7 +302,7 @@ e.MK=function(number,bit)
         else
             return ('%.'..bit..'fm'):format(number/1e6)
         end
-    elseif number>= 1e4 and e.Player.zh then
+    elseif number>= 1e4 and (e.Player.zh or e.onlyChinse) then
         if bit==0 then
             return math.modf(number/1e4)..'w'
         else
