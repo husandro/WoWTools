@@ -859,7 +859,7 @@ local function Init_Quest()
             local questItemName = "QuestProgressItem";
             for i=1, numRequiredItems do
                 local requiredItem = _G[questItemName..buttonIndex];
-                if requiredItem and requiredItem:IsShown() and requiredItem.type then
+                if requiredItem and requiredItem:IsShown() and requiredItem.type=='reward' and requiredItem.objectType == "item" then
                     local link=GetQuestItemLink(requiredItem.type, i)
                     if link then
                         itemLink= itemLink.. link
@@ -867,14 +867,24 @@ local function Init_Quest()
                 end
             end
         end
-
+        local numSpellRewards = GetNumQuestLogRewardSpells()--QuestInfo.lua
+        for rewardSpellIndex = 1, numSpellRewards do
+            local texture, name, isTradeskillSpell, isSpellLearned, hideSpellLearnText, isBoostSpell, garrFollowerID, genericUnlock, spellID = GetRewardSpell(rewardSpellIndex);
+            if spellID then
+                e.LoadSpellItemData(spellID,true)
+               local spellLink= GetSpellLink(spellID)
+               if spellLink then
+                    itemLink= itemLink..spellLink
+               end
+            end
+        end
         if not questSelect[questID] then
             C_Timer.After(0.5, function()
                 print(id, QUESTS_LABEL, GetQuestLink(questID) or questID, (complete and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..acceptButton:GetText()..'|r', itemLink)
             end)
             questSelect[questID]=true
         end
-
+--print(itemLink,GetNumQuestItems(), GetNumQuestCurrencies())
         acceptButton:Click()
 
 --[[--local numRequiredCurrencies = GetNumQuestCurrencies();
