@@ -914,7 +914,7 @@ local function setSTART_LOOT_ROLL(rollID, rollTime, lootHandle)--自动ROLL
                 C_Timer.After(1, function()
                     print(id, addName, link, text)
                 end)
-            else
+            elseif link then
                 if not C_TransmogCollection.PlayerHasTransmogByItemInfo(link) then--幻化
                     local sourceID=select(2,C_TransmogCollection.GetItemInfo(itemLink))
                     if sourceID then
