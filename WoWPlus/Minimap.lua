@@ -134,6 +134,7 @@ local function Init()
                 checked= C_CVar.GetCVarBool("minimapTrackingShowAll"),
                 tooltipOnButton=true,
                 tooltipTitle= e.onlyChinse and '显示: 追踪' or SHOW..': '..TRACKING,
+                tooltipText= id..' '..addName,
                 func= function()
                     Save.minimapTrackingShowAll= not C_CVar.GetCVarBool("minimapTrackingShowAll") and true or false
                     set_minimapTrackingShowAll()--追踪,镇民
@@ -145,8 +146,8 @@ local function Init()
                 text= e.onlyChinse and '缩小地图' or BINDING_NAME_MINIMAPZOOMOUT,
                 checked= Save.ZoomOut,
                 tooltipOnButton=true,
-                tooltipTitle=id..' '..addName,
-                tooltipText= e.onlyChinse and '更新地区时' or UPDATE..ZONE,
+                tooltipTitle= e.onlyChinse and '更新地区时' or UPDATE..ZONE,
+                tooltipText= id..' '..addName,
                 func= function()
                     Save.ZoomOut= not Save.ZoomOut and true or nil
                     set_ZoomOut_Event()--更新地区时,缩小化地图
