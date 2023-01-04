@@ -14,10 +14,10 @@ local function toRaidOrParty(number)--自动, 转团
         local raid= IsInRaid()
         if number>5 and not raid then
             C_PartyInfo.ConvertToRaid();
-            print(id, addName, '|cnGREEN_FONT_COLOR:'..CONVERT_TO_RAID..'|r')
+            print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '转团' or CONVERT_TO_RAID)..'|r')
         elseif number<5 and raid then
             C_PartyInfo.ConvertToParty();
-            print(id, addName, '|cnGREEN_FONT_COLOR:'..CONVERT_TO_PARTY..'|r')
+            print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '转小队' or CONVERT_TO_RAID)..'|r')
         end
     end
 end
@@ -69,7 +69,7 @@ end
 local InvPlateTimer
 local InvUnitFunc=function()--邀请，周围玩家
     if not getLeader() then--取得权限
-        print(id,addName, ERR_GUILD_PERMISSIONS)
+        print(id,addName, '|cnRED_FONT_COLOR:', e.onlyChinse and '你没有权利这样做' or ERR_GUILD_PERMISSIONS)
         return
     end
 
@@ -85,7 +85,7 @@ if not all then
 
     if not p then
         if UnitAffectingCombat('player') then
-            print(id, addName, '|cnRED_FONT_COLOR:'..COMBAT)
+            print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinse and '战斗中' or COMBAT))
             return
         else
             C_CVar.SetCVar('nameplateShowFriends', '1')
@@ -101,13 +101,14 @@ if not all then
             local co=GetNumGroupMembers();
             local raid=IsInRaid();
             if (not raid and co==5) and not Save.PartyToRaid then
-                print(id, addName, PETITION_TITLE:format('|cff00ff00'..CONVERT_TO_RAID..'|r'))
+                print(id, addName, format(e.onlyChinse and '请愿：%s' or PETITION_TITLE, '|cff00ff00'..(e.onlyChinse and '转团' or CONVERT_TO_RAID)..'|r'))
 
             elseif co==40 then
-                print(id, addName, RED_FONT_COLOR_CODE..'|r', co, PLAYERS_IN_GROUP)
+                print(id, addName, RED_FONT_COLOR_CODE..'|r', co, e.onlyChinse and '队员' or PLAYERS_IN_GROUP)
             else
                 toRaidOrParty(number)--自动, 转团
-                for _, v in pairs(C_NamePlate.GetNamePlates()) do
+                local tab= C_NamePlate.GetNamePlates() or {}
+                for _, v in pairs(tab) do
                     local u = v.namePlateUnitToken or (v.UnitFrame and v.UnitFrame.unit);
                     local name=GetUnitName(u,true);
                     local guid=UnitGUID(u);
@@ -115,9 +116,9 @@ if not all then
                         if not InvPlateGuid[guid] then
                             C_PartyInfo.InviteUnit(name);
                             InvPlateGuid[guid]=name;
-                            print('|cnGREEN_FONT_COLOR:'..n..'|r)',INVITE ,e.PlayerLink(name, guid));
+                            print(id, '|cnGREEN_FONT_COLOR:'..n..'|r)', e.onlyChinse and '邀请' or INVITE ,e.PlayerLink(name, guid));
                             if not raid and n +co>=5  then
-                                print(id, addName, PETITION_TITLE:format('|cff00ff00'..CONVERT_TO_RAID..'|r'))
+                                print(id, addName, format(PETITION_TITLE, '|cff00ff00'..(e.onlyChinse and '转团' or CONVERT_TO_RAID)..'|r'))
                                 break
                             end
                             n=n+1
@@ -135,7 +136,9 @@ if not all then
             if not p and not UnitAffectingCombat('player') then
                 C_CVar.SetCVar('nameplateShowFriends', '0')
             end
-            if n==1 then print(GUILDCONTROL_OPTION7..': '..RED_FONT_COLOR_CODE..NONE..'|r') end
+            if n==1 then
+                print(id, addName, e.onlyChinse and '邀请成员' or GUILDCONTROL_OPTION7, '|cnRED_FONT_COLOR:'..(e.onlyChinse and '无' or NONE))
+            end
 
             if InvPlateTimer and InvPlateTimer:IsCancelled() then
                 InvPlateTimer:Cancel()
@@ -308,11 +311,10 @@ local function set_PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNati
 
     local function setPrint(sec, text)
         print(id, addName, text,
-            '|cnGREEN_FONT_COLOR:'..sec.. ' |r'..SECONDS,
-            e.PlayerLink(nil, inviterGUID),
+            '|cnGREEN_FONT_COLOR:'..sec.. ' |r'..(e.onlyChinse and '秒' or SECONDS),
             (isTank and e.Icon.TANK or '')..(isHealer and e.Icon.HEALER or '')..(isDamage and e.Icon.DAMAGER or ''),
-            questSessionActive and SCENARIOS or '',--场景战役
-            isNativeRealm and '|cnGREEN_FONT_COLOR:'..BLIZZARD_STORE_VAS_TRANSFER_REALM..'|r' or ''--转服务器
+            questSessionActive and (e.onlyChinse and '场景战役' or SCENARIOS) or '',--场景战役
+            isNativeRealm and '|cnGREEN_FONT_COLOR:'..format(e.onlyChinse and '%s其它服务器' or INVITATION_XREALM, e.PlayerLink(nil, inviterGUID))..'|r' or e.PlayerLink(nil, inviterGUID)--转服务器
         )
         e.Ccool(F, nil, sec, nil, true, true, nil)--冷却条    
     end
@@ -331,8 +333,8 @@ local function set_PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNati
         end, 1)
 
     elseif Save.InvNoFriend[inviterGUID] then--拒绝
-        setPrint(3, '|cnRED_FONT_COLOR:'..DECLINE..'|r',Save.InvNoFriend[inviterGUID]..'/'..Save.InvNoFriendNum)
-        F.button3:SetText('|cnRED_FONT_COLOR:'..REMOVE..'|r'..ACCEPT)
+        setPrint(3, '|cnRED_FONT_COLOR:'..(e.onlyChinse and '拒绝' or DECLINE)..'|r'..Save.InvNoFriend[inviterGUID]..'/'..Save.InvNoFriendNum)
+        F.button3:SetText('|cnRED_FONT_COLOR:'..(e.onlyChinse and '移除' or REMOVE)..'|r'..(e.onlyChinse and '接受' or ACCEPT))
         notInviterGUID=inviterGUID
         F.InvTimer = C_Timer.NewTicker(3, function()
             DeclineGroup();
@@ -342,9 +344,9 @@ local function set_PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNati
         end, 1)
 
     elseif IsResting() and Save.NoInvInResting and not questSessionActive then--休息区不组队
-        setPrint(3, '|cnRED_FONT_COLOR:'..DECLINE..'|r'..CALENDAR_STATUS_OUT..ZONE)
+        setPrint(3, '|cnRED_FONT_COLOR:'..(e.onlyChinse and '' or DECLINE)..'|r'..(e.onlyChinse and '休息区' or (CALENDAR_STATUS_OUT..ZONE)))
 
-        F.button3:SetText('|cnGREEN_FONT_COLOR:'..ADD..'|r'..DECLINE)
+        F.button3:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '添加' or ADD)..'|r'..(e.onlyChinse and '拒绝' or DECLINE))
         notInviterGUID=inviterGUID
 
         F.InvTimer = C_Timer.NewTicker(3, function()
@@ -354,7 +356,7 @@ local function set_PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNati
         end, 1)
 
     else--添加 拒绝 陌生人
-        F.button3:SetText('|cnGREEN_FONT_COLOR:'..ADD..'|r'..DECLINE)
+        F.button3:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '添加' or ADD)..'|r'..(e.onlyChinse and '拒绝' or DECLINE))
         notInviterGUID=inviterGUID
 
         e.Ccool(F, nil, STATICPOPUP_TIMEOUT, nil, true, true, nil)--冷却条
