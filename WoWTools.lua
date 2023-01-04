@@ -788,7 +788,7 @@ e.GetTimeInfo= function(value, chat, time)
     end
 end
 
-e.GetSetsCollectedNum= function(setID)--套装 , 收集数量
+e.GetSetsCollectedNum= function(setID)--套装 , 收集数量, 返回: 图标, 数量, 最大数, 文本
     local info= setID and C_TransmogSets.GetSetPrimaryAppearances(setID)
     local numCollected,numAll=0,0
     if info then
@@ -801,14 +801,18 @@ e.GetSetsCollectedNum= function(setID)--套装 , 收集数量
     end
     if numAll>0 then
         if numCollected==numAll then
-            return '|A:transmog-icon-checkmark:6:6|a', numCollected, numAll
+            return '|A:transmog-icon-checkmark:6:6|a', numCollected, numAll, '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '已收集' or COLLECTED)..'|r'
         elseif numAll <=9 then
-            return e.Icon.number2:format(numAll-numCollected), numCollected, numAll
+            if numCollected==0 then
+                return e.Icon.number2:format(numAll-numCollected), numCollected, numAll, '|cnRED_FONT_COLOR:'..(e.onlyChinse and '未收集' or NOT_COLLECTED)..'|r'
+            else
+                return e.Icon.number2:format(numAll-numCollected), numCollected, numAll, '|cnYELLOW_FONT_COLOR:'..numCollected..'/'..numAll..' '..(e.onlyChinse and '未收集' or NOT_COLLECTED)..'|r'
+            end
         else
             if numCollected==0 then
-                return '|cnRED_FONT_COLOR:'..numAll-numCollected..'|r ', numCollected, numAll
+                return '|cnRED_FONT_COLOR:'..numAll-numCollected..'|r ', numCollected, numAll, '|cnRED_FONT_COLOR:'..(e.onlyChinse and '未收集' or NOT_COLLECTED)..'|r'
             else
-                return ' |cffffff00'..numAll-numCollected..'|r ', numCollected, numAll
+                return ' |cnYELLOW_FONT_COLOR:'..numAll-numCollected..'|r ', numCollected, numAll, '|cnYELLOW_FONT_COLOR:'..numCollected..'/'..numAll..' '..(e.onlyChinse and '未收集' or NOT_COLLECTED)..'|r'
             end
         end
     end

@@ -51,7 +51,7 @@ local function setInitItem(self, hide)--创建物品
     end
 end
 
-local function GetSetsCollectedNum(setID)--套装收集数
+--[[local function GetSetsCollectedNum(setID)--套装收集数
     local info=C_TransmogSets.GetSetPrimaryAppearances(setID) or {}
     local numCollected,numAll=0,0
     for _,v in pairs(info) do
@@ -69,7 +69,7 @@ local function GetSetsCollectedNum(setID)--套装收集数
             return  '|cnRED_FONT_COLOR:'..(e.onlyChinse and '未收集' or NOT_COLLECTED)..'|r'
         end
     end
-end
+end]]
 
 
 local function setMount(self, mountID)--坐骑    
@@ -260,7 +260,7 @@ local function setItem(self, ItemLink)
         end
     else
         if setID then--套装
-            local collectedNum= GetSetsCollectedNum(setID)
+            local collectedNum= select(4, e.GetSetsCollectedNum(setID))
             if collectedNum then
                 self.text2Left:SetText(collectedNum)
             end
