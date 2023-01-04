@@ -605,17 +605,17 @@ local function setMenu()
             local icon=C_Item.GetItemIconByID(itemLink)
             e.tips:AddDoubleLine(itemLink, icon and '|T'..icon..':0|t' or ' ')
             if Save.Sell[itemID] then
-                e.tips:AddDoubleLine(REMOVE, AUCTION_HOUSE_SELL_TAB, 1,0,0, 1,0,0)
+                e.tips:AddDoubleLine(e.onlyChinse and '移除' or REMOVE, e.onlyChinse and '出售' or AUCTION_HOUSE_SELL_TAB, 1,0,0, 1,0,0)
             else
-                e.tips:AddDoubleLine(ADD, AUCTION_HOUSE_SELL_TAB, 0,1,0, 0,1,0)
+                e.tips:AddDoubleLine(e.onlyChinse and '添加' or ADD, e.onlyChinse and '出售' or AUCTION_HOUSE_SELL_TAB, 0,1,0, 0,1,0)
             end
         elseif infoType=='merchant' and itemID then--购买物品
             itemID= GetMerchantItemID(itemID)
 
-            e.tips:AddDoubleLine(PURCHASE..((itemID and buySave[itemID]) and '|cnRED_FONT_COLOR:'..SLASH_CHAT_MODERATE2..' '..buySave[itemID]..'|r' or '' ), ITEMS, 0,1,0, 0,1,0)
+            e.tips:AddDoubleLine((e.onlyChinse and '购买' or PURCHASE)..((itemID and buySave[itemID]) and '|cnRED_FONT_COLOR:'..(e.onlyChinse and '修改' or SLASH_CHAT_MODERATE2:gsub('%/',''))..' '..buySave[itemID]..'|r' or '' ), e.onlyChinse and '物品' or ITEMS, 0,1,0, 0,1,0)
         else
-            e.tips:AddDoubleLine(DRAG_MODEL..e.Icon.left..ITEMS, AUCTION_HOUSE_SELL_TAB..'/'..PURCHASE)
-            e.tips:AddDoubleLine(MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
+            e.tips:AddDoubleLine((e.onlyChinse and '拖曳' or DRAG_MODEL)..e.Icon.left..(e.onlyChinse and '物品' or ITEMS), e.onlyChinse and '出售/购买' or (AUCTION_HOUSE_SELL_TAB..'/'..PURCHASE))
+            e.tips:AddDoubleLine(e.onlyChinse and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
         end
         e.tips:Show()
     end)
@@ -712,7 +712,7 @@ local function setMenu()
         for _, _  in pairs(Save.noSell) do
             num=num+1
         end
-        e.tips:AddDoubleLine(ITEMS, '|cnGREEN_FONT_COLOR: #'..num..'|r')
+        e.tips:AddDoubleLine(e.onlyChinse and '物品' or ITEMS, '|cnGREEN_FONT_COLOR: #'..num..'|r')
         e.tips:AddLine(' ')
         local infoType, itemID, itemLink = GetCursorInfo()
         if infoType=='item' and itemID and itemLink then
@@ -720,12 +720,12 @@ local function setMenu()
             local icon=C_Item.GetItemIconByID(itemLink)
             e.tips:AddDoubleLine(itemLink, icon and '|T'..icon..':0|t' or ' ')
             if Save.noSell[itemID] then
-                e.tips:AddDoubleLine(REMOVE, BUYBACK, 1,0,0, 1,0,0)
+                e.tips:AddDoubleLine(e.onlyChinse and '移除' or REMOVE, e.onlyChinse and '回购' or BUYBACK, 1,0,0, 1,0,0)
             else
-                e.tips:AddDoubleLine(ADD, BUYBACK, 0,1,0, 0,1,0)
+                e.tips:AddDoubleLine(e.onlyChinse and '添加' or ADD, e.onlyChinse and '回购' or BUYBACK, 0,1,0, 0,1,0)
             end
         else
-            e.tips:AddDoubleLine(DRAG_MODEL..e.Icon.left..ITEMS, BUYBACK)
+            e.tips:AddDoubleLine((e.onlyChinse and '拖曳' or DRAG_MODEL)..e.Icon.left..(e.onlyChinse and '物品' or ITEMS), e.onlyChinse and '回购' or BUYBACK)
         end
         e.tips:Show()
     end)
@@ -758,7 +758,7 @@ local function set_StackSplitFrame_OpenStackSplitFrame(self, maxStack, parent, a
             e.tips:ClearLines()
             e.tips:AddDoubleLine(id, addName)
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(AUCTION_STACK_SIZE..' Plus', '|cnGREEN_FONT_COLOR:'..RESET..'|r')
+            e.tips:AddDoubleLine((e.onlyChinse and '堆叠数量' or AUCTION_STACK_SIZE)..' Plus', e.onlyChinse and '重置' or RESET, nil,nil,nil, 0,1,0)
             e.tips:Show()
         end)
         self.restButton:SetScript('OnLeave', function() e.tips:Hide() end)
