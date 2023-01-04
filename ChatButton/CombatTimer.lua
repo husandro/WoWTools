@@ -9,7 +9,7 @@ local Save= {textScale=1.2,
         pet={num= 0,  win=0, capture=0},
         ins={num= 0, time= 0, kill=0, dead=0},
         afk={num= 0, time= 0},
-        hideCombatText= not e.Player.husandro,--隐藏, 战斗, 文本
+        --hideCombatText= not e.Player.husandro,--隐藏, 战斗, 文本
 }
 local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
 panel.textFrame=e.Cbtn(WoWToolsChatButtonFrame, nil, nil, nil, nil, true, {20,20})
