@@ -564,7 +564,7 @@ local function InitList(self, level, type)--LFDFrame.lua
 
     elseif type=='BATTLEFIELDS' then--战场
         info={
-            text= e.onlyChinse and '释放, 复活' or BATTLE_PET_RELEASE..', '..RESURRECT,
+            text= e.onlyChinse and '释放, 复活' or (BATTLE_PET_RELEASE..', '..RESURRECT),
             checked= Save.ReMe,
             func= function()
                 Save.ReMe= not Save.ReMe and true or nil
@@ -634,20 +634,20 @@ local function setLFGDungeonReadyDialog(self)--自动进入FB LFGDungeonReadyDia
     if dungeonID then
         text='dungeonID: '..dungeonID
                 ..( role and _G[role] and '\n'.._G[role]..e.Icon[role] ..(isLeader and e.Icon.leader or ''))
-                ..(totalEncounters and completedEncounters and totalEncounters>0 and '\n|cnGREEN_FONT_COLOR:'..completedEncounters..'|r /'..totalEncounters..' '..BOSS or '')
-                ..(numMembers and '\n'..numMembers..' '..PLAYER  or '')
-                ..(isHoliday and '\n'..CALENDAR_FILTER_HOLIDAYS.. ' '..INSTANCE or '')
+                ..(totalEncounters and completedEncounters and totalEncounters>0 and '\n|cnGREEN_FONT_COLOR:'..completedEncounters..'|r /'..totalEncounters..' '..(e.onlyChinse and '首领' or BOSS) or '')
+                ..(numMembers and '\n'..numMembers..' '..(e.onlyChinse and '玩家' or PLAYER)  or '')
+                ..(isHoliday and '\n'..(e.onlyChinse and '节日' or CALENDAR_FILTER_HOLIDAYS).. ' '..(e.onlyChinse and '副本' or INSTANCE) or '')
     end
     self.infoText:SetText(text)
     if not Save.enterInstance or afk then
         e.Ccool(self, nil, 38, nil, true, true)
         if Save.enterInstance and afk then
-            print(id, addName, '|cnRED_FONT_COLOR:'..NO..'|r', BATTLEFIELD_CONFIRM_STATUS, '|cnRED_FONT_COLOR:'..CHAT_FLAG_AFK..'|r')
+            print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinse and '不能' or NO)..'|r', e.onlyChinse and '准备进入' or BATTLEFIELD_CONFIRM_STATUS, '|cnRED_FONT_COLOR:'..(e.onlyChinse and '离开中' or CHAT_FLAG_AFK))
         end
         return
     end
     if name then
-        print(id, addName, QUEUED_STATUS_PROPOSAL,'|cnGREEN_FONT_COLOR:'..sec..'|r', SECONDS)
+        print(id, addName, e.onlyChinse and '准备进入' or QUEUED_STATUS_PROPOSAL,'|cnGREEN_FONT_COLOR:'..sec..'|r', e.onlyChinse and '秒' or SECONDS)
         if text~='' then
             text=text:gsub('\n', ' ')
             print(text)
@@ -686,21 +686,21 @@ local function exitInstance()
     else
         C_PartyInfo.LeaveParty(LE_PARTY_CATEGORY_INSTANC)
     end
-    print(id, addName, '|cnGREEN_FONT_COLOR:'..LEAVE..'|r'..(name or INSTANCE), name and '|cnGREEN_FONT_COLOR:'..wowSave[INSTANCE][name]..'|r'..VOICEMACRO_LABEL_CHARGE1 or '')
+    print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '离开' or LEAVE)..'|r'..(name or (e.onlyChinse and '副本' or INSTANCE)), name and '|cnGREEN_FONT_COLOR:'..wowSave[INSTANCE][name]..'|r'..(e.onlyChinse and '次' or VOICEMACRO_LABEL_CHARGE1) or '')
     ExitIns=nil
 end
 
 StaticPopupDialogs[addName..'ExitIns']={
-    text =id..'('..addName..')\n\n|cff00ff00'..LEAVE..'|r: ' ..INSTANCE.. '|cff00ff00 '..sec..' |r'..SECONDS,
-    button1 = LEAVE,
-    button2 = CANCEL,
+    text =id..'('..addName..')\n\n|cff00ff00'..(e.onlyChinse and '离开' or LEAVE)..'|r: ' ..(e.onlyChinse and '副本' or INSTANCE).. '|cff00ff00 '..sec..' |r'..(e.onlyChinse and '秒' or SECONDS),
+    button1 = e.onlyChinse and '离开' or LEAVE,
+    button2 = e.onlyChinse and '取消' or CANCEL,
     OnAccept=function()
         exitInstance()
     end,
     OnCancel=function(_, _, d)
         if d=='clicked' then
             ExitIns=nil
-            print(id,addName,'|cff00ff00'..CANCEL..'|r' .. LEAVE)
+            print(id,addName,'|cff00ff00'..(e.onlyChinse and '取消' or CANCEL)..'|r', e.onlyChinse and '离开' or LEAVE)
         end
     end,
     EditBoxOnEnterPressed = function()
@@ -708,7 +708,7 @@ StaticPopupDialogs[addName..'ExitIns']={
     end,
     EditBoxOnEscapePressed = function(s)
         ExitIns=nil
-        print(id, addName, '|cff00ff00'..CANCEL..'|r' .. LEAVE)
+        print(id,addName,'|cff00ff00'..(e.onlyChinse and '取消' or CANCEL)..'|r', e.onlyChinse and '离开' or LEAVE)
         s:GetParent():Hide()
     end,
 whileDead=true,timeout=sec, hideOnEscape =true,}
@@ -725,7 +725,7 @@ local function setIslandButton(self)--离开海岛按钮
         if not self.island then
             self.island = e.Cbtn(UIParent, true)
             self.island:SetSize(50, 25)
-            self.island:SetText(LEAVE)
+            self.island:SetText(e.onlyChinse and '离开' or LEAVE)
             if Save.islandPoint then
                 self.island:SetPoint(Save.islandPoint[1], UIParent, Save.islandPoint[3], Save.islandPoint[4], Save.islandPoint[5])
             else
@@ -752,10 +752,10 @@ local function setIslandButton(self)--离开海岛按钮
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(id, addName)
-                e.tips:AddDoubleLine(ISLANDS_HEADER, (wowSave[ISLANDS_HEADER] and wowSave[ISLANDS_HEADER] or 0)..' '..VOICEMACRO_LABEL_CHARGE1)
+                e.tips:AddDoubleLine(e.onlyChinse and '海岛探险' or ISLANDS_HEADER, (wowSave[ISLANDS_HEADER] and wowSave[ISLANDS_HEADER] or 0)..' '..(e.onlyChinse and '次' or VOICEMACRO_LABEL_CHARGE1))
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(ISLAND_LEAVE, e.Icon.left)
-                e.tips:AddDoubleLine(NPE_MOVE, e.Icon.right)
+                e.tips:AddDoubleLine(e.onlyChinse and '离开海岛' or ISLAND_LEAVE, e.Icon.left)
+                e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
                 e.tips:Show()
             end)
             self.island:SetScript('OnLeave', function ()
@@ -905,13 +905,15 @@ local function setSTART_LOOT_ROLL(rollID, rollTime, lootHandle)--自动ROLL
     if Save.autoROLL and (Save.leaveInstance and select(10, GetInstanceInfo())) and rollID then
         local _, _, _, quality, bindO_nPickUp, canNeed, canGreed, _, reasonNeed, reasonGreed = GetLootRollItemInfo(rollID)
         local rollType=canNeed and 1 or canGreed and 2
-        local text= canNeed and NEED or canGreed and GREED or NONE--贪婪
+        local text= canNeed and (e.onlyChinse and '需求' or NEED) or canGreed and (e.onlyChinse and '贪婪' or GREED) or (e.onlyChinse and '无' or NONE)
         local link = GetLootRollItemLink(rollID)
 
         if rollType then
             if (quality and quality>=4) or not canNeed then
                 RollOnLoot(rollID, rollType)
-                print(id, addName, link, text)
+                C_Timer.After(1, function()
+                    print(id, addName, link, text)
+                end)
             else
                 if not C_TransmogCollection.PlayerHasTransmogByItemInfo(link) then--幻化
                     local sourceID=select(2,C_TransmogCollection.GetItemInfo(itemLink))
@@ -921,7 +923,9 @@ local function setSTART_LOOT_ROLL(rollID, rollTime, lootHandle)--自动ROLL
                             local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
                             if sourceInfo and not sourceInfo.isCollected then
                                 RollOnLoot(rollID, rollType)
-                                print(id, addName, link, text)
+                                C_Timer.After(1, function()
+                                    print(id, addName, link, text)
+                                end)
                                 return
                             end
                         end
@@ -938,40 +942,53 @@ local function setSTART_LOOT_ROLL(rollID, rollTime, lootHandle)--自动ROLL
                             local num=itemLevel-slotItemLevel
                             if num>0 then
                                 RollOnLoot(rollID, rollType)
-                                print(id, addName, link, text)
+                                C_Timer.After(1, function()
+                                    print(id, addName, link, text)
+                                end)
                                 return
                             end
                         end
                     else--没有装备
                         RollOnLoot(rollID, rollType)
-                        print(id, addName, link, text)
+                        C_Timer.After(1, function()
+                            print(id, addName, link, text)
+                        end)
                         return
                     end
 
                 elseif classID==15 and subclassID==2 then--宠物物品
                     RollOnLoot(rollID, rollType)
-
+                    C_Timer.After(1, function()
+                        print(id, addName, link, text)
+                    end)
+                    return
                 elseif classID==15 and  subclassID==5 then--坐骑
                     local mountID = C_MountJournal.GetMountFromItem(itemID)
                     if mountID then
                         local isCollected =select(11, C_MountJournal.GetMountInfoByID(mountID))
                         if not isCollected then
                             RollOnLoot(rollID, rollType)
-                            print(id, addName, link, text)
+                            C_Timer.After(1, function()
+                                print(id, addName, link, text)
+                            end)
                             return
                         end
                     end
 
                 elseif C_ToyBox.GetToyInfo(itemID) and not PlayerHasToy(itemID) then--玩具 
                     RollOnLoot(rollID, rollType)
-                    print(id, addName, link, text)
+                    C_Timer.After(1, function()
+                        print(id, addName, link, text)
+                    end)
                     return
                 end
             end
         end
     else
         RollOnLoot(rollID, rollType)
-        print(id, addName, link, text)
+        C_Timer.After(1, function()
+            print(id, addName, link, text)
+        end)
     end
 end
 
