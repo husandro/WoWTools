@@ -123,6 +123,12 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
 	for i = 1, numEvents do
 		local event = C_Calendar.GetDayEvent(monthOffset, day, i);
 		if event and (not Save.onGoing or (Save.onGoing and (event.sequenceType == "ONGOING" or _CalendarFrame_IsPlayerCreatedEvent(event.calendarType)))) then
+            if event.calendarType=='HOLIDAY' then
+                local eventHoliday = C_Calendar.GetHolidayInfo(monthOffset, day, i)
+                if eventHoliday and eventHoliday.texture then
+                    event.texture=eventHoliday.texture
+                end
+            end
 			tinsert(events, event);
 		end
 	end
@@ -147,15 +153,17 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
     end
 	for _, event in ipairs(events) do
 		local title = event.title;
-        msg =msg and msg..'\n' or ''
+        msg =msg and msg..' \n' or ''
 
-        if  (event.calendarType=='HOLIDAY' and not event.iconTexture) then
-            if title:find(PVP) then
-                msg=msg..'|A:pvptalents-warmode-swords:0:0|a'--pvp
-            else
-                msg= msg..e.Icon.star2--节日
-            end
+        if title:find(PVP) then
+            msg=msg..'|A:pvptalents-warmode-swords:0:0|a'--pvp
         end
+        if event.texture2 then--节日图标
+            msg=msg..'|T'..event.texture..':0|t'
+        end
+        --if event.calendarType=='HOLIDAY' then --and not event.iconTexture) then
+           
+        --end
 
         if event.calendarType=='PLAYER' or _CalendarFrame_IsPlayerCreatedEvent(event.calendarType) then--自定义,事件
 			local text;
@@ -189,15 +197,15 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
 			msg=msg..text
 		end
 
-        msg= event.iconTexture and msg..'|T'..event.iconTexture..':0|t' or msg
+       -- msg= event.iconTexture and msg..'|T'..event.iconTexture..':0|t' or msg
 
         if ( event.calendarType == "RAID_LOCKOUT" ) then
 			title = GetDungeonNameWithDifficulty(title, event.difficultyName);
             msg=msg..format(CALENDAR_CALENDARTYPE_TOOLTIP_NAMEFORMAT[event.calendarType][event.sequenceType], title)
         elseif event.calendarType=='HOLIDAY' and title:find(PLAYER_DIFFICULTY_TIMEWALKER) then--时空漫游
-            msg= msg..PLAYER_DIFFICULTY_TIMEWALKER
+            msg= msg..(e.onlyChinse and '时空漫游' or PLAYER_DIFFICULTY_TIMEWALKER)
         else
-            msg= msg.. title
+            msg= msg..(title:match(': (.+)') or title:match('：(.+)') or title)
         end
 
         if Save.showDate then
@@ -546,7 +554,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                             description = format(CALENDAR_HOLIDAYFRAME_BEGINSENDS, description, FormatShortDate(holidayInfo.startTime.monthDay, holidayInfo.startTime.month), GameTime_GetFormattedTime(holidayInfo.startTime.hour, holidayInfo.startTime.minute, true), FormatShortDate(holidayInfo.endTime.monthDay, holidayInfo.endTime.month), GameTime_GetFormattedTime(holidayInfo.endTime.hour, holidayInfo.endTime.minute, true));
                         end
 
-                        description=description..'\n\n'..(e.onlyChinse and '节目' or CALENDAR_FILTER_HOLIDAYS)..' ID '..info.eventID..(info.iconTexture and '    |T'..info.iconTexture..':0|t'..info.iconTexture or '')
+                        description=description..'\n\n'..(e.onlyChinse and '节日' or CALENDAR_FILTER_HOLIDAYS)..' ID '..info.eventID..(info.iconTexture and '    |T'..info.iconTexture..':0|t'..info.iconTexture or '')
                         CalendarViewHolidayFrame.ScrollingFont:SetText(description);
 
                         if info.iconTexture then
