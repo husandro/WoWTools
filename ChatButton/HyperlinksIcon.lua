@@ -476,16 +476,6 @@ local function Waypoint(text)--地图标记xy, 格式 60.0 70.5
     if uiMapID and C_Map.CanSetUserWaypointOnMap(uiMapID) then
         local x, y= text:match('(%d+%.%d) (%d+%.%d)')
         if x and y then
---[[            local point=C_Map.GetUserWaypoint()
-            local mapPoint = UiMapPoint.CreateFromVector2D(uiMapID, {x=tonumber(x), y=tonumber(y)})
-            C_Map.SetUserWaypoint(mapPoint)
-            --local link= C_Map.GetUserWaypointHyperlink()
-            if point then
-                C_Map.SetUserWaypoint(point)
-            else
-                C_Map.ClearUserWaypoint()
-            end]]
-            
             return '|cffffff00|Hworldmap:'..uiMapID..':'..x:gsub('%.','')..'0:'..y:gsub('%.','')..'0|h[|A:Waypoint-MapPin-ChatIcon:13:13:0:0|a'..text..']|h|r'
         end
     end
