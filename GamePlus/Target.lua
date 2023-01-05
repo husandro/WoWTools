@@ -7,24 +7,26 @@ local panel= CreateFrame("Frame")
 
 local function set_Register_Event()
     if Save.disabled then
-        panel:UnregisterEvent('PLAYER_TARGET_CHANGED')
+        panel:UnregisterEvent('PLAYER_TARGET_CHANGED')--提示
         panel:UnregisterEvent('PLAYER_ENTERING_WORLD')
-        --panel:UnregisterEvent('PLAYER_REGEN_DISABLED')
-        --panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
+
+        panel:UnregisterEvent('PLAYER_REGEN_DISABLED')--颜色
+        panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
         if panel.Texture then
             panel.Texture:SetShwon(false)
         end
     else
         if not panel.Texture then
             panel.Texture= panel:CreateTexture()
-            --panel.Texture:SetAtlas('NPE_ArrowRight')
             panel.Texture:SetAtlas('common-icon-rotateright')
-            --panel.Texture:SetAtlas('Islands-MarkedArea')
             panel.Texture:SetSize(40, 20)
         end
+
         panel:RegisterEvent('PLAYER_TARGET_CHANGED')
-        --panel:RegisterEvent('PLAYER_REGEN_DISABLED')
-        --panel:RegisterEvent('PLAYER_REGEN_ENABLED')
+        panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+
+        panel:RegisterEvent('PLAYER_REGEN_DISABLED')
+        panel:RegisterEvent('PLAYER_REGEN_ENABLED')
     end
 end
 
@@ -52,7 +54,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event=='PLAYER_TARGET_CHANGED' or event=='PLAYER_ENTERING_WORLD' then
-        C_Timer.After(0.2, function()
+        C_Timer.After(0.15, function()
             local plate = C_NamePlate.GetNamePlateForUnit("target")
             if plate then
                 local frame
@@ -69,9 +71,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
             panel.Texture:SetShown(plate and true or false)
         end)
-    --elseif event=='PLAYER_REGEN_DISABLED' then
 
-    --elseif event=='PLAYER_REGEN_ENABLED' then
+    elseif event=='PLAYER_REGEN_DISABLED' then--颜色
+        panel.Texture:SetVertexColor(1,0,0)
 
+    elseif event=='PLAYER_REGEN_ENABLED' then
+        panel.Texture:SetVertexColor(1,1,1)
     end
 end)

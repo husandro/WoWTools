@@ -366,7 +366,7 @@ local function Init_Gossip()
         elseif (npc and Save.NPC[npc]) or not Save.gossip then
             return
 
-        elseif (info.flags == Enum.GossipOptionRecFlags.QuestLabelPrepend or name:find(QUESTS_LABEL)) and Save.quest then--任务
+        elseif (info.flags == Enum.GossipOptionRecFlags.QuestLabelPrepend or name:find(QUESTS_LABEL) or name:find(LOOT_JOURNAL_LEGENDARIES_SOURCE_QUEST) or name:find('|c')) and Save.quest then--任务
             if info.flags == Enum.GossipOptionRecFlags.QuestLabelPrepend then
                 name=GOSSIP_QUEST_OPTION_PREPEND:format(info.name)
             end
