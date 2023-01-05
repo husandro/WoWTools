@@ -9,6 +9,16 @@ local function _CalendarFrame_SafeGetName(name)
 	end
 	return name;
 end
+local function _CalendarFrame_IsPlayerCreatedEvent(calendarType)
+	return
+		calendarType == "PLAYER" or
+		calendarType == "GUILD_ANNOUNCEMENT" or
+		calendarType == "GUILD_EVENT" or
+		calendarType == "COMMUNITY_EVENT";
+end
+local function _CalendarFrame_IsSignUpEvent(calendarType, inviteType)
+	return (calendarType == "GUILD_EVENT" or calendarType == "COMMUNITY_EVENT") and inviteType == Enum.CalendarInviteType.Signup;
+end
 
 local CALENDAR_CALENDARTYPE_TOOLTIP_NAMEFORMAT = {
 	["PLAYER"] = {
@@ -36,13 +46,6 @@ local CALENDAR_CALENDARTYPE_TOOLTIP_NAMEFORMAT = {
 		[""]				= CALENDAR_EVENTNAME_FORMAT_RAID_LOCKOUT,
 	},
 };
-local function _CalendarFrame_IsPlayerCreatedEvent(calendarType)
-	return
-		calendarType == "PLAYER" or
-		calendarType == "GUILD_ANNOUNCEMENT" or
-		calendarType == "GUILD_EVENT" or
-		calendarType == "COMMUNITY_EVENT";
-end
 
 local function set_Time_Color(eventTime, hour, minute, init)
     if hour and minute then
@@ -78,6 +81,7 @@ local function set_Item_Numeri(itemID)
         return (texture and '|T'..texture..':0|t' or '')..num
     end
 end
+
 
 
 local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDayButton_OnEnter(self)
@@ -153,7 +157,7 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
             end
         end
 
-        if event.calendarType=='PLAYER' then --or  ( _CalendarFrame_IsPlayerCreatedEvent(event.calendarType) ) then--自定义,事件
+        if event.calendarType=='PLAYER' or _CalendarFrame_IsPlayerCreatedEvent(event.calendarType) then--自定义,事件
 			local text;
 			if event.invitedBy and UnitIsUnit("player", event.invitedBy) then
 				if ( event.calendarType == "GUILD_ANNOUNCEMENT" ) then
@@ -166,7 +170,7 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
 					text = e.Icon.player
 				end
 			else
-				if ( _CalendarFrame_IsSignUpEvent(event.calendarType, event.inviteType) ) then
+				if _CalendarFrame_IsSignUpEvent(event.calendarType, event.inviteType) then
 					local inviteStatusInfo = CalendarUtil.GetCalendarInviteStatusInfo(event.inviteStatus);
 					if ( event.inviteStatus == Enum.CalendarStatus.NotSignedup or
 							event.inviteStatus == Enum.CalendarStatus.Signedup ) then
@@ -542,7 +546,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                             description = format(CALENDAR_HOLIDAYFRAME_BEGINSENDS, description, FormatShortDate(holidayInfo.startTime.monthDay, holidayInfo.startTime.month), GameTime_GetFormattedTime(holidayInfo.startTime.hour, holidayInfo.startTime.minute, true), FormatShortDate(holidayInfo.endTime.monthDay, holidayInfo.endTime.month), GameTime_GetFormattedTime(holidayInfo.endTime.hour, holidayInfo.endTime.minute, true));
                         end
 
-                        description=description..'\n\n'..CALENDAR_FILTER_HOLIDAYS..'ID '..info.eventID..(info.iconTexture and '    |T'..info.iconTexture..':0|t'..info.iconTexture or '')
+                        description=description..'\n\n'..(e.onlyChinse and '节目' or CALENDAR_FILTER_HOLIDAYS)..' ID '..info.eventID..(info.iconTexture and '    |T'..info.iconTexture..':0|t'..info.iconTexture or '')
                         CalendarViewHolidayFrame.ScrollingFont:SetText(description);
 
                         if info.iconTexture then
