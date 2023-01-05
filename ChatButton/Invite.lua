@@ -473,39 +473,39 @@ local function set_Chanell_Event()--设置,内容,频道, 邀请,事件
     end
 end
 
---#####
---对话框
---#####
-StaticPopupDialogs[id..addName..'CHANNEL']={--设置,内容,频道, 邀请,事件
-    text=id..' '..addName..' '..CHANNEL..'\n\n'..KBASE_DEFAULT_SEARCH_TEXT,
-    whileDead=1,
-    hideOnEscape=1,
-    exclusive=1,
-	timeout = 60,
-    hasEditBox=1,
-    button1= SLASH_CHAT_MODERATE2:gsub('/',''),
-    button2=CANCEL,
-    OnShow = function(self, data)
-        self.editBox:SetText(Save.ChannelText or (e.Player.zh and '1' or 'inv'))
-        --self.button3:SetEnabled(Save.Mounts[FLOOR][data.spellID] and true or false)
-	end,
-    OnAccept = function(self, data)
-		Save.ChannelText = string.upper(self.editBox:GetText())
-        print(id, addName, CHANNEL,'|cnGREEN_FONT_COLOR:'..Save.ChannelText..'|r')
-	end,
-    EditBoxOnTextChanged=function(self, data)
-        local text= self:GetText()
-        text=text:gsub(' ','')
-        self:GetParent().button1:SetEnabled(text~='')
-    end,
-    EditBoxOnEscapePressed = function(s)
-        s:GetParent():Hide()
-    end,
-}
-
 --初始菜单
 --#######
 local function InitList(self, level, type)
+    --#####
+    --对话框
+    --#####
+    StaticPopupDialogs[id..addName..'CHANNEL']={--设置,内容,频道, 邀请,事件
+        text=id..' '..addName..' '..(e.onlyChinse and '频道' or CHANNEL)..'\n\n'..(e.onlyChinse and '关键词' or KBASE_DEFAULT_SEARCH_TEXT),
+        whileDead=1,
+        hideOnEscape=1,
+        exclusive=1,
+        timeout = 60,
+        hasEditBox=1,
+        button1= e.onlyChinse and '修改' or SLASH_CHAT_MODERATE2:gsub('/',''),
+        button2=CANCEL,
+        OnShow = function(self, data)
+            self.editBox:SetText(Save.ChannelText or (e.Player.zh and '1' or 'inv'))
+            --self.button3:SetEnabled(Save.Mounts[FLOOR][data.spellID] and true or false)
+        end,
+        OnAccept = function(self, data)
+            Save.ChannelText = string.upper(self.editBox:GetText())
+            print(id, addName, e.onlyChinse and '频道' or CHANNEL,'|cnGREEN_FONT_COLOR:'..Save.ChannelText..'|r')
+        end,
+        EditBoxOnTextChanged=function(self, data)
+            local text= self:GetText()
+            text=text:gsub(' ','')
+            self:GetParent().button1:SetEnabled(text~='')
+        end,
+        EditBoxOnEscapePressed = function(s)
+            s:GetParent():Hide()
+        end,
+    }
+
     local info
     if type=='InvUnit' then--邀请单位    
         info={
@@ -546,7 +546,6 @@ local function InitList(self, level, type)
             tooltipTitle= e.onlyChinse and '仅限: 队长 |cnRED_FONT_COLOR:不在副本|r' or format(GROUP_FINDER_CROSS_FACTION_LISTING_WITHOUT_PLAYSTLE, '|cff00ff00'..LEADER..'|r'..NO..'|cnRED_FONT_COLOR:'..INSTANCE..'|r'),
         }
         UIDropDownMenu_AddButton(info, level)
-        
 
         info={--设置,频道,事件
             text= (e.onlyChinse and '频道' or CHANNEL)..(Save.ChannelText and '|cnGREEN_FONT_COLOR: '..Save.ChannelText..'|r' or ''),--内容,频道, 邀请
@@ -561,10 +560,9 @@ local function InitList(self, level, type)
                 Save.Channel = not Save.Channel and true or nil
                 set_Chanell_Event()--设置,频道,事件
                 setTexture()--设置图标颜色, 是否有权限, 是否转团, 邀请选项提示
-            end    
+            end
         }
         UIDropDownMenu_AddButton(info, level)
-
 
         info={--已邀请列表
             text= e.onlyChinse and '已邀请' or LFG_LIST_APP_INVITED,--三级列表，已邀请列表
