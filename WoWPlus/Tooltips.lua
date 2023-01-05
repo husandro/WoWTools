@@ -282,7 +282,7 @@ local function setItem(self, ItemLink)
         local spellTexture=GetSpellTexture(spellID)
         self:AddDoubleLine((itemName~=spellName and hex..'['..spellName..']|r' or '')..(e.onlyChinse and '法术' or SPELLS)..' '..spellID, spellTexture and spellTexture~=itemTexture  and '|T'..spellTexture..':0|t'..spellTexture or ' ')
     end
-    
+
     local bag= GetItemCount(ItemLink)--物品数量
     local bank= GetItemCount(ItemLink,true) - bag
     if bag==0 and bank==0 then
@@ -339,7 +339,7 @@ end
 
 local function setSpell(self, spellID)--法术
     spellID = spellID or select(2, self:GetSpell())
-    local spellTexture= spellID and  GetSpellTexture(spellID)
+    local spellTexture= spellID and GetSpellTexture(spellID)
     if not spellID then
         return
     end
