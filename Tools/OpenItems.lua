@@ -238,7 +238,9 @@ local function setMenuList(self, level, menuList)--主菜单
         local bagInfo=C_Container.GetContainerItemInfo(Bag.bag, Bag.slot)
         t.icon= bagInfo and bagInfo.iconFileID
         t.func=function()
-            setDisableCursorItem()--禁用当物品
+            if not UnitAffectingCombat('player') then
+                setDisableCursorItem()--禁用当物品
+            end
         end
         t.tooltipOnButton=true
         if not UnitAffectingCombat('player') then
