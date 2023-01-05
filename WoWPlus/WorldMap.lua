@@ -627,7 +627,14 @@ local function Init()
         if Save.hide or ChatEdit_TryInsertQuestLinkForQuestID(self.questID) then
             return
         end
-        if not C_QuestLog.IsQuestDisabledForSession(self.questID) and button == "RightButton" then
+        if self.questID and not C_QuestLog.IsQuestDisabledForSession(self.questID) and button == "RightButton" then
+            --[[local info={
+                text= (e.onlyChinse and '任务' or QUESTS_LABEL)..' ID '..self.questID,
+                isTitle=true,
+                notCheckable=true
+            }
+            UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)]]
+
             UIDropDownMenu_AddSeparator()
             local info= {
                 text= (e.onlyChinse and '显示' or SHOW)..'|A:campaign_headericon_open:0:0|a'..(e.onlyChinse and '全部' or ALL),
