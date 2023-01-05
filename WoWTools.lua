@@ -298,19 +298,22 @@ e.MK=function(number,bit)
     bit = bit or 1
     if number>=1e6 then
         if bit==0 then
-            return math.modf(number/1e6)..'m'
+            return ('%im'):format(number/1e6)
+            --return math.modf(number/1e6)..'m'
         else
             return ('%.'..bit..'fm'):format(number/1e6)
         end
     elseif number>= 1e4 and (e.Player.zh or e.onlyChinse) then
         if bit==0 then
-            return math.modf(number/1e4)..'w'
+            return ('%iw'):format(number/1e4)
+            --return math.modf(number/1e4)..'w'
         else
             return ('%.'..bit..'fw'):format(number/1e4)
         end
     elseif number>=1e3 then
         if bit==0 then
-            return math.modf(number/1e3)..'k'
+            return ('%ik'):format(number/1e3)
+            --return math.modf(number/1e3)..'k'
         else
             return ('%.'..bit..'fk'):format(number/1e3)
         end

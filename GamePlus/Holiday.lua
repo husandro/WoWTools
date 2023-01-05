@@ -61,8 +61,9 @@ end
 local function get_Currency_Info(currencyID)--货币,数量
     local info = C_CurrencyInfo.GetCurrencyInfo(currencyID)
     if info and info.iconFileID then
-        return (info.iconFileID and '|T'..info.iconFileID..':0|t' or '').. ((info.quantity and info.quantity>0) and e.MK(info.quality, 0) or '')
+        return '|T'..info.iconFileID..':0|t'--. ((info.quantity and info.quantity>0) and e.MK(info.quality, 0) or '')
     end
+    return ''
 end
 
 local function set_Quest_Completed(tab)--任务是否完成
@@ -79,10 +80,11 @@ end
 
 local function set_Item_Numeri(itemID)
     local texture = C_Item.GetItemIconByID(itemID)
-    local num= GetItemCount(itemID, true)
-    if num and num>0 then
-        return (texture and '|T'..texture..':0|t' or '')..num
+   -- local num= GetItemCount(itemID, true)
+    if texture then
+        return '|T'..texture..':0|t'
     end
+    return ''
 end
 
 
@@ -226,15 +228,14 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
 
         if event.calendarType=='HOLIDAY' and event.eventID then
             if event.eventID==479 or event.eventID==617 or event.eventID==623 or event.eventID==629 or event.eventID==654 or event.eventID==1068 or event.eventID==1277 or event.eventID==1269 then--时光
-                local text= get_Currency_Info(1166)--1166[时空扭曲徽章]
-                msg= text and msg..text or msg
+                msg= msg..get_Currency_Info(1166)--1166[时空扭曲徽章]
                 local tab={40168, 40173, 40786, 45563, 55499, 40168, 40173, 40787, 45563, 55498, 64710,64709}
                 msg= msg..set_Quest_Completed(tab)--任务是否完成
                 find_Currency=true
                 find_Quest=true
 
             elseif event.eventID==479 then--暗月
-                msg=msg ..(set_Item_Numeri(515) or '')--515[暗月奖券]
+                msg=msg ..set_Item_Numeri(515)--515[暗月奖券]
                 if C_QuestLog.IsQuestFlaggedCompleted(36471) and C_QuestLog.IsQuestFlaggedCompleted(32175) then
                     msg= msg..e.Icon.select2
                 else
@@ -244,7 +245,7 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
                 find_Quest=true
 
             elseif event.eventID==324 then--万圣节                
-                msg=msg ..(set_Item_Numeri(33226) or '')--33226[奶糖]
+                msg=msg ..set_Item_Numeri(33226)--33226[奶糖]
                 find_Item=true
             end
             msg= Save.showID and msg..' '..event.eventID or msg--显示 ID
