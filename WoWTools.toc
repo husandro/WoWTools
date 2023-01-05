@@ -101,6 +101,8 @@ GamePlus\InterruptStolenDispel.lua
 GamePlus\Holiday.lua
 ##镶嵌宝石
 GamePlus\Gem.lua
+##目标指示
+GamePlus\Target.lua
 
 ##坐骑， Tools 主要的，
 ##如果要使用Tools中的一个模块，必须开启坐骑模块
