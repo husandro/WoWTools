@@ -888,7 +888,7 @@ local function Init_Quest()
             questSelect[questID]=true
         end
 
-        local majorFactionRepRewards = C_QuestOffer.GetQuestOfferMajorFactionReputationRewards()
+        local majorFactionRepRewards = C_QuestOffer.GetQuestOfferMajorFactionReputationRewards()--名望
         if majorFactionRepRewards then
 			for _, rewardInfo in ipairs(majorFactionRepRewards) do
                 if rewardInfo.factionID and rewardInfo.rewardAmount then
@@ -899,7 +899,11 @@ local function Init_Quest()
                 end
             end
         end
-        --  acceptButton:Click()
+
+        --[[for index= 1,GetNumRewardCurrencies() do--货币
+            local name, texture, numItems, quality = GetQuestCurrencyInfo("reward", index)
+        end]]
+        acceptButton:Click()
 
 --[[--local numRequiredCurrencies = GetNumQuestCurrencies();
         if numRequiredCurrencies>0 then--货币
