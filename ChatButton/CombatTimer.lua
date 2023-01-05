@@ -4,7 +4,6 @@ local Save= {textScale=1.2,
         Say=120,
         --AllOnlineTime=true,--进入游戏时,提示游戏,时间
         combatScale=true,--战斗中缩放
-
         bat={num= 0, time= 0},--战斗数据
         pet={num= 0,  win=0, capture=0},
         ins={num= 0, time= 0, kill=0, dead=0},

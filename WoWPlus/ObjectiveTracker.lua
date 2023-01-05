@@ -356,8 +356,12 @@ local function Init()
                 if info.isOnMap then
                     m=m..e.Icon.map2
                 end
-                if info.level and info.level ~= MAX_PLAYER_LEVEL then
+                --[[if info.level and info.level ~= MAX_PLAYER_LEVEL then
                     m=m..'['..info.level..']'
+                end]]
+                local ver=GetQuestExpansion(questID or info.questID)--版本
+                if ver and ver~= e.ExpansionLevel then
+                    m=m..'|cff606060['..(ver+1)..']|r'
                 end
             end
         end
