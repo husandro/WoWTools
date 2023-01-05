@@ -584,7 +584,7 @@ local function set_AreaPOIPinMixin_OnAcquired(poiInfo)--地图POI提示 AreaPOID
         end
         t=t:match('%((.+)%)') or t
         t=t:match('（(.+)）') or t
-        t=t:match('(.+),') or t
+        t=t:match(',(.+)') or t
         t=t:match(UNITNAME_SUMMON_TITLE14:gsub('%%s','%(%.%+%)')) or t
         t=t:gsub(PET_ACTION_MOVE_TO,'')
         t=t:gsub(SPLASH_BATTLEFORAZEROTH_8_1_0_FEATURE2_TITLE..':','')
