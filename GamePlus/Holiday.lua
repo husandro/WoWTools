@@ -67,11 +67,14 @@ end
 
 local function set_Quest_Completed(tab)--任务是否完成
     for _, questID in pairs(tab) do
-        if C_QuestLog.IsQuestFlaggedCompleted(questID) then
+        local completed= C_QuestLog.IsQuestFlaggedCompleted(questID)
+        if completed then
             return e.Icon.select2
+        elseif completed== false then
+            return e.Icon.info2
         end
     end
-    return e.Icon.info2
+    return ''
 end
 
 local function set_Item_Numeri(itemID)
