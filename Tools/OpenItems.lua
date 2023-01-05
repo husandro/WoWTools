@@ -155,6 +155,9 @@ local function getItems()--取得背包物品信息
 end
 
 local function setDisableCursorItem()--禁用当物品
+    if UnitAffectingCombat('player') then
+        return
+    end
     if Bag.bag and Bag.slot then
         local itemID=C_Container.GetContainerItemID(Bag.bag, Bag.slot)
         if itemID then
@@ -238,9 +241,7 @@ local function setMenuList(self, level, menuList)--主菜单
         local bagInfo=C_Container.GetContainerItemInfo(Bag.bag, Bag.slot)
         t.icon= bagInfo and bagInfo.iconFileID
         t.func=function()
-            if not UnitAffectingCombat('player') then
-                setDisableCursorItem()--禁用当物品
-            end
+            setDisableCursorItem()--禁用当物品
         end
         t.tooltipOnButton=true
         if not UnitAffectingCombat('player') then
@@ -526,7 +527,7 @@ local function Init()
 
     panel:SetScript('OnMouseWheel',function(self,d)
         if d == 1 and not IsModifierKeyDown() then
-            if Bag.slot and Bag.bag and not UnitAffectingCombat('player') then
+            if Bag.slot and Bag.bag then
                 setDisableCursorItem()--禁用当物品
                 CloseDropDownMenus()
                 shoTips(self)--显示提示
