@@ -471,6 +471,26 @@ local function setMount(link)--设置,坐骑
     end
 end
 
+local function Waypoint(text)--地图标记xy, 格式 60.0 70.5
+    local uiMapID= WorldMapFrame:IsShown() and WorldMapFrame.mapID or C_Map.GetBestMapForUnit("player")
+    if uiMapID and C_Map.CanSetUserWaypointOnMap(uiMapID) then
+        local x, y= text:match('(%d+%.%d) (%d+%.%d)')
+        if x and y then
+--[[            local point=C_Map.GetUserWaypoint()
+            local mapPoint = UiMapPoint.CreateFromVector2D(uiMapID, {x=tonumber(x), y=tonumber(y)})
+            C_Map.SetUserWaypoint(mapPoint)
+            --local link= C_Map.GetUserWaypointHyperlink()
+            if point then
+                C_Map.SetUserWaypoint(point)
+            else
+                C_Map.ClearUserWaypoint()
+            end]]
+            
+            return '|cffffff00|Hworldmap:'..uiMapID..':'..x:gsub('%.','')..'0:'..y:gsub('%.','')..'0|h[|A:Waypoint-MapPin-ChatIcon:13:13:0:0|a'..text..']|h|r'
+        end
+    end
+end
+
 local showTimestamps--聊天中时间戳
 local playerName=UnitName('player')
 local function setAddMessageFunc(self, s, ...)
@@ -503,6 +523,8 @@ local function setAddMessageFunc(self, s, ...)
     s=s:gsub('|Hjournal:.-]|h', Journal)
     s=s:gsub('|Hinstancelock:.-]|h', Instancelock)
 
+    s=s:gsub('(%d+%.%d %d+%.%d)', Waypoint)--地图标记xy, 格式 60.0 70.5
+
     if not showTimestamps and s:find(set_LOOT_ITEM) then--	%s获得了战利品：%s。
         local unitName= s:match(set_LOOT_ITEM)
         if unitName then
@@ -516,6 +538,7 @@ local function setAddMessageFunc(self, s, ...)
     for k, _ in pairs(Save.text) do--内容加颜色
         s=s:gsub(k, '|cnGREEN_FONT_COLOR:'..k..'|r')
     end
+
     return self.ADD(self, s, ...)
 end
 

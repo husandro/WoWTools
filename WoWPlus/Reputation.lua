@@ -98,7 +98,7 @@ local function btnstrSetText()--监视声望内容
 			local verHeader= isHeader and not isParagon and not hasRep and not isChild--版本声望
 			if not ((Save.btnStrHideCap and isCapped and not isParagon and not isHeader) or (Save.btnStrHideHeader and verHeader))then
 				local t=''
-				
+
 				if verHeader then
 					t= t.. e.Icon.star2
 				end
@@ -108,14 +108,14 @@ local function btnstrSetText()--监视声望内容
 				elseif not verHeader then
 					t= t.. (icon or Icon.isCapped)
 				end
-					
+
 				t=t..name..(factionStandingtext and ' '..factionStandingtext or '')..(value and ' '..value or '')
 
 				if hasRewardPending then--有奖励
 					t=t..' '..Icon.reward2
 				end
 
-				if verHeader then 
+				if verHeader then
 					t='|cnGREEN_FONT_COLOR:'..t..'|r'
 				end
 				if m~='' then m=m..'|n' end
@@ -182,7 +182,7 @@ hooksecurefunc('ReputationFrame_InitReputationRow', function (factionRow, elemen
 			barColor = BLUE_FONT_COLOR
 		end
 	elseif (isHeader and hasRep) or not isHeader then
-		
+
 		if (standingID == MAX_REPUTATION_REACTION) then--已满
 			text=Icon.isCapped..name
 			barColor=FACTION_ORANGE_COLOR
@@ -373,9 +373,9 @@ local function FactionUpdate(self, env, text)--监视声望更新提示
 			local repInfo = C_GossipInfo.GetFriendshipReputation(factionID)
 			if (repInfo and repInfo.friendshipFactionID > 0) then
 				factionStandingtext = repInfo.reaction
-				if ( repInfo.nextThreshold ) then					
+				if ( repInfo.nextThreshold ) then
 					value=('%i%%'):format(repInfo.standing/repInfo.nextThreshold*100);
-					barColor = FACTION_BAR_COLORS[standingID]					
+					barColor = FACTION_BAR_COLORS[standingID]
 				else
 					barColor = FACTION_ORANGE_COLOR
 					isCapped=true
@@ -392,7 +392,7 @@ local function FactionUpdate(self, env, text)--监视声望更新提示
 				else
 					barColor = BLUE_FONT_COLOR
 					if info then
-						if info.name and info.name~=name then 
+						if info.name and info.name~=name then
 							factionStandingtext=name
 						end
 						value= RENOWN_LEVEL_LABEL..' '..info.renownLevel.. (' %i%%'):format(info.renownReputationEarned/info.renownLevelThreshold*100)--名望 RENOWN_LEVEL_LABEL

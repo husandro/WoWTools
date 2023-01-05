@@ -853,39 +853,53 @@ local function Init_Quest()
             select_Reward()--自动:选择奖励
         end
 
-        local itemLink=''
-        local numRequiredItems = GetNumQuestItems() + GetNumQuestCurrencies()
-        if numRequiredItems>0 then--物品
-            local questItemName = "QuestProgressItem";
-            for i=1, numRequiredItems do
-                local requiredItem = _G[questItemName..buttonIndex];
-                if requiredItem and requiredItem:IsShown() and requiredItem.type=='reward' and requiredItem.objectType == "item" then
-                    local link=GetQuestItemLink(requiredItem.type, i)
-                    if link then
-                        itemLink= itemLink.. link
-                    end
+        local itemLink=''--QuestInfo.lua QuestInfo_ShowRewards()
+        for index=1, GetNumQuestChoices() do--物品
+            local questItem = QuestInfo_GetRewardButton(QuestInfoFrame.rewardsFrame, index);
+            if questItem then
+                local link=GetQuestItemLink(questItem.type, index)
+                if link then
+                    itemLink= itemLink..link
                 end
             end
         end
-        local numSpellRewards = GetNumQuestLogRewardSpells()--QuestInfo.lua
+
+        local numSpellRewards = GetNumQuestLogRewardSpells()--法术 
         for rewardSpellIndex = 1, numSpellRewards do
             local texture, name, isTradeskillSpell, isSpellLearned, hideSpellLearnText, isBoostSpell, garrFollowerID, genericUnlock, spellID = GetRewardSpell(rewardSpellIndex);
             if spellID then
-                e.LoadSpellItemData(spellID,true)
+                e.LoadSpellItemData(spellID, true)
                local spellLink= GetSpellLink(spellID)
                if spellLink then
                     itemLink= itemLink..spellLink
                end
             end
         end
+
+        local skillName, skillIcon, skillPoints = GetRewardSkillPoints()--专业
+        if skillName then
+            itemLink= itemLink..(GetSpellLink(skillName) or ((skillIcon and '|T'..skillIcon..':0|t' or '')..skillName))..(skillPoints and '|cnGREEN_FONT_COLOR:+'..skillPoints..'|r' or '')
+        end
+
         if not questSelect[questID] then
             C_Timer.After(0.5, function()
                 print(id, QUESTS_LABEL, GetQuestLink(questID) or questID, (complete and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..acceptButton:GetText()..'|r', itemLink)
             end)
             questSelect[questID]=true
         end
---print(itemLink,GetNumQuestItems(), GetNumQuestCurrencies())
-        acceptButton:Click()
+
+        local majorFactionRepRewards = C_QuestOffer.GetQuestOfferMajorFactionReputationRewards()
+        if majorFactionRepRewards then
+			for _, rewardInfo in ipairs(majorFactionRepRewards) do
+                if rewardInfo.factionID and rewardInfo.rewardAmount then
+                    local data = C_MajorFactions.GetMajorFactionData(rewardInfo.factionID)
+                    if data and data.name then
+                        itemLink= itemLink..(data.textureKit and '|A:MajorFactions_Icons_'..data.textureKit..'512:0:0|a' or '')..data.name..'|cnGREEN_FONT_COLOR:+'..rewardInfo.rewardAmount..'|r'
+                    end
+                end
+            end
+        end
+        --  acceptButton:Click()
 
 --[[--local numRequiredCurrencies = GetNumQuestCurrencies();
         if numRequiredCurrencies>0 then--货币
