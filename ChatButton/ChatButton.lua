@@ -59,20 +59,24 @@ local function Init()
     end)
     panel:SetScript('OnMouseWheel', function(self, d)--缩放
         if IsAltKeyDown() then
-            local sacle=Save.scale or 1
-            if d==1 then
-                sacle=sacle+0.1
-            elseif d==-1 then
-                sacle=sacle-0.1
+            if UnitAffectingCombat('player') then
+                print(id, addName, e.onlyChinse and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '战斗中' or COMBAT))
+            else
+                local sacle=Save.scale or 1
+                if d==1 then
+                    sacle=sacle+0.1
+                elseif d==-1 then
+                    sacle=sacle-0.1
+                end
+                if sacle>3 then
+                    sacle=3
+                elseif sacle<0.6 then
+                    sacle=0.6
+                end
+                print(id, addName, (e.onlyChinse and '缩放' or UI_SCALE), sacle)
+                self:SetScale(sacle)
+                Save.scale=sacle
             end
-            if sacle>3 then
-                sacle=3
-            elseif sacle<0.6 then
-                sacle=0.6
-            end
-            print(id, addName, (e.onlyChinse and '缩放' or UI_SCALE), sacle)
-            self:SetScale(sacle)
-            Save.scale=sacle
         end
     end)
 end

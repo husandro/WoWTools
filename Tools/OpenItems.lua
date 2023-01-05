@@ -241,7 +241,9 @@ local function setMenuList(self, level, menuList)--主菜单
             setDisableCursorItem()--禁用当物品
         end
         t.tooltipOnButton=true
-        t.tooltipTitle='|cnRED_FONT_COLOR:'..(e.onlyChinse and '禁用' or DISABLE)..'|r'..e.Icon.mid..(e.onlyChinse and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP)
+        if not UnitAffectingCombat('player') then
+            t.tooltipTitle='|cnRED_FONT_COLOR:'..(e.onlyChinse and '禁用' or DISABLE)..'|r'..e.Icon.mid..(e.onlyChinse and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP)
+        end
     else
         t.text=addName..': '..(e.onlyChinse and '无' or  NONE)
         t.isTitle=true
@@ -457,8 +459,10 @@ local function shoTips(self)--显示提示
             BattlePetToolTip_Show(BattlePetToolTip_UnpackBattlePetLink(battlePetLink))
         else
             e.tips:SetBagItem(Bag.bag, Bag.slot)
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.Icon.mid..(e.onlyChinse and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP), e.onlyChinse and '禁用' or DISABLE, 1,0,0, 1,0,0 )
+            if not UnitAffectingCombat('player') then
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(e.Icon.mid..(e.onlyChinse and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP), e.onlyChinse and '禁用' or DISABLE, 1,0,0, 1,0,0 )
+            end
             e.tips:Show()
         end
     else
@@ -520,7 +524,7 @@ local function Init()
 
     panel:SetScript('OnMouseWheel',function(self,d)
         if d == 1 and not IsModifierKeyDown() then
-            if Bag.slot and Bag.bag then
+            if Bag.slot and Bag.bag and not UnitAffectingCombat('player') then
                 setDisableCursorItem()--禁用当物品
                 CloseDropDownMenus()
                 shoTips(self)--显示提示

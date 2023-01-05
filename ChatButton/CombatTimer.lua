@@ -343,13 +343,13 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text= e.onlyChinse and '战斗中缩放 1.5' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..UI_SCALE..' 1.5',
+            text= e.onlyChinse and '战斗中缩放 1.3' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..UI_SCALE..' 1.3',
             checked= Save.combatScale,
             disabled= UnitAffectingCombat('player'),
             func= function()
                 Save.combatScale= not Save.combatScale and true or nil
                 if Save.combatScale and UnitAffectingCombat('player') then--战斗中缩放
-                    panel:SetScale(1.5)
+                    panel:SetScale(1.3)
                 else
                     panel:SetScale(1)
                 end
@@ -572,7 +572,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         panel.texture2:SetShown(true)
         check_Event()--检测事件
         if Save.combatScale then--战斗中缩放
-            panel:SetScale(1.5)
+            panel:SetScale(1.3)
         end
 
     elseif event=='PLAYER_SPECIALIZATION_CHANGED' then
