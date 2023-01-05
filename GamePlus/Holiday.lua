@@ -60,8 +60,8 @@ end
 
 local function get_Currency_Info(currencyID)--货币,数量
     local info = C_CurrencyInfo.GetCurrencyInfo(currencyID)
-    if info and info.quantity and info.quantity>0  then
-        return (info.iconFileID and '|T'..info.iconFileID..':0|t' or '').. e.MK(info.quality, 0)
+    if info and info.iconFileID then
+        return (info.iconFileID and '|T'..info.iconFileID..':0|t' or '').. ((info.quantity and info.quantity>0) and e.MK(info.quality, 0) or '')
     end
 end
 
@@ -222,7 +222,7 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
         local find_Item, find_Quest, find_Currency
 
         if event.calendarType=='HOLIDAY' and event.eventID then
-            if event.eventID==617 or event.eventID==623 or event.eventID==629 or event.eventID==654 or event.eventID==1068 or event.eventID==1277 or event.eventID==1269 then--时光
+            if event.eventID==479 or event.eventID==617 or event.eventID==623 or event.eventID==629 or event.eventID==654 or event.eventID==1068 or event.eventID==1277 or event.eventID==1269 then--时光
                 local text= get_Currency_Info(1166)--1166[时空扭曲徽章]
                 msg= text and msg..text or msg
                 local tab={40168, 40173, 40786, 45563, 55499, 40168, 40173, 40787, 45563, 55498, 64710,64709}
