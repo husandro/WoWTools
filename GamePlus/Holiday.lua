@@ -123,12 +123,12 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
 	for i = 1, numEvents do
 		local event = C_Calendar.GetDayEvent(monthOffset, day, i);
 		if event and (not Save.onGoing or (Save.onGoing and (event.sequenceType == "ONGOING" or _CalendarFrame_IsPlayerCreatedEvent(event.calendarType)))) then
-            if event.calendarType=='HOLIDAY' then
+--[[            if event.calendarType=='HOLIDAY' then
                 local eventHoliday = C_Calendar.GetHolidayInfo(monthOffset, day, i)
                 if eventHoliday and eventHoliday.texture then
-                    event.texture=eventHoliday.texture
+                    event.texture2=eventHoliday.texture
                 end
-            end
+            end]]
 			tinsert(events, event);
 		end
 	end
@@ -157,13 +157,9 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
 
         if title:find(PVP) then
             msg=msg..'|A:pvptalents-warmode-swords:0:0|a'--pvp
+        --[[elseif event.texture2 then--节日图标
+            msg=msg..'|T'..event.texture2..':0|t']]
         end
-        if event.texture2 then--节日图标
-            msg=msg..'|T'..event.texture..':0|t'
-        end
-        --if event.calendarType=='HOLIDAY' then --and not event.iconTexture) then
-           
-        --end
 
         if event.calendarType=='PLAYER' or _CalendarFrame_IsPlayerCreatedEvent(event.calendarType) then--自定义,事件
 			local text;
