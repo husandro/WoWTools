@@ -16,6 +16,10 @@ hooksecurefunc(ProfessionsFrame,'SetProfessionInfo', function(self, professionIn
 end)
 
 local function setProfessions()
+    if UnitAffectingCombat('player') then
+        panel:RegisterEvent('PLAYER_REGEN_ENABLED')
+        return
+    end
     if Save.disabled or not ProfessionsFrame or not ProfessionsFrame:IsVisible() then
         for k=1,7 do
             if panel['profession'..k] then
@@ -87,7 +91,6 @@ local function setProfessions()
                             panel.profession6:SetAttribute('type', 'spell')
                             panel.profession6:SetAttribute('unit', 'player')
                             panel.profession6:SetAttribute('spell', spellID)
-                            
                         end
                         panel.profession6:SetScript('OnEvent', function(self2, event, unitTarget, castGUID, spellID2)
                             if spellID2==spellID then
@@ -229,5 +232,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='TRADE_SKILL_LIST_UPDATE' then-- or event=='TRADE_SKILL_CLOSE' then
         setProfessions()
         --setFM()
+    elseif event=='PLAYER_REGEN_ENABLED' then
+        setProfessions()
+        panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
     end
 end)
