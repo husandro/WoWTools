@@ -869,7 +869,7 @@ local function Init_Quest()
             local texture, name, isTradeskillSpell, isSpellLearned, hideSpellLearnText, isBoostSpell, garrFollowerID, genericUnlock, spellID = GetRewardSpell(rewardSpellIndex);
             if spellID then
                 e.LoadSpellItemData(spellID, true)
-               local spellLink= GetSpellLink(spellID)
+               local spellLink= GetSpellLink(spellID) or ((texture and name) and '|T'..texture..':0|t'..name)
                if spellLink then
                     itemLink= itemLink..spellLink
                end
