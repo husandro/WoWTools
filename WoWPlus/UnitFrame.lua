@@ -76,12 +76,12 @@ local function Init()
     --职业, 图标
     --#########
     --hooksecurefunc('UnitFrame_SetUnit', function(self, unit, healthbar, manabar)
-    hooksecurefunc('UnitFrame_Update', function(self, isParty)
+    hooksecurefunc('UnitFrame_Update', function(self, isParty)--UnitFrame.lua
         local unit=self.overrideName or self.unit
 
         local r,g,b=GetClassColor(UnitClassBase(unit))
 
-        self.name:SetTextColor(r,g,b)
+        self.name:SetTextColor(r,g,b)--名称, 颜色
         --self.healthbar:SetStatusBarColor(r, g, b)
 
         local class=e.Class(unit, nil, true)--职业, 图标
