@@ -954,6 +954,10 @@ BORDER
 ARTWORK
 OVERLAY
 DRAG_MODEL拖曳
+
 UIPanelWindows[]
+
 FrameUtil.RegisterFrameForEvents(self, table);
+SetPortraitTexture(textureObject, unitToken [, disableMasking])
+SetPortraitToTexture(textureObject, texturePath)
 ]]
