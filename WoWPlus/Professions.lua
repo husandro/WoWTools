@@ -1,5 +1,5 @@
 local id, e = ...
-local Save={}
+local Save={disabled ~= e.Player.husandro}
 local addName= TRADE_SKILLS
 local panel= CreateFrame("Frame", nil, ProfessionsFrame)--e.Cbtn(ProfessionsFrame.TitleContainer, nil, true)
 
@@ -132,6 +132,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Save.disabled = not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需求重新加载' or REQUIRES_RELOAD)
             end)
+            sel:SetScript('OnEnter', function(self2)
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddLine('BUG',1,0,0)
+                e.tips:Show()
+            end)
+            sel:SetScript('OnLeave', function() e.tips:Hide() end)
            if not Save.disabled then
                 C_Timer.After(2, Init)
            end
