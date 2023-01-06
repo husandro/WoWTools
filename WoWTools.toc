@@ -109,7 +109,7 @@ Tools\OpenItems.lua
 ##随机玩具
 Tools\UseToy.lua
 ##专业按钮
-Tools\Professions2.lua
+Tools\Professions.lua
 ##各种专送门
 Tools\UsaItems.lua
 ##诺格弗格药剂 Noggenfogger Elixir
