@@ -12,7 +12,7 @@ local function set_ProfessionsFrame_Button()--专业界面, 按钮
         self:SetNormalAtlas(Save.notProfessionsFrameButtuon and e.Icon.disabled or e.Icon.icon)
     end)
     setButton:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_RIGHT")
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, 'Tools')
         e.tips:AddLine(' ')
@@ -40,7 +40,7 @@ local function set_ProfessionsFrame_Button()--专业界面, 按钮
                     C_TradeSkillUI.OpenTradeSkill(skillLine)
                 end)
                 button:SetScript('OnEnter', function(self2)
-                    e.tips:SetOwner(self2, "ANCHOR_LEFT");
+                    e.tips:SetOwner(self2, "ANCHOR_RIGHT");
                     e.tips:ClearLines();
                     e.tips:SetText(name)
                     e.tips:AddLine(' ')
