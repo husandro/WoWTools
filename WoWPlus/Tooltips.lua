@@ -575,14 +575,18 @@ local function setUnitInfo(self, unit)--设置单位提示信息
 
         local isInGuild=IsPlayerInGuildFromGUID(guid)
         local col = e.UnitItemLevel[guid] and e.UnitItemLevel[guid].col or '|c'..select(4,GetClassColor(UnitClassBase(unit)))
-        local line=GameTooltipTextLeft1--名称
 
-        local text=line:GetText()
+        local line=GameTooltipTextLeft1--名称
+        if line then
+            line:SetText(col..e.Icon.toRight2..name..e.Icon.toLeft2..'|r')
+        end
+
+       --[[ local text=line:GetText()
         if text then
             text=text:gsub('(%-.+)','')
             text=text:gsub(name, e.Icon.toRight2..name..e.Icon.toLeft2)
             line:SetText(col..text..'|r')
-        end
+        end]]
         line=isInGuild and GameTooltipTextLeft2
         if line then
             local text=line:GetText()
@@ -599,7 +603,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             local level
 
             level= UnitLevel(unit)
-            text= sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a'
+            local text= sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a'
             level= MAX_PLAYER_LEVEL>level and '|cnGREEN_FONT_COLOR:'..level..'|r' or level
             --className= col and col..className..'|r' or className
             --text= text..LEVEL..' '..level..'  '..e.Race(nil, raceFile, sex)..raceName..' '..e.Class(nil, classFilename)..className..(UnitIsPVP(unit) and  '  (|cnRED_FONT_COLOR:PvP|r)' or '  (|cnGREEN_FONT_COLOR:PvE|r)')
