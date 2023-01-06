@@ -169,9 +169,9 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
 				if ( event.calendarType == "GUILD_ANNOUNCEMENT" ) then
 					text = e.Icon.player;
 				elseif ( event.calendarType == "GUILD_EVENT" ) then
-					text = '|cnGREEN_FONT_COLOR:'..GUILD..'|r'
+					text = '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '公会' or GUILD)..'|r'
 				elseif ( event.calendarType == "COMMUNITY_EVENT") then--社区
-					text = '|cnGREEN_FONT_COLOR:'..COMMUNITIES..'|r';
+					text = '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '社区' or COMMUNITIES)..'|r';
                 else
 					text = e.Icon.player
 				end
