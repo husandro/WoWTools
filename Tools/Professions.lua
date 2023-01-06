@@ -25,31 +25,41 @@ local function set_ProfessionsFrame_Button()--专业界面, 按钮
     setButton.frame:SetShown(not Save.notProfessionsFrameButtuon)
 
     local last
-    for k, index in pairs({GetProfessions()}) do
-        if k~=3 then
-            local name, icon, _, _, _, _, skillLine = GetProfessionInfo(index)
-            if name and icon and skillLine then
-                local button=e.Cbtn(setButton.frame, nil, nil, nil, nil, true, {32, 32})
-                button:SetNormalTexture(icon)
-                if not last then
-                    button:SetPoint('BOTTOMLEFT', ProfessionsFrame, 'BOTTOMRIGHT',0, 35)
-                else
-                    button:SetPoint('BOTTOMLEFT', last, 'TOPLEFT',0,2)
-                end
-                button:SetScript('OnMouseDown', function(self2)
-                    C_TradeSkillUI.OpenTradeSkill(skillLine)
-                end)
-                button:SetScript('OnEnter', function(self2)
-                    e.tips:SetOwner(self2, "ANCHOR_RIGHT");
-                    e.tips:ClearLines();
-                    e.tips:SetText(name)
-                    e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine(id, 'Tools')
-                    e.tips:Show();
-                end)
-                button:SetScript('OnLeave',function() e.tips:Hide() end)
-                last= button
+    local tab={GetProfessions()}
+    if tab[3] then
+        local archaeology=tab[3]--10
+        table.remove(tab, 3)
+        table.insert(tab, archaeology)
+    end
+    for k , index in pairs(tab) do
+        local name, icon, _, _, _, _, skillLine = GetProfessionInfo(index)
+        if icon and skillLine then
+            local button=e.Cbtn(setButton.frame, nil, nil, nil, nil, true, {32, 32})
+            button:SetNormalTexture(icon)
+            if not last then
+                button:SetPoint('BOTTOMLEFT', ProfessionsFrame, 'BOTTOMRIGHT',0, 35)
+            else
+                button:SetPoint('BOTTOMLEFT', last, 'TOPLEFT',0,2)
             end
+            button:SetScript('OnMouseDown', function(self)
+                C_TradeSkillUI.OpenTradeSkill(skillLine)
+            end)
+            button.name= name
+            button:SetScript('OnEnter', function(self)
+                e.tips:SetOwner(self, "ANCHOR_RIGHT");
+                e.tips:ClearLines();
+                if self.name then
+                    e.tips:SetText(self.name)
+                    e.tips:AddLine(' ')
+                end
+                e.tips:AddDoubleLine(id, 'Tools')
+                e.tips:Show();
+            end)
+            button:SetScript('OnLeave',function(self)
+                e.tips:Hide()
+                self:SetButtonState('NORMAL')
+            end)
+            last= button
         end
     end
 end
