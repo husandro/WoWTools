@@ -94,7 +94,7 @@ local function find_Item_Type(class, subclass)
     for bag=0, NUM_BAG_SLOTS do
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local info = C_Container.GetContainerItemInfo(bag, slot)
-            if info and info.hyperlink and info.itemID then
+            if info and info.hyperlink and info.itemID and GetItemSpell(info.itemID) then
                 local classID, subClassID, _, expacID = select(12, GetItemInfo(info.hyperlink))
                 if classID==class and subClassID==subclass and (Save.onlyMaxExpansion and (info.itemID==113509 or e.ExpansionLevel==expacID) or not Save.onlyMaxExpansion) then
                     table.insert(tab, info.itemID)
