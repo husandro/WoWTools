@@ -8,7 +8,7 @@ local function set_ProfessionsFrame_Button()
         if k~=3 then
             local name, icon, _, _, _, _, skillLine = GetProfessionInfo(index)
             if name and icon and skillLine then
-                local buttn=e.Cbtn(panel)
+                local buttn=e.Cbtn(ProfessionsFrame)
                 buttn:SetNormalTexture(icon)
                 buttn:SetSize(32,32)
                 if not last then
