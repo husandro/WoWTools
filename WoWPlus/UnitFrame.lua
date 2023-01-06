@@ -48,7 +48,8 @@ local function Init()
         frame.Portrait:SetDrawLayer('OVERLAY', 2)
         frame:HookScript('OnShow', function(self)
             local texture= select(3, UnitCastingInfo('player')) or select(3, UnitChannelInfo('player'))
-            SetPortraitToTexture(self.Portrait, texture or 0)
+            --SetPortraitToTexture(self.Portrait, texture or 0)
+            self.Portrait:SetTexture(texture or 0)
         end)
 
         if frame.Text then--法术名称, 颜色
