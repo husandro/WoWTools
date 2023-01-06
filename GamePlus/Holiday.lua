@@ -58,36 +58,15 @@ local function set_Time_Color(eventTime, hour, minute, init)
     return eventTime
 end
 
-local function get_Currency_Info(currencyID)--货币,数量
-    local info = C_CurrencyInfo.GetCurrencyInfo(currencyID)
-    if info and info.iconFileID then
-        return '|T'..info.iconFileID..':0|t'--. ((info.quantity and info.quantity>0) and e.MK(info.quality, 0) or '')
-    end
-    return ''
-end
-
 local function set_Quest_Completed(tab)--任务是否完成
     for _, questID in pairs(tab) do
         local completed= C_QuestLog.IsQuestFlaggedCompleted(questID)
         if completed then
             return e.Icon.select2
-        elseif completed== false then
-            return e.Icon.info2
         end
     end
     return ''
 end
-
-local function set_Item_Numeri(itemID)
-    local texture = C_Item.GetItemIconByID(itemID)
-   -- local num= GetItemCount(itemID, true)
-    if texture then
-        return '|T'..texture..':0|t'
-    end
-    return ''
-end
-
-
 
 local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDayButton_OnEnter(self)
     panel.texture:SetShown(Save.hide)
@@ -151,20 +130,38 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
 		return a.startTime.minute < b.startTime.minute;
 	end)
 
-    local msg
-	local eventTime
+    local Text2=''
+	local eventTime, find_Quest
+
     if day and info2.monthDay~=day then
-        msg='|A:UI-HUD-Calendar-'..day..'-Up:0:0|a'
+        Text2='|A:UI-HUD-Calendar-'..day..'-Up:0:0|a'
     end
+
 	for _, event in ipairs(events) do
 		local title = event.title;
-        msg =msg and msg..' \n' or ''
+        local msg = ''
 
         if title:find(PVP) then
-            msg=msg..'|A:pvptalents-warmode-swords:0:0|a'--pvp
+            msg= msg..'|A:pvptalents-warmode-swords:0:0|a'--pvp
+        elseif event.calendarType=='HOLIDAY' and event.eventID then
+            if event.eventID==1063 or event.eventID==617 or event.eventID==623 or event.eventID==629 or event.eventID==654 or event.eventID==1068 or event.eventID==1277 or event.eventID==1269 then--时光
+                local tab={40168, 40173, 40786, 45563, 55499, 40168, 40173, 40787, 45563, 55498, 64710,64709}
+                msg= msg..set_Quest_Completed(tab)--任务是否完成
+                find_Quest=true
+                msg= msg..'|T463446:0|t'--1166[时空扭曲徽章]
+            elseif event.eventID==479 then--暗月
+                local tab={36471, 32175}
+                msg= msg..set_Quest_Completed(tab)--任务是否完成
+
+                msg= msg..'|T134481:0|t'--515[暗月奖券]
+                find_Quest=true
+
+            elseif event.eventID==324 then--万圣节                
+               msg= msg..'|T236546:0|t'--33226[奶糖]
+            end
+        end
         --[[elseif event.texture2 then--节日图标
             msg=msg..'|T'..event.texture2..':0|t']]
-        end
 
         if event.calendarType=='PLAYER' or _CalendarFrame_IsPlayerCreatedEvent(event.calendarType) then--自定义,事件
 			local text;
@@ -195,14 +192,14 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
 					end
 				end
 			end
-			msg=msg..text
+			msg= msg..(text or '')
 		end
 
        -- msg= event.iconTexture and msg..'|T'..event.iconTexture..':0|t' or msg
 
         if ( event.calendarType == "RAID_LOCKOUT" ) then
 			title = GetDungeonNameWithDifficulty(title, event.difficultyName);
-            msg=msg..format(CALENDAR_CALENDARTYPE_TOOLTIP_NAMEFORMAT[event.calendarType][event.sequenceType], title)
+            msg= msg..format(CALENDAR_CALENDARTYPE_TOOLTIP_NAMEFORMAT[event.calendarType][event.sequenceType], title)
         elseif event.calendarType=='HOLIDAY' and title:find(PLAYER_DIFFICULTY_TIMEWALKER) then--时空漫游
             msg= msg..(e.onlyChinse and '时空漫游' or PLAYER_DIFFICULTY_TIMEWALKER)
         else
@@ -211,8 +208,6 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
 
         if Save.showDate then
             if (event.sequenceType == "ONGOING") then
-                --msg=msg..CALENDAR_TOOLTIP_ONGOING
-
                 eventTime = format(CALENDAR_TOOLTIP_DATE_RANGE, FormatShortDate(event.startTime.monthDay, event.startTime.month), FormatShortDate(event.endTime.monthDay, event.endTime.month));
             elseif (event.sequenceType == "END") then
                 eventTime = GameTime_GetFormattedTime(event.endTime.hour, event.endTime.minute, true);
@@ -224,39 +219,22 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
             msg= msg..' '..eventTime
         end
 
-        local  find_Quest
-
-        if event.calendarType=='HOLIDAY' and event.eventID then
-            if event.eventID==479 or event.eventID==617 or event.eventID==623 or event.eventID==629 or event.eventID==654 or event.eventID==1068 or event.eventID==1277 or event.eventID==1269 then--时光
-                msg= msg..get_Currency_Info(1166)--1166[时空扭曲徽章]
-                local tab={40168, 40173, 40786, 45563, 55499, 40168, 40173, 40787, 45563, 55498, 64710,64709}
-                msg= msg..set_Quest_Completed(tab)--任务是否完成
-                find_Quest=true
-
-            elseif event.eventID==479 then--暗月
-                msg=msg ..set_Item_Numeri(515)--515[暗月奖券]
-                if C_QuestLog.IsQuestFlaggedCompleted(36471) and C_QuestLog.IsQuestFlaggedCompleted(32175) then
-                    msg= msg..e.Icon.select2
-                else
-                    msg= msg..e.Icon.info2
-                end
-                find_Quest=true
-
-            elseif event.eventID==324 then--万圣节                
-                msg=msg ..set_Item_Numeri(33226)--33226[奶糖]
-            end
-            msg= Save.showID and msg..' '..event.eventID or msg--显示 ID
+        if Save.showID and event.eventID then--显示 ID
+            msg= msg..' '..event.eventID
         end
 
-        if find_Quest then
-            panel:RegisterEvent('QUEST_COMPLETE')
-        else
-            panel:UnregisterEvent('QUEST_COMPLETE')
+        if msg~='' then
+            Text2= Text2~='' and Text2..'\n' or Text2
+            Text2= Text2..msg..' '
         end
-
 	end
-    msg= msg and msg..'\n'
-    panel.Text:SetText(msg or '')
+
+    if find_Quest then
+        panel:RegisterEvent('QUEST_COMPLETE')
+    else
+        panel:UnregisterEvent('QUEST_COMPLETE')
+    end
+    panel.Text:SetText(Text2)
 end
 
 local function set_event()--设置事件
