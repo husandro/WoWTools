@@ -26,7 +26,7 @@ local function set_ProfessionsFrame_Button()--专业界面, 按钮
 
     local last
     local tab={GetProfessions()}
-    if tab[3] then
+    if tab[3]==10 and #tab>3 then
         local archaeology=tab[3]--10
         table.remove(tab, 3)
         table.insert(tab, archaeology)
@@ -38,6 +38,10 @@ local function set_ProfessionsFrame_Button()--专业界面, 按钮
             button:SetNormalTexture(icon)
             if not last then
                 button:SetPoint('BOTTOMLEFT', ProfessionsFrame, 'BOTTOMRIGHT',0, 35)
+            elseif k==3 then
+                button:SetPoint('BOTTOMLEFT', last, 'TOPLEFT',0, 17)
+            elseif skillLine==794 then
+                button:SetPoint('BOTTOMLEFT', last, 'TOPLEFT',0, 37)
             else
                 button:SetPoint('BOTTOMLEFT', last, 'TOPLEFT',0,2)
             end
