@@ -1,39 +1,19 @@
 local id, e = ...
 local Save={}
-local addName=TRADE_SKILLS
-local panel=e.Cbtn(ProfessionsFrame.TitleContainer, nil, true)
-panel:SetPoint('RIGHT', ProfessionsFrameTitleText, 'RIGHT', 0, 2)
-panel:SetSize(20,20)
---panel.professionInfoStr=e.Cstr(panel)
---panel.professionInfoStr:SetPoint('RIGHT', panel, 'LEFT')
+local addName= TRADE_SKILLS
+local panel= CreateFrame("Frame", nil, ProfessionsFrame)--e.Cbtn(ProfessionsFrame.TitleContainer, nil, true)
 
-
---[[hooksecurefunc(ProfessionsFrame,'SetProfessionInfo', function(self, professionInfo)
-    panel.professionID=professionInfo.professionID
-    if not Save.disabled then
-        panel.professionInfoStr:SetText(professionInfo and professionInfo.professionID or '')
-    end
-end)]]
-
-local function setProfessions()
+--######
+--初始化
+--######
+local function Init()
     if UnitAffectingCombat('player') then
         panel:RegisterEvent('PLAYER_REGEN_ENABLED')
         return
     end
-    if Save.disabled or not ProfessionsFrame or not ProfessionsFrame:IsVisible() then
-        for k=1,7 do
-            if panel['profession'..k] then
-                panel['profession'..k]:SetShown(false)
-            end
-        end
-        if panel.profession6 then
-            panel.profession6:UnregisterAllEvents()
-        end
-        return
-    end
-    local professions= {GetProfessions()}
+
     local last
-    for k, index in pairs( professions) do
+    for k, index in pairs({GetProfessions()}) do
         if k~=3 then
             local name, icon, _, _, _, _, skillLine = GetProfessionInfo(index)
             if name and icon then
@@ -52,6 +32,8 @@ local function setProfessions()
                         e.tips:SetOwner(self2, "ANCHOR_RIGHT");
                         e.tips:ClearLines();
                         e.tips:SetText(self2.name)
+                        e.tips:AddLine(' ')
+                        e.tips:AddDoubleLine(id, e.onlyChinse and '专业' or addName)
                         e.tips:Show();
                     end)
                     panel['profession'..k]:SetScript('OnLeave',function() e.tips:Hide() end)
@@ -79,10 +61,13 @@ local function setProfessions()
                             e.tips:SetOwner(self2, "ANCHOR_RIGHT");
                             e.tips:ClearLines();
                             e.tips:SetSpellByID(spellID)
+                            e.tips:AddLine(' ')
+                            e.tips:AddDoubleLine(id, e.onlyChinse and '专业' or addName)
                             e.tips:Show();
                         end)
                         panel.profession6:SetScript('OnLeave',function() e.tips:Hide() end)
-                        local name2=GetSpellInfo(spellID)
+                        local name2
+                        name2=GetSpellInfo(spellID)
                         if not name2 then
                             name2='/cast [@player]'..name2
                             panel.profession6:SetAttribute("type", "macro")
@@ -117,50 +102,51 @@ local function setProfessions()
                                     e.tips:SetOwner(self2, "ANCHOR_RIGHT");
                                     e.tips:ClearLines();
                                     e.tips:SetToyByItemID(134020)
+                                    e.tips:AddLine(' ')
+                                    e.tips:AddDoubleLine(id, e.onlyChinse and '专业' or addName)
                                     e.tips:Show();
                                 end)
                                 panel.profession7:SetScript('OnLeave',function() e.tips:Hide() end)
                             end
                         end
                     end
-                    if panel.profession7 then
-                        panel.profession7:SetShown(true)
-                    end
                 end
-            end
-            if panel['profession'..k] then
-                panel['profession'..k]:SetShown(name and icon)
             end
         end
     end
     if panel.profession6 then
         panel.profession6:RegisterUnitEvent('UNIT_SPELLCAST_SUCCEEDED', 'player')
-        panel.profession6:SetShown(true)
     end
 end
 
-panel:SetScript('OnMouseDown', function(self, d)
-    if d=='LeftButton' then
-        if Save.disabled then
-            Save.disabled=nil
-        else
-            Save.disabled=true
-            --panel.professionInfoStr:SetText('')
+
+--加载保存数据
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" and arg1==id then
+            Save= WoWToolsSave and WoWToolsSave[addName] or Save
+            --添加控制面板        
+            local sel=e.CPanel(e.onlyChinse and '专业' or addName, not Save.disabled)
+            sel:SetScript('OnMouseDown', function()
+                Save.disabled = not Save.disabled and true or nil
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需求重新加载' or REQUIRES_RELOAD)
+            end)
+           if not Save.disabled then
+                C_Timer.After(2, Init)
+           end
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            if not WoWToolsSave then WoWToolsSave={} end
+            WoWToolsSave[addName]=Save
         end
-        panel:SetNormalAtlas(Save.disabled and e.Icon.disabled or e.Icon.icon)
-        print(id, addName,e.GetEnabeleDisable(not Save.disabled))
-        setProfessions()
+
+    elseif event=='PLAYER_REGEN_ENABLED' then
+        Init()
+        panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
     end
 end)
-panel:SetScript('OnEnter', function(self)
-    e.tips:SetOwner(self, "ANCHOR_RIGHT")
-    e.tips:ClearLines()
-    e.tips:AddDoubleLine(id, addName)
-    e.tips:AddLine(' ')
-    e.tips:AddDoubleLine('professionID: ', self.professionID)
-    e.tips:AddDoubleLine(e.GetEnabeleDisable(not Save.disabled),e.Icon.left)
-    e.tips:Show()
-end)
+
 --[[
 local function setFMkey(self, set)--设置清除快捷键
     if set then
@@ -213,27 +199,3 @@ local function setFM()
     setFMkey(panel.FM, true)--设置快捷键
 end
 ]]
-
---加载保存数据
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-panel:RegisterEvent("TRADE_SKILL_LIST_UPDATE")
---panel:RegisterEvent('TRADE_SKILL_CLOSE')
-panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1==id then
-            Save= WoWToolsSave and WoWToolsSave[addName] or Save
-            panel:SetNormalAtlas(Save.disabled and e.Icon.disabled or e.Icon.icon)
-
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            if not WoWToolsSave then WoWToolsSave={} end
-            WoWToolsSave[addName]=Save
-        end
-    elseif event=='TRADE_SKILL_LIST_UPDATE' then-- or event=='TRADE_SKILL_CLOSE' then
-        setProfessions()
-        --setFM()
-    elseif event=='PLAYER_REGEN_ENABLED' then
-        setProfessions()
-        panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
-    end
-end)
