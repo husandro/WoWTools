@@ -1,26 +1,45 @@
 local id, e = ...
 local addName= PROFESSIONS_TRACKER_HEADER_PROFESSION
+local Save={setButton=true}
 local panel=CreateFrame("Frame")
 
 local function set_ProfessionsFrame_Button()
-    local last
+    local setButton= e.Cbtn(ProfessionsFrame.TitleContainer, nil, not Save.notProfessionsFrameButtuon, nil, nil, nil, {20, 20})
+    setButton:SetPoint('RIGHT', ProfessionsFrameTitleText, 'RIGHT', 0, 2)
+    panel:SetScript('OnMouseDown', function()
+        Save.notProfessionsFrameButtuon= not Save.notProfessionsFrameButtuon and true or nil
+        setButton.frame:SetShown(not Save.notProfessionsFrameButtuon)
+        panel:SetNormalAtlas(Save.notProfessionsFrameButtuon and e.Icon.disabled or e.Icon.icon)
+    end)
+    panel:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_RIGHT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine('professionID: ', self.professionID)
+        e.tips:AddDoubleLine(e.GetEnabeleDisable(not Save.disabled),e.Icon.left)
+        e.tips:Show()
+    end)
+    setButton.frame= CreateFrame("Frame",nil, setButton)
+    setButton.frame:SetShown(not Save.notProfessionsFrameButtuon)
 
+    local last
     for k, index in pairs({GetProfessions()}) do
         if k~=3 then
             local name, icon, _, _, _, _, skillLine = GetProfessionInfo(index)
             if name and icon and skillLine then
                 --e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size)
-                local buttn=e.Cbtn(ProfessionsFrame, nil, nil, nil, nil, true, {32, 32})
-                buttn:SetNormalTexture(icon)
+                local button=e.Cbtn(setButton.frame, nil, nil, nil, nil, true, {32, 32})
+                button:SetNormalTexture(icon)
                 if not last then
-                    buttn:SetPoint('BOTTOMLEFT', ProfessionsFrame, 'BOTTOMRIGHT',0, 35)
+                    button:SetPoint('BOTTOMLEFT', ProfessionsFrame, 'BOTTOMRIGHT',0, 35)
                 else
-                    buttn:SetPoint('BOTTOMLEFT', last, 'TOPLEFT',0,2)
+                    button:SetPoint('BOTTOMLEFT', last, 'TOPLEFT',0,2)
                 end
-                buttn:SetScript('OnMouseDown', function(self2)
+                button:SetScript('OnMouseDown', function(self2)
                     C_TradeSkillUI.OpenTradeSkill(skillLine)
                 end)
-                buttn:SetScript('OnEnter', function(self2)
+                button:SetScript('OnEnter', function(self2)
                     e.tips:SetOwner(self2, "ANCHOR_RIGHT");
                     e.tips:ClearLines();
                     e.tips:SetText(name)
@@ -28,8 +47,8 @@ local function set_ProfessionsFrame_Button()
                     e.tips:AddDoubleLine(id, 'Tools')
                     e.tips:Show();
                 end)
-                buttn:SetScript('OnLeave',function() e.tips:Hide() end)
-                last= buttn
+                button:SetScript('OnLeave',function() e.tips:Hide() end)
+                last= button
             end
         end
     end
