@@ -2,6 +2,37 @@ local id, e = ...
 local addName= PROFESSIONS_TRACKER_HEADER_PROFESSION
 local panel=CreateFrame("Frame")
 
+local function set_ProfessionsFrame_Button()
+    local last
+    for k, index in pairs({GetProfessions()}) do
+        if k~=3 then
+            local name, icon, _, _, _, _, skillLine = GetProfessionInfo(index)
+            if name and icon and skillLine then
+                last=e.Cbtn(panel)
+                last:SetNormalTexture(icon)
+                last:SetSize(32,32)
+                if not last then
+                    last:SetPoint('BOTTOMLEFT', ProfessionsFrame, 'BOTTOMRIGHT',0, 35)
+                else
+                    last:SetPoint('BOTTOMLEFT', last, 'TOPLEFT',0,2)
+                end
+                last:SetScript('OnMouseDown', function(self2)
+                    C_TradeSkillUI.OpenTradeSkill(skillLine)
+                end)
+                last:SetScript('OnEnter', function(self2)
+                    e.tips:SetOwner(self2, "ANCHOR_RIGHT");
+                    e.tips:ClearLines();
+                    e.tips:SetText(name)
+                    e.tips:AddLine(' ')
+                    e.tips:AddDoubleLine(id, 'Tools')
+                    e.tips:Show();
+                end)
+                last:SetScript('OnLeave',function() e.tips:Hide() end)
+            end
+        end
+    end
+end
+
 --####
 --初始
 --####
@@ -144,6 +175,8 @@ local function Init()
             panel.buttons[index]:SetShown(spellID and icon)
         end
     end
+
+    set_ProfessionsFrame_Button()
 end
 
 --###########
