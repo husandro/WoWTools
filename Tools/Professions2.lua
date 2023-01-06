@@ -8,18 +8,18 @@ local function set_ProfessionsFrame_Button()
         if k~=3 then
             local name, icon, _, _, _, _, skillLine = GetProfessionInfo(index)
             if name and icon and skillLine then
-                last=e.Cbtn(panel)
-                last:SetNormalTexture(icon)
-                last:SetSize(32,32)
+                local buttn=e.Cbtn(panel)
+                buttn:SetNormalTexture(icon)
+                buttn:SetSize(32,32)
                 if not last then
-                    last:SetPoint('BOTTOMLEFT', ProfessionsFrame, 'BOTTOMRIGHT',0, 35)
+                    buttn:SetPoint('BOTTOMLEFT', ProfessionsFrame, 'BOTTOMRIGHT',0, 35)
                 else
-                    last:SetPoint('BOTTOMLEFT', last, 'TOPLEFT',0,2)
+                    buttn:SetPoint('BOTTOMLEFT', last, 'TOPLEFT',0,2)
                 end
-                last:SetScript('OnMouseDown', function(self2)
+                buttn:SetScript('OnMouseDown', function(self2)
                     C_TradeSkillUI.OpenTradeSkill(skillLine)
                 end)
-                last:SetScript('OnEnter', function(self2)
+                buttn:SetScript('OnEnter', function(self2)
                     e.tips:SetOwner(self2, "ANCHOR_RIGHT");
                     e.tips:ClearLines();
                     e.tips:SetText(name)
@@ -27,7 +27,8 @@ local function set_ProfessionsFrame_Button()
                     e.tips:AddDoubleLine(id, 'Tools')
                     e.tips:Show();
                 end)
-                last:SetScript('OnLeave',function() e.tips:Hide() end)
+                buttn:SetScript('OnLeave',function() e.tips:Hide() end)
+                last= buttn
             end
         end
     end
