@@ -8,7 +8,7 @@ e.WoWSave={}
 e.UnitItemLevel={}
 local function getPlayerInfo(unit, guid)--取得玩家信息
     if not unit and guid then
-        unit= e.GroupGuid[guid] and e.GroupGuid[guid].unit 
+        unit= e.GroupGuid[guid] and e.GroupGuid[guid].unit
                 or guid== e.Player.guid and 'player'
                 or guid== UnitGUID("mouseover") and "mouseover"
                 or guid== UnitGUID('target') and 'target'
@@ -18,7 +18,7 @@ local function getPlayerInfo(unit, guid)--取得玩家信息
         if itemLevel and itemLevel>1 then
             local name, realm= UnitFullName(unit)
             local r, g, b, hex = GetClassColor(UnitClassBase(unit))
-            
+
             e.UnitItemLevel[guid] = {--玩家装等
                 itemLevel=itemLevel,
                 specID=GetInspectSpecialization(unit),
@@ -327,7 +327,7 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
 
     elseif event=='INSPECT_READY' then--装等
         local unit= UnitGUID("mouseover")==arg1 and 'mouseover'
-                    or e.GroupGuid[arg1] and e.GroupGuid[arg1].unit 
+                    or e.GroupGuid[arg1] and e.GroupGuid[arg1].unit
                     or arg1==e.Player.guid and 'player'
                     or arg1==UnitGUID('target') and 'target'
         if unit then
@@ -341,7 +341,7 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
         C_MythicPlus.RequestMapInfo()
 
     elseif event=='ZONE_CHANGED_NEW_AREA' then--位面, 清除
-        e.Layer=nil 
+        e.Layer=nil
 
     elseif event=='PLAYER_ENTERING_WORLD' then--记录稀有怪
         e.Layer=nil
@@ -363,7 +363,7 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
 
     elseif event=='UPDATE_INSTANCE_INFO' then--副本
         undateInstance()
-        
+
     elseif event=='UNIT_FLAGS' then--稀有怪
         setRareEliteKilled(arg1)
     elseif event=='LOOT_OPENED' then
@@ -373,8 +373,8 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
         set_Money()--钱
 
     elseif event=='PLAYER_LEVEL_UP' then--玩家是否最高等级
-        local level=UnitLevel('player')
+        local level= arg1 or UnitLevel('player')
         e.Player.levelMax= level==MAX_PLAYER_LEVEL--玩家是否最高等级
-        e.Player.level=level
+        e.Player.level= level
     end
 end)

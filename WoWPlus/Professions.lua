@@ -4,16 +4,16 @@ local addName=TRADE_SKILLS
 local panel=e.Cbtn(ProfessionsFrame.TitleContainer, nil, true)
 panel:SetPoint('RIGHT', ProfessionsFrameTitleText, 'RIGHT', 0, 2)
 panel:SetSize(20,20)
-panel.professionInfoStr=e.Cstr(panel)
-panel.professionInfoStr:SetPoint('RIGHT', panel, 'LEFT')
+--panel.professionInfoStr=e.Cstr(panel)
+--panel.professionInfoStr:SetPoint('RIGHT', panel, 'LEFT')
 
 
-hooksecurefunc(ProfessionsFrame,'SetProfessionInfo', function(self, professionInfo)
+--[[hooksecurefunc(ProfessionsFrame,'SetProfessionInfo', function(self, professionInfo)
     panel.professionID=professionInfo.professionID
     if not Save.disabled then
         panel.professionInfoStr:SetText(professionInfo and professionInfo.professionID or '')
     end
-end)
+end)]]
 
 local function setProfessions()
     if UnitAffectingCombat('player') then
@@ -145,7 +145,7 @@ panel:SetScript('OnMouseDown', function(self, d)
             Save.disabled=nil
         else
             Save.disabled=true
-            panel.professionInfoStr:SetText('')
+            --panel.professionInfoStr:SetText('')
         end
         panel:SetNormalAtlas(Save.disabled and e.Icon.disabled or e.Icon.icon)
         print(id, addName,e.GetEnabeleDisable(not Save.disabled))

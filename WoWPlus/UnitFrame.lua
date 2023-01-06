@@ -1,11 +1,7 @@
 local id, e = ...
 local addName=UNITFRAME_LABEL
 local Save={}
-
-PlayerCastingBarFrame:HookScript('OnShow', function()--CastingBarFrame.lua
-    PlayerCastingBarFrame:SetFrameStrata('TOOLTIP')--设置施法条层
-end)
-
+PlayerCastingBarFrame:SetFrameStrata('TOOLTIP')--设置施法条层
 
 --[[
 hooksecurefunc('UnitFrame_SetUnit', function(self, unit, healthbar, manabar)

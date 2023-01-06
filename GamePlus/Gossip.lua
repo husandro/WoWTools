@@ -349,7 +349,6 @@ local function Init_Gossip()
         local index=self:GetID()
         local gossip= C_GossipInfo.GetOptions()
         local name=info.name
-
         local npc=e.GetNpcID('npc')
         self.sel.id=info.gossipOptionID
         self.sel.text=info.name

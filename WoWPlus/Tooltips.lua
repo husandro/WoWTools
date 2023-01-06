@@ -127,7 +127,7 @@ local function get_Pet_Collected_Num(speciesID)--收集数量
     end
     return AllCollected, CollectedNum, CollectedText--总收集数量， 25 25 25， 已收集3/3
 end
-local function setPet(self, speciesID)--宠物
+local function setPet(self, speciesID, setSearchText)--宠物
     if not speciesID or speciesID< 1 then
         return
     end
@@ -170,6 +170,10 @@ local function setPet(self, speciesID)--宠物
         self.itemModel:SetDisplayInfo(creatureDisplayID)
         self.itemModel:SetShown(true)
         self.creatureDisplayID=creatureDisplayID
+    end
+
+    if setSearchText and speciesName and PetJournalSearchBox and PetJournalSearchBox:IsVisible() then--宠物手册，设置名称
+        PetJournalSearchBox:SetText(speciesName)
     end
 end
 
@@ -272,7 +276,7 @@ local function setItem(self, ItemLink)
             if mountID then
                 setMount(self, mountID)--坐骑
             elseif speciesID then
-                setPet(self, speciesID)--宠物
+                setPet(self, speciesID, true)--宠物
             end
         end
     end
@@ -493,8 +497,9 @@ local function set_Unit_Health_Bar(self, unit)
         self.textLeft = e.Cstr(self)
         self.textLeft:SetPoint('TOPLEFT', self, 'BOTTOMLEFT')--生命条
         self.textLeft:SetJustifyH("LEFT");
-        self.textRight = e.Cstr(self)
-        self.textRight:SetPoint('TOPRIGHT', self, 'BOTTOMRIGHT')--生命条
+        self.textRight = e.Cstr(self,18)
+        self.textRight:SetPoint('TOPRIGHT',0,-2)--生命条
+        --self.textRight:SetPoint('TOPRIGHT', self, 'BOTTOMRIGHT')--生命条
         self.textRight:SetJustifyH("Right");
     end
     if self.textLeft then
@@ -669,7 +674,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
         end
 
     elseif (UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit)) then--宠物TargetFrame.lua
-        setPet(self, UnitBattlePetSpeciesID(unit))
+        setPet(self, UnitBattlePetSpeciesID(unit), true)
 
     else
         local r,g,b, hex = GetClassColor(UnitClassBase(unit))--颜色
@@ -945,25 +950,29 @@ local function Init()
             end
         end
     end)
-    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(tooltip,date)--宠物手册，设置名称
+--[[    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(tooltip,date)--宠物手册，设置名称
         local unit= select(2, TooltipUtil.GetDisplayedUnit(tooltip))
-        if unit and tooltip==e.tips  and (UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit)) and PetJournalSearchBox and PetJournalSearchBox:IsVisible()  then
+        if unit and tooltip==e.tips  and (UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit)) then
             local speciesID = UnitBattlePetSpeciesID(unit)
-            if speciesID then
-                local speciesName= C_PetJournal.GetPetInfoBySpeciesID(speciesID)
-                if speciesName then--宠物手册，设置名称
-                    PetJournalSearchBox:SetText(speciesName)
-                end
+            local speciesName= speciesID and C_PetJournal.GetPetInfoBySpeciesID(speciesID)
+            if speciesName and PetJournalSearchBox and PetJournalSearchBox:IsVisible()then
+                PetJournalSearchBox:SetText(speciesName)
             end
         end
-    end)
+    end)]]
+
     --****
     --位置
     --****
     hooksecurefunc("GameTooltip_SetDefaultAnchor", function(self, parent)
-        if Save.setDefaultAnchor and not(Save.inCombatDefaultAnchor and UnitAffectingCombat('player')) then
-            self:ClearAllPoints();
-            self:SetOwner(parent, 'ANCHOR_CURSOR_LEFT')
+        if Save.setDefaultAnchor then
+            if Save.inCombatDefaultAnchor and UnitAffectingCombat('player') and Save.AnchorPoint then
+                self:ClearAllPoints();
+                self:SetPoint(Save.AnchorPoint[1], UIParent, Save.AnchorPoint[3], Save.AnchorPoint[4], Save.AnchorPoint[5])
+            else
+                self:ClearAllPoints();
+                self:SetOwner(parent, 'ANCHOR_CURSOR_LEFT')
+            end
         elseif Save.setAnchor and Save.AnchorPoint then
             self:ClearAllPoints();
             self:SetPoint(Save.AnchorPoint[1], UIParent, Save.AnchorPoint[3], Save.AnchorPoint[4], Save.AnchorPoint[5])

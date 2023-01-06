@@ -107,12 +107,6 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
 	for i = 1, numEvents do
 		local event = C_Calendar.GetDayEvent(monthOffset, day, i);
 		if event and (not Save.onGoing or (Save.onGoing and (event.sequenceType == "ONGOING" or _CalendarFrame_IsPlayerCreatedEvent(event.calendarType)))) then
---[[            if event.calendarType=='HOLIDAY' then
-                local eventHoliday = C_Calendar.GetHolidayInfo(monthOffset, day, i)
-                if eventHoliday and eventHoliday.texture then
-                    event.texture2=eventHoliday.texture
-                end
-            end]]
 			tinsert(events, event);
 		end
 	end
@@ -149,19 +143,26 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
                 msg= msg..set_Quest_Completed(tab)--任务是否完成
                 find_Quest=true
                 msg= msg..'|T463446:0|t'--1166[时空扭曲徽章]
+
             elseif event.eventID==479 then--暗月
                 local tab={36471, 32175}
                 msg= msg..set_Quest_Completed(tab)--任务是否完成
-
                 msg= msg..'|T134481:0|t'--515[暗月奖券]
                 find_Quest=true
 
-            elseif event.eventID==324 then--万圣节                
+            elseif event.eventID==324 then--万圣节
                msg= msg..'|T236546:0|t'--33226[奶糖]
+            elseif event.eventID==423 then--情人节
+                msg= msg..'|T235468:0|t'
+            elseif event.eventID==181 then
+                msg= msg..'|T235477:0|t'
+            elseif event.eventID==691 then
+                msg= msg..'|T1500867:0|t'
+            elseif event.iconTexture then
+                msg= msg..'|T'..event.iconTexture..':0|t'
             end
         end
-        --[[elseif event.texture2 then--节日图标
-            msg=msg..'|T'..event.texture2..':0|t']]
+
 
         if event.calendarType=='PLAYER' or _CalendarFrame_IsPlayerCreatedEvent(event.calendarType) then--自定义,事件
 			local text;
