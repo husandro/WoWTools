@@ -57,8 +57,6 @@ WoWPlus\WardroberSets.lua
 WoWPlus\WorldMap.lua
 ##鼠标，提示
 WoWPlus\Tooltips.lua
-##专业面板，增加专业按钮，没有其它 bug
-##WoWPlus\Professions.lua
 ##单位框，没完成
 WoWPlus\UnitFrame.lua
 ##快速加入，面板
