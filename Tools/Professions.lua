@@ -4,6 +4,7 @@ local panel=CreateFrame("Frame")
 
 local function set_ProfessionsFrame_Button()
     local last
+
     for k, index in pairs({GetProfessions()}) do
         if k~=3 then
             local name, icon, _, _, _, _, skillLine = GetProfessionInfo(index)
