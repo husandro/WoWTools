@@ -1,6 +1,7 @@
 # 下载
 * https://www.curseforge.com/wow/addons/wowtools
 * https://addons.wago.io/addons/wowtools
+* https://github.com/husandro/WoWTools
 
 # WoWTools
 * World of Warcraft 正式服 插件
