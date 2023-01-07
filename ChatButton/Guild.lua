@@ -1,7 +1,3 @@
-if not IsInGuild() then--仅有公会时加载
-    return
-end
-
 local id, e = ...
 local Save={}
 local addName='ChatButtonGuild'
@@ -140,7 +136,7 @@ panel:RegisterEvent('PLAYER_LOGOUT')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
-        if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
+        if WoWToolsChatButtonFrame.disabled or not IsInGuild() then--禁用Chat Button
             panel:UnregisterAllEvents()
         else
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
