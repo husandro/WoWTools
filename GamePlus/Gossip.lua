@@ -878,13 +878,6 @@ local function Init_Quest()
             itemLink= itemLink..(GetSpellLink(skillName) or ((skillIcon and '|T'..skillIcon..':0|t' or '')..skillName))..(skillPoints and '|cnGREEN_FONT_COLOR:+'..skillPoints..'|r' or '')
         end
 
-        if not questSelect[questID] then
-            C_Timer.After(0.5, function()
-                print(id, QUESTS_LABEL, GetQuestLink(questID) or questID, (complete and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..acceptButton:GetText()..'|r', itemLink)
-            end)
-            questSelect[questID]=true
-        end
-
         local majorFactionRepRewards = C_QuestOffer.GetQuestOfferMajorFactionReputationRewards()--名望
         if majorFactionRepRewards then
 			for _, rewardInfo in ipairs(majorFactionRepRewards) do
@@ -897,6 +890,12 @@ local function Init_Quest()
             end
         end
 
+        if not questSelect[questID] then
+            C_Timer.After(0.5, function()
+                print(id, QUESTS_LABEL, GetQuestLink(questID) or questID, (complete and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..acceptButton:GetText()..'|r', itemLink)
+            end)
+            questSelect[questID]=true
+        end
         --[[for index= 1,GetNumRewardCurrencies() do--货币
             local name, texture, numItems, quality = GetQuestCurrencyInfo("reward", index)
         end]]
