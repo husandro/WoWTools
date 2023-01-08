@@ -614,7 +614,15 @@ local function Init()
         ResetCursor()
     end)
     panel:SetScript('OnMouseWheel',function(self,d)--打开，宠物手册
-        ToggleCollectionsJournal(2)
+        if d==1 then
+            if not PetJournal or not PetJournal:IsVisible() then
+                ToggleCollectionsJournal(2)
+            end
+        elseif d==-1 then
+            if PetJournal and PetJournal:IsVisible() then
+                ToggleCollectionsJournal(2)
+            end
+        end
         --SetCollectionsJournalShown(true, 2)--UIParent.lua
     end)
     panel:SetScript('OnEnter', function(self)
