@@ -274,14 +274,12 @@ end
 local function setMerchantInfo()--商人设置
     local selectedTab= MerchantFrame.selectedTab
     local page= selectedTab == 1 and MERCHANT_ITEMS_PER_PAGE or BUYBACK_ITEMS_PER_PAGE
-
     for i=1, page do
         local index = selectedTab==1 and (((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i) or i
         local itemButton= _G["MerchantItem"..i..'ItemButton']
         if itemButton then
             local itemLink,itemID
-
-            if itemButton:IsShown() then
+           -- if itemButton:IsShown() then
                 if selectedTab==1 then
                     itemLink= GetMerchantItemLink(index)
                     itemID= GetMerchantItemID(index)
@@ -289,8 +287,7 @@ local function setMerchantInfo()--商人设置
                     itemLink= GetBuybackItemInfo(index)
                     itemID= C_MerchantFrame.GetBuybackItemID(index)
                 end
-
-            end
+            --end
             set_Item_Info(itemButton, itemLink, itemID, nil, selectedTab == 1 and index, nil, selectedTab ~= 1 and index)
         end
     end
@@ -430,11 +427,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             --添加控制面板        
             local sel=e.CPanel(e.onlyChinse and '物品信息' or addName, not Save.disabled, true)
             sel:SetScript('OnClick', function()
-                if Save.disabled then
-                    Save.disabled=nil
-                else
-                    Save.disabled=true
-                end
+                Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end)
 
