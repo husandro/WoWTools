@@ -325,13 +325,13 @@ local function setItem(self, ItemLink)
         end
         if numPlayer>1 then
             wowNum= bagAll+ bankAll
-            self:AddDoubleLine(numPlayer..(e.onlyChinse and '角色' or CHARACTER)..e.Icon.wow2..e.MK(bagAll+bankAll, 3), e.Icon.bag2..e.MK(bagAll,3)..(bankAll>0 and ' '..e.Icon.bank2..e.MK(bankAll, 3) or ''))
+            self:AddDoubleLine(numPlayer..' '..(e.onlyChinse and '角色' or CHARACTER), e.Icon.wow2..e.MK(bagAll+bankAll, 3)..' = '..e.Icon.bag2..e.MK(bagAll,3)..' + '..e.Icon.bank2..e.MK(bankAll, 3))
         end
     end
 
     local bag= GetItemCount(ItemLink)--物品数量
     local bank= GetItemCount(ItemLink,true) - bag
-    self.textRight:SetText(hex..wowNum..e.Icon.wow2..' '..bank..e.Icon.bank2..' '..bag..e.Icon.bag2..'|r')
+    self.textRight:SetText(hex..e.MK(wowNum, 3)..e.Icon.wow2..' '..e.MK(bank, 3)..e.Icon.bank2..' '..e.MK(bag, 3)..e.Icon.bag2..'|r')
 
     --setItemCooldown(self, itemID)--物品冷却
 
