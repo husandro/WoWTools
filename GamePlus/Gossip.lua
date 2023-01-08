@@ -45,9 +45,10 @@ end
 local function not_Ace_QuestTrivial(questID)--其它任务,低等任务
     return C_QuestLog.IsQuestTrivial(questID) and not isQuestTrivialTracking
 end
-local function getMaxQuest()--任务，是否已满
-    return select(2,C_QuestLog.GetNumQuestLogEntries())==C_QuestLog.GetMaxNumQuestsCanAccept()
-end
+--[[local function getMaxQuest()--任务，是否已满
+    return C_QuestLog.GetMaxNumQuests()==C_QuestLog.GetMaxNumQuestsCanAccept()
+    --return select(2,C_QuestLog.GetNumQuestLogEntries())==C_QuestLog.GetMaxNumQuestsCanAccept()
+end]]
 
 local function select_Reward()--自动:选择奖励
     local numQuests = GetNumQuestChoices()
@@ -373,7 +374,7 @@ local function Init_Gossip()
             find=true
 
         elseif #gossip==1 and Save.unique then--仅一个
-            if not getMaxQuest() then
+           -- if not getMaxQuest() then
                 local tab= C_GossipInfo.GetActiveQuests() or {}
                 for _, questInfo in pairs(tab) do
                     if questInfo.questID and questInfo.isComplete and (Save.quest or Save.questOption[questInfo.questID]) then
@@ -387,7 +388,7 @@ local function Init_Gossip()
                         return
                     end
                 end
-            end
+           -- end
 
             C_GossipInfo.SelectOption(index)
             find=true
@@ -447,7 +448,7 @@ local function Init_Gossip()
         elseif Save.questOption[questID] then--自定义
            C_GossipInfo.SelectAvailableQuest(questID);--or self:GetID()
 
-        elseif not Save.quest or not_Ace_QuestTrivial(questID) or getMaxQuest() or Save.NPC[npc] then
+        elseif not Save.quest or not_Ace_QuestTrivial(questID) or Save.NPC[npc] then--or getMaxQuest()
             return
 
         else
@@ -704,13 +705,9 @@ local function Init_Quest()
             get_set_IsQuestTrivialTracking()--其它任务,低等任务,追踪
 
         elseif event=='QUEST_LOG_UPDATE' then--更新数量
-            local n = select(2,C_QuestLog.GetNumQuestLogEntries()) or 0;
-            local max = C_QuestLog.GetMaxNumQuestsCanAccept() or 25;
-            if max == n then
-                self.Text:SetText(RED_FONT_COLOR_CODE..n..'/'..max..'|r')
-            else
-                self.Text:SetText(n..'/'..max)
-            end
+            local n = select(2,C_QuestLog.GetNumQuestLogEntries())
+            local max = C_QuestLog.GetMaxNumQuestsCanAccept()
+            self.Text:SetText((n and max) and n..'/'..max or '')
         elseif event=='GROUP_ROSTER_UPDATE' then
             set_PushableQuest()--共享,任务
         else
@@ -764,7 +761,7 @@ local function Init_Quest()
                 end
             end
         end
-        if numAvailableQuests > 0 and not getMaxQuest() then
+        if numAvailableQuests > 0 then-- and not getMaxQuest() 
             for i=(numActiveQuests + 1), (numActiveQuests + numAvailableQuests) do
                 local index = i - numActiveQuests
                 local isTrivial= GetAvailableQuestInfo(index);
