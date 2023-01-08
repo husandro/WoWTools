@@ -844,7 +844,7 @@ e.GetItemCollected= function(link, sourceID, icon)--物品是否收集
                 if isSelf then
                     return e.Icon.okTransmog2, sourceInfo.isCollected, isSelf
                 else
-                    return e.Icon.transmogHide2, sourceInfo.isCollected, isSelf
+                    return e.Icon.star2, sourceInfo.isCollected, isSelf
                 end
             else
                 return '|cnRED_FONT_COLOR:'..(e.onlyChinse and '未收集' or NOT_COLLECTED)..'|r', sourceInfo.isCollected, isSelf
