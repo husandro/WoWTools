@@ -2,9 +2,41 @@ local id, e = ...
 local addName= CHALLENGES
 local Save= {}
 local panel=CreateFrame("Frame")
---[[
 
-local spellIDs={--法术, 传送门, {mapChallengeModeID = 法术 SPELL ID}
+local affixSchedule = {-- AngryKeystones Schedule Dragonflight Season 1,史诗钥石地下城, 界面
+	[1]  = { [1]=6,   [2]=14,  [3]=10, }, -- Fortified | Raging | Quaking
+	[2]  = { [1]=11,  [2]=12,  [3]=9,  }, -- Tyrannical | Bursting | Grievous
+	[3]  = { [1]=8,   [2]=3,   [3]=10, }, -- Fortified | Sanguine | Volcanic
+	[4]  = { [1]=6,   [2]=124, [3]=9,  }, -- Tyrannical | Raging | Storming
+	[5]  = { [1]=123, [2]=12,  [3]=10, }, -- Fortified | Spiteful | Grievous
+	[6]  = { [1]=8,   [2]=13,  [3]=9,  }, -- Tyrannical | Sanguine | Explosive
+	[7]  = { [1]=7,   [2]=124, [3]=10, }, -- Fortified | Bolstering | Storming
+	[8]  = { [1]=123, [2]=14,  [3]=9,  }, -- Tyrannical | Spiteful | Quaking
+	[9]  = { [1]=11,  [2]=13,  [3]=10, }, -- Fortified | Bursting | Explosive
+	[10] = { [1]=7,   [2]=3,   [3]=9,  }, -- Tyrannical | Bolstering | Volcanica
+}
+local EncounterJournal_Maps={--[mapChallengeModelID]= journalInstanceID
+    [2]= 313,--青龙寺
+    [400]= 1198,--诺库德阻击战
+    [200]= 721,--[英灵殿]
+    [402]= 1201,--[艾杰斯亚学院]
+    [210]= 800,--[群星庭院]
+    [399]= 1202,--[红玉新生法池]
+    [401]= 1203;--[碧蓝魔馆]
+    [165]= 537,--[影月墓地]
+
+    [166]= 536,--暗轨之路(车站)
+    [391]= 1194,--街头商贩之路(天街)
+    [392]= 1194,--街头商贩之路(天街)
+    [370]= 1178,--机械王子之路(麦卡贡)
+    [369]= 1178,--机械王子之路(麦卡贡)
+    [169]= 558,--铁船之路(码头)
+    [227]= 860,--堕落守护者之路(卡拉赞)
+    [234]= 860,--堕落守护者之路(卡拉赞)
+    
+}
+--[[
+local spellIDs={--法术, 传送门, {mapChallengeModeID = 法术 SPELL ID}, BUG, 战斗中关闭, 会出现错误
     [166]=159900,--暗轨之路(车站)
     [391]=367416,--街头商贩之路(天街)
     [370]=373274,--机械王子之路(麦卡贡)
@@ -300,21 +332,6 @@ end
 --##################
 --史诗钥石地下城, 界面
 --##################
-
---local function set_UI_Blizzard_ChallengesUI()--史诗钥石地下城, 界面
---local Frame=ChallengesFrame
-local affixSchedule = {-- AngryKeystones Schedule Dragonflight Season 1
-	[1]  = { [1]=6,   [2]=14,  [3]=10, }, -- Fortified | Raging | Quaking
-	[2]  = { [1]=11,  [2]=12,  [3]=9,  }, -- Tyrannical | Bursting | Grievous
-	[3]  = { [1]=8,   [2]=3,   [3]=10, }, -- Fortified | Sanguine | Volcanic
-	[4]  = { [1]=6,   [2]=124, [3]=9,  }, -- Tyrannical | Raging | Storming
-	[5]  = { [1]=123, [2]=12,  [3]=10, }, -- Fortified | Spiteful | Grievous
-	[6]  = { [1]=8,   [2]=13,  [3]=9,  }, -- Tyrannical | Sanguine | Explosive
-	[7]  = { [1]=7,   [2]=124, [3]=10, }, -- Fortified | Bolstering | Storming
-	[8]  = { [1]=123, [2]=14,  [3]=9,  }, -- Tyrannical | Spiteful | Quaking
-	[9]  = { [1]=11,  [2]=13,  [3]=10, }, -- Fortified | Bursting | Explosive
-	[10] = { [1]=7,   [2]=3,   [3]=9,  }, -- Tyrannical | Bolstering | Volcanica
-}
 local function makeAffix(parent, id2)
     local frame = CreateFrame("Frame", nil, parent)
     frame:SetSize(20, 20)
@@ -707,16 +724,7 @@ local function Cur(self)--货币数量
     end
 end
 
-local EncounterJournal_Maps={
-    [2]= 313,--青龙寺
-    [400]= 1198,--诺库德阻击战
-    [200]= 721,--[英灵殿]
-    [402]= 1201,--[艾杰斯亚学院]
-    [210]= 800,--[群星庭院]
-    [399]= 1202,--[红玉新生法池]
-    [401]= 1203;--[碧蓝魔馆]
-    [165]= 537,--[影月墓地]
-}
+
 local function set_Update()--Blizzard_ChallengesUI.lua
     local self=ChallengesFrame
     if not self.maps or #self.maps==0 then
