@@ -287,13 +287,7 @@ local function setItem(self, ItemLink)
         self:AddDoubleLine((itemName~=spellName and hex..'['..spellName..']|r' or '')..(e.onlyChinse and '法术' or SPELLS)..' '..spellID, spellTexture and spellTexture~=itemTexture  and '|T'..spellTexture..':0|t'..spellTexture or ' ')
     end
 
-    local bag= GetItemCount(ItemLink)--物品数量
-    local bank= GetItemCount(ItemLink,true) - bag
-    if bag==0 and bank==0 then
-        self.textRight:SetText('|cnRED_FONT_COLOR:0|r'..e.Icon.bank2..' |cnRED_FONT_COLOR:'..bag..e.Icon.bag2..'|r')
-    else
-        self.textRight:SetText(hex..bank..e.Icon.bank2..' '..bag..e.Icon.bag2..'|r')
-    end
+    local wowNum= 0--WoW 数量
     if C_Item.IsItemKeystoneByID(itemID) then--挑战
         --local numPlayer=1 --帐号数据 --{score=总分数,itemLink={超连接}, weekLevel=本周最高, weekNum=本周次数, all=总次数},
         for guid, info in pairs(e.WoWSave) do
@@ -330,9 +324,14 @@ local function setItem(self, ItemLink)
             end
         end
         if numPlayer>1 then
+            wowNum= bagAll+ bankAll
             self:AddDoubleLine(numPlayer..(e.onlyChinse and '角色' or CHARACTER)..e.Icon.wow2..e.MK(bagAll+bankAll, 3), e.Icon.bag2..e.MK(bagAll,3)..(bankAll>0 and ' '..e.Icon.bank2..e.MK(bankAll, 3) or ''))
         end
     end
+
+    local bag= GetItemCount(ItemLink)--物品数量
+    local bank= GetItemCount(ItemLink,true) - bag
+    self.textRight:SetText(hex..wowNum..e.Icon.wow2..' '..bank..e.Icon.bank2..' '..bag..e.Icon.bag2..'|r')
 
     --setItemCooldown(self, itemID)--物品冷却
 
