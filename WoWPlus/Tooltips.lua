@@ -968,9 +968,11 @@ local function Init()
     --****
     hooksecurefunc("GameTooltip_SetDefaultAnchor", function(self, parent)
         if Save.setDefaultAnchor then
-            if Save.inCombatDefaultAnchor and UnitAffectingCombat('player') and Save.AnchorPoint then
-                self:ClearAllPoints();
-                self:SetPoint(Save.AnchorPoint[1], UIParent, Save.AnchorPoint[3], Save.AnchorPoint[4], Save.AnchorPoint[5])
+            if Save.inCombatDefaultAnchor and UnitAffectingCombat('player') then
+                if Save.AnchorPoint then
+                    self:ClearAllPoints();
+                    self:SetPoint(Save.AnchorPoint[1], UIParent, Save.AnchorPoint[3], Save.AnchorPoint[4], Save.AnchorPoint[5])
+                end
             else
                 self:ClearAllPoints();
                 self:SetOwner(parent, 'ANCHOR_CURSOR_LEFT')
