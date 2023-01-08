@@ -705,9 +705,9 @@ local function Init_Quest()
             get_set_IsQuestTrivialTracking()--其它任务,低等任务,追踪
 
         elseif event=='QUEST_LOG_UPDATE' then--更新数量
-            local n = select(2,C_QuestLog.GetNumQuestLogEntries())
-            local max = C_QuestLog.GetMaxNumQuestsCanAccept()
-            self.Text:SetText((n and max) and n..'/'..max or '')
+            --local n = select(2,C_QuestLog.GetNumQuestLogEntries())
+            --local max = C_QuestLog.GetMaxNumQuestsCanAccept()
+            self.Text:SetText((select(2,C_QuestLog.GetNumQuestLogEntries()) or ''))-- and n..'/'..max or '')
         elseif event=='GROUP_ROSTER_UPDATE' then
             set_PushableQuest()--共享,任务
         else

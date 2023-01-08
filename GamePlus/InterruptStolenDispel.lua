@@ -4,7 +4,7 @@ local addName= INTERRUPTS..DISPELS..ACTION_SPELL_STOLEN
 local Save={}
 local panel=CreateFrame("Frame")
 
-local de='->'--分隔符
+local de=' > '--分隔符
 if e.Player.Lo== "zhCN" or e.Player.Lo == "zhTW" or e.Player.Lo=='koKR' then
     de='→'
 end
