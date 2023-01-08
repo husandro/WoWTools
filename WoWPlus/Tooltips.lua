@@ -316,7 +316,7 @@ local function setItem(self, ItemLink)
             if guid~=e.Player.guid then
                 local tab=info.Item[itemID]
                 if tab then
-                    self:AddDoubleLine(e.GetPlayerInfo(nil, guid, true), e.Icon.bank2..tab.bank..' '..e.Icon.bag2..tab.bag)
+                    self:AddDoubleLine(e.GetPlayerInfo(nil, guid, true), e.Icon.bank2..(tab.bank==0 and '|cff606060'..tab.bank..'|r' or tab.bank)..' '..e.Icon.bag2..(tab.bag==0 and '|cff606060'..tab.bag..'|r' or tab.bag))
                     bagAll=bagAll +tab.bag
                     bankAll=bankAll +tab.bank
                     numPlayer=numPlayer +1
