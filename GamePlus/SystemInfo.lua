@@ -223,7 +223,7 @@ local function InitMenu(self, level, type)--主菜单
             menuList='wowMony',
             hasArrow=true,
             tooltipOnButton=true,
-            tooltipTitle= (e.onlyChinse and '角色' or CHARACTER)..'|cnGREEN_FONT_COLOR:'..numPlayer..'|r '..FROM_TOTAL..'|cnGREEN_FONT_COLOR:'..(allMoney >=10000 and e.MK(allMoney/10000, 3) or GetCoinTextureString(allMoney, true))..'|r',
+            tooltipTitle= (e.onlyChinse and '角色' or CHARACTER)..'|cnGREEN_FONT_COLOR:'..numPlayer..'|r  '..(e.onlyChinse and '总计: ' or FROM_TOTAL)..'|cnGREEN_FONT_COLOR:'..(allMoney >=10000 and e.MK(allMoney/10000, 3) or GetCoinTextureString(allMoney, true))..'|r',
             tooltipText= text,
             func= function()
                 Save.money= not Save.money and true or nil
