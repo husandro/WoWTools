@@ -884,7 +884,7 @@ local function Init_Quest()
                 if rewardInfo.factionID and rewardInfo.rewardAmount then
                     local data = C_MajorFactions.GetMajorFactionData(rewardInfo.factionID)
                     if data and data.name then
-                        itemLink= itemLink..(data.textureKit and '|A:MajorFactions_Icons_'..data.textureKit..'512:0:0|a' or '')..data.name..'|cnGREEN_FONT_COLOR:+'..rewardInfo.rewardAmount..'|r'
+                        itemLink= itemLink..(data.textureKit and '|A:MajorFactions_Icons_'..data.textureKit..'512:0:0|a' or '')..(not data.textureKit and data.name or '')..'|cnGREEN_FONT_COLOR:+'..rewardInfo.rewardAmount..'|r'
                     end
                 end
             end
