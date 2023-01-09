@@ -22,7 +22,8 @@
         "TIME_LABEL",
         "QUESTS_LABEL",
         "NPE_MOVE",
-        "QUEUED_STATUS_LOCKED_EXPLANATION"
+        "QUEUED_STATUS_LOCKED_EXPLANATION",
+        "QUEST_PLAYERS_DEFEATED_PET_BATTLE"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
