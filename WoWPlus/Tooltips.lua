@@ -1212,20 +1212,26 @@ local function Init()
         end)
     end
 
-    hooksecurefunc(AreaPOIPinMixin,'TryShowTooltip', function(poiInfo)--POI提示
+    hooksecurefunc(AreaPOIPinMixin,'TryShowTooltip', function(poiInfo)--POI提示 AreaPOIDataProvider.lua
         if poiInfo then
             if poiInfo.areaPoiID then
-                GameTooltip:AddDoubleLine('areaPoiID: ', poiInfo.areaPoiID)
+                GameTooltip:AddDoubleLine('areaPoiID', poiInfo.areaPoiID)
             end
             if poiInfo.widgetSetID then
-                GameTooltip:AddDoubleLine('widgetID: ', poiInfo.widgetSetID)
+                GameTooltip:AddDoubleLine('widgetID', poiInfo.widgetSetID)
             end
             local id2 = poiInfo:GetMap():GetMapID();
             if id2 then
-                GameTooltip:AddDoubleLine('mapID: ', id2)
+                GameTooltip:AddDoubleLine('mapID', id2)
             end
             if poiInfo.textureKit then
-                GameTooltip:AddDoubleLine('textureKit: ', poiInfo.textureKit)
+                GameTooltip:AddDoubleLine('textureKit', poiInfo.textureKit)
+            end
+            if poiInfo.atlasName then
+                GameTooltip:AddDoubleLine('atlasName','|A:'..poiInfo.atlasName..':0:0|a'..poiInfo.atlasName)
+            end
+            if poiInfo.uiTextureKit then
+                GameTooltip:AddDoubleLine('uiTextureKit', poiInfo.uiTextureKit)
             end
             GameTooltip:Show()
         end
