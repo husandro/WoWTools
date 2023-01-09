@@ -589,7 +589,6 @@ local function set_AreaPOIPinMixin_OnAcquired(poiInfo)--地图POI提示 AreaPOID
         t=t:gsub(PET_ACTION_MOVE_TO,'')
         t=t:gsub(SPLASH_BATTLEFORAZEROTH_8_1_0_FEATURE2_TITLE..':','')
         t=t:gsub(SPLASH_BATTLEFORAZEROTH_8_1_0_FEATURE2_TITLE..'：','')
-
     end
 
     if t~='' and not poiInfo.Str then
@@ -605,7 +604,6 @@ local function set_AreaPOIPinMixin_OnAcquired(poiInfo)--地图POI提示 AreaPOID
         end
     end
 
-    
     if poiInfo.Str then
         poiInfo.Str:SetText(t)
     end
