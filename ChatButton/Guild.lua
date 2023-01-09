@@ -110,6 +110,9 @@ local function Init()
 
     setMembers()--在线人数
     panel.texture:SetAtlas('UI-HUD-MicroMenu-GuildCommunities-Up')
+    local r,g,b=GetClassColor(UnitClassBase('player'))
+    panel.texture:SetVertexColor(r,g,b)
+
     panel:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
             e.Say('/g')
