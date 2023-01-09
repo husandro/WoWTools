@@ -687,9 +687,29 @@ local function Init_Quest()
         e.tips:ClearLines()
         local all=C_QuestLog.GetAllCompletedQuestIDs() or {}--完成次数
         e.tips:AddDoubleLine((e.onlyChinse and '今天' or GUILD_EVENT_TODAY)..': '..(GetDailyQuestsCompleted() or '0'),  format(e.onlyChinse and '已完成：%s' or  DATE_COMPLETED, e.MK(#all, 3)))
+        e.tips:AddLine(' ')
 
         e.tips:AddDoubleLine((e.onlyChinse and '任务' or QUESTS_LABEL)..': '..select(2,  C_QuestLog.GetNumQuestLogEntries())..'/'..C_QuestLog.GetMaxNumQuests(), (e.onlyChinse and '追踪' or TRACK_QUEST_ABBREV)..': '..C_QuestLog.GetNumQuestWatches())
+        local numQuest,dayNum,weekNum, companionNum = 0, 0, 0, 0
+        for index=1, select(2,C_QuestLog.GetNumQuestLogEntries()) do
+            local info = C_QuestLog.GetInfo(index)
+            if info then
+                if info.frequency== 0 then
+                    numQuest= numQuest+ 1
+                elseif info.frequency== 1 then
+                    dayNum= dayNum+ 1
+               elseif info.frequency== 2 then
+                    weekNum= weekNum+ 1
+               end
+               if info.campaignID then
+                    companionNum= companionNum+ 1
+               end
+            end
+        end
 
+        e.tips:AddDoubleLine((e.onlyChinse and '一般' or RESISTANCE_FAIR)..': '..numQuest..'/'..C_QuestLog.GetMaxNumQuestsCanAccept(), (e.onlyChinse and '战役' or TRACKER_HEADER_CAMPAIGN_QUESTS)..': '..companionNum)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine((e.onlyChinse and '日常' or DAILY)..': '..dayNum, (e.onlyChinse and '周长' or WEEKLY)..': '..weekNum)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinse and '任务菜单' or QUESTS_LABEL..SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         e.tips:AddDoubleLine(id, addName)
