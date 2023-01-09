@@ -713,7 +713,7 @@ local function Init_Quest()
         e.tips:AddDoubleLine((e.onlyChinse and '战役' or TRACKER_HEADER_CAMPAIGN_QUESTS)..': '..companionNum, (e.onlyChinse and '周长' or WEEKLY)..': '..weekNum)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.GetEnabeleDisable(Save.quest)..e.Icon.left, (e.onlyChinse and '菜单' or SLASH_TEXTTOSPEECH_MENU)..e.Icon.right)
-        e.tips:AddDoubleLine(id, QUESTS_LABEL)
+        e.tips:AddDoubleLine(id, e.onlyChinse and '任务' or QUESTS_LABEL)
         e.tips:Show()
 
        -- set_Only_Show_Zone_Quest()
