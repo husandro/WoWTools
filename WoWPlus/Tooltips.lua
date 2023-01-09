@@ -76,7 +76,7 @@ local function setMount(self, mountID)--坐骑
     local name, spellID, icon, isActive, isUsable, sourceType, isFavorite, isFactionSpecific, faction, shouldHideOnChar, isCollected=C_MountJournal.GetMountInfoByID(mountID)
     self:AddDoubleLine((e.onlyChinse and '坐骑' or MOUNTS)..' '..mountID, spellID and (e.onlyChinse and '召唤技能' or (SUMMON..ABILITIES))..' '..spellID)
     if isFactionSpecific then
-        self:AddDoubleLine(not faction and ' ' or format(e.onlyChinse and '仅限%s' or LFG_LIST_CROSS_FACTION, faction==0 and e.Icon.horde2..(e.onlyChinse and '部落' or THE_HORDE) or e.Icon.alliance2..(e.onlyChinse and '联盟' or THE_ALLIANCE) or ''), ' ')
+        self.textRight:SetText(not faction and ' ' or format(e.onlyChinse and '仅限%s' or LFG_LIST_CROSS_FACTION, faction==0 and e.Icon.horde2..(e.onlyChinse and '部落' or THE_HORDE) or e.Icon.alliance2..(e.onlyChinse and '联盟' or THE_ALLIANCE) or ''))
     end
     local creatureDisplayInfoID, description, source, isSelfMount, mountTypeID, uiModelSceneID, animID, spellVisualKitID, disablePlayerMountPreview = C_MountJournal.GetMountInfoExtraByID(mountID)
     if creatureDisplayInfoID then
