@@ -288,6 +288,9 @@ local function setItem(self, ItemLink)
     end
 
     local wowNum= 0--WoW 数量
+    local bag= GetItemCount(ItemLink)--物品数量
+    local bank= GetItemCount(ItemLink,true) - bag
+
     if C_Item.IsItemKeystoneByID(itemID) then--挑战
         --local numPlayer=1 --帐号数据 --{score=总分数,itemLink={超连接}, weekLevel=本周最高, weekNum=本周次数, all=总次数},
         for guid, info in pairs(e.WoWSave) do
@@ -315,7 +318,7 @@ local function setItem(self, ItemLink)
         for guid, info in pairs(e.WoWSave) do
             if guid~=e.Player.guid then
                 local tab=info.Item[itemID]
-                if tab then
+                if tab and tab.bag and tab.bank then
                     self:AddDoubleLine(e.GetPlayerInfo(nil, guid, true), e.Icon.bank2..(tab.bank==0 and '|cff606060'..tab.bank..'|r' or tab.bank)..' '..e.Icon.bag2..(tab.bag==0 and '|cff606060'..tab.bag..'|r' or tab.bag))
                     bagAll=bagAll +tab.bag
                     bankAll=bankAll +tab.bank
@@ -325,12 +328,10 @@ local function setItem(self, ItemLink)
         end
         if numPlayer>1 then
             wowNum= bagAll+ bankAll
-            self:AddDoubleLine(numPlayer..' '..(e.onlyChinse and '角色' or CHARACTER), e.Icon.wow2..e.MK(bagAll+bankAll, 3)..' = '..e.Icon.bag2..e.MK(bagAll,3)..' + '..e.Icon.bank2..e.MK(bankAll, 3))
+            self:AddDoubleLine(numPlayer..' '..(e.onlyChinse and '角色' or CHARACTER)..' '..e.MK(wowNum+bag+bank, 3), e.Icon.wow2..e.MK(bagAll+bankAll, 3)..' = '..e.Icon.bank2..(bankAll==0 and '|cff606060'..bankAll..'|r' or e.MK(bankAll,3))..' '..e.Icon.bag2..(bagAll==0 and '|cff606060'..bagAll..'|r' or e.MK(bagAll, 3)))
         end
     end
 
-    local bag= GetItemCount(ItemLink)--物品数量
-    local bank= GetItemCount(ItemLink,true) - bag
     self.textRight:SetText(hex..e.MK(wowNum, 3)..e.Icon.wow2..' '..e.MK(bank, 3)..e.Icon.bank2..' '..e.MK(bag, 3)..e.Icon.bag2..'|r')
 
     --setItemCooldown(self, itemID)--物品冷却
