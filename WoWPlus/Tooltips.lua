@@ -491,7 +491,7 @@ local function set_Unit_Health_Bar(self, unit)
     end
     if not self.text and text then
         self.text= e.Cstr(self)
-        self.text:SetPoint('CENTER', self, 'CENTER')--生命条
+        self.text:SetPoint('TOP', self, 'BOTTOM')--生命条
         self.text:SetJustifyH("CENTER");
     end
     if self.text then
