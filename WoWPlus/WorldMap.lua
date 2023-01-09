@@ -593,12 +593,24 @@ local function set_AreaPOIPinMixin_OnAcquired(poiInfo)--地图POI提示 AreaPOID
     end
 
     if t~='' and not poiInfo.Str then
-        poiInfo.Str=e.Cstr(poiInfo, 10)
+        poiInfo.Str=e.Cstr(poiInfo, 10, nil, nil, nil, nil, 'CENTER')
         poiInfo.Str:SetPoint('BOTTOM', poiInfo, 'TOP', 0, -3)
     end
+
+    if poiInfo.areaPoiID and C_AreaPoiInfo.IsAreaPOITimed(poiInfo.areaPoiID) then
+        local seconds= C_AreaPoiInfo.GetAreaPOISecondsLeft(poiInfo.areaPoiID)
+        if seconds then
+            t= t~='' and t..'\n' or t
+            t= t..'|cnGREEN_FONT_COLOR:'..SecondsToTime(seconds)..'|r'
+        end
+    end
+
+    
     if poiInfo.Str then
         poiInfo.Str:SetText(t)
     end
+
+    
 end
 
 --####
