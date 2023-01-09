@@ -690,6 +690,8 @@ local function Init_Quest()
         e.tips:AddLine(' ')
 
         e.tips:AddDoubleLine((e.onlyChinse and '任务' or QUESTS_LABEL)..': '..select(2,  C_QuestLog.GetNumQuestLogEntries())..'/'..C_QuestLog.GetMaxNumQuests(), (e.onlyChinse and '追踪' or TRACK_QUEST_ABBREV)..': '..C_QuestLog.GetNumQuestWatches())
+        e.tips:AddLine(' ')
+
         local numQuest,dayNum,weekNum, companionNum = 0, 0, 0, 0
         for index=1, select(2,C_QuestLog.GetNumQuestLogEntries()) do
             local info = C_QuestLog.GetInfo(index)
@@ -708,7 +710,6 @@ local function Init_Quest()
         end
 
         e.tips:AddDoubleLine((e.onlyChinse and '一般' or RESISTANCE_FAIR)..': '..numQuest..'/'..C_QuestLog.GetMaxNumQuestsCanAccept(), (e.onlyChinse and '战役' or TRACKER_HEADER_CAMPAIGN_QUESTS)..': '..companionNum)
-        e.tips:AddLine(' ')
         e.tips:AddDoubleLine((e.onlyChinse and '日常' or DAILY)..': '..dayNum, (e.onlyChinse and '周长' or WEEKLY)..': '..weekNum)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.GetEnabeleDisable(Save.quest)..e.Icon.left, e.onlyChinse and '任务菜单' or QUESTS_LABEL..SLASH_TEXTTOSPEECH_MENU..e.Icon.right)
