@@ -960,4 +960,5 @@ UIPanelWindows[]
 FrameUtil.RegisterFrameForEvents(self, table);
 SetPortraitTexture(textureObject, unitToken [, disableMasking])
 SetPortraitToTexture(textureObject, texturePath)
+Region:SetVertexColor(colorR, colorG, colorB [, a])
 ]]
