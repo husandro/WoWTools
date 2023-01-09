@@ -99,6 +99,14 @@ local function Init()
 
     end)
 
+    if PetHitIndicator then
+        PetHitIndicator:ClearAllPoints()
+        PetHitIndicator:SetPoint('TOPLEFT', PetPortrait or PetHitIndicator:GetParent(), 'BOTTOMLEFT')
+    end
+    if PlayerHitIndicator then
+        PlayerHitIndicator:ClearAllPoints()
+        PlayerHitIndicator:SetPoint('BOTTOMLEFT', (PlayerFrame.PlayerFrameContainer and PlayerFrame and PlayerFrame.PlayerFrameContainer.PlayerPortrait) or  PlayerHitIndicator:GetParent(), 'TOPLEFT')
+    end
    --[[ hooksecurefunc('UnitFrameHealthBar_Update', function(statusbar, unit)
         if unit and statusbar then
             local r,g ,b = GetClassColor(UnitClassBase(unit))
