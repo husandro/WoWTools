@@ -151,8 +151,7 @@ local function Set()
 			end
 		end)
 
-		panel.btn.text=e.Cstr(panel.btn, nil, nil, nil, true)--内容显示文本
-
+		panel.btn.text=e.Cstr(panel.btn, Save.size, nil, nil, true)--内容显示文本
 		panel.btn.text:SetPoint('TOPLEFT',3,-3)
 	end
 
