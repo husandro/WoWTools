@@ -65,6 +65,20 @@ e.itemPetID={--宠物对换, wow9.0
     [67410]=true,
 }
 
+local GetPlayerNameRemoveRealm= function(name, realm)--玩家名称, 去服务器为*
+    if name then
+        realm= realm or name:match('%-(.+)')
+        if realm then
+            if e.Player.server[realm] then
+                return name..'|cnGREEN_FONT_COLOR:*|r'
+            else
+                return name..'*'
+            end
+        end
+        return name
+    end
+end
+
 e.Race=function(unit, race, sex, reAtlas)--玩家种族图标
     race =race or unit and select(2,UnitRace(unit))
     sex=sex or unit and UnitSex(unit)
@@ -92,7 +106,7 @@ e.Race=function(unit, race, sex, reAtlas)--玩家种族图标
 end
 
 e.Class=function(unit, class, reAltlas)--职业图标
-    class=class or select(2, UnitClass(unit))
+    class=class or (unit and select(2, UnitClass(unit)))
     if class=='EVOKER' then
         class='classicon-evoker'
     else
@@ -106,21 +120,35 @@ e.Class=function(unit, class, reAltlas)--职业图标
 end
 
 e.GetPlayerInfo=function (unit, guid, showName)--, hideClassTexture)
-    if unit then
-        if showName then
-            return e.Race(unit)..(not showName and e.Class(unit) or '')..'|c'..select(4,GetClassColor(UnitClassBase(unit)))..GetUnitName(unit, true)..'|r'
-        else
-            return e.Race(unit)..(not showName and e.Class(unit) or '')
-        end
-    elseif guid then
+    guid= guid or UnitGUID(unit)
+    if guid then
         local _, englishClass, _, englishRace, sex, name, realm = GetPlayerInfoByGUID(guid)
         if name and englishClass and englishRace and sex then
             if showName then
-                realm = (realm and realm~=e.Player.server) and '|cnGREEN_FONT_COLOR:*|r' or ''
-                return (e.Race(nil, englishRace, sex) or '')..(not showName and  e.Class(nil, englishClass) or '')..'|c'..select(4,GetClassColor(englishClass))..name..realm..'|r'
+                return (e.Race(nil, englishRace, sex) or '')..'|c'..select(4,GetClassColor(englishClass))..GetPlayerNameRemoveRealm(name, realm)..'|r'
             else
-                return (e.Race(nil, englishRace, sex) or '')..(not showName and  e.Class(nil, englishClass) or '')
+                return (e.Race(nil, englishRace, sex) or '')..(e.Class(nil, englishClass) or '')
             end
+        end
+    elseif unit then
+        if showName then
+            local name= GetUnitName(unit, true)
+            if name then
+                local col
+                local className=UnitClassBase(unit)
+                if className then
+                    col= select(4,GetClassColor(className))
+                    if col then
+                        name= '|c'..col..name..'|r'
+                    end
+                end
+                if not col then
+                    name= (e.Class(unit) or '')..name
+                end
+                return e.Race(unit)..name
+            end
+        else
+            return e.Race(unit)..(e.Class(unit) or '')
         end
     end
     return ''
@@ -223,6 +251,7 @@ e.Icon={
     FRIENDS_TEXTURE_ONLINE 	有空 FRIENDS_LIST_AVAILABLE
 ]]
 
+
 e.PlayerLink=function(name, guid) --玩家超链接
     if not guid and name then
         local unit=e.GroupGuid[name] and e.GroupGuid[name].unit
@@ -237,30 +266,14 @@ e.PlayerLink=function(name, guid) --玩家超链接
     if guid then
         local _, class, _, race, sex, name2, realm = GetPlayerInfoByGUID(guid)
         if name2 then
-            local showName= name2
-            if realm then
-                if e.Player.server[realm] then
-                    showName= showName..'*'
-                else
-                    showName= showName..'|cnGREEN_FONT_COLOR:*|r'
-                end
-            end
+            local showName= GetPlayerNameRemoveRealm(name2, realm)
             if class then
                 showName= '|c'..select(4,GetClassColor(class))..showName..'|r'
             end
             return ((race and sex) and e.Race(nil, race, sex) or '')..'|Hplayer:'..name2..(realm and '-'..realm or '')..'|h['..showName..']|h'
         end
     elseif name then
-        local showName= name
-        local realm= name:match('%-(.+)')
-        if realm then
-            if e.Player.server[realm] then
-                showName= showName..'|cnGREEN_FONT_COLOR:*|r'
-            else
-                showName= showName..'|cnRED_FONT_COLOR:*|r'
-            end
-        end
-        return '|Hplayer:'..name..'|h['..showName..']|h'
+        return '|Hplayer:'..name..'|h['..GetPlayerNameRemoveRealm(name)..']|h'
     end
 end
 

@@ -38,8 +38,8 @@ end
 
 local function Realm(link)--去服务器为*, 加队友种族图标,和N,T
     local name=link:match('|Hplayer:.-|h%[|cff......(.-)|r]') or link:match('|Hplayer:.-|h%[(.-)]|h')
-    if name == Name then
-        return link:gsub(name, COMBATLOG_FILTER_STRING_ME)
+    if name == e.Player.name or name==e.Player.name_server then
+        return '['..e.Player.col..COMBATLOG_FILTER_STRING_ME..'|r]'
     else
         local server=link:match('|Hplayer:.-|h%[.-%-(.-)|r]|h') or link:match('|Hplayer:.-|h%[(.-)]|h')
         local  text
