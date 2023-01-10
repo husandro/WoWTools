@@ -447,12 +447,12 @@ local function InitMenu(self, level, type)
 	UIDropDownMenu_AddButton(info, level)
 
 	info={
-		text= '|A:communities-icon-chat:0:0|a'..(e.onlyChinse and '声望变化' or COMBAT_TEXT_SHOW_REPUTATION_TEXT),
+		text= (e.onlyChinse and '声望变化' or COMBAT_TEXT_SHOW_REPUTATION_TEXT)..'|A:voicechat-icon-textchat-silenced:0:0|a',
 		checked= Save.factionUpdateTips,
 		func= function()
 			Save.factionUpdateTips= not Save.factionUpdateTips and true or nil
 			set_RegisterEvent_CHAT_MSG_COMBAT_FACTION_CHANGE()--更新, 提示, 事件
-			print(id, addName, e.onlyChinse and '声望变化' or COMBAT_TEXT_SHOW_REPUTATION_TEXT, e.GetEnabeleDisable(Save.factionUpdateTips))
+			print(id, addName, e.onlyChinse and '声望变化' or COMBAT_TEXT_SHOW_REPUTATION_TEXT,'|A:voicechat-icon-textchat-silenced:0:0|a', e.GetEnabeleDisable(Save.factionUpdateTips))
 		end
 	}
 	UIDropDownMenu_AddButton(info, level)
