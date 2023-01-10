@@ -598,7 +598,7 @@ local function set_AreaPOIPinMixin_OnAcquired(poiInfo)--地图POI提示 AreaPOID
 
     if poiInfo.areaPoiID and C_AreaPoiInfo.IsAreaPOITimed(poiInfo.areaPoiID) then
         local seconds= C_AreaPoiInfo.GetAreaPOISecondsLeft(poiInfo.areaPoiID)
-        if seconds then
+        if seconds and seconds>0 then
             t= t~='' and t..'\n' or t
             t= t..'|cnGREEN_FONT_COLOR:'..SecondsToTime(seconds)..'|r'
         end
@@ -607,8 +607,6 @@ local function set_AreaPOIPinMixin_OnAcquired(poiInfo)--地图POI提示 AreaPOID
     if poiInfo.Str then
         poiInfo.Str:SetText(t)
     end
-
-    
 end
 
 --####
