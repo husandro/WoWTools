@@ -249,10 +249,12 @@ local function InvPlateGuidFunc()--从已邀请过列表里, 再次邀请
         end
 
         toRaidOrParty(num)--自动, 转团,转小队
+        if name then
+            C_PartyInfo.InviteUnit(name)
+            n=n+1
 
-        C_PartyInfo.InviteUnit(name)
-        n=n+1
-        print(n..')'..e.PlayerLink(name, guid))
+            print(n..')'..e.PlayerLink(name, guid))
+        end
     end
 end
 
@@ -314,7 +316,7 @@ local function set_PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNati
             '|cnGREEN_FONT_COLOR:'..sec.. ' |r'..(e.onlyChinse and '秒' or SECONDS),
             (isTank and e.Icon.TANK or '')..(isHealer and e.Icon.HEALER or '')..(isDamage and e.Icon.DAMAGER or ''),
             questSessionActive and (e.onlyChinse and '场景战役' or SCENARIOS) or '',--场景战役
-            isNativeRealm and '|cnGREEN_FONT_COLOR:'..format(e.onlyChinse and '%s其它服务器' or INVITATION_XREALM, e.PlayerLink(nil, inviterGUID))..'|r' or e.PlayerLink(nil, inviterGUID)--转服务器
+            isNativeRealm and '|cnGREEN_FONT_COLOR:'..format(e.onlyChinse and '%s其它服务器' or INVITATION_XREALM, e.PlayerLink(nil, inviterGUID)) or e.PlayerLink(nil, inviterGUID)--转服务器
         )
         e.Ccool(F, nil, sec, nil, true, true, nil)--冷却条    
     end
@@ -922,7 +924,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, ...)
                 
                     InvPlateGuid[guid]=name;--保存到已邀请列表
                 
-                    print(id, addName, CHANNEL, guid and e.PlayerLink(nil, guid) or name)
+                    print(id, addName, CHANNEL, e.PlayerLink(name, guid))
                 end
             end
         end

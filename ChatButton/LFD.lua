@@ -902,90 +902,74 @@ local function Init()
 end
 
 local function setSTART_LOOT_ROLL(rollID, rollTime, lootHandle)--自动ROLL
-    if Save.autoROLL and (Save.leaveInstance and select(10, GetInstanceInfo())) and rollID then
-        local _, _, _, quality, bindO_nPickUp, canNeed, canGreed, _, reasonNeed, reasonGreed = GetLootRollItemInfo(rollID)
-        local rollType=canNeed and 1 or canGreed and 2
-        local text= canNeed and (e.onlyChinse and '需求' or NEED) or canGreed and (e.onlyChinse and '贪婪' or GREED) or (e.onlyChinse and '无' or NONE)
-        local link = GetLootRollItemLink(rollID)
+    local isRandomInstance=select(10, GetInstanceInfo()) and true or nil
+    if not Save.autoROLL or not (Save.leaveInstance and isRandomInstance) or not rollID then
+        return
+    end
 
-        if rollType then
-            if (quality and quality>=4) or not canNeed then
-                RollOnLoot(rollID, rollType)
-                C_Timer.After(1, function()
-                    print(id, addName, link, text)
-                end)
-            elseif link then
-                if not C_TransmogCollection.PlayerHasTransmogByItemInfo(link) then--幻化
-                    local sourceID=select(2,C_TransmogCollection.GetItemInfo(itemLink))
-                    if sourceID then
-                        local hasItemData, canCollect =  C_TransmogCollection.PlayerCanCollectSource(sourceID)
-                        if hasItemData and canCollect then
-                            local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
-                            if sourceInfo and not sourceInfo.isCollected then
-                                RollOnLoot(rollID, rollType)
-                                C_Timer.After(1, function()
-                                    print(id, addName, link, text)
-                                end)
-                                return
-                            end
-                        end
-                    end
-                end
+    local _, _, _, quality, bindO_nPickUp, canNeed, canGreed, _, reasonNeed, reasonGreed = GetLootRollItemInfo(rollID)
+    local rollType= canNeed and 1 or 2
+    local text= canNeed and (e.onlyChinse and '需求' or NEED) or canGreed and (e.onlyChinse and '贪婪' or GREED) or (e.onlyChinse and '无' or NONE)
+    local link = GetLootRollItemLink(rollID)
+    local find
 
-                local itemID, _, itemSubType, itemEquipLoc, _, classID, subclassID = GetItemInfoInstant(link)
-                local slot=itemEquipLoc and e.itemSlotTable[itemEquipLoc]--比较装等
-                if slot then
-                    local slotLink=GetInventoryItemLink('player', slot)
-                    if slotLink then
-                        local slotItemLevel= GetDetailedItemLevelInfo(slotLink)
-                        if slotItemLevel then
-                            local num=itemLevel-slotItemLevel
-                            if num>0 then
-                                RollOnLoot(rollID, rollType)
-                                C_Timer.After(1, function()
-                                    print(id, addName, link, text)
-                                end)
-                                return
-                            end
-                        end
-                    else--没有装备
+    if (quality and quality>=4) or not canNeed or isRandomInstance or not link then
+        RollOnLoot(rollID, rollType)
+        find=true
+
+    else
+        if not C_TransmogCollection.PlayerHasTransmogByItemInfo(link) then--幻化
+            local sourceID=select(2,C_TransmogCollection.GetItemInfo(itemLink))
+            if sourceID then
+                local hasItemData, canCollect =  C_TransmogCollection.PlayerCanCollectSource(sourceID)
+                if hasItemData and canCollect then
+                    local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
+                    if sourceInfo and not sourceInfo.isCollected then
                         RollOnLoot(rollID, rollType)
-                        C_Timer.After(1, function()
-                            print(id, addName, link, text)
-                        end)
-                        return
+                        find=true
                     end
-
-                elseif classID==15 and subclassID==2 then--宠物物品
-                    RollOnLoot(rollID, rollType)
-                    C_Timer.After(1, function()
-                        print(id, addName, link, text)
-                    end)
-                    return
-                elseif classID==15 and  subclassID==5 then--坐骑
-                    local mountID = C_MountJournal.GetMountFromItem(itemID)
-                    if mountID then
-                        local isCollected =select(11, C_MountJournal.GetMountInfoByID(mountID))
-                        if not isCollected then
-                            RollOnLoot(rollID, rollType)
-                            C_Timer.After(1, function()
-                                print(id, addName, link, text)
-                            end)
-                            return
-                        end
-                    end
-
-                elseif C_ToyBox.GetToyInfo(itemID) and not PlayerHasToy(itemID) then--玩具 
-                    RollOnLoot(rollID, rollType)
-                    C_Timer.After(1, function()
-                        print(id, addName, link, text)
-                    end)
-                    return
                 end
             end
         end
-    else
-        RollOnLoot(rollID, rollType)
+        if not find then
+            local itemID, _, itemSubType, itemEquipLoc, _, classID, subclassID = GetItemInfoInstant(link)
+            local slot=itemEquipLoc and e.itemSlotTable[itemEquipLoc]--比较装等
+            if slot then
+                local slotLink=GetInventoryItemLink('player', slot)
+                if slotLink then
+                    local slotItemLevel= GetDetailedItemLevelInfo(slotLink)
+                    if slotItemLevel then
+                        local num=itemLevel-slotItemLevel
+                        if num>0 then
+                            RollOnLoot(rollID, rollType)
+                            find=true
+                        end
+                    end
+                else--没有装备
+                    RollOnLoot(rollID, rollType)
+                    find=true
+                end
+
+            elseif classID==15 and subclassID==2 then--宠物物品
+                RollOnLoot(rollID, rollType)
+                find=true
+            elseif classID==15 and  subclassID==5 then--坐骑
+                local mountID = C_MountJournal.GetMountFromItem(itemID)
+                if mountID then
+                    local isCollected =select(11, C_MountJournal.GetMountInfoByID(mountID))
+                    if not isCollected then
+                        RollOnLoot(rollID, rollType)
+                        find=true
+                    end
+                end
+
+            elseif C_ToyBox.GetToyInfo(itemID) and not PlayerHasToy(itemID) then--玩具 
+                RollOnLoot(rollID, rollType)
+                find=true
+            end
+        end
+    end
+    if find then
         C_Timer.After(1, function()
             print(id, addName, link, text)
         end)

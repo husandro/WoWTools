@@ -37,7 +37,7 @@ local function setText()--设置显示内容
             if sec ~= chatStarTime and sec > 0 and sec%Save.Say==0  then
                 chatStarTime=sec
                 if IsInInstance() then
-                    e.Chat(COMBAT..' '..SecondsToClock(sec):gsub('：',':'), nil, true)
+                    e.Chat(SecondsToClock(sec):gsub('：',':'), nil, true)
                 end
             end
         end

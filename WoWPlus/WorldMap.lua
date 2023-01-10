@@ -694,6 +694,8 @@ local function Init()
             UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
         end
     end)
+
+    --WorldMapFrame:Set
 end
 
 --加载保存数据

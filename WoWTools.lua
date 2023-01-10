@@ -2,6 +2,27 @@ local id, e = ...
 e.L=e.L or {}--多语言
 e.tips=GameTooltip
 
+local function GetWeek()--周数
+    local d = date("*t")
+    local cd
+    if GetLocale() == "zhCN" then
+        cd=4
+    else
+        cd=3
+    end
+    for d3=1,15 do
+        if date('*t', time({year=d.year, month=1, day=d3})).wday == cd then
+            cd=d3
+            break
+        end
+    end
+    local week=ceil(floor((time() - time({year = d.year, month = 1, day = cd})) / (24*60*60)) /7)
+    if week==0 then
+        week=52
+    end
+    return week
+end
+
 local ActionButtonUseKeyDown=C_CVar.GetCVarBool("ActionButtonUseKeyDown")
 e.LeftButtonDown = ActionButtonUseKeyDown and 'LeftButtonDown' or 'LeftButtonUp'
 e.RightButtonDown= ActionButtonUseKeyDown and 'RightButtonDown' or 'RightButtonUp'
@@ -43,27 +64,6 @@ e.itemPetID={--宠物对换, wow9.0
     [62072]=true,
     [67410]=true,
 }
-
-local function GetWeek()--周数
-    local d = date("*t")
-    local cd
-    if GetLocale() == "zhCN" then
-        cd=4
-    else
-        cd=3
-    end
-    for d3=1,15 do
-        if date('*t', time({year=d.year, month=1, day=d3})).wday == cd then
-            cd=d3
-            break
-        end
-    end
-    local week=ceil(floor((time() - time({year = d.year, month = 1, day = cd})) / (24*60*60)) /7)
-    if week==0 then
-        week=52
-    end
-    return week
-end
 
 e.Race=function(unit, race, sex, reAtlas)--玩家种族图标
     race =race or unit and select(2,UnitRace(unit))
@@ -126,66 +126,10 @@ e.GetPlayerInfo=function (unit, guid, showName)--, hideClassTexture)
     return ''
 end
 
-e.PlayerLink=function(name, guid) --玩家超链接
-    local class, race,sex
-    if not guid and name and e.GroupGuid[name] and e.GroupGuid[name].unit then
-        guid= UnitGUID(e.GroupGuid[name].unit)
-    end
-    if guid then
-        local _, class2, _, englishRace, sex2, name2 = GetPlayerInfoByGUID(guid)
-        name = name or name2
-        race= englishRace
-        sex= sex2
-        class= class2
-    end
-    if name then
-        return ((race and sex) and e.Race(nil, race, sex) or '')..'|Hplayer:'..(name==COMBATLOG_FILTER_STRING_ME and e.Player.name_server or name)..'|h['..(class and '|c'..select(4,GetClassColor(class))..name ..'|r' or name)..']|h'
-    end
-end
-
-e.PlayerOnlineInfo=function(unit)--单位，状态信息
-    if unit and UnitExists(unit) then
-        if not UnitIsConnected(unit) then
-            return '|TInterface\\FriendsFrame\\StatusIcon-Offline:0|t'
-        elseif UnitIsAFK(unit) then
-            return '|TInterface\\FriendsFrame\\StatusIcon-Away:0|t'
-        elseif UnitIsDeadOrGhost(unit) then
-            return '|A:poi-soulspiritghost:0:0|a'
-        end
-    end
-end
-
-e.GetNpcID = function(unit)--NPC ID
-    if UnitExists(unit) then
-        local guid=UnitGUID(unit)
-        if guid then
-            return select(6,  strsplit("-", guid));
-        end
-    end
-end
-
-e.GetUnitMapName=function(unit)--单位, 地图名称
-    local text
-    local uiMapID= C_Map.GetBestMapForUnit(unit)
-    if unit=='player' and IsInInstance() then
-        local name, _, _, difficultyName= GetInstanceInfo()
-        if name then
-            text= name .. ((difficultyName and difficultyName~='') and '('..difficultyName..')' or '')
-        else
-            text=GetMinimapZoneText()
-        end
-    elseif uiMapID then
-        local info = C_Map.GetMapInfo(uiMapID)
-        if info and info.name then
-            text=info.name
-        end
-    end
-    return text, uiMapID
-end
-
 e.Player={
     server=GetRealmName(),
     name_server=UnitName('player')..'-'..GetRealmName(),
+    name= UnitName('player'),
     col='|c'..select(4,GetClassColor(UnitClassBase('player'))),
     zh= GetLocale()== ("zhCN" or 'zhTW'),
     Lo=GetLocale(),
@@ -278,6 +222,88 @@ e.Icon={
     FRIENDS_TEXTURE_AFK 离开 AFK FRIENDS_LIST_AWAY 
     FRIENDS_TEXTURE_ONLINE 	有空 FRIENDS_LIST_AVAILABLE
 ]]
+
+e.PlayerLink=function(name, guid) --玩家超链接
+    if not guid and name then
+        local unit=e.GroupGuid[name] and e.GroupGuid[name].unit
+        if unit then
+            guid= UnitGUID(unit)
+        end
+    end
+    if name == COMBATLOG_FILTER_STRING_ME or name==e.Player.name or name==e.Player.name_server or guid==e.Player.guid then--自已
+        return e.Icon.player..'|Hplayer:'..e.Player.name_server..'|h['..e.Player.col..COMBATLOG_FILTER_STRING_ME..'|r'..']|h'
+    end
+
+    if guid then
+        local _, class, _, race, sex, name2, realm = GetPlayerInfoByGUID(guid)
+        if name2 then
+            local showName= name2
+            if realm then
+                if e.Player.server[realm] then
+                    showName= showName..'*'
+                else
+                    showName= showName..'|cnGREEN_FONT_COLOR:*|r'
+                end
+            end
+            if class then
+                showName= '|c'..select(4,GetClassColor(class))..showName..'|r'
+            end
+            return ((race and sex) and e.Race(nil, race, sex) or '')..'|Hplayer:'..name2..(realm and '-'..realm or '')..'|h['..showName..']|h'
+        end
+    elseif name then
+        local showName= name
+        local realm= name:match('%-(.+)')
+        if realm then
+            if e.Player.server[realm] then
+                showName= showName..'|cnGREEN_FONT_COLOR:*|r'
+            else
+                showName= showName..'|cnRED_FONT_COLOR:*|r'
+            end
+        end
+        return '|Hplayer:'..name..'|h['..showName..']|h'
+    end
+end
+
+e.PlayerOnlineInfo=function(unit)--单位，状态信息
+    if unit and UnitExists(unit) then
+        if not UnitIsConnected(unit) then
+            return '|TInterface\\FriendsFrame\\StatusIcon-Offline:0|t'
+        elseif UnitIsAFK(unit) then
+            return '|TInterface\\FriendsFrame\\StatusIcon-Away:0|t'
+        elseif UnitIsDeadOrGhost(unit) then
+            return '|A:poi-soulspiritghost:0:0|a'
+        end
+    end
+end
+
+e.GetNpcID = function(unit)--NPC ID
+    if UnitExists(unit) then
+        local guid=UnitGUID(unit)
+        if guid then
+            return select(6,  strsplit("-", guid));
+        end
+    end
+end
+
+e.GetUnitMapName=function(unit)--单位, 地图名称
+    local text
+    local uiMapID= C_Map.GetBestMapForUnit(unit)
+    if unit=='player' and IsInInstance() then
+        local name, _, _, difficultyName= GetInstanceInfo()
+        if name then
+            text= name .. ((difficultyName and difficultyName~='') and '('..difficultyName..')' or '')
+        else
+            text=GetMinimapZoneText()
+        end
+    elseif uiMapID then
+        local info = C_Map.GetMapInfo(uiMapID)
+        if info and info.name then
+            text=info.name
+        end
+    end
+    return text, uiMapID
+end
+
 e.GetFriend = function(name, guid)--检测, 是否好友 
     if guid then
         if C_FriendList.IsFriend(guid) then
@@ -824,7 +850,7 @@ e.GetSetsCollectedNum= function(setID)--套装 , 收集数量, 返回: 图标, �
     end
 end
 
-e.GetItemCollected= function(link, sourceID, icon)--物品是否收集 
+e.GetItemCollected= function(link, sourceID, icon)--物品是否收集
     sourceID= sourceID or link and select(2,C_TransmogCollection.GetItemInfo(link))
     local sourceInfo = sourceID and C_TransmogCollection.GetSourceInfo(sourceID)
     if sourceInfo then
