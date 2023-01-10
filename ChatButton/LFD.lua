@@ -903,7 +903,7 @@ end
 
 local function setSTART_LOOT_ROLL(rollID, rollTime, lootHandle)--自动ROLL
     local isRandomInstance=select(10, GetInstanceInfo()) and true or nil
-    if not Save.autoROLL or not (Save.leaveInstance and isRandomInstance) or not rollID then
+    if not (Save.autoROLL or (Save.leaveInstance and isRandomInstance)) or not rollID then
         return
     end
 
