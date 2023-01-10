@@ -1,24 +1,23 @@
-local id, e =...
-local Save={btnStrHideCap=true, btnStrHideHeader=true, factionUpdateTips=true}
+local id, e = ...
+local Save={btnStrHideCap=true, btnStrHideHeader=true, factionUpdateTips=true, btnstr=true}
 local addName=REPUTATION
-local Frame=ReputationFrame
+local panel= e.Cbtn(ReputationFrame, nil, true, nil, nil, nil,{20, 20})
 
-local Icon={
-    isCapped='|A:'..e.Icon.icon..':0:0|a',
-	up="Interface\\Buttons\\UI-PlusButton-Up",
-	down="Interface\\Buttons\\UI-MinusButton-Up",
-	reward='ParagonReputation_Bag',--奖励
-	reward2='|A:ParagonReputation_Bag:0:0|a'
-}
-
-local function btnstrSetText()--监视声望内容
-	local btn=Frame.sel2 and Frame.sel2.btn--监视声望按钮
-	if not btn or not btn.str then
-		return
+--#########
+--设置, 文本
+--#########
+local function set_UPDATE_FACTION()--设置, 文本, 事件
+	if Save.btn then
+		panel:RegisterEvent('UPDATE_FACTION')
+	else
+		panel:UnregisterEvent('UPDATE_FACTION')
 	end
-	if not Save.btnstr then
-		btn:SetNormalAtlas(e.Icon.disabled)
-		btn.str:SetText('')
+end
+local function Reputation_Text_setText()--设置, 文本
+	if not Save.btn or not Save.btnstr then
+		if panel.btn and panel.btn.text then
+			panel.btn.text:SetText('')
+		end
 		return
 	end
 
@@ -28,7 +27,7 @@ local function btnstrSetText()--监视声望内容
 		local name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canBeLFGBonus =GetFactionInfo(i)
 		if name==HIDE then break end--隐藏 '隐藏声望'
 
-		if (hasRep or ((isHeader or isChild)  and not isCollapsed ) or (not isHeader and not isChild)) and factionID then
+		if (hasRep or ((isHeader or isChild)  and not isCollapsed ) or (not isHeader and not isChild)) and factionID and name then
 			local isCapped= standingID == MAX_REPUTATION_REACTION
 			local factionStandingtext, value, icon
 			--local barColor = FACTION_BAR_COLORS[standingID]
@@ -106,13 +105,13 @@ local function btnstrSetText()--监视声望内容
 				if isChild and not isHeader then
 					t= t..e.Icon.toRight2..(icon or '')
 				elseif not verHeader then
-					t= t.. (icon or Icon.isCapped)
+					t= t.. (icon or ('|A:'..e.Icon.icon..':0:0|a'))
 				end
 
-				t=t..name..(factionStandingtext and ' '..factionStandingtext or '')..(value and ' '..value or '')
+				t=t..(name:match('%- (.+)') or name)..(factionStandingtext and ' '..factionStandingtext or '')..(value and ' '..value or '')
 
 				if hasRewardPending then--有奖励
-					t=t..' '..Icon.reward2
+					t=t..' '..e.Icon.bank2
 				end
 
 				if verHeader then
@@ -125,16 +124,112 @@ local function btnstrSetText()--监视声望内容
 	end
 
 	if hasRewardPending then
-		btn:SetNormalAtlas(Icon.reward)--有奖励
+		panel.btn:SetNormalAtlas('ParagonReputation_Bag')--有奖励
 	else
-		btn:SetNormalAtlas(e.Icon.icon)
+		panel.btn:SetNormalAtlas(e.Icon.icon)
 	end
-	btn.str:SetText(m)
+	panel.btn.text:SetText(m)
 end
 
---ReputationFrame.lua
-hooksecurefunc('ReputationFrame_InitReputationRow', function (factionRow, elementData)
-	if Save.disabled then
+
+local function Set_Reputation_Text()--监视, 文本
+	if Save.btn and not panel.btn then
+		panel.btn=e.Cbtn(nil, nil, Save.btn, nil,nil,nil,{18,18})
+		if Save.point then
+			panel.btn:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
+		else
+			panel.btn:SetPoint('TOPLEFT', ReputationFrame, 'TOPRIGHT',0, -40)
+		end
+		panel.btn:RegisterForDrag("RightButton")
+		panel.btn:SetClampedToScreen(true);
+		panel.btn:SetMovable(true);
+		panel.btn:SetScript("OnDragStart", function(self2, d) if d=='RightButton' and not IsModifierKeyDown() then self2:StartMoving() end end)
+		panel.btn:SetScript("OnDragStop", function(self2)
+				ResetCursor()
+				self2:StopMovingOrSizing()
+				Save.point={self2:GetPoint(1)}
+				Save.point[2]=nil
+		end)
+		panel.btn:SetScript("OnMouseUp", function() ResetCursor() end)
+		panel.btn:SetScript("OnMouseDown", function(self2, d)
+			local key=IsModifierKeyDown()
+			if d=='RightButton' and not key then--右击,移动
+				SetCursor('UI_MOVE_CURSOR')
+
+			elseif d=='LeftButton' and not key then--点击,显示隐藏
+				Save.btnstr= not Save.btnstr and true or nil
+				print(id, addName, e.GetShowHide(Save.btnstr))
+				Reputation_Text_setText()--设置, 文本
+
+			elseif d=='LeftButton' and IsAltKeyDown() then
+				Save.btnStrHideHeader= not Save.btnStrHideHeader and true or nil
+				Reputation_Text_setText()--设置, 文本
+				print(id,addName, e.onlyChinse and '版本' or GAME_VERSION_LABEL,'('..NO..e.Icon.bank2..(e.onlyChinse and '奖励' or QUEST_REWARDS)..')', e.GetShowHide(not Save.btnStrHideHeader))
+
+			elseif d=='LeftButton' and IsShiftKeyDown() then--Shift+点击, 隐藏最高级, 且没有奖励声望
+				Save.btnStrHideCap= not Save.btnStrHideCap and true or nil
+				Reputation_Text_setText()--设置, 文本
+				print(id, addName, e.onlyChinse and '没有声望奖励时' or VIDEO_OPTIONS_ULTRA_HIGH..'('..NO..e.Icon.bank2..QUEST_REWARDS..')', e.GetShowHide(not Save.btnStrHideCap))
+			end
+		end)
+		panel.btn:SetScript("OnEnter",function(self2)
+			e.tips:SetOwner(self2, "ANCHOR_LEFT");
+			e.tips:ClearLines();
+			e.tips:AddDoubleLine(id, addName)
+			e.tips:AddLine(' ')
+			e.tips:AddDoubleLine(e.GetShowHide(Save.btnstr), e.Icon.left)
+			e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
+			e.tips:AddLine(' ')
+			e.tips:AddDoubleLine(e.onlyChinse and '打开/关闭声望界面' or BINDING_NAME_TOGGLECHARACTER2, e.Icon.mid)
+			e.tips:AddDoubleLine((e.onlyChinse and '字体大小' or FONT_SIZE)..': '..(Save.size or 12), 'Alt+'..e.Icon.mid)
+			e.tips:AddLine(' ')
+			e.tips:AddDoubleLine((e.onlyChinse and '版本' or GAME_VERSION_LABEL)..': '..e.GetShowHide(not Save.btnStrHideHeader), 'Alt + '..e.Icon.left)
+			e.tips:AddDoubleLine((e.onlyChinse and '隐藏最高声望' or (VIDEO_OPTIONS_ULTRA_HIGH..addName))..': '..e.GetShowHide(not Save.btnStrHideCap), 'Shift + '..e.Icon.left)
+			e.tips:Show();
+		end)
+		panel.btn:SetScript("OnLeave", function() ResetCursor()  e.tips:Hide() end);
+		panel.btn:EnableMouseWheel(true)
+		panel.btn:SetScript("OnMouseWheel", function (self2, d)--打开,关闭, 声望
+			if IsAltKeyDown() then--缩放
+				local num
+				num= Save.size or 12
+				if d==1 then
+					num= num +1
+				elseif d==-1 then
+					num= num -1
+				end
+				num= num<6 and 6 or num
+				num= num>32 and 32 or num
+				Save.size= num
+				e.Cstr(nil, Save.size, nil, panel.btn.text, true)
+				print(id, addName, e.onlyChinse and '文本' or LOCALE_TEXT_LABEL, e.onlyChinse and '字体大小' or FONT_SIZE, num)
+
+			elseif d==1 then
+				if not ReputationFrame:IsVisible() then
+					ToggleCharacter("ReputationFrame")
+				end
+			elseif d==-1 then
+				if ReputationFrame:IsVisible() then
+					ToggleCharacter("ReputationFrame")
+				end
+			end
+		end)
+
+		panel.btn.text=e.Cstr(panel.btn, Save.size, nil, nil, true)
+		panel.btn.text:SetPoint('TOPLEFT',3,-3)
+	end
+	if panel.btn then
+		panel.btn:SetShown(Save.btn)
+		Reputation_Text_setText()--设置, 文本
+	end
+	set_UPDATE_FACTION()--设置, 文本, 事件
+end
+
+--#########
+--界面, 增强
+--#########
+local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--ReputationFrame.lua
+	if Save.notPlus then
 		return
 	end
     local factionIndex = elementData.index;
@@ -149,6 +244,7 @@ hooksecurefunc('ReputationFrame_InitReputationRow', function (factionRow, elemen
 		return
 	end
 
+	local isCappedIcon='|A:'..e.Icon.icon..':0:0|a'
 	local factionTitle = factionContainer.Name
 	local text
 	local barColor
@@ -162,7 +258,7 @@ hooksecurefunc('ReputationFrame_InitReputationRow', function (factionRow, elemen
 			if repInfo.nextThreshold then
 				text=name..(icon or '')..rankInfo.currentLevel..'/'..rankInfo.maxLevel
 			else
-				text=(icon or Icon.isCapped).. name
+				text=(icon or isCappedIcon).. name
 				barColor=FACTION_ORANGE_COLOR
 			end
 		end
@@ -173,7 +269,7 @@ hooksecurefunc('ReputationFrame_InitReputationRow', function (factionRow, elemen
 			icon='|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'
 		end
 		if C_MajorFactions.HasMaximumRenown(factionID) then
-			text=(icon or Icon.isCapped)..name
+			text=(icon or isCappedIcon)..name
 			barColor=FACTION_ORANGE_COLOR
 		else
 			if info then
@@ -184,7 +280,7 @@ hooksecurefunc('ReputationFrame_InitReputationRow', function (factionRow, elemen
 	elseif (isHeader and hasRep) or not isHeader then
 
 		if (standingID == MAX_REPUTATION_REACTION) then--已满
-			text=Icon.isCapped..name
+			text=isCappedIcon..name
 			barColor=FACTION_ORANGE_COLOR
 		else
 			text=name..''..standingID..'/'..MAX_REPUTATION_REACTION
@@ -230,135 +326,23 @@ hooksecurefunc('ReputationFrame_InitReputationRow', function (factionRow, elemen
 	if factionBar.completed then
 		factionBar.completed:SetText(completedParagon or '')
 	end
-end)
+end
 
-Frame.sel=CreateFrame("Button",nil, Frame, 'UIPanelButtonTemplate')--禁用,开启
-Frame.sel:RegisterForClicks("LeftButtonDown","RightButtonDown")
-Frame.sel:SetSize(18, 18)
-Frame.sel:SetPoint("LEFT", ReputationFrameStandingLabel, 'RIGHT',5,0)
-Frame.sel:SetScript('OnLeave', function ()
-	e.tips:Hide()
-end)
 
-Frame.sel2=CreateFrame("Button",nil, Frame, 'UIPanelButtonTemplate')--监视声望按钮 禁用,开启
-Frame.sel2:SetSize(18, 18)
-Frame.sel2:SetPoint("LEFT", Frame.sel, 'RIGHT',2,0)
-Frame.sel2:SetScript("OnEnter", function(self)
-	e.tips:SetOwner(self, "ANCHOR_LEFT")
-    e.tips:ClearLines()
-	e.tips:AddDoubleLine(id, addName)
-	e.tips:AddLine(' ')
-	e.tips:AddDoubleLine('|A:communities-icon-chat:0:0|a'..(e.onlyChinse and '声望变化' or COMBAT_TEXT_SHOW_REPUTATION_TEXT), e.GetEnabeleDisable(Save.btn)..e.Icon.left)
-    e.tips:Show()
-end)
-Frame.sel2:SetScript('OnLeave', function ()
-	e.tips:Hide()
-end)
-
-hooksecurefunc('ReputationFrame_Update', btnstrSetText)--更新监视
-
-local function SetRe()--监视声望	
-	Frame.sel2:SetNormalAtlas(Save.btn and e.Icon.icon or e.Icon.disabled)
-	local btn=Frame.sel2.btn--监视声望按钮
-	if Save.btn and not btn then
-			btn=CreateFrame("Button",nil, UIParent)--禁用,开启
-			btn:SetNormalAtlas(e.Icon.icon)
-			btn:SetHighlightAtlas(e.Icon.highlight)
-			btn:SetPushedAtlas(e.Icon.pushed)
-			btn:SetSize(18, 18)
-			if Save.point then
-				btn:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
-			else
-				btn:SetPoint('TOPLEFT', Frame, 'TOPRIGHT',0, -40)
-			end
-			btn:RegisterForDrag("RightButton")
-			btn:SetClampedToScreen(true);
-			btn:SetMovable(true);
-			btn:SetScript("OnDragStart", function(self2, d) if d=='RightButton' and not IsModifierKeyDown() then self2:StartMoving() end end)
-			btn:SetScript("OnDragStop", function(self2)
-					ResetCursor()
-					self2:StopMovingOrSizing()
-					Save.point={self2:GetPoint(1)}
-					Save.point[2]=nil
-			end)
-			btn:SetScript("OnMouseUp", function() ResetCursor() end)
-			btn:SetScript("OnMouseDown", function(self2, d)
-				local key=IsModifierKeyDown()
-				if d=='RightButton' and not key then--右击,移动
-					SetCursor('UI_MOVE_CURSOR')
-
-				elseif d=='LeftButton' and not key then--点击,显示隐藏
-					if Save.btnstr then
-						Save.btnstr=nil
-					else
-						Save.btnstr=true
-					end
-					print(id, addName, e.GetShowHide(Save.btnstr))
-					btnstrSetText()
-
-				elseif d=='LeftButton' and IsAltKeyDown() then
-					if Save.btnStrHideHeader then
-						Save.btnStrHideHeader=nil
-					else
-						Save.btnStrHideHeader=true
-					end
-					btnstrSetText()
-					print(id,addName, e.onlyChinse and '版本' or GAME_VERSION_LABEL,'('..NO..Icon.reward2..(e.onlyChinse and '奖励' or QUEST_REWARDS)..')', e.GetShowHide(not Save.btnStrHideHeader))
-
-				elseif d=='LeftButton' and IsShiftKeyDown() then--Shift+点击, 隐藏最高级, 且没有奖励声望
-					if Save.btnStrHideCap then
-						Save.btnStrHideCap=nil
-					else
-						Save.btnStrHideCap=true
-					end
-					btnstrSetText()
-					print(VIDEO_OPTIONS_ULTRA_HIGH..'('..NO..Icon.reward2..QUEST_REWARDS..')'..addName..": "..e.GetShowHide(not Save.btnStrHideCap))
-				end
-			end)
-			btn:SetScript("OnEnter",function(self2)
-				e.tips:SetOwner(self2, "ANCHOR_LEFT");
-				e.tips:ClearLines();
-				e.tips:AddDoubleLine(id, addName)
-				e.tips:AddLine(' ')
-				e.tips:AddDoubleLine('|A:communities-icon-chat:0:0|a'..(e.onlyChinse and '声望变化' or COMBAT_TEXT_SHOW_REPUTATION_TEXT)..': '..e.GetShowHide(Save.btnstr), e.Icon.left)
-				e.tips:AddDoubleLine(e.onlyChinse and '打开/关闭声望界面' or BINDING_NAME_TOGGLECHARACTER2, e.Icon.mid)
-				e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
-				e.tips:AddLine(' ')
-				e.tips:AddDoubleLine((e.onlyChinse and '版本' or GAME_VERSION_LABEL)..': '..e.GetShowHide(not Save.btnStrHideHeader), 'Alt + '..e.Icon.left)
-				e.tips:AddDoubleLine((e.onlyChinse and '隐藏最高声望' or (VIDEO_OPTIONS_ULTRA_HIGH..addName))..': '..e.GetShowHide(not Save.btnStrHideCap), 'Shift + '..e.Icon.left)
-				e.tips:Show();
-			end)
-			btn:SetScript("OnLeave", function() ResetCursor()  e.tips:Hide() end);
-			btn:EnableMouseWheel(true)
-			btn:SetScript("OnMouseWheel", function (self2, d)
-				ToggleCharacter("ReputationFrame")--打开声望
-			end)
-
-			btn.str=e.Cstr(btn, nil, nil, nil, true)
-			btn.str:SetPoint('TOPLEFT',3,-3)
-			Frame.sel2.btn=btn
-	end
-	if btn then
-		btn:SetShown(Save.btn)
-		btnstrSetText()
+--#############
+--声望更新, 提示
+--#############
+local function set_RegisterEvent_CHAT_MSG_COMBAT_FACTION_CHANGE()--更新, 提示, 事件
+	if Save.factionUpdateTips or Save.btn then
+		panel:RegisterEvent('CHAT_MSG_COMBAT_FACTION_CHANGE')
+	else
+		panel:UnregisterEvent('CHAT_MSG_COMBAT_FACTION_CHANGE')
 	end
 end
 
-Frame.sel2:SetScript('OnMouseDown', function(self, d)
-	if Save.btn then
-		Save.btn=nil
-	else
-		Save.btn=true
-		Save.btnstr=true
-	end
-	print(SHOW..addName..': '..e.GetEnabeleDisable(Save.btn))
-	SetRe();
-end)
-
 local factionStr=FACTION_STANDING_INCREASED:gsub("%%s", "(.-)")--你在%s中的声望值提高了%d点。
 factionStr = factionStr:gsub("%%d", ".-")
-
-local function FactionUpdate(self, env, text)--监视声望更新提示
+local function FactionUpdate(self, env, text)
 	local name=text and text:match(factionStr)
 	if not Save.factionUpdateTips or not name then
 		return
@@ -432,9 +416,9 @@ local function FactionUpdate(self, env, text)--监视声望更新提示
 			if value then
 				m=m..' |cffffffff'..value..'|r'
 			end
-			m=(icon or Icon.isCapped)..m
+			m=(icon or isCappedIcon)..m
 			if hasRewardPending then
-				m=m..' '..Icon.reward2
+				m=m..' '..e.Icon.bank2
 			end
 
 			C_Timer.After(0.3, function()
@@ -444,74 +428,123 @@ local function FactionUpdate(self, env, text)--监视声望更新提示
 		end
 	end
 end
-Frame.sel2:RegisterEvent('CHAT_MSG_COMBAT_FACTION_CHANGE')
-Frame.sel2:SetScript('OnEvent', FactionUpdate)
 
-local function SetAll()--收起,展开
-	Frame.sel:SetNormalAtlas(Save.disabled and e.Icon.disabled or e.Icon.icon)
-	if Save.disabled then
-		return
-	end
-	if not Frame.up then
-		Frame.up=CreateFrame("Button",nil, Frame, 'UIPanelButtonTemplate')--收起所有
-		Frame.up:SetNormalTexture(Icon.up)
-		Frame.up:SetSize(16, 16)
-		Frame.up:SetPoint("LEFT", ReputationFrameFactionLabel, 'RIGHT',5,0)
-		Frame.up:SetScript("OnMouseDown", function()
-			for i=GetNumFactions(), 1, -1 do
-				CollapseFactionHeader(i)
-			end
-		end)
-	end
-	if not Frame.down then
-		Frame.down=CreateFrame("Button",nil, Frame, 'UIPanelButtonTemplate')--展开所有
-		Frame.down:SetNormalTexture(Icon.down)
-		Frame.down:SetPoint('LEFT', Frame.up, 'RIGHT')
-		Frame.down:SetSize(18, 18)
-		Frame.down:SetScript("OnMouseDown", function(self)
-			ExpandAllFactionHeaders()
-		end)
-	end
+
+--#####
+--主菜单
+--#####
+local function InitMenu(self, level, type)
+	local info
+	info={
+		text= e.onlyChinse and '文本' or LOCALE_TEXT_LABEL,
+		checked= Save.btn,
+		func= function()
+			Save.btn= not Save.btn and true or nil
+			Set_Reputation_Text()--监视, 文本
+			print(id, addName, e.onlyChinse and '文本' or LOCALE_TEXT_LABEL, e.GetShowHide(Save.btn))
+		end
+	}
+	UIDropDownMenu_AddButton(info, level)
+
+	info={
+		text= '|A:communities-icon-chat:0:0|a'..(e.onlyChinse and '声望变化' or COMBAT_TEXT_SHOW_REPUTATION_TEXT),
+		checked= Save.factionUpdateTips,
+		func= function()
+			Save.factionUpdateTips= not Save.factionUpdateTips and true or nil
+			set_RegisterEvent_CHAT_MSG_COMBAT_FACTION_CHANGE()--更新, 提示, 事件
+			print(id, addName, e.onlyChinse and '声望变化' or COMBAT_TEXT_SHOW_REPUTATION_TEXT, e.GetEnabeleDisable(Save.factionUpdateTips))
+		end
+	}
+	UIDropDownMenu_AddButton(info, level)
+
+	info={
+		text= 'UI Plus',
+		checked= not Save.notPlus,
+		func= function()
+			Save.notPlus= not Save.notPlus and true or nil
+			panel.down:SetShown(not Save.notPlus)
+			panel.up:SetShown(not Save.notPlus)
+			print(id, addName, 'UI Plus', e.GetEnabeleDisable(not Save.notPlus), e.onlyChinse and '需要刷新' or NEED..REFRESH)
+		end
+	}
+	UIDropDownMenu_AddButton(info, level)
+	--UIDropDownMenu_AddSeparator(level)
 end
 
-Frame.sel:SetScript("OnMouseDown", function(self, d)
-	if d=='LeftButton' then
-		Save.disabled= not Save.disabled and true or nil
-		print(id, addName, e.GetEnabeleDisable(Save.disabled), e.onlyChinse and '需要重新加载"' or REQUIRES_RELOAD)
-		SetAll()--收起,展开
-		ReputationFrame_Update()
-	elseif d=='RightButton' then
-		if Save.factionUpdateTips then
-			Save.factionUpdateTips=nil
-		else
-			Save.factionUpdateTips=true
+--######
+--初始化
+--######
+local function Init()
+	Set_Reputation_Text()--监视, 文本
+	hooksecurefunc('ReputationFrame_Update', Reputation_Text_setText)--更新, 监视, 文本
+
+	hooksecurefunc('ReputationFrame_InitReputationRow', set_ReputationFrame_InitReputationRow)-- 声望, 界面, 增强
+
+	set_RegisterEvent_CHAT_MSG_COMBAT_FACTION_CHANGE()--更新, 提示, 事件
+	
+
+	panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
+    UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
+
+	panel:SetPoint("LEFT", ReputationFrameStandingLabel, 'RIGHT',5,0)
+	panel:SetScript("OnMouseDown", function(self,d)
+        ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+    end)
+
+	panel.up=CreateFrame("Button",nil, panel, 'UIPanelButtonTemplate')--收起所有
+	panel.up:SetShown(not Save.notPlus)
+	panel.up:SetNormalTexture('Interface\\Buttons\\UI-PlusButton-Up')
+	panel.up:SetSize(16, 16)
+	panel.up:SetPoint("LEFT", ReputationFrameFactionLabel, 'RIGHT',5,0)
+	panel.up:SetScript("OnMouseDown", function()
+		for i=GetNumFactions(), 1, -1 do
+			CollapseFactionHeader(i)
 		end
-		print(addName, e.onlyChinse and '更新' or UPDATE, e.GetEnabeleDisable(Save.factionUpdateTips))
-	end
-end)
+	end)
+	panel.down=CreateFrame("Button",nil, panel, 'UIPanelButtonTemplate')--展开所有
+	panel.down:SetShown(not Save.notPlus)
+	panel.down:SetNormalTexture('Interface\\Buttons\\UI-MinusButton-Up')
+	panel.down:SetPoint('LEFT', panel.up, 'RIGHT')
+	panel.down:SetSize(18, 18)
+	panel.down:SetScript("OnMouseDown", function(self)
+		ExpandAllFactionHeaders()
+	end)
+end
 
-Frame.sel:SetScript("OnEnter", function(self2)
-	e.tips:SetOwner(self2, "ANCHOR_LEFT")
-    e.tips:ClearLines()
-	e.tips:AddLine(id, addName)
-	e.tips:AddLine(' ')
-	e.tips:AddDoubleLine(addName..': '..e.GetEnabeleDisable(not Save.disabled), e.Icon.left)
-	e.tips:AddLine(' ')
-	e.tips:AddDoubleLine((e.onlyChinse and '更新' or UPDATE)..': '..e.GetEnabeleDisable(Save.factionUpdateTips), e.Icon.right)
-    e.tips:Show()
-end)
 
-Frame.sel:RegisterEvent("ADDON_LOADED")
-Frame.sel:RegisterEvent("PLAYER_LOGOUT")
-Frame.sel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1 == id then
-		Save= WoWToolsSave and WoWToolsSave[addName] or Save
-		SetAll()--收起,展开		
-		SetRe()--监视声望
+--###########
+--加载保存数据
+--###########
+panel:RegisterEvent("ADDON_LOADED")
+
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" and arg1==id then
+            Save= WoWToolsSave and WoWToolsSave[addName] or Save
+
+            --添加控制面板        
+            local sel=e.CPanel(e.onlyChinse and '声望' or addName, not Save.disabled)
+            sel:SetScript('OnMouseDown', function()
+                Save.disabled= not Save.disabled and true or nil
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+            end)
+
+            if Save.disabled then
+                panel:UnregisterAllEvents()
+            else
+                Init()
+            end
+            panel:RegisterEvent("PLAYER_LOGOUT")
+
     elseif event == "PLAYER_LOGOUT" then
-		if not e.ClearAllSave then
-			if not WoWToolsSave then WoWToolsSave={} end
-			WoWToolsSave[addName]=Save
-		end
-	end
+        if not e.ClearAllSave then
+            if not WoWToolsSave then WoWToolsSave={} end
+            WoWToolsSave[addName]=Save
+        end
+
+	elseif event=='UPDATE_FACTION' then
+		Reputation_Text_setText()--文本
+
+	elseif event=='CHAT_MSG_COMBAT_FACTION_CHANGE' then--声望更新, 提示
+		FactionUpdate(arg1)
+    end
 end)
