@@ -453,6 +453,7 @@ local function setMajorFactionRenown(self, majorFactionID)--名望
         if info.textureKit then
             self.Portrait:SetShown(true)
             self.Portrait:SetAtlas('MajorFactions_Icons_'..info.textureKit..'512')
+            self.textLeft:SetText('|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'..'MajorFactions_Icons_'..info.textureKit..'512')
         end
         self:AddDoubleLine((e.onlyChinse and '名望' or RENOWN_LEVEL_LABEL)..' '..majorFactionID, format(e.onlyChinse and '名望等级 %d' or MAJOR_FACTION_RENOWN_LEVEL_TOAST, info.renownLevel)..' '..('%i%%'):format(info.renownReputationEarned/info.renownLevelThreshold*100))
         self:Show()
