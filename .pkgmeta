@@ -2,7 +2,7 @@ package-as:
 KillerCupcakesenable-nolib-creation: 
 noexternals:    
 libs/LibDialog:        
-url: # https://github.com/wildstarnasa/LibDialog.git        
+# url: # https://github.com/wildstarnasa/LibDialog.git        
 tag: latest # if this line is left out, the latest version (even if it's not a tag) is assumed    
 libs/GeminiAddon:        
 url: https://github.com/husandro/WoWTools.wiki.git # https://github.com/wildstarnasa/GeminiAddon.git        
