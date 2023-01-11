@@ -986,6 +986,25 @@ e.GetTooltipData= function(colorRed, text, hyperLink, bag, guidBank, merchant, b
     end
 end
 
+
+e.PlaySound= function(soundKitID)--播放, 声音 SoundKitConstants.lua e.PlaySound()--播放, 声音
+    if not C_CVar.GetCVarBool('Sound_EnableAllSound') or C_CVar.GetCVar('Sound_MasterVolume')=='0' then
+        return
+    end
+    local channel
+    if C_CVar.GetCVarBool('Sound_EnableDialog') and C_CVar.GetCVar("Sound_DialogVolume")~='0' then
+        channel= 'Dialog'
+    elseif C_CVar.GetCVarBool('Sound_EnableAmbience') and C_CVar.GetCVar("Sound_AmbienceVolume")~='0' then
+        channel= 'Ambience'
+    elseif C_CVar.GetCVarBool('Sound_EnableSFX') and C_CVar.GetCVar("Sound_SFXVolume")~='0' then
+        channel= 'SFX'
+    elseif C_CVar.GetCVarBool('Sound_EnableMusic') and C_CVar.GetCVar("Sound_MusicVolume")~='0' then
+        channel= 'Music'
+    else
+        channel= 'Master'
+    end
+    PlaySound(soundKitID or SOUNDKIT.READY_CHECK, channel)
+end
 --[[
 BACKGROUND
 BORDER

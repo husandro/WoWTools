@@ -833,7 +833,7 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:RegisterEvent('GROUP_ROSTER_UPDATE')--'PLAYER_ROLES_ASSIGNED')--GROUP_ROSTER_UPDATE
 panel:RegisterEvent('GROUP_LEFT')
 panel:RegisterEvent('READY_CHECK')
-
+panel:RegisterEvent('START_TIMER')
 
 panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" and arg1==id then
@@ -862,6 +862,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         end
 
     elseif event=='READY_CHECK' then--自动就绪事件
+        e.PlaySound(SOUNDKIT.READY_CHECK)--播放, 声音
         if Save.autoReady then
             if arg1 and arg1~=UnitName('player') then
                 self.autoReadyTime= C_Timer.NewTimer(3, function()
@@ -884,6 +885,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         if arg1==READY_CHECK_ALL_READY then
             setGroupReadyTips(event, arg1, arg2)--队员,就绪,提示信息
         end
+    elseif event=='START_TIMER' then
+        e.PlaySound()--播放, 声音
     end
 end)
 

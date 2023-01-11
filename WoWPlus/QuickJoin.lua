@@ -13,19 +13,19 @@ local function set_SOCIAL_QUEUE_UPDATE()
         self.quickJoinText:SetFontObject('NumberFontNormal');
         self.quickJoinText:SetPoint('TOPRIGHT', -6, -3);
 
-        self:SetScript("OnMouseDown", function(self2, b)
-                if b=='RightButton' then
-                    ToggleQuickJoinPanel()
-                elseif b=='LeftButton' then
-                    ToggleFriendsPanel();
-                end
+        self:SetScript("OnClick", function(self2, d)
+            if d=='RightButton' then
+                ToggleQuickJoinPanel()
+            elseif d=='LeftButton' then
+                ToggleFriendsPanel();
+            end
         end)
-        self:SetScript("OnMouseWheel", function(self2, b)
-                if b==1 then
-                    ToggleFriendsFrame(2);
-                elseif b==-1 then
-                    ToggleRaidFrame();
-                end
+        self:SetScript("OnMouseWheel", function(self2, d)
+            if d==1 then
+                ToggleFriendsFrame(2);
+            elseif d==-1 then
+                ToggleRaidFrame();
+            end
         end)
         self:SetScript('OnEnter', function(self2)
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
@@ -40,8 +40,7 @@ local function set_SOCIAL_QUEUE_UPDATE()
     end
 
     local n=#C_SocialQueue.GetAllGroups();
-    if n==0 then n='' end
-    self.quickJoinText:SetText(n);
+    self.quickJoinText:SetText(n)--n~=0 and n or '');
 end
 
 

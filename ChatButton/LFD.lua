@@ -622,6 +622,9 @@ end
 --离开, 进入, 副本
 --###############
 local function setLFGDungeonReadyDialog(self)--自动进入FB LFGDungeonReadyDialog:HookScript("OnShow"
+    if Save.enterInstance then
+        e.PlaySound()--播放, 声音
+    end
     local afk=UnitIsAFK('player')
     if not self.infoText then
         self.infoText=e.Cstr(self,nil, LFGDungeonReadyDialogInstanceInfoFrame.name, nil, true)
@@ -630,7 +633,7 @@ local function setLFGDungeonReadyDialog(self)--自动进入FB LFGDungeonReadyDia
         self.infoText:SetShadowOffset(2, -2)
     end
     local proposalExists, dungeonID, typeID, subtypeID, name, backgroundTexture, role, hasResponded, totalEncounters, completedEncounters, numMembers, isLeader, isHoliday, proposalCategory , isSilent = GetLFGProposal();
-    local text='' 
+    local text=''
     if dungeonID then
         text='dungeonID: '..dungeonID
                 ..( role and _G[role] and '\n'.._G[role]..e.Icon[role] ..(isLeader and e.Icon.leader or ''))
@@ -670,10 +673,9 @@ local function exitInstance()
     if ins then
         name= name..difficultyName
         wowSave[INSTANCE][name]=wowSave[INSTANCE][name]  and wowSave[INSTANCE][name] +1 or 1
-    else
-        name=nil
     end
-    if not ExitIns or not ins then
+    if not ExitIns or not ins or IsModifierKeyDown() then
+        ExitIns=nil
         StaticPopup_Hide(addName..'ExitIns')
         return
     end
@@ -692,19 +694,16 @@ end
 
 StaticPopupDialogs[addName..'ExitIns']={
     text =id..'('..addName..')\n\n|cff00ff00'..(e.onlyChinse and '离开' or LEAVE)..'|r: ' ..(e.onlyChinse and '副本' or INSTANCE).. '|cff00ff00 '..sec..' |r'..(e.onlyChinse and '秒' or SECONDS),
-    button1 = e.onlyChinse and '离开' or LEAVE,
-    button2 = e.onlyChinse and '取消' or CANCEL,
+    button1 = LEAVE,
+    button2 = CANCEL,
     OnAccept=function()
         exitInstance()
     end,
     OnCancel=function(_, _, d)
-        if d=='clicked' then
+        --if d=='clicked' then
             ExitIns=nil
             print(id,addName,'|cff00ff00'..(e.onlyChinse and '取消' or CANCEL)..'|r', e.onlyChinse and '离开' or LEAVE)
-        end
-    end,
-    EditBoxOnEnterPressed = function()
-        Exit()
+        --end
     end,
     EditBoxOnEscapePressed = function(s)
         ExitIns=nil
@@ -875,6 +874,7 @@ local function Init()
     set_PvPRoles()
 
     LFDRoleCheckPopup:SetScript("OnShow",function(self)--副本职责
+        e.PlaySound(SOUNDKIT.LFG_ROLE_CHECK)--播放, 声音
         if not Save.autoSetPvPRole then
             return
         end
@@ -1182,6 +1182,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
 
     elseif event=='LFG_COMPLETION_REWARD' or event=='LOOT_CLOSED' then--自动离开
         if Save.leaveInstance and IsLFGComplete() then
+            e.PlaySound()--播放, 声音
             ExitIns=true
             StaticPopup_Show(addName..'ExitIns')
             e.Ccool(StaticPopup1, nil, sec, nil, true)--冷却条
@@ -1208,6 +1209,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
         if not Save.leaveInstance then
             return
         end
+        e.PlaySound()--播放, 声音
         C_PartyInfo.LeaveParty(LE_PARTY_CATEGORY_INSTANC)
         LFGTeleport(true)
         print(id, addName, 	e.onlyChinse and '离开海岛' or ISLAND_LEAVE, '|cnGREEN_FONT_COLOR:'..wowSave[ISLANDS_HEADER]..'|r'..	VOICEMACRO_LABEL_CHARGE1)
@@ -1233,6 +1235,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
             if PVPMatchResults and PVPMatchResults.buttonContainer and PVPMatchResults.buttonContainer.leaveButton then
                 e.Ccool(PVPMatchResults.buttonContainer.leaveButton, nil, sec, nil, true, true)
             end
+            e.PlaySound()--播放, 声音
             print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '离开战场' or LEAVE_BATTLEGROUND), SecondsToTime(sec))
             C_Timer.After(sec, function()
                 if not IsModifierKeyDown() then
