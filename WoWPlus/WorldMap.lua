@@ -115,7 +115,7 @@ end
 --#######
 --任务日志
 --#######
-local Code=IN_GAME_NAVIGATION_RANGE:gsub('d','s')--%s码    
+--local Code=IN_GAME_NAVIGATION_RANGE:gsub('d','s')--%s码    
 local function Quest(self, questID)--任务
     if not HaveQuestData(questID) then return end
 
@@ -137,7 +137,7 @@ local function Quest(self, questID)--任务
             x=math.modf(x*100) y=math.modf(y*100)
             if x and y then t='XY '..x..', '..y end
         end
-        self:AddDoubleLine(t,  (e.onlyChinse and '距离' or TRACK_QUEST_PROXIMITY_SORTING)..format(Code, e.MK(distanceSq)))
+        self:AddDoubleLine(t,  (e.onlyChinse and '距离' or TRACK_QUEST_PROXIMITY_SORTING)..' '..e.MK(distanceSq))--format(IN_GAME_NAVIGATION_RANGE, e.MK(distanceSq)))
     end
     if IsInGroup() then
         t= e.GetYesNo(C_QuestLog.IsPushableQuest(questID))--共享

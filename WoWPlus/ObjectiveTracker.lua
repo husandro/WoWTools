@@ -90,8 +90,10 @@ local ObjectiveTrackerRemoveAll =function(self, tip)
         }
         UIDropDownMenu_AddButton(info)
     end
+    local text
+
     info={
-        text = (e.onlyChinse and '任务' or QUESTS_LABEL)..' '..questID,
+        text = (e.onlyChinse and '任务' or QUESTS_LABEL)..' '..questID..'  '..(e.onlyChinse and '等级' or LEVEL)..' '.. C_QuestLog.GetQuestDifficultyLevel(questID),
         isTitle = true,
         notCheckable = true,
     }
@@ -325,7 +327,7 @@ local function Init()
             if factionGroup == LE_QUEST_FACTION_HORDE then
                 m=m..e.Icon.horde2
                 if factionGroup == LE_QUEST_FACTION_ALLIANCE then
-                    m=m.e.Icon.alliance2
+                    m=m..e.Icon.alliance2
                 end
             end
             if  C_QuestLog.IsQuestCalling(questID) then--使命
