@@ -686,7 +686,7 @@ local function Init_Quest()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         local all=C_QuestLog.GetAllCompletedQuestIDs() or {}--完成次数
-        e.tips:AddDoubleLine((e.onlyChinse and '今天' or GUILD_EVENT_TODAY)..': '..(GetDailyQuestsCompleted() or '0'),  format(e.onlyChinse and '已完成：%s' or  DATE_COMPLETED, e.MK(#all, 3)))
+        e.tips:AddDoubleLine(' ', format(e.onlyChinse and '已完成：%s' or  DATE_COMPLETED, e.MK(#all, 3)))
         e.tips:AddLine(' ')
 
         e.tips:AddDoubleLine((e.onlyChinse and '任务' or QUESTS_LABEL)..': '..select(2,  C_QuestLog.GetNumQuestLogEntries())..'/'..C_QuestLog.GetMaxNumQuests(), (e.onlyChinse and '追踪' or TRACK_QUEST_ABBREV)..': '..C_QuestLog.GetNumQuestWatches())
@@ -709,13 +709,14 @@ local function Init_Quest()
             end
         end
         local numMaxQust= C_QuestLog.GetMaxNumQuestsCanAccept()
-        local text= numQuest+dayNum+weekNum ..'/'..numMaxQust
-        if numMaxQust== numQuest then
+        local numAll= numQuest+ dayNum+ weekNum
+        local text= numAll ..'/'..numMaxQust
+        if numAll == numMaxQust then
             text= '|cnRED_FONT_COLOR:'..text..'|r'
         end
-        e.tips:AddDoubleLine((e.onlyChinse and '战役' or TRACKER_HEADER_CAMPAIGN_QUESTS)..': '..companionNum, (e.onlyChinse and '一般' or RESISTANCE_FAIR)..': '..numQuest)
-        e.tips:AddDoubleLine(' ',(e.onlyChinse and '日常' or DAILY)..': '..dayNum)
-        e.tips:AddDoubleLine((e.onlyChinse and '总计' or TOTAL)..': '..text, (e.onlyChinse and '周长' or WEEKLY)..': '..weekNum)
+        e.tips:AddDoubleLine((e.onlyChinse and '日常' or DAILY)..': |cnGREEN_FONT_COLOR:'..GetDailyQuestsCompleted()..'|r'..e.Icon.select2, (e.onlyChinse and '日常' or DAILY)..': '..dayNum)
+        e.tips:AddDoubleLine((e.onlyChinse and '战役' or TRACKER_HEADER_CAMPAIGN_QUESTS)..': '..companionNum, (e.onlyChinse and '周长' or WEEKLY)..': '..weekNum)
+        e.tips:AddDoubleLine((e.onlyChinse and '总计' or TOTAL)..': '..text, (e.onlyChinse and '一般' or RESISTANCE_FAIR)..': '..numQuest)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.GetEnabeleDisable(Save.quest)..e.Icon.left, (e.onlyChinse and '菜单' or SLASH_TEXTTOSPEECH_MENU)..e.Icon.right)
         e.tips:AddDoubleLine(id, e.onlyChinse and '任务' or QUESTS_LABEL)
