@@ -622,9 +622,7 @@ end
 --离开, 进入, 副本
 --###############
 local function setLFGDungeonReadyDialog(self)--自动进入FB LFGDungeonReadyDialog:HookScript("OnShow"
-    if Save.enterInstance then
-        e.PlaySound()--播放, 声音
-    end
+    e.PlaySound()--播放, 声音
     local afk=UnitIsAFK('player')
     if not self.infoText then
         self.infoText=e.Cstr(self,nil, LFGDungeonReadyDialogInstanceInfoFrame.name, nil, true)
@@ -1205,11 +1203,11 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
         end)
 
     elseif event=='ISLAND_COMPLETED' then--离开海岛
+        e.PlaySound()--播放, 声音
         wowSave[ISLANDS_HEADER]=wowSave[ISLANDS_HEADER] and wowSave[ISLANDS_HEADER]+1 or 1
         if not Save.leaveInstance then
             return
         end
-        e.PlaySound()--播放, 声音
         C_PartyInfo.LeaveParty(LE_PARTY_CATEGORY_INSTANC)
         LFGTeleport(true)
         print(id, addName, 	e.onlyChinse and '离开海岛' or ISLAND_LEAVE, '|cnGREEN_FONT_COLOR:'..wowSave[ISLANDS_HEADER]..'|r'..	VOICEMACRO_LABEL_CHARGE1)
@@ -1231,11 +1229,11 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
         end
 
     elseif event=='PVP_MATCH_COMPLETE' then--离开战场
+        e.PlaySound()--播放, 声音
         if Save.leaveInstance then
             if PVPMatchResults and PVPMatchResults.buttonContainer and PVPMatchResults.buttonContainer.leaveButton then
                 e.Ccool(PVPMatchResults.buttonContainer.leaveButton, nil, sec, nil, true, true)
             end
-            e.PlaySound()--播放, 声音
             print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '离开战场' or LEAVE_BATTLEGROUND), SecondsToTime(sec))
             C_Timer.After(sec, function()
                 if not IsModifierKeyDown() then
