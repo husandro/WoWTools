@@ -486,7 +486,7 @@ local function set_Unit_Health_Bar(self, unit)
             end
             left =e.MK(value, 0)
         end
-        right = e.MK(max, 3)
+        right = e.MK(max, 2)
         r, g, b = GetClassColor(select(2, UnitClass(unit)))
         self:SetStatusBarColor(r, g, b)
     end
