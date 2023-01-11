@@ -344,7 +344,7 @@ local factionStr=FACTION_STANDING_INCREASED:gsub("%%s", "(.-)")--你在%s中的�
 factionStr = factionStr:gsub("%%d", ".-")
 local function FactionUpdate(text)
 	local name=text and text:match(factionStr)
-	if not Save.factionUpdateTips or not name then
+	if not Save.factionUpdateTips or not name or panel.printText then
 		return
 	end
 	for i=1, GetNumFactions() do
@@ -420,8 +420,9 @@ local function FactionUpdate(text)
 			if hasRewardPending then
 				m=m..' '..e.Icon.bank2
 			end
-
+			panel.printText=true
 			C_Timer.After(0.3, function()
+				panel.printText=nil
 				print(id, addName, m)
 			end)
 			return
