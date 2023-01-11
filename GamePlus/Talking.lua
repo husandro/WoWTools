@@ -37,10 +37,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='TALKINGHEAD_REQUESTED' then
         local _, _, vo, _, _, _, name, text, isNewTalkingHead = C_TalkingHead.GetCurrentLineInfo();
-        if vo and vo>0 then
+        if vo and vo>0 and self.soundKitID~=vo then
             PlaySound(vo, "Dialog");
             print(id, addName, 'soundKitID', vo)
             print('|cff00ff00'..name..'|r','|cffff00ff'..text..'|r')
+            self.soundKitID=vo
         end
         TalkingHeadFrame:CloseImmediately()
     end
