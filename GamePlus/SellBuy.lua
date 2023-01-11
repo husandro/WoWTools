@@ -832,7 +832,7 @@ local function Init()
     end)
     hooksecurefunc(StaticPopupDialogs["DELETE_GOOD_QUEST_ITEM"],"OnShow",function(self)
         if not Save.notDELETE and self.editBox then
-            self.editBox:SetText(DELETE_CONFIRM_STRING);
+            self.editBox:SetText(DELETE_ITEM_CONFIRM_STRING);
         end
     end)
     hooksecurefunc(StaticPopupDialogs["CONFIRM_DESTROY_COMMUNITY"],"OnShow",function(self)
