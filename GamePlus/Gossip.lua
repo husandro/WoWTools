@@ -709,17 +709,17 @@ local function Init_Quest()
             end
         end
         local numMaxQust= C_QuestLog.GetMaxNumQuestsCanAccept()
-        local text= numQuest..'/'..numMaxQust
+        local text= numQuest+dayNum+weekNum ..'/'..numMaxQust
         if numMaxQust== numQuest then
             text= '|cnRED_FONT_COLOR:'..text..'|r'
         end
-        e.tips:AddDoubleLine((e.onlyChinse and '战役' or TRACKER_HEADER_CAMPAIGN_QUESTS)..': '..companionNum, (e.onlyChinse and '日常' or DAILY)..': '..dayNum)
-        e.tips:AddDoubleLine((e.onlyChinse and '一般' or RESISTANCE_FAIR)..': '..text, (e.onlyChinse and '周长' or WEEKLY)..': '..weekNum)
+        e.tips:AddDoubleLine((e.onlyChinse and '战役' or TRACKER_HEADER_CAMPAIGN_QUESTS)..': '..companionNum, (e.onlyChinse and '一般' or RESISTANCE_FAIR)..': '..numQuest)
+        e.tips:AddDoubleLine(' ',(e.onlyChinse and '日常' or DAILY)..': '..dayNum)
+        e.tips:AddDoubleLine((e.onlyChinse and '总计' or TOTAL)..': '..text, (e.onlyChinse and '周长' or WEEKLY)..': '..weekNum)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.GetEnabeleDisable(Save.quest)..e.Icon.left, (e.onlyChinse and '菜单' or SLASH_TEXTTOSPEECH_MENU)..e.Icon.right)
         e.tips:AddDoubleLine(id, e.onlyChinse and '任务' or QUESTS_LABEL)
         e.tips:Show()
-
        -- set_Only_Show_Zone_Quest()
     end)
     questPanel:SetScript('OnLeave', function() e.tips:Hide() end)
