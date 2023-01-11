@@ -363,7 +363,7 @@ local function setCurrency(self, currencyID)--货币
     if factionID and factionID>0 then
         local name= GetFactionInfoByID(factionID)
         if name then
-            self:AddDoubleLine(e.onlyChinse and '声望' or REPUTATION, name)
+            self:AddDoubleLine(e.onlyChinse and '声望' or REPUTATION, name..' '..factionID)
         end
     end
 
@@ -447,7 +447,7 @@ local setFriendshipFaction=function(self, friendshipID)--friend声望
 end
 
 local function setMajorFactionRenown(self, majorFactionID)--名望
-	local info = C_MajorFactions.GetMajorFactionData(majorFactionID)
+	local info = C_Reputation.IsMajorFaction(majorFactionID) and C_MajorFactions.GetMajorFactionData(majorFactionID)
     if info then
         if info.textureKit then
             self.Portrait:SetShown(true)
@@ -1216,26 +1216,21 @@ local function Init()
         end)
     end
 
-    hooksecurefunc(AreaPOIPinMixin,'TryShowTooltip', function(poiInfo)--POI提示 AreaPOIDataProvider.lua
-        if poiInfo then
-            if poiInfo.areaPoiID then
-                GameTooltip:AddDoubleLine('areaPoiID', poiInfo.areaPoiID)
+    hooksecurefunc(AreaPOIPinMixin,'TryShowTooltip', function(self)--POI提示 AreaPOIDataProvider.lua
+        if self then
+            if self.areaPoiID then
+                GameTooltip:AddDoubleLine('areaPoiID', self.areaPoiID)
             end
-            if poiInfo.widgetSetID then
-                GameTooltip:AddDoubleLine('widgetID', poiInfo.widgetSetID)
+            if self.widgetSetID then
+                GameTooltip:AddDoubleLine('widgetID', self.widgetSetID)
             end
-            local id2 = poiInfo:GetMap():GetMapID();
+            local id2 = self:GetMap() and  self:GetMap():GetMapID()
             if id2 then
                 GameTooltip:AddDoubleLine('mapID', id2)
             end
-            if poiInfo.textureKit then
-                GameTooltip:AddDoubleLine('textureKit', poiInfo.textureKit)
-            end
-            if poiInfo.atlasName then
-                GameTooltip:AddDoubleLine('atlasName','|A:'..poiInfo.atlasName..':0:0|a'..poiInfo.atlasName)
-            end
-            if poiInfo.uiTextureKit then
-                GameTooltip:AddDoubleLine('uiTextureKit', poiInfo.uiTextureKit)
+            if self.factionID then
+                setMajorFactionRenown(GameTooltip, self.factionID)--名望
+                --setFriendshipFaction(GameTooltip, self.factionID)--friend声望
             end
             GameTooltip:Show()
         end
