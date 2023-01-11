@@ -378,13 +378,13 @@ local function Init()
         e.tips:Show()
     end)
 
-    --###############################
+--[[    --###############################
     --修正，在战斗中，打开收藏界面，错误
     --###############################
     if not CollectionsJournal then
-        ToggleCollectionsJournal(2)
+        ToggleCollectionsJournal(1)
         HideUIPanel(CollectionsJournal)
-    end
+    end]]
 end
 
 --加载保存数据
