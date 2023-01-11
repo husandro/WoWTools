@@ -69,7 +69,7 @@ local GetPlayerNameRemoveRealm= function(name, realm)--玩家名称, 去服务�
     if name then
         realm= realm or name:match('%-(.+)')
         if realm then
-            if e.Player.server[realm] then
+            if e.Player.servers[realm] then
                 return name..'|cnGREEN_FONT_COLOR:*|r'
             else
                 return name..'*'
@@ -156,6 +156,7 @@ end
 
 e.Player={
     server=GetRealmName(),
+    servers={},--多服务器
     name_server=UnitName('player')..'-'..GetRealmName(),
     name= UnitName('player'),
     col='|c'..select(4,GetClassColor(UnitClassBase('player'))),
@@ -169,8 +170,6 @@ e.Player={
     level=UnitLevel('player'),
     husandro= select(2, BNGetInfo()) == '古月剑龙#5972' or select(2, BNGetInfo())=='SandroChina#2690',
 }
-
-e.Player.servers={}--多服务器
 for k, v in pairs(GetAutoCompleteRealms()) do
     e.Player.servers[v]=k
 end

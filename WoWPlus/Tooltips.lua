@@ -530,16 +530,17 @@ local function setPlayerInfo(unit, guid)--设置玩家信息
         if icon then
             e.tips.text2Left:SetText("|T"..icon..':0|t')
         end
+--[[        if info.realm then
+            if e.Player.servers[info.realm] then--设置服务器
+                e.tips.textRight:SetText(info.col..info.realm..'|r'..(info.realm~=e.Player.server and '|cnGREEN_FONT_COLOR:*|r' or''))
 
-        if e.Player.servers[info.realm] then--设置服务器
-            e.tips.textRight:SetText(info.col..info.realm..'|r'..(info.realm~=e.Player.server and '|cnGREEN_FONT_COLOR:*|r' or''))
+            elseif info.realm and not e.Player.servers[info.realm] then--不同
+                e.tips.textRight:SetText(info.col..info.realm..'|r|cnRED_FONT_COLOR:*|r')
 
-        elseif info.realm and not e.Player.servers[info.realm] then--不同
-            e.tips.textRight:SetText(info.col..info.realm..'|r|cnRED_FONT_COLOR:*|r')
-
-        elseif UnitIsUnit('player', unit) or UnitIsSameServer(unit) then--同
-            e.tips.textRight:SetText(info.col..e.Player.server..'|r')
-        end
+            elseif UnitIsUnit('player', unit) or UnitIsSameServer(unit) then--同
+                e.tips.textRight:SetText(info.col..e.Player.server..'|r')
+            end
+        end]]
         if info.r and info.b and info.g then
             e.tips.backgroundColor:SetColorTexture(info.r, info.g, info.b, 0.2)--背景颜色
             e.tips.backgroundColor:SetShown(true)
@@ -589,9 +590,10 @@ local function setUnitInfo(self, unit)--设置单位提示信息
         if line then
             line:SetText(col..e.Icon.toRight2..name..e.Icon.toLeft2..'|r')
         end
-        if realm then
-            self.textRight:SetText(realm..(e.Player.server[realm] and '|cnGREEN_FONT_COLOR:*' or ''))
-        end
+
+        realm= realm or e.Player.server--服务器
+        self.textRight:SetText(col..realm..'|r'..(e.Player.servers[realm] and '|cnGREEN_FONT_COLOR:*' or ''))
+
        --[[ local text=line:GetText()
         if text then
             text=text:gsub('(%-.+)','')

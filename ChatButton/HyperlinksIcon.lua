@@ -52,7 +52,9 @@ local function Realm(link)--去服务器为*, 加队友种族图标,和N,T
             end
         end
         if server then
-            if e.Player.server[server] then
+            if server== e.Player.server then
+                return (text or '')..link:gsub('%-'..server..'|r]|h', '|r]|h')
+            elseif e.Player.servers[server] then
                 return (text or '')..link:gsub('%-'..server..'|r]|h', GREEN_FONT_COLOR_CODE..'*|r|r]|h')
             else
                 return (text or '')..link:gsub('%-'..server..'|r]|h', '*|r]|h')
