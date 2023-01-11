@@ -75,7 +75,7 @@ local InvUnitFunc=function()--邀请，周围玩家
 
     local p=C_CVar.GetCVarBool('nameplateShowFriends');
     --local all=C_CVar.GetCVarBool('nameplateShowAll');
-    
+
     --[[
 if not all then
         C_CVar.SetCVar('nameplateShowAll', '1')
@@ -280,6 +280,7 @@ local function set_LFGListInviteDialog(self)--队伍查找器, 自动接受邀�
                 info.activityID and '|cffff00ff'..C_LFGList.GetActivityFullName(info.activityID)..'|r' or '',--查找器,类型
                 info.isWarMode~=nil and info.isWarMode ~= C_PvP.IsWarModeDesired() and '|cnGREEN_FONT_COLOR:'..TALENT_FRAME_LABEL_WARMODE..'|r' or ''
             )
+            e.PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
             e.Ccool(self, nil, 3, nil, true, true, nil)--冷却条
             self.LFGListInviteDialogTimer=C_Timer.NewTicker(3, function()
                     self.AcceptButton:Click()
@@ -312,6 +313,7 @@ local function set_PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNati
     --local playerInfo= e.GetPlayerInfo(nil, inviterGUID, true)
 
     local function setPrint(sec, text)
+        e.PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
         print(id, addName, text,
             '|cnGREEN_FONT_COLOR:'..sec.. ' |r'..(e.onlyChinse and '秒' or SECONDS),
             (isTank and e.Icon.TANK or '')..(isHealer and e.Icon.HEALER or '')..(isDamage and e.Icon.DAMAGER or ''),
@@ -910,20 +912,20 @@ panel:SetScript("OnEvent", function(self, event, arg1, ...)
     elseif event=='PLAYER_ENTERING_WORLD' then
         InvPlateGuid={}
         set_Chanell_Event()--设置,内容,频道, 邀请,事件
-    
+
     elseif event=='CHAT_MSG_SAY' or event=='CHAT_MSG_YELL' or  event=='CHAT_MSG_WHISPER' then
         local text= arg1 and string.upper(arg1)
         if Save.Channel and text and Save.ChannelText and text:find(Save.ChannelText) then
-            local co= GetNumGroupMembers()            
+            local co= GetNumGroupMembers()
             toRaidOrParty(co)--自动, 转团
             if co<5 or (IsInRaid() and co<40) then
                 local guid= select(11, ...)
                 local name= ...
                 if guid and name and name~=e.Player.ame_server then
                     C_PartyInfo.InviteUnit(name)
-                
+
                     InvPlateGuid[guid]=name;--保存到已邀请列表
-                
+
                     print(id, addName, CHANNEL, e.PlayerLink(name, guid))
                 end
             end
