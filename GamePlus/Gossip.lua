@@ -686,7 +686,7 @@ local function Init_Quest()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         local all=C_QuestLog.GetAllCompletedQuestIDs() or {}--完成次数
-        e.tips:AddDoubleLine(' ', format(e.onlyChinse and '已完成：%s' or  DATE_COMPLETED, e.MK(#all, 3)))
+        e.tips:AddDoubleLine(e.onlyChinse and '已完成' or  CRITERIA_COMPLETED, e.MK(#all, 3))
         e.tips:AddLine(' ')
 
         e.tips:AddDoubleLine((e.onlyChinse and '任务' or QUESTS_LABEL)..': '..select(2,  C_QuestLog.GetNumQuestLogEntries())..'/'..C_QuestLog.GetMaxNumQuests(), (e.onlyChinse and '追踪' or TRACK_QUEST_ABBREV)..': '..C_QuestLog.GetNumQuestWatches())
