@@ -401,7 +401,6 @@ end
 --####
 --Buff
 --####
-
 local function setBuff(type, self, ...)--Buff
     local source= type=='Buff' and select(7, UnitBuff(...)) or type=='Debuff' and select(7, UnitDebuff(...)) or select(7, UnitAura(...))
     if source then
@@ -484,7 +483,7 @@ local function set_Unit_Health_Bar(self, unit)
             elseif hp<90 then
                 text='|cnYELLOW_FONT_COLOR:'..text..'|r'
             end
-            left =e.MK(value, 0)
+            left =e.MK(value, 2)
         end
         right = e.MK(max, 2)
         r, g, b = GetClassColor(select(2, UnitClass(unit)))
@@ -550,7 +549,7 @@ end
 
 
 local function setUnitInfo(self, unit)--设置单位提示信息
-    local name=UnitName(unit)
+    local name, realm= UnitName(unit)
     local isPlayer = UnitIsPlayer(unit)
     local guid = UnitGUID(unit)
 
@@ -590,7 +589,9 @@ local function setUnitInfo(self, unit)--设置单位提示信息
         if line then
             line:SetText(col..e.Icon.toRight2..name..e.Icon.toLeft2..'|r')
         end
-
+        if realm then
+            self.textRight:SetText(realm..(e.Player.server[realm] and '|cnGREEN_FONT_COLOR:*' or ''))
+        end
        --[[ local text=line:GetText()
         if text then
             text=text:gsub('(%-.+)','')
@@ -888,7 +889,7 @@ local function Init()
         e.tips.playerModel:SetSize(100, 100)
         e.tips.playerModel:SetShown(false)
     end
-    panel:RegisterEvent('INSPECT_READY')
+    --panel:RegisterEvent('INSPECT_READY')
 
     setInitItem(ItemRefTooltip)
     setInitItem(e.tips)
