@@ -1,0 +1,15 @@
+{
+    "Lua.diagnostics.globals": [
+        "SELECTED_CHAT_FRAME",
+        "RESET_POSITION",
+        "NPE_MOVE",
+        "WoWToolsChatButtonFrame",
+        "UI_SCALE",
+        "COMBAT",
+        "REQUIRES_RELOAD",
+        "TIMEMANAGER_TOOLTIP_TITLE"
+    ],
+    "Lua.diagnostics.disable": [
+        "undefined-global"
+    ]
+}
