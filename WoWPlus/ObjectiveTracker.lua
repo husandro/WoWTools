@@ -44,7 +44,7 @@ local function ItemNum(button)--增加物品数量
         if nu>1 then
             if not button.num then
                 button.num=e.Cstr(button)
-                button.num:SetPoint('BOTTOMLEFT', button, 'BOTTOMLEFT', 0, 0)                
+                button.num:SetPoint('BOTTOMLEFT', button, 'BOTTOMLEFT', 0, 0)
             end
             button.num:SetText(nu)
             return
@@ -134,7 +134,7 @@ end
 
 local Colla=function(type)
     for _, self in pairs(mo) do
-        if self and self.Header and self.Header.MinimizeButton then            
+        if self and self.Header and self.Header.MinimizeButton then
             if self.collapsed ~=type  then
                 local module = self.Header.MinimizeButton:GetParent().module
                 module:SetCollapsed(type)
@@ -231,7 +231,7 @@ local function hideTrecker()--挑战,进入FB时, 隐藏Blizzard_ObjectiveTracke
         end
     else
         for index, self in pairs(mo) do
-            if index>2 and self and self.Header and self.Header.MinimizeButton then 
+            if index>2 and self and self.Header and self.Header.MinimizeButton then
                 if self.setColla then
                     if self.collapsed  then
                         self:SetCollapsed(false);
@@ -256,13 +256,13 @@ local function Init()
         Alpha()
     end--透明度
 
-    ObjectiveTrackerFrame:SetMovable(true)
+    --ObjectiveTrackerFrame:SetMovable(true)
     ObjectiveTrackerFrame:EnableMouse(true)
 
     local btn=ObjectiveTrackerFrame.HeaderMenu.MinimizeButton
-    btn:RegisterForDrag("RightButton")
-    btn:SetScript("OnDragStart", function() ObjectiveTrackerFrame:StartMoving() end)    
-    btn:SetScript("OnDragStop", function() 
+--[[    btn:RegisterForDrag("RightButton")
+    btn:SetScript("OnDragStart", function() ObjectiveTrackerFrame:StartMoving() end)
+    btn:SetScript("OnDragStop", function()
             ResetCursor()
             ObjectiveTrackerFrame:StopMovingOrSizing()
     end)
@@ -273,7 +273,7 @@ local function Init()
         if d=='RightButton' and not IsAltKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         end
-    end)
+    end)]]
     btn:SetScript("OnLeave", function(self)
         ResetCursor()
         e.tips:Hide()
@@ -283,7 +283,7 @@ local function Init()
             e.tips:ClearLines()
             e.tips:AddDoubleLine(id, addName)
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
+            --e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
             e.tips:AddDoubleLine(e.onlyChinse and '显示/隐藏' or (SHOW..'/'..HIDE), e.Icon.mid)
             e.tips:AddDoubleLine((e.onlyChinse and '缩放' or UI_SCALE)..': '..(Save.scale or 1), 'Ctrl + '..e.Icon.mid)
             e.tips:AddDoubleLine((e.onlyChinse and '透明度' or CHANGE_OPACITY)..': '..(Save.alpha or 1), 'Shift + '..e.Icon.mid)
@@ -363,7 +363,7 @@ local function Init()
                 end]]
                 local ver=GetQuestExpansion(questID or info.questID)--版本
                 if ver and ver~= e.ExpansionLevel then
-                    m=m..'|cff606060['..(ver+1)..']|r'
+                    m=m..(ver<e.ExpansionLevel and  '|cff606060' or '|cnRED_FONT_COLOR:')..'['..(ver+1)..']|r'
                 end
             end
         end
@@ -474,7 +474,7 @@ local function Init()
             button:SetPoint(button.point[1], button.point[2], button.point[3], button.point[4], button.point[5])
         end
 
-        if not button.setMove then                                
+        if not button.setMove then
             button:SetSize(35,35)--右击移动
             if  button.NormalTexture then button.NormalTexture:SetSize(60,60) end
             button:SetClampedToScreen(true)--保存
@@ -559,7 +559,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 e.tips:AddDoubleLine(e.onlyChinse and '追踪配方' or PROFESSIONS_TRACK_RECIPE, text)
                 e.tips:Show()
             end)
-            sel2:SetScript('OnLeave', function() e.tips:Hide() end)        
+            sel2:SetScript('OnLeave', function() e.tips:Hide() end)
 
             sel2:SetScript('OnMouseDown', function ()
                 Save.autoHide= not Save.autoHide and true or nil
