@@ -85,7 +85,7 @@ local function setTankHealer(autoSet)--设置队伍标记
     local num=GetNumGroupMembers()
     if Save.tank==0 or num<2 then
         if num<2 and not autoSet then
-            print(id, addName, SETTINGS, TANK..getTexture(Save.tank), HEALER..getTexture(Save.healer), '|cnRED_FONT_COLOR:'..SPELL_TARGET_TYPE4_DESC..'<2|r') 
+            print(id, addName, SETTINGS, TANK..getTexture(Save.tank), HEALER..getTexture(Save.healer), '|cnRED_FONT_COLOR:'..SPELL_TARGET_TYPE4_DESC..'<2|r')
         end
         return
     end
@@ -865,7 +865,9 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         if Save.autoReady then
             if arg1 and arg1~=UnitName('player') then
                 self.autoReadyTime= C_Timer.NewTimer(3, function()
-                    ConfirmReadyCheck(Save.autoReady==1 and 1)
+                    if ReadyCheckFrame and ReadyCheckFrame:IsShown() then
+                        ConfirmReadyCheck(Save.autoReady==1 and 1 or nil)
+                    end
                 end)
                 e.Ccool(ReadyCheckListenerFrame, nil, 3, nil, true)--冷却条
             end
@@ -877,7 +879,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         end
     elseif event=='READY_CHECK_CONFIRM' then
             setGroupReadyTips(event, arg1, arg2)--队员,就绪,提示信息
-        
+
     elseif event=='CHAT_MSG_SYSTEM' then
         if arg1==READY_CHECK_ALL_READY then
             setGroupReadyTips(event, arg1, arg2)--队员,就绪,提示信息
