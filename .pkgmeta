@@ -22,3 +22,6 @@ Monkey/Modules/Hat: Monkey_Hatignore:
 - Scripts # ignore the scripts folder    
 - Some/File.txt # ignore a specific filerequired-dependencies:    
 - monkey-town
+
+enable-nolib-creation: no
+license-output: LICENSE
