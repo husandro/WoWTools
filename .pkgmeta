@@ -1,16 +1,22 @@
 package-as: WoWTools
-externals:    
-libs/LibMonkey-1.0: svn://svn.curseforge.net/wow/libmonkey-1-0/mainline/trunk  
-
-libs/LibBanana-1.0:         
-  url: git://git.curseforge.net/wow/libbanana-1-0/mainline.git        
-  tag: 1.2    
-
-libs/LibSuit-2.0:        
-  url: http://hg.curseforge.net/wow/libsuit-2-0/mainlinemove-folders:    
-
-
-- Scripts # ignore the scripts folder    
-- Some/File.txt # ignore a specific filerequired-dependencies:    
-- monkey-town
-
+Monkeyexternals:    
+libs/LibStub:       
+ url: svn://svn.wowace.com/wow/libstub/mainline/trunk        
+ tag: latest    
+ 
+ libs/CallbackHandler-1.0:        
+ url: svn://svn.wowace.com/wow/callbackhandler/mainline/trunk/CallbackHandler-1.0        
+ tag: latest    
+ 
+ libs/LibMonkey-1.0: svn://svn.curseforge.net/wow/libmonkey-1-0/mainline/trunk    
+ 
+ libs/LibBanana-1.0:         
+ url: git://git.curseforge.net/wow/libbanana-1-0/mainline.git        t
+ ag: 1.2    
+ 
+ libs/LibSuit-2.0:        
+ url: http://hg.curseforge.net/wow/libsuit-2-0/mainlinemove-folders:    
+ 
+ Monkey/Modules/Suit: Monkey_Suit    
+ Monkey/Modules/Hat: Monkey_Hatignore:    
+ - Scripts # ignore the scripts folder    - Some/File.txt # ignore a specific filerequired-dependencies:    - monkey-town
