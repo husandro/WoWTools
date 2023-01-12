@@ -300,7 +300,7 @@ local function setWorldbossText()--显示世界BOSS击杀数据Text
                 find= true
             end
             if find then
-                msg= msg..'\n'..e.GetPlayerInfo(nil, guid, true)..(guid==e.Player.guid and e.Icon.star2 or '')
+                msg= msg..'\n'..e.GetPlayerInfo(nil, guid, true)
             end
         end
         msg= msg or '...'
@@ -369,7 +369,7 @@ local function setInstanceBossText()--显示副本击杀数据
             end
             if text then
                 msg=msg and msg..'\n' or ''
-                msg= msg ..e.GetPlayerInfo(nil, guid, true)..(guid==e.Player.guid and e.Icon.star2 or '')..'\n'
+                msg= msg ..e.GetPlayerInfo(nil, guid, true)..'\n'
                 msg= msg.. text
             end
         end
@@ -384,13 +384,15 @@ local function set_EncounterJournal_Keystones_Tips(self)--险指南界面, 挑�
     e.tips:ClearLines();
     e.tips:AddDoubleLine(e.onlyChinse and '史诗钥石地下城' or CHALLENGES, e.Icon.left)
     for guid, info in pairs(e.WoWSave) do
-        local find
-        for itemLink, _ in pairs(info.Keystone.itemLink) do
-            e.tips:AddLine(itemLink)
-            find=true
-        end
-        if find then
-            e.tips:AddDoubleLine(e.GetPlayerInfo(nil, guid, true), guid==e.Player.guid and e.Icon.star2)
+        if guid and info then
+            local find
+            for itemLink, _ in pairs(info.Keystone.itemLink) do
+                e.tips:AddLine(itemLink)
+                find=true
+            end
+            if find then
+                e.tips:AddLine(e.GetPlayerInfo(nil, guid, true))
+            end
         end
     end
     e.tips:Show()
@@ -402,7 +404,7 @@ local function set_EncounterJournal_Money_Tips(self)--险指南界面, 钱
     local numPlayer, allMoney  = 0, 0
     for guid, info in pairs(e.WoWSave) do
         if info.Money then
-            e.tips:AddDoubleLine(e.GetPlayerInfo(nil, guid, true)..(guid==e.Player.guid and e.Icon.star2 or ''), GetCoinTextureString(info.Money))
+            e.tips:AddDoubleLine(e.GetPlayerInfo(nil, guid, true), GetCoinTextureString(info.Money))
             numPlayer=numPlayer+1
             allMoney= allMoney + info.Money
         end
@@ -463,17 +465,19 @@ local function Init()--冒险指南界面
         e.tips:AddDoubleLine((e.onlyChinse and '副本' or INSTANCE)..e.Icon.left..e.GetShowHide(Save.showInstanceBoss), e.onlyChinse and '已击杀' or DUNGEON_ENCOUNTER_DEFEATED)
         e.tips:AddLine(' ')
         for guid, info in pairs(e.WoWSave) do
-            local find
-            for bossName, tab in pairs(info.Instance.ins) do----ins={[名字]={[难度]=已击杀数}}
-                local text
-                for difficultyName, killed in pairs(tab) do
-                    text= (text and text..' ' or '')..difficultyName..killed
+            if guid and info then
+                local find
+                for bossName, tab in pairs(info.Instance.ins) do----ins={[名字]={[难度]=已击杀数}}
+                    local text
+                    for difficultyName, killed in pairs(tab) do
+                        text= (text and text..' ' or '')..difficultyName..killed
+                    end
+                    e.tips:AddDoubleLine(bossName, text)
+                    find= true
                 end
-                e.tips:AddDoubleLine(bossName,text)
-                find= true
-            end
-            if find then
-                e.tips:AddDoubleLine(e.GetPlayerInfo(nil, guid, true), guid==e.Player.guid and e.Icon.star2)
+                if find then
+                    e.tips:AddLine(e.GetPlayerInfo(nil, guid, true))
+                end
             end
         end
         e.tips:Show()

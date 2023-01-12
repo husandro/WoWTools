@@ -294,13 +294,15 @@ local function setItem(self, ItemLink)
     if C_Item.IsItemKeystoneByID(itemID) then--挑战
         --local numPlayer=1 --帐号数据 --{score=总分数,itemLink={超连接}, weekLevel=本周最高, weekNum=本周次数, all=总次数},
         for guid, info in pairs(e.WoWSave) do
-            local find
-            for linkItem, _ in pairs(info.Keystone.itemLink) do
-               self:AddDoubleLine(' ', linkItem)
-               find=true
-            end
-            if find then
-                self:AddDoubleLine(e.GetPlayerInfo(nil, guid, true), guid==e.Player.guid and e.Icon.star2)
+            if guid and info then
+                local find
+                for linkItem, _ in pairs(info.Keystone.itemLink) do
+                self:AddDoubleLine(' ', linkItem)
+                find=true
+                end
+                if find then
+                    self:AddLine(e.GetPlayerInfo(nil, guid, true))
+                end
             end
         end
         if e.WoWSave[e.Player.guid] and e.WoWSave[e.Player.guid].Keystone then--挑战分数
@@ -316,7 +318,7 @@ local function setItem(self, ItemLink)
     else
         local bagAll,bankAll,numPlayer=0,0,0--帐号数据
         for guid, info in pairs(e.WoWSave) do
-            if guid~=e.Player.guid then
+            if guid and info and guid~=e.Player.guid then
                 local tab=info.Item[itemID]
                 if tab and tab.bag and tab.bank then
                     self:AddDoubleLine(e.GetPlayerInfo(nil, guid, true), e.Icon.bank2..(tab.bank==0 and '|cff606060'..tab.bank..'|r' or tab.bank)..' '..e.Icon.bag2..(tab.bag==0 and '|cff606060'..tab.bag..'|r' or tab.bag))

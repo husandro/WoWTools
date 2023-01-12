@@ -5,9 +5,7 @@ local panel= CreateFrame("Frame")
 
 local function set_VIGNETTE_MINIMAP_UPDATED(vignetteGUID)
     local info= C_VignetteInfo.GetVignetteInfo(vignetteGUID)
-    if info then
-        print(info.type)
-    end
+   for k, v in pairs(info) do if v and type(v)=='table' then print('---------',k..'STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('---------',k..'END') end print(k,v) end
 end
 
 --####

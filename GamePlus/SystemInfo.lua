@@ -210,7 +210,7 @@ local function InitMenu(self, level, type)--主菜单
         for guid, infoMoney in pairs(e.WoWSave) do
             if infoMoney.Money then
                 text= text~='' and text..'\n' or text
-                text= text..e.GetPlayerInfo(nil, guid, true)..(guid==e.Player.guid and e.Icon.star2 or '')..'  '.. GetCoinTextureString(infoMoney.Money, true)
+                text= text..e.GetPlayerInfo(nil, guid, true)..'  '.. GetCoinTextureString(infoMoney.Money, true)
                 numPlayer=numPlayer+1
                 allMoney= allMoney + infoMoney.Money
             end

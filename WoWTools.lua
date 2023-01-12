@@ -66,10 +66,14 @@ e.itemPetID={--宠物对换, wow9.0
 }
 
 local GetPlayerNameRemoveRealm= function(name, realm)--玩家名称, 去服务器为*
+    realm = realm=='' and nil or realm
     if name then
         realm= realm or name:match('%-(.+)')
         if realm then
-            if e.Player.servers[realm] then
+            name= name:match('(.+)%-') or name
+            if realm==e.Player.server then
+                return name
+            elseif e.Player.servers[realm] then
                 return name..'|cnGREEN_FONT_COLOR:*|r'
             else
                 return name..'*'
@@ -122,33 +126,17 @@ end
 e.GetPlayerInfo=function (unit, guid, showName)--, hideClassTexture)
     guid= guid or UnitGUID(unit)
     if guid then
-        local _, englishClass, _, englishRace, sex, name, realm = GetPlayerInfoByGUID(guid)
-        if name and englishClass and englishRace and sex then
-            if showName then
-                return (e.Race(nil, englishRace, sex) or '')..'|c'..select(4,GetClassColor(englishClass))..GetPlayerNameRemoveRealm(name, realm)..'|r'
-            else
-                return (e.Race(nil, englishRace, sex) or '')..(e.Class(nil, englishClass) or '')
-            end
-        end
-    elseif unit then
-        if showName then
-            local name= GetUnitName(unit, true)
-            if name then
-                local col
-                local className=UnitClassBase(unit)
-                if className then
-                    col= select(4,GetClassColor(className))
-                    if col then
-                        name= '|c'..col..name..'|r'
-                    end
-                end
-                if not col then
-                    name= (e.Class(unit) or '')..name
-                end
-                return e.Race(unit)..name
-            end
+        if guid==e.Player.guid then
+           return e.Icon.player..(showName and e.Player.col..COMBATLOG_FILTER_STRING_ME..'|r' or '')..e.Icon.star2
         else
-            return e.Race(unit)..(e.Class(unit) or '')
+            local _, englishClass, _, englishRace, sex, name, realm = GetPlayerInfoByGUID(guid)
+            if name and englishClass and englishRace and sex then
+                if showName then
+                    return (e.Race(nil, englishRace, sex) or '')..'|c'..select(4,GetClassColor(englishClass))..GetPlayerNameRemoveRealm(name, realm)..'|r'
+                else
+                    return (e.Race(nil, englishRace, sex) or '')..(e.Class(nil, englishClass) or '')
+                end
+            end
         end
     end
     return ''

@@ -71,9 +71,6 @@ WoWPlus\EncounterJournal.lua
 WoWPlus\Challenges.lua
 ##距离, 去掉小数点
 WowPlus\SuperTracked.lua
-##怪物 Creature
-##WowPlus\Creature.lua
-
 
 ##WowPlus\GroupManager.lua
 ##WoWPlus\AchievementFrame.lua
@@ -102,6 +99,8 @@ GamePlus\Holiday.lua
 GamePlus\Gem.lua
 ##目标指示
 GamePlus\Target.lua
+##怪物 Creature
+##GamePlus\Creature.lua
 
 ##坐骑， Tools 主要的，
 ##如果要使用Tools中的一个模块，必须开启坐骑模块

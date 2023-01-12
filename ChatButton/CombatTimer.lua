@@ -75,7 +75,10 @@ local function check_Event()--检测事件
 
     local time=GetTime()
     if UnitIsAFK('player') then
-        OnAFKTime= OnAFKTime or time
+        if not OnAFKTime then--AFk时,播放声音
+            OnAFKTime= time
+            e.PlaySound()--播放, 声音
+        end
         LastText=nil
 
     elseif OnAFKTime then
@@ -395,8 +398,8 @@ local function InitMenu(self, level, type)--主菜单
         info={
             text= e.onlyChinse and '总游戏时间'..((tab and tab.totalTime) and ': '..SecondsToTime(tab.totalTime) or '') or TIME_PLAYED_TOTAL:format((tab and tab.totalTime) and SecondsToTime(tab.totalTime) or ''),
             checked= Save.AllOnlineTime,
-            tooltipOnButton= true,
-            tooltipTitle= e.onlyChinse and ('你在这个等级的游戏时间：%s'):format((tab and tab.levelTime) and '\n'..SecondsToTime(tab.levelTime) or '') or TIME_PLAYED_LEVEL:format((tab and tab.levelTime) and '\n'..SecondsToTime(tab.levelTime) or ''),
+            --tooltipOnButton= true,
+            --tooltipTitle= e.onlyChinse and ('你在这个等级的游戏时间：%s'):format((tab and tab.levelTime) and '\n'..SecondsToTime(tab.levelTime) or '') or TIME_PLAYED_LEVEL:format((tab and tab.levelTime) and '\n'..SecondsToTime(tab.levelTime) or ''),
             menuList='AllOnlineTime',
             hasArrow=true,
             func= function()
@@ -430,7 +433,7 @@ local function InitMenu(self, level, type)--主菜单
             if time and time>0 then
                 timeAll= timeAll + time
                 info= {
-                    text=e.GetPlayerInfo(nil, guid, true)..e.Icon.clock2..SecondsToTime(time),
+                    text= e.GetPlayerInfo(nil, guid, true)..e.Icon.clock2..'  '..SecondsToTime(time),
                     notCheckable=true,
                     tooltipOnButton=true,
                     tooltipTitle= tab.Time.levelTime and format(e.onlyChinse and '你在这个等级的游戏时间：%s' or TIME_PLAYED_LEVEL, '\n'..SecondsToTime(tab.Time.levelTime)),
