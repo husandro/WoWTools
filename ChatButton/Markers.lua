@@ -302,11 +302,13 @@ local function Clear(index)--取消标记标
         u = v.namePlateUnitToken or (v.UnitFrame and v.UnitFrame.unit)
         C(u, index);
     end
-    if R then u='raid' else u='party' end--取消队友标记
-    for i=1, GetNumGroupMembers() do
-        C(u..i, index)
-        C(u..i..'target', index)
-        C(u..'pet'..i, index)
+    if IsInGroup() then
+        u=  IsInRaid() and 'raid' or 'party'--取消队友标记
+        for i=1, GetNumGroupMembers() do
+            C(u..i, index)
+            C(u..i..'target', index)
+            C(u..'pet'..i, index)
+        end
     end
     u={
         'player', 'target','pet','focus',

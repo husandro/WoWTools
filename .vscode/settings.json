@@ -68,7 +68,13 @@
         "CUSTOM",
         "COMMUNITIES_NOTIFICATION_SETTINGS_DIALOG_SETTINGS_LABEL",
         "SLASH_PARTY1",
-        "HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS"
+        "HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS",
+        "StaticPopup_Show",
+        "KEY_MOUSEWHEELDOWN",
+        "KEY_MOUSEWHEELUP",
+        "IsInLFDBattlefield",
+        "ConfirmOrLeaveBattlefield",
+        "ConfirmOrLeaveLFGParty"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field"
