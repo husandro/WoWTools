@@ -142,7 +142,7 @@ local function setSellItems()--出售物品
                 if not containerInfo.isLocked and checkText then
                     C_Container.UseContainerItem(bag, slot);--买出
                     local prece =0
-                    if not noValue then--卖出钱
+                    if not containerInfo.hasNoValue then--卖出钱
                         prece = (select(11, GetItemInfo(containerInfo.hyperlink)) or 0) * (C_Container.stackCount or 1);--价格
                         preceTotale = preceTotale + prece
                     end
