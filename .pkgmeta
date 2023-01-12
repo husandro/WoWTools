@@ -1,21 +1,27 @@
 package-as: WoWTools
 
-externals:    
-  libs/LibDialog:        
-    url: https://github.com/wildstarnasa/LibDialog.git        
-    tag: latest # if this line is left out, the latest version (even if it's not a tag) is assumed    
+externals:
+libs/LibDialog:
+url: https://github.com/wildstarnasa/LibDialog.git
+tag: latest # if this line is left out, the latest version (even if it's not a tag) is assumed    
 
-  libs/GeminiAddon:        
-    url: https://github.com/wildstarnasa/GeminiAddon.git     
-    tag: latest
+libs/GeminiAddon:
+url: https://github.com/wildstarnasa/GeminiAddon.git
+tag: latest
 
-  
-  libs/LibMonkey-1.0: svn://svn.curseforge.net/wow/libmonkey-1-0/mainline/trunk
-  libs/LibBanana-1.0:         
-    url: git://git.curseforge.net/wow/libbanana-1-0/mainline.git        t
-    ag: 1.2
-  libs/LibSuit-2.0:        
-    url: http://hg.curseforge.net/wow/libsuit-2-0/mainlinemove-folders:    
+
+libs/LibStub:
+url: svn://svn.wowace.com/wow/libstub/mainline/trunk
+tag: latest
+libs/CallbackHandler-1.0:
+url: svn://svn.wowace.com/wow/callbackhandler/mainline/trunk/CallbackHandler-1.0
+tag: latest
+libs/LibMonkey-1.0: svn://svn.curseforge.net/wow/libmonkey-1-0/mainline/trunk
+libs/LibBanana-1.0:
+url: git://git.curseforge.net/wow/libbanana-1-0/mainline.git
+tag: 1.2
+libs/LibSuit-2.0:
+url: http://hg.curseforge.net/wow/libsuit-2-0/mainline
  
  
   #libs/LibStub:       
