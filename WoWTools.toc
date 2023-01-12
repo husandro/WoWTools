@@ -72,7 +72,7 @@ WoWPlus\Challenges.lua
 ##距离, 去掉小数点
 WowPlus\SuperTracked.lua
 ##怪物 Creature
-WowPlus\Creature.lua
+##WowPlus\Creature.lua
 
 
 ##WowPlus\GroupManager.lua
