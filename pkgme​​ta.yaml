@@ -1,0 +1,20 @@
+package-as: 
+KillerCupcakesenable-nolib-creation: 
+noexternals:    
+libs/LibDialog:        
+  url: https://github.com/wildstarnasa/LibDialog.git        
+  tag: latest # if this line is left out, the latest version (even if it's not a tag) is assumed    
+libs/GeminiAddon:        
+  url: https://github.com/wildstarnasa/GeminiAddon.git        
+  tag: v1.0.0 # This is an example. Please use an actual tag if you are targeting a specific 
+version.move-folders:    
+KillerCupcakes/Modules/Fire: 
+  KillerCupcakesOnFire # This moves KillerCupcakes/Modules/Fire to the same level as KillerCupcakes, as KillerCupCakesOnFire    
+KillerCupcakes/Modules/Sky: 
+KillerCupcakesInTheSkyignore: # Files and directories beginning with a dot (such as .git) are automatically ignored, as is the pgkmeta file itself.    - Scripts    - 
+Some/File.txtrequired-dependencies:    
+  - 221710-dear-cupcakeoptional-dependencies:    
+  - 220002-junkitmanual-changelog: 
+CHANGELOG.txtlicense-output: 
+LICENSE.txttools-used:    
+  - data-tools
