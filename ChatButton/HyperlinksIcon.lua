@@ -252,7 +252,7 @@ local function Quest(link)--任务
     end
 end
 
-local function Talent(link)--天赋
+--[[local function Talent(link)--天赋
     local id2=link:match('Htalent:(%d+)')
     if id2 then
         local _, _, icon, _, _, _, _, _ ,_, known=GetTalentInfoByID(id2)
@@ -260,7 +260,7 @@ local function Talent(link)--天赋
             return '|T'..icon..':0|t'..link..(known and e.Icon.select2 or e.Icon.info2)
         end
     end
-end
+end]]
 
 local function Pvptal(link)--pvp天赋
     local id2=link:match('Hpvptal:(%d+)')
@@ -502,7 +502,7 @@ local function setAddMessageFunc(self, s, ...)
     s=s:gsub('|Hcurrency:.-]|h', Currency)
     s=s:gsub('|Hachievement:.-]|h', Achievement)
     s=s:gsub('|Hquest:.-]|h', Quest)
-    s=s:gsub('|Htalent:.-]|h', Talent)
+    --s=s:gsub('|Htalent:.-]|h', Talent)
     s=s:gsub('|Hpvptal:.-]|h', Pvptal)
 
     s=s:gsub('|Houtfit:.-]|h', Outfit)----外观方案链接    
