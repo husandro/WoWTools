@@ -78,7 +78,9 @@
         "REMOVE",
         "NONE_KEY",
         "QUESTS_LABEL",
-        "NONE"
+        "NONE",
+        "NUM_BAG_SLOTS",
+        "AUCTION_HOUSE_SELL_TAB"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field"
