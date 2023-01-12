@@ -71,6 +71,8 @@ WoWPlus\EncounterJournal.lua
 WoWPlus\Challenges.lua
 ##距离, 去掉小数点
 WowPlus\SuperTracked.lua
+##怪物 Creature
+WowPlus\Creature.lua
 ##WowPlus\GroupManager.lua
 ##WoWPlus\AchievementFrame.lua
 ##WowPlus\AuctionHouse.lua
