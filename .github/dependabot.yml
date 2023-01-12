@@ -8,7 +8,7 @@ updates:
   - package-ecosystem: "" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
-      interval: "day"
+      interval: "weekly"
       
   - name: Create Package
     uses: BigWigsMods/packager@master
