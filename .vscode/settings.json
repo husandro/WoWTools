@@ -74,7 +74,11 @@
         "KEY_MOUSEWHEELUP",
         "IsInLFDBattlefield",
         "ConfirmOrLeaveBattlefield",
-        "ConfirmOrLeaveLFGParty"
+        "ConfirmOrLeaveLFGParty",
+        "REMOVE",
+        "NONE_KEY",
+        "QUESTS_LABEL",
+        "NONE"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field"

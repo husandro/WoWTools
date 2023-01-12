@@ -419,7 +419,7 @@ local function Init_Gossip()
                 if self2.id and self2.text then
                     e.tips:AddDoubleLine(self2.text, 'ID '..self2.id)
                 else
-                    e.tips:AddDoubleLine(NON, QUESTS_LABEL..' ID',1,0,0)
+                    e.tips:AddDoubleLine(NONE, QUESTS_LABEL..' ID',1,0,0)
                 end
                 e.tips:Show()
             end)
@@ -563,7 +563,7 @@ local function InitMenu_Quest(self, level, type)
                 tooltipTitle='questID  '..questID..'\n\n'..e.Icon.left..REMOVE,
                 func=function()
                     Save.questOption[questID]=nil
-                    print(id, QUESTS_LABEL, e.onlyChinse and '移除' or REMOVE, tab.title, tab.name, 'ID', tab.questID)
+                    print(id, QUESTS_LABEL, e.onlyChinse and '移除' or REMOVE, text, 'ID', questID)
                 end
             }
             UIDropDownMenu_AddButton(info, level)
