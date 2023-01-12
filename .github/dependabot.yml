@@ -5,14 +5,16 @@
 
 version: 2
 updates:
-  - package-ecosystem: "" # See documentation for possible values
-    directory: "/" # Location of package manifests
+  - package-ecosystem: "github-actions"
+    directory: "/"
     schedule:
-      interval: "weekly"
+      # Check for updates to GitHub Actions every weekday
+      interval: "daily"
       
   - name: Create Package
     uses: BigWigsMods/packager@master
  
     env:
       CF_API_KEY: ${{ secrets.CF_API_KEY }}
+      WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
       GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
