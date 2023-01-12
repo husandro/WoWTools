@@ -20,5 +20,5 @@ jobs:
       - name: Package and release
         uses: BigWigsMods/packager@master
         with:
-          args: -p 695149
+          args: -p 715192
 

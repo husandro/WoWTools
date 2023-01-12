@@ -1,4 +1,6 @@
+#@retail@
 ## Interface: 100002
+#@end-retail@
 ## Title: |A:Icon-WoW:0:0|a|cffff00ffWoW|r|cff00ff00Tools|r
 ## Author: husandro
 ## Version: @project-version@
