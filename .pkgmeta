@@ -24,4 +24,3 @@ Monkey/Modules/Hat: Monkey_Hatignore:
 - monkey-town
 
 enable-nolib-creation: no
-license-output: LICENSE
