@@ -3,6 +3,13 @@ local addName= CREATURE
 local Save={}
 local panel= CreateFrame("Frame")
 
+local function set_VIGNETTE_MINIMAP_UPDATED(vignetteGUID)
+    local info= C_VignetteInfo.GetVignetteInfo(vignetteGUID)
+    if info then
+        print(info.type)
+    end
+end
+
 --####
 --初始
 --####
@@ -37,8 +44,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             WoWToolsSave[addName]=Save
         end
 
-    elseif event == 'VIGNETTE_MINIMAP_UPDATED' and arg2 then--vignetteGUID, onMinimap
-
+    elseif event == 'VIGNETTE_MINIMAP_UPDATED' and arg1 and arg2 then--vignetteGUID, onMinimap
+        set_VIGNETTE_MINIMAP_UPDATED(arg1)
 
     end
 end)
