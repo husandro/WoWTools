@@ -57,7 +57,7 @@ jobs:
 
       # we first have to clone the AddOn project, this is a required step
       - name: Clone project
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
         with:
           fetch-depth: 0  # gets entire git history, needed for automatic changelogs
 
@@ -67,9 +67,11 @@ jobs:
 
       # another example where we supply additional arguments, this example is specifically to release
       # for the Wrath of the Lich King Classic version of the game and doesn't upload to WoWInterface
-      #- name: Package and release for Wrath of the Lich King Classic
+      # - name: Package and release for Wrath of the Lich King Classic
       #  uses: BigWigsMods/packager@v2
+
+      # CurseForge(-p), WoWInterface(-w), Wago(-a)
         with:
-          args:-p 715192 -w baND1J6o
+          args:-p 715192 -a baND1J6o 
 
 # https://github.com/BigWigsMods/packager/wiki/GitHub-Actions-workflow
