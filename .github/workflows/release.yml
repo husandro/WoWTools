@@ -57,7 +57,7 @@ jobs:
 
       # we first have to clone the AddOn project, this is a required step
       - name: Clone project
-        uses: actions/checkout@v3
+        uses: actions/checkout@v1
         with:
           fetch-depth: 0  # gets entire git history, needed for automatic changelogs
 
@@ -70,6 +70,6 @@ jobs:
       #- name: Package and release for Wrath of the Lich King Classic
       #  uses: BigWigsMods/packager@v2
         with:
-          args:-p 715192 -g wrath -w 0
+          args:-p 715192 -w baND1J6o
 
 # https://github.com/BigWigsMods/packager/wiki/GitHub-Actions-workflow
