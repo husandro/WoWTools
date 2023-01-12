@@ -106,7 +106,7 @@ if not all then
             elseif co==40 then
                 print(id, addName, RED_FONT_COLOR_CODE..'|r', co, e.onlyChinse and '队员' or PLAYERS_IN_GROUP)
             else
-                toRaidOrParty(number)--自动, 转团
+                toRaidOrParty(co)--自动, 转团
                 local tab= C_NamePlate.GetNamePlates() or {}
                 for _, v in pairs(tab) do
                     local u = v.namePlateUnitToken or (v.UnitFrame and v.UnitFrame.unit);

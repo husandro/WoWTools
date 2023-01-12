@@ -394,7 +394,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' then
         C_Timer.After(0.3, function() setGroupTips() end)--队伍信息提示
 
-    elseif event=='PLAYER_REGEN_ENABLED' then
-        set_Shift_Click_facur()--Shift+点击设置焦点
+    --elseif event=='PLAYER_REGEN_ENABLED' then
+        --set_Shift_Click_facur()--Shift+点击设置焦点
     end
 end)
