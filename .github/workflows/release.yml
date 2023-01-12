@@ -34,11 +34,11 @@ jobs:
       - name: Clone project
         uses: actions/checkout@v1
         with:
-          fetch-depth: 0  # gets entire git history, needed for automatic changelogs
+          fetch-depth: 5  # gets entire git history, needed for automatic changelogs
 
       # once cloned, we just run the GitHub Action for the packager project
       - name: Package and release
-        uses: BigWigsMods/packager@v2
+        uses: BigWigsMods/packager@master
 
       # another example where we supply additional arguments, this example is specifically to release
       # for the Wrath of the Lich King Classic version of the game and doesn't upload to WoWInterface
@@ -47,6 +47,6 @@ jobs:
 
       # CurseForge(-p), WoWInterface(-w), Wago(-a)
         with:
-          args:-p 715192 -a baND1J6o 
+          args: -p 715192 -a baND1J6o 
 
 # https://github.com/BigWigsMods/packager/wiki/GitHub-Actions-workflow
