@@ -11,6 +11,7 @@
     ],
     "Lua.diagnostics.disable": [
         "undefined-global",
+        "param-type-mismatch",
         "param-type-mismatch"
     ]
 }

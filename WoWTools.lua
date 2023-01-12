@@ -1003,7 +1003,7 @@ e.PlaySound= function(soundKitID)--播放, 声音 SoundKitConstants.lua e.PlaySo
     else
         channel= 'Master'
     end
-    PlaySound(soundKitID or SOUNDKIT.READY_CHECK, channel)
+    PlaySound(soundKitID or SOUNDKIT.LFG_ROLE_CHECK, channel)--SOUNDKIT.READY_CHECK SOUNDKIT.LFG_ROLE_CHECK SOUNDKIT.LFG_ROLE_CHECK SOUNDKIT.IG_PLAYER_INVITE
 end
 --[[
 BACKGROUND

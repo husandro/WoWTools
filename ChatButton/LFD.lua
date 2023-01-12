@@ -872,7 +872,7 @@ local function Init()
     set_PvPRoles()
 
     LFDRoleCheckPopup:SetScript("OnShow",function(self)--副本职责
-        e.PlaySound(SOUNDKIT.LFG_ROLE_CHECK)--播放, 声音
+        SOUNDKIT.LFG_ROLE_CHEe.PlaySound(CK)--播放, 声音
         if not Save.autoSetPvPRole then
             return
         end
