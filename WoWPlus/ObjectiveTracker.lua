@@ -541,7 +541,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         if not Save.disabled then
             local sel2=CreateFrame("CheckButton", nil, sel, "InterfaceOptionsCheckButtonTemplate")
-            sel2.Text:SetText(e.onlyChinse and '自动隐藏' or (AUTO_JOIN:gsub(JOIN, HIDE)))
+            sel2.text:SetText(e.onlyChinse and '自动隐藏' or (AUTO_JOIN:gsub(JOIN, HIDE)))
             sel2:SetPoint('LEFT', sel.Text, 'RIGHT')
             sel2:SetChecked(Save.autoHide)
             sel2:SetScript('OnEnter', function(self2)

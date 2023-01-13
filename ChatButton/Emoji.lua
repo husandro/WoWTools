@@ -272,11 +272,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
         Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
-        local sel2=CreateFrame("CheckButton", nil, WoWToolsChatButtonFrame.sel, "InterfaceOptionsCheckButtonTemplate")
-        sel2.Text:SetText('Emoji')
-        sel2:SetPoint('LEFT', WoWToolsChatButtonFrame.sel.Text, 'RIGHT')
-        sel2:SetChecked(not Save.disabled)
-        sel2:SetScript('OnClick', function()
+        local sel=CreateFrame("CheckButton", nil, WoWToolsChatButtonFrame.sel, "InterfaceOptionsCheckButtonTemplate")
+        sel.text:SetText('Emoji')
+        sel:SetPoint('LEFT', WoWToolsChatButtonFrame.sel.text, 'RIGHT')
+        sel:SetChecked(not Save.disabled)
+        sel:SetScript('OnClick', function()
             Save.disabled= not Save.disabled and true or nil
             print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.GetEnabeleDisable(not WoWToolsChatButtonFrame.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
         end)

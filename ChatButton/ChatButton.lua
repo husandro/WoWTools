@@ -102,6 +102,15 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 panel.disabled= Save.disabled
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end)
+            panel.sel:SetScript('OnEnter', function (self2)
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(e.onlyChinse and '设置焦点' or SET_FOCUS, e.onlyChinse and '编辑模式: 错误' or HUD_EDIT_MODE_MENU..': '..ERRORS, 1,0,0, 1,0,0)
+                e.tips:Show()
+            end)
+            panel.sel.text:SetTextColor(1,0,0)
+            panel.sel:SetScript('OnLeave', function() e.tips:Hide() end)
+
             if not Save.disabled then
                 Init()
             else
