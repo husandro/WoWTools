@@ -20,7 +20,7 @@ local function Init()--FriendsFrame.lua
                 if info.guid then
                     m=m..e.GetPlayerInfo(nil, info.guid)
                     if info.area then m=m..info.area end
-                    if realm and realm~='' then m=m..(info.area and '-' or '')..realm end
+                    --if realm and realm~='' then m=m..(info.area and '-' or '')..realm end
                     button.info:SetText(m)
 
                 end

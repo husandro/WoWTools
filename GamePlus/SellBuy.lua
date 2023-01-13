@@ -69,8 +69,8 @@ local function setAutoRepairAll()
     if Save.notAutoRepairAll or not CanMerchantRepair() or IsModifierKeyDown() then
         return
     end
-    local Co, Can   = GetRepairAllCost();
-    if Can and Co>0 then
+    local Co, Can= GetRepairAllCost();
+    if Can and Co and Co>0 then
         if CanGuildBankRepair() and GetGuildBankMoney()>=Co  then
             RepairAllItems(true);
             RepairSave.guild=RepairSave.guild+Co
@@ -176,7 +176,7 @@ local function setBuyItems()--购买物品
     for index=1, merchantNum do
         local itemID=GetMerchantItemID(index)
         local num= itemID and buySave[itemID]
-        if num then
+        if itemID and num then
             local buyNum=num-GetItemCount(itemID, true)
             if buyNum>0 then
                 local maxStack = GetMerchantItemMaxStack(index);
@@ -318,7 +318,7 @@ local function setCustomItemMenu(level)--二级菜单, 自定义出售
     }
     UIDropDownMenu_AddButton(info, level)
     for itemID, boolean in pairs(Save.Sell) do
-        if itemID then
+        if itemID  then
             e.LoadSpellItemData(itemID)
             local itemLink= select(2, GetItemInfo(itemID))
             itemLink= itemLink or C_Item.GetItemNameByID(itemID) or ('itemID: ' .. itemID)
