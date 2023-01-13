@@ -732,7 +732,7 @@ local function set_Shift_Click_focurs()
             Frame[frame]=nil
         end
     end
-    panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
+    
 end
 
 
@@ -947,12 +947,16 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     elseif event=='CHAT_MSG_SYSTEM' then
         setMsg_CHAT_MSG_SYSTEM(arg1)--欢迎加入, 信息
 
-    elseif event=='GROUP_ROSTER_UPDATE' then
-        set_Shift_Click_focurs()--Shift+点击设置焦点
-
     elseif event=='CVAR_UPDATE' then
         if arg1=='showTimestamps' then
             showTimestamps= arg2~='none' and true or nil
         end
+
+    elseif event=='GROUP_ROSTER_UPDATE' then
+        set_Shift_Click_focurs()--Shift+点击设置焦点
+
+    elseif event=='PLAYER_REGEN_ENABLED' then
+        set_Shift_Click_focurs()--Shift+点击设置焦点
+        panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
 	end
 end)
