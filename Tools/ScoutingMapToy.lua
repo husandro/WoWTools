@@ -35,7 +35,7 @@ local function Get_Use_Toy()
     panel.itemID=nil
     for itemID, tab in pairs(Toy) do
         for _, achievementID  in pairs(tab) do
-            if not select(13,GetAchievementInfo(achievementID)) then
+            if not select(13,GetAchievementInfo(achievementID)) and itemID then
                 panel.itemID=itemID
 
                 panel.bat=nil

@@ -813,10 +813,10 @@
         "OverrideActionBarExpBarXpR",
         "OverrideActionBarExpBarXpL",
         "SOUND",
-        "SLASH_STOPWATCH_PARAM_PLAY1"
+        "SLASH_STOPWATCH_PARAM_PLAY1",
+        "RaiderIO_ProfileTooltip",
+        "WoWToolsOpenItemsButton"
     ],
     "Lua.diagnostics.disable": [
-        "undefined-field",
-        "param-type-mismatch"
     ]
 }
