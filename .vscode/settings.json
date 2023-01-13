@@ -674,13 +674,13 @@
         "WoWToolsMountButton",
         "HearthstoneToolsButton",
         "ProfessionsFrameTitleText",
-        "PROFESSIONS_TRACKER_HEADER_PROFESSION"
+        "PROFESSIONS_TRACKER_HEADER_PROFESSION",
+        "CALENDAR_SIGNEDUP_FOR_GUILDEVENT_WITH_STATUS"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
-        "param-type-mismatch",
-        "redundant-parameter",
-        "duplicate-set-field",
-        "undefined-global"
+        "missing-parameter",
+        "undefined-global",
+        "redundant-parameter"
     ]
 }
