@@ -1183,7 +1183,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
 
     elseif event=='LFG_COMPLETION_REWARD' or event=='LOOT_CLOSED' then--自动离开
         if Save.leaveInstance and IsLFGComplete() and IsInInstance() then
-            e.PlaySound(31754)--播放, 声音
+            e.PlaySound()--播放, 声音
             ExitIns=true
             C_Timer.After(sec, function()
                 exitInstance()
@@ -1206,7 +1206,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
         if not Save.leaveInstance then
             return
         end
-        e.PlaySound(31754)--播放, 声音
+        e.PlaySound()--播放, 声音
         C_PartyInfo.LeaveParty(LE_PARTY_CATEGORY_INSTANC)
         LFGTeleport(true)
         print(id, addName, 	e.onlyChinse and '离开海岛' or ISLAND_LEAVE, '|cnGREEN_FONT_COLOR:'..wowSave[ISLANDS_HEADER]..'|r'..	VOICEMACRO_LABEL_CHARGE1)

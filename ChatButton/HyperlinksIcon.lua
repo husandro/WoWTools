@@ -732,7 +732,7 @@ local function set_Shift_Click_focurs()
             end
             Frame[frame]=nil
         end
-    end 
+    end
 end
 
 --#########
@@ -894,6 +894,9 @@ local function InitMenu(self, level, type)
             func= function()
                 Save.setPlayerSound= not Save.setPlayerSound and true or nil
                 e.setPlayerSound= Save.setPlayerSound
+                if Save.setPlayerSound then
+                    e.PlaySound()--播放, 声音
+                end
                 set_START_TIMER_Event()--事件, 声音
                 print(id, addName, e.onlyChinse and "播放" or SLASH_STOPWATCH_PARAM_PLAY1, e.onlyChinse and '事件声音' or EVENTS_LABEL..SOUND)
             end
@@ -998,7 +1001,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             panel.timerType=arg1
             if arg2>20 then
                 panel.timer4= C_Timer.NewTimer(arg2-10, function()--3
-                    e.PlaySound(SOUNDKIT.READY_CHECK)
+                    e.PlaySound()
                 end)
             elseif arg2>=7 then
                 e.PlaySound(SOUNDKIT.READY_CHECK)
