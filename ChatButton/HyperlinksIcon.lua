@@ -1004,7 +1004,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                     e.PlaySound()
                 end)
             elseif arg2>=7 then
-                e.PlaySound(SOUNDKIT.READY_CHECK)
+                e.PlaySound()
             end
             panel.timer3= C_Timer.NewTimer(arg2-3, function()--3
                 e.PlaySound(115003)
