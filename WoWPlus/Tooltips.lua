@@ -766,7 +766,7 @@ local function setCVar(reset, tips)
         },
         ["profanityFilter"]={value= '0',msg= '禁用语言过虑 /reload', zh=true},
         ["overrideArchive"]={value= '0',msg= '反和谐 /reload', zh=true},
-        ['cameraDistanceMaxZoomFactor']={value= '2.6', msg= e.onlyChinse and '距离' or FARCLIP}
+        ['cameraDistanceMaxZoomFactor']={value= '2.6', msg= e.onlyChinse and '视野距离' or FARCLIP}
     }
 
     if tips then

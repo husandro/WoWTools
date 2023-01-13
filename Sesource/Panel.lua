@@ -43,8 +43,8 @@ local gamePlus=e.Cstr(panel)
 gamePlus:SetPoint('TOPLEFT', panel,'TOP', 0, -14)
 gamePlus:SetText('Game Plus')
 
-local lastWoW= reloadButton
-local lastGame= gamePlus
+local lastWoW, lastGame
+lastWoW, lastGame= reloadButton, gamePlus
 --添加控制面板
 e.CPanel= function(name, value, GamePlus)
     local check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")

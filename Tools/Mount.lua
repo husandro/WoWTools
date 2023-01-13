@@ -926,7 +926,7 @@ local function setMountJournal_ShowMountDropdown(index)
                     MountJournal_UpdateMountList()
                 end
             }
-            UIDropDownMenu_AddButton(info, level);
+            UIDropDownMenu_AddButton(info, 1);
         end
     end
     UIDropDownMenu_AddSeparator()
@@ -935,7 +935,7 @@ local function setMountJournal_ShowMountDropdown(index)
         isTitle=true,
         notCheckable=true,
     }
-    UIDropDownMenu_AddButton(info, level);
+    UIDropDownMenu_AddButton(info, 1);
 end
 
 --######

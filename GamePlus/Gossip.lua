@@ -809,7 +809,7 @@ local function Init_Quest()
 
         local questID=GetQuestID()
 
-        if not questID or not Save.quest or IsModifierKeyDown() or (Save.NPC[npc] and not Save.questOption[qeustID]) then
+        if not questID or not Save.quest or IsModifierKeyDown() or (Save.NPC[npc] and not Save.questOption[questID]) then
             return
         end
 
