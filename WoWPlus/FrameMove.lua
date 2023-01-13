@@ -97,7 +97,7 @@ end
 
 local FrameTab={
     AddonList={},--插件
-    GameMenuFrame={save=true,},--菜单
+    --GameMenuFrame={save=true,},--菜单
     ProfessionsFrame={},--专业
     CharacterFrame={},--角色
     ReputationDetailFrame={save=true},--声望描述q
