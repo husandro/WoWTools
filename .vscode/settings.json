@@ -816,6 +816,7 @@
         "SLASH_STOPWATCH_PARAM_PLAY1"
     ],
     "Lua.diagnostics.disable": [
-        "undefined-field"
+        "undefined-field",
+        "param-type-mismatch"
     ]
 }
