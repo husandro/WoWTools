@@ -917,8 +917,8 @@ local function Init()
 
     setPanel()--设置控制面板
     set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
-    if Save.setFucus then--Shift+点击设置焦点
-        set_Shift_Click_facur()
+    if Save.setFucus then
+        set_Shift_Click_facur()----Shift+点击设置焦点
         panel:RegisterEvent('GROUP_ROSTER_UPDATE')
     end
 
@@ -947,7 +947,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     elseif event=='CHAT_MSG_SYSTEM' then
         setMsg_CHAT_MSG_SYSTEM(arg1)--欢迎加入, 信息
 
-    elseif event=='GROUP_ROSTER_UPDATE' or event=='PLAYER_REGEN_ENABLED' then
+    elseif event=='GROUP_ROSTER_UPDATE' then
         set_Shift_Click_facur()--Shift+点击设置焦点
 
     elseif event=='CVAR_UPDATE' then
