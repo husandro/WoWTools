@@ -97,16 +97,16 @@ end
 
 local FrameTab={
     AddonList={},--插件
-    GameMenuFrame={},--菜单
+    GameMenuFrame={save=true,},--菜单
     ProfessionsFrame={},--专业
     CharacterFrame={},--角色
-    ReputationDetailFrame={},--声望描述q
+    ReputationDetailFrame={save=true},--声望描述q
     TokenFramePopup={save=true},--货币设置
     SpellBookFrame={},--法术书
     PVEFrame={},--地下城和团队副本
     HelpFrame={},--客服支持
     MacroFrame={},--宏
-    ExtraActionButton1={save=true, click='R' },--额外技能
+    --ExtraActionButton1={save=true, click='R' },--额外技能
     ChatConfigFrame={save=true},--聊天设置
     SettingsPanel={},--选项
     UIWidgetPowerBarContainerFrame={},
@@ -236,7 +236,7 @@ local function setAddLoad(arg1)
         Move(EncounterJournal, {})
 
     elseif arg1=='Blizzard_ClassTalentUI' then--天赋
-        Move(ClassTalentFrame, {})
+        Move(ClassTalentFrame, {save=true})
 
     elseif arg1=='Blizzard_AuctionHouseUI' then--拍卖行
         Move(AuctionHouseFrame, {})
@@ -281,9 +281,9 @@ local function setAddLoad(arg1)
     elseif arg1=='Blizzard_OrderHallUI' then
         Move(OrderHallTalentFrame,{})
 
-    --elseif arg1=='Blizzard_GenericTraitUI' then--欲龙术
-        --Move(GenericTraitFrame,{})
-        --Move(GenericTraitFrame.ButtonsParent,{frame=GenericTraitFrame})
+    elseif arg1=='Blizzard_GenericTraitUI' then--欲龙术
+        Move(GenericTraitFrame,{})
+        Move(GenericTraitFrame.ButtonsParent,{frame=GenericTraitFrame})
 
     elseif arg1=='Blizzard_WeeklyRewards' then--'Blizzard_EventTrace' then--周奖励面板
         Move(WeeklyRewardsFrame, {})
@@ -314,7 +314,7 @@ end
 
 
 local function Init()
-    Move(ZoneAbilityFrame.SpellButtonContainer,{})-- {save=true, click='R'})
+    --Move(ZoneAbilityFrame.SpellButtonContainer, {save=true, click='R'})
 
     setTabInit()
 
