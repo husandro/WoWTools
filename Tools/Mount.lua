@@ -1105,18 +1105,15 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
             local check=e.CPanel('Tools', not Save.disabled, true)
-            check:SetScript('OnClick', function()
-                if Save.disabled then
-                    Save.disabled=nil
-                else
-                    Save.disabled=true
-                end
+            check:SetScript('OnMouseDown', function()
+                Save.disabled= not Save.disabled and true or nil
                 print(id, 'Tools', e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end)
             check:SetScript('OnEnter', function (self2)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(e.onlyChinse and '物品升级界面' or (ITEM_UPGRADE..' UI'), e.onlyChinse and '错误' or ERRORS, 1,0,0,1,0,0)
+                e.tips:AddDoubleLine(e.onlyChinse and '编辑模式' or HUD_EDIT_MODE_MENU, e.onlyChinse and '错误' or ERRORS, 1,0,0, 1,0,0)
                 e.tips:Show()
             end)
             check.text:SetTextColor(1,0,0)

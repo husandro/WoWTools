@@ -534,14 +534,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         --添加控制面板        
         local sel=e.CPanel(e.onlyChinse and '任务追踪栏' or addName, not Save.disabled)
-        sel:SetScript('OnClick', function()
+        sel:SetScript('OnMouseDown', function()
             Save.disabled = not Save.disabled and true or nil
             print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需求重新加载' or REQUIRES_RELOAD)
         end)
 
         if not Save.disabled then
             local sel2=CreateFrame("CheckButton", nil, sel, "InterfaceOptionsCheckButtonTemplate")
-            sel2.Text:SetText(e.onlyChinse and '自动隐藏' or (AUTO_JOIN:gsub(JOIN, '')..HIDE))
+            sel2.Text:SetText(e.onlyChinse and '自动隐藏' or (AUTO_JOIN:gsub(JOIN, HIDE)))
             sel2:SetPoint('LEFT', sel.Text, 'RIGHT')
             sel2:SetChecked(Save.autoHide)
             sel2:SetScript('OnEnter', function(self2)

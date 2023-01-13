@@ -22,7 +22,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             --添加控制面板        
             local sel=e.CPanel( e.onlyChinse and '隐藏NPC发言' or addName, not Save.disabled, true)
-            sel:SetScript('OnClick', function()
+            sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 setRegister()--设置事件
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled))

@@ -861,7 +861,9 @@ local function InitMenu(self, level, type)
             checked=Save.setFucus,
             tooltipOnButton=true,
             tooltipTitle='Shift + '..e.Icon.left,
-            tooltipText= e.onlyChinse and '仅限系统\n\n如果出现错误: 请取消' or LFG_LIST_CROSS_FACTION:format(SYSTEM)..'\n\n'..ENABLE_ERROR_SPEECH..': '..CANCEL,
+            tooltipText= (e.onlyChinse and '仅限系统\n\n如果出现错误: 请取消' or LFG_LIST_CROSS_FACTION:format(SYSTEM)
+                ..'\n\n'..ENABLE_ERROR_SPEECH..': '..CANCEL)
+                ..'\n\n|cnRED_FONT_COLOR:'..(e.onlyChinse and '编辑模式: 错误' or HUD_EDIT_MODE_MENU..': '..ERRORS)..'|r',
             func= function()
                 if Save.setFucus then
                     Save.setFucus=nil

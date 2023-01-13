@@ -98,12 +98,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             --添加控制面板        
             panel.sel=e.CPanel(addName, not Save.disabled, true)
             panel.sel:SetScript('OnMouseDown', function()
-                if Save.disabled then
-                    Save.disabled=nil
-                else
-                    Save.disabled=true
-                end
-                panel.disabled=Save.disabled
+                Save.disabled= not Save.disabled and true or nil
+                panel.disabled= Save.disabled
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end)
             if not Save.disabled then
