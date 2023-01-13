@@ -13,6 +13,7 @@ local Save={
     },
     groupWelcome=true,
     guildWelcome=true,
+    setPlayerSound=e.Player.husandro,--播放, 声音
 }
 
 local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
@@ -731,11 +732,21 @@ local function set_Shift_Click_focurs()
             end
             Frame[frame]=nil
         end
-    end
-    
+    end 
 end
 
-
+--#########
+--事件, 声音
+--#########
+local function set_START_TIMER_Event()--事件, 声音
+    if Save.setPlayerSound then
+        panel:RegisterEvent('START_TIMER')
+        panel:RegisterEvent('STOP_TIMER_OF_TYPE')
+    else
+        panel:UnregisterEvent('START_TIMER')
+        panel:UnregisterEvent('STOP_TIMER_OF_TYPE')
+    end
+end
 
 --#####
 --对话框
@@ -876,6 +887,19 @@ local function InitMenu(self, level, type)
         }
         UIDropDownMenu_AddButton(info, level)
 
+        info={
+            text= e.onlyChinse and '事件声音' or EVENTS_LABEL..SOUND,
+            checked= Save.setPlayerSound,
+            colorCode= (not C_CVar.GetCVarBool('Sound_EnableAllSound') or C_CVar.GetCVar('Sound_MasterVolume')=='0') and '|cff606060',
+            func= function()
+                Save.setPlayerSound= not Save.setPlayerSound and true or nil
+                e.Save.setPlayerSound= Save.setPlayerSound
+                set_START_TIMER_Event()--事件, 声音
+                print(id, addName, e.onlyChinse and "播放" or SLASH_STOPWATCH_PARAM_PLAY1, e.onlyChinse and '事件声音' or EVENTS_LABEL..SOUND)
+            end
+        }
+        UIDropDownMenu_AddButton(info, level)
+
         UIDropDownMenu_AddSeparator(level)
         info={--重载
             text= e.onlyChinse and '重新加载UI' or RELOADUI,
@@ -925,21 +949,29 @@ local function Init()
     end
 
     showTimestamps= C_CVar.GetCVar("showTimestamps")~='none' and true or nil
+
+    if Save.setPlayerSound then
+        set_START_TIMER_Event()--事件, 声音
+    end
 end
 
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent('CVAR_UPDATE')
 
+
 panel:SetScript("OnEvent", function(self, event, arg1, arg2)
-    if event == "ADDON_LOADED" and arg1 == id then
-        if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
-            panel:UnregisterAllEvents()
-        else
-            Save= WoWToolsSave and WoWToolsSave[addName] or Save
-            Save.Cvar= Save.Cvar or {}
-            Init()
+    if event == "ADDON_LOADED" then
+        if arg1 == id then
+            if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
+                panel:UnregisterAllEvents()
+            else
+                Save= WoWToolsSave and WoWToolsSave[addName] or Save
+                e.setPlayerSound= Save.setPlayerSound--播放, 声音
+                Save.Cvar= Save.Cvar or {}
+                Init()
+            end
+            panel:RegisterEvent("PLAYER_LOGOUT")
         end
-        panel:RegisterEvent("PLAYER_LOGOUT")
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
@@ -960,5 +992,37 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     elseif event=='PLAYER_REGEN_ENABLED' then
         set_Shift_Click_focurs()--Shift+点击设置焦点
         panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
+
+    elseif event=='START_TIMER' then--播放, 声音
+        if arg1 and arg2 and arg2>3 and not panel.timerType then
+            panel.timerType=arg1
+            if arg2>20 then
+                panel.timer4= C_Timer.NewTimer(arg2-10, function()--3
+                    e.PlaySound(SOUNDKIT.READY_CHECK)
+                end)
+            elseif arg2>=7 then
+                e.PlaySound(SOUNDKIT.READY_CHECK)
+            end
+            panel.timer3= C_Timer.NewTimer(arg2-3, function()--3
+                e.PlaySound(115003)
+            end)
+            panel.timer2= C_Timer.NewTimer(arg2-2, function()--2
+                e.PlaySound(115003)
+            end)
+            panel.timer1= C_Timer.NewTimer(arg2-1, function()--1
+                e.PlaySound(115003)
+            end)
+            panel.timer0= C_Timer.NewTimer(arg2, function()--0
+                e.PlaySound()
+                panel.timerType=nil
+            end)
+        end
+    elseif event=='STOP_TIMER_OF_TYPE' then
+        panel.timerType= nil
+        if panel.timer4 then panel.timer4:Cancel() end
+        if panel.timer3 then panel.timer3:Cancel() end
+        if panel.timer2 then panel.timer2:Cancel() end
+        if panel.timer1 then panel.timer1:Cancel() end
+        if panel.timer0 then panel.timer0:Cancel() end
 	end
 end)

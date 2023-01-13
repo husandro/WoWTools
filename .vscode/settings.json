@@ -811,8 +811,11 @@
         "OverrideActionBarLeaveFrameDivider3",
         "OverrideActionBarExpBarXpMid",
         "OverrideActionBarExpBarXpR",
-        "OverrideActionBarExpBarXpL"
+        "OverrideActionBarExpBarXpL",
+        "SOUND",
+        "SLASH_STOPWATCH_PARAM_PLAY1"
     ],
     "Lua.diagnostics.disable": [
+        "undefined-field"
     ]
 }

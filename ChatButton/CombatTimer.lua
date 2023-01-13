@@ -77,7 +77,7 @@ local function check_Event()--检测事件
     if UnitIsAFK('player') then
         if not OnAFKTime then--AFk时,播放声音
             OnAFKTime= time
-            e.PlaySound()--播放, 声音
+            e.PlaySound(SOUNDKIT.READY_CHECK)--播放, 声音
         end
         LastText=nil
 
