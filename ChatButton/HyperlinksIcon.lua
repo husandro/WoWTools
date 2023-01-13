@@ -893,7 +893,7 @@ local function InitMenu(self, level, type)
             colorCode= (not C_CVar.GetCVarBool('Sound_EnableAllSound') or C_CVar.GetCVar('Sound_MasterVolume')=='0') and '|cff606060',
             func= function()
                 Save.setPlayerSound= not Save.setPlayerSound and true or nil
-                e.Save.setPlayerSound= Save.setPlayerSound
+                e.setPlayerSound= Save.setPlayerSound
                 set_START_TIMER_Event()--事件, 声音
                 print(id, addName, e.onlyChinse and "播放" or SLASH_STOPWATCH_PARAM_PLAY1, e.onlyChinse and '事件声音' or EVENTS_LABEL..SOUND)
             end
