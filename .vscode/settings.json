@@ -113,6 +113,7 @@
         "NOT_COLLECTED"
     ],
     "Lua.diagnostics.disable": [
-        "undefined-field"
+        "undefined-field",
+        "param-type-mismatch"
     ]
 }
