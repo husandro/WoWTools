@@ -157,7 +157,7 @@ StaticPopupDialogs[id..addName..'RESET']={--重置
 --#####
 --主菜单
 --#####
-local function InitMenu(self, leve, tab)--主菜单
+local function InitMenu(self, level, tab)--主菜单
     if not tab or not tab.spell or not tab.ins then
         return
     end

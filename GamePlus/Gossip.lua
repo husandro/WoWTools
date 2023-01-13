@@ -105,7 +105,7 @@ local function select_Reward()--自动:选择奖励
         end
     end
 
-    bestItem= bestLevelItem or bestItem
+    --bestItem= bestLevelItem or bestItem
     if bestItem then
         _G['QuestInfoRewardsFrameQuestInfoItem'..bestItem]:Click()
         if selectItemLink then
@@ -328,7 +328,7 @@ local function Init_Gossip()
                 if self2.id and self2.text then
                     e.tips:AddDoubleLine(self2.text, 'gossipOption: '..self2.id)
                 else
-                    e.tips:AddDoubleLine(NON, 'gossipOptionID',1,0,0)
+                    e.tips:AddDoubleLine(NONE, 'gossipOptionID',1,0,0)
                 end
                 e.tips:Show()
             end)

@@ -441,9 +441,9 @@ local raidList=function(self, level, type)--团队本
                     k2=k2..'|cff00ff00'..j..'|r'
                 end
                 if encounters then
-                    encounters = encounters.."|n"..colorCode..bossName..FONT_COLOR_CODE_CLOSE
+                    encounters = encounters.."|n"..colorCode..bossName..'|r'
                 else
-                    encounters = colorCode..bossName..FONT_COLOR_CODE_CLOSE
+                    encounters = colorCode..bossName..'|r'
                 end
             end
             info.text=info.text..' '..kill..'/'..numEncounters--击杀数量

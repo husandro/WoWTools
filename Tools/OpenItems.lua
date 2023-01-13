@@ -237,7 +237,7 @@ local function setMenuList(self, level, menuList)--主菜单
     local t=UIDropDownMenu_CreateInfo()
     t.notCheckable=true
     if Bag.bag and Bag.slot then
-        t.text=C_Container.GetContainerItemLink(Bag.bag, Bag.slot) or ('bag: '..bag ..' slot: '..slot)
+        t.text=C_Container.GetContainerItemLink(Bag.bag, Bag.slot) or ('bag: '..Bag.bag ..' slot: '..Bag.slot)
         local bagInfo=C_Container.GetContainerItemInfo(Bag.bag, Bag.slot)
         t.icon= bagInfo and bagInfo.iconFileID
         t.func=function()

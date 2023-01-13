@@ -10,14 +10,14 @@ local Save={
     Mounts={
         [ITEMS]={[174464]=true, [168035]=true},--幽魂缰绳 噬渊鼠缰绳
         [SPELLS]={[2645]=true, [111400]=true, [343016]=true, [195072]=true, [2983]=true, [190784]=true, [48265]=true, [186257]=true, [6544]=true},
-        [FLOOR]={},
+        [FLOOR]={},--{[spellID]=uiMapID}
         [MOUNT_JOURNAL_FILTER_GROUND]={
             --[339588]=true,--[罪奔者布兰契]
             [163024]=true,--战火梦魇兽
         },
         [MOUNT_JOURNAL_FILTER_FLYING]={
             --[339588]=true,--[罪奔者布兰契]
-            [163024]=ture,--战火梦魇兽
+            [163024]=true,--战火梦魇兽
         },
         [MOUNT_JOURNAL_FILTER_AQUATIC]={
             --[359379]=true,--闪光元水母
@@ -547,7 +547,7 @@ StaticPopupDialogs[id..addName..'TEXTURESIZE']={--设置按钮大小
         e.toolsFrame.size=num
         Save.size=num
         setButtonSize()--设置按钮大小
-        print(id, addName, EMBLEM_SYMBOL..HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_HEIGHT, e.toolsFrame.size, '|cnRED_FONT_COLOR:'..RELOADUI..'|r')
+        print(id, addName, EMBLEM_SYMBOL, HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_HEIGHT, e.toolsFrame.size, '|cnRED_FONT_COLOR:'..RELOADUI..'|r')
     end,
 
     EditBoxOnTextChanged=function(self, data)
@@ -748,12 +748,15 @@ local function InitMenu(self, level, menuList)--主菜单
                 end
                 if menuList==ITEMS then
                     info.text=info.text..' |cff00ff00x|r'..GetItemCount(spellID , nil, true, true)
-                elseif menuList==FLOOR and type(boolean)=='number' then
-                    local mapInfo = C_Map.GetMapInfo(boolean)
+                elseif menuList==FLOOR and Save.Mounts[FLOOR][spellID] then
+                    local uiMapID=Save.Mounts[FLOOR][spellID]
+                    local mapInfo = C_Map.GetMapInfo(uiMapID)
+                    info.tooltipOnButton=true
                     if mapInfo and mapInfo.name then
-                        info.tooltipText=mapInfo.name
+                        info.tooltipTitle=mapInfo.name
+                        info.tooltipText= 'uiMapID: '..uiMapID 
                     else
-                        info.tooltipText='MapID: '..boolean
+                        info.tooltipTitle='uiMapID: '..uiMapID
                     end
                 end
                 UIDropDownMenu_AddButton(info, level);
@@ -803,7 +806,11 @@ local function InitMenu(self, level, menuList)--主菜单
                     local uiMapID= C_Map.GetBestMapForUnit("player")--当前地图
                     if uiMapID then
                         info.tooltipOnButton=true
-                        info.tooltipTitle= REFORGE_CURRENT..' MapID: '..uiMapID
+                        info.tooltipTitle= (e.onlyChinse and '当前' or REFORGE_CURRENT)..' MapID: '..uiMapID
+                        local mapInfo = C_Map.GetMapInfo(uiMapID)
+                        if mapInfo and mapInfo.name then
+                            info.tooltipText= mapInfo.name
+                        end
                     end
                 end
                 UIDropDownMenu_AddButton(info, level);

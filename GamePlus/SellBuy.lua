@@ -648,7 +648,7 @@ local function setMenu()
                     ..'\n\n'..AUTO_JOIN:gsub(JOIN,'')..PURCHASE..': '..icon ..itemLink
                     ..'\n\n'..e.Icon.player..e.Player.name_server..': ' ..AUCTION_HOUSE_QUANTITY_LABEL
                     ..'\n\n0: '..(CLEAR or KEY_NUMLOCK_MAC)
-                    ..(Save.notAutoBuy and '\n\n'..AUTO_JOIN:gsub(JOIN,'')..PURCHASE..': '..e.GetEnabeleDisable(flse) or ''),
+                    ..(Save.notAutoBuy and '\n\n'..AUTO_JOIN:gsub(JOIN,PURCHASE)..': '..e.GetEnabeleDisable(false) or ''),
                     button1 = PURCHASE,
                     button2 = CANCEL,
                     hasEditBox=true,whileDead=true,timeout=60,hideOnEscape = 1,

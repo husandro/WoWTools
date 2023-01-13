@@ -176,6 +176,7 @@ local function InitMenu(self, level, type)--主菜单
         elseif type=='FLOOR' then
             local n2=C_FriendList.GetNumWhoResults();--区域
             if n2 then --and n>0 then
+                local playerGuildName = GetGuildInfo('plyaer')
                 local map=e.GetUnitMapName('player');--玩家区域名称
                 for i=1, n2 do
                     local zone= C_FriendList.GetWhoInfo(i)
@@ -194,7 +195,7 @@ local function InitMenu(self, level, type)--主菜单
                         if zone.filename then
                             info.text= e.Class(nil, zone.filename)..'|c'..RAID_CLASS_COLORS[zone.filename].colorStr..info.text..'|r'--职业,图标,颜色
                             if (C_FriendList.GetFriendInfo(zone.filename) or C_FriendList.GetFriendInfo(zone.filename:gsub('%-.+',''))) then --好友
-                                info.text=inf.text..'|A:socialqueuing-icon-group:0:0|a'
+                                info.text=info.text..'|A:socialqueuing-icon-group:0:0|a'
                             end
                         end
                         local t2='';
@@ -212,7 +213,7 @@ local function InitMenu(self, level, type)--主菜单
 
                         if zone.fullGuildName then--公会
                             if t2~='' then t2=t2..'\n' end
-                            if zone.fullGuildName==guild then --同公会
+                            if zone.fullGuildName==playerGuildName then --同公会
                                 info.text=info.text..'|A:communities-guildbanner-background:0:0|a';
                                 t2=t2..'|A:communities-guildbanner-background:0:0|a';
                             end
@@ -229,7 +230,7 @@ local function InitMenu(self, level, type)--主菜单
                             t2=t2..FLOOR..': '..zone.area;
 
                         end
-                        info.tooltipText=t2
+                        info.tooltipTitle=t2
                         UIDropDownMenu_AddButton(info, level)
                     end
                 end
