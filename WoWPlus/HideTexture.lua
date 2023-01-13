@@ -5,7 +5,7 @@ local Save={}
 local function hideTexture(self)
     if self then
         self:SetTexture(0)
-        self:SetShown(flase)
+        self:SetShown(false)
     end
 end
 

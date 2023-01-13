@@ -622,7 +622,9 @@ end
 --离开, 进入, 副本
 --###############
 local function setLFGDungeonReadyDialog(self)--自动进入FB LFGDungeonReadyDialog:HookScript("OnShow"
-    e.PlaySound()--播放, 声音
+    if Save.enterInstance then
+        e.PlaySound()--播放, 声音
+    end
     local afk=UnitIsAFK('player')
     if not self.infoText then
         self.infoText=e.Cstr(self,nil, LFGDungeonReadyDialogInstanceInfoFrame.name, nil, true)
@@ -872,10 +874,10 @@ local function Init()
     set_PvPRoles()
 
     LFDRoleCheckPopup:SetScript("OnShow",function(self)--副本职责
-        SOUNDKIT.LFG_ROLE_CHEe.PlaySound(CK)--播放, 声音
         if not Save.autoSetPvPRole then
             return
         end
+        e.PlaySound()--播放, 声音
         set_PvPRoles()--检测是否选定角色pvp
         if not LFDRoleCheckPopupAcceptButton:IsEnabled() then
             LFDRoleCheckPopup_UpdateAcceptButton();
@@ -1203,11 +1205,11 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
         end)
 
     elseif event=='ISLAND_COMPLETED' then--离开海岛
-        e.PlaySound()--播放, 声音
         wowSave[ISLANDS_HEADER]=wowSave[ISLANDS_HEADER] and wowSave[ISLANDS_HEADER]+1 or 1
         if not Save.leaveInstance then
             return
         end
+        e.PlaySound()--播放, 声音
         C_PartyInfo.LeaveParty(LE_PARTY_CATEGORY_INSTANC)
         LFGTeleport(true)
         print(id, addName, 	e.onlyChinse and '离开海岛' or ISLAND_LEAVE, '|cnGREEN_FONT_COLOR:'..wowSave[ISLANDS_HEADER]..'|r'..	VOICEMACRO_LABEL_CHARGE1)
@@ -1229,8 +1231,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
         end
 
     elseif event=='PVP_MATCH_COMPLETE' then--离开战场
-        e.PlaySound()--播放, 声音
         if Save.leaveInstance then
+            e.PlaySound()--播放, 声音
             if PVPMatchResults and PVPMatchResults.buttonContainer and PVPMatchResults.buttonContainer.leaveButton then
                 e.Ccool(PVPMatchResults.buttonContainer.leaveButton, nil, sec, nil, true, true)
             end

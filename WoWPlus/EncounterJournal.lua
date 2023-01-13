@@ -104,7 +104,7 @@ local function EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示�
         if head then
             text = text~='' and text..'\n' or text
             text = text..'|T450908:0|t'..head
-            if he==MYTHIC_DUNGEONS then
+            if head==MYTHIC_DUNGEONS then
                 local weekLevel=e.WoWSave[e.Player.guid].Keystones.weekLevel--本周最高
                 if weekLevel then
                     text=text..' |cnGREEN_FONT_COLOR:'..weekLevel..'|r'
@@ -927,7 +927,7 @@ local function Init()--冒险指南界面
             end
             
             if EncounterJournal.iconImage  then
-                text= (text or '')..'|T'..EncounterJournal.iconImage..':0|t'..iconImage..'\n'
+                text= (text or '')..'|T'..EncounterJournal.iconImage..':0|t'..EncounterJournal.iconImage..'\n'
             end
             if self.id then
                 text= (text or '')..'JournalEncounterCreatureID '.. self.id..'\n'

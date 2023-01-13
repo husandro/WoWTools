@@ -1049,10 +1049,10 @@ local function Init()
 
                 e.tips:AddDoubleLine((e.onlyChinse and '声望' or REPUTATION)..' '..self.factionID or factionID, completedParagon)
                 e.tips:Show();
+            elseif factionID or self.factionID then
+                e.tips:AddDoubleLine((e.onlyChinse and '声望' or REPUTATION)..' '..(self.factionID or factionID), completedParagon)
+                e.tips:Show()
             end
-        else
-            e.tips:AddDoubleLine((e.onlyChinse and '声望' or REPUTATION)..' '..(self.factionID or factionID), completedParagon)
-            e.tips:Show()
         end
     end)
 

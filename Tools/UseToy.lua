@@ -269,7 +269,7 @@ local function InitMenu(self, level, menuList)--主菜单
         elseif menuList=='SETTINGS' then--设置菜单
             info={--快捷键,设置对话框
                 text= e.onlyChinse and '快捷键' or SETTINGS_KEYBINDINGS_LABEL,--..(Save.KEY and ' |cnGREEN_FONT_COLOR:'..Save.KEY..'|r' or ''),
-                checked=Save.KEY and true or niil,
+                checked=Save.KEY and true or nil,
                 func=function ()
                     StaticPopup_Show(id..addName..'KEY')
                 end,

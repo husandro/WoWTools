@@ -883,7 +883,7 @@ e.GetPetCollected= function(speciesID, itemID, numShow)--宠物, 收集数量
     speciesID = speciesID or (itemID and select(13, C_PetJournal.GetPetInfoByItemID(itemID)))--宠物物品
     if speciesID then
         local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesID)
-        if nunumCollected==0 then
+        if numCollected==0 then
             if numShow then
                 return '|cnRED_FONT_COLOR:'..numCollected..'/'..limit..'|r', numCollected, limit
             else

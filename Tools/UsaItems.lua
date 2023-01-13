@@ -271,8 +271,8 @@ local function setEquipSlot(self)--装备
 end
 
 local function setItemCount(self)--数量
+    local num = GetItemCount(self.itemID,nil,true,true)
     if not PlayerHasToy(self.itemID) then
-        local num = GetItemCount(self.itemID,nil,true,true)
         if num~=1 and not self.count then
             self.count=e.Cstr(self,10,nil,nil,true)
             self.count:SetPoint('BOTTOMRIGHT',-2, 9)

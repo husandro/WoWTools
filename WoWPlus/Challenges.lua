@@ -669,7 +669,8 @@ local function Cur(self)--货币数量
         if info and info.discovered and info.quantity and info.maxQuantity and not Save.hide then
             if info.maxQuantity>0  then
                 if info.useTotalEarnedForMaxQty then--本周还可获取                        
-                    local q=info.maxQuantity - info.totalEarned
+                    local q
+                    q= info.maxQuantity - info.totalEarned
                     if q>0 then q='|cff00ff00'..q..'|r' end
                     t=t..'('..q..'+) '
                 end

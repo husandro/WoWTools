@@ -33,7 +33,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end)]]
     elseif event=='ADDON_LOADED' and arg1=='Blizzard_Collections' then
         hooksecurefunc('MountJournal_UpdateMountDisplay', setMountJournal_UpdateMountDisplay)--Blizzard_MountCollection.lua
-        hooksecurefunc('MountOptionsMenu_Init', setMenuMontJournal)
+        --hooksecurefunc('MountOptionsMenu_Init', setMenuMontJournal)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then

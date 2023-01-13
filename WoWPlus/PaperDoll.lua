@@ -589,7 +589,7 @@ local function add_Equipment_Frame(equipmentSetsDirty)--添加装备管理框
     panel.equipmentFrame:SetShown(true)
 
     local b2, index=nil, 1
-    local setIDs=SortEquipmentSetIDs(C_EquipmentSet.GetEquipmentSetIDs())
+    local setIDs=SortEquipmentSetIDs(C_EquipmentSet.GetEquipmentSetIDs())--PaperDollFrame.lua
     for k, id2 in pairs(setIDs) do
         local texture, setID, isEquipped= select(2, C_EquipmentSet.GetEquipmentSetInfo(id2))
         local b=panel.equipmentFrame.B[k]

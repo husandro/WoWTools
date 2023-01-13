@@ -228,6 +228,7 @@ end
 --#########
 --界面, 增强
 --#########
+local isCappedIcon='|A:'..e.Icon.icon..':0:0|a'
 local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--ReputationFrame.lua
 	if Save.notPlus then
 		return
@@ -244,7 +245,6 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 		return
 	end
 
-	local isCappedIcon='|A:'..e.Icon.icon..':0:0|a'
 	local factionTitle = factionContainer.Name
 	local text
 	local barColor
