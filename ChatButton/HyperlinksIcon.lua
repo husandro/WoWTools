@@ -715,7 +715,7 @@ local Frame = {
     ['TargetFrameToT']=true,
     ['FocusFrame']=true,
 }
-local function set_Shift_Click_facur()
+local function set_Shift_Click_focurs()
     if UnitAffectingCombat('player') then
         panel:RegisterEvent('PLAYER_REGEN_ENABLED')
         return
@@ -868,7 +868,7 @@ local function InitMenu(self, level, type)
                     print(id,addName, e.onlyChinse and '设置' or  SETTINGS, e.onlyChinse and '|cnRED_FONT_COLOR:重新加载UI|r' or '|cnGREEN_FONT_COLOR:'..RELOADUI..'|r')
                 else
                     Save.setFucus=true
-                    set_Shift_Click_facur()--Shift+点击设置焦点
+                    set_Shift_Click_focurs()--Shift+点击设置焦点
                 end
             end,
         }
@@ -918,7 +918,7 @@ local function Init()
     setPanel()--设置控制面板
     set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
     if Save.setFucus then
-        set_Shift_Click_facur()----Shift+点击设置焦点
+        set_Shift_Click_focurs()----Shift+点击设置焦点
         panel:RegisterEvent('GROUP_ROSTER_UPDATE')
     end
 
@@ -948,7 +948,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         setMsg_CHAT_MSG_SYSTEM(arg1)--欢迎加入, 信息
 
     elseif event=='GROUP_ROSTER_UPDATE' then
-        set_Shift_Click_facur()--Shift+点击设置焦点
+        set_Shift_Click_focurs()--Shift+点击设置焦点
 
     elseif event=='CVAR_UPDATE' then
         if arg1=='showTimestamps' then
