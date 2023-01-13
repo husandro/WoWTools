@@ -674,8 +674,7 @@ local function exitInstance()
         name= name..difficultyName
         wowSave[INSTANCE][name]=wowSave[INSTANCE][name]  and wowSave[INSTANCE][name] +1 or 1
     end
-    if not ExitIns or not ins or IsModifierKeyDown() then
-        ExitIns=nil
+    if not ExitIns or not ins then
         StaticPopup_Hide(addName..'ExitIns')
         return
     end
@@ -697,13 +696,14 @@ StaticPopupDialogs[addName..'ExitIns']={
     button1 = LEAVE,
     button2 = CANCEL,
     OnAccept=function()
+        ExitIns=true
         exitInstance()
     end,
     OnCancel=function(_, _, d)
-        --if d=='clicked' then
+        if d=='clicked' then
             ExitIns=nil
             print(id,addName,'|cff00ff00'..(e.onlyChinse and '取消' or CANCEL)..'|r', e.onlyChinse and '离开' or LEAVE)
-        --end
+        end
     end,
     EditBoxOnEscapePressed = function(s)
         ExitIns=nil
@@ -1182,16 +1182,14 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
         end
 
     elseif event=='LFG_COMPLETION_REWARD' or event=='LOOT_CLOSED' then--自动离开
-        if Save.leaveInstance and IsLFGComplete() then
+        if Save.leaveInstance and IsLFGComplete() and IsInInstance() then
             e.PlaySound()--播放, 声音
             ExitIns=true
+            C_Timer.After(sec, function()
+                exitInstance()
+            end)
             StaticPopup_Show(addName..'ExitIns')
             e.Ccool(StaticPopup1, nil, sec, nil, true)--冷却条
-            C_Timer.After(sec, function()
-                if not IsModifierKeyDown() then
-                    exitInstance()
-                end
-            end)
         end
     elseif event=='PLAYER_ENTERING_WORLD' then
         if IsInInstance() then--自动离开
@@ -1200,9 +1198,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
             panel:UnregisterEvent('LOOT_CLOSED')
         end
         C_Timer.After(sec, function()
-            if not IsModifierKeyDown() then
-                setIslandButton(self)--离开海岛按钮
-            end
+            setIslandButton(self)--离开海岛按钮
         end)
 
     elseif event=='ISLAND_COMPLETED' then--离开海岛
