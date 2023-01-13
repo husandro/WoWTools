@@ -919,7 +919,7 @@ local function setSTART_LOOT_ROLL(rollID, rollTime, lootHandle)--自动ROLL
 
     else
         if not C_TransmogCollection.PlayerHasTransmogByItemInfo(link) then--幻化
-            local sourceID=select(2,C_TransmogCollection.GetItemInfo(itemLink))
+            local sourceID=select(2,C_TransmogCollection.GetItemInfo(link))
             if sourceID then
                 local hasItemData, canCollect =  C_TransmogCollection.PlayerCanCollectSource(sourceID)
                 if hasItemData and canCollect then
@@ -937,8 +937,9 @@ local function setSTART_LOOT_ROLL(rollID, rollTime, lootHandle)--自动ROLL
             if slot then
                 local slotLink=GetInventoryItemLink('player', slot)
                 if slotLink then
-                    local slotItemLevel= GetDetailedItemLevelInfo(slotLink)
-                    if slotItemLevel then
+                    local slotItemLevel= GetDetailedItemLevelInfo(slotLink) or 0
+                    local itemLevel= GetDetailedItemLevelInfo(link)
+                    if itemLevel then
                         local num=itemLevel-slotItemLevel
                         if num>0 then
                             RollOnLoot(rollID, rollType)

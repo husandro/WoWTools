@@ -246,7 +246,7 @@ local function setCooldown()--设置冷却
         local start, duration, _, modRate = GetSpellCooldown(panel.spellAtt)
         e.Ccool(panel, start, duration, modRate, true, nil, true)--冷却条
     elseif panel.itemID then
-        local start, duration = GetItemCooldown(itemID)
+        local start, duration = GetItemCooldown(panel.itemID)
         e.Ccool(panel, start, duration, nil, true,nil, true)--冷却条
     elseif panel.cooldown then
         panel.cooldown:Clear()

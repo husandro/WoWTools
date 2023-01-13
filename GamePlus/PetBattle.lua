@@ -252,7 +252,7 @@ local function set_PetBattleFrame_UpdateAllActionButtons(self)--Blizzard_PetBatt
             self2.textrue:SetAlpha(0.5)
         end)
         panel.EnemyFrame.textrue=panel.EnemyFrame:CreateTexture(nil, 'BACKGROUND')
-        panel.EnemyFrame.textrue:SetAllPoints(frame)
+        panel.EnemyFrame.textrue:SetAllPoints(panel.EnemyFrame)
         panel.EnemyFrame.textrue:SetAtlas('Adventures-Missions-Shadow')
         panel.EnemyFrame.textrue:SetAlpha(0.5)
         for index=1, NUM_BATTLE_PETS_IN_BATTLE +2 do

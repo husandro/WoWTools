@@ -305,7 +305,7 @@ local function set_CHALLENGE_MODE_START()--赏金, 说 Bounty
                     if UnitExists(u) and name2 then
                         local buff
                         for _, v in pairs(IDs2) do
-                            local name=WA_GetUnitBuff(u, v)
+                            local name=e.WA_GetUnitBuff(u, v)
                             if  name then
                                 local link=GetSpellLink(v)
                                 if link or name then
@@ -563,7 +563,7 @@ local function All(self)--所有记录
     if mapChallengeModeID and level and level>0 and mapChallengeModeID>0 then
         local name, _, _, texture, _ = C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
         if name then
-            m= (m~='' and m..'\n\n' or m)..(e.onlyChinse and '上周' or HONOR_LASTWEEK)..': '.. (texture and '|T'..texturqbe..':0|t' or '')..name..' '..level
+            m= (m~='' and m..'\n\n' or m)..(e.onlyChinse and '上周' or HONOR_LASTWEEK)..': '.. (texture and '|T'..texture..':0|t' or '')..name..' '..level
         end
     end
 

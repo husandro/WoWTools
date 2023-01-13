@@ -106,7 +106,7 @@ local FrameTab={
     PVEFrame={},--地下城和团队副本
     HelpFrame={},--客服支持
     MacroFrame={},--宏
-    ExtraActionButton1={save=true, click='R' },--额外技能
+    --ExtraActionButton1={save=true, click='R' },--额外技能
     ChatConfigFrame={save=true},--聊天设置
     SettingsPanel={},--选项
     UIWidgetPowerBarContainerFrame={},
@@ -314,7 +314,7 @@ end
 
 
 local function Init()
-    Move(ZoneAbilityFrame.SpellButtonContainer, {save=true, click='R'})
+    --Move(ZoneAbilityFrame.SpellButtonContainer, {save=true, click='R'})
 
     setTabInit()
 
