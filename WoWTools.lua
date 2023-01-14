@@ -28,10 +28,12 @@ e.LeftButtonDown = ActionButtonUseKeyDown and 'LeftButtonDown' or 'LeftButtonUp'
 e.RightButtonDown= ActionButtonUseKeyDown and 'RightButtonDown' or 'RightButtonUp'
 
 e.LoadSpellItemData= function(ID, spell)--加载法术, 物品数据
-    if spell then
-        if not C_Spell.IsSpellDataCached(ID) then C_Spell.RequestLoadSpellData(ID) end
-    else
-        if not C_Item.IsItemDataCachedByID(ID) then C_Item.RequestLoadItemDataByID(ID) end
+    if ID then
+        if spell then
+            if not C_Spell.IsSpellDataCached(ID) then C_Spell.RequestLoadSpellData(ID) end
+        else
+            if not C_Item.IsItemDataCachedByID(ID) then C_Item.RequestLoadItemDataByID(ID) end
+        end
     end
 end
 
