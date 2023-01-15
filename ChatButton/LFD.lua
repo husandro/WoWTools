@@ -562,6 +562,24 @@ local function InitList(self, level, type)--LFDFrame.lua
         }
         UIDropDownMenu_AddButton(info, level)
 
+        local function set_autoopenloothistory()--自动打开战利品掷骰窗口
+            if Save.autoopenloothistory~= nil then
+                C_CVar.SetCVar("autoopenloothistory", Save.autoopenloothistory and '1' or nil)
+            end
+        end
+        info= {
+            text= e.onlyChinse and '自动打开战利品掷骰窗口' or AUTO_OPEN_LOOT_HISTORY_TEXT,
+            tooltipOnButton= true,
+            tooltipTitle= 'SetCVar("autoopenloothistory", "1")',
+            checked= C_CVar.GetCVarBool("autoopenloothistory"),
+            func= function ()
+                local value= C_CVar.GetCVarBool("autoopenloothistory")
+                Save.autoopenloothistory= not value and true or false
+                set_autoopenloothistory()--自动打开战利品掷骰窗口
+            end
+        }
+        UIDropDownMenu_AddButton(info, level)
+
     elseif type=='BATTLEFIELDS' then--战场
         info={
             text= e.onlyChinse and '释放, 复活' or (BATTLE_PET_RELEASE..', '..RESURRECT),
@@ -897,6 +915,7 @@ local function Init()
 
     setHoliday()--节日, 提示, panel.texture
 
+    set_autoopenloothistory()--自动打开战利品掷骰窗口
     --hooksecurefunc('QueueStatusDropDown_Show', setQueueStatusMenu)--小眼睛, 信息, 设置菜单
     --LFDMicroButton:HookScript('OnEnter', function(self2) ToggleDropDownMenu(1, nil, menuList, self2, -250,250) end)
 end

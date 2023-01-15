@@ -815,7 +815,8 @@
         "SOUND",
         "SLASH_STOPWATCH_PARAM_PLAY1",
         "RaiderIO_ProfileTooltip",
-        "WoWToolsOpenItemsButton"
+        "WoWToolsOpenItemsButton",
+        "AUTO_OPEN_LOOT_HISTORY_TEXT"
     ],
     "Lua.diagnostics.disable": [
     ]
