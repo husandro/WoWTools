@@ -256,11 +256,11 @@ local function Init()
         Alpha()
     end--透明度
 
-    --ObjectiveTrackerFrame:SetMovable(true)
+    ObjectiveTrackerFrame:SetMovable(true)
     ObjectiveTrackerFrame:EnableMouse(true)
 
     local btn=ObjectiveTrackerFrame.HeaderMenu.MinimizeButton
---[[    btn:RegisterForDrag("RightButton")
+    btn:RegisterForDrag("RightButton")
     btn:SetScript("OnDragStart", function() ObjectiveTrackerFrame:StartMoving() end)
     btn:SetScript("OnDragStop", function()
             ResetCursor()
@@ -270,10 +270,10 @@ local function Init()
         ResetCursor()
     end)
     btn:SetScript("OnMouseDown", function(self,d)
-        if d=='RightButton' and not IsAltKeyDown() then
+        if d=='RightButton' then
             SetCursor('UI_MOVE_CURSOR')
         end
-    end)]]
+    end)
     btn:SetScript("OnLeave", function(self)
         ResetCursor()
         e.tips:Hide()
@@ -283,7 +283,7 @@ local function Init()
             e.tips:ClearLines()
             e.tips:AddDoubleLine(id, addName)
             e.tips:AddLine(' ')
-            --e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
+            e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
             e.tips:AddDoubleLine(e.onlyChinse and '显示/隐藏' or (SHOW..'/'..HIDE), e.Icon.mid)
             e.tips:AddDoubleLine((e.onlyChinse and '缩放' or UI_SCALE)..': '..(Save.scale or 1), 'Ctrl + '..e.Icon.mid)
             e.tips:AddDoubleLine((e.onlyChinse and '透明度' or CHANGE_OPACITY)..': '..(Save.alpha or 1), 'Shift + '..e.Icon.mid)
