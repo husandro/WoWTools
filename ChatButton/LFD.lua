@@ -266,9 +266,18 @@ local function setQueueStatus()--小眼睛, 信息
     end
 end
 
---#######
---初始菜单
---#######
+--#####################
+--自动打开战利品掷骰窗口
+--#####################
+local function set_autoopenloothistory()
+    if Save.autoopenloothistory~= nil then
+        C_CVar.SetCVar("autoopenloothistory", Save.autoopenloothistory and '1' or nil)
+    end
+end
+
+--###############
+--副本， 菜单列表
+--###############
 local function setTexture(dungeonID, RaidID, name, texture)--设置图标, 点击,提示
     if dungeonID or RaidID then
         panel.dungeonID=dungeonID
@@ -485,7 +494,9 @@ local raidList=function(self, level, type)--团队本
     return find
 end
 
-
+--#######
+--初始菜单
+--#######
 local function InitList(self, level, type)--LFDFrame.lua
     local info
     if type=='SETTINGS' then
@@ -562,11 +573,6 @@ local function InitList(self, level, type)--LFDFrame.lua
         }
         UIDropDownMenu_AddButton(info, level)
 
-        local function set_autoopenloothistory()--自动打开战利品掷骰窗口
-            if Save.autoopenloothistory~= nil then
-                C_CVar.SetCVar("autoopenloothistory", Save.autoopenloothistory and '1' or nil)
-            end
-        end
         info= {
             text= e.onlyChinse and '自动打开战利品掷骰窗口' or AUTO_OPEN_LOOT_HISTORY_TEXT,
             tooltipOnButton= true,
