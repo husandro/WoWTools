@@ -12,7 +12,6 @@ rollText= rollText:gsub('%)', '%%)')
 rollText= rollText:gsub('%%d','%(%%d%+)')
 rollText= rollText:gsub("%%s", "%(%.%-)")
 
-  
 local Max, Min
 
 local function findRolled(name)--查找是否ROLL过
@@ -24,10 +23,8 @@ local function findRolled(name)--查找是否ROLL过
 end
 local function setCHAT_MSG_SYSTEM(text)
     local name, roll, minText, maxText=text:match(rollText)
-    print(text)
-    print(rollText, name, roll, minText, maxText)
     roll= roll and tonumber(roll)
-  
+
     if minText=='1' and maxText=='100' and name and roll then
         local unit=e.GroupGuid[name] and e.GroupGuid[name].unit
         if unit then
@@ -151,7 +148,7 @@ end
 --注册事件
 --#######
 local function setRegisterEvent()--注册事件
-    if not IsInGroup() then
+    if IsInGroup() then
         panel:RegisterEvent('CHAT_MSG_SYSTEM')
         panel:RegisterEvent('PLAYER_REGEN_DISABLED')
     else
