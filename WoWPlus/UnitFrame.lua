@@ -88,9 +88,9 @@ local function Init()
                 if not self.class then
                     self.class=self:CreateTexture()
                     if unit=='target' or unit=='focus' then
-                        self.class:SetPoint('TOPRIGHT', self.portrait, 'TOPLEFT',0,0)
+                        self.class:SetPoint('TOPRIGHT', self.portrait, 'TOPLEFT',-12,12)
                     else
-                        self.class:SetPoint('TOPLEFT', self.portrait, 'TOPRIGHT',0,0)
+                        self.class:SetPoint('TOPLEFT', self.portrait, 'TOPRIGHT',-12,12)
                     end
                     self.class:SetSize(20,20)
 
