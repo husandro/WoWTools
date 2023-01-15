@@ -315,7 +315,7 @@ end
 
 local function Init()
 
-    Move(ZoneAbilityFrame.SpellButtonContainer, {click='R', frame=ZoneAbilityFrame})
+    Move(ZoneAbilityFrame.SpellButtonContainer, {click='R'})
 
 
     setTabInit()

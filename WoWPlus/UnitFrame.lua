@@ -94,7 +94,8 @@ local function Init()
                     end
                     self.class:SetSize(20,20)
 
-                    self.name:SetShadowOffset(2, -2)--加字体, 阴影
+                    self.name:SetShadowOffset(1, -1)--加字体, 阴影
+                    --self.name:SetJustifyH('CENTER')
                     if self.healthbar then
                         if self.healthbar.LeftText then
                             self.healthbar.LeftText:SetShadowOffset(2, -2)
@@ -117,7 +118,6 @@ local function Init()
                             self.manabar.RightText:SetShadowOffset(2, -2)
                         end
                     end
-                    self.name:SetJustifyH('CENTER')
                 end
 
                 self.class:SetAtlas(class)

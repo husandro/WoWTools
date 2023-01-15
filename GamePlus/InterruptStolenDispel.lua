@@ -20,17 +20,29 @@ local UMark={--'|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..t..':0|t'
     [128]='{rt8}',
 }
 
-local function set_COMBAT_LOG_EVENT_UNFILTERED()
-    local _, eventType, _, sourceGUID, _, _, sourceRaidFlags, _, _, _, destRaidFlags ,spellID, _,_, extraSpellID= CombatLogGetCurrentEventInfo()
-    if (eventType=="SPELL_INTERRUPT" or eventType=="SPELL_DISPEL" or eventType=="SPELL_STOLEN") and sourceGUID==e.Player.guid and spellID and extraSpellID then
+
+local function set_COMBAT_LOG_EVENT_UNFILTERED()--https://wowpedia.fandom.com/wiki/COMBAT_LOG_EVENT
+    --timestamp, subevent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, [spellID, spellName, spellSchool], casterGUID, casterName, casterFlags, casterRaidFlags, absorbSpellId, absorbSpellName, absorbSpellSchool, amount, critical
+
+    local _, eventType, _, sourceGUID, _, _, sourceRaidFlags, destGUID, _, _, destRaidFlags ,spellID, _,_, extraSpellID= CombatLogGetCurrentEventInfo()
+    local unitToken = destGUID and UnitTokenFromGUID(destGUID)
+    if (eventType=="SPELL_INTERRUPT" or eventType=="SPELL_DISPEL" or eventType=="SPELL_STOLEN") and sourceGUID==e.Player.guid and (unitToken and not UnitIsUnit(unitToken, 'pet') or not unitToken) and spellID and extraSpellID then
         local text=(UMark[sourceRaidFlags] or '')..GetSpellLink(spellID)..de..GetSpellLink(extraSpellID)..(UMark[destRaidFlags] or '')
         e.Chat(text, nil, true)
     end
 end
 
+local function set_Events()--注册，事件
+    if IsInGroup() then
+        panel:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
+    else
+        panel:UnregisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
+    end
+end
 
 panel:RegisterEvent('ADDON_LOADED')
-panel:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
+panel:RegisterEvent('GROUP_ROSTER_UPDATE')
+panel:RegisterEvent('GROUP_LEFT')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
@@ -61,6 +73,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if Save.disabled then
                 panel:UnregisterAllEvents()
+            else
+                set_Events()--注册，事件
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
@@ -70,7 +84,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave[addName]=Save
         end
 
-    elseif event=='COMBAT_LOG_EVENT_UNFILTERED' and IsInGroup() then
+    elseif event=='COMBAT_LOG_EVENT_UNFILTERED' then-- and IsInGroup() then
         set_COMBAT_LOG_EVENT_UNFILTERED()
+
+    elseif event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' then
+        set_Events()--注册，事件
     end
 end)
