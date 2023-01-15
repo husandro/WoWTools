@@ -996,7 +996,7 @@ e.PlaySound= function(soundKitID)--播放, 声音 SoundKitConstants.lua e.PlaySo
     PlaySound(soundKitID or SOUNDKIT.GS_CHARACTER_SELECTION_ENTER_WORLD, channel)--SOUNDKIT.READY_CHECK SOUNDKIT.LFG_ROLE_CHECK SOUNDKIT.LFG_ROLE_CHECK SOUNDKIT.IG_PLAYER_INVITE
 end
 
-e.set_CVar= function(name, value)
+e.set_CVar= function(name, value)--设置 Cvar
     if value~= nil then
         C_CVar.SetCVar(name, value and '1' or '0')
     end
