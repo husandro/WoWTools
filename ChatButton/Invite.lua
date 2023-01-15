@@ -413,7 +413,7 @@ local function set_LFGPlus()--预创建队伍增强
     f.raid:SetChecked(Save.PartyToRaid);
 
     f.raid:SetScript("OnMouseDown", function(s)
-        e.Save.PartyToRaid=s:GetChecked()
+        Save.PartyToRaid=s:GetChecked()
     end)
 
     hooksecurefunc("LFGListSearchEntry_Update", function(self)----查询,自定义, 预创建队伍, LFG队长分数, 双击加入
