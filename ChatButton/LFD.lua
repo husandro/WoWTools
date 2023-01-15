@@ -574,7 +574,7 @@ local function InitList(self, level, type)--LFDFrame.lua
             func= function ()
                 local value= C_CVar.GetCVarBool("autoopenloothistory")
                 Save.autoopenloothistory= not value and true or false
-                e.set_CVar('autoopenloothistory', value)--自动打开战利品掷骰窗口
+                e.set_CVar('autoopenloothistory', Save.autoopenloothistory)--自动打开战利品掷骰窗口
             end
         }
         UIDropDownMenu_AddButton(info, level)
