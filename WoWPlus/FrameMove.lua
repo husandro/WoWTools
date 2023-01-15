@@ -128,7 +128,7 @@ local FrameTab={
 };
 
 --UIWidgetBelowMinimapContainerFrame={save=true,click='RightButton'},
---ZoneAbilityFrame.SpellButtonContainer = {save=true, click='R'},
+
 
 
 local function setTabInit()
@@ -314,9 +314,17 @@ end
 
 
 local function Init()
-
-    Move(ZoneAbilityFrame.SpellButtonContainer, {click='R'})
-
+    if ZoneAbilityFrame and ZoneAbilityFrame.SpellButtonContainer then--区域，技能
+        ZoneAbilityFrame.moveFrame=CreateFrame('Frame')
+        ZoneAbilityFrame.moveFrame:SetPoint('CENTER', ZoneAbilityFrame.SpellButtonContainer, 'CENTER')
+        ZoneAbilityFrame.moveFrame:SetSize(62, 62)--0, 52
+        Move(ZoneAbilityFrame.moveFrame, {frame= ZoneAbilityFrame})
+    end
+--[[local tex= ZoneAbilityFrame.moveFrame:CreateTexture()
+tex:SetAllPoints(ZoneAbilityFrame.moveFrame)
+tex:SetAtlas('!perks-list-side-vertical')
+-- Move(ZoneAbilityFrame.SpellButtonContainer, {click='R'})
+]]
 
     setTabInit()
 
