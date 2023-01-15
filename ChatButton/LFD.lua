@@ -691,7 +691,8 @@ local function exitInstance()
         name= name..difficultyName
         wowSave[INSTANCE][name]=wowSave[INSTANCE][name]  and wowSave[INSTANCE][name] +1 or 1
     end
-    if not ExitIns or not ins then
+    if not ExitIns or not ins or IsModifierKeyDown() then
+        ExitIns= nil
         StaticPopup_Hide(addName..'ExitIns')
         return
     end
