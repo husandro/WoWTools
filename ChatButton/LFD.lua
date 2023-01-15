@@ -266,14 +266,6 @@ local function setQueueStatus()--小眼睛, 信息
     end
 end
 
---#####################
---自动打开战利品掷骰窗口
---#####################
-local function set_autoopenloothistory()
-    if Save.autoopenloothistory~= nil then
-        C_CVar.SetCVar("autoopenloothistory", Save.autoopenloothistory and '1' or nil)
-    end
-end
 
 --###############
 --副本， 菜单列表
@@ -581,7 +573,7 @@ local function InitList(self, level, type)--LFDFrame.lua
             func= function ()
                 local value= C_CVar.GetCVarBool("autoopenloothistory")
                 Save.autoopenloothistory= not value and true or false
-                set_autoopenloothistory()--自动打开战利品掷骰窗口
+                e.set_CVar('autoopenloothistory', value)--自动打开战利品掷骰窗口
             end
         }
         UIDropDownMenu_AddButton(info, level)
@@ -921,7 +913,7 @@ local function Init()
 
     setHoliday()--节日, 提示, panel.texture
 
-    set_autoopenloothistory()--自动打开战利品掷骰窗口
+    e.set_CVar('autoopenloothistory', value)--自动打开战利品掷骰窗口
     --hooksecurefunc('QueueStatusDropDown_Show', setQueueStatusMenu)--小眼睛, 信息, 设置菜单
     --LFDMicroButton:HookScript('OnEnter', function(self2) ToggleDropDownMenu(1, nil, menuList, self2, -250,250) end)
 end
