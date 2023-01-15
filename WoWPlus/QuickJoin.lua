@@ -40,7 +40,7 @@ local function set_SOCIAL_QUEUE_UPDATE()
     end
 
     local n=#C_SocialQueue.GetAllGroups();
-    self.quickJoinText:SetText(n)--n~=0 and n or '');
+    self.quickJoinText:SetText(n~=0 and n or '');
 end
 
 
