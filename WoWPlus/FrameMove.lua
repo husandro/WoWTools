@@ -106,7 +106,7 @@ local FrameTab={
     PVEFrame={},--地下城和团队副本
     HelpFrame={},--客服支持
     MacroFrame={},--宏
-    --ExtraActionButton1={save=true, click='R' },--额外技能
+    ExtraActionButton1={save=true, click='R' },--额外技能
     ChatConfigFrame={save=true},--聊天设置
     SettingsPanel={},--选项
     UIWidgetPowerBarContainerFrame={},
@@ -303,7 +303,7 @@ local function setAddLoad(arg1)
         end
 
     elseif arg1=='Blizzard_InspectUI' then--玩家, 观察角色, 界面
-        if InspectFrame then 
+        if InspectFrame then
             if InspectFrame.TitleContainer then
                 Move(InspectFrame.TitleContainer,{frame=InspectFrame})
             end
@@ -314,7 +314,9 @@ end
 
 
 local function Init()
+
     --Move(ZoneAbilityFrame.SpellButtonContainer, {save=true, click='R'})
+
 
     setTabInit()
 
