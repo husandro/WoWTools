@@ -569,11 +569,12 @@ local function InitList(self, level, type)--LFDFrame.lua
             text= e.onlyChinse and '自动打开战利品掷骰窗口' or AUTO_OPEN_LOOT_HISTORY_TEXT,
             tooltipOnButton= true,
             tooltipTitle= 'SetCVar("autoopenloothistory", "1")',
-            tooltipText= '\n/loot',
+            tooltipText= '\n/loot\nLootHistoryFrame:SetWidth(350)',
             checked= C_CVar.GetCVarBool("autoopenloothistory"),
             func= function ()
                 local value= C_CVar.GetCVarBool("autoopenloothistory")
                 Save.autoopenloothistory= not value and true or false
+                LootHistoryFrame:SetWidth(Save.autoopenloothistory and 210 or 350)
                 e.set_CVar('autoopenloothistory', Save.autoopenloothistory)--自动打开战利品掷骰窗口
             end
         }
@@ -916,6 +917,10 @@ local function Init()
     setHoliday()--节日, 提示, panel.texture
 
     e.set_CVar('autoopenloothistory', Save.autoopenloothistory)--自动打开战利品掷骰窗口
+    if Save.autoopenloothistory then
+        LootHistoryFrame:SetWidth(Save.autoopenloothistory and 210 or 350)
+    end
+
     --hooksecurefunc('QueueStatusDropDown_Show', setQueueStatusMenu)--小眼睛, 信息, 设置菜单
     --LFDMicroButton:HookScript('OnEnter', function(self2) ToggleDropDownMenu(1, nil, menuList, self2, -250,250) end)
 end

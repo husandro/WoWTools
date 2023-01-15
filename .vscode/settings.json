@@ -816,7 +816,8 @@
         "SLASH_STOPWATCH_PARAM_PLAY1",
         "RaiderIO_ProfileTooltip",
         "WoWToolsOpenItemsButton",
-        "AUTO_OPEN_LOOT_HISTORY_TEXT"
+        "AUTO_OPEN_LOOT_HISTORY_TEXT",
+        "LootHistoryFrame"
     ],
     "Lua.diagnostics.disable": [
     ]
