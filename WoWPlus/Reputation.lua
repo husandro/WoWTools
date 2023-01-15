@@ -416,7 +416,7 @@ local function FactionUpdate(self, event, text, ...)
 			if value then
 				m=m..' |cffffffff'..value..'|r'
 			end
-			m=(icon or isCappedIcon)..'|cffff00ff'..m..'|r'
+			m=(icon or isCappedIcon)..m
 			if hasRewardPending then
 				m=m..e.Icon.bank2
 			end
