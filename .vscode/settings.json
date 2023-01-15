@@ -820,7 +820,8 @@
         "LootHistoryFrame",
         "FriendsFrame",
         "RaidFrame",
-        "HUD_EDIT_MODE_EXPAND_OPTIONS"
+        "HUD_EDIT_MODE_EXPAND_OPTIONS",
+        "class"
     ],
     "Lua.diagnostics.disable": [
     ]

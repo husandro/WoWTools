@@ -76,27 +76,75 @@ local function Init()
     --#########
     --职业, 图标
     --#########
+    hooksecurefunc('UnitFrame_Update', function(self, isParty)--UnitFrame.lua --
     --hooksecurefunc('UnitFrame_SetUnit', function(self, unit, healthbar, manabar)
-    hooksecurefunc('UnitFrame_Update', function(self, isParty)--UnitFrame.lua
-        local unit=self.overrideName or self.unit
+        local unit= self.overrideName or self.unit
+        if unit and self:IsShown() then
+            local classFilename= UnitClassBase(unit)
+            if classFilename then
+                local r,g,b=GetClassColor(classFilename)
+                self.name:SetTextColor(r,g,b)--名称, 颜色
+                local class=e.Class(unit, nil, true)--职业, 图标
+                if not self.class then
+                    self.class=self:CreateTexture()
+                    if unit=='target' or unit=='focus' then
+                        self.class:SetPoint('TOPRIGHT', self.portrait, 'TOPLEFT',0,0)
+                    else
+                        self.class:SetPoint('TOPLEFT', self.portrait, 'TOPRIGHT',0,0)
+                    end
+                    self.class:SetSize(20,20)
 
-        local r,g,b=GetClassColor(UnitClassBase(unit))
+                    self.name:SetShadowOffset(2, -2)--加字体, 阴影
+                    if self.healthbar then
+                        if self.healthbar.LeftText then
+                            self.healthbar.LeftText:SetShadowOffset(2, -2)
+                        end
+                        if self.healthbar.CenterText then
+                            self.healthbar.CenterText:SetShadowOffset(2, -2)
+                        end
+                        if self.healthbar.RightText then
+                            self.healthbar.RightText:SetShadowOffset(2, -2)
+                        end
+                    end
+                    if self.manabar then
+                        if self.manabar.LeftText then
+                            self.manabar.LeftText:SetShadowOffset(2, -2)
+                        end
+                        if self.manabar.CenterText then
+                            self.manabar.CenterText:SetShadowOffset(2, -2)
+                        end
+                        if self.manabar.RightText then
+                            self.manabar.RightText:SetShadowOffset(2, -2)
+                        end
+                    end
+                end
 
-        self.name:SetTextColor(r,g,b)--名称, 颜色
-        --self.healthbar:SetStatusBarColor(r, g, b)
+                self.class:SetAtlas(class)
 
-        local class=e.Class(unit, nil, true)--职业, 图标
-        if not self.class then
-            self.class=self:CreateTexture()
-            if unit=='target' or unit=='focus' then
-                self.class:SetPoint('TOPLEFT', self.portrait, 'BOTTOMLEFT',0,5)
-            else
-                self.class:SetPoint('TOPRIGHT', self.portrait, 'BOTTOMRIGHT',0,5)
+                if self.healthbar then
+                    if self.healthbar.LeftText then
+                        self.healthbar.LeftText:SetTextColor(r,g,b)
+                    end
+                    if self.healthbar.CenterText then
+                        self.healthbar.CenterText:SetTextColor(r,g,b)
+                    end
+                    if self.healthbar.RightText then
+                        self.healthbar.RightText:SetTextColor(r,g,b)
+                    end
+                end
+                if self.manabar then
+                    if self.manabar.LeftText then
+                        self.manabar.LeftText:SetTextColor(r,g,b)
+                    end
+                    if self.manabar.CenterText then
+                        self.manabar.CenterText:SetTextColor(r,g,b)
+                    end
+                    if self.manabar.RightText then
+                        self.manabar.RightText:SetTextColor(r,g,b)
+                    end
+                end
             end
-            self.class:SetSize(20,20)
         end
-        self.class:SetAtlas(class)
-
     end)
 
     if PetHitIndicator then
