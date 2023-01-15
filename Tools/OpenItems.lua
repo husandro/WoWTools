@@ -13,6 +13,7 @@ local Save={
         [163604]=true,--[撒网器5000型]
         [199900]=true,--[二手勘测工具]
         [198083]=true,--探险队补给包
+        [191294]=true,--小型探险锹
     },
     pet=true, open=true, toy=true, mount=true, mago=true, ski=true, alt=true,
     noItemHide=not e.Player.husandro,

@@ -27,6 +27,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 setRegister()--设置事件
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled))
             end)
+            sel:SetScript('OnEnter', function(self2)
+                e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(e.onlyChinse and '声音' or SOUND, e.GetEnabeleDisable(e.setPlayerSound))
+                e.tips:AddDoubleLine('ChatButton, '..(e.onlyChinse and '超链接图标' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK..EMBLEM_SYMBOL), e.onlyChinse and '事件声音' or EVENTS_LABEL..SOUND)
+                e.tips:Show()
+            end)
+            sel:SetScript('OnLeave', function() e.tips:Hide() end)
             setRegister()--设置事件
 
     elseif event == "PLAYER_LOGOUT" then
@@ -38,8 +46,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='TALKINGHEAD_REQUESTED' then
         local _, _, vo, _, _, _, name, text, isNewTalkingHead = C_TalkingHead.GetCurrentLineInfo();
         if vo and vo>0 and self.soundKitID~=vo then
-            PlaySound(vo, "Dialog");
-            print('|cff00ff00'..name..'|r','|cffff00ff'..text..'|r', 'soundKitID', vo)
+            if e.setPlayerSound then
+                e.PlaySound(vo)--, "Dialog");
+            --else
+              --  e.PlaySound(vo, "Dialog");
+            end
+            print('|cff00ff00'..name..'|r','|cffff00ff'..text..'|r',id, addName, 'soundKitID', vo)
             self.soundKitID=vo
         end
         TalkingHeadFrame:CloseImmediately()
