@@ -568,8 +568,8 @@ local function InitList(self, level, type)--LFDFrame.lua
         info= {
             text= e.onlyChinse and '自动打开战利品掷骰窗口' or AUTO_OPEN_LOOT_HISTORY_TEXT,
             tooltipOnButton= true,
-            tooltipTitle= 'SetCVar("autoopenloothistory", "1")',
-            tooltipText= '/loot',
+            tooltipTitle= '/loot',
+            tooltipText= 'SetCVar("autoopenloothistory", "1")',
             checked= C_CVar.GetCVarBool("autoopenloothistory"),
             func= function ()
                 local value= C_CVar.GetCVarBool("autoopenloothistory")
