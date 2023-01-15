@@ -1,6 +1,6 @@
 local id, e = ...
 local addName= SPELLS..'Flyout'
-local Save={disabled= not e.Player.zh}
+local Save={disabled= not e.Player.zh and not e.Player.husandro}
 
 --######
 --初始化
