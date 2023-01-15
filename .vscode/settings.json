@@ -817,7 +817,9 @@
         "RaiderIO_ProfileTooltip",
         "WoWToolsOpenItemsButton",
         "AUTO_OPEN_LOOT_HISTORY_TEXT",
-        "LootHistoryFrame"
+        "LootHistoryFrame",
+        "FriendsFrame",
+        "RaidFrame"
     ],
     "Lua.diagnostics.disable": [
     ]
