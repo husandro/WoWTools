@@ -12,6 +12,7 @@ local Save={
         [141605]=true,--[飞行管理员的哨子]
         [163604]=true,--[撒网器5000型]
         [199900]=true,--[二手勘测工具]
+        [198083]=true,--探险队补给包
     },
     pet=true, open=true, toy=true, mount=true, mago=true, ski=true, alt=true,
     noItemHide=not e.Player.husandro,

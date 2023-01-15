@@ -332,19 +332,19 @@ end
 --#############
 --声望更新, 提示
 --#############
-local function set_RegisterEvent_CHAT_MSG_COMBAT_FACTION_CHANGE()--更新, 提示, 事件
+--[[local function set_RegisterEvent_CHAT_MSG_COMBAT_FACTION_CHANGE()--更新, 提示, 事件
 	if Save.factionUpdateTips or Save.btn then
 		panel:RegisterEvent('CHAT_MSG_COMBAT_FACTION_CHANGE')
 	else
 		panel:UnregisterEvent('CHAT_MSG_COMBAT_FACTION_CHANGE')
 	end
-end
+end]]
 
 local factionStr=FACTION_STANDING_INCREASED:gsub("%%s", "(.-)")--你在%s中的声望值提高了%d点。
 factionStr = factionStr:gsub("%%d", ".-")
-local function FactionUpdate(text)
+local function FactionUpdate(self, event, text, ...)
 	local name=text and text:match(factionStr)
-	if not Save.factionUpdateTips or not name or panel.printText then
+	if not name then
 		return
 	end
 	for i=1, GetNumFactions() do
@@ -409,23 +409,19 @@ local function FactionUpdate(text)
 					value=('%i%%'):format(currentValue/threshold*100).. (completed>0 and ' '..QUEST_REWARDS..'|cnGREEN_FONT_COLOR:'..completed..'|r'..VOICEMACRO_LABEL_CHARGE1 or '')
 				end
 			end
-			local m=name..(factionStandingtext and ' '..factionStandingtext or '')
+			local m=factionStandingtext and factionStandingtext or ''
 			if barColor then
 				m=barColor:WrapTextInColorCode(m)
 			end
 			if value then
 				m=m..' |cffffffff'..value..'|r'
 			end
-			m=(icon or isCappedIcon)..m
+			m=(icon or isCappedIcon)..'|cffff00ff'..m..'|r'
 			if hasRewardPending then
-				m=m..' '..e.Icon.bank2
+				m=m..e.Icon.bank2
 			end
-			panel.printText=true
-			C_Timer.After(0.3, function()
-				panel.printText=nil
-				print(id, addName, m)
-			end)
-			return
+
+			return false, text..m, ...
 		end
 	end
 end
@@ -452,8 +448,8 @@ local function InitMenu(self, level, type)
 		checked= Save.factionUpdateTips,
 		func= function()
 			Save.factionUpdateTips= not Save.factionUpdateTips and true or nil
-			set_RegisterEvent_CHAT_MSG_COMBAT_FACTION_CHANGE()--更新, 提示, 事件
-			print(id, addName, e.onlyChinse and '声望变化' or COMBAT_TEXT_SHOW_REPUTATION_TEXT,'|A:voicechat-icon-textchat-silenced:0:0|a', e.GetEnabeleDisable(Save.factionUpdateTips))
+			--set_RegisterEvent_CHAT_MSG_COMBAT_FACTION_CHANGE()--更新, 提示, 事件
+			print(id, addName, e.onlyChinse and '声望变化' or COMBAT_TEXT_SHOW_REPUTATION_TEXT,'|A:voicechat-icon-textchat-silenced:0:0|a', e.GetEnabeleDisable(Save.factionUpdateTips), e.onlyChinse and '需求重新加载' or REQUIRES_RELOAD)
 		end
 	}
 	UIDropDownMenu_AddButton(info, level)
@@ -481,7 +477,7 @@ local function Init()
 
 	hooksecurefunc('ReputationFrame_InitReputationRow', set_ReputationFrame_InitReputationRow)-- 声望, 界面, 增强
 
-	set_RegisterEvent_CHAT_MSG_COMBAT_FACTION_CHANGE()--更新, 提示, 事件
+	--set_RegisterEvent_CHAT_MSG_COMBAT_FACTION_CHANGE()--更新, 提示, 事件
 
 	panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
@@ -509,6 +505,10 @@ local function Init()
 	panel.down:SetScript("OnMouseDown", function(self)
 		ExpandAllFactionHeaders()
 	end)
+
+	if Save.factionUpdateTips then--声望更新, 提示
+		ChatFrame_AddMessageEventFilter('CHAT_MSG_COMBAT_FACTION_CHANGE', FactionUpdate)
+	end
 end
 
 
@@ -544,7 +544,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 	elseif event=='UPDATE_FACTION' then
 		Reputation_Text_setText()--文本
 
-	elseif event=='CHAT_MSG_COMBAT_FACTION_CHANGE' then--声望更新, 提示
-		FactionUpdate(arg1)
+	--elseif event=='CHAT_MSG_COMBAT_FACTION_CHANGE' then--声望更新, 提示
+	--	FactionUpdate(arg1)
     end
 end)
