@@ -445,6 +445,9 @@ local function InitMenu(self, level, type)
 
 	info={
 		text= (e.onlyChinse and '声望变化' or COMBAT_TEXT_SHOW_REPUTATION_TEXT)..'|A:voicechat-icon-textchat-silenced:0:0|a',
+		tooltipOnButton=true,
+		tooltipTitle= e.onlyChinse and '展开选项 |A:editmode-down-arrow:16:11:0:-7|a 声望' or HUD_EDIT_MODE_EXPAND_OPTIONS..REPUTATION,
+		tooltipText= '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '需求' or NEED),
 		checked= Save.factionUpdateTips,
 		func= function()
 			Save.factionUpdateTips= not Save.factionUpdateTips and true or nil

@@ -819,7 +819,8 @@
         "AUTO_OPEN_LOOT_HISTORY_TEXT",
         "LootHistoryFrame",
         "FriendsFrame",
-        "RaidFrame"
+        "RaidFrame",
+        "HUD_EDIT_MODE_EXPAND_OPTIONS"
     ],
     "Lua.diagnostics.disable": [
     ]
