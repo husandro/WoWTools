@@ -79,7 +79,7 @@ local function Init()
     hooksecurefunc('UnitFrame_Update', function(self, isParty)--UnitFrame.lua --
     --hooksecurefunc('UnitFrame_SetUnit', function(self, unit, healthbar, manabar)
         local unit= self.overrideName or self.unit
-        if unit and self:IsShown() then
+        if unit then
             local classFilename= UnitClassBase(unit)
             if classFilename then
                 local r,g,b=GetClassColor(classFilename)
@@ -117,6 +117,7 @@ local function Init()
                             self.manabar.RightText:SetShadowOffset(2, -2)
                         end
                     end
+                    self.name:SetJustifyH('CENTER')
                 end
 
                 self.class:SetAtlas(class)
@@ -155,6 +156,16 @@ local function Init()
         PlayerHitIndicator:ClearAllPoints()
         PlayerHitIndicator:SetPoint('BOTTOMLEFT', (PlayerFrame.PlayerFrameContainer and PlayerFrame and PlayerFrame.PlayerFrameContainer.PlayerPortrait) or  PlayerHitIndicator:GetParent(), 'TOPLEFT')
     end
+    hooksecurefunc(TargetFrame,'CheckLevel', function(self)--目标, 等级, 颜色
+        local levelText = self.TargetFrameContent.TargetFrameContentMain.LevelText
+        if levelText and levelText:IsShown() and self.unit then
+            local classFilename= UnitClassBase(self.unit)
+            if classFilename then
+                local r,g,b=GetClassColor(classFilename)
+                levelText:SetTextColor(r,g,b)
+            end
+        end
+    end)
    --[[ hooksecurefunc('UnitFrameHealthBar_Update', function(statusbar, unit)
         if unit and statusbar then
             local r,g ,b = GetClassColor(UnitClassBase(unit))

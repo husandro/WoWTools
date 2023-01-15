@@ -821,7 +821,9 @@
         "FriendsFrame",
         "RaidFrame",
         "HUD_EDIT_MODE_EXPAND_OPTIONS",
-        "class"
+        "class",
+        "TargetFrameMixin",
+        "TargetFrame"
     ],
     "Lua.diagnostics.disable": [
     ]
