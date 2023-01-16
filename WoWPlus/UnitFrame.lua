@@ -84,33 +84,33 @@ end
 --####
 --小队
 --####
-local function set_CreateTargetofTarget(self, unit)--TargetFrame.lua
+--[[local function set_CreateTargetofTarget(self, unit, setPoint)--TargetFrame.lua
     if not self.totFrame then
         local thisName= unit.."ToT"
-        local frame = CreateFrame("BUTTON", thisName, self, "TargetofTargetFrameTemplate");
+        local frame = CreateFrame("Frame", thisName, self, "TargetofTargetFrameTemplate");
         frame:SetFrameLevel(self:GetFrameLevel() + 5);
         self.totFrame = frame;
         UnitFrame_Initialize(frame, unit, frame.Name, frame.frameType, frame.Portrait, frame.HealthBar, nil, frame.ManaBar, nil);
         SecureUnitButton_OnLoad(frame, unit);
-        frame:RegisterUnitEvent('UNIT_TARGET', unit..'target')--更新, 目标的目标
-        frame:RegisterUnitEvent('UNIT_MANA', unit..'target')--更新, 目标的目标
-        frame:RegisterUnitEvent('UNIT_HEALTH', unit..'target')--更新, 目标的目标
-        frame:RegisterUnitEvent('UNIT_POWER_UPDATE', unit..'target')--更新, 目标的目标
-        frame:RegisterUnitEvent('UNIT_FLAGS', unit..'target')--更新, 目标的目标
-        
+        frame.unit2=unit..'target'
+        frame:RegisterUnitEvent('UNIT_TARGET', unit)
+
         frame:SetScript('OnEvent', function(self2, event, arg1)
-            local target= self.unit..'target'
-            local exists= UnitExists(target)
-            if exists then
-                --SetPortraitTexture(self2.portrait, target)
-                UnitFrame_Update(self2)
-            end
-            self2:SetShown(exists)
+     
+                local target= self2.unit..'target'
+                local exists= UnitExists(target)
+                if exists then
+                    --SetPortraitTexture(self2.portrait, target)
+                    UnitFrame_Update(self2)
+                end
+                self2:SetScale(not exists and 0.01 or 0.65)
         end)
-        frame:SetScale(0.65)
         frame:ClearAllPoints()
+        if setPoint then
+            frame:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT')
+        end
     end
-end
+end]]
 
 local function set_SetRaidTarget(texture, unit)--设置, 标记 TargetFrame.lua
     local index = unit and GetRaidTargetIndex(unit);
@@ -153,12 +153,12 @@ local function set_PartyFrame()--PartyFrame.lua
                         icon:SetShown(false)
                     end
                 end)
-                set_CreateTargetofTarget(memberFrame, memberFrame.unit..'target')
-                memberFrame.totFrame:SetPoint('LEFT', memberFrame, 'RIGHT')
+                --set_CreateTargetofTarget(memberFrame, memberFrame.unit, true)
             end
         end
     end)
 end
+
 --######
 --初始化
 --######
