@@ -98,24 +98,24 @@ local function Init()
                     --self.name:SetJustifyH('CENTER')
                     if self.healthbar then
                         if self.healthbar.LeftText then
-                            self.healthbar.LeftText:SetShadowOffset(2, -2)
+                            self.healthbar.LeftText:SetShadowOffset(1, -1)
                         end
                         if self.healthbar.CenterText then
-                            self.healthbar.CenterText:SetShadowOffset(2, -2)
+                            self.healthbar.CenterText:SetShadowOffset(1, -1)
                         end
                         if self.healthbar.RightText then
-                            self.healthbar.RightText:SetShadowOffset(2, -2)
+                            self.healthbar.RightText:SetShadowOffset(1, -1)
                         end
                     end
                     if self.manabar then
                         if self.manabar.LeftText then
-                            self.manabar.LeftText:SetShadowOffset(2, -2)
+                            self.manabar.LeftText:SetShadowOffset(1, -1)
                         end
                         if self.manabar.CenterText then
-                            self.manabar.CenterText:SetShadowOffset(2, -2)
+                            self.manabar.CenterText:SetShadowOffset(1, -1)
                         end
                         if self.manabar.RightText then
-                            self.manabar.RightText:SetShadowOffset(2, -2)
+                            self.manabar.RightText:SetShadowOffset(1, -1)
                         end
                     end
                 end
