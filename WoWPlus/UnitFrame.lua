@@ -144,17 +144,9 @@ local function Init()
         end
     end)
 
-    
-   
-   --[[ hooksecurefunc('UnitFrameHealthBar_Update', function(statusbar, unit)
-        if unit and statusbar then
-            local r,g ,b = GetClassColor(UnitClassBase(unit))
-            print(r,g,b, unit)
-            if r and g and b then
-                statusbar:SetStatusBarColor(r, g, b)
-            end
-        end
-    end)]]
+    hooksecurefunc(PartyFrameMixin, 'InitializePartyMemberFrames', function() 
+        print('aaaaaaaaaaa')
+    end)
 end
 
 --###########

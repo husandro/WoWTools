@@ -829,7 +829,8 @@
         "PlayerName",
         "PlayerFrame_GetHealthBar",
         "PlayerFrame_GetManaBar",
-        "OPTION_TOOLTIP_TARGETOFTARGET5"
+        "OPTION_TOOLTIP_TARGETOFTARGET5",
+        "PartyFrameMixin"
     ],
     "Lua.diagnostics.disable": [
     ]

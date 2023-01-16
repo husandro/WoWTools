@@ -742,7 +742,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
     end
 end
 
-local function setCVar(reset, tips)
+local function setCVar(reset, tips, notPrint)
     local tab={
         ['missingTransmogSourceInItemTooltips']={
             value='1',
@@ -787,13 +787,17 @@ local function setCVar(reset, tips)
                 local value = C_CVar.GetCVar(name)
                 if defaultValue~=value then
                     C_CVar.SetCVar(name, defaultValue)
-                    print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '恢复默认设置' or RESET_TO_DEFAULT)..'|r', name, defaultValue, info.msg)
+                    if not notPrint then
+                        print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '恢复默认设置' or RESET_TO_DEFAULT)..'|r', name, defaultValue, info.msg)
+                    end
                 end
             elseif Save.setCVar then
                 local value = C_CVar.GetCVar(name)
                 if value~=info.value then
                     C_CVar.SetCVar(name, info.value)
-                    print(id,addName ,name, info.value..'('..value..')', info.msg)
+                    if not notPrint then
+                        print(id,addName ,name, info.value..'('..value..')', info.msg)
+                    end
                 end
             end
         end
@@ -1202,7 +1206,7 @@ local function Init()
     end)
     panel.CVar:SetScript('OnLeave', function() e.tips:Hide() end)
 
-    setCVar()--设置CVar
+    setCVar(nil, nil, true)--设置CVar
 
     if Save.setCVar and e.Player.zh then
         ConsoleExec("portal TW")
