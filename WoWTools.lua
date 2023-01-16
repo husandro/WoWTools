@@ -416,7 +416,7 @@ e.Cstr=function(self, size, fontType, ChangeFont, color, layer, justifyH)
         elseif color then
             b:SetTextColor(0.8, 0.8, 0.8)
         else
-            b:SetTextColor(1, 0.45, 0.04)
+            b:SetTextColor(1, 0.82, 0)
         end
     end
     return b
@@ -1014,4 +1014,5 @@ FrameUtil.RegisterFrameForEvents(self, table);
 SetPortraitTexture(textureObject, unitToken [, disableMasking])
 SetPortraitToTexture(textureObject, texturePath)
 Region:SetVertexColor(colorR, colorG, colorB [, a])
+... = securecall(func or functionName, ...)
 ]]

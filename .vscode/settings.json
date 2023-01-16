@@ -823,7 +823,13 @@
         "HUD_EDIT_MODE_EXPAND_OPTIONS",
         "class",
         "TargetFrameMixin",
-        "TargetFrame"
+        "TargetFrame",
+        "PlayerFrameBottomManagedFramesContainer",
+        "PlayerLevelText",
+        "PlayerName",
+        "PlayerFrame_GetHealthBar",
+        "PlayerFrame_GetManaBar",
+        "OPTION_TOOLTIP_TARGETOFTARGET5"
     ],
     "Lua.diagnostics.disable": [
     ]
