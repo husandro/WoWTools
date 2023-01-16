@@ -24,10 +24,6 @@ local function set_PlayerFrame()--PlayerFrame.lua
         set_SetTextColor(PlayerLevelText, R,G,B)
     end)
 
-    --set_SetShadowOffset(PlayerLevelText)
-    --set_SetShadowOffset(PlayerName)
-
-
     --施法条
     local frame=PlayerCastingBarFrame
     frame:HookScript('OnShow', function(self)--图标
@@ -84,34 +80,6 @@ end
 --####
 --小队
 --####
---[[local function set_CreateTargetofTarget(self, unit, setPoint)--TargetFrame.lua
-    if not self.totFrame then
-        local thisName= unit.."ToT"
-        local frame = CreateFrame("Frame", thisName, self, "TargetofTargetFrameTemplate");
-        frame:SetFrameLevel(self:GetFrameLevel() + 5);
-        self.totFrame = frame;
-        UnitFrame_Initialize(frame, unit, frame.Name, frame.frameType, frame.Portrait, frame.HealthBar, nil, frame.ManaBar, nil);
-        SecureUnitButton_OnLoad(frame, unit);
-        frame.unit2=unit..'target'
-        frame:RegisterUnitEvent('UNIT_TARGET', unit)
-
-        frame:SetScript('OnEvent', function(self2, event, arg1)
-     
-                local target= self2.unit..'target'
-                local exists= UnitExists(target)
-                if exists then
-                    --SetPortraitTexture(self2.portrait, target)
-                    UnitFrame_Update(self2)
-                end
-                self2:SetScale(not exists and 0.01 or 0.65)
-        end)
-        frame:ClearAllPoints()
-        if setPoint then
-            frame:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT')
-        end
-    end
-end]]
-
 local function set_SetRaidTarget(texture, unit)--设置, 标记 TargetFrame.lua
     local index = unit and GetRaidTargetIndex(unit);
     if (index) then
@@ -140,7 +108,6 @@ local function set_PartyFrame()--PartyFrame.lua
                 memberFrame.PartyMemberOverlay.portrait:SetSize(38,38)
 
                 memberFrame.PartyMemberOverlay:RegisterEvent('RAID_TARGET_UPDATE')--更新,标记
-                --memberFrame.PartyMemberOverlay:RegisterUnitEvent('UNIT_TARGET', memberFrame.PartyMemberOverlay.unit)--更新, 目标的目标
                 memberFrame.PartyMemberOverlay:HookScript('OnEvent', function (self2, event)
                     if event=='RAID_TARGET_UPDATE' and self2.exists then
                         set_SetRaidTarget(self2.RaidTargetIcon, self2.unit);
@@ -153,7 +120,6 @@ local function set_PartyFrame()--PartyFrame.lua
                         icon:SetShown(false)
                     end
                 end)
-                --set_CreateTargetofTarget(memberFrame, memberFrame.unit, true)
             end
         end
     end)

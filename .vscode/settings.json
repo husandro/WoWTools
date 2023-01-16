@@ -845,7 +845,9 @@
         "UnitFrame_Initialize",
         "SetTextStatusBarTextZeroText",
         "SecureUnitButton_OnLoad",
-        "UnitFrame_Update"
+        "UnitFrame_Update",
+        "CastingBarMixin",
+        "FrameUtil"
     ],
     "Lua.diagnostics.disable": [
     ]

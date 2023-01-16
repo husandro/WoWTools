@@ -1011,6 +1011,7 @@ DRAG_MODEL拖曳
 UIPanelWindows[]
 
 FrameUtil.RegisterFrameForEvents(self, table);
+FrameUtil.UnregisterFrameForEvents(self, table);
 SetPortraitTexture(textureObject, unitToken [, disableMasking])
 SetPortraitToTexture(textureObject, texturePath)
 Region:SetVertexColor(colorR, colorG, colorB [, a])
