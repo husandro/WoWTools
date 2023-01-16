@@ -1015,4 +1015,5 @@ SetPortraitTexture(textureObject, unitToken [, disableMasking])
 SetPortraitToTexture(textureObject, texturePath)
 Region:SetVertexColor(colorR, colorG, colorB [, a])
 ... = securecall(func or functionName, ...)
+frame:SetFrameLevel(self:GetFrameLevel() + 5);
 ]]

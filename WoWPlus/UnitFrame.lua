@@ -1,7 +1,7 @@
 local id, e = ...
 local addName= UNITFRAME_LABEL
 local Save={SetShadowOffset= 1}
-
+local panel=CreateFrame("Frame")
 local R,G,B= GetClassColor(UnitClassBase('player'))
 
 local function set_SetShadowOffset(self)--设置字本, 阴影
@@ -80,6 +80,85 @@ local function set_PetFrame()
         PlayerHitIndicator:SetPoint('BOTTOMLEFT', (PlayerFrame.PlayerFrameContainer and PlayerFrame and PlayerFrame.PlayerFrameContainer.PlayerPortrait) or  PlayerHitIndicator:GetParent(), 'TOPLEFT')
     end
 end
+
+--####
+--小队
+--####
+local function set_CreateTargetofTarget(self, unit)--TargetFrame.lua
+    if not self.totFrame then
+        local thisName= unit.."ToT"
+        local frame = CreateFrame("BUTTON", thisName, self, "TargetofTargetFrameTemplate");
+        frame:SetFrameLevel(self:GetFrameLevel() + 5);
+        self.totFrame = frame;
+        UnitFrame_Initialize(frame, unit, frame.Name, frame.frameType, frame.Portrait, frame.HealthBar, nil, frame.ManaBar, nil);
+        SecureUnitButton_OnLoad(frame, unit);
+        frame:RegisterUnitEvent('UNIT_TARGET', unit..'target')--更新, 目标的目标
+        frame:RegisterUnitEvent('UNIT_MANA', unit..'target')--更新, 目标的目标
+        frame:RegisterUnitEvent('UNIT_HEALTH', unit..'target')--更新, 目标的目标
+        frame:RegisterUnitEvent('UNIT_POWER_UPDATE', unit..'target')--更新, 目标的目标
+        frame:RegisterUnitEvent('UNIT_FLAGS', unit..'target')--更新, 目标的目标
+        
+        frame:SetScript('OnEvent', function(self2, event, arg1)
+            local target= self.unit..'target'
+            local exists= UnitExists(target)
+            if exists then
+                --SetPortraitTexture(self2.portrait, target)
+                UnitFrame_Update(self2)
+            end
+            self2:SetShown(exists)
+        end)
+        frame:SetScale(0.65)
+        frame:ClearAllPoints()
+    end
+end
+
+local function set_SetRaidTarget(texture, unit)--设置, 标记 TargetFrame.lua
+    local index = unit and GetRaidTargetIndex(unit);
+    if (index) then
+        SetRaidTargetIconTexture(texture, index);
+    end
+    texture:SetShown(index and true or false)
+end
+local function set_PartyFrame()--PartyFrame.lua
+    hooksecurefunc(PartyFrame, 'UpdatePartyFrames', function(self)
+        if not ShouldShowPartyFrames() then
+            return
+        end
+        for memberFrame in self.PartyMemberFramePool:EnumerateActive() do
+            local exists= UnitExists(memberFrame.unit)
+            memberFrame.PartyMemberOverlay.unit= memberFrame.unit or memberFrame:GetUnit()
+            memberFrame.PartyMemberOverlay.exists= exists
+            if not memberFrame.PartyMemberOverlay.RaidTargetIcon and exists then
+                memberFrame.PartyMemberOverlay.RaidTargetIcon= memberFrame:CreateTexture(nil, 'ARTWORK')--队伍, 标记
+                memberFrame.PartyMemberOverlay.RaidTargetIcon:SetPoint('RIGHT', memberFrame.PartyMemberOverlay.RoleIcon, 'LEFT')
+                memberFrame.PartyMemberOverlay.RaidTargetIcon:SetSize(14,14)
+                memberFrame.PartyMemberOverlay.RaidTargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
+                set_SetRaidTarget(memberFrame.PartyMemberOverlay.RaidTargetIcon, memberFrame.unit)--设置,标记
+
+                memberFrame.PartyMemberOverlay.portrait= CreateFrame("Frame")--目标的目标
+                memberFrame.PartyMemberOverlay.portrait:SetPoint('LEFT', memberFrame, 'RIGHT')
+                memberFrame.PartyMemberOverlay.portrait:SetSize(38,38)
+
+                memberFrame.PartyMemberOverlay:RegisterEvent('RAID_TARGET_UPDATE')--更新,标记
+                --memberFrame.PartyMemberOverlay:RegisterUnitEvent('UNIT_TARGET', memberFrame.PartyMemberOverlay.unit)--更新, 目标的目标
+                memberFrame.PartyMemberOverlay:HookScript('OnEvent', function (self2, event)
+                    if event=='RAID_TARGET_UPDATE' and self2.exists then
+                        set_SetRaidTarget(self2.RaidTargetIcon, self2.unit);
+                    end
+                end)
+                hooksecurefunc(memberFrame, 'UpdateAssignedRoles', function(self2)--隐藏, DPS 图标
+                    local icon = self2.PartyMemberOverlay.RoleIcon;
+                    local role = UnitGroupRolesAssigned(self2.PartyMemberOverlay.unit or self2:GetUnit())
+                    if role== 'DAMAGER' then
+                        icon:SetShown(false)
+                    end
+                end)
+                set_CreateTargetofTarget(memberFrame, memberFrame.unit..'target')
+                memberFrame.totFrame:SetPoint('LEFT', memberFrame, 'RIGHT')
+            end
+        end
+    end)
+end
 --######
 --初始化
 --######
@@ -87,6 +166,7 @@ local function Init()
     set_PlayerFrame()--玩家
     set_TargetFrame()--目标
     set_PetFrame()--宠物
+    set_PartyFrame()--小队
 
     --#########
     --职业, 图标
@@ -144,15 +224,13 @@ local function Init()
         end
     end)
 
-    hooksecurefunc(PartyFrameMixin, 'InitializePartyMemberFrames', function() 
-        print('aaaaaaaaaaa')
-    end)
+   
 end
 
 --###########
 --加载保存数据
 --###########
-local panel=CreateFrame("Frame")
+
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)

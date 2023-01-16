@@ -830,7 +830,22 @@
         "PlayerFrame_GetHealthBar",
         "PlayerFrame_GetManaBar",
         "OPTION_TOOLTIP_TARGETOFTARGET5",
-        "PartyFrameMixin"
+        "PartyFrameMixin",
+        "PartyFrame",
+        "MAX_PARTY_MEMBERS",
+        "SetRaidTargetIconTexture",
+        "RAID_TARGET_ICON_DIMENSION",
+        "RAID_TARGET_TEXTURE_DIMENSION",
+        "RAID_TARGET_TEXTURE_COLUMNS",
+        "RAID_TARGET_TEXTURE_ROWS",
+        "EditModeManagerFrame",
+        "ShouldShowPartyFrames",
+        "DAMAGER",
+        "PartyMemberFrameMixin",
+        "UnitFrame_Initialize",
+        "SetTextStatusBarTextZeroText",
+        "SecureUnitButton_OnLoad",
+        "UnitFrame_Update"
     ],
     "Lua.diagnostics.disable": [
     ]

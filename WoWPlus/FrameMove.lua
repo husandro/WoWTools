@@ -126,7 +126,6 @@ local FrameTab={
     MainMenuBarBackpackButton={save=true, click='R', frame=MicroButtonAndBagsBar},--主菜单
     PlayerPowerBarAlt={},--UnitPowerBarAlt.lua
 };
-
 --UIWidgetBelowMinimapContainerFrame={save=true,click='RightButton'},
 
 
