@@ -468,9 +468,10 @@ end
 local function set_Unit_Health_Bar(self, unit)
     local value= unit and UnitHealth(unit)
     local max= unit and UnitHealthMax(unit)
-    local r, g, b, left, right
-    local text
+    local r, g, b, left, right, hex, text
+
     if value and max then
+        r, g, b, hex = GetClassColor(select(2, UnitClass(unit)))
         if UnitIsFeignDeath(unit) then
             text= e.onlyChinse and '假死' or BOOST2_HUNTERBEAST_FEIGNDEATH:match('|cFFFFFFFF(.+)|r') or NO..DEAD
         elseif value <= 0 then
@@ -484,11 +485,12 @@ local function set_Unit_Health_Bar(self, unit)
                 text='|cnGREEN_FONT_COLOR:'..text..'|r'
             elseif hp<90 then
                 text='|cnYELLOW_FONT_COLOR:'..text..'|r'
+            else
+                text= '|c'..hex..text..'|r'
             end
             left =e.MK(value, 2)
         end
-        right = e.MK(max, 2)
-        r, g, b = GetClassColor(select(2, UnitClass(unit)))
+        right = e.MK(max, 2) 
         self:SetStatusBarColor(r, g, b)
     end
     if not self.text and text then
