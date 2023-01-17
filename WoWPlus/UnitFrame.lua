@@ -266,6 +266,24 @@ local function Init()
     C_Timer.After(2, function()
         set_LootSpecialization()--拾取专精
     end)
+
+    --############
+    --去掉生命条 %
+    --############
+    --extStatusBar.lua
+    hooksecurefunc('TextStatusBar_UpdateTextStringWithValues', function(statusFrame, textString, value, valueMin, valueMax)
+        if value and value>0 then
+            if textString and textString:IsShown() then
+                local text= textString:GetText()
+                text= text:gsub('%%', '')
+                textString:SetText(text)
+            elseif statusFrame.LeftText and statusFrame.LeftText:IsShown() then
+                local text= statusFrame.LeftText:GetText()
+                text= text:gsub('%%', '')
+                statusFrame.LeftText:SetText(text)
+            end
+        end
+    end)
 end
 
 --###########
