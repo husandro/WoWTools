@@ -115,7 +115,7 @@ local function set_PartyFrame()--PartyFrame.lua
                 end)
                 hooksecurefunc(memberFrame, 'UpdateAssignedRoles', function(self2)--隐藏, DPS 图标
                     local icon = self2.PartyMemberOverlay.RoleIcon;
-                    local role = UnitGroupRolesAssigned(self2.PartyMemberOverlay.unit or self2:GetUnit())
+                    local role = UnitGroupRolesAssigned(self2.unit or self2.PartyMemberOverlay.unit or self2:GetUnit())
                     if role== 'DAMAGER' then
                         icon:SetShown(false)
                     end
