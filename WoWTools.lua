@@ -150,7 +150,7 @@ e.Player={
     name_server=UnitName('player')..'-'..GetRealmName(),
     name= UnitName('player'),
     col='|c'..select(4,GetClassColor(UnitClassBase('player'))),
-    zh= GetLocale()== ("zhCN" or 'zhTW'),
+    zh= LOCALE_zhCN or LOCALE_zhTW,--GetLocale()== ("zhCN" or 'zhTW'),
     Lo=GetLocale(),
     class=UnitClassBase('player'),
     --MAX_PLAYER_LEVEL = GetMaxLevelForPlayerExpansion()
@@ -331,10 +331,9 @@ e.MK=function(number,bit)
         else
             return ('%.'..bit..'fm'):format(number/1e6)
         end
-    elseif number>= 1e4 and (e.Player.zh or e.onlyChinse) then
+    elseif number>= 1e4 and (LOCALE_zhCN or e.onlyChinse) then
         if bit==0 then
             return ('%iw'):format(number/1e4)
-            --return math.modf(number/1e4)..'w'
         else
             return ('%.'..bit..'fw'):format(number/1e4)
         end

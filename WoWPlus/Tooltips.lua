@@ -925,6 +925,10 @@ local function Init()
     end)
 
     TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes,  function(tooltip,date)
+        if tooltip~=GameTooltip and tooltip~=ItemRefTooltip then
+            return
+        end
+        --25宏, 11动作条, 4矿
         if date.type==2 then--单位
             if tooltip==e.tips then
                 local unit= select(2, TooltipUtil.GetDisplayedUnit(tooltip))
@@ -933,7 +937,7 @@ local function Init()
                 end
             end
 
-        elseif date.id and date.type and (tooltip==e.tips or tooltip==ItemRefTooltip) and date.type~=25 then--25宏 ,11宠物技能
+        elseif date.id and date.type then
             if date.type==0 or date.type==19 then--TooltipUtil.lua 0物品 19玩具
                 local itemID, itemLink=TooltipUtil.GetDisplayedItem(tooltip)
                 itemLink= itemLink or itemID or date.id
@@ -964,8 +968,10 @@ local function Init()
                 setQuest(tooltip, date.id)--任务
 
             else
-                tooltip:AddDoubleLine('ID '..date.id, 'type '..date.type)
+                tooltip:AddDoubleLine('id '..date.id, 'type '..date.type)
             end
+        elseif date.type or date.id then
+            tooltip:AddDoubleLine(date.id and 'ID '..date.id, date.type and 'type '..date.type)
         end
     end)
 --[[    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(tooltip,date)--宠物手册，设置名称

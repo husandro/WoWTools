@@ -848,7 +848,9 @@
         "UnitFrame_Update",
         "CastingBarMixin",
         "FrameUtil",
-        "PetName"
+        "PetName",
+        "LOCALE_zhTW",
+        "LOCALE_zhCN"
     ],
     "Lua.diagnostics.disable": [
     ]

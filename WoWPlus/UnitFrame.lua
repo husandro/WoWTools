@@ -156,9 +156,9 @@ local function Init()
         if not self.classTexture then
             self.classTexture=self:CreateTexture()
             if unit=='target' or unit=='focus' then
-                self.classTexture:SetPoint('TOPRIGHT', self.portrait, 'TOPLEFT',-12,12)
+                self.classTexture:SetPoint('TOPRIGHT', self.portrait, 'TOPLEFT',0,10)
             else
-                self.classTexture:SetPoint('TOPLEFT', self.portrait, 'TOPRIGHT',-12,12)
+                self.classTexture:SetPoint('TOPLEFT', self.portrait, 'TOPRIGHT',-14,10)
             end
             self.classTexture:SetSize(20,20)
 
@@ -195,8 +195,10 @@ local function Init()
             set_SetTextColor(self.manabar.TextString, r,g,b)
             set_SetTextColor(self.manabar.RightText, r,g,b)
         end
-        self.healthbar:SetStatusBarTexture('Interface\\TargetingFrame\\UI-StatusBar')
-        self.healthbar:SetStatusBarColor(r,g,b)--颜色
+        if self.healthbar then
+            self.healthbar:SetStatusBarTexture('Interface\\TargetingFrame\\UI-StatusBar')
+            self.healthbar:SetStatusBarColor(r,g,b)--颜色
+        end
     end)
 
     hooksecurefunc(TargetFrame, 'CheckClassification', function ()--目标，颜色
