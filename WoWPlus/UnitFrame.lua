@@ -195,9 +195,9 @@ local function Init()
             set_SetTextColor(self.manabar.TextString, r,g,b)
             set_SetTextColor(self.manabar.RightText, r,g,b)
         end
-        if self.healthbar then
-            self.healthbar:SetStatusBarTexture('Interface\\TargetingFrame\\UI-StatusBar')
+        if self.healthbar and self.healthbar:IsVisible() then
             self.healthbar:SetStatusBarColor(r,g,b)--颜色
+            self.healthbar:SetStatusBarTexture('Interface\\TargetingFrame\\UI-StatusBar')
         end
     end)
 
