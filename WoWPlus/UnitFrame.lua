@@ -164,12 +164,12 @@ local function Init()
 
             if self.healthbar then
                 set_SetShadowOffset(self.healthbar.LeftText)--字本, 阴影
-                set_SetShadowOffset(self.healthbar.CenterText)
+                set_SetShadowOffset(self.healthbar.TextString)
                 set_SetShadowOffset(self.healthbar.RightText)
             end
             if self.manabar then
                 set_SetShadowOffset(self.manabar.LeftText)
-                set_SetShadowOffset(self.manabar.CenterText)
+                set_SetShadowOffset(self.manabar.TextString)
                 set_SetShadowOffset(self.manabar.RightText)
             end
             set_SetShadowOffset(self.name)
@@ -187,12 +187,12 @@ local function Init()
 
         if self.healthbar then
             set_SetTextColor(self.healthbar.LeftText, r,g,b)--字体, 颜色
-            set_SetTextColor(self.healthbar.CenterText, r,g,b)
+            set_SetTextColor(self.healthbar.TextString, r,g,b)
             set_SetTextColor(self.healthbar.RightText, r,g,b)
         end
         if self.manabar then
             set_SetTextColor(self.manabar.LeftText, r,g,b)
-            set_SetTextColor(self.manabar.CenterText, r,g,b)
+            set_SetTextColor(self.manabar.TextString, r,g,b)
             set_SetTextColor(self.manabar.RightText, r,g,b)
         end
         self.healthbar:SetStatusBarTexture('Interface\\TargetingFrame\\UI-StatusBar')
