@@ -189,15 +189,13 @@ local function Init()
             set_SetTextColor(self.healthbar.LeftText, r,g,b)--字体, 颜色
             set_SetTextColor(self.healthbar.TextString, r,g,b)
             set_SetTextColor(self.healthbar.RightText, r,g,b)
+            self.healthbar:SetStatusBarColor(r,g,b)--颜色
+            self.healthbar:SetStatusBarTexture('Interface\\TargetingFrame\\UI-StatusBar')
         end
         if self.manabar then
             set_SetTextColor(self.manabar.LeftText, r,g,b)
             set_SetTextColor(self.manabar.TextString, r,g,b)
             set_SetTextColor(self.manabar.RightText, r,g,b)
-        end
-        if self.healthbar then
-            self.healthbar:SetStatusBarColor(r,g,b)--颜色
-            self.healthbar:SetStatusBarTexture('Interface\\TargetingFrame\\UI-StatusBar')
         end
     end)
 
