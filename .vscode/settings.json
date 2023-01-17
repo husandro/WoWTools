@@ -847,7 +847,8 @@
         "SecureUnitButton_OnLoad",
         "UnitFrame_Update",
         "CastingBarMixin",
-        "FrameUtil"
+        "FrameUtil",
+        "PetName"
     ],
     "Lua.diagnostics.disable": [
     ]

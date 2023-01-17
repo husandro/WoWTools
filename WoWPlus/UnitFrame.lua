@@ -175,7 +175,15 @@ local function Init()
         end
         self.classTexture:SetAtlas(class or 0)
 
-        set_SetTextColor(self.name, r,g,b)--名称, 颜色
+        if self.name then
+            set_SetTextColor(self.name, r,g,b)--名称, 颜色
+            if unit=='pet' then
+                self.name:SetText('')
+            elseif isParty then
+                self.name:SetText(UnitName(unit))
+            end
+        end
+
         if self.healthbar then
             set_SetTextColor(self.healthbar.LeftText, r,g,b)--字体, 颜色
             set_SetTextColor(self.healthbar.CenterText, r,g,b)

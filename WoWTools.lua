@@ -67,7 +67,7 @@ e.itemPetID={--宠物对换, wow9.0
     [67410]=true,
 }
 
-local GetPlayerNameRemoveRealm= function(name, realm)--玩家名称, 去服务器为*
+e.GetPlayerNameRemoveRealm= function(name, realm)--玩家名称, 去服务器为*
     realm = realm=='' and nil or realm
     if name then
         realm= realm or name:match('%-(.+)')
@@ -85,7 +85,7 @@ local GetPlayerNameRemoveRealm= function(name, realm)--玩家名称, 去服务�
     end
 end
 
-e.Race=function(unit, race, sex, reAtlas)--玩家种族图标
+e.Race=function(unit, race, sex, reAtlas)--玩家种族图标bt
     race =race or unit and select(2,UnitRace(unit))
     sex=sex or unit and UnitSex(unit)
     sex= sex==2 and 'male' or 'female'
@@ -134,7 +134,7 @@ e.GetPlayerInfo=function (unit, guid, showName)--, hideClassTexture)
             local _, englishClass, _, englishRace, sex, name, realm = GetPlayerInfoByGUID(guid)
             if name and englishClass and englishRace and sex then
                 if showName then
-                    return (e.Race(nil, englishRace, sex) or '')..'|c'..select(4,GetClassColor(englishClass))..GetPlayerNameRemoveRealm(name, realm)..'|r'
+                    return (e.Race(nil, englishRace, sex) or '')..'|c'..select(4,GetClassColor(englishClass))..e.GetPlayerNameRemoveRealm(name, realm)..'|r'
                 else
                     return (e.Race(nil, englishRace, sex) or '')..(e.Class(nil, englishClass) or '')
                 end
@@ -255,14 +255,14 @@ e.PlayerLink=function(name, guid) --玩家超链接
     if guid then
         local _, class, _, race, sex, name2, realm = GetPlayerInfoByGUID(guid)
         if name2 then
-            local showName= GetPlayerNameRemoveRealm(name2, realm)
+            local showName= e.GetPlayerNameRemoveRealm(name2, realm)
             if class then
                 showName= '|c'..select(4,GetClassColor(class))..showName..'|r'
             end
             return ((race and sex) and e.Race(nil, race, sex) or '')..'|Hplayer:'..name2..(realm and '-'..realm or '')..'|h['..showName..']|h'
         end
     elseif name then
-        return '|Hplayer:'..name..'|h['..GetPlayerNameRemoveRealm(name)..']|h'
+        return '|Hplayer:'..name..'|h['..e.GetPlayerNameRemoveRealm(name)..']|h'
     end
 end
 
