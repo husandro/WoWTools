@@ -178,17 +178,17 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
         end
 
         if self.healthbar then
-            set_SetTextColor(self.healthbar.LeftText, r,g,b)--字体, 颜色
-            set_SetTextColor(self.healthbar.TextString, r,g,b)
-            set_SetTextColor(self.healthbar.RightText, r,g,b)
+            --set_SetTextColor(self.healthbar.LeftText, r,g,b)--字体, 颜色
+            --set_SetTextColor(self.healthbar.TextString, r,g,b)
+            --set_SetTextColor(self.healthbar.RightText, r,g,b)
             self.healthbar:SetStatusBarColor(r,g,b)--颜色
             self.healthbar:SetStatusBarTexture('Interface\\TargetingFrame\\UI-StatusBar')
         end
-        if self.manabar then
+        --[[if self.manabar then
             set_SetTextColor(self.manabar.LeftText, r,g,b)
             set_SetTextColor(self.manabar.TextString, r,g,b)
             set_SetTextColor(self.manabar.RightText, r,g,b)
-        end
+        end]]
     end)
 
     hooksecurefunc(TargetFrame, 'CheckClassification', function ()--目标，颜色
