@@ -970,8 +970,8 @@ local function Init()
             else
                 tooltip:AddDoubleLine('id '..date.id, 'type '..date.type)
             end
-        elseif date.type or date.id then
-            tooltip:AddDoubleLine(date.id and 'ID '..date.id, date.type and 'type '..date.type)
+        --elseif date.type or date.id then
+            --tooltip:AddDoubleLine(date.id and 'ID '..date.id, date.type and 'type '..date.type)
         end
     end)
 --[[    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(tooltip,date)--宠物手册，设置名称

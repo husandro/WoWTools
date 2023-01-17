@@ -140,17 +140,17 @@ local function Init()
     --################
     hooksecurefunc('UnitFrame_Update', function(self, isParty)--UnitFrame.lua
         local unit= self.overrideName or self.unit
-        if not UnitExists(unit) then
-            return
-        end
         local r,g,b
         if unit=='player' then
             r,g,b= R,G,B
         else
-            local classFilename= UnitClassBase(unit)
+            local classFilename= unit and UnitClassBase(unit)
             if classFilename then
                 r,g,b=GetClassColor(classFilename)
             end
+        end
+        if not UnitExists(unit) or not (r and g and b) then
+            return
         end
         local class=e.Class(unit, nil, true)--职业, 图标
         if not self.classTexture then
@@ -195,7 +195,7 @@ local function Init()
             set_SetTextColor(self.manabar.TextString, r,g,b)
             set_SetTextColor(self.manabar.RightText, r,g,b)
         end
-        if self.healthbar and self.healthbar:IsVisible() then
+        if self.healthbar then
             self.healthbar:SetStatusBarColor(r,g,b)--颜色
             self.healthbar:SetStatusBarTexture('Interface\\TargetingFrame\\UI-StatusBar')
         end
