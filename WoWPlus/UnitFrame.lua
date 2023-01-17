@@ -139,7 +139,7 @@ local function Init()
     --#########
     hooksecurefunc('UnitFrame_Update', function(self, isParty)--UnitFrame.lua
         local unit= self.overrideName or self.unit
-        if not unit or not UnitExists(unit) then
+        if not UnitExists(unit) then
             return
         end
         local r,g,b
