@@ -23,6 +23,7 @@ local function set_PlayerFrame()--PlayerFrame.lua
     hooksecurefunc('PlayerFrame_UpdateLevel', function()
         set_SetTextColor(PlayerLevelText, R,G,B)
     end)
+    set_SetShadowOffset(PlayerLevelText)
 
     --施法条
     local frame=PlayerCastingBarFrame
@@ -134,9 +135,9 @@ local function Init()
     set_PetFrame()--宠物
     set_PartyFrame()--小队
 
-    --#########
-    --职业, 图标
-    --#########
+    --################
+    --职业, 图标， 颜色
+    --################
     hooksecurefunc('UnitFrame_Update', function(self, isParty)--UnitFrame.lua
         local unit= self.overrideName or self.unit
         if not UnitExists(unit) then
@@ -194,13 +195,18 @@ local function Init()
             set_SetTextColor(self.manabar.CenterText, r,g,b)
             set_SetTextColor(self.manabar.RightText, r,g,b)
         end
+        self.healthbar:SetStatusBarTexture('Interface\\TargetingFrame\\UI-StatusBar')
+        self.healthbar:SetStatusBarColor(r,g,b)--颜色
+    end)
+
+    hooksecurefunc(TargetFrame, 'CheckClassification', function ()--目标，颜色
+        TargetFrame.healthbar:SetStatusBarTexture('Interface\\TargetingFrame\\UI-StatusBar')
     end)
 end
 
 --###########
 --加载保存数据
 --###########
-
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
