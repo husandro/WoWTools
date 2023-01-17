@@ -173,8 +173,8 @@ local function Init()
             end
             set_SetShadowOffset(self.name)
         end
+        self.classTexture:SetAtlas(class or 0)
 
-        self.classTexture:SetAtlas(class)
         set_SetTextColor(self.name, r,g,b)--名称, 颜色
         if self.healthbar then
             set_SetTextColor(self.healthbar.LeftText, r,g,b)--字体, 颜色
@@ -187,8 +187,6 @@ local function Init()
             set_SetTextColor(self.manabar.RightText, r,g,b)
         end
     end)
-
-   
 end
 
 --###########
