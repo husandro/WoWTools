@@ -126,18 +126,10 @@ local function set_PartyFrame()--PartyFrame.lua
     end)
 end
 
---######
---初始化
---######
-local function Init()
-    set_PlayerFrame()--玩家
-    set_TargetFrame()--目标
-    set_PetFrame()--宠物
-    set_PartyFrame()--小队
-
-    --################
-    --职业, 图标， 颜色
-    --################
+--################
+--职业, 图标， 颜色
+--################
+local function set_UnitFrame_Update()--职业, 图标， 颜色
     hooksecurefunc('UnitFrame_Update', function(self, isParty)--UnitFrame.lua
         local unit= self.overrideName or self.unit
         local r,g,b
@@ -204,13 +196,64 @@ local function Init()
     end)
 end
 
+--#######
+--拾取专精
+--#######
+local function set_LootSpecialization()--拾取专精
+    local currentSpec = GetSpecialization()
+    local specID= currentSpec and GetSpecializationInfo(currentSpec)
+    local find=false
+    if specID then
+        local lootSpecID = GetLootSpecialization()
+        if lootSpecID and lootSpecID~=specID then
+            local texture= select(4, GetSpecializationInfoByID(lootSpecID))
+            if texture then
+                if not PlayerFrame.lootSpecTexture then
+                    PlayerFrame.lootSpecTexture= PlayerFrame:CreateTexture(nil,'OVERLAY', nil, 7)
+                    PlayerFrame.lootSpecTexture:SetSize(20,20)
+                    if PlayerFrame.classTexture then
+                        PlayerFrame.lootSpecTexture:SetPoint('RIGHT', PlayerFrame.classTexture, 'LEFT')
+                    else
+                        PlayerFrame.lootSpecTexture:SetPoint('TOPLEFT', PlayerFrame.portrait, 'TOPRIGHT',-34,10)
+                    end
+                end
+                SetPortraitToTexture(PlayerFrame.lootSpecTexture, texture)
+                --PlayerFrame.lootSpecTexture:SetTexture(texture)
+                find=true
+            end
+        end
+    end
+    if PlayerFrame.lootSpecTexture then
+        PlayerFrame.lootSpecTexture:SetShown(find)
+    end
+end
+
+--######
+--初始化
+--######
+local function Init()
+    set_PlayerFrame()--玩家
+    set_TargetFrame()--目标
+    set_PetFrame()--宠物
+    set_PartyFrame()--小队
+    set_UnitFrame_Update()--职业, 图标， 颜色
+    C_Timer.After(2, function()
+        set_LootSpecialization()--拾取专精
+    end)
+end
+
 --###########
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
+
+panel:RegisterEvent('PLAYER_LOOT_SPEC_UPDATED')--拾取专精
+panel:RegisterUnitEvent('PLAYER_SPECIALIZATION_CHANGED','player')
+
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1==id then
+    if event == "ADDON_LOADED" then
+        if arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
             --添加控制面板        
@@ -224,12 +267,15 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Save.SetShadowOffset= Save.SetShadowOffset or 1
                 Init()
             end
-
+        end
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end
             WoWToolsSave[addName]=Save
         end
+
+    elseif event=='PLAYER_LOOT_SPEC_UPDATED' or event=='PLAYER_SPECIALIZATION_CHANGED' then
+        set_LootSpecialization()--拾取专精
     end
 end)
 
