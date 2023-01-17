@@ -149,6 +149,33 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
             self.classTexture=self:CreateTexture()
             if unit=='target' or unit=='focus' then
                 self.classTexture:SetPoint('TOPRIGHT', self.portrait, 'TOPLEFT',0,10)
+                if unit=='target' then--移动, 队长图标，TargetFrame.lua
+                    local targetFrameContentContextual = TargetFrame.TargetFrameContent.TargetFrameContentContextual
+                    if targetFrameContentContextual then
+                        targetFrameContentContextual.LeaderIcon:ClearAllPoints()
+                        targetFrameContentContextual.LeaderIcon:SetPoint('RIGHT', self.classTexture,'LEFT')
+                        targetFrameContentContextual.GuideIcon:ClearAllPoints()
+                        targetFrameContentContextual.GuideIcon:SetPoint('RIGHT', self.classTexture,'LEFT')
+                    end
+                end
+--[[                if self.healthbar then
+                    self.healthbar:SetReverseFill(true)
+                    local a,p,c,x,y=self.healthbar.OverAbsorbGlow:GetPoint()
+                    print(a, p , c, x, y, p==self.healthbar)
+                    if self.healthbar.OverAbsorbGlow then
+                        self.healthbar.OverAbsorbGlow:ClearAllPoints()
+                        self.healthbar.OverAbsorbGlow:SetPoint('TOPRIGHT', self.healthbar, 'TOPLEFT',-7,0)
+                    end
+                end
+                if self.manabar then
+                    self.manabar:SetReverseFill(true)
+                end
+                if unit=='target' and TargetFrameSpellBar then
+                    TargetFrameSpellBar:SetReverseFill(true)
+                end
+                if self.castbar then
+                    self.castbar:SetReverseFill(true)
+                end]]
             else
                 self.classTexture:SetPoint('TOPLEFT', self.portrait, 'TOPRIGHT',-14,10)
             end
@@ -182,7 +209,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
             --set_SetTextColor(self.healthbar.TextString, r,g,b)
             --set_SetTextColor(self.healthbar.RightText, r,g,b)
             self.healthbar:SetStatusBarColor(r,g,b)--颜色
-            self.healthbar:SetStatusBarTexture('Interface\\TargetingFrame\\UI-StatusBar')
+            self.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
         end
         --[[if self.manabar then
             set_SetTextColor(self.manabar.LeftText, r,g,b)
@@ -192,7 +219,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
     end)
 
     hooksecurefunc(TargetFrame, 'CheckClassification', function ()--目标，颜色
-        TargetFrame.healthbar:SetStatusBarTexture('Interface\\TargetingFrame\\UI-StatusBar')
+        TargetFrame.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
     end)
 end
 

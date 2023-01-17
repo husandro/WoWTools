@@ -850,7 +850,8 @@
         "FrameUtil",
         "PetName",
         "LOCALE_zhTW",
-        "LOCALE_zhCN"
+        "LOCALE_zhCN",
+        "TargetFrameSpellBar"
     ],
     "Lua.diagnostics.disable": [
     ]
