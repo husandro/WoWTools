@@ -277,27 +277,3 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         set_LootSpecialization()--拾取专精
     end
 end)
-
---TextStatusBar.lua
---[[hooksecurefunc('TextStatusBar_UpdateTextStringWithValues', function(statusFrame, textString, value, valueMin, valueMax)
-    if statusFrame.unit then
-        local r, g, b=GetClassColor(UnitClassBase(statusFrame.unit))
-        textString:SetTextColor(r, g, b);
-        if statusFrame.LeftText and statusFrame.RightText then
-            statusFrame.LeftText:SetTextColor(r, g, b);
-            statusFrame.RightText:SetTextColor(r, g, b);
-        end
-    end
-end)]]
---[[hooksecurefunc('HealthBar_OnValueChanged', function(self, value, smooth)
-    if not value or not self.lockColor then
-		return;
-	end
-    if self.unit then
-        local r, g, b, hex=GetClassColor(UnitClassBase(self.unit))
-        if r and g and b then
-            self:SetStatusBarColor(r, g, b);
-            return
-        end
-    end
-end)]]
