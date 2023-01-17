@@ -764,13 +764,18 @@ local function setCVar(reset, tips, notPrint)
              value= "1",
              msg= e.onlyChinse and '总是比较装备' or ALWAYS..COMPARE_ACHIEVEMENTS:gsub(ACHIEVEMENTS, ITEMS)
         },
-       ["showTargetOfTarget"]={
-            value= "1",
-            msg= e.onlyChinse and '总是显示目标的目标' or OPTION_TOOLTIP_TARGETOFTARGET5,
-       },
         ["profanityFilter"]={value= '0',msg= '禁用语言过虑 /reload', zh=true},
         ["overrideArchive"]={value= '0',msg= '反和谐 /reload', zh=true},
-        ['cameraDistanceMaxZoomFactor']={value= '2.6', msg= e.onlyChinse and '视野距离' or FARCLIP}
+        ['cameraDistanceMaxZoomFactor']={value= '2.6', msg= e.onlyChinse and '视野距离' or FARCLIP},
+
+        ["showTargetOfTarget"]={
+            value= "1",
+            msg= e.onlyChinse and '总是显示目标的目标' or OPTION_TOOLTIP_TARGETOFTARGET5,
+        },
+--[[        ["showTargetCastbar"]={
+            value= "1",
+            msg= e.onlyChinse and '显示目标施法条' or SHOW..TARGET..HUD_EDIT_MODE_CAST_BAR_LABEL,
+        },]]
     }
 
     if tips then

@@ -851,7 +851,9 @@
         "PetName",
         "LOCALE_zhTW",
         "LOCALE_zhCN",
-        "TargetFrameSpellBar"
+        "TargetFrameSpellBar",
+        "SHOW_TARGET_OF_TARGET_TEXT",
+        "HUD_EDIT_MODE_CAST_BAR_LABEL"
     ],
     "Lua.diagnostics.disable": [
     ]
