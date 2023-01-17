@@ -4,15 +4,15 @@ local Save={SetShadowOffset= 1}
 local panel=CreateFrame("Frame")
 local R,G,B= GetClassColor(UnitClassBase('player'))
 
-local function set_SetShadowOffset(self)--设置字本, 阴影
+local function set_SetShadowOffset(self)--设置, 阴影
     if self then
         self:SetShadowOffset(Save.SetShadowOffset, -(Save.SetShadowOffset))
     end
 end
 
-local function set_SetTextColor(self, r,g,b)--设置字本, 阴影
+local function set_SetTextColor(self, r, g, b)--设置, 字体
     if self and self:IsShown() and r and g and b then
-        self:SetTextColor(r,g,b)
+        self:SetTextColor(r, g, b)
     end
 end
 
@@ -151,7 +151,6 @@ local function Init()
                 r,g,b=GetClassColor(classFilename)
             end
         end
-        self.name:SetTextColor(r,g,b)--名称, 颜色
         local class=e.Class(unit, nil, true)--职业, 图标
         if not self.classTexture then
             self.classTexture=self:CreateTexture()
@@ -176,8 +175,7 @@ local function Init()
         end
 
         self.classTexture:SetAtlas(class)
-        self.name:SetTextColor(r,g,b)
-
+        set_SetTextColor(self.name, r,g,b)--名称, 颜色
         if self.healthbar then
             set_SetTextColor(self.healthbar.LeftText, r,g,b)--字体, 颜色
             set_SetTextColor(self.healthbar.CenterText, r,g,b)
