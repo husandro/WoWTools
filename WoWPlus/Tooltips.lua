@@ -328,7 +328,7 @@ local function setItem(self, ItemLink)
                 end
             end
         end
-        if numPlayer>1 then
+        if numPlayer>0 then
             wowNum= bagAll+ bankAll
             self:AddDoubleLine(numPlayer..' '..(e.onlyChinse and '角色' or CHARACTER)..' '..e.MK(wowNum+bag+bank, 3), e.Icon.wow2..e.MK(bagAll+bankAll, 3)..' = '..e.Icon.bank2..(bankAll==0 and '|cff606060'..bankAll..'|r' or e.MK(bankAll,3))..' '..e.Icon.bag2..(bagAll==0 and '|cff606060'..bagAll..'|r' or e.MK(bagAll, 3)))
         end

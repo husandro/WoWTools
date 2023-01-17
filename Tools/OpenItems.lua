@@ -19,6 +19,7 @@ local Save={
         [198083]=true,--探险队补给包
         [191294]=true,--小型探险锹
         [202087]=true,--匠械移除设备
+        [128353]=true,--海军上将的罗盘
     },
     pet=true, open=true, toy=true, mount=true, mago=true, ski=true, alt=true,
     noItemHide=not e.Player.husandro,

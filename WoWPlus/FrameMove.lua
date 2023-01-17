@@ -189,7 +189,7 @@ local function setClass()--职业,能量条
             Move(frame, {save=true})
         end
 
-    elseif e.Player.class=='WARLOCK' then
+    elseif e.Player.class=='WARLOCK' then--SS
         Move(WarlockPowerFrame, {save=true})
 
     elseif e.Player.class=='MAGE' then--Fs
