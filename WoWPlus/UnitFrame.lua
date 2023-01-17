@@ -218,7 +218,6 @@ local function set_LootSpecialization()--拾取专精
                     end
                 end
                 SetPortraitToTexture(PlayerFrame.lootSpecTexture, texture)
-                --PlayerFrame.lootSpecTexture:SetTexture(texture)
                 find=true
             end
         end
