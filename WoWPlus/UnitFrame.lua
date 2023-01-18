@@ -9,10 +9,20 @@ local function set_SetShadowOffset(self)--设置, 阴影
         self:SetShadowOffset(1, -1)
     end
 end
-
 local function set_SetTextColor(self, r, g, b)--设置, 字体
     if self and self:IsShown() and r and g and b then
         self:SetTextColor(r, g, b)
+    end
+end
+local function set_SetRaidTarget(texture, unit)--设置, 标记 TargetFrame.lua
+    if texture and unit then
+        local index = GetRaidTargetIndex(unit)
+        if index and index>0 and index< 9 then
+            SetRaidTargetIconTexture(texture, index)
+            texture:SetShown(true)
+        else
+            texture:SetShown(false)
+        end
     end
 end
 
@@ -94,13 +104,6 @@ end
 --####
 --小队
 --####
-local function set_SetRaidTarget(texture, unit)--设置, 标记 TargetFrame.lua
-    local index = unit and GetRaidTargetIndex(unit);
-    if (index) then
-        SetRaidTargetIconTexture(texture, index);
-    end
-    texture:SetShown(index and true or false)
-end
 local function set_PartyFrame()--PartyFrame.lua
     hooksecurefunc(PartyFrame, 'UpdatePartyFrames', function(self)
         if not ShouldShowPartyFrames() then
@@ -288,8 +291,31 @@ end
 --####
 --团队
 --####
-local function set_RaidFrame()--设置,团队
-    hooksecurefunc('CompactUnitFrame_UpdateRoleIcon', function(frame)--隐藏, DPS，图标 CompactUnitFrame.lua
+local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
+
+    hooksecurefunc('CompactUnitFrame_SetUnit', function(frame, unit)
+        if unit and not frame.RaidTargetIcon and frame.name then
+            frame.RaidTargetIcon= frame:CreateTexture(nil, 'ARTWORK')
+            frame.RaidTargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
+            frame.RaidTargetIcon:SetPoint('TOPRIGHT')
+            frame.RaidTargetIcon:SetSize(13,13)
+            frame:RegisterEvent("RAID_TARGET_UPDATE")
+            set_SetRaidTarget(frame.RaidTargetIcon, unit)
+        end
+    end)
+    hooksecurefunc('CompactUnitFrame_UpdateUnitEvents', function(frame)
+        frame:RegisterEvent("RAID_TARGET_UPDATE")
+    end)
+    hooksecurefunc('CompactUnitFrame_UnregisterEvents', function(frame)
+        frame:UnregisterEvent("RAID_TARGET_UPDATE")
+    end)
+    hooksecurefunc('CompactUnitFrame_OnEvent', function(self, event, ...)
+        if event=='RAID_TARGET_UPDATE' and self.RaidTargetIcon and self.unit then
+            set_SetRaidTarget(self.RaidTargetIcon, self.unit);
+        end
+    end)
+
+    hooksecurefunc('CompactUnitFrame_UpdateRoleIcon', function(frame)--隐藏, DPS，图标 
         if not frame.roleIcon or not frame.optionTable.displayRaidRoleIcon or UnitInVehicle(frame.unit) or UnitHasVehicleUI(frame.unit) then
             return;
         end
@@ -305,7 +331,7 @@ local function set_RaidFrame()--设置,团队
         end
     end)
 
-    hooksecurefunc('CompactUnitFrame_UpdateName', function(frame)--修改, 名字 CompactUnitFrame.lua
+    hooksecurefunc('CompactUnitFrame_UpdateName', function(frame)--修改, 名字
         if not frame.name or (frame.UpdateNameOverride and frame:UpdateNameOverride()) or not ShouldShowName(frame) then
             return;
         end

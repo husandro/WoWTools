@@ -876,7 +876,10 @@
         "CompactRaidFrameManagerBg",
         "CompactRaidFrameManagerDisplayFrameFilterOptionsFooterDelineator",
         "CompactRaidFrameManager",
-        "CompactRaidFrameManagerDisplayFrameRaidMemberCountLabel"
+        "CompactRaidFrameManagerDisplayFrameRaidMemberCountLabel",
+        "CompactUnitFrame_SetUnit",
+        "CompactUnitFrame_UpdateUnitEvents",
+        "CompactUnitFrame_OnEvent"
     ],
     "Lua.diagnostics.disable": [
     ]
