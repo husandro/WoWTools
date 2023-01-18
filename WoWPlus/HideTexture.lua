@@ -24,7 +24,8 @@ local function Init()
         hideTexture(PetBattleFrame.TopArtLeft)
         hideTexture(PetBattleFrame.TopArtRight)
         hideTexture(PetBattleFrame.TopVersus)
-        hideTexture(PetBattleFrame.TopVersusText)
+        PetBattleFrame.TopVersusText:SetText('')
+        PetBattleFrame.TopVersusText:SetShown(false)
         hideTexture(PetBattleFrame.WeatherFrame.BackgroundArt)
 
         --PetBattleFrame.BottomFrame.TurnTimer.ArtFrame2:SetShown(false)
@@ -40,8 +41,8 @@ local function Init()
             hideTexture(PetBattleFrame.BottomFrame.RightEndCap)
             hideTexture(PetBattleFrame.BottomFrame.Background)
             hideTexture(PetBattleFrame.BottomFrame.TurnTimer.ArtFrame2)
-            hideTexture(PetBattleFrame.BottomFrame.FlowFrame)
-            hideTexture(PetBattleFrame.BottomFrame.Delimiter)
+            PetBattleFrame.BottomFrame.FlowFrame:SetShown(false)
+            PetBattleFrame.BottomFrame.Delimiter:SetShown(false)
 
         end
     end
@@ -59,7 +60,7 @@ local function Init()
     hideTexture(PaladinPowerBarFrameBG)
     hideTexture(PaladinPowerBarFrameBankBG)
 
-    hideTexture(LootFrameBg)--拾取
+    LootFrameBg:SetShown(false)--拾取
 
     hooksecurefunc(HelpTip,'Show', function(self, parent, info, relativeRegion)--隐藏所有HelpTip HelpTip.lua
         HelpTip:HideAll(parent)
