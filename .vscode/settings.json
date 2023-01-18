@@ -863,7 +863,20 @@
         "PlayerFrameGroupIndicatorText",
         "PlayerFrameGroupIndicatorMiddle",
         "PlayerFrameGroupIndicatorLeft",
-        "PlayerFrameGroupIndicatorRight"
+        "PlayerFrameGroupIndicatorRight",
+        "CompactRaidFrameManagerBorderTop",
+        "CompactRaidFrameManagerBorderRight",
+        "CompactRaidFrameManagerBorderBottom",
+        "CompactRaidFrameManagerBorderTopRight",
+        "CompactRaidFrameManagerBorderTopLeft",
+        "CompactRaidFrameManagerBorderBottomLeft",
+        "CompactRaidFrameManagerBorderBottomRight",
+        "CompactRaidFrameManagerDisplayFrameHeaderDelineator",
+        "CompactRaidFrameManagerDisplayFrameHeaderBackground",
+        "CompactRaidFrameManagerBg",
+        "CompactRaidFrameManagerDisplayFrameFilterOptionsFooterDelineator",
+        "CompactRaidFrameManager",
+        "CompactRaidFrameManagerDisplayFrameRaidMemberCountLabel"
     ],
     "Lua.diagnostics.disable": [
     ]

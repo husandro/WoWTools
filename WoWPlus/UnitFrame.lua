@@ -327,7 +327,9 @@ local function set_RaidFrame()--设置,团队
                 frame.statusText:SetText(text)
             end
     end)
-
+    hooksecurefunc('CompactRaidGroup_InitializeForGroup', function(frame, groupIndex)--处理, 队伍号
+        frame.title:SetText('|A:'..e.Icon.number..groupIndex..':0:0|a')
+    end)
 
     CompactRaidFrameContainer.moveFrame= e.Cbtn(CompactRaidFrameContainer, nil, nil, nil, nil, true, {20,20})--新建, 移动, 按钮
     CompactRaidFrameContainer.moveFrame:SetPoint('TOPRIGHT', CompactRaidFrameContainer, 'TOPLEFT',-2, -13)
@@ -376,14 +378,72 @@ local function set_RaidFrame()--设置,团队
     if Save.raidFrameScale and Save.raidFrameScale~=1 then
         CompactRaidFrameContainer:SetScale(Save.raidFrameScale)
     end
-
     CompactRaidFrameContainer:SetClampedToScreen(true)
     CompactRaidFrameContainer:SetMovable(true)
 
-    hooksecurefunc('CompactRaidGroup_InitializeForGroup', function(frame, groupIndex)--处理, 队伍号
-        frame.title:SetText('|A:'..e.Icon.number..groupIndex..':0:0|a')
+
+
+    --Blizzard_CompactRaidFrameManager.lua
+    local bg={--隐藏, 团队, 材质
+        CompactRaidFrameManagerBorderTop,
+        CompactRaidFrameManagerBorderRight,
+        CompactRaidFrameManagerBorderBottom,
+        CompactRaidFrameManagerBorderTopRight,
+        CompactRaidFrameManagerBorderTopLeft,
+        CompactRaidFrameManagerBorderBottomLeft,
+        CompactRaidFrameManagerBorderBottomRight,
+        CompactRaidFrameManagerDisplayFrameHeaderDelineator,
+        CompactRaidFrameManagerDisplayFrameHeaderBackground,
+        CompactRaidFrameManagerBg,
+        CompactRaidFrameManagerDisplayFrameFilterOptionsFooterDelineator,
+    }
+    for _, frame in pairs(bg) do
+        if frame then
+            frame:SetTexture(0)
+            frame:SetShown(false)
+        end
+    end
+    CompactRaidFrameManager.toggleButton:SetNormalAtlas(e.Icon.toRight)--展开, 图标
+    CompactRaidFrameManager.toggleButton:SetAlpha(0.5)
+    CompactRaidFrameManager.toggleButton:SetHeight(40)
+    hooksecurefunc('CompactRaidFrameManager_Collapse', function()
+        CompactRaidFrameManager.toggleButton:SetNormalAtlas(e.Icon.toRight)
+    end)
+    hooksecurefunc('CompactRaidFrameManager_Expand', function()
+        CompactRaidFrameManager.toggleButton:SetNormalAtlas(e.Icon.toLeft)
     end)
 
+    CompactRaidFrameManager.sacleFrame= e.Cbtn(CompactRaidFrameManager, nil, true, nil, nil, nil, {15,15})--新建, 移动, 按钮
+    CompactRaidFrameManager.sacleFrame:SetPoint('RIGHT', CompactRaidFrameManagerDisplayFrameRaidMemberCountLabel, 'LEFT')
+    CompactRaidFrameManager.sacleFrame:SetAlpha(0.5)
+    CompactRaidFrameManager.sacleFrame:SetScript("OnMouseDown", function(self, d)
+        print(id, addName, 'Alt+'..e.Icon.mid..(e.onlyChinse and '缩放' or UI_SCALE), Save.managerScale or 1)
+    end)
+    CompactRaidFrameManager.sacleFrame:SetScript('OnMouseWheel', function(self, d)--缩放
+        if IsAltKeyDown() then
+            if UnitAffectingCombat('player') then
+                print(id, addName, e.onlyChinse and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '战斗中' or COMBAT))
+            else
+                local sacle= Save.managerScale or 1
+                if d==1 then
+                    sacle=sacle+0.05
+                elseif d==-1 then
+                    sacle=sacle-0.05
+                end
+                if sacle>1.5 then
+                    sacle=1.5
+                elseif sacle<0.5 then
+                    sacle=0.5
+                end
+                print(id, addName, (e.onlyChinse and '缩放' or UI_SCALE), sacle)
+                CompactRaidFrameManager:SetScale(sacle)
+                Save.managerScale=sacle
+            end
+        end
+    end)
+    if Save.managerScale and Save.managerScale~=1 then
+        CompactRaidFrameManager:SetScale(Save.managerScale)
+    end
 end
 
 --######
