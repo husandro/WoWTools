@@ -13,7 +13,6 @@ end
 --初始化
 --######
 local function Init()
-
     if ExtraActionButton1 then hideTexture(ExtraActionButton1.style) end--额外技能
     if ZoneAbilityFrame then hideTexture(ZoneAbilityFrame.Style) end--区域技能
 
