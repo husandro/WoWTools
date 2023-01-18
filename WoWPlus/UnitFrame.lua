@@ -450,11 +450,80 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
     end
 end
 
+--###############
+--小队, 使用团框架
+--###############
+local function set_CompactPartyFrame()--CompactPartyFrame.lua
+    if not CompactPartyFrame or CompactPartyFrame.moveFrame then
+        return
+    end
+    CompactPartyFrame.title:SetText('')
+
+    --新建, 移动, 按钮
+    CompactPartyFrame.moveFrame= e.Cbtn(CompactPartyFrame, nil, true, nil, nil, nil, {15,15})
+    CompactPartyFrame.moveFrame:SetAlpha(0.3)
+    if not Save.setButtonState then--设置, 发光
+        CompactPartyFrame.moveFrame:SetButtonState('PUSHED')
+    end
+    CompactPartyFrame.moveFrame:SetPoint('TOPLEFT', CompactPartyFrame, 'TOPLEFT',0,2)
+    CompactPartyFrame.moveFrame:SetClampedToScreen(true)
+    CompactPartyFrame.moveFrame:SetMovable(true)
+    CompactPartyFrame.moveFrame:RegisterForDrag('RightButton')
+    CompactPartyFrame.moveFrame:SetScript("OnDragStart", function(self,d)
+        if d=='RightButton' and not IsMetaKeyDown() then
+            CompactPartyFrame:StartMoving()
+        end
+    end)
+    CompactPartyFrame.moveFrame:SetScript("OnDragStop", function(self)
+        CompactPartyFrame:StopMovingOrSizing()
+    end)
+    CompactPartyFrame.moveFrame:SetScript("OnMouseDown", function(self, d)
+        print(id, addName, (e.onlyChinse and '移动' or NPE_MOVE)..e.Icon.right, 'Alt+'..e.Icon.mid..(e.onlyChinse and '缩放' or UI_SCALE), Save.compactPartyFrameScale or 1)
+        if d=='RightButton' and not IsMetaKeyDown() then
+            SetCursor('UI_MOVE_CURSOR')
+        end
+        Save.setButtonState= true--设置, 发光
+    end)
+    CompactPartyFrame.moveFrame:SetScript("OnLeave", function(self, d)
+        ResetCursor()
+    end)
+    CompactPartyFrame.moveFrame:SetScript('OnMouseWheel', function(self, d)--缩放
+        if IsAltKeyDown() then
+            if UnitAffectingCombat('player') then
+                print(id, addName, e.onlyChinse and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '战斗中' or COMBAT))
+            else
+                local sacle= Save.compactPartyFrameScale or 1
+                if d==1 then
+                    sacle=sacle+0.05
+                elseif d==-1 then
+                    sacle=sacle-0.05
+                end
+                if sacle>1.5 then
+                    sacle=1.5
+                elseif sacle<0.5 then
+                    sacle=0.5
+                end
+                print(id, addName, (e.onlyChinse and '缩放' or UI_SCALE), sacle)
+                CompactPartyFrame:SetScale(sacle)
+                Save.compactPartyFrameScale=sacle
+            end
+        end
+    end)
+    if Save.compactPartyFrameScale and Save.compactPartyFrameScale~=1 then
+        CompactPartyFrame:SetScale(Save.compactPartyFrameScale)
+    end
+    CompactPartyFrame:SetClampedToScreen(true)
+    CompactPartyFrame:SetMovable(true)
+end
+
 --######
 --初始化
 --######
 local function Init()
     set_RaidFrame()--团队
+
+    set_CompactPartyFrame()--小队, 使用团框架
+    hooksecurefunc('CompactPartyFrame_UpdateVisibility', set_CompactPartyFrame)
 
     set_PlayerFrame()--玩家
     set_TargetFrame()--目标

@@ -879,7 +879,9 @@
         "CompactRaidFrameManagerDisplayFrameRaidMemberCountLabel",
         "CompactUnitFrame_SetUnit",
         "CompactUnitFrame_UpdateUnitEvents",
-        "CompactUnitFrame_OnEvent"
+        "CompactUnitFrame_OnEvent",
+        "CompactPartyFrame",
+        "PARTY"
     ],
     "Lua.diagnostics.disable": [
     ]
