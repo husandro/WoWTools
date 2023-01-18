@@ -331,7 +331,8 @@ local function set_RaidFrame()--设置,团队
         frame.title:SetText('|A:'..e.Icon.number..groupIndex..':0:0|a')
     end)
 
-    CompactRaidFrameContainer.moveFrame= e.Cbtn(CompactRaidFrameContainer, nil, nil, nil, nil, true, {20,20})--新建, 移动, 按钮
+    --新建, 移动, 按钮
+    CompactRaidFrameContainer.moveFrame= e.Cbtn(CompactRaidFrameContainer, nil, nil, nil, nil, true, {20,20})
     CompactRaidFrameContainer.moveFrame:SetPoint('TOPRIGHT', CompactRaidFrameContainer, 'TOPLEFT',-2, -13)
     CompactRaidFrameContainer.moveFrame:SetClampedToScreen(true)
     CompactRaidFrameContainer.moveFrame:SetMovable(true)
@@ -381,7 +382,7 @@ local function set_RaidFrame()--设置,团队
     CompactRaidFrameContainer:SetClampedToScreen(true)
     CompactRaidFrameContainer:SetMovable(true)
 
-    -- 
+    --团体, 管理, 缩放
     CompactRaidFrameManager.sacleFrame= e.Cbtn(CompactRaidFrameManager, nil, true, nil, nil, nil, {15,15})
     CompactRaidFrameManager.sacleFrame:SetPoint('RIGHT', CompactRaidFrameManagerDisplayFrameRaidMemberCountLabel, 'LEFT')
     CompactRaidFrameManager.sacleFrame:SetAlpha(0.5)
