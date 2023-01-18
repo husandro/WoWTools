@@ -107,8 +107,8 @@ local function Init()
         hideTexture(CompactRaidFrameManagerDisplayFrameFilterOptionsFooterDelineator)
 
         CompactRaidFrameManager.toggleButton:SetNormalAtlas(e.Icon.toRight)--展开, 图标
-        CompactRaidFrameManager.toggleButton:SetAlpha(0.5)
-        CompactRaidFrameManager.toggleButton:SetHeight(40)
+        CompactRaidFrameManager.toggleButton:SetAlpha(0.3)
+        CompactRaidFrameManager.toggleButton:SetHeight(30)
         hooksecurefunc('CompactRaidFrameManager_Collapse', function()
             CompactRaidFrameManager.toggleButton:SetNormalAtlas(e.Icon.toRight)
         end)
