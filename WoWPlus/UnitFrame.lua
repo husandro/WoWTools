@@ -362,10 +362,8 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
     end)
 
     --新建, 移动, 按钮
-    CompactRaidFrameContainer.moveFrame= e.Cbtn(CompactRaidFrameContainer, nil, nil, nil, nil, true, {20,20})
-    if not Save.setButtonState then--设置, 发光
-        CompactRaidFrameContainer.moveFrame:SetButtonState('PUSHED')
-    end
+    CompactRaidFrameContainer.moveFrame= e.Cbtn(CompactRaidFrameContainer, nil, true, nil, nil, nil, {20,20})
+    CompactRaidFrameContainer.moveFrame:SetAlpha(0.3)
     CompactRaidFrameContainer.moveFrame:SetPoint('TOPRIGHT', CompactRaidFrameContainer, 'TOPLEFT',-2, -13)
     CompactRaidFrameContainer.moveFrame:SetClampedToScreen(true)
     CompactRaidFrameContainer.moveFrame:SetMovable(true)
@@ -383,7 +381,6 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
         if d=='RightButton' and not IsMetaKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         end
-        Save.setButtonState= true--设置, 发光
     end)
     CompactRaidFrameContainer.moveFrame:SetScript("OnLeave", function(self, d)
         ResetCursor()
@@ -462,9 +459,6 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
     --新建, 移动, 按钮
     CompactPartyFrame.moveFrame= e.Cbtn(CompactPartyFrame, nil, true, nil, nil, nil, {15,15})
     CompactPartyFrame.moveFrame:SetAlpha(0.3)
-    if not Save.setButtonState then--设置, 发光
-        CompactPartyFrame.moveFrame:SetButtonState('PUSHED')
-    end
     CompactPartyFrame.moveFrame:SetPoint('TOPLEFT', CompactPartyFrame, 'TOPLEFT',0,2)
     CompactPartyFrame.moveFrame:SetClampedToScreen(true)
     CompactPartyFrame.moveFrame:SetMovable(true)
@@ -482,7 +476,6 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
         if d=='RightButton' and not IsMetaKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         end
-        Save.setButtonState= true--设置, 发光
     end)
     CompactPartyFrame.moveFrame:SetScript("OnLeave", function(self, d)
         ResetCursor()
