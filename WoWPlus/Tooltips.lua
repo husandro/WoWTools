@@ -1,6 +1,6 @@
 local id, e = ...
 local addName= 'Tootips'
-local Save={setDefaultAnchor=true, setCVar=e.Player.husandro}--inCombatDefaultAnchor=true
+local Save={setDefaultAnchor=true, setCVar=e.Player.husandro,inCombatDefaultAnchor=true}
 local panel=CreateFrame("Frame")
 
 local function setInitItem(self, hide)--创建物品
