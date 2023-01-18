@@ -21,27 +21,27 @@ local function Init()
     if MainMenuBar and MainMenuBar.EndCaps then hideTexture(MainMenuBar.EndCaps.RightEndCap) end
 
     if PetBattleFrame then--宠物
-        PetBattleFrame.TopArtLeft:SetShown(false)
-        PetBattleFrame.TopArtRight:SetShown(false)
-        PetBattleFrame.TopVersus:SetShown(false)
-        PetBattleFrame.TopVersusText:SetShown(false)
-        PetBattleFrame.WeatherFrame.BackgroundArt:SetShown(false)
+        hideTexture(PetBattleFrame.TopArtLeft)
+        hideTexture(PetBattleFrame.TopArtRight)
+        hideTexture(PetBattleFrame.TopVersus)
+        hideTexture(PetBattleFrame.TopVersusText)
+        hideTexture(PetBattleFrame.WeatherFrame.BackgroundArt)
 
         --PetBattleFrame.BottomFrame.TurnTimer.ArtFrame2:SetShown(false)
-        PetBattleFrameXPBarLeft:SetShown(false)
-        PetBattleFrameXPBarRight:SetShown(false)
-        PetBattleFrameXPBarMiddle:SetShown(false)
+        hideTexture(PetBattleFrameXPBarLeft)
+        hideTexture(PetBattleFrameXPBarRight)
+        hideTexture(PetBattleFrameXPBarMiddle)
         if PetBattleFrame.BottomFrame then
             --[[if PetBattleFrame.BottomFrame.MicroButtonFrame then
                 hideTexture(PetBattleFrame.BottomFrame.MicroButtonFrame.LeftEndCap)
                 hideTexture(PetBattleFrame.BottomFrame.MicroButtonFrame.RightEndCap)
             end]]
-            PetBattleFrame.BottomFrame.LeftEndCap:SetShown(false)
-            PetBattleFrame.BottomFrame.RightEndCap:SetShown(false)
-            PetBattleFrame.BottomFrame.Background:SetShown(false)
-            PetBattleFrame.BottomFrame.TurnTimer.ArtFrame2:SetShown(false)
-            PetBattleFrame.BottomFrame.FlowFrame:SetShown(false)
-            PetBattleFrame.BottomFrame.Delimiter:SetShown(false)
+            hideTexture(PetBattleFrame.BottomFrame.LeftEndCap)
+            hideTexture(PetBattleFrame.BottomFrame.RightEndCap)
+            hideTexture(PetBattleFrame.BottomFrame.Background)
+            hideTexture(PetBattleFrame.BottomFrame.TurnTimer.ArtFrame2)
+            hideTexture(PetBattleFrame.BottomFrame.FlowFrame)
+            hideTexture(PetBattleFrame.BottomFrame.Delimiter)
 
         end
     end
@@ -50,19 +50,18 @@ local function Init()
     --PetBattleFrame.BottomFrame.MicroButtonFrame.RightEndCap:SetShown(false)
     --PetBattleFrame.BottomFrame.MicroButtonFrame.LeftEndCap:SetShown(false)
     hooksecurefunc('PetBattleFrame_UpdatePassButtonAndTimer', function(self)--Blizzard_PetBattleUI.lua
-        self.BottomFrame.TurnTimer.TimerBG:SetShown(false);
+        hideTexture(self.BottomFrame.TurnTimer.TimerBG)
         --self.BottomFrame.TurnTimer.Bar:SetShown(true);
-        self.BottomFrame.TurnTimer.ArtFrame:SetShown(false);
-        self.BottomFrame.TurnTimer.ArtFrame2:SetShown(false);
+        hideTexture(self.BottomFrame.TurnTimer.ArtFrame);
+        hideTexture(self.BottomFrame.TurnTimer.ArtFrame2);
     end)
 
-    local frame =PaladinPowerBarFrameBG if frame then frame:SetShown(false) end
-    frame=PaladinPowerBarFrameBankBG if frame then frame:SetShown(false) end
+    hideTexture(PaladinPowerBarFrameBG)
+    hideTexture(PaladinPowerBarFrameBankBG)
 
-    LootFrameBg:SetShown(false)--拾取
+    hideTexture(LootFrameBg)--拾取
 
     hooksecurefunc(HelpTip,'Show', function(self, parent, info, relativeRegion)--隐藏所有HelpTip HelpTip.lua
-        --e.Ccool(parent,nil, 2, nil, nil, true, nil, true)
         HelpTip:HideAll(parent)
     end)
 
@@ -93,31 +92,55 @@ local function Init()
         hideTexture(MainMenuBar.BorderArt.BottomRightCorner)
     end
     if MultiBarBottomLeftButton10 then hideTexture(MultiBarBottomLeftButton10.SlotBackground) end
+
+     if CompactRaidFrameManager then--隐藏, 团队, 材质 Blizzard_CompactRaidFrameManager.lua
+        hideTexture(CompactRaidFrameManagerBorderTop)
+        hideTexture(CompactRaidFrameManagerBorderRight)
+        hideTexture(CompactRaidFrameManagerBorderBottom)
+        hideTexture(CompactRaidFrameManagerBorderTopRight)
+        hideTexture(CompactRaidFrameManagerBorderTopLeft)
+        hideTexture(CompactRaidFrameManagerBorderBottomLeft)
+        hideTexture(CompactRaidFrameManagerBorderBottomRight)
+        hideTexture(CompactRaidFrameManagerDisplayFrameHeaderDelineator)
+        hideTexture(CompactRaidFrameManagerDisplayFrameHeaderBackground)
+        hideTexture(CompactRaidFrameManagerBg)
+        hideTexture(CompactRaidFrameManagerDisplayFrameFilterOptionsFooterDelineator)
+
+        CompactRaidFrameManager.toggleButton:SetNormalAtlas(e.Icon.toRight)--展开, 图标
+        CompactRaidFrameManager.toggleButton:SetAlpha(0.5)
+        CompactRaidFrameManager.toggleButton:SetHeight(40)
+        hooksecurefunc('CompactRaidFrameManager_Collapse', function()
+            CompactRaidFrameManager.toggleButton:SetNormalAtlas(e.Icon.toRight)
+        end)
+        hooksecurefunc('CompactRaidFrameManager_Expand', function()
+            CompactRaidFrameManager.toggleButton:SetNormalAtlas(e.Icon.toLeft)
+        end)
+     end
 end
 
 local function set_UNIT_ENTERED_VEHICLE()--载具
     if OverrideActionBarEndCapL then
-        OverrideActionBarEndCapL:SetShown(false)
-        OverrideActionBarEndCapR:SetShown(false)
-        OverrideActionBarBorder:SetShown(false)
-        OverrideActionBarBG:SetShown(false)
-        OverrideActionBarButtonBGMid:SetShown(false)
-        OverrideActionBarButtonBGR:SetShown(false)
-        OverrideActionBarButtonBGL:SetShown(false)
+        hideTexture(OverrideActionBarEndCapL)
+        hideTexture(OverrideActionBarEndCapR)
+        hideTexture(OverrideActionBarBorder)
+        hideTexture(OverrideActionBarBG)
+        hideTexture(OverrideActionBarButtonBGMid)
+        hideTexture(OverrideActionBarButtonBGR)
+        hideTexture(OverrideActionBarButtonBGL)
     end
     if OverrideActionBarMicroBGMid then
-        OverrideActionBarMicroBGMid:SetShown(false)
-        OverrideActionBarMicroBGR:SetShown(false)
-        OverrideActionBarMicroBGL:SetShown(false)
-        OverrideActionBarLeaveFrameExitBG:SetShown(false)
+        hideTexture(OverrideActionBarMicroBGMid)
+        hideTexture(OverrideActionBarMicroBGR)
+        hideTexture(OverrideActionBarMicroBGL)
+        hideTexture(OverrideActionBarLeaveFrameExitBG)
 
-        OverrideActionBarDivider2:SetShown(false)
-        OverrideActionBarLeaveFrameDivider3:SetShown(false)
+        hideTexture(OverrideActionBarDivider2)
+        hideTexture(OverrideActionBarLeaveFrameDivider3)
     end
     if OverrideActionBarExpBar then
-        OverrideActionBarExpBarXpMid:SetShown(false)
-        OverrideActionBarExpBarXpR:SetShown(false)
-        OverrideActionBarExpBarXpL:SetShown(false)
+        hideTexture(OverrideActionBarExpBarXpMid)
+        hideTexture(OverrideActionBarExpBarXpR)
+        hideTexture(OverrideActionBarExpBarXpL)
     end
 end
 

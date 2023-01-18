@@ -383,35 +383,8 @@ local function set_RaidFrame()--设置,团队
 
 
 
-    --Blizzard_CompactRaidFrameManager.lua
-    local bg={--隐藏, 团队, 材质
-        CompactRaidFrameManagerBorderTop,
-        CompactRaidFrameManagerBorderRight,
-        CompactRaidFrameManagerBorderBottom,
-        CompactRaidFrameManagerBorderTopRight,
-        CompactRaidFrameManagerBorderTopLeft,
-        CompactRaidFrameManagerBorderBottomLeft,
-        CompactRaidFrameManagerBorderBottomRight,
-        CompactRaidFrameManagerDisplayFrameHeaderDelineator,
-        CompactRaidFrameManagerDisplayFrameHeaderBackground,
-        CompactRaidFrameManagerBg,
-        CompactRaidFrameManagerDisplayFrameFilterOptionsFooterDelineator,
-    }
-    for _, frame in pairs(bg) do
-        if frame then
-            frame:SetTexture(0)
-            frame:SetShown(false)
-        end
-    end
-    CompactRaidFrameManager.toggleButton:SetNormalAtlas(e.Icon.toRight)--展开, 图标
-    CompactRaidFrameManager.toggleButton:SetAlpha(0.5)
-    CompactRaidFrameManager.toggleButton:SetHeight(40)
-    hooksecurefunc('CompactRaidFrameManager_Collapse', function()
-        CompactRaidFrameManager.toggleButton:SetNormalAtlas(e.Icon.toRight)
-    end)
-    hooksecurefunc('CompactRaidFrameManager_Expand', function()
-        CompactRaidFrameManager.toggleButton:SetNormalAtlas(e.Icon.toLeft)
-    end)
+   
+
 
     CompactRaidFrameManager.sacleFrame= e.Cbtn(CompactRaidFrameManager, nil, true, nil, nil, nil, {15,15})--新建, 移动, 按钮
     CompactRaidFrameManager.sacleFrame:SetPoint('RIGHT', CompactRaidFrameManagerDisplayFrameRaidMemberCountLabel, 'LEFT')
