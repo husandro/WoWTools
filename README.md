@@ -20,3 +20,7 @@
 
 # Wiki
 * https://github.com/husandro/WoWTools/wiki
+
+# bbs
+* https://bbs.nga.cn/read.php?tid=34084034
+
