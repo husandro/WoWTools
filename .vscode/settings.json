@@ -853,7 +853,17 @@
         "LOCALE_zhCN",
         "TargetFrameSpellBar",
         "SHOW_TARGET_OF_TARGET_TEXT",
-        "HUD_EDIT_MODE_CAST_BAR_LABEL"
+        "HUD_EDIT_MODE_CAST_BAR_LABEL",
+        "CompactUnitFrame_UpdateRoleIcon",
+        "GetTexCoordsForRoleSmallCircle",
+        "ShouldShowName",
+        "CompactRaidFrameContainer",
+        "CompactRaidGroup_InitializeForGroup",
+        "PlayerFrame_UpdateGroupIndicator",
+        "PlayerFrameGroupIndicatorText",
+        "PlayerFrameGroupIndicatorMiddle",
+        "PlayerFrameGroupIndicatorLeft",
+        "PlayerFrameGroupIndicatorRight"
     ],
     "Lua.diagnostics.disable": [
     ]

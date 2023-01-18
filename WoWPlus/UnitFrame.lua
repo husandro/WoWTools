@@ -1,12 +1,12 @@
 local id, e = ...
-local addName= UNITFRAME_LABEL
-local Save={SetShadowOffset= 1}
+local addName= UNITFRAME_LABEL..'/'..RAID_FRAMES_LABEL
+local Save={}--{SetShadowOffset= 1}
 local panel=CreateFrame("Frame")
 local R,G,B= GetClassColor(UnitClassBase('player'))
 
 local function set_SetShadowOffset(self)--设置, 阴影
     if self then
-        self:SetShadowOffset(Save.SetShadowOffset, -(Save.SetShadowOffset))
+        self:SetShadowOffset(1, -1)
     end
 end
 
@@ -46,6 +46,19 @@ local function set_PlayerFrame()--PlayerFrame.lua
             self.castingText:SetText('')
         end
     end)
+
+    hooksecurefunc('PlayerFrame_UpdateGroupIndicator', function()--处理,小队, 号码
+        if IsInRaid() then
+            local text= PlayerFrameGroupIndicatorText:GetText()
+            local num= text:match('(%d)')
+            if num then
+                PlayerFrameGroupIndicatorText:SetText('|A:'..e.Icon.number..num..':0:0|a')
+            end
+        end
+    end)
+    PlayerFrameGroupIndicatorLeft:SetTexture(0)
+    PlayerFrameGroupIndicatorMiddle:SetTexture(0)
+    PlayerFrameGroupIndicatorRight:SetTexture(0)
 end
 
 --####
@@ -221,6 +234,24 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
     hooksecurefunc(TargetFrame, 'CheckClassification', function ()--目标，颜色
         TargetFrame.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
     end)
+
+    --############
+    --去掉生命条 %
+    --############
+    --extStatusBar.lua
+    hooksecurefunc('TextStatusBar_UpdateTextStringWithValues', function(statusFrame, textString, value, valueMin, valueMax)
+        if value and value>0 then
+            if textString and textString:IsShown() then
+                local text= textString:GetText()
+                text= text:gsub('%%', '')
+                textString:SetText(text)
+            elseif statusFrame.LeftText and statusFrame.LeftText:IsShown() then
+                local text= statusFrame.LeftText:GetText()
+                text= text:gsub('%%', '')
+                statusFrame.LeftText:SetText(text)
+            end
+        end
+    end)
 end
 
 --#######
@@ -254,10 +285,113 @@ local function set_LootSpecialization()--拾取专精
     end
 end
 
+--####
+--团队
+--####
+local function set_RaidFrame()--设置,团队
+    hooksecurefunc('CompactUnitFrame_UpdateRoleIcon', function(frame)--隐藏, DPS，图标 CompactUnitFrame.lua
+        if not frame.roleIcon or not frame.optionTable.displayRaidRoleIcon or UnitInVehicle(frame.unit) or UnitHasVehicleUI(frame.unit) then
+            return;
+        end
+        local raidID = UnitInRaid(frame.unit);
+        if raidID then
+            if select(12, GetRaidRosterInfo(raidID))=='DAMAGER' then
+                frame.roleIcon:SetShown(false);
+            end
+        else
+            if UnitGroupRolesAssigned(frame.unit) == "DAMAGER"then
+                frame.roleIcon:SetShown(false);
+            end
+        end
+    end)
+
+    hooksecurefunc('CompactUnitFrame_UpdateName', function(frame)--修改, 名字 CompactUnitFrame.lua
+        if not frame.name or (frame.UpdateNameOverride and frame:UpdateNameOverride()) or not ShouldShowName(frame) then
+            return;
+        end
+        local name= frame.name:GetText()
+        if name then
+            name= name:match('(.-)%-') or name
+            name= e.WA_Utf8Sub(name, 4, 8)
+            frame.name:SetText(name)
+        end
+    end)
+
+    hooksecurefunc('CompactUnitFrame_UpdateStatusText', function(frame)--去掉,生命条, %
+        if not frame.statusText or not frame.statusText:IsShown() or frame.optionTable.healthText ~= "perc" then
+            return
+        end
+            local text= frame.statusText:GetText()
+            if text then
+                text= text:gsub('%%', '')
+                frame.statusText:SetText(text)
+            end
+    end)
+
+
+    CompactRaidFrameContainer.moveFrame= e.Cbtn(CompactRaidFrameContainer, nil, nil, nil, nil, true, {20,20})--新建, 移动, 按钮
+    CompactRaidFrameContainer.moveFrame:SetPoint('TOPRIGHT', CompactRaidFrameContainer, 'TOPLEFT',-2, -13)
+    CompactRaidFrameContainer.moveFrame:SetClampedToScreen(true)
+    CompactRaidFrameContainer.moveFrame:SetMovable(true)
+    CompactRaidFrameContainer.moveFrame:RegisterForDrag('RightButton')
+    CompactRaidFrameContainer.moveFrame:SetScript("OnDragStart", function(self,d)
+        if d=='RightButton' and not IsMetaKeyDown() then
+            CompactRaidFrameContainer:StartMoving()
+        end
+    end)
+    CompactRaidFrameContainer.moveFrame:SetScript("OnDragStop", function(self)
+        CompactRaidFrameContainer:StopMovingOrSizing()
+    end)
+    CompactRaidFrameContainer.moveFrame:SetScript("OnMouseDown", function(self, d)
+        print(id, addName, (e.onlyChinse and '移动' or NPE_MOVE)..e.Icon.right, 'Alt+'..e.Icon.mid..(e.onlyChinse and '缩放' or UI_SCALE), Save.raidFrameScale or 1)
+        if d=='RightButton' and not IsMetaKeyDown() then
+            SetCursor('UI_MOVE_CURSOR')
+        end
+    end)
+    CompactRaidFrameContainer.moveFrame:SetScript("OnLeave", function(self, d)
+        ResetCursor()
+    end)
+    CompactRaidFrameContainer.moveFrame:SetScript('OnMouseWheel', function(self, d)--缩放
+        if IsAltKeyDown() then
+            if UnitAffectingCombat('player') then
+                print(id, addName, e.onlyChinse and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '战斗中' or COMBAT))
+            else
+                local sacle= Save.raidFrameScale or 1
+                if d==1 then
+                    sacle=sacle+0.05
+                elseif d==-1 then
+                    sacle=sacle-0.05
+                end
+                if sacle>1.5 then
+                    sacle=1.5
+                elseif sacle<0.5 then
+                    sacle=0.5
+                end
+                print(id, addName, (e.onlyChinse and '缩放' or UI_SCALE), sacle)
+                CompactRaidFrameContainer:SetScale(sacle)
+                Save.raidFrameScale=sacle
+            end
+        end
+    end)
+    if Save.raidFrameScale and Save.raidFrameScale~=1 then
+        CompactRaidFrameContainer:SetScale(Save.raidFrameScale)
+    end
+
+    CompactRaidFrameContainer:SetClampedToScreen(true)
+    CompactRaidFrameContainer:SetMovable(true)
+
+    hooksecurefunc('CompactRaidGroup_InitializeForGroup', function(frame, groupIndex)--处理, 队伍号
+        frame.title:SetText('|A:'..e.Icon.number..groupIndex..':0:0|a')
+    end)
+
+end
+
 --######
 --初始化
 --######
 local function Init()
+    set_RaidFrame()--团队
+
     set_PlayerFrame()--玩家
     set_TargetFrame()--目标
     set_PetFrame()--宠物
@@ -265,24 +399,6 @@ local function Init()
     set_UnitFrame_Update()--职业, 图标， 颜色
     C_Timer.After(2, function()
         set_LootSpecialization()--拾取专精
-    end)
-
-    --############
-    --去掉生命条 %
-    --############
-    --extStatusBar.lua
-    hooksecurefunc('TextStatusBar_UpdateTextStringWithValues', function(statusFrame, textString, value, valueMin, valueMax)
-        if value and value>0 then
-            if textString and textString:IsShown() then
-                local text= textString:GetText()
-                text= text:gsub('%%', '')
-                textString:SetText(text)
-            elseif statusFrame.LeftText and statusFrame.LeftText:IsShown() then
-                local text= statusFrame.LeftText:GetText()
-                text= text:gsub('%%', '')
-                statusFrame.LeftText:SetText(text)
-            end
-        end
     end)
 end
 
@@ -308,7 +424,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end)
 
             if not Save.disabled then
-                Save.SetShadowOffset= Save.SetShadowOffset or 1
+                --Save.SetShadowOffset= Save.SetShadowOffset or 1
                 Init()
             end
         end
