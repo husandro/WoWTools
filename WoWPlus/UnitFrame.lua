@@ -1,5 +1,5 @@
 local id, e = ...
-local addName= UNITFRAME_LABEL..'/'..RAID_FRAMES_LABEL
+local addName= UNITFRAME_LABEL
 local Save={raidFrameScale=0.85}--{SetShadowOffset= 1}
 local panel=CreateFrame("Frame")
 local R,G,B= GetClassColor(UnitClassBase('player'))
