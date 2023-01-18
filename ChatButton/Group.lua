@@ -273,7 +273,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
                     info.name= info.name..e.Icon.map2..e.Icon.select2
                 end
             else
-                info.name= info.name..e.Icon.star2
+                info.name= info.name
             end
 
             if role=='TANK' then

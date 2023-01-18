@@ -129,7 +129,7 @@ e.GetPlayerInfo=function (unit, guid, showName)--, hideClassTexture)
     guid= guid or UnitGUID(unit)
     if guid then
         if guid==e.Player.guid then
-           return e.Icon.player..(showName and e.Player.col..COMBATLOG_FILTER_STRING_ME..'|r' or '')..e.Icon.star2
+           return e.Icon.player..(showName and e.Player.col..(e.onlyChinse and '我' or COMBATLOG_FILTER_STRING_ME)..'|r' or '')..e.Icon.star2
         else
             local _, englishClass, _, englishRace, sex, name, realm = GetPlayerInfoByGUID(guid)
             if name and englishClass and englishRace and sex then

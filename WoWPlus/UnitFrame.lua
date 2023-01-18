@@ -1,6 +1,6 @@
 local id, e = ...
 local addName= UNITFRAME_LABEL..'/'..RAID_FRAMES_LABEL
-local Save={}--{SetShadowOffset= 1}
+local Save={raidFrameScale=0.85}--{SetShadowOffset= 1}
 local panel=CreateFrame("Frame")
 local R,G,B= GetClassColor(UnitClassBase('player'))
 
@@ -295,7 +295,7 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
 
     hooksecurefunc('CompactUnitFrame_SetUnit', function(frame, unit)
         if unit and not frame.RaidTargetIcon and frame.name then
-            frame.RaidTargetIcon= frame:CreateTexture(nil, 'ARTWORK')
+            frame.RaidTargetIcon= frame:CreateTexture(nil, 'OVERLAY')
             frame.RaidTargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
             frame.RaidTargetIcon:SetPoint('TOPRIGHT')
             frame.RaidTargetIcon:SetSize(13,13)
@@ -363,6 +363,9 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
 
     --新建, 移动, 按钮
     CompactRaidFrameContainer.moveFrame= e.Cbtn(CompactRaidFrameContainer, nil, nil, nil, nil, true, {20,20})
+    if not Save.setButtonState then--设置, 发光
+        CompactRaidFrameContainer.moveFrame:SetButtonState('PUSHED')
+    end
     CompactRaidFrameContainer.moveFrame:SetPoint('TOPRIGHT', CompactRaidFrameContainer, 'TOPLEFT',-2, -13)
     CompactRaidFrameContainer.moveFrame:SetClampedToScreen(true)
     CompactRaidFrameContainer.moveFrame:SetMovable(true)
@@ -380,6 +383,7 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
         if d=='RightButton' and not IsMetaKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         end
+        Save.setButtonState= true--设置, 发光
     end)
     CompactRaidFrameContainer.moveFrame:SetScript("OnLeave", function(self, d)
         ResetCursor()
