@@ -36,15 +36,14 @@ local function set_PlayerFrame()--PlayerFrame.lua
     set_SetShadowOffset(PlayerLevelText)
 
     --施法条
-    local frame=PlayerCastingBarFrame
-    frame:HookScript('OnShow', function(self)--图标
+    PlayerCastingBarFrame:HookScript('OnShow', function(self)--图标
         self.Icon:SetShown(true)
     end)
-    set_SetTextColor(frame.Text, R,G,B)--颜色
-    frame.castingText=e.Cstr(frame, nil, nil, nil, {R,G,B}, nil, 'RIGHT')
-    frame.castingText:SetDrawLayer('OVERLAY', 2)
-    frame.castingText:SetPoint('RIGHT', frame.ChargeFlash, 'RIGHT')
-    frame:HookScript('OnUpdate', function(self, elapsed)--玩家, 施法, 时间
+    set_SetTextColor(PlayerCastingBarFrame.Text, R,G,B)--颜色
+    PlayerCastingBarFrame.castingText=e.Cstr(PlayerCastingBarFrame, nil, nil, nil, {R,G,B}, nil, 'RIGHT')
+    PlayerCastingBarFrame.castingText:SetDrawLayer('OVERLAY', 2)
+    PlayerCastingBarFrame.castingText:SetPoint('RIGHT', PlayerCastingBarFrame.ChargeFlash, 'RIGHT')
+    PlayerCastingBarFrame:HookScript('OnUpdate', function(self, elapsed)--玩家, 施法, 时间
         if self.maxValue and self.value then
             local value=self.maxValue-self.value
             if value>=3 then
@@ -114,7 +113,7 @@ local function set_PartyFrame()--PartyFrame.lua
             memberFrame.PartyMemberOverlay.unit= memberFrame.unit or memberFrame:GetUnit()
             memberFrame.PartyMemberOverlay.exists= exists
             if not memberFrame.PartyMemberOverlay.RaidTargetIcon and exists then
-                memberFrame.PartyMemberOverlay.RaidTargetIcon= memberFrame:CreateTexture(nil, 'ARTWORK')--队伍, 标记
+                memberFrame.PartyMemberOverlay.RaidTargetIcon= memberFrame:CreateTexture(nil,'OVERLAY', nil, 7)--队伍, 标记
                 memberFrame.PartyMemberOverlay.RaidTargetIcon:SetPoint('RIGHT', memberFrame.PartyMemberOverlay.RoleIcon, 'LEFT')
                 memberFrame.PartyMemberOverlay.RaidTargetIcon:SetSize(14,14)
                 memberFrame.PartyMemberOverlay.RaidTargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
@@ -162,7 +161,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
         end
         local class=e.Class(unit, nil, true)--职业, 图标
         if not self.classTexture then
-            self.classTexture=self:CreateTexture()
+            self.classTexture=self:CreateTexture(nil,'OVERLAY', nil, 7)
             if unit=='target' or unit=='focus' then
                 self.classTexture:SetPoint('TOPRIGHT', self.portrait, 'TOPLEFT',0,10)
                 if unit=='target' then--移动, 队长图标，TargetFrame.lua
@@ -295,7 +294,7 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
 
     hooksecurefunc('CompactUnitFrame_SetUnit', function(frame, unit)--队伍, 标记
         if unit and not frame.RaidTargetIcon and frame.name then
-            frame.RaidTargetIcon= frame:CreateTexture(nil, 'OVERLAY')
+            frame.RaidTargetIcon= frame:CreateTexture(nil,'OVERLAY', nil, 7)
             frame.RaidTargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
             frame.RaidTargetIcon:SetPoint('TOPRIGHT')
             frame.RaidTargetIcon:SetSize(13,13)
