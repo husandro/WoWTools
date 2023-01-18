@@ -293,7 +293,7 @@ end
 --####
 local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
 
-    hooksecurefunc('CompactUnitFrame_SetUnit', function(frame, unit)
+    hooksecurefunc('CompactUnitFrame_SetUnit', function(frame, unit)--队伍, 标记
         if unit and not frame.RaidTargetIcon and frame.name then
             frame.RaidTargetIcon= frame:CreateTexture(nil, 'OVERLAY')
             frame.RaidTargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
