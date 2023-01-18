@@ -335,11 +335,15 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
         if not frame.name or (frame.UpdateNameOverride and frame:UpdateNameOverride()) or not ShouldShowName(frame) then
             return;
         end
-        local name= frame.name:GetText()
-        if name then
-            name= name:match('(.-)%-') or name
-            name= e.WA_Utf8Sub(name, 4, 8)
-            frame.name:SetText(name)
+        if UnitIsUnit('player',frame.unit) then
+            frame.name:SetText(e.Icon.player)
+        else
+            local name= frame.name:GetText()
+            if name then
+                name= name:match('(.-)%-') or name
+                name= e.WA_Utf8Sub(name, 4, 8)
+                frame.name:SetText(name)
+            end
         end
     end)
 
