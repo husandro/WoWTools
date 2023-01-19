@@ -37,14 +37,15 @@ local function set_PetBattleUnitFrame_UpdateDisplay(self)--Blizzard_PetBattleUI.
                 local power = C_PetBattles.GetPower(petOwner, petIndex)
                 if speed and power then
                     t=t and t..'\n' or ''
-                    t=t..'|A:Soulbinds_Tree_Conduit_Icon_Attack:0:0|a'..power..'\n'..'|A:Soulbinds_Tree_Conduit_Icon_Utility:0:0|a'..speed
+                    t=t..power..'\n'..speed
+                    --t=t..'|A:Soulbinds_Tree_Conduit_Icon_Attack:0:0|a'..power..'\n'..'|A:Soulbinds_Tree_Conduit_Icon_Utility:0:0|a'..speed
                 end
             end
         end
     end
     if not self.text and t then
-        self.text=e.Cstr(self, 10 ,nil, nil, nil, nil, 'RIGHT')
-        self.text:SetPoint('TOPRIGHT', self.Icon, 'TOPRIGHT', 4, 2)
+        self.text=e.Cstr(self, 12 ,nil, nil, nil, nil, 'RIGHT')
+        self.text:SetPoint('TOPRIGHT', self.Icon, 'TOPRIGHT', 6, 2)
     end
     if self.text then
         self.text:SetText(t or'')
@@ -134,69 +135,45 @@ end
 --主面板,主技能, 提示
 --#################
 local function set_PetBattleAbilityButton_UpdateBetterIcon(self)
-    local typeTexture, text, strongTexture, weakHintsTexture
+    local typeTexture, Cooldown, strongTexture, weakHintsTexture
     if self.BetterIcon then
         local activePet = C_PetBattles.GetActivePet(Enum.BattlePetOwner.Ally);
         if activePet then
-            local _, _, _, maxCooldown, _, numTurns, petType = C_PetBattles.GetAbilityInfo(Enum.BattlePetOwner.Ally, activePet, self:GetID());
+            local _, _, _, maxCooldown, _, _, petType = C_PetBattles.GetAbilityInfo(Enum.BattlePetOwner.Ally, activePet, self:GetID());
+            Cooldown=maxCooldown
             if petType and PET_TYPE_SUFFIX[petType] then
                 typeTexture='Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType]--"Interface\\PetBattles\\PetIcon-"..PET_TYPE_SUFFIX[petType]
-                if numTurns and numTurns>1 then
-                    text='|cnGREEN_FONT_COLOR:'..numTurns..'|r'
-                end
-                if maxCooldown and maxCooldown>0 then
-                    text= text and text..'/' or ''
-                    text=text..'|cnRED_FONT_COLOR:'..maxCooldown..'|r'
-                end
-
                 strongTexture, weakHintsTexture= e.GetPetStrongWeakHints(petType)--取得对战宠物, 强弱
-
-                if not self.weakHints then
-                    self.weakHints=self:CreateTexture(nil, 'ARTWORK')
-                    self.weakHints:SetPoint('BOTTOMLEFT',-2,-2)
-                    self.weakHints:SetSize(20,20)
-                    self.weakHints.type=self:CreateTexture(nil, 'ARTWORK')
-                    self.weakHints.type:SetPoint('LEFT', self.weakHints, 'RIGHT',-4,0)
-                    self.weakHints.type:SetSize(18,18)
-                    self.weakHints.type:SetTexture('Interface\\PetBattles\\BattleBar-AbilityBadge-Weak')
-
-                    self.petType=self:CreateTexture(nil,'ARTWORK')
-                    self.petType:SetPoint('BOTTOMLEFT', self.weakHints, 'TOPLEFT', 0, -3)
-                    self.petType:SetSize(20,20)
-
-                    self.strong=self:CreateTexture(nil, 'ARTWORK')
-                    self.strong:SetPoint('BOTTOMLEFT', self.petType, 'TOPLEFT',0, -3)
-                    self.strong:SetSize(20,20)
-                    self.strong.type=self:CreateTexture(nil, 'ARTWORK')
-                    self.strong.type:SetPoint('LEFT', self.strong, 'RIGHT',-4,0)
-                    self.strong.type:SetSize(18,18)
-                    self.strong.type:SetTexture('Interface\\PetBattles\\BattleBar-AbilityBadge-Strong')
-
-                    self.text=e.Cstr(self)
-                    self.text:SetPoint('RIGHT')
+                if not self.petType then
+                    self.strong= self:CreateTexture(nil, 'OVERLAY', nil, 7)
+                    self.strong:SetPoint('TOPLEFT', self,-4, 2)
+                    self.strong:SetSize(15,15)
+                    self.petType= self:CreateTexture(nil, 'OVERLAY', nil, 7)
+                    self.petType:SetPoint('LEFT', self, -4, 0)
+                    self.petType:SetSize(15,15)
+                    self.weakHints= self:CreateTexture(nil, 'OVERLAY', nil, 7)
+                    self.weakHints:SetPoint('BOTTOMLEFT',-4,-2)
+                    self.weakHints:SetSize(15,15)
+                    self.text=e.Cstr(self, nil, nil, nil,{1,0,0}, 'OVERLAY', 'RIGHT')
+                    self.text:SetPoint('RIGHT',-6,-6)
                 end
             end
         end
     end
-    if self.weakHints then
+    if self.petType then
         if weakHintsTexture then
             self.weakHints:SetTexture(weakHintsTexture)
         end
         self.weakHints:SetShown(weakHintsTexture)
-        self.weakHints.type:SetShown(weakHintsTexture)
-
         if typeTexture then
             self.petType:SetTexture(typeTexture)
         end
         self.petType:SetShown(typeTexture)
-
         if strongTexture then
             self.strong:SetTexture(strongTexture)
         end
         self.strong:SetShown(strongTexture)
-        self.strong:SetShown(strongTexture)
-
-        self.text:SetText(text or '')
+        self.text:SetText(Cooldown and Cooldown>0 and Cooldown or '')
     end
 end
 
@@ -298,24 +275,16 @@ local function set_PetBattleFrame_UpdateAllActionButtons(self)--Blizzard_PetBatt
                     frame[i].texture:SetSize(30,30)
 
                     frame[i].strong=frame[i]:CreateTexture(nil,'OVERLAY')
-                    frame[i].strong:SetPoint('TOPLEFT', -5, 3)
-                    frame[i].strong:SetSize(20,20)
-                    frame[i].strong.type=frame[i]:CreateTexture(nil,'OVERLAY')
-                    frame[i].strong.type:SetPoint('LEFT', frame[i].strong, 'RIGHT', -5, 0)
-                    frame[i].strong.type:SetSize(15,15)
-                    frame[i].strong.type:SetTexture('Interface\\PetBattles\\BattleBar-AbilityBadge-Strong')
+                    frame[i].strong:SetPoint('TOPLEFT', -4, 2)
+                    frame[i].strong:SetSize(15,15)
 
                     frame[i].petTypeTexture=frame[i]:CreateTexture(nil,'OVERLAY')
-                    frame[i].petTypeTexture:SetPoint('LEFT', -5, 0)
-                    frame[i].petTypeTexture:SetSize(20,20)
+                    frame[i].petTypeTexture:SetPoint('LEFT', -4, 0)
+                    frame[i].petTypeTexture:SetSize(15,15)
 
                     frame[i].weakHints=frame[i]:CreateTexture(nil,'OVERLAY')
-                    frame[i].weakHints:SetPoint('BOTTOMLEFT', -5, -3)
-                    frame[i].weakHints:SetSize(20,20)
-                    frame[i].weakHints.type=frame[i]:CreateTexture(nil,'OVERLAY')
-                    frame[i].weakHints.type:SetPoint('LEFT', frame[i].weakHints, 'RIGHT',-5,0)
-                    frame[i].weakHints.type:SetSize(15,15)
-                    frame[i].weakHints.type:SetTexture('Interface\\PetBattles\\BattleBar-AbilityBadge-Weak')
+                    frame[i].weakHints:SetPoint('BOTTOMLEFT', -4, -2)
+                    frame[i].weakHints:SetSize(15,15)
                 end
             end
         end
@@ -370,8 +339,6 @@ local function set_PetBattleFrame_UpdateAllActionButtons(self)--Blizzard_PetBatt
             frame[i].strong:SetShown(find)
             frame[i].petTypeTexture:SetShown(find)
             frame[i].weakHints:SetShown(find)
-            frame[i].weakHints.type:SetShown(find)
-            frame[i].strong.type:SetShown(find)
 
             find=nil
             local target2= target==Enum.BattlePetOwner.Ally and Enum.BattlePetOwner.Enemy or Enum.BattlePetOwner.Ally
