@@ -151,7 +151,7 @@ local function set_vigentteButton_Event()
         panel.vigentteButton.text:SetText('')
     end
 end
-local uiMapIDsTab= {2025, 2024, 2023, 2022}--地图, areaPoiIDs
+local uiMapIDsTab= {2026, 2025, 2024, 2023, 2022}--地图, areaPoiIDs
 local function set_vigentteButton_Text()
     if not Save.vigentteButtonShowText then
         panel.vigentteButton.text:SetText('')
@@ -174,7 +174,7 @@ local function set_vigentteButton_Text()
                 local secondsLeft = C_AreaPoiInfo.GetAreaPOISecondsLeft(areaPoiID)
                 if secondsLeft then
                     text= text and text..'\n' or ''
-                    text= text..'|cnGREEN_FONT_COLOR:'..SecondsToTime(secondsLeft)..'|r'..'|A:'..poiInfo.atlasName..':0:0|a'
+                    text= text..SecondsToTime(secondsLeft)..'|A:'..poiInfo.atlasName..':0:0|a'
                 end
             end
         end
