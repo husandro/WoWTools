@@ -482,19 +482,21 @@ end
 --任务，主菜单
 --###########
 local function set_Only_Show_Zone_Quest()--显示本区域任务
-    if Save.autoSortQuest then
-        for index=1, select(2,C_QuestLog.GetNumQuestLogEntries()) do
-            local info = C_QuestLog.GetInfo(index)
-            if info and info.questID and not info.isHeader then
-                if info.isOnMap then
-                    C_QuestLog.AddQuestWatch(info.questID)
-                else
-                    C_QuestLog.RemoveQuestWatch(info.questID)
-                end
+    if not Save.autoSortQuest then
+        return
+    end
+    for index=1, select(2,C_QuestLog.GetNumQuestLogEntries()) do
+        local info = C_QuestLog.GetInfo(index)
+        if info and info.questID and not info.isHeader and not info.campaignID then
+            if info.isOnMap and C_QuestLog.IsOnMap(info.questID) then
+                
+                C_QuestLog.AddQuestWatch(info.questID)
+            else
+                C_QuestLog.RemoveQuestWatch(info.questID)
             end
         end
-        C_QuestLog.SortQuestWatches()
     end
+    C_QuestLog.SortQuestWatches()
 end
 
 local function set_PushableQuest()--共享,任务
