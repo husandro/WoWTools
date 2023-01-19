@@ -63,7 +63,7 @@ local function select_Reward()--自动:选择奖励
         if itemLink then
             local amount = select(3, GetQuestItemInfo('choice', i))--钱
             local _, _, itemQuality, itemLevel, _, _,_,_, itemEquipLoc, _, sellPrice,classID, subclassID = GetItemInfo(itemLink)
-            
+
             if classID==19 or (classID==4 and subclassID==5) or itemLevel==1 or (not itemEquipLoc) then
                 return
             end
@@ -932,7 +932,7 @@ local function Init_Quest()
 
 ]]
 
-        
+
 
        --[[ if not complete then
             if not questSelect[questID] then
