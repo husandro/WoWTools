@@ -487,18 +487,21 @@ local function set_Only_Show_Zone_Quest()--显示本区域任务
     if not Save.autoSortQuest then
         return
     end
-    for index=1, select(2,C_QuestLog.GetNumQuestLogEntries()) do
+    local uiMapID= C_Map.GetBestMapForUnit('player')
+    if not uiMapID or uiMapID==0 then
+        return
+    end
+    for index=1, C_QuestLog.GetNumQuestLogEntries() do
         local info = C_QuestLog.GetInfo(index)
         if info and info.questID and not info.isHeader and not info.campaignID then
-            if info.isOnMap and C_QuestLog.IsOnMap(info.questID) then
-                
+            if info.isOnMap and GetQuestUiMapID(info.questID)==uiMapID then
                 C_QuestLog.AddQuestWatch(info.questID)
             else
                 C_QuestLog.RemoveQuestWatch(info.questID)
             end
         end
     end
-    C_QuestLog.SortQuestWatches()
+    --C_QuestLog.SortQuestWatches()
 end
 
 local function set_PushableQuest()--共享,任务
@@ -713,7 +716,7 @@ local function Init_Quest()
         e.tips:AddDoubleLine(e.GetEnabeleDisable(Save.quest)..e.Icon.left, (e.onlyChinse and '菜单' or SLASH_TEXTTOSPEECH_MENU)..e.Icon.right)
         e.tips:AddDoubleLine(id, e.onlyChinse and '任务' or QUESTS_LABEL)
         e.tips:Show()
-       -- set_Only_Show_Zone_Quest()
+        --set_Only_Show_Zone_Quest()
     end)
     questPanel:SetScript('OnLeave', function() e.tips:Hide() end)
 
@@ -915,37 +918,12 @@ local function Init_Quest()
             end)
             questSelect[questID]=true
         end
-        --[[for index= 1,GetNumRewardCurrencies() do--货币
-            local name, texture, numItems, quality = GetQuestCurrencyInfo("reward", index)
-        end]]
+
         acceptButton:Click()
+    end)
 
---[[--local numRequiredCurrencies = GetNumQuestCurrencies();
-        if numRequiredCurrencies>0 then--货币
-            local questItemName = "QuestProgressItem"
-            for i=1, numRequiredCurrencies do
-                local requiredItem = _G[questItemName..buttonIndex];
-                if requiredItem and requiredItem.type and requiredItem.objectType == "currency" then
-                    local link=GetQuestItemLink(requiredItem.type, i)
-                    if link then
-                        itemLink= itemLink.. link
-                    end
-                end
-            end
-        end
-
-]]
-
-
-
-       --[[ if not complete then
-            if not questSelect[questID] then
-                C_Timer.After(0.5, function()
-                    print(id, QUESTS_LABEL, itemLink or '', GetQuestLink(questID) or questID, '|cnRED_FONT_COLOR:'..acceptButton:GetText()..'|r')
-                end)
-                questSelect[questID]=true
-            end
-        end]]
+    C_Timer.After(2, function()
+        set_Only_Show_Zone_Quest()--显示本区域任务
     end)
 end
 
@@ -983,7 +961,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 questPanel:UnregisterAllEvents()
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
-            set_Only_Show_Zone_Quest()
 
         elseif arg1=='Blizzard_PlayerChoice' then--命运, 字符
             hooksecurefunc(StaticPopupDialogs["CONFIRM_PLAYER_CHOICE_WITH_CONFIRMATION_STRING"],"OnShow",function(s)
