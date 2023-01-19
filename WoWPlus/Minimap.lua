@@ -20,10 +20,17 @@ local function set_ZoomOut()--更新地区时,缩小化地图
         Minimap:SetZoom(0)
     end
 end
+local function set_minimapTrackingShowAll()--追踪,镇民
+    if Save.minimapTrackingShowAll~=nil then
+        C_CVar.SetCVar('minimapTrackingShowAll', not Save.minimapTrackingShowAll and '0' or '1' )
+    end
+end
+
+
 --####
---初始
+--缩放
 --####
-local function Init()
+local function set_MinimapCluster()--缩放
     local frame=MinimapCluster
     if Save.scale and Save.scale~=1 then
         frame:SetScale(Save.scale)
@@ -65,7 +72,13 @@ local function Init()
         e.tips:Show()
     end)
     frame.ScaleOut:SetScript('OnLeave', function() e.tips:Hide() end)
+end
 
+
+--#######
+--盟约图标
+--#######
+local function set_ExpansionLandingPageMinimapButton()
     if ExpansionLandingPageMinimapButton then
         local OpenWR=function()
             if not WeeklyRewardsFrame then
@@ -119,13 +132,13 @@ local function Init()
             ExpansionLandingPageMinimapButton:SetAlpha(0.3)
         end)
     end
+end
 
-    local function set_minimapTrackingShowAll()--追踪,镇民
-        if Save.minimapTrackingShowAll~=nil then
-            C_CVar.SetCVar('minimapTrackingShowAll', not Save.minimapTrackingShowAll and '0' or '1' )
-        end
-    end
 
+--###############
+--小地图, 添加菜单
+--###############
+local function set_MinimapMenu()--小地图, 添加菜单
     if MinimapCluster and MinimapCluster.Tracking and MinimapCluster.Tracking.Button then
         MinimapCluster.Tracking.Button:HookScript( 'OnMouseDown', function()
             UIDropDownMenu_AddSeparator(1)
@@ -157,11 +170,18 @@ local function Init()
             UIDropDownMenu_AddButton(info, 1)
         end)
     end
+end
+--####
+--初始
+--####
+local function Init()
+    set_MinimapCluster()--缩放
+    set_ExpansionLandingPageMinimapButton()--盟约图标
+    set_MinimapMenu()--小地图, 添加菜单
 
     if Save.ZoomOut then
-        set_ZoomOut_Event()--更新地区时,缩小化地图
+        set_ZoomOut_Event()--更新地区时, 缩小化地图
     end
-
     if Save.minimapTrackingShowAll~=nil then
         set_minimapTrackingShowAll()--追踪,镇民
     end
@@ -171,7 +191,6 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
@@ -192,16 +211,21 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end)
             sel:SetScript('OnLeave', function() e.tips:Hide() end)
 
-            if not Save.disabled then
+            if Save.disabled then
+                panel:UnregisterAllEvents()
+            else
                 Init()
             end
+            panel:RegisterEvent("PLAYER_LOGOUT")
+
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end
             WoWToolsSave[addName]=Save
         end
 
-    else
+    elseif event=='PLAYER_ENTERING_WORLD' or event=='ZONE_CHANGED_NEW_AREA' or event=='ZONE_CHANGED' then
         set_ZoomOut()--更新地区时,缩小化地图
+
     end
 end)
