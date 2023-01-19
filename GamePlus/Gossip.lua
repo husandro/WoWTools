@@ -355,11 +355,13 @@ local function Init_Gossip()
         self.sel.text=info.name
         self.sel:SetChecked(Save.gossipOption[info.gossipOptionID])
 
-        local find
-        if IsModifierKeyDown() or selectGissipIDTab[info.gossipOptionID] then
-            return
 
-        elseif Save.gossipOption[info.gossipOptionID] then--自定义
+        if IsModifierKeyDown() or not info.gossipOptionID or selectGissipIDTab[info.gossipOptionID] then
+            return
+        end
+
+        local find
+        if Save.gossipOption[info.gossipOptionID] then--自定义
             C_GossipInfo.SelectOption(index)
             find=true
 
