@@ -529,32 +529,7 @@ end
 
 local function InitMenu_Quest(self, level, type)
     local info
-    if type=='TRACKING' then--追踪
-        info={
-            text= e.onlyChinse and '自动任务追踪' or AUTO_QUEST_WATCH_TEXT,
-            checked=C_CVar.GetCVarBool("autoQuestWatch"),
-            tooltipOnButton=true,
-            tooltipTitle= format(e.onlyChinse and '接受任务：%s' or ERR_QUEST_ACCEPTED_S, 'Cvar autoQuestWatch'),
-            func=function()
-                C_CVar.SetCVar("autoQuestWatch", C_CVar.GetCVarBool("autoQuestWatch") and '0' or '1')
-            end
-        }
-        UIDropDownMenu_AddButton(info, level)
-
-        info={
-            text= e.onlyChinse and '当前地图' or (REFORGE_CURRENT..WORLD_MAP),
-            checked=Save.autoSortQuest,
-            tooltipOnButton=true,
-            tooltipTitle= e.onlyChinse and '仅显示当前地图任务' or format(GROUP_FINDER_CROSS_FACTION_LISTING_WITH_PLAYSTLE, SHOW,FLOOR..QUESTS_LABEL),--仅限-本区域任务
-            tooltipText= e.onlyChinse and '触发事件: 更新区域' or (EVENTS_LABEL..':' ..UPDATE..FLOOR),
-            func=function()
-                Save.autoSortQuest= not Save.autoSortQuest and true or nil
-                set_Auto_QuestWatch_Event()--仅显示本地图任务,事件
-            end
-        }
-        UIDropDownMenu_AddButton(info, level)
-
-    elseif type=='CUSTOM' then
+   if type=='CUSTOM' then
         for questID, text in pairs(Save.questOption) do
             info={
                 text= text,
@@ -628,14 +603,39 @@ local function InitMenu_Quest(self, level, type)
         }
         UIDropDownMenu_AddButton(info, level)
 
+        UIDropDownMenu_AddSeparator(level)
         info={
             text= e.onlyChinse and '追踪' or TRACKING,
+            isTitle= true,
             notCheckable=true,
-            hasArrow=true,
-            menuList='TRACKING'
         }
         UIDropDownMenu_AddButton(info, level)
-       -- UIDropDownMenu_AddSeparator(level)
+
+        info={
+            text= e.onlyChinse and '自动任务追踪' or AUTO_QUEST_WATCH_TEXT,
+            checked=C_CVar.GetCVarBool("autoQuestWatch"),
+            tooltipOnButton=true,
+            tooltipTitle= format(e.onlyChinse and '接受任务：%s' or ERR_QUEST_ACCEPTED_S, 'Cvar autoQuestWatch'),
+            func=function()
+                C_CVar.SetCVar("autoQuestWatch", C_CVar.GetCVarBool("autoQuestWatch") and '0' or '1')
+            end
+        }
+        UIDropDownMenu_AddButton(info, level)
+
+        info={
+            text= e.onlyChinse and '当前地图' or (REFORGE_CURRENT..WORLD_MAP),
+            checked=Save.autoSortQuest,
+            tooltipOnButton=true,
+            tooltipTitle= e.onlyChinse and '仅显示当前地图任务' or format(GROUP_FINDER_CROSS_FACTION_LISTING_WITH_PLAYSTLE, SHOW,FLOOR..QUESTS_LABEL),--仅限-本区域任务
+            tooltipText= e.onlyChinse and '触发事件: 更新区域' or (EVENTS_LABEL..':' ..UPDATE..FLOOR),
+            func=function()
+                Save.autoSortQuest= not Save.autoSortQuest and true or nil
+                set_Auto_QuestWatch_Event()--仅显示本地图任务,事件
+            end
+        }
+        UIDropDownMenu_AddButton(info, level)
+
+        UIDropDownMenu_AddSeparator(level)
 
         info={--自定义,任务,选项
             text= e.onlyChinse and '自定义任务' or CUSTOM..QUESTS_LABEL,
@@ -644,18 +644,6 @@ local function InitMenu_Quest(self, level, type)
             hasArrow=true,
         }
         UIDropDownMenu_AddButton(info, level)
-
---[[
-        UIDropDownMenu_AddSeparator(level)
-        info={
-            text=id..' '..QUESTS_LABEL,
-            notCheckable=true,
-            isTitle=true,
-        }
-        UIDropDownMenu_AddButton(info, level)
-
-]]
-
     end
 end
 
@@ -744,7 +732,7 @@ local function Init_Quest()
 
     QuestFrame.sel=CreateFrame("CheckButton", nil, QuestFrame, 'InterfaceOptionsCheckButtonTemplate')--禁用此npc,任务,选项
     QuestFrame.sel:SetPoint("TOPLEFT", QuestFrame, 40, 20)
-    QuestFrame.sel.Text:SetText(DISABLE)
+    QuestFrame.sel.Text:SetText(e.onlyChinse and '禁用' or DISABLE)
     QuestFrame.sel:SetScript("OnMouseDown", function (self, d)
         if not self.npc and self.name then
             return
