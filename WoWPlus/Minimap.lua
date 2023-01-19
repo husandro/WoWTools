@@ -1,6 +1,6 @@
 local id, e = ...
 local addName= HUD_EDIT_MODE_MINIMAP_LABEL
-local Save={scale=0.85, ZoomOut=true}
+local Save={scale=0.85, ZoomOut=true, vigentteButton=true, vigentteButtonShowText=true }
 local panel=CreateFrame("Frame")
 
 local function set_ZoomOut_Event()--更新地区时,缩小化地图, 事件
@@ -139,43 +139,58 @@ end
 --小地图, 标记, 文本
 --#################
 local function set_vigentteButton_Event()
-    if Save.vigentteButton then
-        panel:RegisterEvent('VIGNETTE_MINIMAP_UPDATED')
-        panel:RegisterEvent('VIGNETTES_UPDATED')
+    local bat= UnitAffectingCombat('player')
+    if Save.vigentteButton and Save.vigentteButtonShowText and not bat then
+        panel.vigentteButton:RegisterEvent('AREA_POIS_UPDATED')
+        panel.vigentteButton:RegisterEvent('VIGNETTES_UPDATED')
     else
-        panel:UnregisterEvent('VIGNETTE_MINIMAP_UPDATED')
-        panel:UnregisterEvent('VIGNETTES_UPDATED')
+        panel.vigentteButton:UnregisterEvent('AREA_POIS_UPDATED')
+        panel.vigentteButton:UnregisterEvent('VIGNETTES_UPDATED')
+    end
+    if Save.vigentteButton and Save.vigentteButtonShowText and bat then
+        panel.vigentteButton.text:SetText('')
     end
 end
+local uiMapIDsTab= {2025, 2024, 2023, 2022}--地图, areaPoiIDs
 local function set_vigentteButton_Text()
     if not Save.vigentteButtonShowText then
         panel.vigentteButton.text:SetText('')
         return
     end
     local text
-    local vignetteGUIDs=C_VignetteInfo.GetVignettes();
+    local vignetteGUIDs=C_VignetteInfo.GetVignettes() or {};
     for _, guid in pairs(vignetteGUIDs) do
-        if guid then
-            local info= C_VignetteInfo.GetVignetteInfo(guid)
-            if info and (info.onWorldMap or info.onMinimap) and info.name and info.atlasName then--and  info.zoneInfiniteAOI then
-                text= text and text..'\n' or ''
-                text= text.. info.name..'|A:'..info.atlasName..':0:0|a'
+        local info= C_VignetteInfo.GetVignetteInfo(guid)
+        if info and info.name and info.atlasName and (info.onWorldMap or info.onMinimap) then
+            text= text and text..'\n' or ''
+            text= text.. info.name..'|A:'..info.atlasName..':0:0|a'
+        end
+    end
+    for _, uiMapID in pairs(uiMapIDsTab) do
+        local areaPoiIDs = C_AreaPoiInfo.GetAreaPOIForMap(uiMapID) or {}
+        for _, areaPoiID in pairs(areaPoiIDs) do
+            local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID)
+            if poiInfo and poiInfo.atlasName and C_AreaPoiInfo.IsAreaPOITimed(areaPoiID) then
+                local secondsLeft = C_AreaPoiInfo.GetAreaPOISecondsLeft(areaPoiID)
+                if secondsLeft then
+                    text= text and text..'\n' or ''
+                    text= text..'|cnGREEN_FONT_COLOR:'..SecondsToTime(secondsLeft)..'|r'..'|A:'..poiInfo.atlasName..':0:0|a'
+                end
             end
         end
     end
     panel.vigentteButton.text:SetText(text or '..')
 end
 local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
-    set_vigentteButton_Event()
     if not Save.vigentteButton then
         if panel.vigentteButton then
             panel.vigentteButton.text:SetText('')
             panel.vigentteButton:SetShown(false)
+            set_vigentteButton_Event()
         end
         return
     end
     if not panel.vigentteButton then
-        --e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size)
         panel.vigentteButton= e.Cbtn(nil, nil, nil, nil, nil, true,{15, 15})
         if Save.pointVigentteButton then
             panel.vigentteButton:SetPoint(Save.pointVigentteButton[1], UIParent, Save.pointVigentteButton[3], Save.pointVigentteButton[4], Save.pointVigentteButton[5])
@@ -196,7 +211,7 @@ local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
         panel.vigentteButton:SetScript("OnDragStop", function(self)
             self:StopMovingOrSizing()
             Save.pointVigentteButton={self:GetPoint(1)}
-            Save.pointVigentteButton=nil
+            Save.pointVigentteButton[2]=nil
             print(id, addName, 'Alt+'..e.Icon.right, e.onlyChinse and '还原位置' or RESET_POSITION)
         end)
         panel.vigentteButton:SetScript('OnMouseDown', function(self, d)
@@ -208,6 +223,7 @@ local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
                 else
                     self:SetNormalAtlas(e.Icon.disabled)
                 end
+                set_vigentteButton_Event()
                 set_vigentteButton_Text()
             elseif d=='RightButton' and key then
                 self:ClearAllPoints()
@@ -249,12 +265,24 @@ local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
             e.tips:Hide()
             ResetCursor()
         end)
+        panel.vigentteButton:RegisterEvent('PLAYER_REGEN_DISABLED')
+        panel.vigentteButton:RegisterEvent('PLAYER_REGEN_ENABLED')
+        panel.vigentteButton:SetScript("OnEvent", function(self, event)
+            if event=='PLAYER_REGEN_DISABLED' or event=='PLAYER_REGEN_ENABLED' then
+                set_vigentteButton_Event()
+                if event=='PLAYER_REGEN_ENABLED' and Save.vigentteButton and Save.vigentteButtonShowText then
+                    set_vigentteButton_Text()
+                end
+            else
+                set_vigentteButton_Text()
+            end
+        end)--更新事件
 
-        --e.Cstr=function(self, size, fontType, ChangeFont, color, layer, justifyH)
         panel.vigentteButton.text= e.Cstr(panel.vigentteButton, Save.vigentteButtonSize, nil, nil, true,nil,'RIGHT')
         panel.vigentteButton.text:SetPoint('BOTTOMRIGHT')
     end
     panel.vigentteButton:SetShown(true)
+    set_vigentteButton_Event()
     set_vigentteButton_Text()
 end
 
@@ -305,8 +333,6 @@ local function set_MinimapMenu()--小地图, 添加菜单
         UIDropDownMenu_AddButton(info, 1)
     end)
 end
-
-
 
 
 --####
