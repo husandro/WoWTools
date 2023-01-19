@@ -603,7 +603,6 @@ local function set_AreaPOIPinMixin_OnAcquired(poiInfo)--地图POI提示 AreaPOID
             t= t..'|cnGREEN_FONT_COLOR:'..SecondsToTime(seconds)..'|r'
         end
     end
-
     if poiInfo.Str then
         poiInfo.Str:SetText(t)
     end
