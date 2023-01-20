@@ -80,7 +80,9 @@ local function set_TargetFrame()
             local classFilename= UnitClassBase(self.unit)
             if classFilename then
                 local r,g,b=GetClassColor(classFilename)
-                levelText:SetTextColor(r,g,b)
+                if r and g and b then
+                    levelText:SetTextColor(r,g,b)
+                end
             end
         end
     end)

@@ -144,7 +144,7 @@ local function Set()
 				n= n<6 and 6 or n
 				n= n>32 and 32 or n
 				Save.size=n
-				e.Cstr(nil, n, nil, panel.btn.text, true)
+				e.Cstr(nil, n, nil, panel.btn.text)
 				print(id, addName, e.onlyChinse and '文本' or LOCALE_TEXT_LABEL, e.onlyChinse and '字体大小' or FONT_SIZE, n)
 			else
 				if d==1 and not TokenFrame:IsVisible() or d==-1 and TokenFrame:IsVisible() then
@@ -153,7 +153,7 @@ local function Set()
 			end
 		end)
 
-		panel.btn.text=e.Cstr(panel.btn, Save.size, nil, nil, true)--内容显示文本
+		panel.btn.text=e.Cstr(panel.btn, Save.size)--内容显示文本
 		panel.btn.text:SetPoint('TOPLEFT',3,-3)
 	end
 
