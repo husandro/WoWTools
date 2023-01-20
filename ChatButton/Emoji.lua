@@ -276,7 +276,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         sel.text:SetText('Emoji')
         sel:SetPoint('LEFT', WoWToolsChatButtonFrame.sel.text, 'RIGHT')
         sel:SetChecked(not Save.disabled)
-        sel:SetScript('OnClick', function()
+        sel:SetScript('OnMouseDown', function()
             Save.disabled= not Save.disabled and true or nil
             print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.GetEnabeleDisable(not WoWToolsChatButtonFrame.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
         end)

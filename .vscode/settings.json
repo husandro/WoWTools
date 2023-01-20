@@ -881,7 +881,11 @@
         "CompactUnitFrame_UpdateUnitEvents",
         "CompactUnitFrame_OnEvent",
         "CompactPartyFrame",
-        "PARTY"
+        "PARTY",
+        "KEY_BUTTON1",
+        "YOU",
+        "UNIT_YOU",
+        "BINDING_NAME_NAMEPLATES"
     ],
     "Lua.diagnostics.disable": [
     ]
