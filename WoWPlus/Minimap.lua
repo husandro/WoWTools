@@ -161,7 +161,7 @@ local function set_vigentteButton_Text()
     local vignetteGUIDs=C_VignetteInfo.GetVignettes() or {};
     for _, guid in pairs(vignetteGUIDs) do
         local info= C_VignetteInfo.GetVignetteInfo(guid)
-        if info and info.name and info.atlasName and (info.onWorldMap or info.onMinimap) then
+        if info and info.name and info.atlasName and (info.onWorldMap or info.onMinimap) and not info.isDead then
             text= text and text..'\n' or ''
             text= text.. info.name..'|A:'..info.atlasName..':0:0|a'
         end
