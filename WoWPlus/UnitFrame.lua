@@ -44,7 +44,7 @@ local function set_PlayerFrame()--PlayerFrame.lua
     PlayerCastingBarFrame.castingText:SetDrawLayer('OVERLAY', 2)
     PlayerCastingBarFrame.castingText:SetPoint('RIGHT', PlayerCastingBarFrame.ChargeFlash, 'RIGHT')
     PlayerCastingBarFrame:HookScript('OnUpdate', function(self, elapsed)--玩家, 施法, 时间
-        if self.maxValue and self.value then
+        if self.maxValue and self.value and self.value>0 and self.maxValue>0 then
             local value=self.maxValue-self.value
             if value>=3 then
                 self.castingText:SetFormattedText('%i', value)

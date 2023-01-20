@@ -20,6 +20,7 @@ local function set_Register_Event()
         panel:RegisterEvent('PLAYER_TARGET_CHANGED')
         panel:RegisterEvent('PLAYER_ENTERING_WORLD')
         panel:RegisterEvent('RAID_TARGET_UPDATE')
+        panel:RegisterUnitEvent('UNIT_FLAGS', 'target')
 
         panel:RegisterEvent('PLAYER_REGEN_DISABLED')
         panel:RegisterEvent('PLAYER_REGEN_ENABLED')
@@ -148,7 +149,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave[addName]=Save
         end
 
-    elseif event=='PLAYER_TARGET_CHANGED' or event=='PLAYER_ENTERING_WORLD' or event=='RAID_TARGET_UPDATE' then
+    elseif event=='PLAYER_TARGET_CHANGED' or event=='PLAYER_ENTERING_WORLD' or event=='RAID_TARGET_UPDATE' or (event=='UNIT_FLAGS' and arg1=='target') then
         C_Timer.After(0.15, function()
             local plate = C_NamePlate.GetNamePlateForUnit("target")
             if plate then
