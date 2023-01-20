@@ -93,7 +93,8 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
                     bottomLeftText= e.Icon.wow2
                 end
                 if text2 then--PvP装备
-                  rightText="|A:pvptalents-warmode-swords:0:0|a"
+                    rightText= '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'
+                  --rightText="|A:pvptalents-warmode-swords:0:0|a"
                 end
 
                 local invSlot = e.itemSlotTable[itemEquipLoc]
