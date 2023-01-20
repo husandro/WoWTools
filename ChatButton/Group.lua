@@ -1,8 +1,8 @@
 local id, e = ...
 local addName= 'ChatButtonGroup'
 local Save={
-    mouseUP='%s求拉, 3Q',
-    mouseDown='1',
+    mouseUP= e.Player.zh and '%s求拉, 3Q' or '%spull me, thx',
+    mouseDown= e.Player.zh and '1' or 'inv' ,
 }
 
 local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)

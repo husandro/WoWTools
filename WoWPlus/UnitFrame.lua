@@ -173,24 +173,6 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                         targetFrameContentContextual.GuideIcon:SetPoint('RIGHT', self.classTexture,'LEFT')
                     end
                 end
---[[                if self.healthbar then
-                    self.healthbar:SetReverseFill(true)
-                    local a,p,c,x,y=self.healthbar.OverAbsorbGlow:GetPoint()
-                    print(a, p , c, x, y, p==self.healthbar)
-                    if self.healthbar.OverAbsorbGlow then
-                        self.healthbar.OverAbsorbGlow:ClearAllPoints()
-                        self.healthbar.OverAbsorbGlow:SetPoint('TOPRIGHT', self.healthbar, 'TOPLEFT',-7,0)
-                    end
-                end
-                if self.manabar then
-                    self.manabar:SetReverseFill(true)
-                end
-                if unit=='target' and TargetFrameSpellBar then
-                    TargetFrameSpellBar:SetReverseFill(true)
-                end
-                if self.castbar then
-                    self.castbar:SetReverseFill(true)
-                end]]
             else
                 self.classTexture:SetPoint('TOPLEFT', self.portrait, 'TOPRIGHT',-14,10)
             end
@@ -212,29 +194,25 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
 
         if self.name then
             set_SetTextColor(self.name, r,g,b)--名称, 颜色
-            if unit=='pet' then
+            if unit=='pet' or UnitIsUnit('pet',unit) then
                 self.name:SetText('')
             elseif isParty then
                 self.name:SetText(UnitName(unit))
             end
         end
-
         if self.healthbar then
-            --set_SetTextColor(self.healthbar.LeftText, r,g,b)--字体, 颜色
-            --set_SetTextColor(self.healthbar.TextString, r,g,b)
-            --set_SetTextColor(self.healthbar.RightText, r,g,b)
             self.healthbar:SetStatusBarColor(r,g,b)--颜色
             self.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
         end
-        --[[if self.manabar then
-            set_SetTextColor(self.manabar.LeftText, r,g,b)
-            set_SetTextColor(self.manabar.TextString, r,g,b)
-            set_SetTextColor(self.manabar.RightText, r,g,b)
-        end]]
     end)
 
     hooksecurefunc(TargetFrame, 'CheckClassification', function ()--目标，颜色
         TargetFrame.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
+    end)
+    hooksecurefunc('UnitFrame_OnEvent', function(self, event, unit)--修改, 宠物, 名称
+        if unit== 'pet' and unit == self.unit and event == "UNIT_NAME_UPDATE" then
+            self.name:SetText('')
+        end
     end)
 
     --############

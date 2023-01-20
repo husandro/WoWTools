@@ -497,7 +497,7 @@ local function set_Only_Show_Zone_Quest()--显示本区域任务
         for index=1, C_QuestLog.GetNumQuestLogEntries() do
             local info = C_QuestLog.GetInfo(index)
             if info and info.questID and not info.isHeader and not info.campaignID and not info.isHidden and not C_QuestLog.IsQuestCalling(info.questID) then
-                if info.isOnMap and GetQuestUiMapID(info.questID)==uiMapID then
+                if info.isOnMap and GetQuestUiMapID(info.questID)==uiMapID and not C_QuestLog.IsComplete(info.questID) then
                     C_QuestLog.AddQuestWatch(info.questID)
                 else
                     C_QuestLog.RemoveQuestWatch(info.questID)

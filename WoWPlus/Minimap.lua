@@ -170,17 +170,24 @@ local function set_vigentteButton_Text()
         local areaPoiIDs = C_AreaPoiInfo.GetAreaPOIForMap(uiMapID) or {}
         for _, areaPoiID in pairs(areaPoiIDs) do
             local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID)
-            if poiInfo and poiInfo.atlasName and C_AreaPoiInfo.IsAreaPOITimed(areaPoiID) then
+            if poiInfo and poiInfo.name and poiInfo.atlasName and C_AreaPoiInfo.IsAreaPOITimed(areaPoiID) then
                 local secondsLeft = C_AreaPoiInfo.GetAreaPOISecondsLeft(areaPoiID)
                 if secondsLeft and secondsLeft>0 then
                     text= text and text..'\n' or ''
-                    text= text..SecondsToTime(secondsLeft)
+                    text= text.. poiInfo.name
                     if poiInfo.factionID and C_Reputation.IsMajorFaction(poiInfo.factionID) then
                         local info = C_MajorFactions.GetMajorFactionData(poiInfo.factionID);
                         if info and info.textureKit then
                             text= text..'|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'
+                        else
+                            text= text..' '
                         end
+                    else
+                        text= text..' '
                     end
+                    local secText=SecondsToClock(secondsLeft,true)
+                    text= text..secText:gsub('：',':')
+                    
                     text= text..'|A:'..poiInfo.atlasName..':0:0|a'
                 end
             end
