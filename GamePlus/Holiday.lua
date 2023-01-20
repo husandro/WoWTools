@@ -262,6 +262,8 @@ local function Text_Settings()--设置Text
             panel.Text:SetTextColor(r,g,b)
         else
             panel.Text:SetTextColor(0.8, 0.8, 0.8)
+            e.Cstr(nil,nil,nil,panel.Text,nil)
+            --e.Cstr=function(self, size, fontType, ChangeFont, color, layer, justifyH)
         end
         if Save.scale then
             panel.Text:SetScale(Save.scale)
@@ -415,7 +417,7 @@ local function Init()
         e.tips:Show()
     end)
     btn:SetScript('OnLeave', function() e.tips:Hide() end)
-
+    --e.Cstr=function(self, size, fontType, ChangeFont, color, layer, justifyH)
     panel.Text=e.Cstr(panel)
     --panel.Text:SetIndentedWordWrap(true)
 

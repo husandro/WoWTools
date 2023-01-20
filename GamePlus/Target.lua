@@ -84,15 +84,15 @@ end
 --初始
 --####
 local function Init()
-    panel:SetSize(45, 20)
+    panel:SetSize(40, 20)
 
     panel.Texture= panel:CreateTexture(nil, 'BACKGROUND')
     panel.Texture:SetAtlas('common-icon-rotateright')
     panel.Texture:SetAllPoints(panel)
 
-    panel.Text= e.Cstr(panel, 8, nil, nil, {1,1,1}, 'BORDER', 'RIGHT')
-    panel.Text:SetPoint('RIGHT', -10, 0)
-    panel.Text:SetShadowOffset(2, -2)
+    panel.Text= e.Cstr(panel, 10, nil, nil, {1,1,1}, 'BORDER', 'RIGHT')
+    panel.Text:SetPoint('RIGHT', -8, 0)
+    --panel.Text:SetShadowOffset(2, -2)
 end
 
 panel:RegisterEvent('ADDON_LOADED')

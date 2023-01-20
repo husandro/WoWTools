@@ -407,7 +407,7 @@ e.Cstr=function(self, size, fontType, ChangeFont, color, layer, justifyH)
         b:SetShadowOffset(fontType:GetShadowOffset())
     else
         b:SetFont('Fonts\\ARHei.ttf', (size or 12), 'OUTLINE')
-        b:SetShadowOffset(1, -1)
+        --b:SetShadowOffset(1, -1)
         --b:SetShadowColor(0, 0, 0)
         b:SetJustifyH(justifyH or 'LEFT')
         if color and type(color)=='table' then

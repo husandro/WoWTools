@@ -209,7 +209,8 @@ local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
         if Save.pointVigentteButton then
             panel.vigentteButton:SetPoint(Save.pointVigentteButton[1], UIParent, Save.pointVigentteButton[3], Save.pointVigentteButton[4], Save.pointVigentteButton[5])
         else
-            panel.vigentteButton:SetPoint('BOTTOMRIGHT', Minimap, 'BOTTOMLEFT', -10,5)
+            --panel.vigentteButton:SetPoint('BOTTOMRIGHT', Minimap, 'BOTTOMLEFT', -10,5)
+            panel.vigentteButton:SetPoint('CENTER', -330, -240)
         end
         if not Save.vigentteButtonShowText then
             panel.vigentteButton:SetNormalAtlas(e.Icon.disabled)
@@ -241,7 +242,8 @@ local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
                 set_vigentteButton_Text()
             elseif d=='RightButton' and key then
                 self:ClearAllPoints()
-                self:SetPoint('BOTTOMRIGHT', Minimap, 'BOTTOMLEFT', -10,5)
+                --self:SetPoint('BOTTOMRIGHT', Minimap, 'BOTTOMLEFT', -10,5)
+                panel.vigentteButton:SetPoint('CENTER', -330, -240)
                 Save.pointVigentteButton=nil
             elseif d=='RightButton' and not key then
                 SetCursor('UI_MOVE_CURSOR')
@@ -292,7 +294,7 @@ local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
             end
         end)--更新事件
 
-        panel.vigentteButton.text= e.Cstr(panel.vigentteButton, Save.vigentteButtonSize, nil, nil, true,nil,'RIGHT')
+        panel.vigentteButton.text= e.Cstr(panel.vigentteButton, Save.vigentteButtonSize, nil, nil, nil,nil,'RIGHT')
         panel.vigentteButton.text:SetPoint('BOTTOMRIGHT')
     end
     panel.vigentteButton:SetShown(true)
