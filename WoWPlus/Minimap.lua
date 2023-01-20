@@ -172,7 +172,7 @@ local function set_vigentteButton_Text()
             local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID)
             if poiInfo and poiInfo.atlasName and C_AreaPoiInfo.IsAreaPOITimed(areaPoiID) then
                 local secondsLeft = C_AreaPoiInfo.GetAreaPOISecondsLeft(areaPoiID)
-                if secondsLeft then
+                if secondsLeft and secondsLeft>0 then
                     text= text and text..'\n' or ''
                     text= text..SecondsToTime(secondsLeft)..'|A:'..poiInfo.atlasName..':0:0|a'
                 end
@@ -300,7 +300,7 @@ local function set_MinimapMenu()--小地图, 添加菜单
             checked= C_CVar.GetCVarBool("minimapTrackingShowAll"),
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinse and '显示: 追踪' or SHOW..': '..TRACKING,
-            tooltipText= id..' '..addName,
+            tooltipText= id..' '..addName..'\n\nCVar minimapTrackingShowAll',
             func= function()
                 Save.minimapTrackingShowAll= not C_CVar.GetCVarBool("minimapTrackingShowAll") and true or false
                 set_minimapTrackingShowAll()--追踪,镇民
@@ -310,6 +310,7 @@ local function set_MinimapMenu()--小地图, 添加菜单
 
         info={
             text= e.onlyChinse and '缩小地图' or BINDING_NAME_MINIMAPZOOMOUT,
+            icon='UI-HUD-Minimap-Zoom-Out',
             checked= Save.ZoomOut,
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinse and '更新地区时' or UPDATE..ZONE,
@@ -322,8 +323,19 @@ local function set_MinimapMenu()--小地图, 添加菜单
         }
         UIDropDownMenu_AddButton(info, 1)
 
+        local mapName=''
+        for _, mapID in pairs(uiMapIDsTab) do
+            local mapInfo=C_Map.GetMapInfo(mapID)
+            if mapInfo and mapInfo.name then
+                mapName= mapName..'\n'..mapInfo.name
+            end
+        end
         info={
             text= e.onlyChinse and '文本' or LOCALE_TEXT_LABEL,
+            icon='MajorFactions_MapIcons_Tuskarr64',
+            tooltipOnButton=true,
+            tooltipTitle= id..'  '..addName,
+            tooltipText= (e.onlyChinse and '小地图' or HUD_EDIT_MODE_MINIMAP_LABEL)..mapName,
             checked= Save.vigentteButton,
             func= function ()
                 Save.vigentteButton= not Save.vigentteButton and true or nil

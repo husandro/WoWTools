@@ -1,6 +1,7 @@
 local id, e = ...
 local addName= 	TASKS_COLON..TRACK_QUEST_PROXIMITY_SORTING
 local Save={}
+--SuperTrackedFrame.lua
 
 --###########
 --加载保存数据
@@ -30,7 +31,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             sel:SetScript('OnLeave', function() e.tips:Hide() end)
 
             if not Save.disabled then
-                hooksecurefunc(SuperTrackedFrame,'UpdateDistanceText', function(self)
+                hooksecurefunc(SuperTrackedFrame,'UpdateDistanceText', function(self2)
                     if not self.isClamped then
                         local distance = C_Navigation.GetDistance();
                         distance= e.MK(distance,2)

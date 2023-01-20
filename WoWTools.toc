@@ -69,8 +69,8 @@ WowPlus\Minimap.lua
 WoWPlus\EncounterJournal.lua
 ##史诗钥石地下城, 挑战增强
 WoWPlus\Challenges.lua
-##距离, 去掉小数点
-WowPlus\SuperTracked.lua
+##距离, 去掉小数点, WOW已修复
+##WowPlus\SuperTracked.lua
 
 ##WowPlus\GroupManager.lua
 ##WoWPlus\AchievementFrame.lua
