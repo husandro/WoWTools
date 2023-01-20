@@ -238,7 +238,7 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
 
         if pvpItem and not self.pvpItem then--提示PvP装备
             local h=self:GetHeight()/3
-            self.pvpItem=self:CreateTexture()
+            self.pvpItem=self:CreateTexture(nil,'OVERLAY',nil,7)
             self.pvpItem:SetSize(h,h)
             if Slot(slot) then
                 self.pvpItem:SetPoint('LEFT', self, 'RIGHT', -2.5,0)
