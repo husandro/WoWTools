@@ -483,25 +483,30 @@ end
 --###########
 --任务，主菜单
 --###########
+local setQuestWatchTime
 local function set_Only_Show_Zone_Quest()--显示本区域任务
-    if not Save.autoSortQuest then
+    if not Save.autoSortQuest or IsInInstance() or setQuestWatchTime then
         return
     end
-    local uiMapID= C_Map.GetBestMapForUnit('player')
-    if not uiMapID or uiMapID==0 then
-        return
-    end
-    for index=1, C_QuestLog.GetNumQuestLogEntries() do
-        local info = C_QuestLog.GetInfo(index)
-        if info and info.questID and not info.isHeader and not info.campaignID and not info.isHidden and not C_QuestLog.IsQuestCalling(info.questID) then
-            if info.isOnMap and GetQuestUiMapID(info.questID)==uiMapID then
-                C_QuestLog.AddQuestWatch(info.questID)
-            else
-                C_QuestLog.RemoveQuestWatch(info.questID)
+    setQuestWatchTime= true
+    C_Timer.After(0.8, function()
+        local uiMapID= C_Map.GetBestMapForUnit('player')
+        if not uiMapID or uiMapID==0 then
+            return
+        end
+        for index=1, C_QuestLog.GetNumQuestLogEntries() do
+            local info = C_QuestLog.GetInfo(index)
+            if info and info.questID and not info.isHeader and not info.campaignID and not info.isHidden and not C_QuestLog.IsQuestCalling(info.questID) then
+                if info.isOnMap and GetQuestUiMapID(info.questID)==uiMapID then
+                    C_QuestLog.AddQuestWatch(info.questID)
+                else
+                    C_QuestLog.RemoveQuestWatch(info.questID)
+                end
             end
         end
-    end
-    --C_QuestLog.SortQuestWatches()
+        C_QuestLog.SortQuestWatches()
+        setQuestWatchTime=nil
+    end)
 end
 
 local function set_PushableQuest()--共享,任务
@@ -522,10 +527,14 @@ local function set_Auto_QuestWatch_Event()--设置事件, 仅显示本地图任�
         questPanel:RegisterEvent('PLAYER_ENTERING_WORLD')
         questPanel:RegisterEvent('ZONE_CHANGED')
         questPanel:RegisterEvent('ZONE_CHANGED_NEW_AREA')
+        --questPanel:RegisterEvent('QUEST_LOG_UPDATE')
+        questPanel:RegisterEvent('SCENARIO_UPDATE')
     else
         questPanel:UnregisterEvent('PLAYER_ENTERING_WORLD')
         questPanel:UnregisterEvent('ZONE_CHANGED')
         questPanel:UnregisterEvent('ZONE_CHANGED_NEW_AREA')
+        --questPanel:UnregisterEvent('SCENARIO_UPDATE')
+        --questPanel:UnregisterEvent('QUEST_LOG_UPDATE')
     end
     if Save.pushable then
         questPanel:RegisterEvent('GROUP_ROSTER_UPDATE')
