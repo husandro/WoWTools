@@ -13,7 +13,7 @@ local function set_Register_Event()
         panel:UnregisterEvent('PLAYER_REGEN_DISABLED')--颜色
         panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
         if panel.Texture then
-            panel.Texture:SetShwon(false)
+            panel.Texture:SetShown(false)
         end
     else
         if not panel.Texture then

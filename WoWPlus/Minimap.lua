@@ -174,7 +174,14 @@ local function set_vigentteButton_Text()
                 local secondsLeft = C_AreaPoiInfo.GetAreaPOISecondsLeft(areaPoiID)
                 if secondsLeft and secondsLeft>0 then
                     text= text and text..'\n' or ''
-                    text= text..SecondsToTime(secondsLeft)..'|A:'..poiInfo.atlasName..':0:0|a'
+                    text= text..SecondsToTime(secondsLeft)
+                    if poiInfo.factionID and C_Reputation.IsMajorFaction(poiInfo.factionID) then
+                        local info = C_MajorFactions.GetMajorFactionData(poiInfo.factionID);
+                        if info and info.textureKit then
+                            text= text..'|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'
+                        end
+                    end
+                    text= text..'|A:'..poiInfo.atlasName..':0:0|a'
                 end
             end
         end
