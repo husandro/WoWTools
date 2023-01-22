@@ -302,9 +302,8 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
     end)
 
     --############
-    --去掉生命条 %
+    --去掉生命条 % extStatusBar.lua
     --############
-    --extStatusBar.lua
     hooksecurefunc('TextStatusBar_UpdateTextStringWithValues', function(statusFrame, textString, value, valueMin, valueMax)
         if value and value>0 then
             if textString and textString:IsShown() then
