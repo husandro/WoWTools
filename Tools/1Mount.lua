@@ -1135,16 +1135,18 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         hooksecurefunc('MountJournal_ShowMountDropdown',setMountJournal_ShowMountDropdown)
 
     elseif event=='PLAYER_REGEN_DISABLED' then
-        C_Timer.After(0.3, function()
             setClickAtt()--设置属性
             if e.toolsFrame:IsShown() then
                 e.toolsFrame:SetShown(false)--设置, TOOLS 框架,隐藏
             end
-        end)
+        
     elseif event=='PLAYER_REGEN_ENABLED' then
         if panel.Combat then
-            setClickAtt()--设置属性
-            setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
+            C_Timer.After(0.3, function()
+                setClickAtt()--设置属性
+                setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
+                panel.Combat=nil
+            end)
         end
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
