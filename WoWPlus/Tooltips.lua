@@ -661,8 +661,6 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                                     line:SetText(' ')
                                     line:SetShown(true)
                                 end
-                            else
-                                line:Hide()
                             end
                         end
                     else
