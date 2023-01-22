@@ -107,7 +107,13 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 panel:UnregisterAllEvents()
             end
         elseif arg1=='Blizzard_AchievementUI' then
-            C_Timer.After(2, Init)--初始
+            C_Timer.After(2, function()
+                if UnitAffectingCombat('player') then
+                    panel.combat= true
+                else
+                    Init()--初始
+                end
+            end)
         end
 
     elseif event=='PLAYER_REGEN_ENABLED' then

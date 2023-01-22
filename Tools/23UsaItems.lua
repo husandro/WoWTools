@@ -556,7 +556,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 e.LoadSpellItemData(ID)--加载法术, 物品数据
             end
 
-            C_Timer.After(1.6, function()
+            C_Timer.After(2.3, function()
                 if UnitAffectingCombat('player') then
                     panel.combat= true
                 else

@@ -182,7 +182,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1== id then
         Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
         if not e.toolsFrame.disabled then
-            C_Timer.After(1.71, function()
+            C_Timer.After(2.4, function()
                 local num = C_PetJournal.GetNumCollectedInfo(pet)--没宠物,不加载
                 if not num or num==0 then
                     panel:UnregisterAllEvents()

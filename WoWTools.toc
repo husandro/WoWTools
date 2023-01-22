@@ -104,29 +104,36 @@ GamePlus\Target.lua
 
 ##坐骑， Tools 主要的，
 ##如果要使用Tools中的一个模块，必须开启坐骑模块
-Tools\Mount.lua
+Tools\1Mount.lua
 ##随机炉石
-Tools\Hearthstone.lua
+Tools\2Hearthstone.lua
 ##打开物品，各种物品
-Tools\OpenItems.lua
-##随机玩具
-Tools\UseToy.lua
-##专业按钮
-Tools\Professions.lua
-##各种专送门
-Tools\UsaItems.lua
-##诺格弗格药剂 Noggenfogger Elixir
-Tools\NoggenfoggerElixir.lua
-##挑战者之路
-Tools\ChallengerPath.lua
-##黛西
-Tools\Daisy.lua
-##法师传送门
-Tools\MagePortal.lua
-##侦察地图, 玩具, 没有小号，可能禁用
-Tools\ScoutingMapToy.lua
+Tools\3OpenItems.lua
 ##食物
-Tools\Food.lua
+Tools\4Food.lua
+
+##侦察地图, 玩具, 没有小号，可能禁用
+Tools\20ScoutingMapToy.lua
+
+##随机玩具
+Tools\21UseToy.lua
+
+##专业按钮
+Tools\22Professions.lua
+##各种专送门,物品，玩具
+Tools\23UsaItems.lua
+##黛西
+Tools\24Daisy.lua
+##诺格弗格药剂 Noggenfogger Elixir
+Tools\25NoggenfoggerElixir.lua
+
+##挑战者之路
+Tools\26ChallengerPath.lua
+
+##法师传送门
+Tools\27MagePortal.lua
+
+
 
 
 ##Chat Button

@@ -194,7 +194,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1== id then
         Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
         if not e.toolsFrame.disabled then
-            C_Timer.After(1.9, function()
+            C_Timer.After(2.7, function()
                 if UnitAffectingCombat('player') then
                     panel.combat= true
                 else

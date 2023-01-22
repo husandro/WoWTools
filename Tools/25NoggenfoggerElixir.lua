@@ -107,7 +107,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1== id then
         Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
         if not e.toolsFrame.disabled then
-            C_Timer.After(1.7, function()
+            C_Timer.After(2.5, function()
                 if UnitAffectingCombat('player') then
                     panel.combat= true
                 else
@@ -142,6 +142,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='BAG_UPDATE_COOLDOWN' then
         local startTime, duration = GetItemCooldown(self.itemID)
-        e.Ccool(self,startTime, duration,nil, true)        
+        e.Ccool(self,startTime, duration,nil, true)
     end
 end)

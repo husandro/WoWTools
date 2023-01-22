@@ -407,16 +407,23 @@ end
 --###########
 panel:RegisterEvent("ADDON_LOADED")
 
-panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
 
-panel:RegisterEvent('NEW_TOY_ADDED')
-panel:RegisterEvent('TOYS_UPDATED')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1== id then
         Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
         if not e.toolsFrame.disabled then
-            Init()--初始
+            C_Timer.After(2.1, function()
+                if UnitAffectingCombat('player') then
+                    panel.combat= true
+                    panel:RegisterEvent("PLAYER_REGEN_ENABLED")
+                else
+                    Init()--初始
+                    panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
+                    panel:RegisterEvent('NEW_TOY_ADDED')
+                    panel:RegisterEvent('TOYS_UPDATED')
+                end
+            end)
         else
             panel:UnregisterAllEvents()
         end
@@ -438,5 +445,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='BAG_UPDATE_COOLDOWN' then
         setCooldown()--主图标冷却
+
+    elseif event=='PLAYER_REGEN_ENABLED' then
+        if panel.combat then
+            Init()--初始
+            panel.combat= nil
+        end
+        panel:UnregisterEvent("PLAYER_REGEN_ENABLED")
     end
 end)
