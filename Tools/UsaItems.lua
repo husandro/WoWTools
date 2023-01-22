@@ -565,7 +565,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end)
         else
             panel:UnregisterAllEvents()
-            panel:UnregisterEvent("PLAYER_REGEN_ENABLED")
         end
 
     elseif event == "PLAYER_LOGOUT" then
