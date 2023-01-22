@@ -30,6 +30,8 @@ local function set_Register_Event()
             panel:RegisterEvent('NAME_PLATE_CREATED')
             panel:RegisterEvent('NAME_PLATE_UNIT_ADDED')
             panel:RegisterEvent('NAME_PLATE_UNIT_REMOVED')
+        elseif panel.Text then
+            panel.Text:SetText('')
         end
     end
     panel:RegisterEvent('PLAYER_LOGOUT')
@@ -41,9 +43,6 @@ end
 local isPvPArena
 --local distanceSquared, checkedDistance = UnitDistanceSquared(u)
 local function set_CreatureNum()
-    if not Save.creatureNum then
-        return
-    end
     local k,T,F=0,0,0
 
     local nameplates= C_NamePlate.GetNamePlates() or {}
@@ -123,6 +122,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Save.creatureNum= not Save.creatureNum and true or nil
                 if panel.Text then
                     set_Register_Event()
+                    if Save.creatureNum then
+                        set_CreatureNum()
+                    end
                 end
             end)
             sel2:SetScript('OnEnter', function(self2)
@@ -167,8 +169,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 panel:ClearAllPoints()
                 panel:SetPoint('RIGHT', frame or plate, 'LEFT')
 
-                set_CreatureNum()
-
+                if Save.creatureNum then
+                    set_CreatureNum()
+                end
             end
             panel:SetShown(plate and true or false)
         end)
