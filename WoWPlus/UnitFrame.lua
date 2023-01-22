@@ -224,13 +224,21 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
     hooksecurefunc('TextStatusBar_UpdateTextStringWithValues', function(statusFrame, textString, value, valueMin, valueMax)
         if value and value>0 then
             if textString and textString:IsShown() then
-                local text= textString:GetText()
-                text= text:gsub('%%', '')
-                textString:SetText(text)
+                if value== valueMax then
+                    textString:SetText('')
+                else
+                    local text= textString:GetText()
+                    text= text:gsub('%%', '')
+                    textString:SetText(text)
+                end
             elseif statusFrame.LeftText and statusFrame.LeftText:IsShown() then
-                local text= statusFrame.LeftText:GetText()
-                text= text:gsub('%%', '')
-                statusFrame.LeftText:SetText(text)
+                if value== valueMax then
+                    statusFrame.LeftText:SetText('')
+                else
+                    local text= statusFrame.LeftText:GetText()
+                    text= text:gsub('%%', '')
+                    statusFrame.LeftText:SetText(text)
+                end
             end
         end
     end)
@@ -330,11 +338,15 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
         if not frame.statusText or not frame.statusText:IsShown() or frame.optionTable.healthText ~= "perc" then
             return
         end
+        if UnitHealth(frame.displayedUnit)==UnitHealthMax(frame.displayedUnit) then
+            frame.statusText:SetText('')
+        else
             local text= frame.statusText:GetText()
             if text then
                 text= text:gsub('%%', '')
                 frame.statusText:SetText(text)
             end
+        end
     end)
     hooksecurefunc('CompactRaidGroup_InitializeForGroup', function(frame, groupIndex)--处理, 队伍号
         frame.title:SetText('|A:'..e.Icon.number..groupIndex..':0:0|a')
