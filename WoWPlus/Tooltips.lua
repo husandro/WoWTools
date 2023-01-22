@@ -653,7 +653,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                         if mapInfo and mapInfo.name and _G["GameTooltipTextLeft"..i] then
                             if mapInfo.name then
                                 line=_G["GameTooltipTextLeft"..i]
-                                line:SetText(col..mapInfo.name..e.Icon.map2)
+                                line:SetText(e.Icon.map2..col..mapInfo.name)
                                 line:SetShown(true)
 
                                 --[[line=_G["GameTooltipTextRight"..i]

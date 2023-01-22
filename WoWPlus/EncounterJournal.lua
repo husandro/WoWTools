@@ -625,9 +625,9 @@ local function Init()--冒险指南界面
                 if not button.tipsText and text then
                     button.tipsText=e.Cstr(button,10, button.name)
                     button.tipsText:SetPoint('BOTTOMRIGHT', -8, 8)
-                    button.tipsText:SetWidth(174)
+                    --button.tipsText:SetWidth(174)
                     button.tipsText:SetJustifyH('RIGHT')
-                    button.tipsText:SetWordWrap(true)
+                    --button.tipsText:SetWordWrap(true)
                 end
                 if button.tipsText then
                     button.tipsText:SetText(text or '')
