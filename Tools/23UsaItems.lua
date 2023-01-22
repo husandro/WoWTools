@@ -5,9 +5,9 @@ panel:SetPoint('BOTTOMLEFT', e.toolsFrame, 'TOPRIGHT',-2,5)
 panel:SetAlpha(0.1)
 local Save= {
         item={
-            40768,--[移动邮箱]
             --156833,--[凯蒂的印哨]
             194885,--[欧胡纳栖枝]收信
+            40768,--[移动邮箱]
             114943,--[终极版侏儒军刀]
             168667,--[布林顿7000]
 
@@ -542,10 +542,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if WoWToolsSave and not WoWToolsSave[addName..'Tools'] then
             panel:SetAlpha(1)
         end
-
+        if not WoWToolsSave or not WoWToolsSave[addName..'Tools'] and PlayerHasToy(156833) and Save.item[1]==194885 then
+          Save.item[1] = 156833
+        end
         Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
-        if not e.toolsFrame.disabled then
 
+        if not e.toolsFrame.disabled then
             for _, ID in pairs(Save.item) do
                 e.LoadSpellItemData(ID)--加载法术, 物品数据
             end
