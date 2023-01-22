@@ -623,7 +623,7 @@ local function Init()--冒险指南界面
             if button and button.tooltipTitle and button.instanceID then--button.bgImage:GetTexture() button.name:GetText()
                 local text=EncounterJournal_ListInstances_set_Instance(button)
                 if not button.tipsText and text then
-                    button.tipsText=e.Cstr(button,14, button.name)
+                    button.tipsText=e.Cstr(button,10, button.name)
                     button.tipsText:SetPoint('BOTTOMRIGHT', -8, 8)
                     button.tipsText:SetWidth(174)
                     button.tipsText:SetJustifyH('RIGHT')
