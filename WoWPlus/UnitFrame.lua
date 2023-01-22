@@ -160,7 +160,7 @@ local function set_PartyFrame()--PartyFrame.lua
                     frame.RaidTargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
 
                     frame.TotPortrait= frame:CreateTexture(nil,'OVERLAY', nil, 7)--目标的目标
-                    frame.TotPortrait:SetPoint('TOPLEFT', memberFrame, 'TOPRIGHT',-2 ,-4)
+                    frame.TotPortrait:SetPoint('TOPLEFT', memberFrame, 'TOPRIGHT',-3 ,-4)
                     frame.TotPortrait:SetSize(20,20)
 
                     frame.frame= CreateFrame("Frame", nil, frame)
