@@ -281,7 +281,9 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
             if unit=='pet' or UnitIsUnit('pet',unit) then
                 self.name:SetText('')
             elseif isParty then
-                self.name:SetText(UnitName(unit))
+                local name= UnitName(unit)
+                name= e.WA_Utf8Sub(name, 4, 9)
+                self.name:SetText(name)
             end
         end
         if self.healthbar then
