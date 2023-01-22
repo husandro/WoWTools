@@ -290,13 +290,13 @@ local mapIDs={
 }
 ]]
 
-local function setClickAtt(entreCombat)--设置 Click属性
+local function setClickAtt()--设置 Click属性
     local inCombat=UnitAffectingCombat('player')
-    if (inCombat and not entreCombat) or UnitIsDead('player') then
+    if inCombat or UnitIsDead('player') then
         panel.Combat=true
         return
     end
-    local spellID= (entreCombat or IsIndoors()) and panel.spellID--进入战斗, 室内
+    local spellID= IsIndoors() and panel.spellID--进入战斗, 室内
                     or #panel[FLOOR]>0 and getRandomRoll(FLOOR)--区域
                     or (IsUsableSpell(368896) and select(5, C_MountJournal.GetMountInfoByID(1589))) and getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING)
                     or IsSubmerged() and getRandomRoll(MOUNT_JOURNAL_FILTER_AQUATIC)--水平中
@@ -1135,11 +1135,12 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         hooksecurefunc('MountJournal_ShowMountDropdown',setMountJournal_ShowMountDropdown)
 
     elseif event=='PLAYER_REGEN_DISABLED' then
-        setClickAtt(true)--设置属性
-        if e.toolsFrame:IsShown() then
-            e.toolsFrame:SetShown(false)--设置, TOOLS 框架,隐藏
-        end
-
+        C_Timer.After(0.3, function()
+            setClickAtt()--设置属性
+            if e.toolsFrame:IsShown() then
+                e.toolsFrame:SetShown(false)--设置, TOOLS 框架,隐藏
+            end
+        end)
     elseif event=='PLAYER_REGEN_ENABLED' then
         if panel.Combat then
             setClickAtt()--设置属性

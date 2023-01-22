@@ -187,7 +187,7 @@ local function set_vigentteButton_Text()
                     end
                     local secText=SecondsToClock(secondsLeft,true)
                     text= text..secText:gsub('：',':')
-                    
+
                     text= text..'|A:'..poiInfo.atlasName..':0:0|a'
                 end
             end
