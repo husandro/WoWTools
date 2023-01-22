@@ -656,11 +656,11 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                                 line:SetText(col..mapInfo.name..e.Icon.map2)
                                 line:SetShown(true)
 
-                                line=_G["GameTooltipTextRight"..i]
+                                --[[line=_G["GameTooltipTextRight"..i]
                                 if line then
                                     line:SetText(' ')
                                     line:SetShown(true)
-                                end
+                                end]]
                             end
                         end
                     else
