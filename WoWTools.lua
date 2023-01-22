@@ -467,7 +467,7 @@ e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size)
 end
 
 e.Ccool=function(self, start, duration, modRate, HideCountdownNumbers, Reverse, SwipeTexture, hideDrawBling)--冷却条
-    if not self then
+    if not (self or duration) then
         return
     end
     if not self.cooldown then

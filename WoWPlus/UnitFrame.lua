@@ -16,7 +16,7 @@ local function set_SetTextColor(self, r, g, b)--设置, 字体
 end
 local function set_SetRaidTarget(texture, unit)--设置, 标记 TargetFrame.lua
     if texture and unit then
-        local index = GetRaidTargetIndex(unit)
+        local index = UnitExists(unit) and GetRaidTargetIndex(unit)
         if index and index>0 and index< 9 then
             SetRaidTargetIconTexture(texture, index)
             texture:SetShown(true)
@@ -105,39 +105,120 @@ end
 --####
 --小队
 --####
+local function set_Party_Target_Changed(portrait, unit)
+    if unit and UnitExists(unit) and portrait then
+        unit= unit..'target'
+        if UnitExists(unit) then
+            local index = GetRaidTargetIndex(unit)
+            if index and index>0 and index< 9 then
+                portrait:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
+            else
+                SetPortraitTexture(portrait, unit, true)
+            end
+            portrait:SetShown(true)
+        else
+            portrait:SetShown(false)
+        end
+    end
+end
+local function set_Paerty_Casting(frame, unit, start)
+    if not (frame or unit) then
+        return
+    end
+    if start then
+        local texture, startTime, endTime = select(3, UnitChannelInfo(unit))
+        if not (texture and  startTime and endTime) then
+            texture, startTime, endTime= select(3, UnitCastingInfo(unit))
+        end
+        if texture and startTime and endTime then
+            local duration=(endTime - startTime) / 1000
+            e.Ccool(frame, nil, duration, nil, true, nil, nil,nil)
+        end
+        frame.texture:SetTexture(texture or 0)
+    else
+        frame.texture:SetTexture(0)
+        if frame.cooldown then
+            frame.cooldown:Clear()
+        end
+    end
+end
 local function set_PartyFrame()--PartyFrame.lua
     hooksecurefunc(PartyFrame, 'UpdatePartyFrames', function(self)
         if not ShouldShowPartyFrames() then
             return
         end
         for memberFrame in self.PartyMemberFramePool:EnumerateActive() do
-            local exists= UnitExists(memberFrame.unit)
-            memberFrame.PartyMemberOverlay.unit= memberFrame.unit or memberFrame:GetUnit()
-            memberFrame.PartyMemberOverlay.exists= exists
-            if not memberFrame.PartyMemberOverlay.RaidTargetIcon and exists then
-                memberFrame.PartyMemberOverlay.RaidTargetIcon= memberFrame:CreateTexture(nil,'OVERLAY', nil, 7)--队伍, 标记
-                memberFrame.PartyMemberOverlay.RaidTargetIcon:SetPoint('RIGHT', memberFrame.PartyMemberOverlay.RoleIcon, 'LEFT')
-                memberFrame.PartyMemberOverlay.RaidTargetIcon:SetSize(14,14)
-                memberFrame.PartyMemberOverlay.RaidTargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
-                set_SetRaidTarget(memberFrame.PartyMemberOverlay.RaidTargetIcon, memberFrame.unit)--设置,标记
+            local unit= memberFrame.unit or memberFrame:GetUnit()
+            local frame= memberFrame.PartyMemberOverlay
+            if frame and unit then
+                frame.unit= UnitExists(unit) and unit or nil
+                if not frame.RaidTargetIcon and frame.unit then
+                    frame.RaidTargetIcon= memberFrame:CreateTexture(nil,'OVERLAY', nil, 7)--队伍, 标记
+                    frame.RaidTargetIcon:SetPoint('RIGHT', frame.RoleIcon, 'LEFT')
+                    frame.RaidTargetIcon:SetSize(14,14)
+                    frame.RaidTargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
 
-                memberFrame.PartyMemberOverlay.portrait= CreateFrame("Frame")--目标的目标
-                memberFrame.PartyMemberOverlay.portrait:SetPoint('LEFT', memberFrame, 'RIGHT')
-                memberFrame.PartyMemberOverlay.portrait:SetSize(38,38)
+                    frame.TotPortrait= frame:CreateTexture(nil,'OVERLAY', nil, 7)--目标的目标
+                    frame.TotPortrait:SetPoint('TOPLEFT', memberFrame, 'TOPRIGHT',0 ,-4)
+                    frame.TotPortrait:SetSize(20,20)
 
-                memberFrame.PartyMemberOverlay:RegisterEvent('RAID_TARGET_UPDATE')--更新,标记
-                memberFrame.PartyMemberOverlay:HookScript('OnEvent', function (self2, event)
-                    if event=='RAID_TARGET_UPDATE' and self2.exists then
-                        set_SetRaidTarget(self2.RaidTargetIcon, self2.unit);
+                    frame.frame= CreateFrame("Frame", nil, frame)
+                    frame.frame:SetPoint('TOP', frame.TotPortrait, 'BOTTOM',0,-2)
+                    frame.frame:SetSize(20,20)
+                    frame.frame.texture= frame.frame:CreateTexture(nil,'BACKGROUND')
+                    frame.frame.texture:SetAllPoints(frame.frame)
+                    frame.frame:HookScript('OnEvent', function (self2, event, arg1)
+                        if  event == "UNIT_SPELLCAST_START" or  event == "UNIT_SPELLCAST_CHANNEL_START" or event=='UNIT_SPELLCAST_EMPOWER_START'  then
+                            set_Paerty_Casting(self2, unit, true)
+                        else
+                            set_Paerty_Casting(self2, unit)
+                        end
+                    end)
+                    frame:HookScript('OnEvent', function (self2, event, arg1)
+                        if event=='RAID_TARGET_UPDATE' then
+                            set_SetRaidTarget(self2.RaidTargetIcon, self2.unit);
+                        elseif event=='UNIT_TARGET' and arg1==self2.unit then
+                            set_Party_Target_Changed(self2.TotPortrait, self2.unit)
+                        end
+                    end)
+
+                    hooksecurefunc(memberFrame, 'UpdateAssignedRoles', function(self2)--隐藏, DPS 图标
+                        if self2.PartyMemberOverlay.unit then
+                            local role = UnitGroupRolesAssigned(self2.PartyMemberOverlay.unit)
+                            local icon = self2.PartyMemberOverlay.RoleIcon;
+                            if icon and role== 'DAMAGER' then
+                                icon:SetShown(false)
+                            end
+                        end
+                    end)
+                end
+
+                if frame.RaidTargetIcon then
+                    if frame.unit then
+                        frame:RegisterEvent('RAID_TARGET_UPDATE')--更新,标记
+                        frame:RegisterUnitEvent('UNIT_TARGET', unit)
+
+                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_START", unit);--开始
+                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", unit);
+                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_START", unit);
+                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit);--结束
+                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
+                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", unit);
+                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTIBLE", unit);
+                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", unit);
+                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_STOP", unit);
+
+                        set_SetRaidTarget(frame.RaidTargetIcon, unit)--设置,标记
+                        set_Party_Target_Changed(frame.TotPortrait, unit)
+                        set_Paerty_Casting(frame.frame, unit, true)
+                    else
+                        frame:UnregisterAllEvents()
+                        frame.RaidTargetIcon:SetShown(false)
+                        frame.TotPortrait:SetShown(false)
+                        frame.frame:UnregisterAllEvents()
+                        frame.frame.texture:SetTexture(0)
                     end
-                end)
-                hooksecurefunc(memberFrame, 'UpdateAssignedRoles', function(self2)--隐藏, DPS 图标
-                    local icon = self2.PartyMemberOverlay.RoleIcon;
-                    local role = UnitGroupRolesAssigned(self2.unit or self2.PartyMemberOverlay.unit or self2:GetUnit())
-                    if role== 'DAMAGER' then
-                        icon:SetShown(false)
-                    end
-                end)
+                end
             end
         end
     end)

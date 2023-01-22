@@ -886,7 +886,8 @@
         "YOU",
         "UNIT_YOU",
         "BINDING_NAME_NAMEPLATES",
-        "CompactUnitFrame_UpdateHealthColor"
+        "CompactUnitFrame_UpdateHealthColor",
+        "MailFrame"
     ],
     "Lua.diagnostics.disable": [
     ]

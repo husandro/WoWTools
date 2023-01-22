@@ -125,6 +125,8 @@ local FrameTab={
     ExpansionLandingPage={},--要塞
     MainMenuBarBackpackButton={save=true, click='R', frame=MicroButtonAndBagsBar},--主菜单
     PlayerPowerBarAlt={},--UnitPowerBarAlt.lua
+    MailFrame={},
+    
 };
 --UIWidgetBelowMinimapContainerFrame={save=true,click='RightButton'},
 
