@@ -1,6 +1,6 @@
 local id, e = ...
 local addName= UNITFRAME_LABEL
-local Save={raidFrameScale=0.85}--{SetShadowOffset= 1}
+local Save={raidFrameScale=0.8}--{SetShadowOffset= 1}
 local panel=CreateFrame("Frame")
 local R,G,B= GetClassColor(UnitClassBase('player'))
 
@@ -278,11 +278,11 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
 
         if self.name then
             set_SetTextColor(self.name, r,g,b)--名称, 颜色
-            if unit=='pet' or UnitIsUnit('pet',unit) then
+            if unit:find('pet')then
                 self.name:SetText('')
             elseif isParty then
                 local name= UnitName(unit)
-                name= e.WA_Utf8Sub(name, 4, 9)
+                name= e.WA_Utf8Sub(name, 4, 8)
                 self.name:SetText(name)
             end
         end
@@ -402,11 +402,13 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
     end)
 
     hooksecurefunc('CompactUnitFrame_UpdateName', function(frame)--修改, 名字
-        if not frame.name or (frame.UpdateNameOverride and frame:UpdateNameOverride()) or not ShouldShowName(frame) then
+        if not frame.unit or not frame.name or (frame.UpdateNameOverride and frame:UpdateNameOverride()) or not ShouldShowName(frame) then
             return;
         end
-        if UnitIsUnit('player',frame.unit) then
+        if UnitIsUnit('player', frame.unit) then
             frame.name:SetText(e.Icon.player)
+        elseif frame.unit:find('pet') then
+            frame.name:SetText('')
         else
             local name= frame.name:GetText()
             if name then
@@ -416,7 +418,20 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
             end
         end
     end)
-
+    --[[
+    hooksecurefunc('CompactUnitFrame_UpdateHealthColor', function(frame)--宠物条，颜色
+        if frame.healthBar and frame.unit and frame.unit:find('pet') then
+            local class= UnitClassBase(frame.unit)
+            if class then
+                local r, g, b= GetClassColor(class)
+                if r and g and b then
+                    frame.healthBar:SetStatusBarColor(r,g,b)
+                    frame.healthBar.r, frame.healthBar.g, frame.healthBar.b = r, g, b
+                end
+            end
+        end
+    end)
+]]
     hooksecurefunc('CompactUnitFrame_UpdateStatusText', function(frame)--去掉,生命条, %
         if not frame.statusText or not frame.statusText:IsShown() or frame.optionTable.healthText ~= "perc" then
             return
@@ -431,6 +446,7 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
             end
         end
     end)
+
     hooksecurefunc('CompactRaidGroup_InitializeForGroup', function(frame, groupIndex)--处理, 队伍号
         frame.title:SetText('|A:'..e.Icon.number..groupIndex..':0:0|a')
     end)
@@ -469,12 +485,12 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
             else
                 local sacle= Save.raidFrameScale or 1
                 if d==1 then
-                    sacle=sacle+0.05
+                    sacle=sacle+0.1
                 elseif d==-1 then
-                    sacle=sacle-0.05
+                    sacle=sacle-0.1
                 end
-                if sacle>1.5 then
-                    sacle=1.5
+                if sacle>2 then
+                    sacle=2
                 elseif sacle<0.5 then
                     sacle=0.5
                 end
