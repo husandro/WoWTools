@@ -650,11 +650,17 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                     elseif isGroupPlayer then----队友位置
                         local mapID= C_Map.GetBestMapForUnit(unit)--地图ID
                         local mapInfo= mapID and C_Map.GetMapInfo(mapID)
-                        if mapInfo and mapInfo.name and _G["GameTooltipTextRight"..i] then
-                            if mapInfo.name ~=e.GetUnitMapName('player') then
-                                line=_G["GameTooltipTextRight"..i]
+                        if mapInfo and mapInfo.name and _G["GameTooltipTextLeft"..i] then
+                            if mapInfo.name then
+                                line=_G["GameTooltipTextLeft"..i]
                                 line:SetText(col..mapInfo.name..e.Icon.map2)
                                 line:SetShown(true)
+
+                                line=_G["GameTooltipTextRight"..i]
+                                if line then
+                                    line:SetText(' ')
+                                    line:SetShown(true)
+                                end
                             else
                                 line:Hide()
                             end
