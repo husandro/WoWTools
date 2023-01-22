@@ -151,8 +151,9 @@ local function set_PartyFrame()--PartyFrame.lua
             local unit= memberFrame.unit or memberFrame:GetUnit()
             local frame= memberFrame.PartyMemberOverlay
             if frame and unit then
-                frame.unit= UnitExists(unit) and unit or nil
-                if not frame.RaidTargetIcon and frame.unit then
+                local exists= UnitExists(unit)
+                frame.unit= unit
+                if not frame.RaidTargetIcon and exists then
                     frame.RaidTargetIcon= memberFrame:CreateTexture(nil,'OVERLAY', nil, 7)--队伍, 标记
                     frame.RaidTargetIcon:SetPoint('RIGHT', frame.RoleIcon, 'LEFT')
                     frame.RaidTargetIcon:SetSize(14,14)
@@ -183,8 +184,8 @@ local function set_PartyFrame()--PartyFrame.lua
                     end)
 
                     hooksecurefunc(memberFrame, 'UpdateAssignedRoles', function(self2)--隐藏, DPS 图标
-                        if self2.PartyMemberOverlay.unit then
-                            local role = UnitGroupRolesAssigned(self2.PartyMemberOverlay.unit)
+                        if self2.unit then
+                            local role = UnitGroupRolesAssigned(self2.unit)
                             local icon = self2.PartyMemberOverlay.RoleIcon;
                             if icon and role== 'DAMAGER' then
                                 icon:SetShown(false)
@@ -194,7 +195,7 @@ local function set_PartyFrame()--PartyFrame.lua
                 end
 
                 if frame.RaidTargetIcon then
-                    if frame.unit then
+                    if exists then
                         frame:RegisterEvent('RAID_TARGET_UPDATE')--更新,标记
                         frame:RegisterUnitEvent('UNIT_TARGET', unit)
 
