@@ -353,6 +353,9 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
     end)
 
     --新建, 移动, 按钮
+    CompactRaidFrameContainer:SetClampedToScreen(true)
+    CompactRaidFrameContainer:SetMovable(true)
+
     CompactRaidFrameContainer.moveFrame= e.Cbtn(CompactRaidFrameContainer, nil, true, nil, nil, nil, {20,20})
     CompactRaidFrameContainer.moveFrame:SetAlpha(0.3)
     CompactRaidFrameContainer.moveFrame:SetPoint('TOPRIGHT', CompactRaidFrameContainer, 'TOPLEFT',-2, -13)
@@ -401,8 +404,7 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
     if Save.raidFrameScale and Save.raidFrameScale~=1 then
         CompactRaidFrameContainer:SetScale(Save.raidFrameScale)
     end
-    CompactRaidFrameContainer:SetClampedToScreen(true)
-    CompactRaidFrameContainer:SetMovable(true)
+
 
     --团体, 管理, 缩放
     CompactRaidFrameManager.sacleFrame= e.Cbtn(CompactRaidFrameManager, nil, true, nil, nil, nil, {15,15})

@@ -885,7 +885,8 @@
         "KEY_BUTTON1",
         "YOU",
         "UNIT_YOU",
-        "BINDING_NAME_NAMEPLATES"
+        "BINDING_NAME_NAMEPLATES",
+        "CompactUnitFrame_UpdateHealthColor"
     ],
     "Lua.diagnostics.disable": [
     ]
