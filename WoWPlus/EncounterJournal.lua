@@ -904,7 +904,7 @@ local function Init()--冒险指南界面
     end)
     hooksecurefunc('EncounterJournal_UpdateButtonState', function(self2)--技能提示
         self2:EnableMouse(true)
-        self2:RegisterForClicks("LeftButtonDown","RightButtonDown")
+        --self2:RegisterForClicks("LeftButtonDown","RightButtonDown")
         self2:SetScript("OnEnter", function(self3)
             local frame2=self3:GetParent()
             local spellID= frame2 and frame2.spellID

@@ -180,7 +180,7 @@ local function Init()
                                 e.Ccool(self, start, duration, modRate)--冷却条
                             end)
                         end
-                        panel.buttons[index]:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
+                        --panel.buttons[index]:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
                         panel.buttons[index]:SetAttribute('type2', 'macro')
                         panel.buttons[index]:SetAttribute("macrotext2", text)
                     end
@@ -191,7 +191,7 @@ local function Init()
                             panel.buttons[index].textureRight= panel.buttons[index]:CreateTexture(nil,'OVERLAY')
                             panel.buttons[index].textureRight:SetPoint('RIGHT',panel.buttons[index].border,'RIGHT',-6,0)
                             panel.buttons[index].textureRight:SetSize(8,8)
-                            panel.buttons[index]:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
+                            --panel.buttons[index]:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
                         end
                         panel.buttons[index].textureRight:SetTexture(icon2)
                     end

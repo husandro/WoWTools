@@ -23,9 +23,8 @@ local function GetWeek()--周数
     return week
 end
 
-local ActionButtonUseKeyDown=C_CVar.GetCVarBool("ActionButtonUseKeyDown")
-e.LeftButtonDown = ActionButtonUseKeyDown and 'LeftButtonDown' or 'LeftButtonUp'
-e.RightButtonDown= ActionButtonUseKeyDown and 'RightButtonDown' or 'RightButtonUp'
+local LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp'
+local RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp'
 
 e.LoadSpellItemData= function(ID, spell)--加载法术, 物品数据
     if ID then
@@ -459,7 +458,7 @@ e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size)
             end
         end
     end
-    b:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
+    b:RegisterForClicks(LeftButtonDown, RightButtonDown)
     b:EnableMouseWheel(true)
     if size then
         b:SetSize(size[1], size[2])
@@ -691,9 +690,9 @@ e.Cbtn2= function(name, parent, showTexture, rightClick)
     local size=e.toolsFrame.size or 30
     button:SetSize(size,size)
     if rightClick then
-        button:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
+        button:RegisterForClicks(LeftButtonDown, RightButtonDown)
     elseif rightClick~=false then
-        button:RegisterForClicks(e.LeftButtonDown)
+        button:RegisterForClicks(LeftButtonDown)
     end
     button:EnableMouseWheel(true)
 

@@ -30,10 +30,11 @@ hooksecurefunc(DressUpOutfitDetailsSlotMixin, 'SetDetails', function(self, trans
 		end
     end
     if link and not self.btn then
-        self.btn=e.Cbtn(self, nil, true)
-        self.btn:RegisterForClicks("LeftButtonDown","RightButtonDown")
+        --e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size)
+        self.btn=e.Cbtn(self, nil, true, nil, nil, nil,{20,20})
+        --self.btn:RegisterForClicks("LeftButtonDown","RightButtonDown")
         self.btn:SetPoint('RIGHT')
-        self.btn:SetSize(20, 20)
+        --self.btn:SetSize(20, 20)
         self.btn:SetAlpha(0.3)
         self.btn:SetScript('OnEnter', function(self2, d)
             if self2.link and self2.link:find('item') then

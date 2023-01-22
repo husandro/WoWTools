@@ -271,17 +271,18 @@ local function CursorPositionInt()
         end
         return
     end
-    frame.playerPostionBtn=CreateFrame('Button', nil, UIParent)--实时玩家当前坐标
-    frame.playerPostionBtn:SetHighlightAtlas(e.Icon.highlight)
-    frame.playerPostionBtn:SetPushedAtlas(e.Icon.pushed)
+    --e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size)
+    frame.playerPostionBtn= e.Cbtn(nil, nil, nil,nil,nil,true,{12,12})-- CreateFrame('Button', nil, UIParent)--实时玩家当前坐标
+    --frame.playerPostionBtn:SetHighlightAtlas(e.Icon.highlight)
+    --frame.playerPostionBtn:SetPushedAtlas(e.Icon.pushed)
     if not Save.PlayerXYPoint then
         frame.playerPostionBtn:SetPoint('BOTTOMRIGHT', frame, 'TOPRIGHT',-50, 5)
     else
         frame.playerPostionBtn:SetPoint(Save.PlayerXYPoint[1], UIParent, Save.PlayerXYPoint[3], Save.PlayerXYPoint[4], Save.PlayerXYPoint[5])
     end
-    frame.playerPostionBtn:SetSize(12,12)
-    frame.playerPostionBtn:RegisterForClicks("LeftButtonDown","RightButtonDown")
-    frame.playerPostionBtn:EnableMouseWheel(true)
+    --frame.playerPostionBtn:SetSize(12,12)
+    --frame.playerPostionBtn:RegisterForClicks("LeftButtonDown","RightButtonDown")
+    --frame.playerPostionBtn:EnableMouseWheel(true)
     frame.playerPostionBtn:SetMovable(true)
     frame.playerPostionBtn:RegisterForDrag("RightButton")
     frame.playerPostionBtn:SetClampedToScreen(true)

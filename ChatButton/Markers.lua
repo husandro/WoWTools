@@ -554,7 +554,7 @@ local function setMarkersFrame()--设置标记, 框架
             else
                 button:SetPoint('BOTTOMRIGHT', last or frame2, 'BOTTOMLEFT')
             end
-            button:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
+            --button:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
 
             button:SetAttribute('type1', 'worldmarker')
             button:SetAttribute('marker1', index==0 and 0 or tab[index])
