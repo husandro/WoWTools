@@ -166,6 +166,9 @@ local function set_vigentteButton_Text()
             text= text.. info.name..'|A:'..info.atlasName..':0:0|a'
         end
     end
+    if text then
+        text= '|cnGREEN_FONT_COLOR:'..text..'|r'
+    end
     for _, uiMapID in pairs(uiMapIDsTab) do
         local areaPoiIDs = C_AreaPoiInfo.GetAreaPOIForMap(uiMapID) or {}
         for _, areaPoiID in pairs(areaPoiIDs) do
