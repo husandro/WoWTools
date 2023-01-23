@@ -33,7 +33,7 @@ local EncounterJournal_Maps={--[mapChallengeModelID]= journalInstanceID
     [169]= 558,--铁船之路(码头)
     [227]= 860,--堕落守护者之路(卡拉赞)
     [234]= 860,--堕落守护者之路(卡拉赞)
-    
+
 }
 --[[
 local spellIDs={--法术, 传送门, {mapChallengeModeID = 法术 SPELL ID}, BUG, 战斗中关闭, 会出现错误
@@ -938,7 +938,7 @@ local function Init()
                 print('|cffff00ff',text)
             end
         end
-        
+
     end
 end
 
