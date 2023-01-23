@@ -468,7 +468,7 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
     CompactRaidFrameContainer.moveFrame:SetMovable(true)
     CompactRaidFrameContainer.moveFrame:RegisterForDrag('RightButton')
     CompactRaidFrameContainer.moveFrame:SetScript("OnDragStart", function(self,d)
-        if d=='RightButton' and not IsMetaKeyDown() then
+        if d=='RightButton' and not IsModifierKeyDown() then
             CompactRaidFrameContainer:StartMoving()
         end
     end)
@@ -477,7 +477,7 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
     end)
     CompactRaidFrameContainer.moveFrame:SetScript("OnMouseDown", function(self, d)
         print(id, addName, (e.onlyChinse and '移动' or NPE_MOVE)..e.Icon.right, 'Alt+'..e.Icon.mid..(e.onlyChinse and '缩放' or UI_SCALE), Save.raidFrameScale or 1)
-        if d=='RightButton' and not IsMetaKeyDown() then
+        if d=='RightButton' and not IsModifierKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         end
     end)
@@ -562,7 +562,7 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
     CompactPartyFrame.moveFrame:SetMovable(true)
     CompactPartyFrame.moveFrame:RegisterForDrag('RightButton')
     CompactPartyFrame.moveFrame:SetScript("OnDragStart", function(self,d)
-        if d=='RightButton' and not IsMetaKeyDown() then
+        if d=='RightButton' and not IsModifierKeyDown() then
             CompactPartyFrame:StartMoving()
         end
     end)
@@ -571,7 +571,7 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
     end)
     CompactPartyFrame.moveFrame:SetScript("OnMouseDown", function(self, d)
         print(id, addName, (e.onlyChinse and '移动' or NPE_MOVE)..e.Icon.right, 'Alt+'..e.Icon.mid..(e.onlyChinse and '缩放' or UI_SCALE), Save.compactPartyFrameScale or 1)
-        if d=='RightButton' and not IsMetaKeyDown() then
+        if d=='RightButton' and not IsModifierKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         end
     end)
