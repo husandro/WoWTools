@@ -324,10 +324,10 @@ local function setMarkersFrame_Postion()--设置标记框架, 位置
     if frame then
         if Save.markersFramePoint then
             frame:SetPoint(Save.markersFramePoint[1], UIParent, Save.markersFramePoint[3], Save.markersFramePoint[4], Save.markersFramePoint[5])
-        elseif MultiBarBottomLeftButton12 and MultiBarBottomLeftButton12:IsShown() then
-            frame:SetPoint('BOTTOMLEFT', MultiBarBottomLeftButton12, 'TOPRIGHT')
+        --elseif MultiBarBottomLeftButton12 and MultiBarBottomLeftButton12:IsShown() then
+        --    frame:SetPoint('BOTTOMLEFT', MultiBarBottomLeftButton12, 'TOPRIGHT')
         else
-            frame:SetPoint('TOPRIGHT', panel, 'BOTTOMRIGHT', 150,100)
+            frame:SetPoint('BOTTOM', UIParent, 'BOTTOM', 330, 175)
         end
     end
 end
