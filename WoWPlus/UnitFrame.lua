@@ -636,7 +636,8 @@ local function Init()
 
     if MirrorTimer1 then
         MirrorTimer1:HookScript('OnUpdate', set_MirrorTimerMixin)--MirrorTimer.lua
-        end
+    end
+
     C_Timer.After(2, set_LootSpecialization)--拾取专精
 end
 
