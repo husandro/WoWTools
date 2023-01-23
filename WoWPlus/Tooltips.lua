@@ -609,6 +609,11 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             local text=line:GetText()
             if text then
                 line:SetText(e.Icon.guild2..col..text:gsub('(%-.+)','')..'|r')
+                line= GameTooltipTextRight2
+                if line then
+                    line:SetText(' ')
+                    line:SetShown()
+                end
             end
         end
 
