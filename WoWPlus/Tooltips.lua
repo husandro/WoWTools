@@ -612,9 +612,9 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             end
         end
 
-        line=isInGuild and GameTooltipTextLeft3 or GameTooltipTextLeft2
+        line= isInGuild and GameTooltipTextLeft3 or GameTooltipTextLeft2
         if line then
-            local className, classFilename= UnitClass(unit);--职业名称
+            local classFilename= select(2, UnitClass(unit))--职业名称
             local sex = UnitSex(unit)
             local raceName, raceFile= UnitRace(unit)
             local level
@@ -627,6 +627,12 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             text= text..level..'  '..e.Class(nil, classFilename)..'  '..e.Race(nil, raceFile, sex)..raceName..'  '..(UnitIsPVP(unit) and  '(|cnRED_FONT_COLOR:PvP|r)' or '(|cnGREEN_FONT_COLOR:PvE|r)')
             text= col and col..text..'|r' or text
             line:SetText(text)
+
+            line= isInGuild and GameTooltipTextRight3 or GameTooltipTextRight2
+            if line then
+                line:SetText(' ')
+                line:SetShown(true)
+            end
         end
 
         local isSelf=UnitIsUnit('player', unit)--我

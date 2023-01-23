@@ -932,7 +932,8 @@
         "UnitAffectingCombat",
         "HUD_EDIT_MODE_RAID_FRAMES_LABEL",
         "MirrorTimer1",
-        "MirrorTimerMixin"
+        "MirrorTimerMixin",
+        "GameTooltipTextRight2"
     ],
     "Lua.diagnostics.disable": [
     ]
