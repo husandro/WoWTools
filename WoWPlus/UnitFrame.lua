@@ -603,6 +603,22 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
     CompactPartyFrame:SetMovable(true)
 end
 
+local elapsedValue=0
+local function set_MirrorTimerMixin(self, elapsed)
+    if elapsedValue>0.5 then
+        if self.value then
+            if not self.valueText then
+                self.valueText=e.Cstr(self,nil,nil,nil,nil,nil,'RIGHT')
+                self.valueText:SetPoint('BOTTOMRIGHT',-7, 4)
+            end
+            self.valueText:SetText(format('%i', self.value))
+        end
+        elapsedValue= 0
+    else
+        elapsedValue= elapsedValue+elapsed
+    end
+end
+
 --######
 --初始化
 --######
@@ -618,6 +634,9 @@ local function Init()
     set_PartyFrame()--小队
     set_UnitFrame_Update()--职业, 图标， 颜色
 
+    if MirrorTimer1 then
+        MirrorTimer1:HookScript('OnUpdate', set_MirrorTimerMixin)--MirrorTimer.lua
+        end
     C_Timer.After(2, set_LootSpecialization)--拾取专精
 end
 

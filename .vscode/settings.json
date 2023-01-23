@@ -930,7 +930,9 @@
         "SetCursor",
         "IsAltKeyDown",
         "UnitAffectingCombat",
-        "HUD_EDIT_MODE_RAID_FRAMES_LABEL"
+        "HUD_EDIT_MODE_RAID_FRAMES_LABEL",
+        "MirrorTimer1",
+        "MirrorTimerMixin"
     ],
     "Lua.diagnostics.disable": [
     ]

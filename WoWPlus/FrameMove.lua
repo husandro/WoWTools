@@ -126,6 +126,7 @@ local FrameTab={
     MainMenuBarBackpackButton={save=true, click='R', frame=MicroButtonAndBagsBar},--主菜单
     PlayerPowerBarAlt={},--UnitPowerBarAlt.lua
     MailFrame={},
+    MirrorTimer1={save=true},
     
 };
 --UIWidgetBelowMinimapContainerFrame={save=true,click='RightButton'},
