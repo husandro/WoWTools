@@ -1,14 +1,14 @@
 local id, e = ...
 local addName= UNITFRAME_LABEL
-local Save={raidFrameScale=0.8}--{SetShadowOffset= 1}
+local Save={raidFrameScale=0.8, }--{SetShadowOffset= 1}
 local panel=CreateFrame("Frame")
 local R,G,B= GetClassColor(UnitClassBase('player'))
 
-local function set_SetShadowOffset(self)--设置, 阴影
+--[[local function set_SetShadowOffset(self)--设置, 阴影
     if self then
         self:SetShadowOffset(1, -1)
     end
-end
+end]]
 local function set_SetTextColor(self, r, g, b)--设置, 字体
     if self and self:IsShown() and r and g and b then
         self:SetTextColor(r, g, b)
@@ -33,7 +33,7 @@ local function set_PlayerFrame()--PlayerFrame.lua
     hooksecurefunc('PlayerFrame_UpdateLevel', function()
         set_SetTextColor(PlayerLevelText, R,G,B)
     end)
-    set_SetShadowOffset(PlayerLevelText)
+    --set_SetShadowOffset(PlayerLevelText)
 
     --施法条
     PlayerCastingBarFrame:HookScript('OnShow', function(self)--图标
@@ -262,7 +262,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
             end
             self.classTexture:SetSize(20,20)
 
-            if self.healthbar then
+--[[            if self.healthbar then
                 set_SetShadowOffset(self.healthbar.LeftText)--字本, 阴影
                 set_SetShadowOffset(self.healthbar.TextString)
                 set_SetShadowOffset(self.healthbar.RightText)
@@ -272,7 +272,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                 set_SetShadowOffset(self.manabar.TextString)
                 set_SetShadowOffset(self.manabar.RightText)
             end
-            set_SetShadowOffset(self.name)
+            set_SetShadowOffset(self.name)]]
         end
         self.classTexture:SetAtlas(class or 0)
 
@@ -307,7 +307,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
     hooksecurefunc('TextStatusBar_UpdateTextStringWithValues', function(statusFrame, textString, value, valueMin, valueMax)
         if value and value>0 then
             if textString and textString:IsShown() then
-                if value== valueMax then
+                if value== valueMax or value==0 then
                     textString:SetText('')
                 else
                     local text= textString:GetText()
@@ -362,7 +362,9 @@ end
 --团队
 --####
 local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
-
+    if Save.notRaidFrame then
+        return
+    end
     hooksecurefunc('CompactUnitFrame_SetUnit', function(frame, unit)--队伍, 标记
         if unit and not frame.RaidTargetIcon and frame.name then
             frame.RaidTargetIcon= frame:CreateTexture(nil,'OVERLAY', nil, 7)
@@ -615,16 +617,14 @@ local function Init()
     set_PetFrame()--宠物
     set_PartyFrame()--小队
     set_UnitFrame_Update()--职业, 图标， 颜色
-    C_Timer.After(2, function()
-        set_LootSpecialization()--拾取专精
-    end)
+
+    C_Timer.After(2, set_LootSpecialization)--拾取专精
 end
 
 --###########
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
 
 panel:RegisterEvent('PLAYER_LOOT_SPEC_UPDATED')--拾取专精
 panel:RegisterUnitEvent('PLAYER_SPECIALIZATION_CHANGED','player')
@@ -641,10 +641,32 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end)
 
-            if not Save.disabled then
+            local sel2=CreateFrame("CheckButton", nil, sel, "InterfaceOptionsCheckButtonTemplate")
+            sel2.text:SetText(e.onlyChinse and '团队框体' or HUD_EDIT_MODE_RAID_FRAMES_LABEL)
+            sel2.text:SetTextColor(1,0,0)
+            sel2:SetPoint('LEFT', sel.text, 'RIGHT')
+            sel2:SetChecked(not Save.notRaidFrame)
+            sel2:SetScript('OnEnter', function(self2)
+                local text=e.GetShowHide(false)
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(e.onlyChinse and '如果出现错误' or ENABLE_ERROR_SPEECH, e.onlyChinse and '请取消' or CANCEL)
+                e.tips:Show()
+            end)
+            sel2:SetScript('OnLeave', function() e.tips:Hide() end)
+            sel2:SetScript('OnMouseDown', function ()
+                Save.notRaidFrame= not Save.notRaidFrame and true or nil
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+            end)
+
+
+            if Save.disabled then
+                panel:UnregisterAllEvents()
+            else
                 --Save.SetShadowOffset= Save.SetShadowOffset or 1
                 Init()
             end
+            panel:RegisterEvent("PLAYER_LOGOUT")
         end
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then

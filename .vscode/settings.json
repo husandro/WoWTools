@@ -929,7 +929,8 @@
         "ResetCursor",
         "SetCursor",
         "IsAltKeyDown",
-        "UnitAffectingCombat"
+        "UnitAffectingCombat",
+        "HUD_EDIT_MODE_RAID_FRAMES_LABEL"
     ],
     "Lua.diagnostics.disable": [
     ]
