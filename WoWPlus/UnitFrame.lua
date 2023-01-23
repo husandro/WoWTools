@@ -307,19 +307,23 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
     hooksecurefunc('TextStatusBar_UpdateTextStringWithValues', function(statusFrame, textString, value, valueMin, valueMax)
         if value and value>0 then
             if textString and textString:IsShown() then
-                if value== valueMax or value==0 then
-                    textString:SetText('')
-                else
-                    local text= textString:GetText()
-                    text= text:gsub('%%', '')
+                local text= textString:GetText()
+                if text then
+                    if text=='100%' then
+                        text= ''
+                    else
+                        text= text:gsub('%%', '')
+                    end
                     textString:SetText(text)
                 end
             elseif statusFrame.LeftText and statusFrame.LeftText:IsShown() then
-                if value== valueMax then
-                    statusFrame.LeftText:SetText('')
-                else
-                    local text= statusFrame.LeftText:GetText()
-                    text= text:gsub('%%', '')
+                local text= statusFrame.LeftText:GetText()
+                if text then
+                    if text=='100%' then
+                        text= ''
+                    else
+                        text= text:gsub('%%', '')
+                    end
                     statusFrame.LeftText:SetText(text)
                 end
             end
@@ -438,14 +442,14 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
         if not frame.statusText or not frame.statusText:IsShown() or frame.optionTable.healthText ~= "perc" then
             return
         end
-        if UnitHealth(frame.displayedUnit)==UnitHealthMax(frame.displayedUnit) then
-            frame.statusText:SetText('')
-        else
-            local text= frame.statusText:GetText()
-            if text then
+        local text= frame.statusText:GetText()
+        if text then
+            if text== '100%' then
+                text= ''
+            else
                 text= text:gsub('%%', '')
-                frame.statusText:SetText(text)
             end
+            frame.statusText:SetText(text)
         end
     end)
 
