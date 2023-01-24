@@ -49,8 +49,6 @@ local function Init()
     hooksecurefunc('ActionButton_UpdateRangeIndicator', function(self, checksRange, inRange)--ActionButton.lua
         if ( checksRange and not inRange ) then
 			self.icon:SetVertexColor(RED_FONT_COLOR:GetRGB());
-		else
-			self.icon:SetVertexColor(1,1,1);
 		end
     end)
 end
