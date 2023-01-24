@@ -942,7 +942,8 @@
         "RED_FONT_COLOR",
         "ACTIONBAR_HOTKEY_FONT_COLOR",
         "TRACKER_SORT_PROXIMITY",
-        "LFG_LIST_TITLE"
+        "LFG_LIST_TITLE",
+        "WorldFrame"
     ],
     "Lua.diagnostics.disable": [
     ]

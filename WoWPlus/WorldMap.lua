@@ -3,24 +3,7 @@ local addName = e.onlyChinse and '地图' or WORLD_MAP
 local addName2=RESET_POSITION:gsub(RESET, PLAYER)
 local Save={}
 local panel=CreateFrame("Frame")
---[[local QuestTagTypeIcon = {
-    --Tag = 0,
-    --Profession = 1,
-    --Normal = 2,
-    [3]='worldquest-icon-pvp-ffa',--PvP = 3,
-    [4]='worldquest-icon-petbattle',--PetBattle = 4,
-    --Bounty = 5,
-    --Dungeon = 6,
-    --Invasion = 7,
-    --Raid = 8,
-    --Contribution = 9,
-    --RatedReward = 10,
-    --InvasionWrapper = 11,
-    --FactionAssault = 12,
-    --Islands = 13,
-    --Threat = 14,
-    [15]='Callings-Available',--CovenantCalling = 15,
-}]]
+
 
 --###########
 --世界地图任务
@@ -271,18 +254,13 @@ local function CursorPositionInt()
         end
         return
     end
-    --e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size)
     frame.playerPostionBtn= e.Cbtn(nil, nil, nil,nil,nil,true,{12,12})-- CreateFrame('Button', nil, UIParent)--实时玩家当前坐标
-    --frame.playerPostionBtn:SetHighlightAtlas(e.Icon.highlight)
-    --frame.playerPostionBtn:SetPushedAtlas(e.Icon.pushed)
     if not Save.PlayerXYPoint then
         frame.playerPostionBtn:SetPoint('BOTTOMRIGHT', frame, 'TOPRIGHT',-50, 5)
     else
         frame.playerPostionBtn:SetPoint(Save.PlayerXYPoint[1], UIParent, Save.PlayerXYPoint[3], Save.PlayerXYPoint[4], Save.PlayerXYPoint[5])
     end
-    --frame.playerPostionBtn:SetSize(12,12)
-    --frame.playerPostionBtn:RegisterForClicks("LeftButtonDown","RightButtonDown")
-    --frame.playerPostionBtn:EnableMouseWheel(true)
+
     frame.playerPostionBtn:SetMovable(true)
     frame.playerPostionBtn:RegisterForDrag("RightButton")
     frame.playerPostionBtn:SetClampedToScreen(true)
@@ -462,7 +440,7 @@ local function setMapIDText(self)
     self.playerPosition:SetShown(not Save.hide)
 end
 
-local function setMapID(self)--显示地图ID
+local function set_Map_ID(self)--显示地图ID
     if not self.mapInfoBtn then
         self.mapInfoBtn=e.Cbtn(self.BorderFrame.TitleContainer)
         if IsAddOnLoaded('Mapster') then
@@ -498,7 +476,7 @@ local function setMapID(self)--显示地图ID
 
     if not self.playerPosition then--玩家坐标
         self.playerPosition=e.Cbtn(self.BorderFrame.TitleContainer)
-        self.playerPosition:SetPoint('LEFT', self.BorderFrame.TitleContainer, 'LEFT', 95, -2)
+        self.playerPosition:SetPoint('LEFT', self.BorderFrame.TitleContainer, 'LEFT', 75, -2)
         self.playerPosition:SetSize(22, 22)
         self.playerPosition:SetNormalAtlas(e.Icon.player:match('|A:(.-):'))
         self.playerPosition:RegisterForClicks("LeftButtonUp", "RightButtonUp")
@@ -523,7 +501,7 @@ local function setMapID(self)--显示地图ID
             end
         end)
         self.playerPosition.Text=e.Cstr(self.playerPosition, nil ,WorldMapFrameTitleText)--玩家当前坐标
-        self.playerPosition.Text:SetPoint('LEFT',self.playerPosition, 'RIGHT', 2, 0)
+        self.playerPosition.Text:SetPoint('LEFT',self.playerPosition, 'RIGHT')
         local timeElapsed2=0
         self.playerPosition:HookScript("OnUpdate", function (self2, elapsed)
             timeElapsed2 = timeElapsed2 + elapsed
@@ -536,13 +514,42 @@ local function setMapID(self)--显示地图ID
                 end
                 x, y = WorldMapFrame.ScrollContainer:GetNormalizedCursorPosition()--当前世界地图位置            
                 if x and y then
-                    text = text~='' and text..'    ' or text
+                    text = text~='' and text..' |cnGREEN_FONT_COLOR:' or text
                     text = text..('%.1f'):format(x*100)..' '..('%.1f'):format(y*100)
                 end
                 self.playerPosition.Text:SetText(text)
             end
         end)
+
+        --####
+        --缩放
+        --####
+        self.ZoomIn= e.Cbtn(self.playerPosition, nil, nil, nil, nil, true, {18,18})--放大
+        self.ZoomIn:SetAlpha(0.3)
+        self.ZoomIn:SetPoint('RIGHT',self.playerPosition, 'LEFT', -2, 0)
+        self.ZoomIn:SetNormalAtlas('UI-HUD-Minimap-Zoom-In')
+        self.ZoomIn:SetScript('OnMouseDown', function(s)
+            local n= Save.scale or 1
+            n= n+ 0.1
+            n= n>2 and 2 or n
+            Save.scale=n
+            WorldMapFrame:SetScale(n)
+            print(id, addName, e.onlyChinse and '缩放' or UI_SCALE, n)
+        end)
+        self.ZoomOut= e.Cbtn(self.playerPosition, nil, nil, nil, nil, true, {18,18})--缩小
+        self.ZoomOut:SetPoint('RIGHT',self.ZoomIn, 'LEFT')
+        self.ZoomOut:SetAlpha(0.3)
+        self.ZoomOut:SetNormalAtlas('UI-HUD-Minimap-Zoom-Out')
+        self.ZoomOut:SetScript('OnMouseDown', function(s)
+            local n= Save.scale or 1
+            n= n- 0.1
+            n= n< 0.5 and 0.5 or n
+            Save.scale=n
+            WorldMapFrame:SetScale(n)
+            print(id, addName, e.onlyChinse and '缩放' or UI_SCALE, n)
+        end)
     end
+
     setMapIDText(self)
 end
 
@@ -609,12 +616,14 @@ local function set_AreaPOIPinMixin_OnAcquired(poiInfo)--地图POI提示 AreaPOID
     end
 end
 
+
+
 --####
 --初始
 --####
 local function Init()
     hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', set_WorldQuestPinMixin_RefreshVisuals)--世界地图任务
-    hooksecurefunc(WorldMapFrame, 'OnMapChanged', setMapID)--Blizzard_WorldMap.lua
+    hooksecurefunc(WorldMapFrame, 'OnMapChanged', set_Map_ID)--Blizzard_WorldMap.lua
     CursorPositionInt()
     hooksecurefunc(AreaPOIPinMixin,'OnAcquired', set_AreaPOIPinMixin_OnAcquired)--地图POI提示 AreaPOIDataProvider.lua
 
@@ -695,7 +704,9 @@ local function Init()
         end
     end)
 
-    --WorldMapFrame:Set
+    if Save.scale and Save.scale~=1 then--缩放
+        WorldMapFrame:SetScale(Save.scale)
+    end
 end
 
 --加载保存数据
