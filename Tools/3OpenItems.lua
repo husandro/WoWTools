@@ -107,7 +107,7 @@ local function getItems()--取得背包物品信息
                     elseif info.hyperlink:find('Hbattlepet:(%d+)') or (classID==15 and subclassID==2) then--宠物, 收集数量
                         local speciesID = info.hyperlink:match('Hbattlepet:(%d+)') or select(13, C_PetJournal.GetPetInfoByItemID(info.itemID))--宠物物品                        
                         if speciesID then
-                            local numCollected, limit = select(2, e.GetPetCollected(speciesID))
+                            local numCollected, limit= C_PetJournal.GetNumCollectedInfo(speciesID)
                             if numCollected and limit and numCollected <  limit then
                                 setAtt(bag, slot, info.iconFileID, info.itemID)
                                 return

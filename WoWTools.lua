@@ -881,30 +881,48 @@ e.GetItemCollected= function(link, sourceID, icon)--物品是否收集
     end
 end
 
-e.GetPetCollected= function(speciesID, itemID, numShow)--宠物, 收集数量
+e.GetPetCollectedNum= function(speciesID, itemID)--总收集数量， 25 25 25， 3/3
     speciesID = speciesID or (itemID and select(13, C_PetJournal.GetPetInfoByItemID(itemID)))--宠物物品
-    if speciesID then
-        local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesID)
-        if numCollected==0 then
-            if numShow then
-                return '|cnRED_FONT_COLOR:'..numCollected..'/'..limit..'|r', numCollected, limit
-            else
-                return '|cnRED_FONT_COLOR:'..format(e.onlyChinse and '已收集（%d/%d）' or ITEM_PET_KNOWN, numCollected, limit)..'|r', numCollected, limit
-            end
-        elseif limit and numCollected==limit and limit>0 then
-            if numShow then
-                return '|cnGREEN_FONT_COLOR:'..numCollected..'/'..limit..'|r', numCollected, limit
-            else
-                return '|cnGREEN_FONT_COLOR:'..format(e.onlyChinse and '已收集（%d/%d）' or ITEM_PET_KNOWN, numCollected, limit)..'|r', numCollected, limit
-            end
+    if not speciesID then
+        return
+    end
+    local AllCollected, CollectedNum, CollectedText
+    local numPets, numOwned = C_PetJournal.GetNumPets()
+    if numPets and numOwned and numPets>0 then
+        if numPets<numOwned or numPets<3 then
+            AllCollected= e.MK(numOwned, 3)
         else
-            if numShow then
-                return numCollected..'/'..limit, numCollected, limit
-            else
-                return format(e.onlyChinse and '已收集（%d/%d）' or ITEM_PET_KNOWN, numCollected, limit), numCollected, limit
-            end
+            AllCollected= e.MK(numOwned,3)..'/'..e.MK(numPets,3).. (' %i%%'):format(numOwned/numPets*100)
         end
     end
+
+    local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesID)
+    if numCollected and limit and limit>0 then
+        if numCollected>0 then
+            local text2
+            for index= 1 ,numOwned do
+                local petID, speciesID2, _, _, level = C_PetJournal.GetPetInfoByIndex(index)
+                if speciesID2==speciesID and petID and level then
+                    local rarity = select(5, C_PetJournal.GetPetStats(petID))
+                    local col= rarity and select(4, GetItemQualityColor(rarity-1))
+                    if col then
+                        text2= text2 and text2..' ' or ''
+                        text2= text2..'|c'..col..level..'|r'
+                    end
+                end
+            end
+            CollectedNum= text2
+        end
+
+        if numCollected==0 then
+            CollectedText='|cnRED_FONT_COLOR:'..numCollected..'|r/'..limit
+        elseif limit and numCollected==limit and limit>0 then
+            CollectedText= '|cnGREEN_FONT_COLOR:'..numCollected..'/'..limit..'|r'
+        else
+            CollectedText= numCollected..'/'..limit
+        end
+    end
+    return AllCollected, CollectedNum, CollectedText
 end
 
 e.GetMountCollected= function(mountID)--坐骑, 收集数量
@@ -914,6 +932,8 @@ e.GetMountCollected= function(mountID)--坐骑, 收集数量
         return '|cnRED_FONT_COLOR:'..(e.onlyChinse and '未收集' or NOT_COLLECTED)..'|r'
     end
 end
+
+
 
 e.ExpansionLevel= GetExpansionLevel()
 e.GetExpansionText= function(expacID, questID)--版本数据

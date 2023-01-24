@@ -686,7 +686,7 @@ local function Init()--冒险指南界面
             else
                 local mountID = C_MountJournal.GetMountFromItem(self.itemID)--坐骑物品
                 local speciesID = select(13, C_PetJournal.GetPetInfoByItemID(self.itemID))--宠物物品
-                local str= speciesID and e.GetPetCollected(speciesID) or mountID and e.GetMountCollected(mountID)--宠物, 收集数量
+                local str= speciesID and select(3, e.GetPetCollectedNum(speciesID)) or mountID and e.GetMountCollected(mountID)--宠物, 收集数量
                 if str then
                     text= text and '' or '   '
                     text= text..str

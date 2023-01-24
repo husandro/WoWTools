@@ -16,23 +16,8 @@ local function set_PetBattleUnitFrame_UpdateDisplay(self)--Blizzard_PetBattleUI.
         if C_PetBattles.IsWildBattle() and petIndex <= C_PetBattles.GetNumPets(petOwner) then
             local speciesID = C_PetBattles.GetPetSpeciesID(petOwner, petIndex)
             if speciesID then
-                local numOwned, maxAllowed = C_PetJournal.GetNumCollectedInfo(speciesID)
-                if maxAllowed and maxAllowed>0 then
-                    if numOwned == maxAllowed  then
-                        t='|cnRED_FONT_COLOR:'..numOwned..'|r/'.. maxAllowed
-                    else
-                        t='|cnGREEN_FONT_COLOR:'..numOwned..'|r/'.. maxAllowed
-                    end
-                    local rarity = C_PetBattles.GetBreedQuality(petOwner, petIndex)
-                    local hex= rarity and select(4, GetItemQualityColor(rarity-1))
-                    if hex then
-                        t='|c'..hex..t..'|r'
-                    else
-                        if numOwned==maxAllowed then
-                            t= '|cnRED_FONT_COLOR:'..t..'|r'
-                        end
-                    end
-                end
+                local CollectedNum, CollectedText= select(2, e.GetPetCollectedNum(speciesID))--总收集数量， 25 25 25， 已收集3/3
+                t= CollectedNum or CollectedText
                 local speed = C_PetBattles.GetSpeed(petOwner, petIndex)
                 local power = C_PetBattles.GetPower(petOwner, petIndex)
                 if speed and power then

@@ -95,38 +95,7 @@ local function setMount(self, mountID)--坐骑
     self.text2Left:SetText(isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinse and '未收集' or NOT_COLLECTED)..'|r')
 end
 
-local function get_Pet_Collected_Num(speciesID)--收集数量
-    local AllCollected, CollectedNum, CollectedText
-    local numPets, numOwned = C_PetJournal.GetNumPets()
-    if numPets and numOwned and numPets>0 then
-        if numPets<numOwned or numPets<3 then
-            AllCollected= e.MK(numOwned, 3)
-        else
-            AllCollected= e.MK(numOwned,3)..'/'..e.MK(numPets,3).. (' %i%%'):format(numOwned/numPets*100)
-        end
-    end
 
-    local text, numCollected, limit= e.GetPetCollected(speciesID)
-    if limit and limit>0 then
-        if numCollected and numCollected>0 then
-            local text2
-            for index= 1 ,numOwned do
-                local petID, speciesID2, _, _, level = C_PetJournal.GetPetInfoByIndex(index)
-                if speciesID2==speciesID and petID and level then
-                    local rarity = select(5, C_PetJournal.GetPetStats(petID))
-                    local col= rarity and select(4, GetItemQualityColor(rarity-1))
-                    if col then
-                    text2= text2 and text2..' ' or ''
-                    text2= text2..'|c'..col..level..'|r'
-                    end
-                end
-            end
-            CollectedNum= text2
-        end
-        CollectedText= text
-    end
-    return AllCollected, CollectedNum, CollectedText--总收集数量， 25 25 25， 已收集3/3
-end
 local function setPet(self, speciesID, setSearchText)--宠物
     if not speciesID or speciesID< 1 then
         return
@@ -135,7 +104,7 @@ local function setPet(self, speciesID, setSearchText)--宠物
     if obtainable then--可得到的
         self:AddLine(' ')
 
-        local AllCollected, CollectedNum, CollectedText= get_Pet_Collected_Num(speciesID)--收集数量
+        local AllCollected, CollectedNum, CollectedText= e.GetPetCollectedNum(speciesID)--收集数量
         self.textLeft:SetText(CollectedNum or '')
         self.text2Left:SetText(CollectedText or '')
         self.textRight:SetText(AllCollected or '')
@@ -896,7 +865,7 @@ local function setBattlePet(self, speciesID, level, breedQuality, maxHealth, pow
     end
     self.backgroundColor:SetShown(breedQuality~=-1)
 
-    local AllCollected, CollectedNum, CollectedText= get_Pet_Collected_Num(speciesID)--收集数量
+    local AllCollected, CollectedNum, CollectedText= e.GetPetCollectedNum(speciesID)--收集数量
     self.textLeft:SetText(CollectedNum or '')
     self.text2Left:SetText(CollectedText or '')
     self.textRight:SetText(not CollectedNum and AllCollected or '')
