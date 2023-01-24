@@ -61,7 +61,7 @@ local function LvTo()--总装等
 
     if avgItemLevel~= avgItemLevelPvp and avgItemLevelPvp and not PaperDollSidebarTab1.itemLevelPvPText then--PVP
         PaperDollSidebarTab1.itemLevelPvPText=e.Cstr(PaperDollSidebarTab1, nil, nil, nil,{1,0.82,0},nil, 'CENTER')
-        PaperDollSidebarTab1.itemLevelPvPText:SetPoint('RIGHT', PaperDollSidebarTab1, 'LEFT')
+        PaperDollSidebarTab1.itemLevelPvPText:SetPoint('TOP')
     end
     if PaperDollSidebarTab1.itemLevelPvPText then
         if avgItemLevel~= avgItemLevelPvp and avgItemLevelPvp then
@@ -99,8 +99,9 @@ local function Lv(self, slot, link)--装等
     end
     if not self.lv and lv then
         self.lv= e.Cstr(self, nil, nil, nil,nil,nil, 'CENTER')
+        self.lv:SetShadowOffset(2,-2)
         self.lv:SetPoint('CENTER')
-        --self.lv:SetPoint('BOTTOM', 0, 0)
+        --self.lv:SetPoint('TOP', 0, 0)
     end
     if self.lv then
         self.lv:SetText(lv or '')
