@@ -937,7 +937,12 @@
         "Minimap",
         "BaseActionButtonMixin",
         "MainMenuBarVehicleLeaveButtonMixin",
-        "PetActionBar"
+        "PetActionBar",
+        "ActionButton_UpdateRangeIndicator",
+        "RED_FONT_COLOR",
+        "ACTIONBAR_HOTKEY_FONT_COLOR",
+        "TRACKER_SORT_PROXIMITY",
+        "LFG_LIST_TITLE"
     ],
     "Lua.diagnostics.disable": [
     ]

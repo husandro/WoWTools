@@ -1029,6 +1029,7 @@ OVERLAY
 DRAG_MODEL拖曳
 
 UIPanelWindows[]
+RANGE_INDICATOR = "●";
 
 FrameUtil.RegisterFrameForEvents(self, table);
 FrameUtil.UnregisterFrameForEvents(self, table);

@@ -1,6 +1,6 @@
 local id, e = ...
-local addName= SPELLS..'Flyout'
-local Save={disabled= not e.Player.zh and not e.Player.husandro}
+local addName= SPELLS..'Frame'
+local Save={}
 
 --######
 --初始化
@@ -45,6 +45,14 @@ local function Init()
             end
             if self.Text then self.TextSetText('') end
     end)
+
+    hooksecurefunc('ActionButton_UpdateRangeIndicator', function(self, checksRange, inRange)--ActionButton.lua
+        if ( checksRange and not inRange ) then
+			self.icon:SetVertexColor(RED_FONT_COLOR:GetRGB());
+		else
+			self.icon:SetVertexColor(1,1,1);
+		end
+    end)
 end
 
 --###########
@@ -57,11 +65,20 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
             --添加控制面板        
-            local sel=e.CPanel(e.onlyChinse and '法术弹出框' or addName, not Save.disabled)
+            local sel=e.CPanel(e.onlyChinse and '法术Frame' or addName, not Save.disabled)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end)
+            sel:SetScript('OnEnter', function(self2)
+                e.tips:SetOwner(self2, "ANCHOR_RIGHT");
+                e.tips:ClearLines();
+                e.tips:AddDoubleLine(e.onlyChinse and '法术距离' or SPELLS..TRACKER_SORT_PROXIMITY, e.onlyChinse and '颜色' or COLOR)
+                e.tips:AddDoubleLine(e.onlyChinse and '法术Flyout' or SPELLS..'Flyout', e.onlyChinse and '名称' or LFG_LIST_TITLE)
+                e.tips:Show();
+            end)
+            sel:SetScript('OnLeave', function() e.tips:Hide() end)
+
 
             if not Save.disabled then
                 Init()

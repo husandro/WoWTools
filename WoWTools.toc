@@ -41,8 +41,8 @@ WoWPlus\Tokens.lua
 WoWPlus\FrameMove.lua
 ##隐藏材质
 WoWPlus\HideTexture.lua
-##法术弹出框，加名称
-WoWPlus\Flyout.lua
+##法术弹出框，加名称, 和颜色
+WoWPlus\SpellFrame.lua
 ##任务框，增强
 WoWPlus\ObjectiveTracker.lua
 ##玩具面板
