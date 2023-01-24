@@ -934,7 +934,10 @@
         "MirrorTimer1",
         "MirrorTimerMixin",
         "GameTooltipTextRight2",
-        "Minimap"
+        "Minimap",
+        "BaseActionButtonMixin",
+        "MainMenuBarVehicleLeaveButtonMixin",
+        "PetActionBar"
     ],
     "Lua.diagnostics.disable": [
     ]

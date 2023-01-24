@@ -9,6 +9,32 @@ local function hideTexture(self)
     end
 end
 
+local function set_UNIT_ENTERED_VEHICLE()--载具
+    if OverrideActionBarEndCapL then
+        hideTexture(OverrideActionBarEndCapL)
+        hideTexture(OverrideActionBarEndCapR)
+        hideTexture(OverrideActionBarBorder)
+        hideTexture(OverrideActionBarBG)
+        hideTexture(OverrideActionBarButtonBGMid)
+        hideTexture(OverrideActionBarButtonBGR)
+        hideTexture(OverrideActionBarButtonBGL)
+    end
+    if OverrideActionBarMicroBGMid then
+        hideTexture(OverrideActionBarMicroBGMid)
+        hideTexture(OverrideActionBarMicroBGR)
+        hideTexture(OverrideActionBarMicroBGL)
+        hideTexture(OverrideActionBarLeaveFrameExitBG)
+
+        hideTexture(OverrideActionBarDivider2)
+        hideTexture(OverrideActionBarLeaveFrameDivider3)
+    end
+    if OverrideActionBarExpBar then
+        hideTexture(OverrideActionBarExpBarXpMid)
+        hideTexture(OverrideActionBarExpBarXpR)
+        hideTexture(OverrideActionBarExpBarXpL)
+    end
+end
+
 --######
 --初始化
 --######
@@ -27,15 +53,10 @@ local function Init()
         PetBattleFrame.TopVersusText:SetShown(false)
         hideTexture(PetBattleFrame.WeatherFrame.BackgroundArt)
 
-        --PetBattleFrame.BottomFrame.TurnTimer.ArtFrame2:SetShown(false)
         hideTexture(PetBattleFrameXPBarLeft)
         hideTexture(PetBattleFrameXPBarRight)
         hideTexture(PetBattleFrameXPBarMiddle)
         if PetBattleFrame.BottomFrame then
-            --[[if PetBattleFrame.BottomFrame.MicroButtonFrame then
-                hideTexture(PetBattleFrame.BottomFrame.MicroButtonFrame.LeftEndCap)
-                hideTexture(PetBattleFrame.BottomFrame.MicroButtonFrame.RightEndCap)
-            end]]
             hideTexture(PetBattleFrame.BottomFrame.LeftEndCap)
             hideTexture(PetBattleFrame.BottomFrame.RightEndCap)
             hideTexture(PetBattleFrame.BottomFrame.Background)
@@ -46,9 +67,6 @@ local function Init()
         end
     end
 
-
-    --PetBattleFrame.BottomFrame.MicroButtonFrame.RightEndCap:SetShown(false)
-    --PetBattleFrame.BottomFrame.MicroButtonFrame.LeftEndCap:SetShown(false)
     hooksecurefunc('PetBattleFrame_UpdatePassButtonAndTimer', function(self)--Blizzard_PetBattleUI.lua
         hideTexture(self.BottomFrame.TurnTimer.TimerBG)
         --self.BottomFrame.TurnTimer.Bar:SetShown(true);
@@ -81,7 +99,7 @@ local function Init()
         end
     end)
 
-    if MainMenuBar and MainMenuBar.BorderArt then
+    if MainMenuBar and MainMenuBar.BorderArt then--主动作条
         hideTexture(MainMenuBar.BorderArt.TopEdge)
         hideTexture(MainMenuBar.BorderArt.BottomEdge)
         hideTexture(MainMenuBar.BorderArt.LeftEdge)
@@ -116,33 +134,45 @@ local function Init()
             CompactRaidFrameManager.toggleButton:SetNormalAtlas(e.Icon.toLeft)
         end)
      end
+
+
+    hooksecurefunc(BaseActionButtonMixin,'UpdateButtonArt', function(self, hideDivider)--ActionButton.lua
+        if (not self or not self.SlotArt or not self.SlotBackground) then
+            return;
+        end
+
+        hideTexture(self.SlotArt)
+        hideTexture(self.SlotBackground)
+        if self.RightDivider and self.BottomDivider then
+           -- print(self.RightDivider:IsShown(), self:GetName())
+            self.RightDivider:SetShown(false)
+            self.BottomDivider:SetShown(false)
+            
+        end
+    end)
+
+    for i=1, 12 do
+        local self= _G['ActionButton'..i]
+        if self and self.SlotArt and self.SlotBackground then
+            hideTexture(self.SlotArt)
+            hideTexture(self.SlotBackground)
+            if self.RightDivider and self.BottomDivider then
+                --self.RightDivider:SetShown(false)--frame
+                --self.BottomDivider:SetShown(false)
+
+                hideTexture(self.RightDivider.TopEdge)
+                hideTexture(self.RightDivider.BottomEdge)
+                hideTexture(self.RightDivider.Center)
+                --hideTexture(self.Border)
+
+            end
+        end
+    end
+
+    MainMenuBar.Background:SetShown(false)
 end
 
-local function set_UNIT_ENTERED_VEHICLE()--载具
-    if OverrideActionBarEndCapL then
-        hideTexture(OverrideActionBarEndCapL)
-        hideTexture(OverrideActionBarEndCapR)
-        hideTexture(OverrideActionBarBorder)
-        hideTexture(OverrideActionBarBG)
-        hideTexture(OverrideActionBarButtonBGMid)
-        hideTexture(OverrideActionBarButtonBGR)
-        hideTexture(OverrideActionBarButtonBGL)
-    end
-    if OverrideActionBarMicroBGMid then
-        hideTexture(OverrideActionBarMicroBGMid)
-        hideTexture(OverrideActionBarMicroBGR)
-        hideTexture(OverrideActionBarMicroBGL)
-        hideTexture(OverrideActionBarLeaveFrameExitBG)
 
-        hideTexture(OverrideActionBarDivider2)
-        hideTexture(OverrideActionBarLeaveFrameDivider3)
-    end
-    if OverrideActionBarExpBar then
-        hideTexture(OverrideActionBarExpBarXpMid)
-        hideTexture(OverrideActionBarExpBarXpR)
-        hideTexture(OverrideActionBarExpBarXpL)
-    end
-end
 
 --###########
 --加载保存数据

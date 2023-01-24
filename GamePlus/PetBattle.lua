@@ -598,6 +598,14 @@ local function Init()
         e.tips:Hide()
     end)
     set_Pet_Type(C_PetBattles.IsInBattle())
+
+    --隐藏宠物, 动作条
+    hooksecurefunc(MainMenuBarVehicleLeaveButtonMixin,'Update', function(self)--MainMenuBar.lua
+        if C_PetBattles.IsInBattle() and PetHasActionBar() then
+			PetActionBar:SetShown(false)
+            print(id)
+		end
+    end)
 end
 
 --###########
