@@ -425,17 +425,26 @@ local function InitWardrobe()
 
 end
 
+--###########
 --加载保存数据
+--###########
 local panel=CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:RegisterEvent("TRANSMOG_SETS_UPDATE_FAVORITE")
+
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1==id then
+    if event == "ADDON_LOADED" then
+        if arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
             wowSave=WoWToolsSave and WoWToolsSave['WoW-CollectionWardrobeSets'] or wowSave
             SetSaveWardroberColleced()--收集所有角色套装数据
             dupframe.sel:SetNormalAtlas(Save.disabledDressUpOutfit and e.Icon.disabled or e.Icon.icon)--试衣间, 外观列表
+
+        elseif arg1=='Blizzard_Collections' then
+            InitWardrobe()
+            SetSaveWardroberColleced()
+        end
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
@@ -443,9 +452,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave[addName]=Save
             WoWToolsSave['WoW-CollectionWardrobeSets']=wowSave
         end
-    elseif event=='ADDON_LOADED' and arg1=='Blizzard_Collections' then
-        InitWardrobe()
-        SetSaveWardroberColleced()
 
     elseif event=='TRANSMOG_SETS_UPDATE_FAVORITE' then
         SetSaveWardroberColleced()
