@@ -58,7 +58,7 @@ end
 --###########
 local panel=CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
@@ -77,10 +77,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end)
             sel:SetScript('OnLeave', function() e.tips:Hide() end)
 
-
-            if not Save.disabled then
+            if Save.disabled then
+                panel:UnregisterAllEvents()
+            else
                 Init()
             end
+            panel:RegisterEvent("PLAYER_LOGOUT")
+
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end
