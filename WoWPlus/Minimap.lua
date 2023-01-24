@@ -269,7 +269,7 @@ local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
                 end
                 print(id, addName, e.onlyChinse and '字体大小' or FONT_SIZE, size)
                 Save.vigentteButtonSize= size
-                e.Cstr(nil, size, nil, panel.vigentteButton.text, true ,nil,'RIGHT')
+                e.Cstr(nil, size, nil, panel.vigentteButton.text, nil ,nil,'RIGHT')
             end
         end)
         panel.vigentteButton:SetScript('OnEnter',function(self)
