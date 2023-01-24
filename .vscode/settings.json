@@ -933,7 +933,8 @@
         "HUD_EDIT_MODE_RAID_FRAMES_LABEL",
         "MirrorTimer1",
         "MirrorTimerMixin",
-        "GameTooltipTextRight2"
+        "GameTooltipTextRight2",
+        "Minimap"
     ],
     "Lua.diagnostics.disable": [
     ]
