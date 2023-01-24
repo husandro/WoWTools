@@ -161,13 +161,15 @@ local function set_vigentteButton_Text()
     local vignetteGUIDs=C_VignetteInfo.GetVignettes() or {};
     for _, guid in pairs(vignetteGUIDs) do
         local info= C_VignetteInfo.GetVignetteInfo(guid)
-        if info and info.name and info.atlasName and (info.onWorldMap or info.onMinimap) and not info.isDead then
-            text= text and text..'\n' or ''
-            text= text.. info.name..'|A:'..info.atlasName..':0:0|a'
+        if info and info.atlasName and not info.isDead then
+            if info.onMinimap then
+                text= text and text..'\n' or ''
+                text= text..(info.name and '|cnGREEN_FONT_COLOR:'..info.name..'|r' or '')..'|A:'..info.atlasName..':0:0|a'
+            elseif info.onWorldMap then
+                text= text and text..'\n' or ''
+                text= text..(info.name and '|cffff00ff'..info.name..'|r' or '')..'|A:'..info.atlasName..':0:0|a'
+            end
         end
-    end
-    if text then
-        text= '|cnGREEN_FONT_COLOR:'..text..'|r'
     end
     for _, uiMapID in pairs(uiMapIDsTab) do
         local areaPoiIDs = C_AreaPoiInfo.GetAreaPOIForMap(uiMapID) or {}
