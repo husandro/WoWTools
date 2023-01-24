@@ -60,7 +60,7 @@ local function LvTo()--总装等
     end
 
     if avgItemLevel~= avgItemLevelPvp and avgItemLevelPvp and not PaperDollSidebarTab1.itemLevelPvPText then--PVP
-        PaperDollSidebarTab1.itemLevelPvPText=e.Cstr(PaperDollSidebarTab1, 10, nil, nil,{1,0.82,0},nil, 'CENTER')
+        PaperDollSidebarTab1.itemLevelPvPText=e.Cstr(PaperDollSidebarTab1, nil, nil, nil,{1,0.82,0},nil, 'CENTER')
         PaperDollSidebarTab1.itemLevelPvPText:SetPoint('RIGHT', PaperDollSidebarTab1, 'LEFT')
     end
     if PaperDollSidebarTab1.itemLevelPvPText then
@@ -98,7 +98,7 @@ local function Lv(self, slot, link)--装等
         end
     end
     if not self.lv and lv then
-        self.lv= e.Cstr(self, 10, nil, nil,nil,nil, 'CENTER')
+        self.lv= e.Cstr(self, nil, nil, nil,nil,nil, 'CENTER')
         self.lv:SetPoint('CENTER')
         --self.lv:SetPoint('BOTTOM', 0, 0)
     end
@@ -303,7 +303,7 @@ local function Sta(self, slot, link)--显示属性
 
         if s then
             if not self.s then
-                self.s=e.Cstr(self, 10)
+                self.s=e.Cstr(self)
                 self.s:SetText( e.onlyChinse and '爆' or e.WA_Utf8Sub(STAT_CRITICAL_STRIKE, 1, 2):upper())
             else
                 self.s:ClearAllPoints()
@@ -314,7 +314,7 @@ local function Sta(self, slot, link)--显示属性
 
         if h then
             if not self.h then
-                self.h=e.Cstr(self, 10)
+                self.h=e.Cstr(self)
                 self.h:SetText(e.onlyChinse and '急' or e.WA_Utf8Sub(STAT_HASTE, 1,2):upper())
             else
                 self.h:ClearAllPoints()
@@ -324,7 +324,7 @@ local function Sta(self, slot, link)--显示属性
         end
         if m  then
             if not self.m then
-                self.m=e.Cstr(self, 10)
+                self.m=e.Cstr(self)
                 self.m:SetText(e.onlyChinse and '精' or e.WA_Utf8Sub(STAT_MASTERY, 1,2):upper())
             else
                 self.m:ClearAllPoints()
@@ -334,7 +334,7 @@ local function Sta(self, slot, link)--显示属性
         end
         if v then
             if not self.v then
-                self.v=e.Cstr(self, 10)
+                self.v=e.Cstr(self)
                 self.v:SetText(e.onlyChinse and '全' or e.WA_Utf8Sub(STAT_VERSATILITY, 1,2):upper())
             else
                 self.v:ClearAllPoints()
@@ -643,7 +643,7 @@ end
 --#######
 local function setFlyoutLevel(button, level, paperDollItemSlot)
     if level and not button.level then
-        button.level=e.Cstr(button, 10)
+        button.level=e.Cstr(button)
         button.level:SetPoint('BOTTOM')
     end
     if button.level then
@@ -664,7 +664,7 @@ local function setFlyoutLevel(button, level, paperDollItemSlot)
         end
     end
     if slotLevel and not button.upLevel then
-        button.upLevel=e.Cstr(button, 10)
+        button.upLevel=e.Cstr(button)
         button.upLevel:SetPoint('TOP',0 ,5)
     end
     if button.upLevel then

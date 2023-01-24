@@ -898,7 +898,7 @@ local function Init()
         if tooltip~=GameTooltip and tooltip~=ItemRefTooltip then
             return
         end
-        --25宏, 11动作条, 4矿
+        --25宏, 11动作条, 4矿, 14装备管理
         if date.type==2 then--单位
             if tooltip==e.tips then
                 local unit= select(2, TooltipUtil.GetDisplayedUnit(tooltip))
@@ -937,7 +937,7 @@ local function Init()
             elseif date.type==23 then
                 setQuest(tooltip, date.id)--任务
 
-            else
+            elseif e.Player.husandro then
                 tooltip:AddDoubleLine('id '..date.id, 'type '..date.type)
             end
         --elseif date.type or date.id then
