@@ -51,27 +51,6 @@ local function setInitItem(self, hide)--创建物品
     end
 end
 
---[[local function GetSetsCollectedNum(setID)--套装收集数
-    local info=C_TransmogSets.GetSetPrimaryAppearances(setID) or {}
-    local numCollected,numAll=0,0
-    for _,v in pairs(info) do
-        numAll=numAll+1
-        if v.collected then
-            numCollected=numCollected + 1
-        end
-    end
-    if numAll>0 then
-        if numCollected==numAll then
-            return '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '已收集' or COLLECTED)..'|r'
-        elseif numCollected>0 and numCollected~=numAll then
-            return '|cnYELLOW_FONT_COLOR:'..numCollected..'/'..numAll..(e.onlyChinse and '已收集' or COLLECTED)..'|r'
-        elseif numCollected==0 then
-            return  '|cnRED_FONT_COLOR:'..(e.onlyChinse and '未收集' or NOT_COLLECTED)..'|r'
-        end
-    end
-end]]
-
-
 local function setMount(self, mountID)--坐骑    
     local name, spellID, icon, isActive, isUsable, sourceType, isFavorite, isFactionSpecific, faction, shouldHideOnChar, isCollected=C_MountJournal.GetMountInfoByID(mountID)
     self:AddDoubleLine((e.onlyChinse and '坐骑' or MOUNTS)..' '..mountID, spellID and (e.onlyChinse and '召唤技能' or (SUMMON..ABILITIES))..' '..spellID)
