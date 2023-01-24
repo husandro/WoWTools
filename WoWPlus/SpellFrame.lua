@@ -74,7 +74,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 e.tips:SetOwner(self2, "ANCHOR_RIGHT");
                 e.tips:ClearLines();
                 e.tips:AddDoubleLine(e.onlyChinse and '法术距离' or SPELLS..TRACKER_SORT_PROXIMITY, e.onlyChinse and '颜色' or COLOR)
-                e.tips:AddDoubleLine(e.onlyChinse and '法术Flyout' or SPELLS..'Flyout', e.onlyChinse and '名称' or LFG_LIST_TITLE)
+                e.tips:AddDoubleLine(e.onlyChinse and '法术弹出框' or SPELLS..' Flyout', e.onlyChinse and '名称' or LFG_LIST_TITLE)
                 e.tips:Show();
             end)
             sel:SetScript('OnLeave', function() e.tips:Hide() end)
