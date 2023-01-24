@@ -130,9 +130,11 @@ local function set_PetBattleFrame_UpdateSpeedIndicators(self)--Blizzard_PetBattl
     ally.power.text:SetText(allyPower)
     enemy.power.text:SetText(enemyPower)
 
-    if PetHasActionBar() then--宠物动作条， 显示，隐藏
-        PetActionBar:SetShown(false)
-    end
+     C_Timer.After(2.5, function()
+        if PetHasActionBar() then--宠物动作条， 显示，隐藏
+            PetActionBar:SetShown(false)
+        end
+    end)
 end
 
 --#################
@@ -604,13 +606,11 @@ local function Init()
     set_Pet_Type(C_PetBattles.IsInBattle())
 
     --隐藏, 宠物, 动作条
-    hooksecurefunc(MainMenuBarVehicleLeaveButtonMixin,'Update', function(self)--MainMenuBar.lua
-        print(id, self)
+    --[[hooksecurefunc(MainMenuBarVehicleLeaveButtonMixin,'Update', function(self)--MainMenuBar.lua
         if C_PetBattles.IsInBattle() and PetHasActionBar() then
 			PetActionBar:SetShown(false)
-       
 		end
-    end)
+    end)]]
 end
 
 --###########
