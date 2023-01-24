@@ -959,7 +959,7 @@ local function Init()
                 end
             end
 
-        elseif date.id and date.type and date~=25 then
+        elseif date.id and date.type and date.typ~= 25 then
             if date.type==0 or date.type==19 then--TooltipUtil.lua 0物品 19玩具
                 local itemID, itemLink=TooltipUtil.GetDisplayedItem(tooltip)
                 itemLink= itemLink or itemID or date.id
