@@ -129,6 +129,10 @@ local function set_PetBattleFrame_UpdateSpeedIndicators(self)--Blizzard_PetBattl
     enemy.speed:SetShown(enemySpeed>=allySpeed)
     ally.power.text:SetText(allyPower)
     enemy.power.text:SetText(enemyPower)
+
+    if PetHasActionBar() then--宠物动作条， 显示，隐藏
+        PetActionBar:SetShown(false)
+    end
 end
 
 --#################
@@ -498,7 +502,7 @@ local function set_Pet_Type(show)--提示,类型,
     if panel.setFrame then
         panel.setFrame:SetShown(not Save.setFrameHide)
     end
-    panel:SetShown(show)--提示,类型, 
+    panel:SetShown(show)--提示,类型,
 end
 
 local function set_Button_setFrame_PetJournal()--宠物手册，增加按钮
@@ -599,11 +603,12 @@ local function Init()
     end)
     set_Pet_Type(C_PetBattles.IsInBattle())
 
-    --隐藏宠物, 动作条
+    --隐藏, 宠物, 动作条
     hooksecurefunc(MainMenuBarVehicleLeaveButtonMixin,'Update', function(self)--MainMenuBar.lua
+        print(id, self)
         if C_PetBattles.IsInBattle() and PetHasActionBar() then
 			PetActionBar:SetShown(false)
-            print(id)
+       
 		end
     end)
 end
@@ -646,6 +651,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         set_Pet_Type(C_PetBattles.IsInBattle())
         if event=='PET_BATTLE_CLOSE' then
+            if PetHasActionBar() then--宠物动作条， 显示，隐藏
+                PetActionBar:SetShown(true)
+            end
             if not UnitAffectingCombat('player') then--UIParent.lua
                 local duration = select(2, GetSpellCooldown(125439))
                 if duration and duration<=2  or not duration then
