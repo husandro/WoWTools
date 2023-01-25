@@ -77,6 +77,10 @@ WoWPlus\Challenges.lua
 ##WowPlus\AuctionHouse.lua
 ##WoWPlus\MountCollection.lua
 
+
+
+
+
 ##自动对话，任务
 GamePlus\Gossip.lua
 ##卖买
@@ -101,6 +105,9 @@ GamePlus\Gem.lua
 GamePlus\Target.lua
 ##怪物 Creature
 ##GamePlus\Creature.lua
+
+
+
 
 ##坐骑， Tools 主要的，
 ##如果要使用Tools中的一个模块，必须开启坐骑模块

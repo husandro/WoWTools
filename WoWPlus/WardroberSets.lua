@@ -364,12 +364,12 @@ local function InitWardrobe()
             local m=''
             local collected, all=0 , 0
             for _, info in pairs(tempSave) do
-                if info.collected and info.all and info.all>0 then
+                if info.collected and info.all and info.all>0 and info.class then
                     local value=math.modf(info.collected/info.all*100)
                     local t=info.collected..'/'..info.all..' '
                     t=t..((value<10 and '  ') or (value<100 and ' ') or '')..value..'%'
                     t=t..'|A:classicon-'..info.class..':0:0|a'
-                    t='|c'..select(4,GetClassColor(info.class))..t..'|r'                
+                    t='|c'..select(4,GetClassColor(info.class))..t..'|r'
                     m=m..t..'\n'
                     collected=info.collected + collected
                     all=info.all + all
