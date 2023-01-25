@@ -530,7 +530,7 @@ local function set_Map_ID(self)--显示地图ID
         self.ZoomIn:SetNormalAtlas('UI-HUD-Minimap-Zoom-In')
         self.ZoomIn:SetScript('OnMouseDown', function(s)
             local n= Save.scale or 1
-            n= n+ 0.1
+            n= n+ 0.05
             n= n>2 and 2 or n
             Save.scale=n
             WorldMapFrame:SetScale(n)
@@ -542,7 +542,7 @@ local function set_Map_ID(self)--显示地图ID
         self.ZoomOut:SetNormalAtlas('UI-HUD-Minimap-Zoom-Out')
         self.ZoomOut:SetScript('OnMouseDown', function(s)
             local n= Save.scale or 1
-            n= n- 0.1
+            n= n- 0.05
             n= n< 0.5 and 0.5 or n
             Save.scale=n
             WorldMapFrame:SetScale(n)
