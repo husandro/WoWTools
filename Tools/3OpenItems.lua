@@ -73,89 +73,102 @@ local function setAtt(bag, slot, icon, itemID)--设置属性
 end
 
 local equipItem--是装备时, 打开角色界面
-local function getItems()--取得背包物品信息
+local function Get_Bag_Info(bag, slot)
+    local info = C_Container.GetContainerItemInfo(bag, slot)
+    if info and info.itemID and info.hyperlink and not info.isLocked and info.iconFileID then
+        if Save.use[info.itemID] then--自定义
+            if Save.use[info.itemID]<=info.stackCount then
+                setAtt(bag, slot, info.iconFileID, info.itemID)
+                return true
+            end
+
+        elseif not Save.no[info.itemID]  and not e.GetTooltipData(true, nil, nil, {bag=bag, slot=slot}) then--不出售, 可以使用
+            local itemName, _, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, sellPrice, classID, subclassID, bindType, expacID, setID, isCraftingReagent= GetItemInfo(info.hyperlink)
+            if itemEquipLoc and _G[itemEquipLoc] then--幻化
+                if Save.mago and (itemMinLevel and itemMinLevel<=e.Player.level or not itemMinLevel) and info.quality and info.quality>1 then--and (not info.isBound or (classID==4 and (subclassID==0 or subclassID==5))) then
+                    local  isCollected, isSelf= select(2, e.GetItemCollected(info.hyperlink))
+                    if not isCollected and isSelf then
+                        setAtt(bag, slot, info.iconFileID, info.itemID)
+                        equipItem=true
+                        return true
+                    end
+                end
+
+            elseif info.hyperlink:find('Hbattlepet:(%d+)') or (classID==15 and subclassID==2) then--宠物, 收集数量
+                local speciesID = info.hyperlink:match('Hbattlepet:(%d+)') or select(13, C_PetJournal.GetPetInfoByItemID(info.itemID))--宠物物品                        
+                if speciesID then
+                    local numCollected, limit= C_PetJournal.GetNumCollectedInfo(speciesID)
+                    if numCollected and limit and numCollected <  limit then
+                        setAtt(bag, slot, info.iconFileID, info.itemID)
+                        return true
+                    end
+                end
+
+            elseif info.hasLoot then--可打开
+                if Save.open then
+                    setAtt(bag, slot, info.iconFileID, info.itemID)
+                    return true
+                end
+
+            elseif classID==9 then--配方                    
+                if Save.ski then
+                    if subclassID == 0 then
+                        if GetItemSpell(info.hyperlink) then
+                            setAtt(bag, slot, info.iconFileID, info.itemID)
+                        end
+                    else
+                        setAtt(bag, slot, info.iconFileID, info.itemID)
+                    end
+                    return true
+                end
+
+            elseif classID==15 and  subclassID==5 then--坐骑
+                if Save.mount then
+                    local mountID = C_MountJournal.GetMountFromItem(info.itemID)
+                    if mountID then
+                        local isCollected =select(11, C_MountJournal.GetMountInfoByID(mountID))
+                        if not isCollected then
+                            setAtt(bag, slot, info.iconFileID, info.itemID)
+                            return true
+                        end
+                    end
+                end
+
+            elseif classID==15 and subclassID==4 then--其它
+                if Save.alt and IsUsableItem(info.hyperlink) and not C_Item.IsAnimaItemByID(info.hyperlink) then
+                    setAtt(bag, slot, info.iconFileID, info.itemID)
+                    return true
+                end
+            elseif C_ToyBox.GetToyInfo(info.itemID) then
+                if Save.toy and not PlayerHasToy(info.itemID) then--玩具 
+                    setAtt(bag, slot, info.iconFileID, info.itemID)
+                    return true
+                end
+            end
+        end
+    end
+end
+
+local function getItems(bagNum)--取得背包物品信息
     if UnitAffectingCombat('player') then
         Combat=true
         return
     end
     equipItem=nil
     Bag={}
-    local levelPlayer=UnitLevel('player')
 
-    for bag=0, NUM_BAG_SLOTS do
-        for slot=1, C_Container.GetContainerNumSlots(bag) do
-            local info = C_Container.GetContainerItemInfo(bag, slot)
-            if info and info.itemID and info.hyperlink and not info.isLocked and info.iconFileID then
-                if Save.use[info.itemID] then--自定义
-                    if Save.use[info.itemID]<=info.stackCount then
-                        setAtt(bag, slot, info.iconFileID, info.itemID)
-                        return
-                    end
-
-                elseif not Save.no[info.itemID]  and not e.GetTooltipData(true, nil, nil, {bag=bag, slot=slot}) then--不出售, 可以使用
-                    local itemName, _, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, sellPrice, classID, subclassID, bindType, expacID, setID, isCraftingReagent= GetItemInfo(info.hyperlink)
-                    if itemEquipLoc and _G[itemEquipLoc] then--幻化
-                        if Save.mago and (itemMinLevel and itemMinLevel<=levelPlayer or not itemMinLevel) and info.quality and info.quality>1 then--and (not info.isBound or (classID==4 and (subclassID==0 or subclassID==5))) then
-                            local  isCollected, isSelf= select(2, e.GetItemCollected(info.hyperlink))
-                            if not isCollected and isSelf then
-                                setAtt(bag, slot, info.iconFileID, info.itemID)
-                                equipItem=true
-                                return
-                            end
-                        end
-
-                    elseif info.hyperlink:find('Hbattlepet:(%d+)') or (classID==15 and subclassID==2) then--宠物, 收集数量
-                        local speciesID = info.hyperlink:match('Hbattlepet:(%d+)') or select(13, C_PetJournal.GetPetInfoByItemID(info.itemID))--宠物物品                        
-                        if speciesID then
-                            local numCollected, limit= C_PetJournal.GetNumCollectedInfo(speciesID)
-                            if numCollected and limit and numCollected <  limit then
-                                setAtt(bag, slot, info.iconFileID, info.itemID)
-                                return
-                            end
-                        end
-
-                    elseif info.hasLoot then--可打开
-                        if Save.open then
-                            setAtt(bag, slot, info.iconFileID, info.itemID)
-                            return
-                        end
-
-                    elseif classID==9 then--配方                    
-                        if Save.ski then
-                            if subclassID == 0 then
-                                if GetItemSpell(info.hyperlink) then
-                                    setAtt(bag, slot, info.iconFileID, info.itemID)
-                                end
-                            else
-                                setAtt(bag, slot, info.iconFileID, info.itemID)
-                            end
-                            return
-                        end
-
-                    elseif classID==15 and  subclassID==5 then--坐骑
-                        if Save.mount then
-                            local mountID = C_MountJournal.GetMountFromItem(info.itemID)
-                            if mountID then
-                                local isCollected =select(11, C_MountJournal.GetMountInfoByID(mountID))
-                                if not isCollected then
-                                    setAtt(bag, slot, info.iconFileID, info.itemID)
-                                    return
-                                end
-                            end
-                        end
-
-                    elseif classID==15 and subclassID==4 then--其它
-                        if Save.alt and IsUsableItem(info.hyperlink) and not C_Item.IsAnimaItemByID(info.hyperlink) then
-                            setAtt(bag, slot, info.iconFileID, info.itemID)
-                            return
-                        end
-                    elseif C_ToyBox.GetToyInfo(info.itemID) then
-                        if Save.toy and not PlayerHasToy(info.itemID) then--玩具 
-                            setAtt(bag, slot, info.iconFileID, info.itemID)
-                            return
-                        end
-                    end
+    if Combat or not bagNum then
+        for bag=0, NUM_BAG_SLOTS do
+            for slot=1, C_Container.GetContainerNumSlots(bag) do
+                if Get_Bag_Info(bag, slot) then
+                    return
                 end
+            end
+        end
+    else
+        for slot=1, C_Container.GetContainerNumSlots(bagNum) do
+            if Get_Bag_Info(bagNum, slot) then
+                return
             end
         end
     end
@@ -554,6 +567,7 @@ panel:RegisterEvent('BAG_UPDATE_DELAYED')
 panel:RegisterEvent('PLAYER_REGEN_DISABLED')
 panel:RegisterEvent('PLAYER_REGEN_ENABLED')
 panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
+panel:RegisterEvent('BAG_UPDATE')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
@@ -572,6 +586,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='BAG_UPDATE_DELAYED' then
             getItems()
+    elseif event=='BAG_UPDATE' and arg1 then
+            getItems(arg1)
     elseif event=='PLAYER_REGEN_DISABLED' then
         if Save.noItemHide then
             panel:SetShown(false)
