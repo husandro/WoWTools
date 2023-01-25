@@ -1,6 +1,6 @@
 local id, e = ...
 local addName= UNITFRAME_LABEL
-local Save={raidFrameScale=0.8, }--{SetShadowOffset= 1}
+local Save={raidFrameScale=0.8, notRaidFrame=not e.Player.husandro }--{SetShadowOffset= 1}
 local panel=CreateFrame("Frame")
 local R,G,B= GetClassColor(UnitClassBase('player'))
 
@@ -637,7 +637,7 @@ end
 local function Init()
     set_RaidFrame()--团队
 
-    set_CompactPartyFrame()--小队, 使用团框架
+    --set_CompactPartyFrame()--小队, 使用团框架
     hooksecurefunc('CompactPartyFrame_UpdateVisibility', set_CompactPartyFrame)
 
     set_PlayerFrame()--玩家
