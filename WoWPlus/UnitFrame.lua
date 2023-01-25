@@ -615,6 +615,9 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
     CompactPartyFrame:SetMovable(true)
 end
 
+--#########
+--MirrorTimer
+--#########
 local elapsedValue=0
 local function set_MirrorTimerMixin(self, elapsed)
     if elapsedValue>0.5 then
@@ -638,7 +641,7 @@ local function Init()
     set_RaidFrame()--团队
 
     --set_CompactPartyFrame()--小队, 使用团框架
-    hooksecurefunc('CompactPartyFrame_UpdateVisibility', set_CompactPartyFrame)
+    --hooksecurefunc('CompactPartyFrame_UpdateVisibility', set_CompactPartyFrame)
 
     set_PlayerFrame()--玩家
     set_TargetFrame()--目标
@@ -683,6 +686,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(e.onlyChinse and '如果出现错误' or ENABLE_ERROR_SPEECH, e.onlyChinse and '请取消' or CANCEL)
+                e.tips:AddDoubleLine(e.onlyChinse and '战斗中, 增加队员' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..' ('..ADD..') '..PLAYERS_IN_GROUP, e.onlyChinse and '错误' or ENABLE_ERROR_SPEECH)
                 e.tips:Show()
             end)
             sel2:SetScript('OnLeave', function() e.tips:Hide() end)
