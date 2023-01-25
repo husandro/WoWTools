@@ -123,11 +123,10 @@ local FrameTab={
     ContainerFrameCombinedBags={},--包
     VehicleSeatIndicator={},--车辆，指示
     ExpansionLandingPage={},--要塞
-    MainMenuBarBackpackButton={save=true, click='R', frame=MicroButtonAndBagsBar},--主菜单
+    --MainMenuBarBackpackButton={save=true, click='R', frame=MicroButtonAndBagsBar},--主菜单
     PlayerPowerBarAlt={},--UnitPowerBarAlt.lua
     MailFrame={},
     MirrorTimer1={save=true},
-    
 };
 --UIWidgetBelowMinimapContainerFrame={save=true,click='RightButton'},
 
@@ -330,7 +329,7 @@ tex:SetAtlas('!perks-list-side-vertical')
 
     setTabInit()
 
-    hooksecurefunc(LootFrame,'Open', function(self2)--物品拾取LootFrame.lua
+    --[[hooksecurefunc(LootFrame,'Open', function(self2)--物品拾取LootFrame.lua
         if not GetCVarBool("autoLootDefault") and not GetCVarBool("lootUnderMouse") then
             local p=Save.point.LootFrame and Save.point.LootFrame[1]
             if p and p[1] and p[3] and p[4] and p[5] then
@@ -339,9 +338,10 @@ tex:SetAtlas('!perks-list-side-vertical')
             end
         end
     end)
+    Move(LootFrame.TitleContainer, {frame=LootFrame, save=true})--物品拾取
+    ]]
 
     Move(DressUpFrame.TitleContainer, {frame = DressUpFrame})--试衣间    
-    Move(LootFrame.TitleContainer, {frame=LootFrame, save=true})--物品拾取
 
     if QueueStatusButton then--小眼睛, 信息, 设置菜单,移动
         hooksecurefunc('QueueStatusDropDown_Show', function()
@@ -380,7 +380,7 @@ tex:SetAtlas('!perks-list-side-vertical')
             Move(frame.TitleContainer, {})
         end
     end
-    --
+    --[[
     --移动，主菜单，背包提示
     hooksecurefunc(MainMenuBarBackpackButton, 'OnEnterInternal', function ()
         e.tips:AddLine(' ')
@@ -390,7 +390,7 @@ tex:SetAtlas('!perks-list-side-vertical')
         e.tips:Show()
     end)
 
---[[    --###############################
+    --###############################
     --修正，在战斗中，打开收藏界面，错误
     --###############################
     if not CollectionsJournal then
