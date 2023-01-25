@@ -426,20 +426,7 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
             end
         end
     end)
-    --[[
-    hooksecurefunc('CompactUnitFrame_UpdateHealthColor', function(frame)--宠物条，颜色
-        if frame.healthBar and frame.unit and frame.unit:find('pet') then
-            local class= UnitClassBase(frame.unit)
-            if class then
-                local r, g, b= GetClassColor(class)
-                if r and g and b then
-                    frame.healthBar:SetStatusBarColor(r,g,b)
-                    frame.healthBar.r, frame.healthBar.g, frame.healthBar.b = r, g, b
-                end
-            end
-        end
-    end)
-]]
+    
     hooksecurefunc('CompactUnitFrame_UpdateStatusText', function(frame)--去掉,生命条, %
         if not frame.statusText or not frame.statusText:IsShown() or frame.optionTable.healthText ~= "perc" then
             return
@@ -457,6 +444,19 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
 
     hooksecurefunc('CompactRaidGroup_InitializeForGroup', function(frame, groupIndex)--处理, 队伍号
         frame.title:SetText('|A:'..e.Icon.number..groupIndex..':0:0|a')
+    end)
+    --[[
+    hooksecurefunc('CompactUnitFrame_UpdateHealthColor', function(frame)--宠物条，颜色
+        if frame.healthBar and frame.unit and frame.unit:find('pet') then
+            local class= UnitClassBase(frame.unit)
+            if class then
+                local r, g, b= GetClassColor(class)
+                if r and g and b then
+                    frame.healthBar:SetStatusBarColor(r,g,b)
+                    frame.healthBar.r, frame.healthBar.g, frame.healthBar.b = r, g, b
+                end
+            end
+        end
     end)
 
     --新建, 移动, 按钮
@@ -545,7 +545,7 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
     if Save.managerScale and Save.managerScale~=1 then
         CompactRaidFrameManager:SetScale(Save.managerScale)
     end
-
+]]
     for index, tab in pairs(EditModeSettingDisplayInfoManager.systemSettingDisplayInfo[Enum.EditModeSystem.UnitFrame]) do
         if tab.name==HUD_EDIT_MODE_SETTING_UNIT_FRAME_WIDTH  then-- Frame Width
             EditModeSettingDisplayInfoManager.systemSettingDisplayInfo[Enum.EditModeSystem.UnitFrame][index].minValue=36
@@ -558,6 +558,7 @@ end
 --###############
 --小队, 使用团框架
 --###############
+--[[
 local function set_CompactPartyFrame()--CompactPartyFrame.lua
     if not CompactPartyFrame or CompactPartyFrame.moveFrame or ShouldShowPartyFrames() then
         return
@@ -616,7 +617,7 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
     CompactPartyFrame:SetClampedToScreen(true)
     CompactPartyFrame:SetMovable(true)
 end
-
+]]
 --#########
 --MirrorTimer
 --#########
@@ -642,8 +643,8 @@ end
 local function Init()
     set_RaidFrame()--团队
 
-    set_CompactPartyFrame()--小队, 使用团框架
-    hooksecurefunc('CompactPartyFrame_UpdateVisibility', set_CompactPartyFrame)
+    --set_CompactPartyFrame()--小队, 使用团框架
+    --hooksecurefunc('CompactPartyFrame_UpdateVisibility', set_CompactPartyFrame)
 
     set_PlayerFrame()--玩家
     set_TargetFrame()--目标

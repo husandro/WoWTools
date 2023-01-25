@@ -135,7 +135,7 @@ local function Init()
         end)
      end
 
-
+--[[
     hooksecurefunc(BaseActionButtonMixin,'UpdateButtonArt', function(self, hideDivider)--ActionButton.lua
         if (not self or not self.SlotArt or not self.SlotBackground) then
             return;
@@ -146,11 +146,10 @@ local function Init()
         if self.RightDivider and self.BottomDivider then
            -- print(self.RightDivider:IsShown(), self:GetName())
             self.RightDivider:SetShown(false)
-            self.BottomDivider:SetShown(false)
-            
+            self.BottomDivider:SetShown(false) 
         end
     end)
-
+]]
     for i=1, 12 do
         local self= _G['ActionButton'..i]
         if self and self.SlotArt and self.SlotBackground then
