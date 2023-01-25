@@ -143,17 +143,17 @@ local function set_Paerty_Casting(frame, unit, start)
     end
 end
 local function set_PartyFrame()--PartyFrame.lua
---[[    hooksecurefunc(PartyFrame, 'UpdatePartyFrames', function(self)
+    hooksecurefunc(PartyFrame, 'UpdatePartyFrames', function(self)
         if not ShouldShowPartyFrames() then
             return
-        end]]
-        for memberFrame in PartyFrame.PartyMemberFramePool:EnumerateActive() do
+        end
+        for memberFrame in self.PartyMemberFramePool:EnumerateActive() do
             local unit= memberFrame.unit or memberFrame:GetUnit()
             local frame= memberFrame.PartyMemberOverlay
             if frame and unit then
-               --local exists= UnitExists(unit)
+                local exists= UnitExists(unit)
                 frame.unit= unit
-                --if not frame.RaidTargetIcon then --and exists then
+                if not frame.RaidTargetIcon and exists then
                     frame.RaidTargetIcon= memberFrame:CreateTexture(nil,'OVERLAY', nil, 7)--队伍, 标记
                     frame.RaidTargetIcon:SetPoint('RIGHT', frame.RoleIcon, 'LEFT')
                     frame.RaidTargetIcon:SetSize(14,14)
@@ -176,12 +176,10 @@ local function set_PartyFrame()--PartyFrame.lua
                         end
                     end)
                     frame:HookScript('OnEvent', function (self2, event, arg1)
-                        if UnitExists(self2.unit) then
-                            if event=='RAID_TARGET_UPDATE' then
-                                set_SetRaidTarget(self2.RaidTargetIcon, self2.unit);
-                            elseif event=='UNIT_TARGET' and arg1==self2.unit then
-                                set_Party_Target_Changed(self2.TotPortrait, self2.unit)
-                            end
+                        if event=='RAID_TARGET_UPDATE' then
+                            set_SetRaidTarget(self2.RaidTargetIcon, self2.unit);
+                        elseif event=='UNIT_TARGET' and arg1==self2.unit then
+                            set_Party_Target_Changed(self2.TotPortrait, self2.unit)
                         end
                     end)
 
@@ -194,10 +192,10 @@ local function set_PartyFrame()--PartyFrame.lua
                             end
                         end
                     end)
-              --  end
+                end
 
-               -- if frame.RaidTargetIcon then
-                    --if exists then
+                if frame.RaidTargetIcon then
+                    if exists then
                         frame:RegisterEvent('RAID_TARGET_UPDATE')--更新,标记
                         frame:RegisterUnitEvent('UNIT_TARGET', unit)
 
@@ -214,17 +212,17 @@ local function set_PartyFrame()--PartyFrame.lua
                         set_SetRaidTarget(frame.RaidTargetIcon, unit)--设置,标记
                         set_Party_Target_Changed(frame.TotPortrait, unit)
                         set_Paerty_Casting(frame.frame, unit, true)
-                    --[[else
+                    else
                         frame:UnregisterAllEvents()
                         frame.RaidTargetIcon:SetShown(false)
                         frame.TotPortrait:SetShown(false)
                         frame.frame:UnregisterAllEvents()
                         frame.frame.texture:SetTexture(0)
-                    end]]
-                --end
+                    end
+                end
             end
         end
-   -- end)
+    end)
 end
 
 --################
@@ -371,7 +369,7 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
     if Save.notRaidFrame then
         return
     end
-    --[[hooksecurefunc('CompactUnitFrame_SetUnit', function(frame, unit)--队伍, 标记
+    hooksecurefunc('CompactUnitFrame_SetUnit', function(frame, unit)--队伍, 标记
         if unit and not frame.RaidTargetIcon and frame.name then
             frame.RaidTargetIcon= frame:CreateTexture(nil,'OVERLAY', nil, 7)
             frame.RaidTargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
@@ -392,7 +390,7 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
             set_SetRaidTarget(self.RaidTargetIcon, self.unit);
         end
     end)
-]]
+
     hooksecurefunc('CompactUnitFrame_UpdateRoleIcon', function(frame)--隐藏, DPS，图标 
         if not frame.roleIcon or not frame.optionTable.displayRaidRoleIcon or UnitInVehicle(frame.unit) or UnitHasVehicleUI(frame.unit) then
             return;
@@ -426,7 +424,20 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
             end
         end
     end)
-    
+    --[[
+    hooksecurefunc('CompactUnitFrame_UpdateHealthColor', function(frame)--宠物条，颜色
+        if frame.healthBar and frame.unit and frame.unit:find('pet') then
+            local class= UnitClassBase(frame.unit)
+            if class then
+                local r, g, b= GetClassColor(class)
+                if r and g and b then
+                    frame.healthBar:SetStatusBarColor(r,g,b)
+                    frame.healthBar.r, frame.healthBar.g, frame.healthBar.b = r, g, b
+                end
+            end
+        end
+    end)
+]]
     hooksecurefunc('CompactUnitFrame_UpdateStatusText', function(frame)--去掉,生命条, %
         if not frame.statusText or not frame.statusText:IsShown() or frame.optionTable.healthText ~= "perc" then
             return
@@ -444,19 +455,6 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
 
     hooksecurefunc('CompactRaidGroup_InitializeForGroup', function(frame, groupIndex)--处理, 队伍号
         frame.title:SetText('|A:'..e.Icon.number..groupIndex..':0:0|a')
-    end)
-    --[[
-    hooksecurefunc('CompactUnitFrame_UpdateHealthColor', function(frame)--宠物条，颜色
-        if frame.healthBar and frame.unit and frame.unit:find('pet') then
-            local class= UnitClassBase(frame.unit)
-            if class then
-                local r, g, b= GetClassColor(class)
-                if r and g and b then
-                    frame.healthBar:SetStatusBarColor(r,g,b)
-                    frame.healthBar.r, frame.healthBar.g, frame.healthBar.b = r, g, b
-                end
-            end
-        end
     end)
 
     --新建, 移动, 按钮
@@ -545,7 +543,7 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
     if Save.managerScale and Save.managerScale~=1 then
         CompactRaidFrameManager:SetScale(Save.managerScale)
     end
-]]
+
     for index, tab in pairs(EditModeSettingDisplayInfoManager.systemSettingDisplayInfo[Enum.EditModeSystem.UnitFrame]) do
         if tab.name==HUD_EDIT_MODE_SETTING_UNIT_FRAME_WIDTH  then-- Frame Width
             EditModeSettingDisplayInfoManager.systemSettingDisplayInfo[Enum.EditModeSystem.UnitFrame][index].minValue=36
@@ -558,7 +556,6 @@ end
 --###############
 --小队, 使用团框架
 --###############
---[[
 local function set_CompactPartyFrame()--CompactPartyFrame.lua
     if not CompactPartyFrame or CompactPartyFrame.moveFrame or ShouldShowPartyFrames() then
         return
@@ -617,7 +614,7 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
     CompactPartyFrame:SetClampedToScreen(true)
     CompactPartyFrame:SetMovable(true)
 end
-]]
+
 --#########
 --MirrorTimer
 --#########
@@ -644,7 +641,7 @@ local function Init()
     set_RaidFrame()--团队
 
     --set_CompactPartyFrame()--小队, 使用团框架
-    --hooksecurefunc('CompactPartyFrame_UpdateVisibility', set_CompactPartyFrame)
+    hooksecurefunc('CompactPartyFrame_UpdateVisibility', set_CompactPartyFrame)
 
     set_PlayerFrame()--玩家
     set_TargetFrame()--目标
@@ -674,21 +671,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             --添加控制面板        
             local sel=e.CPanel(e.onlyChinse and '单位框体' or addName, not Save.disabled)
-            sel.text:SetTextColor(1,0,0)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
-            end)
-            sel:SetScript('OnEnter', function(self2)
-                local text=e.GetShowHide(false)
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine(e.onlyChinse and '战斗中, 增加队员' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..' ('..ADD..') '..PLAYERS_IN_GROUP, e.onlyChinse and '错误' or ENABLE_ERROR_SPEECH)
-                e.tips:Show()
-            end)
-            sel:SetScript('OnLeave', function() e.tips:Hide() end)
-            sel:SetScript('OnMouseDown', function ()
-                Save.notRaidFrame= not Save.notRaidFrame and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end)
 
