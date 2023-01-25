@@ -116,7 +116,7 @@ local function set_PetBattleFrame_UpdateSpeedIndicators(self)--Blizzard_PetBattl
     enemy.power.text:SetText(enemyPower)
 
      C_Timer.After(2.5, function()
-        if PetHasActionBar() then--宠物动作条， 显示，隐藏
+        if PetHasActionBar() and not UnitAffectingCombat('player') then--宠物动作条， 显示，隐藏
             PetActionBar:SetShown(false)
         end
     end)
@@ -636,7 +636,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         set_Pet_Type(C_PetBattles.IsInBattle())
         if event=='PET_BATTLE_CLOSE' then
-            if PetHasActionBar() then--宠物动作条， 显示，隐藏
+            if PetHasActionBar() and not UnitAffectingCombat('player') then--宠物动作条， 显示，隐藏
                 PetActionBar:SetShown(true)
             end
             if not UnitAffectingCombat('player') then--UIParent.lua
