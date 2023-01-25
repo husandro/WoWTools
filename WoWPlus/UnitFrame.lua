@@ -557,7 +557,7 @@ end
 --小队, 使用团框架
 --###############
 local function set_CompactPartyFrame()--CompactPartyFrame.lua
-    if not CompactPartyFrame or CompactPartyFrame.moveFrame then
+    if not CompactPartyFrame or CompactPartyFrame.moveFrame or ShouldShowPartyFrames() then
         return
     end
     CompactPartyFrame.title:SetText('')
