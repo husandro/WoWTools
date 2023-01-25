@@ -371,7 +371,7 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
     if Save.notRaidFrame then
         return
     end
-    hooksecurefunc('CompactUnitFrame_SetUnit', function(frame, unit)--队伍, 标记
+    --[[hooksecurefunc('CompactUnitFrame_SetUnit', function(frame, unit)--队伍, 标记
         if unit and not frame.RaidTargetIcon and frame.name then
             frame.RaidTargetIcon= frame:CreateTexture(nil,'OVERLAY', nil, 7)
             frame.RaidTargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
@@ -392,7 +392,7 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
             set_SetRaidTarget(self.RaidTargetIcon, self.unit);
         end
     end)
-
+]]
     hooksecurefunc('CompactUnitFrame_UpdateRoleIcon', function(frame)--隐藏, DPS，图标 
         if not frame.roleIcon or not frame.optionTable.displayRaidRoleIcon or UnitInVehicle(frame.unit) or UnitHasVehicleUI(frame.unit) then
             return;
