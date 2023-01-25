@@ -83,7 +83,7 @@ GamePlus\Gossip.lua
 GamePlus\SellBuy.lua
 ##宠物对战
 GamePlus\PetBattle.lua
-##物品信息，显示包里，和商人，物品信息，现仅支持系统，以后有空再增加
+##物品信息，显示包里，和商人，物品信息，现仅支持系统
 GamePlus\ItemInfo.lua
 ##fps ms 
 GamePlus\SystemInfo.lua
@@ -111,13 +111,10 @@ Tools\2Hearthstone.lua
 Tools\3OpenItems.lua
 ##食物
 Tools\4Food.lua
-
-##侦察地图, 玩具, 没有小号，可能禁用
+##侦察地图, 玩具, 没有小号，可以禁用
 Tools\20ScoutingMapToy.lua
-
 ##随机玩具
 Tools\21UseToy.lua
-
 ##专业按钮
 Tools\22Professions.lua
 ##各种专送门,物品，玩具
@@ -126,10 +123,8 @@ Tools\23UsaItems.lua
 Tools\24Daisy.lua
 ##诺格弗格药剂 Noggenfogger Elixir
 Tools\25NoggenfoggerElixir.lua
-
 ##挑战者之路
 Tools\26ChallengerPath.lua
-
 ##法师传送门
 Tools\27MagePortal.lua
 
@@ -139,7 +134,7 @@ Tools\27MagePortal.lua
 ##Chat Button
 ##这是Chat主要，如果需要其中一个功能，这个不能关
 ChatButton\ChatButton.lua
-##超链接， 欢迎
+##超链接， 欢迎, 一些其他功能
 ChatButton\HyperlinksIcon.lua
 ##ROLL
 ChatButton\Roll.lua
