@@ -5,6 +5,7 @@ local Save={
 
         [198790]=1,--10.0 加，声望物品
         [201781]=1,
+        [201783]=1,
 
         --[190315]=10,--[活力之土]
         --[190328]=10,--[活力之霜]
@@ -573,6 +574,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='BAG_UPDATE' then
             getItems()
+
     elseif event=='PLAYER_REGEN_DISABLED' then
         if Save.noItemHide then
             panel:SetShown(false)
