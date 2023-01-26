@@ -597,9 +597,10 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
         CompactPartyFrame:StopMovingOrSizing()
     end)
     CompactPartyFrame.moveFrame:SetScript("OnMouseDown", function(self, d)
-        print(id, addName, (e.onlyChinse and '移动' or NPE_MOVE)..e.Icon.right, 'Alt+'..e.Icon.mid..(e.onlyChinse and '缩放' or UI_SCALE), Save.compactPartyFrameScale or 1)
         if d=='RightButton' and not IsModifierKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
+        elseif d=="LeftButton" then
+            print(id, addName, (e.onlyChinse and '移动' or NPE_MOVE)..e.Icon.right, 'Alt+'..e.Icon.mid..(e.onlyChinse and '缩放' or UI_SCALE), Save.compactPartyFrameScale or 1)
         end
     end)
     CompactPartyFrame.moveFrame:SetScript("OnLeave", function(self, d)
