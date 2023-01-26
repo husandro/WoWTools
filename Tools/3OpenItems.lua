@@ -29,7 +29,8 @@ local Save={
 }
 
 local addName=UNWRAP..ITEMS
-local Combat, Bag= nil, {}
+local Combat, Bag, Opening= nil, {}, nil
+
 
 local panel=e.Cbtn2('WoWToolsOpenItemsButton', WoWToolsMountButton)
 panel:SetPoint('RIGHT', HearthstoneToolsButton, 'LEFT')
@@ -73,6 +74,7 @@ local function setAtt(bag, slot, icon, itemID)--设置属性
     panel.count:SetText(num or '')
     panel.texture:SetShown(bag and slot)
     Combat=nil
+    Opening= nil
 end
 
 local equipItem--是装备时, 打开角色界面
@@ -80,7 +82,10 @@ local function getItems()--取得背包物品信息
     if UnitAffectingCombat('player') then
         Combat=true
         return
+    elseif Opening then
+        return
     end
+    Opening= true
     equipItem=nil
     Bag={}
 
