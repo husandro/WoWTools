@@ -944,7 +944,8 @@
         "TRACKER_SORT_PROXIMITY",
         "LFG_LIST_TITLE",
         "WorldFrame",
-        "RANGE_INDICATOR"
+        "RANGE_INDICATOR",
+        "NAMEPLATES_LABEL"
     ],
     "Lua.diagnostics.disable": [
     ]

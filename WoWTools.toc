@@ -105,8 +105,8 @@ GamePlus\Gem.lua
 GamePlus\Target.lua
 ##怪物 Creature
 ##GamePlus\Creature.lua
-
-
+##任务, 姓名板, 数量
+GamePlus\QuestPlate.lua
 
 
 ##坐骑， Tools 主要的，
