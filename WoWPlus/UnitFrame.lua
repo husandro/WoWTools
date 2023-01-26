@@ -575,15 +575,16 @@ end
 --###############
 
 local function set_CompactPartyFrame()--CompactPartyFrame.lua
-    if not CompactPartyFrame or CompactPartyFrame.moveFrame then
+    if not CompactPartyFrame or CompactPartyFrame.moveFrame or not CompactPartyFrame:IsShown() then
         return
     end
     CompactPartyFrame.title:SetText('')
-
+    CompactPartyFrame.title:Hide()
     --新建, 移动, 按钮
-    CompactPartyFrame.moveFrame= e.Cbtn(CompactPartyFrame, nil, true, nil, nil, nil, {15,15})
+    CompactPartyFrame.moveFrame= e.Cbtn(CompactPartyFrame, nil, true, nil, nil, nil, {20,20})
+    --CompactPartyFrame.moveFrame:SetFrameStrata('MEDIUM')
     CompactPartyFrame.moveFrame:SetAlpha(0.3)
-    CompactPartyFrame.moveFrame:SetPoint('TOPLEFT', CompactPartyFrame, 'TOPLEFT',0,2)
+    CompactPartyFrame.moveFrame:SetPoint('TOP', CompactPartyFrame, 'TOP',0, 10)
     CompactPartyFrame.moveFrame:SetClampedToScreen(true)
     CompactPartyFrame.moveFrame:SetMovable(true)
     CompactPartyFrame.moveFrame:RegisterForDrag('RightButton')
