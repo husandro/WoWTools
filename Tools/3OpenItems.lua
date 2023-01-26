@@ -83,7 +83,6 @@ local function getItems()--取得背包物品信息
     end
     equipItem=nil
     Bag={}
-    local levelPlayer=UnitLevel('player')
 
     for bag=0, NUM_BAG_SLOTS do
         for slot=1, C_Container.GetContainerNumSlots(bag) do
@@ -98,7 +97,7 @@ local function getItems()--取得背包物品信息
                 elseif not Save.no[info.itemID]  and not e.GetTooltipData(true, nil, nil, {bag=bag, slot=slot}) then--不出售, 可以使用
                     local itemName, _, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, sellPrice, classID, subclassID, bindType, expacID, setID, isCraftingReagent= GetItemInfo(info.hyperlink)
                     if itemEquipLoc and _G[itemEquipLoc] then--幻化
-                        if Save.mago and (itemMinLevel and itemMinLevel<=levelPlayer or not itemMinLevel) and info.quality and info.quality>1 then--and (not info.isBound or (classID==4 and (subclassID==0 or subclassID==5))) then
+                        if Save.mago and (itemMinLevel and itemMinLevel<=e.Player.level or not itemMinLevel) and info.quality and info.quality>1 then--and (not info.isBound or (classID==4 and (subclassID==0 or subclassID==5))) then
                             local  isCollected, isSelf= select(2, e.GetItemCollected(info.hyperlink))
                             if not isCollected and isSelf then
                                 setAtt(bag, slot, info.iconFileID, info.itemID)
