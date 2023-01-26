@@ -47,19 +47,18 @@ local function Init()
     end)
                     
     hooksecurefunc('ActionButton_UpdateRangeIndicator', function(self, checksRange, inRange)--ActionButton.lua
-        if ( self.HotKey:GetText() == RANGE_INDICATOR ) then
-            if ( checksRange ) then
-                if ( inRange ) then
-                    self.icon:SetVertexColor(ACTIONBAR_HOTKEY_FONT_COLOR:GetRGB());
-                else
-                    self.icon:SetVertexColor(RED_FONT_COLOR:GetRGB());
-                end
-            end
-        else
-            if ( checksRange and not inRange ) then
+        if checksRange then
+            if not inRange then
                 self.icon:SetVertexColor(RED_FONT_COLOR:GetRGB());
-            else
-                self.icon:SetVertexColor(ACTIONBAR_HOTKEY_FONT_COLOR:GetRGB());
+            elseif self.action then
+                local isUsable, notEnoughMana = IsUsableAction(self.action);
+                if ( isUsable ) then
+                    self.icon:SetVertexColor(1.0, 1.0, 1.0);
+                elseif ( notEnoughMana ) then
+                    self.icon:SetVertexColor(0.5, 0.5, 1.0);
+                else
+                    self.icon:SetVertexColor(0.4, 0.4, 0.4);
+                end
             end
         end
     end)

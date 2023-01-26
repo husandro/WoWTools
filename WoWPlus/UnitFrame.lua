@@ -69,6 +69,11 @@ local function set_PlayerFrame()--PlayerFrame.lua
     PlayerFrameGroupIndicatorLeft:SetTexture(0)
     PlayerFrameGroupIndicatorMiddle:SetTexture(0)
     PlayerFrameGroupIndicatorRight:SetTexture(0)
+
+    if PlayerHitIndicator then
+        PlayerHitIndicator:ClearAllPoints()
+        PlayerHitIndicator:SetPoint('BOTTOMLEFT', (PlayerFrame.PlayerFrameContainer and PlayerFrame and PlayerFrame.PlayerFrameContainer.PlayerPortrait) or  PlayerHitIndicator:GetParent(), 'TOPLEFT')
+    end
 end
 
 --####
@@ -92,21 +97,19 @@ end
 --####
 --宠物
 --####
+--[[
 local function set_PetFrame()
     if PetHitIndicator then
         PetHitIndicator:ClearAllPoints()
         PetHitIndicator:SetPoint('TOPLEFT', PetPortrait or PetHitIndicator:GetParent(), 'BOTTOMLEFT')
     end
-    if PlayerHitIndicator then
-        PlayerHitIndicator:ClearAllPoints()
-        PlayerHitIndicator:SetPoint('BOTTOMLEFT', (PlayerFrame.PlayerFrameContainer and PlayerFrame and PlayerFrame.PlayerFrameContainer.PlayerPortrait) or  PlayerHitIndicator:GetParent(), 'TOPLEFT')
-    end
+   
 end
-
+]]
 --####
 --小队
 --####
---[[
+
 local function set_Party_Target_Changed(portrait, unit)
     if unit and UnitExists(unit) and portrait then
         unit= unit..'target'
@@ -223,7 +226,7 @@ local function set_PartyFrame()--PartyFrame.lua
         end
     end)
 end
-]]
+
 --################
 --职业, 图标， 颜色
 --################
@@ -335,10 +338,12 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
     for memberFrame in PartyFrame.PartyMemberFramePool:EnumerateActive() do
         hooksecurefunc(memberFrame, 'UpdateAssignedRoles', function(self)--隐藏, DPS 图标
             local icon = self.PartyMemberOverlay.RoleIcon;
-                if icon and icon:IsShown() then
-                    local role = UnitGroupRolesAssigned(self.unit)
-                if icon and role== 'DAMAGER' then
-                    icon:SetShown(false)
+            if icon and icon:IsShown() then
+                local role = UnitGroupRolesAssigned(self.unit)
+                if role== 'DAMAGER' then
+                    icon:SetAlpha(0)
+                else
+                    icon:SetAlpha(1)
                 end
             end
         end)
@@ -375,6 +380,11 @@ local function set_LootSpecialization()--拾取专精
     if PlayerFrame.lootSpecTexture then
         PlayerFrame.lootSpecTexture:SetShown(find)
     end
+
+    if PetHitIndicator then
+        PetHitIndicator:ClearAllPoints()
+        PetHitIndicator:SetPoint('TOPLEFT', PetPortrait or PetHitIndicator:GetParent(), 'BOTTOMLEFT')
+    end
 end
 
 --####
@@ -384,7 +394,7 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
     if Save.notRaidFrame then
         return
     end
-    --[[hooksecurefunc('CompactUnitFrame_SetUnit', function(frame, unit)--队伍, 标记
+    hooksecurefunc('CompactUnitFrame_SetUnit', function(frame, unit)--队伍, 标记
         if unit and not frame.RaidTargetIcon and frame.name then
             frame.RaidTargetIcon= frame:CreateTexture(nil,'OVERLAY', nil, 7)
             frame.RaidTargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
@@ -405,7 +415,7 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
             set_SetRaidTarget(self.RaidTargetIcon, self.unit);
         end
     end)
-]]
+
     hooksecurefunc('CompactUnitFrame_UpdateRoleIcon', function(frame)--隐藏, DPS，图标 
         if not frame.roleIcon or not frame.optionTable.displayRaidRoleIcon or UnitInVehicle(frame.unit) or UnitHasVehicleUI(frame.unit) then
             return;
@@ -413,11 +423,15 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
         local raidID = UnitInRaid(frame.unit);
         if raidID then
             if select(12, GetRaidRosterInfo(raidID))=='DAMAGER' then
-                frame.roleIcon:SetShown(false);
+                frame.roleIcon:SetAlpha(0)
+            else
+                frame.roleIcon:SetAlpha(1)
             end
         else
             if UnitGroupRolesAssigned(frame.unit) == "DAMAGER"then
-                frame.roleIcon:SetShown(false);
+                frame.roleIcon:SetAlpha(0)
+            else
+                frame.roleIcon:SetAlpha(1)
             end
         end
     end)
@@ -471,7 +485,7 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
     hooksecurefunc('CompactRaidGroup_InitializeForGroup', function(frame, groupIndex)--处理, 队伍号
         frame.title:SetText('|A:'..e.Icon.number..groupIndex..':0:0|a')
     end)
-
+--[[
     --新建, 移动, 按钮
     CompactRaidFrameContainer:SetClampedToScreen(true)
     CompactRaidFrameContainer:SetMovable(true)
@@ -558,7 +572,7 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
     if Save.managerScale and Save.managerScale~=1 then
         CompactRaidFrameManager:SetScale(Save.managerScale)
     end
-
+]]
     for index, tab in pairs(EditModeSettingDisplayInfoManager.systemSettingDisplayInfo[Enum.EditModeSystem.UnitFrame]) do
         if tab.name==HUD_EDIT_MODE_SETTING_UNIT_FRAME_WIDTH  then-- Frame Width
             EditModeSettingDisplayInfoManager.systemSettingDisplayInfo[Enum.EditModeSystem.UnitFrame][index].minValue=36
@@ -571,6 +585,7 @@ end
 --###############
 --小队, 使用团框架
 --###############
+--[[
 local function set_CompactPartyFrame()--CompactPartyFrame.lua
     if not CompactPartyFrame or CompactPartyFrame.moveFrame or ShouldShowPartyFrames() then
         return
@@ -628,8 +643,9 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
     end
     CompactPartyFrame:SetClampedToScreen(true)
     CompactPartyFrame:SetMovable(true)
+    
 end
-
+]]
 --#########
 --MirrorTimer
 --#########
@@ -653,15 +669,15 @@ end
 --初始化
 --######
 local function Init()
-    set_RaidFrame()--团队
+    --set_RaidFrame()--团队
 
     --set_CompactPartyFrame()--小队, 使用团框架
-    hooksecurefunc('CompactPartyFrame_UpdateVisibility', set_CompactPartyFrame)
+    --hooksecurefunc('CompactPartyFrame_UpdateVisibility', set_CompactPartyFrame)
 
     set_PlayerFrame()--玩家
     set_TargetFrame()--目标
-    set_PetFrame()--宠物
-    --set_PartyFrame()--小队
+    --set_PetFrame()--宠物
+    set_PartyFrame()--小队
     set_UnitFrame_Update()--职业, 图标， 颜色
 
     if MirrorTimer1 then
@@ -690,7 +706,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end)
-
+--[[
             local sel2=CreateFrame("CheckButton", nil, sel, "InterfaceOptionsCheckButtonTemplate")
             sel2.text:SetText(e.onlyChinse and '团队框体' or HUD_EDIT_MODE_RAID_FRAMES_LABEL)
             sel2.text:SetTextColor(1,0,0)
@@ -709,7 +725,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end)
 
-
+]]
             if Save.disabled then
                 panel:UnregisterAllEvents()
             else
