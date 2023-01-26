@@ -53,7 +53,8 @@ end
 
 local function setAtt(bag, slot, icon, itemID)--设置属性
     if UnitAffectingCombat('player') then
-        Combat=true
+        Opening= nil
+        Combat= true
         return
     end
     local num
@@ -85,6 +86,7 @@ local function getItems()--取得背包物品信息
     elseif Opening then
         return
     end
+
     Opening= true
     equipItem=nil
     Bag={}
