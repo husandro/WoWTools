@@ -14,7 +14,7 @@ local function set_SetTextColor(self, r, g, b)--设置, 字体
         self:SetTextColor(r, g, b)
     end
 end
---[[
+
 local function set_SetRaidTarget(texture, unit)--设置, 标记 TargetFrame.lua
     if texture and unit then
         local index = UnitExists(unit) and GetRaidTargetIndex(unit)
@@ -26,7 +26,7 @@ local function set_SetRaidTarget(texture, unit)--设置, 标记 TargetFrame.lua
         end
     end
 end
-]]
+
 --####
 --玩家
 --####
@@ -94,22 +94,10 @@ local function set_TargetFrame()
     end)
 end
 
---####
---宠物
---####
---[[
-local function set_PetFrame()
-    if PetHitIndicator then
-        PetHitIndicator:ClearAllPoints()
-        PetHitIndicator:SetPoint('TOPLEFT', PetPortrait or PetHitIndicator:GetParent(), 'BOTTOMLEFT')
-    end
-   
-end
-]]
+
 --####
 --小队
 --####
-
 local function set_Party_Target_Changed(portrait, unit)
     if unit and UnitExists(unit) and portrait then
         unit= unit..'target'
@@ -153,7 +141,7 @@ local function set_PartyFrame()--PartyFrame.lua
             local unit= memberFrame.unit or memberFrame:GetUnit()
             local frame= memberFrame.PartyMemberOverlay
             if frame and unit then
-                local exists= UnitExists(unit)
+                local exists= memberFrame:IsShown()
                 frame.unit= unit
                 if not frame.RaidTargetIcon and exists then
                     frame.RaidTargetIcon= self:CreateTexture(nil,'OVERLAY', nil, 7)--队伍, 标记
@@ -454,7 +442,7 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
         end
     end)
 
-    hooksecurefunc('CompactUnitFrame_UpdateHealthColor', function(frame)--宠物条，颜色
+    hooksecurefunc('CompactUnitFrame_UpdateHealthColor', function(frame)--颜色
         if frame.healthBar and frame.unit and frame.unit:find('pet') then
             local class= UnitClassBase(frame.unit)
             if class then
@@ -485,7 +473,7 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
     hooksecurefunc('CompactRaidGroup_InitializeForGroup', function(frame, groupIndex)--处理, 队伍号
         frame.title:SetText('|A:'..e.Icon.number..groupIndex..':0:0|a')
     end)
---[[
+
     --新建, 移动, 按钮
     CompactRaidFrameContainer:SetClampedToScreen(true)
     CompactRaidFrameContainer:SetMovable(true)
@@ -572,20 +560,20 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
     if Save.managerScale and Save.managerScale~=1 then
         CompactRaidFrameManager:SetScale(Save.managerScale)
     end
-]]
+--[[
     for index, tab in pairs(EditModeSettingDisplayInfoManager.systemSettingDisplayInfo[Enum.EditModeSystem.UnitFrame]) do
         if tab.name==HUD_EDIT_MODE_SETTING_UNIT_FRAME_WIDTH  then-- Frame Width
             EditModeSettingDisplayInfoManager.systemSettingDisplayInfo[Enum.EditModeSystem.UnitFrame][index].minValue=36
         elseif tab.name==HUD_EDIT_MODE_SETTING_UNIT_FRAME_HEIGHT then
             EditModeSettingDisplayInfoManager.systemSettingDisplayInfo[Enum.EditModeSystem.UnitFrame][index].minValue=18
         end
-    end
+    end]]
 end
 
 --###############
 --小队, 使用团框架
 --###############
---[[
+
 local function set_CompactPartyFrame()--CompactPartyFrame.lua
     if not CompactPartyFrame or CompactPartyFrame.moveFrame or ShouldShowPartyFrames() then
         return
@@ -645,7 +633,7 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
     CompactPartyFrame:SetMovable(true)
     
 end
-]]
+
 --#########
 --MirrorTimer
 --#########
@@ -669,15 +657,15 @@ end
 --初始化
 --######
 local function Init()
-    --set_RaidFrame()--团队
+    set_RaidFrame()--团队
 
-    --set_CompactPartyFrame()--小队, 使用团框架
-    --hooksecurefunc('CompactPartyFrame_UpdateVisibility', set_CompactPartyFrame)
+    set_CompactPartyFrame()--小队, 使用团框架
+    hooksecurefunc('CompactPartyFrame_UpdateVisibility', set_CompactPartyFrame)
 
     set_PlayerFrame()--玩家
     set_TargetFrame()--目标
-    --set_PetFrame()--宠物
     set_PartyFrame()--小队
+
     set_UnitFrame_Update()--职业, 图标， 颜色
 
     if MirrorTimer1 then
