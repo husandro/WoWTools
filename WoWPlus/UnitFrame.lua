@@ -14,6 +14,7 @@ local function set_SetTextColor(self, r, g, b)--设置, 字体
         self:SetTextColor(r, g, b)
     end
 end
+--[[
 local function set_SetRaidTarget(texture, unit)--设置, 标记 TargetFrame.lua
     if texture and unit then
         local index = UnitExists(unit) and GetRaidTargetIndex(unit)
@@ -25,7 +26,7 @@ local function set_SetRaidTarget(texture, unit)--设置, 标记 TargetFrame.lua
         end
     end
 end
-
+]]
 --####
 --玩家
 --####
@@ -105,6 +106,7 @@ end
 --####
 --小队
 --####
+--[[
 local function set_Party_Target_Changed(portrait, unit)
     if unit and UnitExists(unit) and portrait then
         unit= unit..'target'
@@ -144,9 +146,6 @@ local function set_Paerty_Casting(frame, unit, start)
 end
 local function set_PartyFrame()--PartyFrame.lua
     hooksecurefunc(PartyFrame, 'UpdatePartyFrames', function(self)
-        if not ShouldShowPartyFrames() then
-            return
-        end
         for memberFrame in self.PartyMemberFramePool:EnumerateActive() do
             local unit= memberFrame.unit or memberFrame:GetUnit()
             local frame= memberFrame.PartyMemberOverlay
@@ -154,19 +153,19 @@ local function set_PartyFrame()--PartyFrame.lua
                 local exists= UnitExists(unit)
                 frame.unit= unit
                 if not frame.RaidTargetIcon and exists then
-                    frame.RaidTargetIcon= memberFrame:CreateTexture(nil,'OVERLAY', nil, 7)--队伍, 标记
+                    frame.RaidTargetIcon= self:CreateTexture(nil,'OVERLAY', nil, 7)--队伍, 标记
                     frame.RaidTargetIcon:SetPoint('RIGHT', frame.RoleIcon, 'LEFT')
                     frame.RaidTargetIcon:SetSize(14,14)
                     frame.RaidTargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
 
-                    frame.TotPortrait= frame:CreateTexture(nil,'OVERLAY', nil, 7)--目标的目标
+                    frame.TotPortrait= self:CreateTexture(nil,'OVERLAY', nil, 7)--目标的目标
                     frame.TotPortrait:SetPoint('TOPLEFT', memberFrame, 'TOPRIGHT',-3 ,-4)
                     frame.TotPortrait:SetSize(20,20)
 
-                    frame.frame= CreateFrame("Frame", nil, frame)
+                    frame.frame= CreateFrame("Frame", nil, self)
                     frame.frame:SetPoint('TOP', frame.TotPortrait, 'BOTTOM')
                     frame.frame:SetSize(20,20)
-                    frame.frame.texture= frame.frame:CreateTexture(nil,'BACKGROUND')
+                    frame.frame.texture= self:CreateTexture(nil,'BACKGROUND')
                     frame.frame.texture:SetAllPoints(frame.frame)
                     frame.frame:HookScript('OnEvent', function (self2, event, arg1)
                         if  event == "UNIT_SPELLCAST_START" or  event == "UNIT_SPELLCAST_CHANNEL_START" or event=='UNIT_SPELLCAST_EMPOWER_START'  then
@@ -224,7 +223,7 @@ local function set_PartyFrame()--PartyFrame.lua
         end
     end)
 end
-
+]]
 --################
 --职业, 图标， 颜色
 --################
@@ -245,7 +244,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
         end
         local class=e.Class(unit, nil, true)--职业, 图标
         if not self.classTexture then
-            self.classTexture=self:CreateTexture(nil,'OVERLAY', nil, 7)
+            self.classTexture= self:CreateTexture(nil,'OVERLAY', nil, 7)
             if unit=='target' or unit=='focus' then
                 self.classTexture:SetPoint('TOPRIGHT', self.portrait, 'TOPLEFT',0,10)
                 if unit=='target' then--移动, 队长图标，TargetFrame.lua
@@ -329,6 +328,22 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
             end
         end
     end)
+
+    --###################
+    --隐藏, 队伍, DPS 图标
+    --###################
+    for memberFrame in PartyFrame.PartyMemberFramePool:EnumerateActive() do
+        hooksecurefunc(memberFrame, 'UpdateAssignedRoles', function(self)--隐藏, DPS 图标
+            local icon = self.PartyMemberOverlay.RoleIcon;
+                if icon and icon:IsShown() then
+                    local role = UnitGroupRolesAssigned(self.unit)
+                if icon and role== 'DAMAGER' then
+                    icon:SetShown(false)
+                end
+            end
+        end)
+    end
+
 end
 
 --#######
@@ -369,7 +384,7 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
     if Save.notRaidFrame then
         return
     end
-    hooksecurefunc('CompactUnitFrame_SetUnit', function(frame, unit)--队伍, 标记
+    --[[hooksecurefunc('CompactUnitFrame_SetUnit', function(frame, unit)--队伍, 标记
         if unit and not frame.RaidTargetIcon and frame.name then
             frame.RaidTargetIcon= frame:CreateTexture(nil,'OVERLAY', nil, 7)
             frame.RaidTargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
@@ -390,7 +405,7 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
             set_SetRaidTarget(self.RaidTargetIcon, self.unit);
         end
     end)
-
+]]
     hooksecurefunc('CompactUnitFrame_UpdateRoleIcon', function(frame)--隐藏, DPS，图标 
         if not frame.roleIcon or not frame.optionTable.displayRaidRoleIcon or UnitInVehicle(frame.unit) or UnitHasVehicleUI(frame.unit) then
             return;
@@ -424,7 +439,7 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
             end
         end
     end)
-    --[[
+
     hooksecurefunc('CompactUnitFrame_UpdateHealthColor', function(frame)--宠物条，颜色
         if frame.healthBar and frame.unit and frame.unit:find('pet') then
             local class= UnitClassBase(frame.unit)
@@ -437,7 +452,7 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
             end
         end
     end)
-]]
+
     hooksecurefunc('CompactUnitFrame_UpdateStatusText', function(frame)--去掉,生命条, %
         if not frame.statusText or not frame.statusText:IsShown() or frame.optionTable.healthText ~= "perc" then
             return
@@ -646,7 +661,7 @@ local function Init()
     set_PlayerFrame()--玩家
     set_TargetFrame()--目标
     set_PetFrame()--宠物
-    set_PartyFrame()--小队
+    --set_PartyFrame()--小队
     set_UnitFrame_Update()--职业, 图标， 颜色
 
     if MirrorTimer1 then
@@ -682,7 +697,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             sel2:SetPoint('LEFT', sel.text, 'RIGHT')
             sel2:SetChecked(not Save.notRaidFrame)
             sel2:SetScript('OnEnter', function(self2)
-                local text=e.GetShowHide(false)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(e.onlyChinse and '如果出现错误' or ENABLE_ERROR_SPEECH, e.onlyChinse and '请取消' or CANCEL)
