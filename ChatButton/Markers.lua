@@ -49,10 +49,11 @@ local function setRaidTarget()--设置团队标记
             })
         end
     end
-    if #tab>0 then
+    local num= #tab
+    if num> 0 then
         table.sort(tab, function(a,b) return a.hp<b.hp end)
         setTaget(tab[1].unit, Save.tank)--设置,目标,标记
-        if tab[2] and Save.tank2~=0 then
+        if num>=2 and Save.tank2~=0 then
             setTaget(tab[2].unit, Save.tank)--设置,目标,标记
         end
     end

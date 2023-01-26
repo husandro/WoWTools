@@ -575,7 +575,7 @@ end
 --###############
 
 local function set_CompactPartyFrame()--CompactPartyFrame.lua
-    if not CompactPartyFrame or CompactPartyFrame.moveFrame or ShouldShowPartyFrames() then
+    if not CompactPartyFrame or CompactPartyFrame.moveFrame then
         return
     end
     CompactPartyFrame.title:SetText('')
@@ -631,7 +631,6 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
     end
     CompactPartyFrame:SetClampedToScreen(true)
     CompactPartyFrame:SetMovable(true)
-    
 end
 
 --#########
@@ -694,7 +693,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end)
---[[
+
             local sel2=CreateFrame("CheckButton", nil, sel, "InterfaceOptionsCheckButtonTemplate")
             sel2.text:SetText(e.onlyChinse and '团队框体' or HUD_EDIT_MODE_RAID_FRAMES_LABEL)
             sel2.text:SetTextColor(1,0,0)
@@ -713,7 +712,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end)
 
-]]
+
             if Save.disabled then
                 panel:UnregisterAllEvents()
             else
