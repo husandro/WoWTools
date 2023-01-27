@@ -945,7 +945,8 @@
         "LFG_LIST_TITLE",
         "WorldFrame",
         "RANGE_INDICATOR",
-        "NAMEPLATES_LABEL"
+        "NAMEPLATES_LABEL",
+        "ActionBarActionEventsFrameMixin"
     ],
     "Lua.diagnostics.disable": [
     ]

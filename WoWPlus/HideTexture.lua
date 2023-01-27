@@ -137,38 +137,53 @@ local function Init()
 
 --[[
     hooksecurefunc(BaseActionButtonMixin,'UpdateButtonArt', function(self, hideDivider)--ActionButton.lua
-        if (not self or not self.SlotArt or not self.SlotBackground) then
-            return;
-        end
-
-        hideTexture(self.SlotArt)
-        hideTexture(self.SlotBackground)
-        if self.RightDivider and self.BottomDivider then
-           -- print(self.RightDivider:IsShown(), self:GetName())
-            self.RightDivider:SetShown(false)
-            self.BottomDivider:SetShown(false) 
+        if self then
+            hideTexture(self.SlotArt)
+            hideTexture(self.SlotBackground)
+            hideTexture(self.NormalTexture)
+            if self.RightDivider and self.BottomDivider then
+            -- print(self.RightDivider:IsShown(), self:GetName())
+                self.RightDivider:SetShown(false)
+                self.BottomDivider:SetShown(false)
+            end
         end
     end)
 ]]
-    for i=1, 12 do
-        local self= _G['ActionButton'..i]
-        if self and self.SlotArt and self.SlotBackground then
-            hideTexture(self.SlotArt)
-            hideTexture(self.SlotBackground)
-            if self.RightDivider and self.BottomDivider then
-                --self.RightDivider:SetShown(false)--frame
-                --self.BottomDivider:SetShown(false)
 
-                hideTexture(self.RightDivider.TopEdge)
-                hideTexture(self.RightDivider.BottomEdge)
-                hideTexture(self.RightDivider.Center)
-                --hideTexture(self.Border)
-
-            end
+local function hideButtonText(self)
+    if self then
+        hideTexture(self.SlotArt)
+        hideTexture(self.SlotBackground)
+        hideTexture(self.NormalTexture)
+        --hideTexture(self.IconMask)
+        if self.RightDivider and self.BottomDivider then
+            self.RightDivider:SetShown(false)--frame
+            self.BottomDivider:SetShown(false)
+            hideTexture(self.RightDivider.TopEdge)
+            hideTexture(self.RightDivider.BottomEdge)
+            hideTexture(self.RightDivider.Center)
         end
     end
+end
 
-    MainMenuBar.Background:SetShown(false)
+    C_Timer.After(2, function()
+        for i=1, 12 do
+            hideButtonText(_G['ActionButton'..i])--主动作条
+            hideButtonText(_G['MultiBarBottomLeftButton'..i])--作条2
+            hideButtonText(_G['MultiBarBottomRightButton'..i])--作条3
+            hideButtonText(_G['MultiBarLeftButton'..i])--作条4
+            hideButtonText(_G['MultiBarRightButton'..i])--作条5
+            
+            for index=5, 7 do
+                hideButtonText(_G['MultiBar'..index..'Button'..i])--作条6, 7, 8
+            end
+        end
+        
+        MainMenuBar.Background:SetShown(false)
+    end)
+    hooksecurefunc(ActionBarActionEventsFrameMixin,'OnLoad', function ()
+        print(id,addName)
+    end)
 end
 
 
