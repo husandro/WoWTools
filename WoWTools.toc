@@ -1,9 +1,7 @@
-#@retail@
 ## Interface: 100005
-#@end-retail@
 ## Title: |A:Icon-WoW:0:0|a|cffff00ffWoW|r|cff00ff00Tools|r
 ## Author: husandro
-## Version: @project-version@
+## Version: 1.0.68
 ## Notes: WoW |cffff0000Plus|r
 ## SavedVariables: WoWToolsSave, WoWDate
 ## DefaultState: Enabled
