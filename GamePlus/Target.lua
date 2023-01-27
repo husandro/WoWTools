@@ -79,7 +79,17 @@ local function set_CreatureNum()
     panel.Text:SetText((T==0 and '-' or T)..' |cff00ff00'..(F==0 and '-' or F)..'|r '..(k==0 and '-' or k))
 end
 
-
+local questN=0
+local function set_NAME_PLATE_CREATED(frame)
+    local text='a'
+    if not frame.questText then
+        frame.questText= e.Cstr(frame)
+        frame.questText:SetPoint('BOTTOMLEFT', frame, 'TOPLEFT')
+        text= 'b'
+        questN=questN+1
+    end
+    frame.questText:SetText(text..questN)
+end
 --####
 --初始
 --####
@@ -186,7 +196,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='PLAYER_REGEN_ENABLED' then
         panel.Texture:SetVertexColor(1,1,1)
 
-    elseif self:IsShown() then
-        set_CreatureNum()
+    else
+        if event=='NAME_PLATE_CREATED' and arg1 then--or event=='NAME_PLATE_UNIT_ADDED'  then-- or event=='NAME_PLATE_UNIT_REMOVED' then
+            set_NAME_PLATE_CREATED(arg1)
+        end
+        if self:IsShown() then
+            set_CreatureNum()
+        end
     end
 end)
