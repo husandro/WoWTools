@@ -63,7 +63,7 @@ local function find_Text(text)
         return text:match(QUEST_DASH..'.-([%d%.]+%%)')
     end
 end
-local function Get_Quest_Progress(unit)
+local function Get_Quest_Progress(unit)--GameTooltip.lua
     if not UnitIsPlayer(unit) then
         local tooltipData = C_TooltipInfo.GetUnit(unit)
         for i = #tooltipData.lines, 5, -1 do
