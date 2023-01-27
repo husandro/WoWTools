@@ -67,7 +67,7 @@ local function Get_Quest_Progress(unit)
                 local num= select(3, GetTaskInfo(questID)) or 1
                 for index=1, num do
                     local text, objectiveType, finished = GetQuestObjectiveInfo(questID, index, false)
-                    print(GetQuestObjectiveInfo(questID, index, false))
+                    --print(GetQuestObjectiveInfo(questID, index, false))
                     if text and not finished then
                         if text:find('(%d+)/(%d+)') then
                             local min, max= text:match('(%d+)/(%d+)')
