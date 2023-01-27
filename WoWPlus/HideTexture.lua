@@ -135,6 +135,9 @@ local function Init()
         end)
      end
 
+    --######
+    --动作条
+    --######
     local function hideButtonText(self)
         if self then
             hideTexture(self.SlotArt)
@@ -149,9 +152,9 @@ local function Init()
             end
         end
     end
-    hooksecurefunc(BaseActionButtonMixin,'UpdateButtonArt', function(self, hideDivider)--ActionButton.lua
-        hideButtonText(self)
-    end)
+    --hooksecurefunc(BaseActionButtonMixin,'UpdateButtonArt', function(self, hideDivider)--ActionButton.lua
+    --    hideButtonText(self)
+    --end)
     C_Timer.After(2, function()
         for i=1, 12 do
             hideButtonText(_G['ActionButton'..i])--主动作条
@@ -159,16 +162,11 @@ local function Init()
             hideButtonText(_G['MultiBarBottomRightButton'..i])--作条3
             hideButtonText(_G['MultiBarLeftButton'..i])--作条4
             hideButtonText(_G['MultiBarRightButton'..i])--作条5
-            
             for index=5, 7 do
                 hideButtonText(_G['MultiBar'..index..'Button'..i])--作条6, 7, 8
             end
         end
-        
         MainMenuBar.Background:SetShown(false)
-    end)
-    hooksecurefunc(ActionBarActionEventsFrameMixin,'OnLoad', function ()
-        print(id,addName)
     end)
 end
 
