@@ -135,37 +135,23 @@ local function Init()
         end)
      end
 
---[[
-    hooksecurefunc(BaseActionButtonMixin,'UpdateButtonArt', function(self, hideDivider)--ActionButton.lua
+    local function hideButtonText(self)
         if self then
             hideTexture(self.SlotArt)
-            hideTexture(self.SlotBackground)
-            hideTexture(self.NormalTexture)
+            hideTexture(self.SlotBackground)--背景，
+            hideTexture(self.NormalTexture)--外框，方块
             if self.RightDivider and self.BottomDivider then
-            -- print(self.RightDivider:IsShown(), self:GetName())
-                self.RightDivider:SetShown(false)
+                self.RightDivider:SetShown(false)--frame
                 self.BottomDivider:SetShown(false)
+                hideTexture(self.RightDivider.TopEdge)
+                hideTexture(self.RightDivider.BottomEdge)
+                hideTexture(self.RightDivider.Center)
             end
         end
-    end)
-]]
-
-local function hideButtonText(self)
-    if self then
-        hideTexture(self.SlotArt)
-        hideTexture(self.SlotBackground)
-        hideTexture(self.NormalTexture)
-        --hideTexture(self.IconMask)
-        if self.RightDivider and self.BottomDivider then
-            self.RightDivider:SetShown(false)--frame
-            self.BottomDivider:SetShown(false)
-            hideTexture(self.RightDivider.TopEdge)
-            hideTexture(self.RightDivider.BottomEdge)
-            hideTexture(self.RightDivider.Center)
-        end
     end
-end
-
+    hooksecurefunc(BaseActionButtonMixin,'UpdateButtonArt', function(self, hideDivider)--ActionButton.lua
+        hideButtonText(self)
+    end)
     C_Timer.After(2, function()
         for i=1, 12 do
             hideButtonText(_G['ActionButton'..i])--主动作条
