@@ -150,6 +150,9 @@ local function Init()
                 hideTexture(self.RightDivider.BottomEdge)
                 hideTexture(self.RightDivider.Center)
             end
+            if self.HotKey then
+                self.HotKey:SetShadowOffset(1, -1)
+            end
         end
     end
     --hooksecurefunc(BaseActionButtonMixin,'UpdateButtonArt', function(self, hideDivider)--ActionButton.lua
