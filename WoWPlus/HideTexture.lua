@@ -139,9 +139,9 @@ local function Init()
     --动作条
     --######
     local KEY_BUTTON_Tab={
-        --[[[KEY_BUTTON1]= e.Player.left,--鼠标左键";
-        [KEY_BUTTON3]= e.Player.right,--鼠标中键";
-        [KEY_BUTTON2]= e.Player.mid,--鼠标右键";
+        --[[[KEY_BUTTON1]= 'ML',--鼠标左键";
+        [KEY_BUTTON3]= 'MR',--鼠标中键";
+        [KEY_BUTTON2]= 'MM',--鼠标右键";
         KEY_BUTTON10]= 'M10',--鼠标按键10";
         [KEY_BUTTON11]= 'M11',--鼠标按键11";
         [KEY_BUTTON12]= 'M12',--鼠标按键12";
