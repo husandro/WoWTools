@@ -3,15 +3,17 @@ local Save= {}
 local addName=	QUICK_JOIN
 
 local function set_SOCIAL_QUEUE_UPDATE()
-    local self=QuickJoinToastButton
-    if not self then
-        return
-    end
+    if QuickJoinToastButton then
+        if not QuickJoinToastButton.quickJoinText then
+            QuickJoinToastButton.quickJoinText= self:CreateFontString()
+            QuickJoinToastButton.quickJoinText:SetFontObject('NumberFontNormal');
+            QuickJoinToastButton.quickJoinText:SetPoint('TOPRIGHT', -6, -3);
+        end
 
-    if not self.quickJoinText then
-        self.quickJoinText= self:CreateFontString()
-        self.quickJoinText:SetFontObject('NumberFontNormal');
-        self.quickJoinText:SetPoint('TOPRIGHT', -6, -3);
+        local n=#C_SocialQueue.GetAllGroups();
+        QuickJoinToastButton.quickJoinText:SetText(n~=0 and n or '');
+    end
+end
 --[[战斗中，不能打开
         self:SetScript("OnClick", function(self2, d)
             if d=='RightButton' then
@@ -37,12 +39,6 @@ local function set_SOCIAL_QUEUE_UPDATE()
             e.tips:Show()
         end)
         self:SetScript('OnLeave', function() e.tips:Hide() end)]]
-    end
-
-    local n=#C_SocialQueue.GetAllGroups();
-    self.quickJoinText:SetText(n~=0 and n or '');
-end
-
 
 
 --######
