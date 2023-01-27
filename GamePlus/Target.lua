@@ -3,44 +3,12 @@ local addName= TARGET..COMBAT_ALLY_START_MISSION
 local Save= {creatureNum= true}
 
 local panel= CreateFrame("Frame")
-
---####
---事件
---####
-local function set_Register_Event()
-    if Save.disabled then
-        panel:UnregisterAllEvents()
-        if panel.Texture then
-            panel.Texture:SetShown(false)
-        end
-        if panel.Text then
-            panel.Text:SetText('')
-        end
-    else
-        panel:RegisterEvent('PLAYER_TARGET_CHANGED')
-        panel:RegisterEvent('PLAYER_ENTERING_WORLD')
-        panel:RegisterEvent('RAID_TARGET_UPDATE')
-        panel:RegisterUnitEvent('UNIT_FLAGS', 'target')
-
-        panel:RegisterEvent('PLAYER_REGEN_DISABLED')
-        panel:RegisterEvent('PLAYER_REGEN_ENABLED')
-
-        if Save.creatureNum then
-            panel:RegisterEvent('UNIT_TARGET')
-            panel:RegisterEvent('NAME_PLATE_CREATED')
-            panel:RegisterEvent('NAME_PLATE_UNIT_ADDED')
-            panel:RegisterEvent('NAME_PLATE_UNIT_REMOVED')
-        elseif panel.Text then
-            panel.Text:SetText('')
-        end
-    end
-    panel:RegisterEvent('PLAYER_LOGOUT')
-end
+local isPvPArena, isIns
 
 --########################
 --怪物目标, 队员目标, 总怪物
 --########################
-local isPvPArena
+
 --local distanceSquared, checkedDistance = UnitDistanceSquared(u)
 local function set_CreatureNum()
     local k,T,F=0,0,0
@@ -79,19 +47,122 @@ local function set_CreatureNum()
     panel.Text:SetText((T==0 and '-' or T)..' |cff00ff00'..(F==0 and '-' or F)..'|r '..(k==0 and '-' or k))
 end
 
-local questN=0
-local function set_NAME_PLATE_CREATED(frame)
-    local text='a'
-    local u = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
-    print(u)
-    if not frame.questText then
-        frame.questText= e.Cstr(frame)
-        frame.questText:SetPoint('BOTTOMLEFT', frame, 'TOPLEFT')
-        text= 'b'
-        questN=questN+1
+--#########
+--任务，数量
+--#########
+local function Get_Quest_Progress(unit)
+    --[[print(unit,C_QuestLog.UnitIsRelatedToActiveQuest(unit))
+	if not C_QuestLog.UnitIsRelatedToActiveQuest(unit) then
+        return
+    end]]
+    if not UnitIsPlayer(unit) then
+        local tooltipData = C_TooltipInfo.GetUnit(unit)
+        --print(C_QuestLog.UnitIsRelatedToActiveQuest(unit))
+        --TooltipUtil.SurfaceArgs(tooltipData)
+        for i = 3, #tooltipData.lines do
+            local line = tooltipData.lines[i]
+            TooltipUtil.SurfaceArgs(line)
+            local questID= line and line.id
+            if questID then
+                local num= select(3, GetTaskInfo(questID)) or 1
+                for index=1, num do
+                    local text, objectiveType, finished = GetQuestObjectiveInfo(questID, index, false)
+                    if text and not finished then
+                        if text:find('(%d+)/(%d+)') then
+                            local min, max= text:match('(%d+)/(%d+)')
+                            min, max= tonumber(min), tonumber(max)
+                            if min and max then
+                                local value= max- min
+                                return value>0 and value or nil
+                            end
+                        else
+                            return text:match('([%d%.]+%%)')
+                        end
+                    end
+                    if index== num then
+                        return
+                    end
+                end
+            end
+        end
     end
-    frame.questText:SetText(text..questN)
 end
+
+local function set_NAME_PLATE_UNIT_ADDED(unit)
+    local plate = C_NamePlate.GetNamePlateForUnit(unit)
+    if plate then
+        local text= Get_Quest_Progress(unit)
+        if text and not plate.questProgress then
+            local frame= plate.UnitFrame and plate.UnitFrame.healthBar or plate
+            plate.questProgress= e.Cstr(frame, 10, nil, nil, nil, nil,'LEFT')
+            plate.questProgress:SetPoint('LEFT', frame, 'RIGHT', 2,0)
+        end
+        if plate.questProgress then
+            plate.questProgress:SetText(text or '')
+        end
+    end
+end
+
+local function set_UNIT_QUEST_LOG_CHANGED()
+    local plates= C_NamePlate.GetNamePlates() or {}
+    for _, plate in pairs(plates) do
+        if plate.questProgress then
+            local unit = plate.namePlateUnitToken or (plate.UnitFrame and plate.UnitFrame.unit)
+            local text= unit and Get_Quest_Progress(unit)
+            plate.questProgress:SetText(text or '')
+        end
+    end
+end
+
+local function set_NAME_PLATE_UNIT_REMOVED(unit)
+    local plate = C_NamePlate.GetNamePlateForUnit(unit)
+    if plate and plate.questProgress then
+        plate.questProgress:SetText('')
+    end
+end
+
+--####
+--事件
+--####
+local function set_Register_Event()
+    panel:UnregisterAllEvents()
+    if Save.disabled then
+        if panel.Texture then
+            panel.Texture:SetShown(false)
+        end
+        if panel.Text then
+            panel.Text:SetText('')
+        end
+    else
+        panel:RegisterEvent('PLAYER_TARGET_CHANGED')
+        panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+        panel:RegisterEvent('RAID_TARGET_UPDATE')
+        panel:RegisterUnitEvent('UNIT_FLAGS', 'target')
+
+        panel:RegisterEvent('PLAYER_REGEN_DISABLED')
+        panel:RegisterEvent('PLAYER_REGEN_ENABLED')
+
+        if Save.creatureNum then
+            panel:RegisterEvent('UNIT_TARGET')
+
+            panel:RegisterEvent('NAME_PLATE_UNIT_ADDED')
+            panel:RegisterEvent('NAME_PLATE_UNIT_REMOVED')
+            if not isIns then
+                panel:RegisterEvent('UNIT_QUEST_LOG_CHANGED')
+            end
+            --[[if not IsInInstance() then
+                panel:RegisterEvent('NAME_PLATE_CREATED')
+            end]]
+
+        elseif panel.Text then
+            panel.Text:SetText('')
+        end
+    end
+
+    panel:RegisterEvent('PLAYER_LOGOUT')
+end
+
+
 --####
 --初始
 --####
@@ -146,15 +217,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 e.tips:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '队友目标' or PLAYERS_IN_GROUP ..TARGET), e.onlyChinse and '你' or YOU)
                 e.tips:AddDoubleLine('|cffffffff'..(e.onlyChinse and '怪物' or PLAYERS_IN_GROUP), e.onlyChinse and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)
                 e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(e.onlyChinse and '任务' or QUESTS_LABEL, e.onlyChinse and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)
+                e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(e.onlyChinse and '显示敌方姓名板' or BINDING_NAME_NAMEPLATES, e.GetEnabeleDisable(C_CVar.GetCVarBool("nameplateShowEnemies")))
                 e.tips:Show()
             end)
             sel2:SetScript('OnLeave', function() e.tips:Hide() end)
 
+            set_Register_Event()
             if not Save.disabled then
                 Init()
             end
-            set_Register_Event()
         end
 
     elseif event == "PLAYER_LOGOUT" then
@@ -190,6 +263,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         if event=='PLAYER_ENTERING_WORLD' then
             isPvPArena= C_PvP.IsBattleground() or C_PvP.IsArena()
+            isIns= IsInInstance()
+            set_Register_Event()
+
         end
 
     elseif event=='PLAYER_REGEN_DISABLED' then--颜色
@@ -198,9 +274,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='PLAYER_REGEN_ENABLED' then
         panel.Texture:SetVertexColor(1,1,1)
 
+    elseif event=='UNIT_QUEST_LOG_CHANGED' then
+        set_UNIT_QUEST_LOG_CHANGED()
+
     else
-        if event=='NAME_PLATE_CREATED' and arg1 then--or event=='NAME_PLATE_UNIT_ADDED'  then-- or event=='NAME_PLATE_UNIT_REMOVED' then
-            set_NAME_PLATE_CREATED(arg1)
+        
+        if not isIns and arg1 then
+            if event=='NAME_PLATE_UNIT_ADDED' then
+                set_NAME_PLATE_UNIT_ADDED(arg1)
+            elseif event=='NAME_PLATE_UNIT_REMOVED' then
+                set_NAME_PLATE_UNIT_REMOVED(arg1)
+            end
         end
         if self:IsShown() then
             set_CreatureNum()
