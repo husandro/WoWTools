@@ -149,9 +149,6 @@ local function set_Register_Event()
             if not isIns then
                 panel:RegisterEvent('UNIT_QUEST_LOG_CHANGED')
             end
-            --[[if not IsInInstance() then
-                panel:RegisterEvent('NAME_PLATE_CREATED')
-            end]]
 
         elseif panel.Text then
             panel.Text:SetText('')
