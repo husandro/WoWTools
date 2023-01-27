@@ -12,7 +12,7 @@ local function set_SOCIAL_QUEUE_UPDATE()
         self.quickJoinText= self:CreateFontString()
         self.quickJoinText:SetFontObject('NumberFontNormal');
         self.quickJoinText:SetPoint('TOPRIGHT', -6, -3);
-
+--[[战斗中，不能打开
         self:SetScript("OnClick", function(self2, d)
             if d=='RightButton' then
                 ToggleQuickJoinPanel()
@@ -36,7 +36,7 @@ local function set_SOCIAL_QUEUE_UPDATE()
             e.tips:AddLine(e.Icon.right..(e.onlyChinse and '快速加入' or QUICK_JOIN))
             e.tips:Show()
         end)
-        self:SetScript('OnLeave', function() e.tips:Hide() end)
+        self:SetScript('OnLeave', function() e.tips:Hide() end)]]
     end
 
     local n=#C_SocialQueue.GetAllGroups();
