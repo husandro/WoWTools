@@ -1029,7 +1029,7 @@ OVERLAY
 DRAG_MODEL拖曳
 
 UIPanelWindows[]
-RANGE_INDICATOR = "●";
+
 
 FrameUtil.RegisterFrameForEvents(self, table);
 FrameUtil.UnregisterFrameForEvents(self, table);
@@ -1041,4 +1041,7 @@ frame:SetFrameLevel(self:GetFrameLevel() + 5);
 UnitPopupSharedMenus.lua
 
 EditModeManagerFrame:UseRaidStylePartyFrames()
+
+QUEST_DASH 任务 -
+RANGE_INDICATOR = "●";
 ]]

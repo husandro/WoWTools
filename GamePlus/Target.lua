@@ -56,31 +56,24 @@ local function find_Text(text)
         min, max= tonumber(min), tonumber(max)
         if min and max then
             local value= max- min
-            return value>0 and value or nil
+            return value>0 and value
         end
+        return true
     else
-        return text:match('([%d%.]+%%)')
+        return text:match(QUEST_DASH..'.-([%d%.]+%%)')
     end
 end
 local function Get_Quest_Progress(unit)
     if not UnitIsPlayer(unit) then
         local tooltipData = C_TooltipInfo.GetUnit(unit)
-        for i = 3, #tooltipData.lines do
+        for i = #tooltipData.lines, 5, -1 do
             local line = tooltipData.lines[i]
             TooltipUtil.SurfaceArgs(line)
-            local questID= line and line.id
-            if questID then
-                local num= select(3, GetTaskInfo(questID)) or 1
-                for index=1, num do
-                    local text, objectiveType, finished = GetQuestObjectiveInfo(questID, index, false)
-                    if text and not finished then
-                        return find_Text(text)
-                    end
-                end
-                return
-            elseif line.leftText then
-                if line.leftText:find('(%d+)/(%d+)') or line.leftText:find('([%d%.]+%%)') then
-                    return find_Text(line.leftText)
+            --local questID= line and line.id
+            if line.leftText then
+                local text= find_Text(line.leftText)
+                if text then
+                    return text~=true and text
                 end
             end
         end
@@ -146,8 +139,11 @@ local function set_Register_Event()
 
             panel:RegisterEvent('NAME_PLATE_UNIT_ADDED')
             panel:RegisterEvent('NAME_PLATE_UNIT_REMOVED')
-            if not isIns then
+            if not isIns  then
                 panel:RegisterEvent('UNIT_QUEST_LOG_CHANGED')
+                panel:RegisterEvent('SCENARIO_UPDATE')
+                panel:RegisterEvent('SCENARIO_CRITERIA_UPDATE')
+                panel:RegisterEvent('SCENARIO_COMPLETED')
             end
 
         elseif panel.Text then
@@ -270,7 +266,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='PLAYER_REGEN_ENABLED' then
         panel.Texture:SetVertexColor(1,1,1)
 
-    elseif event=='UNIT_QUEST_LOG_CHANGED' then
+        panel:RegisterEvent('UNIT_QUEST_LOG_CHANGED')
+                panel:RegisterEvent('SCENARIO_UPDATE')
+                panel:RegisterEvent('SCENARIO_CRITERIA_UPDATE')
+                panel:RegisterEvent('SCENARIO_COMPLETED')
+    elseif event=='UNIT_QUEST_LOG_CHANGED' or event=='SCENARIO_UPDATE' or event=='SCENARIO_CRITERIA_UPDATE' or event=='SCENARIO_COMPLETED'then
         set_UNIT_QUEST_LOG_CHANGED()
 
     else

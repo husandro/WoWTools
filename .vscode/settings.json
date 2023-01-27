@@ -975,7 +975,11 @@
         "KEY_BUTTON6",
         "KEY_BUTTON7",
         "KEY_BUTTON8",
-        "KEY_BUTTON9"
+        "KEY_BUTTON9",
+        "GameTooltip_ShowProgressBar",
+        "GRAY_FONT_COLOR",
+        "QUEST_DASH",
+        "PERCENTAGE_STRING"
     ],
     "Lua.diagnostics.disable": [
     ]
