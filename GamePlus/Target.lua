@@ -50,15 +50,21 @@ end
 --#########
 --任务，数量
 --#########
+local function find_Text(text)
+    if text:find('(%d+)/(%d+)') then
+        local min, max= text:match('(%d+)/(%d+)')
+        min, max= tonumber(min), tonumber(max)
+        if min and max then
+            local value= max- min
+            return value>0 and value or nil
+        end
+    else
+        return text:match('([%d%.]+%%)')
+    end
+end
 local function Get_Quest_Progress(unit)
-    --[[print(unit,C_QuestLog.UnitIsRelatedToActiveQuest(unit))
-	if not C_QuestLog.UnitIsRelatedToActiveQuest(unit) then
-        return
-    end]]
     if not UnitIsPlayer(unit) then
         local tooltipData = C_TooltipInfo.GetUnit(unit)
-        --print(C_QuestLog.UnitIsRelatedToActiveQuest(unit))
-        --TooltipUtil.SurfaceArgs(tooltipData)
         for i = 3, #tooltipData.lines do
             local line = tooltipData.lines[i]
             TooltipUtil.SurfaceArgs(line)
@@ -67,21 +73,15 @@ local function Get_Quest_Progress(unit)
                 local num= select(3, GetTaskInfo(questID)) or 1
                 for index=1, num do
                     local text, objectiveType, finished = GetQuestObjectiveInfo(questID, index, false)
-                    --print(GetQuestObjectiveInfo(questID, index, false))
                     if text and not finished then
-                        if text:find('(%d+)/(%d+)') then
-                            local min, max= text:match('(%d+)/(%d+)')
-                            min, max= tonumber(min), tonumber(max)
-                            if min and max then
-                                local value= max- min
-                                return value>0 and value or nil
-                            end
-                        else
-                            return text:match('([%d%.]+%%)')
-                        end
+                        return find_Text(text)
                     end
                 end
                 return
+            elseif line.leftText then
+                if line.leftText:find('(%d+)/(%d+)') or line.leftText:find('([%d%.]+%%)') then
+                    return find_Text(line.leftText)
+                end
             end
         end
     end
@@ -274,7 +274,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         set_UNIT_QUEST_LOG_CHANGED()
 
     else
-        
         if not isIns and arg1 then
             if event=='NAME_PLATE_UNIT_ADDED' then
                 set_NAME_PLATE_UNIT_ADDED(arg1)
