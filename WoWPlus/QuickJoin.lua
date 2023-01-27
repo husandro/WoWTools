@@ -5,7 +5,7 @@ local addName=	QUICK_JOIN
 local function set_SOCIAL_QUEUE_UPDATE()
     if QuickJoinToastButton then
         if not QuickJoinToastButton.quickJoinText then
-            QuickJoinToastButton.quickJoinText= self:CreateFontString()
+            QuickJoinToastButton.quickJoinText= QuickJoinToastButton:CreateFontString()
             QuickJoinToastButton.quickJoinText:SetFontObject('NumberFontNormal');
             QuickJoinToastButton.quickJoinText:SetPoint('TOPRIGHT', -6, -3);
         end
@@ -14,32 +14,6 @@ local function set_SOCIAL_QUEUE_UPDATE()
         QuickJoinToastButton.quickJoinText:SetText(n~=0 and n or '');
     end
 end
---[[战斗中，不能打开
-        self:SetScript("OnClick", function(self2, d)
-            if d=='RightButton' then
-                ToggleQuickJoinPanel()
-            elseif d=='LeftButton' then
-                ToggleFriendsPanel();
-            end
-        end)
-        self:SetScript("OnMouseWheel", function(self2, d)
-            if d==1 then
-                ToggleFriendsFrame(2);
-            elseif d==-1 then
-                ToggleRaidFrame();
-            end
-        end)
-        self:SetScript('OnEnter', function(self2)
-            e.tips:SetOwner(self2, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddLine(e.Icon.left..(e.onlyChinse and '好友' or FRIENDS))
-            e.tips:AddLine(e.Icon.mid..(e.onlyChinse and '查询' or WHO))
-            e.tips:AddLine(e.Icon.mid..(e.onlyChinse and '团队' or RAID))
-            e.tips:AddLine(e.Icon.right..(e.onlyChinse and '快速加入' or QUICK_JOIN))
-            e.tips:Show()
-        end)
-        self:SetScript('OnLeave', function() e.tips:Hide() end)]]
-
 
 --######
 --初始化
@@ -171,3 +145,29 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         set_SOCIAL_QUEUE_UPDATE()
     end
 end)
+
+--[[战斗中，不能打开
+        self:SetScript("OnClick", function(self2, d)
+            if d=='RightButton' then
+                ToggleQuickJoinPanel()
+            elseif d=='LeftButton' then
+                ToggleFriendsPanel();
+            end
+        end)
+        self:SetScript("OnMouseWheel", function(self2, d)
+            if d==1 then
+                ToggleFriendsFrame(2);
+            elseif d==-1 then
+                ToggleRaidFrame();
+            end
+        end)
+        self:SetScript('OnEnter', function(self2)
+            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddLine(e.Icon.left..(e.onlyChinse and '好友' or FRIENDS))
+            e.tips:AddLine(e.Icon.mid..(e.onlyChinse and '查询' or WHO))
+            e.tips:AddLine(e.Icon.mid..(e.onlyChinse and '团队' or RAID))
+            e.tips:AddLine(e.Icon.right..(e.onlyChinse and '快速加入' or QUICK_JOIN))
+            e.tips:Show()
+        end)
+        self:SetScript('OnLeave', function() e.tips:Hide() end)]]
