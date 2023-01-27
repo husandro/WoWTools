@@ -82,6 +82,8 @@ end
 local questN=0
 local function set_NAME_PLATE_CREATED(frame)
     local text='a'
+    local u = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
+    print(u)
     if not frame.questText then
         frame.questText= e.Cstr(frame)
         frame.questText:SetPoint('BOTTOMLEFT', frame, 'TOPLEFT')
