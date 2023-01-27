@@ -183,7 +183,7 @@ local function Init()
                 hideTexture(self.RightDivider.BottomEdge)
                 hideTexture(self.RightDivider.Center)
             end
-            if self.HotKey then
+            if self.HotKey then--快捷键
                 self.HotKey:SetShadowOffset(1, -1)
                 local text=self.HotKey:GetText()
                 if text and text~='' and text~= RANGE_INDICATOR and #text>4 then
@@ -192,17 +192,21 @@ local function Init()
                             self.HotKey:SetText(text:gsub(key, mouse))
                         end
                     end
-                    --text= e.WA_Utf8Sub(text, 6)
                 end
             end
-            if self.Count then
+            if self.Count then--数量
                 self.Count:SetShadowOffset(1, -1)
+            end
+            if self.Name then--名称
+                self.Name:SetShadowOffset(1, -1)
+                local text=self.Name:GetText()
+                if text and #text>6 then
+                    text= e.WA_Utf8Sub(text, 3, 6)
+                    self.Name:SetText(text)
+                end
             end
         end
     end
-    --hooksecurefunc(BaseActionButtonMixin,'UpdateButtonArt', function(self, hideDivider)--ActionButton.lua
-    --    hideButtonText(self)
-    --end)
     C_Timer.After(2, function()
         for i=1, 12 do
             hideButtonText(_G['ActionButton'..i])--主动作条
@@ -216,6 +220,9 @@ local function Init()
         end
         MainMenuBar.Background:SetShown(false)
     end)
+    --hooksecurefunc(BaseActionButtonMixin,'UpdateButtonArt', function(self, hideDivider)--ActionButton.lua
+    --    hideButtonText(self)
+    --end)
 end
 
 
