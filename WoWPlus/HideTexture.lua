@@ -138,6 +138,39 @@ local function Init()
     --######
     --动作条
     --######
+    local KEY_BUTTON_Tab={
+        --[[[KEY_BUTTON1]= e.Player.left,--鼠标左键";
+        [KEY_BUTTON3]= e.Player.right,--鼠标中键";
+        [KEY_BUTTON2]= e.Player.mid,--鼠标右键";
+        KEY_BUTTON10]= 'M10',--鼠标按键10";
+        [KEY_BUTTON11]= 'M11',--鼠标按键11";
+        [KEY_BUTTON12]= 'M12',--鼠标按键12";
+        [KEY_BUTTON13]= 'M13',--鼠标按键13";
+        [KEY_BUTTON14]= 'M14',--鼠标按键14";
+        [KEY_BUTTON15]= 'M15',--鼠标按键15";
+        [KEY_BUTTON16]= 'M16',--鼠标按键16";
+        [KEY_BUTTON17]= 'M17',--鼠标按键17";
+        [KEY_BUTTON18]= 'M18',--鼠标按键18";
+        [KEY_BUTTON19]= 'M19',--鼠标按键19";
+        [KEY_BUTTON20]= 'M20',--鼠标按键20";
+        [KEY_BUTTON21]= 'M21',--鼠标按键21";
+        [KEY_BUTTON22]= 'M22',--鼠标按键22";
+        [KEY_BUTTON23]= 'M23',--鼠标按键23";
+        [KEY_BUTTON24]= 'M24',--鼠标按键24";
+        [KEY_BUTTON25]= 'M25',--鼠标按键25";
+        [KEY_BUTTON26]= 'M26',--鼠标按键26";
+        [KEY_BUTTON27]= 'M27',--鼠标按键27";
+        [KEY_BUTTON28]= 'M28',--鼠标按键28";
+        [KEY_BUTTON29]= 'M29',--鼠标按键29";
+        [KEY_BUTTON30]= 'M30',--鼠标按键30";
+        [KEY_BUTTON31]= 'M31',--鼠标按键31";]]
+        [KEY_BUTTON4]= 'M4',--鼠标按键4";
+        [KEY_BUTTON5]= 'M5',--鼠标按键5";
+        [KEY_BUTTON6]= 'M6',--鼠标按键6";
+        [KEY_BUTTON7]= 'M7',--鼠标按键7";
+        [KEY_BUTTON8]= 'M8',--鼠标按键8";
+        [KEY_BUTTON9]= 'M9',--鼠标按键9";
+    }
     local function hideButtonText(self)
         if self then
             hideTexture(self.SlotArt)
@@ -152,6 +185,18 @@ local function Init()
             end
             if self.HotKey then
                 self.HotKey:SetShadowOffset(1, -1)
+                local text=self.HotKey:GetText()
+                if text and text~='' and text~= RANGE_INDICATOR and #text>4 then
+                    for key, mouse in pairs(KEY_BUTTON_Tab) do
+                        if text:find(key) then
+                            self.HotKey:SetText(text:gsub(key, mouse))
+                        end
+                    end
+                    --text= e.WA_Utf8Sub(text, 6)
+                end
+            end
+            if self.Count then
+                self.Count:SetShadowOffset(1, -1)
             end
         end
     end
