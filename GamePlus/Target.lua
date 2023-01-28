@@ -51,12 +51,11 @@ end
 --任务，数量
 --#########
 local function find_Text(text)
-    if text:find('(%d+)/(%d+)') then
-        local min, max= text:match('(%d+)/(%d+)')
+    if text:find(QUEST_DASH..'.-(%d+)/(%d+)') then
+        local min, max= text:match(QUEST_DASH..'.-(%d+)/(%d+)')
         min, max= tonumber(min), tonumber(max)
-        if min and max then
-            local value= max- min
-            return value>0 and value
+        if min and max and max> min then
+            return max- min
         end
         return true
     else
