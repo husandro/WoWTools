@@ -51,21 +51,22 @@ end
 --任务，数量
 --#########
 local THREAT_TOOLTIP_str= THREAT_TOOLTIP:gsub('%%d', '%%d+')--"%d%% 威胁"
-
 local function find_Text(text)
-    if text:find('(%d+/%d+)') then
-        local min, max= text:match('(%d+)/(%d+)')
-        min, max= tonumber(min), tonumber(max)
-        if min and max and max> min then
-            return max- min
+    if not text:find(THREAT_TOOLTIP_str) then
+        if text:find('(%d+/%d+)') then
+            local min, max= text:match('(%d+)/(%d+)')
+            min, max= tonumber(min), tonumber(max)
+            if min and max and max> min then
+                return max- min
+            end
+            return true
+        elseif text:find('[%d%.]+%%') then
+            local value= text:match('([%d%.]+%%)')
+            if value and value~='100%' then
+                return value
+            end
+            return true
         end
-        return true
-    elseif text:find('[%d%.]+%%') and not text:find(THREAT_TOOLTIP_str) then
-        local value= text:match('([%d%.]+%%)')
-        if value and value~='100%' then
-            return value
-        end
-        return true
     end
 end
 local function Get_Quest_Progress(unit)--GameTooltip.lua --local questID= line and line.id
