@@ -260,8 +260,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if event=='PLAYER_ENTERING_WORLD' then
             isPvPArena= C_PvP.IsBattleground() or C_PvP.IsArena()
             isIns= IsInInstance()
-            set_Register_Event()
-
+            if Save.creatureNum then
+                set_Register_Event()
+            end
         end
 
     elseif event=='PLAYER_REGEN_DISABLED' then--颜色
