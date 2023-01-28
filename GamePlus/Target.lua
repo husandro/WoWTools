@@ -50,30 +50,35 @@ end
 --#########
 --任务，数量
 --#########
+local THREAT_TOOLTIP_str= THREAT_TOOLTIP:gsub('d', 'd+')
+print(THREAT_TOOLTIP_str)
 local function find_Text(text)
-    if text:find(QUEST_DASH..'.-(%d+)/(%d+)') then
-        local min, max= text:match(QUEST_DASH..'.-(%d+)/(%d+)')
-        min, max= tonumber(min), tonumber(max)
-        if min and max and max> min then
-            return max- min
+    if text then --and text:find(QUEST_DASH) then
+        if text:find('(%d+/%d+)') then
+            local min, max= text:match('(%d+)/(%d+)')
+            min, max= tonumber(min), tonumber(max)
+            if min and max and max> min then
+                return max- min
+            end
+            return true
+        elseif text:find('(%d+%%)') and not text:find(THREAT_TOOLTIP_str) then
+            local value= text:match('([%d%.]+%%)')
+            if value and value~='100%' then
+                return value
+            end
+            return true
         end
-        return true
-    else
-        return text:match(QUEST_DASH..'.-([%d%.]+%%)')
     end
 end
-local function Get_Quest_Progress(unit)--GameTooltip.lua
+local function Get_Quest_Progress(unit)--GameTooltip.lua --local questID= line and line.id
     if not UnitIsPlayer(unit) then
         local tooltipData = C_TooltipInfo.GetUnit(unit)
         for i = #tooltipData.lines, 5, -1 do
             local line = tooltipData.lines[i]
             TooltipUtil.SurfaceArgs(line)
-            --local questID= line and line.id
-            if line.leftText then
-                local text= find_Text(line.leftText)
-                if text then
-                    return text~=true and text
-                end
+            local text= find_Text(line.leftText)
+            if text then
+                return text~=true and text
             end
         end
     end

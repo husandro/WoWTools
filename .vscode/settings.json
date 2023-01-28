@@ -979,7 +979,8 @@
         "GameTooltip_ShowProgressBar",
         "GRAY_FONT_COLOR",
         "QUEST_DASH",
-        "PERCENTAGE_STRING"
+        "PERCENTAGE_STRING",
+        "THREAT_TOOLTIP"
     ],
     "Lua.diagnostics.disable": [
     ]
