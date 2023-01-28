@@ -1,6 +1,6 @@
 local id, e= ...
 local addName= TARGET..COMBAT_ALLY_START_MISSION
-local Save= {creatureNum= true}
+local Save= {creatureNum= e.Player.husandro}
 
 local panel= CreateFrame("Frame")
 local isPvPArena, isIns
@@ -50,24 +50,22 @@ end
 --#########
 --任务，数量
 --#########
-local THREAT_TOOLTIP_str= THREAT_TOOLTIP:gsub('d', 'd+')
-print(THREAT_TOOLTIP_str)
+local THREAT_TOOLTIP_str= THREAT_TOOLTIP:gsub('%%d', '%%d+')--"%d%% 威胁"
+
 local function find_Text(text)
-    if text then --and text:find(QUEST_DASH) then
-        if text:find('(%d+/%d+)') then
-            local min, max= text:match('(%d+)/(%d+)')
-            min, max= tonumber(min), tonumber(max)
-            if min and max and max> min then
-                return max- min
-            end
-            return true
-        elseif text:find('(%d+%%)') and not text:find(THREAT_TOOLTIP_str) then
-            local value= text:match('([%d%.]+%%)')
-            if value and value~='100%' then
-                return value
-            end
-            return true
+    if text:find('(%d+/%d+)') then
+        local min, max= text:match('(%d+)/(%d+)')
+        min, max= tonumber(min), tonumber(max)
+        if min and max and max> min then
+            return max- min
         end
+        return true
+    elseif text:find('[%d%.]+%%') and not text:find(THREAT_TOOLTIP_str) then
+        local value= text:match('([%d%.]+%%)')
+        if value and value~='100%' then
+            return value
+        end
+        return true
     end
 end
 local function Get_Quest_Progress(unit)--GameTooltip.lua --local questID= line and line.id
@@ -76,7 +74,7 @@ local function Get_Quest_Progress(unit)--GameTooltip.lua --local questID= line a
         for i = #tooltipData.lines, 5, -1 do
             local line = tooltipData.lines[i]
             TooltipUtil.SurfaceArgs(line)
-            local text= find_Text(line.leftText)
+            local text= line.leftText and find_Text(line.leftText)
             if text then
                 return text~=true and text
             end
@@ -211,7 +209,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine('|cffffffff'..(e.onlyChinse and '怪物目标' or CREATURE..TARGET), e.onlyChinse and '你' or YOU)
                 e.tips:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '队友目标' or PLAYERS_IN_GROUP ..TARGET), e.onlyChinse and '你' or YOU)
-                e.tips:AddDoubleLine('|cffffffff'..(e.onlyChinse and '怪物' or PLAYERS_IN_GROUP), e.onlyChinse and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)
+                e.tips:AddDoubleLine('|cffffffff'..(e.onlyChinse and '怪物' or CREATURE), e.onlyChinse and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(e.onlyChinse and '任务' or QUESTS_LABEL, e.onlyChinse and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)
                 e.tips:AddLine(' ')
