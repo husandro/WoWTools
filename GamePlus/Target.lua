@@ -147,6 +147,7 @@ local function set_Register_Event()
                 panel:RegisterEvent('SCENARIO_UPDATE')
                 panel:RegisterEvent('SCENARIO_CRITERIA_UPDATE')
                 panel:RegisterEvent('SCENARIO_COMPLETED')
+                panel:RegisterEvent('QUEST_POI_UPDATE')
             end
 
         elseif panel.Text then
@@ -269,11 +270,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='PLAYER_REGEN_ENABLED' then
         panel.Texture:SetVertexColor(1,1,1)
 
-        panel:RegisterEvent('UNIT_QUEST_LOG_CHANGED')
-                panel:RegisterEvent('SCENARIO_UPDATE')
-                panel:RegisterEvent('SCENARIO_CRITERIA_UPDATE')
-                panel:RegisterEvent('SCENARIO_COMPLETED')
-    elseif event=='UNIT_QUEST_LOG_CHANGED' or event=='SCENARIO_UPDATE' or event=='SCENARIO_CRITERIA_UPDATE' or event=='SCENARIO_COMPLETED'then
+    elseif event=='UNIT_QUEST_LOG_CHANGED' or event=='QUEST_POI_UPDATE' or event=='SCENARIO_COMPLETED' or event=='SCENARIO_UPDATE' or event=='SCENARIO_CRITERIA_UPDATE' then
         set_UNIT_QUEST_LOG_CHANGED()
 
     else
