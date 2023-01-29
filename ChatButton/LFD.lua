@@ -564,7 +564,7 @@ local function InitList(self, level, type)--LFDFrame.lua
             end
         }
         UIDropDownMenu_AddButton(info, level)
-
+--[[
         info= {
             text= e.onlyChinse and '自动打开战利品掷骰窗口' or AUTO_OPEN_LOOT_HISTORY_TEXT,
             tooltipOnButton= true,
@@ -573,13 +573,13 @@ local function InitList(self, level, type)--LFDFrame.lua
             checked= C_CVar.GetCVarBool("autoOpenLootHistory"),
             func= function ()
                 local value= C_CVar.GetCVarBool("autoOpenLootHistory")
-                Save.autoopenloothistory= not value and true or false
-                LootHistoryFrame:SetWidth(Save.autoopenloothistory and 210 or 350)
-                e.set_CVar('autoOpenLootHistory', Save.autoopenloothistory)--自动打开战利品掷骰窗口
+                Save.autoOpenLootHistory= not value and true or false
+                LootHistoryFrame:SetWidth(Save.autoOpenLootHistory and 210 or 350)
+                e.set_CVar('autoOpenLootHistory', Save.autoOpenLootHistory)--自动打开战利品掷骰窗口
             end
         }
         UIDropDownMenu_AddButton(info, level)
-
+]]
     elseif type=='BATTLEFIELDS' then--战场
         info={
             text= e.onlyChinse and '释放, 复活' or (BATTLE_PET_RELEASE..', '..RESURRECT),
@@ -916,13 +916,18 @@ local function Init()
 
     setHoliday()--节日, 提示, panel.texture
 
-    e.set_CVar('autoOpenLootHistory', Save.autoopenloothistory)--自动打开战利品掷骰窗口
-    if Save.autoopenloothistory then
-        LootHistoryFrame:SetWidth(Save.autoopenloothistory and 210 or 350)
+    if LootHistoryFrame then
+        LootHistoryFrame:SetWidth(350)
+    end
+--[[
+    e.set_CVar('autoOpenLootHistory', Save.autoOpenLootHistory)--自动打开战利品掷骰窗口
+    if Save.autoOpenLootHistory then
+        LootHistoryFrame:SetWidth(Save.autoOpenLootHistory and 210 or 350)
     end
 
     --hooksecurefunc('QueueStatusDropDown_Show', setQueueStatusMenu)--小眼睛, 信息, 设置菜单
     --LFDMicroButton:HookScript('OnEnter', function(self2) ToggleDropDownMenu(1, nil, menuList, self2, -250,250) end)
+]]
 end
 
 local function setSTART_LOOT_ROLL(rollID, rollTime, lootHandle)--自动ROLL
