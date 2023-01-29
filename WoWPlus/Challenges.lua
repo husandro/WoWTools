@@ -626,9 +626,10 @@ local function All(self)--所有记录
     if  text and not self.WoWKeystones then
         self.WoWKeystones=e.Cstr(self)
         if IsAddOnLoaded('RaiderIO') and RaiderIO_ProfileTooltip then
-            self.WoWKeystones:SetPoint('TOPLEFT', RaiderIO_ProfileTooltip, 'BOTTOMLEFT')
+            self.WoWKeystones:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT', 2, 0)
+            --self.WoWKeystones:SetPoint('TOPLEFT', RaiderIO_ProfileTooltip, 'BOTTOMLEFT')
         else
-            self.WoWKeystones:SetPoint('TOPLEFT', self, 'TOPRIGHT',0, -10)
+            self.WoWKeystones:SetPoint('TOPLEFT', self, 'TOPRIGHT', 2, -10)
         end
     end
     if self.WoWKeystones then
@@ -830,6 +831,11 @@ local function set_Update()--Blizzard_ChallengesUI.lua
 
     if ChallengesFrame.WeeklyInfo.Child.WeeklyChest and ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus and ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus:GetText()==MYTHIC_PLUS_COMPLETE_MYTHIC_DUNGEONS then
         ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus:SetText('')--隐藏，完成史诗钥石地下城即可获得
+        ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus:Hide()
+    end
+    if ChallengesFrame and ChallengesFrame.WeeklyInfo and ChallengesFrame.WeeklyInfo.Child and ChallengesFrame.WeeklyInfo.Child.Description then
+        ChallengesFrame.WeeklyInfo.Child.Description:SetText('')
+        ChallengesFrame.WeeklyInfo.Child.Description:Hide()
     end
 end
 
