@@ -40,6 +40,7 @@ local function set_PlayerFrame()--PlayerFrame.lua
     PlayerCastingBarFrame:HookScript('OnShow', function(self)--图标
         self.Icon:SetShown(true)
     end)
+    PlayerCastingBarFrame:SetFrameStrata('TOOLTIP')
     set_SetTextColor(PlayerCastingBarFrame.Text, R,G,B)--颜色
     PlayerCastingBarFrame.castingText=e.Cstr(PlayerCastingBarFrame, nil, nil, nil, {R,G,B}, nil, 'RIGHT')
     PlayerCastingBarFrame.castingText:SetDrawLayer('OVERLAY', 2)
