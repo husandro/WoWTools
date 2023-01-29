@@ -848,7 +848,7 @@ local function Init()
         self.sel = CreateFrame("CheckButton", nil, self, "InterfaceOptionsCheckButtonTemplate")--隐藏选项
         self.sel:SetPoint('TOPLEFT',60,-20)
         self.sel:SetChecked(Save.hide)
-        self.sel.Text:SetText(HIDE)
+        self.sel.text:SetText(e.onlyChinse and '隐藏' or HIDE)
         self.sel:SetScript("OnMouseDown", function ()
             Save.hide = not Save.hide and true or nil
             Kill(self)--副本PVP团本
