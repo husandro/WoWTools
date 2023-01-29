@@ -68,7 +68,7 @@ local function setAtt(bag, slot, icon, itemID)--设置属性
         num= num~=1 and num or ''
         panel:SetShown(true)
     else
-        panel:SetAttribute("macrotext", nil)
+        panel:SetAttribute("macrotext", '')
         panel:SetShown(not Save.noItemHide)
     end
     setCooldown()--冷却条
