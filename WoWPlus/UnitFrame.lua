@@ -40,24 +40,22 @@ local function set_PlayerFrame()--PlayerFrame.lua
     PlayerCastingBarFrame:HookScript('OnShow', function(self)--图标
         self.Icon:SetShown(true)
     end)
-    PlayerCastingBarFrame:SetFrameStrata('TOOLTIP')
+    PlayerCastingBarFrame:SetFrameStrata('TOOLTIP')--设置为， 最上层
     set_SetTextColor(PlayerCastingBarFrame.Text, R,G,B)--颜色
     PlayerCastingBarFrame.castingText=e.Cstr(PlayerCastingBarFrame, nil, nil, nil, {R,G,B}, nil, 'RIGHT')
     PlayerCastingBarFrame.castingText:SetDrawLayer('OVERLAY', 2)
     PlayerCastingBarFrame.castingText:SetPoint('RIGHT', PlayerCastingBarFrame.ChargeFlash, 'RIGHT')
+    local PlayerCastingElapsed= 0
     PlayerCastingBarFrame:HookScript('OnUpdate', function(self, elapsed)--玩家, 施法, 时间
-        if self.maxValue and self.value and self.value>0 and self.maxValue>0 then
-            local value=self.maxValue-self.value
+        if self.value and self.maxValue then
+            local value= self.channeling and self.value or (self.maxValue-self.value)
             if value>=3 then
                 self.castingText:SetFormattedText('%i', value)
             else
                 self.castingText:SetFormattedText('%.01f', value)
             end
-        else
-            self.castingText:SetText('')
         end
     end)
-
     hooksecurefunc('PlayerFrame_UpdateGroupIndicator', function()--处理,小队, 号码
         if IsInRaid() then
             local text= PlayerFrameGroupIndicatorText:GetText()
