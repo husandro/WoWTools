@@ -1,7 +1,7 @@
 local id, e = ...
 local addName =	DUNGEONS_BUTTON
 local Save={
-    leaveInstance=true, enterInstance=true, autoROLL=true,
+    leaveInstance=e.Player.husandro, enterInstance=e.Player.husandro, autoROLL= e.Player.husandro,
     ReMe=true,--仅限战场，释放，复活
     autoSetPvPRole=true,--自动职责确认， 排副本
 }
