@@ -45,7 +45,6 @@ local function set_PlayerFrame()--PlayerFrame.lua
     PlayerCastingBarFrame.castingText=e.Cstr(PlayerCastingBarFrame, nil, nil, nil, {R,G,B}, nil, 'RIGHT')
     PlayerCastingBarFrame.castingText:SetDrawLayer('OVERLAY', 2)
     PlayerCastingBarFrame.castingText:SetPoint('RIGHT', PlayerCastingBarFrame.ChargeFlash, 'RIGHT')
-    local PlayerCastingElapsed= 0
     PlayerCastingBarFrame:HookScript('OnUpdate', function(self, elapsed)--玩家, 施法, 时间
         if self.value and self.maxValue then
             local value= self.channeling and self.value or (self.maxValue-self.value)
