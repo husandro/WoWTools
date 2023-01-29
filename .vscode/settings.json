@@ -980,7 +980,8 @@
         "GRAY_FONT_COLOR",
         "QUEST_DASH",
         "PERCENTAGE_STRING",
-        "THREAT_TOOLTIP"
+        "THREAT_TOOLTIP",
+        "UIWidgetTemplateUnitPowerBarMixin"
     ],
     "Lua.diagnostics.disable": [
     ]
