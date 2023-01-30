@@ -82,7 +82,7 @@ local function Init()
             _, _, icon, _, _, _, spellID= GetSpellInfo(spelloffset+ 1, 'spell')
 
             if not panel.buttons[index] and spellID and icon and name then
-                panel.buttons[index]=e.Cbtn2(id..addName..name, e.toolsFrame)
+                panel.buttons[index]= e.Cbtn2(id..addName..name, e.toolsFrame, true)
                 e.ToolsSetButtonPoint(panel.buttons[index])--设置位置
                 panel.buttons[index]:SetAttribute("type1", "spell")
                 panel.buttons[index].texture:SetShown(true)

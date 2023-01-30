@@ -98,14 +98,19 @@ local function set_NAME_PLATE_UNIT_ADDED(unit)
     end
 end
 
+local questChanging
 local function set_UNIT_QUEST_LOG_CHANGED()
-    local plates= C_NamePlate.GetNamePlates() or {}
-    for _, plate in pairs(plates) do
-        if plate.questProgress then
-            local unit = plate.namePlateUnitToken or (plate.UnitFrame and plate.UnitFrame.unit)
-            local text= unit and Get_Quest_Progress(unit)
-            plate.questProgress:SetText(text or '')
+    if not questChanging then
+        questChanging=true
+        local plates= C_NamePlate.GetNamePlates() or {}
+        for _, plate in pairs(plates) do
+            if plate.questProgress then
+                local unit = plate.namePlateUnitToken or (plate.UnitFrame and plate.UnitFrame.unit)
+                local text= unit and Get_Quest_Progress(unit)
+                plate.questProgress:SetText(text or '')
+            end
         end
+        questChanging=nil
     end
 end
 
@@ -272,7 +277,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         panel.Texture:SetVertexColor(1,1,1)
 
     elseif event=='UNIT_QUEST_LOG_CHANGED' or event=='QUEST_POI_UPDATE' or event=='SCENARIO_COMPLETED' or event=='SCENARIO_UPDATE' or event=='SCENARIO_CRITERIA_UPDATE' then
-        set_UNIT_QUEST_LOG_CHANGED()
+        C_Timer.After(0.3, function()
+            set_UNIT_QUEST_LOG_CHANGED()
+        end)
+
 
     else
         if not isIns and arg1 then
