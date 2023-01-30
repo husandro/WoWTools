@@ -3,10 +3,11 @@ local addName= ITEMS..INFO
 local Save={}
 local panel=CreateFrame("Frame")
 
-local itemUseString =ITEM_SPELL_CHARGES:gsub('%%d', '%(%%d%+%)')--(%d+)次
-local KeyStone=CHALLENGE_MODE_KEYSTONE_NAME:gsub('%%s','(.+) ')--钥石
+local itemUseString= ITEM_SPELL_CHARGES:gsub('%%d', '%(%%d%+%)')--(%d+)次
+local KeyStone= CHALLENGE_MODE_KEYSTONE_NAME:gsub('%%s','(.+) ')--钥石
 local text_EQUIPMENT_SETS= 	EQUIPMENT_SETS:gsub('%%s','(.+)')
-local PvPItemLevel=PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在竞技场和战场中将物品等级提高至%d。"
+local PvPItemLevel= PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在竞技场和战场中将物品等级提高至%d。"
+local text_ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(%%d%+/%%d%+)')-- "升级：%s/%s"
 local size= 10--字体大小
 
 local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBank, buyBack)
@@ -83,7 +84,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
 
         elseif classID==2 or classID==4 then--装备
             if itemQuality and itemQuality>1 then
-                local noUse, text, wow, text2= e.GetTooltipData(true, text_EQUIPMENT_SETS, itemLink, bag and {bag=bag.bagID, slot=bag.slotID}, guildBank and {tab= guildBank[1], slot=guildBank[2]}, merchantIndex, buyBack, nil, PvPItemLevel)--物品提示，信息
+                local noUse, text, wow, text2, text3= e.GetTooltipData(true, text_EQUIPMENT_SETS, itemLink, bag and {bag=bag.bagID, slot=bag.slotID}, guildBank and {tab= guildBank[1], slot=guildBank[2]}, merchantIndex, buyBack, nil, PvPItemLevel, text_ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT)--物品提示，信息
                 if text then--套装名称，
                     text= text:match('(.+),') or text:match('(.+)，') or text
                     bottomLeftText=e.WA_Utf8Sub(text,3,5)
@@ -96,7 +97,17 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
                     rightText= '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'
                   --rightText="|A:pvptalents-warmode-swords:0:0|a"
                 end
-
+                if text3 then--"升级：%s/%s"
+                    local min, max= text3:match('(%d+)/(%d+)')
+                    if min and max then
+                        if min==max then
+                            leftText= e.Icon.star2
+                        else
+                            min, max= tonumber(min), tonumber(max)
+                            leftText= '|cnRED_FONT_COLOR:'..max-min..'|r'
+                        end
+                    end
+                end
                 local invSlot = e.itemSlotTable[itemEquipLoc]
                 if invSlot and itemLevel and itemLevel>1 then
                     if not noUse then--装等

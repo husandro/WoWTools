@@ -1113,7 +1113,8 @@
         "GetChannelList",
         "GetChannelName",
         "GetChatWindowChannels",
-        "PLAYER_COUNTDOWN_BUTTON"
+        "PLAYER_COUNTDOWN_BUTTON",
+        "ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT"
     ],
     "Lua.diagnostics.disable": [
     ]
