@@ -697,6 +697,9 @@ local function InitList(self, level, type)
             text= e.onlyChinse and '召唤' or SUMMON,
             icon='Raid-Icon-SummonPending',
             checked= Save.Summon,
+            tooltipOnButton=true,
+            tooltipTitle= '|cnRED_FONT_COLOR:'..(e.onlyChinse and '取消' or CANCEL)..'|r',
+            tooltipText= e.onlyChinse and '战斗中\n离开\nalt' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..'\n'..AFK..'\nalt',
             func= function()
                 Save.Summon= not Save.Summon and true or nil
             end
