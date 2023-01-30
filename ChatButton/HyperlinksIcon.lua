@@ -962,7 +962,7 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent('CVAR_UPDATE')
 
 
-panel:SetScript("OnEvent", function(self, event, arg1, arg2)
+panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
     if event == "ADDON_LOADED" then
         if arg1 == id then
             if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
@@ -997,7 +997,15 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
 
     elseif event=='START_TIMER' then--播放, 声音
-        if arg1 and arg2 and arg2>3 and not panel.timerType then
+        if arg2==0 and arg3==0 then
+            panel.timerType= nil
+            if panel.timer4 then panel.timer4:Cancel() end
+            if panel.timer3 then panel.timer3:Cancel() end
+            if panel.timer2 then panel.timer2:Cancel() end
+            if panel.timer1 then panel.timer1:Cancel() end
+            if panel.timer0 then panel.timer0:Cancel() end
+
+        elseif arg1 and arg2 and arg2>3 and not panel.timerType then
             panel.timerType=arg1
             if arg2>20 then
                 panel.timer4= C_Timer.NewTimer(arg2-10, function()--3

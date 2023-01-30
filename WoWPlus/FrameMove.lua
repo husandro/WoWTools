@@ -310,6 +310,9 @@ local function setAddLoad(arg1)
             end
             Move(InspectFrame,{})
         end
+
+    elseif arg1=='Blizzard_ChallengesUI' then
+        Move(ChallengesKeystoneFrame, {save=true})
     end
 end
 

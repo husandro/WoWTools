@@ -184,7 +184,7 @@ end
 local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     local frame=ChallengesKeystoneFrame
     frame.ready = CreateFrame("Button",nil, frame, 'UIPanelButtonTemplate')--就绪
-    frame.ready:SetText(READY..e.Icon.select2)
+    frame.ready:SetText((e.onlyChinse and '就绪' or READY)..e.Icon.select2)
     frame.ready:SetPoint('LEFT', frame.StartButton, 'RIGHT',2, 0)
     frame.ready:SetSize(100,24)
     frame.ready:SetScript("OnMouseDown",function()
@@ -192,7 +192,7 @@ local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     end)
 
     frame.mark = CreateFrame("Button",nil, frame, 'UIPanelButtonTemplate')--标记
-    frame.mark:SetText(e.Icon['TANK']..EVENTTRACE_MARKER..e.Icon['HEALER'])
+    frame.mark:SetText(e.Icon['TANK']..(e.onlyChinse and '标记' or EVENTTRACE_MARKER)..e.Icon['HEALER'])
     frame.mark:SetPoint('RIGHT', frame.StartButton, 'LEFT',-2, 0)
     frame.mark:SetSize(100,24)
     frame.mark:SetScript("OnMouseDown",function()
@@ -217,7 +217,7 @@ local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     frame.clear = CreateFrame("Button",nil, frame, 'UIPanelButtonTemplate')--清除KEY
     frame.clear:SetPoint('RIGHT', -15, -50)
     frame.clear:SetSize(70,24)
-    frame.clear:SetText(CLEAR or KEY_NUMLOCK_MAC)
+    frame.clear:SetText(e.onlyChinse and '清除' or  CLEAR or KEY_NUMLOCK_MAC)
     frame.clear:SetScript("OnMouseDown",function()
             C_ChallengeMode.RemoveKeystone()
             frame:Reset()
@@ -228,7 +228,7 @@ local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     frame.ins = CreateFrame("Button",nil, frame, 'UIPanelButtonTemplate')--插入
     frame.ins:SetPoint('BOTTOMRIGHT', frame.clear, 'TOPRIGHT', 0, 2)
     frame.ins:SetSize(70,24)
-    frame.ins:SetText(COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
+    frame.ins:SetText(e.onlyChinse and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
     frame.ins:SetScript("OnMouseDown",function()
             ItemButtonUtil.OpenAndFilterBags(frame)
             if ItemButtonUtil.GetItemContext() == nil then return end
@@ -286,6 +286,23 @@ local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
             Party(frame)
             timeElapsed=0
         end
+    end)
+
+
+    frame.countdown = CreateFrame("Button",nil, frame, 'UIPanelButtonTemplate')--倒计时7秒
+    frame.countdown:SetText((e.onlyChinse and '倒计时' or PLAYER_COUNTDOWN_BUTTON)..' 7')
+    frame.countdown:SetPoint('TOP', frame, 'BOTTOM',100, 5)
+    frame.countdown:SetSize(100,24)
+    frame.countdown:SetScript("OnMouseDown",function()
+        C_PartyInfo.DoCountdown(7)
+    end)
+    frame.countdown2 = CreateFrame("Button",nil, frame, 'UIPanelButtonTemplate')--倒计时7秒
+    frame.countdown2:SetText((e.onlyChinse and '停止攻击' or BINDING_NAME_STOPATTACK)..' 0')
+    frame.countdown2:SetPoint('TOP', frame, 'BOTTOM',-100, 5)
+    frame.countdown2:SetSize(100,24)
+    frame.countdown2:SetScript("OnMouseDown",function()
+        C_PartyInfo.DoCountdown(0)
+        e.Chat(BINDING_NAME_STOPATTACK)
     end)
 end
 
