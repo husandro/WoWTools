@@ -251,11 +251,12 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
         end
 
         if upgradeItem and not self.upgradeItem then--"升级：%s/%s"
-            self.upgradeItem= e.Cstr(self, 12, nil, nil, {0,1,0}, nil,'CENTER')
             if Slot(slot) then
-                self.upgradeItem:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT', -2.5,0)
+                self.upgradeItem= e.Cstr(self, 10, nil, nil, {0,1,0}, nil,'LEFT')
+                self.upgradeItem:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT')
             else
-                self.upgradeItem:SetPoint('BOTTOMRIGHT', self, 'BOTTOMLEFT', 2.5,0)
+                self.upgradeItem= e.Cstr(self, 10, nil, nil, {0,1,0}, nil,'RIGHT')
+                self.upgradeItem:SetPoint('BOTTOMRIGHT', self, 'BOTTOMLEFT',3,0)
             end
         end
     end
@@ -273,7 +274,7 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
         if upgradeItem then
             local min, max= upgradeItem:match('(%d+)/(%d+)')
             if min and max then
-                if min~=max then
+                if min==max then
                     upgradeItem= e.Icon.star2
                 else
                     min, max= tonumber(min), tonumber(max)
