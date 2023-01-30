@@ -1,6 +1,14 @@
 local id, e = ...
 local addName= e.onlyChinse and '邀请' or INVITE
-local Save={InvNoFriend={}, LFGListAceInvite=true, FriendAceInvite=true, InvNoFriendNum=0, restingTips=true, LFGPlus=true ,ChannelText=e.Player.zh and '1' or 'inv'}
+local Save={InvNoFriend={},
+            LFGListAceInvite=true,--接受,LFD, 邀请
+            FriendAceInvite=true,--接受, 好友, 邀请
+            InvNoFriendNum=0,--拒绝, 次数
+            restingTips=true,--休息区提示
+            LFGPlus=true,--预创建队伍增强
+            ChannelText=e.Player.zh and '1' or 'inv',--频道, 邀请, 事件,内容
+            Summon= true,--接受, 召唤
+}
 local InvPlateGuid={}
 
 local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
