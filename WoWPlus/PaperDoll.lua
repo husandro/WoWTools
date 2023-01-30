@@ -273,7 +273,7 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
         if upgradeItem then
             local min, max= upgradeItem:match('(%d+)/(%d+)')
             if min and max then
-                if min==max then
+                if min~=max then
                     upgradeItem= e.Icon.star2
                 else
                     min, max= tonumber(min), tonumber(max)
