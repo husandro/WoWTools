@@ -32,7 +32,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
                 name=name:gsub('%((%d+)%)','')
                 name=name:match('（(.-)）') or name:match('%((.-)%)') or name:match('%- (.+)') or name:match(KeyStone)--名称
                 if name then
-                    bottomLeftText=e.WA_Utf8Sub(name, 2,5)
+                    bottomLeftText=e.WA_Utf8Sub(name, 3,6)
                 end
                 local activities=C_WeeklyRewards.GetActivities(1)--本周完成
                 if activities then
