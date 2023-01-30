@@ -201,7 +201,7 @@ local function set_vigentteButton_Text()
     panel.vigentteButton.text:SetText(text or '..')
 end
 local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
-    if not Save.vigentteButton then
+    if not Save.vigentteButton or IsInInstance() then
         if panel.vigentteButton then
             panel.vigentteButton.text:SetText('')
             panel.vigentteButton:SetShown(false)
@@ -358,6 +358,7 @@ local function set_MinimapMenu()--小地图, 添加菜单
             tooltipTitle= id..'  '..addName,
             tooltipText= (e.onlyChinse and '小地图' or HUD_EDIT_MODE_MINIMAP_LABEL)..mapName,
             checked= Save.vigentteButton,
+            disabled= IsInInstance(),
             func= function ()
                 Save.vigentteButton= not Save.vigentteButton and true or nil
                 set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
@@ -425,6 +426,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='PLAYER_ENTERING_WORLD' or event=='ZONE_CHANGED_NEW_AREA' or event=='ZONE_CHANGED' then
         set_ZoomOut()--更新地区时,缩小化地图
+
+        if event=='PLAYER_ENTERING_WORLD' then
+            set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
+        end
 
     elseif event=='VIGNETTE_MINIMAP_UPDATED' or event=='VIGNETTES_UPDATED' then
         set_vigentteButton_Event()--小地图, 标记, 文本        
