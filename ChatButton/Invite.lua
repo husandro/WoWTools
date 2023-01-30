@@ -692,6 +692,17 @@ local function InitList(self, level, type)
         }
         UIDropDownMenu_AddButton(info, level)
 
+        UIDropDownMenu_AddSeparator(level)
+        info={
+            text= e.onlyChinse and '召唤' or SUMMON,
+            icon='Raid-Icon-SummonPending',
+            checked= Save.Summon,
+            func= function()
+                Save.Summon= not Save.Summon and true or nil
+            end
+        }
+        UIDropDownMenu_AddButton(info, level)
+
     elseif type=='NoInv' then
         info={
             text= e.onlyChinse and '拒绝邀请' or LFG_LIST_APP_INVITE_DECLINED,--三级列表，拒绝邀请列表
@@ -869,6 +880,28 @@ local function Init()
     end
 
 
+    --#########
+    --接受, 召唤
+    --#########
+    hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"],"OnShow",function(self)--StaticPopup.lua
+        e.PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
+        if Save.Summon and not UnitAffectingCombat("player") and PlayerCanTeleport() and not UnitIsAFK('player') and not IsModifierKeyDown() then
+            e.Ccool(self, nil, 3, nil, true, true, nil)--冷却条
+            panel.SummonTimer= C_Timer.NewTimer(3, function()
+                if not UnitAffectingCombat("player") and PlayerCanTeleport() and not UnitIsAFK('player') and not IsModifierKeyDown() then
+                    C_SummonInfo.ConfirmSummon()
+                    StaticPopup_Hide("CONFIRM_SUMMON")
+                end
+            end)
+        else
+            e.Ccool(self, nil, C_SummonInfo.GetSummonConfirmTimeLeft(), nil, true, true, nil)--冷却条
+        end
+    end)
+    hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"],"OnCancel",function(self)
+        if panel.SummonTimer and not panel.SummonTimer:IsCancelled() then
+            panel.SummonTimer:Cancel()
+        end
+    end)
 end
 
 --###########
