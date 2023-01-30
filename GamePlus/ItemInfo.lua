@@ -98,13 +98,17 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
                   --rightText="|A:pvptalents-warmode-swords:0:0|a"
                 end
                 if text3 then--"升级：%s/%s"
-                    local min, max= text3:match('(%d+)/(%d+)')
-                    if min and max then
-                        if min==max then
-                            leftText= e.Icon.star2
-                        else
-                            min, max= tonumber(min), tonumber(max)
-                            leftText= '|cnGREEN_FONT_COLOR:'..max-min..'|r'
+                    if merchantIndex or guildBank then
+                        leftText= "|A:CovenantSanctum-Upgrade-Icon-Available:0:0|a"
+                    else
+                        local min, max= text3:match('(%d+)/(%d+)')
+                        if min and max then
+                            if min==max then
+                                leftText= "|A:VignetteKill:0:0|a"
+                            else
+                                min, max= tonumber(min), tonumber(max)
+                                leftText= '|cnGREEN_FONT_COLOR:'..max-min..'|r'
+                            end
                         end
                     end
                 end

@@ -255,8 +255,8 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
                 self.upgradeItem= e.Cstr(self, 10, nil, nil, {0,1,0}, nil,'LEFT')
                 self.upgradeItem:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT')
             else
-                self.upgradeItem= e.Cstr(self, 10, nil, nil, {0,1,0}, nil,'RIGHT')
-                self.upgradeItem:SetPoint('BOTTOMRIGHT', self, 'BOTTOMLEFT',3,0)
+                self.upgradeItem= e.Cstr(self, 12, nil, nil, {0,1,0}, nil,'RIGHT')
+                self.upgradeItem:SetPoint('BOTTOMRIGHT', self, 'BOTTOMLEFT',3.5,0)
             end
         end
     end
@@ -275,7 +275,7 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
             local min, max= upgradeItem:match('(%d+)/(%d+)')
             if min and max then
                 if min==max then
-                    upgradeItem= e.Icon.star2
+                    upgradeItem= "|A:VignetteKill:0:0|a"
                 else
                     min, max= tonumber(min), tonumber(max)
                     upgradeItem= max-min
