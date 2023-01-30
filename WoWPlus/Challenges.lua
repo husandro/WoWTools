@@ -87,8 +87,8 @@ local function getBagKey(self, point, x, y) --KEY链接
                             GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
                             GameTooltip:ClearLines()
                             GameTooltip:SetHyperlink(self2.item)
-                            GameTooltip:AddDoubleLine(SEND_MESSAGE, e.Icon.left)
-                            GameTooltip:AddDoubleLine(COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, e.Icon.right)
+                            GameTooltip:AddDoubleLine(e.onlyChinse and '发送信息' or SEND_MESSAGE, e.Icon.left)
+                            GameTooltip:AddDoubleLine(e.onlyChinse and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, e.Icon.right)
                             GameTooltip:Show()
                     end)
                     self['key'..i]:SetScript("OnLeave",function()
@@ -166,13 +166,13 @@ local function Party(frame)--队友位置
             local reason=UnitPhaseReason(unit)--位面
             if reason then
                 if reason==0 then--不同了阶段
-                    text= text ..'|cnRED_FONT_COLOR:'..ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1',''))..'|r'
+                    text= text ..'|cnRED_FONT_COLOR:'..ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', e.onlyChinse and '阶段' or MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1',''))..'|r'
                 elseif reason==1 then--不在同位面
-                    text= text ..'|cnRED_FONT_COLOR:'..ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', e.L['LAYER'])..'|r'
+                    text= text ..'|cnRED_FONT_COLOR:'..ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', e.onlyChinse and '位面' or  e.L['LAYER'])..'|r'
                 elseif reason==2 then--战争模式
-                    text= text ..(C_PvP.IsWarModeDesired() and '|cnRED_FONT_COLOR:'..ERR_PVP_WARMODE_TOGGLE_OFF..'|r' or '|cnRED_FONT_COLOR:'..ERR_PVP_WARMODE_TOGGLE_ON..'|r')
+                    text= text ..(C_PvP.IsWarModeDesired() and '|cnRED_FONT_COLOR:'..(e.onlyChinse and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinse and '开启战争模式' or ERR_PVP_WARMODE_TOGGLE_ON)..'|r')
                 elseif reason==3 then
-                    text= text..'|cnRED_FONT_COLOR:'..PLAYER_DIFFICULTY_TIMEWALKER..'|r'
+                    text= text..'|cnRED_FONT_COLOR:'..(e.onlyChinse and '时空漫游' or PLAYER_DIFFICULTY_TIMEWALKER)..'|r'
                 end
             end
 
@@ -242,7 +242,7 @@ local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
                     end
                 end
             end
-            print(id, CHALLENGE_MODE_KEYSTONE_NAME:format(RED_FONT_COLOR_CODE..TAXI_PATH_UNREACHABLE..'|r'))
+            print(id, CHALLENGE_MODE_KEYSTONE_NAME:format('|cnRED_FONT_COLOR:'..(e.onlyChinse and '尚未发现' or TAXI_PATH_UNREACHABLE)..'|r'))
     end)
 
     frame.party=e.Cstr(frame)--队伍信息
@@ -626,7 +626,7 @@ local function All(self)--所有记录
                 m2=m2..' '..v2
             end
         end
-        if m2~='' then m=(m~='' and m..'|n' or '')..CHALLENGE_MODE_THIS_WEEK..': |cff00ff00'..n..'/'..n2..'|r  (|cffffffff'..(n2-n)..'|r)|n'..m2 end
+        if m2~='' then m=(m~='' and m..'|n' or '')..(e.onlyChinse and '本周' or CHALLENGE_MODE_THIS_WEEK)..': |cff00ff00'..n..'/'..n2..'|r  (|cffffffff'..(n2-n)..'|r)|n'..m2 end
     end
 
     local text= m..'\n'--所有角色KEY
@@ -699,7 +699,7 @@ local function Cur(self)--货币数量
                 end
             else
                 if info.maxQuantity==0 then
-                    t=t..info.quantity..'/'.. UNLIMITED..' '
+                    t=t..info.quantity..'/'.. (e.onlyChinse and '无限制' or UNLIMITED)..' '
                 else
                     if info.quantity==info.maxQuantity then
                         t=t..'|cff00ff00'..info.quantity.. '/'..info.maxQuantity..'|r '
@@ -766,9 +766,9 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                     if self2.mapID then
                         local _, _, timeLimit, texture, backgroundTexture = C_ChallengeMode.GetMapUIInfo(self2.mapID)
                         GameTooltip:AddDoubleLine(' ')
-                        local a=GetNum(self2.mapID, true) or RED_FONT_COLOR_CODE..NONE..'|r'--所有
-                        local w=GetNum(self2.mapID) or RED_FONT_COLOR_CODE..NONE..'|r'--本周
-                        GameTooltip:AddDoubleLine(HISTORY..': '..a, CHALLENGE_MODE_THIS_WEEK..': '..w)
+                        local a=GetNum(self2.mapID, true) or RED_FONT_COLOR_CODE..(e.onlyChinse and '无' or NONE)..'|r'--所有
+                        local w=GetNum(self2.mapID) or RED_FONT_COLOR_CODE..(e.onlyChinse and '无' or NONE)..'|r'--本周
+                        GameTooltip:AddDoubleLine(HISTORY..': '..a, (e.onlyChinse and '本周' or CHALLENGE_MODE_THIS_WEEK)..': '..w)
                         GameTooltip:AddDoubleLine('mapChallengeModeID |cnGREEN_FONT_COLOR:'.. self2.mapID..'|r', timeLimit and (e.onlyChinse and '限时' or GROUP_FINDER_PVE_PLAYSTYLE3)..' '.. SecondsToTime(timeLimit))
                         if texture and backgroundTexture then
                             GameTooltip:AddDoubleLine('|T'..texture..':0|t'..texture, '|T'..backgroundTexture..':0|t'..backgroundTexture)
