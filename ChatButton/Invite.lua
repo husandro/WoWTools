@@ -1,5 +1,5 @@
 local id, e = ...
-local addName= e.onlyChinse and '邀请' or INVITE
+local addName= INVITE
 local Save={InvNoFriend={},
             LFGListAceInvite=true,--接受,LFD, 邀请
             FriendAceInvite=true,--接受, 好友, 邀请
@@ -889,6 +889,7 @@ local function Init()
     hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"],"OnShow",function(self)--StaticPopup.lua
         e.PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
         if Save.Summon and not UnitAffectingCombat("player") and PlayerCanTeleport() and not UnitIsAFK('player') and not IsModifierKeyDown() then
+            print(id, addName, e.onlyChinse and '召唤' or SUMMON, C_SummonInfo.GetSummonConfirmSummoner(), C_SummonInfo.GetSummonConfirmAreaName())
             e.Ccool(self, nil, 3, nil, true, true, nil)--冷却条
             panel.SummonTimer= C_Timer.NewTimer(3, function()
                 if not UnitAffectingCombat("player") and PlayerCanTeleport() and not UnitIsAFK('player') and not IsModifierKeyDown() then
