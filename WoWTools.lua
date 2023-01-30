@@ -979,19 +979,10 @@ e.GetTooltipData= function(colorRed, text, hyperLink, bag, guidBank, merchant, b
             if line.leftText then
                 if text and line.leftText:find(text) then--字符
                     findText= line.leftText:match(text) or line.leftText
-                    if not colorRed   then
-                        break
-                    end
                 elseif text2 and line.leftText:find(text2) then--字符2
                     findText2= line.leftText:match(text2) or line.leftText
-                    if not colorRed and findText then
-                        break
-                    end
                 elseif text3 and line.leftText:find(text3) then
                     findText3= line.leftText:match(text3) or line.leftText
-                    if not colorRed   then
-                        break
-                    end
                 elseif line.leftText==ITEM_BNETACCOUNTBOUND or line.leftText==ITEM_ACCOUNTBOUND then--暴雪游戏通行证绑定, 账号绑定
                     wow=true
                 end

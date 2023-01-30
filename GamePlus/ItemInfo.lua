@@ -104,7 +104,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
                             leftText= e.Icon.star2
                         else
                             min, max= tonumber(min), tonumber(max)
-                            leftText= '|cnRED_FONT_COLOR:'..max-min..'|r'
+                            leftText= '|cnGREEN_FONT_COLOR:'..max-min..'|r'
                         end
                     end
                 end

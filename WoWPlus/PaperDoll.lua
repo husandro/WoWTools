@@ -206,10 +206,11 @@ end
 
 local PvPItemLevelStr=PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在竞技场和战场中将物品等级提高至%d。"
 local enchantStr=ENCHANTED_TOOLTIP_LINE:gsub('%%s','(.+)')--附魔
+local text_ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(%%d%+/%%d%+)')-- "升级：%s/%s"
 local function Enchant(self, slot, link)--附魔, 使用, 属性
-    local enchant, use, pvpItem, _
+    local enchant, use, pvpItem, upgradeItem, _
     if link then
-        _, enchant, _ , pvpItem= e.GetTooltipData(nil, enchantStr, link, nil, nil, nil, nil, slot, PvPItemLevelStr)--物品提示，信息
+        _, enchant, _ , pvpItem, upgradeItem=  e.GetTooltipData(nil, enchantStr, link, nil, nil, nil, nil, slot, PvPItemLevelStr, text_ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT)--物品提示，信息
         if enchant and not self.enchant then--附魔
             local h=self:GetHeight()/3
             self.enchant=self:CreateTexture()
@@ -248,6 +249,15 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
             end
             self.pvpItem:SetAtlas('pvptalents-warmode-swords')
         end
+
+        if upgradeItem and not self.upgradeItem then--"升级：%s/%s"
+            self.upgradeItem= e.Cstr(self, 12, nil, nil, {0,1,0}, nil,'CENTER')
+            if Slot(slot) then
+                self.upgradeItem:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT', -2.5,0)
+            else
+                self.upgradeItem:SetPoint('BOTTOMRIGHT', self, 'BOTTOMLEFT', 2.5,0)
+            end
+        end
     end
 
     if self.enchant then
@@ -258,6 +268,20 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
     end
     if self.pvpItem then
         self.pvpItem:SetShown(pvpItem and true or false)
+    end
+    if self.upgradeItem then--文字
+        if upgradeItem then
+            local min, max= upgradeItem:match('(%d+)/(%d+)')
+            if min and max then
+                if min==max then
+                    upgradeItem= e.Icon.star2
+                else
+                    min, max= tonumber(min), tonumber(max)
+                    upgradeItem= max-min
+                end
+            end
+        end
+        self.upgradeItem:SetText(upgradeItem or '')
     end
 end
 
