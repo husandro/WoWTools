@@ -266,7 +266,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
 
         if self.name then
             set_SetTextColor(self.name, r,g,b)--名称, 颜色
-            if unit:find('pet')then
+            if unit:find('pet') or UnitIsUnit(unit, 'pet') then
                 self.name:SetText('')
             elseif isParty then
                 local name= UnitName(unit)
