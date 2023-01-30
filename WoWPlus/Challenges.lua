@@ -242,7 +242,7 @@ local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
                     end
                 end
             end
-            print(e.id..':|n'..CHALLENGE_MODE_KEYSTONE_NAME:format(RED_FONT_COLOR_CODE..TAXI_PATH_UNREACHABLE..'|r'))
+            print(id, CHALLENGE_MODE_KEYSTONE_NAME:format(RED_FONT_COLOR_CODE..TAXI_PATH_UNREACHABLE..'|r'))
     end)
 
     frame.party=e.Cstr(frame)--队伍信息
