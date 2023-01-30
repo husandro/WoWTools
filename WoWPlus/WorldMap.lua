@@ -1,5 +1,5 @@
 local id, e = ...
-local addName = e.onlyChinse and '地图' or WORLD_MAP
+local addName = WORLD_MAP
 local addName2=RESET_POSITION:gsub(RESET, PLAYER)
 local Save={}
 local panel=CreateFrame("Frame")

@@ -1,5 +1,5 @@
 local id, e = ...
-local addName= e.onlyChinse and '坐骑' or MOUNT
+local addName= MOUNT
 local Faction =  UnitFactionGroup('player')=='Horde' and 0 or UnitFactionGroup('player')=='Alliance' and 1
 local ClassID = select(2, UnitClassBase('player'))
 local ShiJI= Faction==0 and IsSpellKnown(179244) and 179244 or Faction==1 and IsSpellKnown(179245) and 179245--[召唤司机]
