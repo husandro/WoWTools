@@ -416,7 +416,7 @@ local function set_LFGPlus()--预创建队伍增强
         Save.PartyToRaid=s:GetChecked()
     end)
 
-    hooksecurefunc("LFGListSearchEntry_Update", function(self)----查询,自定义, 预创建队伍, LFG队长分数, 双击加入
+    hooksecurefunc("LFGListSearchEntry_Update", function(self)----查询,自定义, 预创建队伍, LFG队长分数, 双击加入 LFGList.lua
         local info = Save.LFGPlus and self.resultID and  C_LFGList.GetSearchResultInfo(self.resultID);
         if info and not info.isDelisted then
             local text=e.GetKeystoneScorsoColor(info.leaderOverallDungeonScore, true);--分数
