@@ -154,6 +154,3 @@ ChatButton\Say.lua
 ChatButton\Emoji.lua
 ##各种, 战斗时间
 ChatButton\CombatTimer.lua
-
-##仅中文,不用中文,可以删除
-Sesource\GlobalStrings.lua
