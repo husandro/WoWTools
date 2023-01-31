@@ -243,18 +243,36 @@ local function Init()
         if outputIcon.countBag then
             outputIcon.countBag:SetText(num or '')
         end
-        
-        local frame= outputIcon:GetParent()
-        if frame and frame.enchantSlot and frame.enchantSlot.Button and frame.enchantSlot.Button:IsShown() then
-            if GetItemCount(38682)>0 then
-                local item = Item:CreateFromItemLink(38682)
-                frame.enchantSlot.Button:SetItem(item)
+    end)
+
+    --######
+    --附魔纸
+    --Blizzard_ProfessionsRecipeSchematicForm.lua
+    hooksecurefunc(ProfessionsFrame.CraftingPage.SchematicForm, 'Init', function(self, recipeInfo, isRecraftOverride)
+        local recipeID = recipeInfo and recipeInfo.recipeID
+        local isEnchant = recipeID and (self.recipeSchematic.recipeType == Enum.TradeskillRecipeType.Enchant) and not C_TradeSkillUI.IsRuneforging();
+        if not isEnchant
+            or Save.notProfessionsFrameButtuon--禁用，按钮
+            or not self.enchantSlot
+            or not self.enchantSlot:IsShown()
+            or GetItemCount(38682, true, nil, true)==0--没有， 附魔纸
+        then
+            return
+        end
+        local candidateGUIDs = C_TradeSkillUI.GetEnchantItems(recipeID);
+        for index, item in ipairs(ItemUtil.TransformItemGUIDsToItems(candidateGUIDs)) do
+            --if candidateGUIDs[index] and item and ItemUtil.GetCraftingReagentCount(item:GetItemID()) > 0 then--第一个
+            if candidateGUIDs[index] and item and item:GetItemID()== 38682 then--附魔纸
+                local itemLocal= Item:CreateFromItemGUID(candidateGUIDs[index])
+                if itemLocal then
+                    self.transaction:SetEnchantAllocation(itemLocal);
+                    self.enchantSlot:SetItem(itemLocal);
+                    self:TriggerEvent(ProfessionsRecipeSchematicFormMixin.Event.AllocationsModified);
+                    break
+                end
             end
         end
     end)
-
-    --Blizzard_ProfessionsRecipeSchematicForm.lua
-  
 end
 --hooksecurefunc(ProfessionsRecipeSchematicFormMixin, 'Init', function(recipeInfo, isRecraftOverride)
   --  print(recipeInfo, isRecraftOverride)
