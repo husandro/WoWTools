@@ -274,9 +274,7 @@ local function Init()
         end
     end)
 end
---hooksecurefunc(ProfessionsRecipeSchematicFormMixin, 'Init', function(recipeInfo, isRecraftOverride)
-  --  print(recipeInfo, isRecraftOverride)
----end)
+
 --###########
 --加载保存数据
 --###########
