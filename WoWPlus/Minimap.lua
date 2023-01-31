@@ -140,24 +140,54 @@ end
 --#################
 local function set_vigentteButton_Event()
     local bat= UnitAffectingCombat('player')
-    if Save.vigentteButton and Save.vigentteButtonShowText and not bat then
+    if Save.vigentteButton and Save.vigentteButtonShowText and not bat and not IsInInstance() then
         panel.vigentteButton:RegisterEvent('AREA_POIS_UPDATED')
         panel.vigentteButton:RegisterEvent('VIGNETTES_UPDATED')
+        panel.vigentteButton:RegisterEvent('QUEST_DATA_LOAD_RESULT')
+        panel.vigentteButton:RegisterEvent('QUEST_COMPLETE')
     else
         panel.vigentteButton:UnregisterEvent('AREA_POIS_UPDATED')
         panel.vigentteButton:UnregisterEvent('VIGNETTES_UPDATED')
+        panel.vigentteButton:UnregisterEvent('QUEST_DATA_LOAD_RESULT')
+        panel.vigentteButton:UnregisterEvent('QUEST_COMPLETE')
     end
     if Save.vigentteButton and Save.vigentteButtonShowText and bat then
         panel.vigentteButton.text:SetText('')
     end
 end
 local uiMapIDsTab= {2026, 2025, 2024, 2023, 2022}--地图, areaPoiIDs
+local questIDTab= {--世界任务, 监视, ID
+    [74378]=true,
+}
+local vigentteButtonSetTexting
 local function set_vigentteButton_Text()
     if not Save.vigentteButtonShowText then
         panel.vigentteButton.text:SetText('')
+        vigentteButtonSetTexting=nil
         return
     end
+    if vigentteButtonSetTexting then
+        return
+    end
+    vigentteButtonSetTexting=true
     local text
+    if e.Player.level==70 then--世界任务, 监视
+        for questID,_ in pairs(questIDTab) do
+            if C_TaskQuest.IsActive(questID) then--世界任务
+                if not HaveQuestRewardData(questID) then
+                    C_TaskQuest.RequestPreloadRewardData(questID)
+                else
+                    local questName= C_TaskQuest.GetQuestInfoByQuestID(questID)
+                    local itemTexture= select(2, GetQuestLogRewardInfo(1, questID))
+                    if questName and itemTexture then
+                        local secondsLeft = C_TaskQuest.GetQuestTimeLeftSeconds(questID)
+                        text='|cffff8200'..questName..(secondsLeft and ' '..SecondsToClock(secondsLeft, true))..'|T'..itemTexture..':0|t|r'
+                    end
+                end
+            end
+        end
+    end
+
     local vignetteGUIDs=C_VignetteInfo.GetVignettes() or {};
     for _, guid in pairs(vignetteGUIDs) do
         local info= C_VignetteInfo.GetVignetteInfo(guid)
@@ -199,7 +229,9 @@ local function set_vigentteButton_Text()
         end
     end
     panel.vigentteButton.text:SetText(text or '..')
+    vigentteButtonSetTexting=nil
 end
+
 local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
     if not Save.vigentteButton or IsInInstance() then
         if panel.vigentteButton then
@@ -288,12 +320,14 @@ local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
         end)
         panel.vigentteButton:RegisterEvent('PLAYER_REGEN_DISABLED')
         panel.vigentteButton:RegisterEvent('PLAYER_REGEN_ENABLED')
-        panel.vigentteButton:SetScript("OnEvent", function(self, event)
+        panel.vigentteButton:SetScript("OnEvent", function(self, event, arg1, arg2)
             if event=='PLAYER_REGEN_DISABLED' or event=='PLAYER_REGEN_ENABLED' then
                 set_vigentteButton_Event()
                 if event=='PLAYER_REGEN_ENABLED' and Save.vigentteButton and Save.vigentteButtonShowText then
                     set_vigentteButton_Text()
                 end
+            elseif event=='QUEST_DATA_LOAD_RESULT' and arg2 and questIDTab[arg1] then
+                set_vigentteButton_Text()
             else
                 set_vigentteButton_Text()
             end
