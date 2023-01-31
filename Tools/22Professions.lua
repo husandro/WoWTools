@@ -244,18 +244,6 @@ local function Init()
             outputIcon.countBag:SetText(num or '')
         end
     end)
---[[    ProfessionsFrame:SetScript('OnShow', function(self)
-        self:RegisterEvent('BAG_UPDATE')
-        print('show')
-    end)
-    hooksecurefunc(ProfessionsFrame, 'Hide', function(self)
-        self:UnregisterEvent('BAG_UPDATE')
-        print('hide')
-    end)
-    hooksecurefunc(ProfessionsFrame, 'OnEvent', function(self, event, arg1)
-        ProfessionsFrame.CraftingPage.SchematicForm.OutPutIcon.countBag:SetText('a')
-    end)
-    --ProfessionsFrame.CraftingPage.SchematicForm.OutPutIcon.countBag]]
 end
 
 --###########
