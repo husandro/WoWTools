@@ -1145,7 +1145,8 @@
         "Background",
         "TalentButtonUtil",
         "TalentSelectionChoiceMixin",
-        "ClassTalentSelectionChoiceMixin"
+        "ClassTalentSelectionChoiceMixin",
+        "ProfessionsRecipeSchematicFormMixin"
     ],
     "Lua.diagnostics.disable": [
     ]

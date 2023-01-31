@@ -211,7 +211,6 @@ end
 --初始
 --####
 local function Init()
-    
     set_ProfessionsFrame_Button()--专业界面, 按钮
 
     --###
@@ -244,9 +243,22 @@ local function Init()
         if outputIcon.countBag then
             outputIcon.countBag:SetText(num or '')
         end
+        
+        local frame= outputIcon:GetParent()
+        if frame and frame.enchantSlot and frame.enchantSlot.Button and frame.enchantSlot.Button:IsShown() then
+            if GetItemCount(38682)>0 then
+                local item = Item:CreateFromItemLink(38682)
+                frame.enchantSlot.Button:SetItem(item)
+            end
+        end
     end)
-end
 
+    --Blizzard_ProfessionsRecipeSchematicForm.lua
+  
+end
+--hooksecurefunc(ProfessionsRecipeSchematicFormMixin, 'Init', function(recipeInfo, isRecraftOverride)
+  --  print(recipeInfo, isRecraftOverride)
+---end)
 --###########
 --加载保存数据
 --###########
