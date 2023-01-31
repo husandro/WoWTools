@@ -1023,9 +1023,10 @@ BORDER
 ARTWORK
 OVERLAY
 DRAG_MODEL拖曳
+QUEST_DASH 任务 -
+RANGE_INDICATOR = "●"
 
 UIPanelWindows[]
-
 
 FrameUtil.RegisterFrameForEvents(self, table);
 FrameUtil.UnregisterFrameForEvents(self, table);
@@ -1038,6 +1039,6 @@ UnitPopupSharedMenus.lua
 
 EditModeManagerFrame:UseRaidStylePartyFrames()
 
-QUEST_DASH 任务 -
-RANGE_INDICATOR = "●";
+local item = Item:CreateFromItemLink(outputItemInfo.hyperlink)
+quality = item:GetItemQuality()
 ]]

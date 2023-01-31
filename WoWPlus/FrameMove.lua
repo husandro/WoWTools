@@ -98,7 +98,7 @@ end
 local FrameTab={
     AddonList={},--插件
     GameMenuFrame={save=true,},--菜单
-    ProfessionsFrame={},--专业
+    ProfessionsFrame={save=true},--专业
     CharacterFrame={},--角色
     ReputationDetailFrame={save=true},--声望描述q
     TokenFramePopup={save=true},--货币设置
@@ -130,6 +130,10 @@ local FrameTab={
 };
 --UIWidgetBelowMinimapContainerFrame={save=true,click='RightButton'},
 
+--#################
+--禁用, 窗口,重置位置
+--#################
+UIPanelWindows['ProfessionsFrame']= nil
 
 
 local function setTabInit()

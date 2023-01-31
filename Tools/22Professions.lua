@@ -67,11 +67,7 @@ local function set_ProfessionsFrame_Button()--专业界面, 按钮
         end
     end
 end
-
---####
---初始
---####
-local function Init()
+local function set_Button()
     panel.buttons={}
     local tab={GetProfessions()}--local prof1, prof2, archaeology, fishing, cooking = GetProfessions()
     for index, type in pairs(tab) do
@@ -211,6 +207,56 @@ local function Init()
         end
     end
 end
+--####
+--初始
+--####
+local function Init()
+    set_ProfessionsFrame_Button()--专业界面, 按钮
+
+    --###
+    --数量
+    --Blizzard_Professions.lua
+    hooksecurefunc(Professions,'SetupOutputIconCommon', function(outputIcon, quantityMin, quantityMax, icon, itemIDOrLink, quality)
+        local num
+        if itemIDOrLink and not Save.notProfessionsFrameButtuon then
+            num= GetItemCount(itemIDOrLink, true)
+            local itemID= GetItemInfoInstant(itemIDOrLink)
+            if itemID then
+                local all= 0--帐号数据
+                for guid, info in pairs(e.WoWSave) do
+                    if guid and info and guid~=e.Player.guid then
+                        local tab=info.Item[itemID]
+                        if tab and tab.bag and tab.bank then
+                           all= all+1
+                        end
+                    end
+                end
+                if all>0 then
+                    num= num..' (+'..all..')'
+                end
+            end
+        end
+        if not outputIcon.countBag and num then
+            outputIcon.countBag= e.Cstr(outputIcon, nil, nil, nil, {0,1,0})
+            outputIcon.countBag:SetPoint('BOTTOM', outputIcon, 'TOP',0,5)
+        end
+        if outputIcon.countBag then
+            outputIcon.countBag:SetText(num or '')
+        end
+    end)
+--[[    ProfessionsFrame:SetScript('OnShow', function(self)
+        self:RegisterEvent('BAG_UPDATE')
+        print('show')
+    end)
+    hooksecurefunc(ProfessionsFrame, 'Hide', function(self)
+        self:UnregisterEvent('BAG_UPDATE')
+        print('hide')
+    end)
+    hooksecurefunc(ProfessionsFrame, 'OnEvent', function(self, event, arg1)
+        ProfessionsFrame.CraftingPage.SchematicForm.OutPutIcon.countBag:SetText('a')
+    end)
+    --ProfessionsFrame.CraftingPage.SchematicForm.OutPutIcon.countBag]]
+end
 
 --###########
 --加载保存数据
@@ -221,14 +267,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
         if not e.toolsFrame.disabled then
             C_Timer.After(2.2, function()
-                set_ProfessionsFrame_Button()--专业界面, 按钮
+                Init()--初始
+
                 if UnitAffectingCombat('player') then
                     panel.combat= true
                     panel:RegisterEvent("PLAYER_REGEN_ENABLED")
                 else
-                    Init()--初始
+                    set_Button()
                 end
             end)
+
         else
             panel:UnregisterAllEvents()
         end
@@ -243,7 +291,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='PLAYER_REGEN_ENABLED' then
         if panel.combat then
             panel.combat=nil
-            Init()--初始
+            set_Button()--初始
         end
         panel:UnregisterEvent("PLAYER_REGEN_ENABLED")
     end

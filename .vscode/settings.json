@@ -1114,7 +1114,9 @@
         "GetChannelName",
         "GetChatWindowChannels",
         "PLAYER_COUNTDOWN_BUTTON",
-        "ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT"
+        "ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT",
+        "UIPanelWindows",
+        "Professions"
     ],
     "Lua.diagnostics.disable": [
     ]
