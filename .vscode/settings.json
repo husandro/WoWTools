@@ -1116,7 +1116,8 @@
         "PLAYER_COUNTDOWN_BUTTON",
         "ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT",
         "UIPanelWindows",
-        "Professions"
+        "Professions",
+        "ABANDON_PET"
     ],
     "Lua.diagnostics.disable": [
     ]
