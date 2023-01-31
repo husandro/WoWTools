@@ -232,16 +232,14 @@ local function Init()
                         end
                     end
                 end
-                if all>0 then
+                if all>=0 then
                     num= num..' (+'..all..')'
                 end
             end
         end
         if not outputIcon.countBag and num then
-            outputIcon.countBag= e.Cstr(outputIcon, nil, nil, nil, {0,1,0})
+            outputIcon.countBag= e.Cstr(outputIcon, nil, nil, nil, {0,1,0}, nil, 'CENTER')
             outputIcon.countBag:SetPoint('BOTTOM', outputIcon, 'TOP',0,5)
-            UIPanelWindows['ProfessionsFrame']= nil
-            print(id)
         end
         if outputIcon.countBag then
             outputIcon.countBag:SetText(num or '')
