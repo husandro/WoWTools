@@ -1120,7 +1120,26 @@
         "ABANDON_PET",
         "UIParentLoadAddOn",
         "ProfessionsFrame_LoadUI",
-        "OpenProfessionUIToSkillLine"
+        "OpenProfessionUIToSkillLine",
+        "CharacterFrame",
+        "ReputationDetailFrame",
+        "TokenFramePopup",
+        "SpellBookFrame",
+        "PVEFrame",
+        "HelpFrame",
+        "MacroFrame",
+        "ChatConfigFrame",
+        "SettingsPanel",
+        "UIWidgetPowerBarContainerFrame",
+        "BlackMarketFrame",
+        "BankFrame",
+        "ClassTrainerFrame",
+        "ColorPickerFrame",
+        "BFAMissionFrame",
+        "VehicleSeatIndicator",
+        "ExpansionLandingPage",
+        "PlayerPowerBarAlt",
+        "SendMailFrame"
     ],
     "Lua.diagnostics.disable": [
     ]

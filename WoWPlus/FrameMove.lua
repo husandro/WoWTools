@@ -98,7 +98,7 @@ end
 local FrameTab={
     AddonList={},--插件
     GameMenuFrame={save=true,},--菜单
-    ProfessionsFrame={save=true},--专业
+    ProfessionsFrame={},--专业
     CharacterFrame={},--角色
     ReputationDetailFrame={save=true},--声望描述q
     TokenFramePopup={save=true},--货币设置
@@ -126,6 +126,7 @@ local FrameTab={
     --MainMenuBarBackpackButton={save=true, click='R', frame=MicroButtonAndBagsBar},--主菜单
     PlayerPowerBarAlt={},--UnitPowerBarAlt.lua
     MailFrame={},
+    SendMailFrame={frame= MailFrame},
     MirrorTimer1={save=true},
 };
 --UIWidgetBelowMinimapContainerFrame={save=true,click='RightButton'},
@@ -404,7 +405,8 @@ tex:SetAtlas('!perks-list-side-vertical')
         ToggleCollectionsJournal(1)
         HideUIPanel(CollectionsJournal)
     end]]
-    
+
+    Move(MailFrame.TitleContainer,{frame=MailFrame})
 end
 
 --加载保存数据
