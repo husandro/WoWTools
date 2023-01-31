@@ -181,7 +181,7 @@ local function set_vigentteButton_Text()
                     local itemTexture= select(2, GetQuestLogRewardInfo(1, questID))
                     if questName and itemTexture then
                         local secondsLeft = C_TaskQuest.GetQuestTimeLeftSeconds(questID)
-                        text='|cffff8200'..questName..(secondsLeft and ' '..SecondsToClock(secondsLeft, true))..'|T'..itemTexture..':0|t|r'
+                        text='|cffff8200'..questName..(secondsLeft and ' '..SecondsToClock(secondsLeft, true) or '')..'|T'..itemTexture..':0|t|r'
                     end
                 end
             end

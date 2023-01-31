@@ -1139,7 +1139,9 @@
         "VehicleSeatIndicator",
         "ExpansionLandingPage",
         "PlayerPowerBarAlt",
-        "SendMailFrame"
+        "SendMailFrame",
+        "ChallengesKeystoneFrameAffixMixin",
+        "CHALLENGE_MODE_EXTRA_AFFIX_INFO"
     ],
     "Lua.diagnostics.disable": [
     ]

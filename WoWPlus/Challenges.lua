@@ -822,7 +822,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
 
                 if(affixScores and #affixScores > 0) then --最佳 
                     for k, affixInfo in ipairs(affixScores) do
-                        if not frame['affixInfo'..k] then
+                        if not frame['affixInfo'..k] and affixInfo.level then
                             frame['affixInfo'..k]=e.Cstr(frame)
                             frame['affixInfo'..k]:SetJustifyH('CENTER')
                             if k==1 then
@@ -833,10 +833,25 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                                 break
                             end
                         end
-                        if affixScores[k].overTime then
-                            frame['affixInfo'..k]:SetText(affixInfo.name..'|n|cffffffff'..affixInfo.level..'|r')
-                        else
-                            frame['affixInfo'..k]:SetText(affixInfo.name..'|n|cff00ff00'..affixInfo.level..'|r')
+                        if frame['affixInfo'..k] then
+                            local text
+                            if affixInfo.level then
+                                text= affixScores[k].overTime and '|cnRED_FONT_COLOR:'..affixInfo.level..'|r' or affixInfo.level
+                                local nameA, _, filedataidA = C_ChallengeMode.GetAffixInfo(10)
+                                local nameB, _, filedataidB = C_ChallengeMode.GetAffixInfo(9)
+                                local texture= affixInfo.name==nameA and filedataidA or  affixInfo.name==nameB and filedataidB
+                                if texture then
+                                    if k==1 then
+                                        text= '|T'..texture..':0|t'..text
+                                    else
+                                        text= text..'|T'..texture..':0|t'
+                                    end
+                                end
+                            end
+                            frame['affixInfo'..k]:SetText(text or '')
+                        end
+                        if k==2 then
+                            break
                         end
                     end
                 end
