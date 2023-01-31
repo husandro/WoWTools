@@ -16,7 +16,7 @@ local affixSchedule = {-- AngryKeystones Schedule Dragonflight Season 1,史诗�
 	[10] = { [1]=7,   [2]=3,   [3]=9,  }, -- Tyrannical | Bolstering | Volcanica
 }
 local EncounterJournal_Maps={--[mapChallengeModelID]= journalInstanceID
-   --[[ [2]= 313,--青龙寺
+    [2]= 313,--青龙寺
     [400]= 1198,--诺库德阻击战
     [200]= 721,--[英灵殿]
     [402]= 1201,--[艾杰斯亚学院]
@@ -33,7 +33,6 @@ local EncounterJournal_Maps={--[mapChallengeModelID]= journalInstanceID
     [169]= 558,--铁船之路(码头)
     [227]= 860,--堕落守护者之路(卡拉赞)
     [234]= 860,--堕落守护者之路(卡拉赞)
-]]
 }
 --[[
 local spellIDs={--法术, 传送门, {mapChallengeModeID = 法术 SPELL ID}, BUG, 战斗中关闭, 会出现错误
