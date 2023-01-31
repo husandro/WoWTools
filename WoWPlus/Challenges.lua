@@ -16,7 +16,7 @@ local affixSchedule = {-- AngryKeystones Schedule Dragonflight Season 1,史诗�
 	[10] = { [1]=7,   [2]=3,   [3]=9,  }, -- Tyrannical | Bolstering | Volcanica
 }
 local EncounterJournal_Maps={--[mapChallengeModelID]= journalInstanceID
-    [2]= 313,--青龙寺
+   --[[ [2]= 313,--青龙寺
     [400]= 1198,--诺库德阻击战
     [200]= 721,--[英灵殿]
     [402]= 1201,--[艾杰斯亚学院]
@@ -33,7 +33,7 @@ local EncounterJournal_Maps={--[mapChallengeModelID]= journalInstanceID
     [169]= 558,--铁船之路(码头)
     [227]= 860,--堕落守护者之路(卡拉赞)
     [234]= 860,--堕落守护者之路(卡拉赞)
-
+]]
 }
 --[[
 local spellIDs={--法术, 传送门, {mapChallengeModeID = 法术 SPELL ID}, BUG, 战斗中关闭, 会出现错误
@@ -621,7 +621,7 @@ local function All(self)--所有记录
         local m2=''
         for k, v in pairs(IDs) do
             if m2~='' then m2=m2..'|n' end
-            m2=m2..v.texture..' |cff00ff00'..v.co..'/'..v.to..'|r'..k
+            m2=m2..v.texture..' |cff00ff00'..v.co..'/'..v.to..'|r '..k
             for _,v2 in pairs(v.lv) do
                 m2=m2..' '..v2
             end
@@ -708,7 +708,7 @@ local function Cur(self)--货币数量
                     end
                 end
             end
-            t=t..info.name
+            --t=t..info.name
 
             if not self['cur'..k] then
                 self['cur'..k]=CreateFrame("Button", nil, self)
@@ -739,6 +739,7 @@ local function Cur(self)--货币数量
         end
         if self['cur'..k] then
             self['cur'..k].text:SetText(t)
+            self['cur'..k]:SetShown(not Save.hide)
         end
     end
 end
@@ -757,7 +758,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                     if not EncounterJournal or not EncounterJournal:IsShown() then
                         ToggleEncounterJournal()
                     end
-                    if self2.mapID then
+                    if self2.mapID and EncounterJournal_Maps[self2.mapID] then
                         NavBar_Reset(EncounterJournal.navBar)
                         EncounterJournal_DisplayInstance(EncounterJournal_Maps[self2.mapID])
                     end
@@ -768,11 +769,12 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                         GameTooltip:AddDoubleLine(' ')
                         local a=GetNum(self2.mapID, true) or RED_FONT_COLOR_CODE..(e.onlyChinse and '无' or NONE)..'|r'--所有
                         local w=GetNum(self2.mapID) or RED_FONT_COLOR_CODE..(e.onlyChinse and '无' or NONE)..'|r'--本周
-                        GameTooltip:AddDoubleLine(HISTORY..': '..a, (e.onlyChinse and '本周' or CHALLENGE_MODE_THIS_WEEK)..': '..w)
+                        GameTooltip:AddDoubleLine((e.onlyChinse and '历史' or HISTORY)..': '..a, (e.onlyChinse and '本周' or CHALLENGE_MODE_THIS_WEEK)..': '..w)
                         GameTooltip:AddDoubleLine('mapChallengeModeID |cnGREEN_FONT_COLOR:'.. self2.mapID..'|r', timeLimit and (e.onlyChinse and '限时' or GROUP_FINDER_PVE_PLAYSTYLE3)..' '.. SecondsToTime(timeLimit))
                         if texture and backgroundTexture then
                             GameTooltip:AddDoubleLine('|T'..texture..':0|t'..texture, '|T'..backgroundTexture..':0|t'..backgroundTexture)
                         end
+                        
                         GameTooltip:AddDoubleLine(e.onlyChinse and '冒险指南' or ADVENTURE_JOURNAL, e.Icon.left)
                         GameTooltip:Show()
                     end
