@@ -232,7 +232,7 @@ local function Init()
                         end
                     end
                 end
-                if all>=0 then
+                if all>0 then
                     num= num..' (+'..all..')'
                 end
             end
