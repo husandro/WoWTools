@@ -1117,7 +1117,10 @@
         "ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT",
         "UIPanelWindows",
         "Professions",
-        "ABANDON_PET"
+        "ABANDON_PET",
+        "UIParentLoadAddOn",
+        "ProfessionsFrame_LoadUI",
+        "OpenProfessionUIToSkillLine"
     ],
     "Lua.diagnostics.disable": [
     ]

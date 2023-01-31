@@ -133,7 +133,7 @@ local FrameTab={
 --#################
 --禁用, 窗口,重置位置
 --#################
-UIPanelWindows['ProfessionsFrame']= nil
+
 
 
 local function setTabInit()
@@ -404,6 +404,7 @@ tex:SetAtlas('!perks-list-side-vertical')
         ToggleCollectionsJournal(1)
         HideUIPanel(CollectionsJournal)
     end]]
+    
 end
 
 --加载保存数据

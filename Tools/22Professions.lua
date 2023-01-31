@@ -211,6 +211,7 @@ end
 --初始
 --####
 local function Init()
+    
     set_ProfessionsFrame_Button()--专业界面, 按钮
 
     --###
@@ -239,6 +240,8 @@ local function Init()
         if not outputIcon.countBag and num then
             outputIcon.countBag= e.Cstr(outputIcon, nil, nil, nil, {0,1,0})
             outputIcon.countBag:SetPoint('BOTTOM', outputIcon, 'TOP',0,5)
+            UIPanelWindows['ProfessionsFrame']= nil
+            print(id)
         end
         if outputIcon.countBag then
             outputIcon.countBag:SetText(num or '')
