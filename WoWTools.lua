@@ -1041,4 +1041,9 @@ EditModeManagerFrame:UseRaidStylePartyFrames()
 
 local item = Item:CreateFromItemLink(outputItemInfo.hyperlink)
 quality = item:GetItemQuality()
+
+if IsModifiedClick("CHATLINK") then
+    local spellLink = GetSpellLink(self:GetSpellID());
+    ChatEdit_InsertLink(spellLink);
+end
 ]]

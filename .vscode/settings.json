@@ -1141,7 +1141,11 @@
         "PlayerPowerBarAlt",
         "SendMailFrame",
         "ChallengesKeystoneFrameAffixMixin",
-        "CHALLENGE_MODE_EXTRA_AFFIX_INFO"
+        "CHALLENGE_MODE_EXTRA_AFFIX_INFO",
+        "Background",
+        "TalentButtonUtil",
+        "TalentSelectionChoiceMixin",
+        "ClassTalentSelectionChoiceMixin"
     ],
     "Lua.diagnostics.disable": [
     ]
