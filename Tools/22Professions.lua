@@ -255,7 +255,7 @@ local function Init()
             or Save.notProfessionsFrameButtuon--禁用，按钮
             or not self.enchantSlot
             or not self.enchantSlot:IsShown()
-            or GetItemCount(38682, true, nil, true)==0--没有， 附魔纸
+            or ItemUtil.GetCraftingReagentCount(38682)==0--没有， 附魔纸
         then
             return
         end
