@@ -415,30 +415,34 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
     end)
 
     hooksecurefunc('CompactUnitFrame_UpdateRoleIcon', function(frame)--隐藏, DPS，图标 
-        if not frame.roleIcon or not frame.optionTable.displayRaidRoleIcon or UnitInVehicle(frame.unit) or UnitHasVehicleUI(frame.unit) then
-            return;
+        if not UnitExists(frame.unit) then
+            return
         end
-        local raidID = UnitInRaid(frame.unit);
         local bool=true
-        if raidID then
-            if select(12, GetRaidRosterInfo(raidID))=='DAMAGER' then
-                bool=false
+        if not UnitInVehicle(frame.unit) and not UnitHasVehicleUI(frame.unit) and frame.roleIcon and frame.optionTable.displayRaidRoleIcon then
+            local raidID = UnitInRaid(frame.unit);
+            if raidID then
+                if select(12, GetRaidRosterInfo(raidID))=='DAMAGER' then
+                    bool=false
+                end
+            else
+                if UnitGroupRolesAssigned(frame.unit) == "DAMAGER" then
+                    bool= false
+                end
             end
-        else
-            if UnitGroupRolesAssigned(frame.unit) == "DAMAGER" then
-                bool= false
+            frame.roleIcon:SetShown(bool)
+        end
+        if frame.powerBar then
+            frame.powerBar:SetShown(bool)
+        end
+        if frame.background then
+            frame.background:ClearAllPoints()--背景
+            if bool then
+                frame.background:SetAllPoints(frame)
+            else
+                frame.background:SetAllPoints(frame.healthBar)
             end
         end
-        frame.roleIcon:SetShown(bool)
-        frame.powerBar:SetShown(bool)
-
-        frame.background:ClearAllPoints()
-        if bool then
-            frame.background:SetAllPoints(frame)
-        else
-            frame.background:SetAllPoints(frame.healthBar)
-        end
-        --frame.background:SetShown(bool)
     end)
 
     hooksecurefunc('CompactUnitFrame_UpdateName', function(frame)--修改, 名字
