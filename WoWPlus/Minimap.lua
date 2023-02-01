@@ -221,7 +221,11 @@ local function set_vigentteButton_Text()
                         text= text..' '
                     end
                     local secText=SecondsToClock(secondsLeft,true)
-                    text= text..secText:gsub('：',':')
+                    secText= secText:gsub('：',':')
+                    if secondsLeft<= 300 then
+                        secText= '|cnGREEN_FONT_COLOR:'..secText..'|r'
+                    end
+                    text= text..secText
 
                     text= text..'|A:'..poiInfo.atlasName..':0:0|a'
                 end

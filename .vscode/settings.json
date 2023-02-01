@@ -1189,7 +1189,8 @@
         "ProfessionsQualityDialogMixin",
         "ActionBarActionButtonMixin",
         "PetActionButtonMixin",
-        "TRADE"
+        "TRADE",
+        "BUG_CATEGORY4"
     ],
     "Lua.diagnostics.disable": [
     ]

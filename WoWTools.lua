@@ -158,7 +158,7 @@ e.Player={
     guid=UnitGUID('player'),
     levelMax=UnitLevel('player')==MAX_PLAYER_LEVEL,--玩家是否最高等级
     level=UnitLevel('player'),
-    husandro= select(2, BNGetInfo()) == '古月剑龙#5972' or select(2, BNGetInfo())=='SandroChina#2690',
+    husandro= select(2, BNGetInfo()) == '古月剑龙#5972' or select(2, BNGetInfo())=='SandroChina#2690' or UnitName('player')=='Fuocco',
 }
 for k, v in pairs(GetAutoCompleteRealms()) do
     e.Player.servers[v]=k
