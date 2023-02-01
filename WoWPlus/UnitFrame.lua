@@ -419,19 +419,26 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
             return;
         end
         local raidID = UnitInRaid(frame.unit);
+        local bool=true
         if raidID then
             if select(12, GetRaidRosterInfo(raidID))=='DAMAGER' then
-                frame.roleIcon:SetAlpha(0)
-            else
-                frame.roleIcon:SetAlpha(1)
+                bool=false
             end
         else
-            if UnitGroupRolesAssigned(frame.unit) == "DAMAGER"then
-                frame.roleIcon:SetAlpha(0)
-            else
-                frame.roleIcon:SetAlpha(1)
+            if UnitGroupRolesAssigned(frame.unit) == "DAMAGER" then
+                bool= false
             end
         end
+        frame.roleIcon:SetShown(bool)
+        frame.powerBar:SetShown(bool)
+
+        frame.background:ClearAllPoints()
+        if bool then
+            frame.background:SetAllPoints(frame)
+        else
+            frame.background:SetAllPoints(frame.healthBar)
+        end
+        --frame.background:SetShown(bool)
     end)
 
     hooksecurefunc('CompactUnitFrame_UpdateName', function(frame)--修改, 名字
@@ -483,6 +490,7 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
     hooksecurefunc('CompactRaidGroup_InitializeForGroup', function(frame, groupIndex)--处理, 队伍号
         frame.title:SetText('|A:'..e.Icon.number..groupIndex..':0:0|a')
     end)
+
 
     --新建, 移动, 按钮
     CompactRaidFrameContainer:SetClampedToScreen(true)

@@ -629,9 +629,10 @@ local function InitList(self, level, type)--LFDFrame.lua
         info= {
             text= e.onlyChinse and '战利品掷骰' or LOOT_ROLL,
             checked= LootHistoryFrame:IsShown(),
+            icon= 'Levelup-Icon-Bag',
             tooltipOnButton= true,
             tooltipTitle= '/loot',
-            tooltipText= 'SetCVar("autoOpenLootHistory", "1")',
+            --tooltipText= 'SetCVar("autoOpenLootHistory", "1")',
             func= function()
                 ToggleLootHistoryFrame()--LootHistory.lua
             end
@@ -1001,6 +1002,13 @@ local function Init()
                 end)
                 if name== e.Player.name then
                     playerFrame.PlayerName:SetText(e.Icon.player..COMBATLOG_FILTER_STRING_ME)
+                elseif name:find('%-') then
+                    local server=name:match('%-(.+)')
+                    if server and e.Player.servers[server] then
+                        playerFrame.PlayerName:SetText(name..e.Icon.star2)
+                    end
+                else
+                    playerFrame.PlayerName:SetText(name..e.Icon.star2)
                 end
             else
                 playerFrame:SetScript('OnMouseDown',nil)
