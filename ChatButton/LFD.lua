@@ -626,7 +626,17 @@ local function InitList(self, level, type)--LFDFrame.lua
             hasArrow=true,
         }
         UIDropDownMenu_AddButton(info, level)
-
+        info= {
+            text= e.onlyChinse and '战利品掷骰' or LOOT_ROLL,
+            checked= LootHistoryFrame:IsShown(),
+            tooltipOnButton= true,
+            tooltipTitle= '/loot',
+            tooltipText= 'SetCVar("autoOpenLootHistory", "1")',
+            func= function()
+                ToggleLootHistoryFrame()--LootHistory.lua
+            end
+        }
+        UIDropDownMenu_AddButton(info, level)
         UIDropDownMenu_AddSeparator(level)
         if  raidList(self, level, type) then --团本
             UIDropDownMenu_AddSeparator(level)
@@ -925,6 +935,48 @@ local function Init()
     end)
     hooksecurefunc('LootHistoryFrame_UpdateItemFrame', function(self, itemFrame)
         itemFrame:SetWidth(315)
+        if itemFrame.WinnerName and itemFrame:IsShown() then--修改, 自已名称
+           local text= itemFrame.WinnerName:GetText()
+           if text and text==e.Player.name then
+                itemFrame.WinnerName:SetText(COMBATLOG_FILTER_STRING_ME)
+           end
+        end
+        local itemLink= select(2, C_LootHistory.GetItem(itemFrame.itemIdx))
+        if itemLink then
+            local text
+            local _, _, _, itemLevel, _, _, _, _, itemEquipLoc, _, _, classID= GetItemInfo(itemLink)
+            if classID==2 or classID==4 then
+                local invSlot = e.itemSlotTable[itemEquipLoc]
+                if invSlot and itemLevel and itemLevel>1 then--装等
+                    local noUse= e.GetTooltipData(true, nil, itemLink)--物品提示，信息
+                    if not noUse then
+                        local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
+                        if itemLinkPlayer then
+                            local lv=GetDetailedItemLevelInfo(itemLinkPlayer)
+                            if lv and itemLevel-lv>0 then
+                                text= e.Icon.up2..itemLevel-lv
+                            end
+                        else
+                            text= e.Icon.up2..itemLevel
+                        end
+                    end
+                end
+
+                if not text then
+                    local text2, _, isSelf= e.GetItemCollected(itemLink, nil, true)--幻化
+                    text= isSelf and text2
+                end
+                if text and not itemFrame.upOrMogText then
+                    --e.Cstr=function(self, size, fontType, ChangeFont, color, layer, justifyH)
+                    itemFrame.upOrMogText= e.Cstr(itemFrame, nil, nil, nil, {0,1,0})
+                    itemFrame.upOrMogText:SetPoint('BOTTOMRIGHT', itemFrame.Icon, 'BOTTOMRIGHT')
+                end
+            end
+
+            if itemFrame.upOrMogText then
+                itemFrame.upOrMogText:SetText(text or '')
+            end
+        end
     end)
     hooksecurefunc('LootHistoryFrame_UpdatePlayerFrame', function(self, playerFrame)
         playerFrame.itemText= nil
@@ -940,11 +992,13 @@ local function Init()
                     end
                 end
                 playerFrame:EnableMouse(true)
-                playerFrame:SetScript('OnMouseDown',function(self2)
-                    e.Say(nil, self2.itemPlayerName, nil, self2.itemText)
+                playerFrame:SetScript('OnMouseDown',function(self2, d)
+                    if d=='LeftButton' then
+                        e.Say(nil, self2.itemPlayerName, nil, self2.itemText)
+                    else
+                        e.Say(nil, self2.itemPlayerName)
+                    end
                 end)
-
-
                 if name== e.Player.name then
                     playerFrame.PlayerName:SetText(e.Icon.player..COMBATLOG_FILTER_STRING_ME)
                 end

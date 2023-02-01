@@ -128,6 +128,7 @@ local FrameTab={
     MailFrame={},
     SendMailFrame={frame= MailFrame},
     MirrorTimer1={save=true},
+    LootHistoryFrame= {},--拾取框
 };
 --UIWidgetBelowMinimapContainerFrame={save=true,click='RightButton'},
 

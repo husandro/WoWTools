@@ -1203,7 +1203,8 @@
         "LootHistoryFrame_UpdatePlayerFrame",
         "LootHistoryFrameUtil_ShouldDisplayPlayer",
         "LootHistoryFrame_GetPlayerFrame",
-        "VOICEMACRO_16_Dw_0"
+        "VOICEMACRO_16_Dw_0",
+        "ToggleLootHistoryFrame"
     ],
     "Lua.diagnostics.disable": [
     ]
