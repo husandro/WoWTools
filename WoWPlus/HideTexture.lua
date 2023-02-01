@@ -199,11 +199,11 @@ local function Init()
             end
             if self.Name then--名称
                 self.Name:SetShadowOffset(1, -1)
-                local text=self.Name:GetText()
+                --[[local text=self.Name:GetText()
                 if text and #text>6 then
-                    text= e.WA_Utf8Sub(text, 3, 6)
+                    text= e.WA_Utf8Sub(text, 2, 5)
                     self.Name:SetText(text)
-                end
+                end]]
             end
         end
     end

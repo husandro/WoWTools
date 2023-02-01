@@ -6,6 +6,7 @@ local Save={
         [GENERAL]='['..GENERAL..']',
         ['本地']='[本地]',
         [PET_BATTLE_COMBAT_LOG]='['..PET..']',
+        [TRADE]= '['..TRADE..']',
     },
     text={--内容颜色,
         ['来人']=true,

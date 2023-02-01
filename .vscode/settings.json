@@ -1186,7 +1186,10 @@
         "FINISHING_REAGENT_TOOLTIP_TITLE",
         "PROFESSIONS_ITEM_RECRAFT_UNLEARNED",
         "PROFESSIONS_INSUFFICIENT_REAGENTS",
-        "ProfessionsQualityDialogMixin"
+        "ProfessionsQualityDialogMixin",
+        "ActionBarActionButtonMixin",
+        "PetActionButtonMixin",
+        "TRADE"
     ],
     "Lua.diagnostics.disable": [
     ]
