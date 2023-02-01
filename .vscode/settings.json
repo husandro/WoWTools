@@ -1190,7 +1190,10 @@
         "ActionBarActionButtonMixin",
         "PetActionButtonMixin",
         "TRADE",
-        "BUG_CATEGORY4"
+        "BUG_CATEGORY4",
+        "MainMenuBarBackpackMixin",
+        "MainMenuBarBackpackButtonCount",
+        "MainMenuBarBackpackButtonIconTexture"
     ],
     "Lua.diagnostics.disable": [
     ]

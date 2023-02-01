@@ -873,7 +873,11 @@ local function Init()
                 Equipment()
                 LvTo()--总装等
             elseif InventSlot_To_ContainerSlot[slot] then--背包数
-                local numFreeSlots = C_Container.GetContainerNumFreeSlots(InventSlot_To_ContainerSlot[slot])
+                local numFreeSlots
+                numFreeSlots = C_Container.GetContainerNumFreeSlots(InventSlot_To_ContainerSlot[slot])
+                if numFreeSlots==0 then
+                    numFreeSlots= nil
+                end
                 if numFreeSlots and not self.numFreeSlots then
                     self.numFreeSlots=e.Cstr(self,nil, nil, nil, true,nil, 'CENTER')
                     self.numFreeSlots:SetPoint('BOTTOM',0 ,6)
@@ -884,6 +888,31 @@ local function Init()
             end
         end
     end)
+
+    --#########
+    --背包, 数量
+    --MainMenuBarBagButtons.lua
+    if MainMenuBarBackpackButton then
+        if MainMenuBarBackpackButtonCount then
+            MainMenuBarBackpackButtonCount:SetShadowOffset(1, -1)
+        end
+        hooksecurefunc(MainMenuBarBackpackButton, 'UpdateFreeSlots', function(self)
+            local totalFree= self.freeSlots
+            print(self.freeSlots, id, self.ItemContextOverlay)
+            if totalFree then
+                if totalFree==0 then
+                    MainMenuBarBackpackButtonIconTexture:SetColorTexture(1,0,0,1)
+                    totalFree= '|cnRED_FONT_COLOR:'..totalFree..'|r'
+                elseif totalFree<=5 then
+                    MainMenuBarBackpackButtonIconTexture:SetColorTexture(0,1,0,1)
+                    totalFree= '|cnGREEN_FONT_COLOR:'..totalFree..'|r'
+                else
+                    MainMenuBarBackpackButtonIconTexture:SetColorTexture(0,0,0,0)
+                end
+                self.Count:SetText(totalFree);
+            end
+        end)
+    end
 end
 --加载保存数据
 panel:RegisterEvent("ADDON_LOADED")
