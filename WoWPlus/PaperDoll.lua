@@ -898,7 +898,6 @@ local function Init()
         end
         hooksecurefunc(MainMenuBarBackpackButton, 'UpdateFreeSlots', function(self)
             local totalFree= self.freeSlots
-            print(self.freeSlots, id, self.ItemContextOverlay)
             if totalFree then
                 if totalFree==0 then
                     MainMenuBarBackpackButtonIconTexture:SetColorTexture(1,0,0,1)
