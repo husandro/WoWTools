@@ -139,19 +139,22 @@ end
 --小地图, 标记, 文本
 --#################
 local function set_vigentteButton_Event()
-    local bat= UnitAffectingCombat('player')
-    if Save.vigentteButton and Save.vigentteButtonShowText and not bat and not IsInInstance() then
+    --local bat= UnitAffectingCombat('player')
+    --if Save.vigentteButton and Save.vigentteButtonShowText and not bat and not IsInInstance() then
+    if Save.vigentteButton and Save.vigentteButtonShowText and not IsInInstance() then
         panel.vigentteButton:RegisterEvent('AREA_POIS_UPDATED')
         panel.vigentteButton:RegisterEvent('VIGNETTES_UPDATED')
         panel.vigentteButton:RegisterEvent('QUEST_DATA_LOAD_RESULT')
         panel.vigentteButton:RegisterEvent('QUEST_COMPLETE')
     else
-        panel.vigentteButton:UnregisterEvent('AREA_POIS_UPDATED')
+        --[[panel.vigentteButton:UnregisterEvent('AREA_POIS_UPDATED')
         panel.vigentteButton:UnregisterEvent('VIGNETTES_UPDATED')
         panel.vigentteButton:UnregisterEvent('QUEST_DATA_LOAD_RESULT')
-        panel.vigentteButton:UnregisterEvent('QUEST_COMPLETE')
+        panel.vigentteButton:UnregisterEvent('QUEST_COMPLETE')]]
+        panel:UnregisterAllEvents()
     end
-    if Save.vigentteButton and Save.vigentteButtonShowText and bat then
+    --if Save.vigentteButton and Save.vigentteButtonShowText and bat then
+    if Save.vigentteButton and Save.vigentteButtonShowText then
         panel.vigentteButton.text:SetText('')
     end
 end
@@ -330,15 +333,16 @@ local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
             e.tips:Hide()
             ResetCursor()
         end)
-        panel.vigentteButton:RegisterEvent('PLAYER_REGEN_DISABLED')
-        panel.vigentteButton:RegisterEvent('PLAYER_REGEN_ENABLED')
+        --panel.vigentteButton:RegisterEvent('PLAYER_REGEN_DISABLED')
+        --panel.vigentteButton:RegisterEvent('PLAYER_REGEN_ENABLED')
         panel.vigentteButton:SetScript("OnEvent", function(self, event, arg1, arg2)
-            if event=='PLAYER_REGEN_DISABLED' or event=='PLAYER_REGEN_ENABLED' then
+            --[[if event=='PLAYER_REGEN_DISABLED' or event=='PLAYER_REGEN_ENABLED' then
                 set_vigentteButton_Event()
                 if event=='PLAYER_REGEN_ENABLED' and Save.vigentteButton and Save.vigentteButtonShowText then
                     set_vigentteButton_Text()
                 end
-            elseif event=='QUEST_DATA_LOAD_RESULT' and arg2 and questIDTab[arg1] then
+            else]]
+            if event=='QUEST_DATA_LOAD_RESULT' and arg2 and questIDTab[arg1] then
                 set_vigentteButton_Text()
             else
                 set_vigentteButton_Text()
