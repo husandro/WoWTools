@@ -52,7 +52,7 @@ local function setCooldown()--冷却条
 end
 
 local function setAtt(bag, slot, icon, itemID)--设置属性
-    if UnitAffectingCombat('player') then
+    if UnitAffectingCombat('player') or not UnitIsConnected('player') then
         Opening= nil
         Combat= true
         return
