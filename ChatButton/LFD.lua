@@ -158,82 +158,82 @@ local function setQueueStatus()--小眼睛, 信息
             end
         end
 
-        local pvp='';
+        local pvp=''
         for i=1,  GetMaxBattlefieldID() do --PVP
-            local status, mapName, teamSize, _, _, _, gameType = GetBattlefieldStatus(i);
+            local status, mapName, teamSize, _, _, _, gameType = GetBattlefieldStatus(i)
             if (status=='queued' or status=='confirm') and mapName then
-                if pvp~='' then pvp=pvp..'\n' end;
+                if pvp~='' then pvp=pvp..'\n' end
                 if status=='confirm' then pvp=pvp..'(|cFF00FF00'..COVENANT_MISSIONS_CONFIRM_START_MISSION..'|r)' end
-                pvp=pvp..mapName;
+                pvp=pvp..mapName
                 if (teamSize and teamSize>0) or (gameType and gameType~='') then
-                    pvp=pvp..'(' if teamSize and teamSize >0 then pvp=pvp..teamSize end;
-                    if gameType then pvp=pvp..gameType end;
-                    pvp=pvp..')';
-                end;
-            end;
-        end;
+                    pvp=pvp..'(' if teamSize and teamSize >0 then pvp=pvp..teamSize end
+                    if gameType then pvp=pvp..gameType end
+                    pvp=pvp..')'
+                end
+            end
+        end
         if pvp~='' then
             text=text~='' and text..'\n' or text
             text=text..'|cFF00FF00*PvP|r'..pvp
             local tank, healer, dps = GetPVPRoles()
             if tank or healer or dps then
                 text=text..(tank and e.Icon.TANK or '')..(healer and e.Icon.HEALER or '')..(dps and e.Icon.DAMAGER or '')
-            end;
+            end
             text=text..' '
-        end;
+        end
 
         local sta=C_PetBattles.GetPVPMatchmakingInfo()--PET
         if sta=='queued' then
             text=text~='' and  text..'\n' or text
             text=text..PET_BATTLE_PVP_QUEUE ..'|A:worldquest-icon-petbattle:0:0|a'
             text=text..' '
-        end;
+        end
 
         if C_LFGList.HasActiveEntryInfo() then--已激活LFG
             local list
-            local info =C_LFGList.GetActiveEntryInfo();
+            local info =C_LFGList.GetActiveEntryInfo()
             if info and info.name then
-                list=info.name;--名称
+                list=info.name--名称
                 local ap=C_LFGList.GetApplicants()--申请人数
                 if ap and #ap>0 then
                     list=list..' |cFF00FF00#'..#ap..'|r'
-                end;
+                end
                 if info.autoAccept then 
                     list=list..'|A:runecarving-icon-reagent-empty:0:0|a' 
-                end;--自动邀请
+                end--自动邀请
                 if info.activityID then--名称
-                    local name2=C_LFGList.GetActivityFullName(info.activityID);                            
+                    local name2=C_LFGList.GetActivityFullName(info.activityID)                            
                     if name2 then
                         list=list..' ('..name2..')'
-                    end;
-                end;
+                    end
+                end
                 if info.duration then--时长
-                    local time=SecondsToClock(1800-info.duration);
-                    time=time:gsub('：',':');
-                    time=time:gsub(' ','');
+                    local time=SecondsToClock(1800-info.duration)
+                    time=time:gsub('：',':')
+                    time=time:gsub(' ','')
                     list=list..' '..time
-                end;
+                end
                 if info.privateGroup then--私人
                     list=list..LFG_LIST_PRIVATE
-                end;
-            end;
+                end
+            end
             if list then
                 text=text~='' and text..'\n'..list or list
                 text=text..' '
             end
-        end;
+        end
 
-        local sea='';--LFG申请列表
-        local apps = C_LFGList.GetApplications() or {};
+        local sea=''--LFG申请列表
+        local apps = C_LFGList.GetApplications() or {}
         for i=1, #apps do
-            local _, appStatus = C_LFGList.GetApplicationInfo(apps[i]);
+            local _, appStatus = C_LFGList.GetApplicationInfo(apps[i])
             if ( appStatus == "applied" or appStatus == "invited" ) then
-                local searchResultInfo = C_LFGList.GetSearchResultInfo(apps[i]);
-                local activityName = C_LFGList.GetActivityFullName(searchResultInfo.activityID, nil, searchResultInfo.isWarMode);
-                sea=sea..'\n'..searchResultInfo.name..'('.. activityName..')|cFF00FF00*|r';
+                local searchResultInfo = C_LFGList.GetSearchResultInfo(apps[i])
+                local activityName = C_LFGList.GetActivityFullName(searchResultInfo.activityID, nil, searchResultInfo.isWarMode)
+                sea=sea..'\n'..searchResultInfo.name..'('.. activityName..')|cFF00FF00*|r'
                 text=text..' '
-            end;
-        end;
+            end
+        end
         if sea~='' then
             text=text~='' and text..'\n'..QUEUED_STATUS_SIGNED_UP..'(|cFF00FF00LFG|r)'..sea or sea
             text=text..' '
@@ -570,7 +570,7 @@ local function InitList(self, level, type)--LFDFrame.lua
             tooltipOnButton= true,
             tooltipTitle= 'SetCVar("autoOpenLootHistory", "1")',
             tooltipText= '\n/loot\nLootHistoryFrame:SetWidth(350)',
-            checked= C_CVar.GetCVarBool("autoOpenLootHistory"),
+            checked= Save.autoOpenLootHistory~=nil and  Save.autoOpenLootHistory or C_CVar.GetCVarBool("autoOpenLootHistory"),
             func= function ()
                 local value= C_CVar.GetCVarBool("autoOpenLootHistory")
                 Save.autoOpenLootHistory= not value and true or false
@@ -650,7 +650,7 @@ local function setLFGDungeonReadyDialog(self)--自动进入FB LFGDungeonReadyDia
         self.infoText:SetJustifyH('LEFT')
         self.infoText:SetShadowOffset(2, -2)
     end
-    local proposalExists, dungeonID, typeID, subtypeID, name, backgroundTexture, role, hasResponded, totalEncounters, completedEncounters, numMembers, isLeader, isHoliday, proposalCategory , isSilent = GetLFGProposal();
+    local proposalExists, dungeonID, typeID, subtypeID, name, backgroundTexture, role, hasResponded, totalEncounters, completedEncounters, numMembers, isLeader, isHoliday, proposalCategory , isSilent = GetLFGProposal()
     local text=''
     if dungeonID then
         text='dungeonID: '..dungeonID
@@ -899,7 +899,7 @@ local function Init()
         e.PlaySound()--播放, 声音
         set_PvPRoles()--检测是否选定角色pvp
         if not LFDRoleCheckPopupAcceptButton:IsEnabled() then
-            LFDRoleCheckPopup_UpdateAcceptButton();
+            LFDRoleCheckPopup_UpdateAcceptButton()
         end
         print(id, addName, e.onlyChinse and '职责确认' or ROLE_POLL,'|cff00ff00'..ACCEPT, SecondsToTime(sec))
         e.Ccool(self, nil, sec, nil, true, true)--设置冷却
@@ -916,18 +916,49 @@ local function Init()
 
     setHoliday()--节日, 提示, panel.texture
 
-    if LootHistoryFrame then
+    --###########
+    --历史, 拾取框
+    --LootHistory.lua
+    hooksecurefunc('LootHistoryFrame_FullUpdate', function(self)
         LootHistoryFrame:SetWidth(350)
-    end
---[[
-    e.set_CVar('autoOpenLootHistory', Save.autoOpenLootHistory)--自动打开战利品掷骰窗口
-    if Save.autoOpenLootHistory then
-        LootHistoryFrame:SetWidth(Save.autoOpenLootHistory and 210 or 350)
-    end
+        LootHistoryFrame.ScrollFrame.ScrollChild:SetWidth(350)
+    end)
+    hooksecurefunc('LootHistoryFrame_UpdateItemFrame', function(self, itemFrame)
+        itemFrame:SetWidth(315)
+    end)
+    hooksecurefunc('LootHistoryFrame_UpdatePlayerFrame', function(self, playerFrame)
+        playerFrame.itemText= nil
+        playerFrame.itemPlayerName= nil
+        if playerFrame.playerIdx then
+            local name, _, _, _, isWinner = C_LootHistory.GetPlayerInfo(playerFrame.itemIdx, playerFrame.playerIdx)
+            if name then
+                playerFrame.itemPlayerName= name
+                if playerFrame.itemIdx and isWinner then
+                    local itemLink = select(2, C_LootHistory.GetItem(playerFrame.itemIdx))
+                    if itemLink then
+                        playerFrame.itemText = itemLink..(e.Player.zh and ' '..NEED..', '..VOICEMACRO_16_Dw_0 or ' need, please!')
+                    end
+                end
+                playerFrame:EnableMouse(true)
+                playerFrame:SetScript('OnMouseDown',function(self2)
+                    e.Say(nil, self2.itemPlayerName, nil, self2.itemText)
+                end)
+
+
+                if name== e.Player.name then
+                    playerFrame.PlayerName:SetText(e.Icon.player..COMBATLOG_FILTER_STRING_ME)
+                end
+            else
+                playerFrame:SetScript('OnMouseDown',nil)
+            end
+            playerFrame:SetWidth(300)
+        end
+    end)
+
+    --e.set_CVar('autoOpenLootHistory', Save.autoOpenLootHistory)--自动打开战利品掷骰窗口
 
     --hooksecurefunc('QueueStatusDropDown_Show', setQueueStatusMenu)--小眼睛, 信息, 设置菜单
     --LFDMicroButton:HookScript('OnEnter', function(self2) ToggleDropDownMenu(1, nil, menuList, self2, -250,250) end)
-]]
 end
 
 local function setSTART_LOOT_ROLL(rollID, rollTime, lootHandle)--自动ROLL
@@ -938,7 +969,7 @@ local function setSTART_LOOT_ROLL(rollID, rollTime, lootHandle)--自动ROLL
 
     local _, _, _, quality, bindO_nPickUp, canNeed, canGreed, _, reasonNeed, reasonGreed = GetLootRollItemInfo(rollID)
     local rollType= canNeed and 1 or 2
-    local text= canNeed and (e.onlyChinse and '需求' or NEED) or canGreed and (e.onlyChinse and '贪婪' or GREED) or (e.onlyChinse and '无' or NONE)
+    local text= canNeed and (e.onlyChinse and '需求' or NEED)..'|TInterface\\Buttons\\UI-GroupLoot-Dice-Up:0|t' or canGreed and (e.onlyChinse and '贪婪' or GREED)..'|TInterface\\Buttons\\UI-GroupLoot-Coin-Up:0|t' or (e.onlyChinse and '无' or NONE)
     local link = GetLootRollItemLink(rollID)
     local find
 
@@ -1040,17 +1071,17 @@ local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
             panel.RoleInfo.text:SetText('')
             panel.RoleInfo:Hide()
         end
-        local co=GetNumGroupMembers();
+        local co=GetNumGroupMembers()
         if co and co>0 then
             local find
             local raid=IsInRaid()
             local u= raid and 'raid' or 'party'
             for i=1, co do
-                local u2=u..i;
+                local u2=u..i
                 if not raid and i==co then
                     u2='player'
                 end
-                local guid=UnitGUID(u2);
+                local guid=UnitGUID(u2)
                 local line=e.PlayerOnlineInfo(u2)
                 if line and guid then
                     print(line, e.GetPlayerInfo(nil, guid, true), e.Icon.map2, e.GetUnitMapName(u2))
@@ -1067,9 +1098,9 @@ local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
         if panel.RoleInfo then
             panel.RoleInfo.text:SetText('')
             panel.RoleInfo:Hide()
-            RoleC=nil;
+            RoleC=nil
         end
-        return;
+        return
     end
 
     if not Name or not (isT or  isH or  isD) then
@@ -1078,17 +1109,17 @@ local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
 
     if env=='LFG_ROLE_CHECK_ROLE_CHOSEN' then--队长重新排本
         if RoleC and RoleC[Name] then
-            local u=RoleC[Name].unit;
+            local u=RoleC[Name].unit
             if u and UnitIsGroupLeader(u) then
-                RoleC=nil;
+                RoleC=nil
             end
         end
     end
 
-    local co=GetNumGroupMembers();
+    local co=GetNumGroupMembers()
     if co and co>0 then
         if not RoleC then
-            RoleC={};
+            RoleC={}
             local raid=IsInRaid()
             local u= raid and 'raid' or 'party'
             for i=1, co do
@@ -1096,11 +1127,11 @@ local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
                 if not raid and i==co then
                     u2='player'
                 end
-                local guid=UnitGUID(u2);
+                local guid=UnitGUID(u2)
                 if guid then
                     local info=(e.PlayerOnlineInfo(u2) or '')..e.GetPlayerInfo(nil, guid, true)
-                    local name=GetUnitName(u2,true);
-                    local player=UnitIsUnit('player', u2);
+                    local name=GetUnitName(u2,true)
+                    local player=UnitIsUnit('player', u2)
                     RoleC[name]={
                         info=info,
                         index=i,
@@ -1111,18 +1142,18 @@ local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
             end
         end
 
-        local all=0;
-        local role='';
+        local all=0
+        local role=''
         if RoleC[Name] then
             if isT then role=role..INLINE_TANK_ICON end
             if isH then role=role..INLINE_HEALER_ICON end
             if isD then role=role..INLINE_DAMAGER_ICON end
-            RoleC[Name].role=role;
+            RoleC[Name].role=role
         else
-            all=1;
+            all=1
         end
 
-        local m='';
+        local m=''
         local playerMapID=select(2, e.GetUnitMapName('player'))
         for k, v in pairs(RoleC) do
             if v then
@@ -1266,9 +1297,9 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
             C_Timer.After(sec, function()
                 if not IsModifierKeyDown() then
                     if IsInLFDBattlefield() then
-                        ConfirmOrLeaveLFGParty();
+                        ConfirmOrLeaveLFGParty()
                     else
-                        ConfirmOrLeaveBattlefield();
+                        ConfirmOrLeaveBattlefield()
                     end
                 end
             end)

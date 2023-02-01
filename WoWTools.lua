@@ -5,7 +5,7 @@ e.tips=GameTooltip
 local function GetWeek()--周数
     local d = date("*t")
     local cd
-    if GetLocale() == "zhCN" then
+    if LOCALE_zhCN then
         cd=4
     else
         cd=3
@@ -773,19 +773,20 @@ e.Chat=function(text, name, setPrint)--v9.25设置
     end
 end
 
-e.Say=function(type, name, wow)
+e.Say=function(type, name, wow, text)
     local chat=SELECTED_DOCK_FRAME;
-    local text = chat.editBox:GetText() or '';
-    if text:find('/') then text='' end
-    text=' '..text;
+    text= text or ''
+    local msg = chat.editBox:GetText() or '';
+    if msg:find('/') then msg='' end
+    msg=' '..msg;
     if name then
         if wow then
-            ChatFrame_SendBNetTell(name..text)
+            ChatFrame_SendBNetTell(name..msg)
         else
-            ChatFrame_OpenChat("/w " ..name..text, chat);
+            ChatFrame_OpenChat("/w " ..name..msg..text, chat);
         end
-    else
-        ChatFrame_OpenChat(type..  text, chat)
+    elseif type then
+        ChatFrame_OpenChat(type..msg, chat)
     end
 end
 

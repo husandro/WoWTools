@@ -1193,7 +1193,17 @@
         "BUG_CATEGORY4",
         "MainMenuBarBackpackMixin",
         "MainMenuBarBackpackButtonCount",
-        "MainMenuBarBackpackButtonIconTexture"
+        "MainMenuBarBackpackButtonIconTexture",
+        "CompactRaidFrameManagerDisplayFrame",
+        "CompactRaidFrameManager_Collapse",
+        "SLASH_FOLLOW2",
+        "DefaultCompactUnitFrameSetupOptions",
+        "LootHistoryFrame_UpdatePlayerFrames",
+        "LootHistoryFrame_UpdateItemFrame",
+        "LootHistoryFrame_UpdatePlayerFrame",
+        "LootHistoryFrameUtil_ShouldDisplayPlayer",
+        "LootHistoryFrame_GetPlayerFrame",
+        "VOICEMACRO_16_Dw_0"
     ],
     "Lua.diagnostics.disable": [
     ]

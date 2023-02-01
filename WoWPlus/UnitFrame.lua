@@ -380,25 +380,37 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
     if Save.notRaidFrame then
         return
     end
-    hooksecurefunc('CompactUnitFrame_SetUnit', function(frame, unit)--队伍, 标记
+    hooksecurefunc('CompactUnitFrame_SetUnit', function(frame, unit)--队伍标记
         if unit and not frame.RaidTargetIcon and frame.name then
             frame.RaidTargetIcon= frame:CreateTexture(nil,'OVERLAY', nil, 7)
             frame.RaidTargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
             frame.RaidTargetIcon:SetPoint('TOPRIGHT')
             frame.RaidTargetIcon:SetSize(13,13)
-            frame:RegisterEvent("RAID_TARGET_UPDATE")
+            --frame:RegisterEvent("RAID_TARGET_UPDATE")
             set_SetRaidTarget(frame.RaidTargetIcon, unit)
+        --[[系统, 自带
+            frame.ToTargetIcon=  frame:CreateTexture(nil,'OVERLAY', nil, 6)--BOSS, 目标
+            frame.ToTargetIcon:SetAtlas('worldstate-capturebar-leftglow-safedangerous-embercourt')
+            frame.ToTargetIcon:SetAllPoints(frame)
+            frame.ToTargetIcon:SetShown(false)
+            ]]
         end
     end)
     hooksecurefunc('CompactUnitFrame_UpdateUnitEvents', function(frame)
         frame:RegisterEvent("RAID_TARGET_UPDATE")
+        --frame:RegisterUnitEvent("UNIT_TARGET", 'boss1', 'boss2', 'boss3', 'boss4', 'boss5', 'boss6', 'boss7', 'boss8')
     end)
     hooksecurefunc('CompactUnitFrame_UnregisterEvents', function(frame)
         frame:UnregisterEvent("RAID_TARGET_UPDATE")
+        frame:UnregisterEvent("UNIT_TARGET")
     end)
-    hooksecurefunc('CompactUnitFrame_OnEvent', function(self, event, ...)
-        if event=='RAID_TARGET_UPDATE' and self.RaidTargetIcon and self.unit then
-            set_SetRaidTarget(self.RaidTargetIcon, self.unit);
+    hooksecurefunc('CompactUnitFrame_OnEvent', function(self, event, arg1)
+        if self.RaidTargetIcon and self.unit then
+            if event=='RAID_TARGET_UPDATE'then
+                set_SetRaidTarget(self.RaidTargetIcon, self.unit);
+            --elseif event=='UNIT_TARGET' and arg1 then
+                --self.ToTargetIcon:SetShown(UnitIsUnit(self.unit, arg1..'target'))
+            end
         end
     end)
 
