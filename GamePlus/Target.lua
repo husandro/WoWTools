@@ -147,7 +147,7 @@ local function set_Register_Event()
 
             panel:RegisterEvent('NAME_PLATE_UNIT_ADDED')
             panel:RegisterEvent('NAME_PLATE_UNIT_REMOVED')
-            if not isIns  then
+            if not IsInInstance()  then
                 panel:RegisterEvent('UNIT_QUEST_LOG_CHANGED')
                 panel:RegisterEvent('SCENARIO_UPDATE')
                 panel:RegisterEvent('SCENARIO_CRITERIA_UPDATE')

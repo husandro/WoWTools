@@ -1204,7 +1204,11 @@
         "LootHistoryFrameUtil_ShouldDisplayPlayer",
         "LootHistoryFrame_GetPlayerFrame",
         "VOICEMACRO_16_Dw_0",
-        "ToggleLootHistoryFrame"
+        "ToggleLootHistoryFrame",
+        "ItemInteractionFrame",
+        "EquipmentFlyoutFrame",
+        "ItemInteractionMixin",
+        "SetItemButtonTexture"
     ],
     "Lua.diagnostics.disable": [
     ]

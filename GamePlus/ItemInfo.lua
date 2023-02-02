@@ -112,6 +112,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
                         end
                     end
                 end
+
                 local invSlot = e.itemSlotTable[itemEquipLoc]
                 if invSlot and itemLevel and itemLevel>1 then
                     if not noUse then--装等

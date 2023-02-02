@@ -129,6 +129,7 @@ local FrameTab={
     SendMailFrame={frame= MailFrame},
     MirrorTimer1={save=true},
     LootHistoryFrame= {},--拾取框
+    
 };
 --UIWidgetBelowMinimapContainerFrame={save=true,click='RightButton'},
 
@@ -317,8 +318,12 @@ local function setAddLoad(arg1)
             Move(InspectFrame,{})
         end
 
-    elseif arg1=='Blizzard_ChallengesUI' then
+    elseif arg1=='Blizzard_ChallengesUI' then--挑战, 钥匙插件, 界面
         Move(ChallengesKeystoneFrame, {save=true})
+
+    elseif arg1=='Blizzard_ItemInteractionUI' then--套装, 转换
+        Move(ItemInteractionFrame, {})
+
     end
 end
 

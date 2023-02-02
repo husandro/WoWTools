@@ -1048,4 +1048,7 @@ if IsModifiedClick("CHATLINK") then
     local spellLink = GetSpellLink(self:GetSpellID());
     ChatEdit_InsertLink(spellLink);
 end
+
+SetItemButtonTextureVertexColor(button, 1.0, 1.0, 1.0);
+SetItemButtonNormalTextureVertexColor(button, 1.0, 1.0, 1.0);
 ]]

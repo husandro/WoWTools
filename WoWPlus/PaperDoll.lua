@@ -667,44 +667,62 @@ end
 --#######
 --装备弹出
 --#######
-local function setFlyoutLevel(button, level, paperDollItemSlot)
-    if level and not button.level then
+local function setFlyoutLevel(button, itemLink, paperDollItemSlot)
+    local level= itemLink and GetDetailedItemLevelInfo(itemLink)
+    if not button.level then
         button.level=e.Cstr(button)
         button.level:SetPoint('BOTTOM')
+        button:SetScript('OnHide', function(self)
+            self.level:SetText('')
+            if self.upgrade then
+                self.upgrade:SetText('')
+            end
+            if self.updown then
+                self.updown:SetText('')
+            end
+        end)
     end
-    if button.level then
-        button.level:SetText(level or '')
+    button.level:SetText(level or '')
+
+    local upgrade= itemLink and select(2, e.GetTooltipData(nil, text_ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT, itemLink))--物品提示，信息
+    if upgrade and not button.upgrade then
+        button.upgrade= e.Cstr(button, nil, nil, nil, {0,1,0}, nil,'LEFT')
+        button.upgrade:SetPoint('LEFT')
+    end
+    if button.upgrade then--文字
+        button.upgrade:SetText(upgrade or '')
     end
 
-    local slotLevel--升级等级，比较
-    if paperDollItemSlot and level then
-        local slot=paperDollItemSlot:GetID()
+    local updown--升级等级，比较
+    if level then
+        local slot=paperDollItemSlot and paperDollItemSlot:GetID()
+        if not slot or slot==0 then
+            local itemEquipLoc= itemLink and select(4, GetItemInfoInstant(itemLink))
+            slot= itemEquipLoc and e.itemSlotTable[itemEquipLoc]
+        end
         if slot then
-            local itemLink = GetInventoryItemLink('player', slot)
-            if itemLink then
-                slotLevel = GetDetailedItemLevelInfo(itemLink)
-                if slotLevel then
-                    slotLevel=level-slotLevel
+            local itemLink2 = GetInventoryItemLink('player', slot)
+            if itemLink2 then
+                updown = GetDetailedItemLevelInfo(itemLink2)
+                if updown then
+                    updown=level-updown
+                    if updown>0 then
+                        updown= '|cnGREEN_FONT_COLOR:+'..updown..'|r'
+                    elseif updown<0 then
+                        updown= '|cnRED_FONT_COLOR:'..updown..'|r'
+                    elseif updown==0 then
+                        updown= nil
+                    end
                 end
             end
         end
     end
-    if slotLevel and not button.upLevel then
-        button.upLevel=e.Cstr(button)
-        button.upLevel:SetPoint('TOP',0 ,5)
+    if updown and not button.updown then
+        button.updown=e.Cstr(button)
+        button.updown:SetPoint('TOP')
     end
-    if button.upLevel then
-        if slotLevel then
-            if slotLevel>0 then
-                button.upLevel:SetText('|cnGREEN_FONT_COLOR:+'..slotLevel..'|r')
-            elseif slotLevel<0 then
-                button.upLevel:SetText('|cnRED_FONT_COLOR:'..slotLevel..'|r')
-            else
-                button.upLevel:SetText(slotLevel)
-            end
-        else
-            button.upLevel:SetText('')
-        end
+    if button.updown then
+        button.updown:SetText(updown or '')
     end
 end
 
@@ -814,30 +832,7 @@ local function Init()
     set_HideShowEquipmentFrame_Texture()--设置，总开关，装备管理框
 
     GetDurationTotale()--装备,总耐久度
-
-    hooksecurefunc('EquipmentFlyout_DisplayButton', function(button, paperDollItemSlot)--EquipmentFlyout.lua
-        local location = button.location;
-        if not location or location >= EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION then
-            setFlyoutLevel(button)
-            return;
-        end
-        local player, bank, bags, voidStorage, slot, bag, tab, voidSlot = EquipmentManager_UnpackLocation(location);
-        if ( not player and not bank and not bags and not voidStorage ) then--EquipmentManager.lua
-            setFlyoutLevel(button)
-            return;
-        end
-        local itemLink
-        if ( voidStorage ) then
-            itemLink = GetVoidItemHyperlinkString(voidSlot)
-        elseif ( not bags ) then -- and (player or bank)
-            itemLink =GetInventoryItemLink("player",slot);
-        else -- bags
-            itemLink = C_Container.GetContainerItemLink(bag, slot);
-        end
-        local level= itemLink and GetDetailedItemLevelInfo(itemLink)
-        setFlyoutLevel(button, level, paperDollItemSlot)
-    end)
-
+    
     hooksecurefunc('PaperDollFrame_UpdateSidebarTabs', function()--头衔数量
             Title()--总装等
             Equipment()
@@ -912,29 +907,74 @@ local function Init()
             end
         end)
     end
+
+    --###########
+    --装备, 弹出框
+    --EquipmentFlyout.lua
+    hooksecurefunc('EquipmentFlyout_DisplayButton', function(button, paperDollItemSlot)
+        local location = button.location;
+        if not location or location >= EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION then
+            setFlyoutLevel(button)
+            return;
+        end
+        local player, bank, bags, voidStorage, slot, bag, tab, voidSlot = EquipmentManager_UnpackLocation(location);
+        if ( not player and not bank and not bags and not voidStorage ) then--EquipmentManager.lua
+            setFlyoutLevel(button)
+            return;
+        end
+        local itemLink
+        if ( voidStorage ) then
+            itemLink = GetVoidItemHyperlinkString(voidSlot)
+        elseif ( not bags ) then -- and (player or bank)
+            itemLink =GetInventoryItemLink("player",slot);
+        else -- bags
+            itemLink = C_Container.GetContainerItemLink(bag, slot);
+        end
+        setFlyoutLevel(button, itemLink, paperDollItemSlot)
+    end)
 end
+
+
+--###########
 --加载保存数据
+--###########
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("EQUIPMENT_SWAP_FINISHED")
 panel:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1 == id then
-       Save= WoWToolsSave and WoWToolsSave[addName] or Save
+    if event == "ADDON_LOADED" then
+        if arg1 == id then
+            Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
-        --添加控制面板        
-        local sel=e.CPanel(e.onlyChinse and '角色' or addName, not Save.disabled)
-        sel:SetScript('OnMouseDown', function()
-            Save.disabled = not Save.disabled and true or nil
-            print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需求重新加载' or REQUIRES_RELOAD)
-        end)
+            --添加控制面板        
+            local sel=e.CPanel(e.onlyChinse and '角色' or addName, not Save.disabled)
+            sel:SetScript('OnMouseDown', function()
+                Save.disabled = not Save.disabled and true or nil
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需求重新加载' or REQUIRES_RELOAD)
+            end)
 
-        if not Save.disabled then
-            Init()
-        else
-            panel:UnregisterAllEvents()
+            if not Save.disabled then
+                Init()
+            else
+                panel:UnregisterAllEvents()
+            end
+            panel:RegisterEvent("PLAYER_LOGOUT")
+
+        elseif arg1=='Blizzard_ItemInteractionUI' then--套装转换, 弹出框
+            hooksecurefunc(ItemInteractionFrame, 'ShowFlyout', function(itemSlot)--Blizzard_ItemInteractionUI.lua
+                local flyout = EquipmentFlyoutFrame;--EquipmentFlyout.lua
+                local itemButton = flyout.button
+                local buttons = flyout.buttons;
+                for i, button in ipairs(buttons) do
+                    local location= button:IsShown() and  button:GetItemLocation()
+                    local itemLink= location and C_Item.GetItemLink(location)
+                    if itemLink then
+                        setFlyoutLevel(button, itemLink, itemButton)
+                    end
+                end
+            end)
         end
-        panel:RegisterEvent("PLAYER_LOGOUT")
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
