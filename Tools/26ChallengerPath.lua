@@ -175,7 +175,7 @@ local function InitMenu(self, level, tab)--主菜单
     UIDropDownMenu_AddButton(info, level)
 
     info={
-        text= ADD,
+        text= e.onlyChinse and '添加' or ADD,
         notCheckable=true,
         func=function()
             StaticPopup_Show(id..addName..'EDIT', e.onlyChinse and '必需' or NEED , e.onlyChinse and '必需' or NEED , {})
