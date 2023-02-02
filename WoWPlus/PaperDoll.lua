@@ -81,13 +81,13 @@ local function Lv(self, slot, link)--装等
         lv=GetDetailedItemLevelInfo(link)
         if lv and to then
             local val=lv-to
-            if val>3 then
+            if val>=6 then
                 lv= GREEN_FONT_COLOR_CODE..lv..'|r'
             elseif quality and quality< 5 then
-                if val < -9  then
+                if val <= -6  then
                     lv =RED_FONT_COLOR_CODE..lv..'|r'
-                elseif val < -3 then
-                    lv =YELLOW_FONT_COLOR_CODE..lv..'|r'
+                --elseif val < -3 then
+                  --  lv =YELLOW_FONT_COLOR_CODE..lv..'|r'
                 else
                     local hex=quality and select(4, GetItemQualityColor(quality))
                     if hex then
