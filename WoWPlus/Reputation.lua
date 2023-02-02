@@ -17,9 +17,11 @@ local function Reputation_Text_setText()--设置, 文本
 	if not Save.btn or not Save.btnstr then
 		if panel.btn and panel.btn.text then
 			panel.btn.text:SetText('')
+			panel.btn:SetNormalAtlas(e.Icon.disabled)
 		end
 		return
 	end
+	panel.btn:SetNormalTexture(0)
 
 	local m=''
 	local hasRewardPending
