@@ -521,17 +521,21 @@ local function setUnitInfo(self, unit)--设置单位提示信息
         setPlayerInfo(unit, guid)--取得玩家信息
 
         local isWarModeDesired=C_PvP.IsWarModeDesired()
-
-        local reason=UnitPhaseReason(unit)
-        if reason then
-            if reason==0 then
-                self.textLeft:SetText(e.onlyChinse and '不同了阶段' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1','')))
-            elseif reason==1 then
-                self.textLeft:SetText(e.onlyChinse and '不在同位面' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', e.L['LAYER']))
-            elseif reason==2 then--战争模
-                self.textLeft:SetText(isWarModeDesired and (e.onlyChinse and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF) or (e.onlyChinse and '开启战争模式' or ERR_PVP_WARMODE_TOGGLE_ON))
-            elseif reason==3 then
-                self.textLeft:SetText(e.onlyChinse and '时空漫游' or PLAYER_DIFFICULTY_TIMEWALKER)
+        local statusIcon, statusText= e.PlayerOnlineInfo(unit)--单位，状态信息
+        if statusIcon and statusText then
+           self.textLeft:SetText(statusText..statusIcon)
+        else
+            local reason=UnitPhaseReason(unit)
+            if reason then
+                if reason==0 then
+                    self.textLeft:SetText(e.onlyChinse and '不同了阶段' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1','')))
+                elseif reason==1 then
+                    self.textLeft:SetText(e.onlyChinse and '不在同位面' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', e.L['LAYER']))
+                elseif reason==2 then--战争模
+                    self.textLeft:SetText(isWarModeDesired and (e.onlyChinse and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF) or (e.onlyChinse and '开启战争模式' or ERR_PVP_WARMODE_TOGGLE_ON))
+                elseif reason==3 then
+                    self.textLeft:SetText(e.onlyChinse and '时空漫游' or PLAYER_DIFFICULTY_TIMEWALKER)
+                end
             end
         end
 

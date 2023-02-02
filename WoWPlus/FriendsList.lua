@@ -1,6 +1,6 @@
 local id, e = ...
 local addName= FRIENDS_LIST
-local Save={ Friends={}, }
+local Save={Friends={}, }
 
 --#############
 --快速加入, 模块
@@ -232,50 +232,88 @@ end
 --#########
 --团队, 模块
 --Blizzard_RaidUI.lua
+--[[subframes = {};
+subframes.name = _G["RaidGroupButton"..i.."Name"];
+subframes.class = _G["RaidGroupButton"..i.."Class"];
+subframes.level = _G["RaidGroupButton"..i.."Level"];
+subframes.rank = _G["RaidGroupButton"..i.."Rank"];
+subframes.role = _G["RaidGroupButton"..i.."Role"];
+subframes.rankTexture = _G["RaidGroupButton"..i.."RankTexture"];
+subframes.roleTexture = _G["RaidGroupButton"..i.."RoleTexture"];
+subframes.readyCheck = _G["RaidGroupButton"..i.."ReadyCheck"];
+button.subframes = subframes;
+]]
 local function set_RaidGroupFrame_Update()--团队, 模块
-        if not IsInRaid() then
-            return
-        end
-        local lv,co,to, afk, dead =0, 0, 0, 0, 0;
-        for i=1, MAX_RAID_MEMBERS do
-            local button = _G["RaidGroupButton"..i]
-            if button and button.subframes then
-                local subframes = button.subframes
-                local unit = "raid"..i
-                if subframes and UnitExists(unit) then
-                    local name, rank, subgroup, level, class, fileName, zone, online, isDead, role, isML, combatRole = GetRaidRosterInfo(i)
-                    local guid= UnitGUID(unit)
-                    if subframes.class and fileName then
-                        local classTexture= e.Class(nil, fileName)--职业图标
-                        if classTexture then
-                            if guid and e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLevel then
-                                classTexture= e.UnitItemLevel[guid].itemLevel..classTexture
-                            elseif CheckInteractDistance(unit, 1) and CanInspect(unit) then
-                                NotifyInspect(unit)--取得装等
-                            end
-                            subframes.class:SetText(classTexture)
-                            subframes.class:SetJustifyH('RIGHT')
-                        end
+    if not IsInRaid() then
+        return
+    end
+    --local lv,co,to, afk, dead =0, 0, 0, 0, 0;
+    for i=1, MAX_RAID_MEMBERS do
+        local button = _G["RaidGroupButton"..i]
+        if button and button.subframes then
+            local subframes = button.subframes
+            local unit = "raid"..i
+            if subframes and UnitExists(unit) then
+                local name, rank, subgroup, level, class, fileName, zone, online, isDead, role, isML, combatRole = GetRaidRosterInfo(i)
+                local guid= UnitGUID(unit)
+
+                if subframes.name and name then
+                    local text= name==e.Player.name and COMBATLOG_FILTER_STRING_ME or e.PlayerOnlineInfo(unit)
+                    if not text then
+                        name= name:gsub('(%-.+)','')--名称
+                        name= e.WA_Utf8Sub(name, 3, 7)
+                        subframes.name:SetText(name)
                     end
-                        --local t=e.UnitItemLevel[guid]
-                        --local  classIcon=e.Class(fileName)
-                        --if classIcon then t=t..classIcon end
-                        --if t then
-                            --button.item=t--设置装等
-                        --else
-                            --button.item=nil
-                        --end
-                        --local c=select(2, e.Race(unit)) if c then t=(t and t or '')..c end
+                    if text then
+                        subframes.name:SetText(text)
+                    end
+                end
 
+                if subframes.class and fileName then
+                    local text= e.Class(nil, fileName)--职业图标
+                    if text then
 
+                        if guid and e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLevel then
+                            text= e.UnitItemLevel[guid].itemLevel..text
+                        elseif CheckInteractDistance(unit, 1) and CanInspect(unit) then
+                            NotifyInspect(unit)--取得装等
+                        end
 
-                    if subframes.level then
-                        local r
-                        if combatRole then if combatRole=='TANK' then r='|A:4259:0:0|a' elseif combatRole=='HEALER' then r='|A:4258:0:0|a' end end
+                        local role2= role or combatRole
+                        if role2=='TANK'then
+                            text= INLINE_TANK_ICON..text
+                        elseif role2=='HEALER' then
+                            text= INLINE_HEALER_ICON..text
+                        end
+
+                        subframes.class:SetText(text)
+                        subframes.class:SetJustifyH('RIGHT')
+                    end
+                end
+
+                if subframes.level and level==MAX_PLAYER_LEVEL then
+                    local text= e.Race(unit) or ''
+                    subframes.level:SetText(text)
+                end
+            end
+        end
+    end
+end
+                        --[[local r
+                        if combatRole then
+                            if combatRole=='TANK' then 
+                                r='|A:4259:0:0|a' 
+                        elseif combatRole=='HEALER' then
+                            r='|A:4258:0:0|a' 
+                        end 
+                    end
                         if r then
                             subframes.level:SetText(r)
                         else
-                            local lv=UnitLevel('player') if lv==level then subframes.level:SetText('') end
+                            local lv=UnitLevel('player') 
+                            if lv==level then 
+                               -- subframes.level:SetText('') 
+                            end
                         end
                     end
                     if subframes.name and name then
@@ -332,7 +370,7 @@ local function set_RaidGroupFrame_Update()--团队, 模块
         end
     end
 end
-
+]]
 
 --######
 --初始化

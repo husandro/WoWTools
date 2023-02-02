@@ -239,6 +239,7 @@ e.Icon={
     FRIENDS_TEXTURE_DND 忙碌texture FRIENDS_LIST_BUSY
     FRIENDS_TEXTURE_AFK 离开 AFK FRIENDS_LIST_AWAY 
     FRIENDS_TEXTURE_ONLINE 	有空 FRIENDS_LIST_AVAILABLE
+    format("\124T%s.tga:0\124t", FRIENDS_TEXTURE_AFK)
 ]]
 
 
@@ -270,15 +271,16 @@ end
 e.PlayerOnlineInfo=function(unit)--单位，状态信息
     if unit and UnitExists(unit) then
         if not UnitIsConnected(unit) then
-            return '|TInterface\\FriendsFrame\\StatusIcon-Offline:0|t'
+            return format("\124T%s.tga:0\124t", FRIENDS_TEXTURE_DND), e.onlyChinse and '离线' or PLAYER_OFFLINE
         elseif UnitIsAFK(unit) then
-            return '|TInterface\\FriendsFrame\\StatusIcon-Away:0|t'
-        elseif UnitIsDeadOrGhost(unit) then
-            return '|A:poi-soulspiritghost:0:0|a'
+            return format("\124T%s.tga:0\124t", FRIENDS_TEXTURE_AFK), e.onlyChinse and '离开' or AFK
+        elseif UnitIsGhost(unit) then
+            return '|A:poi-soulspiritghost:0:0|a', e.onlyChinse and '幽灵' or DEAD
+        elseif UnitIsDead(unit) then
+            return '|A:deathrecap-icon-tombstone:0:0|a', e.onlyChinse and '死亡' or DEAD
         end
     end
 end
-
 e.GetNpcID = function(unit)--NPC ID
     if UnitExists(unit) then
         local guid=UnitGUID(unit)
