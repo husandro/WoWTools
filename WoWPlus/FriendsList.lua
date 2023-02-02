@@ -2,12 +2,118 @@ local id, e = ...
 local addName= FRIENDS_LIST
 local Save={ Friends={}, }
 
+--#############
+--快速加入, 模块
+--#############
+local function set_SOCIAL_QUEUE_UPDATE()--更新, 快速加入
+    if QuickJoinToastButton then
+        if not QuickJoinToastButton.quickJoinText then
+            QuickJoinToastButton.quickJoinText= QuickJoinToastButton:CreateFontString()
+            QuickJoinToastButton.quickJoinText:SetFontObject('NumberFontNormal')
+            QuickJoinToastButton.quickJoinText:SetPoint('TOPRIGHT', -6, -3)
+        end
 
---######
---初始化
---######
-local function Init()--FriendsFrame.lua
-   --local name=UnitName('player')..GetRealmName()--好友列表,在线状态
+        local n=#C_SocialQueue.GetAllGroups()
+        QuickJoinToastButton.quickJoinText:SetText(n~=0 and n or '')
+    end
+end
+local function set_QuinkJoin_Init()--快速加入, 初始化
+    set_SOCIAL_QUEUE_UPDATE()
+
+    hooksecurefunc(QuickJoinEntryMixin, 'ApplyToFrame', function(self, frame)
+            if not frame then return end
+
+            local icon, icon2 = nil, ''--角色图标
+            if self.guid then
+                local guid= select(8, C_SocialQueue.GetGroupInfo(self.guid))
+                if guid then
+                    local _, class, _, race, sex = GetPlayerInfoByGUID(guid)
+                    if race and sex then
+                        icon=e.Race(nil, race, sex, true)
+                    end
+                    if class then
+                        icon2='groupfinder-icon-class-'..class
+                    end
+                end
+
+                if not frame.chat then--悄悄话
+                    frame.chat=e.Cbtn(frame, nil, nil, nil, nil, true, {20,20})
+                    frame.chat:SetPoint('RIGHT', (frame.Icon or frame), 'LEFT')
+                    frame.chat:SetScript('OnMouseDown',function()
+                        local player=frame.Members[1].playerLink
+                        if player then
+                            local link, text = LinkUtil.SplitLink(player)
+                            SetItemRef(link, text, "LeftButton")
+                        end
+                    end)
+                    frame:HookScript("OnDoubleClick", function()
+                        QuickJoinFrame:JoinQueue()
+                    end)
+                end
+                icon=icon or 'communities-icon-chat'
+                frame.chat:SetNormalAtlas(icon)
+
+                if not frame.class and icon2 then--角色职业图标
+                    frame.class=frame:CreateTexture()
+                    frame.class:SetSize(20,20)
+                    frame.class:SetPoint('RIGHT', frame, 'RIGHT', 0,0)
+                end
+
+                if frame.class then--种族图标
+                    if icon2 then
+                        frame.class:SetAtlas(icon2)
+                    end
+                    frame.class:SetShown(icon2 and true or false)
+                end
+            end
+    end)
+
+    hooksecurefunc(QuickJoinRoleSelectionFrame, 'ShowForGroup', function(self, guid)--职责选择框
+        local t, h ,dps=self.RoleButtonTank.CheckButton, self.RoleButtonHealer.CheckButton, self.RoleButtonDPS.CheckButton--选择职责
+        local t3, h3, dps3 =t:GetChecked(), h:GetChecked(), dps:GetChecked()
+        if not t3 and  not h3 and not dps3 then
+            local sid=GetSpecialization()
+            if sid and sid>0 then
+                local role = select(5, GetSpecializationInfo(sid))
+                if role=='TANK' then
+                    t:Click()
+                elseif role=='HEALER' then
+                    h:Click()
+                elseif role=='DAMAGER' then
+                    dps:Click()
+                end
+            end
+        end
+
+        local player= select(8, C_SocialQueue.GetGroupInfo(guid))--玩家名称
+        if player then
+            local name, realm = select(6, GetPlayerInfoByGUID(player))
+            if name then
+                if not self.name then
+                    self.name=self:CreateFontString()
+                    self.name:SetFontObject('GameFontNormal')
+                    self.name:SetPoint('BOTTOM', self.CancelButton, 'TOPLEFT', 2, 0)
+                end
+                if realm and realm=='' then realm=nil end
+                name=name..(realm and ' - '..realm or '')
+                self.name:SetText(name)
+            else
+                if self.name then self.name:SetText('') end
+            end
+        end
+    end)
+
+    if QuickJoinToastButton.Toast then
+        QuickJoinToastButton.Toast:ClearAllPoints()
+        QuickJoinToastButton.Toast:SetPoint('BOTTOMLEFT', QuickJoinToastButton, 'TOPLEFT')
+    end
+end
+
+
+--#############
+--好友列表, 模块
+--#############
+local function set_FriendsList_Init()--好友列表, 初始化
     local optionText = '|A:honorsystem-bar-lock:0:0|a'..(e.onlyChinse and '锁定' or LOCK).."\124T%s.tga:16:16:0:0\124t %s"--好友列表
     Save.Friends[e.Player.name_server]=Save.Friends[e.Player.name_server] or {}
 
@@ -122,15 +228,130 @@ local function Init()--FriendsFrame.lua
     end)
 end
 
+
+--#########
+--团队, 模块
+--Blizzard_RaidUI.lua
+local function set_RaidGroupFrame_Update()--团队, 模块
+        if not IsInRaid() then
+            return
+        end
+        local lv,co,to, afk, dead =0, 0, 0, 0, 0;
+        for i=1, MAX_RAID_MEMBERS do
+            local button = _G["RaidGroupButton"..i]
+            if button and button.subframes then
+                local subframes = button.subframes
+                local unit = "raid"..i
+                if subframes and UnitExists(unit) then
+                    local name, rank, subgroup, level, class, fileName, zone, online, isDead, role, isML, combatRole = GetRaidRosterInfo(i)
+                    local guid= UnitGUID(unit)
+                    if subframes.class and fileName then
+                        local classTexture= e.Class(nil, fileName)--职业图标
+                        if classTexture then
+                            if guid and e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLevel then
+                                classTexture= e.UnitItemLevel[guid].itemLevel..classTexture
+                            elseif CheckInteractDistance(unit, 1) and CanInspect(unit) then
+                                NotifyInspect(unit)--取得装等
+                            end
+                            subframes.class:SetText(classTexture)
+                            subframes.class:SetJustifyH('RIGHT')
+                        end
+                    end
+                        --local t=e.UnitItemLevel[guid]
+                        --local  classIcon=e.Class(fileName)
+                        --if classIcon then t=t..classIcon end
+                        --if t then
+                            --button.item=t--设置装等
+                        --else
+                            --button.item=nil
+                        --end
+                        --local c=select(2, e.Race(unit)) if c then t=(t and t or '')..c end
+
+
+
+                    if subframes.level then
+                        local r
+                        if combatRole then if combatRole=='TANK' then r='|A:4259:0:0|a' elseif combatRole=='HEALER' then r='|A:4258:0:0|a' end end
+                        if r then
+                            subframes.level:SetText(r)
+                        else
+                            local lv=UnitLevel('player') if lv==level then subframes.level:SetText('') end
+                        end
+                    end
+                    if subframes.name and name then
+                        if UnitIsUnit('player',unit) then
+                           -- subframes.name:SetText(e.PRace..YOU)
+                        elseif UnitIsAFK(unit) then
+                            subframes.name:SetText('|A:common-icon-redx:0:0|a')
+                        else
+                            local s, c = UnitDistanceSquared(unit)
+                            if c and s and s>80000 then
+                                subframes.name:SetText(e.MK(s,0))
+                            else
+                                name= name:gsub('(%-.+)','')
+                                name= e.WA_Utf8Sub(name, 3, 5)
+                                subframes.name:SetText(name)
+                                
+                            end
+                        end
+                    end
+                
+                if button.item then
+                     lv=lv +button.item
+                     co=co+1
+                end
+                to=to+1
+
+                if UnitExists(unit) then
+                    if UnitIsDeadOrGhost(unit) then
+                        dead=dead+1
+                    end
+                    if UnitIsAFK(unit) or not UnitIsConnected(unit) then
+                        afk=afk+1
+                    end
+                end
+
+                subframes.name:SetJustifyH('CENTER')
+            end
+        end
+        if FriendsFrameTitleText then
+            local m=RAID .. '  '
+            if lv>0 then
+                lv=math.ceil(lv/co)
+                if co>= (to-afk) and co>0 then
+                    m=m..'|cff00ff00'..lv..'|r '
+                else
+                    m=m..lv..' '
+                end
+            end
+            m=m.. co..'/'..to
+
+            if dead >0 then m=m..' |A:poi-soulspiritghost:0:0|a'.. dead end
+            if afk>0 then m=m..' '..e.Icon.O2..afk end
+            FriendsFrameTitleText:SetText(m)
+        end
+    end
+end
+
+
+--######
+--初始化
+--######
+local function Init()--FriendsFrame.lua
+    set_QuinkJoin_Init()--快速加入, 模块
+    set_FriendsList_Init()--好友列表, 模块
+end
+
 --###########
 --加载保存数据
 --###########
 local panel=CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+panel:RegisterEvent('SOCIAL_QUEUE_UPDATE')--快速加入
 
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1==id then
+    if event == "ADDON_LOADED" then
+        if arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
             --添加控制面板        
             local sel=e.CPanel(e.onlyChinse and '好友列表' or addName, not Save.disabled)
@@ -143,16 +364,27 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end)
 
-            if not Save.disabled then
---                C_Timer.After(1, function()
+            if Save.disabled then
+                panel:UnregisterAllEvents()
+            else
                 Init()
             end
+            panel:RegisterEvent("PLAYER_LOGOUT")
 
+        elseif arg1=='Blizzard_RaidUI' then
+            hooksecurefunc('RaidGroupFrame_Update', set_RaidGroupFrame_Update)--团队, 模块
+        end
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end
             WoWToolsSave[addName]=Save
         end
+
+    elseif event=='SOCIAL_QUEUE_UPDATE' then--更新, 快速加入
+        set_SOCIAL_QUEUE_UPDATE()
+
+    
     end
+    
 end)

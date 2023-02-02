@@ -1209,7 +1209,10 @@
         "EquipmentFlyoutFrame",
         "ItemInteractionMixin",
         "SetItemButtonTexture",
-        "MAINTANK"
+        "MAINTANK",
+        "MAX_RAID_MEMBERS",
+        "FriendsFrameTitleText",
+        "RaidGroupFrame_Update"
     ],
     "Lua.diagnostics.disable": [
     ]

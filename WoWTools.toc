@@ -58,7 +58,7 @@ WoWPlus\Tooltips.lua
 ##单位框，没完成
 WoWPlus\UnitFrame.lua
 ##快速加入，面板
-WowPlus\QuickJoin.lua
+##WowPlus\QuickJoin.lua
 ##好友，面板
 WoWPlus\FriendsList.lua
 ##小地图，增强缩放
