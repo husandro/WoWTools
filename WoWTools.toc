@@ -29,6 +29,7 @@ Sesource\Locales\zhTW.lua
 ##面板，不能删除
 Sesource\Panel.lua
 
+
 ##角色面板
 WoWPlus\PaperDoll.lua
 ##声望面板
@@ -57,8 +58,6 @@ WoWPlus\WorldMap.lua
 WoWPlus\Tooltips.lua
 ##单位框，没完成
 WoWPlus\UnitFrame.lua
-##快速加入，面板
-##WowPlus\QuickJoin.lua
 ##好友，面板
 WoWPlus\FriendsList.lua
 ##小地图，增强缩放
@@ -67,13 +66,12 @@ WowPlus\Minimap.lua
 WoWPlus\EncounterJournal.lua
 ##史诗钥石地下城, 挑战增强
 WoWPlus\Challenges.lua
+
 ##距离, 去掉小数点, WOW已修复
 ##WowPlus\SuperTracked.lua
-
 ##WowPlus\AuctionHouse.lua
-
-
-
+##快速加入，面板
+##WowPlus\QuickJoin.lua
 
 
 ##自动对话，任务
