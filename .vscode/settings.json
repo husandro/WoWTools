@@ -1208,7 +1208,8 @@
         "ItemInteractionFrame",
         "EquipmentFlyoutFrame",
         "ItemInteractionMixin",
-        "SetItemButtonTexture"
+        "SetItemButtonTexture",
+        "MAINTANK"
     ],
     "Lua.diagnostics.disable": [
     ]

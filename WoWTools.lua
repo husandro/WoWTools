@@ -159,6 +159,7 @@ e.Player={
     levelMax=UnitLevel('player')==MAX_PLAYER_LEVEL,--玩家是否最高等级
     level=UnitLevel('player'),
     husandro= select(2, BNGetInfo()) == '古月剑龙#5972' or select(2, BNGetInfo())=='SandroChina#2690' or UnitName('player')=='Fuocco',
+    fanction= UnitFactionGroup('player'),--玩家, 派系
 }
 for k, v in pairs(GetAutoCompleteRealms()) do
     e.Player.servers[v]=k
@@ -319,6 +320,13 @@ e.GetFriend = function(name, guid)--检测, 是否好友
         if C_FriendList.GetFriendInfo(name) or C_FriendList.GetFriendInfo(name:gsub('%-.+','')) then
             return '|A:groupfinder-icon-friend:0:0|a', nil--好友
         end
+    end
+end
+
+e.GetUnitFaction= function(unit)--检查, 是否同一阵营
+    local faction= UnitFactionGroup(unit)
+    if faction~= e.Player.fanction and faction~='Neutral' then
+        return faction=='Horde' and e.Icon.horde2 or e.Icon.alliance2
     end
 end
 

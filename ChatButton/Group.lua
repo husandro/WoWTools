@@ -248,7 +248,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
     local raid=IsInRaid()
     local u= raid and 'raid' or 'party'
     local tabT, tabN, tabDPS, totaleHP = {}, {}, {}, 0
-    local mapName, uiMapID=e.GetUnitMapName('player')
+    local uiMapID= select(2, e.GetUnitMapName('player'))
 
     for i=1, co do
         local unit=u..i
@@ -257,23 +257,31 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
             unit='player'
         end
 
-        local guid=UnitGUID(unit)
-        local maxHP= UnitHealthMax(unit)
-        local role=  raid and select(10, GetRaidRosterInfo(i)) or UnitGroupRolesAssigned(unit)
-        if guid and maxHP and role and _G['INLINE_'..role..'_ICON'] then
-            info.name= _G['INLINE_'..role..'_ICON']..(e.PlayerOnlineInfo(unit) or '')..e.GetPlayerInfo(nil, guid, true)
-            info.maxHP= maxHP
-            info.isSelf= UnitIsUnit(unit, "player")
+        local guid= UnitGUID(unit)
+        if (not e.UnitItemLevel[guid] or not e.UnitItemLevel[guid].itemLeve) and CheckInteractDistance(unit, 1) and CanInspect(unit) then
+            NotifyInspect(unit)--取得装等
+        end
 
-            if not info.isSelf then--地图名称
+        local maxHP= UnitHealthMax(unit)
+        local role
+        if raid then
+            local role2,_, combatRole= select(10, GetRaidRosterInfo(i))
+            role= role2 or combatRole
+            role= role== 'MAINTANK' and 'TANK' or role
+        else
+            role= UnitGroupRolesAssigned(unit)
+        end
+        
+        if guid and maxHP and role then
+            info.name= (e.PlayerOnlineInfo(unit) or '')..e.GetPlayerInfo(nil, guid, true).. (e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLeve or '')
+            info.maxHP= maxHP
+            info.faction= e.GetUnitFaction(unit)--检查, 是否同一阵营
+
+            if uiMapID then--不在同地图
                 local text, mapID=e.GetUnitMapName(unit)
                 if text and mapID and mapID~=uiMapID then
                     info.name= info.name..e.Icon.map2..'|cnRED_FONT_COLOR:'..text..'|r'
-                elseif text then
-                    info.name= info.name..e.Icon.map2..e.Icon.select2
                 end
-            else
-                info.name= info.name
             end
 
             if role=='TANK' then
@@ -286,6 +294,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
 
             totaleHP= totaleHP+ maxHP
         end
+
     end
 
     if totaleHP==0 then
@@ -298,12 +307,12 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
 
     e.tips:SetOwner(panel, "ANCHOR_LEFT")
     e.tips:ClearLines()
-    e.tips:AddDoubleLine(format(e.onlyChinse and '%s玩家' or COMMUNITIES_CROSS_FACTION_BUTTON_TOOLTIP_TITLE, co)..(mapName and ' '..e.Icon.map2..mapName..(uiMapID or '') or ''), e.MK(totaleHP,3))
-    e.tips:AddLine(' ')
+    e.tips:AddDoubleLine(format(e.onlyChinse and '%s玩家' or COMMUNITIES_CROSS_FACTION_BUTTON_TOOLTIP_TITLE, co), e.MK(totaleHP,3))
+    --e.tips:AddLine(' ')
 
     local find
     for _, info in pairs(tabT) do
-        e.tips:AddDoubleLine(info.name, (info.isSelf and e.Icon.star2 or '')..e.MK(info.maxHP, 3))
+        e.tips:AddDoubleLine(info.name, (info.faction or '')..e.MK(info.maxHP, 3)..INLINE_TANK_ICON)
         find=true
     end
     if find then
@@ -311,7 +320,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
         find=nil
     end
     for _, info in pairs(tabN) do
-        e.tips:AddDoubleLine(info.name, (info.isSelf and e.Icon.star2 or '')..e.MK(info.maxHP, 3))
+        e.tips:AddDoubleLine(info.name, (info.faction or '')..e.MK(info.maxHP, 3)..INLINE_HEALER_ICON)
         find=true
     end
     if find then
@@ -319,8 +328,9 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
         find=nil
     end
     for _, info in pairs(tabDPS) do
-        e.tips:AddDoubleLine(info.name, (info.isSelf and e.Icon.star2 or '')..e.MK(info.maxHP, 3))
+        e.tips:AddDoubleLine(info.name, (info.faction or '')..e.MK(info.maxHP, 3)..INLINE_DAMAGER_ICON)
     end
+    
     e.tips:Show()
 end
 

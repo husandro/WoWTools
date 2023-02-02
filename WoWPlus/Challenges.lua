@@ -143,7 +143,7 @@ local function Party(frame)--队友位置
             if tab then
                 if tab.itemLevel then
                     text= text..tab.itemLevel
-                elseif CheckInteractDistance(unit, 1) then--取得装等
+                elseif CheckInteractDistance(unit, 1) and CanInspect(unit) then--取得装等
                     NotifyInspect(unit)
                 end
             end

@@ -237,7 +237,6 @@ local function set_vigentteButton_Text()
                         secText= '|cnGREEN_FONT_COLOR:'..secText..'|r'
                     end
                     text= text..secText
-
                     text= text..'|A:'..poiInfo.atlasName..':0:0|a'
                 end
             end

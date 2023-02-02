@@ -514,7 +514,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             self.Portrait:SetShown(true)
         end
 
-        if CheckInteractDistance(unit, 1) then--取得装等
+        if CheckInteractDistance(unit, 1) and CanInspect(unit) then--取得装等
             NotifyInspect(unit);
         end
         --getPlayerInfo(unit, guid)--取得玩家信息

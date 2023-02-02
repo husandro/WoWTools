@@ -13,15 +13,18 @@ local function getPlayerInfo(unit, guid)--取得玩家信息
                 or guid== UnitGUID("mouseover") and "mouseover"
                 or guid== UnitGUID('target') and 'target'
     end
-    if unit and UnitExists(unit) and guid then
-        local itemLevel=C_PaperDollInfo.GetInspectItemLevel(unit)
+    if unit and guid then
+        local itemLevel= C_PaperDollInfo.GetInspectItemLevel(unit)
         if itemLevel and itemLevel>1 then
             local name, realm= UnitFullName(unit)
-            local r, g, b, hex = GetClassColor(UnitClassBase(unit))
-
+            local r, g, b, hex
+            local class= UnitClassBase(unit)
+            if class then
+                r, g, b, hex= GetClassColor(class)
+            end
             e.UnitItemLevel[guid] = {--玩家装等
                 itemLevel=itemLevel,
-                specID=GetInspectSpecialization(unit),
+                specID= GetInspectSpecialization(unit),
                 name=name,
                 realm=realm,
                 col='|c'..hex,
@@ -42,15 +45,19 @@ local function set_GroupGuid()--队伍数据收集
     e.GroupGuid={}
     if IsInRaid() then
         for index= 1, GetNumGroupMembers() do
-            local unit='raid'..index
-            local guid=UnitGUID(unit)
+            local unit= 'raid'..index
+            local guid= UnitGUID(unit)
             local name, rank, subgroup, level, class, fileName, zone, online, isDead, role, isML, combatRole = GetRaidRosterInfo(index)
             if guid then
-                local tab={unit=unit, subgroup=subgroup, combatRole=combatRole or role}
+                local tab={
+                    unit=unit,
+                    subgroup= subgroup,
+                    combatRole= role or combatRole
+                }
                 e.GroupGuid[guid]=tab
                 e.GroupGuid[GetUnitName(unit, true)]=tab
 
-                if (not e.UnitItemLevel[guid] or not e.UnitItemLevel[guid].itemLeve ) and CheckInteractDistance(unit, 1) then
+                if (not e.UnitItemLevel[guid] or not e.UnitItemLevel[guid].itemLeve ) and CheckInteractDistance(unit, 1) and CanInspect(unit) then
                     NotifyInspect(unit)--取得装等
                 end
             end
@@ -61,11 +68,14 @@ local function set_GroupGuid()--队伍数据收集
             local unit='party'..index
             local guid=UnitGUID(unit)
             if guid then
-                tab={unit=unit, combatRole=UnitGroupRolesAssigned(unit)}
+                tab={
+                    unit=unit,
+                    combatRole=UnitGroupRolesAssigned(unit)
+                }
                 e.GroupGuid[guid]=tab
                 e.GroupGuid[GetUnitName(unit, true)]=tab
 
-                if (not e.UnitItemLevel[guid] or not e.UnitItemLevel[guid].itemLeve ) and CheckInteractDistance(unit, 1) then
+                if (not e.UnitItemLevel[guid] or not e.UnitItemLevel[guid].itemLeve ) and CheckInteractDistance(unit, 1) and CanInspect(unit) then
                     NotifyInspect(unit)--取得装等
                 end
             end
@@ -263,6 +273,8 @@ panel:RegisterEvent('UPDATE_INSTANCE_INFO')--副本
 
 panel:RegisterEvent('PLAYER_LEVEL_UP')--更新玩家等级
 
+panel:RegisterEvent('NEUTRAL_FACTION_SELECT_RESULT')
+
 panel:SetScript('OnEvent', function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" and arg1==id then
         local day= date('%x')--日期
@@ -376,5 +388,8 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
         local level= arg1 or UnitLevel('player')
         e.Player.levelMax= level==MAX_PLAYER_LEVEL--玩家是否最高等级
         e.Player.level= level
+
+    elseif event=='NEUTRAL_FACTION_SELECT_RESULT' and arg1 then--玩家, 派系
+        e.Player.fanction= UnitFactionGroup('player')
     end
 end)
