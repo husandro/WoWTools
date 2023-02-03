@@ -188,7 +188,7 @@ local function set_vigentteButton_Text()
                         if secondsLeft then
                             secText= SecondsToClock(secondsLeft, true)
                             secText= ' '..secText:gsub('：',':')
-                            if secondsLeft<= 300 then
+                            if secondsLeft<= 600 then
                                 secText= '|cnGREEN_FONT_COLOR:'..secText..'|r'
                             end
                         end
@@ -233,7 +233,7 @@ local function set_vigentteButton_Text()
                     end
                     local secText=SecondsToClock(secondsLeft,true)
                     secText= secText:gsub('：',':')
-                    if secondsLeft<= 300 then
+                    if secondsLeft<= 600 then
                         secText= '|cnGREEN_FONT_COLOR:'..secText..'|r'
                     end
                     text= text..secText
