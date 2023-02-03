@@ -29,7 +29,7 @@ local Save={
 }
 
 local addName=UNWRAP..ITEMS
-local Combat, Bag, Opening= nil, {}, nil
+local Combat, Bag, Opening, IsInCombat= nil,{},nil,nil
 
 
 local panel=e.Cbtn2('WoWToolsOpenItemsButton', WoWToolsMountButton)
@@ -52,7 +52,7 @@ local function setCooldown()--冷却条
 end
 
 local function setAtt(bag, slot, icon, itemID)--设置属性
-    if UnitAffectingCombat('player') or not UnitIsConnected('player') then
+    if not IsInCombat then
         Opening= nil
         Combat= true
         return
@@ -587,12 +587,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if Save.noItemHide then
             panel:SetShown(false)
         end
+        IsInCombat= true
+
     elseif event=='PLAYER_REGEN_ENABLED' then
         if Combat then
             getItems()
         else
             panel:SetShown(Bag.bag or not Save.noItemHide)
         end
+        IsInCombat=nil
+
     elseif event=='BAG_UPDATE_COOLDOWN' then
         setCooldown()--冷却条
     end

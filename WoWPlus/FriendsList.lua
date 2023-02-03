@@ -247,7 +247,7 @@ local function set_RaidGroupFrame_Update()--团队, 模块
     if not IsInRaid() then
         return
     end
-    local itemLevel, itemNum= 0,0
+    local itemLevel, itemNum, afkNum, deadNum= 0,0,0,0
     for i=1, MAX_RAID_MEMBERS do
         local button = _G["RaidGroupButton"..i]
         if button and button.subframes then
