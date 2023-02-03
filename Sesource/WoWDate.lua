@@ -5,21 +5,21 @@ e.WoWSave={}
 --########
 --玩家装等
 --########
+
 e.UnitItemLevel={}
 local function getPlayerInfo(guid)--取得玩家信息
-        local unit
-        if e.GroupGuid[guid] then
-            unit= e.GroupGuid[guid].unit
-        elseif guid== e.Player.guid then
-            unit= 'player'
-        elseif UnitGUID("mouseover")== guid then
-            unit= 'mouseover'
-        elseif guid== UnitGUID('target') then
-            unit='target'
-        end
+    local unit
+    if e.GroupGuid[guid] then
+        unit= e.GroupGuid[guid].unit
+    elseif guid== e.Player.guid then
+        unit= 'player'
+    elseif UnitGUID("mouseover")== guid then
+        unit= 'mouseover'
+    elseif guid== UnitGUID('target') then
+        unit='target'
+    end
 
     local itemLevel= unit and C_PaperDollInfo.GetInspectItemLevel(unit)
-
     if unit then
         local name, realm= UnitFullName(unit)
         local r, g, b, hex
@@ -324,9 +324,9 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
             end
         end
 
+        NotifyInspect('player')--取得,自已, 装等
         C_Timer.After(2, function()
-            e.GetGroupGuidDate()--队伍数据收集
-            NotifyInspect('player')--取得,自已, 装等
+            e.GetGroupGuidDate()--队伍数据收集    
             C_MythicPlus.RequestMapInfo()
             C_MythicPlus.RequestRewards()
             C_MythicPlus.RequestCurrentAffixes()
@@ -334,6 +334,7 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
             set_Money()--钱
             updateCurrency()--{currencyID = 数量}
         end)
+
     elseif event=='PLAYER_LOGOUT' then
         if not e.ClearAllSave then
             WoWDate=e.WoWSave

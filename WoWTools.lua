@@ -145,19 +145,19 @@ e.GetPlayerInfo=function (unit, guid, showName)--, hideClassTexture)
 end
 
 e.Player={
-    server=GetRealmName(),
-    servers={},--多服务器
-    name_server=UnitName('player')..'-'..GetRealmName(),
+    server= GetRealmName(),
+    servers= {},--多服务器
+    name_server= UnitName('player')..'-'..GetRealmName(),
     name= UnitName('player'),
-    col='|c'..select(4,GetClassColor(UnitClassBase('player'))),
+    col= '|c'..select(4,GetClassColor(UnitClassBase('player'))),
     zh= LOCALE_zhCN or LOCALE_zhTW,--GetLocale()== ("zhCN" or 'zhTW'),
-    Lo=GetLocale(),
-    class=UnitClassBase('player'),
+    Lo= GetLocale(),
+    class= UnitClassBase('player'),
     --MAX_PLAYER_LEVEL = GetMaxLevelForPlayerExpansion()
-    week=GetWeek(),--周数
-    guid=UnitGUID('player'),
-    levelMax=UnitLevel('player')==MAX_PLAYER_LEVEL,--玩家是否最高等级
-    level=UnitLevel('player'),
+    week= GetWeek(),--周数
+    guid= UnitGUID('player'),
+    levelMax= UnitLevel('player')==MAX_PLAYER_LEVEL,--玩家是否最高等级
+    level= UnitLevel('player'),
     husandro= select(2, BNGetInfo()) == '古月剑龙#5972' or select(2, BNGetInfo())=='SandroChina#2690' or UnitName('player')=='Fuocco',
     fanction= UnitFactionGroup('player'),--玩家, 派系
 }

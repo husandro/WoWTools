@@ -247,7 +247,7 @@ local function set_RaidGroupFrame_Update()--团队, 模块
     if not IsInRaid() then
         return
     end
-    --local lv,co,to, afk, dead =0, 0, 0, 0, 0;
+    local itemLevel, itemNum= 0,0
     for i=1, MAX_RAID_MEMBERS do
         local button = _G["RaidGroupButton"..i]
         if button and button.subframes then
@@ -268,14 +268,14 @@ local function set_RaidGroupFrame_Update()--团队, 模块
                             if distance and distance > DISTANCE_THRESHOLD_SQUARED then
                                 text= e.GetUnitMapName(unit)--单位, 地图名称
                                 if text then
-                                    text= '|cnGREEN_FONT_COLOR:'..text..'|r'
+                                    text= e.Icon.map2..'|cnGREEN_FONT_COLOR:'..text..'|r'
                                 end
                             end
                         end
                     end
-                    
+
                     text= text or e.PlayerOnlineInfo(unit)--状态
-                    
+
                     if not text then--处理名字
                         text= name:gsub('(%-.+)','')--名称
                         text= e.WA_Utf8Sub(text, 3, 7)
@@ -288,7 +288,7 @@ local function set_RaidGroupFrame_Update()--团队, 模块
                 if subframes.class and fileName then
                     local text
                     if e.UnitItemLevel[guid] and e.UnitItemLevel[guid].specID then
-                        local texture= GetSpecializationInfoForSpecID(specID)
+                        local texture= select(4, GetSpecializationInfoForSpecID(e.UnitItemLevel[guid].specID))
                         if texture then
                             text= "|T"..texture..':0|t'
                         end
@@ -298,6 +298,8 @@ local function set_RaidGroupFrame_Update()--团队, 模块
                     if text then
                         if guid and e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLevel then
                             text= e.UnitItemLevel[guid].itemLevel..text
+                            itemLevel= itemLevel+ e.UnitItemLevel[guid].itemLevel
+                            itemNum= itemNum+1
                         else
                             e.GetGroupGuidDate()--队伍数据收集
                         end
@@ -318,6 +320,10 @@ local function set_RaidGroupFrame_Update()--团队, 模块
                 end
             end
         end
+    end
+    if FriendsFrameTitleText and itemNum>0 then
+        local text= '|A:charactercreate-gendericon-male-selected:0:0|a'..format('%i',itemLevel/itemNum)..' |cnGREEN_FONT_COLOR:'..itemNum..'|r/'..GetNumGroupMembers()
+        FriendsFrameTitleText:SetText(text)
     end
 end
 

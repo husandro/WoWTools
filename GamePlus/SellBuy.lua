@@ -136,21 +136,21 @@ local function setSellItems()--出售物品
     for bag=0, NUM_BAG_SLOTS do--背包        
         for slot=0, C_Container.GetContainerNumSlots(bag) do--背包数量
             --local _, itemCount, locked, quality, _, _, itemLink, _, noValue, itemID = C_Container.GetContainerItemInfo(bag,slot);--物品信息
-            local containerInfo = C_Container.GetContainerItemInfo(bag,slot)
-            if containerInfo and containerInfo.hyperlink and containerInfo.itemID then
-                local checkText=CheckItemSell(containerInfo.itemID, containerInfo.quality)--检察 ,boss掉落, 指定 或 出售灰色,宠物
-                if not containerInfo.isLocked and checkText then
+            local info = C_Container.GetContainerItemInfo(bag,slot)
+            if info and info.hyperlink and info.itemID and info.quality and (info.quality<5 or Save.Sell[info.itemID] and not Save.notSellCustom) then
+                local checkText=CheckItemSell(info.itemID, info.quality)--检察 ,boss掉落, 指定 或 出售灰色,宠物
+                if not info.isLocked and checkText then
                     C_Container.UseContainerItem(bag, slot);--买出
                     local prece =0
-                    if not containerInfo.hasNoValue then--卖出钱
-                        prece = (select(11, GetItemInfo(containerInfo.hyperlink)) or 0) * (C_Container.stackCount or 1);--价格
+                    if not info.hasNoValue then--卖出钱
+                        prece = (select(11, GetItemInfo(info.hyperlink)) or 0) * (C_Container.stackCount or 1);--价格
                         preceTotale = preceTotale + prece
                     end
                     num=num+ (C_Container.stackCount or 1)--数量
-                    if not (containerInfo.quality==0 and e.Player.husandro) then
-                        gruop=gruop+1--组
+                    if not (info.quality==0 and e.Player.husandro)then
+                        gruop= gruop+1--组
                     end
-                    print(addName, e.onlyChinse and '出售' or AUCTION_HOUSE_SELL_TAB, checkText or '', containerInfo.hyperlink, GetCoinTextureString(prece))
+                    print(addName, e.onlyChinse and '出售' or AUCTION_HOUSE_SELL_TAB, checkText or '', info.hyperlink, GetCoinTextureString(prece))
                     if gruop>= 12 then
                         break
                     end
