@@ -277,7 +277,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         panel.Texture:SetVertexColor(1,1,1)
 
     elseif event=='UNIT_QUEST_LOG_CHANGED' or event=='QUEST_POI_UPDATE' or event=='SCENARIO_COMPLETED' or event=='SCENARIO_UPDATE' or event=='SCENARIO_CRITERIA_UPDATE' then
-        C_Timer.After(0.3, function()
+        if panel.setUnitQestLogChangedTimer then panel.setUnitQestLogChangedTimer:IsCancelled() end
+        panel.setUnitQestLogChangedTimer= C_Timer.NewTimer(2, function()
             set_UNIT_QUEST_LOG_CHANGED()
         end)
 

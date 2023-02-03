@@ -892,19 +892,25 @@ local function Init()
             MainMenuBarBackpackButtonCount:SetShadowOffset(1, -1)
         end
         hooksecurefunc(MainMenuBarBackpackButton, 'UpdateFreeSlots', function(self)
-            local totalFree= self.freeSlots
-            if totalFree then
-                if totalFree==0 then
-                    MainMenuBarBackpackButtonIconTexture:SetColorTexture(1,0,0,1)
-                    totalFree= '|cnRED_FONT_COLOR:'..totalFree..'|r'
-                elseif totalFree<=5 then
-                    MainMenuBarBackpackButtonIconTexture:SetColorTexture(0,1,0,1)
-                    totalFree= '|cnGREEN_FONT_COLOR:'..totalFree..'|r'
-                else
-                    MainMenuBarBackpackButtonIconTexture:SetColorTexture(0,0,0,0)
+            local totalFree
+            totalFree= 0
+            for i = BACKPACK_CONTAINER, NUM_TOTAL_EQUIPPED_BAG_SLOTS-1 do
+                local freeSlots, bagFamily= C_Container.GetContainerNumFreeSlots(i)
+                if ( bagFamily == 0 ) then
+                    totalFree = totalFree + freeSlots;
                 end
-                self.Count:SetText(totalFree);
             end
+            self.freeSlots= totalFree
+            if totalFree==0 then
+                MainMenuBarBackpackButtonIconTexture:SetColorTexture(1,0,0,1)
+                totalFree= '|cnRED_FONT_COLOR:'..totalFree..'|r'
+            elseif totalFree<=5 then
+                MainMenuBarBackpackButtonIconTexture:SetColorTexture(0,1,0,1)
+                totalFree= '|cnGREEN_FONT_COLOR:'..totalFree..'|r'
+            else
+                MainMenuBarBackpackButtonIconTexture:SetColorTexture(0,0,0,0)
+            end
+            self.Count:SetText(totalFree)
         end)
     end
 

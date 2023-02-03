@@ -224,6 +224,7 @@ local function setGroupReadyTips(event, arg1, arg2)
             panel.groupReadyTips.text:SetPoint('BOTTOMLEFT', panel.groupReadyTips, 'BOTTOMRIGHT')
         end
         if event=='READY_CHECK' and text~='' then
+            if panel.groupReadyTips.timer then panel.groupReadyTips.timer:Cancel() end
             panel.groupReadyTips.timer=C_Timer.NewTimer(arg2 or 35, function()
                 panel.groupReadyTips.text:SetText('')
                 panel.groupReadyTips:SetShown(false)
@@ -494,10 +495,9 @@ local function setMarkersFrame()--设置标记, 框架
             if timerType==3 and event=='START_TIMER' then
                 if totalTime==0 then
                    self.star=nil
-                   if self.timer then
-                        self.timer:Cancel()
-                   end
+                   if self.timer then self.timer:Cancel() end
                 elseif totalTime>0 then
+                    if self.timer then self.timer:Cancel() end
                     self.timer=C_Timer.NewTimer(totalTime, function() self.star=nil end)
                     self.star=true
                 end
@@ -869,6 +869,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         e.PlaySound(SOUNDKIT.READY_CHECK)--播放, 声音
         if Save.autoReady then
             if arg1 and arg1~=UnitName('player') then
+                if self.autoReadyTime then self.autoReadyTime:Cancel() end
                 self.autoReadyTime= C_Timer.NewTimer(3, function()
                     if ReadyCheckFrame and ReadyCheckFrame:IsShown() then
                         ConfirmReadyCheck(Save.autoReady==1 and 1 or nil)

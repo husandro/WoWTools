@@ -100,58 +100,44 @@ if not all then
         end
     end
 
-    if InvPlateTimer and not InvPlateTimer:IsCancelled() then
-        InvPlateTimer:Cancel()
-    end
+    if InvPlateTimer then InvPlateTimer:Cancel() end
+    InvPlateTimer=C_Timer.NewTimer(0.3, function()
+        local n=1;
+        local co=GetNumGroupMembers();
+        local raid=IsInRaid();
+        if (not raid and co==5) and not Save.PartyToRaid then
+            print(id, addName, format(e.onlyChinse and '请愿：%s' or PETITION_TITLE, '|cff00ff00'..(e.onlyChinse and '转团' or CONVERT_TO_RAID)..'|r'))
 
-    InvPlateTimer=C_Timer.NewTicker(0.3, function()
-            local n=1;
-            local co=GetNumGroupMembers();
-            local raid=IsInRaid();
-            if (not raid and co==5) and not Save.PartyToRaid then
-                print(id, addName, format(e.onlyChinse and '请愿：%s' or PETITION_TITLE, '|cff00ff00'..(e.onlyChinse and '转团' or CONVERT_TO_RAID)..'|r'))
-
-            elseif co==40 then
-                print(id, addName, RED_FONT_COLOR_CODE..'|r', co, e.onlyChinse and '队员' or PLAYERS_IN_GROUP)
-            else
-                toRaidOrParty(co)--自动, 转团
-                local tab= C_NamePlate.GetNamePlates() or {}
-                for _, v in pairs(tab) do
-                    local u = v.namePlateUnitToken or (v.UnitFrame and v.UnitFrame.unit);
-                    local name=GetUnitName(u,true);
-                    local guid=UnitGUID(u);
-                    if name and name~=UNKNOWNOBJECT and guid and not UnitInAnyGroup(u) and not UnitIsAFK(u) and UnitIsConnected(u) and UnitIsPlayer(u) and UnitIsFriend(u, 'player') and not UnitIsUnit('player',u) then
-                        if not InvPlateGuid[guid] then
-                            C_PartyInfo.InviteUnit(name);
-                            InvPlateGuid[guid]=name;
-                            print(id, '|cnGREEN_FONT_COLOR:'..n..'|r)', e.onlyChinse and '邀请' or INVITE ,e.PlayerLink(name, guid));
-                            if not raid and n +co>=5  then
-                                print(id, addName, format(PETITION_TITLE, '|cff00ff00'..(e.onlyChinse and '转团' or CONVERT_TO_RAID)..'|r'))
-                                break
-                            end
-                            n=n+1
+        elseif co==40 then
+            print(id, addName, RED_FONT_COLOR_CODE..'|r', co, e.onlyChinse and '队员' or PLAYERS_IN_GROUP)
+        else
+            toRaidOrParty(co)--自动, 转团
+            local tab= C_NamePlate.GetNamePlates() or {}
+            for _, v in pairs(tab) do
+                local u = v.namePlateUnitToken or (v.UnitFrame and v.UnitFrame.unit);
+                local name=GetUnitName(u,true);
+                local guid=UnitGUID(u);
+                if name and name~=UNKNOWNOBJECT and guid and not UnitInAnyGroup(u) and not UnitIsAFK(u) and UnitIsConnected(u) and UnitIsPlayer(u) and UnitIsFriend(u, 'player') and not UnitIsUnit('player',u) then
+                    if not InvPlateGuid[guid] then
+                        C_PartyInfo.InviteUnit(name);
+                        InvPlateGuid[guid]=name;
+                        print(id, '|cnGREEN_FONT_COLOR:'..n..'|r)', e.onlyChinse and '邀请' or INVITE ,e.PlayerLink(name, guid));
+                        if not raid and n +co>=5  then
+                            print(id, addName, format(PETITION_TITLE, '|cff00ff00'..(e.onlyChinse and '转团' or CONVERT_TO_RAID)..'|r'))
+                            break
                         end
+                        n=n+1
                     end
                 end
             end
-           --[[
- if not all then
-                C_CVar.SetCVar('nameplateShowAll', '0')
-            end
-
-]]
-
-            if not p and not UnitAffectingCombat('player') then
-                C_CVar.SetCVar('nameplateShowFriends', '0')
-            end
-            if n==1 then
-                print(id, addName, e.onlyChinse and '邀请成员' or GUILDCONTROL_OPTION7, '|cnRED_FONT_COLOR:'..(e.onlyChinse and '无' or NONE))
-            end
-
-            if InvPlateTimer and InvPlateTimer:IsCancelled() then
-                InvPlateTimer:Cancel()
-            end
-    end,1)
+        end
+        if not p and not UnitAffectingCombat('player') then
+            C_CVar.SetCVar('nameplateShowFriends', '0')
+        end
+        if n==1 then
+            print(id, addName, e.onlyChinse and '邀请成员' or GUILDCONTROL_OPTION7, '|cnRED_FONT_COLOR:'..(e.onlyChinse and '无' or NONE))
+        end
+    end)
 end
 
 local Time
@@ -189,7 +175,9 @@ local function set_LFGListApplicationViewer_UpdateApplicantMember(self, appID, m
             )
 
             C_Timer.After(1,function()
+                if LFGListFrame.ApplicationViewer.RefreshButton:IsEnabled() then
                     LFGListFrame.ApplicationViewer.RefreshButton:Click();
+                end
             end);
             Time= GetTime();
         end
@@ -290,18 +278,21 @@ local function set_LFGListInviteDialog(self)--队伍查找器, 自动接受邀�
             )
             e.PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
             e.Ccool(self, nil, 3, nil, true, true, nil)--冷却条
-            self.LFGListInviteDialogTimer=C_Timer.NewTicker(3, function()
+            if self.LFGListInviteDialogTimer then self.LFGListInviteDialogTimer:Cancel() end
+            self.LFGListInviteDialogTimer=C_Timer.NewTimer(3, function()
+                if self.IsEnabled() then
                     self.AcceptButton:Click()
-            end, 1)
+                end
+            end)
         end
     elseif status=="inviteaccepted" then
-        if self.LFGListInviteDialogTimer and not self.LFGListInviteDialogTimer:IsCancelled() then
-            self.LFGListInviteDialogTimer:Cancel()
-        end
         e.Ccool(self, nil, 3, nil, true, true, nil)--冷却条
-        self.LFGListInviteDialogTimer=C_Timer.NewTicker(3, function()
-            self.AcknowledgeButton:Click();
-        end, 1)
+        if self.LFGListInviteDialogTimer then self.LFGListInviteDialogTimer:Cancel() end
+        self.LFGListInviteDialogTimer=C_Timer.NewTimer(3, function()
+            if self.AcknowledgeButton:IsEnabled() then
+                self.AcknowledgeButton:Click();
+            end
+        end)
     end
 end
 
@@ -339,33 +330,35 @@ local function set_PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNati
         end
         local sec=isInLFG() and 10 or 3--是否有FB, 排除中
         setPrint(sec, '|cnGREEN_FONT_COLOR:'..ACCEPT..'|r'..FRIENDS)
-        F.InvTimer = C_Timer.NewTicker(sec, function()
+        if F.InvTimer then F.InvTimer:Cancel() end
+        F.InvTimer = C_Timer.NewTimer(sec, function()
                 AcceptGroup()
                 StaticPopup_Hide("PARTY_INVITE")
-        end, 1)
+        end)
 
     elseif Save.InvNoFriend[inviterGUID] then--拒绝
         setPrint(3, '|cnRED_FONT_COLOR:'..(e.onlyChinse and '拒绝' or DECLINE)..'|r'..Save.InvNoFriend[inviterGUID]..'/'..Save.InvNoFriendNum)
         F.button3:SetText('|cnRED_FONT_COLOR:'..(e.onlyChinse and '移除' or REMOVE)..'|r'..(e.onlyChinse and '接受' or ACCEPT))
         notInviterGUID=inviterGUID
-        F.InvTimer = C_Timer.NewTicker(3, function()
+        if F.InvTimer then F.InvTimer:Cancel() end
+        F.InvTimer = C_Timer.NewTimer(3, function()
             DeclineGroup();
             StaticPopup_Hide("PARTY_INVITE")
             Save.InvNoFriendNum=Save.InvNoFriendNum+1
             Save.InvNoFriend[inviterGUID]=Save.InvNoFriend[inviterGUID]+1
-        end, 1)
+        end)
 
     elseif IsResting() and Save.NoInvInResting and not questSessionActive then--休息区不组队
         setPrint(3, '|cnRED_FONT_COLOR:'..(e.onlyChinse and '' or DECLINE)..'|r'..(e.onlyChinse and '休息区' or (CALENDAR_STATUS_OUT..ZONE)))
 
         F.button3:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '添加' or ADD)..'|r'..(e.onlyChinse and '拒绝' or DECLINE))
         notInviterGUID=inviterGUID
-
-        F.InvTimer = C_Timer.NewTicker(3, function()
+        if F.InvTimer then F.InvTimer:Cancel() end
+        F.InvTimer = C_Timer.NewTimer(3, function()
             DeclineGroup()
             StaticPopup_Hide("PARTY_INVITE");
             Save.InvNoFriendNum=Save.InvNoFriendNum+1
-        end, 1)
+        end)
 
     else--添加 拒绝 陌生人
         F.button3:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '添加' or ADD)..'|r'..(e.onlyChinse and '拒绝' or DECLINE))
@@ -849,7 +842,7 @@ local function Init()
     set_Chanell_Event()--设置,内容,频道, 邀请,事件
 
     LFGListInviteDialog:SetScript("OnHide", function(self)--LFG,,自动接受邀请
-        if self.LFGListInviteDialogTimer and not self.LFGListInviteDialogTimer:IsCancelled() then
+        if self.LFGListInviteDialogTimer then
             self.LFGListInviteDialogTimer:Cancel()
         end
     end)
@@ -858,7 +851,7 @@ local function Init()
     hooksecurefunc("LFGListApplicationViewer_UpdateApplicantMember", set_LFGListApplicationViewer_UpdateApplicantMember)--自动清邀请, 队伍查找器, LFGList.lua
 
     StaticPopup1:SetScript('OnHide', function(self)--被邀请, 对话框, 取消记时器
-        if self.InvTimer and not self.InvTimer:IsCancelled() then
+        if self.InvTimer then
             self.InvTimer:Cancel()
         end
         notInviterGUID=nil
@@ -891,6 +884,7 @@ local function Init()
         if Save.Summon and not UnitAffectingCombat("player") and PlayerCanTeleport() and not UnitIsAFK('player') and not IsModifierKeyDown() then
             print(id, addName, e.onlyChinse and '召唤' or SUMMON, C_SummonInfo.GetSummonConfirmSummoner(), C_SummonInfo.GetSummonConfirmAreaName())
             e.Ccool(self, nil, 3, nil, true, true, nil)--冷却条
+            if panel.SummonTimer then panel.SummonTimer:Cancel() end
             panel.SummonTimer= C_Timer.NewTimer(3, function()
                 if not UnitAffectingCombat("player") and PlayerCanTeleport() and not UnitIsAFK('player') and not IsModifierKeyDown() then
                     C_SummonInfo.ConfirmSummon()
@@ -902,9 +896,7 @@ local function Init()
         end
     end)
     hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"],"OnCancel",function(self)
-        if panel.SummonTimer and not panel.SummonTimer:IsCancelled() then
-            panel.SummonTimer:Cancel()
-        end
+        if panel.SummonTimer then panel.SummonTimer:Cancel() end
     end)
 end
 

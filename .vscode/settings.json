@@ -1219,7 +1219,8 @@
         "CompactUnitFrame_UpdateStatusText",
         "LOST_HEALTH",
         "CHAT_MSG_SYSTEM",
-        "CHALLENGE_MODE_COMPLETED"
+        "CHALLENGE_MODE_COMPLETED",
+        "BACKPACK_CONTAINER"
     ],
     "Lua.diagnostics.disable": [
     ]

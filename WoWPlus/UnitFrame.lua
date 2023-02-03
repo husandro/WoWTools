@@ -585,13 +585,16 @@ local function set_RaidFrame()--设置,团队
 
     hooksecurefunc('CompactUnitFrame_UpdateDistance', function(frame)--取得装等, 高CPU
         if not frame.unitItemLevel and frame.unit and CheckInteractDistance(frame.unit, 1) and CanInspect(frame.unit) then --frame.inDistance and frame.inDistance< DISTANCE_THRESHOLD_SQUARED then
-            local guid= UnitGUID(frame.unit)
-            if guid and e.UnitItemLevel[guid] then
-                if not e.UnitItemLevel[guid].itemLevel then
-                    NotifyInspect(frame.unit)--取得装等
-                    print(frame.unit, '取得装等')
+            if not frame.getItemTime then
+                NotifyInspect(frame.unit)--取得装等
+                local guid= UnitGUID(frame.unit)
+                if guid and e.UnitItemLevel[guid] then
+                    if not e.UnitItemLevel[guid].itemLevel then
+                        NotifyInspect(frame.unit)--取得装等
+                        print(frame.unit, '取得装等')
+                    end
+                    frame.unitItemLevel= e.UnitItemLevel[guid].itemLevel
                 end
-                frame.unitItemLevel= e.UnitItemLevel[guid].itemLevel
             end
         end
     end)

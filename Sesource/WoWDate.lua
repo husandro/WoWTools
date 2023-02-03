@@ -97,7 +97,7 @@ function e.GetGroupGuidDate()--队伍数据收集
 
     local num, index= #UnitTab, 1
     if num>0 then
-        if panel.NotifyInspectTicker and not panel.NotifyInspectTicker:IsCancelled() then
+        if panel.NotifyInspectTicker then
             panel.NotifyInspectTicker:Cancel()
         end
         panel.NotifyInspectTicker=C_Timer.NewTicker(4, function()
