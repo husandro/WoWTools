@@ -165,7 +165,7 @@ local function set_PartyFrame()--PartyFrame.lua
                     end)
                     frame:HookScript('OnEvent', function (self2, event, arg1)
                         if event=='RAID_TARGET_UPDATE' then
-                            set_SetRaidTarget(self2.RaidTargetIcon, self2.unit);
+                            set_SetRaidTarget(self2.RaidTargetIcon, self2.unit)
                         elseif event=='UNIT_TARGET' and arg1==self2.unit then
                             set_Party_Target_Changed(self2.TotPortrait, self2.unit)
                         end
@@ -174,7 +174,7 @@ local function set_PartyFrame()--PartyFrame.lua
                     hooksecurefunc(memberFrame, 'UpdateAssignedRoles', function(self2)--隐藏, DPS 图标
                         if self2.unit then
                             local role = UnitGroupRolesAssigned(self2.unit)
-                            local icon = self2.PartyMemberOverlay.RoleIcon;
+                            local icon = self2.PartyMemberOverlay.RoleIcon
                             if icon and role== 'DAMAGER' then
                                 icon:SetShown(false)
                             end
@@ -187,15 +187,15 @@ local function set_PartyFrame()--PartyFrame.lua
                         frame:RegisterEvent('RAID_TARGET_UPDATE')--更新,标记
                         frame:RegisterUnitEvent('UNIT_TARGET', unit)
 
-                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_START", unit);--开始
-                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", unit);
-                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_START", unit);
-                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit);--结束
-                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit);
-                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", unit);
-                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTIBLE", unit);
-                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", unit);
-                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_STOP", unit);
+                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_START", unit)--开始
+                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", unit)
+                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_START", unit)
+                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit)--结束
+                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit)
+                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", unit)
+                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTIBLE", unit)
+                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", unit)
+                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_STOP", unit)
 
                         set_SetRaidTarget(frame.RaidTargetIcon, unit)--设置,标记
                         set_Party_Target_Changed(frame.TotPortrait, unit)
@@ -323,7 +323,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
     --###################
     for memberFrame in PartyFrame.PartyMemberFramePool:EnumerateActive() do
         hooksecurefunc(memberFrame, 'UpdateAssignedRoles', function(self)--隐藏, DPS 图标
-            local icon = self.PartyMemberOverlay.RoleIcon;
+            local icon = self.PartyMemberOverlay.RoleIcon
             if icon and icon:IsShown() then
                 local role = UnitGroupRolesAssigned(self.unit)
                 if role== 'DAMAGER' then
@@ -375,8 +375,8 @@ end
 
 --####
 --团队
---####
-local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
+--CompactUnitFrame.lua
+local function set_RaidFrame()--设置,团队
     if Save.notRaidFrame then
         return
     end
@@ -407,7 +407,7 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
     hooksecurefunc('CompactUnitFrame_OnEvent', function(self, event, arg1)
         if self.RaidTargetIcon and self.unit then
             if event=='RAID_TARGET_UPDATE'then
-                set_SetRaidTarget(self.RaidTargetIcon, self.unit);
+                set_SetRaidTarget(self.RaidTargetIcon, self.unit)
             --elseif event=='UNIT_TARGET' and arg1 then
                 --self.ToTargetIcon:SetShown(UnitIsUnit(self.unit, arg1..'target'))
             end
@@ -420,7 +420,7 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
         end
         local bool=true
         if not UnitInVehicle(frame.unit) and not UnitHasVehicleUI(frame.unit) and frame.roleIcon and frame.optionTable.displayRaidRoleIcon then
-            local raidID = UnitInRaid(frame.unit);
+            local raidID = UnitInRaid(frame.unit)
             if raidID then
                 if select(12, GetRaidRosterInfo(raidID))=='DAMAGER' then
                     bool=false
@@ -447,7 +447,7 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
 
     hooksecurefunc('CompactUnitFrame_UpdateName', function(frame)--修改, 名字
         if not frame.unit or not frame.name or (frame.UpdateNameOverride and frame:UpdateNameOverride()) or not ShouldShowName(frame) then
-            return;
+            return
         end
         if UnitIsUnit('player', frame.unit) then
             frame.name:SetText(e.Icon.player)
@@ -582,6 +582,73 @@ local function set_RaidFrame()--设置,团队 CompactUnitFrame.lua
     if Save.managerScale and Save.managerScale~=1 then
         CompactRaidFrameManager:SetScale(Save.managerScale)
     end
+
+    hooksecurefunc('CompactUnitFrame_UpdateDistance', function(frame)--取得装等, 高CPU
+        if not frame.unitItemLevel and frame.unit and CheckInteractDistance(frame.unit, 1) and CanInspect(frame.unit) then --frame.inDistance and frame.inDistance< DISTANCE_THRESHOLD_SQUARED then
+            local guid= UnitGUID(frame.unit)
+            if guid and e.UnitItemLevel[guid] then
+                if not e.UnitItemLevel[guid].itemLevel then
+                    NotifyInspect(frame.unit)--取得装等
+                    print(frame.unit, '取得装等')
+                end
+                frame.unitItemLevel= e.UnitItemLevel[guid].itemLevel
+            end
+        end
+    end)
+        --[[
+        if not frame.statusText or not frame.optionTable.displayStatusText then
+            return
+        end
+	    local distance, checkedDistance = UnitDistanceSquared(frame.displayedUnit)
+        if ( checkedDistance ) then
+
+           
+            local inDistance = distance < DISTANCE_THRESHOLD_SQUARED
+            if ( inDistance ~= frame.inDistance ) then
+                local text= e.GetUnitMapName(frame.displayedUnit)--单位, 地图名称
+                if text then
+                    text= '|cnGREEN_FONT_COLOR:'..text..'|r'
+                    frame.statusText:SetText(text)
+                end
+            end
+        end]]
+    
+
+    hooksecurefunc('CompactUnitFrame_UpdateStatusText', function(frame)
+        local connected= UnitIsConnected(frame.displayedUnit)
+        if frame.background then
+            frame.background:SetShown(connected)
+        end
+
+        if not frame.statusText or not frame.statusText:IsShown() then--not frame.optionTable.displayStatusText then
+            return
+        end
+
+        if ( not connected ) then
+            frame.statusText:SetFormattedText("\124T%s.tga:0\124t", FRIENDS_TEXTURE_DND)
+        elseif UnitIsGhost(frame.displayedUnit) then
+            frame.statusText:SetText('|A:poi-soulspiritghost:0:0|a')
+        elseif UnitIsDead(frame.displayedUnit) then
+            frame.statusText:SetText('|A:deathrecap-icon-tombstone:0:0|a')
+        elseif ( frame.optionTable.healthText == "health" ) then
+            frame.statusText:SetText(e.MK(UnitHealth(frame.displayedUnit),1))
+        elseif ( frame.optionTable.healthText == "losthealth" ) then
+            local healthLost = UnitHealthMax(frame.displayedUnit) - UnitHealth(frame.displayedUnit)
+            frame.statusText:SetFormattedText('%-%s', e.MK(healthLost,1))
+        elseif (frame.optionTable.healthText == "perc") then
+            if UnitHealth(frame.displayedUnit)== UnitHealthMax(frame.displayedUnit) then
+                frame.statusText:SetText('')
+            else
+                local text= frame.statusText:GetText()
+                if text then
+                    text= text:gsub('%%','')
+                    frame.statusText:SetText(text)
+                end
+            end
+        end
+        
+        
+    end)
 --[[
     for index, tab in pairs(EditModeSettingDisplayInfoManager.systemSettingDisplayInfo[Enum.EditModeSystem.UnitFrame]) do
         if tab.name==HUD_EDIT_MODE_SETTING_UNIT_FRAME_WIDTH  then-- Frame Width

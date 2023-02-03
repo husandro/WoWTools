@@ -1212,7 +1212,14 @@
         "MAINTANK",
         "MAX_RAID_MEMBERS",
         "FriendsFrameTitleText",
-        "RaidGroupFrame_Update"
+        "RaidGroupFrame_Update",
+        "DISTANCE_THRESHOLD_SQUARED",
+        "CompactUnitFrame_UpdateCenterStatusIcon",
+        "CompactUnitFrame_UpdateDistance",
+        "CompactUnitFrame_UpdateStatusText",
+        "LOST_HEALTH",
+        "CHAT_MSG_SYSTEM",
+        "CHALLENGE_MODE_COMPLETED"
     ],
     "Lua.diagnostics.disable": [
     ]

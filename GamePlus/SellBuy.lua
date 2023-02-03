@@ -147,7 +147,9 @@ local function setSellItems()--出售物品
                         preceTotale = preceTotale + prece
                     end
                     num=num+ (C_Container.stackCount or 1)--数量
-                    gruop=gruop+1--组
+                    if not (containerInfo.quality==0 and e.Player.husandro) then
+                        gruop=gruop+1--组
+                    end
                     print(addName, e.onlyChinse and '出售' or AUCTION_HOUSE_SELL_TAB, checkText or '', containerInfo.hyperlink, GetCoinTextureString(prece))
                     if gruop>= 12 then
                         break

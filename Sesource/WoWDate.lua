@@ -6,33 +6,41 @@ e.WoWSave={}
 --玩家装等
 --########
 e.UnitItemLevel={}
-local function getPlayerInfo(unit, guid)--取得玩家信息
-    if not unit and guid then
-        unit= e.GroupGuid[guid] and e.GroupGuid[guid].unit
-                or guid== e.Player.guid and 'player'
-                or guid== UnitGUID("mouseover") and "mouseover"
-                or guid== UnitGUID('target') and 'target'
-    end
-    if unit and guid then
-        local itemLevel= C_PaperDollInfo.GetInspectItemLevel(unit)
-        if itemLevel and itemLevel>1 then
-            local name, realm= UnitFullName(unit)
-            local r, g, b, hex
-            local class= UnitClassBase(unit)
-            if class then
-                r, g, b, hex= GetClassColor(class)
-            end
-            e.UnitItemLevel[guid] = {--玩家装等
-                itemLevel=itemLevel,
-                specID= GetInspectSpecialization(unit),
-                name=name,
-                realm=realm,
-                col='|c'..hex,
-                r=r,
-                g=g,
-                b=b,
-            }
+local function getPlayerInfo(guid)--取得玩家信息
+        local unit
+        if e.GroupGuid[guid] then
+            unit= e.GroupGuid[guid].unit
+        elseif guid== e.Player.guid then
+            unit= 'player'
+        elseif UnitGUID("mouseover")== guid then
+            unit= 'mouseover'
+        elseif guid== UnitGUID('target') then
+            unit='target'
         end
+
+    local itemLevel= unit and C_PaperDollInfo.GetInspectItemLevel(unit)
+
+    if unit then
+        local name, realm= UnitFullName(unit)
+        local r, g, b, hex
+        local class= UnitClassBase(unit)
+        if class then
+            r, g, b, hex= GetClassColor(class)
+        end
+
+        if not itemLevel and  e.UnitItemLevel[guid] and e.UnitItemLevel[guid].level then
+            itemLevel=  e.UnitItemLevel[guid].level
+        end
+        e.UnitItemLevel[guid] = {--玩家装等
+            itemLevel= itemLevel,
+            specID= GetInspectSpecialization(unit),
+            name= name,
+            realm= realm,
+            col='|c'..hex,
+            r=r,
+            g=g,
+            b=b,
+        }
     end
 end
 
@@ -41,48 +49,63 @@ end
 --队伍数据收集
 --###########
 e.GroupGuid={}
-local function set_GroupGuid()--队伍数据收集
+function e.GetGroupGuidDate()--队伍数据收集
     e.GroupGuid={}
+    local UnitTab={}
     if IsInRaid() then
-        for index= 1, GetNumGroupMembers() do
+        for index= 1, MAX_RAID_MEMBERS do --GetNumGroupMembers() do
             local unit= 'raid'..index
-            local guid= UnitGUID(unit)
-            local name, rank, subgroup, level, class, fileName, zone, online, isDead, role, isML, combatRole = GetRaidRosterInfo(index)
-            if guid then
-                local tab={
-                    unit=unit,
-                    subgroup= subgroup,
-                    combatRole= role or combatRole
-                }
-                e.GroupGuid[guid]=tab
-                e.GroupGuid[GetUnitName(unit, true)]=tab
-
-                if (not e.UnitItemLevel[guid] or not e.UnitItemLevel[guid].itemLeve ) and CheckInteractDistance(unit, 1) and CanInspect(unit) then
-                    NotifyInspect(unit)--取得装等
+            if UnitExists(unit) and not UnitIsUnit('player', unit) then
+                local guid= UnitGUID(unit)
+                local name, rank, subgroup, level, class, fileName, zone, online, isDead, role, isML, combatRole = GetRaidRosterInfo(index)
+                if guid then
+                    local tab={
+                        unit=unit,
+                        subgroup= subgroup,
+                        combatRole= role or combatRole
+                    }
+                    e.GroupGuid[guid]=tab
+                    e.GroupGuid[GetUnitName(unit, true)]=tab
+                    if (not e.UnitItemLevel[guid] or not e.UnitItemLevel[guid].itemLevel ) and CheckInteractDistance(unit, 1) and CanInspect(unit) then
+                        table.insert(UnitTab, unit)
+                        NotifyInspect(unit)--取得装等
+                    end
                 end
             end
         end
-    else
+    elseif IsInGroup() then
         local tab
-        for index= 1, GetNumGroupMembers()-1 do
-            local unit='party'..index
-            local guid=UnitGUID(unit)
-            if guid then
-                tab={
-                    unit=unit,
-                    combatRole=UnitGroupRolesAssigned(unit)
-                }
-                e.GroupGuid[guid]=tab
-                e.GroupGuid[GetUnitName(unit, true)]=tab
+        for index= 1, 4 do
+            local unit= 'party'..index
+            if UnitExists(unit) then
+                local guid=UnitGUID(unit)
+                if guid then
+                    tab={
+                        unit= unit,
+                        combatRole= UnitGroupRolesAssigned(unit)
+                    }
+                    e.GroupGuid[guid]=tab
+                    e.GroupGuid[GetUnitName(unit, true)]=tab
 
-                if (not e.UnitItemLevel[guid] or not e.UnitItemLevel[guid].itemLeve ) and CheckInteractDistance(unit, 1) and CanInspect(unit) then
-                    NotifyInspect(unit)--取得装等
+                    if (not e.UnitItemLevel[guid] or not e.UnitItemLevel[guid].itemLevel ) and CheckInteractDistance(unit, 1) and CanInspect(unit) then
+                        table.insert(UnitTab, unit)
+                    end
                 end
             end
         end
-        tab={unit='player', combatRole=UnitGroupRolesAssigned('player')}
-        e.GroupGuid[e.Player.guid]=tab
-        e.GroupGuid[UnitName('player')]=tab
+    end
+
+    local num, index= #UnitTab, 1
+    if num>0 then
+        if panel.NotifyInspectTicker and not panel.NotifyInspectTicker:IsCancelled() then
+            panel.NotifyInspectTicker:Cancel()
+        end
+        panel.NotifyInspectTicker=C_Timer.NewTicker(4, function()
+            if UnitTab[index] then
+                NotifyInspect(UnitTab[index])--取得装等
+                index= index+ 1
+            end
+        end, num-1)
     end
 end
 
@@ -245,35 +268,27 @@ end
 
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent('PLAYER_LOGOUT')
+panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 
 panel:RegisterEvent('GROUP_ROSTER_UPDATE')--队伍数据收集 e.GroupGuid
 panel:RegisterEvent('GROUP_LEFT')
-panel:RegisterEvent('ADDON_LOADED')
-
 panel:RegisterEvent('TIME_PLAYED_MSG')--总游戏时间：%s
-
-panel:RegisterEvent('INSPECT_READY')
-
+panel:RegisterEvent('INSPECT_READY')--取得装等
 panel:RegisterEvent('CHALLENGE_MODE_MAPS_UPDATE')--地下城挑战
-panel:RegisterEvent('CHALLENGE_MODE_COMPLETED')
-panel:RegisterEvent('WEEKLY_REWARDS_UPDATE')
-
+panel:RegisterEvent('CHALLENGE_MODE_COMPLETED')--地下城挑战
+panel:RegisterEvent('WEEKLY_REWARDS_UPDATE')--地下城挑战
 panel:RegisterEvent('PLAYER_MONEY')--钱
-
 panel:RegisterEvent('ZONE_CHANGED_NEW_AREA')--位面, 清除
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
-
 panel:RegisterEvent('BOSS_KILL')--显示世界BOSS击杀数据
-
 panel:RegisterEvent('CURRENCY_DISPLAY_UPDATE')--货币
-
 panel:RegisterEvent('BAG_UPDATE_DELAYED')--物品
-
 panel:RegisterEvent('UPDATE_INSTANCE_INFO')--副本
+panel:RegisterEvent('PLAYER_LEVEL_UP')--更新等级
+panel:RegisterEvent('NEUTRAL_FACTION_SELECT_RESULT')--更新阵营
 
-panel:RegisterEvent('PLAYER_LEVEL_UP')--更新玩家等级
-
-panel:RegisterEvent('NEUTRAL_FACTION_SELECT_RESULT')
+panel:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')--取得,自已, 装等
+panel:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED')--取得,自已, 装等
+panel:RegisterEvent('PLAYER_AVG_ITEM_LEVEL_UPDATE')--取得,自已, 装等
 
 panel:SetScript('OnEvent', function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" and arg1==id then
@@ -310,7 +325,7 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
         end
 
         C_Timer.After(2, function()
-            set_GroupGuid()--队伍数据收集
+            e.GetGroupGuidDate()--队伍数据收集
             NotifyInspect('player')--取得,自已, 装等
             C_MythicPlus.RequestMapInfo()
             C_MythicPlus.RequestRewards()
@@ -325,9 +340,7 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
         end
 
     elseif event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' then--队伍数据
-        set_GroupGuid()
-    elseif event=='GROUP_LEFT' then
-        e.GroupGuid={}
+        e.GetGroupGuidDate()
 
     elseif event=='TIME_PLAYED_MSG' then--总游戏时间：%s
         if arg1 and arg2 then
@@ -338,13 +351,7 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
         end
 
     elseif event=='INSPECT_READY' then--装等
-        local unit= UnitGUID("mouseover")==arg1 and 'mouseover'
-                    or e.GroupGuid[arg1] and e.GroupGuid[arg1].unit
-                    or arg1==e.Player.guid and 'player'
-                    or arg1==UnitGUID('target') and 'target'
-        if unit then
-            getPlayerInfo(unit, arg1)
-        end
+            getPlayerInfo(arg1)
 
     elseif event=='CHALLENGE_MODE_MAPS_UPDATE' or event=='WEEKLY_REWARDS_UPDATE' then--地下城挑战
         updateChallengeMode()
@@ -391,5 +398,11 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
 
     elseif event=='NEUTRAL_FACTION_SELECT_RESULT' and arg1 then--玩家, 派系
         e.Player.fanction= UnitFactionGroup('player')
+
+    elseif event=='PLAYER_EQUIPMENT_CHANGED' or event=='PLAYER_SPECIALIZATION_CHANGED' or event=='PLAYER_AVG_ITEM_LEVEL_UPDATE' then--更新自已
+        if event=='PLAYER_SPECIALIZATION_CHANGED' and arg1~='player' and UnitInParty(arg1) then
+            NotifyInspect(arg1)--队伍数据收集
+        end
+        NotifyInspect('player')--取得,自已, 装等
     end
 end)

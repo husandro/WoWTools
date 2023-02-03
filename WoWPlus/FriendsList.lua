@@ -258,11 +258,27 @@ local function set_RaidGroupFrame_Update()--团队, 模块
                 local guid= UnitGUID(unit)
 
                 if subframes.name and name then
-                    local text= name==e.Player.name and COMBATLOG_FILTER_STRING_ME or e.PlayerOnlineInfo(unit)
-                    if not text then
-                        name= name:gsub('(%-.+)','')--名称
-                        name= e.WA_Utf8Sub(name, 3, 7)
-                        subframes.name:SetText(name)
+                    local text
+                    if name==e.Player.name then--自己
+                        text= COMBATLOG_FILTER_STRING_ME
+                    end
+                    if not text then--距离
+                        local distance, checkedDistance = UnitDistanceSquared(unit)
+                        if checkedDistance then
+                            if distance and distance > DISTANCE_THRESHOLD_SQUARED then
+                                text= e.GetUnitMapName(unit)--单位, 地图名称
+                                if text then
+                                    text= '|cnGREEN_FONT_COLOR:'..text..'|r'
+                                end
+                            end
+                        end
+                    end
+                    
+                    text= text or e.PlayerOnlineInfo(unit)--状态
+                    
+                    if not text then--处理名字
+                        text= name:gsub('(%-.+)','')--名称
+                        text= e.WA_Utf8Sub(text, 3, 7)
                     end
                     if text then
                         subframes.name:SetText(text)
@@ -270,22 +286,27 @@ local function set_RaidGroupFrame_Update()--团队, 模块
                 end
 
                 if subframes.class and fileName then
-                    local text= e.Class(nil, fileName)--职业图标
-                    if text then
+                    local text
+                    if e.UnitItemLevel[guid] and e.UnitItemLevel[guid].specID then
+                        local texture= GetSpecializationInfoForSpecID(specID)
+                        if texture then
+                            text= "|T"..texture..':0|t'
+                        end
+                    end
+                    text= text or e.Class(nil, fileName)--职业图标
 
+                    if text then
                         if guid and e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLevel then
                             text= e.UnitItemLevel[guid].itemLevel..text
-                        elseif CheckInteractDistance(unit, 1) and CanInspect(unit) then
-                            NotifyInspect(unit)--取得装等
+                        else
+                            e.GetGroupGuidDate()--队伍数据收集
                         end
-
                         local role2= role or combatRole
                         if role2=='TANK'then
                             text= INLINE_TANK_ICON..text
                         elseif role2=='HEALER' then
                             text= INLINE_HEALER_ICON..text
                         end
-
                         subframes.class:SetText(text)
                         subframes.class:SetJustifyH('RIGHT')
                     end
@@ -299,78 +320,7 @@ local function set_RaidGroupFrame_Update()--团队, 模块
         end
     end
 end
-                        --[[local r
-                        if combatRole then
-                            if combatRole=='TANK' then 
-                                r='|A:4259:0:0|a' 
-                        elseif combatRole=='HEALER' then
-                            r='|A:4258:0:0|a' 
-                        end 
-                    end
-                        if r then
-                            subframes.level:SetText(r)
-                        else
-                            local lv=UnitLevel('player') 
-                            if lv==level then 
-                               -- subframes.level:SetText('') 
-                            end
-                        end
-                    end
-                    if subframes.name and name then
-                        if UnitIsUnit('player',unit) then
-                           -- subframes.name:SetText(e.PRace..YOU)
-                        elseif UnitIsAFK(unit) then
-                            subframes.name:SetText('|A:common-icon-redx:0:0|a')
-                        else
-                            local s, c = UnitDistanceSquared(unit)
-                            if c and s and s>80000 then
-                                subframes.name:SetText(e.MK(s,0))
-                            else
-                                name= name:gsub('(%-.+)','')
-                                name= e.WA_Utf8Sub(name, 3, 5)
-                                subframes.name:SetText(name)
-                                
-                            end
-                        end
-                    end
-                
-                if button.item then
-                     lv=lv +button.item
-                     co=co+1
-                end
-                to=to+1
 
-                if UnitExists(unit) then
-                    if UnitIsDeadOrGhost(unit) then
-                        dead=dead+1
-                    end
-                    if UnitIsAFK(unit) or not UnitIsConnected(unit) then
-                        afk=afk+1
-                    end
-                end
-
-                subframes.name:SetJustifyH('CENTER')
-            end
-        end
-        if FriendsFrameTitleText then
-            local m=RAID .. '  '
-            if lv>0 then
-                lv=math.ceil(lv/co)
-                if co>= (to-afk) and co>0 then
-                    m=m..'|cff00ff00'..lv..'|r '
-                else
-                    m=m..lv..' '
-                end
-            end
-            m=m.. co..'/'..to
-
-            if dead >0 then m=m..' |A:poi-soulspiritghost:0:0|a'.. dead end
-            if afk>0 then m=m..' '..e.Icon.O2..afk end
-            FriendsFrameTitleText:SetText(m)
-        end
-    end
-end
-]]
 
 --######
 --初始化
@@ -422,7 +372,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='SOCIAL_QUEUE_UPDATE' then--更新, 快速加入
         set_SOCIAL_QUEUE_UPDATE()
 
-    
+
     end
-    
+
 end)
