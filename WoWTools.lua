@@ -403,7 +403,7 @@ end
 
 e.Cstr=function(self, size, fontType, ChangeFont, color, layer, justifyH)
     self= self or UIParent
-    local b=ChangeFont or self:CreateFontString(nil, (layer or 'OVERLAY'))
+    local b=ChangeFont or self:CreateFontString(nil, (layer or 'OVERLAY'),nil, 5)
     if fontType then
         if size then
             local fontName, _, fontFlags = fontType:GetFont()

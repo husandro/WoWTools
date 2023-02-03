@@ -256,7 +256,7 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
                 self.upgradeItem:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT')
             else
                 self.upgradeItem= e.Cstr(self, 12, nil, nil, {0,1,0}, nil,'RIGHT')
-                self.upgradeItem:SetPoint('BOTTOMRIGHT', self, 'BOTTOMLEFT',3.5,0)
+                self.upgradeItem:SetPoint('BOTTOMRIGHT', self, 'BOTTOMLEFT')
             end
         end
     end
