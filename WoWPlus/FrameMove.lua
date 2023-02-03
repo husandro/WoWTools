@@ -1,7 +1,7 @@
 local id, e = ...
 local Save={point={},}
-local addName=NPE_MOVE..'Frame'
-local panel=CreateFrame("Frame")
+local addName= NPE_MOVE..'Frame'
+local panel= CreateFrame("Frame")
 
 local Point=function(frame, name2)
     local p=Save.point

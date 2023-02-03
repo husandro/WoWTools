@@ -75,7 +75,7 @@ local function Set()
 	panel:SetNormalAtlas(not Save.Hide and e.Icon.icon or e.Icon.disabled)
 	set_CURRENCY_DISPLAY_UPDATE()--注册, 事情
 	if not Save.Hide and not panel.btn then--监视声望按钮
-		panel.btn=e.Cbtn(UIParent, nil, Save.str)
+		panel.btn=e.Cbtn(nil, nil, Save.str)
 		panel.btn:SetSize(18, 18)
 		if Save.point then
 			panel.btn:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])

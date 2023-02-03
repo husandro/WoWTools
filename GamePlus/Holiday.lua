@@ -1,7 +1,7 @@
 local id, e = ...
 local addName= CALENDAR_FILTER_HOLIDAYS
 local Save={onGoing=true, disabled= not e.Player.husandro}
-local panel= e.Cbtn(UIParent, nil, nil, nil, nil, true, {18,18})
+local panel= e.Cbtn(nil, nil, nil, nil, nil, true, {18,18})
 
 local function _CalendarFrame_SafeGetName(name)
 	if ( not name or name == "" ) then

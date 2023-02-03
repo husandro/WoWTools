@@ -232,7 +232,7 @@ local function setWorldbossText()--显示世界BOSS击杀数据Text
         return
     end
     if not panel.WorldBoss then
-        panel.WorldBoss=e.Cbtn(UIParent, nil, not Save.hideWorldBossText, nil,nil,true)
+        panel.WorldBoss=e.Cbtn(nil, nil, not Save.hideWorldBossText, nil,nil,true)
         if Save.WorldBossPoint then
             panel.WorldBoss:SetPoint(Save.WorldBossPoint[1], UIParent, Save.WorldBossPoint[3], Save.WorldBossPoint[4], Save.WorldBossPoint[5])
         else
@@ -318,7 +318,7 @@ local function setInstanceBossText()--显示副本击杀数据
         return
     end
     if not panel.instanceBoss then
-        panel.instanceBoss=e.Cbtn(UIParent, nil, not Save.hideInstanceBossText, nil,nil,true)
+        panel.instanceBoss=e.Cbtn(nil, nil, not Save.hideInstanceBossText, nil,nil,true)
         if Save.instanceBossPoint then
             panel.instanceBoss:SetPoint(Save.instanceBossPoint[1], UIParent, Save.instanceBossPoint[3], Save.instanceBossPoint[4], Save.instanceBossPoint[5])
         else

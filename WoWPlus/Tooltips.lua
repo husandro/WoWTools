@@ -1126,7 +1126,7 @@ local function Init()
     panel.Anchor.select:SetText(e.onlyChinse and '设置' or SETTINGS)
     panel.Anchor.select:SetScript('OnMouseDown',function(self)
         if not self.frame then
-            self.frame=CreateFrame('Frame',nil, UIParent)
+            self.frame=CreateFrame('Frame')
             if Save.AnchorPoint and Save.AnchorPoint[1] and Save.AnchorPoint[3] and Save.AnchorPoint[4] and Save.AnchorPoint[5] then
                 self.frame:SetPoint(Save.AnchorPoint[1], UIParent, Save.AnchorPoint[3], Save.AnchorPoint[4], Save.AnchorPoint[5])
             else

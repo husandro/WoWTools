@@ -752,7 +752,7 @@ local function setIslandButton(self)--离开海岛按钮
     end
     if find then
         if not self.island then
-            self.island = e.Cbtn(UIParent, true)
+            self.island = e.Cbtn(nil, true)
             self.island:SetSize(50, 25)
             self.island:SetText(e.onlyChinse and '离开' or LEAVE)
             if Save.islandPoint then

@@ -529,7 +529,7 @@ local function add_Equipment_Frame(equipmentSetsDirty)--添加装备管理框
     end
 
     if not panel.equipmentFrame then
-        panel.equipmentFrame=e.Cbtn(UIParent)--添加移动按钮
+        panel.equipmentFrame=e.Cbtn()--添加移动按钮
         panel.equipmentFrame:SetSize(14, 14)
         panel.equipmentFrame:SetNormalAtlas(e.Icon.icon)
         if Save.Equipment then
@@ -620,7 +620,7 @@ local function add_Equipment_Frame(equipmentSetsDirty)--添加装备管理框
         local texture, setID, isEquipped= select(2, C_EquipmentSet.GetEquipmentSetInfo(id2))
         local b=panel.equipmentFrame.B[k]
         if not b then
-            b=e.Cbtn(UIParent)
+            b=e.Cbtn()
             b.tex=b:CreateTexture(nil, 'OVERLAY')
             b.tex:SetAtlas(e.Icon.select)
             b.tex:SetAllPoints(b)
