@@ -247,7 +247,7 @@ local function set_RaidGroupFrame_Update()--团队, 模块
     if not IsInRaid() then
         return
     end
-    local itemLevel, itemNum, afkNum, deadNum= 0,0,0,0
+    local itemLevel, itemNum, afkNum, deadNum, notOnlineNum= 0,0,0,0,0
     for i=1, MAX_RAID_MEMBERS do
         local button = _G["RaidGroupButton"..i]
         if button and button.subframes then
@@ -256,6 +256,10 @@ local function set_RaidGroupFrame_Update()--团队, 模块
             if subframes and UnitExists(unit) then
                 local name, rank, subgroup, level, class, fileName, zone, online, isDead, role, isML, combatRole = GetRaidRosterInfo(i)
                 local guid= UnitGUID(unit)
+
+                afkNum= UnitIsAFK(unit) and (afkNum+1) or afkNum
+                deadNum= isDead and (deadNum+1) or deadNum
+                notOnlineNum= not online and (notOnlineNum+1) or notOnlineNum
 
                 if subframes.name and name then
                     local text
@@ -321,8 +325,12 @@ local function set_RaidGroupFrame_Update()--团队, 模块
             end
         end
     end
-    if FriendsFrameTitleText and itemNum>0 then
-        local text= '|A:charactercreate-gendericon-male-selected:0:0|a'..format('%i',itemLevel/itemNum)..' |cnGREEN_FONT_COLOR:'..itemNum..'|r/'..GetNumGroupMembers()
+    if FriendsFrameTitleText then
+        local text= '|A:charactercreate-gendericon-male-selected:0:0|a'..(itemNum==0 and 0 or format('%i',itemLevel/itemNum))
+        text= text..'  |cnGREEN_FONT_COLOR:'..itemNum..'|r/'..GetNumGroupMembers()..'|cnRED_FONT_COLOR:'--人数
+        text= text..'  '..format("\124T%s.tga:0\124t", FRIENDS_TEXTURE_DND)..notOnlineNum--不在线, 人数
+        text= text..'  '..format("\124T%s.tga:0\124t", FRIENDS_TEXTURE_AFK)..afkNum--AFK
+        text= text..'  |A:deathrecap-icon-tombstone:0:0|a'..deadNum--死亡
         FriendsFrameTitleText:SetText(text)
     end
 end

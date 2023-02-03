@@ -403,7 +403,8 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
     elseif event=='PLAYER_EQUIPMENT_CHANGED' or event=='PLAYER_SPECIALIZATION_CHANGED' or event=='PLAYER_AVG_ITEM_LEVEL_UPDATE' then--更新自已
         if event=='PLAYER_SPECIALIZATION_CHANGED' and arg1~='player' and UnitInParty(arg1) then
             NotifyInspect(arg1)--队伍数据收集
+        else
+            NotifyInspect('player')--取得,自已, 装等
         end
-        NotifyInspect('player')--取得,自已, 装等
     end
 end)
