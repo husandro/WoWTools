@@ -97,6 +97,7 @@ local function find_Item_Type(class, subclass)
             if info and info.hyperlink and info.itemID and GetItemSpell(info.itemID) then
                 local classID, subClassID, _, expacID = select(12, GetItemInfo(info.hyperlink))
                 if classID==class and subClassID==subclass and (Save.onlyMaxExpansion and (info.itemID==113509 or e.ExpansionLevel==expacID) or not Save.onlyMaxExpansion) then
+                    e.LoadSpellItemData(info.itemID)--加载法术, 物品数据
                     table.insert(tab, info.itemID)
                 end
             end
@@ -449,8 +450,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
         Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
+
         if not e.toolsFrame.disabled then
-            C_Timer.After(2, function()
+            for bag=0, NUM_BAG_SLOTS do
+                for slot=1, C_Container.GetContainerNumSlots(bag) do
+                    local info = C_Container.GetContainerItemInfo(bag, slot)
+                    if info and info.itemID then
+                        e.LoadSpellItemData(info.itemID)--加载法术, 物品数据
+                    end
+                end
+            end
+
+            C_Timer.After(2.3, function()
                 if UnitAffectingCombat('player') then
                     panel.setInitBat=true
                     panel:RegisterEvent('PLAYER_REGEN_ENABLED')
