@@ -13,7 +13,7 @@ local Point=function(frame, name2)
 end
 
 local Move=function(F, tab)
-    tab=tab or {}
+    --tab=tab or {}
     local F2, click, save, enter, show,  re =tab.frame, tab.click, tab.save, tab.enter, tab.show, tab.re;--, tab.hook;    
     if not F2 and not F then
         return
@@ -21,7 +21,7 @@ local Move=function(F, tab)
     local name;
     if F2 then
         name=F2:GetName();
-        if not name then
+        if not name and save then
             return true
         end
         if save then
@@ -30,8 +30,8 @@ local Move=function(F, tab)
         F2:SetMovable(true);
     else
         F2=F;
-        name=F:GetName();
-        if not name then
+        name= F:GetName();
+        if not name and save then
             return
         end
     end
@@ -129,7 +129,7 @@ local FrameTab={
     SendMailFrame={frame= MailFrame},
     MirrorTimer1={save=true},
     LootHistoryFrame= {},--拾取框
-    
+    --StoreFrame={},--商店
 };
 --UIWidgetBelowMinimapContainerFrame={save=true,click='RightButton'},
 

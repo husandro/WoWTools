@@ -1221,7 +1221,8 @@
         "CHAT_MSG_SYSTEM",
         "CHALLENGE_MODE_COMPLETED",
         "BACKPACK_CONTAINER",
-        "ON_COOLDOWN"
+        "ON_COOLDOWN",
+        "StoreFrame"
     ],
     "Lua.diagnostics.disable": [
     ]
