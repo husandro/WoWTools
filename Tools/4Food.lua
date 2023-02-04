@@ -450,7 +450,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
         if not e.toolsFrame.disabled then
-            Init()--初始
+            C_Timer.After(2, function()
+                if UnitAffectingCombat('player') then
+                    panel.setInitBat=true
+                    panel:RegisterEvent('PLAYER_REGEN_ENABLED')
+                else
+                    Init()--初始
+                end
+            end)
         else
             panel:UnregisterAllEvents()
         end
@@ -462,7 +469,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave[addName..'Tools']=Save
         end
 
-    elseif event=='BAG_UPDATE' then--
+    elseif event=='BAG_UPDATE' then
         set_Item_Count(self)--更新物品,次数
 
     elseif event=='BAG_UPDATE_DELAYED' then
@@ -472,6 +479,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if panel.bat then
             set_Item_Count(self)--更新物品
             panel.bat=nil
+        elseif panel.setInitBat then
+            Init()--初始
+            panel.setInitBat=nil
         end
         panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
 
