@@ -1305,3 +1305,25 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     end
    
 end)
+--[[
+local function setItemCooldown(self, itemID)--物品冷却
+    local startTime, duration, enable = GetItemCooldown(itemID)
+    if duration>4 and enable==1 then
+        local t=GetTime()
+        if startTime>t then t=t+86400 end
+        t=t-startTime
+        t=duration-t
+        self:AddDoubleLine(ON_COOLDOWN, SecondsToTime(t), 1,0,0, 1,0,0)
+    end
+end
+local function setSpellCooldown(self, spellID)--法术冷却
+    local startTime, duration, enable = GetSpellCooldown(spellID)
+    if duration and duration>4 and enable==1 and gcdMS~=duration then
+        local t=GetTime()
+        if startTime>t then t=t+86400 end
+        t=t-startTime
+        t=duration-t
+        self:AddDoubleLine(ON_COOLDOWN, SecondsToTime(t), 1,0,0, 1,0,0)
+    end
+end
+]]

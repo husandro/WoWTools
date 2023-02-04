@@ -257,6 +257,14 @@ local function showTips(self)--显示提示
                 local name = C_Item.GetItemNameByID(itemID..'') or ('itemID: '..itemID)
                 local icon = C_Item.GetItemIconByID(itemID..'')
                 name= (icon and '|T'..icon..':0|t' or '')..name
+                local startTime, duration, enable = GetItemCooldown(itemID)
+                if duration>4 then
+                    local t=GetTime()
+                    if startTime>t then t=t+86400 end
+                    t=t-startTime
+                    t=duration-t
+                    name= name..'|cnRED_FONT_COLOR: '..SecondsToTime(t)..'|r'
+                end
                 e.tips:AddDoubleLine(name, type..'+'..e.Icon.left)
             end
         end
@@ -322,6 +330,7 @@ local function Init()
     C_Timer.After(2, function()
         setAtt()--设置属性
         set_BindLocation()--显示, 炉石, 绑定位置
+        setCooldown()--主图标冷却
     end)
 end
 
