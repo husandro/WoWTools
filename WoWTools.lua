@@ -742,6 +742,7 @@ e.toolsFrame:SetShown(false)
 e.toolsFrame.last=e.toolsFrame
 e.toolsFrame.line=1
 e.toolsFrame.index=0
+e.toolsFrame.size= 30
 e.ToolsSetButtonPoint=function(self, line, unoLine)--设置位置
     if e.toolsFrame.size and e.toolsFrame.size~=30 then--设置大小
         self:SetSize(e.toolsFrame.size, e.toolsFrame.size)
