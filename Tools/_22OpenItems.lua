@@ -97,6 +97,7 @@ local function getItems()--取得背包物品信息
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local info = C_Container.GetContainerItemInfo(bag, slot)
             if info and info.itemID and info.hyperlink and not info.isLocked and info.iconFileID then
+                e.LoadSpellItemData(info.itemID)--加载法术, 物品数据
                 if Save.use[info.itemID] then--自定义
                     if Save.use[info.itemID]<=info.stackCount then
                         setAtt(bag, slot, info.iconFileID, info.itemID)
@@ -499,7 +500,7 @@ local function Init()
     if e.toolsFrame.size and e.toolsFrame.size~=30 then--设置大小
         panel:SetSize(e.toolsFrame.size, e.toolsFrame.size)
     end
-    --panel.tips=CreateFrame("GameTooltip", id..addName, panel, "GameTooltipTemplate")
+
     panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")--菜单列表
 
     panel.count=e.Cstr(panel, 10, nil, nil, true)
@@ -553,6 +554,8 @@ local function Init()
             end
         end
     end)
+
+    C_Timer.After(2, function() getItems() end)
 end
 
 --###########
@@ -560,7 +563,6 @@ end
 --###########
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
---panel:RegisterEvent('BAG_UPDATE_DELAYED')
 panel:RegisterEvent('BAG_UPDATE')
 
 panel:RegisterEvent('PLAYER_REGEN_DISABLED')

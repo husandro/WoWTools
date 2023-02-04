@@ -55,8 +55,8 @@ local function getToy()--生成, 有效表格
     end
 end
 
-local function setAtt(init)--设置属性
-    if UnitAffectingCombat('player') and not init then
+local function setAtt()--设置属性
+    if UnitAffectingCombat('player') then
         return
     end
     local icon
@@ -315,10 +315,14 @@ local function Init()
     end)
 
     getToy()--生成, 有效表格
-    setAtt(true)--设置属性
+    setAtt()--设置属性
     setCooldown()--主图标冷却
     setBagHearthstone()--设置Shift, Ctrl, Alt 提示
-    C_Timer.After(2, set_BindLocation)--显示, 炉石, 绑定位置
+
+    C_Timer.After(2, function()
+        setAtt()--设置属性
+        set_BindLocation()--显示, 炉石, 绑定位置
+    end)
 end
 
 --###########

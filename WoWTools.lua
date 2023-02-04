@@ -54,6 +54,14 @@ end
 for _, spellID in pairs(spellLoadTab) do
     e.LoadSpellItemData(spellID, true)
 end
+for bag=0, NUM_BAG_SLOTS do
+    for slot=1, C_Container.GetContainerNumSlots(bag) do
+        local info = C_Container.GetContainerItemInfo(bag, slot)
+        if info and info.itemID then
+            e.LoadSpellItemData(info.itemID)--加载法术, 物品数据
+        end
+    end
+end
 
 e.itemPetID={--宠物对换, wow9.0
     [11406]=true,

@@ -1066,6 +1066,7 @@ local function Init()
 
     C_Timer.After(2, function()
         setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
+        setClickAtt()--设置
     end)
 end
 --###########

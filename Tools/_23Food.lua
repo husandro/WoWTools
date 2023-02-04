@@ -452,15 +452,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
 
         if not e.toolsFrame.disabled then
-            for bag=0, NUM_BAG_SLOTS do
-                for slot=1, C_Container.GetContainerNumSlots(bag) do
-                    local info = C_Container.GetContainerItemInfo(bag, slot)
-                    if info and info.itemID then
-                        e.LoadSpellItemData(info.itemID)--加载法术, 物品数据
-                    end
-                end
-            end
-
             C_Timer.After(2.3, function()
                 if UnitAffectingCombat('player') then
                     panel.setInitBat=true
