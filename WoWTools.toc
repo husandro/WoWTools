@@ -96,6 +96,9 @@ GamePlus\Holiday.lua
 GamePlus\Gem.lua
 ##目标指示
 GamePlus\Target.lua
+##驭龙术，速度
+GamePlus\Dragonriding.lua
+
 
 
 ##坐骑， Tools 主要的，

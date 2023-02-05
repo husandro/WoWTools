@@ -1224,7 +1224,9 @@
         "ON_COOLDOWN",
         "StoreFrame",
         "BaseBagSlotButtonMixin",
-        "AltCurrencyFrame_Update"
+        "AltCurrencyFrame_Update",
+        "SPEED",
+        "BASE_MOVEMENT_SPEED"
     ],
     "Lua.diagnostics.disable": [
     ]
