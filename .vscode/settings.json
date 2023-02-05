@@ -1226,7 +1226,9 @@
         "BaseBagSlotButtonMixin",
         "AltCurrencyFrame_Update",
         "SPEED",
-        "BASE_MOVEMENT_SPEED"
+        "BASE_MOVEMENT_SPEED",
+        "UIWidgetTemplateFillUpFramesMixin",
+        "BUG_CATEGORY2"
     ],
     "Lua.diagnostics.disable": [
     ]
