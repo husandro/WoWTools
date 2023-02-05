@@ -7,6 +7,7 @@ end
 local addName= MOUNT_JOURNAL_FILTER_DRAGONRIDING..SPEED
 local Save= {}
 local panel= CreateFrame("Frame")
+panel:SetShown(false)
 
 local lastX, lastY, lastT = 0, 0, 0
 local function get_Speed()
@@ -37,38 +38,6 @@ local function get_Speed()
     end
     lastX, lastY, lastT = 0, 0, 0
 end
-
-local timeElapsed = 0
-local speedTextFactor = 100 / BASE_MOVEMENT_SPEED
-panel:SetScript('OnUpdate', function(self, elapsed)
-    timeElapsed = timeElapsed + elapsed
-    if timeElapsed > 0.3 then
-        local speed= get_Speed()
-        if speed and speed>6 then
-            speed= speed * speedTextFactor
-            if speed>=1000 then
-                self.text:SetFormattedText('|cffff0000%.0f%%', speed)
-                self.statusBar:SetStatusBarColor(1, 0, 0)
-            elseif speed>=800 then
-                self.text:SetFormattedText('|cff00ff00%.0f%%', speed)
-                self.statusBar:SetStatusBarColor(0, 1, 0)
-            elseif speed>=600 then
-                self.text:SetFormattedText('|cffff00ff%.0f%%', speed)
-                self.statusBar:SetStatusBarColor(1, 0, 1)
-            else
-                self.text:SetFormattedText('%.0f%%', speed)
-                self.statusBar:SetStatusBarColor(0.8, 0.8, 0)
-            end
-            self.statusBar:SetValue(speed>1000 and 1000 or speed)
-        else
-            self.text:SetText('')
-            self.statusBar:SetValue(0)
-        end
-        timeElapsed = 0
-    end
-end)
-
-
 local function set_Shown()
     if IsMounted() then
         for _, mountID in ipairs(C_MountJournal.GetCollectedDragonridingMounts()) do
@@ -80,8 +49,6 @@ local function set_Shown()
     end
     panel:SetShown(false)
 end
-
-
 local function set_Events()
     if not IsInInstance() then
         panel:RegisterEvent('PLAYER_MOUNT_DISPLAY_CHANGED')
@@ -101,10 +68,6 @@ local function set_Events()
         panel:SetShown(false)
     end
 end
-
-panel:RegisterEvent('ADDON_LOADED')
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
-
 
 --####
 --初始
@@ -130,7 +93,40 @@ local function Init()
     panel:SetScript('OnShow', function(self)
         self.statusBar:SetShown(true)
     end)
+
+    local timeElapsed = 0
+    local speedTextFactor = 100 / BASE_MOVEMENT_SPEED
+    panel:SetScript('OnUpdate', function(self, elapsed)
+        timeElapsed = timeElapsed + elapsed
+        if timeElapsed > 0.3 then
+            local speed= get_Speed()
+            if speed and speed>6 then
+                speed= speed * speedTextFactor
+                if speed>=1000 then
+                    self.text:SetFormattedText('|cffff0000%.0f%%', speed)
+                    self.statusBar:SetStatusBarColor(1, 0, 0)
+                elseif speed>=800 then
+                    self.text:SetFormattedText('|cff00ff00%.0f%%', speed)
+                    self.statusBar:SetStatusBarColor(0, 1, 0)
+                elseif speed>=600 then
+                    self.text:SetFormattedText('|cffff00ff%.0f%%', speed)
+                    self.statusBar:SetStatusBarColor(1, 0, 1)
+                else
+                    self.text:SetFormattedText('%.0f%%', speed)
+                    self.statusBar:SetStatusBarColor(0.8, 0.8, 0)
+                end
+                self.statusBar:SetValue(speed>1000 and 1000 or speed)
+            else
+                self.text:SetText('')
+                self.statusBar:SetValue(0)
+            end
+            timeElapsed = 0
+        end
+    end)
 end
+
+panel:RegisterEvent('ADDON_LOADED')
+panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
