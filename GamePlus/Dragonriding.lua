@@ -69,6 +69,17 @@ local function set_Events()
     end
 end
 
+local function set_Scale()--设置，缩放
+    if UIWidgetPowerBarContainerFrame then
+        if Save.sacleBool then
+            UIWidgetPowerBarContainerFrame:SetScale(0.8)
+            panel:SetScale(0.8)
+        else
+            UIWidgetPowerBarContainerFrame:SetScale(1)
+            panel:SetScale(1)
+        end
+    end
+end
 --####
 --初始
 --####
@@ -123,6 +134,10 @@ local function Init()
             timeElapsed = 0
         end
     end)
+
+    if Save.sacleBool then
+        set_Scale()--设置，缩放
+    end
 end
 
 panel:RegisterEvent('ADDON_LOADED')
@@ -143,13 +158,30 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             e.tips:ClearLines()
             if e.onlyChinse then
                 e.tips:AddDoubleLine('仅限: 不在副本', '等级: '..MAX_PLAYER_LEVEL)
+                e.tips:AddDoubleLine('仅限: 水平', '速度')
             else
                 e.tips:AddDoubleLine(format(LFG_LIST_CROSS_FACTION, BUG_CATEGORY2), LEVEL..': '..MAX_PLAYER_LEVEL)
-
+                e.tips:AddDoubleLine(format(LFG_LIST_CROSS_FACTION, HUD_EDIT_MODE_SETTING_ACTION_BAR_ORIENTATION_HORIZONTAL), SPEED)
             end
             e.tips:Show()
         end)
         sel:SetScript('OnLeave', function() e.tips:Hide() end)
+
+        local sel2=CreateFrame("CheckButton", nil, sel, "InterfaceOptionsCheckButtonTemplate")
+        sel2.text:SetText((e.onlyChinse and '缩放' or UI_SCALE)..' 0.8')
+        sel2:SetPoint('LEFT', sel.text, 'RIGHT')
+        sel2:SetChecked(Save.sacleBool)
+        sel2:SetScript('OnMouseDown', function()
+            Save.sacleBool= not Save.sacleBool and true or nil
+            set_Scale()--设置，缩放
+        end)
+        sel2:SetScript('OnEnter', function(self2)
+            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine('UIWidgetPowerBarContainerFrame', '0.8')
+            e.tips:Show()
+        end)
+        sel2:SetScript('OnLeave', function() e.tips:Hide() end)
 
         if Save.disabled then
             panel:UnregisterAllEvents()
