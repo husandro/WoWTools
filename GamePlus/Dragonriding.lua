@@ -53,20 +53,19 @@ panel:SetScript('OnUpdate', function(self, elapsed)
     end
 end)
 
+
 local function set_Shown()
-    local find= false
     if IsMounted() then
         for _, mountID in ipairs(C_MountJournal.GetCollectedDragonridingMounts()) do
             if select(4, C_MountJournal.GetMountInfoByID(mountID)) then
-                find= true
+                panel:SetShown(true)
+                return
             end
         end
     end
-    panel:SetShown(find)
-    if not find then
-        lastX, lastY, lastT = 0, 0, 0
-    end
+    panel:SetShown(false)
 end
+
 
 local function set_Events()
     if not IsInInstance() then
@@ -76,7 +75,7 @@ local function set_Events()
         panel:RegisterUnitEvent('UNIT_SPELLCAST_SUCCEEDED','player')
         panel:RegisterEvent('VEHICLE_ANGLE_UPDATE')
         panel:RegisterEvent('UPDATE_UI_WIDGET')
-        set_Shown()
+        panel:SetShown(true)
     else
         panel:UnregisterEvent('PLAYER_MOUNT_DISPLAY_CHANGED')
         panel:UnregisterEvent('MOUNT_JOURNAL_USABILITY_CHANGED')
@@ -84,8 +83,6 @@ local function set_Events()
         panel:UnregisterEvent('UNIT_SPELLCAST_SUCCEEDED')
         panel:UnregisterEvent('VEHICLE_ANGLE_UPDATE')
         panel:UnregisterEvent('UPDATE_UI_WIDGET')
-        lastX, lastY, lastT = 0, 0, 0
-        panel.text:SetText('')
         panel:SetShown(false)
     end
 end
@@ -93,12 +90,17 @@ end
 panel:RegisterEvent('ADDON_LOADED')
 panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 
+
 --####
 --初始
 --####
 local function Init()
     panel.text= e.Cstr(UIWidgetPowerBarContainerFrame, 24)
     panel.text:SetPoint('BOTTOM', UIWidgetPowerBarContainerFrame, 'TOP')
+    panel:SetScript('OnHide', function(self)
+        lastX, lastY, lastT = 0, 0, 0
+        self.text:SetText('')
+    end)
 end
 
 panel:SetScript("OnEvent", function(self, event, arg1)
