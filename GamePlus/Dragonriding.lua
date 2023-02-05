@@ -44,7 +44,7 @@ panel:SetScript('OnUpdate', function(self, elapsed)
     timeElapsed = timeElapsed + elapsed
     if timeElapsed > 0.3 then
         local speed= get_Speed()
-        if speed then
+        if speed and speed>=1 then
             speed= speed * speedTextFactor
             if speed>=1000 then
                 self.text:SetFormattedText('|cffff0000%.0f%%', speed)
@@ -111,7 +111,7 @@ panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 --####
 local function Init()
     panel.text= e.Cstr(panel, 24)
-    panel.text:SetPoint('BOTTOM', UIWidgetPowerBarContainerFrame, 'TOP')
+    panel.text:SetPoint('BOTTOM', UIWidgetPowerBarContainerFrame, 'TOP',0, 12)
 
     panel.statusBar= CreateFrame('StatusBar', nil, panel)
     panel.statusBar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
@@ -123,7 +123,6 @@ local function Init()
     panel:SetScript('OnHide', function(self)
         lastX, lastY, lastT = 0, 0, 0
         self.text:SetText('')
-        self.statusBar:SetShown(false)
         self.statusBar:SetValue(0)
         self.statusBar:SetShown(false)
     end)
