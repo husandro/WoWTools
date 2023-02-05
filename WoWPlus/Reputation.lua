@@ -16,12 +16,10 @@ end
 local function Reputation_Text_setText()--设置, 文本
 	if not Save.btn or not Save.btnstr then
 		if panel.btn and panel.btn.text then
-			panel.btn.text:SetText('')
-			panel.btn:SetNormalAtlas(e.Icon.disabled)
+			panel.btn:SetNormalAtlas(0)
 		end
 		return
 	end
-	panel.btn:SetNormalTexture(0)
 
 	local m=''
 	local hasRewardPending
@@ -136,7 +134,7 @@ end
 
 local function Set_Reputation_Text()--监视, 文本
 	if Save.btn and not panel.btn then
-		panel.btn=e.Cbtn(nil, nil, Save.btn, nil,nil,nil,{18,18})
+		panel.btn= e.Cbtn(nil, nil, Save.btn, nil,nil,nil,{18,18})
 		if Save.point then
 			panel.btn:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
 		else

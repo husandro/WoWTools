@@ -350,8 +350,7 @@ local function setMarkersFrame()--设置标记, 框架
 
     if not frame then
         local last
-        --frame=CreateFrame("Frame",nil, UIParent)
-        frame= CreateFrame("Frame")
+        frame=CreateFrame("Frame",nil, UIParent)
         frame:SetFrameStrata('MEDIUM')
         setMarkersFrame_Postion()--设置标记框架, 位置
         frame:SetSize(1, 25)
