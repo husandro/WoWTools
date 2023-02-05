@@ -404,7 +404,7 @@ local function Init()
         local usedCurrencies = 0;
         if ( itemCount > 0 ) then
             for i=1, MAX_ITEM_COST do
-                local itemTexture, itemValue, itemLink, currencyName = GetMerchantItemCostItem(index, i);
+                local _, itemValue, itemLink, currencyName = GetMerchantItemCostItem(index, i);
                 if itemLink then
                     usedCurrencies = usedCurrencies + 1;
                     local button = _G[frameName.."Item"..usedCurrencies];
