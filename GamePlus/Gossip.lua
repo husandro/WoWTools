@@ -20,11 +20,17 @@ local function setPoint()--设置位置
     if Save.point then
         panel:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
     else
+        local frame
         if _G['!KalielsTrackerFrame'] then
-            panel:SetPoint('BOTTOMRIGHT',_G['!KalielsTrackerFrame'] , 'TOPRIGHT')
+            frame= _G['!KalielsTrackerFrame']
+            panel:SetPoint('BOTTOMRIGHT', frame, 'TOPRIGHT')
         else
-            panel:SetPoint('TOPRIGHT', ObjectiveTrackerBlocksFrame, 'TOPRIGHT', -45, -2)
+            frame= ObjectiveTrackerBlocksFrame
+            panel:SetPoint('TOPRIGHT', frame, 'TOPRIGHT', -45, -2)
         end
+        --panel:SetFrameStrata('HIGH')
+        local frameLevel = frame:GetFrameLevel() or 5
+        frame:SetFrameLevel(frameLevel+ 2)
     end
 end
 
@@ -245,7 +251,7 @@ local function Init_Gossip()
     panel.MenuGossip=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(panel.MenuGossip, InitMenu_Gossip, 'MENU')
 
-    panel:SetFrameStrata('HIGH')
+    --panel:SetFrameStrata('HIGH')
     panel:SetMovable(true)--移动
     panel:SetClampedToScreen(true)
     panel:RegisterForDrag('RightButton')
