@@ -417,9 +417,9 @@ local function Init()
                         end
                         if itemValue and num then
                             if num>=itemValue then
-                                num= '|cnGREEN_FONT_COLOR:'..num..'|r'
+                                num= '|cnGREEN_FONT_COLOR:'..e.MK(num,0)..'|r'
                             else
-                                num= '|cnRED_FONT_COLOR:'..num..'|r'
+                                num= '|cnRED_FONT_COLOR:'..e.MK(num,0)..'|r'
                             end
                         end
                         if not button.quantityAll then
@@ -427,7 +427,7 @@ local function Init()
                             button.quantityAll= e.Cstr(button, nil, nil, nil, nil, nil, 'RIGHT')
                             button.quantityAll:SetPoint('TOPRIGHT', button.text, 'BOTTOMRIGHT')
                         end
-                        button.quantityAll:SetText(num and e.MK(num,0) or '');
+                        button.quantityAll:SetText(num '');
                     end
                 end
             end
