@@ -438,7 +438,7 @@ local function set_Unit_Health_Bar(self, unit)
             end
             left =e.MK(value, 2)
         end
-        right = e.MK(max, 2) 
+        right = e.MK(max, 2)
         self:SetStatusBarColor(r, g, b)
     end
     if not self.text and text then
@@ -1303,7 +1303,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             WoWToolsSave[addName]=Save
         end
     end
-   
+
 end)
 --[[
 local function setItemCooldown(self, itemID)--物品冷却

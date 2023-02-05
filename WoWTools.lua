@@ -457,7 +457,7 @@ e.CeditBox= function(self, width, height)
 end
 
 e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size)
-    --self= self or UIParent
+    self= self or UIParent
     local b
     if Template then
         b=CreateFrame('Button', name, self, 'UIPanelButtonTemplate')
@@ -707,8 +707,8 @@ end
 
 e.Cbtn2= function(name, parent, showTexture, rightClick)
     --local button= CreateFrame("Button", name, (parent or UIParent), "SecureActionButtonTemplate")
-    local button= CreateFrame("Button", name, parent, "SecureActionButtonTemplate")
-    local size=e.toolsFrame.size or 30
+    local button= CreateFrame("Button", name, parent or UIParent, "SecureActionButtonTemplate")
+    local size=e.toolsFrame.size or 20
     button:SetSize(size,size)
     if rightClick then
         button:RegisterForClicks(LeftButtonDown, RightButtonDown)
