@@ -110,15 +110,15 @@ panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 --初始
 --####
 local function Init()
-    panel.text= e.Cstr(panel, 16)
-    panel.text:SetPoint('BOTTOM', UIWidgetPowerBarContainerFrame, 'TOP',0, 3)
+    panel.text= e.Cstr(panel)
+    panel.text:SetPoint('BOTTOM', UIWidgetPowerBarContainerFrame, 'TOP',0, 2)
 
     panel.statusBar= CreateFrame('StatusBar', nil, panel)
     panel.statusBar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
     panel.statusBar:SetStatusBarColor(0.8, 0.8, 0)
     panel.statusBar:SetPoint('BOTTOM', UIWidgetPowerBarContainerFrame, 'TOP')
     panel.statusBar:SetMinMaxValues(0, 1000)
-    panel.statusBar:SetSize(150, 3)
+    panel.statusBar:SetSize(135, 2)
     panel.statusBar:SetValue(0)
 
     panel:SetScript('OnHide', function(self)
