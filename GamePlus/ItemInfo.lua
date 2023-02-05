@@ -423,7 +423,6 @@ local function Init()
                             end
                         end
                         if not button.quantityAll then
-                            --e.Cstr=function(self,size, fontType, ChangeFont, color, layer, justifyH)
                             button.quantityAll= e.Cstr(button, 10, nil, nil, nil, nil, 'RIGHT')
                             button.quantityAll:SetPoint('BOTTOMRIGHT', button, 'TOPRIGHT', 3,0)
                         end
