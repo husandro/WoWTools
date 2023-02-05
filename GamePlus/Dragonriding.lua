@@ -1,6 +1,6 @@
 local id, e= ...
 
-if e.Player.level~=MAX_PLAYER_LEVEL then
+if e.Player.level< 70 then
     return
 end
 
@@ -157,10 +157,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
             if e.onlyChinse then
-                e.tips:AddDoubleLine('仅限: 不在副本', '等级: '..MAX_PLAYER_LEVEL)
+                e.tips:AddDoubleLine('仅限: 不在副本', '等级: '..70)
                 e.tips:AddDoubleLine('仅限: 水平', '速度')
             else
-                e.tips:AddDoubleLine(format(LFG_LIST_CROSS_FACTION, BUG_CATEGORY2), LEVEL..': '..MAX_PLAYER_LEVEL)
+                e.tips:AddDoubleLine(format(LFG_LIST_CROSS_FACTION, BUG_CATEGORY2), LEVEL..': '..70)
                 e.tips:AddDoubleLine(format(LFG_LIST_CROSS_FACTION, HUD_EDIT_MODE_SETTING_ACTION_BAR_ORIENTATION_HORIZONTAL), SPEED)
             end
             e.tips:Show()
