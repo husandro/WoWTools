@@ -381,7 +381,7 @@ local function Init()
         setBags(self)
     end)
     ContainerFrameCombinedBags.SetBagInfo=true
-    hooksecurefunc('ContainerFrame_GenerateFrame',function (self, size, id2)
+    hooksecurefunc('ContainerFrame_GenerateFrame',function (self, size2, id2)
         for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
             if not frame.SetBagInfo then
                 setBags(frame)
@@ -395,6 +395,67 @@ local function Init()
     hooksecurefunc('MerchantFrame_UpdateBuybackInfo', setMerchantInfo)
     hooksecurefunc('BankFrameItemButton_Update',set_BankFrameItemButton_Update)--银行
 
+    --######################
+    --##商人，物品，货币，数量
+    --MerchantFrame.lua
+    hooksecurefunc('MerchantFrame_UpdateAltCurrency', function(index, indexOnPage, canAfford)
+        local itemCount = GetMerchantItemCostInfo(index);
+        local frameName = "MerchantItem"..indexOnPage.."AltCurrencyFrame";
+        local usedCurrencies = 0;
+        if ( itemCount > 0 ) then
+            for i=1, MAX_ITEM_COST do
+                local itemTexture, itemValue, itemLink, currencyName = GetMerchantItemCostItem(index, i);
+                if itemLink then
+                    usedCurrencies = usedCurrencies + 1;
+                    local button = _G[frameName.."Item"..usedCurrencies];
+                    if button and button:IsShown() then
+                        local num
+                        if currencyName then
+                            num= C_CurrencyInfo.GetCurrencyInfoFromLink(itemLink).quantity
+                        else
+                            num= GetItemCount(itemLink, true)
+                        end
+                        if itemValue and num then
+                            if num>=itemValue then
+                                num= '|cnGREEN_FONT_COLOR:'..num..'|r'
+                            else
+                                num= '|cnRED_FONT_COLOR:'..num..'|r'
+                            end
+                        end
+                        if not button.quantityAll then
+                            --e.Cstr=function(self,size, fontType, ChangeFont, color, layer, justifyH)
+                            button.quantityAll= e.Cstr(button, nil, nil, nil, nil, nil, 'RIGHT')
+                            button.quantityAll:SetPoint('TOPRIGHT', button.text, 'BOTTOMRIGHT')
+                        end
+                        button.quantityAll:SetText(num and e.MK(num,0) or '');
+                    end
+                end
+            end
+        end
+    end)
+--[[
+        local currencies = { GetMerchantCurrencies() };
+        if #currencies == 0 then
+            return
+        end
+        for index = 1, MerchantFrame.numCurrencies do
+            local tokenButton = _G["MerchantToken"..index]
+            if tokenButton and tokenButton:IsShown() then
+                local quantity = C_CurrencyInfo.GetCurrencyInfo(currencies[index]).quantity
+                print(quantity, C_CurrencyInfo.GetCurrencyInfo(currencies[index]).name)
+                if not tokenButton.quantityAll then
+                    --e.Cstr=function             (self,        size, fontType, ChangeFont, color, layer, justifyH)
+                    tokenButton.quantityAll= e.Cstr(tokenButton)--, nil, nil, nil, {0,1,0}, 'RIGHT')
+                    tokenButton.quantityAll:SetPoint('TOPRIGHT', tokenButton.Count, 'BOTTOMRIGHT')
+                end
+                tokenButton.quantityAll:SetText(quantity and e.MK(quantity,0) or '');
+            end
+        end
+    end)
+
+    hooksecurefunc('MerchantFrame_UpdateCurrencyButton', function(tokenButton)
+        print(id)
+    end)]]
     --############
     --排序:从右到左
     --############

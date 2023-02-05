@@ -61,6 +61,11 @@ local function setAtt(bag, slot, icon, itemID)--设置属性
     end
     local num
     if bag and slot then
+        if UnitAffectingCombat('player') then
+            Opening= nil
+            Combat= true
+            return
+        end
         local m='/use '..bag..' '..slot
         Bag={bag=bag, slot=slot}
         panel:SetAttribute("type", "macro")

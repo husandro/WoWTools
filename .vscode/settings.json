@@ -1223,7 +1223,8 @@
         "BACKPACK_CONTAINER",
         "ON_COOLDOWN",
         "StoreFrame",
-        "BaseBagSlotButtonMixin"
+        "BaseBagSlotButtonMixin",
+        "AltCurrencyFrame_Update"
     ],
     "Lua.diagnostics.disable": [
     ]
