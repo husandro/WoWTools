@@ -46,9 +46,20 @@ panel:SetScript('OnUpdate', function(self, elapsed)
         timeElapsed = 0
         local speed= get_Speed()
         if speed and speed>=1 then
-            self.text:SetFormattedText('%i%%', speed * speedTextFactor)
+            speed= speed * speedTextFactor
+            if speed>1000 then
+                self.text:SetFormattedText('|cffff0000%.0f%%', speed)
+            elseif speed>900 then
+                self.text:SetFormattedText('|cff00ff00%.0f%%', speed)
+            elseif speed>800 then
+                self.text:SetFormattedText('|cffff00ff%.0f%%', speed)
+            else
+                self.text:SetFormattedText('%.0f%%', speed)
+            end
+            panel.statusBar:SetValue(speed>1000 and 1000 or speed)
         else
             self.text:SetText('')
+            self.statusBar:SetValue(0)
         end
     end
 end)
@@ -95,11 +106,28 @@ panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 --初始
 --####
 local function Init()
-    panel.text= e.Cstr(UIWidgetPowerBarContainerFrame, 24)
+    panel.text= e.Cstr(panel, 24)
     panel.text:SetPoint('BOTTOM', UIWidgetPowerBarContainerFrame, 'TOP')
+
+    panel.statusBar= CreateFrame('StatusBar', nil, panel)
+    panel.statusBar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
+    panel.statusBar:SetColorFill(0, 0, 0, 0.5)
+    panel.statusBar:SetStatusBarColor(0.8,0.8,0.8)
+    panel.statusBar:SetPoint('BOTTOM', UIWidgetPowerBarContainerFrame, 'TOP')
+    panel.statusBar:SetMinMaxValues(0, 1000)
+
     panel:SetScript('OnHide', function(self)
         lastX, lastY, lastT = 0, 0, 0
         self.text:SetText('')
+        self.statusBar:SetShown(false)
+        self.statusBar:SetValue(0)
+        self.statusBar:SetShown(false)
+    end)
+    panel:SetScript('OnShow', function(self)
+        local width= UIWidgetPowerBarContainerFrame:GetWidth()
+        width= width>100 and width or 200
+        self.statusBar:SetSize(width, 10)
+        self.statusBar:SetShown(true)
     end)
 end
 
