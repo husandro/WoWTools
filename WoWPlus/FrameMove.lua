@@ -13,7 +13,7 @@ local Point=function(frame, name2)
 end
 
 local Move=function(F, tab)
-    --tab=tab or {}
+    tab=tab or {}
     local F2, click, save, enter, show,  re =tab.frame, tab.click, tab.save, tab.enter, tab.show, tab.re;--, tab.hook;    
     if not F2 and not F then
         return
@@ -391,7 +391,6 @@ tex:SetAtlas('!perks-list-side-vertical')
             if frame.TitleContainer then
                 Move(frame.TitleContainer, {frame=frame})
             end
-            Move(frame.TitleContainer, {})
         end
     end
     --[[
