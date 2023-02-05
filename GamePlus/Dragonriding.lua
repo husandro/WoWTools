@@ -45,10 +45,10 @@ panel:SetScript('OnUpdate', function(self, elapsed)
     if timeElapsed > 0.3 then
         timeElapsed = 0
         local speed= get_Speed()
-        if speed and speed>1 then
-            panel.text:SetFormattedText('%i%%', speed * speedTextFactor)
+        if speed and speed>=1 then
+            self.text:SetFormattedText('%i%%', speed * speedTextFactor)
         else
-            panel.text:SetText('')
+            self.text:SetText('')
         end
     end
 end)
