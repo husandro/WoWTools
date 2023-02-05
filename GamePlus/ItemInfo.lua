@@ -424,10 +424,10 @@ local function Init()
                         end
                         if not button.quantityAll then
                             --e.Cstr=function(self,size, fontType, ChangeFont, color, layer, justifyH)
-                            button.quantityAll= e.Cstr(button, nil, nil, nil, nil, nil, 'RIGHT')
-                            button.quantityAll:SetPoint('TOPRIGHT', button.text, 'BOTTOMRIGHT')
+                            button.quantityAll= e.Cstr(button, 10, nil, nil, nil, nil, 'RIGHT')
+                            button.quantityAll:SetPoint('BOTTOMRIGHT', button, 'TOPRIGHT', 0,2)
                         end
-                        button.quantityAll:SetText(num '');
+                        button.quantityAll:SetText(num or '');
                     end
                 end
             end
