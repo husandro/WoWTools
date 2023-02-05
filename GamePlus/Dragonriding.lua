@@ -43,9 +43,8 @@ local speedTextFactor = 100 / BASE_MOVEMENT_SPEED
 panel:SetScript('OnUpdate', function(self, elapsed)
     timeElapsed = timeElapsed + elapsed
     if timeElapsed > 0.3 then
-        timeElapsed = 0
         local speed= get_Speed()
-        if speed and speed>=1 then
+        if speed then
             speed= speed * speedTextFactor
             if speed>=1000 then
                 self.text:SetFormattedText('|cffff0000%.0f%%', speed)
@@ -65,6 +64,7 @@ panel:SetScript('OnUpdate', function(self, elapsed)
             self.text:SetText('')
             self.statusBar:SetValue(0)
         end
+        timeElapsed = 0
     end
 end)
 
