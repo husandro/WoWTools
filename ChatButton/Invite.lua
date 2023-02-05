@@ -5,7 +5,7 @@ local Save={InvNoFriend={},
             FriendAceInvite=true,--接受, 好友, 邀请
             InvNoFriendNum=0,--拒绝, 次数
             restingTips=true,--休息区提示
-            LFGPlus= e.Player.husandro,--预创建队伍增强
+            LFGPlus= true,--预创建队伍增强
             ChannelText=e.Player.zh and '1' or 'inv',--频道, 邀请, 事件,内容
             Summon= true,--接受, 召唤
 }
