@@ -16,7 +16,8 @@ end
 local function Reputation_Text_setText()--设置, 文本
 	if not Save.btn or not Save.btnstr then
 		if panel.btn and panel.btn.text then
-			panel.btn:SetNormalAtlas(0)
+			panel.btn.text:SetText('')
+			panel.btn:SetNormalAtlas(e.Icon.disabled)
 		end
 		return
 	end
@@ -125,8 +126,9 @@ local function Reputation_Text_setText()--设置, 文本
 
 	if hasRewardPending then
 		panel.btn:SetNormalAtlas('ParagonReputation_Bag')--有奖励
+		m= '\n'..m
 	else
-		panel.btn:SetNormalAtlas(e.Icon.icon)
+		panel.btn:SetNormalTexture(0)
 	end
 	panel.btn.text:SetText(m)
 end

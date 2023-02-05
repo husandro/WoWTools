@@ -1222,7 +1222,8 @@
         "CHALLENGE_MODE_COMPLETED",
         "BACKPACK_CONTAINER",
         "ON_COOLDOWN",
-        "StoreFrame"
+        "StoreFrame",
+        "BaseBagSlotButtonMixin"
     ],
     "Lua.diagnostics.disable": [
     ]

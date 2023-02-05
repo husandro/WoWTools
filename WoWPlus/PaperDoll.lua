@@ -871,7 +871,7 @@ local function Init()
                 Sta(self, slot, link)
                 Equipment()
                 LvTo()--总装等
-            elseif InventSlot_To_ContainerSlot[slot] then--背包数
+            elseif InventSlot_To_ContainerSlot[slot] and self:HasBagEquipped() then--背包数
                 local numFreeSlots
                 numFreeSlots = C_Container.GetContainerNumFreeSlots(InventSlot_To_ContainerSlot[slot])
                 if numFreeSlots==0 then
@@ -917,6 +917,10 @@ local function Init()
             self.Count:SetText(totalFree)
         end)
     end
+    --[[hooksecurefunc(MainMenuBarBackpackButton, 'BagSlotOnClick', function(button, down)
+        print(id,addName)
+    end)]]
+
 
     --#######
     --装备弹出
