@@ -457,7 +457,7 @@ e.CeditBox= function(self, width, height)
 end
 
 e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size)
-    self= self or UIParent
+    self= self or WorldFrame-- UIParent
     local b
     if Template then
         b=CreateFrame('Button', name, self, 'UIPanelButtonTemplate')
@@ -707,7 +707,7 @@ end
 
 e.Cbtn2= function(name, parent, showTexture, rightClick)
     --local button= CreateFrame("Button", name, (parent or UIParent), "SecureActionButtonTemplate")
-    local button= CreateFrame("Button", name, parent or UIParent, "SecureActionButtonTemplate")
+    local button= CreateFrame("Button", name, parent or WorldFrame, "SecureActionButtonTemplate")
     local size=e.toolsFrame.size or 20
     button:SetSize(size,size)
     if rightClick then
@@ -744,7 +744,7 @@ e.Cbtn2= function(name, parent, showTexture, rightClick)
 end
 
 --e.toolsFrame=CreateFrame('Frame', nil, UIParent)--TOOLS 框架
-e.toolsFrame=CreateFrame('Frame')--TOOLS 框架
+e.toolsFrame=CreateFrame('Frame', nil, WorldFrame)--TOOLS 框架
 e.toolsFrame:SetSize(1,1)
 e.toolsFrame:SetShown(false)
 e.toolsFrame.last=e.toolsFrame
