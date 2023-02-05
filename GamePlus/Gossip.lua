@@ -245,6 +245,7 @@ local function Init_Gossip()
     panel.MenuGossip=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(panel.MenuGossip, InitMenu_Gossip, 'MENU')
 
+    panel:SetFrameStrata('HIGH')
     panel:SetMovable(true)--移动
     panel:SetClampedToScreen(true)
     panel:RegisterForDrag('RightButton')
