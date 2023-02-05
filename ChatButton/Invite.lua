@@ -5,7 +5,7 @@ local Save={InvNoFriend={},
             FriendAceInvite=true,--接受, 好友, 邀请
             InvNoFriendNum=0,--拒绝, 次数
             restingTips=true,--休息区提示
-            LFGPlus=true,--预创建队伍增强
+            LFGPlus= e.Player.husandro,--预创建队伍增强
             ChannelText=e.Player.zh and '1' or 'inv',--频道, 邀请, 事件,内容
             Summon= true,--接受, 召唤
 }
@@ -67,7 +67,7 @@ local function setTexture()--设置图标颜色, 是否有权限, 是否转团, 
     if panel.InvTar then
         panel.InvTar:SetShown((Save.Channel and Save.ChannelText))
     end
-
+ 
     panel.texture:SetDesaturated(not (Save.LFGListAceInvite and Save.FriendAceInvite))--自动接受,LFD, 好友, 邀请
 end
 
@@ -390,6 +390,9 @@ end
 --预创建队伍增强
 --############
 local function set_LFGPlus()--预创建队伍增强
+    if not Save.LFGPlus then
+        return
+    end
     local f=LFGListFrame.SearchPanel.RefreshButton;--界面, 添加, 选项    
     f.ace = CreateFrame("CheckButton", nil, f, "InterfaceOptionsCheckButtonTemplate");--自动进组  选项
     f.ace:SetPoint('RIGHT',f, 'LEFT',-90,0)
@@ -418,7 +421,7 @@ local function set_LFGPlus()--预创建队伍增强
     end)
 
     hooksecurefunc("LFGListSearchEntry_Update", function(self)----查询,自定义, 预创建队伍, LFG队长分数, 双击加入 LFGList.lua
-        local info = Save.LFGPlus and self.resultID and  C_LFGList.GetSearchResultInfo(self.resultID);
+        local info = self.resultID and  C_LFGList.GetSearchResultInfo(self.resultID);
         if info and not info.isDelisted then
             local text=e.GetKeystoneScorsoColor(info.leaderOverallDungeonScore, true);--分数
             text= info.leaderPvpRatingInfo and info.leaderPvpRatingInfo.rating and text..'|A:pvptalents-warmode-swords:0:0|a'..info.leaderPvpRatingInfo.rating or text
@@ -602,6 +605,7 @@ local function InitList(self, level, type)
             text= e.onlyChinse and '预创建队伍增强' or SCORE_POWER_UPS:gsub(ITEMS,LFGLIST_NAME),
             func=function()
                 Save.LFGPlus = not Save.LFGPlus and true or nil
+                print(id, addName, e.GetEnabeleDisable(Save.LFGPlus), e.onlyChinse and '需求重新加载' or REQUIRES_RELOAD)
             end,
             checked=Save.LFGPlus,
             tooltipOnButton=true,
