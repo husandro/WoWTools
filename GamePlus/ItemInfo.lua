@@ -432,29 +432,7 @@ local function Init()
             end
         end
     end)
---[[
-        local currencies = { GetMerchantCurrencies() };
-        if #currencies == 0 then
-            return
-        end
-        for index = 1, MerchantFrame.numCurrencies do
-            local tokenButton = _G["MerchantToken"..index]
-            if tokenButton and tokenButton:IsShown() then
-                local quantity = C_CurrencyInfo.GetCurrencyInfo(currencies[index]).quantity
-                print(quantity, C_CurrencyInfo.GetCurrencyInfo(currencies[index]).name)
-                if not tokenButton.quantityAll then
-                    --e.Cstr=function             (self,        size, fontType, ChangeFont, color, layer, justifyH)
-                    tokenButton.quantityAll= e.Cstr(tokenButton)--, nil, nil, nil, {0,1,0}, 'RIGHT')
-                    tokenButton.quantityAll:SetPoint('TOPRIGHT', tokenButton.Count, 'BOTTOMRIGHT')
-                end
-                tokenButton.quantityAll:SetText(quantity and e.MK(quantity,0) or '');
-            end
-        end
-    end)
 
-    hooksecurefunc('MerchantFrame_UpdateCurrencyButton', function(tokenButton)
-        print(id)
-    end)]]
     --############
     --排序:从右到左
     --############
