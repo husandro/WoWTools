@@ -917,10 +917,11 @@ local function Init()
             self.Count:SetText(totalFree)
         end)
     end
-    --[[hooksecurefunc(MainMenuBarBackpackButton, 'BagSlotOnClick', function(button, down)
-        print(id,addName)
-    end)]]
-
+    MainMenuBarBackpackButton:HookScript('OnClick', function(self, d)
+        if d=='RightButton' then
+            ToggleAllBags()
+        end
+    end)
 
     --#######
     --装备弹出
