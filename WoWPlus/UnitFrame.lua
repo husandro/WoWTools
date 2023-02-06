@@ -623,7 +623,7 @@ local function set_RaidFrame()--设置,团队
             frame.background:SetShown(connected)
         end
 
-        if not frame.statusText or not frame.statusText:IsShown() then--not frame.optionTable.displayStatusText then
+        if not frame.statusText or not frame.optionTable.displayStatusText or not frame.statusText:IsShown() then--not frame.optionTable.displayStatusText then
             return
         end
 
@@ -637,7 +637,9 @@ local function set_RaidFrame()--设置,团队
             frame.statusText:SetText(e.MK(UnitHealth(frame.displayedUnit),1))
         elseif ( frame.optionTable.healthText == "losthealth" ) then
             local healthLost = UnitHealthMax(frame.displayedUnit) - UnitHealth(frame.displayedUnit)
-            frame.statusText:SetFormattedText('%-%s', e.MK(healthLost,1))
+            if ( healthLost > 0 ) then
+                frame.statusText:SetFormattedText('%-%s', e.MK(healthLost,1))
+            end
         elseif (frame.optionTable.healthText == "perc") then
             if UnitHealth(frame.displayedUnit)== UnitHealthMax(frame.displayedUnit) then
                 frame.statusText:SetText('')
