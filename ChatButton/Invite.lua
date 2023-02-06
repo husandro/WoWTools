@@ -280,7 +280,7 @@ local function set_LFGListInviteDialog(self)--队伍查找器, 自动接受邀�
             e.Ccool(self, nil, 3, nil, true, true, nil)--冷却条
             if self.LFGListInviteDialogTimer then self.LFGListInviteDialogTimer:Cancel() end
             self.LFGListInviteDialogTimer=C_Timer.NewTimer(3, function()
-                if self.IsEnabled() then
+                if self.AcceptButton:IsEnabled() then
                     self.AcceptButton:Click()
                 end
             end)
