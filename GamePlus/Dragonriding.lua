@@ -120,16 +120,16 @@ local function Init()
             if speed and speed>0 then
                 speed= speed * speedTextFactor
                 if speed>=1000 then
-                    self.text:SetFormattedText('|cffff0000%.0f%%', speed)
+                    self.text:SetFormattedText('|cffff0000%.0f', speed)
                     self.statusBar:SetStatusBarColor(1, 0, 0)
                 elseif speed>=800 then
-                    self.text:SetFormattedText('|cff00ff00%.0f%%', speed)
+                    self.text:SetFormattedText('|cff00ff00%.0f', speed)
                     self.statusBar:SetStatusBarColor(0, 1, 0)
                 elseif speed>=600 then
-                    self.text:SetFormattedText('|cffff00ff%.0f%%', speed)
+                    self.text:SetFormattedText('|cffff00ff%.0f', speed)
                     self.statusBar:SetStatusBarColor(1, 0, 1)
                 else
-                    self.text:SetFormattedText('%.0f%%', speed)
+                    self.text:SetFormattedText('%.0f', speed)
                     self.statusBar:SetStatusBarColor(0.8, 0.8, 0)
                 end
                 self.statusBar:SetValue(speed>1000 and 1000 or speed)

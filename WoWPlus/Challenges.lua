@@ -263,19 +263,39 @@ local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
         frame.TimeLimit:SetJustifyH('RIGHT')
     end
 
-    hooksecurefunc(frame,'OnKeystoneSlotted',function()--插件KEY时, 说
-            local mapID, affixes, powerLevel = C_ChallengeMode.GetSlottedKeystoneInfo()
-
-            local name,_, timeLimit= C_ChallengeMode.GetMapUIInfo(mapID)
-            local m=name..'('.. powerLevel..'): '
-            for _,v in pairs(affixes) do
-                local name2=C_ChallengeMode.GetAffixInfo(v)
-                if name2 then
-                    m=m..name2..', '
-                end
+    local sel2=CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")--插入, KEY时, 说
+    --e.Cstr=function(self, size, fontType, ChangeFont, color, layer, justifyH)
+    if not frame.DungeonName and not e.onlyChinse then
+        e.Cstr(nil,nil,frame.DungeonName, sel2.text)
+    end
+    sel2.text:SetText(e.onlyChinse and '说' or SAY)
+    sel2:SetPoint('TOPLEFT',22,-12)
+    sel2:SetChecked(Save.slotKeystoneSay)
+    sel2:SetScript('OnMouseDown', function()
+        Save.slotKeystoneSay= not Save.slotKeystoneSay and true or nil
+    end)
+    sel2:SetScript('OnEnter', function(self2)
+        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddLine(e.onlyChinse and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
+        e.tips:Show()
+    end)
+    sel2:SetScript('OnLeave', function() e.tips:Hide() end)
+    hooksecurefunc(frame,'OnKeystoneSlotted',function()--插入, KEY时, 说
+        if not Save.slotKeystoneSay then
+            return
+        end
+        local mapID, affixes, powerLevel = C_ChallengeMode.GetSlottedKeystoneInfo()
+        local name,_, timeLimit= C_ChallengeMode.GetMapUIInfo(mapID)
+        local m=name..'('.. powerLevel..'): '
+        for _,v in pairs(affixes) do
+            local name2=C_ChallengeMode.GetAffixInfo(v)
+            if name2 then
+                m=m..name2..', '
             end
-            m=m..SecondsToClock(timeLimit)
-            e.Chat(m)
+        end
+        m=m..SecondsToClock(timeLimit)
+        e.Chat(m)
     end)
 
     local timeElapsed = 0

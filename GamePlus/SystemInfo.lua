@@ -140,35 +140,10 @@ local function set_Fps_Ms()--设置, fps, ms, 数值
         panel.fpsms:SetText('')
     end
 end
-panel.fpsmsFrame:HookScript("OnUpdate", function (self, elapsed)--fpsms
-    timeElapsed = timeElapsed + elapsed
-    if timeElapsed > 0.4 then
-        timeElapsed = 0
-        local t = select(4, GetNetStats())--ms
-        if t>400 then
-            t='|cnRED_FONT_COLOR:'..t..'|r'
-        elseif t>120 then
-            t='|cnYELLOW_FONT_COLOR:'..t..'|r'
-        end
-
-        local r=GetFramerate() or 0
-        r=math.modf(r)--fps
-        if r then
-            if r<10 then
-                r='|cff00ff00'..r..'|r'
-            elseif r<20 then
-                r='|cffffff00'..r..'|r'
-            end
-            t=t..'ms  '..r..'fps'
-        end
-        panel.fpsms:SetText(t)
-    end
-end)
 
 --#####
 --主菜单
 --#####
-
 local function InitMenu(self, level, type)--主菜单
     local info
     if type=='wowMony' then
@@ -360,6 +335,31 @@ local function Init()
         self:SetButtonState('NORMAL')
     end)
 
+    panel.fpsmsFrame:HookScript("OnUpdate", function (self, elapsed)--fpsms
+        timeElapsed = timeElapsed + elapsed
+        if timeElapsed > 0.4 then
+            timeElapsed = 0
+            local t = select(4, GetNetStats())--ms
+            if t>400 then
+                t='|cnRED_FONT_COLOR:'..t..'|r'
+            elseif t>120 then
+                t='|cnYELLOW_FONT_COLOR:'..t..'|r'
+            end
+
+            local r=GetFramerate() or 0
+            r=math.modf(r)--fps
+            if r then
+                if r<10 then
+                    r='|cff00ff00'..r..'|r'
+                elseif r<20 then
+                    r='|cffffff00'..r..'|r'
+                end
+                t=t..'ms  '..r..'fps'
+            end
+            panel.fpsms:SetText(t)
+        end
+    end)
+
     setStrColor()
     if Save.money then set_Money_Event() end--设置,钱,事件
     set_System_FPSMS()--设置系统fps ms
@@ -367,37 +367,61 @@ local function Init()
     if Save.equipmetLevel or Save.durabiliy then
         set_Durabiliy_EquipLevel_Event()--设置装等,耐久度,事件
     end
+
+    if MainMenuBarVehicleLeaveButton then
+        local Taxielapsed=0
+        MainMenuBarVehicleLeaveButton:HookScript('OnUpdate', function(self, elapsed)--Taxi, 移动, 速度
+            if Taxielapsed>0.3 then
+                if not self.speedText then
+                    self.speedText= e.Cstr(self, 12)
+                    self.speedText:SetPoint('TOP', self, 'TOP')
+                end
+                local speed= GetUnitSpeed("player")
+                if speed==0 then
+                    self.speedText:SetText('')
+                else
+                    self.speedText:SetFormattedText('%.0f', speed * 100 / BASE_MOVEMENT_SPEED)
+                end
+                Taxielapsed=0
+            else
+                Taxielapsed= Taxielapsed+ elapsed
+            end
+        end)
+    end
 end
 
 panel:RegisterEvent("ADDON_LOADED")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1==id then
-        if WoWToolsSave and not WoWToolsSave[addName] then
-            panel:SetButtonState('PUSHED')
-        end
-        Save= WoWToolsSave and WoWToolsSave[addName] or Save
+    if event == "ADDON_LOADED" then
+        if arg1==id then
+            if WoWToolsSave and not WoWToolsSave[addName] then
+                panel:SetButtonState('PUSHED')
+            end
+            Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
-        local check=e.CPanel(e.onlyChinse and '系统信息' or addName, not Save.disabled, true)
-        check:SetScript('OnMouseDown', function()
-            Save.disabled= not Save.disabled and true or nil
-            print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
-        end)
-        check:SetScript('OnEnter', function(self2)
-            e.tips:SetOwner(self2, "ANCHOR_RIGHT");
-            e.tips:ClearLines();
-            e.tips:AddDoubleLine('fps ms', MONEY)
-            e.tips:AddDoubleLine(DURABILITY, EQUIPSET_EQUIP..LEVEL)
-            e.tips:Show();
-        end)
-        check:SetScript('OnLeave', function() e.tips:Hide() end)
+            local check=e.CPanel(e.onlyChinse and '系统信息' or addName, not Save.disabled, true)
+            check:SetScript('OnMouseDown', function()
+                Save.disabled= not Save.disabled and true or nil
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+            end)
+            check:SetScript('OnEnter', function(self2)
+                e.tips:SetOwner(self2, "ANCHOR_RIGHT");
+                e.tips:ClearLines();
+                e.tips:AddDoubleLine('fps ms', MONEY)
+                e.tips:AddDoubleLine(DURABILITY, EQUIPSET_EQUIP..LEVEL)
+                e.tips:Show();
+            end)
+            check:SetScript('OnLeave', function() e.tips:Hide() end)
 
-        if Save.disabled then
-            panel:UnregisterAllEvents()
-        else
-            Init()
+            if Save.disabled then
+                panel:UnregisterAllEvents()
+            else
+                Init()
+            end
+            panel:RegisterEvent("PLAYER_LOGOUT")
+            panel:UnregisterEvent("ADDON_LOADED")
         end
-        panel:RegisterEvent("PLAYER_LOGOUT")
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then

@@ -199,14 +199,19 @@ local function Init()
             end
             if self.Name then--名称
                 self.Name:SetShadowOffset(1, -1)
-                --[[local text=self.Name:GetText()
-                if text and #text>6 then
-                    text= e.WA_Utf8Sub(text, 2, 5)
-                    self.Name:SetText(text)
-                end]]
+            end
+            if self.cooldown then
+                --self.cooldown:SetBlingTexture('Interface\\Cooldown\\star4')--闪光
+                --self.cooldown:SetEdgeTexture("Interface\\Cooldown\\edge", 1,0,0,1);
+                self.cooldown:SetCountdownFont('NumberFontNormal')
             end
         end
     end
+    hooksecurefunc('CooldownFrame_Set', function(self, start, duration, enable, forceShowDrawEdge, modRate)
+        if enable and enable ~= 0 and start > 0 and duration > 0 then
+            self:SetDrawEdge(true)--冷却动画的移动边缘绘制亮线
+        end
+    end)
     C_Timer.After(2, function()
         for i=1, 12 do
             hideButtonText(_G['ActionButton'..i])--主动作条

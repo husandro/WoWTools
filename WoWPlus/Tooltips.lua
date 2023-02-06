@@ -414,6 +414,9 @@ end
 --生命条提示
 --#########
 local function set_Unit_Health_Bar(self, unit)
+    if self:GetWidth()<100 then
+        return
+    end
     local value= unit and UnitHealth(unit)
     local max= unit and UnitHealthMax(unit)
     local r, g, b, left, right, hex, text
@@ -1286,11 +1289,10 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
 
         elseif arg1=='Blizzard_ChallengesUI' then--挑战, AffixID
             hooksecurefunc(ChallengesKeystoneFrameAffixMixin,'OnEnter',function(self2)--Blizzard_ChallengesUI.lua
-                if (self2.affixID or self2.info) then
-                    local affixID= self2.info and self2.info.key or self2.affixID
-                    if affixID then
-                        local _, _, filedataid = C_ChallengeMode.GetAffixInfo(affixID)
-                        GameTooltip:AddDoubleLine('affixID'..affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ');
+                if self2.affixID then
+                    if self2.affixID then
+                        local _, _, filedataid = C_ChallengeMode.GetAffixInfo(self2.affixID)
+                        GameTooltip:AddDoubleLine('affixID '..self2.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ');
                         GameTooltip:Show();
                     end
                 end

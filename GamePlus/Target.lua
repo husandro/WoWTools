@@ -86,7 +86,13 @@ end
 local function set_NAME_PLATE_UNIT_ADDED(unit)
     local plate = C_NamePlate.GetNamePlateForUnit(unit)
     if plate then
-        local text= Get_Quest_Progress(unit)
+        local text
+        local type = UnitClassification(unit)
+        if type=='rareelite' or type=='rare' or type=='worldboss' then--or type=='elite'
+            text= '|A:VignetteEvent:18:18|a'
+        else
+            text= Get_Quest_Progress(unit)
+        end
         if text and not plate.questProgress then
             local frame= plate.UnitFrame and plate.UnitFrame.healthBar or plate
             plate.questProgress= e.Cstr(frame, 10, nil, nil, nil, nil,'LEFT')
