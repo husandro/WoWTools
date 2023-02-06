@@ -261,7 +261,7 @@ local function Init()
     ObjectiveTrackerFrame:EnableMouse(true)
 
     local btn=ObjectiveTrackerFrame.HeaderMenu.MinimizeButton
-    --[[btn:RegisterForDrag("RightButton")
+    btn:RegisterForDrag("RightButton")
     btn:SetScript("OnDragStart", function() ObjectiveTrackerFrame:StartMoving() end)
     btn:SetScript("OnDragStop", function()
             ResetCursor()
@@ -274,9 +274,9 @@ local function Init()
         if d=='RightButton' then
             SetCursor('UI_MOVE_CURSOR')
         end
-    end)]]
+    end)
     btn:SetScript("OnLeave", function(self)
-        --ResetCursor()
+        ResetCursor()
         e.tips:Hide()
     end)
     btn:SetScript("OnEnter",function(self)

@@ -651,7 +651,7 @@ local function InitMenu_Quest(self, level, type)
 
         info={
             text= e.onlyChinse and '当前地图' or (REFORGE_CURRENT..WORLD_MAP),
-            checked=Save.autoSortQuest,
+            checked= Save.autoSortQuest,
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinse and '仅显示当前地图任务' or format(GROUP_FINDER_CROSS_FACTION_LISTING_WITH_PLAYSTLE, SHOW,FLOOR..QUESTS_LABEL),--仅限-本区域任务
             tooltipText= e.onlyChinse and '触发事件: 更新区域' or (EVENTS_LABEL..':' ..UPDATE..FLOOR),
