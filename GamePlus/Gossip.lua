@@ -23,7 +23,7 @@ local function setPoint()--设置位置
         --local frame
         --if _G['!KalielsTrackerFrame'] then
             --frame= _G['!KalielsTrackerFrame']
-            panel:SetPoint('BOTTOMRIGHT', _G['!KalielsTrackerFrame'] or ObjectiveTrackerBlocksFrame, 'TOPRIGHT')
+            panel:SetPoint('BOTTOMRIGHT', _G['!KalielsTrackerFrame'] or ObjectiveTrackerBlocksFrame, 'TOPRIGHT', -10, 0)
         --else
             --frame= ObjectiveTrackerBlocksFrame
             --panel:SetPoint('TOPRIGHT', ObjectiveTrackerBlocksFrame, 'TOPRIGHT', -45, -2)
@@ -683,7 +683,7 @@ local function Init_Quest()
         set_Auto_QuestWatch_Event()
     end
 
-    questPanel.Text=e.Cstr(questPanel, nil, nil,nil, true,nil, 'RIGHT')--任务数量
+    questPanel.Text=e.Cstr(questPanel, nil, nil,nil, nil,nil, 'RIGHT')--任务数量
     questPanel.Text:SetPoint('RIGHT', questPanel, 'LEFT')
     questPanel:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
