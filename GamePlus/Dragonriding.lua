@@ -18,7 +18,7 @@ local function get_Speed()
         local cur= GetUnitSpeed("player")
         if cur and cur>0 then
             lastX, lastY, lastT = 0, 0, 0
-            return cur        
+            return cur
         else
             local position = C_Map.GetPlayerMapPosition(uiMapID, "player")
             if position then
