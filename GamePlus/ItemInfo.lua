@@ -3,11 +3,11 @@ local addName= ITEMS..INFO
 local Save={}
 local panel=CreateFrame("Frame")
 
-local itemUseString= ITEM_SPELL_CHARGES:gsub('%%d', '%(%%d%+%)')--(%d+)次
-local KeyStone= CHALLENGE_MODE_KEYSTONE_NAME:gsub('%%s','(.+) ')--钥石
-local text_EQUIPMENT_SETS= 	EQUIPMENT_SETS:gsub('%%s','(.+)')
-local PvPItemLevel= PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在竞技场和战场中将物品等级提高至%d。"
-local text_ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(%%d%+/%%d%+)')-- "升级：%s/%s"
+local chargesStr= ITEM_SPELL_CHARGES:gsub('%%d', '%(%%d%+%)')--(%d+)次
+local keyStr= CHALLENGE_MODE_KEYSTONE_NAME:gsub('%%s','(.+) ')--钥石
+local equipStr= 	EQUIPMENT_SETS:gsub('%%s','(.+)')
+local pvpItemStr= PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在竞技场和战场中将物品等级提高至%d。"
+local upgradeStr= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(%%d%+/%%d%+)')-- "升级：%s/%s"
 local size= 10--字体大小
 
 local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBank, buyBack)
@@ -31,7 +31,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
             if name then
                 topLeftText=name:match('%((%d+)%)') or C_MythicPlus.GetOwnedKeystoneLevel() --等级
                 name=name:gsub('%((%d+)%)','')
-                name=name:match('（(.-)）') or name:match('%((.-)%)') or name:match('%- (.+)') or name:match(KeyStone)--名称
+                name=name:match('（(.-)）') or name:match('%((.-)%)') or name:match('%- (.+)') or name:match(keyStr)--名称
                 if name then
                     bottomLeftText=e.WA_Utf8Sub(name, 3,6)
                 end
@@ -84,7 +84,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
 
         elseif classID==2 or classID==4 then--装备
             if itemQuality and itemQuality>1 then
-                local noUse, text, wow, text2, text3= e.GetTooltipData(true, text_EQUIPMENT_SETS, itemLink, bag and {bag=bag.bagID, slot=bag.slotID}, guildBank and {tab= guildBank[1], slot=guildBank[2]}, merchantIndex, buyBack, nil, PvPItemLevel, text_ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT)--物品提示，信息
+                local noUse, text, wow, text2, text3= e.GetTooltipData(true, equipStr, itemLink, bag and {bag=bag.bagID, slot=bag.slotID}, guildBank and {tab= guildBank[1], slot=guildBank[2]}, merchantIndex, buyBack, nil, pvpItemStr, upgradeStr)--物品提示，信息
                 if text then--套装名称，
                     text= text:match('(.+),') or text:match('(.+)，') or text
                     bottomLeftText=e.WA_Utf8Sub(text,3,5)
@@ -178,7 +178,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
             bottomRightText= PlayerHasToy(itemID) and e.Icon.X2 or e.Icon.star2
 
         elseif itemStackCount==1 then
-            local noUse, text, wow= e.GetTooltipData(true, itemUseString, itemLink, bag and {bag=bag.bagID, slot=bag.slotID}, guildBank and {tab= guildBank[1], slot=guildBank[2]}, merchantIndex, buyBack)--物品提示，信息
+            local noUse, text, wow= e.GetTooltipData(true, chargesStr, itemLink, bag and {bag=bag.bagID, slot=bag.slotID}, guildBank and {tab= guildBank[1], slot=guildBank[2]}, merchantIndex, buyBack)--物品提示，信息
             bottomLeftText=text
             topRightText= wow and e.Icon.wow2 or noUse and e.Icon.X2
         end
@@ -441,7 +441,6 @@ local function Init()
     end
     ContainerFrameCombinedBagsPortraitButton:HookScript('OnMouseDown',function ()
         UIDropDownMenu_AddSeparator()
-
         local info={--排序:从右到左
             text= e.onlyChinse and '排序: 从右到左' or CLUB_FINDER_SORT_BY..': '..	INT_SPELL_POINTS_SPREAD_TEMPLATE:format(HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_RIGHT,HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_LEFT),
             checked= C_Container.GetSortBagsRightToLeft(),
@@ -458,6 +457,7 @@ local function Init()
     if Save.sortRightToLeft~=nil then
         set_Sort_Rigth_To_Left()--排序:从右到左
     end
+
     --###############
     --收起，背包小按钮
     --###############
@@ -476,7 +476,8 @@ panel:RegisterEvent("GUILDBANK_ITEM_LOCK_CHANGED");
 panel:RegisterEvent('BANKFRAME_OPENED')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1==id then
+    if event == "ADDON_LOADED" then
+        if arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
             --添加控制面板        
@@ -505,6 +506,15 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
+        --[[elseif arg1=='Blizzard_ItemInteractionUI' then
+            hooksecurefunc(ItemInteractionFrame, 'SetupChargeCurrency', function(self2)
+                local info = C_ItemInteraction.GetChargeInfo()
+                if info then
+                    print(info.newChargeAmount, info.rechargeRate, info.timeToNextCharge)
+                end
+            end)]]
+        end
+
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end
@@ -520,19 +530,3 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
     end
 end)
-
---[[
-if MainMenuBarBackpackButton then--背包，数量
-        hooksecurefunc(MainMenuBarBackpackButton, 'UpdateFreeSlots', function(self)
-            local totalFree=0
-            for i = BACKPACK_CONTAINER, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
-                local freeSlots, bagFamily = C_Container.GetContainerNumFreeSlots(i);
-                print(bagFamily, i)
-                if ( bagFamily == 0 ) then
-                    totalFree = totalFree + freeSlots;
-                end
-            end
-            self.Count:SetText(totalFree)
-        end)
-    end
-]]

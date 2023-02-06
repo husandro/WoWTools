@@ -4,6 +4,10 @@ local Save={EquipmentH=true}
 local panel = CreateFrame("Frame", nil, PaperDollFrame)
 panel.serverText= e.Cstr(PaperDollItemsFrame, nil, nil, nil,{1,0.82,0},nil, 'LEFT')--显示服务器名称
 
+local pvpItemStr= PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在竞技场和战场中将物品等级提高至%d。"
+local enchantStr= ENCHANTED_TOOLTIP_LINE:gsub('%%s','(.+)')--附魔
+local upgradeStr= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(%%d%+/%%d%+)')-- "升级：%s/%s"
+
 local function Slot(slot)--左边插曹
     return slot==1 or slot==2 or slot==3 or slot==15 or slot==5 or slot==4 or slot==19 or slot==9 or slot==17 or slot==18
 end
@@ -204,13 +208,10 @@ local function Engineering(self, slot, use)--增加 [潘达利亚工程学: 地�
     self.engineering:SetShown(true)
 end
 
-local PvPItemLevelStr=PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在竞技场和战场中将物品等级提高至%d。"
-local enchantStr=ENCHANTED_TOOLTIP_LINE:gsub('%%s','(.+)')--附魔
-local text_ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(%%d%+/%%d%+)')-- "升级：%s/%s"
 local function Enchant(self, slot, link)--附魔, 使用, 属性
     local enchant, use, pvpItem, upgradeItem, _
     if link then
-        _, enchant, _ , pvpItem, upgradeItem=  e.GetTooltipData(nil, enchantStr, link, nil, nil, nil, nil, slot, PvPItemLevelStr, text_ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT)--物品提示，信息
+        _, enchant, _ , pvpItem, upgradeItem=  e.GetTooltipData(nil, enchantStr, link, nil, nil, nil, nil, slot, pvpItemStr, upgradeStr)--物品提示，信息
         if enchant and not self.enchant then--附魔
             local h=self:GetHeight()/3
             self.enchant=self:CreateTexture()
@@ -293,11 +294,11 @@ local function Set(self, slot, link)--套装
         if set then
             if set and not self.set then
                 self.set=self:CreateTexture()
-                if Slot(slot) then
+            --[[if Slot(slot) then
                     self.set:SetPoint('TOPRIGHT',self)
                 else
                     self.set:SetPoint('TOPLEFT',self)
-                end
+                end]]
                 self.set:SetAllPoints(self)
                 self.set:SetAtlas(e.Icon.pushed)
             end
@@ -732,7 +733,12 @@ local function setFlyout(button, itemLink, slot)
     end
     button.level:SetText(text or '')
 
-    local upgrade= itemLink and select(2, e.GetTooltipData(nil, text_ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT, itemLink))--物品提示，信息
+    local upgrade, pvpItem, _
+    if itemLink then
+        _, upgrade, _, pvpItem= e.GetTooltipData(nil, upgradeStr, itemLink, nil, nil, nil, nil, nil, pvpItemStr)--物品提示，信息
+        --e.GetTooltipData= function(colorRed, text, hyperLink, bag, guidBank, merchant, buyBack, inventory, text2, text3)
+    end
+
     if upgrade and not button.upgrade then
         button.upgrade= e.Cstr(button, nil, nil, nil, {0,1,0}, nil,'LEFT')
         button.upgrade:SetPoint('LEFT')
@@ -774,6 +780,19 @@ local function setFlyout(button, itemLink, slot)
     end
     if button.updown then
         button.updown:SetText(updown or '')
+    end
+
+    Set(button, slot, itemLink)--套装
+
+    if pvpItem and not button.pvpItem then--提示PvP装备
+        local h=button:GetHeight()/3
+        button.pvpItem=button:CreateTexture(nil,'OVERLAY',nil,7)
+        button.pvpItem:SetSize(h,h)
+        button.pvpItem:SetPoint('RIGHT')
+        button.pvpItem:SetAtlas('Warfronts-BaseMapIcons-Horde-Barracks-Minimap')
+    end
+    if button.pvpItem then
+        button.pvpItem:SetShown(pvpItem and true or false)
     end
 end
 

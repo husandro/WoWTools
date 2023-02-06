@@ -615,7 +615,6 @@ local function set_RaidFrame()--设置,团队
                 end
             end
         end]]
-    
 
     hooksecurefunc('CompactUnitFrame_UpdateStatusText', function(frame)
         local connected= UnitIsConnected(frame.displayedUnit)
@@ -651,8 +650,6 @@ local function set_RaidFrame()--设置,团队
                 end
             end
         end
-        
-        
     end)
 --[[
     for index, tab in pairs(EditModeSettingDisplayInfoManager.systemSettingDisplayInfo[Enum.EditModeSystem.UnitFrame]) do
