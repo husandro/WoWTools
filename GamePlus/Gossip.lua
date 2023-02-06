@@ -1,7 +1,11 @@
 local id, e = ...
 local addName= ENABLE_DIALOG..QUESTS_LABEL
 local Save={
-        gossip=true, quest=true, unique=true, autoSortQuest=e.Player.husandro, autoSelectReward=e.Player.husandro,
+        gossip= true,
+        quest= true,
+        unique= true,
+        autoSortQuest= e.Player.husandro,
+        autoSelectReward= e.Player.husandro,
         NPC={},
         gossipOption={},
         questOption={},
