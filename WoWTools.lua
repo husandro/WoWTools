@@ -1071,4 +1071,9 @@ end
 
 SetItemButtonTextureVertexColor(button, 1.0, 1.0, 1.0);
 SetItemButtonNormalTextureVertexColor(button, 1.0, 1.0, 1.0);
+
+Day={0.10, 0.72, 1},--日常 |cff19b7ff  任务颜色
+Week={0.02, 1, 0.66},--周长 |cff05ffa8
+Legendary={1, 0.49, 0},--传说 |cffff7c00
+Calling={1, 0, 0.9},--使命 |cffff00e5
 ]]

@@ -700,13 +700,13 @@ local function Init_Quest()
         e.tips:AddDoubleLine((e.onlyChinse and '日常' or DAILY)..': |cnGREEN_FONT_COLOR:'..GetDailyQuestsCompleted()..'|r'..e.Icon.select2, (e.onlyChinse and '已完成' or  CRITERIA_COMPLETED)..' '..e.MK(#all, 3))
         e.tips:AddLine(' ')
 
-        e.tips:AddDoubleLine((e.onlyChinse and '任务' or QUESTS_LABEL)..': '..select(2,  C_QuestLog.GetNumQuestLogEntries())..'/'..C_QuestLog.GetMaxNumQuests(), (e.onlyChinse and '追踪' or TRACK_QUEST_ABBREV)..': '..C_QuestLog.GetNumQuestWatches())
+        e.tips:AddDoubleLine((e.onlyChinse and '上限' or CAPPED)..': '..select(2,  C_QuestLog.GetNumQuestLogEntries())..'/'..C_QuestLog.GetMaxNumQuestsCanAccept(), (e.onlyChinse and '追踪' or TRACK_QUEST_ABBREV)..': '..C_QuestLog.GetNumQuestWatches())
         e.tips:AddLine(' ')
 
-        local numQuest,dayNum,weekNum, companionNum = 0, 0, 0, 0
+        local numQuest,dayNum,weekNum, companionNum, numAll = 0, 0, 0, 0, 0
         for index=1, select(2,C_QuestLog.GetNumQuestLogEntries()) do
             local info = C_QuestLog.GetInfo(index)
-            if info then
+            if info and  not info.isHeader then
                 if info.frequency== 0 then
                     numQuest= numQuest+ 1
                 elseif info.frequency== 1 then
@@ -717,17 +717,22 @@ local function Init_Quest()
                if info.campaignID then
                     companionNum= companionNum+ 1
                end
+               if not info.isHidden then
+                    numAll= numAll+ 1
+               end
             end
         end
-        local numMaxQust= C_QuestLog.GetMaxNumQuestsCanAccept()
-        local numAll= numQuest+ dayNum+ weekNum
-        local text= numAll ..'/'..numMaxQust
-        if numAll == numMaxQust then
-            text= '|cnRED_FONT_COLOR:'..text..'|r'
-        end
-        e.tips:AddDoubleLine(' ', (e.onlyChinse and '日常' or DAILY)..': '..dayNum)
-        e.tips:AddDoubleLine((e.onlyChinse and '战役' or TRACKER_HEADER_CAMPAIGN_QUESTS)..': '..companionNum, (e.onlyChinse and '周长' or WEEKLY)..': '..weekNum)
-        e.tips:AddDoubleLine((e.onlyChinse and '总计' or TOTAL)..': '..text, (e.onlyChinse and '一般' or RESISTANCE_FAIR)..': '..numQuest)
+
+        --[[Day={0.10, 0.72, 1},--日常 |cff19b7ff
+        Week={0.02, 1, 0.66},--周长 |cff05ffa8
+        Legendary={1, 0.49, 0},--传说 |cffff7c00
+        Calling={1, 0, 0.9},--使命 |cffff00e5
+        ]]
+        e.tips:AddLine('|cff19b7ff'..(e.onlyChinse and '日常' or DAILY)..': '..dayNum)
+        e.tips:AddLine('|cff05ffa8'..(e.onlyChinse and '周长' or WEEKLY)..': '..weekNum)
+        e.tips:AddLine('|cffff7c00'..(e.onlyChinse and '战役' or TRACKER_HEADER_CAMPAIGN_QUESTS)..': '..companionNum)
+ 
+        e.tips:AddLine('|cffffffff'..(e.onlyChinse and '一般' or RESISTANCE_FAIR)..': '..numQuest..'/25')
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.GetEnabeleDisable(Save.quest)..e.Icon.left, (e.onlyChinse and '菜单' or SLASH_TEXTTOSPEECH_MENU)..e.Icon.right)
         e.tips:AddDoubleLine(id, e.onlyChinse and '任务' or QUESTS_LABEL)

@@ -176,6 +176,7 @@ local function setColor(block, questID)
         return
     end
     local r, g, b=block.r, block.g, block.b
+
     if not r or not g or not b then
         local lv= C_PlayerInfo.GetContentDifficultyQuestForPlayer(questID)
         if lv then
@@ -322,6 +323,10 @@ local function Init()
         local m=''
         block.r, block.g, block.b=nil, nil, nil
         if questID then
+    --[[Day={0.10, 0.72, 1},--日常
+        Week={0.02, 1, 0.66},--周长
+        Legendary={1, 0.49, 0},--传说
+        Calling={1, 0, 0.9},--使命]]
             if C_QuestLog.IsComplete(questID) then m=m..e.Icon.select2 elseif C_QuestLog.IsFailed(questID) then m=m.e.Icon.X2 end
             local factionGroup = GetQuestFactionGroup(questID)
             if factionGroup == LE_QUEST_FACTION_HORDE then
@@ -358,12 +363,15 @@ local function Init()
                 if info.isOnMap then
                     m=m..e.Icon.map2
                 end
-                --[[if info.level and info.level ~= MAX_PLAYER_LEVEL then
-                    m=m..'['..info.level..']'
-                end]]
                 local ver=GetQuestExpansion(questID or info.questID)--版本
                 if ver and ver~= e.ExpansionLevel then
                     m=m..(ver<e.ExpansionLevel and  '|cff606060' or '|cnRED_FONT_COLOR:')..'['..(ver+1)..']|r'
+                end
+                if info.campaignID then
+                    block.r, block.g, block.b=Color.Legendary[1],Color.Legendary[2],Color.Legendary[3]
+                elseif info.isStory then
+                    block.r, block.g, block.b=Color.Legendary[1],Color.Legendary[2],Color.Legendary[3]
+                    m= '|A:StoryHeader-CheevoIcon:0:0|a'..m
                 end
             end
         end
