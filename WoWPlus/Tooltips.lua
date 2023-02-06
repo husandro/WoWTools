@@ -1295,6 +1295,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                     end
                 end
             end)
+        --elseif arg1=='Blizzard_PerksProgram' then
         end
 
     elseif event == "PLAYER_LOGOUT" then
