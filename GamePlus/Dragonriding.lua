@@ -15,23 +15,29 @@ local function get_Speed()
     local dt = time - lastT
     local uiMapID = C_Map.GetBestMapForUnit('player')
     if uiMapID then
-        local position = C_Map.GetPlayerMapPosition(uiMapID, "player")
-        if position then
-            local x, y = position.x, position.y
-            local w, h = C_Map.GetMapWorldSize(uiMapID)
-            x = x * w
-            y = y * h
-            local dx = x - lastX
-            local dy = y - lastY
+        local cur= GetUnitSpeed("player")
+        if cur and cur>0 then
+            lastX, lastY, lastT = 0, 0, 0
+            return cur        
+        else
+            local position = C_Map.GetPlayerMapPosition(uiMapID, "player")
+            if position then
+                local x, y = position.x, position.y
+                local w, h = C_Map.GetMapWorldSize(uiMapID)
+                x = x * w
+                y = y * h
+                local dx = x - lastX
+                local dy = y - lastY
 
-            local groundSpeed = math.sqrt(dx * dx + dy * dy) / dt
-            if groundSpeed >= 0 then
-                local cosTheta = math.cos(math.abs(0))
-                if cosTheta >= 0 then
-                    lastX = x
-                    lastY = y
-                    lastT = time
-                    return groundSpeed / cosTheta
+                local groundSpeed = math.sqrt(dx * dx + dy * dy) / dt
+                if groundSpeed >= 0 then
+                    local cosTheta = math.cos(math.abs(0))
+                    if cosTheta >= 0 then
+                        lastX = x
+                        lastY = y
+                        lastT = time
+                        return groundSpeed / cosTheta
+                    end
                 end
             end
         end
