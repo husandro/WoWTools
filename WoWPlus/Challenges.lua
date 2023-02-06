@@ -356,7 +356,11 @@ local function set_CHALLENGE_MODE_START()--赏金, 说 Bounty
                 end
 
                 for _, v in pairs(chat) do
-                    e.Chat(v)
+                    if not Save.slotKeystoneSay then
+                        print(v)
+                    else
+                        e.Chat(v)
+                    end
                 end
             end)
             break
