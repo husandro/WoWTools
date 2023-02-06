@@ -25,9 +25,9 @@ local function get_Speed()
             local dy = y - lastY
 
             local groundSpeed = math.sqrt(dx * dx + dy * dy) / dt
-            if groundSpeed > 0 then
+            if groundSpeed >= 0 then
                 local cosTheta = math.cos(math.abs(0))
-                if cosTheta > 0 then
+                if cosTheta >= 0 then
                     lastX = x
                     lastY = y
                     lastT = time
@@ -111,7 +111,7 @@ local function Init()
         timeElapsed = timeElapsed + elapsed
         if timeElapsed > 0.3 then
             local speed= get_Speed()
-            if speed and speed>6 then
+            if speed and speed>0 then
                 speed= speed * speedTextFactor
                 if speed>=1000 then
                     self.text:SetFormattedText('|cffff0000%.0f%%', speed)
