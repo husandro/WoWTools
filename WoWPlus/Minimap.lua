@@ -47,11 +47,11 @@ local function set_MinimapCluster()--缩放
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
-        e.tips:AddDoubleLine(e.onlyChinse and '放大' or ZOOM_IN, (e.onlyChinse and '缩放' or UI_SCALE)..(Save.scale or 1)..e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinse and '缩放' or UI_SCALE,(e.onlyChinse and '放大' or ZOOM_IN)..(Save.scale or 1)..e.Icon.left)
         e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
         e.tips:Show()
     end)
-    frame.ScaleIn:SetScript('OnLeave', function() e.tips:Hide()  ResetCursor() end)
+    frame.ScaleIn:SetScript('OnLeave', function() e.tips:Hide() ResetCursor() end)
 
     frame.ScaleOut=e.Cbtn(Minimap, nil, nil, nil, nil, true, {20,20})
     frame.ScaleOut:SetPoint('BOTTOM', -1, -13)
@@ -71,11 +71,11 @@ local function set_MinimapCluster()--缩放
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
-        e.tips:AddDoubleLine(e.onlyChinse and '缩小' or ZOOM_OUT, (e.onlyChinse and '缩放' or UI_SCALE)..(Save.scale or 1)..e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinse and '缩放' or UI_SCALE, (e.onlyChinse and '缩小' or ZOOM_OUT)..(Save.scale or 1)..e.Icon.left)
         e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
         e.tips:Show()
     end)
-    frame.ScaleOut:SetScript('OnLeave', function() e.tips:Hide() end)
+    frame.ScaleOut:SetScript('OnLeave', function() e.tips:Hide() ResetCursor() end)
     if Save.scale and Save.scale~=1 then
         frame:SetScale(Save.scale)
     end
