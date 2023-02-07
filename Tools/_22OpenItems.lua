@@ -567,21 +567,23 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
 panel:RegisterEvent('BAG_UPDATE')
-
 panel:RegisterEvent('PLAYER_REGEN_DISABLED')
 panel:RegisterEvent('PLAYER_REGEN_ENABLED')
 panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1==id then
+    if event == "ADDON_LOADED" then
+        if arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
             if not e.toolsFrame.disabled then
                 Init()
+                panel:UnregisterEvent('ADDON_LOADED')
             else
                 panel:UnregisterAllEvents()
             end
+            panel:RegisterEvent("PLAYER_LOGOUT")
+        end
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then

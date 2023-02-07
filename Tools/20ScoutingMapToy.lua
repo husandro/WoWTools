@@ -106,6 +106,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             else
                 panel:UnregisterAllEvents()
             end
+
         elseif arg1=='Blizzard_AchievementUI' then
             C_Timer.After(2, function()
                 if UnitAffectingCombat('player') then

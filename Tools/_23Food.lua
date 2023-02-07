@@ -438,32 +438,35 @@ panel:RegisterEvent("ADDON_LOADED")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
   
-    if event == "ADDON_LOADED" and arg1== id then
-        if WoWToolsSave and not WoWToolsSave[addName..'Tools'] then--初始,类, 设置
-            local className=GetItemClassInfo(0)
-            Save.itemClass={
-                [className..GetItemSubClassInfo(0, 1)]=true,--药水
-                [className..GetItemSubClassInfo(0, 2)]=true,--药剂
-                [className..GetItemSubClassInfo(0, 3)]=true,--合计
-                [className..GetItemSubClassInfo(0, 5)]=true,--食物
-            }
-        end
+    if event == "ADDON_LOADED" then
+        if arg1== id then
+            if WoWToolsSave and not WoWToolsSave[addName..'Tools'] then--初始,类, 设置
+                local className=GetItemClassInfo(0)
+                Save.itemClass={
+                    [className..GetItemSubClassInfo(0, 1)]=true,--药水
+                    [className..GetItemSubClassInfo(0, 2)]=true,--药剂
+                    [className..GetItemSubClassInfo(0, 3)]=true,--合计
+                    [className..GetItemSubClassInfo(0, 5)]=true,--食物
+                }
+            end
 
-        Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
+            Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
 
-        if not e.toolsFrame.disabled then
-            C_Timer.After(2.3, function()
-                if UnitAffectingCombat('player') then
-                    panel.setInitBat=true
-                    panel:RegisterEvent('PLAYER_REGEN_ENABLED')
-                else
-                    Init()--初始
-                end
-            end)
-        else
-            panel:UnregisterAllEvents()
+            if not e.toolsFrame.disabled then
+                C_Timer.After(2.3, function()
+                    if UnitAffectingCombat('player') then
+                        panel.setInitBat=true
+                        panel:RegisterEvent('PLAYER_REGEN_ENABLED')
+                    else
+                        Init()--初始
+                    end
+                end)
+                panel:UnregisterEvent('ADDON_LOADED')
+            else
+                panel:UnregisterAllEvents()
+            end
+            panel:RegisterEvent("PLAYER_LOGOUT")
         end
-        panel:RegisterEvent("PLAYER_LOGOUT")
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then

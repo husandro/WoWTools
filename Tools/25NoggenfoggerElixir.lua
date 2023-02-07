@@ -104,18 +104,21 @@ panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
 panel:RegisterEvent('PLAYER_LOGOUT')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1== id then
-        Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
-        if not e.toolsFrame.disabled then
-            C_Timer.After(2.5, function()
-                if UnitAffectingCombat('player') then
-                    panel.combat= true
-                else
-                    Init()--初始
-                end
-            end)
-        else
-            panel:UnregisterAllEvents()
+    if event == "ADDON_LOADED" then
+        if arg1== id then
+            Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
+            if not e.toolsFrame.disabled then
+                C_Timer.After(2.5, function()
+                    if UnitAffectingCombat('player') then
+                        panel.combat= true
+                    else
+                        Init()--初始
+                    end
+                end)
+                panel:UnregisterEvent('ADDON_LOADED')
+            else
+                panel:UnregisterAllEvents()
+            end
         end
 
     elseif event == "PLAYER_LOGOUT" then

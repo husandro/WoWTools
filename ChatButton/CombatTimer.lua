@@ -541,7 +541,6 @@ end
 --###########
 
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
 
 panel:RegisterEvent('PLAYER_REGEN_DISABLED')
 panel:RegisterEvent('PLAYER_REGEN_ENABLED')
@@ -549,15 +548,19 @@ panel:RegisterEvent('PLAYER_REGEN_ENABLED')
 panel:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED')
 
 panel:SetScript("OnEvent", function(self, event, arg1, arg2)
-    if event == "ADDON_LOADED" and arg1==id then
-        if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
-            panel:UnregisterAllEvents()
-        else
-            if WoWToolsSave and not WoWToolsSave[addName] then
-                panel.textFrame:SetButtonState('PUSHED')
+    if event == "ADDON_LOADED" then
+        if arg1==id then
+            if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
+                panel:UnregisterAllEvents()
+            else
+                if WoWToolsSave and not WoWToolsSave[addName] then
+                    panel.textFrame:SetButtonState('PUSHED')
+                end
+                Save= WoWToolsSave and WoWToolsSave[addName] or Save
+                Init()
+                panel:RegisterEvent("PLAYER_LOGOUT")
+                panel:UnregisterEvent('ADDON_LOADED')
             end
-            Save= WoWToolsSave and WoWToolsSave[addName] or Save
-            Init()
         end
 
     elseif event == "PLAYER_LOGOUT" then

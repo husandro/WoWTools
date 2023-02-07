@@ -430,7 +430,7 @@ StaticPopupDialogs[id..addName..'FLOOR']={--区域,设置对话框
        else
         self:GetParent().button1:SetText(NONE)
        end
-       self:GetParent().button1:SetEnabled(num>0 and num<2147483647) 
+       self:GetParent().button1:SetEnabled(num>0 and num<2147483647)
     end,
     EditBoxOnEscapePressed = function(s)
         s:GetParent():Hide()
@@ -755,7 +755,7 @@ local function InitMenu(self, level, menuList)--主菜单
                     info.tooltipOnButton=true
                     if mapInfo and mapInfo.name then
                         info.tooltipTitle=mapInfo.name
-                        info.tooltipText= 'uiMapID: '..uiMapID 
+                        info.tooltipText= 'uiMapID: '..uiMapID
                     else
                         info.tooltipTitle='uiMapID: '..uiMapID
                     end
@@ -826,7 +826,7 @@ local function InitMenu(self, level, menuList)--主菜单
             hasArrow=true,
         }
         UIDropDownMenu_AddButton(info)
-        
+
         info={--提示移动
             text=e.Icon.right..(e.onlyChinse and '移动' or NPE_MOVE),
             isTitle=true,
@@ -1074,7 +1074,7 @@ end
 --###########
 
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+
 panel:RegisterEvent('PLAYER_REGEN_DISABLED')
 panel:RegisterEvent('PLAYER_REGEN_ENABLED')
 
@@ -1103,7 +1103,8 @@ panel:RegisterEvent('CHAT_MSG_AFK')
 panel:RegisterEvent('PLAYER_STARTED_MOVING')
 
 panel:SetScript("OnEvent", function(self, event, arg1, arg2)
-    if event == "ADDON_LOADED" and arg1==id then
+    if event == "ADDON_LOADED" then
+        if arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
             local check=e.CPanel('Tools', not Save.disabled, true)
@@ -1133,17 +1134,19 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 panel:UnregisterAllEvents()
                 panel:SetShown(false)
             end
+            panel:RegisterEvent("PLAYER_LOGOUT")
 
-    elseif event=='ADDON_LOADED' and arg1=='Blizzard_Collections' then
-        hooksecurefunc('MountJournal_InitMountButton',setMountJournal_InitMountButton)
-        hooksecurefunc('MountJournal_ShowMountDropdown',setMountJournal_ShowMountDropdown)
+        elseif arg1=='Blizzard_Collections' then
+            hooksecurefunc('MountJournal_InitMountButton',setMountJournal_InitMountButton)
+            hooksecurefunc('MountJournal_ShowMountDropdown',setMountJournal_ShowMountDropdown)
+        end
 
     elseif event=='PLAYER_REGEN_DISABLED' then
             setClickAtt()--设置属性
             if e.toolsFrame:IsShown() then
                 e.toolsFrame:SetShown(false)--设置, TOOLS 框架,隐藏
             end
-        
+
     elseif event=='PLAYER_REGEN_ENABLED' then
         if panel.Combat then
             C_Timer.After(0.3, function()

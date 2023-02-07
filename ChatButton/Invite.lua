@@ -908,7 +908,7 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+
 
 panel:RegisterEvent('GROUP_LEFT')
 panel:RegisterEvent('GROUP_ROSTER_UPDATE')
@@ -918,12 +918,16 @@ panel:RegisterEvent('PLAYER_UPDATE_RESTING')----休息区提示
 panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 
 panel:SetScript("OnEvent", function(self, event, arg1, ...)
-    if event == "ADDON_LOADED" and arg1==id then
-        if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
-            panel:UnregisterAllEvents()
-        else
-            Save= WoWToolsSave and WoWToolsSave[addName] or Save
-            Init()
+    if event == "ADDON_LOADED" then
+        if arg1==id then
+            if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
+                panel:UnregisterAllEvents()
+            else
+                Save= WoWToolsSave and WoWToolsSave[addName] or Save
+                Init()
+                panel:UnregisterEvent('ADDON_LOADED')
+            end
+            panel:RegisterEvent("PLAYER_LOGOUT")
         end
 
     elseif event == "PLAYER_LOGOUT" then

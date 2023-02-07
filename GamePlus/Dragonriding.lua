@@ -150,52 +150,54 @@ panel:RegisterEvent('ADDON_LOADED')
 panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1==id then
-        Save= WoWToolsSave and WoWToolsSave[addName] or Save
+    if event == "ADDON_LOADED" then
+        if arg1==id then
+            Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
-        --添加控制面板        
-        local sel=e.CPanel((e.onlyChinse and '驭龙术速度' or addName)..'|A:dragonriding_vigor_decor:0:0|a', not Save.disabled, true)
-        sel:SetScript('OnMouseDown', function()
-            Save.disabled = not Save.disabled and true or nil
-            print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '重新加载UI' or RELOADUI)
-        end)
-        sel:SetScript('OnEnter', function(self2)
-            e.tips:SetOwner(self2, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            if e.onlyChinse then
-                e.tips:AddDoubleLine('仅限: 不在副本', '等级: '..70)
-                e.tips:AddDoubleLine('仅限: 水平', '速度')
+            --添加控制面板        
+            local sel=e.CPanel((e.onlyChinse and '驭龙术速度' or addName)..'|A:dragonriding_vigor_decor:0:0|a', not Save.disabled, true)
+            sel:SetScript('OnMouseDown', function()
+                Save.disabled = not Save.disabled and true or nil
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '重新加载UI' or RELOADUI)
+            end)
+            sel:SetScript('OnEnter', function(self2)
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                if e.onlyChinse then
+                    e.tips:AddDoubleLine('仅限: 不在副本', '等级: '..70)
+                    e.tips:AddDoubleLine('仅限: 水平', '速度')
+                else
+                    e.tips:AddDoubleLine(format(LFG_LIST_CROSS_FACTION, BUG_CATEGORY2), LEVEL..': '..70)
+                    e.tips:AddDoubleLine(format(LFG_LIST_CROSS_FACTION, HUD_EDIT_MODE_SETTING_ACTION_BAR_ORIENTATION_HORIZONTAL), SPEED)
+                end
+                e.tips:Show()
+            end)
+            sel:SetScript('OnLeave', function() e.tips:Hide() end)
+
+            local sel2=CreateFrame("CheckButton", nil, sel, "InterfaceOptionsCheckButtonTemplate")
+            sel2.text:SetText((e.onlyChinse and '缩放' or UI_SCALE)..' 0.8')
+            sel2:SetPoint('LEFT', sel.text, 'RIGHT')
+            sel2:SetChecked(Save.sacleBool)
+            sel2:SetScript('OnMouseDown', function()
+                Save.sacleBool= not Save.sacleBool and true or nil
+                set_Scale()--设置，缩放
+            end)
+            sel2:SetScript('OnEnter', function(self2)
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine('UIWidgetPowerBarContainerFrame', '0.8')
+                e.tips:Show()
+            end)
+            sel2:SetScript('OnLeave', function() e.tips:Hide() end)
+
+            if Save.disabled then
+                panel:UnregisterAllEvents()
             else
-                e.tips:AddDoubleLine(format(LFG_LIST_CROSS_FACTION, BUG_CATEGORY2), LEVEL..': '..70)
-                e.tips:AddDoubleLine(format(LFG_LIST_CROSS_FACTION, HUD_EDIT_MODE_SETTING_ACTION_BAR_ORIENTATION_HORIZONTAL), SPEED)
+                Init()
+                panel:UnregisterEvent('ADDON_LOADED')
             end
-            e.tips:Show()
-        end)
-        sel:SetScript('OnLeave', function() e.tips:Hide() end)
-
-        local sel2=CreateFrame("CheckButton", nil, sel, "InterfaceOptionsCheckButtonTemplate")
-        sel2.text:SetText((e.onlyChinse and '缩放' or UI_SCALE)..' 0.8')
-        sel2:SetPoint('LEFT', sel.text, 'RIGHT')
-        sel2:SetChecked(Save.sacleBool)
-        sel2:SetScript('OnMouseDown', function()
-            Save.sacleBool= not Save.sacleBool and true or nil
-            set_Scale()--设置，缩放
-        end)
-        sel2:SetScript('OnEnter', function(self2)
-            e.tips:SetOwner(self2, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine('UIWidgetPowerBarContainerFrame', '0.8')
-            e.tips:Show()
-        end)
-        sel2:SetScript('OnLeave', function() e.tips:Hide() end)
-
-        if Save.disabled then
-            panel:UnregisterAllEvents()
-        else
-            Init()
+            panel:RegisterEvent("PLAYER_LOGOUT")
         end
-        panel:RegisterEvent("PLAYER_LOGOUT")
-        panel:UnregisterEvent('ADDON_LOADED')
 
     elseif event=='PLAYER_LOGOUT' then
         if not e.ClearAllSave then

@@ -88,7 +88,8 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1==id then
+    if event == "ADDON_LOADED" then
+        if arg1==id then
             if WoWToolsSave and not WoWToolsSave[addName] then
                 panel:SetButtonState('PUSHED')
             end
@@ -108,7 +109,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 e.tips:AddDoubleLine(e.onlyChinse and '设置焦点' or SET_FOCUS, e.onlyChinse and '编辑模式: 错误' or HUD_EDIT_MODE_MENU..': '..ERRORS, 1,0,0, 1,0,0)
                 e.tips:Show()
             end)
-            --panel.sel.text:SetTextColor(1,0,0)
             panel.sel:SetScript('OnLeave', function() e.tips:Hide() end)
 
             if not Save.disabled then
@@ -117,6 +117,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:SetShown(false)
                 panel.disabled=true
             end
+            panel:UnregisterEvent('ADDON_LOADED')
+        end
+
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end

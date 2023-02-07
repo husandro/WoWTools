@@ -71,7 +71,7 @@ end
 local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDayButton_OnEnter(self)
     panel.texture:SetShown(Save.hide)
 
-    if Save.hide or Save.disabled then
+    if Save.hide then
         if panel.Text then
             panel.Text:SetText('')
         end
@@ -239,8 +239,12 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
 end
 
 local function set_event()--设置事件
-    if Save.disabled then
-        panel:UnregisterAllEvents()
+    if Save.hide then
+        panel:UnregisterEvent('CALENDAR_UPDATE_EVENT_LIST')
+        panel:UnregisterEvent('CALENDAR_UPDATE_EVENT')
+        panel:UnregisterEvent('CALENDAR_NEW_EVENT')
+        panel:UnregisterEvent('CALENDAR_OPEN_EVENT')
+        panel:UnregisterEvent('CALENDAR_CLOSE_EVENT')
     else
         panel:RegisterEvent('CALENDAR_UPDATE_EVENT_LIST')
         panel:RegisterEvent('CALENDAR_UPDATE_EVENT')
@@ -248,8 +252,6 @@ local function set_event()--设置事件
         panel:RegisterEvent('CALENDAR_OPEN_EVENT')
         panel:RegisterEvent('CALENDAR_CLOSE_EVENT')
     end
-    panel:RegisterEvent('ADDON_LOADED')
-    panel:RegisterEvent("PLAYER_LOGOUT")
 end
 
 local function Text_Settings()--设置Text
@@ -263,14 +265,11 @@ local function Text_Settings()--设置Text
         else
             panel.Text:SetTextColor(0.8, 0.8, 0.8)
             e.Cstr(nil,nil,nil,panel.Text,nil)
-            --e.Cstr=function(self, size, fontType, ChangeFont, color, layer, justifyH)
         end
         if Save.scale then
             panel.Text:SetScale(Save.scale)
         end
     end
-    panel:SetShown(not Save.disabled)
-
     C_Timer.After(2, set_Text)
 end
 
@@ -367,7 +366,7 @@ local function InitMenu(self, level, type)--主菜单
 
         UIDropDownMenu_AddSeparator(level)
         info={--提示移动
-            text='Alt+'..e.Icon.right..(e.onlyChinse and '移动' or NPE_MOVE),
+            text= e.Icon.right..(e.onlyChinse and '移动' or NPE_MOVE),
             isTitle=true,
             notCheckable=true
         }
@@ -394,33 +393,7 @@ end
 --初始
 --####
 local function Init()
-    local btn=e.Cbtn(CalendarFrame, nil, not Save.disabled, nil, nil, nil, {25,25})
-    btn:SetPoint('TOPRIGHT', CalendarFrame, 'TOPRIGHT', -20, -18)
-    btn:SetScript('OnMouseDown', function()
-        Save.disabled= not Save.disabled and true or nil
-        if Save.disabled and Save.hide then
-            Save.hide=nil
-        end
-        set_event()--设置事件
-        Text_Settings()--设置Text
-        if Save.disabled then
-            btn:SetNormalAtlas(e.Icon.disabled)
-        else
-            btn:SetNormalAtlas(e.Icon.icon)
-        end
-    end)
-    btn:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, addName)
-        e.tips:AddDoubleLine(e.GetShowHide(not Save.disabled), e.Icon.left)
-        e.tips:Show()
-    end)
-    btn:SetScript('OnLeave', function() e.tips:Hide() end)
-    --e.Cstr=function(self, size, fontType, ChangeFont, color, layer, justifyH)
     panel.Text=e.Cstr(panel)
-    --panel.Text:SetIndentedWordWrap(true)
-
     panel.texture=panel:CreateTexture()
     panel.texture:SetAllPoints(panel)
     panel.texture:SetAtlas(e.Icon.icon)
@@ -435,9 +408,9 @@ local function Init()
     panel:SetMovable(true)
     panel:SetClampedToScreen(true)
     panel:SetScript("OnDragStart", function(self,d)
-        if IsAltKeyDown() then
+        --if IsAltKeyDown() then
             self:StartMoving()
-        end
+        --end
     end)
     panel:SetScript("OnDragStop", function(self)
         self:StopMovingOrSizing()
@@ -448,6 +421,7 @@ local function Init()
     panel:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
             Save.hide= not Save.hide and true or nil
+            set_event()--设置事件
             set_Text()
         elseif d=='RightButton' then
             ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
@@ -473,19 +447,39 @@ local function Init()
             Calendar_Toggle()
         end
     end)
-    panel:SetScript('OnLeave',function(self)
-        self:SetButtonState('NORMAL')
-    end)
 
     panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
 
+    set_event()
     Text_Settings()--设置Text
+
+    hooksecurefunc('CalendarViewHolidayFrame_Update', function()
+        local indexInfo = C_Calendar.GetEventIndex();
+        if(indexInfo) then
+            local holidayInfo = C_Calendar.GetHolidayInfo(indexInfo.offsetMonths, indexInfo.monthDay, indexInfo.eventIndex);
+            local info= C_Calendar.GetDayEvent(indexInfo.offsetMonths, indexInfo.monthDay, indexInfo.eventIndex)
+
+            if (holidayInfo and info and info.eventID) then
+                local description = holidayInfo.description;
+                if (holidayInfo.startTime and holidayInfo.endTime) then
+                    description = format(CALENDAR_HOLIDAYFRAME_BEGINSENDS, description, FormatShortDate(holidayInfo.startTime.monthDay, holidayInfo.startTime.month), GameTime_GetFormattedTime(holidayInfo.startTime.hour, holidayInfo.startTime.minute, true), FormatShortDate(holidayInfo.endTime.monthDay, holidayInfo.endTime.month), GameTime_GetFormattedTime(holidayInfo.endTime.hour, holidayInfo.endTime.minute, true));
+                end
+
+                description=description..'\n\n'..(e.onlyChinse and '节日' or CALENDAR_FILTER_HOLIDAYS)..' ID '..info.eventID..(info.iconTexture and '    |T'..info.iconTexture..':0|t'..info.iconTexture or '')
+                CalendarViewHolidayFrame.ScrollingFont:SetText(description);
+
+                if info.iconTexture then
+                    CalendarViewHolidayFrame.Texture:SetTexture(info.iconTexture)
+                end
+            end
+        end
+    end)
 end
 
 
 panel:RegisterEvent('ADDON_LOADED')
-panel:RegisterEvent("PLAYER_LOGOUT")
+panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -496,41 +490,31 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
-            set_event()
+            --添加控制面板        
+            local sel=e.CPanel(e.onlyChinse and '节日' or addName, not Save.disabled, true)
+            sel:SetScript('OnMouseDown', function()
+                Save.disabled = not Save.disabled and true or nil
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '重新加载UI' or RELOADUI)
+            end)
 
-            if not Save.disabled and not IsAddOnLoaded("Blizzard_Calendar") then--加载
-                LoadAddOn("Blizzard_Calendar")
+            if  Save.disabled then
+                panel:UnregisterAllEvents()
+            else
 
-                Calendar_Toggle()
-                C_Calendar.OpenCalendar()
-                Calendar_Toggle()
-                --CalendarFrame:Hide()
+                if not IsAddOnLoaded("Blizzard_Calendar") then--加载
+                    LoadAddOn("Blizzard_Calendar")
+                    Calendar_Toggle()
+                    C_Calendar.OpenCalendar()
+                    Calendar_Toggle()
+                else
+                    Init()--初始
+                    panel:UnregisterEvent('ADDON_LOADED')
+                end
             end
+            panel:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_Calendar' then
-            Init()
-
-            hooksecurefunc('CalendarViewHolidayFrame_Update', function()
-                local indexInfo = C_Calendar.GetEventIndex();
-                if(indexInfo) then
-                    local holidayInfo = C_Calendar.GetHolidayInfo(indexInfo.offsetMonths, indexInfo.monthDay, indexInfo.eventIndex);
-                    local info= C_Calendar.GetDayEvent(indexInfo.offsetMonths, indexInfo.monthDay, indexInfo.eventIndex)
-
-                    if (holidayInfo and info and info.eventID) then
-                        local description = holidayInfo.description;
-                        if (holidayInfo.startTime and holidayInfo.endTime) then
-                            description = format(CALENDAR_HOLIDAYFRAME_BEGINSENDS, description, FormatShortDate(holidayInfo.startTime.monthDay, holidayInfo.startTime.month), GameTime_GetFormattedTime(holidayInfo.startTime.hour, holidayInfo.startTime.minute, true), FormatShortDate(holidayInfo.endTime.monthDay, holidayInfo.endTime.month), GameTime_GetFormattedTime(holidayInfo.endTime.hour, holidayInfo.endTime.minute, true));
-                        end
-
-                        description=description..'\n\n'..(e.onlyChinse and '节日' or CALENDAR_FILTER_HOLIDAYS)..' ID '..info.eventID..(info.iconTexture and '    |T'..info.iconTexture..':0|t'..info.iconTexture or '')
-                        CalendarViewHolidayFrame.ScrollingFont:SetText(description);
-
-                        if info.iconTexture then
-                            CalendarViewHolidayFrame.Texture:SetTexture(info.iconTexture)
-                        end
-                    end
-                end
-            end)
+            Init()--初始
         end
 
     elseif event == "PLAYER_LOGOUT" then
@@ -538,6 +522,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not WoWToolsSave then WoWToolsSave={} end
             WoWToolsSave[addName]=Save
         end
+    elseif event=='PLAYER_ENTERING_WORLD' then
+        if IsInInstance() and not Save.hide then
+            Save.hide= true
+            Text_Settings()--设置Text
+        end
+
     else
         set_Text()
     end

@@ -44,14 +44,8 @@ WoWPlus\HideTexture.lua
 WoWPlus\SpellFrame.lua
 ##任务框，增强
 WoWPlus\ObjectiveTracker.lua
-##玩具面板
-WoWPlus\Toy.lua
-##试衣间， 增加物品超接接
-WoWPlus\Heirloom.lua
-##幻化，物品
-WoWPlus\WardroberItems.lua
-##幻化，套装
-WoWPlus\WardroberSets.lua
+##藏品
+WoWPlus\Collections.lua
 ##地图，增强
 WoWPlus\WorldMap.lua
 ##鼠标，提示

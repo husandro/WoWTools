@@ -8,10 +8,11 @@ local Save={}
 --###########
 local panel=CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1== id then
-        Save= WoWToolsSave and WoWToolsSave[addName] or Save
+    if event == "ADDON_LOADED" then
+        if arg1== id then
+            Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
             --添加控制面板        
             local sel=e.CPanel(addName, not Save.disabled)
@@ -19,6 +20,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end)
+
+            if Save.disabled then
+                panel:UnregisterAllEvents()
+            else
+                panel:UnregisterEvent('ADDON_LOADED')
+            end
+            panel:RegisterEvent("PLAYER_LOGOUT")
+        end
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then

@@ -539,35 +539,41 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:RegisterEvent("PLAYER_REGEN_ENABLED")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1== id then
-        if WoWToolsSave and not WoWToolsSave[addName..'Tools'] then
-            panel:SetAlpha(1)
-        end
-        if (not WoWToolsSave or not WoWToolsSave[addName..'Tools']) and PlayerHasToy(156833) and Save.item[1]==194885 then
-          Save.item[1] = 156833
-        end
-        Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
+    if event == "ADDON_LOADED" then
+        if arg1== id then
+            if WoWToolsSave and not WoWToolsSave[addName..'Tools'] then
+                panel:SetAlpha(1)
+            end
+            if (not WoWToolsSave or not WoWToolsSave[addName..'Tools']) and PlayerHasToy(156833) and Save.item[1]==194885 then
+            Save.item[1] = 156833
+            end
+            Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
 
-        if not e.toolsFrame.disabled then
-            for _, ID in pairs(Save.item) do
-                e.LoadSpellItemData(ID)--加载法术, 物品数据
-            end
-            for _, ID in pairs(Save.spell) do
-                e.LoadSpellItemData(ID, true)--加载法术, 物品数据
-            end
-            for _, ID in pairs(Save.equip) do
-                e.LoadSpellItemData(ID)--加载法术, 物品数据
-            end
-
-            C_Timer.After(2.3, function()
-                if UnitAffectingCombat('player') then
-                    panel.combat= true
-                else
-                    Init()--初始
+            if not e.toolsFrame.disabled then
+                for _, ID in pairs(Save.item) do
+                    e.LoadSpellItemData(ID)--加载法术, 物品数据
                 end
-            end)
-        else
-            panel:UnregisterAllEvents()
+                for _, ID in pairs(Save.spell) do
+                    e.LoadSpellItemData(ID, true)--加载法术, 物品数据
+                end
+                for _, ID in pairs(Save.equip) do
+                    e.LoadSpellItemData(ID)--加载法术, 物品数据
+                end
+
+                C_Timer.After(2.3, function()
+                    if UnitAffectingCombat('player') then
+                        panel.combat= true
+                    else
+                        Init()--初始
+                    end
+                end)
+            else
+                panel:UnregisterAllEvents()
+            end
+
+        elseif event=='ADDON_LOADED' and arg1=='Blizzard_Collections' then
+            hooksecurefunc('ToyBox_ShowToyDropdown', setToyBox_ShowToyDropdown)
+            hooksecurefunc('ToySpellButton_UpdateButton', setToySpellButton_UpdateButton)
         end
 
     elseif event == "PLAYER_LOGOUT" then
@@ -582,9 +588,5 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Init()--初始
         end
         panel:UnregisterEvent("PLAYER_REGEN_ENABLED")
-
-    elseif event=='ADDON_LOADED' and arg1=='Blizzard_Collections' then
-        hooksecurefunc('ToyBox_ShowToyDropdown', setToyBox_ShowToyDropdown)
-        hooksecurefunc('ToySpellButton_UpdateButton', setToySpellButton_UpdateButton)
     end
 end)

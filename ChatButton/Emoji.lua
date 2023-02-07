@@ -269,29 +269,32 @@ end
 panel:RegisterEvent("ADDON_LOADED")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1==id then
-        Save= WoWToolsSave and WoWToolsSave[addName] or Save
+    if event == "ADDON_LOADED" then
+        if arg1==id then
+            Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
-        local sel=CreateFrame("CheckButton", nil, WoWToolsChatButtonFrame.sel, "InterfaceOptionsCheckButtonTemplate")
-        sel.text:SetText('Emoji')
-        sel:SetPoint('LEFT', WoWToolsChatButtonFrame.sel.text, 'RIGHT')
-        sel:SetChecked(not Save.disabled)
-        sel:SetScript('OnMouseDown', function()
-            Save.disabled= not Save.disabled and true or nil
-            print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.GetEnabeleDisable(not WoWToolsChatButtonFrame.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
-        end)
+            local sel=CreateFrame("CheckButton", nil, WoWToolsChatButtonFrame.sel, "InterfaceOptionsCheckButtonTemplate")
+            sel.text:SetText('Emoji')
+            sel:SetPoint('LEFT', WoWToolsChatButtonFrame.sel.text, 'RIGHT')
+            sel:SetChecked(not Save.disabled)
+            sel:SetScript('OnMouseDown', function()
+                Save.disabled= not Save.disabled and true or nil
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.GetEnabeleDisable(not WoWToolsChatButtonFrame.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+            end)
 
-        if WoWToolsChatButtonFrame.disabled or Save.disabled then--禁用Chat Button
-            self:SetShown(false)
-            panel:UnregisterAllEvents()
+            if WoWToolsChatButtonFrame.disabled or Save.disabled then--禁用Chat Button
+                self:SetShown(false)
+                panel:UnregisterAllEvents()
 
-        else
-            Save.Channels= Save.Channels or {}
-            if not Save.disabled then
-                Init()
+            else
+                Save.Channels= Save.Channels or {}
+                if not Save.disabled then
+                    Init()
+                end
+                panel:UnregisterEvent('ADDON_LOADED')
             end
+            panel:RegisterEvent("PLAYER_LOGOUT")
         end
-        panel:RegisterEvent("PLAYER_LOGOUT")
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then

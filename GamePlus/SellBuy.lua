@@ -865,29 +865,32 @@ panel:RegisterEvent('LOOT_READY')--自动拾取加强
 
 
 panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
-    if event == "ADDON_LOADED" and arg1==id then
-        Save= WoWToolsSave and WoWToolsSave[addName] or Save
+    if event == "ADDON_LOADED" then
+        if arg1==id then
+            Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
-        --添加控制面板
-        local check=e.CPanel(e.onlyChinse and '商人' or addName, not Save.disabled, true)
-        check:SetScript('OnMouseDown', function()
-            Save.disabled= not Save.disabled and true or nil
-            print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '重新加载UI' or RELOADUI)
-        end)
+            --添加控制面板
+            local check=e.CPanel(e.onlyChinse and '商人' or addName, not Save.disabled, true)
+            check:SetScript('OnMouseDown', function()
+                Save.disabled= not Save.disabled and true or nil
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '重新加载UI' or RELOADUI)
+            end)
 
-        if Save.disabled then
-            panel:UnregisterAllEvents()
+            if Save.disabled then
+                panel:UnregisterAllEvents()
 
-        else
-            if WoWToolsSave then
-                buySave=WoWToolsSave.BuyItems and WoWToolsSave.BuyItems[e.Player.name_server] or buySave--购买物品
-                RepairSave=WoWToolsSave.Repair and WoWToolsSave.Repair[e.Player.name_server] or RepairSave--修理
+            else
+                if WoWToolsSave then
+                    buySave=WoWToolsSave.BuyItems and WoWToolsSave.BuyItems[e.Player.name_server] or buySave--购买物品
+                    RepairSave=WoWToolsSave.Repair and WoWToolsSave.Repair[e.Player.name_server] or RepairSave--修理
+                end
+                avgItemLevel= GetAverageItemLevel()--装等
+
+                Init()
+                panel:UnregisterEvent('ADDON_LOADED')
             end
-            avgItemLevel= GetAverageItemLevel()--装等
-
-            Init()
+            panel:RegisterEvent("PLAYER_LOGOUT")
         end
-        panel:RegisterEvent("PLAYER_LOGOUT")
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then

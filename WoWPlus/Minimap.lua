@@ -52,6 +52,7 @@ local function set_MinimapCluster()--缩放
         e.tips:Show()
     end)
     frame.ScaleIn:SetScript('OnLeave', function() e.tips:Hide() ResetCursor() end)
+    frame.ScaleIn:SetScript('OnMouseUp', function() ResetCursor() end)
 
     frame.ScaleOut=e.Cbtn(Minimap, nil, nil, nil, nil, true, {20,20})
     frame.ScaleOut:SetPoint('BOTTOM', -1, -13)
@@ -76,6 +77,7 @@ local function set_MinimapCluster()--缩放
         e.tips:Show()
     end)
     frame.ScaleOut:SetScript('OnLeave', function() e.tips:Hide() ResetCursor() end)
+    frame.ScaleOut:SetScript('OnMouseUp', function() ResetCursor() end)
     if Save.scale and Save.scale~=1 then
         frame:SetScale(Save.scale)
     end
@@ -83,8 +85,6 @@ local function set_MinimapCluster()--缩放
     frame:SetMovable(true)
     frame:SetClampedToScreen(true)
     frame.ScaleIn:RegisterForDrag("RightButton")
-    --frame.ScaleIn:SetMovable(true)
-    --frame.ScaleIn:SetClampedToScreen(true)
     frame.ScaleIn:SetScript("OnDragStart", function()
         frame:StartMoving()
     end)
@@ -92,10 +92,8 @@ local function set_MinimapCluster()--缩放
         ResetCursor()
         frame:StopMovingOrSizing()
     end)
-    
+
     frame.ScaleOut:RegisterForDrag("RightButton")
-    --frame.ScaleOut:SetMovable(true)
-    --frame.ScaleOut:SetClampedToScreen(true)
     frame.ScaleOut:SetScript("OnDragStart", function()
         frame:StartMoving()
     end)

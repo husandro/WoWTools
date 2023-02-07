@@ -439,8 +439,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             panel:RegisterEvent("PLAYER_LOGOUT")
 
         elseif event=='ADDON_LOADED' then
-                setAddLoad(arg1)
-                setTabInit()
+            setAddLoad(arg1)
+            setTabInit()
         end
 
     elseif event == "PLAYER_LOGOUT" then

@@ -503,16 +503,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 panel:UnregisterAllEvents()
             else
                 Init()
+                panel:UnregisterEvent('ADDON_LOADED')
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
-
-        --[[elseif arg1=='Blizzard_ItemInteractionUI' then
-            hooksecurefunc(ItemInteractionFrame, 'SetupChargeCurrency', function(self2)
-                local info = C_ItemInteraction.GetChargeInfo()
-                if info then
-                    print(info.newChargeAmount, info.rechargeRate, info.timeToNextCharge)
-                end
-            end)]]
         end
 
     elseif event == "PLAYER_LOGOUT" then

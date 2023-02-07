@@ -209,18 +209,23 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 
 panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
-    if event == "ADDON_LOADED" and arg1==id then
-        Save= WoWToolsSave and WoWToolsSave[addName] or Save
+    if event == "ADDON_LOADED" then
+        if arg1==id then
+            Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
-        --添加控制面板        
-        local sel=e.CPanel(e.onlyChinse and '插件管理' or addName, not Save.disabled, true)
-        sel:SetScript('OnMouseDown', function()
-            Save.disabled = not Save.disabled and true or nil
-            print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需求重新加载' or REQUIRES_RELOAD)
-        end)
-        if not Save.disabled then
-            Init()
+            --添加控制面板        
+            local sel=e.CPanel(e.onlyChinse and '插件管理' or addName, not Save.disabled, true)
+            sel:SetScript('OnMouseDown', function()
+                Save.disabled = not Save.disabled and true or nil
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需求重新加载' or REQUIRES_RELOAD)
+            end)
+
+            if not Save.disabled then
+                Init()
+            end
+            panel:UnregisterEvent('ADDON_LOADED')
         end
+
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end

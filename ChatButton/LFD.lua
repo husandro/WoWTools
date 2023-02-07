@@ -1103,7 +1103,7 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+
 
 panel:RegisterEvent('LFG_COMPLETION_REWARD')
 panel:RegisterEvent('PLAYER_ENTERING_WORLD')
@@ -1287,14 +1287,18 @@ local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
 end
 
 panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
-    if event == "ADDON_LOADED" and arg1==id then
+    if event == "ADDON_LOADED" then
+        if arg1==id then
             if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
                 panel:UnregisterAllEvents()
             else
                 Save= WoWToolsSave and WoWToolsSave[addName] or Save
                 wowSave=WoWToolsSave and WoWToolsSave[INSTANCE] or wowSave
                 Init()
+                panel:UnregisterEvent('ADDON_LOADED')
             end
+            panel:RegisterEvent("PLAYER_LOGOUT")
+        end
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then

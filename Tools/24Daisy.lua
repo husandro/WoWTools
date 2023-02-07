@@ -179,23 +179,26 @@ panel:RegisterEvent('PLAYER_REGEN_DISABLED')
 panel:RegisterEvent('COMPANION_UPDATE')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1== id then
-        Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
-        if not e.toolsFrame.disabled then
-            C_Timer.After(2.4, function()
-                local num = C_PetJournal.GetNumCollectedInfo(pet)--没宠物,不加载
-                if not num or num==0 then
-                    panel:UnregisterAllEvents()
-                    return
-                end
-                if UnitAffectingCombat('player')  then
-                    panel.combat= true
-                else
-                    Init()--初始
-                end
-            end)
-        else
-            panel:UnregisterAllEvents()
+    if event == "ADDON_LOADED" then
+        if arg1== id then
+            Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
+            if not e.toolsFrame.disabled then
+                C_Timer.After(2.4, function()
+                    local num = C_PetJournal.GetNumCollectedInfo(pet)--没宠物,不加载
+                    if not num or num==0 then
+                        panel:UnregisterAllEvents()
+                        return
+                    end
+                    if UnitAffectingCombat('player')  then
+                        panel.combat= true
+                    else
+                        Init()--初始
+                    end
+                end)
+                panel:UnregisterEvent('ADDON_LOADED')
+            else
+                panel:UnregisterAllEvents()
+            end
         end
 
     elseif event == "PLAYER_LOGOUT" then

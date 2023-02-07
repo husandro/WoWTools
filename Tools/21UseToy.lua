@@ -407,31 +407,31 @@ end
 --###########
 panel:RegisterEvent("ADDON_LOADED")
 
-
-
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1== id then
-        Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
-        if not e.toolsFrame.disabled then
-            C_Timer.After(2.1, function()
-                if UnitAffectingCombat('player') then
-                    panel.combat= true
-                    panel:RegisterEvent("PLAYER_REGEN_ENABLED")
-                else
-                    Init()--初始
-                    panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
-                    panel:RegisterEvent('NEW_TOY_ADDED')
-                    panel:RegisterEvent('TOYS_UPDATED')
-                end
-            end)
-        else
-            panel:UnregisterAllEvents()
-        end
-        panel:RegisterEvent("PLAYER_LOGOUT")
+    if event == "ADDON_LOADED" then
+        if arg1== id then
+            Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
+            if not e.toolsFrame.disabled then
+                C_Timer.After(2.1, function()
+                    if UnitAffectingCombat('player') then
+                        panel.combat= true
+                        panel:RegisterEvent("PLAYER_REGEN_ENABLED")
+                    else
+                        Init()--初始
+                        panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
+                        panel:RegisterEvent('NEW_TOY_ADDED')
+                        panel:RegisterEvent('TOYS_UPDATED')
+                    end
+                end)
+            else
+                panel:UnregisterAllEvents()
+            end
+            panel:RegisterEvent("PLAYER_LOGOUT")
 
-    elseif event=='ADDON_LOADED' and arg1=='Blizzard_Collections' then
-        hooksecurefunc('ToyBox_ShowToyDropdown', setToyBox_ShowToyDropdown)
-        hooksecurefunc('ToySpellButton_UpdateButton', setToySpellButton_UpdateButton)
+        elseif arg1=='Blizzard_Collections' then
+            hooksecurefunc('ToyBox_ShowToyDropdown', setToyBox_ShowToyDropdown)
+            hooksecurefunc('ToySpellButton_UpdateButton', setToySpellButton_UpdateButton)
+        end
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then

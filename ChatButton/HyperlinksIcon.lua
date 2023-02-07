@@ -974,6 +974,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
                 e.setPlayerSound= Save.setPlayerSound--播放, 声音
                 Save.Cvar= Save.Cvar or {}
                 Init()
+                panel:UnregisterEvent('ADDON_LOADED')
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
         end

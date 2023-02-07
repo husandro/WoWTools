@@ -344,16 +344,20 @@ panel:RegisterEvent('TOYS_UPDATED')
 
 panel:RegisterEvent('BAG_UPDATE_DELAYED')
 panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
-panel:RegisterEvent("PLAYER_LOGOUT")
+
 panel:RegisterEvent('HEARTHSTONE_BOUND')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1== id then
-        Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
-        if not e.toolsFrame.disabled then
-            Init()--初始
-        else
-            panel:UnregisterAllEvents()
+    if event == "ADDON_LOADED" then
+        if arg1== id then
+            Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
+            if not e.toolsFrame.disabled then
+                Init()--初始
+                panel:UnregisterEvent('ADDON_LOADED')
+            else
+                panel:UnregisterAllEvents()
+            end
+            panel:RegisterEvent("PLAYER_LOGOUT")
         end
 
     elseif event=='ADDON_LOADED' and arg1=='Blizzard_Collections' then

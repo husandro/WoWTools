@@ -18,7 +18,7 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
                 if classID==3 and not items[info.itemID] then
                     local btn=Buttons[index]
                     if not btn then
-                        btn=CreateFrame('ItemButton',nil, ItemSocketingFrame)
+                        btn= CreateFrame('ItemButton',nil, ItemSocketingFrame)
                         btn:SetSize(25,25)
                         if index==1 then
                             btn:SetPoint('TOPRIGHT', ItemSocketingFrame, 'BOTTOMRIGHT',-10,-6)
@@ -86,20 +86,25 @@ panel:RegisterEvent('SOCKET_INFO_CLOSE')
 panel:RegisterEvent('SOCKET_INFO_UPDATE')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1==id then
-        Save= WoWToolsSave and WoWToolsSave[addName] or Save
+    if event == "ADDON_LOADED" then
+        if arg1==id then
+            Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
-        --添加控制面板        
-        local sel=e.CPanel(e.onlyChinse and '镶嵌宝石' or addName, not Save.disabled, true)
-        sel:SetScript('OnMouseDown', function()
-            Save.disabled = not Save.disabled and true or nil
-            print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '重新加载UI' or RELOADUI)
-        end)
+            --添加控制面板        
+            local sel=e.CPanel(e.onlyChinse and '镶嵌宝石' or addName, not Save.disabled, true)
+            sel:SetScript('OnMouseDown', function()
+                Save.disabled = not Save.disabled and true or nil
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '重新加载UI' or RELOADUI)
+            end)
 
-        if Save.disabled then
-            panel:UnregisterAllEvents()
+            if Save.disabled then
+                panel:UnregisterAllEvents()
+            else
+                panel:UnregisterEvent('ADDON_LOADED')
+            end
+            panel:RegisterEvent("PLAYER_LOGOUT")
         end
-        panel:RegisterEvent("PLAYER_LOGOUT")
+
     elseif event=='PLAYER_LOGOUT' then
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end

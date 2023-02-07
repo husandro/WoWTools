@@ -623,6 +623,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Init()
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
+
         elseif arg1=='Blizzard_Collections' then
             set_Button_setFrame_PetJournal()
         end
