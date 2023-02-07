@@ -24,46 +24,86 @@ end
 --####
 local function set_MinimapCluster()--缩放
     local frame=MinimapCluster
+
     frame.ScaleIn=e.Cbtn(Minimap, nil, nil, nil, nil, true, {20,20})
+
+
+    
+
     frame.ScaleIn:SetPoint('TOP',-2, 13)
     frame.ScaleIn:SetScript('OnMouseDown', function(self, d)
-        local scale = Save.scale or 1
-        scale= scale+0.05
-        scale= scale>2 and 2 or scale<0.4 and 0.4 or scale
-        frame:SetScale(scale)
-        Save.scale=scale
-        print(id, addName, e.onlyChinse and '缩放' or UI_SCALE, scale)
+        if d=='RightButton' then
+            SetCursor('UI_MOVE_CURSOR')
+        else
+            local scale = Save.scale or 1
+            scale= scale+0.05
+            scale= scale>2 and 2 or scale<0.4 and 0.4 or scale
+            frame:SetScale(scale)
+            Save.scale=scale
+            print(id, addName, e.onlyChinse and '缩放' or UI_SCALE, scale)
+        end
     end)
     frame.ScaleIn:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
-        e.tips:AddDoubleLine(e.onlyChinse and '放大' or ZOOM_IN, (e.onlyChinse and '缩放' or UI_SCALE)..(Save.scale or 1))
+        e.tips:AddDoubleLine(e.onlyChinse and '放大' or ZOOM_IN, (e.onlyChinse and '缩放' or UI_SCALE)..(Save.scale or 1)..e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
         e.tips:Show()
     end)
-    frame.ScaleIn:SetScript('OnLeave', function() e.tips:Hide() end)
+    frame.ScaleIn:SetScript('OnLeave', function() e.tips:Hide()  ResetCursor() end)
 
     frame.ScaleOut=e.Cbtn(Minimap, nil, nil, nil, nil, true, {20,20})
     frame.ScaleOut:SetPoint('BOTTOM', -1, -13)
     frame.ScaleOut:SetScript('OnMouseDown', function(self, d)
-        local scale = Save.scale or 1
-        scale= scale-0.05
-        scale= scale>2 and 2 or scale<0.4 and 0.4 or scale
-        frame:SetScale(scale)
-        Save.scale=scale
-        print(id, addName, e.onlyChinse and '缩放' or UI_SCALE, scale)
+        if d=='RightButton' then
+            SetCursor('UI_MOVE_CURSOR')
+        else
+            local scale = Save.scale or 1
+            scale= scale-0.05
+            scale= scale>2 and 2 or scale<0.4 and 0.4 or scale
+            frame:SetScale(scale)
+            Save.scale=scale
+            print(id, addName, e.onlyChinse and '缩放' or UI_SCALE, scale)
+        end
     end)
     frame.ScaleOut:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
-        e.tips:AddDoubleLine(e.onlyChinse and '缩小' or ZOOM_OUT, (e.onlyChinse and '缩放' or UI_SCALE)..(Save.scale or 1))
+        e.tips:AddDoubleLine(e.onlyChinse and '缩小' or ZOOM_OUT, (e.onlyChinse and '缩放' or UI_SCALE)..(Save.scale or 1)..e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
         e.tips:Show()
     end)
     frame.ScaleOut:SetScript('OnLeave', function() e.tips:Hide() end)
     if Save.scale and Save.scale~=1 then
         frame:SetScale(Save.scale)
     end
+
+    frame:SetMovable(true)
+    frame:SetClampedToScreen(true)
+    frame.ScaleIn:RegisterForDrag("RightButton")
+    --frame.ScaleIn:SetMovable(true)
+    --frame.ScaleIn:SetClampedToScreen(true)
+    frame.ScaleIn:SetScript("OnDragStart", function()
+        frame:StartMoving()
+    end)
+    frame.ScaleIn:SetScript("OnDragStop", function()
+        ResetCursor()
+        frame:StopMovingOrSizing()
+    end)
+    
+    frame.ScaleOut:RegisterForDrag("RightButton")
+    --frame.ScaleOut:SetMovable(true)
+    --frame.ScaleOut:SetClampedToScreen(true)
+    frame.ScaleOut:SetScript("OnDragStart", function()
+        frame:StartMoving()
+    end)
+    frame.ScaleOut:SetScript("OnDragStop", function()
+        ResetCursor()
+        frame:StopMovingOrSizing()
+    end)
+
 end
 
 
@@ -79,7 +119,7 @@ local function set_ExpansionLandingPageMinimapButton()
             return
         end
         if WeeklyRewardsFrame:IsShown() then
-            HideUIPanel(WeeklyRewardsFrame);
+            HideUIPanel(WeeklyRewardsFrame)
         else
             WeeklyRewardsFrame:Show()
             tinsert(UISpecialFrames, WeeklyRewardsFrame:GetName())
@@ -108,8 +148,8 @@ local function set_ExpansionLandingPageMinimapButton()
     end)
     ExpansionLandingPageMinimapButton:SetScript('OnEnter',function(self)
         self:SetAlpha(1)
-        e.tips:SetOwner(self, "ANCHOR_LEFT");
-        e.tips:ClearLines();
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinse and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , e.Icon.right)
         e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         e.tips:AddLine(' ')
@@ -182,7 +222,7 @@ local function set_vigentteButton_Text()
         end
     end
 
-    local vignetteGUIDs=C_VignetteInfo.GetVignettes() or {};
+    local vignetteGUIDs=C_VignetteInfo.GetVignettes() or {}
     for _, guid in pairs(vignetteGUIDs) do
         local info= C_VignetteInfo.GetVignetteInfo(guid)
         if info and info.atlasName and not info.isDead then
@@ -205,7 +245,7 @@ local function set_vigentteButton_Text()
                     text= text and text..'\n' or ''
                     text= text.. poiInfo.name
                     if poiInfo.factionID and C_Reputation.IsMajorFaction(poiInfo.factionID) then
-                        local info = C_MajorFactions.GetMajorFactionData(poiInfo.factionID);
+                        local info = C_MajorFactions.GetMajorFactionData(poiInfo.factionID)
                         if info and info.textureKit then
                             text= text..'|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'
                         else

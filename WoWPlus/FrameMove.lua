@@ -14,50 +14,50 @@ end
 
 local Move=function(F, tab)
     tab=tab or {}
-    local F2, click, save, enter, show,  re =tab.frame, tab.click, tab.save, tab.enter, tab.show, tab.re;--, tab.hook;    
+    local F2, click, save, enter, show,  re =tab.frame, tab.click, tab.save, tab.enter, tab.show, tab.re--, tab.hook    
     if not F2 and not F then
         return
     end
-    local name;
+    local name
     if F2 then
-        name=F2:GetName();
+        name=F2:GetName()
         if not name and save then
             return true
         end
         if save then
-            F2:SetClampedToScreen(true);
+            F2:SetClampedToScreen(true)
         end
-        F2:SetMovable(true);
+        F2:SetMovable(true)
     else
-        F2=F;
-        name= F:GetName();
+        F2=F
+        name= F:GetName()
         if not name and save then
             return
         end
     end
-    F:SetClampedToScreen(save and true or false);
-    F:SetMovable(true);
+    F:SetClampedToScreen(save and true or false)
+    F:SetMovable(true)
 
     if click=='R' then
-        F:RegisterForDrag("RightButton");
+        F:RegisterForDrag("RightButton")
     elseif click=='L' then
-        F:RegisterForDrag("LeftButton");
+        F:RegisterForDrag("LeftButton")
     else
-        F:RegisterForDrag("LeftButton", "RightButton");
+        F:RegisterForDrag("LeftButton", "RightButton")
     end
-    F:EnableMouse(true);
-    F:SetScript("OnDragStart", function() F2:StartMoving() end);
+    F:EnableMouse(true)
+    F:SetScript("OnDragStart", function() F2:StartMoving() end)
     F:SetScript("OnDragStop", function()
-            ResetCursor();
-            F2:StopMovingOrSizing();
+            ResetCursor()
+            F2:StopMovingOrSizing()
             if save then
                 Save.point[name]={F2:GetPoint(1)}
                 Save.point[name][2]=nil
-            end;
-    end);
+            end
+    end)
 
     if save then
-        Point(F2,name);
+        Point(F2,name)
         local Re={}
         local n=F2:GetNumPoints()
         for i=1,n do
@@ -66,19 +66,19 @@ local Move=function(F, tab)
         F:SetScript("OnMouseUp", function(self,D)--还原 Alt+右击
                 if D=='RightButton' and IsAltKeyDown() then
                     Save.point[name]=nil
-                    F2:ClearAllPoints();
+                    F2:ClearAllPoints()
                     local point=Re[1]
                     if point then
-                        F2:SetPoint(point[1], point[2], point[3], point[4], point[5]);
+                        F2:SetPoint(point[1], point[2], point[3], point[4], point[5])
                     end
                 end
-                ResetCursor();
-        end);
+                ResetCursor()
+        end)
         if enter then
-            F:SetScript("OnEnter", function() Point(F2,name) end);
+            F:SetScript("OnEnter", function() Point(F2,name) end)
         end
         if show  then
-            F:SetScript("OnShow", function() Point(F2,name) end);
+            F:SetScript("OnShow", function() Point(F2,name) end)
         end
 
     end
@@ -90,9 +90,9 @@ end
             or (click=='R' and d~='RightButton')
             or (click=='L' and d~='LeftButton')
             then return end
-            SetCursor('UI_MOVE_CURSOR');
-    end);
-    F:SetScript("OnLeave", function() ResetCursor() end);
+            SetCursor('UI_MOVE_CURSOR')
+    end)
+    F:SetScript("OnLeave", function() ResetCursor() end)
 end
 
 local FrameTab={
@@ -130,7 +130,7 @@ local FrameTab={
     MirrorTimer1={save=true},
     LootHistoryFrame= {},--拾取框
     --StoreFrame={},--商店
-};
+}
 --UIWidgetBelowMinimapContainerFrame={save=true,click='RightButton'},
 
 --#################
@@ -142,9 +142,9 @@ local FrameTab={
 local function setTabInit()
     for k, v in pairs(FrameTab) do
         if v then
-            local f= _G[k];
+            local f= _G[k]
             if f then
-                Move(f, v);
+                Move(f, v)
                 FrameTab[k]=nil
             end
         end
@@ -153,7 +153,7 @@ end
 
 local function setClass()--职业,能量条
     if e.Player.class== 'PALADIN' then
-        local frame = PaladinPowerBarFrame;--圣骑士能量条, 
+        local frame = PaladinPowerBarFrame--圣骑士能量条, 
         if frame then
             Move(frame, {save=true})
             frame =PaladinPowerBarFrameBG if frame then frame:Hide() end
@@ -164,12 +164,12 @@ local function setClass()--职业,能量条
         Move(RuneFrame, {save=true})
 
     elseif e.Player.class=='MONK' then--WS
-        local frame= MonkHarmonyBarFrame;--DPS
+        local frame= MonkHarmonyBarFrame--DPS
         if frame then
             if not frame.moveFrame then
-                frame.moveFrame=CreateFrame('Frame', nil, frame);
-                frame.moveFrame:SetSize(21, 21);
-                frame.moveFrame:SetPoint('RIGHT', frame, 'LEFT');
+                frame.moveFrame=CreateFrame('Frame', nil, frame)
+                frame.moveFrame:SetSize(21, 21)
+                frame.moveFrame:SetPoint('RIGHT', frame, 'LEFT')
                 frame.moveFrame.textrue=frame.moveFrame:CreateTexture()
                 frame.moveFrame.textrue:SetAllPoints(frame.moveFrame)
                 frame.moveFrame.textrue:SetAtlas(e.Icon.icon)
@@ -206,13 +206,13 @@ local function setClass()--职业,能量条
         if frame then
             Move(frame, {save=true})
             if frame.Background then frame.Background:Hide() end
-            frame:SetScale(0.7);--缩放
+            frame:SetScale(0.7)--缩放
         end
     elseif e.Player.class=='ROGUE' or e.Player.class=='DRUID' then --DZ , XD        
         local frame=ComboPointPlayerFrame
         if frame then
             Move(frame, {save=true})
-            UIParent.unit='player';
+            UIParent.unit='player'
             if frame.Background then frame.Background:Hide() end
 
             if frame.ComboPoints then
@@ -222,11 +222,11 @@ local function setClass()--职业,能量条
                         if self.PointOff then  self.PointOff:Hide() end--:SetAlpha(0) end
                         if self.CircleBurst then self.CircleBurst:Hide() end
                         if not self.tex then
-                            self.tex=self:CreateTexture(nil, 'BACKGROUND');
+                            self.tex=self:CreateTexture(nil, 'BACKGROUND')
                             local setFrame=self.Point or self
-                            self.tex:SetPoint('BOTTOM', setFrame, 'BOTTOM',0,0);
-                            self.tex:SetSize(12, 12);
-                            self.tex:SetAtlas(e.Icon.number:format(i));
+                            self.tex:SetPoint('BOTTOM', setFrame, 'BOTTOM',0,0)
+                            self.tex:SetSize(12, 12)
+                            self.tex:SetAtlas(e.Icon.number:format(i))
                         end
                     end
                 end
@@ -250,18 +250,18 @@ local function setAddLoad(arg1)
         Move(AuctionHouseFrame, {})
 
     elseif arg1=='Blizzard_Communities' then--公会和社区
-        local dialog = CommunitiesFrame.NotificationSettingsDialog or nil;
+        local dialog = CommunitiesFrame.NotificationSettingsDialog or nil
         if dialog then
-            dialog:ClearAllPoints();
-            dialog:SetAllPoints();
+            dialog:ClearAllPoints()
+            dialog:SetAllPoints()
         end
         Move(CommunitiesFrame, {})
 
     elseif arg1=='Blizzard_Collections' then
-        local checkbox = WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox;
-        checkbox.Label:ClearAllPoints();
-        checkbox.Label:SetPoint("LEFT", checkbox, "RIGHT", 2, 1);
-        checkbox.Label:SetPoint("RIGHT", checkbox, "RIGHT", 160, 1);
+        local checkbox = WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox
+        checkbox.Label:ClearAllPoints()
+        checkbox.Label:SetPoint("LEFT", checkbox, "RIGHT", 2, 1)
+        checkbox.Label:SetPoint("RIGHT", checkbox, "RIGHT", 160, 1)
         if not UnitAffectingCombat('player') then
             Move(CollectionsJournal, {})--藏品
             Move(WardrobeFrame, {})--幻化
@@ -347,8 +347,8 @@ tex:SetAtlas('!perks-list-side-vertical')
         if not GetCVarBool("autoLootDefault") and not GetCVarBool("lootUnderMouse") then
             local p=Save.point.LootFrame and Save.point.LootFrame[1]
             if p and p[1] and p[3] and p[4] and p[5] then
-                self2:ClearAllPoints();
-                self2:SetPoint(p[1], nil, p[3], p[4], p[5]);
+                self2:ClearAllPoints()
+                self2:SetPoint(p[1], nil, p[3], p[4], p[5])
             end
         end
     end)
