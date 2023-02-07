@@ -408,7 +408,7 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 panel:RegisterEvent('ZONE_CHANGED')
 panel:RegisterEvent("PLAYER_ENTERING_WORLD")
-panel:RegisterEvent('MINIMAP_PING')
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if  arg1==id then
@@ -449,7 +449,5 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if event=='PLAYER_ENTERING_WORLD' then
             set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
         end
-    elseif event=='MINIMAP_PING' then
-        print(id)
     end
 end)
