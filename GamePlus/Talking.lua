@@ -5,10 +5,8 @@ local panel=CreateFrame('Frame')
 
 local function setRegister()--设置事件
     if not Save.disabled then
-        --panel:RegisterEvent('TALKINGHEAD_CLOSE')
         panel:RegisterEvent('TALKINGHEAD_REQUESTED')
     else
-        --panel:UnregisterEvent('TALKINGHEAD_CLOSE')
         panel:UnregisterEvent('TALKINGHEAD_REQUESTED')
     end
 end
@@ -17,7 +15,8 @@ panel:RegisterEvent('ADDON_LOADED')
 panel:RegisterEvent('PLAYER_LOGOUT')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1==id then
+    if event == "ADDON_LOADED" then
+        if arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
             --添加控制面板        
@@ -35,7 +34,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 e.tips:Show()
             end)
             sel:SetScript('OnLeave', function() e.tips:Hide() end)
+
+            local sel2=CreateFrame("CheckButton", nil, sel, "InterfaceOptionsCheckButtonTemplate")
+            sel2.text:SetText(e.onlyChinse and '文本' or LOCALE_TEXT_LABEL)
+            sel2:SetPoint('LEFT', sel.text, 'RIGHT')
+            sel2:SetChecked(not Save.notPrint)
+            sel2:SetScript('OnMouseDown', function()
+                Save.notPrint= not Save.notPrint and true or nil
+            end)
+
             setRegister()--设置事件
+            panel:UnregisterEvent('ADDON_LOADED')
+        end
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
@@ -46,12 +56,15 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='TALKINGHEAD_REQUESTED' then
         local _, _, vo, _, _, _, name, text, isNewTalkingHead = C_TalkingHead.GetCurrentLineInfo();
         if vo and vo>0 and self.soundKitID~=vo then
-            if e.setPlayerSound then
-                e.PlaySound(vo)--, "Dialog");
+            PlaySound(vo, "Dialog")
+            --if e.setPlayerSound then
+            --    e.PlaySound(vo)--, "Dialog");
             --else
               --  e.PlaySound(vo, "Dialog");
+            --end
+            if not Save.notPrint then
+                print('|cff00ff00'..name..'|r','|cffff00ff'..text..'|r',id, addName, 'soundKitID', vo)
             end
-            print('|cff00ff00'..name..'|r','|cffff00ff'..text..'|r',id, addName, 'soundKitID', vo)
             self.soundKitID=vo
         end
         TalkingHeadFrame:CloseImmediately()
