@@ -246,10 +246,8 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
 
         if not self.classTexture then
             self.classTexture= self:CreateTexture(nil,'OVERLAY', nil, 6)
-            self.mask= self:CreateMaskTexture()
-            self.mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
-            self.mask:SetAllPoints(self.classTexture)
-            self.classTexture:AddMaskTexture(self.mask)
+            self.classTexture:SetSize(16,16)
+
             if unit=='target' or unit=='focus' then
                 self.classTexture:SetPoint('TOPRIGHT', self.portrait, 'TOPLEFT',0,10)
                 if unit=='target' then--移动, 队长图标，TargetFrame.lua
@@ -266,13 +264,24 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
             else
                 self.classTexture:SetPoint('TOPLEFT', self.portrait, 'TOPRIGHT',-14,10)
             end
-            self.classTexture:SetSize(16,16)
+           
+            self.classPortrait= self:CreateTexture(nil, 'OVERLAY', nil,7)--加个外框
+            self.classPortrait:SetAtlas('DK-Base-Rune-CDFill')
+            self.classPortrait:SetPoint('CENTER', self.classTexture)
+            self.classPortrait:SetSize(20,20)
 
-            self.itemLevel= e.Cstr(self, 10)--装等
-            if unit=='target' or unit=='focus' then
-                self.itemLevel:SetPoint('TOPLEFT', self.classTexture, 'TOPRIGHT',-2,0)
-            else
-                self.itemLevel:SetPoint('TOPRIGHT', self.classTexture, 'TOPLEFT',5,0)
+            self.mask= self:CreateMaskTexture()--mask
+            self.mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
+            self.mask:SetAllPoints(self.classTexture)
+            self.classTexture:AddMaskTexture(self.mask)
+
+            if not unit:find('boss') then
+                self.itemLevel= e.Cstr(self, 10)--装等
+                if unit=='target' or unit=='focus' then
+                    self.itemLevel:SetPoint('TOPLEFT', self.classTexture, 'TOPRIGHT')
+                else
+                    self.itemLevel:SetPoint('TOPRIGHT', self.classTexture, 'TOPLEFT',2,0)
+                end
             end
             e.GroupFrame[unit]= {
                     itemLevel= self.itemLevel,
@@ -298,6 +307,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                 NotifyInspect(unit)--取得装等
             end
         end
+        self.classPortrait:SetVertexColor(r,g,b,1)
 
         if guid and e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLevel then----装等
             self.itemLevel:SetText((e.UnitItemLevel[guid].col or '')..e.UnitItemLevel[guid].itemLevel)
@@ -391,13 +401,30 @@ local function set_LootSpecialization()--拾取专精
             local texture= select(4, GetSpecializationInfoByID(lootSpecID))
             if texture then
                 if not PlayerFrame.lootSpecTexture then
-                    PlayerFrame.lootSpecTexture= PlayerFrame:CreateTexture(nil,'OVERLAY', nil, 7)
+                    PlayerFrame.lootSpecTexture= PlayerFrame:CreateTexture(nil,'OVERLAY', nil, 6)
                     PlayerFrame.lootSpecTexture:SetSize(14,14)
                     if PlayerFrame.itemLevel then
-                        PlayerFrame.lootSpecTexture:SetPoint('TOPRIGHT', PlayerFrame.itemLevel, 'TOPLEFT',2,0)
+                        PlayerFrame.lootSpecTexture:SetPoint('TOPRIGHT', PlayerFrame.itemLevel, 'TOPLEFT',-2,0)
                     else
                         PlayerFrame.lootSpecTexture:SetPoint('TOPLEFT', PlayerFrame.portrait, 'TOPRIGHT',-34,10)
                     end
+
+                    local lootPortrait= PlayerFrame:CreateTexture(nil, 'OVERLAY', nil,7)
+                    lootPortrait:SetAtlas('DK-Base-Rune-CDFill')
+                    lootPortrait:SetPoint('CENTER', PlayerFrame.lootSpecTexture)
+                    lootPortrait:SetSize(20,20)
+                    local class= UnitClassBase('player')
+                    if class then
+                        local r, g ,b = GetClassColor(class)
+                        if r and g and b then
+                            lootPortrait:SetVertexColor(r,g,b,1)
+                        end
+                    end
+                    --[[self.mask= self:CreateMaskTexture()
+                    self.mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
+                    self.mask:SetAllPoints(self.classTexture)
+                    self.classTexture:AddMaskTexture(self.mask)]]
+
                 end
                 SetPortraitToTexture(PlayerFrame.lootSpecTexture, texture)
                 find=true
