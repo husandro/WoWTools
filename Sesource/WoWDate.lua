@@ -1,7 +1,7 @@
 local id, e = ...
 local panel=CreateFrame("Frame")
 e.WoWSave={}
-e.GroupFrame={}--UnitFrame.lua set_PartyFrame()
+e.GroupFrame={}--UnitFrame.lua 设置装等， 专精
 
 --########
 --玩家装等
