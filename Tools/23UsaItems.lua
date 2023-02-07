@@ -571,7 +571,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 panel:UnregisterAllEvents()
             end
 
-        elseif event=='ADDON_LOADED' and arg1=='Blizzard_Collections' then
+        elseif arg1=='Blizzard_Collections' then
             hooksecurefunc('ToyBox_ShowToyDropdown', setToyBox_ShowToyDropdown)
             hooksecurefunc('ToySpellButton_UpdateButton', setToySpellButton_UpdateButton)
         end

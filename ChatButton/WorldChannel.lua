@@ -178,6 +178,7 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -189,7 +190,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Init()
                 panel:UnregisterEvent('ADDON_LOADED')
             end
-            panel:RegisterEvent("PLAYER_LOGOUT")
         end
 
     elseif event == "PLAYER_LOGOUT" then

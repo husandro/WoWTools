@@ -809,11 +809,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if Save.disabled then
                 panel:UnregisterAllEvents()
             else
-                --Save.SetShadowOffset= Save.SetShadowOffset or 1
                 Init()
+                panel:UnregisterEvent('ADDON_LOADED')
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
         end
+
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end

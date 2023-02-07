@@ -1033,6 +1033,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
             Init()--史诗钥石地下城, 界面
         end
+
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end

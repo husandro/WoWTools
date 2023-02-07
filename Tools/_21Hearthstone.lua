@@ -338,6 +338,7 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
 
 panel:RegisterEvent('NEW_TOY_ADDED')
 panel:RegisterEvent('TOYS_UPDATED')
@@ -353,21 +354,21 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
             if not e.toolsFrame.disabled then
                 Init()--初始
-                panel:UnregisterEvent('ADDON_LOADED')
             else
                 panel:UnregisterAllEvents()
             end
-            panel:RegisterEvent("PLAYER_LOGOUT")
+
+        elseif arg1=='Blizzard_Collections' then
+            hooksecurefunc('ToyBox_ShowToyDropdown', setToyBox_ShowToyDropdown)
+            hooksecurefunc('ToySpellButton_UpdateButton', setToySpellButton_UpdateButton)
         end
 
-    elseif event=='ADDON_LOADED' and arg1=='Blizzard_Collections' then
-        hooksecurefunc('ToyBox_ShowToyDropdown', setToyBox_ShowToyDropdown)
-        hooksecurefunc('ToySpellButton_UpdateButton', setToySpellButton_UpdateButton)
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end
             WoWToolsSave[addName..'Tools']=Save
         end
+
     elseif event=='TOYS_UPDATED' or event=='NEW_TOY_ADDED' then
         getToy()--生成, 有效表格
         setAtt()--设置属性

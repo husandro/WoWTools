@@ -241,8 +241,9 @@ panel:RegisterEvent('VEHICLE_PASSENGERS_CHANGED')
 panel:RegisterEvent('UPDATE_OVERRIDE_ACTIONBAR')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1== id then
-        Save= WoWToolsSave and WoWToolsSave[addName] or Save
+    if event == "ADDON_LOADED" then
+        if arg1== id then
+            Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
             --添加控制面板        
             local sel=e.CPanel(e.onlyChinse and '隐藏材质' or addName, not Save.disabled)
@@ -258,24 +259,26 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
+        elseif arg1=='Blizzard_WeeklyRewards' then--周奖励提示
+            if WeeklyRewardExpirationWarningDialog and WeeklyRewardExpirationWarningDialog:IsShown() then
+                if WeeklyRewardExpirationWarningDialog.Description then
+                    print(id, addName, '|cffff00ff'..WeeklyRewardExpirationWarningDialog.Description:GetText())
+                    WeeklyRewardExpirationWarningDialog:Hide()
+                else
+                    C_Timer.After(5, function()
+                        WeeklyRewardExpirationWarningDialog:Hide()
+                    end)
+                end
+            end
+        end
+
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end
             WoWToolsSave[addName]=Save
         end
+
     elseif event=='UNIT_ENTERED_VEHICLE' or event=='UPDATE_OVERRIDE_ACTIONBAR' then
         set_UNIT_ENTERED_VEHICLE()
-
-    elseif arg1=='Blizzard_WeeklyRewards' then--周奖励提示
-        if WeeklyRewardExpirationWarningDialog and WeeklyRewardExpirationWarningDialog:IsShown() then
-            if WeeklyRewardExpirationWarningDialog.Description then
-                print(id, addName, '|cffff00ff'..WeeklyRewardExpirationWarningDialog.Description:GetText())
-                WeeklyRewardExpirationWarningDialog:Hide()
-            else
-                C_Timer.After(5, function()
-                    WeeklyRewardExpirationWarningDialog:Hide()
-                end)
-            end
-        end
     end
 end)

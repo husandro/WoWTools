@@ -541,7 +541,7 @@ end
 --###########
 
 panel:RegisterEvent("ADDON_LOADED")
-
+panel:RegisterEvent("PLAYER_LOGOUT")
 panel:RegisterEvent('PLAYER_REGEN_DISABLED')
 panel:RegisterEvent('PLAYER_REGEN_ENABLED')
 
@@ -558,7 +558,6 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 end
                 Save= WoWToolsSave and WoWToolsSave[addName] or Save
                 Init()
-                panel:RegisterEvent("PLAYER_LOGOUT")
                 panel:UnregisterEvent('ADDON_LOADED')
             end
         end

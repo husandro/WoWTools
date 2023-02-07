@@ -537,48 +537,51 @@ panel:RegisterEvent("CHALLENGE_MODE_START")
 panel:RegisterEvent("ADDON_LOADED")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1==id then
-        Save= WoWToolsSave and WoWToolsSave[addName] or Save
+    if event == "ADDON_LOADED" then
+        if arg1==id then
+            Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
-        --添加控制面板        
-        local sel=e.CPanel(e.onlyChinse and '任务追踪栏' or addName, not Save.disabled)
-        sel:SetScript('OnMouseDown', function()
-            Save.disabled = not Save.disabled and true or nil
-            print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需求重新加载' or REQUIRES_RELOAD)
-        end)
-
-        if not Save.disabled then
-            local sel2=CreateFrame("CheckButton", nil, sel, "InterfaceOptionsCheckButtonTemplate")
-            sel2.text:SetText(e.onlyChinse and '自动隐藏' or (AUTO_JOIN:gsub(JOIN, HIDE)))
-            sel2:SetPoint('LEFT', sel.Text, 'RIGHT')
-            sel2:SetChecked(Save.autoHide)
-            sel2:SetScript('OnEnter', function(self2)
-                local text=e.GetShowHide(false)
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine(e.onlyChinse and '场景战役' or SCENARIOS, '...')
-                e.tips:AddDoubleLine('UI WIDGET', '...')
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(e.onlyChinse and '奖励目标' or SCENARIO_BONUS_OBJECTIVES, text)
-                e.tips:AddDoubleLine(e.onlyChinse and '世界任务' or TRACKER_HEADER_WORLD_QUESTS, text)
-                e.tips:AddDoubleLine(e.onlyChinse and '战役' or TRACKER_HEADER_CAMPAIGN_QUESTS, text)
-                e.tips:AddDoubleLine(e.onlyChinse and '追踪任务' or TRACK_QUEST, text)
-                e.tips:AddDoubleLine(e.onlyChinse and '追踪成就' or (TRACKING..ACHIEVEMENTS), text)
-                e.tips:AddDoubleLine(e.onlyChinse and '追踪配方' or PROFESSIONS_TRACK_RECIPE, text)
-                e.tips:Show()
-            end)
-            sel2:SetScript('OnLeave', function() e.tips:Hide() end)
-
-            sel2:SetScript('OnMouseDown', function ()
-                Save.autoHide= not Save.autoHide and true or nil
-                print(id, addName, e.onlyChinse and '自动隐藏' or (AUTO_JOIN:gsub(JOIN, '')..HIDE), e.onlyChinse and '任务追踪栏' or QUEST_OBJECTIVES, e.GetEnabeleDisable(Save.autoHide))
+            --添加控制面板        
+            local sel=e.CPanel(e.onlyChinse and '任务追踪栏' or addName, not Save.disabled)
+            sel:SetScript('OnMouseDown', function()
+                Save.disabled = not Save.disabled and true or nil
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需求重新加载' or REQUIRES_RELOAD)
             end)
 
-            Init()
-        else
-            panel:UnregisterAllEvents()
+            if not Save.disabled then
+                local sel2=CreateFrame("CheckButton", nil, sel, "InterfaceOptionsCheckButtonTemplate")
+                sel2.text:SetText(e.onlyChinse and '自动隐藏' or (AUTO_JOIN:gsub(JOIN, HIDE)))
+                sel2:SetPoint('LEFT', sel.Text, 'RIGHT')
+                sel2:SetChecked(Save.autoHide)
+                sel2:SetScript('OnEnter', function(self2)
+                    local text=e.GetShowHide(false)
+                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                    e.tips:ClearLines()
+                    e.tips:AddDoubleLine(e.onlyChinse and '场景战役' or SCENARIOS, '...')
+                    e.tips:AddDoubleLine('UI WIDGET', '...')
+                    e.tips:AddLine(' ')
+                    e.tips:AddDoubleLine(e.onlyChinse and '奖励目标' or SCENARIO_BONUS_OBJECTIVES, text)
+                    e.tips:AddDoubleLine(e.onlyChinse and '世界任务' or TRACKER_HEADER_WORLD_QUESTS, text)
+                    e.tips:AddDoubleLine(e.onlyChinse and '战役' or TRACKER_HEADER_CAMPAIGN_QUESTS, text)
+                    e.tips:AddDoubleLine(e.onlyChinse and '追踪任务' or TRACK_QUEST, text)
+                    e.tips:AddDoubleLine(e.onlyChinse and '追踪成就' or (TRACKING..ACHIEVEMENTS), text)
+                    e.tips:AddDoubleLine(e.onlyChinse and '追踪配方' or PROFESSIONS_TRACK_RECIPE, text)
+                    e.tips:Show()
+                end)
+                sel2:SetScript('OnLeave', function() e.tips:Hide() end)
+
+                sel2:SetScript('OnMouseDown', function ()
+                    Save.autoHide= not Save.autoHide and true or nil
+                    print(id, addName, e.onlyChinse and '自动隐藏' or (AUTO_JOIN:gsub(JOIN, '')..HIDE), e.onlyChinse and '任务追踪栏' or QUEST_OBJECTIVES, e.GetEnabeleDisable(Save.autoHide))
+                end)
+
+                Init()
+                panel:UnregisterEvent('ADDON_LOADED')
+            else
+                panel:UnregisterAllEvents()
+            end
+            panel:RegisterEvent("PLAYER_LOGOUT")
         end
-        panel:RegisterEvent("PLAYER_LOGOUT")
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then

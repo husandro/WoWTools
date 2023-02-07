@@ -371,7 +371,7 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-
+panel:RegisterEvent("PLAYER_LOGOUT")
 panel:RegisterEvent("CHAT_MSG_WHISPER_INFORM")
 panel:RegisterEvent("CHAT_MSG_WHISPER")
 panel:RegisterEvent("CHAT_MSG_BN_WHISPER")
@@ -387,7 +387,6 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
                 Init()
                 panel:UnregisterEvent('ADDON_LOADED')
             end
-            panel:RegisterEvent("PLAYER_LOGOUT")
         end
 
     elseif event=='CHAT_MSG_WHISPER_INFORM' or event=='CHAT_MSG_WHISPER' or event=='CHAT_MSG_BN_WHISPER' or event=='CHAT_MSG_BN_WHISPER_INFORM' then

@@ -421,6 +421,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
+
             --添加控制面板        
             local sel=e.CPanel(e.onlyChinse and '框架移动' or addName, not Save.disabled)
             sel:SetScript('OnMouseDown', function()
@@ -432,13 +433,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Init()
                 setTabInit()
                 setClass()--职业,能量条
-
             else
                 panel:UnregisterAllEvents()
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
-        elseif event=='ADDON_LOADED' then
+        else
             setAddLoad(arg1)
             setTabInit()
         end

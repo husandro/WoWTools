@@ -118,7 +118,8 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent('SOCIAL_QUEUE_UPDATE')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1==id then
+    if event == "ADDON_LOADED" then
+        if arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
             --添加控制面板        
@@ -132,8 +133,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 panel:UnregisterAllEvents()
             else
                 Init()
+                panel:UnregisterEvent('ADDON_LOADED')
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
+        end
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then

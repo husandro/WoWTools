@@ -1099,33 +1099,6 @@ local function setSTART_LOOT_ROLL(rollID, rollTime, lootHandle)--自动ROLL
     end
 end
 
---###########
---加载保存数据
---###########
-panel:RegisterEvent("ADDON_LOADED")
-
-
-panel:RegisterEvent('LFG_COMPLETION_REWARD')
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
-panel:RegisterEvent('ISLAND_COMPLETED')
-
-panel:RegisterEvent('LFG_UPDATE_RANDOM_INFO')
-panel:RegisterEvent('START_LOOT_ROLL')
-
-panel:RegisterEvent('PVP_MATCH_COMPLETE')
-
-panel:RegisterEvent('CORPSE_IN_RANGE')--仅限战场，释放, 复活
-panel:RegisterEvent('PLAYER_DEAD')
-panel:RegisterEvent('AREA_SPIRIT_HEALER_IN_RANGE')
-
-panel:RegisterEvent('LFG_ROLE_CHECK_ROLE_CHOSEN')
-panel:RegisterEvent('LFG_ROLE_CHECK_DECLINED')
-panel:RegisterEvent('LFG_QUEUE_STATUS_UPDATE')
-panel:RegisterEvent('UPDATE_BATTLEFIELD_STATUS')
-panel:RegisterEvent('GROUP_LEFT')
-panel:RegisterEvent('PLAYER_ROLES_ASSIGNED')--职责确认
-
-
 local RoleC
 local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
     if env=='LFG_ROLE_CHECK_DECLINED' then
@@ -1286,6 +1259,33 @@ local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
     end
 end
 
+--###########
+--加载保存数据
+--###########
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+
+panel:RegisterEvent('LFG_COMPLETION_REWARD')
+panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+panel:RegisterEvent('ISLAND_COMPLETED')
+
+panel:RegisterEvent('LFG_UPDATE_RANDOM_INFO')
+panel:RegisterEvent('START_LOOT_ROLL')
+
+panel:RegisterEvent('PVP_MATCH_COMPLETE')
+
+panel:RegisterEvent('CORPSE_IN_RANGE')--仅限战场，释放, 复活
+panel:RegisterEvent('PLAYER_DEAD')
+panel:RegisterEvent('AREA_SPIRIT_HEALER_IN_RANGE')
+
+panel:RegisterEvent('LFG_ROLE_CHECK_ROLE_CHOSEN')
+panel:RegisterEvent('LFG_ROLE_CHECK_DECLINED')
+panel:RegisterEvent('LFG_QUEUE_STATUS_UPDATE')
+panel:RegisterEvent('UPDATE_BATTLEFIELD_STATUS')
+panel:RegisterEvent('GROUP_LEFT')
+panel:RegisterEvent('PLAYER_ROLES_ASSIGNED')--职责确认
+
+
 panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
     if event == "ADDON_LOADED" then
         if arg1==id then
@@ -1297,7 +1297,6 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
                 Init()
                 panel:UnregisterEvent('ADDON_LOADED')
             end
-            panel:RegisterEvent("PLAYER_LOGOUT")
         end
 
     elseif event == "PLAYER_LOGOUT" then
