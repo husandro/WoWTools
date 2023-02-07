@@ -1,6 +1,7 @@
 local id, e = ...
 local panel=CreateFrame("Frame")
 e.WoWSave={}
+e.GroupFrame={}--UnitFrame.lua set_PartyFrame()
 
 --########
 --玩家装等
@@ -26,21 +27,38 @@ local function getPlayerInfo(guid)--取得玩家信息
         local class= UnitClassBase(unit)
         if class then
             r, g, b, hex= GetClassColor(class)
+            if hex then
+                hex= '|c'..hex
+            end
         end
 
         if not itemLevel and  e.UnitItemLevel[guid] and e.UnitItemLevel[guid].level then
             itemLevel=  e.UnitItemLevel[guid].level
         end
+        local specID= GetInspectSpecialization(unit)
         e.UnitItemLevel[guid] = {--玩家装等
             itemLevel= itemLevel,
-            specID= GetInspectSpecialization(unit),
+            specID= specID,
             name= name,
             realm= realm,
-            col='|c'..hex,
+            col= hex,
             r=r,
             g=g,
             b=b,
         }
+
+        local frame=e.GroupFrame[unit]--UnitFrame.lua set_PartyFrame()
+        if frame then
+            if frame.PartyMemberOverlay and frame.PartyMemberOverlay.itemLevel and itemLevel then
+                frame.PartyMemberOverlay.itemLevel:SetText(hex and (hex..itemLevel) or itemLevel)
+            end
+            if frame.classTexture and specID then--UnitFrame.lua set_UnitFrame_Update()--职业, 图标， 颜色
+                local texture= select(4, GetSpecializationInfoByID(specID))
+                if texture then
+                    SetPortraitToTexture(frame.classTexture, texture)
+                end
+            end
+        end
     end
 end
 
@@ -401,7 +419,7 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
         e.Player.fanction= UnitFactionGroup('player')
 
     elseif event=='PLAYER_EQUIPMENT_CHANGED' or event=='PLAYER_SPECIALIZATION_CHANGED' or event=='PLAYER_AVG_ITEM_LEVEL_UPDATE' then--更新自已
-        if event=='PLAYER_SPECIALIZATION_CHANGED' and arg1~='player' and UnitInParty(arg1) then
+        if event=='PLAYER_SPECIALIZATION_CHANGED' and UnitInParty(arg1) then
             NotifyInspect(arg1)--队伍数据收集
         else
             NotifyInspect('player')--取得,自已, 装等

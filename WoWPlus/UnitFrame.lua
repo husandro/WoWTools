@@ -42,7 +42,7 @@ local function set_PlayerFrame()--PlayerFrame.lua
     end)
     PlayerCastingBarFrame:SetFrameStrata('TOOLTIP')--设置为， 最上层
     set_SetTextColor(PlayerCastingBarFrame.Text, R,G,B)--颜色
-    PlayerCastingBarFrame.castingText=e.Cstr(PlayerCastingBarFrame, nil, nil, nil, {R,G,B}, nil, 'RIGHT')
+    PlayerCastingBarFrame.castingText= e.Cstr(PlayerCastingBarFrame, nil, nil, nil, {R,G,B}, nil, 'RIGHT')
     PlayerCastingBarFrame.castingText:SetDrawLayer('OVERLAY', 2)
     PlayerCastingBarFrame.castingText:SetPoint('RIGHT', PlayerCastingBarFrame.ChargeFlash, 'RIGHT')
     PlayerCastingBarFrame:HookScript('OnUpdate', function(self, elapsed)--玩家, 施法, 时间
@@ -180,6 +180,10 @@ local function set_PartyFrame()--PartyFrame.lua
                             end
                         end
                     end)
+
+                    frame.itemLevel= e.Cstr(frame, 10)--队友, 装等
+                    frame.itemLevel:SetPoint('BOTTOM', memberFrame.portrait, 'BOTTOM')
+                    e.GroupFrame[unit]= memberFrame
                 end
 
                 if frame.RaidTargetIcon then
@@ -200,13 +204,23 @@ local function set_PartyFrame()--PartyFrame.lua
                         set_SetRaidTarget(frame.RaidTargetIcon, unit)--设置,标记
                         set_Party_Target_Changed(frame.TotPortrait, unit)
                         set_Paerty_Casting(frame.frame, unit, true)
+
+                        local guid= UnitGUID(unit)--队友, 装等
+                        if guid and e.UnitItemLevel[guid] and e.UnitItemLevel[guid].level then
+                            frame.itemLevel:SetText(e.UnitItemLevel[guid].level)
+                        elseif CheckInteractDistance(unit, 1) and CanInspect(unit) then
+                            NotifyInspect(unit)--取得装等
+                        end
                     else
                         frame:UnregisterAllEvents()
                         frame.RaidTargetIcon:SetShown(false)
                         frame.TotPortrait:SetShown(false)
                         frame.frame:UnregisterAllEvents()
                         frame.frame.texture:SetTexture(0)
+                        
+                        frame.itemLevel:SetText('')
                     end
+
                 end
             end
         end
@@ -231,9 +245,13 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
         if not UnitExists(unit) or not (r and g and b) then
             return
         end
-        local class=e.Class(unit, nil, true)--职业, 图标
+        
         if not self.classTexture then
             self.classTexture= self:CreateTexture(nil,'OVERLAY', nil, 7)
+            self.mask= self:CreateMaskTexture()
+            self.mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
+            self.mask:SetAllPoints(self.classTexture);
+            self.classTexture:AddMaskTexture(self.mask)
             if unit=='target' or unit=='focus' then
                 self.classTexture:SetPoint('TOPRIGHT', self.portrait, 'TOPLEFT',0,10)
                 if unit=='target' then--移动, 队长图标，TargetFrame.lua
@@ -249,20 +267,25 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                 self.classTexture:SetPoint('TOPLEFT', self.portrait, 'TOPRIGHT',-14,10)
             end
             self.classTexture:SetSize(20,20)
-
---[[            if self.healthbar then
-                set_SetShadowOffset(self.healthbar.LeftText)--字本, 阴影
-                set_SetShadowOffset(self.healthbar.TextString)
-                set_SetShadowOffset(self.healthbar.RightText)
-            end
-            if self.manabar then
-                set_SetShadowOffset(self.manabar.LeftText)
-                set_SetShadowOffset(self.manabar.TextString)
-                set_SetShadowOffset(self.manabar.RightText)
-            end
-            set_SetShadowOffset(self.name)]]
         end
-        self.classTexture:SetAtlas(class or 0)
+
+        local guid= UnitGUID(unit)--颜色
+        if guid and e.UnitItemLevel[guid] and e.UnitItemLevel[guid].specID then
+            local texture= select(4, GetSpecializationInfoByID(e.UnitItemLevel[guid].specID))
+            if texture then
+                SetPortraitToTexture(self.classTexture, texture)
+            end
+        else
+            local class= e.Class(unit, nil, true)--职业, 图标
+            if class then
+                self.classTexture:SetAtlas(class)
+            else
+                self.classTexture:SetTexture(0)
+            end
+            if CheckInteractDistance(unit, 1) and CanInspect(unit) then
+                NotifyInspect(unit)--取得装等
+            end
+        end
 
         if self.name then
             set_SetTextColor(self.name, r,g,b)--名称, 颜色
@@ -823,5 +846,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='PLAYER_LOOT_SPEC_UPDATED' or event=='PLAYER_SPECIALIZATION_CHANGED' then
         set_LootSpecialization()--拾取专精
+
     end
 end)
