@@ -264,7 +264,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
             else
                 self.classTexture:SetPoint('TOPLEFT', self.portrait, 'TOPRIGHT',-14,10)
             end
-           
+
             self.classPortrait= self:CreateTexture(nil, 'OVERLAY', nil,7)--加个外框
             self.classPortrait:SetAtlas('DK-Base-Rune-CDFill')
             self.classPortrait:SetPoint('CENTER', self.classTexture)
