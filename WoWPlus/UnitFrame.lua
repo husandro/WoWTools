@@ -181,9 +181,9 @@ local function set_PartyFrame()--PartyFrame.lua
                         end
                     end)
 
-                    frame.itemLevel= e.Cstr(frame, 10)--队友, 装等
+                    --[[frame.itemLevel= e.Cstr(frame, 10)--队友, 装等
                     frame.itemLevel:SetPoint('BOTTOM', memberFrame.portrait, 'BOTTOM')
-                    e.GroupFrame[unit]= memberFrame
+                    e.GroupFrame[unit]= memberFrame]]
                 end
 
                 if frame.RaidTargetIcon then
@@ -205,19 +205,18 @@ local function set_PartyFrame()--PartyFrame.lua
                         set_Party_Target_Changed(frame.TotPortrait, unit)
                         set_Paerty_Casting(frame.frame, unit, true)
 
-                        local guid= UnitGUID(unit)--队友, 装等
+                        --[[local guid= UnitGUID(unit)--队友, 装等
                         if guid and e.UnitItemLevel[guid] and e.UnitItemLevel[guid].level then
                             frame.itemLevel:SetText(e.UnitItemLevel[guid].level)
                         elseif CheckInteractDistance(unit, 1) and CanInspect(unit) then
                             NotifyInspect(unit)--取得装等
-                        end
+                        end]]
                     else
                         frame:UnregisterAllEvents()
                         frame.RaidTargetIcon:SetShown(false)
                         frame.TotPortrait:SetShown(false)
                         frame.frame:UnregisterAllEvents()
                         frame.frame.texture:SetTexture(0)
-                        
                         frame.itemLevel:SetText('')
                     end
 
@@ -245,12 +244,12 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
         if not UnitExists(unit) or not (r and g and b) then
             return
         end
-        
+
         if not self.classTexture then
-            self.classTexture= self:CreateTexture(nil,'OVERLAY', nil, 7)
+            self.classTexture= self:CreateTexture(nil,'OVERLAY', nil, 6)
             self.mask= self:CreateMaskTexture()
             self.mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
-            self.mask:SetAllPoints(self.classTexture);
+            self.mask:SetAllPoints(self.classTexture)
             self.classTexture:AddMaskTexture(self.mask)
             if unit=='target' or unit=='focus' then
                 self.classTexture:SetPoint('TOPRIGHT', self.portrait, 'TOPLEFT',0,10)
@@ -266,10 +265,19 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
             else
                 self.classTexture:SetPoint('TOPLEFT', self.portrait, 'TOPRIGHT',-14,10)
             end
-            self.classTexture:SetSize(20,20)
+            self.classTexture:SetSize(18,18)
+
+            self.itemLevel= e.Cstr(self, 10)--装等
+            self.itemLevel:SetPoint('BOTTOM', self.name, 'TOP')
+
+            e.GroupFrame[unit]= {
+                    itemLevel= self.itemLevel,
+                    classTexture= self.classTexture
+            }
+
         end
 
-        local guid= UnitGUID(unit)--颜色
+        local guid= UnitGUID(unit)--职业, 天赋, 图标
         if guid and e.UnitItemLevel[guid] and e.UnitItemLevel[guid].specID then
             local texture= select(4, GetSpecializationInfoByID(e.UnitItemLevel[guid].specID))
             if texture then
@@ -285,6 +293,12 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
             if CheckInteractDistance(unit, 1) and CanInspect(unit) then
                 NotifyInspect(unit)--取得装等
             end
+        end
+        
+        if guid and e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLevel then----装等
+            self.itemLevel:SetText((e.UnitItemLevel[guid].col or '')..e.UnitItemLevel[guid].itemLevel)
+        else
+            self.itemLevel:SetText('')
         end
 
         if self.name then

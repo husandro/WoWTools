@@ -47,11 +47,14 @@ local function getPlayerInfo(guid)--取得玩家信息
             b=b,
         }
 
-        local frame=e.GroupFrame[unit]--UnitFrame.lua set_PartyFrame()
+        local frame= e.GroupFrame[unit]--UnitFrame.lua set_PartyFrame()
         if frame then
-            if frame.PartyMemberOverlay and frame.PartyMemberOverlay.itemLevel and itemLevel then
-                frame.PartyMemberOverlay.itemLevel:SetText(hex and (hex..itemLevel) or itemLevel)
+            --if frame.PartyMemberOverlay and frame.PartyMemberOverlay.itemLevel and itemLevel then
+            --frame.PartyMemberOverlay.itemLevel:SetText(hex and (hex..itemLevel) or itemLevel)
+            if frame.itemLevel and itemLevel then
+                frame.itemLevel:SetText(hex and (hex..itemLevel) or itemLevel)
             end
+
             if frame.classTexture and specID then--UnitFrame.lua set_UnitFrame_Update()--职业, 图标， 颜色
                 local texture= select(4, GetSpecializationInfoByID(specID))
                 if texture then
