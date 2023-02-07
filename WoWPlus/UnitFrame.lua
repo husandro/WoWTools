@@ -275,7 +275,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
             self.mask:SetAllPoints(self.classTexture)
             self.classTexture:AddMaskTexture(self.mask)
 
-            if not unit:find('boss') then
+            if not unit:find('boss') and self.unit~='player' then
                 self.itemLevel= e.Cstr(self, 10)--装等
                 if unit=='target' or unit=='focus' then
                     self.itemLevel:SetPoint('TOPLEFT', self.classTexture, 'TOPRIGHT')
@@ -309,12 +309,13 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
         end
         self.classPortrait:SetVertexColor(r,g,b,1)
 
-        if guid and e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLevel then----装等
-            self.itemLevel:SetText((e.UnitItemLevel[guid].col or '')..e.UnitItemLevel[guid].itemLevel)
-        else
-            self.itemLevel:SetText('')
+        if self.itemLevel then
+            if guid and e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLevel then----装等
+                self.itemLevel:SetText((e.UnitItemLevel[guid].col or '')..e.UnitItemLevel[guid].itemLevel)
+            else
+                self.itemLevel:SetText('')
+            end
         end
-
         if self.name then
             set_SetTextColor(self.name, r,g,b)--名称, 颜色
             if unit:find('pet') or UnitIsUnit(unit, 'pet') then
@@ -403,8 +404,8 @@ local function set_LootSpecialization()--拾取专精
                 if not PlayerFrame.lootSpecTexture then
                     PlayerFrame.lootSpecTexture= PlayerFrame:CreateTexture(nil,'OVERLAY', nil, 6)
                     PlayerFrame.lootSpecTexture:SetSize(14,14)
-                    if PlayerFrame.itemLevel then
-                        PlayerFrame.lootSpecTexture:SetPoint('TOPRIGHT', PlayerFrame.itemLevel, 'TOPLEFT',-2,0)
+                    if PlayerFrame.classTexture then
+                        PlayerFrame.lootSpecTexture:SetPoint('TOPRIGHT', PlayerFrame.classTexture, 'TOPLEFT',-2,0)
                     else
                         PlayerFrame.lootSpecTexture:SetPoint('TOPLEFT', PlayerFrame.portrait, 'TOPRIGHT',-34,10)
                     end
