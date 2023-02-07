@@ -64,8 +64,8 @@ function e.GetGroupGuidDate()--队伍数据收集
                         subgroup= subgroup,
                         combatRole= role or combatRole
                     }
-                    e.GroupGuid[guid]=tab
-                    e.GroupGuid[GetUnitName(unit, true)]=tab
+                    e.GroupGuid[guid]= tab
+                    e.GroupGuid[GetUnitName(unit, true)]= tab
                     if (not e.UnitItemLevel[guid] or not e.UnitItemLevel[guid].itemLevel ) and CheckInteractDistance(unit, 1) and CanInspect(unit) then
                         table.insert(UnitTab, unit)
                         NotifyInspect(unit)--取得装等
@@ -84,8 +84,8 @@ function e.GetGroupGuidDate()--队伍数据收集
                         unit= unit,
                         combatRole= UnitGroupRolesAssigned(unit)
                     }
-                    e.GroupGuid[guid]=tab
-                    e.GroupGuid[GetUnitName(unit, true)]=tab
+                    e.GroupGuid[guid]= tab
+                    e.GroupGuid[GetUnitName(unit, true)]= tab
 
                     if (not e.UnitItemLevel[guid] or not e.UnitItemLevel[guid].itemLevel ) and CheckInteractDistance(unit, 1) and CanInspect(unit) then
                         table.insert(UnitTab, unit)

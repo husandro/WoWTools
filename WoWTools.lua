@@ -253,7 +253,7 @@ e.Icon={
 
 e.PlayerLink=function(name, guid) --玩家超链接
     if not guid and name then
-        local unit=e.GroupGuid[name] and e.GroupGuid[name].unit
+        local unit= e.GroupGuid[name] and e.GroupGuid[name].unit
         if unit then
             guid= UnitGUID(unit)
         end

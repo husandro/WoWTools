@@ -55,7 +55,7 @@ local function setGroupTips()--队伍信息提示
     end
 
     local subgroup, combatRole
-    local tab=e.GroupGuid[UnitGUID('player')]
+    local tab=e.GroupGuid[e.Player.guid]
     if tab then
         subgroup= tab and tab.subgroup
         combatRole=tab.combatRole
@@ -93,7 +93,7 @@ local function setGroupTips()--队伍信息提示
 end
 
 local function setText(text)--处理%s
-    local groupTab=e.GroupGuid[UnitGUID('player')]
+    local groupTab= e.GroupGuid[e.Player.guid]
     if text:find('%%s') and groupTab and groupTab.subgroup then
         text= text:format(groupTab.subgroup..' '..GROUP..' ')
     else

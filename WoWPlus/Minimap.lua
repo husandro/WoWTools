@@ -3,23 +3,15 @@ local addName= HUD_EDIT_MODE_MINIMAP_LABEL
 local Save={scale=0.85, ZoomOut=true, vigentteButton=e.Player.husandro, vigentteButtonShowText=true }
 local panel=CreateFrame("Frame")
 
-local function set_ZoomOut_Event()--更新地区时,缩小化地图, 事件
-    if Save.ZoomOut then
-        panel:RegisterEvent('PLAYER_ENTERING_WORLD')
-        panel:RegisterEvent("ZONE_CHANGED_NEW_AREA")
-        panel:RegisterEvent('ZONE_CHANGED')
-    else
-        panel:UnregisterEvent('PLAYER_ENTERING_WORLD')
-        panel:UnregisterEvent("ZONE_CHANGED_NEW_AREA")
-        panel:UnregisterEvent('ZONE_CHANGED')
-    end
-end
 local function set_ZoomOut()--更新地区时,缩小化地图
-    local value= Minimap:GetZoomLevels()
-    if value~=0 then
-        Minimap:SetZoom(0)
+    if Save.ZoomOut then
+        local value= Minimap:GetZoomLevels()
+        if value~=0 then
+            Minimap:SetZoom(0)
+        end
     end
 end
+
 local function set_minimapTrackingShowAll()--追踪,镇民
     if Save.minimapTrackingShowAll~=nil then
         C_CVar.SetCVar('minimapTrackingShowAll', not Save.minimapTrackingShowAll and '0' or '1' )
@@ -139,40 +131,31 @@ end
 --小地图, 标记, 文本
 --#################
 local function set_vigentteButton_Event()
-    --local bat= UnitAffectingCombat('player')
-    --if Save.vigentteButton and Save.vigentteButtonShowText and not bat and not IsInInstance() then
     if Save.vigentteButton and Save.vigentteButtonShowText and not IsInInstance() then
         panel.vigentteButton:RegisterEvent('AREA_POIS_UPDATED')
         panel.vigentteButton:RegisterEvent('VIGNETTES_UPDATED')
         panel.vigentteButton:RegisterEvent('QUEST_DATA_LOAD_RESULT')
         panel.vigentteButton:RegisterEvent('QUEST_COMPLETE')
     else
-        --[[panel.vigentteButton:UnregisterEvent('AREA_POIS_UPDATED')
-        panel.vigentteButton:UnregisterEvent('VIGNETTES_UPDATED')
-        panel.vigentteButton:UnregisterEvent('QUEST_DATA_LOAD_RESULT')
-        panel.vigentteButton:UnregisterEvent('QUEST_COMPLETE')]]
-        panel:UnregisterAllEvents()
+        panel.vigentteButton:UnregisterAllEvents()
     end
-    --if Save.vigentteButton and Save.vigentteButtonShowText and bat then
+
     if Save.vigentteButton and Save.vigentteButtonShowText then
         panel.vigentteButton.text:SetText('')
     end
 end
+
 local uiMapIDsTab= {2026, 2025, 2024, 2023, 2022}--地图, areaPoiIDs
 local questIDTab= {--世界任务, 监视, ID
     [74378]=true,
 }
-local vigentteButtonSetTexting
+
 local function set_vigentteButton_Text()
     if not Save.vigentteButtonShowText then
         panel.vigentteButton.text:SetText('')
-        vigentteButtonSetTexting=nil
         return
     end
-    if vigentteButtonSetTexting then
-        return
-    end
-    vigentteButtonSetTexting=true
+
     local text
     if e.Player.level==70 then--世界任务, 监视
         for questID,_ in pairs(questIDTab) do
@@ -243,7 +226,6 @@ local function set_vigentteButton_Text()
         end
     end
     panel.vigentteButton.text:SetText(text or '..')
-    vigentteButtonSetTexting=nil
 end
 
 local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
@@ -332,15 +314,7 @@ local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
             e.tips:Hide()
             ResetCursor()
         end)
-        --panel.vigentteButton:RegisterEvent('PLAYER_REGEN_DISABLED')
-        --panel.vigentteButton:RegisterEvent('PLAYER_REGEN_ENABLED')
         panel.vigentteButton:SetScript("OnEvent", function(self, event, arg1, arg2)
-            --[[if event=='PLAYER_REGEN_DISABLED' or event=='PLAYER_REGEN_ENABLED' then
-                set_vigentteButton_Event()
-                if event=='PLAYER_REGEN_ENABLED' and Save.vigentteButton and Save.vigentteButtonShowText then
-                    set_vigentteButton_Text()
-                end
-            else]]
             if event=='QUEST_DATA_LOAD_RESULT' and arg2 and questIDTab[arg1] then
                 set_vigentteButton_Text()
             else
@@ -387,7 +361,6 @@ local function set_MinimapMenu()--小地图, 添加菜单
             tooltipText= id..' '..addName,
             func= function()
                 Save.ZoomOut= not Save.ZoomOut and true or nil
-                set_ZoomOut_Event()--更新地区时,缩小化地图
                 set_ZoomOut()--更新地区时,缩小化地图
             end
         }
@@ -425,24 +398,20 @@ local function Init()
     set_MinimapCluster()--缩放
     set_ExpansionLandingPageMinimapButton()--盟约图标
     set_MinimapMenu()--小地图, 添加菜单
-
-    if Save.ZoomOut then
-        set_ZoomOut_Event()--更新地区时, 缩小化地图
-    end
-    if Save.minimapTrackingShowAll~=nil then
-        set_minimapTrackingShowAll()--追踪,镇民
-    end
-
-    --set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
+    set_minimapTrackingShowAll()--追踪,镇民
 end
 
 --###########
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-
+panel:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+panel:RegisterEvent('ZONE_CHANGED')
+panel:RegisterEvent("PLAYER_ENTERING_WORLD")
+panel:RegisterEvent('MINIMAP_PING')
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1==id then
+    if event == "ADDON_LOADED" then
+        if  arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
              --添加控制面板        
@@ -466,6 +435,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Init()
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
+        end
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
@@ -476,14 +446,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='PLAYER_ENTERING_WORLD' or event=='ZONE_CHANGED_NEW_AREA' or event=='ZONE_CHANGED' then
         set_ZoomOut()--更新地区时,缩小化地图
 
-        if event=='PLAYER_ENTERING_WORLD' and Save.vigentteButton then
-            C_Timer.After(2, function()
-                vigentteButtonSetTexting= nil
-                set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
-            end)
+        if event=='PLAYER_ENTERING_WORLD' then
+            set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
         end
-
-    elseif event=='VIGNETTE_MINIMAP_UPDATED' or event=='VIGNETTES_UPDATED' then
-        set_vigentteButton_Event()--小地图, 标记, 文本        
+    elseif event=='MINIMAP_PING' then
+        print(id)
     end
 end)

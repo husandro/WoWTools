@@ -26,7 +26,7 @@ local function setCHAT_MSG_SYSTEM(text)
     roll= roll and tonumber(roll)
 
     if minText=='1' and maxText=='100' and name and roll then
-        local unit=e.GroupGuid[name] and e.GroupGuid[name].unit
+        local unit= e.GroupGuid[name] and e.GroupGuid[name].unit
         if unit then
             if unit=='player' then
                 name=e.Player.col..COMBATLOG_FILTER_STRING_ME..'|r'
