@@ -217,7 +217,6 @@ local function set_PartyFrame()--PartyFrame.lua
                         frame.TotPortrait:SetShown(false)
                         frame.frame:UnregisterAllEvents()
                         frame.frame.texture:SetTexture(0)
-                        frame.itemLevel:SetText('')
                     end
 
                 end
@@ -265,11 +264,14 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
             else
                 self.classTexture:SetPoint('TOPLEFT', self.portrait, 'TOPRIGHT',-14,10)
             end
-            self.classTexture:SetSize(18,18)
+            self.classTexture:SetSize(16,16)
 
             self.itemLevel= e.Cstr(self, 10)--装等
-            self.itemLevel:SetPoint('BOTTOM', self.name, 'TOP')
-
+            if unit=='target' or unit=='focus' then
+                self.itemLevel:SetPoint('TOPLEFT', self.classTexture, 'TOPRIGHT')
+            else
+                self.itemLevel:SetPoint('TOPRIGHT', self.classTexture, 'TOPLEFT',5,0)
+            end
             e.GroupFrame[unit]= {
                     itemLevel= self.itemLevel,
                     classTexture= self.classTexture
@@ -294,7 +296,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                 NotifyInspect(unit)--取得装等
             end
         end
-        
+
         if guid and e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLevel then----装等
             self.itemLevel:SetText((e.UnitItemLevel[guid].col or '')..e.UnitItemLevel[guid].itemLevel)
         else
@@ -389,8 +391,8 @@ local function set_LootSpecialization()--拾取专精
                 if not PlayerFrame.lootSpecTexture then
                     PlayerFrame.lootSpecTexture= PlayerFrame:CreateTexture(nil,'OVERLAY', nil, 7)
                     PlayerFrame.lootSpecTexture:SetSize(20,20)
-                    if PlayerFrame.classTexture then
-                        PlayerFrame.lootSpecTexture:SetPoint('RIGHT', PlayerFrame.classTexture, 'LEFT')
+                    if PlayerFrame.itemLevel then
+                        PlayerFrame.lootSpecTexture:SetPoint('TOPRIGHT', PlayerFrame.itemLevel, 'TOPLEFT')
                     else
                         PlayerFrame.lootSpecTexture:SetPoint('TOPLEFT', PlayerFrame.portrait, 'TOPRIGHT',-34,10)
                     end
