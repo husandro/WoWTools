@@ -409,15 +409,15 @@ local function set_LootSpecialization()--拾取专精
                         PlayerFrame.lootSpecTexture:SetPoint('TOPLEFT', PlayerFrame.portrait, 'TOPRIGHT',-34,10)
                     end
 
-                    local lootPortrait= PlayerFrame:CreateTexture(nil, 'OVERLAY', nil,7)
-                    lootPortrait:SetAtlas('DK-Base-Rune-CDFill')
-                    lootPortrait:SetPoint('CENTER', PlayerFrame.lootSpecTexture)
-                    lootPortrait:SetSize(20,20)
+                    PlayerFrame.lootPortrait= PlayerFrame:CreateTexture(nil, 'OVERLAY', nil,7)
+                    PlayerFrame.lootPortrait:SetAtlas('DK-Base-Rune-CDFill')
+                    PlayerFrame.lootPortrait:SetPoint('CENTER', PlayerFrame.lootSpecTexture)
+                    PlayerFrame.lootPortrait:SetSize(20,20)
                     local class= UnitClassBase('player')
                     if class then
                         local r, g ,b = GetClassColor(class)
                         if r and g and b then
-                            lootPortrait:SetVertexColor(r,g,b,1)
+                            PlayerFrame.lootPortrait:SetVertexColor(r,g,b,1)
                         end
                     end
                     --[[self.mask= self:CreateMaskTexture()
@@ -433,6 +433,7 @@ local function set_LootSpecialization()--拾取专精
     end
     if PlayerFrame.lootSpecTexture then
         PlayerFrame.lootSpecTexture:SetShown(find)
+        PlayerFrame.lootPortrait:SetShown(find)
     end
 
     if PetHitIndicator then
