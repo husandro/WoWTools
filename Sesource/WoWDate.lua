@@ -55,7 +55,7 @@ function e.GetGroupGuidDate()--队伍数据收集
     if IsInRaid() then
         for index= 1, MAX_RAID_MEMBERS do --GetNumGroupMembers() do
             local unit= 'raid'..index
-            if UnitExists(unit) and not UnitIsUnit('player', unit) then
+            if UnitExists(unit) then
                 local guid= UnitGUID(unit)
                 local name, rank, subgroup, level, class, fileName, zone, online, isDead, role, isML, combatRole = GetRaidRosterInfo(index)
                 if guid then

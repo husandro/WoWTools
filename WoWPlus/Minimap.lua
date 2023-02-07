@@ -433,7 +433,7 @@ local function Init()
         set_minimapTrackingShowAll()--追踪,镇民
     end
 
-    set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
+    --set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
 end
 
 --###########
@@ -476,8 +476,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='PLAYER_ENTERING_WORLD' or event=='ZONE_CHANGED_NEW_AREA' or event=='ZONE_CHANGED' then
         set_ZoomOut()--更新地区时,缩小化地图
 
-        if event=='PLAYER_ENTERING_WORLD' then
-            set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
+        if event=='PLAYER_ENTERING_WORLD' and Save.vigentteButton then
+            C_Timer.After(2, function()
+                vigentteButtonSetTexting= nil
+                set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
+            end)
         end
 
     elseif event=='VIGNETTE_MINIMAP_UPDATED' or event=='VIGNETTES_UPDATED' then

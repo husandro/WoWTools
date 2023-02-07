@@ -94,7 +94,7 @@ end
 
 local function setText(text)--处理%s
     local groupTab=e.GroupGuid[UnitGUID('player')]
-    if text:find('%%s') and groupTab.subgroup then
+    if text:find('%%s') and groupTab and groupTab.subgroup then
         text= text:format(groupTab.subgroup..' '..GROUP..' ')
     else
         text= text:gsub('%%s','')
