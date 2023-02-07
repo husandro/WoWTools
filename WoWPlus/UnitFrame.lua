@@ -268,7 +268,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
 
             self.itemLevel= e.Cstr(self, 10)--装等
             if unit=='target' or unit=='focus' then
-                self.itemLevel:SetPoint('TOPLEFT', self.classTexture, 'TOPRIGHT')
+                self.itemLevel:SetPoint('TOPLEFT', self.classTexture, 'TOPRIGHT',-2,0)
             else
                 self.itemLevel:SetPoint('TOPRIGHT', self.classTexture, 'TOPLEFT',5,0)
             end
@@ -390,9 +390,9 @@ local function set_LootSpecialization()--拾取专精
             if texture then
                 if not PlayerFrame.lootSpecTexture then
                     PlayerFrame.lootSpecTexture= PlayerFrame:CreateTexture(nil,'OVERLAY', nil, 7)
-                    PlayerFrame.lootSpecTexture:SetSize(20,20)
+                    PlayerFrame.lootSpecTexture:SetSize(14,14)
                     if PlayerFrame.itemLevel then
-                        PlayerFrame.lootSpecTexture:SetPoint('TOPRIGHT', PlayerFrame.itemLevel, 'TOPLEFT')
+                        PlayerFrame.lootSpecTexture:SetPoint('TOPRIGHT', PlayerFrame.itemLevel, 'TOPLEFT',2,0)
                     else
                         PlayerFrame.lootSpecTexture:SetPoint('TOPLEFT', PlayerFrame.portrait, 'TOPRIGHT',-34,10)
                     end
@@ -628,10 +628,6 @@ local function set_RaidFrame()--设置,团队
                 NotifyInspect(frame.unit)--取得装等
                 local guid= UnitGUID(frame.unit)
                 if guid and e.UnitItemLevel[guid] then
-                    if not e.UnitItemLevel[guid].itemLevel then
-                        NotifyInspect(frame.unit)--取得装等
-                        print(frame.unit, '取得装等')
-                    end
                     frame.unitItemLevel= e.UnitItemLevel[guid].itemLevel
                 end
             end
