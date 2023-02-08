@@ -58,7 +58,7 @@ local function set_Instance_Difficulty()
             if difficultyID then
                 local name2, _, isHeroic, isChallengeMode, _, displayMythic = GetDifficultyInfo(difficultyID)
                 name= name2
-                if isHeroic and displayMythic or isChallengeMode then
+                if isHeroic and displayMythic then
                     PlayerFrame.instanceFrame.texture:SetVertexColor(1, 0, 1, 1)
                 elseif isHeroic then
                     PlayerFrame.instanceFrame.texture:SetVertexColor(0, 1, 0, 1)
@@ -362,34 +362,34 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                 self.lootPortrait:SetVertexColor(r,g,b,1)
                 set_LootSpecialization()--拾取专精
 
-                self.instanceFrame= CreateFrame("Frame", nil, self)--副本, 地下城，指示
-                self.instanceFrame:SetFrameLevel(self:GetFrameLevel())
-                self.instanceFrame:SetPoint('RIGHT', self.lootSpecTexture, 'LEFT',-2, -1)
-                self.instanceFrame:SetSize(16,16)
-                self.instanceFrame.texture= self.instanceFrame:CreateTexture(nil,'BORDER', nil, 1)
-                self.instanceFrame.texture:SetAllPoints(self.instanceFrame)
-                self.instanceFrame.texture:SetAtlas('DungeonSkull')
-                local portrait= self.instanceFrame:CreateTexture(nil, 'BORDER',nil,2)--外框
-                portrait:SetAtlas('DK-Base-Rune-CDFill')
-                portrait:SetPoint('CENTER')
-                portrait:SetSize(20,20)
-                portrait:SetVertexColor(r,g,b,1)
-
-                self.instanceFrame2= CreateFrame("Frame", nil, self.instanceFrame)--副本, 地下城，指示
+                self.instanceFrame2= CreateFrame("Frame", nil, self)--副本, 地下城，指示
                 self.instanceFrame2:SetFrameLevel(self:GetFrameLevel())
-                self.instanceFrame2:SetPoint('RIGHT', self.instanceFrame, 'LEFT',1, -5)
+                self.instanceFrame2:SetPoint('RIGHT', self.lootSpecTexture, 'LEFT',-2, -1)
                 self.instanceFrame2:SetSize(16,16)
                 self.instanceFrame2.texture= self.instanceFrame2:CreateTexture(nil,'BORDER', nil, 1)
                 self.instanceFrame2.texture:SetAllPoints(self.instanceFrame2)
                 self.instanceFrame2.texture:SetAtlas('DungeonSkull')
-                portrait= self.instanceFrame2:CreateTexture(nil, 'BORDER',nil,2)--外框
+                local portrait= self.instanceFrame2:CreateTexture(nil, 'BORDER',nil,2)--外框
                 portrait:SetAtlas('DK-Base-Rune-CDFill')
                 portrait:SetPoint('CENTER')
                 portrait:SetSize(20,20)
                 portrait:SetVertexColor(r,g,b,1)
                 self.instanceFrame2.text= e.Cstr(self.instanceFrame2,8)
                 self.instanceFrame2.text:SetPoint('TOP')
-                --self.instanceFrame2.text:SetTextColor(r,g,b)
+
+                self.instanceFrame= CreateFrame("Frame", nil, self)--副本, 地下城，指示
+                self.instanceFrame:SetFrameLevel(self:GetFrameLevel())
+                self.instanceFrame:SetPoint('RIGHT', self.instanceFrame2, 'LEFT',1, -5)
+
+                self.instanceFrame:SetSize(16,16)
+                self.instanceFrame.texture= self.instanceFrame:CreateTexture(nil,'BORDER', nil, 1)
+                self.instanceFrame.texture:SetAllPoints(self.instanceFrame)
+                self.instanceFrame.texture:SetAtlas('DungeonSkull')
+                portrait= self.instanceFrame:CreateTexture(nil, 'BORDER',nil,2)--外框
+                portrait:SetAtlas('DK-Base-Rune-CDFill')
+                portrait:SetPoint('CENTER')
+                portrait:SetSize(20,20)
+                portrait:SetVertexColor(r,g,b,1)
             end
 
             e.GroupFrame[unit]= {
@@ -836,24 +836,6 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
     CompactPartyFrame:SetMovable(true)
 end
 
---#########
---MirrorTimer
---#########
-local elapsedValue=0
-local function set_MirrorTimerMixin(self, elapsed)
-    if elapsedValue>0.5 then
-        if self.value then
-            if not self.valueText then
-                self.valueText=e.Cstr(self,nil,nil,nil,nil,nil,'RIGHT')
-                self.valueText:SetPoint('BOTTOMRIGHT',-7, 4)
-            end
-            self.valueText:SetText(format('%i', self.value))
-        end
-        elapsedValue= 0
-    else
-        elapsedValue= elapsedValue+elapsed
-    end
-end
 
 --######
 --初始化
@@ -870,8 +852,25 @@ local function Init()
 
     set_UnitFrame_Update()--职业, 图标， 颜色
 
+    --###############
+    --MirrorTimer.lua
+    --###############
     if MirrorTimer1 then
-        MirrorTimer1:HookScript('OnUpdate', set_MirrorTimerMixin)--MirrorTimer.lua
+        local elapsedValue=0
+        MirrorTimer1:HookScript('OnUpdate', function(self, elapsed)
+            if elapsedValue>0.5 then
+                if self.value then
+                    if not self.valueText then
+                        self.valueText=e.Cstr(self,nil,nil,nil,nil,nil,'RIGHT')
+                        self.valueText:SetPoint('BOTTOMRIGHT',-7, 4)
+                    end
+                    self.valueText:SetText(format('%i', self.value))
+                end
+                elapsedValue= 0
+            else
+                elapsedValue= elapsedValue+elapsed
+            end
+        end)
     end
 
     --#########
@@ -924,6 +923,8 @@ local function Init()
             end
         end)
     end
+
+    
 end
 
 --###########

@@ -437,6 +437,57 @@ local function Init()
     set_ExpansionLandingPageMinimapButton()--盟约图标
     set_MinimapMenu()--小地图, 添加菜单
     set_minimapTrackingShowAll()--追踪,镇民
+
+    if MinimapCluster then
+        if MinimapCluster.InstanceDifficulty.Instance.Border then
+            local classFilename= UnitClassBase('player')
+            if classFilename then
+                local r,g,b=GetClassColor(classFilename)
+                if r and g and b then
+                    MinimapCluster.InstanceDifficulty.Instance.Border:SetVertexColor(r,g,b)--外框， 颜色
+                end
+            end
+            if MinimapCluster.InstanceDifficulty.Instance.Text then
+                e.Cstr(nil,14, MinimapCluster.InstanceDifficulty.Instance.Text, MinimapCluster.InstanceDifficulty.Instance.Text)--字体，大小
+            end
+        end
+        MinimapCluster:HookScript('OnEvent', function(self)
+            if self.InstanceDifficulty.Instance:IsShown() then
+                local frame= self.InstanceDifficulty.Instance.Background
+                local _, _, difficultyID, _, _, _, _, _, _, LfgDungeonID = GetInstanceInfo()
+                if difficultyID==24 or difficultyID==33 then--时光
+                    frame:SetVertexColor(0, 0.7, 1 ,1)
+
+                elseif LfgDungeonID then
+                    frame:SetVertexColor(0, 0, 1, 1)
+
+                elseif difficultyID then
+                    local _, groupType, isHeroic, isChallengeMode, displayHeroic, displayMythic = GetDifficultyInfo(difficultyID)
+                    if groupType=='raid' then
+                        if displayMythic then
+                            frame:SetVertexColor(1, 0, 1, 1)
+                        elseif displayHeroic then
+                            frame:SetVertexColor(0, 1, 0, 1)
+                        else
+                            frame:SetVertexColor(1, 1, 1, 1)
+                        end
+                    else
+                        if isChallengeMode then
+                            frame:SetVertexColor(1, 0.82, 0, 1)
+                        elseif isHeroic and displayMythic then
+                            frame:SetVertexColor(1, 0, 1, 1)
+                        elseif isHeroic then
+                            frame:SetVertexColor(0,1,0,1)
+                        else
+                            frame:SetVertexColor(1, 1, 1, 1)
+                        end
+                    end
+                else
+                    frame:SetVertexColor(1, 1, 1, 1)
+                end
+            end
+        end)
+    end
 end
 
 --###########

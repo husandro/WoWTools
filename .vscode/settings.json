@@ -1242,7 +1242,9 @@
         "OverrideActionBarLeaveFrameLeaveButton",
         "PetFrame",
         "ERR_RAID_DIFFICULTY_CHANGED_S",
-        "ERR_LEGACY_RAID_DIFFICULTY_CHANGED_S"
+        "ERR_LEGACY_RAID_DIFFICULTY_CHANGED_S",
+        "InstanceDifficultyMixin",
+        "MinimapClusterMixin"
     ],
     "Lua.diagnostics.disable": [
     ]
