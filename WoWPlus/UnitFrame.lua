@@ -127,7 +127,7 @@ local function set_PlayerFrame()--PlayerFrame.lua
         end
     end)
     hooksecurefunc('PlayerFrame_UpdateGroupIndicator', function()--处理,小队, 号码
-        if IsInRaid() then
+        if IsInRaid() and PlayerFrameGroupIndicatorText then
             local text= PlayerFrameGroupIndicatorText:GetText()
             local num= text and text:match('(%d)')
             if num then
