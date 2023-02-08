@@ -391,17 +391,17 @@ end
 
 e.GetDifficultyColor = function(string, difficultyID)--DifficultyUtil.lua
     if string and difficultyID then
-        if difficultyID==17 or difficultyID==7 then--随机
+        if difficultyID==17 or difficultyID==7 then--随机, 蓝色
             return '|cff0000ff'..string..'|r' --rgb= 0,0,1
-        elseif difficultyID==1 or difficultyID==3 or difficultyID==4 or difficultyID==9 or difficultyID==14 then--普通
+        elseif difficultyID==1 or difficultyID==3 or difficultyID==4 or difficultyID==9 or difficultyID==14 then--普通, 白色
             return '|cffffffff'..string..'|r'--rgb= 1,1,1
-        elseif difficultyID==2 or difficultyID==5 or difficultyID==6 or difficultyID==16 then--英雄
+        elseif difficultyID==2 or difficultyID==5 or difficultyID==6 or difficultyID==16 then--英雄, 绿色
             return '|cffffff00'..string..'|r'--rgb= 0,1,0
-        elseif difficultyID==16 or difficultyID==23 then--史诗
+        elseif difficultyID==16 or difficultyID==23 then--史诗, 紫色
             return '|cffff00ff'..string..'|r'--rgb= 1,0,1
-        elseif difficultyID==8 then--挑战        
+        elseif difficultyID==8 then--挑战, 金色
             return '|cFFFF8000'..string..'|r'--rgb= 1,0.82,0
-        elseif difficultyID==24 or difficultyID==33 then--时光
+        elseif difficultyID==24 or difficultyID==33 then--时光, 天蓝色
             return '|cFF00B2FF'..string..'|r'-- rgb= 0,0.7,1
         else
             return string
