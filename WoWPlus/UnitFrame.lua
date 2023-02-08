@@ -259,8 +259,10 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                         targetFrameContentContextual.GuideIcon:SetPoint('RIGHT', self.classTexture,'LEFT')
                     end
                 end
-            elseif unit=='pet' then
+            elseif self.unit=='pet' then
                 self.classTexture:SetPoint('LEFT', self.name,-10,0)
+            elseif self.unit=='player' then
+                self.classTexture:SetPoint('TOPLEFT', self.portrait, 'TOPRIGHT',-14,8)
             else
                 self.classTexture:SetPoint('TOPLEFT', self.portrait, 'TOPRIGHT',-14,10)
             end
