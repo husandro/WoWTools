@@ -379,7 +379,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
 
                 self.instanceFrame= CreateFrame("Frame", nil, self)--副本, 地下城，指示
                 self.instanceFrame:SetFrameLevel(self:GetFrameLevel())
-                self.instanceFrame:SetPoint('RIGHT', self.instanceFrame2, 'LEFT',1, -5)
+                self.instanceFrame:SetPoint('RIGHT', self.instanceFrame2, 'LEFT',1, -6)
 
                 self.instanceFrame:SetSize(16,16)
                 self.instanceFrame.texture= self.instanceFrame:CreateTexture(nil,'BORDER', nil, 1)

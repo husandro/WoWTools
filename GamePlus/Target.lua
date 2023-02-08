@@ -89,7 +89,7 @@ local function set_NAME_PLATE_UNIT_ADDED(unit)
         local text
         local type = UnitClassification(unit)
         if type=='rareelite' or type=='rare' or type=='worldboss' then--or type=='elite'
-            text= '|A:VignetteEvent:18:18|a'
+            text= '|A:VignetteEvent:20:20|a'
         else
             text= Get_Quest_Progress(unit)
         end
