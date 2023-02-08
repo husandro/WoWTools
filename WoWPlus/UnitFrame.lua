@@ -276,12 +276,6 @@ local function set_PartyFrame()--PartyFrame.lua
                         set_Party_Target_Changed(frame.TotPortrait, unit)
                         set_Paerty_Casting(frame.frame, unit, true)
 
-                        --[[local guid= UnitGUID(unit)--队友, 装等
-                        if guid and e.UnitItemLevel[guid] and e.UnitItemLevel[guid].level then
-                            frame.itemLevel:SetText(e.UnitItemLevel[guid].level)
-                        elseif CheckInteractDistance(unit, 1) and CanInspect(unit) then
-                            NotifyInspect(unit)--取得装等
-                        end]]
                     else
                         frame:UnregisterAllEvents()
                         frame.RaidTargetIcon:SetShown(false)
@@ -731,23 +725,6 @@ local function set_RaidFrame()--设置,团队
             end
         end
     end)
-        --[[
-        if not frame.statusText or not frame.optionTable.displayStatusText then
-            return
-        end
-	    local distance, checkedDistance = UnitDistanceSquared(frame.displayedUnit)
-        if ( checkedDistance ) then
-
-           
-            local inDistance = distance < DISTANCE_THRESHOLD_SQUARED
-            if ( inDistance ~= frame.inDistance ) then
-                local text= e.GetUnitMapName(frame.displayedUnit)--单位, 地图名称
-                if text then
-                    text= '|cnGREEN_FONT_COLOR:'..text..'|r'
-                    frame.statusText:SetText(text)
-                end
-            end
-        end]]
 
     hooksecurefunc('CompactUnitFrame_UpdateStatusText', function(frame)
         local connected= UnitIsConnected(frame.displayedUnit)
@@ -961,6 +938,7 @@ panel:RegisterEvent('PLAYER_ENTERING_WORLD')--副本, 地下城，指示
 local dungeonDifficultyStr= ERR_DUNGEON_DIFFICULTY_CHANGED_S:gsub('%%s', '(.+)')--"地下城难度已设置为%s。"
 local raidDifficultyStr= ERR_RAID_DIFFICULTY_CHANGED_S:gsub('%%s', '(.+)')--"团队副本难度设置为%s。"
 local legacyRaidDifficultyStr= ERR_LEGACY_RAID_DIFFICULTY_CHANGED_S:gsub('%%s', '(.+)')--"已将经典团队副本难度设置为%s。"
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
@@ -1018,7 +996,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
         set_Instance_Difficulty()--副本, 地下城，指示
 
-    elseif event=='CHAT_MSG_SYSTEM' then--"地下城难度已设置为%s。" "团队副本难度设置为%s。"
+    elseif event=='CHAT_MSG_SYSTEM' then--"地下城难度已设置为%s。团队副本难度设置为%s。已将经典团队副本难度设置为%s。
         if arg1 and (arg1:find(dungeonDifficultyStr) or arg1:find(raidDifficultyStr) or arg1:find(legacyRaidDifficultyStr)) then
             set_Instance_Difficulty()--副本, 地下城，指示
         end
