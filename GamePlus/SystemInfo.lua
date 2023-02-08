@@ -367,27 +367,6 @@ local function Init()
     if Save.equipmetLevel or Save.durabiliy then
         set_Durabiliy_EquipLevel_Event()--设置装等,耐久度,事件
     end
-
-    if MainMenuBarVehicleLeaveButton then
-        local Taxielapsed=0
-        MainMenuBarVehicleLeaveButton:HookScript('OnUpdate', function(self, elapsed)--Taxi, 移动, 速度
-            if Taxielapsed>0.3 then
-                if not self.speedText then
-                    self.speedText= e.Cstr(self, 12)
-                    self.speedText:SetPoint('TOP', self, 'TOP')
-                end
-                local speed= GetUnitSpeed("player")
-                if speed==0 then
-                    self.speedText:SetText('')
-                else
-                    self.speedText:SetFormattedText('%.0f', speed * 100 / BASE_MOVEMENT_SPEED)
-                end
-                Taxielapsed=0
-            else
-                Taxielapsed= Taxielapsed+ elapsed
-            end
-        end)
-    end
 end
 
 panel:RegisterEvent("ADDON_LOADED")

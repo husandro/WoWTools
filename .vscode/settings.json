@@ -1237,7 +1237,12 @@
         "GenericPlayerChoiceToggleButton",
         "MainMenuBarVehicleLeaveButton",
         "MinimapZoneText",
-        "COLLECTIONS"
+        "COLLECTIONS",
+        "ERR_DUNGEON_DIFFICULTY_CHANGED_S",
+        "OverrideActionBarLeaveFrameLeaveButton",
+        "PetFrame",
+        "ERR_RAID_DIFFICULTY_CHANGED_S",
+        "ERR_LEGACY_RAID_DIFFICULTY_CHANGED_S"
     ],
     "Lua.diagnostics.disable": [
     ]

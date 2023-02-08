@@ -4,11 +4,6 @@ local Save={raidFrameScale=0.8, notRaidFrame=not e.Player.husandro }--{SetShadow
 local panel=CreateFrame("Frame")
 local R,G,B= GetClassColor(UnitClassBase('player'))
 
---[[local function set_SetShadowOffset(self)--设置, 阴影
-    if self then
-        self:SetShadowOffset(1, -1)
-    end
-end]]
 local function set_SetTextColor(self, r, g, b)--设置, 字体
     if self and self:IsShown() and r and g and b then
         self:SetTextColor(r, g, b)
@@ -26,6 +21,82 @@ local function set_SetRaidTarget(texture, unit)--设置, 标记 TargetFrame.lua
         end
     end
 end
+
+--#######
+--拾取专精
+--#######
+local function set_LootSpecialization()--拾取专精
+    if PlayerFrame and PlayerFrame.lootSpecTexture then
+        local find=false
+        if PlayerFrame.unit~='vehicle' then
+            local currentSpec = GetSpecialization()
+            local specID= currentSpec and GetSpecializationInfo(currentSpec)
+            if specID then
+                local lootSpecID = GetLootSpecialization()
+                if lootSpecID and lootSpecID~=specID then
+                    local texture= select(4, GetSpecializationInfoByID(lootSpecID))
+                    if texture then
+                        SetPortraitToTexture(PlayerFrame.lootSpecTexture, texture)
+                        find=true
+                    end
+                end
+            end
+        end
+        PlayerFrame.lootSpecTexture:SetShown(find)
+        PlayerFrame.lootPortrait:SetShown(find)
+    end
+end
+
+--################
+--副本, 地下城，指示
+--################
+local function set_Instance_Difficulty()
+    if PlayerFrame and PlayerFrame.instanceFrame then
+        local ins, find, find2, name= IsInInstance(), false, false, nil
+        if not ins and PlayerFrame.unit~= 'vehicle' then
+            local difficultyID = GetDungeonDifficultyID()
+            if difficultyID then
+                local name2, _, isHeroic, isChallengeMode, _, displayMythic = GetDifficultyInfo(difficultyID)
+                name= name2
+                if isHeroic and displayMythic or isChallengeMode then
+                    PlayerFrame.instanceFrame.texture:SetVertexColor(1, 0, 1, 1)
+                elseif isHeroic then
+                    PlayerFrame.instanceFrame.texture:SetVertexColor(0, 1, 0, 1)
+                else
+                    PlayerFrame.instanceFrame.texture:SetVertexColor(1, 1, 1, 1)
+                end
+                find= true
+            end
+            if find then
+                local text
+                local difficultyID2= GetRaidDifficultyID()
+                if difficultyID2 then
+                    local name3, _, _, _, displayHeroic, displayMythic = GetDifficultyInfo(difficultyID2)
+                    if name3~=name or not displayMythic then
+                        if displayMythic then
+                            PlayerFrame.instanceFrame2.texture:SetVertexColor(1, 0, 1, 1)
+                        elseif displayHeroic then
+                            PlayerFrame.instanceFrame2.texture:SetVertexColor(0, 1, 0, 1)
+                        else
+                            PlayerFrame.instanceFrame2.texture:SetVertexColor(1, 1, 1, 1)
+                        end
+                        find2=true
+                        if not displayMythic then
+                            local difficultyID3= GetLegacyRaidDifficultyID()
+                            if difficultyID3 then
+                                text= select(10, GetDifficultyInfo(difficultyID3))
+                            end
+                        end
+                    end
+                end
+                PlayerFrame.instanceFrame2.text:SetText(text or '')
+            end
+        end
+        PlayerFrame.instanceFrame:SetShown(not ins and find)
+        PlayerFrame.instanceFrame2:SetShown(not ins and find2)
+    end
+end
+
 
 --####
 --玩家
@@ -68,9 +139,13 @@ local function set_PlayerFrame()--PlayerFrame.lua
     PlayerFrameGroupIndicatorMiddle:SetTexture(0)
     PlayerFrameGroupIndicatorRight:SetTexture(0)
 
-    if PlayerHitIndicator then
+    if PlayerHitIndicator then--玩家
         PlayerHitIndicator:ClearAllPoints()
         PlayerHitIndicator:SetPoint('BOTTOMLEFT', (PlayerFrame.PlayerFrameContainer and PlayerFrame and PlayerFrame.PlayerFrameContainer.PlayerPortrait) or  PlayerHitIndicator:GetParent(), 'TOPLEFT')
+    end
+    if PetHitIndicator then--宠物
+        PetHitIndicator:ClearAllPoints()
+        PetHitIndicator:SetPoint('TOPLEFT', PetPortrait or PetHitIndicator:GetParent(), 'BOTTOMLEFT')
     end
 end
 
@@ -180,10 +255,6 @@ local function set_PartyFrame()--PartyFrame.lua
                             end
                         end
                     end)
-
-                    --[[frame.itemLevel= e.Cstr(frame, 10)--队友, 装等
-                    frame.itemLevel:SetPoint('BOTTOM', memberFrame.portrait, 'BOTTOM')
-                    e.GroupFrame[unit]= memberFrame]]
                 end
 
                 if frame.RaidTargetIcon then
@@ -230,7 +301,7 @@ end
 --################
 local function set_UnitFrame_Update()--职业, 图标， 颜色
     hooksecurefunc('UnitFrame_Update', function(self, isParty)--UnitFrame.lua
-        local unit= self.overrideName or self.unit
+        local unit= self.unit
         local r,g,b
         if unit=='player' then
             r,g,b= R,G,B
@@ -285,6 +356,48 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                     self.itemLevel:SetPoint('TOPRIGHT', self.classTexture, 'TOPLEFT',2,0)
                 end
             end
+
+            if self.unit=='player' and self~= PetFrame then
+                self.lootSpecTexture= self:CreateTexture(nil,'BORDER', nil, 6)--拾取专精
+                self.lootSpecTexture:SetSize(14,14)
+                self.lootSpecTexture:SetPoint('TOPRIGHT', self.classTexture, 'TOPLEFT', -0.5,4)
+                self.lootPortrait= self:CreateTexture(nil, 'OVERLAY', nil,7)--外框
+                self.lootPortrait:SetAtlas('DK-Base-Rune-CDFill')
+                self.lootPortrait:SetPoint('CENTER', self.lootSpecTexture)
+                self.lootPortrait:SetSize(20,20)
+                self.lootPortrait:SetVertexColor(r,g,b,1)
+                set_LootSpecialization()--拾取专精
+
+                self.instanceFrame= CreateFrame("Frame", nil, self)--副本, 地下城，指示
+                self.instanceFrame:SetFrameLevel(self:GetFrameLevel())
+                self.instanceFrame:SetPoint('RIGHT', self.lootSpecTexture, 'LEFT',-2, -1)
+                self.instanceFrame:SetSize(16,16)
+                self.instanceFrame.texture= self.instanceFrame:CreateTexture(nil,'BORDER', nil, 1)
+                self.instanceFrame.texture:SetAllPoints(self.instanceFrame)
+                self.instanceFrame.texture:SetAtlas('DungeonSkull')
+                local portrait= self.instanceFrame:CreateTexture(nil, 'BORDER',nil,2)--外框
+                portrait:SetAtlas('DK-Base-Rune-CDFill')
+                portrait:SetPoint('CENTER')
+                portrait:SetSize(20,20)
+                portrait:SetVertexColor(r,g,b,1)
+
+                self.instanceFrame2= CreateFrame("Frame", nil, self.instanceFrame)--副本, 地下城，指示
+                self.instanceFrame2:SetFrameLevel(self:GetFrameLevel())
+                self.instanceFrame2:SetPoint('RIGHT', self.instanceFrame, 'LEFT',1, -5)
+                self.instanceFrame2:SetSize(16,16)
+                self.instanceFrame2.texture= self.instanceFrame2:CreateTexture(nil,'BORDER', nil, 1)
+                self.instanceFrame2.texture:SetAllPoints(self.instanceFrame2)
+                self.instanceFrame2.texture:SetAtlas('DungeonSkull')
+                portrait= self.instanceFrame2:CreateTexture(nil, 'BORDER',nil,2)--外框
+                portrait:SetAtlas('DK-Base-Rune-CDFill')
+                portrait:SetPoint('CENTER')
+                portrait:SetSize(20,20)
+                portrait:SetVertexColor(r,g,b,1)
+                self.instanceFrame2.text= e.Cstr(self.instanceFrame2,8)
+                self.instanceFrame2.text:SetPoint('TOP')
+                --self.instanceFrame2.text:SetTextColor(r,g,b)
+            end
+
             e.GroupFrame[unit]= {
                     itemLevel= self.itemLevel,
                     classTexture= self.classTexture
@@ -293,7 +406,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
         end
 
         local guid= UnitGUID(unit)--职业, 天赋, 图标
-        if guid and e.UnitItemLevel[guid] and e.UnitItemLevel[guid].specID then
+        if unit~='vehicle' and guid and e.UnitItemLevel[guid] and e.UnitItemLevel[guid].specID then
             local texture= select(4, GetSpecializationInfoByID(e.UnitItemLevel[guid].specID))
             if texture then
                 SetPortraitToTexture(self.classTexture, texture)
@@ -305,14 +418,19 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
             else
                 self.classTexture:SetTexture(0)
             end
-            if CheckInteractDistance(unit, 1) and CanInspect(unit) then
+            if CanInspect(unit) and CheckInteractDistance(unit, 1) then
                 NotifyInspect(unit)--取得装等
             end
         end
         self.classPortrait:SetVertexColor(r,g,b,1)
 
+        if self==PlayerFrame then
+            set_Instance_Difficulty()--副本, 地下城，指示
+            set_LootSpecialization()--拾取专精
+        end
+
         if self.itemLevel then
-            if guid and e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLevel then----装等
+            if guid and e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLevel then--装等
                 self.itemLevel:SetText((e.UnitItemLevel[guid].col or '')..e.UnitItemLevel[guid].itemLevel)
             else
                 self.itemLevel:SetText('')
@@ -391,59 +509,6 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
 
 end
 
---#######
---拾取专精
---#######
-local function set_LootSpecialization()--拾取专精
-    local currentSpec = GetSpecialization()
-    local specID= currentSpec and GetSpecializationInfo(currentSpec)
-    local find=false
-    if specID then
-        local lootSpecID = GetLootSpecialization()
-        if lootSpecID and lootSpecID~=specID then
-            local texture= select(4, GetSpecializationInfoByID(lootSpecID))
-            if texture then
-                if not PlayerFrame.lootSpecTexture then
-                    PlayerFrame.lootSpecTexture= PlayerFrame:CreateTexture(nil,'OVERLAY', nil, 6)
-                    PlayerFrame.lootSpecTexture:SetSize(14,14)
-                    if PlayerFrame.classTexture then
-                        PlayerFrame.lootSpecTexture:SetPoint('TOPRIGHT', PlayerFrame.classTexture, 'TOPLEFT',-2,0)
-                    else
-                        PlayerFrame.lootSpecTexture:SetPoint('TOPLEFT', PlayerFrame.portrait, 'TOPRIGHT',-34,10)
-                    end
-
-                    PlayerFrame.lootPortrait= PlayerFrame:CreateTexture(nil, 'OVERLAY', nil,7)
-                    PlayerFrame.lootPortrait:SetAtlas('DK-Base-Rune-CDFill')
-                    PlayerFrame.lootPortrait:SetPoint('CENTER', PlayerFrame.lootSpecTexture)
-                    PlayerFrame.lootPortrait:SetSize(20,20)
-                    local class= UnitClassBase('player')
-                    if class then
-                        local r, g ,b = GetClassColor(class)
-                        if r and g and b then
-                            PlayerFrame.lootPortrait:SetVertexColor(r,g,b,1)
-                        end
-                    end
-                    --[[self.mask= self:CreateMaskTexture()
-                    self.mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
-                    self.mask:SetAllPoints(self.classTexture)
-                    self.classTexture:AddMaskTexture(self.mask)]]
-
-                end
-                SetPortraitToTexture(PlayerFrame.lootSpecTexture, texture)
-                find=true
-            end
-        end
-    end
-    if PlayerFrame.lootSpecTexture then
-        PlayerFrame.lootSpecTexture:SetShown(find)
-        PlayerFrame.lootPortrait:SetShown(find)
-    end
-
-    if PetHitIndicator then
-        PetHitIndicator:ClearAllPoints()
-        PetHitIndicator:SetPoint('TOPLEFT', PetPortrait or PetHitIndicator:GetParent(), 'BOTTOMLEFT')
-    end
-end
 
 --####
 --团队
@@ -832,7 +897,56 @@ local function Init()
         MirrorTimer1:HookScript('OnUpdate', set_MirrorTimerMixin)--MirrorTimer.lua
     end
 
-    C_Timer.After(2, set_LootSpecialization)--拾取专精
+    --#########
+    --移动，速度
+    --#########
+    if OverrideActionBarLeaveFrameLeaveButton then--vehicle
+        local leaveElapsed=0
+        OverrideActionBarLeaveFrameLeaveButton:SetScript('OnUpdate', function(self, elapsed)
+            if leaveElapsed>0.3 then
+                local speed= PlayerFrame.unit and GetUnitSpeed(PlayerFrame.unit)
+                if speed then
+                    if not self.speedText then
+                        self.speedText= e.Cstr(self, 12)
+                        self.speedText:SetPoint('TOP', self, 'TOP')
+                    end
+                    if speed==0 then
+                        self.speedText:SetText('')
+                    else
+                        self.speedText:SetFormattedText('%.0f', speed * 100 / BASE_MOVEMENT_SPEED)
+                    end
+                    leaveElapsed=0
+                end
+            else
+                leaveElapsed= leaveElapsed+ elapsed
+            end
+        end)
+        OverrideActionBarLeaveFrameLeaveButton:SetScript('OnHide', function(self)
+            if self.speedText then
+                self.speedText:SetText('')
+            end
+        end)
+    end
+    if MainMenuBarVehicleLeaveButton then--Taxi, 移动, 速度
+        local Taxielapsed=0
+        MainMenuBarVehicleLeaveButton:HookScript('OnUpdate', function(self, elapsed)
+            if Taxielapsed>0.3 then
+                if not self.speedText then
+                    self.speedText= e.Cstr(self, 12)
+                    self.speedText:SetPoint('TOP', self, 'TOP')
+                end
+                local speed= GetUnitSpeed("player")
+                if speed==0 then
+                    self.speedText:SetText('')
+                else
+                    self.speedText:SetFormattedText('%.0f', speed * 100 / BASE_MOVEMENT_SPEED)
+                end
+                Taxielapsed=0
+            else
+                Taxielapsed= Taxielapsed+ elapsed
+            end
+        end)
+    end
 end
 
 --###########
@@ -843,6 +957,10 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent('PLAYER_LOOT_SPEC_UPDATED')--拾取专精
 panel:RegisterUnitEvent('PLAYER_SPECIALIZATION_CHANGED','player')
 
+panel:RegisterEvent('PLAYER_ENTERING_WORLD')--副本, 地下城，指示
+local dungeonDifficultyStr= ERR_DUNGEON_DIFFICULTY_CHANGED_S:gsub('%%s', '(.+)')--"地下城难度已设置为%s。"
+local raidDifficultyStr= ERR_RAID_DIFFICULTY_CHANGED_S:gsub('%%s', '(.+)')--"团队副本难度设置为%s。"
+local legacyRaidDifficultyStr= ERR_LEGACY_RAID_DIFFICULTY_CHANGED_S:gsub('%%s', '(.+)')--"已将经典团队副本难度设置为%s。"
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
@@ -892,5 +1010,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='PLAYER_LOOT_SPEC_UPDATED' or event=='PLAYER_SPECIALIZATION_CHANGED' then
         set_LootSpecialization()--拾取专精
 
+    elseif event=='PLAYER_ENTERING_WORLD' then--副本, 地下城，指示
+        if not IsInInstance() then
+            self:RegisterEvent('CHAT_MSG_SYSTEM')
+        else
+            self:UnregisterEvent('CHAT_MSG_SYSTEM')
+        end
+        set_Instance_Difficulty()--副本, 地下城，指示
+
+    elseif event=='CHAT_MSG_SYSTEM' then--"地下城难度已设置为%s。" "团队副本难度设置为%s。"
+        if arg1 and (arg1:find(dungeonDifficultyStr) or arg1:find(raidDifficultyStr) or arg1:find(legacyRaidDifficultyStr)) then
+            set_Instance_Difficulty()--副本, 地下城，指示
+        end
     end
 end)

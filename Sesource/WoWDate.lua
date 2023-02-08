@@ -49,7 +49,7 @@ local function getPlayerInfo(guid)--取得玩家信息
 
         --UnitFrame.lua set_UnitFrame_Update()--职业, 图标， 颜色
         local frame= e.GroupFrame[unit]
-        if frame then
+        if frame and frame.unit~='vehicle' then
             if frame.itemLevel and itemLevel then--装等
                 frame.itemLevel:SetText(hex and (hex..itemLevel) or itemLevel)
             end

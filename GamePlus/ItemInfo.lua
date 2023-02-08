@@ -5,7 +5,7 @@ local panel=CreateFrame("Frame")
 
 local chargesStr= ITEM_SPELL_CHARGES:gsub('%%d', '%(%%d%+%)')--(%d+)次
 local keyStr= CHALLENGE_MODE_KEYSTONE_NAME:gsub('%%s','(.+) ')--钥石
-local equipStr= 	EQUIPMENT_SETS:gsub('%%s','(.+)')
+local equipStr= EQUIPMENT_SETS:gsub('%%s','(.+)')
 local pvpItemStr= PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在竞技场和战场中将物品等级提高至%d。"
 local upgradeStr= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(%%d%+/%%d%+)')-- "升级：%s/%s"
 local size= 10--字体大小
