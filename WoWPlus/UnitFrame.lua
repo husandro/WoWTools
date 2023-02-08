@@ -458,20 +458,32 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
     --############
     --去掉生命条 % extStatusBar.lua
     --############
+    local deadText= e.onlyChinse and '死亡' or DEAD
     hooksecurefunc('TextStatusBar_UpdateTextStringWithValues', function(statusFrame, textString, value, valueMin, valueMax)
-        if value and value>0 then
-            if textString and textString:IsShown() then
-                local text= textString:GetText()
-                if text then
-                    if text=='100%' then
-                        text= ''
+        if value>0 then--statusFrame.unit
+            if textString:IsShown() then
+                    local text
+                    if value==1 and statusFrame.unit and  UnitIsGhost(statusFrame.unit) then
+                        text= '|A:poi-soulspiritghost:18:18|a'..deadText
                     else
-                        text= text:gsub('%%', '')
+                        text= textString:GetText()
                     end
-                    textString:SetText(text)
-                end
+                    if text then
+                        if text=='100%' then
+                            text= ''
+                        else
+                            text= text:gsub('%%', '')
+                        end
+                        textString:SetText(text)
+                    end
+
             elseif statusFrame.LeftText and statusFrame.LeftText:IsShown() then
-                local text= statusFrame.LeftText:GetText()
+                local text
+                if value==1 and statusFrame.unit and  UnitIsGhost(statusFrame.unit) then
+                    text= '|A:poi-soulspiritghost:18:18|a'..deadText
+                else
+                    text= statusFrame.LeftText:GetText()
+                end
                 if text then
                     if text=='100%' then
                         text= ''
@@ -481,9 +493,19 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                     statusFrame.LeftText:SetText(text)
                 end
             end
+        elseif statusFrame.zeroText and statusFrame.DeadText and statusFrame.DeadText:IsShown() then
+            local text= deadText--死亡
+            if statusFrame.unit then
+                if UnitIsGhost(statusFrame.unit) then--灵魂
+                    text= '|A:poi-soulspiritghost:18:18|a'..text
+                elseif UnitIsDead(statusFrame.unit) then--死亡
+                    text= '|A:deathrecap-icon-tombstone:18:18|a'..text
+                end
+            end
+            statusFrame.DeadText:SetText(text)
         end
     end)
-
+    --hooksecurefunc('SetTextStatusBarTextZeroText', function(self)
     --###################
     --隐藏, 队伍, DPS 图标
     --###################
@@ -517,19 +539,11 @@ local function set_RaidFrame()--设置,团队
             frame.RaidTargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
             frame.RaidTargetIcon:SetPoint('TOPRIGHT')
             frame.RaidTargetIcon:SetSize(13,13)
-            --frame:RegisterEvent("RAID_TARGET_UPDATE")
             set_SetRaidTarget(frame.RaidTargetIcon, unit)
-        --[[系统, 自带
-            frame.ToTargetIcon=  frame:CreateTexture(nil,'OVERLAY', nil, 6)--BOSS, 目标
-            frame.ToTargetIcon:SetAtlas('worldstate-capturebar-leftglow-safedangerous-embercourt')
-            frame.ToTargetIcon:SetAllPoints(frame)
-            frame.ToTargetIcon:SetShown(false)
-            ]]
         end
     end)
     hooksecurefunc('CompactUnitFrame_UpdateUnitEvents', function(frame)
         frame:RegisterEvent("RAID_TARGET_UPDATE")
-        --frame:RegisterUnitEvent("UNIT_TARGET", 'boss1', 'boss2', 'boss3', 'boss4', 'boss5', 'boss6', 'boss7', 'boss8')
     end)
     hooksecurefunc('CompactUnitFrame_UnregisterEvents', function(frame)
         frame:UnregisterEvent("RAID_TARGET_UPDATE")
@@ -539,8 +553,6 @@ local function set_RaidFrame()--设置,团队
         if self.RaidTargetIcon and self.unit then
             if event=='RAID_TARGET_UPDATE'then
                 set_SetRaidTarget(self.RaidTargetIcon, self.unit)
-            --elseif event=='UNIT_TARGET' and arg1 then
-                --self.ToTargetIcon:SetShown(UnitIsUnit(self.unit, arg1..'target'))
             end
         end
     end)
@@ -728,19 +740,21 @@ local function set_RaidFrame()--设置,团队
 
     hooksecurefunc('CompactUnitFrame_UpdateStatusText', function(frame)
         local connected= UnitIsConnected(frame.displayedUnit)
+        local dead= UnitIsDead(frame.displayedUnit)
+        local ghost= UnitIsGhost(frame.displayedUnit)
         if frame.background then
-            frame.background:SetShown(connected)
+            frame.background:SetShown(connected and not ghost and not dead)
         end
 
         if not frame.statusText or not frame.optionTable.displayStatusText or not frame.statusText:IsShown() then--not frame.optionTable.displayStatusText then
             return
         end
 
-        if ( not connected ) then
+        if ( not connected ) then--没连接
             frame.statusText:SetFormattedText("\124T%s.tga:0\124t", FRIENDS_TEXTURE_DND)
-        elseif UnitIsGhost(frame.displayedUnit) then
+        elseif ghost then--灵魂
             frame.statusText:SetText('|A:poi-soulspiritghost:0:0|a')
-        elseif UnitIsDead(frame.displayedUnit) then
+        elseif dead then--死亡
             frame.statusText:SetText('|A:deathrecap-icon-tombstone:0:0|a')
         elseif ( frame.optionTable.healthText == "health" ) then
             frame.statusText:SetText(e.MK(UnitHealth(frame.displayedUnit),1))
