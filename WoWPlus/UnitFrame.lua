@@ -440,7 +440,6 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                 self.keystoneText= e.Cstr(self)
                 self.keystoneText:SetPoint('LEFT', self.PlayerFrameContent.PlayerFrameContentContextual.LeaderIcon, 'RIGHT')
                 self.keystoneText:SetTextColor(r, g, b)
-                print(self.PlayerFrameContent.PlayerFrameContentContextual.LeaderIcon)
             end
 
             e.GroupFrame[unit]= {

@@ -451,8 +451,8 @@ local function Init()
                 e.Cstr(nil,14, MinimapCluster.InstanceDifficulty.Instance.Text, MinimapCluster.InstanceDifficulty.Instance.Text)--字体，大小
             end
         end
-        MinimapCluster:HookScript('OnEvent', function(self)
-            if self.InstanceDifficulty.Instance:IsShown() then
+        MinimapCluster:HookScript('OnEvent', function(self, event)--Minimap.lua
+            if self.InstanceDifficulty.Instance and self.InstanceDifficulty.Instance:IsShown() then
                 local frame= self.InstanceDifficulty.Instance.Background
                 local _, _, difficultyID, _, _, _, _, _, _, LfgDungeonID = GetInstanceInfo()
                 if difficultyID==24 or difficultyID==33 then--时光
@@ -463,6 +463,7 @@ local function Init()
 
                 elseif difficultyID then
                     local _, groupType, isHeroic, isChallengeMode, displayHeroic, displayMythic = GetDifficultyInfo(difficultyID)
+                    
                     if groupType=='raid' then
                         if displayMythic then
                             frame:SetVertexColor(1, 0, 1, 1)
@@ -472,13 +473,15 @@ local function Init()
                             frame:SetVertexColor(1, 1, 1, 1)
                         end
                     else
-                        if isChallengeMode then
-                            frame:SetVertexColor(1, 0.82, 0, 1)
-                        elseif isHeroic and displayMythic then
+                        if isChallengeMode then--挑战
+                            if self.InstanceDifficulty.ChallengeMode and self.InstanceDifficulty.ChallengeMode.Background then
+                                self.InstanceDifficulty.ChallengeMode.Background:SetVertexColor(1,0.82,0,1)
+                            end
+                        elseif isHeroic and displayMythic then--史诗
                             frame:SetVertexColor(1, 0, 1, 1)
-                        elseif isHeroic then
+                        elseif isHeroic then--英雄
                             frame:SetVertexColor(0,1,0,1)
-                        else
+                        else--普通
                             frame:SetVertexColor(1, 1, 1, 1)
                         end
                     end

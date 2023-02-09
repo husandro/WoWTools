@@ -1245,7 +1245,10 @@
         "ERR_LEGACY_RAID_DIFFICULTY_CHANGED_S",
         "InstanceDifficultyMixin",
         "MinimapClusterMixin",
-        "PlayerFrame_GetPlayerFrameContentContextual"
+        "PlayerFrame_GetPlayerFrameContentContextual",
+        "EasyMenu",
+        "AUCTION_SUBCATEGORY_OTHER",
+        "MinimapCompassTexture"
     ],
     "Lua.diagnostics.disable": [
     ]

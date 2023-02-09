@@ -149,3 +149,6 @@ ChatButton\Say.lua
 ChatButton\Emoji.lua
 ##各种, 战斗时间
 ChatButton\CombatTimer.lua
+
+##副本, 挑战,之类
+##Instance\Explosives.lua
