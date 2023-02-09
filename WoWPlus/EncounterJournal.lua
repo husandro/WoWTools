@@ -509,7 +509,7 @@ local function Init()--冒险指南界面
     end)
     EncounterJournal.Worldboss:SetScript("OnLeave",function() e.tips:Hide() end)
 
-    if e.Player.levelMax then--UnitLevel("player") >= GetMaxLevelForPlayerExpansion()
+    if e.Player.levelMax then
         EncounterJournal.keystones =e.Cbtn(EncounterJournal.TitleContainer, nil ,true)--所有角色,挑战
         EncounterJournal.keystones:SetPoint('RIGHT', EncounterJournal.Worldboss, 'LEFT')
         EncounterJournal.keystones:SetNormalTexture(4352494)

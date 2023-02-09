@@ -71,6 +71,10 @@ local function find_Text(text)
 end
 local function Get_Quest_Progress(unit)--GameTooltip.lua --local questID= line and line.id
     if not UnitIsPlayer(unit) then
+        local type = UnitClassification(unit)
+        if type=='rareelite' or type=='rare' or type=='worldboss' then--or type=='elite'
+            return '|A:VignetteEvent:18:18|a'
+        end
         local tooltipData = C_TooltipInfo.GetUnit(unit)
         for i = 5, #tooltipData.lines do
             local line = tooltipData.lines[i]
@@ -86,13 +90,7 @@ end
 local function set_NAME_PLATE_UNIT_ADDED(unit)
     local plate = C_NamePlate.GetNamePlateForUnit(unit)
     if plate then
-        local text
-        local type = UnitClassification(unit)
-        if type=='rareelite' or type=='rare' or type=='worldboss' then--or type=='elite'
-            text= '|A:VignetteEvent:20:20|a'
-        else
-            text= Get_Quest_Progress(unit)
-        end
+        local text= Get_Quest_Progress(unit)
         if text and not plate.questProgress then
             local frame= plate.UnitFrame and plate.UnitFrame.healthBar or plate
             plate.questProgress= e.Cstr(frame, 10, nil, nil, nil, nil,'LEFT')

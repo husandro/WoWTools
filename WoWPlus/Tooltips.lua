@@ -579,7 +579,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             local raceName, raceFile= UnitRace(unit)
             local level
 
-            level= UnitLevel(unit)
+            level= UnitEffectiveLevel(unit)
             local text= sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a'
             level= MAX_PLAYER_LEVEL>level and '|cnGREEN_FONT_COLOR:'..level..'|r' or level
             --className= col and col..className..'|r' or className

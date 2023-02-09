@@ -353,7 +353,7 @@ end
 
 local function isRaidFinderDungeonDisplayable(dungeonID)--RaidFinder.lua
     local _, _, _, minLevel, maxLevel, _, _, _, expansionLevel = GetLFGDungeonInfo(dungeonID)
-    local myLevel = UnitLevel("player")
+    local myLevel = e.Player.level
     return myLevel >= minLevel and myLevel <= maxLevel and EXPANSION_LEVEL >= expansionLevel
 end
 local raidList=function(self, level, type)--团队本
