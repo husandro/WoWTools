@@ -29,7 +29,7 @@ local function set_Count()
         local unit = info.namePlateUnitToken or (info.UnitFrame and info.UnitFrame.unit)
         local guid= UnitExists(unit) and UnitGUID(unit)
         if guid then
-            if not select(6, strsplit("-", guid))== '120651' then
+            if select(6, strsplit("-", guid))== '120651' then
                 all= all+ 1
                 if Save.mark and not GetRaidTargetIndex(unit) then --标记
                     local t=9- all
