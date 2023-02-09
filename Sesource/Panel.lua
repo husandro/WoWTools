@@ -36,24 +36,43 @@ restButton:SetScript('OnMouseDown', function()
 end)
 
 
+--##############
+--Instance Panel
+--##############
+local instancePane= CreateFrame('Frame')
+instancePane.name = INSTANCE
+instancePane.parent =id;
+InterfaceOptions_AddCategory(instancePane)
 
 
-
+--##############
+--创建, 添加控制面板
+--##############
 local gamePlus=e.Cstr(panel)
 gamePlus:SetPoint('TOPLEFT', panel,'TOP', 0, -14)
 gamePlus:SetText('Game Plus')
 
-local lastWoW, lastGame
+local lastWoW, lastGame, lastInstance
 lastWoW, lastGame= reloadButton, gamePlus
---添加控制面板
-e.CPanel= function(name, value, GamePlus)
-    local check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    check.Text:SetText(name)
+
+e.CPanel= function(name, value, GamePlus, Instance)
+    local check=CreateFrame("CheckButton", nil, Instance and instancePane or panel, "InterfaceOptionsCheckButtonTemplate")
+    check.text:SetText(name)
     check:SetChecked(value)
-    if GamePlus then
+
+    if Instance then--副本, 大类
+        if not lastInstance then
+            check:SetPoint('TOPLEFT')
+            lastInstance= check
+        else
+            check:SetPoint('TOPLEFT', lastInstance, 'BOTTOMLEFT')
+        end
+
+    elseif GamePlus then--GamePlus, 大类
         check:SetPoint('TOPLEFT', lastGame, 'BOTTOMLEFT')
         lastGame=check
-    else
+
+    else--WoWPlus, 大类
         check:SetPoint('TOPLEFT', lastWoW, 'BOTTOMLEFT')
         lastWoW=check
     end

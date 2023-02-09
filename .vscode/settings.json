@@ -1248,7 +1248,17 @@
         "PlayerFrame_GetPlayerFrameContentContextual",
         "EasyMenu",
         "AUCTION_SUBCATEGORY_OTHER",
-        "MinimapCompassTexture"
+        "MinimapCompassTexture",
+        "English",
+        "LOCALE_enUS",
+        "LOCALE_koKR",
+        "LOCALE_frFR",
+        "LOCALE_deDE",
+        "LOCALE_esES",
+        "LOCALE_esMX",
+        "LOCALE_ruRU",
+        "LOCALE_ptBR",
+        "LOCALE_itIT"
     ],
     "Lua.diagnostics.disable": [
     ]
