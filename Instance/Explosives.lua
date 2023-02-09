@@ -74,10 +74,12 @@ local function set_Count()
         end
     end
     button.count:SetText(all>0 and all or '')
+
+    button:SetAlpha(all>0 and 1 or 0.3)
 end
 
 local function set_Button()
- 
+ --[[
     if not IsInInstance() or not C_ChallengeMode.IsChallengeModeActive() then
         set_Events(false)
         return
@@ -95,6 +97,7 @@ local function set_Button()
         set_Events(false)
         return
     end
+    ]]
     if not button then
         button= e.Cbtn(nil, nil, nil, nil, nil, true, {35,35})
         if Save.point then
@@ -116,37 +119,14 @@ local function set_Button()
         button:SetScript("OnEvent", set_Count)
         button.count= e.Cstr(button, 32, nil, nil, {1,1,1}, nil, 'CENTER')
         button.count:SetPoint('CENTER')
+        button:SetAlpha(0.3)
     end
 
     set_Events(true)
 end
 
---#####
---初始化
---#####
-local function Init()
-    --[[local tab={
-        ['enUS']= 'Explosives',
-        ['koKR']= '폭발물',
-        ['frFR']= 'Explosifs',
-        ['deDE']= 'Sprengstoff',
-        ['zhCN']= '爆炸物',
-        ['esES']= 'Explosivos',
-        ['zhTW']= '爆炸物',
-        ['esMX']= 'Explosivos',
-        --['ruRU']= nil,
-        ['ptBR']= 'Explosivos',
-        ['itIT']= 'Esplosivi',
-    }
-    panel.Name= tab[e.Player.Lo] or Save.name[e.Player.Lo]
-    ]]
-end
 
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('CHALLENGE_MODE_START')
-panel:RegisterEvent('CHALLENGE_MODE_COMPLETED')
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
-
 panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
     if event == "ADDON_LOADED" then
         if arg1==id then
@@ -181,7 +161,9 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
                         end
                     end
                     if find then
-                        Init()
+                        set_Button()
+                        panel:RegisterEvent('CHALLENGE_MODE_START')
+                        panel:RegisterEvent('PLAYER_ENTERING_WORLD')
                         panel:UnregisterEvent('ADDON_LOADED')
                     else
                         check.text:SetTextColor(0.8,0.8,0.8)
@@ -204,3 +186,26 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
         set_Button()
     end
 end)
+ --[[
+--#####
+--初始化
+--#####
+local function Init()
+    set_Button()
+   local tab={
+        ['enUS']= 'Explosives',
+        ['koKR']= '폭발물',
+        ['frFR']= 'Explosifs',
+        ['deDE']= 'Sprengstoff',
+        ['zhCN']= '爆炸物',
+        ['esES']= 'Explosivos',
+        ['zhTW']= '爆炸物',
+        ['esMX']= 'Explosivos',
+        --['ruRU']= nil,
+        ['ptBR']= 'Explosivos',
+        ['itIT']= 'Esplosivi',
+    }
+    panel.Name= tab[e.Player.Lo] or Save.name[e.Player.Lo]
+    
+end
+]]

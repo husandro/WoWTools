@@ -120,7 +120,7 @@ local function set_Keystones_Date()--挑战，数据
             for _, runs  in pairs(info) do
                 if runs and runs.level and runs.completed then
                     num= num+ 1
-                    if level< runs.level then
+                    if not level or level< runs.level then
                         level= runs.level
                     end
                 end
@@ -129,7 +129,7 @@ local function set_Keystones_Date()--挑战，数据
                 if level>=15 then
                     level= '|cnGREEN_FONT_COLOR:'..level..'|r'
                 end
-                text= text..'('..num..')'..level
+                text= text..' ('..num..') '..level
             end
         end
     end

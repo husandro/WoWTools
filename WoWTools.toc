@@ -151,4 +151,4 @@ ChatButton\Emoji.lua
 ChatButton\CombatTimer.lua
 
 ##副本, 挑战,之类
-Instance\Explosives.lua
+##Instance\Explosives.lua

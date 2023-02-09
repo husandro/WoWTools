@@ -24,12 +24,7 @@ end
 --####
 local function set_MinimapCluster()--缩放
     local frame=MinimapCluster
-
     frame.ScaleIn=e.Cbtn(Minimap, nil, nil, nil, nil, true, {20,20})
-
-
-    
-
     frame.ScaleIn:SetPoint('TOP',-2, 13)
     frame.ScaleIn:SetScript('OnMouseDown', function(self, d)
         if d=='RightButton' then
@@ -439,16 +434,20 @@ local function Init()
     set_minimapTrackingShowAll()--追踪,镇民
 
     if MinimapCluster then
-        if MinimapCluster.InstanceDifficulty.Instance.Border then
+        if MinimapCluster.InstanceDifficulty and MinimapCluster.InstanceDifficulty.Instance.Border then
             local classFilename= UnitClassBase('player')
             if classFilename then
                 local r,g,b=GetClassColor(classFilename)
                 if r and g and b then
-                    MinimapCluster.InstanceDifficulty.Instance.Border:SetVertexColor(r,g,b)--外框， 颜色
+                    MinimapCluster.InstanceDifficulty.Instance.Border:SetVertexColor(r,g,b,1)--外框， 颜色
+                    if MinimapCluster.InstanceDifficulty.ChallengeMode then
+                        MinimapCluster.InstanceDifficulty.ChallengeMode.Border:SetVertexColor(r,g,b,1)
+                    end
                 end
             end
             if MinimapCluster.InstanceDifficulty.Instance.Text then
                 e.Cstr(nil,14, MinimapCluster.InstanceDifficulty.Instance.Text, MinimapCluster.InstanceDifficulty.Instance.Text)--字体，大小
+                MinimapCluster.InstanceDifficulty.Instance.Text:SetShadowOffset(1,-1)
             end
         end
         MinimapCluster:HookScript('OnEvent', function(self, event)--Minimap.lua
