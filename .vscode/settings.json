@@ -1244,7 +1244,8 @@
         "ERR_RAID_DIFFICULTY_CHANGED_S",
         "ERR_LEGACY_RAID_DIFFICULTY_CHANGED_S",
         "InstanceDifficultyMixin",
-        "MinimapClusterMixin"
+        "MinimapClusterMixin",
+        "PlayerFrame_GetPlayerFrameContentContextual"
     ],
     "Lua.diagnostics.disable": [
     ]

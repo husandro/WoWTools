@@ -97,6 +97,43 @@ local function set_Instance_Difficulty()
     end
 end
 
+--#########
+--挑战，数据
+--#########
+local function set_Keystones_Date()--挑战，数据
+    if not PlayerFrame or not PlayerFrame.keystoneText then
+        return
+    elseif IsInInstance() or IsInRaid() then
+        PlayerFrame.keystoneText:SetText('')
+        return
+    end
+
+    local text
+    local score= C_ChallengeMode.GetOverallDungeonScore()
+    if score and score>0 then
+        text= e.GetKeystoneScorsoColor(score)
+        local info = C_MythicPlus.GetRunHistory(false, true)--本周记录
+        if info then
+            local num= 0
+            local level
+            for _, runs  in pairs(info) do
+                if runs and runs.level and runs.completed then
+                    num= num+ 1
+                    if level< runs.level then
+                        level= runs.level
+                    end
+                end
+            end
+            if num>0 and level then
+                if level>=15 then
+                    level= '|cnGREEN_FONT_COLOR:'..level..'|r'
+                end
+                text= text..'('..num..')'..level
+            end
+        end
+    end
+    PlayerFrame.keystoneText:SetText(text or '')
+end
 
 --####
 --玩家
@@ -131,13 +168,16 @@ local function set_PlayerFrame()--PlayerFrame.lua
             local text= PlayerFrameGroupIndicatorText:GetText()
             local num= text and text:match('(%d)')
             if num then
-                PlayerFrameGroupIndicatorText:SetText('|A:'..e.Icon.number..num..':0:0|a')
+                PlayerFrameGroupIndicatorText:SetText('|A:'..e.Icon.number..num..':18:18|a')
             end
         end
     end)
     PlayerFrameGroupIndicatorLeft:SetTexture(0)
+    PlayerFrameGroupIndicatorLeft:SetShown(false)
     PlayerFrameGroupIndicatorMiddle:SetTexture(0)
+    PlayerFrameGroupIndicatorMiddle:SetShown(false)
     PlayerFrameGroupIndicatorRight:SetTexture(0)
+    PlayerFrameGroupIndicatorRight:SetShown(false)
 
     if PlayerHitIndicator then--玩家
         PlayerHitIndicator:ClearAllPoints()
@@ -380,7 +420,6 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                 self.instanceFrame= CreateFrame("Frame", nil, self)--副本, 地下城，指示
                 self.instanceFrame:SetFrameLevel(self:GetFrameLevel())
                 self.instanceFrame:SetPoint('RIGHT', self.instanceFrame2, 'LEFT',1, -6)
-
                 self.instanceFrame:SetSize(16,16)
                 self.instanceFrame.texture= self.instanceFrame:CreateTexture(nil,'BORDER', nil, 1)
                 self.instanceFrame.texture:SetAllPoints(self.instanceFrame)
@@ -390,6 +429,11 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                 portrait:SetPoint('CENTER')
                 portrait:SetSize(20,20)
                 portrait:SetVertexColor(r,g,b,1)
+
+                self.keystoneText= e.Cstr(self)
+                self.keystoneText:SetPoint('LEFT', self.PlayerFrameContent.PlayerFrameContentContextual.LeaderIcon, 'RIGHT')
+                self.keystoneText:SetTextColor(r, g, b)
+                print(self.PlayerFrameContent.PlayerFrameContentContextual.LeaderIcon)
             end
 
             e.GroupFrame[unit]= {
@@ -421,6 +465,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
         if self==PlayerFrame then
             set_Instance_Difficulty()--副本, 地下城，指示
             set_LootSpecialization()--拾取专精
+            set_Keystones_Date()--挑战，数据
         end
 
         if self.itemLevel then
@@ -757,11 +802,11 @@ local function set_RaidFrame()--设置,团队
         elseif dead then--死亡
             frame.statusText:SetText('|A:deathrecap-icon-tombstone:0:0|a')
         elseif ( frame.optionTable.healthText == "health" ) then
-            frame.statusText:SetText(e.MK(UnitHealth(frame.displayedUnit),1))
+            frame.statusText:SetText(e.MK(UnitHealth(frame.displayedUnit), 0))
         elseif ( frame.optionTable.healthText == "losthealth" ) then
             local healthLost = UnitHealthMax(frame.displayedUnit) - UnitHealth(frame.displayedUnit)
             if ( healthLost > 0 ) then
-                frame.statusText:SetFormattedText('%-%s', e.MK(healthLost,1))
+                frame.statusText:SetText('-'..e.MK(healthLost, 0))
             end
         elseif (frame.optionTable.healthText == "perc") then
             if UnitHealth(frame.displayedUnit)== UnitHealthMax(frame.displayedUnit) then
@@ -946,6 +991,9 @@ local dungeonDifficultyStr= ERR_DUNGEON_DIFFICULTY_CHANGED_S:gsub('%%s', '(.+)')
 local raidDifficultyStr= ERR_RAID_DIFFICULTY_CHANGED_S:gsub('%%s', '(.+)')--"团队副本难度设置为%s。"
 local legacyRaidDifficultyStr= ERR_LEGACY_RAID_DIFFICULTY_CHANGED_S:gsub('%%s', '(.+)')--"已将经典团队副本难度设置为%s。"
 
+panel:RegisterEvent('GROUP_ROSTER_UPDATE')--挑战，数据
+panel:RegisterEvent('GROUP_LEFT')
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
@@ -994,7 +1042,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='PLAYER_LOOT_SPEC_UPDATED' or event=='PLAYER_SPECIALIZATION_CHANGED' then
         set_LootSpecialization()--拾取专精
-
     elseif event=='PLAYER_ENTERING_WORLD' then--副本, 地下城，指示
         if not IsInInstance() then
             self:RegisterEvent('CHAT_MSG_SYSTEM')
@@ -1002,6 +1049,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             self:UnregisterEvent('CHAT_MSG_SYSTEM')
         end
         set_Instance_Difficulty()--副本, 地下城，指示
+        set_Keystones_Date()--挑战，数据
+
+    elseif event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' then
+        set_Keystones_Date()--挑战，数据
 
     elseif event=='CHAT_MSG_SYSTEM' then--"地下城难度已设置为%s。团队副本难度设置为%s。已将经典团队副本难度设置为%s。
         if arg1 and (arg1:find(dungeonDifficultyStr) or arg1:find(raidDifficultyStr) or arg1:find(legacyRaidDifficultyStr)) then
