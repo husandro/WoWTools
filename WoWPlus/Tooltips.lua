@@ -1272,13 +1272,32 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         elseif arg1=='Blizzard_AchievementUI' then--成就ID
             hooksecurefunc(AchievementTemplateMixin, 'Init', function(self2,elementData)--Blizzard_AchievementUI.lua
                 local category = elementData.category;
-                local achievementID,  description, icon, _, flags
+                local text
+                local achievementID, name, points, completed, month, day, year, description, flags, icon, rewardText, isGuild, wasEarnedByMe, earnedBy, isStatistic
                 if self2.index then
-                    achievementID, _, _, _, _, _, _, description, flags, icon= GetAchievementInfo(category, self2.index);
+                    achievementID, name, points, completed, month, day, year, description, flags, icon, rewardText, isGuild, wasEarnedByMe, earnedBy, isStatistic= GetAchievementInfo(category, self2.index);
                 else
-                    achievementID, _, _, _, _, _, _, description, flags, icon = GetAchievementInfo(self2.id);
+                    achievementID, name, points, completed, month, day, year, description, flags, icon, rewardText, isGuild, wasEarnedByMe, earnedBy, isStatistic = GetAchievementInfo(self2.id);
                 end
-                self2.HiddenDescription:SetText(description..' '..(flags==131072 and e.Icon.wow2 ..'|cnGREEN_FONT_COLOR:'..achievementID..'|r' or achievementID)..(icon and ' |T'..icon..':0|t'..icon or ''))
+                if description and icon and achievementID then
+                    text= description
+                    if completed and earnedBy and earnedBy~='' then
+                        if earnedBy==e.Player.name then
+                            text= text..' '..e.Icon.player
+                        else
+                            text= text..' |cnGREEN_FONT_COLOR:'..earnedBy
+                        end
+                        text= text..'|r'
+                    end
+                    if flags==131072 then
+                        text= text.. ' '..e.Icon.wow2..(e.onlyChinse and '战网' or COMMUNITY_COMMAND_BATTLENET)
+                    end
+
+                    text= text ..' '..achievementID..(icon and ' |T'..icon..':0|t'..icon or '')
+                end
+                if text then
+                    self2.HiddenDescription:SetText(text)
+                end
             end)
 
         elseif arg1=='Blizzard_Collections' then--宠物手册， 召唤随机，偏好宠物，技能ID    
