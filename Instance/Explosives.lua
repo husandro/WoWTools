@@ -27,9 +27,11 @@ local function set_Count()
     local nameplates= C_NamePlate.GetNamePlates() or {}
     for _, info in pairs(nameplates) do
         local unit = info.namePlateUnitToken or (info.UnitFrame and info.UnitFrame.unit)
+        print(unit)
         local guid= UnitExists(unit) and UnitGUID(unit)
         if guid then
-            if select(6, strsplit("-", guid))== '120651' then
+            
+            if  select(6, strsplit("-", guid))~= '120651' then
                 all= all+ 1
                 if Save.mark and not GetRaidTargetIndex(unit) then --标记
                     local t=9- all
