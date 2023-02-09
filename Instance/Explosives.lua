@@ -26,12 +26,10 @@ local function set_Count()
     local all, frames= 0, {}
     local nameplates= C_NamePlate.GetNamePlates() or {}
     for _, info in pairs(nameplates) do
-        local unit = info.namePlateUnitToken or (info.UnitFrame and info.UnitFrame.unit)
-        print(unit)
+        local unit = info.namePlateUnitToken or (info.UnitFrame and info.UnitFrame.unit)        
         local guid= UnitExists(unit) and UnitGUID(unit)
         if guid then
-            
-            if  select(6, strsplit("-", guid))~= '120651' then
+            if select(6, strsplit("-", guid))== '120651' then
                 all= all+ 1
                 if Save.mark and not GetRaidTargetIndex(unit) then --标记
                     local t=9- all
@@ -58,7 +56,6 @@ local function set_Count()
         end
     end
 
-print(all)
     for _, frame in pairs(frames) do
         if all>0 then
             if Save.alp and frame:GetAlpha()~=0 then
@@ -80,7 +77,7 @@ print(all)
 end
 
 local function set_Button()
-    --[[
+ 
     if not IsInInstance() or not C_ChallengeMode.IsChallengeModeActive() then
         set_Events(false)
         return
@@ -98,7 +95,6 @@ local function set_Button()
         set_Events(false)
         return
     end
-]]
     if not button then
         button= e.Cbtn(nil, nil, nil, nil, nil, true, {35,35})
         if Save.point then
