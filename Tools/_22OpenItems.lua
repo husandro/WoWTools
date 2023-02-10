@@ -69,7 +69,7 @@ local function setAtt(bag, slot, icon, itemID)--设置属性
         end
         local m='/use '..bag..' '..slot
         Bag={bag=bag, slot=slot}
-        panel:SetAttribute("type", "macro")
+        --panel:SetAttribute("type", "macro")
         panel:SetAttribute("macrotext", m)
         panel.texture:SetTexture(icon)
         num = GetItemCount(itemID)
@@ -503,6 +503,8 @@ end
 --初始化
 --######
 local function Init()
+    panel:SetAttribute("type", "macro")
+    
     if e.toolsFrame.size and e.toolsFrame.size~=30 then--设置大小
         panel:SetSize(e.toolsFrame.size, e.toolsFrame.size)
     end
