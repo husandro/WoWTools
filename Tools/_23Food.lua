@@ -21,7 +21,7 @@ end
 local function set_Cooldown(self)--图标冷却
     if self.itemID then
         local start, duration, enable = GetItemCooldown(self.itemID)
-        panel.texture:SetDesaturated(enable==1)
+        self.texture:SetDesaturated(enable==1 or GetItemCount(self.itemID, nil, true, true)==0)
         e.Ccool(self, start, duration, nil, true, nil, true)--冷却条
     end
 end
@@ -30,7 +30,7 @@ local function set_Item_Count(self)--设置, 数量
     if self.itemID then
         local num=GetItemCount(self.itemID, nil, true, true)
         self.count:SetText(num>1 and num or (num==1 and Save.autoWho) and num or '')
-        self.texture:SetDesaturated(num==0)
+        self.texture:SetDesaturated(num==0 or select(3, GetItemCooldown(self.itemID))==1)
     end
 end
 
@@ -481,7 +481,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='BAG_UPDATE_DELAYED' then
         set_Item_Button()--检查,物品
         set_Item_Count(self)--更新物品,次数
-        
+
     elseif event=='PLAYER_REGEN_ENABLED' then
         if panel.bat then
             set_Item_Count(self)--更新物品
