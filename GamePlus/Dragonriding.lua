@@ -5,7 +5,7 @@ if e.Player.level< 70 then
 end
 
 local addName= MOUNT_JOURNAL_FILTER_DRAGONRIDING..SPEED
-local Save= {sacleBool= e.Player.sacleBool}
+local Save= {sacleBool= e.Player.husandro}
 local panel= CreateFrame("Frame", nil, UIWidgetPowerBarContainerFrame)
 panel:SetShown(false)
 
