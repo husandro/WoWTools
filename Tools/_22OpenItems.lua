@@ -67,14 +67,15 @@ local function setAtt(bag, slot, icon, itemID)--设置属性
             Combat= true
             return
         end
-        local m='/use '..bag..' '..slot
+        
         Bag={bag=bag, slot=slot}
-        --panel:SetAttribute("type", "macro")
-        panel:SetAttribute("macrotext", m)
+        
+        panel:SetAttribute("macrotext", '/use '..bag..' '..slot)
         panel.texture:SetTexture(icon)
         num = GetItemCount(itemID)
         num= num~=1 and num or ''
         panel:SetShown(true)
+        --panel:SetAttribute("type", "macro")
     else
         panel:SetAttribute("macrotext", '')
         panel:SetShown(not Save.noItemHide)

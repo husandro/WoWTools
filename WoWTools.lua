@@ -204,7 +204,7 @@ e.Icon={
     alliance2='|A:charcreatetest-logo-alliance:0:0|a',
 
     number='services-number-',
-    number2='|A:services-number-%d:0:0|a',
+    number2='|A:services-number-%d:16:16|a',
     clock='socialqueuing-icon-clock',
     clock2='|A:socialqueuing-icon-clock:0:0|a',--auctionhouse-icon-clock
 
