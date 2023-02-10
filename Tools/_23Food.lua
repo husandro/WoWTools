@@ -20,7 +20,8 @@ end
 
 local function set_Cooldown(self)--图标冷却
     if self.itemID then
-        local start, duration = GetItemCooldown(self.itemID)
+        local start, duration, enable = GetItemCooldown(self.itemID)
+        panel.texture:SetDesaturated(enable==1)
         e.Ccool(self, start, duration, nil, true, nil, true)--冷却条
     end
 end

@@ -34,7 +34,7 @@ local addName=UNWRAP..ITEMS
 local Combat, Bag, Opening= nil,{},nil
 
 
-local panel=e.Cbtn2('WoWToolsOpenItemsButton', WoWToolsMountButton)
+local panel= e.Cbtn2('WoWToolsOpenItemsButton', WoWToolsMountButton)
 panel:SetPoint('RIGHT', HearthstoneToolsButton, 'LEFT')
 
 local function setCooldown()--冷却条
@@ -43,6 +43,7 @@ local function setCooldown()--冷却条
             local itemID = C_Container.GetContainerItemID(Bag.bag, Bag.slot)
             if itemID then
                 local start, duration, enable = GetItemCooldown(itemID)
+                panel.texture:SetDesaturated(enable==1)
                 e.Ccool(panel, start, duration, nil, true,nil, true)
                 return
             end
@@ -563,15 +564,33 @@ local function Init()
     C_Timer.After(2, function() getItems() end)
 end
 
+--##########
+--注册， 事件
+--##########
+local function set_Events()--注册， 事件
+    if IsInInstance() and C_ChallengeMode.IsChallengeModeActive() then
+        panel:UnregisterEvent('BAG_UPDATE')
+        panel:UnregisterEvent('BAG_UPDATE_COOLDOWN')
+        panel:UnregisterEvent('PLAYER_REGEN_DISABLED')
+        panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
+        panel:SetShown(false)
+    else
+        panel:RegisterEvent('BAG_UPDATE')
+        panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
+        panel:RegisterEvent('PLAYER_REGEN_DISABLED')
+        panel:RegisterEvent('PLAYER_REGEN_ENABLED')
+        getItems()
+    end
+end
+
 --###########
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-panel:RegisterEvent('BAG_UPDATE')
-panel:RegisterEvent('PLAYER_REGEN_DISABLED')
-panel:RegisterEvent('PLAYER_REGEN_ENABLED')
-panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
+
+panel:RegisterEvent('CHALLENGE_MODE_START')
+panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -583,6 +602,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             else
                 panel:UnregisterAllEvents()
             end
+            panel:RegisterEvent("PLAYER_LOGOUT")
         end
 
     elseif event == "PLAYER_LOGOUT" then
@@ -590,6 +610,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not WoWToolsSave then WoWToolsSave={} end
             WoWToolsSave[addName..'Tools']=Save
         end
+    elseif event=='PLAYER_ENTERING_WORLD' or event=='CHALLENGE_MODE_START' then
+        set_Events()--注册， 事件
 
     elseif event=='BAG_UPDATE' then
             getItems()
@@ -608,5 +630,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='BAG_UPDATE_COOLDOWN' then
         setCooldown()--冷却条
+
     end
 end)
