@@ -109,7 +109,7 @@ local FrameTab={
     ExtraActionButton1={click='R' },--额外技能
     ChatConfigFrame={save=true},--聊天设置
     SettingsPanel={},--选项
-    UIWidgetPowerBarContainerFrame={},
+    --UIWidgetPowerBarContainerFrame={},
     FriendsFrame={},--好友列表
     GossipFrame={},
     QuestFrame={},
@@ -412,6 +412,13 @@ tex:SetAtlas('!perks-list-side-vertical')
     end]]
 
     Move(MailFrame.TitleContainer,{frame=MailFrame})
+
+    if UIWidgetPowerBarContainerFrame then
+        --e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size)
+        UIWidgetPowerBarContainerFrame.moveButton= e.Cbtn(UIWidgetPowerBarContainerFrame, nil, nil, nil, nil, true, {25,25})
+        UIWidgetPowerBarContainerFrame.moveButton:SetPoint('TOPRIGHT')
+        Move(UIWidgetPowerBarContainerFrame.moveButton, {frame= UIWidgetPowerBarContainerFrame})
+    end
 end
 
 --加载保存数据

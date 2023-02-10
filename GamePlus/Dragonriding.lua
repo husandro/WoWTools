@@ -6,7 +6,7 @@ end
 
 local addName= MOUNT_JOURNAL_FILTER_DRAGONRIDING..SPEED
 local Save= {}
-local panel= CreateFrame("Frame")
+local panel= CreateFrame("Frame", nil, UIWidgetPowerBarContainerFrame)
 panel:SetShown(false)
 
 local lastX, lastY, lastT = 0, 0, 0
