@@ -568,7 +568,7 @@ end
 --注册， 事件
 --##########
 local function set_Events()--注册， 事件
-    if IsInInstance() and C_ChallengeMode.IsChallengeModeActive() then
+    if C_ChallengeMode.IsChallengeModeActive() then
         panel:UnregisterEvent('BAG_UPDATE')
         panel:UnregisterEvent('BAG_UPDATE_COOLDOWN')
         panel:UnregisterEvent('PLAYER_REGEN_DISABLED')
