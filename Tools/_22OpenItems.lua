@@ -572,13 +572,15 @@ end
 --##########
 local function set_Events()--注册， 事件
     if IsInInstance() and C_ChallengeMode.IsChallengeModeActive() then
-        panel:UnregisterEvent('BAG_UPDATE')
+        --panel:UnregisterEvent('BAG_UPDATE')
+        panel:UnregisterEvent('BAG_UPDATE_DELAYED')
         panel:UnregisterEvent('BAG_UPDATE_COOLDOWN')
         panel:UnregisterEvent('PLAYER_REGEN_DISABLED')
         panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
         panel:SetShown(false)
     else
-        panel:RegisterEvent('BAG_UPDATE')
+        --panel:RegisterEvent('BAG_UPDATE')
+        panel:RegisterEvent('BAG_UPDATE_DELAYED')
         panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
         panel:RegisterEvent('PLAYER_REGEN_DISABLED')
         panel:RegisterEvent('PLAYER_REGEN_ENABLED')
@@ -616,7 +618,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='PLAYER_ENTERING_WORLD' or event=='CHALLENGE_MODE_START' then
         set_Events()--注册， 事件
 
-    elseif event=='BAG_UPDATE' then
+    elseif  event=='BAG_UPDATE_DELAYED' then-- event=='BAG_UPDATE' orthen
             getItems()
 
     elseif event=='PLAYER_REGEN_DISABLED' then
