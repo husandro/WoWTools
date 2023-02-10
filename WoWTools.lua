@@ -1015,8 +1015,8 @@ e.GetTooltipData= function(colorRed, text, hyperLink, bag, guidBank, merchant, b
 end
 
 
-e.PlaySound= function(soundKitID)--播放, 声音 SoundKitConstants.lua e.PlaySound()--播放, 声音
-    if not C_CVar.GetCVarBool('Sound_EnableAllSound') or C_CVar.GetCVar('Sound_MasterVolume')=='0' or not e.setPlayerSound then
+e.PlaySound= function(soundKitID, setPlayerSound)--播放, 声音 SoundKitConstants.lua e.PlaySound()--播放, 声音
+    if not C_CVar.GetCVarBool('Sound_EnableAllSound') or C_CVar.GetCVar('Sound_MasterVolume')=='0' or (not setPlayerSound and not e.setPlayerSound) then
         return
     end
     local channel

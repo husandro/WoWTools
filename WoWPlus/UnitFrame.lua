@@ -355,7 +355,6 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
         if not UnitExists(unit) or not (r and g and b) then
             return
         end
-
         if not self.classTexture then
             self.classTexture= self:CreateTexture(nil,'OVERLAY', nil, 6)
             self.classTexture:SetSize(16,16)
@@ -585,22 +584,27 @@ local function set_RaidFrame()--设置,团队
         return
     end
     hooksecurefunc('CompactUnitFrame_SetUnit', function(frame, unit)--队伍标记
-        if unit and not frame.RaidTargetIcon and frame.name then
+        if UnitExists(unit) and not unit:find('nameplate') and not frame.RaidTargetIcon and frame.name then
             frame.RaidTargetIcon= frame:CreateTexture(nil,'OVERLAY', nil, 7)
             frame.RaidTargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
             frame.RaidTargetIcon:SetPoint('TOPRIGHT')
             frame.RaidTargetIcon:SetSize(13,13)
             set_SetRaidTarget(frame.RaidTargetIcon, unit)
         end
+        frame.unitItemLevel=nil--取得装等
     end)
     hooksecurefunc('CompactUnitFrame_UpdateUnitEvents', function(frame)
-        frame:RegisterEvent("RAID_TARGET_UPDATE")
+        if frame.RaidTargetIcon then
+            frame:RegisterEvent("RAID_TARGET_UPDATE")
+        end
     end)
     hooksecurefunc('CompactUnitFrame_UnregisterEvents', function(frame)
-        frame:UnregisterEvent("RAID_TARGET_UPDATE")
-        frame:UnregisterEvent("UNIT_TARGET")
+        if frame.RaidTargetIcon then
+            frame:UnregisterEvent("RAID_TARGET_UPDATE")
+            frame:UnregisterEvent("UNIT_TARGET")
+        end
     end)
-    hooksecurefunc('CompactUnitFrame_OnEvent', function(self, event, arg1)
+    hooksecurefunc('CompactUnitFrame_OnEvent', function(self, event)
         if self.RaidTargetIcon and self.unit then
             if event=='RAID_TARGET_UPDATE'then
                 set_SetRaidTarget(self.RaidTargetIcon, self.unit)
@@ -609,7 +613,7 @@ local function set_RaidFrame()--设置,团队
     end)
 
     hooksecurefunc('CompactUnitFrame_UpdateRoleIcon', function(frame)--隐藏, DPS，图标 
-        if not UnitExists(frame.unit) then
+        if not UnitExists(frame.unit) or frame.unit:find('nameplate') then
             return
         end
         local bool=true
@@ -640,7 +644,7 @@ local function set_RaidFrame()--设置,团队
     end)
 
     hooksecurefunc('CompactUnitFrame_UpdateName', function(frame)--修改, 名字
-        if not frame.unit or not frame.name or (frame.UpdateNameOverride and frame:UpdateNameOverride()) or not ShouldShowName(frame) then
+        if not UnitExists(frame.unit) or frame.unit:find('nameplate') or not frame.name or (frame.UpdateNameOverride and frame:UpdateNameOverride()) or not ShouldShowName(frame) then
             return
         end
         if UnitIsUnit('player', frame.unit) then
@@ -658,7 +662,7 @@ local function set_RaidFrame()--设置,团队
     end)
 
     hooksecurefunc('CompactUnitFrame_UpdateHealthColor', function(frame)--颜色
-        if frame.healthBar and frame.unit and frame.unit:find('pet') then
+        if frame.unit:find('pet') and frame.healthBar then
             local class= UnitClassBase(frame.unit)
             if class then
                 local r, g, b= GetClassColor(class)
@@ -671,7 +675,7 @@ local function set_RaidFrame()--设置,团队
     end)
 
     hooksecurefunc('CompactUnitFrame_UpdateStatusText', function(frame)--去掉,生命条, %
-        if not frame.statusText or not frame.statusText:IsShown() or frame.optionTable.healthText ~= "perc" then
+        if not UnitExists(frame.unit) or frame.unit:find('nameplate') or not frame.statusText or not frame.statusText:IsShown() or frame.optionTable.healthText ~= "perc" then
             return
         end
         local text= frame.statusText:GetText()
@@ -778,18 +782,19 @@ local function set_RaidFrame()--设置,团队
     end
 
     hooksecurefunc('CompactUnitFrame_UpdateDistance', function(frame)--取得装等, 高CPU
-        if not frame.unitItemLevel and frame.unit and CheckInteractDistance(frame.unit, 1) and CanInspect(frame.unit) then --frame.inDistance and frame.inDistance< DISTANCE_THRESHOLD_SQUARED then
-            if not frame.getItemTime then
-                NotifyInspect(frame.unit)--取得装等
-                local guid= UnitGUID(frame.unit)
-                if guid and e.UnitItemLevel[guid] then
-                    frame.unitItemLevel= e.UnitItemLevel[guid].itemLevel
-                end
+        if not frame.unitItemLevel and UnitExists(frame.unit) and CheckInteractDistance(frame.unit, 1) and CanInspect(frame.unit) then --frame.inDistance and frame.inDistance< DISTANCE_THRESHOLD_SQUARED then
+            NotifyInspect(frame.unit)--取得装等
+            local guid= UnitGUID(frame.unit)
+            if guid and e.UnitItemLevel[guid] then
+                frame.unitItemLevel= e.UnitItemLevel[guid].itemLevel
             end
         end
     end)
 
     hooksecurefunc('CompactUnitFrame_UpdateStatusText', function(frame)
+        if frame.unit:find('nameplate') then
+            return
+        end
         local connected= UnitIsConnected(frame.displayedUnit)
         local dead= UnitIsDead(frame.displayedUnit)
         local ghost= UnitIsGhost(frame.displayedUnit)

@@ -1258,7 +1258,10 @@
         "LOCALE_esMX",
         "LOCALE_ruRU",
         "LOCALE_ptBR",
-        "LOCALE_itIT"
+        "LOCALE_itIT",
+        "EVENTTRACE_BUTTON_PLAY",
+        "NamePlateBaseMixin",
+        "HUD_EDIT_MODE_MICRO_MENU_LABEL"
     ],
     "Lua.diagnostics.disable": [
     ]
