@@ -414,10 +414,10 @@ tex:SetAtlas('!perks-list-side-vertical')
     Move(MailFrame.TitleContainer,{frame=MailFrame})
 
     if UIWidgetPowerBarContainerFrame then--能量条
-        --e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size)
         UIWidgetPowerBarContainerFrame.moveButton= e.Cbtn(UIWidgetPowerBarContainerFrame, nil, nil, nil, nil, true, {25,25})
-        UIWidgetPowerBarContainerFrame.moveButton:SetPoint('BOTTOM', UIWidgetPowerBarContainerFrame, 'TOP')
+        UIWidgetPowerBarContainerFrame.moveButton:SetPoint('TOP', UIWidgetPowerBarContainerFrame, 'TOP')
         --UIWidgetPowerBarContainerFrame.moveButton:SetFrameStrata('HIGH')
+        UIWidgetPowerBarContainerFrame.moveButton:SetFrameLevel(UIWidgetPowerBarContainerFrame:GetFrameLevel()+5)
         Move(UIWidgetPowerBarContainerFrame.moveButton, {frame= UIWidgetPowerBarContainerFrame})
     end
 end
