@@ -1,5 +1,5 @@
 local id, e = ...
-local Save={}
+local Save={notPrint= e.Player.husandro}
 local addName= HIDE..'NPC'..VOICE_TALKING
 local panel=CreateFrame('Frame')
 
