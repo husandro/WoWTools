@@ -224,7 +224,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
             check:SetScript('OnLeave', function() e.tips:Hide() end)
 
             if not Save.disabled then
-                C_Timer.After(2, function()
+                C_Timer.After(4, function()
                     local affixIDs= C_MythicPlus.GetCurrentAffixes() or {}
                     local find
                     for _, tab in pairs(affixIDs) do
@@ -233,7 +233,6 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
                             break
                         end
                     end
-                    print(id,addName,find)
                     if find then
                         set_Button()
                         panel:RegisterEvent('CHALLENGE_MODE_START')
