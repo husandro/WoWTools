@@ -194,6 +194,8 @@ local function set_PlayerFrame()--PlayerFrame.lua
             PlayerLevelText:SetText('')
         end
     end)
+
+    PlayerFrame.PlayerFrameContainer.FrameTexture:SetVertexColor(R,G,B)--外框
 end
 
 --####
@@ -208,6 +210,21 @@ local function set_TargetFrame()
                 local r,g,b=GetClassColor(classFilename)
                 if r and g and b then
                     levelText:SetTextColor(r,g,b)
+                end
+            end
+        end
+    end)
+
+    hooksecurefunc(TargetFrame, 'CheckClassification', function(self)--外框，颜色
+        local classFilename= UnitClassBase(self.unit)
+        if classFilename then
+            local r,g,b=GetClassColor(classFilename)
+            if r and g and b then
+                if self.TargetFrameContainer.FrameTexture then
+                    self.TargetFrameContainer.FrameTexture:SetVertexColor(r,g,b)
+                end
+                if self.TargetFrameContainer.BossPortraitFrameTexture:IsShown() then
+                    self.TargetFrameContainer.BossPortraitFrameTexture:SetVertexColor(r,g,b)
                 end
             end
         end
@@ -332,6 +349,16 @@ local function set_PartyFrame()--PartyFrame.lua
                     end
 
                 end
+
+                if exists and memberFrame.Texture then--外框
+                    local classFilename= unit and UnitClassBase(unit)
+                    if classFilename then
+                        local r,g,b=GetClassColor(classFilename)
+                        if r and g and b then
+                            memberFrame.Texture:SetVertexColor(r,g,b)
+                        end
+                    end
+                end
             end
         end
     end)
@@ -342,6 +369,9 @@ end
 --################
 local function set_UnitFrame_Update()--职业, 图标， 颜色
     hooksecurefunc('UnitFrame_Update', function(self, isParty)--UnitFrame.lua
+        if EditModeManagerFrame:IsEditModeActive() then
+            return
+        end
         local unit= self.unit
         local r,g,b
         if unit=='player' then
@@ -437,7 +467,9 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                 portrait:SetVertexColor(r,g,b,1)
 
                 self.keystoneText= e.Cstr(self)
-                self.keystoneText:SetPoint('LEFT', self.PlayerFrameContent.PlayerFrameContentContextual.LeaderIcon, 'RIGHT')
+                if self.PlayerFrameContent and self.PlayerFrameContent.PlayerFrameContentContextual and self.PlayerFrameContent.PlayerFrameContentContextual.LeaderIcon then
+                    self.keystoneText:SetPoint('LEFT', self.PlayerFrameContent.PlayerFrameContentContextual.LeaderIcon, 'RIGHT')
+                end
                 self.keystoneText:SetTextColor(r, g, b)
             end
 
@@ -494,6 +526,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
             self.healthbar:SetStatusBarColor(r,g,b)--颜色
             self.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
         end
+
     end)
 
     hooksecurefunc(TargetFrame, 'CheckClassification', function ()--目标，颜色

@@ -1261,7 +1261,10 @@
         "LOCALE_itIT",
         "EVENTTRACE_BUTTON_PLAY",
         "NamePlateBaseMixin",
-        "HUD_EDIT_MODE_MICRO_MENU_LABEL"
+        "HUD_EDIT_MODE_MICRO_MENU_LABEL",
+        "BACKGROUND",
+        "SetItemButtonTextureVertexColor",
+        "SetItemButtonNormalTextureVertexColor"
     ],
     "Lua.diagnostics.disable": [
     ]

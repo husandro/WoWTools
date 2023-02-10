@@ -1,3 +1,4 @@
+--[[
 BACKGROUND
 BORDER
 ARTWORK
@@ -18,6 +19,7 @@ frame:SetFrameLevel(self:GetFrameLevel() + 5);
 UnitPopupSharedMenus.lua
 UnitHasVehiclePlayerFrameUI("player")
 
+EditModeManagerFrame:IsEditModeActive()
 EditModeManagerFrame:UseRaidStylePartyFrames()
 
 local item = Item:CreateFromItemLink(outputItemInfo.hyperlink)
@@ -47,3 +49,4 @@ LOCALE_esMX  8  Chinese (Traditional, Taiwan)
 LOCALE_ruRU  9  Spanish (Mexico)
 LOCALE_ptBR  10 Russian (Russia)
 LOCALE_itIT  11 Portuguese (Brazil)
+]]
