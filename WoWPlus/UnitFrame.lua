@@ -365,9 +365,9 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                     local targetFrameContentContextual = TargetFrame.TargetFrameContent.TargetFrameContentContextual
                     if targetFrameContentContextual then
                         targetFrameContentContextual.LeaderIcon:ClearAllPoints()
-                        targetFrameContentContextual.LeaderIcon:SetPoint('RIGHT', self.classTexture,'LEFT')
+                        targetFrameContentContextual.LeaderIcon:SetPoint('RIGHT', self.classTexture,'LEFT',5,-5)
                         targetFrameContentContextual.GuideIcon:ClearAllPoints()
-                        targetFrameContentContextual.GuideIcon:SetPoint('RIGHT', self.classTexture,'LEFT')
+                        targetFrameContentContextual.GuideIcon:SetPoint('RIGHT', self.classTexture,'LEFT',5,-5)
                     end
                 end
             elseif self.unit=='pet' then

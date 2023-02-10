@@ -1,4 +1,8 @@
 local id, e= ...
+if not e.Player.levelMax then
+    return
+end
+
 local Save= {
     mark= e.Player.husandro,
     sound= e.Player.husandro,
@@ -23,18 +27,29 @@ local function set_Events(show)
     end
 end
 
+local function set_Plate(self, hide)
+    if hide then
+        if self:GetAlpha()>0 then self:SetAlpha(0) end
+        if self:GetScale()>0.1 then self:SetScale(0.1) end
+    else
+        if self:GetAlpha()<1 then self:SetAlpha(1) end
+        if self:GetScale()<1 then self:SetScale(1) end
+    end
+end
+
 local playerSound--播放，声音
 local function set_Count(self, event)
     if event=='PLAYER_TARGET_CHANGED' then
         local plate= UnitExists('target') and C_NamePlate.GetNamePlateForUnit('target')
-        if plate then
-            plate:SetShown(true)
+        if plate and plate.UnitFrame then
+            if plate.UnitFrame:GetAlpha()<1 then plate.UnitFrame:SetAlpha(1) end
+            if plate.UnitFrame:GetScale()<1 then plate.UnitFrame:SetScale(1) end
         end
     else
         local all, frames= 0, {}
         local nameplates= C_NamePlate.GetNamePlates() or {}
         for _, plate in pairs(nameplates) do
-            local unit = plate.namePlateUnitToken or (plate.UnitFrame and plate.UnitFrame.unit)
+            local unit =plate.UnitFrame and plate.UnitFrame.unit-- or plate.namePlateUnitToken
             local guid= UnitExists(unit) and UnitGUID(unit)
             if guid then--if select(6, strsplit("-", guid))== '120651' then
                 if guid:match('Creature%-.-%-.-%-.-%-.-%-(%d+)%-') == '120651' then
@@ -45,18 +60,24 @@ local function set_Count(self, event)
                             SetRaidTarget(unit, t)
                         end
                     end
+
                     if Save.hide then--显示，爆炸物
-                        plate:SetShown(true)
+                        set_Plate(plate.UnitFrame, nil)
                     end
+
                 elseif Save.hide then
-                    table.insert(frames, plate)--隐藏，不是爆炸物
+                    table.insert(frames, plate.UnitFrame)--隐藏，不是爆炸物
                 end
             end
         end
 
-        for _, plate in pairs(frames) do--隐藏显示，不是爆炸物
+        for _, plate in pairs(frames) do
             if plate then
-                plate:SetShown(all==0)
+                if all>0 then--隐藏，不是爆炸物
+                    set_Plate(plate, true)
+                else--显示，不是爆炸物
+                    set_Plate(plate, nil)
+                end
             end
         end
 
@@ -78,9 +99,9 @@ end
 
 local function set_Rest()
     local nameplates= C_NamePlate.GetNamePlates() or {}
-    for _, info in pairs(nameplates) do
-        if info then
-            info:SetShown(true)
+    for _, plate in pairs(nameplates) do
+        if plate and plate.UnitFrame then
+            set_Plate(plate.UnitFrame, nil)--显示
         end
     end
 end
@@ -130,20 +151,6 @@ local function set_Button()
         set_Events(false)
         return
     end
-
-    local tab= select(2,  C_ChallengeMode.GetSlottedKeystoneInfo()) or {}
-    local find
-    for _, affixID in pairs(tab) do
-        if affixID== 13 then
-            find= true
-        end
-    end
-
-    if not find then
-        set_Events(false)
-        return
-    end
-
     if not button then
         button= e.Cbtn(nil, nil, nil, nil, nil, true, {35,35})
         if Save.point then
