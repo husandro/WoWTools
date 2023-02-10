@@ -93,7 +93,7 @@ local function set_NAME_PLATE_UNIT_ADDED(unit)
         local text= Get_Quest_Progress(unit)
         if text and not plate.questProgress then
             local frame= plate.UnitFrame and plate.UnitFrame.healthBar or plate
-            plate.questProgress= e.Cstr(frame, 10, nil, nil, nil, nil,'LEFT')
+            plate.questProgress= e.Cstr(frame, 14, nil, nil, {0,1,0}, nil,'LEFT')
             plate.questProgress:SetPoint('LEFT', frame, 'RIGHT', 2,0)
         end
         if plate.questProgress then
@@ -180,6 +180,7 @@ local function Init()
 
     panel.Text= e.Cstr(panel, 10, nil, nil, {1,1,1}, 'BORDER', 'RIGHT')
     panel.Text:SetPoint('RIGHT', -8, 0)
+    
     --panel.Text:SetShadowOffset(2, -2)
 end
 
