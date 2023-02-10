@@ -346,16 +346,15 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
                 e.WoWSave[guid].Rare={day=day,boss={}}
             end
         end
-        
+
         C_MythicPlus.RequestMapInfo()
         C_MythicPlus.RequestRewards()
         C_MythicPlus.RequestCurrentAffixes()
         RequestRaidInfo()
 
-        NotifyInspect('player')--取得,自已, 装等
         C_Timer.After(2, function()
+            NotifyInspect('player')--取得,自已, 装等
             e.GetGroupGuidDate()--队伍数据收集    
-
             set_Money()--钱
             updateCurrency()--{currencyID = 数量}
         end)
