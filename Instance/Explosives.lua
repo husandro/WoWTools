@@ -111,7 +111,7 @@ end
 --#####
 local function Init_Menu(self, level, type)
     local info= {
-        text= e.onlyChinse and '隐藏姓名板' or HIDE..NAMEPLATES_LABEL,
+        text= e.onlyChinse and '透明度' or CHANGE_OPACITY,
         checked= Save.hide,
         func= function()
             Save.hide= not Save.hide and true or nil
