@@ -5,7 +5,7 @@ if e.Player.level< 70 then
 end
 
 local addName= MOUNT_JOURNAL_FILTER_DRAGONRIDING..SPEED
-local Save= {}
+local Save= {sacleBool= e.Player.sacleBool}
 local panel= CreateFrame("Frame", nil, UIWidgetPowerBarContainerFrame)
 panel:SetShown(false)
 
@@ -78,11 +78,9 @@ end
 local function set_Scale()--设置，缩放
     if UIWidgetPowerBarContainerFrame then
         if Save.sacleBool then
-            UIWidgetPowerBarContainerFrame:SetScale(0.8)
-            panel:SetScale(0.8)
+            UIWidgetPowerBarContainerFrame:SetScale(0.85)
         else
             UIWidgetPowerBarContainerFrame:SetScale(1)
-            panel:SetScale(1)
         end
     end
 end
@@ -185,7 +183,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             sel2:SetScript('OnEnter', function(self2)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine('UIWidgetPowerBarContainerFrame', '0.8')
+                e.tips:AddDoubleLine('UIWidgetPowerBarContainerFrame', '0.85')
                 e.tips:Show()
             end)
             sel2:SetScript('OnLeave', function() e.tips:Hide() end)
