@@ -224,8 +224,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
             check:SetScript('OnLeave', function() e.tips:Hide() end)
 
             if not Save.disabled then
-                C_Timer.After(2, function()
-                    local affixIDs= C_MythicPlus.GetCurrentAffixes()
+                C_Timer.After(4, function()
+                    local affixIDs= C_MythicPlus.GetCurrentAffixes() or {}
                     local find
                     for _, tab in pairs(affixIDs) do
                         if tab and tab.id==13 then
