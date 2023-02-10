@@ -129,7 +129,7 @@ local function set_Keystones_Date()--挑战，数据
                 if level>=15 then
                     level= '|cnGREEN_FONT_COLOR:'..level..'|r'
                 end
-                text= text..' ('..num..') '..level
+                text= text..' ('..level..') '..num
             end
         end
     end
@@ -971,55 +971,43 @@ local function Init()
     --#########
     --移动，速度
     --#########
-    if OverrideActionBarLeaveFrameLeaveButton then--vehicle
-        local leaveElapsed=0
-        OverrideActionBarLeaveFrameLeaveButton:SetScript('OnUpdate', function(self, elapsed)
-            if leaveElapsed>0.3 then
-                local speed= PlayerFrame.unit and GetUnitSpeed(PlayerFrame.unit)
-                if speed then
-                    if not self.speedText then
-                        self.speedText= e.Cstr(self, 12)
-                        self.speedText:SetPoint('TOP', self, 'TOP')
-                    end
-                    if speed==0 then
-                        self.speedText:SetText('')
-                    else
-                        self.speedText:SetFormattedText('%.0f', speed * 100 / BASE_MOVEMENT_SPEED)
-                    end
-                    leaveElapsed=0
-                end
-            else
-                leaveElapsed= leaveElapsed+ elapsed
+    local leaveElapsed=0
+    local function get_UnitSpeed(self, elapsed)
+        if leaveElapsed>0.3 then
+            local speed= UnitExists(PlayerFrame.unit) and GetUnitSpeed(PlayerFrame.unit)
+            if not self.speedText and speed then
+                self.speedText= e.Cstr(self, 12)
+                self.speedText:SetPoint('TOP', self, 'TOP')
             end
-        end)
-        OverrideActionBarLeaveFrameLeaveButton:SetScript('OnHide', function(self)
             if self.speedText then
-                self.speedText:SetText('')
-            end
-        end)
-    end
-    if MainMenuBarVehicleLeaveButton then--Taxi, 移动, 速度
-        local Taxielapsed=0
-        MainMenuBarVehicleLeaveButton:HookScript('OnUpdate', function(self, elapsed)
-            if Taxielapsed>0.3 then
-                if not self.speedText then
-                    self.speedText= e.Cstr(self, 12)
-                    self.speedText:SetPoint('TOP', self, 'TOP')
-                end
-                local speed= GetUnitSpeed("player")
-                if speed==0 then
+                if not speed or speed==0 then
                     self.speedText:SetText('')
                 else
                     self.speedText:SetFormattedText('%.0f', speed * 100 / BASE_MOVEMENT_SPEED)
                 end
-                Taxielapsed=0
-            else
-                Taxielapsed= Taxielapsed+ elapsed
             end
-        end)
+             leaveElapsed=0
+        else
+            leaveElapsed= leaveElapsed+ elapsed
+        end
     end
-
-    
+    local function hide_SpeedText(self)
+        if self.speedText then
+            self.speedText:SetText('')
+        end
+    end
+    if MainMenuBarVehicleLeaveButton then--没有车辆，界面
+        MainMenuBarVehicleLeaveButton:SetScript('OnUpdate', get_UnitSpeed)
+        MainMenuBarVehicleLeaveButton:SetScript('OnHide', hide_SpeedText)
+    end
+    if OverrideActionBarLeaveFrameLeaveButton then--有车辆，界面
+        OverrideActionBarLeaveFrameLeaveButton:SetScript('OnUpdate', get_UnitSpeed)
+        OverrideActionBarLeaveFrameLeaveButton:SetScript('OnHide', hide_SpeedText)
+    end
+    if MainMenuBarVehicleLeaveButton then--Taxi, 移动, 速度
+        MainMenuBarVehicleLeaveButton:SetScript('OnUpdate', get_UnitSpeed)
+        MainMenuBarVehicleLeaveButton:SetScript('OnHide', hide_SpeedText)
+    end
 end
 
 --###########
