@@ -480,7 +480,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='BAG_UPDATE_DELAYED' then
         set_Item_Button()--检查,物品
-
+        set_Item_Count(self)--更新物品,次数
+        
     elseif event=='PLAYER_REGEN_ENABLED' then
         if panel.bat then
             set_Item_Count(self)--更新物品
