@@ -111,7 +111,6 @@ local function set_Keystones_Date()--挑战，数据
     local text
     local score= C_ChallengeMode.GetOverallDungeonScore()
     if score and score>0 then
-        --text= e.GetKeystoneScorsoColor(score)
         text= score
         local info = C_MythicPlus.GetRunHistory(false, true)--本周记录
         if info then
