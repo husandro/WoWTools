@@ -1207,23 +1207,26 @@ local function Init()
     end
 
     hooksecurefunc(AreaPOIPinMixin,'TryShowTooltip', function(self)--POI提示 AreaPOIDataProvider.lua
-        if self then
-            if self.areaPoiID then
-                GameTooltip:AddDoubleLine('areaPoiID', self.areaPoiID)
-            end
-            if self.widgetSetID then
-                GameTooltip:AddDoubleLine('widgetID', self.widgetSetID)
-            end
-            local id2 = self:GetMap() and  self:GetMap():GetMapID()
-            if id2 then
-                GameTooltip:AddDoubleLine('mapID', id2)
-            end
-            if self.factionID then
-                setMajorFactionRenown(GameTooltip, self.factionID)--名望
-                --setFriendshipFaction(GameTooltip, self.factionID)--friend声望
-            end
-            GameTooltip:Show()
+        local uiMapID = self:GetMap() and self:GetMap():GetMapID()
+        if self.areaPoiID then
+            GameTooltip:AddDoubleLine('areaPoiID', self.areaPoiID)  
         end
+        if self.widgetSetID then
+            GameTooltip:AddDoubleLine('widgetSetID', self.widgetSetID)
+        end
+        if uiMapID then
+            GameTooltip:AddDoubleLine('mapID', uiMapID)
+        end
+        if self.factionID then
+            setMajorFactionRenown(GameTooltip, self.factionID)--名望
+        end
+        if self.areaPoiID and uiMapID then
+            local poiInfo= C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, self.areaPoiID)
+            if poiInfo and poiInfo.atlasName  then
+                GameTooltip:AddDoubleLine('atlasName', '|A:'..poiInfo.atlasName..':0:0|a'..poiInfo.atlasName)
+            end
+        end
+        GameTooltip:Show()
     end)
 
     --#############
