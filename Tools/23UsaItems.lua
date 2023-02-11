@@ -233,7 +233,7 @@ end
 --物品
 --####
 local function setEquipSlot(self)--装备
-    if UnitAffectingCombat('player') then
+    if UnitAffectingCombat('player') or EditModeManagerFrame:IsEditModeActive() then
         self:RegisterEvent('PLAYER_REGEN_ENABLED')
         return
     end

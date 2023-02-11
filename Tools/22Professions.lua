@@ -68,6 +68,9 @@ local function set_ProfessionsFrame_Button()--专业界面, 按钮
     end
 end
 local function set_Button()
+    if EditModeManagerFrame:IsEditModeActive() then
+        return
+    end
     panel.buttons={}
     local tab={GetProfessions()}--local prof1, prof2, archaeology, fishing, cooking = GetProfessions()
     for index, type in pairs(tab) do

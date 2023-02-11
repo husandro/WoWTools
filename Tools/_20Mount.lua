@@ -221,7 +221,7 @@ local function getRandomRoll(type)--随机坐骑
     end
 end
 local function setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
-    if UnitAffectingCombat('player') then
+    if UnitAffectingCombat('player') or EditModeManagerFrame:IsEditModeActive() then
         panel.Combat=true
         return
     end

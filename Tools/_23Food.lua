@@ -38,6 +38,9 @@ end
 --提示, 事件
 --#########
 local function set_Button_Init(self)
+    if EditModeManagerFrame:IsEditModeActive() then
+        return
+    end
     if self.itemID then
         e.LoadSpellItemData(self.itemID)--加载法术, 物品数据
 

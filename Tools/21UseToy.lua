@@ -69,7 +69,7 @@ local function getToy()--生成, 有效表格
 end
 
 local function setAtt(init)--设置属性
-    if UnitAffectingCombat('player') and not init then
+    if (UnitAffectingCombat('player') and not init) or EditModeManagerFrame:IsEditModeActive() then
         return
     end
     local icon

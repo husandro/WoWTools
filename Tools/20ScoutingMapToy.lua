@@ -27,7 +27,7 @@ for itemID, _ in pairs(Toy) do
 end
 
 local function Get_Use_Toy()
-    if UnitAffectingCombat('player') then
+    if UnitAffectingCombat('player') or EditModeManagerFrame:IsEditModeActive() then
         panel.bat=true
         return
     end

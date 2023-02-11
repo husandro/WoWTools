@@ -56,7 +56,7 @@ local function getToy()--生成, 有效表格
 end
 
 local function setAtt()--设置属性
-    if UnitAffectingCombat('player') then
+    if UnitAffectingCombat('player') or EditModeManagerFrame:IsEditModeActive() then
         return
     end
     local icon
