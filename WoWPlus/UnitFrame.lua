@@ -422,7 +422,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                 if unit=='target' or unit=='focus' then
                     self.itemLevel:SetPoint('TOPLEFT', self.classTexture, 'TOPRIGHT')
                 else
-                    self.itemLevel:SetPoint('TOPRIGHT', self.classTexture, 'TOPLEFT',2,0)
+                    self.itemLevel:SetPoint('TOPRIGHT', self.classTexture, 'TOPLEFT')
                 end
             end
 
