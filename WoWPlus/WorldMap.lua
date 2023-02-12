@@ -625,7 +625,7 @@ local function set_AreaPOIPinMixin_OnAcquired(poiInfo)--地图POI提示 AreaPOID
                         t= t..icon..'|cff00ff00'..num..'|r'
                     end
                     if text then
-                        t= t..' |cffff00ff'..text..'|r'
+                        t= t..'|cffff00ff'..text..'|r'
                     end
                 end
             end
