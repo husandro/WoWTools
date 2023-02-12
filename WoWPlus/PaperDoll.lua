@@ -76,7 +76,7 @@ local function LvTo()--总装等
         end
     end
 end
-
+--[[
 local function Lv(self, slot, link)--装等    
     local lv--, pvp
     local to=GetAverageItemLevel()
@@ -90,8 +90,6 @@ local function Lv(self, slot, link)--装等
             elseif quality and quality< 5 then
                 if val <= -6  then
                     lv =RED_FONT_COLOR_CODE..lv..'|r'
-                --elseif val < -3 then
-                  --  lv =YELLOW_FONT_COLOR_CODE..lv..'|r'
                 else
                     local hex=quality and select(4, GetItemQualityColor(quality))
                     if hex then
@@ -105,13 +103,12 @@ local function Lv(self, slot, link)--装等
         self.lv= e.Cstr(self, nil, nil, nil,nil,nil, 'CENTER')
         self.lv:SetShadowOffset(2,-2)
         self.lv:SetPoint('CENTER')
-        --self.lv:SetPoint('TOP', 0, 0)
     end
     if self.lv then
         self.lv:SetText(lv or '')
     end
 end
-
+]]
 local function Gem(self, slot, link)--宝石
     if not slot or slot>17 or slot<1 or slot==4 then
         return
@@ -287,93 +284,19 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
     end
 end
 
-local function Set(self, slot, link)--套装
+local function Set(self, link)--套装
     local set
     if link then
         set=select(16 , GetItemInfo(link))
         if set then
             if set and not self.set then
                 self.set=self:CreateTexture()
-            --[[if Slot(slot) then
-                    self.set:SetPoint('TOPRIGHT',self)
-                else
-                    self.set:SetPoint('TOPLEFT',self)
-                end]]
                 self.set:SetAllPoints(self)
                 self.set:SetAtlas(e.Icon.pushed)
             end
         end
     end
     if self.set then self.set:SetShown(set) end
-end
-
-local function SetP(self, n)
-    if n==1 then
-        self:SetPoint('BOTTOMLEFT', -3, 0)
-    elseif n==2 then
-        self:SetPoint('BOTTOMRIGHT', 3, 0)
-    elseif n==3 then
-        self:SetPoint('TOPLEFT', -3, 0)
-    else
-        self:SetPoint('TOPRIGHT', 3, 0)
-    end
-end
-local function Sta(self, slot, link)--显示属性
-    local s,h,m,v
-    local n=0
-    if link then
-        local info=GetItemStats(link) or {}
-        s=info['ITEM_MOD_CRIT_RATING_SHORT']
-        h=info['ITEM_MOD_HASTE_RATING_SHORT']
-        m=info['ITEM_MOD_MASTERY_RATING_SHORT']
-        v=info['ITEM_MOD_VERSATILITY']
-
-        if s then
-            if not self.s then
-                self.s=e.Cstr(self)
-                self.s:SetText( e.onlyChinse and '爆' or e.WA_Utf8Sub(STAT_CRITICAL_STRIKE, 1, 2):upper())
-            else
-                self.s:ClearAllPoints()
-            end
-            n=n+1
-            SetP(self.s, n)
-        end
-
-        if h then
-            if not self.h then
-                self.h=e.Cstr(self)
-                self.h:SetText(e.onlyChinse and '急' or e.WA_Utf8Sub(STAT_HASTE, 1,2):upper())
-            else
-                self.h:ClearAllPoints()
-            end
-            n=n+1
-            SetP(self.h, n)
-        end
-        if m  then
-            if not self.m then
-                self.m=e.Cstr(self)
-                self.m:SetText(e.onlyChinse and '精' or e.WA_Utf8Sub(STAT_MASTERY, 1,2):upper())
-            else
-                self.m:ClearAllPoints()
-            end
-            n=n+1
-            SetP(self.m, n)
-        end
-        if v then
-            if not self.v then
-                self.v=e.Cstr(self)
-                self.v:SetText(e.onlyChinse and '全' or e.WA_Utf8Sub(STAT_VERSATILITY, 1,2):upper())
-            else
-                self.v:ClearAllPoints()
-            end
-            n=n+1
-            SetP(self.v, n)
-        end
-    end
-    if self.s then self.s:SetShown(s) end
-    if self.h then self.h:SetShown(h) end
-    if self.m then self.m:SetShown(m) end
-    if self.v then self.v:SetShown(v) end
 end
 
 local function Title()--头衔数量
@@ -782,7 +705,7 @@ local function setFlyout(button, itemLink, slot)
         button.updown:SetText(updown or '')
     end
 
-    Set(button, slot, itemLink)--套装
+    Set(button, itemLink)--套装
 
     if pvpItem and not button.pvpItem then--提示PvP装备
         local h=button:GetHeight()/3
@@ -882,12 +805,12 @@ local function Init()
                 local textureName = GetInventoryItemTexture("player", slot)
                 local hasItem = textureName ~= nil
                 local link=hasItem and GetInventoryItemLink('player', slot) or nil--装等                
-                Lv(self, slot, link)
+                --Lv(self, slot, link)
                 Du(self, slot, link)
                 Gem(self, slot, link)
                 Enchant(self, slot, link)
-                Set(self, slot, link)
-                Sta(self, slot, link)
+                --Set(self, slot, link)
+                e.Set_Item_Stats(self, link, self.icon)
                 Equipment()
                 LvTo()--总装等
             elseif InventSlot_To_ContainerSlot[slot] and self:HasBagEquipped() then--背包数

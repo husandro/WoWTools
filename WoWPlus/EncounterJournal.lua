@@ -700,6 +700,8 @@ local function Init()--冒险指南界面
         if self.collectedText then
             self.collectedText:SetText(text or '')
         end
+
+        e.Set_Item_Stats(self, self.link, self.icon)--显示, 物品, 属性
     end)
     --boss, ID, 信息
     hooksecurefunc('EncounterJournal_DisplayInstance', function(instanceID, noButton)--Blizzard_EncounterJournal.lua

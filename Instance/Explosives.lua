@@ -263,6 +263,6 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
         end
 
     elseif event=='CHALLENGE_MODE_START' or event=='PLAYER_ENTERING_WORLD' then
-        set_Button()
+        C_Timer.After(1, set_Button)
     end
 end)
