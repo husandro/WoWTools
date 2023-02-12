@@ -252,7 +252,7 @@ local function set_ItemInteractionFrame_Currency(self)
 		end
         if not self.ItemInteractionFrameCurrencyText then
             self.ItemInteractionFrameCurrencyText= e.Cstr(self)
-            self.ItemInteractionFrameCurrencyText:SetPoint('TOPLEFT', 60, -25)
+            self.ItemInteractionFrameCurrencyText:SetPoint('TOPLEFT', 55, -38)
 			self.ItemInteractionFrameCurrencyText:EnableMouse(true)
 			self.ItemInteractionFrameCurrencyText:SetScript('OnEnter', function(self2)
 				e.tips:SetOwner(self2, "ANCHOR_LEFT")
