@@ -228,6 +228,59 @@ local function Set()
 	strSetText()
 end
 
+
+--#############
+--套装,转换,货币
+--Blizzard_ItemInteractionUI.lua
+local function set_ItemInteractionFrame_Currency(self)
+    local itemInfo= C_ItemInteraction.GetItemInteractionInfo()
+    local currencyID= itemInfo and itemInfo.currencyTypeId or self.chargeCurrencyTypeId or 2167
+
+	if self==ItemInteractionFrame then
+		TokenFrame.chargeCurrencyTypeId= currencyID
+	end
+
+    local info= C_CurrencyInfo.GetCurrencyInfo(currencyID)
+	local text
+    if info and info.discovered and info.quantity then
+        text= info.iconFileID and '|T'..info.iconFileID..':0|t' or ''
+        text= text.. info.quality
+		if currencyID== 2167 then
+			text= text.. '/6'
+		else
+        	text= info.maxQuantity and text..'/'..info.maxQuantity or text
+		end
+        if not self.ItemInteractionFrameCurrencyText then
+            self.ItemInteractionFrameCurrencyText= e.Cstr(self)
+            self.ItemInteractionFrameCurrencyText:SetPoint('TOPLEFT', 60, -25)
+			self.ItemInteractionFrameCurrencyText:EnableMouse(true)
+			self.ItemInteractionFrameCurrencyText:SetScript('OnEnter', function(self2)
+				e.tips:SetOwner(self2, "ANCHOR_LEFT")
+				e.tips:ClearLines()
+				e.tips:SetCurrencyByID(self2.chargeCurrencyTypeId)
+				e.tips:Show()
+			end)
+			self.ItemInteractionFrameCurrencyText:SetScript('OnLeave', function() e.tips:Hide() end)
+        end
+		self.ItemInteractionFrameCurrencyText.chargeCurrencyTypeId= currencyID
+
+        local chargeInfo = C_ItemInteraction.GetChargeInfo()
+        local timeToNextCharge = chargeInfo.timeToNextCharge
+        if (self.interactionType == Enum.UIItemInteractionType.ItemConversion) and timeToNextCharge>0 then
+            text= text ..' |cnGREEN_FONT_COLOR:'..SecondsToClock(timeToNextCharge, true)..'|r'
+        end
+
+		if info.canEarnPerWeek and info.maxWeeklyQuantity and info.maxWeeklyQuantity>0 then
+			text= text..' ('..info.quantityEarnedThisWeek..'/'..info.maxWeeklyQuantity..')'
+		end
+    end
+
+	if self.ItemInteractionFrameCurrencyText then
+		self.ItemInteractionFrameCurrencyText:SetText(text or '')
+	end
+end
+
+
 --######
 --初始化
 --######
@@ -259,6 +312,8 @@ local function Init()
 
 	Set()
 	hooksecurefunc('TokenFrame_Update',strSetText)--设置, 文本
+
+	set_ItemInteractionFrame_Currency(TokenFrame)--套装,转换,货币
 end
 
 --###########
@@ -267,7 +322,8 @@ end
 panel:RegisterEvent("ADDON_LOADED")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1==id then
+    if event == "ADDON_LOADED" then
+		if arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
             --添加控制面板        
@@ -281,9 +337,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 panel:UnregisterAllEvents()
             else
 				Init()
-				panel:UnregisterEvent('ADDON_LOADED')
+				--panel:UnregisterEvent('ADDON_LOADED')
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
+
+		elseif arg1=='Blizzard_ItemInteractionUI' then
+            hooksecurefunc(ItemInteractionFrame, 'SetupChargeCurrency', function(self2)
+				set_ItemInteractionFrame_Currency(self2)
+				set_ItemInteractionFrame_Currency(TokenFrame)--套装,转换,货币
+			end)
+		end
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then

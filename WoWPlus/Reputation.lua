@@ -473,6 +473,7 @@ local function InitMenu(self, level, type)
 	--UIDropDownMenu_AddSeparator(level)
 end
 
+
 --######
 --初始化
 --######
@@ -514,6 +515,7 @@ local function Init()
 	if Save.factionUpdateTips then--声望更新, 提示
 		ChatFrame_AddMessageEventFilter('CHAT_MSG_COMBAT_FACTION_CHANGE', FactionUpdate)
 	end
+
 end
 
 
@@ -523,7 +525,8 @@ end
 panel:RegisterEvent("ADDON_LOADED")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1==id then
+    if event == "ADDON_LOADED" then
+		if arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
             --添加控制面板        
@@ -540,6 +543,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 				panel:UnregisterEvent('ADDON_LOADED')
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
+		end
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then

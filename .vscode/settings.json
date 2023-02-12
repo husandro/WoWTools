@@ -1265,7 +1265,8 @@
         "BACKGROUND",
         "SetItemButtonTextureVertexColor",
         "SetItemButtonNormalTextureVertexColor",
-        "MainMenuBarVehicleleaveButton"
+        "MainMenuBarVehicleleaveButton",
+        "SL_SET_CONVERSION_RECHARGE_TIME"
     ],
     "Lua.diagnostics.disable": [
     ]
