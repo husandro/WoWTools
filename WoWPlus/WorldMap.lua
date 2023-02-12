@@ -611,6 +611,27 @@ local function set_AreaPOIPinMixin_OnAcquired(poiInfo)--地图POI提示 AreaPOID
             t= t..'|cnGREEN_FONT_COLOR:'..SecondsToTime(seconds)..'|r'
         end
     end
+
+    if poiInfo.widgetSetID then
+        local widgets = C_UIWidgetManager.GetAllWidgetsBySetID(poiInfo.widgetSetID) or {}
+        for _,widget in ipairs(widgets) do
+            if widget and widget.widgetID and  widget.widgetType==8 then
+                local widgetInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(widget.widgetID)
+                if widgetInfo and widgetInfo.shownState== 1  and widgetInfo.text then
+                    
+                    local icon, num= widgetInfo.text:match('(|T.-|t).-]|r.-(%d+)')
+                    local text= widgetInfo.text:match('(%d+/%d+)')--次数
+                    if icon and num then
+                        t= t..icon..'|cff00ff00'..num..'|r'
+                    end
+                    if text then
+                        t= t..' |cffff00ff'..text..'|r'
+                    end
+                end
+            end
+        end
+    end
+
     if poiInfo.Str then
         poiInfo.Str:SetText(t)
     end
