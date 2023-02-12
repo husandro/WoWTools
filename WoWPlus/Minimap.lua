@@ -228,18 +228,16 @@ local function set_vigentteButton_Text()
             end
         end
     end
+
     for _, uiMapID in pairs(uiMapIDsTab) do
         local areaPoiIDs = C_AreaPoiInfo.GetAreaPOIForMap(uiMapID) or {}
         for _, areaPoiID in pairs(areaPoiIDs) do
-            if areaPoiID ~= 7245 and areaPoiID~=7239 then--元素入
+            if areaPoiID ~= 7245 and areaPoiID~=7239 and areaPoiID~=7255 and areaPoiID~=7248 then--元素入
                 local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID)
-
                 if poiInfo and poiInfo.name and poiInfo.atlasName and C_AreaPoiInfo.IsAreaPOITimed(areaPoiID) then
                     local secondsLeft = C_AreaPoiInfo.GetAreaPOISecondsLeft(areaPoiID)
                     if secondsLeft and secondsLeft>0 then
                         text= text and text..'\n' or ''
-                        
-
                         if poiInfo.widgetSetID then
                             local widgets = C_UIWidgetManager.GetAllWidgetsBySetID(poiInfo.widgetSetID) or {}
                             for _,widget in ipairs(widgets) do

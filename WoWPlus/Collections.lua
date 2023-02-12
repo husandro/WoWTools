@@ -149,21 +149,6 @@ end
 --###############
 --套装, 幻化, 界面
 ----Blizzard_Wardrobe.lua
---[[local wowSaveSets = {
-    ['1']={['class']='WARRIOR'},
-    ['2']={['class']='PALADIN'},
-    ['4']={['class']='HUNTER'},
-    ['8']={['class']='ROGUE'},
-    ['16']={['class']='PRIEST'},
-    ['32']={['class']='DEATHKNIGHT'},
-    ['64']={['class']='SHAMAN'},
-    ['128']={['class']='MAGE'},
-    ['256']={['class']='WARLOCK'},
-    ['512']={['class']='MONK'},
-    ['1024']={['class']='DRUID'},
-    ['2048']={['class']='DEMONHUNTER'},
-    ['4096']={['class']='EVOKER'},
-}]]
 local wowSave2=wowSaveSets
 local function get_Sets_Colleced()--收集所有角色套装数据
     local numCollected, numTotal = C_TransmogSets.GetBaseSetsCounts()
