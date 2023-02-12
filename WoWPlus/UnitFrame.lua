@@ -418,7 +418,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
             self.classTexture:AddMaskTexture(self.mask)
 
             if not unit:find('boss') and self.unit~='player' then
-                self.itemLevel= e.Cstr(self, 10)--装等
+                self.itemLevel= e.Cstr(self, 12)--装等
                 if unit=='target' or unit=='focus' then
                     self.itemLevel:SetPoint('TOPLEFT', self.classTexture, 'TOPRIGHT')
                 else
