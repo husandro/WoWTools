@@ -429,9 +429,9 @@ local function set_LFGPlus()--预创建队伍增强
                 end
                 local frame=LFGListApplicationDialog
                 if not frame.TankButton.CheckButton:GetChecked() and not frame.HealerButton.CheckButton:GetChecked() and not frame.DamagerButton.CheckButton:GetChecked() then
-                    local id=GetSpecialization()--当前专精
-                    if id then
-                        local role = select(5, GetSpecializationInfo(id))
+                    local specID=GetSpecialization()--当前专精
+                    if specID then
+                        local role = select(5, GetSpecializationInfo(specID))
                         if role=='DAMAGER' and frame.DamagerButton:IsShown() then
                             frame.DamagerButton.CheckButton:SetChecked(true)
 

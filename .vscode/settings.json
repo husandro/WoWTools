@@ -1266,7 +1266,8 @@
         "SetItemButtonTextureVertexColor",
         "SetItemButtonNormalTextureVertexColor",
         "MainMenuBarVehicleleaveButton",
-        "SL_SET_CONVERSION_RECHARGE_TIME"
+        "SL_SET_CONVERSION_RECHARGE_TIME",
+        "GameTooltipTextRight3"
     ],
     "Lua.diagnostics.disable": [
     ]
