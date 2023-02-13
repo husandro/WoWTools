@@ -1278,7 +1278,16 @@
         "TextureKitConstants",
         "ClassTalentFrameBg",
         "ClassSpecContentFrameMixin",
-        "ClassTalentSpecTabMixin"
+        "ClassTalentSpecTabMixin",
+        "CharacterFrameBg",
+        "CharacterFrameInset",
+        "CharacterStatsPane",
+        "CharacterFrameInsetRight",
+        "CharacterModelScene",
+        "SpellBookFrameBg",
+        "SpellBookPage1",
+        "SpellBookFrameInset",
+        "SpellBookPage2"
     ],
     "Lua.diagnostics.disable": [
     ]

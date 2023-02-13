@@ -8,6 +8,11 @@ local function hideTexture(self)
         self:SetShown(false)
     end
 end
+local function setAlpha(self)
+    if self then
+        self:SetAlpha(0.5)
+    end
+end
 
 local function set_UNIT_ENTERED_VEHICLE()--载具
     if OverrideActionBarEndCapL then
@@ -225,6 +230,29 @@ local function Init()
         end
         MainMenuBar.Background:SetShown(false)
     end)
+
+    setAlpha(CharacterFrameBg)
+    setAlpha(CharacterFrameInset.Bg)
+    setAlpha(CharacterFrame.NineSlice.TopEdge)
+    setAlpha(CharacterFrameInsetRight.Bg)
+    setAlpha(CharacterStatsPane.ClassBackground)
+    setAlpha(CharacterStatsPane.EnhancementsCategory.Background)
+    setAlpha(CharacterStatsPane.AttributesCategory.Background)
+    setAlpha(CharacterStatsPane.ItemLevelCategory.Background)
+
+    
+    setAlpha(SpellBookPage1)
+    setAlpha(SpellBookPage2)
+    hideTexture(SpellBookFrameBg)
+    hideTexture(SpellBookFrameInset.Bg)
+    setAlpha(SpellBookFrame.NineSlice.TopEdge)
+    
+    --hooksecurefunc('PaperDollItemSlotButton_Update',  function(self)--PaperDollFrame.lua
+    
+    --hideTexture
+    
+    --setAlpha(CharacterModelScene)
+
     --hooksecurefunc(BaseActionButtonMixin,'UpdateButtonArt', function(self, hideDivider)--ActionButton.lua
     --    hideButtonText(self)
     --end)
@@ -275,14 +303,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             local frame=ClassTalentFrame
             if frame then
                 if frame.TalentsTab and frame.TalentsTab.BottomBar then
-                    frame.TalentsTab.BottomBar:SetAlpha(0.5)--下面
+                    setAlpha(frame.TalentsTab.BottomBar)--下面
                 end
-                if frame.NineSlice and frame.NineSlice.TopEdge then
-                    frame.NineSlice.TopEdge:SetAlpha(0.5)--顶部
+                if frame.NineSlice then
+                    setAlpha(frame.NineSlice.TopEdge)--顶部
                 end
-                if ClassTalentFrameBg then--里面
-                    ClassTalentFrameBg:SetAlpha(0.5)
-                end
+                setAlpha(ClassTalentFrameBg)--里面
+                    
                 if frame.TalentsTab then
                     hideTexture(frame.TalentsTab.BlackBG)
                     hooksecurefunc(frame.TalentsTab, 'UpdateSpecBackground', function(self2)--Blizzard_ClassTalentTalentsTab.lua
