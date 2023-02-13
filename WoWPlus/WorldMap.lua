@@ -520,7 +520,7 @@ local function set_Map_ID(self)--显示地图ID
                 self.playerPosition.Text:SetText(text)
             end
         end)
-
+--[[
         --####
         --缩放
         --####
@@ -547,7 +547,7 @@ local function set_Map_ID(self)--显示地图ID
             Save.scale=n
             WorldMapFrame:SetScale(n)
             print(id, addName, e.onlyChinse and '缩放' or UI_SCALE, n)
-        end)
+        end)]]
     end
 
     setMapIDText(self)

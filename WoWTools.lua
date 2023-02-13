@@ -1162,3 +1162,4 @@ e.Set_Item_Stats = function(self, link, point)
     if self.itemSet then self.itemSet:SetShown(setID) end--套装
     if self.itemLevel then self.itemLevel:SetText(itemLevel or '') end--装等
 end
+

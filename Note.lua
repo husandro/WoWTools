@@ -49,4 +49,7 @@ LOCALE_esMX  8  Chinese (Traditional, Taiwan)
 LOCALE_ruRU  9  Spanish (Mexico)
 LOCALE_ptBR  10 Russian (Russia)
 LOCALE_itIT  11 Portuguese (Brazil)
+
+StaticPopupDialogs
+https://wowpedia.fandom.com/wiki/Creating_simple_pop-up_dialog_boxes
 ]]

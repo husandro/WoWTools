@@ -6,32 +6,33 @@ local panel = CreateFrame("Frame")--Panel
 panel.name = id--'|cffff00ffWoW|r|cff00ff00Tools|r'
 InterfaceOptions_AddCategory(panel)
 
-local reloadButton=CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')
+local reloadButton=CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')--重新加载UI
 reloadButton:SetPoint('TOPLEFT')
-reloadButton:SetText(e.onlyChinse and '重新加载UI' or RELOADUI)
+
 reloadButton:SetSize(120, 28)
-reloadButton:SetScript('OnMouseDown', function()
+reloadButton:SetScript('OnMouseUp', function()
     ReloadUI()
 end)
 
-StaticPopupDialogs[id..'restAllSetup']={
-    text =id..'|n|n|cnRED_FONT_COLOR:'..CLEAR_ALL..'|r '..SAVE..'|n|n'..RELOADUI..' /reload',
-    button1 = '|cnRED_FONT_COLOR:'..RESET_ALL_BUTTON_TEXT..'|r',
-    button2 = CANCEL,
-    whileDead=true,timeout=30,hideOnEscape = 1,
-    OnAccept=function(self)
-        e.ClearAllSave=true
-        WoWToolsSave={}
-        WoWDate={}
-        ReloadUI()
-    end,
-}
 
-local restButton=CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')
+
+local restButton=CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')--全部重
 restButton:SetPoint('LEFT', reloadButton, 'RIGHT', 10, 0)
-restButton:SetText('|cnRED_FONT_COLOR:'..(e.onlyChinse and '全部重置' or RESET_ALL_BUTTON_TEXT)..'|r')
+
 restButton:SetSize(120, 28)
-restButton:SetScript('OnMouseDown', function()
+restButton:SetScript('OnMouseUp', function()
+    StaticPopupDialogs[id..'restAllSetup']={
+        text =id..'|n|n|cnRED_FONT_COLOR:'..(e.onlyChinse and '清除全部' or CLEAR_ALL)..'|r '..(e.onlyChinse and '保存' or SAVE)..'|n|n'..(e.onlyChinse and '重新加载UI' or RELOADUI)..' /reload',
+        button1 = '|cnRED_FONT_COLOR:'..(e.onlyChinse and '全部重置' or RESET_ALL_BUTTON_TEXT),
+        button2 = e.onlyChinse and '取消' or CANCEL,
+        whileDead=true,timeout=30,hideOnEscape = 1,
+        OnAccept=function(self)
+            e.ClearAllSave=true
+            WoWToolsSave={}
+            WoWDate={}
+            ReloadUI()
+        end,
+    }
     StaticPopup_Show(id..'restAllSetup')
 end)
 
@@ -89,11 +90,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         e.onlyChinse= Save.onlyChinse
 
+        reloadButton:SetText(e.onlyChinse and '重新加载UI' or RELOADUI)
+        restButton:SetText('|cnRED_FONT_COLOR:'..(e.onlyChinse and '全部重置' or RESET_ALL_BUTTON_TEXT)..'|r')
+
         local check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--仅中文
         check:SetChecked(Save.onlyChinse)
         check.text:SetText('Chinse')
         check:SetPoint('TOPLEFT', restButton, 'TOPRIGHT')
-        check:SetScript('OnMouseDown',function()
+        check:SetScript('OnMouseUp',function()
             e.onlyChinse= not e.onlyChinse and true or nil
             Save.onlyChinse = e.onlyChinse
             print(id, addName, e.GetEnabeleDisable(e.onlyChinse), '|cffff00ff', e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)

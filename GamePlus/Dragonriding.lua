@@ -74,7 +74,7 @@ local function set_Events()
         panel:SetShown(false)
     end
 end
-
+--[[
 local function set_Scale()--设置，缩放
     if UIWidgetPowerBarContainerFrame then
         if Save.sacleBool then
@@ -83,7 +83,7 @@ local function set_Scale()--设置，缩放
             UIWidgetPowerBarContainerFrame:SetScale(1)
         end
     end
-end
+end]]
 --####
 --初始
 --####
@@ -138,10 +138,10 @@ local function Init()
             timeElapsed = 0
         end
     end)
-
+--[[
     if Save.sacleBool then
         set_Scale()--设置，缩放
-    end
+    end]]
 end
 
 panel:RegisterEvent('ADDON_LOADED')
@@ -171,7 +171,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 e.tips:Show()
             end)
             sel:SetScript('OnLeave', function() e.tips:Hide() end)
-
+--[[
             local sel2=CreateFrame("CheckButton", nil, sel, "InterfaceOptionsCheckButtonTemplate")
             sel2.text:SetText((e.onlyChinse and '缩放' or UI_SCALE)..' 0.8')
             sel2:SetPoint('LEFT', sel.text, 'RIGHT')
@@ -187,7 +187,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 e.tips:Show()
             end)
             sel2:SetScript('OnLeave', function() e.tips:Hide() end)
-
+]]
             if Save.disabled then
                 panel:UnregisterAllEvents()
             else

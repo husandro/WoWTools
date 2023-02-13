@@ -270,6 +270,45 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     end)
                 end
             end
+
+        elseif arg1=='Blizzard_ClassTalentUI' then--天赋
+            local frame=ClassTalentFrame
+            if frame then
+                if frame.TalentsTab and frame.TalentsTab.BottomBar then
+                    frame.TalentsTab.BottomBar:SetAlpha(0.5)--下面
+                end
+                if frame.NineSlice and frame.NineSlice.TopEdge then
+                    frame.NineSlice.TopEdge:SetAlpha(0.5)--顶部
+                end
+                if ClassTalentFrameBg then--里面
+                    ClassTalentFrameBg:SetAlpha(0.5)
+                end
+                if frame.TalentsTab then
+                    hideTexture(frame.TalentsTab.BlackBG)
+                    hooksecurefunc(frame.TalentsTab, 'UpdateSpecBackground', function(self2)--Blizzard_ClassTalentTalentsTab.lua
+                        if self2.specBackgrounds then
+                            for _, background in ipairs(self2.specBackgrounds) do
+                                hideTexture(background)
+                            end
+                        end
+                    end)
+                end
+            end
+            if frame.SpecTab then
+                hideTexture(frame.SpecTab.Background)
+                hideTexture(frame.SpecTab.BlackBG)
+                hooksecurefunc(frame.SpecTab, 'UpdateSpecContents', function(self2)
+                    local numSpecs= self2.numSpecs
+                    if numSpecs and numSpecs>0 then
+                        for i = 1, numSpecs do
+                            local contentFrame = self2.SpecContentFramePool:Acquire();
+                            if contentFrame then
+                                hideTexture(contentFrame.HoverBackground)
+                            end
+                        end
+                    end
+                end)
+            end
         end
 
     elseif event == "PLAYER_LOGOUT" then

@@ -347,11 +347,19 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
             end
         end
 
-        C_MythicPlus.RequestMapInfo()
-        C_MythicPlus.RequestRewards()
-        C_MythicPlus.RequestCurrentAffixes()
+        if e.Player.levelMax then
+            C_MythicPlus.RequestMapInfo()
+            C_MythicPlus.RequestRewards()
+            C_MythicPlus.RequestCurrentAffixes()
+        end
         RequestRaidInfo()
-
+        C_MajorFactions.RequestCatchUpState()
+        C_FriendList.ShowFriends()
+        --[[
+            RequestRatedInfo()--从服务器请求有关玩家 PvP 评分的信息。
+            RequestRandomBattlegroundInstanceInfo()--请求随机战场实例信息
+            RequestBattlefieldScoreData()--请求战地得分数据
+        ]]
         C_Timer.After(2, function()
             NotifyInspect('player')--取得,自已, 装等
             e.GetGroupGuidDate()--队伍数据收集    

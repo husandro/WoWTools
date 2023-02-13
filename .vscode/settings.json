@@ -1267,7 +1267,18 @@
         "SetItemButtonNormalTextureVertexColor",
         "MainMenuBarVehicleleaveButton",
         "SL_SET_CONVERSION_RECHARGE_TIME",
-        "GameTooltipTextRight3"
+        "GameTooltipTextRight3",
+        "ID",
+        "ContainerFrame1",
+        "EncounterBar",
+        "UIWidgetContainerMixin",
+        "UIWidgetManager",
+        "ClassTalentTalentsTabMixin",
+        "TalentFrameBaseMixin",
+        "TextureKitConstants",
+        "ClassTalentFrameBg",
+        "ClassSpecContentFrameMixin",
+        "ClassTalentSpecTabMixin"
     ],
     "Lua.diagnostics.disable": [
     ]

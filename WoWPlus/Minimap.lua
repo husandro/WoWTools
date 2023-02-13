@@ -182,7 +182,14 @@ local uiMapIDsTab= {2026, 2025, 2024, 2023}--, 2022}--地图, areaPoiIDs
 local questIDTab= {--世界任务, 监视, ID
     [74378]=true,
 }
-
+local areaPoiIDTab={--不显示, areaPoiID
+    [7239]=true,--元素入
+    [7245]=true,
+    [7248]=true,
+    [7249]=true,
+    [7255]=true,
+    [7260]=true,
+}
 local function set_vigentteButton_Text()
     if not Save.vigentteButtonShowText then
         panel.vigentteButton.text:SetText('')
@@ -232,7 +239,7 @@ local function set_vigentteButton_Text()
     for _, uiMapID in pairs(uiMapIDsTab) do
         local areaPoiIDs = C_AreaPoiInfo.GetAreaPOIForMap(uiMapID) or {}
         for _, areaPoiID in pairs(areaPoiIDs) do
-            if areaPoiID ~= 7245 and areaPoiID~=7239 and areaPoiID~=7255 and areaPoiID~=7248 then--元素入
+            if areaPoiID and not areaPoiIDTab[areaPoiID] then--不显示, areaPoiID
                 local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID)
                 if poiInfo and poiInfo.name and poiInfo.atlasName and C_AreaPoiInfo.IsAreaPOITimed(areaPoiID) then
                     local secondsLeft = C_AreaPoiInfo.GetAreaPOISecondsLeft(areaPoiID)

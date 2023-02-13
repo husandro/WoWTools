@@ -1,8 +1,14 @@
 local id, e = ...
-local Save={point={},}
+local Save={
+        point={},--移动
+        scale={},--缩放
+}
 local addName= NPE_MOVE..'Frame'
 local panel= CreateFrame("Frame")
 
+--####
+--移动
+--####
 local Point=function(frame, name2)
     local p=Save.point
     p=p[name2]
@@ -12,9 +18,100 @@ local Point=function(frame, name2)
     end
 end
 
+--####
+--缩放
+--####
+local function show_Tips(frame, name)
+    frame.name= name
+    frame:SetAlpha(0.1)
+    frame:SetScript("OnLeave", function(self) e.tips:Hide() self:SetAlpha(0.1) end)
+    frame:SetScript("OnEnter",function(self)
+        if UnitAffectingCombat('player') then
+            return
+        end
+        self:SetAlpha(1)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine((e.onlyChinse and '缩放' or UI_SCALE), Save.scale[self.name] or 1)
+        e.tips:AddDoubleLine('Frame', self.name)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:Show()
+    end)
+end
+local function ZoomFrame(self, notZoom)
+    local name= (self and not notZoom and not Save.disabledZoom) and self:GetName()
+    if not name then
+        return
+    end
+    local frame
+
+    if self.BorderFrame and self.BorderFrame.TitleContainer then
+        frame= self.BorderFrame.TitleContainer
+        self.ZoomIn= e.Cbtn(frame, nil, nil, nil, nil, true, {16,16})--放大
+        self.ZoomIn:SetPoint('LEFT',35,-2)
+
+    elseif self.SpellButtonContainer then
+        frame=self.SpellButtonContainer
+        self.ZoomIn= e.Cbtn(frame, nil, nil, nil, nil, true, {16,16})
+        self.ZoomIn:SetPoint('BOTTOM', frame, 'TOP', -20,0)
+        self.ZoomIn:SetFrameLevel(frame:GetFrameLevel()+7)
+
+    elseif self.TitleContainer then
+        frame= self.TitleContainer
+        self.ZoomIn= e.Cbtn(frame, nil, nil, nil, nil, true, {16,16})
+        self.ZoomIn:SetPoint('LEFT',35,-2)
+
+    elseif self.Header then
+        frame= self.Header
+        self.ZoomIn= e.Cbtn(frame, nil, nil, nil, nil, true, {16,16})
+        self.ZoomIn:SetPoint('LEFT')
+    else
+        frame= self
+        self.ZoomIn= e.Cbtn(frame, nil, nil, nil, nil, true, {16,16})
+        if self.moveButton then--移动, 按钮
+            self.ZoomIn:SetPoint('BOTTOMRIGHT', self.moveButton, 'TOP')
+        else
+            self.ZoomIn:SetPoint('BOTTOMLEFT', frame, 'TOPLEFT')
+        end
+        self.ZoomIn:SetFrameLevel(frame:GetFrameLevel()+7)
+    end
+
+    self.ZoomIn:SetNormalAtlas('UI-HUD-Minimap-Zoom-In')
+    self.ZoomIn:SetScript('OnMouseDown', function(self2)
+        local n= Save.scale[self2.name] or self:GetScale() or 1
+        n= n+ 0.05
+        n= n>2 and 2 or n
+        Save.scale[self2.name]= n
+        self:SetScale(n)
+    end)
+
+    self.ZoomOut= e.Cbtn(frame, nil, nil, nil, nil, true, {16, 16})--缩小
+    self.ZoomOut:SetFrameLevel(self.ZoomIn:GetFrameLevel())
+    self.ZoomOut:SetPoint('LEFT',self.ZoomIn, 'RIGHT')
+    self.ZoomOut:SetNormalAtlas('UI-HUD-Minimap-Zoom-Out')
+    self.ZoomOut:SetScript('OnMouseDown', function(self2)
+        local n= Save.scale[self2.name] or self:GetScale() or 1
+        n= n- 0.05
+        n= n< 0.5 and 0.5 or n
+        Save.scale[self2.name]= n
+        self:SetScale(n)
+    end)
+
+    show_Tips(self.ZoomIn, name)
+    show_Tips(self.ZoomOut, name)
+    if Save.scale[name] and Save.scale[name]~=1 then
+        self:SetScale(Save.scale[name])
+    end
+end
+
+
+--####
+--移动
+--####
 local Move=function(F, tab)
     tab=tab or {}
-    local F2, click, save, enter, show,  re =tab.frame, tab.click, tab.save, tab.enter, tab.show, tab.re--, tab.hook    
+    local F2, click, save, enter, show,  re =tab.frame, tab.click, tab.save, tab.enter, tab.show, tab.re --, tab.hook 
     if not F2 and not F then
         return
     end
@@ -82,9 +179,9 @@ local Move=function(F, tab)
         end
 
     end
-if re then
-    F2:SetResizable(true)
-end
+    if re then
+        F2:SetResizable(true)
+    end
     F:SetScript("OnMouseDown", function(self,d)
             if IsModifierKeyDown()
             or (click=='R' and d~='RightButton')
@@ -93,6 +190,8 @@ end
             SetCursor('UI_MOVE_CURSOR')
     end)
     F:SetScript("OnLeave", function() ResetCursor() end)
+
+    ZoomFrame(F2, tab.notZoom)
 end
 
 local FrameTab={
@@ -120,7 +219,7 @@ local FrameTab={
     ColorPickerFrame={save=true},--颜色选择器
     BFAMissionFrame={},--侦查地图    
     WorldMapFrame={},--世界地图
-    ContainerFrameCombinedBags={},--包
+    ContainerFrameCombinedBags={save=true},--{notZoom=true},--包
     VehicleSeatIndicator={},--车辆，指示
     ExpansionLandingPage={},--要塞
     --MainMenuBarBackpackButton={save=true, click='R', frame=MicroButtonAndBagsBar},--主菜单
@@ -129,14 +228,10 @@ local FrameTab={
     SendMailFrame={frame= MailFrame},
     MirrorTimer1={save=true},
     LootHistoryFrame= {},--拾取框
+    --EncounterBar={},
     --StoreFrame={},--商店
 }
 --UIWidgetBelowMinimapContainerFrame={save=true,click='RightButton'},
-
---#################
---禁用, 窗口,重置位置
---#################
-
 
 
 local function setTabInit()
@@ -244,7 +339,32 @@ local function setAddLoad(arg1)
         Move(EncounterJournal, {})
 
     elseif arg1=='Blizzard_ClassTalentUI' then--天赋
-        Move(ClassTalentFrame, {save=true})
+        local frame=ClassTalentFrame
+        if frame then
+            Move(frame, {save=true})
+            if frame.TalentsTab and frame.TalentsTab.ButtonsParent then
+                Move(frame.TalentsTab.ButtonsParent,{save=true, frame=frame})--里面, 背景
+            end
+            if frame.ZoomIn then
+                --设置,大小
+                --Blizzard_SharedTalentFrame.lua
+                hooksecurefunc(TalentFrameBaseMixin, 'OnShow', function (self)
+                    local name= ClassTalentFrame:GetName()
+                    if name then
+                        if Save.scale[name] and Save.scale[name]~=1 then
+                            ClassTalentFrame:SetScale(Save.scale[name])
+                        end
+                    end
+                end)
+            end
+            --专精 UpdateSpecFrame
+            --Blizzard_ClassTalentSpecTab.lua
+            if frame.SpecTab and frame.SpecTab.SpecContentFramePool then
+                for specContentFrame in frame.SpecTab.SpecContentFramePool:EnumerateActive() do
+                    Move(specContentFrame, {frame= frame, save=true})
+                end
+            end
+        end
 
     elseif arg1=='Blizzard_AuctionHouseUI' then--拍卖行
         Move(AuctionHouseFrame, {})
@@ -328,18 +448,14 @@ local function setAddLoad(arg1)
 end
 
 
-local function Init()
+local function Init_Move()
     if ZoneAbilityFrame and ZoneAbilityFrame.SpellButtonContainer then--区域，技能
-        ZoneAbilityFrame.moveFrame=CreateFrame('Frame')
-        ZoneAbilityFrame.moveFrame:SetPoint('CENTER', ZoneAbilityFrame.SpellButtonContainer, 'CENTER')
-        ZoneAbilityFrame.moveFrame:SetSize(62, 62)--0, 52
-        Move(ZoneAbilityFrame.moveFrame, {frame= ZoneAbilityFrame})
+        local w,h=ZoneAbilityFrame.SpellButtonContainer:GetSize()
+        local s= math.max(w,h) +20
+        ZoneAbilityFrame.moveButton= e.Cbtn(ZoneAbilityFrame.SpellButtonContainer, nil, nil, nil, nil, true, {s,s})
+        ZoneAbilityFrame.moveButton:SetPoint('CENTER', ZoneAbilityFrame.SpellButtonContainer, 'CENTER')
+        Move(ZoneAbilityFrame.moveButton, {frame= ZoneAbilityFrame})
     end
---[[local tex= ZoneAbilityFrame.moveFrame:CreateTexture()
-tex:SetAllPoints(ZoneAbilityFrame.moveFrame)
-tex:SetAtlas('!perks-list-side-vertical')
--- Move(ZoneAbilityFrame.SpellButtonContainer, {click='R'})
-]]
 
     setTabInit()
 
@@ -380,8 +496,6 @@ tex:SetAtlas('!perks-list-side-vertical')
         end
     end
 
-
-
     --########
     --小，背包
     --########
@@ -389,10 +503,30 @@ tex:SetAtlas('!perks-list-side-vertical')
         local frame= _G['ContainerFrame'..i]
         if frame then
             if frame.TitleContainer then
-                Move(frame.TitleContainer, {frame=frame})
+                if i==1 then
+                    Move(frame.TitleContainer, {frame=frame, save=true})
+                else
+                    Move(frame.TitleContainer, {frame=frame})
+                end
             end
         end
     end
+    hooksecurefunc('UpdateContainerFrameAnchors', function()--ContainerFrame.lua
+        for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
+            local name= frame and frame:GetName()
+            if name then
+                if frame.ZoomIn and Save.scale[name] and Save.scale[name]~=1 then--缩放
+                    frame:SetScale(Save.scale[name])
+                end
+                if (frame==ContainerFrameCombinedBags or frame==ContainerFrame1) then--位置
+                    Point(frame, name)
+                elseif frame==ContainerFrame1 then
+                    Point(frame, name)
+                end
+            end
+        end
+    end)
+
     --[[
     --移动，主菜单，背包提示
     hooksecurefunc(MainMenuBarBackpackButton, 'OnEnterInternal', function ()
@@ -413,15 +547,70 @@ tex:SetAtlas('!perks-list-side-vertical')
 
     Move(MailFrame.TitleContainer,{frame=MailFrame})
 
-    if UIWidgetPowerBarContainerFrame then--能量条
-        UIWidgetPowerBarContainerFrame.moveButton= e.Cbtn(UIWidgetPowerBarContainerFrame, nil, nil, nil, nil, true, {25,25})
-        UIWidgetPowerBarContainerFrame.moveButton:SetPoint('TOP', UIWidgetPowerBarContainerFrame, 'TOP')
-        --UIWidgetPowerBarContainerFrame.moveButton:SetFrameStrata('HIGH')
-        UIWidgetPowerBarContainerFrame.moveButton:SetFrameLevel(UIWidgetPowerBarContainerFrame:GetFrameLevel()+5)
-        Move(UIWidgetPowerBarContainerFrame.moveButton, {frame= UIWidgetPowerBarContainerFrame})
+    if UIWidgetPowerBarContainerFrame then--移动, 能量条
+        local frame=UIWidgetPowerBarContainerFrame        
+        frame.moveButton= e.Cbtn(frame, nil, nil, nil, nil, true, {20,20})
+        frame.moveButton:SetPoint('TOP', frame, 'TOP',0,-13)
+        frame.moveButton:SetFrameLevel(frame:GetFrameLevel()+5)
+        Move(frame.moveButton, {frame= frame})
+
+        local tab= frame.widgetFrames or {}
+        local find
+        for widgetID,_ in pairs(tab) do
+            if widgetID then
+                find=true
+                break
+            end
+        end
+        frame.moveButton:SetShown(find)
+
+        if frame.ZoomIn and frame.ZoomOut then
+            frame.ZoomIn:SetShown(find)
+            frame.ZoomOut:SetShown(find)
+            --显示, 隐藏, 缩放
+            --Blizzard_UIWidgetManager.lua
+            hooksecurefunc(frame, 'RemoveWidget', function(self, widgetID)
+                if self.ZoomIn and self.ZoomOut then
+                    self.ZoomIn:SetShown(false)
+                    self.ZoomOut:SetShown(false)
+                end
+                if self.moveButton then
+                    self.moveButton:SetShown(false)
+                end
+            end)
+            hooksecurefunc(frame, 'CreateWidget', function(self)
+                if self.ZoomIn and self.ZoomOut then
+                    self.ZoomIn:SetShown(true)
+                    self.ZoomOut:SetShown(true)
+                end
+                if self.moveButton then
+                    self.moveButton:SetShown(true)
+                end
+            end)
+        end
     end
 end
 
+local function set_PopupDialogs()
+    StaticPopupDialogs[id..addName..'MoveZoom']={
+        text =id..' '..addName..'\n\n'..(e.onlyChinse and '清除全部' or REMOVE_WORLD_MARKERS)..' ('..(e.onlyChinse and '保存' or SAVE)..')'..'\n\n|cnRED_FONT_COLOR:'..(e.onlyChinse and '重新加载UI' or RELOADUI),
+        button1 = '|cnRED_FONT_COLOR:'..(e.onlyChinse and '移动' or NPE_MOVE),
+        button2 = e.onlyChinse and '取消' or CANCEL,
+        button3 = '|cnRED_FONT_COLOR:'..(e.onlyChinse and '缩放' or UI_SCALE),
+        whileDead=true,
+        timeout=60,
+        hideOnEscape = true,
+        OnAccept=function(self,data)
+            Save.point={}
+            ReloadUI()
+        end,
+        OnAlt= function()
+            Save.scale={}
+            ReloadUI()
+        end,
+    }
+    StaticPopup_Show(id..addName..'MoveZoom')
+end
 --加载保存数据
 panel:RegisterEvent("ADDON_LOADED")
 
@@ -429,19 +618,40 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
+            Save.scale= Save.scale or {}
 
             --添加控制面板        
-            local sel=e.CPanel(e.onlyChinse and '框架移动' or addName, not Save.disabled)
-            sel:SetScript('OnMouseDown', function()
+            local check=e.CPanel(e.onlyChinse and '框架移动' or addName, not Save.disabled)
+            check:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+                if Save.disabled then
+                    panel.check2.text:SetText('|cff808080'..(e.onlyChinse and '缩放' or UI_SCALE))
+                else
+                    panel.check2.text:SetText(e.onlyChinse and '缩放' or UI_SCALE)
+                end
             end)
 
+            panel.check2=CreateFrame("CheckButton", nil, check, "InterfaceOptionsCheckButtonTemplate")
+            panel.check2.text:SetText(e.onlyChinse and '缩放' or UI_SCALE)
+            panel.check2:SetPoint('LEFT', check.text, 'RIGHT')
+            panel.check2:SetChecked(not Save.disabledZoom)
+            panel.check2:SetScript('OnMouseDown', function()
+                Save.disabledZoom= not Save.disabledZoom and true or nil
+                print(id, addName, e.GetEnabeleDisable(not Save.disabledZoom), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+            end)
+
+            local button= e.Cbtn(check, true, nil, nil, nil, nil, {20,20})
+            button:SetPoint('LEFT', panel.check2.text, 'RIGHT',2,0)
+            button:SetNormalAtlas('bags-button-autosort-up')
+            button:SetScript('OnClick', set_PopupDialogs)
+            
             if not Save.disabled then
-                Init()
+                Init_Move()--移动
                 setTabInit()
                 setClass()--职业,能量条
             else
+                panel.check2.text:SetText('|cff808080'..(e.onlyChinse and '缩放' or UI_SCALE))
                 panel:UnregisterAllEvents()
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
