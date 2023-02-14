@@ -103,6 +103,7 @@ local function ZoomFrame(self, notZoom)
 
     show_Tips(self.ZoomIn, name, self==classPowerFrame)
     show_Tips(self.ZoomOut, name, self==classPowerFrame)
+
     if Save.scale[name] and Save.scale[name]~=1 then
         self:SetScale(Save.scale[name])
     end
