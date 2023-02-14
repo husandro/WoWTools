@@ -16,78 +16,7 @@ local function setAlpha(self)
     end
 end
 
-local function set_Alpha_Event(arg1)
-    if Save.disabledAlpha then
-        return
-    end
 
-  if arg1=='Blizzard_ClassTalentUI' and not Save.disabledAlpha then--天赋
-        local frame=ClassTalentFrame
-        setAlpha(frame.TalentsTab.BottomBar)--下面
-        setAlpha(frame.NineSlice.TopLeftCorner)--顶部
-        setAlpha(frame.NineSlice.TopEdge)--顶部
-        setAlpha(frame.NineSlice.TopRightCorner)--顶部
-        setAlpha(ClassTalentFrameBg)--里面
-        hideTexture(frame.TalentsTab.BlackBG)
-        hooksecurefunc(frame.TalentsTab, 'UpdateSpecBackground', function(self2)--Blizzard_ClassTalentTalentsTab.lua
-            if self2.specBackgrounds then
-                for _, background in ipairs(self2.specBackgrounds) do
-                    hideTexture(background)
-                end
-            end
-        end)
-
-        hideTexture(frame.SpecTab.Background)
-        hideTexture(frame.SpecTab.BlackBG)
-        hooksecurefunc(frame.SpecTab, 'UpdateSpecContents', function(self2)--Blizzard_ClassTalentSpecTab.lua
-            local numSpecs= self2.numSpecs
-            if numSpecs and numSpecs>0 then
-                for i = 1, numSpecs do
-                    local contentFrame = self2.SpecContentFramePool:Acquire();
-                    if contentFrame then
-                        hideTexture(contentFrame.HoverBackground)
-                    end
-                end
-            end
-        end)
-
-    elseif arg1=='Blizzard_AchievementUI' then
-        hideTexture(AchievementFrameSummary.Background)
-        hideTexture(AchievementFrameCategoriesBG)
-        hideTexture(AchievementFrameAchievements.Background)
-
-        setAlpha(AchievementFrame.BottomRightCorner)
-        setAlpha(AchievementFrame.BottomLeftCorner)
-        setAlpha(AchievementFrame.TopLeftCorner)
-        setAlpha(AchievementFrame.TopRightCorner)
-
-        setAlpha(AchievementFrame.BottomEdge)
-        setAlpha(AchievementFrame.TopEdge)
-        setAlpha(AchievementFrame.LeftEdge)
-        setAlpha(AchievementFrame.RightEdge)
-
-        setAlpha(AchievementFrame.Header.Right)
-        setAlpha(AchievementFrame.Header.Left)
-
-        setAlpha(AchievementFrame.Background)
-        setAlpha(AchievementFrameMetalBorderBottomLeft)
-        setAlpha(AchievementFrameMetalBorderBottom)
-        setAlpha(AchievementFrameMetalBorderBottomRight)
-        setAlpha(AchievementFrameMetalBorderRight)
-        setAlpha(AchievementFrameMetalBorderLeft)
-        setAlpha(AchievementFrameMetalBorderTopLeft)
-        setAlpha(AchievementFrameMetalBorderTop)
-        setAlpha(AchievementFrameMetalBorderTopRight)
-
-        setAlpha(AchievementFrameWoodBorderBottomLeft)
-        setAlpha(AchievementFrameWoodBorderBottomRight)
-        setAlpha(AchievementFrameWoodBorderTopLeft)
-        setAlpha(AchievementFrameWoodBorderTopRight)
-
-    elseif arg1=='Blizzard_Communities' then--公会和社区
-
-    end
-end
 
 local function set_UNIT_ENTERED_VEHICLE()--载具
     if OverrideActionBarEndCapL then
@@ -143,7 +72,6 @@ local function Init_HideTexture()
             hideTexture(PetBattleFrame.BottomFrame.TurnTimer.ArtFrame2)
             PetBattleFrame.BottomFrame.FlowFrame:SetShown(false)
             PetBattleFrame.BottomFrame.Delimiter:SetShown(false)
-
         end
     end
 
@@ -219,10 +147,10 @@ local function Init_HideTexture()
     --动作条
     --######
     local KEY_BUTTON_Tab={
-        --[[[KEY_BUTTON1]= 'ML',--鼠标左键";
+        [KEY_BUTTON1]= 'ML',--鼠标左键";
         [KEY_BUTTON3]= 'MR',--鼠标中键";
         [KEY_BUTTON2]= 'MM',--鼠标右键";
-        KEY_BUTTON10]= 'M10',--鼠标按键10";
+        --[[[KEY_BUTTON10]= 'M10',--鼠标按键10";
         [KEY_BUTTON11]= 'M11',--鼠标按键11";
         [KEY_BUTTON12]= 'M12',--鼠标按键12";
         [KEY_BUTTON13]= 'M13',--鼠标按键13";
@@ -310,6 +238,9 @@ end
 
 
 local function Init_SetAlpha()
+    if Save.disabledAlpha then
+        return
+    end
     setAlpha(CharacterFrameBg)
     setAlpha(CharacterFrameInset.Bg)
     setAlpha(CharacterFrame.NineSlice.TopEdge)
@@ -320,6 +251,20 @@ local function Init_SetAlpha()
     setAlpha(CharacterStatsPane.EnhancementsCategory.Background)
     setAlpha(CharacterStatsPane.AttributesCategory.Background)
     setAlpha(CharacterStatsPane.ItemLevelCategory.Background)
+    hooksecurefunc('PaperDollTitlesPane_UpdateScrollBox', function()--PaperDollFrame.lua
+        for _, button in pairs(PaperDollFrame.TitleManagerPane.ScrollBox:GetFrames()) do
+            hideTexture(button.BgMiddle)
+        end
+    end)
+    hideTexture(PaperDollFrame.TitleManagerPane.ScrollBar.Backplate)
+    hooksecurefunc('PaperDollEquipmentManagerPane_Update', function()--PaperDollFrame.lua
+        for _, button in pairs(PaperDollFrame.EquipmentManagerPane.ScrollBox:GetFrames()) do
+            hideTexture(button.BgMiddle)
+        end
+    end)
+    hideTexture(PaperDollFrame.EquipmentManagerPane.ScrollBar.Backplate)
+    hideTexture(ReputationFrame.ScrollBar.Backplate)
+    hideTexture(TokenFrame.ScrollBar.Backplate)
 
     hideTexture(SpellBookPage1)
     hideTexture(SpellBookPage2)
@@ -335,7 +280,274 @@ local function Init_SetAlpha()
     setAlpha(WorldMapFrame.BorderFrame.NineSlice.TopRightCorner)
     setAlpha(WorldMapFrameBg)
     setAlpha(QuestMapFrame.Background)
+
+    local frame= PVEFrame--地下城和团队副本
+    setAlpha(frame.NineSlice.TopLeftCorner)
+    setAlpha(frame.NineSlice.TopEdge)
+    setAlpha(frame.NineSlice.TopRightCorner)
+
+    hideTexture(PVEFrameBg)--左边
+    hideTexture(PVEFrameBlueBg)
+    setAlpha(PVEFrameLeftInset.Bg)
+    --hideTexture(PVEFrameTLCorner)
+    
+    setAlpha(LFDQueueFrameBackground)
+    setAlpha(LFDParentFrameInset.Bg)
+    setAlpha(LFDParentFrameRoleBackground)
+   
+
 end
+
+local function set_Alpha_Event(arg1)
+    if Save.disabledAlpha then
+        return
+    end
+
+  if arg1=='Blizzard_ClassTalentUI' and not Save.disabledAlpha then--天赋
+        local frame=ClassTalentFrame
+        setAlpha(frame.TalentsTab.BottomBar)--下面
+        setAlpha(frame.NineSlice.TopLeftCorner)--顶部
+        setAlpha(frame.NineSlice.TopEdge)--顶部
+        setAlpha(frame.NineSlice.TopRightCorner)--顶部
+        setAlpha(ClassTalentFrameBg)--里面
+        hideTexture(frame.TalentsTab.BlackBG)
+        hooksecurefunc(frame.TalentsTab, 'UpdateSpecBackground', function(self2)--Blizzard_ClassTalentTalentsTab.lua
+            if self2.specBackgrounds then
+                for _, background in ipairs(self2.specBackgrounds) do
+                    hideTexture(background)
+                end
+            end
+        end)
+
+        hideTexture(frame.SpecTab.Background)
+        hideTexture(frame.SpecTab.BlackBG)
+        hooksecurefunc(frame.SpecTab, 'UpdateSpecContents', function(self2)--Blizzard_ClassTalentSpecTab.lua
+            local numSpecs= self2.numSpecs
+            if numSpecs and numSpecs>0 then
+                for i = 1, numSpecs do
+                    local contentFrame = self2.SpecContentFramePool:Acquire();
+                    if contentFrame then
+                        hideTexture(contentFrame.HoverBackground)
+                    end
+                end
+            end
+        end)
+
+    elseif arg1=='Blizzard_AchievementUI' then--成就
+        hideTexture(AchievementFrameSummary.Background)
+        hideTexture(AchievementFrameCategoriesBG)
+        hideTexture(AchievementFrameAchievements.Background)
+
+        setAlpha(AchievementFrame.BottomRightCorner)
+        setAlpha(AchievementFrame.BottomLeftCorner)
+        setAlpha(AchievementFrame.TopLeftCorner)
+        setAlpha(AchievementFrame.TopRightCorner)
+
+        setAlpha(AchievementFrame.BottomEdge)
+        setAlpha(AchievementFrame.TopEdge)
+        setAlpha(AchievementFrame.LeftEdge)
+        setAlpha(AchievementFrame.RightEdge)
+
+        setAlpha(AchievementFrame.Header.Right)
+        setAlpha(AchievementFrame.Header.Left)
+
+        setAlpha(AchievementFrame.Background)
+        setAlpha(AchievementFrameMetalBorderBottomLeft)
+        setAlpha(AchievementFrameMetalBorderBottom)
+        setAlpha(AchievementFrameMetalBorderBottomRight)
+        setAlpha(AchievementFrameMetalBorderRight)
+        setAlpha(AchievementFrameMetalBorderLeft)
+        setAlpha(AchievementFrameMetalBorderTopLeft)
+        setAlpha(AchievementFrameMetalBorderTop)
+        setAlpha(AchievementFrameMetalBorderTopRight)
+
+        setAlpha(AchievementFrameWoodBorderBottomLeft)
+        setAlpha(AchievementFrameWoodBorderBottomRight)
+        setAlpha(AchievementFrameWoodBorderTopLeft)
+        setAlpha(AchievementFrameWoodBorderTopRight)
+
+    elseif arg1=='Blizzard_Communities' then--公会和社区
+        local frame= CommunitiesFrame
+        setAlpha(frame.NineSlice.TopEdge)
+        setAlpha(frame.NineSlice.TopLeftCorner)
+        setAlpha(frame.NineSlice.TopRightCorner)
+
+        setAlpha(frame.NineSlice.BottomEdge)
+        setAlpha(frame.NineSlice.BottomLeftCorner)
+        setAlpha(frame.NineSlice.BottomRightCorner)
+
+        setAlpha(CommunitiesFrameBg)
+        setAlpha(frame.MemberList.ColumnDisplay.Background)
+        hideTexture(CommunitiesFrameCommunitiesList.Bg)
+        hideTexture(CommunitiesFrameInset.Bg)
+        
+        hideTexture(CommunitiesFrameCommunitiesList.ScrollBar.Backplate)
+        hideTexture(CommunitiesFrameCommunitiesList.ScrollBar.Background)
+        hideTexture(CommunitiesFrame.MemberList.ScrollBar.Backplate)
+        hideTexture(CommunitiesFrame.MemberList.ScrollBar.Background)
+        
+        setAlpha(CommunitiesFrame.ChatEditBox.Mid)
+        setAlpha(CommunitiesFrame.ChatEditBox.Left)
+        setAlpha(CommunitiesFrame.ChatEditBox.Right)
+        setAlpha(CommunitiesFrameMiddle)
+
+        hideTexture(CommunitiesFrame.GuildBenefitsFrame.Rewards.Bg)
+        
+        hooksecurefunc(CommunitiesFrameCommunitiesList,'UpdateCommunitiesList',function(self)
+            C_Timer.After(0.3, function()
+                for _, button in pairs(CommunitiesFrameCommunitiesList.ScrollBox:GetFrames()) do
+                setAlpha(button.Background)
+                end
+            end)
+        end)
+
+    elseif arg1=='Blizzard_PVPUI' then--地下城和团队副本, PVP
+        hideTexture(HonorFrame.Inset.Bg)
+        setAlpha(HonorFrame.BonusFrame.WorldBattlesTexture)
+        hideTexture(HonorFrame.ConquestBar.Background)
+    
+    elseif arg1=='Blizzard_EncounterJournal' then--冒险指南
+        setAlpha(EncounterJournal.NineSlice.TopLeftEdge)
+        setAlpha(EncounterJournal.NineSlice.TopEdge)
+        setAlpha(EncounterJournal.NineSlice.TopRightEdge)
+
+        hideTexture(EncounterJournalBg)
+        hideTexture(EncounterJournalInset.Bg)
+
+        setAlpha(EncounterJournalMonthlyActivitiesFrame.Bg)
+        setAlpha(EncounterJournalInstanceSelectBG)
+        setAlpha(EncounterJournalEncounterFrameInfoBG)
+        setAlpha(EncounterJournalEncounterFrameInfoModelFrameDungeonBG)
+
+       
+    elseif arg1=='Blizzard_AuctionHouseUI' then--拍卖行
+        local frame= AuctionHouseFrame
+
+
+    elseif arg1=='Blizzard_Collections' then--收藏
+        setAlpha(CollectionsJournal.NineSlice.TopEdge)
+        setAlpha(CollectionsJournal.NineSlice.TopLeftCorner)
+        setAlpha(CollectionsJournal.NineSlice.TopRightCorner)
+        setAlpha(CollectionsJournalBg)
+
+        hideTexture(MountJournal.LeftInset.Bg)
+        setAlpha(MountJournal.MountDisplay.YesMountsTex)
+        hideTexture(MountJournal.RightInset.Bg)
+        setAlpha(MountJournal.BottomLeftInset.Background)
+        hideTexture(MountJournal.BottomLeftInset.Bg)
+        hooksecurefunc('MountJournal_InitMountButton', function(button, elementData)
+            if button then
+                setAlpha(button.background)
+            end
+        end)
+        hideTexture(MountJournal.ScrollBar.Backplate)
+        setAlpha(MountJournalSearchBox.Middle)
+        setAlpha(MountJournalSearchBox.Right)
+        setAlpha(MountJournalSearchBox.Left)
+
+        hideTexture(PetJournalPetCardBG)
+        setAlpha(PetJournalPetCardInset.Bg)
+        setAlpha(PetJournalRightInset.Bg)
+        hideTexture(PetJournalLoadoutPet1BG)
+        hideTexture(PetJournalLoadoutPet2BG)
+        hideTexture(PetJournalLoadoutPet3BG)
+        setAlpha(PetJournalLoadoutBorderSlotHeaderBG)
+        hideTexture(PetJournalLeftInset.Bg)
+        hooksecurefunc('PetJournal_UpdatePetList', function()--Blizzard_PetCollection.lua
+            for _, button in pairs(PetJournal.ScrollBox:GetFrames()) do
+                setAlpha(button.background)
+            end
+        end)
+        hideTexture(PetJournal.ScrollBar.Backplate)
+        setAlpha(PetJournalSearchBox.Middle)
+        setAlpha(PetJournalSearchBox.Right)
+        setAlpha(PetJournalSearchBox.Left)
+
+        hideTexture(ToyBox.iconsFrame.BackgroundTile)
+        setAlpha(ToyBox.iconsFrame.Bg)
+        setAlpha(ToyBox.searchBox.Middle)
+        setAlpha(ToyBox.searchBox.Right)
+        setAlpha(ToyBox.searchBox.Left)
+
+        hideTexture(HeirloomsJournal.iconsFrame.BackgroundTile)
+        setAlpha(HeirloomsJournal.iconsFrame.Bg)
+        setAlpha(HeirloomsJournalSearchBox.Middle)
+        setAlpha(HeirloomsJournalSearchBox.Right)
+        setAlpha(HeirloomsJournalSearchBox.Left)
+        
+
+        hideTexture(WardrobeCollectionFrame.ItemsCollectionFrame.BackgroundTile)
+        setAlpha(WardrobeCollectionFrame.ItemsCollectionFrame.Bg)
+        hideTexture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.BackgroundTile)
+        setAlpha(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.Bg)
+        setAlpha(WardrobeCollectionFrame.SetsCollectionFrame.LeftInset.Bg)
+        hideTexture(WardrobeCollectionFrame.SetsCollectionFrame.ListContainer.ScrollBar.Backplate)
+        setAlpha(WardrobeCollectionFrameSearchBox.Middle)
+        setAlpha(WardrobeCollectionFrameSearchBox.Left)
+        setAlpha(WardrobeCollectionFrameSearchBox.Right)
+
+        setAlpha(WardrobeFrame.NineSlice.TopLeftCorner)--试衣间
+        setAlpha(WardrobeFrame.NineSlice.TopEdge)
+        setAlpha(WardrobeFrame.NineSlice.TopRightCorner)
+        hideTexture(WardrobeFrameBg)
+        hideTexture(WardrobeTransmogFrame.Inset.Bg)
+        setAlpha(WardrobeTransmogFrame.Inset.BG)
+        hideTexture(WardrobeCollectionFrame.SetsTransmogFrame.BackgroundTile)
+        setAlpha(WardrobeCollectionFrame.SetsTransmogFrame.Bg)
+        setAlpha(WardrobeOutfitDropDownMiddle)
+        setAlpha(WardrobeOutfitDropDownLeft)
+        setAlpha(WardrobeOutfitDropDownRight)
+        setAlpha(WardrobeTransmogFrame.MoneyMiddle)
+        setAlpha(WardrobeTransmogFrame.MoneyLeft)
+        setAlpha(WardrobeTransmogFrame.MoneyRight)
+
+
+    elseif arg1=='Blizzard_Calendar' then--日历
+        local frame= CalendarFrame
+
+    elseif arg1=='Blizzard_GarrisonUI' then--要塞
+        local frame= GarrisonShipyardFrame--海军行动
+        frame= GarrisonMissionFrame--要塞任务
+        frame= GarrisonCapacitiveDisplayFrame--要塞订单
+        frame= GarrisonLandingPage--要塞报告
+        frame= OrderHallMissionFrame
+
+    elseif arg1=='Blizzard_PlayerChoice' then
+        local frame= PlayerChoiceFrame--任务选择
+
+    elseif arg1=="Blizzard_GuildBankUI" then--公会银行
+        local frame= GuildBankFrame
+
+    elseif arg1=='Blizzard_FlightMap' then--飞行地图
+        local frame= FlightMapFrame
+
+    elseif arg1=='Blizzard_OrderHallUI' then
+        local frame= OrderHallTalentFrame
+
+    elseif arg1=='Blizzard_GenericTraitUI' then--欲龙术
+        local frame= GenericTraitFrame
+        
+
+    elseif arg1=='Blizzard_WeeklyRewards' then--'Blizzard_EventTrace' then--周奖励面板
+        local frame= WeeklyRewardsFrame
+
+    elseif arg1=='Blizzard_ItemSocketingUI' then--镶嵌宝石，界面
+        local frame= ItemSocketingFrame
+
+    elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级,界面
+        local frame= ItemUpgradeFrame
+
+    elseif arg1=='Blizzard_InspectUI' then--玩家, 观察角色, 界面
+        local frame= InspectFrame
+
+    elseif arg1=='Blizzard_ChallengesUI' then--挑战, 钥匙插件, 界面
+        setAlpha(ChallengesFrameInset.Bg)
+
+    elseif arg1=='Blizzard_ItemInteractionUI' then--套装, 转换
+        local frame= ItemInteractionFrame
+    end
+end
+
 --###########
 --加载保存数据
 --###########
@@ -376,9 +588,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 panel.check2.text:SetText('|cff808080'..(e.onlyChinse and '透明度' or CHANGE_OPACITY)..'0.5')
             else
                 Init_HideTexture()
-                if not Save.disabledAlpha then
-                    Init_SetAlpha()
-                end
+                Init_SetAlpha()
+                
                 panel.check2.text:SetText((e.onlyChinse and '透明度' or CHANGE_OPACITY)..'0.5')
             end
             panel:RegisterEvent("PLAYER_LOGOUT")

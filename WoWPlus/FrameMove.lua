@@ -385,7 +385,7 @@ local function setAddLoad(arg1)
         end--]]
         Move(CommunitiesFrame, {})
 
-    elseif arg1=='Blizzard_Collections' then
+    elseif arg1=='Blizzard_Collections' then--收藏
         local checkbox = WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox
         checkbox.Label:ClearAllPoints()
         checkbox.Label:SetPoint("LEFT", checkbox, "RIGHT", 2, 1)
