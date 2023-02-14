@@ -5,6 +5,8 @@ local Save={
 }
 local addName= NPE_MOVE..'Frame'
 local panel= CreateFrame("Frame")
+local size= 16--放大， 缩小，移动，按钮大小
+local classPowerFrame--职业，能量条
 
 --####
 --移动
@@ -21,10 +23,11 @@ end
 --####
 --缩放
 --####
-local function show_Tips(frame, name)
+local function show_Tips(frame, name, setAlphaZoro)
+    local alpha= setAlphaZoro and 0 or 0.1
     frame.name= name
-    frame:SetAlpha(0.1)
-    frame:SetScript("OnLeave", function(self) e.tips:Hide() self:SetAlpha(0.1) end)
+    frame:SetAlpha(alpha)
+    frame:SetScript("OnLeave", function(self) e.tips:Hide() self:SetAlpha(alpha) end)
     frame:SetScript("OnEnter",function(self)
         if UnitAffectingCombat('player') then
             return
@@ -44,31 +47,31 @@ local function ZoomFrame(self, notZoom)
     if not name then
         return
     end
-    local frame
+    local frame= nil
 
     if self.BorderFrame and self.BorderFrame.TitleContainer then
         frame= self.BorderFrame.TitleContainer
-        self.ZoomIn= e.Cbtn(frame, nil, nil, nil, nil, true, {16,16})--放大
+        self.ZoomIn= e.Cbtn(frame, nil, nil, nil, nil, true, {size,size})--放大
         self.ZoomIn:SetPoint('LEFT',35,-2)
 
     elseif self.SpellButtonContainer then
         frame=self.SpellButtonContainer
-        self.ZoomIn= e.Cbtn(frame, nil, nil, nil, nil, true, {16,16})
+        self.ZoomIn= e.Cbtn(frame, nil, nil, nil, nil, true, {size,size})
         self.ZoomIn:SetPoint('BOTTOM', frame, 'TOP', -20,0)
         self.ZoomIn:SetFrameLevel(frame:GetFrameLevel()+7)
 
     elseif self.TitleContainer then
         frame= self.TitleContainer
-        self.ZoomIn= e.Cbtn(frame, nil, nil, nil, nil, true, {16,16})
+        self.ZoomIn= e.Cbtn(frame, nil, nil, nil, nil, true, {size,size})
         self.ZoomIn:SetPoint('LEFT',35,-2)
 
     elseif self.Header then
         frame= self.Header
-        self.ZoomIn= e.Cbtn(frame, nil, nil, nil, nil, true, {16,16})
+        self.ZoomIn= e.Cbtn(frame, nil, nil, nil, nil, true, {size,size})
         self.ZoomIn:SetPoint('LEFT')
     else
         frame= self
-        self.ZoomIn= e.Cbtn(frame, nil, nil, nil, nil, true, {16,16})
+        self.ZoomIn= e.Cbtn(frame, nil, nil, nil, nil, true, {size,size})
         if self.moveButton then--移动, 按钮
             self.ZoomIn:SetPoint('BOTTOMRIGHT', self.moveButton, 'TOP')
         else
@@ -86,7 +89,7 @@ local function ZoomFrame(self, notZoom)
         self:SetScale(n)
     end)
 
-    self.ZoomOut= e.Cbtn(frame, nil, nil, nil, nil, true, {16, 16})--缩小
+    self.ZoomOut= e.Cbtn(frame, nil, nil, nil, nil, true, {size, size})--缩小
     self.ZoomOut:SetFrameLevel(self.ZoomIn:GetFrameLevel())
     self.ZoomOut:SetPoint('LEFT',self.ZoomIn, 'RIGHT')
     self.ZoomOut:SetNormalAtlas('UI-HUD-Minimap-Zoom-Out')
@@ -98,8 +101,8 @@ local function ZoomFrame(self, notZoom)
         self:SetScale(n)
     end)
 
-    show_Tips(self.ZoomIn, name)
-    show_Tips(self.ZoomOut, name)
+    show_Tips(self.ZoomIn, name, self==classPowerFrame)
+    show_Tips(self.ZoomOut, name, self==classPowerFrame)
     if Save.scale[name] and Save.scale[name]~=1 then
         self:SetScale(Save.scale[name])
     end
@@ -246,17 +249,83 @@ local function setTabInit()
     end
 end
 
+local function set_Move_Button(frame, save)
+    if frame then
+        if not frame.moveButton then
+            frame.moveButton= e.Cbtn(frame, nil, nil, nil, nil, true, {14,14})
+            frame.moveButton:SetPoint('TOP', frame, 'TOP',0,-13)
+            frame.moveButton:SetFrameLevel(frame:GetFrameLevel()+5)
+            Move(frame.moveButton, {frame= frame, save=save})
+        else
+            local name= frame:GetName()
+            if name then
+                Point(frame, name)
+            end
+        end
+    end
+end
+
+
+
+local function set_Class_PowerFrame()
+    set_Move_Button(classPowerFrame, true)
+end
 local function setClass()--职业,能量条
+    --set_Move_Button(PlayerFrame.classPowerBar, true)
+    --职业,能量条
+    if PlayerFrame.classPowerBar then--PlayerFrame.lua
+        classPowerFrame= PlayerFrame.classPowerBar
+    elseif (e.Player.class == "SHAMAN") then
+        classPowerFrame= TotemFrame
+    elseif (e.Player.class == "DEATHKNIGHT") then
+        classPowerFrame= RuneFrame
+    elseif (e.Player.class == "PRIEST") then
+        classPowerFrame= PriestBarFrame
+    end
+
+    if classPowerFrame then
+        panel:RegisterUnitEvent('UNIT_DISPLAYPOWER', "player")
+        C_Timer.After(2, function()
+            set_Move_Button(classPowerFrame, true)
+        end)
+    end
+end
+--[[
+        
+
+    hooksecurefunc( 'PlayerFrame_ToPlayerArt', function(self)
+        local frame
+        
+        if PlayerFrame.classPowerBar then--PlayerFrame.lua
+            frame= PlayerFrame.classPowerBar
+        elseif (e.Player.class == "SHAMAN") then
+            frame= TotemFrame
+        elseif (e.Player.class == "DEATHKNIGHT") then
+            frame= RuneFrame
+        elseif (e.Player.class == "PRIEST") then
+            frame= PriestBarFrame
+        end
+        if frame then
+            C_Timer.After(0.5, function()
+                set_Move_Button(frame, true)
+            end)
+            print(id,addName)
+        end
+        
+    end)]]
+
+   --[[ print(PlayerFrame.classPowerBar:GetName())
+    local find
     if e.Player.class== 'PALADIN' then
         local frame = PaladinPowerBarFrame--圣骑士能量条, 
         if frame then
             Move(frame, {save=true})
-            frame =PaladinPowerBarFrameBG if frame then frame:Hide() end
-            frame=PaladinPowerBarFrameBankBG if frame then frame:Hide() end
+            find=frame
         end
 
     elseif e.Player.class=='DEATHKNIGHT' then--DK符文
         Move(RuneFrame, {save=true})
+        find=RuneFrame
 
     elseif e.Player.class=='MONK' then--WS
         local frame= MonkHarmonyBarFrame--DPS
@@ -286,15 +355,18 @@ local function setClass()--职业,能量条
                     e.tips:Hide()
                     self2.textrue:SetShown(false)
                 end)
+                find=frame
             end
         end
         frame=MonkStaggerBar--T
         if frame then
             Move(frame, {save=true})
+            find=frame
         end
 
     elseif e.Player.class=='WARLOCK' then--SS
         Move(WarlockPowerFrame, {save=true})
+        find=WarlockPowerFrame
 
     elseif e.Player.class=='MAGE' then--Fs
         local frame=MageArcaneChargesFrame
@@ -302,6 +374,7 @@ local function setClass()--职业,能量条
             Move(frame, {save=true})
             if frame.Background then frame.Background:Hide() end
             frame:SetScale(0.7)--缩放
+            find=frame
         end
     elseif e.Player.class=='ROGUE' or e.Player.class=='DRUID' then --DZ , XD        
         local frame=ComboPointPlayerFrame
@@ -326,9 +399,15 @@ local function setClass()--职业,能量条
                     end
                 end
             end
+            find=frame
         end
     end
-end
+    if find then
+        hooksecurefunc('PlayerFrame_ToPlayerArt', function(self)
+            print(self.classPowerBar)
+        end)
+    end
+    ]]
 
 local combatCollectionsJournal--藏品
 local function setAddLoad(arg1)
@@ -558,11 +637,14 @@ local function Init_Move()
 
     if UIWidgetPowerBarContainerFrame then--移动, 能量条
         local frame=UIWidgetPowerBarContainerFrame
+        set_Move_Button(frame)
+        --[[
+        local frame=UIWidgetPowerBarContainerFrame
         frame.moveButton= e.Cbtn(frame, nil, nil, nil, nil, true, {20,20})
         frame.moveButton:SetPoint('TOP', frame, 'TOP',0,-13)
         frame.moveButton:SetFrameLevel(frame:GetFrameLevel()+5)
         Move(frame.moveButton, {frame= frame})
-
+]]
         local tab= frame.widgetFrames or {}
         local find
         for widgetID,_ in pairs(tab) do
@@ -682,6 +764,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Move(WardrobeFrame, {})--幻化
         end
         panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
+    elseif event=='UNIT_DISPLAYPOWER' then
+        set_Move_Button(classPowerFrame, true)
     end
 end)
 --[[

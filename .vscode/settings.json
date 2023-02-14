@@ -1346,7 +1346,14 @@
         "WardrobeOutfitDropDownRight",
         "MountJournalSearchBox",
         "HeirloomsJournalSearchBox",
-        "WeeklyRewardsMixin"
+        "WeeklyRewardsMixin",
+        "PlayerPowerBarAltMixin",
+        "ClassPowerBar",
+        "PlayerFrame_ToPlayerArt",
+        "TotemFrame",
+        "PriestBarFrame",
+        "PriestBar_Update",
+        "PriestBarFrame_CheckAndShow"
     ],
     "Lua.diagnostics.disable": [
     ]

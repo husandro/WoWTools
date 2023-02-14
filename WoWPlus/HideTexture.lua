@@ -82,8 +82,8 @@ local function Init_HideTexture()
         hideTexture(self.BottomFrame.TurnTimer.ArtFrame2);
     end)
 
-    hideTexture(PaladinPowerBarFrameBG)
-    hideTexture(PaladinPowerBarFrameBankBG)
+    setAlpha(PaladinPowerBarFrameBG)--能量条
+    setAlpha(PaladinPowerBarFrameBankBG)
 
     LootFrameBg:SetShown(false)--拾取
 
@@ -508,7 +508,9 @@ local function set_Alpha_Event(arg1)
         local frame= GarrisonShipyardFrame--海军行动
         frame= GarrisonMissionFrame--要塞任务
         frame= GarrisonCapacitiveDisplayFrame--要塞订单
-        frame= GarrisonLandingPage--要塞报告
+        if GarrisonLandingPage then--要塞报告
+            
+        end
         frame= OrderHallMissionFrame
 
     elseif arg1=='Blizzard_PlayerChoice' then
