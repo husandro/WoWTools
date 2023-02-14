@@ -39,7 +39,7 @@ local function set_Alpha_Event(arg1)
 
         hideTexture(frame.SpecTab.Background)
         hideTexture(frame.SpecTab.BlackBG)
-        hooksecurefunc(frame.SpecTab, 'UpdateSpecContents', function(self2)
+        hooksecurefunc(frame.SpecTab, 'UpdateSpecContents', function(self2)--Blizzard_ClassTalentSpecTab.lua
             local numSpecs= self2.numSpecs
             if numSpecs and numSpecs>0 then
                 for i = 1, numSpecs do

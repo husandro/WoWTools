@@ -351,7 +351,7 @@ local function setAddLoad(arg1)
                 hooksecurefunc(TalentFrameBaseMixin, 'OnShow', function (self)
                     local name= ClassTalentFrame:GetName()
                     if name then
-                        if Save.scale[name] and Save.scale[name]~=1 then
+                        if Save.scale[name] and Save.scale[name]~= ClassTalentFrame:GetScale() then
                             ClassTalentFrame:SetScale(Save.scale[name])
                         end
                     end
@@ -364,6 +364,14 @@ local function setAddLoad(arg1)
                     Move(specContentFrame, {frame= frame, save=true})
                 end
             end
+            hooksecurefunc(frame.SpecTab, 'UpdateSpecContents', function()--Blizzard_ClassTalentSpecTab.lua
+                local name= ClassTalentFrame:GetName()
+                if name then
+                    if Save.scale[name] and Save.scale[name]~= ClassTalentFrame:GetScale() then
+                        ClassTalentFrame:SetScale(Save.scale[name])
+                    end
+                end
+            end)
         end
 
     elseif arg1=='Blizzard_AuctionHouseUI' then--拍卖行
