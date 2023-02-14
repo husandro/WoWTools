@@ -474,7 +474,6 @@ local function set_Alpha_Event(arg1)
         setAlpha(HeirloomsJournalSearchBox.Middle)
         setAlpha(HeirloomsJournalSearchBox.Right)
         setAlpha(HeirloomsJournalSearchBox.Left)
-        
 
         hideTexture(WardrobeCollectionFrame.ItemsCollectionFrame.BackgroundTile)
         setAlpha(WardrobeCollectionFrame.ItemsCollectionFrame.Bg)
@@ -528,8 +527,7 @@ local function set_Alpha_Event(arg1)
         local frame= GenericTraitFrame
         
 
-    elseif arg1=='Blizzard_WeeklyRewards' then--'Blizzard_EventTrace' then--周奖励面板
-        local frame= WeeklyRewardsFrame
+   
 
     elseif arg1=='Blizzard_ItemSocketingUI' then--镶嵌宝石，界面
         local frame= ItemSocketingFrame
@@ -605,7 +603,20 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     end)
                 end
             end
-
+            if not Save.disabledAlpha then--隐藏
+                setAlpha(WeeklyRewardsFrame.BackgroundTile)
+                setAlpha(WeeklyRewardsFrame.HeaderFrame.Middle)
+                setAlpha(WeeklyRewardsFrame.HeaderFrame.Left)
+                setAlpha(WeeklyRewardsFrame.HeaderFrame.Right)
+                setAlpha(WeeklyRewardsFrame.RaidFrame.Background)
+                setAlpha(WeeklyRewardsFrame.MythicFrame.Background)
+                setAlpha(WeeklyRewardsFrame.PVPFrame.Background)
+                hooksecurefunc(WeeklyRewardsFrame,'UpdateSelection', function(self2)
+                    for _, frame in ipairs(self2.Activities) do
+                        setAlpha(frame.Background)
+                    end
+                end)
+            end
         else
             set_Alpha_Event(arg1)
         end

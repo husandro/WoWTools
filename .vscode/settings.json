@@ -1345,7 +1345,8 @@
         "WardrobeOutfitDropDownLeft",
         "WardrobeOutfitDropDownRight",
         "MountJournalSearchBox",
-        "HeirloomsJournalSearchBox"
+        "HeirloomsJournalSearchBox",
+        "WeeklyRewardsMixin"
     ],
     "Lua.diagnostics.disable": [
     ]
