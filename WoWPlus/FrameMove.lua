@@ -334,7 +334,7 @@ local combatCollectionsJournal--藏品
 local function setAddLoad(arg1)
     if arg1=='Blizzard_AchievementUI' then--成就
         Move(AchievementFrame.Header,{frame=AchievementFrame})
-
+        Move(AchievementFrame,{})
     elseif arg1=='Blizzard_EncounterJournal' then--冒险指南
         Move(EncounterJournal, {})
 
@@ -370,11 +370,11 @@ local function setAddLoad(arg1)
         Move(AuctionHouseFrame, {})
 
     elseif arg1=='Blizzard_Communities' then--公会和社区
-        local dialog = CommunitiesFrame.NotificationSettingsDialog or nil
+        --[[local dialog = CommunitiesFrame.NotificationSettingsDialog or nil
         if dialog then
             dialog:ClearAllPoints()
             dialog:SetAllPoints()
-        end
+        end--]]
         Move(CommunitiesFrame, {})
 
     elseif arg1=='Blizzard_Collections' then
@@ -389,6 +389,7 @@ local function setAddLoad(arg1)
             combatCollectionsJournal=true
             panel:RegisterEvent('PLAYER_REGEN_ENABLED')
         end
+
     elseif arg1=='Blizzard_Calendar' then--日历
         Move(CalendarFrame, {})
 
@@ -548,7 +549,7 @@ local function Init_Move()
     Move(MailFrame.TitleContainer,{frame=MailFrame})
 
     if UIWidgetPowerBarContainerFrame then--移动, 能量条
-        local frame=UIWidgetPowerBarContainerFrame        
+        local frame=UIWidgetPowerBarContainerFrame
         frame.moveButton= e.Cbtn(frame, nil, nil, nil, nil, true, {20,20})
         frame.moveButton:SetPoint('TOP', frame, 'TOP',0,-13)
         frame.moveButton:SetFrameLevel(frame:GetFrameLevel()+5)
@@ -645,7 +646,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             button:SetPoint('LEFT', panel.check2.text, 'RIGHT',2,0)
             button:SetNormalAtlas('bags-button-autosort-up')
             button:SetScript('OnClick', set_PopupDialogs)
-            
+
             if not Save.disabled then
                 Init_Move()--移动
                 setTabInit()

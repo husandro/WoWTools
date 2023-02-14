@@ -1,6 +1,8 @@
 local id, e= ...
 local addName=HIDE..TEXTURES_SUBHEADER
-local Save={}
+local Save={
+    disabledAlpha= not e.Player.husandro,
+}
 
 local function hideTexture(self)
     if self then
@@ -9,8 +11,81 @@ local function hideTexture(self)
     end
 end
 local function setAlpha(self)
-    if self then
+    if self and not Save.disabledAlpha then
         self:SetAlpha(0.5)
+    end
+end
+
+local function set_Alpha_Event(arg1)
+    if Save.disabledAlpha then
+        return
+    end
+
+  if arg1=='Blizzard_ClassTalentUI' and not Save.disabledAlpha then--天赋
+        local frame=ClassTalentFrame
+        setAlpha(frame.TalentsTab.BottomBar)--下面
+        setAlpha(frame.NineSlice.TopLeftCorner)--顶部
+        setAlpha(frame.NineSlice.TopEdge)--顶部
+        setAlpha(frame.NineSlice.TopRightCorner)--顶部
+        setAlpha(ClassTalentFrameBg)--里面
+        hideTexture(frame.TalentsTab.BlackBG)
+        hooksecurefunc(frame.TalentsTab, 'UpdateSpecBackground', function(self2)--Blizzard_ClassTalentTalentsTab.lua
+            if self2.specBackgrounds then
+                for _, background in ipairs(self2.specBackgrounds) do
+                    hideTexture(background)
+                end
+            end
+        end)
+
+        hideTexture(frame.SpecTab.Background)
+        hideTexture(frame.SpecTab.BlackBG)
+        hooksecurefunc(frame.SpecTab, 'UpdateSpecContents', function(self2)
+            local numSpecs= self2.numSpecs
+            if numSpecs and numSpecs>0 then
+                for i = 1, numSpecs do
+                    local contentFrame = self2.SpecContentFramePool:Acquire();
+                    if contentFrame then
+                        hideTexture(contentFrame.HoverBackground)
+                    end
+                end
+            end
+        end)
+
+    elseif arg1=='Blizzard_AchievementUI' then
+        hideTexture(AchievementFrameSummary.Background)
+        hideTexture(AchievementFrameCategoriesBG)
+        hideTexture(AchievementFrameAchievements.Background)
+
+        setAlpha(AchievementFrame.BottomRightCorner)
+        setAlpha(AchievementFrame.BottomLeftCorner)
+        setAlpha(AchievementFrame.TopLeftCorner)
+        setAlpha(AchievementFrame.TopRightCorner)
+
+        setAlpha(AchievementFrame.BottomEdge)
+        setAlpha(AchievementFrame.TopEdge)
+        setAlpha(AchievementFrame.LeftEdge)
+        setAlpha(AchievementFrame.RightEdge)
+
+        setAlpha(AchievementFrame.Header.Right)
+        setAlpha(AchievementFrame.Header.Left)
+
+        setAlpha(AchievementFrame.Background)
+        setAlpha(AchievementFrameMetalBorderBottomLeft)
+        setAlpha(AchievementFrameMetalBorderBottom)
+        setAlpha(AchievementFrameMetalBorderBottomRight)
+        setAlpha(AchievementFrameMetalBorderRight)
+        setAlpha(AchievementFrameMetalBorderLeft)
+        setAlpha(AchievementFrameMetalBorderTopLeft)
+        setAlpha(AchievementFrameMetalBorderTop)
+        setAlpha(AchievementFrameMetalBorderTopRight)
+
+        setAlpha(AchievementFrameWoodBorderBottomLeft)
+        setAlpha(AchievementFrameWoodBorderBottomRight)
+        setAlpha(AchievementFrameWoodBorderTopLeft)
+        setAlpha(AchievementFrameWoodBorderTopRight)
+
+    elseif arg1=='Blizzard_Communities' then--公会和社区
+
     end
 end
 
@@ -43,7 +118,7 @@ end
 --######
 --初始化
 --######
-local function Init()
+local function Init_HideTexture()
     if ExtraActionButton1 then hideTexture(ExtraActionButton1.style) end--额外技能
     if ZoneAbilityFrame then hideTexture(ZoneAbilityFrame.Style) end--区域技能
 
@@ -231,33 +306,36 @@ local function Init()
         MainMenuBar.Background:SetShown(false)
     end)
 
+end
+
+
+local function Init_SetAlpha()
     setAlpha(CharacterFrameBg)
     setAlpha(CharacterFrameInset.Bg)
     setAlpha(CharacterFrame.NineSlice.TopEdge)
+    setAlpha(CharacterFrame.NineSlice.TopRightCorner)
+    setAlpha(CharacterFrame.NineSlice.TopLeftCorner)
     setAlpha(CharacterFrameInsetRight.Bg)
     setAlpha(CharacterStatsPane.ClassBackground)
     setAlpha(CharacterStatsPane.EnhancementsCategory.Background)
     setAlpha(CharacterStatsPane.AttributesCategory.Background)
     setAlpha(CharacterStatsPane.ItemLevelCategory.Background)
 
-    
-    setAlpha(SpellBookPage1)
-    setAlpha(SpellBookPage2)
-    hideTexture(SpellBookFrameBg)
+    hideTexture(SpellBookPage1)
+    hideTexture(SpellBookPage2)
+    SpellBookFrameBg:SetAtlas('auctionhouse-background-sell-right')
+    setAlpha(SpellBookFrameBg)
     hideTexture(SpellBookFrameInset.Bg)
+    setAlpha(SpellBookFrame.NineSlice.TopLeftCorner)
     setAlpha(SpellBookFrame.NineSlice.TopEdge)
-    
-    --hooksecurefunc('PaperDollItemSlotButton_Update',  function(self)--PaperDollFrame.lua
-    
-    --hideTexture
-    
-    --setAlpha(CharacterModelScene)
+    setAlpha(SpellBookFrame.NineSlice.TopRightCorner)
 
-    --hooksecurefunc(BaseActionButtonMixin,'UpdateButtonArt', function(self, hideDivider)--ActionButton.lua
-    --    hideButtonText(self)
-    --end)
+    setAlpha(WorldMapFrame.BorderFrame.NineSlice.TopLeftCorner)
+    setAlpha(WorldMapFrame.BorderFrame.NineSlice.TopEdge)
+    setAlpha(WorldMapFrame.BorderFrame.NineSlice.TopRightCorner)
+    setAlpha(WorldMapFrameBg)
+    setAlpha(QuestMapFrame.Background)
 end
-
 --###########
 --加载保存数据
 --###########
@@ -274,16 +352,34 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
             --添加控制面板        
-            local sel=e.CPanel(e.onlyChinse and '隐藏材质' or addName, not Save.disabled)
-            sel:SetScript('OnMouseDown', function()
+            local check=e.CPanel(e.onlyChinse and '隐藏材质' or addName, not Save.disabled)
+            check:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+                if Save.disabled then
+                    panel.check2.text:SetText('|cff808080'..(e.onlyChinse and '透明度' or CHANGE_OPACITY)..'0.5')
+                else
+                    panel.check2.text:SetText((e.onlyChinse and '透明度' or CHANGE_OPACITY)..'0.5')
+                end
+            end)
+
+            panel.check2=CreateFrame("CheckButton", nil, check, "InterfaceOptionsCheckButtonTemplate")
+            panel.check2:SetPoint('LEFT', check.text, 'RIGHT')
+            panel.check2:SetChecked(not Save.disabledAlpha)
+            panel.check2:SetScript('OnMouseDown', function()
+                Save.disabledAlpha= not Save.disabledAlpha and true or nil
+                print(id, addName, e.GetEnabeleDisable(not Save.disabledAlpha), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end)
 
             if Save.disabled then
                 panel:UnregisterAllEvents()
+                panel.check2.text:SetText('|cff808080'..(e.onlyChinse and '透明度' or CHANGE_OPACITY)..'0.5')
             else
-                Init()
+                Init_HideTexture()
+                if not Save.disabledAlpha then
+                    Init_SetAlpha()
+                end
+                panel.check2.text:SetText((e.onlyChinse and '透明度' or CHANGE_OPACITY)..'0.5')
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
@@ -299,43 +395,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             end
 
-        elseif arg1=='Blizzard_ClassTalentUI' then--天赋
-            local frame=ClassTalentFrame
-            if frame then
-                if frame.TalentsTab and frame.TalentsTab.BottomBar then
-                    setAlpha(frame.TalentsTab.BottomBar)--下面
-                end
-                if frame.NineSlice then
-                    setAlpha(frame.NineSlice.TopEdge)--顶部
-                end
-                setAlpha(ClassTalentFrameBg)--里面
-                    
-                if frame.TalentsTab then
-                    hideTexture(frame.TalentsTab.BlackBG)
-                    hooksecurefunc(frame.TalentsTab, 'UpdateSpecBackground', function(self2)--Blizzard_ClassTalentTalentsTab.lua
-                        if self2.specBackgrounds then
-                            for _, background in ipairs(self2.specBackgrounds) do
-                                hideTexture(background)
-                            end
-                        end
-                    end)
-                end
-            end
-            if frame.SpecTab then
-                hideTexture(frame.SpecTab.Background)
-                hideTexture(frame.SpecTab.BlackBG)
-                hooksecurefunc(frame.SpecTab, 'UpdateSpecContents', function(self2)
-                    local numSpecs= self2.numSpecs
-                    if numSpecs and numSpecs>0 then
-                        for i = 1, numSpecs do
-                            local contentFrame = self2.SpecContentFramePool:Acquire();
-                            if contentFrame then
-                                hideTexture(contentFrame.HoverBackground)
-                            end
-                        end
-                    end
-                end)
-            end
+        else
+            set_Alpha_Event(arg1)
         end
 
     elseif event == "PLAYER_LOGOUT" then

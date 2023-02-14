@@ -1287,7 +1287,24 @@
         "SpellBookFrameBg",
         "SpellBookPage1",
         "SpellBookFrameInset",
-        "SpellBookPage2"
+        "SpellBookPage2",
+        "WorldMapFrameBg",
+        "QuestMapFrame",
+        "AchievementFrameSummary",
+        "AchievementFrameCategoriesBG",
+        "AchievementFrameAchievements",
+        "AchievementFrameMetalBorderBottom",
+        "AchievementFrameMetalBorderLeft",
+        "AchievementFrameMetalBorderBottomLeft",
+        "AchievementFrameMetalBorderBottomRight",
+        "AchievementFrameMetalBorderRight",
+        "AchievementFrameMetalBorderTopLeft",
+        "AchievementFrameMetalBorderTop",
+        "AchievementFrameMetalBorderTopRight",
+        "AchievementFrameWoodBorderBottomRight",
+        "AchievementFrameWoodBorderBottomLeft",
+        "AchievementFrameWoodBorderTopRight",
+        "AchievementFrameWoodBorderTopLeft"
     ],
     "Lua.diagnostics.disable": [
     ]
