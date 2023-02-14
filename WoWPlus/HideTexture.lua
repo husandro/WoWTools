@@ -290,11 +290,11 @@ local function Init_SetAlpha()
     hideTexture(PVEFrameBlueBg)
     setAlpha(PVEFrameLeftInset.Bg)
     --hideTexture(PVEFrameTLCorner)
-    
+
     setAlpha(LFDQueueFrameBackground)
     setAlpha(LFDParentFrameInset.Bg)
     setAlpha(LFDParentFrameRoleBackground)
-    
+
     --ProfessionsFrame={},--专业
     setAlpha(ProfessionsFrame.NineSlice.TopLeftCorner)
     setAlpha(ProfessionsFrame.NineSlice.TopEdge)
@@ -311,7 +311,6 @@ local function Init_SetAlpha()
     setAlpha(ProfessionsFrame.SpecPage.DetailedView.Path.DialBG)
     setAlpha(ProfessionsFrame.SpecPage.DetailedView.UnspentPoints.CurrencyBackground)
 
-    
     setAlpha(GossipFrame.NineSlice.TopEdge)
     setAlpha(GossipFrame.NineSlice.TopLeftCorner)
     setAlpha(GossipFrame.NineSlice.TopRightCorner)
@@ -320,7 +319,7 @@ local function Init_SetAlpha()
     --setAlpha(GossipFrame.Background)
     hideTexture(GossipFrame.GreetingPanel.ScrollBar.Backplate)
 
-    if PetStableFrame then
+    if PetStableFrame then--猎人，宠物
         setAlpha(PetStableFrame.NineSlice.TopEdge)
         setAlpha(PetStableFrame.NineSlice.TopLeftCorner)
         setAlpha(PetStableFrame.NineSlice.TopRightCorner)
@@ -337,14 +336,61 @@ local function Init_SetAlpha()
             setAlpha(_G['PetStableStabledPet'..i..'Background'])
         end
     end
+
+    --商人
+    setAlpha(MerchantFrame.NineSlice.TopEdge)
+    setAlpha(MerchantFrame.NineSlice.TopLeftCorner)
+    setAlpha(MerchantFrame.NineSlice.TopRightCorner)
+    setAlpha(MerchantFrameBg)
+    hideTexture(MerchantFrameInset.Bg)
+    setAlpha(MerchantMoneyInset.Bg)
+    hideTexture(MerchantMoneyBgMiddle)
+    hideTexture(MerchantMoneyBgLeft)
+    hideTexture(MerchantMoneyBgRight)
+    for i=1, 12 do
+        setAlpha(_G['MerchantItem'..i..'SlotTexture'])
+    end
+    setAlpha(MerchantFrameLootFilterMiddle)
+    setAlpha(MerchantFrameLootFilterLeft)
+    setAlpha(MerchantFrameLootFilterRight)
+
+    --银行
+    setAlpha(BankFrame.NineSlice.TopEdge)
+    setAlpha(BankFrame.NineSlice.TopLeftCorner)
+    setAlpha(BankFrame.NineSlice.TopRightCorner)
+    --setAlpha(BankFrameBg)
+
+    setAlpha(ContainerFrameCombinedBags.NineSlice.TopEdge)--背包
+    setAlpha(ContainerFrameCombinedBags.NineSlice.TopLeftCorner)
+    setAlpha(ContainerFrameCombinedBags.NineSlice.TopRightCorner)
+
+    for i=1 ,NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS+1 do
+        local frame= _G['ContainerFrame'..i]
+        if frame and frame.NineSlice then
+            setAlpha(frame.NineSlice.TopEdge)--背包
+            setAlpha(frame.NineSlice.TopLeftCorner)
+            setAlpha(frame.NineSlice.TopRightCorner)
+        end
+    end
 end
+
+
 
 local function set_Alpha_Event(arg1)
     if Save.disabledAlpha then
         return
     end
+    if arg1=='Blizzard_TimeManager' then--小时图，时间
+        setAlpha(TimeManagerFrame.NineSlice.TopLeftCorner)
+        setAlpha(TimeManagerFrame.NineSlice.TopEdge)
+        setAlpha(TimeManagerFrame.NineSlice.TopRightCorner)
+        setAlpha(TimeManagerFrameBg)
+        hideTexture(TimeManagerFrameInset.Bg)
+        setAlpha(TimeManagerAlarmMessageEditBox.Middle)
+        setAlpha(TimeManagerAlarmMessageEditBox.Left)
+        setAlpha(TimeManagerAlarmMessageEditBox.Right)
 
-  if arg1=='Blizzard_ClassTalentUI' and not Save.disabledAlpha then--天赋
+    elseif arg1=='Blizzard_ClassTalentUI' and not Save.disabledAlpha then--天赋
         local frame=ClassTalentFrame
         setAlpha(frame.TalentsTab.BottomBar)--下面
         setAlpha(frame.NineSlice.TopLeftCorner)--顶部
@@ -421,19 +467,19 @@ local function set_Alpha_Event(arg1)
         setAlpha(frame.MemberList.ColumnDisplay.Background)
         hideTexture(CommunitiesFrameCommunitiesList.Bg)
         hideTexture(CommunitiesFrameInset.Bg)
-        
+
         hideTexture(CommunitiesFrameCommunitiesList.ScrollBar.Backplate)
         hideTexture(CommunitiesFrameCommunitiesList.ScrollBar.Background)
         hideTexture(CommunitiesFrame.MemberList.ScrollBar.Backplate)
         hideTexture(CommunitiesFrame.MemberList.ScrollBar.Background)
-        
+
         setAlpha(CommunitiesFrame.ChatEditBox.Mid)
         setAlpha(CommunitiesFrame.ChatEditBox.Left)
         setAlpha(CommunitiesFrame.ChatEditBox.Right)
         setAlpha(CommunitiesFrameMiddle)
 
         hideTexture(CommunitiesFrame.GuildBenefitsFrame.Rewards.Bg)
-        
+
         hooksecurefunc(CommunitiesFrameCommunitiesList,'UpdateCommunitiesList',function(self)
             C_Timer.After(0.3, function()
                 for _, button in pairs(CommunitiesFrameCommunitiesList.ScrollBox:GetFrames()) do
@@ -446,7 +492,7 @@ local function set_Alpha_Event(arg1)
         hideTexture(HonorFrame.Inset.Bg)
         setAlpha(HonorFrame.BonusFrame.WorldBattlesTexture)
         hideTexture(HonorFrame.ConquestBar.Background)
-    
+
     elseif arg1=='Blizzard_EncounterJournal' then--冒险指南
         setAlpha(EncounterJournal.NineSlice.TopLeftEdge)
         setAlpha(EncounterJournal.NineSlice.TopEdge)
@@ -460,7 +506,22 @@ local function set_Alpha_Event(arg1)
         setAlpha(EncounterJournalEncounterFrameInfoBG)
         setAlpha(EncounterJournalEncounterFrameInfoModelFrameDungeonBG)
 
-       
+    elseif arg1=="Blizzard_GuildBankUI" then--公会银行
+        hideTexture(GuildBankFrame.TitleBg)
+        setAlpha(GuildBankFrame.Emblem)
+        setAlpha(GuildBankFrame.RedMarbleBG)
+        setAlpha(GuildBankFrame.MoneyFrameBG)
+        setAlpha(GuildBankFrame.BlackBG)
+        setAlpha(GuildBankFrame.TabLimitBG)
+        setAlpha(GuildBankFrame.TabLimitBGLeft)
+        setAlpha(GuildBankFrame.TabLimitBGRight)
+        setAlpha(GuildItemSearchBox.Middle)
+        setAlpha(GuildItemSearchBox.Left)
+        setAlpha(GuildItemSearchBox.Right)
+        setAlpha(GuildBankFrame.TabTitleBG)
+        setAlpha(GuildBankFrame.TabTitleBGLeft)
+        setAlpha(GuildBankFrame.TabTitleBGRight)
+
     elseif arg1=='Blizzard_AuctionHouseUI' then--拍卖行
         setAlpha(AuctionHouseFrame.NineSlice.TopLeftCorner)
         setAlpha(AuctionHouseFrame.NineSlice.TopEdge)
@@ -494,7 +555,7 @@ local function set_Alpha_Event(arg1)
         setAlpha(ProfessionsCustomerOrdersFrameMiddleLeft)
         setAlpha(ProfessionsCustomerOrdersFrameMiddleRight)
         setAlpha(ProfessionsCustomerOrdersFrame.BrowseOrders.CategoryList.Background)
-    
+
         setAlpha(ProfessionsCustomerOrdersFrame.Form.LeftPanelBackground.Background)
         setAlpha(ProfessionsCustomerOrdersFrame.Form.RightPanelBackground.Background)
 
@@ -506,7 +567,6 @@ local function set_Alpha_Event(arg1)
         setAlpha(BlackMarketFrame.RightBorder)
         setAlpha(BlackMarketFrame.BottomBorder)
         setAlpha(BlackMarketFrame.ScrollBar.Backplate)
-
 
     elseif arg1=='Blizzard_Collections' then--收藏
         setAlpha(CollectionsJournal.NineSlice.TopEdge)
@@ -584,9 +644,40 @@ local function set_Alpha_Event(arg1)
         setAlpha(WardrobeTransmogFrame.MoneyLeft)
         setAlpha(WardrobeTransmogFrame.MoneyRight)
 
-
     elseif arg1=='Blizzard_Calendar' then--日历
         local frame= CalendarFrame
+        setAlpha(CalendarFrameTopMiddleTexture)
+        setAlpha(CalendarFrameTopLeftTexture)
+        setAlpha(CalendarFrameTopRightTexture)
+
+        setAlpha(CalendarFrameLeftTopTexture)
+        setAlpha(CalendarFrameLeftMiddleTexture)
+        setAlpha(CalendarFrameLeftBottomTexture)
+        setAlpha(CalendarFrameRightTopTexture)
+        setAlpha(CalendarFrameRightMiddleTexture)
+        setAlpha(CalendarFrameRightBottomTexture)
+
+        setAlpha(CalendarFrameBottomRightTexture)
+        setAlpha(CalendarFrameBottomMiddleTexture)
+        setAlpha(CalendarFrameBottomLeftTexture)
+
+    elseif arg1=='Blizzard_FlightMap' then--飞行地图
+        setAlpha(FlightMapFrame.BorderFrame.NineSlice.TopLeftCorner)--试衣间
+        setAlpha(FlightMapFrame.BorderFrame.NineSlice.TopEdge)
+        setAlpha(FlightMapFrame.BorderFrame.NineSlice.TopRightCorner)
+
+        hideTexture(FlightMapFrame.ScrollContainer.Child.TiledBackground)
+        hideTexture(FlightMapFrameBg)
+
+    end
+end
+--[[
+    elseif arg1=='Blizzard_OrderHallUI' then
+        local frame= OrderHallTalentFrame
+
+    elseif arg1=='Blizzard_GenericTraitUI' then--欲龙术
+        local frame= GenericTraitFrame
+        
 
     elseif arg1=='Blizzard_GarrisonUI' then--要塞
         local frame= GarrisonShipyardFrame--海军行动
@@ -599,21 +690,6 @@ local function set_Alpha_Event(arg1)
 
     elseif arg1=='Blizzard_PlayerChoice' then
         local frame= PlayerChoiceFrame--任务选择
-
-    elseif arg1=="Blizzard_GuildBankUI" then--公会银行
-        local frame= GuildBankFrame
-
-    elseif arg1=='Blizzard_FlightMap' then--飞行地图
-        local frame= FlightMapFrame
-
-    elseif arg1=='Blizzard_OrderHallUI' then
-        local frame= OrderHallTalentFrame
-
-    elseif arg1=='Blizzard_GenericTraitUI' then--欲龙术
-        local frame= GenericTraitFrame
-        
-
-   
 
     elseif arg1=='Blizzard_ItemSocketingUI' then--镶嵌宝石，界面
         local frame= ItemSocketingFrame
@@ -629,8 +705,7 @@ local function set_Alpha_Event(arg1)
 
     elseif arg1=='Blizzard_ItemInteractionUI' then--套装, 转换
         local frame= ItemInteractionFrame
-    end
-end
+        ]]
 
 --###########
 --加载保存数据
@@ -673,7 +748,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             else
                 Init_HideTexture()
                 Init_SetAlpha()
-                
+
                 panel.check2.text:SetText((e.onlyChinse and '透明度' or CHANGE_OPACITY)..'0.5')
             end
             panel:RegisterEvent("PLAYER_LOGOUT")

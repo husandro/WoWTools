@@ -234,6 +234,7 @@ local FrameTab={
     LootHistoryFrame= {},--拾取框
     --EncounterBar={},
     --StoreFrame={},--商店
+
 }
 --UIWidgetBelowMinimapContainerFrame={save=true,click='RightButton'},
 
@@ -407,9 +408,13 @@ end
 
 local combatCollectionsJournal--藏品
 local function setAddLoad(arg1)
-    if arg1=='Blizzard_AchievementUI' then--成就
+    if arg1=='Blizzard_TimeManager' then--小时图，时间
+        Move(TimeManagerFrame,{})
+
+    elseif arg1=='Blizzard_AchievementUI' then--成就
         Move(AchievementFrame.Header,{frame=AchievementFrame})
         Move(AchievementFrame,{})
+
     elseif arg1=='Blizzard_EncounterJournal' then--冒险指南
         Move(EncounterJournal, {})
 
@@ -454,7 +459,7 @@ local function setAddLoad(arg1)
 
     elseif arg1=='Blizzard_BlackMarketUI' then--黑市
         Move(BlackMarketFrame, {})
-        
+
     elseif arg1=='Blizzard_Communities' then--公会和社区
         --[[local dialog = CommunitiesFrame.NotificationSettingsDialog or nil
         if dialog then
