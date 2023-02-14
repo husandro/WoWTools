@@ -5,7 +5,7 @@ local Save={
 }
 local addName= NPE_MOVE..'Frame'
 local panel= CreateFrame("Frame")
-local size= 16--放大， 缩小，移动，按钮大小
+local size= 18--放大， 缩小，移动，按钮大小
 local classPowerFrame--职业，能量条
 
 --####
@@ -216,7 +216,7 @@ local FrameTab={
     FriendsFrame={},--好友列表
     GossipFrame={},
     QuestFrame={},
-    BlackMarketFrame={},--黑市
+    PetStableFrame={},--猎人，宠物
     BankFrame={save=true},--银行
     MerchantFrame={},--货物
     ClassTrainerFrame={},--专业训练师
@@ -253,7 +253,7 @@ end
 local function set_Move_Button(frame, save)
     if frame then
         if not frame.moveButton then
-            frame.moveButton= e.Cbtn(frame, nil, nil, nil, nil, true, {14,14})
+            frame.moveButton= e.Cbtn(frame, nil, nil, nil, nil, true, {size+2,size+2})
             frame.moveButton:SetPoint('TOP', frame, 'TOP',0,-13)
             frame.moveButton:SetFrameLevel(frame:GetFrameLevel()+5)
             Move(frame.moveButton, {frame= frame, save=save})
@@ -266,11 +266,6 @@ local function set_Move_Button(frame, save)
     end
 end
 
-
-
-local function set_Class_PowerFrame()
-    set_Move_Button(classPowerFrame, true)
-end
 local function setClass()--职业,能量条
     --set_Move_Button(PlayerFrame.classPowerBar, true)
     --职业,能量条
@@ -457,6 +452,9 @@ local function setAddLoad(arg1)
     elseif arg1=='Blizzard_AuctionHouseUI' then--拍卖行
         Move(AuctionHouseFrame, {})
 
+    elseif arg1=='Blizzard_BlackMarketUI' then--黑市
+        Move(BlackMarketFrame, {})
+        
     elseif arg1=='Blizzard_Communities' then--公会和社区
         --[[local dialog = CommunitiesFrame.NotificationSettingsDialog or nil
         if dialog then
@@ -532,6 +530,9 @@ local function setAddLoad(arg1)
 
     elseif arg1=='Blizzard_ItemInteractionUI' then--套装, 转换
         Move(ItemInteractionFrame, {})
+
+    elseif arg1=='Blizzard_ProfessionsCustomerOrders' then--专业定制
+        Move(ProfessionsCustomerOrdersFrame, {})
 
     end
 end
@@ -765,6 +766,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Move(WardrobeFrame, {})--幻化
         end
         panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
+
     elseif event=='UNIT_DISPLAYPOWER' then
         set_Move_Button(classPowerFrame, true)
     end

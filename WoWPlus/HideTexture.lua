@@ -281,10 +281,10 @@ local function Init_SetAlpha()
     setAlpha(WorldMapFrameBg)
     setAlpha(QuestMapFrame.Background)
 
-    local frame= PVEFrame--地下城和团队副本
-    setAlpha(frame.NineSlice.TopLeftCorner)
-    setAlpha(frame.NineSlice.TopEdge)
-    setAlpha(frame.NineSlice.TopRightCorner)
+    --地下城和团队副本
+    setAlpha(PVEFrame.NineSlice.TopLeftCorner)
+    setAlpha(PVEFrame.NineSlice.TopEdge)
+    setAlpha(PVEFrame.NineSlice.TopRightCorner)
 
     hideTexture(PVEFrameBg)--左边
     hideTexture(PVEFrameBlueBg)
@@ -294,8 +294,49 @@ local function Init_SetAlpha()
     setAlpha(LFDQueueFrameBackground)
     setAlpha(LFDParentFrameInset.Bg)
     setAlpha(LFDParentFrameRoleBackground)
-   
+    
+    --ProfessionsFrame={},--专业
+    setAlpha(ProfessionsFrame.NineSlice.TopLeftCorner)
+    setAlpha(ProfessionsFrame.NineSlice.TopEdge)
+    setAlpha(ProfessionsFrame.NineSlice.TopRightCorner)
+    setAlpha(ProfessionsFrameBg)
+    setAlpha(ProfessionsFrame.CraftingPage.SchematicForm.Background)
+    --setAlpha(ProfessionsFrame.CraftingPage.RecipeList.Backgroud)--列表，清除，不好找
+    setAlpha(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundTop)
+    setAlpha(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundMiddle)
+    setAlpha(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundBottom)
+    --setAlpha(ProfessionsFrame.CraftingPage.RankBar.Background)
+    hideTexture(ProfessionsFrame.SpecPage.TreeView.Background)
+    hideTexture(ProfessionsFrame.SpecPage.DetailedView.Background)
+    setAlpha(ProfessionsFrame.SpecPage.DetailedView.Path.DialBG)
+    setAlpha(ProfessionsFrame.SpecPage.DetailedView.UnspentPoints.CurrencyBackground)
 
+    
+    setAlpha(GossipFrame.NineSlice.TopEdge)
+    setAlpha(GossipFrame.NineSlice.TopLeftCorner)
+    setAlpha(GossipFrame.NineSlice.TopRightCorner)
+    setAlpha(GossipFrameBg)
+    hideTexture(GossipFrameInset.Bg)
+    --setAlpha(GossipFrame.Background)
+    hideTexture(GossipFrame.GreetingPanel.ScrollBar.Backplate)
+
+    if PetStableFrame then
+        setAlpha(PetStableFrame.NineSlice.TopEdge)
+        setAlpha(PetStableFrame.NineSlice.TopLeftCorner)
+        setAlpha(PetStableFrame.NineSlice.TopRightCorner)
+        hideTexture(PetStableFrameModelBg)
+        hideTexture(PetStableFrameInset.Bg)
+        setAlpha(PetStableFrameBg)
+        hideTexture(PetStableFrameStableBg)
+        hideTexture(PetStableActiveBg)
+        for i=1, 10 do
+            if i<=5 then
+                hideTexture(_G['PetStableActivePet'..i..'Background'])
+                setAlpha(_G['PetStableActivePet'..i..'Border'])
+            end
+            setAlpha(_G['PetStableStabledPet'..i..'Background'])
+        end
+    end
 end
 
 local function set_Alpha_Event(arg1)
@@ -421,7 +462,50 @@ local function set_Alpha_Event(arg1)
 
        
     elseif arg1=='Blizzard_AuctionHouseUI' then--拍卖行
-        local frame= AuctionHouseFrame
+        setAlpha(AuctionHouseFrame.NineSlice.TopLeftCorner)
+        setAlpha(AuctionHouseFrame.NineSlice.TopEdge)
+        setAlpha(AuctionHouseFrame.NineSlice.TopRightCorner)
+        setAlpha(AuctionHouseFrameBg)
+        setAlpha(AuctionHouseFrame.CategoriesList.Background)
+
+        setAlpha(AuctionHouseFrame.SearchBar.SearchBox.Middle)
+        setAlpha(AuctionHouseFrame.SearchBar.SearchBox.Left)
+        setAlpha(AuctionHouseFrame.SearchBar.SearchBox.Right)
+        setAlpha(AuctionHouseFrameMiddleMiddle)
+        setAlpha(AuctionHouseFrameMiddleLeft)
+        setAlpha(AuctionHouseFrameMiddleRight)
+
+        setAlpha(AuctionHouseFrame.ItemSellFrame.Background)--购买
+        setAlpha(AuctionHouseFrame.ItemSellList.Background)
+
+        setAlpha(AuctionHouseFrameAuctionsFrame.SummaryList.Background)
+        setAlpha(AuctionHouseFrameAuctionsFrame.AllAuctionsList.Background)
+
+    elseif arg1=='Blizzard_ProfessionsCustomerOrders' then--专业定制
+        setAlpha(ProfessionsCustomerOrdersFrame.NineSlice.TopLeftCorner)
+        setAlpha(ProfessionsCustomerOrdersFrame.NineSlice.TopEdge)
+        setAlpha(ProfessionsCustomerOrdersFrame.NineSlice.TopRightCorner)
+        setAlpha(ProfessionsCustomerOrdersFrameBg)
+        setAlpha(ProfessionsCustomerOrdersFrame.BrowseOrders.SearchBar.SearchBox.Middle)
+        setAlpha(ProfessionsCustomerOrdersFrame.BrowseOrders.SearchBar.SearchBox.Left)
+        setAlpha(ProfessionsCustomerOrdersFrame.BrowseOrders.SearchBar.SearchBox.Right)
+
+        setAlpha(ProfessionsCustomerOrdersFrameMiddleMiddle)
+        setAlpha(ProfessionsCustomerOrdersFrameMiddleLeft)
+        setAlpha(ProfessionsCustomerOrdersFrameMiddleRight)
+        setAlpha(ProfessionsCustomerOrdersFrame.BrowseOrders.CategoryList.Background)
+    
+        setAlpha(ProfessionsCustomerOrdersFrame.Form.LeftPanelBackground.Background)
+        setAlpha(ProfessionsCustomerOrdersFrame.Form.RightPanelBackground.Background)
+
+    elseif arg1=='Blizzard_BlackMarketUI' then--黑市
+        --Move(BlackMarketFrame, {})
+        setAlpha(BlackMarketFrameTitleBg)
+        setAlpha(BlackMarketFrameBg)
+        setAlpha(BlackMarketFrame.LeftBorder)
+        setAlpha(BlackMarketFrame.RightBorder)
+        setAlpha(BlackMarketFrame.BottomBorder)
+        setAlpha(BlackMarketFrame.ScrollBar.Backplate)
 
 
     elseif arg1=='Blizzard_Collections' then--收藏
