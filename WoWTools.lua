@@ -857,7 +857,7 @@ e.GetSetsCollectedNum= function(setID)--套装 , 收集数量, 返回: 图标, �
     end
     if numAll>0 then
         if numCollected==numAll then
-            return '|A:transmog-icon-checkmark:6:6|a', numCollected, numAll, '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '已收集' or COLLECTED)..'|r'
+            return '|A:transmog-icon-checkmark:0:0|a', numCollected, numAll, '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '已收集' or COLLECTED)..'|r'
         elseif numAll <=9 then
             if numCollected==0 then
                 return e.Icon.number2:format(numAll-numCollected), numCollected, numAll, '|cnRED_FONT_COLOR:'..(e.onlyChinse and '未收集' or NOT_COLLECTED)..'|r'

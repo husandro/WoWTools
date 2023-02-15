@@ -192,7 +192,7 @@ local function get_Sets_Colleced()--收集所有角色套装数据
     if not frame.PlayerCoollectedStr then
         frame.PlayerCoollectedStr=e.Cstr(frame)
         frame.PlayerCoollectedStr:SetPoint('BOTTOMLEFT', 10, 60)
-        frame.PlayerCoollectedStr:SetJustifyH('LEFT');
+        --frame.PlayerCoollectedStr:SetJustifyH('LEFT');
     end
     frame.PlayerCoollectedStr:SetText(m)
 end
@@ -291,7 +291,6 @@ local function Init_Wardrobe_Sets()
             if not frame.str then
                 frame.str=e.Cstr(frame)
                 frame.str:SetPoint('BOTTOMLEFT', frame, 'LEFT', 8 , 0)
-                frame.str:SetJustifyH('LEFT')
             end
             frame.str:SetText(button.tips)
             frame.str:SetShown(true)
