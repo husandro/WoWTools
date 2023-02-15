@@ -442,17 +442,6 @@ local function Init_SetAlpha()
         end
     end)
 
-    --[[ReagentBankFrame:HootScrip( 'OnShow', function(self)----ReagentBankFrame_OnShow BankFrame.lua
-        print(self==ReagentBankFrame, id,addName)
-        if  self.slots_initialized and not self.hideBackground then
-            self.hideBackground= true
-            for column = 2, self.numColumn do
-                print(self==ReagentBankFrame)
-                hideTexture(ReagentBankFrame["BG"..column])
-            end
-        end
-    end)]]
-
     --背包
     setAlpha(ContainerFrameCombinedBags.NineSlice.TopEdge)
     setAlpha(ContainerFrameCombinedBags.NineSlice.TopLeftCorner)
