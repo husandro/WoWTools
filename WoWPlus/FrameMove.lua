@@ -392,12 +392,12 @@ local function Init_Move()
         PetStableFrame={},--猎人，宠物
         BankFrame={save=true},--银行
         MerchantFrame={},--货物
-        
+
         ColorPickerFrame={save=true},--颜色选择器
 
         WorldMapFrame={},--世界地图
         MapQuestInfoRewardsFrame={frame= WorldMapFrame},
-        
+
         ContainerFrameCombinedBags={save=true},--{notZoom=true},--包
         VehicleSeatIndicator={},--车辆，指示
         ExpansionLandingPage={},--要塞
@@ -441,7 +441,6 @@ local function Init_Move()
                     Move(frame, {})
                 end
             end
-            
         end
     end
     hooksecurefunc('UpdateContainerFrameAnchors', function()--ContainerFrame.lua
