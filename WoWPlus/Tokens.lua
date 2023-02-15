@@ -356,6 +356,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
 	elseif event=='CURRENCY_DISPLAY_UPDATE' then
+		if ItemInteractionFrame then
+			set_ItemInteractionFrame_Currency(ItemInteractionFrame)
+		end
+		set_ItemInteractionFrame_Currency(TokenFrame)--套装,转换,货币
 		strSetText()
 	end
 end)
