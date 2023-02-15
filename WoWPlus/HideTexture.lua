@@ -470,9 +470,12 @@ local function set_Alpha_Event(arg1)
         setAlpha(AchievementFrame.TopEdge)
         setAlpha(AchievementFrame.LeftEdge)
         setAlpha(AchievementFrame.RightEdge)
-
         setAlpha(AchievementFrame.Header.Right)
         setAlpha(AchievementFrame.Header.Left)
+
+        hideTexture(AchievementFrame.SearchBox.Middle)
+        hideTexture(AchievementFrame.SearchBox.Left)
+        hideTexture(AchievementFrame.SearchBox.Right)
 
         setAlpha(AchievementFrame.Background)
         setAlpha(AchievementFrameMetalBorderBottomLeft)
@@ -710,6 +713,9 @@ local function set_Alpha_Event(arg1)
         setAlpha(ItemSocketingFrame.NineSlice.TopRightCorner)
         setAlpha(ItemSocketingFrameBg)
 
+    elseif arg1=='Blizzard_ChallengesUI' then--挑战, 钥匙插件, 界面
+        setAlpha(ChallengesFrameInset.Bg)
+
     end
 end
 --[[
@@ -745,8 +751,7 @@ end
     elseif arg1=='Blizzard_InspectUI' then--玩家, 观察角色, 界面
         local frame= InspectFrame
 
-    elseif arg1=='Blizzard_ChallengesUI' then--挑战, 钥匙插件, 界面
-        setAlpha(ChallengesFrameInset.Bg)
+    
 
     elseif arg1=='Blizzard_ItemInteractionUI' then--套装, 转换
         local frame= ItemInteractionFrame

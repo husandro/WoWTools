@@ -246,7 +246,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
                         panel:RegisterEvent('PLAYER_ENTERING_WORLD')
                         panel:UnregisterEvent('ADDON_LOADED')
                     else
-                        check.text:SetTextColor(0.8,0.8,0.8)
+                        check.text:SetTextColor(0.5,0.5,0.5)
                         panel:UnregisterAllEvents()
                     end
                 end)
