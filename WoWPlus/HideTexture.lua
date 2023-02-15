@@ -266,6 +266,7 @@ local function Init_SetAlpha()
     hideTexture(ReputationFrame.ScrollBar.Backplate)
     hideTexture(TokenFrame.ScrollBar.Backplate)
 
+    --法术书
     hideTexture(SpellBookPage1)
     hideTexture(SpellBookPage2)
     SpellBookFrameBg:SetAtlas('auctionhouse-background-sell-right')
@@ -274,6 +275,9 @@ local function Init_SetAlpha()
     setAlpha(SpellBookFrame.NineSlice.TopLeftCorner)
     setAlpha(SpellBookFrame.NineSlice.TopEdge)
     setAlpha(SpellBookFrame.NineSlice.TopRightCorner)
+    for i=1, 12 do
+        setAlpha(_G['SpellButton'..i..'Background'])
+    end
 
     setAlpha(WorldMapFrame.BorderFrame.NineSlice.TopLeftCorner)
     setAlpha(WorldMapFrame.BorderFrame.NineSlice.TopEdge)
@@ -363,7 +367,6 @@ local function Init_SetAlpha()
     setAlpha(ContainerFrameCombinedBags.NineSlice.TopEdge)--背包
     setAlpha(ContainerFrameCombinedBags.NineSlice.TopLeftCorner)
     setAlpha(ContainerFrameCombinedBags.NineSlice.TopRightCorner)
-
     for i=1 ,NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS+1 do
         local frame= _G['ContainerFrame'..i]
         if frame and frame.NineSlice then
@@ -372,6 +375,32 @@ local function Init_SetAlpha()
             setAlpha(frame.NineSlice.TopRightCorner)
         end
     end
+
+    --好友列表
+    setAlpha(FriendsFrame.NineSlice.TopEdge)
+    setAlpha(FriendsFrame.NineSlice.TopLeftCorner)
+    setAlpha(FriendsFrame.NineSlice.TopRightCorner)
+    setAlpha(FriendsFrameBg)
+    setAlpha(FriendsFrameInset.Bg)
+    hideTexture(FriendsListFrame.ScrollBar.Backplate)
+    hideTexture(WhoFrameListInset.Bg)
+    hideTexture(WhoFrame.ScrollBar.Backplate)
+    setAlpha(WhoFrameDropDownMiddle)
+    setAlpha(WhoFrameDropDownLeft)
+    setAlpha(WhoFrameDropDownRight)
+    hideTexture(WhoFrameEditBoxInset.Bg)
+    hideTexture(QuickJoinFrame.ScrollBar.Backplate)
+
+    --聊天设置
+    setAlpha(ChannelFrame.NineSlice.TopEdge)
+    setAlpha(ChannelFrame.NineSlice.TopLeftCorner)
+    setAlpha(ChannelFrame.NineSlice.TopRightCorner)
+    setAlpha(ChannelFrameBg)
+    hideTexture(ChannelFrameInset.Bg)
+    hideTexture(ChannelFrame.RightInset.Bg)
+    hideTexture(ChannelFrame.LeftInset.Bg)
+    hideTexture(ChannelFrame.ChannelRoster.ScrollBar.Backplate)
+    
 end
 
 
@@ -421,6 +450,7 @@ local function set_Alpha_Event(arg1)
         end)
 
     elseif arg1=='Blizzard_AchievementUI' then--成就
+        setAlpha(AchievementFrame.Header.PointBorder)
         hideTexture(AchievementFrameSummary.Background)
         hideTexture(AchievementFrameCategoriesBG)
         hideTexture(AchievementFrameAchievements.Background)

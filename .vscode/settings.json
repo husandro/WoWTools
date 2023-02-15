@@ -1418,7 +1418,20 @@
         "TimeManagerFrameInset",
         "TimeManagerAlarmMessageEditBox",
         "BankFrameBg",
-        "GuildItemSearchBox"
+        "GuildItemSearchBox",
+        "FriendsFrameBg",
+        "FriendsFrameInset",
+        "WhoFrameListInset",
+        "FriendsListFrame",
+        "WhoFrame",
+        "WhoFrameDropDown",
+        "WhoFrameDropDownMiddle",
+        "WhoFrameDropDownLeft",
+        "WhoFrameDropDownRight",
+        "WhoFrameEditBoxInset",
+        "ChannelFrame",
+        "ChannelFrameBg",
+        "ChannelFrameInset"
     ],
     "Lua.diagnostics.disable": [
     ]

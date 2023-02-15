@@ -234,6 +234,7 @@ local FrameTab={
     LootHistoryFrame= {},--拾取框
     --EncounterBar={},
     --StoreFrame={},--商店
+    ChannelFrame={},--聊天设置
 
 }
 --UIWidgetBelowMinimapContainerFrame={save=true,click='RightButton'},
