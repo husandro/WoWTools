@@ -233,6 +233,9 @@ end
 --套装,转换,货币
 --Blizzard_ItemInteractionUI.lua
 local function set_ItemInteractionFrame_Currency(self)
+	if not self then
+		return
+	end
     local itemInfo= C_ItemInteraction.GetItemInteractionInfo()
     local currencyID= itemInfo and itemInfo.currencyTypeId or self.chargeCurrencyTypeId or 2167
 
@@ -312,16 +315,17 @@ local function Init()
 	end)
 
 	Set()
-	hooksecurefunc('TokenFrame_Update',strSetText)--设置, 文本
-
-	set_ItemInteractionFrame_Currency(TokenFrame)--套装,转换,货币
+	hooksecurefunc('TokenFrame_Update', function()
+		set_ItemInteractionFrame_Currency(TokenFrame)--套装,转换,货币
+		strSetText()
+	end)--设置, 文本
 end
+
 
 --###########
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
 		if arg1==id then
@@ -338,15 +342,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 panel:UnregisterAllEvents()
             else
 				Init()
-				--panel:UnregisterEvent('ADDON_LOADED')
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
 		elseif arg1=='Blizzard_ItemInteractionUI' then
-            hooksecurefunc(ItemInteractionFrame, 'SetupChargeCurrency', function(self2)
-				set_ItemInteractionFrame_Currency(self2)
-				set_ItemInteractionFrame_Currency(TokenFrame)--套装,转换,货币
-			end)
+            hooksecurefunc(ItemInteractionFrame, 'SetupChargeCurrency', set_ItemInteractionFrame_Currency)
 		end
 
     elseif event == "PLAYER_LOGOUT" then
@@ -356,10 +356,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
 	elseif event=='CURRENCY_DISPLAY_UPDATE' then
-		if ItemInteractionFrame then
-			set_ItemInteractionFrame_Currency(ItemInteractionFrame)
-		end
-		set_ItemInteractionFrame_Currency(TokenFrame)--套装,转换,货币
 		strSetText()
 	end
 end)
