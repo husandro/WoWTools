@@ -13,9 +13,9 @@ local Save={
         ['来人']=true,
         ['成就']=true,
     },
-    groupWelcome=true,
-    guildWelcome=true,
-    setPlayerSound=e.Player.husandro,--播放, 声音
+    groupWelcome= e.Player.husandro,
+    guildWelcome= true,
+    setPlayerSound= e.Player.husandro,--播放, 声音
 }
 
 local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
