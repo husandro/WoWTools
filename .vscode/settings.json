@@ -1526,7 +1526,13 @@
         "ContainerFrameMixin",
         "ContainerFrameItemButtonMixin",
         "BankFrameItemButton_Update",
-        "ReagentBankFrame"
+        "ReagentBankFrame",
+        "ReagentBankFrame_OnShow",
+        "BankFrameMoneyFrame",
+        "BankFrameMoneyFrameInset",
+        "BankFrameMoneyFrameBorderMiddle",
+        "BankFrameMoneyFrameBorderRight",
+        "BankFrameMoneyFrameBorderLeft"
     ],
     "Lua.diagnostics.disable": [
     ]

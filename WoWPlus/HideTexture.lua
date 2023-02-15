@@ -417,9 +417,33 @@ local function Init_SetAlpha()
     setAlpha(BankFrame.NineSlice.TopEdge)
     setAlpha(BankFrame.NineSlice.TopLeftCorner)
     setAlpha(BankFrame.NineSlice.TopRightCorner)
-    --[[hideTexture(BankFrameBg)
 
-    hooksecurefunc('ReagentBankFrame_OnShow', function(self)----ReagentBankFrame_OnShow BankFrame.lua
+    hideTexture(BankFrameMoneyFrameInset.Bg)
+    setAlpha(BankFrameMoneyFrameBorderMiddle)
+    setAlpha(BankFrameMoneyFrameBorderRight)
+    setAlpha(BankFrameMoneyFrameBorderLeft)
+
+    BankFrame:DisableDrawLayer('BACKGROUND')
+    local texture= BankFrame:CreateTexture(nil,'BORDER',nil, 1)
+    texture:SetAtlas('auctionhouse-background-buy-noncommodities-market')
+    texture:SetAllPoints(BankFrame)
+    setAlpha(texture)
+    hideTexture(BankFrameBg)
+
+    hooksecurefunc('BankFrameItemButton_Update',function(button)--银行
+        if button.NormalTexture and button.NormalTexture:IsShown() then
+            hideTexture(button.NormalTexture)
+        end
+        if ReagentBankFrame.numColumn and not ReagentBankFrame.hidexBG then
+            ReagentBankFrame.hidexBG=true
+            for column = 1, 7 do
+                hideTexture(ReagentBankFrame["BG"..column])
+            end
+        end
+    end)
+
+    --[[ReagentBankFrame:HootScrip( 'OnShow', function(self)----ReagentBankFrame_OnShow BankFrame.lua
+        print(self==ReagentBankFrame, id,addName)
         if  self.slots_initialized and not self.hideBackground then
             self.hideBackground= true
             for column = 2, self.numColumn do
@@ -466,18 +490,7 @@ local function Init_SetAlpha()
         end
     end)
 
-   --[[ hooksecurefunc('BankFrameItemButton_Update',function()--银行
-        local container = button:GetParent():GetID();
-        if not button.isBag then
-            local buttonID = button:GetID();
-            local itemInfo = C_Container.GetContainerItemInfo(container, buttonID) or {};
-            local info={
-                bagID=container,
-                slotID=buttonID,
-            }
-            set_Item_Info(button, itemInfo.hyperlink, itemInfo.itemID, info)
-        end
-    end)]]
+   
 
 
     --好友列表
