@@ -1514,7 +1514,14 @@
         "InspectFrameInset",
         "InspectPVPFrame",
         "InspectGuildFrame",
-        "InspectGuildFrameBG"
+        "InspectGuildFrameBG",
+        "ItemUpgradeFrameBg",
+        "ItemUpgradeFramePlayerCurrenciesBorderMiddle",
+        "ItemUpgradeFramePlayerCurrenciesBorderLeft",
+        "ItemUpgradeFramePlayerCurrenciesBorderRight",
+        "ItemUpgradeFrameMiddle",
+        "ItemUpgradeFrameRight",
+        "ItemUpgradeFrameLeft"
     ],
     "Lua.diagnostics.disable": [
     ]

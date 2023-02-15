@@ -900,6 +900,21 @@ local function set_Alpha_Event(arg1)
         hideTexture(InspectFrameInset.Bg)
         hideTexture(InspectPVPFrame.BG)
         hideTexture(InspectGuildFrameBG)
+
+    elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级,界面        
+        setAlpha(ItemUpgradeFrame.NineSlice.TopLeftCorner)
+        setAlpha(ItemUpgradeFrame.NineSlice.TopEdge)
+        setAlpha(ItemUpgradeFrame.NineSlice.TopRightCorner)
+        setAlpha(ItemUpgradeFrameBg)
+        hideTexture(ItemUpgradeFrame.TopBG)
+        hideTexture(ItemUpgradeFrame.BottomBG)
+        setAlpha(ItemUpgradeFramePlayerCurrenciesBorderMiddle)
+        setAlpha(ItemUpgradeFramePlayerCurrenciesBorderLeft)
+        setAlpha(ItemUpgradeFramePlayerCurrenciesBorderRight)
+
+        setAlpha(ItemUpgradeFrameMiddle)
+        setAlpha(ItemUpgradeFrameRight)
+        setAlpha(ItemUpgradeFrameLeft)
     end
 end
 --[[
