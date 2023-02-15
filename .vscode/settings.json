@@ -1440,7 +1440,21 @@
         "ChromieTimeFrame",
         "ClassTrainerFrameInset",
         "ClassTrainerFrameBg",
-        "ClassTrainerFrameBottomInset"
+        "ClassTrainerFrameBottomInset",
+        "RaidFinderFrame",
+        "RaidFinderFrameBottomInset",
+        "RaidFinderQueueFrame",
+        "RaidFinderQueueFrameBackground",
+        "RaidFinderQueueFrameSelectionDropDownMiddle",
+        "RaidFinderQueueFrameSelectionDropDownLeft",
+        "RaidFinderQueueFrameSelectionDropDown",
+        "RaidFinderQueueFrameSelectionDropDownRight",
+        "RaidFinderFrameRoleBackground",
+        "RaidFinderFrameRoleInset",
+        "LFGListFrameMiddleMiddle",
+        "LFGListFrameMiddleLeft",
+        "LFGListFrameMiddleRight",
+        "ConquestFrame"
     ],
     "Lua.diagnostics.disable": [
     ]

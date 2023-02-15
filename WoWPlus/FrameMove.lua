@@ -202,58 +202,12 @@ local Move=function(F, tab)
     ZoomFrame(F2, tab.notZoom)
 end
 
-local FrameTab={
-    AddonList={},--插件
-    GameMenuFrame={save=true,},--菜单
-    ProfessionsFrame={},--专业
-    CharacterFrame={},--角色
-    ReputationDetailFrame={save=true},--声望描述q
-    TokenFramePopup={save=true},--货币设置
-    SpellBookFrame={},--法术书
-    PVEFrame={},--地下城和团队副本
-    HelpFrame={},--客服支持
-    MacroFrame={},--宏
-    ExtraActionButton1={click='R' },--额外技能
-    ChatConfigFrame={save=true},--聊天设置
-    SettingsPanel={},--选项
-    --UIWidgetPowerBarContainerFrame={},
-    FriendsFrame={},--好友列表
-    GossipFrame={},
-    QuestFrame={},
-    PetStableFrame={},--猎人，宠物
-    BankFrame={save=true},--银行
-    MerchantFrame={},--货物
-    
-    ColorPickerFrame={save=true},--颜色选择器
-    BFAMissionFrame={},--侦查地图    
-    WorldMapFrame={},--世界地图
-    ContainerFrameCombinedBags={save=true},--{notZoom=true},--包
-    VehicleSeatIndicator={},--车辆，指示
-    ExpansionLandingPage={},--要塞
-    --MainMenuBarBackpackButton={save=true, click='R', frame=MicroButtonAndBagsBar},--主菜单
-    PlayerPowerBarAlt={},--UnitPowerBarAlt.lua
-    MailFrame={},
-    SendMailFrame={frame= MailFrame},
-    MirrorTimer1={save=true},
-    LootHistoryFrame= {},--拾取框
-    --EncounterBar={},
-    --StoreFrame={},--商店
-    ChannelFrame={},--聊天设置
 
-}
 --UIWidgetBelowMinimapContainerFrame={save=true,click='RightButton'},
 
 
 local function setTabInit()
-    for k, v in pairs(FrameTab) do
-        if v then
-            local f= _G[k]
-            if f then
-                Move(f, v)
-                FrameTab[k]=nil
-            end
-        end
-    end
+   
 end
 
 local function set_Move_Button(frame, save)
@@ -440,11 +394,64 @@ local function setAddLoad(arg1)
 
     elseif arg1=='Blizzard_TrainerUI' then--专业训练师
         Move(ClassTrainerFrame, {})
+
+    elseif arg1=='Blizzard_BFAMissionUI' then--侦查地图
+        Move(BFAMissionFrame, {})
     end
 end
 
 
 local function Init_Move()
+
+    local FrameTab={
+        AddonList={},--插件
+        GameMenuFrame={save=true,},--菜单
+        ProfessionsFrame={},--专业
+        CharacterFrame={},--角色
+        ReputationDetailFrame={save=true},--声望描述q
+        TokenFramePopup={save=true},--货币设置
+        SpellBookFrame={},--法术书
+        PVEFrame={},--地下城和团队副本
+        HelpFrame={},--客服支持
+        MacroFrame={},--宏
+        ExtraActionButton1={click='R' },--额外技能
+        ChatConfigFrame={save=true},--聊天设置
+        SettingsPanel={},--选项
+        --UIWidgetPowerBarContainerFrame={},
+        FriendsFrame={},--好友列表
+        GossipFrame={},
+        QuestFrame={},
+        PetStableFrame={},--猎人，宠物
+        BankFrame={save=true},--银行
+        MerchantFrame={},--货物
+        
+        ColorPickerFrame={save=true},--颜色选择器
+
+        
+        WorldMapFrame={},--世界地图
+        ContainerFrameCombinedBags={save=true},--{notZoom=true},--包
+        VehicleSeatIndicator={},--车辆，指示
+        ExpansionLandingPage={},--要塞
+        --MainMenuBarBackpackButton={save=true, click='R', frame=MicroButtonAndBagsBar},--主菜单
+        PlayerPowerBarAlt={},--UnitPowerBarAlt.lua
+        MailFrame={},
+        SendMailFrame={frame= MailFrame},
+        MirrorTimer1={save=true},
+        LootHistoryFrame= {},--拾取框
+        --EncounterBar={},
+        --StoreFrame={},--商店
+        ChannelFrame={},--聊天设置
+    }
+    for k, v in pairs(FrameTab) do
+        if v then
+            local f= _G[k]
+            if f then
+                Move(f, v)
+                FrameTab[k]=nil
+            end
+        end
+    end
+
     if ZoneAbilityFrame and ZoneAbilityFrame.SpellButtonContainer then--区域，技能
         local w,h=ZoneAbilityFrame.SpellButtonContainer:GetSize()
         local s= math.max(w,h) +20
