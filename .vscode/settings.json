@@ -1434,7 +1434,10 @@
         "ChannelFrameInset",
         "ItemSocketingFrameBg",
         "QuestFrameBg",
-        "QuestFrameInset"
+        "QuestFrameInset",
+        "VoidStorageBorderFrame",
+        "VoidStorageFrame",
+        "ChromieTimeFrame"
     ],
     "Lua.diagnostics.disable": [
     ]

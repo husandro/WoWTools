@@ -540,6 +540,12 @@ local function setAddLoad(arg1)
     elseif arg1=='Blizzard_ProfessionsCustomerOrders' then--专业定制
         Move(ProfessionsCustomerOrdersFrame, {})
 
+    elseif arg1=='Blizzard_VoidStorageUI' then--虚空，仓库
+         --Move(VoidStorageBorderFrame, {})
+         Move(VoidStorageFrame, {})
+
+    elseif arg1=='Blizzard_ChromieTimeUI' then--时光漫游
+        Move(ChromieTimeFrame, {})
     end
 end
 
