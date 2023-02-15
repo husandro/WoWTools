@@ -469,16 +469,20 @@ local function Init_SetAlpha()
             set_BagTexture_Button(itemButton)
         end
     end
-    hooksecurefunc('ContainerFrame_GenerateFrame',function (self, size2, id2)
+    hooksecurefunc('ContainerFrame_GenerateFrame',function (self)--ContainerFrame.lua
         for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
             if not frame.SetBagAlpha then
                 set_BagTexture(frame)
                 hooksecurefunc(frame, 'UpdateItems', set_BagTexture)
+                frame:SetTitle('')--名称
+                hooksecurefunc(frame, 'UpdateName', function(self2) self2:SetTitle('') end)
                 frame.SetBagAlpha=true
             end
         end
     end)
-
+    hooksecurefunc(ContainerFrameCombinedBagsMixin, 'UpdateName', function (self)
+        print(id,addName,'a')
+    end)
    
 
 

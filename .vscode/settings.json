@@ -1532,7 +1532,8 @@
         "BankFrameMoneyFrameInset",
         "BankFrameMoneyFrameBorderMiddle",
         "BankFrameMoneyFrameBorderRight",
-        "BankFrameMoneyFrameBorderLeft"
+        "BankFrameMoneyFrameBorderLeft",
+        "ContainerFrameCombinedBagsMixin"
     ],
     "Lua.diagnostics.disable": [
     ]
