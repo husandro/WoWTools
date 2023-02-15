@@ -659,7 +659,8 @@ local function set_Alpha_Event(arg1)
         setAlpha(WardrobeCollectionFrameSearchBox.Left)
         setAlpha(WardrobeCollectionFrameSearchBox.Right)
 
-        setAlpha(WardrobeFrame.NineSlice.TopLeftCorner)--试衣间
+        --试衣间
+        setAlpha(WardrobeFrame.NineSlice.TopLeftCorner)
         setAlpha(WardrobeFrame.NineSlice.TopEdge)
         setAlpha(WardrobeFrame.NineSlice.TopRightCorner)
         hideTexture(WardrobeFrameBg)
@@ -675,7 +676,6 @@ local function set_Alpha_Event(arg1)
         setAlpha(WardrobeTransmogFrame.MoneyRight)
 
     elseif arg1=='Blizzard_Calendar' then--日历
-        local frame= CalendarFrame
         setAlpha(CalendarFrameTopMiddleTexture)
         setAlpha(CalendarFrameTopLeftTexture)
         setAlpha(CalendarFrameTopRightTexture)
@@ -692,12 +692,18 @@ local function set_Alpha_Event(arg1)
         setAlpha(CalendarFrameBottomLeftTexture)
 
     elseif arg1=='Blizzard_FlightMap' then--飞行地图
-        setAlpha(FlightMapFrame.BorderFrame.NineSlice.TopLeftCorner)--试衣间
+        setAlpha(FlightMapFrame.BorderFrame.NineSlice.TopLeftCorner)
         setAlpha(FlightMapFrame.BorderFrame.NineSlice.TopEdge)
         setAlpha(FlightMapFrame.BorderFrame.NineSlice.TopRightCorner)
 
         hideTexture(FlightMapFrame.ScrollContainer.Child.TiledBackground)
         hideTexture(FlightMapFrameBg)
+    elseif arg1=='Blizzard_ItemSocketingUI' then--镶嵌宝石，界面
+        setAlpha(ItemSocketingFrame.NineSlice.TopLeftCorner)
+        setAlpha(ItemSocketingFrame.NineSlice.TopEdge)
+        setAlpha(ItemSocketingFrame.NineSlice.TopRightCorner)
+        setAlpha(ItemSocketingFrameBg)
+
 
     end
 end
@@ -721,8 +727,7 @@ end
     elseif arg1=='Blizzard_PlayerChoice' then
         local frame= PlayerChoiceFrame--任务选择
 
-    elseif arg1=='Blizzard_ItemSocketingUI' then--镶嵌宝石，界面
-        local frame= ItemSocketingFrame
+
 
     elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级,界面
         local frame= ItemUpgradeFrame

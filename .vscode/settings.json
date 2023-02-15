@@ -1431,7 +1431,8 @@
         "WhoFrameEditBoxInset",
         "ChannelFrame",
         "ChannelFrameBg",
-        "ChannelFrameInset"
+        "ChannelFrameInset",
+        "ItemSocketingFrameBg"
     ],
     "Lua.diagnostics.disable": [
     ]
