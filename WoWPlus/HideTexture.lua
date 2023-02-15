@@ -360,11 +360,11 @@ local function Init_SetAlpha()
     setAlpha(ProfessionsFrame.NineSlice.TopRightCorner)
     setAlpha(ProfessionsFrameBg)
     setAlpha(ProfessionsFrame.CraftingPage.SchematicForm.Background)
-    
+
     setAlpha(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundTop)
     setAlpha(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundMiddle)
     setAlpha(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundBottom)
-    
+
     hideTexture(ProfessionsFrame.SpecPage.TreeView.Background)
     hideTexture(ProfessionsFrame.SpecPage.DetailedView.Background)
     setAlpha(ProfessionsFrame.SpecPage.DetailedView.Path.DialBG)
@@ -685,6 +685,11 @@ local function set_Alpha_Event(arg1)
         setAlpha(ProfessionsCustomerOrdersFrame.Form.LeftPanelBackground.Background)
         setAlpha(ProfessionsCustomerOrdersFrame.Form.RightPanelBackground.Background)
 
+        hideTexture(ProfessionsCustomerOrdersFrame.MoneyFrameInset.Bg)
+        setAlpha(ProfessionsCustomerOrdersFrameLeft)
+        setAlpha(ProfessionsCustomerOrdersFrameMiddle)
+        setAlpha(ProfessionsCustomerOrdersFrameRight)
+
     elseif arg1=='Blizzard_BlackMarketUI' then--黑市
         --Move(BlackMarketFrame, {})
         setAlpha(BlackMarketFrameTitleBg)
@@ -886,7 +891,7 @@ local function set_Alpha_Event(arg1)
         setAlpha(ItemInteractionFrameBg)
         setAlpha(ItemInteractionFrame.Inset.Bg)
         setAlpha(ItemInteractionFrameMiddle)
-        
+
         setAlpha(ItemInteractionFrameRight)
         setAlpha(ItemInteractionFrameLeft)
 
