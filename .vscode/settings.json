@@ -1521,7 +1521,12 @@
         "ItemUpgradeFramePlayerCurrenciesBorderRight",
         "ItemUpgradeFrameMiddle",
         "ItemUpgradeFrameRight",
-        "ItemUpgradeFrameLeft"
+        "ItemUpgradeFrameLeft",
+        "ScenarioStageBlock",
+        "ContainerFrameMixin",
+        "ContainerFrameItemButtonMixin",
+        "BankFrameItemButton_Update",
+        "ReagentBankFrame"
     ],
     "Lua.diagnostics.disable": [
     ]

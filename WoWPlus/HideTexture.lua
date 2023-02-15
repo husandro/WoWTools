@@ -417,19 +417,68 @@ local function Init_SetAlpha()
     setAlpha(BankFrame.NineSlice.TopEdge)
     setAlpha(BankFrame.NineSlice.TopLeftCorner)
     setAlpha(BankFrame.NineSlice.TopRightCorner)
-    --setAlpha(BankFrameBg)
+    --[[hideTexture(BankFrameBg)
 
-    setAlpha(ContainerFrameCombinedBags.NineSlice.TopEdge)--背包
+    hooksecurefunc('ReagentBankFrame_OnShow', function(self)----ReagentBankFrame_OnShow BankFrame.lua
+        if  self.slots_initialized and not self.hideBackground then
+            self.hideBackground= true
+            for column = 2, self.numColumn do
+                print(self==ReagentBankFrame)
+                hideTexture(ReagentBankFrame["BG"..column])
+            end
+        end
+    end)]]
+
+    --背包
+    setAlpha(ContainerFrameCombinedBags.NineSlice.TopEdge)
     setAlpha(ContainerFrameCombinedBags.NineSlice.TopLeftCorner)
     setAlpha(ContainerFrameCombinedBags.NineSlice.TopRightCorner)
     for i=1 ,NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS+1 do
         local frame= _G['ContainerFrame'..i]
         if frame and frame.NineSlice then
-            setAlpha(frame.NineSlice.TopEdge)--背包
+            setAlpha(frame.NineSlice.TopEdge)
             setAlpha(frame.NineSlice.TopLeftCorner)
             setAlpha(frame.NineSlice.TopRightCorner)
         end
     end
+
+    local function set_BagTexture_Button(button)
+        if not button.hasItem then
+            hideTexture(button.icon)
+            hideTexture(button.ItemSlotBackground)
+            button.NormalTexture:SetAlpha(0.1)
+        else
+            button.NormalTexture:SetAlpha(1)
+        end
+    end
+    local function set_BagTexture(self)
+        for i, itemButton in self:EnumerateValidItems() do
+            set_BagTexture_Button(itemButton)
+        end
+    end
+    hooksecurefunc('ContainerFrame_GenerateFrame',function (self, size2, id2)
+        for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
+            if not frame.SetBagAlpha then
+                set_BagTexture(frame)
+                hooksecurefunc(frame, 'UpdateItems', set_BagTexture)
+                frame.SetBagAlpha=true
+            end
+        end
+    end)
+
+   --[[ hooksecurefunc('BankFrameItemButton_Update',function()--银行
+        local container = button:GetParent():GetID();
+        if not button.isBag then
+            local buttonID = button:GetID();
+            local itemInfo = C_Container.GetContainerItemInfo(container, buttonID) or {};
+            local info={
+                bagID=container,
+                slotID=buttonID,
+            }
+            set_Item_Info(button, itemInfo.hyperlink, itemInfo.itemID, info)
+        end
+    end)]]
+
 
     --好友列表
     setAlpha(FriendsFrame.NineSlice.TopEdge)
@@ -476,6 +525,9 @@ local function Init_SetAlpha()
     setAlpha(SendMailMoneyBgRight)
     setAlpha(SendMailMoneyBgLeft)
     hideTexture(SendMailMoneyInset.Bg)
+
+    --场景
+    setAlpha(ScenarioStageBlock.NormalBG)
 end
 
 
@@ -633,11 +685,11 @@ local function set_Alpha_Event(arg1)
         setAlpha(EncounterJournalEncounterFrameInfoModelFrameDungeonBG)
 
     elseif arg1=="Blizzard_GuildBankUI" then--公会银行
-        hideTexture(GuildBankFrame.TitleBg)
-        setAlpha(GuildBankFrame.Emblem)
-        setAlpha(GuildBankFrame.RedMarbleBG)
-        setAlpha(GuildBankFrame.MoneyFrameBG)
         setAlpha(GuildBankFrame.BlackBG)
+        hideTexture(GuildBankFrame.TitleBg)
+        hideTexture(GuildBankFrame.RedMarbleBG)
+        setAlpha(GuildBankFrame.MoneyFrameBG)
+
         setAlpha(GuildBankFrame.TabLimitBG)
         setAlpha(GuildBankFrame.TabLimitBGLeft)
         setAlpha(GuildBankFrame.TabLimitBGRight)
@@ -647,6 +699,34 @@ local function set_Alpha_Event(arg1)
         setAlpha(GuildBankFrame.TabTitleBG)
         setAlpha(GuildBankFrame.TabTitleBGLeft)
         setAlpha(GuildBankFrame.TabTitleBGRight)
+
+        for i=1, 7 do
+            local frame= GuildBankFrame['Column'..i]
+            if frame then
+                hideTexture(frame.Background)
+            end
+        end
+
+        local MAX_GUILDBANK_SLOTS_PER_TAB = 98;
+        local NUM_SLOTS_PER_GUILDBANK_GROUP = 14;
+        hooksecurefunc(GuildBankFrame,'Update', function(self)--Blizzard_GuildBankUI.lua
+            if ( self.mode == "bank" ) then
+                local tab = GetCurrentGuildBankTab() or 1
+                for i=1, MAX_GUILDBANK_SLOTS_PER_TAB do
+                    local index = mod(i, NUM_SLOTS_PER_GUILDBANK_GROUP);
+                    if ( index == 0 ) then
+                        index = NUM_SLOTS_PER_GUILDBANK_GROUP;
+                    end
+                    local column = ceil((i-0.5)/NUM_SLOTS_PER_GUILDBANK_GROUP);
+                    local button = self.Columns[column].Buttons[index];
+                    if button and button.NormalTexture then
+                        local texture= GetGuildBankItemInfo(tab, i)
+                        button.NormalTexture:SetAlpha(texture and 1 or 0.1)
+                    end
+                end
+            end
+        end)
+
 
     elseif arg1=='Blizzard_AuctionHouseUI' then--拍卖行
         setAlpha(AuctionHouseFrame.NineSlice.TopLeftCorner)

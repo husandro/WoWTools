@@ -307,9 +307,8 @@ local function setAddLoad(arg1)
         Move(OrderHallMissionFrame, {})
     elseif arg1=='Blizzard_PlayerChoice' then
         Move(PlayerChoiceFrame, {})--任务选择
-    elseif arg1=="Blizzard_GuildBankUI" then--公会银行
-        Move(GuildBankFrame.Emblem, {frame=GuildBankFrame})
-
+    elseif arg1=="Blizzard_GuildBankUI" then--公会银行--Move(GuildBankFrame.Emblem, {frame=GuildBankFrame})
+        Move(GuildBankFrame, {})
     elseif arg1=='Blizzard_FlightMap' then--飞行地图
         Move(FlightMapFrame, {})
 

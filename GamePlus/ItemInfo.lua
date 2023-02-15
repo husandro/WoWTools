@@ -311,6 +311,7 @@ local function setMerchantInfo()--商人设置
 end
 
 
+--hooksecurefunc(GuildBankFrame,'Update', function(self)--Blizzard_GuildBankUI.lua
 local MAX_GUILDBANK_SLOTS_PER_TAB = 98;
 local NUM_SLOTS_PER_GUILDBANK_GROUP = 14;
 local function setGuildBank()--公会银行,设置
@@ -377,10 +378,8 @@ local function Init()
 
 ]]
 
-    hooksecurefunc(ContainerFrameCombinedBags,'Update', function(self)
-        setBags(self)
-    end)
-    ContainerFrameCombinedBags.SetBagInfo=true
+    --hooksecurefunc(ContainerFrameCombinedBags,'Update', setBags)
+    --ContainerFrameCombinedBags.SetBagInfo=true
     hooksecurefunc('ContainerFrame_GenerateFrame',function (self, size2, id2)
         for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
             if not frame.SetBagInfo then
