@@ -704,9 +704,13 @@ local function set_Alpha_Event(arg1)
         setAlpha(ItemSocketingFrame.NineSlice.TopRightCorner)
         setAlpha(ItemSocketingFrameBg)
 
-
     end
 end
+--[[
+    elseif arg1=='Blizzard_PlayerChoice' then--任务选择
+        print(PlayerChoiceFrame.Background.BackgroundTile)
+        hideTexture(PlayerChoiceFrame.Background.BackgroundTile)
+]]
 --[[
     elseif arg1=='Blizzard_OrderHallUI' then
         local frame= OrderHallTalentFrame
