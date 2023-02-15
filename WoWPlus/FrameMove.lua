@@ -23,8 +23,8 @@ end
 --####
 --缩放
 --####
-local function show_Tips(frame, name, setAlphaZero)
-    local alpha= setAlphaZero and 0 or 0.1
+local function show_Tips(frame, name, zeroAlpha)
+    local alpha= zeroAlpha and 0 or 0.1
     frame.name= name
     frame:SetAlpha(alpha)
     frame:SetScript("OnLeave", function(self) e.tips:Hide() self:SetAlpha(alpha) end)
@@ -42,14 +42,18 @@ local function show_Tips(frame, name, setAlphaZero)
         e.tips:Show()
     end)
 end
-local function ZoomFrame(self, notZoom)
+local function ZoomFrame(self, notZoom, zeroAlpha)
     local name= (self and not notZoom and not Save.disabledZoom) and self:GetName()
     if not name then
         return
     end
     local frame= nil
+    if self.moveButton then
+        frame= self
+        self.ZoomIn= e.Cbtn(frame, nil, nil, nil, nil, true, {size,size})
+        self.ZoomIn:SetPoint('RIGHT', self.moveButton, 'LEFT')
 
-    if self.BorderFrame and self.BorderFrame.TitleContainer then
+    elseif self.BorderFrame and self.BorderFrame.TitleContainer then
         frame= self.BorderFrame.TitleContainer
         self.ZoomIn= e.Cbtn(frame, nil, nil, nil, nil, true, {size,size})--放大
         self.ZoomIn:SetPoint('LEFT',35,-2)
@@ -72,11 +76,7 @@ local function ZoomFrame(self, notZoom)
     else
         frame= self
         self.ZoomIn= e.Cbtn(frame, nil, nil, nil, nil, true, {size,size})
-        if self.moveButton then--移动, 按钮
-            self.ZoomIn:SetPoint('RIGHT', self.moveButton, 'LEFT')
-        else
-            self.ZoomIn:SetPoint('BOTTOMLEFT', frame, 'TOPLEFT')
-        end
+        self.ZoomIn:SetPoint('BOTTOMLEFT', frame, 'TOPLEFT')
         self.ZoomIn:SetFrameLevel(frame:GetFrameLevel()+7)
     end
 
@@ -105,8 +105,8 @@ local function ZoomFrame(self, notZoom)
         self:SetScale(n)
     end)
 
-    show_Tips(self.ZoomIn, name, self==classPowerFrame)
-    show_Tips(self.ZoomOut, name, self==classPowerFrame)
+    show_Tips(self.ZoomIn, name, zeroAlpha)
+    show_Tips(self.ZoomOut, name, zeroAlpha)
 
     if Save.scale[name] and Save.scale[name]~=1 then
         self:SetScale(Save.scale[name])
@@ -199,24 +199,16 @@ local Move=function(F, tab)
     end)
     F:SetScript("OnLeave", function() ResetCursor() end)
 
-    ZoomFrame(F2, tab.notZoom)
+    ZoomFrame(F2, tab.notZoom, tab.zeroAlpha)
 end
 
-
---UIWidgetBelowMinimapContainerFrame={save=true,click='RightButton'},
-
-
-local function setTabInit()
-   
-end
-
-local function set_Move_Button(frame, save)
+local function set_Move_Button(frame, pointFrame, save, zeroAlpha, notZoom)
     if frame then
         if not frame.moveButton then
-            frame.moveButton= e.Cbtn(frame, nil, nil, nil, nil, true, {size+2,size+2})
-            frame.moveButton:SetPoint('BOTTOM', frame, 'TOP',0,-13)
+            frame.moveButton= e.Cbtn(frame, nil, nil, nil, nil, true, {size,size})
+            frame.moveButton:SetPoint('BOTTOM', pointFrame or frame, 'TOP')--,0,-13)
             frame.moveButton:SetFrameLevel(frame:GetFrameLevel()+5)
-            Move(frame.moveButton, {frame= frame, save=save})
+            Move(frame.moveButton, {frame= frame, save=save, zeroAlpha= zeroAlpha, notZoom= notZoom})
         else
             local name= frame:GetName()
             if name then
@@ -226,34 +218,10 @@ local function set_Move_Button(frame, save)
     end
 end
 
-local function setClass()--职业,能量条
-    --set_Move_Button(PlayerFrame.classPowerBar, true)
-    --职业,能量条
-    if PlayerFrame.classPowerBar then--PlayerFrame.lua
-        classPowerFrame= PlayerFrame.classPowerBar
-    elseif (e.Player.class == "SHAMAN") then
-        classPowerFrame= TotemFrame
-    elseif (e.Player.class == "DEATHKNIGHT") then
-        classPowerFrame= RuneFrame
-    elseif (e.Player.class == "PRIEST") then
-        classPowerFrame= PriestBarFrame
-    end
-
-    if classPowerFrame then
-        panel:RegisterUnitEvent('UNIT_DISPLAYPOWER', "player")
-        C_Timer.After(2, function()
-            set_Move_Button(classPowerFrame, true)
-        end)
-        hooksecurefunc('PlayerFrame_ToPlayerArt', function()
-            C_Timer.After(0.5, function()
-                set_Move_Button(classPowerFrame, true)
-            end)
-        end)
-    end
-end
 
 
 local combatCollectionsJournal--藏品
+
 local function setAddLoad(arg1)
     if arg1=='Blizzard_TimeManager' then--小时图，时间
         Move(TimeManagerFrame,{})
@@ -451,20 +419,20 @@ local function Init_Move()
             end
         end
     end
+    set_Move_Button(ZoneAbilityFrame, ZoneAbilityFrame.SpellButtonContainer, true, true, nil)
+    set_Move_Button(QueueStatusButton, nil, true, true, nil)--小眼睛, 
+    Move(DressUpFrame.TitleContainer, {frame = DressUpFrame})--试衣间 
 
-    if ZoneAbilityFrame and ZoneAbilityFrame.SpellButtonContainer then--区域，技能
+    --[[if ZoneAbilityFrame and ZoneAbilityFrame.SpellButtonContainer then--区域，技能
         local w,h=ZoneAbilityFrame.SpellButtonContainer:GetSize()
         local s= math.max(w,h) +20
         ZoneAbilityFrame.moveButton= e.Cbtn(ZoneAbilityFrame.SpellButtonContainer, nil, nil, nil, nil, true, {s,s})
         ZoneAbilityFrame.moveButton:SetPoint('CENTER', ZoneAbilityFrame.SpellButtonContainer, 'CENTER')
         Move(ZoneAbilityFrame.moveButton, {frame= ZoneAbilityFrame})
-    end
+    end]]
 
-    setTabInit()
 
-    set_Move_Button(QueueStatusButton, true)--小眼睛, 
-
-    Move(DressUpFrame.TitleContainer, {frame = DressUpFrame})--试衣间    
+    
 
 
 
@@ -505,7 +473,7 @@ local function Init_Move()
 
     if UIWidgetPowerBarContainerFrame then--移动, 能量条
         local frame=UIWidgetPowerBarContainerFrame
-        set_Move_Button(frame)
+        set_Move_Button(frame, nil, true, true, nil)
 
         local tab= frame.widgetFrames or {}
         local find
@@ -541,6 +509,28 @@ local function Init_Move()
                 end
             end)
         end
+    end
+
+    --职业,能量条
+    if PlayerFrame.classPowerBar then--PlayerFrame.lua
+        classPowerFrame= PlayerFrame.classPowerBar
+    elseif (e.Player.class == "SHAMAN") then
+        classPowerFrame= TotemFrame
+    elseif (e.Player.class == "DEATHKNIGHT") then
+        classPowerFrame= RuneFrame
+    elseif (e.Player.class == "PRIEST") then
+        classPowerFrame= PriestBarFrame
+    end
+    if classPowerFrame then
+        panel:RegisterUnitEvent('UNIT_DISPLAYPOWER', "player")
+        C_Timer.After(2, function()
+            set_Move_Button(classPowerFrame, nil, true, true, nil)
+        end)
+        hooksecurefunc('PlayerFrame_ToPlayerArt', function()
+            C_Timer.After(0.5, function()
+                set_Move_Button(classPowerFrame, nil, true, true, nil)
+            end)
+        end)
     end
 end
 
@@ -602,7 +592,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not Save.disabled then
                 Init_Move()--移动
                 --setTabInit()
-                setClass()--职业,能量条
+                --setClass()--职业,能量条
             else
                 panel.check2.text:SetText('|cff808080'..(e.onlyChinse and '缩放' or UI_SCALE))
                 panel:UnregisterAllEvents()
@@ -628,7 +618,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
 
     elseif event=='UNIT_DISPLAYPOWER' then
-        set_Move_Button(classPowerFrame, true)
+        set_Move_Button(classPowerFrame, nil, true, true, nil)
     end
 end)
 
