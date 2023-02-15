@@ -878,6 +878,28 @@ local function set_Alpha_Event(arg1)
                 setAlpha(frame.Background)
             end
         end)
+
+    elseif arg1=='Blizzard_ItemInteractionUI' then--套装, 转换        
+        setAlpha(ItemInteractionFrame.NineSlice.TopLeftCorner)
+        setAlpha(ItemInteractionFrame.NineSlice.TopEdge)
+        setAlpha(ItemInteractionFrame.NineSlice.TopRightCorner)
+        setAlpha(ItemInteractionFrameBg)
+        setAlpha(ItemInteractionFrame.Inset.Bg)
+        setAlpha(ItemInteractionFrameMiddle)
+        
+        setAlpha(ItemInteractionFrameRight)
+        setAlpha(ItemInteractionFrameLeft)
+
+        hideTexture(ItemInteractionFrame.ButtonFrame.BlackBorder)
+
+    elseif arg1=='Blizzard_InspectUI' then--玩家, 观察角色, 界面
+        setAlpha(InspectFrame.NineSlice.TopLeftCorner)
+        setAlpha(InspectFrame.NineSlice.TopEdge)
+        setAlpha(InspectFrame.NineSlice.TopRightCorner)
+        setAlpha(InspectFrameBg)
+        hideTexture(InspectFrameInset.Bg)
+        hideTexture(InspectPVPFrame.BG)
+        hideTexture(InspectGuildFrameBG)
     end
 end
 --[[
@@ -912,12 +934,7 @@ end
 
     elseif arg1=='Blizzard_InspectUI' then--玩家, 观察角色, 界面
         local frame= InspectFrame
-
-    
-
-    elseif arg1=='Blizzard_ItemInteractionUI' then--套装, 转换
-        local frame= ItemInteractionFrame
-        ]]
+]]
 
 --###########
 --加载保存数据

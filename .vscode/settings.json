@@ -1505,7 +1505,16 @@
         "ItemSocketingScrollFrame",
         "ItemSocketingScrollFrameMiddle",
         "ItemSocketingScrollFrameTop",
-        "ItemSocketingScrollFrameBottom"
+        "ItemSocketingScrollFrameBottom",
+        "ItemInteractionFrameBg",
+        "ItemInteractionFrameMiddle",
+        "ItemInteractionFrameRight",
+        "ItemInteractionFrameLeft",
+        "InspectFrameBg",
+        "InspectFrameInset",
+        "InspectPVPFrame",
+        "InspectGuildFrame",
+        "InspectGuildFrameBG"
     ],
     "Lua.diagnostics.disable": [
     ]
