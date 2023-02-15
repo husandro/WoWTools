@@ -435,10 +435,13 @@ local function Init_Move()
             if frame.TitleContainer then
                 if i==1 then
                     Move(frame.TitleContainer, {frame=frame, save=true})
+                    Move(frame, {save=true})
                 else
                     Move(frame.TitleContainer, {frame=frame})
+                    Move(frame, {})
                 end
             end
+            
         end
     end
     hooksecurefunc('UpdateContainerFrameAnchors', function()--ContainerFrame.lua
