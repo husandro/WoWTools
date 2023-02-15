@@ -286,6 +286,11 @@ local function setClass()--职业,能量条
         C_Timer.After(2, function()
             set_Move_Button(classPowerFrame, true)
         end)
+        hooksecurefunc('PlayerFrame_ToPlayerArt', function()
+            C_Timer.After(0.5, function()
+                set_Move_Button(classPowerFrame, true)
+            end)
+        end)
     end
 end
 
