@@ -1485,7 +1485,27 @@
         "WardrobeSetsCollectionVariantSetsButtonTopLeft",
         "WardrobeSetsCollectionVariantSetsButtonBottomLeft",
         "WardrobeSetsCollectionVariantSetsButtonTopRight",
-        "WardrobeSetsCollectionVariantSetsButtonBottomRight"
+        "WardrobeSetsCollectionVariantSetsButtonBottomRight",
+        "MailFrameBg",
+        "InboxFrameBg",
+        "MailFrameInset",
+        "SendStationeryBackgroundLeft",
+        "SendStationeryBackgroundRight",
+        "SendMailMoney",
+        "SendMailMoneyBgMiddle",
+        "SendMailMoneyBg",
+        "SendMailMoneyBgRight",
+        "SendMailMoneyBgLeft",
+        "SendMailMoneyInset",
+        "ClassTrainerFrameFilterDropDownMiddle",
+        "ClassTrainerFrameFilterDropDown",
+        "ClassTrainerFrameFilterDropDownLeft",
+        "ClassTrainerFrameFilterDropDownRight",
+        "ItemSocketingFrameInset",
+        "ItemSocketingScrollFrame",
+        "ItemSocketingScrollFrameMiddle",
+        "ItemSocketingScrollFrameTop",
+        "ItemSocketingScrollFrameBottom"
     ],
     "Lua.diagnostics.disable": [
     ]

@@ -244,7 +244,8 @@ local function set_ItemInteractionFrame_Currency(self)
 	local text
     if info and info.discovered and info.quantity then
         text= info.iconFileID and '|T'..info.iconFileID..':0|t' or ''
-        text= text.. info.quality
+        text= text.. info.quantity
+		
 		if currencyID== 2167 then
 			text= text.. '/6'
 		else

@@ -395,8 +395,9 @@ local function Init_Move()
         
         ColorPickerFrame={save=true},--颜色选择器
 
-        
         WorldMapFrame={},--世界地图
+        MapQuestInfoRewardsFrame={frame= WorldMapFrame},
+        
         ContainerFrameCombinedBags={save=true},--{notZoom=true},--包
         VehicleSeatIndicator={},--车辆，指示
         ExpansionLandingPage={},--要塞
@@ -409,6 +410,9 @@ local function Init_Move()
         --EncounterBar={},
         --StoreFrame={},--商店
         ChannelFrame={},--聊天设置
+
+        [DressUpFrame.TitleContainer]= {frame = DressUpFrame},--试衣间 
+        [MailFrame.TitleContainer]= {frame=MailFrame},
     }
     for k, v in pairs(FrameTab) do
         if v then
@@ -421,20 +425,6 @@ local function Init_Move()
     end
     set_Move_Button(ZoneAbilityFrame, ZoneAbilityFrame.SpellButtonContainer, true, true, nil)
     set_Move_Button(QueueStatusButton, nil, true, true, nil)--小眼睛, 
-    Move(DressUpFrame.TitleContainer, {frame = DressUpFrame})--试衣间 
-
-    --[[if ZoneAbilityFrame and ZoneAbilityFrame.SpellButtonContainer then--区域，技能
-        local w,h=ZoneAbilityFrame.SpellButtonContainer:GetSize()
-        local s= math.max(w,h) +20
-        ZoneAbilityFrame.moveButton= e.Cbtn(ZoneAbilityFrame.SpellButtonContainer, nil, nil, nil, nil, true, {s,s})
-        ZoneAbilityFrame.moveButton:SetPoint('CENTER', ZoneAbilityFrame.SpellButtonContainer, 'CENTER')
-        Move(ZoneAbilityFrame.moveButton, {frame= ZoneAbilityFrame})
-    end]]
-
-
-    
-
-
 
     --########
     --小，背包
@@ -466,10 +456,6 @@ local function Init_Move()
             end
         end
     end)
-
-   
-
-    Move(MailFrame.TitleContainer,{frame=MailFrame})
 
     if UIWidgetPowerBarContainerFrame then--移动, 能量条
         local frame=UIWidgetPowerBarContainerFrame
