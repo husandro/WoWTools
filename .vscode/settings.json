@@ -1432,7 +1432,9 @@
         "ChannelFrame",
         "ChannelFrameBg",
         "ChannelFrameInset",
-        "ItemSocketingFrameBg"
+        "ItemSocketingFrameBg",
+        "QuestFrameBg",
+        "QuestFrameInset"
     ],
     "Lua.diagnostics.disable": [
     ]

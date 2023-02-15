@@ -400,7 +400,13 @@ local function Init_SetAlpha()
     hideTexture(ChannelFrame.RightInset.Bg)
     hideTexture(ChannelFrame.LeftInset.Bg)
     hideTexture(ChannelFrame.ChannelRoster.ScrollBar.Backplate)
-    
+
+    --任务
+    setAlpha(QuestFrame.NineSlice.TopEdge)
+    setAlpha(QuestFrame.NineSlice.TopLeftCorner)
+    setAlpha(QuestFrame.NineSlice.TopRightCorner)
+    setAlpha(QuestFrameBg)
+    hideTexture(QuestFrameInset.Bg)
 end
 
 
