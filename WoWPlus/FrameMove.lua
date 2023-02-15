@@ -5,7 +5,7 @@ local Save={
 }
 local addName= NPE_MOVE..'Frame'
 local panel= CreateFrame("Frame")
-local size= 18--放大， 缩小，移动，按钮大小
+local size= 16--放大， 缩小，移动，按钮大小
 local classPowerFrame--职业，能量条
 
 --####
@@ -23,8 +23,8 @@ end
 --####
 --缩放
 --####
-local function show_Tips(frame, name, setAlphaZoro)
-    local alpha= setAlphaZoro and 0 or 0.1
+local function show_Tips(frame, name, setAlphaZero)
+    local alpha= setAlphaZero and 0 or 0.1
     frame.name= name
     frame:SetAlpha(alpha)
     frame:SetScript("OnLeave", function(self) e.tips:Hide() self:SetAlpha(alpha) end)
@@ -73,7 +73,7 @@ local function ZoomFrame(self, notZoom)
         frame= self
         self.ZoomIn= e.Cbtn(frame, nil, nil, nil, nil, true, {size,size})
         if self.moveButton then--移动, 按钮
-            self.ZoomIn:SetPoint('BOTTOMRIGHT', self.moveButton, 'TOP')
+            self.ZoomIn:SetPoint('RIGHT', self.moveButton, 'LEFT')
         else
             self.ZoomIn:SetPoint('BOTTOMLEFT', frame, 'TOPLEFT')
         end
@@ -91,7 +91,11 @@ local function ZoomFrame(self, notZoom)
 
     self.ZoomOut= e.Cbtn(frame, nil, nil, nil, nil, true, {size, size})--缩小
     self.ZoomOut:SetFrameLevel(self.ZoomIn:GetFrameLevel())
-    self.ZoomOut:SetPoint('LEFT',self.ZoomIn, 'RIGHT')
+    if self.moveButton then
+        self.ZoomOut:SetPoint('LEFT',self.moveButton, 'RIGHT')
+    else
+        self.ZoomOut:SetPoint('LEFT',self.ZoomIn, 'RIGHT')
+    end
     self.ZoomOut:SetNormalAtlas('UI-HUD-Minimap-Zoom-Out')
     self.ZoomOut:SetScript('OnMouseDown', function(self2)
         local n= Save.scale[self2.name] or self:GetScale() or 1
@@ -219,7 +223,7 @@ local FrameTab={
     PetStableFrame={},--猎人，宠物
     BankFrame={save=true},--银行
     MerchantFrame={},--货物
-    ClassTrainerFrame={},--专业训练师
+    
     ColorPickerFrame={save=true},--颜色选择器
     BFAMissionFrame={},--侦查地图    
     WorldMapFrame={},--世界地图
@@ -256,7 +260,7 @@ local function set_Move_Button(frame, save)
     if frame then
         if not frame.moveButton then
             frame.moveButton= e.Cbtn(frame, nil, nil, nil, nil, true, {size+2,size+2})
-            frame.moveButton:SetPoint('TOP', frame, 'TOP',0,-13)
+            frame.moveButton:SetPoint('BOTTOM', frame, 'TOP',0,-13)
             frame.moveButton:SetFrameLevel(frame:GetFrameLevel()+5)
             Move(frame.moveButton, {frame= frame, save=save})
         else
@@ -429,11 +433,13 @@ local function setAddLoad(arg1)
         Move(ProfessionsCustomerOrdersFrame, {})
 
     elseif arg1=='Blizzard_VoidStorageUI' then--虚空，仓库
-         --Move(VoidStorageBorderFrame, {})
          Move(VoidStorageFrame, {})
 
     elseif arg1=='Blizzard_ChromieTimeUI' then--时光漫游
         Move(ChromieTimeFrame, {})
+
+    elseif arg1=='Blizzard_TrainerUI' then--专业训练师
+        Move(ClassTrainerFrame, {})
     end
 end
 
@@ -449,32 +455,11 @@ local function Init_Move()
 
     setTabInit()
 
-    
+    set_Move_Button(QueueStatusButton, true)--小眼睛, 
 
     Move(DressUpFrame.TitleContainer, {frame = DressUpFrame})--试衣间    
 
-    if QueueStatusButton then--小眼睛, 信息, 设置菜单,移动
-        hooksecurefunc('QueueStatusDropDown_Show', function()
-            UIDropDownMenu_AddSeparator()
-            local info={
-                text=NPE_MOVE..e.Icon.left,
-                notCheckable=true,
-                tooltipOnButton=true,
-                tooltipTitle=REQUIRES_RELOAD,
-                tooltipText=id..'\n'..addName,
-                func= function()
-                    Move(QueueStatusButton, {save=true})
-                    print(id, addName, '|cnGREEN_FONT_COLOR:'..REQUIRES_RELOAD..'|r', 'Alt+'..e.Icon.right..RESET_POSITION )
-                end
-            }
-            UIDropDownMenu_AddButton(info)
-        end)
-        local p=Save.point['QueueStatusButton']
-        if p and p[1] and p[3] and p[4] and p[5] then
-            QueueStatusButton:ClearAllPoints()
-            QueueStatusButton:SetPoint(p[1],UIParent, p[3], p[4], p[5])
-        end
-    end
+
 
     --########
     --小，背包
@@ -609,7 +594,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if not Save.disabled then
                 Init_Move()--移动
-                setTabInit()
+                --setTabInit()
                 setClass()--职业,能量条
             else
                 panel.check2.text:SetText('|cff808080'..(e.onlyChinse and '缩放' or UI_SCALE))
@@ -619,7 +604,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         else
             setAddLoad(arg1)
-            setTabInit()
+            --setTabInit()
         end
 
     elseif event == "PLAYER_LOGOUT" then
@@ -787,4 +772,26 @@ end)
         end
     end)
     Move(LootFrame.TitleContainer, {frame=LootFrame, save=true})--物品拾取
-    ]]
+  
+    if QueueStatusButton then--小眼睛, 信息, 设置菜单,移动
+        hooksecurefunc('QueueStatusDropDown_Show', function()
+            UIDropDownMenu_AddSeparator()
+            local info={
+                text=NPE_MOVE..e.Icon.left,
+                notCheckable=true,
+                tooltipOnButton=true,
+                tooltipTitle=REQUIRES_RELOAD,
+                tooltipText=id..'\n'..addName,
+                func= function()
+                    Move(QueueStatusButton, {save=true})
+                    print(id, addName, '|cnGREEN_FONT_COLOR:'..REQUIRES_RELOAD..'|r', 'Alt+'..e.Icon.right..RESET_POSITION )
+                end
+            }
+            UIDropDownMenu_AddButton(info)
+        end)
+        local p=Save.point['QueueStatusButton']
+        if p and p[1] and p[3] and p[4] and p[5] then
+            QueueStatusButton:ClearAllPoints()
+            QueueStatusButton:SetPoint(p[1],UIParent, p[3], p[4], p[5])
+        end
+    end]]

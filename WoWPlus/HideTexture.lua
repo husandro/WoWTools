@@ -2,7 +2,10 @@ local id, e= ...
 local addName=HIDE..TEXTURES_SUBHEADER
 local Save={
     disabledAlpha= not e.Player.husandro,
+    alpha= 0.5,
 }
+local panel=CreateFrame("Frame")
+
 
 local function hideTexture(self)
     if self then
@@ -12,42 +15,44 @@ local function hideTexture(self)
 end
 local function setAlpha(self)
     if self and not Save.disabledAlpha then
-        self:SetAlpha(0.5)
+        self:SetAlpha(Save.alpha)
     end
 end
 
 
 
-local function set_UNIT_ENTERED_VEHICLE()--载具
-    if OverrideActionBarEndCapL then
-        hideTexture(OverrideActionBarEndCapL)
-        hideTexture(OverrideActionBarEndCapR)
-        hideTexture(OverrideActionBarBorder)
-        hideTexture(OverrideActionBarBG)
-        hideTexture(OverrideActionBarButtonBGMid)
-        hideTexture(OverrideActionBarButtonBGR)
-        hideTexture(OverrideActionBarButtonBGL)
-    end
-    if OverrideActionBarMicroBGMid then
-        hideTexture(OverrideActionBarMicroBGMid)
-        hideTexture(OverrideActionBarMicroBGR)
-        hideTexture(OverrideActionBarMicroBGL)
-        hideTexture(OverrideActionBarLeaveFrameExitBG)
-
-        hideTexture(OverrideActionBarDivider2)
-        hideTexture(OverrideActionBarLeaveFrameDivider3)
-    end
-    if OverrideActionBarExpBar then
-        hideTexture(OverrideActionBarExpBarXpMid)
-        hideTexture(OverrideActionBarExpBarXpR)
-        hideTexture(OverrideActionBarExpBarXpL)
-    end
-end
-
---######
---初始化
---######
+--###############
+--初始化, 隐藏材质
+--###############
 local function Init_HideTexture()
+    if Save.disabled then
+        return
+    end
+    hooksecurefunc('PlayerFrame_ToVehicleArt', function()--隐藏材质, 载具
+        if OverrideActionBarEndCapL then
+            hideTexture(OverrideActionBarEndCapL)
+            hideTexture(OverrideActionBarEndCapR)
+            hideTexture(OverrideActionBarBorder)
+            hideTexture(OverrideActionBarBG)
+            hideTexture(OverrideActionBarButtonBGMid)
+            hideTexture(OverrideActionBarButtonBGR)
+            hideTexture(OverrideActionBarButtonBGL)
+        end
+        if OverrideActionBarMicroBGMid then
+            hideTexture(OverrideActionBarMicroBGMid)
+            hideTexture(OverrideActionBarMicroBGR)
+            hideTexture(OverrideActionBarMicroBGL)
+            hideTexture(OverrideActionBarLeaveFrameExitBG)
+
+            hideTexture(OverrideActionBarDivider2)
+            hideTexture(OverrideActionBarLeaveFrameDivider3)
+        end
+        if OverrideActionBarExpBar then
+            hideTexture(OverrideActionBarExpBarXpMid)
+            hideTexture(OverrideActionBarExpBarXpR)
+            hideTexture(OverrideActionBarExpBarXpL)
+        end
+    end)
     if ExtraActionButton1 then hideTexture(ExtraActionButton1.style) end--额外技能
     if ZoneAbilityFrame then hideTexture(ZoneAbilityFrame.Style) end--区域技能
 
@@ -233,14 +238,46 @@ local function Init_HideTexture()
         end
         MainMenuBar.Background:SetShown(false)
     end)
+end
+
+local function set_HideTexture_Event(arg1)
+    if Save.disabled then
+        return
+    end
+    if arg1=='Blizzard_WeeklyRewards' then--周奖励提示
+        if WeeklyRewardExpirationWarningDialog and WeeklyRewardExpirationWarningDialog:IsShown() then
+            if WeeklyRewardExpirationWarningDialog.Description then
+                print(id, addName, '|cffff00ff'..WeeklyRewardExpirationWarningDialog.Description:GetText())
+                WeeklyRewardExpirationWarningDialog:Hide()
+            else
+                C_Timer.After(5, function()
+                    WeeklyRewardExpirationWarningDialog:Hide()
+                end)
+            end
+        end
+    end
 
 end
 
 
+
+
+
+
+
+
+
+
+
+--###########
+--初始化, 透明
+--###########
 local function Init_SetAlpha()
     if Save.disabledAlpha then
         return
     end
+
+
     setAlpha(CharacterFrameBg)
     setAlpha(CharacterFrameInset.Bg)
     setAlpha(CharacterFrame.NineSlice.TopEdge)
@@ -411,11 +448,22 @@ end
 
 
 
+--#########
+--事件, 透明
+--#########
 local function set_Alpha_Event(arg1)
     if Save.disabledAlpha then
         return
     end
-    if arg1=='Blizzard_TimeManager' then--小时图，时间
+    if arg1=='Blizzard_TrainerUI' then--专业训练师
+        setAlpha(ClassTrainerFrame.NineSlice.TopEdge)
+        setAlpha(ClassTrainerFrame.NineSlice.TopLeftCorner)
+        setAlpha(ClassTrainerFrame.NineSlice.TopRightCorner)
+        hideTexture(ClassTrainerFrameInset.Bg)
+        hideTexture(ClassTrainerFrameBg)
+        hideTexture(ClassTrainerFrameBottomInset.Bg)
+
+    elseif arg1=='Blizzard_TimeManager' then--小时图，时间
         setAlpha(TimeManagerFrame.NineSlice.TopLeftCorner)
         setAlpha(TimeManagerFrame.NineSlice.TopEdge)
         setAlpha(TimeManagerFrame.NineSlice.TopRightCorner)
@@ -716,6 +764,19 @@ local function set_Alpha_Event(arg1)
     elseif arg1=='Blizzard_ChallengesUI' then--挑战, 钥匙插件, 界面
         setAlpha(ChallengesFrameInset.Bg)
 
+    elseif arg1=='Blizzard_WeeklyRewards' then--周奖励提示
+        setAlpha(WeeklyRewardsFrame.BackgroundTile)
+        setAlpha(WeeklyRewardsFrame.HeaderFrame.Middle)
+        setAlpha(WeeklyRewardsFrame.HeaderFrame.Left)
+        setAlpha(WeeklyRewardsFrame.HeaderFrame.Right)
+        setAlpha(WeeklyRewardsFrame.RaidFrame.Background)
+        setAlpha(WeeklyRewardsFrame.MythicFrame.Background)
+        setAlpha(WeeklyRewardsFrame.PVPFrame.Background)
+        hooksecurefunc(WeeklyRewardsFrame,'UpdateSelection', function(self2)
+            for _, frame in ipairs(self2.Activities) do
+                setAlpha(frame.Background)
+            end
+        end)
     end
 end
 --[[
@@ -760,75 +821,41 @@ end
 --###########
 --加载保存数据
 --###########
-local panel=CreateFrame("Frame")
-panel:RegisterEvent("ADDON_LOADED")
 
-panel:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')
-panel:RegisterEvent('VEHICLE_PASSENGERS_CHANGED')
-panel:RegisterEvent('UPDATE_OVERRIDE_ACTIONBAR')
+panel:RegisterEvent("ADDON_LOADED")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
+            Save.alpha= Save.alpha or 0.5
 
             --添加控制面板        
             local check=e.CPanel(e.onlyChinse and '隐藏材质' or addName, not Save.disabled)
             check:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
-                if Save.disabled then
-                    panel.check2.text:SetText('|cff808080'..(e.onlyChinse and '透明度' or CHANGE_OPACITY)..'0.5')
-                else
-                    panel.check2.text:SetText((e.onlyChinse and '透明度' or CHANGE_OPACITY)..'0.5')
-                end
             end)
 
-            panel.check2=CreateFrame("CheckButton", nil, check, "InterfaceOptionsCheckButtonTemplate")
-            panel.check2:SetPoint('LEFT', check.text, 'RIGHT')
-            panel.check2:SetChecked(not Save.disabledAlpha)
-            panel.check2:SetScript('OnMouseDown', function()
+            local check2=CreateFrame("CheckButton", nil, check, "InterfaceOptionsCheckButtonTemplate")
+            check2.text:SetText((e.onlyChinse and '透明度' or CHANGE_OPACITY)..Save.alpha)
+            check2:SetPoint('LEFT', check.text, 'RIGHT')
+            check2:SetChecked(not Save.disabledAlpha)
+            check2:SetScript('OnMouseDown', function()
                 Save.disabledAlpha= not Save.disabledAlpha and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabledAlpha), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end)
 
-            if Save.disabled then
+            if Save.disabled and Save.disabledAlpha then
                 panel:UnregisterAllEvents()
-                panel.check2.text:SetText('|cff808080'..(e.onlyChinse and '透明度' or CHANGE_OPACITY)..'0.5')
             else
                 Init_HideTexture()
                 Init_SetAlpha()
-
-                panel.check2.text:SetText((e.onlyChinse and '透明度' or CHANGE_OPACITY)..'0.5')
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
-        elseif arg1=='Blizzard_WeeklyRewards' then--周奖励提示
-            if WeeklyRewardExpirationWarningDialog and WeeklyRewardExpirationWarningDialog:IsShown() then
-                if WeeklyRewardExpirationWarningDialog.Description then
-                    print(id, addName, '|cffff00ff'..WeeklyRewardExpirationWarningDialog.Description:GetText())
-                    WeeklyRewardExpirationWarningDialog:Hide()
-                else
-                    C_Timer.After(5, function()
-                        WeeklyRewardExpirationWarningDialog:Hide()
-                    end)
-                end
-            end
-            if not Save.disabledAlpha then--隐藏
-                setAlpha(WeeklyRewardsFrame.BackgroundTile)
-                setAlpha(WeeklyRewardsFrame.HeaderFrame.Middle)
-                setAlpha(WeeklyRewardsFrame.HeaderFrame.Left)
-                setAlpha(WeeklyRewardsFrame.HeaderFrame.Right)
-                setAlpha(WeeklyRewardsFrame.RaidFrame.Background)
-                setAlpha(WeeklyRewardsFrame.MythicFrame.Background)
-                setAlpha(WeeklyRewardsFrame.PVPFrame.Background)
-                hooksecurefunc(WeeklyRewardsFrame,'UpdateSelection', function(self2)
-                    for _, frame in ipairs(self2.Activities) do
-                        setAlpha(frame.Background)
-                    end
-                end)
-            end
         else
+            set_HideTexture_Event(arg1)
             set_Alpha_Event(arg1)
         end
 
@@ -837,8 +864,35 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not WoWToolsSave then WoWToolsSave={} end
             WoWToolsSave[addName]=Save
         end
-
-    elseif event=='UNIT_ENTERED_VEHICLE' or event=='UPDATE_OVERRIDE_ACTIONBAR' then
-        set_UNIT_ENTERED_VEHICLE()
     end
 end)
+
+
+--[[#############
+--隐藏材质, 载具
+--#############
+local function set_UNIT_ENTERED_VEHICLE()
+    if OverrideActionBarEndCapL then
+        hideTexture(OverrideActionBarEndCapL)
+        hideTexture(OverrideActionBarEndCapR)
+        hideTexture(OverrideActionBarBorder)
+        hideTexture(OverrideActionBarBG)
+        hideTexture(OverrideActionBarButtonBGMid)
+        hideTexture(OverrideActionBarButtonBGR)
+        hideTexture(OverrideActionBarButtonBGL)
+    end
+    if OverrideActionBarMicroBGMid then
+        hideTexture(OverrideActionBarMicroBGMid)
+        hideTexture(OverrideActionBarMicroBGR)
+        hideTexture(OverrideActionBarMicroBGL)
+        hideTexture(OverrideActionBarLeaveFrameExitBG)
+
+        hideTexture(OverrideActionBarDivider2)
+        hideTexture(OverrideActionBarLeaveFrameDivider3)
+    end
+    if OverrideActionBarExpBar then
+        hideTexture(OverrideActionBarExpBarXpMid)
+        hideTexture(OverrideActionBarExpBarXpR)
+        hideTexture(OverrideActionBarExpBarXpL)
+    end
+end]]

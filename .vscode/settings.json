@@ -1437,7 +1437,10 @@
         "QuestFrameInset",
         "VoidStorageBorderFrame",
         "VoidStorageFrame",
-        "ChromieTimeFrame"
+        "ChromieTimeFrame",
+        "ClassTrainerFrameInset",
+        "ClassTrainerFrameBg",
+        "ClassTrainerFrameBottomInset"
     ],
     "Lua.diagnostics.disable": [
     ]
