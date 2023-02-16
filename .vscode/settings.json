@@ -1580,7 +1580,18 @@
         "LOG_OUT",
         "LootHistoryFrameScrollFrame",
         "RaidGroup6",
-        "SpellBookPageText"
+        "SpellBookPageText",
+        "ClassTalentFrameMiddle",
+        "ClassTalentFrameLeft",
+        "ClassTalentFrameRight",
+        "ChatConfigCategoryFrame",
+        "ChatConfigBackgroundFrame",
+        "ChatConfigChatSettingsLeft",
+        "ChatConfigChatSettings",
+        "FCF_GetCurrentChatFrame",
+        "GetMessageTypeColor",
+        "ChatConfig_UpdateSwatches",
+        "GetChatUnitColor"
     ],
     "Lua.diagnostics.disable": [
     ]

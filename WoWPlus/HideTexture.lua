@@ -88,7 +88,7 @@ local function Init_HideTexture()
     setAlpha(PaladinPowerBarFrameBG)--能量条
     setAlpha(PaladinPowerBarFrameBankBG)
 
-    
+
 
     hooksecurefunc(HelpTip,'Show', function(self, parent, info, relativeRegion)--隐藏所有HelpTip HelpTip.lua
         HelpTip:HideAll(parent)
@@ -552,7 +552,58 @@ local function Init_SetAlpha()
     --拾取, 历史
     hideTexture(LootHistoryFrameScrollFrame.ScrollBarBackground)
     setAlpha(LootHistoryFrame.NineSlice.Center)
-    --hideTexture(LootFrameBg)
+
+    --频道, 设置
+    hideTexture(ChatConfigCategoryFrame.NineSlice.Center)
+    hideTexture(ChatConfigBackgroundFrame.NineSlice.Center)
+    hideTexture(ChatConfigChatSettingsLeft.NineSlice.Center)
+    
+    hooksecurefunc('ChatConfig_CreateCheckboxes', function(frame)--ChatConfigFrame.lua
+        if frame.NineSlice then
+            hideTexture(frame.NineSlice.TopEdge)
+            hideTexture(frame.NineSlice.BottomEdge)
+            hideTexture(frame.NineSlice.RightEdge)
+            hideTexture(frame.NineSlice.LeftEdge)
+            hideTexture(frame.NineSlice.TopLeftCorner)
+            hideTexture(frame.NineSlice.TopRightCorner)
+            hideTexture(frame.NineSlice.BottomLeftCorner)
+            hideTexture(frame.NineSlice.BottomRightCorner)
+            hideTexture(frame.NineSlice.Center)
+        end
+        local checkBoxNameString = frame:GetName().."CheckBox";
+        for index, _ in ipairs(frame.checkBoxTable) do
+            local checkBox = _G[checkBoxNameString..index];
+            if checkBox and checkBox.NineSlice then
+                hideTexture(checkBox.NineSlice.TopEdge)
+                hideTexture(checkBox.NineSlice.RightEdge)
+                hideTexture(checkBox.NineSlice.LeftEdge)
+                hideTexture(checkBox.NineSlice.TopRightCorner)
+                hideTexture(checkBox.NineSlice.TopLeftCorner)
+                hideTexture(checkBox.NineSlice.BottomRightCorner)
+                hideTexture(checkBox.NineSlice.BottomLeftCorner)
+            end
+        end
+    end)
+    hooksecurefunc('ChatConfig_UpdateCheckboxes', function(frame)--频道颜色设置 ChatConfigFrame.lua
+        if not FCF_GetCurrentChatFrame() then
+            return;
+        end
+        local checkBoxNameString = frame:GetName().."CheckBox";
+        for index, value in ipairs(frame.checkBoxTable) do
+            if value and value.type then
+                local r, g, b = GetMessageTypeColor(value.type)
+                if r and g and b then
+                    if _G[checkBoxNameString..index.."CheckText"] then
+                        _G[checkBoxNameString..index.."CheckText"]:SetTextColor(r,g,b)
+                    end
+                    local checkBox = _G[checkBoxNameString..index]
+                    if checkBox and checkBox.NineSlice and checkBox.NineSlice.BottomEdge then
+                        checkBox.NineSlice.BottomEdge:SetVertexColor(r,g,b)
+                    end
+                end
+            end
+        end
+    end)
 end
 
 
@@ -587,14 +638,13 @@ local function set_Alpha_Event(arg1)
         setAlpha(TimeManagerAlarmMessageEditBox.Right)
 
     elseif arg1=='Blizzard_ClassTalentUI' and not Save.disabledAlpha then--天赋
-        local frame=ClassTalentFrame
-        setAlpha(frame.TalentsTab.BottomBar)--下面
-        setAlpha(frame.NineSlice.TopLeftCorner)--顶部
-        setAlpha(frame.NineSlice.TopEdge)--顶部
-        setAlpha(frame.NineSlice.TopRightCorner)--顶部
+        setAlpha(ClassTalentFrame.TalentsTab.BottomBar)--下面
+        setAlpha(ClassTalentFrame.NineSlice.TopLeftCorner)--顶部
+        setAlpha(ClassTalentFrame.NineSlice.TopEdge)--顶部
+        setAlpha(ClassTalentFrame.NineSlice.TopRightCorner)--顶部
         setAlpha(ClassTalentFrameBg)--里面
-        hideTexture(frame.TalentsTab.BlackBG)
-        hooksecurefunc(frame.TalentsTab, 'UpdateSpecBackground', function(self2)--Blizzard_ClassTalentTalentsTab.lua
+        hideTexture(ClassTalentFrame.TalentsTab.BlackBG)
+        hooksecurefunc(ClassTalentFrame.TalentsTab, 'UpdateSpecBackground', function(self2)--Blizzard_ClassTalentTalentsTab.lua
             if self2.specBackgrounds then
                 for _, background in ipairs(self2.specBackgrounds) do
                     hideTexture(background)
@@ -602,9 +652,9 @@ local function set_Alpha_Event(arg1)
             end
         end)
 
-        hideTexture(frame.SpecTab.Background)
-        hideTexture(frame.SpecTab.BlackBG)
-        hooksecurefunc(frame.SpecTab, 'UpdateSpecContents', function(self2)--Blizzard_ClassTalentSpecTab.lua
+        hideTexture(ClassTalentFrame.SpecTab.Background)
+        hideTexture(ClassTalentFrame.SpecTab.BlackBG)
+        hooksecurefunc(ClassTalentFrame.SpecTab, 'UpdateSpecContents', function(self2)--Blizzard_ClassTalentSpecTab.lua
             local numSpecs= self2.numSpecs
             if numSpecs and numSpecs>0 then
                 for i = 1, numSpecs do
@@ -615,6 +665,13 @@ local function set_Alpha_Event(arg1)
                 end
             end
         end)
+
+        setAlpha(ClassTalentFrameMiddle)
+        setAlpha(ClassTalentFrameLeft)
+        setAlpha(ClassTalentFrameRight)
+        setAlpha(ClassTalentFrame.TalentsTab.SearchBox.Middle)
+        setAlpha(ClassTalentFrame.TalentsTab.SearchBox.Left)
+        setAlpha(ClassTalentFrame.TalentsTab.SearchBox.Right)
 
     elseif arg1=='Blizzard_AchievementUI' then--成就
         setAlpha(AchievementFrame.Header.PointBorder)
@@ -699,7 +756,7 @@ local function set_Alpha_Event(arg1)
         hideTexture(CommunitiesFrame.GuildBenefitsFrame.Rewards.ScrollBar.Backplate)
         hideTexture(CommunitiesFrameGuildDetailsFrameNews.ScrollBar.Backplate)
         hideTexture(CommunitiesFrameGuildDetailsFrameNews.ScrollBar.Background)
-    
+
     elseif arg1=='Blizzard_PVPUI' then--地下城和团队副本, PVP
         hideTexture(HonorFrame.Inset.Bg)
         setAlpha(HonorFrame.BonusFrame.WorldBattlesTexture)
@@ -974,7 +1031,7 @@ local function set_Alpha_Event(arg1)
         setAlpha(WardrobeCollectionFrameWeaponDropDownMiddle)
         setAlpha(WardrobeCollectionFrameWeaponDropDownLeft)
         setAlpha(WardrobeCollectionFrameWeaponDropDownRight)
-        
+
 
     elseif arg1=='Blizzard_Calendar' then--日历
         setAlpha(CalendarFrameTopMiddleTexture)
