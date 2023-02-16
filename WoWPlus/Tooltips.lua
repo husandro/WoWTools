@@ -475,10 +475,10 @@ end
 --设置单位
 --#######
 local function setPlayerInfo(unit, guid)--设置玩家信息
-    local info=e.UnitItemLevel[guid]
+    local info= e.UnitItemLevel[guid]
     if info then
         if info.itemLevel and info.itemLevel>1 then
-            e.tips.textLeft:SetText(info.col..info.itemLevel..'|r')--设置装等
+            e.tips.textLeft:SetText(info.col and info.col..info.itemLevel..'|r' or info.itemLevel)--设置装等
         end
 
         local icon= info.specID and select(4, GetSpecializationInfoByID(info.specID))--设置天赋
