@@ -550,6 +550,7 @@ local function Init_SetAlpha()
 
     --拾取, 历史
     hideTexture(LootHistoryFrameScrollFrame.ScrollBarBackground)
+    hideTexture(LootHistoryFrame.NineSlice.Center)
 end
 
 

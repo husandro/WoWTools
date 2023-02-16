@@ -1578,7 +1578,8 @@
         "CharacterModelFrameBackgroundBotRight",
         "CharacterModelFrameBackgroundOverlay",
         "LOG_OUT",
-        "LootHistoryFrameScrollFrame"
+        "LootHistoryFrameScrollFrame",
+        "RaidGroup6"
     ],
     "Lua.diagnostics.disable": [
     ]

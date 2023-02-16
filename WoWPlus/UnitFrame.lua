@@ -760,7 +760,7 @@ local function set_RaidFrame()--设置,团队
         end
     end)
 
-    hooksecurefunc('CompactUnitFrame_UpdateHealthColor', function(frame)--颜色
+    --[[hooksecurefunc('CompactUnitFrame_UpdateHealthColor', function(frame)--颜色
         if frame.unit:find('pet') and frame.healthBar then
             local class= UnitClassBase(frame.unit)
             if class then
@@ -771,7 +771,7 @@ local function set_RaidFrame()--设置,团队
                 end
             end
         end
-    end)
+    end)]]
 
     hooksecurefunc('CompactUnitFrame_UpdateStatusText', function(frame)--去掉,生命条, %
         if not UnitExists(frame.unit) or frame.unit:find('nameplate') or not frame.statusText or not frame.statusText:IsShown() or frame.optionTable.healthText ~= "perc" then
@@ -880,7 +880,7 @@ local function set_RaidFrame()--设置,团队
         CompactRaidFrameManager:SetScale(Save.managerScale)
     end
 
-    hooksecurefunc('CompactUnitFrame_UpdateDistance', function(frame)--取得装等, 高CPU
+    --[[hooksecurefunc('CompactUnitFrame_UpdateDistance', function(frame)--取得装等, 高CPU
         if not frame.unitItemLevel and UnitExists(frame.unit) and CheckInteractDistance(frame.unit, 1) and CanInspect(frame.unit) then --frame.inDistance and frame.inDistance< DISTANCE_THRESHOLD_SQUARED then
             NotifyInspect(frame.unit)--取得装等
             local guid= UnitGUID(frame.unit)
@@ -888,7 +888,7 @@ local function set_RaidFrame()--设置,团队
                 frame.unitItemLevel= e.UnitItemLevel[guid].itemLevel
             end
         end
-    end)
+    end)--]]
 
     hooksecurefunc('CompactUnitFrame_UpdateStatusText', function(frame)
         if frame.unit:find('nameplate') then
