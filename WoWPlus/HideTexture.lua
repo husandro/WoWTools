@@ -275,7 +275,7 @@ local function Init_SetAlpha()
         return
     end
 
-
+    --角色，界面
     setAlpha(CharacterFrameBg)
     setAlpha(CharacterFrameInset.Bg)
     setAlpha(CharacterFrame.NineSlice.TopEdge)
@@ -301,31 +301,41 @@ local function Init_SetAlpha()
     hideTexture(ReputationFrame.ScrollBar.Backplate)
     hideTexture(TokenFrame.ScrollBar.Backplate)
 
+    hideTexture(CharacterModelFrameBackgroundTopLeft)--角色3D背景
+    hideTexture(CharacterModelFrameBackgroundTopRight)
+    hideTexture(CharacterModelFrameBackgroundBotLeft)
+    hideTexture(CharacterModelFrameBackgroundBotRight)
+    hideTexture(CharacterModelFrameBackgroundOverlay)
+
     --法术书
-    hideTexture(SpellBookPage1)
-    hideTexture(SpellBookPage2)
-    SpellBookFrameBg:SetAtlas('auctionhouse-background-sell-right')
-    setAlpha(SpellBookFrameBg)
-    hideTexture(SpellBookFrameInset.Bg)
     setAlpha(SpellBookFrame.NineSlice.TopLeftCorner)
     setAlpha(SpellBookFrame.NineSlice.TopEdge)
     setAlpha(SpellBookFrame.NineSlice.TopRightCorner)
+
+    hideTexture(SpellBookPage1)
+    hideTexture(SpellBookPage2)
+    --SpellBookFrameBg:SetAtlas('auctionhouse-background-sell-right')
+    setAlpha(SpellBookFrameBg)
+    setAlpha(SpellBookFrameInset.Bg)
+
     for i=1, 12 do
-        setAlpha(_G['SpellButton'..i..'Background'])
+        --setAlpha(_G['SpellButton'..i..'Background'])
     end
 
+    --世界地图
     setAlpha(WorldMapFrame.BorderFrame.NineSlice.TopLeftCorner)
     setAlpha(WorldMapFrame.BorderFrame.NineSlice.TopEdge)
     setAlpha(WorldMapFrame.BorderFrame.NineSlice.TopRightCorner)
     setAlpha(WorldMapFrameBg)
     setAlpha(QuestMapFrame.Background)
+    WorldMapFrame.NavBar:DisableDrawLayer('BACKGROUND')
 
     --地下城和团队副本
     setAlpha(PVEFrame.NineSlice.TopLeftCorner)
     setAlpha(PVEFrame.NineSlice.TopEdge)
     setAlpha(PVEFrame.NineSlice.TopRightCorner)
     setAlpha(LFGListFrame.CategorySelection.Inset.CustomBG)
-    setAlpha(LFGListFrame.CategorySelection.Inset.Bg)
+    hideTexture(LFGListFrame.CategorySelection.Inset.Bg)
     setAlpha(LFGListFrame.SearchPanel.SearchBox.Middle)
     setAlpha(LFGListFrame.SearchPanel.SearchBox.Left)
     setAlpha(LFGListFrame.SearchPanel.SearchBox.Right)
@@ -335,6 +345,12 @@ local function Init_SetAlpha()
     setAlpha(LFGListFrameMiddleMiddle)
     setAlpha(LFGListFrameMiddleLeft)
     setAlpha(LFGListFrameMiddleRight)
+    setAlpha(LFGListFrameBottomMiddle)
+    setAlpha(LFGListFrameTopMiddle)
+    setAlpha(LFGListFrameTopLeft)
+    setAlpha(LFGListFrameBottomLeft)
+    setAlpha(LFGListFrameTopRight)
+    setAlpha(LFGListFrameBottomRight)
     setAlpha(RaidFinderFrameBottomInset.Bg)
     setAlpha(RaidFinderQueueFrameBackground)
     setAlpha(RaidFinderQueueFrameSelectionDropDownMiddle)
@@ -349,6 +365,10 @@ local function Init_SetAlpha()
     --hideTexture(PVEFrameTLCorner)
 
     setAlpha(LFDQueueFrameBackground)
+    setAlpha(LFDQueueFrameTypeDropDownMiddle)
+    setAlpha(LFDQueueFrameTypeDropDownRight)
+    setAlpha(LFDQueueFrameTypeDropDownLeft)
+
     setAlpha(LFDParentFrameInset.Bg)
     setAlpha(LFDParentFrameRoleBackground)
 
@@ -644,6 +664,9 @@ local function set_Alpha_Event(arg1)
         setAlpha(CommunitiesFrame.MemberList.ColumnDisplay.Background)
         setAlpha(CommunitiesFrameCommunitiesList.Bg)
         setAlpha(CommunitiesFrameInset.Bg)
+        CommunitiesFrame.GuildBenefitsFrame.Perks:DisableDrawLayer('BACKGROUND')
+        CommunitiesFrameGuildDetailsFrameInfo:DisableDrawLayer('BACKGROUND')
+        CommunitiesFrameGuildDetailsFrameNews:DisableDrawLayer('BACKGROUND')
 
         hideTexture(CommunitiesFrameCommunitiesList.ScrollBar.Backplate)
         hideTexture(CommunitiesFrameCommunitiesList.ScrollBar.Background)
@@ -667,13 +690,22 @@ local function set_Alpha_Event(arg1)
 
         setAlpha(ClubFinderCommunityAndGuildFinderFrame.InsetFrame.Bg)
         hideTexture(ClubFinderCommunityAndGuildFinderFrame.CommunityCards.ScrollBar.Backplate)
-
+        hideTexture(CommunitiesFrame.GuildBenefitsFrame.Rewards.ScrollBar.Backplate)
+        hideTexture(CommunitiesFrameGuildDetailsFrameNews.ScrollBar.Backplate)
+        hideTexture(CommunitiesFrameGuildDetailsFrameNews.ScrollBar.Background)
+    
     elseif arg1=='Blizzard_PVPUI' then--地下城和团队副本, PVP
         hideTexture(HonorFrame.Inset.Bg)
         setAlpha(HonorFrame.BonusFrame.WorldBattlesTexture)
         hideTexture(HonorFrame.ConquestBar.Background)
         setAlpha(ConquestFrame.Inset.Bg)
         setAlpha(ConquestFrame.RatedBGTexture)
+        PVPQueueFrame.HonorInset:DisableDrawLayer('BACKGROUND')
+        setAlpha(PVPQueueFrame.HonorInset.CasualPanel.HonorLevelDisplay.Background)
+        setAlpha(HonorFrameTypeDropDownMiddle)
+        setAlpha(HonorFrameTypeDropDownLeft)
+        setAlpha(HonorFrameTypeDropDownRight)
+        hideTexture(ConquestFrame.RatedBGTexture)
         --hideTexture(LFGListFrame.SearchPanel.ScrollBar.Backplate)
 
     elseif arg1=='Blizzard_EncounterJournal' then--冒险指南
@@ -686,8 +718,13 @@ local function set_Alpha_Event(arg1)
 
         setAlpha(EncounterJournalMonthlyActivitiesFrame.Bg)
         setAlpha(EncounterJournalInstanceSelectBG)
-        setAlpha(EncounterJournalEncounterFrameInfoBG)
+        --setAlpha(EncounterJournalEncounterFrameInfoBG)
         setAlpha(EncounterJournalEncounterFrameInfoModelFrameDungeonBG)
+        EncounterJournalNavBar:DisableDrawLayer('BACKGROUND')
+
+        setAlpha(EncounterJournalInstanceSelectTierDropDownMiddle)
+        setAlpha(EncounterJournalInstanceSelectTierDropDownLeft)
+        setAlpha(EncounterJournalInstanceSelectTierDropDownRight)
 
     elseif arg1=="Blizzard_GuildBankUI" then--公会银行
         setAlpha(GuildBankFrame.BlackBG)
@@ -795,11 +832,11 @@ local function set_Alpha_Event(arg1)
         hideTexture(MountJournal.RightInset.Bg)
         setAlpha(MountJournal.BottomLeftInset.Background)
         hideTexture(MountJournal.BottomLeftInset.Bg)
-        hooksecurefunc('MountJournal_InitMountButton', function(button, elementData)
+        --[[hooksecurefunc('MountJournal_InitMountButton', function(button, elementData)
             if button then
                 setAlpha(button.background)
             end
-        end)
+        end)]]
         hideTexture(MountJournal.ScrollBar.Backplate)
         setAlpha(MountJournalSearchBox.Middle)
         setAlpha(MountJournalSearchBox.Right)
@@ -813,11 +850,11 @@ local function set_Alpha_Event(arg1)
         hideTexture(PetJournalLoadoutPet3BG)
         setAlpha(PetJournalLoadoutBorderSlotHeaderBG)
         hideTexture(PetJournalLeftInset.Bg)
-        hooksecurefunc('PetJournal_UpdatePetList', function()--Blizzard_PetCollection.lua
+        --[[hooksecurefunc('PetJournal_UpdatePetList', function()--Blizzard_PetCollection.lua
             for _, button in pairs(PetJournal.ScrollBox:GetFrames()) do
                 setAlpha(button.background)
             end
-        end)
+        end)]]
         hideTexture(PetJournal.ScrollBar.Backplate)
         setAlpha(PetJournalSearchBox.Middle)
         setAlpha(PetJournalSearchBox.Right)
@@ -837,6 +874,7 @@ local function set_Alpha_Event(arg1)
         setAlpha(ToyBox.searchBox.Middle)
         setAlpha(ToyBox.searchBox.Right)
         setAlpha(ToyBox.searchBox.Left)
+        ToyBox.progressBar:DisableDrawLayer('BACKGROUND')
 
         hideTexture(HeirloomsJournal.iconsFrame.BackgroundTile)
         hideTexture(HeirloomsJournal.iconsFrame.Bg)
@@ -858,10 +896,14 @@ local function set_Alpha_Event(arg1)
 
         hideTexture(WardrobeCollectionFrame.ItemsCollectionFrame.BackgroundTile)
         hideTexture(WardrobeCollectionFrame.ItemsCollectionFrame.Bg)
+        hideTexture(WardrobeCollectionFrame.ItemsCollectionFrame.ShadowLineTop)
+
         hideTexture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.BackgroundTile)
         hideTexture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.Bg)
         hideTexture(WardrobeCollectionFrame.SetsCollectionFrame.LeftInset.Bg)
         hideTexture(WardrobeCollectionFrame.SetsCollectionFrame.ListContainer.ScrollBar.Backplate)
+        hideTexture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.ShadowLineTop)
+
         setAlpha(WardrobeCollectionFrameSearchBox.Middle)
         setAlpha(WardrobeCollectionFrameSearchBox.Left)
         setAlpha(WardrobeCollectionFrameSearchBox.Right)
@@ -873,8 +915,9 @@ local function set_Alpha_Event(arg1)
         setAlpha(WardrobeCollectionFrameMiddleRight)
         setAlpha(WardrobeCollectionFrameTopLeft)
         setAlpha(WardrobeCollectionFrameBottomLeft)
-        setAlpha(WardrobeCollectionFrameTopRight)
+        setAlpha(WardrobeCollectionFrameBottomRight)
         setAlpha(WardrobeCollectionFrameTopLeft)
+                 --WardrobeCollectionFrameBottomRight
 
         setAlpha(WardrobeSetsCollectionVariantSetsButtonMiddleMiddle)
         setAlpha(WardrobeSetsCollectionVariantSetsButtonBottomMiddle)
@@ -885,9 +928,10 @@ local function set_Alpha_Event(arg1)
         setAlpha(WardrobeSetsCollectionVariantSetsButtonBottomLeft)
         setAlpha(WardrobeSetsCollectionVariantSetsButtonTopRight)
         setAlpha(WardrobeSetsCollectionVariantSetsButtonBottomRight)
-        hooksecurefunc(WardrobeSetsScrollFrameButtonMixin, 'Init', function(button, displayData)--外观列表
+        hideTexture(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.ModelFadeTexture)
+        --[[hooksecurefunc(WardrobeSetsScrollFrameButtonMixin, 'Init', function(button, displayData)--外观列表
             setAlpha(button.Background)
-        end)
+        end)]]
 
         --试衣间
         setAlpha(WardrobeFrame.NineSlice.TopLeftCorner)
@@ -904,6 +948,27 @@ local function set_Alpha_Event(arg1)
         setAlpha(WardrobeTransmogFrame.MoneyMiddle)
         setAlpha(WardrobeTransmogFrame.MoneyLeft)
         setAlpha(WardrobeTransmogFrame.MoneyRight)
+        for v=1,6 do
+            for h= 1, 3 do
+                local button= WardrobeCollectionFrame.ItemsCollectionFrame['ModelR'..h..'C'..v]
+                if button then
+                    button:DisableDrawLayer('BACKGROUND')
+                end
+            end
+        end
+        for v=1,4 do
+            for h= 1, 2 do
+                local button= WardrobeCollectionFrame.SetsTransmogFrame['ModelR'..h..'C'..v]
+                if button then
+                    button:DisableDrawLayer('BACKGROUND')
+                end
+            end
+        end
+        WardrobeCollectionFrame.progressBar:DisableDrawLayer('BACKGROUND')
+        setAlpha(WardrobeCollectionFrameWeaponDropDownMiddle)
+        setAlpha(WardrobeCollectionFrameWeaponDropDownLeft)
+        setAlpha(WardrobeCollectionFrameWeaponDropDownRight)
+        
 
     elseif arg1=='Blizzard_Calendar' then--日历
         setAlpha(CalendarFrameTopMiddleTexture)
@@ -1048,16 +1113,35 @@ end
     elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级,界面
         local frame= ItemUpgradeFrame
 
-    elseif arg1=='Blizzard_InspectUI' then--玩家, 观察角色, 界面
-        local frame= InspectFrame
+   
 ]]
+
+
+local function set_PopupDialogs()
+    StaticPopupDialogs[id..addName..'MoveZoom']={
+        text =id..' '..addName..'\n\n'..(e.onlyChinse and '清除全部' or REMOVE_WORLD_MARKERS)..' ('..(e.onlyChinse and '保存' or SAVE)..')'..'\n\n|cnRED_FONT_COLOR:'..(e.onlyChinse and '重新加载UI' or RELOADUI),
+        button1 = '|cnRED_FONT_COLOR:'..(e.onlyChinse and '移动' or NPE_MOVE),
+        button2 = e.onlyChinse and '取消' or CANCEL,
+        button3 = '|cnRED_FONT_COLOR:'..(e.onlyChinse and '缩放' or UI_SCALE),
+        whileDead=true,
+        timeout=60,
+        hideOnEscape = true,
+        OnAccept=function(self,data)
+            
+            ReloadUI()
+        end,
+        OnAlt= function()
+
+            ReloadUI()
+        end,
+    }
+    StaticPopup_Show(id..addName..'MoveZoom')
+end
 
 --###########
 --加载保存数据
 --###########
-
 panel:RegisterEvent("ADDON_LOADED")
-
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
@@ -1071,14 +1155,19 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end)
 
-            local check2=CreateFrame("CheckButton", nil, check, "InterfaceOptionsCheckButtonTemplate")
-            check2.text:SetText((e.onlyChinse and '透明度' or CHANGE_OPACITY)..Save.alpha)
-            check2:SetPoint('LEFT', check.text, 'RIGHT')
-            check2:SetChecked(not Save.disabledAlpha)
-            check2:SetScript('OnMouseDown', function()
+            panel.check2=CreateFrame("CheckButton", nil, check, "InterfaceOptionsCheckButtonTemplate")
+            panel.check2.text:SetText((e.onlyChinse and '透明度' or CHANGE_OPACITY)..Save.alpha)
+            panel.check2:SetPoint('LEFT', check.text, 'RIGHT')
+            panel.check2:SetChecked(not Save.disabledAlpha)
+            panel.check2:SetScript('OnMouseDown', function()
                 Save.disabledAlpha= not Save.disabledAlpha and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabledAlpha), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end)
+
+            local button= e.Cbtn(check, true, nil, nil, nil, nil, {20,20})
+            button:SetPoint('LEFT', panel.check2.text, 'RIGHT',2,0)
+            button:SetNormalAtlas('mechagon-projects')
+            button:SetScript('OnClick', set_PopupDialogs)
 
             if Save.disabled and Save.disabledAlpha then
                 panel:UnregisterAllEvents()

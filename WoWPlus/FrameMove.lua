@@ -541,7 +541,12 @@ local function set_PopupDialogs()
     }
     StaticPopup_Show(id..addName..'MoveZoom')
 end
+
+
+
+--###########
 --加载保存数据
+--###########
 panel:RegisterEvent("ADDON_LOADED")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
