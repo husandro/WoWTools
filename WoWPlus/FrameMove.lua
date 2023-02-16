@@ -519,6 +519,19 @@ local function Init_Move()
             end)
         end)
     end
+
+    --[[
+    hooksecurefunc(LootFrame,'Open', function(self2)--物品拾取LootFrame.lua
+        if not GetCVarBool("autoLootDefault") and not GetCVarBool("lootUnderMouse") then
+            local p=Save.point.LootFrame and Save.point.LootFrame[1]
+            if p and p[1] and p[3] and p[4] and p[5] then
+                self2:ClearAllPoints()
+                self2:SetPoint(p[1], nil, p[3], p[4], p[5])
+            end
+        end
+    end)]]
+    Move(LootFrame.TitleContainer, {frame=LootFrame, save=true})--物品拾取
+    Move(LootFrame, {save=true})--物品拾取
 end
 
 local function set_PopupDialogs()

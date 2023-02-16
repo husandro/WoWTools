@@ -936,6 +936,8 @@ local function Init()
     end)
     hooksecurefunc('LootHistoryFrame_UpdateItemFrame', function(self, itemFrame)
         itemFrame:SetWidth(315)
+        itemFrame.Divider:SetWidth(315)
+        itemFrame.ActiveHighlight:SetWidth(315)
         if itemFrame.WinnerName and itemFrame:IsShown() then--修改, 自已名称
            local text= itemFrame.WinnerName:GetText()
            if text and text==e.Player.name then
@@ -968,7 +970,6 @@ local function Init()
                     text= isSelf and text2
                 end
                 if text and not itemFrame.upOrMogText then
-                    --e.Cstr=function(self, size, fontType, ChangeFont, color, layer, justifyH)
                     itemFrame.upOrMogText= e.Cstr(itemFrame, nil, nil, nil, {0,1,0})
                     itemFrame.upOrMogText:SetPoint('BOTTOMRIGHT', itemFrame.Icon, 'BOTTOMRIGHT')
                 end

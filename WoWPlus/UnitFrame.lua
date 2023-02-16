@@ -888,7 +888,7 @@ local function set_RaidFrame()--设置,团队
                 frame.unitItemLevel= e.UnitItemLevel[guid].itemLevel
             end
         end
-    end)--]]
+    end)]]
 
     hooksecurefunc('CompactUnitFrame_UpdateStatusText', function(frame)
         if frame.unit:find('nameplate') then
