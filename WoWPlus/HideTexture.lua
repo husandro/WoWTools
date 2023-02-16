@@ -557,7 +557,7 @@ local function Init_SetAlpha()
     hideTexture(ChatConfigCategoryFrame.NineSlice.Center)
     hideTexture(ChatConfigBackgroundFrame.NineSlice.Center)
     hideTexture(ChatConfigChatSettingsLeft.NineSlice.Center)
-    
+
     hooksecurefunc('ChatConfig_CreateCheckboxes', function(frame)--ChatConfigFrame.lua
         if frame.NineSlice then
             hideTexture(frame.NineSlice.TopEdge)
@@ -586,7 +586,7 @@ local function Init_SetAlpha()
     end)
     hooksecurefunc('ChatConfig_UpdateCheckboxes', function(frame)--频道颜色设置 ChatConfigFrame.lua
         if not FCF_GetCurrentChatFrame() then
-            return;
+            return
         end
         local checkBoxNameString = frame:GetName().."CheckBox";
         for index, value in ipairs(frame.checkBoxTable) do
