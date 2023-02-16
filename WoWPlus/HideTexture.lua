@@ -311,6 +311,7 @@ local function Init_SetAlpha()
     setAlpha(SpellBookFrame.NineSlice.TopLeftCorner)
     setAlpha(SpellBookFrame.NineSlice.TopEdge)
     setAlpha(SpellBookFrame.NineSlice.TopRightCorner)
+    SpellBookPageText:SetTextColor(1, 0.82, 0)
 
     hideTexture(SpellBookPage1)
     hideTexture(SpellBookPage2)

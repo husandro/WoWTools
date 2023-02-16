@@ -1579,7 +1579,8 @@
         "CharacterModelFrameBackgroundOverlay",
         "LOG_OUT",
         "LootHistoryFrameScrollFrame",
-        "RaidGroup6"
+        "RaidGroup6",
+        "SpellBookPageText"
     ],
     "Lua.diagnostics.disable": [
     ]
