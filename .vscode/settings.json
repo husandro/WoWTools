@@ -1535,7 +1535,8 @@
         "BankFrameMoneyFrameBorderLeft",
         "ContainerFrameCombinedBagsMixin",
         "AchievementFrameWaterMark",
-        "AchievementFrameGuildEmblemRight"
+        "AchievementFrameGuildEmblemRight",
+        "ClubFinderCommunityAndGuildFinderFrame"
     ],
     "Lua.diagnostics.disable": [
     ]

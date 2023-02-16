@@ -281,7 +281,7 @@ local function Init_SetAlpha()
     setAlpha(CharacterFrame.NineSlice.TopEdge)
     setAlpha(CharacterFrame.NineSlice.TopRightCorner)
     setAlpha(CharacterFrame.NineSlice.TopLeftCorner)
-    setAlpha(CharacterFrameInsetRight.Bg)
+    hideTexture(CharacterFrameInsetRight.Bg)
     setAlpha(CharacterStatsPane.ClassBackground)
     setAlpha(CharacterStatsPane.EnhancementsCategory.Background)
     setAlpha(CharacterStatsPane.AttributesCategory.Background)
@@ -632,19 +632,18 @@ local function set_Alpha_Event(arg1)
 
 
     elseif arg1=='Blizzard_Communities' then--公会和社区
-        local frame= CommunitiesFrame
-        setAlpha(frame.NineSlice.TopEdge)
-        setAlpha(frame.NineSlice.TopLeftCorner)
-        setAlpha(frame.NineSlice.TopRightCorner)
+        setAlpha(CommunitiesFrame.NineSlice.TopEdge)
+        setAlpha(CommunitiesFrame.NineSlice.TopLeftCorner)
+        setAlpha(CommunitiesFrame.NineSlice.TopRightCorner)
 
-        setAlpha(frame.NineSlice.BottomEdge)
-        setAlpha(frame.NineSlice.BottomLeftCorner)
-        setAlpha(frame.NineSlice.BottomRightCorner)
+        setAlpha(CommunitiesFrame.NineSlice.BottomEdge)
+        setAlpha(CommunitiesFrame.NineSlice.BottomLeftCorner)
+        setAlpha(CommunitiesFrame.NineSlice.BottomRightCorner)
 
         setAlpha(CommunitiesFrameBg)
-        setAlpha(frame.MemberList.ColumnDisplay.Background)
-        hideTexture(CommunitiesFrameCommunitiesList.Bg)
-        hideTexture(CommunitiesFrameInset.Bg)
+        setAlpha(CommunitiesFrame.MemberList.ColumnDisplay.Background)
+        setAlpha(CommunitiesFrameCommunitiesList.Bg)
+        setAlpha(CommunitiesFrameInset.Bg)
 
         hideTexture(CommunitiesFrameCommunitiesList.ScrollBar.Backplate)
         hideTexture(CommunitiesFrameCommunitiesList.ScrollBar.Background)
@@ -665,6 +664,9 @@ local function set_Alpha_Event(arg1)
                 end
             end)
         end)
+
+        setAlpha(ClubFinderCommunityAndGuildFinderFrame.InsetFrame.Bg)
+        hideTexture(ClubFinderCommunityAndGuildFinderFrame.CommunityCards.ScrollBar.Backplate)
 
     elseif arg1=='Blizzard_PVPUI' then--地下城和团队副本, PVP
         hideTexture(HonorFrame.Inset.Bg)
