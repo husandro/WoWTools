@@ -1181,6 +1181,13 @@ end
 
 
 local function set_PopupDialogs()
+    local function get_TextToNumber(self)
+        local num= self:GetText()
+        num= tonumber(num)
+        if num and num<=1 and num>=0 then
+            return num
+        end
+    end
     StaticPopupDialogs[id..addName..'Aplha']={--修该, 透明度
         text =id..' '..addName..'\n\n'..(e.onlyChinse and '透明度' or CHANGE_OPACITY).. '  |cnGREEN_FONT_COLOR:0 - 1|r\n\n|cnRED_FONT_COLOR:'..(e.onlyChinse and '重新加载UI' or RELOADUI),
         whileDead=1,
@@ -1190,17 +1197,21 @@ local function set_PopupDialogs()
         button1= e.onlyChinse and '修改' or SLASH_CHAT_MODERATE2:gsub('/',''),
         button2= e.onlyChinse and '取消' or CANCEL,
         OnShow = function(self, data)
-            --self.editBox:SetNumeric(true)
             self.editBox:SetText(Save.alpha or 0.5)
         end,
         OnAccept = function(self, data)
-            Save.alpha= self.editBox:GetNumber()
-            ReloadUI()
+            local num= get_TextToNumber(self.editBox)
+            if num then
+                Save.alpha= num
+                ReloadUI()
+            end
         end,
         EditBoxOnTextChanged=function(self, data)
-            local num= self:GetNumber()
-            print(num)
-            self:GetParent().button1:SetEnabled(num and num>=0 and num<=1)
+            local num= get_TextToNumber(self)
+            if num then
+                print(num)
+            end
+            self:GetParent().button1:SetEnabled(num and true or false)
         end,
         EditBoxOnEscapePressed = function(self)
             self:GetParent():Hide()
