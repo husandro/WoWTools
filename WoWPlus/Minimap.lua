@@ -240,7 +240,7 @@ local function set_vigentteButton_Text()
     for _, uiMapID in pairs(uiMapIDsTab) do
         local areaPoiIDs = C_AreaPoiInfo.GetAreaPOIForMap(uiMapID) or {}
         for _, areaPoiID in pairs(areaPoiIDs) do
-            if areaPoiID and areaPoiID<7239 and areaPoiID<7260 then--不显示, areaPoiID
+            if areaPoiID and (areaPoiID<7239 or areaPoiID>7260) then--不显示, areaPoiID
                 local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID)
                 if poiInfo and poiInfo.name and poiInfo.atlasName and C_AreaPoiInfo.IsAreaPOITimed(areaPoiID) then
                     local secondsLeft = C_AreaPoiInfo.GetAreaPOISecondsLeft(areaPoiID)
