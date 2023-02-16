@@ -1,6 +1,9 @@
 local id, e = ...
 local addName= UNITFRAME_LABEL
-local Save={raidFrameScale=0.8, notRaidFrame=not e.Player.husandro }--{SetShadowOffset= 1}
+local Save={
+    raidFrameScale=0.8,
+    notRaidFrame=not e.Player.husandro
+}
 local panel=CreateFrame("Frame")
 local R,G,B= GetClassColor(UnitClassBase('player'))
 
@@ -604,7 +607,71 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
             end
         end)
     end
+end
 
+
+--###############
+--小队, 使用团框架
+--###############
+local function set_CompactPartyFrame()--CompactPartyFrame.lua
+    if not CompactPartyFrame or CompactPartyFrame.moveFrame or not CompactPartyFrame:IsShown() then
+        return
+    end
+    CompactPartyFrame.title:SetText('')
+    CompactPartyFrame.title:Hide()
+    --新建, 移动, 按钮
+    CompactPartyFrame.moveFrame= e.Cbtn(CompactPartyFrame, nil, true, nil, nil, nil, {20,20})
+    --CompactPartyFrame.moveFrame:SetFrameStrata('MEDIUM')
+    CompactPartyFrame.moveFrame:SetAlpha(0.3)
+    CompactPartyFrame.moveFrame:SetPoint('TOP', CompactPartyFrame, 'TOP',0, 10)
+    CompactPartyFrame.moveFrame:SetClampedToScreen(true)
+    CompactPartyFrame.moveFrame:SetMovable(true)
+    CompactPartyFrame.moveFrame:RegisterForDrag('RightButton')
+    CompactPartyFrame.moveFrame:SetScript("OnDragStart", function(self,d)
+        if d=='RightButton' and not IsModifierKeyDown() then
+            CompactPartyFrame:StartMoving()
+        end
+    end)
+    CompactPartyFrame.moveFrame:SetScript("OnDragStop", function(self)
+        CompactPartyFrame:StopMovingOrSizing()
+    end)
+    CompactPartyFrame.moveFrame:SetScript("OnMouseDown", function(self, d)
+        if d=='RightButton' and not IsModifierKeyDown() then
+            SetCursor('UI_MOVE_CURSOR')
+        elseif d=="LeftButton" then
+            print(id, addName, (e.onlyChinse and '移动' or NPE_MOVE)..e.Icon.right, 'Alt+'..e.Icon.mid..(e.onlyChinse and '缩放' or UI_SCALE), Save.compactPartyFrameScale or 1)
+        end
+    end)
+    CompactPartyFrame.moveFrame:SetScript("OnLeave", function(self, d)
+        ResetCursor()
+    end)
+    CompactPartyFrame.moveFrame:SetScript('OnMouseWheel', function(self, d)--缩放
+        if IsAltKeyDown() then
+            if UnitAffectingCombat('player') then
+                print(id, addName, e.onlyChinse and '缩放' or UI_SCALE, '|cnRED_FONT_COLOR:'..(e.onlyChinse and '战斗中' or COMBAT))
+            else
+                local sacle= Save.compactPartyFrameScale or 1
+                if d==1 then
+                    sacle=sacle+0.05
+                elseif d==-1 then
+                    sacle=sacle-0.05
+                end
+                if sacle>1.5 then
+                    sacle=1.5
+                elseif sacle<0.5 then
+                    sacle=0.5
+                end
+                print(id, addName, (e.onlyChinse and '缩放' or UI_SCALE), sacle)
+                CompactPartyFrame:SetScale(sacle)
+                Save.compactPartyFrameScale=sacle
+            end
+        end
+    end)
+    if Save.compactPartyFrameScale and Save.compactPartyFrameScale~=1 then
+        CompactPartyFrame:SetScale(Save.compactPartyFrameScale)
+    end
+    CompactPartyFrame:SetClampedToScreen(true)
+    CompactPartyFrame:SetMovable(true)
 end
 
 
@@ -865,72 +932,6 @@ local function set_RaidFrame()--设置,团队
     end)
 end
 
---###############
---小队, 使用团框架
---###############
-
-local function set_CompactPartyFrame()--CompactPartyFrame.lua
-    if not CompactPartyFrame or CompactPartyFrame.moveFrame or not CompactPartyFrame:IsShown() then
-        return
-    end
-    CompactPartyFrame.title:SetText('')
-    CompactPartyFrame.title:Hide()
-    --新建, 移动, 按钮
-    CompactPartyFrame.moveFrame= e.Cbtn(CompactPartyFrame, nil, true, nil, nil, nil, {20,20})
-    --CompactPartyFrame.moveFrame:SetFrameStrata('MEDIUM')
-    CompactPartyFrame.moveFrame:SetAlpha(0.3)
-    CompactPartyFrame.moveFrame:SetPoint('TOP', CompactPartyFrame, 'TOP',0, 10)
-    CompactPartyFrame.moveFrame:SetClampedToScreen(true)
-    CompactPartyFrame.moveFrame:SetMovable(true)
-    CompactPartyFrame.moveFrame:RegisterForDrag('RightButton')
-    CompactPartyFrame.moveFrame:SetScript("OnDragStart", function(self,d)
-        if d=='RightButton' and not IsModifierKeyDown() then
-            CompactPartyFrame:StartMoving()
-        end
-    end)
-    CompactPartyFrame.moveFrame:SetScript("OnDragStop", function(self)
-        CompactPartyFrame:StopMovingOrSizing()
-    end)
-    CompactPartyFrame.moveFrame:SetScript("OnMouseDown", function(self, d)
-        if d=='RightButton' and not IsModifierKeyDown() then
-            SetCursor('UI_MOVE_CURSOR')
-        elseif d=="LeftButton" then
-            print(id, addName, (e.onlyChinse and '移动' or NPE_MOVE)..e.Icon.right, 'Alt+'..e.Icon.mid..(e.onlyChinse and '缩放' or UI_SCALE), Save.compactPartyFrameScale or 1)
-        end
-    end)
-    CompactPartyFrame.moveFrame:SetScript("OnLeave", function(self, d)
-        ResetCursor()
-    end)
-    CompactPartyFrame.moveFrame:SetScript('OnMouseWheel', function(self, d)--缩放
-        if IsAltKeyDown() then
-            if UnitAffectingCombat('player') then
-                print(id, addName, e.onlyChinse and '缩放' or UI_SCALE, '|cnRED_FONT_COLOR:'..(e.onlyChinse and '战斗中' or COMBAT))
-            else
-                local sacle= Save.compactPartyFrameScale or 1
-                if d==1 then
-                    sacle=sacle+0.05
-                elseif d==-1 then
-                    sacle=sacle-0.05
-                end
-                if sacle>1.5 then
-                    sacle=1.5
-                elseif sacle<0.5 then
-                    sacle=0.5
-                end
-                print(id, addName, (e.onlyChinse and '缩放' or UI_SCALE), sacle)
-                CompactPartyFrame:SetScale(sacle)
-                Save.compactPartyFrameScale=sacle
-            end
-        end
-    end)
-    if Save.compactPartyFrameScale and Save.compactPartyFrameScale~=1 then
-        CompactPartyFrame:SetScale(Save.compactPartyFrameScale)
-    end
-    CompactPartyFrame:SetClampedToScreen(true)
-    CompactPartyFrame:SetMovable(true)
-end
-
-
 --######
 --初始化
 --######
@@ -1038,15 +1039,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end)
 
             local sel2=CreateFrame("CheckButton", nil, sel, "InterfaceOptionsCheckButtonTemplate")
-            sel2.text:SetText(e.onlyChinse and '团队框体' or HUD_EDIT_MODE_RAID_FRAMES_LABEL)
-            --sel2.text:SetTextColor(1,0,0)
+            sel2.text:SetText('|cnRED_FONT_COLOR:'..(e.onlyChinse and '团队框体' or HUD_EDIT_MODE_RAID_FRAMES_LABEL))
             sel2:SetPoint('LEFT', sel.text, 'RIGHT')
             sel2:SetChecked(not Save.notRaidFrame)
             sel2:SetScript('OnEnter', function(self2)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine(e.onlyChinse and '如果出现错误' or ENABLE_ERROR_SPEECH, e.onlyChinse and '请取消' or CANCEL)
-                --e.tips:AddDoubleLine(e.onlyChinse and '战斗中, 增加队员' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..' ('..ADD..') '..PLAYERS_IN_GROUP, e.onlyChinse and '错误' or ENABLE_ERROR_SPEECH)
+                e.tips:AddDoubleLine(e.onlyChinse and '如果出现: 登出游戏' or (ENABLE_ERROR_SPEECH..': '..LOG_OUT..GAME), e.onlyChinse and '请取消' or CANCEL,1,0,0,0,1,0)
                 e.tips:Show()
             end)
             sel2:SetScript('OnLeave', function() e.tips:Hide() end)
