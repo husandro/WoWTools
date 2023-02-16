@@ -88,7 +88,7 @@ local function Init_HideTexture()
     setAlpha(PaladinPowerBarFrameBG)--能量条
     setAlpha(PaladinPowerBarFrameBankBG)
 
-    LootFrameBg:SetShown(false)--拾取
+    
 
     hooksecurefunc(HelpTip,'Show', function(self, parent, info, relativeRegion)--隐藏所有HelpTip HelpTip.lua
         HelpTip:HideAll(parent)
@@ -550,7 +550,8 @@ local function Init_SetAlpha()
 
     --拾取, 历史
     hideTexture(LootHistoryFrameScrollFrame.ScrollBarBackground)
-    hideTexture(LootHistoryFrame.NineSlice.Center)
+    setAlpha(LootHistoryFrame.NineSlice.Center)
+    --hideTexture(LootFrameBg)
 end
 
 

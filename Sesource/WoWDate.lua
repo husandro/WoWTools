@@ -31,7 +31,6 @@ local function getPlayerInfo(guid)--取得玩家信息
                 hex= '|c'..hex
             end
         end
-
         if not itemLevel and  e.UnitItemLevel[guid] and e.UnitItemLevel[guid].level then
             itemLevel=  e.UnitItemLevel[guid].level
         end
