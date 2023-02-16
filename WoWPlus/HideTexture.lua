@@ -1118,24 +1118,32 @@ end
 
 
 local function set_PopupDialogs()
-    StaticPopupDialogs[id..addName..'MoveZoom']={
-        text =id..' '..addName..'\n\n'..(e.onlyChinse and '清除全部' or REMOVE_WORLD_MARKERS)..' ('..(e.onlyChinse and '保存' or SAVE)..')'..'\n\n|cnRED_FONT_COLOR:'..(e.onlyChinse and '重新加载UI' or RELOADUI),
-        button1 = '|cnRED_FONT_COLOR:'..(e.onlyChinse and '移动' or NPE_MOVE),
-        button2 = e.onlyChinse and '取消' or CANCEL,
-        button3 = '|cnRED_FONT_COLOR:'..(e.onlyChinse and '缩放' or UI_SCALE),
-        whileDead=true,
-        timeout=60,
-        hideOnEscape = true,
-        OnAccept=function(self,data)
-            
+    StaticPopupDialogs[id..addName..'Aplha']={--修该, 透明度
+        text =id..' '..addName..'\n\n'..(e.onlyChinse and '透明度' or CHANGE_OPACITY).. '  |cnGREEN_FONT_COLOR:0 - 1|r\n\n|cnRED_FONT_COLOR:'..(e.onlyChinse and '重新加载UI' or RELOADUI),
+        whileDead=1,
+        hideOnEscape=1,
+        exclusive=1,
+        hasEditBox=1,
+        button1= e.onlyChinse and '修改' or SLASH_CHAT_MODERATE2:gsub('/',''),
+        button2= e.onlyChinse and '取消' or CANCEL,
+        OnShow = function(self, data)
+            --self.editBox:SetNumeric(true)
+            self.editBox:SetText(Save.alpha or 0.5)
+        end,
+        OnAccept = function(self, data)
+            Save.alpha= self.editBox:GetNumber()
             ReloadUI()
         end,
-        OnAlt= function()
-
-            ReloadUI()
+        EditBoxOnTextChanged=function(self, data)
+            local num= self:GetNumber()
+            print(num)
+            self:GetParent().button1:SetEnabled(num and num>=0 and num<=1)
+        end,
+        EditBoxOnEscapePressed = function(self)
+            self:GetParent():Hide()
         end,
     }
-    StaticPopup_Show(id..addName..'MoveZoom')
+    StaticPopup_Show(id..addName..'Aplha')
 end
 
 --###########
