@@ -547,6 +547,9 @@ local function Init_SetAlpha()
 
     --场景
     setAlpha(ScenarioStageBlock.NormalBG)
+
+    --拾取, 历史
+    hideTexture(LootHistoryFrameScrollFrame.ScrollBarBackground)
 end
 
 

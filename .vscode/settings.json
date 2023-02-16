@@ -1577,7 +1577,8 @@
         "CharacterModelFrameBackgroundBotLeft",
         "CharacterModelFrameBackgroundBotRight",
         "CharacterModelFrameBackgroundOverlay",
-        "LOG_OUT"
+        "LOG_OUT",
+        "LootHistoryFrameScrollFrame"
     ],
     "Lua.diagnostics.disable": [
     ]
