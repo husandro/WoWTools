@@ -1533,7 +1533,9 @@
         "BankFrameMoneyFrameBorderMiddle",
         "BankFrameMoneyFrameBorderRight",
         "BankFrameMoneyFrameBorderLeft",
-        "ContainerFrameCombinedBagsMixin"
+        "ContainerFrameCombinedBagsMixin",
+        "AchievementFrameWaterMark",
+        "AchievementFrameGuildEmblemRight"
     ],
     "Lua.diagnostics.disable": [
     ]

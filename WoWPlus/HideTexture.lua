@@ -19,8 +19,6 @@ local function setAlpha(self)
     end
 end
 
-
-
 --###############
 --初始化, 隐藏材质
 --###############
@@ -598,6 +596,9 @@ local function set_Alpha_Event(arg1)
         hideTexture(AchievementFrameCategoriesBG)
         hideTexture(AchievementFrameAchievements.Background)
 
+        hideTexture(AchievementFrameWaterMark)
+        hideTexture(AchievementFrameGuildEmblemRight)
+
         setAlpha(AchievementFrame.BottomRightCorner)
         setAlpha(AchievementFrame.BottomLeftCorner)
         setAlpha(AchievementFrame.TopLeftCorner)
@@ -628,6 +629,7 @@ local function set_Alpha_Event(arg1)
         setAlpha(AchievementFrameWoodBorderBottomRight)
         setAlpha(AchievementFrameWoodBorderTopLeft)
         setAlpha(AchievementFrameWoodBorderTopRight)
+
 
     elseif arg1=='Blizzard_Communities' then--公会和社区
         local frame= CommunitiesFrame
