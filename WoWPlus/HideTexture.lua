@@ -480,11 +480,6 @@ local function Init_SetAlpha()
             end
         end
     end)
-    hooksecurefunc(ContainerFrameCombinedBagsMixin, 'UpdateName', function (self)
-        print(id,addName,'a')
-    end)
-   
-
 
     --好友列表
     setAlpha(FriendsFrame.NineSlice.TopEdge)
@@ -921,6 +916,17 @@ local function set_Alpha_Event(arg1)
         setAlpha(CalendarFrameBottomRightTexture)
         setAlpha(CalendarFrameBottomMiddleTexture)
         setAlpha(CalendarFrameBottomLeftTexture)
+        for i= 1, 42 do
+            local frame= _G['CalendarDayButton'..i]
+            if frame then
+                frame:DisableDrawLayer('BACKGROUND')
+            end
+        end
+        --[[local texture= CalendarFrame:CreateTexture(nil,'BORDER',nil, 1)
+        texture:SetAtlas('auctionhouse-background-buy-noncommodities-market')
+        texture:SetPoint('TOPLEFT',  _G['CalendarDayButton1'])
+        texture:SetPoint('BOTTOMRIGHT',  _G['CalendarDayButton42'])
+        --setAlpha(texture)]]
 
     elseif arg1=='Blizzard_FlightMap' then--飞行地图
         setAlpha(FlightMapFrame.BorderFrame.NineSlice.TopLeftCorner)
