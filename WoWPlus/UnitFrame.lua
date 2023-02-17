@@ -981,7 +981,7 @@ local function Init()
                 unit= PlayerFrame.unit
             end
             if unit then
-                speed=unit and GetUnitSpeed(unit)--PlayerFrame.unit
+                speed= GetUnitSpeed(unit)--PlayerFrame.unit
                 if speed and not self.speedText then
                     self.speedText= e.Cstr(self, 12)
                     self.speedText:SetPoint('TOP', self, 'TOP')
