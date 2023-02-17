@@ -1591,7 +1591,10 @@
         "FCF_GetCurrentChatFrame",
         "GetMessageTypeColor",
         "ChatConfig_UpdateSwatches",
-        "GetChatUnitColor"
+        "GetChatUnitColor",
+        "ClassTalentCurrencyDisplayMixin",
+        "TalentButtonBaseMixin",
+        "ClassTalentButtonSpendMixin"
     ],
     "Lua.diagnostics.disable": [
     ]

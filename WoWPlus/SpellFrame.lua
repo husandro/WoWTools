@@ -1,6 +1,29 @@
 local id, e = ...
 local addName= SPELLS..'Frame'
 local Save={}
+local panel=CreateFrame("Frame")
+
+
+--#########
+--天赋, 点数
+--Blizzard_SharedTalentButtonTemplates.lua
+--Blizzard_ClassTalentButtonTemplates.lua
+local function set_UpdateSpendText(self)
+    local info= self.nodeInfo
+    local text
+    if info and info.currentRank and info.maxRanks and info.currentRank>0 and info.maxRanks~= info.currentRank then
+        text= '/'..info.maxRanks
+    end
+    if text and not self.maxText then
+        self.maxText= e.Cstr(self, nil, self.SpendText)
+        self.maxText:SetPoint('LEFT', self.SpendText, 'RIGHT')
+        self.maxText:SetTextColor(1, 0, 1)
+    end
+    if self.maxText then
+        self.maxText:SetText(text or '')
+    end
+end
+
 
 --######
 --初始化
@@ -45,7 +68,10 @@ local function Init()
             end
             if self.Text then self.TextSetText('') end
     end)
-                    
+
+    --#############
+    --法术按键, 颜色
+    --#############
     hooksecurefunc('ActionButton_UpdateRangeIndicator', function(self, checksRange, inRange)--ActionButton.lua
         if checksRange then
             if not inRange then
@@ -64,14 +90,15 @@ local function Init()
     end)
 end
 
+
 --###########
 --加载保存数据
 --###########
-local panel=CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1==id then
+    if event == "ADDON_LOADED" then
+        if arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
             --添加控制面板        
             local sel=e.CPanel(e.onlyChinse and '法术Frame' or addName, not Save.disabled)
@@ -92,9 +119,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 panel:UnregisterAllEvents()
             else
                 Init()
-                panel:UnregisterEvent('ADDON_LOADED')
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
+
+        elseif arg1=='Blizzard_ClassTalentUI' then--天赋
+            hooksecurefunc(ClassTalentButtonSpendMixin,'UpdateSpendText', set_UpdateSpendText)--天赋, 点数
+        end
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then

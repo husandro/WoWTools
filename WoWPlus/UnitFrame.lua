@@ -974,10 +974,18 @@ local function Init()
     local leaveElapsed=0
     local function get_UnitSpeed(self, elapsed)
         if leaveElapsed>0.3 then
-            local speed= UnitExists(PlayerFrame.unit) and GetUnitSpeed(PlayerFrame.unit)
-            if not self.speedText and speed then
-                self.speedText= e.Cstr(self, 12)
-                self.speedText:SetPoint('TOP', self, 'TOP')
+            local unit, speed
+            if UnitExists('vehicle') then
+                unit= 'vehicle'
+            elseif UnitExists(PlayerFrame.unit) then
+                unit= PlayerFrame.unit
+            end
+            if unit then
+                speed=unit and GetUnitSpeed(unit)--PlayerFrame.unit
+                if speed and not self.speedText then
+                    self.speedText= e.Cstr(self, 12)
+                    self.speedText:SetPoint('TOP', self, 'TOP')
+                end
             end
             if self.speedText then
                 if not speed or speed==0 then
