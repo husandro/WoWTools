@@ -1289,13 +1289,15 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 local text= self2.id
                 if text and not frame.textID  then
                     frame.textID= e.Cstr(frame)
-                    frame.textID:SetPoint('TOP', frame.texture, 'BOTTOM',0,2)
+                    frame.textID:SetPoint('BOTTOM', frame.texture, 'BOTTOM')
                 end
                 if frame.textID then
                     if text then
                         local flags= select(9, GetAchievementInfo(self2.id))
                         if flags==131072 then
                             text= e.Icon.wow2..'|cnGREEN_FONT_COLOR:'..text..'|r'
+                        else
+                            text= 'ID'..text
                         end
                     end
                     frame.textID:SetText(text or '')
@@ -1304,7 +1306,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 local icon= frame.texture:GetTextureFileID()
                 if icon and not frame.textIcon then
                     frame.textIcon= e.Cstr(frame)
-                    frame.textIcon:SetPoint('BOTTOM', frame.texture, 'TOP',0,-2)
+                    frame.textIcon:SetPoint('TOP', frame.texture, 'TOP')
                 end
                 if frame and frame.textIcon then
                     frame.textIcon:SetText(icon and '|T'..icon..':0|t'..icon or '')

@@ -311,18 +311,25 @@ local function Init_SetAlpha()
     setAlpha(SpellBookFrame.NineSlice.TopLeftCorner)
     setAlpha(SpellBookFrame.NineSlice.TopEdge)
     setAlpha(SpellBookFrame.NineSlice.TopRightCorner)
-    SpellBookPageText:SetTextColor(1, 0.82, 0)
+    if SpellBookPageText then
+        SpellBookPageText:SetTextColor(1, 0.82, 0)
+    end
 
     hideTexture(SpellBookPage1)
     hideTexture(SpellBookPage2)
-    --SpellBookFrameBg:SetAtlas('auctionhouse-background-sell-right')
     setAlpha(SpellBookFrameBg)
-    setAlpha(SpellBookFrameInset.Bg)
+    hideTexture(SpellBookFrameInset.Bg)
 
     for i=1, 12 do
-        --setAlpha(_G['SpellButton'..i..'Background'])
-    end
+        setAlpha(_G['SpellButton'..i..'Background'])
+        local frame= _G['SpellButton'..i]
+        if frame then
+            hooksecurefunc(frame, 'UpdateButton', function(self)--SpellBookFrame.lua
+                self.SpellSubName:SetTextColor(1, 1, 1)
 
+            end)
+        end
+    end
     --世界地图
     setAlpha(WorldMapFrame.BorderFrame.NineSlice.TopLeftCorner)
     setAlpha(WorldMapFrame.BorderFrame.NineSlice.TopEdge)
@@ -606,6 +613,17 @@ local function Init_SetAlpha()
             end
         end
     end)
+
+    --插件，管理
+    setAlpha(AddonList.NineSlice.TopEdge)
+    setAlpha(AddonList.NineSlice.TopLeftCorner)
+    setAlpha(AddonList.NineSlice.TopRightCorner)
+    setAlpha(AddonListBg)
+    setAlpha(AddonListInset.Bg)
+    hideTexture(AddonList.ScrollBar.Backplate)
+    setAlpha(AddonCharacterDropDownMiddle)
+    setAlpha(AddonCharacterDropDownLeft)
+    setAlpha(AddonCharacterDropDownRight)
 end
 
 
@@ -867,10 +885,24 @@ local function set_Alpha_Event(arg1)
         setAlpha(AuctionHouseFrameMiddleMiddle)
         setAlpha(AuctionHouseFrameMiddleLeft)
         setAlpha(AuctionHouseFrameMiddleRight)
+        setAlpha(AuctionHouseFrameBottomMiddle)
+        setAlpha(AuctionHouseFrameBottomLeft)
+        setAlpha(AuctionHouseFrameBottomRight)
 
-        setAlpha(AuctionHouseFrame.ItemSellFrame.Background)--购买
+        hideTexture(AuctionHouseFrame.CategoriesList.ScrollBar.Backplate)
+        hideTexture(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBar.Backplate)
+        setAlpha(AuctionHouseFrameMiddle)
+        setAlpha(AuctionHouseFrameLeft)
+        setAlpha(AuctionHouseFrameRight)
+        hideTexture(AuctionHouseFrame.MoneyFrameInset.Bg)
+
+        setAlpha(AuctionHouseFrame.ItemSellFrame.Background)--出售
         setAlpha(AuctionHouseFrame.ItemSellList.Background)
+        hideTexture(AuctionHouseFrame.ItemSellList.ScrollBar.Backplate)
 
+        hideTexture(AuctionHouseFrameAuctionsFrame.SummaryList.ScrollBar.Backplate)
+        hideTexture(AuctionHouseFrameAuctionsFrame.AllAuctionsList.ScrollBar.Backplate)
+        
         setAlpha(AuctionHouseFrameAuctionsFrame.SummaryList.Background)
         setAlpha(AuctionHouseFrameAuctionsFrame.AllAuctionsList.Background)
 
@@ -1165,14 +1197,38 @@ local function set_Alpha_Event(arg1)
         setAlpha(ItemUpgradeFrameMiddle)
         setAlpha(ItemUpgradeFrameRight)
         setAlpha(ItemUpgradeFrameLeft)
+
+    elseif arg1=='Blizzard_MacroUI' then--宏
+        setAlpha(MacroFrame.NineSlice.TopLeftCorner)
+        setAlpha(MacroFrame.NineSlice.TopEdge)
+        setAlpha(MacroFrame.NineSlice.TopRightCorner)
+        hideTexture(MacroFrameBg)
+        setAlpha(MacroFrameInset.Bg)
+        hideTexture(MacroFrame.MacroSelector.ScrollBar.Backplate)
+        hideTexture(MacroFrameSelectedMacroBackground)
     end
 end
 --[[
+        --MacroFrameSelectedMacroButton
+        --MacroFrameSelectedMacroBackground
+        --hideTexture(MacroFrameSelectedMacroBackground)
+        MacroFrame:SetSize(500, 700)--338, 424
+        --MacroFrame.MacroSelector:SetWidth(480)
+        MacroFrameText:SetSize(460,380)
+        --MacroFrameTextBackground:SetSize(460,380)
+        MacroFrameScrollFrameScrollBar:ClearAllPoints()
+        MacroFrameScrollFrameScrollBar:SetPoint('TOPLEFT', MacroFrameText,'TOPRIGHT')
+        MacroFrameScrollFrameScrollBar:SetSize(460, 20)
+        --MacroSaveButton
+        --MacroFrameSelectedMacroButton:ClearAllPoints()
+        --MacroFrameSelectedMacroButton:SetPoint('BOTTOMLEFT', MacroFrame.MacroSelector, 'BOTTOMRIGHT')
+        --MacroFrame.MacroSelector:SetWidth(480)
+        --MacroFrame.MacroSelector:SetSize()
+
     elseif arg1=='Blizzard_PlayerChoice' then--任务选择
         print(PlayerChoiceFrame.Background.BackgroundTile)
         hideTexture(PlayerChoiceFrame.Background.BackgroundTile)
-]]
---[[
+
     elseif arg1=='Blizzard_OrderHallUI' then
         local frame= OrderHallTalentFrame
 

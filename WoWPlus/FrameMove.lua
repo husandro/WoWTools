@@ -364,6 +364,9 @@ local function setAddLoad(arg1)
 
     elseif arg1=='Blizzard_BFAMissionUI' then--侦查地图
         Move(BFAMissionFrame, {})
+
+    elseif arg1=='Blizzard_MacroUI' then--宏
+        Move(MacroFrame, {})
     end
 end
 
