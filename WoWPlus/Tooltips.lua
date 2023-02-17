@@ -1281,33 +1281,33 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             panel:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_AchievementUI' then--成就ID
-            hooksecurefunc(AchievementTemplateMixin, 'Init', function(self2,elementData)--Blizzard_AchievementUI.lua
-                local category = elementData.category;
-                local text
-                local achievementID, name, points, completed, month, day, year, description, flags, icon, rewardText, isGuild, wasEarnedByMe, earnedBy, isStatistic
-                if self2.index then
-                    achievementID, name, points, completed, month, day, year, description, flags, icon, rewardText, isGuild, wasEarnedByMe, earnedBy, isStatistic= GetAchievementInfo(category, self2.index);
-                else
-                    achievementID, name, points, completed, month, day, year, description, flags, icon, rewardText, isGuild, wasEarnedByMe, earnedBy, isStatistic = GetAchievementInfo(self2.id);
+            hooksecurefunc(AchievementTemplateMixin, 'Init', function(self2)
+                local frame= self2.Icon
+                if not frame then
+                    return
                 end
-                if description and icon and achievementID then
-                    text= description
-                    if completed and earnedBy and earnedBy~='' then
-                        if earnedBy==e.Player.name then
-                            text= text..' '..e.Icon.player
-                        else
-                            text= text..' |cnGREEN_FONT_COLOR:'..earnedBy
+                local text= self2.id
+                if text and not frame.textID  then
+                    frame.textID= e.Cstr(frame)
+                    frame.textID:SetPoint('TOP', frame.texture, 'BOTTOM',0,2)
+                end
+                if frame.textID then
+                    if text then
+                        local flags= select(9, GetAchievementInfo(self2.id))
+                        if flags==131072 then
+                            text= e.Icon.wow2..'|cnGREEN_FONT_COLOR:'..text..'|r'
                         end
-                        text= text..'|r'
                     end
-                    if flags==131072 then
-                        text= text.. ' '..e.Icon.wow2..(e.onlyChinse and '战网' or COMMUNITY_COMMAND_BATTLENET)
-                    end
-
-                    text= text ..' '..achievementID..(icon and ' |T'..icon..':0|t'..icon or '')
+                    frame.textID:SetText(text or '')
                 end
-                if text then
-                    self2.HiddenDescription:SetText(text)
+
+                local icon= frame.texture:GetTextureFileID()
+                if icon and not frame.textIcon then
+                    frame.textIcon= e.Cstr(frame)
+                    frame.textIcon:SetPoint('BOTTOM', frame.texture, 'TOP',0,-2)
+                end
+                if frame and frame.textIcon then
+                    frame.textIcon:SetText(icon and '|T'..icon..':0|t'..icon or '')
                 end
             end)
 

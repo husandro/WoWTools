@@ -677,6 +677,7 @@ local function set_Alpha_Event(arg1)
         setAlpha(ClassTalentFrame.TalentsTab.SearchBox.Right)
 
     elseif arg1=='Blizzard_AchievementUI' then--成就
+        
         setAlpha(AchievementFrame.Header.PointBorder)
         hideTexture(AchievementFrameSummary.Background)
         hideTexture(AchievementFrameCategoriesBG)
@@ -685,17 +686,17 @@ local function set_Alpha_Event(arg1)
         hideTexture(AchievementFrameWaterMark)
         hideTexture(AchievementFrameGuildEmblemRight)
 
-        setAlpha(AchievementFrame.BottomRightCorner)
-        setAlpha(AchievementFrame.BottomLeftCorner)
-        setAlpha(AchievementFrame.TopLeftCorner)
-        setAlpha(AchievementFrame.TopRightCorner)
+        hideTexture(AchievementFrame.BottomRightCorner)
+        hideTexture(AchievementFrame.BottomLeftCorner)
+        hideTexture(AchievementFrame.TopLeftCorner)
+        hideTexture(AchievementFrame.TopRightCorner)
 
-        setAlpha(AchievementFrame.BottomEdge)
-        setAlpha(AchievementFrame.TopEdge)
-        setAlpha(AchievementFrame.LeftEdge)
-        setAlpha(AchievementFrame.RightEdge)
-        setAlpha(AchievementFrame.Header.Right)
-        setAlpha(AchievementFrame.Header.Left)
+        hideTexture(AchievementFrame.BottomEdge)
+        hideTexture(AchievementFrame.TopEdge)
+        hideTexture(AchievementFrame.LeftEdge)
+        hideTexture(AchievementFrame.RightEdge)
+        hideTexture(AchievementFrame.Header.Right)
+        hideTexture(AchievementFrame.Header.Left)
 
         hideTexture(AchievementFrame.SearchBox.Middle)
         hideTexture(AchievementFrame.SearchBox.Left)
@@ -716,6 +717,23 @@ local function set_Alpha_Event(arg1)
         setAlpha(AchievementFrameWoodBorderTopLeft)
         setAlpha(AchievementFrameWoodBorderTopRight)
 
+        hideTexture(AchievementFrameSummaryCategoriesStatusBarFillBar)
+        for i=1, 10 do
+            hideTexture(_G['AchievementFrameCategoriesCategory'..i..'Bar'])
+        end
+        if AchievementFrameStatsBG then
+            AchievementFrameStatsBG:Hide()
+        end
+        setAlpha(AchievementFrame.Header.LeftDDLInset)
+        setAlpha(AchievementFrame.Header.RightDDLInset)
+        hooksecurefunc(AchievementTemplateMixin, 'Init', function(self)
+            if self.Icon then
+                hideTexture(self.Icon.frame)
+            end
+        end)
+        hideTexture(AchievementFrameAchievements.ScrollBar.Backplate)
+        hideTexture(AchievementFrameStats.ScrollBar.Backplate)
+        hideTexture(AchievementFrameCategories.ScrollBar.Backplate)
 
     elseif arg1=='Blizzard_Communities' then--公会和社区
         setAlpha(CommunitiesFrame.NineSlice.TopEdge)

@@ -1594,7 +1594,14 @@
         "GetChatUnitColor",
         "ClassTalentCurrencyDisplayMixin",
         "TalentButtonBaseMixin",
-        "ClassTalentButtonSpendMixin"
+        "ClassTalentButtonSpendMixin",
+        "FramerateDisplayMixin",
+        "FramerateText",
+        "FramerateFrame",
+        "AchievementFrameSummaryCategoriesStatusBarFillBar",
+        "AchievementFrameStats",
+        "AchievementFrameStatsBG",
+        "AchievementFrameCategories"
     ],
     "Lua.diagnostics.disable": [
     ]
