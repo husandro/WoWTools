@@ -583,7 +583,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             local text= sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a'
 
             level= MAX_PLAYER_LEVEL>level and '|cnGREEN_FONT_COLOR:'..level..'|r' or level
-            
+
             if isPlayer then
                 local effectiveLevel= UnitEffectiveLevel(unit)
                 if effectiveLevel~=level then
@@ -591,7 +591,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                 end
             end
 
-            
+
             --className= col and col..className..'|r' or className
             --text= text..LEVEL..' '..level..'  '..e.Race(nil, raceFile, sex)..raceName..' '..e.Class(nil, classFilename)..className..(UnitIsPVP(unit) and  '  (|cnRED_FONT_COLOR:PvP|r)' or '  (|cnGREEN_FONT_COLOR:PvE|r)')
             text= text..level..'  '..e.Class(nil, classFilename)..'  '..e.Race(nil, raceFile, sex)..raceName..'  '..(UnitIsPVP(unit) and  '(|cnRED_FONT_COLOR:PvP|r)' or '(|cnGREEN_FONT_COLOR:PvE|r)')
@@ -1219,7 +1219,7 @@ local function Init()
     hooksecurefunc(AreaPOIPinMixin,'TryShowTooltip', function(self)--POI提示 AreaPOIDataProvider.lua
         local uiMapID = self:GetMap() and self:GetMap():GetMapID()
         if self.areaPoiID then
-            GameTooltip:AddDoubleLine('areaPoiID', self.areaPoiID)  
+            GameTooltip:AddDoubleLine('areaPoiID', self.areaPoiID)
         end
         if self.widgetSetID then
             GameTooltip:AddDoubleLine('widgetSetID', self.widgetSetID)
