@@ -1626,7 +1626,10 @@
         "SpellButtonMixin",
         "BOOKTYPE_PROFESSION",
         "BOOSTED_CHAR_SPELL_TEMPLOCK",
-        "SPELLBOOK_AVAILABLE_AT"
+        "SPELLBOOK_AVAILABLE_AT",
+        "NUM_RAID_GROUPS",
+        "GarrisonCapacitiveDisplayFrameBg",
+        "GarrisonCapacitiveDisplayFrameInset"
     ],
     "Lua.diagnostics.disable": [
     ]

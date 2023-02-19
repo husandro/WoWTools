@@ -514,7 +514,7 @@ local function Init_SetAlpha()
     setAlpha(FriendsFrame.NineSlice.TopLeftCorner)
     setAlpha(FriendsFrame.NineSlice.TopRightCorner)
     setAlpha(FriendsFrameBg)
-    setAlpha(FriendsFrameInset.Bg)
+    hideTexture(FriendsFrameInset.Bg)
     hideTexture(FriendsListFrame.ScrollBar.Backplate)
     hideTexture(WhoFrameListInset.Bg)
     hideTexture(WhoFrame.ScrollBar.Backplate)
@@ -523,6 +523,8 @@ local function Init_SetAlpha()
     setAlpha(WhoFrameDropDownRight)
     hideTexture(WhoFrameEditBoxInset.Bg)
     hideTexture(QuickJoinFrame.ScrollBar.Backplate)
+
+    
 
     --聊天设置
     setAlpha(ChannelFrame.NineSlice.TopEdge)
@@ -818,7 +820,7 @@ local function set_Alpha_Event(arg1)
         hideTexture(EncounterJournalBg)
         hideTexture(EncounterJournalInset.Bg)
 
-        setAlpha(EncounterJournalMonthlyActivitiesFrame.Bg)
+        
         setAlpha(EncounterJournalInstanceSelectBG)
         --setAlpha(EncounterJournalEncounterFrameInfoBG)
         setAlpha(EncounterJournalEncounterFrameInfoModelFrameDungeonBG)
@@ -827,6 +829,10 @@ local function set_Alpha_Event(arg1)
         setAlpha(EncounterJournalInstanceSelectTierDropDownMiddle)
         setAlpha(EncounterJournalInstanceSelectTierDropDownLeft)
         setAlpha(EncounterJournalInstanceSelectTierDropDownRight)
+
+        C_Timer.After(0.3, function()
+            setAlpha(EncounterJournalMonthlyActivitiesFrame.Bg)
+        end)
 
     elseif arg1=="Blizzard_GuildBankUI" then--公会银行
         setAlpha(GuildBankFrame.BlackBG)
@@ -1206,6 +1212,44 @@ local function set_Alpha_Event(arg1)
         setAlpha(MacroFrameInset.Bg)
         hideTexture(MacroFrame.MacroSelector.ScrollBar.Backplate)
         hideTexture(MacroFrameSelectedMacroBackground)
+    elseif arg1=='Blizzard_GarrisonUI' then--要塞
+        --[[
+        Move(GarrisonShipyardFrame,{})--海军行动
+        Move(GarrisonMissionFrame, {})--要塞任务
+        
+        Move(GarrisonLandingPage, {})--要塞报告
+        Move(OrderHallMissionFrame, {})
+        ]]
+        if GarrisonCapacitiveDisplayFrame then--要塞订单
+            setAlpha(GarrisonCapacitiveDisplayFrame.NineSlice.TopLeftCorner)
+            setAlpha(GarrisonCapacitiveDisplayFrame.NineSlice.TopEdge)
+            setAlpha(GarrisonCapacitiveDisplayFrame.NineSlice.TopRightCorner)
+            setAlpha(GarrisonCapacitiveDisplayFrameBg)
+            hideTexture(GarrisonCapacitiveDisplayFrame.TopTileStreaks)
+            hideTexture(GarrisonCapacitiveDisplayFrameInset.Bg)
+        end
+
+    elseif arg1=='Blizzard_PlayerChoice' then----任务选择
+        C_Timer.After(0.3, function()
+            if PlayerChoiceFrame.NineSlice then
+                hideTexture(PlayerChoiceFrame.NineSlice.TopLeftCorner)
+                hideTexture(PlayerChoiceFrame.NineSlice.TopEdge)
+                hideTexture(PlayerChoiceFrame.NineSlice.TopRightCorner)
+                hideTexture(PlayerChoiceFrame.NineSlice.BottomLeftCorner)
+                hideTexture(PlayerChoiceFrame.NineSlice.BottomEdge)
+                hideTexture(PlayerChoiceFrame.NineSlice.BottomRightCorner)
+                hideTexture(PlayerChoiceFrame.NineSlice.RightEdge)
+                hideTexture(PlayerChoiceFrame.NineSlice.LeftEdge)
+            end
+            if PlayerChoiceFrame.Title then
+                setAlpha(PlayerChoiceFrame.Title.Middle)
+                hideTexture(PlayerChoiceFrame.Title.Left)
+                hideTexture(PlayerChoiceFrame.Title.Right)
+            end
+            if PlayerChoiceFrame.Background then
+                hideTexture(PlayerChoiceFrame.Background.BackgroundTile)
+            end
+        end)
     end
 end
 --[[
@@ -1236,17 +1280,8 @@ end
         local frame= GenericTraitFrame
         
 
-    elseif arg1=='Blizzard_GarrisonUI' then--要塞
-        local frame= GarrisonShipyardFrame--海军行动
-        frame= GarrisonMissionFrame--要塞任务
-        frame= GarrisonCapacitiveDisplayFrame--要塞订单
-        if GarrisonLandingPage then--要塞报告
-            
-        end
-        frame= OrderHallMissionFrame
 
-    elseif arg1=='Blizzard_PlayerChoice' then
-        local frame= PlayerChoiceFrame--任务选择
+   
 
 
 

@@ -243,6 +243,7 @@ subframes.roleTexture = _G["RaidGroupButton"..i.."RoleTexture"];
 subframes.readyCheck = _G["RaidGroupButton"..i.."ReadyCheck"];
 button.subframes = subframes;
 ]]
+local setRaidGroupFrameLabel
 local function set_RaidGroupFrame_Update()--团队, 模块
     if not IsInRaid() then
         return
@@ -254,7 +255,7 @@ local function set_RaidGroupFrame_Update()--团队, 模块
             local subframes = button.subframes
             local unit = "raid"..i
             if subframes and UnitExists(unit) then
-                local name, rank, subgroup, level, class, fileName, zone, online, isDead, role, isML, combatRole = GetRaidRosterInfo(i)
+                local name, _, _, level, _, fileName, _, online, isDead, role, _, combatRole = GetRaidRosterInfo(i)
                 local guid= UnitGUID(unit)
 
                 afkNum= UnitIsAFK(unit) and (afkNum+1) or afkNum
@@ -332,6 +333,7 @@ local function set_RaidGroupFrame_Update()--团队, 模块
         text= text..'  '..format("\124T%s.tga:0\124t", FRIENDS_TEXTURE_AFK)..afkNum--AFK
         text= text..'  |A:deathrecap-icon-tombstone:0:0|a'..deadNum--死亡
         FriendsFrameTitleText:SetText(text)
+        FriendsFrameTitleText:SetJustifyH('RIGHT')
     end
 end
 
