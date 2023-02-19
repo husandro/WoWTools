@@ -277,7 +277,7 @@ local function Init_SetAlpha()
 
     --角色，界面
     setAlpha(CharacterFrameBg)
-    setAlpha(CharacterFrameInset.Bg)
+    hideTexture(CharacterFrameInset.Bg)
     setAlpha(CharacterFrame.NineSlice.TopEdge)
     setAlpha(CharacterFrame.NineSlice.TopRightCorner)
     setAlpha(CharacterFrame.NineSlice.TopLeftCorner)
