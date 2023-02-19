@@ -464,16 +464,11 @@ local function Init()
 
     if MinimapCluster then
         if MinimapCluster.InstanceDifficulty and MinimapCluster.InstanceDifficulty.Instance.Border then
-            local classFilename= UnitClassBase('player')
-            if classFilename then
-                local r,g,b=GetClassColor(classFilename)
-                if r and g and b then
-                    MinimapCluster.InstanceDifficulty.Instance.Border:SetVertexColor(r,g,b,1)--外框， 颜色
-                    if MinimapCluster.InstanceDifficulty.ChallengeMode then
-                        MinimapCluster.InstanceDifficulty.ChallengeMode.Border:SetVertexColor(r,g,b,1)
-                    end
-                end
+            MinimapCluster.InstanceDifficulty.Instance.Border:SetVertexColor(e.Player.r, e.Player.g, e.Player.b, 1)--外框， 颜色
+            if MinimapCluster.InstanceDifficulty.ChallengeMode then
+                MinimapCluster.InstanceDifficulty.ChallengeMode.Border:SetVertexColor(e.Player.r, e.Player.g, e.Player.b, 1)
             end
+
             if MinimapCluster.InstanceDifficulty.Instance.Text then
                 e.Cstr(nil,14, MinimapCluster.InstanceDifficulty.Instance.Text, MinimapCluster.InstanceDifficulty.Instance.Text)--字体，大小
                 MinimapCluster.InstanceDifficulty.Instance.Text:SetShadowOffset(1,-1)

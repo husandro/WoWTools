@@ -181,11 +181,10 @@ local function setTexture()--设置,图标, 颜色
     end
 
     if Save.classColor then
-        local r,g,b= GetClassColor(UnitClassBase('player'))
         if panel.text then
-            panel.text:SetTextColor(r,g,b)
+            panel.text:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
         end
-        panel.texture2:SetColorTexture(r,g,b)
+        panel.texture2:SetColorTexture(e.Player.r, e.Player.g, e.Player.b)
     else
         if panel.text then
             panel.text:SetTextColor(0.8, 0.8, 0.8)

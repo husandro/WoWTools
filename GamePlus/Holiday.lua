@@ -260,8 +260,7 @@ local function Text_Settings()--设置Text
         panel.Text:ClearAllPoints()
         panel.Text:SetPoint(Save.left and 'TOPLEFT' or 'TOPRIGHT')
         if Save.classColor then
-            local r,g,b= GetClassColor(UnitClassBase('player'))
-            panel.Text:SetTextColor(r,g,b)
+            panel.Text:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
         else
             panel.Text:SetTextColor(0.8, 0.8, 0.8)
             e.Cstr(nil,nil,nil,panel.Text,nil)

@@ -1629,7 +1629,20 @@
         "SPELLBOOK_AVAILABLE_AT",
         "NUM_RAID_GROUPS",
         "GarrisonCapacitiveDisplayFrameBg",
-        "GarrisonCapacitiveDisplayFrameInset"
+        "GarrisonCapacitiveDisplayFrameInset",
+        "STAT_CATEGORY_ATTRIBUTES",
+        "LE_UNIT_STAT_STRENGTH",
+        "LE_UNIT_STAT_AGILITY",
+        "LE_UNIT_STAT_INTELLECT",
+        "PaperDollFrame_SetStat",
+        "LE_UNIT_STAT_STAMINA",
+        "SPEC_FRAME_PRIMARY_STAT",
+        "SPEC_FRAME_PRIMARY_STAT_AGILITY",
+        "SPEC_FRAME_PRIMARY_STAT_INTELLECT",
+        "PaperDollFrame_SetLabelAndText",
+        "HIGHLIGHT_FONT_COLOR_CODE",
+        "PAPERDOLLFRAME_TOOLTIP_FORMAT",
+        "FONT_COLOR_CODE_CLOSE"
     ],
     "Lua.diagnostics.disable": [
     ]

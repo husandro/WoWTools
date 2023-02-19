@@ -109,9 +109,8 @@ local function Init()
     UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
 
     setMembers()--在线人数
-    panel.texture:SetAtlas('UI-HUD-MicroMenu-GuildCommunities-Up')
-    local r,g,b=GetClassColor(UnitClassBase('player'))
-    panel.texture:SetVertexColor(r,g,b)
+    panel.texture:SetAtlas('UI-HUD-MicroMenu-GuildCommunities-Up')    
+    panel.texture:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
 
     panel:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then

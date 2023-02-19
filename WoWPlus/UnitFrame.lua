@@ -5,7 +5,6 @@ local Save={
     notRaidFrame=not e.Player.husandro
 }
 local panel=CreateFrame("Frame")
-local R,G,B= GetClassColor(UnitClassBase('player'))
 
 local function set_SetTextColor(self, r, g, b)--设置, 字体
     if self and self:IsShown() and r and g and b then
@@ -143,7 +142,7 @@ end
 --####
 local function set_PlayerFrame()--PlayerFrame.lua
     hooksecurefunc('PlayerFrame_UpdateLevel', function()
-        set_SetTextColor(PlayerLevelText, R,G,B)
+        set_SetTextColor(PlayerLevelText, e.Player.r, e.Player.g, e.Player.b)
     end)
     --set_SetShadowOffset(PlayerLevelText)
 
@@ -152,8 +151,8 @@ local function set_PlayerFrame()--PlayerFrame.lua
         self.Icon:SetShown(true)
     end)
     PlayerCastingBarFrame:SetFrameStrata('TOOLTIP')--设置为， 最上层
-    set_SetTextColor(PlayerCastingBarFrame.Text, R,G,B)--颜色
-    PlayerCastingBarFrame.castingText= e.Cstr(PlayerCastingBarFrame, nil, nil, nil, {R,G,B}, nil, 'RIGHT')
+    set_SetTextColor(PlayerCastingBarFrame.Text, e.Player.r, e.Player.g, e.Player.b)--颜色
+    PlayerCastingBarFrame.castingText= e.Cstr(PlayerCastingBarFrame, nil, nil, nil, {e.Player.r, e.Player.g, e.Player.b}, nil, 'RIGHT')
     PlayerCastingBarFrame.castingText:SetDrawLayer('OVERLAY', 2)
     PlayerCastingBarFrame.castingText:SetPoint('RIGHT', PlayerCastingBarFrame.ChargeFlash, 'RIGHT')
     PlayerCastingBarFrame:HookScript('OnUpdate', function(self, elapsed)--玩家, 施法, 时间
@@ -197,7 +196,7 @@ local function set_PlayerFrame()--PlayerFrame.lua
         end
     end)
 
-    PlayerFrame.PlayerFrameContainer.FrameTexture:SetVertexColor(R,G,B)--外框
+    PlayerFrame.PlayerFrameContainer.FrameTexture:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)--外框
 end
 
 --####
@@ -377,7 +376,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
         local unit= self.unit
         local r,g,b
         if unit=='player' then
-            r,g,b= R,G,B
+            r,g,b= e.Player.r, e.Player.g, e.Player.b
         else
             local classFilename= unit and UnitClassBase(unit)
             if classFilename then

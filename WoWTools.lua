@@ -152,15 +152,20 @@ e.GetPlayerInfo=function (unit, guid, showName)--, hideClassTexture)
     return ''
 end
 
+local class= UnitClassBase('player')
+local r, g, b, hex= GetClassColor(class)
 e.Player={
     server= GetRealmName(),
     servers= {},--多服务器
     name_server= UnitName('player')..'-'..GetRealmName(),
     name= UnitName('player'),
-    col= '|c'..select(4,GetClassColor(UnitClassBase('player'))),
+    class= class,
+    r= r,
+    g= g,
+    b= b,
+    col= '|c'..hex,
     zh= LOCALE_zhCN or LOCALE_zhTW,--GetLocale()== ("zhCN" or 'zhTW'),
     Lo= GetLocale(),
-    class= UnitClassBase('player'),
     --MAX_PLAYER_LEVEL = GetMaxLevelForPlayerExpansion()
     week= GetWeek(),--周数
     guid= UnitGUID('player'),
@@ -411,32 +416,32 @@ end
 
 e.Cstr=function(self, size, fontType, ChangeFont, color, layer, justifyH)
     self= self or UIParent
-    local b=ChangeFont or self:CreateFontString(nil, (layer or 'OVERLAY'),nil, 5)
+    local label= ChangeFont or self:CreateFontString(nil, (layer or 'OVERLAY'), nil, 5)
     if fontType then
         if size then
             local fontName, _, fontFlags = fontType:GetFont()
-            b:SetFont(fontName, size, fontFlags)
+            label:SetFont(fontName, size, fontFlags)
         else
-            b:SetFont(fontType:GetFont())
+            label:SetFont(fontType:GetFont())
         end
-        b:SetTextColor(fontType:GetTextColor())
-        b:SetFontObject(fontType:GetFontObject())
-        b:SetShadowColor(fontType:GetShadowColor())
-        b:SetShadowOffset(fontType:GetShadowOffset())
+        label:SetTextColor(fontType:GetTextColor())
+        label:SetFontObject(fontType:GetFontObject())
+        label:SetShadowColor(fontType:GetShadowColor())
+        label:SetShadowOffset(fontType:GetShadowOffset())
     else
-        b:SetFont('Fonts\\ARHei.ttf', (size or 12), 'OUTLINE')
-        b:SetShadowOffset(1, -1)
-        --b:SetShadowColor(0, 0, 0)
-        b:SetJustifyH(justifyH or 'LEFT')
+        label:SetFont('Fonts\\ARHei.ttf', (size or 12), 'OUTLINE')
+        label:SetShadowOffset(1, -1)
+        --label:SetShadowColor(0, 0, 0)
+        label:SetJustifyH(justifyH or 'LEFT')
         if color and type(color)=='table' then
-            b:SetTextColor(color[1], color[2], color[3])
+            label:SetTextColor(color[1], color[2], color[3])
         elseif color then
-            b:SetTextColor(0.8, 0.8, 0.8)
+            label:SetTextColor(0.8, 0.8, 0.8)
         else
-            b:SetTextColor(1, 0.82, 0)
+            label:SetTextColor(1, 0.82, 0)
         end
     end
-    return b
+    return label
 end
 
 
@@ -458,31 +463,31 @@ end
 
 e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size)
     self= self or UIParent-- UIParent
-    local b
+    local button
     if Template then
-        b=CreateFrame('Button', name, self, 'UIPanelButtonTemplate')
+        button=CreateFrame('Button', name, self, 'UIPanelButtonTemplate')
     elseif SecureAction then
-        b=CreateFrame("Button", name, self, "SecureActionButtonTemplate");
-        b:SetHighlightAtlas(e.Icon.highlight)
-        b:SetPushedAtlas(e.Icon.pushed)
+        button=CreateFrame("Button", name, self, "SecureActionButtonTemplate");
+        button:SetHighlightAtlas(e.Icon.highlight)
+        button:SetPushedAtlas(e.Icon.pushed)
     else
-        b=CreateFrame('Button', name, self)
-        b:SetHighlightAtlas(e.Icon.highlight)
-        b:SetPushedAtlas(e.Icon.pushed)
+        button=CreateFrame('Button', name, self)
+        button:SetHighlightAtlas(e.Icon.highlight)
+        button:SetPushedAtlas(e.Icon.pushed)
         if not notTexture then
             if value then
-                b:SetNormalAtlas(e.Icon.icon)
+                button:SetNormalAtlas(e.Icon.icon)
             else
-                b:SetNormalAtlas(e.Icon.disabled)
+                button:SetNormalAtlas(e.Icon.disabled)
             end
         end
     end
-    b:RegisterForClicks(LeftButtonDown, RightButtonDown)
-    b:EnableMouseWheel(true)
+    button:RegisterForClicks(LeftButtonDown, RightButtonDown)
+    button:EnableMouseWheel(true)
     if size then
-        b:SetSize(size[1], size[2])
+        button:SetSize(size[1], size[2])
     end
-    return b
+    return button
 end
 
 e.Ccool=function(self, start, duration, modRate, HideCountdownNumbers, Reverse, SwipeTexture, hideDrawBling)--冷却条
