@@ -14,7 +14,7 @@ local Save={
 local addName= STAT_CATEGORY_ATTRIBUTES
 local panel= CreateFrame('Frame')
 local button
-
+--PaperDollFrame.lua
 
 --#####
 --主属性
@@ -433,25 +433,92 @@ local function set_Show_Hide()
     button:SetAlpha(Save.hide and 0.3 or 1)
 end
 
-local function set_Point()--设置, 位置
+--#########
+--设置, 位置
+--#########
+local function set_Point()
     if Save.point then
         button:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
     else
-        button:SetPoint('LEFT', 12, 180)
+        button:SetPoint('LEFT', 18, 180)
     end
+end
+
+
+
+--##########
+--设置 panel
+--##########
+local function set_Panle_Setting()--设置 panel
+    panel.name = (e.onlyChinse and '属性' or STAT_CATEGORY_ATTRIBUTES)..'|A:charactercreate-icon-customize-body-selected:0:0|a'--添加新控制面板
+    panel.parent =id
+    InterfaceOptions_AddCategory(panel)
+    local last= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    last:SetPoint("TOPLEFT")
+    last.text:SetText((e.onlyChinse and '数值' or STATUS_TEXT_VALUE)..': '..(e.onlyChinse and '向左' or BINDING_NAME_STRAFELEFT)..e.Icon.toLeft2)
+    last:SetChecked(Save.toLeft)
+    last:SetScript('OnMouseDown', function()
+        Save.toLeft= not Save.toLeft and true or nil
+        C_UI.Reload()
+    end)
+    last:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddLine('21% '..Tabs[2].text)
+        e.tips:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinse and '重新加载UI' or RELOADUI))
+        e.tips:Show()
+    end)
+    last:SetScript('OnLeave', function() e.tips:Hide() end)
+
+    for index, info in pairs(Tabs) do
+        if index>1 then
+           --[[local color= CreateFrame("ColorSelect",nil, panel, 'ColorSwatchTemplate')
+           color:SetPoint('TOPLEFT', last, 'BOTTOMLEFT')
+           color:SetSize(20,20)
+           ]]
+           --e.Cstr=function(self, size, fontType, ChangeFont, color, layer, justifyH)
+            local r= info.r or 1
+            local g= info.g or 0.82
+            local b= info.b or 0
+            local a= info.a or 1
+            local text= e.Cstr(panel, nil, nil, nil, {r,g,b,a})
+            text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -4)
+            text:SetText(info.text)
+            text:EnableMouse(true)
+            text.r, text.g, text.b, text.a= r, g, b, a
+            text.name= info.name
+            text:SetScript('OnMouseDown', function(self)
+                e.ShowColorPicker(self.r, self.g, self.b,self.a, function(restore)
+                    if not restore then
+                        local newA, newR, newG, newB = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()
+                        self:SetTextColor(newR, newG, newB, newA)
+                        Save.color[self.name].r= newR
+                        Save.color[self.name].b= newB
+                        Save.color[self.name].g= newG
+                        Save.color[self.name].a= newA
+                        if button[self.name] and button[self.name].label then
+                            button[self.name].label:SetTextColor(newR, newG, newB, newA)
+                        end
+                    end
+                end)
+            end)
+            text:SetScript('OnEnter', function(self)
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(e.onlyChinse and '设置' or SETTINGS, e.onlyChinse and '颜色' or COLOR)
+                e.tips:Show()
+            end)
+            text:SetScript('OnLeave', function() e.tips:Hide() end)
+            last= text
+        end
+    end
+
 end
 
 --####
 --初始
 --####
 local function Init()
-    --##########
-    --设置 panel
-    --##########
-    panel.name = (e.onlyChinse and '属性' or STAT_CATEGORY_ATTRIBUTES)..'|A:charactercreate-icon-customize-body-selected:0:0|a'--添加新控制面板
-    panel.parent =id
-    InterfaceOptions_AddCategory(panel)
-
     --e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size)
     button= e.Cbtn(nil, nil, nil, nil, nil, true, {18,18})
     set_Point()--设置, 位置
@@ -538,6 +605,7 @@ local function Init()
 
 
     set_Tabs()--设置, 内容
+    set_Panle_Setting()--设置 panel
 
     C_Timer.After(2, create_Rest_Lable)
 end

@@ -1774,7 +1774,8 @@
         "INVSLOTS_EQUIPABLE_IN_COMBAT",
         "OpenAzeriteEmpoweredItemUIFromItemLocation",
         "AZERITE_PREVIEW_UNAVAILABLE_FOR_CLASS",
-        "Mastery_OnEnter"
+        "Mastery_OnEnter",
+        "OpacitySliderFrame"
     ],
     "Lua.diagnostics.disable": [
     ]

@@ -835,13 +835,13 @@ e.GetTimeInfo= function(value, chat, time)
         time= time or GetTime()
         time= time < value and time + 86400 or time
         time= time - value;
-        if chat then 
+        if chat then
             return SecondsToClock(time):gsub('：',':'), time;
         else
             return SecondsToTime(time), time;
         end
     else
-        if chat then 
+        if chat then
             return SecondsToClock(0):gsub('：',':'), 0;
         else
             return SecondsToTime(0), 0;
@@ -1147,9 +1147,9 @@ e.Set_Item_Stats = function(self, link, point)
                 if lv <= -6  then
                     itemLevel =RED_FONT_COLOR_CODE..itemLevel..'|r'
                 else
-                    local hex= quality and select(4, GetItemQualityColor(quality))
-                    if hex then
-                        itemLevel='|c'..hex..itemLevel..'|r'
+                    local hexColor= quality and select(4, GetItemQualityColor(quality))
+                    if hexColor then
+                        itemLevel='|c'..hexColor..itemLevel..'|r'
                     end
                 end
             end
@@ -1168,3 +1168,19 @@ e.Set_Item_Stats = function(self, link, point)
     if self.itemLevel then self.itemLevel:SetText(itemLevel or '') end--装等
 end
 
+e.ShowColorPicker= function(valueR, valueG, valueB, valueA, changedCallback)
+    valueR= valueR or 1
+    valueG= valueG or 0.8
+    valueB= valueB or 0
+    valueA= valueA or 1
+    ColorPickerFrame.hasOpacity= true
+    --ColorPickerFrame.previousValues = {valueR, valueG , valueB , valueA}
+    ColorPickerFrame.func= changedCallback
+    ColorPickerFrame.opacityFunc= changedCallback
+    ColorPickerFrame.cancelFunc =  changedCallback
+    ColorPickerFrame:SetColorRGB(valueR, valueG, valueB)
+    ColorPickerFrame.opacity = valueA;
+    ColorPickerFrame:Hide(); -- Need to run the OnShow handler.
+    ColorPickerFrame:Show();
+end
+--e.ShowColorPicker(r,g,b,a, function(restore) if not restore then local newA, newR, newG, newB = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()
