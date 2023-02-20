@@ -424,11 +424,11 @@ end
 --显示， 隐藏
 --##########
 local function set_Show_Hide()
-    if Save.hide then
+    --[[if Save.hide then
         button:SetNormalAtlas(e.Icon.icon)
     else
         button:SetNormalAtlas('charactercreate-icon-customize-body-selected')
-    end
+    end]]
     button.frame:SetShown(not Save.hide)
     button:SetAlpha(Save.hide and 0.3 or 1)
 end
