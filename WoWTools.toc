@@ -33,7 +33,7 @@ Sesource\Panel.lua
 ##角色面板
 WoWPlus\PaperDoll.lua
 ##角色，属性
-##WoWPlus\Attributes.lua
+WoWPlus\Attributes.lua
 ##声望面板
 WoWPlus\Reputation.lua
 ##货币面板

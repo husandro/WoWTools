@@ -434,7 +434,7 @@ e.Cstr=function(self, size, fontType, ChangeFont, color, layer, justifyH)
         --label:SetShadowColor(0, 0, 0)
         label:SetJustifyH(justifyH or 'LEFT')
         if color and type(color)=='table' then
-            label:SetTextColor(color[1], color[2], color[3])
+            label:SetTextColor(color[1], color[2], color[3], color[4])
         elseif color then
             label:SetTextColor(0.8, 0.8, 0.8)
         else
