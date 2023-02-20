@@ -395,7 +395,7 @@ local function Init_Move()
         BankFrame={save=true},--银行
         MerchantFrame={},--货物
 
-        ColorPickerFrame={save=true},--颜色选择器
+        ColorPickerFrame={save=true, click='R'},--颜色选择器
 
         WorldMapFrame={},--世界地图
         MapQuestInfoRewardsFrame={frame= WorldMapFrame},

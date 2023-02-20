@@ -9,7 +9,7 @@ local Save={
         ['MASTERY']= {r=0.82, g=0, b=0.82},
         ['VERSATILITY']= {r=0, g=1, b=0.82},
         ['LIFESTEAL']= {r=0.5, g=1, b=0},
-        ['AVOIDANCE']= {r=1, g=1, a=0},--'闪避'},
+        ['AVOIDANCE']= {r=1, g=1, b=0},--'闪避'},
     },
     --toLeft=true
 }
@@ -404,10 +404,6 @@ local function set_OnEvent(frame)
         frame.primaryStat= select(6, GetSpecializationInfo(GetSpecialization(), nil, nil, nil, UnitSex("player")))
         name= Tabs[frame.index]['text'][frame.primaryStat]
         value= set_Stat_Text(frame)
-        frame:RegisterUnitEvent('UNIT_STATS', 'player')
-        frame:SetScript('OnEvent', set_Stat_Text)
-        frame.label:SetScript('OnEnter', set_Stat_Tooltip)
-        frame.text:SetScript('OnEnter', set_Stat_Tooltip)
     else
         name= Tabs[frame.index].text
         if frame.index==2 then--爆击
@@ -420,50 +416,25 @@ local function set_OnEvent(frame)
             end
             frame.minCrit = minCrit
             value= set_Crit_Text(frame)
-            frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
-            frame:SetScript('OnEvent', set_Crit_Text)
-            frame.label:SetScript('OnEnter', set_Crit_Tooltip)
-            frame.text:SetScript('OnEnter', set_Crit_Tooltip)
 
         elseif frame.index==3 then--急速
             value= set_Haste_Text(frame)
-            frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
-            frame:SetScript('OnEvent', set_Haste_Text)
-            frame.label:SetScript('OnEnter', set_Haste_Tooltip)
-            frame.text:SetScript('OnEnter', set_Haste_Tooltip)
 
         elseif frame.index==4 then--精通
             value= set_Mastery_Text(frame)
-            frame:RegisterEvent('MASTERY_UPDATE')
-            frame.onEnterFunc = Mastery_OnEnter;
-            frame.label:SetScript('OnEnter', frame.onEnterFunc)--PaperDollFrame.lua
-            frame.text:SetScript('OnEnter', frame.onEnterFunc)
-
+            
         elseif frame.index==5 then--全能
             value= set_Versatility_Text(frame)
-            frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
-            frame:SetScript('OnEvent', set_Versatility_Text)
-            frame.label:SetScript('OnEnter', set_Versatility_Tooltip)
-            frame.text:SetScript('OnEnter', set_Versatility_Tooltip)
 
         elseif frame.index==6 then--吸血
             value= set_Lifesteal_Text(frame)
-            frame:RegisterEvent('LIFESTEAL_UPDATE')
-            button.frame:RegisterEvent('LIFESTEAL_UPDATE')
-            frame:SetScript('OnEvent', set_Lifesteal_Text)
-            frame.label:SetScript('OnEnter', set_Lifesteal_Tooltip)
-            frame.text:SetScript('OnEnter', set_Lifesteal_Tooltip)
 
         elseif frame.index==7 then--闪避
             value= set_Avoidance_Text(frame)
-            frame:RegisterEvent('AVOIDANCE_UPDATE')
-            button.frame:RegisterEvent('AVOIDANCE_UPDATE')
-            frame:SetScript('OnEvent', set_Avoidance_Text)
-            frame.label:SetScript('OnEnter', set_Avoidance_Tooltip)
-            frame.text:SetScript('OnEnter', set_Avoidance_Tooltip)
+
         end
     end
-    if not frame.value then
+    if not frame.value or frame.value==0 or value==0 then
         frame.value= value
     end
     frame.name= name
@@ -639,6 +610,7 @@ local function set_Panle_Setting()--设置 panel
             text:EnableMouse(true)
             text.r, text.g, text.b, text.a= r, g, b, a
             text.name= info.name
+            text.text= info.text
             text:SetScript('OnMouseDown', function(self)
                 e.ShowColorPicker(self.r, self.g, self.b,self.a, function(restore)
                     if not restore then
@@ -655,12 +627,40 @@ local function set_Panle_Setting()--设置 panel
                 end)
             end)
             text:SetScript('OnEnter', function(self)
+                local r2= Save.tab[self.name].r or 1
+                local g2= Save.tab[self.name].g or 0.82
+                local b2= Save.tab[self.name].b or 0
+                local a2= Save.tab[self.name].a or 1
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
+                e.tips:AddLine(self.text, self.name, r2, g2, b2)
                 e.tips:AddDoubleLine(e.onlyChinse and '设置' or SETTINGS, e.onlyChinse and '颜色' or COLOR)
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(format('r%.2f', r2)..format('  g%.2f', g2)..format('  b%.2f', b2), format('a%.2f', r2))
                 e.tips:Show()
             end)
             text:SetScript('OnLeave', function() e.tips:Hide() end)
+            if index>5 then
+                local check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--仅中文
+                check:SetChecked(not info.hide)
+                check:SetPoint('LEFT', text, 'RIGHT')
+                check.name= info.name
+                check.text= info.text
+                check:SetScript('OnMouseUp',function(self)
+                    local hide= not Save.tab[self.name].hide and true or nil
+                    Save.tab[self.name].hide= hide
+                    create_Rest_Lable(true)
+                    print(id, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+                end)
+                check:SetScript('OnEnter', function(self)
+                    e.tips:SetOwner(self, "ANCHOR_LEFT")
+                    e.tips:ClearLines()
+                    e.tips:AddDoubleLine(self.text, self.name)
+                    e.tips:AddLine(e.GetShowHide(Save.tab[self.name].hide))
+                    e.tips:Show()
+                end)
+                check:SetScript('OnLeave', function() e.tips:Hide() end)
+            end
             last= text
         end
     end
@@ -754,7 +754,7 @@ local function Init()
     if Save.scale and Save.scale~=1 then--缩放
         button.frame:SetScale(Save.scale)
     end
-    button.frame:RegisterEvent('PLAYER_ENTERING_WORLD')
+    --button.frame:RegisterEvent('PLAYER_ENTERING_WORLD')
     button.frame:RegisterEvent('PLAYER_AVG_ITEM_LEVEL_UPDATE')
     button.frame:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
     button.frame:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED')
