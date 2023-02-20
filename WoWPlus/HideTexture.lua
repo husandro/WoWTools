@@ -326,7 +326,6 @@ local function Init_SetAlpha()
         if frame then
             hooksecurefunc(frame, 'UpdateButton', function(self)--SpellBookFrame.lua
                 self.SpellSubName:SetTextColor(1, 1, 1)
-
             end)
         end
     end

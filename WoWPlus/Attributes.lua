@@ -3,11 +3,13 @@ local id, e= ...
 local Save={
     redColor= '|cnRED_FONT_COLOR:',
     greenColor='|cnGREEN_FONT_COLOR:',
-    color={
-        ['CRITCHANCE']= {r=0.82, g=0.2, b=0, a=1},
-        ['HASTE']= {r=0.2, g=0.82, b=0.2, a=1},
-        ['MASTERY']= {r=0.82, g=0, b=0.82, a=1},
-        ['VERSATILITY']= {r=0, g=1, b=0.82, a=1},
+    tab={
+        ['CRITCHANCE']= {r=0.82, g=0.2, b=0},
+        ['HASTE']= {r=0.2, g=0.82, b=0.2},
+        ['MASTERY']= {r=0.82, g=0, b=0.82},
+        ['VERSATILITY']= {r=0, g=1, b=0.82},
+        ['LIFESTEAL']= {r=0.5, g=1, b=0},
+        ['AVOIDANCE']= {r=1, g=1, a=0},--'闪避'},
     },
     --toLeft=true
 }
@@ -159,7 +161,7 @@ local function set_Crit_Tooltip(self)
     local frame= self:GetParent()
     e.tips:SetOwner(self, "ANCHOR_LEFT")
     e.tips:ClearLines()
-    local spellCrit = frame.minCrit
+    local spellCrit = frame.minCrit or 0
 	local rangedCrit = GetRangedCritChance();
 	local meleeCrit = GetCritChance();
     local critChance, rating
@@ -298,7 +300,75 @@ local function set_Versatility_Tooltip(self)
     e.tips:Show()
 end
 
+--####
+--吸血
+--####
+local function set_Lifesteal_Text(frame)
+    local lifesteal = GetLifesteal();
+    if not frame.value or frame.value== lifesteal then
+        frame.text:SetFormattedText('%d%%', lifesteal + 0.5)
+    elseif frame.value< lifesteal then
+        frame.text:SetFormattedText(Save.greenColor..'%d%%', lifesteal + 0.5)
+    else
+        frame.text:SetFormattedText(Save.redColor..'%d%%', lifesteal + 0.5)
+    end
+    return lifesteal
+end
+local function set_Lifesteal_Tooltip(self)
+    local frame= self:GetParent()
+    e.tips:SetOwner(self, "ANCHOR_LEFT")
+    e.tips:ClearLines()
 
+    local lifesteal = GetLifesteal();
+	e.tips:AddDoubleLine(frame.name,  format("%0.2f%%", lifesteal))
+    e.tips:AddLine(format(e.onlyChinse and '你所造成伤害和治疗的一部分将转而治疗你。\n\n吸血：%s [+%.2f%%]' or CR_LIFESTEAL_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(CR_LIFESTEAL)), GetCombatRatingBonus(CR_LIFESTEAL)), nil,nil,nil,true)
+    if frame.value and frame.value~=lifesteal then
+        e.tips:AddLine(' ')
+        local text
+        if frame.value< lifesteal then
+            text= Save.greenColor..'+ '..format('%.2f%%', lifesteal- frame.value)
+        else
+            text= Save.redColor..'- '..format('%.2f%%', frame.value- lifesteal)
+        end
+        e.tips:AddDoubleLine(format('%.2f%%', frame.value + 0.5), text)
+    end
+    e.tips:Show()
+end
+
+--####
+--闪避
+--####
+local function set_Avoidance_Text(frame)
+    local Avoidance = GetAvoidance();
+    if not frame.value or frame.value== Avoidance then
+        frame.text:SetFormattedText('%d%%', Avoidance + 0.5)
+    elseif frame.value< Avoidance then
+        frame.text:SetFormattedText(Save.greenColor..'%d%%', Avoidance + 0.5)
+    else
+        frame.text:SetFormattedText(Save.redColor..'%d%%', Avoidance + 0.5)
+    end
+    return Avoidance
+end
+local function set_Avoidance_Tooltip(self)
+    local frame= self:GetParent()
+    e.tips:SetOwner(self, "ANCHOR_LEFT")
+    e.tips:ClearLines()
+
+    local Avoidance = GetAvoidance();
+	e.tips:AddDoubleLine(frame.name,  format("%0.2f%%", Avoidance))
+    e.tips:AddLine(format(e.onlyChinse and '范围效果法术的伤害降低。\n\n闪避：%s [+%.2f%%' or CR_AVOIDANCE_TOOLTIP , BreakUpLargeNumbers(GetCombatRating(CR_AVOIDANCE)), GetCombatRatingBonus(CR_AVOIDANCE)), nil,nil,nil,true)
+    if frame.value and frame.value~=Avoidance then
+        e.tips:AddLine(' ')
+        local text
+        if frame.value< Avoidance then
+            text= Save.greenColor..'+ '..format('%.2f%%', Avoidance- frame.value)
+        else
+            text= Save.redColor..'- '..format('%.2f%%', frame.value- Avoidance)
+        end
+        e.tips:AddDoubleLine(format('%.2f%%', frame.value + 0.5), text)
+    end
+    e.tips:Show()
+end
 
 local Tabs
 local function set_Tabs()
@@ -311,30 +381,33 @@ local function set_Tabs()
         },
         {name= 'CRITCHANCE', text= e.onlyChinse and '爆击' or STAT_CRITICAL_STRIKE},
         {name= 'HASTE', text= e.onlyChinse and '急速' or STAT_HASTE},
-        {name= 'MASTERY', r=Save.color['MASTERY'].r, g=Save.color['MASTERY'].g, b=Save.color['MASTERY'].b, a=Save.color['MASTERY'].a, text= e.onlyChinse and '精通' or STAT_MASTERY},
+        {name= 'MASTERY', text= e.onlyChinse and '精通' or STAT_MASTERY},
         {name= 'VERSATILITY', text= e.onlyChinse and '全能' or STAT_VERSATILITY},
+        --6
+        {name= 'LIFESTEAL', text= e.onlyChinse and '吸血' or STAT_LIFESTEAL},
+        {name= 'AVOIDANCE', text= e.onlyChinse and '闪避' or STAT_AVOIDANCE},
+        --8
     }
     for index, info in pairs(Tabs) do
         if index>1 then
-            Tabs[index].r= Save.color[info.name].r or 1
-            Tabs[index].g= Save.color[info.name].g or 0.82
-            Tabs[index].b= Save.color[info.name].b or 0
-            Tabs[index].a= Save.color[info.name].a or 1
+            Tabs[index].r= Save.tab[info.name] and Save.tab[info.name].r or 1
+            Tabs[index].g= Save.tab[info.name] and Save.tab[info.name].g or 0.82
+            Tabs[index].b= Save.tab[info.name] and Save.tab[info.name].b or 0
+            Tabs[index].a= Save.tab[info.name] and Save.tab[info.name].a or 1
         end
     end
 end
 
 local function set_OnEvent(frame)
-    frame.value=nil
-    local name
-    if frame.index==1 then
+    local name, value
+    if frame.index==1 then--主属性
         frame.primaryStat= select(6, GetSpecializationInfo(GetSpecialization(), nil, nil, nil, UnitSex("player")))
         name= Tabs[frame.index]['text'][frame.primaryStat]
-        frame.value= set_Stat_Text(frame)
+        value= set_Stat_Text(frame)
+        frame:RegisterUnitEvent('UNIT_STATS', 'player')
         frame:SetScript('OnEvent', set_Stat_Text)
         frame.label:SetScript('OnEnter', set_Stat_Tooltip)
         frame.text:SetScript('OnEnter', set_Stat_Tooltip)
-
     else
         name= Tabs[frame.index].text
         if frame.index==2 then--爆击
@@ -346,76 +419,106 @@ local function set_OnEvent(frame)
                 minCrit = min(minCrit, spellCrit);
             end
             frame.minCrit = minCrit
-            frame.value= set_Crit_Text(frame)
+            value= set_Crit_Text(frame)
+            frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
             frame:SetScript('OnEvent', set_Crit_Text)
             frame.label:SetScript('OnEnter', set_Crit_Tooltip)
             frame.text:SetScript('OnEnter', set_Crit_Tooltip)
 
         elseif frame.index==3 then--急速
-            frame.value= set_Haste_Text(frame)
+            value= set_Haste_Text(frame)
+            frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
             frame:SetScript('OnEvent', set_Haste_Text)
             frame.label:SetScript('OnEnter', set_Haste_Tooltip)
             frame.text:SetScript('OnEnter', set_Haste_Tooltip)
 
         elseif frame.index==4 then--精通
-            frame.value= set_Mastery_Text(frame)
+            value= set_Mastery_Text(frame)
+            frame:RegisterEvent('MASTERY_UPDATE')
             frame.onEnterFunc = Mastery_OnEnter;
             frame.label:SetScript('OnEnter', frame.onEnterFunc)--PaperDollFrame.lua
             frame.text:SetScript('OnEnter', frame.onEnterFunc)
 
         elseif frame.index==5 then--全能
-            frame.value= set_Versatility_Text(frame)
+            value= set_Versatility_Text(frame)
+            frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
             frame:SetScript('OnEvent', set_Versatility_Text)
             frame.label:SetScript('OnEnter', set_Versatility_Tooltip)
             frame.text:SetScript('OnEnter', set_Versatility_Tooltip)
 
+        elseif frame.index==6 then--吸血
+            value= set_Lifesteal_Text(frame)
+            frame:RegisterEvent('LIFESTEAL_UPDATE')
+            button.frame:RegisterEvent('LIFESTEAL_UPDATE')
+            frame:SetScript('OnEvent', set_Lifesteal_Text)
+            frame.label:SetScript('OnEnter', set_Lifesteal_Tooltip)
+            frame.text:SetScript('OnEnter', set_Lifesteal_Tooltip)
+
+        elseif frame.index==7 then--闪避
+            value= set_Avoidance_Text(frame)
+            frame:RegisterEvent('AVOIDANCE_UPDATE')
+            button.frame:RegisterEvent('AVOIDANCE_UPDATE')
+            frame:SetScript('OnEvent', set_Avoidance_Text)
+            frame.label:SetScript('OnEnter', set_Avoidance_Tooltip)
+            frame.text:SetScript('OnEnter', set_Avoidance_Tooltip)
         end
     end
-
+    if not frame.value then
+        frame.value= value
+    end
     frame.name= name
     frame.label:SetText(name)
 end
 
-local function create_Rest_Lable()
-    local last
+local function create_Rest_Lable(rest)
+    local last= button.frame
     for index, info in pairs(Tabs) do
-        local frame= button[info.name]
-        if not frame then
-            frame= CreateFrame('Frame', nil, button.frame)
-            frame:SetSize(1,13)
-            frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
-            frame.label= e.Cstr(frame, nil, nil, nil, {info.r,info.g,info.b,info.a}, nil, Save.toLeft and 'LEFT' or 'RIGHT')
-            
-            frame.label:EnableMouse(true)
-            frame.label:SetScript('OnLeave', function() e.tips:Hide() end)
+        local frame, find= button[info.name], nil
+        if not info.hide then
+            if not frame then
+                frame= CreateFrame('Frame', nil, button.frame)
+                frame:SetSize(1,13)
+                frame.label= e.Cstr(frame, nil, nil, nil, {info.r,info.g,info.b,info.a}, nil, Save.toLeft and 'LEFT' or 'RIGHT')
+                frame.label:EnableMouse(true)
+                frame.label:SetScript('OnLeave', function() e.tips:Hide() end)
 
-            frame.text= e.Cstr(frame, nil, nil, nil, {1,1,1}, nil, Save.toLeft and 'RIGHT' or 'LEFT')
-            frame.text:EnableMouse(true)
-            frame.text:SetScript('OnLeave', function() e.tips:Hide() end)
+                frame.text= e.Cstr(frame, nil, nil, nil, {1,1,1}, nil, Save.toLeft and 'RIGHT' or 'LEFT')
+                frame.text:EnableMouse(true)
+                frame.text:SetScript('OnLeave', function() e.tips:Hide() end)
 
-            if Save.toLeft then
-                if not last then
-                    frame:SetPoint('TOPLEFT', button.frame, 'BOTTOMLEFT', 8, 0)
+                if Save.toLeft then
+                    frame.text:SetPoint('TOPRIGHT', frame, 'TOPLEFT')
+                    frame.label:SetPoint('TOPLEFT')
                 else
-                    frame:SetPoint('TOPLEFT', last, 'BOTTOMLEFT')
+                    frame.text:SetPoint('TOPLEFT', frame, 'TOPRIGHT')
+                    frame.label:SetPoint('TOPRIGHT')
                 end
-                frame.text:SetPoint('TOPRIGHT', frame, 'TOPLEFT')
-                frame.label:SetPoint('TOPLEFT')
-            else
-                if not last then
-                    frame:SetPoint('TOPRIGHT', button.frame, 'BOTTOMRIGHT', -8, 0)
+
+                frame.index= index
+                button[info.name]= frame
+            end
+
+            if rest then
+                frame.value=nil
+            end
+            set_OnEvent(frame)
+
+            find= frame.value and frame.value>0
+            if find then
+                frame:ClearAllPoints()
+                if Save.toLeft then
+                    frame:SetPoint('TOPLEFT', last, 'BOTTOMLEFT')
                 else
                     frame:SetPoint('TOPRIGHT', last, 'BOTTOMRIGHT')
                 end
-                frame.text:SetPoint('TOPLEFT', frame, 'TOPRIGHT')
-                frame.label:SetPoint('TOPRIGHT')
+                last= frame
+                frame:SetShown(true)
             end
-
-            frame.index= index
-            last= frame
-            button[info.name]= frame
         end
-        set_OnEvent(frame)
+        if not find and frame then
+            frame:SetScript('OnEvent', nil)
+            frame:SetShown(false)
+        end
     end
 end
 
@@ -424,11 +527,11 @@ end
 --显示， 隐藏
 --##########
 local function set_Show_Hide()
-    --[[if Save.hide then
-        button:SetNormalAtlas(e.Icon.icon)
-    else
+    if Save.hide then
         button:SetNormalAtlas('charactercreate-icon-customize-body-selected')
-    end]]
+    else
+        button:SetNormalTexture(0)--'charactercreate-icon-customize-body-selected')
+    end
     button.frame:SetShown(not Save.hide)
     button:SetAlpha(Save.hide and 0.3 or 1)
 end
@@ -440,7 +543,7 @@ local function set_Point()
     if Save.point then
         button:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
     else
-        button:SetPoint('LEFT', 19, 180)
+        button:SetPoint('LEFT', 13, 180)
     end
 end
 
@@ -453,30 +556,27 @@ local function set_Panle_Setting()--设置 panel
     panel.name = (e.onlyChinse and '属性' or STAT_CATEGORY_ATTRIBUTES)..'|A:charactercreate-icon-customize-body-selected:0:0|a'--添加新控制面板
     panel.parent =id
     InterfaceOptions_AddCategory(panel)
+
+    local reloadButton=CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')--重新加载UI
+    reloadButton:SetPoint('TOPLEFT')
+    reloadButton:SetText(e.onlyChinse and '重新加载UI' or RELOADUI)
+    reloadButton:SetSize(120, 28)
+    reloadButton:SetScript('OnMouseUp', function()
+        ReloadUI()
+    end)
+
     local last= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    last:SetPoint("TOPLEFT")
+    last:SetPoint("TOPLEFT", reloadButton, 'BOTTOMLEFT', 0, -5)
     last.text:SetText((e.onlyChinse and '数值' or STATUS_TEXT_VALUE)..': '..(e.onlyChinse and '向左' or BINDING_NAME_STRAFELEFT)..e.Icon.toLeft2)
     last:SetChecked(Save.toLeft)
     last:SetScript('OnMouseDown', function()
         Save.toLeft= not Save.toLeft and true or nil
-        C_UI.Reload()
+        print(id, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
     end)
-    last:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddLine('21% '..Tabs[2].text)
-        e.tips:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinse and '重新加载UI' or RELOADUI))
-        e.tips:Show()
-    end)
-    last:SetScript('OnLeave', function() e.tips:Hide() end)
+
 
     for index, info in pairs(Tabs) do
         if index>1 then
-           --[[local color= CreateFrame("ColorSelect",nil, panel, 'ColorSwatchTemplate')
-           color:SetPoint('TOPLEFT', last, 'BOTTOMLEFT')
-           color:SetSize(20,20)
-           ]]
-           --e.Cstr=function(self, size, fontType, ChangeFont, color, layer, justifyH)
             local r= info.r or 1
             local g= info.g or 0.82
             local b= info.b or 0
@@ -492,10 +592,10 @@ local function set_Panle_Setting()--设置 panel
                     if not restore then
                         local newA, newR, newG, newB = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()
                         self:SetTextColor(newR, newG, newB, newA)
-                        Save.color[self.name].r= newR
-                        Save.color[self.name].b= newB
-                        Save.color[self.name].g= newG
-                        Save.color[self.name].a= newA
+                        Save.tab[self.name].r= newR
+                        Save.tab[self.name].b= newB
+                        Save.tab[self.name].g= newG
+                        Save.tab[self.name].a= newA
                         if button[self.name] and button[self.name].label then
                             button[self.name].label:SetTextColor(newR, newG, newB, newA)
                         end
@@ -540,7 +640,7 @@ local function Init()
     end)
     button:SetScript("OnMouseDown", function(self,d)
         if d=='LeftButton' then--提示移动
-            create_Rest_Lable()
+            create_Rest_Lable(true)
             print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '重置' or RESET)..'|r', e.onlyChinse and '数值' or STATUS_TEXT_VALUE)
 
         elseif d=='RightButton' then
@@ -558,26 +658,27 @@ local function Init()
     button:SetScript('OnMouseWheel', function(self, d)
         if not IsModifierKeyDown() then
             if d==1 then
-                Save.hide= nil
-            elseif d==-1 then
                 Save.hide= true
+            elseif d==-1 then
+                Save.hide= nil
             end
             set_Show_Hide()--显示， 隐藏
 
         elseif IsAltKeyDown() then--缩放
-            local sacle=Save.scale or 1
+            local scale=Save.scale or 1
             if d==1 then
-                sacle=sacle+0.1
+                scale=scale+0.05
             elseif d==-1 then
-                sacle=sacle-0.1
+                scale=scale-0.05
             end
-            if sacle>3 then
-                sacle=3
-            elseif sacle<0.6 then
-                sacle=0.6
+            if scale>3 then
+                scale=3
+            elseif scale<0.5 then
+                scale=0.5
             end
-            self.frame:SetScale(sacle)
-            Save.scale=sacle
+            self.frame:SetScale(scale)
+            Save.scale=scale
+            print(id, addName, e.onlyChinse and '缩放' or UI_SCALE,'|cnGREEN_FONT_COLOR:'..scale)
         end
     end)
     button:SetScript('OnEnter', function(self)
@@ -601,6 +702,23 @@ local function Init()
     if Save.scale and Save.scale~=1 then--缩放
         button.frame:SetScale(Save.scale)
     end
+    button.frame:RegisterEvent('PLAYER_ENTERING_WORLD')
+    button.frame:RegisterEvent('PLAYER_AVG_ITEM_LEVEL_UPDATE')
+    button.frame:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
+    button.frame:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED')
+    button.frame:RegisterEvent('PLAYER_TALENT_UPDATE')
+    button.frame:RegisterEvent('CHALLENGE_MODE_START')
+    button.frame:SetScript("OnEvent", function(self, event)
+        if event=='PLAYER_SPECIALIZATION_CHANGED' then
+            set_Tabs()--设置, 内容
+            create_Rest_Lable(true)
+        elseif event=='AVOIDANCE_UPDATE' or event=='LIFESTEAL_UPDATE' then
+            create_Rest_Lable()
+        else
+            create_Rest_Lable(true)
+        end
+    end)
+
     set_Show_Hide()--显示， 隐藏
 
 
