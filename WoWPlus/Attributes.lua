@@ -3,6 +3,13 @@ local id, e= ...
 local Save={
     redColor= '|cnRED_FONT_COLOR:',
     greenColor='|cnGREEN_FONT_COLOR:',
+    color={
+        ['CRITCHANCE']= {r=0.82, g=0.2, b=0, a=1},
+        ['HASTE']= {r=0.2, g=0.82, b=0.2, a=1},
+        ['MASTERY']= {r=0.82, g=0, b=0.82, a=1},
+        ['VERSATILITY']= {r=0, g=1, b=0.82, a=1},
+    },
+    --toLeft=true
 }
 local addName= STAT_CATEGORY_ATTRIBUTES
 local panel= CreateFrame('Frame')
@@ -166,7 +173,7 @@ local function set_Crit_Tooltip(self)
 		critChance = meleeCrit;
 		rating = CR_CRIT_MELEE;
 	end
-    e.tips:AddDoubleLine(frame.name, format('%d%%', critChance + 0.5))
+    e.tips:AddDoubleLine(frame.name, format('%.2f%%', critChance + 0.5))
 
 	local extraCritChance = GetCombatRatingBonus(rating);
 	local extraCritRating = GetCombatRating(rating);
@@ -224,7 +231,7 @@ local function set_Haste_Tooltip(self)
 	else
 		hasteFormatString = "%s";
 	end
-	e.tips:AddDoubleLine(frame.name, format(hasteFormatString, format("%d%%", haste + 0.5)))
+	e.tips:AddDoubleLine(frame.name, format(hasteFormatString, format("%0.2f%%", haste + 0.5)))
 	e.tips:AddLine(_G["STAT_HASTE_"..e.Player.class.."_TOOLTIP"] or (e.onlyChinse and '提高攻击速度和施法速度。' or STAT_HASTE_TOOLTIP), nil, nil,nil,true)
 	e.tips:AddDoubleLine(format(e.onlyChinse and '急速：%s [+%.2f%%]' or STAT_HASTE_BASE_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(rating)), GetCombatRatingBonus(rating)))
     if frame.value and frame.value~=haste then
@@ -302,11 +309,19 @@ local function set_Tabs()
                 [3]= e.onlyChinse and '智力' or SPEC_FRAME_PRIMARY_STAT_INTELLECT,
             }
         },
-        {name= 'CRITCHANCE', r=0.82, g=0.2, b=0, text= e.onlyChinse and '爆击' or STAT_CRITICAL_STRIKE},
-        {name= 'HASTE', r=0.2, g=0.82, b=0.2, text= e.onlyChinse and '急速' or STAT_HASTE},
-        {name= 'MASTERY', r=0.82, g=0, b=0.82, text= e.onlyChinse and '精通' or STAT_MASTERY},
-        {name= 'VERSATILITY', r=0, g=1, b=0.82, text= e.onlyChinse and '全能' or STAT_VERSATILITY},
+        {name= 'CRITCHANCE', text= e.onlyChinse and '爆击' or STAT_CRITICAL_STRIKE},
+        {name= 'HASTE', text= e.onlyChinse and '急速' or STAT_HASTE},
+        {name= 'MASTERY', r=Save.color['MASTERY'].r, g=Save.color['MASTERY'].g, b=Save.color['MASTERY'].b, a=Save.color['MASTERY'].a, text= e.onlyChinse and '精通' or STAT_MASTERY},
+        {name= 'VERSATILITY', text= e.onlyChinse and '全能' or STAT_VERSATILITY},
     }
+    for index, info in pairs(Tabs) do
+        if index>1 then
+            Tabs[index].r= Save.color[info.name].r or 1
+            Tabs[index].g= Save.color[info.name].g or 0.82
+            Tabs[index].b= Save.color[info.name].b or 0
+            Tabs[index].a= Save.color[info.name].a or 1
+        end
+    end
 end
 
 local function set_OnEvent(frame)
@@ -366,27 +381,63 @@ local function create_Rest_Lable()
     for index, info in pairs(Tabs) do
         local frame= button[info.name]
         if not frame then
-            frame= CreateFrame('Frame', nil, button)
-            frame:SetPoint('TOPRIGHT', last or button, 'BOTTOMRIGHT')
-            frame:SetSize(1,12)
+            frame= CreateFrame('Frame', nil, button.frame)
+            frame:SetSize(1,13)
             frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
-
-            frame.label= e.Cstr(frame, nil, nil, nil, {info.r,info.g,info.b,info.a}, nil, 'RIGHT')
-            frame.label:SetPoint('TOPRIGHT')
+            frame.label= e.Cstr(frame, nil, nil, nil, {info.r,info.g,info.b,info.a}, nil, Save.toLeft and 'LEFT' or 'RIGHT')
+            
             frame.label:EnableMouse(true)
             frame.label:SetScript('OnLeave', function() e.tips:Hide() end)
 
-            frame.text= e.Cstr(frame, nil, nil, nil, {1,1,1}, nil, 'LEFT')
-            frame.text:SetPoint('TOPLEFT', frame, 'TOPRIGHT')
+            frame.text= e.Cstr(frame, nil, nil, nil, {1,1,1}, nil, Save.toLeft and 'RIGHT' or 'LEFT')
             frame.text:EnableMouse(true)
             frame.text:SetScript('OnLeave', function() e.tips:Hide() end)
+
+            if Save.toLeft then
+                if not last then
+                    frame:SetPoint('TOPLEFT', button.frame, 'BOTTOMLEFT', 8, 0)
+                else
+                    frame:SetPoint('TOPLEFT', last, 'BOTTOMLEFT')
+                end
+                frame.text:SetPoint('TOPRIGHT', frame, 'TOPLEFT')
+                frame.label:SetPoint('TOPLEFT')
+            else
+                if not last then
+                    frame:SetPoint('TOPRIGHT', button.frame, 'BOTTOMRIGHT', -8, 0)
+                else
+                    frame:SetPoint('TOPRIGHT', last, 'BOTTOMRIGHT')
+                end
+                frame.text:SetPoint('TOPLEFT', frame, 'TOPRIGHT')
+                frame.label:SetPoint('TOPRIGHT')
+            end
 
             frame.index= index
             last= frame
             button[info.name]= frame
-            
         end
         set_OnEvent(frame)
+    end
+end
+
+
+--##########
+--显示， 隐藏
+--##########
+local function set_Show_Hide()
+    if Save.hide then
+        button:SetNormalAtlas(e.Icon.icon)
+    else
+        button:SetNormalAtlas('charactercreate-icon-customize-body-selected')
+    end
+    button.frame:SetShown(not Save.hide)
+    button:SetAlpha(Save.hide and 0.3 or 1)
+end
+
+local function set_Point()--设置, 位置
+    if Save.point then
+        button:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
+    else
+        button:SetPoint('LEFT', 12, 180)
     end
 end
 
@@ -403,17 +454,14 @@ local function Init()
 
     --e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size)
     button= e.Cbtn(nil, nil, nil, nil, nil, true, {18,18})
-    if Save.point then
-        button:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
-    else
-        button:SetPoint('LEFT', 80, 180)
-    end
+    set_Point()--设置, 位置
+
     button:RegisterForDrag("RightButton")
     button:SetMovable(true)
     button:SetClampedToScreen(true)
 
     button:SetScript("OnDragStart", function(self,d )
-        if d=='RightButton' then
+        if d=='RightButton' and not IsModifierKeyDown() then
             self:StartMoving()
         end
     end)
@@ -428,28 +476,42 @@ local function Init()
             create_Rest_Lable()
             print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '重置' or RESET)..'|r', e.onlyChinse and '数值' or STATUS_TEXT_VALUE)
 
-        elseif d=='RightButton' then--移动光标
-            SetCursor('UI_MOVE_CURSOR')
+        elseif d=='RightButton' then
+            if not IsModifierKeyDown() then--移动光标
+                SetCursor('UI_MOVE_CURSOR')
+                print(id, addName, e.onlyChinse and '还原位置' or RESET_POSITION, 'Alt+'..e.Icon.right)
 
+            elseif IsAltKeyDown then
+                Save.point=nil
+                self:ClearAllPoints()
+                set_Point()--设置, 位置
+            end
         end
     end)
-    button:SetScript("OnMouseUp", function() ResetCursor() end)
-    button:SetScript("OnLeave",function() ResetCursor() e.tips:Hide() end)
-    button:SetScript('OnMouseWheel', function(self, d)--缩放
-        local sacle=Save.scale or 1
-        if d==1 then
-            sacle=sacle+0.1
-        elseif d==-1 then
-            sacle=sacle-0.1
+    button:SetScript('OnMouseWheel', function(self, d)
+        if not IsModifierKeyDown() then
+            if d==1 then
+                Save.hide= nil
+            elseif d==-1 then
+                Save.hide= true
+            end
+            set_Show_Hide()--显示， 隐藏
+
+        elseif IsAltKeyDown() then--缩放
+            local sacle=Save.scale or 1
+            if d==1 then
+                sacle=sacle+0.1
+            elseif d==-1 then
+                sacle=sacle-0.1
+            end
+            if sacle>3 then
+                sacle=3
+            elseif sacle<0.6 then
+                sacle=0.6
+            end
+            self.frame:SetScale(sacle)
+            Save.scale=sacle
         end
-        if sacle>3 then
-            sacle=3
-        elseif sacle<0.6 then
-            sacle=0.6
-        end
-        
-        self:SetScale(sacle)
-        Save.scale=sacle
     end)
     button:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -457,18 +519,23 @@ local function Init()
         e.tips:AddDoubleLine(e.onlyChinse and '重置' or RESET, e.Icon.left)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
-        e.tips:AddDoubleLine((e.onlyChinse and '缩放' or UI_SCALE)..': '..(Save.scale or 1), e.Icon.mid)
+        e.tips:AddDoubleLine(e.GetShowHide(not Save.hide), e.Icon.mid)
+        e.tips:AddDoubleLine((e.onlyChinse and '缩放' or UI_SCALE)..': '..(Save.scale or 1), '|cnGREEN_FONT_COLOR:Alt+'..e.Icon.mid)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
     end)
+    button:SetScript("OnMouseUp", function() ResetCursor() end)
+    button:SetScript("OnLeave",function() ResetCursor() e.tips:Hide() end)
 
-
-    
-
+    button.frame= CreateFrame("Frame",nil,button)
+    button.frame:SetPoint(Save.toLeft and 'BOTTOMLEFT' or 'BOTTOMRIGHT')
+    button.frame:SetSize(1,1)
     if Save.scale and Save.scale~=1 then--缩放
-        button:SetScale(Save.scale)
+        button.frame:SetScale(Save.scale)
     end
+    set_Show_Hide()--显示， 隐藏
+
 
     set_Tabs()--设置, 内容
 
