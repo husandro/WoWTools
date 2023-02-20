@@ -494,6 +494,59 @@ local function create_Rest_Lable(rest)
                     frame.label:SetPoint('TOPRIGHT')
                 end
 
+                if index==1 then--主属性
+                    frame:RegisterUnitEvent('UNIT_STATS', 'player')
+                    frame:SetScript('OnEvent', set_Stat_Text)
+                    frame.label:SetScript('OnEnter', set_Stat_Tooltip)
+                    frame.text:SetScript('OnEnter', set_Stat_Tooltip)
+                else
+                    if index==2 then--爆击
+                        local holySchool = 2;
+                        local minCrit = GetSpellCritChance(holySchool);
+                        local spellCrit;
+                        for i=(holySchool+1), MAX_SPELL_SCHOOLS do
+                            spellCrit = GetSpellCritChance(i);
+                            minCrit = min(minCrit, spellCrit);
+                        end
+                        frame.minCrit = minCrit
+                        frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
+                        frame:SetScript('OnEvent', set_Crit_Text)
+                        frame.label:SetScript('OnEnter', set_Crit_Tooltip)
+                        frame.text:SetScript('OnEnter', set_Crit_Tooltip)
+            
+                    elseif index==3 then--急速
+                        frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
+                        frame:SetScript('OnEvent', set_Haste_Text)
+                        frame.label:SetScript('OnEnter', set_Haste_Tooltip)
+                        frame.text:SetScript('OnEnter', set_Haste_Tooltip)
+            
+                    elseif index==4 then--精通
+                        frame:RegisterEvent('MASTERY_UPDATE')
+                        frame.onEnterFunc = Mastery_OnEnter;
+                        frame.label:SetScript('OnEnter', frame.onEnterFunc)--PaperDollFrame.lua
+                        frame.text:SetScript('OnEnter', frame.onEnterFunc)
+            
+                    elseif index==5 then--全能
+                        frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
+                        frame:SetScript('OnEvent', set_Versatility_Text)
+                        frame.label:SetScript('OnEnter', set_Versatility_Tooltip)
+                        frame.text:SetScript('OnEnter', set_Versatility_Tooltip)
+            
+                    elseif index==6 then--吸血
+                        frame:RegisterEvent('LIFESTEAL_UPDATE')
+                        button.frame:RegisterEvent('LIFESTEAL_UPDATE')
+                        frame:SetScript('OnEvent', set_Lifesteal_Text)
+                        frame.label:SetScript('OnEnter', set_Lifesteal_Tooltip)
+                        frame.text:SetScript('OnEnter', set_Lifesteal_Tooltip)
+            
+                    elseif index==7 then--闪避
+                        frame:RegisterEvent('AVOIDANCE_UPDATE')
+                        button.frame:RegisterEvent('AVOIDANCE_UPDATE')
+                        frame:SetScript('OnEvent', set_Avoidance_Text)
+                        frame.label:SetScript('OnEnter', set_Avoidance_Tooltip)
+                        frame.text:SetScript('OnEnter', set_Avoidance_Tooltip)
+                    end
+                end
                 frame.index= index
                 button[info.name]= frame
             end
@@ -516,7 +569,6 @@ local function create_Rest_Lable(rest)
             end
         end
         if not find and frame then
-            frame:SetScript('OnEvent', nil)
             frame:SetShown(false)
         end
     end
