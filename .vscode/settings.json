@@ -1775,7 +1775,8 @@
         "OpenAzeriteEmpoweredItemUIFromItemLocation",
         "AZERITE_PREVIEW_UNAVAILABLE_FOR_CLASS",
         "Mastery_OnEnter",
-        "OpacitySliderFrame"
+        "OpacitySliderFrame",
+        "SlashCmdList"
     ],
     "Lua.diagnostics.disable": [
     ]

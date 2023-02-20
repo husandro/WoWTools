@@ -1,15 +1,15 @@
 
 local id, e= ...
 local Save={
-    redColor= '|cnRED_FONT_COLOR:',
-    greenColor='|cnGREEN_FONT_COLOR:',
+    redColor= '|cffff8200',
+    greenColor='|cff00ff00',
     tab={
         ['CRITCHANCE']= {r=0.99, g=0.35, b=0.31},
         ['HASTE']= {r=0.66, g=1, b=0.4},
         ['MASTERY']= {r=0.82, g=0.28, b=0.82},
         ['VERSATILITY']= {r=0, g=0.77, b=1},
         ['LIFESTEAL']= {r=1, g=0.33, b=0.5},
-        ['AVOIDANCE']= {r=1, g=0.79, b=0},--'闪避'},
+        ['AVOIDANCE']= {r=1, g=0.79, b=0},--'闪避'
     },
     --toLeft=true
 }
@@ -394,6 +394,9 @@ local function set_Tabs()
             Tabs[index].g= Save.tab[info.name] and Save.tab[info.name].g or 0.82
             Tabs[index].b= Save.tab[info.name] and Save.tab[info.name].b or 0
             Tabs[index].a= Save.tab[info.name] and Save.tab[info.name].a or 1
+            if index>5 then
+                Tabs[index].hide= Save.tab[info.name] and Save.tab[info.name].hide
+            end
         end
     end
 end
@@ -596,7 +599,13 @@ local function set_Panle_Setting()--设置 panel
         Save.toLeft= not Save.toLeft and true or nil
         print(id, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
     end)
-
+    last:SetScript("OnEnter", function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddLine('23% '..Tabs[2].text)
+        e.tips:Show()
+    end)
+    last:SetScript('OnLeave', function() e.tips:Hide() end)
 
     for index, info in pairs(Tabs) do
         if index>1 then
@@ -633,7 +642,7 @@ local function set_Panle_Setting()--设置 panel
                 local a2= Save.tab[self.name].a or 1
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddLine(self.text, self.name, r2, g2, b2)
+                e.tips:AddDoubleLine(self.text, self.name, r2, g2, b2)
                 e.tips:AddDoubleLine(e.onlyChinse and '设置' or SETTINGS, e.onlyChinse and '颜色' or COLOR)
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(format('r%.2f', r2)..format('  g%.2f', g2)..format('  b%.2f', b2), format('a%.2f', r2))
@@ -649,14 +658,18 @@ local function set_Panle_Setting()--设置 panel
                 check:SetScript('OnMouseUp',function(self)
                     local hide= not Save.tab[self.name].hide and true or nil
                     Save.tab[self.name].hide= hide
+                    set_Tabs()
                     create_Rest_Lable(true)
                     print(id, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
                 end)
                 check:SetScript('OnEnter', function(self)
                     e.tips:SetOwner(self, "ANCHOR_LEFT")
                     e.tips:ClearLines()
-                    e.tips:AddDoubleLine(self.text, self.name)
-                    e.tips:AddLine(e.GetShowHide(Save.tab[self.name].hide))
+                    local value= button[self.name] and button[self.name].value
+                    e.tips:AddDoubleLine(self.text, value and format('%.2f%%', value))
+                    e.tips:AddLine(' ')
+                    e.tips:AddDoubleLine(e.GetShowHide(Save.tab[self.name].hide), '|cnGREEN_FONT_COLOR:0 = '..(e.onlyChinse and '隐藏' or HIDE))
+
                     e.tips:Show()
                 end)
                 check:SetScript('OnLeave', function() e.tips:Hide() end)
