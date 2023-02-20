@@ -4,12 +4,12 @@ local Save={
     redColor= '|cnRED_FONT_COLOR:',
     greenColor='|cnGREEN_FONT_COLOR:',
     tab={
-        ['CRITCHANCE']= {r=0.82, g=0.2, b=0},
-        ['HASTE']= {r=0.2, g=0.82, b=0.2},
-        ['MASTERY']= {r=0.82, g=0, b=0.82},
-        ['VERSATILITY']= {r=0, g=1, b=0.82},
-        ['LIFESTEAL']= {r=0.5, g=1, b=0},
-        ['AVOIDANCE']= {r=1, g=1, b=0},--'闪避'},
+        ['CRITCHANCE']= {r=0.98, g=0.37, b=0.14},
+        ['HASTE']= {r=0.66, g=1, b=0.4},
+        ['MASTERY']= {r=0.82, g=0.28, b=0.82},
+        ['VERSATILITY']= {r=0, g=0.77, b=1},
+        ['LIFESTEAL']= {r=1, g=10.35, b=0.4},
+        ['AVOIDANCE']= {r=1, g=0.79, b=0},--'闪避'},
     },
     --toLeft=true
 }
