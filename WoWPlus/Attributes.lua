@@ -440,7 +440,7 @@ local function set_Point()
     if Save.point then
         button:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
     else
-        button:SetPoint('LEFT', 18, 180)
+        button:SetPoint('LEFT', 19, 180)
     end
 end
 
