@@ -1797,7 +1797,8 @@
         "DODGE_CHANCE",
         "STAT_STAGGER_TOOLTIP",
         "STAGGER",
-        "STAT_STAGGER_TARGET_TOOLTIP"
+        "STAT_STAGGER_TARGET_TOOLTIP",
+        "DEFENSE"
     ],
     "Lua.diagnostics.disable": [
     ]

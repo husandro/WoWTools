@@ -152,18 +152,19 @@ e.GetPlayerInfo=function (unit, guid, showName)--, hideClassTexture)
     return ''
 end
 
-local class= UnitClassBase('player')
-local r, g, b, hex= GetClassColor(class)
+local classFilename= UnitClassBase('player')
+local rPerc, gPerc, bPerc, argbHex = GetClassColor(classFilename)
 e.Player={
     server= GetRealmName(),
     servers= {},--多服务器
     name_server= UnitName('player')..'-'..GetRealmName(),
     name= UnitName('player'),
-    class= class,
-    r= r,
-    g= g,
-    b= b,
-    col= '|c'..hex,
+    sex= UnitSex("player"),
+    class= classFilename,
+    r= rPerc,
+    g= gPerc,
+    b= bPerc,
+    col= '|c'..argbHex,
     zh= LOCALE_zhCN or LOCALE_zhTW,--GetLocale()== ("zhCN" or 'zhTW'),
     Lo= GetLocale(),
     --MAX_PLAYER_LEVEL = GetMaxLevelForPlayerExpansion()

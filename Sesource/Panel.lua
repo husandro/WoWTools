@@ -84,33 +84,39 @@ panel:RegisterEvent('ADDON_LOADED')
 panel:RegisterEvent("PLAYER_LOGOUT")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event=='ADDON_LOADED' and arg1==id then
+    if event=='ADDON_LOADED' then
+        if arg1==id then
+            Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
-        Save= WoWToolsSave and WoWToolsSave[addName] or Save
+            e.onlyChinse= Save.onlyChinse
 
-        e.onlyChinse= Save.onlyChinse
+            reloadButton:SetText(e.onlyChinse and '重新加载UI' or RELOADUI)
+            restButton:SetText('|cnRED_FONT_COLOR:'..(e.onlyChinse and '全部重置' or RESET_ALL_BUTTON_TEXT)..'|r')
 
-        reloadButton:SetText(e.onlyChinse and '重新加载UI' or RELOADUI)
-        restButton:SetText('|cnRED_FONT_COLOR:'..(e.onlyChinse and '全部重置' or RESET_ALL_BUTTON_TEXT)..'|r')
+            local check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--仅中文
+            check:SetChecked(Save.onlyChinse)
+            check.text:SetText('Chinse')
+            check:SetPoint('TOPLEFT', restButton, 'TOPRIGHT')
+            check:SetScript('OnMouseUp',function()
+                e.onlyChinse= not e.onlyChinse and true or nil
+                Save.onlyChinse = e.onlyChinse
+                print(id, addName, e.GetEnabeleDisable(e.onlyChinse), '|cffff00ff', e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+            end)
+            check:SetScript('OnEnter', function(self2)
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(LANGUAGE..'('..SHOW..')', LFG_LIST_LANGUAGE_ZHCN)
+                e.tips:AddDoubleLine('显示语言', '简体中文')
+                e.tips:Show()
+            end)
+            check:SetScript('OnLeave', function() e.tips:Hide() end)
+            panel:UnregisterEvent('ADDON_LOADED')
 
-        local check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--仅中文
-        check:SetChecked(Save.onlyChinse)
-        check.text:SetText('Chinse')
-        check:SetPoint('TOPLEFT', restButton, 'TOPRIGHT')
-        check:SetScript('OnMouseUp',function()
-            e.onlyChinse= not e.onlyChinse and true or nil
-            Save.onlyChinse = e.onlyChinse
-            print(id, addName, e.GetEnabeleDisable(e.onlyChinse), '|cffff00ff', e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
-        end)
-        check:SetScript('OnEnter', function(self2)
-            e.tips:SetOwner(self2, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(LANGUAGE..'('..SHOW..')', LFG_LIST_LANGUAGE_ZHCN)
-            e.tips:AddDoubleLine('显示语言', '简体中文')
-            e.tips:Show()
-        end)
-        check:SetScript('OnLeave', function() e.tips:Hide() end)
-
+            local text= e.Cstr(panel, nil, nil, nil, nil, nil, 'RIGHT')
+            text:SetPoint('TOPRIGHT')
+            text:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '启用' or ENABLE)..'|r/|cnRED_FONT_COLOR:'..(e.onlyChinse and '禁用' or DISABLE))
+        end
+    
     elseif event == "PLAYER_LOGOUT" then
         if e.ClearAllSave then
             WoWToolsSave={}

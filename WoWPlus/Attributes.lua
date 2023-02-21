@@ -1,5 +1,8 @@
 
 local id, e= ...
+local addName= STAT_CATEGORY_ATTRIBUTES--PaperDollFrame.lua
+local panel= CreateFrame('Frame')
+local button, Role, PrimaryStat
 local Save={
     redColor= '|cffff8200',
     greenColor='|cff00ff00',
@@ -15,17 +18,18 @@ local Save={
         ["PARRY"]= {r=0.59, g=0.85, b=1},
         ["BLOCK"]= {r=0.75, g=0.53, b=0.78},
         ["STAGGER"]= {r=0.38, g=1, b=0.62},
+        ["SPEED"]= {r=1, g=0.82, b=0},--移动
     },
-    --toLeft=true
+    --toLeft=true--数值,放左边
+    scale= 1.1,--缩放
 }
-local addName= STAT_CATEGORY_ATTRIBUTES
-local panel= CreateFrame('Frame')
-local button
---PaperDollFrame.lua
-
 
 local Tabs
 local function set_Tabs()
+    local spec= GetSpecialization()
+    Role= GetSpecializationRole(spec)--DAMAGER, TANK, HEALER
+    PrimaryStat= select(6, GetSpecializationInfo(spec, nil, nil, nil, e.Player.sex))
+
     Tabs={
         {name='STATUS', r=e.Player.r, g=e.Player.g, b=e.Player.b, a=1, text= {
                 [1]= e.onlyChinse and '力量' or SPEC_FRAME_PRIMARY_STAT_STRENGTH,
@@ -36,35 +40,54 @@ local function set_Tabs()
         {name= 'CRITCHANCE', text= e.onlyChinse and '爆击' or STAT_CRITICAL_STRIKE},
         {name= 'HASTE', text= e.onlyChinse and '急速' or STAT_HASTE},
         {name= 'MASTERY', text= e.onlyChinse and '精通' or STAT_MASTERY},
-        {name= 'VERSATILITY', text= e.onlyChinse and '全能' or STAT_VERSATILITY},
-        --6
-        {name= 'LIFESTEAL', text= e.onlyChinse and '吸血' or STAT_LIFESTEAL},
-        {name= 'AVOIDANCE', text= e.onlyChinse and '闪避' or STAT_AVOIDANCE},
-        --[[8
-        {name= 'DODGE', text= e.onlyChinse and '躲闪' or STAT_DODGE},
-        {name= 'PARRY', text= e.onlyChinse and '招架' or STAT_PARRY},
-        {name= 'BLOCK', text= e.onlyChinse and '格挡' or STAT_BLOCK},
-        {name= 'STAGGER', text= e.onlyChinse and '醉拳' or STAT_STAGGER},]]
+        {name= 'VERSATILITY', text= e.onlyChinse and '全能' or STAT_VERSATILITY},--5
+
+        {name= 'LIFESTEAL', text= e.onlyChinse and '吸血' or STAT_LIFESTEAL},--6
+        {name= 'AVOIDANCE', text= e.onlyChinse and '闪避' or STAT_AVOIDANCE},--7
+
+        {name= 'DODGE', text= e.onlyChinse and '躲闪' or STAT_DODGE},--8
+        {name= 'PARRY', text= e.onlyChinse and '招架' or STAT_PARRY},--9
+        {name= 'BLOCK', text= e.onlyChinse and '格挡' or STAT_BLOCK},--10
+        {name= 'STAGGER', text= e.onlyChinse and '醉拳' or STAT_STAGGER},--11
+
+        {name= 'SPEED', text= e.onlyChinse and '移动' or NPE_MOVE},--12
     }
     for index, info in pairs(Tabs) do
         if index>1 then
-            Tabs[index].r= Save.tab[info.name] and Save.tab[info.name].r or 1
-            Tabs[index].g= Save.tab[info.name] and Save.tab[info.name].g or 0.82
-            Tabs[index].b= Save.tab[info.name] and Save.tab[info.name].b or 0
-            Tabs[index].a= Save.tab[info.name] and Save.tab[info.name].a or 1
-            if index>5 then
-                Tabs[index].hide= Save.tab[info.name] and Save.tab[info.name].hide
+            if not Save.tab[info.name] then
+                Save.tab[info.name]={}
+            end
+            Tabs[index].r= Save.tab[info.name].r or 1
+            Tabs[index].g= Save.tab[info.name].g or 0.82
+            Tabs[index].b= Save.tab[info.name].b or 0
+            Tabs[index].a= Save.tab[info.name].a or 1
+            if info.name=='VERSATILITY' then
+                Tabs[index].damage= Save.tab[info.name].damage
+            elseif info.name=='SPEED' then
+                Tabs[index].current= Save.tab[info.name].current
+            end
+            if index>=6 and index<=11 then--坦克
+                if Role~='TANK' then
+                    Tabs[index].hide= true
+                elseif info.name=='STAGGER' and e.Player.class~='MONK' then--武僧
+                    Tabs[index].hide= true
+                else
+                    Tabs[index].hide= Save.tab[info.name].hide
+                end
+            else
+                Tabs[index].hide= Save.tab[info.name].hide
             end
         end
     end
 end
 
+
 --#####
 --主属性
 --#####
 local function set_Stat_Text(frame)
-    if frame.primaryStat then
-    local value= UnitStat('player', frame.primaryStat)
+    if PrimaryStat then
+        local value= UnitStat('player', PrimaryStat)
         local text
         if not frame.value or frame.value== value then
             text= e.MK(value, 3)
@@ -78,10 +101,13 @@ local function set_Stat_Text(frame)
     end
 end
 local function set_Stat_Tooltip(self)
+    if not PrimaryStat then
+        return
+    end
     local frame= self:GetParent()
     e.tips:SetOwner(self, "ANCHOR_LEFT")
     e.tips:ClearLines()
-    local stat, effectiveStat, posBuff, negBuff = UnitStat('player', frame.primaryStat);
+    local stat, effectiveStat, posBuff, negBuff = UnitStat('player', PrimaryStat);
     local effectiveStatDisplay = BreakUpLargeNumbers(effectiveStat);
     local tooltipText = effectiveStatDisplay
     if posBuff~=0 and negBuff~=0 then
@@ -99,65 +125,48 @@ local function set_Stat_Tooltip(self)
             tooltipText = tooltipText..")"
         end
     end
-    e.tips:AddDoubleLine(frame.name, tooltipText)
-
-    local _, unitClass = UnitClass("player");
-    unitClass = strupper(unitClass);
-    local primaryStat, spec, role;
-    spec = GetSpecialization();
-    if (spec) then
-        role = GetSpecializationRole(spec);
-        primaryStat = select(6, GetSpecializationInfo(spec, nil, nil, nil, UnitSex("player")));
-    end
-    if frame.primaryStat==1 then-- Strength
+    e.tips:AddDoubleLine(frame.nametext, tooltipText)
+    local role = GetSpecializationRole(GetSpecialization())
+    if PrimaryStat==LE_UNIT_STAT_STRENGTH then-- Strength
         local text= ''
         local attackPower = GetAttackPowerForStat(frame.index, effectiveStat);
         if (HasAPEffectsSpellPower()) then
             text= e.onlyChinse and '提高你的攻击和技能强度' or STAT_TOOLTIP_BONUS_AP_SP
         end
-        if (not primaryStat or primaryStat == LE_UNIT_STAT_STRENGTH) then
-            text= text..' '.. BreakUpLargeNumbers(attackPower)
-            if ( role == "TANK" ) then
-                local increasedParryChance = GetParryChanceFromAttribute();
-                if ( increasedParryChance > 0 ) then
-                    CR_PARRY_BASE_STAT_TOOLTIP = "招架几率提高%.2f%%|n|cff888888（在效果递减之前）|r"
-
-                    text= text..'\n'..format(e.onlyChinse and '"招架几率提高%.2f%%|n|cff888888（在效果递减之前）|r"' or CR_PARRY_BASE_STAT_TOOLTIP, increasedParryChance);
-                end
+        text= text..' '.. BreakUpLargeNumbers(attackPower)
+        if role == "TANK" then
+            local increasedParryChance = GetParryChanceFromAttribute();
+            if ( increasedParryChance > 0 ) then
+                CR_PARRY_BASE_STAT_TOOLTIP = "招架几率提高%.2f%%|n|cff888888（在效果递减之前）|r"
+                text= text..'\n'..format(e.onlyChinse and '"招架几率提高%.2f%%|n|cff888888（在效果递减之前）|r"' or CR_PARRY_BASE_STAT_TOOLTIP, increasedParryChance);
             end
-        else
-            text= e.onlyChinse and "|cff808080该属性不能使你获益|r" or STAT_NO_BENEFIT_TOOLTIP
         end
         e.tips:AddDoubleLine(text,nil,nil,nil,true)
-    elseif frame.primaryStat==2 then-- Agility
+
+    elseif PrimaryStat==LE_UNIT_STAT_AGILITY then-- Agility
         local text=''
-        if (not primaryStat or primaryStat == LE_UNIT_STAT_AGILITY) then
-            if HasAPEffectsSpellPower() then
-                text= e.onlyChinse and '提高你的攻击和技能强度' or  STAT_TOOLTIP_BONUS_AP_SP
-            else
-                text= e.onlyChinse and '提高你的攻击和技能强度' or STAT_TOOLTIP_BONUS_AP
-            end
-            if ( role == "TANK" ) then
-                local increasedDodgeChance = GetDodgeChanceFromAttribute();
-                if ( increasedDodgeChance > 0 ) then
-                    text= text .."|n"..format(e.onlyChinse and '躲闪几率提高%.2f%%|n|cff888888（在效果递减之前）|r' or CR_DODGE_BASE_STAT_TOOLTIP, increasedDodgeChance);
-                end
-            end
+        if HasAPEffectsSpellPower() then
+            text= e.onlyChinse and '提高你的攻击和技能强度' or  STAT_TOOLTIP_BONUS_AP_SP
         else
-            text= e.onlyChinse and "|cff808080该属性不能使你获益|r" or STAT_NO_BENEFIT_TOOLTIP
+            text= e.onlyChinse and '提高你的攻击和技能强度' or STAT_TOOLTIP_BONUS_AP
+        end
+
+        if role == "TANK" then
+            local increasedDodgeChance = GetDodgeChanceFromAttribute();
+            if increasedDodgeChance > 0 then
+                text= text .."|n"..format(e.onlyChinse and '躲闪几率提高%.2f%%|n|cff888888（在效果递减之前）|r' or CR_DODGE_BASE_STAT_TOOLTIP, increasedDodgeChance);
+            end
         end
         e.tips:AddDoubleLine(text,nil,nil,nil,true)
 
-    elseif frame.primaryStat==3 then
+    elseif PrimaryStat==LE_UNIT_STAT_INTELLECT then
         local text
-        if ( HasAPEffectsSpellPower() ) then
+        if HasAPEffectsSpellPower() then
             text= e.onlyChinse and "|cff808080该属性不能使你获益|r" or STAT_NO_BENEFIT_TOOLTIP
-        elseif ( HasSPEffectsAttackPower() ) then
+        elseif HasSPEffectsAttackPower() then
             text= e.onlyChinse and '提高你的攻击和技能强度' or  STAT_TOOLTIP_BONUS_AP_SP
-        elseif ( not primaryStat or primaryStat == LE_UNIT_STAT_INTELLECT ) then
-            text= (e.onlyChinse and '提高你的法术强度' or DEFAULT_STAT4_TOOLTIP).. effectiveStat
         else
-            text= e.onlyChinse and "|cff808080该属性不能使你获益|r" or STAT_NO_BENEFIT_TOOLTIP
+            text= (e.onlyChinse and '提高你的法术强度' or DEFAULT_STAT4_TOOLTIP).. effectiveStat
         end
         e.tips:AddDoubleLine(text,nil,nil,nil,true)
     end
@@ -181,7 +190,7 @@ end
 --####
 local function set_Crit_Text(frame)
     local critChance
-	local spellCrit = frame.minCrit
+	local spellCrit = frame.minCrit or 0
 	local rangedCrit = GetRangedCritChance();
 	local meleeCrit = GetCritChance();
 	if (spellCrit >= rangedCrit and spellCrit >= meleeCrit) then
@@ -218,7 +227,7 @@ local function set_Crit_Tooltip(self)
 		critChance = meleeCrit;
 		rating = CR_CRIT_MELEE;
 	end
-    e.tips:AddDoubleLine(frame.name, format('%.2f%%', critChance + 0.5))
+    e.tips:AddDoubleLine(frame.nametext, format('%.2f%%', critChance + 0.5))
 
 	local extraCritChance = GetCombatRatingBonus(rating);
 	local extraCritRating = GetCombatRating(rating);
@@ -276,7 +285,7 @@ local function set_Haste_Tooltip(self)
 	else
 		hasteFormatString = "%s";
 	end
-	e.tips:AddDoubleLine(frame.name, format(hasteFormatString, format("%0.2f%%", haste + 0.5)))
+	e.tips:AddDoubleLine(frame.nametext, format(hasteFormatString, format("%0.2f%%", haste + 0.5)))
 	e.tips:AddLine(_G["STAT_HASTE_"..e.Player.class.."_TOOLTIP"] or (e.onlyChinse and '提高攻击速度和施法速度。' or STAT_HASTE_TOOLTIP), nil, nil,nil,true)
 	e.tips:AddDoubleLine(format(e.onlyChinse and '急速：%s [+%.2f%%]' or STAT_HASTE_BASE_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(rating)), GetCombatRatingBonus(rating)))
     if frame.value and frame.value~=haste then
@@ -312,12 +321,18 @@ end
 --####
 local function set_Versatility_Text(frame)
     local versatilityDamageBonus = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE)
+    local text= format('%d', versatilityDamageBonus + 0.5)
+    if frame.damage then
+        local versatilityDamageTakenReduction = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_TAKEN) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_TAKEN);
+        text= text..'/'..format('%d', versatilityDamageTakenReduction + 0.5)
+    end
+    text= text..'%'
     if not frame.value or frame.value== versatilityDamageBonus then
-        frame.text:SetFormattedText('%d%%', versatilityDamageBonus + 0.5)
+        frame.text:SetText(text)
     elseif frame.value< versatilityDamageBonus then
-        frame.text:SetFormattedText(Save.greenColor..'%d%%', versatilityDamageBonus + 0.5)
+        frame.text:SetText(Save.greenColor..text)
     else
-        frame.text:SetFormattedText(Save.redColor..'%d%%', versatilityDamageBonus + 0.5)
+        frame.text:SetText(Save.redColor..text)
     end
     return versatilityDamageBonus
 end
@@ -328,7 +343,7 @@ local function set_Versatility_Tooltip(self)
     local versatility = GetCombatRating(CR_VERSATILITY_DAMAGE_DONE);
 	local versatilityDamageBonus = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE);
 	local versatilityDamageTakenReduction = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_TAKEN) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_TAKEN);
-    e.tips:AddLine(frame.name)
+    e.tips:AddLine(frame.nametext)
 	e.tips:AddLine(format(e.onlyChinse and "造成的伤害值和治疗量提高%.2f%%，\n受到的伤害降低%.2f%%。\n全能：%s [%.2f%%/%.2f%%]" or CR_VERSATILITY_TOOLTIP, versatilityDamageBonus, versatilityDamageTakenReduction, BreakUpLargeNumbers(versatility), versatilityDamageBonus, versatilityDamageTakenReduction), nil,nil,nil,true)
     if frame.value and frame.value~=versatilityDamageBonus then
         e.tips:AddLine(' ')
@@ -363,7 +378,7 @@ local function set_Lifesteal_Tooltip(self)
     e.tips:ClearLines()
 
     local lifesteal = GetLifesteal();
-	e.tips:AddDoubleLine(frame.name,  format("%0.2f%%", lifesteal))
+	e.tips:AddDoubleLine(frame.nametext,  format("%0.2f%%", lifesteal))
     e.tips:AddLine(format(e.onlyChinse and '你所造成伤害和治疗的一部分将转而治疗你。\n\n吸血：%s [+%.2f%%]' or CR_LIFESTEAL_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(CR_LIFESTEAL)), GetCombatRatingBonus(CR_LIFESTEAL)), nil,nil,nil,true)
     if frame.value and frame.value~=lifesteal then
         e.tips:AddLine(' ')
@@ -398,7 +413,7 @@ local function set_Avoidance_Tooltip(self)
     e.tips:ClearLines()
 
     local Avoidance = GetAvoidance();
-	e.tips:AddDoubleLine(frame.name,  format("%0.2f%%", Avoidance))
+	e.tips:AddDoubleLine(frame.nametext,  format("%0.2f%%", Avoidance))
     e.tips:AddLine(format(e.onlyChinse and '范围效果法术的伤害降低。\n\n闪避：%s [+%.2f%%' or CR_AVOIDANCE_TOOLTIP , BreakUpLargeNumbers(GetCombatRating(CR_AVOIDANCE)), GetCombatRatingBonus(CR_AVOIDANCE)), nil,nil,nil,true)
     if frame.value and frame.value~=Avoidance then
         e.tips:AddLine(' ')
@@ -433,7 +448,7 @@ local function set_Dodge_Tooltip(self)
     e.tips:ClearLines()
 
     local chance = GetDodgeChance();
-	e.tips:AddDoubleLine(frame.name,  format("%0.2f%%", chance))
+	e.tips:AddDoubleLine(frame.nametext,  format("%0.2f%%", chance))
     e.tips:AddLine( format(e.onlyChinse and '%d点躲闪可使躲闪几率提高%.2f%%\n|cff888888（在效果递减之前）|r' or CR_DODGE_TOOLTIP, GetCombatRating(CR_DODGE), GetCombatRatingBonus(CR_DODGE)), nil,nil,nil,true)
     if frame.value and frame.value~=chance then
         e.tips:AddLine(' ')
@@ -468,7 +483,7 @@ local function set_Parry_Tooltip(self)
     e.tips:ClearLines()
 
     local chance = GetParryChance();
-	e.tips:AddDoubleLine(frame.name,  format("%0.2f%%", chance))
+	e.tips:AddDoubleLine(frame.nametext,  format("%0.2f%%", chance))
     e.tips:AddLine(format(e.onlyChinse and '%d点招架可使招架几率提高%.2f%%\n|cff888888（在效果递减之前）|r' or CR_PARRY_TOOLTIP, GetCombatRating(CR_PARRY), GetCombatRatingBonus(CR_PARRY)), nil,nil,nil,true)
     if frame.value and frame.value~=chance then
         e.tips:AddLine(' ')
@@ -503,8 +518,7 @@ local function set_Block_Tooltip(self)
     e.tips:ClearLines()
 
     local chance = GetBlockChance();
-    e.tips:AddDoubleLine(frame.name,  format("%0.2f%%", chance))
-    
+    e.tips:AddDoubleLine(frame.nametext,  format("%0.2f%%", chance))
 
 	local shieldBlockArmor = GetShieldBlock();
 	local blockArmorReduction = PaperDollFrame_GetArmorReduction(shieldBlockArmor, UnitEffectiveLevel('player'));
@@ -532,29 +546,36 @@ end
 --醉拳
 --####
 local function set_Stagger_Text(frame)
-    local chance = GetBlockChance();
-    if not frame.value or frame.value== chance then
-        frame.text:SetFormattedText('%d%%', chance + 0.5)
-    elseif frame.value< chance then
-        frame.text:SetFormattedText(Save.greenColor..'%d%%', chance + 0.5)
-    else
-        frame.text:SetFormattedText(Save.redColor..'%d%%', chance + 0.5)
+    local stagger, staggerAgainstTarget = C_PaperDollInfo.GetStaggerPercentage('player')
+    if stagger then
+        local text= format('%d', stagger + 0.5)
+        if staggerAgainstTarget then
+            text= text..' '..format('%d', staggerAgainstTarget + 0.5)
+        end
+        text= text..'%'
+        if not frame.value or frame.value== stagger then
+            frame.text:SetText(text)
+        elseif frame.value< stagger then
+            frame.text:SetText(Save.greenColor..text)
+        else
+            frame.text:SetText(Save.redColor..text)
+        end
     end
-    return chance
+    return stagger
 end
 local function set_Stagger_Tooltip(self)
+    local stagger, staggerAgainstTarget = C_PaperDollInfo.GetStaggerPercentage('player');
+    if not stagger then
+        return
+    end
     local frame= self:GetParent()
     e.tips:SetOwner(self, "ANCHOR_LEFT")
     e.tips:ClearLines()
-
-    local stagger, staggerAgainstTarget = C_PaperDollInfo.GetStaggerPercentage('target');
-    e.tips:AddDoubleLine(frame.name,  format("%0.2f%%", stagger))
-
+    e.tips:AddDoubleLine(frame.nametext,  format("%0.2f%%", stagger))
 	e.tips:AddLine(format(e.onlyChinse and '你的醉拳可化解%0.2f%%的伤害' or STAT_STAGGER_TOOLTIP, stagger), nil,nil,nil,true)
 	if (staggerAgainstTarget) then
 		e.tips:AddLine(format(e.onlyChinse and '（对当前目标比例%0.2f%%）' or STAT_STAGGER_TARGET_TOOLTIP, staggerAgainstTarget), nil,nil,nil,true)
 	end
-
 
     if frame.value and frame.value~=stagger then
         e.tips:AddLine(' ')
@@ -564,24 +585,47 @@ local function set_Stagger_Tooltip(self)
         else
             text= Save.redColor..'- '..format('%.2f%%', frame.value- stagger)
         end
-        e.tips:AddDoubleLine(format('%.2f%%', frame.value + 0.5), stagger)
+        e.tips:AddDoubleLine(format('%.2f%%', frame.value), text)
     end
     e.tips:Show()
 end
 
+--####
+--移动, 12
+--####
+local timeElapsed = 0
+local function set_SPEED_Text(frame, elapsed)
+    timeElapsed = timeElapsed + elapsed
+    if timeElapsed > 0.3 then
+        local currentSpeed, runSpeed, flightSpeed, swimSpeed = GetUnitSpeed('player')
+        local value
+        value= frame.current and currentSpeed or IsFlying() and flightSpeed or IsSwimming() and swimSpeed or runSpeed
+        if value~=0 then
+            frame.text:SetFormattedText('%.0f%%', value*100/BASE_MOVEMENT_SPEED)
+        else
+            frame.text:SetText('')
+        end
+        timeElapsed = 0
+    end
+end
+local function set_SPEED_Tooltip(self)
+    local frame= self:GetParent()
+    e.tips:SetOwner(self, "ANCHOR_LEFT")
+    e.tips:ClearLines()
+    e.tips:Show()
+end
 
 
-local function set_OnEvent(frame)
-    local name, value
-    if frame.index==1 then--主属性
-        frame.primaryStat= select(6, GetSpecializationInfo(GetSpecialization(), nil, nil, nil, UnitSex("player")))
-        name= Tabs[frame.index]['text'][frame.primaryStat]
+local function set_Label_Value(frame)
+    local text, value
+    if frame.name=='STATUS' then--主属性1
+        text= Tabs[frame.index]['text'][PrimaryStat]
         value= set_Stat_Text(frame)
     else
-        name= Tabs[frame.index].text
-        if frame.index==2 then--爆击
+        text= Tabs[frame.index].text
+        if frame.name=='CRITCHANCE' then--爆击2
             local holySchool = 2;
-            local minCrit = GetSpellCritChance(holySchool);
+            local minCrit = GetSpellCritChance(holySchool) or 0;
             local spellCrit;
             for i=(holySchool+1), MAX_SPELL_SCHOOLS do
                 spellCrit = GetSpellCritChance(i);
@@ -590,40 +634,41 @@ local function set_OnEvent(frame)
             frame.minCrit = minCrit
             value= set_Crit_Text(frame)
 
-        elseif frame.index==3 then--急速
+        elseif frame.name=='HASTE' then--急速3
             value= set_Haste_Text(frame)
 
-        elseif frame.index==4 then--精通
+        elseif frame.name=='MASTERY' then--精通4
             value= set_Mastery_Text(frame)
-            
-        elseif frame.index==5 then--全能
+
+        elseif frame.name=='VERSATILITY' then--全能5
             value= set_Versatility_Text(frame)
 
-        elseif frame.index==6 then--吸血
+        elseif frame.name=='LIFESTEAL' then--吸血6
             value= set_Lifesteal_Text(frame)
 
-        elseif frame.index==7 then--闪避
+        elseif frame.name=='AVOIDANCE' then--闪避7
             value= set_Avoidance_Text(frame)
 
-        elseif frame.index==8 then--躲闪
+        elseif frame.name=='DODGE' then--躲闪
             value= set_Dodge_Text(frame)
 
-        elseif frame.index==9 then--招架
+        elseif frame.name=='PARRY' then--招架
             value= set_Parry_Text(frame)
-        
-        elseif frame.index==10 then--格挡
+
+        elseif frame.name=='BLOCK' then--格挡
             value= set_Block_Text(frame)
-        
-        elseif frame.index==11 then--醉拳
+
+        elseif frame.name=='STAGGER' then--醉拳11
             value= set_Stagger_Text(frame)
+        --elseif frame.name=='STAGGER' then--SPEED 速度12
 
         end
     end
     if not frame.value or frame.value==0 or value==0 then
         frame.value= value
     end
-    frame.name= name
-    frame.label:SetText(name)
+    frame.nametext= text
+    frame.label:SetText(text or '')
 end
 
 local function create_Rest_Lable(rest)
@@ -633,7 +678,7 @@ local function create_Rest_Lable(rest)
         if not info.hide then
             if not frame then
                 frame= CreateFrame('Frame', nil, button.frame)
-                frame:SetSize(1,13)
+                frame:SetSize(1,14)
                 frame.label= e.Cstr(frame, nil, nil, nil, {info.r,info.g,info.b,info.a}, nil, Save.toLeft and 'LEFT' or 'RIGHT')
                 frame.label:EnableMouse(true)
                 frame.label:SetScript('OnLeave', function() e.tips:Hide() end)
@@ -650,96 +695,110 @@ local function create_Rest_Lable(rest)
                     frame.label:SetPoint('TOPRIGHT')
                 end
 
-                if index==1 then--主属性
+                if info.name=='STATUS' then--主属性1
                     frame:RegisterUnitEvent('UNIT_STATS', 'player')
                     frame:SetScript('OnEvent', set_Stat_Text)
                     frame.label:SetScript('OnEnter', set_Stat_Tooltip)
                     frame.text:SetScript('OnEnter', set_Stat_Tooltip)
-                else
-                    if index==2 then--爆击
-                        local holySchool = 2;
-                        local minCrit = GetSpellCritChance(holySchool);
-                        local spellCrit;
-                        for i=(holySchool+1), MAX_SPELL_SCHOOLS do
-                            spellCrit = GetSpellCritChance(i);
-                            minCrit = min(minCrit, spellCrit);
-                        end
-                        frame.minCrit = minCrit
-                        frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
-                        frame:SetScript('OnEvent', set_Crit_Text)
-                        frame.label:SetScript('OnEnter', set_Crit_Tooltip)
-                        frame.text:SetScript('OnEnter', set_Crit_Tooltip)
-            
-                    elseif index==3 then--急速
-                        frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
-                        frame:SetScript('OnEvent', set_Haste_Text)
-                        frame.label:SetScript('OnEnter', set_Haste_Tooltip)
-                        frame.text:SetScript('OnEnter', set_Haste_Tooltip)
-            
-                    elseif index==4 then--精通
-                        frame:RegisterEvent('MASTERY_UPDATE')
-                        frame.onEnterFunc = Mastery_OnEnter;
-                        frame.label:SetScript('OnEnter', frame.onEnterFunc)--PaperDollFrame.lua
-                        frame.text:SetScript('OnEnter', frame.onEnterFunc)
-            
-                    elseif index==5 then--全能
-                        frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
-                        frame:SetScript('OnEvent', set_Versatility_Text)
-                        frame.label:SetScript('OnEnter', set_Versatility_Tooltip)
-                        frame.text:SetScript('OnEnter', set_Versatility_Tooltip)
-            
-                    elseif index==6 then--吸血
-                        frame:RegisterEvent('LIFESTEAL_UPDATE')
-                        button.frame:RegisterEvent('LIFESTEAL_UPDATE')
-                        frame:SetScript('OnEvent', set_Lifesteal_Text)
-                        frame.label:SetScript('OnEnter', set_Lifesteal_Tooltip)
-                        frame.text:SetScript('OnEnter', set_Lifesteal_Tooltip)
-            
-                    elseif index==7 then--闪避
-                        frame:RegisterEvent('AVOIDANCE_UPDATE')
-                        button.frame:RegisterEvent('AVOIDANCE_UPDATE')
-                        frame:SetScript('OnEvent', set_Avoidance_Text)
-                        frame.label:SetScript('OnEnter', set_Avoidance_Tooltip)
-                        frame.text:SetScript('OnEnter', set_Avoidance_Tooltip)
 
-
-
-                    elseif index==8 then--躲闪
-                        --frame:RegisterEvent('AVOIDANCE_UPDATE')
-                        frame:SetScript('OnEvent', set_Dodge_Text)
-                        frame.label:SetScript('OnEnter', set_Dodge_Tooltip)
-                        frame.text:SetScript('OnEnter', set_Dodge_Tooltip)
-                    
-                    elseif index==9 then--招架
-                        --frame:RegisterEvent('AVOIDANCE_UPDATE')
-                        frame:SetScript('OnEvent', set_Parry_Text)
-                        frame.label:SetScript('OnEnter', set_Parry_Tooltip)
-                        frame.text:SetScript('OnEnter', set_Parry_Tooltip)
-
-                    elseif index==10 then--格挡
-                        --frame:RegisterEvent('AVOIDANCE_UPDATE')
-                        frame:SetScript('OnEvent', set_Block_Text)
-                        frame.label:SetScript('OnEnter', set_Block_Tooltip)
-                        frame.text:SetScript('OnEnter', set_Block_Tooltip)
-
-                    elseif index==11 then--醉拳
-                        --frame:RegisterEvent('AVOIDANCE_UPDATE')
-                        frame:SetScript('OnEvent', set_Stagger_Text)
-                        frame.label:SetScript('OnEnter', set_Stagger_Tooltip)
-                        frame.text:SetScript('OnEnter', set_Stagger_Tooltip)
-
+                elseif info.name=='CRITCHANCE' then--爆击2
+                    local holySchool = 2;
+                    local minCrit = GetSpellCritChance(holySchool) or 0;
+                    local spellCrit;
+                    for i=(holySchool+1), MAX_SPELL_SCHOOLS do
+                        spellCrit = GetSpellCritChance(i);
+                        minCrit = min(minCrit, spellCrit);
                     end
+                    frame.minCrit = minCrit
+                    frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
+                    frame:SetScript('OnEvent', set_Crit_Text)
+                    frame.label:SetScript('OnEnter', set_Crit_Tooltip)
+                    frame.text:SetScript('OnEnter', set_Crit_Tooltip)
+
+                elseif info.name=='HASTE' then--急速3
+                    frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
+                    frame:SetScript('OnEvent', set_Haste_Text)
+                    frame.label:SetScript('OnEnter', set_Haste_Tooltip)
+                    frame.text:SetScript('OnEnter', set_Haste_Tooltip)
+
+                elseif info.name=='MASTERY' then--精通4
+                    frame:RegisterEvent('MASTERY_UPDATE')
+                    frame.onEnterFunc = Mastery_OnEnter;
+                    frame.label:SetScript('OnEnter', frame.onEnterFunc)--PaperDollFrame.lua
+                    frame.text:SetScript('OnEnter', frame.onEnterFunc)
+
+                elseif info.name=='VERSATILITY' then--全能5
+                    frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
+                    frame:SetScript('OnEvent', set_Versatility_Text)
+                    frame.label:SetScript('OnEnter', set_Versatility_Tooltip)
+                    frame.text:SetScript('OnEnter', set_Versatility_Tooltip)
+
+                elseif info.name=='LIFESTEAL' then--吸血6
+                    frame:RegisterEvent('LIFESTEAL_UPDATE')
+                    button.frame:RegisterEvent('LIFESTEAL_UPDATE')
+                    frame:SetScript('OnEvent', set_Lifesteal_Text)
+                    frame.label:SetScript('OnEnter', set_Lifesteal_Tooltip)
+                    frame.text:SetScript('OnEnter', set_Lifesteal_Tooltip)
+
+                elseif info.name=='AVOIDANCE' then--闪避7
+                    frame:RegisterEvent('AVOIDANCE_UPDATE')
+                    button.frame:RegisterEvent('AVOIDANCE_UPDATE')
+                    frame:SetScript('OnEvent', set_Avoidance_Text)
+                    frame.label:SetScript('OnEnter', set_Avoidance_Tooltip)
+                    frame.text:SetScript('OnEnter', set_Avoidance_Tooltip)
+
+                elseif info.name=='DODGE' then--躲闪8
+                    frame:RegisterUnitEvent('UNIT_DEFENSE', "player")
+                    frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
+                    frame:SetScript('OnEvent', set_Dodge_Text)
+                    frame.label:SetScript('OnEnter', set_Dodge_Tooltip)
+                    frame.text:SetScript('OnEnter', set_Dodge_Tooltip)
+
+                elseif info.name=='PARRY' then--招架9
+                    frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
+                    frame:RegisterUnitEvent('UNIT_DEFENSE', "player")
+                    frame:SetScript('OnEvent', set_Parry_Text)
+                    frame.label:SetScript('OnEnter', set_Parry_Tooltip)
+                    frame.text:SetScript('OnEnter', set_Parry_Tooltip)
+
+                elseif info.name=='BLOCK' then--格挡10
+                    frame:RegisterUnitEvent('UNIT_DEFENSE', "player")
+                    frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
+                    frame:SetScript('OnEvent', set_Block_Text)
+                    frame.label:SetScript('OnEnter', set_Block_Tooltip)
+                    frame.text:SetScript('OnEnter', set_Block_Tooltip)
+
+                elseif info.name=='STAGGER' then--醉拳11
+                    frame:RegisterUnitEvent('UNIT_DEFENSE', "player")
+                    frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
+                    frame:RegisterEvent('PLAYER_TARGET_CHANGED')
+                    frame:SetScript('OnEvent', set_Stagger_Text)
+                    frame.label:SetScript('OnEnter', set_Stagger_Tooltip)
+                    frame.text:SetScript('OnEnter', set_Stagger_Tooltip)
+
+                elseif info.name=='SPEED' then--移动12
+                    frame:HookScript('OnUpdate', set_SPEED_Text)
+                    frame.label:SetScript('OnEnter', set_SPEED_Tooltip)
+                    frame.text:SetScript('OnEnter', set_SPEED_Tooltip)
                 end
+                frame.name= info.name
                 frame.index= index
                 button[info.name]= frame
             end
 
-            if rest then
+            if rest then--重置
                 frame.value=nil
             end
-            set_OnEvent(frame)
 
-            find= frame.value and frame.value>0
+            if frame.name=='VERSATILITY' then--全能5, 双属性
+                frame.damage= info.damage
+            elseif frame.name=='SPEED' then--速度12, 当前属性
+                frame.current= info.current
+            end
+
+            set_Label_Value(frame)
+
+            find= (frame.value and frame.value>0) or info.name=='SPEED'
             if find then
                 frame:ClearAllPoints()
                 if Save.toLeft then
@@ -788,42 +847,52 @@ end
 --设置 panel
 --##########
 local function set_Panle_Setting()--设置 panel
-    panel.name = (e.onlyChinse and '属性' or STAT_CATEGORY_ATTRIBUTES)..'|A:charactercreate-icon-customize-body-selected:0:0|a'--添加新控制面板
-    panel.parent =id
-    InterfaceOptions_AddCategory(panel)
-
-    local reloadButton=CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')--重新加载UI
-    reloadButton:SetPoint('TOPLEFT')
-    reloadButton:SetText(e.onlyChinse and '重新加载UI' or RELOADUI)
-    reloadButton:SetSize(120, 28)
-    reloadButton:SetScript('OnMouseUp', function()
+    local last=CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')--重新加载UI
+    last:SetPoint('TOPLEFT')
+    last:SetText(e.onlyChinse and '重新加载UI' or RELOADUI)
+    last:SetSize(120, 28)
+    last:SetScript('OnMouseUp', function()
         ReloadUI()
     end)
 
-    local last= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    last:SetPoint("TOPLEFT", reloadButton, 'BOTTOMLEFT', 0, -5)
-    last.text:SetText((e.onlyChinse and '数值' or STATUS_TEXT_VALUE)..': '..(e.onlyChinse and '向左' or BINDING_NAME_STRAFELEFT)..e.Icon.toLeft2)
-    last:SetChecked(Save.toLeft)
-    last:SetScript('OnMouseDown', function()
+    local check= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    check:SetPoint("TOPLEFT", panel.check, 'BOTTOMLEFT', 0, -12)
+    check.text:SetText((e.onlyChinse and '数值' or STATUS_TEXT_VALUE)..': '..(e.onlyChinse and '向左' or BINDING_NAME_STRAFELEFT)..e.Icon.toLeft2)
+    check:SetChecked(Save.toLeft)
+    check:SetScript('OnMouseDown', function()
         Save.toLeft= not Save.toLeft and true or nil
         print(id, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
     end)
-    last:SetScript("OnEnter", function(self)
+    check:SetScript("OnEnter", function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddLine('23% '..Tabs[2].text)
         e.tips:Show()
     end)
-    last:SetScript('OnLeave', function() e.tips:Hide() end)
+    check:SetScript('OnLeave', function() e.tips:Hide() end)
 
     for index, info in pairs(Tabs) do
         if index>1 then
+            if info.name=='DODGE' then
+                local text= e.Cstr(panel)
+                text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
+                if e.onlyChinse then
+                    text:SetText("仅限坦克"..INLINE_TANK_ICON)
+                else
+                    text:SetFormattedText(LFG_LIST_CROSS_FACTION , TANK..INLINE_TANK_ICON)
+                end
+                last= text
+            end
             local r= info.r or 1
             local g= info.g or 0.82
             local b= info.b or 0
             local a= info.a or 1
             local text= e.Cstr(panel, nil, nil, nil, {r,g,b,a})
-            text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -4)
+            if index==2 or info.name=='SPEED' then
+                text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
+            else
+                text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -4)
+            end
             text:SetText(info.text)
             text:EnableMouse(true)
             text.r, text.g, text.b, text.a= r, g, b, a
@@ -831,42 +900,44 @@ local function set_Panle_Setting()--设置 panel
             text.text= info.text
             text:SetScript('OnMouseDown', function(self)
                 e.ShowColorPicker(self.r, self.g, self.b,self.a, function(restore)
+                    local newA, newR, newG, newB
                     if not restore then
-                        local newA, newR, newG, newB = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()
-                        self:SetTextColor(newR, newG, newB, newA)
-                        Save.tab[self.name].r= newR
-                        Save.tab[self.name].b= newB
-                        Save.tab[self.name].g= newG
-                        Save.tab[self.name].a= newA
-                        if button[self.name] and button[self.name].label then
-                            button[self.name].label:SetTextColor(newR, newG, newB, newA)
-                        end
+                        newA, newR, newG, newB = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()
+                    else
+                        newA, newR, newG, newB= self.a, self.r, self.g, self.b
+                    end
+                    Save.tab[self.name].r= newR
+                    Save.tab[self.name].b= newB
+                    Save.tab[self.name].g= newG
+                    Save.tab[self.name].a= newA
+                    self:SetTextColor(newR, newG, newB, newA)
+                    if button[self.name] and button[self.name].label then
+                        button[self.name].label:SetTextColor(newR, newG, newB, newA)
                     end
                 end)
             end)
             text:SetScript('OnEnter', function(self)
-                local r2= Save.tab[self.name] and Save.tab[self.name].r or 1
-                local g2= Save.tab[self.name] and Save.tab[self.name].g or 0.82
-                local b2= Save.tab[self.name] and Save.tab[self.name].b or 0
-                local a2= Save.tab[self.name] and Save.tab[self.name].a or 1
+                local r2= Save.tab[self.name].r or 1
+                local g2= Save.tab[self.name].g or 0.82
+                local b2= Save.tab[self.name].b or 0
+                local a2= Save.tab[self.name].a or 1
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(self.text, self.name, r2, g2, b2)
                 e.tips:AddDoubleLine(e.onlyChinse and '设置' or SETTINGS, e.onlyChinse and '颜色' or COLOR)
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(format('r%.2f', r2)..format('  g%.2f', g2)..format('  b%.2f', b2), format('a%.2f', r2))
+                e.tips:AddDoubleLine(format('r%.2f', r2)..format('  g%.2f', g2)..format('  b%.2f', b2), format('a%.2f', a2))
                 e.tips:Show()
             end)
             text:SetScript('OnLeave', function() e.tips:Hide() end)
-            if index>5 then
-                local check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--仅中文
-                check:SetChecked(not info.hide)
+            
+                check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+                check:SetChecked(not Save.tab[info.name].hide)
                 check:SetPoint('LEFT', text, 'RIGHT')
                 check.name= info.name
-                check.text= info.text
+                check.text2= info.text
                 check:SetScript('OnMouseUp',function(self)
-                    local hide= not Save.tab[self.name].hide and true or nil
-                    Save.tab[self.name].hide= hide
+                    Save.tab[self.name].hide= not Save.tab[self.name].hide and true or nil
                     set_Tabs()
                     create_Rest_Lable(true)
                     print(id, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
@@ -875,18 +946,44 @@ local function set_Panle_Setting()--设置 panel
                     e.tips:SetOwner(self, "ANCHOR_LEFT")
                     e.tips:ClearLines()
                     local value= button[self.name] and button[self.name].value
-                    e.tips:AddDoubleLine(self.text, value and format('%.2f%%', value))
+                    e.tips:AddDoubleLine(self.text2, value and format('%.2f%%', value))
                     e.tips:AddLine(' ')
                     e.tips:AddDoubleLine(e.GetShowHide(Save.tab[self.name].hide), '|cnGREEN_FONT_COLOR:0 = '..(e.onlyChinse and '隐藏' or HIDE))
-
                     e.tips:Show()
                 end)
                 check:SetScript('OnLeave', function() e.tips:Hide() end)
-            end
+
+                if info.name=='SPEED' then--速度, 当前速度, 选项
+                    local current= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+                    current:SetChecked(Save.tab[info.name].current)
+                    current:SetPoint('LEFT', check, 'RIGHT',2,0)
+                    current.text:SetText(e.onlyChinse and '当前' or 'REFORGE_CURRENT')
+                    current.name= info.name
+                    current:SetScript('OnMouseUp',function(self)
+                        Save.tab[self.name].current= not Save.tab[self.name].current and true or nil
+                        set_Tabs()
+                        create_Rest_Lable(true)
+                    end)
+                    current:SetScript('OnEnter', set_SPEED_Tooltip)
+                    current:SetScript('OnLeave', function() e.tips:Hide() end)
+
+                elseif info.name=='VERSATILITY' then--全能5, 双属性 22/18%
+                    local damage=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+                    damage:SetChecked(Save.tab[info.name].damage)
+                    damage:SetPoint('LEFT', check, 'RIGHT',2,0)
+                    damage.text:SetText((e.onlyChinse and '防御' or DEFENSE)..' 22/18%')
+                    damage.name= info.name
+                    damage:SetScript('OnMouseDown', function(self)
+                        Save.tab[self.name].damage= not Save.tab[self.name].damage and true or nil
+                        create_Rest_Lable()
+                    end)
+                    damage:SetScript('OnEnter', set_Versatility_Tooltip)
+                    damage:SetScript('OnLeave', function() e.tips:Hide() end)
+                end
+            
             last= text
         end
     end
-
 end
 
 --####
@@ -970,36 +1067,34 @@ local function Init()
     button:SetScript("OnMouseUp", function() ResetCursor() end)
     button:SetScript("OnLeave",function() ResetCursor() e.tips:Hide() end)
 
-    button.frame= CreateFrame("Frame",nil,button)
-    button.frame:SetPoint(Save.toLeft and 'BOTTOMLEFT' or 'BOTTOMRIGHT')
-    button.frame:SetSize(1,1)
-    if Save.scale and Save.scale~=1 then--缩放
-        button.frame:SetScale(Save.scale)
-    end
-    button.frame:RegisterEvent('PLAYER_ENTERING_WORLD')
-    button.frame:RegisterEvent('PLAYER_AVG_ITEM_LEVEL_UPDATE')
-    button.frame:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
-    button.frame:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED')
-    button.frame:RegisterEvent('PLAYER_TALENT_UPDATE')
-    button.frame:RegisterEvent('CHALLENGE_MODE_START')
-    button.frame:SetScript("OnEvent", function(self, event)
-        if event=='PLAYER_SPECIALIZATION_CHANGED' then
-            set_Tabs()--设置, 内容
-            create_Rest_Lable(true)
-        elseif event=='AVOIDANCE_UPDATE' or event=='LIFESTEAL_UPDATE' then
-            --create_Rest_Lable()
-        else
-            create_Rest_Lable(true)
+    C_Timer.After(2, function()
+        button.frame= CreateFrame("Frame",nil,button)
+        button.frame:SetPoint(Save.toLeft and 'BOTTOMLEFT' or 'BOTTOMRIGHT')
+        button.frame:SetSize(1,1)
+        if Save.scale and Save.scale~=1 then--缩放
+            button.frame:SetScale(Save.scale)
         end
+        --button.frame:RegisterEvent('PLAYER_ENTERING_WORLD')
+        button.frame:RegisterEvent('PLAYER_AVG_ITEM_LEVEL_UPDATE')
+        button.frame:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
+        button.frame:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED')
+        button.frame:RegisterEvent('PLAYER_TALENT_UPDATE')
+        button.frame:RegisterEvent('CHALLENGE_MODE_START')
+        button.frame:SetScript("OnEvent", function(self, event)
+            if event=='PLAYER_SPECIALIZATION_CHANGED' then
+                set_Tabs()--设置, 内容
+                create_Rest_Lable(true)
+            elseif event=='AVOIDANCE_UPDATE' or event=='LIFESTEAL_UPDATE' then
+                create_Rest_Lable()
+            else
+                create_Rest_Lable(true)
+            end
+        end)
+        set_Show_Hide()--显示， 隐藏
+        set_Tabs()--设置, 内容
+        create_Rest_Lable()
+        set_Panle_Setting()--设置 panel
     end)
-
-    set_Show_Hide()--显示， 隐藏
-
-
-    set_Tabs()--设置, 内容
-    set_Panle_Setting()--设置 panel
-
-    C_Timer.After(2, create_Rest_Lable)
 end
 
 
@@ -1009,13 +1104,36 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
-            --添加控制面板        
-            local check= e.CPanel((e.onlyChinse and '属性' or STAT_CATEGORY_ATTRIBUTES)..'|A:charactercreate-icon-customize-body-selected:0:0|a', not Save.disabled)
+            --添加控制面板
+            panel.name = (e.onlyChinse and '属性' or STAT_CATEGORY_ATTRIBUTES)..'|A:charactercreate-icon-customize-body-selected:0:0|a'--添加新控制面板
+            panel.parent =id
+            InterfaceOptions_AddCategory(panel)
+
+            panel.check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+            panel.check:SetChecked(not Save.disabled)
+            panel.check:SetPoint('TOPLEFT', panel, 'TOP')
+            panel.check.text:SetText(e.onlyChinse and '启用' or ENABLE)
+            panel.check:SetScript('OnMouseDown', function()
+                Save.disabled = not Save.disabled and true or nil
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需求重新加载' or REQUIRES_RELOAD)
+                if not Save.disabled and not button then
+                    Init()
+                end
+            end)
+            panel.check:SetScript('OnEnter', function(self2)
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddLine(e.onlyChinse and '启用/禁用' or ENABLE..'/'..DISABLE)
+                e.tips:Show()
+            end)
+            panel.check:SetScript('OnLeave', function() e.tips:Hide() end)
+
+
+            --[[local check= e.CPanel((e.onlyChinse and '属性' or STAT_CATEGORY_ATTRIBUTES)..'|A:charactercreate-icon-customize-body-selected:0:0|a', not Save.disabled)
             check:SetScript('OnMouseDown', function()
                 Save.disabled = not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需求重新加载' or REQUIRES_RELOAD)
-            end)
-            --[[check:SetScript('OnEnter', function(self2)
+            end)check:SetScript('OnEnter', function(self2)
                 local name, description, filedataid= C_ChallengeMode.GetAffixInfo(13)
                 if name and description then
                     e.tips:SetOwner(self2, "ANCHOR_LEFT")
