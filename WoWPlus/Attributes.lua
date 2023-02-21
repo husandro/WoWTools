@@ -614,7 +614,7 @@ local function set_SPEED_Tooltip(self)
     e.tips:ClearLines()
     local unit= UnitExists('vehicle') and 'vehicle' or 'player'
     local currentSpeed, runSpeed, flightSpeed, swimSpeed = GetUnitSpeed(unit)
-   
+
     e.tips:AddDoubleLine(frame.nametext, unit)
     e.tips:AddLine(format(e.onlyChinse and '提升移动速度。|n|n速度：%s [+%.2f%%]' or CR_SPEED_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(CR_SPEED)), GetCombatRatingBonus(CR_SPEED)), nil,nil,nil, true)
     e.tips:AddLine(' ')
@@ -950,7 +950,6 @@ local function set_Panle_Setting()--设置 panel
                 e.tips:Show()
             end)
             text:SetScript('OnLeave', function() e.tips:Hide() end)
-            
                 check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
                 check:SetChecked(not Save.tab[info.name].hide)
                 check:SetPoint('LEFT', text, 'RIGHT',2,0)
@@ -995,12 +994,13 @@ local function set_Panle_Setting()--设置 panel
                     damage.name= info.name
                     damage:SetScript('OnMouseDown', function(self)
                         Save.tab[self.name].damage= not Save.tab[self.name].damage and true or nil
+                        set_Tabs()
                         create_Rest_Lable()
                     end)
                     damage:SetScript('OnEnter', set_Versatility_Tooltip)
                     damage:SetScript('OnLeave', function() e.tips:Hide() end)
                 end
-            
+
             last= text
         end
     end
