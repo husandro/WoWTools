@@ -844,11 +844,12 @@ local function create_Rest_Lable(rest)--初始， 或设置
             find= (frame.value and frame.value>0) or info.name=='SPEED'
             if find then
                 frame:ClearAllPoints()
-                if Save.toLeft then
+                frame:SetPoint('TOP', last,'BOTTOM')
+                --[[if Save.toLeft then
                     frame:SetPoint('TOPLEFT', last, 'BOTTOMLEFT')
                 else
                     frame:SetPoint('TOPRIGHT', last, 'BOTTOMRIGHT')
-                end
+                end]]
                 last= frame
                 frame:SetShown(true)
             end
@@ -1087,6 +1088,24 @@ local function set_Panle_Setting()--设置 panel
         Save.gsubText= value>0 and value or nil
         create_Rest_Lable()--初始， 或设置
     end)
+
+    local slider4= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--缩放
+    slider4:SetPoint("TOPLEFT", slider3, 'BOTTOMLEFT', 0,-24)
+    slider4:SetSize(200,20)
+    slider4:SetMinMaxValues(0.4, 3)
+    slider4:SetValue(Save.scale or 1)
+    slider4.Low:SetText((e.onlyChinse and '缩放' or UI_SCALE)..' 0.4')
+    slider4.High:SetText('3')
+    slider4.Text:SetText(Save.scale or 1)
+    slider4:SetValueStep(0.1)
+    slider4:SetScript('OnValueChanged', function(self, value, userInput)
+        value= tonumber(format('%.1f', value))
+        self:SetValue(value)
+        self.Text:SetText(value)
+        Save.scale=value
+        set_Size_panel()
+        button.frame:SetScale(value)
+    end)
 end
 
 --####
@@ -1134,30 +1153,12 @@ local function Init()
         end
     end)
     button:SetScript('OnMouseWheel', function(self, d)
-        if not IsModifierKeyDown() then
-            if d==1 then
-                Save.hide= true
-            elseif d==-1 then
-                Save.hide= nil
-            end
-            set_Show_Hide()--显示， 隐藏
-
-        elseif IsAltKeyDown() then--缩放
-            local scale=Save.scale or 1
-            if d==1 then
-                scale=scale+0.05
-            elseif d==-1 then
-                scale=scale-0.05
-            end
-            if scale>3 then
-                scale=3
-            elseif scale<0.5 then
-                scale=0.5
-            end
-            self.frame:SetScale(scale)
-            Save.scale=scale
-            print(id, addName, e.onlyChinse and '缩放' or UI_SCALE,'|cnGREEN_FONT_COLOR:'..scale)
+        if d==1 then
+            Save.hide= true
+        elseif d==-1 then
+            Save.hide= nil
         end
+        set_Show_Hide()--显示， 隐藏
     end)
     button:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -1166,7 +1167,7 @@ local function Init()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
         e.tips:AddDoubleLine(e.GetShowHide(not Save.hide), e.Icon.mid)
-        e.tips:AddDoubleLine((e.onlyChinse and '缩放' or UI_SCALE)..': '..(Save.scale or 1), '|cnGREEN_FONT_COLOR:Alt+'..e.Icon.mid)
+        --e.tips:AddDoubleLine((e.onlyChinse and '缩放' or UI_SCALE)..': '..(Save.scale or 1), '|cnGREEN_FONT_COLOR:Alt+'..e.Icon.mid)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
@@ -1176,7 +1177,7 @@ local function Init()
 
     C_Timer.After(2, function()
         button.frame= CreateFrame("Frame",nil,button)
-        button.frame:SetPoint(Save.toLeft and 'BOTTOMLEFT' or 'BOTTOMRIGHT')
+        button.frame:SetPoint('BOTTOM')
         button.frame:SetSize(1,1)
         if Save.scale and Save.scale~=1 then--缩放
             button.frame:SetScale(Save.scale)
