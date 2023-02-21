@@ -23,6 +23,42 @@ local panel= CreateFrame('Frame')
 local button
 --PaperDollFrame.lua
 
+
+local Tabs
+local function set_Tabs()
+    Tabs={
+        {name='STATUS', r=e.Player.r, g=e.Player.g, b=e.Player.b, a=1, text= {
+                [1]= e.onlyChinse and '力量' or SPEC_FRAME_PRIMARY_STAT_STRENGTH,
+                [2]= e.onlyChinse and '敏捷' or SPEC_FRAME_PRIMARY_STAT_AGILITY,
+                [4]= e.onlyChinse and '智力' or SPEC_FRAME_PRIMARY_STAT_INTELLECT,
+            }
+        },
+        {name= 'CRITCHANCE', text= e.onlyChinse and '爆击' or STAT_CRITICAL_STRIKE},
+        {name= 'HASTE', text= e.onlyChinse and '急速' or STAT_HASTE},
+        {name= 'MASTERY', text= e.onlyChinse and '精通' or STAT_MASTERY},
+        {name= 'VERSATILITY', text= e.onlyChinse and '全能' or STAT_VERSATILITY},
+        --6
+        {name= 'LIFESTEAL', text= e.onlyChinse and '吸血' or STAT_LIFESTEAL},
+        {name= 'AVOIDANCE', text= e.onlyChinse and '闪避' or STAT_AVOIDANCE},
+        --[[8
+        {name= 'DODGE', text= e.onlyChinse and '躲闪' or STAT_DODGE},
+        {name= 'PARRY', text= e.onlyChinse and '招架' or STAT_PARRY},
+        {name= 'BLOCK', text= e.onlyChinse and '格挡' or STAT_BLOCK},
+        {name= 'STAGGER', text= e.onlyChinse and '醉拳' or STAT_STAGGER},]]
+    }
+    for index, info in pairs(Tabs) do
+        if index>1 then
+            Tabs[index].r= Save.tab[info.name] and Save.tab[info.name].r or 1
+            Tabs[index].g= Save.tab[info.name] and Save.tab[info.name].g or 0.82
+            Tabs[index].b= Save.tab[info.name] and Save.tab[info.name].b or 0
+            Tabs[index].a= Save.tab[info.name] and Save.tab[info.name].a or 1
+            if index>5 then
+                Tabs[index].hide= Save.tab[info.name] and Save.tab[info.name].hide
+            end
+        end
+    end
+end
+
 --#####
 --主属性
 --#####
@@ -534,40 +570,6 @@ local function set_Stagger_Tooltip(self)
 end
 
 
-local Tabs
-local function set_Tabs()
-    Tabs={
-        {name='STATUS', r=e.Player.r, g=e.Player.g, b=e.Player.b, a=1, text= {
-                [1]= e.onlyChinse and '力量' or SPEC_FRAME_PRIMARY_STAT_STRENGTH,
-                [2]= e.onlyChinse and '敏捷' or SPEC_FRAME_PRIMARY_STAT_AGILITY,
-                [3]= e.onlyChinse and '智力' or SPEC_FRAME_PRIMARY_STAT_INTELLECT,
-            }
-        },
-        {name= 'CRITCHANCE', text= e.onlyChinse and '爆击' or STAT_CRITICAL_STRIKE},
-        {name= 'HASTE', text= e.onlyChinse and '急速' or STAT_HASTE},
-        {name= 'MASTERY', text= e.onlyChinse and '精通' or STAT_MASTERY},
-        {name= 'VERSATILITY', text= e.onlyChinse and '全能' or STAT_VERSATILITY},
-        --6
-        {name= 'LIFESTEAL', text= e.onlyChinse and '吸血' or STAT_LIFESTEAL},
-        {name= 'AVOIDANCE', text= e.onlyChinse and '闪避' or STAT_AVOIDANCE},
-        --8
-        {name= 'DODGE', text= e.onlyChinse and '躲闪' or STAT_DODGE},
-        {name= 'PARRY', text= e.onlyChinse and '招架' or STAT_PARRY},
-        {name= 'BLOCK', text= e.onlyChinse and '格挡' or STAT_BLOCK},
-        {name= 'STAGGER', text= e.onlyChinse and '醉拳' or STAT_STAGGER},
-    }
-    for index, info in pairs(Tabs) do
-        if index>1 then
-            Tabs[index].r= Save.tab[info.name] and Save.tab[info.name].r or 1
-            Tabs[index].g= Save.tab[info.name] and Save.tab[info.name].g or 0.82
-            Tabs[index].b= Save.tab[info.name] and Save.tab[info.name].b or 0
-            Tabs[index].a= Save.tab[info.name] and Save.tab[info.name].a or 1
-            if index>5 then
-                Tabs[index].hide= Save.tab[info.name] and Save.tab[info.name].hide
-            end
-        end
-    end
-end
 
 local function set_OnEvent(frame)
     local name, value
