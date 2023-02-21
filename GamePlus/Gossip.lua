@@ -984,6 +984,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             else
                 panel:UnregisterAllEvents()
                 questPanel:UnregisterAllEvents()
+                panel:SetShown(false)
+                questPanel:SetShown(false)
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 

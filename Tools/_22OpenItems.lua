@@ -606,6 +606,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 panel:UnregisterEvent('ADDON_LOADED')
             else
                 panel:UnregisterAllEvents()
+                panel:SetShown(false)
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
         end

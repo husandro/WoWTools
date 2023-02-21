@@ -105,6 +105,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                     ToggleAchievementFrame()
             else
                 panel:UnregisterAllEvents()
+                panel:SetShown(false)
             end
 
         elseif arg1=='Blizzard_AchievementUI' then

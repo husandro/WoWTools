@@ -498,8 +498,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if  Save.disabled then
                 panel:UnregisterAllEvents()
+                panel:SetShown(false)
             else
-
                 if not IsAddOnLoaded("Blizzard_Calendar") then--加载
                     LoadAddOn("Blizzard_Calendar")
                     Calendar_Toggle()

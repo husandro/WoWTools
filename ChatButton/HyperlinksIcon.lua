@@ -969,6 +969,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
         if arg1 == id then
             if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
                 panel:UnregisterAllEvents()
+                panel:SetShown(false)
             else
                 Save= WoWToolsSave and WoWToolsSave[addName] or Save
                 e.setPlayerSound= Save.setPlayerSound--播放, 声音

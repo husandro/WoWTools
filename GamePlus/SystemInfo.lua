@@ -395,6 +395,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if Save.disabled then
                 panel:UnregisterAllEvents()
+                panel:SetShown(false)
             else
                 Init()
                 panel:UnregisterEvent('ADDON_LOADED')

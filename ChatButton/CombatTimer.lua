@@ -551,6 +551,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         if arg1==id then
             if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
                 panel:UnregisterAllEvents()
+                panel:SetShown(false)
+                panel.textFrame:SetShown(false)
             else
                 if WoWToolsSave and not WoWToolsSave[addName] then
                     panel.textFrame:SetButtonState('PUSHED')

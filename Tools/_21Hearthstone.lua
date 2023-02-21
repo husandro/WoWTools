@@ -356,6 +356,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Init()--初始
             else
                 panel:UnregisterAllEvents()
+                panel:SetShown(false)
             end
 
         elseif arg1=='Blizzard_Collections' then

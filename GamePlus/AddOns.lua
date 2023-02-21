@@ -206,7 +206,6 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
 
 panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
     if event == "ADDON_LOADED" then
@@ -220,10 +219,14 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需求重新加载' or REQUIRES_RELOAD)
             end)
 
-            if not Save.disabled then
+            if Save.disabled then
+                panel:UnregisterAllEvents()
+                panel:SetShown(false)
+            else
                 Init()
+                panel:UnregisterEvent('ADDON_LOADED')
             end
-            panel:UnregisterEvent('ADDON_LOADED')
+            panel:RegisterEvent("PLAYER_LOGOUT")
         end
 
     elseif event == "PLAYER_LOGOUT" then

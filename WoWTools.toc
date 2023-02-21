@@ -63,12 +63,7 @@ WoWPlus\EncounterJournal.lua
 ##史诗钥石地下城, 挑战增强
 WoWPlus\Challenges.lua
 
-##距离, 去掉小数点, WOW已修复
-##WowPlus\SuperTracked.lua
 ##WowPlus\AuctionHouse.lua
-##快速加入，面板
-##WowPlus\QuickJoin.lua
-
 
 ##自动对话，任务
 GamePlus\Gossip.lua
