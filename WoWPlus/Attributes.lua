@@ -694,6 +694,9 @@ local function set_Label_Value(frame)
         frame.value= value
     end
     frame.nametext= text
+    if Save.gsubText then--文本，截取
+        text= e.WA_Utf8Sub(text, Save.gsubText)
+    end
     frame.label:SetText(text or '')
 end
 
@@ -1068,6 +1071,22 @@ local function set_Panle_Setting()--设置 panel
         set_Size_panel()
     end)
 
+    local slider3= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--文本，截取
+    slider3:SetPoint("TOPLEFT", slider2, 'BOTTOMLEFT', 0,-24)
+    slider3:SetSize(200,20)
+    slider3:SetMinMaxValues(0, 20)
+    slider3:SetValue(Save.gsubText or 0)
+    slider3.Low:SetText(e.onlyChinse and '文本 0=否' or (LOCALE_TEXT_LABEL..' 0='..NO) )
+    slider3.High:SetText((e.onlyChinse and '截取' or BINDING_NAME_SCREENSHOT).. ' 20')
+    slider3.Text:SetText(Save.gsubText or '0')
+    slider3:SetValueStep(1)
+    slider3:SetScript('OnValueChanged', function(self, value, userInput)
+        value= math.floor(value)
+        self:SetValue(value)
+        self.Text:SetText(value)
+        Save.gsubText= value>0 and value or nil
+        create_Rest_Lable()--初始， 或设置
+    end)
 end
 
 --####
@@ -1211,7 +1230,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
             Save.vertical= Save.vertical or 3
             Save.horizontal= Save.horizontal or 8
-
             --添加控制面板
             panel.name = (e.onlyChinse and '属性' or STAT_CATEGORY_ATTRIBUTES)..'|A:charactercreate-icon-customize-body-selected:0:0|a'--添加新控制面板
             panel.parent =id
