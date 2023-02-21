@@ -10,6 +10,11 @@ local Save={
         ['VERSATILITY']= {r=0, g=0.77, b=1},
         ['LIFESTEAL']= {r=1, g=0.33, b=0.5},
         ['AVOIDANCE']= {r=1, g=0.79, b=0},--'闪避'
+
+        ["DODGE"]= {r=1, g=0.51, b=1},--躲闪
+        ["PARRY"]= {r=0.59, g=0.85, b=1},
+        ["BLOCK"]= {r=0.75, g=0.53, b=0.78},
+        ["STAGGER"]= {r=0.38, g=1, b=0.62},
     },
     --toLeft=true
 }
@@ -22,17 +27,19 @@ local button
 --主属性
 --#####
 local function set_Stat_Text(frame)
+    if frame.primaryStat then
     local value= UnitStat('player', frame.primaryStat)
-    local text
-    if not frame.value or frame.value== value then
-        text= e.MK(value, 3)
-    elseif frame.value< value then
-        text= Save.greenColor..e.MK(value, 3)..'|r'
-    else
-        text= Save.redColor..e.MK(value, 3)..'|r'
+        local text
+        if not frame.value or frame.value== value then
+            text= e.MK(value, 3)
+        elseif frame.value< value then
+            text= Save.greenColor..e.MK(value, 3)..'|r'
+        else
+            text= Save.redColor..e.MK(value, 3)..'|r'
+        end
+        frame.text:SetText(text)
+        return value
     end
-    frame.text:SetText(text)
-    return value
 end
 local function set_Stat_Tooltip(self)
     local frame= self:GetParent()
@@ -265,7 +272,7 @@ local function set_Mastery_Text(frame)
 end
 
 --####
---全能
+--全能, 5
 --####
 local function set_Versatility_Text(frame)
     local versatilityDamageBonus = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE)
@@ -301,7 +308,7 @@ local function set_Versatility_Tooltip(self)
 end
 
 --####
---吸血
+--吸血, 6
 --####
 local function set_Lifesteal_Text(frame)
     local lifesteal = GetLifesteal();
@@ -336,7 +343,7 @@ local function set_Lifesteal_Tooltip(self)
 end
 
 --####
---闪避
+--闪避, 7
 --####
 local function set_Avoidance_Text(frame)
     local Avoidance = GetAvoidance();
@@ -370,6 +377,163 @@ local function set_Avoidance_Tooltip(self)
     e.tips:Show()
 end
 
+--####
+--躲闪, 8
+--####
+local function set_Dodge_Text(frame)
+    local chance = GetDodgeChance();
+    if not frame.value or frame.value== chance then
+        frame.text:SetFormattedText('%d%%', chance + 0.5)
+    elseif frame.value< chance then
+        frame.text:SetFormattedText(Save.greenColor..'%d%%', chance + 0.5)
+    else
+        frame.text:SetFormattedText(Save.redColor..'%d%%', chance + 0.5)
+    end
+    return chance
+end
+local function set_Dodge_Tooltip(self)
+    local frame= self:GetParent()
+    e.tips:SetOwner(self, "ANCHOR_LEFT")
+    e.tips:ClearLines()
+
+    local chance = GetDodgeChance();
+	e.tips:AddDoubleLine(frame.name,  format("%0.2f%%", chance))
+    e.tips:AddLine( format(e.onlyChinse and '%d点躲闪可使躲闪几率提高%.2f%%\n|cff888888（在效果递减之前）|r' or CR_DODGE_TOOLTIP, GetCombatRating(CR_DODGE), GetCombatRatingBonus(CR_DODGE)), nil,nil,nil,true)
+    if frame.value and frame.value~=chance then
+        e.tips:AddLine(' ')
+        local text
+        if frame.value< chance then
+            text= Save.greenColor..'+ '..format('%.2f%%', chance- frame.value)
+        else
+            text= Save.redColor..'- '..format('%.2f%%', frame.value- chance)
+        end
+        e.tips:AddDoubleLine(format('%.2f%%', frame.value + 0.5), chance)
+    end
+    e.tips:Show()
+end
+
+--####
+--招架, 9
+--####
+local function set_Parry_Text(frame)
+    local chance = GetParryChance();
+    if not frame.value or frame.value== chance then
+        frame.text:SetFormattedText('%d%%', chance + 0.5)
+    elseif frame.value< chance then
+        frame.text:SetFormattedText(Save.greenColor..'%d%%', chance + 0.5)
+    else
+        frame.text:SetFormattedText(Save.redColor..'%d%%', chance + 0.5)
+    end
+    return chance
+end
+local function set_Parry_Tooltip(self)
+    local frame= self:GetParent()
+    e.tips:SetOwner(self, "ANCHOR_LEFT")
+    e.tips:ClearLines()
+
+    local chance = GetParryChance();
+	e.tips:AddDoubleLine(frame.name,  format("%0.2f%%", chance))
+    e.tips:AddLine(format(e.onlyChinse and '%d点招架可使招架几率提高%.2f%%\n|cff888888（在效果递减之前）|r' or CR_PARRY_TOOLTIP, GetCombatRating(CR_PARRY), GetCombatRatingBonus(CR_PARRY)), nil,nil,nil,true)
+    if frame.value and frame.value~=chance then
+        e.tips:AddLine(' ')
+        local text
+        if frame.value< chance then
+            text= Save.greenColor..'+ '..format('%.2f%%', chance- frame.value)
+        else
+            text= Save.redColor..'- '..format('%.2f%%', frame.value- chance)
+        end
+        e.tips:AddDoubleLine(format('%.2f%%', frame.value + 0.5), chance)
+    end
+    e.tips:Show()
+end
+
+--####
+--格挡, 10
+--####
+local function set_Block_Text(frame)
+    local chance = GetBlockChance();
+    if not frame.value or frame.value== chance then
+        frame.text:SetFormattedText('%d%%', chance + 0.5)
+    elseif frame.value< chance then
+        frame.text:SetFormattedText(Save.greenColor..'%d%%', chance + 0.5)
+    else
+        frame.text:SetFormattedText(Save.redColor..'%d%%', chance + 0.5)
+    end
+    return chance
+end
+local function set_Block_Tooltip(self)
+    local frame= self:GetParent()
+    e.tips:SetOwner(self, "ANCHOR_LEFT")
+    e.tips:ClearLines()
+
+    local chance = GetBlockChance();
+    e.tips:AddDoubleLine(frame.name,  format("%0.2f%%", chance))
+    
+
+	local shieldBlockArmor = GetShieldBlock();
+	local blockArmorReduction = PaperDollFrame_GetArmorReduction(shieldBlockArmor, UnitEffectiveLevel('player'));
+	local blockArmorReductionAgainstTarget = PaperDollFrame_GetArmorReductionAgainstTarget(shieldBlockArmor);
+
+	e.tips:AddLine(format(e.onlyChinse and '格挡可使一次攻击的伤害降低%0.2f%%.\n|cff888888（对抗与你实力相当的敌人时）|r' or CR_BLOCK_TOOLTIP, blockArmorReduction), nil,nil,nil,true)
+	if (blockArmorReductionAgainstTarget) then
+		e.tips:AddLine(format(e.onlyChinse and '（对当前目标：%0.2f%%）' or STAT_BLOCK_TARGET_TOOLTIP, blockArmorReductionAgainstTarget), nil,nil,nil,true)
+	end
+
+    if frame.value and frame.value~=chance then
+        e.tips:AddLine(' ')
+        local text
+        if frame.value< chance then
+            text= Save.greenColor..'+ '..format('%.2f%%', chance- frame.value)
+        else
+            text= Save.redColor..'- '..format('%.2f%%', frame.value- chance)
+        end
+        e.tips:AddDoubleLine(format('%.2f%%', frame.value + 0.5), chance)
+    end
+    e.tips:Show()
+end
+
+--####
+--醉拳
+--####
+local function set_Stagger_Text(frame)
+    local chance = GetBlockChance();
+    if not frame.value or frame.value== chance then
+        frame.text:SetFormattedText('%d%%', chance + 0.5)
+    elseif frame.value< chance then
+        frame.text:SetFormattedText(Save.greenColor..'%d%%', chance + 0.5)
+    else
+        frame.text:SetFormattedText(Save.redColor..'%d%%', chance + 0.5)
+    end
+    return chance
+end
+local function set_Stagger_Tooltip(self)
+    local frame= self:GetParent()
+    e.tips:SetOwner(self, "ANCHOR_LEFT")
+    e.tips:ClearLines()
+
+    local stagger, staggerAgainstTarget = C_PaperDollInfo.GetStaggerPercentage('target');
+    e.tips:AddDoubleLine(frame.name,  format("%0.2f%%", stagger))
+
+	e.tips:AddLine(format(e.onlyChinse and '你的醉拳可化解%0.2f%%的伤害' or STAT_STAGGER_TOOLTIP, stagger), nil,nil,nil,true)
+	if (staggerAgainstTarget) then
+		e.tips:AddLine(format(e.onlyChinse and '（对当前目标比例%0.2f%%）' or STAT_STAGGER_TARGET_TOOLTIP, staggerAgainstTarget), nil,nil,nil,true)
+	end
+
+
+    if frame.value and frame.value~=stagger then
+        e.tips:AddLine(' ')
+        local text
+        if frame.value< stagger then
+            text= Save.greenColor..'+ '..format('%.2f%%', stagger- frame.value)
+        else
+            text= Save.redColor..'- '..format('%.2f%%', frame.value- stagger)
+        end
+        e.tips:AddDoubleLine(format('%.2f%%', frame.value + 0.5), stagger)
+    end
+    e.tips:Show()
+end
+
+
 local Tabs
 local function set_Tabs()
     Tabs={
@@ -387,6 +551,10 @@ local function set_Tabs()
         {name= 'LIFESTEAL', text= e.onlyChinse and '吸血' or STAT_LIFESTEAL},
         {name= 'AVOIDANCE', text= e.onlyChinse and '闪避' or STAT_AVOIDANCE},
         --8
+        {name= 'DODGE', text= e.onlyChinse and '躲闪' or STAT_DODGE},
+        {name= 'PARRY', text= e.onlyChinse and '招架' or STAT_PARRY},
+        {name= 'BLOCK', text= e.onlyChinse and '格挡' or STAT_BLOCK},
+        {name= 'STAGGER', text= e.onlyChinse and '醉拳' or STAT_STAGGER},
     }
     for index, info in pairs(Tabs) do
         if index>1 then
@@ -434,6 +602,18 @@ local function set_OnEvent(frame)
 
         elseif frame.index==7 then--闪避
             value= set_Avoidance_Text(frame)
+
+        elseif frame.index==8 then--躲闪
+            value= set_Dodge_Text(frame)
+
+        elseif frame.index==9 then--招架
+            value= set_Parry_Text(frame)
+        
+        elseif frame.index==10 then--格挡
+            value= set_Block_Text(frame)
+        
+        elseif frame.index==11 then--醉拳
+            value= set_Stagger_Text(frame)
 
         end
     end
@@ -519,6 +699,33 @@ local function create_Rest_Lable(rest)
                         frame:SetScript('OnEvent', set_Avoidance_Text)
                         frame.label:SetScript('OnEnter', set_Avoidance_Tooltip)
                         frame.text:SetScript('OnEnter', set_Avoidance_Tooltip)
+
+
+
+                    elseif index==8 then--躲闪
+                        --frame:RegisterEvent('AVOIDANCE_UPDATE')
+                        frame:SetScript('OnEvent', set_Dodge_Text)
+                        frame.label:SetScript('OnEnter', set_Dodge_Tooltip)
+                        frame.text:SetScript('OnEnter', set_Dodge_Tooltip)
+                    
+                    elseif index==9 then--招架
+                        --frame:RegisterEvent('AVOIDANCE_UPDATE')
+                        frame:SetScript('OnEvent', set_Parry_Text)
+                        frame.label:SetScript('OnEnter', set_Parry_Tooltip)
+                        frame.text:SetScript('OnEnter', set_Parry_Tooltip)
+
+                    elseif index==10 then--格挡
+                        --frame:RegisterEvent('AVOIDANCE_UPDATE')
+                        frame:SetScript('OnEvent', set_Block_Text)
+                        frame.label:SetScript('OnEnter', set_Block_Tooltip)
+                        frame.text:SetScript('OnEnter', set_Block_Tooltip)
+
+                    elseif index==11 then--醉拳
+                        --frame:RegisterEvent('AVOIDANCE_UPDATE')
+                        frame:SetScript('OnEvent', set_Stagger_Text)
+                        frame.label:SetScript('OnEnter', set_Stagger_Tooltip)
+                        frame.text:SetScript('OnEnter', set_Stagger_Tooltip)
+
                     end
                 end
                 frame.index= index
@@ -636,10 +843,10 @@ local function set_Panle_Setting()--设置 panel
                 end)
             end)
             text:SetScript('OnEnter', function(self)
-                local r2= Save.tab[self.name].r or 1
-                local g2= Save.tab[self.name].g or 0.82
-                local b2= Save.tab[self.name].b or 0
-                local a2= Save.tab[self.name].a or 1
+                local r2= Save.tab[self.name] and Save.tab[self.name].r or 1
+                local g2= Save.tab[self.name] and Save.tab[self.name].g or 0.82
+                local b2= Save.tab[self.name] and Save.tab[self.name].b or 0
+                local a2= Save.tab[self.name] and Save.tab[self.name].a or 1
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(self.text, self.name, r2, g2, b2)
@@ -767,7 +974,7 @@ local function Init()
     if Save.scale and Save.scale~=1 then--缩放
         button.frame:SetScale(Save.scale)
     end
-    --button.frame:RegisterEvent('PLAYER_ENTERING_WORLD')
+    button.frame:RegisterEvent('PLAYER_ENTERING_WORLD')
     button.frame:RegisterEvent('PLAYER_AVG_ITEM_LEVEL_UPDATE')
     button.frame:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
     button.frame:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED')
@@ -778,7 +985,7 @@ local function Init()
             set_Tabs()--设置, 内容
             create_Rest_Lable(true)
         elseif event=='AVOIDANCE_UPDATE' or event=='LIFESTEAL_UPDATE' then
-            create_Rest_Lable()
+            --create_Rest_Lable()
         else
             create_Rest_Lable(true)
         end
