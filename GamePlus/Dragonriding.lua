@@ -44,6 +44,7 @@ local function get_Speed()
     end
     lastX, lastY, lastT = 0, 0, 0
 end
+--[[
 local function set_Shown()
     if IsMounted() then
         for _, mountID in ipairs(C_MountJournal.GetCollectedDragonridingMounts()) do
@@ -74,16 +75,7 @@ local function set_Events()
         panel:SetShown(false)
     end
 end
---[[
-local function set_Scale()--设置，缩放
-    if UIWidgetPowerBarContainerFrame then
-        if Save.sacleBool then
-            UIWidgetPowerBarContainerFrame:SetScale(0.85)
-        else
-            UIWidgetPowerBarContainerFrame:SetScale(1)
-        end
-    end
-end]]
+]]
 --####
 --初始
 --####
@@ -138,10 +130,21 @@ local function Init()
             timeElapsed = 0
         end
     end)
---[[
-    if Save.sacleBool then
-        set_Scale()--设置，缩放
-    end]]
+
+    hooksecurefunc(UIWidgetPowerBarContainerFrame, 'CreateWidget', function(self, widgetID)
+        if widgetID==4460 and not IsInInstance() then
+            panel:SetShown(true)
+        end
+    end)
+    hooksecurefunc(UIWidgetPowerBarContainerFrame, 'RemoveWidget', function(self, widgetID)
+        if widgetID==4460 then
+            panel:SetShown(false)
+        end
+    end)
+    local widgetInfo = C_UIWidgetManager.GetFillUpFramesWidgetVisualizationInfo(4460)
+    if widgetInfo and widgetInfo.shownState==1 then
+        panel:SetShown(true)
+    end
 end
 
 panel:RegisterEvent('ADDON_LOADED')
@@ -171,23 +174,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 e.tips:Show()
             end)
             sel:SetScript('OnLeave', function() e.tips:Hide() end)
---[[
-            local sel2=CreateFrame("CheckButton", nil, sel, "InterfaceOptionsCheckButtonTemplate")
-            sel2.text:SetText((e.onlyChinse and '缩放' or UI_SCALE)..' 0.8')
-            sel2:SetPoint('LEFT', sel.text, 'RIGHT')
-            sel2:SetChecked(Save.sacleBool)
-            sel2:SetScript('OnMouseDown', function()
-                Save.sacleBool= not Save.sacleBool and true or nil
-                set_Scale()--设置，缩放
-            end)
-            sel2:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine('UIWidgetPowerBarContainerFrame', '0.85')
-                e.tips:Show()
-            end)
-            sel2:SetScript('OnLeave', function() e.tips:Hide() end)
-]]
+
             if Save.disabled then
                 panel:UnregisterAllEvents()
             else
@@ -203,11 +190,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave[addName]=Save
         end
 
-    elseif event=='PLAYER_ENTERING_WORLD' then
-        set_Events()
+    --elseif event=='PLAYER_ENTERING_WORLD' then
+        --set_Events()
 
-    else
-        set_Shown()
+    --else
+        --set_Shown()
     end
 end)
 --https://wago.io/KIIAJSKl1

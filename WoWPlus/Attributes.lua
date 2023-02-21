@@ -597,7 +597,7 @@ local timeElapsed = 0
 local function set_SPEED_Text(frame, elapsed)
     timeElapsed = timeElapsed + elapsed
     if timeElapsed > 0.3 then
-        local currentSpeed, runSpeed, flightSpeed, swimSpeed = GetUnitSpeed('player')
+        local currentSpeed, runSpeed, flightSpeed, swimSpeed = GetUnitSpeed(UnitExists('vehicle') and 'vehicle' or 'player')
         local value
         value= frame.current and currentSpeed or IsFlying() and flightSpeed or IsSwimming() and swimSpeed or runSpeed
         if value~=0 then
@@ -612,6 +612,16 @@ local function set_SPEED_Tooltip(self)
     local frame= self:GetParent()
     e.tips:SetOwner(self, "ANCHOR_LEFT")
     e.tips:ClearLines()
+    local unit= UnitExists('vehicle') and 'vehicle' or 'player'
+    local currentSpeed, runSpeed, flightSpeed, swimSpeed = GetUnitSpeed(unit)
+   
+    e.tips:AddDoubleLine(frame.nametext, unit)
+    e.tips:AddLine(format(e.onlyChinse and '提升移动速度。|n|n速度：%s [+%.2f%%]' or CR_SPEED_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(CR_SPEED)), GetCombatRatingBonus(CR_SPEED)), nil,nil,nil, true)
+    e.tips:AddLine(' ')
+    e.tips:AddDoubleLine((e.onlyChinse and '当前' or REFORGE_CURRENT)..' '..format('%.0f%%', currentSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', currentSpeed))
+    e.tips:AddDoubleLine((e.onlyChinse and '地面' or MOUNT_JOURNAL_FILTER_GROUND)..' '..format('%.0f%%', runSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', runSpeed))
+    e.tips:AddDoubleLine((e.onlyChinse and '水栖' or MOUNT_JOURNAL_FILTER_AQUATIC )..' '..format('%.0f%%', swimSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', swimSpeed))
+    e.tips:AddDoubleLine((e.onlyChinse and '飞行' or MOUNT_JOURNAL_FILTER_FLYING )..' '..format('%.0f%%', flightSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', flightSpeed))
     e.tips:Show()
 end
 
@@ -780,6 +790,16 @@ local function create_Rest_Lable(rest)
                     frame:HookScript('OnUpdate', set_SPEED_Text)
                     frame.label:SetScript('OnEnter', set_SPEED_Tooltip)
                     frame.text:SetScript('OnEnter', set_SPEED_Tooltip)
+                    hooksecurefunc(UIWidgetPowerBarContainerFrame, 'CreateWidget', function(self, widgetID)
+                        if widgetID==4460 then
+                            frame:SetShown(false)
+                        end
+                    end)
+                    hooksecurefunc(UIWidgetPowerBarContainerFrame, 'RemoveWidget', function(self, widgetID)
+                        if widgetID==4460 then
+                            frame:SetShown(true)
+                        end
+                    end)
                 end
                 frame.name= info.name
                 frame.index= index
@@ -933,14 +953,14 @@ local function set_Panle_Setting()--设置 panel
             
                 check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
                 check:SetChecked(not Save.tab[info.name].hide)
-                check:SetPoint('LEFT', text, 'RIGHT')
+                check:SetPoint('LEFT', text, 'RIGHT',2,0)
                 check.name= info.name
                 check.text2= info.text
                 check:SetScript('OnMouseUp',function(self)
                     Save.tab[self.name].hide= not Save.tab[self.name].hide and true or nil
                     set_Tabs()
                     create_Rest_Lable(true)
-                    print(id, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+                    print(id, addName,e.GetShowHide(not Save.tab[self.name].hide), '|cnGREEN_FONT_COLOR:', e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
                 end)
                 check:SetScript('OnEnter', function(self)
                     e.tips:SetOwner(self, "ANCHOR_LEFT")
