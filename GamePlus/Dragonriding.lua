@@ -1,6 +1,6 @@
 local id, e= ...
 
-if e.Player.level< 70 then
+if e.Player.level< 58 then
     return
 end
 
