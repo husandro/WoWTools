@@ -28,8 +28,9 @@ local Tabs
 local function set_Tabs()
     local spec= GetSpecialization()
     Role= GetSpecializationRole(spec)--DAMAGER, TANK, HEALER
-    PrimaryStat= select(6, GetSpecializationInfo(spec, nil, nil, nil, e.Player.sex))
-
+    local icon, _
+    icon, _, PrimaryStat= select(4, GetSpecializationInfo(spec, nil, nil, nil, e.Player.sex))
+    SetPortraitToTexture(button.texture, icon or 0)
     Tabs={
         {name='STATUS', r=e.Player.r, g=e.Player.g, b=e.Player.b, a=1, text= {
                 [1]= e.onlyChinse and '力量' or SPEC_FRAME_PRIMARY_STAT_STRENGTH,
@@ -698,11 +699,12 @@ local function create_Rest_Lable(rest)
                 frame.text:SetScript('OnLeave', function() e.tips:Hide() end)
 
                 if Save.toLeft then
-                    frame.text:SetPoint('TOPRIGHT', frame, 'TOPLEFT')
-                    frame.label:SetPoint('TOPLEFT')
+                    frame.label:SetPoint('TOPLEFT',6,0)
+                    frame.text:SetPoint('RIGHT', frame.label, 'LEFT',2,0)
+                    
                 else
-                    frame.text:SetPoint('TOPLEFT', frame, 'TOPRIGHT')
-                    frame.label:SetPoint('TOPRIGHT')
+                    frame.label:SetPoint('TOPRIGHT',-6,0)
+                    frame.text:SetPoint('LEFT', frame.label, 'RIGHT',-2,0)
                 end
 
                 if info.name=='STATUS' then--主属性1
@@ -841,11 +843,11 @@ end
 --显示， 隐藏
 --##########
 local function set_Show_Hide()
-    if Save.hide then
+    --[[if Save.hide then
         button:SetNormalAtlas('charactercreate-icon-customize-body-selected')
     else
         button:SetNormalTexture(0)--'charactercreate-icon-customize-body-selected')
-    end
+    end]]
     button.frame:SetShown(not Save.hide)
     button:SetAlpha(Save.hide and 0.3 or 1)
 end
@@ -857,7 +859,7 @@ local function set_Point()
     if Save.point then
         button:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
     else
-        button:SetPoint('LEFT', 13, 180)
+        button:SetPoint('LEFT', 23, 180)
     end
 end
 
@@ -1012,6 +1014,10 @@ end
 local function Init()
     --e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size)
     button= e.Cbtn(nil, nil, nil, nil, nil, true, {18,18})
+    button.texture= button:CreateTexture()
+    button.texture:SetAllPoints(button)
+    button.texture:SetAlpha(0.3)
+
     set_Point()--设置, 位置
 
     button:RegisterForDrag("RightButton")
@@ -1148,22 +1154,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end)
             panel.check:SetScript('OnLeave', function() e.tips:Hide() end)
 
-
-            --[[local check= e.CPanel((e.onlyChinse and '属性' or STAT_CATEGORY_ATTRIBUTES)..'|A:charactercreate-icon-customize-body-selected:0:0|a', not Save.disabled)
-            check:SetScript('OnMouseDown', function()
-                Save.disabled = not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需求重新加载' or REQUIRES_RELOAD)
-            end)check:SetScript('OnEnter', function(self2)
-                local name, description, filedataid= C_ChallengeMode.GetAffixInfo(13)
-                if name and description then
-                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                    e.tips:ClearLines()
-                    e.tips:AddDoubleLine(name, filedataid and '|T'..filedataid ..':0|t' or ' ')
-                    e.tips:AddLine(description, nil,nil,nil,true)
-                    e.tips:Show()
-                end
-            end)
-            check:SetScript('OnLeave', function() e.tips:Hide() end)]]
             if Save.disabled then
                 panel:UnregisterAllEvents()
             else
