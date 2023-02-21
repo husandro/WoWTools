@@ -1798,7 +1798,8 @@
         "STAT_STAGGER_TOOLTIP",
         "STAGGER",
         "STAT_STAGGER_TARGET_TOOLTIP",
-        "DEFENSE"
+        "DEFENSE",
+        "QUESTLINE_LOCATED_ABOVE"
     ],
     "Lua.diagnostics.disable": [
     ]

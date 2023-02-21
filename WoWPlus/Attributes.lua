@@ -22,6 +22,8 @@ local Save={
     },
     --toLeft=true--数值,放左边
     scale= 1.1,--缩放
+    vertical=3,--上下，间隔
+    horizontal=8--左右， 间隔
 }
 
 local Tabs
@@ -344,7 +346,7 @@ local function set_Versatility_Tooltip(self)
     local versatility = GetCombatRating(CR_VERSATILITY_DAMAGE_DONE);
 	local versatilityDamageBonus = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE);
 	local versatilityDamageTakenReduction = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_TAKEN) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_TAKEN);
-    e.tips:AddDoubleLine(frame.nametext, format('%d%%',  versatilityDamageBonus+0.5))
+    e.tips:AddDoubleLine(frame.nametext, format('%.2f%%',  versatilityDamageBonus))
 	e.tips:AddLine(format(e.onlyChinse and "造成的伤害值和治疗量提高%.2f%%，\n受到的伤害降低%.2f%%。\n全能：%s [%.2f%%/%.2f%%]" or CR_VERSATILITY_TOOLTIP, versatilityDamageBonus, versatilityDamageTakenReduction, BreakUpLargeNumbers(versatility), versatilityDamageBonus, versatilityDamageTakenReduction), nil,nil,nil,true)
     if frame.value and frame.value~=versatilityDamageBonus then
         e.tips:AddLine(' ')
@@ -598,13 +600,23 @@ local timeElapsed = 0
 local function set_SPEED_Text(frame, elapsed)
     timeElapsed = timeElapsed + elapsed
     if timeElapsed > 0.3 then
-        local currentSpeed, runSpeed, flightSpeed, swimSpeed = GetUnitSpeed(UnitExists('vehicle') and 'vehicle' or 'player')
-        local value
-        value= frame.current and currentSpeed or IsFlying() and flightSpeed or IsSwimming() and swimSpeed or runSpeed
-        if value~=0 then
-            frame.text:SetFormattedText('%.0f%%', value*100/BASE_MOVEMENT_SPEED)
+        local unit= UnitExists('vehicle') and 'vehicle' or (frame.current or UnitOnTaxi('player')) and 'player'
+        if unit then
+            local currentSpeed = GetUnitSpeed(unit)
+            if currentSpeed~=0 then
+                frame.text:SetFormattedText('%.0f%%', currentSpeed*100/BASE_MOVEMENT_SPEED)
+            else
+                frame.text:SetText('')
+            end
         else
-            frame.text:SetText('')
+            local _, runSpeed, flightSpeed, swimSpeed = GetUnitSpeed('player')
+            local value
+            value= IsFlying() and flightSpeed or IsSwimming() and swimSpeed or runSpeed
+            if value~=0 then
+                frame.text:SetFormattedText('%.0f%%', value*100/BASE_MOVEMENT_SPEED)
+            else
+                frame.text:SetText('')
+            end
         end
         timeElapsed = 0
     end
@@ -613,16 +625,19 @@ local function set_SPEED_Tooltip(self)
     local frame= self:GetParent()
     e.tips:SetOwner(self, "ANCHOR_LEFT")
     e.tips:ClearLines()
-    local unit= UnitExists('vehicle') and 'vehicle' or 'player'
-    local currentSpeed, runSpeed, flightSpeed, swimSpeed = GetUnitSpeed(unit)
-
-    e.tips:AddDoubleLine(frame.nametext, unit)
+    local currentSpeed, runSpeed, flightSpeed, swimSpeed = GetUnitSpeed('player')
+    e.tips:AddDoubleLine(frame.nametext, 'player')
     e.tips:AddLine(format(e.onlyChinse and '提升移动速度。|n|n速度：%s [+%.2f%%]' or CR_SPEED_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(CR_SPEED)), GetCombatRatingBonus(CR_SPEED)), nil,nil,nil, true)
     e.tips:AddLine(' ')
-    e.tips:AddDoubleLine((e.onlyChinse and '当前' or REFORGE_CURRENT)..' '..format('%.0f%%', currentSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', currentSpeed))
-    e.tips:AddDoubleLine((e.onlyChinse and '地面' or MOUNT_JOURNAL_FILTER_GROUND)..' '..format('%.0f%%', runSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', runSpeed))
-    e.tips:AddDoubleLine((e.onlyChinse and '水栖' or MOUNT_JOURNAL_FILTER_AQUATIC )..' '..format('%.0f%%', swimSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', swimSpeed))
-    e.tips:AddDoubleLine((e.onlyChinse and '飞行' or MOUNT_JOURNAL_FILTER_FLYING )..' '..format('%.0f%%', flightSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', flightSpeed))
+    e.tips:AddDoubleLine((e.onlyChinse and '当前' or REFORGE_CURRENT)..format(' %.0f%%', currentSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', currentSpeed))
+    e.tips:AddDoubleLine((e.onlyChinse and '地面' or MOUNT_JOURNAL_FILTER_GROUND)..format(' %.0f%%', runSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', runSpeed))
+    e.tips:AddDoubleLine((e.onlyChinse and '水栖' or MOUNT_JOURNAL_FILTER_AQUATIC )..format(' %.0f%%', swimSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', swimSpeed))
+    e.tips:AddDoubleLine((e.onlyChinse and '飞行' or MOUNT_JOURNAL_FILTER_FLYING )..format(' %.0f%%', flightSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', flightSpeed))
+    if UnitExists('vehicle') then
+        currentSpeed = GetUnitSpeed('vehicle')
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine((e.onlyChinse and '载具' or 'Vehicle')..format(' %.0f%%', currentSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', currentSpeed))
+    end
     e.tips:Show()
 end
 
@@ -682,14 +697,17 @@ local function set_Label_Value(frame)
     frame.label:SetText(text or '')
 end
 
-local function create_Rest_Lable(rest)
+local function set_Size(frame)--设置，大小
+    frame:SetSize(Save.horizontal, 12+ (Save.vertical or 3))
+end
+local function create_Rest_Lable(rest)--初始， 或设置
     local last= button.frame
     for index, info in pairs(Tabs) do
         local frame, find= button[info.name], nil
         if not info.hide then
             if not frame then
                 frame= CreateFrame('Frame', nil, button.frame)
-                frame:SetSize(1,14)
+                set_Size(frame)--设置，大小
                 frame.label= e.Cstr(frame, nil, nil, nil, {info.r,info.g,info.b,info.a}, nil, Save.toLeft and 'LEFT' or 'RIGHT')
                 frame.label:EnableMouse(true)
                 frame.label:SetScript('OnLeave', function() e.tips:Hide() end)
@@ -699,12 +717,12 @@ local function create_Rest_Lable(rest)
                 frame.text:SetScript('OnLeave', function() e.tips:Hide() end)
 
                 if Save.toLeft then
-                    frame.label:SetPoint('TOPLEFT',6,0)
-                    frame.text:SetPoint('RIGHT', frame.label, 'LEFT',2,0)
-                    
+                    frame.label:SetPoint('TOPLEFT', frame, 'TOPRIGHT',-5,0)
+                    frame.text:SetPoint('TOPRIGHT', frame, 'TOPLEFT', 5,0)
+
                 else
-                    frame.label:SetPoint('TOPRIGHT',-6,0)
-                    frame.text:SetPoint('LEFT', frame.label, 'RIGHT',-2,0)
+                    frame.label:SetPoint('TOPRIGHT', frame, 'TOPLEFT', 5,0)
+                    frame.text:SetPoint('TOPLEFT', frame, 'TOPRIGHT',-5,0)
                 end
 
                 if info.name=='STATUS' then--主属性1
@@ -877,22 +895,6 @@ local function set_Panle_Setting()--设置 panel
         ReloadUI()
     end)
 
-    local check= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    check:SetPoint("TOPLEFT", panel.check, 'BOTTOMLEFT', 0, -12)
-    check.text:SetText((e.onlyChinse and '数值' or STATUS_TEXT_VALUE)..': '..(e.onlyChinse and '向左' or BINDING_NAME_STRAFELEFT)..e.Icon.toLeft2)
-    check:SetChecked(Save.toLeft)
-    check:SetScript('OnMouseDown', function()
-        Save.toLeft= not Save.toLeft and true or nil
-        print(id, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
-    end)
-    check:SetScript("OnEnter", function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddLine('23% '..Tabs[2].text)
-        e.tips:Show()
-    end)
-    check:SetScript('OnLeave', function() e.tips:Hide() end)
-
     for index, info in pairs(Tabs) do
         if index>1 then
             if info.name=='DODGE' then
@@ -952,7 +954,7 @@ local function set_Panle_Setting()--设置 panel
                 e.tips:Show()
             end)
             text:SetScript('OnLeave', function() e.tips:Hide() end)
-                check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+                local check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
                 check:SetChecked(not Save.tab[info.name].hide)
                 check:SetPoint('LEFT', text, 'RIGHT',2,0)
                 check.name= info.name
@@ -960,7 +962,7 @@ local function set_Panle_Setting()--设置 panel
                 check:SetScript('OnMouseUp',function(self)
                     Save.tab[self.name].hide= not Save.tab[self.name].hide and true or nil
                     set_Tabs()
-                    create_Rest_Lable(true)
+                    create_Rest_Lable(true)--初始， 或设置
                     print(id, addName,e.GetShowHide(not Save.tab[self.name].hide), '|cnGREEN_FONT_COLOR:', e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
                 end)
                 check:SetScript('OnEnter', function(self)
@@ -983,7 +985,7 @@ local function set_Panle_Setting()--设置 panel
                     current:SetScript('OnMouseUp',function(self)
                         Save.tab[self.name].current= not Save.tab[self.name].current and true or nil
                         set_Tabs()
-                        create_Rest_Lable(true)
+                        create_Rest_Lable(true)--初始， 或设置
                     end)
                     current:SetScript('OnEnter', set_SPEED_Tooltip)
                     current:SetScript('OnLeave', function() e.tips:Hide() end)
@@ -997,7 +999,7 @@ local function set_Panle_Setting()--设置 panel
                     damage:SetScript('OnMouseDown', function(self)
                         Save.tab[self.name].damage= not Save.tab[self.name].damage and true or nil
                         set_Tabs()
-                        create_Rest_Lable()
+                        create_Rest_Lable()--初始， 或设置
                     end)
                     damage:SetScript('OnEnter', set_Versatility_Tooltip)
                     damage:SetScript('OnLeave', function() e.tips:Hide() end)
@@ -1006,6 +1008,66 @@ local function set_Panle_Setting()--设置 panel
             last= text
         end
     end
+
+    local check= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    check:SetPoint("TOPLEFT", panel.check, 'BOTTOMLEFT', 0, -12)
+    check.text:SetText((e.onlyChinse and '数值' or STATUS_TEXT_VALUE)..': '..(e.onlyChinse and '向左' or BINDING_NAME_STRAFELEFT)..e.Icon.toLeft2)
+    check:SetChecked(Save.toLeft)
+    check:SetScript('OnMouseDown', function()
+        Save.toLeft= not Save.toLeft and true or nil
+        print(id, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+    end)
+    check:SetScript("OnEnter", function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddLine('23% '..Tabs[2].text)
+        e.tips:Show()
+    end)
+    check:SetScript('OnLeave', function() e.tips:Hide() end)
+
+    local function set_Size_panel()
+        for _, info in pairs(Tabs) do
+            local frame= button[info.name]
+            if frame then
+                set_Size(frame)--设置，大小
+            end
+        end
+    end
+    local slider= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--间隔，上下
+    slider:SetPoint("TOPLEFT", check, 'BOTTOMLEFT', 0,-12)
+    --slider:SetOrientation('VERTICAL')--HORIZONTAL --slider.tooltipText=e.onlyChinse and '距离远近' or TRACKER_SORT_PROXIMITY
+    slider:SetSize(200,20)
+    slider:SetMinMaxValues(-5,10)
+    slider:SetValue(Save.vertical)
+    slider.Low:SetText('|T450907:0|t-5')
+    slider.High:SetText('|T450905:0|t10')
+    slider.Text:SetText(Save.vertical)
+    slider:SetValueStep(0.1)
+    slider:SetScript('OnValueChanged', function(self, value, userInput)
+        value= tonumber(format('%.1f', value))
+        self:SetValue(value)
+        self.Text:SetText(value)
+        Save.vertical=value
+        set_Size_panel()
+    end)
+
+    local slider2= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--间隔，左右
+    slider2:SetPoint("TOPLEFT", slider, 'BOTTOMLEFT', 0,-24)
+    slider2:SetSize(200,20)
+    slider2:SetMinMaxValues(0.1, 20)
+    slider2:SetValue(Save.horizontal)
+    slider2.Low:SetText('|T450908:0|t 0.1')
+    slider2.High:SetText('|T450906:0|t 10')
+    slider2.Text:SetText(Save.horizontal)
+    slider2:SetValueStep(0.1)
+    slider2:SetScript('OnValueChanged', function(self, value, userInput)
+        value= tonumber(format('%.1f', value))
+        self:SetValue(value)
+        self.Text:SetText(value)
+        Save.horizontal=value
+        set_Size_panel()
+    end)
+
 end
 
 --####
@@ -1037,7 +1099,7 @@ local function Init()
     end)
     button:SetScript("OnMouseDown", function(self,d)
         if d=='LeftButton' then--提示移动
-            create_Rest_Lable(true)
+            create_Rest_Lable(true)--初始， 或设置
             print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '重置' or RESET)..'|r', e.onlyChinse and '数值' or STATUS_TEXT_VALUE)
 
         elseif d=='RightButton' then
@@ -1109,17 +1171,35 @@ local function Init()
         button.frame:SetScript("OnEvent", function(self, event)
             if event=='PLAYER_SPECIALIZATION_CHANGED' then
                 set_Tabs()--设置, 内容
-                create_Rest_Lable(true)
+                create_Rest_Lable(true)--初始， 或设置
             elseif event=='AVOIDANCE_UPDATE' or event=='LIFESTEAL_UPDATE' then
-                create_Rest_Lable()
+                create_Rest_Lable()--初始， 或设置
             else
-                create_Rest_Lable(true)
+                create_Rest_Lable(true)--初始， 或设置
             end
         end)
         set_Show_Hide()--显示， 隐藏
         set_Tabs()--设置, 内容
-        create_Rest_Lable()
+        create_Rest_Lable()--初始， 或设置
         set_Panle_Setting()--设置 panel
+    end)
+
+    local restButton=CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')--全部重
+    restButton:SetText('|cnRED_FONT_COLOR:'..(e.onlyChinse and '重置' or RESET)..'|r')
+    restButton:SetPoint("TOPRIGHT")
+    restButton:SetSize(60, 28)
+    restButton:SetScript('OnMouseUp', function()
+        StaticPopupDialogs[id..addName..'restAllSetup']={
+            text =id..'  '..addName..'|n|n|cnRED_FONT_COLOR:'..(e.onlyChinse and '清除全部' or CLEAR_ALL)..'|r '..(e.onlyChinse and '保存' or SAVE)..'|n|n'..(e.onlyChinse and '重新加载UI' or RELOADUI)..' /reload',
+            button1 = '|cnRED_FONT_COLOR:'..(e.onlyChinse and '重置' or RESET),
+            button2 = e.onlyChinse and '取消' or CANCEL,
+            whileDead=true,timeout=30,hideOnEscape = 1,
+            OnAccept=function(self)
+                Save=nil
+                ReloadUI()
+            end,
+        }
+        StaticPopup_Show(id..addName..'restAllSetup')
     end)
 end
 
@@ -1129,6 +1209,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
+            Save.vertical= Save.vertical or 3
+            Save.horizontal= Save.horizontal or 8
 
             --添加控制面板
             panel.name = (e.onlyChinse and '属性' or STAT_CATEGORY_ATTRIBUTES)..'|A:charactercreate-icon-customize-body-selected:0:0|a'--添加新控制面板
