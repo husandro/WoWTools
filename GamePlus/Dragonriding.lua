@@ -141,9 +141,11 @@ local function Init()
             panel:SetShown(false)
         end
     end)
-    local widgetInfo = C_UIWidgetManager.GetFillUpFramesWidgetVisualizationInfo(4460)
-    if widgetInfo and widgetInfo.shownState==1 then
-        panel:SetShown(true)
+    if not IsInsane() then
+        local widgetInfo = C_UIWidgetManager.GetFillUpFramesWidgetVisualizationInfo(4460)
+        if widgetInfo and widgetInfo.shownState==1 then
+            panel:SetShown(true)
+        end
     end
 end
 
