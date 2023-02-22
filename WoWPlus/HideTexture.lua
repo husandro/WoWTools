@@ -650,8 +650,13 @@ hooksecurefunc(SCENARIO_TRACKER_MODULE, 'AddProgressBar', function(self, block, 
         hideTexture(progressBar.Bar.Icon)
         hideTexture(progressBar.Bar.BarBG)
     end
+end)
+hooksecurefunc('SetupTextureKitOnRegions', function(textureKit, frame, regions, setVisibilityOfRegions, useAtlasSize)
+    if frame then
+        setAlpha(frame)
+        
+    end
 end)]]
-
 --#########
 --事件, 透明
 --#########

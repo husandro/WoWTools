@@ -1802,7 +1802,8 @@
         "QUESTLINE_LOCATED_ABOVE",
         "BINDING_NAME_SCREENSHOT",
         "ScenarioStage_UpdateOptionWidgetRegistration",
-        "SCENARIO_TRACKER_MODULE"
+        "SCENARIO_TRACKER_MODULE",
+        "UIWidgetTemplateIconAndTextMixin"
     ],
     "Lua.diagnostics.disable": [
     ]
