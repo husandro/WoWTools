@@ -1800,7 +1800,9 @@
         "STAT_STAGGER_TARGET_TOOLTIP",
         "DEFENSE",
         "QUESTLINE_LOCATED_ABOVE",
-        "BINDING_NAME_SCREENSHOT"
+        "BINDING_NAME_SCREENSHOT",
+        "ScenarioStage_UpdateOptionWidgetRegistration",
+        "SCENARIO_TRACKER_MODULE"
     ],
     "Lua.diagnostics.disable": [
     ]

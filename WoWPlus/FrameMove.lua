@@ -535,6 +535,14 @@ local function Init_Move()
     end)]]
     Move(LootFrame.TitleContainer, {frame=LootFrame, save=true})--物品拾取
     Move(LootFrame, {save=true})--物品拾取
+
+    --场景 
+    if ObjectiveTrackerBlocksFrame then
+        Move(ObjectiveTrackerBlocksFrame.ScenarioHeader, {frame=ObjectiveTrackerFrame, notZoom=true})
+        Move(ObjectiveTrackerBlocksFrame.AchievementHeader, {frame=ObjectiveTrackerFrame, notZoom=true})
+        Move(ObjectiveTrackerBlocksFrame.QuestHeader, {frame=ObjectiveTrackerFrame, zeroAlpha=true, notZoom=true})
+        Move(ObjectiveTrackerBlocksFrame.CampaignQuestHeader, {frame=ObjectiveTrackerFrame, notZoom=true})
+    end
 end
 
 local function set_PopupDialogs()

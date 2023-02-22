@@ -523,7 +523,7 @@ local function Init_SetAlpha()
     hideTexture(WhoFrameEditBoxInset.Bg)
     hideTexture(QuickJoinFrame.ScrollBar.Backplate)
 
-    
+
 
     --聊天设置
     setAlpha(ChannelFrame.NineSlice.TopEdge)
@@ -556,8 +556,6 @@ local function Init_SetAlpha()
     setAlpha(SendMailMoneyBgLeft)
     hideTexture(SendMailMoneyInset.Bg)
 
-    --场景
-    setAlpha(ScenarioStageBlock.NormalBG)
 
     --拾取, 历史
     hideTexture(LootHistoryFrameScrollFrame.ScrollBarBackground)
@@ -625,9 +623,34 @@ local function Init_SetAlpha()
     setAlpha(AddonCharacterDropDownMiddle)
     setAlpha(AddonCharacterDropDownLeft)
     setAlpha(AddonCharacterDropDownRight)
+
+    --场景 Blizzard_ScenarioObjectiveTracker.lua
+    if ObjectiveTrackerBlocksFrame then
+        setAlpha(ObjectiveTrackerBlocksFrame.ScenarioHeader.Background)
+        setAlpha(ObjectiveTrackerBlocksFrame.AchievementHeader.Background)
+        setAlpha(ObjectiveTrackerBlocksFrame.QuestHeader.Background)
+        hooksecurefunc('ScenarioStage_UpdateOptionWidgetRegistration', function(stageBlock, widgetSetID)
+            setAlpha(stageBlock.NormalBG)
+            setAlpha(stageBlock.FinalBG)
+        end)
+    end
 end
-
-
+    --[[hooksecurefunc(UIWidgetPowerBarContainerFrame, 'CreateWidget', function(self, widgetID)
+       
+    end)
+hooksecurefunc(SCENARIO_TRACKER_MODULE, 'AddProgressBar', function(self, block, line, criteriaIndex)
+    
+    local progressBar  = self.usedProgressBars[block] and self.usedProgressBars[block][line];
+    print(progressBar, progressBar.Bar)
+    if progressBar  and progressBar.Bar then
+        hideTexture(progressBar.Bar.BorderLeft)
+        hideTexture(progressBar.Bar.BorderCenter)
+        hideTexture(progressBar.Bar.BorderRight)
+        hideTexture(progressBar.Bar.IconBG)
+        hideTexture(progressBar.Bar.Icon)
+        hideTexture(progressBar.Bar.BarBG)
+    end
+end)]]
 
 --#########
 --事件, 透明
@@ -696,7 +719,7 @@ local function set_Alpha_Event(arg1)
         setAlpha(ClassTalentFrame.TalentsTab.SearchBox.Right)
 
     elseif arg1=='Blizzard_AchievementUI' then--成就
-        
+
         setAlpha(AchievementFrame.Header.PointBorder)
         hideTexture(AchievementFrameSummary.Background)
         hideTexture(AchievementFrameCategoriesBG)
@@ -819,7 +842,7 @@ local function set_Alpha_Event(arg1)
         hideTexture(EncounterJournalBg)
         hideTexture(EncounterJournalInset.Bg)
 
-        
+
         setAlpha(EncounterJournalInstanceSelectBG)
         --setAlpha(EncounterJournalEncounterFrameInfoBG)
         setAlpha(EncounterJournalEncounterFrameInfoModelFrameDungeonBG)
@@ -907,7 +930,7 @@ local function set_Alpha_Event(arg1)
 
         hideTexture(AuctionHouseFrameAuctionsFrame.SummaryList.ScrollBar.Backplate)
         hideTexture(AuctionHouseFrameAuctionsFrame.AllAuctionsList.ScrollBar.Backplate)
-        
+
         setAlpha(AuctionHouseFrameAuctionsFrame.SummaryList.Background)
         setAlpha(AuctionHouseFrameAuctionsFrame.AllAuctionsList.Background)
 
@@ -1242,8 +1265,8 @@ local function set_Alpha_Event(arg1)
             end
             if PlayerChoiceFrame.Title then
                 setAlpha(PlayerChoiceFrame.Title.Middle)
-                hideTexture(PlayerChoiceFrame.Title.Left)
-                hideTexture(PlayerChoiceFrame.Title.Right)
+                setAlpha(PlayerChoiceFrame.Title.Left)
+                setAlpha(PlayerChoiceFrame.Title.Right)
             end
             if PlayerChoiceFrame.Background then
                 hideTexture(PlayerChoiceFrame.Background.BackgroundTile)

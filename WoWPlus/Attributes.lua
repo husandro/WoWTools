@@ -1115,7 +1115,8 @@ local function Init()
     --e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size)
     button= e.Cbtn(nil, nil, nil, nil, nil, true, {18,18})
     button.texture= button:CreateTexture()
-    button.texture:SetAllPoints(button)
+    button.texture:SetSize(14,14)
+    button.texture:SetPoint('CENTER')
     button.texture:SetAlpha(0.3)
 
     set_Point()--设置, 位置
@@ -1225,6 +1226,9 @@ end
 
 
 panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent('PET_BATTLE_OPENING_DONE')
+panel:RegisterEvent('PET_BATTLE_CLOSE')
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
@@ -1268,5 +1272,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not WoWToolsSave then WoWToolsSave={} end
             WoWToolsSave[addName]=Save
         end
+
+    elseif event=='PET_BATTLE_OPENING_DONE' then
+        button:SetShown(false)
+
+    elseif event=='PET_BATTLE_CLOSE' then
+        button:SetShown(true)
+
     end
 end)

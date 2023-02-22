@@ -26,11 +26,11 @@ local Color={
     Impossible={1, 0, 0.08},--4
 }
 local Icon={
-    day='|A:UI-DailyQuestPoiCampaign-QuestBang:0:0|a',
-    legend='|A:questlegendary:0:0|a',
-    week='|A:weeklyrewards-orb-unlocked:0:0|a',
-    start='|A:vignetteevent:0:0|a',
-    campa='|A:campaignavailabledailyquesticon:0:0|a',
+    day='|A:UI-DailyQuestPoiCampaign-QuestBang:10:10|a',
+    legend='|A:questlegendary:10:10|a',
+    week='|A:weeklyrewards-orb-unlocked:10:10|a',
+    start='|A:vignetteevent:10:10|a',
+    campa='|A:campaignavailabledailyquesticon:10:10|a',
     x2='Interface\\AddOns\\WeakAuras\\Media\\Textures\\cancel-icon.tga',
     clear='bags-button-autosort-up'
 }
@@ -360,9 +360,9 @@ local function Init()
                         block.r, block.g, block.b= Color.Week[1], Color.Week[2], Color.Week[3]
                     end
                 end
-                if info.isOnMap then
+                --[[if info.isOnMap then
                     m=m..e.Icon.map2
-                end
+                end]]
                 local ver=GetQuestExpansion(questID or info.questID)--版本
                 if ver and ver~= e.ExpansionLevel then
                     m=m..(ver<e.ExpansionLevel and  '|cff606060' or '|cnRED_FONT_COLOR:')..'['..(ver+1)..']|r'

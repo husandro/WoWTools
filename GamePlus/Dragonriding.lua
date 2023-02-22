@@ -44,38 +44,7 @@ local function get_Speed()
     end
     lastX, lastY, lastT = 0, 0, 0
 end
---[[
-local function set_Shown()
-    if IsMounted() then
-        for _, mountID in ipairs(C_MountJournal.GetCollectedDragonridingMounts()) do
-            if select(4, C_MountJournal.GetMountInfoByID(mountID)) then
-                panel:SetShown(true)
-                return
-            end
-        end
-    end
-    panel:SetShown(false)
-end
-local function set_Events()
-    if not IsInInstance() then
-        panel:RegisterEvent('PLAYER_MOUNT_DISPLAY_CHANGED')
-        panel:RegisterEvent('MOUNT_JOURNAL_USABILITY_CHANGED')
-        panel:RegisterEvent('LEARNED_SPELL_IN_TAB')
-        panel:RegisterUnitEvent('UNIT_SPELLCAST_SUCCEEDED','player')
-        panel:RegisterEvent('VEHICLE_ANGLE_UPDATE')
-        panel:RegisterEvent('UPDATE_UI_WIDGET')
-        panel:SetShown(true)
-    else
-        panel:UnregisterEvent('PLAYER_MOUNT_DISPLAY_CHANGED')
-        panel:UnregisterEvent('MOUNT_JOURNAL_USABILITY_CHANGED')
-        panel:UnregisterEvent('LEARNED_SPELL_IN_TAB')
-        panel:UnregisterEvent('UNIT_SPELLCAST_SUCCEEDED')
-        panel:UnregisterEvent('VEHICLE_ANGLE_UPDATE')
-        panel:UnregisterEvent('UPDATE_UI_WIDGET')
-        panel:SetShown(false)
-    end
-end
-]]
+
 --####
 --初始
 --####
@@ -191,12 +160,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not WoWToolsSave then WoWToolsSave={} end
             WoWToolsSave[addName]=Save
         end
-
-    --elseif event=='PLAYER_ENTERING_WORLD' then
-        --set_Events()
-
-    --else
-        --set_Shown()
     end
 end)
 --https://wago.io/KIIAJSKl1
