@@ -1803,7 +1803,9 @@
         "BINDING_NAME_SCREENSHOT",
         "ScenarioStage_UpdateOptionWidgetRegistration",
         "SCENARIO_TRACKER_MODULE",
-        "UIWidgetTemplateIconAndTextMixin"
+        "UIWidgetTemplateIconAndTextMixin",
+        "FORMATTING",
+        "COLOR_PICKER"
     ],
     "Lua.diagnostics.disable": [
     ]

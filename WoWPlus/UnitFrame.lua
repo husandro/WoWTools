@@ -524,8 +524,8 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
             end
         end
         if self.healthbar then
-            self.healthbar:SetStatusBarColor(r,g,b)--颜色
             self.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
+            self.healthbar:SetStatusBarColor(r,g,b)--颜色
         end
 
     end)

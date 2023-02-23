@@ -21,9 +21,11 @@ local Save={
         ["SPEED"]= {r=1, g=0.82, b=0},--移动
     },
     --toLeft=true--数值,放左边
+    --bar=true,--进度条
+    --barTexture2,--样式2
     scale= 1.1,--缩放
     vertical=3,--上下，间隔
-    horizontal=8--左右， 间隔
+    horizontal=8,--左右， 间隔
 }
 
 local Tabs
@@ -34,52 +36,55 @@ local function set_Tabs()
     icon, _, PrimaryStat= select(4, GetSpecializationInfo(spec, nil, nil, nil, e.Player.sex))
     SetPortraitToTexture(button.texture, icon or 0)
     Tabs={
-        {name='STATUS', r=e.Player.r, g=e.Player.g, b=e.Player.b, a=1, text= {
-                [1]= e.onlyChinse and '力量' or SPEC_FRAME_PRIMARY_STAT_STRENGTH,
-                [2]= e.onlyChinse and '敏捷' or SPEC_FRAME_PRIMARY_STAT_AGILITY,
-                [4]= e.onlyChinse and '智力' or SPEC_FRAME_PRIMARY_STAT_INTELLECT,
-            }
-        },
-        {name= 'CRITCHANCE', text= e.onlyChinse and '爆击' or STAT_CRITICAL_STRIKE},
-        {name= 'HASTE', text= e.onlyChinse and '急速' or STAT_HASTE},
-        {name= 'MASTERY', text= e.onlyChinse and '精通' or STAT_MASTERY},
-        {name= 'VERSATILITY', text= e.onlyChinse and '全能' or STAT_VERSATILITY},--5
+        {name='STATUS', r=e.Player.r, g=e.Player.g, b=e.Player.b, a=1},
 
-        {name= 'LIFESTEAL', text= e.onlyChinse and '吸血' or STAT_LIFESTEAL},--6
-        {name= 'AVOIDANCE', text= e.onlyChinse and '闪避' or STAT_AVOIDANCE},--7
+        {name= 'CRITCHANCE', text= e.onlyChinse and '爆击' or STAT_CRITICAL_STRIKE, bar=true},
+        {name= 'HASTE', text= e.onlyChinse and '急速' or STAT_HASTE, bar=true},
+        {name= 'MASTERY', text= e.onlyChinse and '精通' or STAT_MASTERY, bar=true},
+        {name= 'VERSATILITY', text= e.onlyChinse and '全能' or STAT_VERSATILITY, bar=true},--5
 
-        {name= 'DODGE', text= e.onlyChinse and '躲闪' or STAT_DODGE},--8
-        {name= 'PARRY', text= e.onlyChinse and '招架' or STAT_PARRY},--9
-        {name= 'BLOCK', text= e.onlyChinse and '格挡' or STAT_BLOCK},--10
-        {name= 'STAGGER', text= e.onlyChinse and '醉拳' or STAT_STAGGER},--11
+        {name= 'LIFESTEAL', text= e.onlyChinse and '吸血' or STAT_LIFESTEAL, bar=true},--6
+        {name= 'AVOIDANCE', text= e.onlyChinse and '闪避' or STAT_AVOIDANCE, bar=true},--7
+
+        {name= 'DODGE', text= e.onlyChinse and '躲闪' or STAT_DODGE, bar=true},--8
+        {name= 'PARRY', text= e.onlyChinse and '招架' or STAT_PARRY, bar=true},--9
+        {name= 'BLOCK', text= e.onlyChinse and '格挡' or STAT_BLOCK, bar=true},--10
+        {name= 'STAGGER', text= e.onlyChinse and '醉拳' or STAT_STAGGER, bar=true},--11
 
         {name= 'SPEED', text= e.onlyChinse and '移动' or NPE_MOVE},--12
     }
+
+    if PrimaryStat==LE_UNIT_STAT_STRENGTH then
+        Tabs[1].text= e.onlyChinse and '力量' or SPEC_FRAME_PRIMARY_STAT_STRENGTH
+    elseif PrimaryStat==LE_UNIT_STAT_AGILITY then
+        Tabs[1].text= e.onlyChinse and '敏捷' or SPEC_FRAME_PRIMARY_STAT_AGILITY
+    else
+        Tabs[1].text= e.onlyChinse and '智力' or SPEC_FRAME_PRIMARY_STAT_INTELLECT
+    end
+
     for index, info in pairs(Tabs) do
-        if index>1 then
-            if not Save.tab[info.name] then
-                Save.tab[info.name]={}
-            end
-            Tabs[index].r= Save.tab[info.name].r or 1
-            Tabs[index].g= Save.tab[info.name].g or 0.82
-            Tabs[index].b= Save.tab[info.name].b or 0
-            Tabs[index].a= Save.tab[info.name].a or 1
-            if info.name=='VERSATILITY' then
-                Tabs[index].damage= Save.tab[info.name].damage
-            elseif info.name=='SPEED' then
-                Tabs[index].current= Save.tab[info.name].current
-            end
-            if index>=6 and index<=11 then--坦克
-                if Role~='TANK' then
-                    Tabs[index].hide= true
-                elseif info.name=='STAGGER' and e.Player.class~='MONK' then--武僧
-                    Tabs[index].hide= true
-                else
-                    Tabs[index].hide= Save.tab[info.name].hide
-                end
+        if not Save.tab[info.name]then
+            Save.tab[info.name]={name= info.name}
+        end
+        Tabs[index].r= index==1 and e.Player.r or Save.tab[info.name].r or 1
+        Tabs[index].g= index==1 and e.Player.g or Save.tab[info.name].g or 0.82
+        Tabs[index].b= index==1 and e.Player.b or Save.tab[info.name].b or 0
+        Tabs[index].a= index==1 and 1 or Save.tab[info.name].a or 1
+        if info.name=='VERSATILITY' then
+            Tabs[index].damage= Save.tab[info.name].damage
+        elseif info.name=='SPEED' then
+            Tabs[index].current= Save.tab[info.name].current
+        end
+        if index>=6 and index<=11 then--坦克
+            if Role~='TANK' then
+                Tabs[index].hide= true
+            elseif info.name=='STAGGER' and e.Player.class~='MONK' then--武僧
+                Tabs[index].hide= true
             else
                 Tabs[index].hide= Save.tab[info.name].hide
             end
+        else
+            Tabs[index].hide= Save.tab[info.name].hide
         end
     end
 end
@@ -210,6 +215,9 @@ local function set_Crit_Text(frame)
     else
         frame.text:SetFormattedText(Save.redColor..'%d%%', critChance + 0.5)
     end
+    if frame.bar then
+        frame.bar:SetValue(critChance)
+    end
     return critChance
 end
 local function set_Crit_Tooltip(self)
@@ -272,6 +280,9 @@ local function set_Haste_Text(frame)
     else
         frame.text:SetFormattedText(Save.redColor..'%d%%', haste + 0.5)
     end
+    if frame.bar then
+        frame.bar:SetValue(haste)
+    end
     return haste
 end
 local function set_Haste_Tooltip(self)
@@ -316,6 +327,9 @@ local function set_Mastery_Text(frame)
     else
         frame.text:SetFormattedText(Save.redColor..'%d%%', mastery + 0.5)
     end
+    if frame.bar then
+        frame.bar:SetValue(mastery)
+    end
     return mastery
 end
 
@@ -336,6 +350,9 @@ local function set_Versatility_Text(frame)
         frame.text:SetText(Save.greenColor..text)
     else
         frame.text:SetText(Save.redColor..text)
+    end
+    if frame.bar then
+        frame.bar:SetValue(versatilityDamageBonus)
     end
     return versatilityDamageBonus
 end
@@ -373,6 +390,9 @@ local function set_Lifesteal_Text(frame)
     else
         frame.text:SetFormattedText(Save.redColor..'%d%%', lifesteal + 0.5)
     end
+    if frame.bar then
+        frame.bar:SetValue(lifesteal)
+    end
     return lifesteal
 end
 local function set_Lifesteal_Tooltip(self)
@@ -407,6 +427,9 @@ local function set_Avoidance_Text(frame)
         frame.text:SetFormattedText(Save.greenColor..'%d%%', Avoidance + 0.5)
     else
         frame.text:SetFormattedText(Save.redColor..'%d%%', Avoidance + 0.5)
+    end
+    if frame.bar then
+        frame.bar:SetValue(Avoidance)
     end
     return Avoidance
 end
@@ -443,6 +466,9 @@ local function set_Dodge_Text(frame)
     else
         frame.text:SetFormattedText(Save.redColor..'%d%%', chance + 0.5)
     end
+    if frame.bar then
+        frame.bar:SetValue(chance)
+    end
     return chance
 end
 local function set_Dodge_Tooltip(self)
@@ -478,6 +504,9 @@ local function set_Parry_Text(frame)
     else
         frame.text:SetFormattedText(Save.redColor..'%d%%', chance + 0.5)
     end
+    if frame.bar then
+        frame.bar:SetValue(chance)
+    end
     return chance
 end
 local function set_Parry_Tooltip(self)
@@ -512,6 +541,9 @@ local function set_Block_Text(frame)
         frame.text:SetFormattedText(Save.greenColor..'%d%%', chance + 0.5)
     else
         frame.text:SetFormattedText(Save.redColor..'%d%%', chance + 0.5)
+    end
+    if frame.bar then
+        frame.bar:SetValue(chance)
     end
     return chance
 end
@@ -563,6 +595,9 @@ local function set_Stagger_Text(frame)
         else
             frame.text:SetText(Save.redColor..text)
         end
+    end
+    if frame.bar then
+        frame.bar:SetValue(stagger)
     end
     return stagger
 end
@@ -643,56 +678,55 @@ end
 
 
 local function set_Label_Value(frame)
-    local text, value
+    local  value
     if frame.name=='STATUS' then--主属性1
-        text= Tabs[frame.index]['text'][PrimaryStat]
         value= set_Stat_Text(frame)
-    else
-        text= Tabs[frame.index].text
-        if frame.name=='CRITCHANCE' then--爆击2
-            local holySchool = 2;
-            local minCrit = GetSpellCritChance(holySchool) or 0;
-            local spellCrit;
-            for i=(holySchool+1), MAX_SPELL_SCHOOLS do
-                spellCrit = GetSpellCritChance(i);
-                minCrit = min(minCrit, spellCrit);
-            end
-            frame.minCrit = minCrit
-            value= set_Crit_Text(frame)
 
-        elseif frame.name=='HASTE' then--急速3
-            value= set_Haste_Text(frame)
-
-        elseif frame.name=='MASTERY' then--精通4
-            value= set_Mastery_Text(frame)
-
-        elseif frame.name=='VERSATILITY' then--全能5
-            value= set_Versatility_Text(frame)
-
-        elseif frame.name=='LIFESTEAL' then--吸血6
-            value= set_Lifesteal_Text(frame)
-
-        elseif frame.name=='AVOIDANCE' then--闪避7
-            value= set_Avoidance_Text(frame)
-
-        elseif frame.name=='DODGE' then--躲闪
-            value= set_Dodge_Text(frame)
-
-        elseif frame.name=='PARRY' then--招架
-            value= set_Parry_Text(frame)
-
-        elseif frame.name=='BLOCK' then--格挡
-            value= set_Block_Text(frame)
-
-        elseif frame.name=='STAGGER' then--醉拳11
-            value= set_Stagger_Text(frame)
-        --elseif frame.name=='STAGGER' then--SPEED 速度12
-
+    elseif frame.name=='CRITCHANCE' then--爆击2
+        local holySchool = 2;
+        local minCrit = GetSpellCritChance(holySchool) or 0;
+        local spellCrit;
+        for i=(holySchool+1), MAX_SPELL_SCHOOLS do
+            spellCrit = GetSpellCritChance(i);
+            minCrit = min(minCrit, spellCrit);
         end
+        frame.minCrit = minCrit
+        value= set_Crit_Text(frame)
+
+    elseif frame.name=='HASTE' then--急速3
+        value= set_Haste_Text(frame)
+
+    elseif frame.name=='MASTERY' then--精通4
+        value= set_Mastery_Text(frame)
+
+    elseif frame.name=='VERSATILITY' then--全能5
+        value= set_Versatility_Text(frame)
+
+    elseif frame.name=='LIFESTEAL' then--吸血6
+        value= set_Lifesteal_Text(frame)
+
+    elseif frame.name=='AVOIDANCE' then--闪避7
+        value= set_Avoidance_Text(frame)
+
+    elseif frame.name=='DODGE' then--躲闪
+        value= set_Dodge_Text(frame)
+
+    elseif frame.name=='PARRY' then--招架
+        value= set_Parry_Text(frame)
+
+    elseif frame.name=='BLOCK' then--格挡
+        value= set_Block_Text(frame)
+
+    elseif frame.name=='STAGGER' then--醉拳11
+        value= set_Stagger_Text(frame)
+    --elseif frame.name=='STAGGER' then--SPEED 速度12
+
     end
     if not frame.value or frame.value==0 or value==0 then
         frame.value= value
     end
+
+    local text= Tabs[frame.index].text
     frame.nametext= text
     if Save.gsubText then--文本，截取
         text= e.WA_Utf8Sub(text, Save.gsubText)
@@ -719,13 +753,31 @@ local function create_Rest_Lable(rest)--初始， 或设置
                 frame.text:EnableMouse(true)
                 frame.text:SetScript('OnLeave', function() e.tips:Hide() end)
 
+                if info.bar and Save.bar then
+                    frame.bar= CreateFrame('StatusBar', nil, frame)
+                    frame.bar:SetSize(120, 12)
+                    if Save.barTexture2 then
+                        frame.bar:SetStatusBarTexture('Interface\\TargetingFrame\\UI-StatusBar')
+                    else
+                        frame.bar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
+                    end
+                    frame.bar:SetMinMaxValues(0,100)
+                    frame.bar:SetFrameLevel(frame:GetFrameLevel()-1)
+                    frame.bar:SetStatusBarColor(info.r,info.g,info.b,info.a)
+                end
                 if Save.toLeft then
                     frame.label:SetPoint('TOPLEFT', frame, 'TOPRIGHT',-5,0)
                     frame.text:SetPoint('TOPRIGHT', frame, 'TOPLEFT', 5,0)
-
+                    if frame.bar then
+                        frame.bar:SetPoint('TOPRIGHT', frame.text,0,-2)
+                        frame.bar:SetReverseFill(true)
+                    end
                 else
                     frame.label:SetPoint('TOPRIGHT', frame, 'TOPLEFT', 5,0)
                     frame.text:SetPoint('TOPLEFT', frame, 'TOPRIGHT',-5,0)
+                    if frame.bar then
+                        frame.bar:SetPoint('TOPLEFT', frame.text,0,-2)
+                    end
                 end
 
                 if info.name=='STATUS' then--主属性1
@@ -900,28 +952,28 @@ local function set_Panle_Setting()--设置 panel
     end)
 
     for index, info in pairs(Tabs) do
-        if index>1 then
-            if info.name=='DODGE' then
-                local text= e.Cstr(panel)
-                text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
-                if e.onlyChinse then
-                    text:SetText("仅限坦克"..INLINE_TANK_ICON)
-                else
-                    text:SetFormattedText(LFG_LIST_CROSS_FACTION , TANK..INLINE_TANK_ICON)
-                end
-                last= text
-            end
-            local r= info.r or 1
-            local g= info.g or 0.82
-            local b= info.b or 0
-            local a= info.a or 1
-            local text= e.Cstr(panel, nil, nil, nil, {r,g,b,a})
-            if index==2 or info.name=='SPEED' then
-                text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
+        if info.name=='DODGE' then
+            local text= e.Cstr(panel)
+            text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
+            if e.onlyChinse then
+                text:SetText("仅限坦克"..INLINE_TANK_ICON)
             else
-                text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -4)
+                text:SetFormattedText(LFG_LIST_CROSS_FACTION , TANK..INLINE_TANK_ICON)
             end
-            text:SetText(info.text)
+            last= text
+        end
+        local r= info.r or 1
+        local g= info.g or 0.82
+        local b= info.b or 0
+        local a= info.a or 1
+        local text= e.Cstr(panel, nil, nil, nil, {r,g,b,a})
+        if index==2 or info.name=='SPEED' then
+            text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
+        else
+            text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -4)
+        end
+        text:SetText(info.text)
+        if index>1 then
             text:EnableMouse(true)
             text.r, text.g, text.b, text.a= r, g, b, a
             text.name= info.name
@@ -935,12 +987,17 @@ local function set_Panle_Setting()--设置 panel
                         newA, newR, newG, newB= self.a, self.r, self.g, self.b
                     end
                     Save.tab[self.name].r= newR
-                    Save.tab[self.name].b= newB
                     Save.tab[self.name].g= newG
+                    Save.tab[self.name].b= newB
                     Save.tab[self.name].a= newA
                     self:SetTextColor(newR, newG, newB, newA)
-                    if button[self.name] and button[self.name].label then
-                        button[self.name].label:SetTextColor(newR, newG, newB, newA)
+                    if button[self.name] then
+                        if button[self.name].label then
+                            button[self.name].label:SetTextColor(newR, newG, newB, newA)
+                        end
+                        if button[self.name].bar then
+                            button[self.name].bar:SetStatusBarColor(newR,newG,newB,newA)
+                        end
                     end
                 end)
             end)
@@ -958,59 +1015,59 @@ local function set_Panle_Setting()--设置 panel
                 e.tips:Show()
             end)
             text:SetScript('OnLeave', function() e.tips:Hide() end)
-                local check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-                check:SetChecked(not Save.tab[info.name].hide)
-                check:SetPoint('LEFT', text, 'RIGHT',2,0)
-                check.name= info.name
-                check.text2= info.text
-                check:SetScript('OnMouseUp',function(self)
-                    Save.tab[self.name].hide= not Save.tab[self.name].hide and true or nil
-                    set_Tabs()
-                    create_Rest_Lable(true)--初始， 或设置
-                    print(id, addName,e.GetShowHide(not Save.tab[self.name].hide), '|cnGREEN_FONT_COLOR:', e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
-                end)
-                check:SetScript('OnEnter', function(self)
-                    e.tips:SetOwner(self, "ANCHOR_LEFT")
-                    e.tips:ClearLines()
-                    local value= button[self.name] and button[self.name].value
-                    e.tips:AddDoubleLine(self.text2, value and format('%.2f%%', value))
-                    e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine(e.GetShowHide(Save.tab[self.name].hide), '|cnGREEN_FONT_COLOR:0 = '..(e.onlyChinse and '隐藏' or HIDE))
-                    e.tips:Show()
-                end)
-                check:SetScript('OnLeave', function() e.tips:Hide() end)
-
-                if info.name=='SPEED' then--速度, 当前速度, 选项
-                    local current= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-                    current:SetChecked(Save.tab[info.name].current)
-                    current:SetPoint('LEFT', check, 'RIGHT',2,0)
-                    current.text:SetText(e.onlyChinse and '当前' or 'REFORGE_CURRENT')
-                    current.name= info.name
-                    current:SetScript('OnMouseUp',function(self)
-                        Save.tab[self.name].current= not Save.tab[self.name].current and true or nil
-                        set_Tabs()
-                        create_Rest_Lable(true)--初始， 或设置
-                    end)
-                    current:SetScript('OnEnter', set_SPEED_Tooltip)
-                    current:SetScript('OnLeave', function() e.tips:Hide() end)
-
-                elseif info.name=='VERSATILITY' then--全能5, 双属性 22/18%
-                    local damage=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-                    damage:SetChecked(Save.tab[info.name].damage)
-                    damage:SetPoint('LEFT', check, 'RIGHT',2,0)
-                    damage.text:SetText((e.onlyChinse and '防御' or DEFENSE)..' 22/18%')
-                    damage.name= info.name
-                    damage:SetScript('OnMouseDown', function(self)
-                        Save.tab[self.name].damage= not Save.tab[self.name].damage and true or nil
-                        set_Tabs()
-                        create_Rest_Lable()--初始， 或设置
-                    end)
-                    damage:SetScript('OnEnter', set_Versatility_Tooltip)
-                    damage:SetScript('OnLeave', function() e.tips:Hide() end)
-                end
-
-            last= text
         end
+
+        local check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+        check:SetChecked(not Save.tab[info.name].hide)
+        check:SetPoint('LEFT', text, 'RIGHT',2,0)
+        check.name= info.name
+        check.text2= info.text
+        check:SetScript('OnMouseUp',function(self)
+            Save.tab[self.name].hide= not Save.tab[self.name].hide and true or nil
+            set_Tabs()
+            create_Rest_Lable(true)--初始， 或设置
+           -- print(id, addName,e.GetShowHide(not Save.tab[self.name].hide), '|cnGREEN_FONT_COLOR:', e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+        end)
+        check:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            local value= button[self.name] and button[self.name].value
+            e.tips:AddDoubleLine(self.text2, format('%.2f%%', value or 0))
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(e.GetShowHide(Save.tab[self.name].hide), '|cnGREEN_FONT_COLOR:0 = '..(e.onlyChinse and '隐藏' or HIDE))
+            e.tips:Show()
+        end)
+        check:SetScript('OnLeave', function() e.tips:Hide() end)
+
+        if info.name=='SPEED' then--速度, 当前速度, 选项
+            local current= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+            current:SetChecked(Save.tab[info.name].current)
+            current:SetPoint('LEFT', check, 'RIGHT',2,0)
+            current.text:SetText(e.onlyChinse and '当前' or 'REFORGE_CURRENT')
+            current.name= info.name
+            current:SetScript('OnMouseUp',function(self)
+                Save.tab[self.name].current= not Save.tab[self.name].current and true or nil
+                set_Tabs()
+                create_Rest_Lable(true)--初始， 或设置
+            end)
+            current:SetScript('OnEnter', set_SPEED_Tooltip)
+            current:SetScript('OnLeave', function() e.tips:Hide() end)
+
+        elseif info.name=='VERSATILITY' then--全能5, 双属性 22/18%
+            local damage=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+            damage:SetChecked(Save.tab[info.name].damage)
+            damage:SetPoint('LEFT', check, 'RIGHT',2,0)
+            damage.text:SetText((e.onlyChinse and '防御' or DEFENSE)..' 22/18%')
+            damage.name= info.name
+            damage:SetScript('OnMouseDown', function(self)
+                Save.tab[self.name].damage= not Save.tab[self.name].damage and true or nil
+                set_Tabs()
+                create_Rest_Lable()--初始， 或设置
+            end)
+            damage:SetScript('OnEnter', set_Versatility_Tooltip)
+            damage:SetScript('OnLeave', function() e.tips:Hide() end)
+        end
+        last= text
     end
 
     local check= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
@@ -1029,6 +1086,34 @@ local function set_Panle_Setting()--设置 panel
     end)
     check:SetScript('OnLeave', function() e.tips:Hide() end)
 
+    local check2= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--bar
+    check2:SetPoint("TOPLEFT", check, 'BOTTOMLEFT')
+    check2.text:SetText('Bar')
+    check2:SetChecked(Save.bar)
+    check2:SetScript('OnMouseDown', function()
+        Save.bar= not Save.bar and true or nil
+        print(id, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+    end)
+
+    local check3= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--bar，图片，样式2
+    check3:SetPoint("LEFT", check2.text, 'RIGHT', 4, 0)
+    check3.text:SetText((e.onlyChinse and '格式' or FORMATTING).. ' 2')
+    check3:SetChecked(Save.barTexture2)
+    check3:SetScript('OnMouseDown', function()
+        Save.barTexture2= not Save.barTexture2 and true or nil
+        --print(id, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+        for _, info in pairs(Tabs) do
+            local frame= button[info.name]
+            if frame and frame.bar then
+                if Save.barTexture2 then
+                    frame.bar:SetStatusBarTexture('Interface\\TargetingFrame\\UI-StatusBar')
+                else
+                    frame.bar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
+                end
+            end
+        end
+    end)
+
     local function set_Size_panel()
         for _, info in pairs(Tabs) do
             local frame= button[info.name]
@@ -1038,7 +1123,7 @@ local function set_Panle_Setting()--设置 panel
         end
     end
     local slider= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--间隔，上下
-    slider:SetPoint("TOPLEFT", check, 'BOTTOMLEFT', 0,-12)
+    slider:SetPoint("TOPLEFT", check2, 'BOTTOMLEFT', 0,-12)
     --slider:SetOrientation('VERTICAL')--HORIZONTAL --slider.tooltipText=e.onlyChinse and '距离远近' or TRACKER_SORT_PROXIMITY
     slider:SetSize(200,20)
     slider:SetMinMaxValues(-5,10)

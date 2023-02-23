@@ -38,7 +38,7 @@ WoWPlus\Attributes.lua
 WoWPlus\Reputation.lua
 ##货币面板
 WoWPlus\Tokens.lua
-##移动框架
+##移动框架， 透明度
 WoWPlus\FrameMove.lua
 ##隐藏材质
 WoWPlus\HideTexture.lua
@@ -89,7 +89,8 @@ GamePlus\Gem.lua
 GamePlus\Target.lua
 ##驭龙术，速度
 GamePlus\Dragonriding.lua
-
+##颜色选择器，增强
+##GamePlus\ColorSelectFrame.lua
 
 
 ##坐骑， Tools 主要的，
