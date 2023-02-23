@@ -634,6 +634,9 @@ local function Init_SetAlpha()
             setAlpha(stageBlock.FinalBG)
         end)
     end
+
+    --小地图
+    setAlpha(MinimapCompassTexture)
 end
     --[[hooksecurefunc(UIWidgetPowerBarContainerFrame, 'CreateWidget', function(self, widgetID)
        

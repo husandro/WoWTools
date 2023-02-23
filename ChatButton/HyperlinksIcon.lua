@@ -530,6 +530,7 @@ local function setAddMessageFunc(self, s, ...)
             end
         end
     end
+
     for k, _ in pairs(Save.text) do--内容加颜色
         s=s:gsub(k, '|cnGREEN_FONT_COLOR:'..k..'|r')
     end

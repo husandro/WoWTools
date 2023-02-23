@@ -486,7 +486,6 @@ local function Init()
 
                 elseif difficultyID then
                     local _, groupType, isHeroic, isChallengeMode, displayHeroic, displayMythic = GetDifficultyInfo(difficultyID)
-                    
                     if groupType=='raid' then
                         if displayMythic then
                             frame:SetVertexColor(1, 0, 1, 1)
@@ -523,7 +522,7 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 panel:RegisterEvent('ZONE_CHANGED')
 panel:RegisterEvent("PLAYER_ENTERING_WORLD")
-
+panel:RegisterEvent('MINIMAP_UPDATE_ZOOM')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if  arg1==id then
@@ -564,6 +563,30 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         if event=='PLAYER_ENTERING_WORLD' then
             set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
+        end
+
+    elseif event=='MINIMAP_UPDATE_ZOOM' then--当前缩放，显示数值 Minimap.lua
+        local zoomIn, zoomOut= Minimap.ZoomIn:IsEnabled(), Minimap.ZoomOut:IsEnabled()
+        local zoom = Minimap:GetZoom();
+        local level= Minimap:GetZoomLevels()
+        if zoomOut and zoomIn then
+            if not Minimap.ZoomIn.text then
+                Minimap.ZoomIn.text= e.Cstr(Minimap)
+                Minimap.ZoomIn.text:SetPoint('BOTTOMLEFT', Minimap.ZoomIn, 'TOPLEFT',-2,-6)
+            end
+            Minimap.ZoomIn.text:SetText(level-1-zoom)
+            if not Minimap.ZoomOut.text then
+                Minimap.ZoomOut.text= e.Cstr(Minimap)
+                Minimap.ZoomOut.text:SetPoint('BOTTOMLEFT', Minimap.ZoomOut, 'TOPLEFT',0,-2)
+            end
+            Minimap.ZoomOut.text:SetText(zoom)
+        else
+            if Minimap.ZoomIn.text then
+                Minimap.ZoomIn.text:SetText('')
+            end
+            if Minimap.ZoomOut.text then
+                Minimap.ZoomOut.text:SetText('')
+            end
         end
     end
 end)

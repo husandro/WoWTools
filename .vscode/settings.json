@@ -1805,7 +1805,9 @@
         "SCENARIO_TRACKER_MODULE",
         "UIWidgetTemplateIconAndTextMixin",
         "FORMATTING",
-        "COLOR_PICKER"
+        "COLOR_PICKER",
+        "WIDE",
+        "BENEFICIAL"
     ],
     "Lua.diagnostics.disable": [
     ]
