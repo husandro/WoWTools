@@ -21,7 +21,7 @@ local Save={
         ["SPEED"]= {r=1, g=0.82, b=0},--移动
     },
     --toLeft=true--数值,放左边
-    --bar=true,--进度条
+    bar=true,--进度条
     --barTexture2,--样式2
     scale= 1.1,--缩放
     vertical=3,--上下，间隔
