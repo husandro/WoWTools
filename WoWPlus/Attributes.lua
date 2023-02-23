@@ -967,7 +967,7 @@ local function set_Panle_Setting()--设置 panel
         local b= info.b or 0
         local a= info.a or 1
         local text= e.Cstr(panel, nil, nil, nil, {r,g,b,a})
-        if index==2 or info.name=='SPEED' then
+        if index==1 or info.name=='SPEED' then
             text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
         else
             text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -4)
