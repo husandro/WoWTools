@@ -463,7 +463,7 @@ local function Init_Move()
 
     if UIWidgetPowerBarContainerFrame then--移动, 能量条
         local frame=UIWidgetPowerBarContainerFrame
-        set_Move_Button(frame, nil, true, true, nil)
+        set_Move_Button(frame, nil, nil, true, nil)
 
         local tab= frame.widgetFrames or {}
         local find

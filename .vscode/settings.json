@@ -1807,7 +1807,8 @@
         "FORMATTING",
         "COLOR_PICKER",
         "WIDE",
-        "BENEFICIAL"
+        "BENEFICIAL",
+        "STATUS_TEXT_PERCENT"
     ],
     "Lua.diagnostics.disable": [
     ]

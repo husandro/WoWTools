@@ -21,13 +21,14 @@ local Save={
         ["SPEED"]= {r=1, g=0.82, b=0},--移动
     },
     --toLeft=true--数值,放左边
-    bar= e.Player.husandro,--进度条
+    bar= true,--进度条
     barTexture2=true,--样式2
     scale= 1.1,--缩放
     vertical=3,--上下，间隔
-    horizontal=8,--左右， 间隔
+    horizontal=9,--左右， 间隔
     barWidth=0,--bar, 宽度
-    setMaxMinValue= e.Player.husandro,--增加,减少值
+    setMaxMinValue= true,--增加,减少值
+    bit=0,--百分比，位数
 }
 
 local Tabs
@@ -94,8 +95,8 @@ end
 --设置，当前值
 --###########
 local function set_Text_Value(frame, value, value2)
-    local text= not value2 and format('%.0f%%', value) or format('%.0f/%.0f%%', value, value2)
-    if not frame.value or frame.value== value then
+    local text= not value2 and format('%.'..Save.bit..'f%%', value) or format('%.'..Save.bit..'f/%.'..Save.bit..'f%%', value, value2)
+    if not frame.value or frame.value== value or frame.value==0 then
         if frame.bar then
             frame.bar:SetStatusBarColor(frame.r, frame.g, frame.b, frame.a)
             frame.bar:SetValue(value)
@@ -151,7 +152,7 @@ local function set_Stat_Tooltip(self)
         return
     end
     local frame= self:GetParent()
-    e.tips:SetOwner(self, "ANCHOR_LEFT")
+    e.tips:SetOwner(button, "ANCHOR_RIGHT")
     e.tips:ClearLines()
     local stat, effectiveStat, posBuff, negBuff = UnitStat('player', PrimaryStat);
     local effectiveStatDisplay = BreakUpLargeNumbers(effectiveStat);
@@ -249,7 +250,7 @@ local function set_Crit_Text(frame)
 end
 local function set_Crit_Tooltip(self)
     local frame= self:GetParent()
-    e.tips:SetOwner(self, "ANCHOR_LEFT")
+    e.tips:SetOwner(button, "ANCHOR_RIGHT")
     e.tips:ClearLines()
     local spellCrit = frame.minCrit or 0
 	local rangedCrit = GetRangedCritChance();
@@ -305,7 +306,7 @@ local function set_Haste_Text(frame)
 end
 local function set_Haste_Tooltip(self)
     local frame= self:GetParent()
-    e.tips:SetOwner(self, "ANCHOR_LEFT")
+    e.tips:SetOwner(button, "ANCHOR_RIGHT")
     e.tips:ClearLines()
 
     local haste = GetHaste();
@@ -352,7 +353,7 @@ local function set_Versatility_Text(frame)
 end
 local function set_Versatility_Tooltip(self)
     local frame= self:GetParent()
-    e.tips:SetOwner(self, "ANCHOR_LEFT")
+    e.tips:SetOwner(button, "ANCHOR_RIGHT")
     e.tips:ClearLines()
     local versatility = GetCombatRating(CR_VERSATILITY_DAMAGE_DONE);
 	local versatilityDamageBonus = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE);
@@ -382,7 +383,7 @@ local function set_Lifesteal_Text(frame)
 end
 local function set_Lifesteal_Tooltip(self)
     local frame= self:GetParent()
-    e.tips:SetOwner(self, "ANCHOR_LEFT")
+    e.tips:SetOwner(button, "ANCHOR_RIGHT")
     e.tips:ClearLines()
 
     local lifesteal = GetLifesteal();
@@ -411,7 +412,7 @@ local function set_Avoidance_Text(frame)
 end
 local function set_Avoidance_Tooltip(self)
     local frame= self:GetParent()
-    e.tips:SetOwner(self, "ANCHOR_LEFT")
+    e.tips:SetOwner(button, "ANCHOR_RIGHT")
     e.tips:ClearLines()
 
     local Avoidance = GetAvoidance();
@@ -440,7 +441,7 @@ local function set_Dodge_Text(frame)
 end
 local function set_Dodge_Tooltip(self)
     local frame= self:GetParent()
-    e.tips:SetOwner(self, "ANCHOR_LEFT")
+    e.tips:SetOwner(button, "ANCHOR_RIGHT")
     e.tips:ClearLines()
 
     local chance = GetDodgeChance();
@@ -469,7 +470,7 @@ local function set_Parry_Text(frame)
 end
 local function set_Parry_Tooltip(self)
     local frame= self:GetParent()
-    e.tips:SetOwner(self, "ANCHOR_LEFT")
+    e.tips:SetOwner(button, "ANCHOR_RIGHT")
     e.tips:ClearLines()
 
     local chance = GetParryChance();
@@ -498,7 +499,7 @@ local function set_Block_Text(frame)
 end
 local function set_Block_Tooltip(self)
     local frame= self:GetParent()
-    e.tips:SetOwner(self, "ANCHOR_LEFT")
+    e.tips:SetOwner(button, "ANCHOR_RIGHT")
     e.tips:ClearLines()
 
     local chance = GetBlockChance();
@@ -543,7 +544,7 @@ local function set_Stagger_Tooltip(self)
         return
     end
     local frame= self:GetParent()
-    e.tips:SetOwner(self, "ANCHOR_LEFT")
+    e.tips:SetOwner(button, "ANCHOR_RIGHT")
     e.tips:ClearLines()
     e.tips:AddDoubleLine(frame.nametext,  format("%0.2f%%", stagger))
 	e.tips:AddLine(format(e.onlyChinse and '你的醉拳可化解%0.2f%%的伤害' or STAT_STAGGER_TOOLTIP, stagger), nil,nil,nil,true)
@@ -594,7 +595,7 @@ local function set_SPEED_Text(frame, elapsed)
 end
 local function set_SPEED_Tooltip(self)
     local frame= self:GetParent()
-    e.tips:SetOwner(self, "ANCHOR_LEFT")
+    e.tips:SetOwner(button, "ANCHOR_RIGHT")
     e.tips:ClearLines()
     local currentSpeed, runSpeed, flightSpeed, swimSpeed = GetUnitSpeed('player')
     e.tips:AddDoubleLine(frame.nametext, 'player')
@@ -673,6 +674,13 @@ end
 local function set_Size(frame)--设置，大小
     frame:SetSize(Save.horizontal, 12+ (Save.vertical or 3))
 end
+local function set_setMaxMinValue_Point(frame)--设置，位置，数值 + -
+    if Save.toLeft then
+        frame.textValue:SetPoint('RIGHT', frame.text, -30-(Save.bit*6), 0)
+    else
+        frame.textValue:SetPoint('LEFT', frame.text, 30+(Save.bit*6), 0)
+    end
+end
 local function create_Rest_Lable(rest)--初始， 或设置
     local last= button.frame
     for index, info in pairs(Tabs) do
@@ -699,7 +707,7 @@ local function create_Rest_Lable(rest)--初始， 或设置
                     frame.text:SetPoint('TOPLEFT', frame, 'TOPRIGHT',-5,0)
                 end
 
-                if info.bar and Save.bar then
+                if info.bar and Save.bar then--bar
                     frame.bar= CreateFrame('StatusBar', nil, frame)
                     frame.bar:SetSize(120+Save.barWidth, 10)
                     if Save.barTexture2 then
@@ -707,34 +715,23 @@ local function create_Rest_Lable(rest)--初始， 或设置
                     else
                         frame.bar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
                     end
+                    if Save.toLeft then
+                        frame.bar:SetPoint('TOPRIGHT', frame.text, 0,-2)
+                        frame.bar:SetReverseFill(true)
+                    else
+                        frame.bar:SetPoint('TOPLEFT', frame.text, 0,-2)
+                    end
                     frame.bar:SetMinMaxValues(0,100)
                     frame.bar:SetFrameLevel(frame:GetFrameLevel()-1)
                     frame.bar:SetStatusBarColor(info.r,info.g,info.b,info.a)
                     frame.r, frame.g, frame.b, frame.a= info.r,info.g,info.b,info.a
                 end
-                if Save.setMaxMinValue then
+
+                
+                if Save.setMaxMinValue then--数值 + -
                     frame.textValue=e.Cstr(frame,10)
                     frame.textValue:SetTextColor(info.r,info.g,info.b,info.a)
-                    if Save.toLeft then
-
-                    else
-                        frame.textValue:SetPoint('LEFT', frame.text, 30,0)
-                    end
-                end
-
-                if Save.toLeft then
-                    
-                    
-                    if frame.bar then
-                        frame.bar:SetPoint('TOPRIGHT', frame.text, 0,-2)
-                        frame.bar:SetReverseFill(true)
-                    end
-                else
-                    
-                    
-                    if frame.bar then
-                        frame.bar:SetPoint('TOPLEFT', frame.text, 0,-2)
-                    end
+                    set_setMaxMinValue_Point(frame)--设置，位置，数值 + -
                 end
 
                 if info.name=='STATUS' then--主属性1
@@ -1035,7 +1032,7 @@ local function set_Panle_Setting()--设置 panel
 
     local check4= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--增加,减少,值
     check4:SetPoint("TOPLEFT", check, 'BOTTOMLEFT')
-    check4.text:SetText((e.onlyChinse and '数值' or STATUS_TEXT_VALUE)..' + -')
+    check4.text:SetText((e.onlyChinse and '数值' or STATUS_TEXT_VALUE)..' + -10')
     check4:SetChecked(Save.setMaxMinValue)
     check4:SetScript('OnMouseDown', function()
         Save.setMaxMinValue= not Save.setMaxMinValue and true or nil
@@ -1048,12 +1045,42 @@ local function set_Panle_Setting()--设置 panel
         print(id, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
+    local sliderA= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--位数，bit
+    sliderA:SetPoint("TOPLEFT", check4, 'BOTTOMLEFT', 0,-24)
+    sliderA:SetSize(200,20)
+    sliderA:SetMinMaxValues(0, 3)
+    sliderA:SetValue(Save.bit)
+    sliderA.Low:SetText((e.onlyChinse and '百分比' or STATUS_TEXT_PERCENT)..' 0%')
+    sliderA.High:SetText('1.003%')
+    sliderA.Text:SetText(Save.bit)
+    sliderA:SetValueStep(1)
+    sliderA:SetScript('OnValueChanged', function(self, value, userInput)
+        value= math.floor(value)
+        self:SetValue(value)
+        self.Text:SetText(value)
+        Save.bit=value
+        create_Rest_Lable()--初始， 或设置
+        for _, info in pairs(Tabs) do
+            local frame= button[info.name]
+            if frame and frame.textValue then
+                frame.textValue:ClearAllPoints()
+                set_setMaxMinValue_Point(frame)--设置，位置，数值 + -
+            end
+        end
+    end)
+
     local check2= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--bar
-    check2:SetPoint("TOPLEFT", check4, 'BOTTOMLEFT')
+    check2:SetPoint("TOPLEFT", sliderA, 'BOTTOMLEFT',0,-36)
     check2.text:SetText('Bar')
     check2:SetChecked(Save.bar)
     check2:SetScript('OnMouseDown', function()
         Save.bar= not Save.bar and true or nil
+        for _, info in pairs(Tabs) do
+            local frame= button[info.name]
+            if frame and frame.bar then
+                frame.bar:SetShown(Save.bar)
+            end
+        end
         print(id, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
@@ -1180,6 +1207,7 @@ end
 --####
 local function Init()
     button= e.Cbtn(nil, nil, nil, nil, nil, true, {18,18})
+    button:SetFrameLevel(button:GetFrameLevel()+5)
     button.texture= button:CreateTexture()
     button.texture:SetSize(14,14)
     button.texture:SetPoint('CENTER')
@@ -1191,7 +1219,7 @@ local function Init()
     button:SetMovable(true)
     button:SetClampedToScreen(true)
 
-    button:SetScript("OnDragStart", function(self,d )
+    button:SetScript("OnDragStart", function(self,d)
         if d=='RightButton' and not IsModifierKeyDown() then
             self:StartMoving()
         end
@@ -1301,6 +1329,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save.vertical= Save.vertical or 3
             Save.horizontal= Save.horizontal or 8
             Save.barWidth= Save.barWidth or 0
+            Save.bit= Save.bit or 0
+
             --添加控制面板
             panel.name = (e.onlyChinse and '属性' or STAT_CATEGORY_ATTRIBUTES)..'|A:charactercreate-icon-customize-body-selected:0:0|a'--添加新控制面板
             panel.parent =id
