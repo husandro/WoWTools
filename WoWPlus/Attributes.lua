@@ -70,21 +70,20 @@ local function set_Tabs()
         Tabs[index].g= index==1 and e.Player.g or Save.tab[info.name].g or 0.82
         Tabs[index].b= index==1 and e.Player.b or Save.tab[info.name].b or 0
         Tabs[index].a= index==1 and 1 or Save.tab[info.name].a or 1
+
         if info.name=='VERSATILITY' then
             Tabs[index].damage= Save.tab[info.name].damage
         elseif info.name=='SPEED' then
             Tabs[index].current= Save.tab[info.name].current
         end
-        if index>=6 and index<=11 then--坦克
+
+        Tabs[index].hide= Save.tab[info.name].hide
+        if index>=8 and index<=11 then--坦克
             if Role~='TANK' then
                 Tabs[index].hide= true
             elseif info.name=='STAGGER' and e.Player.class~='MONK' then--武僧
                 Tabs[index].hide= true
-            else
-                Tabs[index].hide= Save.tab[info.name].hide
             end
-        else
-            Tabs[index].hide= Save.tab[info.name].hide
         end
     end
 end
@@ -897,11 +896,6 @@ local function create_Rest_Lable(rest)--初始， 或设置
             if find then
                 frame:ClearAllPoints()
                 frame:SetPoint('TOP', last,'BOTTOM')
-                --[[if Save.toLeft then
-                    frame:SetPoint('TOPLEFT', last, 'BOTTOMLEFT')
-                else
-                    frame:SetPoint('TOPRIGHT', last, 'BOTTOMRIGHT')
-                end]]
                 last= frame
                 frame:SetShown(true)
             end
@@ -1331,9 +1325,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             panel.check.text:SetText(e.onlyChinse and '启用' or ENABLE)
             panel.check:SetScript('OnMouseDown', function()
                 Save.disabled = not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需求重新加载' or REQUIRES_RELOAD)
                 if not Save.disabled and not button then
                     Init()
+                else
+                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需求重新加载' or REQUIRES_RELOAD)
                 end
             end)
             panel.check:SetScript('OnEnter', function(self2)
