@@ -151,7 +151,7 @@ StaticPopupDialogs[id..addName..'RESET']={--重置
     button2=CANCEL,
     OnAccept = function()
       Save=nil
-      C_UI.Reload()
+      e.Reload()
 	end,
 }
 --#####

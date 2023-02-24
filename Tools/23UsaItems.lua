@@ -87,7 +87,7 @@ StaticPopupDialogs[id..addName..'REMOVE']={
     OnAccept = function(self, data)
         if data.clearAll then
             Save[data.type]={}
-            C_UI.Reload()
+            e.Reload()
         else
             if Save[data.type][data.index] and Save[data.type][data.index]==data.ID then
                 table.remove(Save[data.type], data.index)
@@ -109,7 +109,7 @@ StaticPopupDialogs[id..addName..'RESETALL']={--重置所有
     button2=CANCEL,
     OnAccept = function(self, data)
         Save=nil
-        C_UI.Reload()
+        e.Reload()
     end,
 }
 
@@ -206,7 +206,7 @@ local function InitMenu(self, level, type)--主菜单
             tooltipOnButton=true,
             tooltipTitle='/reload',
             func=function()
-                C_UI.Reload()
+                e.Reload()
             end
         }
         UIDropDownMenu_AddButton(info, level);

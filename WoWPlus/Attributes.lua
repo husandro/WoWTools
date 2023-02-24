@@ -2,11 +2,12 @@
 local id, e= ...
 local addName= STAT_CATEGORY_ATTRIBUTES--PaperDollFrame.lua
 local panel= CreateFrame('Frame')
-local button, Role, PrimaryStat
+local button, Role, PrimaryStat, Tabs
 local Save={
     redColor= '|cffff8200',
     greenColor='|cff00ff00',
     tab={
+        ['STATUS']={},
         ['CRITCHANCE']= {r=0.99, g=0.35, b=0.31},
         ['HASTE']= {r=0, g=1, b=0.77},
         ['MASTERY']= {r=0.82, g=0.28, b=0.82},
@@ -31,13 +32,16 @@ local Save={
     bit=0,--百分比，位数
 }
 
-local Tabs
-local function set_Tabs()
+local function get_PrimaryStat()--取得主属
     local spec= GetSpecialization()
     Role= GetSpecializationRole(spec)--DAMAGER, TANK, HEALER
     local icon, _
     icon, _, PrimaryStat= select(4, GetSpecializationInfo(spec, nil, nil, nil, e.Player.sex))
     SetPortraitToTexture(button.texture, icon or 0)
+end
+
+local function set_Tabs()
+    get_PrimaryStat()--取得主属
     Tabs={
         {name='STATUS', r=e.Player.r, g=e.Player.g, b=e.Player.b, a=1},
 
@@ -95,19 +99,22 @@ end
 --设置，当前值
 --###########
 local function set_Text_Value(frame, value, value2)
-    if not frame.value then
-        frame.value=value
+    if not frame.value or frame.value==0 then
+        frame.value=value or 0
     end
-    
-    local text= not value2 and format('%.'..Save.bit..'f%%', value) or format('%.'..Save.bit..'f/%.'..Save.bit..'f%%', value, value2)
-    if not frame.value or frame.value== value or frame.value==0 then
+    local text
+    if frame.index==1 then--主属性
+        text= e.MK(value, 3)
+    elseif not value2 then--全能, 醉拳
+        text= format('%.'..Save.bit..'f%%', value)
+    else
+        text= format('%.'..Save.bit..'f/%.'..Save.bit..'f%%', value, value2)
+    end
+    if frame.value== value then
         if frame.bar then
             frame.bar:SetStatusBarColor(frame.r, frame.g, frame.b, frame.a)
             frame.bar:SetValue(value)
-           -- frame.barTexture:SetShown(false)
-            if frame.value then
-                frame.barTexture:SetWidth(frame.bar:GetWidth()*(frame.value/100)+20)
-            end
+            frame.barTexture:SetShown(false)
         end
         if frame.textValue then
             frame.textValue:SetFormattedText('')
@@ -144,19 +151,8 @@ end
 --主属性
 --#####
 local function set_Stat_Text(frame)
-    if PrimaryStat then
-        local value= UnitStat('player', PrimaryStat)
-        local text
-        if not frame.value or frame.value== value then
-            text= e.MK(value, 3)
-        elseif frame.value< value then
-            text= Save.greenColor..e.MK(value, 3)..'|r'
-        else
-            text= Save.redColor..e.MK(value, 3)..'|r'
-        end
-        frame.text:SetText(text)
-        return value
-    end
+    local value= UnitStat('player', PrimaryStat)
+    set_Text_Value(frame, value)
 end
 local function set_Stat_Tooltip(self)
     if not PrimaryStat then
@@ -625,6 +621,122 @@ local function set_SPEED_Tooltip(self)
 end
 
 
+
+local function set_Frame(frame, info)--设置, frame
+    --frame, 数值
+    frame.name= info.name
+    frame.r, frame.g, frame.b, frame.a= info.r,info.g,info.b,info.a
+    frame:SetSize(Save.horizontal, 12+ (Save.vertical or 3))--设置，大小
+
+    --名称
+
+    frame.label:ClearAllPoints()
+    if Save.toLeft then
+        frame.label:SetPoint('TOPLEFT', frame, 'TOPRIGHT',-5,0)
+    else
+        frame.label:SetPoint('TOPRIGHT', frame, 'TOPLEFT', 5,0)
+    end
+    
+    local text= Tabs[frame.index].text
+    frame.nametext= text
+    if Save.gsubText then--文本，截取
+        text= e.WA_Utf8Sub(text, Save.gsubText)
+    end
+    frame.label:SetText(text or '')
+
+    --数值,text
+    frame.text:ClearAllPoints()
+    if Save.toLeft then
+        frame.text:SetPoint('TOPRIGHT', frame, 'TOPLEFT', 5,0)
+    else
+        frame.text:SetPoint('TOPLEFT', frame, 'TOPRIGHT',-5,0)
+    end
+
+    if Save.toLeft then
+        frame.label:SetJustifyH('LEFT')
+        frame.text:SetJustifyH('RIGHT')
+    else
+        frame.label:SetJustifyH('RIGHT')
+        frame.text:SetJustifyH('LEFT')
+    end
+
+    if frame.bar then
+        frame.bar:SetSize(120+Save.barWidth, 10)
+        frame.bar:ClearAllPoints()
+        if Save.toLeft then
+            frame.bar:SetPoint('TOPRIGHT', frame.text, 0,-2)
+            frame.bar:SetReverseFill(true)
+        else
+            frame.bar:SetPoint('TOPLEFT', frame.text, 0,-2)
+            frame.bar:SetReverseFill(false)
+        end
+        if Save.barTexture2 then
+            frame.bar:SetStatusBarTexture('Interface\\TargetingFrame\\UI-StatusBar')
+        else
+            frame.bar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
+        end
+        frame.bar:SetStatusBarColor(info.r,info.g,info.b,info.a)
+        frame.barTexture:ClearAllPoints()
+        if Save.toLeft then
+            frame.barTexture:SetPoint('RIGHT', frame.bar)
+        else
+            frame.barTexture:SetPoint('LEFT', frame.bar)
+        end
+        frame.barTexture:SetSize(frame.bar:GetWidth(), 10)
+        frame.bar:SetShown(Save.bar)
+    end
+
+    if frame.textValue then--数值 + -
+        frame.textValue:SetTextColor(info.r,info.g,info.b,info.a)
+        frame.textValue:ClearAllPoints()
+        if Save.toLeft then
+            frame.textValue:SetPoint('RIGHT', frame.text, -30-(Save.bit*6), 0)
+        else
+            frame.textValue:SetPoint('LEFT', frame.text, 30+(Save.bit*6), 0)
+        end
+        frame.textValue:SetShown(Save.setMaxMinValu)
+    end
+
+
+    if frame.name=='STATUS' then--主属性1
+        if not PrimaryStat or not Role then
+            get_PrimaryStat()--取得主属
+        end
+        set_Stat_Text(frame)
+    elseif frame.name=='CRITCHANCE' then--爆击2
+        local holySchool = 2;
+        local minCrit = GetSpellCritChance(holySchool) or 0;
+        local spellCrit;
+        for i=(holySchool+1), MAX_SPELL_SCHOOLS do
+            spellCrit = GetSpellCritChance(i);
+            minCrit = min(minCrit, spellCrit);
+        end
+        frame.minCrit = minCrit
+        set_Crit_Text(frame)
+    elseif frame.name=='HASTE' then--急速3
+        set_Haste_Text(frame)
+    elseif frame.name=='MASTERY' then--精通4
+        set_Mastery_Text(frame)
+    elseif frame.name=='VERSATILITY' then--全能5
+        set_Versatility_Text(frame)
+        frame.damage= info.damage
+    elseif frame.name=='LIFESTEAL' then--吸血6
+        set_Lifesteal_Text(frame)
+    elseif frame.name=='AVOIDANCE' then--闪避7
+        set_Avoidance_Text(frame)
+    elseif frame.name=='DODGE' then--躲闪
+        set_Dodge_Text(frame)
+    elseif frame.name=='PARRY' then--招架
+        set_Parry_Text(frame)
+    elseif frame.name=='BLOCK' then--格挡
+        set_Block_Text(frame)
+    elseif frame.name=='STAGGER' then--醉拳11
+        set_Stagger_Text(frame)
+    elseif frame.name=='SPEED' then--SPEED 速度12
+        frame.current= info.current
+    end
+end
+
 local function frame_Init(rest)--初始， 或设置
     if rest then
         set_Tabs()
@@ -647,7 +759,6 @@ local function frame_Init(rest)--初始， 或设置
 
                 if info.bar and Save.bar then--bar
                     frame.bar= CreateFrame('StatusBar', nil, frame)
-                    frame.bar:SetSize(120+Save.barWidth, 10)
                     frame.bar:SetMinMaxValues(0,100)
                     frame.bar:SetFrameLevel(frame:GetFrameLevel()-1)
                     frame.barTexture= frame:CreateTexture(nil, 'OVERLAY')
@@ -749,117 +860,15 @@ local function frame_Init(rest)--初始， 或设置
                 frame.index= index
                 button[info.name]= frame
             end
-
-            --frame, 数值
-            frame.r, frame.g, frame.b, frame.a= info.r,info.g,info.b,info.a
-            frame:SetSize(Save.horizontal, 12+ (Save.vertical or 3))--设置，大小
-
-            --名称
-
-            frame.label:ClearAllPoints()
-            if Save.toLeft then
-                frame.label:SetPoint('TOPLEFT', frame, 'TOPRIGHT',-5,0)
-            else
-                frame.label:SetPoint('TOPRIGHT', frame, 'TOPLEFT', 5,0)
-            end
-            frame.name= info.name
-            local text= Tabs[frame.index].text
-            frame.nametext= text
-            if Save.gsubText then--文本，截取
-                text= e.WA_Utf8Sub(text, Save.gsubText)
-            end
-            frame.label:SetText(text or '')
-
-            --数值,text
-            frame.text:ClearAllPoints()
-            if Save.toLeft then
-                frame.text:SetPoint('TOPRIGHT', frame, 'TOPLEFT', 5,0)
-            else
-                frame.text:SetPoint('TOPLEFT', frame, 'TOPRIGHT',-5,0)
-            end
-
-            if Save.toLeft then
-                frame.label:SetJustifyH('LEFT')
-                frame.text:SetJustifyH('RIGHT')
-            else
-                frame.label:SetJustifyH('RIGHT')
-                frame.text:SetJustifyH('LEFT')
-            end
-
-            if frame.bar then
-                frame.bar:ClearAllPoints()
-                if Save.toLeft then
-                    frame.bar:SetPoint('TOPRIGHT', frame.text, 0,-2)
-                    frame.bar:SetReverseFill(true)
-                else
-                    frame.bar:SetPoint('TOPLEFT', frame.text, 0,-2)
-                    frame.bar:SetReverseFill(false)
-                end
-                if Save.barTexture2 then
-                    frame.bar:SetStatusBarTexture('Interface\\TargetingFrame\\UI-StatusBar')
-                else
-                    frame.bar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
-                end
-                frame.bar:SetStatusBarColor(info.r,info.g,info.b,info.a)
-                frame.barTexture:ClearAllPoints()
-                if Save.toLeft then
-                    frame.barTexture:SetPoint('RIGHT', frame.bar)
-                else
-                    frame.barTexture:SetPoint('LEFT', frame.bar)
-                end
-                frame.barTexture:SetSize(frame.bar:GetWidth(), 10)
-                frame.bar:SetShown(Save.bar)
-            end
-
-            if frame.textValue then--数值 + -
-                frame.textValue:SetTextColor(info.r,info.g,info.b,info.a)
-                frame.textValue:ClearAllPoints()
-                if Save.toLeft then
-                    frame.textValue:SetPoint('RIGHT', frame.text, -30-(Save.bit*6), 0)
-                else
-                    frame.textValue:SetPoint('LEFT', frame.text, 30+(Save.bit*6), 0)
-                end
-                frame.textValue:SetShown(Save.setMaxMinValu)
-            end
-
+            
             --重置, 数值
             if rest then
                 frame.value=nil
             end
-            if info.name=='STATUS' then--主属性1
-                set_Stat_Text(frame)
-            elseif info.name=='CRITCHANCE' then--爆击2
-                local holySchool = 2;
-                local minCrit = GetSpellCritChance(holySchool) or 0;
-                local spellCrit;
-                for i=(holySchool+1), MAX_SPELL_SCHOOLS do
-                    spellCrit = GetSpellCritChance(i);
-                    minCrit = min(minCrit, spellCrit);
-                end
-                frame.minCrit = minCrit
-                set_Crit_Text(frame)
-            elseif info.name=='HASTE' then--急速3
-                set_Haste_Text(frame)
-            elseif info.name=='MASTERY' then--精通4
-                set_Mastery_Text(frame)
-            elseif info.name=='VERSATILITY' then--全能5
-                set_Versatility_Text(frame)
-                frame.damage= info.damage
-            elseif info.name=='LIFESTEAL' then--吸血6
-                set_Lifesteal_Text(frame)
-            elseif info.name=='AVOIDANCE' then--闪避7
-                set_Avoidance_Text(frame)
-            elseif info.name=='DODGE' then--躲闪
-                set_Dodge_Text(frame)
-            elseif info.name=='PARRY' then--招架
-                set_Parry_Text(frame)
-            elseif info.name=='BLOCK' then--格挡
-                set_Block_Text(frame)
-            elseif info.name=='STAGGER' then--醉拳11
-                set_Stagger_Text(frame)
-            elseif info.name=='SPEED' then--SPEED 速度12
-                frame.current= info.current
-            end
+            
+            set_Frame(frame, info)
+
+
 
             find= (frame.value and frame.value>0) or info.name=='SPEED'
             if find then
@@ -881,7 +890,8 @@ end
 --##########
 local function set_Show_Hide()
     button.frame:SetShown(not Save.hide)
-    button.texture:SetAlpha(Save.hide and 0.3 or 1)
+    button.texture:SetAlpha(Save.hide and 1 or 0.3)
+    button.classPortrait:SetAlpha(Save.hide and 1 or 0.3)
 end
 
 --#########
@@ -931,7 +941,6 @@ local function set_Panle_Setting()--设置 panel
         else
             check:SetPoint('TOPLEFT', last, 'BOTTOMLEFT')--,0, -4)
         end
-        check:SetPoint('LEFT', text, 'RIGHT',2,0)
         check.name= info.name
         check.text2= info.text
         check:SetScript('OnMouseUp',function(self)
@@ -1001,9 +1010,8 @@ local function set_Panle_Setting()--设置 panel
             current:SetChecked(Save.tab[info.name].current)
             current:SetPoint('LEFT', text, 'RIGHT',2,0)
             current.text:SetText(e.onlyChinse and '当前' or 'REFORGE_CURRENT')
-            current.name= info.name
             current:SetScript('OnMouseUp',function(self)
-                Save.tab[self.name].current= not Save.tab[self.name].current and true or nil
+                Save.tab['SPEED'].current= not Save.tab['SPEED'].current and true or nil
                 frame_Init(true)--初始， 或设置
             end)
             current:SetScript('OnEnter', set_SPEED_Tooltip)
@@ -1014,9 +1022,8 @@ local function set_Panle_Setting()--设置 panel
             damage:SetChecked(Save.tab[info.name].damage)
             damage:SetPoint('LEFT', text, 'RIGHT',2,0)
             damage.text:SetText((e.onlyChinse and '防御' or DEFENSE)..' 22/18%')
-            damage.name= info.name
             damage:SetScript('OnMouseDown', function(self)
-                Save.tab[self.name].damage= not Save.tab[self.name].damage and true or nil
+                Save.tab['VERSATILITY'].damage= not Save.tab['VERSATILITY'].damage and true or nil
                 frame_Init(true)--初始，设置
             end)
             damage:SetScript('OnEnter', set_Versatility_Tooltip)
@@ -1176,10 +1183,17 @@ end
 --####
 local function Init()
     button= e.Cbtn(nil, nil, nil, nil, nil, true, {18,18})
+    --button:SetNormalAtlas('DK-Base-Rune-CDFill')
     button:SetFrameLevel(button:GetFrameLevel()+5)
-    button.texture= button:CreateTexture()
-    button.texture:SetSize(14,14)
+    button.texture= button:CreateTexture(nil, 'BORDER')
+    button.texture:SetSize(12,12)
     button.texture:SetPoint('CENTER')
+    button.classPortrait= button:CreateTexture(nil, 'OVERLAY', nil)--加个外框
+    button.classPortrait:SetAtlas('DK-Base-Rune-CDFill')
+    button.classPortrait:SetPoint('CENTER')
+    button.classPortrait:SetSize(20,20)
+    button.classPortrait:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+
     set_Point()--设置, 位置
 
     button:RegisterForDrag("RightButton")

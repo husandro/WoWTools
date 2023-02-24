@@ -1184,4 +1184,12 @@ e.ShowColorPicker= function(valueR, valueG, valueB, valueA, changedCallback)
     ColorPickerFrame:Hide(); -- Need to run the OnShow handler.
     ColorPickerFrame:Show();
 end
+
+e.Reload= function()
+    if not UnitAffectingCombat('player') then
+        C_UI.Reload()
+    else
+        print(id,'|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '战斗中'..HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+    end
+end
 --e.ShowColorPicker(r,g,b,a, function(restore) if not restore then local newA, newR, newG, newB = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()

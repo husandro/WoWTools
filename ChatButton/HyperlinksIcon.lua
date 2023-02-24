@@ -928,7 +928,7 @@ local function InitMenu(self, level, type)
             tooltipTitle='/reload',
             colorCode='|cffff0000',
             func=function()
-                C_UI.Reload()
+                e.Reload()
             end
         }
         UIDropDownMenu_AddButton(info, level)

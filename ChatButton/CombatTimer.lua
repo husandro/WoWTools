@@ -420,7 +420,7 @@ local function InitMenu(self, level, type)--主菜单
             notCheckable=true,
             func=function()
                 Save=nil
-                C_UI.Reload()
+                e.Reload()
             end
         }
         UIDropDownMenu_AddButton(info, level)

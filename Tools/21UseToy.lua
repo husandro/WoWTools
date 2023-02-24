@@ -239,7 +239,7 @@ StaticPopupDialogs[id..addName..'RESETALL']={--重置所有,清除全部玩具
     button2=CANCEL,
     OnAccept = function(self, data)
         Save=nil
-        C_UI.Reload()
+        e.Reload()
     end,
 }
 

@@ -164,7 +164,7 @@ local function InitMenu(self, level, type)
         info={
             text= e.onlyChinse and '重置' or RESET,
             notCheckable=true,
-            func=function() Save=nil C_UI.Reload() end,
+            func=function() Save=nil e.Reload() end,
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinse and '重新加载UI' or RELOADUI,
             colorCode='|cffff0000'
