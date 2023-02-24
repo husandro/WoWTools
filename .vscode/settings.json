@@ -1808,7 +1808,9 @@
         "COLOR_PICKER",
         "WIDE",
         "BENEFICIAL",
-        "STATUS_TEXT_PERCENT"
+        "STATUS_TEXT_PERCENT",
+        "GROUP_INVITE",
+        "LFG_TYPE_RANDOM_DUNGEON"
     ],
     "Lua.diagnostics.disable": [
     ]

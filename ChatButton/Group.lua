@@ -245,6 +245,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
         return
     end
 
+    local UnitTab={}
     local raid=IsInRaid()
     local u= raid and 'raid' or 'party'
     local tabT, tabN, tabDPS, totaleHP = {}, {}, {}, 0
@@ -258,7 +259,8 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
         end
 
         local guid= UnitGUID(unit)
-        if (not e.UnitItemLevel[guid] or not e.UnitItemLevel[guid].itemLeve) and CheckInteractDistance(unit, 1) and CanInspect(unit) then
+        if (not e.UnitItemLevel[guid] or not e.UnitItemLevel[guid].itemLeve) then
+            table.insert(UnitTab, unit)
             NotifyInspect(unit)--取得装等
         end
 
@@ -294,7 +296,6 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
 
             totaleHP= totaleHP+ maxHP
         end
-
     end
 
     if totaleHP==0 then
@@ -308,7 +309,6 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
     e.tips:SetOwner(panel, "ANCHOR_LEFT")
     e.tips:ClearLines()
     e.tips:AddDoubleLine(format(e.onlyChinse and '%s玩家' or COMMUNITIES_CROSS_FACTION_BUTTON_TOOLTIP_TITLE, co), e.MK(totaleHP,3))
-    --e.tips:AddLine(' ')
 
     local find
     for _, info in pairs(tabT) do
@@ -330,8 +330,10 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
     for _, info in pairs(tabDPS) do
         e.tips:AddDoubleLine(info.name, (info.faction or '')..e.MK(info.maxHP, 3)..INLINE_DAMAGER_ICON)
     end
-    
+
     e.tips:Show()
+
+    e.GetNotifyInspect(UnitTab)--取得装等
 end
 
 --####

@@ -13,8 +13,9 @@ local Save={
         ['来人']=true,
         ['成就']=true,
     },
-    groupWelcome= e.Player.husandro,
+    groupWelcome= true,--欢迎
     guildWelcome= true,
+    welcomeOnlyHomeGroup=true,--仅限, 手动组队
     setPlayerSound= e.Player.husandro,--播放, 声音
 }
 
@@ -676,7 +677,7 @@ local function setMsg_CHAT_MSG_SYSTEM(text)--欢迎加入, 信息
         return
     end
     if text:find(raidMS) or text:find(partyMS) then
-        if Save.groupWelcome and UnitIsGroupLeader('player') then
+        if Save.groupWelcome and UnitIsGroupLeader('player') and (Save.welcomeOnlyHomeGroup and IsInGroup(LE_PARTY_CATEGORY_HOME) or not Save.welcomeOnlyHomeGroup) then
             local name=text:match(raidMS) or text:match(partyMS)
             if name then
                 e.Chat(Save.groupWelcomeText or EMOTE103_CMD1:gsub('/',''), name)
@@ -807,6 +808,19 @@ local function InitMenu(self, level, type)
     local info
     if type=='Welcome' then--欢迎
         info={
+            text= e.onlyChinse and '公会新成员' or LFG_LIST_GUILD_MEMBER,--公会新成员
+            checked=Save.guildWelcome,
+            tooltipOnButton=true,
+            tooltipTitle=Save.guildWelcomeText or EMOTE103_CMD1:gsub('/',''),
+            colorCode= not IsInGuild() and '|cff606060',--不在公会
+            func=function()
+                StaticPopup_Show(id..addName..'WELCOME', e.onlyChinse and '公会新成员' or LFG_LIST_GUILD_MEMBER, nil, {guild= true})
+            end,
+        }
+        UIDropDownMenu_AddButton(info, level)
+
+        UIDropDownMenu_AddSeparator(level)
+        info={
             text= e.onlyChinse and '队伍新成员' or SPELL_TARGET_TYPE14_DESC,--队伍新成员
             checked=Save.groupWelcome,
             tooltipOnButton=true,
@@ -817,15 +831,15 @@ local function InitMenu(self, level, type)
             end,
         }
         UIDropDownMenu_AddButton(info, level)
-        info={
-            text= e.onlyChinse and '公会新成员' or LFG_LIST_GUILD_MEMBER,--公会新成员
-            checked=Save.guildWelcome,
+        info={--仅限, 手动组队,不是在随机队伍里
+            text= e.onlyChinse and format('仅限%s', '组队邀请') or LFG_LIST_CROSS_FACTION:format(GROUP_INVITE),
+            checked= Save.welcomeOnlyHomeGroup,
             tooltipOnButton=true,
-            tooltipTitle=Save.guildWelcomeText or EMOTE103_CMD1:gsub('/',''),
-            colorCode= not IsInGuild() and '|cff606060',--不在公会
-            func=function()
-                StaticPopup_Show(id..addName..'WELCOME', e.onlyChinse and '公会新成员' or LFG_LIST_GUILD_MEMBER, nil, {guild= true})
-            end,
+            tooltipTitle= e.onlyChinse and '随机' or LFG_TYPE_RANDOM_DUNGEON,
+            tooltipText= '|cnRED_FONT_COLOR:'..(e.onlyChinse and '不是' or NO),
+            func= function()
+                Save.welcomeOnlyHomeGroup= not Save.welcomeOnlyHomeGroup and true or nil
+            end
         }
         UIDropDownMenu_AddButton(info, level)
 

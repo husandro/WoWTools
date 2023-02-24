@@ -66,6 +66,22 @@ local function getPlayerInfo(guid)--取得玩家信息
     end
 end
 
+--#######
+--取得装等
+--#######
+e.GetNotifyInspect= function(tab)
+    local num, index= #tab, 1
+    if num>0 then
+        if panel.NotifyInspectTicker then panel.NotifyInspectTicker:Cancel() end
+        panel.NotifyInspectTicker=C_Timer.NewTicker(4, function()
+            local unit=tab[index]
+            if UnitExists(unit) and CheckInteractDistance(unit, 1) and CanInspect(unit) then
+                NotifyInspect(tab[index])
+            end
+            index= index+ 1
+        end, num-1)
+    end
+end
 
 --###########
 --队伍数据收集
@@ -88,9 +104,8 @@ function e.GetGroupGuidDate()--队伍数据收集
                     }
                     e.GroupGuid[guid]= tab
                     e.GroupGuid[GetUnitName(unit, true)]= tab
-                    if (not e.UnitItemLevel[guid] or not e.UnitItemLevel[guid].itemLevel ) and CheckInteractDistance(unit, 1) and CanInspect(unit) then
+                    if not e.UnitItemLevel[guid] or not e.UnitItemLevel[guid].itemLevel then
                         table.insert(UnitTab, unit)
-                        NotifyInspect(unit)--取得装等
                     end
                 end
             end
@@ -109,26 +124,14 @@ function e.GetGroupGuidDate()--队伍数据收集
                     e.GroupGuid[guid]= tab
                     e.GroupGuid[GetUnitName(unit, true)]= tab
 
-                    if (not e.UnitItemLevel[guid] or not e.UnitItemLevel[guid].itemLevel ) and CheckInteractDistance(unit, 1) and CanInspect(unit) then
+                    if not e.UnitItemLevel[guid] or not e.UnitItemLevel[guid].itemLevel then
                         table.insert(UnitTab, unit)
                     end
                 end
             end
         end
     end
-
-    local num, index= #UnitTab, 1
-    if num>0 then
-        if panel.NotifyInspectTicker then
-            panel.NotifyInspectTicker:Cancel()
-        end
-        panel.NotifyInspectTicker=C_Timer.NewTicker(4, function()
-            if UnitTab[index] then
-                NotifyInspect(UnitTab[index])--取得装等
-                index= index+ 1
-            end
-        end, num-1)
-    end
+    e.GetNotifyInspect(UnitTab)--取得装等
 end
 
 

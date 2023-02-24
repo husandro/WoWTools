@@ -119,6 +119,7 @@ local function Party(frame)--队友位置
         return
     end
 
+    local UnitTab={}
     local name, uiMapID=e.GetUnitMapName('player')
     local text
     for i=1, GetNumGroupMembers() do
@@ -143,8 +144,8 @@ local function Party(frame)--队友位置
             if tab then
                 if tab.itemLevel then
                     text= text..tab.itemLevel
-                elseif CheckInteractDistance(unit, 1) and CanInspect(unit) then--取得装等
-                    NotifyInspect(unit)
+                else
+                    table.insert(UnitTab, unit)
                 end
             end
 
@@ -178,6 +179,7 @@ local function Party(frame)--队友位置
         end
     end
     frame.party:SetText(text or '')
+    e.GetNotifyInspect(UnitTab)--取得装等
 end
 
 local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面

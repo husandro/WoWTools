@@ -494,9 +494,9 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
             else
                 self.classTexture:SetTexture(0)
             end
-            if CanInspect(unit) and CheckInteractDistance(unit, 1) then
-                NotifyInspect(unit)--取得装等
-            end
+            --if CanInspect(unit) and CheckInteractDistance(unit, 1) then
+              --  NotifyInspect(unit)--取得装等
+            --end
         end
         self.classPortrait:SetVertexColor(r,g,b,1)
 
