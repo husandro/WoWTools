@@ -156,7 +156,7 @@ local function set_Stat_Text(frame)
 end
 local function set_Stat_Tooltip(self)
     if not PrimaryStat then
-        return
+        get_PrimaryStat()--取得主属
     end
     local frame= self:GetParent()
     e.tips:SetOwner(button, "ANCHOR_RIGHT")
@@ -164,35 +164,38 @@ local function set_Stat_Tooltip(self)
     local stat, effectiveStat, posBuff, negBuff = UnitStat('player', PrimaryStat);
     local effectiveStatDisplay = BreakUpLargeNumbers(effectiveStat);
     local tooltipText = effectiveStatDisplay
-    if posBuff~=0 and negBuff~=0 then
-        tooltipText = effectiveStatDisplay;
-        if ( posBuff > 0 or negBuff < 0 ) then
-            tooltipText = tooltipText.." ("..BreakUpLargeNumbers(stat - posBuff - negBuff)
-        end
-        if ( posBuff > 0 ) then
-            tooltipText = tooltipText..GREEN_FONT_COLOR_CODE.."+"..BreakUpLargeNumbers(posBuff)..FONT_COLOR_CODE_CLOSE;
-        end
-        if ( negBuff < 0 ) then
-            tooltipText = tooltipText..RED_FONT_COLOR_CODE.." "..BreakUpLargeNumbers(negBuff)..FONT_COLOR_CODE_CLOSE;
-        end
-        if ( posBuff > 0 or negBuff < 0 ) then
-            tooltipText = tooltipText..")"
-        end
-    end
-    e.tips:AddDoubleLine(frame.nametext, tooltipText)
+
+    if ( ( posBuff == 0 ) and ( negBuff == 0 ) ) then
+		e.tips:AddLine(tooltipText..effectiveStatDisplay..FONT_COLOR_CODE_CLOSE, nil,nil,nil,true)
+	else
+		if ( posBuff > 0 or negBuff < 0 ) then
+			tooltipText = tooltipText.." ("..BreakUpLargeNumbers(stat - posBuff - negBuff)..FONT_COLOR_CODE_CLOSE;
+		end
+		if ( posBuff > 0 ) then
+			tooltipText = tooltipText..FONT_COLOR_CODE_CLOSE..GREEN_FONT_COLOR_CODE.."+"..BreakUpLargeNumbers(posBuff)..FONT_COLOR_CODE_CLOSE;
+		end
+		if ( negBuff < 0 ) then
+			tooltipText = tooltipText..RED_FONT_COLOR_CODE.." "..BreakUpLargeNumbers(negBuff)..FONT_COLOR_CODE_CLOSE;
+		end
+		if ( posBuff > 0 or negBuff < 0 ) then
+			tooltipText = tooltipText..HIGHLIGHT_FONT_COLOR_CODE..")"..FONT_COLOR_CODE_CLOSE;
+		end
+
+        e.tips:AddDoubleLine(frame.nameText, tooltipText)
+	end
+
     local role = GetSpecializationRole(GetSpecialization())
     if PrimaryStat==LE_UNIT_STAT_STRENGTH then-- Strength
         local text= ''
         local attackPower = GetAttackPowerForStat(frame.index, effectiveStat);
         if (HasAPEffectsSpellPower()) then
-            text= e.onlyChinse and '提高你的攻击和技能强度' or STAT_TOOLTIP_BONUS_AP_SP
+            text= (e.onlyChinse and '提高你的攻击和技能强度' or STAT_TOOLTIP_BONUS_AP_SP)..' '..BreakUpLargeNumbers(attackPower)
         end
-        text= text..' '.. BreakUpLargeNumbers(attackPower)
         if role == "TANK" then
             local increasedParryChance = GetParryChanceFromAttribute();
             if ( increasedParryChance > 0 ) then
-                CR_PARRY_BASE_STAT_TOOLTIP = "招架几率提高%.2f%%|n|cff888888（在效果递减之前）|r"
-                text= text..'\n'..format(e.onlyChinse and '"招架几率提高%.2f%%|n|cff888888（在效果递减之前）|r"' or CR_PARRY_BASE_STAT_TOOLTIP, increasedParryChance);
+                text = text~='' and text..'\n' or text
+                text= text..format(e.onlyChinse and '"招架几率提高%.2f%%|n|cff888888（在效果递减之前）|r"' or CR_PARRY_BASE_STAT_TOOLTIP, increasedParryChance);
             end
         end
         e.tips:AddDoubleLine(text,nil,nil,nil,true)
@@ -273,7 +276,7 @@ local function set_Crit_Tooltip(self)
 		critChance = meleeCrit;
 		rating = CR_CRIT_MELEE;
 	end
-    e.tips:AddDoubleLine(frame.nametext, format('%.2f%%', critChance + 0.5))
+    e.tips:AddDoubleLine(frame.nameText, format('%.2f%%', critChance + 0.5))
 
 	local extraCritChance = GetCombatRatingBonus(rating);
 	local extraCritRating = GetCombatRating(rating);
@@ -325,7 +328,7 @@ local function set_Haste_Tooltip(self)
 	else
 		hasteFormatString = "%s";
 	end
-	e.tips:AddDoubleLine(frame.nametext, format(hasteFormatString, format("%0.2f%%", haste + 0.5)))
+	e.tips:AddDoubleLine(frame.nameText, format(hasteFormatString, format("%0.2f%%", haste + 0.5)))
 	e.tips:AddLine(_G["STAT_HASTE_"..e.Player.class.."_TOOLTIP"] or (e.onlyChinse and '提高攻击速度和施法速度。' or STAT_HASTE_TOOLTIP), nil, nil,nil,true)
 	e.tips:AddDoubleLine(format(e.onlyChinse and '急速：%s [+%.2f%%]' or STAT_HASTE_BASE_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(rating)), GetCombatRatingBonus(rating)))
     if frame.value and frame.value~=haste then
@@ -365,7 +368,7 @@ local function set_Versatility_Tooltip(self)
     local versatility = GetCombatRating(CR_VERSATILITY_DAMAGE_DONE);
 	local versatilityDamageBonus = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE);
 	local versatilityDamageTakenReduction = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_TAKEN) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_TAKEN);
-    e.tips:AddDoubleLine(frame.nametext, format('%.2f%%',  versatilityDamageBonus))
+    e.tips:AddDoubleLine(frame.nameText, format('%.2f%%',  versatilityDamageBonus))
 	e.tips:AddLine(format(e.onlyChinse and "造成的伤害值和治疗量提高%.2f%%，\n受到的伤害降低%.2f%%。\n全能：%s [%.2f%%/%.2f%%]" or CR_VERSATILITY_TOOLTIP, versatilityDamageBonus, versatilityDamageTakenReduction, BreakUpLargeNumbers(versatility), versatilityDamageBonus, versatilityDamageTakenReduction), nil,nil,nil,true)
     if frame.value and frame.value~=versatilityDamageBonus then
         e.tips:AddLine(' ')
@@ -394,7 +397,7 @@ local function set_Lifesteal_Tooltip(self)
     e.tips:ClearLines()
 
     local lifesteal = GetLifesteal();
-	e.tips:AddDoubleLine(frame.nametext,  format("%0.2f%%", lifesteal))
+	e.tips:AddDoubleLine(frame.nameText,  format("%0.2f%%", lifesteal))
     e.tips:AddLine(format(e.onlyChinse and '你所造成伤害和治疗的一部分将转而治疗你。\n\n吸血：%s [+%.2f%%]' or CR_LIFESTEAL_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(CR_LIFESTEAL)), GetCombatRatingBonus(CR_LIFESTEAL)), nil,nil,nil,true)
     if frame.value and frame.value~=lifesteal then
         e.tips:AddLine(' ')
@@ -423,7 +426,7 @@ local function set_Avoidance_Tooltip(self)
     e.tips:ClearLines()
 
     local Avoidance = GetAvoidance();
-	e.tips:AddDoubleLine(frame.nametext,  format("%0.2f%%", Avoidance))
+	e.tips:AddDoubleLine(frame.nameText,  format("%0.2f%%", Avoidance))
     e.tips:AddLine(format(e.onlyChinse and '范围效果法术的伤害降低。\n\n闪避：%s [+%.2f%%' or CR_AVOIDANCE_TOOLTIP , BreakUpLargeNumbers(GetCombatRating(CR_AVOIDANCE)), GetCombatRatingBonus(CR_AVOIDANCE)), nil,nil,nil,true)
     if frame.value and frame.value~=Avoidance then
         e.tips:AddLine(' ')
@@ -452,7 +455,7 @@ local function set_Dodge_Tooltip(self)
     e.tips:ClearLines()
 
     local chance = GetDodgeChance();
-	e.tips:AddDoubleLine(frame.nametext,  format("%0.2f%%", chance))
+	e.tips:AddDoubleLine(frame.nameText,  format("%0.2f%%", chance))
     e.tips:AddLine( format(e.onlyChinse and '%d点躲闪可使躲闪几率提高%.2f%%\n|cff888888（在效果递减之前）|r' or CR_DODGE_TOOLTIP, GetCombatRating(CR_DODGE), GetCombatRatingBonus(CR_DODGE)), nil,nil,nil,true)
     if frame.value and frame.value~=chance then
         e.tips:AddLine(' ')
@@ -481,7 +484,7 @@ local function set_Parry_Tooltip(self)
     e.tips:ClearLines()
 
     local chance = GetParryChance();
-	e.tips:AddDoubleLine(frame.nametext,  format("%0.2f%%", chance))
+	e.tips:AddDoubleLine(frame.nameText,  format("%0.2f%%", chance))
     e.tips:AddLine(format(e.onlyChinse and '%d点招架可使招架几率提高%.2f%%\n|cff888888（在效果递减之前）|r' or CR_PARRY_TOOLTIP, GetCombatRating(CR_PARRY), GetCombatRatingBonus(CR_PARRY)), nil,nil,nil,true)
     if frame.value and frame.value~=chance then
         e.tips:AddLine(' ')
@@ -510,7 +513,7 @@ local function set_Block_Tooltip(self)
     e.tips:ClearLines()
 
     local chance = GetBlockChance();
-    e.tips:AddDoubleLine(frame.nametext,  format("%0.2f%%", chance))
+    e.tips:AddDoubleLine(frame.nameText,  format("%0.2f%%", chance))
 
 	local shieldBlockArmor = GetShieldBlock();
 	local blockArmorReduction = PaperDollFrame_GetArmorReduction(shieldBlockArmor, UnitEffectiveLevel('player'));
@@ -553,7 +556,7 @@ local function set_Stagger_Tooltip(self)
     local frame= self:GetParent()
     e.tips:SetOwner(button, "ANCHOR_RIGHT")
     e.tips:ClearLines()
-    e.tips:AddDoubleLine(frame.nametext,  format("%0.2f%%", stagger))
+    e.tips:AddDoubleLine(frame.nameText,  format("%0.2f%%", stagger))
 	e.tips:AddLine(format(e.onlyChinse and '你的醉拳可化解%0.2f%%的伤害' or STAT_STAGGER_TOOLTIP, stagger), nil,nil,nil,true)
 	if (staggerAgainstTarget) then
 		e.tips:AddLine(format(e.onlyChinse and '（对当前目标比例%0.2f%%）' or STAT_STAGGER_TARGET_TOOLTIP, staggerAgainstTarget), nil,nil,nil,true)
@@ -605,7 +608,7 @@ local function set_SPEED_Tooltip(self)
     e.tips:SetOwner(button, "ANCHOR_RIGHT")
     e.tips:ClearLines()
     local currentSpeed, runSpeed, flightSpeed, swimSpeed = GetUnitSpeed('player')
-    e.tips:AddDoubleLine(frame.nametext, 'player')
+    e.tips:AddDoubleLine(frame.nameText, 'player')
     e.tips:AddLine(format(e.onlyChinse and '提升移动速度。|n|n速度：%s [+%.2f%%]' or CR_SPEED_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(CR_SPEED)), GetCombatRatingBonus(CR_SPEED)), nil,nil,nil, true)
     e.tips:AddLine(' ')
     e.tips:AddDoubleLine((e.onlyChinse and '当前' or REFORGE_CURRENT)..format(' %.0f%%', currentSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', currentSpeed))
@@ -638,7 +641,7 @@ local function set_Frame(frame, info)--设置, frame
     end
     
     local text= Tabs[frame.index].text
-    frame.nametext= text
+    frame.nameText= text
     if Save.gsubText then--文本，截取
         text= e.WA_Utf8Sub(text, Save.gsubText)
     end
@@ -860,15 +863,13 @@ local function frame_Init(rest)--初始， 或设置
                 frame.index= index
                 button[info.name]= frame
             end
-            
+
             --重置, 数值
             if rest then
                 frame.value=nil
             end
-            
+
             set_Frame(frame, info)
-
-
 
             find= (frame.value and frame.value>0) or info.name=='SPEED'
             if find then
