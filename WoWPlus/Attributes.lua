@@ -875,6 +875,15 @@ local function frame_Init(rest)--初始， 或设置
     end
 end
 
+
+--##########
+--显示， 隐藏
+--##########
+local function set_Show_Hide()
+    button.frame:SetShown(not Save.hide)
+    button.texture:SetAlpha(Save.hide and 0.3 or 1)
+end
+
 --#########
 --设置, 位置
 --#########
@@ -1171,7 +1180,6 @@ local function Init()
     button.texture= button:CreateTexture()
     button.texture:SetSize(14,14)
     button.texture:SetPoint('CENTER')
-    button.texture:SetAlpha(0.3)
     set_Point()--设置, 位置
 
     button:RegisterForDrag("RightButton")
@@ -1212,7 +1220,7 @@ local function Init()
         elseif d==-1 then
             Save.hide= nil
         end
-        button.frame:SetShown(not Save.hide)--显示， 隐藏
+        set_Show_Hide()--显示， 隐藏
     end)
     button:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -1251,7 +1259,7 @@ local function Init()
                 frame_Init(true)--初始， 或设置
             end
         end)
-        button.frame:SetShown(not Save.hide)--显示， 隐藏
+        set_Show_Hide()--显示， 隐藏
         frame_Init(true)--初始， 或设置
         set_Panle_Setting()--设置 panel
     end)
