@@ -10,7 +10,7 @@ local Save={
         ['CRITCHANCE']= {r=0.99, g=0.35, b=0.31},
         ['HASTE']= {r=0, g=1, b=0.77},
         ['MASTERY']= {r=0.82, g=0.28, b=0.82},
-        ['VERSATILITY']= {r=0, g=0.77, b=1},
+        ['VERSATILITY']= {r=0, g=0.77, b=1},--双属性, damage=true
         ['LIFESTEAL']= {r=1, g=0.33, b=0.5},
         ['AVOIDANCE']= {r=1, g=0.79, b=0},--'闪避'
 
@@ -18,7 +18,7 @@ local Save={
         ["PARRY"]= {r=0.59, g=0.85, b=1},
         ["BLOCK"]= {r=0.75, g=0.53, b=0.78},
         ["STAGGER"]= {r=0.38, g=1, b=0.62},
-        ["SPEED"]= {r=1, g=0.82, b=0},--移动
+        ["SPEED"]= {r=1, g=0.82, b=0, current=true},--移动
     },
     --toLeft=true--数值,放左边
     bar= true,--进度条
@@ -910,12 +910,35 @@ local function set_Panle_Setting()--设置 panel
         local g= info.g or 0.82
         local b= info.b or 0
         local a= info.a or 1
-        local text= e.Cstr(panel, nil, nil, nil, {r,g,b,a})
+
+        local check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--禁用, 启用
+        check:SetChecked(not Save.tab[info.name].hide)
         if index==1 or info.name=='SPEED' then
-            text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
+            check:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
         else
-            text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -4)
+            check:SetPoint('TOPLEFT', last, 'BOTTOMLEFT')--,0, -4)
         end
+        check:SetPoint('LEFT', text, 'RIGHT',2,0)
+        check.name= info.name
+        check.text2= info.text
+        check:SetScript('OnMouseUp',function(self)
+            Save.tab[self.name].hide= not Save.tab[self.name].hide and true or nil
+            set_Tabs()
+            create_Rest_Lable(true)--初始， 或设置
+        end)
+        check:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            local value= button[self.name] and button[self.name].value
+            e.tips:AddDoubleLine(self.text2, format('%.2f%%', value or 0))
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(e.GetShowHide(Save.tab[self.name].hide), '|cnGREEN_FONT_COLOR:0 = '..(e.onlyChinse and '隐藏' or HIDE))
+            e.tips:Show()
+        end)
+        check:SetScript('OnLeave', function() e.tips:Hide() end)
+
+        local text= e.Cstr(panel, nil, nil, nil, {r,g,b,a})--Text
+        text:SetPoint('LEFT', check, 'RIGHT')
         text:SetText(info.text)
         if index>1 then
             text:EnableMouse(true)
@@ -961,32 +984,10 @@ local function set_Panle_Setting()--设置 panel
             text:SetScript('OnLeave', function() e.tips:Hide() end)
         end
 
-        local check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-        check:SetChecked(not Save.tab[info.name].hide)
-        check:SetPoint('LEFT', text, 'RIGHT',2,0)
-        check.name= info.name
-        check.text2= info.text
-        check:SetScript('OnMouseUp',function(self)
-            Save.tab[self.name].hide= not Save.tab[self.name].hide and true or nil
-            set_Tabs()
-            create_Rest_Lable(true)--初始， 或设置
-           -- print(id, addName,e.GetShowHide(not Save.tab[self.name].hide), '|cnGREEN_FONT_COLOR:', e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
-        end)
-        check:SetScript('OnEnter', function(self)
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            local value= button[self.name] and button[self.name].value
-            e.tips:AddDoubleLine(self.text2, format('%.2f%%', value or 0))
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.GetShowHide(Save.tab[self.name].hide), '|cnGREEN_FONT_COLOR:0 = '..(e.onlyChinse and '隐藏' or HIDE))
-            e.tips:Show()
-        end)
-        check:SetScript('OnLeave', function() e.tips:Hide() end)
-
         if info.name=='SPEED' then--速度, 当前速度, 选项
             local current= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
             current:SetChecked(Save.tab[info.name].current)
-            current:SetPoint('LEFT', check, 'RIGHT',2,0)
+            current:SetPoint('LEFT', text, 'RIGHT',2,0)
             current.text:SetText(e.onlyChinse and '当前' or 'REFORGE_CURRENT')
             current.name= info.name
             current:SetScript('OnMouseUp',function(self)
@@ -1000,7 +1001,7 @@ local function set_Panle_Setting()--设置 panel
         elseif info.name=='VERSATILITY' then--全能5, 双属性 22/18%
             local damage=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
             damage:SetChecked(Save.tab[info.name].damage)
-            damage:SetPoint('LEFT', check, 'RIGHT',2,0)
+            damage:SetPoint('LEFT', text, 'RIGHT',2,0)
             damage.text:SetText((e.onlyChinse and '防御' or DEFENSE)..' 22/18%')
             damage.name= info.name
             damage:SetScript('OnMouseDown', function(self)
@@ -1011,7 +1012,7 @@ local function set_Panle_Setting()--设置 panel
             damage:SetScript('OnEnter', set_Versatility_Tooltip)
             damage:SetScript('OnLeave', function() e.tips:Hide() end)
         end
-        last= text
+        last= check
     end
 
     local check= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
@@ -1298,10 +1299,9 @@ local function Init()
         set_Panle_Setting()--设置 panel
     end)
 
-    local restButton=CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')--全部重
-    restButton:SetText('|cnRED_FONT_COLOR:'..(e.onlyChinse and '重置' or RESET)..'|r')
+    local restButton= e.Cbtn(panel, true, nil, nil, nil, nil, {20,20})--重置
+    restButton:SetNormalAtlas('bags-button-autosort-up')
     restButton:SetPoint("TOPRIGHT")
-    restButton:SetSize(60, 28)
     restButton:SetScript('OnMouseUp', function()
         StaticPopupDialogs[id..addName..'restAllSetup']={
             text =id..'  '..addName..'|n|n|cnRED_FONT_COLOR:'..(e.onlyChinse and '清除全部' or CLEAR_ALL)..'|r '..(e.onlyChinse and '保存' or SAVE)..'|n|n'..(e.onlyChinse and '重新加载UI' or RELOADUI)..' /reload',

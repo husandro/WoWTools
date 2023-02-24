@@ -1259,6 +1259,17 @@ local function set_Alpha_Event(arg1)
             hideTexture(GarrisonCapacitiveDisplayFrameInset.Bg)
         end
 
+    elseif arg1=='Blizzard_GenericTraitUI' then--欲龙术
+        setAlpha(GenericTraitFrame.Background)
+        setAlpha(GenericTraitFrame.NineSlice.RightEdge)
+        setAlpha(GenericTraitFrame.NineSlice.LeftEdge)
+        setAlpha(GenericTraitFrame.NineSlice.TopEdge)
+        setAlpha(GenericTraitFrame.NineSlice.BottomEdge)
+        setAlpha(GenericTraitFrame.NineSlice.TopRightCorner)
+        setAlpha(GenericTraitFrame.NineSlice.TopLeftCorner)
+        setAlpha(GenericTraitFrame.NineSlice.BottomLeftCorner)
+        setAlpha(GenericTraitFrame.NineSlice.BottomRightCorner)
+
     elseif arg1=='Blizzard_PlayerChoice' then----任务选择
         C_Timer.After(0.3, function()
             if PlayerChoiceFrame.NineSlice then
