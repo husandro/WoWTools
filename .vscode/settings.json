@@ -1810,7 +1810,8 @@
         "BENEFICIAL",
         "STATUS_TEXT_PERCENT",
         "GROUP_INVITE",
-        "LFG_TYPE_RANDOM_DUNGEON"
+        "LFG_TYPE_RANDOM_DUNGEON",
+        "BLOCK"
     ],
     "Lua.diagnostics.disable": [
     ]

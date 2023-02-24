@@ -11,7 +11,7 @@ local Save={
         ['CRITCHANCE']= {r=0.99, g=0.35, b=0.31},
         ['HASTE']= {r=0, g=1, b=0.77},
         ['MASTERY']= {r=0.82, g=0.28, b=0.82},
-        ['VERSATILITY']= {r=0, g=0.77, b=1},--双属性, damage=true
+        ['VERSATILITY']= {r=0, g=0.77, b=1},--双属性, damageAndDefense=true, onlyDefense=true,仅防卫
         ['LIFESTEAL']= {r=1, g=0.33, b=0.5},
         ['AVOIDANCE']= {r=1, g=0.79, b=0},--'闪避'
 
@@ -30,6 +30,8 @@ local Save={
     barWidth=0,--bar, 宽度
     setMaxMinValue= true,--增加,减少值
     bit=0,--百分比，位数
+    onlyDPS=true,--四属性, 仅限DPS
+    useNumber= e.Player.husandro,
 }
 
 local function get_PrimaryStat()--取得主属
@@ -79,17 +81,24 @@ local function set_Tabs()
         Tabs[index].a= index==1 and 1 or Save.tab[info.name].a or 1
 
         if info.name=='VERSATILITY' then
-            Tabs[index].damage= Save.tab[info.name].damage
+            Tabs[index].damageAndDefense= Save.tab[info.name].damageAndDefense
+            Tabs[index].onlyDefense= Save.tab[info.name].onlyDefense
         elseif info.name=='SPEED' then
             Tabs[index].current= Save.tab[info.name].current
         end
 
         Tabs[index].hide= Save.tab[info.name].hide
-        if index>=8 and index<=11 then--坦克
-            if Role~='TANK' then
+        if not Tabs[index].hide then
+            if info.name=='STAGGER' and (e.Player.class~='MONK' or Role~='TANK') then--武僧, 醉拳
                 Tabs[index].hide= true
-            elseif info.name=='STAGGER' and e.Player.class~='MONK' then--武僧
-                Tabs[index].hide= true
+            elseif info.name=='CRITCHANCE' or info.name=='HASTE' or info.name=='MASTERY' or info.name=='VERSATILITY' then--四属性, DPS
+                if Role~='DAMAGER' and Save.onlyDPS then
+                    Tabs[index].hide= true
+                end
+            elseif info.name=='DODGE' or info.name=='PARRY' or info.name=='BLOCK' then--坦克
+                if Role~='TANK' then
+                    Tabs[index].hide= true
+                end
             end
         end
     end
@@ -103,7 +112,7 @@ local function set_Text_Value(frame, value, value2)
         frame.value=value or 0
     end
     local text
-    if frame.index==1 then--主属性
+    if frame.name=='STATUS' then--主属性
         text= e.MK(value, 3)
     elseif not value2 then--全能, 醉拳
         text= format('%.'..Save.bit..'f%%', value)
@@ -187,7 +196,7 @@ local function set_Stat_Tooltip(self)
     local role = GetSpecializationRole(GetSpecialization())
     if PrimaryStat==LE_UNIT_STAT_STRENGTH then-- Strength
         local text= ''
-        local attackPower = GetAttackPowerForStat(frame.index, effectiveStat);
+        local attackPower = GetAttackPowerForStat(PrimaryStat, effectiveStat);
         if (HasAPEffectsSpellPower()) then
             text= (e.onlyChinse and '提高你的攻击和技能强度' or STAT_TOOLTIP_BONUS_AP_SP)..' '..BreakUpLargeNumbers(attackPower)
         end
@@ -244,19 +253,35 @@ end
 --爆击
 --####
 local function set_Crit_Text(frame)
-    local critChance
-	local spellCrit = frame.minCrit or 0
-	local rangedCrit = GetRangedCritChance();
-	local meleeCrit = GetCritChance();
-	if (spellCrit >= rangedCrit and spellCrit >= meleeCrit) then
-		critChance = spellCrit
-	elseif (rangedCrit >= meleeCrit) then
-		critChance = rangedCrit
-	else
-		critChance = meleeCrit
-	end
-    set_Text_Value(frame, critChance)--设置，当前值
-    --return critChance
+    if Save.useNumber then
+        local rating
+        local spellCrit = frame.minCrit
+        local rangedCrit = GetRangedCritChance();
+        local meleeCrit = GetCritChance();
+
+        if (spellCrit >= rangedCrit and spellCrit >= meleeCrit) then
+            rating = CR_CRIT_SPELL;
+        elseif (rangedCrit >= meleeCrit) then
+            rating = CR_CRIT_RANGED;
+        else
+            rating = CR_CRIT_MELEE;
+        end
+        local extraCritRating = GetCombatRating(rating)
+        set_Text_Value(frame, extraCritRating)--设置，当前值
+    else
+        local critChance
+        local spellCrit = frame.minCrit or 0
+        local rangedCrit = GetRangedCritChance();
+        local meleeCrit = GetCritChance();
+        if (spellCrit >= rangedCrit and spellCrit >= meleeCrit) then
+            critChance = spellCrit 
+        elseif (rangedCrit >= meleeCrit) then
+            critChance = rangedCrit
+        else
+            critChance = meleeCrit
+        end
+        set_Text_Value(frame, critChance)--设置，当前值
+    end
 end
 local function set_Crit_Tooltip(self)
     local frame= self:GetParent()
@@ -357,9 +382,18 @@ end
 --全能, 5
 --####
 local function set_Versatility_Text(frame)
-    local versatilityDamageBonus = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE)
-    set_Text_Value(frame, versatilityDamageBonus, frame.damage and GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_TAKEN)+GetVersatilityBonus(CR_VERSATILITY_DAMAGE_TAKEN))--设置，当前值
-    --return versatilityDamageBonus
+    --local versatility = GetCombatRating(CR_VERSATILITY_DAMAGE_DONE);
+	local versatilityDamageBonus = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE);
+	local versatilityDamageTakenReduction = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_TAKEN) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_TAKEN);
+    if frame.onlyDefense then
+        set_Text_Value(frame, versatilityDamageTakenReduction)--设置，当前值
+    else
+        if frame.damageAndDefense then
+            set_Text_Value(frame, versatilityDamageBonus, versatilityDamageTakenReduction)--设置，当前值
+        else
+            set_Text_Value(frame, versatilityDamageBonus)--设置，当前值
+        end
+    end
 end
 local function set_Versatility_Tooltip(self)
     local frame= self:GetParent()
@@ -632,16 +666,15 @@ local function set_Frame(frame, info)--设置, frame
     frame:SetSize(Save.horizontal, 12+ (Save.vertical or 3))--设置，大小
 
     --名称
-
     frame.label:ClearAllPoints()
     if Save.toLeft then
         frame.label:SetPoint('TOPLEFT', frame, 'TOPRIGHT',-5,0)
     else
         frame.label:SetPoint('TOPRIGHT', frame, 'TOPLEFT', 5,0)
     end
-    
-    local text= Tabs[frame.index].text
-    frame.nameText= text
+
+    local text= info.text
+    frame.nameText= info.text
     if Save.gsubText then--文本，截取
         text= e.WA_Utf8Sub(text, Save.gsubText)
     end
@@ -721,8 +754,9 @@ local function set_Frame(frame, info)--设置, frame
     elseif frame.name=='MASTERY' then--精通4
         set_Mastery_Text(frame)
     elseif frame.name=='VERSATILITY' then--全能5
+        frame.damageAndDefense= info.damageAndDefense
+        frame.onlyDefense= info.onlyDefense
         set_Versatility_Text(frame)
-        frame.damage= info.damage
     elseif frame.name=='LIFESTEAL' then--吸血6
         set_Lifesteal_Text(frame)
     elseif frame.name=='AVOIDANCE' then--闪避7
@@ -910,7 +944,7 @@ end
 --设置 panel
 --##########
 local function set_Panle_Setting()--设置 panel
-    local last
+    local last, check
     last=CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')--重新加载UI
     last:SetPoint('TOPLEFT')
     last:SetText(e.onlyChinse and '重新加载UI' or RELOADUI)
@@ -920,7 +954,22 @@ local function set_Panle_Setting()--设置 panel
     end)
 
     for index, info in pairs(Tabs) do
-        if info.name=='DODGE' then
+        if info.name=='CRITCHANCE' then
+            check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--四属性, 仅限DPS
+            check:SetChecked(Save.onlyDPS)
+            check:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
+            if e.onlyChinse then
+                check.text:SetText("仅限DPS"..INLINE_DAMAGER_ICON)
+            else
+                check.text:SetFormattedText(LFG_LIST_CROSS_FACTION , DAMAGER..INLINE_DAMAGER_ICON)
+            end
+            check:SetScript('OnMouseUp',function(self)
+                Save.onlyDPS = not Save.onlyDPS and true or nil
+                frame_Init(true)--初始，设置
+            end)
+            last=check
+
+        elseif info.name=='DODGE' then
             local text= e.Cstr(panel)
             text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
             if e.onlyChinse then
@@ -935,12 +984,12 @@ local function set_Panle_Setting()--设置 panel
         local b= info.b or 0
         local a= info.a or 1
 
-        local check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--禁用, 启用
+        check= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--禁用, 启用
         check:SetChecked(not Save.tab[info.name].hide)
-        if index==1 or info.name=='SPEED' then
+        if info.name=='STATUS' or info.name=='SPEED' or info.name=='LIFESTEAL' then
             check:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
         else
-            check:SetPoint('TOPLEFT', last, 'BOTTOMLEFT')--,0, -4)
+            check:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, 6)
         end
         check.name= info.name
         check.text2= info.text
@@ -1017,23 +1066,43 @@ local function set_Panle_Setting()--设置 panel
             end)
             current:SetScript('OnEnter', set_SPEED_Tooltip)
             current:SetScript('OnLeave', function() e.tips:Hide() end)
-
-        elseif info.name=='VERSATILITY' then--全能5, 双属性 22/18%
-            local damage=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-            damage:SetChecked(Save.tab[info.name].damage)
-            damage:SetPoint('LEFT', text, 'RIGHT',2,0)
-            damage.text:SetText((e.onlyChinse and '防御' or DEFENSE)..' 22/18%')
-            damage:SetScript('OnMouseDown', function(self)
-                Save.tab['VERSATILITY'].damage= not Save.tab['VERSATILITY'].damage and true or nil
+            
+        elseif info.name=='VERSATILITY' then--全能5
+            local check2=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--仅防卫
+            check2:SetChecked(Save.tab['VERSATILITY'].onlyDefense)
+            check2:SetPoint('LEFT', text, 'RIGHT',2,0)
+            check2.text:SetText((e.onlyChinse and '仅防御' or format(LFG_LIST_CROSS_FACTION, DEFENSE)))
+            check2:SetScript('OnMouseDown', function(self)
+                Save.tab['VERSATILITY'].onlyDefense= not Save.tab['VERSATILITY'].onlyDefense and true or nil
+                if Save.tab['VERSATILITY'].onlyDefense then
+                    check2.A.text:SetTextColor(0.62, 0.62, 0.62)
+                else
+                    check2.A.text:SetTextColor(1, 0.82, 0)
+                end
                 frame_Init(true)--初始，设置
             end)
-            damage:SetScript('OnEnter', set_Versatility_Tooltip)
-            damage:SetScript('OnLeave', function() e.tips:Hide() end)
+            check2:SetScript('OnEnter', set_Versatility_Tooltip)
+            check2:SetScript('OnLeave', function() e.tips:Hide() end)
+            
+            check2.A=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--双属性 22/18%
+            check2.A:SetChecked(Save.tab['VERSATILITY'].damageAndDefense)
+            check2.A:SetPoint('LEFT', check2.text, 'RIGHT',2,0)
+            check2.A.text:SetText('22/18%')
+            check2.A:SetScript('OnMouseDown', function(self)
+                Save.tab['VERSATILITY'].damageAndDefense= not Save.tab['VERSATILITY'].damageAndDefense and true or nil
+                frame_Init(true)--初始，设置
+            end)
+            check2.A:SetScript('OnEnter', set_Versatility_Tooltip)
+            check2.A:SetScript('OnLeave', function() e.tips:Hide() end)
+
+            if Save.tab['VERSATILITY'].onlyDefense then
+                check2.A.text:SetTextColor(0.62, 0.62, 0.62)
+            end
         end
         last= check
     end
 
-    local check= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    check= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     check:SetPoint("TOPLEFT", panel.check, 'BOTTOMLEFT', 0, -12)
     check.text:SetText((e.onlyChinse and '数值' or STATUS_TEXT_VALUE)..': '..(e.onlyChinse and '向左' or BINDING_NAME_STRAFELEFT)..e.Icon.toLeft2)
     check:SetChecked(Save.toLeft)
@@ -1051,7 +1120,7 @@ local function set_Panle_Setting()--设置 panel
 
     local check4= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--增加,减少,值
     check4:SetPoint("TOPLEFT", check, 'BOTTOMLEFT')
-    check4.text:SetText((e.onlyChinse and '数值' or STATUS_TEXT_VALUE)..' + -10')
+    check4.text:SetText((e.onlyChinse and '增益值' or BENEFICIAL)..' + -10')
     check4:SetChecked(Save.setMaxMinValue)
     check4:SetScript('OnMouseDown', function()
         Save.setMaxMinValue= not Save.setMaxMinValue and true or nil
@@ -1326,6 +1395,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     Init()
                 else
                     print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需求重新加载' or REQUIRES_RELOAD)
+                    frame_Init(true)--初始， 或设置
                 end
             end)
             panel.check:SetScript('OnEnter', function(self2)
