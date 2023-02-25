@@ -1013,7 +1013,7 @@ end
 --设置 panel
 --##########
 local function set_Panle_Setting()--设置 panel
-    local last, check
+    local last, check, findTank, findDps
     last=CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')--重新加载UI
     last:SetPoint('TOPLEFT')
     last:SetText(e.onlyChinse and '重新加载UI' or RELOADUI)
@@ -1023,7 +1023,7 @@ local function set_Panle_Setting()--设置 panel
     end)
 
     for index, info in pairs(Tabs) do
-        if info.name=='CRITCHANCE' then
+        if info.dps and not findDps then
             check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--四属性, 仅限DPS
             check:SetChecked(Save.onlyDPS)
             check:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
@@ -1036,9 +1036,10 @@ local function set_Panle_Setting()--设置 panel
                 Save.onlyDPS = not Save.onlyDPS and true or nil
                 frame_Init(true)--初始，设置
             end)
+            findDps=true
             last=check
 
-        elseif info.name=='ARMOR' then
+        elseif info.tank and not findTank then
             local text= e.Cstr(panel)
             text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
             if e.onlyChinse then
@@ -1046,6 +1047,7 @@ local function set_Panle_Setting()--设置 panel
             else
                 text:SetFormattedText(LFG_LIST_CROSS_FACTION , TANK..INLINE_TANK_ICON)
             end
+            findTank=true
             last= text
         end
         local r= info.r or 1
