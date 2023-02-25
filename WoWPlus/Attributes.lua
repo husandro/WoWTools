@@ -2,10 +2,11 @@
 local id, e= ...
 local addName= STAT_CATEGORY_ATTRIBUTES--PaperDollFrame.lua
 local panel= CreateFrame('Frame')
-local button, Role, PrimaryStat, Tabs
+local button, Role, PrimaryStat, Tabs, BarMax
 local Save={
     redColor= '|cffff8200',
     greenColor='|cff00ff00',
+    --font={r=0, g=0, b=0, a=1, x=1, y=-1},--阴影
     tab={
         ['STATUS']={},
         ['CRITCHANCE']= {r=0.99, g=0.35, b=0.31},
@@ -30,8 +31,8 @@ local Save={
     barWidth=0,--bar, 宽度
     setMaxMinValue= true,--增加,减少值
     bit=0,--百分比，位数
-    onlyDPS=true,--四属性, 仅限DPS
-    useNumber= e.Player.husandro,
+    --onlyDPS=true,--四属性, 仅限DPS
+    --useNumber= e.Player.husandro,--使用数字
 }
 
 local function get_PrimaryStat()--取得主属
@@ -58,7 +59,7 @@ local function set_Tabs()
         {name= 'DODGE', text= e.onlyChinse and '躲闪' or STAT_DODGE, bar=true},--8
         {name= 'PARRY', text= e.onlyChinse and '招架' or STAT_PARRY, bar=true},--9
         {name= 'BLOCK', text= e.onlyChinse and '格挡' or STAT_BLOCK, bar=true},--10
-        {name= 'STAGGER', text= e.onlyChinse and '醉拳' or STAT_STAGGER, bar=true},--11
+        {name= 'STAGGER', text= e.onlyChinse and '醉拳' or STAT_STAGGER, bar=true, noUseNumber=true},--11
 
         {name= 'SPEED', text= e.onlyChinse and '移动' or NPE_MOVE},--12
     }
@@ -80,12 +81,10 @@ local function set_Tabs()
         Tabs[index].b= index==1 and e.Player.b or Save.tab[info.name].b or 0
         Tabs[index].a= index==1 and 1 or Save.tab[info.name].a or 1
 
-        if info.name=='VERSATILITY' then
-            Tabs[index].damageAndDefense= Save.tab[info.name].damageAndDefense
-            Tabs[index].onlyDefense= Save.tab[info.name].onlyDefense
-        elseif info.name=='SPEED' then
-            Tabs[index].current= Save.tab[info.name].current
-        end
+        Tabs[index].noUseNumber= Save.tab[info.name].noUseNumber
+        Tabs[index].current= Save.tab[info.name].current
+        Tabs[index].damageAndDefense= Save.tab[info.name].damageAndDefense
+        Tabs[index].onlyDefense= Save.tab[info.name].onlyDefense
 
         Tabs[index].hide= Save.tab[info.name].hide
         if not Tabs[index].hide then
@@ -114,6 +113,9 @@ local function set_Text_Value(frame, value, value2)
     local text
     if frame.name=='STATUS' then--主属性
         text= e.MK(value, 3)
+    elseif Save.useNumber and not frame.noUseNumber then--使用数值
+        text= e.MK(value, Save.bit)
+
     elseif not value2 then--全能, 醉拳
         text= format('%.'..Save.bit..'f%%', value)
     else
@@ -160,6 +162,12 @@ end
 --主属性
 --#####
 local function set_Stat_Text(frame)
+    if not PrimaryStat then
+        get_PrimaryStat()--取得主属
+    end
+    if not PrimaryStat then
+        return
+    end
     local value= UnitStat('player', PrimaryStat)
     set_Text_Value(frame, value)
 end
@@ -252,10 +260,21 @@ end
 --####
 --爆击
 --####
+local function get_minCrit()
+    local holySchool = 2;
+    local minCrit = GetSpellCritChance(holySchool) or 0;
+    local spellCrit;
+    for i=(holySchool+1), MAX_SPELL_SCHOOLS do
+        spellCrit = GetSpellCritChance(i);
+        minCrit = min(minCrit, spellCrit);
+    end
+    return minCrit or 0
+end
 local function set_Crit_Text(frame)
+    local critChance
     if Save.useNumber then
         local rating
-        local spellCrit = frame.minCrit
+        local spellCrit = get_minCrit()
         local rangedCrit = GetRangedCritChance();
         local meleeCrit = GetCritChance();
 
@@ -266,20 +285,22 @@ local function set_Crit_Text(frame)
         else
             rating = CR_CRIT_MELEE;
         end
-        local extraCritRating = GetCombatRating(rating)
-        set_Text_Value(frame, extraCritRating)--设置，当前值
+        critChance = GetCombatRating(rating)
     else
-        local critChance
-        local spellCrit = frame.minCrit or 0
+        local spellCrit = get_minCrit()
         local rangedCrit = GetRangedCritChance();
         local meleeCrit = GetCritChance();
         if (spellCrit >= rangedCrit and spellCrit >= meleeCrit) then
-            critChance = spellCrit 
+            critChance = spellCrit
         elseif (rangedCrit >= meleeCrit) then
             critChance = rangedCrit
         else
             critChance = meleeCrit
         end
+    end
+    if not frame then
+        return critChance or 0
+    else
         set_Text_Value(frame, critChance)--设置，当前值
     end
 end
@@ -287,7 +308,7 @@ local function set_Crit_Tooltip(self)
     local frame= self:GetParent()
     e.tips:SetOwner(button, "ANCHOR_RIGHT")
     e.tips:ClearLines()
-    local spellCrit = frame.minCrit or 0
+    local spellCrit = get_minCrit() or 0
 	local rangedCrit = GetRangedCritChance();
 	local meleeCrit = GetCritChance();
     local critChance, rating
@@ -335,9 +356,17 @@ end
 --急速
 --####
 local function set_Haste_Text(frame)
-	local haste = GetHaste()
-    set_Text_Value(frame, haste)--设置，当前值
-    --return haste
+    local haste
+    if Save.useNumber then
+        haste= GetCombatRating(CR_HASTE_MELEE)
+    else
+        haste = GetHaste()
+    end
+    if not frame then
+        return haste or 0
+    else
+        set_Text_Value(frame, haste)--设置，当前值
+    end
 end
 local function set_Haste_Tooltip(self)
     local frame= self:GetParent()
@@ -373,26 +402,42 @@ end
 --精通
 --####
 local function set_Mastery_Text(frame)
-	local mastery = GetMasteryEffect();
-    set_Text_Value(frame, mastery)--设置，当前值
-    --return mastery
+    local mastery
+    if Save.useNumber then
+        mastery= GetCombatRating(CR_MASTERY)
+    else
+        mastery = GetMasteryEffect()
+    end
+    if not frame then
+        return mastery or 0
+    else
+        set_Text_Value(frame, mastery)--设置，当前值
+    end
 end
 
 --####
 --全能, 5
 --####
 local function set_Versatility_Text(frame)
-    --local versatility = GetCombatRating(CR_VERSATILITY_DAMAGE_DONE);
-	local versatilityDamageBonus = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE);
-	local versatilityDamageTakenReduction = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_TAKEN) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_TAKEN);
-    if frame.onlyDefense then
-        set_Text_Value(frame, versatilityDamageTakenReduction)--设置，当前值
+    local value, value2
+    if Save.useNumber then
+        value = GetCombatRating(CR_VERSATILITY_DAMAGE_DONE);
     else
-        if frame.damageAndDefense then
-            set_Text_Value(frame, versatilityDamageBonus, versatilityDamageTakenReduction)--设置，当前值
+        if frame.onlyDefense then
+            value= GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_TAKEN) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_TAKEN)
         else
-            set_Text_Value(frame, versatilityDamageBonus)--设置，当前值
+            if frame.damageAndDefense then
+                value= GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE)
+                value2= GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_TAKEN) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_TAKEN);
+            else
+                value= GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE)
+            end
         end
+    end
+    if not frame then
+        return value or 0, value2 or 0
+    else
+        set_Text_Value(frame, value, value2)--设置，当前值
     end
 end
 local function set_Versatility_Tooltip(self)
@@ -421,9 +466,17 @@ end
 --吸血, 6
 --####
 local function set_Lifesteal_Text(frame)
-    local lifesteal = GetLifesteal();
-    set_Text_Value(frame, lifesteal)--设置，当前值
-    --return lifesteal
+    local lifesteal
+    if Save.useNumber then
+        lifesteal= GetCombatRating(CR_LIFESTEAL)
+    else
+        lifesteal= GetLifesteal();
+    end
+    if not frame then
+        return lifesteal or 0
+    else
+        set_Text_Value(frame, lifesteal)--设置，当前值
+    end
 end
 local function set_Lifesteal_Tooltip(self)
     local frame= self:GetParent()
@@ -450,9 +503,17 @@ end
 --闪避, 7
 --####
 local function set_Avoidance_Text(frame)
-    local Avoidance = GetAvoidance();
-    set_Text_Value(frame, Avoidance)--设置，当前值
-    --return Avoidance
+    local avoidance
+    if Save.useNumber then
+        avoidance= GetCombatRating(CR_AVOIDANCE)
+    else
+        avoidance= GetAvoidance();
+    end
+    if not frame then
+        return avoidance or 0
+    else
+        set_Text_Value(frame, avoidance)--设置，当前值
+    end
 end
 local function set_Avoidance_Tooltip(self)
     local frame= self:GetParent()
@@ -479,9 +540,17 @@ end
 --躲闪, 8
 --####
 local function set_Dodge_Text(frame)
-    local chance = GetDodgeChance();
-    set_Text_Value(frame, chance)--设置，当前值
-    --return chance
+    local chance
+    if Save.useNumber then
+        chance= GetCombatRating(CR_DODGE)
+    else
+        chance= GetDodgeChance();
+    end
+    if not frame then
+        return chance or 0
+    else
+        set_Text_Value(frame, chance)--设置，当前值
+    end
 end
 local function set_Dodge_Tooltip(self)
     local frame= self:GetParent()
@@ -508,9 +577,17 @@ end
 --招架, 9
 --####
 local function set_Parry_Text(frame)
-    local chance = GetParryChance();
-    set_Text_Value(frame, chance)--设置，当前值
-    --return chance
+    local chance
+    if Save.useNumber then 
+        chance= GetCombatRating(CR_PARRY)
+    else
+        chance= GetParryChance();
+    end
+    if not frame then
+        return chance or 0
+    else
+        set_Text_Value(frame, chance)--设置，当前值
+    end
 end
 local function set_Parry_Tooltip(self)
     local frame= self:GetParent()
@@ -537,9 +614,17 @@ end
 --格挡, 10
 --####
 local function set_Block_Text(frame)
-    local chance = GetBlockChance();
-    set_Text_Value(frame, chance)--设置，当前值
-    --return chance
+    local chance
+    if Save.useNumber then
+        chance= GetCombatRating(CR_BLOCK)
+    else
+        chance= GetBlockChance();
+    end
+    if not frame then
+        return chance or 0
+    else
+        set_Text_Value(frame, chance)--设置，当前值
+    end
 end
 local function set_Block_Tooltip(self)
     local frame= self:GetParent()
@@ -566,7 +651,7 @@ local function set_Block_Tooltip(self)
         else
             text= Save.redColor..'- '..format('%.2f%%', frame.value- chance)
         end
-        e.tips:AddDoubleLine(format('%.2f%%', frame.value + 0.5), chance)
+        e.tips:AddDoubleLine(format('%.2f%%', frame.value + 0.5), text)
     end
     e.tips:Show()
 end
@@ -659,10 +744,12 @@ end
 
 
 
-local function set_Frame(frame, info)--设置, frame
+local function set_Shadow(self)--设置，字体阴影
+    self:SetShadowColor(Save.font.r, Save.font.g, Save.font.b, Save.font.a)
+    self:SetShadowOffset(Save.font.x, Save.font.y)
+end
+local function set_Frame(frame)--设置, frame
     --frame, 数值
-    frame.name= info.name
-    frame.r, frame.g, frame.b, frame.a= info.r,info.g,info.b,info.a
     frame:SetSize(Save.horizontal, 12+ (Save.vertical or 3))--设置，大小
 
     --名称
@@ -673,8 +760,7 @@ local function set_Frame(frame, info)--设置, frame
         frame.label:SetPoint('TOPRIGHT', frame, 'TOPLEFT', 5,0)
     end
 
-    local text= info.text
-    frame.nameText= info.text
+    local text= frame.nameText
     if Save.gsubText then--文本，截取
         text= e.WA_Utf8Sub(text, Save.gsubText)
     end
@@ -696,7 +782,30 @@ local function set_Frame(frame, info)--设置, frame
         frame.text:SetJustifyH('LEFT')
     end
 
+    set_Shadow(frame.label)--设置，字体阴影
+    set_Shadow(frame.text)--设置，字体阴影
+
     if frame.bar then
+        if Save.useNumber and not frame.noUseNumber then
+            if not BarMax then--取得Bar，最高值
+                local value
+                value= max(
+                    set_Crit_Text(),
+                    set_Haste_Text(),
+                    set_Mastery_Text(),
+                    set_Versatility_Text(),
+                    set_Lifesteal_Text(),
+                    set_Avoidance_Text(),
+                    set_Dodge_Text(),
+                    set_Parry_Text()
+                )
+                value= format('%i', value)
+                BarMax= tonumber('1'..string.rep('0', #value))
+            end
+            frame.bar:SetMinMaxValues(0, BarMax)
+        else
+            frame.bar:SetMinMaxValues(0,100)
+        end
         frame.bar:SetSize(120+Save.barWidth, 10)
         frame.bar:ClearAllPoints()
         if Save.toLeft then
@@ -711,7 +820,7 @@ local function set_Frame(frame, info)--设置, frame
         else
             frame.bar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
         end
-        frame.bar:SetStatusBarColor(info.r,info.g,info.b,info.a)
+        frame.bar:SetStatusBarColor(frame.r,frame.g,frame.b,frame.a)
         frame.barTexture:ClearAllPoints()
         if Save.toLeft then
             frame.barTexture:SetPoint('RIGHT', frame.bar)
@@ -723,7 +832,7 @@ local function set_Frame(frame, info)--设置, frame
     end
 
     if frame.textValue then--数值 + -
-        frame.textValue:SetTextColor(info.r,info.g,info.b,info.a)
+        frame.textValue:SetTextColor(frame.r,frame.g,frame.b,frame.a)
         frame.textValue:ClearAllPoints()
         if Save.toLeft then
             frame.textValue:SetPoint('RIGHT', frame.text, -30-(Save.bit*6), 0)
@@ -733,29 +842,18 @@ local function set_Frame(frame, info)--设置, frame
         frame.textValue:SetShown(Save.setMaxMinValu)
     end
 
-
     if frame.name=='STATUS' then--主属性1
         if not PrimaryStat or not Role then
             get_PrimaryStat()--取得主属
         end
         set_Stat_Text(frame)
     elseif frame.name=='CRITCHANCE' then--爆击2
-        local holySchool = 2;
-        local minCrit = GetSpellCritChance(holySchool) or 0;
-        local spellCrit;
-        for i=(holySchool+1), MAX_SPELL_SCHOOLS do
-            spellCrit = GetSpellCritChance(i);
-            minCrit = min(minCrit, spellCrit);
-        end
-        frame.minCrit = minCrit
         set_Crit_Text(frame)
     elseif frame.name=='HASTE' then--急速3
         set_Haste_Text(frame)
     elseif frame.name=='MASTERY' then--精通4
         set_Mastery_Text(frame)
     elseif frame.name=='VERSATILITY' then--全能5
-        frame.damageAndDefense= info.damageAndDefense
-        frame.onlyDefense= info.onlyDefense
         set_Versatility_Text(frame)
     elseif frame.name=='LIFESTEAL' then--吸血6
         set_Lifesteal_Text(frame)
@@ -769,13 +867,14 @@ local function set_Frame(frame, info)--设置, frame
         set_Block_Text(frame)
     elseif frame.name=='STAGGER' then--醉拳11
         set_Stagger_Text(frame)
-    elseif frame.name=='SPEED' then--SPEED 速度12
-        frame.current= info.current
+    --elseif frame.name=='SPEED' then--SPEED 速度12
+        --frame.current= info.current
     end
 end
 
 local function frame_Init(rest)--初始， 或设置
     if rest then
+        BarMax=nil--bar,最大值
         set_Tabs()
     end
 
@@ -796,7 +895,7 @@ local function frame_Init(rest)--初始， 或设置
 
                 if info.bar and Save.bar then--bar
                     frame.bar= CreateFrame('StatusBar', nil, frame)
-                    frame.bar:SetMinMaxValues(0,100)
+
                     frame.bar:SetFrameLevel(frame:GetFrameLevel()-1)
                     frame.barTexture= frame:CreateTexture(nil, 'OVERLAY')
                     frame.barTexture:SetAtlas('UI-HUD-UnitFrame-Player-GroupIndicator')
@@ -895,8 +994,16 @@ local function frame_Init(rest)--初始， 或设置
                     end)
                 end
                 frame.index= index
+                frame.noUseNumber= info.noUseNumber
                 button[info.name]= frame
             end
+
+            frame.name= info.name
+            frame.nameText= info.text
+            frame.r, frame.g, frame.b, frame.a= info.r,info.g,info.b,info.a
+            frame.damageAndDefense= info.damageAndDefense--全能5
+            frame.onlyDefense= info.onlyDefense--全能5
+            frame.current= info.current--SPEED 速度12
 
             --重置, 数值
             if rest then
@@ -1066,7 +1173,7 @@ local function set_Panle_Setting()--设置 panel
             end)
             current:SetScript('OnEnter', set_SPEED_Tooltip)
             current:SetScript('OnLeave', function() e.tips:Hide() end)
-            
+
         elseif info.name=='VERSATILITY' then--全能5
             local check2=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--仅防卫
             check2:SetChecked(Save.tab['VERSATILITY'].onlyDefense)
@@ -1083,7 +1190,7 @@ local function set_Panle_Setting()--设置 panel
             end)
             check2:SetScript('OnEnter', set_Versatility_Tooltip)
             check2:SetScript('OnLeave', function() e.tips:Hide() end)
-            
+
             check2.A=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--双属性 22/18%
             check2.A:SetChecked(Save.tab['VERSATILITY'].damageAndDefense)
             check2.A:SetPoint('LEFT', check2.text, 'RIGHT',2,0)
@@ -1102,21 +1209,79 @@ local function set_Panle_Setting()--设置 panel
         last= check
     end
 
+
+
+    local text= e.Cstr(panel,26)--Text
+    text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
+    text:SetText(e.onlyChinse and '阴影' or SHADOW_QUALITY:gsub(QUALITY , ''))
+    text:EnableMouse(true)
+    set_Shadow(text)--设置，字体阴影
+    text.r, text.g, text.b, text.a= Save.font.r, Save.font.g, Save.font.b, Save.font.a
+    text:SetScript('OnMouseDown', function(self)
+        e.ShowColorPicker(self.r, self.g, self.b, self.a, function(restore)
+            local newA, newR, newG, newB
+            if not restore then
+                newA, newR, newG, newB = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()
+            else
+                newA, newR, newG, newB= self.a, self.r, self.g, self.b
+            end
+            Save.font.r= newR
+            Save.font.g= newG
+            Save.font.b= newB
+            Save.font.a= newA
+            set_Shadow(self)--设置，字体阴影
+            frame_Init(true)--初始，设置
+        end)
+    end)
+
+    local sliderX= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--bar, 宽度
+    sliderX:SetPoint("TOPLEFT", text, 'BOTTOMLEFT',0,-12)
+    sliderX:SetSize(120,20)
+    sliderX:SetMinMaxValues(-5,5)
+    sliderX:SetValue(Save.font.x)
+    sliderX.Low:SetText('')
+    sliderX.High:SetText('')
+    sliderX.Text:SetText('x'..Save.font.x)
+    sliderX:SetValueStep(0.1)
+    sliderX:SetScript('OnValueChanged', function(self, value, userInput)
+        value= math.floor(value)
+        self:SetValue(value)
+        self.Text:SetText('x'..value)
+        Save.font.x=value
+        set_Shadow(self.text)--设置，字体阴影
+        frame_Init(true)--初始，设置
+    end)
+    sliderX.text= text
+
+    local sliderY= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--bar, 宽度
+    sliderY:SetPoint("LEFT", sliderX, 'RIGHT', 2, 0)
+    sliderY:SetSize(120,20)
+    sliderY:SetMinMaxValues(-5,5)
+    sliderY:SetValue(Save.font.y)
+    sliderY.Low:SetText('')
+    sliderY.High:SetText('')
+    sliderY.Text:SetText('y'..Save.font.y)
+    sliderY:SetValueStep(0.1)
+    sliderY:SetScript('OnValueChanged', function(self, value, userInput)
+        value= math.floor(value)
+        self:SetValue(value)
+        self.Text:SetText('y'..value)
+        Save.font.y=value
+        set_Shadow(self.text)--设置，字体阴影
+        frame_Init(true)--初始，设置
+    end)
+    sliderY.text= text
+
+
     check= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     check:SetPoint("TOPLEFT", panel.check, 'BOTTOMLEFT', 0, -12)
-    check.text:SetText((e.onlyChinse and '数值' or STATUS_TEXT_VALUE)..': '..(e.onlyChinse and '向左' or BINDING_NAME_STRAFELEFT)..e.Icon.toLeft2)
+    check.text:SetText((e.onlyChinse and '向左' or BINDING_NAME_STRAFELEFT)..' 23%'..Tabs[2].text)
     check:SetChecked(Save.toLeft)
     check:SetScript('OnMouseDown', function()
         Save.toLeft= not Save.toLeft and true or nil
         frame_Init(true)--初始， 或设置
     end)
-    check:SetScript("OnEnter", function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddLine('23% '..Tabs[2].text)
-        e.tips:Show()
-    end)
-    check:SetScript('OnLeave', function() e.tips:Hide() end)
+
 
     local check4= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--增加,减少,值
     check4:SetPoint("TOPLEFT", check, 'BOTTOMLEFT')
@@ -1127,13 +1292,22 @@ local function set_Panle_Setting()--设置 panel
         frame_Init(true)--初始， 或设置
     end)
 
+    local check5= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--使用，数值
+    check5:SetPoint("TOPLEFT", check4, 'BOTTOMLEFT')
+    check5.text:SetText(e.onlyChinse and '数值' or STATUS_TEXT_VALUE)
+    check5:SetChecked(Save.useNumber)
+    check5:SetScript('OnMouseDown', function()
+        Save.useNumber= not Save.useNumber and true or nil
+        frame_Init(true)--初始， 或设置
+    end)
+
     local sliderA= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--位数，bit
-    sliderA:SetPoint("TOPLEFT", check4, 'BOTTOMLEFT', 0,-24)
-    sliderA:SetSize(200,20)
+    sliderA:SetPoint("LEFT", check5.text, 'RIGHT', 6,0)
+    sliderA:SetSize(150,20)
     sliderA:SetMinMaxValues(0, 3)
     sliderA:SetValue(Save.bit)
-    sliderA.Low:SetText((e.onlyChinse and '百分比' or STATUS_TEXT_PERCENT)..' 0%')
-    sliderA.High:SetText('1.003%')
+    sliderA.Low:SetText('0')
+    sliderA.High:SetText('0.003')
     sliderA.Text:SetText(Save.bit)
     sliderA:SetValueStep(1)
     sliderA:SetScript('OnValueChanged', function(self, value, userInput)
@@ -1145,7 +1319,7 @@ local function set_Panle_Setting()--设置 panel
     end)
 
     local check2= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--bar
-    check2:SetPoint("TOPLEFT", sliderA, 'BOTTOMLEFT',0,-36)
+    check2:SetPoint("TOPLEFT", check5, 'BOTTOMLEFT',0,-36)
     check2.text:SetText('Bar')
     check2:SetChecked(Save.bar)
     check2:SetScript('OnMouseDown', function()
@@ -1154,7 +1328,7 @@ local function set_Panle_Setting()--设置 panel
     end)
 
     local check3= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--bar，图片，样式2
-    check3:SetPoint("LEFT", check2.text, 'RIGHT', 4, 0)
+    check3:SetPoint("LEFT", check2.text, 'RIGHT', 6, 0)
     check3.text:SetText((e.onlyChinse and '格式' or FORMATTING).. ' 2')
     check3:SetChecked(Save.barTexture2)
     check3:SetScript('OnMouseDown', function()
@@ -1163,7 +1337,7 @@ local function set_Panle_Setting()--设置 panel
     end)
     local sliderCheck2= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--bar, 宽度
     sliderCheck2:SetPoint("LEFT", check3.text, 'RIGHT', 10, 0)
-    sliderCheck2:SetSize(200,20)
+    sliderCheck2:SetSize(150,20)
     sliderCheck2:SetMinMaxValues(-60,120)
     sliderCheck2:SetValue(Save.barWidth)
     sliderCheck2.Low:SetText((e.onlyChinse and '宽' or WIDE)..' -60')
@@ -1233,10 +1407,10 @@ local function set_Panle_Setting()--设置 panel
     local slider4= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--缩放
     slider4:SetPoint("TOPLEFT", slider3, 'BOTTOMLEFT', 0,-24)
     slider4:SetSize(200,20)
-    slider4:SetMinMaxValues(0.4, 3)
+    slider4:SetMinMaxValues(0.3, 4)
     slider4:SetValue(Save.scale or 1)
     slider4.Low:SetText((e.onlyChinse and '缩放' or UI_SCALE)..' 0.4')
-    slider4.High:SetText('3')
+    slider4.High:SetText('4')
     slider4.Text:SetText(Save.scale or 1)
     slider4:SetValueStep(0.1)
     slider4:SetScript('OnValueChanged', function(self, value, userInput)
@@ -1375,10 +1549,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
+
             Save.vertical= Save.vertical or 3
             Save.horizontal= Save.horizontal or 8
             Save.barWidth= Save.barWidth or 0
             Save.bit= Save.bit or 0
+            Save.font= Save.font or {r=0, g=0, b=0, a=1, x=1, y=-1}--阴影
 
             --添加控制面板
             panel.name = (e.onlyChinse and '属性' or STAT_CATEGORY_ATTRIBUTES)..'|A:charactercreate-icon-customize-body-selected:0:0|a'--添加新控制面板

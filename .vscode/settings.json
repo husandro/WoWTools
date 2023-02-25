@@ -1811,7 +1811,10 @@
         "STATUS_TEXT_PERCENT",
         "GROUP_INVITE",
         "LFG_TYPE_RANDOM_DUNGEON",
-        "BLOCK"
+        "BLOCK",
+        "CR_BLOCK",
+        "SHADOW_QUALITY",
+        "QUALITY"
     ],
     "Lua.diagnostics.disable": [
     ]
