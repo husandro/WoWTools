@@ -1814,7 +1814,11 @@
         "BLOCK",
         "CR_BLOCK",
         "SHADOW_QUALITY",
-        "QUALITY"
+        "QUALITY",
+        "ARMOR",
+        "STAT_ARMOR",
+        "STAT_ARMOR_TOOLTIP",
+        "STAT_ARMOR_TARGET_TOOLTIP"
     ],
     "Lua.diagnostics.disable": [
     ]

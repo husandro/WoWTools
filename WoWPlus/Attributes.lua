@@ -16,6 +16,7 @@ local Save={
         ['LIFESTEAL']= {r=1, g=0.33, b=0.5},
         ['AVOIDANCE']= {r=1, g=0.79, b=0},--'闪避'
 
+        ['ARMOR']={r=0.71, g=0.55, b=0.22, a=1},--护甲
         ["DODGE"]= {r=1, g=0.51, b=1},--躲闪
         ["PARRY"]= {r=0.59, g=0.85, b=1},
         ["BLOCK"]= {r=0.75, g=0.53, b=0.78},
@@ -31,7 +32,7 @@ local Save={
     barWidth=0,--bar, 宽度
     setMaxMinValue= true,--增加,减少值
     bit=0,--百分比，位数
-    --onlyDPS=true,--四属性, 仅限DPS
+    onlyDPS=true,--四属性, 仅限DPS
     --useNumber= e.Player.husandro,--使用数字
 }
 
@@ -48,20 +49,21 @@ local function set_Tabs()
     Tabs={
         {name='STATUS', r=e.Player.r, g=e.Player.g, b=e.Player.b, a=1},
 
-        {name= 'CRITCHANCE', text= e.onlyChinse and '爆击' or STAT_CRITICAL_STRIKE, bar=true},
-        {name= 'HASTE', text= e.onlyChinse and '急速' or STAT_HASTE, bar=true},
-        {name= 'MASTERY', text= e.onlyChinse and '精通' or STAT_MASTERY, bar=true},
-        {name= 'VERSATILITY', text= e.onlyChinse and '全能' or STAT_VERSATILITY, bar=true},--5
+        {name= 'CRITCHANCE', text= e.onlyChinse and '爆击' or STAT_CRITICAL_STRIKE, bar=true, dps=true},
+        {name= 'HASTE', text= e.onlyChinse and '急速' or STAT_HASTE, bar=true, dps=true},
+        {name= 'MASTERY', text= e.onlyChinse and '精通' or STAT_MASTERY, bar=true, dps=true},
+        {name= 'VERSATILITY', text= e.onlyChinse and '全能' or STAT_VERSATILITY, bar=true, dps=true},--5
 
         {name= 'LIFESTEAL', text= e.onlyChinse and '吸血' or STAT_LIFESTEAL, bar=true},--6
         {name= 'AVOIDANCE', text= e.onlyChinse and '闪避' or STAT_AVOIDANCE, bar=true},--7
 
-        {name= 'DODGE', text= e.onlyChinse and '躲闪' or STAT_DODGE, bar=true},--8
-        {name= 'PARRY', text= e.onlyChinse and '招架' or STAT_PARRY, bar=true},--9
-        {name= 'BLOCK', text= e.onlyChinse and '格挡' or STAT_BLOCK, bar=true},--10
-        {name= 'STAGGER', text= e.onlyChinse and '醉拳' or STAT_STAGGER, bar=true, noUseNumber=true},--11
+        {name= 'ARMOR', text= e.onlyChinse and '护甲' or STAT_ARMOR, bar=true, tank=true},
+        {name= 'DODGE', text= e.onlyChinse and '躲闪' or STAT_DODGE, bar=true, tank=true},--9
+        {name= 'PARRY', text= e.onlyChinse and '招架' or STAT_PARRY, bar=true, tank=true},--10
+        {name= 'BLOCK', text= e.onlyChinse and '格挡' or STAT_BLOCK, bar=true, tank=true},--11
+        {name= 'STAGGER', text= e.onlyChinse and '醉拳' or STAT_STAGGER, bar=true, tank=true, noUseNumber=true},--12
 
-        {name= 'SPEED', text= e.onlyChinse and '移动' or NPE_MOVE},--12
+        {name= 'SPEED', text= e.onlyChinse and '移动' or NPE_MOVE},--13
     }
 
     if PrimaryStat==LE_UNIT_STAT_STRENGTH then
@@ -90,11 +92,11 @@ local function set_Tabs()
         if not Tabs[index].hide then
             if info.name=='STAGGER' and (e.Player.class~='MONK' or Role~='TANK') then--武僧, 醉拳
                 Tabs[index].hide= true
-            elseif info.name=='CRITCHANCE' or info.name=='HASTE' or info.name=='MASTERY' or info.name=='VERSATILITY' then--四属性, DPS
+            elseif info.dps then--四属性, DPS
                 if Role~='DAMAGER' and Save.onlyDPS then
                     Tabs[index].hide= true
                 end
-            elseif info.name=='DODGE' or info.name=='PARRY' or info.name=='BLOCK' then--坦克
+            elseif info.tank then--坦克
                 if Role~='TANK' then
                     Tabs[index].hide= true
                 end
@@ -339,16 +341,6 @@ local function set_Crit_Tooltip(self)
             e.tips:AddLine(format(CR_CRIT_TOOLTIP, BreakUpLargeNumbers(extraCritRating), extraCritChance), nil,nil,nil,true)
         end
 	end
-    if frame.value and frame.value~=critChance then
-        e.tips:AddLine(' ')
-        local text
-        if frame.value< critChance then
-            text= Save.greenColor..'+ '..format('%.2f%%', critChance- frame.value)
-        else
-            text= Save.redColor..'- '..format('%.2f%%', frame.value- critChance)
-        end
-        e.tips:AddDoubleLine(format('%.2f%%', frame.value + 0.5), text)
-    end
     e.tips:Show()
 end
 
@@ -385,16 +377,6 @@ local function set_Haste_Tooltip(self)
 	e.tips:AddDoubleLine(frame.nameText, format(hasteFormatString, format("%0.2f%%", haste + 0.5)))
 	e.tips:AddLine(_G["STAT_HASTE_"..e.Player.class.."_TOOLTIP"] or (e.onlyChinse and '提高攻击速度和施法速度。' or STAT_HASTE_TOOLTIP), nil, nil,nil,true)
 	e.tips:AddDoubleLine(format(e.onlyChinse and '急速：%s [+%.2f%%]' or STAT_HASTE_BASE_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(rating)), GetCombatRatingBonus(rating)))
-    if frame.value and frame.value~=haste then
-        e.tips:AddLine(' ')
-        local text
-        if frame.value< haste then
-            text= Save.greenColor..'+ '..format('%.2f%%', haste- frame.value)
-        else
-            text= Save.redColor..'- '..format('%.2f%%', frame.value- haste)
-        end
-        e.tips:AddDoubleLine(format('%.2f%%', frame.value + 0.5), text)
-    end
     e.tips:Show()
 end
 
@@ -449,16 +431,6 @@ local function set_Versatility_Tooltip(self)
 	local versatilityDamageTakenReduction = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_TAKEN) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_TAKEN);
     e.tips:AddDoubleLine(frame.nameText, format('%.2f%%',  versatilityDamageBonus))
 	e.tips:AddLine(format(e.onlyChinse and "造成的伤害值和治疗量提高%.2f%%，\n受到的伤害降低%.2f%%。\n全能：%s [%.2f%%/%.2f%%]" or CR_VERSATILITY_TOOLTIP, versatilityDamageBonus, versatilityDamageTakenReduction, BreakUpLargeNumbers(versatility), versatilityDamageBonus, versatilityDamageTakenReduction), nil,nil,nil,true)
-    if frame.value and frame.value~=versatilityDamageBonus then
-        e.tips:AddLine(' ')
-        local text
-        if frame.value< versatilityDamageBonus then
-            text= Save.greenColor..'+ '..format('%.2f%%', versatilityDamageBonus- frame.value)
-        else
-            text= Save.redColor..'- '..format('%.2f%%', frame.value- versatilityDamageBonus)
-        end
-        e.tips:AddDoubleLine(format('%.2f%%', frame.value + 0.5), text)
-    end
     e.tips:Show()
 end
 
@@ -486,16 +458,6 @@ local function set_Lifesteal_Tooltip(self)
     local lifesteal = GetLifesteal();
 	e.tips:AddDoubleLine(frame.nameText,  format("%0.2f%%", lifesteal))
     e.tips:AddLine(format(e.onlyChinse and '你所造成伤害和治疗的一部分将转而治疗你。\n\n吸血：%s [+%.2f%%]' or CR_LIFESTEAL_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(CR_LIFESTEAL)), GetCombatRatingBonus(CR_LIFESTEAL)), nil,nil,nil,true)
-    if frame.value and frame.value~=lifesteal then
-        e.tips:AddLine(' ')
-        local text
-        if frame.value< lifesteal then
-            text= Save.greenColor..'+ '..format('%.2f%%', lifesteal- frame.value)
-        else
-            text= Save.redColor..'- '..format('%.2f%%', frame.value- lifesteal)
-        end
-        e.tips:AddDoubleLine(format('%.2f%%', frame.value + 0.5), text)
-    end
     e.tips:Show()
 end
 
@@ -523,16 +485,6 @@ local function set_Avoidance_Tooltip(self)
     local Avoidance = GetAvoidance();
 	e.tips:AddDoubleLine(frame.nameText,  format("%0.2f%%", Avoidance))
     e.tips:AddLine(format(e.onlyChinse and '范围效果法术的伤害降低。\n\n闪避：%s [+%.2f%%' or CR_AVOIDANCE_TOOLTIP , BreakUpLargeNumbers(GetCombatRating(CR_AVOIDANCE)), GetCombatRatingBonus(CR_AVOIDANCE)), nil,nil,nil,true)
-    if frame.value and frame.value~=Avoidance then
-        e.tips:AddLine(' ')
-        local text
-        if frame.value< Avoidance then
-            text= Save.greenColor..'+ '..format('%.2f%%', Avoidance- frame.value)
-        else
-            text= Save.redColor..'- '..format('%.2f%%', frame.value- Avoidance)
-        end
-        e.tips:AddDoubleLine(format('%.2f%%', frame.value + 0.5), text)
-    end
     e.tips:Show()
 end
 
@@ -560,21 +512,51 @@ local function set_Dodge_Tooltip(self)
     local chance = GetDodgeChance();
 	e.tips:AddDoubleLine(frame.nameText,  format("%0.2f%%", chance))
     e.tips:AddLine( format(e.onlyChinse and '%d点躲闪可使躲闪几率提高%.2f%%\n|cff888888（在效果递减之前）|r' or CR_DODGE_TOOLTIP, GetCombatRating(CR_DODGE), GetCombatRatingBonus(CR_DODGE)), nil,nil,nil,true)
-    if frame.value and frame.value~=chance then
-        e.tips:AddLine(' ')
-        local text
-        if frame.value< chance then
-            text= Save.greenColor..'+ '..format('%.2f%%', chance- frame.value)
-        else
-            text= Save.redColor..'- '..format('%.2f%%', frame.value- chance)
-        end
-        e.tips:AddDoubleLine(format('%.2f%%', frame.value + 0.5), chance)
-    end
     e.tips:Show()
 end
 
 --####
---招架, 9
+--护甲
+--####
+local function set_ARMOR_Text(frame)
+    local value, value2
+    local baselineArmor, effectiveArmor, armor, bonusArmor = UnitArmor('player')
+    if Save.useNumber then
+        value= effectiveArmor
+    else
+        value = PaperDollFrame_GetArmorReduction(effectiveArmor, UnitEffectiveLevel('player'));
+        value2 = PaperDollFrame_GetArmorReductionAgainstTarget(effectiveArmor);
+        if value== value2 then
+            value2= nil
+        end
+    end
+    if not frame then
+        return value or 0, value2 or 0
+    else
+        set_Text_Value(frame, value, value2)--设置，当前值
+    end
+end
+local function set_ARMOR_Tooltip(self)
+    local frame= self:GetParent()
+    e.tips:SetOwner(button, "ANCHOR_RIGHT")
+    e.tips:ClearLines()
+
+    local baselineArmor, effectiveArmor, armor, bonusArmor = UnitArmor('player');
+    e.tips:AddDoubleLine(frame.nameText, BreakUpLargeNumbers(effectiveArmor))
+
+    local armorReduction = PaperDollFrame_GetArmorReduction(effectiveArmor, UnitEffectiveLevel('player'));
+	local armorReductionAgainstTarget = PaperDollFrame_GetArmorReductionAgainstTarget(effectiveArmor);
+
+    e.tips:AddLine(format(e.onlyChinse and '物理伤害减免：%0.2f%%\n|cff888888（对抗与你实力相当的敌人时）|r' or STAT_ARMOR_TOOLTIP, armorReduction), nil,nil,nil,true)
+
+	if (armorReductionAgainstTarget) then
+		e.tips:AddLine(format(e.onlyChinse and '（对当前目标：%0.2f%%）' or STAT_ARMOR_TARGET_TOOLTIP, armorReductionAgainstTarget), nil,nil,nil,true)
+	end
+    e.tips:Show()
+end
+
+--####
+--招架
 --####
 local function set_Parry_Text(frame)
     local chance
@@ -597,21 +579,11 @@ local function set_Parry_Tooltip(self)
     local chance = GetParryChance();
 	e.tips:AddDoubleLine(frame.nameText,  format("%0.2f%%", chance))
     e.tips:AddLine(format(e.onlyChinse and '%d点招架可使招架几率提高%.2f%%\n|cff888888（在效果递减之前）|r' or CR_PARRY_TOOLTIP, GetCombatRating(CR_PARRY), GetCombatRatingBonus(CR_PARRY)), nil,nil,nil,true)
-    if frame.value and frame.value~=chance then
-        e.tips:AddLine(' ')
-        local text
-        if frame.value< chance then
-            text= Save.greenColor..'+ '..format('%.2f%%', chance- frame.value)
-        else
-            text= Save.redColor..'- '..format('%.2f%%', frame.value- chance)
-        end
-        e.tips:AddDoubleLine(format('%.2f%%', frame.value + 0.5), text)
-    end
     e.tips:Show()
 end
 
 --####
---格挡, 10
+--格挡
 --####
 local function set_Block_Text(frame)
     local chance
@@ -642,17 +614,6 @@ local function set_Block_Tooltip(self)
 	if (blockArmorReductionAgainstTarget) then
 		e.tips:AddLine(format(e.onlyChinse and '（对当前目标：%0.2f%%）' or STAT_BLOCK_TARGET_TOOLTIP, blockArmorReductionAgainstTarget), nil,nil,nil,true)
 	end
-
-    if frame.value and frame.value~=chance then
-        e.tips:AddLine(' ')
-        local text
-        if frame.value< chance then
-            text= Save.greenColor..'+ '..format('%.2f%%', chance- frame.value)
-        else
-            text= Save.redColor..'- '..format('%.2f%%', frame.value- chance)
-        end
-        e.tips:AddDoubleLine(format('%.2f%%', frame.value + 0.5), text)
-    end
     e.tips:Show()
 end
 
@@ -680,22 +641,11 @@ local function set_Stagger_Tooltip(self)
 	if (staggerAgainstTarget) then
 		e.tips:AddLine(format(e.onlyChinse and '（对当前目标比例%0.2f%%）' or STAT_STAGGER_TARGET_TOOLTIP, staggerAgainstTarget), nil,nil,nil,true)
 	end
-
-    if frame.value and frame.value~=stagger then
-        e.tips:AddLine(' ')
-        local text
-        if frame.value< stagger then
-            text= Save.greenColor..'+ '..format('%.2f%%', stagger- frame.value)
-        else
-            text= Save.redColor..'- '..format('%.2f%%', frame.value- stagger)
-        end
-        e.tips:AddDoubleLine(format('%.2f%%', frame.value), text)
-    end
     e.tips:Show()
 end
 
 --####
---移动, 12
+--移动
 --####
 local timeElapsed = 0
 local function set_SPEED_Text(frame, elapsed)
@@ -796,6 +746,7 @@ local function set_Frame(frame)--设置, frame
                     set_Versatility_Text(),
                     set_Lifesteal_Text(),
                     set_Avoidance_Text(),
+                    set_ARMOR_Text(),
                     set_Dodge_Text(),
                     set_Parry_Text()
                 )
@@ -857,7 +808,9 @@ local function set_Frame(frame)--设置, frame
         set_Versatility_Text(frame)
     elseif frame.name=='LIFESTEAL' then--吸血6
         set_Lifesteal_Text(frame)
-    elseif frame.name=='AVOIDANCE' then--闪避7
+    elseif frame.name=='ARMOR' then--护甲
+        set_ARMOR_Text(frame)
+    elseif frame.name=='AVOIDANCE' then--闪避
         set_Avoidance_Text(frame)
     elseif frame.name=='DODGE' then--躲闪
         set_Dodge_Text(frame)
@@ -865,9 +818,9 @@ local function set_Frame(frame)--设置, frame
         set_Parry_Text(frame)
     elseif frame.name=='BLOCK' then--格挡
         set_Block_Text(frame)
-    elseif frame.name=='STAGGER' then--醉拳11
+    elseif frame.name=='STAGGER' then--醉拳
         set_Stagger_Text(frame)
-    --elseif frame.name=='SPEED' then--SPEED 速度12
+    --elseif frame.name=='SPEED' then--SPEED 速度
         --frame.current= info.current
     end
 end
@@ -941,6 +894,14 @@ local function frame_Init(rest)--初始， 或设置
                     frame:SetScript('OnEvent', set_Lifesteal_Text)
                     frame.label:SetScript('OnEnter', set_Lifesteal_Tooltip)
                     frame.text:SetScript('OnEnter', set_Lifesteal_Tooltip)
+
+                elseif info.name=='ARMOR' then--护甲
+                    frame:RegisterUnitEvent('UNIT_DEFENSE', "player")
+                    frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
+                    frame:RegisterEvent('PLAYER_TARGET_CHANGED')
+                    frame:SetScript('OnEvent', set_ARMOR_Text)
+                    frame.label:SetScript('OnEnter', set_ARMOR_Tooltip)
+                    frame.text:SetScript('OnEnter', set_ARMOR_Tooltip)
 
                 elseif info.name=='AVOIDANCE' then--闪避7
                     frame:RegisterEvent('AVOIDANCE_UPDATE')
