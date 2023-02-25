@@ -577,24 +577,24 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             local classFilename= select(2, UnitClass(unit))--职业名称
             local sex = UnitSex(unit)
             local raceName, raceFile= UnitRace(unit)
-            local level
-
-            level= UnitLevel(unit)
+            local level= UnitLevel(unit)
             local text= sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a'
 
-            level= MAX_PLAYER_LEVEL>level and '|cnGREEN_FONT_COLOR:'..level..'|r' or level
+            if MAX_PLAYER_LEVEL~level then
+                text= text.. level
+            else
+                text= text..'|cnGREEN_FONT_COLOR:'..level..'|r'
+            end
 
             if isPlayer then
                 local effectiveLevel= UnitEffectiveLevel(unit)
                 if effectiveLevel~=level then
-                    level= level..'(|cnGREEN_FONT_COLOR:'..effectiveLevel..'|r) '
+                    text= text..'(|cnGREEN_FONT_COLOR:'..effectiveLevel..'|r) '
                 end
             end
-
-
             --className= col and col..className..'|r' or className
             --text= text..LEVEL..' '..level..'  '..e.Race(nil, raceFile, sex)..raceName..' '..e.Class(nil, classFilename)..className..(UnitIsPVP(unit) and  '  (|cnRED_FONT_COLOR:PvP|r)' or '  (|cnGREEN_FONT_COLOR:PvE|r)')
-            text= text..level..'  '..e.Class(nil, classFilename)..'  '..e.Race(nil, raceFile, sex)..raceName..'  '..(UnitIsPVP(unit) and  '(|cnRED_FONT_COLOR:PvP|r)' or '(|cnGREEN_FONT_COLOR:PvE|r)')
+            text= text..'  '..e.Class(nil, classFilename)..'  '..e.Race(nil, raceFile, sex)..raceName..'  '..(UnitIsPVP(unit) and  '(|cnRED_FONT_COLOR:PvP|r)' or '(|cnGREEN_FONT_COLOR:PvE|r)')
             text= col and col..text..'|r' or text
             line:SetText(text)
 
