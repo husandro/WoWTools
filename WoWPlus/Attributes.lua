@@ -21,6 +21,7 @@ local Save={
         ["PARRY"]= {r=0.59, g=0.85, b=1},
         ["BLOCK"]= {r=0.75, g=0.53, b=0.78},
         ["STAGGER"]= {r=0.38, g=1, b=0.62},
+
         ["SPEED"]= {r=1, g=0.82, b=0, current=true},--移动
     },
     --toLeft=true--数值,放左边
@@ -971,7 +972,7 @@ local function frame_Init(rest)--初始， 或设置
                 frame.value=nil
             end
 
-            set_Frame(frame, info)
+            set_Frame(frame)
 
             find= (frame.value and frame.value>0) or info.name=='SPEED'
             if find then
@@ -1037,7 +1038,7 @@ local function set_Panle_Setting()--设置 panel
             end)
             last=check
 
-        elseif info.name=='DODGE' then
+        elseif info.name=='ARMOR' then
             local text= e.Cstr(panel)
             text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
             if e.onlyChinse then
