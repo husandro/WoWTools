@@ -2,7 +2,7 @@
 local id, e= ...
 local addName= STAT_CATEGORY_ATTRIBUTES--PaperDollFrame.lua
 local panel= CreateFrame('Frame')
-local button, Role, PrimaryStat, Tabs, BarMax
+local button, Role, PrimaryStat, Tabs
 local Save={
     redColor= '|cffff8200',
     greenColor='|cff00ff00',
@@ -27,10 +27,11 @@ local Save={
     --toLeft=true--数值,放左边
     bar= true,--进度条
     barTexture2=true,--样式2
+    barWidth=0,--bar, 宽度
+    barX=0,--bar,移位
     scale= 1.1,--缩放
     vertical=3,--上下，间隔
     horizontal=9,--左右， 间隔
-    barWidth=0,--bar, 宽度
     setMaxMinValue= true,--增加,减少值
     bitPrecet=0,--百分比，位数
     onlyDPS=true,--四属性, 仅限DPS
@@ -146,19 +147,18 @@ local function set_Text_Value(frame, value, value2)
             frame.bar:SetStatusBarColor(frame.r, frame.g, frame.b, frame.a)
             frame.bar:SetValue(value)
             frame.barTexture:SetShown(false)
-        elseif frame.value< value then
-            frame.bar:SetStatusBarColor(0,1,0, frame.a)
+        else
+            if frame.value< value then
+                frame.bar:SetStatusBarColor(0,1,0, frame.a)
+            else
+                frame.bar:SetStatusBarColor(1,0,0, frame.a)
+            end
             frame.bar:SetValue(value)
             if frame.useNumber then
-                frame.barTexture:SetWidth(frame.bar:GetWidth()*(frame.value/BarMax))
+                frame.barTexture:SetWidth(frame.bar:GetWidth()*(frame.value/frame.bar.maxValue))
             else
                 frame.barTexture:SetWidth(frame.bar:GetWidth()*(frame.value/100))
             end
-            frame.barTexture:SetShown(true)
-        else
-            frame.bar:SetStatusBarColor(1,0,0, frame.a)
-            frame.bar:SetValue(value)
-            frame.barTexture:SetWidth(frame.bar:GetWidth()*(frame.value/100))
             frame.barTexture:SetShown(true)
         end
     end
@@ -168,13 +168,13 @@ local function set_Text_Value(frame, value, value2)
             frame.textValue:SetText('')
         elseif frame.value< value then
             if frame.useNumber then
-                frame.textValue:SetText(e.MK(value-frame.value, frame.bit))
+                frame.textValue:SetText('+'..e.MK(value-frame.value, frame.bit))
             else
                 frame.textValue:SetFormattedText('+%.0f', value-frame.value)
             end
         else
             if frame.useNumber then
-                frame.textValue:SetText(e.MK(frame.value-value, frame.bit))
+                frame.textValue:SetText('-'..e.MK(frame.value-value, frame.bit))
             else
                 frame.textValue:SetFormattedText('-%.0f', frame.value-value)
             end
@@ -783,10 +783,10 @@ local function set_Frame(frame)--设置, frame
         frame.bar:SetSize(120+Save.barWidth, 10)
         frame.bar:ClearAllPoints()
         if Save.toLeft then
-            frame.bar:SetPoint('TOPRIGHT', frame.text, 0,-2)
+            frame.bar:SetPoint('TOPRIGHT', frame.text, -Save.barX,-2)
             frame.bar:SetReverseFill(true)
         else
-            frame.bar:SetPoint('TOPLEFT', frame.text, 0,-2)
+            frame.bar:SetPoint('TOPLEFT', frame.text, Save.barX,-2)
             frame.bar:SetReverseFill(false)
         end
         if Save.barTexture2 then
@@ -808,9 +808,9 @@ local function set_Frame(frame)--设置, frame
         frame.textValue:SetTextColor(frame.r,frame.g,frame.b,frame.a)
         frame.textValue:ClearAllPoints()
         if Save.toLeft then
-            frame.textValue:SetPoint('RIGHT', frame.text, -30-(frame.bit*8), 0)
+            frame.textValue:SetPoint('RIGHT', frame.text, -30-(frame.bit*6), 0)
         else
-            frame.textValue:SetPoint('LEFT', frame.text, 30+(frame.bit*8), 0)
+            frame.textValue:SetPoint('LEFT', frame.text, 30+(frame.bit*6), 0)
         end
         frame.textValue:SetShown(Save.setMaxMinValue)
     end
@@ -849,7 +849,6 @@ end
 
 local function frame_Init(rest)--初始， 或设置
     if rest then
-        BarMax=nil--bar,最大值
         set_Tabs()
     end
 
@@ -1171,10 +1170,10 @@ local function set_Panle_Setting()--设置 panel
             sliderBit:SetPoint("LEFT", current.text, 'RIGHT', 6,0)
             sliderBit:SetSize(100,20)
             sliderBit:SetMinMaxValues(0, 3)
-            sliderBit:SetValue(Save.tab['STATUS'].bar or 3)
+            sliderBit:SetValue(Save.tab['STATUS'].bit or 3)
             sliderBit.Low:SetText('0')
             sliderBit.High:SetText('0.003')
-            sliderBit.Text:SetText(Save.tab['STATUS'].bar or 3)
+            sliderBit.Text:SetText(Save.tab['STATUS'].bit or 3)
             sliderBit:SetValueStep(1)
             sliderBit:SetScript('OnValueChanged', function(self, value, userInput)
                 value= math.floor(value)
@@ -1367,16 +1366,16 @@ local function set_Panle_Setting()--设置 panel
         Save.barTexture2= not Save.barTexture2 and true or nil
         frame_Init(true)--初始，设置
     end)
-    local sliderCheck2= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--bar, 宽度
-    sliderCheck2:SetPoint("LEFT", check3.text, 'RIGHT', 10, 0)
-    sliderCheck2:SetSize(150,20)
-    sliderCheck2:SetMinMaxValues(-60,120)
-    sliderCheck2:SetValue(Save.barWidth)
-    sliderCheck2.Low:SetText((e.onlyChinse and '宽' or WIDE)..' -60')
-    sliderCheck2.High:SetText('120')
-    sliderCheck2.Text:SetText(Save.barWidth)
-    sliderCheck2:SetValueStep(0.1)
-    sliderCheck2:SetScript('OnValueChanged', function(self, value, userInput)
+    local barWidth= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--bar, 宽度
+    barWidth:SetPoint("LEFT", check3.text, 'RIGHT', 10, 0)
+    barWidth:SetSize(150,20)
+    barWidth:SetMinMaxValues(-60,120)
+    barWidth:SetValue(Save.barWidth)
+    barWidth.Low:SetText((e.onlyChinse and '宽' or WIDE)..' -60')
+    barWidth.High:SetText('120')
+    barWidth.Text:SetText(Save.barWidth)
+    barWidth:SetValueStep(0.1)
+    barWidth:SetScript('OnValueChanged', function(self, value, userInput)
         value= math.floor(value)
         self:SetValue(value)
         self.Text:SetText(value)
@@ -1384,8 +1383,25 @@ local function set_Panle_Setting()--设置 panel
         frame_Init(true)--初始，设置
     end)
 
+    local barX= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--bar, 宽度
+    barX:SetPoint("TOPLEFT", barWidth.Low, 'BOTTOMLEFT', 0, -10)
+    barX:SetSize(150,20)
+    barX:SetMinMaxValues(-60,120)
+    barX:SetValue(Save.barX)
+    barX.Low:SetText('y -60')
+    barX.High:SetText('120')
+    barX.Text:SetText(Save.barX)
+    barX:SetValueStep(1)
+    barX:SetScript('OnValueChanged', function(self, value, userInput)
+        value= math.floor(value)
+        self:SetValue(value)
+        self.Text:SetText(value)
+        Save.barX=value
+        frame_Init(true)--初始，设置
+    end)
+
     local slider= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--间隔，上下
-    slider:SetPoint("TOPLEFT", check2, 'BOTTOMLEFT', 0,-36)
+    slider:SetPoint("TOPLEFT", check2, 'BOTTOMLEFT', 0,-80)
     --slider:SetOrientation('VERTICAL')--HORIZONTAL --slider.tooltipText=e.onlyChinse and '距离远近' or TRACKER_SORT_PROXIMITY
     slider:SetSize(200,20)
     slider:SetMinMaxValues(-5,10)
@@ -1585,6 +1601,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save.vertical= Save.vertical or 3
             Save.horizontal= Save.horizontal or 8
             Save.barWidth= Save.barWidth or 0
+            Save.barX= Save.barX or 0
             Save.bit= Save.bit or 0
             Save.font= Save.font or {r=0, g=0, b=0, a=1, x=1, y=-1}--阴影
             Save.tab['STAUTS']= Save.tab['STAUTS'] or {}
