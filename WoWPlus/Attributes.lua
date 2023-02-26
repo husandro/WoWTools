@@ -48,21 +48,21 @@ end
 local function set_Tabs()
     get_PrimaryStat()--取得主属
     Tabs={
-        {name='STATUS', r=e.Player.r, g=e.Player.g, b=e.Player.b, a=1, useNumber=true},
+        {name='STATUS', r=e.Player.r, g=e.Player.g, b=e.Player.b, a=1, useNumber=true, textValue=true},
 
-        {name= 'CRITCHANCE', text= e.onlyChinse and '爆击' or STAT_CRITICAL_STRIKE, bar=true, dps=true},
-        {name= 'HASTE', text= e.onlyChinse and '急速' or STAT_HASTE, bar=true, dps=true},
-        {name= 'MASTERY', text= e.onlyChinse and '精通' or STAT_MASTERY, bar=true, dps=true},
-        {name= 'VERSATILITY', text= e.onlyChinse and '全能' or STAT_VERSATILITY, bar=true, dps=true},--5
+        {name= 'CRITCHANCE', text= e.onlyChinse and '爆击' or STAT_CRITICAL_STRIKE, bar=true, dps=true, textValue=true},
+        {name= 'HASTE', text= e.onlyChinse and '急速' or STAT_HASTE, bar=true, dps=true, textValue=true},
+        {name= 'MASTERY', text= e.onlyChinse and '精通' or STAT_MASTERY, bar=true, dps=true, textValue=true},
+        {name= 'VERSATILITY', text= e.onlyChinse and '全能' or STAT_VERSATILITY, bar=true, dps=true, textValue=true},--5
 
-        {name= 'LIFESTEAL', text= e.onlyChinse and '吸血' or STAT_LIFESTEAL, bar=true},--6
-        {name= 'AVOIDANCE', text= e.onlyChinse and '闪避' or STAT_AVOIDANCE, bar=true},--7
+        {name= 'LIFESTEAL', text= e.onlyChinse and '吸血' or STAT_LIFESTEAL, bar=true, textValue=true},--6
+        {name= 'AVOIDANCE', text= e.onlyChinse and '闪避' or STAT_AVOIDANCE, bar=true, textValue=true},--7
 
-        {name= 'ARMOR', text= e.onlyChinse and '护甲' or STAT_ARMOR, bar=true, tank=true},
-        {name= 'DODGE', text= e.onlyChinse and '躲闪' or STAT_DODGE, bar=true, tank=true},--9
-        {name= 'PARRY', text= e.onlyChinse and '招架' or STAT_PARRY, bar=true, tank=true},--10
-        {name= 'BLOCK', text= e.onlyChinse and '格挡' or STAT_BLOCK, bar=true, tank=true},--11
-        {name= 'STAGGER', text= e.onlyChinse and '醉拳' or STAT_STAGGER, bar=true, tank=true, usePercent=true},--12
+        {name= 'ARMOR', text= e.onlyChinse and '护甲' or STAT_ARMOR, bar=true, tank=true, textValue=true},
+        {name= 'DODGE', text= e.onlyChinse and '躲闪' or STAT_DODGE, bar=true, tank=true, textValue=true},--9
+        {name= 'PARRY', text= e.onlyChinse and '招架' or STAT_PARRY, bar=true, tank=true, textValue=true},--10
+        {name= 'BLOCK', text= e.onlyChinse and '格挡' or STAT_BLOCK, bar=true, tank=true, textValue=true},--11
+        {name= 'STAGGER', text= e.onlyChinse and '醉拳' or STAT_STAGGER, bar=true, tank=true, usePercent=true, textValue=true},--12
 
         {name= 'SPEED', text= e.onlyChinse and '移动' or NPE_MOVE},--13
     }
@@ -92,6 +92,7 @@ local function set_Tabs()
         Tabs[index].damageAndDefense= Save.tab[info.name].damageAndDefense
         Tabs[index].onlyDefense= Save.tab[info.name].onlyDefense
         Tabs[index].bar= Save.tab[info.name].bar and true or Save.bar and Tabs[index].bar
+        Tabs[index].textValue= Save.setMaxMinValue and Tabs[index].textValue or false
 
         Tabs[index].hide= Save.tab[info.name].hide
         if not Tabs[index].hide then
@@ -136,8 +137,8 @@ local function set_Text_Value(frame, value, value2)
             frame.bar:SetValue(value)
             frame.barTexture:SetShown(false)
         end
-        if frame.textValue then
-            frame.textValue:SetFormattedText('')
+        if frame.textValue and frame.textValue:IsShown() then
+            frame.textValue:SetText('')
         end
 
     elseif frame.value< value then
@@ -152,8 +153,8 @@ local function set_Text_Value(frame, value, value2)
             end
             frame.barTexture:SetShown(true)
         end
-        if frame.textValue then
-            if Save.useNumber or frame.useNumber then
+        if frame.textValue and frame.textValue:IsShown() then
+            if frame.useNumber then
                 frame.textValue:SetText(e.MK(value-frame.value, Save.bit))
             else
                 frame.textValue:SetFormattedText('+%.0f', value-frame.value)
@@ -168,8 +169,8 @@ local function set_Text_Value(frame, value, value2)
             frame.barTexture:SetWidth(frame.bar:GetWidth()*(frame.value/100))
             frame.barTexture:SetShown(true)
         end
-        if frame.textValue then
-            if Save.useNumber or frame.useNumber then
+        if frame.textValue and frame.textValue:IsShown() then
+            if frame.useNumber then
                 frame.textValue:SetText(e.MK(frame.value-value, Save.bit))
             else
                 frame.textValue:SetFormattedText('-%.0f', frame.value-value)
@@ -976,8 +977,12 @@ local function frame_Init(rest)--初始， 或设置
                 frame.bar:SetShown(info.bar)
             end
 
-            if Save.setMaxMinValue then--数值 + -
+            if info.textValue and not frame.textValue then--数值 + -
                 frame.textValue=e.Cstr(frame,10)
+            end
+            if frame.textValue then
+                frame.textValue:SetText('')
+                frame.textValue:SetShown(info.textValue)
             end
 
             frame.r, frame.g, frame.b, frame.a= info.r,info.g,info.b,info.a
@@ -1305,6 +1310,16 @@ local function set_Panle_Setting()--设置 panel
     check4:SetScript('OnMouseDown', function()
         Save.setMaxMinValue= not Save.setMaxMinValue and true or nil
         frame_Init(true)--初始， 或设置
+        if Save.setMaxMinValue then
+            C_Timer.After(0.3, function()
+                for _, info in pairs(Tabs) do
+                    local frame= button[info.name]
+                    if frame and frame.textValue then
+                        frame.textValue:SetText('+12')
+                    end
+                end
+            end)
+        end
     end)
 
     local check5= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--使用，数值
