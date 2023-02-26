@@ -1818,7 +1818,10 @@
         "ARMOR",
         "STAT_ARMOR",
         "STAT_ARMOR_TOOLTIP",
-        "STAT_ARMOR_TARGET_TOOLTIP"
+        "STAT_ARMOR_TARGET_TOOLTIP",
+        "MinimapMixin",
+        "Minimap_ZoomIn",
+        "Minimap_ZoomOut"
     ],
     "Lua.diagnostics.disable": [
     ]

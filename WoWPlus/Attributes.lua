@@ -791,7 +791,7 @@ local function set_Frame(frame)--设置, frame
         else
             frame.textValue:SetPoint('LEFT', frame.text, 30+(Save.bit*6), 0)
         end
-        frame.textValue:SetShown(Save.setMaxMinValu)
+        frame.textValue:SetShown(Save.setMaxMinValue)
     end
 
     if frame.name=='STATUS' then--主属性1

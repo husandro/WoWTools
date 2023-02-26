@@ -18,31 +18,50 @@ local function set_minimapTrackingShowAll()--追踪,镇民
     end
 end
 
-
 --####
 --缩放
 --####
 local function set_MinimapCluster()--缩放
     local frame=MinimapCluster
+    local function set_Minimap_Zoom(d)
+        local scale = Save.scale or 1
+        if d==1 then
+            scale= scale-0.05
+        elseif d==-1 then
+            scale= scale+0.05
+        end
+        scale= scale>2 and 2 or scale<0.4 and 0.4 or scale
+        frame:SetScale(scale)
+        Save.scale=scale
+        print(id, addName, e.onlyChinse and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
+    end
+    --[[Minimap:SetScript('OnMouseWheel', function(self, d)--Minimap.lua
+        if IsAltKeyDown() then
+            set_Minimap_Zoom(d)
+        else
+            if d > 0 then
+                Minimap_ZoomIn();
+            elseif d < 0 then
+                Minimap_ZoomOut();
+            end
+        end
+    end)]]
+
     frame.ScaleIn=e.Cbtn(Minimap, nil, nil, nil, nil, true, {20,20})
     frame.ScaleIn:SetPoint('TOP',-2, 13)
     frame.ScaleIn:SetScript('OnMouseDown', function(self, d)
         if d=='RightButton' then
             SetCursor('UI_MOVE_CURSOR')
         else
-            local scale = Save.scale or 1
-            scale= scale+0.05
-            scale= scale>2 and 2 or scale<0.4 and 0.4 or scale
-            frame:SetScale(scale)
-            Save.scale=scale
-            print(id, addName, e.onlyChinse and '缩放' or UI_SCALE, scale)
+            set_Minimap_Zoom(1)
         end
     end)
     frame.ScaleIn:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
-        e.tips:AddDoubleLine(e.onlyChinse and '缩放' or UI_SCALE,(e.onlyChinse and '放大' or ZOOM_IN)..(Save.scale or 1)..e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinse and '缩放' or UI_SCALE, (e.onlyChinse and '缩小' or ZOOM_OUT)..(Save.scale or 1)..e.Icon.left)
+        
         e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
         e.tips:Show()
     end)
@@ -55,19 +74,14 @@ local function set_MinimapCluster()--缩放
         if d=='RightButton' then
             SetCursor('UI_MOVE_CURSOR')
         else
-            local scale = Save.scale or 1
-            scale= scale-0.05
-            scale= scale>2 and 2 or scale<0.4 and 0.4 or scale
-            frame:SetScale(scale)
-            Save.scale=scale
-            print(id, addName, e.onlyChinse and '缩放' or UI_SCALE, scale)
+            set_Minimap_Zoom(-1)
         end
     end)
     frame.ScaleOut:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
-        e.tips:AddDoubleLine(e.onlyChinse and '缩放' or UI_SCALE, (e.onlyChinse and '缩小' or ZOOM_OUT)..(Save.scale or 1)..e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinse and '缩放' or UI_SCALE,(e.onlyChinse and '放大' or ZOOM_IN)..(Save.scale or 1)..e.Icon.left)
         e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
         e.tips:Show()
     end)
