@@ -8,7 +8,7 @@ local Save={
     greenColor='|cff00ff00',
     --font={r=0, g=0, b=0, a=1, x=1, y=-1},--阴影
     tab={
-        ['STATUS']={},
+        ['STATUS']={bit=3},
         ['CRITCHANCE']= {r=0.99, g=0.35, b=0.31},
         ['HASTE']= {r=0, g=1, b=0.77},
         ['MASTERY']= {r=0.82, g=0.28, b=0.82},
@@ -32,7 +32,7 @@ local Save={
     horizontal=9,--左右， 间隔
     barWidth=0,--bar, 宽度
     setMaxMinValue= true,--增加,减少值
-    bit=0,--百分比，位数
+    bitPrecet=0,--百分比，位数
     onlyDPS=true,--四属性, 仅限DPS
     --useNumber= e.Player.husandro,--使用数字
 }
@@ -48,7 +48,7 @@ end
 local function set_Tabs()
     get_PrimaryStat()--取得主属
     Tabs={
-        {name='STATUS', r=e.Player.r, g=e.Player.g, b=e.Player.b, a=1},
+        {name='STATUS', r=e.Player.r, g=e.Player.g, b=e.Player.b, a=1, useNumber=true},
 
         {name= 'CRITCHANCE', text= e.onlyChinse and '爆击' or STAT_CRITICAL_STRIKE, bar=true, dps=true},
         {name= 'HASTE', text= e.onlyChinse and '急速' or STAT_HASTE, bar=true, dps=true},
@@ -62,7 +62,7 @@ local function set_Tabs()
         {name= 'DODGE', text= e.onlyChinse and '躲闪' or STAT_DODGE, bar=true, tank=true},--9
         {name= 'PARRY', text= e.onlyChinse and '招架' or STAT_PARRY, bar=true, tank=true},--10
         {name= 'BLOCK', text= e.onlyChinse and '格挡' or STAT_BLOCK, bar=true, tank=true},--11
-        {name= 'STAGGER', text= e.onlyChinse and '醉拳' or STAT_STAGGER, bar=true, tank=true, noUseNumber=true},--12
+        {name= 'STAGGER', text= e.onlyChinse and '醉拳' or STAT_STAGGER, bar=true, tank=true, usePercent=true},--12
 
         {name= 'SPEED', text= e.onlyChinse and '移动' or NPE_MOVE},--13
     }
@@ -83,11 +83,15 @@ local function set_Tabs()
         Tabs[index].g= index==1 and e.Player.g or Save.tab[info.name].g or 0.82
         Tabs[index].b= index==1 and e.Player.b or Save.tab[info.name].b or 0
         Tabs[index].a= index==1 and 1 or Save.tab[info.name].a or 1
-
-        Tabs[index].noUseNumber= Save.tab[info.name].noUseNumber
+        Tabs[index].useNumber=info.name=='STATUS' and true
+                            or Tabs[index].usePercent and nil
+                            or (Save.useNumber and not Tabs[index].usePercent ) and true
+                            or Tabs[index].useNumber
+        Tabs[index].bit= Save.tab[info.name].bit or Save.bit
         Tabs[index].current= Save.tab[info.name].current
         Tabs[index].damageAndDefense= Save.tab[info.name].damageAndDefense
         Tabs[index].onlyDefense= Save.tab[info.name].onlyDefense
+        Tabs[index].bar= Save.tab[info.name].bar and true or Save.bar and Tabs[index].bar
 
         Tabs[index].hide= Save.tab[info.name].hide
         if not Tabs[index].hide then
@@ -110,22 +114,24 @@ end
 --设置，当前值
 --###########
 local function set_Text_Value(frame, value, value2)
+    value= value or 0
     if not frame.value or frame.value==0 then
         frame.value=value or 0
     end
-    local text
-    if frame.name=='STATUS' then--主属性
-        text= e.MK(value, 3)
-    elseif Save.useNumber and not frame.noUseNumber then--使用数值
-        text= e.MK(value, Save.bit)
 
-    elseif not value2 then--全能, 醉拳
-        text= format('%.'..Save.bit..'f%%', value)
+    local text
+    if frame.useNumber then
+        text= e.MK(frame.value, frame.bit)..( value2 and '/'..e.MK(value2, frame.bit) or '')
     else
-        text= format('%.'..Save.bit..'f/%.'..Save.bit..'f%%', value, value2)
+        if value2 then
+            text= format('%.'..frame.bit..'f/%.'..frame.bit..'f%%', frame.value, value2)
+        else
+            text= format('%.'..frame.bit..'f%%', frame.value)
+        end
     end
+
     if frame.value== value then
-        if frame.bar then
+        if frame.bar and frame.bar:IsShown() then
             frame.bar:SetStatusBarColor(frame.r, frame.g, frame.b, frame.a)
             frame.bar:SetValue(value)
             frame.barTexture:SetShown(false)
@@ -136,26 +142,38 @@ local function set_Text_Value(frame, value, value2)
 
     elseif frame.value< value then
         text= Save.greenColor..text
-        if frame.bar then
+        if frame.bar and frame.bar:IsShown() then
             frame.bar:SetStatusBarColor(0,1,0, frame.a)
             frame.bar:SetValue(value)
-            frame.barTexture:SetWidth(frame.bar:GetWidth()*(frame.value/100))
+            if frame.useNumber then
+                frame.barTexture:SetWidth(frame.bar:GetWidth()*(frame.value/BarMax))
+            else
+                frame.barTexture:SetWidth(frame.bar:GetWidth()*(frame.value/100))
+            end
             frame.barTexture:SetShown(true)
         end
         if frame.textValue then
-            frame.textValue:SetFormattedText('+%.0f', value-frame.value)
+            if Save.useNumber or frame.useNumber then
+                frame.textValue:SetText(e.MK(value-frame.value, Save.bit))
+            else
+                frame.textValue:SetFormattedText('+%.0f', value-frame.value)
+            end
         end
 
     else
         text= Save.redColor..text
-        if frame.bar then
+        if frame.bar and frame.bar:IsShown() then
             frame.bar:SetStatusBarColor(1,0,0, frame.a)
             frame.bar:SetValue(value)
             frame.barTexture:SetWidth(frame.bar:GetWidth()*(frame.value/100))
             frame.barTexture:SetShown(true)
         end
         if frame.textValue then
-            frame.textValue:SetFormattedText('-%.0f', frame.value-value)
+            if Save.useNumber or frame.useNumber then
+                frame.textValue:SetText(e.MK(frame.value-value, Save.bit))
+            else
+                frame.textValue:SetFormattedText('-%.0f', frame.value-value)
+            end
         end
     end
     frame.text:SetText(text)
@@ -561,7 +579,7 @@ end
 --####
 local function set_Parry_Text(frame)
     local chance
-    if Save.useNumber then 
+    if Save.useNumber then
         chance= GetCombatRating(CR_PARRY)
     else
         chance= GetParryChance();
@@ -623,11 +641,7 @@ end
 --####
 local function set_Stagger_Text(frame)
     local stagger, staggerAgainstTarget = C_PaperDollInfo.GetStaggerPercentage('player')
-    if frame.bar then
-        frame.bar:SetValue(stagger)
-    end
     set_Text_Value(frame, stagger, staggerAgainstTarget)--设置，当前值
-    --return stagger
 end
 local function set_Stagger_Tooltip(self)
     local stagger, staggerAgainstTarget = C_PaperDollInfo.GetStaggerPercentage('player');
@@ -737,10 +751,12 @@ local function set_Frame(frame)--设置, frame
     set_Shadow(frame.text)--设置，字体阴影
 
     if frame.bar then
-        if Save.useNumber and not frame.noUseNumber then
-            if not BarMax then--取得Bar，最高值
-                local value
-                value= max(
+        local value
+        if frame.useNumber then
+            if frame.name=='STATUS' then
+                value= frame.value or 10000
+            else
+                local tab= max(--取得Bar，最高值
                     set_Crit_Text(),
                     set_Haste_Text(),
                     set_Mastery_Text(),
@@ -751,13 +767,16 @@ local function set_Frame(frame)--设置, frame
                     set_Dodge_Text(),
                     set_Parry_Text()
                 )
-                value= format('%i', value)
-                BarMax= tonumber('1'..string.rep('0', #value))
+                value= format('%i', tab)
+                value= tonumber('1'..string.rep('0', #value))
             end
-            frame.bar:SetMinMaxValues(0, BarMax)
         else
             frame.bar:SetMinMaxValues(0,100)
+            value=100
         end
+        frame.bar:SetMinMaxValues(0, value)
+        frame.bar.maxValue=value
+
         frame.bar:SetSize(120+Save.barWidth, 10)
         frame.bar:ClearAllPoints()
         if Save.toLeft then
@@ -780,16 +799,15 @@ local function set_Frame(frame)--设置, frame
             frame.barTexture:SetPoint('LEFT', frame.bar)
         end
         frame.barTexture:SetSize(frame.bar:GetWidth(), 10)
-        frame.bar:SetShown(Save.bar)
     end
 
     if frame.textValue then--数值 + -
         frame.textValue:SetTextColor(frame.r,frame.g,frame.b,frame.a)
         frame.textValue:ClearAllPoints()
         if Save.toLeft then
-            frame.textValue:SetPoint('RIGHT', frame.text, -30-(Save.bit*6), 0)
+            frame.textValue:SetPoint('RIGHT', frame.text, -30-(frame.bit*8), 0)
         else
-            frame.textValue:SetPoint('LEFT', frame.text, 30+(Save.bit*6), 0)
+            frame.textValue:SetPoint('LEFT', frame.text, 30+(frame.bit*8), 0)
         end
         frame.textValue:SetShown(Save.setMaxMinValue)
     end
@@ -833,7 +851,7 @@ local function frame_Init(rest)--初始， 或设置
     end
 
     local last= button.frame
-    for index, info in pairs(Tabs) do
+    for _, info in pairs(Tabs) do
         local frame, find= button[info.name], nil
         if not info.hide then
             if not frame then
@@ -847,17 +865,7 @@ local function frame_Init(rest)--初始， 或设置
                 frame.text:EnableMouse(true)
                 frame.text:SetScript('OnLeave', function() e.tips:Hide() end)
 
-                if info.bar and Save.bar then--bar
-                    frame.bar= CreateFrame('StatusBar', nil, frame)
 
-                    frame.bar:SetFrameLevel(frame:GetFrameLevel()-1)
-                    frame.barTexture= frame:CreateTexture(nil, 'OVERLAY')
-                    frame.barTexture:SetAtlas('UI-HUD-UnitFrame-Player-GroupIndicator')
-                end
-
-                if Save.setMaxMinValue then--数值 + -
-                    frame.textValue=e.Cstr(frame,10)
-                end
 
                 if info.name=='STATUS' then--主属性1
                     frame:RegisterUnitEvent('UNIT_STATS', 'player')
@@ -955,17 +963,31 @@ local function frame_Init(rest)--初始， 或设置
                         end
                     end)
                 end
-                frame.index= index
-                frame.noUseNumber= info.noUseNumber
                 button[info.name]= frame
             end
 
-            frame.name= info.name
-            frame.nameText= info.text
+            if info.bar and not frame.bar then--bar
+                frame.bar= CreateFrame('StatusBar', nil, frame)
+                frame.bar:SetFrameLevel(frame:GetFrameLevel()-1)
+                frame.barTexture= frame:CreateTexture(nil, 'OVERLAY')
+                frame.barTexture:SetAtlas('UI-HUD-UnitFrame-Player-GroupIndicator')
+            end
+            if frame.bar then
+                frame.bar:SetShown(info.bar)
+            end
+
+            if Save.setMaxMinValue then--数值 + -
+                frame.textValue=e.Cstr(frame,10)
+            end
+
             frame.r, frame.g, frame.b, frame.a= info.r,info.g,info.b,info.a
             frame.damageAndDefense= info.damageAndDefense--全能5
             frame.onlyDefense= info.onlyDefense--全能5
             frame.current= info.current--SPEED 速度12
+            frame.bit= info.bit
+            frame.useNumber= info.useNumber
+            frame.name= info.name
+            frame.nameText= info.text
 
             --重置, 数值
             if rest then
@@ -1126,13 +1148,42 @@ local function set_Panle_Setting()--设置 panel
             text:SetScript('OnLeave', function() e.tips:Hide() end)
         end
 
-        if info.name=='SPEED' then--速度, 当前速度, 选项
+        if info.name=='STATUS' then--主属性, 使用bar
+            local current= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+            current:SetChecked(Save.tab[info.name].bar)
+            current:SetPoint('LEFT', text, 'RIGHT',2,0)
+            current.text:SetText('Bar')
+            current:SetScript('OnMouseUp',function(self)
+                Save.tab['STATUS'].bar= not Save.tab['STATUS'].bar and true or false
+                frame_Init(true)--初始， 或设置
+            end)
+            current:SetScript('OnEnter', set_SPEED_Tooltip)
+            current:SetScript('OnLeave', function() e.tips:Hide() end)
+
+            local sliderBit= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--位数，bit
+            sliderBit:SetPoint("LEFT", current.text, 'RIGHT', 6,0)
+            sliderBit:SetSize(100,20)
+            sliderBit:SetMinMaxValues(0, 3)
+            sliderBit:SetValue(Save.tab['STATUS'].bar or 3)
+            sliderBit.Low:SetText('0')
+            sliderBit.High:SetText('0.003')
+            sliderBit.Text:SetText(Save.tab['STATUS'].bar or 3)
+            sliderBit:SetValueStep(1)
+            sliderBit:SetScript('OnValueChanged', function(self, value, userInput)
+                value= math.floor(value)
+                self:SetValue(value)
+                self.Text:SetText(value)
+                Save.tab['STATUS'].bit= value
+                frame_Init(true)--初始，设置
+            end)
+
+        elseif info.name=='SPEED' then--速度, 当前速度, 选项
             local current= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
             current:SetChecked(Save.tab[info.name].current)
             current:SetPoint('LEFT', text, 'RIGHT',2,0)
             current.text:SetText(e.onlyChinse and '当前' or 'REFORGE_CURRENT')
             current:SetScript('OnMouseUp',function(self)
-                Save.tab['SPEED'].current= not Save.tab['SPEED'].current and true or nil
+                Save.tab['SPEED'].current= not Save.tab['SPEED'].current and true or false
                 frame_Init(true)--初始， 或设置
             end)
             current:SetScript('OnEnter', set_SPEED_Tooltip)
@@ -1265,16 +1316,16 @@ local function set_Panle_Setting()--设置 panel
         frame_Init(true)--初始， 或设置
     end)
 
-    local sliderA= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--位数，bit
-    sliderA:SetPoint("LEFT", check5.text, 'RIGHT', 6,0)
-    sliderA:SetSize(150,20)
-    sliderA:SetMinMaxValues(0, 3)
-    sliderA:SetValue(Save.bit)
-    sliderA.Low:SetText('0')
-    sliderA.High:SetText('0.003')
-    sliderA.Text:SetText(Save.bit)
-    sliderA:SetValueStep(1)
-    sliderA:SetScript('OnValueChanged', function(self, value, userInput)
+    local sliderBit= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--位数，bit
+    sliderBit:SetPoint("LEFT", check5.text, 'RIGHT', 6,0)
+    sliderBit:SetSize(150,20)
+    sliderBit:SetMinMaxValues(0, 3)
+    sliderBit:SetValue(Save.bit)
+    sliderBit.Low:SetText('0')
+    sliderBit.High:SetText('0.003')
+    sliderBit.Text:SetText(Save.bit)
+    sliderBit:SetValueStep(1)
+    sliderBit:SetScript('OnValueChanged', function(self, value, userInput)
         value= math.floor(value)
         self:SetValue(value)
         self.Text:SetText(value)
@@ -1519,6 +1570,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save.barWidth= Save.barWidth or 0
             Save.bit= Save.bit or 0
             Save.font= Save.font or {r=0, g=0, b=0, a=1, x=1, y=-1}--阴影
+            Save.tab['STAUTS']= Save.tab['STAUTS'] or {}
+            Save.tab['STAUTS'].bit= Save.tab['STAUTS'].bit or 3
 
             --添加控制面板
             panel.name = (e.onlyChinse and '属性' or STAT_CATEGORY_ATTRIBUTES)..'|A:charactercreate-icon-customize-body-selected:0:0|a'--添加新控制面板
