@@ -117,33 +117,36 @@ end
 local function set_Text_Value(frame, value, value2)
     value= value or 0
     if not frame.value or frame.value==0 then
-        frame.value=value or 0
+        frame.value= value
     end
 
     local text
-    if frame.useNumber then
-        text= e.MK(frame.value, frame.bit)..( value2 and '/'..e.MK(value2, frame.bit) or '')
+    if value==0 then
+        text= ''
     else
-        if value2 then
-            text= format('%.'..frame.bit..'f/%.'..frame.bit..'f%%', frame.value, value2)
+        if frame.useNumber then
+            text= e.MK(frame.value, frame.bit)..( value2 and '/'..e.MK(value2, frame.bit) or '')
         else
-            text= format('%.'..frame.bit..'f%%', frame.value)
+            if value2 then
+                text= format('%.'..frame.bit..'f/%.'..frame.bit..'f%%', frame.value, value2)
+            else
+                text= format('%.'..frame.bit..'f%%', frame.value)
+            end
+        end
+        if frame.value< value then
+            text= Save.greenColor..text
+        elseif frame.value< value then
+            text= Save.redColor..text
         end
     end
+    frame.text:SetText(text)
 
-    if frame.value== value then
-        if frame.bar and frame.bar:IsShown() then
+    if frame.bar and frame.bar:IsShown() then
+        if frame.value== value or value==0 then
             frame.bar:SetStatusBarColor(frame.r, frame.g, frame.b, frame.a)
             frame.bar:SetValue(value)
             frame.barTexture:SetShown(false)
-        end
-        if frame.textValue and frame.textValue:IsShown() then
-            frame.textValue:SetText('')
-        end
-
-    elseif frame.value< value then
-        text= Save.greenColor..text
-        if frame.bar and frame.bar:IsShown() then
+        elseif frame.value< value then
             frame.bar:SetStatusBarColor(0,1,0, frame.a)
             frame.bar:SetValue(value)
             if frame.useNumber then
@@ -152,32 +155,31 @@ local function set_Text_Value(frame, value, value2)
                 frame.barTexture:SetWidth(frame.bar:GetWidth()*(frame.value/100))
             end
             frame.barTexture:SetShown(true)
-        end
-        if frame.textValue and frame.textValue:IsShown() then
-            if frame.useNumber then
-                frame.textValue:SetText(e.MK(value-frame.value, Save.bit))
-            else
-                frame.textValue:SetFormattedText('+%.0f', value-frame.value)
-            end
-        end
-
-    else
-        text= Save.redColor..text
-        if frame.bar and frame.bar:IsShown() then
+        else
             frame.bar:SetStatusBarColor(1,0,0, frame.a)
             frame.bar:SetValue(value)
             frame.barTexture:SetWidth(frame.bar:GetWidth()*(frame.value/100))
             frame.barTexture:SetShown(true)
         end
-        if frame.textValue and frame.textValue:IsShown() then
+    end
+
+    if frame.textValue and frame.textValue:IsShown() then
+        if frame.value== value or value==0 then
+            frame.textValue:SetText('')
+        elseif frame.value< value then
             if frame.useNumber then
-                frame.textValue:SetText(e.MK(frame.value-value, Save.bit))
+                frame.textValue:SetText(e.MK(value-frame.value, frame.bit))
+            else
+                frame.textValue:SetFormattedText('+%.0f', value-frame.value)
+            end
+        else
+            if frame.useNumber then
+                frame.textValue:SetText(e.MK(frame.value-value, frame.bit))
             else
                 frame.textValue:SetFormattedText('-%.0f', frame.value-value)
             end
         end
     end
-    frame.text:SetText(text)
 end
 
 --#####
