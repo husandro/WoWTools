@@ -29,6 +29,7 @@ local Save={
     barTexture2=true,--样式2
     barWidth=0,--bar, 宽度
     barX=0,--bar,移位
+    barToLeft=e.Player.husandro,--bar,放左边
     scale= 1.1,--缩放
     vertical=3,--上下，间隔
     horizontal=9,--左右， 间隔
@@ -36,6 +37,7 @@ local Save={
     bitPrecet=0,--百分比，位数
     onlyDPS=true,--四属性, 仅限DPS
     --useNumber= e.Player.husandro,--使用数字
+    
 }
 
 local function get_PrimaryStat()--取得主属
@@ -785,12 +787,22 @@ local function set_Frame(frame)--设置, frame
         frame.bar.maxValue=value
         frame.bar:SetSize(120+Save.barWidth, 10)
         frame.bar:ClearAllPoints()
-        if Save.toLeft then
-            frame.bar:SetPoint('TOPRIGHT', frame.text, -Save.barX,-2)
-            frame.bar:SetReverseFill(true)
+        if Save.barToLeft then
+            if Save.toLeft then
+                frame.bar:SetPoint('LEFT', frame.label, -Save.barX,-2)
+                frame.bar:SetReverseFill(false)
+            else
+                frame.bar:SetPoint('RIGHT', frame.label, Save.barX,-2)
+                frame.bar:SetReverseFill(true)
+            end
         else
-            frame.bar:SetPoint('TOPLEFT', frame.text, Save.barX,-2)
-            frame.bar:SetReverseFill(false)
+            if Save.toLeft then
+                frame.bar:SetPoint('RIGHT', frame.text, -Save.barX,-2)
+                frame.bar:SetReverseFill(true)
+            else
+                frame.bar:SetPoint('LEFT', frame.text, Save.barX,-2)
+                frame.bar:SetReverseFill(false)
+            end
         end
         if Save.barTexture2 then
             frame.bar:SetStatusBarTexture('Interface\\TargetingFrame\\UI-StatusBar')
@@ -1309,7 +1321,7 @@ local function set_Panle_Setting()--设置 panel
 
     local check4= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--增加,减少,值
     check4:SetPoint("TOPLEFT", check, 'BOTTOMLEFT')
-    check4.text:SetText((e.onlyChinse and '增益值' or BENEFICIAL)..' + -10')
+    check4.text:SetText((e.onlyChinse and '向左' or BINDING_NAME_STRAFELEFT))
     check4:SetChecked(Save.setMaxMinValue)
     check4:SetScript('OnMouseDown', function()
         Save.setMaxMinValue= not Save.setMaxMinValue and true or nil
@@ -1372,7 +1384,7 @@ local function set_Panle_Setting()--设置 panel
     local barWidth= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--bar, 宽度
     barWidth:SetPoint("LEFT", check3.text, 'RIGHT', 10, 0)
     barWidth:SetSize(150,20)
-    barWidth:SetMinMaxValues(-60,120)
+    barWidth:SetMinMaxValues(-120,120)
     barWidth:SetValue(Save.barWidth)
     barWidth.Low:SetText((e.onlyChinse and '宽' or WIDE)..' -60')
     barWidth.High:SetText('120')
@@ -1403,8 +1415,18 @@ local function set_Panle_Setting()--设置 panel
         frame_Init(true)--初始，设置
     end)
 
+    local barToLeft= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--增加,减少,值
+    barToLeft:SetPoint("TOPLEFT", check2, 'BOTTOMLEFT')
+    barToLeft.text:SetText(e.onlyChinse and '向左' or BINDING_NAME_STRAFELEFT)
+    barToLeft:SetChecked(Save.barToLeft)
+    barToLeft:SetScript('OnMouseDown', function()
+        Save.barToLeft= not Save.barToLeft and true or nil
+        frame_Init(true)--初始， 或设置
+       
+    end)
+
     local slider= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--间隔，上下
-    slider:SetPoint("TOPLEFT", check2, 'BOTTOMLEFT', 0,-80)
+    slider:SetPoint("TOPLEFT", barToLeft, 'BOTTOMLEFT', 0,-80)
     --slider:SetOrientation('VERTICAL')--HORIZONTAL --slider.tooltipText=e.onlyChinse and '距离远近' or TRACKER_SORT_PROXIMITY
     slider:SetSize(200,20)
     slider:SetMinMaxValues(-5,10)
