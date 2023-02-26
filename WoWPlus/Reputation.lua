@@ -6,15 +6,8 @@ local panel= e.Cbtn(ReputationFrame, nil, true, nil, nil, nil,{20, 20})
 --#########
 --设置, 文本
 --#########
-local function set_UPDATE_FACTION()--设置, 文本, 事件
-	if Save.btn then
-		panel:RegisterEvent('UPDATE_FACTION')
-	else
-		panel:UnregisterEvent('UPDATE_FACTION')
-	end
-end
 local function Reputation_Text_setText()--设置, 文本
-	if not Save.btn or not Save.btnstr then
+	if not Save.btn or not Save.btnstr or (panel.btn and not panel.btn:IsShown())  then
 		if panel.btn and panel.btn.text then
 			panel.btn.text:SetText('')
 			panel.btn:SetNormalAtlas(e.Icon.disabled)
@@ -84,6 +77,7 @@ local function Reputation_Text_setText()--设置, 文本
 			end
 
 			local isParagon = C_Reputation.IsFactionParagon(factionID)--奖励			
+
 			if ( isParagon ) then--奖励
 				local currentValue, threshold, rewardQuestID, hasRewardPending2, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID);
 				hasRewardPending=hasRewardPending2
@@ -216,15 +210,25 @@ local function Set_Reputation_Text()--监视, 文本
 				end
 			end
 		end)
+		panel.btn:RegisterEvent('PLAYER_ENTERING_WORLD')
+		panel.btn:RegisterEvent('PET_BATTLE_OPENING_DONE')
+		panel.btn:RegisterEvent('PET_BATTLE_CLOSE')
+		panel.btn:RegisterEvent('UPDATE_FACTION')
+		panel.btn:SetScript('OnEvent', function(self)
+			local show= Save.btn and not IsInInstance() and not C_PetBattles.IsInBattle()
+			self:SetShown(show)
+			if show then
+				Reputation_Text_setText()--设置, 文本
+			end
+		end)
 
 		panel.btn.text=e.Cstr(panel.btn, Save.size)
 		panel.btn.text:SetPoint('TOPLEFT',3,-3)
 	end
 	if panel.btn then
-		panel.btn:SetShown(Save.btn)
+		panel.btn:SetShown(Save.btn and not IsInInstance() and not C_PetBattles.IsInBattle())
 		Reputation_Text_setText()--设置, 文本
 	end
-	set_UPDATE_FACTION()--设置, 文本, 事件
 end
 
 --#########
@@ -436,6 +440,7 @@ local function InitMenu(self, level, type)
 	local info
 	info={
 		text= e.onlyChinse and '文本' or LOCALE_TEXT_LABEL,
+		colorCode= (IsInInstance or C_PetBattles.IsInBattle()) and '|cff808080',
 		checked= Save.btn,
 		func= function()
 			Save.btn= not Save.btn and true or nil
@@ -523,7 +528,6 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
 		if arg1==id then
@@ -551,11 +555,5 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not WoWToolsSave then WoWToolsSave={} end
             WoWToolsSave[addName]=Save
         end
-
-	elseif event=='UPDATE_FACTION' then
-		Reputation_Text_setText()--文本
-
-	--elseif event=='CHAT_MSG_COMBAT_FACTION_CHANGE' then--声望更新, 提示
-	--	FactionUpdate(arg1)
     end
 end)

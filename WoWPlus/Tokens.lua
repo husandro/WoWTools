@@ -3,8 +3,65 @@ local addName=TOKENS
 local Save={Hide=true, str=true}
 local panel= e.Cbtn(TokenFrame, true, nil,nil,nil, true, {18,18})
 
-local function strSetText()
-	if not Save.str or not panel.btn then
+
+
+--#############
+--套装,转换,货币
+--Blizzard_ItemInteractionUI.lua
+local function set_ItemInteractionFrame_Currency(self)
+	if not self then
+		return
+	end
+    local itemInfo= C_ItemInteraction.GetItemInteractionInfo()
+    local currencyID= itemInfo and itemInfo.currencyTypeId or self.chargeCurrencyTypeId or 2167
+
+	if self==ItemInteractionFrame then
+		TokenFrame.chargeCurrencyTypeId= currencyID
+	end
+
+    local info= C_CurrencyInfo.GetCurrencyInfo(currencyID)
+	local text
+    if info and info.discovered and info.quantity then
+        text= info.iconFileID and '|T'..info.iconFileID..':0|t' or ''
+        text= text.. info.quantity
+		if currencyID== 2167 then
+			text= text.. '/6'
+		else
+        	text= info.maxQuantity and text..'/'..info.maxQuantity or text
+		end
+        if not self.ItemInteractionFrameCurrencyText then
+            self.ItemInteractionFrameCurrencyText= e.Cstr(self)
+            self.ItemInteractionFrameCurrencyText:SetPoint('TOPLEFT', 55, -38)
+			self.ItemInteractionFrameCurrencyText:EnableMouse(true)
+			self.ItemInteractionFrameCurrencyText:SetScript('OnEnter', function(self2)
+				e.tips:SetOwner(self2, "ANCHOR_LEFT")
+				e.tips:ClearLines()
+				e.tips:SetCurrencyByID(self2.chargeCurrencyTypeId)
+				e.tips:Show()
+			end)
+			self.ItemInteractionFrameCurrencyText:SetScript('OnLeave', function() e.tips:Hide() end)
+        end
+		self.ItemInteractionFrameCurrencyText.chargeCurrencyTypeId= currencyID
+
+        local chargeInfo = C_ItemInteraction.GetChargeInfo()
+        local timeToNextCharge = chargeInfo.timeToNextCharge
+        if (self.interactionType == Enum.UIItemInteractionType.ItemConversion) and timeToNextCharge>0 then
+            text= text ..' |cnGREEN_FONT_COLOR:'..SecondsToClock(timeToNextCharge, true)..'|r'
+        end
+
+		if info.canEarnPerWeek and info.maxWeeklyQuantity and info.maxWeeklyQuantity>0 then
+			text= text..' ('..info.quantityEarnedThisWeek..'/'..info.maxWeeklyQuantity..')'
+		end
+    end
+
+	if self.ItemInteractionFrameCurrencyText then
+		self.ItemInteractionFrameCurrencyText:SetText(text or '')
+	end
+end
+
+
+local function set_Text()
+	if not Save.str or not panel.btn or not panel.btn:IsShown() then
 		if panel.btn then
 			panel.btn.text:SetText('')
 		end
@@ -63,17 +120,9 @@ local function strSetText()
 	panel.btn.text:SetText(m)
 end
 
-local function set_CURRENCY_DISPLAY_UPDATE()
-	if Save.Hide then
-		panel:UnregisterEvent('CURRENCY_DISPLAY_UPDATE')
-	else
-		panel:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
-	end
-end
 
 local function Set()
 	panel:SetNormalAtlas(not Save.Hide and e.Icon.icon or e.Icon.disabled)
-	set_CURRENCY_DISPLAY_UPDATE()--注册, 事情
 	if not Save.Hide and not panel.btn then--监视声望按钮
 		panel.btn=e.Cbtn(nil, nil, Save.str)
 		panel.btn:SetSize(18, 18)
@@ -102,18 +151,17 @@ local function Set()
 				Save.str= not Save.str and true or nil
 				panel.btn:SetNormalAtlas(Save.str and e.Icon.icon or e.Icon.disabled)
 				print(id, addName, e.GetShowHide(Save.str))
-				strSetText()
-				set_CURRENCY_DISPLAY_UPDATE()--注册, 事情
+				set_Text()
 
 			elseif d=='LeftButton' and IsAltKeyDown() then--显示名称
 				Save.nameShow= not Save.nameShow and true or nil
-				strSetText()
+				set_Text()
 				print(id, addName, SHOW, NAME, e.GetShowHide(Save.nameShow))
 
 			elseif d=='LeftButton' and IsControlKeyDown() then --显示ID
 				Save.showID= not Save.showID and true or nil
 				print(id, addName, SHOW, 'ID', e.GetShowHide(Save.showID))
-				strSetText()
+				set_Text()
 			end
 		end)
 		panel.btn:SetScript("OnEnter",function(self2)
@@ -152,137 +200,26 @@ local function Set()
 				end
 			end
 		end)
+		panel.btn:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
+		panel.btn:RegisterEvent('PLAYER_ENTERING_WORLD')
+		panel.btn:RegisterEvent('PET_BATTLE_OPENING_DONE')
+		panel.btn:RegisterEvent('PET_BATTLE_CLOSE')
+		panel.btn:SetScript('OnEvent', function(self)
+			self:SetShown(not Save.Hide and not IsInInstance() and not C_PetBattles.IsInBattle())
+			set_Text()
+		end)
 
 		panel.btn.text=e.Cstr(panel.btn, Save.size)--内容显示文本
 		panel.btn.text:SetPoint('TOPLEFT',3,-3)
 	end
-
-	--展开,合起
-	if not Save.hideUpDown and not panel.down then
-		panel.down=e.Cbtn(panel, true);
-		panel.down:SetPoint('RIGHT', panel, 'LEFT', -2,0)
-		panel.down:SetSize(18,18);
-		panel.down:SetNormalTexture('Interface\\Buttons\\UI-MinusButton-Up')
-		panel.down:SetScript("OnMouseDown", function(self)
-				for i=1, C_CurrencyInfo.GetCurrencyListSize() do--展开所有
-					local info = C_CurrencyInfo.GetCurrencyListInfo(i)
-					if info  and info.isHeader and not info.isHeaderExpanded then
-						C_CurrencyInfo.ExpandCurrencyList(i,true);
-					end
-				end
-				TokenFrame_Update()
-		end)
-		panel.up=e.Cbtn(panel, true)
-		panel.up:SetPoint('RIGHT', panel.down, 'LEFT',-2,0)
-		panel.up:SetSize(18,18);
-		panel.up:SetNormalTexture("Interface\\Buttons\\UI-PlusButton-Up")
-		panel.up:SetScript("OnMouseDown", function(self)
-				for i=1, C_CurrencyInfo.GetCurrencyListSize() do--展开所有
-					local info = C_CurrencyInfo.GetCurrencyListInfo(i);
-					if info  and info.isHeader and info.isHeaderExpanded then
-						C_CurrencyInfo.ExpandCurrencyList(i, false);
-					end
-				end
-				TokenFrame_Update();
-		end)
-		panel.bag=e.Cbtn(panel,true)
-		panel.bag:SetPoint('RIGHT', panel.up, 'LEFT',-2,0)
-		panel.bag:SetSize(18,18);
-		panel.bag:SetNormalAtlas(e.Icon.bag)
-		panel.bag:SetScript("OnMouseDown", function(self)
-				for index=1, BackpackTokenFrame:GetMaxTokensWatched() do--Blizzard_TokenUI.lua
-					local info = C_CurrencyInfo.GetBackpackCurrencyInfo(index)
-					if info then
-						local link=C_CurrencyInfo.GetCurrencyLink(info.currencyTypesID) or info.name
-						--C_CurrencyInfo.SetCurrencyBackpack(index, false)
-						print(link)
-					end
-				end
-				ToggleAllBags()
-				TokenFrame_Update();
-		end)
-		panel.bag:SetScript('OnEnter', function(self2)
-			e.tips:SetOwner(self2, "ANCHOR_LEFT")
-			e.tips:ClearLines()
-			e.tips:AddDoubleLine(e.onlyChinse and '在行囊上显示' or SHOW_ON_BACKPACK, GetNumWatchedTokens())
-			for index=1, BackpackTokenFrame:GetMaxTokensWatched() do--Blizzard_TokenUI.lua
-				local info = C_CurrencyInfo.GetBackpackCurrencyInfo(index)
-				if info and info.name and info.iconFileID then
-					e.tips:AddDoubleLine(info.name, '|T'..info.iconFileID..':0|t')
-				end
-			end
-			e.tips:Show()
-		end)
-		panel.bag:SetScript('OnLeave', function() e.tips:Hide() end)
-	end
-
-	if panel.down then
-		panel.down:SetShown(not Save.hideUpDown)
-		panel.up:SetShown(not Save.hideUpDown)
-		panel.bag:SetShown(not Save.hideUpDown)
-	end
 	if panel.btn then
-		panel.btn:SetShown(not Save.Hide)
+		panel.btn:SetShown(not Save.Hide and not IsInInstance() and not C_PetBattles.IsInBattle())
 		panel.btn:SetNormalAtlas(Save.str and e.Icon.icon or e.Icon.disabled)
-	end
-	strSetText()
-end
-
-
---#############
---套装,转换,货币
---Blizzard_ItemInteractionUI.lua
-local function set_ItemInteractionFrame_Currency(self)
-	if not self then
-		return
-	end
-    local itemInfo= C_ItemInteraction.GetItemInteractionInfo()
-    local currencyID= itemInfo and itemInfo.currencyTypeId or self.chargeCurrencyTypeId or 2167
-
-	if self==ItemInteractionFrame then
-		TokenFrame.chargeCurrencyTypeId= currencyID
-	end
-
-    local info= C_CurrencyInfo.GetCurrencyInfo(currencyID)
-	local text
-    if info and info.discovered and info.quantity then
-        text= info.iconFileID and '|T'..info.iconFileID..':0|t' or ''
-        text= text.. info.quantity
-		
-		if currencyID== 2167 then
-			text= text.. '/6'
-		else
-        	text= info.maxQuantity and text..'/'..info.maxQuantity or text
-		end
-        if not self.ItemInteractionFrameCurrencyText then
-            self.ItemInteractionFrameCurrencyText= e.Cstr(self)
-            self.ItemInteractionFrameCurrencyText:SetPoint('TOPLEFT', 55, -38)
-			self.ItemInteractionFrameCurrencyText:EnableMouse(true)
-			self.ItemInteractionFrameCurrencyText:SetScript('OnEnter', function(self2)
-				e.tips:SetOwner(self2, "ANCHOR_LEFT")
-				e.tips:ClearLines()
-				e.tips:SetCurrencyByID(self2.chargeCurrencyTypeId)
-				e.tips:Show()
-			end)
-			self.ItemInteractionFrameCurrencyText:SetScript('OnLeave', function() e.tips:Hide() end)
-        end
-		self.ItemInteractionFrameCurrencyText.chargeCurrencyTypeId= currencyID
-
-        local chargeInfo = C_ItemInteraction.GetChargeInfo()
-        local timeToNextCharge = chargeInfo.timeToNextCharge
-        if (self.interactionType == Enum.UIItemInteractionType.ItemConversion) and timeToNextCharge>0 then
-            text= text ..' |cnGREEN_FONT_COLOR:'..SecondsToClock(timeToNextCharge, true)..'|r'
-        end
-
-		if info.canEarnPerWeek and info.maxWeeklyQuantity and info.maxWeeklyQuantity>0 then
-			text= text..' ('..info.quantityEarnedThisWeek..'/'..info.maxWeeklyQuantity..')'
-		end
-    end
-
-	if self.ItemInteractionFrameCurrencyText then
-		self.ItemInteractionFrameCurrencyText:SetText(text or '')
+		set_Text()
 	end
 end
+
+
 
 
 --######
@@ -291,33 +228,84 @@ end
 local function Init()
 	panel:SetPoint("TOPRIGHT", TokenFrame, 'TOPRIGHT',-6,-35)
 	panel:SetScript('OnMouseDown', function (self, d)
-		if d=='LeftButton' then
-			Save.Hide= not Save.Hide and true or nil
-			print(id, addName, e.GetEnabeleDisable(not Save.Hide))
-			Set()
-		elseif d=='RightButton' then--展开所有
-			Save.hideUpDown= not Save.hideUpDown and true or nil
-			Set()
-			print(id, addName, '|TInterface\\Buttons\\UI-PlusButton-Up:0|t|TInterface\\Buttons\\UI-MinusButton-Up:0|t', e.GetShowHide(not Save.hideUpDown))
-		end
+		Save.Hide= not Save.Hide and true or nil
+		print(id, addName, e.GetEnabeleDisable(not Save.Hide))
+		Set()
 	end)
 	panel:SetScript("OnEnter", function(self2)
 		e.tips:SetOwner(self2, "ANCHOR_LEFT")
 		e.tips:ClearLines()
-		e.tips:AddDoubleLine(id, addName)
-		e.tips:AddLine(' ')
 		e.tips:AddDoubleLine((e.onlyChinse and '文本' or  LOCALE_TEXT_LABEL)..': '..e.GetEnabeleDisable(not Save.Hide),e.Icon.left)
-		e.tips:AddDoubleLine('|TInterface\\Buttons\\UI-PlusButton-Up:0|t|TInterface\\Buttons\\UI-MinusButton-Up:0|t '..e.GetShowHide(not Save.hideUpDown), e.Icon.right)
+		e.tips:AddLine(' ')
+		e.tips:AddDoubleLine('|cnRED_FONT_COLOR:'..(e.onlyChinse and '副本' or INSTANCE),'|cnRED_FONT_COLOR:'..(e.onlyChinse and '宠物对战' or SHOW_PET_BATTLES_ON_MAP_TEXT))
+		e.tips:AddDoubleLine(id, addName)
 		e.tips:Show()
 	end)
 	panel:SetScript('OnLeave', function ()
 		e.tips:Hide()
 	end)
 
+	--展开,合起
+	panel.down=e.Cbtn(panel, true);
+	panel.down:SetPoint('RIGHT', panel, 'LEFT', -2,0)
+	panel.down:SetSize(18,18);
+	panel.down:SetNormalTexture('Interface\\Buttons\\UI-MinusButton-Up')
+	panel.down:SetScript("OnMouseDown", function(self)
+			for i=1, C_CurrencyInfo.GetCurrencyListSize() do--展开所有
+				local info = C_CurrencyInfo.GetCurrencyListInfo(i)
+				if info  and info.isHeader and not info.isHeaderExpanded then
+					C_CurrencyInfo.ExpandCurrencyList(i,true);
+				end
+			end
+			TokenFrame_Update()
+	end)
+	panel.up=e.Cbtn(panel, true)
+	panel.up:SetPoint('RIGHT', panel.down, 'LEFT',-2,0)
+	panel.up:SetSize(18,18);
+	panel.up:SetNormalTexture("Interface\\Buttons\\UI-PlusButton-Up")
+	panel.up:SetScript("OnMouseDown", function(self)
+			for i=1, C_CurrencyInfo.GetCurrencyListSize() do--展开所有
+				local info = C_CurrencyInfo.GetCurrencyListInfo(i);
+				if info  and info.isHeader and info.isHeaderExpanded then
+					C_CurrencyInfo.ExpandCurrencyList(i, false);
+				end
+			end
+			TokenFrame_Update();
+	end)
+	panel.bag=e.Cbtn(panel,true)
+	panel.bag:SetPoint('RIGHT', panel.up, 'LEFT',-2,0)
+	panel.bag:SetSize(18,18);
+	panel.bag:SetNormalAtlas(e.Icon.bag)
+	panel.bag:SetScript("OnMouseDown", function(self)
+			for index=1, BackpackTokenFrame:GetMaxTokensWatched() do--Blizzard_TokenUI.lua
+				local info = C_CurrencyInfo.GetBackpackCurrencyInfo(index)
+				if info then
+					local link=C_CurrencyInfo.GetCurrencyLink(info.currencyTypesID) or info.name
+					--C_CurrencyInfo.SetCurrencyBackpack(index, false)
+					print(link)
+				end
+			end
+			ToggleAllBags()
+			TokenFrame_Update();
+	end)
+	panel.bag:SetScript('OnEnter', function(self2)
+		e.tips:SetOwner(self2, "ANCHOR_LEFT")
+		e.tips:ClearLines()
+		e.tips:AddDoubleLine(e.onlyChinse and '在行囊上显示' or SHOW_ON_BACKPACK, GetNumWatchedTokens())
+		for index=1, BackpackTokenFrame:GetMaxTokensWatched() do--Blizzard_TokenUI.lua
+			local info = C_CurrencyInfo.GetBackpackCurrencyInfo(index)
+			if info and info.name and info.iconFileID then
+				e.tips:AddDoubleLine(info.name, '|T'..info.iconFileID..':0|t')
+			end
+		end
+		e.tips:Show()
+	end)
+	panel.bag:SetScript('OnLeave', function() e.tips:Hide() end)
+
 	Set()
 	hooksecurefunc('TokenFrame_Update', function()
 		set_ItemInteractionFrame_Currency(TokenFrame)--套装,转换,货币
-		strSetText()
+		set_Text()
 	end)--设置, 文本
 end
 
@@ -355,8 +343,5 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not WoWToolsSave then WoWToolsSave={} end
             WoWToolsSave[addName]=Save
         end
-
-	elseif event=='CURRENCY_DISPLAY_UPDATE' then
-		strSetText()
 	end
 end)

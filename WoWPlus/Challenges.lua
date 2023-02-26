@@ -1,4 +1,7 @@
 local id, e = ...
+if not e.Player.levelMax then
+    return
+end
 local addName= CHALLENGES
 local Save= {}
 local panel=CreateFrame("Frame")

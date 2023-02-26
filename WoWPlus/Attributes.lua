@@ -1595,6 +1595,7 @@ end
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent('PET_BATTLE_OPENING_DONE')
 panel:RegisterEvent('PET_BATTLE_CLOSE')
+panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
