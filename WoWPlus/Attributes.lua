@@ -193,6 +193,9 @@ local function set_Stat_Text(frame)
         return
     end
     local value= UnitStat('player', PrimaryStat)
+    if not frame then
+        return value
+    end
     set_Text_Value(frame, value)
 end
 local function set_Stat_Tooltip(self)
@@ -757,9 +760,9 @@ local function set_Frame(frame)--设置, frame
         local value
         if frame.useNumber then
             if frame.name=='STATUS' then
-                value= frame.value or 10000
+                value= set_Stat_Text() or 1000
             else
-                local tab= max(--取得Bar，最高值
+                value= max(--取得Bar，最高值
                     set_Crit_Text(),
                     set_Haste_Text(),
                     set_Mastery_Text(),
@@ -770,16 +773,16 @@ local function set_Frame(frame)--设置, frame
                     set_Dodge_Text(),
                     set_Parry_Text()
                 )
-                value= format('%i', tab)
-                value= tonumber('1'..string.rep('0', #value))
             end
+            value= (value and value~=0) and value or 1000
+            value= format('%i', value)
+            value= tonumber('1'..string.rep('0', #value))
         else
             frame.bar:SetMinMaxValues(0,100)
             value=100
         end
         frame.bar:SetMinMaxValues(0, value)
         frame.bar.maxValue=value
-
         frame.bar:SetSize(120+Save.barWidth, 10)
         frame.bar:ClearAllPoints()
         if Save.toLeft then
@@ -1388,8 +1391,8 @@ local function set_Panle_Setting()--设置 panel
     barX:SetSize(150,20)
     barX:SetMinMaxValues(-60,120)
     barX:SetValue(Save.barX)
-    barX.Low:SetText('y -60')
-    barX.High:SetText('120')
+    barX.Low:SetText('x -60')
+    barX.High:SetText('+120')
     barX.Text:SetText(Save.barX)
     barX:SetValueStep(1)
     barX:SetScript('OnValueChanged', function(self, value, userInput)
