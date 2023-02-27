@@ -1831,7 +1831,8 @@
         "CollectionsMicroButton",
         "MainMenuMicroButton",
         "HelpMicroButton",
-        "StoreMicroButton"
+        "StoreMicroButton",
+        "COLORS"
     ],
     "Lua.diagnostics.disable": [
     ]

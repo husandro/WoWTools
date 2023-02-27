@@ -14,10 +14,12 @@ local function hideTexture(self)
         self:SetShown(false)
     end
 end
-local function setAlpha(self)
+local function setAlpha(self, notColor)
     if self and not Save.disabledAlpha then
-        self:SetAlpha(Save.alpha)
-        if Save.useClassColor then
+        if Save.alpha~=1 then
+            self:SetAlpha(Save.alpha)
+        end
+        if Save.useClassColor and not notColor then
             self:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
         end
     end
@@ -390,7 +392,7 @@ local function Init_SetAlpha()
     setAlpha(ProfessionsFrameBg)
     setAlpha(ProfessionsFrame.CraftingPage.SchematicForm.Background)
     setAlpha(ProfessionsFrame.CraftingPage.RankBar.Background)
-    setAlpha(ProfessionsFrame.SpecPage.PanelFooter)
+    --setAlpha(ProfessionsFrame.SpecPage.PanelFooter)
 
     setAlpha(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundTop)
     setAlpha(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundMiddle)
@@ -1410,10 +1412,28 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 print(id, addName, e.GetEnabeleDisable(not Save.disabledAlpha), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end)
 
+
             local button= e.Cbtn(check, true, nil, nil, nil, nil, {20,20})
             button:SetPoint('LEFT', panel.check2.text, 'RIGHT',2,0)
             button:SetNormalAtlas('mechagon-projects')
             button:SetScript('OnClick', set_PopupDialogs)
+
+            panel.check3=CreateFrame("CheckButton", nil, check, "InterfaceOptionsCheckButtonTemplate")
+            panel.check3.text:SetText(e.onlyChinse and '职业颜色' or COLORS)
+            panel.check3:SetPoint('LEFT', button, 'RIGHT')
+            panel.check3:SetChecked(Save.useClassColor)
+            panel.check3:SetScript('OnMouseDown', function()
+                Save.useClassColor= not Save.useClassColor and true or nil
+                print(id, addName, e.GetEnabeleDisable(Save.useClassColor), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+            end)
+            panel.check3:SetScript('OnEnter', function(self2)
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddLine(e.Player.col..(e.onlyChinse and '职业颜色' or CLASS_COLORS))
+                e.tips:Show()
+            end)
+            panel.check3:SetScript('OnLeave', function() e.tips:Hide() end)
+            
 
             if Save.disabled and Save.disabledAlpha then
                 panel:UnregisterAllEvents()

@@ -837,6 +837,9 @@ local function Init()
         if MainMenuBarBackpackButtonCount then
             MainMenuBarBackpackButtonCount:SetShadowOffset(1, -1)
         end
+        if e.Player.useClassColor and MainMenuBarBackpackButtonCount then
+            MainMenuBarBackpackButtonCount:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
+        end
         hooksecurefunc(MainMenuBarBackpackButton, 'UpdateFreeSlots', function(self)
             local totalFree
             totalFree= 0
