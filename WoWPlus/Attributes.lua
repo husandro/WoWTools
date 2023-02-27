@@ -1321,7 +1321,7 @@ local function set_Panle_Setting()--设置 panel
 
     local check4= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--增加,减少,值
     check4:SetPoint("TOPLEFT", check, 'BOTTOMLEFT')
-    check4.text:SetText((e.onlyChinse and '向左' or BINDING_NAME_STRAFELEFT))
+    check4.text:SetText((e.onlyChinse and '增益' or BENEFICIAL)..' -12')
     check4:SetChecked(Save.setMaxMinValue)
     check4:SetScript('OnMouseDown', function()
         Save.setMaxMinValue= not Save.setMaxMinValue and true or nil
@@ -1415,7 +1415,7 @@ local function set_Panle_Setting()--设置 panel
         frame_Init(true)--初始，设置
     end)
 
-    local barToLeft= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--增加,减少,值
+    local barToLeft= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--bar 向左
     barToLeft:SetPoint("TOPLEFT", check2, 'BOTTOMLEFT')
     barToLeft.text:SetText(e.onlyChinse and '向左' or BINDING_NAME_STRAFELEFT)
     barToLeft:SetChecked(Save.barToLeft)
