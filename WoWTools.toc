@@ -28,9 +28,9 @@ Sesource\Locales\ruRU.lua
 Sesource\Locales\zhTW.lua
 ##面板，不能删除
 Sesource\Panel.lua
-##fps ms, 使用职业颜色, 放到最前面
-GamePlus\SystemInfo.lua
 
+##隐藏材质，透明度, 职业颜色， 使用职业颜色参数, 放到最前面
+WoWPlus\Texture.lua
 ##角色面板
 WoWPlus\PaperDoll.lua
 ##角色，属性
@@ -41,8 +41,6 @@ WoWPlus\Reputation.lua
 WoWPlus\Tokens.lua
 ##移动框架, 缩放
 WoWPlus\Frame.lua
-##隐藏材质，透明度
-WoWPlus\Texture.lua
 ##法术弹出框，加名称, 和颜色
 WoWPlus\SpellFrame.lua
 ##任务框，增强
@@ -89,7 +87,8 @@ GamePlus\Target.lua
 GamePlus\Dragonriding.lua
 ##颜色选择器，增强
 ##GamePlus\ColorSelectFrame.lua
-
+##fps ms
+GamePlus\SystemInfo.lua
 
 ##坐骑， Tools 主要的，
 ##如果要使用Tools中的一个模块，必须开启坐骑模块

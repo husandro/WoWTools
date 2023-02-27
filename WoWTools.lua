@@ -753,6 +753,7 @@ e.Cbtn2= function(name, parent, showTexture, rightClick)
     button.border:SetAtlas('bag-reagent-border')
     if e.Player.useClassColor then--使用职业颜色
         button.border:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+        button.border:SetAlpha(0.5)
     end
 
     return button

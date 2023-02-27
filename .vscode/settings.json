@@ -1832,7 +1832,10 @@
         "MainMenuMicroButton",
         "HelpMicroButton",
         "StoreMicroButton",
-        "COLORS"
+        "COLORS",
+        "IgnoreListFrame",
+        "RecruitAFriendFrame",
+        "EncounterJournalMonthlyActivitiesFrame"
     ],
     "Lua.diagnostics.disable": [
     ]

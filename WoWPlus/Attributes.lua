@@ -1422,7 +1422,6 @@ local function set_Panle_Setting()--设置 panel
     barToLeft:SetScript('OnMouseDown', function()
         Save.barToLeft= not Save.barToLeft and true or nil
         frame_Init(true)--初始， 或设置
-       
     end)
 
     local slider= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--间隔，上下
@@ -1493,6 +1492,23 @@ local function set_Panle_Setting()--设置 panel
         Save.scale=value
         button.frame:SetScale(value)
     end)
+
+    local restButton= e.Cbtn(panel, true, nil, nil, nil, nil, {20,20})--重置
+    restButton:SetNormalAtlas('bags-button-autosort-up')
+    restButton:SetPoint("TOPRIGHT")
+    restButton:SetScript('OnMouseUp', function()
+        StaticPopupDialogs[id..addName..'restAllSetup']={
+            text =id..'  '..addName..'|n|n|cnRED_FONT_COLOR:'..(e.onlyChinse and '清除全部' or CLEAR_ALL)..'|r '..(e.onlyChinse and '保存' or SAVE)..'|n|n'..(e.onlyChinse and '重新加载UI' or RELOADUI)..' /reload',
+            button1 = '|cnRED_FONT_COLOR:'..(e.onlyChinse and '重置' or RESET),
+            button2 = e.onlyChinse and '取消' or CANCEL,
+            whileDead=true,timeout=30,hideOnEscape = 1,
+            OnAccept=function(self)
+                Save=nil
+                ReloadUI()
+            end,
+        }
+        StaticPopup_Show(id..addName..'restAllSetup')
+    end)
 end
 
 --####
@@ -1500,7 +1516,7 @@ end
 --####
 local function Init()
     button= e.Cbtn(nil, nil, nil, nil, nil, true, {18,18})
-    --button:SetNormalAtlas('DK-Base-Rune-CDFill')
+
     button:SetFrameLevel(button:GetFrameLevel()+5)
     button.texture= button:CreateTexture(nil, 'BORDER')
     button.texture:SetSize(12,12)
@@ -1567,14 +1583,13 @@ local function Init()
     button:SetScript("OnMouseUp", function() ResetCursor() end)
     button:SetScript("OnLeave",function() ResetCursor() e.tips:Hide() end)
 
-    C_Timer.After(2, function()
+    C_Timer.After(4, function()
         button.frame= CreateFrame("Frame",nil,button)
         button.frame:SetPoint('BOTTOM')
         button.frame:SetSize(1,1)
         if Save.scale and Save.scale~=1 then--缩放
             button.frame:SetScale(Save.scale)
         end
-
         button.frame:RegisterEvent('PLAYER_AVG_ITEM_LEVEL_UPDATE')
         button.frame:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
         button.frame:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED')
@@ -1594,30 +1609,12 @@ local function Init()
         frame_Init(true)--初始， 或设置
         set_Panle_Setting()--设置 panel
     end)
-
-    local restButton= e.Cbtn(panel, true, nil, nil, nil, nil, {20,20})--重置
-    restButton:SetNormalAtlas('bags-button-autosort-up')
-    restButton:SetPoint("TOPRIGHT")
-    restButton:SetScript('OnMouseUp', function()
-        StaticPopupDialogs[id..addName..'restAllSetup']={
-            text =id..'  '..addName..'|n|n|cnRED_FONT_COLOR:'..(e.onlyChinse and '清除全部' or CLEAR_ALL)..'|r '..(e.onlyChinse and '保存' or SAVE)..'|n|n'..(e.onlyChinse and '重新加载UI' or RELOADUI)..' /reload',
-            button1 = '|cnRED_FONT_COLOR:'..(e.onlyChinse and '重置' or RESET),
-            button2 = e.onlyChinse and '取消' or CANCEL,
-            whileDead=true,timeout=30,hideOnEscape = 1,
-            OnAccept=function(self)
-                Save=nil
-                ReloadUI()
-            end,
-        }
-        StaticPopup_Show(id..addName..'restAllSetup')
-    end)
 end
 
 
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent('PET_BATTLE_OPENING_DONE')
 panel:RegisterEvent('PET_BATTLE_CLOSE')
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -1679,7 +1676,5 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='PET_BATTLE_CLOSE' then
         button:SetShown(true)
 
-    elseif event=='PLAYER_ENTERING_WORLD' then
-        button:SetShown(not C_PetBattles.IsInBattle())
     end
 end)

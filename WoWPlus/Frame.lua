@@ -413,7 +413,7 @@ local function Init_Move()
         --EncounterBar={},
         --StoreFrame={},--商店
         ChannelFrame={},--聊天设置
-
+        --StaticPopup1={},
         [DressUpFrame.TitleContainer]= {frame = DressUpFrame},--试衣间 
         [MailFrame.TitleContainer]= {frame=MailFrame},
     }
@@ -427,7 +427,7 @@ local function Init_Move()
         end
     end
     
-    set_Move_Button(ZoneAbilityFrame, {frame=ZoneAbilityFrame.SpellButtonContainer, save=true, zeroAlpha=true, notZoom=nil})
+    set_Move_Button(ZoneAbilityFrame, {frame=ZoneAbilityFrame.SpellButtonContainer, save=true, zeroAlpha=nil, notZoom=nil})
     set_Move_Button(QueueStatusButton, {frame=nil, save=true, zeroAlpha=true, notZoom=nil})--小眼睛, 
 
     --########
@@ -462,6 +462,7 @@ local function Init_Move()
             end
         end
     end)
+   
 
     if UIWidgetPowerBarContainerFrame then--移动, 能量条
         local frame=UIWidgetPowerBarContainerFrame

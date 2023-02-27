@@ -3,7 +3,7 @@ local addName=HIDE..TEXTURES_SUBHEADER
 local Save={
     disabledAlpha= not e.Player.husandro,
     alpha= 0.5,
-    useClassColor=e.Player.husandro
+    disabledColor= not e.Player.husandro,
 }
 local panel=CreateFrame("Frame")
 
@@ -14,22 +14,23 @@ local function hideTexture(self)
         self:SetShown(false)
     end
 end
-local function setAlpha(self, notColor)
-    if self and not Save.disabledAlpha then
-        if Save.alpha~=1 then
+local function setAlpha(self)
+    if self then
+        if not Save.disabledAlpha then
             self:SetAlpha(Save.alpha)
         end
-        if Save.useClassColor and not notColor then
+        if not Save.disabledColor then
             self:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
         end
     end
 end
 
+
 --###############
 --初始化, 隐藏材质
 --###############
 local function Init_HideTexture()
-    if Save.disabled then
+    if Save.disabledTexture then
         return
     end
     hooksecurefunc('PlayerFrame_UpdateArt', function()--隐藏材质, 载具
@@ -90,11 +91,6 @@ local function Init_HideTexture()
         hideTexture(self.BottomFrame.TurnTimer.ArtFrame);
         hideTexture(self.BottomFrame.TurnTimer.ArtFrame2);
     end)
-
-    setAlpha(PaladinPowerBarFrameBG)--能量条
-    setAlpha(PaladinPowerBarFrameBankBG)
-
-
 
     hooksecurefunc(HelpTip,'Show', function(self, parent, info, relativeRegion)--隐藏所有HelpTip HelpTip.lua
         HelpTip:HideAll(parent)
@@ -244,8 +240,9 @@ local function Init_HideTexture()
     end)
 end
 
+
 local function set_HideTexture_Event(arg1)
-    if Save.disabled then
+    if Save.disabledTexture then
         return
     end
     if arg1=='Blizzard_WeeklyRewards' then--周奖励提示
@@ -260,7 +257,6 @@ local function set_HideTexture_Event(arg1)
             end
         end
     end
-
 end
 
 
@@ -276,10 +272,14 @@ end
 --###########
 --初始化, 透明
 --###########
-local function Init_SetAlpha()
-    if Save.disabledAlpha then
+local function Init_Set_AlphaAndColor()
+    if Save.disabledAlpha and Save.disabledColor then
         return
     end
+
+    --骑士，能量条
+    setAlpha(PaladinPowerBarFrameBG)
+    setAlpha(PaladinPowerBarFrameBankBG)
 
     --角色，界面
     setAlpha(CharacterFrameBg)
@@ -375,7 +375,6 @@ local function Init_SetAlpha()
     hideTexture(PVEFrameBg)--左边
     hideTexture(PVEFrameBlueBg)
     setAlpha(PVEFrameLeftInset.Bg)
-    --hideTexture(PVEFrameTLCorner)
 
     setAlpha(LFDQueueFrameBackground)
     setAlpha(LFDQueueFrameTypeDropDownMiddle)
@@ -385,14 +384,12 @@ local function Init_SetAlpha()
     setAlpha(LFDParentFrameInset.Bg)
     setAlpha(LFDParentFrameRoleBackground)
 
-    --ProfessionsFrame={},--专业
     setAlpha(ProfessionsFrame.NineSlice.TopLeftCorner)
     setAlpha(ProfessionsFrame.NineSlice.TopEdge)
     setAlpha(ProfessionsFrame.NineSlice.TopRightCorner)
     setAlpha(ProfessionsFrameBg)
     setAlpha(ProfessionsFrame.CraftingPage.SchematicForm.Background)
     setAlpha(ProfessionsFrame.CraftingPage.RankBar.Background)
-    --setAlpha(ProfessionsFrame.SpecPage.PanelFooter)
 
     setAlpha(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundTop)
     setAlpha(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundMiddle)
@@ -408,7 +405,6 @@ local function Init_SetAlpha()
     setAlpha(GossipFrame.NineSlice.TopRightCorner)
     setAlpha(GossipFrameBg)
     hideTexture(GossipFrameInset.Bg)
-    --setAlpha(GossipFrame.Background)
     hideTexture(GossipFrame.GreetingPanel.ScrollBar.Backplate)
 
     if PetStableFrame then--猎人，宠物
@@ -513,6 +509,10 @@ local function Init_SetAlpha()
             end
         end
     end)
+    hooksecurefunc('PaperDollItemSlotButton_Update', function(frame)--PaperDollFrame.lua
+        setAlpha(frame:GetNormalTexture())
+        setAlpha(frame.icon)
+    end)
 
     --好友列表
     setAlpha(FriendsFrame.NineSlice.TopEdge)
@@ -521,6 +521,11 @@ local function Init_SetAlpha()
     setAlpha(FriendsFrameBg)
     hideTexture(FriendsFrameInset.Bg)
     hideTexture(FriendsListFrame.ScrollBar.Backplate)
+    hideTexture(IgnoreListFrame.ScrollBar.Backplate)
+    if RecruitAFriendFrame and RecruitAFriendFrame.RecruitList then 
+        hideTexture(RecruitAFriendFrame.RecruitList.ScrollBar.Backplate)
+        setAlpha(RecruitAFriendFrame.RecruitList.ScrollFrameInset.Bg)
+    end
     hideTexture(WhoFrameListInset.Bg)
     hideTexture(WhoFrame.ScrollBar.Backplate)
     setAlpha(WhoFrameDropDownMiddle)
@@ -650,34 +655,34 @@ local function Init_SetAlpha()
             setAlpha(StaticPopup1.Border.Bg)
         end
     end
+
+    local buttons = {
+        CharacterMicroButton,--菜单
+        SpellbookMicroButton,
+        TalentMicroButton,
+        AchievementMicroButton,
+        QuestLogMicroButton,
+        GuildMicroButton,
+        LFDMicroButton,
+        EJMicroButton,
+        CollectionsMicroButton,
+        MainMenuMicroButton,
+        HelpMicroButton,
+        StoreMicroButton,
+        MainMenuBarBackpackButton,--背包
+    }
+    for _, frame in pairs(buttons) do
+        if frame then
+            setAlpha(frame:GetNormalTexture())
+        end
+    end
 end
-    --[[hooksecurefunc(UIWidgetPowerBarContainerFrame, 'CreateWidget', function(self, widgetID)
-       
-    end)
-hooksecurefunc(SCENARIO_TRACKER_MODULE, 'AddProgressBar', function(self, block, line, criteriaIndex)
-    
-    local progressBar  = self.usedProgressBars[block] and self.usedProgressBars[block][line];
-    print(progressBar, progressBar.Bar)
-    if progressBar  and progressBar.Bar then
-        hideTexture(progressBar.Bar.BorderLeft)
-        hideTexture(progressBar.Bar.BorderCenter)
-        hideTexture(progressBar.Bar.BorderRight)
-        hideTexture(progressBar.Bar.IconBG)
-        hideTexture(progressBar.Bar.Icon)
-        hideTexture(progressBar.Bar.BarBG)
-    end
-end)
-hooksecurefunc('SetupTextureKitOnRegions', function(textureKit, frame, regions, setVisibilityOfRegions, useAtlasSize)
-    if frame then
-        setAlpha(frame)
-        
-    end
-end)]]
+
 --#########
 --事件, 透明
 --#########
 local function set_Alpha_Event(arg1)
-    if Save.disabledAlpha then
+    if Save.disabledAlpha and Save.disabledColor then
         return
     end
     if arg1=='Blizzard_TrainerUI' then--专业训练师
@@ -874,7 +879,9 @@ local function set_Alpha_Event(arg1)
         setAlpha(EncounterJournalInstanceSelectTierDropDownRight)
 
         C_Timer.After(0.3, function()
-            setAlpha(EncounterJournalMonthlyActivitiesFrame.Bg)
+            if EncounterJournalMonthlyActivitiesFrame then
+                setAlpha(EncounterJournalMonthlyActivitiesFrame.Bg)
+            end
         end)
 
     elseif arg1=="Blizzard_GuildBankUI" then--公会银行
@@ -978,7 +985,6 @@ local function set_Alpha_Event(arg1)
         setAlpha(ProfessionsCustomerOrdersFrameRight)
 
     elseif arg1=='Blizzard_BlackMarketUI' then--黑市
-        --Move(BlackMarketFrame, {})
         setAlpha(BlackMarketFrameTitleBg)
         setAlpha(BlackMarketFrameBg)
         setAlpha(BlackMarketFrame.LeftBorder)
@@ -997,11 +1003,7 @@ local function set_Alpha_Event(arg1)
         hideTexture(MountJournal.RightInset.Bg)
         setAlpha(MountJournal.BottomLeftInset.Background)
         hideTexture(MountJournal.BottomLeftInset.Bg)
-        --[[hooksecurefunc('MountJournal_InitMountButton', function(button, elementData)
-            if button then
-                setAlpha(button.background)
-            end
-        end)]]
+
         hideTexture(MountJournal.ScrollBar.Backplate)
         setAlpha(MountJournalSearchBox.Middle)
         setAlpha(MountJournalSearchBox.Right)
@@ -1015,11 +1017,7 @@ local function set_Alpha_Event(arg1)
         hideTexture(PetJournalLoadoutPet3BG)
         setAlpha(PetJournalLoadoutBorderSlotHeaderBG)
         hideTexture(PetJournalLeftInset.Bg)
-        --[[hooksecurefunc('PetJournal_UpdatePetList', function()--Blizzard_PetCollection.lua
-            for _, button in pairs(PetJournal.ScrollBox:GetFrames()) do
-                setAlpha(button.background)
-            end
-        end)]]
+
         hideTexture(PetJournal.ScrollBar.Backplate)
         setAlpha(PetJournalSearchBox.Middle)
         setAlpha(PetJournalSearchBox.Right)
@@ -1156,11 +1154,6 @@ local function set_Alpha_Event(arg1)
                 frame:DisableDrawLayer('BACKGROUND')
             end
         end
-        --[[local texture= CalendarFrame:CreateTexture(nil,'BORDER',nil, 1)
-        texture:SetAtlas('auctionhouse-background-buy-noncommodities-market')
-        texture:SetPoint('TOPLEFT',  _G['CalendarDayButton1'])
-        texture:SetPoint('BOTTOMRIGHT',  _G['CalendarDayButton42'])
-        --setAlpha(texture)]]
 
     elseif arg1=='Blizzard_FlightMap' then--飞行地图
         setAlpha(FlightMapFrame.BorderFrame.NineSlice.TopLeftCorner)
@@ -1306,44 +1299,6 @@ local function set_Alpha_Event(arg1)
         end)
     end
 end
---[[
-        --MacroFrameSelectedMacroButton
-        --MacroFrameSelectedMacroBackground
-        --hideTexture(MacroFrameSelectedMacroBackground)
-        MacroFrame:SetSize(500, 700)--338, 424
-        --MacroFrame.MacroSelector:SetWidth(480)
-        MacroFrameText:SetSize(460,380)
-        --MacroFrameTextBackground:SetSize(460,380)
-        MacroFrameScrollFrameScrollBar:ClearAllPoints()
-        MacroFrameScrollFrameScrollBar:SetPoint('TOPLEFT', MacroFrameText,'TOPRIGHT')
-        MacroFrameScrollFrameScrollBar:SetSize(460, 20)
-        --MacroSaveButton
-        --MacroFrameSelectedMacroButton:ClearAllPoints()
-        --MacroFrameSelectedMacroButton:SetPoint('BOTTOMLEFT', MacroFrame.MacroSelector, 'BOTTOMRIGHT')
-        --MacroFrame.MacroSelector:SetWidth(480)
-        --MacroFrame.MacroSelector:SetSize()
-
-    elseif arg1=='Blizzard_PlayerChoice' then--任务选择
-        print(PlayerChoiceFrame.Background.BackgroundTile)
-        hideTexture(PlayerChoiceFrame.Background.BackgroundTile)
-
-    elseif arg1=='Blizzard_OrderHallUI' then
-        local frame= OrderHallTalentFrame
-
-    elseif arg1=='Blizzard_GenericTraitUI' then--欲龙术
-        local frame= GenericTraitFrame
-        
-
-
-   
-
-
-
-    elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级,界面
-        local frame= ItemUpgradeFrame
-
-   
-]]
 
 
 local function set_PopupDialogs()
@@ -1394,13 +1349,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
+            e.Player.useClassColor= not Save.disabledColor--使用职业颜色
             Save.alpha= Save.alpha or 0.5
 
             --添加控制面板        
-            local check=e.CPanel(e.onlyChinse and '隐藏材质' or addName, not Save.disabled)
+            local check=e.CPanel(e.onlyChinse and '隐藏材质' or addName, not Save.disabledTexture)
             check:SetScript('OnMouseDown', function()
-                Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+                Save.disabledTexture= not Save.disabledTexture and true or nil
+                print(id, addName, e.GetEnabeleDisable(not Save.disabledTexture), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end)
 
             panel.check2=CreateFrame("CheckButton", nil, check, "InterfaceOptionsCheckButtonTemplate")
@@ -1419,12 +1375,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             button:SetScript('OnClick', set_PopupDialogs)
 
             panel.check3=CreateFrame("CheckButton", nil, check, "InterfaceOptionsCheckButtonTemplate")
-            panel.check3.text:SetText(e.onlyChinse and '职业颜色' or COLORS)
+            panel.check3.text:SetText(e.Player.col..(e.onlyChinse and '职业颜色' or COLORS))
             panel.check3:SetPoint('LEFT', button, 'RIGHT')
-            panel.check3:SetChecked(Save.useClassColor)
+            panel.check3:SetChecked(not Save.disabledColor)
             panel.check3:SetScript('OnMouseDown', function()
-                Save.useClassColor= not Save.useClassColor and true or nil
-                print(id, addName, e.GetEnabeleDisable(Save.useClassColor), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+                Save.disabledColor= not Save.disabledColor and true or nil
+                e.Player.useClassColor= not Save.disabledColor
+                print(id, addName, e.GetEnabeleDisable(not Save.disabledColor), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end)
             panel.check3:SetScript('OnEnter', function(self2)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
@@ -1433,13 +1390,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 e.tips:Show()
             end)
             panel.check3:SetScript('OnLeave', function() e.tips:Hide() end)
-            
 
-            if Save.disabled and Save.disabledAlpha then
+            if Save.disabledTexture and Save.disabledAlpha and Save.disabledColor then
                 panel:UnregisterAllEvents()
             else
                 Init_HideTexture()
-                Init_SetAlpha()
+                Init_Set_AlphaAndColor()
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
@@ -1455,33 +1411,3 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
     end
 end)
-
-
---[[#############
---隐藏材质, 载具
---#############
-local function set_UNIT_ENTERED_VEHICLE()
-    if OverrideActionBarEndCapL then
-        hideTexture(OverrideActionBarEndCapL)
-        hideTexture(OverrideActionBarEndCapR)
-        hideTexture(OverrideActionBarBorder)
-        hideTexture(OverrideActionBarBG)
-        hideTexture(OverrideActionBarButtonBGMid)
-        hideTexture(OverrideActionBarButtonBGR)
-        hideTexture(OverrideActionBarButtonBGL)
-    end
-    if OverrideActionBarMicroBGMid then
-        hideTexture(OverrideActionBarMicroBGMid)
-        hideTexture(OverrideActionBarMicroBGR)
-        hideTexture(OverrideActionBarMicroBGL)
-        hideTexture(OverrideActionBarLeaveFrameExitBG)
-
-        hideTexture(OverrideActionBarDivider2)
-        hideTexture(OverrideActionBarLeaveFrameDivider3)
-    end
-    if OverrideActionBarExpBar then
-        hideTexture(OverrideActionBarExpBarXpMid)
-        hideTexture(OverrideActionBarExpBarXpR)
-        hideTexture(OverrideActionBarExpBarXpL)
-    end
-end]]

@@ -3,8 +3,9 @@ local addName= POWER_TYPE_FOOD
 local Save={
     itemClass={},--物品类型
     noUseItems={},--禁用物品
-    autoLogin= e.Player.husandro,--启动,查询
+    --autoLogin= e.Player.husandro,--启动,查询
     onlyMaxExpansion=true,--仅本版本物品
+    autoWho=e.Player.husandro
 }
 
 local panel= CreateFrame("Frame")
