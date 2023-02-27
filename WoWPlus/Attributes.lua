@@ -1574,7 +1574,7 @@ local function Init()
         if Save.scale and Save.scale~=1 then--缩放
             button.frame:SetScale(Save.scale)
         end
-        --button.frame:RegisterEvent('PLAYER_ENTERING_WORLD')
+
         button.frame:RegisterEvent('PLAYER_AVG_ITEM_LEVEL_UPDATE')
         button.frame:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
         button.frame:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED')
@@ -1679,5 +1679,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='PET_BATTLE_CLOSE' then
         button:SetShown(true)
 
+    elseif event=='PLAYER_ENTERING_WORLD' then
+        button:SetShown(not C_PetBattles.IsInBattle())
     end
 end)
