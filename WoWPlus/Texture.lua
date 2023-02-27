@@ -632,7 +632,6 @@ local function Init_SetAlpha()
         hooksecurefunc('ScenarioStage_UpdateOptionWidgetRegistration', function(stageBlock, widgetSetID)
             setAlpha(stageBlock.NormalBG)
             setAlpha(stageBlock.FinalBG)
-            setAlpha(stageBlock.Frame)
         end)
     end
 

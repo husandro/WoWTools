@@ -38,10 +38,10 @@ WoWPlus\Attributes.lua
 WoWPlus\Reputation.lua
 ##货币面板
 WoWPlus\Tokens.lua
-##移动框架， 透明度
-WoWPlus\FrameMove.lua
-##隐藏材质
-WoWPlus\HideTexture.lua
+##移动框架, 缩放
+WoWPlus\Frame.lua
+##隐藏材质，透明度
+WoWPlus\Texture.lua
 ##法术弹出框，加名称, 和颜色
 WoWPlus\SpellFrame.lua
 ##任务框，增强
