@@ -18,16 +18,10 @@ panel.fpsmsFrame:SetShown(false)
 local equipmentLevelIcon= ''
 
 local function set_Text_Size_Color()
-    local color
-    if Save.classColor then
-        color={e.Player.r, e.Player.g, e.Player.b}
-    else
-        color=true
-    end
-    e.Cstr(nil, Save.size, nil , panel.fpsms, color)
-    e.Cstr(nil, Save.size, nil , panel.money, color)
-    e.Cstr(nil, Save.size, nil , panel.durabiliy, color)
-    e.Cstr(nil, nil, nil , panel.equipmentLevel, color)
+    e.Cstr(nil, Save.size, nil , panel.fpsms, true)
+    e.Cstr(nil, Save.size, nil , panel.money, true)
+    e.Cstr(nil, Save.size, nil , panel.durabiliy, true)
+    e.Cstr(nil, nil, nil , panel.equipmentLevel, true)
 end
 
 local function set_Class_Color()
@@ -286,9 +280,11 @@ local function InitMenu(self, level, type)--主菜单
             checked= Save.classColor,
             func= function()
                 Save.classColor= not Save.classColor and true or nil
+                e.Player.useClassColor= Save.classColor
                 set_Text_Size_Color()
                 set_Class_Color()
                 setMoney()
+                print(id, addName, e.GetEnabeleDisable(Save.classColor), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end
         }
         UIDropDownMenu_AddButton(info,level)

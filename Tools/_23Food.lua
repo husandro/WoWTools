@@ -3,22 +3,24 @@ local addName= POWER_TYPE_FOOD
 local Save={
     itemClass={},--物品类型
     noUseItems={},--禁用物品
-    --autoLogin=true,--启动,查询
+    autoLogin= e.Player.husandro,--启动,查询
     onlyMaxExpansion=true,--仅本版本物品
 }
 
-local panel=e.Cbtn2(nil, WoWToolsMountButton, true, nil)
-panel.itemID= 5512--治疗石
+local panel= CreateFrame("Frame")
+local Buttons={}
+local itemClass={}--物品列表
+local button
 
 local function setPanelPostion()--设置按钮位置
     if Save.point then
-        panel:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
+        button:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
     else
-        panel:SetPoint('RIGHT', WoWToolsOpenItemsButton, 'LEFT')
+        button:SetPoint('RIGHT', WoWToolsOpenItemsButton, 'LEFT')
     end
 end
 
-local function set_Cooldown(self)--图标冷却
+local function set_Item_Cooldown(self)--图标冷却
     if self.itemID then
         local start, duration, enable = GetItemCooldown(self.itemID)
         self.texture:SetDesaturated(enable==0 or GetItemCount(self.itemID, nil, true, true)==0)
@@ -38,59 +40,57 @@ end
 --提示, 事件
 --#########
 local function set_Button_Init(self)
-    if EditModeManagerFrame:IsEditModeActive() then
+    if not self.itemID then
+        self:UnregisterAllEvents()
         return
     end
-    if self.itemID then
-        e.LoadSpellItemData(self.itemID)--加载法术, 物品数据
+    e.LoadSpellItemData(self.itemID)--加载法术, 物品数据
 
-        self:SetAttribute("type", "item")
-        self:SetAttribute("item", C_Item.GetItemNameByID(self.itemID))
-        self.texture:SetTexture(C_Item.GetItemIconByID(self.itemID))
+    self:SetAttribute("type", "item")
+    self:SetAttribute("item", C_Item.GetItemNameByID(self.itemID))
+    self.texture:SetTexture(C_Item.GetItemIconByID(self.itemID))
 
-        if not self.count then--设置, 数量
-            self.count= e.Cstr(self,10, nil,nil, true)
-            self.count:SetPoint('BOTTOMRIGHT', -4,4)
-        end
-
-        self:SetScript("OnEnter",function(self2)
-            e.tips:SetOwner(self2, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:SetItemByID(self2.itemID)
-            e.tips:AddLine(' ')
-            if self==panel then
-                e.tips:AddDoubleLine(e.onlyChinse and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
-            else
-                e.tips:AddDoubleLine(e.onlyChinse and '禁用' or DISABLE, 'Shift+'..e.Icon.right)
-            end
-            e.tips:Show()
-        end)
-        self:SetScript("OnLeave",function() e.tips:Hide() end)
-
-        self:RegisterEvent('BAG_UPDATE')
-        self:RegisterEvent('BAG_UPDATE_COOLDOWN')
-        if self~=panel then
-            self:SetScript("OnEvent", function(self2, event)
-            if event=='BAG_UPDATE' then
-                    set_Item_Count(self2)
-                elseif event=='BAG_UPDATE_COOLDOWN' then
-                    set_Cooldown(self2)--图标冷却
-                end
-            end)
-            self:SetScript('OnMouseDown',function(self2, d)
-                if d=='RightButton' and IsShiftKeyDown() then
-                    Save.noUseItems[self2.itemID]=true
-                    local link= select(2, GetItemInfo(self2.itemID))
-                    print(id, addName, e.onlyChinse and '禁用' or DISABLE, link or self2.itemID, '|cnRED_FONT_COLOR:', e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
-                end
-            end)
-        end
-
-        set_Item_Count(self)
-        set_Cooldown(self)--图标冷却
-    else
-        self:UnregisterAllEvents()
+    if not self.count then--设置, 数量
+        self.count= e.Cstr(self,10, nil,nil, true)
+        self.count:SetPoint('BOTTOMRIGHT', -4,4)
     end
+
+    self:SetScript("OnEnter",function(self2)
+        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:SetItemByID(self2.itemID)
+        e.tips:AddLine(' ')
+        if self==button then
+            e.tips:AddDoubleLine(e.onlyChinse and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+        else
+            e.tips:AddDoubleLine(e.onlyChinse and '禁用' or DISABLE, 'Shift+'..e.Icon.right)
+        end
+        e.tips:Show()
+    end)
+    self:SetScript("OnLeave",function() e.tips:Hide() end)
+
+    self:RegisterEvent('BAG_UPDATE')
+    self:RegisterEvent('BAG_UPDATE_COOLDOWN')
+
+    self:SetScript("OnEvent", function(self2, event)
+    if event=='BAG_UPDATE' then
+            set_Item_Count(self2)
+        elseif event=='BAG_UPDATE_COOLDOWN' then
+            set_Item_Cooldown(self2)--图标冷却
+        end
+    end)
+    if self~=button then
+        self:SetScript('OnMouseDown',function(self2, d)
+            if d=='RightButton' and IsShiftKeyDown() then
+                Save.noUseItems[self2.itemID]=true
+                local link= select(2, GetItemInfo(self2.itemID))
+                print(id, addName, e.onlyChinse and '禁用' or DISABLE, link or self2.itemID, '|cnRED_FONT_COLOR:', e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+            end
+        end)
+    end
+
+    set_Item_Count(self)
+    set_Item_Cooldown(self)--图标冷却
 end
 
 local function find_Item_Type(class, subclass)
@@ -111,15 +111,11 @@ local function find_Item_Type(class, subclass)
 end
 
 local function create_Button(self)
-    self= self or panel
-    local button= e.Cbtn2(nil, self, true, nil)
-
-    button:SetPoint('RIGHT', self, 'LEFT')
-    return button
+    self= self or button
+    local btn= e.Cbtn2(nil, self, true, nil)
+    btn:SetPoint('RIGHT', self, 'LEFT')
+    return btn
 end
-
-
-local itemClass={}--物品列表
 
 for classID=0, 20 do
     if classID~=10 then
@@ -145,7 +141,7 @@ for classID=0, 20 do
     end
 end
 
-local Button={}
+
 local function set_Item_Button()--检查,物品
     if UnitAffectingCombat('player') then
         panel.bat=true
@@ -159,13 +155,13 @@ local function set_Item_Button()--检查,物品
         if Save.itemClass[tab.className..tab.subclassName] then
             local Tabs=find_Item_Type(tab.classID, tab.subClassID)
             for _, itemID in pairs(Tabs) do
-                if not Save.noUseItems[itemID] and itemID~=panel.itemID and not created[itemID] then
-                    local button= Button[index]
-                    button= button or create_Button(Button[index-1])
-                    button.itemID= itemID
-                    Button[index]=button
-                    set_Button_Init(button)
-                    button:SetShown(true)
+                if not Save.noUseItems[itemID] and itemID~=button.itemID and not created[itemID] then
+                    local btn= Buttons[index]
+                    btn= btn or create_Button(Buttons[index-1])
+                    btn.itemID= itemID
+                    Buttons[index]=btn
+                    set_Button_Init(btn)
+                    btn:SetShown(true)
                     index= index +1
                     created[itemID]=true
                 end
@@ -173,13 +169,18 @@ local function set_Item_Button()--检查,物品
         end
     end
 
-    for i= index , #Button do
-        local button= Button[i]
-        button.itemID=nil
-        set_Button_Init(button)
-        button:SetShown(false)
+    for i= index , #Buttons do
+        local btn= Buttons[i]
+        btn.itemID=nil
+        set_Button_Init(btn)
+        btn:SetShown(false)
     end
 end
+
+
+
+
+
 
 --#####
 --主菜单
@@ -371,7 +372,7 @@ local function InitMenu(self, level, type)--主菜单
             disabled=bat,
             func=function()
                 Save.point=nil
-                panel:ClearAllPoints()
+                button:ClearAllPoints()
                 setPanelPostion()--设置按钮位置
             end,
         }
@@ -389,9 +390,9 @@ local function Init()
 
     setPanelPostion()--设置按钮位置
     local size=e.toolsFrame.size or 30
-    panel:SetSize(size,size)
+    button:SetSize(size,size)
 
-    set_Button_Init(panel)--提示, 事件
+    set_Button_Init(button)--提示, 事件
 
     if Save.autoWho then
         set_auto_Who_Event()--设置事件,自动更新
@@ -400,31 +401,35 @@ local function Init()
         set_Item_Button()
     end
 
-    panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
-    UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
+    button.Menu=CreateFrame("Frame",nil, button, "UIDropDownMenuTemplate")
+    UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
-    panel:RegisterForDrag("RightButton")
-    panel:SetMovable(true)
-    panel:SetClampedToScreen(true)
-    panel:SetScript("OnDragStart", function(self,d )
-        self:StartMoving()
+    button:RegisterForDrag("RightButton")
+    button:SetMovable(true)
+    button:SetClampedToScreen(true)
+    button:SetScript("OnDragStart", function(self,d)
+        if not EditModeManagerFrame:IsEditModeActive() then
+            self:StartMoving()
+        end
     end)
-    panel:SetScript("OnDragStop", function(self)
-        ResetCursor()
-        self:StopMovingOrSizing()
-        Save.point={self:GetPoint(1)}
-        Save.point[2]=nil
-        CloseDropDownMenus()
+    button:SetScript("OnDragStop", function(self)
+        if not EditModeManagerFrame:IsEditModeActive() then
+            ResetCursor()
+            self:StopMovingOrSizing()
+            Save.point={self:GetPoint(1)}
+            Save.point[2]=nil
+            CloseDropDownMenus()
+        end
     end)
-    panel:SetScript("OnMouseDown", function(self,d)
+    button:SetScript("OnMouseDown", function(self,d)
         if d=='RightButton' then
             ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
         end
     end)
-    panel:SetScript("OnMouseUp", function(self, d)
+    button:SetScript("OnMouseUp", function(self, d)
         ResetCursor()
     end)
-    panel:SetScript('OnMouseWheel',function(self,d)
+    button:SetScript('OnMouseWheel',function(self,d)
         if d==-1 and not IsModifierKeyDown() then
             if UnitAffectingCombat('player') then
                 print(id, e.onlyChinse and '查询' or WHO, '|cnRED_FONT_COLOR:'..COMBAT )
@@ -439,10 +444,7 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-
 panel:SetScript("OnEvent", function(self, event, arg1)
-  
     if event == "ADDON_LOADED" then
         if arg1== id then
             if WoWToolsSave and not WoWToolsSave[addName..'Tools'] then--初始,类, 设置
@@ -458,6 +460,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
 
             if not e.toolsFrame.disabled then
+                button=e.Cbtn2(nil, WoWToolsMountButton, true, nil)
+                button.itemID= 5512--治疗石
+                set_Button_Init(button)--提示, 事件
+
+                panel:RegisterEvent("PLAYER_LOGOUT")
+
                 C_Timer.After(2.3, function()
                     if UnitAffectingCombat('player') then
                         panel.setInitBat=true
@@ -466,11 +474,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         Init()--初始
                     end
                 end)
-                panel:UnregisterEvent('ADDON_LOADED')
-            else
-                panel:UnregisterAllEvents()
-                panel:SetShown(false)
             end
+            panel:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event == "PLAYER_LOGOUT" then
@@ -479,24 +484,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave[addName..'Tools']=Save
         end
 
-    elseif event=='BAG_UPDATE' then
-        set_Item_Count(self)--更新物品,次数
-
     elseif event=='BAG_UPDATE_DELAYED' then
         set_Item_Button()--检查,物品
-        set_Item_Count(self)--更新物品,次数
 
     elseif event=='PLAYER_REGEN_ENABLED' then
         if panel.bat then
-            set_Item_Count(self)--更新物品
+            set_Item_Button()--检查,物品
             panel.bat=nil
+
         elseif panel.setInitBat then
             Init()--初始
             panel.setInitBat=nil
         end
         panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
-
-    elseif event=='BAG_UPDATE_COOLDOWN' then
-        set_Cooldown(self)--图标冷却
     end
 end)

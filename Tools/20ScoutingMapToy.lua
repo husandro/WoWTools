@@ -1,9 +1,7 @@
 local id, e = ...
 --local addName= ADVENTURE_MAP_TITLE..TOY
-
-local panel=e.Cbtn2(nil, WoWToolsMountButton, true)
-panel:SetAttribute("type", "item")
-panel:SetPoint('RIGHT', WoWToolsOpenItemsButton, 'LEFT')
+local panel= CreateFrame("Frame")
+local button
 
 local Toy={
     [187869]={14663, 14303, 14304, 14305, 14306},--暗影界
@@ -27,112 +25,99 @@ for itemID, _ in pairs(Toy) do
 end
 
 local function Get_Use_Toy()
-    if UnitAffectingCombat('player') or EditModeManagerFrame:IsEditModeActive() then
-        panel.bat=true
+    if UnitAffectingCombat('player') then
         return
     end
-
-    panel.itemID=nil
+    button.itemID=nil
     for itemID, tab in pairs(Toy) do
         for _, achievementID  in pairs(tab) do
             if not select(13,GetAchievementInfo(achievementID)) and itemID then
-                panel.itemID=itemID
-
+                button.itemID=itemID
                 panel.bat=nil
 
-                panel.texture:SetTexture(C_Item.GetItemIconByID(itemID))
-                panel:SetAttribute("item", C_Item.GetItemNameByID(itemID) or itemID)
-                panel:SetShown(true)
+                button.texture:SetTexture(C_Item.GetItemIconByID(itemID))
+                button:SetAttribute("item", C_Item.GetItemNameByID(itemID) or itemID)
 
+                button:SetShown(true)
                 return
             end
         end
         Toy[itemID]=nil
     end
-
-    panel:SetShown(false)
+    button:SetShown(false)
     panel:UnregisterAllEvents()
 end
 
-
---####
---初始
---####
-local function Init()
-    panel:SetScript('OnEnter', function(self)
-        if self.itemID then
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:SetToyByItemID(self.itemID)
-            e.tips:Show()
-        end
-    end)
-    panel:SetScript('OnLeave', function() e.tips:Hide() end)
-
-    for itemID, _ in pairs(Toy) do
-        if not(PlayerHasToy(itemID) and C_ToyBox.IsToyUsable(itemID)) then
-            Toy[itemID]=nil
-        end
-    end
-
-    Get_Use_Toy()
-end
 
 --###########
 --加载保存数据
 --###########2
 panel:RegisterEvent("ADDON_LOADED")
-
-panel:RegisterEvent("PLAYER_REGEN_ENABLED")
-panel:RegisterEvent('PLAYER_REGEN_DISABLED')
-panel:RegisterEvent('UI_ERROR_MESSAGE')
-panel:RegisterEvent('RECEIVED_ACHIEVEMENT_LIST')
-panel:RegisterEvent('CRITERIA_UPDATE')
-
 panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" then
         if arg1== id then
             if not e.toolsFrame.disabled then
-                    if not IsAddOnLoaded('Blizzard_AchievementUI') then
-                        LoadAddOn("Blizzard_AchievementUI")
+                button=e.Cbtn2(nil, WoWToolsMountButton, true)
+                button:SetAttribute("type", "item")
+                button:SetPoint('BOTTOM', WoWToolsOpenItemsButton, 'TOP')--自定义位置
+                button:SetScript('OnEnter', function(self)
+                    if self.itemID then
+                        e.tips:SetOwner(self, "ANCHOR_LEFT")
+                        e.tips:ClearLines()
+                        e.tips:SetToyByItemID(self.itemID)
+                        e.tips:Show()
                     end
+                end)
+                button:SetScript('OnLeave', function() e.tips:Hide() end)
 
-                    if not IsAddOnLoaded('Blizzard_ToyBox') then
-                        LoadAddOn("Blizzard_ToyBox")
-                    end
+                panel:RegisterEvent("PLAYER_REGEN_ENABLED")
+                panel:RegisterEvent('PLAYER_REGEN_DISABLED')
+                panel:RegisterEvent('UI_ERROR_MESSAGE')
+                panel:RegisterEvent('RECEIVED_ACHIEVEMENT_LIST')
+                panel:RegisterEvent('CRITERIA_UPDATE')
 
-                    ToggleAchievementFrame()
-                    ToggleAchievementFrame()
+                if not IsAddOnLoaded('Blizzard_AchievementUI') then
+                    LoadAddOn("Blizzard_AchievementUI")
+                end
+                if not IsAddOnLoaded('Blizzard_ToyBox') then
+                    LoadAddOn("Blizzard_ToyBox")
+                end
+                ToggleAchievementFrame()
+                ToggleAchievementFrame()
             else
                 panel:UnregisterAllEvents()
-                panel:SetShown(false)
             end
 
         elseif arg1=='Blizzard_AchievementUI' then
             C_Timer.After(2, function()
-                if UnitAffectingCombat('player') then
-                    panel.combat= true
-                else
-                    Init()--初始
+                if not UnitAffectingCombat('player') then
+                    for itemID, _ in pairs(Toy) do--初始
+                        if not(PlayerHasToy(itemID) and C_ToyBox.IsToyUsable(itemID)) then
+                            Toy[itemID]=nil
+                        end
+                    end
+                    Get_Use_Toy()
                 end
             end)
         end
 
     elseif event=='PLAYER_REGEN_ENABLED' then
-        if panel.bat or panel.itemID then
-            Get_Use_Toy()
-        end
+        Get_Use_Toy()
+
     elseif event=='PLAYER_REGEN_DISABLED' then
-        panel:SetShown(false)
+        button:SetShown(false)
 
     elseif event=='UI_ERROR_MESSAGE' and arg1==56 and arg2==SPELL_FAILED_CUSTOM_ERROR_616 then
-        if panel.itemID then
-            Toy[panel.itemID]=nil
-            Get_Use_Toy()
-        end
+        C_Timer.After(0.3, function()
+            if button.itemID then
+                Toy[button.itemID]=nil
+                Get_Use_Toy()
+            end
+        end)
+
     elseif event=='RECEIVED_ACHIEVEMENT_LIST' then
-        if panel.itemID then
+        C_Timer.After(0.3, function()
             Get_Use_Toy()
-        end
+        end)
     end
 end)

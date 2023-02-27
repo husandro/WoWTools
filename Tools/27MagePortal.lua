@@ -1,10 +1,13 @@
 local className, _, classId = UnitClass('player')
-local englishFaction = UnitFactionGroup('player')
 if classId~=8 then--不是法师, 不加载
     return
 end
+local englishFaction = UnitFactionGroup('player')
 
 local id, e= ...
+local addName=UNITNAME_SUMMON_TITLE14:format(className)
+local Save={}
+local panel=CreateFrame("Frame")
 
 local Tab
 if englishFaction=='Horde' then--部落
@@ -56,9 +59,6 @@ for _, tab in pairs(Tab) do
     end
 end
 
-local addName=UNITNAME_SUMMON_TITLE14:format(className)
-local Save={}
-local panel=CreateFrame("Frame")
 
 local function setCooldown(self, spellID)--设置冷却
     local start, duration, _, modRate = GetSpellCooldown(spellID)

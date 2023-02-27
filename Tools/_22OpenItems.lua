@@ -1,4 +1,5 @@
 local id, e = ...
+local addName=UNWRAP..ITEMS
 local Save={
     use={--定义,使用物品, [ID]=数量(或组合数量)
         [190198]=5,
@@ -33,28 +34,24 @@ local Save={
     pet=true, open=true, toy=true, mount=true, mago=true, ski=true, alt=true,
     noItemHide=not e.Player.husandro,
 }
-
-local addName=UNWRAP..ITEMS
 local Combat, Bag, Opening= nil,{},nil
-
-
-local panel= e.Cbtn2('WoWToolsOpenItemsButton', WoWToolsMountButton)
-panel:SetPoint('RIGHT', HearthstoneToolsButton, 'LEFT')
+local panel= CreateFrame("Frame")
+local button
 
 local function setCooldown()--冷却条
-    if panel:IsShown() then
+    if button:IsShown() then
         if Bag.bag and Bag.slot then
             local itemID = C_Container.GetContainerItemID(Bag.bag, Bag.slot)
             if itemID then
                 local start, duration, enable = GetItemCooldown(itemID)
-                panel.texture:SetDesaturated(enable==1 and duration and duration>2)
-                e.Ccool(panel, start, duration, nil, true,nil, true)
+                button.texture:SetDesaturated(enable==1 and duration and duration>2)
+                e.Ccool(button, start, duration, nil, true,nil, true)
                 return
             end
         end
     end
-    if panel.cooldown then
-        panel.cooldown:Clear()
+    if button.cooldown then
+        button.cooldown:Clear()
     end
 end
 
@@ -74,19 +71,19 @@ local function setAtt(bag, slot, icon, itemID)--设置属性
 
         Bag={bag=bag, slot=slot}
 
-        panel:SetAttribute("macrotext", '/use '..bag..' '..slot)
-        panel.texture:SetTexture(icon)
+        button:SetAttribute("macrotext", '/use '..bag..' '..slot)
+        button.texture:SetTexture(icon)
         num = GetItemCount(itemID)
         num= num~=1 and num or ''
-        panel:SetShown(true)
-        --panel:SetAttribute("type", "macro")
+        button:SetShown(true)
+        --button:SetAttribute("type", "macro")
     else
-        panel:SetAttribute("macrotext", '')
-        panel:SetShown(not Save.noItemHide)
+        button:SetAttribute("macrotext", '')
+        button:SetShown(not Save.noItemHide)
     end
     setCooldown()--冷却条
-    panel.count:SetText(num or '')
-    panel.texture:SetShown(bag and slot)
+    button.count:SetText(num or '')
+    button.texture:SetShown(bag and slot)
     Combat=nil
     Opening= nil
 end
@@ -421,7 +418,7 @@ local function setMenuList(self, level, menuList)--主菜单
             else
                 Save.noItemHide =true
             end
-            panel:SetShown(Bag.bag or not Save.noItemHide)
+            button:SetShown(Bag.bag or not Save.noItemHide)
         end,
         checked= Save.noItemHide
     }
@@ -504,26 +501,28 @@ local function shoTips(self)--显示提示
         e.tips:Show()
     end
 end
+
+
 --######
 --初始化
 --######
 local function Init()
-    panel:SetAttribute("type", "macro")
+    button:SetAttribute("type", "macro")
 
     if e.toolsFrame.size and e.toolsFrame.size~=30 then--设置大小
-        panel:SetSize(e.toolsFrame.size, e.toolsFrame.size)
+        button:SetSize(e.toolsFrame.size, e.toolsFrame.size)
     end
 
-    panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")--菜单列表
+    button.Menu=CreateFrame("Frame",nil, button, "UIDropDownMenuTemplate")--菜单列表
 
-    panel.count=e.Cstr(panel, 10, nil, nil, true)
-    panel.count:SetPoint('BOTTOM',0,2)
+    button.count=e.Cstr(button, 10, nil, nil, true)
+    button.count:SetPoint('BOTTOM',0,2)
 
-    UIDropDownMenu_Initialize(panel.Menu, setMenuList, 'MENU')
+    UIDropDownMenu_Initialize(button.Menu, setMenuList, 'MENU')
 
     getItems()--设置属性
 
-    panel:SetScript("OnEnter",function(self)
+    button:SetScript("OnEnter",function(self)
         local infoType, itemID, itemLink = GetCursorInfo()
         if infoType == "item" and itemID and itemLink then
             if Bag.bag and Bag.slot and itemLink== C_Container.GetContainerItemLink(Bag.bag, Bag.slot) then
@@ -539,15 +538,15 @@ local function Init()
             shoTips(self)--显示提示
         end
     end)
-    panel:SetScript("OnLeave",function()
+    button:SetScript("OnLeave",function()
         e.tips:Hide()
         BattlePetTooltip:Hide()
         ResetCursor()
     end)
-    panel:SetScript("OnMouseDown", function(self,d)
+    button:SetScript("OnMouseDown", function(self,d)
         local key= IsModifierKeyDown()
         if (d=='RightButton' and not key) or not(Bag.bag and Bag.slot) then
-            ToggleDropDownMenu(1,nil,panel.Menu,self,self:GetWidth(),0)
+            ToggleDropDownMenu(1,nil,button.Menu,self,self:GetWidth(),0)
         else
             if d=='LeftButton' and not key and equipItem and not PaperDollFrame:IsVisible() then
                 ToggleCharacter("PaperDollFrame")
@@ -558,7 +557,7 @@ local function Init()
         end
     end)
 
-    panel:SetScript('OnMouseWheel',function(self,d)
+    button:SetScript('OnMouseWheel',function(self,d)
         if d == 1 and not IsModifierKeyDown() then
             if Bag.slot and Bag.bag then
                 setDisableCursorItem()--禁用当物品
@@ -581,7 +580,9 @@ local function set_Events()--注册， 事件
         panel:UnregisterEvent('BAG_UPDATE_COOLDOWN')
         panel:UnregisterEvent('PLAYER_REGEN_DISABLED')
         panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
-        panel:SetShown(false)
+        if not UnitAffectingCombat('player') then
+            button:SetShown(false)
+        end
     else
         --panel:RegisterEvent('BAG_UPDATE')
         panel:RegisterEvent('BAG_UPDATE_DELAYED')
@@ -596,23 +597,21 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-
-panel:RegisterEvent('CHALLENGE_MODE_START')
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
-
-
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
             if not e.toolsFrame.disabled then
+
+                button= e.Cbtn2('WoWToolsOpenItemsButton', WoWToolsMountButton)
+                button:SetPoint('RIGHT', HearthstoneToolsButton, 'LEFT')
+
+                panel:RegisterEvent('CHALLENGE_MODE_START')
+                panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+                panel:RegisterEvent("PLAYER_LOGOUT")
                 Init()
-                panel:UnregisterEvent('ADDON_LOADED')
-            else
-                panel:UnregisterAllEvents()
-                panel:SetShown(false)
             end
-            panel:RegisterEvent("PLAYER_LOGOUT")
+            panel:UnregisterEvent("ADDON_LOADED")
         end
 
     elseif event == "PLAYER_LOGOUT" then
@@ -620,6 +619,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not WoWToolsSave then WoWToolsSave={} end
             WoWToolsSave[addName..'Tools']=Save
         end
+
     elseif event=='PLAYER_ENTERING_WORLD' or event=='CHALLENGE_MODE_START' then
         set_Events()--注册， 事件
 
@@ -628,14 +628,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='PLAYER_REGEN_DISABLED' then
         if Save.noItemHide then
-            panel:SetShown(false)
+            button:SetShown(false)
         end
 
     elseif event=='PLAYER_REGEN_ENABLED' then
         if Combat then
             getItems()
         else
-            panel:SetShown(Bag.bag or not Save.noItemHide)
+            button:SetShown(Bag.bag or not Save.noItemHide)
         end
 
     elseif event=='BAG_UPDATE_COOLDOWN' then

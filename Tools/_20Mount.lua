@@ -3,8 +3,8 @@ local addName= MOUNT
 local Faction =  UnitFactionGroup('player')=='Horde' and 0 or UnitFactionGroup('player')=='Alliance' and 1
 local ClassID = select(2, UnitClassBase('player'))
 local ShiJI= Faction==0 and IsSpellKnown(179244) and 179244 or Faction==1 and IsSpellKnown(179245) and 179245--[召唤司机]
-
-
+local XD
+local button
 
 local Save={
     Mounts={
@@ -49,76 +49,56 @@ local Save={
     XD= true,
     KEY= e.Player.husandro and 'BUTTON5', --为我自定义, 按键
 }
-local XD
 
-local panel=e.Cbtn2('WoWToolsMountButton')
-panel:SetAttribute("type1", "spell")
-panel:SetAttribute("target-spell", "cursor")
-panel:SetAttribute("alt-type1", "spell")
-panel:SetAttribute("shift-type1", "spell")
-panel:SetAttribute("ctrl-type1", "spell")
-
-panel.textureModifier=panel:CreateTexture(nil,'OVERLAY')--提示 Shift, Ctrl, Alt
-panel.textureModifier:SetAllPoints(panel.texture)
-panel.textureModifier:AddMaskTexture(panel.mask)
-
-panel.textureModifier:SetShown(false)
-
-e.toolsFrame:SetParent(panel)--设置, TOOLS 位置
-e.toolsFrame:SetPoint('BOTTOMRIGHT', panel, 'TOPRIGHT',-1,0)
-panel.Up=panel:CreateTexture(nil,'OVERLAY')
-panel.Up:SetPoint('TOP',-1, 9)
-panel.Up:SetAtlas('NPE_ArrowUp')
-panel.Up:SetSize(20,20)
 
 local function setPanelPostion()--设置按钮位置
     if Save.Point and Save.Point[1] and Save.Point[3] and Save.Point[4] and Save.Point[5] then
-        panel:SetPoint(Save.Point[1], UIParent, Save.Point[3], Save.Point[4], Save.Point[5])
+        button:SetPoint(Save.Point[1], UIParent, Save.Point[3], Save.Point[4], Save.Point[5])
     else
         --[[if CharacterReagentBag0Slot and CharacterReagentBag0Slot:IsVisible() then
-            panel:SetPoint('RIGHT', CharacterReagentBag0Slot, 'LEFT', -10 ,0)
+            button:SetPoint('RIGHT', CharacterReagentBag0Slot, 'LEFT', -10 ,0)
         else
-            panel:SetPoint('CENTER')
+            button:SetPoint('CENTER')
         end]]
-        panel:SetPoint('BOTTOMRIGHT', UIParent, 'BOTTOMRIGHT', -290, 6)
+        button:SetPoint('BOTTOMRIGHT', UIParent, 'BOTTOMRIGHT', -290, 6)
     end
 end
 
 local function setButtonSize()--设置按钮大小
     if e.toolsFrame.size then
-        panel:SetSize(e.toolsFrame.size, e.toolsFrame.size)
+        button:SetSize(e.toolsFrame.size, e.toolsFrame.size)
     end
 end
 
 local function setKEY()--设置捷键
     if Save.KEY then
-        e.SetButtonKey(panel, true, Save.KEY)
+        e.SetButtonKey(button, true, Save.KEY)
         if #Save.KEY==1 then
-            if not panel.KEY then
-                panel.KEYstring=e.Cstr(panel,10, nil, nil, true, 'OVERLAY')
-                panel.KEYstring:SetPoint('BOTTOMRIGHT', panel.border, 'BOTTOMRIGHT',-4,4)
+            if not button.KEY then
+                button.KEYstring=e.Cstr(button,10, nil, nil, true, 'OVERLAY')
+                button.KEYstring:SetPoint('BOTTOMRIGHT', button.border, 'BOTTOMRIGHT',-4,4)
             end
-            panel.KEYstring:SetText(Save.KEY)
-            if panel.KEYtexture then
-                panel.KEYtexture:SetShown(false)
+            button.KEYstring:SetText(Save.KEY)
+            if button.KEYtexture then
+                button.KEYtexture:SetShown(false)
             end
         else
-            if not panel.KEYtexture then
-                panel.KEYtexture=panel:CreateTexture(nil,'OVERLAY')
-                panel.KEYtexture:SetPoint('BOTTOM', panel.border,'BOTTOM',-1,-5)
-                panel.KEYtexture:SetAtlas('NPE_ArrowDown')
-                panel.KEYtexture:SetDesaturated(true)
-                panel.KEYtexture:SetSize(20,15)
+            if not button.KEYtexture then
+                button.KEYtexture=button:CreateTexture(nil,'OVERLAY')
+                button.KEYtexture:SetPoint('BOTTOM', button.border,'BOTTOM',-1,-5)
+                button.KEYtexture:SetAtlas('NPE_ArrowDown')
+                button.KEYtexture:SetDesaturated(true)
+                button.KEYtexture:SetSize(20,15)
             end
-            panel.KEYtexture:SetShown(true)
+            button.KEYtexture:SetShown(true)
         end
     else
-        e.SetButtonKey(panel)
-        if panel.KEYstring then
-            panel.KEYstring:SetText('')
+        e.SetButtonKey(button)
+        if button.KEYstring then
+            button.KEYstring:SetText('')
         end
-        if panel.KEYtexture then
-            panel.KEYtexture:SetShown(false)
+        if button.KEYtexture then
+            button.KEYtexture:SetShown(false)
         end
     end
 end
@@ -151,23 +131,23 @@ local function removeTable(type, ID)--移除, 表里, 其他同样的项目
     end
 end
 local function checkSpell()--检测法术
-    panel.spellID=nil
+    button.spellID=nil
     if XD and XD[MOUNT_JOURNAL_FILTER_GROUND] then
-        panel.spellID=XD[MOUNT_JOURNAL_FILTER_GROUND]
+        button.spellID=XD[MOUNT_JOURNAL_FILTER_GROUND]
     else
         for spellID, _ in pairs(Save.Mounts[SPELLS]) do
             if IsSpellKnown(spellID) then
-                panel.spellID=spellID
+                button.spellID=spellID
                 break
             end
         end
     end
 end
 local function checkItem()--检测物品
-    panel.itemID=nil
+    button.itemID=nil
     for itemID, _ in pairs(Save.Mounts[ITEMS]) do
         if GetItemCount(itemID , nil, true, true)>0 then
-            panel.itemID=itemID
+            button.itemID=itemID
             break
         end
     end
@@ -186,13 +166,13 @@ local function checkMount()--检测坐骑
     local uiMapID= C_Map.GetBestMapForUnit("player")--当前地图
     for index, type in pairs(tab) do
         if XD and XD[type] then
-            panel[type]={XD[type]}
+            button[type]={XD[type]}
 
         elseif index<=3 and not prima and ShiJI then--33388初级骑术 33391中级骑术 3409高级骑术 34091专家级骑术 90265大师级骑术 783旅行形态
-            panel[type]={ShiJI}
+            button[type]={ShiJI}
 
         else
-            panel[type]={}
+            button[type]={}
             for spellID, mapID in pairs(Save.Mounts[type]) do
                 local mountID = C_MountJournal.GetMountFromSpell(spellID)
                 if mountID then
@@ -201,10 +181,10 @@ local function checkMount()--检测坐骑
                     if not shouldHideOnChar and isCollected and (not isFactionSpecific or faction==Faction) then
                         if type==FLOOR then
                             if uiMapID and mapID==uiMapID and not XD then
-                                table.insert(panel[type], spellID)
+                                table.insert(button[type], spellID)
                             end
                         else
-                            table.insert(panel[type], spellID)
+                            table.insert(button[type], spellID)
                         end
                     end
                 end
@@ -214,51 +194,51 @@ local function checkMount()--检测坐骑
 end
 
 local function getRandomRoll(type)--随机坐骑
-    local tab=panel[type]
+    local tab=button[type]
     if #tab>0 then
         local index=math.random(1,#tab)
         return tab[index]
     end
 end
 local function setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
-    if UnitAffectingCombat('player') or EditModeManagerFrame:IsEditModeActive() then
-        panel.Combat=true
+    if UnitAffectingCombat('player') then
+        button.Combat=true
         return
     end
     local tab={'Shift', 'Alt', 'Ctrl'}
 
     local name, _, icon
     for _, type in pairs(tab) do
-        panel.textureModifier[type]=nil
-        if panel[type] and panel[type][1] then
-            name, _, icon=GetSpellInfo(panel[type][1])
+        button.textureModifier[type]=nil
+        if button[type] and button[type][1] then
+            name, _, icon=GetSpellInfo(button[type][1])
             --if name and icon then
-                panel:SetAttribute(type.."-spell1", name or panel[type][1])
-                panel.textureModifier[type]=icon
-                panel.typeSpell=true--提示用
-                panel.typeID=panel[type][1]
+                button:SetAttribute(type.."-spell1", name or button[type][1])
+                button.textureModifier[type]=icon
+                button.typeSpell=true--提示用
+                button.typeID=button[type][1]
             --end
         end
     end
-    panel.Combat=nil
+    button.Combat=nil
 end
 local function setCooldown()--设置冷却
-    if panel.spellAtt then
-        local start, duration, _, modRate = GetSpellCooldown(panel.spellAtt)
-        e.Ccool(panel, start, duration, modRate, true, nil, true)--冷却条
-    elseif panel.itemID then
-        local start, duration = GetItemCooldown(panel.itemID)
-        e.Ccool(panel, start, duration, nil, true,nil, true)--冷却条
-    elseif panel.cooldown then
-        panel.cooldown:Clear()
+    if button.spellAtt then
+        local start, duration, _, modRate = GetSpellCooldown(button.spellAtt)
+        e.Ccool(button, start, duration, modRate, true, nil, true)--冷却条
+    elseif button.itemID then
+        local start, duration = GetItemCooldown(button.itemID)
+        e.Ccool(button, start, duration, nil, true,nil, true)--冷却条
+    elseif button.cooldown then
+        button.cooldown:Clear()
     end
 end
 local function setTextrue()--设置图标
-    local icon= panel.iconAtt
+    local icon= button.iconAtt
     if IsMounted() then
         icon=136116
     elseif icon then
-        local spellID= panel.spellAtt or panel.itemID and select(2, GetItemSpell(panel.itemID))
+        local spellID= button.spellAtt or button.itemID and select(2, GetItemSpell(button.itemID))
         if spellID  then --and e.WA_GetUnitBuff('player', spellID, 'PLAYER') then
             local spellName=GetSpellInfo(spellID)
             for i = 1, 40 do
@@ -273,9 +253,9 @@ local function setTextrue()--设置图标
         end
     end
     if icon then
-        panel.texture:SetTexture(icon)
+        button.texture:SetTexture(icon)
     end
-    panel.texture:SetShown(icon and true or false)
+    button.texture:SetShown(icon and true or false)
     setCooldown()--设置冷却
 end
 
@@ -294,11 +274,11 @@ local mapIDs={
 local function setClickAtt()--设置 Click属性
     local inCombat=UnitAffectingCombat('player')
     if inCombat or UnitIsDead('player') then
-        panel.Combat=true
+        button.Combat=true
         return
     end
-    local spellID= IsIndoors() and panel.spellID--进入战斗, 室内
-                    or #panel[FLOOR]>0 and getRandomRoll(FLOOR)--区域
+    local spellID= IsIndoors() and button.spellID--进入战斗, 室内
+                    or #button[FLOOR]>0 and getRandomRoll(FLOOR)--区域
                     or (IsUsableSpell(368896) and select(5, C_MountJournal.GetMountInfoByID(1589))) and getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING)
                     or IsSubmerged() and getRandomRoll(MOUNT_JOURNAL_FILTER_AQUATIC)--水平中
                     or IsFlyableArea() and getRandomRoll(MOUNT_JOURNAL_FILTER_FLYING)--飞行区域
@@ -308,28 +288,28 @@ local function setClickAtt()--设置 Click属性
     if spellID then
         name, _, icon=GetSpellInfo(spellID)
         if name and icon then
-            panel:SetAttribute("type1", "spell")
-            panel:SetAttribute("spell1", name)
-            panel.typeSpell=true--提示用
-            panel.typeID=spellID
+            button:SetAttribute("type1", "spell")
+            button:SetAttribute("spell1", name)
+            button.typeSpell=true--提示用
+            button.typeID=spellID
         end
-    elseif panel.itemID then
-        panel:SetAttribute("type1", "item")
-        panel:SetAttribute("item1", C_Item.GetItemNameByID(panel.itemID)  or panel.itemID)
-        panel.typeID=panel[type][1]
-        panel.typeSpell=nil--提示用
-        panel.typeID=spellID
+    elseif button.itemID then
+        button:SetAttribute("type1", "item")
+        button:SetAttribute("item1", C_Item.GetItemNameByID(button.itemID)  or button.itemID)
+        button.typeID=button[type][1]
+        button.typeSpell=nil--提示用
+        button.typeID=spellID
     else
-        panel:SetAttribute("item1", nil)
-        panel:SetAttribute("spell1", nil)
-        panel.typeSpell=nil--提示用
-        panel.typeID=nil
+        button:SetAttribute("item1", nil)
+        button:SetAttribute("spell1", nil)
+        button.typeSpell=nil--提示用
+        button.typeID=nil
     end
-    panel.spellAtt=spellID
-    panel.iconAtt=icon
+    button.spellAtt=spellID
+    button.iconAtt=icon
     setTextrue()--设置图标
 
-    panel.Combat=nil
+    button.Combat=nil
 end
 
 --#######
@@ -340,7 +320,7 @@ local function getMountShow()
     C_MountJournal.SetCollectedFilterSetting(3,false)
     local num=C_MountJournal.GetNumDisplayedMounts()
     local n=1
-    while n<num and panel.showFrame:IsShown() and IsOutdoors() and not UnitIsDeadOrGhost('player') and not UnitAffectingCombat('player') and not IsPlayerMoving() do
+    while n<num and button.showFrame:IsShown() and IsOutdoors() and not UnitIsDeadOrGhost('player') and not UnitAffectingCombat('player') and not IsPlayerMoving() do
         local _, _, _, isActive, isUsable, _, _, _, _, _, _, mountID = C_MountJournal.GetDisplayedMountInfo(math.random(1, num));
         if not isActive and isUsable and mountID then
             C_MountJournal.SummonByID(mountID)
@@ -348,7 +328,7 @@ local function getMountShow()
         end
         n=n+1
     end
-    panel.showFrame:SetShown(false)
+    button.showFrame:SetShown(false)
 end
 
 local specialEffects
@@ -365,12 +345,12 @@ local function setMountShow()--坐骑展示
     end
     timeElapsed=3.1
     print(id, addName, specialEffects and EMOTE171_CMD2:gsub('/','') or MOUNT, '3 '..SECONDS)
-    if not panel.showFrame then
-        panel.showFrame=CreateFrame('Frame')
-        panel.showFrame:HookScript('OnUpdate',function(self, elapsed)
+    if not button.showFrame then
+        button.showFrame=CreateFrame('Frame')
+        button.showFrame:HookScript('OnUpdate',function(self, elapsed)
             timeElapsed= timeElapsed+ elapsed
             if UnitAffectingCombat('player') or IsPlayerMoving() or UnitIsDeadOrGhost('player') then
-                panel.showFrame:SetShown(false)
+                button.showFrame:SetShown(false)
                 specialEffects=nil
                 return
             elseif timeElapsed>3 then
@@ -384,7 +364,7 @@ local function setMountShow()--坐骑展示
             end
         end)
     end
-    panel.showFrame:SetShown(true)
+    button.showFrame:SetShown(true)
 end
 
 --#####
@@ -655,7 +635,7 @@ local function InitMenu(self, level, menuList)--主菜单
                 colorCode=not Save.Point and '|cff606060',
                 func=function()
                     Save.Point=nil
-                    panel:ClearAllPoints()
+                    button:ClearAllPoints()
                     setPanelPostion()--设置按钮位置
                     CloseDropDownMenus()
                 end,
@@ -719,8 +699,8 @@ local function InitMenu(self, level, menuList)--主菜单
                 UIDropDownMenu_AddButton(info, level);
             end
 
-        elseif panel[menuList] then--二级菜单
-            for _, spellID in pairs(panel[menuList]) do
+        elseif button[menuList] then--二级菜单
+            for _, spellID in pairs(button[menuList]) do
                 local name, _, icon, mountID
                 if menuList==ITEMS then
                     name=C_Item.GetItemNameByID(spellID)
@@ -770,7 +750,7 @@ local function InitMenu(self, level, menuList)--主菜单
 
             elseif type==SPELLS or type==ITEMS then
                 local num=getTableNum(type)--检测,表里的数量
-                local icon= (type==SPELLS and panel.spellID) and GetSpellTexture(panel.spellID) or panel.itemID and C_Item.GetItemIconByID(panel.itemID)
+                local icon= (type==SPELLS and button.spellID) and GetSpellTexture(button.spellID) or button.itemID and C_Item.GetItemIconByID(button.itemID)
                 info={
                     text=(num>0 and '|cnGREEN_FONT_COLOR:'..num..'|r' or '')..(icon and '|T'..icon..':0|t' or '')..type,
                     menuList=type,
@@ -780,8 +760,8 @@ local function InitMenu(self, level, menuList)--主菜单
                 }
                 UIDropDownMenu_AddButton(info, level);
 
-            elseif panel[type] then
-                local tab=panel[type]
+            elseif button[type] then
+                local tab=button[type]
                 local num, spellID = #tab, tab[1]
                 local icon
                 icon =spellID and GetSpellTexture(spellID)
@@ -956,8 +936,8 @@ local function Init()
 
     setButtonSize()--设置按钮大小
 
-    panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
-    UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
+    button.Menu=CreateFrame("Frame",nil, button, "UIDropDownMenuTemplate")
+    UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
     XDInt()--德鲁伊设置
     checkSpell()--检测法术
     checkItem()--检测物品
@@ -969,22 +949,26 @@ local function Init()
         setKEY()--设置捷键
     end
 
-    --panel:EnableMouseWheel(true)
-    panel:RegisterForDrag("RightButton")
-    panel:SetMovable(true)
-    panel:SetClampedToScreen(true)
+    --button:EnableMouseWheel(true)
+    button:RegisterForDrag("RightButton")
+    button:SetMovable(true)
+    button:SetClampedToScreen(true)
 
-    panel:SetScript("OnDragStart", function(self,d )
-        self:StartMoving()
+    button:SetScript("OnDragStart", function(self,d)
+        if not EditModeManagerFrame:IsEditModeActive() then
+            self:StartMoving()
+        end
     end)
-    panel:SetScript("OnDragStop", function(self)
-        ResetCursor()
-        self:StopMovingOrSizing()
-        Save.Point={self:GetPoint(1)}
-        Save.Point[2]=nil
-        CloseDropDownMenus()
+    button:SetScript("OnDragStop", function(self)
+        if not EditModeManagerFrame:IsEditModeActive() then
+            ResetCursor()
+            self:StopMovingOrSizing()
+            Save.Point={self:GetPoint(1)}
+            Save.Point[2]=nil
+            CloseDropDownMenus()
+        end
     end)
-    panel:SetScript("OnMouseDown", function(self,d)
+    button:SetScript("OnMouseDown", function(self,d)
         local infoType, itemID, itemLink ,spellID= GetCursorInfo()
         if infoType == "item" and itemID then
             local exits=Save.Mounts[ITEMS][itemID] and ERR_ZONE_EXPLORED:format(PROFESSIONS_CURRENT_LISTINGS) or NEW
@@ -1024,14 +1008,14 @@ local function Init()
         self.border:SetAtlas('bag-border')
     end)
 
-    panel:SetScript("OnMouseUp", function(self, d)
+    button:SetScript("OnMouseUp", function(self, d)
         if d=='LeftButton' then
             self.border:SetAtlas('bag-reagent-border')
         end
         ResetCursor()
     end)
 
-    panel:SetScript('OnMouseWheel',function(self,d)
+    button:SetScript('OnMouseWheel',function(self,d)
         if d==1 then--坐骑展示
             specialEffects=nil
             setMountShow()
@@ -1041,7 +1025,7 @@ local function Init()
         end
     end)
 
-    panel:SetScript('OnEnter', function(self)
+    button:SetScript('OnEnter', function(self)
         if not UnitAffectingCombat('player') then
             e.toolsFrame:SetShown(true)--设置, TOOLS 框架, 显示
         end
@@ -1058,7 +1042,7 @@ local function Init()
             e.tips:Show()
         end
     end)
-    panel:SetScript("OnLeave",function(self)
+    button:SetScript("OnLeave",function(self)
         e.tips:Hide()
         ResetCursor()
         self.border:SetAtlas('bag-reagent-border')
@@ -1069,39 +1053,13 @@ local function Init()
         setClickAtt()--设置
     end)
 end
+
+
 --###########
 --加载保存数据
 --###########
-
+local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-
-panel:RegisterEvent('PLAYER_REGEN_DISABLED')
-panel:RegisterEvent('PLAYER_REGEN_ENABLED')
-
-panel:RegisterEvent('SPELLS_CHANGED')
-panel:RegisterEvent('SPELL_DATA_LOAD_RESULT')
-
-panel:RegisterEvent('BAG_UPDATE_DELAYED')
-
-panel:RegisterEvent('MOUNT_JOURNAL_USABILITY_CHANGED')
-panel:RegisterEvent('PLAYER_MOUNT_DISPLAY_CHANGED')
-panel:RegisterEvent('AREA_POIS_UPDATED')
-
-panel:RegisterEvent('NEW_MOUNT_ADDED')
-
-panel:RegisterEvent('MODIFIER_STATE_CHANGED')
-
-panel:RegisterEvent('ZONE_CHANGED')
-panel:RegisterEvent('ZONE_CHANGED_INDOORS')
-panel:RegisterEvent('ZONE_CHANGED_NEW_AREA')
-
-panel:RegisterEvent('SPELL_UPDATE_COOLDOWN')
-panel:RegisterEvent('SPELL_UPDATE_USABLE')
-
-panel:RegisterEvent('CHAT_MSG_AFK')
-
-panel:RegisterEvent('PLAYER_STARTED_MOVING')
-
 panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" then
         if arg1==id then
@@ -1125,14 +1083,52 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             check:SetScript('OnLeave', function() e.tips:Hide() end)
 
             if not Save.disabled then
+                button=e.Cbtn2('WoWToolsMountButton')
+                button:SetAttribute("type1", "spell")
+                button:SetAttribute("target-spell", "cursor")
+                button:SetAttribute("alt-type1", "spell")
+                button:SetAttribute("shift-type1", "spell")
+                button:SetAttribute("ctrl-type1", "spell")
+
+                button.textureModifier=button:CreateTexture(nil,'OVERLAY')--提示 Shift, Ctrl, Alt
+                button.textureModifier:SetAllPoints(button.texture)
+                button.textureModifier:AddMaskTexture(button.mask)
+
+                button.textureModifier:SetShown(false)
+
+                e.toolsFrame:SetParent(button)--设置, TOOLS 位置
+                e.toolsFrame:SetPoint('BOTTOMRIGHT', button, 'TOPRIGHT',-1,0)
+                button.Up=button:CreateTexture(nil,'OVERLAY')
+                button.Up:SetPoint('TOP',-1, 9)
+                button.Up:SetAtlas('NPE_ArrowUp')
+                button.Up:SetSize(20,20)
+
                 if Save.size then
                     e.toolsFrame.size=Save.size
                 end
+
+                panel:RegisterEvent('PLAYER_REGEN_DISABLED')
+                panel:RegisterEvent('PLAYER_REGEN_ENABLED')
+                panel:RegisterEvent('SPELLS_CHANGED')
+                panel:RegisterEvent('SPELL_DATA_LOAD_RESULT')
+                panel:RegisterEvent('BAG_UPDATE_DELAYED')
+                panel:RegisterEvent('MOUNT_JOURNAL_USABILITY_CHANGED')
+                panel:RegisterEvent('PLAYER_MOUNT_DISPLAY_CHANGED')
+                panel:RegisterEvent('AREA_POIS_UPDATED')
+                panel:RegisterEvent('NEW_MOUNT_ADDED')
+                panel:RegisterEvent('MODIFIER_STATE_CHANGED')
+                panel:RegisterEvent('ZONE_CHANGED')
+                panel:RegisterEvent('ZONE_CHANGED_INDOORS')
+                panel:RegisterEvent('ZONE_CHANGED_NEW_AREA')
+                panel:RegisterEvent('SPELL_UPDATE_COOLDOWN')
+                panel:RegisterEvent('SPELL_UPDATE_USABLE')
+                panel:RegisterEvent('CHAT_MSG_AFK')
+                panel:RegisterEvent('PLAYER_STARTED_MOVING')
+
                 Init()--初始
             else
                 e.toolsFrame.disabled=true
-                panel:UnregisterAllEvents()
-                panel:SetShown(false)
+                button:UnregisterAllEvents()
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
@@ -1148,11 +1144,11 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             end
 
     elseif event=='PLAYER_REGEN_ENABLED' then
-        if panel.Combat then
+        if button.Combat then
             C_Timer.After(0.3, function()
                 setClickAtt()--设置属性
                 setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
-                panel.Combat=nil
+                button.Combat=nil
             end)
         end
 
@@ -1184,14 +1180,14 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     elseif event=='MODIFIER_STATE_CHANGED' then
         local icon
         if arg2==1 then
-            icon = arg1:find('SHIFT') and panel.textureModifier.Shift
-                or arg1:find('CTRL') and panel.textureModifier.Ctrl
-                or arg1:find('ALT') and panel.textureModifier.Alt
+            icon = arg1:find('SHIFT') and button.textureModifier.Shift
+                or arg1:find('CTRL') and button.textureModifier.Ctrl
+                or arg1:find('ALT') and button.textureModifier.Alt
         end
         if icon then
-            panel.textureModifier:SetTexture(icon)
+            button.textureModifier:SetTexture(icon)
         end
-        panel.textureModifier:SetShown(icon)
+        button.textureModifier:SetShown(icon)
 
     elseif event=='SPELL_UPDATE_COOLDOWN' then
         setCooldown()--设置冷却

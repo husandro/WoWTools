@@ -438,7 +438,11 @@ e.Cstr=function(self, size, fontType, ChangeFont, color, layer, justifyH)
         if color and type(color)=='table' then
             label:SetTextColor(color[1], color[2], color[3], color[4])
         elseif color then
-            label:SetTextColor(0.8, 0.8, 0.8)
+            if e.Player.useClassColor then
+                label:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
+            else
+                label:SetTextColor(0.8, 0.8, 0.8)
+            end
         else
             label:SetTextColor(1, 0.82, 0)
         end
@@ -735,6 +739,7 @@ e.Cbtn2= function(name, parent, showTexture, rightClick)
     button.background=button:CreateTexture(nil,'BACKGROUND')
     button.background:SetAllPoints(button)
     button.background:SetAtlas(e.Icon.bagEmpty)
+    button.background:SetAlpha(0.5)
     button.background:AddMaskTexture(button.mask)
 
     button.texture=button:CreateTexture(nil, 'BORDER')

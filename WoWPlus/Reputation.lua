@@ -440,7 +440,7 @@ local function InitMenu(self, level, type)
 	local info
 	info={
 		text= e.onlyChinse and '文本' or LOCALE_TEXT_LABEL,
-		colorCode= (IsInInstance or C_PetBattles.IsInBattle()) and '|cff808080',
+		colorCode= (IsInInstance() or C_PetBattles.IsInBattle()) and '|cff808080',
 		checked= Save.btn,
 		func= function()
 			Save.btn= not Save.btn and true or nil

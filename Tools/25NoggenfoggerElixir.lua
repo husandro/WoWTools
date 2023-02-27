@@ -11,8 +11,8 @@ local Save={
         [16593]=true,
     }
 }
-local panel=e.Cbtn2(nil, e.toolsFrame, true)
-panel.itemID=8529
+local button--button.itemID=8529
+local panel= CreateFrame("Frame")
 
 local function setAura()--光环取消
     for i = 1, 40 do
@@ -28,13 +28,13 @@ local function setAura()--光环取消
 end
 
 local function setCount()--设置数量
-    local num = GetItemCount(panel.itemID,nil,true,true)
-    if num~=1 and not panel.count then
-        panel.count=e.Cstr(panel,10,nil,nil,true)
-        panel.count:SetPoint('BOTTOMRIGHT',-2, 9)
+    local num = GetItemCount(button.itemID,nil,true,true)
+    if num~=1 and not button.count then
+        button.count=e.Cstr(button,10,nil,nil,true)
+        button.count:SetPoint('BOTTOMRIGHT',-2, 9)
     end
-    if panel.count then
-        panel.count:SetText(num~=1 and num or '')
+    if button.count then
+        button.count:SetText(num~=1 and num or '')
     end
 end
 
@@ -60,21 +60,21 @@ end
 --初始
 --####
 local function Init()
-    e.ToolsSetButtonPoint(panel)--设置位置
-    --panel.texture:SetShown(true)
-    panel:SetAttribute('type','item')
-    panel:SetAttribute('item',GetItemInfo(panel.itemID) or panel.itemID)
-    panel.texture:SetTexture(C_Item.GetItemIconByID(panel.itemID..''))
+    e.ToolsSetButtonPoint(button)--设置位置
+    --button.texture:SetShown(true)
+    button:SetAttribute('type','item')
+    button:SetAttribute('item',GetItemInfo(button.itemID) or button.itemID)
+    button.texture:SetTexture(C_Item.GetItemIconByID(button.itemID..''))
     setCount()--设置数量
     setAura()--光环取消
 
-    panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
-    UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
+    button.Menu=CreateFrame("Frame",nil, button, "UIDropDownMenuTemplate")
+    UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
-    panel:SetScript('OnEnter', function(self)
+    button:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:SetItemByID(panel.itemID)
+        e.tips:SetItemByID(button.itemID)
         e.tips:AddLine(' ')
         for spellID, type in pairs(Save.aura) do
             local name, _, icon = GetSpellInfo(spellID)
@@ -85,8 +85,8 @@ local function Init()
         e.tips:AddDoubleLine(e.onlyChinse and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.mid)
         e.tips:Show()
     end)
-    panel:SetScript('OnLeave', function() e.tips:Hide() end)
-    panel:SetScript('OnMouseWheel', function(self, d)
+    button:SetScript('OnLeave', function() e.tips:Hide() end)
+    button:SetScript('OnMouseWheel', function(self, d)
         ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
    end)
 end
@@ -96,18 +96,21 @@ end
 --###########
 panel:RegisterEvent("ADDON_LOADED")
 
-panel:RegisterEvent("PLAYER_REGEN_ENABLED")
-panel:RegisterEvent("PLAYER_REGEN_DISABLED")
-panel:RegisterEvent('BAG_UPDATE_DELAYED')
-panel:RegisterUnitEvent("UNIT_AURA", 'player')
-panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
-panel:RegisterEvent('PLAYER_LOGOUT')
-
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
             Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
             if not e.toolsFrame.disabled then
+                button=e.Cbtn2(nil, e.toolsFrame, true)
+                button.itemID=8529
+
+                panel:RegisterEvent("PLAYER_REGEN_ENABLED")
+                panel:RegisterEvent("PLAYER_REGEN_DISABLED")
+                panel:RegisterEvent('BAG_UPDATE_DELAYED')
+                panel:RegisterUnitEvent("UNIT_AURA", 'player')
+                panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
+                panel:RegisterEvent('PLAYER_LOGOUT')
+
                 C_Timer.After(2.5, function()
                     if UnitAffectingCombat('player') then
                         panel.combat= true
@@ -115,11 +118,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         Init()--初始
                     end
                 end)
-                panel:UnregisterEvent('ADDON_LOADED')
-            else
-                panel:UnregisterAllEvents()
-                panel:SetShown(false)
             end
+            panel:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event == "PLAYER_LOGOUT" then

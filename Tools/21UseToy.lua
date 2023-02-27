@@ -1,7 +1,9 @@
 local id, e = ...
 local addName= SLASH_RANDOM3:gsub('/','').. TOY
-local panel=e.Cbtn2(id..'RandomToyButton', e.toolsFrame)
-panel.items={}--存放有效
+local panel= CreateFrame('Frame')
+local button
+local ItemsTab={}--存放有效
+
 
 local Save={
     items={
@@ -29,10 +31,6 @@ local Save={
 }
 
 
-panel:SetAttribute("type1", "item")
-panel:SetAttribute("alt-type1", "item")
-panel:SetAttribute("shift-type1", "item")
-panel:SetAttribute("ctrl-type1", "item")
 
 local ModifiedTab={
     alt=69775,--[维库饮水角]
@@ -47,36 +45,37 @@ end
 --主图标冷却
 --#########
 local function setCooldown()--主图标冷却
-    if panel:IsShown() then
-        if panel.itemID then
-            local start, duration = GetItemCooldown(panel.itemID)
-            e.Ccool(panel, start, duration, nil, true, nil, true)--冷却条
+    if button:IsShown() then
+        if button.itemID then
+            local start, duration = GetItemCooldown(button.itemID)
+            e.Ccool(button, start, duration, nil, true, nil, true)--冷却条
         else
-            if panel.cooldown then
-                panel.cooldown:Clear()
+            if button.cooldown then
+                button.cooldown:Clear()
             end
         end
     end
 end
 
 local function getToy()--生成, 有效表格
-    panel.items={}
+    ItemsTab={}
     for itemID ,_ in pairs(Save.items) do
         e.LoadSpellItemData(itemID)--加载法术, 物品数据
         if PlayerHasToy(itemID) then
-            table.insert(panel.items, itemID)
+            table.insert(ItemsTab, itemID)
         end
     end
 end
 
-local function setAtt(init)--设置属性
-    if (UnitAffectingCombat('player') and not init) or EditModeManagerFrame:IsEditModeActive() then
+local function setAtt()--设置属性
+    if UnitAffectingCombat('player') or not button:IsShown() then
         return
     end
+
     local icon
     local tab={}
 
-    for _, itemID in pairs(panel.items) do
+    for _, itemID in pairs(ItemsTab) do
         local duration, enable = select(2 ,GetItemCooldown(itemID))
         if duration<2 and enable==1 and C_ToyBox.IsToyUsable(itemID) then
             table.insert(tab, itemID)
@@ -84,24 +83,24 @@ local function setAtt(init)--设置属性
     end
 
     local num=#tab
-    panel.count:SetText(num)
+    button.count:SetText(num)
     if num>0 then
         local itemID=tab[math.random(1, num)]
         if itemID then
             icon = C_Item.GetItemIconByID(itemID)
             if icon then
-                panel.texture:SetTexture(icon)
+                button.texture:SetTexture(icon)
             end
             local  name= select(2, C_ToyBox.GetToyInfo(itemID)) or C_Item.GetItemNameByID(itemID) or itemID
-            panel:SetAttribute('item1', name)
-            panel.itemID=itemID
+            button:SetAttribute('item1', name)
+            button.itemID=itemID
         end
     else
-        panel:SetAttribute('item1', nil)
-        panel.itemID=nil
+        button:SetAttribute('item1', nil)
+        button.itemID=nil
     end
     setCooldown()--主图标冷却
-    panel.texture:SetShown(icon)
+    button.texture:SetShown(icon)
 end
 
 local function getAllSaveNum()--Save中玩具数量
@@ -115,9 +114,6 @@ end
 --玩具界面, 菜单
 --#############
 local function setToyBox_ShowToyDropdown(itemID, anchorTo, offsetX, offsetY)
-    if e.toolsFrame.disabled or not itemID then
-        return
-    end
     local info={
             text='|T133567:0|t'..addName,
             checked=Save.items[itemID],
@@ -138,9 +134,6 @@ local function setToyBox_ShowToyDropdown(itemID, anchorTo, offsetX, offsetY)
     UIDropDownMenu_AddButton(info, 1)
 end
 local function setToySpellButton_UpdateButton(self)--标记, 是否已选取
-    if e.toolsFrame.disabled or not self.itemID then
-        return
-    end
     local find = Save.items[self.itemID]
     if find and not self.toy then
         self.toy=self:CreateTexture(nil, 'ARTWORK')
@@ -158,33 +151,35 @@ end
 --######
 local function setKEY()--设置捷键
     if Save.KEY then
-        e.SetButtonKey(panel, true, Save.KEY)
+        e.SetButtonKey(button, true, Save.KEY)
         if #Save.KEY==1 then
-            if not panel.KEY then
-                panel.KEYstring=e.Cstr(panel,10, nil, nil, true, 'OVERLAY')
-                panel.KEYstring:SetPoint('BOTTOMRIGHT', panel.border, 'BOTTOMRIGHT',-4,4)
+            if not button.KEY then
+                button.KEYstring=e.Cstr(button,10, nil, nil, true, 'OVERLAY')
+                button.KEYstring:SetPoint('BOTTOMRIGHT', button.border, 'BOTTOMRIGHT',-4,4)
             end
-            panel.KEYstring:SetText(Save.KEY)
-            if panel.KEYtexture then
-                panel.KEYtexture:SetShown(false)
+            button.KEYstring:SetText(Save.KEY)
+            if button.KEYtexture then
+                button.KEYtexture:SetShown(false)
             end
         else
-            if not panel.KEYtexture then
-                panel.KEYtexture=panel:CreateTexture(nil,'OVERLAY')
-                panel.KEYtexture:SetPoint('BOTTOM', panel.border,'BOTTOM',-1,-5)
-                panel.KEYtexture:SetAtlas('NPE_ArrowDown')
-                panel.KEYtexture:SetDesaturated(true)
-                panel.KEYtexture:SetSize(20,15)
+            if not button.KEYtexture then
+                button.KEYtexture=button:CreateTexture(nil,'OVERLAY')
+                button.KEYtexture:SetPoint('BOTTOM', button.border,'BOTTOM',-1,-5)
+                button.KEYtexture:SetAtlas('NPE_ArrowDown')
+                if not e.Player.useClassColor then
+                    button.KEYtexture:SetDesaturated(true)
+                end
+                button.KEYtexture:SetSize(20,15)
             end
-            panel.KEYtexture:SetShown(true)
+            button.KEYtexture:SetShown(true)
         end
     else
-        e.SetButtonKey(panel)
-        if panel.KEYstring then
-            panel.KEYstring:SetText('')
+        e.SetButtonKey(button)
+        if button.KEYstring then
+            button.KEYstring:SetText('')
         end
-        if panel.KEYtexture then
-            panel.KEYtexture:SetShown(false)
+        if button.KEYtexture then
+            button.KEYtexture:SetShown(false)
         end
     end
 end
@@ -251,7 +246,7 @@ local function InitMenu(self, level, menuList)--主菜单
     local info
     if menuList then
         if menuList=='TOY' then
-            for _, itemID in pairs(panel.items) do
+            for _, itemID in pairs(ItemsTab) do
                 info={
                     text= C_Item.GetItemNameByID(itemID) or ('itemID '..itemID),
                     notCheckable=true,
@@ -280,7 +275,7 @@ local function InitMenu(self, level, menuList)--主菜单
 
             UIDropDownMenu_AddSeparator(level)
             info={--清除
-                text='|cnRED_FONT_COLOR:'..(e.onlyChinse and '清除' or CLEAR or KEY_NUMLOCK_MAC)..(e.onlyChinse and '玩具' or TOY)..'|r '..#panel.items..'/'..getAllSaveNum(),
+                text='|cnRED_FONT_COLOR:'..(e.onlyChinse and '清除' or CLEAR or KEY_NUMLOCK_MAC)..(e.onlyChinse and '玩具' or TOY)..'|r '..#ItemsTab..'/'..getAllSaveNum(),
                 notCheckable=true,
                 tooltipOnButton=true,
                 tooltipTitle= e.onlyChinse and '清除全部' or CLEAR_ALL,
@@ -304,7 +299,7 @@ local function InitMenu(self, level, menuList)--主菜单
         end
     else
        info={
-            text='|cnGREEN_FONT_COLOR:'..#panel.items..'|r'.. addName,
+            text='|cnGREEN_FONT_COLOR:'..#ItemsTab..'|r'.. addName,
             notCheckable=true,
             menuList='TOY',
             hasArrow=true,
@@ -350,59 +345,37 @@ end
 
 local function Init()
     if e.toolsFrame.size and e.toolsFrame.size~=30 then--设置大小
-        panel:SetSize(e.toolsFrame.size, e.toolsFrame.size)
+        button:SetSize(e.toolsFrame.size, e.toolsFrame.size)
     end
-    e.ToolsSetButtonPoint(panel)--设置位置
-
-    panel.count=e.Cstr(panel,10, nil,nil, true)
-    panel.count:SetPoint('TOPRIGHT',-3, -2)
+    e.ToolsSetButtonPoint(button)--设置位置
 
     getToy()--生成, 有效表格
-    setAtt(true)--设置属性
-    setCooldown()--主图标冷却
-    if Save.KEY then
-        setKEY()--设置捷键
-    end
+    setAtt()--设置属性
+    if Save.KEY then setKEY() end--设置捷键
 
-    panel:SetScript('OnShow', setCooldown)
+    button:SetScript('OnShow', setAtt)
 
     for type, itemID in pairs(ModifiedTab) do
-        panel:SetAttribute(type.."-item1",  C_Item.GetItemNameByID(itemID..'') or itemID)
+        button:SetAttribute(type.."-item1",  C_Item.GetItemNameByID(itemID..'') or itemID)
     end
 
-    panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
-    UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
+    button.Menu=CreateFrame("Frame",nil, button, "UIDropDownMenuTemplate")
+    UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
-    panel:SetScript("OnEnter",function(self)
-        showTips(self)--显示提示
-    end)
-    panel:SetScript("OnLeave",function()
-        e.tips:Hide()
-    end)
-    panel:SetScript("OnMouseDown", function(self,d)
+    button:SetScript("OnEnter", showTips)
+    button:SetScript("OnLeave",function() e.tips:Hide() end)
+    button:SetScript("OnMouseDown", function(self,d)
         if d=='RightButton' and not IsModifierKeyDown() then
             ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
         end
-        self.border:SetAtlas('bag-border')
     end)
 
-    panel:SetScript("OnMouseUp", function(self, d)
-        if d=='LeftButton' and not IsModifierKeyDown() then
-            setAtt()--设置属性
-            if not UnitAffectingCombat('player') and self:IsShown() then
-                showTips(self)--显示提示
-            end
-        end
-        self.border:SetAtlas('bag-reagent-border')
-       --ResetCursor()
-    end)
-
-    panel:SetScript('OnMouseWheel',function(self,d)
+    button:SetScript('OnMouseWheel',function(self,d)
         setAtt()--设置属性
         showTips(self)--显示提示
     end)
-
 end
+
 --###########
 --加载保存数据
 --###########
@@ -414,20 +387,32 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== id then
             Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
             if not e.toolsFrame.disabled then
+
+                button=e.Cbtn2(id..'RandomToyButton', e.toolsFrame)
+                button:SetAttribute("type1", "item")
+                button:SetAttribute("alt-type1", "item")
+                button:SetAttribute("shift-type1", "item")
+                button:SetAttribute("ctrl-type1", "item")
+
+                button.count=e.Cstr(button,10, nil,nil, true)
+                button.count:SetPoint('TOPRIGHT',-3, -2)
+
+                panel:RegisterUnitEvent('UNIT_SPELLCAST_SUCCEEDED', 'player')
+                panel:RegisterEvent('SPELL_UPDATE_COOLDOWN')
+                panel:RegisterEvent('NEW_TOY_ADDED')
+                panel:RegisterEvent('TOYS_UPDATED')
+                panel:RegisterEvent('SPELL_UPDATE_USABLE')
+
                 C_Timer.After(2.1, function()
                     if UnitAffectingCombat('player') then
                         panel.combat= true
                         panel:RegisterEvent("PLAYER_REGEN_ENABLED")
                     else
                         Init()--初始
-                        panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
-                        panel:RegisterEvent('NEW_TOY_ADDED')
-                        panel:RegisterEvent('TOYS_UPDATED')
                     end
                 end)
             else
-                panel:UnregisterAllEvents()
-                panel:SetShown(false)
+                button:UnregisterAllEvents()
             end
 
         elseif arg1=='Blizzard_Collections' then
@@ -445,8 +430,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         getToy()--生成, 有效表格
         setAtt()--设置属性
 
-    elseif event=='BAG_UPDATE_COOLDOWN' then
+    elseif event=='SPELL_UPDATE_COOLDOWN' then
         setCooldown()--主图标冷却
+
+    elseif event=='SPELL_UPDATE_USABLE' or event=='UNIT_SPELLCAST_SUCCEEDED' then
+        setAtt()--设置属性
 
     elseif event=='PLAYER_REGEN_ENABLED' then
         if panel.combat then

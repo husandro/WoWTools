@@ -370,9 +370,6 @@ end
 --################
 local function set_UnitFrame_Update()--职业, 图标， 颜色
     hooksecurefunc('UnitFrame_Update', function(self, isParty)--UnitFrame.lua
-        if EditModeManagerFrame:IsEditModeActive() then
-            return
-        end
         local unit= self.unit
         local r,g,b
         if unit=='player' then
@@ -627,12 +624,14 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
     CompactPartyFrame.moveFrame:SetMovable(true)
     CompactPartyFrame.moveFrame:RegisterForDrag('RightButton')
     CompactPartyFrame.moveFrame:SetScript("OnDragStart", function(self,d)
-        if d=='RightButton' and not IsModifierKeyDown() then
+        if d=='RightButton' and not IsModifierKeyDown() and not EditModeManagerFrame:IsEditModeActive() then
             CompactPartyFrame:StartMoving()
         end
     end)
     CompactPartyFrame.moveFrame:SetScript("OnDragStop", function(self)
-        CompactPartyFrame:StopMovingOrSizing()
+        if not EditModeManagerFrame:IsEditModeActive() then
+            CompactPartyFrame:StopMovingOrSizing()
+        end
     end)
     CompactPartyFrame.moveFrame:SetScript("OnMouseDown", function(self, d)
         if d=='RightButton' and not IsModifierKeyDown() then

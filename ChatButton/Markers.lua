@@ -205,16 +205,18 @@ local function setGroupReadyTips(event, arg1, arg2)
             button.groupReadyTips:SetClampedToScreen(true)
 
             button.groupReadyTips:SetScript("OnDragStart", function(self,d )
-                if not IsModifierKeyDown() and d=='RightButton' then
+                if not IsModifierKeyDown() and d=='RightButton' and not EditModeManagerFrame:IsEditModeActive() then
                     self:StartMoving()
                 end
             end)
             button.groupReadyTips:SetScript("OnDragStop", function(self)
-                ResetCursor()
-                self:StopMovingOrSizing()
-                Save.groupReadyTipsPoint={self:GetPoint(1)}
-                Save.groupReadyTipsPoint[2]=nil
-                print(id, addName, RESET_POSITION, 'Alt+'..e.Icon.right)
+                if not EditModeManagerFrame:IsEditModeActive() then
+                    ResetCursor()
+                    self:StopMovingOrSizing()
+                    Save.groupReadyTipsPoint={self:GetPoint(1)}
+                    Save.groupReadyTipsPoint[2]=nil
+                    print(id, addName, RESET_POSITION, 'Alt+'..e.Icon.right)
+                end
             end)
             button.groupReadyTips:SetScript('OnHide', function(self)
                 if self.timer then
@@ -372,15 +374,17 @@ local function setMarkersFrame()--设置标记, 框架
                 button:SetNormalTexture('Interface\\AddOns\\WeakAuras\\Media\\Textures\\cancel-mark.tga')
                 button:RegisterForDrag("RightButton")
                 button:SetScript("OnDragStart", function(self,d )
-                    if d=='RightButton' and not IsModifierKeyDown() then
+                    if d=='RightButton' and not IsModifierKeyDown() and not EditModeManagerFrame:IsEditModeActive() then
                         frame:StartMoving()
                     end
                 end)
                 button:SetScript("OnDragStop", function(self)
-                    ResetCursor()
-                    frame:StopMovingOrSizing()
-                    Save.markersFramePoint={frame:GetPoint(1)}
-                    Save.markersFramePoint[2]=nil
+                    if not EditModeManagerFrame:IsEditModeActive() then
+                        ResetCursor()
+                        frame:StopMovingOrSizing()
+                        Save.markersFramePoint={frame:GetPoint(1)}
+                        Save.markersFramePoint[2]=nil
+                    end
                 end)
                 button:SetScript('OnMouseDown', function(self, d)
                     local key=IsModifierKeyDown()

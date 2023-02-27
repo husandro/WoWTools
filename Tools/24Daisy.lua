@@ -1,10 +1,10 @@
-local pet=2780
-
 local id, e = ...
 local Save={}
 local addName='DaisyTools'
-local panel=e.Cbtn2(nil, e.toolsFrame, true, false)
+local panel= CreateFrame('Frame')
+local button
 local petName, petGUID
+local speciesID=2780
 
 local function setTargetChaged()
     if Save.notGuLai then
@@ -19,13 +19,13 @@ local function setTargetChaged()
 end
 
 local function setGuLaiTip()--设置 是否使用 /招手
-    panel.texture:SetDesaturated(Save.notGuLai)
+    button.texture:SetDesaturated(Save.notGuLai)
 end
 local function setAutoSummonTips()--设置, 自动召唤
     if Save.autoSummon then
-        panel.border:SetAtlas('bag-border')
+        button.border:SetAtlas('bag-border')
     else
-        panel.border:SetAtlas('bag-reagent-border')
+        button.border:SetAtlas('bag-reagent-border')
     end
 end
 local function getSummoned()--是否已召唤, 或有BUFF(在背上)
@@ -43,7 +43,7 @@ end
 local function setSummonedPetGUID()--召唤信息
     local find, summoned = getSummoned()
     if find then--显示名字,提示是否召唤
-        if not panel.text then
+        if not button.text then
             local size=8
             if e.toolsFrame.size then
                 if e.toolsFrame.size>40 then
@@ -52,8 +52,8 @@ local function setSummonedPetGUID()--召唤信息
                     size=10
                 end
             end
-            panel.text=e.Cstr(panel, size,nil,nil, true)
-            panel.text:SetPoint('CENTER',0 , -5)
+            button.text=e.Cstr(button, size,nil,nil, true)
+            button.text:SetPoint('CENTER',0 , -5)
         end
     elseif not summoned
         and Save.autoSummon
@@ -68,8 +68,8 @@ local function setSummonedPetGUID()--召唤信息
         then
         C_PetJournal.SummonPetByGUID(petGUID)
     end
-    if panel.text then--显示名字
-        panel.text:SetText(find and petName or '')
+    if button.text then--显示名字
+        button.text:SetText(find and petName or '')
     end
 end
 
@@ -112,13 +112,13 @@ end
 --初始
 --####
 local function Init()
-    local speciesName, speciesIcon= C_PetJournal.GetPetInfoBySpeciesID(pet)
+    local speciesName, speciesIcon= C_PetJournal.GetPetInfoBySpeciesID(speciesID)
     if speciesName and speciesIcon then
-        local speciesId, petGUID2 = C_PetJournal.FindPetIDByName(speciesName)
-        if speciesId==pet and petGUID2 then
+        local speciesId2, petGUID2 = C_PetJournal.FindPetIDByName(speciesName)
+        if speciesId2==speciesID and petGUID2 then
             petGUID=petGUID2
             petName=speciesName
-            panel.texture:SetTexture(speciesIcon)
+            button.texture:SetTexture(speciesIcon)
         end
     end
     if not petGUID then--没找到时, 退出
@@ -127,11 +127,11 @@ local function Init()
         return
     end
 
-    e.ToolsSetButtonPoint(panel)--设置位置
-    panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
-    UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
+    e.ToolsSetButtonPoint(button)--设置位置
+    button.Menu=CreateFrame("Frame",nil, button, "UIDropDownMenuTemplate")
+    UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
-    panel:SetScript('OnMouseDown', function(self, d)
+    button:SetScript('OnMouseDown', function(self, d)
         local key=IsModifierKeyDown()
         if d=='LeftButton' and not key then
             C_PetJournal.SummonPetByGUID(petGUID)
@@ -141,11 +141,11 @@ local function Init()
         end
     end)
 
-    panel:SetScript('OnMouseWheel', function(self, d)
+    button:SetScript('OnMouseWheel', function(self, d)
         ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
    end)
 
-   panel:SetScript('OnEnter', function(self)
+   button:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:SetCompanionPet(petGUID)
@@ -153,7 +153,7 @@ local function Init()
         e.tips:AddDoubleLine(e.onlyChinse and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.mid)
         e.tips:Show()
     end)
-    panel:SetScript('OnLeave', function() e.tips:Hide() end)
+    button:SetScript('OnLeave', function() e.tips:Hide() end)
 
     setGuLaiTip()--设置 是否使用 /招手
     setSummonedPetGUID()--召唤信息,自动召唤
@@ -165,41 +165,38 @@ end
 --###########
 --加载保存数据
 --###########
-
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_LOGOUT')
 
-panel:RegisterEvent("PLAYER_REGEN_ENABLED")
-panel:RegisterUnitEvent('UNIT_AURA','player')
-panel:RegisterEvent('PLAYER_STOPPED_MOVING')
-
-panel:RegisterEvent('PLAYER_TARGET_CHANGED')
-panel:RegisterEvent('PLAYER_REGEN_DISABLED')
-
-panel:RegisterEvent('COMPANION_UPDATE')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
             Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
             if not e.toolsFrame.disabled then
+                button=e.Cbtn2(nil, e.toolsFrame, true, false)
+
+                panel:RegisterEvent('PLAYER_LOGOUT')
+                panel:RegisterEvent("PLAYER_REGEN_ENABLED")
+                panel:RegisterUnitEvent('UNIT_AURA','player')
+                panel:RegisterEvent('PLAYER_STOPPED_MOVING')
+                panel:RegisterEvent('PLAYER_TARGET_CHANGED')
+                panel:RegisterEvent('PLAYER_REGEN_DISABLED')
+                panel:RegisterEvent('COMPANION_UPDATE')
+
                 C_Timer.After(2.4, function()
-                    local num = C_PetJournal.GetNumCollectedInfo(pet)--没宠物,不加载
+                    local num = C_PetJournal.GetNumCollectedInfo(speciesID)--没宠物,不加载
                     if not num or num==0 then
                         panel:UnregisterAllEvents()
                         return
                     end
                     if UnitAffectingCombat('player')  then
-                        panel.combat= true
+                        button.combat= true
                     else
                         Init()--初始
                     end
                 end)
-                panel:UnregisterEvent('ADDON_LOADED')
-            else
-                panel:UnregisterAllEvents()
-                panel:SetShown(false)
             end
+            panel:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event == "PLAYER_LOGOUT" then
@@ -213,9 +210,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         panel:RegisterEvent('PLAYER_TARGET_CHANGED')
         panel:RegisterEvent('PLAYER_STOPPED_MOVING')
         panel:RegisterUnitEvent('UNIT_AURA','player')
-        if panel.combat then
+        if button.combat then
             Init()
-            panel.combat=nil
+            button.combat=nil
         end
     elseif event=='PLAYER_REGEN_DISABLED' then
         panel:UnregisterEvent('PLAYER_TARGET_CHANGED')

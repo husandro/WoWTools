@@ -1,4 +1,5 @@
 local id, e = ...
+local addName= SLASH_RANDOM3:gsub('/','').. TUTORIAL_TITLE31
 local Save={
     items={
         [193588]=true,--时光旅行者的炉石
@@ -23,13 +24,7 @@ local Save={
     showBindNameShort=true,
     showBindName=true,
 }
-local addName= SLASH_RANDOM3:gsub('/','').. TUTORIAL_TITLE31
-local panel=e.Cbtn2('HearthstoneToolsButton',WoWToolsMountButton)
-panel:SetAttribute("type1", "item")
-panel:SetAttribute("alt-type1", "item")
-panel:SetAttribute("shift-type1", "item")
-panel:SetAttribute("ctrl-type1", "item")
-panel:SetPoint('RIGHT', WoWToolsMountButton, 'LEFT')
+local button--button.items={}--存放有效
 
 local ModifiedTab={
     alt=140192,--达拉然炉石
@@ -39,45 +34,45 @@ local ModifiedTab={
 for _, itemID in pairs(ModifiedTab) do
     e.LoadSpellItemData(itemID)--加载法术, 物品数据
 end
-panel.items={}--存放有效
+
 
 local function getToy()--生成, 有效表格
-    panel.items={}
+    button.items={}
     local find
     for itemID ,_ in pairs(Save.items) do
         if PlayerHasToy(itemID) then
             find=true
-            table.insert(panel.items, itemID)
+            table.insert(button.items, itemID)
         end
     end
     if not find and GetItemCount( 6948)~=0 then
-        panel.items={6948}
+        button.items={6948}
     end
 end
 
 local function setAtt()--设置属性
-    if UnitAffectingCombat('player') or EditModeManagerFrame:IsEditModeActive() then
+    if UnitAffectingCombat('player') then
         return
     end
     local icon
-    local num=#panel.items
+    local num=#button.items
     if num>0 then
         local index=math.random(1, num)
-        local itemID=panel.items[index]
+        local itemID=button.items[index]
         if itemID then
             icon = C_Item.GetItemIconByID(itemID)
             if icon then
-                panel.texture:SetTexture(icon)
+                button.texture:SetTexture(icon)
             end
-            panel:SetAttribute('item1', C_Item.GetItemNameByID(itemID) or itemID)
+            button:SetAttribute('item1', C_Item.GetItemNameByID(itemID) or itemID)
 
-            panel.itemID=itemID
+            button.itemID=itemID
         end
     else
-        panel:SetAttribute('item1', nil)
-        panel.itemID=nil
+        button:SetAttribute('item1', nil)
+        button.itemID=nil
     end
-    panel.texture:SetShown(icon)
+    button.texture:SetShown(icon)
 end
 
 
@@ -132,12 +127,12 @@ local function set_BindLocation()--显示, 炉石, 绑定位置
             text= e.WA_Utf8Sub(text, 2, 5)
         end
     end
-    if not panel.showBindNameText and text then
-        panel.showBindNameText=e.Cstr(panel, 10, nil, nil, true, nil, 'CENTER')
-        panel.showBindNameText:SetPoint('TOP', panel, 'BOTTOM',0,5)
+    if not button.showBindNameText and text then
+        button.showBindNameText=e.Cstr(button, 10, nil, nil, true, nil, 'CENTER')
+        button.showBindNameText:SetPoint('TOP', button, 'BOTTOM',0,5)
     end
-    if panel.showBindNameText then
-        panel.showBindNameText:SetText(text or '')
+    if button.showBindNameText then
+        button.showBindNameText:SetText(text or '')
     end
 end
 
@@ -176,7 +171,7 @@ local function InitMenu(self, level, menuList)--主菜单
         UIDropDownMenu_AddButton(info, level)
     else
        info={
-            text='|cnGREEN_FONT_COLOR:'..#panel.items..'|r'.. addName,
+            text='|cnGREEN_FONT_COLOR:'..#button.items..'|r'.. addName,
             notCheckable=true,
             menuList='TOY',
             hasArrow=true,
@@ -207,24 +202,24 @@ local function setBagHearthstone()
             find= duration<2 and enable==1
         end
         if find then
-            if not panel['texture'..type] then
-                panel['texture'..type]=panel:CreateTexture(nil,'OVERLAY')
+            if not button['texture'..type] then
+                button['texture'..type]=button:CreateTexture(nil,'OVERLAY')
                 local size=(e.toolsFrame.size or 30)/3
-                panel['texture'..type]:SetSize(size, size)
+                button['texture'..type]:SetSize(size, size)
                 if type=='alt' then
-                    panel['texture'..type]:SetPoint('BOTTOMRIGHT',-3,3)
+                    button['texture'..type]:SetPoint('BOTTOMRIGHT',-3,3)
                 elseif type=='shift' then
-                    panel['texture'..type]:SetPoint('TOPLEFT',2,-2)
+                    button['texture'..type]:SetPoint('TOPLEFT',2,-2)
                 else
-                    panel['texture'..type]:SetPoint('BOTTOMLEFT',2,2)
+                    button['texture'..type]:SetPoint('BOTTOMLEFT',2,2)
                 end
-                panel['texture'..type]:SetDrawLayer('OVERLAY',2)
-                panel['texture'..type]:AddMaskTexture(panel.mask)
-                panel['texture'..type]:SetTexture(C_Item.GetItemIconByID(itemID))
+                button['texture'..type]:SetDrawLayer('OVERLAY',2)
+                button['texture'..type]:AddMaskTexture(button.mask)
+                button['texture'..type]:SetTexture(C_Item.GetItemIconByID(itemID))
             end
         end
-        if panel['texture'..type] then
-            panel['texture'..type]:SetShown(find)
+        if button['texture'..type] then
+            button['texture'..type]:SetShown(find)
         end
     end
 end
@@ -233,12 +228,12 @@ end
 --主图标冷却
 --#########
 local function setCooldown()
-    if panel.itemID then
-        local start, duration = GetItemCooldown(panel.itemID)
-        e.Ccool(panel, start, duration, nil, true, nil, true)--冷却条
+    if button.itemID then
+        local start, duration = GetItemCooldown(button.itemID)
+        e.Ccool(button, start, duration, nil, true, nil, true)--冷却条
     else
-        if panel.cooldown then
-            panel.cooldown:Clear()
+        if button.cooldown then
+            button.cooldown:Clear()
         end
     end
 end
@@ -288,29 +283,29 @@ local function Init()
     end
 
     if e.toolsFrame.size and e.toolsFrame.size~=30 then--设置大小
-        panel:SetSize(e.toolsFrame.size, e.toolsFrame.size)
+        button:SetSize(e.toolsFrame.size, e.toolsFrame.size)
     end
 
     for type, itemID in pairs(ModifiedTab) do
-        panel:SetAttribute(type.."-item1",  C_Item.GetItemNameByID(itemID) or itemID)
+        button:SetAttribute(type.."-item1",  C_Item.GetItemNameByID(itemID) or itemID)
     end
 
-    panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
-    UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
+    button.Menu=CreateFrame("Frame",nil, button, "UIDropDownMenuTemplate")
+    UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
-    panel:SetScript("OnEnter",function(self)
+    button:SetScript("OnEnter",function(self)
         showTips(self)--显示提示
     end)
-    panel:SetScript("OnLeave",function()
+    button:SetScript("OnLeave",function()
         e.tips:Hide()
     end)
-    panel:SetScript("OnMouseDown", function(self,d)
+    button:SetScript("OnMouseDown", function(self,d)
         if d=='RightButton' and not IsModifierKeyDown() then
             ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
         end
     end)
 
-    panel:SetScript("OnMouseUp", function(self, d)
+    button:SetScript("OnMouseUp", function(self, d)
         if d=='LeftButton' and not IsModifierKeyDown() then
             setAtt()--设置属性
             showTips(self)--显示提示
@@ -318,7 +313,7 @@ local function Init()
         ResetCursor()
     end)
 
-    panel:SetScript('OnMouseWheel',function(self,d)
+    button:SetScript('OnMouseWheel',function(self,d)
         setAtt()--设置属性
     end)
 
@@ -337,26 +332,32 @@ end
 --###########
 --加载保存数据
 --###########
+local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-
-panel:RegisterEvent('NEW_TOY_ADDED')
-panel:RegisterEvent('TOYS_UPDATED')
-
-panel:RegisterEvent('BAG_UPDATE_DELAYED')
-panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
-
-panel:RegisterEvent('HEARTHSTONE_BOUND')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
             Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
             if not e.toolsFrame.disabled then
+                button=e.Cbtn2('HearthstoneToolsButton',WoWToolsMountButton)
+                button:SetAttribute("type1", "item")
+                button:SetAttribute("alt-type1", "item")
+                button:SetAttribute("shift-type1", "item")
+                button:SetAttribute("ctrl-type1", "item")
+                button:SetPoint('RIGHT', WoWToolsMountButton, 'LEFT')
+                button.items={}--存放有效
+
+                panel:RegisterEvent("PLAYER_LOGOUT")
+                panel:RegisterEvent('NEW_TOY_ADDED')
+                panel:RegisterEvent('TOYS_UPDATED')
+                panel:RegisterEvent('BAG_UPDATE_DELAYED')
+                panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
+                panel:RegisterEvent('HEARTHSTONE_BOUND')
+
                 Init()--初始
             else
-                panel:UnregisterAllEvents()
-                panel:SetShown(false)
+                panel:UnregisterEvent('ADDON_LOADED')
             end
 
         elseif arg1=='Blizzard_Collections' then
