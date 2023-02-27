@@ -1,9 +1,10 @@
 local id, e= ...
 local addName=HIDE..TEXTURES_SUBHEADER
 local Save={
+    disabledTexture= true,
     disabledAlpha= not e.Player.husandro,
-    alpha= 0.5,
     disabledColor= not e.Player.husandro,
+    alpha= 0.5,
 }
 local panel=CreateFrame("Frame")
 
@@ -1304,12 +1305,12 @@ local function set_PopupDialogs()
     local function get_TextToNumber(self)
         local num= self:GetText()
         num= tonumber(num)
-        if num and num<=1 and num>=0 then
+        if num and num<1 and num>=0 then
             return num
         end
     end
     StaticPopupDialogs[id..addName..'Aplha']={--修该, 透明度
-        text =id..' '..addName..'\n\n'..(e.onlyChinse and '透明度' or CHANGE_OPACITY).. '  |cnGREEN_FONT_COLOR:0 - 1|r\n\n|cnRED_FONT_COLOR:'..(e.onlyChinse and '重新加载UI' or RELOADUI),
+        text =id..' '..addName..'\n\n'..(e.onlyChinse and '透明度' or CHANGE_OPACITY).. '  |cnGREEN_FONT_COLOR:0 - 0.9|r\n\n|cnRED_FONT_COLOR:'..(e.onlyChinse and '重新加载UI' or RELOADUI),
         whileDead=1,
         hideOnEscape=1,
         exclusive=1,

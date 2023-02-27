@@ -585,12 +585,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         local level= Minimap:GetZoomLevels()
         if zoomOut and zoomIn then
             if not Minimap.ZoomIn.text then
-                Minimap.ZoomIn.text= e.Cstr(Minimap)
+                Minimap.ZoomIn.text= e.Cstr(Minimap, nil, nil, nil, true)
                 Minimap.ZoomIn.text:SetPoint('BOTTOMLEFT', Minimap.ZoomIn, 'TOPLEFT',-2,-6)
             end
             Minimap.ZoomIn.text:SetText(level-1-zoom)
             if not Minimap.ZoomOut.text then
-                Minimap.ZoomOut.text= e.Cstr(Minimap)
+                Minimap.ZoomOut.text= e.Cstr(Minimap, nil, nil, nil, true)
                 Minimap.ZoomOut.text:SetPoint('BOTTOMLEFT', Minimap.ZoomOut, 'TOPLEFT',0,-2)
             end
             Minimap.ZoomOut.text:SetText(zoom)
