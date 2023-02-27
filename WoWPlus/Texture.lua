@@ -535,7 +535,6 @@ local function Init_Set_AlphaAndColor()
     hideTexture(QuickJoinFrame.ScrollBar.Backplate)
 
 
-
     --聊天设置
     setAlpha(ChannelFrame.NineSlice.TopEdge)
     setAlpha(ChannelFrame.NineSlice.TopLeftCorner)
