@@ -1,7 +1,7 @@
 local id, e = ...
 local Save={
         point={},--移动
-        scale={},--缩放
+        scale={UIWidgetPowerBarContainerFrame=0.85},--缩放
 }
 local addName= NPE_MOVE..'Frame'
 local panel= CreateFrame("Frame")
@@ -202,7 +202,8 @@ local Move=function(F, tab)
     ZoomFrame(F2, tab.notZoom, tab.zeroAlpha)
 end
 
-local function set_Move_Button(frame, pointFrame, save, zeroAlpha, notZoom)
+local function set_Move_Button(frame, tab)
+    local pointFrame, save, zeroAlpha, notZoom= tab.frame, tab.save, tab.zeroAlpha, tab.notZoom
     if frame then
         if not frame.moveButton then
             frame.moveButton= e.Cbtn(frame, nil, nil, nil, nil, true, {size,size})
@@ -425,8 +426,9 @@ local function Init_Move()
             end
         end
     end
-    set_Move_Button(ZoneAbilityFrame, ZoneAbilityFrame.SpellButtonContainer, true, true, nil)
-    set_Move_Button(QueueStatusButton, nil, true, true, nil)--小眼睛, 
+    
+    set_Move_Button(ZoneAbilityFrame, {frame=ZoneAbilityFrame.SpellButtonContainer, save=true, zeroAlpha=true, notZoom=nil})
+    set_Move_Button(QueueStatusButton, {frame=nil, save=true, zeroAlpha=true, notZoom=nil})--小眼睛, 
 
     --########
     --小，背包
@@ -463,7 +465,7 @@ local function Init_Move()
 
     if UIWidgetPowerBarContainerFrame then--移动, 能量条
         local frame=UIWidgetPowerBarContainerFrame
-        set_Move_Button(frame, nil, nil, true, nil)
+        set_Move_Button(frame, {frame=nil, save=nil, zeroAlpha=nil, notZoom=nil})
 
         local tab= frame.widgetFrames or {}
         local find
@@ -514,11 +516,11 @@ local function Init_Move()
     if classPowerFrame then
         panel:RegisterUnitEvent('UNIT_DISPLAYPOWER', "player")
         C_Timer.After(2, function()
-            set_Move_Button(classPowerFrame, nil, true, true, nil)
+            set_Move_Button(classPowerFrame, {frame=nil, save=true, zeroAlpha=true, notZoom=nil})
         end)
         hooksecurefunc('PlayerFrame_ToPlayerArt', function()
             C_Timer.After(0.5, function()
-                set_Move_Button(classPowerFrame, nil, true, true, nil)
+                set_Move_Button(classPowerFrame, {frame=nil, save=true, zeroAlpha=true, notZoom=nil})
             end)
         end)
     end
@@ -607,8 +609,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if not Save.disabled then
                 Init_Move()--移动
-                --setTabInit()
-                --setClass()--职业,能量条
             else
                 panel.check2.text:SetText('|cff808080'..(e.onlyChinse and '缩放' or UI_SCALE))
                 panel:UnregisterAllEvents()
@@ -617,7 +617,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         else
             setAddLoad(arg1)
-            --setTabInit()
         end
 
     elseif event == "PLAYER_LOGOUT" then
@@ -634,177 +633,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
 
     elseif event=='UNIT_DISPLAYPOWER' then
-        set_Move_Button(classPowerFrame, nil, true, true, nil)
+        set_Move_Button(classPowerFrame, {frame=nil, save=true, zeroAlpha=true, notZoom=nil})
     end
 end)
-
---[[
-        
-
-    hooksecurefunc( 'PlayerFrame_ToPlayerArt', function(self)
-        local frame
-        
-        if PlayerFrame.classPowerBar then--PlayerFrame.lua
-            frame= PlayerFrame.classPowerBar
-        elseif (e.Player.class == "SHAMAN") then
-            frame= TotemFrame
-        elseif (e.Player.class == "DEATHKNIGHT") then
-            frame= RuneFrame
-        elseif (e.Player.class == "PRIEST") then
-            frame= PriestBarFrame
-        end
-        if frame then
-            C_Timer.After(0.5, function()
-                set_Move_Button(frame, true)
-            end)
-            print(id,addName)
-        end
-        
-    end)]]
-
-   --[[ print(PlayerFrame.classPowerBar:GetName())
-    local find
-    if e.Player.class== 'PALADIN' then
-        local frame = PaladinPowerBarFrame--圣骑士能量条, 
-        if frame then
-            Move(frame, {save=true})
-            find=frame
-        end
-
-    elseif e.Player.class=='DEATHKNIGHT' then--DK符文
-        Move(RuneFrame, {save=true})
-        find=RuneFrame
-
-    elseif e.Player.class=='MONK' then--WS
-        local frame= MonkHarmonyBarFrame--DPS
-        if frame then
-            if not frame.moveFrame then
-                frame.moveFrame=CreateFrame('Frame', nil, frame)
-                frame.moveFrame:SetSize(21, 21)
-                frame.moveFrame:SetPoint('RIGHT', frame, 'LEFT')
-                frame.moveFrame.textrue=frame.moveFrame:CreateTexture()
-                frame.moveFrame.textrue:SetAllPoints(frame.moveFrame)
-                frame.moveFrame.textrue:SetAtlas(e.Icon.icon)
-                frame.moveFrame.textrue:SetShown(false)
-                frame.moveFrame:SetScript('OnEnter', function(self2)
-                    if not UnitAffectingCombat('player') then
-                        self2.textrue:SetShown(true)
-                        e.tips:ClearLines()
-                        e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                        e.tips:AddDoubleLine(id, addName)
-                        e.tips:AddLine(' ')
-                        e.tips:AddDoubleLine(NPE_MOVE, e.Icon.left)
-                        e.tips:Show()
-                    end
-                end)
-                Move(frame.moveFrame, {save=true, frame=frame})
-                frame.moveFrame:SetScript('OnLeave', function(self2)
-                    ResetCursor()
-                    e.tips:Hide()
-                    self2.textrue:SetShown(false)
-                end)
-                find=frame
-            end
-        end
-        frame=MonkStaggerBar--T
-        if frame then
-            Move(frame, {save=true})
-            find=frame
-        end
-
-    elseif e.Player.class=='WARLOCK' then--SS
-        Move(WarlockPowerFrame, {save=true})
-        find=WarlockPowerFrame
-
-    elseif e.Player.class=='MAGE' then--Fs
-        local frame=MageArcaneChargesFrame
-        if frame then
-            Move(frame, {save=true})
-            if frame.Background then frame.Background:Hide() end
-            frame:SetScale(0.7)--缩放
-            find=frame
-        end
-    elseif e.Player.class=='ROGUE' or e.Player.class=='DRUID' then --DZ , XD        
-        local frame=ComboPointPlayerFrame
-        if frame then
-            Move(frame, {save=true})
-            UIParent.unit='player'
-            if frame.Background then frame.Background:Hide() end
-
-            if frame.ComboPoints then
-                for i = 1, #frame.ComboPoints do
-                    local self=frame.ComboPoints[i]
-                    if self then
-                        if self.PointOff then  self.PointOff:Hide() end--:SetAlpha(0) end
-                        if self.CircleBurst then self.CircleBurst:Hide() end
-                        if not self.tex then
-                            self.tex=self:CreateTexture(nil, 'BACKGROUND')
-                            local setFrame=self.Point or self
-                            self.tex:SetPoint('BOTTOM', setFrame, 'BOTTOM',0,0)
-                            self.tex:SetSize(12, 12)
-                            self.tex:SetAtlas(e.Icon.number:format(i))
-                        end
-                    end
-                end
-            end
-            find=frame
-        end
-    end
-    if find then
-        hooksecurefunc('PlayerFrame_ToPlayerArt', function(self)
-            print(self.classPowerBar)
-        end)
-    end
-    
-
-     
-    --移动，主菜单，背包提示
-    hooksecurefunc(MainMenuBarBackpackButton, 'OnEnterInternal', function ()
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
-        e.tips:AddDoubleLine(e.onlyChinse and '重置位置' or RESET_POSITION, 'alt+'..e.Icon.right)
-        e.tips:AddDoubleLine(id, addName)
-        e.tips:Show()
-    end)
-
-    --###############################
-    --修正，在战斗中，打开收藏界面，错误
-    --###############################
-    if not CollectionsJournal then
-        ToggleCollectionsJournal(1)
-        HideUIPanel(CollectionsJournal)
-    end
-
-    hooksecurefunc(LootFrame,'Open', function(self2)--物品拾取LootFrame.lua
-        if not GetCVarBool("autoLootDefault") and not GetCVarBool("lootUnderMouse") then
-            local p=Save.point.LootFrame and Save.point.LootFrame[1]
-            if p and p[1] and p[3] and p[4] and p[5] then
-                self2:ClearAllPoints()
-                self2:SetPoint(p[1], nil, p[3], p[4], p[5])
-            end
-        end
-    end)
-    Move(LootFrame.TitleContainer, {frame=LootFrame, save=true})--物品拾取
-  
-    if QueueStatusButton then--小眼睛, 信息, 设置菜单,移动
-        hooksecurefunc('QueueStatusDropDown_Show', function()
-            UIDropDownMenu_AddSeparator()
-            local info={
-                text=NPE_MOVE..e.Icon.left,
-                notCheckable=true,
-                tooltipOnButton=true,
-                tooltipTitle=REQUIRES_RELOAD,
-                tooltipText=id..'\n'..addName,
-                func= function()
-                    Move(QueueStatusButton, {save=true})
-                    print(id, addName, '|cnGREEN_FONT_COLOR:'..REQUIRES_RELOAD..'|r', 'Alt+'..e.Icon.right..RESET_POSITION )
-                end
-            }
-            UIDropDownMenu_AddButton(info)
-        end)
-        local p=Save.point['QueueStatusButton']
-        if p and p[1] and p[3] and p[4] and p[5] then
-            QueueStatusButton:ClearAllPoints()
-            QueueStatusButton:SetPoint(p[1],UIParent, p[3], p[4], p[5])
-        end
-    end]]
