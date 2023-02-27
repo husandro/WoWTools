@@ -364,21 +364,21 @@ local function setMarkersFrame()--设置标记, 框架
         end
 
         for index = 0, NUM_RAID_ICONS do
-            local button=e.Cbtn(frame, nil, nil, nil, nil, true, {25,25})
+            local btn=e.Cbtn(frame, nil, nil, nil, nil, true, {25,25})
             if Save.H then
-                button:SetPoint('BOTTOMLEFT', last or frame, 'TOPLEFT')
+                btn:SetPoint('BOTTOMLEFT', last or frame, 'TOPLEFT')
             else
-                button:SetPoint('BOTTOMRIGHT', last or frame, 'BOTTOMLEFT')
+                btn:SetPoint('BOTTOMRIGHT', last or frame, 'BOTTOMLEFT')
             end
             if index==0 then
-                button:SetNormalTexture('Interface\\AddOns\\WeakAuras\\Media\\Textures\\cancel-mark.tga')
-                button:RegisterForDrag("RightButton")
-                button:SetScript("OnDragStart", function(self,d )
+                btn:SetNormalTexture('Interface\\AddOns\\WeakAuras\\Media\\Textures\\cancel-mark.tga')
+                btn:RegisterForDrag("RightButton")
+                btn:SetScript("OnDragStart", function(self,d )
                     if d=='RightButton' and not IsModifierKeyDown() and not EditModeManagerFrame:IsEditModeActive() then
                         frame:StartMoving()
                     end
                 end)
-                button:SetScript("OnDragStop", function(self)
+                btn:SetScript("OnDragStop", function(self)
                     if not EditModeManagerFrame:IsEditModeActive() then
                         ResetCursor()
                         frame:StopMovingOrSizing()
@@ -386,7 +386,7 @@ local function setMarkersFrame()--设置标记, 框架
                         Save.markersFramePoint[2]=nil
                     end
                 end)
-                button:SetScript('OnMouseDown', function(self, d)
+                btn:SetScript('OnMouseDown', function(self, d)
                     local key=IsModifierKeyDown()
                     if d=='LeftButton' and not key then
                         Clear()--取消标记标
@@ -397,10 +397,10 @@ local function setMarkersFrame()--设置标记, 框架
                         print(id,addName,HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION..(Save.H and e.Icon.up2 or e.Icon.toLeft2), REQUIRES_RELOAD)
                     end
                 end)
-                button:SetScript('OnMouseUp', function()
+                btn:SetScript('OnMouseUp', function()
                     ResetCursor()
                 end)
-                button:SetScript('OnEnter', function(self)
+                btn:SetScript('OnEnter', function(self)
                     e.tips:SetOwner(self, "ANCHOR_RIGHT")
                     e.tips:ClearLines()
                     e.tips:AddDoubleLine(id, addName)
@@ -411,8 +411,8 @@ local function setMarkersFrame()--设置标记, 框架
                     e.tips:AddDoubleLine((e.onlyChinse and '图标方向' or  HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION)..(Save.H and e.Icon.toLeft2 or e.Icon.up2), 'Ctrl+'..e.Icon.right)
                     e.tips:Show()
                 end)
-                button:EnableMouseWheel(true)
-                button:SetScript('OnMouseWheel', function(self, d)--缩放
+                btn:EnableMouseWheel(true)
+                btn:SetScript('OnMouseWheel', function(self, d)--缩放
                     if IsAltKeyDown() then
                         local sacle=Save.markersScale or 1
                         if d==1 then
@@ -431,15 +431,15 @@ local function setMarkersFrame()--设置标记, 框架
                     end
                 end)
             else
-                button:SetNormalTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
-                button:SetScript('OnMouseDown', function(self, d)
+                btn:SetNormalTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
+                btn:SetScript('OnMouseDown', function(self, d)
                     if d=='LeftButton' then
                         setTaget('target', index)--设置,目标, 标记
                     elseif d=='RightButton' then
                         Clear(index)--取消标记标    
                     end
                 end)
-                button:SetScript('OnEnter', function(self)
+                btn:SetScript('OnEnter', function(self)
                     e.tips:SetOwner(self, "ANCHOR_RIGHT")
                     e.tips:ClearLines()
                     e.tips:AddLine(getTexture(index)..(e.onlyChinse and '设置' or SETTINGS)..e.Icon.left, color[index].r, color[index].g, color[index].b)
@@ -447,10 +447,10 @@ local function setMarkersFrame()--设置标记, 框架
                     e.tips:Show()
                 end)
             end
-            button:SetScript('OnLeave', function()
+            btn:SetScript('OnLeave', function()
                 e.tips:Hide()
             end)
-            last=button
+            last=btn
         end
     end
     frame:SetShown(true)
@@ -554,30 +554,30 @@ local function setMarkersFrame()--设置标记, 框架
         local last
         local tab={5,6,3,2,7,1,4,8}
         for index=0,  NUM_WORLD_RAID_MARKERS do
-            local button=e.Cbtn(frame2, nil, nil, true, nil, true, {25,25})
+            local btn=e.Cbtn(frame2, nil, nil, true, nil, true, {25,25})
             if Save.H then
-                button:SetPoint('BOTTOMRIGHT', last or frame2, 'TOPRIGHT')
+                btn:SetPoint('BOTTOMRIGHT', last or frame2, 'TOPRIGHT')
             else
-                button:SetPoint('BOTTOMRIGHT', last or frame2, 'BOTTOMLEFT')
+                btn:SetPoint('BOTTOMRIGHT', last or frame2, 'BOTTOMLEFT')
             end
-            --button:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
+            --btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
 
-            button:SetAttribute('type1', 'worldmarker')
-            button:SetAttribute('marker1', index==0 and 0 or tab[index])
-            button:SetAttribute("action1", index==0 and 'clear' or "set")
+            btn:SetAttribute('type1', 'worldmarker')
+            btn:SetAttribute('marker1', index==0 and 0 or tab[index])
+            btn:SetAttribute("action1", index==0 and 'clear' or "set")
 
-            button:SetAttribute("type2", "worldmarker")
-            button:SetAttribute("marker2", index==0 and 0 or tab[index])
-            button:SetAttribute("action2", "clear")
+            btn:SetAttribute("type2", "worldmarker")
+            btn:SetAttribute("marker2", index==0 and 0 or tab[index])
+            btn:SetAttribute("action2", "clear")
             if index==0 then
-                button:SetNormalTexture('Interface\\AddOns\\WeakAuras\\Media\\Textures\\cancel-mark.tga')
+                btn:SetNormalTexture('Interface\\AddOns\\WeakAuras\\Media\\Textures\\cancel-mark.tga')
             else
-                button:SetNormalTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
+                btn:SetNormalTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
             end
-            button:SetScript('OnLeave', function()
+            btn:SetScript('OnLeave', function()
                 e.tips:Hide()
             end)
-            button:SetScript('OnEnter', function(self)
+            btn:SetScript('OnEnter', function(self)
                 e.tips:SetOwner(self, "ANCHOR_RIGHT")
                 e.tips:ClearLines()
                 if index==0 then
@@ -588,12 +588,12 @@ local function setMarkersFrame()--设置标记, 框架
                 end
                 e.tips:Show()
             end)
-            last=button
+            last=btn
             if index~=0 then--背景
-                button.texture=button:CreateTexture(nil,'BACKGROUND')
-                button.texture:SetAllPoints(button)
-                button.texture:SetColorTexture(color[index].r, color[index].g, color[index].b)
-                button.texture:SetAlpha(0.3)
+                btn.texture=btn:CreateTexture(nil,'BACKGROUND')
+                btn.texture:SetAllPoints(btn)
+                btn.texture:SetColorTexture(color[index].r, color[index].g, color[index].b)
+                btn.texture:SetAlpha(0.3)
             end
         end
     end

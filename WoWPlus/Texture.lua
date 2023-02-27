@@ -1,7 +1,7 @@
 local id, e= ...
 local addName=HIDE..TEXTURES_SUBHEADER
 local Save={
-    disabledTexture= true,
+    --disabledTexture= true,
     disabledAlpha= not e.Player.husandro,
     disabledColor= not e.Player.husandro,
     alpha= 0.5,
@@ -147,6 +147,11 @@ local function Init_HideTexture()
         hooksecurefunc('CompactRaidFrameManager_Expand', function()
             CompactRaidFrameManager.toggleButton:SetNormalAtlas(e.Icon.toLeft)
         end)
+        if CompactRaidFrameManagerDisplayFrameLeaderOptionsCountdownText then
+            CompactRaidFrameManagerDisplayFrameLeaderOptionsCountdownText:SetText('|A:countdown-swords:22:22|a10')
+            CompactRaidFrameManagerDisplayFrameLeaderOptionsInitiateRolePollText:SetText('|A:groupfinder-icon-role-large-tank:22:22:|a|A:groupfinder-icon-role-large-heal:22:22|a')
+            CompactRaidFrameManagerDisplayFrameLeaderOptionsInitiateReadyCheckText:SetText('|A:'..e.Icon.select..':22:22|a')
+        end
      end
 
     --######

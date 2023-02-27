@@ -1835,7 +1835,9 @@
         "COLORS",
         "IgnoreListFrame",
         "RecruitAFriendFrame",
-        "EncounterJournalMonthlyActivitiesFrame"
+        "CompactRaidFrameManagerDisplayFrameLeaderOptionsCountdownText",
+        "CompactRaidFrameManagerDisplayFrameLeaderOptionsInitiateRolePollText",
+        "CompactRaidFrameManagerDisplayFrameLeaderOptionsInitiateReadyCheckText"
     ],
     "Lua.diagnostics.disable": [
     ]
