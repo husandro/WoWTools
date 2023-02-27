@@ -1,24 +1,25 @@
 local id, e = ...
 local Save= {}
 local addName= SAY
-local panel=e.Cbtn2('WoWToolsChatButtonSay', WoWToolsChatButtonFrame, true, false)
+local button
+local panel= CreateFrame("Frame")
 
 local function setType(text)--使用,提示
-    if not panel.typeText then
-        panel.typeText=e.Cstr(panel, 10, nil, nil, true)
-        panel.typeText:SetPoint('BOTTOM',0,2)
+    if not button.typeText then
+        button.typeText=e.Cstr(button, 10, nil, nil, true)
+        button.typeText:SetPoint('BOTTOM',0,2)
     end
 
     if text=='大喊' then
         text='喊'
-    elseif panel.type and text:find('%w') then--处理英文
-        text=panel.type:gsub('/','')
+    elseif button.type and text:find('%w') then--处理英文
+        text=button.type:gsub('/','')
     else
         text=e.WA_Utf8Sub(text, 1)
     end
 
-    panel.typeText:SetText(text)
-    panel.typeText:SetShown(IsInGroup())
+    button.typeText:SetText(text)
+    button.typeText:SetShown(IsInGroup())
 end
 
 
@@ -104,9 +105,9 @@ local function InitMenu(self, level, type)--主菜单
                         tooltipTitle=wow.note,
                         func=function()
                             e.Say(nil, wow.accountName, true)
-                            panel.type=nil
-                            panel.name=wow.accountName
-                            panel.wow=true
+                            button.type=nil
+                            button.name=wow.accountName
+                            button.wow=true
                             setType(e.onlyChinse and '战' or COMMUNITY_COMMAND_BATTLENET)--使用,提示
                         end
                     }
@@ -135,9 +136,9 @@ local function InitMenu(self, level, type)--主菜单
                         icon= game.afk and FRIENDS_TEXTURE_AFK or game.dnd and FRIENDS_TEXTURE_DND,
                         func=function()
                             e.Say('/w', game.name)
-                            panel.type='/w'
-                            panel.name=game.name
-                            panel.wow=nil
+                            button.type='/w'
+                            button.name=game.name
+                            button.wow=nil
                             setType(e.onlyChinse and '密' or SLASH_TEXTTOSPEECH_WHISPER)--使用,提示
                         end
                     }
@@ -165,9 +166,9 @@ local function InitMenu(self, level, type)--主菜单
                     tooltipText=text,
                     func=function()
                         e.Say(nil, tab.name, tab.wow)
-                        panel.type='/w'
-                        panel.name=tab.name
-                        panel.wow=tab.wow
+                        button.type='/w'
+                        button.name=tab.name
+                        button.wow=tab.wow
                         setType(e.onlyChinse and '密' or SLASH_TEXTTOSPEECH_WHISPER)--使用,提示
                     end
                 }
@@ -187,9 +188,9 @@ local function InitMenu(self, level, type)--主菜单
                             tooltipOnButton=true,
                             func=function(s, d)
                                 e.Say(nil, zone.fullName)
-                                panel.type='/w'
-                                panel.name=zone.fullGuildName
-                                panel.wow=nil
+                                button.type='/w'
+                                button.name=zone.fullGuildName
+                                button.wow=nil
                             end
                         }
                         if zone.filename then
@@ -245,9 +246,9 @@ local function InitMenu(self, level, type)--主菜单
                 tooltipTitle=tab.type,
                 func=function()
                     e.Say(tab.type)
-                    panel.type=tab.type
-                    panel.name=nil
-                    panel.wow=nil
+                    button.type=tab.type
+                    button.name=nil
+                    button.wow=nil
                     setType(tab.text)--使用,提示
                 end
             }
@@ -257,16 +258,16 @@ local function InitMenu(self, level, type)--主菜单
                     info.text= info.text..' '..text
                     info.func=function()
                         e.Say('/w', text)
-                        panel.type='/w'
-                        panel.name=text
-                        panel.wow=nil
+                        button.type='/w'
+                        button.name=text
+                        button.wow=nil
                         setType(tab.text)--使用,提示
                     end
-                elseif panel.name then--最后密语
-                    info.text= info.text..' '.. panel.name
+                elseif button.name then--最后密语
+                    info.text= info.text..' '.. button.name
                     info.func=function()
-                        e.Say('/w', panel.name, panel.wow)
-                        panel.type='/w'
+                        e.Say('/w', button.name, button.wow)
+                        button.type='/w'
                         setType(tab.text)--使用,提示
                     end
                 end
@@ -336,27 +337,28 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddButton(info, level)
     end
 end
+
 --####
 --初始
 --####
 local function Init()
-    panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
-    WoWToolsChatButtonFrame.last=panel
+    button:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
+    WoWToolsChatButtonFrame.last=button
 
-    panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
-    UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
+    button.Menu=CreateFrame("Frame",nil, button, "UIDropDownMenuTemplate")
+    UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
-    panel.type=SLASH_SAY1
+    button.type=SLASH_SAY1
     setType(SAY)--使用,提示
 
-    panel.texture:SetAtlas('transmog-icon-chat')
-    panel:SetScript('OnMouseDown', function(self, d)
-        if d=='LeftButton' and (panel.type or panel.name) then
-            if panel.type=='/w' then
-                local name= UnitIsPlayer('target') and GetUnitName('target', true) or panel.name
-                e.Say(panel.type, name , panel.wow)
+    button.texture:SetAtlas('transmog-icon-chat')
+    button:SetScript('OnMouseDown', function(self, d)
+        if d=='LeftButton' and (button.type or button.name) then
+            if button.type=='/w' then
+                local name= UnitIsPlayer('target') and GetUnitName('target', true) or button.name
+                e.Say(button.type, name , button.wow)
             else
-                e.Say(panel.type, panel.name, panel.wow)
+                e.Say(button.type, button.name, button.wow)
             end
         else
             ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
@@ -366,28 +368,27 @@ local function Init()
     set_CVar_chatBubbles()--聊天泡泡
 end
 
-
 --###########
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-panel:RegisterEvent("CHAT_MSG_WHISPER_INFORM")
-panel:RegisterEvent("CHAT_MSG_WHISPER")
-panel:RegisterEvent("CHAT_MSG_BN_WHISPER")
-panel:RegisterEvent("CHAT_MSG_BN_WHISPER_INFORM")
 
 panel:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
-                panel:UnregisterAllEvents()
-                panel:SetShown(false)
-            else
+            if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
                 Save= WoWToolsSave and WoWToolsSave[addName] or Save
+
+                button=e.Cbtn2('WoWToolsChatButtonSay', WoWToolsChatButtonFrame, true, false)
+
                 Init()
-                panel:UnregisterEvent('ADDON_LOADED')
+                panel:RegisterEvent("PLAYER_LOGOUT")
+                panel:RegisterEvent("CHAT_MSG_WHISPER_INFORM")
+                panel:RegisterEvent("CHAT_MSG_WHISPER")
+                panel:RegisterEvent("CHAT_MSG_BN_WHISPER")
+                panel:RegisterEvent("CHAT_MSG_BN_WHISPER_INFORM")
             end
+            panel:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event=='CHAT_MSG_WHISPER_INFORM' or event=='CHAT_MSG_WHISPER' or event=='CHAT_MSG_BN_WHISPER' or event=='CHAT_MSG_BN_WHISPER_INFORM' then

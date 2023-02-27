@@ -4,8 +4,7 @@ local Save={
     mouseUP= e.Player.zh and '%s求拉, 3Q' or '%spull me, thx',
     mouseDown= e.Player.zh and '1' or 'inv, thx' ,
 }
-
-local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
+local button
 
 local roleAtlas={
     TANK='groupfinder-icon-role-large-tank',
@@ -15,19 +14,19 @@ local roleAtlas={
 }
 
 local function setType(text)--使用,提示
-    if not panel.typeText then
-        panel.typeText=e.Cstr(panel, 10, nil, nil, true)
-        panel.typeText:SetPoint('BOTTOM',0,2)
+    if not button.typeText then
+        button.typeText=e.Cstr(button, 10, nil, nil, true)
+        button.typeText:SetPoint('BOTTOM',0,2)
     end
-    if panel.type and text:find('%w') then--处理英文
-        text=panel.type:gsub('/','')
+    if button.type and text:find('%w') then--处理英文
+        text=button.type:gsub('/','')
     else
         text= text==RAID_WARNING and COMMUNITIES_NOTIFICATION_SETTINGS_DIALOG_SETTINGS_LABEL or text--团队通知->通知
         text=e.WA_Utf8Sub(text, 1)
     end
 
-    panel.typeText:SetText(text)
-    panel.typeText:SetShown(IsInGroup())
+    button.typeText:SetText(text)
+    button.typeText:SetShown(IsInGroup())
 end
 
 local function setGroupTips()--队伍信息提示
@@ -36,22 +35,22 @@ local function setGroupTips()--队伍信息提示
     local isInInstance= IsInInstance()
     local num=GetNumGroupMembers()
 
-    if not panel.type then
+    if not button.type then
         if isInRaid then
-            panel.type=SLASH_RAID2
+            button.type=SLASH_RAID2
             setType(RAID)--使用,提示
         elseif isInGroup then
-            panel.type=SLASH_PARTY1
+            button.type=SLASH_PARTY1
             setType(HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS)--使用,提示
         end
     end
 
-    if isInGroup and not panel.membersText then--人数
-        panel.membersText=e.Cstr(panel, 10, nil, nil, true)
-        panel.membersText:SetPoint('TOPLEFT', 3, -3)
+    if isInGroup and not button.membersText then--人数
+        button.membersText=e.Cstr(button, 10, nil, nil, true)
+        button.membersText:SetPoint('TOPLEFT', 3, -3)
     end
-    if panel.membersText then
-        panel.membersText:SetText(isInGroup and num or '')
+    if button.membersText then
+        button.membersText:SetText(isInGroup and num or '')
     end
 
     local subgroup, combatRole
@@ -61,34 +60,34 @@ local function setGroupTips()--队伍信息提示
         combatRole=tab.combatRole
     end
 
-    if subgroup and not panel.subgroupTexture then--小队号
-        panel.subgroupTexture=e.Cstr(panel, 10, nil, nil, true, nil, 'RIGHT')
-        panel.subgroupTexture:SetPoint('TOPRIGHT',-6,-3)
-        panel.subgroupTexture:SetTextColor(0,1,0)
+    if subgroup and not button.subgroupTexture then--小队号
+        button.subgroupTexture=e.Cstr(button, 10, nil, nil, true, nil, 'RIGHT')
+        button.subgroupTexture:SetPoint('TOPRIGHT',-6,-3)
+        button.subgroupTexture:SetTextColor(0,1,0)
     end
-    if panel.subgroupTexture then
-        panel.subgroupTexture:SetText(subgroup or '')
+    if button.subgroupTexture then
+        button.subgroupTexture:SetText(subgroup or '')
     end
 
-    if isInRaid and not isInInstance and not panel.textureNotInstance then--在副本外, 在团时, 提示
-        panel.textureNotInstance=panel:CreateTexture(nil,'BACKGROUND')
-        panel.textureNotInstance:SetAllPoints(panel)
-        panel.textureNotInstance:SetAtlas('socket-punchcard-red-background')
+    if isInRaid and not isInInstance and not button.textureNotInstance then--在副本外, 在团时, 提示
+        button.textureNotInstance=button:CreateTexture(nil,'BACKGROUND')
+        button.textureNotInstance:SetAllPoints(button)
+        button.textureNotInstance:SetAtlas('socket-punchcard-red-background')
     end
-    if panel.textureNotInstance then
-        panel.textureNotInstance:SetShown(isInRaid and not isInInstance)
+    if button.textureNotInstance then
+        button.textureNotInstance:SetShown(isInRaid and not isInInstance)
     end
 
     if isInGroup then--职责提示
-        panel.texture:SetAtlas( roleAtlas[combatRole] or roleAtlas['NONE'])
+        button.texture:SetAtlas( roleAtlas[combatRole] or roleAtlas['NONE'])
     else
-        panel.texture:SetAtlas('socialqueuing-icon-group')
+        button.texture:SetAtlas('socialqueuing-icon-group')
     end
-    --panel.texture:SetDesaturated(not isInGroup)
-    --panel.texture:SetShown(isInGroup)
+    --button.texture:SetDesaturated(not isInGroup)
+    --button.texture:SetShown(isInGroup)
 
-    if panel.typeText then
-        panel.typeText:SetShown(isInGroup)
+    if button.typeText then
+        button.typeText:SetShown(isInGroup)
     end
 end
 
@@ -198,7 +197,7 @@ local function InitMenu(self, level, type)--主菜单
                 tooltipTitle=tab.type,
                 func=function()
                     e.Say(tab.type)
-                    panel.type=tab.type
+                    button.type=tab.type
                     setType(tab.text)--使用,提示
                 end
             }
@@ -306,7 +305,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
     table.sort(tabN, function(a, b) if a and b then  return a.maxHP> b.maxHP end return false end)
     table.sort(tabDPS, function(a, b) if a and b then  return a.maxHP> b.maxHP end return false end)
 
-    e.tips:SetOwner(panel, "ANCHOR_LEFT")
+    e.tips:SetOwner(button, "ANCHOR_LEFT")
     e.tips:ClearLines()
     e.tips:AddDoubleLine(format(e.onlyChinse and '%s玩家' or COMMUNITIES_CROSS_FACTION_BUTTON_TOOLTIP_TITLE, co), e.MK(totaleHP,3))
 
@@ -340,31 +339,31 @@ end
 --初始
 --####
 local function Init()
-    panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
-    WoWToolsChatButtonFrame.last=panel
+    button:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
+    WoWToolsChatButtonFrame.last=button
 
-    panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
-    UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
+    button.Menu=CreateFrame("Frame",nil, button, "UIDropDownMenuTemplate")
+    UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
     if IsInRaid() then
-        panel.type=SLASH_RAID2
+        button.type=SLASH_RAID2
         setType(RAID)--使用,提示
     elseif IsInGroup() then
-        panel.type=SLASH_PARTY1
+        button.type=SLASH_PARTY1
         setType(HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS)--使用,提示
     end
 
-    panel.texture:SetAtlas('socialqueuing-icon-group')
-    panel:SetScript('OnMouseDown', function(self, d)
-        if d=='LeftButton' and panel.type then
-            e.Say(panel.type)
+    button.texture:SetAtlas('socialqueuing-icon-group')
+    button:SetScript('OnMouseDown', function(self, d)
+        if d=='LeftButton' and button.type then
+            e.Say(button.type)
         else
             show_Group_Info_Toolstip()--玩家,信息, 提示
             ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
         end
     end)
 
-    panel:SetScript('OnMouseWheel', function(self, d)--发送自定义信息
+    button:SetScript('OnMouseWheel', function(self, d)--发送自定义信息
         local text= d==1 and Save.mouseUP or d==-1 and Save.mouseDown
         if text then
             text=setText(text)--处理%s
@@ -372,7 +371,7 @@ local function Init()
         end
     end)
 
-    --panel:SetScript('OnLeave', function() e.tips:Hide() end)
+    --button:SetScript('OnLeave', function() e.tips:Hide() end)
 
     set_CVar_chatBubblesParty()--聊天泡泡
 
@@ -382,22 +381,22 @@ end
 --###########
 --加载保存数据
 --###########
+local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-panel:RegisterEvent('GROUP_LEFT')
-panel:RegisterEvent('GROUP_ROSTER_UPDATE')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
-                panel:UnregisterAllEvents()
-                panel:SetShown(false)
-            else
+            if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
                 Save= WoWToolsSave and WoWToolsSave[addName] or Save
+                button=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
+
                 Init()
-                panel:UnregisterEvent('ADDON_LOADED')
+                panel:RegisterEvent("PLAYER_LOGOUT")
+                panel:RegisterEvent('GROUP_LEFT')
+                panel:RegisterEvent('GROUP_ROSTER_UPDATE')
             end
+            panel:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event == "PLAYER_LOGOUT" then

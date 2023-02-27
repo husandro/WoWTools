@@ -2,12 +2,12 @@ local id, e = ...
 
 local Save={}
 local addName='ChatButtonWorldChannel'
-local panel= e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
+local button
 
 local function setChinesTips(name, type)--大脚世界频道, 提示
     if name=='大脚世界频道' then
-        panel.texture:SetDesaturated(type==2)
-        panel.texture:SetShown(type~=0)
+        button.texture:SetDesaturated(type==2)
+        button.texture:SetShown(type~=0)
     end
 end
 
@@ -44,16 +44,16 @@ end
 local function setLeftClickTips(name, channelNumber, texture)--设置点击提示,频道字符
     channelNumber= (channelNumber and channelNumber>0) and channelNumber or nil
     if channelNumber then
-        panel.channelNumber=channelNumber
+        button.channelNumber=channelNumber
     end
-    if channelNumber and not panel.leftClickTips then
-        panel.leftClickTips=e.Cstr(panel, 10, nil, nil, true, nil, 'CENTER')
-        panel.leftClickTips:SetPoint('BOTTOM',0,2)
+    if channelNumber and not button.leftClickTips then
+        button.leftClickTips=e.Cstr(button, 10, nil, nil, true, nil, 'CENTER')
+        button.leftClickTips:SetPoint('BOTTOM',0,2)
     end
-    if panel.leftClickTips then
+    if button.leftClickTips then
         local text
         if channelNumber then
-            panel.channelNumber=channelNumber
+            button.channelNumber=channelNumber
 
             if texture then
                 text='|T'..texture..':0|t'
@@ -61,7 +61,7 @@ local function setLeftClickTips(name, channelNumber, texture)--设置点击提�
                 text=name=='大脚世界频道' and '世' or e.WA_Utf8Sub(name, 1, 4)
             end
         end
-        panel.leftClickTips:SetText(text or '')
+        button.leftClickTips:SetText(text or '')
     end
 end
 
@@ -106,7 +106,7 @@ local function addMenu(name, channelNumber, level)--添加菜单
         communityTexture=info.avatarId
     end
     text=((channelNumber and channelNumber>0) and channelNumber..' ' or '')..text--频道数字
-    text=text..(panel.channelNumber==channelNumber and e.Icon.left or '')--当前点击提示
+    text=text..(button.channelNumber==channelNumber and e.Icon.left or '')--当前点击提示
 
     info={
         text= text,
@@ -127,7 +127,7 @@ local function addMenu(name, channelNumber, level)--添加菜单
     }
     UIDropDownMenu_AddButton(info, level)
 
-    if not panel.channelNumber or panel.channelNumber==0 then
+    if not button.channelNumber or button.channelNumber==0 then
         setLeftClickTips(name, channelNumber)--设置点击提示,频道字符
     end
 end
@@ -152,45 +152,46 @@ end
 --初始
 --####
 local function Init()
-    panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
-    WoWToolsChatButtonFrame.last=panel
+    button:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
+    WoWToolsChatButtonFrame.last=button
 
     if e.Player.zh then
-        panel.texture:SetAtlas('WildBattlePet')
+        button.texture:SetAtlas('WildBattlePet')
     else
-        panel.texture:SetAtlas('128-Store-Main')
+        button.texture:SetAtlas('128-Store-Main')
     end
 
-    panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
-    UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
+    button.Menu=CreateFrame("Frame",nil, button, "UIDropDownMenuTemplate")
+    UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
-    panel:SetScript("OnMouseDown",function(self,d)
-        if d=='LeftButton' and panel.channelNumber and panel.channelNumber>0 then
-            e.Say('/'..panel.channelNumber)
+    button:SetScript("OnMouseDown",function(self,d)
+        if d=='LeftButton' and button.channelNumber and button.channelNumber>0 then
+            e.Say('/'..button.channelNumber)
         else
             ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
         end
     end)
-    panel.texture:SetShown(true)
+    button.texture:SetShown(true)
 end
 
 --###########
 --加载保存数据
 --###########
+local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
-                panel:UnregisterAllEvents()
-                panel:SetShown(false)
-            else
+            if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
                 Save= WoWToolsSave and WoWToolsSave[addName] or Save
+
+                button= e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
+
                 Init()
-                panel:UnregisterEvent('ADDON_LOADED')
+                panel:RegisterEvent("PLAYER_LOGOUT")
             end
+            panel:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event == "PLAYER_LOGOUT" then

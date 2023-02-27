@@ -10,8 +10,8 @@ local Save={InvNoFriend={},
             Summon= true,--接受, 召唤
 }
 local InvPlateGuid={}
-
-local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
+local button
+local panel= CreateFrame("Frame")
 
 local function getLeader()--取得权限
     return UnitIsGroupAssistant('player') or UnitIsGroupLeader('player') or not IsInGroup()
@@ -39,36 +39,36 @@ local function isInLFG()--是否有FB, 排除中
 end
 
 local function setTexture()--设置图标颜色, 是否有权限, 是否转团, 邀请选项提示
-    panel.texture:SetDesaturated(not getLeader() and true or false)
+    button.texture:SetDesaturated(not getLeader() and true or false)
 
     if Save.PartyToRaid then
-        panel.border:SetAtlas('bag-border')
+        button.border:SetAtlas('bag-border')
     else
-        panel.border:SetAtlas('bag-reagent-border')
+        button.border:SetAtlas('bag-reagent-border')
     end
 
-    if not panel.LFGAutoInv and Save.LFGAutoInv then--邀请LFG,指示图标
-        panel.LFGAutoInv=panel:CreateTexture(nil, 'ARTWORK')
-        panel.LFGAutoInv:SetPoint('BOTTOMLEFT',3,3)
-        panel.LFGAutoInv:SetSize(10,10)
-        panel.LFGAutoInv:SetAtlas(e.Icon.toRight)
-        panel.LFGAutoInv:SetDesaturated(true)
+    if not button.LFGAutoInv and Save.LFGAutoInv then--邀请LFG,指示图标
+        button.LFGAutoInv=button:CreateTexture(nil, 'ARTWORK')
+        button.LFGAutoInv:SetPoint('BOTTOMLEFT',3,3)
+        button.LFGAutoInv:SetSize(10,10)
+        button.LFGAutoInv:SetAtlas(e.Icon.toRight)
+        button.LFGAutoInv:SetDesaturated(true)
     end
-    if panel.LFGAutoInv then
-        panel.LFGAutoInv:SetShown(Save.LFGAutoInv)
+    if button.LFGAutoInv then
+        button.LFGAutoInv:SetShown(Save.LFGAutoInv)
     end
-    if not panel.InvTar and (Save.InvTar or (Save.Channel and Save.ChannelText)) then--邀请目标, 频道, 指示图标
-        panel.InvTar=panel:CreateTexture(nil, 'ARTWORK')
-        panel.InvTar:SetPoint('BOTTOMRIGHT',-7,3)
-        panel.InvTar:SetSize(10,10)
-        panel.InvTar:SetAtlas(e.Icon.toLeft)
-        panel.InvTar:SetDesaturated(true)
+    if not button.InvTar and (Save.InvTar or (Save.Channel and Save.ChannelText)) then--邀请目标, 频道, 指示图标
+        button.InvTar=button:CreateTexture(nil, 'ARTWORK')
+        button.InvTar:SetPoint('BOTTOMRIGHT',-7,3)
+        button.InvTar:SetSize(10,10)
+        button.InvTar:SetAtlas(e.Icon.toLeft)
+        button.InvTar:SetDesaturated(true)
     end
-    if panel.InvTar then
-        panel.InvTar:SetShown((Save.Channel and Save.ChannelText))
+    if button.InvTar then
+        button.InvTar:SetShown((Save.Channel and Save.ChannelText))
     end
- 
-    panel.texture:SetDesaturated(not (Save.LFGListAceInvite and Save.FriendAceInvite))--自动接受,LFD, 好友, 邀请
+
+    button.texture:SetDesaturated(not (Save.LFGListAceInvite and Save.FriendAceInvite))--自动接受,LFD, 好友, 邀请
 end
 
 --#######
@@ -466,9 +466,9 @@ local function set_Chanell_Event()--设置,内容,频道, 邀请,事件
         panel:RegisterEvent('CHAT_MSG_WHISPER')
         panel:RegisterEvent('CHAT_MSG_YELL')
     else
-        panel:RegisterEvent('CHAT_MSG_SAY')
-        panel:RegisterEvent('CHAT_MSG_WHISPER')
-        panel:RegisterEvent('CHAT_MSG_YELL')
+        panel:UnregisterEvent('CHAT_MSG_SAY')
+        panel:UnregisterEvent('CHAT_MSG_WHISPER')
+        panel:UnregisterEvent('CHAT_MSG_YELL')
     end
 end
 
@@ -814,16 +814,16 @@ end
 --初始
 --####
 local function Init()
-    panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
-    WoWToolsChatButtonFrame.last=panel
+    button:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
+    WoWToolsChatButtonFrame.last=button
 
-    panel.texture:SetAtlas('communities-icon-addgroupplus')
+    button.texture:SetAtlas('communities-icon-addgroupplus')
     setTexture()--设置图标颜色, 是否有权限
 
-    panel.Menu= CreateFrame("Frame",nil, LFDMicroButton, "UIDropDownMenuTemplate")--菜单列表
-    UIDropDownMenu_Initialize(panel.Menu, InitList, "MENU")
+    button.Menu= CreateFrame("Frame",nil, LFDMicroButton, "UIDropDownMenuTemplate")--菜单列表
+    UIDropDownMenu_Initialize(button.Menu, InitList, "MENU")
 
-    panel:SetScript('OnMouseDown', function(self, d)
+    button:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
             InvUnitFunc()--邀请，周围玩家
         else
@@ -879,8 +879,8 @@ local function Init()
         if Save.Summon and not UnitAffectingCombat("player") and PlayerCanTeleport() and not UnitIsAFK('player') and not IsModifierKeyDown() then
             print(id, addName, e.onlyChinse and '召唤' or SUMMON, C_SummonInfo.GetSummonConfirmSummoner(), C_SummonInfo.GetSummonConfirmAreaName())
             e.Ccool(self, nil, 3, nil, true, true, nil)--冷却条
-            if panel.SummonTimer then panel.SummonTimer:Cancel() end
-            panel.SummonTimer= C_Timer.NewTimer(3, function()
+            if button.SummonTimer then button.SummonTimer:Cancel() end
+            button.SummonTimer= C_Timer.NewTimer(3, function()
                 if not UnitAffectingCombat("player") and PlayerCanTeleport() and not UnitIsAFK('player') and not IsModifierKeyDown() then
                     C_SummonInfo.ConfirmSummon()
                     StaticPopup_Hide("CONFIRM_SUMMON")
@@ -891,7 +891,7 @@ local function Init()
         end
     end)
     hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"],"OnCancel",function(self)
-        if panel.SummonTimer then panel.SummonTimer:Cancel() end
+        if button.SummonTimer then button.SummonTimer:Cancel() end
     end)
 end
 
@@ -899,26 +899,24 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-
-panel:RegisterEvent('GROUP_LEFT')
-panel:RegisterEvent('GROUP_ROSTER_UPDATE')
-
-panel:RegisterEvent('PARTY_INVITE_REQUEST')
-panel:RegisterEvent('PLAYER_UPDATE_RESTING')----休息区提示
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 
 panel:SetScript("OnEvent", function(self, event, arg1, ...)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
-                panel:UnregisterAllEvents()
-                panel:SetShown(false)
-            else
+            if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
                 Save= WoWToolsSave and WoWToolsSave[addName] or Save
+
+                button=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
                 Init()
-                panel:UnregisterEvent('ADDON_LOADED')
+
+                panel:RegisterEvent("PLAYER_LOGOUT")
+                panel:RegisterEvent('GROUP_LEFT')
+                panel:RegisterEvent('GROUP_ROSTER_UPDATE')
+                panel:RegisterEvent('PARTY_INVITE_REQUEST')
+                panel:RegisterEvent('PLAYER_UPDATE_RESTING')----休息区提示
+                panel:RegisterEvent('PLAYER_ENTERING_WORLD')
             end
+            panel:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event == "PLAYER_LOGOUT" then

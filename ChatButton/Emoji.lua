@@ -1,7 +1,7 @@
 local id, e = ...
 local addName= 'Emoji'
 local Save={Channels={}, disabled= not e.Player.zh and not e.Player.husandro }
-local panel=e.Cbtn2('WoWToolsChatButtonEmoji', WoWToolsChatButtonFrame, true, false)
+local button
 
 local frame--控制图标,显示,隐藏
 local File={'Angel','Angry','Biglaugh','Clap','Cool','Cry','Cutie','Despise','Dreamsmile','Embarrass','Evil','Excited','Faint','Fight','Flu','Freeze','Frown','Greet','Grimace','Growl','Happy','Heart','Horror','Ill','Innocent','Kongfu','Love','Mail','Makeup','Meditate','Miserable','Okay','Pretty','Puke','Shake','Shout','Shuuuu','Shy','Sleep','Smile','Suprise','Surrender','Sweat','Tear','Tears','Think','Titter','Ugly','Victory','Volunteer','Wronged','Mario',}
@@ -177,14 +177,14 @@ end
 --初始
 --####
 local function Init()
-    panel:SetPoint('LEFT', WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
-    WoWToolsChatButtonFrame.last=panel
+    button:SetPoint('LEFT', WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
+    WoWToolsChatButtonFrame.last=button
 
-    frame=e.Cbtn(panel,nil,nil,nil,nil, true,{10, e.toolsFrame.size or 30})--控制图标,显示,隐藏
+    frame=e.Cbtn(button,nil,nil,nil,nil, true,{10, e.toolsFrame.size or 30})--控制图标,显示,隐藏
     if Save.Point then
         frame:SetPoint(Save.Point[1], UIParent, Save.Point[3], Save.Point[4], Save.Point[5])
     else
-        frame:SetPoint('BOTTOMRIGHT',panel, 'TOPLEFT', -120,2)
+        frame:SetPoint('BOTTOMRIGHT',button, 'TOPLEFT', -120,2)
     end
     frame:SetShown(false)
     frame:RegisterForDrag("RightButton")
@@ -209,7 +209,7 @@ local function Init()
         if d=='RightButton' and IsAltKeyDown() then--还原
             Save.Point=nil
             self:ClearAllPoints()
-            self:SetPoint('BOTTOMRIGHT',panel, 'TOPLEFT', -120,2)
+            self:SetPoint('BOTTOMRIGHT',button, 'TOPLEFT', -120,2)
         elseif d=='RightButton' and not key then--移动光标
             SetCursor('UI_MOVE_CURSOR')
         elseif d=='LeftButton' then--提示信息
@@ -223,18 +223,18 @@ local function Init()
         ResetCursor()
     end)
 
-    panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
-    UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
+    button.Menu=CreateFrame("Frame",nil, button, "UIDropDownMenuTemplate")
+    UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
     setButtons()--设置按钮
 
-    panel.texture:SetTexture('Interface\\Addons\\WoWTools\\Sesource\\Emojis\\greet')
-    panel:SetScript('OnEnter', function()
+    button.texture:SetTexture('Interface\\Addons\\WoWTools\\Sesource\\Emojis\\greet')
+    button:SetScript('OnEnter', function()
         if Save.showEnter then
             frame:SetShown(true)
         end
     end)
-    panel:SetScript('OnMouseDown', function(self, d)
+    button:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
             frame:SetShown(not frame:IsShown())
         else
@@ -266,12 +266,14 @@ end
 --###########
 --加载保存数据
 --###########
+local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
+            Save.Channels= Save.Channels or {}
 
             local sel=CreateFrame("CheckButton", nil, WoWToolsChatButtonFrame.sel, "InterfaceOptionsCheckButtonTemplate")
             sel.text:SetText('Emoji')
@@ -282,17 +284,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.GetEnabeleDisable(not WoWToolsChatButtonFrame.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end)
 
-            if WoWToolsChatButtonFrame.disabled or Save.disabled then--禁用Chat Button
-                self:SetShown(false)
-                panel:UnregisterAllEvents()
-
-            else
-                Save.Channels= Save.Channels or {}
-                if not Save.disabled then
-                    Init()
-                end
-                panel:UnregisterEvent('ADDON_LOADED')
+            if not (WoWToolsChatButtonFrame.disabled or Save.disabled) then--禁用Chat Button
+                button=e.Cbtn2('WoWToolsChatButtonEmoji', WoWToolsChatButtonFrame, true, false)
+                Init()
             end
+            panel:UnregisterEvent('ADDON_LOADED')
             panel:RegisterEvent("PLAYER_LOGOUT")
         end
 

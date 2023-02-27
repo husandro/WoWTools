@@ -2,7 +2,8 @@ local id, e = ...
 local addName= BINDING_HEADER_RAID_TARGET
 local Save={ autoSet=true, tank=2, tank2=6, healer=1, countdown=7, groupReadyTips=true, markersScale=0.85, markersFrame= e.Player.husandro}
 
-local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
+local button
+local panel= CreateFrame("Frame")
 
 local color={
     [1]={r=1, g=1, b=0},--星星, 黄色
@@ -102,17 +103,17 @@ local function setTankHealer(autoSet)--设置队伍标记
 end
 
 local function setReadyTexureTips()--自动就绪, 主图标, 提示
-    if Save.autoReady and not panel.ReadyTextrueTips then
-        panel.ReadyTextrueTips=panel:CreateTexture(nil,'OVERLAY')
-        panel.ReadyTextrueTips:SetPoint('TOP')
-        local size=panel:GetWidth()/2
-        panel.ReadyTextrueTips:SetSize(size, size)
+    if Save.autoReady and not button.ReadyTextrueTips then
+        button.ReadyTextrueTips=button:CreateTexture(nil,'OVERLAY')
+        button.ReadyTextrueTips:SetPoint('TOP')
+        local size=button:GetWidth()/2
+        button.ReadyTextrueTips:SetSize(size, size)
     end
-    if panel.ReadyTextrueTips then
+    if button.ReadyTextrueTips then
         if Save.autoReady then
-            panel.ReadyTextrueTips:SetAtlas(Save.autoReady==1 and e.Icon.select or 'auctionhouse-ui-filter-redx')
+            button.ReadyTextrueTips:SetAtlas(Save.autoReady==1 and e.Icon.select or 'auctionhouse-ui-filter-redx')
         end
-        panel.ReadyTextrueTips:SetShown(Save.autoReady and true or false)
+        button.ReadyTextrueTips:SetShown(Save.autoReady and true or false)
     end
 end
 
@@ -163,14 +164,14 @@ local function setGroupReadyTips(event, arg1, arg2)
                 text= (text~='' and text..'\n' or text)..text2
             end
         end
-        if text~='' and not panel.groupReadyTips then
-            panel.groupReadyTips=e.Cbtn(nil, nil, nil, nil, nil, true,{20,20})
+        if text~='' and not button.groupReadyTips then
+            button.groupReadyTips=e.Cbtn(nil, nil, nil, nil, nil, true,{20,20})
             if Save.groupReadyTipsPoint then
-                panel.groupReadyTips:SetPoint(Save.groupReadyTipsPoint[1], UIParent, Save.groupReadyTipsPoint[3], Save.groupReadyTipsPoint[4], Save.groupReadyTipsPoint[5])
+                button.groupReadyTips:SetPoint(Save.groupReadyTipsPoint[1], UIParent, Save.groupReadyTipsPoint[3], Save.groupReadyTipsPoint[4], Save.groupReadyTipsPoint[5])
             else
-                panel.groupReadyTips:SetPoint('BOTTOMLEFT', panel, 'TOPLEFT', 0, 20)
+                button.groupReadyTips:SetPoint('BOTTOMLEFT', button, 'TOPLEFT', 0, 20)
             end
-            panel.groupReadyTips:SetScript('OnMouseDown', function(self,d)
+            button.groupReadyTips:SetScript('OnMouseDown', function(self,d)
                 local key=IsModifierKeyDown()
                 if d=='LeftButton' and not key then
                     self.text:SetText('')
@@ -180,10 +181,10 @@ local function setGroupReadyTips(event, arg1, arg2)
                 elseif d=='RightButton' and IsAltKeyDown() then
                     Save.groupReadyTipsPoint=nil
                     self:ClearAllPoints()
-                    self:SetPoint('BOTTOMLEFT', panel, 'TOPLEFT', 0, 20)
+                    self:SetPoint('BOTTOMLEFT', button, 'TOPLEFT', 0, 20)
                 end
             end)
-            panel.groupReadyTips:SetScript('OnEnter', function(self)
+            button.groupReadyTips:SetScript('OnEnter', function(self)
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(addName, e.onlyChinse and '队员就绪信息' or PLAYERS_IN_GROUP..READY..INFO)
@@ -191,50 +192,50 @@ local function setGroupReadyTips(event, arg1, arg2)
                 e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
                 e.tips:Show()
             end)
-            panel.groupReadyTips:SetScript('OnLeave', function()
+            button.groupReadyTips:SetScript('OnLeave', function()
                 ResetCursor()
                 e.tips:Hide()
             end)
-            panel.groupReadyTips:SetScript("OnMouseUp", function(self, d)
+            button.groupReadyTips:SetScript("OnMouseUp", function(self, d)
                 ResetCursor()
             end)
 
-            panel.groupReadyTips:RegisterForDrag("RightButton")
-            panel.groupReadyTips:SetMovable(true)
-            panel.groupReadyTips:SetClampedToScreen(true)
+            button.groupReadyTips:RegisterForDrag("RightButton")
+            button.groupReadyTips:SetMovable(true)
+            button.groupReadyTips:SetClampedToScreen(true)
 
-            panel.groupReadyTips:SetScript("OnDragStart", function(self,d )
+            button.groupReadyTips:SetScript("OnDragStart", function(self,d )
                 if not IsModifierKeyDown() and d=='RightButton' then
                     self:StartMoving()
                 end
             end)
-            panel.groupReadyTips:SetScript("OnDragStop", function(self)
+            button.groupReadyTips:SetScript("OnDragStop", function(self)
                 ResetCursor()
                 self:StopMovingOrSizing()
                 Save.groupReadyTipsPoint={self:GetPoint(1)}
                 Save.groupReadyTipsPoint[2]=nil
                 print(id, addName, RESET_POSITION, 'Alt+'..e.Icon.right)
             end)
-            panel.groupReadyTips:SetScript('OnHide', function(self)
+            button.groupReadyTips:SetScript('OnHide', function(self)
                 if self.timer then
                     self.timer:Cancel()
                 end
             end)
-            panel.groupReadyTips.text=e.Cstr(panel.groupReadyTips)
-            panel.groupReadyTips.text:SetPoint('BOTTOMLEFT', panel.groupReadyTips, 'BOTTOMRIGHT')
+            button.groupReadyTips.text=e.Cstr(button.groupReadyTips)
+            button.groupReadyTips.text:SetPoint('BOTTOMLEFT', button.groupReadyTips, 'BOTTOMRIGHT')
         end
         if event=='READY_CHECK' and text~='' then
-            if panel.groupReadyTips.timer then panel.groupReadyTips.timer:Cancel() end
-            panel.groupReadyTips.timer=C_Timer.NewTimer(arg2 or 35, function()
-                panel.groupReadyTips.text:SetText('')
-                panel.groupReadyTips:SetShown(false)
+            if button.groupReadyTips.timer then button.groupReadyTips.timer:Cancel() end
+            button.groupReadyTips.timer=C_Timer.NewTimer(arg2 or 35, function()
+                button.groupReadyTips.text:SetText('')
+                button.groupReadyTips:SetShown(false)
             end)
-            e.Ccool(panel.groupReadyTips,nil, arg2 or 35, nil,nil,true )
+            e.Ccool(button.groupReadyTips,nil, arg2 or 35, nil,nil,true )
         end
     end
-    if panel.groupReadyTips then
-        panel.groupReadyTips:SetShown(text~='')
-        panel.groupReadyTips.text:SetText(text)
+    if button.groupReadyTips then
+        button.groupReadyTips:SetShown(text~='')
+        button.groupReadyTips.text:SetText(text)
     end
 end
 
@@ -243,18 +244,18 @@ end
 --#############
 local function setTexture()--图标, 自动标记
     if Save.tank==0 then
-        panel.texture:SetTexture(0)
+        button.texture:SetTexture(0)
     else
-        panel.texture:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..Save.tank)
+        button.texture:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..Save.tank)
     end
     if Save.autoSet then
-        panel.border:SetAtlas('bag-border')
+        button.border:SetAtlas('bag-border')
     else
-        panel.border:SetAtlas('bag-reagent-border')
+        button.border:SetAtlas('bag-reagent-border')
     end
 end
 local function setAllTextrue()--主图标,是否有权限
-    panel.texture:SetDesaturated(GetNumGroupMembers() <2  or not getAllSet())
+    button.texture:SetDesaturated(GetNumGroupMembers() <2  or not getAllSet())
 end
 
 
@@ -339,7 +340,7 @@ local function setMarkersFrame()--设置标记, 框架
     if not Save.markersFrame or not getAllSet() or combat then
         if combat then
             panel:RegisterEvent('PLAYER_REGEN_ENABLED')
-            panel.combat=true
+            button.combat=true
         else
             if frame then
                 frame:SetShown(false)
@@ -529,7 +530,7 @@ local function setMarkersFrame()--设置标记, 框架
     if combat then
        if not isInGroup or not frame2 or not frame2:IsShown() then
             panel:RegisterEvent('PLAYER_REGEN_ENABLED')
-            panel.combat=true
+            button.combat=true
             return
        end
     elseif not isInGroup then
@@ -783,8 +784,8 @@ end
 --初始
 --####
 local function Init()
-    panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
-    WoWToolsChatButtonFrame.last=panel
+    button:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
+    WoWToolsChatButtonFrame.last=button
 
     setTexture()--设置,按钮图片
     setAllTextrue()--主图标,是否有权限
@@ -792,10 +793,10 @@ local function Init()
     setReadyTexureTips()--自动就绪, 主图标, 提示
     setGroupReadyTipsEvent()--注册事件, 就绪,队员提示信息
 
-    panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
-    UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
+    button.Menu=CreateFrame("Frame",nil, button, "UIDropDownMenuTemplate")
+    UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
-    panel:SetScript("OnMouseDown", function(self,d)
+    button:SetScript("OnMouseDown", function(self,d)
         if d=='LeftButton' then
             setTankHealer()--设置队伍标记
         else
@@ -806,8 +807,8 @@ local function Init()
     local readyFrame=ReadyCheckListenerFrame--自动就绪事件, 提示
     if readyFrame then
         readyFrame:SetScript('OnHide',function ()
-            if panel.autoReadyTime then
-                panel.autoReadyTime:Cancel()
+            if button.autoReadyTime then
+                button.autoReadyTime:Cancel()
             end
         end)
         readyFrame:SetScript('OnShow',function(self)
@@ -832,22 +833,22 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-panel:RegisterEvent('GROUP_ROSTER_UPDATE')--'PLAYER_ROLES_ASSIGNED')--GROUP_ROSTER_UPDATE
-panel:RegisterEvent('GROUP_LEFT')
-panel:RegisterEvent('READY_CHECK')
 
 panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
-                panel:UnregisterAllEvents()
-                panel:SetShown(false)
-            else
+            if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
                 Save= WoWToolsSave and WoWToolsSave[addName] or Save
+                button=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
+
                 Init()
-                panel:UnregisterEvent('ADDON_LOADED')
+
+                panel:RegisterEvent("PLAYER_LOGOUT")
+                panel:RegisterEvent('GROUP_ROSTER_UPDATE')
+                panel:RegisterEvent('GROUP_LEFT')
+                panel:RegisterEvent('READY_CHECK')
             end
+            panel:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event == "PLAYER_LOGOUT" then

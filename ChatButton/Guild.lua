@@ -1,18 +1,18 @@
 local id, e = ...
 local Save={}
 local addName='ChatButtonGuild'
-
-local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
+local button
+local panel= CreateFrame("Frame")
 
 local function setMembers()--在线人数
     local num = select(2, GetNumGuildMembers())
     num = (num and num>1) and num-1 or nil
-    if not panel.membersText and num then
-        panel.membersText=e.Cstr(panel, 10, nil, nil, true, nil, 'CENTER')
-        panel.membersText:SetPoint('BOTTOM', 0, 7)
+    if not button.membersText and num then
+        button.membersText=e.Cstr(button, 10, nil, nil, true, nil, 'CENTER')
+        button.membersText:SetPoint('BOTTOM', 0, 7)
     end
-    if panel.membersText then
-        panel.membersText:SetText(num or '')
+    if button.membersText then
+        button.membersText:SetText(num or '')
     end
 end
 
@@ -81,38 +81,23 @@ local function InitMenu(self, level, type)--主菜单
         end
     }
     UIDropDownMenu_AddButton(info, level)
-
-    --[[
-if CanReplaceGuildMaster() then--弹劾,污染
-        info={
-            text=GUILD_IMPEACH_POPUP_CONFIRM,
-            notCheckable=true,
-            func=function()
-                ReplaceGuildMaster()
-            end
-        }
-        UIDropDownMenu_AddButton(info, level)
-    end
-
-]]
-
 end
 
 --####
 --初始
 --####
 local function Init()
-    panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
-    WoWToolsChatButtonFrame.last=panel
+    button:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
+    WoWToolsChatButtonFrame.last=button
 
-    panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
-    UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
+    button.Menu=CreateFrame("Frame",nil, button, "UIDropDownMenuTemplate")
+    UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
     setMembers()--在线人数
-    panel.texture:SetAtlas('UI-HUD-MicroMenu-GuildCommunities-Up')    
-    panel.texture:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+    button.texture:SetAtlas('UI-HUD-MicroMenu-GuildCommunities-Up')    
+    button.texture:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
 
-    panel:SetScript('OnMouseDown', function(self, d)
+    button:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
             e.Say('/g')
         else
@@ -122,31 +107,32 @@ local function Init()
     end)
 
     if CanReplaceGuildMaster() then--弹劾
-        panel.canReplaceGuildMaster=e.Cstr(panel, 10, nil, nil, true, nil, 'CENTER')
-        panel.canReplaceGuildMaster:SetPoint('TOP')
-        panel.canReplaceGuildMaster:SetText('|cnGREEN_FONT_COLOR:'..GUILD_IMPEACH_POPUP_CONFIRM..'|r')
+        button.canReplaceGuildMaster=e.Cstr(button, 10, nil, nil, true, nil, 'CENTER')
+        button.canReplaceGuildMaster:SetPoint('TOP')
+        button.canReplaceGuildMaster:SetText('|cnGREEN_FONT_COLOR:'..GUILD_IMPEACH_POPUP_CONFIRM..'|r')
     end
 
     set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
 end
+
 --###########
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_LOGOUT')
-panel:RegisterEvent('GUILD_ROSTER_UPDATE')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if WoWToolsChatButtonFrame.disabled or not IsInGuild() then--禁用Chat Button
-                panel:UnregisterAllEvents()
-                panel:SetShown(false)
-            else
+            if not WoWToolsChatButtonFrame.disabled and IsInGuild() then--禁用Chat Button
                 Save= WoWToolsSave and WoWToolsSave[addName] or Save
+
+                button=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
+
                 Init()
-                panel:UnregisterEvent('ADDON_LOADED')
+                panel:RegisterEvent('PLAYER_LOGOUT')
+                panel:RegisterEvent('GUILD_ROSTER_UPDATE')
             end
+            panel:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event == "PLAYER_LOGOUT" then

@@ -174,6 +174,7 @@ e.Player={
     level= UnitLevel('player'),--UnitEffectiveLevel('player')
     husandro= select(2, BNGetInfo()) == '古月剑龙#5972' or select(2, BNGetInfo())=='SandroChina#2690' or UnitName('player')=='Fuocco',
     fanction= UnitFactionGroup('player'),--玩家, 派系
+    --useClassColor,--使用职业颜色 SystemInfo.lua
 }
 for k, v in pairs(GetAutoCompleteRealms()) do
     e.Player.servers[v]=k
@@ -745,6 +746,9 @@ e.Cbtn2= function(name, parent, showTexture, rightClick)
     button.border=button:CreateTexture(nil, 'ARTWORK')
     button.border:SetAllPoints(button)
     button.border:SetAtlas('bag-reagent-border')
+    if e.Player.useClassColor then--使用职业颜色
+        button.border:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+    end
 
     return button
 end

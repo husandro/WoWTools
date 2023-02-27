@@ -18,8 +18,8 @@ local Save={
     welcomeOnlyHomeGroup=true,--仅限, 手动组队
     setPlayerSound= e.Player.husandro,--播放, 声音
 }
-
-local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
+local button
+local panel= CreateFrame("Frame")
 
 local Magic=function(s)  local t={'%%', '%.', '%(','%)','%+', '%-', '%*', '%?', '%[', '%^', '%$'} for _,v in pairs(t) do s=s:gsub(v,'%%'..v) end return s end --  ( ) . % + - * ? [ ^ $
 local MK=function(k,b) if not b then b=1 end if k>=1e6 then k=string.format('%.'..b..'fm',k/1e6) elseif k>= 1e4 and GetLocale() == "zhCN" then k=string.format('%.'..b..'fw',k/1e4) elseif k>=1e3 then k=string.format('%.'..b..'fk',k/1e3) else k=string.format('%i',k) end return k end--加k 9.1
@@ -564,7 +564,7 @@ local function setUseDisabled()
         DEFAULT_CHAT_FRAME.AddMessage=setAddMessageFunc
         DEFAULT_CHAT_FRAME.editBox:SetAltArrowKeyMode(false)--alt +方向= 移动
     end
-    panel.texture:SetShown(not Save.disabed)--SetDesaturated(Save.disabed)
+    button.texture:SetShown(not Save.disabed)--SetDesaturated(Save.disabed)
 end
 local function setFunc()--使用，禁用
     Save.disabed= not Save.disabed and true or nil
@@ -941,13 +941,13 @@ DEFAULT_CHAT_FRAME.ADD=DEFAULT_CHAT_FRAME.AddMessage
 --初始
 --####
 local function Init()
-    panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')
-    WoWToolsChatButtonFrame.last=panel
+    button:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')
+    WoWToolsChatButtonFrame.last=button
 
-    panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
-    UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
-    panel.texture:SetAtlas(e.Icon.icon)
-    panel:SetScript('OnMouseDown', function(self, d)
+    button.Menu=CreateFrame("Frame",nil, button, "UIDropDownMenuTemplate")
+    UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
+    button.texture:SetAtlas(e.Icon.icon)
+    button:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
             setFunc()--使用，禁用
         else
@@ -958,7 +958,7 @@ local function Init()
     if not Save.disabed then--使用，禁用
         setUseDisabled()
     else
-        panel.texture:SetDesaturated(true)
+        button.texture:SetDesaturated(true)
     end
 
     setPanel()--设置控制面板
@@ -975,24 +975,27 @@ local function Init()
     end
 end
 
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('CVAR_UPDATE')
+--###########
+--加载保存数据
+--###########
 
+panel:RegisterEvent("ADDON_LOADED")
 
 panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
     if event == "ADDON_LOADED" then
         if arg1 == id then
-            if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
-                panel:UnregisterAllEvents()
-                panel:SetShown(false)
-            else
+            if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
                 Save= WoWToolsSave and WoWToolsSave[addName] or Save
-                e.setPlayerSound= Save.setPlayerSound--播放, 声音
                 Save.Cvar= Save.Cvar or {}
+                e.setPlayerSound= Save.setPlayerSound--播放, 声音
+
+                button=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
+
                 Init()
-                panel:UnregisterEvent('ADDON_LOADED')
+                panel:RegisterEvent('CVAR_UPDATE')
+                panel:RegisterEvent("PLAYER_LOGOUT")
             end
-            panel:RegisterEvent("PLAYER_LOGOUT")
+            panel:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event == "PLAYER_LOGOUT" then
@@ -1017,42 +1020,42 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
 
     elseif event=='START_TIMER' then--播放, 声音
         if arg2==0 and arg3==0 then
-            panel.timerType= nil
-            if panel.timer4 then panel.timer4:Cancel() end
-            if panel.timer3 then panel.timer3:Cancel() end
-            if panel.timer2 then panel.timer2:Cancel() end
-            if panel.timer1 then panel.timer1:Cancel() end
-            if panel.timer0 then panel.timer0:Cancel() end
+            button.timerType= nil
+            if button.timer4 then button.timer4:Cancel() end
+            if button.timer3 then button.timer3:Cancel() end
+            if button.timer2 then button.timer2:Cancel() end
+            if button.timer1 then button.timer1:Cancel() end
+            if button.timer0 then button.timer0:Cancel() end
 
-        elseif arg1 and arg2 and arg2>3 and not panel.timerType then
-            panel.timerType=arg1
+        elseif arg1 and arg2 and arg2>3 and not button.timerType then
+            button.timerType=arg1
             if arg2>20 then
-                panel.timer4= C_Timer.NewTimer(arg2-10, function()--3
+                button.timer4= C_Timer.NewTimer(arg2-10, function()--3
                     e.PlaySound()
                 end)
             elseif arg2>=7 then
                 e.PlaySound()
             end
-            panel.timer3= C_Timer.NewTimer(arg2-3, function()--3
+            button.timer3= C_Timer.NewTimer(arg2-3, function()--3
                 e.PlaySound(115003)
             end)
-            panel.timer2= C_Timer.NewTimer(arg2-2, function()--2
+            button.timer2= C_Timer.NewTimer(arg2-2, function()--2
                 e.PlaySound(115003)
             end)
-            panel.timer1= C_Timer.NewTimer(arg2-1, function()--1
+            button.timer1= C_Timer.NewTimer(arg2-1, function()--1
                 e.PlaySound(115003)
             end)
-            panel.timer0= C_Timer.NewTimer(arg2, function()--0
+            button.timer0= C_Timer.NewTimer(arg2, function()--0
                 e.PlaySound(114995 )--63971)
-                panel.timerType=nil
+                button.timerType=nil
             end)
         end
     elseif event=='STOP_TIMER_OF_TYPE' then
-        panel.timerType= nil
-        if panel.timer4 then panel.timer4:Cancel() end
-        if panel.timer3 then panel.timer3:Cancel() end
-        if panel.timer2 then panel.timer2:Cancel() end
-        if panel.timer1 then panel.timer1:Cancel() end
-        if panel.timer0 then panel.timer0:Cancel() end
+        button.timerType= nil
+        if button.timer4 then button.timer4:Cancel() end
+        if button.timer3 then button.timer3:Cancel() end
+        if button.timer2 then button.timer2:Cancel() end
+        if button.timer1 then button.timer1:Cancel() end
+        if button.timer0 then button.timer0:Cancel() end
 	end
 end)

@@ -1821,7 +1821,17 @@
         "STAT_ARMOR_TARGET_TOOLTIP",
         "MinimapMixin",
         "Minimap_ZoomIn",
-        "Minimap_ZoomOut"
+        "Minimap_ZoomOut",
+        "SpellbookMicroButton",
+        "TalentMicroButton",
+        "AchievementMicroButton",
+        "QuestLogMicroButton",
+        "GuildMicroButton",
+        "EJMicroButton",
+        "CollectionsMicroButton",
+        "MainMenuMicroButton",
+        "HelpMicroButton",
+        "StoreMicroButton"
     ],
     "Lua.diagnostics.disable": [
     ]

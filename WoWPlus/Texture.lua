@@ -637,6 +637,13 @@ local function Init_SetAlpha()
 
     --小地图
     setAlpha(MinimapCompassTexture)
+
+    --对话框
+    if StaticPopup1 then
+        if StaticPopup1.Border then
+            setAlpha(StaticPopup1.Border.Bg)
+        end
+    end
 end
     --[[hooksecurefunc(UIWidgetPowerBarContainerFrame, 'CreateWidget', function(self, widgetID)
        

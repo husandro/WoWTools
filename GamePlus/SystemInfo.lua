@@ -1,6 +1,11 @@
 local id, e = ...
 local addName= SYSTEM_MESSAGES--MAINMENU_BUTTON
-local Save={equipmetLevel=true, durabiliy=true, moneyWoW=true}
+local Save={
+    equipmetLevel=true,
+    durabiliy=true,
+    moneyWoW=true,
+    classColor= e.Player.husandro,--使用职业颜色
+}
 
 local panel=e.Cbtn(nil, nil, nil,nil,nil,true,{12,12})
 panel.fpsms=e.Cstr(panel, Save.size)--fpsms
@@ -12,11 +17,43 @@ panel.fpsmsFrame:SetShown(false)
 
 local equipmentLevelIcon= ''
 
-local function setStrColor()
-    e.Cstr(nil, Save.size, nil , panel.fpsms, true)
-    e.Cstr(nil, Save.size, nil , panel.money, true)
-    e.Cstr(nil, Save.size, nil , panel.durabiliy, true)
-    e.Cstr(nil, Save.size, nil , panel.equipmentLevel, true)
+local function set_Text_Size_Color()
+    local color
+    if Save.classColor then
+        color={e.Player.r, e.Player.g, e.Player.b}
+    else
+        color=true
+    end
+    e.Cstr(nil, Save.size, nil , panel.fpsms, color)
+    e.Cstr(nil, Save.size, nil , panel.money, color)
+    e.Cstr(nil, Save.size, nil , panel.durabiliy, color)
+    e.Cstr(nil, nil, nil , panel.equipmentLevel, color)
+end
+
+local function set_Class_Color()
+    local buttons = {
+        CharacterMicroButton,
+        SpellbookMicroButton,
+        TalentMicroButton,
+        AchievementMicroButton,
+        QuestLogMicroButton,
+        GuildMicroButton,
+        LFDMicroButton,
+        EJMicroButton,
+        CollectionsMicroButton,
+        MainMenuMicroButton,
+        HelpMicroButton,
+        StoreMicroButton,
+    }
+    for _, frame in pairs(buttons) do
+        if frame and frame:IsEnabled() then
+            if Save.classColor then
+                frame:GetNormalTexture():SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+            else
+                frame:GetNormalTexture():SetVertexColor(1, 1, 1)
+            end
+        end
+    end
 end
 
 local function setMoney()
@@ -31,7 +68,11 @@ local function setMoney()
         money= GetMoney()
     end
     if money>=10000 then
-        panel.money:SetText(e.MK(money/1e4, 3)..'|TInterface/moneyframe/ui-silvericon:6|t')
+        if Save.classColor then
+            panel.money:SetText(e.MK(money/1e4, 3)..'|TInterface/moneyframe/ui-goldicon:8|t')
+        else
+            panel.money:SetText(e.MK(money/1e4, 3)..'|TInterface/moneyframe/ui-silvericon:8|t')
+        end
     else
         panel.money:SetText(GetMoneyString(money,true))
     end
@@ -228,6 +269,19 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddButton(info,level)
 
         UIDropDownMenu_AddSeparator(level)
+        info={--使用,职业,颜色
+            text= e.onlyChinse and '职业颜色' or CLASS_COLORS,
+            checked= Save.classColor,
+            func= function()
+                Save.classColor= not Save.classColor and true or nil
+                set_Text_Size_Color()
+                set_Class_Color()
+                setMoney()
+            end
+        }
+        UIDropDownMenu_AddButton(info,level)
+
+        UIDropDownMenu_AddSeparator(level)
         info={
             text=e.Icon.mid..(e.onlyChinse and '缩放' or UI_SCALE)..': '..(Save.size or 12),
             isTitle=true,
@@ -292,7 +346,7 @@ local function Init()
     panel:RegisterForDrag("RightButton");
     panel:SetClampedToScreen(true);
     panel:SetScript("OnDragStart", function(self2, d)
-        if d=='RightButton' and not IsModifierKeyDown() then
+        if d=='RightButton' then
             SetCursor('UI_MOVE_CURSOR')
             self2:StartMoving()
             CloseDropDownMenus()
@@ -302,7 +356,7 @@ local function Init()
         self2:StopMovingOrSizing()
         Save.point={self2:GetPoint(1)}
         ResetCursor()
-        setStrColor()
+        set_Text_Size_Color()
     end)
     panel:SetScript("OnMouseUp", function(self2,d)
         ResetCursor()
@@ -321,15 +375,16 @@ local function Init()
             size= size<6 and 6 or size
         end
         Save.size=size
-        setStrColor()
-        print(id, addName, FONT_SIZE..': '..size)
+        set_Text_Size_Color()
+        print(id, addName, e.onlyChinse and '字体大小' or FONT_SIZE,'|cnGREEN_FONT_COLOR:'..size)
     end)
 
     panel:SetScript('OnMouseDown', function(self, d)
-        if d=='RightButton' and not IsAltKeyDown() then--移动光标
+        if d=='RightButton' then--移动光标
             SetCursor('UI_MOVE_CURSOR')
+        else
+            ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
         end
-        ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
     end)
     panel:SetScript('OnLeave', function (self)
         self:SetButtonState('NORMAL')
@@ -360,12 +415,18 @@ local function Init()
         end
     end)
 
-    setStrColor()
-    if Save.money then set_Money_Event() end--设置,钱,事件
+    set_Text_Size_Color()
+    if Save.money then--设置,钱,事件
+        set_Money_Event()
+    end
     set_System_FPSMS()--设置系统fps ms
     set_Fps_Ms()--设置, fps, ms, 数值
-    if Save.equipmetLevel or Save.durabiliy then
-        set_Durabiliy_EquipLevel_Event()--设置装等,耐久度,事件
+    if Save.equipmetLevel or Save.durabiliy then--设置装等,耐久度,事件
+        set_Durabiliy_EquipLevel_Event()
+    end
+
+    if Save.classColor then--主菜单, 使用职业颜色
+        set_Class_Color()
     end
 end
 
@@ -378,6 +439,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 panel:SetButtonState('PUSHED')
             end
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
+            e.Player.useClassColor= Save.classColor--注册, 使用职业颜色
 
             local check=e.CPanel(e.onlyChinse and '系统信息' or addName, not Save.disabled, true)
             check:SetScript('OnMouseDown', function()

@@ -8,8 +8,8 @@ local Save={
 local wowSave={[INSTANCE]={}}--{[ISLANDS_HEADER]=次数, [副本名称..难度=次数]}
 
 local sec=3--时间 timer
-
-local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
+local button
+local panel= CreateFrame("Frame")
 
 local getRewardInfo=function(dungeonID)--FB奖励
     local t=''
@@ -96,27 +96,27 @@ end
 local function setQueueStatus()--小眼睛, 信息
     local text=''
     if not Save.hideQueueStatus then
-        if not panel.tipsFrame then
-            panel.tipsFrame=e.Cbtn(nil, nil, nil, nil, nil, true, {20,20})
+        if not button.tipsFrame then
+            button.tipsFrame=e.Cbtn(nil, nil, nil, nil, nil, true, {20,20})
             if Save.tipsFramePoint then
-                panel.tipsFrame:SetPoint(Save.tipsFramePoint[1], UIParent, Save.tipsFramePoint[3], Save.tipsFramePoint[4], Save.tipsFramePoint[5])
+                button.tipsFrame:SetPoint(Save.tipsFramePoint[1], UIParent, Save.tipsFramePoint[3], Save.tipsFramePoint[4], Save.tipsFramePoint[5])
             else
-                panel.tipsFrame:SetPoint('BOTTOMLEFT', panel, 'TOPLEFT',0,2)
+                button.tipsFrame:SetPoint('BOTTOMLEFT', button, 'TOPLEFT',0,2)
             end
-            panel.tipsFrame:RegisterForDrag("RightButton",'LeftButton')
-            panel.tipsFrame:SetMovable(true)
-            panel.tipsFrame:SetClampedToScreen(true)
+            button.tipsFrame:RegisterForDrag("RightButton",'LeftButton')
+            button.tipsFrame:SetMovable(true)
+            button.tipsFrame:SetClampedToScreen(true)
 
-            panel.tipsFrame:SetScript("OnDragStart", function(self,d )
+            button.tipsFrame:SetScript("OnDragStart", function(self,d )
                 self:StartMoving()
             end)
-            panel.tipsFrame:SetScript("OnDragStop", function(self)
+            button.tipsFrame:SetScript("OnDragStop", function(self)
                 ResetCursor()
                 self:StopMovingOrSizing()
                 Save.tipsFramePoint={self:GetPoint(1)}
                 Save.tipsFramePoint[2]=nil
             end)
-            panel.tipsFrame:SetScript('OnMouseWheel', function(self, d)
+            button.tipsFrame:SetScript('OnMouseWheel', function(self, d)
                 local n= Save.tipsFrameTextSize or 12
                 if d==1 then
                     n=n+1
@@ -127,14 +127,14 @@ local function setQueueStatus()--小眼睛, 信息
                 e.Cstr(nil, Save.tipsFrameTextSize, nil, self.text, true)
                 print(id, addName, e.onlyChinse and '字体大小' or FONT_SIZE, '|cnGREEN_FONT_COLOR:'..Save.tipsFrameTextSize)
             end)
-            panel.tipsFrame:SetScript("OnMouseDown", function(self,d)
+            button.tipsFrame:SetScript("OnMouseDown", function(self,d)
                 SetCursor('UI_MOVE_CURSOR')
             end)
-            panel.tipsFrame:SetScript("OnLeave", function()
+            button.tipsFrame:SetScript("OnLeave", function()
                 e.tips:Hide()
                 ResetCursor()
             end)
-            panel.tipsFrame:SetScript('OnEnter', function(self)
+            button.tipsFrame:SetScript('OnEnter', function(self)
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.left)
@@ -144,8 +144,8 @@ local function setQueueStatus()--小眼睛, 信息
                 e.tips:AddDoubleLine(id, addName)
                 e.tips:Show()
             end)
-            panel.tipsFrame.text=e.Cstr(panel.tipsFrame, Save.tipsFrameTextSize, nil, nil, true)
-            panel.tipsFrame.text:SetPoint('BOTTOMLEFT')
+            button.tipsFrame.text=e.Cstr(button.tipsFrame, Save.tipsFrameTextSize, nil, nil, true)
+            button.tipsFrame.text:SetPoint('BOTTOMLEFT')
         end
 
         local num= 0
@@ -198,11 +198,11 @@ local function setQueueStatus()--小眼睛, 信息
                 if ap and #ap>0 then
                     list=list..' |cFF00FF00#'..#ap..'|r'
                 end
-                if info.autoAccept then 
-                    list=list..'|A:runecarving-icon-reagent-empty:0:0|a' 
+                if info.autoAccept then
+                    list=list..'|A:runecarving-icon-reagent-empty:0:0|a'
                 end--自动邀请
                 if info.activityID then--名称
-                    local name2=C_LFGList.GetActivityFullName(info.activityID)                            
+                    local name2=C_LFGList.GetActivityFullName(info.activityID)
                     if name2 then
                         list=list..' ('..name2..')'
                     end
@@ -239,30 +239,30 @@ local function setQueueStatus()--小眼睛, 信息
             text=text..' '
         end
     end
-    if panel.tipsFrame then
-        panel.tipsFrame.text:SetText(text)
-        panel.tipsFrame:SetShown(text~='' and true or nil)
+    if button.tipsFrame then
+        button.tipsFrame.text:SetText(text)
+        button.tipsFrame:SetShown(text~='' and true or nil)
     end
 
-    if not panel.enterInstance and Save.enterInstance then--自动进入,指示图标
-        panel.enterInstance=panel:CreateTexture(nil, 'ARTWORK')
-        panel.enterInstance:SetPoint('BOTTOMLEFT',3,3)
-        panel.enterInstance:SetSize(10,10)
-        panel.enterInstance:SetAtlas(e.Icon.toRight)
-        panel.enterInstance:SetDesaturated(true)
+    if not button.enterInstance and Save.enterInstance then--自动进入,指示图标
+        button.enterInstance=button:CreateTexture(nil, 'ARTWORK')
+        button.enterInstance:SetPoint('BOTTOMLEFT',3,3)
+        button.enterInstance:SetSize(10,10)
+        button.enterInstance:SetAtlas(e.Icon.toRight)
+        button.enterInstance:SetDesaturated(true)
     end
-    if panel.enterInstance then
-        panel.enterInstance:SetShown(Save.enterInstance)
+    if button.enterInstance then
+        button.enterInstance:SetShown(Save.enterInstance)
     end
-    if not panel.leaveInstance and Save.leaveInstance then--自动离开,指示图标
-        panel.leaveInstance=panel:CreateTexture(nil, 'ARTWORK')
-        panel.leaveInstance:SetPoint('BOTTOMRIGHT',-7,3)
-        panel.leaveInstance:SetSize(10,10)
-        panel.leaveInstance:SetAtlas(e.Icon.toLeft)
-        panel.leaveInstance:SetDesaturated(true)
+    if not button.leaveInstance and Save.leaveInstance then--自动离开,指示图标
+        button.leaveInstance=button:CreateTexture(nil, 'ARTWORK')
+        button.leaveInstance:SetPoint('BOTTOMRIGHT',-7,3)
+        button.leaveInstance:SetSize(10,10)
+        button.leaveInstance:SetAtlas(e.Icon.toLeft)
+        button.leaveInstance:SetDesaturated(true)
     end
-    if panel.leaveInstance then
-        panel.leaveInstance:SetShown(Save.leaveInstance)
+    if button.leaveInstance then
+        button.leaveInstance:SetShown(Save.leaveInstance)
     end
 end
 
@@ -272,17 +272,17 @@ end
 --###############
 local function setTexture(dungeonID, RaidID, name, texture)--设置图标, 点击,提示
     if dungeonID or RaidID then
-        panel.dungeonID=dungeonID
-        panel.name=name
-        panel.RaidID=RaidID
+        button.dungeonID=dungeonID
+        button.name=name
+        button.RaidID=RaidID
     end
     if texture then
-        panel.texture:SetTexture(texture)
+        button.texture:SetTexture(texture)
     else
         if not Save.hideQueueStatus then
-            panel.texture:SetAtlas('groupfinder-eye-frame')
+            button.texture:SetAtlas('groupfinder-eye-frame')
         else
-            panel.texture:SetAtlas('UI-HUD-MicroMenu-Groupfinder-Mouseover')
+            button.texture:SetAtlas('UI-HUD-MicroMenu-Groupfinder-Mouseover')
         end
     end
 end
@@ -594,7 +594,7 @@ local function InitList(self, level, type)--LFDFrame.lua
             text= e.onlyChinse and '职责确认' or ROLE_POLL,
             checked= Save.autoSetPvPRole,
             func= function()
-                Save.autoSetPvPRole= not Save.autoSetPvPRole and true or nil 
+                Save.autoSetPvPRole= not Save.autoSetPvPRole and true or nil
             end
         }
         UIDropDownMenu_AddButton(info, level)
@@ -798,9 +798,9 @@ local function setIslandButton(self)--离开海岛按钮
 end
 
 
-local function setHoliday()--节日, 提示, panel.texture
-    panel.dungeonID=nil
-    panel.name=nil
+local function setHoliday()--节日, 提示, button.texture
+    button.dungeonID=nil
+    button.name=nil
     for i=1, GetNumRandomDungeons() do
         local dungeonID, name = GetLFGRandomDungeonInfo(i)
         if dungeonID then
@@ -830,13 +830,13 @@ end
 --初始
 --####
 local function Init()
-    panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
-    WoWToolsChatButtonFrame.last=panel
+    button:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
+    WoWToolsChatButtonFrame.last=button
 
-    panel.Menu= CreateFrame("Frame",nil, LFDMicroButton, "UIDropDownMenuTemplate")--菜单列表
-    UIDropDownMenu_Initialize(panel.Menu, InitList, "MENU")
-    
-    panel:SetScript('OnMouseDown', function(self, d)
+    button.Menu= CreateFrame("Frame",nil, LFDMicroButton, "UIDropDownMenuTemplate")--菜单列表
+    UIDropDownMenu_Initialize(button.Menu, InitList, "MENU")
+
+    button:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' and (self.dungeonID or self.RaidID) then
             if self.dungeonID then
                 LFDQueueFrame_SetType(self.dungeonID)
@@ -851,7 +851,7 @@ local function Init()
             ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
         end
     end)
-    panel:SetScript('OnEnter',function(self)
+    button:SetScript('OnEnter',function(self)
         if self.name and (self.dungeonID or self.RaidID) then
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
@@ -859,7 +859,7 @@ local function Init()
             e.tips:Show()
         end
     end)
-    panel:SetScript('OnLeave', function() e.tips:Hide() end)
+    button:SetScript('OnLeave', function() e.tips:Hide() end)
 
     LFGDungeonReadyDialog:HookScript("OnShow", setLFGDungeonReadyDialog)--自动进入FB
 
@@ -925,7 +925,7 @@ local function Init()
         end)
     end)
 
-    setHoliday()--节日, 提示, panel.texture
+    setHoliday()--节日, 提示, button.texture
 
     --###########
     --历史, 拾取框
@@ -1103,9 +1103,9 @@ end
 local RoleC
 local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
     if env=='LFG_ROLE_CHECK_DECLINED' then
-        if panel.RoleInfo then
-            panel.RoleInfo.text:SetText('')
-            panel.RoleInfo:Hide()
+        if button.RoleInfo then
+            button.RoleInfo.text:SetText('')
+            button.RoleInfo:Hide()
         end
         local co=GetNumGroupMembers()
         if co and co>0 then
@@ -1131,9 +1131,9 @@ local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
         return
 
     elseif env=='UPDATE_BATTLEFIELD_STATUS' or env=='LFG_QUEUE_STATUS_UPDATE' or env=='GROUP_LEFT' or env=='PLAYER_ROLES_ASSIGNED' then
-        if panel.RoleInfo then
-            panel.RoleInfo.text:SetText('')
-            panel.RoleInfo:Hide()
+        if button.RoleInfo then
+            button.RoleInfo.text:SetText('')
+            button.RoleInfo:Hide()
             RoleC=nil
         end
         return
@@ -1205,27 +1205,27 @@ local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
             end
         end
 
-        if m~='' and not panel.RoleInfo then
-            panel.RoleInfo=e.Cbtn(nil, nil, nil, nil, nil, true, {20,20})
+        if m~='' and not button.RoleInfo then
+            button.RoleInfo=e.Cbtn(nil, nil, nil, nil, nil, true, {20,20})
             if Save.RoleInfoPoint then
-                panel.RoleInfo:SetPoint(Save.RoleInfoPoint[1], UIParent, Save.RoleInfoPoint[3], Save.RoleInfoPoint[4], Save.RoleInfoPoint[5])
+                button.RoleInfo:SetPoint(Save.RoleInfoPoint[1], UIParent, Save.RoleInfoPoint[3], Save.RoleInfoPoint[4], Save.RoleInfoPoint[5])
             else
-                panel.RoleInfo:SetPoint('TOPLEFT', panel, 'BOTTOMLEFT', 40, 40)
-                panel.RoleInfo:SetButtonState('PUSHED')
+                button.RoleInfo:SetPoint('TOPLEFT', button, 'BOTTOMLEFT', 40, 40)
+                button.RoleInfo:SetButtonState('PUSHED')
             end
-            panel.RoleInfo:RegisterForDrag("RightButton")
-            panel.RoleInfo:SetMovable(true)
-            panel.RoleInfo:SetClampedToScreen(true)
-            panel.RoleInfo:SetScript("OnDragStart", function(self)
+            button.RoleInfo:RegisterForDrag("RightButton")
+            button.RoleInfo:SetMovable(true)
+            button.RoleInfo:SetClampedToScreen(true)
+            button.RoleInfo:SetScript("OnDragStart", function(self)
                 self:StartMoving()
             end)
-            panel.RoleInfo:SetScript("OnDragStop", function(self)
+            button.RoleInfo:SetScript("OnDragStop", function(self)
                 ResetCursor()
                 self:StopMovingOrSizing()
                 Save.RoleInfoPoint={self:GetPoint(1)}
                 Save.RoleInfoPoint[2]=nil
             end)
-            panel.RoleInfo:SetScript('OnEnter', function(self)
+            button.RoleInfo:SetScript('OnEnter', function(self)
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(id, addName)
@@ -1234,8 +1234,8 @@ local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
                 e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
                 e.tips:Show()
             end)
-            panel.RoleInfo:SetScript('OnLeave', function() e.tips:Hide() end)
-            panel.RoleInfo:SetScript('OnMouseDown', function(self, d)
+            button.RoleInfo:SetScript('OnLeave', function() e.tips:Hide() end)
+            button.RoleInfo:SetScript('OnMouseDown', function(self, d)
                 if d=='RightButton' then--移动光标
                     SetCursor('UI_MOVE_CURSOR')
                 elseif d=='LeftButton' then
@@ -1243,20 +1243,20 @@ local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
                     self:SetShown(false)
                 end
             end)
-            panel.RoleInfo:SetScript("OnMouseUp", function(self)
+            button.RoleInfo:SetScript("OnMouseUp", function(self)
                 ResetCursor()
             end)
-            panel.RoleInfo.text=e.Cstr(panel.RoleInfo)
-            panel.RoleInfo.text:SetPoint('BOTTOMLEFT')--, panel.RoleInfo, 'BOTTOMRIGHT')
-            panel.RoleInfo:SetShown(false)
+            button.RoleInfo.text=e.Cstr(button.RoleInfo)
+            button.RoleInfo.text:SetPoint('BOTTOMLEFT')--, button.RoleInfo, 'BOTTOMRIGHT')
+            button.RoleInfo:SetShown(false)
         end
-        if panel.RoleInfo then
-            panel.RoleInfo.text:SetText(m)
-            panel.RoleInfo:SetShown(m~='')
+        if button.RoleInfo then
+            button.RoleInfo.text:SetText(m)
+            button.RoleInfo:SetShown(m~='')
         end
 
-    elseif panel.RoleInfo then
-        panel.RoleInfo:SetShown(false)
+    elseif button.RoleInfo then
+        button.RoleInfo:SetShown(false)
     end
 end
 
@@ -1264,41 +1264,35 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-
-panel:RegisterEvent('LFG_COMPLETION_REWARD')
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
-panel:RegisterEvent('ISLAND_COMPLETED')
-
-panel:RegisterEvent('LFG_UPDATE_RANDOM_INFO')
-panel:RegisterEvent('START_LOOT_ROLL')
-
-panel:RegisterEvent('PVP_MATCH_COMPLETE')
-
-panel:RegisterEvent('CORPSE_IN_RANGE')--仅限战场，释放, 复活
-panel:RegisterEvent('PLAYER_DEAD')
-panel:RegisterEvent('AREA_SPIRIT_HEALER_IN_RANGE')
-
-panel:RegisterEvent('LFG_ROLE_CHECK_ROLE_CHOSEN')
-panel:RegisterEvent('LFG_ROLE_CHECK_DECLINED')
-panel:RegisterEvent('LFG_QUEUE_STATUS_UPDATE')
-panel:RegisterEvent('UPDATE_BATTLEFIELD_STATUS')
-panel:RegisterEvent('GROUP_LEFT')
-panel:RegisterEvent('PLAYER_ROLES_ASSIGNED')--职责确认
-
 
 panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
-                panel:UnregisterAllEvents()
-                panel:SetShown(false)
-            else
+            if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
                 Save= WoWToolsSave and WoWToolsSave[addName] or Save
                 wowSave=WoWToolsSave and WoWToolsSave[INSTANCE] or wowSave
+
+                button=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
+
                 Init()
-                panel:UnregisterEvent('ADDON_LOADED')
+                panel:RegisterEvent("PLAYER_LOGOUT")
+                panel:RegisterEvent('LFG_COMPLETION_REWARD')
+                panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+                panel:RegisterEvent('ISLAND_COMPLETED')
+                panel:RegisterEvent('LFG_UPDATE_RANDOM_INFO')
+                panel:RegisterEvent('START_LOOT_ROLL')
+                panel:RegisterEvent('PVP_MATCH_COMPLETE')
+                panel:RegisterEvent('CORPSE_IN_RANGE')--仅限战场，释放, 复活
+                panel:RegisterEvent('PLAYER_DEAD')
+                panel:RegisterEvent('AREA_SPIRIT_HEALER_IN_RANGE')
+                panel:RegisterEvent('LFG_ROLE_CHECK_ROLE_CHOSEN')
+                panel:RegisterEvent('LFG_ROLE_CHECK_DECLINED')
+                panel:RegisterEvent('LFG_QUEUE_STATUS_UPDATE')
+                panel:RegisterEvent('UPDATE_BATTLEFIELD_STATUS')
+                panel:RegisterEvent('GROUP_LEFT')
+                panel:RegisterEvent('PLAYER_ROLES_ASSIGNED')--职责确认
             end
+            panel:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event == "PLAYER_LOGOUT" then
@@ -1339,7 +1333,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
         print(id, addName, 	e.onlyChinse and '离开海岛' or ISLAND_LEAVE, '|cnGREEN_FONT_COLOR:'..wowSave[ISLANDS_HEADER]..'|r'..	VOICEMACRO_LABEL_CHARGE1)
 
     elseif event=='LFG_UPDATE_RANDOM_INFO' then
-        setHoliday()--节日, 提示, panel.texture
+        setHoliday()--节日, 提示, button.texture
 
     elseif event=='START_LOOT_ROLL' then
         setSTART_LOOT_ROLL(arg1, arg2, arg3)

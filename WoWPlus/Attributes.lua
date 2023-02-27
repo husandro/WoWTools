@@ -170,15 +170,15 @@ local function set_Text_Value(frame, value, value2)
             frame.textValue:SetText('')
         elseif frame.value< value then
             if frame.useNumber then
-                frame.textValue:SetText('+'..e.MK(value-frame.value, frame.bit))
+                frame.textValue:SetText('|A:UI-HUD-Minimap-Zoom-In:0:0|a'..e.MK(value-frame.value, frame.bit))
             else
-                frame.textValue:SetFormattedText('+%.0f', value-frame.value)
+                frame.textValue:SetFormattedText('|A:UI-HUD-Minimap-Zoom-In:0:0|a%.0f', value-frame.value)-- +
             end
         else
             if frame.useNumber then
-                frame.textValue:SetText('-'..e.MK(frame.value-value, frame.bit))
+                frame.textValue:SetText('|A:UI-HUD-Minimap-Zoom-Out:0:0|a'..e.MK(frame.value-value, frame.bit))
             else
-                frame.textValue:SetFormattedText('-%.0f', frame.value-value)
+                frame.textValue:SetFormattedText('|A:UI-HUD-Minimap-Zoom-Out:0:0|a%.0f', frame.value-value)-- -
             end
         end
     end
@@ -994,7 +994,7 @@ local function frame_Init(rest)--初始， 或设置
             end
 
             if info.textValue and not frame.textValue then--数值 + -
-                frame.textValue=e.Cstr(frame,10)
+                frame.textValue=e.Cstr(frame)
             end
             if frame.textValue then
                 frame.textValue:SetText('')

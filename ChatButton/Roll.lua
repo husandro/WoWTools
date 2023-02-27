@@ -2,8 +2,9 @@ local id, e = ...
 local addName=ROLL
 local Save={autoClear=true}
 
+local button
+local panel= CreateFrame("Frame")
 local Tab={}
-local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
 
 local rollText= RANDOM_ROLL_RESULT
 rollText= rollText:gsub('%-', '%%-')
@@ -43,17 +44,17 @@ local function setCHAT_MSG_SYSTEM(text)
             elseif not Min or Min>roll then
                 Min=roll
             end
-            if not panel.rightTopText then
-                panel.rightTopText=e.Cstr(panel, nil, nil, nil,{0,1,0})
-                panel.rightTopText:SetPoint('TOPLEFT',2,-3)
+            if not button.rightTopText then
+                button.rightTopText=e.Cstr(button, nil, nil, nil,{0,1,0})
+                button.rightTopText:SetPoint('TOPLEFT',2,-3)
             end
-            panel.rightTopText:SetText(Max)
+            button.rightTopText:SetText(Max)
             if Min then
-                if not panel.rightBottomText then
-                    panel.rightBottomText=e.Cstr(panel, nil, nil, nil, {1,0,0})
-                    panel.rightBottomText:SetPoint('BOTTOMRIGHT',-2,3)
+                if not button.rightBottomText then
+                    button.rightBottomText=e.Cstr(button, nil, nil, nil, {1,0,0})
+                    button.rightBottomText:SetPoint('BOTTOMRIGHT',-2,3)
                 end
-                panel.rightBottomText:SetText(Min)
+                button.rightBottomText:SetText(Min)
             end
         end
         table.insert(Tab, {name=name, roll=roll, date=date('%X'), text=text})
@@ -63,11 +64,11 @@ end
 local function setRest()--重置
     Tab={}
     Max, Min= nil, nil
-    if panel.rightBottomText then
-        panel.rightBottomText:SetText('')
+    if button.rightBottomText then
+        button.rightBottomText:SetText('')
     end
-    if panel.rightTopText then
-        panel.rightTopText:SetText('')
+    if button.rightTopText then
+        button.rightTopText:SetText('')
     end
 end
 
@@ -161,17 +162,17 @@ end
 --初始
 --####
 local function Init()
-    panel:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
-    WoWToolsChatButtonFrame.last=panel
+    button:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
+    WoWToolsChatButtonFrame.last=button
 
     setRegisterEvent()--注册事件
     setAutoClearRegisterEvent()--注册自动清除事件
 
-    panel.texture:SetTexture('Interface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47')
-    panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
-    UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
+    button.texture:SetTexture('Interface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47')
+    button.Menu=CreateFrame("Frame",nil, button, "UIDropDownMenuTemplate")
+    UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
-    panel:SetScript('OnMouseDown',function(self, d)
+    button:SetScript('OnMouseDown',function(self, d)
         if d=='LeftButton' then
             RandomRoll(1, 100)
         else
@@ -184,21 +185,21 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('GROUP_LEFT')
-panel:RegisterEvent('GROUP_ROSTER_UPDATE')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
-                panel:UnregisterAllEvents()
-                panel:SetShown(false)
-            else
+            if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
                 Save= WoWToolsSave and WoWToolsSave[addName] or Save
+
+                button=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
+
                 Init()
-                panel:UnregisterEvent('ADDON_LOADED')
+                panel:RegisterEvent('GROUP_LEFT')
+                panel:RegisterEvent('GROUP_ROSTER_UPDATE')
+                panel:RegisterEvent("PLAYER_LOGOUT")
             end
-            panel:RegisterEvent("PLAYER_LOGOUT")
+            panel:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event == "PLAYER_LOGOUT" then

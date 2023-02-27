@@ -1,5 +1,4 @@
 local id, e = ...
-
 local addName= COMBAT..TIMEMANAGER_TOOLTIP_TITLE
 local Save= {textScale=1.2,
         Say=120,
@@ -11,8 +10,8 @@ local Save= {textScale=1.2,
         afk={num= 0, time= 0},
         hideCombatText= true,--隐藏, 战斗, 文本
 }
-local panel=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
-panel.textFrame=e.Cbtn(WoWToolsChatButtonFrame, nil, nil, nil, nil, true, {20,20})
+local button
+local panel= CreateFrame("Frame")
 
 local OnLineTime--在线时间
 local OnCombatTime--战斗时间
@@ -65,11 +64,11 @@ local function setText()--设置显示内容
         text= text and text..'\n' or (LastText and LastText..'\n' or '')
         text=text..'|A:BuildanAbomination-32x32:0:0|a'..InstanceDate.kill..'|A:poi-soulspiritghost:0:0|a'..InstanceDate.dead..'|A:CrossedFlagsWithTimer:0:0|a'..e.GetTimeInfo(OnInstanceTime, not Save.timeTypeText)
     end
-    panel.text:SetText(text or LastText or '')
+    button.text:SetText(text or LastText or '')
 end
 
 local function check_Event()--检测事件
-    if not panel.updatFrame then
+    if not button.updatFrame then
         return
     end
 
@@ -154,7 +153,7 @@ local function check_Event()--检测事件
         InstanceDate={time= 0, kill=0, dead=0}--副本数据{dead死亡,kill杀怪, map地图}
         OnInstanceTime=nil
     end
-    panel.updatFrame:SetShown((OnAFKTime or OnCombatTime or OnPetTime or OnInstanceTime) and true or false)--设置更新数据,显示/隐藏 panel.updatFrame
+    button.updatFrame:SetShown((OnAFKTime or OnCombatTime or OnPetTime or OnInstanceTime) and true or false)--设置更新数据,显示/隐藏 button.updatFrame
     setText()--设置显示内容
 end
 
@@ -175,66 +174,66 @@ local function setTexture()--设置,图标, 颜色
         end
     end
     if texture then
-        panel.texture:SetTexture(texture)
+        button.texture:SetTexture(texture)
     else
-        panel.texture:SetAtlas('Mobile-MechanicIcon-Powerful')
+        button.texture:SetAtlas('Mobile-MechanicIcon-Powerful')
     end
 
     if Save.classColor then
-        if panel.text then
-            panel.text:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
+        if button.text then
+            button.text:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
         end
-        panel.texture2:SetColorTexture(e.Player.r, e.Player.g, e.Player.b)
+        button.texture2:SetColorTexture(e.Player.r, e.Player.g, e.Player.b)
     else
-        if panel.text then
-            panel.text:SetTextColor(0.8, 0.8, 0.8)
+        if button.text then
+            button.text:SetTextColor(0.8, 0.8, 0.8)
         end
-        panel.texture2:SetColorTexture(1,0,0)
+        button.texture2:SetColorTexture(1,0,0)
     end
 end
 
-local function setTextFrame()--设置显示内容, 父框架panel.textFrame, 内容panel.text
+local function setTextFrame()--设置显示内容, 父框架button.textFrame, 内容button.text
     if Save.disabledText then
         return
     end
 
     if Save.textFramePoint then
-        panel.textFrame:SetPoint(Save.textFramePoint[1], UIParent, Save.textFramePoint[3], Save.textFramePoint[4], Save.textFramePoint[5])
+        button.textFrame:SetPoint(Save.textFramePoint[1], UIParent, Save.textFramePoint[3], Save.textFramePoint[4], Save.textFramePoint[5])
     else
-        panel.textFrame:SetPoint('BOTTOMLEFT', panel, 'BOTTOMRIGHT')
+        button.textFrame:SetPoint('BOTTOMLEFT', button, 'BOTTOMRIGHT')
     end
-    panel.textFrame:RegisterForDrag("RightButton")
-    panel.textFrame:SetMovable(true)
-    panel.textFrame:SetClampedToScreen(true)
-    panel.textFrame:SetScript("OnDragStart", function(self, d)
+    button.textFrame:RegisterForDrag("RightButton")
+    button.textFrame:SetMovable(true)
+    button.textFrame:SetClampedToScreen(true)
+    button.textFrame:SetScript("OnDragStart", function(self, d)
         if not IsModifierKeyDown() and d=='RightButton' then
             self:StartMoving()
         end
     end)
-    panel.textFrame:SetScript("OnDragStop", function(self)
+    button.textFrame:SetScript("OnDragStop", function(self)
         ResetCursor()
         self:StopMovingOrSizing()
         Save.textFramePoint={self:GetPoint(1)}
         Save.textFramePoint[2]=nil
         print(id, addName, RESET_POSITION, 'Alt+'..e.Icon.right)
     end)
-    panel.textFrame:SetScript("OnMouseDown", function(self,d)
+    button.textFrame:SetScript("OnMouseDown", function(self,d)
         if d=='LeftButton' then--提示移动
-            panel.text:SetText('')
+            button.text:SetText('')
 
         elseif d=='RightButton' and not IsModifierKeyDown() then--移动光标
             SetCursor('UI_MOVE_CURSOR')
 
         elseif d=='RightButton' and IsAltKeyDown() then--还原
             Save.textFramePoint=nil
-            panel.textFrame:ClearAllPoints()
-            panel.textFrame:SetPoint('BOTTOMLEFT', panel, 'BOTTOMRIGHT')
+            button.textFrame:ClearAllPoints()
+            button.textFrame:SetPoint('BOTTOMLEFT', button, 'BOTTOMRIGHT')
         end
     end)
-    panel.textFrame:SetScript("OnMouseUp", function(self, d)
+    button.textFrame:SetScript("OnMouseUp", function(self, d)
         ResetCursor()
     end)
-    panel.textFrame:SetScript('OnEnter', function(self)
+    button.textFrame:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinse and '清除' or CLEAR or KEY_NUMLOCK_MAC, e.Icon.left)
@@ -255,15 +254,15 @@ local function setTextFrame()--设置显示内容, 父框架panel.textFrame, 内
         --end
         e.tips:Show()
     end)
-    panel.textFrame:SetScript("OnLeave", function(self, d)
+    button.textFrame:SetScript("OnLeave", function(self, d)
         e.tips:Hide()
         self:SetButtonState('NORMAL')
     end)
-    panel.textFrame:SetScript('OnMouseWheel', function(self, d)--缩放
+    button.textFrame:SetScript('OnMouseWheel', function(self, d)--缩放
         if IsAltKeyDown() then
-            local text=panel.text:GetText()
+            local text=button.text:GetText()
             if not text or text=='' then
-                panel.text:SetText(UI_SCALE)
+                button.text:SetText(UI_SCALE)
             end
             local sacle=Save.textScale or 1
             if d==1 then
@@ -277,22 +276,22 @@ local function setTextFrame()--设置显示内容, 父框架panel.textFrame, 内
                 sacle=0.6
             end
             print(id, addName, e.onlyChinse and '缩放' or UI_SCALE, sacle)
-            panel.text:SetScale(sacle)
+            button.text:SetScale(sacle)
             Save.textScale=sacle
         end
     end)
 
-    panel.text=e.Cstr(panel.textFrame)
-    panel.text:SetPoint('BOTTOMLEFT')
+    button.text=e.Cstr(button.textFrame)
+    button.text:SetPoint('BOTTOMLEFT')
     if Save.textScale and Save.textScale~=1 then
-        panel.text:SetScale(Save.textScale)
+        button.text:SetScale(Save.textScale)
     end
 
-    panel.updatFrame=CreateFrame("Frame", nil, panel)
-    panel.updatFrame:SetShown(true)
+    button.updatFrame=CreateFrame("Frame", nil, button)
+    button.updatFrame:SetShown(true)
 
     local timeElapsed = 0
-    panel.updatFrame:HookScript("OnUpdate", function (self, elapsed)
+    button.updatFrame:HookScript("OnUpdate", function (self, elapsed)
         timeElapsed = timeElapsed + elapsed
         if timeElapsed > 0.3 then
             timeElapsed = 0
@@ -353,9 +352,9 @@ local function InitMenu(self, level, type)--主菜单
             func= function()
                 Save.combatScale= not Save.combatScale and true or nil
                 if Save.combatScale and UnitAffectingCombat('player') then--战斗中缩放
-                    panel:SetScale(1.3)
+                    button:SetScale(1.3)
                 else
-                    panel:SetScale(1)
+                    button:SetScale(1)
                 end
             end
         }
@@ -497,22 +496,22 @@ end
 local function Init()
     OnLineTime=GetTime()
 
-    panel:SetPoint('BOTTOMLEFT',WoWToolsChatButtonFrame.last, 'BOTTOMRIGHT')--设置位置
+    button:SetPoint('BOTTOMLEFT',WoWToolsChatButtonFrame.last, 'BOTTOMRIGHT')--设置位置
 
-    panel.texture2=panel:CreateTexture(nil, 'OVERLAY')
-    panel.texture2:SetAllPoints(panel)
-    panel.texture2:AddMaskTexture(panel.mask)
-    panel.texture2:SetShown(false)
+    button.texture2=button:CreateTexture(nil, 'OVERLAY')
+    button.texture2:SetAllPoints(button)
+    button.texture2:AddMaskTexture(button.mask)
+    button.texture2:SetShown(false)
 
-    panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")--菜单框架
-    UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
+    button.Menu=CreateFrame("Frame",nil, button, "UIDropDownMenuTemplate")--菜单框架
+    UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
-    panel:SetScript('OnMouseDown', function(self, d)
+    button:SetScript('OnMouseDown', function(self, d)
         ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
     end)
 
 
-    setTextFrame()--设置显示内容,框架 panel.textFrame,内容 panel.text
+    setTextFrame()--设置显示内容,框架 button.textFrame,内容 button.text
     C_Timer.After(2, setTexture)--设置,图标, 颜色
 
     if Save.AllOnlineTime or not e.WoWSave[e.Player.guid].Time.totalTime then--总游戏时间
@@ -538,29 +537,29 @@ end
 --###########
 --加载保存数据
 --###########
-
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-panel:RegisterEvent('PLAYER_REGEN_DISABLED')
-panel:RegisterEvent('PLAYER_REGEN_ENABLED')
 
-panel:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED')
-
-panel:SetScript("OnEvent", function(self, event, arg1, arg2)
+panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
-                panel:UnregisterAllEvents()
-                panel:SetShown(false)
-                panel.textFrame:SetShown(false)
-            else
-                if WoWToolsSave and not WoWToolsSave[addName] then
-                    panel.textFrame:SetButtonState('PUSHED')
-                end
+            if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
+
                 Save= WoWToolsSave and WoWToolsSave[addName] or Save
+
+                button=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
+                button.textFrame=e.Cbtn(WoWToolsChatButtonFrame, nil, nil, nil, nil, true, {20,20})
+                if WoWToolsSave and not WoWToolsSave[addName] then
+                    button.textFrame:SetButtonState('PUSHED')
+                end
+
                 Init()
-                panel:UnregisterEvent('ADDON_LOADED')
+
+                panel:RegisterEvent('PLAYER_REGEN_DISABLED')
+                panel:RegisterEvent('PLAYER_REGEN_ENABLED')
+                panel:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED')
+                panel:RegisterEvent("PLAYER_LOGOUT")
             end
+            panel:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event == "PLAYER_LOGOUT" then
@@ -570,17 +569,17 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         end
 
     elseif event=='PLAYER_REGEN_ENABLED' then
-        panel.texture2:SetShown(false)
+        button.texture2:SetShown(false)
         check_Event()--检测事件
         if Save.combatScale then--战斗中缩放
-            panel:SetScale(1)
+            button:SetScale(1)
         end
 
     elseif event=='PLAYER_REGEN_DISABLED' then
-        panel.texture2:SetShown(true)
+        button.texture2:SetShown(true)
         check_Event()--检测事件
         if Save.combatScale then--战斗中缩放
-            panel:SetScale(1.3)
+            button:SetScale(1.3)
         end
 
     elseif event=='PLAYER_SPECIALIZATION_CHANGED' then
@@ -613,7 +612,6 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     elseif event=='PLAYER_ENTERING_WORLD' then--副本,杀怪,死亡
         isInPvPInstance=C_PvP.IsBattleground() or C_PvP.IsArena()--是否在战场
         check_Event()--检测事件
-
 
     elseif event=='PLAYER_DEAD' or event=='PLAYER_UNGHOST' or event=='PLAYER_ALIVE' then
         if event=='PLAYER_DEAD' and not OnInstanceDeadCheck then
