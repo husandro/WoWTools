@@ -119,7 +119,7 @@ end
 --###########
 local function set_Text_Value(frame, value, value2)
     value= value or 0
-    if not frame.value or frame.value==0 then
+    if not frame.value or frame.value==0 or value==0 then
         frame.value= value
     end
 
