@@ -9,7 +9,11 @@ local Save={
         [201781]=1,
         [201783]=1,
         [201779]=1,
-        
+        [200288]=1,
+        [200287]=1,
+        [200286]=1,
+        [200285]=1,
+
         --[190315]=10,--[活力之土]
         --[190328]=10,--[活力之霜]
         --[198326]=10,--[活力之气]
@@ -43,7 +47,7 @@ local function setCooldown()--冷却条
             local itemID = C_Container.GetContainerItemID(Bag.bag, Bag.slot)
             if itemID then
                 local start, duration, enable = GetItemCooldown(itemID)
-                panel.texture:SetDesaturated(enable==1)
+                panel.texture:SetDesaturated(enable==1 and duration and duration>2)
                 e.Ccool(panel, start, duration, nil, true,nil, true)
                 return
             end
@@ -67,9 +71,9 @@ local function setAtt(bag, slot, icon, itemID)--设置属性
             Combat= true
             return
         end
-        
+
         Bag={bag=bag, slot=slot}
-        
+
         panel:SetAttribute("macrotext", '/use '..bag..' '..slot)
         panel.texture:SetTexture(icon)
         num = GetItemCount(itemID)
@@ -505,7 +509,7 @@ end
 --######
 local function Init()
     panel:SetAttribute("type", "macro")
-    
+
     if e.toolsFrame.size and e.toolsFrame.size~=30 then--设置大小
         panel:SetSize(e.toolsFrame.size, e.toolsFrame.size)
     end
