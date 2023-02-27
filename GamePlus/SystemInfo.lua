@@ -31,21 +31,22 @@ local function set_Text_Size_Color()
 end
 
 local function set_Class_Color()
-    local buttons = {
-        CharacterMicroButton,
-        SpellbookMicroButton,
-        TalentMicroButton,
-        AchievementMicroButton,
-        QuestLogMicroButton,
-        GuildMicroButton,
-        LFDMicroButton,
-        EJMicroButton,
-        CollectionsMicroButton,
-        MainMenuMicroButton,
-        HelpMicroButton,
-        StoreMicroButton,
+    local buttons = {--菜单
+        'CharacterMicroButton',
+        'SpellbookMicroButton',
+        'TalentMicroButton',
+        'AchievementMicroButton',
+        'QuestLogMicroButton',
+        'GuildMicroButton',
+        'LFDMicroButton',
+        'EJMicroButton',
+        'CollectionsMicroButton',
+        'MainMenuMicroButton',
+        'HelpMicroButton',
+        'StoreMicroButton',
     }
     for _, frame in pairs(buttons) do
+        frame=_G[frame]
         if frame and frame:IsEnabled() then
             if Save.classColor then
                 frame:GetNormalTexture():SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
@@ -54,6 +55,17 @@ local function set_Class_Color()
             end
         end
     end
+
+    C_Timer.After(2, function()-- ContainerFrame.lua NUM_REAGENTBAG_FRAMES = Constants.InventoryConstants.NumReagentBagSlots;
+    if CharacterReagentBag0Slot then--材料包
+        if Save.classColor then
+            CharacterReagentBag0Slot:GetNormalTexture():SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+        else
+            CharacterReagentBag0Slot:GetNormalTexture():SetVertexColor(1, 1, 1)
+        end
+    end
+end)
+    
 end
 
 local function setMoney()

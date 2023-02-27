@@ -847,14 +847,14 @@ local tabMenuList={
     'Shift', 'Alt', 'Ctrl',
     FLOOR,
 }
-local function setMountJournal_InitMountButton(button, elementData)--Blizzard_MountCollection.lua
+local function setMountJournal_InitMountButton(self, elementData)--Blizzard_MountCollection.lua
     --local creatureName, spellID, icon, active, isUsable, sourceType, isFavorite, isFactionSpecific, faction, isFiltered, isCollected, mountID, isForDragonriding = C_MountJournal.GetDisplayedMountInfo(elementData.index)
-    if not button or not button.spellID or Save.disabled then
+    if not self or not self.spellID or Save.disabled then
         return
     end
     local text
     for _, type in pairs(tabMenuList) do
-        local ID=Save.Mounts[type][button.spellID]
+        local ID=Save.Mounts[type][self.spellID]
         if ID then
             text= text and text..'\n' or ''
             if type==FLOOR then
@@ -869,14 +869,14 @@ local function setMountJournal_InitMountButton(button, elementData)--Blizzard_Mo
             end
         end
     end
-    if text and not button.text then
-        button.text=e.Cstr(button, nil, button.name, nil,nil,nil,'RIGHT')--self, size, fontType, ChangeFont, color, layer, justifyH)
-        button.text:SetPoint('RIGHT')
-        button.text:SetFontObject('GameFontNormal')
-        button.text:SetAlpha(0.3)
+    if text and not self.text then
+        self.text=e.Cstr(self, nil, self.name, nil,nil,nil,'RIGHT')--self, size, fontType, ChangeFont, color, layer, justifyH)
+        self.text:SetPoint('RIGHT')
+        self.text:SetFontObject('GameFontNormal')
+        self.text:SetAlpha(0.3)
     end
-    if button.text then
-        button.text:SetText(text or '')
+    if self.text then
+        self.text:SetText(text or '')
     end
 end
 
