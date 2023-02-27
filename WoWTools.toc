@@ -28,7 +28,8 @@ Sesource\Locales\ruRU.lua
 Sesource\Locales\zhTW.lua
 ##面板，不能删除
 Sesource\Panel.lua
-
+##fps ms, 使用职业颜色, 放到最前面
+GamePlus\SystemInfo.lua
 
 ##角色面板
 WoWPlus\PaperDoll.lua
@@ -62,7 +63,6 @@ WowPlus\Minimap.lua
 WoWPlus\EncounterJournal.lua
 ##史诗钥石地下城, 挑战增强
 WoWPlus\Challenges.lua
-
 ##WowPlus\AuctionHouse.lua
 
 ##自动对话，任务
@@ -73,8 +73,6 @@ GamePlus\SellBuy.lua
 GamePlus\PetBattle.lua
 ##物品信息，显示包里，和商人，物品信息，现仅支持系统
 GamePlus\ItemInfo.lua
-##fps ms 
-GamePlus\SystemInfo.lua
 ##插件，方案
 GamePlus\AddOns.lua
 ##自动隐藏，弹出NPC说话，

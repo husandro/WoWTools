@@ -263,7 +263,7 @@ local function Text_Settings()--设置Text
             panel.Text:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
         else
             panel.Text:SetTextColor(0.8, 0.8, 0.8)
-            e.Cstr(nil,nil,nil,panel.Text,nil)
+            e.Cstr(nil,nil,nil,panel.Text,true)
         end
         if Save.scale then
             panel.Text:SetScale(Save.scale)
@@ -392,7 +392,7 @@ end
 --初始
 --####
 local function Init()
-    panel.Text=e.Cstr(panel)
+    panel.Text=e.Cstr(panel,nil,nil,nil,true)
     panel.texture=panel:CreateTexture()
     panel.texture:SetAllPoints(panel)
     panel.texture:SetAtlas(e.Icon.icon)

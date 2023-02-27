@@ -3,6 +3,7 @@ local addName=HIDE..TEXTURES_SUBHEADER
 local Save={
     disabledAlpha= not e.Player.husandro,
     alpha= 0.5,
+    useClassColor=e.Player.husandro
 }
 local panel=CreateFrame("Frame")
 
@@ -16,6 +17,9 @@ end
 local function setAlpha(self)
     if self and not Save.disabledAlpha then
         self:SetAlpha(Save.alpha)
+        if Save.useClassColor then
+            self:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+        end
     end
 end
 

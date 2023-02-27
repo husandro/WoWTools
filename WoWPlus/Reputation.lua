@@ -197,7 +197,7 @@ local function Set_Reputation_Text()--监视, 文本
 				num= num<6 and 6 or num
 				num= num>32 and 32 or num
 				Save.size= num
-				e.Cstr(nil, num, nil, panel.btn.text)
+				e.Cstr(nil, num, nil, panel.btn.text, true)
 				print(id, addName, e.onlyChinse and '文本' or LOCALE_TEXT_LABEL, e.onlyChinse and '字体大小' or FONT_SIZE, num)
 
 			elseif d==1 then
@@ -222,7 +222,7 @@ local function Set_Reputation_Text()--监视, 文本
 			end
 		end)
 
-		panel.btn.text=e.Cstr(panel.btn, Save.size)
+		panel.btn.text=e.Cstr(panel.btn, Save.size, nil, nil, true)
 		panel.btn.text:SetPoint('TOPLEFT',3,-3)
 	end
 	if panel.btn then
