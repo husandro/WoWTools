@@ -31,12 +31,91 @@ local function setCount()--设置数量
     local num = GetItemCount(button.itemID,nil,true,true)
     if num~=1 and not button.count then
         button.count=e.Cstr(button,10,nil,nil,true)
-        button.count:SetPoint('BOTTOMRIGHT',-2, 9)
+        button.count:SetPoint('TOPRIGHT',-2,-2)
     end
     if button.count then
         button.count:SetText(num~=1 and num or '')
     end
 end
+
+
+--######
+--快捷键
+--######
+local function set_KEY()--设置捷键
+    if Save.KEY then
+        e.SetButtonKey(button, true, Save.KEY)
+        if #Save.KEY==1 then
+            if not button.KEY then
+                button.KEYstring=e.Cstr(button,10, nil, nil, true, 'OVERLAY')
+                button.KEYstring:SetPoint('BOTTOMRIGHT', button.border, 'BOTTOMRIGHT',-4,4)
+            end
+            button.KEYstring:SetText(Save.KEY)
+            if button.KEYtexture then
+                button.KEYtexture:SetShown(false)
+            end
+        else
+            if not button.KEYtexture then
+                button.KEYtexture=button:CreateTexture(nil,'OVERLAY')
+                button.KEYtexture:SetPoint('BOTTOM', button.border,'BOTTOM',-1,-5)
+                button.KEYtexture:SetAtlas('NPE_ArrowDown')
+                if not e.Player.useClassColor then
+                    button.KEYtexture:SetDesaturated(true)
+                end
+                button.KEYtexture:SetSize(20,15)
+            end
+            button.KEYtexture:SetShown(true)
+        end
+    else
+        e.SetButtonKey(button)
+        if button.KEYstring then
+            button.KEYstring:SetText('')
+        end
+        if button.KEYtexture then
+            button.KEYtexture:SetShown(false)
+        end
+    end
+end
+
+StaticPopupDialogs[id..addName..'KEY']={--快捷键,设置对话框
+    text=id..' '..addName..'\n'..SETTINGS_KEYBINDINGS_LABEL..'\n\nQ, BUTTON5',
+    whileDead=1,
+    hideOnEscape=1,
+    exclusive=1,
+    timeout = 60,
+    hasEditBox=1,
+    button1=SETTINGS,
+    button2=CANCEL,
+    button3=REMOVE,
+    OnShow = function(self, data)
+        self.editBox:SetText(Save.KEY or ';')
+        if Save.KEY then
+            self.button1:SetText(SLASH_CHAT_MODERATE2:gsub('/', ''))--修该
+        end
+        self.button3:SetEnabled(Save.KEY)
+    end,
+    OnAccept = function(self, data)
+        local text= self.editBox:GetText()
+        text=text:gsub(' ','')
+        text=text:gsub('%[','')
+        text=text:gsub(']','')
+        text=text:upper()
+        Save.KEY=text
+        set_KEY()--设置捷键
+    end,
+    OnAlt = function()
+        Save.KEY=nil
+        set_KEY()--设置捷键
+    end,
+    EditBoxOnTextChanged=function(self, data)
+        local text= self:GetText()
+        text=text:gsub(' ','')
+        self:GetParent().button1:SetEnabled(text~='')
+    end,
+    EditBoxOnEscapePressed = function(s)
+        s:GetParent():Hide()
+    end,
+}
 
 --#####
 --主菜单
@@ -55,6 +134,55 @@ local function InitMenu(self, level)--主菜单
         }
         UIDropDownMenu_AddButton(info, level)
     end
+    UIDropDownMenu_AddSeparator(level)
+    local info={--快捷键,设置对话框
+        text= e.onlyChinse and '快捷键' or SETTINGS_KEYBINDINGS_LABEL,--..(Save.KEY and ' |cnGREEN_FONT_COLOR:'..Save.KEY..'|r' or ''),
+        checked=Save.KEY and true or nil,
+        disabled=UnitAffectingCombat('player'),
+        func=function()
+            StaticPopupDialogs[id..addName..'KEY']={--快捷键,设置对话框
+                text=id..' '..addName..'\n'..(e.onlyChinse and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..'\n\nQ, BUTTON5',
+                whileDead=1,
+                hideOnEscape=1,
+                exclusive=1,
+                timeout = 60,
+                hasEditBox=1,
+                button1=SETTINGS,
+                button2=CANCEL,
+                button3=REMOVE,
+                OnShow = function(self, data)
+                    self.editBox:SetText(Save.KEY or ';')
+                    if Save.KEY then
+                        self.button1:SetText(SLASH_CHAT_MODERATE2:gsub('/', ''))--修该
+                    end
+                    self.button3:SetEnabled(Save.KEY)
+                end,
+                OnAccept = function(self, data)
+                    local text= self.editBox:GetText()
+                    text=text:gsub(' ','')
+                    text=text:gsub('%[','')
+                    text=text:gsub(']','')
+                    text=text:upper()
+                    Save.KEY=text
+                    set_KEY()--设置捷键
+                end,
+                OnAlt = function()
+                    Save.KEY=nil
+                    set_KEY()--设置捷键
+                end,
+                EditBoxOnTextChanged=function(self, data)
+                    local text= self:GetText()
+                    text=text:gsub(' ','')
+                    self:GetParent().button1:SetEnabled(text~='')
+                end,
+                EditBoxOnEscapePressed = function(s)
+                    s:GetParent():Hide()
+                end,
+            }
+            StaticPopup_Show(id..addName..'KEY')
+        end,
+    }
+    UIDropDownMenu_AddButton(info, level)
 end
 --####
 --初始
@@ -86,9 +214,13 @@ local function Init()
         e.tips:Show()
     end)
     button:SetScript('OnLeave', function() e.tips:Hide() end)
-    button:SetScript('OnMouseWheel', function(self, d)
-        ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+    button:SetScript('OnMouseUp', function(self, d)
+        if d=='RightButton' then
+            ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+        end
    end)
+
+   if Save.KEY then set_KEY() end--设置捷键
 end
 
 --###########
@@ -101,7 +233,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== id then
             Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
             if not e.toolsFrame.disabled then
-                button=e.Cbtn2(nil, e.toolsFrame, true)
+                button=e.Cbtn2(id..addName, e.toolsFrame, true)
                 button.itemID=8529
 
                 panel:RegisterEvent("PLAYER_REGEN_ENABLED")
@@ -145,7 +277,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         setAura()--光环取消
 
     elseif event=='BAG_UPDATE_COOLDOWN' then
-        local startTime, duration = GetItemCooldown(self.itemID)
-        e.Ccool(self,startTime, duration,nil, true)
+        local startTime, duration = GetItemCooldown(button.itemID)
+        e.Ccool(button,startTime, duration,nil, true)
     end
 end)

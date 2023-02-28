@@ -149,7 +149,7 @@ end
 --######
 --快捷键
 --######
-local function setKEY()--设置捷键
+local function set_KEY()--设置捷键
     if Save.KEY then
         e.SetButtonKey(button, true, Save.KEY)
         if #Save.KEY==1 then
@@ -184,45 +184,7 @@ local function setKEY()--设置捷键
     end
 end
 
-StaticPopupDialogs[id..addName..'KEY']={--快捷键,设置对话框
-    text=id..' '..addName..'\n'..SETTINGS_KEYBINDINGS_LABEL..'\n\nQ, BUTTON5',
-    whileDead=1,
-    hideOnEscape=1,
-    exclusive=1,
-    timeout = 60,
-    hasEditBox=1,
-    button1=SETTINGS,
-    button2=CANCEL,
-    button3=REMOVE,
-    OnShow = function(self, data)
-        self.editBox:SetText(Save.KEY or ';')
-        if Save.KEY then
-            self.button1:SetText(SLASH_CHAT_MODERATE2:gsub('/', ''))--修该
-        end
-        self.button3:SetEnabled(Save.KEY)
-    end,
-    OnAccept = function(self, data)
-        local text= self.editBox:GetText()
-        text=text:gsub(' ','')
-        text=text:gsub('%[','')
-        text=text:gsub(']','')
-        text=text:upper()
-        Save.KEY=text
-        setKEY()--设置捷键
-    end,
-    OnAlt = function()
-        Save.KEY=nil
-        setKEY()--设置捷键
-    end,
-    EditBoxOnTextChanged=function(self, data)
-        local text= self:GetText()
-        text=text:gsub(' ','')
-        self:GetParent().button1:SetEnabled(text~='')
-    end,
-    EditBoxOnEscapePressed = function(s)
-        s:GetParent():Hide()
-    end,
-}
+
 
 StaticPopupDialogs[id..addName..'RESETALL']={--重置所有,清除全部玩具
     text=id..' '..addName..'\n'..	CLEAR_ALL..'\n\n'.. RELOADUI,
@@ -266,11 +228,50 @@ local function InitMenu(self, level, menuList)--主菜单
             info={--快捷键,设置对话框
                 text= e.onlyChinse and '快捷键' or SETTINGS_KEYBINDINGS_LABEL,--..(Save.KEY and ' |cnGREEN_FONT_COLOR:'..Save.KEY..'|r' or ''),
                 checked=Save.KEY and true or nil,
-                func=function ()
+                disabled=UnitAffectingCombat('player'),
+                func=function()
+                    StaticPopupDialogs[id..addName..'KEY']={--快捷键,设置对话框
+                        text=id..' '..addName..'\n'..(e.onlyChinse and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..'\n\nQ, BUTTON5',
+                        whileDead=1,
+                        hideOnEscape=1,
+                        exclusive=1,
+                        timeout = 60,
+                        hasEditBox=1,
+                        button1=SETTINGS,
+                        button2=CANCEL,
+                        button3=REMOVE,
+                        OnShow = function(self, data)
+                            self.editBox:SetText(Save.KEY or ';')
+                            if Save.KEY then
+                                self.button1:SetText(SLASH_CHAT_MODERATE2:gsub('/', ''))--修该
+                            end
+                            self.button3:SetEnabled(Save.KEY)
+                        end,
+                        OnAccept = function(self, data)
+                            local text= self.editBox:GetText()
+                            text=text:gsub(' ','')
+                            text=text:gsub('%[','')
+                            text=text:gsub(']','')
+                            text=text:upper()
+                            Save.KEY=text
+                            set_KEY()--设置捷键
+                        end,
+                        OnAlt = function()
+                            Save.KEY=nil
+                            set_KEY()--设置捷键
+                        end,
+                        EditBoxOnTextChanged=function(self, data)
+                            local text= self:GetText()
+                            text=text:gsub(' ','')
+                            self:GetParent().button1:SetEnabled(text~='')
+                        end,
+                        EditBoxOnEscapePressed = function(s)
+                            s:GetParent():Hide()
+                        end,
+                    }
                     StaticPopup_Show(id..addName..'KEY')
                 end,
             }
-            info.disabled=UnitAffectingCombat('player')
             UIDropDownMenu_AddButton(info, level)
 
             UIDropDownMenu_AddSeparator(level)
@@ -351,7 +352,7 @@ local function Init()
 
     getToy()--生成, 有效表格
     setAtt()--设置属性
-    if Save.KEY then setKEY() end--设置捷键
+    if Save.KEY then set_KEY() end--设置捷键
 
     button:SetScript('OnShow', setAtt)
 
