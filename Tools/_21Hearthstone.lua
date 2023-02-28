@@ -224,20 +224,6 @@ local function setBagHearthstone()
     end
 end
 
---#########
---主图标冷却
---#########
-local function setCooldown()
-    if button.itemID then
-        local start, duration = GetItemCooldown(button.itemID)
-        e.Ccool(button, start, duration, nil, true, nil, true)--冷却条
-    else
-        if button.cooldown then
-            button.cooldown:Clear()
-        end
-    end
-end
-
 --####
 --初始
 --####
@@ -319,13 +305,13 @@ local function Init()
 
     getToy()--生成, 有效表格
     setAtt()--设置属性
-    setCooldown()--主图标冷却
+    e.SetItemSpellCool(button, button.itemID, nil)--主图标冷却
     setBagHearthstone()--设置Shift, Ctrl, Alt 提示
 
     C_Timer.After(2, function()
         setAtt()--设置属性
         set_BindLocation()--显示, 炉石, 绑定位置
-        setCooldown()--主图标冷却
+        e.SetItemSpellCool(button, button.itemID, nil)--主图标冷却
     end)
 end
 
@@ -376,7 +362,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         setAtt()--设置属性
 
     elseif event=='BAG_UPDATE_COOLDOWN' then
-        setCooldown()--主图标冷却
+        e.SetItemSpellCool(button, button.itemID, nil)--主图标冷却
         setBagHearthstone()--设置Shift, Ctrl, Alt 提示
 
     elseif event=='BAG_UPDATE_DELAYED' then

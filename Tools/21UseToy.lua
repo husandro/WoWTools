@@ -46,14 +46,7 @@ end
 --#########
 local function setCooldown()--主图标冷却
     if button:IsShown() then
-        if button.itemID then
-            local start, duration = GetItemCooldown(button.itemID)
-            e.Ccool(button, start, duration, nil, true, nil, true)--冷却条
-        else
-            if button.cooldown then
-                button.cooldown:Clear()
-            end
-        end
+        e.SetItemSpellCool(button, button.itemID, nil)--冷却条
     end
 end
 

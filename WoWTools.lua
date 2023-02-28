@@ -516,6 +516,17 @@ e.Ccool=function(self, start, duration, modRate, HideCountdownNumbers, Reverse, 
     start=start or GetTime()
     self.cooldown:SetCooldown(start, duration, modRate)
 end
+e.SetItemSpellCool= function(self, item, spell)
+    if item then
+        local startTime, duration = GetItemCooldown(item)
+        e.Ccool(self, startTime, duration, nil, true, nil, true)
+    elseif spell then
+        local start, duration, _, modRate = GetSpellCooldown(spell)
+        e.Ccool(self, start, duration, modRate, true, nil, true)--冷却条
+    elseif self.cooldown then
+        self.cooldown:Clear()
+    end
+end
 
 e.SetButtonKey = function(self, set, key, click)--设置清除快捷键
     if set then

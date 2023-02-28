@@ -285,10 +285,6 @@ local function setItemCount(self)--数量
     self.texture:SetDesaturated(num==0 and not PlayerHasToy(self.itemID))
 end
 
-local function setItemCooldown(self)--冷却
-    local startTime, duration = GetItemCooldown(self.itemID)
-    e.Ccool(self,startTime, duration,nil, true)
-end
 local function setBlingtron(self)--布林顿任务
     local complete=C_QuestLog.IsQuestFlaggedCompleted(56042)
     if not self.quest then
@@ -311,14 +307,14 @@ local function setItemButton(self, equip)--设置按钮
         if event=='BAG_UPDATE_DELAYED' then
             setItemCount(self2)
         elseif event=='BAG_UPDATE_COOLDOWN' then
-            setItemCooldown(self2)
+            e.SetItemSpellCool(self2, self2.itemID, nil)
         elseif event=='QUEST_COMPLETE' then
             setBlingtron(self2)
         elseif event=='PLAYER_EQUIPMENT_CHANGED' or 'PLAYER_REGEN_ENABLED' then
             setEquipSlot(self2)
         end
     end)
-    setItemCooldown(self)
+    e.SetItemSpellCool(self, self.itemID, nil)
     setItemCount(self)
     if equip then
         self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
@@ -350,10 +346,7 @@ local function setSpellCount(self)--次数
     end
     self.texture:SetDesaturated(num and num>0)
 end
-local function setSpellCooldown(self)--冷却
-    local start, duration, _, modRate = GetSpellCooldown(self.spellID)
-    e.Ccool(self, start, duration, modRate, true)
-end
+
 local function setSpellButton(self)--设置按钮
     self:RegisterEvent("SPELL_UPDATE_USABLE")
     self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
@@ -368,10 +361,10 @@ local function setSpellButton(self)--设置按钮
         if event=='SPELL_UPDATE_USABLE' then
             setSpellCount(self2)
         elseif event=='SPELL_UPDATE_COOLDOWN' then
-            setSpellCooldown(self2)
+            e.SetItemSpellCool(self2, nil, self2.spellID)
         end
     end)
-    setSpellCooldown(self)
+    e.SetItemSpellCool(self, nil, self.spellID)
     setSpellCount(self)
 end
 --###

@@ -172,8 +172,7 @@ local function set_Button()
                             panel.buttons[index].textureRight:SetSize(8,8)
                             panel.buttons[index].textureRight:SetTexture(135805)
                             panel.buttons[index]:SetScript('OnShow',function(self)
-                                local start, duration, _, modRate = GetSpellCooldown(818)
-                                e.Ccool(self, start, duration, modRate)--冷却条
+                                e.SetItemSpellCool(self, nil, 818)
                             end)
                         end
                         --panel.buttons[index]:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)

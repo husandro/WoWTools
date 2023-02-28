@@ -57,10 +57,7 @@ for _, tab in pairs(Save.list) do
         e.LoadSpellItemData(tab.spell, true)--加载法术, 物品数据
     end
 end
-local function setSpellCooldown(self, spellID)--冷却
-    local start, duration, _, modRate = GetSpellCooldown(spellID)
-    e.Ccool(self, start, duration, modRate, true, nil)
-end
+
 
 --#####
 --对话框
@@ -268,13 +265,13 @@ local function Init()
                 elseif event=='PLAYER_REGEN_ENABLED' then
                     self:RegisterEvent('SPELL_UPDATE_COOLDOWN')
                 elseif event=='SPELL_UPDATE_COOLDOWN' then
-                    setSpellCooldown(self, tab.spell)--冷却
+                    e.SetItemSpellCool(self, nil, tab.spell)--冷却
                 end
             end)
             buttons[tab.spell]:SetScript('OnShow', function(self)
-                setSpellCooldown(self, tab.spell)--冷却
+                e.SetItemSpellCool(self, nil, tab.spell)--冷却
             end)
-            setSpellCooldown(buttons[tab.spell], tab.spell)--冷却
+            e.SetItemSpellCool(buttons[tab.spell], nil, tab.spell)--冷却
             buttons[tab.spell].cooldown:SetAlpha(0.5)
         end
     end

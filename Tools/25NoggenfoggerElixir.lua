@@ -277,7 +277,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         setAura()--光环取消
 
     elseif event=='BAG_UPDATE_COOLDOWN' then
-        local startTime, duration = GetItemCooldown(button.itemID)
-        e.Ccool(button,startTime, duration,nil, true)
+        e.SetItemSpellCool(button, button.itemID, nil)
     end
 end)

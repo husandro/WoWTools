@@ -222,17 +222,8 @@ local function setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
     end
     button.Combat=nil
 end
-local function setCooldown()--设置冷却
-    if button.spellAtt then
-        local start, duration, _, modRate = GetSpellCooldown(button.spellAtt)
-        e.Ccool(button, start, duration, modRate, true, nil, true)--冷却条
-    elseif button.itemID then
-        local start, duration = GetItemCooldown(button.itemID)
-        e.Ccool(button, start, duration, nil, true,nil, true)--冷却条
-    elseif button.cooldown then
-        button.cooldown:Clear()
-    end
-end
+
+
 local function setTextrue()--设置图标
     local icon= button.iconAtt
     if IsMounted() then
@@ -256,7 +247,7 @@ local function setTextrue()--设置图标
         button.texture:SetTexture(icon)
     end
     button.texture:SetShown(icon and true or false)
-    setCooldown()--设置冷却
+    e.SetItemSpellCool(button, button.itemID, button.spellAtt)--设置冷却
 end
 
 --[[
@@ -944,7 +935,7 @@ local function Init()
     checkMount()--检测坐骑
     setClickAtt()--设置
     setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
-    setCooldown()--设置冷却
+    e.SetItemSpellCool(button, button.itemID, button.spellAtt)--设置冷却
     if Save.KEY then
         setKEY()--设置捷键
     end
@@ -1190,7 +1181,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         button.textureModifier:SetShown(icon)
 
     elseif event=='SPELL_UPDATE_COOLDOWN' then
-        setCooldown()--设置冷却
+        e.SetItemSpellCool(button, button.itemID, button.spellAtt)--设置冷却
 
     elseif event=='SPELL_UPDATE_USABLE' then
         setTextrue()--设置图标
