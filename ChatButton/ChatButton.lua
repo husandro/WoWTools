@@ -97,7 +97,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
             --添加控制面板        
-            panel.sel=e.CPanel(addName, not Save.disabled, true)
+            panel.sel=e.CPanel(addName..'|A:transmog-icon-chat:0:0|a', not Save.disabled, true)
             panel.sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 panel.disabled= Save.disabled

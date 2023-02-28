@@ -1,8 +1,7 @@
 local id, e= ...
-local Save= {disabled= not e.Player.husandro}
+local Save= {}
 local addName= COLOR_PICKER..' Plus'--"颜色选择器";
 local panel= CreateFrame("Frame")--ColorPickerFrame.xml
-
 
 local RGB_to_HEX=function(r, g, b, a)
 	r = r <= 1 and r >= 0 and r or 0
@@ -14,12 +13,12 @@ end
 
 local function set_Text()
 	local a, r, g, b = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()
-	--panel.check.text:SetTextColor(r, g, b)
 	if ColorPickerFrame.rgb then
 		ColorPickerFrame.rgb:SetText(format('%.2f, %.2f, %.2f, %.2f', r,g,b,a))
 		ColorPickerFrame.rgb2:SetText(format('r=%.2f, g=%.2f, b=%.2f, a=%.2f', r,g,b,a))
 		ColorPickerFrame.hex:SetText(RGB_to_HEX(r,g,b,a))
 		ColorPickerFrame.cn:SetText('')
+		ColorPickerFrame.cn2:SetText('')
 	end
 	ColorPickerFrame.Header.Text:SetTextColor(r,g,b)
 end
@@ -28,11 +27,10 @@ end
 --初始
 --####
 local function Init(self)
-	local size, x, y, n= 22, 0, 8, 1
-    local function create_Texture(r,g,b,a, atlas)
+	local size, x, y, n
+	    local function create_Texture(r,g,b,a, atlas)
 		local texture= self:CreateTexture()
 		texture:SetSize(size, size)
-		texture:SetPoint('BOTTOMLEFT', self, 'TOPLEFT', x, y)
 		texture:EnableMouse(true)
 		texture.r, texture.g, texture.b, texture.a= r, g, b, a
 		texture:SetScript('OnMouseDown', function(self2)
@@ -46,33 +44,40 @@ local function Init(self)
 		else
 			texture:SetColorTexture(r, g, b, 1)
 		end
-		if n==16 then
-			n=0
-			y=y +size +2
-			x=0
-		else
-			x=x+size+2
-		end
-		n=n+1
 		return texture
 	end
 
+
+	size, x, y, n= 28, 0, 0, 1
 	local classes = {"HUNTER", "WARLOCK", "PRIEST", "PALADIN", "MAGE", "ROGUE", "DRUID", "SHAMAN", "WARRIOR", "DEATHKNIGHT", "MONK", "DEMONHUNTER", "EVOKER"}
 	for _, className in pairs(classes) do--ColorUtil.lua
 		local col= C_ClassColor.GetClassColor(className)
-		create_Texture(col.r, col.g, col.b, col.a, e.Class(nil, className, true))
-		
-		--local texture= create_Texture(col.r, col.g, col.b, col.a, e.Class(nil, className, true))
-		--texture.textClass= 'RAID_CLASS_COLORS'..'[\''..className..'\']'
+		local texture= create_Texture(col.r, col.g, col.b, col.a, e.Class(nil, className, true))
+		texture:SetPoint('TOPLEFT', self, 'TOPRIGHT', x, y)
+		if n==7 then
+			n=0
+			x= x+ size+2
+			y= 0
+		else
+			y= y- size-2
+		end
+		n=n+1
 	end
 
-	n=1
-	y=y +size +2
-	x=0
+	size, x, y, n= 22, -50, 8, 1
 	local DBColors = C_UIColor.GetColors();--Color.lua
 	for _, dbColor in ipairs(DBColors) do
 		local texture= create_Texture(dbColor.color.r, dbColor.color.g, dbColor.color.b, dbColor.color.a)
 		texture.textCode= dbColor.baseTag
+		texture:SetPoint('BOTTOMLEFT', self, 'TOPLEFT', x, y)
+		if n==20 then
+			n=0
+			y=y +size +2
+			x=-50
+		else
+			x=x+size+2
+		end
+		n=n+1
 	end
 
 	local w=350

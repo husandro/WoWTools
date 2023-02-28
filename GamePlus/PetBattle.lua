@@ -611,7 +611,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
             --添加控制面板
-            local check=e.CPanel(e.onlyChinse and '宠物对战' or addName, not Save.disabled, true)
+            local check=e.CPanel((e.onlyChinse and '宠物对战' or addName)..'|A:WildBattlePetCapturable:0:0|a', not Save.disabled, true)
             check:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '重新加载UI' or RELOADUI)
