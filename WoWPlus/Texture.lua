@@ -15,9 +15,9 @@ local function hideTexture(self)
         self:SetShown(false)
     end
 end
-local function setAlpha(self)
+local function setAlpha(self, notAlpha)
     if self then
-        if not Save.disabledAlpha then
+        if not (Save.disabledAlpha or notAlpha)  then
             self:SetAlpha(Save.alpha)
         end
         if not Save.disabledColor then
@@ -680,7 +680,7 @@ local function Init_Set_AlphaAndColor()
     }
     for _, frame in pairs(buttons) do
         if frame then
-            setAlpha(frame:GetNormalTexture())
+            setAlpha(frame:GetNormalTexture(), true)
         end
     end
 end
