@@ -1,5 +1,7 @@
 local id, e= ...
-local Save= {}
+local Save= {
+	color={}
+}
 local addName= COLOR_PICKER..' Plus'--"颜色选择器";
 local panel= CreateFrame("Frame")--ColorPickerFrame.xml
 
@@ -11,33 +13,62 @@ local RGB_to_HEX=function(r, g, b, a)
 	return format("%02x%02x%02x%02x", a*255, r*255, g*255, b*255)
 end
 
-local function set_Text()
-	local a, r, g, b = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()
-	if ColorPickerFrame.rgb then
-		ColorPickerFrame.rgb:SetText(format('%.2f, %.2f, %.2f, %.2f', r,g,b,a))
-		ColorPickerFrame.rgb2:SetText(format('r=%.2f, g=%.2f, b=%.2f, a=%.2f', r,g,b,a))
-		ColorPickerFrame.hex:SetText(RGB_to_HEX(r,g,b,a))
-		ColorPickerFrame.cn:SetText('')
-		ColorPickerFrame.cn2:SetText('')
+ local HEX_to_RGB=function(hex)--HEX转RGB
+	if hex then
+		hex= hex:gsub('|c', '')
+		hex= hex:gsub(' ','')
+		if strlen(hex)==8 then
+			local a, r, g, b= hex:match('(..)(..)(..)(..)')
+			if a and r and g and b then
+				a, r, g, b= tonumber("0x"..a), tonumber("0x"..r), tonumber("0x"..g), tonumber("0x"..b)
+				if a and r and g and b then
+					return r/255, g/255, b/255, a/255
+				end
+			end
+		end
 	end
-	ColorPickerFrame.Header.Text:SetTextColor(r,g,b)
 end
 
+local timeElapsed=0
+local function set_Text(self, elapsed)
+	timeElapsed = timeElapsed + elapsed
+	if timeElapsed > 0.3 then
+		local a, r, g, b = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()
+		if ColorPickerFrame.rgb then
+			if not ColorPickerFrame.rgb:HasFocus() then
+				ColorPickerFrame.rgb:SetText(format('%.2f %.2f %.2f %.2f', r,g,b,a))
+			end
+			if not ColorPickerFrame.rgb2:HasFocus() then
+				ColorPickerFrame.rgb2:SetText(format('r=%.2f, g=%.2f, b=%.2f, a=%.2f', r,g,b,a))
+			end
+			if not ColorPickerFrame.hex:HasFocus() then
+				ColorPickerFrame.hex:SetText(RGB_to_HEX(r,g,b,a))
+			end
+		end
+		ColorPickerFrame.Header.Text:SetTextColor(r,g,b)
+		ColorPickerFrame.alphaText:SetFormattedText('%.2f', a)
+		ColorPickerFrame.alphaText:SetTextColor(r,g,b)
+	end
+end
+
+local function set_Edit_Text(r, g, b, a, textCode)
+	ColorPickerFrame:SetColorRGB(r, g, b)
+	OpacitySliderFrame:SetValue(a);
+	ColorPickerFrame.cn:SetText(textCode and textCode..'_CODE' or '')
+	ColorPickerFrame.cn2:SetText(textCode and '|cn'..textCode or '')
+end
 --####
 --初始
 --####
 local function Init(self)
 	local size, x, y, n
-	    local function create_Texture(r,g,b,a, atlas)
+	local function create_Texture(r,g,b,a, atlas)
 		local texture= self:CreateTexture()
 		texture:SetSize(size, size)
 		texture:EnableMouse(true)
 		texture.r, texture.g, texture.b, texture.a= r, g, b, a
 		texture:SetScript('OnMouseDown', function(self2)
-			ColorPickerFrame:SetColorRGB(self2.r, self2.g, self2.b)
-			ColorPickerFrame.opacity = self2.a;
-			ColorPickerFrame.cn:SetText(self2.textCode and self2.textCode..'_CODE' or '')
-			ColorPickerFrame.cn2:SetText(self2.textCode and '|cn'..self2.textCode or '')
+			set_Edit_Text(self2.r, self2.g, self2.b, self2.a, self2.textCode)
 		end)
 		if atlas then
 			texture:SetAtlas(atlas)
@@ -75,29 +106,86 @@ local function Init(self)
 			y=y +size +2
 			x=-50
 		else
-			x=x+size+2
+			x=x +size +2
 		end
 		n=n+1
 	end
 
 	local w=350
-	self.rgb= CreateFrame("EditBox", nil, self, 'InputBoxTemplate')
+	self.rgb= CreateFrame("EditBox", nil, self, 'InputBoxTemplate')-- 1 1 1 1
 	self.rgb:SetPoint("TOPLEFT", self, 'BOTTOMLEFT',10,0)
 	self.rgb:SetSize(w,20)
 	self.rgb:SetAutoFocus(false)
+	self.rgb:SetScript('OnEnterPressed', function(self2)
+		local text= self2:GetText()
+		text= text:gsub('  ',' ')
+		local r, g, b, a= text:match('(.-) (.-) (.-) (.+)')
+		a= a or '1'
+		if r and g and b then
+			r, g, b, a= tonumber(r), tonumber(g), tonumber(b), tonumber(a)
+			if r and g and b then
+				set_Edit_Text(r, g, b, a, nil)
+				self2:ClearFocus()
+			end
+		end
+	end)
 
 	self.rgb2= CreateFrame("EditBox", nil, self, 'InputBoxTemplate')
 	self.rgb2:SetPoint("TOPLEFT", self.rgb, 'BOTTOMLEFT',0,-2)
 	self.rgb2:SetSize(w,20)
 	self.rgb2:SetAutoFocus(false)
+	self.rgb2:SetScript('OnEnterPressed', function(self2)
+		local text= self2:GetText()
+		text= text:gsub(' ','')
+		text= text:gsub('，', ',')
+		text= strlower(text)
+		local r, g, b, a= text:match('r=(.-),g=(.-),b=(.-),a=(.+)')
+		a= a or '1'
+		if r and g and b then
+			r, g, b, a= tonumber(r), tonumber(g), tonumber(b), tonumber(a)
+			if r and g and b then
+				set_Edit_Text(r, g, b, a, nil)
+				self2:ClearFocus()
+			end
+		end
+	end)
 
 	self.hex= CreateFrame("EditBox", nil, self, 'InputBoxTemplate')
 	self.hex:SetPoint("TOPLEFT", self.rgb2, 'BOTTOMLEFT',0,-2)
 	self.hex:SetSize(w,20)
 	self.hex:SetAutoFocus(false)
-	self.hexText=e.Cstr(self)
-	self.hexText:SetPoint('RIGHT', self.hex, 'LEFT',-2,0)
-	self.hexText:SetText('|c')
+	self.hex:SetScript('OnEnterPressed', function(self2)
+		local text= self2:GetText()
+		text= text:gsub(' ','')
+		local r, g, b, a= HEX_to_RGB(text)
+		a= a or '1'
+		if r and g and b then
+			set_Edit_Text(r, g, b, a, nil)
+			self2:ClearFocus()
+		end
+	end)
+	local hexText=e.Cstr(self)
+	hexText:SetPoint('RIGHT', self.hex, 'LEFT',-2,0)
+	hexText:SetText('|c')
+
+	self.hex.hexText=e.Cstr(self.hex, 18)--提示，修改，颜色
+	self.hex.hexText:SetPoint('RIGHT', self.hex,-2,0)
+	self.hex:SetScript('OnTextChanged', function(self2, userInput)
+		if userInput then
+			local text= self2:GetText()
+			text= text:gsub(' ','')
+			local r, g, b, a= HEX_to_RGB(text)
+			a= a or '1'
+			if r and g and b then
+				self2.hexText:SetFormattedText('r%.2f g%.2f b%.2f a%.2f', r,g,b,a)
+				self2.hexText:SetTextColor(r,g,b)
+			else
+				self2.hexText:SetText('')
+			end
+		else
+			self2.hexText:SetText('')
+		end
+	end)
 
 	self.cn= CreateFrame("EditBox", nil, self, 'InputBoxTemplate')
 	self.cn:SetPoint("TOPLEFT", self.hex, 'BOTTOMLEFT',0,-2)
@@ -108,9 +196,21 @@ local function Init(self)
 	self.cn2:SetPoint("TOPLEFT", self.cn, 'BOTTOMLEFT',0,-2)
 	self.cn2:SetSize(w,20)
 	self.cn2:SetAutoFocus(false)
-	self.cnText2=e.Cstr(self)
-	self.cnText2:SetPoint('LEFT', self.cn2, 'RIGHT', 2,0)
-	self.cnText2:SetText(':')
+	local cnText2=e.Cstr(self)
+	cnText2:SetPoint('LEFT', self.cn2, 'RIGHT', 2,0)
+	cnText2:SetText(':')
+
+	size= 22
+	local restColor= create_Texture(e.Player.r, e.Player.g, e.Player.b, 1)
+	restColor:SetPoint('TOP', ColorSwatch, 'BOTTOM', 0, -60)
+	restColor:SetScript('OnShow', function(self2)
+		local a, r, g, b = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()
+		self2:SetColorTexture(r, g, b, a)
+		self2.r, self2.g, self2.b, self2.a= r, g, b, a
+	end)
+
+	self.alphaText=e.Cstr(self, 20)
+	self.alphaText:SetPoint('LEFT', OpacitySliderFrame, 'RIGHT', 5,0)
 end
 
 panel:RegisterEvent('ADDON_LOADED')
@@ -128,11 +228,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 			panel.check.text:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
 			panel.check.text:EnableMouse(true)
 			panel.check.text:SetScript('OnMouseDown', function()
-                e.ShowColorPicker(e.Player.r, e.Player.g, e.Player.b, 1, set_Text)
+                e.ShowColorPicker(e.Player.r, e.Player.g, e.Player.b, 1, function()
+					set_Text(nil, 3)
+				end)
 			end)
 
             if not Save.disabled then
                 Init(ColorPickerFrame)
+				ColorPickerFrame:SetScript('OnUpdate', set_Text)
             end
             panel:UnregisterEvent('ADDON_LOADED')
             panel:RegisterEvent('PLAYER_LOGOUT')

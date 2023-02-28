@@ -1845,7 +1845,8 @@
         "ExpansionLandingPageMinimapButtonMixin",
         "OPTIONS",
         "MajorFactionRenownFrame",
-        "ColorSelectFrame"
+        "ColorSelectFrame",
+        "ColorSwatch"
     ],
     "Lua.diagnostics.disable": [
     ]
