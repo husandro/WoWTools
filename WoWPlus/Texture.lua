@@ -516,8 +516,10 @@ local function Init_Set_AlphaAndColor()
         end
     end)
     hooksecurefunc('PaperDollItemSlotButton_Update', function(frame)--PaperDollFrame.lua
-        setAlpha(frame:GetNormalTexture())
-        setAlpha(frame.icon)
+        if frame:GetID()>30 then
+            setAlpha(frame:GetNormalTexture())
+            setAlpha(frame.icon)
+        end
     end)
 
     --好友列表
