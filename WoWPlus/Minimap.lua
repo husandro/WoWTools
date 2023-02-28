@@ -5,7 +5,7 @@ local Save={
         ZoomOut=true,
         vigentteButton=e.Player.husandro,
         vigentteButtonShowText=true,
-        expansionSacle=0.6,
+        expansionScale=0.6,
         --expansionAlpha=0.3,
 }
 local panel=CreateFrame("Frame")
@@ -173,8 +173,8 @@ local function set_ExpansionLandingPageMinimapButton()
         e.tips:AddDoubleLine(e.onlyChinse and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , e.Icon.right)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinse and '设置选项' or OPTIONS, e.Icon.mid)
-        e.tips:AddDoubleLine(e.onlyChinse and '缩放' or UI_SCALE, (Save.expansionSacle and Save.expansionSacle or '')..' Alt+'..e.Icon.mid)
-        e.tips:AddDoubleLine(e.onlyChinse and '透明度' or CHANGE_OPACITY, (Save.expansionSacle and Save.expansionSacle or '')..' Ctrl+'..e.Icon.mid)
+        e.tips:AddDoubleLine(e.onlyChinse and '缩放' or UI_SCALE, (Save.expansionScale and Save.expansionScale or '')..' Alt+'..e.Icon.mid)
+        e.tips:AddDoubleLine(e.onlyChinse and '透明度' or CHANGE_OPACITY, (Save.expansionScale and Save.expansionScale or '')..' Ctrl+'..e.Icon.mid)
         e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
@@ -190,7 +190,7 @@ local function set_ExpansionLandingPageMinimapButton()
         if not IsModifierKeyDown() then--打开, 插件, 选项
             InterfaceOptionsFrame_OpenToCategory(id)
         elseif IsAltKeyDown() then--缩放
-            local n= Save.expansionSacle or 1
+            local n= Save.expansionScale or 1
             if d==1 then
                 n= n+0.1
             elseif d==-1 then
@@ -198,7 +198,7 @@ local function set_ExpansionLandingPageMinimapButton()
             end
             n= n>2 and 2 or n<0.3 and 0.3 or n
             self:SetScale(n)
-            Save.expansionSacle=n
+            Save.expansionScale=n
             print(id, addName, e.onlyChinse and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..n)
         elseif IsControlKeyDown() then--透明度
             local n= Save.expansionAlpha or 1
@@ -213,8 +213,8 @@ local function set_ExpansionLandingPageMinimapButton()
             print(id, addName, e.onlyChinse and '透明度' or CHANGE_OPACITY, '|cnGREEN_FONT_COLOR:'..n)
         end
     end)
-    if Save.expansionSacle and Save.expansionSacle~=1 then
-        frame:SetScale(Save.expansionSacle)
+    if Save.expansionScale and Save.expansionScale~=1 then
+        frame:SetScale(Save.expansionScale)
     end
     C_Timer.After(8, function()--盟约图标停止闪烁
         frame.MinimapLoopPulseAnim:Stop()
