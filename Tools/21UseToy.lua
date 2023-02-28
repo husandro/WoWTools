@@ -406,7 +406,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     end
                 end)
             else
-                button:UnregisterAllEvents()
+                panel:UnregisterAllEvents()
             end
 
         elseif arg1=='Blizzard_Collections' then
