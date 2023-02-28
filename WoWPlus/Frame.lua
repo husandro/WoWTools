@@ -400,8 +400,6 @@ local function Init_Move()
         BankFrame={save=true},--银行
         MerchantFrame={},--货物
 
-        ColorPickerFrame={save=true, click='R'},--颜色选择器
-
         WorldMapFrame={},--世界地图
         MapQuestInfoRewardsFrame={frame= WorldMapFrame},
 
@@ -420,6 +418,7 @@ local function Init_Move()
         --StaticPopup1={},
         [DressUpFrame.TitleContainer]= {frame = DressUpFrame},--试衣间 
         [MailFrame.TitleContainer]= {frame=MailFrame},
+        ColorPickerFrame={save=true, click='R'},--颜色选择器
     }
     for k, v in pairs(FrameTab) do
         if v then
@@ -430,7 +429,7 @@ local function Init_Move()
             end
         end
     end
-
+    
     set_Move_Button(ZoneAbilityFrame, {frame=ZoneAbilityFrame.SpellButtonContainer, save=true, zeroAlpha=nil, notZoom=nil})
     set_Move_Button(QueueStatusButton, {frame=nil, save=true, zeroAlpha=true, notZoom=nil})--小眼睛, 
 

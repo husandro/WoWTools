@@ -1071,84 +1071,25 @@ end
 --###############
 --显示, 物品, 属性
 --###############
-local function SetP(self, n, point)
-    if n==1 then
-        if point then
-            self:SetPoint('BOTTOMLEFT', point, -3, 0)
-        else
-            self:SetPoint('BOTTOMRIGHT', 3, 0)
-        end
-    elseif n==2 then
-        if point then
-            self:SetPoint('BOTTOMRIGHT', point,3, 0)
-        else
-            self:SetPoint('BOTTOMRIGHT',3, 0)
-        end
-    elseif n==3 then
-        if point then
-            self:SetPoint('TOPLEFT', point, -3, 0)
-        else
-            self:SetPoint('TOPLEFT', -3, 0)
-        end
-    else
-        if point then
-            self:SetPoint('TOPRIGHT', point, 3, 0)
-        else
-            self:SetPoint('TOPRIGHT', 3, 0)
-        end
-    end
-end
 e.Set_Item_Stats = function(self, link, point)
     if not self then
         return
     end
-    local crit, haste, mastery, versaility, setID, itemLevel
-    local n=0
+    local setID, itemLevel
+    local tab={}
     if link then
         local info= GetItemStats(link) or {}
-        crit= info['ITEM_MOD_CRIT_RATING_SHORT']
-        haste= info['ITEM_MOD_HASTE_RATING_SHORT']
-        mastery= info['ITEM_MOD_MASTERY_RATING_SHORT']
-        versaility= info['ITEM_MOD_VERSATILITY']
-        if crit then
-            if not self.crit then--爆击
-                self.crit=e.Cstr(self)
-                self.crit:SetText( e.onlyChinse and '爆' or e.WA_Utf8Sub(STAT_CRITICAL_STRIKE, 1, 2):upper())
-            else
-                self.crit:ClearAllPoints()
-            end
-            n=n+1
-            SetP(self.crit, n, point)
+        if info['ITEM_MOD_CRIT_RATING_SHORT'] then
+            table.insert(tab, {text=e.onlyChinse and '爆' or e.WA_Utf8Sub(STAT_CRITICAL_STRIKE, 1, 2):upper(), value=info['ITEM_MOD_CRIT_RATING_SHORT']})
         end
-        if haste then--急速
-            if not self.haste then
-                self.haste=e.Cstr(self)
-                self.haste:SetText(e.onlyChinse and '急' or e.WA_Utf8Sub(STAT_HASTE, 1,2):upper())
-            else
-                self.haste:ClearAllPoints()
-            end
-            n=n+1
-            SetP(self.haste, n, point)
+        if info['ITEM_MOD_HASTE_RATING_SHORT'] then
+            table.insert(tab, {text=e.onlyChinse and '急' or e.WA_Utf8Sub(STAT_HASTE, 1,2):upper(), value=info['ITEM_MOD_HASTE_RATING_SHORT']})
         end
-        if mastery then--精通
-            if not self.mastery then
-                self.mastery=e.Cstr(self)
-                self.mastery:SetText(e.onlyChinse and '精' or e.WA_Utf8Sub(STAT_MASTERY, 1,2):upper())
-            else
-                self.mastery:ClearAllPoints()
-            end
-            n=n+1
-            SetP(self.mastery, n, point)
+        if info['ITEM_MOD_MASTERY_RATING_SHORT'] then
+            table.insert(tab, {text=e.onlyChinse and '精' or e.WA_Utf8Sub(STAT_MASTERY, 1,2):upper(), value=info['ITEM_MOD_MASTERY_RATING_SHORT']})
         end
-        if versaility then--全能
-            if not self.versaility then
-                self.versaility=e.Cstr(self)
-                self.versaility:SetText(e.onlyChinse and '全' or e.WA_Utf8Sub(STAT_VERSATILITY, 1,2):upper())
-            else
-                self.versaility:ClearAllPoints()
-            end
-            n=n+1
-            SetP(self.versaility, n, point)
+        if info['ITEM_MOD_VERSATILITY'] then
+            table.insert(tab, {text=e.onlyChinse and '全' or e.WA_Utf8Sub(STAT_VERSATILITY, 1,2):upper(), value=info['ITEM_MOD_VERSATILITY']})
         end
 
         setID= select(16 , GetItemInfo(link))--套装
@@ -1165,7 +1106,7 @@ e.Set_Item_Stats = function(self, link, point)
             local lv = itemLevel- avgItemLevel
             if lv>=6 then
                 itemLevel= GREEN_FONT_COLOR_CODE..itemLevel..'|r'
-            elseif quality and quality< 5 then
+            elseif quality and quality<= 6 then
                 if lv <= -6  then
                     itemLevel =RED_FONT_COLOR_CODE..itemLevel..'|r'
                 else
@@ -1182,12 +1123,31 @@ e.Set_Item_Stats = function(self, link, point)
             self.itemLevel:SetPoint('CENTER', point)
         end
     end
-    if self.crit then self.crit:SetShown(crit) end--爆击
-    if self.haste then self.haste:SetShown(haste) end--急速
-    if self.mastery then self.mastery:SetShown(mastery) end--精通
-    if self.versaility then self.versaility:SetShown(versaility) end--全能
     if self.itemSet then self.itemSet:SetShown(setID) end--套装
     if self.itemLevel then self.itemLevel:SetText(itemLevel or '') end--装等
+
+    table.sort(tab, function(a,b) return a.value>b.value end)
+    for index=1 ,4 do
+        local text=self['statText'..index]
+        if tab[index] then
+            if not text then
+                text= e.Cstr(self)
+                if index==1 then
+                    text:SetPoint('BOTTOMLEFT', point or self, 'BOTTOMLEFT', -3, 0)
+                elseif index==2 then
+                    text:SetPoint('BOTTOMRIGHT', point or self, 'BOTTOMRIGHT', 3, 0)
+                elseif index==3 then
+                    text:SetPoint('TOPLEFT', point or self, 'TOPLEFT', -3, 0)
+                else
+                    text:SetPoint('TOPRIGHT', point or self, 'TOPRIGHT', 3, 0)
+                end
+                self['statText'..index]=text
+            end
+            text:SetText(tab[index].text)
+        elseif text then
+            text:SetText('')
+        end
+    end
 end
 
 e.ShowColorPicker= function(valueR, valueG, valueB, valueA, changedCallback)

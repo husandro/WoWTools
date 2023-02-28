@@ -76,39 +76,7 @@ local function LvTo()--总装等
         end
     end
 end
---[[
-local function Lv(self, slot, link)--装等    
-    local lv--, pvp
-    local to=GetAverageItemLevel()
-    if link then
-        local quality = GetInventoryItemQuality("player", slot)--颜色
-        lv=GetDetailedItemLevelInfo(link)
-        if lv and to then
-            local val=lv-to
-            if val>=6 then
-                lv= GREEN_FONT_COLOR_CODE..lv..'|r'
-            elseif quality and quality< 5 then
-                if val <= -6  then
-                    lv =RED_FONT_COLOR_CODE..lv..'|r'
-                else
-                    local hex=quality and select(4, GetItemQualityColor(quality))
-                    if hex then
-                        lv='|c'..hex..lv..'|r'
-                    end
-                end
-            end
-        end
-    end
-    if not self.lv and lv then
-        self.lv= e.Cstr(self, nil, nil, nil,nil,nil, 'CENTER')
-        self.lv:SetShadowOffset(2,-2)
-        self.lv:SetPoint('CENTER')
-    end
-    if self.lv then
-        self.lv:SetText(lv or '')
-    end
-end
-]]
+
 local function Gem(self, slot, link)--宝石
     if not slot or slot>17 or slot<1 or slot==4 then
         return

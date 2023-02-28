@@ -86,7 +86,7 @@ GamePlus\Target.lua
 ##驭龙术，速度
 GamePlus\Dragonriding.lua
 ##颜色选择器，增强
-##GamePlus\ColorSelectFrame.lua
+GamePlus\Color.lua
 ##fps ms
 GamePlus\SystemInfo.lua
 
