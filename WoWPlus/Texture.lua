@@ -138,7 +138,7 @@ local function Init_HideTexture()
         hideTexture(CompactRaidFrameManagerBg)
         hideTexture(CompactRaidFrameManagerDisplayFrameFilterOptionsFooterDelineator)
 
-        CompactRaidFrameManager.toggleButton:SetNormalAtlas(e.Icon.toRight)--展开, 图标
+        CompactRaidFrameManager.toggleButton:SetNormalAtlas(e.Icon.toRight,true)--展开, 图标
         CompactRaidFrameManager.toggleButton:SetAlpha(0.3)
         CompactRaidFrameManager.toggleButton:SetHeight(30)
         hooksecurefunc('CompactRaidFrameManager_Collapse', function()
@@ -1304,6 +1304,8 @@ local function set_Alpha_Event(arg1)
                 hideTexture(PlayerChoiceFrame.Background.BackgroundTile)
             end
         end)
+    elseif arg1=='Blizzard_MajorFactions' then--派系声望
+        setAlpha(MajorFactionRenownFrame.Background)
     end
 end
 

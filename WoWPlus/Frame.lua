@@ -368,7 +368,11 @@ local function setAddLoad(arg1)
 
     elseif arg1=='Blizzard_MacroUI' then--宏
         Move(MacroFrame, {})
+    elseif arg1=='Blizzard_MajorFactions' then--派系声望
+        Move(MajorFactionRenownFrame, {})
+        Move(MajorFactionRenownFrame.HeaderFrame, {frame=MajorFactionRenownFrame})
     end
+
 end
 
 
@@ -426,7 +430,7 @@ local function Init_Move()
             end
         end
     end
-    
+
     set_Move_Button(ZoneAbilityFrame, {frame=ZoneAbilityFrame.SpellButtonContainer, save=true, zeroAlpha=nil, notZoom=nil})
     set_Move_Button(QueueStatusButton, {frame=nil, save=true, zeroAlpha=true, notZoom=nil})--小眼睛, 
 
@@ -462,7 +466,7 @@ local function Init_Move()
             end
         end
     end)
-   
+
 
     if UIWidgetPowerBarContainerFrame then--移动, 能量条
         local frame=UIWidgetPowerBarContainerFrame

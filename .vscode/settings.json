@@ -1837,7 +1837,14 @@
         "RecruitAFriendFrame",
         "CompactRaidFrameManagerDisplayFrameLeaderOptionsCountdownText",
         "CompactRaidFrameManagerDisplayFrameLeaderOptionsInitiateRolePollText",
-        "CompactRaidFrameManagerDisplayFrameLeaderOptionsInitiateReadyCheckText"
+        "CompactRaidFrameManagerDisplayFrameLeaderOptionsInitiateReadyCheckText",
+        "InterfaceOptionsFrame_OpenToCategory",
+        "DragonridingPanelSkillsButtonMixin",
+        "GenericTraitUI_LoadUI",
+        "ToggleFrame",
+        "ExpansionLandingPageMinimapButtonMixin",
+        "OPTIONS",
+        "MajorFactionRenownFrame"
     ],
     "Lua.diagnostics.disable": [
     ]

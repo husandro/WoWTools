@@ -1,6 +1,13 @@
 local id, e = ...
 local addName= HUD_EDIT_MODE_MINIMAP_LABEL
-local Save={scale=0.85, ZoomOut=true, vigentteButton=e.Player.husandro, vigentteButtonShowText=true }
+local Save={
+        scale=0.85,
+        ZoomOut=true,
+        vigentteButton=e.Player.husandro,
+        vigentteButtonShowText=true,
+        expansionSacle=0.6,
+        expansionAlpha=0.3,
+}
 local panel=CreateFrame("Frame")
 
 local function set_ZoomOut()--更新地区时,缩小化地图
@@ -61,7 +68,7 @@ local function set_MinimapCluster()--缩放
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
         e.tips:AddDoubleLine(e.onlyChinse and '缩放' or UI_SCALE, (e.onlyChinse and '缩小' or ZOOM_OUT)..(Save.scale or 1)..e.Icon.left)
-        
+
         e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
         e.tips:Show()
     end)
@@ -118,7 +125,8 @@ end
 --盟约图标
 --#######
 local function set_ExpansionLandingPageMinimapButton()
-    if not ExpansionLandingPageMinimapButton then
+    local frame=ExpansionLandingPageMinimapButton
+    if not frame then
         return
     end
     local OpenWR=function()
@@ -132,45 +140,87 @@ local function set_ExpansionLandingPageMinimapButton()
             tinsert(UISpecialFrames, WeeklyRewardsFrame:GetName())
         end
     end
-    ExpansionLandingPageMinimapButton:SetScale(0.6)--透明度
-    ExpansionLandingPageMinimapButton:SetFrameStrata('TOOLTIP')
-    ExpansionLandingPageMinimapButton:SetMovable(true)--移动
-    ExpansionLandingPageMinimapButton:RegisterForDrag("RightButton")
-    ExpansionLandingPageMinimapButton:SetClampedToScreen(true)
-    ExpansionLandingPageMinimapButton:SetScript("OnDragStart", function(self, d)
+    frame:SetFrameStrata('TOOLTIP')
+    frame:SetMovable(true)--移动
+    frame:RegisterForDrag("RightButton")
+    frame:SetClampedToScreen(true)
+    frame:EnableMouseWheel(true)
+    frame:SetScript("OnDragStart", function(self, d)
         if d=='RightButton' and IsAltKeyDown() then
             self:StartMoving()
         end
     end)
-    ExpansionLandingPageMinimapButton:SetScript("OnDragStop", function(self)
+
+    frame:SetScript("OnDragStop", function(self)
         self:StopMovingOrSizing()
     end)
-    ExpansionLandingPageMinimapButton:SetScript('OnMouseDown', function(self, d)
+    frame:SetScript('OnMouseDown', function(self, d)
         if d=='RightButton' and not IsModifierKeyDown() then--周奖励面板
-            if not WeeklyRewardsFrame then
+            if not IsAddOnLoaded("Blizzard_WeeklyRewards") then
                 LoadAddOn("Blizzard_WeeklyRewards")
             end
             OpenWR()
         end
     end)
-    ExpansionLandingPageMinimapButton:SetScript('OnEnter',function(self)
+    --hooksecurefunc(DragonridingPanelSkillsButtonMixin, 'OnClick', function(self, d)--显示,飞龙技能
+    frame:SetScript('OnEnter',function(self)--Minimap.lua
         self:SetAlpha(1)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
+        e.tips:SetText(self.title, 1, 1, 1);
+	    e.tips:AddLine(self.description, nil, nil, nil, true);
+        e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinse and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , e.Icon.right)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinse and '设置选项' or OPTIONS, e.Icon.mid)
+        e.tips:AddDoubleLine(e.onlyChinse and '缩放' or UI_SCALE, Save.expansionSacle..' Alt+'..e.Icon.mid)
+        e.tips:AddDoubleLine(e.onlyChinse and '透明度' or CHANGE_OPACITY, Save.expansionSacle..' Ctrl+'..e.Icon.mid)
         e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
     end)
-    ExpansionLandingPageMinimapButton:SetScript('OnLeave', function(self)
+    frame:SetScript('OnLeave', function(self)
         e.tips:Hide()
-        self:SetAlpha(0.3)
+        if Save.expansionAlpha and Save.expansionAlpha~=1 then
+            self:SetAlpha(Save.expansionAlpha)
+        end
     end)
-
+    frame:SetScript('OnMouseWheel', function(self, d)
+        if not IsModifierKeyDown() then--打开, 插件, 选项
+            InterfaceOptionsFrame_OpenToCategory(id)
+        elseif IsAltKeyDown() then--缩放
+            local n= Save.expansionSacle or 1
+            if d==1 then
+                n= n+0.1
+            elseif d==-1 then
+                n= n-0.1
+            end
+            n= n>2 and 2 or n<0.3 and 0.3 or n
+            self:SetScale(n)
+            Save.expansionSacle=n
+            print(id, addName, e.onlyChinse and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..n)
+        elseif IsControlKeyDown() then--透明度
+            local n= Save.expansionAlpha or 1
+            if d==1 then
+                n= n+0.1
+            elseif d==-1 then
+                n= n-0.1
+            end
+            n= n>1 and 1 or n<0.3 and 0.3 or n
+            self:SetAlpha(n)
+            Save.expansionAlpha=n
+            print(id, addName, e.onlyChinse and '透明度' or CHANGE_OPACITY, '|cnGREEN_FONT_COLOR:'..n)
+        end
+    end)
+    if Save.expansionSacle and Save.expansionSacle~=1 then
+        frame:SetScale(Save.expansionSacle)
+    end
     C_Timer.After(8, function()--盟约图标停止闪烁
-        ExpansionLandingPageMinimapButton.MinimapLoopPulseAnim:Stop()
-        ExpansionLandingPageMinimapButton:SetAlpha(0.3)
+        frame.MinimapLoopPulseAnim:Stop()
+        if Save.expansionAlpha and Save.expansionAlpha~=1 then
+            frame:SetAlpha(Save.expansionAlpha)
+        end
     end)
 end
 
@@ -341,7 +391,7 @@ local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
         panel.vigentteButton:SetScript('OnMouseDown', function(self, d)
             local key= IsModifierKeyDown()
             if d=='LeftButton' and not key then
-                Save.vigentteButtonShowText= not Save.vigentteButtonShowText and true or nil
+                Save.vigentteButtonShowText= not Save.vigentteButtonShowText and true or false
                 if Save.vigentteButtonShowText then
                     self:SetNormalTexture(0)
                 else
@@ -533,10 +583,7 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("ZONE_CHANGED_NEW_AREA")
-panel:RegisterEvent('ZONE_CHANGED')
-panel:RegisterEvent("PLAYER_ENTERING_WORLD")
-panel:RegisterEvent('MINIMAP_UPDATE_ZOOM')
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if  arg1==id then
@@ -548,22 +595,24 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Save.disabled = not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需求重新加载' or REQUIRES_RELOAD)
              end)
-             sel:SetScript('OnEnter', function(self2)
+             --[[sel:SetScript('OnEnter', function(self2)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(id, addName)
                 e.tips:AddDoubleLine(UI_SCALE, Save.scale or 1)
                 e.tips:Show()
             end)
-            sel:SetScript('OnLeave', function() e.tips:Hide() end)
+            sel:SetScript('OnLeave', function() e.tips:Hide() end)]]
 
-            if Save.disabled then
-                panel:UnregisterAllEvents()
-            else
+            if not Save.disabled then
+                panel:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+                panel:RegisterEvent('ZONE_CHANGED')
+                panel:RegisterEvent("PLAYER_ENTERING_WORLD")
+                panel:RegisterEvent('MINIMAP_UPDATE_ZOOM')
                 Init()
-                panel:UnregisterEvent('ADDON_LOADED')
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
+            panel:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event == "PLAYER_LOGOUT" then
