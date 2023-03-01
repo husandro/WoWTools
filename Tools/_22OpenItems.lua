@@ -11,7 +11,7 @@ local Save={
         [201783]=1,
         [201779]=1,
         
-        [200289]=1,
+        --[200289]=1,
         [200288]=1,
         [200287]=1,
         [200286]=1,
@@ -180,6 +180,17 @@ local function getItems()--取得背包物品信息
                             setAtt(bag, slot, info.iconFileID, info.itemID)
                             return
                         end
+
+                    --[[elseif classID==0 and subclassID==8 and GetItemSpell(info.hyperlink) then--声望
+                        --e.GetTooltipData= function(colorRed, text, hyperLink, bag, guidBank, merchant, buyBack, inventory, text2, text3)--物品提示，信息
+                        --QUEST_REPUTATION_REWARD_TOOLTIP = "在%2$s中的声望提高%1$d点";
+                        local reuptationText=QUEST_REPUTATION_REWARD_TOOLTIP:gsub('%%d', '%(%.%+)')
+                        reuptationText= reuptationText:gsub('%.','%%.')
+                        local find=e.GetTooltipData(nil, reuptationText, info.hyperlink, {bag=bag, slot=slot})
+                        print(info.hyperlink, find)
+                        if find then
+                            print(info.hyperlink)
+                        end]]
                     end
                 end
             end
