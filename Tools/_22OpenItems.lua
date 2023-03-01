@@ -195,6 +195,7 @@ local function getItems()--取得背包物品信息
                             return
                         elseif C_Item.IsItemSpecificToPlayerClass(info.hyperlink) then
                             setAtt(bag, slot, info.iconFileID, info.itemID)
+                            return
                         end
                     end
                 end
