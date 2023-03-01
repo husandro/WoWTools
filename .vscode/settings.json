@@ -1851,7 +1851,10 @@
         "WeeklyRewards_ShowUI",
         "WeeklyRewardActivityItemMixin",
         "WeeklyRewardConfirmSelectionMixin",
-        "ExtractColorValueFromHex"
+        "MATERIAL_TEXT_COLOR_TABLE",
+        "MATERIAL_TITLETEXT_COLOR_TABLE",
+        "COVENANT_COLORS",
+        "PLAYER_FACTION_COLORS"
     ],
     "Lua.diagnostics.disable": [
     ]

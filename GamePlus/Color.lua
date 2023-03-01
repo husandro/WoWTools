@@ -70,7 +70,7 @@ local function Init(self)
 		end)
 		texture:SetScript('OnEnter', function(self2)
 			if self2.tooltip then
-				e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+				e.tips:SetOwner(self, "ANCHOR_RIGHT")
 				e.tips:ClearLines()
 				e.tips:AddLine(self2.tooltip)
 				e.tips:Show()
@@ -87,8 +87,7 @@ local function Init(self)
 
 
 	size, x, y, n= 22, 0, -15, 1
-	--local classes = {"HUNTER", "WARLOCK", "PRIEST", "PALADIN", "MAGE", "ROGUE", "DRUID", "SHAMAN", "WARRIOR", "DEATHKNIGHT", "MONK", "DEMONHUNTER", "EVOKER"}
-	for className, col in pairs(RAID_CLASS_COLORS) do
+	for className, col in pairs(RAID_CLASS_COLORS) do--职业 ColorUtil.lua
 		local texture= create_Texture(col.r, col.g, col.b, col.a, e.Class(nil, className, true))
 		texture:SetPoint('TOPLEFT', self, 'TOPRIGHT', x, y)
 		local hex= col:GenerateHexColor()
@@ -102,32 +101,75 @@ local function Init(self)
 		end
 		n=n+1
 	end
-	--[[
-	local classes = {"HUNTER", "WARLOCK", "PRIEST", "PALADIN", "MAGE", "ROGUE", "DRUID", "SHAMAN", "WARRIOR", "DEATHKNIGHT", "MONK", "DEMONHUNTER", "EVOKER"}
-	for _, className in pairs(classes) do--职业颜色, ColorUtil.lua
-		local col= C_ClassColor.GetClassColor(className)
-		local texture= create_Texture(col.r, col.g, col.b, col.a, e.Class(nil, className, true))
-		texture:SetPoint('TOPLEFT', self, 'TOPRIGHT', x, y)
-		local hex= col:GenerateHexColor()
-		texture.tooltip= '|c'..hex..'RAID_CLASS_COLORS["'..className..'"]'
-		if n==7 then
-			n=0
-			x= x+ size+2
-			y= -15
-		else
-			y= y- size-2
-		end
-		n=n+1
-	end
-]]
-	x= x+ size+2
-	y= -15
-	size=16
+
+	size, x, y, n= 16, x+size+2, -15, 0
 	for index, col in pairs(ITEM_QUALITY_COLORS) do--物品 UIParent.lua
 		local texture= create_Texture(col.r, col.g, col.b, col.a)
 		texture:SetPoint('TOPLEFT', self, 'TOPRIGHT', x, y)
 		texture.tooltip= col.hex.._G["ITEM_QUALITY" .. index.. "_DESC"]..'\nITEM_QUALITY' ..index.. '_DESC'
-		y= y- size-2
+		if n==10 then
+			n=0
+			x= x+ size+2
+			y= -15
+		else
+			y= y- size-2
+		end
+		n=n+1
+	end
+	n=n+1
+	for name, col in pairs(MATERIAL_TEXT_COLOR_TABLE) do--SharedColorConstants.lua
+		local texture= create_Texture(col.r, col.g, col.b, col.a)
+		texture:SetPoint('TOPLEFT', self, 'TOPRIGHT', x, y)
+		texture.tooltip= 'MATERIAL_TEXT_COLOR_TABLE'..'["'..name..'"]'
+		if n==10 then
+			n=0
+			x= x+ size+2
+			y= -15
+		else
+			y= y- size-2
+		end
+		n=n+1
+	end
+	for name, col in pairs(MATERIAL_TITLETEXT_COLOR_TABLE) do--SharedColorConstants.lua
+		local texture= create_Texture(col.r, col.g, col.b, col.a)
+		texture:SetPoint('TOPLEFT', self, 'TOPRIGHT', x, y)
+		texture.tooltip= 'MATERIAL_TITLETEXT_COLOR_TABLE'..'["'..name..'"]'
+		if n==10 then
+			n=0
+			x= x+ size+2
+			y= -15
+		else
+			y= y- size-2
+		end
+		n=n+1
+	end
+	for name, col in pairs(COVENANT_COLORS) do--SharedColorConstants.lua
+		if type(name)~='number' then
+			local texture= create_Texture(col.r, col.g, col.b, col.a)
+			texture:SetPoint('TOPLEFT', self, 'TOPRIGHT', x, y)
+			texture.tooltip= 'COVENANT_COLORS'..'["'..name..'"]'
+			if n==10 then
+				n=0
+				x= x+ size+2
+				y= -15
+			else
+				y= y- size-2
+			end
+			n=n+1
+		end
+	end
+	for name, col in pairs(PLAYER_FACTION_COLORS) do--SharedColorConstants.lua
+		local texture= create_Texture(col.r, col.g, col.b, col.a)
+		texture:SetPoint('TOPLEFT', self, 'TOPRIGHT', x, y)
+		texture.tooltip= 'PLAYER_FACTION_COLORS'..'['..name..']'
+		if n==10 then
+			n=0
+			x= x+ size+2
+			y= -15
+		else
+			y= y- size-2
+		end
+		n=n+1
 	end
 
 	size, x, y, n= 16, 2, 8, 1
@@ -237,7 +279,6 @@ local function Init(self)
 
 	self.alphaText=e.Cstr(self, 20)--透明值，提示
 	self.alphaText:SetPoint('LEFT', OpacitySliderFrame, 'RIGHT', 5,0)
-	
 
 	size= 18
 	local restColor= create_Texture(e.Player.r, e.Player.g, e.Player.b, 1)--记录，打开时的颜色， 和历史
@@ -248,12 +289,12 @@ local function Init(self)
 		self2.r, self2.g, self2.b, self2.a= r, g, b, a
 
 		size, x, y, n= 16, 0, -15, 1
-		for index=1, #Save.color do
-			local texture= self2[index]
-			local col= Save.color[index]
-			if not self2[index] then
+		for i=1, #Save.color do
+			local texture= self2[i]
+			local col= Save.color[i]
+			if not self2[i] then
 				texture= create_Texture(col.r, col.g, col.b, 1)--记录，打开时的颜色， 和历史
-				self2[index]= texture
+				self2[i]= texture
 				texture:SetPoint('TOPRIGHT', self, 'TOPLEFT', x, y)
 			end
 			texture.r, texture.g, texture.b, texture.a= col.r, col.g, col.b, col.a
