@@ -1855,7 +1855,8 @@
         "MATERIAL_TITLETEXT_COLOR_TABLE",
         "COVENANT_COLORS",
         "PLAYER_FACTION_COLORS",
-        "QUEST_REPUTATION_REWARD_TOOLTIP"
+        "QUEST_REPUTATION_REWARD_TOOLTIP",
+        "ITEM_SPELL_TRIGGER_ONUSE"
     ],
     "Lua.diagnostics.disable": [
     ]

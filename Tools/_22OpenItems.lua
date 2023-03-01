@@ -6,7 +6,7 @@ local Save={
         [201791]=1,--龙类驯服手册》
         [198969]=1,--守护者的印记,  研究以使你的巨龙群岛工程学知识提高1点。
 
-        [198790]=1,--10.0 加，声望物品
+        --[[[198790]=1,--10.0 加，声望物品
         [201781]=1,
         [201783]=1,
         [201779]=1,
@@ -20,7 +20,7 @@ local Save={
         [201921]=1,
         [201922]=1,
         [201923]=1,
-        [201924]=1,
+        [201924]=1,]]
         --[190315]=10,--[活力之土]
         --[190328]=10,--[活力之霜]
         --[198326]=10,--[活力之气]
@@ -36,9 +36,16 @@ local Save={
         [191294]=true,--小型探险锹
         [202087]=true,--匠械移除设备
         [128353]=true,--海军上将的罗盘
+        [86143]=true,--pet
     },
-    pet=true, open=true, toy=true, mount=true, mago=true, ski=true, alt=true,
-    noItemHide=not e.Player.husandro,
+    pet=true,
+    open=true,
+    toy=true,
+    mount=true,
+    mago=true,
+    ski=true,
+    alt=true,
+    noItemHide= not e.Player.husandro,
 }
 local Combat, Bag, Opening= nil,{},nil
 local panel= CreateFrame("Frame")
@@ -175,22 +182,20 @@ local function getItems()--取得背包物品信息
                             setAtt(bag, slot, info.iconFileID, info.itemID)
                             return
                         end
+
                     elseif C_ToyBox.GetToyInfo(info.itemID) then
                         if Save.toy and not PlayerHasToy(info.itemID) then--玩具 
                             setAtt(bag, slot, info.iconFileID, info.itemID)
                             return
                         end
 
-                    --[[elseif classID==0 and subclassID==8 and GetItemSpell(info.hyperlink) then--声望
-                        --e.GetTooltipData= function(colorRed, text, hyperLink, bag, guidBank, merchant, buyBack, inventory, text2, text3)--物品提示，信息
-                        --QUEST_REPUTATION_REWARD_TOOLTIP = "在%2$s中的声望提高%1$d点";
-                        local reuptationText=QUEST_REPUTATION_REWARD_TOOLTIP:gsub('%%d', '%(%.%+)')
-                        reuptationText= reuptationText:gsub('%.','%%.')
-                        local find=e.GetTooltipData(nil, reuptationText, info.hyperlink, {bag=bag, slot=slot})
-                        print(info.hyperlink, find)
-                        if find then
-                            print(info.hyperlink)
-                        end]]
+                    elseif Save.alt then
+                        if classID==0 and subclassID==8  then--声望，物品
+                            setAtt(bag, slot, info.iconFileID, info.itemID)
+                            return
+                        elseif C_Item.IsItemSpecificToPlayerClass(info.hyperlink) then
+                            setAtt(bag, slot, info.iconFileID, info.itemID)
+                        end
                     end
                 end
             end

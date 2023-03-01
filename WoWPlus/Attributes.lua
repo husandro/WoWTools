@@ -128,12 +128,12 @@ local function set_Text_Value(frame, value, value2)
         text= ''
     else
         if frame.useNumber then
-            text= e.MK(frame.value, frame.bit)..( value2 and '/'..e.MK(value2, frame.bit) or '')
+            text= e.MK(value, frame.bit)..( value2 and '/'..e.MK(value2, frame.bit) or '')
         else
             if value2 then
-                text= format('%.'..frame.bit..'f/%.'..frame.bit..'f%%', frame.value, value2)
+                text= format('%.'..frame.bit..'f/%.'..frame.bit..'f%%', value, value2)
             else
-                text= format('%.'..frame.bit..'f%%', frame.value)
+                text= format('%.'..frame.bit..'f%%', value)
             end
         end
         if frame.value< value then
