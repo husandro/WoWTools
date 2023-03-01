@@ -174,7 +174,7 @@ e.Player={
     level= UnitLevel('player'),--UnitEffectiveLevel('player')
     husandro= select(2, BNGetInfo()) == '古月剑龙#5972' or select(2, BNGetInfo())=='SandroChina#2690' or UnitName('player')=='Fuocco',
     fanction= UnitFactionGroup('player'),--玩家, 派系
-    --useClassColor,--使用职业颜色 SystemInfo.lua
+    --useClassColor,--使用职业颜色 Textures.lua
 }
 for k, v in pairs(GetAutoCompleteRealms()) do
     e.Player.servers[v]=k

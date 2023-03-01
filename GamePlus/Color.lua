@@ -71,6 +71,15 @@ local function Init(self)
 		texture:SetScript('OnMouseDown', function(self2)
 			set_Edit_Text(self2.r, self2.g, self2.b, self2.a, self2.textCode)
 		end)
+		texture:SetScript('OnEnter', function(self2)
+			if self2.tooltip then
+				e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+				e.tips:ClearLines()
+				e.tips:AddLine(self2.tooltip)
+				e.tips:Show()
+			end
+		end)
+		texture:SetScript('OnLeave', function() e.tips:Hide() end)
 		if atlas then
 			texture:SetAtlas(atlas)
 		else
@@ -81,11 +90,12 @@ local function Init(self)
 
 
 	size, x, y, n= 22, 0, -15, 1
-	local classes = {"HUNTER", "WARLOCK", "PRIEST", "PALADIN", "MAGE", "ROGUE", "DRUID", "SHAMAN", "WARRIOR", "DEATHKNIGHT", "MONK", "DEMONHUNTER", "EVOKER"}
-	for _, className in pairs(classes) do--ColorUtil.lua
-		local col= C_ClassColor.GetClassColor(className)
+	--local classes = {"HUNTER", "WARLOCK", "PRIEST", "PALADIN", "MAGE", "ROGUE", "DRUID", "SHAMAN", "WARRIOR", "DEATHKNIGHT", "MONK", "DEMONHUNTER", "EVOKER"}
+	for className, col in pairs(RAID_CLASS_COLORS) do
 		local texture= create_Texture(col.r, col.g, col.b, col.a, e.Class(nil, className, true))
 		texture:SetPoint('TOPLEFT', self, 'TOPRIGHT', x, y)
+		local hex= col:GenerateHexColor()
+		texture.tooltip= '|c'..hex..'RAID_CLASS_COLORS["'..className..'"]'
 		if n==7 then
 			n=0
 			x= x+ size+2
@@ -94,6 +104,33 @@ local function Init(self)
 			y= y- size-2
 		end
 		n=n+1
+	end
+	--[[
+	local classes = {"HUNTER", "WARLOCK", "PRIEST", "PALADIN", "MAGE", "ROGUE", "DRUID", "SHAMAN", "WARRIOR", "DEATHKNIGHT", "MONK", "DEMONHUNTER", "EVOKER"}
+	for _, className in pairs(classes) do--职业颜色, ColorUtil.lua
+		local col= C_ClassColor.GetClassColor(className)
+		local texture= create_Texture(col.r, col.g, col.b, col.a, e.Class(nil, className, true))
+		texture:SetPoint('TOPLEFT', self, 'TOPRIGHT', x, y)
+		local hex= col:GenerateHexColor()
+		texture.tooltip= '|c'..hex..'RAID_CLASS_COLORS["'..className..'"]'
+		if n==7 then
+			n=0
+			x= x+ size+2
+			y= -15
+		else
+			y= y- size-2
+		end
+		n=n+1
+	end
+]]
+	x= x+ size+2
+	y= -15
+	size=16
+	for index, col in pairs(ITEM_QUALITY_COLORS) do--物品 UIParent.lua
+		local texture= create_Texture(col.r, col.g, col.b, col.a)
+		texture:SetPoint('TOPLEFT', self, 'TOPRIGHT', x, y)
+		texture.tooltip= col.hex.._G["ITEM_QUALITY" .. index.. "_DESC"]..'\nITEM_QUALITY' ..index.. '_DESC'
+		y= y- size-2
 	end
 
 	size, x, y, n= 16, 2, 8, 1
@@ -258,7 +295,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
             end)
-			panel.check.text:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
+			--panel.check.text:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
 			panel.check.text:EnableMouse(true)
 			panel.check.text:SetScript('OnMouseDown', function()
                 e.ShowColorPicker(e.Player.r, e.Player.g, e.Player.b, 1, function()

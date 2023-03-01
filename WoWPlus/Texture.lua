@@ -11,7 +11,9 @@ local panel=CreateFrame("Frame")
 
 local function hideTexture(self)
     if self then
-        self:SetTexture(0)
+        if self:GetObjectType()=='Texture' then
+            self:SetTexture(0)
+        end
         self:SetShown(false)
     end
 end
@@ -20,7 +22,7 @@ local function setAlpha(self, notAlpha)
         if not (Save.disabledAlpha or notAlpha)  then
             self:SetAlpha(Save.alpha)
         end
-        if not Save.disabledColor then
+        if not Save.disabledColor and self:GetObjectType()=='Texture' then
             self:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
         end
     end
