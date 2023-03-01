@@ -94,25 +94,25 @@ local function Init(self)
 		texture.tooltip= '|c'..hex..'RAID_CLASS_COLORS["'..className..'"]'
 		if n==7 then
 			n=0
-			x= x+ size+2
+			x= x+ size
 			y= -15
 		else
-			y= y- size-2
+			y= y- size
 		end
 		n=n+1
 	end
 
-	size, x, y, n= 16, x+size+2, -15, 0
+	size, x, y, n= 16, x+size, -15, 0
 	for index, col in pairs(ITEM_QUALITY_COLORS) do--物品 UIParent.lua
 		local texture= create_Texture(col.r, col.g, col.b, col.a)
 		texture:SetPoint('TOPLEFT', self, 'TOPRIGHT', x, y)
 		texture.tooltip= col.hex.._G["ITEM_QUALITY" .. index.. "_DESC"]..'\nITEM_QUALITY' ..index.. '_DESC'
 		if n==10 then
 			n=0
-			x= x+ size+2
+			x= x+ size
 			y= -15
 		else
-			y= y- size-2
+			y= y- size
 		end
 		n=n+1
 	end
@@ -123,10 +123,10 @@ local function Init(self)
 		texture.tooltip= 'MATERIAL_TEXT_COLOR_TABLE'..'["'..name..'"]'
 		if n==10 then
 			n=0
-			x= x+ size+2
+			x= x+ size
 			y= -15
 		else
-			y= y- size-2
+			y= y- size
 		end
 		n=n+1
 	end
@@ -136,10 +136,10 @@ local function Init(self)
 		texture.tooltip= 'MATERIAL_TITLETEXT_COLOR_TABLE'..'["'..name..'"]'
 		if n==10 then
 			n=0
-			x= x+ size+2
+			x= x+ size
 			y= -15
 		else
-			y= y- size-2
+			y= y- size
 		end
 		n=n+1
 	end
@@ -150,10 +150,10 @@ local function Init(self)
 			texture.tooltip= 'COVENANT_COLORS'..'["'..name..'"]'
 			if n==10 then
 				n=0
-				x= x+ size+2
+				x= x+ size
 				y= -15
 			else
-				y= y- size-2
+				y= y- size
 			end
 			n=n+1
 		end
@@ -164,10 +164,10 @@ local function Init(self)
 		texture.tooltip= 'PLAYER_FACTION_COLORS'..'['..name..']'
 		if n==10 then
 			n=0
-			x= x+ size+2
+			x= x+ size
 			y= -15
 		else
-			y= y- size-2
+			y= y- size
 		end
 		n=n+1
 	end
@@ -178,12 +178,12 @@ local function Init(self)
 		local texture= create_Texture(dbColor.color.r, dbColor.color.g, dbColor.color.b, dbColor.color.a)
 		texture.textCode= dbColor.baseTag
 		texture:SetPoint('BOTTOMLEFT', self, 'TOPLEFT', x, y)
-		if n==20 then
+		if n==22 then
 			n=0
-			y=y +size +2
+			y=y +size
 			x=2
 		else
-			x=x +size +2
+			x=x +size
 		end
 		n=n+1
 	end
@@ -277,7 +277,7 @@ local function Init(self)
 	cnText2:SetPoint('LEFT', self.cn2, 'RIGHT', 2,0)
 	cnText2:SetText(':')
 
-	self.alphaText=e.Cstr(self, 20)--透明值，提示
+	self.alphaText=e.Cstr(self, 16)--透明值，提示
 	self.alphaText:SetPoint('LEFT', OpacitySliderFrame, 'RIGHT', 5,0)
 
 	size= 18
@@ -302,10 +302,10 @@ local function Init(self)
 
 			if n==10 then
 				n=0
-				x= x- size-2
+				x= x- size
 				y= -15
 			else
-				y= y- size-2
+				y= y- size
 			end
 			n=n+1
 		end
