@@ -14,18 +14,15 @@ local RGB_to_HEX=function(r, g, b, a)
 	return format("%02x%02x%02x%02x", a*255, r*255, g*255, b*255)
 end
 
-local HEX_to_RGB=function(hex)--HEX转RGB
-	if hex then
-		hex= hex:gsub('|c', '')
-		hex= hex:gsub(' ','')
-		if strlen(hex)==8 then
-			local a, r, g, b= hex:match('(..)(..)(..)(..)')
-			if a and r and g and b then
-				a, r, g, b= tonumber("0x"..a), tonumber("0x"..r), tonumber("0x"..g), tonumber("0x"..b)
-				if a and r and g and b then
-					return r/255, g/255, b/255, a/255
-				end
-			end
+local function ExtractColorValueFromHex(str, index)
+	return tonumber(str:sub(index, index + 1), 16) / 255;
+end
+local HEX_to_RGB=function(hexColor)--HEX转RGB ColorUtil.lua
+	if hexColor then
+		hexColor= hexColor:gsub('|c', '')
+		hexColor= hexColor:gsub(' ','')
+		if #hexColor == 8 then
+			return ExtractColorValueFromHex(hexColor, 3), ExtractColorValueFromHex(hexColor, 5), ExtractColorValueFromHex(hexColor, 7), ExtractColorValueFromHex(hexColor, 1)
 		end
 	end
 end

@@ -9,6 +9,7 @@ RANGE_INDICATOR = "●"
 
 UIPanelWindows[]
 
+GetClassColoredTextForUnit(unit, text)
 FrameUtil.RegisterFrameForEvents(self, table);
 FrameUtil.UnregisterFrameForEvents(self, table);
 SetPortraitTexture(textureObject, unitToken [, disableMasking])

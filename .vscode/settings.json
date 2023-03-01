@@ -1850,7 +1850,8 @@
         "ColorPickerOkayButton",
         "WeeklyRewards_ShowUI",
         "WeeklyRewardActivityItemMixin",
-        "WeeklyRewardConfirmSelectionMixin"
+        "WeeklyRewardConfirmSelectionMixin",
+        "ExtractColorValueFromHex"
     ],
     "Lua.diagnostics.disable": [
     ]
