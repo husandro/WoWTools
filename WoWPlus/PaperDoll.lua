@@ -900,12 +900,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 local activities = C_WeeklyRewards.GetActivities();
                 for _, activityInfo in ipairs(activities) do
                     local frame = self2:GetActivityFrame(activityInfo.type, activityInfo.index);
-                    local itemFrame=frame.ItemFrame
-                    if itemFrame and itemFrame.displayedItemDBID then
-                        local hyperlink = C_WeeklyRewards.GetItemHyperlink(itemFrame.displayedItemDBID);
-		                if hyperlink then
-                            e.Set_Item_Stats(itemFrame, hyperlink, itemFrame.Icon)
-                        end
+                    local itemFrame= frame and frame.ItemFrame
+                    if itemFrame then
+                        e.Set_Item_Stats(itemFrame, itemFrame.displayedItemDBID and C_WeeklyRewards.GetItemHyperlink(itemFrame.displayedItemDBID), itemFrame.Icon)
                     end
                 end
             end)

@@ -27,11 +27,17 @@ local HEX_to_RGB=function(hexColor)--HEX转RGB ColorUtil.lua
 	end
 end
 
+local function get_Frame_color()--取得, frame, 颜色
+	local a= OpacitySliderFrame:IsShown() and OpacitySliderFrame:GetValue() or 1
+	local r, g, b = ColorPickerFrame:GetColorRGB()
+	return r, g, b, a
+end
+
 local timeElapsed=0
 local function set_Text(self, elapsed)
 	timeElapsed = timeElapsed + elapsed
 	if timeElapsed > 0.3 then
-		local a, r, g, b = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()
+		local r, g, b, a= get_Frame_color()
 		if ColorPickerFrame.rgb then
 			if not ColorPickerFrame.rgb:HasFocus() then
 				ColorPickerFrame.rgb:SetText(format('%.2f %.2f %.2f %.2f', r,g,b,a))
@@ -188,7 +194,7 @@ local function Init(self)
 		n=n+1
 	end
 
-	local w=350
+	local w=290
 	self.rgb= CreateFrame("EditBox", nil, self, 'InputBoxTemplate')-- 1 1 1 1
 	self.rgb:SetPoint("TOPLEFT", self, 'BOTTOMLEFT',10,0)
 	self.rgb:SetSize(w,20)
@@ -277,18 +283,18 @@ local function Init(self)
 	cnText2:SetPoint('LEFT', self.cn2, 'RIGHT', 2,0)
 	cnText2:SetText(':')
 
-	self.alphaText=e.Cstr(self, 16)--透明值，提示
+	self.alphaText=e.Cstr(OpacitySliderFrame, 16)--透明值，提示
 	self.alphaText:SetPoint('LEFT', OpacitySliderFrame, 'RIGHT', 5,0)
 
 	size= 18
 	local restColor= create_Texture(e.Player.r, e.Player.g, e.Player.b, 1)--记录，打开时的颜色， 和历史
 	restColor:SetPoint('TOP', ColorSwatch, 'BOTTOM', 0, -60)
 	restColor:SetScript('OnShow', function(self2)
-		local a, r, g, b = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()
+		local r, g, b, a= get_Frame_color()
 		self2:SetColorTexture(r, g, b, a)
 		self2.r, self2.g, self2.b, self2.a= r, g, b, a
 
-		size, x, y, n= 16, 0, -15, 1
+		size, x, y, n= 16, 0, -15, 0
 		for i=1, #Save.color do
 			local texture= self2[i]
 			local col= Save.color[i]
@@ -315,7 +321,7 @@ local function Init(self)
 		if #Save.color >=logNum then
 			table.remove(Save.color, 1)
 		end
-		local a, r, g, b = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()
+		local r, g, b, a= get_Frame_color()
 		table.insert(Save.color,{r=r, g=g, b=b, a=a})
 	end)
 end
