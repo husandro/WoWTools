@@ -168,17 +168,34 @@ local function set_Text_Value(frame, value, value2)
     if frame.textValue and frame.textValue:IsShown() then
         if frame.value== value or value==0 then
             frame.textValue:SetText('')
-        elseif frame.value< value then
-            if frame.useNumber then
-                frame.textValue:SetText('|A:UI-HUD-Minimap-Zoom-In:0:0|a'..e.MK(value-frame.value, frame.bit))
-            else
-                frame.textValue:SetFormattedText('|A:UI-HUD-Minimap-Zoom-In:0:0|a%.0f', value-frame.value)-- +
-            end
         else
-            if frame.useNumber then
-                frame.textValue:SetText('|A:UI-HUD-Minimap-Zoom-Out:0:0|a'..e.MK(frame.value-value, frame.bit))
+            if frame.value< value then
+                if frame.useNumber then
+                    frame.textValue:SetText('|A:UI-HUD-Minimap-Zoom-In:0:0|a'..e.MK(value-frame.value, frame.bit))
+                else
+                    frame.textValue:SetFormattedText('|A:UI-HUD-Minimap-Zoom-In:0:0|a%.0f', value-frame.value)-- +
+                end
             else
-                frame.textValue:SetFormattedText('|A:UI-HUD-Minimap-Zoom-Out:0:0|a%.0f', frame.value-value)-- -
+                if frame.useNumber then
+                    frame.textValue:SetText('|A:UI-HUD-Minimap-Zoom-Out:0:0|a'..e.MK(frame.value-value, frame.bit))
+                else
+                    frame.textValue:SetFormattedText('|A:UI-HUD-Minimap-Zoom-Out:0:0|a%.0f', frame.value-value)-- -
+                end
+            end
+            if frame.bar and frame.bar:IsShown() then--barToLeft
+                local value3= frame.value>value and value or frame.value
+                local barX
+                if frame.useNumber then
+                    barX= frame.bar:GetWidth()*(value3/frame.bar.maxValue)
+                else
+                    barX= frame.bar:GetWidth()*(value3/100)
+                end
+                frame.textValue:ClearAllPoints()
+                if Save.barToLeft then
+                    frame.textValue:SetPoint('RIGHT', frame.bar, 'LEFT', -(barX), 0)
+                else
+                    frame.textValue:SetPoint('LEFT', frame.bar, 'RIGHT', barX, 0)
+                end
             end
         end
     end
@@ -820,12 +837,17 @@ local function set_Frame(frame)--设置, frame
     end
 
     if frame.textValue then--数值 + -
-        frame.textValue:SetTextColor(frame.r,frame.g,frame.b,frame.a)
         frame.textValue:ClearAllPoints()
-        if Save.toLeft then
-            frame.textValue:SetPoint('RIGHT', frame.text, -30-(frame.bit*6), 0)
+        if frame.bar and frame.bar:IsShown() then
+            frame.textValue:SetParent(frame.bar)
         else
-            frame.textValue:SetPoint('LEFT', frame.text, 30+(frame.bit*6), 0)
+            frame.textValue:SetParent(frame)
+            frame.textValue:SetTextColor(frame.r,frame.g,frame.b,frame.a)
+            if Save.toLeft then
+                frame.textValue:SetPoint('RIGHT', frame.text, -30-(frame.bit*6), 0)
+            else
+                frame.textValue:SetPoint('LEFT', frame.text, 30+(frame.bit*6), 0)
+            end
         end
         frame.textValue:SetShown(Save.setMaxMinValue)
     end
