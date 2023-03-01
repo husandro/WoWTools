@@ -1846,7 +1846,8 @@
         "OPTIONS",
         "MajorFactionRenownFrame",
         "ColorSelectFrame",
-        "ColorSwatch"
+        "ColorSwatch",
+        "ColorPickerOkayButton"
     ],
     "Lua.diagnostics.disable": [
     ]

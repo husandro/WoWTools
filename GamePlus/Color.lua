@@ -1,9 +1,10 @@
 local id, e= ...
 local Save= {
-	color={}
+		color={},--保存，历史记录
 }
 local addName= COLOR_PICKER..' Plus'--"颜色选择器";
 local panel= CreateFrame("Frame")--ColorPickerFrame.xml
+local logNum= 30--记录数量
 
 local RGB_to_HEX=function(r, g, b, a)
 	r = r <= 1 and r >= 0 and r or 0
@@ -13,7 +14,7 @@ local RGB_to_HEX=function(r, g, b, a)
 	return format("%02x%02x%02x%02x", a*255, r*255, g*255, b*255)
 end
 
- local HEX_to_RGB=function(hex)--HEX转RGB
+local HEX_to_RGB=function(hex)--HEX转RGB
 	if hex then
 		hex= hex:gsub('|c', '')
 		hex= hex:gsub(' ','')
@@ -53,7 +54,7 @@ end
 
 local function set_Edit_Text(r, g, b, a, textCode)
 	ColorPickerFrame:SetColorRGB(r, g, b)
-	OpacitySliderFrame:SetValue(a);
+	OpacitySliderFrame:SetValue(a or 1);
 	ColorPickerFrame.cn:SetText(textCode and textCode..'_CODE' or '')
 	ColorPickerFrame.cn2:SetText(textCode and '|cn'..textCode or '')
 end
@@ -79,7 +80,7 @@ local function Init(self)
 	end
 
 
-	size, x, y, n= 28, 0, 0, 1
+	size, x, y, n= 22, 0, -15, 1
 	local classes = {"HUNTER", "WARLOCK", "PRIEST", "PALADIN", "MAGE", "ROGUE", "DRUID", "SHAMAN", "WARRIOR", "DEATHKNIGHT", "MONK", "DEMONHUNTER", "EVOKER"}
 	for _, className in pairs(classes) do--ColorUtil.lua
 		local col= C_ClassColor.GetClassColor(className)
@@ -88,14 +89,14 @@ local function Init(self)
 		if n==7 then
 			n=0
 			x= x+ size+2
-			y= 0
+			y= -15
 		else
 			y= y- size-2
 		end
 		n=n+1
 	end
 
-	size, x, y, n= 22, -50, 8, 1
+	size, x, y, n= 16, 2, 8, 1
 	local DBColors = C_UIColor.GetColors();--Color.lua
 	for _, dbColor in ipairs(DBColors) do
 		local texture= create_Texture(dbColor.color.r, dbColor.color.g, dbColor.color.b, dbColor.color.a)
@@ -104,7 +105,7 @@ local function Init(self)
 		if n==20 then
 			n=0
 			y=y +size +2
-			x=-50
+			x=2
 		else
 			x=x +size +2
 		end
@@ -130,7 +131,7 @@ local function Init(self)
 		end
 	end)
 
-	self.rgb2= CreateFrame("EditBox", nil, self, 'InputBoxTemplate')
+	self.rgb2= CreateFrame("EditBox", nil, self, 'InputBoxTemplate')--r=1, b=1, g=1, a=1
 	self.rgb2:SetPoint("TOPLEFT", self.rgb, 'BOTTOMLEFT',0,-2)
 	self.rgb2:SetSize(w,20)
 	self.rgb2:SetAutoFocus(false)
@@ -150,7 +151,7 @@ local function Init(self)
 		end
 	end)
 
-	self.hex= CreateFrame("EditBox", nil, self, 'InputBoxTemplate')
+	self.hex= CreateFrame("EditBox", nil, self, 'InputBoxTemplate')--|cff808080
 	self.hex:SetPoint("TOPLEFT", self.rgb2, 'BOTTOMLEFT',0,-2)
 	self.hex:SetSize(w,20)
 	self.hex:SetAutoFocus(false)
@@ -164,7 +165,7 @@ local function Init(self)
 			self2:ClearFocus()
 		end
 	end)
-	local hexText=e.Cstr(self)
+	local hexText=e.Cstr(self)--提示
 	hexText:SetPoint('RIGHT', self.hex, 'LEFT',-2,0)
 	hexText:SetText('|c')
 
@@ -187,30 +188,61 @@ local function Init(self)
 		end
 	end)
 
-	self.cn= CreateFrame("EditBox", nil, self, 'InputBoxTemplate')
+	self.cn= CreateFrame("EditBox", nil, self, 'InputBoxTemplate')--格式 RED_FONT_COLOR
 	self.cn:SetPoint("TOPLEFT", self.hex, 'BOTTOMLEFT',0,-2)
 	self.cn:SetSize(w,20)
 	self.cn:SetAutoFocus(false)
 
-	self.cn2= CreateFrame("EditBox", nil, self, 'InputBoxTemplate')
+	self.cn2= CreateFrame("EditBox", nil, self, 'InputBoxTemplate')--格式 '|cnGREEN_FONT_COLOR:'
 	self.cn2:SetPoint("TOPLEFT", self.cn, 'BOTTOMLEFT',0,-2)
 	self.cn2:SetSize(w,20)
 	self.cn2:SetAutoFocus(false)
-	local cnText2=e.Cstr(self)
+	local cnText2=e.Cstr(self)--提示
 	cnText2:SetPoint('LEFT', self.cn2, 'RIGHT', 2,0)
 	cnText2:SetText(':')
 
-	size= 22
-	local restColor= create_Texture(e.Player.r, e.Player.g, e.Player.b, 1)
+	self.alphaText=e.Cstr(self, 20)--透明值，提示
+	self.alphaText:SetPoint('LEFT', OpacitySliderFrame, 'RIGHT', 5,0)
+	
+
+	size= 18
+	local restColor= create_Texture(e.Player.r, e.Player.g, e.Player.b, 1)--记录，打开时的颜色， 和历史
 	restColor:SetPoint('TOP', ColorSwatch, 'BOTTOM', 0, -60)
 	restColor:SetScript('OnShow', function(self2)
 		local a, r, g, b = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()
 		self2:SetColorTexture(r, g, b, a)
 		self2.r, self2.g, self2.b, self2.a= r, g, b, a
+
+		size, x, y, n= 16, 0, -15, 1
+		for index=1, #Save.color do
+			local texture= self2[index]
+			local col= Save.color[index]
+			if not self2[index] then
+				texture= create_Texture(col.r, col.g, col.b, 1)--记录，打开时的颜色， 和历史
+				self2[index]= texture
+				texture:SetPoint('TOPRIGHT', self, 'TOPLEFT', x, y)
+			end
+			texture.r, texture.g, texture.b, texture.a= col.r, col.g, col.b, col.a
+			texture:SetColorTexture(col.r, col.g, col.b ,1)
+
+			if n==10 then
+				n=0
+				x= x- size-2
+				y= -15
+			else
+				y= y- size-2
+			end
+			n=n+1
+		end
 	end)
 
-	self.alphaText=e.Cstr(self, 20)
-	self.alphaText:SetPoint('LEFT', OpacitySliderFrame, 'RIGHT', 5,0)
+	ColorPickerOkayButton:SetScript('OnMouseDown', function()--记录，历史
+		if #Save.color >=logNum then
+			table.remove(Save.color, 1)
+		end
+		local a, r, g, b = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()
+		table.insert(Save.color,{r=r, g=g, b=b, a=a})
+	end)
 end
 
 panel:RegisterEvent('ADDON_LOADED')
@@ -218,6 +250,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
+			Save.color= Save.color or {}
 
             --添加控制面板        
             panel.check=e.CPanel((e.onlyChinse and '颜色选择器增强' or addName)..'|A:colorblind-colorwheel:0:0|a', not Save.disabled, true)
