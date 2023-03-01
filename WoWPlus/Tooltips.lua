@@ -643,7 +643,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                         line:Hide()
                     end
                 else
-                    if allNum==i and isSelf and e.WoWSave[e.Player.guid] and e.WoWSave[e.Player.guid].Keystone then--挑战分数
+                    --[[if allNum==i and isSelf and e.WoWSave[e.Player.guid] and e.WoWSave[e.Player.guid].Keystone then--挑战分数
                         local score= e.WoWSave[e.Player.guid].Keystone.score
                         local numAll= e.WoWSave[e.Player.guid].Keystone.all or 0
                         local weekNum= e.WoWSave[e.Player.guid].Keystone.weekNum or 0
@@ -660,7 +660,8 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                         end
                     else
                         line:Hide()
-                    end
+                    end]]
+                    line:Hide()
                 end
             end
         end

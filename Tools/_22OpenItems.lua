@@ -10,12 +10,17 @@ local Save={
         [201781]=1,
         [201783]=1,
         [201779]=1,
+        
         [200289]=1,
         [200288]=1,
         [200287]=1,
         [200286]=1,
         [200285]=1,
 
+        [201921]=1,
+        [201922]=1,
+        [201923]=1,
+        [201924]=1,
         --[190315]=10,--[活力之土]
         --[190328]=10,--[活力之霜]
         --[198326]=10,--[活力之气]
@@ -38,7 +43,7 @@ local Save={
 local Combat, Bag, Opening= nil,{},nil
 local panel= CreateFrame("Frame")
 local button
-
+--QUEST_REPUTATION_REWARD_TOOLTIP = "在%2$s中的声望提高%1$d点";
 local function setCooldown()--冷却条
     if button:IsShown() then
         if Bag.bag and Bag.slot then

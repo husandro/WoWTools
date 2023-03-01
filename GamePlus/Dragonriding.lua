@@ -50,7 +50,7 @@ end
 --####
 local function Init()
     panel.text= e.Cstr(panel, 16)
-    panel.text:SetPoint('BOTTOM', UIWidgetPowerBarContainerFrame, 'TOP',0, 4)
+    panel.text:SetPoint('BOTTOM', UIWidgetPowerBarContainerFrame, 'TOP',0, 12)
 
     panel.statusBar= CreateFrame('StatusBar', nil, panel)
     panel.statusBar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')

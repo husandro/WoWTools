@@ -17,12 +17,12 @@ local function hideTexture(self)
         self:SetShown(false)
     end
 end
-local function setAlpha(self, notAlpha)
+local function setAlpha(self, notAlpha, notColor)
     if self then
         if not (Save.disabledAlpha or notAlpha)  then
             self:SetAlpha(Save.alpha)
         end
-        if not Save.disabledColor and self:GetObjectType()=='Texture' then
+        if not Save.disabledColor and self:GetObjectType()=='Texture' and not notColor then
             self:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
         end
     end
@@ -385,7 +385,7 @@ local function Init_Set_AlphaAndColor()
     setAlpha(RaidFinderQueueFrameSelectionDropDownMiddle)
     setAlpha(RaidFinderQueueFrameSelectionDropDownLeft)
     setAlpha(RaidFinderQueueFrameSelectionDropDownRight)
-    setAlpha(RaidFinderFrameRoleBackground)
+    setAlpha(RaidFinderFrameRoleBackground, nil, true)
     setAlpha(RaidFinderFrameRoleInset.Bg)
 
     hideTexture(PVEFrameBg)--左边
