@@ -251,7 +251,15 @@ local function set_HideTexture_Event(arg1)
     if Save.disabledTexture then
         return
     end
+
     if arg1=='Blizzard_WeeklyRewards' then--周奖励提示
+        hooksecurefunc(WeeklyRewardsFrame,'UpdateOverlay', function(self)--Blizzard_WeeklyRewards.lua
+            if self.Overlay and self.Overlay:IsShown() then--未提取,提示
+                self.Overlay:SetScale(0.4)
+                self.Overlay:ClearAllPoints()
+                self.Overlay:SetPoint('TOPLEFT', 80,-60)
+            end
+        end)
         if WeeklyRewardExpirationWarningDialog and WeeklyRewardExpirationWarningDialog:IsShown() then
             if WeeklyRewardExpirationWarningDialog.Description then
                 print(id, addName, '|cffff00ff'..WeeklyRewardExpirationWarningDialog.Description:GetText())
@@ -530,7 +538,7 @@ local function Init_Set_AlphaAndColor()
     hideTexture(FriendsFrameInset.Bg)
     hideTexture(FriendsListFrame.ScrollBar.Backplate)
     hideTexture(IgnoreListFrame.ScrollBar.Backplate)
-    if RecruitAFriendFrame and RecruitAFriendFrame.RecruitList then 
+    if RecruitAFriendFrame and RecruitAFriendFrame.RecruitList then
         hideTexture(RecruitAFriendFrame.RecruitList.ScrollBar.Backplate)
         setAlpha(RecruitAFriendFrame.RecruitList.ScrollFrameInset.Bg)
     end

@@ -322,6 +322,7 @@ local function setAddLoad(arg1)
 
     elseif arg1=='Blizzard_WeeklyRewards' then--'Blizzard_EventTrace' then--周奖励面板
         Move(WeeklyRewardsFrame, {})
+        Move(WeeklyRewardsFrame.Blackout, {frame=WeeklyRewardsFrame})
 
     elseif arg1=='Blizzard_ItemSocketingUI' then--镶嵌宝石，界面
         Move(ItemSocketingFrame,{})

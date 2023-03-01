@@ -728,7 +728,6 @@ e.GetSpellCooldown = function(spellID)--法术冷却
 end
 
 e.Cbtn2= function(name, parent, showTexture, rightClick)
-    --local button= CreateFrame("Button", name, (parent or UIParent), "SecureActionButtonTemplate")
     local button= CreateFrame("Button", name, parent or UIParent, "SecureActionButtonTemplate")
     local size=e.toolsFrame.size or 20
     button:SetSize(size,size)
@@ -770,7 +769,6 @@ e.Cbtn2= function(name, parent, showTexture, rightClick)
     return button
 end
 
---e.toolsFrame=CreateFrame('Frame', nil, UIParent)--TOOLS 框架
 e.toolsFrame=CreateFrame('Frame')--TOOLS 框架
 e.toolsFrame:SetSize(1,1)
 e.toolsFrame:SetShown(false)

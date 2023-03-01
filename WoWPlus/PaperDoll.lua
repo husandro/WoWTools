@@ -873,8 +873,6 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("EQUIPMENT_SWAP_FINISHED")
-panel:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -889,12 +887,28 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end)
 
             if not Save.disabled then
+                panel:RegisterEvent("EQUIPMENT_SWAP_FINISHED")
+                panel:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
                 Init()
-                panel:UnregisterEvent('ADDON_LOADED')
             else
-                panel:UnregisterAllEvents()
+                panel:UnregisterEvent('ADDON_LOADED')
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
+
+        elseif arg1=='Blizzard_WeeklyRewards' then--周奖励, 物品提示，信息
+            hooksecurefunc(WeeklyRewardsFrame, 'Refresh', function(self2)--Blizzard_WeeklyRewards.lua
+                local activities = C_WeeklyRewards.GetActivities();
+                for _, activityInfo in ipairs(activities) do
+                    local frame = self2:GetActivityFrame(activityInfo.type, activityInfo.index);
+                    local itemFrame=frame.ItemFrame
+                    if itemFrame and itemFrame.displayedItemDBID then
+                        local hyperlink = C_WeeklyRewards.GetItemHyperlink(itemFrame.displayedItemDBID);
+		                if hyperlink then
+                            e.Set_Item_Stats(itemFrame, hyperlink, itemFrame.Icon)
+                        end
+                    end
+                end
+            end)
         end
 
     elseif event == "PLAYER_LOGOUT" then
@@ -908,5 +922,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='UPDATE_INVENTORY_DURABILITY' then
         GetDurationTotale()--装备,总耐久度
+
+    
     end
 end)

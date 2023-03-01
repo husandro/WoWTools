@@ -1847,7 +1847,10 @@
         "MajorFactionRenownFrame",
         "ColorSelectFrame",
         "ColorSwatch",
-        "ColorPickerOkayButton"
+        "ColorPickerOkayButton",
+        "WeeklyRewards_ShowUI",
+        "WeeklyRewardActivityItemMixin",
+        "WeeklyRewardConfirmSelectionMixin"
     ],
     "Lua.diagnostics.disable": [
     ]

@@ -159,7 +159,7 @@ local function set_ExpansionLandingPageMinimapButton()
             if not IsAddOnLoaded("Blizzard_WeeklyRewards") then
                 LoadAddOn("Blizzard_WeeklyRewards")
             end
-            OpenWR()
+            WeeklyRewards_ShowUI()--WeeklyReward.lua
         end
     end)
     --hooksecurefunc(DragonridingPanelSkillsButtonMixin, 'OnClick', function(self, d)--显示,飞龙技能
