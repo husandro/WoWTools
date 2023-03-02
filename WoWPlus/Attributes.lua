@@ -37,7 +37,6 @@ local Save={
     bitPrecet=0,--百分比，位数
     onlyDPS=true,--四属性, 仅限DPS
     --useNumber= e.Player.husandro,--使用数字
-    
 }
 
 local function get_PrimaryStat()--取得主属
