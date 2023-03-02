@@ -16,7 +16,7 @@ local function Reputation_Text_setText()--设置, 文本
 	end
 
 	local m=''
-	local hasRewardPending
+	
 	for i=1, GetNumFactions() do
 		local name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canBeLFGBonus =GetFactionInfo(i)
 		if name==HIDE then break end--隐藏 '隐藏声望'
@@ -77,7 +77,7 @@ local function Reputation_Text_setText()--设置, 文本
 			end
 
 			local isParagon = C_Reputation.IsFactionParagon(factionID)--奖励			
-
+			local hasRewardPending
 			if ( isParagon ) then--奖励
 				local currentValue, threshold, rewardQuestID, hasRewardPending2, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID);
 				hasRewardPending=hasRewardPending2
@@ -118,12 +118,12 @@ local function Reputation_Text_setText()--设置, 文本
 		end
 	end
 
-	if hasRewardPending then
+	--[[if hasRewardPending then
 		panel.btn:SetNormalAtlas('ParagonReputation_Bag')--有奖励
 		m= '\n'..m
 	else
 		panel.btn:SetNormalTexture(0)
-	end
+	end]]
 	panel.btn.text:SetText(m)
 end
 
