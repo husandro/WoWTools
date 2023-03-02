@@ -291,7 +291,6 @@ local function setMerchantInfo()
                 if num then
                     if not itemButton.buyItemNum then
                         itemButton.buyItemNum=e.Cstr(itemButton)
-                        --itemButton.buyItemNum:SetPoint('BOTTOMRIGHT', _G["MerchantItem"..index.."Name"],0,-8)
                         itemButton.buyItemNum:SetPoint('BOTTOMRIGHT')
                     end
                     itemButton.buyItemNum:SetText(num)

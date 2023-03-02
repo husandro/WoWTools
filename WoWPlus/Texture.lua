@@ -658,7 +658,7 @@ local function Init_Set_AlphaAndColor()
         setAlpha(ObjectiveTrackerBlocksFrame.AchievementHeader.Background)
         setAlpha(ObjectiveTrackerBlocksFrame.QuestHeader.Background)
         hooksecurefunc('ScenarioStage_UpdateOptionWidgetRegistration', function(stageBlock, widgetSetID)
-            setAlpha(stageBlock.NormalBG)
+            setAlpha(stageBlock.NormalBG, nil, true)
             setAlpha(stageBlock.FinalBG)
         end)
     end

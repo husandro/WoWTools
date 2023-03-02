@@ -424,7 +424,17 @@ local function Init()
                         if not button.quantityAll then
                             button.quantityAll= e.Cstr(button, 10, nil, nil, nil, nil, 'RIGHT')
                             button.quantityAll:SetPoint('BOTTOMRIGHT', button, 'TOPRIGHT', 3,0)
+                            button:EnableMouse(true)
+                            button:SetScript('OnMouseDown', function(self)
+                                if self.itemLink then
+                                    local link= self.itemLink..(self.quantityAll.itemValue or '')
+                                    if not ChatEdit_InsertLink(link) then
+                                        ChatFrame_OpenChat(link)
+                                    end
+                                end
+                            end)
                         end
+                        button.quantityAll.itemValue= itemValue
                         button.quantityAll:SetText(num or '');
                     end
                 end
