@@ -183,7 +183,7 @@ local function set_Text_Value(frame, value, value2)
                 end
             end
             if frame.bar and frame.bar:IsShown() then--barToLeft
-                local value3= frame.value>value and value or frame.value
+                local value3= frame.value>value and  frame.value or value
                 local barX
                 if frame.useNumber then
                     barX= frame.bar:GetWidth()*(value3/frame.bar.maxValue)
@@ -192,9 +192,9 @@ local function set_Text_Value(frame, value, value2)
                 end
                 frame.textValue:ClearAllPoints()
                 if Save.barToLeft then
-                    frame.textValue:SetPoint('RIGHT', frame.bar, 'LEFT', -(barX), 0)
+                    frame.textValue:SetPoint('RIGHT', frame.bar, -(barX), 0)
                 else
-                    frame.textValue:SetPoint('LEFT', frame.bar, 'RIGHT', barX, 0)
+                    frame.textValue:SetPoint('LEFT', frame.bar, barX, 0)
                 end
             end
         end
@@ -775,7 +775,7 @@ local function set_Frame(frame)--设置, frame
     set_Shadow(frame.label)--设置，字体阴影
     set_Shadow(frame.text)--设置，字体阴影
 
-    if frame.bar then
+    if frame.bar and frame:IsShown() then
         local value
         if frame.useNumber then
             if frame.name=='STATUS' then
@@ -805,22 +805,29 @@ local function set_Frame(frame)--设置, frame
         frame.bar:SetSize(120+Save.barWidth, 10)
         frame.bar:ClearAllPoints()
         if Save.barToLeft then
+            frame.bar:SetPoint('RIGHT', frame, 'LEFT', Save.barX,-2)
+            frame.bar:SetReverseFill(true)
+        else
+            frame.bar:SetPoint('LEFT', frame, 'RIGHT', -Save.barX,-2)
+            frame.bar:SetReverseFill(false)
+        end
+        --[[if Save.barToLeft then
             if Save.toLeft then
-                frame.bar:SetPoint('LEFT', frame.label, -Save.barX,-2)
+                frame.bar:SetPoint('LEFT', frame, -Save.barX,-2)
                 frame.bar:SetReverseFill(false)
             else
-                frame.bar:SetPoint('RIGHT', frame.label, Save.barX,-2)
+                frame.bar:SetPoint('RIGHT', frame, Save.barX,-2)
                 frame.bar:SetReverseFill(true)
             end
         else
-            if Save.toLeft then
+            if Save.barTexture then
                 frame.bar:SetPoint('RIGHT', frame.text, -Save.barX,-2)
                 frame.bar:SetReverseFill(true)
             else
                 frame.bar:SetPoint('LEFT', frame.text, Save.barX,-2)
                 frame.bar:SetReverseFill(false)
             end
-        end
+        end]]
         if Save.barTexture2 then
             frame.bar:SetStatusBarTexture('Interface\\TargetingFrame\\UI-StatusBar')
         else
@@ -828,7 +835,7 @@ local function set_Frame(frame)--设置, frame
         end
         frame.bar:SetStatusBarColor(frame.r,frame.g,frame.b,frame.a)
         frame.barTexture:ClearAllPoints()
-        if Save.toLeft then
+        if Save.barToLeft then
             frame.barTexture:SetPoint('RIGHT', frame.bar)
         else
             frame.barTexture:SetPoint('LEFT', frame.bar)
@@ -838,16 +845,11 @@ local function set_Frame(frame)--设置, frame
 
     if frame.textValue then--数值 + -
         frame.textValue:ClearAllPoints()
-        if frame.bar and frame.bar:IsShown() then
-            frame.textValue:SetParent(frame.bar)
+        frame.textValue:SetTextColor(frame.r,frame.g,frame.b,frame.a)
+        if Save.toLeft then
+            frame.textValue:SetPoint('RIGHT', frame.text, -30-(frame.bit*6), 0)
         else
-            frame.textValue:SetParent(frame)
-            frame.textValue:SetTextColor(frame.r,frame.g,frame.b,frame.a)
-            if Save.toLeft then
-                frame.textValue:SetPoint('RIGHT', frame.text, -30-(frame.bit*6), 0)
-            else
-                frame.textValue:SetPoint('LEFT', frame.text, 30+(frame.bit*6), 0)
-            end
+            frame.textValue:SetPoint('LEFT', frame.text, 30+(frame.bit*6), 0)
         end
         frame.textValue:SetShown(Save.setMaxMinValue)
     end
@@ -1008,7 +1010,7 @@ local function frame_Init(rest)--初始， 或设置
             if info.bar and not frame.bar then--bar
                 frame.bar= CreateFrame('StatusBar', nil, frame)
                 frame.bar:SetFrameLevel(frame:GetFrameLevel()-1)
-                frame.barTexture= frame:CreateTexture(nil, 'OVERLAY')
+                frame.barTexture= frame.bar:CreateTexture(nil, 'OVERLAY')
                 frame.barTexture:SetAtlas('UI-HUD-UnitFrame-Player-GroupIndicator')
             end
             if frame.bar then
@@ -1423,10 +1425,10 @@ local function set_Panle_Setting()--设置 panel
     local barX= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--bar, 宽度
     barX:SetPoint("TOPLEFT", barWidth.Low, 'BOTTOMLEFT', 0, -10)
     barX:SetSize(150,20)
-    barX:SetMinMaxValues(-60,120)
+    barX:SetMinMaxValues(-200,200)
     barX:SetValue(Save.barX)
-    barX.Low:SetText('x -60')
-    barX.High:SetText('+120')
+    barX.Low:SetText('x -200')
+    barX.High:SetText('+200')
     barX.Text:SetText(Save.barX)
     barX:SetValueStep(1)
     barX:SetScript('OnValueChanged', function(self, value, userInput)
