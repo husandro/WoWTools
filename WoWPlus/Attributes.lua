@@ -1389,7 +1389,7 @@ local function set_Panle_Setting()--设置 panel
     end)
 
     local check2= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--bar
-    check2:SetPoint("TOPLEFT", check5, 'BOTTOMLEFT',0,-36)
+    check2:SetPoint("TOPLEFT", check5, 'BOTTOMLEFT',0,-62)
     check2.text:SetText('Bar')
     check2:SetChecked(Save.bar)
     check2:SetScript('OnMouseDown', function()
