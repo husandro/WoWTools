@@ -4,12 +4,12 @@ e.tips=GameTooltip
 
 local function GetWeek()--周数
     local d = date("*t")
-    local cd
-    if LOCALE_zhCN then
+    local cd=3
+   --[[if LOCALE_zhCN then
         cd=4
     else
         cd=3
-    end
+    end]]
     for d3=1,15 do
         if date('*t', time({year=d.year, month=1, day=d3})).wday == cd then
             cd=d3
