@@ -21,21 +21,24 @@ local function setPanelPostion()--设置按钮位置
     end
 end
 
-local function set_Item_Cooldown(self)--图标冷却
+local function set_Item_Cooldown_Count(self)--图标冷却
     if self.itemID then
         local start, duration, enable = GetItemCooldown(self.itemID)
-        self.texture:SetDesaturated(enable==0 or GetItemCount(self.itemID, nil, true, true)==0)
-        e.Ccool(self, start, duration, nil, true, nil, true)--冷却条
+        local num= GetItemCount(self.itemID, nil, true, true)
+        local notFind= enable==0 or num==0
+        if notFind then
+            if self.cooldown then
+                self.cooldown:Clear()
+            end
+        else
+            e.Ccool(self, start, duration, nil, true, nil, true)--冷却条
+        end
+        self.count:SetText(num>1 and num or (num==1 and Save.autoWho) and num or '')
+        self.texture:SetDesaturated(notFind)
+        self.texture:SetShown(num>0)
     end
 end
 
-local function set_Item_Count(self)--设置, 数量
-    if self.itemID then
-        local num=GetItemCount(self.itemID, nil, true, true)
-        self.count:SetText(num>1 and num or (num==1 and Save.autoWho) and num or '')
-        self.texture:SetDesaturated(num==0 or select(3, GetItemCooldown(self.itemID))==0)
-    end
-end
 
 --#########
 --提示, 事件
@@ -71,15 +74,8 @@ local function set_Button_Init(self)
     self:SetScript("OnLeave",function() e.tips:Hide() end)
 
     self:RegisterEvent('BAG_UPDATE')
-    self:RegisterEvent('BAG_UPDATE_COOLDOWN')
-
-    self:SetScript("OnEvent", function(self2, event)
-        if event=='BAG_UPDATE' then
-            set_Item_Count(self2)
-        elseif event=='BAG_UPDATE_COOLDOWN' then
-            set_Item_Cooldown(self2)--图标冷却
-        end
-    end)
+    self:RegisterEvent('SPELL_UPDATE_COOLDOWN')
+    self:SetScript("OnEvent", set_Item_Cooldown_Count)
     if self~=button then
         self:SetScript('OnMouseDown',function(self2, d)
             if d=='RightButton' and IsShiftKeyDown() then
@@ -89,9 +85,7 @@ local function set_Button_Init(self)
             end
         end)
     end
-
-    set_Item_Count(self)
-    set_Item_Cooldown(self)--图标冷却
+    set_Item_Cooldown_Count(self)
 end
 
 local function find_Item_Type(class, subclass)

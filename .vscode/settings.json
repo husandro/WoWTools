@@ -1856,7 +1856,8 @@
         "COVENANT_COLORS",
         "PLAYER_FACTION_COLORS",
         "QUEST_REPUTATION_REWARD_TOOLTIP",
-        "ITEM_SPELL_TRIGGER_ONUSE"
+        "ITEM_SPELL_TRIGGER_ONUSE",
+        "ITEM_COOLDOWN_TOTAL_SEC"
     ],
     "Lua.diagnostics.disable": [
     ]
