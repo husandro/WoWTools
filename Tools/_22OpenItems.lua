@@ -138,15 +138,16 @@ local function getItems()--取得背包物品信息
                         end
 
                     elseif info.hyperlink:find('Hbattlepet:(%d+)') or (classID==15 and subclassID==2) then--宠物, 收集数量
-                        local speciesID = info.hyperlink:match('Hbattlepet:(%d+)') or select(13, C_PetJournal.GetPetInfoByItemID(info.itemID))--宠物物品                        
-                        if speciesID then
-                            local numCollected, limit= C_PetJournal.GetNumCollectedInfo(speciesID)
-                            if numCollected and limit and numCollected <  limit then
-                                setAtt(bag, slot, info.iconFileID, info.itemID)
-                                return
+                        if Save.pet then
+                            local speciesID = info.hyperlink:match('Hbattlepet:(%d+)') or select(13, C_PetJournal.GetPetInfoByItemID(info.itemID))--宠物物品                        
+                            if speciesID then
+                                local numCollected, limit= C_PetJournal.GetNumCollectedInfo(speciesID)
+                                if numCollected and limit and numCollected <  limit then
+                                    setAtt(bag, slot, info.iconFileID, info.itemID)
+                                    return
+                                end
                             end
                         end
-
                     elseif info.hasLoot then--可打开
                         if Save.open then
                             setAtt(bag, slot, info.iconFileID, info.itemID)
@@ -177,12 +178,6 @@ local function getItems()--取得背包物品信息
                             end
                         end
 
-                    elseif classID==15 and subclassID==4 then--其它
-                        if Save.alt and IsUsableItem(info.hyperlink) and not C_Item.IsAnimaItemByID(info.hyperlink) then
-                            setAtt(bag, slot, info.iconFileID, info.itemID)
-                            return
-                        end
-
                     elseif C_ToyBox.GetToyInfo(info.itemID) then
                         if Save.toy and not PlayerHasToy(info.itemID) then--玩具 
                             setAtt(bag, slot, info.iconFileID, info.itemID)
@@ -196,6 +191,11 @@ local function getItems()--取得背包物品信息
                         elseif C_Item.IsItemSpecificToPlayerClass(info.hyperlink) then
                             setAtt(bag, slot, info.iconFileID, info.itemID)
                             return
+                        elseif classID==15 and subclassID==4 then--其它
+                            if Save.alt and IsUsableItem(info.hyperlink) and not C_Item.IsAnimaItemByID(info.hyperlink) then
+                                setAtt(bag, slot, info.iconFileID, info.itemID)
+                                return
+                            end
                         end
                     end
                 end
@@ -334,11 +334,7 @@ local function setMenuList(self, level, menuList)--主菜单
         text= e.onlyChinse and '<右键点击打开>' or ITEM_OPENABLE,
         checked=Save.open,
         func=function()
-            if Save.open then
-                Save.open=nil
-            else
-                Save.open=true
-            end
+            Save.open= not Save.open and true or nil
             getItems()
         end
     }
@@ -350,11 +346,7 @@ local function setMenuList(self, level, menuList)--主菜单
         tooltipTitle= '<3',
         checked=Save.pet,
         func=function()
-            if Save.pet then
-                Save.pet=nil
-            else
-                Save.pet=true
-            end
+            Save.pet= not Save.pet and true or nil
             getItems()
         end
     }
@@ -364,11 +356,7 @@ local function setMenuList(self, level, menuList)--主菜单
         text= e.onlyChinse and '玩具' or TOY,
         checked=Save.toy,
         func=function()
-            if Save.toy then
-                Save.toy=nil
-            else
-                Save.toy=true
-            end
+            Save.toy= not Save.toy and true or nil
             getItems()
         end
     }
@@ -378,11 +366,7 @@ local function setMenuList(self, level, menuList)--主菜单
         text= e.onlyChinse and '坐骑' or MOUNTS,
         checked=Save.mount,
         func=function()
-            if Save.mount then
-                Save.mount=nil
-            else
-                Save.mount=true
-            end
+            Save.mount= not Save.mount and true or nil
             getItems()
         end
     }
@@ -392,11 +376,7 @@ local function setMenuList(self, level, menuList)--主菜单
         text= e.onlyChinse and '幻化' or TRANSMOGRIFY,
         checked=Save.mago,
         func=function()
-            if Save.mago then
-                Save.mago=nil
-            else
-                Save.mago=true
-            end
+            Save.mago= not Save.mago and true or nil
             getItems()
         end,
     }
@@ -406,11 +386,7 @@ local function setMenuList(self, level, menuList)--主菜单
         text= e.onlyChinse and '配方' or TRADESKILL_SERVICE_LEARN,
         checked=Save.ski,
         func=function()
-            if Save.ski then
-                Save.ski=nil
-            else
-                Save.ski=true
-            end
+            Save.ski= not Save.ski and true or nil
             getItems()
         end,
     }
@@ -420,11 +396,7 @@ local function setMenuList(self, level, menuList)--主菜单
         text= e.onlyChinse and '其它' or BINDING_HEADER_OTHER,
         checked=Save.alt,
         func=function()
-            if Save.alt then
-                Save.alt=nil
-            else
-                Save.alt=true
-            end
+            Save.alt= not Save.alt and true or nil
             getItems()
         end
     }
@@ -436,11 +408,7 @@ local function setMenuList(self, level, menuList)--主菜单
         tooltipOnButton=true,
         tooltipTitle= e.onlyChinse and '未发现物品' or BROWSE_NO_RESULTS,
         func=function()
-            if Save.noItemHide  then
-                Save.noItemHide =nil
-            else
-                Save.noItemHide =true
-            end
+            Save.noItemHide= not Save.noItemHide and true or nil
             button:SetShown(Bag.bag or not Save.noItemHide)
         end,
         checked= Save.noItemHide
