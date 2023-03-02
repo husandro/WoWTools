@@ -804,10 +804,10 @@ local function set_Frame(frame)--设置, frame
         frame.bar:SetSize(120+Save.barWidth, 10)
         frame.bar:ClearAllPoints()
         if Save.barToLeft then
-            frame.bar:SetPoint('RIGHT', frame, 'LEFT', -(Save.barX),-2)
+            frame.bar:SetPoint('RIGHT', frame, 'LEFT', -(Save.barX), 0)
             frame.bar:SetReverseFill(true)
         else
-            frame.bar:SetPoint('LEFT', frame, 'RIGHT', Save.barX,-2)
+            frame.bar:SetPoint('LEFT', frame, 'RIGHT', Save.barX, 0)
             frame.bar:SetReverseFill(false)
         end
 
