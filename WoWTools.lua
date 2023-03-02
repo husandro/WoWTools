@@ -1148,6 +1148,48 @@ e.Set_Item_Stats = function(self, link, point)
     end
 end
 
+local function set_Frame_Color(self, setR, setG, setB, setA, setHex)
+    if self then
+        local type= self:GetObjectType()
+        if type=='FontString' then
+            self:SetTextColor(setR, setG, setB,setA)
+        elseif type=='Texture' then
+            self:SetColorTexture(setR, setG, setB,setA)
+        end
+        self.r, self.g, self.b, self.a, self.hex= setR, setG, setB, setA, '|c'..setHex
+    end
+end
+e.RGB_to_HEX=function(setR, setG, setB,setA, self)--RGB转HEX
+	setR = setR <= 1 and setR >= 0 and setR or 0
+	setG = setG <= 1 and setG >= 0 and setG or 0
+	setB = setA <= 1 and setB >= 0 and setB or 0
+	setA = setA <= 1 and setA >= 0 and setA or 0
+    local hex=format("%02x%02x%02x%02x", setA*255, setR*255, setG*255, setB*255)
+    set_Frame_Color(self, setR, setG, setB, setA, hex)
+	return hex
+end
+
+e.HEX_to_RGB=function(hexColor, self)--HEX转RGB
+	if hexColor then
+		hexColor= hexColor:gsub('|c', '')
+		hexColor= hexColor:gsub(' ','')
+		if #hexColor == 8 then
+            local colorA= tonumber(hexColor:sub(1, 2), 16) / 255-- ColorUtil.lua
+            local colorR= tonumber(hexColor:sub(3, 4), 16) / 255
+            local colorG= tonumber(hexColor:sub(5, 6), 16) / 255
+            local colorB= tonumber(hexColor:sub(7, 8), 16) / 255
+            set_Frame_Color(self, colorR, colorG, colorB, colorA, hexColor)
+			return colorR, colorG, colorB, colorA
+		end
+	end
+end
+
+e.Get_ColorFrame_RGBA= function()--取得, ColorFrame, 颜色
+	local a= OpacitySliderFrame:IsShown() and OpacitySliderFrame:GetValue() or 1
+	local r, g, b = ColorPickerFrame:GetColorRGB()
+	return r, g, b, a
+end
+
 e.ShowColorPicker= function(valueR, valueG, valueB, valueA, changedCallback)
     valueR= valueR or 1
     valueG= valueG or 0.8
@@ -1168,7 +1210,7 @@ e.Reload= function()
     if not UnitAffectingCombat('player') then
         C_UI.Reload()
     else
-        print(id,'|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '战斗中'..HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+        print(id, '|cnRED_FONT_COLOR:'..(e.onlyChinse and '战斗中'..HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
     end
 end
 --e.ShowColorPicker(r,g,b,a, function(restore) if not restore then local newA, newR, newG, newB = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()

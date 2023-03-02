@@ -4,9 +4,9 @@ local addName= STAT_CATEGORY_ATTRIBUTES--PaperDollFrame.lua
 local panel= CreateFrame('Frame')
 local button, Role, PrimaryStat, Tabs
 local Save={
-    redColor= '|cffff8200',
+    redColor= '|cffff0000',
     greenColor='|cff00ff00',
-    --font={r=0, g=0, b=0, a=1, x=1, y=-1},--阴影
+    font={r=0, g=0, b=0, a=1, x=1, y=-1},--阴影
     tab={
         ['STATUS']={bit=3},
         ['CRITCHANCE']= {r=0.99, g=0.35, b=0.31},
@@ -27,7 +27,7 @@ local Save={
     --toLeft=true--数值,放左边
     bar= true,--进度条
     barTexture2=true,--样式2
-    barWidth=0,--bar, 宽度
+    barWidth= -60,--bar, 宽度
     barX=22,--bar,移位
     --barToLeft=e.Player.husandro,--bar,放左边
     scale= 1.1,--缩放
@@ -137,7 +137,7 @@ local function set_Text_Value(frame, value, value2)
         end
         if frame.value< value then
             text= Save.greenColor..text
-        elseif frame.value< value then
+        elseif frame.value> value then
             text= Save.redColor..text
         end
     end
@@ -150,9 +150,9 @@ local function set_Text_Value(frame, value, value2)
             frame.barTexture:SetShown(false)
         else
             if frame.value< value then
-                frame.bar:SetStatusBarColor(0,1,0, frame.a)
+                frame.bar:SetStatusBarColor(panel.barGreenColor.r, panel.barGreenColor.g, panel.barGreenColor.b, panel.barGreenColor.a)
             else
-                frame.bar:SetStatusBarColor(1,0,0, frame.a)
+                frame.bar:SetStatusBarColor(panel.barRedColor.r, panel.barRedColor.g, panel.barRedColor.b, panel.barRedColor.a)
             end
             frame.bar:SetValue(value)
             if frame.useNumber then
@@ -810,29 +810,13 @@ local function set_Frame(frame)--设置, frame
             frame.bar:SetPoint('LEFT', frame, 'RIGHT', Save.barX,-2)
             frame.bar:SetReverseFill(false)
         end
-        --[[if Save.barToLeft then
-            if Save.toLeft then
-                frame.bar:SetPoint('LEFT', frame, -Save.barX,-2)
-                frame.bar:SetReverseFill(false)
-            else
-                frame.bar:SetPoint('RIGHT', frame, Save.barX,-2)
-                frame.bar:SetReverseFill(true)
-            end
-        else
-            if Save.barTexture then
-                frame.bar:SetPoint('RIGHT', frame.text, -Save.barX,-2)
-                frame.bar:SetReverseFill(true)
-            else
-                frame.bar:SetPoint('LEFT', frame.text, Save.barX,-2)
-                frame.bar:SetReverseFill(false)
-            end
-        end]]
+
         if Save.barTexture2 then
             frame.bar:SetStatusBarTexture('Interface\\TargetingFrame\\UI-StatusBar')
         else
             frame.bar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
         end
-        frame.bar:SetStatusBarColor(frame.r,frame.g,frame.b,frame.a)
+
         frame.barTexture:ClearAllPoints()
         if Save.barToLeft then
             frame.barTexture:SetPoint('RIGHT', frame.bar)
@@ -915,12 +899,13 @@ local function frame_Init(rest)--初始， 或设置
 
                 elseif info.name=='CRITCHANCE' then--爆击2
                     frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
+                    frame:RegisterUnitEvent('UNIT_AURA', 'player')
                     frame:SetScript('OnEvent', set_Crit_Text)
                     frame.label:SetScript('OnEnter', set_Crit_Tooltip)
                     frame.text:SetScript('OnEnter', set_Crit_Tooltip)
 
                 elseif info.name=='HASTE' then--急速3
-                    frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
+                    frame:RegisterUnitEvent('UNIT_SPELL_HASTE', 'player')
                     frame:SetScript('OnEvent', set_Haste_Text)
                     frame.label:SetScript('OnEnter', set_Haste_Tooltip)
                     frame.text:SetScript('OnEnter', set_Haste_Tooltip)
@@ -932,7 +917,9 @@ local function frame_Init(rest)--初始， 或设置
                     frame.text:SetScript('OnEnter', frame.onEnterFunc)
 
                 elseif info.name=='VERSATILITY' then--全能5
+                    frame:RegisterUnitEvent('UNIT_DEFENSE', "player")
                     frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
+                    frame:RegisterUnitEvent('UNIT_AURA', 'player')
                     frame:SetScript('OnEvent', set_Versatility_Text)
                     frame.label:SetScript('OnEnter', set_Versatility_Tooltip)
                     frame.text:SetScript('OnEnter', set_Versatility_Tooltip)
@@ -946,7 +933,7 @@ local function frame_Init(rest)--初始， 或设置
 
                 elseif info.name=='ARMOR' then--护甲
                     frame:RegisterUnitEvent('UNIT_DEFENSE', "player")
-                    frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
+                    frame:RegisterUnitEvent('UNIT_AURA', 'player')
                     frame:RegisterEvent('PLAYER_TARGET_CHANGED')
                     frame:SetScript('OnEvent', set_ARMOR_Text)
                     frame.label:SetScript('OnEnter', set_ARMOR_Tooltip)
@@ -961,27 +948,27 @@ local function frame_Init(rest)--初始， 或设置
 
                 elseif info.name=='DODGE' then--躲闪8
                     frame:RegisterUnitEvent('UNIT_DEFENSE', "player")
-                    frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
+                    frame:RegisterUnitEvent('UNIT_AURA', 'player')
                     frame:SetScript('OnEvent', set_Dodge_Text)
                     frame.label:SetScript('OnEnter', set_Dodge_Tooltip)
                     frame.text:SetScript('OnEnter', set_Dodge_Tooltip)
 
                 elseif info.name=='PARRY' then--招架9
-                    frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
                     frame:RegisterUnitEvent('UNIT_DEFENSE', "player")
+                    frame:RegisterUnitEvent('UNIT_AURA', 'player')
                     frame:SetScript('OnEvent', set_Parry_Text)
                     frame.label:SetScript('OnEnter', set_Parry_Tooltip)
                     frame.text:SetScript('OnEnter', set_Parry_Tooltip)
 
                 elseif info.name=='BLOCK' then--格挡10
                     frame:RegisterUnitEvent('UNIT_DEFENSE', "player")
-                    frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
+                    frame:RegisterUnitEvent('UNIT_AURA', 'player')
                     frame:SetScript('OnEvent', set_Block_Text)
                     frame.label:SetScript('OnEnter', set_Block_Tooltip)
                     frame.text:SetScript('OnEnter', set_Block_Tooltip)
 
                 elseif info.name=='STAGGER' then--醉拳11
-                    frame:RegisterUnitEvent('UNIT_DEFENSE', "player")
+                    frame:RegisterUnitEvent('UNIT_AURA', 'player')
                     frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
                     frame:RegisterEvent('PLAYER_TARGET_CHANGED')
                     frame:SetScript('OnEvent', set_Stagger_Text)
@@ -1155,23 +1142,23 @@ local function set_Panle_Setting()--设置 panel
             text.text= info.text
             text:SetScript('OnMouseDown', function(self)
                 e.ShowColorPicker(self.r, self.g, self.b,self.a, function(restore)
-                    local newA, newR, newG, newB
+                    local setA, setR, setG, setB
                     if not restore then
-                        newA, newR, newG, newB = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()
+                        setA, setR, setG, setB = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()
                     else
-                        newA, newR, newG, newB= self.a, self.r, self.g, self.b
+                        setA, setR, setG, setB= self.a, self.r, self.g, self.b
                     end
-                    Save.tab[self.name].r= newR
-                    Save.tab[self.name].g= newG
-                    Save.tab[self.name].b= newB
-                    Save.tab[self.name].a= newA
-                    self:SetTextColor(newR, newG, newB, newA)
+                    Save.tab[self.name].r= setR
+                    Save.tab[self.name].g= setG
+                    Save.tab[self.name].b= setB
+                    Save.tab[self.name].a= setA
+                    self:SetTextColor(setR, setG, setB, setA)
                     if button[self.name] then
                         if button[self.name].label then
-                            button[self.name].label:SetTextColor(newR, newG, newB, newA)
+                            button[self.name].label:SetTextColor(setR, setG, setB, setA)
                         end
                         if button[self.name].bar then
-                            button[self.name].bar:SetStatusBarColor(newR,newG,newB,newA)
+                            button[self.name].bar:SetStatusBarColor(setR,setG,setB,setA)
                         end
                     end
                 end)
@@ -1278,16 +1265,16 @@ local function set_Panle_Setting()--设置 panel
     text.r, text.g, text.b, text.a= Save.font.r, Save.font.g, Save.font.b, Save.font.a
     text:SetScript('OnMouseDown', function(self)
         e.ShowColorPicker(self.r, self.g, self.b, self.a, function(restore)
-            local newA, newR, newG, newB
+            local setA, setR, setG, setB
             if not restore then
-                newA, newR, newG, newB = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()
+                setA, setR, setG, setB = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()
             else
-                newA, newR, newG, newB= self.a, self.r, self.g, self.b
+                setA, setR, setG, setB= self.a, self.r, self.g, self.b
             end
-            Save.font.r= newR
-            Save.font.g= newG
-            Save.font.b= newB
-            Save.font.a= newA
+            Save.font.r= setR
+            Save.font.g= setG
+            Save.font.b= setB
+            Save.font.a= setA
             set_Shadow(self)--设置，字体阴影
             frame_Init(true)--初始，设置
         end)
@@ -1342,27 +1329,10 @@ local function set_Panle_Setting()--设置 panel
     end)
 
 
-    local check4= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--增加,减少,值
-    check4:SetPoint("TOPLEFT", check, 'BOTTOMLEFT')
-    check4.text:SetText((e.onlyChinse and '增益' or BENEFICIAL)..' -12')
-    check4:SetChecked(Save.setMaxMinValue)
-    check4:SetScript('OnMouseDown', function()
-        Save.setMaxMinValue= not Save.setMaxMinValue and true or nil
-        frame_Init(true)--初始， 或设置
-        if Save.setMaxMinValue then
-            C_Timer.After(0.3, function()
-                for _, info in pairs(Tabs) do
-                    local frame= button[info.name]
-                    if frame and frame.textValue then
-                        frame.textValue:SetText('+12')
-                    end
-                end
-            end)
-        end
-    end)
+
 
     local check5= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--使用，数值
-    check5:SetPoint("TOPLEFT", check4, 'BOTTOMLEFT')
+    check5:SetPoint("TOPLEFT", check, 'BOTTOMLEFT')
     check5.text:SetText(e.onlyChinse and '数值' or STATUS_TEXT_VALUE)
     check5:SetChecked(Save.useNumber)
     check5:SetScript('OnMouseDown', function()
@@ -1387,8 +1357,68 @@ local function set_Panle_Setting()--设置 panel
         frame_Init(true)--初始，设置
     end)
 
+    local barValueText= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--增加,减少,值
+    barValueText:SetPoint("TOPLEFT", check5, 'BOTTOMLEFT')
+    barValueText.text:SetText(e.onlyChinse and '增益' or BENEFICIAL)
+    barValueText:SetChecked(Save.setMaxMinValue)
+    barValueText:SetScript('OnMouseDown', function()
+        Save.setMaxMinValue= not Save.setMaxMinValue and true or nil
+        frame_Init(true)--初始， 或设置
+        if Save.setMaxMinValue then
+            C_Timer.After(0.3, function()
+                for _, info in pairs(Tabs) do
+                    local frame= button[info.name]
+                    if frame and frame.textValue then
+                        frame.textValue:SetText('+12')
+                    end
+                end
+            end)
+        end
+    end)
+    panel.barGreenColor= e.Cstr(panel, 20)
+    panel.barGreenColor:SetPoint('LEFT', barValueText.text,'RIGHT', 2, 0)
+    panel.barGreenColor:EnableMouse(true)
+    panel.barGreenColor:SetText('+12')
+    e.HEX_to_RGB(Save.greenColor, panel.barGreenColor)--设置, panel.barGreenColor. r g b hex
+    panel.barGreenColor:SetScript('OnMouseDown', function(self)
+        local valueR, valueG, valueB, valueA= self.r, self.g, self.b, self.a
+        e.ShowColorPicker(self.r, self.g, self.b,self.a, function(restore)
+            local setA, setR, setG, setB
+            if not restore then
+                setR, setG, setB, setA= e.Get_ColorFrame_RGBA()
+            else
+                setR, setG, setB, setA= valueR, valueG, valueB, valueA
+            end
+            local hex= e.RGB_to_HEX(setR, setG, setB,setA, self)--RGB转HEX
+            hex= hex and '|c'..hex or '|cffff8200'
+            Save.greenColor= hex
+        end)
+    end)
+
+    panel.barRedColor= e.Cstr(panel, 20)
+    panel.barRedColor:SetPoint('LEFT', panel.barGreenColor,'RIGHT', 2, 0)
+    panel.barRedColor:EnableMouse(true)
+    panel.barRedColor:SetText('-12')
+    e.HEX_to_RGB(Save.redColor, panel.barRedColor)--设置, panel.barRedColor. r g b hex
+    panel.barRedColor:SetScript('OnMouseDown', function(self)
+        local valueR, valueG, valueB, valueA= self.r, self.g, self.b, self.a
+        e.ShowColorPicker(self.r, self.g, self.b,self.a, function(restore)
+            local setA, setR, setG, setB
+            if not restore then
+                setR, setG, setB, setA= e.Get_ColorFrame_RGBA()
+            else
+                setR, setG, setB, setA= valueR, valueG, valueB, valueA
+            end
+            local hex= e.RGB_to_HEX(setR, setG, setB,setA, self)--RGB转HEX
+            hex= hex and '|c'..hex or '|cffff0000'
+            Save.redColor= hex
+        end)
+    end)
+
+
+
     local check2= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--bar
-    check2:SetPoint("TOPLEFT", check5, 'BOTTOMLEFT',0,-62)
+    check2:SetPoint("TOPLEFT", barValueText, 'BOTTOMLEFT',0,-62)
     check2.text:SetText('Bar')
     check2:SetChecked(Save.bar)
     check2:SetScript('OnMouseDown', function()

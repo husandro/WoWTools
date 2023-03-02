@@ -74,7 +74,7 @@ local function set_Button_Init(self)
     self:RegisterEvent('BAG_UPDATE_COOLDOWN')
 
     self:SetScript("OnEvent", function(self2, event)
-    if event=='BAG_UPDATE' then
+        if event=='BAG_UPDATE' then
             set_Item_Count(self2)
         elseif event=='BAG_UPDATE_COOLDOWN' then
             set_Item_Cooldown(self2)--图标冷却

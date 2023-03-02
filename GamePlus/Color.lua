@@ -6,38 +6,13 @@ local addName= COLOR_PICKER..' Plus'--"颜色选择器";
 local panel= CreateFrame("Frame")--ColorPickerFrame.xml
 local logNum= 30--记录数量
 
-local RGB_to_HEX=function(r, g, b, a)
-	r = r <= 1 and r >= 0 and r or 0
-	g = g <= 1 and g >= 0 and g or 0
-	b = b <= 1 and b >= 0 and b or 0
-	a = a <= 1 and a >= 0 and a or 0
-	return format("%02x%02x%02x%02x", a*255, r*255, g*255, b*255)
-end
 
-local function ExtractColorValueFromHex(str, index)
-	return tonumber(str:sub(index, index + 1), 16) / 255;
-end
-local HEX_to_RGB=function(hexColor)--HEX转RGB ColorUtil.lua
-	if hexColor then
-		hexColor= hexColor:gsub('|c', '')
-		hexColor= hexColor:gsub(' ','')
-		if #hexColor == 8 then
-			return ExtractColorValueFromHex(hexColor, 3), ExtractColorValueFromHex(hexColor, 5), ExtractColorValueFromHex(hexColor, 7), ExtractColorValueFromHex(hexColor, 1)
-		end
-	end
-end
-
-local function get_Frame_color()--取得, frame, 颜色
-	local a= OpacitySliderFrame:IsShown() and OpacitySliderFrame:GetValue() or 1
-	local r, g, b = ColorPickerFrame:GetColorRGB()
-	return r, g, b, a
-end
 
 local timeElapsed=0
 local function set_Text(self, elapsed)
 	timeElapsed = timeElapsed + elapsed
 	if timeElapsed > 0.3 then
-		local r, g, b, a= get_Frame_color()
+		local r, g, b, a= e.Get_ColorFrame_RGBA()
 		if ColorPickerFrame.rgb then
 			if not ColorPickerFrame.rgb:HasFocus() then
 				ColorPickerFrame.rgb:SetText(format('%.2f %.2f %.2f %.2f', r,g,b,a))
@@ -46,7 +21,7 @@ local function set_Text(self, elapsed)
 				ColorPickerFrame.rgb2:SetText(format('r=%.2f, g=%.2f, b=%.2f, a=%.2f', r,g,b,a))
 			end
 			if not ColorPickerFrame.hex:HasFocus() then
-				ColorPickerFrame.hex:SetText(RGB_to_HEX(r,g,b,a))
+				ColorPickerFrame.hex:SetText(e.RGB_to_HEX(r,g,b,a))
 			end
 		end
 		ColorPickerFrame.Header.Text:SetTextColor(r,g,b)
@@ -240,7 +215,7 @@ local function Init(self)
 	self.hex:SetScript('OnEnterPressed', function(self2)
 		local text= self2:GetText()
 		text= text:gsub(' ','')
-		local r, g, b, a= HEX_to_RGB(text)
+		local r, g, b, a= e.HEX_to_RGB(text)
 		a= a or '1'
 		if r and g and b then
 			set_Edit_Text(r, g, b, a, nil)
@@ -257,7 +232,7 @@ local function Init(self)
 		if userInput then
 			local text= self2:GetText()
 			text= text:gsub(' ','')
-			local r, g, b, a= HEX_to_RGB(text)
+			local r, g, b, a= e.HEX_to_RGB(text)
 			a= a or '1'
 			if r and g and b then
 				self2.hexText:SetFormattedText('r%.2f g%.2f b%.2f a%.2f', r,g,b,a)
@@ -290,7 +265,7 @@ local function Init(self)
 	local restColor= create_Texture(e.Player.r, e.Player.g, e.Player.b, 1)--记录，打开时的颜色， 和历史
 	restColor:SetPoint('TOP', ColorSwatch, 'BOTTOM', 0, -60)
 	restColor:SetScript('OnShow', function(self2)
-		local r, g, b, a= get_Frame_color()
+		local r, g, b, a= e.Get_ColorFrame_RGBA()
 		self2:SetColorTexture(r, g, b, a)
 		self2.r, self2.g, self2.b, self2.a= r, g, b, a
 
@@ -321,7 +296,7 @@ local function Init(self)
 		if #Save.color >=logNum then
 			table.remove(Save.color, 1)
 		end
-		local r, g, b, a= get_Frame_color()
+		local r, g, b, a= e.Get_ColorFrame_RGBA()
 		table.insert(Save.color,{r=r, g=g, b=b, a=a})
 	end)
 end
