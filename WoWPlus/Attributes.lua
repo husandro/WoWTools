@@ -28,7 +28,7 @@ local Save={
     bar= true,--进度条
     barTexture2=true,--样式2
     barWidth=0,--bar, 宽度
-    barX=26,--bar,移位
+    barX=22,--bar,移位
     --barToLeft=e.Player.husandro,--bar,放左边
     scale= 1.1,--缩放
     vertical=3,--上下，间隔
@@ -805,10 +805,10 @@ local function set_Frame(frame)--设置, frame
         frame.bar:SetSize(120+Save.barWidth, 10)
         frame.bar:ClearAllPoints()
         if Save.barToLeft then
-            frame.bar:SetPoint('RIGHT', frame, 'LEFT', Save.barX,-2)
+            frame.bar:SetPoint('RIGHT', frame, 'LEFT', -(Save.barX),-2)
             frame.bar:SetReverseFill(true)
         else
-            frame.bar:SetPoint('LEFT', frame, 'RIGHT', -Save.barX,-2)
+            frame.bar:SetPoint('LEFT', frame, 'RIGHT', Save.barX,-2)
             frame.bar:SetReverseFill(false)
         end
         --[[if Save.barToLeft then
