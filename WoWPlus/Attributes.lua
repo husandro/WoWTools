@@ -1709,9 +1709,8 @@ local function Init()
         button.frame:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
         button.frame:RegisterEvent('PLAYER_TALENT_UPDATE')
         button.frame:RegisterEvent('CHALLENGE_MODE_START')
-
-        --button.frame:RegisterEvent('LIFESTEAL_UPDATE')
-        --button.frame:RegisterEvent('AVOIDANCE_UPDATE')
+        button.frame:RegisterEvent('SOCKET_INFO_SUCCESS')
+        button.frame:RegisterEvent('SOCKET_INFO_UPDATE')
 
         button.frame:RegisterUnitEvent('UNIT_DEFENSE', "player")
         button.frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
@@ -1725,9 +1724,10 @@ local function Init()
                 frame_Init(true)--初始， 或设置
             elseif event=='AVOIDANCE_UPDATE'
                 or event=='LIFESTEAL_UPDATE'
-                or event=='UNIT_AURA'
                 or event=='UNIT_DAMAGE'
-                or event=='UNIT_DEFENSE' then
+                or event=='UNIT_DEFENSE'
+                or event=='UNIT_RANGEDDAMAGE'
+                or event=='UNIT_AURA' then
                 frame_Init()--初始， 或设置
             else
                 frame_Init(true)--初始， 或设置

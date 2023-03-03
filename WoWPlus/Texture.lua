@@ -695,6 +695,10 @@ local function Init_Set_AlphaAndColor()
             setAlpha(frame:GetNormalTexture(), true)
         end
     end
+
+    if MainStatusTrackingBarContainer then--货币，XP，追踪，最下面BAR
+        hideTexture(MainStatusTrackingBarContainer.BarFrameTexture)
+    end
 end
 
 --#########
