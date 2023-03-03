@@ -1,10 +1,12 @@
 local id, e= ...
-local addName=HIDE..TEXTURES_SUBHEADER
+local addName= TEXTURES_SUBHEADER
 local Save={
     --disabledTexture= true,
     disabledAlpha= not e.Player.husandro,
     disabledColor= not e.Player.husandro,
     alpha= 0.5,
+    chatBubbleAlpha= 0.5,--聊天泡泡
+    chatBubbleSacal= 1,
 }
 local panel=CreateFrame("Frame")
 
@@ -1319,102 +1321,188 @@ local function set_Alpha_Event(arg1)
     end
 end
 
-
-local function set_PopupDialogs()
-    local function get_TextToNumber(self)
-        local num= self:GetText()
-        num= tonumber(num)
-        if num and num<1 and num>=0 then
-            return num
-        end
-    end
-    StaticPopupDialogs[id..addName..'Aplha']={--修该, 透明度
-        text =id..' '..addName..'\n\n'..(e.onlyChinse and '透明度' or CHANGE_OPACITY).. '  |cnGREEN_FONT_COLOR:0 - 0.9|r\n\n|cnRED_FONT_COLOR:'..(e.onlyChinse and '重新加载UI' or RELOADUI),
-        whileDead=1,
-        hideOnEscape=1,
-        exclusive=1,
-        hasEditBox=1,
-        button1= e.onlyChinse and '修改' or SLASH_CHAT_MODERATE2:gsub('/',''),
-        button2= e.onlyChinse and '取消' or CANCEL,
-        OnShow = function(self, data)
-            self.editBox:SetText(Save.alpha or 0.5)
-        end,
-        OnAccept = function(self, data)
-            local num= get_TextToNumber(self.editBox)
-            if num then
-                Save.alpha= num
-                ReloadUI()
-            end
-        end,
-        EditBoxOnTextChanged=function(self, data)
-            local num= get_TextToNumber(self)
-            if num then
-                print(num)
-            end
-            self:GetParent().button1:SetEnabled(num and true or false)
-        end,
-        EditBoxOnEscapePressed = function(self)
-            self:GetParent():Hide()
-        end,
+local function Init_chatBubbles()--聊天泡泡
+    local chatBubblesEvents={
+        'CHAT_MSG_SAY',
+        'CHAT_MSG_YELL',
+        'CHAT_MSG_PARTY',
+        'CHAT_MSG_PARTY_LEADER',
+        'CHAT_MSG_RAID',
+        'CHAT_MSG_RAID_LEADER',
+        'CHAT_MSG_MONSTER_PARTY',
+        'CHAT_MSG_MONSTER_SAY',
+        'CHAT_MSG_MONSTER_YELL',
     }
-    StaticPopup_Show(id..addName..'Aplha')
+    if not Save.disabledChatBubble then
+        FrameUtil.RegisterFrameForEvents(panel, chatBubblesEvents)
+    else
+        FrameUtil.UnregisterFrameForEvents(panel, chatBubblesEvents);
+    end
 end
 
+
+local function options_Init()
+    --添加控制面板
+    panel.name = (e.onlyChinse and '材质' or addName)..'|A:AnimCreate_Icon_Texture:0:0|a'
+    panel.parent =id
+    InterfaceOptions_AddCategory(panel)
+    local restButton= CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')--重新加载UI
+    restButton:SetPoint('TOPLEFT')
+    restButton:SetText(e.onlyChinse and '重新加载UI' or RELOADUI)
+    restButton:SetSize(120, 28)
+    restButton:SetScript('OnMouseUp', e.Reload)
+
+    local enableDisbleButton=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    enableDisbleButton:SetChecked(not Save.disabled)
+    enableDisbleButton:SetPoint('LEFT', restButton, 'RIGHT', 2, 0)
+    enableDisbleButton.text:SetText(e.onlyChinse and '启用/禁用' or ENABLE..'/'..DISABLE)
+    enableDisbleButton:SetScript('OnMouseDown', function()
+        Save.disabled = not Save.disabled and true or nil
+        print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需求重新加载' or REQUIRES_RELOAD)
+    end)
+
+    local textureCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    textureCheck.text:SetText(e.onlyChinse and '隐藏材质' or HIDE..addName)
+    textureCheck:SetChecked(not Save.disabledTexture)
+    textureCheck:SetPoint('TOPLEFT', restButton, 'BOTTOMLEFT',0, -6)
+    textureCheck:SetScript('OnMouseDown', function()
+        Save.disabledTexture= not Save.disabledTexture and true or nil
+        print(id, addName, e.GetEnabeleDisable(not Save.disabledTexture), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+    end)
+
+    local alphaCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    alphaCheck.text:SetText(e.onlyChinse and '透明度' or CHANGE_OPACITY)
+    alphaCheck:SetPoint('TOPLEFT', textureCheck, 'BOTTOMLEFT', 0, -16)
+    alphaCheck:SetChecked(not Save.disabledAlpha)
+    alphaCheck:SetScript('OnMouseDown', function()
+        Save.disabledAlpha= not Save.disabledAlpha and true or nil
+        print(id, addName, e.GetEnabeleDisable(not Save.disabledAlpha), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+    end)
+
+    local alphaValue= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')
+    alphaValue:SetPoint("LEFT", alphaCheck.text, 'RIGHT', 2,0)
+    alphaValue:SetSize(200,20)
+    alphaValue:SetMinMaxValues(0, 0.9)
+    alphaValue:SetValue(Save.alpha)
+    alphaValue.Low:SetText('0')
+    alphaValue.High:SetText('0.9')
+    alphaValue.Text:SetText(Save.alpha)
+    alphaValue:SetValueStep(0.1)
+    alphaValue:SetScript('OnValueChanged', function(self, value, userInput)
+        value= tonumber(format('%.1f', value))
+        self:SetValue(value)
+        self.Text:SetText(value)
+        Save.alpha=value
+    end)
+
+    local classColor=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    classColor.text:SetText(e.Player.col..(e.onlyChinse and '职业颜色' or COLORS))
+    classColor:SetPoint('LEFT', alphaValue, 'RIGHT', 2, 0)
+    classColor:SetChecked(not Save.disabledColor)
+    classColor:SetScript('OnMouseDown', function()
+        Save.disabledColor= not Save.disabledColor and true or false
+        e.Player.useClassColor= not Save.disabledColor
+        print(id, addName, e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+    end)
+    classColor:SetScript('OnEnter', function(self2)
+        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddLine(e.Player.col..(e.onlyChinse and '职业颜色' or CLASS_COLORS))
+        e.tips:Show()
+    end)
+    classColor:SetScript('OnLeave', function() e.tips:Hide() end)
+
+    --聊天泡泡 ChatBubble
+    local chatBubbleCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    chatBubbleCheck.text:SetText(e.onlyChinse and '聊天泡泡' or CHAT_BUBBLES_TEXT)
+    chatBubbleCheck:SetPoint('TOPLEFT', alphaCheck, 'BOTTOMLEFT', 0, -16)
+    chatBubbleCheck:SetChecked(not Save.disabledChatBubble)
+    chatBubbleCheck:SetScript('OnMouseDown', function()
+        Save.disabledChatBubble= not Save.disabledChatBubble and true or false
+        print(id, addName, e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+    end)
+    chatBubbleCheck:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:AddDoubleLine(e.onlyChinse and '说' or SAY, 'CVar: chatBubbles '.. e.GetShowHide(C_CVar.GetCVarBool("chatBubbles")))
+        e.tips:AddDoubleLine(e.onlyChinse and '小队' or CHAT_MSG_PARTY, 'CVar: chatBubblesParty '.. e.GetShowHide(C_CVar.GetCVarBool("chatBubblesParty")))
+        e.tips:Show()
+    end)
+    chatBubbleCheck:SetScript('OnLeave', function() e.tips:Hide() end)
+
+    local chatBubbleAlpha=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    chatBubbleAlpha.text:SetText(e.onlyChinse and '透明度' or CHANGE_OPACITY)
+    chatBubbleAlpha:SetPoint('TOPLEFT', chatBubbleCheck, 'BOTTOMRIGHT')
+    chatBubbleAlpha:SetChecked(not Save.disabledChatBubbleAlpha)
+    chatBubbleAlpha:SetScript('OnMouseDown', function()
+        Save.disabledChatBubbleAlpha= not Save.disabledChatBubbleAlpha and true or false
+        print(id, addName, e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+    end)
+
+    local chaAlphaValue= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')
+    chaAlphaValue:SetPoint("LEFT", chatBubbleAlpha.text, 'RIGHT', 2,0)
+    chaAlphaValue:SetSize(200,20)
+    chaAlphaValue:SetMinMaxValues(0, 0.9)
+    chaAlphaValue:SetValue(Save.chatBubbleAlpha)
+    chaAlphaValue.Low:SetText('0')
+    chaAlphaValue.High:SetText('0.9')
+    chaAlphaValue.Text:SetText(Save.chatBubbleAlpha)
+    chaAlphaValue:SetValueStep(0.1)
+    chaAlphaValue:SetScript('OnValueChanged', function(self, value, userInput)
+        value= tonumber(format('%.1f', value))
+        self:SetValue(value)
+        self.Text:SetText(value)
+        Save.chatBubbleAlpha=value
+        print(id, addName, e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+    end)
+
+    local chatBubbleSacale=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    chatBubbleSacale.text:SetText(e.onlyChinse and '缩放' or UI_SCALE)
+    chatBubbleSacale:SetPoint('TOPLEFT', chatBubbleAlpha, 'BottomLEFT')
+    chatBubbleSacale:SetChecked(not Save.disabledChatBubbleSacal)
+    chatBubbleSacale:SetScript('OnMouseDown', function()
+        Save.disabledChatBubbleSacal= not Save.disabledChatBubbleSacal and true or false
+        print(id, addName, e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+    end)
+
+    local chaScaleValue= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')
+    chaScaleValue:SetPoint("LEFT", chatBubbleSacale.text, 'RIGHT', 2,0)
+    chaScaleValue:SetSize(200,20)
+    chaScaleValue:SetMinMaxValues(0.3, 2)
+    chaScaleValue:SetValue(Save.chatBubbleSacal)
+    chaScaleValue.Low:SetText('0.3')
+    chaScaleValue.High:SetText('2')
+    chaScaleValue.Text:SetText(Save.chatBubbleSacal)
+    chaScaleValue:SetValueStep(0.1)
+    chaScaleValue:SetScript('OnValueChanged', function(self, value, userInput)
+        value= tonumber(format('%.1f', value))
+        self:SetValue(value)
+        self.Text:SetText(value)
+        Save.chatBubbleSacal=value
+        print(id, addName, e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+    end)
+
+end
 --###########
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
             e.Player.useClassColor= not Save.disabledColor--使用职业颜色
-            Save.alpha= Save.alpha or 0.5
 
-            --添加控制面板        
-            local check=e.CPanel(e.onlyChinse and '隐藏材质' or addName, not Save.disabledTexture)
-            check:SetScript('OnMouseDown', function()
-                Save.disabledTexture= not Save.disabledTexture and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabledTexture), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
-            end)
+            options_Init()
 
-            panel.check2=CreateFrame("CheckButton", nil, check, "InterfaceOptionsCheckButtonTemplate")
-            panel.check2.text:SetText((e.onlyChinse and '透明度' or CHANGE_OPACITY)..Save.alpha)
-            panel.check2:SetPoint('LEFT', check.text, 'RIGHT')
-            panel.check2:SetChecked(not Save.disabledAlpha)
-            panel.check2:SetScript('OnMouseDown', function()
-                Save.disabledAlpha= not Save.disabledAlpha and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabledAlpha), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
-            end)
-
-
-            local button= e.Cbtn(check, true, nil, nil, nil, nil, {20,20})
-            button:SetPoint('LEFT', panel.check2.text, 'RIGHT',2,0)
-            button:SetNormalAtlas('mechagon-projects')
-            button:SetScript('OnClick', set_PopupDialogs)
-
-            panel.check3=CreateFrame("CheckButton", nil, check, "InterfaceOptionsCheckButtonTemplate")
-            panel.check3.text:SetText(e.Player.col..(e.onlyChinse and '职业颜色' or COLORS))
-            panel.check3:SetPoint('LEFT', button, 'RIGHT')
-            panel.check3:SetChecked(not Save.disabledColor)
-            panel.check3:SetScript('OnMouseDown', function()
-                Save.disabledColor= not Save.disabledColor and true or nil
-                e.Player.useClassColor= not Save.disabledColor
-                print(id, addName, e.GetEnabeleDisable(not Save.disabledColor), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
-            end)
-            panel.check3:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddLine(e.Player.col..(e.onlyChinse and '职业颜色' or CLASS_COLORS))
-                e.tips:Show()
-            end)
-            panel.check3:SetScript('OnLeave', function() e.tips:Hide() end)
-
-            if Save.disabledTexture and Save.disabledAlpha and Save.disabledColor then
+            if Save.disabled then
                 panel:UnregisterAllEvents()
             else
                 Init_HideTexture()
                 Init_Set_AlphaAndColor()
+                if not Save.disabledChatBubble then
+                    Init_chatBubbles()
+                end
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
@@ -1428,5 +1516,31 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not WoWToolsSave then WoWToolsSave={} end
             WoWToolsSave[addName]=Save
         end
+
+    else--ChatBubbles
+        C_Timer.After(0, function()
+            for _, buble in pairs(C_ChatBubbles.GetAllChatBubbles()) do
+                if not buble.setAlpha then
+                    local frame= buble:GetChildren()
+                    if frame then
+                        if not Save.disabledChatBubbleSacal and Save.chatBubbleSacal~=1 then
+                            frame:SetScale(Save.chatBubbleSacal)
+                        end
+                        if not Save.disabledChatBubbleAlpha then
+                            local tab={frame:GetRegions()}
+                            for _, frame2 in pairs(tab) do
+                                if frame2:GetObjectType()=='Texture' then-- .String
+                                    frame2:SetAlpha(Save.chatBubbleAlpha)
+                                    if not Save.disabledColor then
+                                        frame2:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+                                    end
+                                end
+                            end
+                        end
+                        buble.setAlpha= true
+                    end
+                end
+            end
+        end)
     end
 end)

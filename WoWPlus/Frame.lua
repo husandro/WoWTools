@@ -563,11 +563,11 @@ local function set_PopupDialogs()
         hideOnEscape = true,
         OnAccept=function(self,data)
             Save.point={}
-            ReloadUI()
+            e.Reload()
         end,
         OnAlt= function()
             Save.scale={}
-            ReloadUI()
+            e.Reload()
         end,
     }
     StaticPopup_Show(id..addName..'MoveZoom')

@@ -10,9 +10,7 @@ local reloadButton=CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')--é
 reloadButton:SetPoint('TOPLEFT')
 
 reloadButton:SetSize(120, 28)
-reloadButton:SetScript('OnMouseUp', function()
-    ReloadUI()
-end)
+reloadButton:SetScript('OnMouseUp', e.Reload)
 
 
 
@@ -30,7 +28,7 @@ restButton:SetScript('OnMouseUp', function()
             e.ClearAllSave=true
             WoWToolsSave={}
             WoWDate={}
-            ReloadUI()
+            e.Reload()
         end,
     }
     StaticPopup_Show(id..'restAllSetup')

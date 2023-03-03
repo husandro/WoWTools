@@ -1112,9 +1112,7 @@ local function set_Panle_Setting()--设置 panel
     last:SetPoint('TOPLEFT')
     last:SetText(e.onlyChinse and '重新加载UI' or RELOADUI)
     last:SetSize(120, 28)
-    last:SetScript('OnMouseUp', function()
-        ReloadUI()
-    end)
+    last:SetScript('OnMouseUp', e.Reload)
 
     for index, info in pairs(Tabs) do
         if info.dps and not findDps then
@@ -1618,7 +1616,7 @@ local function set_Panle_Setting()--设置 panel
             whileDead=true,timeout=30,hideOnEscape = 1,
             OnAccept=function(self)
                 Save=nil
-                ReloadUI()
+                e.Reload()
             end,
         }
         StaticPopup_Show(id..addName..'restAllSetup')
@@ -1752,7 +1750,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             panel.check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
             panel.check:SetChecked(not Save.disabled)
             panel.check:SetPoint('TOPLEFT', panel, 'TOP')
-            panel.check.text:SetText(e.onlyChinse and '启用' or ENABLE)
+            panel.check.text:SetText(e.onlyChinse and '启用/禁用' or (ENABLE..'/'..DISABLE))
             panel.check:SetScript('OnMouseDown', function()
                 Save.disabled = not Save.disabled and true or nil
                 if not Save.disabled and not button then

@@ -84,7 +84,7 @@ local function setButtons()--设置按钮, 和位置
                                 DisableAddOn(i)
                             end
                         end
-                        ReloadUI()
+                        e.Reload()
                     elseif d=='RightButton' then--移除
                         StaticPopup_Show(id..addName..'DELETE', name, num, {name=name, frame=self})
                     end

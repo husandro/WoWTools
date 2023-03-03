@@ -1857,7 +1857,16 @@
         "PLAYER_FACTION_COLORS",
         "QUEST_REPUTATION_REWARD_TOOLTIP",
         "ITEM_SPELL_TRIGGER_ONUSE",
-        "ITEM_COOLDOWN_TOTAL_SEC"
+        "ITEM_COOLDOWN_TOTAL_SEC",
+        "CHAT_MSG_SAY",
+        "CHAT_MSG_YELL",
+        "CHAT_MSG_PARTY",
+        "CHAT_MSG_PARTY_LEADER",
+        "CHAT_MSG_RAID",
+        "CHAT_MSG_RAID_LEADER",
+        "CHAT_MSG_MONSTER_PARTY",
+        "CHAT_MSG_MONSTER_SAY",
+        "CHAT_MSG_MONSTER_YELL"
     ],
     "Lua.diagnostics.disable": [
     ]
