@@ -145,11 +145,13 @@ local function set_Text_Value(frame, value, value2)
         end
         frame.text:SetText(text)
     end
+
     if frame.bar and frame.bar:IsShown() then
         if frame.value== value or value==0 then
             frame.bar:SetStatusBarColor(frame.r, frame.g, frame.b, frame.a)
             frame.bar:SetValue(value)
             frame.barTexture:SetShown(false)
+            frame.barTextureSpark:SetShown(false)
         else
             if frame.value< value then
                 frame.bar:SetStatusBarColor(panel.barGreenColor.r, panel.barGreenColor.g, panel.barGreenColor.b, panel.barGreenColor.a)
@@ -163,6 +165,14 @@ local function set_Text_Value(frame, value, value2)
                 frame.barTexture:SetWidth(frame.bar:GetWidth()*(frame.value/100))
             end
             frame.barTexture:SetShown(true)
+
+            frame.barTextureSpark:ClearAllPoints()
+            if not Save.barToLeft then
+                frame.barTextureSpark:SetPoint('RIGHT', frame.barTexture,3,0)
+            else
+                frame.barTextureSpark:SetPoint('LEFT', frame.barTexture,-3,0)
+            end
+            frame.barTextureSpark:SetShown(true)
         end
     end
 
@@ -171,17 +181,17 @@ local function set_Text_Value(frame, value, value2)
             frame.textValue:SetText('')
         else
             local text, icon
-            if frame.value< value then-- 减
+            if frame.value< value then--加
                 if frame.useNumber then
-                    icon, text= '|A:UI-HUD-Minimap-Zoom-In:0:0|a', e.MK(value-frame.value, frame.bit)
+                    icon, text= '|A:UI-HUD-Minimap-Zoom-In:8:8|a', e.MK(value-frame.value, frame.bit)
                 else
-                    icon, text= '|A:UI-HUD-Minimap-Zoom-In:0:0|a%.0f', ('%.'..frame.bit..'f'):format(value-frame.value)
+                    icon, text= '|A:UI-HUD-Minimap-Zoom-In:8:8|a', format('%.'..frame.bit..'f', value-frame.value)
                 end
-            else-- 加
+            else--减
                 if frame.useNumber then
-                    icon, text= '|A:UI-HUD-Minimap-Zoom-Out:0:0|a', e.MK(frame.value-value, frame.bit)
+                    icon, text= '|A:UI-HUD-Minimap-Zoom-Out:8:8|a', e.MK(frame.value-value, frame.bit)
                 else
-                    icon, text= '|A:UI-HUD-Minimap-Zoom-Out:0:0|a', ('%.'..frame.bit..'f'):format(frame.value-value)
+                    icon, text= '|A:UI-HUD-Minimap-Zoom-Out:8:8|a', format('%.'..frame.bit..'f', frame.value-value)
                 end
             end
             if Save.toLeft then
@@ -190,6 +200,7 @@ local function set_Text_Value(frame, value, value2)
                 text= icon..text
             end
             frame.textValue:SetText(text)
+
             if frame.bar and frame.bar:IsShown() then--barToLeft
                 local value3= frame.value>value and  frame.value or value
                 local barX
@@ -200,9 +211,9 @@ local function set_Text_Value(frame, value, value2)
                 end
                 frame.textValue:ClearAllPoints()
                 if Save.barToLeft then
-                    frame.textValue:SetPoint('RIGHT', frame.bar, -(barX), 0)
+                    frame.textValue:SetPoint('RIGHT', frame.bar, -(barX)-3, 0)
                 else
-                    frame.textValue:SetPoint('LEFT', frame.bar, barX, 0)
+                    frame.textValue:SetPoint('LEFT', frame.bar, barX+3, 0)
                 end
             end
         end
@@ -830,9 +841,9 @@ local function set_Frame(frame)--设置, frame
 
         frame.barTexture:ClearAllPoints()
         if Save.barToLeft then
-            frame.barTexture:SetPoint('RIGHT', frame.bar)
+            frame.barTexture:SetPoint('RIGHT')
         else
-            frame.barTexture:SetPoint('LEFT', frame.bar)
+            frame.barTexture:SetPoint('LEFT')
         end
         frame.barTexture:SetSize(frame.bar:GetWidth(), 10)
     end
@@ -1013,11 +1024,15 @@ local function frame_Init(rest)--初始， 或设置
             if info.bar and not frame.bar then--bar
                 frame.bar= CreateFrame('StatusBar', nil, frame)
                 frame.bar:SetFrameLevel(frame:GetFrameLevel()-1)
-                frame.barTexture= frame.bar:CreateTexture(nil, 'OVERLAY')
+                frame.barTexture= frame.bar:CreateTexture(nil, 'BORDER')
                 frame.barTexture:SetAtlas('UI-HUD-UnitFrame-Player-GroupIndicator')
+                frame.barTextureSpark= frame.bar:CreateTexture(nil, 'OVERLAY')
+                frame.barTextureSpark:SetAtlas('objectivewidget-bar-spark-neutral')
+                frame.barTextureSpark:SetSize(6,12)
             end
             if frame.bar then
                 frame.bar:SetShown(info.bar)
+                frame.barTextureSpark:SetShown(false)
             end
 
             if info.textValue and not frame.textValue then--数值 + -
@@ -1361,7 +1376,7 @@ local function set_Panle_Setting()--设置 panel
 
     local check5= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--使用，数值
     check5:SetPoint("TOPLEFT", check, 'BOTTOMLEFT')
-    check5.text:SetText(e.onlyChinse and '数值' or STATUS_TEXT_VALUE)
+    check5.text:SetText((e.onlyChinse and '数值' or STATUS_TEXT_VALUE)..' 2K')
     check5:SetChecked(Save.useNumber)
     check5:SetScript('OnMouseDown', function()
         Save.useNumber= not Save.useNumber and true or nil
