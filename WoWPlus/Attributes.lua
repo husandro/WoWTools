@@ -219,9 +219,9 @@ local function set_Text_Value(frame, value, value2)
                 end
                 frame.textValue:ClearAllPoints()
                 if Save.barToLeft then
-                    frame.textValue:SetPoint('RIGHT', frame.bar, -(barX)-2, 0)
+                    frame.textValue:SetPoint('RIGHT', frame.bar, -(barX)-3, 0)
                 else
-                    frame.textValue:SetPoint('LEFT', frame.bar, barX+2, 0)
+                    frame.textValue:SetPoint('LEFT', frame.bar, barX+3, 0)
                 end
             end
         end
@@ -932,9 +932,9 @@ local function frame_Init(rest)--初始， 或设置
                     frame.text:SetScript('OnEnter', set_Stat_Tooltip)
 
                 elseif info.name=='CRITCHANCE' then--爆击2
-                    frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
-                    frame:RegisterUnitEvent('UNIT_AURA', 'player')
-                    frame:SetScript('OnEvent', set_Crit_Text)
+                    --frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
+                    --frame:RegisterUnitEvent('UNIT_AURA', 'player')
+                    --frame:SetScript('OnEvent', set_Crit_Text)
                     frame.label:SetScript('OnEnter', set_Crit_Tooltip)
                     frame.text:SetScript('OnEnter', set_Crit_Tooltip)
 
@@ -951,10 +951,10 @@ local function frame_Init(rest)--初始， 或设置
                     frame.text:SetScript('OnEnter', frame.onEnterFunc)
 
                 elseif info.name=='VERSATILITY' then--全能5
-                    frame:RegisterUnitEvent('UNIT_DEFENSE', "player")
-                    frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
-                    frame:RegisterUnitEvent('UNIT_AURA', 'player')
-                    frame:SetScript('OnEvent', set_Versatility_Text)
+                    --frame:RegisterUnitEvent('UNIT_DEFENSE', "player")
+                    --frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
+                    --frame:RegisterUnitEvent('UNIT_AURA', 'player')
+                    --frame:SetScript('OnEvent', set_Versatility_Text)
                     frame.label:SetScript('OnEnter', set_Versatility_Tooltip)
                     frame.text:SetScript('OnEnter', set_Versatility_Tooltip)
 
@@ -966,8 +966,8 @@ local function frame_Init(rest)--初始， 或设置
                     frame.text:SetScript('OnEnter', set_Lifesteal_Tooltip)
 
                 elseif info.name=='ARMOR' then--护甲
-                    frame:RegisterUnitEvent('UNIT_DEFENSE', "player")
-                    frame:RegisterUnitEvent('UNIT_AURA', 'player')
+                    --frame:RegisterUnitEvent('UNIT_DEFENSE', "player")
+                    --frame:RegisterUnitEvent('UNIT_AURA', 'player')
                     frame:RegisterEvent('PLAYER_TARGET_CHANGED')
                     frame:SetScript('OnEvent', set_ARMOR_Text)
                     frame.label:SetScript('OnEnter', set_ARMOR_Tooltip)
@@ -981,29 +981,29 @@ local function frame_Init(rest)--初始， 或设置
                     frame.text:SetScript('OnEnter', set_Avoidance_Tooltip)
 
                 elseif info.name=='DODGE' then--躲闪8
-                    frame:RegisterUnitEvent('UNIT_DEFENSE', "player")
-                    frame:RegisterUnitEvent('UNIT_AURA', 'player')
-                    frame:SetScript('OnEvent', set_Dodge_Text)
+                    --frame:RegisterUnitEvent('UNIT_DEFENSE', "player")
+                    --frame:RegisterUnitEvent('UNIT_AURA', 'player')
+                    --frame:SetScript('OnEvent', set_Dodge_Text)
                     frame.label:SetScript('OnEnter', set_Dodge_Tooltip)
                     frame.text:SetScript('OnEnter', set_Dodge_Tooltip)
 
                 elseif info.name=='PARRY' then--招架9
-                    frame:RegisterUnitEvent('UNIT_DEFENSE', "player")
-                    frame:RegisterUnitEvent('UNIT_AURA', 'player')
-                    frame:SetScript('OnEvent', set_Parry_Text)
+                    --frame:RegisterUnitEvent('UNIT_DEFENSE', "player")
+                    --frame:RegisterUnitEvent('UNIT_AURA', 'player')
+                    --frame:SetScript('OnEvent', set_Parry_Text)
                     frame.label:SetScript('OnEnter', set_Parry_Tooltip)
                     frame.text:SetScript('OnEnter', set_Parry_Tooltip)
 
                 elseif info.name=='BLOCK' then--格挡10
-                    frame:RegisterUnitEvent('UNIT_DEFENSE', "player")
-                    frame:RegisterUnitEvent('UNIT_AURA', 'player')
-                    frame:SetScript('OnEvent', set_Block_Text)
+                    --frame:RegisterUnitEvent('UNIT_DEFENSE', "player")
+                    --frame:RegisterUnitEvent('UNIT_AURA', 'player')
+                    --frame:SetScript('OnEvent', set_Block_Text)
                     frame.label:SetScript('OnEnter', set_Block_Tooltip)
                     frame.text:SetScript('OnEnter', set_Block_Tooltip)
 
                 elseif info.name=='STAGGER' then--醉拳11
-                    frame:RegisterUnitEvent('UNIT_AURA', 'player')
-                    frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
+                    --frame:RegisterUnitEvent('UNIT_AURA', 'player')
+                    --frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
                     frame:RegisterEvent('PLAYER_TARGET_CHANGED')
                     frame:SetScript('OnEvent', set_Stagger_Text)
                     frame.label:SetScript('OnEnter', set_Stagger_Tooltip)
@@ -1702,16 +1702,30 @@ local function Init()
         if Save.scale and Save.scale~=1 then--缩放
             button.frame:SetScale(Save.scale)
         end
+
+        button.frame:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED')
+
         button.frame:RegisterEvent('PLAYER_AVG_ITEM_LEVEL_UPDATE')
         button.frame:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
-        button.frame:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED')
         button.frame:RegisterEvent('PLAYER_TALENT_UPDATE')
         button.frame:RegisterEvent('CHALLENGE_MODE_START')
+
+        --button.frame:RegisterEvent('LIFESTEAL_UPDATE')
+        --button.frame:RegisterEvent('AVOIDANCE_UPDATE')
+
+        button.frame:RegisterUnitEvent('UNIT_DEFENSE', "player")
+        button.frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
+        button.frame:RegisterUnitEvent('UNIT_AURA', 'player')
+
         button.frame:SetScript("OnEvent", function(self, event)
             if event=='PLAYER_SPECIALIZATION_CHANGED' then
                 set_Tabs()--设置, 内容
                 frame_Init(true)--初始， 或设置
-            elseif event=='AVOIDANCE_UPDATE' or event=='LIFESTEAL_UPDATE' then
+            elseif event=='AVOIDANCE_UPDATE'
+                or event=='LIFESTEAL_UPDATE'
+                or event=='UNIT_AURA'
+                or event=='UNIT_DAMAGE'
+                or event=='UNIT_DEFENSE' then
                 frame_Init()--初始， 或设置
             else
                 frame_Init(true)--初始， 或设置

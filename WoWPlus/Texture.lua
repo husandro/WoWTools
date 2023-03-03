@@ -1394,7 +1394,7 @@ local function options_Init()--添加控制面板
 
     local classColor=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     classColor.text:SetText(e.Player.col..(e.onlyChinse and '职业颜色' or COLORS))
-    classColor:SetPoint('LEFT', alphaValue, 'RIGHT', 6, 0)
+    classColor:SetPoint('TOPLEFT', alphaCheck, 'BOTTOMRIGHT')
     classColor:SetChecked(not Save.disabledColor)
     classColor:SetScript('OnMouseDown', function()
         Save.disabledColor= not Save.disabledColor and true or false
@@ -1411,7 +1411,7 @@ local function options_Init()--添加控制面板
     --聊天泡泡 ChatBubble
     local chatBubbleCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     chatBubbleCheck.text:SetText(e.onlyChinse and '聊天泡泡' or CHAT_BUBBLES_TEXT)
-    chatBubbleCheck:SetPoint('TOPLEFT', alphaCheck, 'BOTTOMLEFT', 0, -16)
+    chatBubbleCheck:SetPoint('TOPLEFT', alphaCheck, 'BOTTOMLEFT', 0, -32)
     chatBubbleCheck:SetChecked(not Save.disabledChatBubble)
     chatBubbleCheck:SetScript('OnMouseDown', function()
         Save.disabledChatBubble= not Save.disabledChatBubble and true or false
