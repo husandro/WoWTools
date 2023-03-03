@@ -38,6 +38,7 @@ local Save={
     onlyDPS=true,--四属性, 仅限DPS
     --useNumber= e.Player.husandro,--使用数字
     --notText=false,--禁用，数值
+    bit=0
 }
 
 local function get_PrimaryStat()--取得主属
@@ -1056,7 +1057,7 @@ local function frame_Init(rest)--初始， 或设置
             frame.damageAndDefense= info.damageAndDefense--全能5
             frame.onlyDefense= info.onlyDefense--全能5
             frame.current= info.current--SPEED 速度12
-            frame.bit= info.bit
+            frame.bit= info.bit or 0
             frame.useNumber= info.useNumber
             frame.name= info.name
             frame.nameText= info.text
@@ -1243,7 +1244,7 @@ local function set_Panle_Setting()--设置 panel
                 value= math.floor(value)
                 self:SetValue(value)
                 self.Text:SetText(value)
-                Save.tab['STATUS'].bit= value
+                Save.tab['STATUS'].bit= value==0 and 0 or value
                 frame_Init(true)--初始，设置
             end)
 
@@ -1332,7 +1333,7 @@ local function set_Panle_Setting()--设置 panel
         value= math.floor(value)
         self:SetValue(value)
         self.Text:SetText('x'..value)
-        Save.font.x=value
+        Save.font.x= value==0 and 0 or value
         set_Shadow(self.text)--设置，字体阴影
         frame_Init(true)--初始，设置
     end)
@@ -1351,7 +1352,7 @@ local function set_Panle_Setting()--设置 panel
         value= math.floor(value)
         self:SetValue(value)
         self.Text:SetText('y'..value)
-        Save.font.y=value
+        Save.font.y= value==0 and 0 or value
         set_Shadow(self.text)--设置，字体阴影
         frame_Init(true)--初始，设置
     end)
@@ -1395,10 +1396,10 @@ local function set_Panle_Setting()--设置 panel
     sliderBit.Text:SetText(Save.bit)
     sliderBit:SetValueStep(1)
     sliderBit:SetScript('OnValueChanged', function(self, value, userInput)
-        value= math.floor(value)
+        value= math.ceil(value)
         self:SetValue(value)
         self.Text:SetText(value)
-        Save.bit=value
+        Save.bit= value==0 and 0 or value
         frame_Init(true)--初始，设置
     end)
 
@@ -1506,7 +1507,7 @@ local function set_Panle_Setting()--设置 panel
         value= math.floor(value)
         self:SetValue(value)
         self.Text:SetText(value)
-        Save.barWidth=value
+        Save.barWidth= value==0 and 0 or value
         frame_Init(true)--初始，设置
     end)
 
@@ -1523,7 +1524,7 @@ local function set_Panle_Setting()--设置 panel
         value= math.floor(value)
         self:SetValue(value)
         self.Text:SetText(value)
-        Save.barX=value
+        Save.barX= value==0 and 0 or value
         frame_Init(true)--初始，设置
     end)
 
@@ -1550,7 +1551,7 @@ local function set_Panle_Setting()--设置 panel
         value= tonumber(format('%.1f', value))
         self:SetValue(value)
         self.Text:SetText(value)
-        Save.vertical=value
+        Save.vertical= value==0 and 0 or value
         frame_Init(true)--初始，设置
     end)
 
@@ -1754,6 +1755,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save.barWidth= Save.barWidth or 0
             Save.barX= Save.barX or 0
             Save.bit= Save.bit or 0
+            Save.bit= Save.bit== 0 and 0
+
             Save.font= Save.font or {r=0, g=0, b=0, a=1, x=1, y=-1}--阴影
             Save.tab['STAUTS']= Save.tab['STAUTS'] or {}
             Save.tab['STAUTS'].bit= Save.tab['STAUTS'].bit or 3

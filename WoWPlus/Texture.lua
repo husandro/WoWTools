@@ -507,6 +507,9 @@ local function Init_Set_AlphaAndColor()
             hideTexture(button.icon)
             hideTexture(button.ItemSlotBackground)
             button.NormalTexture:SetAlpha(0.1)
+            if not Save.disabledColor then
+                button.NormalTexture:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+            end
         else
             button.NormalTexture:SetAlpha(1)
         end
@@ -1393,7 +1396,7 @@ local function options_Init()--添加控制面板
         value= tonumber(format('%.1f', value))
         self:SetValue(value)
         self.Text:SetText(value)
-        Save.alpha=value
+        Save.alpha= value==0 and 0 or value
     end)
 
     local classColor=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
@@ -1449,7 +1452,7 @@ local function options_Init()--添加控制面板
         value= tonumber(format('%.1f', value))
         self:SetValue(value)
         self.Text:SetText(value)
-        Save.chatBubbleAlpha=value
+        Save.chatBubbleAlpha= value==0 and 0 or value
     end)
 
     local chatBubbleSacale=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
