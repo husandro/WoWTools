@@ -5,7 +5,7 @@ local Save={
         ZoomOut=true,
         vigentteButton=e.Player.husandro,
         vigentteButtonShowText=true,
-        expansionScale=0.6,
+        expansionScale= e.Player.husandro and 0.85 or 0.6,
         --expansionAlpha=0.3,
 }
 local panel=CreateFrame("Frame")
