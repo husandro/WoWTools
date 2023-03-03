@@ -6,7 +6,7 @@ local Save={
     disabledColor= not e.Player.husandro,
     alpha= 0.5,
     chatBubbleAlpha= 0.5,--聊天泡泡
-    chatBubbleSacal= 1,
+    chatBubbleSacal= 0.85,
 }
 local panel=CreateFrame("Frame")
 
@@ -1358,7 +1358,6 @@ local function options_Init()
     enableDisbleButton.text:SetText(e.onlyChinse and '启用/禁用' or ENABLE..'/'..DISABLE)
     enableDisbleButton:SetScript('OnMouseDown', function()
         Save.disabled = not Save.disabled and true or nil
-        print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需求重新加载' or REQUIRES_RELOAD)
     end)
 
     local textureCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
@@ -1367,7 +1366,6 @@ local function options_Init()
     textureCheck:SetPoint('TOPLEFT', restButton, 'BOTTOMLEFT',0, -6)
     textureCheck:SetScript('OnMouseDown', function()
         Save.disabledTexture= not Save.disabledTexture and true or nil
-        print(id, addName, e.GetEnabeleDisable(not Save.disabledTexture), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
     local alphaCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
@@ -1375,8 +1373,7 @@ local function options_Init()
     alphaCheck:SetPoint('TOPLEFT', textureCheck, 'BOTTOMLEFT', 0, -16)
     alphaCheck:SetChecked(not Save.disabledAlpha)
     alphaCheck:SetScript('OnMouseDown', function()
-        Save.disabledAlpha= not Save.disabledAlpha and true or nil
-        print(id, addName, e.GetEnabeleDisable(not Save.disabledAlpha), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+        Save.disabledAlpha= not Save.disabledAlpha and true or false
     end)
 
     local alphaValue= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')
@@ -1402,7 +1399,6 @@ local function options_Init()
     classColor:SetScript('OnMouseDown', function()
         Save.disabledColor= not Save.disabledColor and true or false
         e.Player.useClassColor= not Save.disabledColor
-        print(id, addName, e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
     end)
     classColor:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
@@ -1419,7 +1415,6 @@ local function options_Init()
     chatBubbleCheck:SetChecked(not Save.disabledChatBubble)
     chatBubbleCheck:SetScript('OnMouseDown', function()
         Save.disabledChatBubble= not Save.disabledChatBubble and true or false
-        print(id, addName, e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
     end)
     chatBubbleCheck:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -1435,11 +1430,10 @@ local function options_Init()
     chatBubbleAlpha:SetChecked(not Save.disabledChatBubbleAlpha)
     chatBubbleAlpha:SetScript('OnMouseDown', function()
         Save.disabledChatBubbleAlpha= not Save.disabledChatBubbleAlpha and true or false
-        print(id, addName, e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
     local chaAlphaValue= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')
-    chaAlphaValue:SetPoint("LEFT", chatBubbleAlpha.text, 'RIGHT', 2,0)
+    chaAlphaValue:SetPoint("LEFT", chatBubbleAlpha.text, 'RIGHT', 6,0)
     chaAlphaValue:SetSize(200,20)
     chaAlphaValue:SetMinMaxValues(0, 0.9)
     chaAlphaValue:SetValue(Save.chatBubbleAlpha)
@@ -1452,7 +1446,6 @@ local function options_Init()
         self:SetValue(value)
         self.Text:SetText(value)
         Save.chatBubbleAlpha=value
-        print(id, addName, e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
     local chatBubbleSacale=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
@@ -1461,26 +1454,28 @@ local function options_Init()
     chatBubbleSacale:SetChecked(not Save.disabledChatBubbleSacal)
     chatBubbleSacale:SetScript('OnMouseDown', function()
         Save.disabledChatBubbleSacal= not Save.disabledChatBubbleSacal and true or false
-        print(id, addName, e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
     local chaScaleValue= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')
-    chaScaleValue:SetPoint("LEFT", chatBubbleSacale.text, 'RIGHT', 2,0)
+    chaScaleValue:SetPoint("LEFT", chatBubbleSacale.text, 'RIGHT', 6,0)
     chaScaleValue:SetSize(200,20)
     chaScaleValue:SetMinMaxValues(0.3, 2)
     chaScaleValue:SetValue(Save.chatBubbleSacal)
     chaScaleValue.Low:SetText('0.3')
     chaScaleValue.High:SetText('2')
     chaScaleValue.Text:SetText(Save.chatBubbleSacal)
-    chaScaleValue:SetValueStep(0.1)
+    chaScaleValue:SetValueStep(0.01)
     chaScaleValue:SetScript('OnValueChanged', function(self, value, userInput)
-        value= tonumber(format('%.1f', value))
+        value= tonumber(format('%.2f', value))
         self:SetValue(value)
         self.Text:SetText(value)
         Save.chatBubbleSacal=value
-        print(id, addName, e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
+    local needReload= e.Cstr(panel)
+    needReload:SetText(e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+    needReload:SetPoint('TOPRIGHT')
+    needReload:SetTextColor(0,1,0)
 end
 --###########
 --加载保存数据
