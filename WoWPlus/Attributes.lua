@@ -902,8 +902,6 @@ local function set_Frame(frame)--设置, frame
         set_Block_Text(frame)
     elseif frame.name=='STAGGER' then--醉拳
         set_Stagger_Text(frame)
-    --elseif frame.name=='SPEED' then--SPEED 速度
-        --frame.current= info.current
     end
 end
 
@@ -1378,8 +1376,6 @@ local function set_Panle_Setting()--设置 panel
         Save.toLeft= not Save.toLeft and true or nil
         frame_Init(true)--初始， 或设置
     end)
-
-
 
 
     local check5= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--使用，数值
