@@ -1715,6 +1715,8 @@ local function Init()
 
         button.frame:RegisterUnitEvent('UNIT_DEFENSE', "player")
         button.frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
+        button.frame:RegisterUnitEvent('UNIT_RANGEDDAMAGE', 'player')
+
         button.frame:RegisterUnitEvent('UNIT_AURA', 'player')
 
         button.frame:SetScript("OnEvent", function(self, event)
