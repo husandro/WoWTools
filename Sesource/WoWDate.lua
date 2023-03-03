@@ -440,5 +440,6 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
         else
             NotifyInspect('player')--取得,自已, 装等
         end
+
     end
 end)
