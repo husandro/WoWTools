@@ -183,21 +183,29 @@ local function set_Text_Value(frame, value, value2)
             local text, icon
             if frame.value< value then--加
                 if frame.useNumber then
-                    icon, text= '|A:UI-HUD-Minimap-Zoom-In:8:8|a', e.MK(value-frame.value, frame.bit)
+                    icon, text= '|A:UI-HUD-Minimap-Zoom-In:6:6|a', e.MK(value-frame.value, frame.bit)
                 else
-                    icon, text= '|A:UI-HUD-Minimap-Zoom-In:8:8|a', format('%.'..frame.bit..'f', value-frame.value)
+                    icon, text= '|A:UI-HUD-Minimap-Zoom-In:6:6|a', format('%.'..frame.bit..'f', value-frame.value)
                 end
             else--减
                 if frame.useNumber then
-                    icon, text= '|A:UI-HUD-Minimap-Zoom-Out:8:8|a', e.MK(frame.value-value, frame.bit)
+                    icon, text= '|A:UI-HUD-Minimap-Zoom-Out6:6|a', e.MK(frame.value-value, frame.bit)
                 else
-                    icon, text= '|A:UI-HUD-Minimap-Zoom-Out:8:8|a', format('%.'..frame.bit..'f', frame.value-value)
+                    icon, text= '|A:UI-HUD-Minimap-Zoom-Out:6:6|a', format('%.'..frame.bit..'f', frame.value-value)
                 end
             end
-            if Save.toLeft then
-                text= text..icon
+            if frame.bar and frame.bar:IsShown() then
+                if Save.barToLeft then
+                    text= text..icon
+                else
+                    text= icon..text
+                end
             else
-                text= icon..text
+                if Save.toLeft then
+                    text= text..icon
+                else
+                    text= icon..text
+                end
             end
             frame.textValue:SetText(text)
 
@@ -211,9 +219,9 @@ local function set_Text_Value(frame, value, value2)
                 end
                 frame.textValue:ClearAllPoints()
                 if Save.barToLeft then
-                    frame.textValue:SetPoint('RIGHT', frame.bar, -(barX)-3, 0)
+                    frame.textValue:SetPoint('RIGHT', frame.bar, -(barX), 0)
                 else
-                    frame.textValue:SetPoint('LEFT', frame.bar, barX+3, 0)
+                    frame.textValue:SetPoint('LEFT', frame.bar, barX, 0)
                 end
             end
         end
@@ -766,9 +774,9 @@ local function set_Frame(frame)--设置, frame
     --名称
     frame.label:ClearAllPoints()
     if Save.toLeft then
-        frame.label:SetPoint('TOPLEFT', frame, 'TOPRIGHT',-5,0)
+        frame.label:SetPoint('LEFT', frame, 'RIGHT',-5,0)
     else
-        frame.label:SetPoint('TOPRIGHT', frame, 'TOPLEFT', 5,0)
+        frame.label:SetPoint('RIGHT', frame, 'LEFT', 5,0)
     end
 
     local text= frame.nameText
@@ -780,9 +788,9 @@ local function set_Frame(frame)--设置, frame
     --数值,text
     frame.text:ClearAllPoints()
     if Save.toLeft then
-        frame.text:SetPoint('TOPRIGHT', frame, 'TOPLEFT', 5,0)
+        frame.text:SetPoint('RIGHT', frame, 'LEFT', 5,0)
     else
-        frame.text:SetPoint('TOPLEFT', frame, 'TOPRIGHT',-5,0)
+        frame.text:SetPoint('LEFT', frame, 'RIGHT',-5,0)
     end
 
     if Save.toLeft then
@@ -859,9 +867,9 @@ local function set_Frame(frame)--设置, frame
             end
         else--不显示，数值
             if Save.toLeft then
-                frame.text:SetPoint('TOPRIGHT', frame, 'TOPLEFT')
+                frame.text:SetPoint('RIGHT', frame, 'LEFT')
             else
-                frame.text:SetPoint('TOPLEFT', frame, 'TOPRIGHT')
+                frame.text:SetPoint('LEFT', frame, 'RIGHT')
             end
         end
         frame.textValue:SetShown(Save.setMaxMinValue)
