@@ -37,6 +37,7 @@ local Save={
     bitPrecet=0,--百分比，位数
     onlyDPS=true,--四属性, 仅限DPS
     --useNumber= e.Player.husandro,--使用数字
+    --notText=false,--禁用，数值
 }
 
 local function get_PrimaryStat()--取得主属
@@ -89,7 +90,7 @@ local function set_Tabs()
                             or Tabs[index].usePercent and nil
                             or (Save.useNumber and not Tabs[index].usePercent ) and true
                             or Tabs[index].useNumber
-        Tabs[index].bit= Save.tab[info.name].bit or Save.bit
+        Tabs[index].bit= Save.tab[info.name].bit or Save.bit or 0
         Tabs[index].current= Save.tab[info.name].current
         Tabs[index].damageAndDefense= Save.tab[info.name].damageAndDefense
         Tabs[index].onlyDefense= Save.tab[info.name].onlyDefense
@@ -122,27 +123,28 @@ local function set_Text_Value(frame, value, value2)
         frame.value= value
     end
 
-    local text
-    if value==0 then
-        text= ''
-    else
-        if frame.useNumber then
-            text= e.MK(value, frame.bit)..( value2 and '/'..e.MK(value2, frame.bit) or '')
+    if not Save.notText then
+        local text
+        if value==0 then
+            text= ''
         else
-            if value2 then
-                text= format('%.'..frame.bit..'f/%.'..frame.bit..'f%%', value, value2)
+            if frame.useNumber then
+                text= e.MK(value, frame.bit)..( value2 and '/'..e.MK(value2, frame.bit) or '')
             else
-                text= format('%.'..frame.bit..'f%%', value)
+                if value2 then
+                    text= format('%.'..frame.bit..'f/%.'..frame.bit..'f%%', value, value2)
+                else
+                    text= format('%.'..frame.bit..'f%%', value)
+                end
+            end
+            if frame.value< value then
+                text= Save.greenColor..text
+            elseif frame.value> value then
+                text= Save.redColor..text
             end
         end
-        if frame.value< value then
-            text= Save.greenColor..text
-        elseif frame.value> value then
-            text= Save.redColor..text
-        end
+        frame.text:SetText(text)
     end
-    frame.text:SetText(text)
-
     if frame.bar and frame.bar:IsShown() then
         if frame.value== value or value==0 then
             frame.bar:SetStatusBarColor(frame.r, frame.g, frame.b, frame.a)
@@ -168,19 +170,26 @@ local function set_Text_Value(frame, value, value2)
         if frame.value== value or value==0 then
             frame.textValue:SetText('')
         else
-            if frame.value< value then
+            local text, icon
+            if frame.value< value then-- 减
                 if frame.useNumber then
-                    frame.textValue:SetText('|A:UI-HUD-Minimap-Zoom-In:0:0|a'..e.MK(value-frame.value, frame.bit))
+                    icon, text= '|A:UI-HUD-Minimap-Zoom-In:0:0|a', e.MK(value-frame.value, frame.bit)
                 else
-                    frame.textValue:SetFormattedText('|A:UI-HUD-Minimap-Zoom-In:0:0|a%.0f', value-frame.value)-- +
+                    icon, text= '|A:UI-HUD-Minimap-Zoom-In:0:0|a%.0f', ('%.'..frame.bit..'f'):format(value-frame.value)
                 end
-            else
+            else-- 加
                 if frame.useNumber then
-                    frame.textValue:SetText('|A:UI-HUD-Minimap-Zoom-Out:0:0|a'..e.MK(frame.value-value, frame.bit))
+                    icon, text= '|A:UI-HUD-Minimap-Zoom-Out:0:0|a', e.MK(frame.value-value, frame.bit)
                 else
-                    frame.textValue:SetFormattedText('|A:UI-HUD-Minimap-Zoom-Out:0:0|a%.0f', frame.value-value)-- -
+                    icon, text= '|A:UI-HUD-Minimap-Zoom-Out:0:0|a', ('%.'..frame.bit..'f'):format(frame.value-value)
                 end
             end
+            if Save.toLeft then
+                text= text..icon
+            else
+                text= icon..text
+            end
+            frame.textValue:SetText(text)
             if frame.bar and frame.bar:IsShown() then--barToLeft
                 local value3= frame.value>value and  frame.value or value
                 local barX
@@ -734,8 +743,10 @@ end
 
 
 local function set_Shadow(self)--设置，字体阴影
-    self:SetShadowColor(Save.font.r, Save.font.g, Save.font.b, Save.font.a)
-    self:SetShadowOffset(Save.font.x, Save.font.y)
+    if self then
+        self:SetShadowColor(Save.font.r, Save.font.g, Save.font.b, Save.font.a)
+        self:SetShadowOffset(Save.font.x, Save.font.y)
+    end
 end
 local function set_Frame(frame)--设置, frame
     --frame, 数值
@@ -829,10 +840,18 @@ local function set_Frame(frame)--设置, frame
     if frame.textValue then--数值 + -
         frame.textValue:ClearAllPoints()
         frame.textValue:SetTextColor(frame.r,frame.g,frame.b,frame.a)
-        if Save.toLeft then
-            frame.textValue:SetPoint('RIGHT', frame.text, -30-(frame.bit*6), 0)
-        else
-            frame.textValue:SetPoint('LEFT', frame.text, 30+(frame.bit*6), 0)
+        if not Save.notText then
+            if Save.toLeft then
+                frame.textValue:SetPoint('RIGHT', frame.text, 'LEFT')--, -30-(frame.bit*6), 0)
+            else
+                frame.textValue:SetPoint('LEFT', frame.text, 'RIGHT')--, 30+(frame.bit*6), 0)
+            end
+        else--不显示，数值
+            if Save.toLeft then
+                frame.text:SetPoint('TOPRIGHT', frame, 'TOPLEFT')
+            else
+                frame.text:SetPoint('TOPLEFT', frame, 'TOPRIGHT')
+            end
         end
         frame.textValue:SetShown(Save.setMaxMinValue)
     end
@@ -888,8 +907,6 @@ local function frame_Init(rest)--初始， 或设置
                 frame.text= e.Cstr(frame, nil, nil, nil, {1,1,1}, nil, Save.toLeft and 'RIGHT' or 'LEFT')
                 frame.text:EnableMouse(true)
                 frame.text:SetScript('OnLeave', function() e.tips:Hide() end)
-
-
 
                 if info.name=='STATUS' then--主属性1
                     frame:RegisterUnitEvent('UNIT_STATS', 'player')
@@ -1009,6 +1026,9 @@ local function frame_Init(rest)--初始， 或设置
             if frame.textValue then
                 frame.textValue:SetText('')
                 frame.textValue:SetShown(info.textValue)
+            end
+            if Save.notText then
+                frame.text:SetText('')
             end
 
             frame.r, frame.g, frame.b, frame.a= info.r,info.g,info.b,info.a
@@ -1318,9 +1338,17 @@ local function set_Panle_Setting()--设置 panel
     end)
     sliderY.text= text
 
+    local notTextCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    notTextCheck:SetPoint("TOPLEFT", panel.check, 'BOTTOMLEFT', 0, -12)
+    notTextCheck.text:SetText(e.onlyChinse and '隐藏数值' or HIDE..STATUS_TEXT_VALUE)
+    notTextCheck:SetChecked(Save.notText)
+    notTextCheck:SetScript('OnMouseDown', function()
+        Save.notText= not Save.notText and true or nil
+        frame_Init(true)--初始， 或设置
+    end)
 
     check= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    check:SetPoint("TOPLEFT", panel.check, 'BOTTOMLEFT', 0, -12)
+    check:SetPoint("TOPLEFT", notTextCheck, 'BOTTOMLEFT')
     check.text:SetText((e.onlyChinse and '向左' or BINDING_NAME_STRAFELEFT)..' 23%'..Tabs[2].text)
     check:SetChecked(Save.toLeft)
     check:SetScript('OnMouseDown', function()

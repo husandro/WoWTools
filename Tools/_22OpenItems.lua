@@ -34,10 +34,10 @@ local Save={
         [201782]=1,--提尔的祝福
 
 
-        [190315]=10,--[活力之土]
+        --[[[190315]=10,--[活力之土] 没， 包含材料包
         [190328]=10,--[活力之霜]
         [198326]=10,--[活力之气]
-        [190320]=10,--[活力之火]
+        [190320]=10,--[活力之火]]
 
     },
     no={--禁用使用
@@ -134,6 +134,7 @@ local function getItems()--取得背包物品信息
             if info and info.itemID and info.hyperlink and not info.isLocked and info.iconFileID then
                 e.LoadSpellItemData(info.itemID)--加载法术, 物品数据
                 if Save.use[info.itemID] then--自定义
+                    print(info.hyperlink, Save.use[info.itemID]<=info.stackCount)
                     if Save.use[info.itemID]<=info.stackCount then
                         setAtt(bag, slot, info.iconFileID, info.itemID)
                         return
@@ -441,51 +442,6 @@ end
 
 --########
 --设置属性
-StaticPopupDialogs['OpenItmesUseOrDisableItem']={
-    text=id..' '..addName..'\n\n%s\n%s\n\n'..COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS)..' >1: ',
-    whileDead=1,
-    hideOnEscape=1,
-    exclusive=1,
-	timeout = 60,
-    hasEditBox=1,
-    button1='|cnGREEN_FONT_COLOR:'..USE..'|r',
-    button2=CANCEL,
-    button3='|cnRED_FONT_COLOR:'..DISABLE..'|r',
-    OnShow = function(self, data)
-        self.editBox:SetNumeric(true)
-        local num=Save.use[data.itemID]
-        if num and num>1 then
-            self.editBox:SetNumber(num)
-        end
-        --self.editBox:SetAutoFocus(false)
-	end,
-    OnAccept = function(self, data)
-		local num= self.editBox:GetNumber()
-        num = num<1 and 1 or num
-        Save.use[data.itemID]=num
-        Save.no[data.itemID]=nil
-        getItems()--取得背包物品信息
-        print(id, '|cnGREEN_FONT_COLOR:'..addName..'|r', num>1 and COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS)..': '..'|cnGREEN_FONT_COLOR:'..num..'|r' or '', data.itemLink)
-	end,
-    OnAlt = function(self, data)
-        Save.no[data.itemID]=true
-        Save.use[data.itemID]=nil
-        getItems()--取得背包物品信息
-        print(id, addName, '|cnRED_FONT_COLOR:'..DISABLE..'|r', data.itemLink)
-    end,
-    EditBoxOnTextChanged=function(self)
-       local num= self:GetNumber()
-        if num>1 then
-           self:GetParent().button1:SetText('|cnGREEN_FONT_COLOR:'..AUCTION_STACK_SIZE..num..'|r')
-        else
-            self:GetParent().button1:SetText('|cnGREEN_FONT_COLOR:'..USE..'|r');
-        end
-    end,
-    EditBoxOnEscapePressed = function(s)
-        s:GetParent():Hide()
-    end,
-}
-
 local function shoTips(self)--显示提示
     if e.tips:IsShown() then
         e.tips:Hide()
@@ -539,6 +495,50 @@ local function Init()
             if Bag.bag and Bag.slot and itemLink== C_Container.GetContainerItemLink(Bag.bag, Bag.slot) then
                 return
             end
+            --添加，移除
+            StaticPopupDialogs['OpenItmesUseOrDisableItem']={
+                text=id..' '..addName..'\n\n%s\n%s\n\n'..(e.onlyChinse and '合成物品' or COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS))..' >1: ',
+                whileDead=1,
+                hideOnEscape=1,
+                exclusive=1,
+                timeout = 60,
+                hasEditBox=1,
+                button1='|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '使用' or USE)..'|r',
+                button2=CANCEL,
+                button3='|cnRED_FONT_COLOR:'..(e.onlyChinse and '禁用' or DISABLE)..'|r',
+                OnShow = function(self2, data)
+                    self2.editBox:SetNumeric(true)
+                    local num=Save.use[data.itemID] or 1
+                    self2.editBox:SetNumber(num)
+                    self2.editBox:SetAutoFocus(false)
+                end,
+                OnAccept = function(self2, data)
+                    local num= self2.editBox:GetNumber()
+                    num = num<1 and 1 or num
+                    Save.use[data.itemID]=num
+                    Save.no[data.itemID]=nil
+                    getItems()--取得背包物品信息
+                    print(id, '|cnGREEN_FONT_COLOR:'..addName..'|r', num>1 and (e.onlyChinse and '合成物品' or COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS))..': '..'|cnGREEN_FONT_COLOR:'..num..'|r' or '', data.itemLink)
+                end,
+                OnAlt = function(self2, data)
+                    Save.no[data.itemID]=true
+                    Save.use[data.itemID]=nil
+                    getItems()--取得背包物品信息
+                    print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinse and '禁用' or DISABLE)..'|r', data.itemLink)
+                end,
+                EditBoxOnTextChanged=function(self2)
+                   local num= self2:GetNumber()
+                    if num>1 then
+                       self2:GetParent().button1:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '合成' or AUCTION_STACK_SIZE)..' '..num..'|r')
+                    else
+                        self2:GetParent().button1:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '使用' or USE)..'|r');
+                    end
+                end,
+                EditBoxOnEscapePressed = function(s)
+                    s:GetParent():Hide()
+                end,
+            }
+
             local icon
             icon= C_Item.GetItemIconByID(itemID)
             icon = icon and '|T'..icon..':0|t'..itemLink or ''

@@ -35,7 +35,6 @@ local function set_Item_Cooldown_Count(self)--图标冷却
         end
         self.count:SetText(num>1 and num or (num==1 and Save.autoWho) and num or '')
         self.texture:SetDesaturated(notFind)
-        self.texture:SetShown(num>0)
     end
 end
 
