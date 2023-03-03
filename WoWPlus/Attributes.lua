@@ -183,15 +183,15 @@ local function set_Text_Value(frame, value, value2)
             local text, icon
             if frame.value< value then--加
                 if frame.useNumber then
-                    icon, text= '|A:UI-HUD-Minimap-Zoom-In:6:6|a', e.MK(value-frame.value, frame.bit)
+                    icon, text= '|A:UI-HUD-Minimap-Zoom-In:8:8|a', e.MK(value-frame.value, frame.bit)
                 else
-                    icon, text= '|A:UI-HUD-Minimap-Zoom-In:6:6|a', format('%.'..frame.bit..'f', value-frame.value)
+                    icon, text= '|A:UI-HUD-Minimap-Zoom-In:8:8|a', format('%.'..frame.bit..'f', value-frame.value)
                 end
             else--减
                 if frame.useNumber then
-                    icon, text= '|A:UI-HUD-Minimap-Zoom-Out6:6|a', e.MK(frame.value-value, frame.bit)
+                    icon, text= '|A:UI-HUD-Minimap-Zoom-Out:6:6|a', e.MK(frame.value-value, frame.bit)
                 else
-                    icon, text= '|A:UI-HUD-Minimap-Zoom-Out:6:6|a', format('%.'..frame.bit..'f', frame.value-value)
+                    icon, text= '|A:UI-HUD-Minimap-Zoom-Out:8:8|a', format('%.'..frame.bit..'f', frame.value-value)
                 end
             end
             if frame.bar and frame.bar:IsShown() then
@@ -219,9 +219,9 @@ local function set_Text_Value(frame, value, value2)
                 end
                 frame.textValue:ClearAllPoints()
                 if Save.barToLeft then
-                    frame.textValue:SetPoint('RIGHT', frame.bar, -(barX), 0)
+                    frame.textValue:SetPoint('RIGHT', frame.bar, -(barX)-2, 0)
                 else
-                    frame.textValue:SetPoint('LEFT', frame.bar, barX, 0)
+                    frame.textValue:SetPoint('LEFT', frame.bar, barX+2, 0)
                 end
             end
         end
@@ -959,9 +959,9 @@ local function frame_Init(rest)--初始， 或设置
                     frame.text:SetScript('OnEnter', set_Versatility_Tooltip)
 
                 elseif info.name=='LIFESTEAL' then--吸血6
-                    frame:RegisterEvent('LIFESTEAL_UPDATE')
+                    --frame:RegisterEvent('LIFESTEAL_UPDATE')
                     button.frame:RegisterEvent('LIFESTEAL_UPDATE')
-                    frame:SetScript('OnEvent', set_Lifesteal_Text)
+                    --frame:SetScript('OnEvent', set_Lifesteal_Text)
                     frame.label:SetScript('OnEnter', set_Lifesteal_Tooltip)
                     frame.text:SetScript('OnEnter', set_Lifesteal_Tooltip)
 
@@ -974,9 +974,9 @@ local function frame_Init(rest)--初始， 或设置
                     frame.text:SetScript('OnEnter', set_ARMOR_Tooltip)
 
                 elseif info.name=='AVOIDANCE' then--闪避7
-                    frame:RegisterEvent('AVOIDANCE_UPDATE')
+                    --frame:RegisterEvent('AVOIDANCE_UPDATE')
                     button.frame:RegisterEvent('AVOIDANCE_UPDATE')
-                    frame:SetScript('OnEvent', set_Avoidance_Text)
+                    --frame:SetScript('OnEvent', set_Avoidance_Text)
                     frame.label:SetScript('OnEnter', set_Avoidance_Tooltip)
                     frame.text:SetScript('OnEnter', set_Avoidance_Tooltip)
 
@@ -1125,7 +1125,7 @@ local function set_Panle_Setting()--设置 panel
                 check.text:SetFormattedText(LFG_LIST_CROSS_FACTION , DAMAGER..INLINE_DAMAGER_ICON)
             end
             check:SetScript('OnMouseUp',function(self)
-                Save.onlyDPS = not Save.onlyDPS and true or nil
+                Save.onlyDPS = not Save.onlyDPS and true or false
                 frame_Init(true)--初始，设置
             end)
             findDps=true

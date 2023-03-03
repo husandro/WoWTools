@@ -1341,11 +1341,11 @@ local function Init_chatBubbles()--聊天泡泡
 end
 
 
-local function options_Init()
-    --添加控制面板
+local function options_Init()--添加控制面板
     panel.name = (e.onlyChinse and '材质' or addName)..'|A:AnimCreate_Icon_Texture:0:0|a'
     panel.parent =id
     InterfaceOptions_AddCategory(panel)
+
     local restButton= CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')--重新加载UI
     restButton:SetPoint('TOPLEFT')
     restButton:SetText(e.onlyChinse and '重新加载UI' or RELOADUI)
