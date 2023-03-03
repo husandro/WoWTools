@@ -203,12 +203,12 @@ local function getItems()--取得背包物品信息
                         --[[if classID==0 and subclassID==8  then--声望，物品
                             setAtt(bag, slot, info.iconFileID, info.itemID)
                             return
-                        else]]
+                        else
                             --print(C_Item.IsItemSpecificToPlayerClass(info.hyperlink), info.hyperlink)
                         if C_Item.IsItemSpecificToPlayerClass(info.hyperlink) then
                             setAtt(bag, slot, info.iconFileID, info.itemID)
                             return
-                        elseif classID==15 and subclassID==4 then--其它
+                        else]]if classID==15 and subclassID==4 then--其它
                             if info.itemID == 193201 or info.itemID==191251 then--钥匙框架
                                 if GetItemCount(193201)>=3 and GetItemCount(191251)>=30 then
                                     setAtt(bag, slot, info.iconFileID, info.itemID)
