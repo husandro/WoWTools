@@ -81,6 +81,7 @@ local function Gem(self, slot, link)--宝石
     if not slot or slot>17 or slot<1 or slot==4 then
         return
     end
+
     local gems={}
     if link then
         for i=1, MAX_NUM_SOCKETS do
