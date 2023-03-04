@@ -1175,7 +1175,7 @@ local function set_Panle_Setting()--设置 panel
             e.tips:AddDoubleLine(e.GetShowHide(Save.tab[self.name].hide), '|cnGREEN_FONT_COLOR:0 = '..(e.onlyChinse and '隐藏' or HIDE))
             e.tips:Show()
         end)
-        check:SetScript('OnLeave', function() e.tips:Hide() end)
+        check:SetScript('OnLeave', function(self) e.tips:Hide() end)
 
         local text= e.Cstr(panel, nil, nil, nil, {r,g,b,a})--Text
         text:SetPoint('LEFT', check, 'RIGHT')
@@ -1429,7 +1429,7 @@ local function set_Panle_Setting()--设置 panel
     panel.barGreenColor= e.Cstr(panel, 20)
     panel.barGreenColor:SetPoint('LEFT', barValueText.text,'RIGHT', 2, 0)
     panel.barGreenColor:EnableMouse(true)
-    panel.barGreenColor:SetScript('OnLeave', function() e.tips:Hide() end)
+    panel.barGreenColor:SetScript('OnLeave', function(self) e.tips:Hide() end)
     panel.barGreenColor:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
@@ -1456,7 +1456,7 @@ local function set_Panle_Setting()--设置 panel
     panel.barRedColor= e.Cstr(panel, 20)
     panel.barRedColor:SetPoint('LEFT', panel.barGreenColor,'RIGHT', 2, 0)
     panel.barRedColor:EnableMouse(true)
-    panel.barRedColor:SetScript('OnLeave', function() e.tips:Hide() end)
+    panel.barRedColor:SetScript('OnLeave', function(self) e.tips:Hide() end)
     panel.barRedColor:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
@@ -1480,17 +1480,17 @@ local function set_Panle_Setting()--设置 panel
         end)
     end)
 
-    local textColor= e.Cstr(panel, 20)
+    local textColor= e.Cstr(panel, 20)--数值text, 颜色
     textColor:SetPoint('LEFT', panel.barRedColor,'RIGHT', 20, 0)
     textColor:EnableMouse(true)
-    textColor:SetScript('OnLeave', function() e.tips:Hide() end)
+    textColor:SetScript('OnLeave', function(self) e.tips:Hide() end)
     textColor:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinse and '设置' or SETTINGS, self.hex..(e.onlyChinse and '颜色' or COLOR))
         e.tips:Show()
     end)
-    textColor:SetText('20%')
+    textColor:SetText('23%')
     e.RGB_to_HEX(Save.textColor.r, Save.textColor.g, Save.textColor.b, Save.textColor.a, textColor)
     textColor:SetScript('OnMouseDown', function(self)
         local valueR, valueG, valueB, valueA= self.r, self.g, self.b, self.a
