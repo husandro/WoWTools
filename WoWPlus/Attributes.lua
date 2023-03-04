@@ -169,9 +169,9 @@ local function set_Text_Value(frame, value, value2)
 
             frame.barTextureSpark:ClearAllPoints()
             if not Save.barToLeft then
-                frame.barTextureSpark:SetPoint('RIGHT', frame.barTexture,3,0)
+                frame.barTextureSpark:SetPoint('RIGHT', frame.barTexture)
             else
-                frame.barTextureSpark:SetPoint('LEFT', frame.barTexture,-3,0)
+                frame.barTextureSpark:SetPoint('LEFT', frame.barTexture)
             end
             frame.barTextureSpark:SetShown(true)
         end
