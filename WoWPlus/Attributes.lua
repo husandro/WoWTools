@@ -38,7 +38,8 @@ local Save={
     onlyDPS=true,--四属性, 仅限DPS
     --useNumber= e.Player.husandro,--使用数字
     --notText=false,--禁用，数值
-    bit=0
+    textColor= {r=1,g=1,b=1,a=1},--数值，颜色
+    bit=0,--数值，位数
 }
 
 local function get_PrimaryStat()--取得主属
@@ -168,10 +169,10 @@ local function set_Text_Value(frame, value, value2)
             frame.barTexture:SetShown(true)
 
             frame.barTextureSpark:ClearAllPoints()
-            if not Save.barToLeft then
-                frame.barTextureSpark:SetPoint('RIGHT', frame.barTexture)
+            if Save.barToLeft then
+                frame.barTextureSpark:SetPoint('LEFT', frame.barTexture,-3,0)
             else
-                frame.barTextureSpark:SetPoint('LEFT', frame.barTexture)
+                frame.barTextureSpark:SetPoint('RIGHT', frame.barTexture, 3,0)
             end
             frame.barTextureSpark:SetShown(true)
         end
@@ -1051,6 +1052,8 @@ local function frame_Init(rest)--初始， 或设置
             end
             if Save.notText then
                 frame.text:SetText('')
+            else
+                frame.text:SetTextColor(Save.textColor.r, Save.textColor.g, Save.textColor.b, Save.textColor.a)
             end
 
             frame.r, frame.g, frame.b, frame.a= info.r,info.g,info.b,info.a
@@ -1475,6 +1478,31 @@ local function set_Panle_Setting()--设置 panel
         end)
     end)
 
+    local textColor= e.Cstr(panel, 20)
+    textColor:SetPoint('LEFT', panel.barRedColor,'RIGHT', 20, 0)
+    textColor:EnableMouse(true)
+    textColor:SetScript('OnLeave', function() e.tips:Hide() end)
+    textColor:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_RIGHT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.onlyChinse and '设置' or SETTINGS, self.hex..(e.onlyChinse and '颜色' or COLOR))
+        e.tips:Show()
+    end)
+    textColor:SetText('20%')
+    e.RGB_to_HEX(Save.textColor.r, Save.textColor.g, Save.textColor.b, Save.textColor.a, textColor)
+    textColor:SetScript('OnMouseDown', function(self)
+        local valueR, valueG, valueB, valueA= self.r, self.g, self.b, self.a
+        e.ShowColorPicker(self.r, self.g, self.b,self.a, function(restore)
+            local setA, setR, setG, setB
+            if not restore then
+                setR, setG, setB, setA= e.Get_ColorFrame_RGBA()
+            else
+                setR, setG, setB, setA= valueR, valueG, valueB, valueA
+            end
+            Save.textColor= {r=setR, g=setG, b=setB, a=setA}
+            frame_Init(true)--初始，设置
+        end)
+    end)
 
 
     local check2= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--bar
@@ -1756,7 +1784,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save.barX= Save.barX or 0
             Save.bit= Save.bit or 0
             Save.bit= Save.bit== 0 and 0
-
+            Save.textColor= Save.textColor or {r=1,g=1,b=1,a=1}
             Save.font= Save.font or {r=0, g=0, b=0, a=1, x=1, y=-1}--阴影
             Save.tab['STAUTS']= Save.tab['STAUTS'] or {}
             Save.tab['STAUTS'].bit= Save.tab['STAUTS'].bit or 3
