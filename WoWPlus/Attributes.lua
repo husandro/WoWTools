@@ -769,112 +769,114 @@ local function set_Shadow(self)--设置，字体阴影
         self:SetShadowOffset(Save.font.x, Save.font.y)
     end
 end
-local function set_Frame(frame)--设置, frame
-    --frame, 数值
-    frame:SetSize(Save.horizontal, 12+ (Save.vertical or 3))--设置，大小
+local function set_Frame(frame, rest)--设置, frame
+    if rest then
+        --frame, 数值
+        frame:SetSize(Save.horizontal, 12+ (Save.vertical or 3))--设置，大小
 
-    --名称
-    frame.label:ClearAllPoints()
-    if Save.toLeft then
-        frame.label:SetPoint('LEFT', frame, 'RIGHT',-5,0)
-    else
-        frame.label:SetPoint('RIGHT', frame, 'LEFT', 5,0)
-    end
+        --名称
+        frame.label:ClearAllPoints()
+        if Save.toLeft then
+            frame.label:SetPoint('LEFT', frame, 'RIGHT',-5,0)
+        else
+            frame.label:SetPoint('RIGHT', frame, 'LEFT', 5,0)
+        end
 
-    local text= frame.nameText
-    if Save.gsubText then--文本，截取
-        text= e.WA_Utf8Sub(text, Save.gsubText)
-    end
-    frame.label:SetText(text or '')
+        local text= frame.nameText
+        if Save.gsubText then--文本，截取
+            text= e.WA_Utf8Sub(text, Save.gsubText)
+        end
+        frame.label:SetText(text or '')
 
-    --数值,text
-    frame.text:ClearAllPoints()
-    if Save.toLeft then
-        frame.text:SetPoint('RIGHT', frame, 'LEFT', 5,0)
-    else
-        frame.text:SetPoint('LEFT', frame, 'RIGHT',-5,0)
-    end
+        --数值,text
+        frame.text:ClearAllPoints()
+        if Save.toLeft then
+            frame.text:SetPoint('RIGHT', frame, 'LEFT', 5,0)
+        else
+            frame.text:SetPoint('LEFT', frame, 'RIGHT',-5,0)
+        end
 
-    if Save.toLeft then
-        frame.label:SetJustifyH('LEFT')
-        frame.text:SetJustifyH('RIGHT')
-    else
-        frame.label:SetJustifyH('RIGHT')
-        frame.text:SetJustifyH('LEFT')
-    end
+        if Save.toLeft then
+            frame.label:SetJustifyH('LEFT')
+            frame.text:SetJustifyH('RIGHT')
+        else
+            frame.label:SetJustifyH('RIGHT')
+            frame.text:SetJustifyH('LEFT')
+        end
 
-    set_Shadow(frame.label)--设置，字体阴影
-    set_Shadow(frame.text)--设置，字体阴影
+        set_Shadow(frame.label)--设置，字体阴影
+        set_Shadow(frame.text)--设置，字体阴影
 
-    if frame.bar and frame:IsShown() then
-        local value
-        if frame.useNumber then
-            if frame.name=='STATUS' then
-                value= set_Stat_Text() or 1000
+        if frame.bar and frame:IsShown() then
+            local value
+            if frame.useNumber then
+                if frame.name=='STATUS' then
+                    value= set_Stat_Text() or 1000
+                else
+                    value= max(--取得Bar，最高值
+                        set_Crit_Text(),
+                        set_Haste_Text(),
+                        set_Mastery_Text(),
+                        set_Versatility_Text(),
+                        set_Lifesteal_Text(),
+                        set_Avoidance_Text(),
+                        set_ARMOR_Text(),
+                        set_Dodge_Text(),
+                        set_Parry_Text()
+                    )
+                end
+                value= (value and value~=0) and value or 1000
+                value= format('%i', value)
+                value= tonumber('1'..string.rep('0', #value))
             else
-                value= max(--取得Bar，最高值
-                    set_Crit_Text(),
-                    set_Haste_Text(),
-                    set_Mastery_Text(),
-                    set_Versatility_Text(),
-                    set_Lifesteal_Text(),
-                    set_Avoidance_Text(),
-                    set_ARMOR_Text(),
-                    set_Dodge_Text(),
-                    set_Parry_Text()
-                )
+                frame.bar:SetMinMaxValues(0,100)
+                value=100
             end
-            value= (value and value~=0) and value or 1000
-            value= format('%i', value)
-            value= tonumber('1'..string.rep('0', #value))
-        else
-            frame.bar:SetMinMaxValues(0,100)
-            value=100
-        end
-        frame.bar:SetMinMaxValues(0, value)
-        frame.bar.maxValue=value
-        frame.bar:SetSize(120+Save.barWidth, 10)
-        frame.bar:ClearAllPoints()
-        if Save.barToLeft then
-            frame.bar:SetPoint('RIGHT', frame, 'LEFT', -(Save.barX), 0)
-            frame.bar:SetReverseFill(true)
-        else
-            frame.bar:SetPoint('LEFT', frame, 'RIGHT', Save.barX, 0)
-            frame.bar:SetReverseFill(false)
-        end
-
-        if Save.barTexture2 then
-            frame.bar:SetStatusBarTexture('Interface\\TargetingFrame\\UI-StatusBar')
-        else
-            frame.bar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
-        end
-
-        frame.barTexture:ClearAllPoints()
-        if Save.barToLeft then
-            frame.barTexture:SetPoint('RIGHT')
-        else
-            frame.barTexture:SetPoint('LEFT')
-        end
-        frame.barTexture:SetSize(frame.bar:GetWidth(), 10)
-    end
-
-    if frame.textValue then--数值 + -
-        frame.textValue:ClearAllPoints()
-        frame.textValue:SetTextColor(frame.r,frame.g,frame.b,frame.a)
-        if not Save.notText then
-            if Save.toLeft then
-                frame.textValue:SetPoint('RIGHT', frame.text, 'LEFT')--, -30-(frame.bit*6), 0)
+            frame.bar:SetMinMaxValues(0, value)
+            frame.bar.maxValue=value
+            frame.bar:SetSize(120+Save.barWidth, 10)
+            frame.bar:ClearAllPoints()
+            if Save.barToLeft then
+                frame.bar:SetPoint('RIGHT', frame, 'LEFT', -(Save.barX), 0)
+                frame.bar:SetReverseFill(true)
             else
-                frame.textValue:SetPoint('LEFT', frame.text, 'RIGHT')--, 30+(frame.bit*6), 0)
+                frame.bar:SetPoint('LEFT', frame, 'RIGHT', Save.barX, 0)
+                frame.bar:SetReverseFill(false)
             end
-        else--不显示，数值
-            if Save.toLeft then
-                frame.text:SetPoint('RIGHT', frame, 'LEFT')
+
+            if Save.barTexture2 then
+                frame.bar:SetStatusBarTexture('Interface\\TargetingFrame\\UI-StatusBar')
             else
-                frame.text:SetPoint('LEFT', frame, 'RIGHT')
+                frame.bar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
             end
+
+            frame.barTexture:ClearAllPoints()
+            if Save.barToLeft then
+                frame.barTexture:SetPoint('RIGHT')
+            else
+                frame.barTexture:SetPoint('LEFT')
+            end
+            frame.barTexture:SetSize(frame.bar:GetWidth(), 10)
         end
-        frame.textValue:SetShown(Save.setMaxMinValue)
+
+        if frame.textValue then--数值 + -
+            frame.textValue:ClearAllPoints()
+            frame.textValue:SetTextColor(frame.r,frame.g,frame.b,frame.a)
+            if not Save.notText then
+                if Save.toLeft then
+                    frame.textValue:SetPoint('RIGHT', frame.text, 'LEFT')--, -30-(frame.bit*6), 0)
+                else
+                    frame.textValue:SetPoint('LEFT', frame.text, 'RIGHT')--, 30+(frame.bit*6), 0)
+                end
+            else--不显示，数值
+                if Save.toLeft then
+                    frame.text:SetPoint('RIGHT', frame, 'LEFT')
+                else
+                    frame.text:SetPoint('LEFT', frame, 'RIGHT')
+                end
+            end
+            frame.textValue:SetShown(Save.setMaxMinValue)
+        end
     end
 
     if frame.name=='STATUS' then--主属性1
@@ -1029,48 +1031,48 @@ local function frame_Init(rest)--初始， 或设置
                 button[info.name]= frame
             end
 
-            if info.bar and not frame.bar then--bar
-                frame.bar= CreateFrame('StatusBar', nil, frame)
-                frame.bar:SetFrameLevel(frame:GetFrameLevel()-1)
-                frame.barTexture= frame.bar:CreateTexture(nil, 'BORDER')
-                frame.barTexture:SetAtlas('UI-HUD-UnitFrame-Player-GroupIndicator')
-                frame.barTextureSpark= frame.bar:CreateTexture(nil, 'OVERLAY')
-                frame.barTextureSpark:SetAtlas('objectivewidget-bar-spark-neutral')
-                frame.barTextureSpark:SetSize(6,12)
-            end
-            if frame.bar then
-                frame.bar:SetShown(info.bar)
-                frame.barTextureSpark:SetShown(false)
-            end
-
-            if info.textValue and not frame.textValue then--数值 + -
-                frame.textValue=e.Cstr(frame)
-            end
-            if frame.textValue then
-                frame.textValue:SetText('')
-                frame.textValue:SetShown(info.textValue)
-            end
-            if Save.notText then
-                frame.text:SetText('')
-            else
-                frame.text:SetTextColor(Save.textColor.r, Save.textColor.g, Save.textColor.b, Save.textColor.a)
-            end
-
-            frame.r, frame.g, frame.b, frame.a= info.r,info.g,info.b,info.a
-            frame.damageAndDefense= info.damageAndDefense--全能5
-            frame.onlyDefense= info.onlyDefense--全能5
-            frame.current= info.current--SPEED 速度12
-            frame.bit= info.bit or 0
-            frame.useNumber= info.useNumber
-            frame.name= info.name
-            frame.nameText= info.text
-
             --重置, 数值
             if rest then
+                if info.bar and not frame.bar then--bar
+                    frame.bar= CreateFrame('StatusBar', nil, frame)
+                    frame.bar:SetFrameLevel(frame:GetFrameLevel()-1)
+                    frame.barTexture= frame.bar:CreateTexture(nil, 'BORDER')
+                    frame.barTexture:SetAtlas('UI-HUD-UnitFrame-Player-GroupIndicator')
+                    frame.barTextureSpark= frame.bar:CreateTexture(nil, 'OVERLAY')
+                    frame.barTextureSpark:SetAtlas('objectivewidget-bar-spark-neutral')
+                    frame.barTextureSpark:SetSize(6,12)
+                end
+                if frame.bar then
+                    frame.bar:SetShown(info.bar)
+                    frame.barTextureSpark:SetShown(false)
+                end
+
+                if info.textValue and not frame.textValue then--数值 + -
+                    frame.textValue=e.Cstr(frame)
+                end
+                if frame.textValue then
+                    frame.textValue:SetText('')
+                    frame.textValue:SetShown(info.textValue)
+                end
+                if Save.notText then
+                    frame.text:SetText('')
+                else
+                    frame.text:SetTextColor(Save.textColor.r, Save.textColor.g, Save.textColor.b, Save.textColor.a)
+                end
+
+                frame.r, frame.g, frame.b, frame.a= info.r,info.g,info.b,info.a
+                frame.damageAndDefense= info.damageAndDefense--全能5
+                frame.onlyDefense= info.onlyDefense--全能5
+                frame.current= info.current--SPEED 速度12
+                frame.bit= info.bit or 0
+                frame.useNumber= info.useNumber
+                frame.name= info.name
+                frame.nameText= info.text
+
                 frame.value=nil
             end
 
-            set_Frame(frame)
+            set_Frame(frame, rest)
 
             find= (frame.value and frame.value>0) or info.name=='SPEED'
             if find then
