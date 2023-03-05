@@ -446,8 +446,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 						print(id, addName, e.GetShowHide(not Save.hide))
 					end
 				end)
-				check2:SetScript('OnEnter', function(self2)
-					e.tips:SetOwner(self2, "ANCHOR_LEFT");
+				check2:SetScript('OnEnter', function()
+					e.tips:SetOwner(ColorPickerFrame, "ANCHOR_RIGHT");
 					e.tips:ClearLines();
 					e.tips:AddDoubleLine(e.GetShowHide(true), e.GetShowHide(false))
 					e.tips:AddDoubleLine(id, addName)
@@ -462,8 +462,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 					Save.colorType= not Save.colorType and true or nil
 					print(id, addName, e.GetEnabeleDisable(Save.colorType), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
 				end)
-				colorTypeCheck:SetScript('OnEnter', function(self2)
-					e.tips:SetOwner(self2, "ANCHOR_LEFT");
+				colorTypeCheck:SetScript('OnEnter', function()
+					e.tips:SetOwner(ColorPickerFrame, "ANCHOR_RIGHT");
 					e.tips:ClearLines();
 					e.tips:AddDoubleLine(COLOR, 2)
 					e.tips:AddDoubleLine(id, addName)
