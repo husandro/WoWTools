@@ -73,7 +73,7 @@ local function set_Text()
         if  info.name==UNUSED then
 			break
 		end
-        if (info.isHeader and  info.isHeaderExpanded) or  not info.isHeader then
+        if info and (info.isHeader and info.isHeaderExpanded) or  not info.isHeader then
 			local t=''
 			if info.isHeader then
 				if Save.nameShow then
@@ -88,9 +88,9 @@ local function set_Text()
 				end
                 t=info.iconFileID and t..'|T'..info.iconFileID..':0|t' or t --图标
 				t=Save.nameShow and t..info.name..' ' or t--名称
-                if info.maxuantity and info.maxuantity>0 then
-					if info.quantity==info.maxuantity then--最大数量
-                    	t=t..'|cnRED_FONT_COLOR:'..e.MK(info.quantity, 3)..'|r'..e.Icon.disabled
+                if info.maxQuantity and info.maxQuantity>0 then
+					if info.quantity==info.maxQuantity then--最大数量
+                    	t=t..'|cnRED_FONT_COLOR:'..e.MK(info.quantity, 3)..'|r'..e.Icon.O2
 					else
 						t=t..e.MK(info.quantity, 3)..' /'..e.MK(info.maxQuantity)
 					end
@@ -116,6 +116,9 @@ local function set_Text()
         	end
 			m= t~=''and m..t..'|n' or m
     	end
+	end
+	if m=='' then
+		m='..'
 	end
 	panel.btn.text:SetText(m)
 end
