@@ -6,52 +6,61 @@ local addName= COLOR_PICKER..' Plus'--"颜色选择器";
 local panel= CreateFrame("Frame")--ColorPickerFrame.xml
 local logNum= 30--记录数量
 
-
+local Frame
 
 local timeElapsed=0
-local function set_Text(self, elapsed)
+local function set_Text(_, elapsed)
+	if not Frame or not Frame:IsShown() then
+		return
+	end
 	timeElapsed = timeElapsed + elapsed
 	if timeElapsed > 0.3 then
 		local r, g, b, a= e.Get_ColorFrame_RGBA()
-		if ColorPickerFrame.rgb then
-			if not ColorPickerFrame.rgb:HasFocus() then
-				ColorPickerFrame.rgb:SetText(format('%.2f %.2f %.2f %.2f', r,g,b,a))
+		if Frame.rgb then
+			if not Frame.rgb:HasFocus() then
+				Frame.rgb:SetText(format('%.2f %.2f %.2f %.2f', r,g,b,a))
 			end
-			if not ColorPickerFrame.rgb2:HasFocus() then
-				ColorPickerFrame.rgb2:SetText(format('r=%.2f, g=%.2f, b=%.2f, a=%.2f', r,g,b,a))
+			if not Frame.rgb2:HasFocus() then
+				Frame.rgb2:SetText(format('r=%.2f, g=%.2f, b=%.2f, a=%.2f', r,g,b,a))
 			end
-			if not ColorPickerFrame.hex:HasFocus() then
-				ColorPickerFrame.hex:SetText(e.RGB_to_HEX(r,g,b,a))
+			if not Frame.hex:HasFocus() then
+				Frame.hex:SetText(e.RGB_to_HEX(r,g,b,a))
 			end
 		end
 		ColorPickerFrame.Header.Text:SetTextColor(r,g,b)
-		ColorPickerFrame.alphaText:SetFormattedText('%.2f', a)
-		ColorPickerFrame.alphaText:SetTextColor(r,g,b)
+		Frame.alphaText:SetFormattedText('%.2f', a)
+		Frame.alphaText:SetTextColor(r,g,b)
 	end
 end
 
 local function set_Edit_Text(r, g, b, a, textCode)
 	ColorPickerFrame:SetColorRGB(r, g, b)
 	OpacitySliderFrame:SetValue(a or 1);
-	ColorPickerFrame.cn:SetText(textCode and textCode..'_CODE' or '')
-	ColorPickerFrame.cn2:SetText(textCode and '|cn'..textCode or '')
+	Frame.cn:SetText(textCode and textCode..'_CODE' or '')
+	Frame.cn2:SetText(textCode and '|cn'..textCode or '')
 end
+
+
+
 --####
 --初始
 --####
-local function Init(self)
+local function Init()
+	Frame= CreateFrame("Frame", nil, ColorPickerFrame)
+
 	local size, x, y, n
 	local function create_Texture(r,g,b,a, atlas)
-		local texture= self:CreateTexture()
+		local texture= Frame:CreateTexture()
 		texture:SetSize(size, size)
 		texture:EnableMouse(true)
+		a=a or 1
 		texture.r, texture.g, texture.b, texture.a= r, g, b, a
 		texture:SetScript('OnMouseDown', function(self2)
 			set_Edit_Text(self2.r, self2.g, self2.b, self2.a, self2.textCode)
 		end)
 		texture:SetScript('OnEnter', function(self2)
 			if self2.tooltip then
-				e.tips:SetOwner(self, "ANCHOR_RIGHT")
+				e.tips:SetOwner(ColorPickerFrame, "ANCHOR_RIGHT")
 				e.tips:ClearLines()
 				e.tips:AddLine(self2.tooltip)
 				e.tips:Show()
@@ -61,74 +70,40 @@ local function Init(self)
 		if atlas then
 			texture:SetAtlas(atlas)
 		else
-			texture:SetColorTexture(r, g, b, 1)
+			texture:SetColorTexture(r, g, b)
 		end
 		return texture
 	end
 
-
+	local colorTab={}
 	size, x, y, n= 22, 0, -15, 1
 	for className, col in pairs(RAID_CLASS_COLORS) do--职业 ColorUtil.lua
-		local texture= create_Texture(col.r, col.g, col.b, col.a, e.Class(nil, className, true))
-		texture:SetPoint('TOPLEFT', self, 'TOPRIGHT', x, y)
-		local hex= col:GenerateHexColor()
-		texture.tooltip= '|c'..hex..'RAID_CLASS_COLORS["'..className..'"]'
-		if n==7 then
-			n=0
-			x= x+ size
-			y= -15
-		else
-			y= y- size
+		local text= col.r..col.g..col.b.. (col.a or 1)
+		if not colorTab[text] then
+			colorTab[text]= true
+			local texture= create_Texture(col.r, col.g, col.b, col.a, e.Class(nil, className, true))
+			texture:SetPoint('TOPLEFT', ColorPickerFrame, 'TOPRIGHT', x, y)
+			local hex= col:GenerateHexColor()
+			texture.tooltip= '|c'..hex..'RAID_CLASS_COLORS["'..className..'"]'
+			if n==7 then
+				n=0
+				x= x+ size
+				y= -15
+			else
+				y= y- size
+			end
+			n=n+1
 		end
-		n=n+1
 	end
 
 	size, x, y, n= 16, x+size, -15, 0
 	for index, col in pairs(ITEM_QUALITY_COLORS) do--物品 UIParent.lua
-		local texture= create_Texture(col.r, col.g, col.b, col.a)
-		texture:SetPoint('TOPLEFT', self, 'TOPRIGHT', x, y)
-		texture.tooltip= col.hex.._G["ITEM_QUALITY" .. index.. "_DESC"]..'\nITEM_QUALITY' ..index.. '_DESC'
-		if n==10 then
-			n=0
-			x= x+ size
-			y= -15
-		else
-			y= y- size
-		end
-		n=n+1
-	end
-	n=n+1
-	for name, col in pairs(MATERIAL_TEXT_COLOR_TABLE) do--SharedColorConstants.lua
-		local texture= create_Texture(col.r, col.g, col.b, col.a)
-		texture:SetPoint('TOPLEFT', self, 'TOPRIGHT', x, y)
-		texture.tooltip= 'MATERIAL_TEXT_COLOR_TABLE'..'["'..name..'"]'
-		if n==10 then
-			n=0
-			x= x+ size
-			y= -15
-		else
-			y= y- size
-		end
-		n=n+1
-	end
-	for name, col in pairs(MATERIAL_TITLETEXT_COLOR_TABLE) do--SharedColorConstants.lua
-		local texture= create_Texture(col.r, col.g, col.b, col.a)
-		texture:SetPoint('TOPLEFT', self, 'TOPRIGHT', x, y)
-		texture.tooltip= 'MATERIAL_TITLETEXT_COLOR_TABLE'..'["'..name..'"]'
-		if n==10 then
-			n=0
-			x= x+ size
-			y= -15
-		else
-			y= y- size
-		end
-		n=n+1
-	end
-	for name, col in pairs(COVENANT_COLORS) do--SharedColorConstants.lua
-		if type(name)~='number' then
+		local text= col.r..col.g..col.b.. (col.a or 1)
+		if not colorTab[text] then
+			colorTab[text]= true
 			local texture= create_Texture(col.r, col.g, col.b, col.a)
-			texture:SetPoint('TOPLEFT', self, 'TOPRIGHT', x, y)
-			texture.tooltip= 'COVENANT_COLORS'..'["'..name..'"]'
+			texture:SetPoint('TOPLEFT', ColorPickerFrame, 'TOPRIGHT', x, y)
+			texture.tooltip= col.hex.._G["ITEM_QUALITY" .. index.. "_DESC"]..'\nITEM_QUALITY' ..index.. '_DESC'
 			if n==10 then
 				n=0
 				x= x+ size
@@ -139,60 +114,187 @@ local function Init(self)
 			n=n+1
 		end
 	end
+	n=n+1
+	for name, col in pairs(MATERIAL_TEXT_COLOR_TABLE) do--SharedColorConstants.lua
+		local text= col.r..col.g..col.b.. (col.a or 1)
+		if not colorTab[text] then
+			colorTab[text]= true
+			local texture= create_Texture(col.r, col.g, col.b, col.a)
+			texture:SetPoint('TOPLEFT', ColorPickerFrame, 'TOPRIGHT', x, y)
+			texture.tooltip= 'MATERIAL_TEXT_COLOR_TABLE'..'["'..name..'"]'
+			if n==9 then
+				n=0
+				x= x+ size
+				y= -15
+			else
+				y= y- size
+			end
+			n=n+1
+		end
+	end
+	for name, col in pairs(MATERIAL_TITLETEXT_COLOR_TABLE) do--SharedColorConstants.lua
+		local text= col.r..col.g..col.b.. (col.a or 1)
+		if not colorTab[text] then
+			colorTab[text]= true
+			local texture= create_Texture(col.r, col.g, col.b, col.a)
+			texture:SetPoint('TOPLEFT', ColorPickerFrame, 'TOPRIGHT', x, y)
+			texture.tooltip= 'MATERIAL_TITLETEXT_COLOR_TABLE'..'["'..name..'"]'
+			if n==10 then
+				n=0
+				x= x+ size
+				y= -15
+			else
+				y= y- size
+			end
+			n=n+1
+		end
+	end
+	for name, col in pairs(COVENANT_COLORS) do--SharedColorConstants.lua
+		if type(name)~='number' then
+			local text= col.r..col.g..col.b.. (col.a or 1)
+			if not colorTab[text] then
+			colorTab[text]= true
+				local texture= create_Texture(col.r, col.g, col.b, col.a)
+				texture:SetPoint('TOPLEFT', ColorPickerFrame, 'TOPRIGHT', x, y)
+				texture.tooltip= 'COVENANT_COLORS'..'["'..name..'"]'
+				if n==10 then
+					n=0
+					x= x+ size
+					y= -15
+				else
+					y= y- size
+				end
+				n=n+1
+			end
+		end
+	end
 	for name, col in pairs(PLAYER_FACTION_COLORS) do--SharedColorConstants.lua
-		local texture= create_Texture(col.r, col.g, col.b, col.a)
-		texture:SetPoint('TOPLEFT', self, 'TOPRIGHT', x, y)
-		texture.tooltip= 'PLAYER_FACTION_COLORS'..'['..name..']'
-		if n==10 then
-			n=0
-			x= x+ size
-			y= -15
-		else
-			y= y- size
+		local text= col.r..col.g..col.b.. (col.a or 1)
+		if not colorTab[text] then
+			colorTab[text]= true
+			local texture= create_Texture(col.r, col.g, col.b, col.a)
+			texture:SetPoint('TOPLEFT', ColorPickerFrame, 'TOPRIGHT', x, y)
+			texture.tooltip= 'PLAYER_FACTION_COLORS'..'['..name..']'
+			if n==10 then
+				n=0
+				x= x+ size
+				y= -15
+			else
+				y= y- size
+			end
+			n=n+1
 		end
-		n=n+1
 	end
 
-	size, x, y, n= 16, 2, 8, 1
-	local DBColors = C_UIColor.GetColors();--Color.lua
+	size, x, y, n= 16, -70, 0, 1
+	local DBColors = C_UIColor.GetColors() or {};--Color.lua
+	table.sort(DBColors, function(a,b)
+		return a.color.r> b.color.r
+	end)
 	for _, dbColor in ipairs(DBColors) do
-		local texture= create_Texture(dbColor.color.r, dbColor.color.g, dbColor.color.b, dbColor.color.a)
-		texture.textCode= dbColor.baseTag
-		texture:SetPoint('BOTTOMLEFT', self, 'TOPLEFT', x, y)
-		if n==22 then
-			n=0
-			y=y +size
-			x=2
-		else
-			x=x +size
+		local text= dbColor.color.r.. dbColor.color.g.. dbColor.color.b.. (dbColor.color.a or 1)
+		if not colorTab[text] then
+			colorTab[text]= true
+			local texture= create_Texture(dbColor.color.r, dbColor.color.g, dbColor.color.b, dbColor.color.a)
+			texture.textCode= dbColor.baseTag
+			texture:SetPoint('BOTTOMLEFT', ColorPickerFrame.Header, 'TOPLEFT', x, y)
+			if n==21 then
+				n=0
+				y=y +size
+				x=-70
+			else
+				x=x +size
+			end
+			n=n+1
 		end
-		n=n+1
 	end
-
-	local w=290
-	self.rgb= CreateFrame("EditBox", nil, self, 'InputBoxTemplate')-- 1 1 1 1
-	self.rgb:SetPoint("TOPLEFT", self, 'BOTTOMLEFT',10,0)
-	self.rgb:SetSize(w,20)
-	self.rgb:SetAutoFocus(false)
-	self.rgb:SetScript('OnEnterPressed', function(self2)
-		local text= self2:GetText()
+	if Save.colorType then--颜色 选择器2
+		x, y, n= -100, y+size, 1
+		for r=0, 1, 0.2 do
+			for g=0, 1, 0.2 do
+				for b=0, 1, 0.2 do
+					local texture= create_Texture(r, g, b)
+					texture:SetPoint('BOTTOMLEFT', ColorPickerFrame.Header, 'TOPLEFT', x, y)
+					if n==24 then
+						n=0
+						y=y +size
+						x=-100
+					else
+						x=x +size
+					end
+					n=n+1
+				end
+			end
+		end
+	end
+	--RGB
+	local function get_rgb_Text(text)
+		text= text:gsub(',',' ')
+		text= text:gsub('，',' ')
 		text= text:gsub('  ',' ')
-		local r, g, b, a= text:match('(.-) (.-) (.-) (.+)')
+		local r, g, b, a
+
+		if text:find('#') or text:find('|c') then
+			text= text:gsub(' ',' ')
+			r, g, b, a= e.HEX_to_RGB(text)
+		else
+			r, g, b, a= text:match('(.-) (.-) (.-) (.+)')
+			if not r or not g or not b then
+				r, g, b= text:match('(.-) (.-) (.+)')
+			end
+
+			if not r or not g or not b then
+				r, g, b= text:match('(%d+) (%d+) (%d+)')
+			end
+		end
 		a= a or '1'
 		if r and g and b then
 			r, g, b, a= tonumber(r), tonumber(g), tonumber(b), tonumber(a)
 			if r and g and b then
-				set_Edit_Text(r, g, b, a, nil)
-				self2:ClearFocus()
+				local maxValue= max(r, g, b)
+				if maxValue<=1 then
+					return r,g,b,a
+				elseif maxValue<=255 then
+					a= (not a or a==1) and 255 or a
+					return r/255, g/255, b/255, a/255
+				end
 			end
+		end
+	end
+	local w=290
+	Frame.rgb= CreateFrame("EditBox", nil, Frame, 'InputBoxTemplate')-- 1 1 1 1
+	Frame.rgb:SetPoint("TOPLEFT", ColorPickerFrame, 'BOTTOMLEFT',10,0)
+	Frame.rgb:SetSize(w,20)
+	Frame.rgb:SetAutoFocus(false)
+	Frame.rgb:SetScript('OnEnterPressed', function(self2)
+		local r, g, b, a=get_rgb_Text(self2:GetText())
+		if r and g and b then
+			set_Edit_Text(r, g, b, (a or 1), nil)
+			self2:ClearFocus()
+		end
+	end)
+	Frame.rgb.lable=e.Cstr(Frame.rgb, 10)--提示，修改，颜色
+	Frame.rgb.lable:SetPoint('RIGHT', Frame.rgb,-2,0)
+	Frame.rgb:SetScript('OnTextChanged', function(self2, userInput)
+		if userInput then
+			local r, g, b, a= get_rgb_Text(self2:GetText())
+			if r and g and b and a then
+				self2.lable:SetFormattedText('r%.2f g%.2f b%.2f a%.2f', r,g,b,a)
+				self2.lable:SetTextColor(r,g,b)
+			else
+				self2.lable:SetText('')
+			end
+		else
+			self2.lable:SetText('')
 		end
 	end)
 
-	self.rgb2= CreateFrame("EditBox", nil, self, 'InputBoxTemplate')--r=1, b=1, g=1, a=1
-	self.rgb2:SetPoint("TOPLEFT", self.rgb, 'BOTTOMLEFT',0,-2)
-	self.rgb2:SetSize(w,20)
-	self.rgb2:SetAutoFocus(false)
-	self.rgb2:SetScript('OnEnterPressed', function(self2)
+
+	Frame.rgb2= CreateFrame("EditBox", nil, Frame, 'InputBoxTemplate')--r=1, b=1, g=1, a=1
+	Frame.rgb2:SetPoint("TOPLEFT", Frame.rgb, 'BOTTOMLEFT',0,-2)
+	Frame.rgb2:SetSize(w,20)
+	Frame.rgb2:SetAutoFocus(false)
+	Frame.rgb2:SetScript('OnEnterPressed', function(self2)
 		local text= self2:GetText()
 		text= text:gsub(' ','')
 		text= text:gsub('，', ',')
@@ -202,17 +304,23 @@ local function Init(self)
 		if r and g and b then
 			r, g, b, a= tonumber(r), tonumber(g), tonumber(b), tonumber(a)
 			if r and g and b then
-				set_Edit_Text(r, g, b, a, nil)
+				local maxValue= max(r, g, b, a)
+				if maxValue<=1 then
+					set_Edit_Text(r, g, b, a, nil)
+				elseif maxValue<=255 then
+					a= a==1 and 255 or a
+					set_Edit_Text(r/255, g/255, b/255, a/255, nil)
+				end
 				self2:ClearFocus()
 			end
 		end
 	end)
 
-	self.hex= CreateFrame("EditBox", nil, self, 'InputBoxTemplate')--|cff808080
-	self.hex:SetPoint("TOPLEFT", self.rgb2, 'BOTTOMLEFT',0,-2)
-	self.hex:SetSize(w,20)
-	self.hex:SetAutoFocus(false)
-	self.hex:SetScript('OnEnterPressed', function(self2)
+	Frame.hex= CreateFrame("EditBox", nil, Frame, 'InputBoxTemplate')--|cff808080
+	Frame.hex:SetPoint("TOPLEFT", Frame.rgb2, 'BOTTOMLEFT',0,-2)
+	Frame.hex:SetSize(w,20)
+	Frame.hex:SetAutoFocus(false)
+	Frame.hex:SetScript('OnEnterPressed', function(self2)
 		local text= self2:GetText()
 		text= text:gsub(' ','')
 		local r, g, b, a= e.HEX_to_RGB(text)
@@ -222,13 +330,13 @@ local function Init(self)
 			self2:ClearFocus()
 		end
 	end)
-	local hexText=e.Cstr(self)--提示
-	hexText:SetPoint('RIGHT', self.hex, 'LEFT',-2,0)
+	local hexText=e.Cstr(Frame)--提示
+	hexText:SetPoint('RIGHT', Frame.hex, 'LEFT',-2,0)
 	hexText:SetText('|c')
 
-	self.hex.hexText=e.Cstr(self.hex, 18)--提示，修改，颜色
-	self.hex.hexText:SetPoint('RIGHT', self.hex,-2,0)
-	self.hex:SetScript('OnTextChanged', function(self2, userInput)
+	Frame.hex.hexText=e.Cstr(Frame.hex, 10)--提示，修改，颜色
+	Frame.hex.hexText:SetPoint('RIGHT', Frame.hex,-2,0)
+	Frame.hex:SetScript('OnTextChanged', function(self2, userInput)
 		if userInput then
 			local text= self2:GetText()
 			text= text:gsub(' ','')
@@ -245,21 +353,21 @@ local function Init(self)
 		end
 	end)
 
-	self.cn= CreateFrame("EditBox", nil, self, 'InputBoxTemplate')--格式 RED_FONT_COLOR
-	self.cn:SetPoint("TOPLEFT", self.hex, 'BOTTOMLEFT',0,-2)
-	self.cn:SetSize(w,20)
-	self.cn:SetAutoFocus(false)
+	Frame.cn= CreateFrame("EditBox", nil, Frame, 'InputBoxTemplate')--格式 RED_FONT_COLOR
+	Frame.cn:SetPoint("TOPLEFT", Frame.hex, 'BOTTOMLEFT',0,-2)
+	Frame.cn:SetSize(w,20)
+	Frame.cn:SetAutoFocus(false)
 
-	self.cn2= CreateFrame("EditBox", nil, self, 'InputBoxTemplate')--格式 '|cnGREEN_FONT_COLOR:'
-	self.cn2:SetPoint("TOPLEFT", self.cn, 'BOTTOMLEFT',0,-2)
-	self.cn2:SetSize(w,20)
-	self.cn2:SetAutoFocus(false)
-	local cnText2=e.Cstr(self)--提示
-	cnText2:SetPoint('LEFT', self.cn2, 'RIGHT', 2,0)
+	Frame.cn2= CreateFrame("EditBox", nil, Frame, 'InputBoxTemplate')--格式 '|cnGREEN_FONT_COLOR:'
+	Frame.cn2:SetPoint("TOPLEFT", Frame.cn, 'BOTTOMLEFT',0,-2)
+	Frame.cn2:SetSize(w,20)
+	Frame.cn2:SetAutoFocus(false)
+	local cnText2=e.Cstr(Frame)--提示
+	cnText2:SetPoint('LEFT', Frame.cn2, 'RIGHT', 2,0)
 	cnText2:SetText(':')
 
-	self.alphaText=e.Cstr(OpacitySliderFrame, 16)--透明值，提示
-	self.alphaText:SetPoint('LEFT', OpacitySliderFrame, 'RIGHT', 5,0)
+	Frame.alphaText=e.Cstr(Frame, 14)--透明值，提示
+	Frame.alphaText:SetPoint('LEFT', OpacitySliderFrame, 'RIGHT', 5,0)
 
 	size= 18
 	local restColor= create_Texture(e.Player.r, e.Player.g, e.Player.b, 1)--记录，打开时的颜色， 和历史
@@ -276,10 +384,10 @@ local function Init(self)
 			if not self2[i] then
 				texture= create_Texture(col.r, col.g, col.b, 1)--记录，打开时的颜色， 和历史
 				self2[i]= texture
-				texture:SetPoint('TOPRIGHT', self, 'TOPLEFT', x, y)
+				texture:SetPoint('TOPRIGHT', ColorPickerFrame, 'TOPLEFT', x, y)
 			end
 			texture.r, texture.g, texture.b, texture.a= col.r, col.g, col.b, col.a
-			texture:SetColorTexture(col.r, col.g, col.b ,1)
+			texture:SetColorTexture(col.r, col.g, col.b , col.a)
 
 			if n==10 then
 				n=0
@@ -292,13 +400,10 @@ local function Init(self)
 		end
 	end)
 
-	ColorPickerOkayButton:SetScript('OnMouseDown', function()--记录，历史
-		if #Save.color >=logNum then
-			table.remove(Save.color, 1)
-		end
-		local r, g, b, a= e.Get_ColorFrame_RGBA()
-		table.insert(Save.color,{r=r, g=g, b=b, a=a})
-	end)
+
+
+	ColorPickerFrame:SetScript('OnUpdate', set_Text)
+	Frame:SetShown(not Save.hide)
 end
 
 panel:RegisterEvent('ADDON_LOADED')
@@ -314,7 +419,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end)
-			--panel.check.text:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
+
 			panel.check.text:EnableMouse(true)
 			panel.check.text:SetScript('OnMouseDown', function()
                 e.ShowColorPicker(e.Player.r, e.Player.g, e.Player.b, 1, function()
@@ -323,8 +428,61 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 			end)
 
             if not Save.disabled then
-                Init(ColorPickerFrame)
-				ColorPickerFrame:SetScript('OnUpdate', set_Text)
+				local check2= CreateFrame("CheckButton", nil, ColorPickerFrame, "InterfaceOptionsCheckButtonTemplate")--显示/隐藏
+				check2:SetPoint("TOPLEFT", ColorPickerFrame, 7, -7)
+				check2:SetChecked(not Save.hide)
+				check2:SetScript('OnMouseDown', function()
+					Save.hide= not Save.hide and true or nil
+					if not Save.hide and not Frame then
+						Init()
+					end
+					if Frame then
+						Frame:SetShown(not Save.hide)
+						print(id, addName, e.GetShowHide(not Save.hide))
+					end
+				end)
+				check2:SetScript('OnEnter', function(self2)
+					e.tips:SetOwner(self2, "ANCHOR_LEFT");
+					e.tips:ClearLines();
+					e.tips:AddDoubleLine(e.GetShowHide(true), e.GetShowHide(false))
+					e.tips:AddDoubleLine(id, addName)
+					e.tips:Show();
+				end)
+				check2:SetScript('OnLeave', function() e.tips:Hide() end)
+
+				local colorTypeCheck= CreateFrame("CheckButton", nil, ColorPickerFrame, "InterfaceOptionsCheckButtonTemplate")--显示/隐藏
+				colorTypeCheck:SetPoint("LEFT", check2, 'RIGHT',-4,0)
+				colorTypeCheck:SetChecked(Save.colorType)
+				colorTypeCheck:SetScript('OnMouseDown', function()
+					Save.colorType= not Save.colorType and true or nil
+					print(id, addName, e.GetEnabeleDisable(Save.colorType), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+				end)
+				colorTypeCheck:SetScript('OnEnter', function(self2)
+					e.tips:SetOwner(self2, "ANCHOR_LEFT");
+					e.tips:ClearLines();
+					e.tips:AddDoubleLine(COLOR, 2)
+					e.tips:AddDoubleLine(id, addName)
+					e.tips:Show();
+				end)
+				colorTypeCheck:SetScript('OnLeave', function() e.tips:Hide() end)
+
+				if not Save.hide then
+					Init()
+				end
+
+				ColorPickerOkayButton:SetScript('OnMouseDown', function()--记录，历史
+					local r, g, b, a= e.Get_ColorFrame_RGBA()
+					for _, col in pairs(Save.color) do
+						if col.r==r and col.g==g and col.b==b and col.a== a then
+							return
+						end
+					end
+					if #Save.color >=logNum then
+						table.remove(Save.color, 1)
+					end
+					table.insert(Save.color,{r=r, g=g, b=b, a=a})
+				end)
+
             end
             panel:UnregisterEvent('ADDON_LOADED')
             panel:RegisterEvent('PLAYER_LOGOUT')

@@ -1169,17 +1169,32 @@ e.RGB_to_HEX=function(setR, setG, setB,setA, self)--RGB转HEX
 	return hex
 end
 
-e.HEX_to_RGB=function(hexColor, self)--HEX转RGB
+e.HEX_to_RGB=function(hexColor, self)--HEX转RGB -- ColorUtil.lua
 	if hexColor then
 		hexColor= hexColor:gsub('|c', '')
+        hexColor= hexColor:gsub('#', '')
 		hexColor= hexColor:gsub(' ','')
-		if #hexColor == 8 then
-            local colorA= tonumber(hexColor:sub(1, 2), 16) / 255-- ColorUtil.lua
-            local colorR= tonumber(hexColor:sub(3, 4), 16) / 255
-            local colorG= tonumber(hexColor:sub(5, 6), 16) / 255
-            local colorB= tonumber(hexColor:sub(7, 8), 16) / 255
-            set_Frame_Color(self, colorR, colorG, colorB, colorA, hexColor)
-			return colorR, colorG, colorB, colorA
+        local len= #hexColor
+		if len == 8 then
+            local colorA= tonumber(hexColor:sub(1, 2), 16)
+            local colorR= tonumber(hexColor:sub(3, 4), 16)
+            local colorG= tonumber(hexColor:sub(5, 6), 16)
+            local colorB= tonumber(hexColor:sub(7, 8), 16)
+            if colorA and colorR and colorG and colorB then
+                colorA, colorR, colorG, colorB= colorA/255, colorR/255, colorG/255, colorB/255
+                set_Frame_Color(self, colorR, colorG, colorB, colorA, hexColor)
+                return colorR, colorG, colorB, colorA
+            end
+        elseif len==6 then
+            local colorR= tonumber(hexColor:sub(1, 2), 16)
+            local colorG= tonumber(hexColor:sub(3, 4), 16)
+            local colorB= tonumber(hexColor:sub(5, 6), 16)
+            if colorR and colorG and colorB then
+                colorR, colorG, colorB= colorR/255, colorG/255, colorB/255
+                hexColor= 'ff'..hexColor
+                set_Frame_Color(self, colorR, colorG, colorB, 1, hexColor)
+                return colorR, colorG, colorB, 1
+            end
 		end
 	end
 end

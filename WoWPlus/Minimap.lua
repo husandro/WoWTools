@@ -129,7 +129,7 @@ local function set_ExpansionLandingPageMinimapButton()
     if not frame then
         return
     end
-    local OpenWR=function()
+    --[[local OpenWR=function()
         if not WeeklyRewardsFrame then
             return
         end
@@ -139,7 +139,7 @@ local function set_ExpansionLandingPageMinimapButton()
             WeeklyRewardsFrame:Show()
             tinsert(UISpecialFrames, WeeklyRewardsFrame:GetName())
         end
-    end
+    end]]
     frame:SetFrameStrata('TOOLTIP')
     frame:SetMovable(true)--移动
     frame:RegisterForDrag("RightButton")

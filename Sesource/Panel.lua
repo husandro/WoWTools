@@ -66,7 +66,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             reloadButton:SetText(e.onlyChinese and '重新加载UI' or RELOADUI)
 
             local restButton=CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')--全部重
-            restButton:SetPoint('TOPRIGHT')
+            restButton:SetPoint('TOPRIGHT',3,10)
             restButton:SetSize(120, 28)
             restButton:SetScript('OnMouseUp', function()
                 StaticPopupDialogs[id..'restAllSetup']={
@@ -74,7 +74,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     button1 = '|cnRED_FONT_COLOR:'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT),
                     button2 = e.onlyChinese and '取消' or CANCEL,
                     whileDead=true,timeout=30,hideOnEscape = 1,
-                    OnAccept=function(self)
+                    OnAccept=function()
                         e.ClearAllSave=true
                         WoWToolsSave={}
                         WoWDate={}
