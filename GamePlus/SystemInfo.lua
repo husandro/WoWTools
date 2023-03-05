@@ -228,7 +228,7 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddButton(info,level)
 
         info={
-            text= (e.onlyChinse and '系统' or SYSTEM).. ' fps ms',
+            text= (e.onlyChinese and '系统' or SYSTEM).. ' fps ms',
             checked= Save.SystemFpsMs,
             func= function()
                 Save.SystemFpsMs= not Save.SystemFpsMs and true or nil
@@ -249,12 +249,12 @@ local function InitMenu(self, level, type)--主菜单
         --e.tips:AddDoubleLine(CHARACTER..numPlayer..' '..FROM_TOTAL..e.MK(allMoney/10000, 3), GetCoinTextureString(allMoney))
 
         info={
-            text= (e.onlyChinse and '钱' or MONEY),
+            text= (e.onlyChinese and '钱' or MONEY),
             checked=Save.money,
             menuList='wowMony',
             hasArrow=true,
             tooltipOnButton=true,
-            tooltipTitle= (e.onlyChinse and '角色' or CHARACTER)..'|cnGREEN_FONT_COLOR:'..numPlayer..'|r  '..(e.onlyChinse and '总计: ' or FROM_TOTAL)..'|cnGREEN_FONT_COLOR:'..(allMoney >=10000 and e.MK(allMoney/10000, 3) or GetCoinTextureString(allMoney, true))..'|r',
+            tooltipTitle= (e.onlyChinese and '角色' or CHARACTER)..'|cnGREEN_FONT_COLOR:'..numPlayer..'|r  '..(e.onlyChinese and '总计: ' or FROM_TOTAL)..'|cnGREEN_FONT_COLOR:'..(allMoney >=10000 and e.MK(allMoney/10000, 3) or GetCoinTextureString(allMoney, true))..'|r',
             tooltipText= text,
             func= function()
                 Save.money= not Save.money and true or nil
@@ -264,7 +264,7 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddButton(info,level)
 
         info={
-            text= (e.onlyChinse and '耐久度' or DURABILITY)..': '..setDurabiliy(true),
+            text= (e.onlyChinese and '耐久度' or DURABILITY)..': '..setDurabiliy(true),
             checked= Save.durabiliy,
             func= function()
                 Save.durabiliy = not  Save.durabiliy and true or nil
@@ -274,7 +274,7 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddButton(info,level)
 
         info={
-            text= (e.onlyChinse and '装备等级' or EQUIPSET_EQUIP..LEVEL),
+            text= (e.onlyChinese and '装备等级' or EQUIPSET_EQUIP..LEVEL),
             checked=Save.equipmetLevel,
             func= function()
                 Save.equipmetLevel= not Save.equipmetLevel and true or nil
@@ -285,7 +285,7 @@ local function InitMenu(self, level, type)--主菜单
 --[[
         UIDropDownMenu_AddSeparator(level)
         info={--使用,职业,颜色
-            text= e.onlyChinse and '职业颜色' or CLASS_COLORS,
+            text= e.onlyChinese and '职业颜色' or CLASS_COLORS,
             checked= Save.classColor,
             func= function()
                 Save.classColor= not Save.classColor and true or nil
@@ -293,28 +293,28 @@ local function InitMenu(self, level, type)--主菜单
                 set_Text_Size_Color()
                 set_Class_Color()
                 setMoney()
-                print(id, addName, e.GetEnabeleDisable(Save.classColor), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+                print(id, addName, e.GetEnabeleDisable(Save.classColor), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         }
         UIDropDownMenu_AddButton(info,level)
 ]]
         UIDropDownMenu_AddSeparator(level)
         info={
-            text=e.Icon.mid..(e.onlyChinse and '缩放' or UI_SCALE)..': '..(Save.size or 12),
+            text=e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE)..': '..(Save.size or 12),
             isTitle=true,
             notCheckable=true,
         }
         UIDropDownMenu_AddButton(info,level)
 
         info={
-            text=e.Icon.right..(e.onlyChinse and '移动' or NPE_MOVE),
+            text=e.Icon.right..(e.onlyChinese and '移动' or NPE_MOVE),
             isTitle=true,
             notCheckable=true,
         }
         UIDropDownMenu_AddButton(info,level)
 
         info={
-            text= (e.onlyChinse and '重置位置' or RESET_POSITION),
+            text= (e.onlyChinese and '重置位置' or RESET_POSITION),
             colorCode= not Save.point and '|cff606060',
             notCheckable=true,
             func= function()
@@ -393,7 +393,7 @@ local function Init()
         end
         Save.size=size
         set_Text_Size_Color()
-        print(id, addName, e.onlyChinse and '字体大小' or FONT_SIZE,'|cnGREEN_FONT_COLOR:'..size)
+        print(id, addName, e.onlyChinese and '字体大小' or FONT_SIZE,'|cnGREEN_FONT_COLOR:'..size)
     end)
 
     panel:SetScript('OnMouseDown', function(self, d)
@@ -454,10 +454,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
             --e.Player.useClassColor= Save.classColor--注册, 使用职业颜色
 
-            local check=e.CPanel(e.onlyChinse and '系统信息' or addName, not Save.disabled, true)
+            local check=e.CPanel(e.onlyChinese and '系统信息' or addName, not Save.disabled, true)
             check:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end)
             check:SetScript('OnEnter', function(self2)
                 e.tips:SetOwner(self2, "ANCHOR_RIGHT");

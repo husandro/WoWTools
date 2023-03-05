@@ -113,9 +113,9 @@ local function set_Button()
                         end
 
                         if self.index==3 or self.index==4 then
-                            e.tips:AddDoubleLine(e.onlyChinse and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, 'F', 0,1,0, 0,1,0)
-                            e.tips:AddDoubleLine(e.onlyChinse and '设置' or SETTINGS, e.Icon.mid..(e.onlyChinse and '滚轮向上滚动' or KEY_MOUSEWHEELUP))
-                            e.tips:AddDoubleLine(e.onlyChinse and '清除' or SLASH_STOPWATCH_PARAM_STOP2, e.Icon.mid..(e.onlyChinse and '轮向下滚动' or KEY_MOUSEWHEELDOWN))
+                            e.tips:AddDoubleLine(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, 'F', 0,1,0, 0,1,0)
+                            e.tips:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, e.Icon.mid..(e.onlyChinese and '滚轮向上滚动' or KEY_MOUSEWHEELUP))
+                            e.tips:AddDoubleLine(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, e.Icon.mid..(e.onlyChinese and '轮向下滚动' or KEY_MOUSEWHEELDOWN))
                         end
                         e.tips:Show()
                     end
@@ -128,23 +128,23 @@ local function set_Button()
                             e.SetButtonKey(self, true,'F', 'RightButton')
                             panel.buttons[index]:RegisterEvent('PLAYER_REGEN_ENABLED')
                             panel.buttons[index]:RegisterEvent('PLAYER_REGEN_DISABLED')
-                            print(id, addName,'|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '设置' or SETTINGS), self.name, e.onlyChinse and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, '|cffff00ffF')
+                            print(id, addName,'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '设置' or SETTINGS), self.name, e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, '|cffff00ffF')
                             self.text:SetText('F')
                         elseif d==-1 then
                             e.SetButtonKey(self)
                             panel.buttons[index]:UnregisterEvent('PLAYER_REGEN_DISABLED')
                             panel.buttons[index]:UnregisterEvent('PLAYER_REGEN_ENABLED')
                             self.text:SetText('')
-                            print(id, addName,'|cnRED_FONT_COLOR:'..(e.onlyChinse and '清除' or SLASH_STOPWATCH_PARAM_STOP2), self.name, e.onlyChinse and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)
+                            print(id, addName,'|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2), self.name, e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)
                         end
                     end)
                     panel.buttons[index]:SetScript("OnEvent", function(self, event)
                         if event=='PLAYER_REGEN_ENABLED' then
                             e.SetButtonKey(self, true,'F', 'RightButton')
-                            print(id, addName,'|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '设置' or SETTINGS), self.name, e.onlyChinse and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, '|cffff00ffF|r')
+                            print(id, addName,'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '设置' or SETTINGS), self.name, e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, '|cffff00ffF|r')
                         elseif event=='PLAYER_REGEN_DISABLED' then
                             e.SetButtonKey(self)
-                            print(id, addName,'|cnRED_FONT_COLOR:'..(e.onlyChinse and '清除' or SLASH_STOPWATCH_PARAM_STOP2), self.name, e.onlyChinse and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)
+                            print(id, addName,'|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2), self.name, e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)
                         end
                     end)
                     panel.buttons[index].text=e.Cstr(panel.buttons[index], nil,nil,nil,{1,0,0})

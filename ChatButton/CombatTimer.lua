@@ -46,13 +46,13 @@ local function setText()--设置显示内容
         if Save.hideCombatText then
             text= text ..'|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a|cnRED_FONT_COLOR:'..combat..'|r'
         else
-            text= text ..'|cnRED_FONT_COLOR:'..(e.onlyChinse and '战斗' or COMBAT)..'|r|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a'..combat
+            text= text ..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗' or COMBAT)..'|r|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a'..combat
         end
     end
 
     if OnAFKTime then
         text= text and text..'\n' or ''
-        text= text .. (e.onlyChinse and '离开' or AFK)..e.Icon.clock2..e.GetTimeInfo(OnAFKTime, not Save.timeTypeText)
+        text= text .. (e.onlyChinese and '离开' or AFK)..e.Icon.clock2..e.GetTimeInfo(OnAFKTime, not Save.timeTypeText)
     end
 
     if OnPetTime then
@@ -82,7 +82,7 @@ local function check_Event()--检测事件
 
     elseif OnAFKTime then
         local text, sec = e.GetTimeInfo(OnAFKTime, not Save.timeTypeText)
-        LastText= e.Icon.clock2..'|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '离开' or AFK)..text..'|r'
+        LastText= e.Icon.clock2..'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '离开' or AFK)..text..'|r'
         Save.afk.num= Save.afk.num + 1
         Save.afk.time= Save.afk.time + sec
         print(id, addName, LastText)
@@ -125,7 +125,7 @@ local function check_Event()--检测事件
         else
             LastText='|cnRED_FONT_COLOR:'..LastText..'|r'
         end
-        print(id, addName, e.onlyChinse and '宠物对战' or PET_BATTLE_PVP_QUEUE, LastText, Save.pet.win..'/'..Save.pet.num, (Save.pet.capture>0 and Save.pet.capture..' |T646379:0|t' or ''));
+        print(id, addName, e.onlyChinese and '宠物对战' or PET_BATTLE_PVP_QUEUE, LastText, Save.pet.win..'/'..Save.pet.num, (Save.pet.capture>0 and Save.pet.capture..' |T646379:0|t' or ''));
 
         PetRound={}
         OnPetTime=nil
@@ -236,21 +236,21 @@ local function setTextFrame()--设置显示内容, 父框架button.textFrame, �
     button.textFrame:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinse and '清除' or CLEAR or KEY_NUMLOCK_MAC, e.Icon.left)
-        e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
-        e.tips:AddDoubleLine(e.onlyChinse and '缩放' or UI_SCALE,'Alt+'..e.Icon.mid)
+        e.tips:AddDoubleLine(e.onlyChinese and '清除' or CLEAR or KEY_NUMLOCK_MAC, e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE,'Alt+'..e.Icon.mid)
         e.tips:AddLine(' ')
         --if Save.bat.num>0 then--战斗
-            e.tips:AddDoubleLine((e.onlyChinse and '战斗' or COMBAT)..'|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a'..SecondsToTime(Save.bat.time), Save.bat.num..' '..(e.onlyChinse and '次' or VOICEMACRO_LABEL_CHARGE1))
+            e.tips:AddDoubleLine((e.onlyChinese and '战斗' or COMBAT)..'|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a'..SecondsToTime(Save.bat.time), Save.bat.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
         --end
         --if Save.pet.num>0 then--宠物战斗
-            e.tips:AddDoubleLine((PetAll.num>0 and PetAll.win..'/'..PetAll.num or (e.onlyChinse and '宠物' or PET))..'|A:worldquest-icon-petbattle:0:0|a'..Save.pet.win..'|r/'..Save.pet.num, Save.pet.capture..' |T646379:0|t')
+            e.tips:AddDoubleLine((PetAll.num>0 and PetAll.win..'/'..PetAll.num or (e.onlyChinese and '宠物' or PET))..'|A:worldquest-icon-petbattle:0:0|a'..Save.pet.win..'|r/'..Save.pet.num, Save.pet.capture..' |T646379:0|t')
         --end
         --if Save.afk.num>0 then--AFK
-            e.tips:AddDoubleLine((e.onlyChinse and '离开' or AFK)..e.Icon.clock2..SecondsToTime(Save.afk.time), Save.afk.num..' '..(e.onlyChinse and '次' or VOICEMACRO_LABEL_CHARGE1))
+            e.tips:AddDoubleLine((e.onlyChinese and '离开' or AFK)..e.Icon.clock2..SecondsToTime(Save.afk.time), Save.afk.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
         --end
         --if Save.ins.num>0 then
-           e.tips:AddDoubleLine((e.onlyChinse and '副本' or INSTANCE)..'|A:BuildanAbomination-32x32:0:0|a'..Save.ins.kill..'|A:poi-soulspiritghost:0:0|a'..Save.ins.dead, Save.ins.num..' '..(e.onlyChinse and '次' or VOICEMACRO_LABEL_CHARGE1)..' |A:CrossedFlagsWithTimer:0:0|a'..e.GetTimeInfo(Save.ins.time))
+           e.tips:AddDoubleLine((e.onlyChinese and '副本' or INSTANCE)..'|A:BuildanAbomination-32x32:0:0|a'..Save.ins.kill..'|A:poi-soulspiritghost:0:0|a'..Save.ins.dead, Save.ins.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)..' |A:CrossedFlagsWithTimer:0:0|a'..e.GetTimeInfo(Save.ins.time))
         --end
         e.tips:Show()
     end)
@@ -275,7 +275,7 @@ local function setTextFrame()--设置显示内容, 父框架button.textFrame, �
             elseif sacle<0.6 then
                 sacle=0.6
             end
-            print(id, addName, e.onlyChinse and '缩放' or UI_SCALE, sacle)
+            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, sacle)
             button.text:SetScale(sacle)
             Save.textScale=sacle
         end
@@ -321,11 +321,11 @@ local function InitMenu(self, level, type)--主菜单
     local info
     if type=='SETTINGS' then
         info={--图标类型
-            text= e.onlyChinse and ('图标类型: |cnGREEN_FONT_COLOR:'..(not Save.specializationTexture and '派系|r' or '专精|r')) or (EMBLEM_SYMBOL..': |cnGREEN_FONT_COLOR:'..(not Save.specializationTexture and FACTION or SPECIALIZATION)..'|r'),
+            text= e.onlyChinese and ('图标类型: |cnGREEN_FONT_COLOR:'..(not Save.specializationTexture and '派系|r' or '专精|r')) or (EMBLEM_SYMBOL..': |cnGREEN_FONT_COLOR:'..(not Save.specializationTexture and FACTION or SPECIALIZATION)..'|r'),
             checked= Save.specializationTexture,
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinse and '类型' or TYPE,
-            tooltipText= e.onlyChinse and '派系\n专精' or FACTION..'\n'..SPECIALIZATION,
+            tooltipTitle= e.onlyChinese and '类型' or TYPE,
+            tooltipText= e.onlyChinese and '派系\n专精' or FACTION..'\n'..SPECIALIZATION,
             func= function()
                 Save.specializationTexture= not Save.specializationTexture and true or nil
                 setTexture()--设置,图标
@@ -334,10 +334,10 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddButton(info, level)
 
         info={--时间类型
-            text= (e.onlyChinse and '时间类型' or TIME_LABEL)..' |cnGREEN_FONT_COLOR:'..(Save.timeTypeText and SecondsToTime(35) or '00:35')..'|r',
+            text= (e.onlyChinese and '时间类型' or TIME_LABEL)..' |cnGREEN_FONT_COLOR:'..(Save.timeTypeText and SecondsToTime(35) or '00:35')..'|r',
             checked= Save.timeTypeText,
             tooltipOnButton=true,
-            tooltipTitle=  e.onlyChinse and '类型' or TYPE,
+            tooltipTitle=  e.onlyChinese and '类型' or TYPE,
             tooltipText='00:35\n'..SecondsToTime(35),
             func= function()
                 Save.timeTypeText= not Save.timeTypeText and true or nil
@@ -346,7 +346,7 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text= e.onlyChinse and '战斗中缩放 1.3' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..UI_SCALE..' 1.3',
+            text= e.onlyChinese and '战斗中缩放 1.3' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..UI_SCALE..' 1.3',
             checked= Save.combatScale,
             disabled= UnitAffectingCombat('player'),
             func= function()
@@ -361,7 +361,7 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text= e.onlyChinse and '隐藏|cnRED_FONT_COLOR:战斗|r文本' or (HIDE..'|cnRED_FONT_COLOR:'..COMBAT..'|r'..LOCALE_TEXT_LABEL),
+            text= e.onlyChinese and '隐藏|cnRED_FONT_COLOR:战斗|r文本' or (HIDE..'|cnRED_FONT_COLOR:'..COMBAT..'|r'..LOCALE_TEXT_LABEL),
             checked= Save.hideCombatText,
             func= function()
                 Save.hideCombatText= not Save.hideCombatText and true or nil
@@ -370,7 +370,7 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text= e.onlyChinse and '职业颜色' or CLASS_COLORS,
+            text= e.onlyChinese and '职业颜色' or CLASS_COLORS,
             checked= Save.classColor,
             colorCode= Save.classColor and e.Player.col or '|cffd0d0d0',
             func=function()
@@ -381,10 +381,10 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddButton(info, level)
 
         info={--
-            text= ((e.onlyChinse and '战斗时间' or COMBAT)..'|A:communities-icon-chat:0:0|a'..(e.onlyChinse and '每: ' or EVENTTRACE_TIMESTAMP)..Save.Say),
+            text= ((e.onlyChinese and '战斗时间' or COMBAT)..'|A:communities-icon-chat:0:0|a'..(e.onlyChinese and '每: ' or EVENTTRACE_TIMESTAMP)..Save.Say),
             checked= Save.Say and true or nil,
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinse and '说' or SAY,
+            tooltipTitle= e.onlyChinese and '说' or SAY,
             func= function()
                 Save.Say= not Save.Say and 120 or nil
             end
@@ -394,10 +394,10 @@ local function InitMenu(self, level, type)--主菜单
 
         local tab=e.WoWSave[e.Player.guid].Time
         info={
-            text= e.onlyChinse and '总游戏时间'..((tab and tab.totalTime) and ': '..SecondsToTime(tab.totalTime) or '') or TIME_PLAYED_TOTAL:format((tab and tab.totalTime) and SecondsToTime(tab.totalTime) or ''),
+            text= e.onlyChinese and '总游戏时间'..((tab and tab.totalTime) and ': '..SecondsToTime(tab.totalTime) or '') or TIME_PLAYED_TOTAL:format((tab and tab.totalTime) and SecondsToTime(tab.totalTime) or ''),
             checked= Save.AllOnlineTime,
             --tooltipOnButton= true,
-            --tooltipTitle= e.onlyChinse and ('你在这个等级的游戏时间：%s'):format((tab and tab.levelTime) and '\n'..SecondsToTime(tab.levelTime) or '') or TIME_PLAYED_LEVEL:format((tab and tab.levelTime) and '\n'..SecondsToTime(tab.levelTime) or ''),
+            --tooltipTitle= e.onlyChinese and ('你在这个等级的游戏时间：%s'):format((tab and tab.levelTime) and '\n'..SecondsToTime(tab.levelTime) or '') or TIME_PLAYED_LEVEL:format((tab and tab.levelTime) and '\n'..SecondsToTime(tab.levelTime) or ''),
             menuList='AllOnlineTime',
             hasArrow=true,
             func= function()
@@ -411,10 +411,10 @@ local function InitMenu(self, level, type)--主菜单
 
         UIDropDownMenu_AddSeparator(level)
         info={
-            text= e.onlyChinse and '重置所有' or RESET..ALL,
+            text= e.onlyChinese and '重置所有' or RESET..ALL,
             colorCode='|cffff0000',
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinse and '重新加载UI' or RELOADUI,
+            tooltipTitle= e.onlyChinese and '重新加载UI' or RELOADUI,
             tooltipText=SLASH_RELOAD1,
             notCheckable=true,
             func=function()
@@ -434,7 +434,7 @@ local function InitMenu(self, level, type)--主菜单
                     text= e.GetPlayerInfo(nil, guid, true)..e.Icon.clock2..'  '..SecondsToTime(time),
                     notCheckable=true,
                     tooltipOnButton=true,
-                    tooltipTitle= tab.Time.levelTime and format(e.onlyChinse and '你在这个等级的游戏时间：%s' or TIME_PLAYED_LEVEL, '\n'..SecondsToTime(tab.Time.levelTime)),
+                    tooltipTitle= tab.Time.levelTime and format(e.onlyChinese and '你在这个等级的游戏时间：%s' or TIME_PLAYED_LEVEL, '\n'..SecondsToTime(tab.Time.levelTime)),
                 }
                 UIDropDownMenu_AddButton(info, level)
             end
@@ -442,7 +442,7 @@ local function InitMenu(self, level, type)--主菜单
         if timeAll>0 then
             UIDropDownMenu_AddSeparator(level)
             info={
-                text= (e.onlyChinse and '总计：' or FROM_TOTAL).. SecondsToTime(timeAll),
+                text= (e.onlyChinese and '总计：' or FROM_TOTAL).. SecondsToTime(timeAll),
                 notCheckable=true,
                 isTitle=true
             }
@@ -451,7 +451,7 @@ local function InitMenu(self, level, type)--主菜单
 
     else
         info={--在线时间
-            text= (e.onlyChinse and '在线' or GUILD_ONLINE_LABEL)..e.Icon.clock2..e.GetTimeInfo(OnLineTime),
+            text= (e.onlyChinese and '在线' or GUILD_ONLINE_LABEL)..e.Icon.clock2..e.GetTimeInfo(OnLineTime),
             isTitle=true,
             notCheckable=true
         }
@@ -460,7 +460,7 @@ local function InitMenu(self, level, type)--主菜单
         local tab=e.WoWSave[e.Player.guid].Time
         if tab and tab.totalTime then
             info={
-                text= (e.onlyChinse and '总计' or TOTAL)..e.Icon.clock2..SecondsToTime(tab.totalTime),
+                text= (e.onlyChinese and '总计' or TOTAL)..e.Icon.clock2..SecondsToTime(tab.totalTime),
                 isTitle=true,
                 notCheckable=true
             }
@@ -469,7 +469,7 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddSeparator(level)
 
         info={
-            text= e.onlyChinse and '设置' or SETTINGS,
+            text= e.onlyChinese and '设置' or SETTINGS,
             notCheckable=true,
             hasArrow=true,
             menuList='SETTINGS',
@@ -478,7 +478,7 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text= e.onlyChinse and '信息' or INFO,
+            text= e.onlyChinese and '信息' or INFO,
             checked= not Save.disabledText,
             func=function()
                 Save.disabledText= not Save.disabledText and true or nil
@@ -520,7 +520,7 @@ local function Init()
 end
 
 local function setPetText()--宠物战斗, 设置显示内容
-    local text= format(e.onlyChinse and '%d轮' or PET_BATTLE_COMBAT_LOG_NEW_ROUND, PetRound.round or 0)
+    local text= format(e.onlyChinese and '%d轮' or PET_BATTLE_COMBAT_LOG_NEW_ROUND, PetRound.round or 0)
     if  C_PetBattles.IsWildBattle() then
         text=text..'|A:worldquest-icon-petbattle:0:0|a'
     elseif PetRound.PVP then

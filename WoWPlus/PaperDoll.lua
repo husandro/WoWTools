@@ -480,18 +480,18 @@ local function add_Equipment_Frame(equipmentSetsDirty)--添加装备管理框
                 end
                 Save.equipmentSize=n
                 setEquipmentSize(self)
-                print(id, addName, e.onlyChinse and '缩放' or UI_SCALE, GREEN_FONT_COLOR_CODE..n)
+                print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, GREEN_FONT_COLOR_CODE..n)
         end)
         panel.equipmentFrame:SetScript("OnEnter", function (self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(id, e.onlyChinse and '装备管理'or EQUIPMENT_MANAGER)
+            e.tips:AddDoubleLine(id, e.onlyChinese and '装备管理'or EQUIPMENT_MANAGER)
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.onlyChinse and '打开/关闭角色界面' or BINDING_NAME_TOGGLECHARACTER0, e.Icon.left)
+            e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭角色界面' or BINDING_NAME_TOGGLECHARACTER0, e.Icon.left)
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine( Save.EquipmentH and (e.onlyChinse and '向右' or BINDING_NAME_STRAFERIGHT) or (e.onlyChinse and '向下' or BINDING_NAME_PITCHDOWN), 'Alt + '..e.Icon.left)
-            e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
-            e.tips:AddDoubleLine((e.onlyChinse and '缩放' or UI_SCALE)..': '..(Save.equipmentSize and Save.equipmentSize or 18), e.Icon.mid)
+            e.tips:AddDoubleLine( Save.EquipmentH and (e.onlyChinese and '向右' or BINDING_NAME_STRAFERIGHT) or (e.onlyChinese and '向下' or BINDING_NAME_PITCHDOWN), 'Alt + '..e.Icon.left)
+            e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
+            e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..': '..(Save.equipmentSize and Save.equipmentSize or 18), e.Icon.mid)
             e.tips:Show()
             self:SetAlpha(1)
         end)
@@ -570,7 +570,7 @@ local function GetDurationTotale()
         panel.durabilityText:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.onlyChinse and '耐久度' or DURABILITY, self.value)
+            e.tips:AddDoubleLine(e.onlyChinese and '耐久度' or DURABILITY, self.value)
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
@@ -700,7 +700,7 @@ local function Init()
     panel.serverText:SetScript("OnEnter",function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddLine(e.onlyChinse and '服务器:' or FRIENDS_LIST_REALM)
+            e.tips:AddLine(e.onlyChinese and '服务器:' or FRIENDS_LIST_REALM)
             local ok2
             for k, v in pairs(GetAutoCompleteRealms()) do
                 if v==e.Player.server then
@@ -711,7 +711,7 @@ local function Init()
                 ok2=true
             end
             if not ok2 then
-                e.tips:AddDoubleLine(e.onlyChinse and '唯一' or ITEM_UNIQUE, e.Player.server)
+                e.tips:AddDoubleLine(e.onlyChinese and '唯一' or ITEM_UNIQUE, e.Player.server)
             end
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(id, addName)
@@ -737,7 +737,7 @@ local function Init()
             e.tips:ClearLines()
             e.tips:AddDoubleLine(id, addName)
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.onlyChinse and '装备管理' or EQUIPMENT_MANAGER, e.GetShowHide(Save.equipment))
+            e.tips:AddDoubleLine(e.onlyChinese and '装备管理' or EQUIPMENT_MANAGER, e.GetShowHide(Save.equipment))
             e.tips:Show()
     end)
     panel.HideShowEquipmentFrame:SetScript("OnLeave",function(self)
@@ -881,10 +881,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
             --添加控制面板
-            local sel=e.CPanel((e.onlyChinse and '角色' or addName)..(e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a'), not Save.disabled)
+            local sel=e.CPanel((e.onlyChinese and '角色' or addName)..(e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a'), not Save.disabled)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled = not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需求重新加载' or REQUIRES_RELOAD)
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
             end)
 
             if not Save.disabled then

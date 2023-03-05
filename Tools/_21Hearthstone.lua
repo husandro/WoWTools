@@ -250,7 +250,7 @@ local function showTips(self)--显示提示
             end
         end
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinse and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         e.tips:Show()
         if e.tips.textRight then
             local text=GetBindLocation()--显示,绑定位置

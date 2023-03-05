@@ -35,7 +35,7 @@ local function show_Tips(frame, name, zeroAlpha)
         self:SetAlpha(1)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine((e.onlyChinse and '缩放' or UI_SCALE), Save.scale[self.name] or 1)
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE), Save.scale[self.name] or 1)
         e.tips:AddDoubleLine('Frame', self.name)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
@@ -554,10 +554,10 @@ end
 
 local function set_PopupDialogs()
     StaticPopupDialogs[id..addName..'MoveZoom']={
-        text =id..' '..addName..'\n\n'..(e.onlyChinse and '清除全部' or REMOVE_WORLD_MARKERS)..' ('..(e.onlyChinse and '保存' or SAVE)..')'..'\n\n|cnRED_FONT_COLOR:'..(e.onlyChinse and '重新加载UI' or RELOADUI),
-        button1 = '|cnRED_FONT_COLOR:'..(e.onlyChinse and '移动' or NPE_MOVE),
-        button2 = e.onlyChinse and '取消' or CANCEL,
-        button3 = '|cnRED_FONT_COLOR:'..(e.onlyChinse and '缩放' or UI_SCALE),
+        text =id..' '..addName..'\n\n'..(e.onlyChinese and '清除全部' or REMOVE_WORLD_MARKERS)..' ('..(e.onlyChinese and '保存' or SAVE)..')'..'\n\n|cnRED_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI),
+        button1 = '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移动' or NPE_MOVE),
+        button2 = e.onlyChinese and '取消' or CANCEL,
+        button3 = '|cnRED_FONT_COLOR:'..(e.onlyChinese and '缩放' or UI_SCALE),
         whileDead=true,
         timeout=60,
         hideOnEscape = true,
@@ -587,24 +587,24 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save.scale= Save.scale or {}
 
             --添加控制面板        
-            local check=e.CPanel(e.onlyChinse and '框架移动' or addName, not Save.disabled)
+            local check=e.CPanel(e.onlyChinese and '框架移动' or addName, not Save.disabled)
             check:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 if Save.disabled then
-                    panel.check2.text:SetText('|cff808080'..(e.onlyChinse and '缩放' or UI_SCALE))
+                    panel.check2.text:SetText('|cff808080'..(e.onlyChinese and '缩放' or UI_SCALE))
                 else
-                    panel.check2.text:SetText(e.onlyChinse and '缩放' or UI_SCALE)
+                    panel.check2.text:SetText(e.onlyChinese and '缩放' or UI_SCALE)
                 end
             end)
 
             panel.check2=CreateFrame("CheckButton", nil, check, "InterfaceOptionsCheckButtonTemplate")
-            panel.check2.text:SetText(e.onlyChinse and '缩放' or UI_SCALE)
+            panel.check2.text:SetText(e.onlyChinese and '缩放' or UI_SCALE)
             panel.check2:SetPoint('LEFT', check.text, 'RIGHT')
             panel.check2:SetChecked(not Save.disabledZoom)
             panel.check2:SetScript('OnMouseDown', function()
                 Save.disabledZoom= not Save.disabledZoom and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabledZoom), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+                print(id, addName, e.GetEnabeleDisable(not Save.disabledZoom), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end)
 
             local button= e.Cbtn(check, true, nil, nil, nil, nil, {20,20})
@@ -615,7 +615,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not Save.disabled then
                 Init_Move()--移动
             else
-                panel.check2.text:SetText('|cff808080'..(e.onlyChinse and '缩放' or UI_SCALE))
+                panel.check2.text:SetText('|cff808080'..(e.onlyChinese and '缩放' or UI_SCALE))
                 panel:UnregisterAllEvents()
             end
             panel:RegisterEvent("PLAYER_LOGOUT")

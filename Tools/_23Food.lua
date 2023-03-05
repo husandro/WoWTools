@@ -64,9 +64,9 @@ local function set_Button_Init(self)
         e.tips:SetItemByID(self2.itemID)
         e.tips:AddLine(' ')
         if self==button then
-            e.tips:AddDoubleLine(e.onlyChinse and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         else
-            e.tips:AddDoubleLine(e.onlyChinse and '禁用' or DISABLE, 'Shift+'..e.Icon.right)
+            e.tips:AddDoubleLine(e.onlyChinese and '禁用' or DISABLE, 'Shift+'..e.Icon.right)
         end
         e.tips:Show()
     end)
@@ -80,7 +80,7 @@ local function set_Button_Init(self)
             if d=='RightButton' and IsShiftKeyDown() then
                 Save.noUseItems[self2.itemID]=true
                 local link= select(2, GetItemInfo(self2.itemID))
-                print(id, addName, e.onlyChinse and '禁用' or DISABLE, link or self2.itemID, '|cnRED_FONT_COLOR:', e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+                print(id, addName, e.onlyChinese and '禁用' or DISABLE, link or self2.itemID, '|cnRED_FONT_COLOR:', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         end)
     end
@@ -217,7 +217,7 @@ local function InitMenu(self, level, type)--主菜单
                 disabled= bat,
                 icon=itemTexture,
                 tooltipOnButton=true,
-                tooltipTitle=e.Icon.left..(e.onlyChinse and '移除' or REMOVE),
+                tooltipTitle=e.Icon.left..(e.onlyChinese and '移除' or REMOVE),
                 func=function()
                     Save.noUseItems[itemID]=nil
                     set_Item_Button()
@@ -228,7 +228,7 @@ local function InitMenu(self, level, type)--主菜单
 
         UIDropDownMenu_AddSeparator(level)
         info={
-            text= e.onlyChinse and '清除全部' or CLEAR_ALL,
+            text= e.onlyChinese and '清除全部' or CLEAR_ALL,
             notCheckable=true,
             disabled=bat,
             func= function()
@@ -241,7 +241,7 @@ local function InitMenu(self, level, type)--主菜单
 
     elseif type=='WHO' then
         info= {
-            text= e.onlyChinse and '登录游戏时: 查找' or (LOGIN or SOCIAL_TWITTER_SIGN_IN)..GAME,
+            text= e.onlyChinese and '登录游戏时: 查找' or (LOGIN or SOCIAL_TWITTER_SIGN_IN)..GAME,
             tooltipOnButton=true,
             tooltipTitle=AUTO_JOIN:gsub(JOIN,WHO),
             tooltipText='1 '..VOICEMACRO_LABEL_CHARGE1,
@@ -253,7 +253,7 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddButton(info, level)
 
         info= {--自动, 更新物品, 查询
-            text= e.onlyChinse and '自动查找' or UPDATE..ITEMS,
+            text= e.onlyChinese and '自动查找' or UPDATE..ITEMS,
             tooltipOnButton=true,
             tooltipTitle=EVENTS_LABEL..': BAG_UPDATE_DELAYED',
             checked=Save.autoWho,
@@ -268,7 +268,7 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text= e.onlyChinse and '仅当前版本物品' or 	LFG_LIST_CROSS_FACTION:format(REFORGE_CURRENT..(VERSION or GAME_VERSION_LABEL)),
+            text= e.onlyChinese and '仅当前版本物品' or 	LFG_LIST_CROSS_FACTION:format(REFORGE_CURRENT..(VERSION or GAME_VERSION_LABEL)),
             checked= Save.onlyMaxExpansion,
             disabled= bat,
             tooltipOnButton=true,
@@ -300,14 +300,14 @@ local function InitMenu(self, level, type)--主菜单
     else
         local classNum=get_Save_itemClass_Select()
         info={
-            text='|A:common-icon-zoomin:0:0|a'..(e.onlyChinse and '查找' or WHO).. e.Icon.mid..' '..classNum,
+            text='|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '查找' or WHO).. e.Icon.mid..' '..classNum,
             colorCode='|cff00ff00',
             notCheckable=true,
             disabled=bat or classNum==0,
             menuList='WHO',
             hasArrow=true,
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinse and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN,
+            tooltipTitle= e.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN,
             func= function()
                 set_Item_Button()
             end
@@ -330,7 +330,7 @@ local function InitMenu(self, level, type)--主菜单
         end
 
         info={
-            text=e.Icon.up2.. (e.onlyChinse and '全部取消' or CALENDAR_EVENT_REMOVED_MAIL_SUBJECT:format(ALL)),
+            text=e.Icon.up2.. (e.onlyChinese and '全部取消' or CALENDAR_EVENT_REMOVED_MAIL_SUBJECT:format(ALL)),
             colorCode= '|cffff0000',
             notCheckable=true,
             disabled=bat,
@@ -344,7 +344,7 @@ local function InitMenu(self, level, type)--主菜单
 
         UIDropDownMenu_AddSeparator(level)
         info= {
-            text= e.onlyChinse and '禁用' or DISABLE,
+            text= e.onlyChinese and '禁用' or DISABLE,
             notCheckable=true,
             menuList='DISABLE',
             hasArrow=true,
@@ -353,14 +353,14 @@ local function InitMenu(self, level, type)--主菜单
 
         UIDropDownMenu_AddSeparator(level)
         info= {
-            text= e.Icon.right.. (e.onlyChinse and '移动' or NPE_MOVE),
+            text= e.Icon.right.. (e.onlyChinese and '移动' or NPE_MOVE),
             isTitle= true,
             notCheckable= true,
         }
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text= e.onlyChinse and '还原位置' or RESET_POSITION,
+            text= e.onlyChinese and '还原位置' or RESET_POSITION,
             notCheckable=true,
             colorCode= not Save.point and'|cff606060',
             disabled=bat,
@@ -426,7 +426,7 @@ local function Init()
     button:SetScript('OnMouseWheel',function(self,d)
         if d==-1 and not IsModifierKeyDown() then
             if UnitAffectingCombat('player') then
-                print(id, e.onlyChinse and '查询' or WHO, '|cnRED_FONT_COLOR:'..COMBAT )
+                print(id, e.onlyChinese and '查询' or WHO, '|cnRED_FONT_COLOR:'..COMBAT )
             else
                 set_Item_Button()
             end

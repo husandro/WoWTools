@@ -114,7 +114,7 @@ end
 --好友列表, 模块
 --#############
 local function set_FriendsList_Init()--好友列表, 初始化
-    local optionText = '|A:honorsystem-bar-lock:0:0|a'..(e.onlyChinse and '锁定' or LOCK).."\124T%s.tga:16:16:0:0\124t %s"--好友列表
+    local optionText = '|A:honorsystem-bar-lock:0:0|a'..(e.onlyChinese and '锁定' or LOCK).."\124T%s.tga:16:16:0:0\124t %s"--好友列表
     Save.Friends[e.Player.name_server]=Save.Friends[e.Player.name_server] or {}
 
     hooksecurefunc('FriendsFrame_UpdateFriendButton', function(button)
@@ -169,20 +169,20 @@ local function set_FriendsList_Init()--好友列表, 初始化
         if Save.Friends[e.Player.name_server].Availabel then
             BNSetAFK(false)
             BNSetDND(false)
-            print(id, addName,string.format(optionText, FRIENDS_TEXTURE_ONLINE, e.onlyChinse and '有空' or FRIENDS_LIST_AVAILABLE))
+            print(id, addName,string.format(optionText, FRIENDS_TEXTURE_ONLINE, e.onlyChinese and '有空' or FRIENDS_LIST_AVAILABLE))
         elseif Save.Friends[e.Player.name_server].Away then
             BNSetAFK(true)
-            print(id, addName, string.format(optionText, FRIENDS_TEXTURE_AFK, e.onlyChinse and '离开' or FRIENDS_LIST_AWAY))
+            print(id, addName, string.format(optionText, FRIENDS_TEXTURE_AFK, e.onlyChinese and '离开' or FRIENDS_LIST_AWAY))
         elseif Save.Friends[e.Player.name_server].DND then
             BNSetDND(true)
-            print(id, addName,string.format(optionText, FRIENDS_TEXTURE_DND, e.onlyChinse and '忙碌' or FRIENDS_LIST_BUSY))
+            print(id, addName,string.format(optionText, FRIENDS_TEXTURE_DND, e.onlyChinese and '忙碌' or FRIENDS_LIST_BUSY))
         end
     end
 
     hooksecurefunc('FriendsFrameStatusDropDown_Initialize', function(self)
         UIDropDownMenu_AddSeparator()
         local info= {
-            text = optionText:format(FRIENDS_TEXTURE_ONLINE, e.onlyChinse and '有空' or FRIENDS_LIST_AVAILABLE),
+            text = optionText:format(FRIENDS_TEXTURE_ONLINE, e.onlyChinese and '有空' or FRIENDS_LIST_AVAILABLE),
             checked= Save.Friends[e.Player.name_server].Availabel,
             tooltipOnButton=true,
             tooltipTitle=id,
@@ -197,7 +197,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
         UIDropDownMenu_AddButton(info)
 
         info= {
-            text = optionText:format(FRIENDS_TEXTURE_AFK, e.onlyChinse and '离开' or FRIENDS_LIST_AWAY),
+            text = optionText:format(FRIENDS_TEXTURE_AFK, e.onlyChinese and '离开' or FRIENDS_LIST_AWAY),
             checked= Save.Friends[e.Player.name_server].Away,
             tooltipOnButton=true,
             tooltipTitle=id,
@@ -212,7 +212,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
         UIDropDownMenu_AddButton(info)
 
         info= {
-            text = optionText:format(FRIENDS_TEXTURE_DND, e.onlyChinse and '忙碌' or FRIENDS_LIST_BUSY),
+            text = optionText:format(FRIENDS_TEXTURE_DND, e.onlyChinese and '忙碌' or FRIENDS_LIST_BUSY),
             checked= Save.Friends[e.Player.name_server].DND,
             tooltipOnButton=true,
             tooltipTitle=id,
@@ -358,14 +358,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
             --添加控制面板        
-            local sel=e.CPanel(e.onlyChinse and '好友列表' or addName, not Save.disabled)
+            local sel=e.CPanel(e.onlyChinese and '好友列表' or addName, not Save.disabled)
             sel:SetScript('OnMouseDown', function()
                 if Save.disabled then
                     Save.disabled=nil
                 else
                     Save.disabled=true
                 end
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end)
 
             if Save.disabled then

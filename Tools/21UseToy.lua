@@ -210,21 +210,21 @@ local function InitMenu(self, level, menuList)--主菜单
                         Save.items[itemID]=nil
                         getToy()--生成, 有效表格
                         setAtt()--设置属性                        
-                        print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '移除' or REMOVE)..'|r', e.onlyChinse and '完成' or COMPLETE, select(2, GetItemInfo(itemID)) or (TOY..'ID: '..itemID))
+                        print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', e.onlyChinese and '完成' or COMPLETE, select(2, GetItemInfo(itemID)) or (TOY..'ID: '..itemID))
                     end,
                     tooltipOnButton=true,
-                    tooltipTitle= e.onlyChinse and '移除' or REMOVE,
+                    tooltipTitle= e.onlyChinese and '移除' or REMOVE,
                 }
                 UIDropDownMenu_AddButton(info, level)
             end
         elseif menuList=='SETTINGS' then--设置菜单
             info={--快捷键,设置对话框
-                text= e.onlyChinse and '快捷键' or SETTINGS_KEYBINDINGS_LABEL,--..(Save.KEY and ' |cnGREEN_FONT_COLOR:'..Save.KEY..'|r' or ''),
+                text= e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL,--..(Save.KEY and ' |cnGREEN_FONT_COLOR:'..Save.KEY..'|r' or ''),
                 checked=Save.KEY and true or nil,
                 disabled=UnitAffectingCombat('player'),
                 func=function()
                     StaticPopupDialogs[id..addName..'KEY']={--快捷键,设置对话框
-                        text=id..' '..addName..'\n'..(e.onlyChinse and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..'\n\nQ, BUTTON5',
+                        text=id..' '..addName..'\n'..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..'\n\nQ, BUTTON5',
                         whileDead=1,
                         hideOnEscape=1,
                         exclusive=1,
@@ -269,10 +269,10 @@ local function InitMenu(self, level, menuList)--主菜单
 
             UIDropDownMenu_AddSeparator(level)
             info={--清除
-                text='|cnRED_FONT_COLOR:'..(e.onlyChinse and '清除' or CLEAR or KEY_NUMLOCK_MAC)..(e.onlyChinse and '玩具' or TOY)..'|r '..#ItemsTab..'/'..getAllSaveNum(),
+                text='|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除' or CLEAR or KEY_NUMLOCK_MAC)..(e.onlyChinese and '玩具' or TOY)..'|r '..#ItemsTab..'/'..getAllSaveNum(),
                 notCheckable=true,
                 tooltipOnButton=true,
-                tooltipTitle= e.onlyChinse and '清除全部' or CLEAR_ALL,
+                tooltipTitle= e.onlyChinese and '清除全部' or CLEAR_ALL,
                 func=function ()
                     StaticPopup_Show(id..addName..'RESETALL')
                 end,
@@ -280,11 +280,11 @@ local function InitMenu(self, level, menuList)--主菜单
             UIDropDownMenu_AddButton(info, level)
 
             info={--重置所有
-                text= e.onlyChinse and '重置' or RESET,
+                text= e.onlyChinese and '重置' or RESET,
                 colorCode="|cffff0000",
                 notCheckable=true,
                 tooltipOnButton=true,
-                tooltipTitle= e.onlyChinse and '全部重置' or RESET_ALL_BUTTON_TEXT,
+                tooltipTitle= e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT,
                 func=function ()
                     StaticPopup_Show(id..addName..'RESETALL')
                 end,
@@ -301,7 +301,7 @@ local function InitMenu(self, level, menuList)--主菜单
        UIDropDownMenu_AddButton(info, level)
        -- UIDropDownMenu_AddSeparator()
         info={
-            text=Save.KEY or (e.onlyChinse and '快捷键' or SETTINGS_KEYBINDINGS_LABEL),
+            text=Save.KEY or (e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL),
             notCheckable=true,
             menuList='SETTINGS',
             hasArrow=true,
@@ -329,7 +329,7 @@ local function showTips(self)--显示提示
             end
         end
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinse and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         e.tips:Show()
     else
         e.tips:Hide()

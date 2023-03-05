@@ -525,7 +525,7 @@ local function setAddMessageFunc(self, s, ...)
         local unitName= s:match(set_LOOT_ITEM)
         if unitName then
             if unitName==playerName then
-                s=s:gsub(unitName..'['..e.Player.col..(e.onlyChinse and '我' or COMBATLOG_FILTER_STRING_ME)..'|r]')
+                s=s:gsub(unitName..'['..e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r]')
             else
                 s=s:gsub(Magic(unitName), e.PlayerLink(unitName))
             end
@@ -577,13 +577,13 @@ end
 --###########
 local function setPanel()
     local frame = CreateFrame("FRAME");
-    frame.name = e.onlyChinse and '超链接图标' or addName;
+    frame.name = e.onlyChinese and '超链接图标' or addName;
     frame.parent =id;
     InterfaceOptions_AddCategory(frame)
 
     local str=e.Cstr(frame)--内容加颜色
     str:SetPoint('TOPLEFT')
-    str:SetText(e.onlyChinse and '颜色: 关键词 (|cnGREEN_FONT_COLOR:空格|r) 分开' or (COLOR..': '..KBASE_DEFAULT_SEARCH_TEXT..'|cnGREEN_FONT_COLOR:( '..KEY_SPACE..' )|r'))
+    str:SetText(e.onlyChinese and '颜色: 关键词 (|cnGREEN_FONT_COLOR:空格|r) 分开' or (COLOR..': '..KBASE_DEFAULT_SEARCH_TEXT..'|cnGREEN_FONT_COLOR:( '..KEY_SPACE..' )|r'))
     local editBox=e.CeditBox(frame)
     editBox:SetPoint('TOPLEFT', str, 'BOTTOMLEFT',0,-5)
     editBox:SetTextColor(0,1,0)
@@ -597,7 +597,7 @@ local function setPanel()
     end
     local btn=CreateFrame('Button', nil, editBox, 'UIPanelButtonTemplate')
     btn:SetSize(80,28)
-    btn:SetText(e.onlyChinse and '更新' or UPDATE)
+    btn:SetText(e.onlyChinese and '更新' or UPDATE)
     btn:SetPoint('TOPLEFT', editBox, 'TOPRIGHT',5, 0)
     btn:SetScript('OnMouseDown', function()
         Save.text={}
@@ -616,12 +616,12 @@ local function setPanel()
                 end
             end)
         end
-        print(id, addName, e.onlyChinse and '颜色' or COLOR, '|cnGREEN_FONT_COLOR:#'..n..(e.onlyChinse and '完成' or COMPLETE)..'|r', e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+        print(id, addName, e.onlyChinese and '颜色' or COLOR, '|cnGREEN_FONT_COLOR:#'..n..(e.onlyChinese and '完成' or COMPLETE)..'|r', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
     local str2=e.Cstr(frame)--频道名称替换
     str2:SetPoint('TOPLEFT', editBox, 'BOTTOMLEFT', 0,-20)
-    str2:SetText(e.onlyChinse and '频道名称替换: 关键词|cnGREEN_FONT_COLOR:=|r替换' or (CHANNEL_CHANNEL_NAME..': '..COMMUNITIES_SETTINGS_SHORT_NAME_LABEL..'  |cnGREEN_FONT_COLOR:= |r'))
+    str2:SetText(e.onlyChinese and '频道名称替换: 关键词|cnGREEN_FONT_COLOR:=|r替换' or (CHANNEL_CHANNEL_NAME..': '..COMMUNITIES_SETTINGS_SHORT_NAME_LABEL..'  |cnGREEN_FONT_COLOR:= |r'))
     local editBox2=e.CeditBox(frame)
     editBox2:SetPoint('TOPLEFT', str2, 'BOTTOMLEFT',0,-5)
     if Save.channels then
@@ -634,7 +634,7 @@ local function setPanel()
     end
     local btn2=CreateFrame('Button', nil, editBox2, 'UIPanelButtonTemplate')
     btn2:SetSize(80,28)
-    btn2:SetText(e.onlyChinse and '更新' or UPDATE)
+    btn2:SetText(e.onlyChinese and '更新' or UPDATE)
     btn2:SetPoint('TOPLEFT', editBox2, 'TOPRIGHT',5, 0)
     btn2:SetScript('OnMouseDown', function()
         Save.channels={}
@@ -653,7 +653,7 @@ local function setPanel()
                 end
             end)
         end
-        print(id, addName, e.onlyChinse and '频道名称替换' or (CHANNEL_CHANNEL_NAME..COMMUNITIES_SETTINGS_SHORT_NAME_LABEL), '|cnGREEN_FONT_COLOR:#'..n..(e.onlyChinse and '完成' or COMPLETE)..'|r',  e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+        print(id, addName, e.onlyChinese and '频道名称替换' or (CHANNEL_CHANNEL_NAME..COMMUNITIES_SETTINGS_SHORT_NAME_LABEL), '|cnGREEN_FONT_COLOR:#'..n..(e.onlyChinese and '完成' or COMPLETE)..'|r',  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 end
 
@@ -808,35 +808,35 @@ local function InitMenu(self, level, type)
     local info
     if type=='Welcome' then--欢迎
         info={
-            text= e.onlyChinse and '公会新成员' or LFG_LIST_GUILD_MEMBER,--公会新成员
+            text= e.onlyChinese and '公会新成员' or LFG_LIST_GUILD_MEMBER,--公会新成员
             checked=Save.guildWelcome,
             tooltipOnButton=true,
             tooltipTitle=Save.guildWelcomeText or EMOTE103_CMD1:gsub('/',''),
             colorCode= not IsInGuild() and '|cff606060',--不在公会
             func=function()
-                StaticPopup_Show(id..addName..'WELCOME', e.onlyChinse and '公会新成员' or LFG_LIST_GUILD_MEMBER, nil, {guild= true})
+                StaticPopup_Show(id..addName..'WELCOME', e.onlyChinese and '公会新成员' or LFG_LIST_GUILD_MEMBER, nil, {guild= true})
             end,
         }
         UIDropDownMenu_AddButton(info, level)
 
         UIDropDownMenu_AddSeparator(level)
         info={
-            text= e.onlyChinse and '队伍新成员' or SPELL_TARGET_TYPE14_DESC,--队伍新成员
+            text= e.onlyChinese and '队伍新成员' or SPELL_TARGET_TYPE14_DESC,--队伍新成员
             checked=Save.groupWelcome,
             tooltipOnButton=true,
             tooltipTitle=LFG_LIST_CROSS_FACTION:format(PARTY_PROMOTE),
             tooltipText=Save.groupWelcomeText or EMOTE103_CMD1:gsub('/',''),
             func=function()
-                StaticPopup_Show(id..addName..'WELCOME', e.onlyChinse and '队伍新成员' or SPELL_TARGET_TYPE14_DESC, nil, {group= true})
+                StaticPopup_Show(id..addName..'WELCOME', e.onlyChinese and '队伍新成员' or SPELL_TARGET_TYPE14_DESC, nil, {group= true})
             end,
         }
         UIDropDownMenu_AddButton(info, level)
         info={--仅限, 手动组队,不是在随机队伍里
-            text= e.onlyChinse and format('仅限%s', '组队邀请') or LFG_LIST_CROSS_FACTION:format(GROUP_INVITE),
+            text= e.onlyChinese and format('仅限%s', '组队邀请') or LFG_LIST_CROSS_FACTION:format(GROUP_INVITE),
             checked= Save.welcomeOnlyHomeGroup,
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinse and '随机' or LFG_TYPE_RANDOM_DUNGEON,
-            tooltipText= '|cnRED_FONT_COLOR:'..(e.onlyChinse and '不是' or NO),
+            tooltipTitle= e.onlyChinese and '随机' or LFG_TYPE_RANDOM_DUNGEON,
+            tooltipText= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '不是' or NO),
             func= function()
                 Save.welcomeOnlyHomeGroup= not Save.welcomeOnlyHomeGroup and true or nil
             end
@@ -845,7 +845,7 @@ local function InitMenu(self, level, type)
 
     else
         info={
-            text= (e.onlyChinse and '超链接图标'or addName)..e.Icon.left..e.GetEnabeleDisable(not Save.disabed),
+            text= (e.onlyChinese and '超链接图标'or addName)..e.Icon.left..e.GetEnabeleDisable(not Save.disabed),
             checked=not Save.disabed,
             func=function()
                 setFunc()--使用，禁用
@@ -855,7 +855,7 @@ local function InitMenu(self, level, type)
 
         local bool= C_CVar.GetCVarBool('textToSpeech')--文本转语音
         info={
-            text= (e.onlyChinse and '文本转语音' or TEXT_TO_SPEECH)..e.GetEnabeleDisable(bool),
+            text= (e.onlyChinese and '文本转语音' or TEXT_TO_SPEECH)..e.GetEnabeleDisable(bool),
             checked=bool,
             tooltipOnButton=true,
             tooltipTitle='CVar: textToSpeech',
@@ -865,13 +865,13 @@ local function InitMenu(self, level, type)
                 else
                     C_CVar.SetCVar("textToSpeech", 1)
                 end
-                print(id, addName, e.onlyChinse and '文本转语音' or TEXT_TO_SPEECH..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool('textToSpeech')))
+                print(id, addName, e.onlyChinese and '文本转语音' or TEXT_TO_SPEECH..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool('textToSpeech')))
             end
         }
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text= e.onlyChinse and '欢迎加入' or (EMOTE103_CMD1:gsub('/','')..JOIN),
+            text= e.onlyChinese and '欢迎加入' or (EMOTE103_CMD1:gsub('/','')..JOIN),
             checked= Save.guildWelcome or Save.groupWelcome,
             func=function()
                 Save.guildWelcome=nil
@@ -885,17 +885,17 @@ local function InitMenu(self, level, type)
 
         UIDropDownMenu_AddSeparator(level)
         info={
-            text= e.onlyChinse and '设置焦点' or SET_FOCUS,
+            text= e.onlyChinese and '设置焦点' or SET_FOCUS,
             checked=Save.setFucus,
             tooltipOnButton=true,
             tooltipTitle='Shift + '..e.Icon.left,
-            tooltipText= (e.onlyChinse and '仅限系统\n\n如果出现错误: 请取消' or LFG_LIST_CROSS_FACTION:format(SYSTEM)
+            tooltipText= (e.onlyChinese and '仅限系统\n\n如果出现错误: 请取消' or LFG_LIST_CROSS_FACTION:format(SYSTEM)
                 ..'\n\n'..ENABLE_ERROR_SPEECH..': '..CANCEL)
-                ..'\n\n|cnRED_FONT_COLOR:'..(e.onlyChinse and '编辑模式: 错误' or HUD_EDIT_MODE_MENU..': '..ERRORS)..'|r',
+                ..'\n\n|cnRED_FONT_COLOR:'..(e.onlyChinese and '编辑模式: 错误' or HUD_EDIT_MODE_MENU..': '..ERRORS)..'|r',
             func= function()
                 if Save.setFucus then
                     Save.setFucus=nil
-                    print(id,addName, e.onlyChinse and '设置' or  SETTINGS, e.onlyChinse and '|cnRED_FONT_COLOR:重新加载UI|r' or '|cnGREEN_FONT_COLOR:'..RELOADUI..'|r')
+                    print(id,addName, e.onlyChinese and '设置' or  SETTINGS, e.onlyChinese and '|cnRED_FONT_COLOR:重新加载UI|r' or '|cnGREEN_FONT_COLOR:'..RELOADUI..'|r')
                 else
                     Save.setFucus=true
                     set_Shift_Click_focurs()--Shift+点击设置焦点
@@ -905,7 +905,7 @@ local function InitMenu(self, level, type)
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text= e.onlyChinse and '事件声音' or EVENTS_LABEL..SOUND,
+            text= e.onlyChinese and '事件声音' or EVENTS_LABEL..SOUND,
             checked= Save.setPlayerSound,
             colorCode= (not C_CVar.GetCVarBool('Sound_EnableAllSound') or C_CVar.GetCVar('Sound_MasterVolume')=='0') and '|cff606060',
             func= function()
@@ -915,14 +915,14 @@ local function InitMenu(self, level, type)
                     e.PlaySound()--播放, 声音
                 end
                 set_START_TIMER_Event()--事件, 声音
-                print(id, addName, e.onlyChinse and "播放" or SLASH_STOPWATCH_PARAM_PLAY1, e.onlyChinse and '事件声音' or EVENTS_LABEL..SOUND)
+                print(id, addName, e.onlyChinese and "播放" or SLASH_STOPWATCH_PARAM_PLAY1, e.onlyChinese and '事件声音' or EVENTS_LABEL..SOUND)
             end
         }
         UIDropDownMenu_AddButton(info, level)
 
         UIDropDownMenu_AddSeparator(level)
         info={--重载
-            text= e.onlyChinse and '重新加载UI' or RELOADUI,
+            text= e.onlyChinese and '重新加载UI' or RELOADUI,
             notCheckable=true,
             tooltipOnButton=true,
             tooltipTitle='/reload',

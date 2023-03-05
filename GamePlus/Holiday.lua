@@ -170,9 +170,9 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
 				if ( event.calendarType == "GUILD_ANNOUNCEMENT" ) then
 					text = e.Icon.player;
 				elseif ( event.calendarType == "GUILD_EVENT" ) then
-					text = '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '公会' or GUILD)..'|r'
+					text = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '公会' or GUILD)..'|r'
 				elseif ( event.calendarType == "COMMUNITY_EVENT") then--社区
-					text = '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '社区' or COMMUNITIES)..'|r';
+					text = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '社区' or COMMUNITIES)..'|r';
                 else
 					text = e.Icon.player
 				end
@@ -202,7 +202,7 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
 			title = GetDungeonNameWithDifficulty(title, event.difficultyName);
             msg= msg..format(CALENDAR_CALENDARTYPE_TOOLTIP_NAMEFORMAT[event.calendarType][event.sequenceType], title)
         elseif event.calendarType=='HOLIDAY' and title:find(PLAYER_DIFFICULTY_TIMEWALKER) then--时空漫游
-            msg= msg..(e.onlyChinse and '时空漫游' or PLAYER_DIFFICULTY_TIMEWALKER)
+            msg= msg..(e.onlyChinese and '时空漫游' or PLAYER_DIFFICULTY_TIMEWALKER)
         else
             msg= msg..(title:match(': (.+)') or title:match('：(.+)') or title)
         end
@@ -279,7 +279,7 @@ local function InitMenu(self, level, type)--主菜单
     local info
     if type then
         info={
-            text= e.onlyChinse and '内容靠左' or BINDING_NAME_STRAFELEFT,--向左平移
+            text= e.onlyChinese and '内容靠左' or BINDING_NAME_STRAFELEFT,--向左平移
             checked= Save.left,
             func= function()
                 Save.left= not Save.left and true or nil
@@ -289,7 +289,7 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text= e.onlyChinse and '职业颜色' or CLASS_COLORS,
+            text= e.onlyChinese and '职业颜色' or CLASS_COLORS,
             checked= Save.classColor,
             func= function()
                 Save.classColor= not Save.classColor and true or nil
@@ -299,7 +299,7 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text= e.onlyChinse and '仅限: 正在活动' or LFG_LIST_CROSS_FACTION:format(CALENDAR_TOOLTIP_ONGOING),
+            text= e.onlyChinese and '仅限: 正在活动' or LFG_LIST_CROSS_FACTION:format(CALENDAR_TOOLTIP_ONGOING),
             checked= Save.onGoing,
             func= function()
                 Save.onGoing= not Save.onGoing and true or nil
@@ -308,7 +308,7 @@ local function InitMenu(self, level, type)--主菜单
         }
         UIDropDownMenu_AddButton(info, level)
         info={
-            text= e.onlyChinse and '时间' or TIME_LABEL,
+            text= e.onlyChinese and '时间' or TIME_LABEL,
             checked= Save.showDate,
             func= function()
                 Save.showDate= not Save.showDate and true or nil
@@ -317,7 +317,7 @@ local function InitMenu(self, level, type)--主菜单
         }
         UIDropDownMenu_AddButton(info, level)
         info={
-            text= e.onlyChinse and '节日 ID' or CALENDAR_FILTER_HOLIDAYS..' ID',--时间
+            text= e.onlyChinese and '节日 ID' or CALENDAR_FILTER_HOLIDAYS..' ID',--时间
             checked= Save.showID,
             func= function()
                 Save.showID= not Save.showID and true or nil
@@ -328,7 +328,7 @@ local function InitMenu(self, level, type)--主菜单
 
         UIDropDownMenu_AddSeparator(level)
         info={
-            text=e.onlyChinse and '还原位置' or RESET_POSITION,
+            text=e.onlyChinese and '还原位置' or RESET_POSITION,
             colorCode=not Save.point and '|cff606060',
             func=function()
                 Save.point=nil
@@ -343,7 +343,7 @@ local function InitMenu(self, level, type)--主菜单
 
     else
         info={
-            text=e.onlyChinse and '设置' or SETTINGS,
+            text=e.onlyChinese and '设置' or SETTINGS,
             notCheckable=true,
             menuList='SETTINGS',
             hasArrow=true,
@@ -351,13 +351,13 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text=e.Icon.left..(e.onlyChinse and '显示/隐藏' or (SHOW..'/'..HIDE)),
+            text=e.Icon.left..(e.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE)),
             isTitle=true,
             notCheckable=true
         }
         UIDropDownMenu_AddButton(info, level)
         info={--点击这里显示日历
-            text=e.Icon.mid..(e.onlyChinse and '打开/关闭日历' or GAMETIME_TOOLTIP_TOGGLE_CALENDAR ),
+            text=e.Icon.mid..(e.onlyChinese and '打开/关闭日历' or GAMETIME_TOOLTIP_TOGGLE_CALENDAR ),
             isTitle=true,
             notCheckable=true
         }
@@ -365,14 +365,14 @@ local function InitMenu(self, level, type)--主菜单
 
         UIDropDownMenu_AddSeparator(level)
         info={--提示移动
-            text= e.Icon.right..(e.onlyChinse and '移动' or NPE_MOVE),
+            text= e.Icon.right..(e.onlyChinese and '移动' or NPE_MOVE),
             isTitle=true,
             notCheckable=true
         }
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text='Alt+'..e.Icon.mid..(e.onlyChinse and '缩放' or UI_SCALE)..(Save.scale or 1),
+            text='Alt+'..e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE)..(Save.scale or 1),
             isTitle=true,
             notCheckable=true
         }
@@ -439,7 +439,7 @@ local function Init()
             elseif sacle<0.6 then
                 sacle=0.6
             end
-            print(id, addName, e.onlyChinse and '缩放' or UI_SCALE, sacle)
+            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, sacle)
             Save.scale=sacle
             Text_Settings()--设置Text
         else
@@ -465,7 +465,7 @@ local function Init()
                     description = format(CALENDAR_HOLIDAYFRAME_BEGINSENDS, description, FormatShortDate(holidayInfo.startTime.monthDay, holidayInfo.startTime.month), GameTime_GetFormattedTime(holidayInfo.startTime.hour, holidayInfo.startTime.minute, true), FormatShortDate(holidayInfo.endTime.monthDay, holidayInfo.endTime.month), GameTime_GetFormattedTime(holidayInfo.endTime.hour, holidayInfo.endTime.minute, true));
                 end
 
-                description=description..'\n\n'..(e.onlyChinse and '节日' or CALENDAR_FILTER_HOLIDAYS)..' ID '..info.eventID..(info.iconTexture and '    |T'..info.iconTexture..':0|t'..info.iconTexture or '')
+                description=description..'\n\n'..(e.onlyChinese and '节日' or CALENDAR_FILTER_HOLIDAYS)..' ID '..info.eventID..(info.iconTexture and '    |T'..info.iconTexture..':0|t'..info.iconTexture or '')
                 CalendarViewHolidayFrame.ScrollingFont:SetText(description);
 
                 if info.iconTexture then
@@ -490,10 +490,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
             --添加控制面板        
-            local sel=e.CPanel(e.onlyChinse and '节日' or addName, not Save.disabled, true)
+            local sel=e.CPanel(e.onlyChinese and '节日' or addName, not Save.disabled, true)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled = not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '重新加载UI' or RELOADUI)
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
             end)
 
             if  Save.disabled then

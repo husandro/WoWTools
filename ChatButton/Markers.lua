@@ -187,9 +187,9 @@ local function setGroupReadyTips(event, arg1, arg2)
             button.groupReadyTips:SetScript('OnEnter', function(self)
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine(addName, e.onlyChinse and '队员就绪信息' or PLAYERS_IN_GROUP..READY..INFO)
-                e.tips:AddDoubleLine(e.onlyChinse and '清除全部' or  CLEAR_ALL, e.Icon.left)
-                e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
+                e.tips:AddDoubleLine(addName, e.onlyChinese and '队员就绪信息' or PLAYERS_IN_GROUP..READY..INFO)
+                e.tips:AddDoubleLine(e.onlyChinese and '清除全部' or  CLEAR_ALL, e.Icon.left)
+                e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
                 e.tips:Show()
             end)
             button.groupReadyTips:SetScript('OnLeave', function()
@@ -404,11 +404,11 @@ local function setMarkersFrame()--设置标记, 框架
                     e.tips:SetOwner(self, "ANCHOR_RIGHT")
                     e.tips:ClearLines()
                     e.tips:AddDoubleLine(id, addName)
-                    e.tips:AddDoubleLine(e.Icon.O2..(e.onlyChinse and '清除全部' or CLEAR_ALL), e.Icon.left)
+                    e.tips:AddDoubleLine(e.Icon.O2..(e.onlyChinese and '清除全部' or CLEAR_ALL), e.Icon.left)
                     e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE,e.Icon.right)
-                    e.tips:AddDoubleLine(e.onlyChinse and '缩放' or  UI_SCALE, (Save.markersScale or 1)..' Alt+'..e.Icon.mid)
-                    e.tips:AddDoubleLine((e.onlyChinse and '图标方向' or  HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION)..(Save.H and e.Icon.toLeft2 or e.Icon.up2), 'Ctrl+'..e.Icon.right)
+                    e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE,e.Icon.right)
+                    e.tips:AddDoubleLine(e.onlyChinese and '缩放' or  UI_SCALE, (Save.markersScale or 1)..' Alt+'..e.Icon.mid)
+                    e.tips:AddDoubleLine((e.onlyChinese and '图标方向' or  HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION)..(Save.H and e.Icon.toLeft2 or e.Icon.up2), 'Ctrl+'..e.Icon.right)
                     e.tips:Show()
                 end)
                 btn:EnableMouseWheel(true)
@@ -425,7 +425,7 @@ local function setMarkersFrame()--设置标记, 框架
                         elseif sacle<0.6 then
                             sacle=0.6
                         end
-                        print(id, addName, e.onlyChinse and '缩放' or UI_SCALE, sacle)
+                        print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, sacle)
                         frame:SetScale(sacle)
                         Save.markersScale=sacle
                     end
@@ -442,8 +442,8 @@ local function setMarkersFrame()--设置标记, 框架
                 btn:SetScript('OnEnter', function(self)
                     e.tips:SetOwner(self, "ANCHOR_RIGHT")
                     e.tips:ClearLines()
-                    e.tips:AddLine(getTexture(index)..(e.onlyChinse and '设置' or SETTINGS)..e.Icon.left, color[index].r, color[index].g, color[index].b)
-                    e.tips:AddLine(getTexture(index)..(e.onlyChinse and '清除' or CLEAR or KEY_NUMLOCK_MAC)..e.Icon.right, color[index].r, color[index].g, color[index].b)
+                    e.tips:AddLine(getTexture(index)..(e.onlyChinese and '设置' or SETTINGS)..e.Icon.left, color[index].r, color[index].g, color[index].b)
+                    e.tips:AddLine(getTexture(index)..(e.onlyChinese and '清除' or CLEAR or KEY_NUMLOCK_MAC)..e.Icon.right, color[index].r, color[index].g, color[index].b)
                     e.tips:Show()
                 end)
             end
@@ -518,11 +518,11 @@ local function setMarkersFrame()--设置标记, 框架
         frame.countdown:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_RIGHT")
             e.tips:ClearLines()
-            e.tips:AddLine(e.Icon.left..(e.onlyChinse and '/倒计时' or SLASH_COUNTDOWN2)..' '..(Save.countdown or 7))
+            e.tips:AddLine(e.Icon.left..(e.onlyChinese and '/倒计时' or SLASH_COUNTDOWN2)..' '..(Save.countdown or 7))
             e.tips:AddLine(e.Icon.right..BINDING_NAME_STOPATTACK)
             e.tips:AddLine(' ')
-            e.tips:AddLine(e.onlyChinse and '你太快了' or ERR_GENERIC_THROTTLE, 1,0,0)
-            e.tips:AddLine('Ctrl+'..e.Icon.right..(e.onlyChinse and '设置' or SETTINGS))
+            e.tips:AddLine(e.onlyChinese and '你太快了' or ERR_GENERIC_THROTTLE, 1,0,0)
+            e.tips:AddLine('Ctrl+'..e.Icon.right..(e.onlyChinese and '设置' or SETTINGS))
             e.tips:Show()
         end)
         frame.countdown:SetScript('OnLeave', function() e.tips:Hide() end)
@@ -581,10 +581,10 @@ local function setMarkersFrame()--设置标记, 框架
                 e.tips:SetOwner(self, "ANCHOR_RIGHT")
                 e.tips:ClearLines()
                 if index==0 then
-                    e.tips:AddLine(e.Icon.O2..(e.onlyChinse and '清除全部' or CLEAR_ALL)..e.Icon.left)
+                    e.tips:AddLine(e.Icon.O2..(e.onlyChinese and '清除全部' or CLEAR_ALL)..e.Icon.left)
                 else
-                    e.tips:AddLine(getTexture(index)..(e.onlyChinse and '设置' or SETTINGS)..e.Icon.left, color[index].r, color[index].g, color[index].b)
-                    e.tips:AddLine(getTexture(index)..(e.onlyChinse and '清除' or CLEAR or KEY_NUMLOCK_MAC)..e.Icon.right, color[index].r, color[index].g, color[index].b)
+                    e.tips:AddLine(getTexture(index)..(e.onlyChinese and '设置' or SETTINGS)..e.Icon.left, color[index].r, color[index].g, color[index].b)
+                    e.tips:AddLine(getTexture(index)..(e.onlyChinese and '清除' or CLEAR or KEY_NUMLOCK_MAC)..e.Icon.right, color[index].r, color[index].g, color[index].b)
                 end
                 e.tips:Show()
             end)
@@ -616,7 +616,7 @@ local function InitMenu(self, level, type)--主菜单
     if type then
         if type=='ready' then
             info={
-                text=e.Icon.select2..(e.onlyChinse and '就绪' or READY),--就绪
+                text=e.Icon.select2..(e.onlyChinese and '就绪' or READY),--就绪
                 colorCode='|cff00ff00',
                 checked=Save.autoReady==1,
                 func=function()
@@ -627,7 +627,7 @@ local function InitMenu(self, level, type)--主菜单
             }
             UIDropDownMenu_AddButton(info, level)
             info={
-                text=e.Icon.O2..(e.onlyChinse and '未就绪' or NOT_READY_FEMALE),--未就绪
+                text=e.Icon.O2..(e.onlyChinese and '未就绪' or NOT_READY_FEMALE),--未就绪
                 colorCode='|cffff0000',
                 checked=Save.autoReady==2,
                 func=function()
@@ -638,7 +638,7 @@ local function InitMenu(self, level, type)--主菜单
             }
             UIDropDownMenu_AddButton(info, level)
             info={--无
-                text= e.onlyChinse and '无' or NONE,
+                text= e.onlyChinese and '无' or NONE,
                 checked=not Save.autoReady,
                 func=function()
                     Save.autoReady=nil
@@ -650,7 +650,7 @@ local function InitMenu(self, level, type)--主菜单
 
             UIDropDownMenu_AddSeparator(level)--队员提示信息
             info={
-                text= e.onlyChinse and '队员就绪信息' or (PLAYERS_IN_GROUP..READY..INFO),
+                text= e.onlyChinese and '队员就绪信息' or (PLAYERS_IN_GROUP..READY..INFO),
                 checked=Save.groupReadyTips,
                 func=function()
                     Save.groupReadyTips= not Save.groupReadyTips and true or false
@@ -661,7 +661,7 @@ local function InitMenu(self, level, type)--主菜单
 
         elseif type=='MakerFrameResetPost' then--重置位置， 队伍标记工具
             info={
-                text= e.onlyChinse and '重置位置' or RESET_POSITION,
+                text= e.onlyChinese and '重置位置' or RESET_POSITION,
                 notCheckable=true,
                 colorCode= not Save.markersFramePoint and '|cff606060',
                 func= function()
@@ -679,7 +679,7 @@ local function InitMenu(self, level, type)--主菜单
                     UIDropDownMenu_AddSeparator(level)
                 end
                 info={
-                    text= index==num and (e.onlyChinse and '无' or NONE) or _G['RAID_TARGET_'..index],
+                    text= index==num and (e.onlyChinese and '无' or NONE) or _G['RAID_TARGET_'..index],
                     icon= index==num and nil or 'Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index,
                     checked= Save[type]==index,
                     colorCode=colorCode[index],
@@ -703,7 +703,7 @@ local function InitMenu(self, level, type)--主菜单
                 UIDropDownMenu_AddButton(info, level)
             end
             info={
-                text=format(e.onlyChinse and '仅限%s' or LFG_LIST_CROSS_FACTION, type=='tank2' and (e.onlyChinse and '团队' or RAID) or type=='healer' and (e.onlyChinse and '小队' or GROUP) or (e.onlyChinse and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS)),
+                text=format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, type=='tank2' and (e.onlyChinese and '团队' or RAID) or type=='healer' and (e.onlyChinese and '小队' or GROUP) or (e.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS)),
                 notCheckable=true,
                 isTitle=true,
             }
@@ -711,7 +711,7 @@ local function InitMenu(self, level, type)--主菜单
         end
     else
         info={
-            text= e.onlyChinse and '自动标记' or (AUTO_JOIN:gsub(JOIN,'')..EVENTTRACE_MARKER)..e.Icon.TANK..e.Icon.HEALER,
+            text= e.onlyChinese and '自动标记' or (AUTO_JOIN:gsub(JOIN,'')..EVENTTRACE_MARKER)..e.Icon.TANK..e.Icon.HEALER,
             checked= Save.autoSet,
             disabled= Save.tank==0 and Save.healer==0,
             func=function()
@@ -728,9 +728,9 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddSeparator()
 
         local tab={
-                {text= e.Icon.TANK..(e.onlyChinse and '坦克' or TANK), type='tank'},
-                {text= e.Icon.HEALER..(e.onlyChinse and '治疗' or HEALER), type='healer'},
-                {text= e.Icon.TANK..(e.onlyChinse and '坦克' or TANK)..'2', type='tank2'},
+                {text= e.Icon.TANK..(e.onlyChinese and '坦克' or TANK), type='tank'},
+                {text= e.Icon.HEALER..(e.onlyChinese and '治疗' or HEALER), type='healer'},
+                {text= e.Icon.TANK..(e.onlyChinese and '坦克' or TANK)..'2', type='tank2'},
             }
         for _, tab2 in pairs(tab) do
             info={
@@ -754,11 +754,11 @@ local function InitMenu(self, level, type)--主菜单
 
         UIDropDownMenu_AddSeparator()
         info={
-            text=e.onlyChinse and '队伍标记工具' or format(BINDING_HEADER_RAID_TARGET, PROFESSION_TOOL_TOOLTIP_LINE),
+            text=e.onlyChinese and '队伍标记工具' or format(BINDING_HEADER_RAID_TARGET, PROFESSION_TOOL_TOOLTIP_LINE),
             checked=Save.markersFrame,
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinse and '世界标记' or SLASH_WORLD_MARKER3:gsub('/',''),
-            tooltipText= e.onlyChinse and '需求：队伍和权限' or NEED..": "..COVENANT_RENOWN_TOAST_REWARD_COMBINER:format(HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS,CALENDAR_INVITELIST_SETMODERATOR),
+            tooltipTitle= e.onlyChinese and '世界标记' or SLASH_WORLD_MARKER3:gsub('/',''),
+            tooltipText= e.onlyChinese and '需求：队伍和权限' or NEED..": "..COVENANT_RENOWN_TOAST_REWARD_COMBINER:format(HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS,CALENDAR_INVITELIST_SETMODERATOR),
             menuList= 'MakerFrameResetPost',
             hasArrow=true,
             func=function()
@@ -774,7 +774,7 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text=(Save.autoReady==1 and e.Icon.select2 or Save.autoReady==2 and e.Icon.O2 or (e.onlyChinse and '无' or NONE)).. (e.onlyChinse and '自动' or AUTO_JOIN:gsub(JOIN,''))..((not Save.autoReady or Save.autoReady==1) and (e.onlyChinse and '就绪' or READY) or Save.autoReady==2 and (e.onlyChinse and '未就绪' or NOT_READY_FEMALE) or ''),
+            text=(Save.autoReady==1 and e.Icon.select2 or Save.autoReady==2 and e.Icon.O2 or (e.onlyChinese and '无' or NONE)).. (e.onlyChinese and '自动' or AUTO_JOIN:gsub(JOIN,''))..((not Save.autoReady or Save.autoReady==1) and (e.onlyChinese and '就绪' or READY) or Save.autoReady==2 and (e.onlyChinese and '未就绪' or NOT_READY_FEMALE) or ''),
             checked= Save.autoReady==1 or Save.autoReady==2,
             colorCode= Save.autoReady==1 and '|cff00ff00' or Save.autoReady==2 and '|cffff0000',
             menuList='ready',

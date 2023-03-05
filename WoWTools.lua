@@ -137,7 +137,7 @@ e.GetPlayerInfo=function (unit, guid, showName)--, hideClassTexture)
     guid= guid or UnitGUID(unit)
     if guid then
         if guid==e.Player.guid then
-           return e.Icon.player..(showName and e.Player.col..(e.onlyChinse and '我' or COMBATLOG_FILTER_STRING_ME)..'|r' or '')..e.Icon.star2
+           return e.Icon.player..(showName and e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r' or '')..e.Icon.star2
         else
             local _, englishClass, _, englishRace, sex, name, realm = GetPlayerInfoByGUID(guid)
             if name and englishClass and englishRace and sex then
@@ -286,13 +286,13 @@ end
 e.PlayerOnlineInfo=function(unit)--单位，状态信息
     if unit and UnitExists(unit) then
         if not UnitIsConnected(unit) then
-            return format("\124T%s.tga:0\124t", FRIENDS_TEXTURE_DND), e.onlyChinse and '离线' or PLAYER_OFFLINE
+            return format("\124T%s.tga:0\124t", FRIENDS_TEXTURE_DND), e.onlyChinese and '离线' or PLAYER_OFFLINE
         elseif UnitIsAFK(unit) then
-            return format("\124T%s.tga:0\124t", FRIENDS_TEXTURE_AFK), e.onlyChinse and '离开' or AFK
+            return format("\124T%s.tga:0\124t", FRIENDS_TEXTURE_AFK), e.onlyChinese and '离开' or AFK
         elseif UnitIsGhost(unit) then
-            return '|A:poi-soulspiritghost:0:0|a', e.onlyChinse and '幽灵' or DEAD
+            return '|A:poi-soulspiritghost:0:0|a', e.onlyChinese and '幽灵' or DEAD
         elseif UnitIsDead(unit) then
-            return '|A:deathrecap-icon-tombstone:0:0|a', e.onlyChinse and '死亡' or DEAD
+            return '|A:deathrecap-icon-tombstone:0:0|a', e.onlyChinese and '死亡' or DEAD
         end
     end
 end
@@ -356,7 +356,7 @@ e.MK=function(number,bit)
         else
             return ('%.'..bit..'fm'):format(number/1e6)
         end
-    elseif number>= 1e4 and (LOCALE_zhCN or e.onlyChinse) then
+    elseif number>= 1e4 and (LOCALE_zhCN or e.onlyChinese) then
         if bit==0 then
             return ('%iw'):format(number/1e4)
         else
@@ -376,23 +376,23 @@ end
 
 e.GetShowHide = function(sh)
 	if sh then
-		return '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '显示' or SHOW)..'|r'
+		return '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '显示' or SHOW)..'|r'
 	else
-		return '|cnRED_FONT_COLOR:'..(e.onlyChinse and '隐藏' or HIDE)..'|r'
+		return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '隐藏' or HIDE)..'|r'
 	end
 end
 e.GetEnabeleDisable = function (ed)--启用或禁用字符
     if ed then
-        return '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '启用' or ENABLE)..'|r'
+        return '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '启用' or ENABLE)..'|r'
     else
-        return '|cnRED_FONT_COLOR:'..(e.onlyChinse and '禁用' or DISABLE)..'|r'
+        return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE)..'|r'
     end
 end
 e.GetYesNo = function (yesno)
     if yesno then
-        return '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '是' or YES)..'|r'
+        return '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '是' or YES)..'|r'
     else
-        return '|cnRED_FONT_COLOR:'..(e.onlyChinse and '否' or NO)..'|r'
+        return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '否' or NO)..'|r'
     end
 end
 
@@ -882,18 +882,18 @@ e.GetSetsCollectedNum= function(setID)--套装 , 收集数量, 返回: 图标, �
     end
     if numAll>0 then
         if numCollected==numAll then
-            return '|A:transmog-icon-checkmark:0:0|a', numCollected, numAll, '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '已收集' or COLLECTED)..'|r'
+            return '|A:transmog-icon-checkmark:0:0|a', numCollected, numAll, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r'
         elseif numAll <=9 then
             if numCollected==0 then
-                return e.Icon.number2:format(numAll-numCollected), numCollected, numAll, '|cnRED_FONT_COLOR:'..(e.onlyChinse and '未收集' or NOT_COLLECTED)..'|r'
+                return e.Icon.number2:format(numAll-numCollected), numCollected, numAll, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
             else
-                return e.Icon.number2:format(numAll-numCollected), numCollected, numAll, '|cnYELLOW_FONT_COLOR:'..numCollected..'/'..numAll..' '..(e.onlyChinse and '未收集' or NOT_COLLECTED)..'|r'
+                return e.Icon.number2:format(numAll-numCollected), numCollected, numAll, '|cnYELLOW_FONT_COLOR:'..numCollected..'/'..numAll..' '..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
             end
         else
             if numCollected==0 then
-                return '|cnRED_FONT_COLOR:'..numAll-numCollected..'|r ', numCollected, numAll, '|cnRED_FONT_COLOR:'..(e.onlyChinse and '未收集' or NOT_COLLECTED)..'|r'
+                return '|cnRED_FONT_COLOR:'..numAll-numCollected..'|r ', numCollected, numAll, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
             else
-                return ' |cnYELLOW_FONT_COLOR:'..numAll-numCollected..'|r ', numCollected, numAll, '|cnYELLOW_FONT_COLOR:'..numCollected..'/'..numAll..' '..(e.onlyChinse and '未收集' or NOT_COLLECTED)..'|r'
+                return ' |cnYELLOW_FONT_COLOR:'..numAll-numCollected..'|r ', numCollected, numAll, '|cnYELLOW_FONT_COLOR:'..numCollected..'/'..numAll..' '..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
             end
         end
     end
@@ -912,7 +912,7 @@ e.GetItemCollected= function(link, sourceID, icon)--物品是否收集
                     return '|A:Adventures-Checkmark:0:0|a', sourceInfo.isCollected, isSelf--黄色√
                 end
             else
-                return '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '已收集' or COLLECTED)..'|r', sourceInfo.isCollected, isSelf
+                return '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r', sourceInfo.isCollected, isSelf
             end
         else
             if icon then
@@ -922,7 +922,7 @@ e.GetItemCollected= function(link, sourceID, icon)--物品是否收集
                     return e.Icon.star2, sourceInfo.isCollected, isSelf
                 end
             else
-                return '|cnRED_FONT_COLOR:'..(e.onlyChinse and '未收集' or NOT_COLLECTED)..'|r', sourceInfo.isCollected, isSelf
+                return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r', sourceInfo.isCollected, isSelf
             end
         end
     end
@@ -974,9 +974,9 @@ end
 
 e.GetMountCollected= function(mountID)--坐骑, 收集数量
     if select(11, C_MountJournal.GetMountInfoByID(mountID)) then
-        return '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '已收集' or COLLECTED)..'|r'
+        return '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r'
     else
-        return '|cnRED_FONT_COLOR:'..(e.onlyChinse and '未收集' or NOT_COLLECTED)..'|r'
+        return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
     end
 end
 
@@ -987,9 +987,9 @@ e.GetExpansionText= function(expacID, questID)--版本数据
     expacID= expacID or questID and GetQuestExpansion(questID)
     if expacID then
         if e.ExpansionLevel==expacID then
-            return _G['EXPANSION_NAME'..expacID], (e.onlyChinse and '版本' or GAME_VERSION_LABEL)..' '..(expacID+1)
+            return _G['EXPANSION_NAME'..expacID], (e.onlyChinese and '版本' or GAME_VERSION_LABEL)..' '..(expacID+1)
         else
-            return '|cff606060'.._G['EXPANSION_NAME'..expacID]..'|r', '|cff606060'..(e.onlyChinse and '版本' or GAME_VERSION_LABEL)..' '..(expacID+1)..'|r'
+            return '|cff606060'.._G['EXPANSION_NAME'..expacID]..'|r', '|cff606060'..(e.onlyChinese and '版本' or GAME_VERSION_LABEL)..' '..(expacID+1)..'|r'
         end
     end
 end
@@ -1078,16 +1078,16 @@ e.Set_Item_Stats = function(self, link, point)
     if link then
         local info= GetItemStats(link) or {}
         if info['ITEM_MOD_CRIT_RATING_SHORT'] then
-            table.insert(tab, {text=e.onlyChinse and '爆' or e.WA_Utf8Sub(STAT_CRITICAL_STRIKE, 1, 2):upper(), value=info['ITEM_MOD_CRIT_RATING_SHORT']})
+            table.insert(tab, {text=e.onlyChinese and '爆' or e.WA_Utf8Sub(STAT_CRITICAL_STRIKE, 1, 2):upper(), value=info['ITEM_MOD_CRIT_RATING_SHORT']})
         end
         if info['ITEM_MOD_HASTE_RATING_SHORT'] then
-            table.insert(tab, {text=e.onlyChinse and '急' or e.WA_Utf8Sub(STAT_HASTE, 1,2):upper(), value=info['ITEM_MOD_HASTE_RATING_SHORT']})
+            table.insert(tab, {text=e.onlyChinese and '急' or e.WA_Utf8Sub(STAT_HASTE, 1,2):upper(), value=info['ITEM_MOD_HASTE_RATING_SHORT']})
         end
         if info['ITEM_MOD_MASTERY_RATING_SHORT'] then
-            table.insert(tab, {text=e.onlyChinse and '精' or e.WA_Utf8Sub(STAT_MASTERY, 1,2):upper(), value=info['ITEM_MOD_MASTERY_RATING_SHORT']})
+            table.insert(tab, {text=e.onlyChinese and '精' or e.WA_Utf8Sub(STAT_MASTERY, 1,2):upper(), value=info['ITEM_MOD_MASTERY_RATING_SHORT']})
         end
         if info['ITEM_MOD_VERSATILITY'] then
-            table.insert(tab, {text=e.onlyChinse and '全' or e.WA_Utf8Sub(STAT_VERSATILITY, 1,2):upper(), value=info['ITEM_MOD_VERSATILITY']})
+            table.insert(tab, {text=e.onlyChinese and '全' or e.WA_Utf8Sub(STAT_VERSATILITY, 1,2):upper(), value=info['ITEM_MOD_VERSATILITY']})
         end
 
         setID= select(16 , GetItemInfo(link))--套装
@@ -1210,7 +1210,7 @@ e.Reload= function()
     if not UnitAffectingCombat('player') then
         C_UI.Reload()
     else
-        print(id, '|cnRED_FONT_COLOR:'..(e.onlyChinse and '战斗中'..HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+        print(id, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中'..HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
     end
 end
 --e.ShowColorPicker(r,g,b,a, function(restore) if not restore then local newA, newR, newG, newB = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()

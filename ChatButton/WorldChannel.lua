@@ -113,8 +113,8 @@ local function addMenu(name, channelNumber, level)--添加菜单
         checked= check==1,
         colorCode= check==0 and '|cffff0000' or check==2 and '|cff606060',
         tooltipOnButton=true,
-        tooltipTitle=(e.onlyChinse and '屏蔽' or IGNORE)..' Alt+'..e.Icon.left,
-        tooltipText= check==2 and (e.onlyChinse and '已屏蔽' or IGNORED),
+        tooltipTitle=(e.onlyChinese and '屏蔽' or IGNORE)..' Alt+'..e.Icon.left,
+        tooltipText= check==2 and (e.onlyChinese and '已屏蔽' or IGNORED),
         icon=communityTexture,
         func=function()
             if IsAltKeyDown() then

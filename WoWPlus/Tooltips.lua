@@ -53,13 +53,13 @@ end
 
 local function setMount(self, mountID)--坐骑    
     local name, spellID, icon, isActive, isUsable, sourceType, isFavorite, isFactionSpecific, faction, shouldHideOnChar, isCollected=C_MountJournal.GetMountInfoByID(mountID)
-    self:AddDoubleLine((e.onlyChinse and '坐骑' or MOUNTS)..' '..mountID, spellID and (e.onlyChinse and '召唤技能' or (SUMMON..ABILITIES))..' '..spellID)
+    self:AddDoubleLine((e.onlyChinese and '坐骑' or MOUNTS)..' '..mountID, spellID and (e.onlyChinese and '召唤技能' or (SUMMON..ABILITIES))..' '..spellID)
     if isFactionSpecific then
-        self.textRight:SetText(not faction and ' ' or format(e.onlyChinse and '仅限%s' or LFG_LIST_CROSS_FACTION, faction==0 and e.Icon.horde2..(e.onlyChinse and '部落' or THE_HORDE) or e.Icon.alliance2..(e.onlyChinse and '联盟' or THE_ALLIANCE) or ''))
+        self.textRight:SetText(not faction and ' ' or format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, faction==0 and e.Icon.horde2..(e.onlyChinese and '部落' or THE_HORDE) or e.Icon.alliance2..(e.onlyChinese and '联盟' or THE_ALLIANCE) or ''))
     end
     local creatureDisplayInfoID, description, source, isSelfMount, mountTypeID, uiModelSceneID, animID, spellVisualKitID, disablePlayerMountPreview = C_MountJournal.GetMountInfoExtraByID(mountID)
     if creatureDisplayInfoID then
-        self:AddDoubleLine((e.onlyChinse and '模型' or MODEL)..' '..creatureDisplayInfoID, (e.onlyChinse and '变形' or TUTORIAL_TITLE61_DRUID)..' '..e.GetYesNo(isSelfMount))
+        self:AddDoubleLine((e.onlyChinese and '模型' or MODEL)..' '..creatureDisplayInfoID, (e.onlyChinese and '变形' or TUTORIAL_TITLE61_DRUID)..' '..e.GetYesNo(isSelfMount))
     end
     if source then
         self:AddLine(source,nil,nil,nil,true)
@@ -71,7 +71,7 @@ local function setMount(self, mountID)--坐骑
         self.creatureDisplayID=creatureDisplayInfoID
     end
 
-    self.text2Left:SetText(isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinse and '未收集' or NOT_COLLECTED)..'|r')
+    self.text2Left:SetText(isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
 end
 
 
@@ -88,7 +88,7 @@ local function setPet(self, speciesID, setSearchText)--宠物
         self.text2Left:SetText(CollectedText or '')
         self.textRight:SetText(AllCollected or '')
 
-        self:AddDoubleLine((e.onlyChinse and '宠物' or PET)..' '..speciesID..(speciesIcon and '  |T'..speciesIcon..':0|t'..speciesIcon or ''), (creatureDisplayID and (e.onlyChinse and '模型' or MODEL)..' '..creatureDisplayID or '')..(companionID and ' NPC '..companionID or ''))--ID
+        self:AddDoubleLine((e.onlyChinese and '宠物' or PET)..' '..speciesID..(speciesIcon and '  |T'..speciesIcon..':0|t'..speciesIcon or ''), (creatureDisplayID and (e.onlyChinese and '模型' or MODEL)..' '..creatureDisplayID or '')..(companionID and ' NPC '..companionID or ''))--ID
 
         local tab = C_PetJournal.GetPetAbilityListTable(speciesID)--技能图标
         table.sort(tab, function(a,b) return a.level< b.level end)
@@ -104,7 +104,7 @@ local function setPet(self, speciesID, setSearchText)--宠物
         end
         self:AddDoubleLine(abilityIconA, abilityIconB)
         if not isTradeable then
-            self:AddLine(e.onlyChinse and '该宠物不可交易' or BATTLE_PET_NOT_TRADABLE, 1,0,0)
+            self:AddLine(e.onlyChinese and '该宠物不可交易' or BATTLE_PET_NOT_TRADABLE, 1,0,0)
         end
     end
     if tooltipSource then
@@ -143,7 +143,7 @@ local function setItem(self, ItemLink)
     if expacID then--版本数据
         self:AddDoubleLine(e.GetExpansionText(expacID))
     end
-    self:AddDoubleLine(itemID and (e.onlyChinse and '物品' or ITEMS)..' '.. itemID or ' ' , itemTexture and '|T'..itemTexture..':0|t'..itemTexture)--ID, texture
+    self:AddDoubleLine(itemID and (e.onlyChinese and '物品' or ITEMS)..' '.. itemID or ' ' , itemTexture and '|T'..itemTexture..':0|t'..itemTexture)--ID, texture
     if classID and subclassID then
         self:AddDoubleLine((itemType and itemType..' classID'  or 'classID') ..' '..classID, (itemSubType and itemSubType..' subID' or 'subclassID')..' '..subclassID)
     end
@@ -153,7 +153,7 @@ local function setItem(self, ItemLink)
         if itemLevel and itemLevel>1 then
             local slot=itemEquipLoc and e.itemSlotTable[itemEquipLoc]--比较装等
             if slot then
-                self:AddDoubleLine(_G[itemEquipLoc], (e.onlyChinse and '栏位' or TRADESKILL_FILTER_SLOTS)..' '..slot)--栏位
+                self:AddDoubleLine(_G[itemEquipLoc], (e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)..' '..slot)--栏位
                 local slotLink=GetInventoryItemLink('player', slot)
                 local text
                 if slotLink then
@@ -180,7 +180,7 @@ local function setItem(self, ItemLink)
             local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
             if sourceInfo then
                 visualID=sourceInfo.visualID
-                self.text2Left:SetText(sourceInfo.isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinse and '未收集' or NOT_COLLECTED)..'|r')
+                self.text2Left:SetText(sourceInfo.isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
             end
         end
         if appearanceID then
@@ -217,7 +217,7 @@ local function setItem(self, ItemLink)
                 self.text2Left:SetText(collectedNum)
             end
         elseif C_ToyBox.GetToyInfo(itemID) then--玩具
-            self.text2Left:SetText(PlayerHasToy(itemID) and '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinse and '未收集' or NOT_COLLECTED)..'|r')
+            self.text2Left:SetText(PlayerHasToy(itemID) and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
         else
             local mountID = C_MountJournal.GetMountFromItem(itemID)--坐骑物品
             local speciesID = select(13, C_PetJournal.GetPetInfoByItemID(itemID))
@@ -232,7 +232,7 @@ local function setItem(self, ItemLink)
     local spellName, spellID = GetItemSpell(ItemLink)--物品法术
     if spellName and spellID then
         local spellTexture=GetSpellTexture(spellID)
-        self:AddDoubleLine((itemName~=spellName and hex..'['..spellName..']|r' or '')..(e.onlyChinse and '法术' or SPELLS)..' '..spellID, spellTexture and spellTexture~=itemTexture  and '|T'..spellTexture..':0|t'..spellTexture or ' ')
+        self:AddDoubleLine((itemName~=spellName and hex..'['..spellName..']|r' or '')..(e.onlyChinese and '法术' or SPELLS)..' '..spellID, spellTexture and spellTexture~=itemTexture  and '|T'..spellTexture..':0|t'..spellTexture or ' ')
     end
 
     local wowNum= 0--WoW 数量
@@ -278,7 +278,7 @@ local function setItem(self, ItemLink)
         end
         if numPlayer>0 then
             wowNum= bagAll+ bankAll
-            self:AddDoubleLine(numPlayer..' '..(e.onlyChinse and '角色' or CHARACTER)..' '..e.MK(wowNum+bag+bank, 3), e.Icon.wow2..e.MK(bagAll+bankAll, 3)..' = '..e.Icon.bank2..(bankAll==0 and '|cff606060'..bankAll..'|r' or e.MK(bankAll,3))..' '..e.Icon.bag2..(bagAll==0 and '|cff606060'..bagAll..'|r' or e.MK(bagAll, 3)))
+            self:AddDoubleLine(numPlayer..' '..(e.onlyChinese and '角色' or CHARACTER)..' '..e.MK(wowNum+bag+bank, 3), e.Icon.wow2..e.MK(bagAll+bankAll, 3)..' = '..e.Icon.bank2..(bankAll==0 and '|cff606060'..bankAll..'|r' or e.MK(bankAll,3))..' '..e.Icon.bag2..(bagAll==0 and '|cff606060'..bagAll..'|r' or e.MK(bagAll, 3)))
         end
     end
 
@@ -297,7 +297,7 @@ local function setSpell(self, spellID)--法术
     if not spellID then
         return
     end
-    self:AddDoubleLine((e.onlyChinse and '法术' or SPELLS)..' '..spellID, spellTexture and '|T'..spellTexture..':0|t'..spellTexture)
+    self:AddDoubleLine((e.onlyChinese and '法术' or SPELLS)..' '..spellID, spellTexture and '|T'..spellTexture..':0|t'..spellTexture)
     local mountID = C_MountJournal.GetMountFromSpell(spellID)--坐骑
     if mountID then
         setMount(self, mountID)
@@ -307,13 +307,13 @@ end
 local function setCurrency(self, currencyID)--货币
     local info2 = currencyID and C_CurrencyInfo.GetCurrencyInfo(currencyID)
     if info2 then
-        self:AddDoubleLine((e.onlyChinse and '货币' or TOKENS)..' '..currencyID, info2.iconFileID and '|T'..info2.iconFileID..':0|t'..info2.iconFileID)
+        self:AddDoubleLine((e.onlyChinese and '货币' or TOKENS)..' '..currencyID, info2.iconFileID and '|T'..info2.iconFileID..':0|t'..info2.iconFileID)
     end
     local factionID = C_CurrencyInfo.GetFactionGrantedByCurrency(currencyID)--派系声望
     if factionID and factionID>0 then
         local name= GetFactionInfoByID(factionID)
         if name then
-            self:AddDoubleLine(e.onlyChinse and '声望' or REPUTATION, name..' '..factionID)
+            self:AddDoubleLine(e.onlyChinese and '声望' or REPUTATION, name..' '..factionID)
         end
     end
 
@@ -329,23 +329,23 @@ local function setCurrency(self, currencyID)--货币
         end
     end
     if numPlayer>1 then
-        self:AddDoubleLine(e.Icon.wow2..numPlayer..(e.onlyChinse and '角色' or CHARACTER), e.MK(all,3))
+        self:AddDoubleLine(e.Icon.wow2..numPlayer..(e.onlyChinese and '角色' or CHARACTER), e.MK(all,3))
     end
     self:Show()
 end
 
 local function setAchievement(self, achievementID)--成就
     local _, name, points, completed, month, day, year, description, flags, icon, rewardText, isGuild, wasEarnedByMe, earnedBy, isStatistic = GetAchievementInfo(achievementID)
-    self.textLeft:SetText(points..(e.onlyChinse and '点' or RESAMPLE_QUALITY_POINT))--点数
-    self.text2Left:SetText(completed and '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '已完成' or CRITERIA_COMPLETED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinse and '未完成' or ACHIEVEMENTFRAME_FILTER_INCOMPLETE)..'|r')--否是完成
-    self.textRight:SetText(isGuild and (e.onlyChinse and '公会' or GUILD) or flags==131072 and e.Icon.wow2..(e.onlyChinse and '战网' or COMMUNITY_COMMAND_BATTLENET)  or '')
+    self.textLeft:SetText(points..(e.onlyChinese and '点' or RESAMPLE_QUALITY_POINT))--点数
+    self.text2Left:SetText(completed and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已完成' or CRITERIA_COMPLETED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未完成' or ACHIEVEMENTFRAME_FILTER_INCOMPLETE)..'|r')--否是完成
+    self.textRight:SetText(isGuild and (e.onlyChinese and '公会' or GUILD) or flags==131072 and e.Icon.wow2..(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET)  or '')
 
-    self:AddDoubleLine((e.onlyChinse and '成就' or ACHIEVEMENTS)..' '..achievementID, icon and '|T'..icon..':0|t'..icon)
+    self:AddDoubleLine((e.onlyChinese and '成就' or ACHIEVEMENTS)..' '..achievementID, icon and '|T'..icon..':0|t'..icon)
 end
 
 local function setQuest(self, questID)
     self:AddDoubleLine(e.GetExpansionText(nil, questID))--任务版本
-    self:AddDoubleLine(e.onlyChinse and '任务' or QUESTS_LABEL, questID)
+    self:AddDoubleLine(e.onlyChinese and '任务' or QUESTS_LABEL, questID)
 end
 
 --####
@@ -364,10 +364,10 @@ local function setBuff(type, self, ...)--Buff
             SetPortraitTexture(self.Portrait, source)
             self.Portrait:SetShown(true)
         end
-        local text= source=='player' and (e.onlyChinse and '我' or COMBATLOG_FILTER_STRING_ME)
+        local text= source=='player' and (e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
                 or source=='pet' and PET or UnitIsPlayer(source) and e.GetPlayerInfo(source, nil, true)
                 or UnitName(source) or _G[source] or source
-        self:AddDoubleLine('|c'..(hex or 'ffffff')..(e.onlyChinse and '来原: '..text or format(e.onlyChinse and '"来源：%s' or RUNEFORGE_LEGENDARY_POWER_SOURCE_FORMAT, text)..'|r'))
+        self:AddDoubleLine('|c'..(hex or 'ffffff')..(e.onlyChinese and '来原: '..text or format(e.onlyChinese and '"来源：%s' or RUNEFORGE_LEGENDARY_POWER_SOURCE_FORMAT, text)..'|r'))
         self:Show()
     end
 end
@@ -375,7 +375,7 @@ end
 local function set_Aura(self, auraID)--Aura
     local _, _, icon, _, _, _, spellID = GetSpellInfo(auraID)
    if icon and spellID then
-        self:AddDoubleLine((e.onlyChinse and '光环' or AURAS)..' '..spellID, '|T'..icon..':0|t'..icon)
+        self:AddDoubleLine((e.onlyChinese and '光环' or AURAS)..' '..spellID, '|T'..icon..':0|t'..icon)
         local mountID = C_MountJournal.GetMountFromSpell(spellID)
         if mountID then
             setMount(self, mountID)
@@ -391,7 +391,7 @@ local setFriendshipFaction=function(self, friendshipID)--friend声望
     local repInfo = C_GossipInfo.GetFriendshipReputation(friendshipID);
 	if ( repInfo and repInfo.friendshipFactionID and repInfo.friendshipFactionID > 0) then
         local icon = (repInfo.texture and repInfo.texture>0) and repInfo.texture
-        self:AddDoubleLine((e.onlyChinse and '个人声望' or (INDIVIDUALS..REPUTATION))..' '..friendshipID, icon and '|T'..icon..':0|t'..icon)
+        self:AddDoubleLine((e.onlyChinese and '个人声望' or (INDIVIDUALS..REPUTATION))..' '..friendshipID, icon and '|T'..icon..':0|t'..icon)
         self:Show()
     end
 end
@@ -404,7 +404,7 @@ local function setMajorFactionRenown(self, majorFactionID)--名望
             self.Portrait:SetAtlas('MajorFactions_Icons_'..info.textureKit..'512')
             self.textLeft:SetText('|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'..'MajorFactions_Icons_'..info.textureKit..'512')
         end
-        self:AddDoubleLine((e.onlyChinse and '名望' or RENOWN_LEVEL_LABEL)..' '..majorFactionID, format(e.onlyChinse and '名望等级 %d' or MAJOR_FACTION_RENOWN_LEVEL_TOAST, info.renownLevel)..' '..('%i%%'):format(info.renownReputationEarned/info.renownLevelThreshold*100))
+        self:AddDoubleLine((e.onlyChinese and '名望' or RENOWN_LEVEL_LABEL)..' '..majorFactionID, format(e.onlyChinese and '名望等级 %d' or MAJOR_FACTION_RENOWN_LEVEL_TOAST, info.renownLevel)..' '..('%i%%'):format(info.renownReputationEarned/info.renownLevelThreshold*100))
         self:Show()
     end
 end
@@ -424,9 +424,9 @@ local function set_Unit_Health_Bar(self, unit)
     if value and max then
         r, g, b, hex = GetClassColor(select(2, UnitClass(unit)))
         if UnitIsFeignDeath(unit) then
-            text= e.onlyChinse and '假死' or BOOST2_HUNTERBEAST_FEIGNDEATH:match('|cFFFFFFFF(.+)|r') or NO..DEAD
+            text= e.onlyChinese and '假死' or BOOST2_HUNTERBEAST_FEIGNDEATH:match('|cFFFFFFFF(.+)|r') or NO..DEAD
         elseif value <= 0 then
-            text = '|A:poi-soulspiritghost:0:0|a'..'|cnRED_FONT_COLOR:'..(e.onlyChinse and '死亡' or DEAD)..'|r'
+            text = '|A:poi-soulspiritghost:0:0|a'..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '死亡' or DEAD)..'|r'
         else
             local hp = value / max * 100;
             text = ('%i%%'):format(hp)..'  ';
@@ -531,13 +531,13 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             local reason=UnitPhaseReason(unit)
             if reason then
                 if reason==0 then
-                    self.textLeft:SetText(e.onlyChinse and '不同了阶段' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1','')))
+                    self.textLeft:SetText(e.onlyChinese and '不同了阶段' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1','')))
                 elseif reason==1 then
-                    self.textLeft:SetText(e.onlyChinse and '不在同位面' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', e.L['LAYER']))
+                    self.textLeft:SetText(e.onlyChinese and '不在同位面' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', e.L['LAYER']))
                 elseif reason==2 then--战争模
-                    self.textLeft:SetText(isWarModeDesired and (e.onlyChinse and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF) or (e.onlyChinse and '开启战争模式' or ERR_PVP_WARMODE_TOGGLE_ON))
+                    self.textLeft:SetText(isWarModeDesired and (e.onlyChinese and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF) or (e.onlyChinese and '开启战争模式' or ERR_PVP_WARMODE_TOGGLE_ON))
                 elseif reason==3 then
-                    self.textLeft:SetText(e.onlyChinse and '时空漫游' or PLAYER_DIFFICULTY_TIMEWALKER)
+                    self.textLeft:SetText(e.onlyChinese and '时空漫游' or PLAYER_DIFFICULTY_TIMEWALKER)
                 end
             end
         end
@@ -619,7 +619,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                         if isWarModeDesired then
                             line=_G["GameTooltipTextRight"..i]
                             if line then
-                                line:SetText(col..(e.onlyChinse and '战争模式' or PVP_LABEL_WAR_MODE))
+                                line:SetText(col..(e.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE))
                                 line:SetShown(true)
                             end
                         end
@@ -688,18 +688,18 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             self.Portrait:SetShown(true)
 
         elseif UnitIsBossMob(unit) then--世界BOSS
-            self.textLeft:SetText(hex..(e.onlyChinse and '首领' or BOSS)..'|r')
+            self.textLeft:SetText(hex..(e.onlyChinese and '首领' or BOSS)..'|r')
             self.Portrait:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare')
             self.Portrait:SetShown(true)
         else
             local classification = UnitClassification(unit);--TargetFrame.lua
             if classification == "rareelite" then--稀有, 精英
-                self.textLeft:SetText(hex..(e.onlyChinse and '稀有' or GARRISON_MISSION_RARE)..'|r')
+                self.textLeft:SetText(hex..(e.onlyChinese and '稀有' or GARRISON_MISSION_RARE)..'|r')
                 self.Portrait:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare')
                 self.Portrait:SetShown(true)
 
             elseif classification == "rare" then--稀有
-                self.textLeft:SetText(hex..(e.onlyChinse and '稀有' or GARRISON_MISSION_RARE)..'|r')
+                self.textLeft:SetText(hex..(e.onlyChinese and '稀有' or GARRISON_MISSION_RARE)..'|r')
                 self.Portrait:SetAtlas('UUnitFrame-Target-PortraitOn-Boss-Rare-Star')
                 self.Portrait:SetShown(true)
             else
@@ -729,35 +729,35 @@ local function setCVar(reset, tips, notPrint)
     local tab={
         ['missingTransmogSourceInItemTooltips']={
             value='1',
-            msg= e.onlyChinse and '显示装备幻化来源' or TRANSMOGRIFY..SOURCES..': '..SHOW,
+            msg= e.onlyChinese and '显示装备幻化来源' or TRANSMOGRIFY..SOURCES..': '..SHOW,
         },
         ['nameplateOccludedAlphaMult']={
             value='0.15',
-            msg= e.onlyChinse and '不在视野里, 姓名板透明度: 0.15' or SPELL_FAILED_LINE_OF_SIGHT..'('..SHOW_TARGET_CASTBAR_IN_V_KEY..')'..CHANGE_OPACITY,
+            msg= e.onlyChinese and '不在视野里, 姓名板透明度: 0.15' or SPELL_FAILED_LINE_OF_SIGHT..'('..SHOW_TARGET_CASTBAR_IN_V_KEY..')'..CHANGE_OPACITY,
         },
         ['dontShowEquipmentSetsOnItems']={
             value='0',
-            msg= e.onlyChinse and '显法装备方案' or EQUIPMENT_SETS:format(SHOW),
+            msg= e.onlyChinese and '显法装备方案' or EQUIPMENT_SETS:format(SHOW),
         },
         ['UberTooltips']={
             value='1',
-            msg= e.onlyChinse and '显示法术信息' or SPELL_MESSAGES..': '..SHOW,
+            msg= e.onlyChinese and '显示法术信息' or SPELL_MESSAGES..': '..SHOW,
         },
         ["alwaysCompareItems"]={
              value= "1",
-             msg= e.onlyChinse and '总是比较装备' or ALWAYS..COMPARE_ACHIEVEMENTS:gsub(ACHIEVEMENTS, ITEMS)
+             msg= e.onlyChinese and '总是比较装备' or ALWAYS..COMPARE_ACHIEVEMENTS:gsub(ACHIEVEMENTS, ITEMS)
         },
         ["profanityFilter"]={value= '0',msg= '禁用语言过虑 /reload', zh=true},
         ["overrideArchive"]={value= '0',msg= '反和谐 /reload', zh=true},
-        ['cameraDistanceMaxZoomFactor']={value= '2.6', msg= e.onlyChinse and '视野距离' or FARCLIP},
+        ['cameraDistanceMaxZoomFactor']={value= '2.6', msg= e.onlyChinese and '视野距离' or FARCLIP},
 
         ["showTargetOfTarget"]={
             value= "1",
-            msg= e.onlyChinse and '总是显示目标的目标' or OPTION_TOOLTIP_TARGETOFTARGET5,
+            msg= e.onlyChinese and '总是显示目标的目标' or OPTION_TOOLTIP_TARGETOFTARGET5,
         },
 --[[        ["showTargetCastbar"]={
             value= "1",
-            msg= e.onlyChinse and '显示目标施法条' or SHOW..TARGET..HUD_EDIT_MODE_CAST_BAR_LABEL,
+            msg= e.onlyChinese and '显示目标施法条' or SHOW..TARGET..HUD_EDIT_MODE_CAST_BAR_LABEL,
         },]]
     }
 
@@ -776,7 +776,7 @@ local function setCVar(reset, tips, notPrint)
                 if defaultValue~=value then
                     C_CVar.SetCVar(name, defaultValue)
                     if not notPrint then
-                        print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '恢复默认设置' or RESET_TO_DEFAULT)..'|r', name, defaultValue, info.msg)
+                        print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '恢复默认设置' or RESET_TO_DEFAULT)..'|r', name, defaultValue, info.msg)
                     end
                 end
             elseif Save.setCVar then
@@ -794,7 +794,7 @@ end
 
 local function set_FlyoutInfo(self, flyoutID)--法术, 弹出框
     local _, _, numSlots, isKnown= GetFlyoutInfo(flyoutID)
-    self:AddDoubleLine((not isKnown and '|cnRED_FONT_COLOR:' or '')..'flyoutID|r '..flyoutID, numSlots..' '..(e.onlyChinse and '数量' or AUCTION_HOUSE_QUANTITY_LABEL))
+    self:AddDoubleLine((not isKnown and '|cnRED_FONT_COLOR:' or '')..'flyoutID|r '..flyoutID, numSlots..' '..(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL))
     for slot= 1, numSlots do
         local flyoutSpellID, overrideSpellID, isKnown2, spellName = GetFlyoutSlotInfo(flyoutID, slot)
         local spellID= overrideSpellID or flyoutSpellID
@@ -802,9 +802,9 @@ local function set_FlyoutInfo(self, flyoutID)--法术, 弹出框
             e.LoadSpellItemData(spellID, true)
             local name2, _, icon = GetSpellInfo(spellID)
             if name2 and icon then
-                self:AddDoubleLine('|T'..icon..':0|t'..(not isKnown2 and ' |cnRED_FONT_COLOR:' or '')..name2..'|r', spellID..' '..(e.onlyChinse and '法术' or SPELLS))
+                self:AddDoubleLine('|T'..icon..':0|t'..(not isKnown2 and ' |cnRED_FONT_COLOR:' or '')..name2..'|r', spellID..' '..(e.onlyChinese and '法术' or SPELLS))
             else
-                self:AddDoubleLine((not isKnown2 and ' |cnRED_FONT_COLOR:' or '')..spellName..'|r', spellID..' '..(e.onlyChinse and '法术' or SPELLS))
+                self:AddDoubleLine((not isKnown2 and ' |cnRED_FONT_COLOR:' or '')..spellName..'|r', spellID..' '..(e.onlyChinese and '法术' or SPELLS))
             end
         end
     end
@@ -826,11 +826,11 @@ local function setBattlePet(self, speciesID, level, breedQuality, maxHealth, pow
     if obtainable then
         local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesID)
         if numCollected==0 then
-            BattlePetTooltipTemplate_AddTextLine(self, format(e.onlyChinse and '已收集（%d/%d）' or ITEM_PET_KNOWN, 0, limit), 1,0,0)
+            BattlePetTooltipTemplate_AddTextLine(self, format(e.onlyChinese and '已收集（%d/%d）' or ITEM_PET_KNOWN, 0, limit), 1,0,0)
         end
     end
-    BattlePetTooltipTemplate_AddTextLine(self, (e.onlyChinse and '宠物' or PET)..' '..speciesID..'                  |T'..speciesIcon..':0|t'..speciesIcon)
-    BattlePetTooltipTemplate_AddTextLine(self, 'NPC '..companionID..'                  '..(e.onlyChinse and '模型' or MODEL)..' '..creatureDisplayID)
+    BattlePetTooltipTemplate_AddTextLine(self, (e.onlyChinese and '宠物' or PET)..' '..speciesID..'                  |T'..speciesIcon..':0|t'..speciesIcon)
+    BattlePetTooltipTemplate_AddTextLine(self, 'NPC '..companionID..'                  '..(e.onlyChinese and '模型' or MODEL)..' '..creatureDisplayID)
 
     local tab = C_PetJournal.GetPetAbilityListTable(speciesID)--技能图标
     table.sort(tab, function(a,b) return a.level< b.level end)
@@ -908,7 +908,7 @@ local function Init()
         if abilityID then
             local _, _, icon, _, unparsedDescription = C_PetBattles.GetAbilityInfoByID(abilityID)
             local description = SharedPetAbilityTooltip_ParseText(abilityInfo, unparsedDescription)
-            self.Description:SetText(description..'\n\n'..(e.onlyChinse and '技能' or ABILITIES)..' '..abilityID..(icon and '  |T'..icon..':0|t'..icon or ''))
+            self.Description:SetText(description..'\n\n'..(e.onlyChinese and '技能' or ABILITIES)..' '..abilityID..(icon and '  |T'..icon..':0|t'..icon or ''))
         end
     end)
 
@@ -1049,10 +1049,10 @@ local function Init()
                     e.tips:AddLine(' ')
                 end
 
-                e.tips:AddDoubleLine((e.onlyChinse and '声望' or REPUTATION)..' '..self.factionID or factionID, completedParagon)
+                e.tips:AddDoubleLine((e.onlyChinese and '声望' or REPUTATION)..' '..self.factionID or factionID, completedParagon)
                 e.tips:Show();
             elseif factionID or self.factionID then
-                e.tips:AddDoubleLine((e.onlyChinse and '声望' or REPUTATION)..' '..(self.factionID or factionID), completedParagon)
+                e.tips:AddDoubleLine((e.onlyChinese and '声望' or REPUTATION)..' '..(self.factionID or factionID), completedParagon)
                 e.tips:Show()
             end
         end
@@ -1096,7 +1096,7 @@ local function Init()
     InterfaceOptions_AddCategory(panel)
 
     panel.setDefaultAnchor=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--设置默认提示位置
-    panel.setDefaultAnchor.Text:SetText('1) '..(e.onlyChinse and '跟随鼠标' or FOLLOW..MOUSE_LABEL))
+    panel.setDefaultAnchor.Text:SetText('1) '..(e.onlyChinese and '跟随鼠标' or FOLLOW..MOUSE_LABEL))
     panel.setDefaultAnchor:SetPoint('TOPLEFT')
     panel.setDefaultAnchor:SetChecked(Save.setDefaultAnchor)--提示位置            
     panel.setDefaultAnchor:SetScript('OnMouseDown', function()
@@ -1111,7 +1111,7 @@ local function Init()
     end)
 
     panel.inCombatDefaultAnchor=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    panel.inCombatDefaultAnchor.Text:SetText(e.onlyChinse and '战斗中：默认' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..DEFAULT)
+    panel.inCombatDefaultAnchor.Text:SetText(e.onlyChinese and '战斗中：默认' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..DEFAULT)
     panel.inCombatDefaultAnchor:SetPoint('LEFT', panel.setDefaultAnchor.Text, 'RIGHT', 20, 0)
     panel.inCombatDefaultAnchor:SetScript('OnMouseDown', function()
         Save.inCombatDefaultAnchor= not Save.inCombatDefaultAnchor and true or nil
@@ -1120,7 +1120,7 @@ local function Init()
     panel.inCombatDefaultAnchor:SetChecked(Save.inCombatDefaultAnchor)
 
     panel.Anchor=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--指定提示位置
-    panel.Anchor.Text:SetText('2)' ..(e.onlyChinse and '指定' or COMBAT_ALLY_START_MISSION))
+    panel.Anchor.Text:SetText('2)' ..(e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION))
     panel.Anchor:SetPoint('TOPLEFT', panel.setDefaultAnchor, 'BOTTOMLEFT', 0, -2)
 
     panel.Anchor:SetChecked(Save.setAnchor)
@@ -1137,7 +1137,7 @@ local function Init()
     panel.Anchor.select=e.Cbtn(panel,true)
     panel.Anchor.select:SetPoint('LEFT', panel.Anchor.text, 'RIGHT',5,0)
     panel.Anchor.select:SetSize(90, 25)
-    panel.Anchor.select:SetText(e.onlyChinse and '设置' or SETTINGS)
+    panel.Anchor.select:SetText(e.onlyChinese and '设置' or SETTINGS)
     panel.Anchor.select:SetScript('OnMouseDown',function(self)
         if not self.frame then
             self.frame=CreateFrame('Frame')
@@ -1175,7 +1175,7 @@ local function Init()
 
 --设置CVar
     panel.CVar=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    panel.CVar.Text:SetText((e.onlyChinse and '设置' or SETTINGS)..' CVar')
+    panel.CVar.Text:SetText((e.onlyChinese and '设置' or SETTINGS)..' CVar')
     panel.CVar:SetPoint('TOPLEFT', panel.Anchor, 'BOTTOMLEFT', 0, -30)
     panel.CVar:SetChecked(Save.setCVar)
     panel.CVar:SetScript('OnMouseDown', function()
@@ -1266,7 +1266,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             local sel=e.CPanel(addName, not Save.disabled)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end)
             sel:SetScript('OnEnter', function(self2)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")

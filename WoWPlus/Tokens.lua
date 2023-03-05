@@ -92,7 +92,7 @@ local function set_Text()
 					if info.quantity==info.maxQuantity then--最大数量
                     	t=t..'|cnRED_FONT_COLOR:'..e.MK(info.quantity, 3)..'|r'..e.Icon.O2
 					else
-						t=t..e.MK(info.quantity, 3)..' /'..e.MK(info.maxQuantity)
+						t=t..e.MK(info.quantity, 3)--..' /'..e.MK(info.maxQuantity)
 					end
                 else
                     t=t..e.MK(info.quantity, 3)--数量
@@ -170,13 +170,13 @@ local function Set()
 		panel.btn:SetScript("OnEnter",function(self2)
 			e.tips:SetOwner(self2, "ANCHOR_LEFT");
 			e.tips:ClearLines();
-			e.tips:AddDoubleLine((e.onlyChinse and '文本' or LOCALE_TEXT_LABEL)..': '..e.GetShowHide(Save.str),e.Icon.left)
-			e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
+			e.tips:AddDoubleLine((e.onlyChinese and '文本' or LOCALE_TEXT_LABEL)..': '..e.GetShowHide(Save.str),e.Icon.left)
+			e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
 			e.tips:AddLine(' ')
-			e.tips:AddDoubleLine(e.onlyChinse and '打开/关闭货币页面' or BINDING_NAME_TOGGLECURRENCY, e.Icon.mid)
-			e.tips:AddDoubleLine((e.onlyChinse and '字体大小' or FONT_SIZE)..(Save.size or 12), 'Alt+'..e.Icon.mid)
+			e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭货币页面' or BINDING_NAME_TOGGLECURRENCY, e.Icon.mid)
+			e.tips:AddDoubleLine((e.onlyChinese and '字体大小' or FONT_SIZE)..(Save.size or 12), 'Alt+'..e.Icon.mid)
 			e.tips:AddLine(' ')
-			e.tips:AddDoubleLine((e.onlyChinse and '名称' or NAME)..': '..e.GetShowHide(Save.nameShow), 'Alt+'..e.Icon.left)
+			e.tips:AddDoubleLine((e.onlyChinese and '名称' or NAME)..': '..e.GetShowHide(Save.nameShow), 'Alt+'..e.Icon.left)
 			e.tips:AddDoubleLine('ID: '..e.GetShowHide(Save.showID), 'Ctrl+'..e.Icon.left)
 			e.tips:AddLine(' ')
 			e.tips:AddDoubleLine(id, addName)
@@ -196,7 +196,7 @@ local function Set()
 				n= n>32 and 32 or n
 				Save.size=n
 				e.Cstr(nil, n, nil, panel.btn.text, true)
-				print(id, addName, e.onlyChinse and '文本' or LOCALE_TEXT_LABEL, e.onlyChinse and '字体大小' or FONT_SIZE, n)
+				print(id, addName, e.onlyChinese and '文本' or LOCALE_TEXT_LABEL, e.onlyChinese and '字体大小' or FONT_SIZE, n)
 			else
 				if d==1 and not TokenFrame:IsVisible() or d==-1 and TokenFrame:IsVisible() then
 					ToggleCharacter("TokenFrame")--打开货币
@@ -238,9 +238,9 @@ local function Init()
 	panel:SetScript("OnEnter", function(self2)
 		e.tips:SetOwner(self2, "ANCHOR_LEFT")
 		e.tips:ClearLines()
-		e.tips:AddDoubleLine((e.onlyChinse and '文本' or  LOCALE_TEXT_LABEL)..': '..e.GetEnabeleDisable(not Save.Hide),e.Icon.left)
+		e.tips:AddDoubleLine((e.onlyChinese and '文本' or  LOCALE_TEXT_LABEL)..': '..e.GetEnabeleDisable(not Save.Hide),e.Icon.left)
 		e.tips:AddLine(' ')
-		e.tips:AddDoubleLine('|cnRED_FONT_COLOR:'..(e.onlyChinse and '副本' or INSTANCE),'|cnRED_FONT_COLOR:'..(e.onlyChinse and '宠物对战' or SHOW_PET_BATTLES_ON_MAP_TEXT))
+		e.tips:AddDoubleLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '副本' or INSTANCE),'|cnRED_FONT_COLOR:'..(e.onlyChinese and '宠物对战' or SHOW_PET_BATTLES_ON_MAP_TEXT))
 		e.tips:AddDoubleLine(id, addName)
 		e.tips:Show()
 	end)
@@ -294,7 +294,7 @@ local function Init()
 	panel.bag:SetScript('OnEnter', function(self2)
 		e.tips:SetOwner(self2, "ANCHOR_LEFT")
 		e.tips:ClearLines()
-		e.tips:AddDoubleLine(e.onlyChinse and '在行囊上显示' or SHOW_ON_BACKPACK, GetNumWatchedTokens())
+		e.tips:AddDoubleLine(e.onlyChinese and '在行囊上显示' or SHOW_ON_BACKPACK, GetNumWatchedTokens())
 		for index=1, BackpackTokenFrame:GetMaxTokensWatched() do--Blizzard_TokenUI.lua
 			local info = C_CurrencyInfo.GetBackpackCurrencyInfo(index)
 			if info and info.name and info.iconFileID then
@@ -323,10 +323,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
             --添加控制面板        
-            local sel=e.CPanel((e.onlyChinse and '货币' or addName)..'|A:bags-junkcoin:0:0|a', not Save.disabled)
+            local sel=e.CPanel((e.onlyChinese and '货币' or addName)..'|A:bags-junkcoin:0:0|a', not Save.disabled)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end)
 
             if Save.disabled then

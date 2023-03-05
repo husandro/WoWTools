@@ -505,7 +505,7 @@ local function set_Button_setFrame_PetJournal()--宠物手册，增加按钮
     frame:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinse and '宠物类型' or PET_FAMILIES, e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinese and '宠物类型' or PET_FAMILIES, e.Icon.left)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
@@ -575,11 +575,11 @@ local function Init()
     panel:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinse and '显示/隐藏' or SHOW..'/'..HIDE, e.Icon.left)
-        e.tips:AddDoubleLine(e.onlyChinse and '宠物手册' or PET_JOURNAL, e.Icon.mid)
-        e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinese and '宠物手册' or PET_JOURNAL, e.Icon.mid)
+        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
         if not IsAddOnLoaded('Rematch') then
-            e.tips:AddDoubleLine(e.Icon.left..(e.onlyChinse and '图标' or EMBLEM_SYMBOL), e.onlyChinse and '过滤器: 宠物类型' or FILTER..": "..PET_FAMILIES)
+            e.tips:AddDoubleLine(e.Icon.left..(e.onlyChinese and '图标' or EMBLEM_SYMBOL), e.onlyChinese and '过滤器: 宠物类型' or FILTER..": "..PET_FAMILIES)
         end
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
@@ -611,10 +611,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
             --添加控制面板
-            local check=e.CPanel((e.onlyChinse and '宠物对战' or addName)..'|A:WildBattlePetCapturable:0:0|a', not Save.disabled, true)
+            local check=e.CPanel((e.onlyChinese and '宠物对战' or addName)..'|A:WildBattlePetCapturable:0:0|a', not Save.disabled, true)
             check:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '重新加载UI' or RELOADUI)
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
             end)
 
             if Save.disabled then

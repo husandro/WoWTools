@@ -107,8 +107,8 @@ local function Quest(self, questID)--任务
     local t=''
     local lv=C_QuestLog.GetQuestDifficultyLevel(questID)--ID
     if lv then t=t..'['..lv..']' else t=t..' 'end
-    if C_QuestLog.IsComplete(questID) then t=t..'|cFF00FF00'..(e.onlyChinse and '完成' or COMPLETE)..'|r' else t=t..(e.onlyChinse and '未完成' or INCOMPLETE) end
-    if t=='' then t=t..(e.onlyChinse and '任务' or QUESTS_LABEL) end
+    if C_QuestLog.IsComplete(questID) then t=t..'|cFF00FF00'..(e.onlyChinese and '完成' or COMPLETE)..'|r' else t=t..(e.onlyChinese and '未完成' or INCOMPLETE) end
+    if t=='' then t=t..(e.onlyChinese and '任务' or QUESTS_LABEL) end
     t=t..' ID'
     self:AddDoubleLine(t, questID)
 
@@ -120,11 +120,11 @@ local function Quest(self, questID)--任务
             x=math.modf(x*100) y=math.modf(y*100)
             if x and y then t='XY '..x..', '..y end
         end
-        self:AddDoubleLine(t,  (e.onlyChinse and '距离' or TRACK_QUEST_PROXIMITY_SORTING)..' '..e.MK(distanceSq))--format(IN_GAME_NAVIGATION_RANGE, e.MK(distanceSq)))
+        self:AddDoubleLine(t,  (e.onlyChinese and '距离' or TRACK_QUEST_PROXIMITY_SORTING)..' '..e.MK(distanceSq))--format(IN_GAME_NAVIGATION_RANGE, e.MK(distanceSq)))
     end
     if IsInGroup() then
         t= e.GetYesNo(C_QuestLog.IsPushableQuest(questID))--共享
-        local t2= (e.onlyChinse and '共享' or SHARE_QUEST)..' '
+        local t2= (e.onlyChinese and '共享' or SHARE_QUEST)..' '
         local u if IsInRaid() then u='raid' else u='party' end
         local n,acceto=GetNumGroupMembers(), 0
         for i=1, n do
@@ -138,8 +138,8 @@ local function Quest(self, questID)--任务
     local all=C_QuestLog.GetAllCompletedQuestIDs()--完成次数
     if all and #all>0 then
         t= GetDailyQuestsCompleted() or '0'
-        t=t..(e.onlyChinse and '日常' or DAILY)..' '..#all..(e.onlyChinse and '任务' or QUESTS_LABEL)
-        self:AddDoubleLine(e.onlyChinse and '已完成任务' or TRACKER_FILTER_COMPLETED_QUESTS, t)
+        t=t..(e.onlyChinese and '日常' or DAILY)..' '..#all..(e.onlyChinese and '任务' or QUESTS_LABEL)
+        self:AddDoubleLine(e.onlyChinese and '已完成任务' or TRACKER_FILTER_COMPLETED_QUESTS, t)
     end
     --local info=C_QuestLog.GetQuestDetailsTheme(questID)--POI图标
     --if info and info.poiIcon then e.playerTexSet(info.poiIcon, nil) end--设置图,像
@@ -292,9 +292,9 @@ local function CursorPositionInt()
         local can
         can= C_Map.GetBestMapForUnit("player")
         can= can and C_Map.CanSetUserWaypointOnMap(can)
-        e.tips:AddDoubleLine('|A:Waypoint-MapPin-ChatIcon:0:0|a'..(e.onlyChinse and '发送位置' or RESET_POSITION:gsub(RESET, SEND_LABEL)), (not can and GetMinimapZoneText() or not can and '|cnRED_FONT_COLOR:'..(e.onlyChinse and '无' or NONE)..'|r' or '') ..e.Icon.left)
-        e.tips:AddDoubleLine(e.onlyChinse and '大小' or FONT_SIZE, (Save.PlayerXYSize or 12)..e.Icon.mid)
-        e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
+        e.tips:AddDoubleLine('|A:Waypoint-MapPin-ChatIcon:0:0|a'..(e.onlyChinese and '发送位置' or RESET_POSITION:gsub(RESET, SEND_LABEL)), (not can and GetMinimapZoneText() or not can and '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE)..'|r' or '') ..e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinese and '大小' or FONT_SIZE, (Save.PlayerXYSize or 12)..e.Icon.mid)
+        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
         e.tips:Show()
     end)
     frame.playerPostionBtn:SetScript("OnLeave", function()
@@ -316,7 +316,7 @@ local function CursorPositionInt()
         end
         Save.PlayerXYSize=size
         e.Cstr(nil, size, nil, self.Text)
-        print(id,addName, e.onlyChinse and '大小' or FONT_SIZE, size)
+        print(id,addName, e.onlyChinese and '大小' or FONT_SIZE, size)
     end)
 
     frame.playerPostionBtn.Text=e.Cstr(frame.playerPostionBtn, Save.PlayerXYSize)
@@ -353,7 +353,7 @@ local function setOnEnter(self)--地图ID提示
             e.tips:AddDoubleLine(info.name, 'mapID '..info.mapID or uiMapID)--地图ID
             local uiMapGroupID = C_Map.GetMapGroupID(uiMapID)
             if uiMapGroupID then
-                e.tips:AddDoubleLine(e.onlyChinse and '区域' or FLOOR, 'uiMapGroupID g'..uiMapGroupID)
+                e.tips:AddDoubleLine(e.onlyChinese and '区域' or FLOOR, 'uiMapGroupID g'..uiMapGroupID)
             end
         end
         local areaPoiIDs=C_AreaPoiInfo.GetAreaPOIForMap(uiMapID)
@@ -371,9 +371,9 @@ local function setOnEnter(self)--地图ID提示
         if IsInInstance() then--副本数据
             local instanceID, _, LfgDungeonID =select(8, GetInstanceInfo())
             if instanceID then
-                e.tips:AddDoubleLine(e.onlyChinse and '副本' or INSTANCE, instanceID)
+                e.tips:AddDoubleLine(e.onlyChinese and '副本' or INSTANCE, instanceID)
                 if LfgDungeonID then
-                    e.tips:AddDoubleLine(e.onlyChinse and '随机副本' or (SLASH_RANDOM3:gsub('/','')..INSTANCE), LfgDungeonID)
+                    e.tips:AddDoubleLine(e.onlyChinese and '随机副本' or (SLASH_RANDOM3:gsub('/','')..INSTANCE), LfgDungeonID)
                 end
             end
         end
@@ -389,7 +389,7 @@ local function setOnEnter(self)--地图ID提示
             if playerCursorMapName then
                 e.tips:AddDoubleLine(e.Icon.player..playerCursorMapName, 'XY: '..x..' '..y)
             else
-                e.tips:AddDoubleLine(e.onlyChinse and '位置' or (RESET_POSITION:gsub(RESET, e.Icon.player)), 'XY: '..x..' '..y)
+                e.tips:AddDoubleLine(e.onlyChinese and '位置' or (RESET_POSITION:gsub(RESET, e.Icon.player)), 'XY: '..x..' '..y)
             end
         end
     end
@@ -461,7 +461,7 @@ local function set_Map_ID(self)--显示地图ID
                 Save.hide= not Save.hide and true or nil
                 setMapIDText(self)
                 setMapQuestList()--世界地图,任务, 加 - + 按钮
-                print(id, addName, e.GetShowHide(not Save.hide), e.onlyChinse and ' 刷新' or REFRESH)
+                print(id, addName, e.GetShowHide(not Save.hide), e.onlyChinese and ' 刷新' or REFRESH)
                 self.mapInfoBtn:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.map)
             elseif d=='RightButton' then--实时玩家当前坐标
                 if Save.PlayerXY then
@@ -491,8 +491,8 @@ local function set_Map_ID(self)--显示地图ID
             local can
             can= C_Map.GetBestMapForUnit("player")
             can= can and C_Map.CanSetUserWaypointOnMap(can)
-            e.tips:AddDoubleLine('|A:Waypoint-MapPin-ChatIcon:0:0|a'..(e.onlyChinse and '发送位置' or RESET_POSITION:gsub(RESET, SEND_LABEL)), (not can and GetMinimapZoneText() or not can and '|cnRED_FONT_COLOR:'..(e.onlyChinse and '无' or NONE)..'|r' or '')..e.Icon.left)
-            e.tips:AddDoubleLine(e.onlyChinse and '返回当前地图' or (PREVIOUS..REFORGE_CURRENT..WORLD_MAP), e.Icon.right)
+            e.tips:AddDoubleLine('|A:Waypoint-MapPin-ChatIcon:0:0|a'..(e.onlyChinese and '发送位置' or RESET_POSITION:gsub(RESET, SEND_LABEL)), (not can and GetMinimapZoneText() or not can and '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE)..'|r' or '')..e.Icon.left)
+            e.tips:AddDoubleLine(e.onlyChinese and '返回当前地图' or (PREVIOUS..REFORGE_CURRENT..WORLD_MAP), e.Icon.right)
             e.tips:Show()
         end)
         self.playerPosition:SetScript('OnMouseDown', function(self2, d)
@@ -536,7 +536,7 @@ local function set_Map_ID(self)--显示地图ID
             n= n>2 and 2 or n
             Save.scale=n
             WorldMapFrame:SetScale(n)
-            print(id, addName, e.onlyChinse and '缩放' or UI_SCALE, n)
+            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, n)
         end)
         self.ZoomOut= e.Cbtn(self.playerPosition, nil, nil, nil, nil, true, {18,18})--缩小
         self.ZoomOut:SetPoint('RIGHT',self.ZoomIn, 'LEFT')
@@ -548,7 +548,7 @@ local function set_Map_ID(self)--显示地图ID
             n= n< 0.5 and 0.5 or n
             Save.scale=n
             WorldMapFrame:SetScale(n)
-            print(id, addName, e.onlyChinse and '缩放' or UI_SCALE, n)
+            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, n)
         end)]]
     end
 
@@ -670,31 +670,31 @@ local function Init()
         if self.questID and not C_QuestLog.IsQuestDisabledForSession(self.questID) and button == "RightButton" then
             UIDropDownMenu_AddSeparator()
             local info= {
-                text= (e.onlyChinse and '显示' or SHOW)..'|A:campaign_headericon_open:0:0|a'..(e.onlyChinse and '全部' or ALL),
+                text= (e.onlyChinese and '显示' or SHOW)..'|A:campaign_headericon_open:0:0|a'..(e.onlyChinese and '全部' or ALL),
                 notCheckable=true,
                 func= Exp,
             }
             UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
             info ={
                 notCheckable=true,
-                text= (e.onlyChinse and '隐藏' or HIDE)..'|A:campaign_headericon_closed:0:0|a'..(e.onlyChinse and '全部' or ALL),
+                text= (e.onlyChinese and '隐藏' or HIDE)..'|A:campaign_headericon_closed:0:0|a'..(e.onlyChinese and '全部' or ALL),
                 func= Coll,
             }
             UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
 
             UIDropDownMenu_AddSeparator()
-            local text= '|cnRED_FONT_COLOR:'..(e.onlyChinse and '放弃|A:groupfinder-icon-redx:0:0|a所有任务' or (ABANDON_QUEST..'|A:groupfinder-icon-redx:0:0|a'..ALL))..' #'..select(2, C_QuestLog.GetNumQuestLogEntries())..'|r'
+            local text= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '放弃|A:groupfinder-icon-redx:0:0|a所有任务' or (ABANDON_QUEST..'|A:groupfinder-icon-redx:0:0|a'..ALL))..' #'..select(2, C_QuestLog.GetNumQuestLogEntries())..'|r'
             info={
                 text= text,
                 tooltipOnButton=true,
-                tooltipTitle= '|cffff0000'..(e.onlyChinse and '危险！' or VOICEMACRO_1_Sc_0)..'|r',
+                tooltipTitle= '|cffff0000'..(e.onlyChinese and '危险！' or VOICEMACRO_1_Sc_0)..'|r',
                 tooltipText= id..' '..addName,
                 notCheckable=true,
                 func= function()
                     StaticPopupDialogs[id..addName.."ABANDON_QUEST"] = {
                         text = ABANDON_QUEST_CONFIRM,
                         button1 = text,
-                        button2 = e.onlyChinse and '取消' or CANCEL,
+                        button2 = e.onlyChinese and '取消' or CANCEL,
                         OnAccept = function(self2)
                             local n=0
                             for index=1 , C_QuestLog.GetNumQuestLogEntries() do
@@ -706,7 +706,7 @@ local function Init()
                                     C_QuestLog.AbandonQuest()
                                     n=n+1
                                     if linkQuest then
-                                        print(id, addName,  e.onlyChinse and '放弃|A:groupfinder-icon-redx:0:0|a' or (ABANDON_QUEST_ABBREV..'|A:groupfinder-icon-redx:0:0|a'), linkQuest, n)
+                                        print(id, addName,  e.onlyChinese and '放弃|A:groupfinder-icon-redx:0:0|a' or (ABANDON_QUEST_ABBREV..'|A:groupfinder-icon-redx:0:0|a'), linkQuest, n)
                                     end
                                 end
                                 if IsModifierKeyDown() then
@@ -739,10 +739,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
             --添加控制面板        
-            local sel=e.CPanel((e.onlyChinse and '地图' or addName)..e.Icon.map2, not Save.disabled)
+            local sel=e.CPanel((e.onlyChinese and '地图' or addName)..e.Icon.map2, not Save.disabled)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end)
 
             if Save.disabled then

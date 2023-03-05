@@ -539,7 +539,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
     --############
     --去掉生命条 % extStatusBar.lua
     --############
-    local deadText= e.onlyChinse and '死亡' or DEAD
+    local deadText= e.onlyChinese and '死亡' or DEAD
     hooksecurefunc('TextStatusBar_UpdateTextStringWithValues', function(statusFrame, textString, value, valueMin, valueMax)
         if value>0 then--statusFrame.unit
             if textString:IsShown() then
@@ -637,7 +637,7 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
         if d=='RightButton' and not IsModifierKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         elseif d=="LeftButton" then
-            print(id, addName, (e.onlyChinse and '移动' or NPE_MOVE)..e.Icon.right, 'Alt+'..e.Icon.mid..(e.onlyChinse and '缩放' or UI_SCALE), Save.compactPartyFrameScale or 1)
+            print(id, addName, (e.onlyChinese and '移动' or NPE_MOVE)..e.Icon.right, 'Alt+'..e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE), Save.compactPartyFrameScale or 1)
         end
     end)
     CompactPartyFrame.moveFrame:SetScript("OnLeave", function(self, d)
@@ -646,7 +646,7 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
     CompactPartyFrame.moveFrame:SetScript('OnMouseWheel', function(self, d)--缩放
         if IsAltKeyDown() then
             if UnitAffectingCombat('player') then
-                print(id, addName, e.onlyChinse and '缩放' or UI_SCALE, '|cnRED_FONT_COLOR:'..(e.onlyChinse and '战斗中' or COMBAT))
+                print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT))
             else
                 local sacle= Save.compactPartyFrameScale or 1
                 if d==1 then
@@ -659,7 +659,7 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
                 elseif sacle<0.5 then
                     sacle=0.5
                 end
-                print(id, addName, (e.onlyChinse and '缩放' or UI_SCALE), sacle)
+                print(id, addName, (e.onlyChinese and '缩放' or UI_SCALE), sacle)
                 CompactPartyFrame:SetScale(sacle)
                 Save.compactPartyFrameScale=sacle
             end
@@ -810,7 +810,7 @@ local function set_RaidFrame()--设置,团队
         CompactRaidFrameContainer:StopMovingOrSizing()
     end)
     CompactRaidFrameContainer.moveFrame:SetScript("OnMouseDown", function(self, d)
-        print(id, addName, (e.onlyChinse and '移动' or NPE_MOVE)..e.Icon.right, 'Alt+'..e.Icon.mid..(e.onlyChinse and '缩放' or UI_SCALE), Save.raidFrameScale or 1)
+        print(id, addName, (e.onlyChinese and '移动' or NPE_MOVE)..e.Icon.right, 'Alt+'..e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE), Save.raidFrameScale or 1)
         if d=='RightButton' and not IsModifierKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         end
@@ -821,7 +821,7 @@ local function set_RaidFrame()--设置,团队
     CompactRaidFrameContainer.moveFrame:SetScript('OnMouseWheel', function(self, d)--缩放
         if IsAltKeyDown() then
             if UnitAffectingCombat('player') then
-                print(id, addName, e.onlyChinse and '缩放' or UI_SCALE, '|cnRED_FONT_COLOR:'..(e.onlyChinse and '战斗中' or COMBAT))
+                print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT))
             else
                 local sacle= Save.raidFrameScale or 1
                 if d==1 then
@@ -834,7 +834,7 @@ local function set_RaidFrame()--设置,团队
                 elseif sacle<0.5 then
                     sacle=0.5
                 end
-                print(id, addName, (e.onlyChinse and '缩放' or UI_SCALE), sacle)
+                print(id, addName, (e.onlyChinese and '缩放' or UI_SCALE), sacle)
                 CompactRaidFrameContainer:SetScale(sacle)
                 Save.raidFrameScale=sacle
             end
@@ -850,12 +850,12 @@ local function set_RaidFrame()--设置,团队
     CompactRaidFrameManager.sacleFrame:SetPoint('RIGHT', CompactRaidFrameManagerDisplayFrameRaidMemberCountLabel, 'LEFT')
     CompactRaidFrameManager.sacleFrame:SetAlpha(0.5)
     CompactRaidFrameManager.sacleFrame:SetScript("OnMouseDown", function(self, d)
-        print(id, addName, 'Alt+'..e.Icon.mid..(e.onlyChinse and '缩放' or UI_SCALE), Save.managerScale or 1)
+        print(id, addName, 'Alt+'..e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE), Save.managerScale or 1)
     end)
     CompactRaidFrameManager.sacleFrame:SetScript('OnMouseWheel', function(self, d)--缩放
         if IsAltKeyDown() then
             if UnitAffectingCombat('player') then
-                print(id, addName, e.onlyChinse and '缩放' or UI_SCALE, '|cnRED_FONT_COLOR:'..(e.onlyChinse and '战斗中' or COMBAT))
+                print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT))
             else
                 local sacle= Save.managerScale or 1
                 if d==1 then
@@ -868,7 +868,7 @@ local function set_RaidFrame()--设置,团队
                 elseif sacle<0.5 then
                     sacle=0.5
                 end
-                print(id, addName, (e.onlyChinse and '缩放' or UI_SCALE), sacle)
+                print(id, addName, (e.onlyChinese and '缩放' or UI_SCALE), sacle)
                 CompactRaidFrameManager:SetScale(sacle)
                 Save.managerScale=sacle
             end
@@ -1038,27 +1038,27 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
             --添加控制面板        
-            local sel=e.CPanel(e.onlyChinse and '单位框体' or addName, not Save.disabled)
+            local sel=e.CPanel(e.onlyChinese and '单位框体' or addName, not Save.disabled)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end)
 
             local sel2=CreateFrame("CheckButton", nil, sel, "InterfaceOptionsCheckButtonTemplate")
-            sel2.text:SetText(e.onlyChinse and '团队框体' or HUD_EDIT_MODE_RAID_FRAMES_LABEL)
+            sel2.text:SetText(e.onlyChinese and '团队框体' or HUD_EDIT_MODE_RAID_FRAMES_LABEL)
             sel2:SetPoint('LEFT', sel.text, 'RIGHT')
             sel2:SetChecked(not Save.notRaidFrame)
             sel2:SetScript('OnEnter', function(self2)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine(e.onlyChinse and '如果出现错误' or ENABLE_ERROR_SPEECH, e.onlyChinse and '请取消' or CANCEL)
-                --e.tips:AddDoubleLine(e.onlyChinse and '登出游戏' or LOG_OUT..GAME, e.onlyChinse and '请取消' or CANCEL)
+                e.tips:AddDoubleLine(e.onlyChinese and '如果出现错误' or ENABLE_ERROR_SPEECH, e.onlyChinese and '请取消' or CANCEL)
+                --e.tips:AddDoubleLine(e.onlyChinese and '登出游戏' or LOG_OUT..GAME, e.onlyChinese and '请取消' or CANCEL)
                 e.tips:Show()
             end)
             sel2:SetScript('OnLeave', function() e.tips:Hide() end)
             sel2:SetScript('OnMouseDown', function ()
                 Save.notRaidFrame= not Save.notRaidFrame and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end)
 
 

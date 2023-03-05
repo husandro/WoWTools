@@ -101,16 +101,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
             --添加控制面板        
-            local sel=e.CPanel(e.onlyChinse and '法术Frame' or addName, not Save.disabled)
+            local sel=e.CPanel(e.onlyChinese and '法术Frame' or addName, not Save.disabled)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end)
             sel:SetScript('OnEnter', function(self2)
                 e.tips:SetOwner(self2, "ANCHOR_RIGHT");
                 e.tips:ClearLines();
-                e.tips:AddDoubleLine(e.onlyChinse and '法术距离' or SPELLS..TRACKER_SORT_PROXIMITY, e.onlyChinse and '颜色' or COLOR)
-                e.tips:AddDoubleLine(e.onlyChinse and '法术弹出框' or SPELLS..' Flyout', e.onlyChinse and '名称' or LFG_LIST_TITLE)
+                e.tips:AddDoubleLine(e.onlyChinese and '法术距离' or SPELLS..TRACKER_SORT_PROXIMITY, e.onlyChinese and '颜色' or COLOR)
+                e.tips:AddDoubleLine(e.onlyChinese and '法术弹出框' or SPELLS..' Flyout', e.onlyChinese and '名称' or LFG_LIST_TITLE)
                 e.tips:Show();
             end)
             sel:SetScript('OnLeave', function() e.tips:Hide() end)

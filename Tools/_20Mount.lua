@@ -552,7 +552,7 @@ local function InitMenu(self, level, menuList)--主菜单
     if menuList then
         if menuList==SETTINGS then--设置菜单
             info={--快捷键,设置对话框
-                text= e.onlyChinse and '快捷键' or SETTINGS_KEYBINDINGS_LABEL,--..(Save.KEY and ' |cnGREEN_FONT_COLOR:'..Save.KEY..'|r' or ''),
+                text= e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL,--..(Save.KEY and ' |cnGREEN_FONT_COLOR:'..Save.KEY..'|r' or ''),
                 checked=Save.KEY and true or nil,
                 func=function ()
                     StaticPopup_Show(id..addName..'KEY')
@@ -562,7 +562,7 @@ local function InitMenu(self, level, menuList)--主菜单
             UIDropDownMenu_AddButton(info, level)
 
             info={
-                text= e.onlyChinse and '图标大小' or HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE,--HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_HEIGHT,--设置按钮大小
+                text= e.onlyChinese and '图标大小' or HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE,--HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_HEIGHT,--设置按钮大小
                 tooltipOnButton=true,
                 tooltipTitle=e.toolsFrame.size or 30,
                 notCheckable=true,
@@ -594,11 +594,11 @@ local function InitMenu(self, level, menuList)--主菜单
 
             UIDropDownMenu_AddSeparator(level)
             info={--坐骑展示,每3秒
-                text= e.onlyChinse and '坐骑展示' or (SLASH_RANDOM3:gsub('/','')..SHOW),
+                text= e.onlyChinese and '坐骑展示' or (SLASH_RANDOM3:gsub('/','')..SHOW),
                 notCheckable=true,
                 tooltipOnButton=true,
-                tooltipTitle= e.onlyChinse and '每隔 3 秒, 召唤' or ('3 '..SECONDS..MOUNT),
-                tooltipText= (e.onlyChinse and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP)..e.Icon.mid,
+                tooltipTitle= e.onlyChinese and '每隔 3 秒, 召唤' or ('3 '..SECONDS..MOUNT),
+                tooltipText= (e.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP)..e.Icon.mid,
                 func=function()
                     specialEffects=nil
                     setMountShow()
@@ -607,11 +607,11 @@ local function InitMenu(self, level, menuList)--主菜单
             UIDropDownMenu_AddButton(info, level)
 
             info={--坐骑特效
-                text= e.onlyChinse and '坐骑特效' or (EMOTE171_CMD2:gsub('/','')..SHOW),
+                text= e.onlyChinese and '坐骑特效' or (EMOTE171_CMD2:gsub('/','')..SHOW),
                 notCheckable=true,
                 tooltipOnButton=true,
-                tooltipTitle= e.onlyChinse and '每隔 3 秒' or ('3 '..SECONDS..EMOTE171_CMD2:gsub('/','')),
-                tooltipText= (e.onlyChinse and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN)..e.Icon.mid,
+                tooltipTitle= e.onlyChinese and '每隔 3 秒' or ('3 '..SECONDS..EMOTE171_CMD2:gsub('/','')),
+                tooltipText= (e.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN)..e.Icon.mid,
                 func=function()
                     specialEffects=true
                     setMountShow()
@@ -621,7 +621,7 @@ local function InitMenu(self, level, menuList)--主菜单
 
             UIDropDownMenu_AddSeparator(level)
             info={
-                text= e.onlyChinse and '还原位置' or RESET_POSITION,
+                text= e.onlyChinese and '还原位置' or RESET_POSITION,
                 disabled=UnitAffectingCombat('player'),
                 colorCode=not Save.Point and '|cff606060',
                 func=function()
@@ -631,7 +631,7 @@ local function InitMenu(self, level, menuList)--主菜单
                     CloseDropDownMenus()
                 end,
                 tooltipOnButton=true,
-                tooltipTitle=e.Icon.right..(e.onlyChinse and '移动' or NPE_MOVE),
+                tooltipTitle=e.Icon.right..(e.onlyChinese and '移动' or NPE_MOVE),
                 notCheckable=true,
             }
             UIDropDownMenu_AddButton(info, level)
@@ -778,7 +778,7 @@ local function InitMenu(self, level, menuList)--主菜单
                     local uiMapID= C_Map.GetBestMapForUnit("player")--当前地图
                     if uiMapID then
                         info.tooltipOnButton=true
-                        info.tooltipTitle= (e.onlyChinse and '当前' or REFORGE_CURRENT)..' MapID: '..uiMapID
+                        info.tooltipTitle= (e.onlyChinese and '当前' or REFORGE_CURRENT)..' MapID: '..uiMapID
                         local mapInfo = C_Map.GetMapInfo(uiMapID)
                         if mapInfo and mapInfo.name then
                             info.tooltipText= mapInfo.name
@@ -791,7 +791,7 @@ local function InitMenu(self, level, menuList)--主菜单
 
         UIDropDownMenu_AddSeparator()
         info={
-            text=Save.KEY or (e.onlyChinse and '快捷键' or SETTINGS_KEYBINDINGS_LABEL),
+            text=Save.KEY or (e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL),
             notCheckable=true,
             menuList=SETTINGS,
             hasArrow=true,
@@ -799,7 +799,7 @@ local function InitMenu(self, level, menuList)--主菜单
         UIDropDownMenu_AddButton(info)
 
         info={--提示移动
-            text=e.Icon.right..(e.onlyChinse and '移动' or NPE_MOVE),
+            text=e.Icon.right..(e.onlyChinese and '移动' or NPE_MOVE),
             isTitle=true,
             notCheckable=true
         }
@@ -868,7 +868,7 @@ local function setMountJournal_ShowMountDropdown(index)
                 UIDropDownMenu_AddSeparator()
             end
             info={
-                text= (e.onlyChinse and '设置' or SETTINGS)..' '..type..' #'..getTableNum(type),
+                text= (e.onlyChinese and '设置' or SETTINGS)..' '..type..' #'..getTableNum(type),
                 checked=Save.Mounts[type][spellID] and true or nil,
                 tooltipOnButton=true,
                 tooltipTitle=id,
@@ -1029,7 +1029,7 @@ local function Init()
                 e.tips:SetItemByID(self.typeID)
             end
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.onlyChinse and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
             e.tips:Show()
         end
     end)
@@ -1059,15 +1059,15 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             local check=e.CPanel('Tools', not Save.disabled, true)
             check:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
-                print(id, 'Tools', e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+                print(id, 'Tools', e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end)
             check:SetScript('OnEnter', function (self2)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine(e.onlyChinse and '编辑模式' or HUD_EDIT_MODE_MENU, e.onlyChinse and '错误' or ERRORS, 1,0,0, 1,0,0)
+                e.tips:AddDoubleLine(e.onlyChinese and '编辑模式' or HUD_EDIT_MODE_MENU, e.onlyChinese and '错误' or ERRORS, 1,0,0, 1,0,0)
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(e.onlyChinse and '物品升级界面' or (ITEM_UPGRADE..' UI'), e.onlyChinse and '错误' or ERRORS, 1,0,0,1,0,0)
-                e.tips:AddDoubleLine(e.onlyChinse and '预创建队伍' or LFGLIST_NAME, e.onlyChinse and '错误' or ERRORS, 1,0,0, 1,0,0)
+                e.tips:AddDoubleLine(e.onlyChinese and '物品升级界面' or (ITEM_UPGRADE..' UI'), e.onlyChinese and '错误' or ERRORS, 1,0,0,1,0,0)
+                e.tips:AddDoubleLine(e.onlyChinese and '预创建队伍' or LFGLIST_NAME, e.onlyChinese and '错误' or ERRORS, 1,0,0, 1,0,0)
                 e.tips:Show()
             end)
             check.text:SetTextColor(1,0,0)

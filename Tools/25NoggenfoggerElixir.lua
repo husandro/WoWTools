@@ -123,7 +123,7 @@ StaticPopupDialogs[id..addName..'KEY']={--快捷键,设置对话框
 local function InitMenu(self, level)--主菜单
     for spellID, type in pairs(Save.aura) do
         local name, _, icon = GetSpellInfo(spellID)
-        name= name or (e.onlyChinse and '光环' or AURAS)..' '..spellID
+        name= name or (e.onlyChinese and '光环' or AURAS)..' '..spellID
         local info={
             text=name,
             icon=icon,
@@ -136,12 +136,12 @@ local function InitMenu(self, level)--主菜单
     end
     UIDropDownMenu_AddSeparator(level)
     local info={--快捷键,设置对话框
-        text= e.onlyChinse and '快捷键' or SETTINGS_KEYBINDINGS_LABEL,--..(Save.KEY and ' |cnGREEN_FONT_COLOR:'..Save.KEY..'|r' or ''),
+        text= e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL,--..(Save.KEY and ' |cnGREEN_FONT_COLOR:'..Save.KEY..'|r' or ''),
         checked=Save.KEY and true or nil,
         disabled=UnitAffectingCombat('player'),
         func=function()
             StaticPopupDialogs[id..addName..'KEY']={--快捷键,设置对话框
-                text=id..' '..addName..'\n'..(e.onlyChinse and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..'\n\nQ, BUTTON5',
+                text=id..' '..addName..'\n'..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..'\n\nQ, BUTTON5',
                 whileDead=1,
                 hideOnEscape=1,
                 exclusive=1,
@@ -208,9 +208,9 @@ local function Init()
             local name, _, icon = GetSpellInfo(spellID)
             name= name or (AURAS..' ID'..spellID)
             name= (icon and '|T'..icon..':0|t' or '')..name
-            e.tips:AddDoubleLine(name, type and	'|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '取消' or CANCEL)..'|r' or '...')
+            e.tips:AddDoubleLine(name, type and	'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL)..'|r' or '...')
         end
-        e.tips:AddDoubleLine(e.onlyChinse and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.mid)
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.mid)
         e.tips:Show()
     end)
     button:SetScript('OnLeave', function() e.tips:Hide() end)

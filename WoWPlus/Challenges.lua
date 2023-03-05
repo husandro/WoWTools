@@ -89,8 +89,8 @@ local function getBagKey(self, point, x, y) --KEY链接
                             GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
                             GameTooltip:ClearLines()
                             GameTooltip:SetHyperlink(self2.item)
-                            GameTooltip:AddDoubleLine(e.onlyChinse and '发送信息' or SEND_MESSAGE, e.Icon.left)
-                            GameTooltip:AddDoubleLine(e.onlyChinse and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, e.Icon.right)
+                            GameTooltip:AddDoubleLine(e.onlyChinese and '发送信息' or SEND_MESSAGE, e.Icon.left)
+                            GameTooltip:AddDoubleLine(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, e.Icon.right)
                             GameTooltip:Show()
                     end)
                     self['key'..i]:SetScript("OnLeave",function()
@@ -169,13 +169,13 @@ local function Party(frame)--队友位置
             local reason=UnitPhaseReason(unit)--位面
             if reason then
                 if reason==0 then--不同了阶段
-                    text= text ..'|cnRED_FONT_COLOR:'..ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', e.onlyChinse and '阶段' or MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1',''))..'|r'
+                    text= text ..'|cnRED_FONT_COLOR:'..ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', e.onlyChinese and '阶段' or MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1',''))..'|r'
                 elseif reason==1 then--不在同位面
-                    text= text ..'|cnRED_FONT_COLOR:'..ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', e.onlyChinse and '位面' or  e.L['LAYER'])..'|r'
+                    text= text ..'|cnRED_FONT_COLOR:'..ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', e.onlyChinese and '位面' or  e.L['LAYER'])..'|r'
                 elseif reason==2 then--战争模式
-                    text= text ..(C_PvP.IsWarModeDesired() and '|cnRED_FONT_COLOR:'..(e.onlyChinse and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinse and '开启战争模式' or ERR_PVP_WARMODE_TOGGLE_ON)..'|r')
+                    text= text ..(C_PvP.IsWarModeDesired() and '|cnRED_FONT_COLOR:'..(e.onlyChinese and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '开启战争模式' or ERR_PVP_WARMODE_TOGGLE_ON)..'|r')
                 elseif reason==3 then
-                    text= text..'|cnRED_FONT_COLOR:'..(e.onlyChinse and '时空漫游' or PLAYER_DIFFICULTY_TIMEWALKER)..'|r'
+                    text= text..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '时空漫游' or PLAYER_DIFFICULTY_TIMEWALKER)..'|r'
                 end
             end
 
@@ -188,7 +188,7 @@ end
 local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     local frame=ChallengesKeystoneFrame
     frame.ready = CreateFrame("Button",nil, frame, 'UIPanelButtonTemplate')--就绪
-    frame.ready:SetText((e.onlyChinse and '就绪' or READY)..e.Icon.select2)
+    frame.ready:SetText((e.onlyChinese and '就绪' or READY)..e.Icon.select2)
     frame.ready:SetPoint('LEFT', frame.StartButton, 'RIGHT',2, 0)
     frame.ready:SetSize(100,24)
     frame.ready:SetScript("OnMouseDown",function()
@@ -196,7 +196,7 @@ local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     end)
 
     frame.mark = CreateFrame("Button",nil, frame, 'UIPanelButtonTemplate')--标记
-    frame.mark:SetText(e.Icon['TANK']..(e.onlyChinse and '标记' or EVENTTRACE_MARKER)..e.Icon['HEALER'])
+    frame.mark:SetText(e.Icon['TANK']..(e.onlyChinese and '标记' or EVENTTRACE_MARKER)..e.Icon['HEALER'])
     frame.mark:SetPoint('RIGHT', frame.StartButton, 'LEFT',-2, 0)
     frame.mark:SetSize(100,24)
     frame.mark:SetScript("OnMouseDown",function()
@@ -221,7 +221,7 @@ local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     frame.clear = CreateFrame("Button",nil, frame, 'UIPanelButtonTemplate')--清除KEY
     frame.clear:SetPoint('RIGHT', -15, -50)
     frame.clear:SetSize(70,24)
-    frame.clear:SetText(e.onlyChinse and '清除' or  CLEAR or KEY_NUMLOCK_MAC)
+    frame.clear:SetText(e.onlyChinese and '清除' or  CLEAR or KEY_NUMLOCK_MAC)
     frame.clear:SetScript("OnMouseDown",function()
             C_ChallengeMode.RemoveKeystone()
             frame:Reset()
@@ -232,7 +232,7 @@ local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     frame.ins = CreateFrame("Button",nil, frame, 'UIPanelButtonTemplate')--插入
     frame.ins:SetPoint('BOTTOMRIGHT', frame.clear, 'TOPRIGHT', 0, 2)
     frame.ins:SetSize(70,24)
-    frame.ins:SetText(e.onlyChinse and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
+    frame.ins:SetText(e.onlyChinese and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
     frame.ins:SetScript("OnMouseDown",function()
             ItemButtonUtil.OpenAndFilterBags(frame)
             if ItemButtonUtil.GetItemContext() == nil then return end
@@ -246,7 +246,7 @@ local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
                     end
                 end
             end
-            print(id, CHALLENGE_MODE_KEYSTONE_NAME:format('|cnRED_FONT_COLOR:'..(e.onlyChinse and '尚未发现' or TAXI_PATH_UNREACHABLE)..'|r'))
+            print(id, CHALLENGE_MODE_KEYSTONE_NAME:format('|cnRED_FONT_COLOR:'..(e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)..'|r'))
     end)
 
     frame.party=e.Cstr(frame)--队伍信息
@@ -270,10 +270,10 @@ local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
 
     local sel2=CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")--插入, KEY时, 说
     --e.Cstr=function(self, size, fontType, ChangeFont, color, layer, justifyH)
-    if not frame.DungeonName and not e.onlyChinse then
+    if not frame.DungeonName and not e.onlyChinese then
         e.Cstr(nil,nil,frame.DungeonName, sel2.text)
     end
-    sel2.text:SetText(e.onlyChinse and '说' or SAY)
+    sel2.text:SetText(e.onlyChinese and '说' or SAY)
     sel2:SetPoint('TOPLEFT',22,-12)
     sel2:SetChecked(Save.slotKeystoneSay)
     sel2:SetScript('OnMouseDown', function()
@@ -282,7 +282,7 @@ local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     sel2:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddLine(e.onlyChinse and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
+        e.tips:AddLine(e.onlyChinese and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
         e.tips:Show()
     end)
     sel2:SetScript('OnLeave', function() e.tips:Hide() end)
@@ -314,14 +314,14 @@ local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
 
 
     frame.countdown = CreateFrame("Button",nil, frame, 'UIPanelButtonTemplate')--倒计时7秒
-    frame.countdown:SetText((e.onlyChinse and '倒计时' or PLAYER_COUNTDOWN_BUTTON)..' 7')
+    frame.countdown:SetText((e.onlyChinese and '倒计时' or PLAYER_COUNTDOWN_BUTTON)..' 7')
     frame.countdown:SetPoint('TOP', frame, 'BOTTOM',100, 5)
     frame.countdown:SetSize(150,24)
     frame.countdown:SetScript("OnMouseDown",function()
         C_PartyInfo.DoCountdown(7)
     end)
     frame.countdown2 = CreateFrame("Button",nil, frame, 'UIPanelButtonTemplate')--倒计时7秒
-    frame.countdown2:SetText((e.onlyChinse and '取消' or CANCEL)..' 0')
+    frame.countdown2:SetText((e.onlyChinese and '取消' or CANCEL)..' 0')
     frame.countdown2:SetPoint('TOP', frame, 'BOTTOM',-100, 5)
     frame.countdown2:SetSize(100,24)
     frame.countdown2:SetScript("OnMouseDown",function()
@@ -597,18 +597,18 @@ local function All(self)--所有记录
 
     local currentWeekBestLevel, weeklyRewardLevel, nextDifficultyWeeklyRewardLevel, nextBestLevel = C_MythicPlus.GetWeeklyChestRewardLevel()
     if currentWeekBestLevel and weeklyRewardLevel and weeklyRewardLevel>0 and currentWeekBestLevel>0 then
-        m=m..format(e.onlyChinse and '%d级的当前奖励是%d。%d级的奖励是%d。' or MYTHIC_PLUS_CURR_WEEK_REWARD, currentWeekBestLevel,weeklyRewardLevel, nextDifficultyWeeklyRewardLevel, nextBestLevel)
+        m=m..format(e.onlyChinese and '%d级的当前奖励是%d。%d级的奖励是%d。' or MYTHIC_PLUS_CURR_WEEK_REWARD, currentWeekBestLevel,weeklyRewardLevel, nextDifficultyWeeklyRewardLevel, nextBestLevel)
     end
-    --[[m=m..(e.onlyChinse and '每周最佳纪录: ' or CHALLENGE_MODE_WEEKLY_BEST..': ')..currentWeekBestLevel.. ' ('..weeklyRewardLevel..')'
+    --[[m=m..(e.onlyChinese and '每周最佳纪录: ' or CHALLENGE_MODE_WEEKLY_BEST..': ')..currentWeekBestLevel.. ' ('..weeklyRewardLevel..')'
     if nextDifficultyWeeklyRewardLevel and nextBestLevel and nextDifficultyWeeklyRewardLevel>0 and nextBestLevel>0 and currentWeekBestLevel<nextDifficultyWeeklyRewardLevel then
-        m=m..'\n'..(e.onlyChinse and '下一级：' or NEXT_RANK_COLON)..nextDifficultyWeeklyRewardLevel..' ('..nextBestLevel..')'
+        m=m..'\n'..(e.onlyChinese and '下一级：' or NEXT_RANK_COLON)..nextDifficultyWeeklyRewardLevel..' ('..nextBestLevel..')'
     end]]
 
     local mapChallengeModeID, level = C_MythicPlus.GetLastWeeklyBestInformation()
     if mapChallengeModeID and level and level>0 and mapChallengeModeID>0 then
         local name, _, _, texture, _ = C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
         if name then
-            m= (m~='' and m..'\n\n' or m)..(e.onlyChinse and '上周' or HONOR_LASTWEEK)..': '.. (texture and '|T'..texture..':0|t' or '')..name..' '..level
+            m= (m~='' and m..'\n\n' or m)..(e.onlyChinese and '上周' or HONOR_LASTWEEK)..': '.. (texture and '|T'..texture..':0|t' or '')..name..' '..level
         end
     end
 
@@ -616,7 +616,7 @@ local function All(self)--所有记录
     if info then
         local nu=#C_MythicPlus.GetRunHistory(true) or {}
         local nu2=#info
-        m= (m~='' and m..'\n\n' or m)..(e.onlyChinse and '历史' or HISTORY)..': |cff00ff00'..nu.. '/'.. nu2.. ' |r(|cffffffff'..nu2-nu..'|r)'
+        m= (m~='' and m..'\n\n' or m)..(e.onlyChinese and '历史' or HISTORY)..': |cff00ff00'..nu.. '/'.. nu2.. ' |r(|cffffffff'..nu2-nu..'|r)'
     end
 
     info = C_MythicPlus.GetRunHistory(false, true)--本周记录
@@ -654,7 +654,7 @@ local function All(self)--所有记录
                 m2=m2..' '..v2
             end
         end
-        if m2~='' then m=(m~='' and m..'|n' or '')..(e.onlyChinse and '本周' or CHALLENGE_MODE_THIS_WEEK)..': |cff00ff00'..n..'/'..n2..'|r  (|cffffffff'..(n2-n)..'|r)|n'..m2 end
+        if m2~='' then m=(m~='' and m..'|n' or '')..(e.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK)..': |cff00ff00'..n..'/'..n2..'|r  (|cffffffff'..(n2-n)..'|r)|n'..m2 end
     end
 
     local text= m..'\n'--所有角色KEY
@@ -727,7 +727,7 @@ local function Cur(self)--货币数量
                 end
             else
                 if info.maxQuantity==0 then
-                    t=t..info.quantity..'/'.. (e.onlyChinse and '无限制' or UNLIMITED)..' '
+                    t=t..info.quantity..'/'.. (e.onlyChinese and '无限制' or UNLIMITED)..' '
                 else
                     if info.quantity==info.maxQuantity then
                         t=t..'|cff00ff00'..info.quantity.. '/'..info.maxQuantity..'|r '
@@ -795,15 +795,15 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                     if self2.mapID then
                         local _, _, timeLimit, texture, backgroundTexture = C_ChallengeMode.GetMapUIInfo(self2.mapID)
                         GameTooltip:AddDoubleLine(' ')
-                        local a=GetNum(self2.mapID, true) or RED_FONT_COLOR_CODE..(e.onlyChinse and '无' or NONE)..'|r'--所有
-                        local w=GetNum(self2.mapID) or RED_FONT_COLOR_CODE..(e.onlyChinse and '无' or NONE)..'|r'--本周
-                        GameTooltip:AddDoubleLine((e.onlyChinse and '历史' or HISTORY)..': '..a, (e.onlyChinse and '本周' or CHALLENGE_MODE_THIS_WEEK)..': '..w)
-                        GameTooltip:AddDoubleLine('mapChallengeModeID |cnGREEN_FONT_COLOR:'.. self2.mapID..'|r', timeLimit and (e.onlyChinse and '限时' or GROUP_FINDER_PVE_PLAYSTYLE3)..' '.. SecondsToTime(timeLimit))
+                        local a=GetNum(self2.mapID, true) or RED_FONT_COLOR_CODE..(e.onlyChinese and '无' or NONE)..'|r'--所有
+                        local w=GetNum(self2.mapID) or RED_FONT_COLOR_CODE..(e.onlyChinese and '无' or NONE)..'|r'--本周
+                        GameTooltip:AddDoubleLine((e.onlyChinese and '历史' or HISTORY)..': '..a, (e.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK)..': '..w)
+                        GameTooltip:AddDoubleLine('mapChallengeModeID |cnGREEN_FONT_COLOR:'.. self2.mapID..'|r', timeLimit and (e.onlyChinese and '限时' or GROUP_FINDER_PVE_PLAYSTYLE3)..' '.. SecondsToTime(timeLimit))
                         if texture and backgroundTexture then
                             GameTooltip:AddDoubleLine('|T'..texture..':0|t'..texture, '|T'..backgroundTexture..':0|t'..backgroundTexture)
                         end
                         
-                        GameTooltip:AddDoubleLine(e.onlyChinse and '冒险指南' or ADVENTURE_JOURNAL, e.Icon.left)
+                        GameTooltip:AddDoubleLine(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, e.Icon.left)
                         GameTooltip:Show()
                     end
                 end)
@@ -910,7 +910,7 @@ local function Init()
         self.sel = CreateFrame("CheckButton", nil, self, "InterfaceOptionsCheckButtonTemplate")--隐藏选项
         self.sel:SetPoint('TOPLEFT',60,-20)
         self.sel:SetChecked(Save.hide)
-        self.sel.text:SetText(e.onlyChinse and '隐藏' or HIDE)
+        self.sel.text:SetText(e.onlyChinese and '隐藏' or HIDE)
         self.sel:SetScript("OnMouseDown", function ()
             Save.hide = not Save.hide and true or nil
             Kill(self)--副本PVP团本
@@ -1023,10 +1023,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
             --添加控制面板        
-            local sel=e.CPanel(e.onlyChinse and '史诗钥石地下城' or addName, not Save.disabled)
+            local sel=e.CPanel(e.onlyChinese and '史诗钥石地下城' or addName, not Save.disabled)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end)
 
             if Save.disabled then

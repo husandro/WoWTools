@@ -71,7 +71,7 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddSeparator(level)
     end
     info={
-        text=e.onlyChinse and '公会信息' or GUILD_INFORMATION,
+        text=e.onlyChinese and '公会信息' or GUILD_INFORMATION,
         checked=Save.guildInfo,
         tooltipOnButton=true,
         tooltipTitle=e.WoWSave[e.Player.guid].GuildInfo or NONE,

@@ -88,7 +88,7 @@ local function InitMenu(self, level, type)--主菜单
         return
     end
     local info={
-        text= e.onlyChinse and '显示名称' or PROFESSIONS_FLYOUT_SHOW_NAME,
+        text= e.onlyChinese and '显示名称' or PROFESSIONS_FLYOUT_SHOW_NAME,
         checked= not Save.notShowName,
         func=function()
             if not Save.notShowName then
@@ -170,7 +170,7 @@ local function Init()
                     e.tips:AddLine(' ')
                     e.tips:AddDoubleLine((icon and '|T'..icon..':0|t' or '').. name..e.GetSpellCooldown(tab.spell2), e.Icon.right)
                 end
-                e.tips:AddDoubleLine(e.onlyChinse and '显示名称' or PROFESSIONS_FLYOUT_SHOW_NAME, e.Icon.mid)
+                e.tips:AddDoubleLine(e.onlyChinese and '显示名称' or PROFESSIONS_FLYOUT_SHOW_NAME, e.Icon.mid)
                 e.tips:Show()
             end)
            button:SetScript('OnLeave', function() e.tips:Hide() end)

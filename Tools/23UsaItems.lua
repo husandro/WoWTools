@@ -144,7 +144,7 @@ StaticPopupDialogs[id..addName..'ADD']={--添加, 移除
 local function InitMenu(self, level, type)--主菜单
     local info
     if type then
-        local cleraAllText='|cnRED_FONT_COLOR:'..(e.onlyChinse and '全部清除' or CLEAR_ALL)..'|r '..(type=='spell' and (e.onlyChinse and '法术' or SPELLS) or type=='item' and (e.onlyChinse and '物品' or ITEMS) or (e.onlyChinse and '装备' or EQUIPSET_EQUIP))..' #'..'|cnGREEN_FONT_COLOR:'..#Save[type]..'|r'
+        local cleraAllText='|cnRED_FONT_COLOR:'..(e.onlyChinese and '全部清除' or CLEAR_ALL)..'|r '..(type=='spell' and (e.onlyChinese and '法术' or SPELLS) or type=='item' and (e.onlyChinese and '物品' or ITEMS) or (e.onlyChinese and '装备' or EQUIPSET_EQUIP))..' #'..'|cnGREEN_FONT_COLOR:'..#Save[type]..'|r'
         info={--清除全部
             text=cleraAllText,
             notCheckable=true,
@@ -152,7 +152,7 @@ local function InitMenu(self, level, type)--主菜单
                 StaticPopup_Show(id..addName..'REMOVE', cleraAllText ,nil, {type=type, clearAll=true})
             end,
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinse and '重新加载UI' or RELOADUI
+            tooltipTitle= e.onlyChinese and '重新加载UI' or RELOADUI
             }
         UIDropDownMenu_AddButton(info, level)
         UIDropDownMenu_AddSeparator(level)
@@ -186,9 +186,9 @@ local function InitMenu(self, level, type)--主菜单
         end
     else
         local tab={
-            [e.onlyChinse and '物品' or ITEMS]='item',
-            [e.onlyChinse and '法术' or SPELLS]='spell',
-            [e.onlyChinse and '装备' or EQUIPSET_EQUIP]='equip'
+            [e.onlyChinese and '物品' or ITEMS]='item',
+            [e.onlyChinese and '法术' or SPELLS]='spell',
+            [e.onlyChinese and '装备' or EQUIPSET_EQUIP]='equip'
         }
         for text, type2 in pairs(tab) do
             info={
@@ -201,7 +201,7 @@ local function InitMenu(self, level, type)--主菜单
         end
         UIDropDownMenu_AddSeparator(level)
         info={
-            text= e.onlyChinse and '重新加载UI' or RELOADUI,
+            text= e.onlyChinese and '重新加载UI' or RELOADUI,
             notCheckable=true,
             tooltipOnButton=true,
             tooltipTitle='/reload',
@@ -212,19 +212,19 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddButton(info, level);
         UIDropDownMenu_AddSeparator(level)
         info={
-            text= e.onlyChinse and '重置' or RESET,
+            text= e.onlyChinese and '重置' or RESET,
             colorCode='|cffff0000',
             notCheckable=true,
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinse and '全部重置' or RESET_ALL_BUTTON_TEXT,
-            tooltipText= e.onlyChinse and '重新加载UI' or RELOADUI,
+            tooltipTitle= e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT,
+            tooltipText= e.onlyChinese and '重新加载UI' or RELOADUI,
             func=function()
                 StaticPopup_Show(id..addName..'RESETALL')
             end
         }
         UIDropDownMenu_AddButton(info, level);
         UIDropDownMenu_AddButton({text=addName, isTitle=true, notCheckable=true}, level);
-        UIDropDownMenu_AddButton({text= e.onlyChinse and '拖曳: 物品, 法术, 装备' or (DRAG_MODEL..', '..SPELLS..', '..ITEMS), isTitle=true, notCheckable=true}, level);
+        UIDropDownMenu_AddButton({text= e.onlyChinese and '拖曳: 物品, 法术, 装备' or (DRAG_MODEL..', '..SPELLS..', '..ITEMS), isTitle=true, notCheckable=true}, level);
     end
 end
 

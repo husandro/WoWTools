@@ -1349,26 +1349,26 @@ end
 
 
 local function options_Init()--添加控制面板
-    panel.name = (e.onlyChinse and '材质' or addName)..'|A:AnimCreate_Icon_Texture:0:0|a'
+    panel.name = (e.onlyChinese and '材质' or addName)..'|A:AnimCreate_Icon_Texture:0:0|a'
     panel.parent =id
     InterfaceOptions_AddCategory(panel)
 
     local restButton= CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')--重新加载UI
     restButton:SetPoint('TOPLEFT')
-    restButton:SetText(e.onlyChinse and '重新加载UI' or RELOADUI)
+    restButton:SetText(e.onlyChinese and '重新加载UI' or RELOADUI)
     restButton:SetSize(120, 28)
     restButton:SetScript('OnMouseUp', e.Reload)
 
     local enableDisbleButton=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     enableDisbleButton:SetChecked(not Save.disabled)
     enableDisbleButton:SetPoint('LEFT', restButton, 'RIGHT', 2, 0)
-    enableDisbleButton.text:SetText(e.onlyChinse and '启用/禁用' or ENABLE..'/'..DISABLE)
+    enableDisbleButton.text:SetText(e.onlyChinese and '启用/禁用' or ENABLE..'/'..DISABLE)
     enableDisbleButton:SetScript('OnMouseDown', function()
         Save.disabled = not Save.disabled and true or nil
     end)
 
     local textureCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    textureCheck.text:SetText(e.onlyChinse and '隐藏材质' or HIDE..addName)
+    textureCheck.text:SetText(e.onlyChinese and '隐藏材质' or HIDE..addName)
     textureCheck:SetChecked(not Save.disabledTexture)
     textureCheck:SetPoint('TOPLEFT', restButton, 'BOTTOMLEFT',0, -16)
     textureCheck:SetScript('OnMouseDown', function()
@@ -1376,7 +1376,7 @@ local function options_Init()--添加控制面板
     end)
 
     local alphaCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    alphaCheck.text:SetText(e.onlyChinse and '透明度' or CHANGE_OPACITY)
+    alphaCheck.text:SetText(e.onlyChinese and '透明度' or CHANGE_OPACITY)
     alphaCheck:SetPoint('TOPLEFT', textureCheck, 'BOTTOMLEFT', 0, -16)
     alphaCheck:SetChecked(not Save.disabledAlpha)
     alphaCheck:SetScript('OnMouseDown', function()
@@ -1400,7 +1400,7 @@ local function options_Init()--添加控制面板
     end)
 
     local classColor=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    classColor.text:SetText(e.Player.col..(e.onlyChinse and '职业颜色' or COLORS))
+    classColor.text:SetText(e.Player.col..(e.onlyChinese and '职业颜色' or COLORS))
     classColor:SetPoint('TOPLEFT', alphaCheck, 'BOTTOMRIGHT')
     classColor:SetChecked(not Save.disabledColor)
     classColor:SetScript('OnMouseDown', function()
@@ -1410,14 +1410,14 @@ local function options_Init()--添加控制面板
     classColor:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddLine(e.Player.col..(e.onlyChinse and '职业颜色' or CLASS_COLORS))
+        e.tips:AddLine(e.Player.col..(e.onlyChinese and '职业颜色' or CLASS_COLORS))
         e.tips:Show()
     end)
     classColor:SetScript('OnLeave', function() e.tips:Hide() end)
 
     --聊天泡泡 ChatBubble
     local chatBubbleCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    chatBubbleCheck.text:SetText(e.onlyChinse and '聊天泡泡' or CHAT_BUBBLES_TEXT)
+    chatBubbleCheck.text:SetText(e.onlyChinese and '聊天泡泡' or CHAT_BUBBLES_TEXT)
     chatBubbleCheck:SetPoint('TOPLEFT', alphaCheck, 'BOTTOMLEFT', 0, -32)
     chatBubbleCheck:SetChecked(not Save.disabledChatBubble)
     chatBubbleCheck:SetScript('OnMouseDown', function()
@@ -1425,14 +1425,14 @@ local function options_Init()--添加控制面板
     end)
     chatBubbleCheck:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:AddDoubleLine(e.onlyChinse and '说' or SAY, 'CVar: chatBubbles '.. e.GetShowHide(C_CVar.GetCVarBool("chatBubbles")))
-        e.tips:AddDoubleLine(e.onlyChinse and '小队' or CHAT_MSG_PARTY, 'CVar: chatBubblesParty '.. e.GetShowHide(C_CVar.GetCVarBool("chatBubblesParty")))
+        e.tips:AddDoubleLine(e.onlyChinese and '说' or SAY, 'CVar: chatBubbles '.. e.GetShowHide(C_CVar.GetCVarBool("chatBubbles")))
+        e.tips:AddDoubleLine(e.onlyChinese and '小队' or CHAT_MSG_PARTY, 'CVar: chatBubblesParty '.. e.GetShowHide(C_CVar.GetCVarBool("chatBubblesParty")))
         e.tips:Show()
     end)
     chatBubbleCheck:SetScript('OnLeave', function() e.tips:Hide() end)
 
     local chatBubbleAlpha=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    chatBubbleAlpha.text:SetText(e.onlyChinse and '透明度' or CHANGE_OPACITY)
+    chatBubbleAlpha.text:SetText(e.onlyChinese and '透明度' or CHANGE_OPACITY)
     chatBubbleAlpha:SetPoint('TOPLEFT', chatBubbleCheck, 'BOTTOMRIGHT')
     chatBubbleAlpha:SetChecked(not Save.disabledChatBubbleAlpha)
     chatBubbleAlpha:SetScript('OnMouseDown', function()
@@ -1456,7 +1456,7 @@ local function options_Init()--添加控制面板
     end)
 
     local chatBubbleSacale=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    chatBubbleSacale.text:SetText(e.onlyChinse and '缩放' or UI_SCALE)
+    chatBubbleSacale.text:SetText(e.onlyChinese and '缩放' or UI_SCALE)
     chatBubbleSacale:SetPoint('TOPLEFT', chatBubbleAlpha, 'BottomLEFT')
     chatBubbleSacale:SetChecked(not Save.disabledChatBubbleSacal)
     chatBubbleSacale:SetScript('OnMouseDown', function()
@@ -1480,7 +1480,7 @@ local function options_Init()--添加控制面板
     end)
 
     local needReload= e.Cstr(panel)
-    needReload:SetText(e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+    needReload:SetText(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     needReload:SetPoint('TOPRIGHT')
     needReload:SetTextColor(0,1,0)
 end

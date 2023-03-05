@@ -78,7 +78,7 @@ end
 --#####
 local function InitMenu(self, level)--主菜单
     local info={
-        text= e.onlyChinse and '使用 /招手' or (USE..' '..EMOTE102_CMD1),
+        text= e.onlyChinese and '使用 /招手' or (USE..' '..EMOTE102_CMD1),
         checked=not Save.notGuLai,
         func=function()
             if Save.notGuLai then
@@ -93,7 +93,7 @@ local function InitMenu(self, level)--主菜单
     UIDropDownMenu_AddButton(info, level)
 
     info={--自动召唤
-        text= e.onlyChinse and '自动召唤' or (AUTO_JOIN:gsub(JOIN,'')..SUMMONS),
+        text= e.onlyChinese and '自动召唤' or (AUTO_JOIN:gsub(JOIN,'')..SUMMONS),
         checked=Save.autoSummon,
         func=function()
             if Save.autoSummon then
@@ -122,7 +122,7 @@ local function Init()
         end
     end
     if not petGUID then--没找到时, 退出
-        print(id, addName, e.onlyChinse and '没发现宠物, 黛西' or SPELL_FAILED_ERROR)
+        print(id, addName, e.onlyChinese and '没发现宠物, 黛西' or SPELL_FAILED_ERROR)
         panel:UnregisterAllEvents()
         return
     end
@@ -150,7 +150,7 @@ local function Init()
         e.tips:ClearLines()
         e.tips:SetCompanionPet(petGUID)
         --e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinse and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.mid)
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.mid)
         e.tips:Show()
     end)
     button:SetScript('OnLeave', function() e.tips:Hide() end)

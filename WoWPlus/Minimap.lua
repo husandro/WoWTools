@@ -40,7 +40,7 @@ local function set_MinimapCluster()--缩放
         scale= scale>2 and 2 or scale<0.4 and 0.4 or scale
         frame:SetScale(scale)
         Save.scale=scale
-        print(id, addName, e.onlyChinse and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
+        print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
     end
     --[[Minimap:SetScript('OnMouseWheel', function(self, d)--Minimap.lua
         if IsAltKeyDown() then
@@ -67,9 +67,9 @@ local function set_MinimapCluster()--缩放
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
-        e.tips:AddDoubleLine(e.onlyChinse and '缩放' or UI_SCALE, (e.onlyChinse and '缩小' or ZOOM_OUT)..(Save.scale or 1)..e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE, (e.onlyChinese and '缩小' or ZOOM_OUT)..(Save.scale or 1)..e.Icon.left)
 
-        e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
         e.tips:Show()
     end)
     frame.ScaleIn:SetScript('OnLeave', function() e.tips:Hide() ResetCursor() end)
@@ -88,8 +88,8 @@ local function set_MinimapCluster()--缩放
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
-        e.tips:AddDoubleLine(e.onlyChinse and '缩放' or UI_SCALE,(e.onlyChinse and '放大' or ZOOM_IN)..(Save.scale or 1)..e.Icon.left)
-        e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE,(e.onlyChinese and '放大' or ZOOM_IN)..(Save.scale or 1)..e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
         e.tips:Show()
     end)
     frame.ScaleOut:SetScript('OnLeave', function() e.tips:Hide() ResetCursor() end)
@@ -170,12 +170,12 @@ local function set_ExpansionLandingPageMinimapButton()
         e.tips:SetText(self.title, 1, 1, 1);
 	    e.tips:AddLine(self.description, nil, nil, nil, true);
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinse and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , e.Icon.right)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinse and '设置选项' or OPTIONS, e.Icon.mid)
-        e.tips:AddDoubleLine(e.onlyChinse and '缩放' or UI_SCALE, (Save.expansionScale and Save.expansionScale or '')..' Alt+'..e.Icon.mid)
-        e.tips:AddDoubleLine(e.onlyChinse and '透明度' or CHANGE_OPACITY, (Save.expansionScale and Save.expansionScale or '')..' Ctrl+'..e.Icon.mid)
-        e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '设置选项' or OPTIONS, e.Icon.mid)
+        e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE, (Save.expansionScale and Save.expansionScale or '')..' Alt+'..e.Icon.mid)
+        e.tips:AddDoubleLine(e.onlyChinese and '透明度' or CHANGE_OPACITY, (Save.expansionScale and Save.expansionScale or '')..' Ctrl+'..e.Icon.mid)
+        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
@@ -199,7 +199,7 @@ local function set_ExpansionLandingPageMinimapButton()
             n= n>2 and 2 or n<0.3 and 0.3 or n
             self:SetScale(n)
             Save.expansionScale=n
-            print(id, addName, e.onlyChinse and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..n)
+            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..n)
         elseif IsControlKeyDown() then--透明度
             local n= Save.expansionAlpha or 1
             if d==1 then
@@ -210,7 +210,7 @@ local function set_ExpansionLandingPageMinimapButton()
             n= n>1 and 1 or n<0.3 and 0.3 or n
             self:SetAlpha(n)
             Save.expansionAlpha=n
-            print(id, addName, e.onlyChinse and '透明度' or CHANGE_OPACITY, '|cnGREEN_FONT_COLOR:'..n)
+            print(id, addName, e.onlyChinese and '透明度' or CHANGE_OPACITY, '|cnGREEN_FONT_COLOR:'..n)
         end
     end)
     if Save.expansionScale and Save.expansionScale~=1 then
@@ -386,7 +386,7 @@ local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
             self:StopMovingOrSizing()
             Save.pointVigentteButton={self:GetPoint(1)}
             Save.pointVigentteButton[2]=nil
-            print(id, addName, 'Alt+'..e.Icon.right, e.onlyChinse and '还原位置' or RESET_POSITION)
+            print(id, addName, 'Alt+'..e.Icon.right, e.onlyChinese and '还原位置' or RESET_POSITION)
         end)
         panel.vigentteButton:SetScript('OnMouseDown', function(self, d)
             local key= IsModifierKeyDown()
@@ -421,7 +421,7 @@ local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
                 elseif size<8 then
                     size=8
                 end
-                print(id, addName, e.onlyChinse and '字体大小' or FONT_SIZE, size)
+                print(id, addName, e.onlyChinese and '字体大小' or FONT_SIZE, size)
                 Save.vigentteButtonSize= size
                 e.Cstr(nil, size, nil, panel.vigentteButton.text, true ,nil,'RIGHT')
             end
@@ -431,9 +431,9 @@ local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
             e.tips:AddDoubleLine(id, addName)
-            e.tips:AddDoubleLine(e.onlyChinse and '文本' or LOCALE_TEXT_LABEL, e.GetShowHide(Save.vigentteButtonShowText)..e.Icon.left)
-            e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
-            e.tips:AddDoubleLine((e.onlyChinse and '字体大小' or FONT_SIZE)..': '..(Save.vigentteButtonSize or 12), 'Alt+'..e.Icon.mid)
+            e.tips:AddDoubleLine(e.onlyChinese and '文本' or LOCALE_TEXT_LABEL, e.GetShowHide(Save.vigentteButtonShowText)..e.Icon.left)
+            e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
+            e.tips:AddDoubleLine((e.onlyChinese and '字体大小' or FONT_SIZE)..': '..(Save.vigentteButtonSize or 12), 'Alt+'..e.Icon.mid)
             e.tips:Show()
         end)
         panel.vigentteButton:SetScript('OnLeave',function(self)
@@ -466,10 +466,10 @@ local function set_MinimapMenu()--小地图, 添加菜单
     MinimapCluster.Tracking.Button:HookScript( 'OnMouseDown', function()
         UIDropDownMenu_AddSeparator(1)
         local info={
-            text=e.onlyChinse and '镇民' or TOWNSFOLK_TRACKING_TEXT,
+            text=e.onlyChinese and '镇民' or TOWNSFOLK_TRACKING_TEXT,
             checked= C_CVar.GetCVarBool("minimapTrackingShowAll"),
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinse and '显示: 追踪' or SHOW..': '..TRACKING,
+            tooltipTitle= e.onlyChinese and '显示: 追踪' or SHOW..': '..TRACKING,
             tooltipText= id..' '..addName..'\n\nCVar minimapTrackingShowAll',
             func= function()
                 Save.minimapTrackingShowAll= not C_CVar.GetCVarBool("minimapTrackingShowAll") and true or false
@@ -479,11 +479,11 @@ local function set_MinimapMenu()--小地图, 添加菜单
         UIDropDownMenu_AddButton(info, 1)
 
         info={
-            text= e.onlyChinse and '缩小地图' or BINDING_NAME_MINIMAPZOOMOUT,
+            text= e.onlyChinese and '缩小地图' or BINDING_NAME_MINIMAPZOOMOUT,
             icon='UI-HUD-Minimap-Zoom-Out',
             checked= Save.ZoomOut,
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinse and '更新地区时' or UPDATE..ZONE,
+            tooltipTitle= e.onlyChinese and '更新地区时' or UPDATE..ZONE,
             tooltipText= id..' '..addName,
             func= function()
                 Save.ZoomOut= not Save.ZoomOut and true or nil
@@ -500,11 +500,11 @@ local function set_MinimapMenu()--小地图, 添加菜单
             end
         end
         info={
-            text= e.onlyChinse and '文本' or LOCALE_TEXT_LABEL,
+            text= e.onlyChinese and '文本' or LOCALE_TEXT_LABEL,
             icon='MajorFactions_MapIcons_Tuskarr64',
             tooltipOnButton=true,
             tooltipTitle= id..'  '..addName,
-            tooltipText= (e.onlyChinse and '小地图' or HUD_EDIT_MODE_MINIMAP_LABEL)..mapName,
+            tooltipText= (e.onlyChinese and '小地图' or HUD_EDIT_MODE_MINIMAP_LABEL)..mapName,
             checked= Save.vigentteButton,
             disabled= IsInInstance(),
             func= function ()
@@ -590,10 +590,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
              --添加控制面板        
-             local sel=e.CPanel(e.onlyChinse and '小地图' or addName, not Save.disabled)
+             local sel=e.CPanel(e.onlyChinese and '小地图' or addName, not Save.disabled)
              sel:SetScript('OnMouseDown', function()
                 Save.disabled = not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需求重新加载' or REQUIRES_RELOAD)
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
              end)
              --[[sel:SetScript('OnEnter', function(self2)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")

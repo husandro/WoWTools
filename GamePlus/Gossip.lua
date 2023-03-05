@@ -135,10 +135,10 @@ local function InitMenu_Gossip(self, level, type)
                 text= text,
                 notCheckable=true,
                 tooltipOnButton=true,
-                tooltipTitle='gossipOptionID '..gossipOptionID..'\n\n'..e.Icon.left..(e.onlyChinse and '移除' or REMOVE),
+                tooltipTitle='gossipOptionID '..gossipOptionID..'\n\n'..e.Icon.left..(e.onlyChinese and '移除' or REMOVE),
                 func=function()
                     Save.gossipOption[gossipOptionID]=nil
-                    print(id, ENABLE_DIALOG, e.onlyChinse and '移除' or REMOVE, text, 'gossipOptionID:', gossipOptionID)
+                    print(id, ENABLE_DIALOG, e.onlyChinese and '移除' or REMOVE, text, 'gossipOptionID:', gossipOptionID)
                 end
             }
             UIDropDownMenu_AddButton(info, level)
@@ -146,11 +146,11 @@ local function InitMenu_Gossip(self, level, type)
 
         UIDropDownMenu_AddSeparator(level)
         info={
-            text= e.onlyChinse and '清除全部' or CLEAR_ALL,
+            text= e.onlyChinese and '清除全部' or CLEAR_ALL,
             notCheckable=true,
             func= function()
                 Save.gossipOption={}
-                print(id, ENABLE_DIALOG, e.onlyChinse and '自定义' or CUSTOM, e.onlyChinse and '清除全部' or CLEAR_ALL)
+                print(id, ENABLE_DIALOG, e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
             end
         }
         UIDropDownMenu_AddButton(info, level)
@@ -161,7 +161,7 @@ local function InitMenu_Gossip(self, level, type)
                 text=name,
                 tooltipOnButton=true,
                 tooltipTitle= 'NPC '..npcID,
-                tooltipTEXT= e.Icon.left.. (e.onlyChinse and '移除' or REMOVE),
+                tooltipTEXT= e.Icon.left.. (e.onlyChinese and '移除' or REMOVE),
                 notCheckable= true,
                 func= function()
                     Save.NPC[npcID]=nil
@@ -171,17 +171,17 @@ local function InitMenu_Gossip(self, level, type)
         end
         UIDropDownMenu_AddSeparator(level)
         info={
-            text=e.onlyChinse and '清除全部' or CLEAR_ALL,
+            text=e.onlyChinese and '清除全部' or CLEAR_ALL,
             notCheckable=true,
             func= function()
                 Save.NPC={}
-                print(id, ENABLE_DIALOG, e.onlyChinse and '自定义' or CUSTOM, e.onlyChinse and '清除全部' or CLEAR_ALL)
+                print(id, ENABLE_DIALOG, e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
             end
         }
         UIDropDownMenu_AddButton(info, level)
     else
         info={--启用,禁用
-            text=e.Icon.left..(e.onlyChinse and '自动对话' or AUTO_JOIN:gsub(JOIN, ENABLE_DIALOG)),
+            text=e.Icon.left..(e.onlyChinese and '自动对话' or AUTO_JOIN:gsub(JOIN, ENABLE_DIALOG)),
             checked=Save.gossip,
             func= function()
                 Save.gossip= not Save.gossip and true or nil
@@ -190,7 +190,7 @@ local function InitMenu_Gossip(self, level, type)
         }
         UIDropDownMenu_AddButton(info, level)
         info={--唯一
-            text= e.onlyChinse and '唯一对话' or ITEM_UNIQUE..ENABLE_DIALOG,
+            text= e.onlyChinese and '唯一对话' or ITEM_UNIQUE..ENABLE_DIALOG,
             checked= Save.unique,
             func= function()
                 Save.unique= not Save.unique and true or nil
@@ -200,7 +200,7 @@ local function InitMenu_Gossip(self, level, type)
 
         UIDropDownMenu_AddSeparator(level)
         info={--自定义,闲话,选项
-            text= e.onlyChinse and '自定义对话' or (CUSTOM..ENABLE_DIALOG),
+            text= e.onlyChinese and '自定义对话' or (CUSTOM..ENABLE_DIALOG),
             menuList='CUSTOM',
             notCheckable=true,
             hasArrow=true,
@@ -208,11 +208,11 @@ local function InitMenu_Gossip(self, level, type)
         UIDropDownMenu_AddButton(info, level)
 
         info={--禁用NPC, 闲话,任务, 选项
-            text= e.onlyChinse and '禁用 NPC' or (DISABLE..' NPC'),
+            text= e.onlyChinese and '禁用 NPC' or (DISABLE..' NPC'),
             menuList='DISABLE',
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinse and '对话' or ENABLE_DIALOG,
-            tooltipText= e.onlyChinse and '任务' or QUESTS_LABEL,
+            tooltipTitle= e.onlyChinese and '对话' or ENABLE_DIALOG,
+            tooltipText= e.onlyChinese and '任务' or QUESTS_LABEL,
             notCheckable=true,
             hasArrow=true,
         }
@@ -220,13 +220,13 @@ local function InitMenu_Gossip(self, level, type)
 
         UIDropDownMenu_AddSeparator(level)
         info={
-            text=e.Icon.right..(e.onlyChinse and '移动' or NPE_MOVE),
+            text=e.Icon.right..(e.onlyChinese and '移动' or NPE_MOVE),
             notCheckable=true,
             isTitle=true,
         }
         UIDropDownMenu_AddButton(info, level)
         info={
-            text= e.onlyChinse and '重置位置' or RESET_POSITION,
+            text= e.onlyChinese and '重置位置' or RESET_POSITION,
             notCheckable=true,
             colorCode=not Save.point and '|cff606060',
             func= function()
@@ -239,7 +239,7 @@ local function InitMenu_Gossip(self, level, type)
 
         UIDropDownMenu_AddSeparator(level)
         info={
-            text=id..' '..(e.onlyChinse and '对话' or ENABLE_DIALOG),
+            text=id..' '..(e.onlyChinese and '对话' or ENABLE_DIALOG),
             isTitle=true,
             notCheckable=true,
         }
@@ -446,7 +446,7 @@ local function Init_Gossip()
                         C_GossipInfo.SelectAvailableQuest(self2.id);
                     end
                 else
-                    print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinse and '无' or NONE)..'|r', e.onlyChinse and '任务' or QUESTS_LABEL,'ID')
+                    print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE)..'|r', e.onlyChinese and '任务' or QUESTS_LABEL,'ID')
                 end
             end)
         end
@@ -565,7 +565,7 @@ local function InitMenu_Quest(self, level, type)
                 tooltipTitle='questID  '..questID..'\n\n'..e.Icon.left..REMOVE,
                 func=function()
                     Save.questOption[questID]=nil
-                    print(id, QUESTS_LABEL, e.onlyChinse and '移除' or REMOVE, text, 'ID', questID)
+                    print(id, QUESTS_LABEL, e.onlyChinese and '移除' or REMOVE, text, 'ID', questID)
                 end
             }
             UIDropDownMenu_AddButton(info, level)
@@ -573,18 +573,18 @@ local function InitMenu_Quest(self, level, type)
 
         UIDropDownMenu_AddSeparator(level)
         info={
-            text= e.onlyChinse and '清除全部' or CLEAR_ALL,
+            text= e.onlyChinese and '清除全部' or CLEAR_ALL,
             notCheckable=true,
             func= function()
                 Save.questOption={}
-                print(id, QUESTS_LABEL, e.onlyChinse and '自定义' or CUSTOM, e.onlyChinse and '清除全部' or CLEAR_ALL)
+                print(id, QUESTS_LABEL, e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
             end
         }
         UIDropDownMenu_AddButton(info, level)
 
     else
         info={
-            text=e.Icon.left..(e.onlyChinse and '自动接受' or QUICK_JOIN_IS_AUTO_ACCEPT_TOOLTIP),
+            text=e.Icon.left..(e.onlyChinese and '自动接受' or QUICK_JOIN_IS_AUTO_ACCEPT_TOOLTIP),
             checked=Save.quest,
             func= function()
                 Save.quest= not Save.quest and true or nil
@@ -594,11 +594,11 @@ local function InitMenu_Quest(self, level, type)
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text='|A:TrivialQuests:0:0|a'..(e.onlyChinse and '其他任务' or MINIMAP_TRACKING_TRIVIAL_QUESTS),--低等任务
+            text='|A:TrivialQuests:0:0|a'..(e.onlyChinese and '其他任务' or MINIMAP_TRACKING_TRIVIAL_QUESTS),--低等任务
             checked= isQuestTrivialTracking,
             tooltipOnButton= true,
-            tooltipTitle= e.onlyChinse and '追踪' or TRACKING,
-            tooltipText= e.onlyChinse and '低等任务' or (LOW..LEVEL..QUESTS_LABEL),
+            tooltipTitle= e.onlyChinese and '追踪' or TRACKING,
+            tooltipText= e.onlyChinese and '低等任务' or (LOW..LEVEL..QUESTS_LABEL),
             func= function ()
                 get_set_IsQuestTrivialTracking(true)--其它任务,低等任务,追踪
             end,
@@ -606,11 +606,11 @@ local function InitMenu_Quest(self, level, type)
         UIDropDownMenu_AddButton(info, level)
 
         info={--自动:选择奖励
-            text= e.onlyChinse and '自动选择奖励' or format(TITLE_REWARD, AUTO_JOIN:gsub(JOIN, CHOOSE)),
+            text= e.onlyChinese and '自动选择奖励' or format(TITLE_REWARD, AUTO_JOIN:gsub(JOIN, CHOOSE)),
             checked= Save.autoSelectReward,
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinse and '最高品质' or format(PROFESSIONS_CRAFTING_QUALITY, VIDEO_OPTIONS_ULTRA_HIGH),
-            tooltipText= '|cff0000ff'..(e.onlyChinse and '稀有' or GARRISON_MISSION_RARE)..'|r',
+            tooltipTitle= e.onlyChinese and '最高品质' or format(PROFESSIONS_CRAFTING_QUALITY, VIDEO_OPTIONS_ULTRA_HIGH),
+            tooltipText= '|cff0000ff'..(e.onlyChinese and '稀有' or GARRISON_MISSION_RARE)..'|r',
             func= function()
                 Save.autoSelectReward= not Save.autoSelectReward and true or nil
             end
@@ -618,11 +618,11 @@ local function InitMenu_Quest(self, level, type)
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text= e.onlyChinse and '共享任务' or SHARE_QUEST,
+            text= e.onlyChinese and '共享任务' or SHARE_QUEST,
             checked=Save.pushable,
             colorCode= not IsInGroup() and '|cff606060',
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinse and '仅限在队伍中' or format(LFG_LIST_CROSS_FACTION, AGGRO_WARNING_IN_PARTY),
+            tooltipTitle= e.onlyChinese and '仅限在队伍中' or format(LFG_LIST_CROSS_FACTION, AGGRO_WARNING_IN_PARTY),
             func= function()
                 Save.pushable= not Save.pushable and true or nil
                 set_PushableQuest()--共享,任务
@@ -632,17 +632,17 @@ local function InitMenu_Quest(self, level, type)
 
         UIDropDownMenu_AddSeparator(level)
         info={
-            text= e.onlyChinse and '追踪' or TRACKING,
+            text= e.onlyChinese and '追踪' or TRACKING,
             isTitle= true,
             notCheckable=true,
         }
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text= e.onlyChinse and '自动任务追踪' or AUTO_QUEST_WATCH_TEXT,
+            text= e.onlyChinese and '自动任务追踪' or AUTO_QUEST_WATCH_TEXT,
             checked=C_CVar.GetCVarBool("autoQuestWatch"),
             tooltipOnButton=true,
-            tooltipTitle= format(e.onlyChinse and '接受任务：%s' or ERR_QUEST_ACCEPTED_S, 'Cvar autoQuestWatch'),
+            tooltipTitle= format(e.onlyChinese and '接受任务：%s' or ERR_QUEST_ACCEPTED_S, 'Cvar autoQuestWatch'),
             func=function()
                 C_CVar.SetCVar("autoQuestWatch", C_CVar.GetCVarBool("autoQuestWatch") and '0' or '1')
             end
@@ -650,11 +650,11 @@ local function InitMenu_Quest(self, level, type)
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text= e.onlyChinse and '当前地图' or (REFORGE_CURRENT..WORLD_MAP),
+            text= e.onlyChinese and '当前地图' or (REFORGE_CURRENT..WORLD_MAP),
             checked= Save.autoSortQuest,
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinse and '仅显示当前地图任务' or format(GROUP_FINDER_CROSS_FACTION_LISTING_WITH_PLAYSTLE, SHOW,FLOOR..QUESTS_LABEL),--仅限-本区域任务
-            tooltipText= e.onlyChinse and '触发事件: 更新区域' or (EVENTS_LABEL..':' ..UPDATE..FLOOR),
+            tooltipTitle= e.onlyChinese and '仅显示当前地图任务' or format(GROUP_FINDER_CROSS_FACTION_LISTING_WITH_PLAYSTLE, SHOW,FLOOR..QUESTS_LABEL),--仅限-本区域任务
+            tooltipText= e.onlyChinese and '触发事件: 更新区域' or (EVENTS_LABEL..':' ..UPDATE..FLOOR),
             func=function()
                 Save.autoSortQuest= not Save.autoSortQuest and true or nil
                 set_Auto_QuestWatch_Event()--仅显示本地图任务,事件
@@ -665,7 +665,7 @@ local function InitMenu_Quest(self, level, type)
         UIDropDownMenu_AddSeparator(level)
 
         info={--自定义,任务,选项
-            text= e.onlyChinse and '自定义任务' or CUSTOM..QUESTS_LABEL,
+            text= e.onlyChinese and '自定义任务' or CUSTOM..QUESTS_LABEL,
             menuList='CUSTOM',
             notCheckable=true,
             hasArrow=true,
@@ -701,10 +701,10 @@ local function Init_Quest()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         local all=C_QuestLog.GetAllCompletedQuestIDs() or {}--完成次数
-        e.tips:AddDoubleLine((e.onlyChinse and '日常' or DAILY)..': |cnGREEN_FONT_COLOR:'..GetDailyQuestsCompleted()..'|r'..e.Icon.select2, (e.onlyChinse and '已完成' or  CRITERIA_COMPLETED)..' '..e.MK(#all, 3))
+        e.tips:AddDoubleLine((e.onlyChinese and '日常' or DAILY)..': |cnGREEN_FONT_COLOR:'..GetDailyQuestsCompleted()..'|r'..e.Icon.select2, (e.onlyChinese and '已完成' or  CRITERIA_COMPLETED)..' '..e.MK(#all, 3))
         e.tips:AddLine(' ')
 
-        e.tips:AddDoubleLine((e.onlyChinse and '上限' or CAPPED)..': '..select(2,  C_QuestLog.GetNumQuestLogEntries())..'/'..C_QuestLog.GetMaxNumQuestsCanAccept(), (e.onlyChinse and '追踪' or TRACK_QUEST_ABBREV)..': '..C_QuestLog.GetNumQuestWatches())
+        e.tips:AddDoubleLine((e.onlyChinese and '上限' or CAPPED)..': '..select(2,  C_QuestLog.GetNumQuestLogEntries())..'/'..C_QuestLog.GetMaxNumQuestsCanAccept(), (e.onlyChinese and '追踪' or TRACK_QUEST_ABBREV)..': '..C_QuestLog.GetNumQuestWatches())
         e.tips:AddLine(' ')
 
         local numQuest,dayNum,weekNum, companionNum, numAll = 0, 0, 0, 0, 0
@@ -732,14 +732,14 @@ local function Init_Quest()
         Legendary={1, 0.49, 0},--传说 |cffff7c00
         Calling={1, 0, 0.9},--使命 |cffff00e5
         ]]
-        e.tips:AddLine('|cff19b7ff'..(e.onlyChinse and '日常' or DAILY)..': '..dayNum)
-        e.tips:AddLine('|cff05ffa8'..(e.onlyChinse and '周长' or WEEKLY)..': '..weekNum)
-        e.tips:AddLine('|cffff7c00'..(e.onlyChinse and '战役' or TRACKER_HEADER_CAMPAIGN_QUESTS)..': '..companionNum)
+        e.tips:AddLine('|cff19b7ff'..(e.onlyChinese and '日常' or DAILY)..': '..dayNum)
+        e.tips:AddLine('|cff05ffa8'..(e.onlyChinese and '周长' or WEEKLY)..': '..weekNum)
+        e.tips:AddLine('|cffff7c00'..(e.onlyChinese and '战役' or TRACKER_HEADER_CAMPAIGN_QUESTS)..': '..companionNum)
  
-        e.tips:AddLine('|cffffffff'..(e.onlyChinse and '一般' or RESISTANCE_FAIR)..': '..numQuest..'/25')
+        e.tips:AddLine('|cffffffff'..(e.onlyChinese and '一般' or RESISTANCE_FAIR)..': '..numQuest..'/25')
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.GetEnabeleDisable(Save.quest)..e.Icon.left, (e.onlyChinse and '菜单' or SLASH_TEXTTOSPEECH_MENU)..e.Icon.right)
-        e.tips:AddDoubleLine(id, e.onlyChinse and '任务' or QUESTS_LABEL)
+        e.tips:AddDoubleLine(e.GetEnabeleDisable(Save.quest)..e.Icon.left, (e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..e.Icon.right)
+        e.tips:AddDoubleLine(id, e.onlyChinese and '任务' or QUESTS_LABEL)
         e.tips:Show()
         --set_Only_Show_Zone_Quest()
     end)
@@ -764,7 +764,7 @@ local function Init_Quest()
 
     QuestFrame.sel=CreateFrame("CheckButton", nil, QuestFrame, 'InterfaceOptionsCheckButtonTemplate')--禁用此npc,任务,选项
     QuestFrame.sel:SetPoint("TOPLEFT", QuestFrame, 40, 20)
-    QuestFrame.sel.Text:SetText(e.onlyChinse and '禁用' or DISABLE)
+    QuestFrame.sel.Text:SetText(e.onlyChinese and '禁用' or DISABLE)
     QuestFrame.sel:SetScript("OnMouseDown", function (self, d)
         if not self.npc and self.name then
             return
@@ -966,10 +966,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save.gossipOption= Save.gossipOption or {}
 
              --添加控制面板        
-            local sel=e.CPanel((e.onlyChinse and '对话和任务' or addName)..'|A:transmog-icon-chat:0:0|a', not Save.disabled, true)
+            local sel=e.CPanel((e.onlyChinese and '对话和任务' or addName)..'|A:transmog-icon-chat:0:0|a', not Save.disabled, true)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end)
 
             if not Save.disabled then

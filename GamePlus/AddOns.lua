@@ -92,7 +92,7 @@ local function setButtons()--设置按钮, 和位置
                 panel.buttons[name]:SetScript('OnEnter', function(self)
                     e.tips:SetOwner(self, "ANCHOR_RIGHT");
                     e.tips:ClearLines();
-                    e.tips:AddDoubleLine((e.onlyChinse and '加载插件' or LOAD_ADDON)..e.Icon.left, (e.onlyChinse and '删除' or DELETE)..e.Icon.right,0,1,0, 0,1,0)
+                    e.tips:AddDoubleLine((e.onlyChinese and '加载插件' or LOAD_ADDON)..e.Icon.left, (e.onlyChinese and '删除' or DELETE)..e.Icon.right,0,1,0, 0,1,0)
                     local index=1
                     for name2,_ in pairs(Save.buttons[name]) do
                         e.tips:AddDoubleLine(name2, index)
@@ -156,7 +156,7 @@ StaticPopupDialogs[id..addName..'NEW']={
 --#####
 local function Init()
     panel:SetPoint('TOPLEFT', AddonList ,'TOPRIGHT',-2, -20)
-    panel:SetText(e.onlyChinse and '新建' or NEW)
+    panel:SetText(e.onlyChinese and '新建' or NEW)
     panel:SetScript('OnMouseDown',function()
         local text= select(3, getAddList())--检查列表, 选取数量, 总数, 数量/总数
         StaticPopup_Show(id..addName..'NEW', text, nil)--新建按钮
@@ -213,10 +213,10 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
             --添加控制面板        
-            local sel=e.CPanel(e.onlyChinse and '插件管理' or addName, not Save.disabled, true)
+            local sel=e.CPanel(e.onlyChinese and '插件管理' or addName, not Save.disabled, true)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled = not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需求重新加载' or REQUIRES_RELOAD)
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
             end)
 
             if Save.disabled then

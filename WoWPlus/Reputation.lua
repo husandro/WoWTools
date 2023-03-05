@@ -151,19 +151,19 @@ local function Set_Reputation_Text()--监视, 文本
 				SetCursor('UI_MOVE_CURSOR')
 
 			elseif d=='LeftButton' and not key then--点击,显示隐藏
-				Save.btnstr= not Save.btnstr and true or nil
+				Save.btnstr= not Save.btnstr and true or false
 				print(id, addName, e.GetShowHide(Save.btnstr))
 				Reputation_Text_setText()--设置, 文本
 
 			elseif d=='LeftButton' and IsAltKeyDown() then
 				Save.btnStrHideHeader= not Save.btnStrHideHeader and true or false
 				Reputation_Text_setText()--设置, 文本
-				print(id,addName, e.onlyChinse and '版本' or GAME_VERSION_LABEL,'('..NO..e.Icon.bank2..(e.onlyChinse and '奖励' or QUEST_REWARDS)..')', e.GetShowHide(not Save.btnStrHideHeader))
+				print(id,addName, e.onlyChinese and '版本' or GAME_VERSION_LABEL,'('..NO..e.Icon.bank2..(e.onlyChinese and '奖励' or QUEST_REWARDS)..')', e.GetShowHide(not Save.btnStrHideHeader))
 
 			elseif d=='LeftButton' and IsShiftKeyDown() then--Shift+点击, 隐藏最高级, 且没有奖励声望
 				Save.btnStrHideCap= not Save.btnStrHideCap and true or false
 				Reputation_Text_setText()--设置, 文本
-				print(id, addName, e.onlyChinse and '没有声望奖励时' or VIDEO_OPTIONS_ULTRA_HIGH..'('..NO..e.Icon.bank2..QUEST_REWARDS..')', e.GetShowHide(not Save.btnStrHideCap))
+				print(id, addName, e.onlyChinese and '没有声望奖励时' or VIDEO_OPTIONS_ULTRA_HIGH..'('..NO..e.Icon.bank2..QUEST_REWARDS..')', e.GetShowHide(not Save.btnStrHideCap))
 			end
 		end)
 		panel.btn:SetScript("OnEnter",function(self2)
@@ -172,13 +172,13 @@ local function Set_Reputation_Text()--监视, 文本
 			e.tips:AddDoubleLine(id, addName)
 			e.tips:AddLine(' ')
 			e.tips:AddDoubleLine(e.GetShowHide(Save.btnstr), e.Icon.left)
-			e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
+			e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
 			e.tips:AddLine(' ')
-			e.tips:AddDoubleLine(e.onlyChinse and '打开/关闭声望界面' or BINDING_NAME_TOGGLECHARACTER2, e.Icon.mid)
-			e.tips:AddDoubleLine((e.onlyChinse and '字体大小' or FONT_SIZE)..': '..(Save.size or 12), 'Alt+'..e.Icon.mid)
+			e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭声望界面' or BINDING_NAME_TOGGLECHARACTER2, e.Icon.mid)
+			e.tips:AddDoubleLine((e.onlyChinese and '字体大小' or FONT_SIZE)..': '..(Save.size or 12), 'Alt+'..e.Icon.mid)
 			e.tips:AddLine(' ')
-			e.tips:AddDoubleLine((e.onlyChinse and '版本' or GAME_VERSION_LABEL)..': '..e.GetShowHide(not Save.btnStrHideHeader), 'Alt + '..e.Icon.left)
-			e.tips:AddDoubleLine((e.onlyChinse and '隐藏最高声望' or (VIDEO_OPTIONS_ULTRA_HIGH..addName))..': '..e.GetShowHide(not Save.btnStrHideCap), 'Shift + '..e.Icon.left)
+			e.tips:AddDoubleLine((e.onlyChinese and '版本' or GAME_VERSION_LABEL)..': '..e.GetShowHide(not Save.btnStrHideHeader), 'Alt + '..e.Icon.left)
+			e.tips:AddDoubleLine((e.onlyChinese and '隐藏最高声望' or (VIDEO_OPTIONS_ULTRA_HIGH..addName))..': '..e.GetShowHide(not Save.btnStrHideCap), 'Shift + '..e.Icon.left)
 			e.tips:Show();
 		end)
 		panel.btn:SetScript("OnLeave", function() ResetCursor()  e.tips:Hide() end);
@@ -196,7 +196,7 @@ local function Set_Reputation_Text()--监视, 文本
 				num= num>32 and 32 or num
 				Save.size= num
 				e.Cstr(nil, num, nil, panel.btn.text, true)
-				print(id, addName, e.onlyChinse and '文本' or LOCALE_TEXT_LABEL, e.onlyChinse and '字体大小' or FONT_SIZE, num)
+				print(id, addName, e.onlyChinese and '文本' or LOCALE_TEXT_LABEL, e.onlyChinese and '字体大小' or FONT_SIZE, num)
 
 			elseif d==1 then
 				if not ReputationFrame:IsVisible() then
@@ -266,7 +266,7 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 			if repInfo.nextThreshold then
 				levelText= rankInfo.currentLevel..'/'..rankInfo.maxLevel
 			else
-				barColor=FACTION_ORANGE_COLOR
+				barColor= FACTION_ORANGE_COLOR
 			end
 		end
 	elseif isMajorFaction then-- 名望
@@ -301,7 +301,7 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 
 	if isWatched and not factionBar.watchedIcon then--显示为经验条
 		factionContainer.watchedIcon=factionBar:CreateTexture(nil, 'OVERLAY')
-		factionContainer.watchedIcon:SetPoint('LEFT', factionBar, 'LEFT')
+		factionContainer.watchedIcon:SetPoint('LEFT')
 		factionContainer.watchedIcon:SetAtlas(e.Icon.selectYellow)
 		factionContainer.watchedIcon:SetSize(16, 16)
 	end
@@ -457,27 +457,27 @@ end
 local function InitMenu(self, level, type)
 	local info
 	info={
-		text= e.onlyChinse and '文本' or LOCALE_TEXT_LABEL,
+		text= e.onlyChinese and '文本' or LOCALE_TEXT_LABEL,
 		colorCode= (IsInInstance() or C_PetBattles.IsInBattle()) and '|cff808080',
 		checked= Save.btn,
 		func= function()
 			Save.btn= not Save.btn and true or nil
 			Set_Reputation_Text()--监视, 文本
-			print(id, addName, e.onlyChinse and '文本' or LOCALE_TEXT_LABEL, e.GetShowHide(Save.btn))
+			print(id, addName, e.onlyChinese and '文本' or LOCALE_TEXT_LABEL, e.GetShowHide(Save.btn))
 		end
 	}
 	UIDropDownMenu_AddButton(info, level)
 
 	info={
-		text= (e.onlyChinse and '声望变化' or COMBAT_TEXT_SHOW_REPUTATION_TEXT)..'|A:voicechat-icon-textchat-silenced:0:0|a',
+		text= (e.onlyChinese and '声望变化' or COMBAT_TEXT_SHOW_REPUTATION_TEXT)..'|A:voicechat-icon-textchat-silenced:0:0|a',
 		tooltipOnButton=true,
-		tooltipTitle= e.onlyChinse and '展开选项 |A:editmode-down-arrow:16:11:0:-7|a 声望' or HUD_EDIT_MODE_EXPAND_OPTIONS..REPUTATION,
-		tooltipText= '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '需求' or NEED),
+		tooltipTitle= e.onlyChinese and '展开选项 |A:editmode-down-arrow:16:11:0:-7|a 声望' or HUD_EDIT_MODE_EXPAND_OPTIONS..REPUTATION,
+		tooltipText= '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需求' or NEED),
 		checked= Save.factionUpdateTips,
 		func= function()
 			Save.factionUpdateTips= not Save.factionUpdateTips and true or nil
 			--set_RegisterEvent_CHAT_MSG_COMBAT_FACTION_CHANGE()--更新, 提示, 事件
-			print(id, addName, e.onlyChinse and '声望变化' or COMBAT_TEXT_SHOW_REPUTATION_TEXT,'|A:voicechat-icon-textchat-silenced:0:0|a', e.GetEnabeleDisable(Save.factionUpdateTips), e.onlyChinse and '需求重新加载' or REQUIRES_RELOAD)
+			print(id, addName, e.onlyChinese and '声望变化' or COMBAT_TEXT_SHOW_REPUTATION_TEXT,'|A:voicechat-icon-textchat-silenced:0:0|a', e.GetEnabeleDisable(Save.factionUpdateTips), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
 		end
 	}
 	UIDropDownMenu_AddButton(info, level)
@@ -489,7 +489,7 @@ local function InitMenu(self, level, type)
 			Save.notPlus= not Save.notPlus and true or nil
 			panel.down:SetShown(not Save.notPlus)
 			panel.up:SetShown(not Save.notPlus)
-			print(id, addName, 'UI Plus', e.GetEnabeleDisable(not Save.notPlus), e.onlyChinse and '需要刷新' or NEED..REFRESH)
+			print(id, addName, 'UI Plus', e.GetEnabeleDisable(not Save.notPlus), e.onlyChinese and '需要刷新' or NEED..REFRESH)
 		end
 	}
 	UIDropDownMenu_AddButton(info, level)
@@ -552,10 +552,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
             --添加控制面板        
-            local sel=e.CPanel(e.onlyChinse and '声望' or addName, not Save.disabled)
+            local sel=e.CPanel(e.onlyChinese and '声望' or addName, not Save.disabled)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end)
 
             if Save.disabled then

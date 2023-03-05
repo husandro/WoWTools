@@ -309,10 +309,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 			Save.color= Save.color or {}
 
             --添加控制面板        
-            panel.check=e.CPanel((e.onlyChinse and '颜色选择器增强' or addName)..'|A:colorblind-colorwheel:0:0|a', not Save.disabled, true)
+            panel.check=e.CPanel((e.onlyChinese and '颜色选择器增强' or addName)..'|A:colorblind-colorwheel:0:0|a', not Save.disabled, true)
             panel.check:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end)
 			--panel.check.text:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
 			panel.check.text:EnableMouse(true)

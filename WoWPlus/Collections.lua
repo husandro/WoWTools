@@ -75,8 +75,8 @@ local function Init_DressUpFrames()--试衣间, 外观列表
                     e.tips:ClearLines()
                     e.tips:SetHyperlink(self2.link)
                     e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine(e.onlyChinse and '链接' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, e.Icon.left)
-                    e.tips:AddDoubleLine(e.onlyChinse and '外观' or WARDROBE, e.Icon.right)
+                    e.tips:AddDoubleLine(e.onlyChinese and '链接' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, e.Icon.left)
+                    e.tips:AddDoubleLine(e.onlyChinese and '外观' or WARDROBE, e.Icon.right)
                     e.tips:Show()
                 end
             end)
@@ -123,14 +123,14 @@ local function Init_DressUpFrames()--试衣间, 外观列表
         sel:SetAlpha(0.3)
         sel:SetScript('OnMouseDown', function ()
             Save.hideDressUpOutfit= not Save.hideDressUpOutfit and true or nil
-            print(id, addName, e.onlyChinse and '外观列表' or DRESSING_ROOM_APPEARANCE_LIST, e.GetShowHide(not Save.hideDressUpOutfit),e.onlyChinse and '需求刷新' or NEED..REFRESH)
+            print(id, addName, e.onlyChinese and '外观列表' or DRESSING_ROOM_APPEARANCE_LIST, e.GetShowHide(not Save.hideDressUpOutfit),e.onlyChinese and '需求刷新' or NEED..REFRESH)
             sel:SetNormalAtlas(Save.hideDressUpOutfit and e.Icon.disabled or e.Icon.icon)
         end)
         sel:SetScript('OnEnter', function (self2)
             e.tips:SetOwner(self2, "ANCHOR_RIGHT")
             e.tips:ClearLines()
             e.tips:AddDoubleLine(id, addName)
-            e.tips:AddDoubleLine(e.onlyChinse and '外观列表' or DRESSING_ROOM_APPEARANCE_LIST, e.GetShowHide(not Save.hideDressUpOutfit)..e.Icon.left)
+            e.tips:AddDoubleLine(e.onlyChinese and '外观列表' or DRESSING_ROOM_APPEARANCE_LIST, e.GetShowHide(not Save.hideDressUpOutfit)..e.Icon.left)
             e.tips:Show()
         end)
         sel:SetScript('OnLeave', function ()
@@ -445,7 +445,7 @@ local function Init_Wardrobe_Sets()
                     frame.str:SetShown(false)
                 end
             end
-            print(id, addName, e.GetShowHide(not Save.hideSets), e.onlyChinse and '需求刷新' or NEED..REFRESH)
+            print(id, addName, e.GetShowHide(not Save.hideSets), e.onlyChinese and '需求刷新' or NEED..REFRESH)
             setAllSets()--所以有套装情况
             get_Sets_Colleced()--收集所有角色套装数据
             self2:SetNormalAtlas(Save.hideSets and e.Icon.disabled or e.Icon.icon)
@@ -519,7 +519,7 @@ local function Init_Heirloom()
     Heirloomframe.sel:SetAlpha(0.5)
     Heirloomframe.sel:SetScript('OnMouseDown',function (self2)
         Save.hideHeirloom= not Save.hideHeirloom and true or nil
-        print(id, addName, e.GetEnabeleDisable(not Save.hideHeirloom), e.onlyChinse and '需求刷新' or NEED..REFRESH)
+        print(id, addName, e.GetEnabeleDisable(not Save.hideHeirloom), e.onlyChinese and '需求刷新' or NEED..REFRESH)
         self2:SetNormalAtlas(Save.hideHeirloom and e.Icon.disabled or e.Icon.icon)
     end)
     Heirloomframe.sel:SetScript('OnEnter', function (self2)
@@ -739,7 +739,7 @@ local function Init_ToyBox()
     toyframe.sel:SetAlpha(0.5)
     toyframe.sel:SetScript('OnMouseDown',function (self2)
         Save.hideToyBox= not Save.hideToyBox and true or nil
-        print(id, addName, e.GetEnabeleDisable(not Save.hideToyBox), e.onlyChinse and '需求刷新' or NEED..REFRESH)
+        print(id, addName, e.GetEnabeleDisable(not Save.hideToyBox), e.onlyChinese and '需求刷新' or NEED..REFRESH)
         self2:SetNormalAtlas(Save.hideToyBox and e.Icon.disabled or e.Icon.icon)
     end)
     toyframe.sel:SetScript('OnEnter', function (self2)
@@ -768,10 +768,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             wowSaveItems=WoWToolsSave and WoWToolsSave['WoW-CollectionWardrobeItems'] or wowSaveItems
 
             --添加控制面板        
-            local sel=e.CPanel(e.onlyChinse and '收藏' or addName, not Save.disabled)
+            local sel=e.CPanel(e.onlyChinese and '收藏' or addName, not Save.disabled)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end)
 
             if Save.disabled then

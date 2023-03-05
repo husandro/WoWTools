@@ -155,16 +155,16 @@ end
 --#####
 local function InitMenu(self, level, type)--主菜单
     local chatType={
-        {text= e.onlyChinse and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS, type= SLASH_PARTY1},--/p
-        {text= e.onlyChinse and '团队' or RAID, type= SLASH_RAID2},--/raid
-        {text= e.onlyChinse and '副本' or INSTANCE, type= SLASH_INSTANCE_CHAT1},--/i
-        {text= e.onlyChinse and '团队通知' or RAID_WARNING, type= 	SLASH_RAID_WARNING1},--/rw
+        {text= e.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS, type= SLASH_PARTY1},--/p
+        {text= e.onlyChinese and '团队' or RAID, type= SLASH_RAID2},--/raid
+        {text= e.onlyChinese and '副本' or INSTANCE, type= SLASH_INSTANCE_CHAT1},--/i
+        {text= e.onlyChinese and '团队通知' or RAID_WARNING, type= 	SLASH_RAID_WARNING1},--/rw
     }
     local info
     if type then
         local tab2={
-            {type= 'mouseUP', text= e.onlyChinse and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP},
-            {type= 'mouseDown', text= e.onlyChinse and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN},
+            {type= 'mouseUP', text= e.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP},
+            {type= 'mouseDown', text= e.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN},
         }
         for _, tab in pairs(tab2) do
             local text=(Save[tab.type] or tab.text)
@@ -215,7 +215,7 @@ local function InitMenu(self, level, type)--主菜单
 
         UIDropDownMenu_AddSeparator(level)
         info={
-            text=((Save.mouseDown or Save.mouseUP) and e.Icon.mid or '').. (e.onlyChinse and '自定义' or CUSTOM),
+            text=((Save.mouseDown or Save.mouseUP) and e.Icon.mid or '').. (e.onlyChinese and '自定义' or CUSTOM),
             notCheckable=true,
             menuList='CUSTOM',
             hasArrow=true,
@@ -223,7 +223,7 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text= e.onlyChinse and '聊天泡泡' or CHAT_BUBBLES_TEXT,
+            text= e.onlyChinese and '聊天泡泡' or CHAT_BUBBLES_TEXT,
             tooltipOnButton=true,
             tooltipTitle= 'CVar chatBubblesParty',
             checked= C_CVar.GetCVarBool("chatBubblesParty"),
@@ -307,7 +307,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
 
     e.tips:SetOwner(button, "ANCHOR_LEFT")
     e.tips:ClearLines()
-    e.tips:AddDoubleLine(format(e.onlyChinse and '%s玩家' or COMMUNITIES_CROSS_FACTION_BUTTON_TOOLTIP_TITLE, co), e.MK(totaleHP,3))
+    e.tips:AddDoubleLine(format(e.onlyChinese and '%s玩家' or COMMUNITIES_CROSS_FACTION_BUTTON_TOOLTIP_TITLE, co), e.MK(totaleHP,3))
 
     local find
     for _, info in pairs(tabT) do

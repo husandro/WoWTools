@@ -55,29 +55,29 @@ local function set_Tabs()
     Tabs={
         {name='STATUS', r=e.Player.r, g=e.Player.g, b=e.Player.b, a=1, useNumber=true, textValue=true},
 
-        {name= 'CRITCHANCE', text= e.onlyChinse and '爆击' or STAT_CRITICAL_STRIKE, bar=true, dps=true, textValue=true},
-        {name= 'HASTE', text= e.onlyChinse and '急速' or STAT_HASTE, bar=true, dps=true, textValue=true},
-        {name= 'MASTERY', text= e.onlyChinse and '精通' or STAT_MASTERY, bar=true, dps=true, textValue=true},
-        {name= 'VERSATILITY', text= e.onlyChinse and '全能' or STAT_VERSATILITY, bar=true, dps=true, textValue=true},--5
+        {name= 'CRITCHANCE', text= e.onlyChinese and '爆击' or STAT_CRITICAL_STRIKE, bar=true, dps=true, textValue=true},
+        {name= 'HASTE', text= e.onlyChinese and '急速' or STAT_HASTE, bar=true, dps=true, textValue=true},
+        {name= 'MASTERY', text= e.onlyChinese and '精通' or STAT_MASTERY, bar=true, dps=true, textValue=true},
+        {name= 'VERSATILITY', text= e.onlyChinese and '全能' or STAT_VERSATILITY, bar=true, dps=true, textValue=true},--5
 
-        {name= 'LIFESTEAL', text= e.onlyChinse and '吸血' or STAT_LIFESTEAL, bar=true, textValue=true},--6
-        {name= 'AVOIDANCE', text= e.onlyChinse and '闪避' or STAT_AVOIDANCE, bar=true, textValue=true},--7
+        {name= 'LIFESTEAL', text= e.onlyChinese and '吸血' or STAT_LIFESTEAL, bar=true, textValue=true},--6
+        {name= 'AVOIDANCE', text= e.onlyChinese and '闪避' or STAT_AVOIDANCE, bar=true, textValue=true},--7
 
-        {name= 'ARMOR', text= e.onlyChinse and '护甲' or STAT_ARMOR, bar=true, tank=true, textValue=true},
-        {name= 'DODGE', text= e.onlyChinse and '躲闪' or STAT_DODGE, bar=true, tank=true, textValue=true},--9
-        {name= 'PARRY', text= e.onlyChinse and '招架' or STAT_PARRY, bar=true, tank=true, textValue=true},--10
-        {name= 'BLOCK', text= e.onlyChinse and '格挡' or STAT_BLOCK, bar=true, tank=true, textValue=true},--11
-        {name= 'STAGGER', text= e.onlyChinse and '醉拳' or STAT_STAGGER, bar=true, tank=true, usePercent=true, textValue=true},--12
+        {name= 'ARMOR', text= e.onlyChinese and '护甲' or STAT_ARMOR, bar=true, tank=true, textValue=true},
+        {name= 'DODGE', text= e.onlyChinese and '躲闪' or STAT_DODGE, bar=true, tank=true, textValue=true},--9
+        {name= 'PARRY', text= e.onlyChinese and '招架' or STAT_PARRY, bar=true, tank=true, textValue=true},--10
+        {name= 'BLOCK', text= e.onlyChinese and '格挡' or STAT_BLOCK, bar=true, tank=true, textValue=true},--11
+        {name= 'STAGGER', text= e.onlyChinese and '醉拳' or STAT_STAGGER, bar=true, tank=true, usePercent=true, textValue=true},--12
 
-        {name= 'SPEED', text= e.onlyChinse and '移动' or NPE_MOVE},--13
+        {name= 'SPEED', text= e.onlyChinese and '移动' or NPE_MOVE},--13
     }
 
     if PrimaryStat==LE_UNIT_STAT_STRENGTH then
-        Tabs[1].text= e.onlyChinse and '力量' or SPEC_FRAME_PRIMARY_STAT_STRENGTH
+        Tabs[1].text= e.onlyChinese and '力量' or SPEC_FRAME_PRIMARY_STAT_STRENGTH
     elseif PrimaryStat==LE_UNIT_STAT_AGILITY then
-        Tabs[1].text= e.onlyChinse and '敏捷' or SPEC_FRAME_PRIMARY_STAT_AGILITY
+        Tabs[1].text= e.onlyChinese and '敏捷' or SPEC_FRAME_PRIMARY_STAT_AGILITY
     else
-        Tabs[1].text= e.onlyChinse and '智力' or SPEC_FRAME_PRIMARY_STAT_INTELLECT
+        Tabs[1].text= e.onlyChinese and '智力' or SPEC_FRAME_PRIMARY_STAT_INTELLECT
     end
 
     for index, info in pairs(Tabs) do
@@ -281,13 +281,13 @@ local function set_Stat_Tooltip(self)
         local text= ''
         local attackPower = GetAttackPowerForStat(PrimaryStat, effectiveStat);
         if (HasAPEffectsSpellPower()) then
-            text= (e.onlyChinse and '提高你的攻击和技能强度' or STAT_TOOLTIP_BONUS_AP_SP)..' '..BreakUpLargeNumbers(attackPower)
+            text= (e.onlyChinese and '提高你的攻击和技能强度' or STAT_TOOLTIP_BONUS_AP_SP)..' '..BreakUpLargeNumbers(attackPower)
         end
         if role == "TANK" then
             local increasedParryChance = GetParryChanceFromAttribute();
             if ( increasedParryChance > 0 ) then
                 text = text~='' and text..'\n' or text
-                text= text..format(e.onlyChinse and '"招架几率提高%.2f%%|n|cff888888（在效果递减之前）|r"' or CR_PARRY_BASE_STAT_TOOLTIP, increasedParryChance);
+                text= text..format(e.onlyChinese and '"招架几率提高%.2f%%|n|cff888888（在效果递减之前）|r"' or CR_PARRY_BASE_STAT_TOOLTIP, increasedParryChance);
             end
         end
         e.tips:AddDoubleLine(text,nil,nil,nil,true)
@@ -295,15 +295,15 @@ local function set_Stat_Tooltip(self)
     elseif PrimaryStat==LE_UNIT_STAT_AGILITY then-- Agility
         local text=''
         if HasAPEffectsSpellPower() then
-            text= e.onlyChinse and '提高你的攻击和技能强度' or  STAT_TOOLTIP_BONUS_AP_SP
+            text= e.onlyChinese and '提高你的攻击和技能强度' or  STAT_TOOLTIP_BONUS_AP_SP
         else
-            text= e.onlyChinse and '提高你的攻击和技能强度' or STAT_TOOLTIP_BONUS_AP
+            text= e.onlyChinese and '提高你的攻击和技能强度' or STAT_TOOLTIP_BONUS_AP
         end
 
         if role == "TANK" then
             local increasedDodgeChance = GetDodgeChanceFromAttribute();
             if increasedDodgeChance > 0 then
-                text= text .."|n"..format(e.onlyChinse and '躲闪几率提高%.2f%%|n|cff888888（在效果递减之前）|r' or CR_DODGE_BASE_STAT_TOOLTIP, increasedDodgeChance);
+                text= text .."|n"..format(e.onlyChinese and '躲闪几率提高%.2f%%|n|cff888888（在效果递减之前）|r' or CR_DODGE_BASE_STAT_TOOLTIP, increasedDodgeChance);
             end
         end
         e.tips:AddDoubleLine(text,nil,nil,nil,true)
@@ -311,11 +311,11 @@ local function set_Stat_Tooltip(self)
     elseif PrimaryStat==LE_UNIT_STAT_INTELLECT then
         local text
         if HasAPEffectsSpellPower() then
-            text= e.onlyChinse and "|cff808080该属性不能使你获益|r" or STAT_NO_BENEFIT_TOOLTIP
+            text= e.onlyChinese and "|cff808080该属性不能使你获益|r" or STAT_NO_BENEFIT_TOOLTIP
         elseif HasSPEffectsAttackPower() then
-            text= e.onlyChinse and '提高你的攻击和技能强度' or  STAT_TOOLTIP_BONUS_AP_SP
+            text= e.onlyChinese and '提高你的攻击和技能强度' or  STAT_TOOLTIP_BONUS_AP_SP
         else
-            text= (e.onlyChinse and '提高你的法术强度' or DEFAULT_STAT4_TOOLTIP).. effectiveStat
+            text= (e.onlyChinese and '提高你的法术强度' or DEFAULT_STAT4_TOOLTIP).. effectiveStat
         end
         e.tips:AddDoubleLine(text,nil,nil,nil,true)
     end
@@ -402,13 +402,13 @@ local function set_Crit_Tooltip(self)
 	local extraCritChance = GetCombatRatingBonus(rating);
 	local extraCritRating = GetCombatRating(rating);
 	if (GetCritChanceProvidesParryEffect()) then
-        if e.onlyChinse then
+        if e.onlyChinese then
             e.tips:AddLine(format("攻击和法术造成额外效果的几率。\n爆击：%s [+%.2f%%]\n招架几率提高%.2f%%。", BreakUpLargeNumbers(extraCritRating), extraCritChance, GetCombatRatingBonusForCombatRatingValue(CR_PARRY, extraCritRating)), nil,nil,nil,true)
         else
             e.tips:AddLine(format(CR_CRIT_PARRY_RATING_TOOLTIP, BreakUpLargeNumbers(extraCritRating), extraCritChance, GetCombatRatingBonusForCombatRatingValue(CR_PARRY, extraCritRating)), nil,nil,nil,true)
         end
 	else
-        if e.onlyChinse then
+        if e.onlyChinese then
 		    e.tips:AddLine(format( "攻击和法术造成额外效果的几率。\n爆击：%s [+%.2f%%]", BreakUpLargeNumbers(extraCritRating), extraCritChance), nil,nil,nil,true)
         else
             e.tips:AddLine(format(CR_CRIT_TOOLTIP, BreakUpLargeNumbers(extraCritRating), extraCritChance), nil,nil,nil,true)
@@ -448,8 +448,8 @@ local function set_Haste_Tooltip(self)
 		hasteFormatString = "%s";
 	end
 	e.tips:AddDoubleLine(frame.nameText, format(hasteFormatString, format("%0.2f%%", haste + 0.5)))
-	e.tips:AddLine(_G["STAT_HASTE_"..e.Player.class.."_TOOLTIP"] or (e.onlyChinse and '提高攻击速度和施法速度。' or STAT_HASTE_TOOLTIP), nil, nil,nil,true)
-	e.tips:AddDoubleLine(format(e.onlyChinse and '急速：%s [+%.2f%%]' or STAT_HASTE_BASE_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(rating)), GetCombatRatingBonus(rating)))
+	e.tips:AddLine(_G["STAT_HASTE_"..e.Player.class.."_TOOLTIP"] or (e.onlyChinese and '提高攻击速度和施法速度。' or STAT_HASTE_TOOLTIP), nil, nil,nil,true)
+	e.tips:AddDoubleLine(format(e.onlyChinese and '急速：%s [+%.2f%%]' or STAT_HASTE_BASE_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(rating)), GetCombatRatingBonus(rating)))
     e.tips:Show()
 end
 
@@ -503,7 +503,7 @@ local function set_Versatility_Tooltip(self)
 	local versatilityDamageBonus = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE);
 	local versatilityDamageTakenReduction = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_TAKEN) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_TAKEN);
     e.tips:AddDoubleLine(frame.nameText, format('%.2f%%',  versatilityDamageBonus))
-	e.tips:AddLine(format(e.onlyChinse and "造成的伤害值和治疗量提高%.2f%%，\n受到的伤害降低%.2f%%。\n全能：%s [%.2f%%/%.2f%%]" or CR_VERSATILITY_TOOLTIP, versatilityDamageBonus, versatilityDamageTakenReduction, BreakUpLargeNumbers(versatility), versatilityDamageBonus, versatilityDamageTakenReduction), nil,nil,nil,true)
+	e.tips:AddLine(format(e.onlyChinese and "造成的伤害值和治疗量提高%.2f%%，\n受到的伤害降低%.2f%%。\n全能：%s [%.2f%%/%.2f%%]" or CR_VERSATILITY_TOOLTIP, versatilityDamageBonus, versatilityDamageTakenReduction, BreakUpLargeNumbers(versatility), versatilityDamageBonus, versatilityDamageTakenReduction), nil,nil,nil,true)
     e.tips:Show()
 end
 
@@ -530,7 +530,7 @@ local function set_Lifesteal_Tooltip(self)
 
     local lifesteal = GetLifesteal();
 	e.tips:AddDoubleLine(frame.nameText,  format("%0.2f%%", lifesteal))
-    e.tips:AddLine(format(e.onlyChinse and '你所造成伤害和治疗的一部分将转而治疗你。\n\n吸血：%s [+%.2f%%]' or CR_LIFESTEAL_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(CR_LIFESTEAL)), GetCombatRatingBonus(CR_LIFESTEAL)), nil,nil,nil,true)
+    e.tips:AddLine(format(e.onlyChinese and '你所造成伤害和治疗的一部分将转而治疗你。\n\n吸血：%s [+%.2f%%]' or CR_LIFESTEAL_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(CR_LIFESTEAL)), GetCombatRatingBonus(CR_LIFESTEAL)), nil,nil,nil,true)
     e.tips:Show()
 end
 
@@ -557,7 +557,7 @@ local function set_Avoidance_Tooltip(self)
 
     local Avoidance = GetAvoidance();
 	e.tips:AddDoubleLine(frame.nameText,  format("%0.2f%%", Avoidance))
-    e.tips:AddLine(format(e.onlyChinse and '范围效果法术的伤害降低。\n\n闪避：%s [+%.2f%%' or CR_AVOIDANCE_TOOLTIP , BreakUpLargeNumbers(GetCombatRating(CR_AVOIDANCE)), GetCombatRatingBonus(CR_AVOIDANCE)), nil,nil,nil,true)
+    e.tips:AddLine(format(e.onlyChinese and '范围效果法术的伤害降低。\n\n闪避：%s [+%.2f%%' or CR_AVOIDANCE_TOOLTIP , BreakUpLargeNumbers(GetCombatRating(CR_AVOIDANCE)), GetCombatRatingBonus(CR_AVOIDANCE)), nil,nil,nil,true)
     e.tips:Show()
 end
 
@@ -584,7 +584,7 @@ local function set_Dodge_Tooltip(self)
 
     local chance = GetDodgeChance();
 	e.tips:AddDoubleLine(frame.nameText,  format("%0.2f%%", chance))
-    e.tips:AddLine( format(e.onlyChinse and '%d点躲闪可使躲闪几率提高%.2f%%\n|cff888888（在效果递减之前）|r' or CR_DODGE_TOOLTIP, GetCombatRating(CR_DODGE), GetCombatRatingBonus(CR_DODGE)), nil,nil,nil,true)
+    e.tips:AddLine( format(e.onlyChinese and '%d点躲闪可使躲闪几率提高%.2f%%\n|cff888888（在效果递减之前）|r' or CR_DODGE_TOOLTIP, GetCombatRating(CR_DODGE), GetCombatRatingBonus(CR_DODGE)), nil,nil,nil,true)
     e.tips:Show()
 end
 
@@ -620,10 +620,10 @@ local function set_ARMOR_Tooltip(self)
     local armorReduction = PaperDollFrame_GetArmorReduction(effectiveArmor, UnitEffectiveLevel('player'));
 	local armorReductionAgainstTarget = PaperDollFrame_GetArmorReductionAgainstTarget(effectiveArmor);
 
-    e.tips:AddLine(format(e.onlyChinse and '物理伤害减免：%0.2f%%\n|cff888888（对抗与你实力相当的敌人时）|r' or STAT_ARMOR_TOOLTIP, armorReduction), nil,nil,nil,true)
+    e.tips:AddLine(format(e.onlyChinese and '物理伤害减免：%0.2f%%\n|cff888888（对抗与你实力相当的敌人时）|r' or STAT_ARMOR_TOOLTIP, armorReduction), nil,nil,nil,true)
 
 	if (armorReductionAgainstTarget) then
-		e.tips:AddLine(format(e.onlyChinse and '（对当前目标：%0.2f%%）' or STAT_ARMOR_TARGET_TOOLTIP, armorReductionAgainstTarget), nil,nil,nil,true)
+		e.tips:AddLine(format(e.onlyChinese and '（对当前目标：%0.2f%%）' or STAT_ARMOR_TARGET_TOOLTIP, armorReductionAgainstTarget), nil,nil,nil,true)
 	end
     e.tips:Show()
 end
@@ -651,7 +651,7 @@ local function set_Parry_Tooltip(self)
 
     local chance = GetParryChance();
 	e.tips:AddDoubleLine(frame.nameText,  format("%0.2f%%", chance))
-    e.tips:AddLine(format(e.onlyChinse and '%d点招架可使招架几率提高%.2f%%\n|cff888888（在效果递减之前）|r' or CR_PARRY_TOOLTIP, GetCombatRating(CR_PARRY), GetCombatRatingBonus(CR_PARRY)), nil,nil,nil,true)
+    e.tips:AddLine(format(e.onlyChinese and '%d点招架可使招架几率提高%.2f%%\n|cff888888（在效果递减之前）|r' or CR_PARRY_TOOLTIP, GetCombatRating(CR_PARRY), GetCombatRatingBonus(CR_PARRY)), nil,nil,nil,true)
     e.tips:Show()
 end
 
@@ -683,9 +683,9 @@ local function set_Block_Tooltip(self)
 	local blockArmorReduction = PaperDollFrame_GetArmorReduction(shieldBlockArmor, UnitEffectiveLevel('player'));
 	local blockArmorReductionAgainstTarget = PaperDollFrame_GetArmorReductionAgainstTarget(shieldBlockArmor);
 
-	e.tips:AddLine(format(e.onlyChinse and '格挡可使一次攻击的伤害降低%0.2f%%.\n|cff888888（对抗与你实力相当的敌人时）|r' or CR_BLOCK_TOOLTIP, blockArmorReduction), nil,nil,nil,true)
+	e.tips:AddLine(format(e.onlyChinese and '格挡可使一次攻击的伤害降低%0.2f%%.\n|cff888888（对抗与你实力相当的敌人时）|r' or CR_BLOCK_TOOLTIP, blockArmorReduction), nil,nil,nil,true)
 	if (blockArmorReductionAgainstTarget) then
-		e.tips:AddLine(format(e.onlyChinse and '（对当前目标：%0.2f%%）' or STAT_BLOCK_TARGET_TOOLTIP, blockArmorReductionAgainstTarget), nil,nil,nil,true)
+		e.tips:AddLine(format(e.onlyChinese and '（对当前目标：%0.2f%%）' or STAT_BLOCK_TARGET_TOOLTIP, blockArmorReductionAgainstTarget), nil,nil,nil,true)
 	end
     e.tips:Show()
 end
@@ -706,9 +706,9 @@ local function set_Stagger_Tooltip(self)
     e.tips:SetOwner(button, "ANCHOR_RIGHT")
     e.tips:ClearLines()
     e.tips:AddDoubleLine(frame.nameText,  format("%0.2f%%", stagger))
-	e.tips:AddLine(format(e.onlyChinse and '你的醉拳可化解%0.2f%%的伤害' or STAT_STAGGER_TOOLTIP, stagger), nil,nil,nil,true)
+	e.tips:AddLine(format(e.onlyChinese and '你的醉拳可化解%0.2f%%的伤害' or STAT_STAGGER_TOOLTIP, stagger), nil,nil,nil,true)
 	if (staggerAgainstTarget) then
-		e.tips:AddLine(format(e.onlyChinse and '（对当前目标比例%0.2f%%）' or STAT_STAGGER_TARGET_TOOLTIP, staggerAgainstTarget), nil,nil,nil,true)
+		e.tips:AddLine(format(e.onlyChinese and '（对当前目标比例%0.2f%%）' or STAT_STAGGER_TARGET_TOOLTIP, staggerAgainstTarget), nil,nil,nil,true)
 	end
     e.tips:Show()
 end
@@ -747,16 +747,16 @@ local function set_SPEED_Tooltip(self)
     e.tips:ClearLines()
     local currentSpeed, runSpeed, flightSpeed, swimSpeed = GetUnitSpeed('player')
     e.tips:AddDoubleLine(frame.nameText, 'player')
-    e.tips:AddLine(format(e.onlyChinse and '提升移动速度。|n|n速度：%s [+%.2f%%]' or CR_SPEED_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(CR_SPEED)), GetCombatRatingBonus(CR_SPEED)), nil,nil,nil, true)
+    e.tips:AddLine(format(e.onlyChinese and '提升移动速度。|n|n速度：%s [+%.2f%%]' or CR_SPEED_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(CR_SPEED)), GetCombatRatingBonus(CR_SPEED)), nil,nil,nil, true)
     e.tips:AddLine(' ')
-    e.tips:AddDoubleLine((e.onlyChinse and '当前' or REFORGE_CURRENT)..format(' %.0f%%', currentSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', currentSpeed))
-    e.tips:AddDoubleLine((e.onlyChinse and '地面' or MOUNT_JOURNAL_FILTER_GROUND)..format(' %.0f%%', runSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', runSpeed))
-    e.tips:AddDoubleLine((e.onlyChinse and '水栖' or MOUNT_JOURNAL_FILTER_AQUATIC )..format(' %.0f%%', swimSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', swimSpeed))
-    e.tips:AddDoubleLine((e.onlyChinse and '飞行' or MOUNT_JOURNAL_FILTER_FLYING )..format(' %.0f%%', flightSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', flightSpeed))
+    e.tips:AddDoubleLine((e.onlyChinese and '当前' or REFORGE_CURRENT)..format(' %.0f%%', currentSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', currentSpeed))
+    e.tips:AddDoubleLine((e.onlyChinese and '地面' or MOUNT_JOURNAL_FILTER_GROUND)..format(' %.0f%%', runSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', runSpeed))
+    e.tips:AddDoubleLine((e.onlyChinese and '水栖' or MOUNT_JOURNAL_FILTER_AQUATIC )..format(' %.0f%%', swimSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', swimSpeed))
+    e.tips:AddDoubleLine((e.onlyChinese and '飞行' or MOUNT_JOURNAL_FILTER_FLYING )..format(' %.0f%%', flightSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', flightSpeed))
     if UnitExists('vehicle') then
         currentSpeed = GetUnitSpeed('vehicle')
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine((e.onlyChinse and '载具' or 'Vehicle')..format(' %.0f%%', currentSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', currentSpeed))
+        e.tips:AddDoubleLine((e.onlyChinese and '载具' or 'Vehicle')..format(' %.0f%%', currentSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', currentSpeed))
     end
     e.tips:Show()
 end
@@ -1116,7 +1116,7 @@ local function set_Panle_Setting()--设置 panel
     local last, check, findTank, findDps
     last=CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')--重新加载UI
     last:SetPoint('TOPLEFT')
-    last:SetText(e.onlyChinse and '重新加载UI' or RELOADUI)
+    last:SetText(e.onlyChinese and '重新加载UI' or RELOADUI)
     last:SetSize(120, 28)
     last:SetScript('OnMouseUp', e.Reload)
 
@@ -1125,7 +1125,7 @@ local function set_Panle_Setting()--设置 panel
             check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--四属性, 仅限DPS
             check:SetChecked(Save.onlyDPS)
             check:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
-            if e.onlyChinse then
+            if e.onlyChinese then
                 check.text:SetText("仅限DPS"..INLINE_DAMAGER_ICON)
             else
                 check.text:SetFormattedText(LFG_LIST_CROSS_FACTION , DAMAGER..INLINE_DAMAGER_ICON)
@@ -1140,7 +1140,7 @@ local function set_Panle_Setting()--设置 panel
         elseif info.tank and not findTank then
             local text= e.Cstr(panel)
             text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
-            if e.onlyChinse then
+            if e.onlyChinese then
                 text:SetText("仅限坦克"..INLINE_TANK_ICON)
             else
                 text:SetFormattedText(LFG_LIST_CROSS_FACTION , TANK..INLINE_TANK_ICON)
@@ -1172,7 +1172,7 @@ local function set_Panle_Setting()--设置 panel
             local value= button[self.name] and button[self.name].value
             e.tips:AddDoubleLine(self.text2, format('%.2f%%', value or 0))
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.GetShowHide(Save.tab[self.name].hide), '|cnGREEN_FONT_COLOR:0 = '..(e.onlyChinse and '隐藏' or HIDE))
+            e.tips:AddDoubleLine(e.GetShowHide(Save.tab[self.name].hide), '|cnGREEN_FONT_COLOR:0 = '..(e.onlyChinese and '隐藏' or HIDE))
             e.tips:Show()
         end)
         check:SetScript('OnLeave', function(self) e.tips:Hide() end)
@@ -1216,7 +1216,7 @@ local function set_Panle_Setting()--设置 panel
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(self.text, self.name, r2, g2, b2)
-                e.tips:AddDoubleLine(e.onlyChinse and '设置' or SETTINGS, e.onlyChinse and '颜色' or COLOR)
+                e.tips:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, e.onlyChinese and '颜色' or COLOR)
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(format('r%.2f', r2)..format('  g%.2f', g2)..format('  b%.2f', b2), format('a%.2f', a2))
                 e.tips:Show()
@@ -1239,7 +1239,7 @@ local function set_Panle_Setting()--设置 panel
             local sliderBit= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--位数，bit
             sliderBit:SetPoint("LEFT", current.text, 'RIGHT', 6,0)
             sliderBit:SetSize(100,20)
-            sliderBit:SetMinMaxValues(0, 3)
+            sliderBit:SetMinMaxValues(0, 6)
             sliderBit:SetValue(Save.tab['STATUS'].bit or 3)
             sliderBit.Low:SetText('0')
             sliderBit.High:SetText('0.003')
@@ -1257,7 +1257,7 @@ local function set_Panle_Setting()--设置 panel
             local current= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
             current:SetChecked(Save.tab[info.name].current)
             current:SetPoint('LEFT', text, 'RIGHT',2,0)
-            current.text:SetText(e.onlyChinse and '当前' or 'REFORGE_CURRENT')
+            current.text:SetText(e.onlyChinese and '当前' or 'REFORGE_CURRENT')
             current:SetScript('OnMouseUp',function(self)
                 Save.tab['SPEED'].current= not Save.tab['SPEED'].current and true or false
                 frame_Init(true)--初始， 或设置
@@ -1269,7 +1269,7 @@ local function set_Panle_Setting()--设置 panel
             local check2=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--仅防卫
             check2:SetChecked(Save.tab['VERSATILITY'].onlyDefense)
             check2:SetPoint('LEFT', text, 'RIGHT',2,0)
-            check2.text:SetText((e.onlyChinse and '仅防御' or format(LFG_LIST_CROSS_FACTION, DEFENSE)))
+            check2.text:SetText((e.onlyChinese and '仅防御' or format(LFG_LIST_CROSS_FACTION, DEFENSE)))
             check2:SetScript('OnMouseDown', function(self)
                 Save.tab['VERSATILITY'].onlyDefense= not Save.tab['VERSATILITY'].onlyDefense and true or nil
                 if Save.tab['VERSATILITY'].onlyDefense then
@@ -1304,7 +1304,7 @@ local function set_Panle_Setting()--设置 panel
 
     local text= e.Cstr(panel,26)--Text
     text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
-    text:SetText(e.onlyChinse and '阴影' or SHADOW_QUALITY:gsub(QUALITY , ''))
+    text:SetText(e.onlyChinese and '阴影' or SHADOW_QUALITY:gsub(QUALITY , ''))
     text:EnableMouse(true)
     set_Shadow(text)--设置，字体阴影
     text.r, text.g, text.b, text.a= Save.font.r, Save.font.g, Save.font.b, Save.font.a
@@ -1365,16 +1365,43 @@ local function set_Panle_Setting()--设置 panel
 
     local notTextCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     notTextCheck:SetPoint("TOPLEFT", panel.check, 'BOTTOMLEFT', 0, -12)
-    notTextCheck.text:SetText(e.onlyChinse and '隐藏数值' or HIDE..STATUS_TEXT_VALUE)
+    notTextCheck.text:SetText(e.onlyChinese and '隐藏数值' or HIDE..STATUS_TEXT_VALUE)
     notTextCheck:SetChecked(Save.notText)
     notTextCheck:SetScript('OnMouseDown', function()
         Save.notText= not Save.notText and true or nil
         frame_Init(true)--初始， 或设置
     end)
 
+    local textColor= e.Cstr(panel, 20)--数值text, 颜色
+    textColor:SetPoint('LEFT', notTextCheck.text,'RIGHT', 5, 0)
+    textColor:EnableMouse(true)
+    textColor:SetScript('OnLeave', function(self) e.tips:Hide() end)
+    textColor:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_RIGHT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, self.hex..(e.onlyChinese and '颜色' or COLOR))
+        e.tips:Show()
+    end)
+    textColor:SetText('23%')
+    e.RGB_to_HEX(Save.textColor.r, Save.textColor.g, Save.textColor.b, Save.textColor.a, textColor)
+    textColor:SetScript('OnMouseDown', function(self)
+        local valueR, valueG, valueB, valueA= self.r, self.g, self.b, self.a
+        e.ShowColorPicker(self.r, self.g, self.b,self.a, function(restore)
+            local setA, setR, setG, setB
+            if not restore then
+                setR, setG, setB, setA= e.Get_ColorFrame_RGBA()
+            else
+                setR, setG, setB, setA= valueR, valueG, valueB, valueA
+            end
+            Save.textColor= {r=setR, g=setG, b=setB, a=setA}
+            frame_Init(true)--初始，设置
+        end)
+    end)
+
+
     check= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     check:SetPoint("TOPLEFT", notTextCheck, 'BOTTOMLEFT')
-    check.text:SetText((e.onlyChinse and '向左' or BINDING_NAME_STRAFELEFT)..' 23%'..Tabs[2].text)
+    check.text:SetText((e.onlyChinese and '向左' or BINDING_NAME_STRAFELEFT)..' 23%'..Tabs[2].text)
     check:SetChecked(Save.toLeft)
     check:SetScript('OnMouseDown', function()
         Save.toLeft= not Save.toLeft and true or nil
@@ -1384,7 +1411,7 @@ local function set_Panle_Setting()--设置 panel
 
     local check5= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--使用，数值
     check5:SetPoint("TOPLEFT", check, 'BOTTOMLEFT')
-    check5.text:SetText((e.onlyChinse and '数值' or STATUS_TEXT_VALUE)..' 2K')
+    check5.text:SetText((e.onlyChinese and '数值' or STATUS_TEXT_VALUE)..' 2K')
     check5:SetChecked(Save.useNumber)
     check5:SetScript('OnMouseDown', function()
         Save.useNumber= not Save.useNumber and true or nil
@@ -1410,7 +1437,7 @@ local function set_Panle_Setting()--设置 panel
 
     local barValueText= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--增加,减少,值
     barValueText:SetPoint("TOPLEFT", check5, 'BOTTOMLEFT')
-    barValueText.text:SetText(e.onlyChinse and '增益' or BENEFICIAL)
+    barValueText.text:SetText(e.onlyChinese and '增益' or BENEFICIAL)
     barValueText:SetChecked(Save.setMaxMinValue)
     barValueText:SetScript('OnMouseDown', function()
         Save.setMaxMinValue= not Save.setMaxMinValue and true or nil
@@ -1433,7 +1460,7 @@ local function set_Panle_Setting()--设置 panel
     panel.barGreenColor:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinse and '设置' or SETTINGS, self.hex..(e.onlyChinse and '颜色' or COLOR))
+        e.tips:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, self.hex..(e.onlyChinese and '颜色' or COLOR))
         e.tips:Show()
     end)
     panel.barGreenColor:SetText('+12')
@@ -1460,7 +1487,7 @@ local function set_Panle_Setting()--设置 panel
     panel.barRedColor:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinse and '设置' or SETTINGS, self.hex..(e.onlyChinse and '颜色' or COLOR))
+        e.tips:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, self.hex..(e.onlyChinese and '颜色' or COLOR))
         e.tips:Show()
     end)
     panel.barRedColor:SetText('-12')
@@ -1480,33 +1507,6 @@ local function set_Panle_Setting()--设置 panel
         end)
     end)
 
-    local textColor= e.Cstr(panel, 20)--数值text, 颜色
-    textColor:SetPoint('LEFT', panel.barRedColor,'RIGHT', 20, 0)
-    textColor:EnableMouse(true)
-    textColor:SetScript('OnLeave', function(self) e.tips:Hide() end)
-    textColor:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_RIGHT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinse and '设置' or SETTINGS, self.hex..(e.onlyChinse and '颜色' or COLOR))
-        e.tips:Show()
-    end)
-    textColor:SetText('23%')
-    e.RGB_to_HEX(Save.textColor.r, Save.textColor.g, Save.textColor.b, Save.textColor.a, textColor)
-    textColor:SetScript('OnMouseDown', function(self)
-        local valueR, valueG, valueB, valueA= self.r, self.g, self.b, self.a
-        e.ShowColorPicker(self.r, self.g, self.b,self.a, function(restore)
-            local setA, setR, setG, setB
-            if not restore then
-                setR, setG, setB, setA= e.Get_ColorFrame_RGBA()
-            else
-                setR, setG, setB, setA= valueR, valueG, valueB, valueA
-            end
-            Save.textColor= {r=setR, g=setG, b=setB, a=setA}
-            frame_Init(true)--初始，设置
-        end)
-    end)
-
-
     local check2= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--bar
     check2:SetPoint("TOPLEFT", barValueText, 'BOTTOMLEFT',0,-62)
     check2.text:SetText('Bar')
@@ -1518,7 +1518,7 @@ local function set_Panle_Setting()--设置 panel
 
     local check3= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--bar，图片，样式2
     check3:SetPoint("LEFT", check2.text, 'RIGHT', 6, 0)
-    check3.text:SetText((e.onlyChinse and '格式' or FORMATTING).. ' 2')
+    check3.text:SetText((e.onlyChinese and '格式' or FORMATTING).. ' 2')
     check3:SetChecked(Save.barTexture2)
     check3:SetScript('OnMouseDown', function()
         Save.barTexture2= not Save.barTexture2 and true or nil
@@ -1529,7 +1529,7 @@ local function set_Panle_Setting()--设置 panel
     barWidth:SetSize(150,20)
     barWidth:SetMinMaxValues(-120,120)
     barWidth:SetValue(Save.barWidth)
-    barWidth.Low:SetText((e.onlyChinse and '宽' or WIDE)..' -60')
+    barWidth.Low:SetText((e.onlyChinese and '宽' or WIDE)..' -60')
     barWidth.High:SetText('120')
     barWidth.Text:SetText(Save.barWidth)
     barWidth:SetValueStep(0.1)
@@ -1560,7 +1560,7 @@ local function set_Panle_Setting()--设置 panel
 
     local barToLeft= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--bar 向左
     barToLeft:SetPoint("TOPLEFT", check2, 'BOTTOMLEFT')
-    barToLeft.text:SetText(e.onlyChinse and '向左' or BINDING_NAME_STRAFELEFT)
+    barToLeft.text:SetText(e.onlyChinese and '向左' or BINDING_NAME_STRAFELEFT)
     barToLeft:SetChecked(Save.barToLeft)
     barToLeft:SetScript('OnMouseDown', function()
         Save.barToLeft= not Save.barToLeft and true or nil
@@ -1569,7 +1569,7 @@ local function set_Panle_Setting()--设置 panel
 
     local slider= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--间隔，上下
     slider:SetPoint("TOPLEFT", barToLeft, 'BOTTOMLEFT', 0,-80)
-    --slider:SetOrientation('VERTICAL')--HORIZONTAL --slider.tooltipText=e.onlyChinse and '距离远近' or TRACKER_SORT_PROXIMITY
+    --slider:SetOrientation('VERTICAL')--HORIZONTAL --slider.tooltipText=e.onlyChinese and '距离远近' or TRACKER_SORT_PROXIMITY
     slider:SetSize(200,20)
     slider:SetMinMaxValues(-5,10)
     slider:SetValue(Save.vertical)
@@ -1607,8 +1607,8 @@ local function set_Panle_Setting()--设置 panel
     slider3:SetSize(200,20)
     slider3:SetMinMaxValues(0, 20)
     slider3:SetValue(Save.gsubText or 0)
-    slider3.Low:SetText(e.onlyChinse and '文本 0=否' or (LOCALE_TEXT_LABEL..' 0='..NO) )
-    slider3.High:SetText((e.onlyChinse and '截取' or BINDING_NAME_SCREENSHOT).. ' 20')
+    slider3.Low:SetText(e.onlyChinese and '文本 0=否' or (LOCALE_TEXT_LABEL..' 0='..NO) )
+    slider3.High:SetText((e.onlyChinese and '截取' or BINDING_NAME_SCREENSHOT).. ' 20')
     slider3.Text:SetText(Save.gsubText or '0')
     slider3:SetValueStep(1)
     slider3:SetScript('OnValueChanged', function(self, value, userInput)
@@ -1624,7 +1624,7 @@ local function set_Panle_Setting()--设置 panel
     slider4:SetSize(200,20)
     slider4:SetMinMaxValues(0.3, 4)
     slider4:SetValue(Save.scale or 1)
-    slider4.Low:SetText((e.onlyChinse and '缩放' or UI_SCALE)..' 0.4')
+    slider4.Low:SetText((e.onlyChinese and '缩放' or UI_SCALE)..' 0.4')
     slider4.High:SetText('4')
     slider4.Text:SetText(Save.scale or 1)
     slider4:SetValueStep(0.1)
@@ -1641,9 +1641,9 @@ local function set_Panle_Setting()--设置 panel
     restButton:SetPoint("TOPRIGHT")
     restButton:SetScript('OnMouseUp', function()
         StaticPopupDialogs[id..addName..'restAllSetup']={
-            text =id..'  '..addName..'|n|n|cnRED_FONT_COLOR:'..(e.onlyChinse and '清除全部' or CLEAR_ALL)..'|r '..(e.onlyChinse and '保存' or SAVE)..'|n|n'..(e.onlyChinse and '重新加载UI' or RELOADUI)..' /reload',
-            button1 = '|cnRED_FONT_COLOR:'..(e.onlyChinse and '重置' or RESET),
-            button2 = e.onlyChinse and '取消' or CANCEL,
+            text =id..'  '..addName..'|n|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除全部' or CLEAR_ALL)..'|r '..(e.onlyChinese and '保存' or SAVE)..'|n|n'..(e.onlyChinese and '重新加载UI' or RELOADUI)..' /reload',
+            button1 = '|cnRED_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET),
+            button2 = e.onlyChinese and '取消' or CANCEL,
             whileDead=true,timeout=30,hideOnEscape = 1,
             OnAccept=function(self)
                 Save=nil
@@ -1690,12 +1690,12 @@ local function Init()
     button:SetScript("OnMouseDown", function(self,d)
         if d=='LeftButton' then--提示移动
             frame_Init(true)--初始， 或设置
-            print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '重置' or RESET)..'|r', e.onlyChinse and '数值' or STATUS_TEXT_VALUE)
+            print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET)..'|r', e.onlyChinese and '数值' or STATUS_TEXT_VALUE)
 
         elseif d=='RightButton' then
             if not IsModifierKeyDown() then--移动光标
                 SetCursor('UI_MOVE_CURSOR')
-                print(id, addName, e.onlyChinse and '还原位置' or RESET_POSITION, 'Alt+'..e.Icon.right)
+                print(id, addName, e.onlyChinese and '还原位置' or RESET_POSITION, 'Alt+'..e.Icon.right)
 
             elseif IsAltKeyDown then
                 Save.point=nil
@@ -1715,9 +1715,9 @@ local function Init()
     button:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinse and '重置' or RESET, e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinese and '重置' or RESET, e.Icon.left)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
         e.tips:AddDoubleLine(e.GetShowHide(not Save.hide), e.Icon.mid)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
@@ -1792,27 +1792,27 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save.tab['STAUTS'].bit= Save.tab['STAUTS'].bit or 3
 
             --添加控制面板
-            panel.name = (e.onlyChinse and '属性' or STAT_CATEGORY_ATTRIBUTES)..'|A:charactercreate-icon-customize-body-selected:0:0|a'--添加新控制面板
+            panel.name = (e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES)..'|A:charactercreate-icon-customize-body-selected:0:0|a'--添加新控制面板
             panel.parent =id
             InterfaceOptions_AddCategory(panel)
 
             panel.check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
             panel.check:SetChecked(not Save.disabled)
             panel.check:SetPoint('TOPLEFT', panel, 'TOP')
-            panel.check.text:SetText(e.onlyChinse and '启用/禁用' or (ENABLE..'/'..DISABLE))
+            panel.check.text:SetText(e.onlyChinese and '启用/禁用' or (ENABLE..'/'..DISABLE))
             panel.check:SetScript('OnMouseDown', function()
                 Save.disabled = not Save.disabled and true or nil
                 if not Save.disabled and not button then
                     Init()
                 else
-                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需求重新加载' or REQUIRES_RELOAD)
+                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                     frame_Init(true)--初始， 或设置
                 end
             end)
             panel.check:SetScript('OnEnter', function(self2)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddLine(e.onlyChinse and '启用/禁用' or ENABLE..'/'..DISABLE)
+                e.tips:AddLine(e.onlyChinese and '启用/禁用' or ENABLE..'/'..DISABLE)
                 e.tips:Show()
             end)
             panel.check:SetScript('OnLeave', function() e.tips:Hide() end)

@@ -61,9 +61,9 @@ end
 --#####
 local function InitMenu(self, level, type)--主菜单    
     local chatType={
-        {text= e.onlyChinse and '说' or SAY, type= SLASH_SAY1},--/s
-        {text= e.onlyChinse and '喊' or YELL, type= SLASH_YELL1},--/p
-        {text= e.onlyChinse and '密语' or SLASH_TEXTTOSPEECH_WHISPER, type= SLASH_SMART_WHISPER1}--/w
+        {text= e.onlyChinese and '说' or SAY, type= SLASH_SAY1},--/s
+        {text= e.onlyChinese and '喊' or YELL, type= SLASH_YELL1},--/p
+        {text= e.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER, type= SLASH_SMART_WHISPER1}--/w
     }
     local info
     if type then
@@ -108,7 +108,7 @@ local function InitMenu(self, level, type)--主菜单
                             button.type=nil
                             button.name=wow.accountName
                             button.wow=true
-                            setType(e.onlyChinse and '战' or COMMUNITY_COMMAND_BATTLENET)--使用,提示
+                            setType(e.onlyChinese and '战' or COMMUNITY_COMMAND_BATTLENET)--使用,提示
                         end
                     }
                     UIDropDownMenu_AddButton(info, level)
@@ -139,7 +139,7 @@ local function InitMenu(self, level, type)--主菜单
                             button.type='/w'
                             button.name=game.name
                             button.wow=nil
-                            setType(e.onlyChinse and '密' or SLASH_TEXTTOSPEECH_WHISPER)--使用,提示
+                            setType(e.onlyChinese and '密' or SLASH_TEXTTOSPEECH_WHISPER)--使用,提示
                         end
                     }
                     UIDropDownMenu_AddButton(info, level)
@@ -162,14 +162,14 @@ local function InitMenu(self, level, type)--主菜单
                     text=(tab.wow and e.Icon.wow2 or '')..(tab.guid and e.GetPlayerInfo(nil, tab.guid, true) or tab.name),
                     notCheckable=true,
                     tooltipOnButton=true,
-                    tooltipTitle= e.onlyChinse and '记录: 密语' or (PVP_RECORD..SLASH_TEXTTOSPEECH_WHISPER),
+                    tooltipTitle= e.onlyChinese and '记录: 密语' or (PVP_RECORD..SLASH_TEXTTOSPEECH_WHISPER),
                     tooltipText=text,
                     func=function()
                         e.Say(nil, tab.name, tab.wow)
                         button.type='/w'
                         button.name=tab.name
                         button.wow=tab.wow
-                        setType(e.onlyChinse and '密' or SLASH_TEXTTOSPEECH_WHISPER)--使用,提示
+                        setType(e.onlyChinese and '密' or SLASH_TEXTTOSPEECH_WHISPER)--使用,提示
                     end
                 }
                 UIDropDownMenu_AddButton(info, level)
@@ -289,7 +289,7 @@ local function InitMenu(self, level, type)--主菜单
         numOline=numOline>0 and '|cnGREEN_FONT_COLOR:'..numOline..'|r' or ''
 
         info={--战网
-            text=numOline..(e.onlyChinse and '战网' or COMMUNITY_COMMAND_BATTLENET),
+            text=numOline..(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET),
             notCheckable=true,
             menuList='WOW',
             hasArrow=true
@@ -299,7 +299,7 @@ local function InitMenu(self, level, type)--主菜单
         numOline= C_FriendList.GetNumOnlineFriends()--好友列表
         numOline= (numOline and numOline>0) and '|cnGREEN_FONT_COLOR:'..numOline..'|r' or ''
         info={
-            text=numOline..(e.onlyChinse and '好友' or FRIENDS),
+            text=numOline..(e.onlyChinese and '好友' or FRIENDS),
             notCheckable=true,
             menuList='GAME',
             hasArrow=true
@@ -310,7 +310,7 @@ local function InitMenu(self, level, type)--主菜单
         numOline = C_FriendList.GetNumWhoResults()
         numOline = (numOline and numOline>0)  and '|cnGREEN_FONT_COLOR:'..numOline..'|r' or ''
         info={--区域列表
-            text=numOline..(e.onlyChinse and '区域' or FLOOR),
+            text=numOline..(e.onlyChinese and '区域' or FLOOR),
             notCheckable=true,
             menuList='FLOOR',
             hasArrow=true,
@@ -322,10 +322,10 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddSeparator(level)
 
         info={
-            text= e.onlyChinse and '聊天泡泡' or CHAT_BUBBLES_TEXT,
+            text= e.onlyChinese and '聊天泡泡' or CHAT_BUBBLES_TEXT,
             tooltipOnButton=true,
-            --tooltipTitle= e.onlyChinse and '战斗中：禁用' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..DISABLE,
-            --tooltipText= (e.onlyChinse and '仅限副本' or LFG_LIST_CROSS_FACTION:format(INSTANCE))..'\n\n
+            --tooltipTitle= e.onlyChinese and '战斗中：禁用' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..DISABLE,
+            --tooltipText= (e.onlyChinese and '仅限副本' or LFG_LIST_CROSS_FACTION:format(INSTANCE))..'\n\n
             tooltipTitle= 'CVar chatBubbles',
             checked= C_CVar.GetCVarBool("chatBubbles"),
             disabled= UnitAffectingCombat('player'),

@@ -125,7 +125,7 @@ local function setQueueStatus()--小眼睛, 信息
                 end
                 Save.tipsFrameTextSize= n>30 and 30 or n<6 and 6 or n
                 e.Cstr(nil, Save.tipsFrameTextSize, nil, self.text, true)
-                print(id, addName, e.onlyChinse and '字体大小' or FONT_SIZE, '|cnGREEN_FONT_COLOR:'..Save.tipsFrameTextSize)
+                print(id, addName, e.onlyChinese and '字体大小' or FONT_SIZE, '|cnGREEN_FONT_COLOR:'..Save.tipsFrameTextSize)
             end)
             button.tipsFrame:SetScript("OnMouseDown", function(self,d)
                 SetCursor('UI_MOVE_CURSOR')
@@ -137,10 +137,10 @@ local function setQueueStatus()--小眼睛, 信息
             button.tipsFrame:SetScript('OnEnter', function(self)
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.left)
-                e.tips:AddDoubleLine(e.onlyChinse and '字体大小' or FONT_SIZE, (Save.tipsFrameTextSize or 12).. e.Icon.mid)
+                e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.left)
+                e.tips:AddDoubleLine(e.onlyChinese and '字体大小' or FONT_SIZE, (Save.tipsFrameTextSize or 12).. e.Icon.mid)
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(e.onlyChinse and '列表信息' or (SOCIAL_QUEUE_TOOLTIP_HEADER..INFO), '|A:groupfinder-eye-frame:0:0|a')
+                e.tips:AddDoubleLine(e.onlyChinese and '列表信息' or (SOCIAL_QUEUE_TOOLTIP_HEADER..INFO), '|A:groupfinder-eye-frame:0:0|a')
                 e.tips:AddDoubleLine(id, addName)
                 e.tips:Show()
             end)
@@ -493,11 +493,11 @@ local function InitList(self, level, type)--LFDFrame.lua
     local info
     if type=='SETTINGS' then
         info={--自动, 准备进入,选项
-            text=e.Icon.toRight2..(e.onlyChinse and '准备进入' or BATTLEFIELD_CONFIRM_STATUS),
+            text=e.Icon.toRight2..(e.onlyChinese and '准备进入' or BATTLEFIELD_CONFIRM_STATUS),
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinse and '已经建好了一个队伍，准备前往' or SPECIFIC_DUNGEON_IS_READY,
+            tooltipTitle= e.onlyChinese and '已经建好了一个队伍，准备前往' or SPECIFIC_DUNGEON_IS_READY,
             checked=Save.enterInstance,
-            tooltipText= (e.onlyChinse and '自动进入' or AUTO_JOIN:gsub(JOIN, ENTER_LFG))..'\n'..(e.onlyChinse and '不能在 AFK 中' or format(ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS, '',AFK)).. '\n\n|cnGREEN_FONT_COLOR:Alt '..(e.onlyChinse and '取消' or CANCEL)..'|r\n\n'..id..' '..addName,
+            tooltipText= (e.onlyChinese and '自动进入' or AUTO_JOIN:gsub(JOIN, ENTER_LFG))..'\n'..(e.onlyChinese and '不能在 AFK 中' or format(ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS, '',AFK)).. '\n\n|cnGREEN_FONT_COLOR:Alt '..(e.onlyChinese and '取消' or CANCEL)..'|r\n\n'..id..' '..addName,
             func=function()
                 Save.enterInstance= not Save.enterInstance and true or nil
                 setQueueStatus()--小眼睛, 信息
@@ -506,11 +506,11 @@ local function InitList(self, level, type)--LFDFrame.lua
         UIDropDownMenu_AddButton(info, level)
 
         info={--自动, 离开副本,选项
-            text=e.Icon.toLeft2..(e.onlyChinse and '离开副本' or (LEAVE..INSTANCE)),
+            text=e.Icon.toLeft2..(e.onlyChinese and '离开副本' or (LEAVE..INSTANCE)),
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinse and '离开副本和战场' or (LEAVE..INSTANCE..' '..BATTLEFIELDS),
+            tooltipTitle= e.onlyChinese and '离开副本和战场' or (LEAVE..INSTANCE..' '..BATTLEFIELDS),
             checked=Save.leaveInstance,
-            tooltipText= (e.onlyChinse and '离开随机(自动 Roll)' or  AUTO_JOIN:gsub(JOIN, LEAVE)..' ('..AUTO_JOIN:gsub(JOIN,'')..LOOT_ROLL) .. ')\n\n|cnGREEN_FONT_COLOR:Alt '..(e.onlyChinse and '取消' or CANCEL)..'|r\n\n'..id..' '..addName,
+            tooltipText= (e.onlyChinese and '离开随机(自动 Roll)' or  AUTO_JOIN:gsub(JOIN, LEAVE)..' ('..AUTO_JOIN:gsub(JOIN,'')..LOOT_ROLL) .. ')\n\n|cnGREEN_FONT_COLOR:Alt '..(e.onlyChinese and '取消' or CANCEL)..'|r\n\n'..id..' '..addName,
             func=function()
                 Save.leaveInstance= not Save.leaveInstance and true or nil
                 setQueueStatus()--小眼睛, 信息
@@ -529,7 +529,7 @@ local function InitList(self, level, type)--LFDFrame.lua
         UIDropDownMenu_AddSeparator(level)
 
         info={
-            text= (e.onlyChinse and '离开所有副本' or LEAVE_ALL_QUEUES)..' #'..num..'|r',
+            text= (e.onlyChinese and '离开所有副本' or LEAVE_ALL_QUEUES)..' #'..num..'|r',
             notCheckable=true,
             disabled= num==0,
             func=function ()
@@ -538,14 +538,14 @@ local function InitList(self, level, type)--LFDFrame.lua
                 end
             end,
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinse and '在队列中' or BATTLEFIELD_QUEUE_STATUS,
+            tooltipTitle= e.onlyChinese and '在队列中' or BATTLEFIELD_QUEUE_STATUS,
             tooltipText=text,
         }
         UIDropDownMenu_AddButton(info, level)
 
         UIDropDownMenu_AddSeparator(level)
         info={--信息 QueueStatusFrame.lua
-            text='|A:groupfinder-eye-frame:0:0|a'.. (e.onlyChinse and '列表信息' or SOCIAL_QUEUE_TOOLTIP_HEADER..INFO),
+            text='|A:groupfinder-eye-frame:0:0|a'.. (e.onlyChinese and '列表信息' or SOCIAL_QUEUE_TOOLTIP_HEADER..INFO),
             checked=not Save.hideQueueStatus,
             func=function()
                 Save.hideQueueStatus = not Save.hideQueueStatus and true or nil
@@ -555,10 +555,10 @@ local function InitList(self, level, type)--LFDFrame.lua
         UIDropDownMenu_AddButton(info, level)
 
         info={--自动,战利品掷骰
-            text='|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t'..(e.onlyChinse and '战利品掷骰' or LOOT_ROLL),
+            text='|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t'..(e.onlyChinese and '战利品掷骰' or LOOT_ROLL),
             checked=Save.autoROLL,
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinse and '自动' or AUTO_JOIN:gsub(JOIN,''),
+            tooltipTitle= e.onlyChinese and '自动' or AUTO_JOIN:gsub(JOIN,''),
             func= function()
                 Save.autoROLL= not Save.autoROLL and true or nil
             end
@@ -566,7 +566,7 @@ local function InitList(self, level, type)--LFDFrame.lua
         UIDropDownMenu_AddButton(info, level)
 --[[
         info= {
-            text= e.onlyChinse and '自动打开战利品掷骰窗口' or AUTO_OPEN_LOOT_HISTORY_TEXT,
+            text= e.onlyChinese and '自动打开战利品掷骰窗口' or AUTO_OPEN_LOOT_HISTORY_TEXT,
             tooltipOnButton= true,
             tooltipTitle= 'SetCVar("autoOpenLootHistory", "1")',
             tooltipText= '\n/loot\nLootHistoryFrame:SetWidth(350)',
@@ -582,7 +582,7 @@ local function InitList(self, level, type)--LFDFrame.lua
 ]]
     elseif type=='BATTLEFIELDS' then--战场
         info={
-            text= e.onlyChinse and '释放, 复活' or (BATTLE_PET_RELEASE..', '..RESURRECT),
+            text= e.onlyChinese and '释放, 复活' or (BATTLE_PET_RELEASE..', '..RESURRECT),
             checked= Save.ReMe,
             func= function()
                 Save.ReMe= not Save.ReMe and true or nil
@@ -591,7 +591,7 @@ local function InitList(self, level, type)--LFDFrame.lua
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text= e.onlyChinse and '职责确认' or ROLE_POLL,
+            text= e.onlyChinese and '职责确认' or ROLE_POLL,
             checked= Save.autoSetPvPRole,
             func= function()
                 Save.autoSetPvPRole= not Save.autoSetPvPRole and true or nil
@@ -602,7 +602,7 @@ local function InitList(self, level, type)--LFDFrame.lua
     else
         local isLeader, isTank, isHealer, isDPS = GetLFGRoles()--角色职责
         info={
-            text= (e.onlyChinse and '设置' or SETTINGS)..(isLeader and e.Icon.leader or '')
+            text= (e.onlyChinese and '设置' or SETTINGS)..(isLeader and e.Icon.leader or '')
             ..(isTank and e.Icon.TANK or '')
             ..(isHealer and e.Icon.HEALER or '')
             ..(isDPS and e.Icon.DAMAGER or '')
@@ -617,7 +617,7 @@ local function InitList(self, level, type)--LFDFrame.lua
 
         isTank, isHealer, isDPS = GetPVPRoles()--检测是否选定角色pve
         info={
-            text=e.onlyChinse and '战场' or BATTLEFIELDS
+            text=e.onlyChinese and '战场' or BATTLEFIELDS
             ..(isTank and e.Icon.TANK or '')
             ..(isHealer and e.Icon.HEALER or '')
             ..(isDPS and e.Icon.DAMAGER or ''),
@@ -627,7 +627,7 @@ local function InitList(self, level, type)--LFDFrame.lua
         }
         UIDropDownMenu_AddButton(info, level)
         info= {
-            text= e.onlyChinse and '战利品掷骰' or LOOT_ROLL,
+            text= e.onlyChinese and '战利品掷骰' or LOOT_ROLL,
             checked= LootHistoryFrame:IsShown(),
             icon= 'Levelup-Icon-Bag',
             tooltipOnButton= true,
@@ -666,20 +666,20 @@ local function setLFGDungeonReadyDialog(self)--自动进入FB LFGDungeonReadyDia
     if dungeonID then
         text='dungeonID: '..dungeonID
                 ..( role and _G[role] and '\n'.._G[role]..e.Icon[role] ..(isLeader and e.Icon.leader or ''))
-                ..(totalEncounters and completedEncounters and totalEncounters>0 and '\n|cnGREEN_FONT_COLOR:'..completedEncounters..'|r /'..totalEncounters..' '..(e.onlyChinse and '首领' or BOSS) or '')
-                ..(numMembers and '\n'..numMembers..' '..(e.onlyChinse and '玩家' or PLAYER)  or '')
-                ..(isHoliday and '\n'..(e.onlyChinse and '节日' or CALENDAR_FILTER_HOLIDAYS).. ' '..(e.onlyChinse and '副本' or INSTANCE) or '')
+                ..(totalEncounters and completedEncounters and totalEncounters>0 and '\n|cnGREEN_FONT_COLOR:'..completedEncounters..'|r /'..totalEncounters..' '..(e.onlyChinese and '首领' or BOSS) or '')
+                ..(numMembers and '\n'..numMembers..' '..(e.onlyChinese and '玩家' or PLAYER)  or '')
+                ..(isHoliday and '\n'..(e.onlyChinese and '节日' or CALENDAR_FILTER_HOLIDAYS).. ' '..(e.onlyChinese and '副本' or INSTANCE) or '')
     end
     self.infoText:SetText(text)
     if not Save.enterInstance or afk then
         e.Ccool(self, nil, 38, nil, true, true)
         if Save.enterInstance and afk then
-            print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinse and '不能' or NO)..'|r', e.onlyChinse and '准备进入' or BATTLEFIELD_CONFIRM_STATUS, '|cnRED_FONT_COLOR:'..(e.onlyChinse and '离开中' or CHAT_FLAG_AFK))
+            print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '不能' or NO)..'|r', e.onlyChinese and '准备进入' or BATTLEFIELD_CONFIRM_STATUS, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '离开中' or CHAT_FLAG_AFK))
         end
         return
     end
     if name then
-        print(id, addName, e.onlyChinse and '准备进入' or QUEUED_STATUS_PROPOSAL,'|cnGREEN_FONT_COLOR:'..sec..'|r', e.onlyChinse and '秒' or SECONDS)
+        print(id, addName, e.onlyChinese and '准备进入' or QUEUED_STATUS_PROPOSAL,'|cnGREEN_FONT_COLOR:'..sec..'|r', e.onlyChinese and '秒' or SECONDS)
         if text~='' then
             text=text:gsub('\n', ' ')
             print(text)
@@ -717,12 +717,12 @@ local function exitInstance()
     else
         C_PartyInfo.LeaveParty(LE_PARTY_CATEGORY_INSTANC)
     end
-    print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '离开' or LEAVE)..'|r'..(name or (e.onlyChinse and '副本' or INSTANCE)), name and '|cnGREEN_FONT_COLOR:'..wowSave[INSTANCE][name]..'|r'..(e.onlyChinse and '次' or VOICEMACRO_LABEL_CHARGE1) or '')
+    print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '离开' or LEAVE)..'|r'..(name or (e.onlyChinese and '副本' or INSTANCE)), name and '|cnGREEN_FONT_COLOR:'..wowSave[INSTANCE][name]..'|r'..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1) or '')
     ExitIns=nil
 end
 
 StaticPopupDialogs[addName..'ExitIns']={
-    text =id..'('..addName..')\n\n|cff00ff00'..(e.onlyChinse and '离开' or LEAVE)..'|r: ' ..(e.onlyChinse and '副本' or INSTANCE).. '|cff00ff00 '..sec..' |r'..(e.onlyChinse and '秒' or SECONDS),
+    text =id..'('..addName..')\n\n|cff00ff00'..(e.onlyChinese and '离开' or LEAVE)..'|r: ' ..(e.onlyChinese and '副本' or INSTANCE).. '|cff00ff00 '..sec..' |r'..(e.onlyChinese and '秒' or SECONDS),
     button1 = LEAVE,
     button2 = CANCEL,
     OnAccept=function()
@@ -732,12 +732,12 @@ StaticPopupDialogs[addName..'ExitIns']={
     OnCancel=function(_, _, d)
         if d=='clicked' then
             ExitIns=nil
-            print(id,addName,'|cff00ff00'..(e.onlyChinse and '取消' or CANCEL)..'|r', e.onlyChinse and '离开' or LEAVE)
+            print(id,addName,'|cff00ff00'..(e.onlyChinese and '取消' or CANCEL)..'|r', e.onlyChinese and '离开' or LEAVE)
         end
     end,
     EditBoxOnEscapePressed = function(s)
         ExitIns=nil
-        print(id,addName,'|cff00ff00'..(e.onlyChinse and '取消' or CANCEL)..'|r', e.onlyChinse and '离开' or LEAVE)
+        print(id,addName,'|cff00ff00'..(e.onlyChinese and '取消' or CANCEL)..'|r', e.onlyChinese and '离开' or LEAVE)
         s:GetParent():Hide()
     end,
 whileDead=true,timeout=sec, hideOnEscape =true,}
@@ -754,7 +754,7 @@ local function setIslandButton(self)--离开海岛按钮
         if not self.island then
             self.island = e.Cbtn(nil, true)
             self.island:SetSize(50, 25)
-            self.island:SetText(e.onlyChinse and '离开' or LEAVE)
+            self.island:SetText(e.onlyChinese and '离开' or LEAVE)
             if Save.islandPoint then
                 self.island:SetPoint(Save.islandPoint[1], UIParent, Save.islandPoint[3], Save.islandPoint[4], Save.islandPoint[5])
             else
@@ -781,10 +781,10 @@ local function setIslandButton(self)--离开海岛按钮
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(id, addName)
-                e.tips:AddDoubleLine(e.onlyChinse and '海岛探险' or ISLANDS_HEADER, (wowSave[ISLANDS_HEADER] and wowSave[ISLANDS_HEADER] or 0)..' '..(e.onlyChinse and '次' or VOICEMACRO_LABEL_CHARGE1))
+                e.tips:AddDoubleLine(e.onlyChinese and '海岛探险' or ISLANDS_HEADER, (wowSave[ISLANDS_HEADER] and wowSave[ISLANDS_HEADER] or 0)..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(e.onlyChinse and '离开海岛' or ISLAND_LEAVE, e.Icon.left)
-                e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
+                e.tips:AddDoubleLine(e.onlyChinese and '离开海岛' or ISLAND_LEAVE, e.Icon.left)
+                e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
                 e.tips:Show()
             end)
             self.island:SetScript('OnLeave', function ()
@@ -912,7 +912,7 @@ local function Init()
         if not LFDRoleCheckPopupAcceptButton:IsEnabled() then
             LFDRoleCheckPopup_UpdateAcceptButton()
         end
-        print(id, addName, e.onlyChinse and '职责确认' or ROLE_POLL,'|cff00ff00'..ACCEPT, SecondsToTime(sec))
+        print(id, addName, e.onlyChinese and '职责确认' or ROLE_POLL,'|cff00ff00'..ACCEPT, SecondsToTime(sec))
         e.Ccool(self, nil, sec, nil, true, true)--设置冷却
         C_Timer.After(sec, function()
             if LFDRoleCheckPopupAcceptButton:IsEnabled() and not IsModifierKeyDown() then
@@ -1032,7 +1032,7 @@ local function setSTART_LOOT_ROLL(rollID, rollTime, lootHandle)--自动ROLL
 
     local _, _, _, quality, bindO_nPickUp, canNeed, canGreed, _, reasonNeed, reasonGreed = GetLootRollItemInfo(rollID)
     local rollType= canNeed and 1 or 2
-    local text= canNeed and (e.onlyChinse and '需求' or NEED)..'|TInterface\\Buttons\\UI-GroupLoot-Dice-Up:0|t' or canGreed and (e.onlyChinse and '贪婪' or GREED)..'|TInterface\\Buttons\\UI-GroupLoot-Coin-Up:0|t' or (e.onlyChinse and '无' or NONE)
+    local text= canNeed and (e.onlyChinese and '需求' or NEED)..'|TInterface\\Buttons\\UI-GroupLoot-Dice-Up:0|t' or canGreed and (e.onlyChinese and '贪婪' or GREED)..'|TInterface\\Buttons\\UI-GroupLoot-Coin-Up:0|t' or (e.onlyChinese and '无' or NONE)
     local link = GetLootRollItemLink(rollID)
     local find
 
@@ -1230,8 +1230,8 @@ local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(id, addName)
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(e.onlyChinse and '全部清除' or CLEAR_ALL, e.Icon.left)
-                e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
+                e.tips:AddDoubleLine(e.onlyChinese and '全部清除' or CLEAR_ALL, e.Icon.left)
+                e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
                 e.tips:Show()
             end)
             button.RoleInfo:SetScript('OnLeave', function() e.tips:Hide() end)
@@ -1330,7 +1330,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
         e.PlaySound()--播放, 声音
         C_PartyInfo.LeaveParty(LE_PARTY_CATEGORY_INSTANC)
         LFGTeleport(true)
-        print(id, addName, 	e.onlyChinse and '离开海岛' or ISLAND_LEAVE, '|cnGREEN_FONT_COLOR:'..wowSave[ISLANDS_HEADER]..'|r'..	VOICEMACRO_LABEL_CHARGE1)
+        print(id, addName, 	e.onlyChinese and '离开海岛' or ISLAND_LEAVE, '|cnGREEN_FONT_COLOR:'..wowSave[ISLANDS_HEADER]..'|r'..	VOICEMACRO_LABEL_CHARGE1)
 
     elseif event=='LFG_UPDATE_RANDOM_INFO' then
         setHoliday()--节日, 提示, button.texture
@@ -1341,7 +1341,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
     elseif event=='CORPSE_IN_RANGE' or event=='PLAYER_DEAD' or event=='AREA_SPIRIT_HEALER_IN_RANGE' then--仅限战场，释放, 复活
         if Save.ReMe and (C_PvP.IsBattleground() or C_PvP.IsArena()) then
             if event=='PLAYER_DEAD' then
-                print(id, addName,'|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '释放, 复活' or (BATTLE_PET_RELEASE..', '..RESURRECT)))
+                print(id, addName,'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '释放, 复活' or (BATTLE_PET_RELEASE..', '..RESURRECT)))
             end
             RepopMe()--死后将你的幽灵释放到墓地。
             RetrieveCorpse()--当玩家站在它的尸体附近时复活。
@@ -1354,7 +1354,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
             if PVPMatchResults and PVPMatchResults.buttonContainer and PVPMatchResults.buttonContainer.leaveButton then
                 e.Ccool(PVPMatchResults.buttonContainer.leaveButton, nil, sec, nil, true, true)
             end
-            print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '离开战场' or LEAVE_BATTLEGROUND), SecondsToTime(sec))
+            print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '离开战场' or LEAVE_BATTLEGROUND), SecondsToTime(sec))
             C_Timer.After(sec, function()
                 if not IsModifierKeyDown() then
                     if IsInLFDBattlefield() then

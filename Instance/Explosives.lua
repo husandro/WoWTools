@@ -111,7 +111,7 @@ end
 --#####
 local function Init_Menu(self, level, type)
     local info= {
-        text= e.onlyChinse and '透明度' or CHANGE_OPACITY,
+        text= e.onlyChinese and '透明度' or CHANGE_OPACITY,
         checked= Save.hide,
         func= function()
             Save.hide= not Save.hide and true or nil
@@ -123,7 +123,7 @@ local function Init_Menu(self, level, type)
     UIDropDownMenu_AddButton(info, level)
 
     info= {
-        text= e.onlyChinse and '队伍标记' or BINDING_HEADER_RAID_TARGET,
+        text= e.onlyChinese and '队伍标记' or BINDING_HEADER_RAID_TARGET,
         checked= Save.mark,
         func= function()
             Save.mark= not Save.mark and true or nil
@@ -132,7 +132,7 @@ local function Init_Menu(self, level, type)
     UIDropDownMenu_AddButton(info, level)
 
     info= {
-        text= e.onlyChinse and '播放' or EVENTTRACE_BUTTON_PLAY,
+        text= e.onlyChinese and '播放' or EVENTTRACE_BUTTON_PLAY,
         checked= Save.sound,
         icon= 'chatframe-button-icon-voicechat',
         disabled= not C_CVar.GetCVarBool('Sound_EnableAllSound') or C_CVar.GetCVar('Sound_MasterVolume')=='0',
@@ -187,7 +187,7 @@ local function set_Button()
                 e.tips:AddDoubleLine(name, filedataid and '|T'..filedataid ..':0|t' or ' ')
                 e.tips:AddLine(description, nil,nil,nil,true)
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine((e.onlyChinse and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..e.Icon.left, (e.onlyChinse and '移动' or NPE_MOVE)..e.Icon.right)
+                e.tips:AddDoubleLine((e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..e.Icon.left, (e.onlyChinese and '移动' or NPE_MOVE)..e.Icon.right)
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(id, addName)
                 e.tips:Show()
@@ -213,10 +213,10 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
             --添加控制面板        
-            local check= e.CPanel((e.onlyChinse and '爆炸物' or addName)..'|T2175503:0|t', not Save.disabled, nil, true)
+            local check= e.CPanel((e.onlyChinese and '爆炸物' or addName)..'|T2175503:0|t', not Save.disabled, nil, true)
             check:SetScript('OnMouseDown', function()
                 Save.disabled = not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需求重新加载' or REQUIRES_RELOAD)
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
             end)
             check:SetScript('OnEnter', function(self2)
                 local name, description, filedataid= C_ChallengeMode.GetAffixInfo(13)

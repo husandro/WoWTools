@@ -169,7 +169,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
 
 
         elseif classID==12 and itemQuality and itemQuality>0 then--任务
-            topRightText= e.onlyChinse and '任务' or e.WA_Utf8Sub(itemSubType, 2,5)
+            topRightText= e.onlyChinese and '任务' or e.WA_Utf8Sub(itemSubType, 2,5)
 
         elseif itemQuality==7 or itemQuality==8 then
             topRightText=e.Icon.wow2
@@ -451,7 +451,7 @@ local function Init()
     ContainerFrameCombinedBagsPortraitButton:HookScript('OnMouseDown',function ()
         UIDropDownMenu_AddSeparator()
         local info={--排序:从右到左
-            text= e.onlyChinse and '排序: 从右到左' or CLUB_FINDER_SORT_BY..': '..	INT_SPELL_POINTS_SPREAD_TEMPLATE:format(HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_RIGHT,HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_LEFT),
+            text= e.onlyChinese and '排序: 从右到左' or CLUB_FINDER_SORT_BY..': '..	INT_SPELL_POINTS_SPREAD_TEMPLATE:format(HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_RIGHT,HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_LEFT),
             checked= C_Container.GetSortBagsRightToLeft(),
             tooltipOnButton=true,
             tooltipTitle=id,
@@ -490,16 +490,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
             --添加控制面板        
-            local sel=e.CPanel(e.onlyChinse and '物品信息' or addName, not Save.disabled, true)
+            local sel=e.CPanel(e.onlyChinese and '物品信息' or addName, not Save.disabled, true)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end)
 
             sel:SetScript('OnEnter', function(self2)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                if e.onlyChinse then
+                if e.onlyChinese then
                     e.tips:AddDoubleLine('系统背包, 商人', '物品信息')
                 else
                     e.tips:AddDoubleLine(BAGSLOT..' '..MERCHANT, EMBLEM_SYMBOL..INFO)

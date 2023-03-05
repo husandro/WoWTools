@@ -247,7 +247,7 @@ end
 --####
 local function setUseMenu(level)--二级, 使用
     local info={
-        text= e.onlyChinse and '全部清除' or CLEAR_ALL,
+        text= e.onlyChinese and '全部清除' or CLEAR_ALL,
         notCheckable=true,
         func=function()
             Save.use={}
@@ -262,8 +262,8 @@ local function setUseMenu(level)--二级, 使用
             icon= C_Item.GetItemIconByID(itemID),
             checked=true,
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinse and '移除' or REMOVE,
-            tooltipText=num>1 and '\n'..(e.onlyChinse and '组合物品' or COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS))..'\n'..(e.onlyChinse and '数量' or AUCTION_STACK_SIZE)..': '..num,
+            tooltipTitle= e.onlyChinese and '移除' or REMOVE,
+            tooltipText=num>1 and '\n'..(e.onlyChinese and '组合物品' or COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS))..'\n'..(e.onlyChinese and '数量' or AUCTION_STACK_SIZE)..': '..num,
             func=function()
                 Save.use[itemID]=nil
                 getItems()
@@ -274,7 +274,7 @@ local function setUseMenu(level)--二级, 使用
 end
 local function setNoMenu(level)--二级,禁用
     local info={
-        text= e.onlyChinse and '全部清除' or CLEAR_ALL,
+        text= e.onlyChinese and '全部清除' or CLEAR_ALL,
         notCheckable=true,
         func=function()
             Save.no={}
@@ -319,14 +319,14 @@ local function setMenuList(self, level, menuList)--主菜单
         end
         t.tooltipOnButton=true
         if not UnitAffectingCombat('player') then
-            t.tooltipTitle='|cnRED_FONT_COLOR:'..(e.onlyChinse and '禁用' or DISABLE)..'|r'..e.Icon.mid..(e.onlyChinse and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP)
+            t.tooltipTitle='|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE)..'|r'..e.Icon.mid..(e.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP)
         end
     else
-        t.text=addName..': '..(e.onlyChinse and '无' or  NONE)
+        t.text=addName..': '..(e.onlyChinese and '无' or  NONE)
         t.isTitle=true
         t.tooltipOnButton=true
-        t.tooltipTitle= e.onlyChinse and '使用/禁用' or (USE..'/'..DISABLE)
-        t.tooltipText= e.onlyChinse and '拖曳物品到这里' or (DRAG_MODEL..ITEMS)
+        t.tooltipTitle= e.onlyChinese and '使用/禁用' or (USE..'/'..DISABLE)
+        t.tooltipText= e.onlyChinese and '拖曳物品到这里' or (DRAG_MODEL..ITEMS)
     end
 
     UIDropDownMenu_AddButton(t)
@@ -340,21 +340,21 @@ local function setMenuList(self, level, menuList)--主菜单
         use=use+1
     end
     t=UIDropDownMenu_CreateInfo()--自定义禁用列表
-    t.text= (e.onlyChinse and '禁用' or DISABLE)..' #'..no
+    t.text= (e.onlyChinese and '禁用' or DISABLE)..' #'..no
     t.notCheckable=1
     t.menuList='NO'
     t.hasArrow=true
     UIDropDownMenu_AddButton(t)
 
     t=UIDropDownMenu_CreateInfo()--自定义使用列表
-    t.text= (e.onlyChinse and '使用' or USE)..' #'..use
+    t.text= (e.onlyChinese and '使用' or USE)..' #'..use
     t.notCheckable=1
     t.menuList='USE'
     t.hasArrow=true
     UIDropDownMenu_AddButton(t)
 
     t={
-        text= e.onlyChinse and '<右键点击打开>' or ITEM_OPENABLE,
+        text= e.onlyChinese and '<右键点击打开>' or ITEM_OPENABLE,
         checked=Save.open,
         func=function()
             Save.open= not Save.open and true or nil
@@ -364,7 +364,7 @@ local function setMenuList(self, level, menuList)--主菜单
     UIDropDownMenu_AddButton(t)
 
     t={
-        text= e.onlyChinse and '宠物' or PET,
+        text= e.onlyChinese and '宠物' or PET,
         tooltipOnButton=true,
         tooltipTitle= '<3',
         checked=Save.pet,
@@ -376,7 +376,7 @@ local function setMenuList(self, level, menuList)--主菜单
     UIDropDownMenu_AddButton(t)
 
     t={
-        text= e.onlyChinse and '玩具' or TOY,
+        text= e.onlyChinese and '玩具' or TOY,
         checked=Save.toy,
         func=function()
             Save.toy= not Save.toy and true or nil
@@ -386,7 +386,7 @@ local function setMenuList(self, level, menuList)--主菜单
     UIDropDownMenu_AddButton(t)
 
     t={
-        text= e.onlyChinse and '坐骑' or MOUNTS,
+        text= e.onlyChinese and '坐骑' or MOUNTS,
         checked=Save.mount,
         func=function()
             Save.mount= not Save.mount and true or nil
@@ -396,7 +396,7 @@ local function setMenuList(self, level, menuList)--主菜单
     UIDropDownMenu_AddButton(t)
 
     t={
-        text= e.onlyChinse and '幻化' or TRANSMOGRIFY,
+        text= e.onlyChinese and '幻化' or TRANSMOGRIFY,
         checked=Save.mago,
         func=function()
             Save.mago= not Save.mago and true or nil
@@ -406,7 +406,7 @@ local function setMenuList(self, level, menuList)--主菜单
     UIDropDownMenu_AddButton(t)
 
     t={
-        text= e.onlyChinse and '配方' or TRADESKILL_SERVICE_LEARN,
+        text= e.onlyChinese and '配方' or TRADESKILL_SERVICE_LEARN,
         checked=Save.ski,
         func=function()
             Save.ski= not Save.ski and true or nil
@@ -416,7 +416,7 @@ local function setMenuList(self, level, menuList)--主菜单
     UIDropDownMenu_AddButton(t)
 
     t={
-        text= e.onlyChinse and '其它' or BINDING_HEADER_OTHER,
+        text= e.onlyChinese and '其它' or BINDING_HEADER_OTHER,
         checked=Save.alt,
         func=function()
             Save.alt= not Save.alt and true or nil
@@ -427,9 +427,9 @@ local function setMenuList(self, level, menuList)--主菜单
 
     UIDropDownMenu_AddSeparator()
     t={
-        text= e.onlyChinse and '自动隐藏' or (AUTO_JOIN:gsub(JOIN,'')..HIDE),
+        text= e.onlyChinese and '自动隐藏' or (AUTO_JOIN:gsub(JOIN,'')..HIDE),
         tooltipOnButton=true,
-        tooltipTitle= e.onlyChinse and '未发现物品' or BROWSE_NO_RESULTS,
+        tooltipTitle= e.onlyChinese and '未发现物品' or BROWSE_NO_RESULTS,
         func=function()
             Save.noItemHide= not Save.noItemHide and true or nil
             button:SetShown(Bag.bag or not Save.noItemHide)
@@ -438,7 +438,7 @@ local function setMenuList(self, level, menuList)--主菜单
     }
     UIDropDownMenu_AddButton(t)
 
-    UIDropDownMenu_AddButton({text= e.onlyChinse and '拖曳物品: 使用/禁用' or (DRAG_MODEL..ITEMS..'('..USE..'/'..DISABLE..')'), isTitle=true, notCheckable=true})
+    UIDropDownMenu_AddButton({text= e.onlyChinese and '拖曳物品: 使用/禁用' or (DRAG_MODEL..ITEMS..'('..USE..'/'..DISABLE..')'), isTitle=true, notCheckable=true})
 end
 
 
@@ -461,7 +461,7 @@ local function shoTips(self)--显示提示
             e.tips:SetBagItem(Bag.bag, Bag.slot)
             if not UnitAffectingCombat('player') then
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(e.Icon.mid..(e.onlyChinse and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP), e.onlyChinse and '禁用' or DISABLE, 1,0,0, 1,0,0 )
+                e.tips:AddDoubleLine(e.Icon.mid..(e.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP), e.onlyChinese and '禁用' or DISABLE, 1,0,0, 1,0,0 )
             end
             e.tips:Show()
         end
@@ -499,15 +499,15 @@ local function Init()
             end
             --添加，移除
             StaticPopupDialogs['OpenItmesUseOrDisableItem']={
-                text=id..' '..addName..'\n\n%s\n%s\n\n'..(e.onlyChinse and '合成物品' or COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS))..' >1: ',
+                text=id..' '..addName..'\n\n%s\n%s\n\n'..(e.onlyChinese and '合成物品' or COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS))..' >1: ',
                 whileDead=1,
                 hideOnEscape=1,
                 exclusive=1,
                 timeout = 60,
                 hasEditBox=1,
-                button1='|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '使用' or USE)..'|r',
+                button1='|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '使用' or USE)..'|r',
                 button2=CANCEL,
-                button3='|cnRED_FONT_COLOR:'..(e.onlyChinse and '禁用' or DISABLE)..'|r',
+                button3='|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE)..'|r',
                 OnShow = function(self2, data)
                     self2.editBox:SetNumeric(true)
                     local num=Save.use[data.itemID] or 1
@@ -520,20 +520,20 @@ local function Init()
                     Save.use[data.itemID]=num
                     Save.no[data.itemID]=nil
                     getItems()--取得背包物品信息
-                    print(id, '|cnGREEN_FONT_COLOR:'..addName..'|r', num>1 and (e.onlyChinse and '合成物品' or COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS))..': '..'|cnGREEN_FONT_COLOR:'..num..'|r' or '', data.itemLink)
+                    print(id, '|cnGREEN_FONT_COLOR:'..addName..'|r', num>1 and (e.onlyChinese and '合成物品' or COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS))..': '..'|cnGREEN_FONT_COLOR:'..num..'|r' or '', data.itemLink)
                 end,
                 OnAlt = function(self2, data)
                     Save.no[data.itemID]=true
                     Save.use[data.itemID]=nil
                     getItems()--取得背包物品信息
-                    print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinse and '禁用' or DISABLE)..'|r', data.itemLink)
+                    print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE)..'|r', data.itemLink)
                 end,
                 EditBoxOnTextChanged=function(self2)
                    local num= self2:GetNumber()
                     if num>1 then
-                       self2:GetParent().button1:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '合成' or AUCTION_STACK_SIZE)..' '..num..'|r')
+                       self2:GetParent().button1:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '合成' or AUCTION_STACK_SIZE)..' '..num..'|r')
                     else
-                        self2:GetParent().button1:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '使用' or USE)..'|r');
+                        self2:GetParent().button1:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '使用' or USE)..'|r');
                     end
                 end,
                 EditBoxOnEscapePressed = function(s)
@@ -544,7 +544,7 @@ local function Init()
             local icon
             icon= C_Item.GetItemIconByID(itemID)
             icon = icon and '|T'..icon..':0|t'..itemLink or ''
-            local list=Save.use[itemID] and (e.onlyChinse and '当前列表' or PROFESSIONS_CURRENT_LISTINGS)..': |cff00ff00'..(e.onlyChinse and '使用' or USE)..'|r' or Save.no[itemID] and (e.onlyChinse and '当前列表' or PROFESSIONS_CURRENT_LISTINGS)..': |cffff0000'..(e.onlyChinse and '禁用' or DISABLE)..'|r' or ''
+            local list=Save.use[itemID] and (e.onlyChinese and '当前列表' or PROFESSIONS_CURRENT_LISTINGS)..': |cff00ff00'..(e.onlyChinese and '使用' or USE)..'|r' or Save.no[itemID] and (e.onlyChinese and '当前列表' or PROFESSIONS_CURRENT_LISTINGS)..': |cffff0000'..(e.onlyChinese and '禁用' or DISABLE)..'|r' or ''
             StaticPopup_Show('OpenItmesUseOrDisableItem',icon,list, {itemID=itemID, itemLink=itemLink})
             ClearCursor()
         else

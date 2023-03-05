@@ -127,15 +127,15 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
             --添加控制面板        
-            local sel=e.CPanel((e.onlyChinse and '驭龙术速度' or addName)..'|A:dragonriding_vigor_decor:0:0|a', not Save.disabled, true)
+            local sel=e.CPanel((e.onlyChinese and '驭龙术速度' or addName)..'|A:dragonriding_vigor_decor:0:0|a', not Save.disabled, true)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled = not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '重新加载UI' or RELOADUI)
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
             end)
             sel:SetScript('OnEnter', function(self2)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                if e.onlyChinse then
+                if e.onlyChinese then
                     e.tips:AddDoubleLine('仅限: 不在副本', '等级: '..70)
                     e.tips:AddDoubleLine('仅限: 水平', '速度')
                 else

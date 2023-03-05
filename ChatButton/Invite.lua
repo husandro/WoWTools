@@ -22,10 +22,10 @@ local function toRaidOrParty(number)--自动, 转团
         local raid= IsInRaid()
         if number>5 and not raid then
             C_PartyInfo.ConvertToRaid()
-            print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '转团' or CONVERT_TO_RAID)..'|r')
+            print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '转团' or CONVERT_TO_RAID)..'|r')
         elseif number<5 and raid then
             C_PartyInfo.ConvertToParty()
-            print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '转小队' or CONVERT_TO_RAID)..'|r')
+            print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '转小队' or CONVERT_TO_RAID)..'|r')
         end
     end
 end
@@ -77,14 +77,14 @@ end
 local InvPlateTimer
 local InvUnitFunc=function()--邀请，周围玩家
     if not getLeader() then--取得权限
-        print(id,addName, '|cnRED_FONT_COLOR:', e.onlyChinse and '你没有权利这样做' or ERR_GUILD_PERMISSIONS)
+        print(id,addName, '|cnRED_FONT_COLOR:', e.onlyChinese and '你没有权利这样做' or ERR_GUILD_PERMISSIONS)
         return
     end
 
     local p=C_CVar.GetCVarBool('nameplateShowFriends')
     if not p then
         if UnitAffectingCombat('player') then
-            print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinse and '战斗中' or COMBAT))
+            print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT))
             return
         else
             C_CVar.SetCVar('nameplateShowFriends', '1')
@@ -97,10 +97,10 @@ local InvUnitFunc=function()--邀请，周围玩家
         local co=GetNumGroupMembers()
         local raid=IsInRaid()
         if (not raid and co==5) and not Save.PartyToRaid then
-            print(id, addName, format(e.onlyChinse and '请愿：%s' or PETITION_TITLE, '|cff00ff00'..(e.onlyChinse and '转团' or CONVERT_TO_RAID)..'|r'))
+            print(id, addName, format(e.onlyChinese and '请愿：%s' or PETITION_TITLE, '|cff00ff00'..(e.onlyChinese and '转团' or CONVERT_TO_RAID)..'|r'))
 
         elseif co==40 then
-            print(id, addName, RED_FONT_COLOR_CODE..'|r', co, e.onlyChinse and '队员' or PLAYERS_IN_GROUP)
+            print(id, addName, RED_FONT_COLOR_CODE..'|r', co, e.onlyChinese and '队员' or PLAYERS_IN_GROUP)
         else
             toRaidOrParty(co)--自动, 转团
             local tab= C_NamePlate.GetNamePlates() or {}
@@ -112,9 +112,9 @@ local InvUnitFunc=function()--邀请，周围玩家
                     if not InvPlateGuid[guid] then
                         C_PartyInfo.InviteUnit(name)
                         InvPlateGuid[guid]=name
-                        print(id, '|cnGREEN_FONT_COLOR:'..n..'|r)', e.onlyChinse and '邀请' or INVITE ,e.PlayerLink(name, guid))
+                        print(id, '|cnGREEN_FONT_COLOR:'..n..'|r)', e.onlyChinese and '邀请' or INVITE ,e.PlayerLink(name, guid))
                         if not raid and n +co>=5  then
-                            print(id, addName, format(PETITION_TITLE, '|cff00ff00'..(e.onlyChinse and '转团' or CONVERT_TO_RAID)..'|r'))
+                            print(id, addName, format(PETITION_TITLE, '|cff00ff00'..(e.onlyChinese and '转团' or CONVERT_TO_RAID)..'|r'))
                             break
                         end
                         n=n+1
@@ -126,7 +126,7 @@ local InvUnitFunc=function()--邀请，周围玩家
             C_CVar.SetCVar('nameplateShowFriends', '0')
         end
         if n==1 then
-            print(id, addName, e.onlyChinse and '邀请成员' or GUILDCONTROL_OPTION7, '|cnRED_FONT_COLOR:'..(e.onlyChinse and '无' or NONE))
+            print(id, addName, e.onlyChinese and '邀请成员' or GUILDCONTROL_OPTION7, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE))
         end
     end)
 end
@@ -256,16 +256,16 @@ local function set_LFGListInviteDialog(self)--队伍查找器, 自动接受邀�
     if status=="invited" then
         local info= C_LFGList.GetSearchResultInfo(self.resultID)
         if self.AcceptButton and self.AcceptButton:IsEnabled() and info then
-            print(id, e.onlyChinse and '接受' or ACCEPT, addName,
+            print(id, e.onlyChinese and '接受' or ACCEPT, addName,
                 info.leaderOverallDungeonScore and info.leaderOverallDungeonScore>0 and '|T4352494:0|t'..e.GetKeystoneScorsoColor(info.leaderOverallDungeonScore) or '',--地下城史诗,分数
                 info.leaderPvpRatingInfo and  info.leaderPvpRatingInfo.rating and info.leaderPvpRatingInfo.rating>0 and '|A:pvptalents-warmode-swords:0:0|a|cnRED_FONT_COLOR:'..info.leaderPvpRatingInfo.rating..'|r' or '',--PVP 分数
-                info.leaderName and (e.onlyChinse and '%s邀请你加入' or COMMUNITY_INVITATION_FRAME_INVITATION_TEXT):format(e.PlayerLink(info.leaderName)..' ') or '',--	%s邀请你加入
+                info.leaderName and (e.onlyChinese and '%s邀请你加入' or COMMUNITY_INVITATION_FRAME_INVITATION_TEXT):format(e.PlayerLink(info.leaderName)..' ') or '',--	%s邀请你加入
                 info.name and info.name or '',--名称
                 e.Icon[role] or '',
-                info.numMembers and (e.onlyChinse and '队员' or PLAYERS_IN_GROUP)..'|cff00ff00 '..info.numMembers..'|r' or '',--队伍成员数量
-                info.autoAccept and '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '自动邀请' or AUTO_JOIN:gsub(JOIN,INVITE))..'|r' or '',--对方是否开启, 自动邀请
+                info.numMembers and (e.onlyChinese and '队员' or PLAYERS_IN_GROUP)..'|cff00ff00 '..info.numMembers..'|r' or '',--队伍成员数量
+                info.autoAccept and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '自动邀请' or AUTO_JOIN:gsub(JOIN,INVITE))..'|r' or '',--对方是否开启, 自动邀请
                 info.activityID and '|cffff00ff'..C_LFGList.GetActivityFullName(info.activityID)..'|r' or '',--查找器,类型
-                info.isWarMode~=nil and info.isWarMode ~= C_PvP.IsWarModeDesired() and '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '战争模式' or TALENT_FRAME_LABEL_WARMODE)..'|r' or ''
+                info.isWarMode~=nil and info.isWarMode ~= C_PvP.IsWarModeDesired() and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '战争模式' or TALENT_FRAME_LABEL_WARMODE)..'|r' or ''
             )
             e.PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
             e.Ccool(self, nil, 3, nil, true, true, nil)--冷却条
@@ -305,10 +305,10 @@ local function set_PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNati
     local function setPrint(sec, text)
         e.PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
         print(id, addName, text,
-            '|cnGREEN_FONT_COLOR:'..sec.. ' |r'..(e.onlyChinse and '秒' or SECONDS),
+            '|cnGREEN_FONT_COLOR:'..sec.. ' |r'..(e.onlyChinese and '秒' or SECONDS),
             (isTank and e.Icon.TANK or '')..(isHealer and e.Icon.HEALER or '')..(isDamage and e.Icon.DAMAGER or ''),
-            questSessionActive and (e.onlyChinse and '场景战役' or SCENARIOS) or '',--场景战役
-            isNativeRealm and '|cnGREEN_FONT_COLOR:'..format(e.onlyChinse and '%s其它服务器' or INVITATION_XREALM, e.PlayerLink(nil, inviterGUID)) or e.PlayerLink(nil, inviterGUID)--转服务器
+            questSessionActive and (e.onlyChinese and '场景战役' or SCENARIOS) or '',--场景战役
+            isNativeRealm and '|cnGREEN_FONT_COLOR:'..format(e.onlyChinese and '%s其它服务器' or INVITATION_XREALM, e.PlayerLink(nil, inviterGUID)) or e.PlayerLink(nil, inviterGUID)--转服务器
         )
         e.Ccool(F, nil, sec, nil, true, true, nil)--冷却条    
     end
@@ -328,8 +328,8 @@ local function set_PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNati
         end)
 
     elseif Save.InvNoFriend[inviterGUID] then--拒绝
-        setPrint(3, '|cnRED_FONT_COLOR:'..(e.onlyChinse and '拒绝' or DECLINE)..'|r'..Save.InvNoFriend[inviterGUID]..'/'..Save.InvNoFriendNum)
-        F.button3:SetText('|cnRED_FONT_COLOR:'..(e.onlyChinse and '移除' or REMOVE)..'|r'..(e.onlyChinse and '接受' or ACCEPT))
+        setPrint(3, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '拒绝' or DECLINE)..'|r'..Save.InvNoFriend[inviterGUID]..'/'..Save.InvNoFriendNum)
+        F.button3:SetText('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r'..(e.onlyChinese and '接受' or ACCEPT))
         notInviterGUID=inviterGUID
         if F.InvTimer then F.InvTimer:Cancel() end
         F.InvTimer = C_Timer.NewTimer(3, function()
@@ -340,9 +340,9 @@ local function set_PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNati
         end)
 
     elseif IsResting() and Save.NoInvInResting and not questSessionActive then--休息区不组队
-        setPrint(3, '|cnRED_FONT_COLOR:'..(e.onlyChinse and '' or DECLINE)..'|r'..(e.onlyChinse and '休息区' or (CALENDAR_STATUS_OUT..ZONE)))
+        setPrint(3, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '' or DECLINE)..'|r'..(e.onlyChinese and '休息区' or (CALENDAR_STATUS_OUT..ZONE)))
 
-        F.button3:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '添加' or ADD)..'|r'..(e.onlyChinse and '拒绝' or DECLINE))
+        F.button3:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r'..(e.onlyChinese and '拒绝' or DECLINE))
         notInviterGUID=inviterGUID
         if F.InvTimer then F.InvTimer:Cancel() end
         F.InvTimer = C_Timer.NewTimer(3, function()
@@ -352,7 +352,7 @@ local function set_PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNati
         end)
 
     else--添加 拒绝 陌生人
-        F.button3:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '添加' or ADD)..'|r'..(e.onlyChinse and '拒绝' or DECLINE))
+        F.button3:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r'..(e.onlyChinese and '拒绝' or DECLINE))
         notInviterGUID=inviterGUID
 
         e.Ccool(F, nil, STATICPOPUP_TIMEOUT, nil, true, true, nil)--冷却条
@@ -371,9 +371,9 @@ local function set_event_PLAYER_UPDATE_RESTING()--设置, 休息区提示事件
 end
 local function set_PLAYER_UPDATE_RESTING()--设置, 休息区提示
     if IsResting() then
-        print(id, addName, e.onlyChinse and '进入' or  ENTER_LFG, '|cnGREEN_FONT_COLOR:'..(e.onlyChinse and '休息' or CALENDAR_STATUS_OUT)..'|r',  e.onlyChinse and '区域' or ZONE)
+        print(id, addName, e.onlyChinese and '进入' or  ENTER_LFG, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '休息' or CALENDAR_STATUS_OUT)..'|r',  e.onlyChinese and '区域' or ZONE)
     else
-        print(id, addName, e.onlyChinse and '离开' or LEAVE, '|cnRED_FONT_COLOR:'..( e.onlyChinse and '休息' or CALENDAR_STATUS_OUT)..'|r', e.onlyChinse and '区域' or ZONE)
+        print(id, addName, e.onlyChinese and '离开' or LEAVE, '|cnRED_FONT_COLOR:'..( e.onlyChinese and '休息' or CALENDAR_STATUS_OUT)..'|r', e.onlyChinese and '区域' or ZONE)
     end
 end
 
@@ -387,7 +387,7 @@ local function set_LFGPlus()--预创建队伍增强
     local f=LFGListFrame.SearchPanel.RefreshButton--界面, 添加, 选项    
     f.ace = CreateFrame("CheckButton", nil, f, "InterfaceOptionsCheckButtonTemplate")--自动进组  选项
     f.ace:SetPoint('RIGHT',f, 'LEFT',-90,0)
-    f.ace.Text:SetText('|cFFFFD000'..(e.onlyChinse and '自动接受' or AUTO_JOIN:gsub(JOIN, ACCEPT))..'|r')
+    f.ace.Text:SetText('|cFFFFD000'..(e.onlyChinese and '自动接受' or AUTO_JOIN:gsub(JOIN, ACCEPT))..'|r')
     f.ace:SetChecked(Save.LFGListAceInvite)
     f.ace:SetScript("OnMouseDown", function (s)
             Save.LFGListAceInvite=s:GetChecked()
@@ -396,7 +396,7 @@ local function set_LFGPlus()--预创建队伍增强
     f=LFGListFrame.ApplicationViewer.DataDisplay --自动邀请 选项
     f.inv = CreateFrame("CheckButton",nil, f, "InterfaceOptionsCheckButtonTemplate")
     f.inv:SetPoint("BOTTOMLEFT", f, "TOPLEFT", 0, -10)
-    f.inv.Text:SetText('|cFFFFD000'..(e.onlyChinse and '自动邀请' or AUTO_JOIN:gsub(JOIN, INVITE))..'|r')
+    f.inv.Text:SetText('|cFFFFD000'..(e.onlyChinese and '自动邀请' or AUTO_JOIN:gsub(JOIN, INVITE))..'|r')
     f.inv:SetChecked(Save.LFGAutoInv)
     f.inv:SetScript("OnMouseDown", function(s)
             Save.LFGAutoInv=s:GetChecked()
@@ -404,7 +404,7 @@ local function set_LFGPlus()--预创建队伍增强
 
     f.raid = CreateFrame("CheckButton",nil, f, "InterfaceOptionsCheckButtonTemplate")--转化为团队 选项
     f.raid:SetPoint("TOPLEFT", f, "BOTTOMLEFT", 0, 8)
-    f.raid.Text:SetText('|cFFFFD000'..(e.onlyChinse and '转团' or CONVERT_TO_RAID)..'|r')
+    f.raid.Text:SetText('|cFFFFD000'..(e.onlyChinese and '转团' or CONVERT_TO_RAID)..'|r')
     f.raid:SetChecked(Save.PartyToRaid)
 
     f.raid:SetScript("OnMouseDown", function(s)
@@ -479,13 +479,13 @@ local function InitList(self, level, type)
     --对话框
     --#####
     StaticPopupDialogs[id..addName..'CHANNEL']={--设置,内容,频道, 邀请,事件
-        text=id..' '..addName..' '..(e.onlyChinse and '频道' or CHANNEL)..'\n\n'..(e.onlyChinse and '关键词' or KBASE_DEFAULT_SEARCH_TEXT),
+        text=id..' '..addName..' '..(e.onlyChinese and '频道' or CHANNEL)..'\n\n'..(e.onlyChinese and '关键词' or KBASE_DEFAULT_SEARCH_TEXT),
         whileDead=1,
         hideOnEscape=1,
         exclusive=1,
         timeout = 60,
         hasEditBox=1,
-        button1= e.onlyChinse and '修改' or SLASH_CHAT_MODERATE2:gsub('/',''),
+        button1= e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/',''),
         button2=CANCEL,
         OnShow = function(self, data)
             self.editBox:SetText(Save.ChannelText or (e.Player.zh and '1' or 'inv'))
@@ -493,7 +493,7 @@ local function InitList(self, level, type)
         end,
         OnAccept = function(self, data)
             Save.ChannelText = string.upper(self.editBox:GetText())
-            print(id, addName, e.onlyChinse and '频道' or CHANNEL,'|cnGREEN_FONT_COLOR:'..Save.ChannelText..'|r')
+            print(id, addName, e.onlyChinese and '频道' or CHANNEL,'|cnGREEN_FONT_COLOR:'..Save.ChannelText..'|r')
         end,
         EditBoxOnTextChanged=function(self, data)
             local text= self:GetText()
@@ -508,14 +508,14 @@ local function InitList(self, level, type)
     local info
     if type=='InvUnit' then--邀请单位    
         info={
-            text= e.onlyChinse and '邀请成员' or GUILDCONTROL_OPTION7,
+            text= e.onlyChinese and '邀请成员' or GUILDCONTROL_OPTION7,
             notCheckable=true,
             isTitle=true,
         }
         UIDropDownMenu_AddButton(info, level)
 
         info={--邀请LFD
-            text= e.onlyChinse and '队伍查找器' or DUNGEONS_BUTTON,
+            text= e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON,
             func=function()
                 Save.LFGAutoInv= not Save.LFGAutoInv and true or nil
                 local f=(LFGListFrame and LFGListFrame.ApplicationViewer) and LFGListFrame.ApplicationViewer.DataDisplay.inv
@@ -526,12 +526,12 @@ local function InitList(self, level, type)
             end,
             checked=Save.LFGAutoInv,
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinse and '仅限: |cnRED_FONT_COLOR:队长|r' or format(GROUP_FINDER_CROSS_FACTION_LISTING_WITHOUT_PLAYSTLE, '|cff00ff00'..LEADER..'|r'),
+            tooltipTitle= e.onlyChinese and '仅限: |cnRED_FONT_COLOR:队长|r' or format(GROUP_FINDER_CROSS_FACTION_LISTING_WITHOUT_PLAYSTLE, '|cff00ff00'..LEADER..'|r'),
         }
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text= e.onlyChinse and '邀请目标' or INVITE..TARGET,
+            text= e.onlyChinese and '邀请目标' or INVITE..TARGET,
             checked=Save.InvTar,
             disabled=IsInInstance() and true or nil,
 
@@ -542,17 +542,17 @@ local function InitList(self, level, type)
                 setTexture()--设置图标颜色, 是否有权限, 是否转团, 邀请选项提示
             end,
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinse and '仅限: 队长 |cnRED_FONT_COLOR:不在副本|r' or format(GROUP_FINDER_CROSS_FACTION_LISTING_WITHOUT_PLAYSTLE, '|cff00ff00'..LEADER..'|r'..NO..'|cnRED_FONT_COLOR:'..INSTANCE..'|r'),
+            tooltipTitle= e.onlyChinese and '仅限: 队长 |cnRED_FONT_COLOR:不在副本|r' or format(GROUP_FINDER_CROSS_FACTION_LISTING_WITHOUT_PLAYSTLE, '|cff00ff00'..LEADER..'|r'..NO..'|cnRED_FONT_COLOR:'..INSTANCE..'|r'),
         }
         UIDropDownMenu_AddButton(info, level)
 
         info={--设置,频道,事件
-            text= (e.onlyChinse and '频道' or CHANNEL)..(Save.ChannelText and '|cnGREEN_FONT_COLOR: '..Save.ChannelText..'|r' or ''),--内容,频道, 邀请
+            text= (e.onlyChinese and '频道' or CHANNEL)..(Save.ChannelText and '|cnGREEN_FONT_COLOR: '..Save.ChannelText..'|r' or ''),--内容,频道, 邀请
             checked=Save.Channel,
             colorCode=not Save.ChannelText and '|cff606060',
             tooltipOnButton=true,
-            tooltipTitle=Save.ChannelText or (e.onlyChinse and '无' or NONE),
-            tooltipText= e.onlyChinse and '说, 喊, 密语' or (SAY..', '..YELL..', '..WHISPER),
+            tooltipTitle=Save.ChannelText or (e.onlyChinese and '无' or NONE),
+            tooltipText= e.onlyChinese and '说, 喊, 密语' or (SAY..', '..YELL..', '..WHISPER),
             hasArrow=true,
             menuList='ChannelText',
             func= function()
@@ -564,19 +564,19 @@ local function InitList(self, level, type)
         UIDropDownMenu_AddButton(info, level)
 
         info={--已邀请列表
-            text= e.onlyChinse and '已邀请' or LFG_LIST_APP_INVITED,--三级列表，已邀请列表
+            text= e.onlyChinese and '已邀请' or LFG_LIST_APP_INVITED,--三级列表，已邀请列表
             notCheckable=true,
             menuList='InvUnitAll',
             hasArrow=true,
             func=InvPlateGuidFunc,
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinse and '邀请全部' or CALENDAR_INVITE_ALL,
+            tooltipTitle= e.onlyChinese and '邀请全部' or CALENDAR_INVITE_ALL,
         }
         UIDropDownMenu_AddButton(info, level)
         UIDropDownMenu_AddSeparator(level)
 
         info={--转团
-            text=e.onlyChinse and '转团' or CONVERT_TO_RAID,
+            text=e.onlyChinese and '转团' or CONVERT_TO_RAID,
             func=function()
                 Save.PartyToRaid= not Save.PartyToRaid and true or nil
                 local f=(LFGListFrame and LFGListFrame.ApplicationViewer and LFGListFrame.ApplicationViewer.DataDisplay) and LFGListFrame.ApplicationViewer.DataDisplay.raid
@@ -586,21 +586,21 @@ local function InitList(self, level, type)
                 setTexture()--设置图标颜色, 是否有权限, 是否转团
             end,
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinse and '仅限队伍查找器' or format(GROUP_FINDER_CROSS_FACTION_LISTING_WITHOUT_PLAYSTLE, '|cff00ff00'..DUNGEONS_BUTTON..'|r'),
+            tooltipTitle= e.onlyChinese and '仅限队伍查找器' or format(GROUP_FINDER_CROSS_FACTION_LISTING_WITHOUT_PLAYSTLE, '|cff00ff00'..DUNGEONS_BUTTON..'|r'),
             checked= Save.PartyToRaid,
         }
         UIDropDownMenu_AddButton(info, level)
 
 
         info={
-            text= e.onlyChinse and '预创建队伍增强' or SCORE_POWER_UPS:gsub(ITEMS,LFGLIST_NAME),
+            text= e.onlyChinese and '预创建队伍增强' or SCORE_POWER_UPS:gsub(ITEMS,LFGLIST_NAME),
             func=function()
                 Save.LFGPlus = not Save.LFGPlus and true or nil
-                print(id, addName, e.GetEnabeleDisable(Save.LFGPlus), e.onlyChinse and '需求重新加载' or REQUIRES_RELOAD)
+                print(id, addName, e.GetEnabeleDisable(Save.LFGPlus), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
             end,
             checked=Save.LFGPlus,
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinse and '预创建队伍' or LFGLIST_NAME,
+            tooltipTitle= e.onlyChinese and '预创建队伍' or LFGLIST_NAME,
         }
         UIDropDownMenu_AddButton(info, level)
 
@@ -611,7 +611,7 @@ local function InitList(self, level, type)
                 info={
                     text=e.GetPlayerInfo(nil, guid, true),
                     tooltipOnButton=true,
-                    tooltipTitle= e.onlyChinse and '邀请' or INVITE,
+                    tooltipTitle= e.onlyChinese and '邀请' or INVITE,
                     tooltipText=name,
                     notCheckable=true,
                     func=function()
@@ -626,7 +626,7 @@ local function InitList(self, level, type)
         end
         if n==0 then
             info={
-                text= e.onlyChinse and '无' or NONE,
+                text= e.onlyChinese and '无' or NONE,
                 notCheckable=true,
                 isTitle=true,
             }
@@ -634,14 +634,14 @@ local function InitList(self, level, type)
         else
             UIDropDownMenu_AddSeparator(level)
             info={
-                text= '|cff00ff00'..(e.onlyChinse and '邀请全部' or CALENDAR_INVITE_ALL)..'|r',
+                text= '|cff00ff00'..(e.onlyChinese and '邀请全部' or CALENDAR_INVITE_ALL)..'|r',
                 notCheckable=true,
                 func= InvPlateGuidFunc,
             }
             UIDropDownMenu_AddButton(info, level)
 
             info={
-                text='|cffff0000'..(e.onlyChinse and '全部清除' or CLEAR_ALL)..'|r',
+                text='|cffff0000'..(e.onlyChinese and '全部清除' or CLEAR_ALL)..'|r',
                 notCheckable=true,
                 func=function()
                     InvPlateGuid={}
@@ -652,14 +652,14 @@ local function InitList(self, level, type)
 
     elseif type=='ACEINVITE' then--自动接受邀请
         info={--队伍查找器
-            text= e.onlyChinse and '接受邀请' or CALENDAR_ACCEPT_INVITATION,
+            text= e.onlyChinese and '接受邀请' or CALENDAR_ACCEPT_INVITATION,
             isTitle=true,
             notCheckable=true,
         }
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text= e.onlyChinse and '队伍查找器' or DUNGEONS_BUTTON,
+            text= e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON,
             checked=Save.LFGListAceInvite,
             func=function()
                 Save.LFGListAceInvite= not Save.LFGListAceInvite and true or nil
@@ -669,10 +669,10 @@ local function InitList(self, level, type)
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text= e.onlyChinse and '好友' or FRIENDS,
+            text= e.onlyChinese and '好友' or FRIENDS,
             checked=Save.FriendAceInvite,
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinse and '战网, 好友, 公会' or (COMMUNITY_COMMAND_BATTLENET..', '..FRIENDS..', '..GUILD),
+            tooltipTitle= e.onlyChinese and '战网, 好友, 公会' or (COMMUNITY_COMMAND_BATTLENET..', '..FRIENDS..', '..GUILD),
             func=function()
                 Save.FriendAceInvite= not Save.FriendAceInvite and true or nil
                 setTexture()--设置图标颜色, 是否有权限, 是否转团, 邀请选项提示
@@ -682,12 +682,12 @@ local function InitList(self, level, type)
 
         UIDropDownMenu_AddSeparator(level)
         info={
-            text= e.onlyChinse and '召唤' or SUMMON,
+            text= e.onlyChinese and '召唤' or SUMMON,
             icon='Raid-Icon-SummonPending',
             checked= Save.Summon,
             tooltipOnButton=true,
-            tooltipTitle= '|cnRED_FONT_COLOR:'..(e.onlyChinse and '取消' or CANCEL)..'|r',
-            tooltipText= e.onlyChinse and '战斗中\n离开\nalt' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..'\n'..AFK..'\nalt',
+            tooltipTitle= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL)..'|r',
+            tooltipText= e.onlyChinese and '战斗中\n离开\nalt' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..'\n'..AFK..'\nalt',
             func= function()
                 Save.Summon= not Save.Summon and true or nil
             end
@@ -696,7 +696,7 @@ local function InitList(self, level, type)
 
     elseif type=='NoInv' then
         info={
-            text= e.onlyChinse and '拒绝邀请' or LFG_LIST_APP_INVITE_DECLINED,--三级列表，拒绝邀请列表
+            text= e.onlyChinese and '拒绝邀请' or LFG_LIST_APP_INVITE_DECLINED,--三级列表，拒绝邀请列表
             notCheckable=true,
             menuList='NoInvList',
             hasArrow=true,
@@ -704,11 +704,11 @@ local function InitList(self, level, type)
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text= e.onlyChinse and '|cnRED_FONT_COLOR:休息|r区' or ('|cnRED_FONT_COLOR:'..CALENDAR_STATUS_OUT..'|r'..ZONE),--休息区拒绝组队  
+            text= e.onlyChinese and '|cnRED_FONT_COLOR:休息|r区' or ('|cnRED_FONT_COLOR:'..CALENDAR_STATUS_OUT..'|r'..ZONE),--休息区拒绝组队  
             checked=Save.NoInvInResting,
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinse and '拒绝' or DECLINE,
-            tooltipText= e.onlyChinse and '好友 |cnRED_FONT_COLOR:否|r' or ('|cnRED_FONT_COLOR:'..NO..'|r'..TUTORIAL_TITLE22),
+            tooltipTitle= e.onlyChinese and '拒绝' or DECLINE,
+            tooltipText= e.onlyChinese and '好友 |cnRED_FONT_COLOR:否|r' or ('|cnRED_FONT_COLOR:'..NO..'|r'..TUTORIAL_TITLE22),
             func=function()
                 Save.NoInvInResting= not Save.NoInvInResting and true or nil
             end,
@@ -717,7 +717,7 @@ local function InitList(self, level, type)
 
         UIDropDownMenu_AddSeparator(level)
         info={
-            text= e.onlyChinse and '休息区信息' or CALENDAR_STATUS_OUT..ZONE..INFO,
+            text= e.onlyChinese and '休息区信息' or CALENDAR_STATUS_OUT..ZONE..INFO,
             checked=Save.restingTips,
             func=function()
                 Save.restingTips= not Save.restingTips and true or nil
@@ -740,15 +740,15 @@ local function InitList(self, level, type)
                         print(id, addName, '|cff00ff00'..REMOVE..'|r: '..text)
                     end,
                     tooltipOnButton=true,
-                    tooltipTitle= e.onlyChinse and '移除' or REMOVE,
-                    tooltipText= format(e.onlyChinse and '%d次' or ITEM_SPELL_CHARGES, nu)..'\n\n'..(select(7,GetPlayerInfoByGUID(guid)) or ''),
+                    tooltipTitle= e.onlyChinese and '移除' or REMOVE,
+                    tooltipText= format(e.onlyChinese and '%d次' or ITEM_SPELL_CHARGES, nu)..'\n\n'..(select(7,GetPlayerInfoByGUID(guid)) or ''),
                 }
                 UIDropDownMenu_AddButton(info, level)
             end
         end
         if all==0 then
             info={
-                text= e.onlyChinse and '无' or NONE,
+                text= e.onlyChinese and '无' or NONE,
                 notCheckable=true,
                 isTitle=true,
             }
@@ -756,12 +756,12 @@ local function InitList(self, level, type)
         else
             UIDropDownMenu_AddSeparator(level)
             info={
-                text=e.onlyChinse and '全部清除' or CLEAR_ALL,
+                text=e.onlyChinese and '全部清除' or CLEAR_ALL,
                 colorCode= '|cff00ff00',
                 notCheckable=true,
                 func=function()
                     Save.InvNoFriend={}
-                    print(id, addName, '|cff00ff00'..(e.onlyChinse and '全部清除' or CLEAR_ALL)..'|r', e.onlyChinse and '完成' or DONE)
+                    print(id, addName, '|cff00ff00'..(e.onlyChinese and '全部清除' or CLEAR_ALL)..'|r', e.onlyChinese and '完成' or DONE)
                 end,
             }
             UIDropDownMenu_AddButton(info, level)
@@ -769,7 +769,7 @@ local function InitList(self, level, type)
 
     elseif type=='ChannelText' then--三级列表,修改,频道,关键词
         info={
-            text= e.onlyChinse and '关键词' or KBASE_DEFAULT_SEARCH_TEXT,--在这里输入关键字。
+            text= e.onlyChinese and '关键词' or KBASE_DEFAULT_SEARCH_TEXT,--在这里输入关键字。
             notCheckable=true,
             func= function()
                 StaticPopup_Show(id..addName..'CHANNEL')
@@ -779,19 +779,19 @@ local function InitList(self, level, type)
 
     else
         info={
-            text=e.Icon.left..(e.onlyChinse and '邀请成员' or GUILDCONTROL_OPTION7),
+            text=e.Icon.left..(e.onlyChinese and '邀请成员' or GUILDCONTROL_OPTION7),
             notCheckable=true,
             menuList='InvUnit',
             func=InvUnitFunc,--邀请，周围玩家
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinse and '邀请周围玩家' or (INVITE..e.Icon.left..SPELL_RANGE_AREA:gsub(SPELL_TARGET_CENTER_CASTER,'')),
+            tooltipTitle= e.onlyChinese and '邀请周围玩家' or (INVITE..e.Icon.left..SPELL_RANGE_AREA:gsub(SPELL_TARGET_CENTER_CASTER,'')),
             hasArrow=true,
             colorCode=not getLeader() and '|cff606060',
         }
         UIDropDownMenu_AddButton(info, level)
         UIDropDownMenu_AddSeparator(level)
         info = {
-            text= e.onlyChinse and '接受邀请' or CALENDAR_ACCEPT_INVITATION,
+            text= e.onlyChinese and '接受邀请' or CALENDAR_ACCEPT_INVITATION,
             notCheckable=true,
             menuList='ACEINVITE',
             hasArrow=true,
@@ -799,12 +799,12 @@ local function InitList(self, level, type)
         UIDropDownMenu_AddButton(info, level)
         UIDropDownMenu_AddSeparator(level)
         info = {
-            text= e.onlyChinse and '拒绝邀请' or GUILD_INVITE_DECLINE,
+            text= e.onlyChinese and '拒绝邀请' or GUILD_INVITE_DECLINE,
             notCheckable=true,
             menuList='NoInv',
             hasArrow=true,
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinse and ('拒绝 '..Save.InvNoFriendNum..' 次') or (DECLINE..' '..format(ITEM_SPELL_CHARGES, Save.InvNoFriendNum))
+            tooltipTitle= e.onlyChinese and ('拒绝 '..Save.InvNoFriendNum..' 次') or (DECLINE..' '..format(ITEM_SPELL_CHARGES, Save.InvNoFriendNum))
         }
         UIDropDownMenu_AddButton(info, level)
     end
@@ -877,7 +877,7 @@ local function Init()
     hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"],"OnShow",function(self)--StaticPopup.lua
         e.PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
         if Save.Summon and not UnitAffectingCombat("player") and PlayerCanTeleport() and not UnitIsAFK('player') and not IsModifierKeyDown() then
-            print(id, addName, e.onlyChinse and '召唤' or SUMMON, C_SummonInfo.GetSummonConfirmSummoner(), C_SummonInfo.GetSummonConfirmAreaName())
+            print(id, addName, e.onlyChinese and '召唤' or SUMMON, C_SummonInfo.GetSummonConfirmSummoner(), C_SummonInfo.GetSummonConfirmAreaName())
             e.Ccool(self, nil, 3, nil, true, true, nil)--冷却条
             if button.SummonTimer then button.SummonTimer:Cancel() end
             button.SummonTimer= C_Timer.NewTimer(3, function()

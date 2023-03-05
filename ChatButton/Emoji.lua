@@ -91,22 +91,22 @@ local function InitMenu(self, level, type)
     local info
     if type then
         info={
-            text= e.onlyChinse and '全选' or  MENU_EDIT_SELECT_ALL or ALL,--全选
+            text= e.onlyChinese and '全选' or  MENU_EDIT_SELECT_ALL or ALL,--全选
             notCheckable=true,
             func=function()
                 Save.Channels={}
-                print(id, addName, e.onlyChinse and '聊天频道' or CHAT_CHANNELS,  e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+                print(id, addName, e.onlyChinese and '聊天频道' or CHAT_CHANNELS,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         }
         UIDropDownMenu_AddButton(info, level)
         info={
-            text= e.onlyChinse and '清除' or  CLEAR or KEY_NUMLOCK_MAC,--全清
+            text= e.onlyChinese and '清除' or  CLEAR or KEY_NUMLOCK_MAC,--全清
             notCheckable=true,
             func=function()
                 for _, channel in pairs(Channels) do
                     Save.Channels[channel]=true
                 end
-                print(id, addName, e.onlyChinse and '聊天频道' or CHAT_CHANNELS,  e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+                print(id, addName, e.onlyChinese and '聊天频道' or CHAT_CHANNELS,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         }
         UIDropDownMenu_AddButton(info, level)
@@ -116,57 +116,57 @@ local function InitMenu(self, level, type)
                 text=_G[channel] or channel,
                 checked=not Save.Channels[channel],
                 tooltipOnButton=true,
-                tooltipTitle= e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD,
+                tooltipTitle= e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD,
                 tooltipText=channel,
                 func=function()
                     Save.Channels[channel]= not Save.Channels[channel] and true or nil
-                    print(id, addName, e.onlyChinse and '聊天频道' or CHAT_CHANNELS,  e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+                    print(id, addName, e.onlyChinese and '聊天频道' or CHAT_CHANNELS,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             }
             UIDropDownMenu_AddButton(info, level)
         end
     else
         info={
-            text= e.onlyChinse and '进入战斗' or ENTERING_COMBAT,--进入战斗时, 隐藏
+            text= e.onlyChinese and '进入战斗' or ENTERING_COMBAT,--进入战斗时, 隐藏
             checked=not Save.notHideCombat,
             func=function() Save.notHideCombat = not Save.notHideCombat and true or nil setframeEvent() end,
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinse and '隐藏' or HIDE,
+            tooltipTitle= e.onlyChinese and '隐藏' or HIDE,
         }
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text= e.onlyChinse and '移动' or NPE_MOVE,--移动时, 隐藏
+            text= e.onlyChinese and '移动' or NPE_MOVE,--移动时, 隐藏
             checked=not Save.notHideMoving,
             func=function() Save.notHideMoving = not Save.notHideMoving and true or nil setframeEvent() end,
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinse and '隐藏' or HIDE,
+            tooltipTitle= e.onlyChinese and '隐藏' or HIDE,
         }
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text= e.onlyChinse and '过移图标时' or ENTER_LFG..EMBLEM_SYMBOL,--过移图标时,显示
+            text= e.onlyChinese and '过移图标时' or ENTER_LFG..EMBLEM_SYMBOL,--过移图标时,显示
             checked=Save.showEnter,
             func=function() Save.showEnter = not Save.showEnter and true or nil end,
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinse and '显示' or SHOW,
+            tooltipTitle= e.onlyChinese and '显示' or SHOW,
         }
         UIDropDownMenu_AddButton(info, level)
 
         UIDropDownMenu_AddSeparator(level)
         info={
-            text= e.onlyChinse and '聊天频道' or CHAT_CHANNELS,
+            text= e.onlyChinese and '聊天频道' or CHAT_CHANNELS,
             notCheckable=true,
             menuList='Channels',
             hasArrow=true,
         }
         UIDropDownMenu_AddButton(info, level)
         info={
-            text= e.onlyChinse and '重置' or RESET,
+            text= e.onlyChinese and '重置' or RESET,
             notCheckable=true,
             func=function() Save=nil e.Reload() end,
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinse and '重新加载UI' or RELOADUI,
+            tooltipTitle= e.onlyChinese and '重新加载UI' or RELOADUI,
             colorCode='|cffff0000'
         }
         UIDropDownMenu_AddButton(info, level)
@@ -281,7 +281,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             sel:SetChecked(not Save.disabled)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.GetEnabeleDisable(not WoWToolsChatButtonFrame.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.GetEnabeleDisable(not WoWToolsChatButtonFrame.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end)
 
             if not (WoWToolsChatButtonFrame.disabled or Save.disabled) then--禁用Chat Button

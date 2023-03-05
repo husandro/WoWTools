@@ -248,11 +248,11 @@ local function setWorldbossText()--显示世界BOSS击杀数据Text
             e.tips:SetOwner(self2, "ANCHOR_LEFT");
             e.tips:ClearLines();
             e.tips:AddDoubleLine(id, addName)
-            e.tips:AddDoubleLine(e.onlyChinse and '冒险指南' or ADVENTURE_JOURNAL, e.onlyChinse and '世界BOSS和稀有怪' or (CHANNEL_CATEGORY_WORLD..'BOSS/'..GARRISON_MISSION_RARE))
+            e.tips:AddDoubleLine(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, e.onlyChinese and '世界BOSS和稀有怪' or (CHANNEL_CATEGORY_WORLD..'BOSS/'..GARRISON_MISSION_RARE))
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(e.GetShowHide(not Save.hideWorldBossText), e.Icon.left)
-            e.tips:AddDoubleLine(e.onlyChinse and '移动' or  NPE_MOVE, e.Icon.right)
-            e.tips:AddDoubleLine(e.onlyChinse and '大小' or FONT_SIZE, (Save.EncounterJournalFontSize or 12)..e.Icon.mid)
+            e.tips:AddDoubleLine(e.onlyChinese and '移动' or  NPE_MOVE, e.Icon.right)
+            e.tips:AddDoubleLine(e.onlyChinese and '大小' or FONT_SIZE, (Save.EncounterJournalFontSize or 12)..e.Icon.mid)
             e.tips:Show()
         end)
         panel.WorldBoss:SetScript('OnMouseDown', function(self2, d)
@@ -333,11 +333,11 @@ local function setInstanceBossText()--显示副本击杀数据
             e.tips:SetOwner(self2, "ANCHOR_LEFT");
             e.tips:ClearLines();
             e.tips:AddDoubleLine(id, addName)
-            e.tips:AddDoubleLine(e.onlyChinse and '冒险指南' or ADVENTURE_JOURNAL, e.onlyChinse and '副本' or INSTANCE)
+            e.tips:AddDoubleLine(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, e.onlyChinese and '副本' or INSTANCE)
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(e.GetShowHide(not Save.hideInstanceBossText), e.Icon.left)
-            e.tips:AddDoubleLine(e.onlyChinse and '移动' or NPE_MOVE, e.Icon.right)
-            e.tips:AddDoubleLine(e.onlyChinse and '大小' or FONT_SIZE, (Save.EncounterJournalFontSize or 12)..e.Icon.mid)
+            e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
+            e.tips:AddDoubleLine(e.onlyChinese and '大小' or FONT_SIZE, (Save.EncounterJournalFontSize or 12)..e.Icon.mid)
             e.tips:Show()
         end)
         panel.instanceBoss:SetScript('OnMouseDown', function(self2, d)
@@ -382,7 +382,7 @@ end
 local function set_EncounterJournal_Keystones_Tips(self)--险指南界面, 挑战
     e.tips:SetOwner(self, "ANCHOR_LEFT");
     e.tips:ClearLines();
-    e.tips:AddDoubleLine(e.onlyChinse and '史诗钥石地下城' or CHALLENGES, e.Icon.left)
+    e.tips:AddDoubleLine(e.onlyChinese and '史诗钥石地下城' or CHALLENGES, e.Icon.left)
     for guid, info in pairs(e.WoWSave) do
         if guid and info then
             local find
@@ -410,10 +410,10 @@ local function set_EncounterJournal_Money_Tips(self)--险指南界面, 钱
         end
     end
     if allMoney==0 then
-        e.tips:AddDoubleLine(e.onlyChinse and '钱' or MONEY, e.onlyChinse and '无' or NONE)
+        e.tips:AddDoubleLine(e.onlyChinese and '钱' or MONEY, e.onlyChinese and '无' or NONE)
     else
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine((e.onlyChinse and '角色' or CHARACTER)..' '..numPlayer..' '..(e.onlyChinse and '总计：' or FROM_TOTAL)..e.MK(allMoney/10000, 3), GetCoinTextureString(allMoney))
+        e.tips:AddDoubleLine((e.onlyChinese and '角色' or CHARACTER)..' '..numPlayer..' '..(e.onlyChinese and '总计：' or FROM_TOTAL)..e.MK(allMoney/10000, 3), GetCoinTextureString(allMoney))
     end
     e.tips:Show()
 end
@@ -429,8 +429,8 @@ local function Init()--冒险指南界面
         e.tips:SetOwner(self2, "ANCHOR_LEFT");
         e.tips:ClearLines();
         e.tips:AddDoubleLine(id, addName)
-        e.tips:AddDoubleLine(e.onlyChinse and '冒险指南' or ADVENTURE_JOURNAL, e.GetEnabeleDisable(not Save.hideEncounterJournal))
-        e.tips:AddDoubleLine(e.onlyChinse and '奖励' or QUEST_REWARDS, e.GetShowHide(not Save.hideEncounterJournal_All_Info_Text))
+        e.tips:AddDoubleLine(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, e.GetEnabeleDisable(not Save.hideEncounterJournal))
+        e.tips:AddDoubleLine(e.onlyChinese and '奖励' or QUEST_REWARDS, e.GetShowHide(not Save.hideEncounterJournal_All_Info_Text))
         e.tips:Show()
     end)
     EncounterJournal.btn:SetScript('OnMouseDown', function(self2, d)
@@ -443,7 +443,7 @@ local function Init()--冒险指南界面
             end
             EncounterJournal.money:SetShown(not Save.hideEncounterJournal)
             EncounterJournal.btn:SetNormalAtlas(Save.hideEncounterJournal and e.Icon.disabled or e.Icon.icon )
-            print(id, addName, e.GetShowHide(not Save.hideEncounterJournal), e.onlyChinse and '需要刷新' or NEED..REFRESH)
+            print(id, addName, e.GetShowHide(not Save.hideEncounterJournal), e.onlyChinese and '需要刷新' or NEED..REFRESH)
         elseif d=='RightButton' then
             if Save.hideEncounterJournal_All_Info_Text then
                 Save.hideEncounterJournal_All_Info_Text=nil
@@ -462,7 +462,7 @@ local function Init()--冒险指南界面
     EncounterJournal.instance:SetScript('OnEnter',function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT");
         e.tips:ClearLines();
-        e.tips:AddDoubleLine((e.onlyChinse and '副本' or INSTANCE)..e.Icon.left..e.GetShowHide(Save.showInstanceBoss), e.onlyChinse and '已击杀' or DUNGEON_ENCOUNTER_DEFEATED)
+        e.tips:AddDoubleLine((e.onlyChinese and '副本' or INSTANCE)..e.Icon.left..e.GetShowHide(Save.showInstanceBoss), e.onlyChinese and '已击杀' or DUNGEON_ENCOUNTER_DEFEATED)
         e.tips:AddLine(' ')
         for guid, info in pairs(e.WoWSave) do
             if guid and info then
@@ -761,7 +761,7 @@ local function Init()--冒险指南界面
                             e.tips:AddDoubleLine('dungeonEncounterID: '..dungeonEncounterID, (journalInstanceID and journalInstanceID>0) and 'journalInstanceID: '..journalInstanceID or ' ' )
                             local numKill=Save.wowBossKill[dungeonEncounterID]
                             if numKill then
-                                e.tips:AddDoubleLine(e.onlyChinse and '击杀' or KILLS, '|cnGREEN_FONT_COLOR:'..numKill..' |r'..(e.onlyChinse and '次' or VOICEMACRO_LABEL_CHARGE1))
+                                e.tips:AddDoubleLine(e.onlyChinese and '击杀' or KILLS, '|cnGREEN_FONT_COLOR:'..numKill..' |r'..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
                             end
                         end
 
@@ -980,10 +980,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
             --添加控制面板        
-            local sel=e.CPanel(e.onlyChinse and '冒险指南' or addName, not Save.disabled)
+            local sel=e.CPanel(e.onlyChinese and '冒险指南' or addName, not Save.disabled)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
-                print(addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinse and '需要重新加载' or REQUIRES_RELOAD)
+                print(addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end)
 
             if Save.disabled then
