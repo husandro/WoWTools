@@ -21,7 +21,7 @@ local function set_ItemInteractionFrame_Currency(self)
 
     local info= C_CurrencyInfo.GetCurrencyInfo(currencyID)
 	local text
-    if info and info.discovered and info.quantity then
+    if info and info.quantity and (info.discovered or info.quantity>0) then
         text= info.iconFileID and '|T'..info.iconFileID..':0|t' or ''
         text= text.. info.quantity
 		if currencyID== 2167 then
