@@ -14,9 +14,10 @@ local function Reputation_Text_setText()--设置, 文本
 		end
 		return
 	end
+	panel.btn:SetNormalTexture(0)
 
 	local m=''
-	
+
 	for i=1, GetNumFactions() do
 		local name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canBeLFGBonus =GetFactionInfo(i)
 		if name==HIDE then break end--隐藏 '隐藏声望'
@@ -100,7 +101,7 @@ local function Reputation_Text_setText()--设置, 文本
 				if isChild and not isHeader then
 					t= t..e.Icon.toRight2..(icon or '')
 				elseif not verHeader then
-					t= t.. (icon or ('|A:'..e.Icon.icon..':0:0|a'))
+					t= t.. (icon or '    ')--('|A:'..e.Icon.icon..':0:0|a'))
 				end
 
 				t=t..(name:match('%- (.+)') or name)..(factionStandingtext and ' '..factionStandingtext or '')..(value and ' '..value or '')
@@ -118,12 +119,9 @@ local function Reputation_Text_setText()--设置, 文本
 		end
 	end
 
-	--[[if hasRewardPending then
-		panel.btn:SetNormalAtlas('ParagonReputation_Bag')--有奖励
-		m= '\n'..m
-	else
-		panel.btn:SetNormalTexture(0)
-	end]]
+	if m=='' then
+		m='..'
+	end
 	panel.btn.text:SetText(m)
 end
 
@@ -158,12 +156,12 @@ local function Set_Reputation_Text()--监视, 文本
 				Reputation_Text_setText()--设置, 文本
 
 			elseif d=='LeftButton' and IsAltKeyDown() then
-				Save.btnStrHideHeader= not Save.btnStrHideHeader and true or nil
+				Save.btnStrHideHeader= not Save.btnStrHideHeader and true or false
 				Reputation_Text_setText()--设置, 文本
 				print(id,addName, e.onlyChinse and '版本' or GAME_VERSION_LABEL,'('..NO..e.Icon.bank2..(e.onlyChinse and '奖励' or QUEST_REWARDS)..')', e.GetShowHide(not Save.btnStrHideHeader))
 
 			elseif d=='LeftButton' and IsShiftKeyDown() then--Shift+点击, 隐藏最高级, 且没有奖励声望
-				Save.btnStrHideCap= not Save.btnStrHideCap and true or nil
+				Save.btnStrHideCap= not Save.btnStrHideCap and true or false
 				Reputation_Text_setText()--设置, 文本
 				print(id, addName, e.onlyChinse and '没有声望奖励时' or VIDEO_OPTIONS_ULTRA_HIGH..'('..NO..e.Icon.bank2..QUEST_REWARDS..')', e.GetShowHide(not Save.btnStrHideCap))
 			end
@@ -234,103 +232,123 @@ end
 --#########
 --界面, 增强
 --#########
-local isCappedIcon='|A:'..e.Icon.icon..':0:0|a'
 local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--ReputationFrame.lua
-	if Save.notPlus then
-		return
-	end
     local factionIndex = elementData.index;
 	local factionContainer = factionRow.Container
 	local factionBar = factionContainer.ReputationBar;
-	local watchedIcon=factionBar.watchedIcon--显示为经验条
+
 	local name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canSetInactive = GetFactionInfo(factionIndex);
-	if (isHeader and not hasRep) or not factionID then
-		if watchedIcon then
-			watchedIcon:SetShown(false)
+	if (isHeader and not hasRep) or not factionID or Save.notPlus then
+		if factionContainer.watchedIcon then--显示为经验条
+			factionContainer.watchedIcon:SetShown(false)
+		end
+		if factionContainer.completed then--完成次数
+			factionContainer.completed:SetText('')
+		end
+		if factionContainer.levelText then--等级
+			factionContainer.levelText:SetText('')
+		end
+		if factionContainer.texture then--图标
+			factionContainer.texture:SetTexture(0)
 		end
 		return
 	end
 
 	local factionTitle = factionContainer.Name
-	local text
-	local barColor
+	local text, barColor, levelText, texture, atlas
 	local isMajorFaction = C_Reputation.IsMajorFaction(factionID);
 	local repInfo = C_GossipInfo.GetFriendshipReputation(factionID);
 
-	if repInfo and repInfo.friendshipFactionID > 0 then--好友声望
+	if repInfo and repInfo.friendshipFactionID and repInfo.friendshipFactionID > 0 then--好友声望
 		local rankInfo = C_GossipInfo.GetFriendshipReputationRanks(factionID)
+		texture= repInfo and repInfo.texture
 		if rankInfo and rankInfo.maxLevel>0 then
-			local icon=repInfo.texture and '|T'..repInfo.texture..':0|t' or nil
 			if repInfo.nextThreshold then
-				text=name..(icon or '')..rankInfo.currentLevel..'/'..rankInfo.maxLevel
+				levelText= rankInfo.currentLevel..'/'..rankInfo.maxLevel
 			else
-				text=(icon or isCappedIcon).. name
 				barColor=FACTION_ORANGE_COLOR
 			end
 		end
 	elseif isMajorFaction then-- 名望
 		local info = C_MajorFactions.GetMajorFactionData(factionID)
-		local icon
-		if info and info.textureKit then
-			icon='|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'
-		end
-		if C_MajorFactions.HasMaximumRenown(factionID) then
-			text=(icon or isCappedIcon)..name
-			barColor=FACTION_ORANGE_COLOR
-		else
 			if info then
-				text=(icon or '')..name--.. ('%i%%'):format(info.renownLevel..'/'..info.renownLevelThreshold*100)
+				atlas= info.textureKit and 'MajorFactions_Icons_'..info.textureKit..'512'
+			if C_MajorFactions.HasMaximumRenown(factionID) then
+				barColor=FACTION_ORANGE_COLOR
+			else
+				barColor = BLUE_FONT_COLOR
+				if info.renownLevel then
+					local levels = C_MajorFactions.GetRenownLevels(factionID)
+					if levels then
+						levelText= info.renownLevel..'/'..#levels
+					end
+				end
 			end
-			barColor = BLUE_FONT_COLOR
 		end
-	elseif (isHeader and hasRep) or not isHeader then
 
+	elseif (isHeader and hasRep) or not isHeader then
 		if (standingID == MAX_REPUTATION_REACTION) then--已满
-			text=isCappedIcon..name
 			barColor=FACTION_ORANGE_COLOR
 		else
-			text=name..''..standingID..'/'..MAX_REPUTATION_REACTION
 			barColor = FACTION_BAR_COLORS[standingID]
+			levelText= standingID..'/'..MAX_REPUTATION_REACTION
 		end
 	end
 
-	if text then
-		if barColor then
-			text=barColor:WrapTextInColorCode(text)--颜色	
-		end
-		factionTitle:SetText(text)
+	if barColor then--标题, 颜色
+		factionTitle:SetTextColor(barColor.r, barColor.g, barColor.b)
 	end
 
-	if isWatched then
-		if not watchedIcon then
-			watchedIcon=factionBar:CreateTexture(nil, 'OVERLAY')
-			watchedIcon:SetPoint('RIGHT', factionBar, 'LEFT',8, 0)
-			watchedIcon:SetAtlas(e.Icon.selectYellow)
-			watchedIcon:SetSize(16, 16)
-			factionBar.watchedIcon=watchedIcon
-		end
-		watchedIcon:SetShown(true)
-	elseif watchedIcon then
-		watchedIcon:SetShown(false)
+	if isWatched and not factionBar.watchedIcon then--显示为经验条
+		factionContainer.watchedIcon=factionBar:CreateTexture(nil, 'OVERLAY')
+		factionContainer.watchedIcon:SetPoint('LEFT', factionBar, 'LEFT')
+		factionContainer.watchedIcon:SetAtlas(e.Icon.selectYellow)
+		factionContainer.watchedIcon:SetSize(16, 16)
+	end
+	if factionContainer.watchedIcon then
+		factionContainer.watchedIcon:SetShown(isWatched)
 	end
 
-	local isParagon = C_Reputation.IsFactionParagon(factionID)--奖励			
 	local completedParagon--完成次数
-	if ( isParagon ) then--奖励
+	if C_Reputation.IsFactionParagon(factionID) then--奖励
 		local currentValue, threshold, _, _, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID)
-		if not tooLowLevelForParagon then
+		if not tooLowLevelForParagon and currentValue and threshold then
 			local completed= math.modf(currentValue/threshold)--完成次数
 			if completed>0 then
 				completedParagon=completed
 			end
 		end
 	end
-	if completedParagon and not factionBar.completed then
-		factionBar.completed=e.Cstr(factionBar, nil, nil, nil, nil, nil, 'RIGHT')
-		factionBar.completed:SetPoint('RIGHT',- 5,0)
+	if completedParagon and not factionContainer.completed then
+		factionContainer.completed= e.Cstr(factionBar, nil, nil, nil, nil, nil, 'RIGHT')
+		factionContainer.completed:SetPoint('RIGHT',- 5,0)
 	end
-	if factionBar.completed then
-		factionBar.completed:SetText(completedParagon or '')
+	if factionContainer.completed then
+		factionContainer.completed:SetText(completedParagon or '')
+	end
+
+	if levelText and not factionContainer.levelText then--等级
+		factionContainer.levelText= e.Cstr(factionContainer, 10, nil, nil, nil, nil, 'RIGHT')
+		factionContainer.levelText:SetPoint('RIGHT', factionContainer, 'LEFT',2,0)
+	end
+	if factionContainer.levelText then
+		factionContainer.levelText:SetText(levelText or '')
+	end
+
+	if (texture or atlas) and not factionContainer.texture then--图标
+		local h=factionContainer:GetHeight() or 20
+		factionContainer.texture= factionContainer:CreateTexture(nil, 'OVERLAY')
+		factionContainer.texture:SetPoint('RIGHT', factionTitle, 'RIGHT',6,0)
+		factionContainer.texture:SetSize(h,h)
+	end
+	if factionContainer.texture then
+		if texture then
+			factionContainer.texture:SetTexture(texture)
+		elseif atlas then
+			factionContainer.texture:SetAtlas(atlas)
+		else
+			factionContainer.texture:SetTexture(0)
+		end
 	end
 end
 
@@ -422,7 +440,7 @@ local function FactionUpdate(self, event, text, ...)
 			if value then
 				m=m..' |cffffffff'..value..'|r'
 			end
-			m=(icon or isCappedIcon)..m
+			m=(icon or ('|A:'..e.Icon.icon..':0:0|a'))..m
 			if hasRewardPending then
 				m=m..e.Icon.bank2
 			end
