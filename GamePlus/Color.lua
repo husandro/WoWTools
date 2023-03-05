@@ -186,7 +186,8 @@ local function Init()
 		end
 	end
 
-	size, x, y, n= 16, -70, 0, 1
+	size, x, y, n= 16, -70, -3, 1
+	local Y=0
 	local DBColors = C_UIColor.GetColors() or {};--Color.lua
 	table.sort(DBColors, function(a,b)
 		return a.color.r> b.color.r
@@ -198,18 +199,22 @@ local function Init()
 			local texture= create_Texture(dbColor.color.r, dbColor.color.g, dbColor.color.b, dbColor.color.a)
 			texture.textCode= dbColor.baseTag
 			texture:SetPoint('BOTTOMLEFT', ColorPickerFrame.Header, 'TOPLEFT', x, y)
-			if n==21 then
+			if n==20 then
 				n=0
 				y=y +size
 				x=-70
+				Y=Y+1
 			else
 				x=x +size
 			end
 			n=n+1
+			if Y>5 then
+				break
+			end
 		end
 	end
 	if Save.colorType then--颜色 选择器2
-		x, y, n= -100, y+size, 1
+		x, y, n= -102, y+3, 1
 		for r=0, 1, 0.2 do
 			for g=0, 1, 0.2 do
 				for b=0, 1, 0.2 do
@@ -218,7 +223,7 @@ local function Init()
 					if n==24 then
 						n=0
 						y=y +size
-						x=-100
+						x=-102
 					else
 						x=x +size
 					end
