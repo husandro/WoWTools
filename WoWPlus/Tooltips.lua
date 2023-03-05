@@ -1068,7 +1068,7 @@ local function Init()
         end
         if factionID and not ReputationDetailFrame.factionIDText then
             ReputationDetailFrame.factionIDText=e.Cstr(ReputationDetailFrame)
-            ReputationDetailFrame.factionIDText:SetPoint('TOPLEFT', 8, -8)
+            ReputationDetailFrame.factionIDText:SetPoint('TOPLEFT', 6, -6)
         end
         if ReputationDetailFrame.factionIDText then
             ReputationDetailFrame.factionIDText:SetText(factionID and (e.onlyChinese and '声望' or REPUTATION)..' '..factionID or '')
