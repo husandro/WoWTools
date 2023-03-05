@@ -254,8 +254,8 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 		return
 	end
 
+	local barColor, levelText, texture, atlas,isCapped
 	local factionTitle = factionContainer.Name
-	local text, barColor, levelText, texture, atlas
 	local isMajorFaction = C_Reputation.IsMajorFaction(factionID);
 	local repInfo = C_GossipInfo.GetFriendshipReputation(factionID);
 
@@ -267,6 +267,7 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 				levelText= rankInfo.currentLevel..'/'..rankInfo.maxLevel
 			else
 				barColor= FACTION_ORANGE_COLOR
+				isCapped= true
 			end
 		end
 	elseif isMajorFaction then-- 名望
@@ -275,6 +276,7 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 				atlas= info.textureKit and 'MajorFactions_Icons_'..info.textureKit..'512'
 			if C_MajorFactions.HasMaximumRenown(factionID) then
 				barColor=FACTION_ORANGE_COLOR
+				isCapped=true
 			else
 				barColor = BLUE_FONT_COLOR
 				if info.renownLevel then
@@ -289,6 +291,7 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 	elseif (isHeader and hasRep) or not isHeader then
 		if (standingID == MAX_REPUTATION_REACTION) then--已满
 			barColor=FACTION_ORANGE_COLOR
+			isCapped=true
 		else
 			barColor = FACTION_BAR_COLORS[standingID]
 			levelText= standingID..'/'..MAX_REPUTATION_REACTION
@@ -310,13 +313,16 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 	end
 
 	local completedParagon--完成次数
-	if C_Reputation.IsFactionParagon(factionID) then--奖励
+	if isCapped and C_Reputation.IsFactionParagon(factionID) then--奖励
 		local currentValue, threshold, _, _, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID)
-		if not tooLowLevelForParagon and currentValue and threshold then
-			local completed= math.modf(currentValue/threshold)--完成次数
-			if completed>0 then
-				completedParagon=completed
+		local completed=0
+		if currentValue and threshold then
+			if not tooLowLevelForParagon then
+				completed= math.modf(currentValue/threshold)--完成次数
+				completedParagon= completed>0 and completed
 			end
+			factionBar:SetMinMaxValues(0, threshold)
+			factionBar:SetValue(currentValue-(threshold*completed))
 		end
 	end
 	if completedParagon and not factionContainer.completed then
@@ -325,6 +331,10 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 	end
 	if factionContainer.completed then
 		factionContainer.completed:SetText(completedParagon or '')
+	end
+
+	if barColor and isCapped then
+		factionBar:SetStatusBarColor(barColor.r, barColor.g, barColor.b)
 	end
 
 	if levelText and not factionContainer.levelText then--等级

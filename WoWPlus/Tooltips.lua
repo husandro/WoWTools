@@ -1057,6 +1057,24 @@ local function Init()
             end
         end
     end)
+    
+    hooksecurefunc('ReputationFrame_InitReputationRow',function(factionRow, elementData)--ReputationFrame.lua 声望 界面,
+        local factionIndex = elementData.index;
+        local factionID
+        if ( factionIndex == GetSelectedFaction() ) then
+            if ( ReputationDetailFrame:IsShown() ) then
+                factionID= select(14, GetFactionInfo(factionIndex))
+            end
+        end
+        if factionID and not ReputationDetailFrame.factionIDText then
+            ReputationDetailFrame.factionIDText=e.Cstr(ReputationDetailFrame)
+            ReputationDetailFrame.factionIDText:SetPoint('TOPLEFT', 8, -8)
+        end
+        if ReputationDetailFrame.factionIDText then
+            ReputationDetailFrame.factionIDText:SetText(factionID and (e.onlyChinese and '声望' or REPUTATION)..' '..factionID or '')
+        end
+    end)
+
 
     --####
     --Buff
