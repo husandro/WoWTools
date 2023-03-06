@@ -215,6 +215,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
                 Save.buttons[e.onlyChinese and '宠物对战' or PET_BATTLE_COMBAT_LOG ]={
                     ['BugSack']=true,
                     ['!BugGrabber']=true,
+                    ['Ace3']=true,
+                    ['AceGUI-3.0_SFX-Widgets']=true,
                     ['tdBattlePetScript']=true,
                     ['tdBattlePetScript_Rematch']=true,
                     ['Rematch']=true,
