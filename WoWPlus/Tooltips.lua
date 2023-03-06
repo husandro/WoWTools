@@ -1057,7 +1057,7 @@ local function Init()
             end
         end
     end)
-    
+
     hooksecurefunc('ReputationFrame_InitReputationRow',function(factionRow, elementData)--ReputationFrame.lua 声望 界面,
         local factionIndex = elementData.index;
         local factionID
@@ -1106,16 +1106,91 @@ local function Init()
     end)
 
 
-    --##########
-    --设置 panel
-    --##########
-    panel.name = addName;--添加新控制面板
-    panel.parent =id;
+
+    setCVar(nil, nil, true)--设置CVar
+
+    if Save.setCVar and e.Player.zh then
+        ConsoleExec("portal TW")
+        SetCVar("profanityFilter", '0')
+
+        local pre = C_BattleNet.GetFriendGameAccountInfo
+        C_BattleNet.GetFriendGameAccountInfo = function(...)
+            local gameAccountInfo = pre(...)
+            gameAccountInfo.isInCurrentRegion = true
+            return gameAccountInfo;
+        end
+    end
+
+    if ExtraActionButton1 then
+        ExtraActionButton1:SetScript('OnLeave', function()
+            e.tips:Hide()
+        end)
+    end
+
+    hooksecurefunc(AreaPOIPinMixin,'TryShowTooltip', function(self)--POI提示 AreaPOIDataProvider.lua
+        local uiMapID = self:GetMap() and self:GetMap():GetMapID()
+        if self.areaPoiID then
+            GameTooltip:AddDoubleLine('areaPoiID', self.areaPoiID)
+        end
+        if self.widgetSetID then
+            GameTooltip:AddDoubleLine('widgetSetID', self.widgetSetID)
+        end
+        if uiMapID then
+            GameTooltip:AddDoubleLine('mapID', uiMapID)
+        end
+        if self.factionID then
+            setMajorFactionRenown(GameTooltip, self.factionID)--名望
+        end
+        if self.areaPoiID and uiMapID then
+            local poiInfo= C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, self.areaPoiID)
+            if poiInfo and poiInfo.atlasName  then
+                GameTooltip:AddDoubleLine('atlasName', '|A:'..poiInfo.atlasName..':0:0|a'..poiInfo.atlasName)
+            end
+        end
+        GameTooltip:Show()
+    end)
+
+    --#############
+    --挑战, AffixID
+    --Blizzard_ScenarioObjectiveTracker.lua
+    if ScenarioChallengeModeAffixMixin then
+        hooksecurefunc( ScenarioChallengeModeAffixMixin, 'OnEnter',function(self2)
+            if self2.affixID then
+                local _, _, filedataid = C_ChallengeMode.GetAffixInfo(self2.affixID)
+                GameTooltip:AddDoubleLine('affixID '..self2.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ');
+                GameTooltip:Show();
+            end
+        end)
+    end
+end
+
+--##########
+--设置 panel
+--##########
+local function Init_Panel()
+    panel.name = e.Icon.mid..addName;--添加新控制面板
+    panel.parent= id
     InterfaceOptions_AddCategory(panel)
+
+    local restButton= CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')--重新加载UI
+    restButton:SetPoint('TOPLEFT')
+    restButton:SetText(e.onlyChinese and '重新加载UI' or RELOADUI)
+    restButton:SetSize(120, 28)
+    restButton:SetScript('OnMouseUp', e.Reload)
+
+    --添加控制面板 
+    local check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    check:SetChecked(not Save.disabled)
+    check:SetPoint('TOPLEFT', panel, 'TOP')
+    check.text:SetText(e.onlyChinese and '启用/禁用' or (ENABLE..'/'..DISABLE))
+    check:SetScript('OnMouseDown', function()
+        Save.disabled= not Save.disabled and true or nil
+        print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+    end)
 
     panel.setDefaultAnchor=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--设置默认提示位置
     panel.setDefaultAnchor.Text:SetText('1) '..(e.onlyChinese and '跟随鼠标' or FOLLOW..MOUSE_LABEL))
-    panel.setDefaultAnchor:SetPoint('TOPLEFT')
+    panel.setDefaultAnchor:SetPoint('TOPLEFT', restButton, 'BOTTOMLEFT', 0, -32)
     panel.setDefaultAnchor:SetChecked(Save.setDefaultAnchor)--提示位置            
     panel.setDefaultAnchor:SetScript('OnMouseDown', function()
         if Save.setDefaultAnchor then
@@ -1189,9 +1264,7 @@ local function Init()
         end)
     end)
 
-
-
---设置CVar
+   --设置CVar
     panel.CVar=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     panel.CVar.Text:SetText((e.onlyChinese and '设置' or SETTINGS)..' CVar')
     panel.CVar:SetPoint('TOPLEFT', panel.Anchor, 'BOTTOMLEFT', 0, -30)
@@ -1215,63 +1288,7 @@ local function Init()
     end)
     panel.CVar:SetScript('OnLeave', function() e.tips:Hide() end)
 
-    setCVar(nil, nil, true)--设置CVar
-
-    if Save.setCVar and e.Player.zh then
-        ConsoleExec("portal TW")
-        SetCVar("profanityFilter", '0')
-
-        local pre = C_BattleNet.GetFriendGameAccountInfo
-        C_BattleNet.GetFriendGameAccountInfo = function(...)
-            local gameAccountInfo = pre(...)
-            gameAccountInfo.isInCurrentRegion = true
-            return gameAccountInfo;
-        end
-    end
-
-    if ExtraActionButton1 then
-        ExtraActionButton1:SetScript('OnLeave', function()
-            e.tips:Hide()
-        end)
-    end
-
-    hooksecurefunc(AreaPOIPinMixin,'TryShowTooltip', function(self)--POI提示 AreaPOIDataProvider.lua
-        local uiMapID = self:GetMap() and self:GetMap():GetMapID()
-        if self.areaPoiID then
-            GameTooltip:AddDoubleLine('areaPoiID', self.areaPoiID)
-        end
-        if self.widgetSetID then
-            GameTooltip:AddDoubleLine('widgetSetID', self.widgetSetID)
-        end
-        if uiMapID then
-            GameTooltip:AddDoubleLine('mapID', uiMapID)
-        end
-        if self.factionID then
-            setMajorFactionRenown(GameTooltip, self.factionID)--名望
-        end
-        if self.areaPoiID and uiMapID then
-            local poiInfo= C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, self.areaPoiID)
-            if poiInfo and poiInfo.atlasName  then
-                GameTooltip:AddDoubleLine('atlasName', '|A:'..poiInfo.atlasName..':0:0|a'..poiInfo.atlasName)
-            end
-        end
-        GameTooltip:Show()
-    end)
-
-    --#############
-    --挑战, AffixID
-    --Blizzard_ScenarioObjectiveTracker.lua
-    if ScenarioChallengeModeAffixMixin then
-        hooksecurefunc( ScenarioChallengeModeAffixMixin, 'OnEnter',function(self2)
-            if self2.affixID then
-                local _, _, filedataid = C_ChallengeMode.GetAffixInfo(self2.affixID)
-                GameTooltip:AddDoubleLine('affixID '..self2.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ');
-                GameTooltip:Show();
-            end
-        end)
-    end
 end
-
 --加载保存数据
 panel:RegisterEvent("ADDON_LOADED")
 
@@ -1280,19 +1297,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         if arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
-            --添加控制面板 
-            local sel=e.CPanel(addName, not Save.disabled)
-            sel:SetScript('OnMouseDown', function()
-                Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end)
-            sel:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine('Tooltip')
-                e.tips:Show()
-            end)
-            sel:SetScript('OnLeave', function() e.tips:Hide() end)
+            Init_Panel()--设置 panel
 
             if Save.disabled then
                 panel:UnregisterAllEvents()
@@ -1317,8 +1322,6 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                         local flags= select(9, GetAchievementInfo(self2.id))
                         if flags==131072 then
                             text= e.Icon.wow2..'|cnGREEN_FONT_COLOR:'..text..'|r'
-                        else
-                            text= 'ID'..text
                         end
                     end
                     frame.textID:SetText(text or '')
@@ -1327,7 +1330,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 local icon= frame.texture:GetTextureFileID()
                 if icon and not frame.textIcon then
                     frame.textIcon= e.Cstr(frame)
-                    frame.textIcon:SetPoint('TOP', frame.texture, 'TOP')
+                    frame.textIcon:SetPoint('BOTTOM', frame.texture, 'TOP',0,-3)
                 end
                 if frame and frame.textIcon then
                     frame.textIcon:SetText(icon and '|T'..icon..':0|t'..icon or '')

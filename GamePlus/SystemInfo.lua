@@ -454,7 +454,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
             --e.Player.useClassColor= Save.classColor--注册, 使用职业颜色
 
-            local check=e.CPanel(e.onlyChinese and '系统信息' or addName, not Save.disabled, true)
+            local check=e.CPanel('|A:UI-HUD-MicroMenu-GameMenu-Mouseover:0:0|a'..(e.onlyChinese and '系统信息' or addName), not Save.disabled, true)
             check:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)

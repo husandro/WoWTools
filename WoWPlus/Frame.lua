@@ -291,11 +291,13 @@ local function setAddLoad(arg1)
         checkbox.Label:SetPoint("RIGHT", checkbox, "RIGHT", 160, 1)
         if not UnitAffectingCombat('player') then
             Move(CollectionsJournal, {})--藏品
+            Move(RematchJournal, {frame=CollectionsJournal})--藏品
             Move(WardrobeFrame, {})--幻化
         else
             combatCollectionsJournal=true
             panel:RegisterEvent('PLAYER_REGEN_ENABLED')
         end
+        
 
     elseif arg1=='Blizzard_Calendar' then--日历
         Move(CalendarFrame, {})
@@ -587,7 +589,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save.scale= Save.scale or {}
 
             --添加控制面板        
-            local check=e.CPanel(e.onlyChinese and '框架移动' or addName, not Save.disabled)
+            local check=e.CPanel('|A:communities-chat-icon-plus:0:0|a'..(e.onlyChinese and '框架移动' or addName), not Save.disabled)
             check:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)

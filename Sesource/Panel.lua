@@ -1,5 +1,5 @@
 local id, e = ...
-local addName= 'panelSettings'
+local addName= 'spanelSettings'
 local Save={onlyChinese=e.Player.husandro}
 local panel = CreateFrame("Frame")--Panel
 
@@ -15,7 +15,7 @@ reloadButton:SetScript('OnMouseUp', e.Reload)
 --Instance Panel
 --##############
 local instancePane= CreateFrame('Frame')
-instancePane.name = INSTANCE
+instancePane.name = '|A:poi-rift1:0:0|a'..INSTANCE
 instancePane.parent =id;
 InterfaceOptions_AddCategory(instancePane)
 
@@ -106,6 +106,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 e.tips:Show()
             end)
             check:SetScript('OnLeave', function() e.tips:Hide() end)
+
+            MainMenuMicroButton:EnableMouseWheel(true)
+            MainMenuMicroButton:SetScript('OnMouseWheel', function()
+                InterfaceOptionsFrame_OpenToCategory(id)
+            end)
+
             panel:UnregisterEvent('ADDON_LOADED')
         end
 

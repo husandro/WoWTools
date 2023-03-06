@@ -1120,6 +1120,7 @@ local function set_Panle_Setting()--设置 panel
     last:SetSize(120, 28)
     last:SetScript('OnMouseUp', e.Reload)
 
+
     for index, info in pairs(Tabs) do
         if info.dps and not findDps then
             check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--四属性, 仅限DPS
@@ -1792,7 +1793,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save.tab['STAUTS'].bit= Save.tab['STAUTS'].bit or 3
 
             --添加控制面板
-            panel.name = (e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES)..'|A:charactercreate-icon-customize-body-selected:0:0|a'--添加新控制面板
+            panel.name = '|A:charactercreate-icon-customize-body-selected:0:0|a'..(e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES)--添加新控制面板
             panel.parent =id
             InterfaceOptions_AddCategory(panel)
 

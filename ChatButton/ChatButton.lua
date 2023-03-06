@@ -97,19 +97,19 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
             --添加控制面板        
-            panel.sel=e.CPanel(addName..'|A:transmog-icon-chat:0:0|a', not Save.disabled, true)
+            panel.sel=e.CPanel('|A:transmog-icon-chat:0:0|a'..addName, not Save.disabled, true)
             panel.sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 panel.disabled= Save.disabled
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end)
-            panel.sel:SetScript('OnEnter', function (self2)
+            --[[panel.sel:SetScript('OnEnter', function (self2)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(e.onlyChinese and '设置焦点' or SET_FOCUS, e.onlyChinese and '编辑模式: 错误' or HUD_EDIT_MODE_MENU..': '..ERRORS, 1,0,0, 1,0,0)
                 e.tips:Show()
             end)
-            panel.sel:SetScript('OnLeave', function() e.tips:Hide() end)
+            panel.sel:SetScript('OnLeave', function() e.tips:Hide() end)]]
 
             if not Save.disabled then
                 Init()

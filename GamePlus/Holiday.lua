@@ -490,7 +490,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
             --添加控制面板        
-            local sel=e.CPanel(e.onlyChinese and '节日' or addName, not Save.disabled, true)
+            local sel=e.CPanel('|A:GarrisonTroops-Health:0:0|a'..(e.onlyChinese and '节日' or addName), not Save.disabled, true)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled = not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)

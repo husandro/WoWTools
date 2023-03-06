@@ -276,7 +276,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save.Channels= Save.Channels or {}
 
             local sel=CreateFrame("CheckButton", nil, WoWToolsChatButtonFrame.sel, "InterfaceOptionsCheckButtonTemplate")
-            sel.text:SetText('Emoji')
+            sel.text:SetText('|TInterface\\Addons\\WoWTools\\Sesource\\Emojis\\greet:0|tEmoji')
             sel:SetPoint('LEFT', WoWToolsChatButtonFrame.sel.text, 'RIGHT')
             sel:SetChecked(not Save.disabled)
             sel:SetScript('OnMouseDown', function()

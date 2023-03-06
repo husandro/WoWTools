@@ -1,6 +1,8 @@
 local id, e = ...
-local Save={}
-local addName= SHOW_PET_BATTLES_ON_MAP_TEXT
+local Save={
+    disabledClickToMove=e.Player.husandro,--禁用, 点击移动
+}
+local addName= PET_BATTLE_COMBAT_LOG  
 local panel= e.Cbtn(nil, nil, true,nil,nil,nil, {20,20})
 panel:SetShown(false)
 panel:SetFrameStrata('DIALOG')
@@ -434,7 +436,7 @@ local function set_Pet_Type(show)--提示,类型,
         if Save.point then
             panel:SetPoint(Save.point[1],UIParent, Save.point[3], Save.point[4], Save.point[5])
         else
-            panel:SetPoint('LEFT',400, 200)
+            panel:SetPoint('RIGHT',-400, 200)
         end
         panel.setFrame=CreateFrame("Frame", nil, panel)
         panel.setFrame:SetSize(1,1)
@@ -611,11 +613,29 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
             --添加控制面板
-            local check=e.CPanel((e.onlyChinese and '宠物对战' or addName)..'|A:WildBattlePetCapturable:0:0|a', not Save.disabled, true)
+            local check=e.CPanel('|A:WildBattlePetCapturable:0:0|a'..(e.onlyChinese and '宠物对战' or addName), not Save.disabled, true)
             check:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
             end)
+
+            if not e.Player.levelMax then
+                local clickToMoveCheck=CreateFrame("CheckButton", nil, check, "InterfaceOptionsCheckButtonTemplate")
+                clickToMoveCheck.text:SetText(e.onlyChinese and '禁用: 点击移动' or DISABLE..': '..CLICK_TO_MOVE)
+                clickToMoveCheck:SetPoint('LEFT', check.text, 'RIGHT',2,0)
+                clickToMoveCheck:SetChecked(Save.disabledClickToMove)
+                clickToMoveCheck:SetScript('OnMouseDown', function()
+                    Save.disabledClickToMove = not Save.disabledClickToMove and true or nil
+                end)
+                clickToMoveCheck:SetScript('OnEnter', function(self2)
+                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                    e.tips:ClearLines()
+                    e.tips:AddDoubleLine(e.onlyChinese and '等级' or LEVEL, '<'..MAX_PLAYER_LEVEL)
+                    e.tips:AddDoubleLine(e.onlyChinese and '点击移动' or CLICK_TO_MOVE, (e.onlyChinese and '当前' or REFORGE_CURRENT)..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool("autoInteract")))
+                    e.tips:Show()
+                end)
+                clickToMoveCheck:SetScript('OnLeave', function() e.tips:Hide() end)
+            end
 
             if Save.disabled then
                 panel:UnregisterAllEvents()
@@ -649,5 +669,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             end
         end
+
+        if event=='PET_BATTLE_OPENING_DONE' and not e.Player.levelMax and Save.disabledClickToMove and C_CVar.GetCVarBool("autoInteract") then--禁用, 点击移动
+            C_CVar.SetCVar("autoInteract", '0')
+            print(id, addName, e.onlyChinese and '点击移动' or CLICK_TO_MOVE, e.GetEnabeleDisable(C_CVar.GetCVarBool("autoInteract")))
+        end
+
     end
 end)

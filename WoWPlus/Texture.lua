@@ -1349,7 +1349,7 @@ end
 
 
 local function options_Init()--添加控制面板
-    panel.name = (e.onlyChinese and '材质' or addName)..'|A:AnimCreate_Icon_Texture:0:0|a'
+    panel.name = '|A:AnimCreate_Icon_Texture:0:0|a'..(e.onlyChinese and '材质' or addName)
     panel.parent =id
     InterfaceOptions_AddCategory(panel)
 
@@ -1361,7 +1361,7 @@ local function options_Init()--添加控制面板
 
     local enableDisbleButton=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     enableDisbleButton:SetChecked(not Save.disabled)
-    enableDisbleButton:SetPoint('LEFT', restButton, 'RIGHT', 2, 0)
+    enableDisbleButton:SetPoint('TOPLEFT', panel, 'TOP')
     enableDisbleButton.text:SetText(e.onlyChinese and '启用/禁用' or ENABLE..'/'..DISABLE)
     enableDisbleButton:SetScript('OnMouseDown', function()
         Save.disabled = not Save.disabled and true or nil

@@ -20,7 +20,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
             --添加控制面板        
-            local sel=e.CPanel( e.onlyChinese and '隐藏NPC发言' or addName, not Save.disabled, true)
+            local sel=e.CPanel('|A:TalkingHeads-Glow-TopSpike:0:0|a'..(e.onlyChinese and '隐藏NPC发言' or addName), not Save.disabled, true)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 setRegister()--设置事件
