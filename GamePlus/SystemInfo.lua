@@ -462,8 +462,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             check:SetScript('OnEnter', function(self2)
                 e.tips:SetOwner(self2, "ANCHOR_RIGHT");
                 e.tips:ClearLines();
-                e.tips:AddDoubleLine('fps ms', MONEY)
-                e.tips:AddDoubleLine(DURABILITY, EQUIPSET_EQUIP..LEVEL)
+                e.tips:AddDoubleLine('fps ms', e.onlyChinese and '钱' or MONEY)
+                e.tips:AddDoubleLine(e.onlyChinese and '耐久度' or DURABILITY, e.onlyChinese and '装等' or (EQUIPSET_EQUIP..LEVEL))
                 e.tips:Show();
             end)
             check:SetScript('OnLeave', function() e.tips:Hide() end)
