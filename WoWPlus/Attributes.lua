@@ -14,7 +14,7 @@ local Save={
         ['MASTERY']= {r=0.82, g=0.28, b=0.82},
         ['VERSATILITY']= {r=0, g=0.77, b=1},--双属性, damageAndDefense=true, onlyDefense=true,仅防卫
         ['LIFESTEAL']= {r=1, g=0.33, b=0.5},
-        ['AVOIDANCE']= {r=1, g=0.79, b=0},--'闪避'
+        ['AVOIDANCE']= {r=0.90, g=0.80, b=0.60},--'闪避'
 
         ['ARMOR']={r=0.71, g=0.55, b=0.22, a=1},--护甲
         ["DODGE"]= {r=1, g=0.51, b=1},--躲闪

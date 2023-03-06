@@ -200,7 +200,7 @@ end
 --更新货币
 --#######
 local function updateCurrency(arg1)--{currencyID = 数量}
-    if arg1 then
+    if arg1 and arg1~=2032 then
         local info = C_CurrencyInfo.GetCurrencyInfo(arg1)
         if info and info.quantity then
             e.WoWSave[e.Player.guid].Currency[arg1]=info.quantity==0 and nil or info.quantity
@@ -210,7 +210,7 @@ local function updateCurrency(arg1)--{currencyID = 数量}
             local link =C_CurrencyInfo.GetCurrencyListLink(i)
             local currencyID = link and C_CurrencyInfo.GetCurrencyIDFromLink(link)
             local info = C_CurrencyInfo.GetCurrencyListInfo(i)
-            if currencyID and info and info.quantity then
+            if currencyID and info and info.quantity and currencyID~=2032 then
                 e.WoWSave[e.Player.guid].Currency[currencyID]=info.quantity==0 and nil or info.quantity
             end
         end
