@@ -1137,14 +1137,14 @@ local function set_Alpha_Event(arg1)
         setAlpha(WardrobeTransmogFrame.MoneyMiddle)
         setAlpha(WardrobeTransmogFrame.MoneyLeft)
         setAlpha(WardrobeTransmogFrame.MoneyRight)
-        for v=1,6 do
+        --[[for v=1,6 do--物品,幻化, 背景
             for h= 1, 3 do
                 local button= WardrobeCollectionFrame.ItemsCollectionFrame['ModelR'..h..'C'..v]
                 if button then
                     button:DisableDrawLayer('BACKGROUND')
                 end
             end
-        end
+        end]]
         for v=1,4 do
             for h= 1, 2 do
                 local button= WardrobeCollectionFrame.SetsTransmogFrame['ModelR'..h..'C'..v]
