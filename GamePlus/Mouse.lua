@@ -138,28 +138,24 @@ local set_Update = function(self)
     end
 end
 
-if (not panel.particles_pool) then
-    panel.particles_pool = {}
-    panel.particles_used = {}
+local function frame_Inst(self)
+    self.particles_pool = {}
+    self.particles_used = {}
     for i = 1, max_particles, 1 do
-        panel.particles_pool[i] = UIParent:CreateTexture(nil, "BACKGROUND", nil, -8)
-        panel.particles_pool[i]:SetTexture(Save.texture1)
-        panel.particles_pool[i]:SetBlendMode("ADD")
-        panel.particles_pool[i]:SetSize(32, 32)
-        panel.particles_pool[i].life = 0
-        panel.particles_pool[i]:Hide()
+        self.particles_pool[i] = UIParent:CreateTexture(nil, "BACKGROUND", nil, -8)
+        self.particles_pool[i]:SetTexture(Save.texture1)
+        self.particles_pool[i]:SetBlendMode("ADD")
+        self.particles_pool[i]:SetSize(32, 32)
+        self.particles_pool[i].life = 0
+        self.particles_pool[i]:Hide()
     end
 end
-
-
-
-
 
 --#####
 --初始化
 --#####
 local function Init()
-
+    frame_Inst(panel)
 end
 
 
@@ -172,6 +168,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
             if not Save.disabled then
+                Init()
                 panel:SetScript('OnUpdate', set_Update)
             end
             panel:UnregisterEvent('ADDON_LOADED')
