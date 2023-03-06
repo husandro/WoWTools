@@ -2,7 +2,7 @@ local id, e = ...
 local Save={
     disabledClickToMove=e.Player.husandro,--禁用, 点击移动
 }
-local addName= PET_BATTLE_COMBAT_LOG  
+local addName= PET_BATTLE_COMBAT_LOG
 local panel= e.Cbtn(nil, nil, true,nil,nil,nil, {20,20})
 panel:SetShown(false)
 panel:SetFrameStrata('DIALOG')

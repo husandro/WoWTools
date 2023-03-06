@@ -3,20 +3,20 @@ local addName= ADDONS..CHAT_MODERATE
 local panel=e.Cbtn(AddonList, true, nil, nil, nil, true,{80,22})
 
 local Save={
-            buttons={
-                [RESISTANCE_FAIR]={
-                    ['WeakAuras']=true,
-                    ['WeakAurasArchive']=true,
-                    ['WeakAurasModelPaths']=true,
-                    ['WeakAurasOptions']=true,
-                    ['WeakAurasTemplates']=true,
-                    ['BugSack']=true,
-                    ['!BugGrabber']=true,
-                    ['TextureAtlasViewer']=true,
-                    [id]=true,
-                }
-            }
+        buttons={
+            [RESISTANCE_FAIR]={
+                ['WeakAuras']=true,
+                ['WeakAurasArchive']=true,
+                ['WeakAurasModelPaths']=true,
+                ['WeakAurasOptions']=true,
+                ['WeakAurasTemplates']=true,
+                ['BugSack']=true,
+                ['!BugGrabber']=true,
+                ['TextureAtlasViewer']=true,
+                [id]=true,
+            },
         }
+    }
 
 local function getAddList()--检查列表, 选取数量, 总数, 数量/总数
     local num, all=0, GetNumAddOns();
@@ -211,7 +211,32 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
-
+            if e.Player.husandro then
+                Save.buttons[e.onlyChinese and '宠物对战' or PET_BATTLE_COMBAT_LOG ]={
+                    ['BugSack']=true,
+                    ['!BugGrabber']=true,
+                    ['tdBattlePetScript']=true,
+                    ['tdBattlePetScript_Rematch']=true,
+                    ['Rematch']=true,
+                    [id]=true,
+                }
+                Save.buttons[e.onlyChinese and '副本' or INSTANCE ]={
+                    ['BugSack']=true,
+                    ['!BugGrabber']=true,
+                    ['WeakAuras']=true,
+                    ['WeakAurasArchive']=true,
+                    ['WeakAurasModelPaths']=true,
+                    ['WeakAurasOptions']=true,
+                    ['WeakAurasTemplates']=true,
+                    ['Details']=true,
+                    ['DBM-Core']=true,
+                    ['DBM-Challenges']=true,
+                    ['DBM-GUI']=true,
+                    ['DBM-StatusBarTimers']=true,
+                    ['DBM-DMF']=true,
+                    [id]=true,
+                }
+            end
             --添加控制面板        
             local sel=e.CPanel('|A:Garr_Building-AddFollowerPlus:0:0|a'..(e.onlyChinese and '插件管理' or addName), not Save.disabled, true)
             sel:SetScript('OnMouseDown', function()

@@ -120,7 +120,7 @@ end
 local Move=function(F, tab)
     tab=tab or {}
     local F2, click, save, enter, show,  re =tab.frame, tab.click, tab.save, tab.enter, tab.show, tab.re --, tab.hook 
-    if not F2 and not F then
+    if not F then
         return
     end
     local name
