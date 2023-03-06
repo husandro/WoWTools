@@ -89,7 +89,8 @@ GamePlus\Dragonriding.lua
 GamePlus\Color.lua
 ##fps ms
 GamePlus\SystemInfo.lua
-
+##鼠标 Mouse https://wago.io/CVmKEpl6E
+GamePlus\Mouse.lua
 ##坐骑， Tools 主要的，
 ##如果要使用Tools中的一个模块，必须开启坐骑模块
 Tools\_20Mount.lua

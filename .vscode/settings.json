@@ -1870,7 +1870,8 @@
         "CLASS_ICON_TCOORDS",
         "CLICK_TO_MOVE",
         "ITEM_UPGRADE_CURRENT",
-        "BATTLE_PET_SOURCE_5"
+        "BATTLE_PET_SOURCE_5",
+        "GetCursorPosition"
     ],
     "Lua.diagnostics.disable": [
     ]
