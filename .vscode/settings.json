@@ -1879,7 +1879,8 @@
         "AUCTION_DURATION",
         "PARTICLE_DENSITY",
         "UIDropDownMenu_SetWidth",
-        "UIDropDownMenu_SetText"
+        "UIDropDownMenu_SetText",
+        "MINIMUM"
     ],
     "Lua.diagnostics.disable": [
     ]

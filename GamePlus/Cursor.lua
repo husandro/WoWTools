@@ -203,11 +203,6 @@ local function Init()
     C_Timer.After(2, function()
         Frame:SetScript('OnUpdate', set_Update)
     end)
-    --frame2= CreateFrame("Frame", Save.texture2)
-    --frame_Init_Set(frame2)
-
-    --local frame3= CreateFrame("Frame", Save.texture3)
-    --frame_Init_Set(frame3)
 end
 
 
@@ -263,7 +258,7 @@ local function Init_Options()
     sliderMaxParticles:SetPoint("TOPLEFT", reloadButton, 'BOTTOMLEFT', 0, -32)
 
     local sliderMinDistance = e.Create_Slider(panel, {min=1, max=10, value=Save.minDistance, setp=1,
-    text=e.onlyChinese and '距离' or TRACKER_SORT_PROXIMITY,
+    text=e.onlyChinese and '最小距离' or MINIMUM..TRACKER_SORT_PROXIMITY,
     func=function(self, value)
         value= math.floor(value)
         self:SetValue(value)
@@ -271,7 +266,7 @@ local function Init_Options()
         Save.minDistance= value
         frame_Init_Set()--初始，设置
     end})
-    sliderMinDistance:SetPoint("TOPLEFT", sliderMaxParticles, 'BOTTOMLEFT', 0, -16)
+    sliderMinDistance:SetPoint("TOPLEFT", sliderMaxParticles, 'BOTTOMLEFT', 0, -32)
 
 
     local sliderSize = e.Create_Slider(panel, {min=8, max=128, value=Save.size, setp=1,
@@ -283,7 +278,7 @@ local function Init_Options()
         Save.size= value
         frame_Init_Set()--初始，设置
     end})
-    sliderSize:SetPoint("TOPLEFT", sliderMinDistance, 'BOTTOMLEFT', 0, -16)
+    sliderSize:SetPoint("TOPLEFT", sliderMinDistance, 'BOTTOMLEFT', 0, -32)
 
     local sliderX = e.Create_Slider(panel, {min=-100, max=100, value=Save.X, setp=1,
     text='X',
@@ -294,7 +289,7 @@ local function Init_Options()
         Save.X= value==0 and 0 or value
         frame_Init_Set()--初始，设置
     end})
-    sliderX:SetPoint("TOPLEFT", sliderSize, 'BOTTOMLEFT', 0, -16)
+    sliderX:SetPoint("TOPLEFT", sliderSize, 'BOTTOMLEFT', 0, -32)
 
     local sliderY = e.Create_Slider(panel, {min=-100, max=100, value=Save.Y, setp=1,
     text='Y',
@@ -305,7 +300,7 @@ local function Init_Options()
         Save.Y= value==0 and 0 or value
         frame_Init_Set()--初始，设置
     end})
-    sliderY:SetPoint("TOPLEFT", sliderX, 'BOTTOMLEFT', 0, -16)
+    sliderY:SetPoint("TOPLEFT", sliderX, 'BOTTOMLEFT', 0, -32)
 
     local sliderRate = e.Create_Slider(panel, {min=0.001, max=0.1, value=Save.rate, setp=0.001,
     text=e.onlyChinese and '刷新' or REFRESH,
@@ -316,7 +311,7 @@ local function Init_Options()
         Save.rate= value
         frame_Init_Set()--初始，设置
     end})
-    sliderRate:SetPoint("TOPLEFT", sliderY, 'BOTTOMLEFT', 0, -16)
+    sliderRate:SetPoint("TOPLEFT", sliderY, 'BOTTOMLEFT', 0, -32)
 
     local sliderRotate = e.Create_Slider(panel, {min=0, max=32, value=Save.rotate, setp=1,
     text=e.onlyChinese and '旋转' or HUD_EDIT_MODE_SETTING_MINIMAP_ROTATE_MINIMAP:gsub(MINIMAP_LABEL, ''),
@@ -327,7 +322,7 @@ local function Init_Options()
         Save.rotate= value==0 and 0 or value
         frame_Init_Set()--初始，设置
     end})
-    sliderRotate:SetPoint("TOPLEFT", sliderRate, 'BOTTOMLEFT', 0, -16)
+    sliderRotate:SetPoint("TOPLEFT", sliderRate, 'BOTTOMLEFT', 0, -32)
 
     local sliderDuration = e.Create_Slider(panel, {min=0.1, max=4, value=Save.duration, setp=0.1,
     text=e.onlyChinese and '持续时间' or AUCTION_DURATION,
@@ -338,7 +333,7 @@ local function Init_Options()
         Save.duration=  value
         frame_Init_Set()--初始，设置
     end})
-    sliderDuration:SetPoint("TOPLEFT", sliderRotate, 'BOTTOMLEFT', 0, -16)
+    sliderDuration:SetPoint("TOPLEFT", sliderRotate, 'BOTTOMLEFT', 0, -32)
 
     local sliderGravity = e.Create_Slider(panel, {min=-512, max=512, value=Save.gravity, setp=1,
     text=e.onlyChinese and '掉落' or BATTLE_PET_SOURCE_1,
@@ -349,7 +344,7 @@ local function Init_Options()
         Save.gravity= value==0 and 0 or value
         frame_Init_Set()--初始，设置
     end})
-    sliderGravity:SetPoint("TOPLEFT", sliderDuration, 'BOTTOMLEFT', 0, -16)
+    sliderGravity:SetPoint("TOPLEFT", sliderDuration, 'BOTTOMLEFT', 0, -32)
 
     local alphaSlider = e.Create_Slider(panel, {min=0.1, max=1, value=Save.alpha, setp=0.1,
     text=e.onlyChinese and '透明度' or CHANGE_OPACITY,
@@ -360,7 +355,7 @@ local function Init_Options()
         Save.alpha= value
         frame_Init_Set()--初始，设置
     end})
-    alphaSlider:SetPoint("TOPLEFT", sliderGravity, 'BOTTOMLEFT', 0, -16)
+    alphaSlider:SetPoint("TOPLEFT", sliderGravity, 'BOTTOMLEFT', 0, -32)
 
     local useClassColorCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     useClassColorCheck:SetPoint("TOPLEFT", panel.check, 'BOTTOMLEFT', 0, -12)
@@ -375,7 +370,7 @@ local function Init_Options()
 
     local colorText= e.Cstr(panel, nil, nil, nil, {Save.color.r, Save.color.g, Save.color.b, Save.color.a})
     colorText:SetPoint('LEFT', useClassColorCheck.text, 'RIGHT', 4,0)
-    colorText:SetText(e.onlyChinese and '自定义 ' or CUSTOM )
+    colorText:SetText('|A:colorblind-colorwheel:0:0|a'..(e.onlyChinese and '自定义 ' or CUSTOM))
     colorText:EnableMouse(true)
     colorText.r, colorText.g, colorText.b, colorText.a= Save.color.r, Save.color.g, Save.color.b, Save.color.a
     colorText:SetScript('OnMouseDown', function(self)
@@ -517,8 +512,8 @@ local function Init_Options()
             panel:UnregisterEvent('PLAYER_STARTED_MOVING')
         end
     end
-    randomTextureCheck:SetPoint("BOTTOMLEFT", dropDown, 'TOPRIGHT', -50, 0)
-    randomTextureCheck.text:SetText(e.onlyChinese and '随机' or 'Random')
+    randomTextureCheck:SetPoint("BOTTOMLEFT", dropDown, 'TOPRIGHT', -60, 0)
+    randomTextureCheck.text:SetText('|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t'..(e.onlyChinese and '随机' or 'Random'))
     randomTextureCheck:SetChecked(Save.randomTexture)
     randomTextureCheck:SetScript('OnMouseDown', function()
         Save.randomTexture= not Save.randomTexture and true or nil
