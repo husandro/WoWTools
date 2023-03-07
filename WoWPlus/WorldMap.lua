@@ -373,7 +373,7 @@ local function setOnEnter(self)--地图ID提示
             if instanceID then
                 e.tips:AddDoubleLine(e.onlyChinese and '副本' or INSTANCE, instanceID)
                 if LfgDungeonID then
-                    e.tips:AddDoubleLine(e.onlyChinese and '随机副本' or (SLASH_RANDOM3:gsub('/','')..INSTANCE), LfgDungeonID)
+                    e.tips:AddDoubleLine(e.onlyChinese and '随机副本' or LFG_TYPE_RANDOM_DUNGEON, LfgDungeonID)
                 end
             end
         end
@@ -423,7 +423,7 @@ local function setMapIDText(self)
                 if instanceID then
                     m=INSTANCE..instanceID..'  '..m
                     if LfgDungeonID then
-                        m=SLASH_RANDOM3:gsub('/','')..LfgDungeonID..'  '..m
+                        m=(e.onlyChinese and '随机' or 'Random')..LfgDungeonID..'  '..m
                     end
                 end
             end

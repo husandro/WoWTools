@@ -594,7 +594,7 @@ local function InitMenu(self, level, menuList)--主菜单
 
             UIDropDownMenu_AddSeparator(level)
             info={--坐骑展示,每3秒
-                text= e.onlyChinese and '坐骑展示' or (SLASH_RANDOM3:gsub('/','')..SHOW),
+                text= e.onlyChinese and '坐骑展示' or ('Random'..SHOW),
                 notCheckable=true,
                 tooltipOnButton=true,
                 tooltipTitle= e.onlyChinese and '每隔 3 秒, 召唤' or ('3 '..SECONDS..MOUNT),

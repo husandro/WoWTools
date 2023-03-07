@@ -1228,4 +1228,17 @@ e.Reload= function()
         print(id, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中'..HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
     end
 end
+
+e.Create_Slider= function(self, tab)--e.Create_Slider(self, {w= ,h=, min=, max=, value=, text=, setp=, func=})
+    local slider= CreateFrame("Slider", nil, self, 'OptionsSliderTemplate')
+    slider:SetSize(tab.w or 200, tab.h or 18)
+    slider:SetMinMaxValues(tab.min, tab.max)
+    slider:SetValue(tab.value)
+    slider.Low:SetText(tab.text..' '..tab.min)
+    slider.High:SetText(tab.max)
+    slider.Text:SetText(tab.value)
+    slider:SetValueStep(tab.setp)
+    slider:SetScript('OnValueChanged', tab.func)
+    return slider
+end
 --e.ShowColorPicker(r,g,b,a, function(restore) if not restore then local newA, newR, newG, newB = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()

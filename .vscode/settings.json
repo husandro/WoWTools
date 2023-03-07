@@ -1875,7 +1875,11 @@
         "HUD_EDIT_MODE_SETTING_MINIMAP_ROTATE_MINIMAP",
         "MINIMAP_LABEL",
         "SPELL_DURATION",
-        "BATTLE_PET_SOURCE_1"
+        "BATTLE_PET_SOURCE_1",
+        "AUCTION_DURATION",
+        "PARTICLE_DENSITY",
+        "UIDropDownMenu_SetWidth",
+        "UIDropDownMenu_SetText"
     ],
     "Lua.diagnostics.disable": [
     ]
