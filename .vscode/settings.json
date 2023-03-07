@@ -1871,7 +1871,11 @@
         "CLICK_TO_MOVE",
         "ITEM_UPGRADE_CURRENT",
         "BATTLE_PET_SOURCE_5",
-        "GetCursorPosition"
+        "GetCursorPosition",
+        "HUD_EDIT_MODE_SETTING_MINIMAP_ROTATE_MINIMAP",
+        "MINIMAP_LABEL",
+        "SPELL_DURATION",
+        "BATTLE_PET_SOURCE_1"
     ],
     "Lua.diagnostics.disable": [
     ]
