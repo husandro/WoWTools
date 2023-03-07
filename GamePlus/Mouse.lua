@@ -1,7 +1,7 @@
 local id, e= ...
 local addName= MOUSE_LABEL-- = "鼠标"
 local Save={
-    color={r=0, g=1, b= 0, a=0},
+    color={r=0, g=1, b= 0, a=1},
     usrClassColor=true,
 
     blendMode= 4,
@@ -350,7 +350,7 @@ local function Init_Options()
         set_Color()
         frame_Init_Set()--初始，设置
     end)
---e.Cstr=function(self, size, fontType, ChangeFont, color, layer, justifyH)
+
     local colorText= e.Cstr(panel, nil, nil, nil, {Save.color.r, Save.color.g, Save.color.b, Save.color.a})
     colorText:SetPoint('LEFT', useClassColorCheck.text, 'RIGHT', 4,0)
     colorText:SetText(e.onlyChinese and '自定义 ' or CUSTOM )
@@ -371,6 +371,13 @@ local function Init_Options()
             frame_Init_Set()--初始，设置
         end)
     end)
+    colorText:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_RIGHT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, e.onlyChinese and '颜色' or COLOR)
+        e.tips:Show()
+    end)
+    colorText:SetScript('OnLeave', function() e.tips:Hide() end)
 end
 
 
