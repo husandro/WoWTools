@@ -250,7 +250,7 @@ local function Init_Options()
         StaticPopup_Show(id..addName..'restAllSetup')
     end)
 
-    
+
     local sliderMaxParticles = e.Create_Slider(panel, {min=50, max=4096, value=Save.maxParticles, setp=1,
     text=e.onlyChinese and '粒子密度' or PARTICLE_DENSITY,
     func=function(self, value)
@@ -379,6 +379,9 @@ local function Init_Options()
     colorText:EnableMouse(true)
     colorText.r, colorText.g, colorText.b, colorText.a= Save.color.r, Save.color.g, Save.color.b, Save.color.a
     colorText:SetScript('OnMouseDown', function(self)
+        local usrClassColor= Save.usrClassColor
+        Save.usrClassColor=nil
+        useClassColorCheck:SetChecked(false)
         local valueR, valueG, valueB, valueA= self.r, self.g, self.b, self.a
         e.ShowColorPicker(self.r, self.g, self.b,self.a, function(restore)
             local setA, setR, setG, setB
@@ -386,6 +389,10 @@ local function Init_Options()
                 setR, setG, setB, setA= e.Get_ColorFrame_RGBA()
             else
                 setR, setG, setB, setA= valueR, valueG, valueB, valueA
+                if usrClassColor then
+                    Save.usrClassColor=true
+                    useClassColorCheck:SetChecked(true)
+                end
             end
             Save.color= {r=setR, g=setG, b=setB, a=setA}
             self:SetTextColor(setR, setG, setB, setA)
@@ -402,14 +409,15 @@ local function Init_Options()
     colorText:SetScript('OnLeave', function() e.tips:Hide() end)
 
 
-    local dropDown = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")
-    local panelTexture= panel:CreateTexture()--图片
+    local dropDown = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")--下拉，菜单
+    local panelTexture= panel:CreateTexture()--大图片
     local delColorButton= e.Cbtn(panel, nil, nil, nil, nil, true, {20,20})--删除, 按钮
     local addColorEdit= CreateFrame("EditBox", nil, panel, 'InputBoxTemplate')--EditBox
     local addColorButton= e.Cbtn(panel, nil, nil, nil, nil, true, {20,20})--添加, 按钮
-    
-    
-    local function set_panel_Texture()--设置, 大图片
+    local randomTextureCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--随机, 图片
+
+    --设置, 大图片
+    local function set_panel_Texture()
         local texture= Save.Atlas[Save.atlasIndex]
         texture= texture or defaultTexture
         if get_Texture_type(texture) then
@@ -419,6 +427,8 @@ local function Init_Options()
         end
         addColorEdit:SetText(texture)
     end
+
+    --下拉，菜单
     local function Init_Menu(self, level, menuList)
         for index, texture in pairs(Save.Atlas) do
             local info={
@@ -428,6 +438,8 @@ local function Init_Options()
                 checked= Save.atlasIndex==index,
                 func= function(_, arg1)
                     Save.atlasIndex=arg1
+                    Save.randomTexture=nil
+                    randomTextureCheck:SetChecked(false)
                     UIDropDownMenu_SetText(self, Save.Atlas[arg1])
                     set_panel_Texture()
                     frame_Init_Set()--初始，设置
@@ -436,16 +448,17 @@ local function Init_Options()
             UIDropDownMenu_AddButton(info, level)
         end
     end
-    
     dropDown:SetPoint("TOPLEFT", useClassColorCheck, 'BOTTOMLEFT', -18,0)
     UIDropDownMenu_SetWidth(dropDown, 280)
     UIDropDownMenu_Initialize(dropDown, Init_Menu)
     UIDropDownMenu_SetText(dropDown, Save.Atlas[Save.atlasIndex] or defaultTexture)
 
-    panelTexture:SetPoint("BOTTOMRIGHT", dropDown, 'TOPRIGHT', -50,0)--大图片
+    --大图片
+    panelTexture:SetPoint("BOTTOMRIGHT", dropDown, 'TOPRIGHT', -50,0)
     panelTexture:SetSize(80,80)
     set_panel_Texture()
 
+    --删除，图片
     delColorButton:SetPoint('LEFT', dropDown, 'RIGHT')
     delColorButton:SetSize(20,20)
     delColorButton:SetNormalAtlas('xmarksthespot')
@@ -462,6 +475,7 @@ local function Init_Options()
         UIDropDownMenu_Initialize(dropDown, Init_Menu)
     end)
 
+    --添加，自定义，图片
     local function add_Color()
         local text= addColorEdit:GetText() or ''
         if text:gsub(' ','')~='' then
@@ -487,19 +501,18 @@ local function Init_Options()
         end
     end)
     addColorEdit:SetScript('OnEnterPressed', add_Color)
-
-    addColorButton:SetPoint('LEFT', addColorEdit, 'RIGHT')
+    addColorButton:SetPoint('LEFT', addColorEdit, 'RIGHT')--添加按钮
     addColorButton:SetNormalAtlas(e.Icon.select)
     addColorButton:SetScript('OnClick', add_Color)
 
-    local function set_Random_Event()--随机, 事件
+    --随机, 图片，事件
+    local function set_Random_Event()
         if Save.randomTexture then
             panel:RegisterEvent('PLAYER_STARTED_MOVING')
         else
             panel:UnregisterEvent('PLAYER_STARTED_MOVING')
         end
     end
-    local randomTextureCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     randomTextureCheck:SetPoint("BOTTOMLEFT", dropDown, 'TOPRIGHT', -50, 0)
     randomTextureCheck.text:SetText(e.onlyChinese and '随机' or 'Random')
     randomTextureCheck:SetChecked(Save.randomTexture)
@@ -508,9 +521,13 @@ local function Init_Options()
         frame_Init_Set()--初始，设置
         set_Random_Event()--随机, 事件
     end)
-    --randomTextureCheck:SetScript('OnEnter', function(self)
-    --end)
-
+    randomTextureCheck:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_RIGHT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.onlyChinese and '事件' or EVENTS_LABEL, e.onlyChinese and '移动' or NPE_MOVE)
+        e.tips:Show()
+    end)
+    randomTextureCheck:SetScript('OnLeave', function() e.tips:Hide() end)
     if Save.randomTexture then
         set_Random_Event()
     end
