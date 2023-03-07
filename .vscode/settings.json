@@ -1880,7 +1880,8 @@
         "PARTICLE_DENSITY",
         "UIDropDownMenu_SetWidth",
         "UIDropDownMenu_SetText",
-        "MINIMUM"
+        "MINIMUM",
+        "HIGH"
     ],
     "Lua.diagnostics.disable": [
     ]

@@ -512,7 +512,7 @@ local function Init_Options()
             panel:UnregisterEvent('PLAYER_STARTED_MOVING')
         end
     end
-    randomTextureCheck:SetPoint("BOTTOMLEFT", dropDown, 'TOPRIGHT', -60, 0)
+    randomTextureCheck:SetPoint("TOPLEFT", addColorEdit, 'BOTTOMLEFT',-10,-4)
     randomTextureCheck.text:SetText('|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t'..(e.onlyChinese and '随机' or 'Random'))
     randomTextureCheck:SetChecked(Save.randomTexture)
     randomTextureCheck:SetScript('OnMouseDown', function()
@@ -530,6 +530,22 @@ local function Init_Options()
     if Save.randomTexture then
         set_Random_Event()
     end
+
+    --战斗中， 随机，图片
+    local randomTextureInCombatCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--随机, 图片
+    randomTextureInCombatCheck:SetPoint("LEFT", randomTextureCheck.text, 'RIGHT', 2,0)
+    randomTextureInCombatCheck.text:SetText(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+    randomTextureInCombatCheck:SetChecked(Save.randomTextureInCombat)
+    randomTextureInCombatCheck:SetScript('OnMouseDown', function()
+        Save.randomTextureInCombat= not Save.randomTextureInCombat and true or nil
+    end)
+    randomTextureInCombatCheck:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_RIGHT")
+        e.tips:ClearLines()
+        e.tips:AddLine((e.onlyChinese and '高' or HIGH )..' CPU')
+        e.tips:Show()
+    end)
+    randomTextureInCombatCheck:SetScript('OnLeave', function() e.tips:Hide() end)
 end
 
 
@@ -579,7 +595,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event=='PLAYER_STARTED_MOVING' then
-        if not UnitAffectingCombat('player') then
+        if Save.randomTextureInCombat or not UnitAffectingCombat('player') then
             frame_Init_Set()--初始，设置
         end
     end
