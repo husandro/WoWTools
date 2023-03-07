@@ -146,11 +146,11 @@ local function frame_Init_Set(self)
         atlsIndex= random(1,atlsIndex)
     end
     local alts= Atlas[atlsIndex]
-
+    egim= 0
     self.elapsed=0
     self.Pool = self.Pool or {}
     for i = 1, max_particles, 1 do
-        self.Pool[i] = self.Pool[i] or UIParent:CreateTexture(nil, "BACKGROUND", nil, -8)
+        self.Pool[i] = self.Pool[i] or UIParent:CreateTexture(nil, "OVERLAY", nil, -8)
         self.Pool[i]:SetAtlas(alts)
         self.Pool[i]:SetVertexColor(Color.r, Color.g, Color.b, Color.a)
         self.Pool[i]:SetBlendMode(blendModeTab[Save.blendMode])
