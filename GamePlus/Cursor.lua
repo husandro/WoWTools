@@ -415,6 +415,8 @@ local function Init_Options()
     local addColorEdit= CreateFrame("EditBox", nil, panel, 'InputBoxTemplate')--EditBox
     local addColorButton= e.Cbtn(panel, nil, nil, nil, nil, true, {20,20})--添加, 按钮
     local randomTextureCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--随机, 图片
+    local numColorText= e.Cstr(panel, nil, nil, nil, nil, nil, 'RIGHT')--颜色，数量
+    numColorText:SetPoint('RIGHT', dropDown, 'LEFT', 18,5)
 
     --设置, 大图片
     local function set_panel_Texture()
@@ -426,6 +428,7 @@ local function Init_Options()
             panelTexture:SetTexture(texture)
         end
         addColorEdit:SetText(texture)
+        numColorText:SetText(#Save.Atlas)
     end
 
     --下拉，菜单
@@ -481,6 +484,7 @@ local function Init_Options()
         if text:gsub(' ','')~='' then
             table.insert(Save.Atlas, text)
             addColorEdit:SetText('')
+            numColorText:SetText(#Save.Atlas)
             UIDropDownMenu_Initialize(dropDown, Init_Menu)
         end
     end
