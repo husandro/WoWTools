@@ -90,7 +90,7 @@ GamePlus\Color.lua
 ##fps ms
 GamePlus\SystemInfo.lua
 ##鼠标 Mouse https://wago.io/CVmKEpl6E
-GamePlus\Mouse.lua
+GamePlus\Cursor.lua
 
 
 ##坐骑， Tools 主要的，
