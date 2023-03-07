@@ -494,14 +494,8 @@ local function Init_Options()
 
     local function set_Random_Event()--随机, 事件
         if Save.randomTexture then
-            panel:RegisterEvent('PLAYER_REGEN_ENABLED')
-            panel:RegisterEvent('MOUNT_JOURNAL_USABILITY_CHANGED')
-            panel:RegisterEvent('ZONE_CHANGED')
             panel:RegisterEvent('PLAYER_STARTED_MOVING')
         else
-            panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
-            panel:UnregisterEvent('MOUNT_JOURNAL_USABILITY_CHANGED')
-            panel:UnregisterEvent('ZONE_CHANGED')
             panel:UnregisterEvent('PLAYER_STARTED_MOVING')
         end
     end
@@ -514,6 +508,9 @@ local function Init_Options()
         frame_Init_Set()--初始，设置
         set_Random_Event()--随机, 事件
     end)
+    --randomTextureCheck:SetScript('OnEnter', function(self)
+    --end)
+
     if Save.randomTexture then
         set_Random_Event()
     end
@@ -564,8 +561,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not WoWToolsSave then WoWToolsSave={} end
             WoWToolsSave[addName]=Save
         end
-    else
 
+    elseif event=='PLAYER_STARTED_MOVING' then
         if not UnitAffectingCombat('player') then
             frame_Init_Set()--初始，设置
         end
