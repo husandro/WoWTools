@@ -154,10 +154,10 @@ local function set_Texture(self, atlas, texture, setRandomTexture)
     else
         self:SetTexture(texture)
     end
+    if not Save.notUseColor then
+        self:SetVertexColor(Color.r, Color.g, Color.b, Color.a)
+    end
     if not setRandomTexture then
-        if not Save.notUseColor then
-            self:SetVertexColor(Color.r, Color.g, Color.b, Color.a)
-        end
         self:SetSize(Save.size, Save.size)
         self.life = 0
         self:SetAlpha(Save.alpha)
