@@ -1217,7 +1217,7 @@ local function set_Panle_Setting()--设置 panel
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(self.text, self.name, r2, g2, b2)
-                e.tips:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, e.onlyChinese and '颜色' or COLOR)
+                e.tips:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, (e.onlyChinese and '颜色' or COLOR)..e.Icon.left)
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(format('r%.2f', r2)..format('  g%.2f', g2)..format('  b%.2f', b2), format('a%.2f', a2))
                 e.tips:Show()
