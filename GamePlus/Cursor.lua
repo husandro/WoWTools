@@ -154,9 +154,11 @@ local function set_Texture(self, atlas, texture, setRandomTexture)
     else
         self:SetTexture(texture)
     end
+
     if not Save.notUseColor then
         self:SetVertexColor(Color.r, Color.g, Color.b, Color.a)
     end
+
     if not setRandomTexture then
         self:SetSize(Save.size, Save.size)
         self.life = 0
@@ -185,15 +187,17 @@ local function frame_Init_Set(setRandomTexture)
         end
         set_Texture(Frame.Pool[i], atlas, texture, setRandomTexture)
     end
+
     if Frame.Used then
         for i=1, #Frame.Used do
             set_Texture(Frame.Used[i], atlas, texture, setRandomTexture)
         end
+    else
+        Frame.Used = {}
     end
 
     --egim= 0
     if not setRandomTexture then
-        Frame.Used = Frame.Used or {}
         Frame.elapsed=0
     end
 end
