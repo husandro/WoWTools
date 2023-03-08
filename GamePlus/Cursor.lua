@@ -4,7 +4,7 @@ local defaultTexture= 'bonusobjectives-bar-starburst'
 local Save={
     color={r=0, g=1, b= 0, a=1},
     usrClassColor=true,
-    blendMode= 4,
+    --blendMode= 4,--觉得，没必要
     size=32,--8 64
     gravity=512, -- -512 512
     duration=0.4,--0.1 4
@@ -14,9 +14,10 @@ local Save={
     X=40,--移位
     Y=-30,
     alpha=1,--透明
-    maxParticles= 216,--数量
+    maxParticles= 50,--数量
     minDistance=3,--距离
-    --randomTexture=false,--随机, 图片
+    randomTexture=true,--随机, 图片
+    randomTextureInCombat=true,--战斗中，也随机，图片
     Atlas={
         'bonusobjectives-bar-starburst',--星星
         'Adventures-Buff-Heal-Burst',--雪
@@ -48,18 +49,14 @@ local Save={
 
 local panel= CreateFrame("Frame")
 local Color, Frame
-
-
-
-
-
+--[[
 local blendModeTab ={
     "DISABLE",
     "BLEND",
     "ALPHAKEY",
     "ADD",
     "MOD",
-}
+}]]
 
 local egim= 0
 local create_Particle = function(self)
@@ -151,22 +148,23 @@ local function get_Texture_type(texture)--取得格式, atlas 或 texture
     end
 end
 
-local function set_Texture(self, atlas, texture)
+local function set_Texture(self, atlas, texture, setRandomTexture)
     if atlas then
         self:SetAtlas(atlas)
     else
         self:SetTexture(texture)
     end
-    self:SetVertexColor(Color.r, Color.g, Color.b, Color.a)
-    self:SetBlendMode(blendModeTab[Save.blendMode])
-    self:SetSize(Save.size, Save.size)
-    self.life = 0
-    self:SetAlpha(Save.alpha)
-    self:Hide()
+    if not setRandomTexture then
+        if not Save.notUseColor then
+            self:SetVertexColor(Color.r, Color.g, Color.b, Color.a)
+        end
+        self:SetSize(Save.size, Save.size)
+        self.life = 0
+        self:SetAlpha(Save.alpha)
+        self:Hide()
+    end
 end
-local function frame_Init_Set(self)
-    self= self or Frame
-
+local function frame_Init_Set(setRandomTexture)
     local atlasIndex= Save.randomTexture and random(1, #Save.Atlas) or Save.atlasIndex
     local atlas,texture
     if get_Texture_type(Save.Atlas[atlasIndex]) then
@@ -178,20 +176,26 @@ local function frame_Init_Set(self)
         atlas= defaultTexture
     end
 
-    --egim= 0
-    self.elapsed=0
-    local max= self.Pool and #self.Pool or Save.maxParticles
-    self.Pool = self.Pool or {}
+    local max= Frame.Pool and #Frame.Pool or Save.maxParticles
+    Frame.Pool = Frame.Pool or {}
     for i = 1, max do
-        self.Pool[i] = self.Pool[i] or UIParent:CreateTexture()
-        set_Texture(self.Pool[i], atlas, texture)
+        if not Frame.Pool[i] then
+            Frame.Pool[i] = UIParent:CreateTexture()
+            Frame.Pool[i]:SetBlendMode('ADD')--blendModeTab[Save.blendMode])
+        end
+        set_Texture(Frame.Pool[i], atlas, texture, setRandomTexture)
     end
-    if self.Used then
-        for i=1, #self.Used do
-            set_Texture(self.Used[i], atlas, texture)
+    if Frame.Used then
+        for i=1, #Frame.Used do
+            set_Texture(Frame.Used[i], atlas, texture, setRandomTexture)
         end
     end
-    self.Used = self.Used or {}
+
+    --egim= 0
+    if not setRandomTexture then
+        Frame.Used = Frame.Used or {}
+        Frame.elapsed=0
+    end
 end
 
 
@@ -367,26 +371,33 @@ local function Init_Options()
     end})
     alphaSlider:SetPoint("TOPLEFT", sliderGravity, 'BOTTOMLEFT', 0, -32)
 
-    local useClassColorCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    useClassColorCheck:SetPoint("TOPLEFT", panel.check, 'BOTTOMLEFT', 0, -12)
+    local useClassColorCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--职业颜色
+    local colorText= e.Cstr(panel, nil, nil, nil, {Save.color.r, Save.color.g, Save.color.b, Save.color.a})--自定义,颜色
+    local notUseColorCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--不使用，颜色
+
+    useClassColorCheck:SetPoint("TOPLEFT", panel.check, 'BOTTOMLEFT', 0, -12)--职业颜色
     useClassColorCheck.text:SetText(e.onlyChinese and '职业颜色' or CLASS_COLORS)
     useClassColorCheck.text:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
     useClassColorCheck:SetChecked(Save.usrClassColor)
     useClassColorCheck:SetScript('OnMouseDown', function()
         Save.usrClassColor= not Save.usrClassColor and true or nil
+        Save.notUseColor=nil
+        notUseColorCheck:SetChecked(false)
         set_Color()
         frame_Init_Set()--初始，设置
     end)
 
-    local colorText= e.Cstr(panel, nil, nil, nil, {Save.color.r, Save.color.g, Save.color.b, Save.color.a})
-    colorText:SetPoint('LEFT', useClassColorCheck.text, 'RIGHT', 4,0)
+    colorText:SetPoint('LEFT', useClassColorCheck.text, 'RIGHT', 4,0)----自定义,颜色
     colorText:SetText('|A:colorblind-colorwheel:0:0|a'..(e.onlyChinese and '自定义 ' or CUSTOM))
     colorText:EnableMouse(true)
     colorText.r, colorText.g, colorText.b, colorText.a= Save.color.r, Save.color.g, Save.color.b, Save.color.a
     colorText:SetScript('OnMouseDown', function(self)
         local usrClassColor= Save.usrClassColor
+        local notUseColor= Save.notUseColor
         Save.usrClassColor=nil
+        Save.notUseColor=nil
         useClassColorCheck:SetChecked(false)
+        notUseColorCheck:SetChecked(false)
         local valueR, valueG, valueB, valueA= self.r, self.g, self.b, self.a
         e.ShowColorPicker(self.r, self.g, self.b,self.a, function(restore)
             local setA, setR, setG, setB
@@ -397,6 +408,9 @@ local function Init_Options()
                 if usrClassColor then
                     Save.usrClassColor=true
                     useClassColorCheck:SetChecked(true)
+                elseif notUseColor then
+                    Save.notUseColor=true
+                    notUseColorCheck:SetChecked(true)
                 end
             end
             Save.color= {r=setR, g=setG, b=setB, a=setA}
@@ -413,6 +427,16 @@ local function Init_Options()
     end)
     colorText:SetScript('OnLeave', function() e.tips:Hide() end)
 
+
+    notUseColorCheck:SetPoint("LEFT", colorText, 'RIGHT', 2, 0)--不使用，颜色
+    notUseColorCheck.text:SetText(e.onlyChinese and '无' or NONE)
+    notUseColorCheck:SetChecked(Save.notUseColor)
+    notUseColorCheck:SetScript('OnMouseDown', function()
+        Save.notUseColor= not Save.notUseColor and true or nil
+        Save.useClassColorCheck=nil
+        useClassColorCheck:SetChecked(false)
+        print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+    end)
 
     local dropDown = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")--下拉，菜单
     local panelTexture= panel:CreateTexture()--大图片
@@ -574,11 +598,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     Init()
                     Init_Options()
                 end
-                if Save.disabled then
-                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
-                end
                 Frame:SetShown(not Save.disabled)
-                
             end)
 
             if not Save.disabled then
@@ -599,7 +619,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='PLAYER_STARTED_MOVING' then
         if Save.randomTextureInCombat or not UnitAffectingCombat('player') then
-            frame_Init_Set()--初始，设置
+            frame_Init_Set(true)--初始，设置
         end
     end
 end)
