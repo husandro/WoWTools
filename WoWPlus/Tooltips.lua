@@ -813,7 +813,7 @@ end
 --###########
 --宠物面板提示
 --###########
-local function setBattlePet(self, speciesID, level, breedQuality, maxHealth, power, speed, customName)
+local function set_Battle_Pet(self, speciesID, level, breedQuality, maxHealth, power, speed, customName)
     if not speciesID or speciesID < 1 then
         return
     end
@@ -1093,11 +1093,11 @@ local function Init()
     --宠物面板提示
     --###########
     hooksecurefunc("BattlePetToolTip_Show", function(...)--BattlePetTooltip.lua 
-        setBattlePet(BattlePetTooltip, ...)
+        set_Battle_Pet(BattlePetTooltip, ...)
     end)
 
     hooksecurefunc('FloatingBattlePet_Show', function(...)--FloatingPetBattleTooltip.lua
-        setBattlePet(FloatingBattlePetTooltip, ...)
+        set_Battle_Pet(FloatingBattlePetTooltip, ...)
     end)
 
     hooksecurefunc(e.tips,"SetCompanionPet", function(self, petGUID)--设置宠物信息
