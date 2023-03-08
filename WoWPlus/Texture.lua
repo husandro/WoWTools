@@ -890,6 +890,8 @@ local function set_Alpha_Event(arg1)
         setAlpha(EncounterJournal.NineSlice.TopLeftEdge)
         setAlpha(EncounterJournal.NineSlice.TopEdge)
         setAlpha(EncounterJournal.NineSlice.TopRightEdge)
+        setAlpha(EncounterJournal.NineSlice.TopRightCorner)
+        setAlpha(EncounterJournal.NineSlice.TopLeftCorner)
 
         hideTexture(EncounterJournalBg)
         hideTexture(EncounterJournalInset.Bg)
