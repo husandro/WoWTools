@@ -524,8 +524,7 @@ local function Init_Options()
         if userInput then
             local text= self:GetText()
             if text:gsub(' ','')~='' then
-                local atlas= get_Texture_type(text)
-                if atlas then
+                if  get_Texture_type(text) then
                     panelTexture:SetAtlas(text)
                 else
                     panelTexture:SetTexture(text)
