@@ -1225,11 +1225,11 @@ e.Reload= function()
     if not UnitAffectingCombat('player') then
         C_UI.Reload()
     else
-        print(id, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中'..HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+        print(id, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
     end
 end
 
-e.Create_Slider= function(self, tab)--e.Create_Slider(self, {w= ,h=, min=, max=, value=, setp=, text=, func=})
+e.Create_Slider= function(self, tab)--e.Create_Slider(self, {w= ,h=, min=, max=, value=, setp=, color=, text=, func=})
     local slider= CreateFrame("Slider", nil, self, 'OptionsSliderTemplate')
     slider:SetSize(tab.w or 200, tab.h or 18)
     slider:SetMinMaxValues(tab.min, tab.max)
@@ -1239,6 +1239,19 @@ e.Create_Slider= function(self, tab)--e.Create_Slider(self, {w= ,h=, min=, max=,
     slider.Text:SetText(tab.value)
     slider:SetValueStep(tab.setp)
     slider:SetScript('OnValueChanged', tab.func)
+    if tab.color then
+        slider.Low:SetTextColor(1,0,1)
+        slider.High:SetTextColor(1,0,1)
+        slider.Text:SetTextColor(1,0,1)
+        slider.NineSlice.BottomEdge:SetVertexColor(1,0,1)
+        slider.NineSlice.TopEdge:SetVertexColor(1,0,1)
+        slider.NineSlice.RightEdge:SetVertexColor(1,0,1)
+        slider.NineSlice.LeftEdge:SetVertexColor(1,0,1)
+        slider.NineSlice.TopRightCorner:SetVertexColor(1,0,1)
+        slider.NineSlice.TopLeftCorner:SetVertexColor(1,0,1)
+        slider.NineSlice.BottomRightCorner:SetVertexColor(1,0,1)
+        slider.NineSlice.BottomLeftCorner:SetVertexColor(1,0,1)
+    end
     return slider
 end
 --e.ShowColorPicker(r,g,b,a, function(restore) if not restore then local newA, newR, newG, newB = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()

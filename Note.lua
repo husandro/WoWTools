@@ -57,5 +57,6 @@ https://wowpedia.fandom.com/wiki/Creating_simple_pop-up_dialog_boxes
 local hasPetUI, isHunterPet = HasPetUI();
 Frame:DisableDrawLayer('BACKGROUND')
 
+fileID = GetFileIDFromPath(filePath)--检查,自定义,文件是否存在
 
 ]]

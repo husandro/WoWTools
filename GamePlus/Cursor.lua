@@ -1,10 +1,10 @@
 local id, e= ...
 local addName= MOUSE_LABEL-- = "鼠标"
 local defaultTexture= 'bonusobjectives-bar-starburst'
+local defaultGCDTexture= ''
 local Save={
     color={r=0, g=1, b= 0, a=1},
     usrClassColor=true,
-    --blendMode= 4,--觉得，没必要
     size=32,--8 64
     gravity=512, -- -512 512
     duration=0.4,--0.1 4
@@ -44,21 +44,37 @@ local Save={
         'CovenantSanctum-Reservoir-Idle-Kyrian-Speck',
         'CovenantSanctum-Reservoir-Idle-Kyrian-Glass',
         [[Interface\Addons\WoWTools\Sesource\Mouse\Aura121]],
-    }
+
+        [[Interface\Addons\WoWTools\Sesource\Mouse\Aura142.tga]],
+        [[Interface\Addons\WoWTools\Sesource\Mouse\Aura103.tga]],
+        [[Interface\Addons\WoWTools\Sesource\Mouse\Aura73.tga]],
+    },
+    GCDTexture={
+        [[Interface\Addons\WoWTools\Sesource\Mouse\Aura142.tga]],
+        [[Interface\Addons\WoWTools\Sesource\Mouse\Aura103.tga]],
+        [[Interface\Addons\WoWTools\Sesource\Mouse\Aura73.tga]],
+    },
+    gcdSize=15,
+    gcdTextureIndex=1,
 }
 
 local panel= CreateFrame("Frame")
-local Color, Frame
---[[
-local blendModeTab ={
-    "DISABLE",
-    "BLEND",
-    "ALPHAKEY",
-    "ADD",
-    "MOD",
-}]]
+local Color, cursorFrame, gcdFrame
 
-local egim= 0
+--####
+--颜色
+--####
+local function set_Color()
+    if Save.usrClassColor then
+        Color={r=e.Player.r, g=e.Player.g, b= e.Player.b, a=1}
+    else
+        Color=Save.color
+    end
+end
+
+--######
+--Cursor
+--######
 local create_Particle = function(self)
     local part = self.Pool[#self.Pool]
     self.Pool[#self.Pool] = nil
@@ -68,11 +84,11 @@ local create_Particle = function(self)
     local x, y = GetCursorPosition()
     part.x = x / scale + Save.X
     part.y = y / scale + Save.Y
-    if egim < 0 then
-        egim = floor(egim + 360)
+    if self.egim < 0 then
+        self.egim = floor(self.egim + 360)
     end
-    egim = floor(egim)
-    part.a = - egim
+    self.egim = floor(self.egim)
+    part.a = - self.egim
     part.vx = 1
     part.vy = 1
 
@@ -112,7 +128,6 @@ local update_Particle = function(part,  delta)
 end
 
 
---local oldX, oldY = 0, 0
 local nowX, nowY = 0, 0
 local set_Update = function(self, elapsed)
     self.elapsed= self.elapsed+ elapsed
@@ -125,7 +140,7 @@ local set_Update = function(self, elapsed)
         local y = nowY - oldY
 
         if math.sqrt(x * x + y * y) > Save.minDistance then
-            egim = atan2((nowX - oldX) ,  (nowY - oldY))
+            self.egim = atan2((nowX - oldX) ,  (nowY - oldY))
             create_Particle(self)
         end
 
@@ -148,7 +163,7 @@ local function get_Texture_type(texture)--取得格式, atlas 或 texture
     end
 end
 
-local function set_Texture(self, atlas, texture, setRandomTexture)
+local function set_Cursor_Texture(self, atlas, texture, setRandomTexture)
     if atlas then
         self:SetAtlas(atlas)
     else
@@ -166,7 +181,8 @@ local function set_Texture(self, atlas, texture, setRandomTexture)
         self:Hide()
     end
 end
-local function frame_Init_Set(setRandomTexture)
+
+local function cursor_Init_And_Set(setRandomTexture)
     local atlasIndex= Save.randomTexture and random(1, #Save.Atlas) or Save.atlasIndex
     local atlas,texture
     if get_Texture_type(Save.Atlas[atlasIndex]) then
@@ -178,45 +194,30 @@ local function frame_Init_Set(setRandomTexture)
         atlas= defaultTexture
     end
 
-    local max= Frame.Pool and #Frame.Pool or Save.maxParticles
-    Frame.Pool = Frame.Pool or {}
+    local max= cursorFrame.Pool and #cursorFrame.Pool or Save.maxParticles
+    cursorFrame.Pool = cursorFrame.Pool or {}
     for i = 1, max do
-        if not Frame.Pool[i] then
-            Frame.Pool[i] = UIParent:CreateTexture()
-            Frame.Pool[i]:SetBlendMode('ADD')--blendModeTab[Save.blendMode])
+        if not cursorFrame.Pool[i] then
+            cursorFrame.Pool[i] = UIParent:CreateTexture()
+            cursorFrame.Pool[i]:SetBlendMode('ADD')
         end
-        set_Texture(Frame.Pool[i], atlas, texture, setRandomTexture)
+        set_Cursor_Texture(cursorFrame.Pool[i], atlas, texture, setRandomTexture)
     end
 
-    if Frame.Used then
-        for i=1, #Frame.Used do
-            set_Texture(Frame.Used[i], atlas, texture, setRandomTexture)
+    if cursorFrame.Used then
+        for i=1, #cursorFrame.Used do
+            set_Cursor_Texture(cursorFrame.Used[i], atlas, texture, setRandomTexture)
         end
     else
-        Frame.Used = {}
+        cursorFrame.Used = {}
     end
 
-    --egim= 0
     if not setRandomTexture then
-        Frame.elapsed=0
+        cursorFrame.elapsed=0
     end
 end
 
-
-
---####
---颜色
---####
-local function set_Color()
-    if Save.usrClassColor then
-        Color={r=e.Player.r, g=e.Player.g, b= e.Player.b, a=1}
-    else
-        Color=Save.color
-    end
-end
-
---随机, 图片，事件
-local function set_Random_Event()
+local function set_Curor_Random_Event()--随机, 图片，事件
     if Save.randomTexture and not Save.disabled then
         panel:RegisterEvent('PLAYER_STARTED_MOVING')
     else
@@ -224,46 +225,10 @@ local function set_Random_Event()
     end
 end
 
---#####
---初始化
---#####
-local function Init()
-    Frame= CreateFrame('Frame')
-    frame_Init_Set()
-    Frame:SetScript('OnUpdate', set_Update)
-    if Save.randomTexture then
-        set_Random_Event()--随机, 图片，事件
-    end
-end
-
---###########
---添加控制面板
---###########
+--##################
+--Curor, 添加控制面板
+--##################
 local function Init_Options()
-    local reloadButton=CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')--重新加载UI
-    reloadButton:SetPoint('TOPLEFT')
-    reloadButton:SetText(e.onlyChinese and '重新加载UI' or RELOADUI)
-    reloadButton:SetSize(120, 28)
-    reloadButton:SetScript('OnMouseUp', e.Reload)
-
-    local restButton= e.Cbtn(panel, true, nil, nil, nil, nil, {20,20})--重置
-    restButton:SetNormalAtlas('bags-button-autosort-up')
-    restButton:SetPoint("TOPRIGHT")
-    restButton:SetScript('OnMouseUp', function()
-        StaticPopupDialogs[id..addName..'restAllSetup']={
-            text =id..'  '..addName..'|n|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除全部' or CLEAR_ALL)..'|r '..(e.onlyChinese and '保存' or SAVE)..'|n|n'..(e.onlyChinese and '重新加载UI' or RELOADUI)..' /reload',
-            button1 = '|cnRED_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET),
-            button2 = e.onlyChinese and '取消' or CANCEL,
-            whileDead=true,timeout=30,hideOnEscape = 1,
-            OnAccept=function(self)
-                Save=nil
-                e.Reload()
-            end,
-        }
-        StaticPopup_Show(id..addName..'restAllSetup')
-    end)
-
-
     local sliderMaxParticles = e.Create_Slider(panel, {min=50, max=4096, value=Save.maxParticles, setp=1,
     text=e.onlyChinese and '粒子密度' or PARTICLE_DENSITY,
     func=function(self, value)
@@ -273,18 +238,18 @@ local function Init_Options()
         Save.maxParticles= value
         print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end})
-    sliderMaxParticles:SetPoint("TOPLEFT", reloadButton, 'BOTTOMLEFT', 0, -32)
+    sliderMaxParticles:SetPoint("TOPLEFT", panel.cursorCheck, 'BOTTOMLEFT', 0, -20)
 
-    local sliderMinDistance = e.Create_Slider(panel, {min=1, max=10, value=Save.minDistance, setp=1,
+    local sliderMinDistance = e.Create_Slider(panel, {min=1, max=10, value=Save.minDistance, setp=1, color=true,
     text=e.onlyChinese and '最小距离' or MINIMUM..TRACKER_SORT_PROXIMITY,
     func=function(self, value)
         value= math.floor(value)
         self:SetValue(value)
         self.Text:SetText(value)
         Save.minDistance= value
-        frame_Init_Set()--初始，设置
+        cursor_Init_And_Set()--初始，设置
     end})
-    sliderMinDistance:SetPoint("TOPLEFT", sliderMaxParticles, 'BOTTOMLEFT', 0, -32)
+    sliderMinDistance:SetPoint("TOPLEFT", sliderMaxParticles, 'BOTTOMLEFT', 0, -20)
 
 
     local sliderSize = e.Create_Slider(panel, {min=8, max=128, value=Save.size, setp=1,
@@ -294,20 +259,20 @@ local function Init_Options()
         self:SetValue(value)
         self.Text:SetText(value)
         Save.size= value
-        frame_Init_Set()--初始，设置
+        cursor_Init_And_Set()--初始，设置
     end})
-    sliderSize:SetPoint("TOPLEFT", sliderMinDistance, 'BOTTOMLEFT', 0, -32)
+    sliderSize:SetPoint("TOPLEFT", sliderMinDistance, 'BOTTOMLEFT', 0, -20)
 
-    local sliderX = e.Create_Slider(panel, {min=-100, max=100, value=Save.X, setp=1,
+    local sliderX = e.Create_Slider(panel, {min=-100, max=100, value=Save.X, setp=1, color=true,
     text='X',
     func=function(self, value)
         value= math.floor(value)
         self:SetValue(value)
         self.Text:SetText(value)
         Save.X= value==0 and 0 or value
-        frame_Init_Set()--初始，设置
+        cursor_Init_And_Set()--初始，设置
     end})
-    sliderX:SetPoint("TOPLEFT", sliderSize, 'BOTTOMLEFT', 0, -32)
+    sliderX:SetPoint("TOPLEFT", sliderSize, 'BOTTOMLEFT', 0, -20)
 
     local sliderY = e.Create_Slider(panel, {min=-100, max=100, value=Save.Y, setp=1,
     text='Y',
@@ -316,20 +281,20 @@ local function Init_Options()
         self:SetValue(value)
         self.Text:SetText(value)
         Save.Y= value==0 and 0 or value
-        frame_Init_Set()--初始，设置
+        cursor_Init_And_Set()--初始，设置
     end})
-    sliderY:SetPoint("TOPLEFT", sliderX, 'BOTTOMLEFT', 0, -32)
+    sliderY:SetPoint("TOPLEFT", sliderX, 'BOTTOMLEFT', 0, -20)
 
-    local sliderRate = e.Create_Slider(panel, {min=0.001, max=0.1, value=Save.rate, setp=0.001,
+    local sliderRate = e.Create_Slider(panel, {min=0.001, max=0.1, value=Save.rate, setp=0.001, color=true,
     text=e.onlyChinese and '刷新' or REFRESH,
     func=function(self, value)
         value= tonumber(format('%.3f', value))
         self:SetValue(value)
         self.Text:SetText(value)
         Save.rate= value
-        frame_Init_Set()--初始，设置
+        cursor_Init_And_Set()--初始，设置
     end})
-    sliderRate:SetPoint("TOPLEFT", sliderY, 'BOTTOMLEFT', 0, -32)
+    sliderRate:SetPoint("TOPLEFT", sliderY, 'BOTTOMLEFT', 0, -20)
 
     local sliderRotate = e.Create_Slider(panel, {min=0, max=32, value=Save.rotate, setp=1,
     text=e.onlyChinese and '旋转' or HUD_EDIT_MODE_SETTING_MINIMAP_ROTATE_MINIMAP:gsub(MINIMAP_LABEL, ''),
@@ -338,20 +303,20 @@ local function Init_Options()
         self:SetValue(value)
         self.Text:SetText(value)
         Save.rotate= value==0 and 0 or value
-        frame_Init_Set()--初始，设置
+        cursor_Init_And_Set()--初始，设置
     end})
-    sliderRotate:SetPoint("TOPLEFT", sliderRate, 'BOTTOMLEFT', 0, -32)
+    sliderRotate:SetPoint("TOPLEFT", sliderRate, 'BOTTOMLEFT', 0, -20)
 
-    local sliderDuration = e.Create_Slider(panel, {min=0.1, max=4, value=Save.duration, setp=0.1,
+    local sliderDuration = e.Create_Slider(panel, {min=0.1, max=4, value=Save.duration, setp=0.1, color=true,
     text=e.onlyChinese and '持续时间' or AUCTION_DURATION,
     func=function(self, value)
         value= tonumber(format('%.1f', value))
         self:SetValue(value)
         self.Text:SetText(value)
         Save.duration=  value
-        frame_Init_Set()--初始，设置
+        cursor_Init_And_Set()--初始，设置
     end})
-    sliderDuration:SetPoint("TOPLEFT", sliderRotate, 'BOTTOMLEFT', 0, -32)
+    sliderDuration:SetPoint("TOPLEFT", sliderRotate, 'BOTTOMLEFT', 0, -20)
 
     local sliderGravity = e.Create_Slider(panel, {min=-512, max=512, value=Save.gravity, setp=1,
     text=e.onlyChinese and '掉落' or BATTLE_PET_SOURCE_1,
@@ -360,26 +325,234 @@ local function Init_Options()
         self:SetValue(value)
         self.Text:SetText(value)
         Save.gravity= value==0 and 0 or value
-        frame_Init_Set()--初始，设置
+        cursor_Init_And_Set()--初始，设置
     end})
-    sliderGravity:SetPoint("TOPLEFT", sliderDuration, 'BOTTOMLEFT', 0, -32)
+    sliderGravity:SetPoint("TOPLEFT", sliderDuration, 'BOTTOMLEFT', 0, -20)
 
-    local alphaSlider = e.Create_Slider(panel, {min=0.1, max=1, value=Save.alpha, setp=0.1,
+    local alphaSlider = e.Create_Slider(panel, {min=0.1, max=1, value=Save.alpha, setp=0.1, color=true,
     text=e.onlyChinese and '透明度' or CHANGE_OPACITY,
     func=function(self, value)
         value= tonumber(format('%.1f', value))
         self:SetValue(value)
         self.Text:SetText(value)
         Save.alpha= value
-        frame_Init_Set()--初始，设置
+        cursor_Init_And_Set()--初始，设置
     end})
-    alphaSlider:SetPoint("TOPLEFT", sliderGravity, 'BOTTOMLEFT', 0, -32)
+    alphaSlider:SetPoint("TOPLEFT", sliderGravity, 'BOTTOMLEFT', 0, -20)
+
+    local dropDown = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")--下拉，菜单
+    local delColorButton= e.Cbtn(panel, nil, nil, nil, nil, true, {20,20})--删除, 按钮
+    local addColorEdit= CreateFrame("EditBox", nil, panel, 'InputBoxTemplate')--EditBox
+    local addColorButton= e.Cbtn(panel, nil, nil, nil, nil, true, {20,20})--添加, 按钮
+    local numColorText= e.Cstr(panel, nil, nil, nil, nil, nil, 'RIGHT')--颜色，数量
+    numColorText:SetPoint('RIGHT', dropDown, 'LEFT', 18,5)
+
+    local function set_panel_Texture()--大图片
+        local texture= Save.Atlas[Save.atlasIndex]
+        texture= texture or defaultTexture
+        if get_Texture_type(texture) then
+            panel.Texture:SetAtlas(texture)
+        else
+            panel.Texture:SetTexture(texture)
+        end
+        addColorEdit:SetText(texture)
+        numColorText:SetText(#Save.Atlas)
+    end
+    set_panel_Texture()
+
+    --下拉，菜单
+    local function Init_Menu(self, level, menuList)
+        for index, texture in pairs(Save.Atlas) do
+            local info={
+                text= texture,
+                icon= texture,
+                arg1= index,
+                checked= Save.atlasIndex==index,
+                func= function(_, arg1)
+                    Save.atlasIndex=arg1
+                    Save.randomTexture=nil
+                    panel.randomTextureCheck:SetChecked(false)
+                    UIDropDownMenu_SetText(self, Save.Atlas[arg1])
+                    set_panel_Texture()
+                    cursor_Init_And_Set()--初始，设置
+                end
+            }
+            UIDropDownMenu_AddButton(info, level)
+        end
+    end
+    dropDown:SetPoint("TOPLEFT", alphaSlider, 'BOTTOMLEFT', -18,-32)
+    UIDropDownMenu_SetWidth(dropDown, 180)
+    UIDropDownMenu_Initialize(dropDown, Init_Menu)
+    UIDropDownMenu_SetText(dropDown, Save.Atlas[Save.atlasIndex] or defaultTexture)
+
+    --删除，图片
+    delColorButton:SetPoint('LEFT', dropDown, 'RIGHT',-10,0)
+    delColorButton:SetSize(20,20)
+    delColorButton:SetNormalAtlas('xmarksthespot')
+    delColorButton:SetScript('OnClick', function()
+        local texture= Save.Atlas[Save.atlasIndex]
+        local icon = select(2, get_Texture_type(texture))
+        table.remove(Save.Atlas, Save.atlasIndex)
+        Save.atlasIndex=1
+        print(id, addName, e.onlyChinese and '移除' or REMOVE, icon, texture)
+        set_panel_Texture()
+        cursor_Init_And_Set()
+        addColorEdit:SetText(texture or defaultTexture)
+        UIDropDownMenu_SetText(dropDown, Save.Atlas[Save.atlasIndex] or defaultTexture)
+        UIDropDownMenu_Initialize(dropDown, Init_Menu)
+    end)
+
+    --添加，自定义，图片
+    local function add_Color()
+        local text= addColorEdit:GetText() or ''
+        if text:gsub(' ','')~='' then
+            table.insert(Save.Atlas, text)
+            addColorEdit:SetText('')
+            numColorText:SetText(#Save.Atlas)
+            UIDropDownMenu_Initialize(dropDown, Init_Menu)
+        end
+    end
+    addColorEdit:SetPoint("TOPLEFT", dropDown, 'BOTTOMLEFT',22,-2)
+	addColorEdit:SetSize(192,20)
+	addColorEdit:SetAutoFocus(false)
+    addColorEdit:SetScript('OnTextChanged', function(self, userInput)
+        if userInput then
+            local text= self:GetText()
+            if text:gsub(' ','')~='' then
+                if  get_Texture_type(text) then
+                    panel.Texture:SetAtlas(text)
+                else
+                    panel.Texture:SetTexture(text)
+                end
+            end
+        end
+    end)
+    addColorEdit:SetScript('OnEnterPressed', add_Color)
+
+    --添加按钮
+    addColorButton:SetPoint('LEFT', addColorEdit, 'RIGHT', 5,0)
+    addColorButton:SetNormalAtlas(e.Icon.select)
+    addColorButton:SetScript('OnClick', add_Color)
+end
+
+local function Cursor_Init()--Cursor, 初始化
+    cursorFrame= CreateFrame('Frame')
+    cursorFrame.egim=0
+    cursor_Init_And_Set()
+    Init_Options()
+    cursorFrame:SetScript('OnUpdate', set_Update)
+    if Save.randomTexture then
+        set_Curor_Random_Event()--随机, 图片，事件
+    end
+end
+
+
+--###
+--GCD
+--###
+local function set_GCD_Texture()--随机GCD，图片
+    local index= Save.randomTexture and random(1, #Save.GCDTexture) or Save.gcdTextureIndex
+    gcdFrame.cooldown:SetSwipeTexture(Save.GCDTexture[index] or defaultGCDTexture)
+end
+
+local function set_GCD()--设置 GCD
+    gcdFrame.size=15
+    gcdFrame:SetSize(Save.gcdSize*2, Save.gcdSize*2)
+    set_GCD_Texture()
+    if not Save.notUseColor then
+        gcdFrame.cooldown:SetSwipeColor(Color.r, Color.g, Color.b, Color.a)
+    end
+    if Save.randomTexture then
+        gcdFrame:SetScript('OnShow', set_GCD_Texture)
+    else
+        gcdFrame:SetScript('OnShow', nil)
+    end
+end
+
+local function GCD_Init()--GCD 初始
+    gcdFrame= CreateFrame("Frame")
+    gcdFrame:SetFrameStrata("TOOLTIP")
+
+    gcdFrame.cooldown= CreateFrame("Cooldown", nil, gcdFrame, 'CooldownFrameTemplate')
+    gcdFrame.cooldown:SetUseCircularEdge(true)--设置边缘纹理是否应该遵循圆形图案而不是方形编辑框
+    gcdFrame.cooldown:SetDrawBling(false)--闪光
+    gcdFrame.cooldown:SetDrawEdge(true)--冷却动画的移动边缘绘制亮线
+    gcdFrame.cooldown:SetHideCountdownNumbers(false)--隐藏数字
+    gcdFrame.cooldown:SetReverse(false)--控制冷却动画的方向
+    gcdFrame.cooldown:SetEdgeTexture("Interface\\Cooldown\\edge")
+    gcdFrame:SetShown(false)
+
+    local GCDelapsed=0
+    gcdFrame:RegisterEvent('SPELL_UPDATE_COOLDOWN')
+    gcdFrame:SetScript('OnEvent', function(self)
+        local start, duration, enabled, modRate = GetSpellCooldown(61304)
+        if enabled==1 and start > 0 and duration > 0 then
+            self.cooldown:SetCooldown(start, duration, modRate)
+            GCDelapsed=0
+            local x, y = GetCursorPosition()
+            self:SetPoint("BOTTOMLEFT", x-Save.gcdSize, y-Save.gcdSize)
+            self:SetShown(true)
+        else
+            self:SetShown(false)
+        end
+    end)
+
+
+    gcdFrame:SetScript('OnUpdate', function(self, elapsed)
+        GCDelapsed= GCDelapsed + elapsed
+        if GCDelapsed>0.2 then
+            local x, y = GetCursorPosition()
+            self:SetPoint("BOTTOMLEFT", x-Save.gcdSize, y-Save.gcdSize)
+        end
+    end)
+    set_GCD()--设置 GCD
+end
+
+
+--######
+--初始化
+--######
+local function Init()
+    panel.name = e.Icon.left..(e.onlyChinese and '鼠标' or   MOUSE_LABEL)
+    panel.parent =id
+    InterfaceOptions_AddCategory(panel)
+
+    --重新加载UI, 按钮
+    local reloadButton=CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')
+    reloadButton:SetPoint('TOPLEFT')
+    reloadButton:SetText(e.onlyChinese and '重新加载UI' or RELOADUI)
+    reloadButton:SetSize(120, 28)
+    reloadButton:SetScript('OnMouseUp', e.Reload)
+
+    --设置, 大图片
+    panel.Texture= panel:CreateTexture()--大图片
+    panel.Texture:SetPoint('LEFT', reloadButton, 'RIGHT', 10, -15)
+    panel.Texture:SetSize(80,80)
+
+    --重置, 按钮
+    local restButton= e.Cbtn(panel, true, nil, nil, nil, nil, {20,20})
+    restButton:SetNormalAtlas('bags-button-autosort-up')
+    restButton:SetPoint("TOPRIGHT")
+    restButton:SetScript('OnMouseUp', function()
+        StaticPopupDialogs[id..addName..'restAllSetup']={
+            text =id..'  '..addName..'|n|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除全部' or CLEAR_ALL)..'|r '..(e.onlyChinese and '保存' or SAVE)..'|n|n'..(e.onlyChinese and '重新加载UI' or RELOADUI)..' /reload',
+            button1 = '|cnRED_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET),
+            button2 = e.onlyChinese and '取消' or CANCEL,
+            whileDead=true,timeout=30,hideOnEscape = 1,
+            OnAccept=function()
+                Save=nil
+                e.Reload()
+            end,
+        }
+        StaticPopup_Show(id..addName..'restAllSetup')
+    end)
 
     local useClassColorCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--职业颜色
     local colorText= e.Cstr(panel, nil, nil, nil, {Save.color.r, Save.color.g, Save.color.b, Save.color.a})--自定义,颜色
     local notUseColorCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--不使用，颜色
 
-    useClassColorCheck:SetPoint("TOPLEFT", panel.check, 'BOTTOMLEFT', 0, -12)--职业颜色
+    --职业颜色
+    useClassColorCheck:SetPoint("BOTTOMLEFT", 70,0)
     useClassColorCheck.text:SetText(e.onlyChinese and '职业颜色' or CLASS_COLORS)
     useClassColorCheck.text:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
     useClassColorCheck:SetChecked(Save.usrClassColor)
@@ -388,10 +561,13 @@ local function Init_Options()
         Save.notUseColor=nil
         notUseColorCheck:SetChecked(false)
         set_Color()
-        frame_Init_Set()--初始，设置
+        if cursorFrame then
+            cursor_Init_And_Set()--初始，设置
+        end
     end)
 
-    colorText:SetPoint('LEFT', useClassColorCheck.text, 'RIGHT', 4,0)----自定义,颜色
+    --自定义,颜色
+    colorText:SetPoint('LEFT', useClassColorCheck.text, 'RIGHT', 4,0)
     colorText:SetText('|A:colorblind-colorwheel:0:0|a'..(e.onlyChinese and '自定义 ' or CUSTOM))
     colorText:EnableMouse(true)
     colorText.r, colorText.g, colorText.b, colorText.a= Save.color.r, Save.color.g, Save.color.b, Save.color.a
@@ -420,7 +596,9 @@ local function Init_Options()
             Save.color= {r=setR, g=setG, b=setB, a=setA}
             self:SetTextColor(setR, setG, setB, setA)
             set_Color()
-            frame_Init_Set()--初始，设置
+            if cursorFrame then
+                cursor_Init_And_Set()--初始，设置
+            end
         end)
     end)
     colorText:SetScript('OnEnter', function(self)
@@ -431,8 +609,8 @@ local function Init_Options()
     end)
     colorText:SetScript('OnLeave', function() e.tips:Hide() end)
 
-
-    notUseColorCheck:SetPoint("LEFT", colorText, 'RIGHT', 2, 0)--不使用，颜色
+    --不使用，颜色
+    notUseColorCheck:SetPoint("LEFT", colorText, 'RIGHT')
     notUseColorCheck.text:SetText(e.onlyChinese and '无' or NONE)
     notUseColorCheck:SetChecked(Save.notUseColor)
     notUseColorCheck:SetScript('OnMouseDown', function()
@@ -442,125 +620,29 @@ local function Init_Options()
         print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
-    local dropDown = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")--下拉，菜单
-    local panelTexture= panel:CreateTexture()--大图片
-    local delColorButton= e.Cbtn(panel, nil, nil, nil, nil, true, {20,20})--删除, 按钮
-    local addColorEdit= CreateFrame("EditBox", nil, panel, 'InputBoxTemplate')--EditBox
-    local addColorButton= e.Cbtn(panel, nil, nil, nil, nil, true, {20,20})--添加, 按钮
-    local randomTextureCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--随机, 图片
-    local numColorText= e.Cstr(panel, nil, nil, nil, nil, nil, 'RIGHT')--颜色，数量
-    numColorText:SetPoint('RIGHT', dropDown, 'LEFT', 18,5)
-
-    --设置, 大图片
-    local function set_panel_Texture()
-        local texture= Save.Atlas[Save.atlasIndex]
-        texture= texture or defaultTexture
-        if get_Texture_type(texture) then
-            panelTexture:SetAtlas(texture)
-        else
-            panelTexture:SetTexture(texture)
-        end
-        addColorEdit:SetText(texture)
-        numColorText:SetText(#Save.Atlas)
-    end
-
-    --下拉，菜单
-    local function Init_Menu(self, level, menuList)
-        for index, texture in pairs(Save.Atlas) do
-            local info={
-                text= texture,
-                icon= texture,
-                arg1= index,
-                checked= Save.atlasIndex==index,
-                func= function(_, arg1)
-                    Save.atlasIndex=arg1
-                    Save.randomTexture=nil
-                    randomTextureCheck:SetChecked(false)
-                    UIDropDownMenu_SetText(self, Save.Atlas[arg1])
-                    set_panel_Texture()
-                    frame_Init_Set()--初始，设置
-                end
-            }
-            UIDropDownMenu_AddButton(info, level)
-        end
-    end
-    dropDown:SetPoint("TOPLEFT", useClassColorCheck, 'BOTTOMLEFT', -18,0)
-    UIDropDownMenu_SetWidth(dropDown, 280)
-    UIDropDownMenu_Initialize(dropDown, Init_Menu)
-    UIDropDownMenu_SetText(dropDown, Save.Atlas[Save.atlasIndex] or defaultTexture)
-
-    --大图片
-    panelTexture:SetPoint("BOTTOMRIGHT", dropDown, 'TOPRIGHT', -50,0)
-    panelTexture:SetSize(80,80)
-    set_panel_Texture()
-
-    --删除，图片
-    delColorButton:SetPoint('LEFT', dropDown, 'RIGHT')
-    delColorButton:SetSize(20,20)
-    delColorButton:SetNormalAtlas('xmarksthespot')
-    delColorButton:SetScript('OnClick', function()
-        local texture= Save.Atlas[Save.atlasIndex]
-        local icon = select(2, get_Texture_type(texture))
-        table.remove(Save.Atlas, Save.atlasIndex)
-        Save.atlasIndex=1
-        print(id, addName, e.onlyChinese and '移除' or REMOVE, icon, texture)
-        set_panel_Texture()
-        frame_Init_Set()
-        addColorEdit:SetText(texture or defaultTexture)
-        UIDropDownMenu_SetText(dropDown, Save.Atlas[Save.atlasIndex] or defaultTexture)
-        UIDropDownMenu_Initialize(dropDown, Init_Menu)
-    end)
-
-    --添加，自定义，图片
-    local function add_Color()
-        local text= addColorEdit:GetText() or ''
-        if text:gsub(' ','')~='' then
-            table.insert(Save.Atlas, text)
-            addColorEdit:SetText('')
-            numColorText:SetText(#Save.Atlas)
-            UIDropDownMenu_Initialize(dropDown, Init_Menu)
-        end
-    end
-    addColorEdit:SetPoint("TOPLEFT", dropDown, 'BOTTOMLEFT',25,-2)
-	addColorEdit:SetSize(285,20)
-	addColorEdit:SetAutoFocus(false)
-    addColorEdit:SetScript('OnTextChanged', function(self, userInput)
-        if userInput then
-            local text= self:GetText()
-            if text:gsub(' ','')~='' then
-                if  get_Texture_type(text) then
-                    panelTexture:SetAtlas(text)
-                else
-                    panelTexture:SetTexture(text)
-                end
-            end
-        end
-    end)
-    addColorEdit:SetScript('OnEnterPressed', add_Color)
-    addColorButton:SetPoint('LEFT', addColorEdit, 'RIGHT')--添加按钮
-    addColorButton:SetNormalAtlas(e.Icon.select)
-    addColorButton:SetScript('OnClick', add_Color)
-
-
-    randomTextureCheck:SetPoint("TOPLEFT", addColorEdit, 'BOTTOMLEFT',-10,-4)
-    randomTextureCheck.text:SetText('|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t'..(e.onlyChinese and '随机' or 'Random'))
-    randomTextureCheck:SetChecked(Save.randomTexture)
-    randomTextureCheck:SetScript('OnMouseDown', function()
+    --随机, 图片
+    panel.randomTextureCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    panel.randomTextureCheck:SetPoint("LEFT", notUseColorCheck.text, 'RIGHT', 10,0)
+    panel.randomTextureCheck.text:SetText('|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t'..(e.onlyChinese and '随机图标' or 'Random '..EMBLEM_SYMBOL))
+    panel.randomTextureCheck:SetChecked(Save.randomTexture)
+    panel.randomTextureCheck:SetScript('OnMouseDown', function()
         Save.randomTexture= not Save.randomTexture and true or nil
-        frame_Init_Set()--初始，设置
-        set_Random_Event()--随机, 事件
+        if cursorFrame then
+            cursor_Init_And_Set()--初始，设置
+            set_Curor_Random_Event()--随机, 事件
+        end
     end)
-    randomTextureCheck:SetScript('OnEnter', function(self)
+    panel.randomTextureCheck:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '事件' or EVENTS_LABEL, e.onlyChinese and '移动' or NPE_MOVE)
         e.tips:Show()
     end)
-    randomTextureCheck:SetScript('OnLeave', function() e.tips:Hide() end)
+    panel.randomTextureCheck:SetScript('OnLeave', function() e.tips:Hide() end)
 
     --战斗中， 随机，图片
     local randomTextureInCombatCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--随机, 图片
-    randomTextureInCombatCheck:SetPoint("LEFT", randomTextureCheck.text, 'RIGHT', 2,0)
+    randomTextureInCombatCheck:SetPoint("LEFT", panel.randomTextureCheck.text, 'RIGHT', 2,0)
     randomTextureInCombatCheck.text:SetText(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
     randomTextureInCombatCheck:SetChecked(Save.randomTextureInCombat)
     randomTextureInCombatCheck:SetScript('OnMouseDown', function()
@@ -573,9 +655,24 @@ local function Init_Options()
         e.tips:Show()
     end)
     randomTextureInCombatCheck:SetScript('OnLeave', function() e.tips:Hide() end)
+
+
+
+    --Cursor, 启用/禁用
+    panel.cursorCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    panel.cursorCheck:SetChecked(not Save.disabled)
+    panel.cursorCheck:SetPoint("TOPLEFT", reloadButton, 'BOTTOMLEFT', 0, -5)
+    panel.cursorCheck.text:SetText(e.onlyChinese and '启用/禁用' or (ENABLE..'/'..DISABLE))
+    panel.cursorCheck:SetScript('OnMouseDown', function()
+        Save.disabled = not Save.disabled and true or nil
+        if not Save.disabled and not cursorFrame then
+            Cursor_Init()
+        end
+        cursorFrame:SetShown(not Save.disabled)
+    end)
+
+    
 end
-
-
 
 --###########
 --加载保存数据
@@ -587,28 +684,23 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
             set_Color()
 
-            panel.name = e.Icon.left..(e.onlyChinese and '鼠标' or   MOUSE_LABEL)
-            panel.parent =id
-            InterfaceOptions_AddCategory(panel)
+            if not Save.GCDTexture then
+                Save.GCDTexture={
+                    [[Interface\Addons\WoWTools\Sesource\Mouse\Aura142.tga]],
+                    [[Interface\Addons\WoWTools\Sesource\Mouse\Aura103.tga]],
+                }
+                Save.gcdSize=15
+                Save.gcdTextureIndex=1
+            end
 
-            panel.check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-            panel.check:SetChecked(not Save.disabled)
-            panel.check:SetPoint('TOPLEFT', panel, 'TOP')
-            panel.check.text:SetText(e.onlyChinese and '启用/禁用' or (ENABLE..'/'..DISABLE))
-            panel.check:SetScript('OnMouseDown', function()
-                Save.disabled = not Save.disabled and true or nil
-                if not Save.disabled and not Frame then
-                    Init()
-                    Init_Options()
-                end
-                Frame:SetShown(not Save.disabled)
-            end)
+            Init()
 
             if not Save.disabled then
-                C_Timer.After(2, function()
-                    Init()
-                    Init_Options()
-                end)
+                C_Timer.After(2, Cursor_Init)
+            end
+
+            if not Save.gcdDisabled then
+                C_Timer.After(2, GCD_Init)
             end
             panel:UnregisterEvent('ADDON_LOADED')
             panel:RegisterEvent("PLAYER_LOGOUT")
@@ -622,7 +714,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='PLAYER_STARTED_MOVING' then
         if Save.randomTextureInCombat or not UnitAffectingCombat('player') then
-            frame_Init_Set(true)--初始，设置
+            cursor_Init_And_Set(true)--初始，设置
         end
     end
 end)
