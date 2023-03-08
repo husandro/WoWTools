@@ -61,7 +61,8 @@ local Save={
     gcdAlpha=1,
     gcdX=0,
     gcdY=0,
-    --gcdReverse=true,
+    --gcdDrawBling=false,
+    --gcdReverse=false,
 }
 
 local panel= CreateFrame("Frame")
@@ -491,6 +492,7 @@ local function set_GCD()
         gcdFrame:RegisterEvent('SPELL_UPDATE_COOLDOWN')
         gcdFrame:SetAlpha(Save.gcdAlpha)
         gcdFrame.cooldown:SetReverse(Save.gcdReverse)--控制冷却动画的方向
+        gcdFrame.cooldown:SetDrawBling(Save.gcdDrawBling)--闪光
     end
 end
 
@@ -512,8 +514,6 @@ end
 --GCD, 添加控制面板
 --################
 local function Init_GCD_Options()
-
-
     local sliderSize = e.Create_Slider(panel, {min=8, max=128, value=Save.gcdSize, setp=1,
     text=e.onlyChinese and '缩放' or UI_SCALE,
     func=function(self, value)
@@ -567,6 +567,15 @@ local function Init_GCD_Options()
     end)
     checkReverse:SetPoint("TOPLEFT", sliderY, 'BOTTOMLEFT', 0, -20)
 
+    local checkDrawBling=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    checkDrawBling:SetChecked(Save.gcdReverse)
+    checkDrawBling.text:SetText('|TInterface\\Cooldown\\star4:16|tDrawBling')
+    checkDrawBling:SetScript('OnMouseUp', function()
+        Save.gcdDrawBling = not Save.gcdDrawBling and true or false
+        show_GCD_Frame_Tips()--显示GCD图片
+    end)
+    checkDrawBling:SetPoint("LEFT", checkReverse.text, 'RIGHT', 2, 00)
+
     local dropDown = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")--下拉，菜单
     local delColorButton= e.Cbtn(panel, nil, nil, nil, nil, true, {20,20})--删除, 按钮
     local addColorEdit= CreateFrame("EditBox", nil, panel, 'InputBoxTemplate')--EditBox
@@ -582,7 +591,7 @@ local function Init_GCD_Options()
         addColorEdit:SetText(texture)
         numColorText:SetText(#Save.GCDTexture)
     end
-    
+
     --下拉，菜单
     local function Init_Menu(self, level, menuList)
         for index, texture in pairs(Save.GCDTexture) do
@@ -670,12 +679,10 @@ local function GCD_Init()
     gcdFrame.elapsed=0
 
     gcdFrame.cooldown= CreateFrame("Cooldown", nil, gcdFrame, 'CooldownFrameTemplate')
-    gcdFrame.cooldown:SetUseCircularEdge(true)--设置边缘纹理是否应该遵循圆形图案而不是方形编辑框
-    gcdFrame.cooldown:SetDrawBling(false)--闪光
-    gcdFrame.cooldown:SetDrawEdge(true)--冷却动画的移动边缘绘制亮线
     gcdFrame.cooldown:SetHideCountdownNumbers(true)--隐藏数字
-    
     gcdFrame.cooldown:SetEdgeTexture("Interface\\Cooldown\\edge")
+    gcdFrame.cooldown:SetDrawEdge(true)--冷却动画的移动边缘绘制亮线
+    gcdFrame.cooldown:SetUseCircularEdge(true)--设置边缘纹理是否应该遵循圆形图案而不是方形编辑框
     gcdFrame:SetShown(false)
 
     gcdFrame:SetScript('OnEvent', function(self)
@@ -830,7 +837,7 @@ local function Init()
         e.tips:ClearLines()
         e.tips:AddLine(e.onlyChinese and '事件' or EVENTS_LABEL)
         e.tips:AddDoubleLine('Cursor', e.onlyChinese and '移动' or NPE_MOVE)
-        e.tips:AddDoubleLine('GCD', e.onlyChinese and '显示' or SHOW)
+        e.tips:AddDoubleLine('GCD', e.GetEnabeleDisable(true))
         e.tips:Show()
     end)
     panel.randomTextureCheck:SetScript('OnLeave', function() e.tips:Hide() end)
