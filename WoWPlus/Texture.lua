@@ -1521,7 +1521,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave[addName]=Save
         end
 
-    else--ChatBubbles
+    else--ChatBubbles https://wago.io/yyX84OlOD
         C_Timer.After(0, function()
             for _, buble in pairs(C_ChatBubbles.GetAllChatBubbles()) do
                 if not buble.setAlpha then
@@ -1548,8 +1548,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                                 end
                             end
                         end
-                        
-                        
                         buble.setAlpha= true
                     end
                 end
