@@ -1,7 +1,7 @@
 local id, e = ...
 local addName= HUD_EDIT_MODE_MINIMAP_LABEL
 local Save={
-        scale=0.85,
+        scale=e.Player.husandro and 1 or 0.85,
         ZoomOut=true,
         vigentteButton=e.Player.husandro,
         vigentteButtonShowText=true,

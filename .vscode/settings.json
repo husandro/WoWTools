@@ -1881,7 +1881,8 @@
         "UIDropDownMenu_SetWidth",
         "UIDropDownMenu_SetText",
         "MINIMUM",
-        "HIGH"
+        "HIGH",
+        "HUD_EDIT_MODE_SETTING_BAGS_DIRECTION"
     ],
     "Lua.diagnostics.disable": [
     ]

@@ -45,17 +45,23 @@ local Save={
         'CovenantSanctum-Reservoir-Idle-Kyrian-Glass',
         [[Interface\Addons\WoWTools\Sesource\Mouse\Aura121]],
 
-        [[Interface\Addons\WoWTools\Sesource\Mouse\Aura142.tga]],
-        [[Interface\Addons\WoWTools\Sesource\Mouse\Aura103.tga]],
         [[Interface\Addons\WoWTools\Sesource\Mouse\Aura73.tga]],
+        [[Interface\Addons\WoWTools\Sesource\Mouse\Aura94.tga]],
+        [[Interface\Addons\WoWTools\Sesource\Mouse\Aura103.tga]],
+        [[Interface\Addons\WoWTools\Sesource\Mouse\Aura142.tga]],
     },
     GCDTexture={
-        [[Interface\Addons\WoWTools\Sesource\Mouse\Aura142.tga]],
-        [[Interface\Addons\WoWTools\Sesource\Mouse\Aura103.tga]],
         [[Interface\Addons\WoWTools\Sesource\Mouse\Aura73.tga]],
+        [[Interface\Addons\WoWTools\Sesource\Mouse\Aura94.tga]],
+        [[Interface\Addons\WoWTools\Sesource\Mouse\Aura103.tga]],
+        [[Interface\Addons\WoWTools\Sesource\Mouse\Aura142.tga]],
     },
     gcdSize=15,
     gcdTextureIndex=1,
+    gcdAlpha=1,
+    gcdX=0,
+    gcdY=0,
+    --gcdReverse=true,
 }
 
 local panel= CreateFrame("Frame")
@@ -72,9 +78,9 @@ local function set_Color()
     end
 end
 
---######
---Cursor
---######
+--############
+--Cursor, 模块
+--############
 local create_Particle = function(self)
     local part = self.Pool[#self.Pool]
     self.Pool[#self.Pool] = nil
@@ -182,6 +188,7 @@ local function set_Cursor_Texture(self, atlas, texture, setRandomTexture)
     end
 end
 
+--初始, 设置, Cursor
 local function cursor_Init_And_Set(setRandomTexture)
     local atlasIndex= Save.randomTexture and random(1, #Save.Atlas) or Save.atlasIndex
     local atlas,texture
@@ -225,10 +232,8 @@ local function set_Curor_Random_Event()--随机, 图片，事件
     end
 end
 
---##################
 --Curor, 添加控制面板
---##################
-local function Init_Options()
+local function Init_Cursor_Options()
     local sliderMaxParticles = e.Create_Slider(panel, {min=50, max=4096, value=Save.maxParticles, setp=1,
     text=e.onlyChinese and '粒子密度' or PARTICLE_DENSITY,
     func=function(self, value)
@@ -433,13 +438,22 @@ local function Init_Options()
     addColorButton:SetPoint('LEFT', addColorEdit, 'RIGHT', 5,0)
     addColorButton:SetNormalAtlas(e.Icon.select)
     addColorButton:SetScript('OnClick', add_Color)
+    addColorButton:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_RIGHT")
+        e.tips:ClearLines()
+        e.tips:AddLine('Atlas')
+        e.tips:AddDoubleLine('Texture', (e.onlyChinese and '需求' or NEED)..' \\Interface')
+        e.tips:Show()
+    end)
+    addColorButton:SetScript('OnLeave', function() e.tips:Hide() end)
 end
 
-local function Cursor_Init()--Cursor, 初始化
+--Cursor, 初始化
+local function Cursor_Init()
     cursorFrame= CreateFrame('Frame')
     cursorFrame.egim=0
     cursor_Init_And_Set()
-    Init_Options()
+    Init_Cursor_Options()
     cursorFrame:SetScript('OnUpdate', set_Update)
     if Save.randomTexture then
         set_Curor_Random_Event()--随机, 图片，事件
@@ -447,65 +461,243 @@ local function Cursor_Init()--Cursor, 初始化
 end
 
 
---###
---GCD
---###
-local function set_GCD_Texture()--随机GCD，图片
+
+--#########
+--GCD, 模块
+--#########
+--随机GCD，图片
+local function set_GCD_Texture()
     local index= Save.randomTexture and random(1, #Save.GCDTexture) or Save.gcdTextureIndex
     gcdFrame.cooldown:SetSwipeTexture(Save.GCDTexture[index] or defaultGCDTexture)
 end
 
-local function set_GCD()--设置 GCD
-    gcdFrame.size=15
-    gcdFrame:SetSize(Save.gcdSize*2, Save.gcdSize*2)
-    set_GCD_Texture()
-    if not Save.notUseColor then
-        gcdFrame.cooldown:SetSwipeColor(Color.r, Color.g, Color.b, Color.a)
-    end
-    if Save.randomTexture then
-        gcdFrame:SetScript('OnShow', set_GCD_Texture)
+--设置 GCD
+local function set_GCD()
+    gcdFrame.cooldown:Clear()
+    if Save.disabledGCD then
+        gcdFrame:UnregisterEvent('SPELL_UPDATE_COOLDOWN')
+        gcdFrame:SetShown(false)
     else
-        gcdFrame:SetScript('OnShow', nil)
+        gcdFrame:SetSize(Save.gcdSize*2, Save.gcdSize*2)
+        set_GCD_Texture()
+        if not Save.notUseColor then
+            gcdFrame.cooldown:SetSwipeColor(Color.r, Color.g, Color.b, Color.a)
+        end
+        if Save.randomTexture then
+            gcdFrame:SetScript('OnHide', set_GCD_Texture)
+        else
+            gcdFrame:SetScript('OnHide', nil)
+        end
+        gcdFrame:RegisterEvent('SPELL_UPDATE_COOLDOWN')
+        gcdFrame:SetAlpha(Save.gcdAlpha)
+        gcdFrame.cooldown:SetReverse(Save.gcdReverse)--控制冷却动画的方向
     end
 end
 
-local function GCD_Init()--GCD 初始
+--设置,GCD,位置
+local function set_GCD_Frame_Point()
+    local x, y = GetCursorPosition()
+    gcdFrame:SetPoint("BOTTOMLEFT", x-Save.gcdSize+Save.gcdX, y-Save.gcdSize+Save.gcdY)
+end
+
+--显示GCD图片, 提示用
+local function show_GCD_Frame_Tips()
+    gcdFrame:SetShown(false)
+    set_GCD()
+    gcdFrame.cooldown:SetCooldown(GetTime(), 1.171)
+    gcdFrame:SetShown(true)
+end
+
+--################
+--GCD, 添加控制面板
+--################
+local function Init_GCD_Options()
+
+
+    local sliderSize = e.Create_Slider(panel, {min=8, max=128, value=Save.gcdSize, setp=1,
+    text=e.onlyChinese and '缩放' or UI_SCALE,
+    func=function(self, value)
+        value= math.floor(value)
+        self:SetValue(value)
+        self.Text:SetText(value)
+        Save.gcdSize= value
+        show_GCD_Frame_Tips()--显示GCD图片
+    end})
+    sliderSize:SetPoint("TOPLEFT", panel.gcdCheck, 'BOTTOMLEFT', 0, -20)
+
+    local alphaSlider = e.Create_Slider(panel, {min=0.1, max=1, value=Save.alpha, setp=0.1, color=true,
+    text=e.onlyChinese and '透明度' or CHANGE_OPACITY,
+    func=function(self, value)
+        value= tonumber(format('%.1f', value))
+        self:SetValue(value)
+        self.Text:SetText(value)
+        Save.gcdAlpha= value
+        show_GCD_Frame_Tips()--显示GCD图片
+    end})
+    alphaSlider:SetPoint("TOPLEFT", sliderSize, 'BOTTOMLEFT', 0, -20)
+
+    local sliderX = e.Create_Slider(panel, {min=-100, max=100, value=Save.gcdX , setp=1,
+    text='X',
+    func=function(self, value)
+        value= math.floor(value)
+        self:SetValue(value)
+        self.Text:SetText(value)
+        Save.gcdX= value==0 and 0 or value
+        show_GCD_Frame_Tips()--显示GCD图片
+    end})
+    sliderX:SetPoint("TOPLEFT", alphaSlider, 'BOTTOMLEFT', 0, -20)
+
+    local sliderY = e.Create_Slider(panel, {min=-100, max=100, value=Save.gcdY, setp=1, color=true,
+    text='Y',
+    func=function(self, value)
+        value= math.floor(value)
+        self:SetValue(value)
+        self.Text:SetText(value)
+        Save.gcdY= value==0 and 0 or value
+        show_GCD_Frame_Tips()--显示GCD图片
+    end})
+    sliderY:SetPoint("TOPLEFT", sliderX, 'BOTTOMLEFT', 0, -20)
+
+    local checkReverse=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    checkReverse:SetChecked(Save.gcdReverse)
+    checkReverse.text:SetText(e.onlyChinese and '方向' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION)
+    checkReverse:SetScript('OnMouseUp', function()
+        Save.gcdReverse = not Save.gcdReverse and true or false
+        show_GCD_Frame_Tips()--显示GCD图片
+    end)
+    checkReverse:SetPoint("TOPLEFT", sliderY, 'BOTTOMLEFT', 0, -20)
+
+    local dropDown = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")--下拉，菜单
+    local delColorButton= e.Cbtn(panel, nil, nil, nil, nil, true, {20,20})--删除, 按钮
+    local addColorEdit= CreateFrame("EditBox", nil, panel, 'InputBoxTemplate')--EditBox
+    local addColorButton= e.Cbtn(panel, nil, nil, nil, nil, true, {20,20})--添加, 按钮
+    local numColorText= e.Cstr(panel, nil, nil, nil, nil, nil, 'RIGHT')--颜色，数量
+    numColorText:SetPoint('RIGHT', dropDown, 'LEFT', 18,5)
+
+    local function set_panel_Texture()--大图片
+        local texture= Save.GCDTexture[Save.gcdTextureIndex]
+        texture= texture or defaultGCDTexture
+        panel.Texture:SetTexture(texture)
+        addColorEdit:SetText(texture)
+        numColorText:SetText(#Save.GCDTexture)
+    end
+    
+    --下拉，菜单
+    local function Init_Menu(self, level, menuList)
+        for index, texture in pairs(Save.GCDTexture) do
+            local info={
+                text= texture,
+                icon= texture,
+                arg1= index,
+                checked= Save.gcdTextureIndex==index,
+                func= function(_, arg1)
+                    Save.gcdTextureIndex=arg1
+                    Save.randomTexture=nil
+                    panel.randomTextureCheck:SetChecked(false)
+                    UIDropDownMenu_SetText(self, Save.GCDTexture[arg1])
+                    set_panel_Texture()
+                    show_GCD_Frame_Tips()--显示GCD图片
+                end
+            }
+            UIDropDownMenu_AddButton(info, level)
+        end
+    end
+    dropDown:SetPoint("TOPLEFT", checkReverse, 'BOTTOMLEFT', -18,-15)
+    UIDropDownMenu_SetWidth(dropDown, 180)
+    UIDropDownMenu_Initialize(dropDown, Init_Menu)
+    UIDropDownMenu_SetText(dropDown, Save.GCDTexture[Save.gcdTextureIndex] or defaultGCDTexture)
+
+    --删除，图片
+    delColorButton:SetPoint('LEFT', dropDown, 'RIGHT',-10,0)
+    delColorButton:SetSize(20,20)
+    delColorButton:SetNormalAtlas('xmarksthespot')
+    delColorButton:SetScript('OnClick', function()
+        local texture= Save.GCDTexture[Save.gcdTextureIndex]
+        local icon = texture and '|T'..texture..':0|t'
+        table.remove(Save.GCDTexture, Save.gcdTextureIndex)
+        Save.gcdTextureIndex=1
+        print(id, addName, e.onlyChinese and '移除' or REMOVE, icon, texture)
+        set_panel_Texture()
+        show_GCD_Frame_Tips()--显示GCD图片
+        addColorEdit:SetText(texture or defaultGCDTexture)
+        UIDropDownMenu_SetText(dropDown, Save.GCDTexture[Save.gcdTextureIndex] or defaultGCDTexture)
+        UIDropDownMenu_Initialize(dropDown, Init_Menu)
+    end)
+
+    --添加，自定义，图片
+    local function add_Color()
+        local text= addColorEdit:GetText() or ''
+        if text:gsub(' ','')~='' then
+            table.insert(Save.GCDTexture, text)
+            addColorEdit:SetText('')
+            numColorText:SetText(#Save.GCDTexture)
+            UIDropDownMenu_Initialize(dropDown, Init_Menu)
+        end
+    end
+    addColorEdit:SetPoint("TOPLEFT", dropDown, 'BOTTOMLEFT',22,-2)
+	addColorEdit:SetSize(192,20)
+	addColorEdit:SetAutoFocus(false)
+    addColorEdit:SetScript('OnTextChanged', function(self, userInput)
+        if userInput then
+            local text= self:GetText()
+            if text:gsub(' ','')~='' then
+                panel.Texture:SetTexture(text)
+            end
+        end
+    end)
+    addColorEdit:SetScript('OnEnterPressed', add_Color)
+
+    --添加按钮
+    addColorButton:SetPoint('LEFT', addColorEdit, 'RIGHT', 5,0)
+    addColorButton:SetNormalAtlas(e.Icon.select)
+    addColorButton:SetScript('OnClick', add_Color)
+    addColorButton:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_RIGHT")
+        e.tips:ClearLines()
+        e.tips:AddLine(format(e.onlyChinese and "仅限%s" or LFG_LIST_CROSS_FACTION , 'Texture'))
+        e.tips:Show()
+    end)
+    addColorButton:SetScript('OnLeave', function() e.tips:Hide() end)
+end
+
+--##########
+--GCD, 初始化
+--##########
+local function GCD_Init()
     gcdFrame= CreateFrame("Frame")
     gcdFrame:SetFrameStrata("TOOLTIP")
+    gcdFrame.elapsed=0
 
     gcdFrame.cooldown= CreateFrame("Cooldown", nil, gcdFrame, 'CooldownFrameTemplate')
     gcdFrame.cooldown:SetUseCircularEdge(true)--设置边缘纹理是否应该遵循圆形图案而不是方形编辑框
     gcdFrame.cooldown:SetDrawBling(false)--闪光
     gcdFrame.cooldown:SetDrawEdge(true)--冷却动画的移动边缘绘制亮线
-    gcdFrame.cooldown:SetHideCountdownNumbers(false)--隐藏数字
-    gcdFrame.cooldown:SetReverse(false)--控制冷却动画的方向
+    gcdFrame.cooldown:SetHideCountdownNumbers(true)--隐藏数字
+    
     gcdFrame.cooldown:SetEdgeTexture("Interface\\Cooldown\\edge")
     gcdFrame:SetShown(false)
 
-    local GCDelapsed=0
-    gcdFrame:RegisterEvent('SPELL_UPDATE_COOLDOWN')
     gcdFrame:SetScript('OnEvent', function(self)
         local start, duration, enabled, modRate = GetSpellCooldown(61304)
         if enabled==1 and start > 0 and duration > 0 then
             self.cooldown:SetCooldown(start, duration, modRate)
-            GCDelapsed=0
-            local x, y = GetCursorPosition()
-            self:SetPoint("BOTTOMLEFT", x-Save.gcdSize, y-Save.gcdSize)
             self:SetShown(true)
         else
             self:SetShown(false)
         end
     end)
 
+    gcdFrame:SetScript('OnShow', set_GCD_Frame_Point)
 
     gcdFrame:SetScript('OnUpdate', function(self, elapsed)
-        GCDelapsed= GCDelapsed + elapsed
-        if GCDelapsed>0.2 then
-            local x, y = GetCursorPosition()
-            self:SetPoint("BOTTOMLEFT", x-Save.gcdSize, y-Save.gcdSize)
+        self.elapsed = self.elapsed + elapsed
+        if self.elapsed>0.01 then
+            set_GCD_Frame_Point()
         end
     end)
+
     set_GCD()--设置 GCD
+    Init_GCD_Options()
 end
 
 
@@ -526,7 +718,7 @@ local function Init()
 
     --设置, 大图片
     panel.Texture= panel:CreateTexture()--大图片
-    panel.Texture:SetPoint('LEFT', reloadButton, 'RIGHT', 10, -15)
+    panel.Texture:SetPoint('TOPRIGHT', panel, 'TOP', -20, 10)
     panel.Texture:SetSize(80,80)
 
     --重置, 按钮
@@ -657,12 +849,11 @@ local function Init()
     randomTextureInCombatCheck:SetScript('OnLeave', function() e.tips:Hide() end)
 
 
-
     --Cursor, 启用/禁用
     panel.cursorCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     panel.cursorCheck:SetChecked(not Save.disabled)
     panel.cursorCheck:SetPoint("TOPLEFT", reloadButton, 'BOTTOMLEFT', 0, -5)
-    panel.cursorCheck.text:SetText(e.onlyChinese and '启用/禁用' or (ENABLE..'/'..DISABLE))
+    panel.cursorCheck.text:SetText((e.onlyChinese and '启用' or ENABLE).. ' Cursor')
     panel.cursorCheck:SetScript('OnMouseDown', function()
         Save.disabled = not Save.disabled and true or nil
         if not Save.disabled and not cursorFrame then
@@ -671,7 +862,22 @@ local function Init()
         cursorFrame:SetShown(not Save.disabled)
     end)
 
-    
+    --GCD, 启用/禁用
+    panel.gcdCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    panel.gcdCheck:SetChecked(not Save.disabled)
+    panel.gcdCheck:SetPoint("TOPLEFT", panel, 'TOP', 0, -35)
+    panel.gcdCheck.text:SetText((e.onlyChinese and '启用' or ENABLE).. ' GCD')
+    panel.gcdCheck:SetScript('OnMouseDown', function()
+        Save.disabledGCD = not Save.disabledGCD and true or nil
+        if not Save.disabledGCD and not gcdFrame then
+            GCD_Init()
+        end
+        if not Save.disabledGCD then
+            show_GCD_Frame_Tips()--显示GCD图片
+        else
+            set_GCD()--设置 GCD
+        end
+    end)
 end
 
 --###########
@@ -686,11 +892,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if not Save.GCDTexture then
                 Save.GCDTexture={
-                    [[Interface\Addons\WoWTools\Sesource\Mouse\Aura142.tga]],
+                    [[Interface\Addons\WoWTools\Sesource\Mouse\Aura73.tga]],
+                    [[Interface\Addons\WoWTools\Sesource\Mouse\Aura94.tga]],
                     [[Interface\Addons\WoWTools\Sesource\Mouse\Aura103.tga]],
+                    [[Interface\Addons\WoWTools\Sesource\Mouse\Aura142.tga]],
                 }
                 Save.gcdSize=15
                 Save.gcdTextureIndex=1
+                Save.gcdAlpha=1
+                Save.gcdX=0
+                Save.gcdY=0
             end
 
             Init()
@@ -699,7 +910,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 C_Timer.After(2, Cursor_Init)
             end
 
-            if not Save.gcdDisabled then
+            if not Save.disabledGCD then
                 C_Timer.After(2, GCD_Init)
             end
             panel:UnregisterEvent('ADDON_LOADED')
