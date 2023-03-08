@@ -1882,7 +1882,14 @@
         "UIDropDownMenu_SetText",
         "MINIMUM",
         "HIGH",
-        "HUD_EDIT_MODE_SETTING_BAGS_DIRECTION"
+        "HUD_EDIT_MODE_SETTING_BAGS_DIRECTION",
+        "OPTION_TOOLTIP_REVERSE_NEW_LOOT",
+        "REVERSE_CLEAN_UP_BAGS_TEXT",
+        "BUG_CATEGORY11",
+        "NEW_CAPS",
+        "HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT",
+        "HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY",
+        "BANK"
     ],
     "Lua.diagnostics.disable": [
     ]

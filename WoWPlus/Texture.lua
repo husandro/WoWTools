@@ -1522,7 +1522,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     else--ChatBubbles
-
         C_Timer.After(0, function()
             for _, buble in pairs(C_ChatBubbles.GetAllChatBubbles()) do
                 if not buble.setAlpha then

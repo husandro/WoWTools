@@ -445,27 +445,57 @@ local function Init()
     --############
     --排序:从右到左
     --############
-    local function set_Sort_Rigth_To_Left()
-        C_Container.SetSortBagsRightToLeft(Save.sortRightToLeft)
-    end
     ContainerFrameCombinedBagsPortraitButton:HookScript('OnMouseDown',function ()
         UIDropDownMenu_AddSeparator()
-        local info={--排序:从右到左
-            text= e.onlyChinese and '排序: 从右到左' or CLUB_FINDER_SORT_BY..': '..	INT_SPELL_POINTS_SPREAD_TEMPLATE:format(HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_RIGHT,HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_LEFT),
+        local info={
+            text= e.onlyChinese and '反向整理背包' or REVERSE_CLEAN_UP_BAGS_TEXT,
             checked= C_Container.GetSortBagsRightToLeft(),
             tooltipOnButton=true,
             tooltipTitle=id,
-            tooltipText=addName,
+            tooltipText=addName..'\nC_Container.\nSetSortBagsRightToLeft',
             func= function()
-                Save.sortRightToLeft= not C_Container.GetSortBagsRightToLeft() and true or false
-                set_Sort_Rigth_To_Left()--排序:从右到左
+                C_Container.SetSortBagsRightToLeft(not C_Container.GetSortBagsRightToLeft() and true or false)
+            end,
+        }
+        UIDropDownMenu_AddButton(info, 1)
+
+        info={--排序:从右到左
+            text= e.onlyChinese and '新物品: 最左边' or BUG_CATEGORY11..'('..NEW_CAPS..'): '..HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT,
+            checked= C_Container.GetInsertItemsLeftToRight(),
+            tooltipOnButton=true,
+            tooltipTitle=id,
+            tooltipText=addName..'\nC_Container.\nSetInsertItemsLeftToRight\n\n'..OPTION_TOOLTIP_REVERSE_NEW_LOOT,
+            func= function()
+                C_Container.SetInsertItemsLeftToRight(not C_Container.GetInsertItemsLeftToRight() and true or false)
+            end,
+        }
+        UIDropDownMenu_AddButton(info, 1)
+
+        info={
+            text= e.onlyChinese and '自动排序' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY..' ('..AUTO_JOIN:gsub(JOIN,'')..')',
+            checked=not C_Container.GetBackpackAutosortDisabled(),
+            tooltipOnButton=true,
+            tooltipTitle=id,
+            tooltipText=addName..'\nC_Container.\nSetBackpackAutosortDisabled',
+            func= function()
+                C_Container.SetBackpackAutosortDisabled(not C_Container.GetBackpackAutosortDisabled() and true or false)
+            end,
+        }
+        UIDropDownMenu_AddButton(info, 1)
+
+        info={
+            text= e.onlyChinese and '自动排序 (银行)' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY..' ('..AUTO_JOIN:gsub(JOIN,'')..') '.. BANK,
+            checked=not C_Container.GetBankAutosortDisabled(),
+            tooltipOnButton=true,
+            tooltipTitle=id,
+            tooltipText=addName..'\nC_Container.\nGetBankAutosortDisabled',
+            icon= 'Banker',
+            func= function()
+                C_Container.SetBankAutosortDisabled(not C_Container.GetBankAutosortDisabled() and true or false)
             end,
         }
         UIDropDownMenu_AddButton(info, 1)
     end)
-    if Save.sortRightToLeft~=nil then
-        set_Sort_Rigth_To_Left()--排序:从右到左
-    end
 
     --###############
     --收起，背包小按钮
