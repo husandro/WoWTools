@@ -1229,7 +1229,7 @@ e.Reload= function()
     end
 end
 
-e.Create_Slider= function(self, tab)--e.Create_Slider(self, {w= ,h=, min=, max=, value=, text=, setp=, func=})
+e.Create_Slider= function(self, tab)--e.Create_Slider(self, {w= ,h=, min=, max=, value=, setp=, text=, func=})
     local slider= CreateFrame("Slider", nil, self, 'OptionsSliderTemplate')
     slider:SetSize(tab.w or 200, tab.h or 18)
     slider:SetMinMaxValues(tab.min, tab.max)

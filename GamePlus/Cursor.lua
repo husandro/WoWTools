@@ -50,9 +50,8 @@ local panel= CreateFrame("Frame")
 local Color, Frame
 
 
-local cursor_old_x, cursor_old_y = 0, 0
-local cursor_now_x, cursor_now_y = 0, 0
-local egim= 0
+
+
 
 local blendModeTab ={
     "DISABLE",
@@ -62,6 +61,7 @@ local blendModeTab ={
     "MOD",
 }
 
+local egim= 0
 local create_Particle = function(self)
     local part = self.Pool[#self.Pool]
     self.Pool[#self.Pool] = nil
@@ -90,6 +90,7 @@ local delete_Particle = function(self, part, index)
     self.Pool[#self.Pool + 1] = table.remove(self.Used, index)
 end
 
+
 local update_Particle = function(part,  delta)
     part.life = part.life - delta
 
@@ -114,21 +115,20 @@ local update_Particle = function(part,  delta)
 end
 
 
-
+--local oldX, oldY = 0, 0
+local nowX, nowY = 0, 0
 local set_Update = function(self, elapsed)
     self.elapsed= self.elapsed+ elapsed
     if self.elapsed> Save.rate then
         self.elapsed=0
-        cursor_old_x, cursor_old_y = cursor_now_x, cursor_now_y
-        cursor_now_x, cursor_now_y = GetCursorPosition()
+        local oldX, oldY = nowX, nowY
+        nowX, nowY = GetCursorPosition()
 
-        local x = cursor_now_x - cursor_old_x
-        local y = cursor_now_y - cursor_old_y
-        local m = math.sqrt(x * x + y * y)
-        local d = Save.minDistance
+        local x = nowX - oldX
+        local y = nowY - oldY
 
-        if (m > d) then
-            egim = atan2((cursor_now_x - cursor_old_x) ,  (cursor_now_y - cursor_old_y))
+        if math.sqrt(x * x + y * y) > Save.minDistance then
+            egim = atan2((nowX - oldX) ,  (nowY - oldY))
             create_Particle(self)
         end
 
@@ -194,16 +194,6 @@ local function frame_Init_Set(self)
     self.Used = self.Used or {}
 end
 
---#####
---初始化
---#####
-local function Init()
-    Frame= CreateFrame('Frame')
-    frame_Init_Set()
-    C_Timer.After(2, function()
-        Frame:SetScript('OnUpdate', set_Update)
-    end)
-end
 
 
 --####
@@ -217,6 +207,26 @@ local function set_Color()
     end
 end
 
+--随机, 图片，事件
+local function set_Random_Event()
+    if Save.randomTexture and not Save.disabled then
+        panel:RegisterEvent('PLAYER_STARTED_MOVING')
+    else
+        panel:UnregisterEvent('PLAYER_STARTED_MOVING')
+    end
+end
+
+--#####
+--初始化
+--#####
+local function Init()
+    Frame= CreateFrame('Frame')
+    frame_Init_Set()
+    Frame:SetScript('OnUpdate', set_Update)
+    if Save.randomTexture then
+        set_Random_Event()--随机, 图片，事件
+    end
+end
 
 --###########
 --添加控制面板
@@ -504,14 +514,7 @@ local function Init_Options()
     addColorButton:SetNormalAtlas(e.Icon.select)
     addColorButton:SetScript('OnClick', add_Color)
 
-    --随机, 图片，事件
-    local function set_Random_Event()
-        if Save.randomTexture then
-            panel:RegisterEvent('PLAYER_STARTED_MOVING')
-        else
-            panel:UnregisterEvent('PLAYER_STARTED_MOVING')
-        end
-    end
+
     randomTextureCheck:SetPoint("TOPLEFT", addColorEdit, 'BOTTOMLEFT',-10,-4)
     randomTextureCheck.text:SetText('|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t'..(e.onlyChinese and '随机' or 'Random'))
     randomTextureCheck:SetChecked(Save.randomTexture)
@@ -527,9 +530,6 @@ local function Init_Options()
         e.tips:Show()
     end)
     randomTextureCheck:SetScript('OnLeave', function() e.tips:Hide() end)
-    if Save.randomTexture then
-        set_Random_Event()
-    end
 
     --战斗中， 随机，图片
     local randomTextureInCombatCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--随机, 图片
@@ -570,19 +570,22 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             panel.check.text:SetText(e.onlyChinese and '启用/禁用' or (ENABLE..'/'..DISABLE))
             panel.check:SetScript('OnMouseDown', function()
                 Save.disabled = not Save.disabled and true or nil
-                if not Save.disabled and not frame2 then
+                if not Save.disabled and not Frame then
                     Init()
                     Init_Options()
-
                 end
                 if Save.disabled then
                     print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                 end
+                Frame:SetShown(not Save.disabled)
+                
             end)
 
             if not Save.disabled then
-                Init()
-                Init_Options()
+                C_Timer.After(2, function()
+                    Init()
+                    Init_Options()
+                end)
             end
             panel:UnregisterEvent('ADDON_LOADED')
             panel:RegisterEvent("PLAYER_LOGOUT")
