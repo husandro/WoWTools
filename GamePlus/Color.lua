@@ -16,6 +16,10 @@ local function set_Text(_, elapsed)
 	timeElapsed = timeElapsed + elapsed
 	if timeElapsed > 0.3 then
 		local r, g, b, a= e.Get_ColorFrame_RGBA()
+		r= r==0 and 0 or r
+		g= g==0 and 0 or g
+		b= b==0 and 0 or b
+		a= a==0 and 0 or a
 		if Frame.rgb then
 			if not Frame.rgb:HasFocus() then
 				Frame.rgb:SetText(format('%.2f %.2f %.2f %.2f', r,g,b,a))
@@ -28,6 +32,7 @@ local function set_Text(_, elapsed)
 			end
 		end
 		ColorPickerFrame.Header.Text:SetTextColor(r,g,b)
+
 		Frame.alphaText:SetFormattedText('%.2f', a)
 		Frame.alphaText:SetTextColor(r,g,b)
 	end
@@ -35,10 +40,11 @@ end
 
 local function set_Edit_Text(r, g, b, a, textCode)
 	ColorPickerFrame:SetColorRGB(r, g, b)
-	OpacitySliderFrame:SetValue(a or 1);
+	OpacitySliderFrame:SetValue(a and 1-a or 0);
 	Frame.cn:SetText(textCode and textCode..'_CODE' or '')
 	Frame.cn2:SetText(textCode and '|cn'..textCode or '')
 end
+
 
 
 
@@ -371,7 +377,7 @@ local function Init()
 	cnText2:SetPoint('LEFT', Frame.cn2, 'RIGHT', 2,0)
 	cnText2:SetText(':')
 
-	Frame.alphaText=e.Cstr(Frame, 14)--透明值，提示
+	Frame.alphaText=e.Cstr(OpacitySliderFrame, 14)--透明值，提示
 	Frame.alphaText:SetPoint('LEFT', OpacitySliderFrame, 'RIGHT', 5,0)
 
 	size= 18

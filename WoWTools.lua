@@ -1200,25 +1200,27 @@ e.HEX_to_RGB=function(hexColor, self)--HEX转RGB -- ColorUtil.lua
 end
 
 e.Get_ColorFrame_RGBA= function()--取得, ColorFrame, 颜色
-	local a= OpacitySliderFrame:IsShown() and OpacitySliderFrame:GetValue() or 1
+	local a= OpacitySliderFrame:IsShown() and OpacitySliderFrame:GetValue() or 0
 	local r, g, b = ColorPickerFrame:GetColorRGB()
-	return r, g, b, a
+    
+	return r, g, b, 1-a
 end
 
 e.ShowColorPicker= function(valueR, valueG, valueB, valueA, changedCallback)
+    ColorPickerFrame:SetShown(false); -- Need to run the OnShow handler.
     valueR= valueR or 1
     valueG= valueG or 0.8
     valueB= valueB or 0
     valueA= valueA or 1
+    --valueA= 1- valueA
     ColorPickerFrame.hasOpacity= true
-    ColorPickerFrame.previousValues = {valueR, valueG , valueB , valueA}
+    --ColorPickerFrame.previousValues = {valueR, valueG , valueB , valueA}
     ColorPickerFrame.func= changedCallback
     ColorPickerFrame.opacityFunc= changedCallback
     ColorPickerFrame.cancelFunc =  changedCallback
     ColorPickerFrame:SetColorRGB(valueR, valueG, valueB)
-    ColorPickerFrame.opacity = valueA;
-    ColorPickerFrame:Hide(); -- Need to run the OnShow handler.
-    ColorPickerFrame:Show();
+    ColorPickerFrame.opacity = 1- valueA;
+    ColorPickerFrame:SetShown(true)
 end
 
 e.Reload= function()

@@ -1743,7 +1743,7 @@ local function Init()
         button.frame:RegisterEvent('CHALLENGE_MODE_START')
         button.frame:RegisterEvent('SOCKET_INFO_SUCCESS')
         button.frame:RegisterEvent('SOCKET_INFO_UPDATE')
-        button.frame:RegisterEvent('PLAYER_LEVEL_CHANGED')
+       -- button.frame:RegisterEvent('PLAYER_LEVEL_CHANGED')
 
         button.frame:RegisterUnitEvent('UNIT_DEFENSE', "player")
         button.frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')

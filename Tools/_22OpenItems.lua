@@ -134,7 +134,6 @@ local function getItems()--取得背包物品信息
             if info and info.itemID and info.hyperlink and not info.isLocked and info.iconFileID then
                 e.LoadSpellItemData(info.itemID)--加载法术, 物品数据
                 if Save.use[info.itemID] then--自定义
-                    print(info.hyperlink, Save.use[info.itemID]<=info.stackCount)
                     if Save.use[info.itemID]<=info.stackCount then
                         setAtt(bag, slot, info.iconFileID, info.itemID)
                         return
