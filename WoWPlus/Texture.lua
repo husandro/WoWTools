@@ -1419,8 +1419,8 @@ local function options_Init()--添加控制面板
 
     --聊天泡泡 ChatBubble
     local chatBubbleCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    chatBubbleCheck.text:SetText(e.onlyChinese and '聊天泡泡' or CHAT_BUBBLES_TEXT)
-    chatBubbleCheck:SetPoint('TOPLEFT', alphaCheck, 'BOTTOMLEFT', 0, -32)
+    chatBubbleCheck.text:SetText(e.onlyChinese and '聊天泡泡: 副本无效' or (CHAT_BUBBLES_TEXT..': '..INSTANCE..' ('..NO..')'))
+    chatBubbleCheck:SetPoint('TOPLEFT', alphaCheck, 'BOTTOMLEFT', 0, -60)
     chatBubbleCheck:SetChecked(not Save.disabledChatBubble)
     chatBubbleCheck:SetScript('OnMouseDown', function()
         Save.disabledChatBubble= not Save.disabledChatBubble and true or false
@@ -1459,7 +1459,7 @@ local function options_Init()--添加控制面板
 
     local chatBubbleSacale=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     chatBubbleSacale.text:SetText(e.onlyChinese and '缩放' or UI_SCALE)
-    chatBubbleSacale:SetPoint('TOPLEFT', chatBubbleAlpha, 'BottomLEFT')
+    chatBubbleSacale:SetPoint('TOPLEFT', chatBubbleAlpha, 'BottomLEFT', 0, -15)
     chatBubbleSacale:SetChecked(not Save.disabledChatBubbleSacal)
     chatBubbleSacale:SetScript('OnMouseDown', function()
         Save.disabledChatBubbleSacal= not Save.disabledChatBubbleSacal and true or false
@@ -1528,7 +1528,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     local frame= buble:GetChildren()
                     if frame then
                         if not Save.disabledChatBubbleSacal and Save.chatBubbleSacal~=1 then
+                            local fontString = frame.String
+                            local point, relativeTo, relativePoint, ofsx, ofsy = fontString:GetPoint(1)
+                            local currentScale= buble:GetScale()
                             frame:SetScale(Save.chatBubbleSacal)
+                            if point then
+                                local scaleRatio = Save.chatBubbleSacal / currentScale
+                                fontString:SetPoint(point, relativeTo, relativePoint, ofsx / scaleRatio, ofsy / scaleRatio)
+                            end
                         end
                         if not Save.disabledChatBubbleAlpha then
                             local tab={frame:GetRegions()}
@@ -1541,6 +1548,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                                 end
                             end
                         end
+                        
+                        
                         buble.setAlpha= true
                     end
                 end
