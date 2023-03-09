@@ -174,7 +174,9 @@ e.Player={
     level= UnitLevel('player'),--UnitEffectiveLevel('player')
     husandro= select(2, BNGetInfo()) == '古月剑龙#5972' or select(2, BNGetInfo())=='SandroChina#2690' or UnitName('player')=='Fuocco' or UnitName('player')=='活就好',
     fanction= UnitFactionGroup('player'),--玩家, 派系  "Alliance", "Horde", "Neutral"
-    --useClassColor,--使用职业颜色 Textures.lua
+    useClassColor= true,--使用职业颜色
+    useCustomColor= nil,--使用自定义颜色
+    useCustomColorTab={r=1, g=0.82, b=0, a=1, hex='|cffffd100'}
 }
 
 for k, v in pairs(GetAutoCompleteRealms()) do
@@ -645,7 +647,7 @@ e.WA_Utf8Sub = function(input, size, letterSize)
     end
     return output
 end
-
+--[[
 e.HEX=function(r, g, b, a)
     a=a or 1
     r = r <= 1 and r >= 0 and r or 0
@@ -653,7 +655,7 @@ e.HEX=function(r, g, b, a)
     b = b <= 1 and b >= 0 and b or 0
     a = a <= 1 and a >= 0 and a or 0
     return string.format("%02x%02x%02x%02x",a*255, r*255, g*255, b*255)
-end
+end]]
 
 
 --取得对战宠物, 强弱 SharedPetBattleTemplates.lua

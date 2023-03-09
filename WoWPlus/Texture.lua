@@ -408,7 +408,7 @@ local function Init_Set_AlphaAndColor()
     --hide_Frame_Texture(SpellBookSkillLineTab1, {index=3})
     --hide_Frame_Texture(SpellBookSkillLineTab1, {index=2})
     --hide_Frame_Texture(SpellBookSkillLineTab1, {index=1})
-    
+
 
     --世界地图
     setAlpha(WorldMapFrame.BorderFrame.NineSlice.TopLeftCorner)
@@ -989,9 +989,9 @@ local function set_Alpha_Event(arg1)
         hide_Frame_Texture(CommunitiesFrame.GuildInfoTab, {index=1})
         hide_Frame_Texture(ClubFinderCommunityAndGuildFinderFrame.ClubFinderSearchTab, {index=1})
         hide_Frame_Texture(ClubFinderCommunityAndGuildFinderFrame.ClubFinderPendingTab, {index=1})
-        
-        
-        
+
+
+
 
     elseif arg1=='Blizzard_PVPUI' then--地下城和团队副本, PVP
         hideTexture(HonorFrame.Inset.Bg)
