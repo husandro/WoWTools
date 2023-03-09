@@ -89,24 +89,28 @@ panel:SetScript("OnEvent", function(self, event, arg1)
           
             useClassColor.text:SetText(e.Player.col..(e.onlyChinese and '职业颜色' or COLORS))
             useClassColor:SetPoint('BOTTOMLEFT')
-            useClassColor:SetScript('OnMouseDown', function()
-                Save.useClassColor= not Save.useClassColor and true or false
-                Save.useCustomColor= Save.useClassColor and nil or Save.useCustomColor
+            useClassColor:SetScript('OnClick', function()
+                Save.useClassColor= not Save.useClassColor and true or nil
+                if Save.useClassColor then
+                    Save.useClassColor=nil
+                end
                 set_Use_Color()
             end)
                     
             useCustomColor.text:SetText('|A:colorblind-colorwheel:0:0|a'..(e.onlyChinese and '自定义 ' or CUSTOM))
             useCustomColor:SetPoint('LEFT', useClassColor.text, 'RIGHT',2,0)
-            useCustomColor:SetScript('OnMouseDown', function()
-                Save.useCustomColor= not Save.useCustomColor and true or false
-                Save.useCustomColor= Save.useCustomColor and nil or Save.useCustomColor
+            useCustomColor:SetScript('OnClick', function()
+                Save.useCustomColor= not Save.useCustomColor and true or nil
+                if Save.useCustomColor then
+                    Save.useClassColor=nil
+                end
                 set_Use_Color()
             end)
             useCustomColor.text.r, useCustomColor.text.g, useCustomColor.text.b, useCustomColor.text.a= Save.useCustomColorTab.r, Save.useCustomColorTab.g, Save.useCustomColorTab.b, Save.useCustomColorTab.a
             useCustomColor.text:SetTextColor(Save.useCustomColorTab.r, Save.useCustomColorTab.g, Save.useCustomColorTab.b, Save.useCustomColorTab.a)
             useCustomColor.text:EnableMouse(true)
-            useCustomColor.text:SetScript('OnEnter', function(self)
-                e.tips:SetOwner(self, "ANCHOR_RIGHT")
+            useCustomColor.text:SetScript('OnEnter', function(self2)
+                e.tips:SetOwner(self2, "ANCHOR_RIGHT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, (e.onlyChinese and '颜色' or COLOR)..e.Icon.left)
                 e.tips:Show()
