@@ -48,12 +48,18 @@ local function getWhisper(event, text, name, _, _, _, _, _, _, _, _, _, guid)
     end
 end
 
-local function set_CVar_chatBubbles()--聊天泡泡
-    if Save.chatBubbles~=nil then
-        local value= Save.chatBubbles and '1' or '0'
-        if C_CVar.GetCVar("chatBubbles")~=value then
-            C_CVar.SetCVar("chatBubbles", value)
-        end
+
+local function set_chatBubbles_Tips()--提示，聊天泡泡，开启/禁用
+    local bool= C_CVar.GetCVarBool("chatBubbles")
+    if not bool and not button.tipBubbles then
+        button.tipBubbles= button:CreateTexture(nil, 'OVERLAY')
+        local size=e.toolsFrame.size/2
+        button.tipBubbles:SetSize(size, size)
+        button.tipBubbles:SetPoint('TOPLEFT', 3, -3)
+        button.tipBubbles:SetAtlas(e.Icon.disabled)
+    end
+    if button.tipBubbles then
+        button.tipBubbles:SetShown(not bool)
     end
 end
 
@@ -188,7 +194,7 @@ local function InitMenu(self, level, type)--主菜单
         elseif type=='FLOOR' then
             local n2=C_FriendList.GetNumWhoResults();--区域
             if n2 then --and n>0 then
-                local playerGuildName = GetGuildInfo('plyaer')
+                local playerGuildName = GetGuildInfo('player')
                 local map=e.GetUnitMapName('player');--玩家区域名称
                 for i=1, n2 do
                     local zone= C_FriendList.GetWhoInfo(i)
@@ -250,13 +256,15 @@ local function InitMenu(self, level, type)--主菜单
 
         elseif type=='BUBBLES' then
             info={
-                text= (e.onlyChinese and '副本'..INSTANCE)..': '..e.GetEnabeleDisable(false),
+                text= (e.onlyChinese and '副本' or INSTANCE)..': '..e.GetEnabeleDisable(false),
                 checked= Save.inInstanceBubblesDisabled,
                 tooltipOnButton= true,
                 tooltipTitle= (e.onlyChinese and '其它' or OTHER)..': '..e.GetEnabeleDisable(true),
+                tooltipText= e.onlyChinese and '自动' or AUTO_JOIN:gsub(JOIN,''),
                 func= function()
                     Save.inInstanceBubblesDisabled= not Save.inInstanceBubblesDisabled and true or nil
                     set_InInstance_Disabled_Bubbles()--副本禁用，其它开启
+                    CloseDropDownMenus();
                 end
 
             }
@@ -347,17 +355,18 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddSeparator(level)
 
         info={
-            text= e.onlyChinese and '聊天泡泡' or CHAT_BUBBLES_TEXT,
+            text= e.Icon.O2..(e.onlyChinese and '聊天泡泡' or CHAT_BUBBLES_TEXT),
             tooltipOnButton=true,
             --tooltipTitle= e.onlyChinese and '战斗中：禁用' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..DISABLE,
             --tooltipText= (e.onlyChinese and '仅限副本' or LFG_LIST_CROSS_FACTION:format(INSTANCE))..'\n\n
             tooltipTitle= 'CVar chatBubbles',
+            tooltipText= (e.onlyChinese and '当前' or REFORGE_CURRENT)..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool("chatBubbles")),
             menuList= 'BUBBLES',
+            hasArrow=true,
             checked= C_CVar.GetCVarBool("chatBubbles"),
             disabled= UnitAffectingCombat('player'),
             func= function ()
-                Save.chatBubbles= not C_CVar.GetCVarBool("chatBubbles") and true or false
-                set_CVar_chatBubbles()
+                C_CVar.SetCVar("chatBubbles", not C_CVar.GetCVarBool("chatBubbles") and '1' or '0')
             end
         }
         UIDropDownMenu_AddButton(info, level)
@@ -391,7 +400,7 @@ local function Init()
         end
     end)
 
-    set_CVar_chatBubbles()--聊天泡泡
+    set_chatBubbles_Tips()--提示，聊天泡泡，开启/禁用
 end
 
 --###########
@@ -414,6 +423,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
                 panel:RegisterEvent("CHAT_MSG_BN_WHISPER")
                 panel:RegisterEvent("CHAT_MSG_BN_WHISPER_INFORM")
                 panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+                panel:RegisterEvent('CVAR_UPDATE')
             end
             panel:UnregisterEvent('ADDON_LOADED')
         end
@@ -428,5 +438,10 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
         end
     elseif event== 'PLAYER_ENTERING_WORLD' then
         set_InInstance_Disabled_Bubbles()--副本禁用，其它开启
+
+    elseif event=='CVAR_UPDATE' then
+        if arg1=='chatBubbles' then
+            set_chatBubbles_Tips()--提示，聊天泡泡，开启/禁用
+        end
     end
 end)

@@ -3,7 +3,6 @@ local addName= TEXTURES_SUBHEADER
 local Save={
     --disabledTexture= true,
     disabledAlpha= not e.Player.husandro,
-    disabledColor= not e.Player.husandro,
     alpha= 0.5,
     chatBubbleAlpha= 0.5,--聊天泡泡
     chatBubbleSacal= 0.85,
@@ -25,8 +24,8 @@ local function setAlpha(self, notAlpha, notColor)
         if not (Save.disabledAlpha or notAlpha)  then
             self:SetAlpha(Save.alpha)
         end
-        if not Save.disabledColor and self:GetObjectType()=='Texture' and not notColor then
-            self:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+        if  e.Player.useColor and self:GetObjectType()=='Texture' and not notColor then
+            self:SetVertexColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
         end
     end
 end
@@ -59,8 +58,8 @@ local function set_Alpha_Frame_Texture(frame)
                 if not Save.disabledAlpha  then
                     icon:SetAlpha(Save.alpha)
                 end
-                if not Save.disabledColor then
-                    icon:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+                if e.Player.useColor then
+                    icon:SetVertexColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
                 end
             end
         end
@@ -125,6 +124,8 @@ local function Init_HideTexture()
             PetBattleFrame.BottomFrame.Delimiter:SetShown(false)
         end
     end
+
+    hide_Frame_Texture(PetBattleFrame.BottomFrame.MicroButtonFrame)
 
     hooksecurefunc('PetBattleFrame_UpdatePassButtonAndTimer', function(self)--Blizzard_PetBattleUI.lua
         hideTexture(self.BottomFrame.TurnTimer.TimerBG)
@@ -327,7 +328,7 @@ end
 --初始化, 透明
 --###########
 local function Init_Set_AlphaAndColor()
-    if Save.disabledAlpha and Save.disabledColor then
+    if Save.disabledAlpha and e.Player.useColor then
         return
     end
 
@@ -589,8 +590,8 @@ local function Init_Set_AlphaAndColor()
             hideTexture(button.icon)
             hideTexture(button.ItemSlotBackground)
             button.NormalTexture:SetAlpha(0.1)
-            if not Save.disabledColor then
-                button.NormalTexture:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+            if e.Player.useColor then
+                button.NormalTexture:SetVertexColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
             end
         else
             button.NormalTexture:SetAlpha(1)
@@ -816,7 +817,7 @@ end
 --事件, 透明
 --#########
 local function set_Alpha_Event(arg1)
-    if Save.disabledAlpha and Save.disabledColor then
+    if Save.disabledAlpha and not e.Player.useColor then
         return
     end
     if arg1=='Blizzard_TrainerUI' then--专业训练师
@@ -1501,7 +1502,7 @@ local function options_Init()--添加控制面板
     end)
 
     local textureCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    textureCheck.text:SetText(e.onlyChinese and '隐藏材质' or HIDE..addName)
+    textureCheck.text:SetText('1)'..(e.onlyChinese and '隐藏材质' or HIDE..addName))
     textureCheck:SetChecked(not Save.disabledTexture)
     textureCheck:SetPoint('TOPLEFT', restButton, 'BOTTOMLEFT',0, -16)
     textureCheck:SetScript('OnMouseDown', function()
@@ -1509,8 +1510,8 @@ local function options_Init()--添加控制面板
     end)
 
     local alphaCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    alphaCheck.text:SetText(e.onlyChinese and '透明度' or CHANGE_OPACITY)
-    alphaCheck:SetPoint('TOPLEFT', textureCheck, 'BOTTOMLEFT', 0, -16)
+    alphaCheck.text:SetText('2)'..(e.onlyChinese and '透明度' or CHANGE_OPACITY))
+    alphaCheck:SetPoint('TOPLEFT', textureCheck, 'BOTTOMLEFT', 0, -32)
     alphaCheck:SetChecked(not Save.disabledAlpha)
     alphaCheck:SetScript('OnMouseDown', function()
         Save.disabledAlpha= not Save.disabledAlpha and true or false
@@ -1532,26 +1533,11 @@ local function options_Init()--添加控制面板
         Save.alpha= value==0 and 0 or value
     end)
 
-    local classColor=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    classColor.text:SetText(e.Player.col..(e.onlyChinese and '职业颜色' or COLORS))
-    classColor:SetPoint('TOPLEFT', alphaCheck, 'BOTTOMRIGHT')
-    classColor:SetChecked(not Save.disabledColor)
-    classColor:SetScript('OnMouseDown', function()
-        Save.disabledColor= not Save.disabledColor and true or false
-        e.Player.useClassColor= not Save.disabledColor
-    end)
-    classColor:SetScript('OnEnter', function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddLine(e.Player.col..(e.onlyChinese and '职业颜色' or CLASS_COLORS))
-        e.tips:Show()
-    end)
-    classColor:SetScript('OnLeave', function() e.tips:Hide() end)
 
     --聊天泡泡 ChatBubble
     local chatBubbleCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    chatBubbleCheck.text:SetText(e.onlyChinese and '聊天泡泡: 副本无效' or (CHAT_BUBBLES_TEXT..': '..INSTANCE..' ('..NO..')'))
-    chatBubbleCheck:SetPoint('TOPLEFT', alphaCheck, 'BOTTOMLEFT', 0, -60)
+    chatBubbleCheck.text:SetText('3)'..(e.onlyChinese and '聊天泡泡: 副本无效' or (CHAT_BUBBLES_TEXT..': '..INSTANCE..' ('..NO..')')))
+    chatBubbleCheck:SetPoint('TOPLEFT', alphaCheck, 'BOTTOMLEFT', 0, -72)
     chatBubbleCheck:SetChecked(not Save.disabledChatBubble)
     chatBubbleCheck:SetScript('OnMouseDown', function()
         Save.disabledChatBubble= not Save.disabledChatBubble and true or false
@@ -1590,7 +1576,7 @@ local function options_Init()--添加控制面板
 
     local chatBubbleSacale=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     chatBubbleSacale.text:SetText(e.onlyChinese and '缩放' or UI_SCALE)
-    chatBubbleSacale:SetPoint('TOPLEFT', chatBubbleAlpha, 'BottomLEFT', 0, -15)
+    chatBubbleSacale:SetPoint('TOPLEFT', chatBubbleAlpha, 'BottomLEFT', 0, -12)
     chatBubbleSacale:SetChecked(not Save.disabledChatBubbleSacal)
     chatBubbleSacale:SetScript('OnMouseDown', function()
         Save.disabledChatBubbleSacal= not Save.disabledChatBubbleSacal and true or false
@@ -1626,7 +1612,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
-            e.Player.useClassColor= not Save.disabledColor--使用职业颜色
 
             options_Init()
 

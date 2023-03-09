@@ -903,7 +903,8 @@ local function InitMenu(self, level, type)
             end,
         }
         UIDropDownMenu_AddButton(info, level)
-
+        
+UIDropDownMenu_AddSeparator(level)
         info={
             text= e.onlyChinese and '事件声音' or EVENTS_LABEL..SOUND,
             checked= Save.setPlayerSound,
@@ -920,7 +921,24 @@ local function InitMenu(self, level, type)
         }
         UIDropDownMenu_AddButton(info, level)
 
-        UIDropDownMenu_AddSeparator(level)
+        
+   
+
+        info={
+            text= 'ETRACE',
+            checked= IsAddOnLoaded("Blizzard_EventTrace") and EventTrace:IsShown(),
+            tooltipOnButton=true,
+            tooltipTitle= e.onlyChinese and '事件记录' or EVENTTRACE_HEADER,
+            func= function()
+                if not IsAddOnLoaded('Blizzard_EventTrace') then
+                    UIParentLoadAddOn("Blizzard_EventTrace")
+                else
+                    EventTrace:SetShown(not EventTrace:IsShown() and true or false)
+                end
+            end,
+        }
+        UIDropDownMenu_AddButton(info, level)
+
         info={
             text= 'FSTACK',
             checked= IsAddOnLoaded("Blizzard_DebugTools") and FrameStackTooltip_IsFramestackEnabled(),--Blizzard_DebugTools.lua
@@ -935,21 +953,6 @@ local function InitMenu(self, level, type)
                     LoadAddOn("Blizzard_DebugTools")
                 end
                 FrameStackTooltip_ToggleDefaults()
-            end,
-        }
-        UIDropDownMenu_AddButton(info, level)
-
-        info={
-            text= 'ETRACE',
-            checked= IsAddOnLoaded("Blizzard_EventTrace") and EventTrace:IsShown(),
-            tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and '事件记录' or EVENTTRACE_HEADER,
-            func= function()
-                if not IsAddOnLoaded('Blizzard_EventTrace') then
-                    UIParentLoadAddOn("Blizzard_EventTrace")
-                else
-                    EventTrace:SetShown(not EventTrace:IsShown() and true or false)
-                end
             end,
         }
         UIDropDownMenu_AddButton(info, level)

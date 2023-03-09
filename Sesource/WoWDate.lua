@@ -432,7 +432,7 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
         e.Player.level= level
 
     elseif event=='NEUTRAL_FACTION_SELECT_RESULT' and arg1 then--玩家, 派系
-        e.Player.fanction= UnitFactionGroup('player')
+        e.Player.faction= UnitFactionGroup('player')
 
     elseif event=='PLAYER_EQUIPMENT_CHANGED' or event=='PLAYER_SPECIALIZATION_CHANGED' or event=='PLAYER_AVG_ITEM_LEVEL_UPDATE' then--更新自已
         if event=='PLAYER_SPECIALIZATION_CHANGED' and UnitInParty(arg1) then

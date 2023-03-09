@@ -4,7 +4,7 @@ local Save={
     onlyChinese= e.Player.husandro,
     useClassColor= e.Player.husandro,--使用,职业, 颜色
     useCustomColor= nil,--使用, 自定义, 颜色
-    useCustomColorTab= e.Player.useCustomColorTab,--自定义, 颜色, 表
+    useCustomColorTab= {r=1, g=0.82, b=0, a=1, hex='|cffffd100'},--自定义, 颜色, 表
 }
 local panel = CreateFrame("Frame")--Panel
 
@@ -65,69 +65,82 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event=='ADDON_LOADED' then
         if arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
-            Save.useCustomColorTab= Save.useCustomColorTab or e.Player.useCustomColorTab
+            Save.useCustomColorTab= Save.useCustomColorTab or {r=1, g=0.82, b=0, a=1, hex='|cffffd100'}
 
             e.onlyChinese= Save.onlyChinese
-            e.Player.useCustomColorTab= Save.useCustomColorTab
 
             local useClassColor=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--使用,职业,颜色
             local useCustomColor=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--使用,自定义,颜色
+
             local function set_Use_Color()
                 if Save.useClassColor then
                     useClassColor:SetChecked(true)
                     useCustomColor:SetChecked(false)
                     Save.useCustomColor=nil
+                    local r,g,b= e.Player.r, e.Player.g, e.Player.b
+                    local hex= e.RGB_to_HEX(r,g,b,1)
+                    e.Player.useColor= {r=r, g=g, b=b, a=1, hex=hex}
+
                 elseif Save.useCustomColor then
                     useClassColor:SetChecked(false)
                     useCustomColor:SetChecked(true)
                     Save.useClassColor=nil
+                    e.Player.useColor= Save.useCustomColorTab
+                else
+                    e.Player.useColor=nil
                 end
-                e.Player.useClassColor= Save.useClassColor
-                e.Player.useCustomColor= Save.useCustomColor
             end
             set_Use_Color()
-          
+
             useClassColor.text:SetText(e.Player.col..(e.onlyChinese and '职业颜色' or COLORS))
             useClassColor:SetPoint('BOTTOMLEFT')
             useClassColor:SetScript('OnClick', function()
                 Save.useClassColor= not Save.useClassColor and true or nil
-                if Save.useClassColor then
-                    Save.useClassColor=nil
+                if Save.useCustomColor then
+                    Save.useCustomColor=nil
                 end
                 set_Use_Color()
+                print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end)
-                    
+
             useCustomColor.text:SetText('|A:colorblind-colorwheel:0:0|a'..(e.onlyChinese and '自定义 ' or CUSTOM))
             useCustomColor:SetPoint('LEFT', useClassColor.text, 'RIGHT',2,0)
             useCustomColor:SetScript('OnClick', function()
                 Save.useCustomColor= not Save.useCustomColor and true or nil
-                if Save.useCustomColor then
+                if Save.useClassColor then
                     Save.useClassColor=nil
                 end
                 set_Use_Color()
+                print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end)
-            useCustomColor.text.r, useCustomColor.text.g, useCustomColor.text.b, useCustomColor.text.a= Save.useCustomColorTab.r, Save.useCustomColorTab.g, Save.useCustomColorTab.b, Save.useCustomColorTab.a
             useCustomColor.text:SetTextColor(Save.useCustomColorTab.r, Save.useCustomColorTab.g, Save.useCustomColorTab.b, Save.useCustomColorTab.a)
             useCustomColor.text:EnableMouse(true)
             useCustomColor.text:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, (e.onlyChinese and '颜色' or COLOR)..e.Icon.left)
+                local hex=self2.hex:gsub('|c','')
+                e.tips:AddDoubleLine(format('r%.2f g%.2f b%.2f a%.2f', self2.r, self2.g, self2.b, self2.a), hex)
                 e.tips:Show()
             end)
             useCustomColor.text:SetScript('OnLeave', function() e.tips:Hide() end)
+
+            useCustomColor.text.r, useCustomColor.text.g, useCustomColor.text.b, useCustomColor.text.a, useCustomColor.text.hex= Save.useCustomColorTab.r, Save.useCustomColorTab.g, Save.useCustomColorTab.b, Save.useCustomColorTab.a, Save.useCustomColorTab.hex
             useCustomColor.text:SetScript('OnMouseDown', function(self2)
-                local valueR, valueG, valueB, valueA= self2.r, self2.g, self2.b, self2.a
+                local valueR, valueG, valueB, valueA, class, custom= self2.r, self2.g, self2.b, self2.a, Save.useClassColor, Save.useCustomColor
                 e.ShowColorPicker(self2.r, self2.g, self2.b,self2.a, function(restore)
-                    local setA, setR, setG, setB
+                    local setA, setR, setG, setB, class2, custom2
                     if not restore then
                         setR, setG, setB, setA= e.Get_ColorFrame_RGBA()
+                        class2, custom2= nil, true
                     else
                         setR, setG, setB, setA= valueR, valueG, valueB, valueA
+                        class2, custom2= class, custom
                     end
                     e.RGB_to_HEX(setR, setG, setB, setA, self2)--RGB转HEX
                     Save.useCustomColorTab= {r=setR, g=setG, b=setB, a=setA, hex=self2.hex}
-                    e.Player.useCustomColorTab=Save.useCustomColorTab
+                    Save.useClassColor, Save.useCustomColor= class2, custom2
+                    set_Use_Color()
                 end)
             end)
 

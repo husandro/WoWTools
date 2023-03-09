@@ -83,7 +83,7 @@ local function setMoney()
         money= GetMoney()
     end
     if money>=10000 then
-        if e.Player.useClassColor then
+        if e.Player.useColor then
             panel.money:SetText(e.MK(money/1e4, 3)..'|TInterface/moneyframe/ui-goldicon:8|t')
         else
             panel.money:SetText(e.MK(money/1e4, 3)..'|TInterface/moneyframe/ui-silvericon:8|t')
@@ -282,22 +282,7 @@ local function InitMenu(self, level, type)--主菜单
             end
         }
         UIDropDownMenu_AddButton(info,level)
---[[
-        UIDropDownMenu_AddSeparator(level)
-        info={--使用,职业,颜色
-            text= e.onlyChinese and '职业颜色' or CLASS_COLORS,
-            checked= Save.classColor,
-            func= function()
-                Save.classColor= not Save.classColor and true or nil
-                e.Player.useClassColor= Save.classColor
-                set_Text_Size_Color()
-                set_Class_Color()
-                setMoney()
-                print(id, addName, e.GetEnabeleDisable(Save.classColor), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end
-        }
-        UIDropDownMenu_AddButton(info,level)
-]]
+
         UIDropDownMenu_AddSeparator(level)
         info={
             text=e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE)..': '..(Save.size or 12),
@@ -452,7 +437,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 panel:SetButtonState('PUSHED')
             end
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
-            --e.Player.useClassColor= Save.classColor--注册, 使用职业颜色
 
             local check=e.CPanel('|A:UI-HUD-MicroMenu-GameMenu-Mouseover:0:0|a'..(e.onlyChinese and '系统信息' or addName), not Save.disabled, true)
             check:SetScript('OnMouseDown', function()

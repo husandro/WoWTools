@@ -167,17 +167,15 @@ e.Player={
     col= '|c'..argbHex,
     zh= LOCALE_zhCN or LOCALE_zhTW,--GetLocale()== ("zhCN" or 'zhTW'),
     Lo= GetLocale(),
-    --MAX_PLAYER_LEVEL = GetMaxLevelForPlayerExpansion()
     week= GetWeek(),--周数
     guid= UnitGUID('player'),
     levelMax= UnitLevel('player')==MAX_PLAYER_LEVEL,--玩家是否最高等级
     level= UnitLevel('player'),--UnitEffectiveLevel('player')
     husandro= select(2, BNGetInfo()) == '古月剑龙#5972' or select(2, BNGetInfo())=='SandroChina#2690' or UnitName('player')=='Fuocco' or UnitName('player')=='活就好',
-    fanction= UnitFactionGroup('player'),--玩家, 派系  "Alliance", "Horde", "Neutral"
-    useClassColor= true,--使用职业颜色
-    useCustomColor= nil,--使用自定义颜色
-    useCustomColorTab={r=1, g=0.82, b=0, a=1, hex='|cffffd100'}
+    faction= UnitFactionGroup('player'),--玩家, 派系  "Alliance", "Horde", "Neutral"
+    --useColor= {r=1, g=0.82, b=0, a=1, hex='|cffffd100'},--使用颜色
 }
+ --MAX_PLAYER_LEVEL = GetMaxLevelForPlayerExpansion()
 
 for k, v in pairs(GetAutoCompleteRealms()) do
     e.Player.servers[v]=k
@@ -345,7 +343,7 @@ end
 
 e.GetUnitFaction= function(unit)--检查, 是否同一阵营
     local faction= UnitFactionGroup(unit)
-    if faction~= e.Player.fanction and faction~='Neutral' then
+    if faction~= e.Player.faction and faction~='Neutral' then
         return faction=='Horde' and e.Icon.horde2 or e.Icon.alliance2
     end
 end
@@ -441,8 +439,8 @@ e.Cstr=function(self, size, fontType, ChangeFont, color, layer, justifyH)
         if color and type(color)=='table' then
             label:SetTextColor(color[1], color[2], color[3], color[4])
         elseif color then
-            if e.Player.useClassColor then
-                label:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
+            if e.Player.useColor then
+                label:SetTextColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b, e.Player.useColor.a)
             else
                 label:SetTextColor(0.8, 0.8, 0.8)
             end
@@ -732,7 +730,7 @@ end
 
 e.Cbtn2= function(name, parent, showTexture, rightClick)
     local button= CreateFrame("Button", name, parent or UIParent, "SecureActionButtonTemplate")
-    local size=e.toolsFrame.size or 20
+    local size= e.toolsFrame.size
     button:SetSize(size,size)
     if rightClick then
         button:RegisterForClicks(LeftButtonDown, RightButtonDown)
@@ -764,8 +762,8 @@ e.Cbtn2= function(name, parent, showTexture, rightClick)
     button.border=button:CreateTexture(nil, 'ARTWORK')
     button.border:SetAllPoints(button)
     button.border:SetAtlas('bag-reagent-border')
-    if e.Player.useClassColor then--使用职业颜色
-        button.border:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+    if e.Player.useColor then--使用职业颜色
+        button.border:SetVertexColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b, e.Player.useColor.a)
         button.border:SetAlpha(0.5)
     end
 
@@ -1162,7 +1160,8 @@ local function set_Frame_Color(self, setR, setG, setB, setA, setHex)
         self.r, self.g, self.b, self.a, self.hex= setR, setG, setB, setA, '|c'..setHex
     end
 end
-e.RGB_to_HEX=function(setR, setG, setB,setA, self)--RGB转HEX
+e.RGB_to_HEX=function(setR, setG, setB, setA, self)--RGB转HEX
+    setA= setA or 1
 	setR = setR <= 1 and setR >= 0 and setR or 0
 	setG = setG <= 1 and setG >= 0 and setG or 0
 	setB = setA <= 1 and setB >= 0 and setB or 0
@@ -1205,7 +1204,6 @@ end
 e.Get_ColorFrame_RGBA= function()--取得, ColorFrame, 颜色
 	local a= OpacitySliderFrame:IsShown() and OpacitySliderFrame:GetValue() or 0
 	local r, g, b = ColorPickerFrame:GetColorRGB()
-    
 	return r, g, b, 1-a
 end
 

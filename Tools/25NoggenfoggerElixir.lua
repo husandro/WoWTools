@@ -59,7 +59,7 @@ local function set_KEY()--设置捷键
                 button.KEYtexture=button:CreateTexture(nil,'OVERLAY')
                 button.KEYtexture:SetPoint('BOTTOM', button.border,'BOTTOM',-1,-5)
                 button.KEYtexture:SetAtlas('NPE_ArrowDown')
-                if not e.Player.useClassColor then
+                if not e.Player.useColor then
                     button.KEYtexture:SetDesaturated(true)
                 end
                 button.KEYtexture:SetSize(20,15)
