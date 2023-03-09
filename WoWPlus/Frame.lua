@@ -203,6 +203,7 @@ local Move=function(F, tab)
 end
 
 local function set_Move_Button(frame, tab)
+    tab= tab or {}
     local pointFrame, save, zeroAlpha, notZoom= tab.frame, tab.save, tab.zeroAlpha, tab.notZoom
     if frame then
         if not frame.moveButton then
@@ -297,7 +298,7 @@ local function setAddLoad(arg1)
             combatCollectionsJournal=true
             panel:RegisterEvent('PLAYER_REGEN_ENABLED')
         end
-        
+
 
     elseif arg1=='Blizzard_Calendar' then--日历
         Move(CalendarFrame, {})
@@ -371,11 +372,19 @@ local function setAddLoad(arg1)
 
     elseif arg1=='Blizzard_MacroUI' then--宏
         Move(MacroFrame, {})
+
     elseif arg1=='Blizzard_MajorFactions' then--派系声望
         Move(MajorFactionRenownFrame, {})
         Move(MajorFactionRenownFrame.HeaderFrame, {frame=MajorFactionRenownFrame})
-    end
 
+    elseif arg1=='Blizzard_DebugTools' then--FSTACK
+        Move(TableAttributeDisplay.TitleButton, {frame= TableAttributeDisplay, Save=true})
+        Move(TableAttributeDisplay,{Save=true})
+
+    elseif arg1=='Blizzard_EventTrace' then--ETRACE
+        Move(EventTrace.TitleContainer, {frame=EventTrace})
+        Move(EventTrace, {notZoom=true})
+    end
 end
 
 

@@ -921,6 +921,40 @@ local function InitMenu(self, level, type)
         UIDropDownMenu_AddButton(info, level)
 
         UIDropDownMenu_AddSeparator(level)
+        info={
+            text= 'FSTACK',
+            checked= IsAddOnLoaded("Blizzard_DebugTools") and FrameStackTooltip_IsFramestackEnabled(),--Blizzard_DebugTools.lua
+            tooltipOnButton=true,
+            tooltipTitle= e.onlyChinese and '框架栈' or DEBUG_FRAMESTACK,
+            tooltipText='|cnGREEN_FONT_COLOR:Alt|r '..(e.onlyChinese and '切换' or HUD_EDIT_MODE_SWITCH)
+                        ..'\n|cnGREEN_FONT_COLOR:Ctrl|r '..(e.onlyChinese and '显示' or SHOW)
+                        ..'\n|cnGREEN_FONT_COLOR:Shift|r '..(e.onlyChinese and '材质信息' or TEXTURES_SUBHEADER..INFO)
+                        ..'\n|cnGREEN_FONT_COLOR:Ctrl+C|r '.. (e.onlyChinese and '复制' or CALENDAR_COPY_EVENT)..' \"File\" '..(e.onlyChinese and '类型' or TYPE),
+            func= function()--Bindings.xml
+                if not IsAddOnLoaded("Blizzard_DebugTools") then
+                    LoadAddOn("Blizzard_DebugTools")
+                end
+                FrameStackTooltip_ToggleDefaults()
+            end,
+        }
+        UIDropDownMenu_AddButton(info, level)
+
+        info={
+            text= 'ETRACE',
+            checked= IsAddOnLoaded("Blizzard_EventTrace") and EventTrace:IsShown(),
+            tooltipOnButton=true,
+            tooltipTitle= e.onlyChinese and '事件记录' or EVENTTRACE_HEADER,
+            func= function()
+                if not IsAddOnLoaded('Blizzard_EventTrace') then
+                    UIParentLoadAddOn("Blizzard_EventTrace")
+                else
+                    EventTrace:SetShown(not EventTrace:IsShown() and true or false)
+                end
+            end,
+        }
+        UIDropDownMenu_AddButton(info, level)
+
+        --UIDropDownMenu_AddSeparator(level)
         info={--重载
             text= e.onlyChinese and '重新加载UI' or RELOADUI,
             notCheckable=true,
@@ -995,7 +1029,25 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
                 panel:RegisterEvent('CVAR_UPDATE')
                 panel:RegisterEvent("PLAYER_LOGOUT")
             end
-            panel:UnregisterEvent('ADDON_LOADED')
+            --panel:UnregisterEvent('ADDON_LOADED')
+
+        elseif arg1=='Blizzard_DebugTools' then--FSTACK Blizzard_DebugTools.lua
+           local edit= CreateFrame("EditBox", nil, TableAttributeDisplay, 'InputBoxTemplate')
+           edit:SetPoint("BOTTOMRIGHT", TableAttributeDisplay.TitleButton, 'TOPRIGHT',0,2)
+           edit:SetSize(TableAttributeDisplay:GetWidth()-80, 20)
+           edit:SetAutoFocus(false)
+           edit.elapsed= 0
+           edit:SetScript('OnUpdate', function(self2, elapsed)
+                self2.elapsed= self2.elapsed +elapsed
+                if self2.elapsed>0.3 then
+                    if not self2:HasFocus() then
+                        local text = TableAttributeDisplay.TitleButton.Text:GetText()
+                        if text and text~='' then
+                            edit:SetText(text:match('%- (.+)') or text)
+                        end
+                    end
+                end
+           end)
         end
 
     elseif event == "PLAYER_LOGOUT" then

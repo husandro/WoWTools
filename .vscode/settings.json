@@ -1960,7 +1960,15 @@
         "FriendsFrameTab1",
         "FriendsFrameTab2",
         "FriendsFrameTab3",
-        "FriendsFrameTab4"
+        "FriendsFrameTab4",
+        "FrameStackTooltip_ToggleDefaults",
+        "FrameStackTooltip_IsFramestackEnabled",
+        "TableAttributeDisplay",
+        "HUD_EDIT_MODE_SWITCH",
+        "CALENDAR_COPY_EVENT",
+        "EventTrace",
+        "EVENTTRACE_HEADER",
+        "DEBUG_FRAMESTACK"
     ],
     "Lua.diagnostics.disable": [
     ]
