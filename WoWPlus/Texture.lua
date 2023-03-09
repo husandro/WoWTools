@@ -24,7 +24,7 @@ local function setAlpha(self, notAlpha, notColor)
         if not (Save.disabledAlpha or notAlpha)  then
             self:SetAlpha(Save.alpha)
         end
-        if  e.Player.useColor and self:GetObjectType()=='Texture' and not notColor then
+        if e.Player.useColor and self:GetObjectType()=='Texture' and not notColor then
             self:SetVertexColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
         end
     end
@@ -329,7 +329,7 @@ end
 --初始化, 透明
 --###########
 local function Init_Set_AlphaAndColor()
-    if Save.disabledAlpha and e.Player.useColor then
+    if Save.disabledAlpha then
         return
     end
 
@@ -818,7 +818,7 @@ end
 --事件, 透明
 --#########
 local function set_Alpha_Event(arg1)
-    if Save.disabledAlpha and not e.Player.useColor then
+    if Save.disabledAlpha then
         return
     end
     if arg1=='Blizzard_TrainerUI' then--专业训练师
