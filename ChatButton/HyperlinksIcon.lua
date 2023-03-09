@@ -903,8 +903,7 @@ local function InitMenu(self, level, type)
             end,
         }
         UIDropDownMenu_AddButton(info, level)
-        
-UIDropDownMenu_AddSeparator(level)
+
         info={
             text= e.onlyChinese and '事件声音' or EVENTS_LABEL..SOUND,
             checked= Save.setPlayerSound,
@@ -921,9 +920,7 @@ UIDropDownMenu_AddSeparator(level)
         }
         UIDropDownMenu_AddButton(info, level)
 
-        
-   
-
+        UIDropDownMenu_AddSeparator(level)
         info={
             text= 'ETRACE',
             checked= IsAddOnLoaded("Blizzard_EventTrace") and EventTrace:IsShown(),
