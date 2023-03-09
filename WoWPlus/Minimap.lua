@@ -579,6 +579,21 @@ local function Init()
             end
         end)
     end
+
+    --################
+    --开启, 新手編輯模式
+    --################
+    if C_PlayerInfo.IsPlayerNPERestricted() then
+        EditModeManagerFrame.CanEnterEditMode = function(self)--EditModeManager.lua
+             return TableIsEmpty(self.FramesBlockingEditMode)
+        end
+        C_Timer.After(2, function()
+            if Minimap then
+                Minimap:SetShown(true)
+                MinimapCluster:SetShown(true)
+            end
+        end)
+    end
 end
 
 --###########
@@ -628,6 +643,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         if event=='PLAYER_ENTERING_WORLD' then
             set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
+
         end
 
     elseif event=='MINIMAP_UPDATE_ZOOM' then--当前缩放，显示数值 Minimap.lua

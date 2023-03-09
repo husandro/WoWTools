@@ -1889,7 +1889,10 @@
         "NEW_CAPS",
         "HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT",
         "HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY",
-        "BANK"
+        "BANK",
+        "Class_Intro_KeyboardMouse",
+        "TutorialManager",
+        "TableIsEmpty"
     ],
     "Lua.diagnostics.disable": [
     ]
