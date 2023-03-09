@@ -56,6 +56,17 @@ local function set_CVar_chatBubbles()--聊天泡泡
         end
     end
 end
+
+local function set_InInstance_Disabled_Bubbles()--副本禁用，其它开启
+    if Save.inInstanceBubblesDisabled then
+        if IsInInstance() then
+            C_CVar.SetCVar("chatBubbles", '0')
+        else
+            C_CVar.SetCVar("chatBubbles", '1')
+        end
+    end
+end
+
 --#####
 --主菜单
 --#####
@@ -236,6 +247,20 @@ local function InitMenu(self, level, type)--主菜单
                     end
                 end
             end
+
+        elseif type=='BUBBLES' then
+            info={
+                text= (e.onlyChinese and '副本'..INSTANCE)..': '..e.GetEnabeleDisable(false),
+                checked= Save.inInstanceBubblesDisabled,
+                tooltipOnButton= true,
+                tooltipTitle= (e.onlyChinese and '其它' or OTHER)..': '..e.GetEnabeleDisable(true),
+                func= function()
+                    Save.inInstanceBubblesDisabled= not Save.inInstanceBubblesDisabled and true or nil
+                    set_InInstance_Disabled_Bubbles()--副本禁用，其它开启
+                end
+
+            }
+            UIDropDownMenu_AddButton(info, level)
         end
     else
         for _, tab in pairs(chatType) do
@@ -327,6 +352,7 @@ local function InitMenu(self, level, type)--主菜单
             --tooltipTitle= e.onlyChinese and '战斗中：禁用' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..DISABLE,
             --tooltipText= (e.onlyChinese and '仅限副本' or LFG_LIST_CROSS_FACTION:format(INSTANCE))..'\n\n
             tooltipTitle= 'CVar chatBubbles',
+            menuList= 'BUBBLES',
             checked= C_CVar.GetCVarBool("chatBubbles"),
             disabled= UnitAffectingCombat('player'),
             func= function ()
@@ -387,6 +413,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
                 panel:RegisterEvent("CHAT_MSG_WHISPER")
                 panel:RegisterEvent("CHAT_MSG_BN_WHISPER")
                 panel:RegisterEvent("CHAT_MSG_BN_WHISPER_INFORM")
+                panel:RegisterEvent('PLAYER_ENTERING_WORLD')
             end
             panel:UnregisterEvent('ADDON_LOADED')
         end
@@ -399,5 +426,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
             if not WoWToolsSave then WoWToolsSave={} end
             WoWToolsSave[addName]=Save
         end
+    elseif event== 'PLAYER_ENTERING_WORLD' then
+        set_InInstance_Disabled_Bubbles()--副本禁用，其它开启
     end
 end)

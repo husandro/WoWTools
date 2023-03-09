@@ -1968,7 +1968,8 @@
         "CALENDAR_COPY_EVENT",
         "EventTrace",
         "EVENTTRACE_HEADER",
-        "DEBUG_FRAMESTACK"
+        "DEBUG_FRAMESTACK",
+        "OTHER"
     ],
     "Lua.diagnostics.disable": [
     ]
