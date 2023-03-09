@@ -1,6 +1,6 @@
 local id, e= ...
 local addName= TARGET..COMBAT_ALLY_START_MISSION
-local Save= {creatureNum= e.Player.husandro}
+local Save= {creatureNum= true}
 
 local panel= CreateFrame("Frame")
 local isPvPArena, isIns
@@ -52,7 +52,7 @@ end
 --#########
 local THREAT_TOOLTIP_str= THREAT_TOOLTIP:gsub('%%d', '%%d+')--"%d%% 威胁"
 local function find_Text(text)
-    if not text:find(THREAT_TOOLTIP_str) then
+    if text and not text:find(THREAT_TOOLTIP_str) then
         if text:find('(%d+/%d+)') then
             local min, max= text:match('(%d+)/(%d+)')
             min, max= tonumber(min), tonumber(max)
@@ -69,6 +69,7 @@ local function find_Text(text)
         end
     end
 end
+
 local function Get_Quest_Progress(unit)--GameTooltip.lua --local questID= line and line.id
     if not UnitIsPlayer(unit) then
         local type = UnitClassification(unit)
@@ -76,10 +77,10 @@ local function Get_Quest_Progress(unit)--GameTooltip.lua --local questID= line a
             return '|A:VignetteEvent:18:18|a'
         end
         local tooltipData = C_TooltipInfo.GetUnit(unit)
-        for i = 5, #tooltipData.lines do
+        for i = 4, #tooltipData.lines do
             local line = tooltipData.lines[i]
             TooltipUtil.SurfaceArgs(line)
-            local text= line.leftText and find_Text(line.leftText)
+            local text= find_Text(line.leftText)
             if text then
                 return text~=true and text
             end
@@ -87,9 +88,8 @@ local function Get_Quest_Progress(unit)--GameTooltip.lua --local questID= line a
     end
 end
 
-local function set_NAME_PLATE_UNIT_ADDED(unit)
-    local plate = C_NamePlate.GetNamePlateForUnit(unit)
-    if plate then
+local function set_questProgress_Text(plate, unit)
+    if UnitExists(unit) and plate then
         local text= Get_Quest_Progress(unit)
         if text and not plate.questProgress then
             local frame= plate.UnitFrame and plate.UnitFrame.healthBar or plate
@@ -103,27 +103,17 @@ local function set_NAME_PLATE_UNIT_ADDED(unit)
 end
 
 local questChanging
-local function set_UNIT_QUEST_LOG_CHANGED()
+local function set_check_All_Plates()
     if not questChanging then
         questChanging=true
         local plates= C_NamePlate.GetNamePlates() or {}
         for _, plate in pairs(plates) do
-            if plate.questProgress then
-                local unit = plate.namePlateUnitToken or (plate.UnitFrame and plate.UnitFrame.unit)
-                local text= unit and Get_Quest_Progress(unit)
-                plate.questProgress:SetText(text or '')
-            end
+            set_questProgress_Text(plate, plate.namePlateUnitToken or (plate.UnitFrame and plate.UnitFrame.unit))
         end
         questChanging=nil
     end
 end
 
-local function set_NAME_PLATE_UNIT_REMOVED(unit)
-    local plate = C_NamePlate.GetNamePlateForUnit(unit)
-    if plate and plate.questProgress then
-        plate.questProgress:SetText('')
-    end
-end
 
 --####
 --事件
@@ -180,7 +170,6 @@ local function Init()
 
     panel.Text= e.Cstr(panel, 10, nil, nil, {1,1,1}, 'BORDER', 'RIGHT')
     panel.Text:SetPoint('RIGHT', -8, 0)
-    
     --panel.Text:SetShadowOffset(2, -2)
 end
 
@@ -282,19 +271,19 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='PLAYER_REGEN_ENABLED' then
         panel.Texture:SetVertexColor(1,1,1)
 
-    elseif event=='UNIT_QUEST_LOG_CHANGED' or event=='QUEST_POI_UPDATE' or event=='SCENARIO_COMPLETED' or event=='SCENARIO_UPDATE' or event=='SCENARIO_CRITERIA_UPDATE' then
-        if panel.setUnitQestLogChangedTimer then panel.setUnitQestLogChangedTimer:IsCancelled() end
-        panel.setUnitQestLogChangedTimer= C_Timer.NewTimer(2, function()
-            set_UNIT_QUEST_LOG_CHANGED()
-        end)
-
+    elseif event=='UNIT_QUEST_LOG_CHANGED' or event=='QUEST_POI_UPDATE' or event=='SCENARIO_COMPLETED' or event=='SCENARIO_UPDATE' or event=='SCENARIO_CRITERIA_UPDATE' then    
+        C_Timer.After(2, set_check_All_Plates)
 
     else
         if not isIns and arg1 then
             if event=='NAME_PLATE_UNIT_ADDED' then
-                set_NAME_PLATE_UNIT_ADDED(arg1)
+                set_questProgress_Text(C_NamePlate.GetNamePlateForUnit(arg1), arg1)
+
             elseif event=='NAME_PLATE_UNIT_REMOVED' then
-                set_NAME_PLATE_UNIT_REMOVED(arg1)
+                local plate = C_NamePlate.GetNamePlateForUnit(arg1)
+                if plate and plate.questProgress then
+                    plate.questProgress:SetText('')
+                end
             end
         end
         if self:IsShown() then

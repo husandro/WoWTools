@@ -172,10 +172,11 @@ e.Player={
     guid= UnitGUID('player'),
     levelMax= UnitLevel('player')==MAX_PLAYER_LEVEL,--玩家是否最高等级
     level= UnitLevel('player'),--UnitEffectiveLevel('player')
-    husandro= select(2, BNGetInfo()) == '古月剑龙#5972' or select(2, BNGetInfo())=='SandroChina#2690' or UnitName('player')=='Fuocco',
+    husandro= select(2, BNGetInfo()) == '古月剑龙#5972' or select(2, BNGetInfo())=='SandroChina#2690' or UnitName('player')=='Fuocco' or UnitName('player')=='活就好',
     fanction= UnitFactionGroup('player'),--玩家, 派系  "Alliance", "Horde", "Neutral"
     --useClassColor,--使用职业颜色 Textures.lua
 }
+
 for k, v in pairs(GetAutoCompleteRealms()) do
     e.Player.servers[v]=k
 end

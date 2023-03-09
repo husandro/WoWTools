@@ -19,6 +19,7 @@ local function hideTexture(self)
         self:SetShown(false)
     end
 end
+
 local function setAlpha(self, notAlpha, notColor)
     if self then
         if not (Save.disabledAlpha or notAlpha)  then
@@ -30,6 +31,41 @@ local function setAlpha(self, notAlpha, notColor)
     end
 end
 
+--隐藏, frame, 子材质
+local function hide_Frame_Texture(frame, tab)
+    tab= tab or {}
+    if frame then
+        local frames= {frame:GetRegions()}
+        for index, icon in pairs(frames) do
+            if tab.index then
+                if tab.index==index then
+                    hideTexture(icon)
+                    break
+                end
+            elseif icon:GetObjectType()=="Texture" then
+                icon:SetTexture(0)
+                icon:SetShown(false)
+            end
+        end
+    end
+end
+
+--透明度, 颜色, frame, 子材质
+local function set_Alpha_Frame_Texture(frame)
+    if frame then
+        local tab= {frame:GetRegions()}
+        for _, icon in pairs(tab) do
+            if icon:GetObjectType()=="Texture" then
+                if not Save.disabledAlpha  then
+                    icon:SetAlpha(Save.alpha)
+                end
+                if not Save.disabledColor then
+                    icon:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+                end
+            end
+        end
+    end
+end
 
 --###############
 --初始化, 隐藏材质
@@ -303,8 +339,15 @@ local function Init_Set_AlphaAndColor()
     setAlpha(CharacterFrameBg)
     hideTexture(CharacterFrameInset.Bg)
     setAlpha(CharacterFrame.NineSlice.TopEdge)
+    setAlpha(CharacterFrame.NineSlice.BottomEdge)
+    setAlpha(CharacterFrame.NineSlice.LeftEdge)
+    setAlpha(CharacterFrame.NineSlice.RightEdge)
+
     setAlpha(CharacterFrame.NineSlice.TopRightCorner)
     setAlpha(CharacterFrame.NineSlice.TopLeftCorner)
+    setAlpha(CharacterFrame.NineSlice.BottomRightCorner)
+    setAlpha(CharacterFrame.NineSlice.BottomLeftCorner)
+
     hideTexture(CharacterFrameInsetRight.Bg)
     setAlpha(CharacterStatsPane.ClassBackground)
     setAlpha(CharacterStatsPane.EnhancementsCategory.Background)
@@ -353,6 +396,20 @@ local function Init_Set_AlphaAndColor()
             end)
         end
     end
+
+    set_Alpha_Frame_Texture(SpellBookFrameTabButton1)
+    set_Alpha_Frame_Texture(SpellBookFrameTabButton2)
+    set_Alpha_Frame_Texture(SpellBookFrameTabButton3)
+    hide_Frame_Texture(SpellBookSkillLineTab1)
+    hide_Frame_Texture(SpellBookSkillLineTab2)
+    hide_Frame_Texture(SpellBookSkillLineTab3)
+    hide_Frame_Texture(SpellBookSkillLineTab4)
+    hide_Frame_Texture(SpellBookSkillLineTab5)
+    --hide_Frame_Texture(SpellBookSkillLineTab1, {index=3})
+    --hide_Frame_Texture(SpellBookSkillLineTab1, {index=2})
+    --hide_Frame_Texture(SpellBookSkillLineTab1, {index=1})
+    
+
     --世界地图
     setAlpha(WorldMapFrame.BorderFrame.NineSlice.TopLeftCorner)
     setAlpha(WorldMapFrame.BorderFrame.NineSlice.TopEdge)
@@ -425,6 +482,10 @@ local function Init_Set_AlphaAndColor()
     hideTexture(GossipFrameInset.Bg)
     hideTexture(GossipFrame.GreetingPanel.ScrollBar.Backplate)
 
+    set_Alpha_Frame_Texture(PVEFrameTab1)
+    set_Alpha_Frame_Texture(PVEFrameTab2)
+    set_Alpha_Frame_Texture(PVEFrameTab3)
+
     if PetStableFrame then--猎人，宠物
         setAlpha(PetStableFrame.NineSlice.TopEdge)
         setAlpha(PetStableFrame.NineSlice.TopLeftCorner)
@@ -490,12 +551,33 @@ local function Init_Set_AlphaAndColor()
     end)
 
     --背包
-    setAlpha(ContainerFrameCombinedBags.NineSlice.TopEdge)
-    setAlpha(ContainerFrameCombinedBags.NineSlice.TopLeftCorner)
-    setAlpha(ContainerFrameCombinedBags.NineSlice.TopRightCorner)
+    if ContainerFrameCombinedBags and ContainerFrameCombinedBags.NineSlice then
+        setAlpha(ContainerFrameCombinedBags.NineSlice.TopEdge)
+        setAlpha(ContainerFrameCombinedBags.NineSlice.LeftEdge)
+        setAlpha(ContainerFrameCombinedBags.NineSlice.RightEdge)
+
+        setAlpha(ContainerFrameCombinedBags.NineSlice.BottomEdge)
+
+        setAlpha(ContainerFrameCombinedBags.NineSlice.TopLeftCorner)
+        setAlpha(ContainerFrameCombinedBags.NineSlice.TopRightCorner)
+        setAlpha(ContainerFrameCombinedBags.NineSlice.BottomRightCorner)
+        setAlpha(ContainerFrameCombinedBags.NineSlice.BottomLeftCorner)
+        setAlpha(ContainerFrameCombinedBags.MoneyFrame.Border.Middle)
+        setAlpha(ContainerFrameCombinedBags.MoneyFrame.Border.Right)
+        setAlpha(ContainerFrameCombinedBags.MoneyFrame.Border.Left)
+
+        setAlpha(ContainerFrameCombinedBags.Bg.TopSection, true)
+        --setAlpha(ContainerFrameCombinedBags.Bg.BottomEdge)
+        --setAlpha(ContainerFrameCombinedBags.Bg.BottomRight)
+        --setAlpha(ContainerFrameCombinedBags.Bg.BottomLeft)
+        setAlpha(BagItemSearchBox.Middle)
+        setAlpha(BagItemSearchBox.Left)
+        setAlpha(BagItemSearchBox.Right)
+    end
     for i=1 ,NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS+1 do
         local frame= _G['ContainerFrame'..i]
         if frame and frame.NineSlice then
+            setAlpha(frame.Bg.TopSection, true)
             setAlpha(frame.NineSlice.TopEdge)
             setAlpha(frame.NineSlice.TopLeftCorner)
             setAlpha(frame.NineSlice.TopRightCorner)
@@ -536,6 +618,28 @@ local function Init_Set_AlphaAndColor()
             setAlpha(frame.icon)
         end
     end)
+    hide_Frame_Texture(CharacterHeadSlot)--1
+    hide_Frame_Texture(CharacterNeckSlot)--2
+    hide_Frame_Texture(CharacterShoulderSlot)--3
+    hide_Frame_Texture(CharacterShirtSlot)--4
+    hide_Frame_Texture(CharacterChestSlot)--5
+    hide_Frame_Texture(CharacterWaistSlot)--6
+    hide_Frame_Texture(CharacterLegsSlot)--7
+    hide_Frame_Texture(CharacterFeetSlot)--8
+    hide_Frame_Texture(CharacterWristSlot)--9
+    hide_Frame_Texture(CharacterHandsSlot)--10
+    hide_Frame_Texture(CharacterBackSlot)--15
+    hide_Frame_Texture(CharacterTabardSlot)--19
+    hide_Frame_Texture(CharacterFinger0Slot)--11
+    hide_Frame_Texture(CharacterFinger1Slot)--12
+    hide_Frame_Texture(CharacterTrinket0Slot)--13
+    hide_Frame_Texture(CharacterTrinket1Slot)--14
+    hide_Frame_Texture(CharacterMainHandSlot)--16
+    hide_Frame_Texture(CharacterSecondaryHandSlot)--17
+
+    set_Alpha_Frame_Texture(CharacterFrameTab1)
+    set_Alpha_Frame_Texture(CharacterFrameTab2)
+    set_Alpha_Frame_Texture(CharacterFrameTab3)
 
     --好友列表
     setAlpha(FriendsFrame.NineSlice.TopEdge)
@@ -557,6 +661,10 @@ local function Init_Set_AlphaAndColor()
     hideTexture(WhoFrameEditBoxInset.Bg)
     hideTexture(QuickJoinFrame.ScrollBar.Backplate)
 
+    set_Alpha_Frame_Texture(FriendsFrameTab1)
+    set_Alpha_Frame_Texture(FriendsFrameTab2)
+    set_Alpha_Frame_Texture(FriendsFrameTab3)
+    set_Alpha_Frame_Texture(FriendsFrameTab4)
 
     --聊天设置
     setAlpha(ChannelFrame.NineSlice.TopEdge)
@@ -828,6 +936,9 @@ local function set_Alpha_Event(arg1)
         hideTexture(AchievementFrameAchievements.ScrollBar.Backplate)
         hideTexture(AchievementFrameStats.ScrollBar.Backplate)
         hideTexture(AchievementFrameCategories.ScrollBar.Backplate)
+        set_Alpha_Frame_Texture(AchievementFrameTab1)
+        set_Alpha_Frame_Texture(AchievementFrameTab2)
+        set_Alpha_Frame_Texture(AchievementFrameTab3)
 
     elseif arg1=='Blizzard_Communities' then--公会和社区
         setAlpha(CommunitiesFrame.NineSlice.TopEdge)
@@ -872,6 +983,16 @@ local function set_Alpha_Event(arg1)
         hideTexture(CommunitiesFrameGuildDetailsFrameNews.ScrollBar.Backplate)
         hideTexture(CommunitiesFrameGuildDetailsFrameNews.ScrollBar.Background)
 
+        hide_Frame_Texture(CommunitiesFrame.ChatTab, {index=1})
+        hide_Frame_Texture(CommunitiesFrame.RosterTab, {index=1})
+        hide_Frame_Texture(CommunitiesFrame.GuildBenefitsTab, {index=1})
+        hide_Frame_Texture(CommunitiesFrame.GuildInfoTab, {index=1})
+        hide_Frame_Texture(ClubFinderCommunityAndGuildFinderFrame.ClubFinderSearchTab, {index=1})
+        hide_Frame_Texture(ClubFinderCommunityAndGuildFinderFrame.ClubFinderPendingTab, {index=1})
+        
+        
+        
+
     elseif arg1=='Blizzard_PVPUI' then--地下城和团队副本, PVP
         hideTexture(HonorFrame.Inset.Bg)
         setAlpha(HonorFrame.BonusFrame.WorldBattlesTexture)
@@ -911,6 +1032,11 @@ local function set_Alpha_Event(arg1)
                 setAlpha(EncounterJournalMonthlyActivitiesFrame.Bg)
             end
         end)
+
+        set_Alpha_Frame_Texture(EncounterJournalSuggestTab)
+        set_Alpha_Frame_Texture(EncounterJournalMonthlyActivitiesTab)
+        set_Alpha_Frame_Texture(EncounterJournalDungeonTab)
+        set_Alpha_Frame_Texture(EncounterJournalRaidTab)
 
     elseif arg1=="Blizzard_GuildBankUI" then--公会银行
         setAlpha(GuildBankFrame.BlackBG)
@@ -1160,6 +1286,11 @@ local function set_Alpha_Event(arg1)
         setAlpha(WardrobeCollectionFrameWeaponDropDownLeft)
         setAlpha(WardrobeCollectionFrameWeaponDropDownRight)
 
+        set_Alpha_Frame_Texture(CollectionsJournalTab1)
+        set_Alpha_Frame_Texture(CollectionsJournalTab2)
+        set_Alpha_Frame_Texture(CollectionsJournalTab3)
+        set_Alpha_Frame_Texture(CollectionsJournalTab4)
+        set_Alpha_Frame_Texture(CollectionsJournalTab5)
 
     elseif arg1=='Blizzard_Calendar' then--日历
         setAlpha(CalendarFrameTopMiddleTexture)

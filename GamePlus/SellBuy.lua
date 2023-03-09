@@ -846,6 +846,47 @@ local function Init()
     hooksecurefunc('MerchantFrame_UpdateBuybackInfo', setMerchantInfo)
 
     hooksecurefunc(StackSplitFrame, 'OpenStackSplitFrame',set_StackSplitFrame_OpenStackSplitFrame)--StackSplitFrame.lua 堆叠,数量,框架
+
+    --#################
+    --拾取, 设置自动拾取
+    --#################
+    if LootFrame then
+        local check=CreateFrame("CheckButton", nil, LootFrame.TitleContainer, "InterfaceOptionsCheckButtonTemplate")
+        check:SetPoint('TOPLEFT',-27,2)
+        check:SetChecked(C_CVar.GetCVarBool("autoLootDefault"))
+        check:SetScript('OnClick', function(self)
+            C_CVar.SetCVar("autoLootDefault", not C_CVar.GetCVarBool("autoLootDefault") and '1' or '0')
+            local value= C_CVar.GetCVarBool("autoLootDefault")
+            print(id, addName, not e.onlyChinese and AUTO_LOOT_DEFAULT_TEXT or "自动拾取", e.GetEnabeleDisable(value))
+            if value and not IsModifierKeyDown() then
+                for i = GetNumLootItems(), 1, -1 do
+                    LootSlot(i);
+                end
+            end
+        end)
+        check:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_LEFT");
+            e.tips:ClearLines();
+            e.tips:AddDoubleLine(e.onlyChinese and '自动拾取' or AUTO_LOOT_DEFAULT_TEXT, (e.onlyChinese and '当前' or REFORGE_CURRENT)..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
+            e.tips:AddLine('')
+            e.tips:AddDoubleLine(e.onlyChinese and '正在打开' or OPENING, '|cnGREEN_FONT_COLOR:Alt|r '..(e.onlyChinese and '禁用' or DISABLE))
+            e.tips:AddLine('')
+            e.tips:AddDoubleLine(id, addName)
+            e.tips:Show()
+        end)
+        check:RegisterEvent('CVAR_UPDATE')
+        check:SetScript('OnEvent', function(self, event, eventName, value)
+            if eventName=='autoLootDefault' then
+                self:SetChecked(value=='1' and true or false)
+            end
+        end)
+        --[[hooksecurefunc(LootFrame, 'Open', function()
+            if IsModifierKeyDown() and C_CVar.GetCVarBool("autoLootDefault") then
+                C_CVar.SetCVar("autoLootDefault", '0')
+                print(id, addName, not e.onlyChinese and AUTO_LOOT_DEFAULT_TEXT or "自动拾取", e.GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
+            end
+        end)]]
+    end
 end
 --###########
 --加载保存数据
@@ -861,7 +902,7 @@ panel:RegisterEvent('PLAYER_AVG_ITEM_LEVEL_UPDATE')
 panel:RegisterEvent('MERCHANT_UPDATE')--购回
 
 panel:RegisterEvent('LOOT_READY')--自动拾取加强 
-
+panel:RegisterEvent('LOOT_OPENED')
 
 panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
     if event == "ADDON_LOADED" then
@@ -920,11 +961,16 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
     elseif event=='MERCHANT_UPDATE' then
         setBuyBackItems()--回购
 
-    elseif event=='LOOT_READY' then
+    elseif event=='LOOT_READY' then--拾取, 增强
         if arg1 then
             for i = GetNumLootItems(), 1, -1 do
                 LootSlot(i);
             end
+        end
+    elseif event=='LOOT_OPENED' then
+        if IsModifierKeyDown() and C_CVar.GetCVarBool("autoLootDefault") then
+            C_CVar.SetCVar("autoLootDefault", '0')
+            print(id, addName, not e.onlyChinese and AUTO_LOOT_DEFAULT_TEXT or "自动拾取", e.GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
         end
     end
 end)

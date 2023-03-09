@@ -380,7 +380,6 @@ end
 
 
 local function Init_Move()
-
     local FrameTab={
         AddonList={},--插件
         GameMenuFrame={save=true,},--菜单
@@ -416,7 +415,7 @@ local function Init_Move()
         MirrorTimer1={save=true},
         LootHistoryFrame= {},--拾取框
         --EncounterBar={},
-        --StoreFrame={},--商店
+        --[StoreFrame.TitleContainer]={frame=StoreFrame},--商店
         ChannelFrame={},--聊天设置
         --StaticPopup1={},
         [DressUpFrame.TitleContainer]= {frame = DressUpFrame},--试衣间 
@@ -532,7 +531,6 @@ local function Init_Move()
         end)
     end
 
-    --[[
     hooksecurefunc(LootFrame,'Open', function(self2)--物品拾取LootFrame.lua
         if not GetCVarBool("autoLootDefault") and not GetCVarBool("lootUnderMouse") then
             local p=Save.point.LootFrame and Save.point.LootFrame[1]
@@ -541,7 +539,7 @@ local function Init_Move()
                 self2:SetPoint(p[1], nil, p[3], p[4], p[5])
             end
         end
-    end)]]
+    end)
     Move(LootFrame.TitleContainer, {frame=LootFrame, save=true})--物品拾取
     Move(LootFrame, {save=true})--物品拾取
 
