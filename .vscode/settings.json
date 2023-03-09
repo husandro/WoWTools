@@ -1969,7 +1969,8 @@
         "EventTrace",
         "EVENTTRACE_HEADER",
         "DEBUG_FRAMESTACK",
-        "OTHER"
+        "OTHER",
+        "PetBattleFrameXPBar"
     ],
     "Lua.diagnostics.disable": [
     ]

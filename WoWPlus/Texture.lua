@@ -115,6 +115,7 @@ local function Init_HideTexture()
         hideTexture(PetBattleFrameXPBarLeft)
         hideTexture(PetBattleFrameXPBarRight)
         hideTexture(PetBattleFrameXPBarMiddle)
+
         if PetBattleFrame.BottomFrame then
             hideTexture(PetBattleFrame.BottomFrame.LeftEndCap)
             hideTexture(PetBattleFrame.BottomFrame.RightEndCap)
