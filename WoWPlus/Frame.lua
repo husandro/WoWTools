@@ -378,12 +378,12 @@ local function setAddLoad(arg1)
         Move(MajorFactionRenownFrame.HeaderFrame, {frame=MajorFactionRenownFrame})
 
     elseif arg1=='Blizzard_DebugTools' then--FSTACK
-        Move(TableAttributeDisplay.TitleButton, {frame= TableAttributeDisplay, Save=true})
-        Move(TableAttributeDisplay,{Save=true})
+        Move(TableAttributeDisplay.TitleButton, {frame= TableAttributeDisplay})
+        Move(TableAttributeDisplay,{})
 
     elseif arg1=='Blizzard_EventTrace' then--ETRACE
-        Move(EventTrace.TitleContainer, {frame=EventTrace})
-        Move(EventTrace, {notZoom=true})
+        Move(EventTrace.TitleContainer, {frame=EventTrace, notZoom=true})
+        Move(EventTrace, {notZoom=true, save=true})
     end
 end
 
