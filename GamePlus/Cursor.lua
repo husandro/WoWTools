@@ -227,7 +227,10 @@ end
 
 local function set_Curor_Random_Event()--随机, 图片，事件
     if Save.randomTexture and not Save.disabled then
-        panel:RegisterEvent('PLAYER_STARTED_MOVING')
+        local bat= UnitAffectingCombat('player')
+        if Save.randomTextureInCombat or UnitAffectingCombat('player') then
+            panel:RegisterEvent('PLAYER_STARTED_MOVING')
+        end
     else
         panel:UnregisterEvent('PLAYER_STARTED_MOVING')
     end
@@ -935,7 +938,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave[addName]=Save
         end
 
-    elseif event=='PLAYER_STARTED_MOVING' then
+    elseif event=='PLAYER_STARTED_MOVING' or event=='GLOBAL_MOUSE_DOWN' then
         if Save.randomTextureInCombat or not UnitAffectingCombat('player') then
             cursor_Init_And_Set(true)--初始，设置
         end
