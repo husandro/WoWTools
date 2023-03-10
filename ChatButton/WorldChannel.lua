@@ -1,32 +1,33 @@
 local id, e = ...
 
-local Save={}
+local Save={
+    world= CHANNEL_CATEGORY_WORLD--'大脚世界频道'
+}
 local addName='ChatButtonWorldChannel'
 local button
 
-local world= WORLD--'大脚世界频道'
-
+--[[
 local function setChinesTips(name, type)
-    if name== world then
+    if name== Save.world then
         button.texture:SetDesaturated(type==2)
         button.texture:SetShown(type~=0)
     end
-end
+end]]
 
 local Check=function(name)
     if not select(2,GetChannelName(name)) then
-        setChinesTips(name, 0)
+        --setChinesTips(name, 0)
         return 0--不存存在
     else
         local tab={GetChatWindowChannels(SELECTED_CHAT_FRAME:GetID())}
         for i= 1, #tab, 2 do
             if tab[i]==name then
-                setChinesTips(name, 1)
+                --setChinesTips(name, 1)
                 return 1--存在2
             end
         end
 
-        setChinesTips(name, 2)
+        --setChinesTips(name, 2)
         return 2--屏蔽
     end
 end
@@ -44,27 +45,26 @@ local function setJoin(name, join, leave, remove)--加入,移除, 屏蔽
 end
 
 local function setLeftClickTips(name, channelNumber, texture)--设置点击提示,频道字符
-    channelNumber= (channelNumber and channelNumber>0) and channelNumber or nil
-    if channelNumber then
-        button.channelNumber=channelNumber
-    end
-    if channelNumber and not button.leftClickTips then
+    if not button.leftClickTips then
         button.leftClickTips=e.Cstr(button, {size=10, color=true, justifyH='CENTER'})--10, nil, nil, true, nil, 'CENTER')
         button.leftClickTips:SetPoint('BOTTOM',0,2)
     end
-    if button.leftClickTips then
-        local text
-        if channelNumber then
-            button.channelNumber=channelNumber
-
-            if texture then
-                text='|T'..texture..':0|t'
-            else
-                text= name=='大脚世界频道' and '世' or e.WA_Utf8Sub(name, 1, 4)
-            end
-        end
-        button.leftClickTips:SetText(text or '')
+    button.channelNumber=channelNumber
+    local text
+    if name then
+        text= name=='大脚世界频道' and '世' or e.WA_Utf8Sub(name, 1, 3)
+    else
+        text= e.onlyChinese and '无' or NONE
     end
+
+    if name == Save.world then
+        button.texture:SetAtlas('WildBattlePet')
+    elseif texture then
+        button.texture:SetTexture(texture)
+    else
+        button.texture:SetAtlas('128-Store-Main')
+    end
+    button.leftClickTips:SetText(text)
 end
 
 local function sendSay(name, channelNumber)--发送
@@ -118,35 +118,37 @@ local function addMenu(name, channelNumber, level)--添加菜单
         tooltipTitle=(e.onlyChinese and '屏蔽' or IGNORE)..' Alt+'..e.Icon.left,
         tooltipText= check==2 and (e.onlyChinese and '已屏蔽' or IGNORED),
         icon=communityTexture,
-        func=function()
+        arg1={texture=communityTexture, name=name, communityName= communityName, channelNumber= channelNumber},
+        func=function(self, arg1)
             if IsAltKeyDown() then
-                setJoin(name, nil, nil, true)--加入,移除,屏蔽
+                setJoin(arg1.name, nil, nil, true)--加入,移除,屏蔽
             else
-                sendSay(name, channelNumber)
-                setLeftClickTips(communityName or name, channelNumber, communityTexture)--设置点击提示,频道字符
+                sendSay(arg1.name, arg1.channelNumber)
+                setLeftClickTips(arg1.communityName or arg1.name, arg1.channelNumber, arg1.texture)--设置点击提示,频道字符
             end
         end
     }
     UIDropDownMenu_AddButton(info, level)
 
-    if not button.channelNumber or button.channelNumber==0 then
-        setLeftClickTips(name, channelNumber)--设置点击提示,频道字符
-    end
+    --if not button.channelNumber or button.channelNumber==0 then
+    --    setLeftClickTips(name, channelNumber)--设置点击提示,频道字符
+    --end
 end
 
 local function InitMenu(self, level, type)--主菜单
-    if e.Player.zh then
-        local channelNumbern = GetChannelName(world)
-        addMenu(world , channelNumbern, level)
+    --if e.Player.zh then
+        local channelNumbern = GetChannelName(Save.world)
+        addMenu(Save.world , channelNumbern, level)
         UIDropDownMenu_AddSeparator(level)
-    end
+    --end
 
     local channels = {GetChannelList()}
     for i = 1, #channels, 3 do
         local channelNumber, name, disabled = channels[i], channels[i+1], channels[i+2]
-        if not disabled and channelNumber and name~=world then
+        if not disabled and channelNumber and name~=Save.world then
             addMenu(name, channelNumber, level)
         end
+        
     end
 end
 
@@ -157,11 +159,11 @@ local function Init()
     button:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
     WoWToolsChatButtonFrame.last=button
 
-    if e.Player.zh then
+    --[[if e.Player.zh then
         button.texture:SetAtlas('WildBattlePet')
-    else
-        button.texture:SetAtlas('128-Store-Main')
-    end
+    else    
+    end]]
+    button.texture:SetAtlas('128-Store-Main')
 
     button.Menu=CreateFrame("Frame",nil, button, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
@@ -173,7 +175,7 @@ local function Init()
             ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
         end
     end)
-    button.texture:SetShown(true)
+    --button.texture:SetShown(true)
 end
 
 --###########
@@ -187,6 +189,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
                 Save= WoWToolsSave and WoWToolsSave[addName] or Save
+                Save.world= Save.world or CHANNEL_CATEGORY_WORLD
 
                 button= e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
 
