@@ -339,6 +339,7 @@ end
 
 local function set_textButton_Disabled_Enable()--禁用, 启用, textButton
     Save.disabledText = not Save.disabledText and true or nil
+    set_Text_Button()
     if not Save.disabledText then
         button.textButton:SetButtonState('PUSHED')
     end
@@ -494,6 +495,8 @@ local function Init()
     OnLineTime=GetTime()
 
     button:SetPoint('BOTTOMLEFT',WoWToolsChatButtonFrame.last, 'BOTTOMRIGHT')--设置位置
+    
+    button.texture:SetDesaturated(Save.disabledText)
 
     button.texture2=button:CreateTexture(nil, 'OVERLAY')
     button.texture2:SetAllPoints(button)
@@ -505,7 +508,7 @@ local function Init()
     UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
     button:SetScript('OnMouseDown', function(self, d)
-        if d=='ButtonRight' then
+        if d=='RightButton' then
         ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
         elseif d=='LeftButton' then
             set_textButton_Disabled_Enable()--禁用, 启用, textButton
@@ -514,10 +517,10 @@ local function Init()
 
     set_Text_Button()--设置显示内容,框架 button.textButton,内容 button.text
 
-    if e.Player.faction=='Alliance' then
-        button.texture:SetAtlas(e.Icon.alliance)
+    if e.Player.faction~='Alliance' then
+        button.texture:SetTexture(255130)
     elseif e.Player.faction=='Horde' then
-        button.texture:SetAtlas(e.Icon.horde)
+        button.texture:SetTexture(2565244)
     else
         button.texture:SetAtlas('nameplates-icon-flag-neutral')
     end
