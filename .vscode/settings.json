@@ -1971,7 +1971,8 @@
         "DEBUG_FRAMESTACK",
         "OTHER",
         "PetBattleFrameXPBar",
-        "HUD_EDIT_MODE_RESET_POSITION"
+        "HUD_EDIT_MODE_RESET_POSITION",
+        "WORLD"
     ],
     "Lua.diagnostics.disable": [
     ]

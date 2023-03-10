@@ -4,8 +4,10 @@ local Save={}
 local addName='ChatButtonWorldChannel'
 local button
 
-local function setChinesTips(name, type)--大脚世界频道, 提示
-    if name=='大脚世界频道' then
+local world= WORLD--'大脚世界频道'
+
+local function setChinesTips(name, type)
+    if name== world then
         button.texture:SetDesaturated(type==2)
         button.texture:SetShown(type~=0)
     end
@@ -13,18 +15,18 @@ end
 
 local Check=function(name)
     if not select(2,GetChannelName(name)) then
-        setChinesTips(name, 0)--大脚世界频道, 提示
+        setChinesTips(name, 0)
         return 0--不存存在
     else
         local tab={GetChatWindowChannels(SELECTED_CHAT_FRAME:GetID())}
         for i= 1, #tab, 2 do
             if tab[i]==name then
-                setChinesTips(name, 1)--大脚世界频道, 提示
+                setChinesTips(name, 1)
                 return 1--存在2
             end
         end
 
-        setChinesTips(name, 2)--大脚世界频道, 提示
+        setChinesTips(name, 2)
         return 2--屏蔽
     end
 end
@@ -58,7 +60,7 @@ local function setLeftClickTips(name, channelNumber, texture)--设置点击提�
             if texture then
                 text='|T'..texture..':0|t'
             else
-                text=name=='大脚世界频道' and '世' or e.WA_Utf8Sub(name, 1, 4)
+                text= name=='大脚世界频道' and '世' or e.WA_Utf8Sub(name, 1, 4)
             end
         end
         button.leftClickTips:SetText(text or '')
@@ -134,15 +136,15 @@ end
 
 local function InitMenu(self, level, type)--主菜单
     if e.Player.zh then
-        local channelNumbern = GetChannelName('大脚世界频道')
-        addMenu('大脚世界频道' , channelNumbern, level)
+        local channelNumbern = GetChannelName(world)
+        addMenu(world , channelNumbern, level)
         UIDropDownMenu_AddSeparator(level)
     end
 
     local channels = {GetChannelList()}
     for i = 1, #channels, 3 do
         local channelNumber, name, disabled = channels[i], channels[i+1], channels[i+2]
-        if not disabled and channelNumber and name~='大脚世界频道' then
+        if not disabled and channelNumber and name~=world then
             addMenu(name, channelNumber, level)
         end
     end
