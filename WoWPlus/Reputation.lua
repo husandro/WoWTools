@@ -1,7 +1,7 @@
 local id, e = ...
 local Save={btnStrHideCap=true, btnStrHideHeader=true, factionUpdateTips=true, btnstr=true}
 local addName=REPUTATION
-local panel= e.Cbtn(ReputationFrame, nil, true, nil, nil, nil,{20, 20})
+local panel= e.Cbtn(ReputationFrame, {icon=true,size={20, 20}})
 
 --#########
 --设置, 文本
@@ -128,7 +128,7 @@ end
 
 local function Set_Reputation_Text()--监视, 文本
 	if Save.btn and not panel.btn then
-		panel.btn= e.Cbtn(nil, nil, Save.btn, nil,nil,nil,{18,18})
+		panel.btn= e.Cbtn(nil, {icon=Save.btn, size={18,18}})
 		if Save.point then
 			panel.btn:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
 		else
@@ -195,7 +195,7 @@ local function Set_Reputation_Text()--监视, 文本
 				num= num<6 and 6 or num
 				num= num>32 and 32 or num
 				Save.size= num
-				e.Cstr(nil, num, nil, panel.btn.text, true)
+				e.Cstr(nil, {size=num, changeFont=panel.btn.text, color=true})
 				print(id, addName, e.onlyChinese and '文本' or LOCALE_TEXT_LABEL, e.onlyChinese and '字体大小' or FONT_SIZE, num)
 
 			elseif d==1 then
@@ -220,7 +220,7 @@ local function Set_Reputation_Text()--监视, 文本
 			end
 		end)
 
-		panel.btn.text=e.Cstr(panel.btn, Save.size, nil, nil, true)
+		panel.btn.text=e.Cstr(panel.btn, {size=Save.size, color=true})
 		panel.btn.text:SetPoint('TOPLEFT',3,-3)
 	end
 	if panel.btn then
@@ -326,7 +326,7 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 		end
 	end
 	if completedParagon and not factionContainer.completed then
-		factionContainer.completed= e.Cstr(factionBar, nil, nil, nil, nil, nil, 'RIGHT')
+		factionContainer.completed= e.Cstr(factionBar, {justifyH='RIGHT'})
 		factionContainer.completed:SetPoint('RIGHT',- 5,0)
 	end
 	if factionContainer.completed then
@@ -338,7 +338,7 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 	end
 
 	if levelText and not factionContainer.levelText then--等级
-		factionContainer.levelText= e.Cstr(factionContainer, 10, nil, nil, nil, nil, 'RIGHT')
+		factionContainer.levelText= e.Cstr(factionContainer, {size=10, justifyH='RIGHT'})--10, nil, nil, nil, nil, 'RIGHT')
 		factionContainer.levelText:SetPoint('RIGHT', factionContainer, 'LEFT',2,0)
 	end
 	if factionContainer.levelText then

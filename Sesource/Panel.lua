@@ -182,7 +182,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end)
             restButton:SetText('|cnRED_FONT_COLOR:'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT)..'|r')
 
-            local textTips= e.Cstr(panel, nil, nil, nil, nil, nil, 'CENTER')
+            local textTips= e.Cstr(panel, {justifyH='CENTER'})--nil, nil, nil, nil, nil, 'CENTER')
             textTips:SetPoint('TOP',-70,10)
             textTips:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '启用' or ENABLE)..'|r/|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE))
 

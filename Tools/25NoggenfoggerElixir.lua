@@ -30,7 +30,7 @@ end
 local function setCount()--设置数量
     local num = GetItemCount(button.itemID,nil,true,true)
     if num~=1 and not button.count then
-        button.count=e.Cstr(button,10,nil,nil,true)
+        button.count=e.Cstr(button, {size=10, color=true})--10,nil,nil,true)
         button.count:SetPoint('TOPRIGHT',-2,-2)
     end
     if button.count then
@@ -47,7 +47,7 @@ local function set_KEY()--设置捷键
         e.SetButtonKey(button, true, Save.KEY)
         if #Save.KEY==1 then
             if not button.KEY then
-                button.KEYstring=e.Cstr(button,10, nil, nil, true, 'OVERLAY')
+                button.KEYstring=e.Cstr(button, {size=10, color=true})--10, nil, nil, true, 'OVERLAY')
                 button.KEYstring:SetPoint('BOTTOMRIGHT', button.border, 'BOTTOMRIGHT',-4,4)
             end
             button.KEYstring:SetText(Save.KEY)

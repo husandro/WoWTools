@@ -128,7 +128,7 @@ local function set_BindLocation()--显示, 炉石, 绑定位置
         end
     end
     if not button.showBindNameText and text then
-        button.showBindNameText=e.Cstr(button, 10, nil, nil, true, nil, 'CENTER')
+        button.showBindNameText=e.Cstr(button, {size=10, color=true, justifyH='CENTER'})--10, nil, nil, true, nil, 'CENTER')
         button.showBindNameText:SetPoint('TOP', button, 'BOTTOM',0,5)
     end
     if button.showBindNameText then

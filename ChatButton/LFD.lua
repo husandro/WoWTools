@@ -97,7 +97,7 @@ local function setQueueStatus()--小眼睛, 信息
     local text=''
     if not Save.hideQueueStatus then
         if not button.tipsFrame then
-            button.tipsFrame=e.Cbtn(nil, nil, nil, nil, nil, true, {20,20})
+            button.tipsFrame=e.Cbtn(nil, {icon='hide', size={20,20}})
             if Save.tipsFramePoint then
                 button.tipsFrame:SetPoint(Save.tipsFramePoint[1], UIParent, Save.tipsFramePoint[3], Save.tipsFramePoint[4], Save.tipsFramePoint[5])
             else
@@ -123,8 +123,9 @@ local function setQueueStatus()--小眼睛, 信息
                 elseif d==-1 then
                     n=n-1
                 end
-                Save.tipsFrameTextSize= n>30 and 30 or n<6 and 6 or n
-                e.Cstr(nil, Save.tipsFrameTextSize, nil, self.text, true)
+                n= n>30 and 30 or n<6 and 6 or n
+                Save.tipsFrameTextSize= n
+                e.Cstr(nil, {size=n, changeFont=self.text, color=true})--Save.tipsFrameTextSize, nil, self.text, true)
                 print(id, addName, e.onlyChinese and '字体大小' or FONT_SIZE, '|cnGREEN_FONT_COLOR:'..Save.tipsFrameTextSize)
             end)
             button.tipsFrame:SetScript("OnMouseDown", function(self,d)
@@ -144,7 +145,7 @@ local function setQueueStatus()--小眼睛, 信息
                 e.tips:AddDoubleLine(id, addName)
                 e.tips:Show()
             end)
-            button.tipsFrame.text=e.Cstr(button.tipsFrame, Save.tipsFrameTextSize, nil, nil, true)
+            button.tipsFrame.text=e.Cstr(button.tipsFrame, {size=Save.tipsFrameTextSize, color=true})--Save.tipsFrameTextSize, nil, nil, true)
             button.tipsFrame.text:SetPoint('BOTTOMLEFT')
         end
 
@@ -656,7 +657,7 @@ local function setLFGDungeonReadyDialog(self)--自动进入FB LFGDungeonReadyDia
     end
     local afk=UnitIsAFK('player')
     if not self.infoText then
-        self.infoText=e.Cstr(self,nil, LFGDungeonReadyDialogInstanceInfoFrame.name, nil, true)
+        self.infoText=e.Cstr(self, {copyFont=LFGDungeonReadyDialogInstanceInfoFrame.name, color=true})--nil, LFGDungeonReadyDialogInstanceInfoFrame.name, nil, true)
         self.infoText:SetPoint('LEFT', self, 'RIGHT')
         self.infoText:SetJustifyH('LEFT')
         self.infoText:SetShadowOffset(2, -2)
@@ -752,8 +753,7 @@ local function setIslandButton(self)--离开海岛按钮
     end
     if find then
         if not self.island then
-            self.island = e.Cbtn(nil, true)
-            self.island:SetSize(50, 25)
+            self.island = e.Cbtn(nil, {type=false, size={50,25}})
             self.island:SetText(e.onlyChinese and '离开' or LEAVE)
             if Save.islandPoint then
                 self.island:SetPoint(Save.islandPoint[1], UIParent, Save.islandPoint[3], Save.islandPoint[4], Save.islandPoint[5])
@@ -970,7 +970,7 @@ local function Init()
                     text= isSelf and text2
                 end
                 if text and not itemFrame.upOrMogText then
-                    itemFrame.upOrMogText= e.Cstr(itemFrame, nil, nil, nil, {0,1,0})
+                    itemFrame.upOrMogText= e.Cstr(itemFrame, {color={r=0,g=1,b=0}})--nil, nil, nil, {0,1,0})
                     itemFrame.upOrMogText:SetPoint('BOTTOMRIGHT', itemFrame.Icon, 'BOTTOMRIGHT')
                 end
             end
@@ -1206,7 +1206,7 @@ local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
         end
 
         if m~='' and not button.RoleInfo then
-            button.RoleInfo=e.Cbtn(nil, nil, nil, nil, nil, true, {20,20})
+            button.RoleInfo=e.Cbtn(nil, {icon='hide', size={20,20}})
             if Save.RoleInfoPoint then
                 button.RoleInfo:SetPoint(Save.RoleInfoPoint[1], UIParent, Save.RoleInfoPoint[3], Save.RoleInfoPoint[4], Save.RoleInfoPoint[5])
             else

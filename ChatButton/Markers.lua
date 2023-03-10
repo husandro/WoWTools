@@ -165,7 +165,7 @@ local function setGroupReadyTips(event, arg1, arg2)
             end
         end
         if text~='' and not button.groupReadyTips then
-            button.groupReadyTips=e.Cbtn(nil, nil, nil, nil, nil, true,{20,20})
+            button.groupReadyTips=e.Cbtn(nil, {icon='hide', size={20,20}})
             if Save.groupReadyTipsPoint then
                 button.groupReadyTips:SetPoint(Save.groupReadyTipsPoint[1], UIParent, Save.groupReadyTipsPoint[3], Save.groupReadyTipsPoint[4], Save.groupReadyTipsPoint[5])
             else
@@ -364,7 +364,7 @@ local function setMarkersFrame()--设置标记, 框架
         end
 
         for index = 0, NUM_RAID_ICONS do
-            local btn=e.Cbtn(frame, nil, nil, nil, nil, true, {25,25})
+            local btn=e.Cbtn(frame, {icon='hide', size={25,25}})
             if Save.H then
                 btn:SetPoint('BOTTOMLEFT', last or frame, 'TOPLEFT')
             else
@@ -456,7 +456,7 @@ local function setMarkersFrame()--设置标记, 框架
     frame:SetShown(true)
 
     if not frame.check then--就绪
-        frame.check=e.Cbtn(frame, nil, nil, nil, nil, true, {25,25})
+        frame.check=e.Cbtn(frame, {icon='hide', size={25,25}})
         frame.check:SetNormalAtlas(e.Icon.select)
         if Save.H then
             frame.check:SetPoint('TOPLEFT')
@@ -474,7 +474,7 @@ local function setMarkersFrame()--设置标记, 框架
         end)
         frame.check:SetScript('OnLeave', function() e.tips:Hide() end)
 
-        frame.countdown=e.Cbtn(frame.check, nil, nil, nil, nil, true, {25,25})--倒计时10秒
+        frame.countdown=e.Cbtn(frame.check, {icon='hide', size={25,25}})--倒计时10秒
         frame.countdown:SetNormalAtlas('countdown-swords')
         if Save.H then
             frame.countdown:SetPoint('TOPRIGHT',frame.check, 'TOPLEFT')
@@ -554,7 +554,7 @@ local function setMarkersFrame()--设置标记, 框架
         local last
         local tab={5,6,3,2,7,1,4,8}
         for index=0,  NUM_WORLD_RAID_MARKERS do
-            local btn=e.Cbtn(frame2, nil, nil, true, nil, true, {25,25})
+            local btn=e.Cbtn(frame2, {type=true, icon='hide', size={25,25}})
             if Save.H then
                 btn:SetPoint('BOTTOMRIGHT', last or frame2, 'TOPRIGHT')
             else

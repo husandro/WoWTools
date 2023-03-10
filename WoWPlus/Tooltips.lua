@@ -5,15 +5,15 @@ local panel=CreateFrame("Frame")
 
 local function setInitItem(self, hide)--创建物品
     if not self.textLeft then--左上角字符
-        self.textLeft=e.Cstr(self, 16)
+        self.textLeft=e.Cstr(self, {size=16})
         self.textLeft:SetPoint('BOTTOMLEFT', self, 'TOPLEFT')
     end
     if not self.text2Left then--左上角字符2
-        self.text2Left=e.Cstr(self, 16)
+        self.text2Left=e.Cstr(self, {size=16})
         self.text2Left:SetPoint('LEFT', self.textLeft, 'RIGHT', 5, 0)
     end
     if not self.textRight then--右上角字符
-        self.textRight=e.Cstr(self, 10)
+        self.textRight=e.Cstr(self, {size=10})
         self.textRight:SetPoint('BOTTOMRIGHT', self, 'TOPRIGHT')
     end
     if not self.backgroundColor then--背景颜色
@@ -456,7 +456,7 @@ local function set_Unit_Health_Bar(self, unit)
         self.textLeft = e.Cstr(self)
         self.textLeft:SetPoint('TOPLEFT', self, 'BOTTOMLEFT')--生命条
         self.textLeft:SetJustifyH("LEFT");
-        self.textRight = e.Cstr(self,18)
+        self.textRight = e.Cstr(self, {size=18})
         self.textRight:SetPoint('TOPRIGHT',0,-2)--生命条
         --self.textRight:SetPoint('TOPRIGHT', self, 'BOTTOMRIGHT')--生命条
         self.textRight:SetJustifyH("Right");
@@ -1227,10 +1227,10 @@ local function Init_Panel()
         end
         panel.inCombatDefaultAnchor:SetEnabled(Save.setDefaultAnchor)
     end)
-    panel.Anchor.select=e.Cbtn(panel,true)
+    panel.Anchor.select=e.Cbtn(panel, {icon='hide', size={25,25}})
     panel.Anchor.select:SetPoint('LEFT', panel.Anchor.text, 'RIGHT',5,0)
-    panel.Anchor.select:SetSize(90, 25)
-    panel.Anchor.select:SetText(e.onlyChinese and '设置' or SETTINGS)
+    panel.Anchor.select:SetNormalAtlas('mechagon-projects')
+
     panel.Anchor.select:SetScript('OnMouseDown',function(self)
         if not self.frame then
             self.frame=CreateFrame('Frame')

@@ -1,6 +1,6 @@
 local id, e = ...
 local addName= ADDONS..CHAT_MODERATE
-local panel=e.Cbtn(AddonList, true, nil, nil, nil, true,{80,22})
+local panel=e.Cbtn(AddonList, {type=false, size={80,22}})
 
 local Save={
         buttons={
@@ -73,7 +73,7 @@ local function setButtons()--设置按钮, 和位置
         local num=getTabNumeri(tab)
         if num>0 then
             if not panel.buttons[name] then
-                panel.buttons[name]=e.Cbtn(panel, true, nil, nil, nil, true,{80,22})
+                panel.buttons[name]=e.Cbtn(panel, {type=false, size={80,22}})
                 panel.buttons[name]:SetScript('OnMouseDown',function(self, d)
                     if d=='LeftButton' then--加载
                         for i=1, GetNumAddOns() do
@@ -195,7 +195,7 @@ local function Init()
         end
         panel:SetEnabled(num~=0 and num~=all and not findButton)--新建按钮, 没有选定,或全选时, 禁用
         if not panel.text then
-            panel.text=e.Cstr(panel,16)
+            panel.text=e.Cstr(panel,{size=16})--16)
             panel.text:SetPoint('BOTTOM',panel, 'TOP',0,2)
         end
         panel.text:SetText(text)

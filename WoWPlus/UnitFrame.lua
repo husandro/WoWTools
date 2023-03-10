@@ -152,7 +152,7 @@ local function set_PlayerFrame()--PlayerFrame.lua
     end)
     PlayerCastingBarFrame:SetFrameStrata('TOOLTIP')--设置为， 最上层
     set_SetTextColor(PlayerCastingBarFrame.Text, e.Player.r, e.Player.g, e.Player.b)--颜色
-    PlayerCastingBarFrame.castingText= e.Cstr(PlayerCastingBarFrame, nil, nil, nil, {e.Player.r, e.Player.g, e.Player.b}, nil, 'RIGHT')
+    PlayerCastingBarFrame.castingText= e.Cstr(PlayerCastingBarFrame, {color={r=e.Player.r, g=e.Player.g, b=e.Player.b}, justifyH='RIGHT'})
     PlayerCastingBarFrame.castingText:SetDrawLayer('OVERLAY', 2)
     PlayerCastingBarFrame.castingText:SetPoint('RIGHT', PlayerCastingBarFrame.ChargeFlash, 'RIGHT')
     PlayerCastingBarFrame:HookScript('OnUpdate', function(self, elapsed)--玩家, 施法, 时间
@@ -417,7 +417,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
             self.classTexture:AddMaskTexture(self.mask)
 
             if not unit:find('boss') and self.unit~='player' then
-                self.itemLevel= e.Cstr(self, 12)--装等
+                self.itemLevel= e.Cstr(self, {size=12})--装等
                 if unit=='target' or unit=='focus' then
                     self.itemLevel:SetPoint('TOPLEFT', self.classTexture, 'TOPRIGHT')
                 else
@@ -448,7 +448,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                 portrait:SetPoint('CENTER')
                 portrait:SetSize(20,20)
                 portrait:SetVertexColor(r,g,b,1)
-                self.instanceFrame2.text= e.Cstr(self.instanceFrame2,8)
+                self.instanceFrame2.text= e.Cstr(self.instanceFrame2, {size=8})
                 self.instanceFrame2.text:SetPoint('TOP')
 
                 self.instanceFrame= CreateFrame("Frame", nil, self)--副本, 地下城，指示
@@ -616,7 +616,7 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
     CompactPartyFrame.title:SetText('')
     CompactPartyFrame.title:Hide()
     --新建, 移动, 按钮
-    CompactPartyFrame.moveFrame= e.Cbtn(CompactPartyFrame, nil, true, nil, nil, nil, {20,20})
+    CompactPartyFrame.moveFrame= e.Cbtn(CompactPartyFrame, {icon=true, size={20,20}})
     --CompactPartyFrame.moveFrame:SetFrameStrata('MEDIUM')
     CompactPartyFrame.moveFrame:SetAlpha(0.3)
     CompactPartyFrame.moveFrame:SetPoint('TOP', CompactPartyFrame, 'TOP',0, 10)
@@ -795,7 +795,7 @@ local function set_RaidFrame()--设置,团队
     CompactRaidFrameContainer:SetClampedToScreen(true)
     CompactRaidFrameContainer:SetMovable(true)
 
-    CompactRaidFrameContainer.moveFrame= e.Cbtn(CompactRaidFrameContainer, nil, true, nil, nil, nil, {20,20})
+    CompactRaidFrameContainer.moveFrame= e.Cbtn(CompactRaidFrameContainer, {icon=true, size={20,20}})
     CompactRaidFrameContainer.moveFrame:SetAlpha(0.3)
     CompactRaidFrameContainer.moveFrame:SetPoint('TOPRIGHT', CompactRaidFrameContainer, 'TOPLEFT',-2, -13)
     CompactRaidFrameContainer.moveFrame:SetClampedToScreen(true)
@@ -846,7 +846,7 @@ local function set_RaidFrame()--设置,团队
 
 
     --团体, 管理, 缩放
-    CompactRaidFrameManager.sacleFrame= e.Cbtn(CompactRaidFrameManager, nil, true, nil, nil, nil, {15,15})
+    CompactRaidFrameManager.sacleFrame= e.Cbtn(CompactRaidFrameManager, {icon=true, size={15,15}})
     CompactRaidFrameManager.sacleFrame:SetPoint('RIGHT', CompactRaidFrameManagerDisplayFrameRaidMemberCountLabel, 'LEFT')
     CompactRaidFrameManager.sacleFrame:SetAlpha(0.5)
     CompactRaidFrameManager.sacleFrame:SetScript("OnMouseDown", function(self, d)
@@ -954,7 +954,7 @@ local function Init()
             if elapsedValue>0.5 then
                 if self.value then
                     if not self.valueText then
-                        self.valueText=e.Cstr(self,nil,nil,nil,nil,nil,'RIGHT')
+                        self.valueText=e.Cstr(self, {justifyH='RIGHT'})
                         self.valueText:SetPoint('BOTTOMRIGHT',-7, 4)
                     end
                     self.valueText:SetText(format('%i', self.value))
@@ -981,7 +981,7 @@ local function Init()
             if unit then
                 speed= GetUnitSpeed(unit)--PlayerFrame.unit
                 if speed and not self.speedText then
-                    self.speedText= e.Cstr(self, 12)
+                    self.speedText= e.Cstr(self, {size=12})
                     self.speedText:SetPoint('TOP', self, 'TOP')
                 end
             end

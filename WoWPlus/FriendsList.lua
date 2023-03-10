@@ -37,7 +37,7 @@ local function set_QuinkJoin_Init()--快速加入, 初始化
                 end
 
                 if not frame.chat then--悄悄话
-                    frame.chat=e.Cbtn(frame, nil, nil, nil, nil, true, {20,20})
+                    frame.chat=e.Cbtn(frame, {icon='hide', size={20,20}})
                     frame.chat:SetPoint('RIGHT', (frame.Icon or frame), 'LEFT')
                     frame.chat:SetScript('OnMouseDown',function()
                         local player=frame.Members[1].playerLink

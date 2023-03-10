@@ -547,7 +547,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
                 button=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
-                button.textFrame=e.Cbtn(WoWToolsChatButtonFrame, nil, nil, nil, nil, true, {20,20})
+                button.textFrame=e.Cbtn(WoWToolsChatButtonFrame, {icon='hide', size={20,20}})
                 if WoWToolsSave and not WoWToolsSave[addName] then
                     button.textFrame:SetButtonState('PUSHED')
                 end

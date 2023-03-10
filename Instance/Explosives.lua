@@ -152,7 +152,7 @@ local function set_Button()
         return
     end
     if not button then
-        button= e.Cbtn(nil, nil, nil, nil, nil, true, {35,35})
+        button= e.Cbtn(nil, {icon='hide', size={35,35}})
         if Save.point then
             button:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
         else
@@ -195,7 +195,7 @@ local function set_Button()
         end)
         button:SetScript('OnLeave', function() e.tips:Hide() ResetCursor() end)
 
-        button.count= e.Cstr(button, 32, nil, nil, {1,1,1}, nil, 'CENTER')
+        button.count= e.Cstr(button, {size=32, color={r=1,g=1,b=1}, justifyH='CENTER'})--32, nil, nil, {1,1,1}, nil, 'CENTER')
         button.count:SetPoint('CENTER')
 
         button.Menu=CreateFrame("Frame",nil, button, "UIDropDownMenuTemplate")

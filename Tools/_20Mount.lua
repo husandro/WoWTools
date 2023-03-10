@@ -75,7 +75,7 @@ local function setKEY()--设置捷键
         e.SetButtonKey(button, true, Save.KEY)
         if #Save.KEY==1 then
             if not button.KEY then
-                button.KEYstring=e.Cstr(button,10, nil, nil, true, 'OVERLAY')
+                button.KEYstring=e.Cstr(button,{size=10, color=true})--10, nil, nil, true, 'OVERLAY')
                 button.KEYstring:SetPoint('BOTTOMRIGHT', button.border, 'BOTTOMRIGHT',-4,4)
             end
             button.KEYstring:SetText(Save.KEY)
@@ -841,7 +841,7 @@ local function setMountJournal_InitMountButton(self, elementData)--Blizzard_Moun
         end
     end
     if text and not self.text then
-        self.text=e.Cstr(self, nil, self.name, nil,nil,nil,'RIGHT')--self, size, fontType, ChangeFont, color, layer, justifyH)
+        self.text=e.Cstr(self, {copyFont=self.name, justifyH='RIGHT'})--nil, self.name, nil,nil,nil,'RIGHT')
         self.text:SetPoint('RIGHT')
         self.text:SetFontObject('GameFontNormal')
         self.text:SetAlpha(0.3)

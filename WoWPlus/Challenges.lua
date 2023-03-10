@@ -269,7 +269,6 @@ local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     end
 
     local sel2=CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")--插入, KEY时, 说
-    --e.Cstr=function(self, size, fontType, ChangeFont, color, layer, justifyH)
     if not frame.DungeonName and not e.onlyChinese then
         e.Cstr(nil,nil,frame.DungeonName, sel2.text)
     end
@@ -760,7 +759,7 @@ local function Cur(self)--货币数量
                         GameTooltip:Hide()
                 end)
 
-                self['cur'..k].text=e.Cstr(self['cur'..k], 10)
+                self['cur'..k].text=e.Cstr(self['cur'..k], {size=10})
                 self['cur'..k].text:SetPoint('RIGHT', self['cur'..k], 'LEFT', 0, 0)
                 self['cur'..k].text:SetJustifyH('RIGHT')
             end
@@ -820,7 +819,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                 local name = C_ChallengeMode.GetMapUIInfo(frame.mapID)--名称                        
                 if name then
                     if not frame.nameStr then
-                        frame.nameStr=e.Cstr(frame,10)
+                        frame.nameStr=e.Cstr(frame, {size=10})
                         frame.nameStr:SetPoint('BOTTOM',frame, 'TOP', 0,0)
                     end
                     name=name:match('%((.+)%)') or name
@@ -838,7 +837,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                 local affixScores, overAllScore = C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(frame.mapID)
                 if(overAllScore and inTimeInfo or overtimeInfo) then
                     if not frame.sc then--分数
-                        frame.sc=e.Cstr(frame, 10)
+                        frame.sc=e.Cstr(frame, {size=10})
                         frame.sc:SetPoint('CENTER', 0,-3)
                         if frame.HighestLevel then--移动层数位置
                             frame.HighestLevel:ClearAllPoints()

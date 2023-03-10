@@ -223,7 +223,7 @@ local function Init()
                             size=10
                         end
                     end
-                    buttons[tab.spell].name=e.Cstr(buttons[tab.spell], size, nil, nil, true, nil,'CENTER')
+                    buttons[tab.spell].name=e.Cstr(buttons[tab.spell], {size=size, color=true, justifyH='CENTER'})--size, nil, nil, true, nil,'CENTER')
                 end
                 buttons[tab.spell].name:SetPoint('CENTER',0,-5)
                 buttons[tab.spell].name:SetText(name)

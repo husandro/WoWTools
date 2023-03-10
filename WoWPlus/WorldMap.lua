@@ -35,7 +35,7 @@ local function set_WorldQuestPinMixin_RefreshVisuals(self)----WorldQuestDataProv
     self.Texture:SetTexture(itemTexture)
     self.Texture:SetSize(45, 45)
     if not self.str then
-        self.str=e.Cstr(self,26)
+        self.str=e.Cstr(self, {size=26})
         self.str:SetPoint('TOP', self, 'BOTTOM', 0, 0)
     end
 
@@ -256,7 +256,7 @@ local function CursorPositionInt()
         end
         return
     end
-    frame.playerPostionBtn= e.Cbtn(nil, nil, nil,nil,nil,true,{12,12})-- CreateFrame('Button', nil, UIParent)--实时玩家当前坐标
+    frame.playerPostionBtn= e.Cbtn(nil, {icon=true, size={12,12}})-- CreateFrame('Button', nil, UIParent)--实时玩家当前坐标
     if not Save.PlayerXYPoint then
         frame.playerPostionBtn:SetPoint('BOTTOMRIGHT', frame, 'TOPRIGHT',-50, 5)
     else
@@ -315,11 +315,11 @@ local function CursorPositionInt()
             size= size<8 and 8 or size
         end
         Save.PlayerXYSize=size
-        e.Cstr(nil, size, nil, self.Text)
+        e.Cstr(nil, {size=size, changeFont=self.Text})
         print(id,addName, e.onlyChinese and '大小' or FONT_SIZE, size)
     end)
 
-    frame.playerPostionBtn.Text=e.Cstr(frame.playerPostionBtn, Save.PlayerXYSize)
+    frame.playerPostionBtn.Text=e.Cstr(frame.playerPostionBtn, {size=Save.PlayerXYSize})
     frame.playerPostionBtn.Text:SetPoint('RIGHT')
 
     local timeElapsed = 0
@@ -428,7 +428,7 @@ local function setMapIDText(self)
                 end
             end
             if not self.mapInfoBtn.mapID then--字符
-                self.mapInfoBtn.mapID=e.Cstr(self.BorderFrame.TitleContainer, nil, WorldMapFrameTitleText)
+                self.mapInfoBtn.mapID=e.Cstr(self.BorderFrame.TitleContainer, {copyFont=WorldMapFrameTitleText})
                 self.mapInfoBtn.mapID:SetPoint('RIGHT', self.mapInfoBtn, 'LEFT')
             end
         end
@@ -444,15 +444,13 @@ end
 
 local function set_Map_ID(self)--显示地图ID
     if not self.mapInfoBtn then
-        self.mapInfoBtn=e.Cbtn(self.BorderFrame.TitleContainer)
+        self.mapInfoBtn=e.Cbtn(self.BorderFrame.TitleContainer, {icon='hide', size={22,22}})
         if IsAddOnLoaded('Mapster') then
             self.mapInfoBtn:SetPoint('RIGHT', self.BorderFrame.TitleContainer, 'RIGHT', -140,0)
         else
             self.mapInfoBtn:SetPoint('RIGHT', self.BorderFrame.TitleContainer, 'RIGHT', -50,0)
         end
-
         self.mapInfoBtn:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.map)
-        self.mapInfoBtn:SetSize(22,22)
         self.mapInfoBtn:RegisterForClicks("LeftButtonUp", "RightButtonUp")
         self.mapInfoBtn:SetScript('OnEnter', setOnEnter)
         self.mapInfoBtn:SetScript('OnLeave', function() e.tips:Hide() end)
@@ -477,9 +475,8 @@ local function set_Map_ID(self)--显示地图ID
     end
 
     if not self.playerPosition then--玩家坐标
-        self.playerPosition=e.Cbtn(self.BorderFrame.TitleContainer)
+        self.playerPosition=e.Cbtn(self.BorderFrame.TitleContainer, {icon='hide', size={22,22}})
         self.playerPosition:SetPoint('LEFT', self.BorderFrame.TitleContainer, 'LEFT', 75, -2)
-        self.playerPosition:SetSize(22, 22)
         self.playerPosition:SetNormalAtlas(e.Icon.player:match('|A:(.-):'))
         self.playerPosition:RegisterForClicks("LeftButtonUp", "RightButtonUp")
         self.playerPosition:SetScript('OnLeave', function() e.tips:Hide() end)
@@ -502,7 +499,7 @@ local function set_Map_ID(self)--显示地图ID
                 sendPlayerPoint()--发送玩家位置
             end
         end)
-        self.playerPosition.Text=e.Cstr(self.playerPosition, nil ,WorldMapFrameTitleText)--玩家当前坐标
+        self.playerPosition.Text=e.Cstr(self.playerPosition, {copyFont=WorldMapFrameTitleText})--玩家当前坐标
         self.playerPosition.Text:SetPoint('LEFT',self.playerPosition, 'RIGHT')
         local timeElapsed2=0
         self.playerPosition:HookScript("OnUpdate", function (self2, elapsed)
@@ -522,34 +519,6 @@ local function set_Map_ID(self)--显示地图ID
                 self.playerPosition.Text:SetText(text)
             end
         end)
---[[
-        --####
-        --缩放
-        --####
-        self.ZoomIn= e.Cbtn(self.playerPosition, nil, nil, nil, nil, true, {18,18})--放大
-        self.ZoomIn:SetAlpha(0.3)
-        self.ZoomIn:SetPoint('RIGHT',self.playerPosition, 'LEFT', -2, 0)
-        self.ZoomIn:SetNormalAtlas('UI-HUD-Minimap-Zoom-In')
-        self.ZoomIn:SetScript('OnMouseDown', function(s)
-            local n= Save.scale or 1
-            n= n+ 0.05
-            n= n>2 and 2 or n
-            Save.scale=n
-            WorldMapFrame:SetScale(n)
-            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, n)
-        end)
-        self.ZoomOut= e.Cbtn(self.playerPosition, nil, nil, nil, nil, true, {18,18})--缩小
-        self.ZoomOut:SetPoint('RIGHT',self.ZoomIn, 'LEFT')
-        self.ZoomOut:SetAlpha(0.3)
-        self.ZoomOut:SetNormalAtlas('UI-HUD-Minimap-Zoom-Out')
-        self.ZoomOut:SetScript('OnMouseDown', function(s)
-            local n= Save.scale or 1
-            n= n- 0.05
-            n= n< 0.5 and 0.5 or n
-            Save.scale=n
-            WorldMapFrame:SetScale(n)
-            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, n)
-        end)]]
     end
 
     setMapIDText(self)
@@ -602,7 +571,7 @@ local function set_AreaPOIPinMixin_OnAcquired(poiInfo)--地图POI提示 AreaPOID
     end
 
     if t~='' and not poiInfo.Str then
-        poiInfo.Str=e.Cstr(poiInfo, 10, nil, nil, nil, nil, 'CENTER')
+        poiInfo.Str=e.Cstr(poiInfo, {size=10, justifyH='CENTER'})
         poiInfo.Str:SetPoint('BOTTOM', poiInfo, 'TOP', 0, -3)
     end
 

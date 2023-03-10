@@ -921,11 +921,11 @@ local function frame_Init(rest)--初始， 或设置
             if not frame then
                 frame= CreateFrame('Frame', nil, button.frame)
 
-                frame.label= e.Cstr(frame, nil, nil, nil, {info.r,info.g,info.b,info.a}, nil)
+                frame.label= e.Cstr(frame, {color={r=info.r, g=info.g,b=info.b, a=info.a}})--nil, nil, nil, {info.r,info.g,info.b,info.a}, nil)
                 frame.label:EnableMouse(true)
                 frame.label:SetScript('OnLeave', function() e.tips:Hide() end)
 
-                frame.text= e.Cstr(frame, nil, nil, nil, {1,1,1}, nil, Save.toLeft and 'RIGHT' or 'LEFT')
+                frame.text= e.Cstr(frame, {color={r=1,g=1,b=1}, justifyH= Save.toLeft and 'RIGHT'})--nil, nil, nil, {1,1,1}, nil, Save.toLeft and 'RIGHT' or 'LEFT')
                 frame.text:EnableMouse(true)
                 frame.text:SetScript('OnLeave', function() e.tips:Hide() end)
 
@@ -1178,7 +1178,7 @@ local function set_Panle_Setting()--设置 panel
         end)
         check:SetScript('OnLeave', function(self) e.tips:Hide() end)
 
-        local text= e.Cstr(panel, nil, nil, nil, {r,g,b,a})--Text
+        local text= e.Cstr(panel, {r=r,g=g,b=b,a=a})--nil, nil, nil, {r,g,b,a})--Text
         text:SetPoint('LEFT', check, 'RIGHT')
         text:SetText(info.text)
         if index>1 then
@@ -1303,7 +1303,7 @@ local function set_Panle_Setting()--设置 panel
 
 
 
-    local text= e.Cstr(panel,26)--Text
+    local text= e.Cstr(panel, {size=26})--26)--Text
     text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
     text:SetText(e.onlyChinese and '阴影' or SHADOW_QUALITY:gsub(QUALITY , ''))
     text:EnableMouse(true)
@@ -1373,7 +1373,7 @@ local function set_Panle_Setting()--设置 panel
         frame_Init(true)--初始， 或设置
     end)
 
-    local textColor= e.Cstr(panel, 20)--数值text, 颜色
+    local textColor= e.Cstr(panel, {size=20})--20)--数值text, 颜色
     textColor:SetPoint('LEFT', notTextCheck.text,'RIGHT', 5, 0)
     textColor:EnableMouse(true)
     textColor:SetScript('OnLeave', function(self) e.tips:Hide() end)
@@ -1454,7 +1454,7 @@ local function set_Panle_Setting()--设置 panel
             end)
         end
     end)
-    panel.barGreenColor= e.Cstr(panel, 20)
+    panel.barGreenColor= e.Cstr(panel, {size=20})--20)
     panel.barGreenColor:SetPoint('LEFT', barValueText.text,'RIGHT', 2, 0)
     panel.barGreenColor:EnableMouse(true)
     panel.barGreenColor:SetScript('OnLeave', function(self) e.tips:Hide() end)
@@ -1481,7 +1481,7 @@ local function set_Panle_Setting()--设置 panel
         end)
     end)
 
-    panel.barRedColor= e.Cstr(panel, 20)
+    panel.barRedColor= e.Cstr(panel, {size=20})--20)
     panel.barRedColor:SetPoint('LEFT', panel.barGreenColor,'RIGHT', 2, 0)
     panel.barRedColor:EnableMouse(true)
     panel.barRedColor:SetScript('OnLeave', function(self) e.tips:Hide() end)
@@ -1637,7 +1637,7 @@ local function set_Panle_Setting()--设置 panel
         button.frame:SetScale(value)
     end)
 
-    local restButton= e.Cbtn(panel, true, nil, nil, nil, nil, {20,20})--重置
+    local restButton= e.Cbtn(panel, {type=false, size={20,20}})--重置
     restButton:SetNormalAtlas('bags-button-autosort-up')
     restButton:SetPoint("TOPRIGHT")
     restButton:SetScript('OnMouseUp', function()
@@ -1659,7 +1659,7 @@ end
 --初始
 --####
 local function Init()
-    button= e.Cbtn(nil, nil, nil, nil, nil, true, {18,18})
+    button= e.Cbtn(nil, {icon='hide', size={18,18}})
 
     button:SetFrameLevel(button:GetFrameLevel()+5)
     button.texture= button:CreateTexture(nil, 'BORDER')

@@ -8,7 +8,7 @@ local function setMembers()--在线人数
     local num = select(2, GetNumGuildMembers())
     num = (num and num>1) and num-1 or nil
     if not button.membersText and num then
-        button.membersText=e.Cstr(button, 10, nil, nil, true, nil, 'CENTER')
+        button.membersText=e.Cstr(button, {size=10, color=true, justifyH='CENTER'})-- 10, nil, nil, true, nil, 'CENTER')
         button.membersText:SetPoint('BOTTOM', 0, 7)
     end
     if button.membersText then
@@ -107,7 +107,7 @@ local function Init()
     end)
 
     if CanReplaceGuildMaster() then--弹劾
-        button.canReplaceGuildMaster=e.Cstr(button, 10, nil, nil, true, nil, 'CENTER')
+        button.canReplaceGuildMaster=e.Cstr(button, {size=10, color=true, justifyH='CENTER'})--10, nil, nil, true, nil, 'CENTER')
         button.canReplaceGuildMaster:SetPoint('TOP')
         button.canReplaceGuildMaster:SetText('|cnGREEN_FONT_COLOR:'..GUILD_IMPEACH_POPUP_CONFIRM..'|r')
     end

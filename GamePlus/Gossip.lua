@@ -11,8 +11,8 @@ local Save={
         questOption={},
 }
 
-local panel=e.Cbtn(nil, nil,nil,nil,nil, true, {15,15});--闲话图标
-local questPanel=e.Cbtn(panel, nil,nil,nil,nil, true, {15,15});--任务图标
+local panel=e.Cbtn(nil, {icon='hide', size={15,15}});--闲话图标
+local questPanel=e.Cbtn(panel, {icon='hide', size={15,15}});--任务图标
 local questSelect={}--已选任务, 提示用
 
 local function setTexture()--设置图标
@@ -687,7 +687,7 @@ local function Init_Quest()
         set_Auto_QuestWatch_Event()
     end
 
-    questPanel.Text=e.Cstr(questPanel, nil, nil,nil, nil,nil, 'RIGHT')--任务数量
+    questPanel.Text=e.Cstr(questPanel, {justifyH='RIGHT'})--nil, nil,nil, nil,nil, 'RIGHT')--任务数量
     questPanel.Text:SetPoint('RIGHT', questPanel, 'LEFT')
     questPanel:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then

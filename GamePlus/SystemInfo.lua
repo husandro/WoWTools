@@ -4,72 +4,20 @@ local Save={
     equipmetLevel=true,
     durabiliy=true,
     moneyWoW=true,
-   -- classColor= e.Player.husandro,--使用职业颜色
 }
 
-local panel=e.Cbtn(nil, nil, nil,nil,nil,true,{12,12})
-panel.fpsms=e.Cstr(panel, Save.size)--fpsms
-panel.money=e.Cstr(panel, Save.size)--钱
-panel.durabiliy=e.Cstr(panel, Save.size)--耐久度
-panel.equipmentLevel=e.Cstr(panel, Save.size)--装等
-panel.fpsmsFrame=CreateFrame("Frame",nil, panel)--fps,ms,框架
-panel.fpsmsFrame:SetShown(false)
-
+local button=e.Cbtn(nil, {icon='hide',size={12,12}})
 local equipmentLevelIcon= ''
 
 local function set_Text_Size_Color()
-    e.Cstr(nil, Save.size, nil , panel.fpsms, true)
-    e.Cstr(nil, Save.size, nil , panel.money, true)
-    e.Cstr(nil, Save.size, nil , panel.durabiliy, true)
-    e.Cstr(nil, nil, nil , panel.equipmentLevel, true)
-end
---[[
-local function set_Class_Color()
-    local buttons = {
-        'CharacterMicroButton',--菜单
-        'SpellbookMicroButton',
-        'TalentMicroButton',
-        'AchievementMicroButton',
-        'QuestLogMicroButton',
-        'GuildMicroButton',
-        'LFDMicroButton',
-        'EJMicroButton',
-        'CollectionsMicroButton',
-        'MainMenuMicroButton',
-        'HelpMicroButton',
-        'StoreMicroButton',
-        --'MainMenuBarBackpackButton',--背包
-    }
-    for _, frame in pairs(buttons) do
-        frame=_G[frame]
-        if frame and frame:IsEnabled() then
-            if Save.classColor then
-                frame:GetNormalTexture():SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
-            else
-                frame:GetNormalTexture():SetVertexColor(1, 1, 1)
-            end
-        end
+    e.Cstr(nil, {size=Save.size, changeFont=button.fpsms, color=true})--Save.size, nil , button.fpsms, true)
+    e.Cstr(nil, {size=Save.size, changeFont=button.money, color=true})--, nil , button.money, true)
+    e.Cstr(nil, {size=Save.size, changeFont=button.durabiliy, color=true})-- Save.size, nil , button.durabiliy, true)
+    if not Save.notEquipmentLevelChangeSize then
+        e.Cstr(nil, {size=Save.size, changeFont=button.equipmentLevel, color=true})--nil, nil , button.equipmentLevel, true)
     end
+end
 
-    C_Timer.After(2, function()-- ContainerFrame.lua NUM_REAGENTBAG_FRAMES = Constants.InventoryConstants.NumReagentBagSlots;
-        buttons={
-            'CharacterBag1Slot',
-            'CharacterBag2Slot',
-            'CharacterBag3Slot',
-            'CharacterBag0Slot',
-            'CharacterReagentBag0Slot',
-        }
-        for _, frame in pairs(buttons) do
-            frame=_G[frame]
-            if frame and frame:IsEnabled() then
-                if Save.classColor then
-                    frame:GetNormalTexture():SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
-                else
-                    frame:GetNormalTexture():SetVertexColor(1, 1, 1)
-                end
-            end
-        end
-    end)]]
 
 local function setMoney()
     local money=0
@@ -84,21 +32,21 @@ local function setMoney()
     end
     if money>=10000 then
         if e.Player.useColor then
-            panel.money:SetText(e.MK(money/1e4, 3)..'|TInterface/moneyframe/ui-goldicon:8|t')
+            button.money:SetText(e.MK(money/1e4, 3)..'|TInterface/moneyframe/ui-goldicon:8|t')
         else
-            panel.money:SetText(e.MK(money/1e4, 3)..'|TInterface/moneyframe/ui-silvericon:8|t')
+            button.money:SetText(e.MK(money/1e4, 3)..'|TInterface/moneyframe/ui-silvericon:8|t')
         end
     else
-        panel.money:SetText(GetMoneyString(money,true))
+        button.money:SetText(GetMoneyString(money,true))
     end
 end
 local function set_Money_Event()--设置, 钱, 事件
     if Save.money then
-        panel:RegisterEvent('PLAYER_MONEY')
+        button:RegisterEvent('PLAYER_MONEY')
         setMoney()
     else
-        panel:UnregisterEvent('PLAYER_MONEY')
-        panel.money:SetText('')
+        button:UnregisterEvent('PLAYER_MONEY')
+        button.money:SetText('')
     end
 end
 
@@ -127,7 +75,7 @@ local function setDurabiliy(re)
         du=du..'|T132281:8|t';
     end
     if not re then
-        panel.durabiliy:SetText(du)
+        button.durabiliy:SetText(du)
     else
         return du or ''
     end
@@ -142,35 +90,35 @@ local function setEquipmentLevel()--角色图标显示装等
         end
         text=text..equipmentLevelIcon
     end
-    panel.equipmentLevel:SetText(text or '')
+    button.equipmentLevel:SetText(text or '')
 end
 local function set_Durabiliy_EquipLevel_Event()--设置装等,耐久度,事件
     if Save.equipmetLevel or Save.durabiliy then
-        panel:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
+        button:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
     else
-        panel:UnregisterEvent('PLAYER_EQUIPMENT_CHANGED')
+        button:UnregisterEvent('PLAYER_EQUIPMENT_CHANGED')
     end
 
     if Save.equipmetLevel then
         C_Timer.After(2, setEquipmentLevel) --角色图标显示装等  
     else
-        panel.equipmentLevel:SetText('')
+        button.equipmentLevel:SetText('')
     end
 
     if Save.durabiliy then
-        panel:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
+        button:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
         setDurabiliy()
     else
-        panel:UnregisterEvent("UPDATE_INVENTORY_DURABILITY")
-        panel.durabiliy:SetText('')
+        button:UnregisterEvent("UPDATE_INVENTORY_DURABILITY")
+        button.durabiliy:SetText('')
     end
 end
 
 local function set_Point()--设置位置
     if Save.point then
-        panel:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
+        button:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
     else
-        panel:SetPoint('BOTTOMRIGHT',-24, 0)
+        button:SetPoint('BOTTOMRIGHT',-24, 0)
     end
 end
 
@@ -189,11 +137,11 @@ end
 
 local timeElapsed = 0
 local function set_Fps_Ms()--设置, fps, ms, 数值
-    panel.fpsmsFrame:SetShown(not Save.hideFpsMs)
+    button.fpsmsFrame:SetShown(not Save.hideFpsMs)
     if not Save.hideFpsMs then
         timeElapsed=0
     else
-        panel.fpsms:SetText('')
+        button.fpsms:SetText('')
     end
 end
 
@@ -304,7 +252,7 @@ local function InitMenu(self, level, type)--主菜单
             notCheckable=true,
             func= function()
                 Save.point=nil
-                panel:ClearAllPoints()
+                button:ClearAllPoints()
                 set_Point()--设置位置
             end
         }
@@ -325,46 +273,48 @@ end
 --######
 local function Init()
     set_Point()--设置位置
-    panel:SetHighlightAtlas(e.Icon.highlight)
-    panel:SetPushedAtlas(e.Icon.pushed)
-    panel:SetFrameStrata('HIGH')
+    button:SetHighlightAtlas(e.Icon.highlight)
+    button:SetPushedAtlas(e.Icon.pushed)
+    button:SetFrameStrata('HIGH')
 
-    panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
-    UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
+    button.Menu=CreateFrame("Frame",nil, button, "UIDropDownMenuTemplate")
+    UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
-    panel.fpsms:SetPoint('BOTTOMRIGHT')
-    panel.money:SetPoint('BOTTOMRIGHT', panel.fpsms, 'BOTTOMLEFT', -4, 0)
-    panel.durabiliy:SetPoint('BOTTOMRIGHT', panel.money, 'BOTTOMLEFT', -4, 0)
+    button.fpsms:SetPoint('BOTTOMRIGHT')
+    button.money:SetPoint('BOTTOMRIGHT', button.fpsms, 'BOTTOMLEFT', -4, 0)
+    button.durabiliy:SetPoint('BOTTOMRIGHT', button.money, 'BOTTOMLEFT', -4, 0)
     if CharacterMicroButton and CharacterMicroButton:IsVisible() then
-        panel.equipmentLevel:SetPoint('BOTTOM', CharacterMicroButton)
+        button.equipmentLevel:SetPoint('BOTTOM', CharacterMicroButton)
+        button.equipmentLevel:SetParent(CharacterMicroButton)
+        Save.notEquipmentLevelChangeSize=true
     else
-        panel.equipmentLevel:SetPoint('BOTTOMRIGHT', panel.durabiliy, 'BOTTOMLEFT', -4, 0)
+        button.equipmentLevel:SetPoint('BOTTOMRIGHT', button.durabiliy, 'BOTTOMLEFT', -4, 0)
         equipmentLevelIcon= UnitSex('player')==2 and '|A:charactercreate-gendericon-male:0:0|a' or  '|A:charactercreate-gendericon-female:0:0|a'--e.Icon.player--'|T1030900:0|t'--'|A:charactercreate-icon-customize-torso-selected:0:0|a'
     end
-    panel.fpsmsFrame:SetPoint('RIGHT')
-    panel.fpsmsFrame:SetSize(1,1)
+    button.fpsmsFrame:SetPoint('RIGHT')
+    button.fpsmsFrame:SetSize(1,1)
 
-    panel:SetMovable(true)
-    panel:RegisterForDrag("RightButton");
-    panel:SetClampedToScreen(true);
-    panel:SetScript("OnDragStart", function(self2, d)
+    button:SetMovable(true)
+    button:RegisterForDrag("RightButton");
+    button:SetClampedToScreen(true);
+    button:SetScript("OnDragStart", function(self2, d)
         if d=='RightButton' then
             SetCursor('UI_MOVE_CURSOR')
             self2:StartMoving()
             CloseDropDownMenus()
         end
     end)
-    panel:SetScript("OnDragStop", function(self2)
+    button:SetScript("OnDragStop", function(self2)
         self2:StopMovingOrSizing()
         Save.point={self2:GetPoint(1)}
         ResetCursor()
         set_Text_Size_Color()
     end)
-    panel:SetScript("OnMouseUp", function(self2,d)
+    button:SetScript("OnMouseUp", function(self2,d)
         ResetCursor()
     end)
 
-    panel:SetScript('OnMouseWheel',function(self, d)
+    button:SetScript('OnMouseWheel',function(self, d)
         if IsModifierKeyDown() then
             return
         end
@@ -381,18 +331,18 @@ local function Init()
         print(id, addName, e.onlyChinese and '字体大小' or FONT_SIZE,'|cnGREEN_FONT_COLOR:'..size)
     end)
 
-    panel:SetScript('OnMouseDown', function(self, d)
+    button:SetScript('OnMouseDown', function(self, d)
         if d=='RightButton' then--移动光标
             SetCursor('UI_MOVE_CURSOR')
         else
             ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
         end
     end)
-    panel:SetScript('OnLeave', function (self)
+    button:SetScript('OnLeave', function (self)
         self:SetButtonState('NORMAL')
     end)
 
-    panel.fpsmsFrame:HookScript("OnUpdate", function (self, elapsed)--fpsms
+    button.fpsmsFrame:HookScript("OnUpdate", function (self, elapsed)--fpsms
         timeElapsed = timeElapsed + elapsed
         if timeElapsed > 0.4 then
             timeElapsed = 0
@@ -413,9 +363,10 @@ local function Init()
                 end
                 t=t..'ms  '..r..'fps'
             end
-            panel.fpsms:SetText(t)
+            button.fpsms:SetText(t)
         end
     end)
+
 
     set_Text_Size_Color()
     if Save.money then--设置,钱,事件
@@ -428,13 +379,13 @@ local function Init()
     end
 end
 
-panel:RegisterEvent("ADDON_LOADED")
+button:RegisterEvent("ADDON_LOADED")
 
-panel:SetScript("OnEvent", function(self, event, arg1)
+button:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             if WoWToolsSave and not WoWToolsSave[addName] then
-                panel:SetButtonState('PUSHED')
+                button:SetButtonState('PUSHED')
             end
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
@@ -452,14 +403,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end)
             check:SetScript('OnLeave', function() e.tips:Hide() end)
 
-            if Save.disabled then
-                panel:UnregisterAllEvents()
-                panel:SetShown(false)
-            else
+            if not Save.disabled then
+                button.fpsms=e.Cstr(button, {size=Save.size})--fpsms
+                button.money=e.Cstr(button, {size=Save.size})--)--钱
+                button.durabiliy=e.Cstr(button, {size=Save.size})--)--耐久度
+                button.equipmentLevel=e.Cstr(button, {size=Save.size})--)--装等
+                button.fpsmsFrame=CreateFrame("Frame",nil, button)--fps,ms,框架
+                button.fpsmsFrame:SetShown(false)
                 Init()
-                panel:UnregisterEvent('ADDON_LOADED')
             end
-            panel:RegisterEvent("PLAYER_LOGOUT")
+            button:UnregisterEvent('ADDON_LOADED')
+            button:RegisterEvent("PLAYER_LOGOUT")
+            button:SetShown(not Save.disabled)
         end
 
     elseif event == "PLAYER_LOGOUT" then

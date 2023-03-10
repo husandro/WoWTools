@@ -1,6 +1,6 @@
 local id, e = ...
 local addName=USE_ITEM
-local panel=e.Cbtn(e.toolsFrame, nil, true, nil, nil, nil, {20,20})
+local panel=e.Cbtn(e.toolsFrame, {icon=true, size={20,20}})
 panel:SetPoint('BOTTOMLEFT', e.toolsFrame, 'TOPRIGHT',-2,5)
 panel:SetAlpha(0.1)
 local Save= {
@@ -275,7 +275,7 @@ local function setItemCount(self)--数量
     local num = GetItemCount(self.itemID,nil,true,true)
     if not PlayerHasToy(self.itemID) then
         if num~=1 and not self.count then
-            self.count=e.Cstr(self,10,nil,nil,true)
+            self.count=e.Cstr(self, {size=10, color=true})--10,nil,nil,true)
             self.count:SetPoint('BOTTOMRIGHT',-2, 9)
         end
         if self.count then
@@ -288,7 +288,7 @@ end
 local function setBlingtron(self)--布林顿任务
     local complete=C_QuestLog.IsQuestFlaggedCompleted(56042)
     if not self.quest then
-        self.quest=e.Cstr(self, 8)
+        self.quest=e.Cstr(self, {size=8})
         self.quest:SetPoint('BOTTOM',0,8)
     end
     self.quest:SetText(complete and '|cnGREEN_FONT_COLOR:'..COMPLETE..'|r' or e.Icon.info2)
@@ -338,7 +338,7 @@ end
 local function setSpellCount(self)--次数
     local num, max= GetSpellCharges(self.spellID)
     if max and max>1 and not self.count then
-        self.count=e.Cstr(self,nil,nil,nil,true)
+        self.count=e.Cstr(self, {color=true})--nil,nil,nil,true)
         self.count:SetPoint('BOTTOMRIGHT',-2, 9)
     end
     if self.count then

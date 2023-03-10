@@ -347,10 +347,10 @@ local function Init_Cursor_Options()
     alphaSlider:SetPoint("TOPLEFT", sliderGravity, 'BOTTOMLEFT', 0, -20)
 
     local dropDown = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")--下拉，菜单
-    local delColorButton= e.Cbtn(panel, nil, nil, nil, nil, true, {20,20})--删除, 按钮
+    local delColorButton= e.Cbtn(panel, {icon='hide', size={20,20}})--删除, 按钮
     local addColorEdit= CreateFrame("EditBox", nil, panel, 'InputBoxTemplate')--EditBox
-    local addColorButton= e.Cbtn(panel, nil, nil, nil, nil, true, {20,20})--添加, 按钮
-    local numColorText= e.Cstr(panel, nil, nil, nil, nil, nil, 'RIGHT')--颜色，数量
+    local addColorButton= e.Cbtn(panel, {icon='hide', size={20,20}})--添加, 按钮
+    local numColorText= e.Cstr(panel, {justifyH='RIGHT'})--nil, nil, nil, nil, nil, 'RIGHT')--颜色，数量
     numColorText:SetPoint('RIGHT', dropDown, 'LEFT', 18,5)
 
     local function set_panel_Texture()--大图片
@@ -577,10 +577,10 @@ local function Init_GCD_Options()
     checkDrawBling:SetPoint("LEFT", checkReverse.text, 'RIGHT', 2, 00)
 
     local dropDown = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")--下拉，菜单
-    local delColorButton= e.Cbtn(panel, nil, nil, nil, nil, true, {20,20})--删除, 按钮
+    local delColorButton= e.Cbtn(panel, {icon='hide', size={20,20}})--删除, 按钮
     local addColorEdit= CreateFrame("EditBox", nil, panel, 'InputBoxTemplate')--EditBox
-    local addColorButton= e.Cbtn(panel, nil, nil, nil, nil, true, {20,20})--添加, 按钮
-    local numColorText= e.Cstr(panel, nil, nil, nil, nil, nil, 'RIGHT')--颜色，数量
+    local addColorButton= e.Cbtn(panel, {icon='hide', size={20,20}})--添加, 按钮
+    local numColorText= e.Cstr(panel, {justifyH='RIGHT'})--nil, nil, nil, nil, nil, 'RIGHT')--颜色，数量
     numColorText:SetPoint('RIGHT', dropDown, 'LEFT', 18,5)
     numColorText:SetText(#Save.GCDTexture)
 
@@ -730,7 +730,7 @@ local function Init()
     panel.Texture:SetSize(80,80)
 
     --重置, 按钮
-    local restButton= e.Cbtn(panel, true, nil, nil, nil, nil, {20,20})
+    local restButton= e.Cbtn(panel, {type=false, size={20,20}})
     restButton:SetNormalAtlas('bags-button-autosort-up')
     restButton:SetPoint("TOPRIGHT")
     restButton:SetScript('OnMouseUp', function()
@@ -748,7 +748,7 @@ local function Init()
     end)
 
     local useClassColorCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--职业颜色
-    local colorText= e.Cstr(panel, nil, nil, nil, {Save.color.r, Save.color.g, Save.color.b, Save.color.a})--自定义,颜色
+    local colorText= e.Cstr(panel, {color={r=Save.color.r, g=Save.color.g, b=Save.color.b, a=Save.color.a}})--nil, nil, nil, {Save.color.r, Save.color.g, Save.color.b, Save.color.a})--自定义,颜色
     local notUseColorCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--不使用，颜色
 
     --职业颜色

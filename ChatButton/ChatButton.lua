@@ -1,7 +1,7 @@
 local id, e = ...
 local Save={scale=0.8}
 local addName='ChatButton'
-local panel=e.Cbtn(nil, nil, nil, nil, 'WoWToolsChatButtonFrame', true, {30,30})
+local panel=e.Cbtn(nil, {name='WoWToolsChatButtonFrame', icon='hide', size={30,30}})
 WoWToolsChatButtonFrame.last=panel
 
 --####

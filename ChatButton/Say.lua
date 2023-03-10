@@ -6,7 +6,7 @@ local panel= CreateFrame("Frame")
 
 local function setType(text)--使用,提示
     if not button.typeText then
-        button.typeText=e.Cstr(button, 10, nil, nil, true)
+        button.typeText=e.Cstr(button, {size=10, color=true})--10, nil, nil, true)
         button.typeText:SetPoint('BOTTOM',0,2)
     end
 

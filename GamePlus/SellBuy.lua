@@ -590,10 +590,9 @@ local function setMenu()
     if not frame or panel.set then
         return
     end
-    panel.set=e.Cbtn(frame.TitleContainer)
+    panel.set=e.Cbtn(frame.TitleContainer, {size={20,20}, icon='hide'})
     panel.set:SetNormalTexture(236994)
     panel.set:SetPoint('RIGHT', frame.TitleContainer ,'RIGHT', -25, 0)
-    panel.set:SetSize(20, 20)
     panel.set:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT");
         e.tips:ClearLines();
@@ -682,9 +681,8 @@ local function setMenu()
     end)
     panel.set:SetScript('OnLeave', function() e.tips:Hide() end)
 
-    panel.noSell=e.Cbtn(panel.set, nil, false)--购回
+    panel.noSell=e.Cbtn(panel.set, {size={20,20}, icon=false})--nil, false)--购回
     panel.noSell:SetPoint('RIGHT', panel.set, 'LEFT', -2, 0)
-    panel.noSell:SetSize(20, 20)
     panel.noSell:SetScript('OnMouseUp', function(self2)
         local infoType, itemID, itemLink = GetCursorInfo()
         if infoType=='item' and itemID then
@@ -742,9 +740,8 @@ local function set_StackSplitFrame_OpenStackSplitFrame(self, maxStack, parent, a
             self.RightButton:SetEnabled(self.split<self.maxStack)
             self.LeftButton:SetEnabled(self.split>self.minSplit)
         end
-        self.restButton=e.Cbtn(self)--重置
+        self.restButton=e.Cbtn(self, {size={22,22}})--重置
         self.restButton:SetPoint('TOP')
-        self.restButton:SetSize(22, 22)
         self.restButton:SetNormalAtlas('characterundelete-RestoreButton')
         self.restButton:SetScript('OnMouseDown', function(self2)
             self.split=self.minSplit
@@ -763,8 +760,7 @@ local function set_StackSplitFrame_OpenStackSplitFrame(self, maxStack, parent, a
         end)
         self.restButton:SetScript('OnLeave', function() e.tips:Hide() end)
 
-        self.MaxButton=e.Cbtn(self, nil, nil, nil,nil, true)
-        self.MaxButton:SetSize(40, 20)
+        self.MaxButton=e.Cbtn(self, {icon='hide', size={40,20}})
         self.MaxButton:SetNormalFontObject('NumberFontNormalYellow')
         self.MaxButton:SetPoint('LEFT', self.restButton, 'RIGHT')
         self.MaxButton:SetScript('OnMouseDown', function(self2)
@@ -773,8 +769,7 @@ local function set_StackSplitFrame_OpenStackSplitFrame(self, maxStack, parent, a
             setButton()
         end)
 
-        self.MetaButton=e.Cbtn(self, nil, nil, nil,nil, true)
-        self.MetaButton:SetSize(40, 20)
+        self.MetaButton=e.Cbtn(self, {icon='hide', size={40,20}})
         self.MetaButton:SetNormalFontObject('NumberFontNormalYellow')
         self.MetaButton:SetPoint('RIGHT', self.restButton, 'LEFT')
         self.MetaButton:SetScript('OnMouseDown', function(self2)

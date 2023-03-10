@@ -1,7 +1,7 @@
 local id, e = ...
 local addName= CALENDAR_FILTER_HOLIDAYS
 local Save={onGoing=true, disabled= not e.Player.husandro}
-local panel= e.Cbtn(nil, nil, nil, nil, nil, true, {18,18})
+local panel= e.Cbtn(nil, {icon='hide', size={18,18}})
 
 local function _CalendarFrame_SafeGetName(name)
 	if ( not name or name == "" ) then
@@ -263,7 +263,7 @@ local function Text_Settings()--设置Text
             panel.Text:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
         else
             panel.Text:SetTextColor(0.8, 0.8, 0.8)
-            e.Cstr(nil,nil,nil,panel.Text,true)
+            e.Cstr(nil, {changeFont=panel.Text, color=true})--nil,nil,panel.Text,true)
         end
         if Save.scale then
             panel.Text:SetScale(Save.scale)
@@ -392,7 +392,7 @@ end
 --初始
 --####
 local function Init()
-    panel.Text=e.Cstr(panel,nil,nil,nil,true)
+    panel.Text=e.Cstr(panel, {color=true})--nil,nil,nil,true)
     panel.texture=panel:CreateTexture()
     panel.texture:SetAllPoints(panel)
     panel.texture:SetAtlas(e.Icon.icon)

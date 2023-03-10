@@ -192,7 +192,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
     end
 
     if topRightText and not self.topRightText then
-        self.topRightText=e.Cstr(self, size, nil, nil, nil, 'OVERLAY')
+        self.topRightText=e.Cstr(self, {size=size})--size, nil, nil, nil, 'OVERLAY')
         self.topRightText:SetPoint('TOPRIGHT',2,0)
     end
     if self.topRightText then
@@ -202,7 +202,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
         end
     end
     if topLeftText and not self.topLeftText then
-        self.topLeftText=e.Cstr(self, size, nil, nil, nil, 'OVERLAY')
+        self.topLeftText=e.Cstr(self, {size=size})--size, nil, nil, nil, 'OVERLAY')
         self.topLeftText:SetPoint('TOPLEFT')
     end
     if self.topLeftText then
@@ -213,7 +213,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
     end
     if bottomRightText then
         if not self.bottomRightText then
-            self.bottomRightText=e.Cstr(self, size, nil, nil, nil, 'OVERLAY')
+            self.bottomRightText=e.Cstr(self, {size=size})--size, nil, nil, nil, 'OVERLAY')
             self.bottomRightText:SetPoint('BOTTOMRIGHT')
         end
     end
@@ -225,7 +225,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
     end
 
     if leftText and not self.leftText then
-        self.leftText=e.Cstr(self, size, nil, nil, nil, 'OVERLAY')
+        self.leftText=e.Cstr(self, {size=size})--size, nil, nil, nil, 'OVERLAY')
         self.leftText:SetPoint('LEFT')
     end
     if self.leftText then
@@ -236,7 +236,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
     end
 
     if rightText and not self.rightText then
-        self.rightText=e.Cstr(self, size, nil, nil, nil, 'OVERLAY')
+        self.rightText=e.Cstr(self, {size=size})--size, nil, nil, nil, 'OVERLAY')
         self.rightText:SetPoint('RIGHT')
     end
     if self.rightText then
@@ -247,7 +247,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
     end
 
     if bottomLeftText and not self.bottomLeftText then
-        self.bottomLeftText=e.Cstr(self, size)
+        self.bottomLeftText=e.Cstr(self, {size=size})--size)
         self.bottomLeftText:SetPoint('BOTTOMLEFT')
     end
     if self.bottomLeftText then
@@ -422,7 +422,7 @@ local function Init()
                             end
                         end
                         if not button.quantityAll then
-                            button.quantityAll= e.Cstr(button, 10, nil, nil, nil, nil, 'RIGHT')
+                            button.quantityAll= e.Cstr(button, {size=10, justifyH='RIGHT'})--10, nil, nil, nil, nil, 'RIGHT')
                             button.quantityAll:SetPoint('BOTTOMRIGHT', button, 'TOPRIGHT', 3,0)
                             button:EnableMouse(true)
                             button:SetScript('OnMouseDown', function(self)

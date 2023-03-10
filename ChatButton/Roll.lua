@@ -45,13 +45,13 @@ local function setCHAT_MSG_SYSTEM(text)
                 Min=roll
             end
             if not button.rightTopText then
-                button.rightTopText=e.Cstr(button, nil, nil, nil,{0,1,0})
+                button.rightTopText=e.Cstr(button, {color={r=0,g=1,b=0}})--nil, nil, nil,{0,1,0})
                 button.rightTopText:SetPoint('TOPLEFT',2,-3)
             end
             button.rightTopText:SetText(Max)
             if Min then
                 if not button.rightBottomText then
-                    button.rightBottomText=e.Cstr(button, nil, nil, nil, {1,0,0})
+                    button.rightBottomText=e.Cstr(button, {color={r=0,g=1,b=0}})--nil, nil, nil, {1,0,0})
                     button.rightBottomText:SetPoint('BOTTOMRIGHT',-2,3)
                 end
                 button.rightBottomText:SetText(Min)

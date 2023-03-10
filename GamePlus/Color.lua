@@ -284,7 +284,7 @@ local function Init()
 			self2:ClearFocus()
 		end
 	end)
-	Frame.rgb.lable=e.Cstr(Frame.rgb, 10)--提示，修改，颜色
+	Frame.rgb.lable=e.Cstr(Frame.rgb, {size=10})--10)--提示，修改，颜色
 	Frame.rgb.lable:SetPoint('RIGHT', Frame.rgb,-2,0)
 	Frame.rgb:SetScript('OnTextChanged', function(self2, userInput)
 		if userInput then
@@ -345,7 +345,7 @@ local function Init()
 	hexText:SetPoint('RIGHT', Frame.hex, 'LEFT',-2,0)
 	hexText:SetText('|c')
 
-	Frame.hex.hexText=e.Cstr(Frame.hex, 10)--提示，修改，颜色
+	Frame.hex.hexText=e.Cstr(Frame.hex, {size=10})--10)--提示，修改，颜色
 	Frame.hex.hexText:SetPoint('RIGHT', Frame.hex,-2,0)
 	Frame.hex:SetScript('OnTextChanged', function(self2, userInput)
 		if userInput then
@@ -377,7 +377,7 @@ local function Init()
 	cnText2:SetPoint('LEFT', Frame.cn2, 'RIGHT', 2,0)
 	cnText2:SetText(':')
 
-	Frame.alphaText=e.Cstr(OpacitySliderFrame, 14)--透明值，提示
+	Frame.alphaText=e.Cstr(OpacitySliderFrame, {size=14})--14)--透明值，提示
 	Frame.alphaText:SetPoint('LEFT', OpacitySliderFrame, 'RIGHT', 5,0)
 
 	size= 18

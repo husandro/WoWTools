@@ -93,7 +93,7 @@ local function set_questProgress_Text(plate, unit)
         local text= Get_Quest_Progress(unit)
         if text and not plate.questProgress then
             local frame= plate.UnitFrame and plate.UnitFrame.healthBar or plate
-            plate.questProgress= e.Cstr(frame, 14, nil, nil, {0,1,0}, nil,'LEFT')
+            plate.questProgress= e.Cstr(frame, {size=14, color={r=0,g=1,b=0}})--14, nil, nil, {0,1,0}, nil,'LEFT')
             plate.questProgress:SetPoint('LEFT', frame, 'RIGHT', 2,0)
         end
         if plate.questProgress then
@@ -168,7 +168,7 @@ local function Init()
     panel.Texture:SetAtlas('common-icon-rotateright')
     panel.Texture:SetAllPoints(panel)
 
-    panel.Text= e.Cstr(panel, 10, nil, nil, {1,1,1}, 'BORDER', 'RIGHT')
+    panel.Text= e.Cstr(panel, {size=10, color={r=1,g=1,b=1}, layer='BORDER', justifyH='RIGHT'})--10, nil, nil, {1,1,1}, 'BORDER', 'RIGHT')
     panel.Text:SetPoint('RIGHT', -8, 0)
     --panel.Text:SetShadowOffset(2, -2)
 end

@@ -417,38 +417,35 @@ e.GetDifficultyColor = function(string, difficultyID)--DifficultyUtil.lua
     end
 end
 
-e.Cstr=function(self, size, fontType, ChangeFont, color, layer, justifyH)
+e.Cstr=function(self, tab)--self, {size, copyFont, changeFont, color={r=,g=,b=,a=}, layer=, justifyH}
+    tab= tab or {}
     self= self or UIParent
-    local label= ChangeFont or self:CreateFontString(nil, (layer or 'OVERLAY'), nil, 5)
-    if fontType then
-        if size then
-            local fontName, _, fontFlags = fontType:GetFont()
-            label:SetFont(fontName, size, fontFlags)
-        else
-            label:SetFont(fontType:GetFont())
-        end
-        label:SetTextColor(fontType:GetTextColor())
-        label:SetFontObject(fontType:GetFontObject())
-        label:SetShadowColor(fontType:GetShadowColor())
-        label:SetShadowOffset(fontType:GetShadowOffset())
+    local font= tab.changeFont or self:CreateFontString(nil, (tab.layer or 'OVERLAY'), nil, 5)
+    if tab.copyFont then
+        local fontName, size, fontFlags = tab.copyFont:GetFont()
+        font:SetFont(fontName, tab.size or size, fontFlags)
+        font:SetTextColor(tab.copyFont:GetTextColor())
+        font:SetFontObject(tab.copyFont:GetFontObject())
+        font:SetShadowColor(tab.copyFont:GetShadowColor())
+        font:SetShadowOffset(tab.copyFont:GetShadowOffset())
     else
-        label:SetFont('Fonts\\ARHei.ttf', (size or 12), 'OUTLINE')
-        label:SetShadowOffset(1, -1)
-        --label:SetShadowColor(0, 0, 0)
-        label:SetJustifyH(justifyH or 'LEFT')
-        if color and type(color)=='table' then
-            label:SetTextColor(color[1], color[2], color[3], color[4])
-        elseif color then
-            if e.Player.useColor then
-                label:SetTextColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b, e.Player.useColor.a)
-            else
-                label:SetTextColor(0.8, 0.8, 0.8)
-            end
+        font:SetFont('Fonts\\ARHei.ttf', (tab.size or 12), 'OUTLINE')
+        font:SetShadowOffset(1, -1)
+        --font:SetShadowColor(0, 0, 0)
+        font:SetJustifyH(tab.justifyH or 'LEFT')
+        if not tab.color then
+            font:SetTextColor(1, 0.82, 0)
+        elseif type(tab.color)=='table' then
+            font:SetTextColor(tab.color.r, tab.color.g, tab.color.b, tab.color.a or 1)
         else
-            label:SetTextColor(1, 0.82, 0)
+            if e.Player.useColor then
+                font:SetTextColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b, e.Player.useColor.a)
+            else
+                font:SetTextColor(0.82, 0.82, 0.82)
+            end
         end
     end
-    return label
+    return font
 end
 
 
@@ -468,21 +465,22 @@ e.CeditBox= function(self, width, height)
     return editBox
 end
 
-e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size)
-    self= self or UIParent-- UIParent
+e.Cbtn= function(self, tab)--type, icon, name, size --Template, value, SecureAction, name, notTexture, size)
+    tab=tab or {}
+    self= self or UIParent
     local button
-    if Template then
-        button=CreateFrame('Button', name, self, 'UIPanelButtonTemplate')
-    elseif SecureAction then
-        button=CreateFrame("Button", name, self, "SecureActionButtonTemplate");
+    if tab.type==false then
+        button=CreateFrame('Button', tab.name, self, 'UIPanelButtonTemplate')
+    elseif tab.type==true then
+        button=CreateFrame("Button", tab.name, self, "SecureActionButtonTemplate");
         button:SetHighlightAtlas(e.Icon.highlight)
         button:SetPushedAtlas(e.Icon.pushed)
     else
-        button=CreateFrame('Button', name, self)
+        button=CreateFrame('Button', tab.name, self)
         button:SetHighlightAtlas(e.Icon.highlight)
         button:SetPushedAtlas(e.Icon.pushed)
-        if not notTexture then
-            if value then
+        if tab.icon~='hide' then
+            if tab.icon==true then
                 button:SetNormalAtlas(e.Icon.icon)
             else
                 button:SetNormalAtlas(e.Icon.disabled)
@@ -491,8 +489,8 @@ e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size)
     end
     button:RegisterForClicks(LeftButtonDown, RightButtonDown)
     button:EnableMouseWheel(true)
-    if size then
-        button:SetSize(size[1], size[2])
+    if tab.size then
+        button:SetSize(tab.size[1], tab.size[2])
     end
     return button
 end
@@ -1117,7 +1115,7 @@ e.Set_Item_Stats = function(self, link, point)
             end
         end
         if not self.itemLevel and itemLevel then
-            self.itemLevel= e.Cstr(self, nil, nil, nil,nil,nil, 'CENTER')
+            self.itemLevel= e.Cstr(self, {justifyH='CENTER'})--nil, nil, nil,nil,nil, 'CENTER')
             self.itemLevel:SetShadowOffset(2,-2)
             self.itemLevel:SetPoint('CENTER', point)
         end

@@ -47,7 +47,7 @@ local function setLeftClickTips(name, channelNumber, texture)--设置点击提�
         button.channelNumber=channelNumber
     end
     if channelNumber and not button.leftClickTips then
-        button.leftClickTips=e.Cstr(button, 10, nil, nil, true, nil, 'CENTER')
+        button.leftClickTips=e.Cstr(button, {size=10, color=true, justifyH='CENTER'})--10, nil, nil, true, nil, 'CENTER')
         button.leftClickTips:SetPoint('BOTTOM',0,2)
     end
     if button.leftClickTips then

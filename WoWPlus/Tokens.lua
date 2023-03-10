@@ -1,7 +1,7 @@
 local id, e = ...
 local addName=TOKENS
 local Save={Hide=true, str=true}
-local panel= e.Cbtn(TokenFrame, true, nil,nil,nil, true, {18,18})
+local panel= e.Cbtn(TokenFrame, {icon=false, size={18,18}})
 
 
 
@@ -127,8 +127,7 @@ end
 local function Set()
 	panel:SetNormalAtlas(not Save.Hide and e.Icon.icon or e.Icon.disabled)
 	if not Save.Hide and not panel.btn then--监视声望按钮
-		panel.btn=e.Cbtn(nil, nil, Save.str)
-		panel.btn:SetSize(18, 18)
+		panel.btn=e.Cbtn(nil, {icon=Save.str, size={18,18}})
 		if Save.point then
 			panel.btn:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
 		else
@@ -195,7 +194,7 @@ local function Set()
 				n= n<6 and 6 or n
 				n= n>32 and 32 or n
 				Save.size=n
-				e.Cstr(nil, n, nil, panel.btn.text, true)
+				e.Cstr(nil, {size=n, changeFont=panel.btn.text, color=true})--n, nil, panel.btn.text, true)
 				print(id, addName, e.onlyChinese and '文本' or LOCALE_TEXT_LABEL, e.onlyChinese and '字体大小' or FONT_SIZE, n)
 			else
 				if d==1 and not TokenFrame:IsVisible() or d==-1 and TokenFrame:IsVisible() then
@@ -212,7 +211,7 @@ local function Set()
 			set_Text()
 		end)
 
-		panel.btn.text=e.Cstr(panel.btn, Save.size, nil, nil, true)--内容显示文本
+		panel.btn.text=e.Cstr(panel.btn, {size=Save.size, color=true})--内容显示文本
 		panel.btn.text:SetPoint('TOPLEFT',3,-3)
 	end
 	if panel.btn then
@@ -249,9 +248,8 @@ local function Init()
 	end)
 
 	--展开,合起
-	panel.down=e.Cbtn(panel, true);
+	panel.down=e.Cbtn(panel, {icon=false, size={18,18}});
 	panel.down:SetPoint('RIGHT', panel, 'LEFT', -2,0)
-	panel.down:SetSize(18,18);
 	panel.down:SetNormalTexture('Interface\\Buttons\\UI-MinusButton-Up')
 	panel.down:SetScript("OnMouseDown", function(self)
 			for i=1, C_CurrencyInfo.GetCurrencyListSize() do--展开所有
@@ -262,7 +260,7 @@ local function Init()
 			end
 			TokenFrame_Update()
 	end)
-	panel.up=e.Cbtn(panel, true)
+	panel.up=e.Cbtn(panel, {icon=false, size={18,18}})
 	panel.up:SetPoint('RIGHT', panel.down, 'LEFT',-2,0)
 	panel.up:SetSize(18,18);
 	panel.up:SetNormalTexture("Interface\\Buttons\\UI-PlusButton-Up")
@@ -275,9 +273,8 @@ local function Init()
 			end
 			TokenFrame_Update();
 	end)
-	panel.bag=e.Cbtn(panel,true)
+	panel.bag=e.Cbtn(panel, {icon='hide', size={18,18}})
 	panel.bag:SetPoint('RIGHT', panel.up, 'LEFT',-2,0)
-	panel.bag:SetSize(18,18);
 	panel.bag:SetNormalAtlas(e.Icon.bag)
 	panel.bag:SetScript("OnMouseDown", function(self)
 			for index=1, BackpackTokenFrame:GetMaxTokensWatched() do--Blizzard_TokenUI.lua

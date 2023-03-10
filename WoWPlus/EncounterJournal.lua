@@ -218,7 +218,7 @@ local function MoveFrame(self, savePointName)
         size= size<6 and 6 or size
         size= size>72 and 72 or size
         Save.EncounterJournalFontSize=size
-        e.Cstr(nil, size, nil, self2.Text)
+        e.Cstr(nil, {size=size, changeFont=self2.Text})--size, nil, self2.Text)
         print(id, addName, 	FONT_SIZE, size)
     end)
 end
@@ -232,7 +232,7 @@ local function setWorldbossText()--显示世界BOSS击杀数据Text
         return
     end
     if not panel.WorldBoss then
-        panel.WorldBoss=e.Cbtn(nil, nil, not Save.hideWorldBossText, nil,nil,true)
+        panel.WorldBoss=e.Cbtn(nil, {icon='hide', size={14,14}})
         if Save.WorldBossPoint then
             panel.WorldBoss:SetPoint(Save.WorldBossPoint[1], UIParent, Save.WorldBossPoint[3], Save.WorldBossPoint[4], Save.WorldBossPoint[5])
         else
@@ -242,8 +242,6 @@ local function setWorldbossText()--显示世界BOSS击杀数据Text
                 panel.WorldBoss:SetPoint('CENTER')
             end
         end
-
-        panel.WorldBoss:SetSize(14,14)
         panel.WorldBoss:SetScript('OnEnter', function(self2)
             e.tips:SetOwner(self2, "ANCHOR_LEFT");
             e.tips:ClearLines();
@@ -264,13 +262,13 @@ local function setWorldbossText()--显示世界BOSS击杀数据Text
         end)
         MoveFrame(panel.WorldBoss, 'WorldBossPoint')
 
-        panel.WorldBoss.Text=e.Cstr(panel.WorldBoss, Save.EncounterJournalFontSize, nil,nil,nil)
+        panel.WorldBoss.Text=e.Cstr(panel.WorldBoss, {size=Save.EncounterJournalFontSize})--, nil,nil,nil)
         panel.WorldBoss.Text:SetPoint('TOPLEFT')
 
         panel.WorldBoss.texture=panel.WorldBoss:CreateTexture()
         panel.WorldBoss.texture:SetAllPoints(panel.WorldBoss)
         panel.WorldBoss.texture:SetAtlas(e.Icon.disabled)
-        panel.WorldBoss.texture:SetShown(Save.hideWorldBossText)
+        --panel.WorldBoss.texture:SetShown(Save.hideWorldBossText)
     end
 
     local msg
@@ -307,6 +305,8 @@ local function setWorldbossText()--显示世界BOSS击杀数据Text
     end
     panel.WorldBoss.Text:SetText(msg or '')
     panel.WorldBoss:SetShown(true)
+    panel.WorldBoss.texture:SetShown(Save.hideWorldBossText)
+    panel.WorldBoss.Text:SetShown(not Save.hideWorldBossText)
 end
 
 local function setInstanceBossText()--显示副本击杀数据
@@ -318,7 +318,7 @@ local function setInstanceBossText()--显示副本击杀数据
         return
     end
     if not panel.instanceBoss then
-        panel.instanceBoss=e.Cbtn(nil, nil, not Save.hideInstanceBossText, nil,nil,true)
+        panel.instanceBoss=e.Cbtn(nil, {icon='hide', size={14,14}})
         if Save.instanceBossPoint then
             panel.instanceBoss:SetPoint(Save.instanceBossPoint[1], UIParent, Save.instanceBossPoint[3], Save.instanceBossPoint[4], Save.instanceBossPoint[5])
         else
@@ -328,7 +328,6 @@ local function setInstanceBossText()--显示副本击杀数据
                 panel.instanceBoss:SetPoint('CENTER')
             end
         end
-        panel.instanceBoss:SetSize(14,14)
         panel.instanceBoss:SetScript('OnEnter', function(self2)
             e.tips:SetOwner(self2, "ANCHOR_LEFT");
             e.tips:ClearLines();
@@ -348,7 +347,7 @@ local function setInstanceBossText()--显示副本击杀数据
             end
         end)
         MoveFrame(panel.instanceBoss, 'instanceBossPoint')
-        panel.instanceBoss.Text=e.Cstr(panel.instanceBoss, Save.EncounterJournalFontSize, nil, nil, nil)
+        panel.instanceBoss.Text=e.Cstr(panel.instanceBoss, {size=Save.EncounterJournalFontSize})
         panel.instanceBoss.Text:SetPoint('TOPLEFT')
 
         panel.instanceBoss.texture=panel.instanceBoss:CreateTexture()
@@ -377,6 +376,8 @@ local function setInstanceBossText()--显示副本击杀数据
     end
     panel.instanceBoss.Text:SetText(msg or '')
     panel.instanceBoss:SetShown(true)
+    panel.instanceBoss.texture:SetShown(Save.hideInstanceBossText)
+    panel.instanceBoss.Text:SetShown(not Save.hideInstanceBossText)
 end
 
 local function set_EncounterJournal_Keystones_Tips(self)--险指南界面, 挑战
@@ -422,9 +423,8 @@ end
 --初始化
 --######
 local function Init()--冒险指南界面
-    EncounterJournal.btn= e.Cbtn(EncounterJournal.TitleContainer, nil, not Save.hideEncounterJournal)--按钮, 总开关
+    EncounterJournal.btn= e.Cbtn(EncounterJournal.TitleContainer, {icn=not Save.hideEncounterJournal, size={22,22}})--按钮, 总开关
     EncounterJournal.btn:SetPoint('RIGHT',-22, -2)
-    EncounterJournal.btn:SetSize(22, 22)
     EncounterJournal.btn:SetScript('OnEnter',function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT");
         e.tips:ClearLines();
@@ -455,10 +455,9 @@ local function Init()--冒险指南界面
     end)
     EncounterJournal.btn:SetScript("OnLeave",function() e.tips:Hide() end)
 
-    EncounterJournal.instance =e.Cbtn(EncounterJournal.TitleContainer, nil ,true)--所有角色副本
+    EncounterJournal.instance =e.Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--所有角色副本
     EncounterJournal.instance:SetPoint('RIGHT', EncounterJournal.btn, 'LEFT')
     EncounterJournal.instance:SetNormalAtlas('animachannel-icon-kyrian-map')
-    EncounterJournal.instance:SetSize(22,22)
     EncounterJournal.instance:SetScript('OnEnter',function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT");
         e.tips:ClearLines();
@@ -493,10 +492,9 @@ local function Init()--冒险指南界面
     end)
     EncounterJournal.instance:SetScript("OnLeave",function() e.tips:Hide() end)
 
-    EncounterJournal.Worldboss =e.Cbtn(EncounterJournal.TitleContainer, nil ,true)--所有角色已击杀世界BOSS
+    EncounterJournal.Worldboss =e.Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--所有角色已击杀世界BOSS
     EncounterJournal.Worldboss:SetPoint('RIGHT', EncounterJournal.instance, 'LEFT')
     EncounterJournal.Worldboss:SetNormalAtlas('poi-soulspiritghost')
-    EncounterJournal.Worldboss:SetSize(22,22)
     EncounterJournal.Worldboss:SetScript('OnEnter',set_EncounterJournal_World_Tips)--提示
     EncounterJournal.Worldboss:SetScript('OnMouseDown', function(self2, d)
         if  Save.showWorldBoss then
@@ -510,20 +508,18 @@ local function Init()--冒险指南界面
     EncounterJournal.Worldboss:SetScript("OnLeave",function() e.tips:Hide() end)
 
     if e.Player.levelMax then
-        EncounterJournal.keystones =e.Cbtn(EncounterJournal.TitleContainer, nil ,true)--所有角色,挑战
+        EncounterJournal.keystones =e.Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--所有角色,挑战
         EncounterJournal.keystones:SetPoint('RIGHT', EncounterJournal.Worldboss, 'LEFT')
         EncounterJournal.keystones:SetNormalTexture(4352494)
-        EncounterJournal.keystones:SetSize(22,22)
         EncounterJournal.keystones:SetScript('OnEnter',set_EncounterJournal_Keystones_Tips)
         EncounterJournal.keystones:SetScript("OnLeave",function() e.tips:Hide() end)
         EncounterJournal.keystones:SetScript('OnMouseDown', function()
             PVEFrame_ToggleFrame('ChallengesFrame',3)
         end)
     end
-    EncounterJournal.money =e.Cbtn(EncounterJournal.TitleContainer, nil ,true)--钱
+    EncounterJournal.money =e.Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--钱
     EncounterJournal.money:SetPoint('RIGHT', EncounterJournal.keystones or EncounterJournal.Worldboss, 'LEFT')
     EncounterJournal.money:SetNormalAtlas('Front-Gold-Icon')
-    EncounterJournal.money:SetSize(22,22)
     EncounterJournal.money:SetScript('OnEnter',set_EncounterJournal_Money_Tips)
     EncounterJournal.money:SetScript("OnLeave",function() e.tips:Hide() end)
 
@@ -623,7 +619,7 @@ local function Init()--冒险指南界面
             if button and button.tooltipTitle and button.instanceID then--button.bgImage:GetTexture() button.name:GetText()
                 local text=EncounterJournal_ListInstances_set_Instance(button)
                 if not button.tipsText and text then
-                    button.tipsText=e.Cstr(button,10, button.name)
+                    button.tipsText=e.Cstr(button, {size=10, copyFont=button.name})--10, button.name)
                     button.tipsText:SetPoint('BOTTOMRIGHT', -8, 8)
                     --button.tipsText:SetWidth(174)
                     button.tipsText:SetJustifyH('RIGHT')
@@ -694,7 +690,7 @@ local function Init()--冒险指南界面
             end
         end
         if text and not self.collectedText and self.slot then
-            self.collectedText= e.Cstr(self, nil,nil,nil,nil,nil,'CENTER')
+            self.collectedText= e.Cstr(self, {justifyH='CENTER'})--nil,nil,nil,nil,nil,'CENTER')
             self.collectedText:SetPoint('CENTER', self.slot, 'CENTER', 5, 0)
         end
         if self.collectedText then
@@ -788,7 +784,7 @@ local function Init()--冒险指南界面
         end
 
         if not self2.instance.Killed then--综述, 添加副本击杀情况
-            self2.instance.Killed=e.Cstr(self2.instance, nil, nil,nil,nil,nil,'RIGHT')
+            self2.instance.Killed=e.Cstr(self2.instance, {justifyH='RIGHT'})--nil, nil,nil,nil,nil,'RIGHT')
             self2.instance.Killed:SetPoint('BOTTOMRIGHT', -33, 126)
         end
         self2.instance.Killed.instanceID=instanceID
@@ -924,7 +920,7 @@ local function Init()--冒险指南界面
         local text
         if not Save.hideEncounterJournal and self.displayInfo and EncounterJournal.encounter and EncounterJournal.encounter.info and EncounterJournal.encounter.info.model and EncounterJournal.encounter.info.model.imageTitle then
             if not EncounterJournal.creatureDisplayIDText then
-                EncounterJournal.creatureDisplayIDText=e.Cstr(self,10, EncounterJournal.encounter.info.model.imageTitle)
+                EncounterJournal.creatureDisplayIDText=e.Cstr(self,{size=10, fontType=EncounterJournal.encounter.info.model.imageTitle})--10, EncounterJournal.encounter.info.model.imageTitle)
                 EncounterJournal.creatureDisplayIDText:SetPoint('BOTTOM', EncounterJournal.encounter.info.model.imageTitle, 'TOP', 0 , 10)
             end
             

@@ -69,17 +69,17 @@ local function setButtons()--设置按钮
         button:SetScript('OnLeave', function() e.tips:Hide() end)
     end
     for i, texture in pairs(File) do
-        local button=e.Cbtn(frame,nil,nil,nil,nil, true,{size,size})
-        setPoint(button, e.L['EMOJI'][i])
-        button:SetNormalTexture('Interface\\Addons\\WoWTools\\Sesource\\Emojis\\'..texture)
-        last=button
+        local btn=e.Cbtn(frame, {icon='hide',size={size,size}})
+        setPoint(btn, e.L['EMOJI'][i])
+        btn:SetNormalTexture('Interface\\Addons\\WoWTools\\Sesource\\Emojis\\'..texture)
+        last=btn
         index=index+1
     end
     for i= 1, 8 do
-        local button=e.Cbtn(frame,nil,nil,nil,nil, true,{size,size})
-        setPoint(button, 'rt'..i)
-        button:SetNormalTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..i)
-        last=button
+        local btn=e.Cbtn(frame, {icon='hide',size={size,size}})
+        setPoint(btn, 'rt'..i)
+        btn:SetNormalTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..i)
+        last=btn
         index=index+1
     end
 end
@@ -180,7 +180,7 @@ local function Init()
     button:SetPoint('LEFT', WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
     WoWToolsChatButtonFrame.last=button
 
-    frame=e.Cbtn(button,nil,nil,nil,nil, true,{10, e.toolsFrame.size or 30})--控制图标,显示,隐藏
+    frame=e.Cbtn(button,{icon='hide', size={10, e.toolsFrame.size}})--控制图标,显示,隐藏
     if Save.Point then
         frame:SetPoint(Save.Point[1], UIParent, Save.Point[3], Save.Point[4], Save.Point[5])
     else

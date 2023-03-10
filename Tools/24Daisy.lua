@@ -52,7 +52,7 @@ local function setSummonedPetGUID()--召唤信息
                     size=10
                 end
             end
-            button.text=e.Cstr(button, size,nil,nil, true)
+            button.text=e.Cstr(button, {size=size, color=true})-- size,nil,nil, true)
             button.text:SetPoint('CENTER',0 , -5)
         end
     elseif not summoned

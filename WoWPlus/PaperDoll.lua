@@ -2,7 +2,7 @@ local id, e = ...
 local addName= CHARACTER
 local Save={EquipmentH=true}
 local panel = CreateFrame("Frame", nil, PaperDollFrame)
-panel.serverText= e.Cstr(PaperDollItemsFrame, nil, nil, nil,{1,0.82,0},nil, 'LEFT')--显示服务器名称
+panel.serverText= e.Cstr(PaperDollItemsFrame)--显示服务器名称
 
 local pvpItemStr= PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在竞技场和战场中将物品等级提高至%d。"
 local enchantStr= ENCHANTED_TOOLTIP_LINE:gsub('%%s','(.+)')--附魔
@@ -53,7 +53,7 @@ local function LvTo()--总装等
     end
     local avgItemLevel,_, avgItemLevelPvp = GetAverageItemLevel()
     if avgItemLevel and not PaperDollSidebarTab1.itemLevelText then--PVE
-        PaperDollSidebarTab1.itemLevelText=e.Cstr(PaperDollSidebarTab1, nil, nil, nil,{1,0.82,0},nil, 'CENTER')
+        PaperDollSidebarTab1.itemLevelText=e.Cstr(PaperDollSidebarTab1, {justifyH='CENTER'})
         PaperDollSidebarTab1.itemLevelText:SetPoint('BOTTOM')
     end
     if PaperDollSidebarTab1.itemLevelText then
@@ -64,7 +64,7 @@ local function LvTo()--总装等
     end
 
     if avgItemLevel~= avgItemLevelPvp and avgItemLevelPvp and not PaperDollSidebarTab1.itemLevelPvPText then--PVP
-        PaperDollSidebarTab1.itemLevelPvPText=e.Cstr(PaperDollSidebarTab1, nil, nil, nil,{1,0.82,0},nil, 'CENTER')
+        PaperDollSidebarTab1.itemLevelPvPText=e.Cstr(PaperDollSidebarTab1, {justifyH='CENTER'})
         PaperDollSidebarTab1.itemLevelPvPText:SetPoint('TOP')
     end
     if PaperDollSidebarTab1.itemLevelPvPText then
@@ -136,9 +136,8 @@ local function Engineering(self, slot, use)--增加 [潘达利亚工程学: 地�
     end
 
     if not self.engineering then
-        self.engineering=e.Cbtn(self)
         local h=self:GetHeight()/3
-        self.engineering:SetSize(h,h)
+        self.engineering=e.Cbtn(self, {icon='hide',size={h,h}})
         self.engineering:SetNormalTexture(136243)
         if Slot(slot) then
             self.engineering:SetPoint('TOPLEFT', self, 'TOPRIGHT', 8, 0)
@@ -219,10 +218,10 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
 
         if upgradeItem and not self.upgradeItem then--"升级：%s/%s"
             if Slot(slot) then
-                self.upgradeItem= e.Cstr(self, 12, nil, nil, {0,1,0}, nil,'LEFT')
+                self.upgradeItem= e.Cstr(self, {color={r=0,g=1,b=0}})--12, nil, nil, {0,1,0}, nil,'LEFT')
                 self.upgradeItem:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT')
             else
-                self.upgradeItem= e.Cstr(self, 12, nil, nil, {0,1,0}, nil,'RIGHT')
+                self.upgradeItem= e.Cstr(self, {color={r=0,g=1,b=0}, justifyH='RIGHT'})--12, nil, nil, {0,1,0}, nil,'RIGHT')
                 self.upgradeItem:SetPoint('BOTTOMRIGHT', self, 'BOTTOMLEFT')
             end
         end
@@ -277,7 +276,7 @@ local function Title()--头衔数量
     nu= #to-1
     nu= nu>1 and nu or nil
     if nu and not PaperDollSidebarTab2.titleNumeri then
-        PaperDollSidebarTab2.titleNumeri=e.Cstr(PaperDollSidebarTab2,nil,nil,nil,{1,0.82,0},nil,'CENTER')
+        PaperDollSidebarTab2.titleNumeri=e.Cstr(PaperDollSidebarTab2, {justifyH='CENTER'})
         PaperDollSidebarTab2.titleNumeri:SetPoint('BOTTOM')
     end
     if PaperDollSidebarTab2.titleNumeri then
@@ -321,7 +320,7 @@ local function Equipment()--装备管理
     end
 
     if not PaperDollSidebarTab3.set and name then--名称
-        PaperDollSidebarTab3.set=e.Cstr(PaperDollSidebarTab3, nil, nil, nil,{1,0.82,0},nil, 'CENTER')
+        PaperDollSidebarTab3.set=e.Cstr(PaperDollSidebarTab3, {justifyH='CENTER'})
         PaperDollSidebarTab3.set:SetPoint('BOTTOM', 2, 0)
     end
     if PaperDollSidebarTab3.set then
@@ -352,7 +351,7 @@ local function Equipment()--装备管理
     end
 
     if not PaperDollSidebarTab3.nu and nu then--套装数量
-        PaperDollSidebarTab3.nu=e.Cstr(PaperDollSidebarTab3, nil, nil, nil,{1,0.82,0},nil, 'RIGHT')
+        PaperDollSidebarTab3.nu=e.Cstr(PaperDollSidebarTab3, {justifyH='RIGHT'})
         PaperDollSidebarTab3.nu:SetPoint('LEFT', PaperDollSidebarTab3, 'RIGHT',0, 4)
     end
     if PaperDollSidebarTab3.nu then
@@ -422,9 +421,7 @@ local function add_Equipment_Frame(equipmentSetsDirty)--添加装备管理框
     end
 
     if not panel.equipmentFrame then
-        panel.equipmentFrame=e.Cbtn()--添加移动按钮
-        panel.equipmentFrame:SetSize(14, 14)
-        panel.equipmentFrame:SetNormalAtlas(e.Icon.icon)
+        panel.equipmentFrame=e.Cbtn(nil, {icon=true, size={14,14}})--添加移动按钮
         if Save.Equipment then
             panel.equipmentFrame:SetPoint(Save.Equipment[1], UIParent, Save.Equipment[3], Save.Equipment[4], Save.Equipment[5])
         else
@@ -513,7 +510,7 @@ local function add_Equipment_Frame(equipmentSetsDirty)--添加装备管理框
         local texture, setID, isEquipped= select(2, C_EquipmentSet.GetEquipmentSetInfo(id2))
         local b=panel.equipmentFrame.B[k]
         if not b then
-            b=e.Cbtn()
+            b=e.Cbtn(nil, {icon='hide'})
             b.tex=b:CreateTexture(nil, 'OVERLAY')
             b.tex:SetAtlas(e.Icon.select)
             b.tex:SetAllPoints(b)
@@ -564,7 +561,7 @@ end
 --############
 local function GetDurationTotale()
     if not panel.durabilityText then
-        panel.durabilityText= e.Cstr(panel, nil, nil,nil,{1,0.8,0})
+        panel.durabilityText= e.Cstr(panel)
         panel.durabilityText:SetPoint('LEFT', panel.serverText, 'RIGHT')
         panel.durabilityText:EnableMouse(true)
         panel.durabilityText:SetScript('OnEnter', function(self)
@@ -632,7 +629,7 @@ local function setFlyout(button, itemLink, slot)
     end
 
     if upgrade and not button.upgrade then
-        button.upgrade= e.Cstr(button, nil, nil, nil, {0,1,0}, nil,'LEFT')
+        button.upgrade= e.Cstr(button, {color={r=0,g=1,b=0}})
         button.upgrade:SetPoint('LEFT')
     end
     if button.upgrade then
@@ -724,9 +721,8 @@ local function Init()
     --#########
     --装备管理框
     --#########
-    panel.HideShowEquipmentFrame = e.Cbtn(PaperDollItemsFrame, nil, Save.equipment)--显示/隐藏装备管理框选项
+    panel.HideShowEquipmentFrame = e.Cbtn(PaperDollItemsFrame, {icon=Save.equipment, size={20,20}})--显示/隐藏装备管理框选项
     panel.HideShowEquipmentFrame:SetPoint('TOPRIGHT',-2,-40)
-    panel.HideShowEquipmentFrame:SetSize(20, 20)
     panel.HideShowEquipmentFrame:SetScript("OnMouseDown", function(self)
         Save.equipment= not Save.equipment and true or nil
         add_Equipment_Frame()--装备管理框
@@ -789,7 +785,7 @@ local function Init()
                     numFreeSlots= nil
                 end
                 if numFreeSlots and not self.numFreeSlots then
-                    self.numFreeSlots=e.Cstr(self,nil, nil, nil, true,nil, 'CENTER')
+                    self.numFreeSlots=e.Cstr(self, {color=true, justifyH='CENTER'})
                     self.numFreeSlots:SetPoint('BOTTOM',0 ,6)
                 end
                 if self.numFreeSlots then

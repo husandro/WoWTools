@@ -4,7 +4,7 @@ local Save={setButton=true}
 local panel=CreateFrame("Frame")
 
 local function set_ProfessionsFrame_Button()--专业界面, 按钮
-    local setButton= e.Cbtn(ProfessionsFrame.TitleContainer, nil, not Save.notProfessionsFrameButtuon, nil, nil, nil, {20, 20})
+    local setButton= e.Cbtn(ProfessionsFrame.TitleContainer, {icon=not Save.notProfessionsFrameButtuon, size={20, 20}})
     setButton:SetPoint('RIGHT', ProfessionsFrameTitleText, 'RIGHT', 0, 2)
     setButton:SetScript('OnMouseDown', function(self)
         Save.notProfessionsFrameButtuon= not Save.notProfessionsFrameButtuon and true or nil
@@ -34,7 +34,7 @@ local function set_ProfessionsFrame_Button()--专业界面, 按钮
     for k , index in pairs(tab) do
         local name, icon, _, _, _, _, skillLine = GetProfessionInfo(index)
         if icon and skillLine then
-            local button=e.Cbtn(setButton.frame, nil, nil, nil, nil, true, {32, 32})
+            local button=e.Cbtn(setButton.frame, {icon='hide',size={32, 32}})
             button:SetNormalTexture(icon)
             if not last then
                 button:SetPoint('BOTTOMLEFT', ProfessionsFrame, 'BOTTOMRIGHT',0, 35)
@@ -147,7 +147,7 @@ local function set_Button()
                             print(id, addName,'|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2), self.name, e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)
                         end
                     end)
-                    panel.buttons[index].text=e.Cstr(panel.buttons[index], nil,nil,nil,{1,0,0})
+                    panel.buttons[index].text=e.Cstr(panel.buttons[index], {color={r=1,g=0,b=0}})--nil,nil,nil,{1,0,0})
                     panel.buttons[index].text:SetPoint('TOPRIGHT',-4,0)
                 end
             end
@@ -236,7 +236,7 @@ local function Init()
             end
         end
         if not outputIcon.countBag and num then
-            outputIcon.countBag= e.Cstr(outputIcon, nil, nil, nil, {0,1,0}, nil, 'CENTER')
+            outputIcon.countBag= e.Cstr(outputIcon, {color={r=0,g=1,b=0}, justifyH='CENTER'})--nil, nil, nil, {0,1,0}, nil, 'CENTER')
             outputIcon.countBag:SetPoint('BOTTOM', outputIcon, 'TOP',0,5)
         end
         if outputIcon.countBag then

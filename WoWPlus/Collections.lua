@@ -66,7 +66,7 @@ local function Init_DressUpFrames()--试衣间, 外观列表
             end
         end
         if link and not self.btn then
-            self.btn=e.Cbtn(self, nil, true, nil, nil, nil,{20,20})
+            self.btn=e.Cbtn(self, {icon=true, size={20,20}})
             self.btn:SetPoint('RIGHT')
             self.btn:SetAlpha(0.3)
             self.btn:SetScript('OnEnter', function(self2, d)
@@ -117,9 +117,8 @@ local function Init_DressUpFrames()--试衣间, 外观列表
     end)
 
     if DressUpFrame and DressUpFrame.OutfitDetailsPanel then
-        local sel= e.Cbtn(DressUpFrame.OutfitDetailsPanel, nil, Save.hideDressUpOutfit)
+        local sel= e.Cbtn(DressUpFrame.OutfitDetailsPanel, {icon=Save.hideDressUpOutfit, size={16,16}})
         sel:SetPoint('BOTTOMRIGHT', -5, 10)
-        sel:SetSize(16,16)
         sel:SetAlpha(0.3)
         sel:SetScript('OnMouseDown', function ()
             Save.hideDressUpOutfit= not Save.hideDressUpOutfit and true or nil
@@ -324,7 +323,7 @@ local function Init_Wardrobe_Sets()
             local link = select(6, C_TransmogCollection.GetAppearanceSourceInfo(sources[index].sourceID))
             local btn=itemFrame['btn'..i]
             if not btn then
-                btn=e.Cbtn(itemFrame,nil, true)
+                btn=e.Cbtn(itemFrame, {icon=true, size={26,10}})
                 btn:SetNormalAtlas('adventure-missionend-line');
                 itemFrame['btn'..i]=btn
                 if i==1 then
@@ -332,7 +331,6 @@ local function Init_Wardrobe_Sets()
                 else
                     btn:SetPoint('TOP', itemFrame, 'BOTTOM', 0 , -(i-2)*10)
                 end
-                btn:SetSize(26, 10)--32
                 btn:SetAlpha(0.2)
                 btn:SetScript("OnEnter",function(self2)
                         if not self2.link then
@@ -432,9 +430,8 @@ local function Init_Wardrobe_Sets()
     end
     setAllSets()--所以有套装情况
 
-    frame.sel =e.Cbtn(frame, nil, not Save.hideSets)--隐藏选项
+    frame.sel =e.Cbtn(frame, {icon=not Save.hideSets, size={18,18}})--隐藏选项
     frame.sel:SetPoint('BOTTOMRIGHT',-16, 28)
-    frame.sel:SetSize(18,18)
     frame.sel:SetAlpha(0.5)
     frame.sel:SetScript("OnMouseDown", function(self2)
             if Save.hideSets then
@@ -513,9 +510,8 @@ local function Init_Heirloom()
         end
     end)
     local Heirloomframe=HeirloomsJournal
-    Heirloomframe.sel=e.Cbtn(Heirloomframe, nil, not Save.hideHeirloom)
+    Heirloomframe.sel=e.Cbtn(Heirloomframe, {icon=not Save.hideHeirloom, size={18,18}})
     Heirloomframe.sel:SetPoint('BOTTOMRIGHT',-25, 35)
-    Heirloomframe.sel:SetSize(18,18)
     Heirloomframe.sel:SetAlpha(0.5)
     Heirloomframe.sel:SetScript('OnMouseDown',function (self2)
         Save.hideHeirloom= not Save.hideHeirloom and true or nil
@@ -679,9 +675,8 @@ end
 
 local function Init_Wardrober_Items()--物品, 幻化, 界面
     local Frame=WardrobeCollectionFrame.ItemsCollectionFrame
-    Frame.sel=e.Cbtn(Frame, nil, not Save.hideItems)
+    Frame.sel=e.Cbtn(Frame, {icon=not Save.hideItems, size={18,18}})
     Frame.sel:SetPoint('BOTTOMRIGHT',-19, 30)
-    Frame.sel:SetSize(18,18)
     Frame.sel:SetAlpha(0.5)
     Frame.sel:SetScript('OnMouseDown',function (self2)
         Save.hideItems= not Save.hideItems and true or nil
@@ -733,9 +728,8 @@ local function Init_ToyBox()
     hooksecurefunc('ToySpellButton_UpdateButton', ToyFun)
 
     local toyframe=ToyBox
-    toyframe.sel=e.Cbtn(toyframe, nil, not Save.hideToyBox)
+    toyframe.sel=e.Cbtn(toyframe, {icon=not Save.hideToyBox, size={18,18}})
     toyframe.sel:SetPoint('BOTTOMRIGHT',-25, 35)
-    toyframe.sel:SetSize(18,18)
     toyframe.sel:SetAlpha(0.5)
     toyframe.sel:SetScript('OnMouseDown',function (self2)
         Save.hideToyBox= not Save.hideToyBox and true or nil

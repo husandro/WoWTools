@@ -15,7 +15,7 @@ local function set_UpdateSpendText(self)
         text= '/'..info.maxRanks
     end
     if text and not self.maxText then
-        self.maxText= e.Cstr(self, nil, self.SpendText)
+        self.maxText= e.Cstr(self, {fontType=self.SpendText})--nil, self.SpendText)
         self.maxText:SetPoint('LEFT', self.SpendText, 'RIGHT')
         self.maxText:SetTextColor(1, 0, 1)
     end

@@ -68,7 +68,7 @@ end
 local function setName(self)--设置名称
     if not Save.notShowName then
         if not self.text then
-            self.text=e.Cstr(self, nil, nil, nil, not self.luce)
+            self.text=e.Cstr(self, {color= not self.luce})-- nil, nil, nil, not self.luce)
             self.text:SetPoint('RIGHT', self, 'LEFT')
         end
         local text=self.name:gsub('(.+):','')

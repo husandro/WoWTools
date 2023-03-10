@@ -15,7 +15,7 @@ local roleAtlas={
 
 local function setType(text)--使用,提示
     if not button.typeText then
-        button.typeText=e.Cstr(button, 10, nil, nil, true)
+        button.typeText=e.Cstr(button,{size=10, color=true})-- 10, nil, nil, true)
         button.typeText:SetPoint('BOTTOM',0,2)
     end
     if button.type and text:find('%w') then--处理英文
@@ -46,7 +46,7 @@ local function setGroupTips()--队伍信息提示
     end
 
     if isInGroup and not button.membersText then--人数
-        button.membersText=e.Cstr(button, 10, nil, nil, true)
+        button.membersText=e.Cstr(button, {size=10, color=true})--10, nil, nil, true)
         button.membersText:SetPoint('TOPLEFT', 3, -3)
     end
     if button.membersText then
@@ -61,7 +61,7 @@ local function setGroupTips()--队伍信息提示
     end
 
     if subgroup and not button.subgroupTexture then--小队号
-        button.subgroupTexture=e.Cstr(button, 10, nil, nil, true, nil, 'RIGHT')
+        button.subgroupTexture=e.Cstr(button, {size=10, colro=true, justifyH='RIGHT'})--10, nil, nil, true, nil, 'RIGHT')
         button.subgroupTexture:SetPoint('TOPRIGHT',-6,-3)
         button.subgroupTexture:SetTextColor(0,1,0)
     end

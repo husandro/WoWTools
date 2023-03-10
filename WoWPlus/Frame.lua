@@ -50,32 +50,32 @@ local function ZoomFrame(self, notZoom, zeroAlpha)
     local frame= nil
     if self.moveButton then
         frame= self
-        self.ZoomIn= e.Cbtn(frame, nil, nil, nil, nil, true, {size,size})
+        self.ZoomIn= e.Cbtn(frame, {icon='hide', size={size,size}})
         self.ZoomIn:SetPoint('RIGHT', self.moveButton, 'LEFT')
 
     elseif self.BorderFrame and self.BorderFrame.TitleContainer then
         frame= self.BorderFrame.TitleContainer
-        self.ZoomIn= e.Cbtn(frame, nil, nil, nil, nil, true, {size,size})--放大
+        self.ZoomIn= e.Cbtn(frame, {icon='hide', size={size,size}})--放大
         self.ZoomIn:SetPoint('LEFT',35,-2)
 
     elseif self.SpellButtonContainer then
         frame=self.SpellButtonContainer
-        self.ZoomIn= e.Cbtn(frame, nil, nil, nil, nil, true, {size,size})
+        self.ZoomIn= e.Cbtn(frame, {icon='hide', size={size,size}})
         self.ZoomIn:SetPoint('BOTTOM', frame, 'TOP', -20,0)
         self.ZoomIn:SetFrameLevel(frame:GetFrameLevel()+7)
 
     elseif self.TitleContainer then
         frame= self.TitleContainer
-        self.ZoomIn= e.Cbtn(frame, nil, nil, nil, nil, true, {size,size})
+        self.ZoomIn= e.Cbtn(frame, {icon='hide', size={size,size}})
         self.ZoomIn:SetPoint('LEFT',35,-2)
 
     elseif self.Header then
         frame= self.Header
-        self.ZoomIn= e.Cbtn(frame, nil, nil, nil, nil, true, {size,size})
+        self.ZoomIn= e.Cbtn(frame, {icon='hide', size={size,size}})
         self.ZoomIn:SetPoint('LEFT')
     else
         frame= self
-        self.ZoomIn= e.Cbtn(frame, nil, nil, nil, nil, true, {size,size})
+        self.ZoomIn= e.Cbtn(frame, {icon='hide', size={size,size}})
         self.ZoomIn:SetPoint('BOTTOMLEFT', frame, 'TOPLEFT')
         self.ZoomIn:SetFrameLevel(frame:GetFrameLevel()+7)
     end
@@ -89,7 +89,7 @@ local function ZoomFrame(self, notZoom, zeroAlpha)
         self:SetScale(n)
     end)
 
-    self.ZoomOut= e.Cbtn(frame, nil, nil, nil, nil, true, {size, size})--缩小
+    self.ZoomOut= e.Cbtn(frame, {icon='hide', size={size,size}})--缩小
     self.ZoomOut:SetFrameLevel(self.ZoomIn:GetFrameLevel())
     if self.moveButton then
         self.ZoomOut:SetPoint('LEFT',self.moveButton, 'RIGHT')
@@ -207,7 +207,7 @@ local function set_Move_Button(frame, tab)
     local pointFrame, save, zeroAlpha, notZoom= tab.frame, tab.save, tab.zeroAlpha, tab.notZoom
     if frame then
         if not frame.moveButton then
-            frame.moveButton= e.Cbtn(frame, nil, nil, nil, nil, true, {size,size})
+            frame.moveButton= e.Cbtn(frame, {icon='hide', size={size,size}})
             frame.moveButton:SetPoint('BOTTOM', pointFrame or frame, 'TOP')--,0,-13)
             frame.moveButton:SetFrameLevel(frame:GetFrameLevel()+5)
             Move(frame.moveButton, {frame= frame, save=save, zeroAlpha= zeroAlpha, notZoom= notZoom})
@@ -616,7 +616,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 print(id, addName, e.GetEnabeleDisable(not Save.disabledZoom), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end)
 
-            local button= e.Cbtn(check, true, nil, nil, nil, nil, {20,20})
+            local button= e.Cbtn(check, {icon='hide', size={20,20}})
             button:SetPoint('LEFT', panel.check2.text, 'RIGHT',2,0)
             button:SetNormalAtlas('bags-button-autosort-up')
             button:SetScript('OnClick', set_PopupDialogs)

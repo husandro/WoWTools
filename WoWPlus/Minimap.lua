@@ -54,7 +54,7 @@ local function set_MinimapCluster()--缩放
         end
     end)]]
 
-    frame.ScaleIn=e.Cbtn(Minimap, nil, nil, nil, nil, true, {20,20})
+    frame.ScaleIn=e.Cbtn(Minimap, {icon='hide', size={20,20}})
     frame.ScaleIn:SetPoint('TOP',-2, 13)
     frame.ScaleIn:SetScript('OnMouseDown', function(self, d)
         if d=='RightButton' then
@@ -75,7 +75,7 @@ local function set_MinimapCluster()--缩放
     frame.ScaleIn:SetScript('OnLeave', function() e.tips:Hide() ResetCursor() end)
     frame.ScaleIn:SetScript('OnMouseUp', function() ResetCursor() end)
 
-    frame.ScaleOut=e.Cbtn(Minimap, nil, nil, nil, nil, true, {20,20})
+    frame.ScaleOut=e.Cbtn(Minimap, {icon='hide', size={20,20}})
     frame.ScaleOut:SetPoint('BOTTOM', -1, -13)
     frame.ScaleOut:SetScript('OnMouseDown', function(self, d)
         if d=='RightButton' then
@@ -366,7 +366,7 @@ local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
         return
     end
     if not panel.vigentteButton then
-        panel.vigentteButton= e.Cbtn(nil, nil, nil, nil, nil, true,{15, 15})
+        panel.vigentteButton= e.Cbtn(nil, {icon='hide', size={15,15}})
         if Save.pointVigentteButton then
             panel.vigentteButton:SetPoint(Save.pointVigentteButton[1], UIParent, Save.pointVigentteButton[3], Save.pointVigentteButton[4], Save.pointVigentteButton[5])
         else
@@ -425,7 +425,7 @@ local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
                 end
                 print(id, addName, e.onlyChinese and '字体大小' or FONT_SIZE, size)
                 Save.vigentteButtonSize= size
-                e.Cstr(nil, size, nil, panel.vigentteButton.text, true ,nil,'RIGHT')
+                e.Cstr(nil, {size=size, changeFont=panel.vigentteButton.text, color=true, justifyH='RIGHT'})--size, nil, panel.vigentteButton.text, true ,nil,'RIGHT')
             end
         end)
         panel.vigentteButton:SetScript('OnEnter',function(self)
@@ -450,7 +450,7 @@ local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
             end
         end)--更新事件
 
-        panel.vigentteButton.text= e.Cstr(panel.vigentteButton, Save.vigentteButtonSize, nil, nil, true,nil,'RIGHT')
+        panel.vigentteButton.text= e.Cstr(panel.vigentteButton, {size=Save.vigentteButtonSize, color=true, justifyH='RIGHT'})
         panel.vigentteButton.text:SetPoint('BOTTOMRIGHT')
     end
     panel.vigentteButton:SetShown(true)
@@ -536,7 +536,7 @@ local function Init()
             end
 
             if MinimapCluster.InstanceDifficulty.Instance.Text then
-                e.Cstr(nil,14, MinimapCluster.InstanceDifficulty.Instance.Text, MinimapCluster.InstanceDifficulty.Instance.Text)--字体，大小
+                e.Cstr(nil,{size=14, copyFont=MinimapCluster.InstanceDifficulty.Instance.Text, changeFont=MinimapCluster.InstanceDifficulty.Instance.Text})--字体，大小
                 MinimapCluster.InstanceDifficulty.Instance.Text:SetShadowOffset(1,-1)
             end
         end
@@ -652,12 +652,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         local level= Minimap:GetZoomLevels()
         if zoomOut and zoomIn then
             if not Minimap.ZoomIn.text then
-                Minimap.ZoomIn.text= e.Cstr(Minimap, nil, nil, nil, true)
+                Minimap.ZoomIn.text= e.Cstr(Minimap, {color=true})
                 Minimap.ZoomIn.text:SetPoint('BOTTOMLEFT', Minimap.ZoomIn, 'TOPLEFT',-2,-6)
             end
             Minimap.ZoomIn.text:SetText(level-1-zoom)
             if not Minimap.ZoomOut.text then
-                Minimap.ZoomOut.text= e.Cstr(Minimap, nil, nil, nil, true)
+                Minimap.ZoomOut.text= e.Cstr(Minimap, {color=true})
                 Minimap.ZoomOut.text:SetPoint('BOTTOMLEFT', Minimap.ZoomOut, 'TOPLEFT',0,-2)
             end
             Minimap.ZoomOut.text:SetText(zoom)

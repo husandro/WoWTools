@@ -3,7 +3,7 @@ local Save={
     clickToMove= e.Player.husandro,--禁用, 点击移动
 }
 local addName= PET_BATTLE_COMBAT_LOG
-local panel= e.Cbtn(nil, nil, true,nil,nil,nil, {20,20})
+local panel= e.Cbtn(nil, {icon=true, size={20,20}})
 panel:SetShown(false)
 panel:SetFrameStrata('DIALOG')
 
@@ -31,7 +31,7 @@ local function set_PetBattleUnitFrame_UpdateDisplay(self)--Blizzard_PetBattleUI.
         end
     end
     if not self.text and t then
-        self.text=e.Cstr(self, 12 ,nil, nil, nil, nil, 'RIGHT')
+        self.text=e.Cstr(self, {justifyH='RIGHT'})--12 ,nil, nil, nil, nil, 'RIGHT')
         self.text:SetPoint('TOPRIGHT', self.Icon, 'TOPRIGHT', 6, 2)
     end
     if self.text then
@@ -147,7 +147,7 @@ local function set_PetBattleAbilityButton_UpdateBetterIcon(self)
                     self.weakHints= self:CreateTexture(nil, 'OVERLAY', nil, 7)
                     self.weakHints:SetPoint('BOTTOMLEFT',-4,-2)
                     self.weakHints:SetSize(15,15)
-                    self.text=e.Cstr(self, nil, nil, nil,{1,0,0}, 'OVERLAY', 'RIGHT')
+                    self.text=e.Cstr(self, {color={r=1,g=0,b=0}, justifyH='RIGHT'})--nil, nil, nil,{1,0,0}, 'OVERLAY', 'RIGHT')
                     self.text:SetPoint('RIGHT',-6,-6)
                 end
             end
@@ -233,7 +233,7 @@ local function set_PetBattleFrame_UpdateAllActionButtons(self)--Blizzard_PetBatt
             end
             for i = 1, NUM_BATTLE_PET_ABILITIES do
                 if frame and not frame[i] then
-                    frame[i]=e.Cbtn(frame, nil, true)
+                    frame[i]=e.Cbtn(frame, {icon=true, size={40,40}})--nil, true)
                     frame[i]:SetSize(40,40)
                     if i==1 then
                         if index==1 then
@@ -366,7 +366,7 @@ local function set_PetBattleActionButton_UpdateState(self)
                 local isUsable, currentCooldown, currentLockdown = C_PetBattles.GetAbilityState(Enum.BattlePetOwner.Enemy, activeEnemy, i)
                 if currentCooldown and currentCooldown>0 then
                     if not frame[i].cooldownText then
-                        frame[i].cooldownText=e.Cstr(frame[i], 20 , nil, nil, {1, 0, 0}, 'OVERLAY')
+                        frame[i].cooldownText=e.Cstr(frame[i], {size=20, color={r=1,g=0,b=0}})--20 , nil, nil, {1, 0, 0}, 'OVERLAY')
                         frame[i].cooldownText:SetPoint('CENTER')
                     end
                     text=currentCooldown
@@ -444,7 +444,7 @@ local function set_Pet_Type(show)--提示,类型,
 
         local last=panel.setFrame
         for i=1, C_PetJournal.GetNumPetTypes() do
-            local texture= e.Cbtn(panel.setFrame, nil,nil,nil,nil,true,{25,25})
+            local texture= e.Cbtn(panel.setFrame, {icon='hide',size={25,25}})
             texture:SetSize(25, 25)
             texture:SetPoint('LEFT', last, 'RIGHT')
             texture:SetNormalTexture('Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[i])
@@ -460,7 +460,7 @@ local function set_Pet_Type(show)--提示,类型,
                 texture.indicatoUp:SetSize(10,10)
                 texture.indicatoUp:SetPoint('BOTTOM', texture,'TOP')
 
-                texture.strong= e.Cbtn(panel.setFrame, nil,nil,nil,nil,true,{25,25})
+                texture.strong= e.Cbtn(panel.setFrame, {icon='hide',size={25,25}})
                 texture.strong:SetPoint('BOTTOM', texture.indicatoUp, 'TOP')
                 texture.strong:SetNormalTexture(strong)
                 texture.strong.abilityID= PetTypeAbility[index]
@@ -475,7 +475,7 @@ local function set_Pet_Type(show)--提示,类型,
                 texture.indicatoDown:SetSize(10,10)
                 texture.indicatoDown:SetPoint('TOP', texture,'BOTTOM')
 
-                texture.weakHints= e.Cbtn(panel.setFrame, nil,nil,nil,nil,true,{25,25})
+                texture.weakHints= e.Cbtn(panel.setFrame, {icon='hide', size={25,25}})
                 texture.weakHints:SetPoint('TOP', texture.indicatoDown, 'BOTTOM')
                 texture.weakHints:SetNormalTexture(weakHints)
                 texture.weakHints.abilityID= PetTypeAbility[index2]
@@ -495,7 +495,7 @@ local function set_Pet_Type(show)--提示,类型,
 end
 
 local function set_Button_setFrame_PetJournal()--宠物手册，增加按钮
-    local frame= e.Cbtn(RematchJournal or PetJournal, nil, true,nil,nil,nil,{25, 25}) --e.Cbtn= function(self, Template, value, SecureAction, name, notTexture, size) --PetJournal
+    local frame= e.Cbtn(RematchJournal or PetJournal, {icon=true,size={25, 25}})
     frame:SetPoint('TOPLEFT', RematchJournal or PetJournal,'TOPRIGHT',3,-29)
     frame:SetScript('OnMouseDown', function()
         if panel.setFrame then
