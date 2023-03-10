@@ -752,6 +752,7 @@ e.Cbtn2= function(name, parent, showTexture, rightClick)
     button.background:AddMaskTexture(button.mask)
 
     button.texture=button:CreateTexture(nil, 'BORDER')
+    
     button.texture:SetPoint("TOPLEFT", button, "TOPLEFT", 4, -4);
 	button.texture:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -6, 6);
     button.texture:AddMaskTexture(button.mask)

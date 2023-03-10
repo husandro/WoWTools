@@ -145,7 +145,7 @@ local function check_Event()--检测事件
             Save.ins.time= Save.ins.time +sec
         end
         LastText='|cnGREEN_FONT_COLOR:|A:CrossedFlagsWithTimer:0:0|a'..text..' |A:BuildanAbomination-32x32:0:0|a'..InstanceDate.kill..' |A:poi-soulspiritghost:0:0|a'..InstanceDate.dead..'|r'
-        print(id, INSTANCE, InstanceDate.map or '', text)
+        print(id, InstanceDate.map or (e.onlyChinese and '副本' or INSTANCE), text)
         panel:UnregisterEvent('PLAYER_DEAD')
         panel:UnregisterEvent('PLAYER_UNGHOST')
         panel:UnregisterEvent('PLAYER_ALIVE')
@@ -215,7 +215,7 @@ local function setTextFrame()--设置显示内容, 父框架button.textFrame, �
         self:StopMovingOrSizing()
         Save.textFramePoint={self:GetPoint(1)}
         Save.textFramePoint[2]=nil
-        print(id, addName, RESET_POSITION, 'Alt+'..e.Icon.right)
+        print(id, addName, e.onlyChinese and '重设到默认位置' or HUD_EDIT_MODE_RESET_POSITION, 'Alt+'..e.Icon.right)
     end)
     button.textFrame:SetScript("OnMouseDown", function(self,d)
         if d=='LeftButton' then--提示移动
@@ -482,7 +482,7 @@ local function InitMenu(self, level, type)--主菜单
             checked= not Save.disabledText,
             func=function()
                 Save.disabledText= not Save.disabledText and true or nil
-                print(id, addName, '|cnRED_FONT_COLOR:'..REQUIRES_RELOAD)
+                print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
             end
         }
         UIDropDownMenu_AddButton(info, level)

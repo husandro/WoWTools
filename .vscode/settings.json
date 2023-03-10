@@ -1970,7 +1970,8 @@
         "EVENTTRACE_HEADER",
         "DEBUG_FRAMESTACK",
         "OTHER",
-        "PetBattleFrameXPBar"
+        "PetBattleFrameXPBar",
+        "HUD_EDIT_MODE_RESET_POSITION"
     ],
     "Lua.diagnostics.disable": [
     ]
