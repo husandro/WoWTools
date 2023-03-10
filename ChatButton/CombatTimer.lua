@@ -10,8 +10,7 @@ local Save= {textScale=1.2,
         afk={num= 0, time= 0},
         hideCombatText= true,--隐藏, 战斗, 文本
 }
-local button
-local panel= CreateFrame("Frame")
+local button= e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
 
 local OnLineTime--在线时间
 local OnCombatTime--战斗时间
@@ -67,11 +66,22 @@ local function setText()--设置显示内容
     button.text:SetText(text or LastText or '')
 end
 
-local function check_Event()--检测事件
-    if not button.updatFrame then
-        return
+local function setPetText()--宠物战斗, 设置显示内容
+    local text= format(e.onlyChinese and '%d轮' or PET_BATTLE_COMBAT_LOG_NEW_ROUND, PetRound.round or 0)
+    if  C_PetBattles.IsWildBattle() then
+        text=text..'|A:worldquest-icon-petbattle:0:0|a'
+    elseif PetRound.PVP then
+        text=text..'|A:pvptalents-warmode-swords:0:0|a'
+    else
+        text=text..'|A:jailerstower-animapowerlist-offense:0:0|a'
     end
+    if PetAll.num>0 then
+        text=text..' '..PetAll.win..'/'..PetAll.num
+    end
+    PetRound.text=text
+end
 
+local function check_Event()--检测事件
     local time=GetTime()
     if UnitIsAFK('player') then
         if not OnAFKTime then--AFk时,播放声音
@@ -134,10 +144,10 @@ local function check_Event()--检测事件
     if IsInInstance() then--副本
         OnInstanceTime= OnInstanceTime or time
         InstanceDate.map= InstanceDate.map or e.GetUnitMapName('player')
-        panel:RegisterEvent('PLAYER_DEAD')--死亡
-        panel:RegisterEvent('PLAYER_UNGHOST')
-        panel:RegisterEvent('PLAYER_ALIVE')
-        panel:RegisterEvent('UNIT_FLAGS')--杀怪
+        button.textButton:RegisterEvent('PLAYER_DEAD')--死亡
+        button.textButton:RegisterEvent('PLAYER_UNGHOST')
+        button.textButton:RegisterEvent('PLAYER_ALIVE')
+        button.textButton:RegisterEvent('UNIT_FLAGS')--杀怪
     elseif OnInstanceTime then
         local text, sec= e.GetTimeInfo(OnInstanceTime, not Save.timeTypeText)
         if sec>60 or InstanceDate.dead>0 or InstanceDate.kill>0 then
@@ -146,173 +156,195 @@ local function check_Event()--检测事件
         end
         LastText='|cnGREEN_FONT_COLOR:|A:CrossedFlagsWithTimer:0:0|a'..text..' |A:BuildanAbomination-32x32:0:0|a'..InstanceDate.kill..' |A:poi-soulspiritghost:0:0|a'..InstanceDate.dead..'|r'
         print(id, InstanceDate.map or (e.onlyChinese and '副本' or INSTANCE), text)
-        panel:UnregisterEvent('PLAYER_DEAD')
-        panel:UnregisterEvent('PLAYER_UNGHOST')
-        panel:UnregisterEvent('PLAYER_ALIVE')
-        panel:UnregisterEvent('UNIT_FLAGS')
+        button.textButton:UnregisterEvent('PLAYER_DEAD')
+        button.textButton:UnregisterEvent('PLAYER_UNGHOST')
+        button.textButton:UnregisterEvent('PLAYER_ALIVE')
+        button.textButton:UnregisterEvent('UNIT_FLAGS')
         InstanceDate={time= 0, kill=0, dead=0}--副本数据{dead死亡,kill杀怪, map地图}
         OnInstanceTime=nil
     end
-    button.updatFrame:SetShown((OnAFKTime or OnCombatTime or OnPetTime or OnInstanceTime) and true or false)--设置更新数据,显示/隐藏 button.updatFrame
+    button.frame:SetShown(OnAFKTime or OnCombatTime or OnPetTime or OnInstanceTime)--设置更新数据,显示/隐藏 button.frame
     setText()--设置显示内容
 end
 
 
-local function setTexture()--设置,图标, 颜色
-    local texture
-    if not Save.specializationTexture then
-        local faction=UnitFactionGroup('player')
-        if faction=='Alliance' then
-            texture= 255130
-        elseif faction=='Horde' then
-            texture= 2565244
-        end
-    else
-        local specializationID=GetSpecialization()--当前专精
-        if specializationID then
-            texture = select(4, GetSpecializationInfo(specializationID))
-        end
-    end
-    if texture then
-        button.texture:SetTexture(texture)
-    else
-        button.texture:SetAtlas('Mobile-MechanicIcon-Powerful')
-    end
-
-    if Save.classColor then
-        if button.text then
-            button.text:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
-        end
-        button.texture2:SetColorTexture(e.Player.r, e.Player.g, e.Player.b)
-    else
-        if button.text then
-            button.text:SetTextColor(0.8, 0.8, 0.8)
-        end
-        button.texture2:SetColorTexture(1,0,0)
-    end
-end
-
-local function setTextFrame()--设置显示内容, 父框架button.textFrame, 内容button.text
+local function set_Text_Button()--设置显示内容, 父框架button.textButton, 内容button.text
     if Save.disabledText then
+        if button.textButton then
+            button.textButton:UnregisterAllEvents()
+            button.textButton:SetShown(false)
+        end
         return
     end
 
-    if Save.textFramePoint then
-        button.textFrame:SetPoint(Save.textFramePoint[1], UIParent, Save.textFramePoint[3], Save.textFramePoint[4], Save.textFramePoint[5])
-    else
-        button.textFrame:SetPoint('BOTTOMLEFT', button, 'BOTTOMRIGHT')
-    end
-    button.textFrame:RegisterForDrag("RightButton")
-    button.textFrame:SetMovable(true)
-    button.textFrame:SetClampedToScreen(true)
-    button.textFrame:SetScript("OnDragStart", function(self, d)
-        if not IsModifierKeyDown() and d=='RightButton' then
-            self:StartMoving()
-        end
-    end)
-    button.textFrame:SetScript("OnDragStop", function(self)
-        ResetCursor()
-        self:StopMovingOrSizing()
-        Save.textFramePoint={self:GetPoint(1)}
-        Save.textFramePoint[2]=nil
-        print(id, addName, e.onlyChinese and '重设到默认位置' or HUD_EDIT_MODE_RESET_POSITION, 'Alt+'..e.Icon.right)
-    end)
-    button.textFrame:SetScript("OnMouseDown", function(self,d)
-        if d=='LeftButton' then--提示移动
-            button.text:SetText('')
+    if not button.textButton then
+        button.textButton= e.Cbtn(WoWToolsChatButtonFrame, {icon='hide', size={20,20}})
 
-        elseif d=='RightButton' and not IsModifierKeyDown() then--移动光标
-            SetCursor('UI_MOVE_CURSOR')
-
-        elseif d=='RightButton' and IsAltKeyDown() then--还原
-            Save.textFramePoint=nil
-            button.textFrame:ClearAllPoints()
-            button.textFrame:SetPoint('BOTTOMLEFT', button, 'BOTTOMRIGHT')
+        if Save.textFramePoint then
+            button.textButton:SetPoint(Save.textFramePoint[1], UIParent, Save.textFramePoint[3], Save.textFramePoint[4], Save.textFramePoint[5])
+        else
+            button.textButton:SetPoint('BOTTOMLEFT', button, 'BOTTOMRIGHT')
         end
-    end)
-    button.textFrame:SetScript("OnMouseUp", function(self, d)
-        ResetCursor()
-    end)
-    button.textFrame:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '清除' or CLEAR or KEY_NUMLOCK_MAC, e.Icon.left)
-        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
-        e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE,'Alt+'..e.Icon.mid)
-        e.tips:AddLine(' ')
-        --if Save.bat.num>0 then--战斗
+        button.textButton:RegisterForDrag("RightButton")
+        button.textButton:SetMovable(true)
+        button.textButton:SetClampedToScreen(true)
+        button.textButton:SetScript("OnDragStart", function(self, d)
+            if not IsModifierKeyDown() and d=='RightButton' then
+                self:StartMoving()
+            end
+        end)
+        button.textButton:SetScript("OnDragStop", function(self)
+            ResetCursor()
+            self:StopMovingOrSizing()
+            Save.textFramePoint={self:GetPoint(1)}
+            Save.textFramePoint[2]=nil
+            print(id, addName, e.onlyChinese and '重设到默认位置' or HUD_EDIT_MODE_RESET_POSITION, 'Alt+'..e.Icon.right)
+        end)
+        button.textButton:SetScript("OnMouseDown", function(self,d)
+            if d=='LeftButton' then--提示移动
+                button.text:SetText('')
+
+            elseif d=='RightButton' and not IsModifierKeyDown() then--移动光标
+                SetCursor('UI_MOVE_CURSOR')
+
+            elseif d=='RightButton' and IsAltKeyDown() then--还原
+                Save.textFramePoint=nil
+                button.textButton:ClearAllPoints()
+                button.textButton:SetPoint('BOTTOMLEFT', button, 'BOTTOMRIGHT')
+            end
+        end)
+        button.textButton:SetScript("OnMouseUp", function(self, d)
+            ResetCursor()
+        end)
+        button.textButton:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(e.onlyChinese and '清除' or CLEAR or KEY_NUMLOCK_MAC, e.Icon.left)
+            e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
+            e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE,'Alt+'..e.Icon.mid)
+            e.tips:AddLine(' ')
             e.tips:AddDoubleLine((e.onlyChinese and '战斗' or COMBAT)..'|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a'..SecondsToTime(Save.bat.time), Save.bat.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
-        --end
-        --if Save.pet.num>0 then--宠物战斗
             e.tips:AddDoubleLine((PetAll.num>0 and PetAll.win..'/'..PetAll.num or (e.onlyChinese and '宠物' or PET))..'|A:worldquest-icon-petbattle:0:0|a'..Save.pet.win..'|r/'..Save.pet.num, Save.pet.capture..' |T646379:0|t')
-        --end
-        --if Save.afk.num>0 then--AFK
             e.tips:AddDoubleLine((e.onlyChinese and '离开' or AFK)..e.Icon.clock2..SecondsToTime(Save.afk.time), Save.afk.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
-        --end
-        --if Save.ins.num>0 then
-           e.tips:AddDoubleLine((e.onlyChinese and '副本' or INSTANCE)..'|A:BuildanAbomination-32x32:0:0|a'..Save.ins.kill..'|A:poi-soulspiritghost:0:0|a'..Save.ins.dead, Save.ins.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)..' |A:CrossedFlagsWithTimer:0:0|a'..e.GetTimeInfo(Save.ins.time))
-        --end
-        e.tips:Show()
-    end)
-    button.textFrame:SetScript("OnLeave", function(self, d)
-        e.tips:Hide()
-        self:SetButtonState('NORMAL')
-    end)
-    button.textFrame:SetScript('OnMouseWheel', function(self, d)--缩放
-        if IsAltKeyDown() then
-            local text=button.text:GetText()
-            if not text or text=='' then
-                button.text:SetText(UI_SCALE)
+            e.tips:AddDoubleLine((e.onlyChinese and '副本' or INSTANCE)..'|A:BuildanAbomination-32x32:0:0|a'..Save.ins.kill..'|A:poi-soulspiritghost:0:0|a'..Save.ins.dead, Save.ins.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)..' |A:CrossedFlagsWithTimer:0:0|a'..e.GetTimeInfo(Save.ins.time))
+            e.tips:Show()
+        end)
+        button.textButton:SetScript("OnLeave", function(self, d)
+            e.tips:Hide()
+            self:SetButtonState('NORMAL')
+        end)
+        button.textButton:SetScript('OnMouseWheel', function(self, d)--缩放
+            if IsAltKeyDown() then
+                local text=button.text:GetText()
+                if not text or text=='' then
+                    button.text:SetText(UI_SCALE)
+                end
+                local sacle=Save.textScale or 1
+                if d==1 then
+                    sacle=sacle+0.1
+                elseif d==-1 then
+                    sacle=sacle-0.1
+                end
+                if sacle>3 then
+                    sacle=3
+                elseif sacle<0.6 then
+                    sacle=0.6
+                end
+                print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, sacle)
+                button.text:SetScale(sacle)
+                Save.textScale=sacle
             end
-            local sacle=Save.textScale or 1
-            if d==1 then
-                sacle=sacle+0.1
-            elseif d==-1 then
-                sacle=sacle-0.1
-            end
-            if sacle>3 then
-                sacle=3
-            elseif sacle<0.6 then
-                sacle=0.6
-            end
-            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, sacle)
-            button.text:SetScale(sacle)
-            Save.textScale=sacle
-        end
-    end)
+        end)
+        button.textButton:SetScript('OnEvent', function(self, event, arg1)
+            if event=='PLAYER_FLAGS_CHANGED' then--AFK
+                check_Event()--检测事件
 
-    button.text=e.Cstr(button.textFrame)
-    button.text:SetPoint('BOTTOMLEFT')
-    if Save.textScale and Save.textScale~=1 then
-        button.text:SetScale(Save.textScale)
+            elseif event=='PET_BATTLE_OPENING_DONE' then
+                check_Event()--检测事件
+    
+            elseif event=='PET_BATTLE_PVP_DUEL_REQUESTED' then--宠物战斗
+                PetRound.PVP =true
+                setPetText()--宠物战斗, 设置显示内容
+            elseif (event=='PET_BATTLE_PET_ROUND_RESULTS' or event=='PET_BATTLE_PET_ROUND_PLAYBACK_COMPLETE') and arg1 then
+                PetRound.round=arg1
+                setPetText()--宠物战斗, 设置显示内容
+            elseif event=='PET_BATTLE_CAPTURED' and arg1 and arg1==2 then--捕获
+                PetRound.capture=true
+                setPetText()--宠物战斗, 设置显示内容
+            elseif event=='PET_BATTLE_FINAL_ROUND' and arg1 then--结束
+                if arg1==1 then--赢
+                    PetRound.win=true
+                end
+                setPetText()--宠物战斗, 设置显示内容
+            elseif event=='PET_BATTLE_CLOSE' then
+                check_Event()--检测事件
+    
+            elseif event=='PLAYER_ENTERING_WORLD' then--副本,杀怪,死亡
+                isInPvPInstance=C_PvP.IsBattleground() or C_PvP.IsArena()--是否在战场
+                check_Event()--检测事件
+    
+            elseif event=='PLAYER_DEAD' or event=='PLAYER_UNGHOST' or event=='PLAYER_ALIVE' then
+                if event=='PLAYER_DEAD' and not OnInstanceDeadCheck then
+                    InstanceDate.dead= InstanceDate.dead +1
+                    Save.ins.dead= Save.ins.dead +1
+                    OnInstanceDeadCheck= true
+                else
+                    OnInstanceDeadCheck=nil
+                end
+    
+            elseif event=='UNIT_FLAGS' and arg1 then--杀怪,数量
+                if arg1:find('nameplate') and UnitIsEnemy(arg1, 'player') and UnitIsDead(arg1) then
+                    if isInPvPInstance and UnitIsPlayer(arg1) or not isInPvPInstance then
+                        InstanceDate.kill= InstanceDate.kill +1
+                        Save.ins.kill= Save.ins.kill +1
+                    end
+                end
+            end
+        end)
+
+        button.text= e.Cstr(button.textButton)
+        button.text:SetPoint('BOTTOMLEFT')
+        if Save.textScale and Save.textScale~=1 then
+            button.text:SetScale(Save.textScale)
+        end
+
+        button.frame=CreateFrame("Frame", nil, button.textButton)
+        button.frame.elapsed=0
+        button.frame:HookScript("OnUpdate", function (self, elapsed)
+            self.elapsed = self.elapsed + elapsed
+            if self.elapsed > 0.3 then
+                self.elapsed = 0
+                setText()--设置显示内容
+            end
+        end)
     end
 
-    button.updatFrame=CreateFrame("Frame", nil, button)
-    button.updatFrame:SetShown(true)
+    button.textButton:RegisterEvent('PLAYER_FLAGS_CHANGED')--AFK
+    button.textButton:RegisterEvent('PET_BATTLE_OPENING_DONE')--宠物战斗
+    button.textButton:RegisterEvent('PET_BATTLE_CLOSE')
+    button.textButton:RegisterEvent('PET_BATTLE_PET_ROUND_RESULTS')
+    button.textButton:RegisterEvent('PET_BATTLE_FINAL_ROUND')
+    button.textButton:RegisterEvent('PET_BATTLE_CAPTURED')
+    button.textButton:RegisterEvent('PET_BATTLE_PET_ROUND_PLAYBACK_COMPLETE')
+    button.textButton:RegisterEvent('PLAYER_ENTERING_WORLD')--副本,杀怪,死亡
+    button.textButton:SetShown(true)
 
-    local timeElapsed = 0
-    button.updatFrame:HookScript("OnUpdate", function (self, elapsed)
-        timeElapsed = timeElapsed + elapsed
-        if timeElapsed > 0.3 then
-            timeElapsed = 0
-            setText()--设置显示内容
-        end
-    end)
-
-    panel:RegisterEvent('PLAYER_FLAGS_CHANGED')--AFK
-
-    panel:RegisterEvent('PET_BATTLE_OPENING_DONE')--宠物战斗
-    panel:RegisterEvent('PET_BATTLE_CLOSE')
-    panel:RegisterEvent('PET_BATTLE_PET_ROUND_RESULTS')
-    panel:RegisterEvent('PET_BATTLE_FINAL_ROUND')
-    panel:RegisterEvent('PET_BATTLE_CAPTURED')
-    panel:RegisterEvent('PET_BATTLE_PET_ROUND_PLAYBACK_COMPLETE')
-
-    panel:RegisterEvent('PLAYER_ENTERING_WORLD')--副本,杀怪,死亡
     check_Event()--检测事件
 
     isInPvPInstance=C_PvP.IsBattleground() or C_PvP.IsArena()--是否在战场
 end
+
+
+
+
+local function set_textButton_Disabled_Enable()--禁用, 启用, textButton
+    Save.disabledText = not Save.disabledText and true or nil
+    if not Save.disabledText then
+        button.textButton:SetButtonState('PUSHED')
+    end
+    button.texture:SetDesaturated(Save.disabledText)
+end
+
 
 --#####
 --主菜单
@@ -320,19 +352,6 @@ end
 local function InitMenu(self, level, type)--主菜单
     local info
     if type=='SETTINGS' then
-        info={--图标类型
-            text= e.onlyChinese and ('图标类型: |cnGREEN_FONT_COLOR:'..(not Save.specializationTexture and '派系|r' or '专精|r')) or (EMBLEM_SYMBOL..': |cnGREEN_FONT_COLOR:'..(not Save.specializationTexture and FACTION or SPECIALIZATION)..'|r'),
-            checked= Save.specializationTexture,
-            tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and '类型' or TYPE,
-            tooltipText= e.onlyChinese and '派系\n专精' or FACTION..'\n'..SPECIALIZATION,
-            func= function()
-                Save.specializationTexture= not Save.specializationTexture and true or nil
-                setTexture()--设置,图标
-            end
-        }
-        UIDropDownMenu_AddButton(info, level)
-
         info={--时间类型
             text= (e.onlyChinese and '时间类型' or TIME_LABEL)..' |cnGREEN_FONT_COLOR:'..(Save.timeTypeText and SecondsToTime(35) or '00:35')..'|r',
             checked= Save.timeTypeText,
@@ -370,17 +389,6 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text= e.onlyChinese and '职业颜色' or CLASS_COLORS,
-            checked= Save.classColor,
-            colorCode= Save.classColor and e.Player.col or '|cffd0d0d0',
-            func=function()
-                Save.classColor= not Save.classColor and true or nil
-                setTexture()--设置,图标, 颜色
-            end
-        }
-        UIDropDownMenu_AddButton(info, level)
-
-        info={--
             text= ((e.onlyChinese and '战斗时间' or COMBAT)..'|A:communities-icon-chat:0:0|a'..(e.onlyChinese and '每: ' or EVENTTRACE_TIMESTAMP)..Save.Say),
             checked= Save.Say and true or nil,
             tooltipOnButton=true,
@@ -396,8 +404,6 @@ local function InitMenu(self, level, type)--主菜单
         info={
             text= e.onlyChinese and '总游戏时间'..((tab and tab.totalTime) and ': '..SecondsToTime(tab.totalTime) or '') or TIME_PLAYED_TOTAL:format((tab and tab.totalTime) and SecondsToTime(tab.totalTime) or ''),
             checked= Save.AllOnlineTime,
-            --tooltipOnButton= true,
-            --tooltipTitle= e.onlyChinese and ('你在这个等级的游戏时间：%s'):format((tab and tab.levelTime) and '\n'..SecondsToTime(tab.levelTime) or '') or TIME_PLAYED_LEVEL:format((tab and tab.levelTime) and '\n'..SecondsToTime(tab.levelTime) or ''),
             menuList='AllOnlineTime',
             hasArrow=true,
             func= function()
@@ -468,22 +474,13 @@ local function InitMenu(self, level, type)--主菜单
         end
         UIDropDownMenu_AddSeparator(level)
 
-        info={
-            text= e.onlyChinese and '设置' or SETTINGS,
-            notCheckable=true,
-            hasArrow=true,
-            menuList='SETTINGS',
-            colorCode= Save.disabledText and '|cff606060',
-        }
-        UIDropDownMenu_AddButton(info, level)
 
         info={
             text= e.onlyChinese and '信息' or INFO,
             checked= not Save.disabledText,
-            func=function()
-                Save.disabledText= not Save.disabledText and true or nil
-                print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
-            end
+            hasArrow=true,
+            menuList='SETTINGS',
+            func=set_textButton_Disabled_Enable--禁用, 启用, textButton
         }
         UIDropDownMenu_AddButton(info, level)
     end
@@ -501,65 +498,61 @@ local function Init()
     button.texture2=button:CreateTexture(nil, 'OVERLAY')
     button.texture2:SetAllPoints(button)
     button.texture2:AddMaskTexture(button.mask)
+    button.texture2:SetColorTexture(1,0,0)
     button.texture2:SetShown(false)
 
     button.Menu=CreateFrame("Frame",nil, button, "UIDropDownMenuTemplate")--菜单框架
     UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
     button:SetScript('OnMouseDown', function(self, d)
+        if d=='ButtonRight' then
         ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+        elseif d=='LeftButton' then
+            set_textButton_Disabled_Enable()--禁用, 启用, textButton
+        end
     end)
 
+    set_Text_Button()--设置显示内容,框架 button.textButton,内容 button.text
 
-    setTextFrame()--设置显示内容,框架 button.textFrame,内容 button.text
-    C_Timer.After(2, setTexture)--设置,图标, 颜色
+    if e.Player.faction=='Alliance' then
+        button.texture:SetAtlas(e.Icon.alliance)
+    elseif e.Player.faction=='Horde' then
+        button.texture:SetAtlas(e.Icon.horde)
+    else
+        button.texture:SetAtlas('nameplates-icon-flag-neutral')
+    end
 
     if Save.AllOnlineTime or not e.WoWSave[e.Player.guid].Time.totalTime then--总游戏时间
         RequestTimePlayed()
     end
 end
 
-local function setPetText()--宠物战斗, 设置显示内容
-    local text= format(e.onlyChinese and '%d轮' or PET_BATTLE_COMBAT_LOG_NEW_ROUND, PetRound.round or 0)
-    if  C_PetBattles.IsWildBattle() then
-        text=text..'|A:worldquest-icon-petbattle:0:0|a'
-    elseif PetRound.PVP then
-        text=text..'|A:pvptalents-warmode-swords:0:0|a'
-    else
-        text=text..'|A:jailerstower-animapowerlist-offense:0:0|a'
-    end
-    if PetAll.num>0 then
-        text=text..' '..PetAll.win..'/'..PetAll.num
-    end
-    PetRound.text=text
-end
+
 
 --###########
 --加载保存数据
 --###########
-panel:RegisterEvent("ADDON_LOADED")
+button:RegisterEvent("ADDON_LOADED")
 
-panel:SetScript("OnEvent", function(self, event, arg1)
+button:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
+            if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
+                button:SetShown(false)
+            else
 
                 Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
-                button=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
-                button.textFrame=e.Cbtn(WoWToolsChatButtonFrame, {icon='hide', size={20,20}})
-                if WoWToolsSave and not WoWToolsSave[addName] then
-                    button.textFrame:SetButtonState('PUSHED')
-                end
+
+                button:RegisterEvent('PLAYER_REGEN_DISABLED')
+                button:RegisterEvent('PLAYER_REGEN_ENABLED')
+                button:RegisterEvent("PLAYER_LOGOUT")
 
                 Init()
 
-                panel:RegisterEvent('PLAYER_REGEN_DISABLED')
-                panel:RegisterEvent('PLAYER_REGEN_ENABLED')
-                panel:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED')
-                panel:RegisterEvent("PLAYER_LOGOUT")
+                
             end
-            panel:UnregisterEvent('ADDON_LOADED')
+            button:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event == "PLAYER_LOGOUT" then
@@ -570,65 +563,20 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='PLAYER_REGEN_ENABLED' then
         button.texture2:SetShown(false)
-        check_Event()--检测事件
         if Save.combatScale then--战斗中缩放
             button:SetScale(1)
+        end
+        if not Save.disabledText then
+            check_Event()--检测事件
         end
 
     elseif event=='PLAYER_REGEN_DISABLED' then
         button.texture2:SetShown(true)
-        check_Event()--检测事件
         if Save.combatScale then--战斗中缩放
             button:SetScale(1.3)
         end
-
-    elseif event=='PLAYER_SPECIALIZATION_CHANGED' then
-        setTexture()--设置,图标
-
-    elseif event=='PLAYER_FLAGS_CHANGED' then--AFK
-        check_Event()--检测事件
-
-
-    elseif event=='PET_BATTLE_OPENING_DONE' then
-        check_Event()--检测事件
-
-    elseif event=='PET_BATTLE_PVP_DUEL_REQUESTED' then--宠物战斗
-        PetRound.PVP =true
-        setPetText()--宠物战斗, 设置显示内容
-    elseif (event=='PET_BATTLE_PET_ROUND_RESULTS' or event=='PET_BATTLE_PET_ROUND_PLAYBACK_COMPLETE') and arg1 then
-        PetRound.round=arg1
-        setPetText()--宠物战斗, 设置显示内容
-    elseif event=='PET_BATTLE_CAPTURED' and arg1 and arg1==2 then--捕获
-        PetRound.capture=true
-        setPetText()--宠物战斗, 设置显示内容
-    elseif event=='PET_BATTLE_FINAL_ROUND' and arg1 then--结束
-        if arg1==1 then--赢
-            PetRound.win=true
-        end
-        setPetText()--宠物战斗, 设置显示内容
-    elseif event=='PET_BATTLE_CLOSE' then
-        check_Event()--检测事件
-
-    elseif event=='PLAYER_ENTERING_WORLD' then--副本,杀怪,死亡
-        isInPvPInstance=C_PvP.IsBattleground() or C_PvP.IsArena()--是否在战场
-        check_Event()--检测事件
-
-    elseif event=='PLAYER_DEAD' or event=='PLAYER_UNGHOST' or event=='PLAYER_ALIVE' then
-        if event=='PLAYER_DEAD' and not OnInstanceDeadCheck then
-            InstanceDate.dead= InstanceDate.dead +1
-            Save.ins.dead= Save.ins.dead +1
-            OnInstanceDeadCheck= true
-        else
-            OnInstanceDeadCheck=nil
-        end
-        --local InstanceDate={num= 0, time= 0, kill=0, dead=0}--副本数据{dead死亡,kill杀怪, map地图}
-
-    elseif event=='UNIT_FLAGS' and arg1 then--杀怪,数量
-        if arg1:find('nameplate') and UnitIsEnemy(arg1, 'player') and UnitIsDead(arg1) then
-            if isInPvPInstance and UnitIsPlayer(arg1) or not isInPvPInstance then
-                InstanceDate.kill= InstanceDate.kill +1
-                Save.ins.kill= Save.ins.kill +1
-            end
+        if not Save.disabledText then
+            check_Event()--检测事件
         end
     end
 end)
