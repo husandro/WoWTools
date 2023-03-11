@@ -578,7 +578,6 @@ local function Init()
     --开启, 新手編輯模式
     --################
     if C_PlayerInfo.IsPlayerNPERestricted() then
-        C_PlayerInfo.IsPlayerNPERestricted= function() return true end
         --[[EditModeManagerFrame.CanEnterEditMode = function(self)--EditModeManager.lua
              return TableIsEmpty(self.FramesBlockingEditMode)
         end]]
@@ -588,6 +587,7 @@ local function Init()
                 MinimapCluster:SetShown(true)
             end
         end)
+        C_PlayerInfo.IsPlayerNPERestricted= function() return true end
     end
 end
 
