@@ -1974,7 +1974,9 @@
         "HUD_EDIT_MODE_RESET_POSITION",
         "WORLD",
         "OKAY",
-        "SpellBookSkillLineTab6"
+        "SpellBookSkillLineTab6",
+        "ClubFinderGuildFinderFrame",
+        "LFDQueueFrameSpecific"
     ],
     "Lua.diagnostics.disable": [
     ]

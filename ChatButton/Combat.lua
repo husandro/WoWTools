@@ -10,7 +10,7 @@ local Save= {textScale=1.2,
         afk={num= 0, time= 0},
         hideCombatText= true,--隐藏, 战斗, 文本
 }
-local button= e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
+local button
 
 local OnLineTime--在线时间
 local OnCombatTime--战斗时间
@@ -534,27 +534,23 @@ end
 --###########
 --加载保存数据
 --###########
-button:RegisterEvent("ADDON_LOADED")
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
 
-button:SetScript("OnEvent", function(self, event, arg1)
+panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
-                button:SetShown(false)
-            else
-
+            if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
+                button=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
                 Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
-
-                button:RegisterEvent('PLAYER_REGEN_DISABLED')
-                button:RegisterEvent('PLAYER_REGEN_ENABLED')
-                button:RegisterEvent("PLAYER_LOGOUT")
+                panel:RegisterEvent('PLAYER_REGEN_DISABLED')
+                panel:RegisterEvent('PLAYER_REGEN_ENABLED')
+                panel:RegisterEvent("PLAYER_LOGOUT")
 
                 Init()
-
-
             end
-            button:UnregisterEvent('ADDON_LOADED')
+            panel:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event == "PLAYER_LOGOUT" then

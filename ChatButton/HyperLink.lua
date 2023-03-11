@@ -1032,22 +1032,27 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
             --panel:UnregisterEvent('ADDON_LOADED')
 
         elseif arg1=='Blizzard_DebugTools' then--FSTACK Blizzard_DebugTools.lua
-           local edit= CreateFrame("EditBox", nil, TableAttributeDisplay, 'InputBoxTemplate')
-           edit:SetPoint("BOTTOMRIGHT", TableAttributeDisplay.TitleButton, 'TOPRIGHT',0,2)
-           edit:SetSize(TableAttributeDisplay:GetWidth()-80, 20)
-           edit:SetAutoFocus(false)
-           edit.elapsed= 0
-           edit:SetScript('OnUpdate', function(self2, elapsed)
-                self2.elapsed= self2.elapsed +elapsed
-                if self2.elapsed>0.3 then
-                    if not self2:HasFocus() then
-                        local text = TableAttributeDisplay.TitleButton.Text:GetText()
-                        if text and text~='' then
-                            edit:SetText(text:match('%- (.+)') or text)
+            local btn= e.Cbtn(TableAttributeDisplay, {icon='hide', size={40,40}})
+            btn:SetPoint("BOTTOMRIGHT", TableAttributeDisplay.TitleButton, 'TOPRIGHT',0,2)
+            btn:SetNormalAtlas(e.Icon.icon)
+            btn:SetScript('OnClick', FrameStackTooltip_ToggleDefaults)
+
+            local edit= CreateFrame("EditBox", nil, TableAttributeDisplay, 'InputBoxTemplate')
+            edit:SetPoint('BOTTOMRIGHT', btn, 'BOTTOMLEFT')
+            edit:SetSize(390, 20)
+            edit:SetAutoFocus(false)
+            edit.elapsed= 0
+            edit:SetScript('OnUpdate', function(self2, elapsed)
+                    self2.elapsed= self2.elapsed +elapsed
+                    if self2.elapsed>0.3 then
+                        if not self2:HasFocus() then
+                            local text = TableAttributeDisplay.TitleButton.Text:GetText()
+                            if text and text~='' then
+                                edit:SetText(text:match('%- (.+)') or text)
+                            end
                         end
                     end
-                end
-           end)
+            end)
         end
 
     elseif event == "PLAYER_LOGOUT" then
