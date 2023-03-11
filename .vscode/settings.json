@@ -1973,7 +1973,8 @@
         "PetBattleFrameXPBar",
         "HUD_EDIT_MODE_RESET_POSITION",
         "WORLD",
-        "OKAY"
+        "OKAY",
+        "SpellBookSkillLineTab6"
     ],
     "Lua.diagnostics.disable": [
     ]
