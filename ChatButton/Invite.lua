@@ -487,18 +487,18 @@ local function InitList(self, level, type)
         hasEditBox=1,
         button1= e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/',''),
         button2=CANCEL,
-        OnShow = function(self, data)
-            self.editBox:SetText(Save.ChannelText or (e.Player.zh and '1' or 'inv'))
+        OnShow = function(self2, data)
+            self2.editBox:SetText(Save.ChannelText or (e.Player.zh and '1' or 'inv'))
             --self.button3:SetEnabled(Save.Mounts[FLOOR][data.spellID] and true or false)
         end,
-        OnAccept = function(self, data)
+        OnAccept = function(self2, data)
             Save.ChannelText = string.upper(self.editBox:GetText())
             print(id, addName, e.onlyChinese and '频道' or CHANNEL,'|cnGREEN_FONT_COLOR:'..Save.ChannelText..'|r')
         end,
-        EditBoxOnTextChanged=function(self, data)
-            local text= self:GetText()
+        EditBoxOnTextChanged=function(self2, data)
+            local text= self2:GetText()
             text=text:gsub(' ','')
-            self:GetParent().button1:SetEnabled(text~='')
+            self2:GetParent().button1:SetEnabled(text~='')
         end,
         EditBoxOnEscapePressed = function(s)
             s:GetParent():Hide()

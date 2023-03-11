@@ -206,7 +206,10 @@ local function MoveFrame(self, savePointName)
             self2:StopMovingOrSizing()
             Save[savePointName]={self2:GetPoint(1)}
     end);
-    self:SetScript('OnLeave', function() e.tips:Hide() end)
+    self:SetScript('OnLeave', function()
+        self:SetButtonState("NORMAL")
+        e.tips:Hide()
+    end)
     self:EnableMouseWheel(true)
     self:SetScript('OnMouseWheel', function(self2, d)
         local size=Save.EncounterJournalFontSize or 12
@@ -489,6 +492,9 @@ local function Init()--冒险指南界面
                 Save.hideInstanceBossText=nil
             end
             setInstanceBossText()
+            if panel.instanceBoss then
+                panel.instanceBoss:SetButtonState('PUSHED')
+            end
     end)
     EncounterJournal.instance:SetScript("OnLeave",function() e.tips:Hide() end)
 
@@ -504,6 +510,9 @@ local function Init()--冒险指南界面
             Save.hideWorldBossText=nil
         end
         setWorldbossText()
+        if panel.WorldBoss then
+            panel.WorldBoss:SetButtonState('PUSHED')
+        end
     end)
     EncounterJournal.Worldboss:SetScript("OnLeave",function() e.tips:Hide() end)
 
@@ -923,7 +932,7 @@ local function Init()--冒险指南界面
                 EncounterJournal.creatureDisplayIDText=e.Cstr(self,{size=10, fontType=EncounterJournal.encounter.info.model.imageTitle})--10, EncounterJournal.encounter.info.model.imageTitle)
                 EncounterJournal.creatureDisplayIDText:SetPoint('BOTTOM', EncounterJournal.encounter.info.model.imageTitle, 'TOP', 0 , 10)
             end
-            
+
             if EncounterJournal.iconImage  then
                 text= (text or '')..'|T'..EncounterJournal.iconImage..':0|t'..EncounterJournal.iconImage..'\n'
             end

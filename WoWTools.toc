@@ -136,7 +136,7 @@ ChatButton\Invite.lua
 ##查找器， 地下城和团队， 自动退出，进入，Roll装
 ChatButton\LFD.lua
 ##世界频道
-ChatButton\WorldChannel.lua
+ChatButton\World.lua
 ##公会
 ChatButton\Guild.lua
 ##队伍

@@ -1972,7 +1972,8 @@
         "OTHER",
         "PetBattleFrameXPBar",
         "HUD_EDIT_MODE_RESET_POSITION",
-        "WORLD"
+        "WORLD",
+        "OKAY"
     ],
     "Lua.diagnostics.disable": [
     ]

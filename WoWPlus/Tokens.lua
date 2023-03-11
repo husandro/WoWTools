@@ -181,7 +181,11 @@ local function Set()
 			e.tips:AddDoubleLine(id, addName)
 			e.tips:Show();
 		end)
-		panel.btn:SetScript("OnLeave", function() ResetCursor()  e.tips:Hide() end);
+		panel.btn:SetScript("OnLeave", function(self2)
+			self2:SetButtonState("NORMAL")
+			ResetCursor()
+			e.tips:Hide()
+		end);
 		panel.btn:EnableMouseWheel(true)
 		panel.btn:SetScript("OnMouseWheel", function (self2, d)
 			if IsAltKeyDown() then
@@ -233,6 +237,9 @@ local function Init()
 		Save.Hide= not Save.Hide and true or nil
 		print(id, addName, e.GetEnabeleDisable(not Save.Hide))
 		Set()
+		if panel.btn then
+			panel.btn:SetButtonState('PUSHED')
+		end
 	end)
 	panel:SetScript("OnEnter", function(self2)
 		e.tips:SetOwner(self2, "ANCHOR_LEFT")

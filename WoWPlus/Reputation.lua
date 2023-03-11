@@ -181,7 +181,11 @@ local function Set_Reputation_Text()--监视, 文本
 			e.tips:AddDoubleLine((e.onlyChinese and '隐藏最高声望' or (VIDEO_OPTIONS_ULTRA_HIGH..addName))..': '..e.GetShowHide(not Save.btnStrHideCap), 'Shift + '..e.Icon.left)
 			e.tips:Show();
 		end)
-		panel.btn:SetScript("OnLeave", function() ResetCursor()  e.tips:Hide() end);
+		panel.btn:SetScript("OnLeave", function(self2)
+			self2:SetButtonState("NORMAL")
+			ResetCursor()
+			e.tips:Hide()
+		end);
 		panel.btn:EnableMouseWheel(true)
 		panel.btn:SetScript("OnMouseWheel", function (self2, d)--打开,关闭, 声望
 			if IsAltKeyDown() then--缩放
@@ -473,6 +477,9 @@ local function InitMenu(self, level, type)
 		func= function()
 			Save.btn= not Save.btn and true or nil
 			Set_Reputation_Text()--监视, 文本
+			if panel.btn then
+				panel.btn:SetButtonState('PUSHED')
+			end
 			print(id, addName, e.onlyChinese and '文本' or LOCALE_TEXT_LABEL, e.GetShowHide(Save.btn))
 		end
 	}
