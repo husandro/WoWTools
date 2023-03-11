@@ -1,7 +1,9 @@
 local id, e = ...
 e.L=e.L or {}--多语言
 e.tips=GameTooltip
-
+if C_PlayerInfo.IsPlayerNPERestricted() then
+    C_PlayerInfo.IsPlayerNPERestricted= function() return false end
+end
 local function GetWeek()--周数
     local d = date("*t")
     local cd=3
