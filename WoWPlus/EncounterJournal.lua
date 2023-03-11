@@ -974,10 +974,7 @@ end
 --###########
 panel:RegisterEvent("ADDON_LOADED")
 
-panel:RegisterEvent('BOSS_KILL')
-panel:RegisterEvent('UPDATE_INSTANCE_INFO')
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
-panel:RegisterEvent('WEEKLY_REWARDS_UPDATE')
+
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -996,9 +993,15 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
-        elseif arg1=='Blizzard_EncounterJournal' and not Save.disabled then---冒险指南
-            Init()--冒险指南界面
-            EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示所数据
+        elseif arg1=='Blizzard_EncounterJournal' then---冒险指南
+            if not Save.disabled then
+                Init()--冒险指南界面
+                EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示所数据
+                panel:RegisterEvent('BOSS_KILL')
+                panel:RegisterEvent('UPDATE_INSTANCE_INFO')
+                panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+                panel:RegisterEvent('WEEKLY_REWARDS_UPDATE')
+            end
         end
 
     elseif event == "PLAYER_LOGOUT" then
