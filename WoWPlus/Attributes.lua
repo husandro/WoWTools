@@ -1099,6 +1099,19 @@ local function set_Show_Hide()
     button.classPortrait:SetAlpha(Save.hide and 1 or 0.3)
 end
 
+--################
+--显示，隐藏，事件
+--################
+local function set_ShowHide_Event()
+    if Save.hideInPetBattle then
+        panel:RegisterEvent('PET_BATTLE_OPENING_DONE')
+        panel:RegisterEvent('PET_BATTLE_CLOSE')
+    else
+        panel:UnregisterEvent('PET_BATTLE_OPENING_DONE')
+        panel:UnregisterEvent('PET_BATTLE_CLOSE')
+    end
+end
+
 --#########
 --设置, 位置
 --#########
@@ -1654,6 +1667,18 @@ local function set_Panle_Setting()--设置 panel
         }
         StaticPopup_Show(id..addName..'restAllSetup')
     end)
+
+    local hideText= e.Cstr(panel)--隐藏
+    hideText:SetPoint('BOTTOMLEFT')
+    hideText:SetText(e.onlyChinese and '隐藏' or HIDE)
+    local checkHidePet= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--bar，图片，样式2
+    checkHidePet:SetPoint("LEFT", hideText, 'RIGHT')
+    checkHidePet.text:SetText(e.onlyChinese and '宠物对战' or PET_BATTLE_COMBAT_LOG)
+    checkHidePet:SetChecked(Save.hideInPetBattle)
+    checkHidePet:SetScript('OnMouseDown', function()
+        Save.hideInPetBattle= not Save.hideInPetBattle and true or nil
+        set_ShowHide_Event()--显示，隐藏，事件
+    end)
 end
 
 --####
@@ -1774,10 +1799,8 @@ local function Init()
 end
 
 
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PET_BATTLE_OPENING_DONE')
-panel:RegisterEvent('PET_BATTLE_CLOSE')
 
+panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
@@ -1824,6 +1847,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 panel:UnregisterAllEvents()
             else
                 Init()
+                set_ShowHide_Event()--显示，隐藏，事件
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
         end
