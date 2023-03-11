@@ -886,7 +886,7 @@ local function Init()
     panel.cursorCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     panel.cursorCheck:SetChecked(not Save.disabled)
     panel.cursorCheck:SetPoint("TOPLEFT", reloadButton, 'BOTTOMLEFT', 0, -5)
-    panel.cursorCheck.text:SetText((e.onlyChinese and '启用' or ENABLE).. ' Cursor')
+    panel.cursorCheck.text:SetText('1)'..(e.onlyChinese and '启用' or ENABLE).. ' Cursor')
     panel.cursorCheck:SetScript('OnMouseDown', function()
         Save.disabled = not Save.disabled and true or nil
         if not Save.disabled and not cursorFrame then
@@ -902,7 +902,7 @@ local function Init()
     panel.gcdCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     panel.gcdCheck:SetChecked(not Save.disabled)
     panel.gcdCheck:SetPoint("TOPLEFT", panel, 'TOP', 0, -35)
-    panel.gcdCheck.text:SetText((e.onlyChinese and '启用' or ENABLE).. ' GCD')
+    panel.gcdCheck.text:SetText('2)'..(e.onlyChinese and '启用' or ENABLE).. ' GCD')
     panel.gcdCheck:SetScript('OnMouseDown', function()
         Save.disabledGCD = not Save.disabledGCD and true or nil
         if not Save.disabledGCD and not gcdFrame then
