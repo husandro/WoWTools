@@ -122,10 +122,10 @@ local update_Particle = function(part,  delta)
     part.x = part.x + part.vx * delta
     part.y = part.y + part.vy * delta
 
-    if Save.rotate then
+    --if Save.rotate then
         part.a = part.a + part.va + delta
         part:SetRotation(math.rad(part.a))
-    end
+    --end
 
     local scale = math.max(0.1, part.life / Save.duration)
 
