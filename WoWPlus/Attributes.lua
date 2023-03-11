@@ -121,6 +121,7 @@ end
 --###########
 local function set_Text_Value(frame, value, value2)
     value= value or 0
+    value= value>=1 and value or 0
     if not frame.value or frame.value==0 or value==0 then
         frame.value= value
     end
@@ -1178,7 +1179,7 @@ local function set_Panle_Setting()--设置 panel
         end)
         check:SetScript('OnLeave', function(self) e.tips:Hide() end)
 
-        local text= e.Cstr(panel, {r=r,g=g,b=b,a=a})--nil, nil, nil, {r,g,b,a})--Text
+        local text= e.Cstr(panel, {color={r=r,g=g,b=b,a=a}})--nil, nil, nil, {r,g,b,a})--Text
         text:SetPoint('LEFT', check, 'RIGHT')
         text:SetText(info.text)
         if index>1 then
@@ -1190,7 +1191,7 @@ local function set_Panle_Setting()--设置 panel
                 e.ShowColorPicker(self.r, self.g, self.b,self.a, function(restore)
                     local setA, setR, setG, setB
                     if not restore then
-                        setA, setR, setG, setB = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()
+                        setR, setG, setB, setA = e.Get_ColorFrame_RGBA()
                     else
                         setA, setR, setG, setB= self.a, self.r, self.g, self.b
                     end
@@ -1307,13 +1308,13 @@ local function set_Panle_Setting()--设置 panel
     text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
     text:SetText(e.onlyChinese and '阴影' or SHADOW_QUALITY:gsub(QUALITY , ''))
     text:EnableMouse(true)
-    set_Shadow(text)--设置，字体阴影
     text.r, text.g, text.b, text.a= Save.font.r, Save.font.g, Save.font.b, Save.font.a
+    set_Shadow(text)--设置，字体阴影
     text:SetScript('OnMouseDown', function(self)
         e.ShowColorPicker(self.r, self.g, self.b, self.a, function(restore)
             local setA, setR, setG, setB
             if not restore then
-                setA, setR, setG, setB = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()
+                setR, setG, setB, setA = e.Get_ColorFrame_RGBA()
             else
                 setA, setR, setG, setB= self.a, self.r, self.g, self.b
             end
