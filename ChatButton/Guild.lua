@@ -21,11 +21,18 @@ end
 --#######
 local guildMS= GUILD_INFO_TEMPLATE:gsub('(%%.+)', '')--公会创立
 local function set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
-    if Save.guildInfo or not e.WoWSave[e.Player.guid].GuildInfo then
-        panel:RegisterEvent('CHAT_MSG_SYSTEM')
-        GuildInfo()
-    else
+    if not IsInGuild() then
+        if e.WoWSave[e.Player.guid] then
+            e.WoWSave[e.Player.guid].GuildInfo=nil
+        end
         panel:UnregisterEvent('CHAT_MSG_SYSTEM')
+    else
+        if Save.guildInfo or not e.WoWSave[e.Player.guid].GuildInfo then
+            panel:RegisterEvent('CHAT_MSG_SYSTEM')
+            GuildInfo()
+        else
+            panel:UnregisterEvent('CHAT_MSG_SYSTEM')
+        end
     end
 end
 
@@ -74,7 +81,7 @@ local function InitMenu(self, level, type)--主菜单
         text=e.onlyChinese and '公会信息' or GUILD_INFORMATION,
         checked=Save.guildInfo,
         tooltipOnButton=true,
-        tooltipTitle=e.WoWSave[e.Player.guid].GuildInfo or NONE,
+        tooltipTitle= e.WoWSave[e.Player.guid].GuildInfo or NONE,
         func=function()
             Save.guildInfo= not Save.guildInfo and true or nil
             set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
@@ -94,7 +101,7 @@ local function Init()
     UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
     setMembers()--在线人数
-    button.texture:SetAtlas('UI-HUD-MicroMenu-GuildCommunities-Up')    
+    button.texture:SetAtlas('UI-HUD-MicroMenu-GuildCommunities-Up')
     button.texture:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
 
     button:SetScript('OnMouseDown', function(self, d)
@@ -112,13 +119,14 @@ local function Init()
         button.canReplaceGuildMaster:SetText('|cnGREEN_FONT_COLOR:'..GUILD_IMPEACH_POPUP_CONFIRM..'|r')
     end
 
-    set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
+    C_Timer.After(2, set_CHAT_MSG_SYSTEM)--事件, 公会新成员, 队伍新成员
 end
 
 --###########
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterUnitEvent('PLAYER_GUILD_UPDATE', "player")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -146,5 +154,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='CHAT_MSG_SYSTEM' then
         setMsg_CHAT_MSG_SYSTEM(arg1)--欢迎加入, 信息
+
+    elseif event=='PLAYER_GUILD_UPDATE' then
+        set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
     end
 end)
