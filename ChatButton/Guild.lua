@@ -123,7 +123,7 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if not WoWToolsChatButtonFrame.disabled and IsInGuild() then--禁用Chat Button
+            if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
                 Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
                 button=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
