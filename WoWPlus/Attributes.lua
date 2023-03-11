@@ -8,7 +8,7 @@ local Save={
     greenColor='|cff00ff00',
     font={r=0, g=0, b=0, a=1, x=1, y=-1},--阴影
     tab={
-        ['STATUS']={bit=3},
+        ['STATUS']={bit=2},
         ['CRITCHANCE']= {r=0.99, g=0.35, b=0.31},
         ['HASTE']= {r=0, g=1, b=0.77},
         ['MASTERY']= {r=0.82, g=0.28, b=0.82},
