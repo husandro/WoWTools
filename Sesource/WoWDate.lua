@@ -3,6 +3,11 @@ local panel=CreateFrame("Frame")
 e.WoWSave={}
 e.GroupFrame={}--UnitFrame.lua 设置装等， 专精
 
+--帐号受限, 需要再次/reload
+if C_PlayerInfo.IsPlayerNPERestricted() then
+    C_PlayerInfo.IsPlayerNPERestricted= function() return false end
+end
+
 --########
 --玩家装等
 --########
@@ -368,6 +373,21 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
             set_Money()--钱
             updateCurrency()--{currencyID = 数量}
         end)
+
+        --################
+        --开启, 新手編輯模式
+        --################
+        if C_PlayerInfo.IsPlayerNPERestricted() then
+            EditModeManagerFrame.CanEnterEditMode = function(self2)--EditModeManager.lua
+                return TableIsEmpty(self2.FramesBlockingEditMode)
+            end
+            C_Timer.After(2, function()
+                if Minimap then
+                    Minimap:SetShown(true)
+                    MinimapCluster:SetShown(true)
+                end
+            end)
+        end
 
     elseif event=='PLAYER_LOGOUT' then
         if not e.ClearAllSave then
