@@ -1,5 +1,7 @@
 local id, e = ...
-local Save= {}
+local Save= {
+    inInstanceBubblesDisabled= e.Player.husandro
+}
 local addName= SAY
 local button
 local panel= CreateFrame("Frame")
