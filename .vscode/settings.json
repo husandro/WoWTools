@@ -1976,7 +1976,8 @@
         "OKAY",
         "SpellBookSkillLineTab6",
         "ClubFinderGuildFinderFrame",
-        "LFDQueueFrameSpecific"
+        "LFDQueueFrameSpecific",
+        "LFDFrame_OnEvent"
     ],
     "Lua.diagnostics.disable": [
     ]

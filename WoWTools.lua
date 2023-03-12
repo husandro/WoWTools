@@ -2,6 +2,7 @@ local id, e = ...
 e.L=e.L or {}--多语言
 e.tips=GameTooltip
 
+
 local function GetWeek()--周数
     local d = date("*t")
     local cd=3
