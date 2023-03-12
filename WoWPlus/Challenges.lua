@@ -1053,14 +1053,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         set_CHALLENGE_MODE_START()--赏金, 说 Bounty
 
     elseif event=='CHALLENGE_MODE_COMPLETED' or event=='WEEKLY_REWARDS_UPDATE' then
-        Kill(ChallengesFrame)--副本PVP团本
-        All(ChallengesFrame)--所有记录   
-        Cur(ChallengesFrame)--货币数量
-
+        C_Timer.After(2, function()
+            Kill(ChallengesFrame)--副本PVP团本
+            All(ChallengesFrame)--所有记录   
+            Cur(ChallengesFrame)--货币数量
+        end)
     elseif event=='CURRENCY_DISPLAY_UPDATE' then
         Cur(ChallengesFrame)--货币数量
 
     elseif event=='UPDATE_INSTANCE_INFO' then
-        Kill(ChallengesFrame)--副本PVP团本
+        C_Timer.After(2, function()
+            Kill(ChallengesFrame)--副本PVP团本
+        end)
     end
 end)
