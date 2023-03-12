@@ -9,11 +9,12 @@ local Save={
 local button=e.Cbtn(nil, {icon='hide',size={12,12}})
 local equipmentLevelIcon= ''
 
+local notEquipmentLevelChangeSize
 local function set_Text_Size_Color()
     e.Cstr(nil, {size=Save.size, changeFont=button.fpsms, color=true})--Save.size, nil , button.fpsms, true)
     e.Cstr(nil, {size=Save.size, changeFont=button.money, color=true})--, nil , button.money, true)
     e.Cstr(nil, {size=Save.size, changeFont=button.durabiliy, color=true})-- Save.size, nil , button.durabiliy, true)
-    if not Save.notEquipmentLevelChangeSize then
+    if not notEquipmentLevelChangeSize then
         e.Cstr(nil, {size=Save.size, changeFont=button.equipmentLevel, color=true})--nil, nil , button.equipmentLevel, true)
     end
 end
@@ -215,7 +216,7 @@ local function InitMenu(self, level, type)--主菜单
             text= (e.onlyChinese and '耐久度' or DURABILITY)..': '..setDurabiliy(true),
             checked= Save.durabiliy,
             func= function()
-                Save.durabiliy = not  Save.durabiliy and true or nil
+                Save.durabiliy = not Save.durabiliy and true or false
                 set_Durabiliy_EquipLevel_Event()--设置装等,耐久度,事件
             end
         }
@@ -286,7 +287,7 @@ local function Init()
     if CharacterMicroButton and CharacterMicroButton:IsVisible() then
         button.equipmentLevel:SetPoint('BOTTOM', CharacterMicroButton)
         button.equipmentLevel:SetParent(CharacterMicroButton)
-        Save.notEquipmentLevelChangeSize=true
+        notEquipmentLevelChangeSize=true
     else
         button.equipmentLevel:SetPoint('BOTTOMRIGHT', button.durabiliy, 'BOTTOMLEFT', -4, 0)
         equipmentLevelIcon= UnitSex('player')==2 and '|A:charactercreate-gendericon-male:0:0|a' or  '|A:charactercreate-gendericon-female:0:0|a'--e.Icon.player--'|T1030900:0|t'--'|A:charactercreate-icon-customize-torso-selected:0:0|a'
@@ -335,7 +336,7 @@ local function Init()
         if d=='RightButton' then--移动光标
             SetCursor('UI_MOVE_CURSOR')
         else
-            ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+            ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
         end
     end)
     button:SetScript('OnLeave', function (self)
@@ -353,7 +354,8 @@ local function Init()
                 t='|cnYELLOW_FONT_COLOR:'..t..'|r'
             end
 
-            local r=GetFramerate() or 0
+            local r
+            r=GetFramerate() or 0
             r=math.modf(r)--fps
             if r then
                 if r<10 then
@@ -395,7 +397,7 @@ button:SetScript("OnEvent", function(self, event, arg1)
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end)
             check:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_RIGHT");
+                e.tips:SetOwner(self2, "ANCHOR_LEFT");
                 e.tips:ClearLines();
                 e.tips:AddDoubleLine('fps ms', e.onlyChinese and '钱' or MONEY)
                 e.tips:AddDoubleLine(e.onlyChinese and '耐久度' or DURABILITY, e.onlyChinese and '装等' or (EQUIPSET_EQUIP..LEVEL))
@@ -404,10 +406,10 @@ button:SetScript("OnEvent", function(self, event, arg1)
             check:SetScript('OnLeave', function() e.tips:Hide() end)
 
             if not Save.disabled then
-                button.fpsms=e.Cstr(button, {size=Save.size})--fpsms
-                button.money=e.Cstr(button, {size=Save.size})--)--钱
-                button.durabiliy=e.Cstr(button, {size=Save.size})--)--耐久度
-                button.equipmentLevel=e.Cstr(button, {size=Save.size})--)--装等
+                button.fpsms=e.Cstr(button, {size=Save.size, color=true})--fpsms
+                button.money=e.Cstr(button, {size=Save.size, color=true})--钱
+                button.durabiliy=e.Cstr(button, {size=Save.size, color=true})--耐久度
+                button.equipmentLevel=e.Cstr(button, {size=Save.size, color=true})--装等
                 button.fpsmsFrame=CreateFrame("Frame",nil, button)--fps,ms,框架
                 button.fpsmsFrame:SetShown(false)
                 Init()

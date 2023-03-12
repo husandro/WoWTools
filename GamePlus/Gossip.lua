@@ -683,10 +683,6 @@ local function Init_Quest()
 
     questPanel:SetPoint('RIGHT', panel, 'LEFT')
 
-    if Save.autoSortQuest then--仅显示本地图任务,事件
-        set_Auto_QuestWatch_Event()
-    end
-
     questPanel.Text=e.Cstr(questPanel, {justifyH='RIGHT'})--nil, nil,nil, nil,nil, 'RIGHT')--任务数量
     questPanel.Text:SetPoint('RIGHT', questPanel, 'LEFT')
     questPanel:SetScript('OnMouseDown', function(self, d)
@@ -947,9 +943,10 @@ local function Init_Quest()
         acceptButton:Click()
     end)
 
-    C_Timer.After(2, function()
-        set_Only_Show_Zone_Quest()--显示本区域任务
-    end)
+    if Save.autoSortQuest then--仅显示本地图任务,事件
+        set_Auto_QuestWatch_Event()
+    end
+    C_Timer.After(2, set_Only_Show_Zone_Quest)--显示本区域任务
 end
 
 --###########
