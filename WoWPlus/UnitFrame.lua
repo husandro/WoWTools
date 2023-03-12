@@ -230,6 +230,39 @@ local function set_TargetFrame()
             end
         end
     end)
+
+    TargetFrame.elapsed2= 0
+    if not TargetFrame.rangeText then
+        TargetFrame.rangeText= e.Cstr(TargetFrame, {justifyH='RIGHT'})
+        TargetFrame.rangeText:SetPoint('RIGHT', TargetFrame, 'LEFT', 22,0)
+    end
+    hooksecurefunc(TargetFrame, 'OnUpdate', function(self, elapsed)
+        self.elapsed2= self.elapsed2+ elapsed
+        if self.elapsed2>0.3 then
+            self.elapsed2=0
+            local mi, ma= e.GetRange('target')
+            local text
+            if mi and ma then
+                text=mi..'\n'..ma
+                if mi>40 then
+                    text='|cFFFF0000'..text--红色
+                elseif mi>35 then
+                    text='|cFFFFD000'..text
+                elseif mi>30 then
+                    text='|cFFFF00FF'..text
+                elseif mi >8 then
+                    text ='|cFFFFFF00'..text
+                elseif mi>5 then
+                    text='|cFFAF00FF'..text
+                elseif mi>2 then
+                    text='|cFF00FF00'..text
+                else
+                    text='|cFFFFFFFF'..text----白色
+                end
+            end
+            self.rangeText:SetText(text or '')
+        end
+    end)
 end
 
 

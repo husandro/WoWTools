@@ -1257,3 +1257,17 @@ e.Create_Slider= function(self, tab)--e.Create_Slider(self, {w= ,h=, min=, max=,
     end
     return slider
 end
+
+local LibRangeCheck = LibStub("LibRangeCheck-2.0")
+e.GetRange= function(unit, checkVisible)--WA Prototypes.lua
+    return LibRangeCheck:GetRange(unit, checkVisible);
+end
+
+e.CheckRange= function(unit, range, operator)
+    local min, max= LibRangeCheck:GetRange(unit, true);
+    if (operator == "<=") then
+        return (max or 999) <= range;
+    else
+    return (min or 0) >= range;
+    end
+end

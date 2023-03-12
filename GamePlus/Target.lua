@@ -1,6 +1,9 @@
 local id, e= ...
 local addName= TARGET..COMBAT_ALLY_START_MISSION
-local Save= {creatureNum= true}
+local Save= {
+    creatureNum= true,
+    range=35,
+}
 
 local panel= CreateFrame("Frame")
 local isPvPArena, isIns
@@ -17,7 +20,14 @@ local function set_CreatureNum()
     for _, nameplat in pairs(nameplates) do
         local u = nameplat.namePlateUnitToken or (nameplat.UnitFrame and nameplat.UnitFrame.unit)
         local t= u and u..'target'
-        if t and UnitExists(u) and not UnitIsDeadOrGhost(u) and not UnitInParty(u) and not UnitIsUnit(u,'player') and (not isPvPArena or (isPvPArena and UnitIsPlayer(u))) then
+        local range= Save.range>0 and e.CheckRange(u, Save.range, '<=') or Save.range==0
+        if t and UnitExists(u)
+            and not UnitIsDeadOrGhost(u)
+            and not UnitInParty(u)
+            and not UnitIsUnit(u,'player')
+            and (not isPvPArena or (isPvPArena and UnitIsPlayer(u)))
+            and range
+            then
             if UnitCanAttack('player',u) then
                 k=k+1
                 if UnitIsUnit(t,'player') then
@@ -179,6 +189,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave and WoWToolsSave[addName] or Save
+            Save.range= Save.range or 35
 
             --添加控制面板        
             local sel=e.CPanel(e.Icon.toRight2..(e.onlyChinese and '目标指示' or addName), not Save.disabled, true)
@@ -219,6 +230,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 e.tips:Show()
             end)
             sel2:SetScript('OnLeave', function() e.tips:Hide() end)
+
+            local sliderRange = e.Create_Slider(sel, {min=0, max=60, value=Save.range, setp=1, w= e.onlyChinese and 150 or 100,
+            text=e.onlyChinese and '码' or IN_GAME_NAVIGATION_RANGE:gsub('%%s',''),
+            func=function(self2, value)
+                value= math.floor(value)
+                self2:SetValue(value)
+                self2.Text:SetText(value)
+                Save.range= value
+            end})
+            sliderRange:SetPoint("LEFT", sel2.text, 'RIGHT', 2, 0)
 
             set_Register_Event()
             if not Save.disabled then
@@ -271,7 +292,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='PLAYER_REGEN_ENABLED' then
         panel.Texture:SetVertexColor(1,1,1)
 
-    elseif event=='UNIT_QUEST_LOG_CHANGED' or event=='QUEST_POI_UPDATE' or event=='SCENARIO_COMPLETED' or event=='SCENARIO_UPDATE' or event=='SCENARIO_CRITERIA_UPDATE' then    
+    elseif event=='UNIT_QUEST_LOG_CHANGED' or event=='QUEST_POI_UPDATE' or event=='SCENARIO_COMPLETED' or event=='SCENARIO_UPDATE' or event=='SCENARIO_CRITERIA_UPDATE' then
         C_Timer.After(2, set_check_All_Plates)
 
     else

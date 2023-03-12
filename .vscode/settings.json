@@ -1977,7 +1977,9 @@
         "SpellBookSkillLineTab6",
         "ClubFinderGuildFinderFrame",
         "LFDQueueFrameSpecific",
-        "LFDFrame_OnEvent"
+        "LFDFrame_OnEvent",
+        "BOOKTYPE_SPELL",
+        "AnimateTexCoords"
     ],
     "Lua.diagnostics.disable": [
     ]
