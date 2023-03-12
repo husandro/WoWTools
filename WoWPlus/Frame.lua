@@ -223,6 +223,11 @@ end
 
 
 local combatCollectionsJournal--藏品
+local function set_Move_CollectionJournal()--藏品
+    Move(CollectionsJournal, {})--藏品
+    Move(RematchJournal, {frame=CollectionsJournal})--藏品
+    Move(WardrobeFrame, {})--幻化
+end
 
 local function setAddLoad(arg1)
     if arg1=='Blizzard_TimeManager' then--小时图，时间
@@ -291,14 +296,11 @@ local function setAddLoad(arg1)
         checkbox.Label:SetPoint("LEFT", checkbox, "RIGHT", 2, 1)
         checkbox.Label:SetPoint("RIGHT", checkbox, "RIGHT", 160, 1)
         if not UnitAffectingCombat('player') then
-            Move(CollectionsJournal, {})--藏品
-            Move(RematchJournal, {frame=CollectionsJournal})--藏品
-            Move(WardrobeFrame, {})--幻化
+            set_Move_CollectionJournal()--藏品
         else
             combatCollectionsJournal=true
             panel:RegisterEvent('PLAYER_REGEN_ENABLED')
         end
-
 
     elseif arg1=='Blizzard_Calendar' then--日历
         Move(CalendarFrame, {})
@@ -309,10 +311,13 @@ local function setAddLoad(arg1)
         Move(GarrisonCapacitiveDisplayFrame, {})--要塞订单
         Move(GarrisonLandingPage, {})--要塞报告
         Move(OrderHallMissionFrame, {})
+
     elseif arg1=='Blizzard_PlayerChoice' then
         Move(PlayerChoiceFrame, {})--任务选择
+
     elseif arg1=="Blizzard_GuildBankUI" then--公会银行--Move(GuildBankFrame.Emblem, {frame=GuildBankFrame})
         Move(GuildBankFrame, {})
+
     elseif arg1=='Blizzard_FlightMap' then--飞行地图
         Move(FlightMapFrame, {})
 
@@ -641,8 +646,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='PLAYER_REGEN_ENABLED' then
         if combatCollectionsJournal then
-            Move(CollectionsJournal, {})--藏品
-            Move(WardrobeFrame, {})--幻化
+            set_Move_CollectionJournal()--藏品
         end
         panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
 

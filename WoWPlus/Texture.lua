@@ -402,11 +402,13 @@ local function Init_Set_AlphaAndColor()
     set_Alpha_Frame_Texture(SpellBookFrameTabButton1)
     set_Alpha_Frame_Texture(SpellBookFrameTabButton2)
     set_Alpha_Frame_Texture(SpellBookFrameTabButton3)
-    hide_Frame_Texture(SpellBookSkillLineTab1)
-    hide_Frame_Texture(SpellBookSkillLineTab2)
-    hide_Frame_Texture(SpellBookSkillLineTab3)
-    hide_Frame_Texture(SpellBookSkillLineTab4)
-    hide_Frame_Texture(SpellBookSkillLineTab5)
+
+    --[[set_Alpha_Frame_Texture(SpellBookSkillLineTab1)
+    set_Alpha_Frame_Texture(SpellBookSkillLineTab2)
+    set_Alpha_Frame_Texture(SpellBookSkillLineTab3)
+    set_Alpha_Frame_Texture(SpellBookSkillLineTab4)
+    set_Alpha_Frame_Texture(SpellBookSkillLineTab5)
+    set_Alpha_Frame_Texture(SpellBookSkillLineTab6)]]
     --hide_Frame_Texture(SpellBookSkillLineTab1, {index=3})
     --hide_Frame_Texture(SpellBookSkillLineTab1, {index=2})
     --hide_Frame_Texture(SpellBookSkillLineTab1, {index=1})
@@ -992,7 +994,7 @@ local function set_Alpha_Event(arg1)
         hide_Frame_Texture(ClubFinderCommunityAndGuildFinderFrame.ClubFinderSearchTab, {index=1})
         hide_Frame_Texture(ClubFinderCommunityAndGuildFinderFrame.ClubFinderPendingTab, {index=1})
 
-
+        setAlpha(ClubFinderGuildFinderFrame.InsetFrame.Bg)
 
 
     elseif arg1=='Blizzard_PVPUI' then--地下城和团队副本, PVP
@@ -1007,7 +1009,7 @@ local function set_Alpha_Event(arg1)
         setAlpha(HonorFrameTypeDropDownLeft)
         setAlpha(HonorFrameTypeDropDownRight)
         hideTexture(ConquestFrame.RatedBGTexture)
-        --hideTexture(LFGListFrame.SearchPanel.ScrollBar.Backplate)
+        hideTexture(LFDQueueFrameSpecific.ScrollBar.Backplate)
 
     elseif arg1=='Blizzard_EncounterJournal' then--冒险指南
         setAlpha(EncounterJournal.NineSlice.TopLeftEdge)
@@ -1294,6 +1296,20 @@ local function set_Alpha_Event(arg1)
         set_Alpha_Frame_Texture(CollectionsJournalTab4)
         set_Alpha_Frame_Texture(CollectionsJournalTab5)
 
+        if RematchJournal then
+            setAlpha(RematchJournal.NineSlice.TopEdge)
+            setAlpha(RematchJournal.NineSlice.TopRightCorner)
+            setAlpha(RematchJournal.NineSlice.TopLeftCorner)
+            setAlpha(RematchJournalBg)
+            setAlpha(RematchLoadoutPanel.Target.InsetBack)
+            hideTexture(RematchPetPanel.Top.InsetBack)
+            setAlpha(RematchQueuePanel.List.Background.InsetBack)
+            setAlpha(RematchQueuePanel.Top.InsetBack)
+            hideTexture(RematchPetPanel.Top.TypeBar.NineSlice)
+            setAlpha(RematchTeamPanel.List.Background.InsetBack)
+            setAlpha(RematchOptionPanel.List.Background.InsetBack)
+            setAlpha(RematchLoadoutPanel.TopLoadout.InsetBack)
+        end
     elseif arg1=='Blizzard_Calendar' then--日历
         setAlpha(CalendarFrameTopMiddleTexture)
         setAlpha(CalendarFrameTopLeftTexture)

@@ -1037,6 +1037,7 @@ local legacyRaidDifficultyStr= ERR_LEGACY_RAID_DIFFICULTY_CHANGED_S:gsub('%%s', 
 
 panel:RegisterEvent('GROUP_ROSTER_UPDATE')--挑战，数据
 panel:RegisterEvent('GROUP_LEFT')
+--panel:RegisterEvent('CHALLENGE_MODE_COMPLETED')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -1085,6 +1086,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='PLAYER_LOOT_SPEC_UPDATED' or event=='PLAYER_SPECIALIZATION_CHANGED' then
         set_LootSpecialization()--拾取专精
+
     elseif event=='PLAYER_ENTERING_WORLD' then--副本, 地下城，指示
         if not IsInInstance() then
             self:RegisterEvent('CHAT_MSG_SYSTEM')

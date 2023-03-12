@@ -17,7 +17,7 @@ local Save={
     maxParticles= 50,--数量
     minDistance=3,--距离
     randomTexture=true,--随机, 图片
-    randomTextureInCombat=true,--战斗中，也随机，图片
+    --randomTextureInCombat=true,--战斗中，也随机，图片
     Atlas={
         'bonusobjectives-bar-starburst',--星星
         'Adventures-Buff-Heal-Burst',--雪
@@ -122,10 +122,10 @@ local update_Particle = function(part,  delta)
     part.x = part.x + part.vx * delta
     part.y = part.y + part.vy * delta
 
-    if Save.rotate then
+    --if Save.rotate then
         part.a = part.a + part.va + delta
         part:SetRotation(math.rad(part.a))
-    end
+    --end
 
     local scale = math.max(0.1, part.life / Save.duration)
 
@@ -136,7 +136,7 @@ end
 
 
 local nowX, nowY = 0, 0
-local set_Update = function(self, elapsed)
+local set_Cursor_Update = function(self, elapsed)
     self.elapsed= self.elapsed+ elapsed
     if self.elapsed> Save.rate then
         self.elapsed=0
@@ -170,7 +170,7 @@ local function get_Texture_type(texture)--取得格式, atlas 或 texture
     end
 end
 
-local function set_Cursor_Texture(self, atlas, texture, setRandomTexture)
+local function set_Cursor_Texture(self, atlas, texture, onlyRandomTexture)
     if atlas then
         self:SetAtlas(atlas)
     else
@@ -181,7 +181,7 @@ local function set_Cursor_Texture(self, atlas, texture, setRandomTexture)
         self:SetVertexColor(Color.r, Color.g, Color.b, Color.a)
     end
 
-    if not setRandomTexture then
+    if not onlyRandomTexture then
         self:SetSize(Save.size, Save.size)
         self.life = 0
         self:SetAlpha(Save.alpha)
@@ -190,7 +190,7 @@ local function set_Cursor_Texture(self, atlas, texture, setRandomTexture)
 end
 
 --初始, 设置, Cursor
-local function cursor_Init_And_Set(setRandomTexture)
+local function cursor_Init_And_Set(onlyRandomTexture)
     local atlasIndex= Save.randomTexture and random(1, #Save.Atlas) or Save.atlasIndex
     local atlas,texture
     if get_Texture_type(Save.Atlas[atlasIndex]) then
@@ -209,30 +209,31 @@ local function cursor_Init_And_Set(setRandomTexture)
             cursorFrame.Pool[i] = UIParent:CreateTexture()
             cursorFrame.Pool[i]:SetBlendMode('ADD')
         end
-        set_Cursor_Texture(cursorFrame.Pool[i], atlas, texture, setRandomTexture)
+        set_Cursor_Texture(cursorFrame.Pool[i], atlas, texture, onlyRandomTexture)
     end
 
     if cursorFrame.Used then
         for i=1, #cursorFrame.Used do
-            set_Cursor_Texture(cursorFrame.Used[i], atlas, texture, setRandomTexture)
+            set_Cursor_Texture(cursorFrame.Used[i], atlas, texture, onlyRandomTexture)
         end
     else
         cursorFrame.Used = {}
-    end
-
-    if not setRandomTexture then
-        cursorFrame.elapsed=0
     end
 end
 
 local function set_Curor_Random_Event()--随机, 图片，事件
     if Save.randomTexture and not Save.disabled then
-        local bat= UnitAffectingCombat('player')
-        if Save.randomTextureInCombat or UnitAffectingCombat('player') then
-            panel:RegisterEvent('PLAYER_STARTED_MOVING')
+        cursorFrame:RegisterEvent('PLAYER_REGEN_DISABLED')
+        cursorFrame:RegisterEvent('PLAYER_REGEN_ENABLED')
+        if  UnitAffectingCombat('player') then
+            cursorFrame:RegisterEvent('PLAYER_STARTED_MOVING')
+            cursorFrame:UnregisterEvent('GLOBAL_MOUSE_DOWN')
+        else
+            cursorFrame:RegisterEvent('GLOBAL_MOUSE_DOWN')
+            cursorFrame:UnregisterEvent('PLAYER_STARTED_MOVING')
         end
     else
-        panel:UnregisterEvent('PLAYER_STARTED_MOVING')
+       cursorFrame:UnregisterAllEvents()
     end
 end
 
@@ -455,13 +456,27 @@ end
 --Cursor, 初始化
 local function Cursor_Init()
     cursorFrame= CreateFrame('Frame')
+    cursorFrame.elapsed=0
     cursorFrame.egim=0
     cursor_Init_And_Set()
     Init_Cursor_Options()
-    cursorFrame:SetScript('OnUpdate', set_Update)
-    if Save.randomTexture then
-        set_Curor_Random_Event()--随机, 图片，事件
-    end
+    cursorFrame:SetScript('OnUpdate', set_Cursor_Update)
+
+    set_Curor_Random_Event()--随机, 图片，事件
+
+    cursorFrame:SetScript('OnEvent', function(self, event)
+        if event=='PLAYER_STARTED_MOVING' or event=='GLOBAL_MOUSE_DOWN' then
+            cursor_Init_And_Set(true)--初始，设置
+
+        elseif event=='PLAYER_REGEN_DISABLED' then
+            self:RegisterEvent('PLAYER_STARTED_MOVING')
+            self:UnregisterEvent('GLOBAL_MOUSE_DOWN')
+
+        elseif event=='PLAYER_REGEN_ENABLED' then
+            self:RegisterEvent('GLOBAL_MOUSE_DOWN')
+            self:UnregisterEvent('PLAYER_STARTED_MOVING')
+        end
+    end)
 end
 
 
@@ -839,13 +854,16 @@ local function Init()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
         e.tips:AddLine(e.onlyChinese and '事件' or EVENTS_LABEL)
-        e.tips:AddDoubleLine('Cursor', e.onlyChinese and '移动' or NPE_MOVE)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine('Cursor', (e.onlyChinese and '战斗中: 移动' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..NPE_MOVE))
+        e.tips:AddDoubleLine(' ', (e.onlyChinese and '其它' or OTHER)..e.Icon.left)
+        e.tips:AddLine(' ')
         e.tips:AddDoubleLine('GCD', e.GetEnabeleDisable(true))
         e.tips:Show()
     end)
     panel.randomTextureCheck:SetScript('OnLeave', function() e.tips:Hide() end)
 
-    --战斗中， 随机，图片
+    --[[战斗中， 随机，图片
     local randomTextureInCombatCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--随机, 图片
     randomTextureInCombatCheck:SetPoint("LEFT", panel.randomTextureCheck.text, 'RIGHT', 2,0)
     randomTextureInCombatCheck.text:SetText(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
@@ -862,26 +880,29 @@ local function Init()
         e.tips:Show()
     end)
     randomTextureInCombatCheck:SetScript('OnLeave', function() e.tips:Hide() end)
-
+]]
 
     --Cursor, 启用/禁用
     panel.cursorCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     panel.cursorCheck:SetChecked(not Save.disabled)
     panel.cursorCheck:SetPoint("TOPLEFT", reloadButton, 'BOTTOMLEFT', 0, -5)
-    panel.cursorCheck.text:SetText((e.onlyChinese and '启用' or ENABLE).. ' Cursor')
+    panel.cursorCheck.text:SetText('1)'..(e.onlyChinese and '启用' or ENABLE).. ' Cursor')
     panel.cursorCheck:SetScript('OnMouseDown', function()
         Save.disabled = not Save.disabled and true or nil
         if not Save.disabled and not cursorFrame then
             Cursor_Init()
         end
-        cursorFrame:SetShown(not Save.disabled)
+        if cursorFrame then
+            set_Curor_Random_Event()--随机, 图片，事件
+            cursorFrame:SetShown(not Save.disabled)
+        end
     end)
 
     --GCD, 启用/禁用
     panel.gcdCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     panel.gcdCheck:SetChecked(not Save.disabled)
     panel.gcdCheck:SetPoint("TOPLEFT", panel, 'TOP', 0, -35)
-    panel.gcdCheck.text:SetText((e.onlyChinese and '启用' or ENABLE).. ' GCD')
+    panel.gcdCheck.text:SetText('2)'..(e.onlyChinese and '启用' or ENABLE).. ' GCD')
     panel.gcdCheck:SetScript('OnMouseDown', function()
         Save.disabledGCD = not Save.disabledGCD and true or nil
         if not Save.disabledGCD and not gcdFrame then
@@ -936,11 +957,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if not e.ClearAllSave then
             if not WoWToolsSave then WoWToolsSave={} end
             WoWToolsSave[addName]=Save
-        end
-
-    elseif event=='PLAYER_STARTED_MOVING' or event=='GLOBAL_MOUSE_DOWN' then
-        if Save.randomTextureInCombat or not UnitAffectingCombat('player') then
-            cursor_Init_And_Set(true)--初始，设置
         end
     end
 end)

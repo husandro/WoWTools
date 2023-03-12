@@ -1973,7 +1973,11 @@
         "PetBattleFrameXPBar",
         "HUD_EDIT_MODE_RESET_POSITION",
         "WORLD",
-        "BOOKTYPE_SPELL"
+        "OKAY",
+        "SpellBookSkillLineTab6",
+        "ClubFinderGuildFinderFrame",
+        "LFDQueueFrameSpecific",
+        "LFDFrame_OnEvent"
     ],
     "Lua.diagnostics.disable": [
     ]

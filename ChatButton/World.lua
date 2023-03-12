@@ -6,28 +6,17 @@ local Save={
 local addName='ChatButtonWorldChannel'
 local button
 
---[[
-local function setChinesTips(name, type)
-    if name== Save.world then
-        button.texture:SetDesaturated(type==2)
-        button.texture:SetShown(type~=0)
-    end
-end]]
 
 local Check=function(name)
     if not select(2,GetChannelName(name)) then
-        --setChinesTips(name, 0)
         return 0--不存存在
     else
         local tab={GetChatWindowChannels(SELECTED_CHAT_FRAME:GetID())}
         for i= 1, #tab, 2 do
             if tab[i]==name then
-                --setChinesTips(name, 1)
                 return 1--存在2
             end
         end
-
-        --setChinesTips(name, 2)
         return 2--屏蔽
     end
 end
@@ -68,6 +57,7 @@ local function setLeftClickTips(name, channelNumber, texture)--设置点击提�
 end
 
 local function sendSay(name, channelNumber)--发送
+    Save.lastName= name
     local check=Check(name)
     if check==0 or not channelNumber or channelNumber==0 then
         setJoin(name, true)
@@ -117,6 +107,8 @@ local function addMenu(name, channelNumber, level)--添加菜单
         tooltipOnButton=true,
         tooltipTitle=(e.onlyChinese and '屏蔽' or IGNORE)..' Alt+'..e.Icon.left,
         tooltipText= check==2 and (e.onlyChinese and '已屏蔽' or IGNORED),
+        menuList= name==Save.world and 'WORLD',
+        hasArrow= name==Save.world,
         icon=communityTexture,
         arg1={texture=communityTexture, name=name, communityName= communityName, channelNumber= channelNumber},
         func=function(self, arg1)
@@ -129,18 +121,49 @@ local function addMenu(name, channelNumber, level)--添加菜单
         end
     }
     UIDropDownMenu_AddButton(info, level)
-
-    --if not button.channelNumber or button.channelNumber==0 then
-    --    setLeftClickTips(name, channelNumber)--设置点击提示,频道字符
-    --end
 end
 
 local function InitMenu(self, level, type)--主菜单
-    --if e.Player.zh then
-        local channelNumbern = GetChannelName(Save.world)
-        addMenu(Save.world , channelNumbern, level)
-        UIDropDownMenu_AddSeparator(level)
-    --end
+    if type=='WORLD' then
+        local info= {
+            text= e.onlyChinese and '修改名称' or EQUIPMENT_SET_EDIT:gsub('/.+',''),
+            notCheckable=true,
+            func= function()
+                StaticPopupDialogs[id..addName..'changeNamme']={
+                    text=(e.onlyChinese and '修改名称' or EQUIPMENT_SET_EDIT:gsub('/.+',''))..'\n\n'..(e.onlyChinese and '重新加载UI' or RELOADUI ),
+                    whileDead=1,
+                    hideOnEscape=1,
+                    exclusive=1,
+                    timeout = 60,
+                    hasEditBox=1,
+                    button1= e.onlyChinese and '确定' or OKAY,
+                    button2= e.onlyChinese and '取消' or CANCEL,
+                    OnShow= function(self2)
+                        self2.editBox:SetText(Save.world)
+                        self2.button1:SetEnabled(false)
+                    end,
+                    OnAccept= function(self2, data)
+                        Save.world= self2.editBox:GetText()
+                        e.Reload()
+                    end,
+                    EditBoxOnTextChanged=function(self2, data)
+                        local text= self2:GetText()
+                        self2:GetParent().button1:SetEnabled(text~= Save.world and text:gsub(' ', '')~='')
+                    end,
+                    EditBoxOnEscapePressed = function(self2)
+                        self2:GetParent():Hide()
+                    end,
+                }
+                StaticPopup_Show(id..addName..'changeNamme')
+            end
+        }
+        UIDropDownMenu_AddButton(info, level)
+        return
+    end
+
+    local channelNumber2 = GetChannelName(Save.world)
+    addMenu(Save.world , channelNumber2, level)
+    UIDropDownMenu_AddSeparator(level)
 
     local channels = {GetChannelList()}
     for i = 1, #channels, 3 do
@@ -148,7 +171,6 @@ local function InitMenu(self, level, type)--主菜单
         if not disabled and channelNumber and name~=Save.world then
             addMenu(name, channelNumber, level)
         end
-        
     end
 end
 
@@ -159,24 +181,28 @@ local function Init()
     button:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
     WoWToolsChatButtonFrame.last=button
 
-    --[[if e.Player.zh then
-        button.texture:SetAtlas('WildBattlePet')
-    else    
-    end]]
     button.texture:SetAtlas('128-Store-Main')
 
     button.Menu=CreateFrame("Frame",nil, button, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
     button:SetScript("OnMouseDown",function(self,d)
-        if d=='LeftButton' and button.channelNumber and button.channelNumber>0 then
-            e.Say('/'..button.channelNumber)
+        if d=='LeftButton' and self.channelNumber and self.channelNumber>0 then
+            e.Say('/'..self.channelNumber)
         else
             ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
         end
     end)
-    --button.texture:SetShown(true)
+
+    if Save.lastName then
+        local channelNumber = GetChannelName(Save.lastName)
+        if channelNumber and channelNumber>0 then
+            button.channelNumber= channelNumber
+            setLeftClickTips(Save.lastName, channelNumber)
+        end
+    end
 end
+
 
 --###########
 --加载保存数据

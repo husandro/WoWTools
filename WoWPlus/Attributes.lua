@@ -8,7 +8,7 @@ local Save={
     greenColor='|cff00ff00',
     font={r=0, g=0, b=0, a=1, x=1, y=-1},--阴影
     tab={
-        ['STATUS']={bit=3},
+        ['STATUS']={bit=2},
         ['CRITCHANCE']= {r=0.99, g=0.35, b=0.31},
         ['HASTE']= {r=0, g=1, b=0.77},
         ['MASTERY']= {r=0.82, g=0.28, b=0.82},
@@ -121,6 +121,7 @@ end
 --###########
 local function set_Text_Value(frame, value, value2)
     value= value or 0
+    value= value>=1 and value or 0
     if not frame.value or frame.value==0 or value==0 then
         frame.value= value
     end
@@ -1098,6 +1099,19 @@ local function set_Show_Hide()
     button.classPortrait:SetAlpha(Save.hide and 1 or 0.3)
 end
 
+--################
+--显示，隐藏，事件
+--################
+local function set_ShowHide_Event()
+    if Save.hideInPetBattle then
+        panel:RegisterEvent('PET_BATTLE_OPENING_DONE')
+        panel:RegisterEvent('PET_BATTLE_CLOSE')
+    else
+        panel:UnregisterEvent('PET_BATTLE_OPENING_DONE')
+        panel:UnregisterEvent('PET_BATTLE_CLOSE')
+    end
+end
+
 --#########
 --设置, 位置
 --#########
@@ -1178,7 +1192,7 @@ local function set_Panle_Setting()--设置 panel
         end)
         check:SetScript('OnLeave', function(self) e.tips:Hide() end)
 
-        local text= e.Cstr(panel, {r=r,g=g,b=b,a=a})--nil, nil, nil, {r,g,b,a})--Text
+        local text= e.Cstr(panel, {color={r=r,g=g,b=b,a=a}})--nil, nil, nil, {r,g,b,a})--Text
         text:SetPoint('LEFT', check, 'RIGHT')
         text:SetText(info.text)
         if index>1 then
@@ -1190,7 +1204,7 @@ local function set_Panle_Setting()--设置 panel
                 e.ShowColorPicker(self.r, self.g, self.b,self.a, function(restore)
                     local setA, setR, setG, setB
                     if not restore then
-                        setA, setR, setG, setB = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()
+                        setR, setG, setB, setA = e.Get_ColorFrame_RGBA()
                     else
                         setA, setR, setG, setB= self.a, self.r, self.g, self.b
                     end
@@ -1307,13 +1321,13 @@ local function set_Panle_Setting()--设置 panel
     text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
     text:SetText(e.onlyChinese and '阴影' or SHADOW_QUALITY:gsub(QUALITY , ''))
     text:EnableMouse(true)
-    set_Shadow(text)--设置，字体阴影
     text.r, text.g, text.b, text.a= Save.font.r, Save.font.g, Save.font.b, Save.font.a
+    set_Shadow(text)--设置，字体阴影
     text:SetScript('OnMouseDown', function(self)
         e.ShowColorPicker(self.r, self.g, self.b, self.a, function(restore)
             local setA, setR, setG, setB
             if not restore then
-                setA, setR, setG, setB = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()
+                setR, setG, setB, setA = e.Get_ColorFrame_RGBA()
             else
                 setA, setR, setG, setB= self.a, self.r, self.g, self.b
             end
@@ -1653,6 +1667,18 @@ local function set_Panle_Setting()--设置 panel
         }
         StaticPopup_Show(id..addName..'restAllSetup')
     end)
+
+    local hideText= e.Cstr(panel)--隐藏
+    hideText:SetPoint('BOTTOMLEFT')
+    hideText:SetText(e.onlyChinese and '隐藏' or HIDE)
+    local checkHidePet= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--bar，图片，样式2
+    checkHidePet:SetPoint("LEFT", hideText, 'RIGHT')
+    checkHidePet.text:SetText(e.onlyChinese and '宠物对战' or PET_BATTLE_COMBAT_LOG)
+    checkHidePet:SetChecked(Save.hideInPetBattle)
+    checkHidePet:SetScript('OnMouseDown', function()
+        Save.hideInPetBattle= not Save.hideInPetBattle and true or nil
+        set_ShowHide_Event()--显示，隐藏，事件
+    end)
 end
 
 --####
@@ -1773,10 +1799,8 @@ local function Init()
 end
 
 
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PET_BATTLE_OPENING_DONE')
-panel:RegisterEvent('PET_BATTLE_CLOSE')
 
+panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
@@ -1823,6 +1847,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 panel:UnregisterAllEvents()
             else
                 Init()
+                set_ShowHide_Event()--显示，隐藏，事件
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
         end

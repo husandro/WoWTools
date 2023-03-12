@@ -10,7 +10,7 @@ local Save= {textScale=1.2,
         afk={num= 0, time= 0},
         hideCombatText= true,--隐藏, 战斗, 文本
 }
-local button= e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
+local button
 
 local OnLineTime--在线时间
 local OnCombatTime--战斗时间
@@ -163,7 +163,7 @@ local function check_Event()--检测事件
         InstanceDate={time= 0, kill=0, dead=0}--副本数据{dead死亡,kill杀怪, map地图}
         OnInstanceTime=nil
     end
-    button.frame:SetShown(OnAFKTime or OnCombatTime or OnPetTime or OnInstanceTime)--设置更新数据,显示/隐藏 button.frame
+    button.frame:SetShown((OnAFKTime or OnCombatTime or OnPetTime or OnInstanceTime) and true or false)--设置更新数据,显示/隐藏 button.frame
     setText()--设置显示内容
 end
 
@@ -261,7 +261,7 @@ local function set_Text_Button()--设置显示内容, 父框架button.textButton
 
             elseif event=='PET_BATTLE_OPENING_DONE' then
                 check_Event()--检测事件
-    
+
             elseif event=='PET_BATTLE_PVP_DUEL_REQUESTED' then--宠物战斗
                 PetRound.PVP =true
                 setPetText()--宠物战斗, 设置显示内容
@@ -278,11 +278,11 @@ local function set_Text_Button()--设置显示内容, 父框架button.textButton
                 setPetText()--宠物战斗, 设置显示内容
             elseif event=='PET_BATTLE_CLOSE' then
                 check_Event()--检测事件
-    
+
             elseif event=='PLAYER_ENTERING_WORLD' then--副本,杀怪,死亡
                 isInPvPInstance=C_PvP.IsBattleground() or C_PvP.IsArena()--是否在战场
                 check_Event()--检测事件
-    
+
             elseif event=='PLAYER_DEAD' or event=='PLAYER_UNGHOST' or event=='PLAYER_ALIVE' then
                 if event=='PLAYER_DEAD' and not OnInstanceDeadCheck then
                     InstanceDate.dead= InstanceDate.dead +1
@@ -291,7 +291,6 @@ local function set_Text_Button()--设置显示内容, 父框架button.textButton
                 else
                     OnInstanceDeadCheck=nil
                 end
-    
             elseif event=='UNIT_FLAGS' and arg1 then--杀怪,数量
                 if arg1:find('nameplate') and UnitIsEnemy(arg1, 'player') and UnitIsDead(arg1) then
                     if isInPvPInstance and UnitIsPlayer(arg1) or not isInPvPInstance then
@@ -302,7 +301,7 @@ local function set_Text_Button()--设置显示内容, 父框架button.textButton
             end
         end)
 
-        button.text= e.Cstr(button.textButton)
+        button.text= e.Cstr(button.textButton, {color=true})
         button.text:SetPoint('BOTTOMLEFT')
         if Save.textScale and Save.textScale~=1 then
             button.text:SetScale(Save.textScale)
@@ -495,7 +494,7 @@ local function Init()
     OnLineTime=GetTime()
 
     button:SetPoint('BOTTOMLEFT',WoWToolsChatButtonFrame.last, 'BOTTOMRIGHT')--设置位置
-    
+
     button.texture:SetDesaturated(Save.disabledText)
 
     button.texture2=button:CreateTexture(nil, 'OVERLAY')
@@ -517,7 +516,7 @@ local function Init()
 
     set_Text_Button()--设置显示内容,框架 button.textButton,内容 button.text
 
-    if e.Player.faction~='Alliance' then
+    if e.Player.faction=='Alliance' then
         button.texture:SetTexture(255130)
     elseif e.Player.faction=='Horde' then
         button.texture:SetTexture(2565244)
@@ -535,27 +534,23 @@ end
 --###########
 --加载保存数据
 --###########
-button:RegisterEvent("ADDON_LOADED")
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
 
-button:SetScript("OnEvent", function(self, event, arg1)
+panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if WoWToolsChatButtonFrame.disabled then--禁用Chat Button
-                button:SetShown(false)
-            else
-
+            if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
+                button=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
                 Save= WoWToolsSave and WoWToolsSave[addName] or Save
 
-
-                button:RegisterEvent('PLAYER_REGEN_DISABLED')
-                button:RegisterEvent('PLAYER_REGEN_ENABLED')
-                button:RegisterEvent("PLAYER_LOGOUT")
+                panel:RegisterEvent('PLAYER_REGEN_DISABLED')
+                panel:RegisterEvent('PLAYER_REGEN_ENABLED')
+                panel:RegisterEvent("PLAYER_LOGOUT")
 
                 Init()
-
-                
             end
-            button:UnregisterEvent('ADDON_LOADED')
+            panel:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event == "PLAYER_LOGOUT" then

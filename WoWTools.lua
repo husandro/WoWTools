@@ -2,6 +2,7 @@ local id, e = ...
 e.L=e.L or {}--多语言
 e.tips=GameTooltip
 
+
 local function GetWeek()--周数
     local d = date("*t")
     local cd=3
@@ -1256,4 +1257,3 @@ e.Create_Slider= function(self, tab)--e.Create_Slider(self, {w= ,h=, min=, max=,
     end
     return slider
 end
---e.ShowColorPicker(r,g,b,a, function(restore) if not restore then local newA, newR, newG, newB = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()

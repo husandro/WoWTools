@@ -576,6 +576,8 @@ local function Kill(self)--副本PVP团本
             self.re:SetPoint('TOPLEFT', self, 'TOPLEFT', 10, -45)
             self.re:SetJustifyH('LEFT')
         end
+    end
+    if self.re then
         self.re:SetText(T)
     end
 end
@@ -801,7 +803,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                         if texture and backgroundTexture then
                             GameTooltip:AddDoubleLine('|T'..texture..':0|t'..texture, '|T'..backgroundTexture..':0|t'..backgroundTexture)
                         end
-                        
+
                         GameTooltip:AddDoubleLine(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, e.Icon.left)
                         GameTooltip:Show()
                     end
@@ -1005,7 +1007,6 @@ local function Init()
                 print('|cffff00ff',text)
             end
         end
-
     end
 end
 
@@ -1036,6 +1037,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         elseif arg1=='Blizzard_ChallengesUI' then--挑战,钥石,插入界面
             set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
             Init()--史诗钥石地下城, 界面
+            panel:RegisterEvent('CHALLENGE_MODE_COMPLETED')
+            panel:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
+            panel:RegisterEvent('UPDATE_INSTANCE_INFO')
+            panel:RegisterEvent('WEEKLY_REWARDS_UPDATE')
         end
 
     elseif event == "PLAYER_LOGOUT" then
@@ -1046,5 +1051,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='CHALLENGE_MODE_START' then
         set_CHALLENGE_MODE_START()--赏金, 说 Bounty
+
+    elseif event=='CHALLENGE_MODE_COMPLETED' or event=='WEEKLY_REWARDS_UPDATE' then
+        Kill(ChallengesFrame)--副本PVP团本
+        All(ChallengesFrame)--所有记录   
+        Cur(ChallengesFrame)--货币数量
+
+    elseif event=='CURRENCY_DISPLAY_UPDATE' then
+        Cur(ChallengesFrame)--货币数量
+
+    elseif event=='UPDATE_INSTANCE_INFO' then
+        Kill(ChallengesFrame)--副本PVP团本
     end
 end)

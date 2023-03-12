@@ -126,7 +126,7 @@ Tools\27MagePortal.lua
 ##这是Chat主要，如果需要其中一个功能，这个不能关
 ChatButton\ChatButton.lua
 ##超链接， 欢迎, 一些其他功能
-ChatButton\HyperlinksIcon.lua
+ChatButton\HyperLink.lua
 ##ROLL
 ChatButton\Roll.lua
 ##标记
@@ -136,7 +136,7 @@ ChatButton\Invite.lua
 ##查找器， 地下城和团队， 自动退出，进入，Roll装
 ChatButton\LFD.lua
 ##世界频道
-ChatButton\WorldChannel.lua
+ChatButton\World.lua
 ##公会
 ChatButton\Guild.lua
 ##队伍
@@ -146,7 +146,7 @@ ChatButton\Say.lua
 ##表情，如不是中文，默认关闭
 ChatButton\Emoji.lua
 ##各种, 战斗时间
-ChatButton\CombatTimer.lua
+ChatButton\Combat.lua
 
 ##副本, 挑战,之类
 Instance\Explosives.lua

@@ -129,17 +129,7 @@ local function set_ExpansionLandingPageMinimapButton()
     if not frame then
         return
     end
-    --[[local OpenWR=function()
-        if not WeeklyRewardsFrame then
-            return
-        end
-        if WeeklyRewardsFrame:IsShown() then
-            HideUIPanel(WeeklyRewardsFrame)
-        else
-            WeeklyRewardsFrame:Show()
-            tinsert(UISpecialFrames, WeeklyRewardsFrame:GetName())
-        end
-    end]]
+
     frame:SetFrameStrata('TOOLTIP')
     frame:SetMovable(true)--移动
     frame:RegisterForDrag("RightButton")
@@ -439,6 +429,7 @@ local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
             e.tips:Show()
         end)
         panel.vigentteButton:SetScript('OnLeave',function(self)
+            self:SetButtonState("NORMAL")
             e.tips:Hide()
             ResetCursor()
         end)
@@ -512,6 +503,9 @@ local function set_MinimapMenu()--小地图, 添加菜单
             func= function ()
                 Save.vigentteButton= not Save.vigentteButton and true or nil
                 set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
+                if panel.vigentteButton then
+                    panel.vigentteButton:SetButtonState('PUSHED')
+                end
             end
         }
         UIDropDownMenu_AddButton(info, 1)
@@ -580,20 +574,7 @@ local function Init()
         end)
     end
 
-    --################
-    --开启, 新手編輯模式
-    --################
-    if C_PlayerInfo.IsPlayerNPERestricted() then
-        EditModeManagerFrame.CanEnterEditMode = function(self)--EditModeManager.lua
-             return TableIsEmpty(self.FramesBlockingEditMode)
-        end
-        C_Timer.After(2, function()
-            if Minimap then
-                Minimap:SetShown(true)
-                MinimapCluster:SetShown(true)
-            end
-        end)
-    end
+    
 end
 
 --###########
