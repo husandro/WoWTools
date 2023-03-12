@@ -230,6 +230,12 @@ local function set_TargetFrame()
             end
         end
     end)
+
+    hooksecurefunc(TargetFrame, 'OnUpdate', function(self, elapsed)
+        if self.elapsed>0.49 then
+            
+        end
+    end)
 end
 
 

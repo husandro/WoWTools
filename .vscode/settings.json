@@ -1972,7 +1972,8 @@
         "OTHER",
         "PetBattleFrameXPBar",
         "HUD_EDIT_MODE_RESET_POSITION",
-        "WORLD"
+        "WORLD",
+        "BOOKTYPE_SPELL"
     ],
     "Lua.diagnostics.disable": [
     ]
