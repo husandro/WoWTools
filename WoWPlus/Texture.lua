@@ -32,8 +32,8 @@ end
 
 --隐藏, frame, 子材质
 local function hide_Frame_Texture(frame, tab)
-    tab= tab or {}
     if frame then
+        tab= tab or {}
         local frames= {frame:GetRegions()}
         for index, icon in pairs(frames) do
             if tab.index then
@@ -50,11 +50,20 @@ local function hide_Frame_Texture(frame, tab)
 end
 
 --透明度, 颜色, frame, 子材质
-local function set_Alpha_Frame_Texture(frame)
+local function set_Alpha_Frame_Texture(frame, tab)
     if frame then
-        local tab= {frame:GetRegions()}
-        for _, icon in pairs(tab) do
-            if icon:GetObjectType()=="Texture" then
+        tab=tab or {}
+        local tabs= {frame:GetRegions()}
+        for index, icon in pairs(tabs) do
+            if tab.index== index then
+                if not Save.disabledAlpha  then
+                    icon:SetAlpha(Save.alpha)
+                end
+                if e.Player.useColor then
+                    icon:SetVertexColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
+                end
+                return
+            elseif icon:GetObjectType()=="Texture" then
                 if not Save.disabledAlpha  then
                     icon:SetAlpha(Save.alpha)
                 end
@@ -814,6 +823,18 @@ local function Init_Set_AlphaAndColor()
     if MainStatusTrackingBarContainer then--货币，XP，追踪，最下面BAR
         hideTexture(MainStatusTrackingBarContainer.BarFrameTexture)
     end
+
+    C_Timer.After(2, function()
+        for i=1, GetNumAddOns() do
+            local t= GetAddOnEnableState(nil,i);
+            if t==2 then
+                local name=GetAddOnInfo(i)
+                if name then
+                    set_Alpha_Frame_Texture(_G['LibDBIcon10_'..name], {index=2})
+                end
+            end
+        end
+    end)
 end
 
 --#########
