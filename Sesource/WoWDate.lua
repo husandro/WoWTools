@@ -112,14 +112,15 @@ function e.GetGroupGuidDate()--队伍数据收集
             local unit= 'raid'..index
             if UnitExists(unit) then
                 local guid= UnitGUID(unit)
-                local name, rank, subgroup, level, class, fileName, zone, online, isDead, role, isML, combatRole = GetRaidRosterInfo(index)
+                local _, _, subgroup, _, _, _, _, _, _, role, _, combatRole = GetRaidRosterInfo(index)
                 if guid then
                     local tab={
                         unit=unit,
                         subgroup= subgroup,
-                        combatRole= role or combatRole
+                        combatRole= role or combatRole,
                     }
                     e.GroupGuid[guid]= tab
+                    tab.guid= guid
                     e.GroupGuid[GetUnitName(unit, true)]= tab
                     if not e.UnitItemLevel[guid] or not e.UnitItemLevel[guid].itemLevel then
                         table.insert(UnitTab, unit)
@@ -136,11 +137,12 @@ function e.GetGroupGuidDate()--队伍数据收集
                 if guid then
                     tab={
                         unit= unit,
-                        combatRole= UnitGroupRolesAssigned(unit)
+                        combatRole= UnitGroupRolesAssigned(unit),
+                        guid=guid,
                     }
                     e.GroupGuid[guid]= tab
+                    tab.guid= guid
                     e.GroupGuid[GetUnitName(unit, true)]= tab
-
                     if not e.UnitItemLevel[guid] or not e.UnitItemLevel[guid].itemLevel then
                         table.insert(UnitTab, unit)
                     end

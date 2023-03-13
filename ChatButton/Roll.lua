@@ -53,7 +53,7 @@ local function setCHAT_MSG_SYSTEM(text)
             button.rightBottomText:SetText(Min)
         end
     end
-    table.insert(Tab, {name=name, roll=roll, date=date('%X'), text=text, guid= name==e.Player.name and e.Player.guid or (e.GroupGuid[name] and e.GroupGuid[name].guid)})
+    table.insert(Tab, {name=name, roll=roll, date=date('%X'), text=text, guid= name==e.Player.name and e.Player.guid or e.GroupGuid[name] and e.GroupGuid[name].guid})
 end
 
 
