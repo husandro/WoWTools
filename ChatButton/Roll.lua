@@ -26,10 +26,10 @@ local function setCHAT_MSG_SYSTEM(text)
         return
     end
     local name, roll, minText, maxText=text:match(rollText)
-    if not (name or roll or minText~='1' or maxText~=100) then
+    roll=  roll and tonumber(roll)
+    if not (name and roll and minText=='1' and maxText=='100') then
         return
     end
-    roll= tonumber(roll)
     if not findRolled(name) then
         if not Max or roll>Max then
             if Max then
@@ -60,7 +60,7 @@ end
 local function get_Save_Max()--清除时,保存数据
     local maxTab, max= nil, 0
     for _, tab in pairs(Tab) do
-        if tab.roll>max then
+        if tab.roll and tab.roll>max then
             maxTab= tab
             if tab==100 then
                 break
