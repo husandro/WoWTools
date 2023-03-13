@@ -731,7 +731,7 @@ end
 --初始化
 --######
 local function Init()
-    panel.name = e.Icon.left..(e.onlyChinese and '鼠标' or   MOUSE_LABEL)
+    panel.name = e.Icon.left..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '鼠标' or MOUSE_LABEL)..'|r'
     panel.parent =id
     InterfaceOptions_AddCategory(panel)
 
@@ -886,7 +886,7 @@ local function Init()
     panel.cursorCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     panel.cursorCheck:SetChecked(not Save.disabled)
     panel.cursorCheck:SetPoint("TOPLEFT", reloadButton, 'BOTTOMLEFT', 0, -5)
-    panel.cursorCheck.text:SetText('1)'..(e.onlyChinese and '启用' or ENABLE).. ' Cursor')
+    panel.cursorCheck.text:SetText('1)|cnRED_FONT_COLOR:'..(e.onlyChinese and '启用' or ENABLE).. ' Cursor')
     panel.cursorCheck:SetScript('OnMouseDown', function()
         Save.disabled = not Save.disabled and true or nil
         if not Save.disabled and not cursorFrame then
@@ -897,12 +897,19 @@ local function Init()
             cursorFrame:SetShown(not Save.disabled)
         end
     end)
+    panel.cursorCheck:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.onlyChinese and '物品升级界面' or (ITEM_UPGRADE..' UI'), e.onlyChinese and '错误' or ERRORS, 1,0,0,1,0,0)
+        e.tips:Show()
+    end)
+    panel.cursorCheck:SetScript('OnLeave', function() e.tips:Hide() end)
 
     --GCD, 启用/禁用
     panel.gcdCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    panel.gcdCheck:SetChecked(not Save.disabled)
+    panel.gcdCheck:SetChecked(not Save.disabledGCD)
     panel.gcdCheck:SetPoint("TOPLEFT", panel, 'TOP', 0, -35)
-    panel.gcdCheck.text:SetText('2)'..(e.onlyChinese and '启用' or ENABLE).. ' GCD')
+    panel.gcdCheck.text:SetText('2)|cnRED_FONT_COLOR:'..(e.onlyChinese and '启用' or ENABLE).. ' GCD')
     panel.gcdCheck:SetScript('OnMouseDown', function()
         Save.disabledGCD = not Save.disabledGCD and true or nil
         if not Save.disabledGCD and not gcdFrame then
@@ -914,6 +921,13 @@ local function Init()
             set_GCD()--设置 GCD
         end
     end)
+    panel.gcdCheck:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.onlyChinese and '物品升级界面' or (ITEM_UPGRADE..' UI'), e.onlyChinese and '错误' or ERRORS, 1,0,0,1,0,0)
+        e.tips:Show()
+    end)
+    panel.gcdCheck:SetScript('OnLeave', function() e.tips:Hide() end)
 end
 
 --###########

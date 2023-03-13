@@ -1312,6 +1312,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
             StaticPopup_Show(addName..'ExitIns')
             e.Ccool(StaticPopup1, nil, sec, nil, true)--冷却条
         end
+        
     elseif event=='PLAYER_ENTERING_WORLD' then
         if IsInInstance() then--自动离开
             panel:RegisterEvent('LOOT_CLOSED')

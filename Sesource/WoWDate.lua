@@ -4,23 +4,6 @@ e.WoWSave={}
 e.GroupFrame={}--UnitFrame.lua 设置装等， 专精
 
 
---################
---开启, 新手編輯模式
---################ LFDFrame.lua
-if C_PlayerInfo.IsPlayerNPERestricted() then
-    C_PlayerInfo.IsPlayerNPERestricted= function() return false end
-    EditModeManagerFrame.CanEnterEditMode = function(self2)--EditModeManager.lua
-        return TableIsEmpty(self2.FramesBlockingEditMode)
-    end
-    C_Timer.After(2, function()
-        if Minimap then
-            Minimap:SetShown(true)
-            MinimapCluster:SetShown(true)
-        end
-    end)
-end
-
-
 --########
 --玩家装等
 --########
@@ -386,9 +369,23 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
             e.GetGroupGuidDate()--队伍数据收集    
             set_Money()--钱
             updateCurrency()--{currencyID = 数量}
+
+            --################
+            --开启, 新手編輯模式
+            --################ LFDFrame.lua
+            if C_PlayerInfo.IsPlayerNPERestricted() then
+                --C_PlayerInfo.IsPlayerNPERestricted= function() return false end
+                EditModeManagerFrame.CanEnterEditMode = function(self2)--EditModeManager.lua
+                    return TableIsEmpty(self2.FramesBlockingEditMode)
+                end
+                if Minimap then
+                    Minimap:SetShown(true)
+                    MinimapCluster:SetShown(true)
+                end
+            end
         end)
 
-        
+
 
     elseif event=='PLAYER_LOGOUT' then
         if not e.ClearAllSave then

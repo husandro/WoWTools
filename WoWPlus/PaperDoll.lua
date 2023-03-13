@@ -636,7 +636,7 @@ local function setFlyout(button, itemLink, slot)
         button.upgrade:SetText(upgrade or '')
     end
 
-    local updown--升级等级，比较
+    local updown--UpgradeFrame等级，比较
     if level then
         if not slot or slot==0 then
             local itemEquipLoc= itemLink and select(4, GetItemInfoInstant(itemLink))
@@ -836,7 +836,7 @@ local function Init()
     --#######
     --装备弹出
     --EquipmentFlyout.lua
-    hooksecurefunc('EquipmentFlyout_Show', function(itemButton)
+   hooksecurefunc('EquipmentFlyout_Show', function(itemButton)
         for _, button in ipairs(EquipmentFlyoutFrame.buttons) do
             if button and button:IsShown() then
                 local itemLink, slot
