@@ -1979,7 +1979,10 @@
         "LFDQueueFrameSpecific",
         "LFDFrame_OnEvent",
         "BOOKTYPE_SPELL",
-        "AnimateTexCoords"
+        "AnimateTexCoords",
+        "SLASH_STOPWATCH_PARAM_STOP5",
+        "SLASH_TEXTTOSPEECH_HELP_ALTVOICE",
+        "ACHIEVEMENT_REQUIRES_GUILD_REPUTATION"
     ],
     "Lua.diagnostics.disable": [
     ]

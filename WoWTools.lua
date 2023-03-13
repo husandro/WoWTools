@@ -1258,6 +1258,33 @@ e.Create_Slider= function(self, tab)--e.Create_Slider(self, {w= ,h=, min=, max=,
     return slider
 end
 
+e.Magic= function(text)
+    local tab= {'%.', '%(','%)','%+', '%-', '%*', '%?', '%[', '%^'}
+    for _,v in pairs(tab) do
+        text= text:gsub(v,'%%'..v)
+    end
+    tab={
+        ['%%%d%$s']= '%(%.%-%)',
+        ['%%s']= '%(%.%-%)',
+        ['%%%d%$d']= '%(%%d%+%)',
+        ['%%d']= '%(%%d%+%)',
+    }
+    local find
+    for k,v in pairs(tab) do
+        text= text:gsub(k,v)
+        find=true
+    end
+    if find then
+        tab={'%$'}
+    else
+        tab={'%%','%$'}
+    end
+    for _, v in pairs(tab) do
+        text= text:gsub(v,'%%'..v)
+    end
+    return text
+end
+
 local LibRangeCheck = LibStub("LibRangeCheck-2.0")
 e.GetRange= function(unit, checkVisible)--WA Prototypes.lua
     return LibRangeCheck:GetRange(unit, checkVisible);
