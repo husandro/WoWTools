@@ -1983,7 +1983,8 @@
         "SLASH_STOPWATCH_PARAM_STOP5",
         "SLASH_TEXTTOSPEECH_HELP_ALTVOICE",
         "ACHIEVEMENT_REQUIRES_GUILD_REPUTATION",
-        "hash_SlashCmdList"
+        "hash_SlashCmdList",
+        "GARRISON_LANDING_PAGE_TITLE"
     ],
     "Lua.diagnostics.disable": [
     ]

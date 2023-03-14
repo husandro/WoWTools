@@ -5,7 +5,8 @@ local Save={
         ZoomOut=true,
         vigentteButton=e.Player.husandro,
         vigentteButtonShowText=true,
-        expansionScale= 0.85
+        expansionScale= 0.85,
+        addIcon= e.Player.husandro,
         --expansionAlpha=0.3,
 }
 local panel=CreateFrame("Frame")
@@ -126,93 +127,131 @@ end
 --#######
 local function set_ExpansionLandingPageMinimapButton()
     local frame=ExpansionLandingPageMinimapButton
-    if not frame then
-        return
-    end
-    
-    frame:SetFrameStrata('TOOLTIP')
-    frame:SetMovable(true)--移动
-    frame:RegisterForDrag("RightButton")
-    frame:SetClampedToScreen(true)
-    frame:EnableMouseWheel(true)
-    frame:SetScript("OnDragStart", function(self, d)
-        if d=='RightButton' and IsAltKeyDown() then
-            self:StartMoving()
+    if Save.addIcon then
+        if frame then
+            frame:SetShown(false)
         end
-    end)
+        e.Set_MinMap_Icon({name= id, texture= 136235 or 136235,
+            func= function(self, d)
+                if d=='LeftButton' then
+                    if IsAltKeyDown() then
+                        if not IsAddOnLoaded("Blizzard_WeeklyRewards") then--周奖励面板
+                            LoadAddOn("Blizzard_WeeklyRewards")
+                        end
+                        WeeklyRewards_ShowUI()--WeeklyReward.lua
+                    else
+                        if ExpansionLandingPageMinimapButton and ExpansionLandingPageMinimapButton.ToggleLandingPage then
+                            ExpansionLandingPageMinimapButton.ToggleLandingPage(ExpansionLandingPageMinimapButton)--Minimap.lua
+                        else
+                            InterfaceOptionsFrame_OpenToCategory(id)
+                        end
+                    end
+                else
+                    InterfaceOptionsFrame_OpenToCategory(id)
+                end
+            end,
+            enter= function(self)
+                if ExpansionLandingPageMinimapButton and ExpansionLandingPageMinimapButton.OnEnter then
+                    ExpansionLandingPageMinimapButton.OnEnter(ExpansionLandingPageMinimapButton)
+                    e.tips:AddLine(' ')
+                    e.tips:AddDoubleLine(e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , 'Alt'..e.Icon.left)
+                    e.tips:AddDoubleLine(e.onlyChinese and '设置选项' or OPTIONS, e.Icon.right)
+                    e.tips:Show()
+                else
+                    e.tips:SetOwner(self, "ANCHOR_Left")
+                    e.tips:ClearLines()
+                    e.tips:AddDoubleLine(e.onlyChinese and '设置选项' or OPTIONS)
+                    e.tips:AddDoubleLine(e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , 'Alt'..e.Icon.left)
+                    e.tips:Show()
+                end
+            end
+        })
 
-    frame:SetScript("OnDragStop", function(self)
-        self:StopMovingOrSizing()
-    end)
-    frame:SetScript('OnMouseDown', function(self, d)
-        if d=='RightButton' and not IsModifierKeyDown() then--周奖励面板
-            if not IsAddOnLoaded("Blizzard_WeeklyRewards") then
-                LoadAddOn("Blizzard_WeeklyRewards")
+    else
+        frame:SetFrameStrata('TOOLTIP')
+        frame:SetMovable(true)--移动
+        frame:RegisterForDrag("RightButton")
+        frame:SetClampedToScreen(true)
+        frame:EnableMouseWheel(true)
+        frame:SetScript("OnDragStart", function(self, d)
+            if d=='RightButton' and IsAltKeyDown() then
+                self:StartMoving()
             end
-            WeeklyRewards_ShowUI()--WeeklyReward.lua
-        end
-    end)
-    --hooksecurefunc(DragonridingPanelSkillsButtonMixin, 'OnClick', function(self, d)--显示,飞龙技能
+        end)
 
-    frame:SetScript('OnEnter',function(self)--Minimap.lua
-        self:SetAlpha(1)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:SetText(self.title, 1, 1, 1);
-	    e.tips:AddLine(self.description, nil, nil, nil, true);
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , e.Icon.right)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '设置选项' or OPTIONS, e.Icon.mid)
-        e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE, (Save.expansionScale and Save.expansionScale or '')..' Alt+'..e.Icon.mid)
-        e.tips:AddDoubleLine(e.onlyChinese and '透明度' or CHANGE_OPACITY, (Save.expansionScale and Save.expansionScale or '')..' Ctrl+'..e.Icon.mid)
-        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, addName)
-        e.tips:Show()
-    end)
-    frame:SetScript('OnLeave', function(self)
-        e.tips:Hide()
-        if Save.expansionAlpha and Save.expansionAlpha~=1 then
-            self:SetAlpha(Save.expansionAlpha)
-        end
-    end)
-    frame:SetScript('OnMouseWheel', function(self, d)
-        if not IsModifierKeyDown() then--打开, 插件, 选项
-            InterfaceOptionsFrame_OpenToCategory(id)
-        elseif IsAltKeyDown() then--缩放
-            local n= Save.expansionScale or 1
-            if d==1 then
-                n= n+0.1
-            elseif d==-1 then
-                n= n-0.1
+        frame:SetScript("OnDragStop", function(self)
+            self:StopMovingOrSizing()
+        end)
+        frame:SetScript('OnMouseDown', function(self, d)
+            if d=='RightButton' and not IsModifierKeyDown() then
+                InterfaceOptionsFrame_OpenToCategory(id)
             end
-            n= n>2 and 2 or n<0.3 and 0.3 or n
-            self:SetScale(n)
-            Save.expansionScale=n
-            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..n)
-        elseif IsControlKeyDown() then--透明度
-            local n= Save.expansionAlpha or 1
-            if d==1 then
-                n= n+0.1
-            elseif d==-1 then
-                n= n-0.1
+        end)
+        --hooksecurefunc(DragonridingPanelSkillsButtonMixin, 'OnClick', function(self, d)--显示,飞龙技能
+
+        frame:SetScript('OnEnter',function(self)--Minimap.lua
+            self:SetAlpha(1)
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:SetText(self.title, 1, 1, 1);
+            e.tips:AddLine(self.description, nil, nil, nil, true);
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(e.onlyChinese and '设置选项' or OPTIONS, e.Icon.right)
+            e.tips:AddDoubleLine(e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , e.Icon.mid)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE, (Save.expansionScale and Save.expansionScale or '')..' Alt+'..e.Icon.mid)
+            e.tips:AddDoubleLine(e.onlyChinese and '透明度' or CHANGE_OPACITY, (Save.expansionScale and Save.expansionScale or '')..' Ctrl+'..e.Icon.mid)
+            e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(id, addName)
+            e.tips:Show()
+        end)
+        frame:SetScript('OnLeave', function(self)
+            e.tips:Hide()
+            if Save.expansionAlpha and Save.expansionAlpha~=1 then
+                self:SetAlpha(Save.expansionAlpha)
             end
-            n= n>1 and 1 or n<0.3 and 0.3 or n
-            self:SetAlpha(n)
-            Save.expansionAlpha=n
-            print(id, addName, e.onlyChinese and '透明度' or CHANGE_OPACITY, '|cnGREEN_FONT_COLOR:'..n)
+        end)
+        frame:SetScript('OnMouseWheel', function(self, d)
+            if not IsModifierKeyDown() then--打开, 插件, 选项
+                if not IsAddOnLoaded("Blizzard_WeeklyRewards") then--周奖励面板
+                    LoadAddOn("Blizzard_WeeklyRewards")
+                end
+                WeeklyRewards_ShowUI()--WeeklyReward.lua
+            elseif IsAltKeyDown() then--缩放
+                local n= Save.expansionScale or 1
+                if d==1 then
+                    n= n+0.1
+                elseif d==-1 then
+                    n= n-0.1
+                end
+                n= n>2 and 2 or n<0.3 and 0.3 or n
+                self:SetScale(n)
+                Save.expansionScale=n
+                print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..n)
+            elseif IsControlKeyDown() then--透明度
+                local n= Save.expansionAlpha or 1
+                if d==1 then
+                    n= n+0.1
+                elseif d==-1 then
+                    n= n-0.1
+                end
+                n= n>1 and 1 or n<0.3 and 0.3 or n
+                self:SetAlpha(n)
+                Save.expansionAlpha=n
+                print(id, addName, e.onlyChinese and '透明度' or CHANGE_OPACITY, '|cnGREEN_FONT_COLOR:'..n)
+            end
+        end)
+        if Save.expansionScale and Save.expansionScale~=1 then
+            frame:SetScale(Save.expansionScale)
         end
-    end)
-    if Save.expansionScale and Save.expansionScale~=1 then
-        frame:SetScale(Save.expansionScale)
+        C_Timer.After(8, function()--盟约图标停止闪烁
+            frame.MinimapLoopPulseAnim:Stop()
+            if Save.expansionAlpha and Save.expansionAlpha~=1 then
+                frame:SetAlpha(Save.expansionAlpha)
+            end
+        end)
     end
-    C_Timer.After(8, function()--盟约图标停止闪烁
-        frame.MinimapLoopPulseAnim:Stop()
-        if Save.expansionAlpha and Save.expansionAlpha~=1 then
-            frame:SetAlpha(Save.expansionAlpha)
-        end
-    end)
 end
 
 --#################
@@ -519,7 +558,7 @@ end
 --####
 local function Init()
     set_MinimapCluster()--缩放
-    set_ExpansionLandingPageMinimapButton()--盟约图标
+    C_Timer.After(2, set_ExpansionLandingPageMinimapButton)--盟约图标
     set_MinimapMenu()--小地图, 添加菜单
     set_minimapTrackingShowAll()--追踪,镇民
 
@@ -589,19 +628,29 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave[addName] or Save
 
              --添加控制面板        
-             local sel=e.CPanel('|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(e.onlyChinese and '小地图' or addName), not Save.disabled)
-             sel:SetScript('OnMouseDown', function()
+             local check=e.CPanel('|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(e.onlyChinese and '小地图' or addName), not Save.disabled)
+             check:SetScript('OnMouseDown', function()
                 Save.disabled = not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                print(id, addName, e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
              end)
-             --[[sel:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+
+             --添加一个图标，隐藏要塞图标
+             local checkAddIcon=CreateFrame("CheckButton", nil, check, "InterfaceOptionsCheckButtonTemplate")
+             checkAddIcon:SetChecked(Save.addIcon)
+             checkAddIcon.text:SetText(e.Icon.wow2..(e.onlyChinese and '图标' or EMBLEM_SYMBOL))
+             checkAddIcon:SetScript('OnMouseUp', function()
+                 Save.addIcon = not Save.addIcon and true or false
+                 print(id, addName, e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+             end)
+             checkAddIcon:SetPoint("LEFT", check.text, 'RIGHT', 2, 0)
+             checkAddIcon:SetScript('OnEnter', function(self2)
+                e.tips:SetOwner(self2, "ANCHOR_RIGHT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine(id, addName)
-                e.tips:AddDoubleLine(UI_SCALE, Save.scale or 1)
+                e.tips:AddDoubleLine(e.onlyChinese and '添加' or ADD, e.Icon.wow2..(e.onlyChinese and '图标' or EMBLEM_SYMBOL))
+                e.tips:AddDoubleLine(e.onlyChinese and "要塞报告" or GARRISON_LANDING_PAGE_TITLE, e.onlyChinese and '隐藏' or HIDE)
                 e.tips:Show()
             end)
-            sel:SetScript('OnLeave', function() e.tips:Hide() end)]]
+            checkAddIcon:SetScript('OnLeave', function() e.tips:Hide() end)
 
             if not Save.disabled then
                 panel:RegisterEvent("ZONE_CHANGED_NEW_AREA")
