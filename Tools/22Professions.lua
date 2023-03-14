@@ -1,6 +1,9 @@
 local id, e = ...
 local addName= PROFESSIONS_TRACKER_HEADER_PROFESSION
-local Save={setButton=true}
+local Save={
+    setButton=true,
+    --disabledClassTrainer=true,--隐藏，全学，按钮
+}
 local panel=CreateFrame("Frame")
 
 
@@ -75,8 +78,24 @@ local function set_Blizzard_TrainerU()
             btn:SetEnabled(btn.all>0)
             btn:SetText(btn.all..' '..btn.name)
         end
-        btn:SetShown(show)
+        btn:SetShown(show and not Save.disabledClassTrainer)
 	end)
+
+    local btn2= e.Cbtn(ClassTrainerFrame, {icon=true})
+    btn2:SetPoint('LEFT', ClassTrainerFrame.TitleContainer, -5, -1)
+    btn2:SetSize(20,20)
+    btn2:SetAlpha(0.3)
+    btn2:SetScript('OnClick', function()
+        Save.disabledClassTrainer= not Save.disabledClassTrainer and true or nil
+        btn:SetShown(not Save.disabledClassTrainer)
+    end)
+    btn2:SetScript("OnEnter",function(self)
+		e.tips:SetOwner(self,"ANCHOR_BOTTOMLEFT")
+		e.tips:ClearLines()
+		e.tips:AddDoubleLine(e.onlyChinese and '全部学习' or (ALL..' '.. LEARN), e.GetShowHide(not Save.disabledClassTrainer))
+		e.tips:Show()
+	end)
+	btn2:SetScript("OnLeave",function() e.tips:Hide() end)
 end
 
 

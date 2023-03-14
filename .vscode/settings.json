@@ -1990,7 +1990,8 @@
         "LEARN",
         "AVAILABLE",
         "HUD_EDIT_MODE_EXIT",
-        "NOT_ENOUGH_GOLD"
+        "NOT_ENOUGH_GOLD",
+        "ClassTrainerFrame_Update"
     ],
     "Lua.diagnostics.disable": [
     ]
