@@ -950,76 +950,6 @@ local function Init_Quest()
 end
 
 
---添一个,全学,专业, 按钮, 插件 TrainAll
-local function set_Blizzard_TrainerU()
-    local btn= e.Cbtn(ClassTrainerTrainButton, {type=false, size={ClassTrainerTrainButton:GetSize()}})
-    btn:SetPoint('RIGHT', ClassTrainerTrainButton, 'LEFT',-2,0)
-    btn.name=e.onlyChinese and '全部' or ALL
-    btn.all= 0
-    btn.cost= 0
-	btn:SetText(btn.name)
-    btn:SetScript("OnEnter",function(self)
-        local text= GetCoinTextureString(self.cost)
-        if self.cost< GetMoney() then
-            text= '|cnGREEN_FONT_COLOR:'..text..'|r'
-        else
-            text= '|cnGREEN_FONT_COLOR:'..text..'|r'
-        end
-		e.tips:SetOwner(self,"ANCHOR_BOTTOMLEFT")
-		e.tips:ClearLines()
-		e.tips:AddDoubleLine(e.onlyChinese and '全部' or ALL, e.onlyChinese and '学习' or LEARN)
-		e.tips:AddDoubleLine(text, (e.onlyChinese and '可用' or AVAILABLE)..': '..'|cnGREEN_FONT_COLOR:'..self.all..'|r')
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine('Alt', e.onlyChinese and '退出' or HUD_EDIT_MODE_EXIT)
-        e.tips:AddDoubleLine(id, addName)
-		e.tips:Show()
-	end)
-	btn:SetScript("OnLeave",function() e.tips:Hide() end)
-
-	btn:SetScript("OnClick",function()
-        local index= WOW_PROJECT_ID==WOW_PROJECT_MAINLINE and 2 or 3
-        local num, cost= 0, 0
-		for i=1,GetNumTrainerServices() do
-			if select(index, GetTrainerServiceInfo(i))=="available" then
-                local cost2= GetTrainerServiceCost(i) or 0
-                if cost2<= GetMoney() then
-                    if IsModifierKeyDown() then
-                        break
-                    end
-                    BuyTrainerService(i)
-                    cost= cost +cost2
-                    num= num +1
-                    print(GetTrainerServiceItemLink(i) or GetTrainerServiceInfo(i))
-                else
-                    print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '金币不足' or NOT_ENOUGH_GOLD))
-                    break
-                end
-            end
-		end
-        C_Timer.After(1, function()
-            print(id, addName, (e.onlyChinese and '学习' or LEARN)..': |cnGREEN_FONT_COLOR:'..num, (cost>0 and '|cnGREEN_FONT_COLOR:' or '')..GetCoinTextureString(cost))
-        end)
-	end)
-
-	hooksecurefunc("ClassTrainerFrame_Update",function()--Blizzard_TrainerUI.lua
-		btn.all=0
-        btn.cost=0
-        local index= WOW_PROJECT_ID==WOW_PROJECT_MAINLINE and 2 or 3
-        local tradeSkillStepIndex = GetTrainerServiceStepIndex();
-        local category= tradeSkillStepIndex and select(index, GetTrainerServiceInfo(tradeSkillStepIndex))
-        if tradeSkillStepIndex and(category=='used' or category=='available') then
-            for i=1,GetNumTrainerServices() do
-                if select(index, GetTrainerServiceInfo(i))=="available" then
-                    btn.all= btn.all +1
-                    btn.cost= btn.cost +(GetTrainerServiceCost(i) or 0)
-                end
-            end
-        end
-		btn:SetEnabled(btn.cost>0)
-        btn:SetText(btn.all..' '..btn.name)
-        btn:SetShown(IsTradeskillTrainer())
-	end)
-end
 
 --###########
 --加载保存数据
@@ -1064,9 +994,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     s.editBox:SetText(SHADOWLANDS_EXPERIENCE_THREADS_OF_FATE_CONFIRMATION_STRING)
                 end
             end)
-
-        elseif arg1== 'Blizzard_TrainerUI' then
-            set_Blizzard_TrainerU()--添一个,全学,专业, 按钮
         end
 
     elseif event == "PLAYER_LOGOUT" then

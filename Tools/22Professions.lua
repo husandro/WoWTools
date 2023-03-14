@@ -3,6 +3,82 @@ local addName= PROFESSIONS_TRACKER_HEADER_PROFESSION
 local Save={setButton=true}
 local panel=CreateFrame("Frame")
 
+
+--添一个,全学,专业, 按钮, 插件 TrainAll local index= WOW_PROJECT_ID==WOW_PROJECT_MAINLINE and 2 or 3
+local function set_Blizzard_TrainerU()
+    local btn= e.Cbtn(ClassTrainerTrainButton, {type=false, size={ClassTrainerTrainButton:GetSize()}})
+    btn:SetPoint('RIGHT', ClassTrainerTrainButton, 'LEFT',-2,0)
+    btn.name=e.onlyChinese and '全部' or ALL
+    btn.all= 0
+    btn.cost= 0
+	btn:SetText(btn.name)
+    btn:SetScript("OnEnter",function(self)
+        local text= GetCoinTextureString(self.cost)
+        if self.cost< GetMoney() then
+            text= '|cnGREEN_FONT_COLOR:'..text..'|r'
+        else
+            text= '|cnGREEN_FONT_COLOR:'..text..'|r'
+        end
+		e.tips:SetOwner(self,"ANCHOR_BOTTOMLEFT")
+		e.tips:ClearLines()
+		e.tips:AddDoubleLine(e.onlyChinese and '全部' or ALL, e.onlyChinese and '学习' or LEARN)
+		e.tips:AddDoubleLine(text, (e.onlyChinese and '可用' or AVAILABLE)..': '..'|cnGREEN_FONT_COLOR:'..self.all..'|r')
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine('Alt', e.onlyChinese and '退出' or HUD_EDIT_MODE_EXIT)
+        e.tips:AddDoubleLine(id, addName)
+		e.tips:Show()
+	end)
+	btn:SetScript("OnLeave",function() e.tips:Hide() end)
+
+	btn:SetScript("OnClick",function()
+        local index= WOW_PROJECT_ID==WOW_PROJECT_MAINLINE and 2 or 3
+        local num, cost= 0, 0
+		for i=1,GetNumTrainerServices() do
+			if select(index, GetTrainerServiceInfo(i))=="available" then
+                local cost2= GetTrainerServiceCost(i) or 0
+                if cost2<= GetMoney() then
+                    if IsModifierKeyDown() then
+                        break
+                    end
+                    BuyTrainerService(i)
+                    cost= cost +cost2
+                    num= num +1
+                    print(GetTrainerServiceItemLink(i) or GetTrainerServiceInfo(i))
+                else
+                    print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '金币不足' or NOT_ENOUGH_GOLD))
+                    break
+                end
+            end
+		end
+        C_Timer.After(1, function()
+            print(id, addName, (e.onlyChinese and '学习' or LEARN)..': |cnGREEN_FONT_COLOR:'..num, (cost>0 and '|cnGREEN_FONT_COLOR:' or '')..GetCoinTextureString(cost))
+        end)
+	end)
+
+	hooksecurefunc("ClassTrainerFrame_Update",function()--Blizzard_TrainerUI.lua 
+        local show= IsTradeskillTrainer()
+        if show then
+            btn.all=0
+            btn.cost=0
+            local index= WOW_PROJECT_ID==WOW_PROJECT_MAINLINE and 2 or 3
+            local tradeSkillStepIndex = GetTrainerServiceStepIndex();
+            local category= tradeSkillStepIndex and select(index, GetTrainerServiceInfo(tradeSkillStepIndex))
+            if tradeSkillStepIndex and(category=='used' or category=='available') then
+                for i=1,GetNumTrainerServices() do
+                    if select(index, GetTrainerServiceInfo(i))=="available" then
+                        btn.all= btn.all +1
+                        btn.cost= btn.cost +(GetTrainerServiceCost(i) or 0)
+                    end
+                end
+            end
+            btn:SetEnabled(btn.cost>0)
+            btn:SetText(btn.all..' '..btn.name)
+        end
+        btn:SetShown(show)
+	end)
+end
+
+
 local function set_ProfessionsFrame_Button()--专业界面, 按钮
     local setButton= e.Cbtn(ProfessionsFrame.TitleContainer, {icon=not Save.notProfessionsFrameButtuon, size={20, 20}})
     setButton:SetPoint('RIGHT', ProfessionsFrameTitleText, 'RIGHT', 0, 2)
@@ -206,6 +282,8 @@ local function set_Button()
         end
     end
 end
+
+
 --####
 --初始
 --####
@@ -278,8 +356,6 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
@@ -295,10 +371,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         set_Button()
                     end
                 end)
-                panel:UnregisterEvent('ADDON_LOADED')
-            else
-                panel:UnregisterAllEvents()
             end
+            panel:RegisterEvent("PLAYER_LOGOUT")
+
+        elseif arg1== 'Blizzard_TrainerUI' then
+            set_Blizzard_TrainerU()--添一个,全学,专业, 按钮
         end
 
     elseif event == "PLAYER_LOGOUT" then
