@@ -24,34 +24,36 @@ local function set_Blizzard_TrainerU()
 		e.tips:AddDoubleLine(e.onlyChinese and '全部' or ALL, e.onlyChinese and '学习' or LEARN)
 		e.tips:AddDoubleLine(text, (e.onlyChinese and '可用' or AVAILABLE)..': '..'|cnGREEN_FONT_COLOR:'..self.all..'|r')
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine('Alt', e.onlyChinese and '退出' or HUD_EDIT_MODE_EXIT)
         e.tips:AddDoubleLine(id, addName)
 		e.tips:Show()
 	end)
 	btn:SetScript("OnLeave",function() e.tips:Hide() end)
 
 	btn:SetScript("OnClick",function()
-        local index= WOW_PROJECT_ID==WOW_PROJECT_MAINLINE and 2 or 3
         local num, cost= 0, 0
+        local tab={}
 		for i=1,GetNumTrainerServices() do
-			if select(index, GetTrainerServiceInfo(i))=="available" then
-                local cost2= GetTrainerServiceCost(i) or 0
-                if cost2<= GetMoney() then
-                    if IsModifierKeyDown() then
-                        break
-                    end
+			if select(2, GetTrainerServiceInfo(i))=="available" then
+                local money= GetTrainerServiceCost(i) or 0
+                if money<= GetMoney() then
+                    local link=GetTrainerServiceItemLink(i) or GetTrainerServiceInfo(i)
                     BuyTrainerService(i)
-                    cost= cost +cost2
+                    cost= cost +money
                     num= num +1
-                    print(GetTrainerServiceItemLink(i) or GetTrainerServiceInfo(i))
+                    if link then
+                        table.insert(tab, link)
+                    end
                 else
                     print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '金币不足' or NOT_ENOUGH_GOLD))
                     break
                 end
             end
 		end
-        C_Timer.After(1, function()
-            print(id, addName, (e.onlyChinese and '学习' or LEARN)..': |cnGREEN_FONT_COLOR:'..num, (cost>0 and '|cnGREEN_FONT_COLOR:' or '')..GetCoinTextureString(cost))
+        C_Timer.After(0.5, function()
+            for i, link in pairs(tab) do
+                print('|cffff00ff'..i..'|r)', link)
+            end
+            print(id, 'Tools', addName, '|cffff00ff'..num..'|r '..(e.onlyChinese and '学习' or LEARN), (cost>0 and '|cnGREEN_FONT_COLOR:' or '')..GetCoinTextureString(cost))
         end)
 	end)
 
@@ -60,18 +62,17 @@ local function set_Blizzard_TrainerU()
         if show then
             btn.all=0
             btn.cost=0
-            local index= WOW_PROJECT_ID==WOW_PROJECT_MAINLINE and 2 or 3
             local tradeSkillStepIndex = GetTrainerServiceStepIndex();
-            local category= tradeSkillStepIndex and select(index, GetTrainerServiceInfo(tradeSkillStepIndex))
-            if tradeSkillStepIndex and(category=='used' or category=='available') then
+            local category= tradeSkillStepIndex and select(2, GetTrainerServiceInfo(tradeSkillStepIndex))
+            if tradeSkillStepIndex and (category=='used' or category=='available') then
                 for i=1,GetNumTrainerServices() do
-                    if select(index, GetTrainerServiceInfo(i))=="available" then
+                    if select(2, GetTrainerServiceInfo(i))=="available" then
                         btn.all= btn.all +1
                         btn.cost= btn.cost +(GetTrainerServiceCost(i) or 0)
                     end
                 end
             end
-            btn:SetEnabled(btn.cost>0)
+            btn:SetEnabled(btn.all>0)
             btn:SetText(btn.all..' '..btn.name)
         end
         btn:SetShown(show)

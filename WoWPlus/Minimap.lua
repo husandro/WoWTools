@@ -139,8 +139,7 @@ local function set_ExpansionLandingPageMinimapButton()
                         end
                         WeeklyRewards_ShowUI()--WeeklyReward.lua
                     else
-                        print(ExpansionLandingPageMinimapButton.ToggleLandingPage)
-                        if ExpansionLandingPageMinimapButton and ExpansionLandingPageMinimapButton.ToggleLandingPage then
+                        if ExpansionLandingPageMinimapButton and ExpansionLandingPageMinimapButton.ToggleLandingPage and ExpansionLandingPageMinimapButton.title then
                             ExpansionLandingPageMinimapButton.ToggleLandingPage(ExpansionLandingPageMinimapButton)--Minimap.lua
                         else
                             InterfaceOptionsFrame_OpenToCategory(id)
