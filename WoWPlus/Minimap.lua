@@ -129,6 +129,9 @@ local function set_ExpansionLandingPageMinimapButton()
     if Save.addIcon then
         if ExpansionLandingPageMinimapButton then
             ExpansionLandingPageMinimapButton:SetShown(false)
+            hooksecurefunc(ExpansionLandingPageMinimapButton, 'OnShow', function(self)
+                self:SetShown(false)
+            end)
         end
         e.Set_MinMap_Icon({name= id, texture= 136235 or 136235,
             func= function(self, d)

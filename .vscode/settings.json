@@ -1984,7 +1984,8 @@
         "SLASH_TEXTTOSPEECH_HELP_ALTVOICE",
         "ACHIEVEMENT_REQUIRES_GUILD_REPUTATION",
         "hash_SlashCmdList",
-        "GARRISON_LANDING_PAGE_TITLE"
+        "GARRISON_LANDING_PAGE_TITLE",
+        "DragonflightLandingOverlayMixin"
     ],
     "Lua.diagnostics.disable": [
     ]
