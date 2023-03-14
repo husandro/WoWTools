@@ -126,10 +126,9 @@ end
 --盟约图标
 --#######
 local function set_ExpansionLandingPageMinimapButton()
-    local frame=ExpansionLandingPageMinimapButton
     if Save.addIcon then
-        if frame then
-            frame:SetShown(false)
+        if ExpansionLandingPageMinimapButton then
+            ExpansionLandingPageMinimapButton:SetShown(false)
         end
         e.Set_MinMap_Icon({name= id, texture= 136235 or 136235,
             func= function(self, d)
@@ -140,6 +139,7 @@ local function set_ExpansionLandingPageMinimapButton()
                         end
                         WeeklyRewards_ShowUI()--WeeklyReward.lua
                     else
+                        print(ExpansionLandingPageMinimapButton.ToggleLandingPage)
                         if ExpansionLandingPageMinimapButton and ExpansionLandingPageMinimapButton.ToggleLandingPage then
                             ExpansionLandingPageMinimapButton.ToggleLandingPage(ExpansionLandingPageMinimapButton)--Minimap.lua
                         else
@@ -151,23 +151,28 @@ local function set_ExpansionLandingPageMinimapButton()
                 end
             end,
             enter= function(self)
-                if ExpansionLandingPageMinimapButton and ExpansionLandingPageMinimapButton.OnEnter then
+                if ExpansionLandingPageMinimapButton and ExpansionLandingPageMinimapButton.OnEnter and ExpansionLandingPageMinimapButton.title then--Minimap.lua
                     ExpansionLandingPageMinimapButton.OnEnter(ExpansionLandingPageMinimapButton)
                     e.tips:AddLine(' ')
                     e.tips:AddDoubleLine(e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , 'Alt'..e.Icon.left)
                     e.tips:AddDoubleLine(e.onlyChinese and '设置选项' or OPTIONS, e.Icon.right)
+                    e.tips:AddLine(' ')
+                    e.tips:AddDoubleLine(id, addName)
                     e.tips:Show()
                 else
                     e.tips:SetOwner(self, "ANCHOR_Left")
                     e.tips:ClearLines()
-                    e.tips:AddDoubleLine(e.onlyChinese and '设置选项' or OPTIONS)
+                    e.tips:AddDoubleLine(e.onlyChinese and '设置选项' or OPTIONS, e.Icon.right)
                     e.tips:AddDoubleLine(e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , 'Alt'..e.Icon.left)
+                    e.tips:AddLine(' ')
+                    e.tips:AddDoubleLine(id, addName)
                     e.tips:Show()
                 end
             end
         })
 
     else
+        local frame=ExpansionLandingPageMinimapButton
         frame:SetFrameStrata('TOOLTIP')
         frame:SetMovable(true)--移动
         frame:RegisterForDrag("RightButton")
@@ -647,7 +652,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 e.tips:SetOwner(self2, "ANCHOR_RIGHT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(e.onlyChinese and '添加' or ADD, e.Icon.wow2..(e.onlyChinese and '图标' or EMBLEM_SYMBOL))
-                e.tips:AddDoubleLine(e.onlyChinese and "要塞报告" or GARRISON_LANDING_PAGE_TITLE, e.onlyChinese and '隐藏' or HIDE)
+                e.tips:AddDoubleLine(e.onlyChinese and "要塞报告" or GARRISON_LANDING_PAGE_TITLE, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '隐藏' or HIDE))
                 e.tips:Show()
             end)
             checkAddIcon:SetScript('OnLeave', function() e.tips:Hide() end)

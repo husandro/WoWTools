@@ -1303,33 +1303,6 @@ e.CheckRange= function(unit, range, operator)
     end
 end
 
---[[e.Set_MinMap_Icon= function(name, texture, clickFunc)
-    local bunnyLDB = LibStub("LibDataBroker-1.1"):NewDataObject(name, {
-        type = "data source",
-        text = name,
-        icon = texture,
-        OnClick = clickFunc,
-        })
-    local icon = LibStub("LibDBIcon-1.0")
-    local addon = LibStub("AceAddon-3.0"):NewAddon(name, "AceConsole-3.0")
-    function addon:OnInitialize()
-        -- Obviously you'll need a ## SavedVariables: BunniesDB line in your TOC, duh! 
-        self.db = LibStub("AceDB-3.0"):New(BunniesDB, { profile = { minimap = { hide = false, }, }, })
-        icon:Register(name, bunnyLDB, self.db.profile.minimap)
-        self:RegisterChatCommand(name, "CommandTheBunnies")
-    end
-    function addon:CommandTheBunnies()
-        self.db.profile.minimap.hide = not self.db.profile.minimap.hide
-        if self.db.profile.minimap.hide then
-            icon:Hide(name)
-        else
-            icon:Show(name)
-        end
-    end
-    return addon
-end
-e.Set_MinMap_Icon('abc', "Interface\\Icons\\INV_Chest_Cloth_17", function(self2,d) print(d) end)]]
-
 e.Set_MinMap_Icon= function(tab)-- {name, texture, func, func2, hide} 小地图，建立一个图标 Hide("MyLDB") icon:Show("")
     local bunnyLDB = LibStub("LibDataBroker-1.1"):NewDataObject(tab.name, {
         type = "data source",
