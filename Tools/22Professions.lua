@@ -44,7 +44,7 @@ local function set_Blizzard_TrainerU()
                         table.insert(tab, link)
                     end
                 else
-                    print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '金币不足' or NOT_ENOUGH_GOLD))
+                    print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '金币不足' or NOT_ENOUGH_GOLD), GetCoinTextureString(money))
                     break
                 end
             end
