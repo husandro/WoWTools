@@ -7,7 +7,7 @@ local Save={
 local panel=CreateFrame("Frame")
 
 
---添一个,全学,专业, 按钮, 插件 TrainAll local index= WOW_PROJECT_ID==WOW_PROJECT_MAINLINE and 2 or 3
+--添一个,全学,专业, 按钮, 插件 TrainAll 
 local function set_Blizzard_TrainerU()
     local btn= e.Cbtn(ClassTrainerTrainButton, {type=false, size={ClassTrainerTrainButton:GetSize()}})
     btn:SetPoint('RIGHT', ClassTrainerTrainButton, 'LEFT',-2,0)
@@ -33,10 +33,11 @@ local function set_Blizzard_TrainerU()
 	btn:SetScript("OnLeave",function() e.tips:Hide() end)
 
 	btn:SetScript("OnClick",function()
+        local index= WOW_PROJECT_ID==WOW_PROJECT_MAINLINE and 2 or 3
         local num, cost= 0, 0
         local tab={}
 		for i=1,GetNumTrainerServices() do
-			if select(2, GetTrainerServiceInfo(i))=="available" then
+			if select(index, GetTrainerServiceInfo(i))=="available" then
                 local money= GetTrainerServiceCost(i) or 0
                 if money<= GetMoney() then
                     local link=GetTrainerServiceItemLink(i) or GetTrainerServiceInfo(i)
@@ -63,13 +64,14 @@ local function set_Blizzard_TrainerU()
 	hooksecurefunc("ClassTrainerFrame_Update",function()--Blizzard_TrainerUI.lua 
         local show= IsTradeskillTrainer()
         if show then
+            local index= WOW_PROJECT_ID==WOW_PROJECT_MAINLINE and 2 or 3
             btn.all=0
             btn.cost=0
             local tradeSkillStepIndex = GetTrainerServiceStepIndex();
-            local category= tradeSkillStepIndex and select(2, GetTrainerServiceInfo(tradeSkillStepIndex))
+            local category= tradeSkillStepIndex and select(index, GetTrainerServiceInfo(tradeSkillStepIndex))
             if tradeSkillStepIndex and (category=='used' or category=='available') then
                 for i=1,GetNumTrainerServices() do
-                    if select(2, GetTrainerServiceInfo(i))=="available" then
+                    if select(index, GetTrainerServiceInfo(i))=="available" then
                         btn.all= btn.all +1
                         btn.cost= btn.cost +(GetTrainerServiceCost(i) or 0)
                     end
@@ -90,7 +92,7 @@ local function set_Blizzard_TrainerU()
         btn:SetShown(not Save.disabledClassTrainer)
     end)
     btn2:SetScript("OnEnter",function(self)
-		e.tips:SetOwner(self,"ANCHOR_BOTTOMLEFT")
+		e.tips:SetOwner(ClassTrainerFrame.TitleContainer, "ANCHOR_TOPLEFT")
 		e.tips:ClearLines()
 		e.tips:AddDoubleLine(e.onlyChinese and '全部学习' or (ALL..' '.. LEARN), e.GetShowHide(not Save.disabledClassTrainer))
 		e.tips:Show()
