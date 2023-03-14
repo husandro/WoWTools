@@ -1001,13 +1001,13 @@ local function set_Blizzard_TrainerU()
         end)
 	end)
 
-	hooksecurefunc("ClassTrainerFrame_Update",function(self)
+	hooksecurefunc("ClassTrainerFrame_Update",function()--Blizzard_TrainerUI.lua
 		btn.all=0
         btn.cost=0
         local index= WOW_PROJECT_ID==WOW_PROJECT_MAINLINE and 2 or 3
         local tradeSkillStepIndex = GetTrainerServiceStepIndex();
-
-        local category=select(index, GetTrainerServiceInfo(tradeSkillStepIndex))
+        local category= tradeSkillStepIndex and select(index, GetTrainerServiceInfo(tradeSkillStepIndex))
+        print(tradeSkillStepIndex)
         if tradeSkillStepIndex and(category=='used' or category=='available') then
             for i=1,GetNumTrainerServices() do
                 if select(index, GetTrainerServiceInfo(i))=="available" then
