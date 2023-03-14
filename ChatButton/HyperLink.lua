@@ -847,7 +847,7 @@ local function InitMenu(self, level, type)
 
     else
         info={
-            text= (e.onlyChinese and '超链接图标'or addName)..e.Icon.left..e.GetEnabeleDisable(not Save.disabed),
+            text= (e.onlyChinese and '超链接图标'or addName)..e.Icon.left,
             checked=not Save.disabed,
             func=function()
                 setFunc()--使用，禁用
@@ -857,7 +857,7 @@ local function InitMenu(self, level, type)
 
         local bool= C_CVar.GetCVarBool('textToSpeech')--文本转语音
         info={
-            text= (e.onlyChinese and '文本转语音' or TEXT_TO_SPEECH)..e.GetEnabeleDisable(bool),
+            text= (e.onlyChinese and '文本转语音' or TEXT_TO_SPEECH),
             checked=bool,
             tooltipOnButton=true,
             tooltipTitle='CVar: textToSpeech',
@@ -924,7 +924,7 @@ local function InitMenu(self, level, type)
 
         UIDropDownMenu_AddSeparator(level)
         info={
-            text= 'ETRACE',
+            text= '|cffff00ffE|rTRACE',
             checked= IsAddOnLoaded("Blizzard_EventTrace") and EventTrace:IsShown(),
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '事件记录' or EVENTTRACE_HEADER,
@@ -939,7 +939,7 @@ local function InitMenu(self, level, type)
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text= 'FSTACK',
+            text= '|cff00ff00F|rSTACK',
             checked= IsAddOnLoaded("Blizzard_DebugTools") and FrameStackTooltip_IsFramestackEnabled(),--Blizzard_DebugTools.lua
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '框架栈' or DEBUG_FRAMESTACK,
