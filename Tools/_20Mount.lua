@@ -7,6 +7,7 @@ local XD
 local button
 
 local Save={
+    disabled= not e.Player.husandro,
     Mounts={
         [ITEMS]={[174464]=true, [168035]=true},--幽魂缰绳 噬渊鼠缰绳
         [SPELLS]={[2645]=true, [111400]=true, [343016]=true, [195072]=true, [2983]=true, [190784]=true, [48265]=true, [186257]=true, [6544]=true},

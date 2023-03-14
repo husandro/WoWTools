@@ -3,6 +3,8 @@ local addName= MOUSE_LABEL-- = "鼠标"
 local defaultTexture= 'bonusobjectives-bar-starburst'
 local defaultGCDTexture= ''
 local Save={
+    disabled= not e.Player.husandro,
+    disabledGCD= not e.Player.husandro,
     color={r=0, g=1, b= 0, a=1},
     usrClassColor=true,
     size=32,--8 64
