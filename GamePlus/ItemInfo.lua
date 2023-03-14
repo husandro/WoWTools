@@ -333,18 +333,35 @@ local function setGuildBank()--公会银行,设置
     end
 end
 
-local function set_BankFrameItemButton_Update(button)--银行, BankFrame.lua
-    local container = button:GetParent():GetID();
-    if not button.isBag then
-        local buttonID = button:GetID();
+
+local function set_BankFrameItemButton_Update(self)--银行, BankFrame.lua
+    local container = self:GetParent():GetID();
+    if not self.isBag then
+        local buttonID = self:GetID();
         local itemInfo = C_Container.GetContainerItemInfo(container, buttonID) or {};
         local info={
             bagID=container,
             slotID=buttonID,
         }
-        set_Item_Info(button, itemInfo.hyperlink, itemInfo.itemID, info)
+        set_Item_Info(self, itemInfo.hyperlink, itemInfo.itemID, info)
+    else
+        local slot = self:GetBagID()
+        local numFreeSlots
+        numFreeSlots = C_Container.GetContainerNumFreeSlots(slot)
+        if not numFreeSlots or numFreeSlots==0 then
+            numFreeSlots= nil
+        end
+        if numFreeSlots and not self.numFreeSlots then
+            self.numFreeSlots=e.Cstr(self, {color=true, justifyH='CENTER'})
+            self.numFreeSlots:SetPoint('BOTTOM',0 ,6)
+        end
+        if self.numFreeSlots then
+            self.numFreeSlots:SetText(numFreeSlots or '')
+        end
     end
 end
+
+
 --####
 --初始
 --####
@@ -380,7 +397,7 @@ local function Init()
 
     --hooksecurefunc(ContainerFrameCombinedBags,'Update', setBags)
     --ContainerFrameCombinedBags.SetBagInfo=true
-    hooksecurefunc('ContainerFrame_GenerateFrame',function (self, size2, id2)
+    hooksecurefunc('ContainerFrame_GenerateFrame',function (self)
         for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
             if not frame.SetBagInfo then
                 setBags(frame)
@@ -390,9 +407,9 @@ local function Init()
         end
     end)
 
-    hooksecurefunc('MerchantFrame_UpdateMerchantInfo',setMerchantInfo)--MerchantFrame.lua
+    hooksecurefunc('MerchantFrame_UpdateMerchantInfo', setMerchantInfo)--MerchantFrame.lua
     hooksecurefunc('MerchantFrame_UpdateBuybackInfo', setMerchantInfo)
-    hooksecurefunc('BankFrameItemButton_Update',set_BankFrameItemButton_Update)--银行
+    hooksecurefunc('BankFrameItemButton_Update', set_BankFrameItemButton_Update)--银行
 
     --######################
     --##商人，物品，货币，数量
