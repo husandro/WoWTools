@@ -129,7 +129,7 @@ local function set_ExpansionLandingPageMinimapButton()
     if not frame then
         return
     end
-
+    
     frame:SetFrameStrata('TOOLTIP')
     frame:SetMovable(true)--移动
     frame:RegisterForDrag("RightButton")
@@ -153,6 +153,7 @@ local function set_ExpansionLandingPageMinimapButton()
         end
     end)
     --hooksecurefunc(DragonridingPanelSkillsButtonMixin, 'OnClick', function(self, d)--显示,飞龙技能
+
     frame:SetScript('OnEnter',function(self)--Minimap.lua
         self:SetAlpha(1)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -574,7 +575,7 @@ local function Init()
         end)
     end
 
-    
+
 end
 
 --###########
@@ -615,7 +616,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            if not WoWToolsSave then WoWToolsSave={} end
+            
             WoWToolsSave[addName]=Save
         end
 

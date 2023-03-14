@@ -400,7 +400,7 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddButton(info, level)
 
 
-        local tab=e.WoWSave[e.Player.guid].Time
+        local tab=WoWDate[e.Player.guid].Time
         info={
             text= e.onlyChinese and '总游戏时间'..((tab and tab.totalTime) and ': '..SecondsToTime(tab.totalTime) or '') or TIME_PLAYED_TOTAL:format((tab and tab.totalTime) and SecondsToTime(tab.totalTime) or ''),
             checked= Save.AllOnlineTime,
@@ -432,7 +432,7 @@ local function InitMenu(self, level, type)--主菜单
 
     elseif type=='AllOnlineTime' then--3级,所有角色时间
         local timeAll=0
-        for guid, tab in pairs(e.WoWSave) do
+        for guid, tab in pairs(WoWDate) do
             local time= tab.Time and tab.Time.totalTime
             if time and time>0 then
                 timeAll= timeAll + time
@@ -463,7 +463,7 @@ local function InitMenu(self, level, type)--主菜单
         }
         UIDropDownMenu_AddButton(info, level)
 
-        local tab=e.WoWSave[e.Player.guid].Time
+        local tab=WoWDate[e.Player.guid].Time
         if tab and tab.totalTime then
             info={
                 text= (e.onlyChinese and '总计' or TOTAL)..e.Icon.clock2..SecondsToTime(tab.totalTime),
@@ -524,7 +524,7 @@ local function Init()
         button.texture:SetAtlas('nameplates-icon-flag-neutral')
     end
 
-    if Save.AllOnlineTime or not e.WoWSave[e.Player.guid].Time.totalTime then--总游戏时间
+    if Save.AllOnlineTime or not WoWDate[e.Player.guid].Time.totalTime then--总游戏时间
         RequestTimePlayed()
     end
 end
@@ -555,7 +555,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            if not WoWToolsSave then WoWToolsSave={} end
+            
             WoWToolsSave[addName]=Save
         end
 

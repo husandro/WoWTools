@@ -68,7 +68,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                         e.tips:Show()
                     end
                 end)
-                button:SetScript('OnLeave', function() e.tips:Hide() end)
+                button:SetScript('OnLeave', function() e.tips:Hide() Get_Use_Toy() end)
 
                 panel:RegisterEvent("PLAYER_REGEN_ENABLED")
                 panel:RegisterEvent('PLAYER_REGEN_DISABLED')

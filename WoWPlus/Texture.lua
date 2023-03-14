@@ -824,11 +824,12 @@ local function Init_Set_AlphaAndColor()
         hideTexture(MainStatusTrackingBarContainer.BarFrameTexture)
     end
 
-    C_Timer.After(2, function()
+    C_Timer.After(3, function()
         for i=1, GetNumAddOns() do
             local t= GetAddOnEnableState(nil,i);
             if t==2 then
                 local name=GetAddOnInfo(i)
+                name= name:match('(.-)%-') or name
                 if name then
                     set_Alpha_Frame_Texture(_G['LibDBIcon10_'..name], {index=2})
                 end
@@ -1671,7 +1672,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            if not WoWToolsSave then WoWToolsSave={} end
+            
             WoWToolsSave[addName]=Save
         end
 

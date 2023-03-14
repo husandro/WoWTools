@@ -1982,7 +1982,8 @@
         "AnimateTexCoords",
         "SLASH_STOPWATCH_PARAM_STOP5",
         "SLASH_TEXTTOSPEECH_HELP_ALTVOICE",
-        "ACHIEVEMENT_REQUIRES_GUILD_REPUTATION"
+        "ACHIEVEMENT_REQUIRES_GUILD_REPUTATION",
+        "hash_SlashCmdList"
     ],
     "Lua.diagnostics.disable": [
     ]

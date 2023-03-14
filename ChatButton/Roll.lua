@@ -224,7 +224,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            if not WoWToolsSave then WoWToolsSave={} end
+            
             get_Save_Max()--清除时,保存数据
             WoWToolsSave[addName]=Save
         end

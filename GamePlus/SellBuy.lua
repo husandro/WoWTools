@@ -929,7 +929,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            if not WoWToolsSave then WoWToolsSave={} end
+            
             WoWToolsSave[addName]=Save
             WoWToolsSave.BuyItems=WoWToolsSave.BuyItems or {}--购买物品
             WoWToolsSave.BuyItems[e.Player.name_server]=buySave

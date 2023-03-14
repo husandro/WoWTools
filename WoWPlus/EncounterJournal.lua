@@ -27,7 +27,7 @@ local function EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示�
     end
     local m=''
 
-    local tab=e.WoWSave[e.Player.guid].Instance.ins
+    local tab=WoWDate[e.Player.guid].Instance.ins
     local text=''
     for insName, info in pairs(tab) do
         text= text~='' and text..'\n' or text
@@ -41,7 +41,7 @@ local function EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示�
     end
 
     text=''--世界BOSS
-    tab=e.WoWSave[e.Player.guid].Worldboss.boss
+    tab=WoWDate[e.Player.guid].Worldboss.boss
     local num=0
     for bossName, _ in pairs(tab) do
         num=num+1
@@ -53,7 +53,7 @@ local function EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示�
         m=m..num..' |cnGREEN_FONT_COLOR:'..text..'|r'
     end
 
-    tab=e.WoWSave[e.Player.guid].Rare.boss--稀有怪
+    tab=WoWDate[e.Player.guid].Rare.boss--稀有怪
     text, num='',0
     for name, _ in pairs(tab) do
         text=text~='' and text..' ' or text
@@ -104,8 +104,8 @@ local function EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示�
         if head then
             text = text~='' and text..'\n' or text
             text = text..'|T450908:0|t'..head
-            if head==MYTHIC_DUNGEONS and e.WoWSave[e.Player.guid].Keystone then
-                local weekLevel= e.WoWSave[e.Player.guid].Keystone.weekLevel--本周最高
+            if head==MYTHIC_DUNGEONS and WoWDate[e.Player.guid].Keystone then
+                local weekLevel= WoWDate[e.Player.guid].Keystone.weekLevel--本周最高
                 if weekLevel then
                     text=text..' |cnGREEN_FONT_COLOR:'..weekLevel..'|r'
                 end
@@ -166,7 +166,7 @@ local function set_EncounterJournal_World_Tips(self2)--所有角色已击杀世�
     e.tips:ClearLines();
     e.tips:AddDoubleLine(ADVENTURE_JOURNAL, CHANNEL_CATEGORY_WORLD..'BOSS/'..GARRISON_MISSION_RARE..e.Icon.left..e.GetShowHide(Save.showWorldBoss))
     e.tips:AddLine(' ')
-    for guid, info in pairs(e.WoWSave) do
+    for guid, info in pairs(WoWDate) do
         local find
         local text, num= nil, 0
         for bossName, _ in pairs(info.Worldboss.boss) do--世界BOSS
@@ -276,7 +276,7 @@ local function setWorldbossText()--显示世界BOSS击杀数据Text
 
     local msg
     if not Save.hideWorldBossText then
-        for guid, info in pairs(e.WoWSave) do
+        for guid, info in pairs(WoWDate) do
             local text, numAll, find= nil, 0, nil
             for bossName, _ in pairs(info.Worldboss.boss) do--世界BOSS
                 numAll=numAll+1
@@ -361,7 +361,7 @@ local function setInstanceBossText()--显示副本击杀数据
 
     local msg
     if not Save.hideInstanceBossText then
-        for guid, info in pairs(e.WoWSave) do
+        for guid, info in pairs(WoWDate) do
             local text
             for bossName, tab in pairs(info.Instance.ins) do--ins={[名字]={[难度]=已击杀数}}
                 text= text and text..'\n   '..bossName or '   '..bossName
@@ -387,7 +387,7 @@ local function set_EncounterJournal_Keystones_Tips(self)--险指南界面, 挑�
     e.tips:SetOwner(self, "ANCHOR_LEFT");
     e.tips:ClearLines();
     e.tips:AddDoubleLine(e.onlyChinese and '史诗钥石地下城' or CHALLENGES, e.Icon.left)
-    for guid, info in pairs(e.WoWSave) do
+    for guid, info in pairs(WoWDate) do
         if guid and info then
             local find
             for itemLink, _ in pairs(info.Keystone.itemLink) do
@@ -406,7 +406,7 @@ local function set_EncounterJournal_Money_Tips(self)--险指南界面, 钱
     e.tips:SetOwner(self, "ANCHOR_LEFT");
     e.tips:ClearLines();
     local numPlayer, allMoney  = 0, 0
-    for guid, info in pairs(e.WoWSave) do
+    for guid, info in pairs(WoWDate) do
         if info.Money then
             e.tips:AddDoubleLine(e.GetPlayerInfo(nil, guid, true), GetCoinTextureString(info.Money))
             numPlayer=numPlayer+1
@@ -466,7 +466,7 @@ local function Init()--冒险指南界面
         e.tips:ClearLines();
         e.tips:AddDoubleLine((e.onlyChinese and '副本' or INSTANCE)..e.Icon.left..e.GetShowHide(Save.showInstanceBoss), e.onlyChinese and '已击杀' or DUNGEON_ENCOUNTER_DEFEATED)
         e.tips:AddLine(' ')
-        for guid, info in pairs(e.WoWSave) do
+        for guid, info in pairs(WoWDate) do
             if guid and info then
                 local find
                 for bossName, tab in pairs(info.Instance.ins) do----ins={[名字]={[难度]=已击杀数}}
@@ -549,7 +549,7 @@ local function Init()--冒险指南界面
                 set_EncounterJournal_World_Tips(button)--角色世界BOSS提示
                 find=true
             else
-                for guid, info in pairs(e.WoWSave) do--世界BOSS
+                for guid, info in pairs(WoWDate) do--世界BOSS
                     if guid==e.Player.guid then
                         local num=0
                         for bossName, _ in pairs(info.Worldboss.boss) do
@@ -1006,7 +1006,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            if not WoWToolsSave then WoWToolsSave={} end
+            
             WoWToolsSave[addName]=Save
         end
 

@@ -222,7 +222,7 @@ local function Init()
             local itemID= GetItemInfoInstant(itemIDOrLink)
             if itemID then
                 local all= 0--帐号数据
-                for guid, info in pairs(e.WoWSave) do
+                for guid, info in pairs(WoWDate) do
                     if guid and info and guid~=e.Player.guid then
                         local tab=info.Item[itemID]
                         if tab and tab.bag and tab.bank then
@@ -303,7 +303,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            if not WoWToolsSave then WoWToolsSave={} end
+            
             WoWToolsSave[addName..'Tools']=Save
         end
 

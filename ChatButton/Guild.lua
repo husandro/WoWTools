@@ -22,12 +22,12 @@ end
 local guildMS= GUILD_INFO_TEMPLATE:gsub('(%%.+)', '')--公会创立
 local function set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
     if not IsInGuild() then
-        if e.WoWSave[e.Player.guid] then
-            e.WoWSave[e.Player.guid].GuildInfo=nil
+        if WoWDate[e.Player.guid] then
+            WoWDate[e.Player.guid].GuildInfo=nil
         end
         panel:UnregisterEvent('CHAT_MSG_SYSTEM')
     else
-        if Save.guildInfo or not e.WoWSave[e.Player.guid].GuildInfo then
+        if Save.guildInfo or not WoWDate[e.Player.guid].GuildInfo then
             panel:RegisterEvent('CHAT_MSG_SYSTEM')
             GuildInfo()
         else
@@ -38,7 +38,7 @@ end
 
 local function setMsg_CHAT_MSG_SYSTEM(text)--欢迎加入, 信息
     if text:find(guildMS) then
-        e.WoWSave[e.Player.guid].GuildInfo= text
+        WoWDate[e.Player.guid].GuildInfo= text
         panel:UnregisterEvent('CHAT_MSG_SYSTEM')
     end
 end
@@ -81,7 +81,7 @@ local function InitMenu(self, level, type)--主菜单
         text=e.onlyChinese and '公会信息' or GUILD_INFORMATION,
         checked=Save.guildInfo,
         tooltipOnButton=true,
-        tooltipTitle= e.WoWSave[e.Player.guid].GuildInfo or NONE,
+        tooltipTitle= WoWDate[e.Player.guid].GuildInfo or NONE,
         func=function()
             Save.guildInfo= not Save.guildInfo and true or nil
             set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
@@ -145,7 +145,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            if not WoWToolsSave then WoWToolsSave={} end
+            
             WoWToolsSave[addName]=Save
         end
 
