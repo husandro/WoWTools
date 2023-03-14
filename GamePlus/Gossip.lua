@@ -11,8 +11,8 @@ local Save={
         questOption={},
 }
 
-local panel=e.Cbtn(nil, {icon='hide', size={15,15}});--闲话图标
-local questPanel=e.Cbtn(panel, {icon='hide', size={15,15}});--任务图标
+local panel=e.Cbtn(nil, {icon='hide', size={15,15}})--闲话图标
+local questPanel=e.Cbtn(panel, {icon='hide', size={15,15}})--任务图标
 local questSelect={}--已选任务, 提示用
 
 local function setTexture()--设置图标
@@ -443,7 +443,7 @@ local function Init_Gossip()
                 if self2.id and self2.text then
                     Save.questOption[self2.id]= not Save.questOption[self2.id] and self2.text or nil
                     if Save.questOption[self2.id] then
-                        C_GossipInfo.SelectAvailableQuest(self2.id);
+                        C_GossipInfo.SelectAvailableQuest(self2.id)
                     end
                 else
                     print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE)..'|r', e.onlyChinese and '任务' or QUESTS_LABEL,'ID')
@@ -459,7 +459,7 @@ local function Init_Gossip()
             return
 
         elseif Save.questOption[questID] then--自定义
-           C_GossipInfo.SelectAvailableQuest(questID);--or self:GetID()
+           C_GossipInfo.SelectAvailableQuest(questID)--or self:GetID()
 
         elseif not Save.quest or not_Ace_QuestTrivial(questID) or Save.NPC[npc] then--or getMaxQuest()
             return
@@ -731,7 +731,7 @@ local function Init_Quest()
         e.tips:AddLine('|cff19b7ff'..(e.onlyChinese and '日常' or DAILY)..': '..dayNum)
         e.tips:AddLine('|cff05ffa8'..(e.onlyChinese and '周长' or WEEKLY)..': '..weekNum)
         e.tips:AddLine('|cffff7c00'..(e.onlyChinese and '战役' or TRACKER_HEADER_CAMPAIGN_QUESTS)..': '..companionNum)
- 
+
         e.tips:AddLine('|cffffffff'..(e.onlyChinese and '一般' or RESISTANCE_FAIR)..': '..numQuest..'/25')
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.GetEnabeleDisable(Save.quest)..e.Icon.left, (e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..e.Icon.right)
@@ -794,8 +794,8 @@ local function Init_Quest()
             return
         end
 
-        local numActiveQuests = GetNumActiveQuests();
-        local numAvailableQuests = GetNumAvailableQuests();
+        local numActiveQuests = GetNumActiveQuests()
+        local numAvailableQuests = GetNumAvailableQuests()
         if numActiveQuests > 0 then
             for index=1, numActiveQuests do
                 if select(2,GetActiveTitle(index)) then
@@ -807,7 +807,7 @@ local function Init_Quest()
         if numAvailableQuests > 0 then-- and not getMaxQuest() 
             for i=(numActiveQuests + 1), (numActiveQuests + numAvailableQuests) do
                 local index = i - numActiveQuests
-                local isTrivial= GetAvailableQuestInfo(index);
+                local isTrivial= GetAvailableQuestInfo(index)
                 if (isTrivial and isQuestTrivialTracking) or not isTrivial then
                     SelectAvailableQuest(index)
                     return
@@ -832,11 +832,11 @@ local function Init_Quest()
         if not IsQuestCompletable() then--or not C_QuestOffer.GetHideRequiredItemsOnTurnIn() then
             if questID then--and not questSelect[questID] then
                 local link--C_QuestLog.RequestLoadQuestByID(questID)
-                local buttonIndex = 1;--物品数量
+                local buttonIndex = 1--物品数量
                 for i=1, GetNumQuestItems() do
-                    local hidden = IsQuestItemHidden(i);
+                    local hidden = IsQuestItemHidden(i)
                     if (hidden == 0) then
-                        local requiredItem = _G["QuestProgressItem"..buttonIndex];
+                        local requiredItem = _G["QuestProgressItem"..buttonIndex]
                         if requiredItem and requiredItem.type then
                             local itemLink = GetQuestItemLink(requiredItem.type, i)
                             local name,_ , numItems = GetQuestItemInfo(requiredItem.type, i)
@@ -844,7 +844,7 @@ local function Init_Quest()
                                 link=(link or '')..(numItems and '|cnRED_FONT_COLOR:'..numItems..'x|r' or '')..(itemLink or name)
                             end
                         end
-                        buttonIndex = buttonIndex+1;
+                        buttonIndex = buttonIndex+1
                     end
                 end
                 local text=GetProgressText()
@@ -861,7 +861,7 @@ local function Init_Quest()
                 end)
                 questSelect[questID]=true
             end
-            QuestProgressCompleteButton_OnClick()--local b=QuestFrameCompleteQuestButton;
+            QuestProgressCompleteButton_OnClick()--local b=QuestFrameCompleteQuestButton
         end
     end)
 
@@ -872,10 +872,10 @@ local function Init_Quest()
         QuestFrame.sel.name=UnitName("npc")
         QuestFrame.sel:SetChecked(Save.NPC[npc])
 
-        local questID;
+        local questID
         if template.canHaveSealMaterial and not QuestUtil.QuestTextContrastEnabled() and template.questLog then
-                local frame = parentFrame:GetParent():GetParent();
-                questID = frame.questID;
+                local frame = parentFrame:GetParent():GetParent()
+                questID = frame.questID
         end
         questID= questID or GetQuestID()
 
@@ -895,7 +895,7 @@ local function Init_Quest()
 
         local itemLink=''--QuestInfo.lua QuestInfo_ShowRewards()
         for index=1, GetNumQuestChoices() do--物品
-            local questItem = QuestInfo_GetRewardButton(QuestInfoFrame.rewardsFrame, index);
+            local questItem = QuestInfo_GetRewardButton(QuestInfoFrame.rewardsFrame, index)
             if questItem then
                 local link=GetQuestItemLink(questItem.type, index)
                 if link then
@@ -906,7 +906,7 @@ local function Init_Quest()
 
         local numSpellRewards = GetNumQuestLogRewardSpells()--法术 
         for rewardSpellIndex = 1, numSpellRewards do
-            local texture, name, isTradeskillSpell, isSpellLearned, hideSpellLearnText, isBoostSpell, garrFollowerID, genericUnlock, spellID = GetRewardSpell(rewardSpellIndex);
+            local texture, name, isTradeskillSpell, isSpellLearned, hideSpellLearnText, isBoostSpell, garrFollowerID, genericUnlock, spellID = GetRewardSpell(rewardSpellIndex)
             if spellID then
                 e.LoadSpellItemData(spellID, true)
                local spellLink= GetSpellLink(spellID) or ((texture and name) and '|T'..texture..':0|t'..name)
@@ -949,6 +949,79 @@ local function Init_Quest()
     C_Timer.After(2, set_Only_Show_Zone_Quest)--显示本区域任务
 end
 
+
+--添一个,全学,专业, 按钮, 插件 TrainAll
+local function set_Blizzard_TrainerU()
+    local btn= e.Cbtn(ClassTrainerTrainButton, {type=false, size={ClassTrainerTrainButton:GetSize()}})
+    btn:SetPoint('RIGHT', ClassTrainerTrainButton, 'LEFT',-2,0)
+    btn.name=e.onlyChinese and '全部' or ALL
+    btn.all= 0
+    btn.cost= 0
+	btn:SetText(btn.name)
+    btn:SetScript("OnEnter",function(self)
+        local text= GetCoinTextureString(self.cost)
+        if self.cost< GetMoney() then
+            text= '|cnGREEN_FONT_COLOR:'..text..'|r'
+        else
+            text= '|cnGREEN_FONT_COLOR:'..text..'|r'
+        end
+		e.tips:SetOwner(self,"ANCHOR_BOTTOMLEFT")
+		e.tips:ClearLines()
+		e.tips:AddDoubleLine(e.onlyChinese and '全部' or ALL, e.onlyChinese and '学习' or LEARN)
+		e.tips:AddDoubleLine(text, (e.onlyChinese and '可用' or AVAILABLE)..': '..'|cnGREEN_FONT_COLOR:'..self.all..'|r')
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine('Alt', e.onlyChinese and '退出' or HUD_EDIT_MODE_EXIT)
+        e.tips:AddDoubleLine(id, addName)
+		e.tips:Show()
+	end)
+	btn:SetScript("OnLeave",function() e.tips:Hide() end)
+
+	btn:SetScript("OnClick",function()
+        local index= WOW_PROJECT_ID==WOW_PROJECT_MAINLINE and 2 or 3
+        local num, cost= 0, 0
+		for i=1,GetNumTrainerServices() do
+			if select(index, GetTrainerServiceInfo(i))=="available" then
+                local cost2= GetTrainerServiceCost(i) or 0
+                if cost2<= GetMoney() then
+                    if IsModifierKeyDown() then
+                        break
+                    end
+                    BuyTrainerService(i)
+                    cost= cost +cost2
+                    num= num +1
+                    print(GetTrainerServiceItemLink(i) or GetTrainerServiceInfo(i))
+                else
+                    print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '金币不足' or NOT_ENOUGH_GOLD))
+                    break
+                end
+            end
+		end
+        C_Timer.After(1, function()
+            print(id, addName, (e.onlyChinese and '学习' or LEARN)..': |cnGREEN_FONT_COLOR:'..num, (cost>0 and '|cnGREEN_FONT_COLOR:' or '')..GetCoinTextureString(cost))
+        end)
+	end)
+
+	hooksecurefunc("ClassTrainerFrame_Update",function(self)
+		btn.all=0
+        btn.cost=0
+        local index= WOW_PROJECT_ID==WOW_PROJECT_MAINLINE and 2 or 3
+        local tradeSkillStepIndex = GetTrainerServiceStepIndex();
+
+        local category=select(index, GetTrainerServiceInfo(tradeSkillStepIndex))
+        if tradeSkillStepIndex and(category=='used' or category=='available') then
+            for i=1,GetNumTrainerServices() do
+                if select(index, GetTrainerServiceInfo(i))=="available" then
+                    btn.all= btn.all +1
+                    btn.cost= btn.cost +(GetTrainerServiceCost(i) or 0)
+                end
+            end
+        end
+		btn:SetEnabled(btn.cost>0)
+        btn:SetText(btn.all..' '..btn.name)
+        btn:SetShown(IsTradeskillTrainer())
+	end)
+end
+
 --###########
 --加载保存数据
 --###########
@@ -989,14 +1062,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         elseif arg1=='Blizzard_PlayerChoice' then--命运, 字符
             hooksecurefunc(StaticPopupDialogs["CONFIRM_PLAYER_CHOICE_WITH_CONFIRMATION_STRING"],"OnShow",function(s)
                 if Save.gossip and s.editBox then
-                    s.editBox:SetText(SHADOWLANDS_EXPERIENCE_THREADS_OF_FATE_CONFIRMATION_STRING);
+                    s.editBox:SetText(SHADOWLANDS_EXPERIENCE_THREADS_OF_FATE_CONFIRMATION_STRING)
                 end
             end)
+
+        elseif arg1== 'Blizzard_TrainerUI' then
+            set_Blizzard_TrainerU()--添一个,全学,专业, 按钮
         end
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            
+
             WoWToolsSave[addName]=Save
         end
 

@@ -1985,7 +1985,12 @@
         "ACHIEVEMENT_REQUIRES_GUILD_REPUTATION",
         "hash_SlashCmdList",
         "GARRISON_LANDING_PAGE_TITLE",
-        "DragonflightLandingOverlayMixin"
+        "DragonflightLandingOverlayMixin",
+        "ClassTrainerTrainButton",
+        "LEARN",
+        "AVAILABLE",
+        "HUD_EDIT_MODE_EXIT",
+        "NOT_ENOUGH_GOLD"
     ],
     "Lua.diagnostics.disable": [
     ]

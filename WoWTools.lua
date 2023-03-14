@@ -466,12 +466,12 @@ e.CeditBox= function(self, width, height)
     return editBox
 end
 
-e.Cbtn= function(self, tab)--type, icon, name, size --Template, value, SecureAction, name, notTexture, size)
+e.Cbtn= function(self, tab)--type, icon, name, size
     tab=tab or {}
     self= self or UIParent
     local button
     if tab.type==false then
-        button=CreateFrame('Button', tab.name, self, 'UIPanelButtonTemplate')
+        button=CreateFrame('Button', tab.name, self, 'UIPanelButtonTemplate')--MagicButtonTemplate
     elseif tab.type==true then
         button=CreateFrame("Button", tab.name, self, "SecureActionButtonTemplate");
         button:SetHighlightAtlas(e.Icon.highlight)
