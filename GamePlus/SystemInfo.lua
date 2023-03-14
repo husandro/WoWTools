@@ -386,10 +386,10 @@ button:RegisterEvent("ADDON_LOADED")
 button:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if WoWToolsSave and not WoWToolsSave[addName] then
+            if not WoWToolsSave[addName] then
                 button:SetButtonState('PUSHED')
             end
-            Save= WoWToolsSave and WoWToolsSave[addName] or Save
+            Save= WoWToolsSave[addName] or Save
 
             local check=e.CPanel('|A:UI-HUD-MicroMenu-GameMenu-Mouseover:0:0|a'..(e.onlyChinese and '系统信息' or addName), not Save.disabled, true)
             check:SetScript('OnMouseDown', function()

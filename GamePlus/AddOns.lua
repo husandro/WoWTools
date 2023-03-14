@@ -210,7 +210,7 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            Save= WoWToolsSave and WoWToolsSave[addName] or Save
+            Save= WoWToolsSave[addName] or Save
             if e.Player.husandro then
                 Save.buttons[e.onlyChinese and '宠物对战' or PET_BATTLE_COMBAT_LOG ]={
                     ['BugSack']=true,

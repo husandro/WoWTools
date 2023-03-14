@@ -324,7 +324,7 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
-            Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
+            Save= WoWToolsSave[addName..'Tools'] or Save
             if not e.toolsFrame.disabled then
                 button=e.Cbtn2('HearthstoneToolsButton',WoWToolsMountButton)
                 button:SetAttribute("type1", "item")

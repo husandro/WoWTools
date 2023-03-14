@@ -89,11 +89,11 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if WoWToolsSave and not WoWToolsSave[addName] then
+            if not WoWToolsSave[addName] then
                 panel:SetButtonState('PUSHED')
             end
 
-            Save= WoWToolsSave and WoWToolsSave[addName] or Save
+            Save= WoWToolsSave[addName] or Save
 
             --添加控制面板        
             panel.sel=e.CPanel('|A:transmog-icon-chat:0:0|a'..addName, not Save.disabled, true)

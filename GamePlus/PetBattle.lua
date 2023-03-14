@@ -630,7 +630,7 @@ panel:RegisterEvent('PET_BATTLE_CLOSE')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            Save= WoWToolsSave and WoWToolsSave[addName] or Save
+            Save= WoWToolsSave[addName] or Save
 
             --添加控制面板
             local check=e.CPanel('|A:WildBattlePetCapturable:0:0|a'..(e.onlyChinese and '宠物对战' or addName), not Save.disabled, true)

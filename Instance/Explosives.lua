@@ -210,7 +210,7 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            Save= WoWToolsSave and WoWToolsSave[addName] or Save
+            Save= WoWToolsSave[addName] or Save
 
             --添加控制面板        
             local check= e.CPanel((e.onlyChinese and '爆炸物' or addName)..'|T2175503:0|t', not Save.disabled, nil, true)

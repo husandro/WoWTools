@@ -542,7 +542,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
                 button=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
-                Save= WoWToolsSave and WoWToolsSave[addName] or Save
+                Save= WoWToolsSave[addName] or Save
 
                 panel:RegisterEvent('PLAYER_REGEN_DISABLED')
                 panel:RegisterEvent('PLAYER_REGEN_ENABLED')

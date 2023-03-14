@@ -705,7 +705,7 @@ end
 panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
-            Save= WoWToolsSave and WoWToolsSave[addName] or Save
+            Save= WoWToolsSave[addName] or Save
 
             --添加控制面板        
             local sel=e.CPanel(e.Icon.map2..(e.onlyChinese and '地图' or addName), not Save.disabled)

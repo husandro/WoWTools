@@ -441,7 +441,7 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
-            if WoWToolsSave and not WoWToolsSave[addName..'Tools'] then--初始,类, 设置
+            if not WoWToolsSave[addName..'Tools'] then--初始,类, 设置
                 local className=GetItemClassInfo(0)
                 Save.itemClass={
                     [className..GetItemSubClassInfo(0, 1)]=true,--药水
@@ -451,7 +451,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 }
             end
 
-            Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
+            Save= WoWToolsSave[addName..'Tools'] or Save
 
             if not e.toolsFrame.disabled then
                 button=e.Cbtn2(nil, WoWToolsMountButton, true, nil)

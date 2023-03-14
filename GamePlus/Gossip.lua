@@ -958,7 +958,7 @@ panel:RegisterEvent('QUEST_ACCEPTED')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED"  then
         if arg1 == id then
-            Save= WoWToolsSave and WoWToolsSave[addName] or Save
+            Save= WoWToolsSave[addName] or Save
             Save.questOption = Save.questOption or {}
             Save.gossipOption= Save.gossipOption or {}
 

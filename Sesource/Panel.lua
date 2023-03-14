@@ -67,11 +67,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave= WoWToolsSave or {}
             WoWDate= WoWDate or {}
 
-            Save= WoWToolsSave and WoWToolsSave[addName] or Save
+            Save= WoWToolsSave[addName] or Save
             Save.useCustomColorTab= Save.useCustomColorTab or {r=1, g=0.82, b=0, a=1, hex='|cffffd100'}
 
             e.onlyChinese= Save.onlyChinese
-            --e.Player.useColor= Save.useCustomColorTab
 
             if e.onlyChinese then
                 e.L['LAYER']='位面'

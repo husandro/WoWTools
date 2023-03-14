@@ -214,7 +214,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
-                Save= WoWToolsSave and WoWToolsSave[addName] or Save
+                Save= WoWToolsSave[addName] or Save
                 Save.world= Save.world or CHANNEL_CATEGORY_WORLD
 
                 button= e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)

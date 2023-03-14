@@ -286,7 +286,7 @@ panel:RegisterEvent('PLAYER_REGEN_ENABLED')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
-            Save= WoWToolsSave and WoWToolsSave[addName..'Tools'] or Save
+            Save= WoWToolsSave[addName..'Tools'] or Save
 
             if not e.toolsFrame.disabled then
                 C_Timer.After(2.6, function()

@@ -88,7 +88,7 @@ panel:RegisterEvent('SOCKET_INFO_UPDATE')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            Save= WoWToolsSave and WoWToolsSave[addName] or Save
+            Save= WoWToolsSave[addName] or Save
 
             --添加控制面板        
             local sel=e.CPanel('|T4555592:0|t'..(e.onlyChinese and '镶嵌宝石' or addName), not Save.disabled, true)

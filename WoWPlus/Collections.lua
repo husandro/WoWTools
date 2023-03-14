@@ -757,9 +757,9 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            Save= WoWToolsSave and WoWToolsSave[addName] or Save
-            wowSaveSets=WoWToolsSave and WoWToolsSave['WoW-CollectionWardrobeSets'] or wowSaveSets
-            wowSaveItems=WoWToolsSave and WoWToolsSave['WoW-CollectionWardrobeItems'] or wowSaveItems
+            Save= WoWToolsSave[addName] or Save
+            wowSaveSets=WoWToolsSave['WoW-CollectionWardrobeSets'] or wowSaveSets
+            wowSaveItems=WoWToolsSave['WoW-CollectionWardrobeItems'] or wowSaveItems
 
             --添加控制面板        
             local sel=e.CPanel('|A:UI-HUD-MicroMenu-Collections-Mouseover:0:0|a'..(e.onlyChinese and '收藏' or addName), not Save.disabled)

@@ -483,11 +483,11 @@ panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if WoWToolsSave and not WoWToolsSave[addName] then
+            if not WoWToolsSave[addName] then
                 panel:SetButtonState('PUSHED')
             end
 
-            Save= WoWToolsSave and WoWToolsSave[addName] or Save
+            Save= WoWToolsSave[addName] or Save
 
             --添加控制面板        
             local sel=e.CPanel('|A:GarrisonTroops-Health:0:0|a'..(e.onlyChinese and '节日' or addName), not Save.disabled, true)

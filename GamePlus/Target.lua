@@ -188,7 +188,7 @@ panel:RegisterEvent('ADDON_LOADED')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            Save= WoWToolsSave and WoWToolsSave[addName] or Save
+            Save= WoWToolsSave[addName] or Save
             Save.range= Save.range or 35
 
             --添加控制面板        
