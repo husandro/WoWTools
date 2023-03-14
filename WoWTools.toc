@@ -77,6 +77,9 @@ WoWPlus\EncounterJournal.lua
 WoWPlus\Challenges.lua
 ##WowPlus\AuctionHouse.lua
 
+
+
+
 ##自动对话，任务
 GamePlus\Gossip.lua
 ##卖买
@@ -105,6 +108,7 @@ GamePlus\Color.lua
 GamePlus\SystemInfo.lua
 ##鼠标 Mouse https://wago.io/CVmKEpl6E
 GamePlus\Cursor.lua
+
 
 
 ##坐骑， Tools 主要的，
