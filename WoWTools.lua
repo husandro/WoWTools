@@ -1303,7 +1303,7 @@ e.CheckRange= function(unit, range, operator)
     end
 end
 
-e.Set_MinMap_Icon= function(tab)-- {name, texture, func, func2, hide} 小地图，建立一个图标 Hide("MyLDB") icon:Show("")
+e.Set_MinMap_Icon= function(tab)-- {name, texture, func, hide} 小地图，建立一个图标 Hide("MyLDB") icon:Show("")
     local bunnyLDB = LibStub("LibDataBroker-1.1"):NewDataObject(tab.name, {
         type = "data source",
         text = tab.name,
