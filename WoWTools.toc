@@ -43,6 +43,9 @@ Sesource\Locales\zhTW.lua
 ##面板，不能删除
 Sesource\Panel.lua
 
+
+
+
 ##隐藏材质，透明度
 WoWPlus\Texture.lua
 ##角色面板
