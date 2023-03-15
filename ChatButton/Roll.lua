@@ -157,7 +157,7 @@ local function InitMenu(self, level, type)--主菜单
         checked=Save.autoClear,
         tooltipOnButton=true,
         tooltipTitle= e.onlyChinese and '进入战斗时: 清除' or (ENTERING_COMBAT..': '..(CLEAR or KEY_NUMLOCK_MAC)),
-        tooltipText= e.onlyChinese and '记录仅限有队伍' or (PVP_RECORD..LFG_LIST_CROSS_FACTION:format(HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS)),
+        --tooltipText= e.onlyChinese and '记录仅限有队伍' or (PVP_RECORD..LFG_LIST_CROSS_FACTION:format(HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS)),
         func=function()
             Save.autoClear= not Save.autoClear and true or false
             setAutoClearRegisterEvent()--注册自动清除事件
