@@ -136,7 +136,7 @@ local function Init_HideTexture()
     end
 
     hide_Frame_Texture(PetBattleFrame.BottomFrame.MicroButtonFrame)
-    
+
     hooksecurefunc('PetBattleFrame_UpdatePassButtonAndTimer', function(self)--Blizzard_PetBattleUI.lua
         hideTexture(self.BottomFrame.TurnTimer.TimerBG)
         --self.BottomFrame.TurnTimer.Bar:SetShown(true);
@@ -1672,7 +1672,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            
+
             WoWToolsSave[addName]=Save
         end
 
