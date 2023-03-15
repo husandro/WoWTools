@@ -136,7 +136,7 @@ local function Init_HideTexture()
     end
 
     hide_Frame_Texture(PetBattleFrame.BottomFrame.MicroButtonFrame)
-
+    
     hooksecurefunc('PetBattleFrame_UpdatePassButtonAndTimer', function(self)--Blizzard_PetBattleUI.lua
         hideTexture(self.BottomFrame.TurnTimer.TimerBG)
         --self.BottomFrame.TurnTimer.Bar:SetShown(true);
