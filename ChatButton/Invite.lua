@@ -450,11 +450,11 @@ local function set_LFGPlus()--预创建队伍增强
             end)
         end
     end)
---[[local buttons= self.ScrollBox and self --LFGListSearchPanel_UpdateResults'
-self.ScrollBox:GetFrames() or {}
-if not self.searching or self.totalResults~=0  and #buttons~=0 then
-for _, button in pairs(buttons) do
-]]
+    --[[local buttons= self.ScrollBox and self --LFGListSearchPanel_UpdateResults'
+    self.ScrollBox:GetFrames() or {}
+    if not self.searching or self.totalResults~=0  and #buttons~=0 then
+    for _, button in pairs(buttons) do
+    ]]
 end
 
 --#######################

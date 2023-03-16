@@ -230,7 +230,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
                     ['WeakAurasModelPaths']=true,
                     ['WeakAurasOptions']=true,
                     ['WeakAurasTemplates']=true,
-                    ['Details']=true,
+                    ['Recount']=true,
                     ['DBM-Core']=true,
                     ['DBM-Challenges']=true,
                     ['DBM-GUI']=true,

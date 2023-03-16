@@ -234,7 +234,7 @@ end
 --#####
 --主属性
 --#####
-local function set_Stat_Text(frame)
+local function set_STATUS_Text(frame)
     if not PrimaryStat then
         get_PrimaryStat()--取得主属
     end
@@ -247,7 +247,7 @@ local function set_Stat_Text(frame)
     end
     set_Text_Value(frame, value)
 end
-local function set_Stat_Tooltip(self)
+local function set_STATUS_Tooltip(self)
     if not PrimaryStat then
         get_PrimaryStat()--取得主属
     end
@@ -346,7 +346,7 @@ local function get_minCrit()
     end
     return minCrit or 0
 end
-local function set_Crit_Text(frame)
+local function set_CRITCHANCE_Text(frame)
     local critChance
     if Save.useNumber then
         local rating
@@ -380,7 +380,7 @@ local function set_Crit_Text(frame)
         set_Text_Value(frame, critChance)--设置，当前值
     end
 end
-local function set_Crit_Tooltip(self)
+local function set_CRITCHANCE_Tooltip(self)
     local frame= self:GetParent()
     e.tips:SetOwner(button, "ANCHOR_RIGHT")
     e.tips:ClearLines()
@@ -421,7 +421,7 @@ end
 --####
 --急速
 --####
-local function set_Haste_Text(frame)
+local function set_HASTE_Text(frame)
     local haste
     if Save.useNumber then
         haste= GetCombatRating(CR_HASTE_MELEE)
@@ -434,7 +434,7 @@ local function set_Haste_Text(frame)
         set_Text_Value(frame, haste)--设置，当前值
     end
 end
-local function set_Haste_Tooltip(self)
+local function set_HASTE_Tooltip(self)
     local frame= self:GetParent()
     e.tips:SetOwner(button, "ANCHOR_RIGHT")
     e.tips:ClearLines()
@@ -457,7 +457,7 @@ end
 --####
 --精通
 --####
-local function set_Mastery_Text(frame)
+local function set_MASTERY_Text(frame)
     local mastery
     if Save.useNumber then
         mastery= GetCombatRating(CR_MASTERY)
@@ -474,7 +474,7 @@ end
 --####
 --全能, 5
 --####
-local function set_Versatility_Text(frame)
+local function set_VERSATILITY_Text(frame)
     local value, value2
     if Save.useNumber then
         value = GetCombatRating(CR_VERSATILITY_DAMAGE_DONE);
@@ -496,7 +496,7 @@ local function set_Versatility_Text(frame)
         set_Text_Value(frame, value, value2)--设置，当前值
     end
 end
-local function set_Versatility_Tooltip(self)
+local function set_VERSATILITY_Tooltip(self)
     local frame= self:GetParent()
     e.tips:SetOwner(button, "ANCHOR_RIGHT")
     e.tips:ClearLines()
@@ -511,7 +511,7 @@ end
 --####
 --吸血, 6
 --####
-local function set_Lifesteal_Text(frame)
+local function set_LIFESTEAL_Text(frame)
     local lifesteal
     if Save.useNumber then
         lifesteal= GetCombatRating(CR_LIFESTEAL)
@@ -524,7 +524,7 @@ local function set_Lifesteal_Text(frame)
         set_Text_Value(frame, lifesteal)--设置，当前值
     end
 end
-local function set_Lifesteal_Tooltip(self)
+local function set_LIFESTEAL_Tooltip(self)
     local frame= self:GetParent()
     e.tips:SetOwner(button, "ANCHOR_RIGHT")
     e.tips:ClearLines()
@@ -538,7 +538,7 @@ end
 --####
 --闪避, 7
 --####
-local function set_Avoidance_Text(frame)
+local function set_AVOIDANCE_Text(frame)
     local avoidance
     if Save.useNumber then
         avoidance= GetCombatRating(CR_AVOIDANCE)
@@ -551,7 +551,7 @@ local function set_Avoidance_Text(frame)
         set_Text_Value(frame, avoidance)--设置，当前值
     end
 end
-local function set_Avoidance_Tooltip(self)
+local function set_AVOIDANCE_Tooltip(self)
     local frame= self:GetParent()
     e.tips:SetOwner(button, "ANCHOR_RIGHT")
     e.tips:ClearLines()
@@ -565,7 +565,7 @@ end
 --####
 --躲闪, 8
 --####
-local function set_Dodge_Text(frame)
+local function set_DODGE_Text(frame)
     local chance
     if Save.useNumber then
         chance= GetCombatRating(CR_DODGE)
@@ -578,7 +578,7 @@ local function set_Dodge_Text(frame)
         set_Text_Value(frame, chance)--设置，当前值
     end
 end
-local function set_Dodge_Tooltip(self)
+local function set_DODGE_Tooltip(self)
     local frame= self:GetParent()
     e.tips:SetOwner(button, "ANCHOR_RIGHT")
     e.tips:ClearLines()
@@ -632,7 +632,7 @@ end
 --####
 --招架
 --####
-local function set_Parry_Text(frame)
+local function set_PARRY_Text(frame)
     local chance
     if Save.useNumber then
         chance= GetCombatRating(CR_PARRY)
@@ -645,7 +645,7 @@ local function set_Parry_Text(frame)
         set_Text_Value(frame, chance)--设置，当前值
     end
 end
-local function set_Parry_Tooltip(self)
+local function set_PARRY_Tooltip(self)
     local frame= self:GetParent()
     e.tips:SetOwner(button, "ANCHOR_RIGHT")
     e.tips:ClearLines()
@@ -659,7 +659,7 @@ end
 --####
 --格挡
 --####
-local function set_Block_Text(frame)
+local function set_BLOCK_Text(frame)
     local chance
     if Save.useNumber then
         chance= GetCombatRating(CR_BLOCK)
@@ -672,7 +672,7 @@ local function set_Block_Text(frame)
         set_Text_Value(frame, chance)--设置，当前值
     end
 end
-local function set_Block_Tooltip(self)
+local function set_BLOCK_Tooltip(self)
     local frame= self:GetParent()
     e.tips:SetOwner(button, "ANCHOR_RIGHT")
     e.tips:ClearLines()
@@ -694,11 +694,11 @@ end
 --####
 --醉拳
 --####
-local function set_Stagger_Text(frame)
+local function set_STAGGER_Text(frame)
     local stagger, staggerAgainstTarget = C_PaperDollInfo.GetStaggerPercentage('player')
     set_Text_Value(frame, stagger, staggerAgainstTarget)--设置，当前值
 end
-local function set_Stagger_Tooltip(self)
+local function set_STAGGER_Tooltip(self)
     local stagger, staggerAgainstTarget = C_PaperDollInfo.GetStaggerPercentage('player');
     if not stagger then
         return
@@ -812,18 +812,18 @@ local function set_Frame(frame, rest)--设置, frame
             local value
             if frame.useNumber then
                 if frame.name=='STATUS' then
-                    value= set_Stat_Text() or 1000
+                    value= set_STATUS_Text() or 1000
                 else
                     value= max(--取得Bar，最高值
-                        set_Crit_Text(),
-                        set_Haste_Text(),
-                        set_Mastery_Text(),
-                        set_Versatility_Text(),
-                        set_Lifesteal_Text(),
-                        set_Avoidance_Text(),
+                        set_CRITCHANCE_Text(),
+                        set_HASTE_Text(),
+                        set_MASTERY_Text(),
+                        set_VERSATILITY_Text(),
+                        set_LIFESTEAL_Text(),
+                        set_AVOIDANCE_Text(),
                         set_ARMOR_Text(),
-                        set_Dodge_Text(),
-                        set_Parry_Text()
+                        set_DODGE_Text(),
+                        set_PARRY_Text()
                     )
                 end
                 value= (value and value~=0) and value or 1000
@@ -884,29 +884,29 @@ local function set_Frame(frame, rest)--设置, frame
         if not PrimaryStat or not Role then
             get_PrimaryStat()--取得主属
         end
-        set_Stat_Text(frame)
+        set_STATUS_Text(frame)
     elseif frame.name=='CRITCHANCE' then--爆击2
-        set_Crit_Text(frame)
+        set_CRITCHANCE_Text(frame)
     elseif frame.name=='HASTE' then--急速3
-        set_Haste_Text(frame)
+        set_HASTE_Text(frame)
     elseif frame.name=='MASTERY' then--精通4
-        set_Mastery_Text(frame)
+        set_MASTERY_Text(frame)
     elseif frame.name=='VERSATILITY' then--全能5
-        set_Versatility_Text(frame)
+        set_VERSATILITY_Text(frame)
     elseif frame.name=='LIFESTEAL' then--吸血6
-        set_Lifesteal_Text(frame)
+        set_LIFESTEAL_Text(frame)
     elseif frame.name=='ARMOR' then--护甲
         set_ARMOR_Text(frame)
     elseif frame.name=='AVOIDANCE' then--闪避
-        set_Avoidance_Text(frame)
+        set_AVOIDANCE_Text(frame)
     elseif frame.name=='DODGE' then--躲闪
-        set_Dodge_Text(frame)
+        set_DODGE_Text(frame)
     elseif frame.name=='PARRY' then--招架
-        set_Parry_Text(frame)
+        set_PARRY_Text(frame)
     elseif frame.name=='BLOCK' then--格挡
-        set_Block_Text(frame)
+        set_BLOCK_Text(frame)
     elseif frame.name=='STAGGER' then--醉拳
-        set_Stagger_Text(frame)
+        set_STAGGER_Text(frame)
     end
 end
 
@@ -932,22 +932,22 @@ local function frame_Init(rest)--初始， 或设置
 
                 if info.name=='STATUS' then--主属性1
                     frame:RegisterUnitEvent('UNIT_STATS', 'player')
-                    frame:SetScript('OnEvent', set_Stat_Text)
-                    frame.label:SetScript('OnEnter', set_Stat_Tooltip)
-                    frame.text:SetScript('OnEnter', set_Stat_Tooltip)
+                    frame:SetScript('OnEvent', set_STATUS_Text)
+                    frame.label:SetScript('OnEnter', set_STATUS_Tooltip)
+                    frame.text:SetScript('OnEnter', set_STATUS_Tooltip)
 
                 elseif info.name=='CRITCHANCE' then--爆击2
                     --frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
                     --frame:RegisterUnitEvent('UNIT_AURA', 'player')
-                    --frame:SetScript('OnEvent', set_Crit_Text)
-                    frame.label:SetScript('OnEnter', set_Crit_Tooltip)
-                    frame.text:SetScript('OnEnter', set_Crit_Tooltip)
+                    --frame:SetScript('OnEvent', set_CRITCHANCE_Text)
+                    frame.label:SetScript('OnEnter', set_CRITCHANCE_Tooltip)
+                    frame.text:SetScript('OnEnter', set_CRITCHANCE_Tooltip)
 
                 elseif info.name=='HASTE' then--急速3
                     frame:RegisterUnitEvent('UNIT_SPELL_HASTE', 'player')
-                    frame:SetScript('OnEvent', set_Haste_Text)
-                    frame.label:SetScript('OnEnter', set_Haste_Tooltip)
-                    frame.text:SetScript('OnEnter', set_Haste_Tooltip)
+                    frame:SetScript('OnEvent', set_HASTE_Text)
+                    frame.label:SetScript('OnEnter', set_HASTE_Tooltip)
+                    frame.text:SetScript('OnEnter', set_HASTE_Tooltip)
 
                 elseif info.name=='MASTERY' then--精通4
                     frame:RegisterEvent('MASTERY_UPDATE')
@@ -959,16 +959,16 @@ local function frame_Init(rest)--初始， 或设置
                     --frame:RegisterUnitEvent('UNIT_DEFENSE', "player")
                     --frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
                     --frame:RegisterUnitEvent('UNIT_AURA', 'player')
-                    --frame:SetScript('OnEvent', set_Versatility_Text)
-                    frame.label:SetScript('OnEnter', set_Versatility_Tooltip)
-                    frame.text:SetScript('OnEnter', set_Versatility_Tooltip)
+                    --frame:SetScript('OnEvent', set_VERSATILITY_Text)
+                    frame.label:SetScript('OnEnter', set_VERSATILITY_Tooltip)
+                    frame.text:SetScript('OnEnter', set_VERSATILITY_Tooltip)
 
                 elseif info.name=='LIFESTEAL' then--吸血6
                     --frame:RegisterEvent('LIFESTEAL_UPDATE')
                     button.frame:RegisterEvent('LIFESTEAL_UPDATE')
-                    --frame:SetScript('OnEvent', set_Lifesteal_Text)
-                    frame.label:SetScript('OnEnter', set_Lifesteal_Tooltip)
-                    frame.text:SetScript('OnEnter', set_Lifesteal_Tooltip)
+                    --frame:SetScript('OnEvent', set_LIFESTEAL_Text)
+                    frame.label:SetScript('OnEnter', set_LIFESTEAL_Tooltip)
+                    frame.text:SetScript('OnEnter', set_LIFESTEAL_Tooltip)
 
                 elseif info.name=='ARMOR' then--护甲
                     --frame:RegisterUnitEvent('UNIT_DEFENSE', "player")
@@ -981,38 +981,38 @@ local function frame_Init(rest)--初始， 或设置
                 elseif info.name=='AVOIDANCE' then--闪避7
                     --frame:RegisterEvent('AVOIDANCE_UPDATE')
                     button.frame:RegisterEvent('AVOIDANCE_UPDATE')
-                    --frame:SetScript('OnEvent', set_Avoidance_Text)
-                    frame.label:SetScript('OnEnter', set_Avoidance_Tooltip)
-                    frame.text:SetScript('OnEnter', set_Avoidance_Tooltip)
+                    --frame:SetScript('OnEvent', set_AVOIDANCE_Text)
+                    frame.label:SetScript('OnEnter', set_AVOIDANCE_Tooltip)
+                    frame.text:SetScript('OnEnter', set_AVOIDANCE_Tooltip)
 
                 elseif info.name=='DODGE' then--躲闪8
                     --frame:RegisterUnitEvent('UNIT_DEFENSE', "player")
                     --frame:RegisterUnitEvent('UNIT_AURA', 'player')
-                    --frame:SetScript('OnEvent', set_Dodge_Text)
-                    frame.label:SetScript('OnEnter', set_Dodge_Tooltip)
-                    frame.text:SetScript('OnEnter', set_Dodge_Tooltip)
+                    --frame:SetScript('OnEvent', set_DODGE_Text)
+                    frame.label:SetScript('OnEnter', set_DODGE_Tooltip)
+                    frame.text:SetScript('OnEnter', set_DODGE_Tooltip)
 
                 elseif info.name=='PARRY' then--招架9
                     --frame:RegisterUnitEvent('UNIT_DEFENSE', "player")
                     --frame:RegisterUnitEvent('UNIT_AURA', 'player')
-                    --frame:SetScript('OnEvent', set_Parry_Text)
-                    frame.label:SetScript('OnEnter', set_Parry_Tooltip)
-                    frame.text:SetScript('OnEnter', set_Parry_Tooltip)
+                    --frame:SetScript('OnEvent', set_PARRY_Text)
+                    frame.label:SetScript('OnEnter', set_PARRY_Tooltip)
+                    frame.text:SetScript('OnEnter', set_PARRY_Tooltip)
 
                 elseif info.name=='BLOCK' then--格挡10
                     --frame:RegisterUnitEvent('UNIT_DEFENSE', "player")
                     --frame:RegisterUnitEvent('UNIT_AURA', 'player')
-                    --frame:SetScript('OnEvent', set_Block_Text)
-                    frame.label:SetScript('OnEnter', set_Block_Tooltip)
-                    frame.text:SetScript('OnEnter', set_Block_Tooltip)
+                    --frame:SetScript('OnEvent', set_BLOCK_Text)
+                    frame.label:SetScript('OnEnter', set_BLOCK_Tooltip)
+                    frame.text:SetScript('OnEnter', set_BLOCK_Tooltip)
 
                 elseif info.name=='STAGGER' then--醉拳11
                     --frame:RegisterUnitEvent('UNIT_AURA', 'player')
                     --frame:RegisterUnitEvent('UNIT_DAMAGE', 'player')
                     frame:RegisterEvent('PLAYER_TARGET_CHANGED')
-                    frame:SetScript('OnEvent', set_Stagger_Text)
-                    frame.label:SetScript('OnEnter', set_Stagger_Tooltip)
-                    frame.text:SetScript('OnEnter', set_Stagger_Tooltip)
+                    frame:SetScript('OnEvent', set_STAGGER_Text)
+                    frame.label:SetScript('OnEnter', set_STAGGER_Tooltip)
+                    frame.text:SetScript('OnEnter', set_STAGGER_Tooltip)
 
                 elseif info.name=='SPEED' then--移动12
                     frame:HookScript('OnUpdate', set_SPEED_Text)
@@ -1294,7 +1294,7 @@ local function set_Panle_Setting()--设置 panel
                 end
                 frame_Init(true)--初始，设置
             end)
-            check2:SetScript('OnEnter', set_Versatility_Tooltip)
+            check2:SetScript('OnEnter', set_VERSATILITY_Tooltip)
             check2:SetScript('OnLeave', function() e.tips:Hide() end)
 
             check2.A=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--双属性 22/18%
@@ -1305,7 +1305,7 @@ local function set_Panle_Setting()--设置 panel
                 Save.tab['VERSATILITY'].damageAndDefense= not Save.tab['VERSATILITY'].damageAndDefense and true or nil
                 frame_Init(true)--初始，设置
             end)
-            check2.A:SetScript('OnEnter', set_Versatility_Tooltip)
+            check2.A:SetScript('OnEnter', set_VERSATILITY_Tooltip)
             check2.A:SetScript('OnLeave', function() e.tips:Hide() end)
 
             if Save.tab['VERSATILITY'].onlyDefense then
