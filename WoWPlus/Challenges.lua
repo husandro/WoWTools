@@ -1042,7 +1042,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             panel:RegisterEvent('WEEKLY_REWARDS_UPDATE')
 
         elseif arg1=='Blizzard_WeeklyRewards' then--周奖励界面，添加一个按钮，打开挑战界面
-            local btn =e.Cbtn(WeeklyRewardsFrame, {icon='hide', size={20,20}})--所有角色,挑战
+            local btn =e.Cbtn(WeeklyRewardsFrame, {icon='hide', size={15,15}})--所有角色,挑战
             btn:SetPoint('BOTTOMLEFT', WeeklyRewardsFrame, 'TOPLEFT', 30,0)
             btn:SetNormalTexture(4352494)
             btn:SetScript('OnEnter', function(self2)
