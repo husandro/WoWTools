@@ -1014,7 +1014,6 @@ end
 --###########
 --加载保存数据
 --###########
-
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent('CHALLENGE_MODE_START')
 
@@ -1041,6 +1040,22 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             panel:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
             panel:RegisterEvent('UPDATE_INSTANCE_INFO')
             panel:RegisterEvent('WEEKLY_REWARDS_UPDATE')
+
+        elseif arg1=='Blizzard_WeeklyRewards' then--周奖励界面，添加一个按钮，打开挑战界面
+            local btn =e.Cbtn(WeeklyRewardsFrame, {icon='hide', size={20,20}})--所有角色,挑战
+            btn:SetPoint('BOTTOMLEFT', WeeklyRewardsFrame, 'TOPLEFT', 30,0)
+            btn:SetNormalTexture(4352494)
+            btn:SetScript('OnEnter', function(self2)
+                e.tips:SetOwner(self2, "ANCHOR_LEFT");
+                e.tips:ClearLines();
+                e.tips:AddDoubleLine(e.onlyChinese and '史诗钥石地下城' or CHALLENGES, e.Icon.left)
+                e.tips:Show()
+            end)
+            btn:SetScript("OnLeave",function() e.tips:Hide() end)
+            btn:SetScript('OnMouseDown', function()
+                PVEFrame_ToggleFrame('ChallengesFrame',3)
+            end)
+            btn:SetAlpha(0.5)
         end
 
     elseif event == "PLAYER_LOGOUT" then
