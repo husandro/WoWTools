@@ -40,6 +40,8 @@ local Save={
     --notText=false,--禁用，数值
     textColor= {r=1,g=1,b=1,a=1},--数值，颜色
     bit=0,--数值，位数
+
+    hideInPetBattle=true,--宠物战斗中, 隐藏
 }
 
 local function get_PrimaryStat()--取得主属
@@ -1106,9 +1108,11 @@ local function set_ShowHide_Event()
     if Save.hideInPetBattle then
         panel:RegisterEvent('PET_BATTLE_OPENING_DONE')
         panel:RegisterEvent('PET_BATTLE_CLOSE')
+        panel:RegisterEvent('PLAYER_ENTERING_WORLD')
     else
         panel:UnregisterEvent('PET_BATTLE_OPENING_DONE')
         panel:UnregisterEvent('PET_BATTLE_CLOSE')
+        panel:UnregisterEvent('PLAYER_ENTERING_WORLD')
     end
 end
 
@@ -1863,5 +1867,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='PET_BATTLE_CLOSE' then
         button:SetShown(true)
 
+    elseif event=='PLAYER_ENTERING_WORLD' then
+        button:SetShown(not C_PetBattles.IsInBattle())
     end
 end)
