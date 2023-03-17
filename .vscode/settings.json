@@ -2074,7 +2074,11 @@
         "CALENDAR_STATUS_SIGNEDUP",
         "CALENDAR_STATUS_NOT_SIGNEDUP",
         "CALENDAR_STATUS_TENTATIVE",
-        "BankFrame_OnEvent"
+        "BankFrame_OnEvent",
+        "CALL_PET_SPELL_NAME",
+        "ItemUpgradeFrameCloseButton",
+        "ItemUpgradeMixin",
+        "ItemInteractionFrameCloseButton"
     ],
     "Lua.diagnostics.disable": [
     ]

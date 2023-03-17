@@ -59,4 +59,16 @@ Frame:DisableDrawLayer('BACKGROUND')
 
 fileID = GetFileIDFromPath(filePath)--检查,自定义,文件是否存在
 
+InterfaceOptionsFrame_OpenToCategory(id)
+CharacterFrameTab_OnClick (self, button)
+if ( name == "CharacterFrameTab1" ) then
+		ToggleCharacter("PaperDollFrame");
+elseif ( name == "CharacterFrameTab2" ) then
+		ToggleCharacter("ReputationFrame");
+elseif ( name == "CharacterFrameTab3" ) then
+		CharacterFrame_ToggleTokenFrame();
+end
+ToggleCollectionsJournal(tabIndex) UIParent.lua
+
+ToggleEncounterJournal()
 ]]

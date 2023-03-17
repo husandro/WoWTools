@@ -130,7 +130,7 @@ local function set_ExpansionLandingPageMinimapButton()
         if ExpansionLandingPageMinimapButton then
             ExpansionLandingPageMinimapButton:SetShown(false)
         end
-        e.Set_MinMap_Icon({name= id, texture= 136235 or 136235,
+        e.Set_MinMap_Icon({name= id, texture= 136235,
             func= function(self, d)
                 if d=='LeftButton' then
                     if IsAltKeyDown() then
@@ -672,7 +672,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            
             WoWToolsSave[addName]=Save
         end
 

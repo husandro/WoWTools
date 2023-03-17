@@ -481,7 +481,11 @@ e.Cbtn= function(self, tab)--type, icon, name, size
         button:SetHighlightAtlas(e.Icon.highlight)
         button:SetPushedAtlas(e.Icon.pushed)
         if tab.icon~='hide' then
-            if tab.icon==true then
+            if tab.texture then
+                button:SetNormalTexture(tab.texture)
+            elseif tab.atlas then
+                button:SetNormalAtlas(tab.atlas)
+            elseif tab.icon==true then
                 button:SetNormalAtlas(e.Icon.icon)
             else
                 button:SetNormalAtlas(e.Icon.disabled)

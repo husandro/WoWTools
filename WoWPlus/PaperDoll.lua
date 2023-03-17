@@ -866,6 +866,47 @@ local function Init()
     end)
 end
 
+
+
+--####################
+--添加一个按钮, 打开选项
+--####################
+local function add_Button_OpenOption(self)
+    local btn= e.Cbtn(self, {icon=true})
+    btn:SetSize(20,20)
+    btn:SetPoint('RIGHT', self, 'LEFT',-2,0)
+    btn:SetScript('OnClick', function()
+        InterfaceOptionsFrame_OpenToCategory(id)
+    end)
+    btn:SetScript('OnEnter', function(self2)
+        e.tips:SetOwner(self2, "ANCHOR_Left")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.onlyChinese and '设置选项' or OPTIONS, e.Icon.left)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:Show()
+    end)
+    btn:SetScript('OnLeave', function() e.tips:Hide() end)
+
+    local btn2= e.Cbtn(btn, {atlas='charactercreate-icon-customize-body-selected'})
+    btn2:SetSize(40,40)
+    btn2:SetPoint('TOP', btn, 'BOTTOM')
+    btn2:SetScript('OnClick', function()
+        ToggleCharacter("PaperDollFrame")
+    end)
+    btn2:SetScript('OnEnter', function(self2)
+        e.tips:SetOwner(self2, "ANCHOR_Left")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭角色界面' or BINDING_NAME_TOGGLECHARACTER0, e.Icon.left)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:Show()
+    end)
+    btn2:SetScript('OnLeave', function() e.tips:Hide() end)
+    if not PaperDollFrame:IsVisible() or not PaperDollFrame:IsShown() then
+        ToggleCharacter("PaperDollFrame")
+    end
+end
 --###########
 --加载保存数据
 --###########
@@ -903,11 +944,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     end
                 end
             end)
+
+        elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级, 界面
+            add_Button_OpenOption(ItemUpgradeFrameCloseButton)--添加一个按钮, 打开选项
+
+        elseif arg1=='Blizzard_ItemInteractionUI' then--套装转换, 界面
+            add_Button_OpenOption(ItemInteractionFrameCloseButton)--添加一个按钮, 打开选项
         end
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            
             WoWToolsSave[addName]=Save
         end
 

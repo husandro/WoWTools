@@ -1,7 +1,7 @@
 local id, e = ...
 local addName= 'ChatButtonGroup'
 local Save={
-    mouseUP= e.Player.zh and '%s求拉, 3Q' or '%spull me, thx',
+    mouseUP= CALL_PET_SPELL_NAME:format( COMBATLOG_FILTER_STRING_ME),
     mouseDown= e.Player.zh and '1' or 'inv, thx' ,
 }
 local button
@@ -401,7 +401,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            
             WoWToolsSave[addName]=Save
         end
 
