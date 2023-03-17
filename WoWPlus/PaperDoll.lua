@@ -4,6 +4,8 @@ local Save={EquipmentH=true}
 local panel = CreateFrame("Frame", nil, PaperDollFrame)
 panel.serverText= e.Cstr(PaperDollItemsFrame)--显示服务器名称
 
+local disabledClearAllSave--禁用插件
+
 local pvpItemStr= PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在竞技场和战场中将物品等级提高至%d。"
 local enchantStr= ENCHANTED_TOOLTIP_LINE:gsub('%%s','(.+)')--附魔
 local upgradeStr= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(%%d%+/%%d%+)')-- "升级：%s/%s"
@@ -903,6 +905,28 @@ local function add_Button_OpenOption(self)
         e.tips:Show()
     end)
     btn2:SetScript('OnLeave', function() e.tips:Hide() end)
+
+    if #e.Player.disabledLUA>0 then--禁用插件
+        local btn3= e.Cbtn(btn, {atlas=e.Icon.disabled})
+        btn3:SetSize(20,20)
+        btn3:SetPoint('RIGHT', btn, 'LEFT', -2,0)
+        btn3:SetScript('OnClick', function()
+            e.DisabledLua=true
+            e.Reload()
+        end)
+        btn3:SetScript('OnEnter', function(self2)
+            e.tips:SetOwner(self2, "ANCHOR_Left")
+            e.tips:ClearLines()
+            for _, text in pairs(e.Player.disabledLUA) do
+                e.tips:AddDoubleLine(text, e.GetEnabeleDisable())
+            end
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(' ', e.onlyChinese and '重新加载UI' or RELOADUI, nil,nil,nil, 0,1,0)
+            e.tips:AddDoubleLine(id, addName)
+            e.tips:Show()
+        end)
+        btn3:SetScript('OnLeave', function() e.tips:Hide() end)
+    end
     if not PaperDollFrame:IsVisible() or not PaperDollFrame:IsShown() then
         ToggleCharacter("PaperDollFrame")
     end

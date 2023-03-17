@@ -174,6 +174,7 @@ e.Player={
     level= UnitLevel('player'),--UnitEffectiveLevel('player')
     husandro= select(2, BNGetInfo()) == '古月剑龙#5972' or select(2, BNGetInfo())=='SandroChina#2690' or UnitName('player')=='Fuocco' or UnitName('player')=='活就好',
     faction= UnitFactionGroup('player'),--玩家, 派系  "Alliance", "Horde", "Neutral"
+    disabledLUA={},--禁用插件 {save='', text} e.DisabledLua=true
     --useColor= {r=1, g=0.82, b=0, a=1, hex='|cffffd100'},--使用颜色
 }
  --MAX_PLAYER_LEVEL = GetMaxLevelForPlayerExpansion()

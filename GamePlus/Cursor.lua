@@ -932,6 +932,9 @@ local function Init()
         e.tips:Show()
     end)
     panel.gcdCheck:SetScript('OnLeave', function() e.tips:Hide() end)
+
+
+
 end
 
 --###########
@@ -941,7 +944,11 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            Save= WoWToolsSave[addName] or Save
+            if not WoWToolsSave[addName] then
+                WoWToolsSave[addName]= Save
+            else
+                Save= WoWToolsSave[addName]
+            end
             set_Color()
 
             if not Save.GCDTexture then
@@ -962,10 +969,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if not Save.disabled then
                 C_Timer.After(2, Cursor_Init)
+                table.insert(e.Player.disabledLUA, addName..' CURSOR')--禁用插件, 给物品升级界面用
             end
 
             if not Save.disabledGCD then
                 C_Timer.After(2, GCD_Init)
+                table.insert(e.Player.disabledLUA, addName..' GCD')--禁用插件, 给物品升级界面用
             end
             panel:UnregisterEvent('ADDON_LOADED')
             panel:RegisterEvent("PLAYER_LOGOUT")
@@ -973,6 +982,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
+            if e.DisabledLua then--禁用插件, 给物品升级界面用
+                Save.disabled=true
+                Save.disabledGCD=true
+            end
             WoWToolsSave[addName]=Save
         end
     end

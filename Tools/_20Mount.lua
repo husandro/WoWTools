@@ -1055,7 +1055,11 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            Save= WoWToolsSave[addName] or Save
+            if not WoWToolsSave[addName] then
+                WoWToolsSave[addName]= Save
+            else
+                Save= WoWToolsSave[addName]
+            end
 
             local check=e.CPanel('|A:bag-border-empty:0:0|aTools', not Save.disabled, true)
             check:SetScript('OnMouseDown', function()
@@ -1119,6 +1123,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 panel:RegisterEvent('PLAYER_STARTED_MOVING')
 
                 Init()--初始
+
+                table.insert(e.Player.disabledLUA, 'Tools')--禁用插件, 给物品升级界面用
             else
                 e.toolsFrame.disabled=true
                 panel:UnregisterAllEvents()
@@ -1147,6 +1153,9 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
+            if e.DisabledLua then--禁用插件, 给物品升级界面用
+                Save.disabled=true
+            end
             WoWToolsSave[addName]=Save
         end
 
