@@ -437,7 +437,7 @@ e.Cstr=function(self, tab)--self, {size, copyFont, changeFont, color={r=,g=,b=,a
         font:SetShadowColor(tab.copyFont:GetShadowColor())
         font:SetShadowOffset(tab.copyFont:GetShadowOffset())
     else
-        if e.Player.zh or e.onlyChinese then
+        if e.onlyChinese then
             font:SetFont('Fonts\\ARHei.ttf', (tab.size or 12), 'OUTLINE')
         elseif tab.size then
             font:SetHeight(tab.size)
