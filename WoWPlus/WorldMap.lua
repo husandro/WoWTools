@@ -343,8 +343,8 @@ local function setOnEnter(self)--地图ID提示
     e.tips:ClearLines()
     e.tips:AddDoubleLine(id, addName)
     e.tips:AddLine(' ')
-    if e.Layer then
-        e.tips:AddDoubleLine(e.LayerText, e.Layer)
+    if e.Player.Layer then
+        e.tips:AddDoubleLine(e.Player.LayerText, e.Player.Layer)
     end
     local uiMapID = frame.mapID or frame:GetMapID("current")
     if uiMapID then
@@ -432,8 +432,8 @@ local function setMapIDText(self)
                 self.mapInfoBtn.mapID:SetPoint('RIGHT', self.mapInfoBtn, 'LEFT')
             end
         end
-        if e.Layer then
-            m = e.Layer..' '..m
+        if e.Player.Layer then
+            m = e.Player.Layer..' '..m
         end
     end
     if self.mapInfoBtn.mapID then

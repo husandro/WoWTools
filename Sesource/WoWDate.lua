@@ -406,10 +406,10 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
         C_MythicPlus.RequestMapInfo()
 
     elseif event=='ZONE_CHANGED_NEW_AREA' then--位面, 清除
-        e.Layer=nil
+        e.Player.Layer=nil
 
     elseif event=='PLAYER_ENTERING_WORLD' then--记录稀有怪
-        e.Layer=nil
+        e.Player.Layer=nil
         if IsInInstance() then--稀有怪
             panel:UnregisterEvent('UNIT_FLAGS')
             panel:UnregisterEvent('LOOT_OPENED')

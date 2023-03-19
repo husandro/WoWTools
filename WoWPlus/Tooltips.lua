@@ -533,7 +533,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                 if reason==0 then
                     self.textLeft:SetText(e.onlyChinese and '不同了阶段' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1','')))
                 elseif reason==1 then
-                    self.textLeft:SetText(e.onlyChinese and '不在同位面' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', e.LayerText))
+                    self.textLeft:SetText(e.onlyChinese and '不在同位面' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', e.Player.LayerText))
                 elseif reason==2 then--战争模
                     self.textLeft:SetText(isWarModeDesired and (e.onlyChinese and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF) or (e.onlyChinese and '开启战争模式' or ERR_PVP_WARMODE_TOGGLE_ON))
                 elseif reason==3 then
@@ -614,8 +614,8 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             line=_G["GameTooltipTextLeft"..i]
             if line then
                 if i==num then
-                    if isSelf and (e.Layer or isWarModeDesired) then--位面ID, 战争模式
-                        line:SetText(e.Layer and '|A:nameplates-holypower2-on:0:0|a'..col..e.LayerText..' '..e.Layer..'|r' or ' ')
+                    if isSelf and (e.Player.Layer or isWarModeDesired) then--位面ID, 战争模式
+                        line:SetText(e.Player.Layer and '|A:nameplates-holypower2-on:0:0|a'..col..e.Player.LayerText..' '..e.Player.Layer..'|r' or ' ')
                         if isWarModeDesired then
                             line=_G["GameTooltipTextRight"..i]
                             if line then
@@ -676,11 +676,13 @@ local function setUnitInfo(self, unit)--设置单位提示信息
         if GameTooltipTextLeft2 then GameTooltipTextLeft2:SetTextColor(r,g,b) end
         if GameTooltipTextLeft3 then GameTooltipTextLeft3:SetTextColor(r,g,b) end
         if GameTooltipTextLeft4 then GameTooltipTextLeft4:SetTextColor(r,g,b) end
+        if guid then
             local zone, npc = select(5, strsplit("-", guid))--位面,NPCID
             if zone then
-                self:AddDoubleLine(e.LayerText..' '..zone, 'NPC '..npc, r,g,b, r,g,b)
-                e.Layer=zone
+                self:AddDoubleLine(e.Player.LayerText..' '..zone, 'NPC '..npc, r,g,b, r,g,b)
+                e.Player.Layer=zone
             end
+        end
 
         --怪物, 图标
         if UnitIsQuestBoss(unit) then--任务

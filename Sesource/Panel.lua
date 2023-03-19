@@ -74,23 +74,21 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             e.onlyChinese= Save.onlyChinese
 
             if e.onlyChinese or LOCALE_zhCN or LOCALE_zhTW then
-                e.LayerText= '位面'
+                e.Player.LayerText= '位面'
             elseif LOCALE_koKR then
-                e.LayerText= '층'
+                e.Player.LayerText= '층'
             elseif LOCALE_frFR then
-                e.LayerText= 'Couche'
+                e.Player.LayerText= 'Couche'
             elseif LOCALE_deDE then
-                e.LayerText= 'Schicht'
+                e.Player.LayerText= 'Schicht'
             elseif LOCALE_esES or LOCALE_esMX then
-                e.LayerText= 'Capa'
+                e.Player.LayerText= 'Capa'
             elseif LOCALE_ruRU then
-                e.LayerText= 'слой'
+                e.Player.LayerText= 'слой'
             elseif LOCALE_ptBR then
-                e.LayerText= 'Camada'
+                e.Player.LayerText= 'Camada'
             elseif LOCALE_itIT then
-                e.LayerText= 'Strato'
-            else
-                e.LayerText= 'Layer'
+                e.Player.LayerText= 'Strato'
             end
 
             local useClassColor=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--使用,职业,颜色
