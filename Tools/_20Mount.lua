@@ -572,6 +572,14 @@ local function InitMenu(self, level, menuList)--主菜单
                 end,
             }
             UIDropDownMenu_AddButton(info, level)
+    
+            info={
+                text= (e.onlyChinese and '缩放' or UI_SCALE)..': |cnGREEN_FONT_COLOR:'..(Save.scale or 1)..'|r Alt+',
+                isTitle=true,
+                notCheckable=true,
+                icon='newplayertutorial-icon-mouse-middlebutton',
+            }
+            UIDropDownMenu_AddButton(info, level)
 
             if ClassID==11 then--德鲁伊
                 info={
@@ -600,6 +608,7 @@ local function InitMenu(self, level, menuList)--主菜单
                 tooltipOnButton=true,
                 tooltipTitle= e.onlyChinese and '每隔 3 秒, 召唤' or ('3 '..SECONDS..MOUNT),
                 tooltipText= (e.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP)..e.Icon.mid,
+                icon='newplayertutorial-icon-mouse-middlebutton',
                 func=function()
                     specialEffects=nil
                     setMountShow()
@@ -613,6 +622,7 @@ local function InitMenu(self, level, menuList)--主菜单
                 tooltipOnButton=true,
                 tooltipTitle= e.onlyChinese and '每隔 3 秒' or ('3 '..SECONDS..EMOTE171_CMD2:gsub('/','')),
                 tooltipText= (e.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN)..e.Icon.mid,
+                icon='newplayertutorial-icon-mouse-middlebutton',
                 func=function()
                     specialEffects=true
                     setMountShow()
@@ -800,9 +810,10 @@ local function InitMenu(self, level, menuList)--主菜单
         UIDropDownMenu_AddButton(info)
 
         info={--提示移动
-            text=e.Icon.right..(e.onlyChinese and '移动' or NPE_MOVE),
+            text= e.onlyChinese and '移动' or NPE_MOVE,
             isTitle=true,
-            notCheckable=true
+            notCheckable=true,
+            icon= 'newplayertutorial-icon-mouse-rightbutton'
         }
         UIDropDownMenu_AddButton(info)
     end
@@ -902,6 +913,8 @@ local function setMountJournal_ShowMountDropdown(index)
             UIDropDownMenu_AddButton(info, 1);
         end
     end
+
+
     UIDropDownMenu_AddSeparator()
     info={
         text=id..' '..addName,
@@ -1008,12 +1021,26 @@ local function Init()
     end)
 
     button:SetScript('OnMouseWheel',function(self,d)
-        if d==1 then--坐骑展示
-            specialEffects=nil
-            setMountShow()
-        elseif d==-1 then--坐骑特效
-            specialEffects=true
-            setMountShow()
+        if IsAltKeyDown() then
+            local n= Save.scale or 1
+            if d==1 then
+                n= n+0.05
+            else
+                n= n-0.05
+            end
+            n= n>3 and 3 or n
+            n= n<0.5 and 0.5 or n
+            self:SetScale(n)
+            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, n)
+            Save.scale= n
+        else
+            if d==1 then--坐骑展示
+                specialEffects=nil
+                setMountShow()
+            elseif d==-1 then--坐骑特效
+                specialEffects=true
+                setMountShow()
+            end
         end
     end)
 
@@ -1039,6 +1066,10 @@ local function Init()
         ResetCursor()
         self.border:SetAtlas('bag-reagent-border')
     end)
+
+    if Save.scale and Save.scale~=1 then
+        button:SetScale(Save.scale)
+    end
 
     C_Timer.After(2, function()
         setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
