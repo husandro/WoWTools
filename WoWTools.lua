@@ -1318,7 +1318,7 @@ e.Set_MinMap_Icon= function(tab)-- {name, texture, func, hide} 小地图，建�
         text = tab.name,
         icon = tab.texture,
         OnClick = tab.func,
-        OnEnter= tab.enter
+        OnEnter= tab.enter,
     })
     local icon = LibStub("LibDBIcon-1.0")
     icon:Register(tab.name, bunnyLDB, {hide= tab.hide})

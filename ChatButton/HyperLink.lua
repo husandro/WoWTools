@@ -978,11 +978,13 @@ DEFAULT_CHAT_FRAME.ADD=DEFAULT_CHAT_FRAME.AddMessage
 --####
 local function Init()
     button:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')
+
     WoWToolsChatButtonFrame.last=button
 
     button.Menu=CreateFrame("Frame",nil, button, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
     button.texture:SetAtlas(e.Icon.icon)
+    
     button:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
             setFunc()--使用，禁用
@@ -1026,7 +1028,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
                 e.setPlayerSound= Save.setPlayerSound--播放, 声音
 
                 button=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
-
+                
                 Init()
                 panel:RegisterEvent('CVAR_UPDATE')
                 panel:RegisterEvent("PLAYER_LOGOUT")
