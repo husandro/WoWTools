@@ -424,16 +424,24 @@ end
 e.Cstr=function(self, tab)--self, {size, copyFont, changeFont, color={r=,g=,b=,a=}, layer=, justifyH}
     tab= tab or {}
     self= self or UIParent
-    local font= tab.changeFont or self:CreateFontString(nil, (tab.layer or 'OVERLAY'), nil, 5)
+    local font= tab.changeFont or self:CreateFontString(nil, (tab.layer or 'OVERLAY'), 'GameFontNormalOutline', 5)
     if tab.copyFont then
-        local fontName, size, fontFlags = tab.copyFont:GetFont()
+        font:CopyFontObject(tab.copyFont)
+        if tab.size then
+            font:SetHeight(tab.szie)
+        end
+        --[[local fontName, size, fontFlags = tab.copyFont:GetFont()
         font:SetFont(fontName, tab.size or size, fontFlags)
         font:SetTextColor(tab.copyFont:GetTextColor())
         font:SetFontObject(tab.copyFont:GetFontObject())
         font:SetShadowColor(tab.copyFont:GetShadowColor())
-        font:SetShadowOffset(tab.copyFont:GetShadowOffset())
+        font:SetShadowOffset(tab.copyFont:GetShadowOffset())]]
     else
-        font:SetFont('Fonts\\ARHei.ttf', (tab.size or 12), 'OUTLINE')
+        if e.Player.zh or e.onlyChinese then
+            font:SetFont('Fonts\\ARHei.ttf', (tab.size or 12), 'OUTLINE')
+        elseif tab.size then
+            font:SetHeight(tab.size)
+        end
         font:SetShadowOffset(1, -1)
         --font:SetShadowColor(0, 0, 0)
         font:SetJustifyH(tab.justifyH or 'LEFT')
