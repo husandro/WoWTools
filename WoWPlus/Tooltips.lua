@@ -13,7 +13,7 @@ local function setInitItem(self, hide)--创建物品
         self.text2Left:SetPoint('LEFT', self.textLeft, 'RIGHT', 5, 0)
     end
     if not self.textRight then--右上角字符
-        self.textRight=e.Cstr(self, {size=10})
+        self.textRight=e.Cstr(self, {size=12})
         self.textRight:SetPoint('BOTTOMRIGHT', self, 'TOPRIGHT')
     end
     if not self.backgroundColor then--背景颜色
