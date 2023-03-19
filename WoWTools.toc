@@ -24,12 +24,11 @@ Libs\LibDBIcon-1.0\LibDBIcon-1.0.lua
 Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
 ##Libs\LibButtonGlow-1.0\LibButtonGlow-1.0.lua
 
+
 ##主要，不能删除
 WoWTools.lua
 Sesource\WoWDate.lua
-##面板，不能删除
 Sesource\Panel.lua
-
 
 
 
