@@ -176,8 +176,8 @@ e.Player={
     faction= UnitFactionGroup('player'),--玩家, 派系  "Alliance", "Horde", "Neutral"
     disabledLUA={},--禁用插件 {save='', text} e.DisabledLua=true
     --useColor= {r=1, g=0.82, b=0, a=1, hex='|cffffd100'},--使用颜色
-    LayerText= 'Layer',
-    --Layer= 位面
+    LayerText= 'Layer',--位面文本
+    --Layer= 位面数字
 }
  --MAX_PLAYER_LEVEL = GetMaxLevelForPlayerExpansion()
 

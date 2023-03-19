@@ -924,7 +924,7 @@ local function InitMenu(self, level, type)
 
         UIDropDownMenu_AddSeparator(level)
         info={
-            text= '|cffff00ffE|rTRACE',
+            text= '|cffff00ffETR|rACE',
             checked= IsAddOnLoaded("Blizzard_EventTrace") and EventTrace:IsShown(),
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '事件记录' or EVENTTRACE_HEADER,
@@ -939,7 +939,7 @@ local function InitMenu(self, level, type)
         UIDropDownMenu_AddButton(info, level)
 
         info={
-            text= '|cff00ff00F|rSTACK',
+            text= '|cff00ff00FST|rACK',
             checked= IsAddOnLoaded("Blizzard_DebugTools") and FrameStackTooltip_IsFramestackEnabled(),--Blizzard_DebugTools.lua
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '框架栈' or DEBUG_FRAMESTACK,
@@ -984,7 +984,7 @@ local function Init()
     button.Menu=CreateFrame("Frame",nil, button, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
     button.texture:SetAtlas(e.Icon.icon)
-    
+
     button:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
             setFunc()--使用，禁用
@@ -1002,7 +1002,7 @@ local function Init()
     setPanel()--设置控制面板
     set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
     if Save.setFucus then
-        set_Shift_Click_focurs()----Shift+点击设置焦点
+        set_Shift_Click_focurs()--Shift+点击设置焦点
         panel:RegisterEvent('GROUP_ROSTER_UPDATE')
     end
 
@@ -1028,7 +1028,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
                 e.setPlayerSound= Save.setPlayerSound--播放, 声音
 
                 button=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
-                
+
                 Init()
                 panel:RegisterEvent('CVAR_UPDATE')
                 panel:RegisterEvent("PLAYER_LOGOUT")
