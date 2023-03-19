@@ -1353,7 +1353,30 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                     end
                 end
             end)
-        --elseif arg1=='Blizzard_PerksProgram' then
+
+        elseif arg1=='Blizzard_ClassTalentUI' then--天赋，显示专精ID
+            hooksecurefunc(ClassTalentFrame.SpecTab, 'UpdateSpecContents', function(self2)--Blizzard_ClassTalentSpecTab.lua
+                if self2.isInitialized and self2.numSpecs and self2.numSpecs>0 then
+                    for i = 1, self2.numSpecs do
+                        local contentFrame = self2.SpecContentFramePool:Acquire();
+                        if contentFrame then
+                            local specID= GetSpecializationInfo(i)
+                            if specID and not contentFrame.specText then
+                                contentFrame.specText= e.Cstr(self2)
+                                
+                                contentFrame.specText:SetPoint('RIGHT', contentFrame.RoleIcon, 'LEFT')
+                            end
+                            if contentFrame.specText then
+                                local text
+                                if specID then
+                                    text= (e.onlyChinese and '专精' or SPECIALIZATION)..' '..specID
+                                end
+                                contentFrame.specText:SetText(text or '')
+                            end
+                        end
+                    end
+                end
+            end)
         end
 
     elseif event == "PLAYER_LOGOUT" then

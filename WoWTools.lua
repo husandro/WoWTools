@@ -825,19 +825,23 @@ e.Chat=function(text, name, setPrint)--v9.25设置
 end
 
 e.Say=function(type, name, wow, text)
-    local chat=SELECTED_DOCK_FRAME;
-    text= text or ''
-    local msg = chat.editBox:GetText() or '';
+    local chat= SELECTED_DOCK_FRAME
+    local msg = chat.editBox:GetText() or ''
+    if text and text==msg then
+        text=''
+    else
+        text= text or ''
+    end
     if msg:find('/') then msg='' end
-    msg=' '..msg;
+    msg=' '..msg
     if name then
         if wow then
-            ChatFrame_SendBNetTell(name..msg)
+            ChatFrame_SendBNetTell(name..msg..(text or ''))
         else
-            ChatFrame_OpenChat("/w " ..name..msg..text, chat);
+            ChatFrame_OpenChat("/w " ..name..msg..(text or ''), chat);
         end
     elseif type then
-        ChatFrame_OpenChat(type..msg, chat)
+        ChatFrame_OpenChat(type..msg..(text or ''), chat)
     end
 end
 

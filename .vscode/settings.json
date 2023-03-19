@@ -2078,7 +2078,10 @@
         "CALL_PET_SPELL_NAME",
         "ItemUpgradeFrameCloseButton",
         "ItemUpgradeMixin",
-        "ItemInteractionFrameCloseButton"
+        "ItemInteractionFrameCloseButton",
+        "SLASH_RAID1",
+        "ClassSpecSpellMixin",
+        "EDIT"
     ],
     "Lua.diagnostics.disable": [
     ]

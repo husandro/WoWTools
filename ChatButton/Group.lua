@@ -156,7 +156,7 @@ end
 local function InitMenu(self, level, type)--主菜单
     local chatType={
         {text= e.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS, type= SLASH_PARTY1},--/p
-        {text= e.onlyChinese and '团队' or RAID, type= SLASH_RAID2},--/raid
+        {text= e.onlyChinese and '团队' or RAID, type= SLASH_RAID1},--/raid
         {text= e.onlyChinese and '副本' or INSTANCE, type= SLASH_INSTANCE_CHAT1},--/i
         {text= e.onlyChinese and '团队通知' or RAID_WARNING, type= 	SLASH_RAID_WARNING1},--/rw
     }

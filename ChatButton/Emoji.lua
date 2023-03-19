@@ -51,22 +51,22 @@ local function setButtons()--设置按钮
             e.Chat(text)
         end
     end
-    local function setPoint(button, text)--设置位置, 操作
+    local function setPoint(btn, text)--设置位置, 操作
         if index>0 and select(2, math.modf(index / 10))==0 then
-            button:SetPoint('BOTTOMLEFT', line, 'TOPLEFT')
-            line=button
+            btn:SetPoint('BOTTOMLEFT', line, 'TOPLEFT')
+            line=btn
         else
-            button:SetPoint('BOTTOMLEFT', last, 'BOTTOMRIGHT')
-            if index==0 then line=button end
+            btn:SetPoint('BOTTOMLEFT', last, 'BOTTOMRIGHT')
+            if index==0 then line=btn end
         end
-        button:SetScript('OnMouseDown', function(self, d) send(text, d) end)
-        button:SetScript('OnEnter', function(self)
+        btn:SetScript('OnMouseDown', function(self, d) send(text, d) end)
+        btn:SetScript('OnEnter', function(self)
             e.tips:SetOwner(frame, "ANCHOR_RIGHT", 0,125)
             e.tips:ClearLines()
             e.tips:AddLine(text)
             e.tips:Show()
         end)
-        button:SetScript('OnLeave', function() e.tips:Hide() end)
+        btn:SetScript('OnLeave', function() e.tips:Hide() end)
     end
     for i, texture in pairs(File) do
         local btn=e.Cbtn(frame, {icon='hide',size={size,size}})

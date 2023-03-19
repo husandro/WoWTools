@@ -1685,6 +1685,48 @@ local function set_Panle_Setting()--设置 panel
     end)
 end
 
+
+--#######
+--发送信息
+--#######
+local function send_Att_Chat()
+    local text=''
+    local specIndex= GetSpecialization()
+    if specIndex then
+        local specID= GetSpecializationInfo(specIndex)
+        if specID then
+            local specTab= C_SpecializationInfo.GetSpellsDisplay(specID) or {}
+            for _, spellID in pairs (specTab) do
+                local link= GetSpellLink(spellID)
+                if link then
+                    text= link
+                    break
+                end
+            end
+        end
+    end
+    text= text.. 'HP'..e.MK(UnitHealthMax('player'), 0)
+    for _, info in pairs(Tabs) do
+        local frame=button[info.name]
+        if not info.hide and info.name~='SPEED' and frame and frame:IsShown() and frame.value and frame.value>0 then
+            local value= frame.text:GetText()
+            if value then
+                text= text..', '..info.text..value
+            end
+        end
+    end
+    if ChatEdit_GetActiveWindow() then
+        ChatEdit_InsertLink(text)
+    else
+        local name
+        if UnitExists('target') and UnitIsPlayer('target') and not UnitIsUnit('player', 'target') then
+            name= GetUnitName('target', true)
+        end
+        e.Chat(text, name, true)
+    end
+end
+
+
 --####
 --初始
 --####
@@ -1720,9 +1762,12 @@ local function Init()
     end)
     button:SetScript("OnMouseDown", function(self,d)
         if d=='LeftButton' then--提示移动
-            frame_Init(true)--初始， 或设置
-            print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET)..'|r', e.onlyChinese and '数值' or STATUS_TEXT_VALUE)
-
+            if not IsAltKeyDown() then
+                frame_Init(true)--初始， 或设置
+                print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET)..'|r', e.onlyChinese and '数值' or STATUS_TEXT_VALUE)
+            else
+                send_Att_Chat()--发送信息
+            end
         elseif d=='RightButton' then
             if not IsModifierKeyDown() then--移动光标
                 SetCursor('UI_MOVE_CURSOR')
@@ -1744,9 +1789,24 @@ local function Init()
         set_Show_Hide()--显示， 隐藏
     end)
     button:SetScript('OnEnter', function(self)
+        local text
+        if ChatEdit_GetActiveWindow() then
+            text= e.onlyChinese and '编辑' or EDIT
+        elseif UnitExists('target') and UnitIsPlayer('target') and not UnitIsUnit('player', 'target') then
+            text= (e.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER)..': '.. GetUnitName('target', true)
+        elseif not UnitIsDeadOrGhost('player') and IsInInstance() then
+            text= (e.onlyChinese and '说' or SAY)
+        elseif IsInRaid() then
+            text= e.onlyChinese and '说: 团队' or SAY..': '..CHAT_MSG_RAID
+        elseif IsInGroup() then
+            text= e.onlyChinese and '说: 队伍' or SAY..': '..CHAT_MSG_PARTY
+        else
+            text= (e.onlyChinese and '说' or SAY)
+        end
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '重置' or RESET, e.Icon.left)
+        e.tips:AddDoubleLine(text, 'Alt+'..e.Icon.left)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
         e.tips:AddDoubleLine(e.GetShowHide(not Save.hide), e.Icon.mid)
