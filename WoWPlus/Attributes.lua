@@ -40,9 +40,14 @@ local Save={
     --notText=false,--禁用，数值
     textColor= {r=1,g=1,b=1,a=1},--数值，颜色
     bit=0,--数值，位数
-
-    hideInPetBattle=true,--宠物战斗中, 隐藏
 }
+    --hideInPetBattle=true,--宠物战斗中, 隐藏
+    --buttonAlpha=0.3,--专精，图标，透明度
+    --hide=false,--显示，隐藏
+    --gsubText
+    --strlower
+    --strupper
+
 
 local function get_PrimaryStat()--取得主属
     local spec= GetSpecialization()
@@ -786,6 +791,11 @@ local function set_Frame(frame, rest)--设置, frame
         end
 
         local text= frame.nameText
+        if Save.strupper then--大写
+            text= strupper(text)
+        elseif Save.strlower then--小写
+            text= strlower(text)
+        end
         if Save.gsubText then--文本，截取
             text= e.WA_Utf8Sub(text, Save.gsubText)
         end
@@ -1097,8 +1107,8 @@ end
 --##########
 local function set_Show_Hide()
     button.frame:SetShown(not Save.hide)
-    button.texture:SetAlpha(Save.hide and 1 or 0.3)
-    button.classPortrait:SetAlpha(Save.hide and 1 or 0.3)
+    button.texture:SetAlpha(Save.hide and 1 or Save.buttonAlpha or 0.3)
+    button.classPortrait:SetAlpha(Save.hide and 1 or Save.buttonAlpha or 0.3)
 end
 
 --################
@@ -1638,6 +1648,39 @@ local function set_Panle_Setting()--设置 panel
         frame_Init(true)--初始，设置
     end)
 
+    local checkStrupper= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--bar，图片，样式2
+    local checkStrlower= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--bar，图片，样式2
+    checkStrupper:SetPoint("LEFT", slider3, 'RIGHT')
+    checkStrupper.text:SetText('ABC')--大写
+    checkStrupper:SetChecked(Save.strupper)
+    checkStrupper:SetScript('OnMouseDown', function()
+        Save.strupper= not Save.strupper and true or nil
+        if Save.strupper then
+            Save.strlower=nil
+            checkStrlower:SetChecked(false)
+        end
+        frame_Init(true)--初始，设置
+    end)
+    checkStrlower:SetPoint("LEFT", checkStrupper.text, 'RIGHT')
+    checkStrlower.text:SetText('abc')--小写
+    checkStrlower:SetChecked(Save.strlower)
+    checkStrlower:SetScript('OnMouseDown', function()
+        Save.strlower= not Save.strlower and true or nil
+        if Save.strlower then
+            Save.strupper=nil
+            checkStrupper:SetChecked(false)
+        end
+        frame_Init(true)--初始，设置
+    end)
+
+
+
+
+
+
+
+
+
     local slider4= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--缩放
     slider4:SetPoint("TOPLEFT", slider3, 'BOTTOMLEFT', 0,-24)
     slider4:SetSize(200,20)
@@ -1654,6 +1697,18 @@ local function set_Panle_Setting()--设置 panel
         Save.scale=value
         button.frame:SetScale(value)
     end)
+
+    local sliderButtonAlpha = e.Create_Slider(panel, {min=0, max=1, value=Save.buttonAlpha or 0.3, setp=0.1, color=true,
+    text=e.onlyChinese and '专精透明度' or SPECIALIZATION..'('..CHANGE_OPACITY..')',
+    func=function(self, value)
+        value= tonumber(format('%.1f', value))
+        value= value==0 and 0 or value
+        self:SetValue(value)
+        self.Text:SetText(value)
+        Save.buttonAlpha=  value
+        set_Show_Hide()--显示， 隐藏
+    end})
+    sliderButtonAlpha:SetPoint("TOPLEFT", slider4, 'BOTTOMLEFT', 0,-24)
 
     local restButton= e.Cbtn(panel, {type=false, size={20,20}})--重置
     restButton:SetNormalAtlas('bags-button-autosort-up')
@@ -1682,7 +1737,11 @@ local function set_Panle_Setting()--设置 panel
     checkHidePet:SetScript('OnMouseDown', function()
         Save.hideInPetBattle= not Save.hideInPetBattle and true or nil
         set_ShowHide_Event()--显示，隐藏，事件
+        button:SetShown(not Save.hideInPetBattle or not C_PetBattles.IsInBattle())
     end)
+
+
+
 end
 
 
