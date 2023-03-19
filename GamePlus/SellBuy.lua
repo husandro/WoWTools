@@ -925,7 +925,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT, (e.onlyChinese and '当前' or REFORGE_CURRENT)..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(e.onlyChinese and '拾取窗口' or HUD_EDIT_MODE_LOOT_FRAME_LABEL, 'Alt Ctr Shift: |cnRED_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL))
+                e.tips:AddDoubleLine(e.onlyChinese and '拾取窗口' or HUD_EDIT_MODE_LOOT_FRAME_LABEL, 'Alt Ctrl Shift: |cnRED_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL))
                 e.tips:Show();
             end)
             check2:SetScript('OnLeave', function() e.tips:Hide() end)
