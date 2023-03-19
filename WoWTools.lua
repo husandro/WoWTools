@@ -426,16 +426,16 @@ e.Cstr=function(self, tab)--self, {size, copyFont, changeFont, color={r=,g=,b=,a
     self= self or UIParent
     local font= tab.changeFont or self:CreateFontString(nil, (tab.layer or 'OVERLAY'), 'GameFontNormalOutline', 5)
     if tab.copyFont then
-        font:CopyFontObject(tab.copyFont)
+        --[[font:CopyFontObject(tab.copyFont)
         if tab.size then
             font:SetHeight(tab.szie)
-        end
-        --[[local fontName, size, fontFlags = tab.copyFont:GetFont()
+        end]]
+        local fontName, size, fontFlags = tab.copyFont:GetFont()
         font:SetFont(fontName, tab.size or size, fontFlags)
         font:SetTextColor(tab.copyFont:GetTextColor())
         font:SetFontObject(tab.copyFont:GetFontObject())
         font:SetShadowColor(tab.copyFont:GetShadowColor())
-        font:SetShadowOffset(tab.copyFont:GetShadowOffset())]]
+        font:SetShadowOffset(tab.copyFont:GetShadowOffset())
     else
         if e.Player.zh or e.onlyChinese then
             font:SetFont('Fonts\\ARHei.ttf', (tab.size or 12), 'OUTLINE')
