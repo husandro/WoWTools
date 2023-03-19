@@ -864,9 +864,9 @@ local function Init()
             e.tips:SetOwner(self, "ANCHOR_LEFT");
             e.tips:ClearLines();
             e.tips:AddDoubleLine(e.onlyChinese and '自动拾取' or AUTO_LOOT_DEFAULT_TEXT, (e.onlyChinese and '当前' or REFORGE_CURRENT)..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
-            e.tips:AddLine('')
-            e.tips:AddDoubleLine(e.onlyChinese and '正在打开' or OPENING, '|cnGREEN_FONT_COLOR:Alt|r '..(e.onlyChinese and '禁用' or DISABLE))
-            e.tips:AddLine('')
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(e.onlyChinese and '拾取时' or PROC_EVENT512_DESC:format(ITEM_LOOT), '|cnGREEN_FONT_COLOR:Alt|r '..(e.onlyChinese and '禁用' or DISABLE))
+            e.tips:AddLine(' ')
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
         end)
@@ -884,6 +884,7 @@ local function Init()
         end)]]
     end
 end
+
 --###########
 --加载保存数据
 --###########
@@ -898,7 +899,7 @@ panel:RegisterEvent('PLAYER_AVG_ITEM_LEVEL_UPDATE')
 panel:RegisterEvent('MERCHANT_UPDATE')--购回
 
 panel:RegisterEvent('LOOT_READY')--自动拾取加强 
-panel:RegisterEvent('LOOT_OPENED')
+
 
 panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
     if event == "ADDON_LOADED" then
@@ -922,16 +923,15 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
             check2:SetScript('OnEnter', function(self2)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT");
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine(e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT, e.GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
+                e.tips:AddDoubleLine(e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT, (e.onlyChinese and '当前' or REFORGE_CURRENT)..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(e.onlyChinese and '拾取窗口' or HUD_EDIT_MODE_LOOT_FRAME_LABEL, 'Alt Ctr Shift: '..(e.onlyChinese and '取消' or CANCEL))
+                e.tips:AddDoubleLine(e.onlyChinese and '拾取窗口' or HUD_EDIT_MODE_LOOT_FRAME_LABEL, 'Alt Ctr Shift: |cnRED_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL))
                 e.tips:Show();
             end)
             check2:SetScript('OnLeave', function() e.tips:Hide() end)
 
             if Save.disabled then
                 panel:UnregisterAllEvents()
-
             else
                 if WoWToolsSave then
                     buySave=WoWToolsSave.BuyItems and WoWToolsSave.BuyItems[e.Player.name_server] or buySave--购买物品
@@ -975,15 +975,16 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
 
     elseif event=='LOOT_READY' then--拾取, 增强
         if arg1 then
-            for i = GetNumLootItems(), 1, -1 do
-                LootSlot(i);
+            if IsModifierKeyDown() and Save.altDisabledAutoLoot then
+                C_CVar.SetCVar("autoLootDefault", '0')
+                print(id, addName,'|cnGREEN_FONT_COLOR:Alt Ctrl Shift|r', e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT, e.GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
+            else
+                for i = GetNumLootItems(), 1, -1 do
+                    LootSlot(i);
+                end
             end
         end
-    elseif event=='LOOT_OPENED' then
-        if Save.altDisabledAutoLoot and IsModifierKeyDown() and C_CVar.GetCVarBool("autoLootDefault") then
-            C_CVar.SetCVar("autoLootDefault", '0')
-            print(id, addName,'Alt Ctrl Shift', not e.onlyChinese and AUTO_LOOT_DEFAULT_TEXT or "自动拾取", e.GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
-        end
+
     end
 end)
 

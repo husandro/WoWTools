@@ -2082,7 +2082,9 @@
         "SLASH_RAID1",
         "ClassSpecSpellMixin",
         "EDIT",
-        "HUD_EDIT_MODE_LOOT_FRAME_LABEL"
+        "HUD_EDIT_MODE_LOOT_FRAME_LABEL",
+        "PROC_EVENT512_DESC",
+        "ITEM_LOOT"
     ],
     "Lua.diagnostics.disable": [
     ]
