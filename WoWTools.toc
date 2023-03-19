@@ -14,37 +14,19 @@
 
 ##AceAddon-3.0, AceConsole-3.0, AceDB-3.0
 ##LibButtonGlow-1.0,
-
 Libs\LibStub-1.0\LibStub.lua
 Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
 Libs\LibRangeCheck-2.0\LibRangeCheck-2.0.lua
-
-
 ##Libs\AceAddon-3.0\AceAddon-3.0.lua
 ##Libs\AceConsole-3.0\AceConsole-3.0.lua
 ##Libs\AceDB-3.0\AceDB-3.0.lua
-
 Libs\LibDBIcon-1.0\LibDBIcon-1.0.lua
 Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
-
 ##Libs\LibButtonGlow-1.0\LibButtonGlow-1.0.lua
 
 ##主要，不能删除
 WoWTools.lua
 Sesource\WoWDate.lua
-
-##语言，不能删除
-Sesource\Locales\zhCN.lua
-Sesource\Locales\enUS.lua
-Sesource\Locales\deDE.lua
-##Sesource\Locales\esES.lua
-Sesource\Locales\esMX.lua
-Sesource\Locales\frFR.lua
-Sesource\Locales\itIT.lua
-Sesource\Locales\koKR.lua
-Sesource\Locales\ptBR.lua
-Sesource\Locales\ruRU.lua
-Sesource\Locales\zhTW.lua
 ##面板，不能删除
 Sesource\Panel.lua
 
@@ -119,6 +101,7 @@ GamePlus\Cursor.lua
 
 
 
+
 ##坐骑， Tools 主要的，
 ##如果要使用Tools中的一个模块，必须开启坐骑模块
 Tools\_20Mount.lua
@@ -173,6 +156,10 @@ ChatButton\Say.lua
 ChatButton\Emoji.lua
 ##各种, 战斗时间
 ChatButton\Combat.lua
+
+
+
+
 
 ##副本, 挑战,之类
 Instance\Explosives.lua

@@ -1295,9 +1295,6 @@ e.Magic= function(text)
 end
 
 
-
-
-
 local LibRangeCheck = LibStub("LibRangeCheck-2.0")
 e.GetRange= function(unit, checkVisible)--WA Prototypes.lua
     return LibRangeCheck:GetRange(unit, checkVisible);

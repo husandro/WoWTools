@@ -73,11 +73,24 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             e.onlyChinese= Save.onlyChinese
 
-            
-
-            if e.onlyChinese then
-                e.L['LAYER']='位面'
-                e.L['EMOJI']={'天使','生气','大笑','鼓掌','酷','哭','可爱','鄙视','美梦','尴尬','邪恶','兴奋','晕','打架','流感','呆','皱眉','致敬','鬼脸','龇牙','开心','心','恐惧','生病','无辜','功夫','花痴','邮件','化妆','沉思','可怜','好','漂亮','吐','握手','喊','闭嘴','害羞','睡觉','微笑','吃惊','失败','流汗','流泪','悲剧','想','偷笑','猥琐','胜利','雷锋','委屈','马里奥'}
+            if e.onlyChinese or LOCALE_zhCN or LOCALE_zhTW then
+                e.LayerText= '位面'
+            elseif LOCALE_koKR then
+                e.LayerText= '층'
+            elseif LOCALE_frFR then
+                e.LayerText= 'Couche'
+            elseif LOCALE_deDE then
+                e.LayerText= 'Schicht'
+            elseif LOCALE_esES or LOCALE_esMX then
+                e.LayerText= 'Capa'
+            elseif LOCALE_ruRU then
+                e.LayerText= 'слой'
+            elseif LOCALE_ptBR then
+                e.LayerText= 'Camada'
+            elseif LOCALE_itIT then
+                e.LayerText= 'Strato'
+            else
+                e.LayerText= 'Layer'
             end
 
             local useClassColor=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--使用,职业,颜色

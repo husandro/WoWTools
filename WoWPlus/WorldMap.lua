@@ -344,7 +344,7 @@ local function setOnEnter(self)--地图ID提示
     e.tips:AddDoubleLine(id, addName)
     e.tips:AddLine(' ')
     if e.Layer then
-        e.tips:AddDoubleLine(e.L['LAYER'], e.Layer)
+        e.tips:AddDoubleLine(e.LayerText, e.Layer)
     end
     local uiMapID = frame.mapID or frame:GetMapID("current")
     if uiMapID then

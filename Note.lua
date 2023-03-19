@@ -39,17 +39,17 @@ Week={0.02, 1, 0.66},--周长 |cff05ffa8
 Legendary={1, 0.49, 0},--传说 |cffff7c00
 Calling={1, 0, 0.9},--使命 |cffff00e5
 
-LOCALE_enUS  1  English (United States)
-LOCALE_koKR  2  enGB clients return enUS
-LOCALE_frFR  3  Korean (Korea)
-LOCALE_deDE  4  French (France)
-LOCALE_zhCN  5  German (Germany)
-LOCALE_esES  6  Chinese (Simplified, PRC)
-LOCALE_zhTW  7  Spanish (Spain)
-LOCALE_esMX  8  Chinese (Traditional, Taiwan)
-LOCALE_ruRU  9  Spanish (Mexico)
-LOCALE_ptBR  10 Russian (Russia)
-LOCALE_itIT  11 Portuguese (Brazil)
+LOCALE_enUS  1  
+LOCALE_koKR  2  
+LOCALE_frFR  3  
+LOCALE_deDE  4  
+LOCALE_zhCN  5  
+LOCALE_esES  6  
+LOCALE_zhTW  7  
+LOCALE_esMX  8
+LOCALE_ruRU  9
+LOCALE_ptBR  10
+LOCALE_itIT  11
 
 StaticPopupDialogs
 https://wowpedia.fandom.com/wiki/Creating_simple_pop-up_dialog_boxes
