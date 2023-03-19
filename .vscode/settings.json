@@ -2081,7 +2081,8 @@
         "ItemInteractionFrameCloseButton",
         "SLASH_RAID1",
         "ClassSpecSpellMixin",
-        "EDIT"
+        "EDIT",
+        "HUD_EDIT_MODE_LOOT_FRAME_LABEL"
     ],
     "Lua.diagnostics.disable": [
     ]

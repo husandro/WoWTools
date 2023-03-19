@@ -14,6 +14,7 @@ local Save={
     Sell={
         [34498]=true,--[纸飞艇工具包]
     },
+    altDisabledAutoLoot= e.Player.husandro,--打开拾取窗口时，下次禁用，自动拾取
 }
 local bossSave={}
 local buySave={}--购买物品
@@ -911,6 +912,23 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
             end)
 
+            local check2= CreateFrame("CheckButton", nil, check, "InterfaceOptionsCheckButtonTemplate")--显示/隐藏
+            check2.text:SetText(e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT)
+            check2:SetPoint("LEFT", check.text, 'RIGHT', 2, 0)
+            check2:SetChecked(Save.altDisabledAutoLoot)
+            check2:SetScript('OnClick', function()
+                Save.altDisabledAutoLoot= not Save.altDisabledAutoLoot and true or nil
+            end)
+            check2:SetScript('OnEnter', function(self2)
+                e.tips:SetOwner(self2, "ANCHOR_LEFT");
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT, e.GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(e.onlyChinese and '拾取窗口' or HUD_EDIT_MODE_LOOT_FRAME_LABEL, 'Alt Ctr Shift: '..(e.onlyChinese and '取消' or CANCEL))
+                e.tips:Show();
+            end)
+            check2:SetScript('OnLeave', function() e.tips:Hide() end)
+
             if Save.disabled then
                 panel:UnregisterAllEvents()
 
@@ -962,9 +980,9 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
             end
         end
     elseif event=='LOOT_OPENED' then
-        if IsModifierKeyDown() and C_CVar.GetCVarBool("autoLootDefault") then
+        if Save.altDisabledAutoLoot and IsModifierKeyDown() and C_CVar.GetCVarBool("autoLootDefault") then
             C_CVar.SetCVar("autoLootDefault", '0')
-            print(id, addName, not e.onlyChinese and AUTO_LOOT_DEFAULT_TEXT or "自动拾取", e.GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
+            print(id, addName,'Alt Ctrl Shift', not e.onlyChinese and AUTO_LOOT_DEFAULT_TEXT or "自动拾取", e.GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
         end
     end
 end)
