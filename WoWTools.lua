@@ -422,9 +422,9 @@ e.GetDifficultyColor = function(string, difficultyID)--DifficultyUtil.lua
 end
 
 e.Cstr=function(self, tab)--self, {size, copyFont, changeFont, color={r=,g=,b=,a=}, layer=, justifyH}
-    tab= tab or {}
+    tab= tab or {}--Fonts.xml FontStyles.xml
     self= self or UIParent
-    local font= tab.changeFont or self:CreateFontString(nil, (tab.layer or 'OVERLAY'), 'GameFontNormalOutline', 5)
+    local font= tab.changeFont or self:CreateFontString(nil, (tab.layer or 'OVERLAY'), 'GameFontNormal', 5)
     if tab.copyFont then
         --[[font:CopyFontObject(tab.copyFont)
         if tab.size then
@@ -437,11 +437,9 @@ e.Cstr=function(self, tab)--self, {size, copyFont, changeFont, color={r=,g=,b=,a
         font:SetShadowColor(tab.copyFont:GetShadowColor())
         font:SetShadowOffset(tab.copyFont:GetShadowOffset())
     else
-        if e.onlyChinese then
-            font:SetFont('Fonts\\ARHei.ttf', (tab.size or 12), 'OUTLINE')
-        elseif tab.size then
-            font:SetHeight(tab.size)
-        end
+        local fontName= font:GetFont()
+        font:SetFont(e.onlyChinese and 'Fonts\\ARHei.ttf' or fontName, (tab.size or 12), 'OUTLINE, THICK')
+
         font:SetShadowOffset(1, -1)
         --font:SetShadowColor(0, 0, 0)
         font:SetJustifyH(tab.justifyH or 'LEFT')
@@ -1149,15 +1147,15 @@ e.Set_Item_Stats = function(self, link, point)
         local text=self['statText'..index]
         if tab[index] then
             if not text then
-                text= e.Cstr(self)
+                text= e.Cstr(self,{justifyH= (index==2 or index==4) and 'RIGHT'})
                 if index==1 then
                     text:SetPoint('BOTTOMLEFT', point or self, 'BOTTOMLEFT', -3, 0)
                 elseif index==2 then
-                    text:SetPoint('BOTTOMRIGHT', point or self, 'BOTTOMRIGHT', 3, 0)
+                    text:SetPoint('BOTTOMRIGHT', point or self, 'BOTTOMRIGHT', 8, 0)
                 elseif index==3 then
                     text:SetPoint('TOPLEFT', point or self, 'TOPLEFT', -3, 0)
                 else
-                    text:SetPoint('TOPRIGHT', point or self, 'TOPRIGHT', 3, 0)
+                    text:SetPoint('TOPRIGHT', point or self, 'TOPRIGHT', 8, 0)
                 end
                 self['statText'..index]=text
             end
