@@ -852,37 +852,26 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                 end
 
                 if(affixScores and #affixScores > 0) then --最佳 
-                    for k, affixInfo in ipairs(affixScores) do
-                        if not frame['affixInfo'..k] and affixInfo.level then
-                            frame['affixInfo'..k]=e.Cstr(frame)
-                            frame['affixInfo'..k]:SetJustifyH('CENTER')
-                            if k==1 then
-                                frame['affixInfo'..k]:SetPoint('BOTTOMLEFT', 0, 0)
-                            elseif k==2 then
-                                frame['affixInfo'..k]:SetPoint('BOTTOMRIGHT', 0, 0)
-                            else
-                                break
-                            end
-                        end
-                        if frame['affixInfo'..k] then
-                            local text
-                            if affixInfo.level then
-                                text= affixScores[k].overTime and '|cnRED_FONT_COLOR:'..affixInfo.level..'|r' or affixInfo.level
-                                local nameA, _, filedataidA = C_ChallengeMode.GetAffixInfo(10)
-                                local nameB, _, filedataidB = C_ChallengeMode.GetAffixInfo(9)
-                                local texture= affixInfo.name==nameA and filedataidA or  affixInfo.name==nameB and filedataidB
-                                if texture then
-                                    if k==1 then
-                                        text= '|T'..texture..':0|t'..text
-                                    else
-                                        text= text..'|T'..texture..':0|t'
-                                    end
+                    local nameA, _, filedataidA = C_ChallengeMode.GetAffixInfo(10)
+                    local nameB, _, filedataidB = C_ChallengeMode.GetAffixInfo(9)
+                    for _, info in ipairs(affixScores) do
+                        if info.level and info.level>0 and (info.name == nameA or info.name==nameB) then
+                            if not frame[info.name] then
+                                frame[info.name]= e.Cstr(frame, {justifyH= info.name==nameB and 'RIGHT'})
+                                if info.name== nameA then
+                                    frame[info.name]:SetPoint('BOTTOMLEFT',4,0)
+                                else
+                                    frame[info.name]:SetPoint('BOTTOMRIGHT',-4,0)
                                 end
                             end
-                            frame['affixInfo'..k]:SetText(text or '')
-                        end
-                        if k==2 then
-                            break
+                            local level= info.overTime and '|cnRED_FONT_COLOR:'..info.level..'|r' or info.level
+                            local text
+                            if info.name == nameA then
+                                text= '|T'..filedataidA..':0|t'..level
+                            else
+                                text= level..'|T'..filedataidB..':0|t'
+                            end
+                            frame[info.name]:SetText(text)
                         end
                     end
                 end
