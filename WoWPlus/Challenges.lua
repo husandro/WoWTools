@@ -859,19 +859,13 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                             if not frame[info.name] then
                                 frame[info.name]= e.Cstr(frame, {justifyH= info.name==nameB and 'RIGHT'})
                                 if info.name== nameA then
-                                    frame[info.name]:SetPoint('BOTTOMLEFT',4,0)
+                                    frame[info.name]:SetPoint('BOTTOMLEFT')
                                 else
-                                    frame[info.name]:SetPoint('BOTTOMRIGHT',-4,0)
+                                    frame[info.name]:SetPoint('BOTTOMLEFT', 0, 14)
                                 end
                             end
                             local level= info.overTime and '|cnRED_FONT_COLOR:'..info.level..'|r' or info.level
-                            local text
-                            if info.name == nameA then
-                                text= '|T'..filedataidA..':0|t'..level
-                            else
-                                text= level..'|T'..filedataidB..':0|t'
-                            end
-                            frame[info.name]:SetText(text)
+                            frame[info.name]:SetText('|T'..(info.name == nameA and filedataidA or filedataidB)..':0|t'..level)
                         end
                     end
                 end
