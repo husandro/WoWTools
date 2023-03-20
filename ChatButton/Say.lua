@@ -1,6 +1,8 @@
 local id, e = ...
 local Save= {
     inInstanceBubblesDisabled= e.Player.husandro,
+    saveWhisper=true,--保存, 密语
+    --WhisperTab={}--保存, 密语, 内容
 }
 local addName= SAY
 local button
@@ -21,7 +23,6 @@ local function setType(text)--使用,提示
     end
 
     button.typeText:SetText(text)
-    button.typeText:SetShown(IsInGroup())
 end
 
 
@@ -29,6 +30,18 @@ end
 --密语列表
 --#######
 local WhisperTab={}--{name=name, wow=wow, guid=guid, msg={text=text, type=type,time=time}}
+local numWhisper=0--最后密语,数量
+
+local function set_numWhisper_Tips()--最后密语,数量, 提示
+    if numWhisper>0 and not button.numWhisper then
+        button.numWhisper=e.Cstr(button, {color={r=0,g=1,b=0}})
+        button.numWhisper:SetPoint('TOPRIGHT',-5,-5)
+    end
+    if button.numWhisper then
+        button.numWhisper:SetText(numWhisper>0 and numWhisper or '')
+    end
+end
+
 local function findWhisper(name)
     for index, tab in pairs(WhisperTab) do
         if tab.name==name then
@@ -36,6 +49,7 @@ local function findWhisper(name)
         end
     end
 end
+
 local function getWhisper(event, text, name, _, _, _, _, _, _, _, _, _, guid)
     if e.Player.name_server~=name and name then
         local type= event:find('INFORM') and true or nil--_INFORM 发送
@@ -46,6 +60,10 @@ local function getWhisper(event, text, name, _, _, _, _, _, _, _, _, _, guid)
         else
             local wow= event:find('MSG_BN') and true or nil
             table.insert(WhisperTab, {name=name, wow=wow, guid=guid, msg={{text=text, type=type, time=date('%X')}}})
+        end
+        if not type then
+            numWhisper= numWhisper + 1--最后密语,数量
+            set_numWhisper_Tips()--最后密语,数量, 提示
         end
     end
 end
@@ -78,7 +96,7 @@ end
 --#####
 --主菜单
 --#####
-local function InitMenu(self, level, type)--主菜单    
+local function Init_Menu(self, level, type)--主菜单    
     local chatType={
         {text= e.onlyChinese and '说' or SAY, type= SLASH_SAY1},--/s
         {text= e.onlyChinese and '喊' or YELL, type= SLASH_YELL1},--/p
@@ -165,6 +183,7 @@ local function InitMenu(self, level, type)--主菜单
                 end
             end
         elseif type=='WHISPER' then--密语列表 --{name=name, wow=wow, guid=guid, msg={text=text, type=type,time=time}}
+            local find
             for _, tab in pairs(WhisperTab) do
                 local text
 
@@ -192,7 +211,32 @@ local function InitMenu(self, level, type)--主菜单
                     end
                 }
                 UIDropDownMenu_AddButton(info, level)
+                find=true
             end
+            if find then
+                info={
+                    text= e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2 ,--清除, 密语
+                    notCheckable=true,
+                    func= function()
+                        WhisperTab={}
+                    end
+                }
+                UIDropDownMenu_AddButton(info, level)
+
+                UIDropDownMenu_AddSeparator(level)
+            end
+            info={
+                text= e.onlyChinese and '保存' or SAVE,--保存, 密语
+                checked= Save.saveWhisper,
+                func= function()
+                    Save.saveWhisper= not Save.saveWhisper and true or nil
+                end
+            }
+            UIDropDownMenu_AddButton(info, level)
+
+            numWhisper=0--最后密语,数量, 清空
+            set_numWhisper_Tips()--最后密语,数量, 提示
+
         elseif type=='FLOOR' then
             local n2=C_FriendList.GetNumWhoResults();--区域
             if n2 then --and n>0 then
@@ -273,7 +317,7 @@ local function InitMenu(self, level, type)--主菜单
             UIDropDownMenu_AddButton(info, level)
         end
     else
-        for _, tab in pairs(chatType) do
+        for index, tab in pairs(chatType) do
             info={
                 text=tab.text,
                 notCheckable=true,
@@ -287,7 +331,7 @@ local function InitMenu(self, level, type)--主菜单
                     setType(tab.text)--使用,提示
                 end
             }
-            if tab.text==(e.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER) then
+            if index==3 then --tab.text=='密语' or tab.text==SLASH_TEXTTOSPEECH_WHISPER then
                 local text= UnitIsPlayer('target') and GetUnitName('target', true)
                 if text then--目标密语
                     info.text= info.text..' '..text
@@ -308,6 +352,10 @@ local function InitMenu(self, level, type)--主菜单
                 end
                 info.menuList='WHISPER'
                 info.hasArrow=true
+                local num= #WhisperTab
+                if num>0 then
+                    info.text= '|cnGREEN_FONT_COLOR:'..num..'|r'..info.text
+                end
             end
             UIDropDownMenu_AddButton(info, level)
         end
@@ -383,10 +431,10 @@ local function Init()
     WoWToolsChatButtonFrame.last=button
 
     button.Menu=CreateFrame("Frame",nil, button, "UIDropDownMenuTemplate")
-    UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
+    UIDropDownMenu_Initialize(button.Menu, Init_Menu, 'MENU')
 
     button.type=SLASH_SAY1
-    setType(SAY)--使用,提示
+    setType(e.onlyChinese and '说' or SAY)--使用,提示
 
     button.texture:SetAtlas('transmog-icon-chat')
     button:SetScript('OnMouseDown', function(self, d)
@@ -416,6 +464,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
             if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
                 Save= WoWToolsSave[addName] or Save
 
+                WhisperTab= Save.WhisperTab or {}--保存, 密语
+
                 button=e.Cbtn2('WoWToolsChatButtonSay', WoWToolsChatButtonFrame, true, false)
 
                 Init()
@@ -435,6 +485,11 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
+            if Save.saveWhisper then--保存, 密语
+                Save.WhisperTab= WhisperTab
+            else
+                Save.WhisperTab=nil
+            end
             WoWToolsSave[addName]=Save
         end
     elseif event== 'PLAYER_ENTERING_WORLD' then
