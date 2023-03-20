@@ -2,7 +2,7 @@ local id, e = ...
 local addName= CHARACTER
 local Save={EquipmentH=true}
 local panel = CreateFrame("Frame", nil, PaperDollFrame)
-panel.serverText= e.Cstr(PaperDollItemsFrame)--显示服务器名称
+
 
 local pvpItemStr= PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在竞技场和战场中将物品等级提高至%d。"
 local enchantStr= ENCHANTED_TOOLTIP_LINE:gsub('%%s','(.+)')--附魔
@@ -23,7 +23,7 @@ local function Du(self, slot, link) --耐久度
     if du then
         if not self.du then
             self.du= CreateFrame('StatusBar', nil, self)
-            self.du:SetFrameLevel(self:GetFrameLevel()-1)
+            --self.du:SetFrameLevel(self:GetFrameLevel()-1)
             if Slot(slot) then
                self.du:SetPoint('RIGHT', self, 'LEFT', -2.5,0)
             else
@@ -763,6 +763,7 @@ local function Init()
     --#############
     --显示服务器名称
     --#############
+    panel.serverText= e.Cstr(PaperDollItemsFrame,{color= GameLimitedMode_IsActive() and {r=0,g=1,b=0} or true})--显示服务器名称
     panel.serverText:SetPoint('RIGHT', CharacterLevelText, 'LEFT',-30,0)
     panel.serverText:EnableMouse(true)
     panel.serverText:SetScript("OnEnter",function(self)
@@ -782,6 +783,14 @@ local function Init()
                 e.tips:AddDoubleLine(e.onlyChinese and '唯一' or ITEM_UNIQUE, e.Player.server)
             end
             e.tips:AddLine(' ')
+            if GameLimitedMode_IsActive() then
+                local rLevel, rMoney, profCap = GetRestrictedAccountData()
+                e.tips:AddLine(e.onlyChinese and '受限制' or CHAT_MSG_RESTRICTED, 1,0,0)
+                e.tips:AddDoubleLine(e.onlyChinese and '等级' or LEVEL, rLevel, 1,0,0, 1,0,0)
+                e.tips:AddDoubleLine(e.onlyChinese and '钱' or MONEY, GetMoneyString(rMoney), 1,0,0, 1,0,0)
+                e.tips:AddDoubleLine(e.onlyChinese and '专业技能' or PROFESSIONS_TRACKER_HEADER_PROFESSION, profCap, 1,0,0, 1,0,0)
+                e.tips:AddLine(' ')
+            end
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
     end)
@@ -934,6 +943,23 @@ local function Init()
                 setFlyout(button, itemLink, slot)
             end
         end
+    end)
+
+    --############
+    --更改,等级文本
+    --############
+    CharacterLevelText:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
+    CharacterLevelText:SetJustifyH('LEFT')
+    hooksecurefunc('PaperDollFrame_SetLevel', function()--PaperDollFrame.lua
+        local race= e.Race('player', nil, nil, true)
+        local class= e.Class('player', nil, true)
+        local level = UnitLevel("player");
+        local effectiveLevel = UnitEffectiveLevel("player");
+
+        if ( effectiveLevel ~= level ) then
+            level = EFFECTIVE_LEVEL_FORMAT:format('|cnGREEN_FONT_COLOR:'..effectiveLevel..'|r', level);
+        end
+        CharacterLevelText:SetText('  |A:'..race..':26:26|a|A:'..class..':26:26|a  '..level)
     end)
 end
 

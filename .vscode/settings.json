@@ -2088,7 +2088,10 @@
         "ITEM_UPGRADE_NEXT_UPGRADE",
         "TRADESKILLS",
         "CHALLENGES_LASTRUN_TIME",
-        "ClassTrainerFrame_InitServiceButton"
+        "ClassTrainerFrame_InitServiceButton",
+        "GameLimitedMode_IsActive",
+        "CHAT_MSG_RESTRICTED",
+        "EFFECTIVE_LEVEL_FORMAT"
     ],
     "Lua.diagnostics.disable": [
     ]
