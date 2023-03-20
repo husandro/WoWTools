@@ -151,7 +151,7 @@ local function recipeLearned(recipeSpellID)--是否已学配方
     local info= C_TradeSkillUI.GetRecipeInfo(recipeSpellID)
     return info and info.learned
 end
-local function Engineering(self, slot, use)--增加 [潘达利亚工程学: 地精滑翔器][诺森德工程学: 氮气推进器]    
+local function Engineering(self, slot, use)--增加 [潘达利亚工程学: 地精滑翔器][诺森德工程学: 氮气推进器]
     if not ((slot==15 and recipeLearned(126392)) or (slot==6 and recipeLearned(55016))) or use then
         if self.engineering  then
             self.engineering:SetShown(false)

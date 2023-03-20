@@ -81,6 +81,11 @@ local function set_Blizzard_TrainerU()
             btn:SetText(btn.all..' '..btn.name)
         end
         btn:SetShown(show and not Save.disabledClassTrainer)
+
+        
+        --[[for _, frame in pairs(ClassTrainerFrame.ScrollBox:GetFrames()) do
+            print(_, frame, frame.skillIndex, frame.isTradeSkill )
+        end]]
 	end)
 
     local btn2= e.Cbtn(ClassTrainerFrame, {icon=true})
@@ -98,6 +103,12 @@ local function set_Blizzard_TrainerU()
 		e.tips:Show()
 	end)
 	btn2:SetScript("OnLeave",function() e.tips:Hide() end)
+
+    hooksecurefunc('ClassTrainerFrame_InitServiceButton', function(skillButton, elementData,...)
+        local skillIndex = elementData.skillIndex;
+        local isTradeSkill = elementData.isTradeSkill;
+        local serviceName, serviceType, texture, reqLevel = GetTrainerServiceInfo(skillIndex);
+    end)
 end
 
 

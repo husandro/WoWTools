@@ -2087,7 +2087,8 @@
         "ITEM_LOOT",
         "ITEM_UPGRADE_NEXT_UPGRADE",
         "TRADESKILLS",
-        "CHALLENGES_LASTRUN_TIME"
+        "CHALLENGES_LASTRUN_TIME",
+        "ClassTrainerFrame_InitServiceButton"
     ],
     "Lua.diagnostics.disable": [
     ]
