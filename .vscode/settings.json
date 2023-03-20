@@ -2085,7 +2085,9 @@
         "HUD_EDIT_MODE_LOOT_FRAME_LABEL",
         "PROC_EVENT512_DESC",
         "ITEM_LOOT",
-        "ITEM_UPGRADE_NEXT_UPGRADE"
+        "ITEM_UPGRADE_NEXT_UPGRADE",
+        "TRADESKILLS",
+        "CHALLENGES_LASTRUN_TIME"
     ],
     "Lua.diagnostics.disable": [
     ]

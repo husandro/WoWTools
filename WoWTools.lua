@@ -438,7 +438,7 @@ e.Cstr=function(self, tab)--self, {size, copyFont, changeFont, color={r=,g=,b=,a
         font:SetShadowOffset(tab.copyFont:GetShadowOffset())
     else
         local fontName= font:GetFont()
-        font:SetFont(e.onlyChinese and 'Fonts\\ARHei.ttf' or fontName, (tab.size or 12), 'OUTLINE, THICK')
+        font:SetFont((e.onlyChinese or LOCALE_zhCN) and 'Fonts\\ARHei.ttf' or fontName, (tab.size or 12), 'OUTLINE, THICK')
 
         font:SetShadowOffset(1, -1)
         --font:SetShadowColor(0, 0, 0)
