@@ -1,6 +1,6 @@
 local id, e = ...
 local Save= {
-    inInstanceBubblesDisabled= e.Player.husandro
+    inInstanceBubblesDisabled= e.Player.husandro,
 }
 local addName= SAY
 local button
@@ -40,7 +40,7 @@ local function getWhisper(event, text, name, _, _, _, _, _, _, _, _, _, guid)
     if e.Player.name_server~=name and name then
         local type= event:find('INFORM') and true or nil--_INFORM 发送
         local index=findWhisper(name)
-        local tab={text=text, type=type, time=date('%X')}
+        --local tab={text=text, type=type, time=date('%X')}
         if index then
             table.insert(WhisperTab[index].msg, {text=text, type=type, time=date('%X')})
         else
@@ -287,7 +287,7 @@ local function InitMenu(self, level, type)--主菜单
                     setType(tab.text)--使用,提示
                 end
             }
-            if tab.text==SLASH_TEXTTOSPEECH_WHISPER then
+            if tab.text==(e.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER) then
                 local text= UnitIsPlayer('target') and GetUnitName('target', true)
                 if text then--目标密语
                     info.text= info.text..' '..text
