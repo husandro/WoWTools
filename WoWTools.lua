@@ -27,9 +27,9 @@ end
 local LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp'
 local RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp'
 
-e.LoadSpellItemData= function(ID, spell)--加载法术, 物品数据
+e.LoadSpellItemData= function(ID, isSpell)--加载法术, 物品数据
     if ID then
-        if spell then
+        if isSpell then
             if not C_Spell.IsSpellDataCached(ID) then C_Spell.RequestLoadSpellData(ID) end
         else
             if not C_Item.IsItemDataCachedByID(ID) then C_Item.RequestLoadItemDataByID(ID) end
@@ -1096,16 +1096,16 @@ e.Set_Item_Stats = function(self, link, point)
     if link then
         local info= GetItemStats(link) or {}
         if info['ITEM_MOD_CRIT_RATING_SHORT'] then
-            table.insert(tab, {text=e.onlyChinese and '爆' or e.WA_Utf8Sub(STAT_CRITICAL_STRIKE, 1, 2):upper(), value=info['ITEM_MOD_CRIT_RATING_SHORT']})
+            table.insert(tab, {text=e.onlyChinese and '爆' or strlower(e.WA_Utf8Sub(STAT_CRITICAL_STRIKE, 1, 2)), value=info['ITEM_MOD_CRIT_RATING_SHORT']})
         end
         if info['ITEM_MOD_HASTE_RATING_SHORT'] then
-            table.insert(tab, {text=e.onlyChinese and '急' or e.WA_Utf8Sub(STAT_HASTE, 1,2):upper(), value=info['ITEM_MOD_HASTE_RATING_SHORT']})
+            table.insert(tab, {text=e.onlyChinese and '急' or strlower(e.WA_Utf8Sub(STAT_HASTE, 1,2)), value=info['ITEM_MOD_HASTE_RATING_SHORT']})
         end
         if info['ITEM_MOD_MASTERY_RATING_SHORT'] then
-            table.insert(tab, {text=e.onlyChinese and '精' or e.WA_Utf8Sub(STAT_MASTERY, 1,2):upper(), value=info['ITEM_MOD_MASTERY_RATING_SHORT']})
+            table.insert(tab, {text=e.onlyChinese and '精' or strlower(e.WA_Utf8Sub(STAT_MASTERY, 1,2)), value=info['ITEM_MOD_MASTERY_RATING_SHORT']})
         end
         if info['ITEM_MOD_VERSATILITY'] then
-            table.insert(tab, {text=e.onlyChinese and '全' or e.WA_Utf8Sub(STAT_VERSATILITY, 1,2):upper(), value=info['ITEM_MOD_VERSATILITY']})
+            table.insert(tab, {text=e.onlyChinese and '全' or strlower(e.WA_Utf8Sub(STAT_VERSATILITY, 1,2)), value=info['ITEM_MOD_VERSATILITY']})
         end
 
         setID= select(16 , GetItemInfo(link))--套装
@@ -1149,13 +1149,13 @@ e.Set_Item_Stats = function(self, link, point)
             if not text then
                 text= e.Cstr(self,{justifyH= (index==2 or index==4) and 'RIGHT'})
                 if index==1 then
-                    text:SetPoint('BOTTOMLEFT', point or self, 'BOTTOMLEFT', -3, 0)
+                    text:SetPoint('BOTTOMLEFT', point or self, 'BOTTOMLEFT')
                 elseif index==2 then
-                    text:SetPoint('BOTTOMRIGHT', point or self, 'BOTTOMRIGHT', 7, 0)
+                    text:SetPoint('BOTTOMRIGHT', point or self, 'BOTTOMRIGHT')
                 elseif index==3 then
-                    text:SetPoint('TOPLEFT', point or self, 'TOPLEFT', -3, 0)
+                    text:SetPoint('TOPLEFT', point or self, 'TOPLEFT')
                 else
-                    text:SetPoint('TOPRIGHT', point or self, 'TOPRIGHT', 7, 0)
+                    text:SetPoint('TOPRIGHT', point or self, 'TOPRIGHT')
                 end
                 self['statText'..index]=text
             end

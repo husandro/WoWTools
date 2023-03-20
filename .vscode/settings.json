@@ -2084,7 +2084,8 @@
         "EDIT",
         "HUD_EDIT_MODE_LOOT_FRAME_LABEL",
         "PROC_EVENT512_DESC",
-        "ITEM_LOOT"
+        "ITEM_LOOT",
+        "ITEM_UPGRADE_NEXT_UPGRADE"
     ],
     "Lua.diagnostics.disable": [
     ]

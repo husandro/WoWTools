@@ -4,8 +4,6 @@ local Save={EquipmentH=true}
 local panel = CreateFrame("Frame", nil, PaperDollFrame)
 panel.serverText= e.Cstr(PaperDollItemsFrame)--显示服务器名称
 
-local disabledClearAllSave--禁用插件
-
 local pvpItemStr= PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在竞技场和战场中将物品等级提高至%d。"
 local enchantStr= ENCHANTED_TOOLTIP_LINE:gsub('%%s','(.+)')--附魔
 local upgradeStr= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(%%d%+/%%d%+)')-- "升级：%s/%s"
@@ -24,7 +22,8 @@ local function Du(self, slot, link) --耐久度
     end
     if du then
         if not self.du then
-            self.du=CreateFrame('StatusBar', nil, self)
+            self.du= CreateFrame('StatusBar', nil, self)
+            self.du:SetFrameLevel(self:GetFrameLevel()-1)
             if Slot(slot) then
                self.du:SetPoint('RIGHT', self, 'LEFT', -2.5,0)
             else
@@ -34,6 +33,17 @@ local function Du(self, slot, link) --耐久度
             self.du:SetMinMaxValues(0, 100)
             self.du:SetOrientation("VERTICAL")
             self.du:SetStatusBarTexture('Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_Smooth_Border')
+            self.du:EnableMouse(true)
+            self.du:SetScript('OnEnter', function(self2)
+                local value
+                value= self2:GetValue() or 0
+                value= format('%i%%', value)
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+				e.tips:ClearLines()
+				e.tips:AddDoubleLine(e.onlyChinese and '耐久度' or DURABILITY, value)
+				e.tips:Show()
+            end)
+            self.du:SetScript('OnLeave', function() e.tips:Hide() end)
         end
         if du >70 then
             self.du:SetStatusBarColor(0,1,0)
@@ -88,16 +98,27 @@ local function Gem(self, slot, link)--宝石
     if link then
         for i=1, MAX_NUM_SOCKETS do
             local gemlink=select(2, GetItemGem(link, i))
-            gems[i]=gemlink and C_Item.GetItemIconByID(gemlink) or false
+            e.LoadSpellItemData(gemlink)--加载法术, 物品数据
+            table.insert(gems, gemlink or false)
         end
     end
     local n= 1
-    for _, v in pairs(gems) do
-        if v then
+    for _, gemLink in pairs(gems) do
+        if gemLink then
             if not self['gem'..n] then
                 local h=self:GetHeight()/3
                 self['gem'..n]=self:CreateTexture()
                 self['gem'..n]:SetSize(h,h)
+                self['gem'..n]:EnableMouse(true)
+                self['gem'..n]:SetScript('OnEnter' ,function(self2)
+                    if self2.gemLink then
+                        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                        e.tips:ClearLines()
+                        e.tips:SetHyperlink(self2.gemLink)
+                        e.tips:Show()
+                    end
+                end)
+                self['gem'..n]:SetScript('OnLeave',function() e.tips:Hide() end)
             else
                 self['gem'..n]:ClearAllPoints()
             end
@@ -116,10 +137,11 @@ local function Gem(self, slot, link)--宝石
             end
         end
         if self['gem'..n] then
-            self['gem'..n]:SetTexture(v or 0)
-            self['gem'..n]:SetShown(v and true or false)
+            self['gem'..n].gemLink= gemLink
+            self['gem'..n]:SetTexture(gemLink and C_Item.GetItemIconByID(gemLink) or 0)
+            self['gem'..n]:SetShown(gemLink and true or false)
         end
-        if v then
+        if gemLink then
             n=n+1
         end
     end
@@ -189,9 +211,19 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
                 self.enchant:SetPoint('RIGHT', self, 'LEFT', -8, 0)
             end
             self.enchant:SetTexture(463531)
+            self.enchant:EnableMouse(true)
+            self.enchant:SetScript('OnEnter' ,function(self2)
+                if self2.tips then
+                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                    e.tips:ClearLines()
+                    e.tips:AddLine(self2.tips)
+                    e.tips:Show()
+                end
+            end)
+            self.enchant:SetScript('OnLeave',function() e.tips:Hide() end)
         end
 
-        use=GetItemSpell(link)--物品是否可使用
+        use= select(2, GetItemSpell(link))--物品是否可使用
         if use and not self.use then
             local h=self:GetHeight()/3
             self.use=self:CreateTexture()
@@ -202,6 +234,16 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
                 self.use:SetPoint('TOPRIGHT', self, 'TOPLEFT', -8, 0)
             end
             self.use:SetAtlas('soulbinds_tree_conduit_icon_utility')
+            self.use:EnableMouse(true)
+            self.use:SetScript('OnEnter' ,function(self2)
+                if self2.spellID then
+                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                    e.tips:ClearLines()
+                    e.tips:SetSpellByID(self2.spellID)
+                    e.tips:Show()
+                end
+            end)
+            self.use:SetScript('OnLeave',function() e.tips:Hide() end)
         end
 
         Engineering(self, slot, use)--地精滑翔,氮气推进器
@@ -216,29 +258,53 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
                 self.pvpItem:SetPoint('RIGHT', self, 'LEFT', 2.5,0)
             end
             self.pvpItem:SetAtlas('pvptalents-warmode-swords')
+            self.pvpItem:EnableMouse(true)
+            self.pvpItem:SetScript('OnEnter', function(self2)
+                if self2.tips then
+                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                    e.tips:ClearLines()
+                    e.tips:AddLine((e.onlyChinese and "装备：在竞技场和战场中将物品等级提高至%d。" or PVP_ITEM_LEVEL_TOOLTIP):format(self2.tips))
+                    e.tips:Show()
+                end
+            end)
+            self.pvpItem:SetScript('OnLeave', function() e.tips:Hide() end)
         end
 
         if upgradeItem and not self.upgradeItem then--"升级：%s/%s"
             if Slot(slot) then
-                self.upgradeItem= e.Cstr(self, {color={r=0,g=1,b=0}})--12, nil, nil, {0,1,0}, nil,'LEFT')
-                self.upgradeItem:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT')
+                self.upgradeItem= e.Cstr(self, {color={r=0,g=1,b=0}})
+                self.upgradeItem:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT',-2,0)
             else
-                self.upgradeItem= e.Cstr(self, {color={r=0,g=1,b=0}, justifyH='RIGHT'})--12, nil, nil, {0,1,0}, nil,'RIGHT')
-                self.upgradeItem:SetPoint('BOTTOMRIGHT', self, 'BOTTOMLEFT')
+                self.upgradeItem= e.Cstr(self, {color={r=0,g=1,b=0}, justifyH='RIGHT'})
+                self.upgradeItem:SetPoint('BOTTOMRIGHT', self, 'BOTTOMLEFT',2,0)
             end
+            self.upgradeItem:EnableMouse(true)
+            self.upgradeItem:SetScript('OnEnter', function(self2)
+                if self2.tips then
+                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                    e.tips:ClearLines()
+                    e.tips:AddDoubleLine(e.onlyChinese and "升级：" or ITEM_UPGRADE_NEXT_UPGRADE, self2.tips)
+                    e.tips:Show()
+                end
+            end)
+            self.upgradeItem:SetScript('OnLeave', function() e.tips:Hide() end)
         end
     end
 
     if self.enchant then
+        self.enchant.tips= enchant
         self.enchant:SetShown(enchant and true or false)
     end
     if self.use then
+        self.use.spellID= use
         self.use:SetShown(use and true or false)
     end
     if self.pvpItem then
+        self.pvpItem.tips= pvpItem
         self.pvpItem:SetShown(pvpItem and true or false)
     end
     if self.upgradeItem then--文字
+        self.upgradeItem.tips=upgradeItem
         if upgradeItem then
             local min, max= upgradeItem:match('(%d+)/(%d+)')
             if min and max then
