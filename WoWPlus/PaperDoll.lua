@@ -40,7 +40,7 @@ local function Du(self, slot, link) --耐久度
                 value= format('%i%%', value)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
 				e.tips:ClearLines()
-				e.tips:AddDoubleLine(e.onlyChinese and '耐久度' or DURABILITY, value)
+				e.tips:AddLine((e.onlyChinese and '耐久度' or DURABILITY)..': '..value)
 				e.tips:Show()
             end)
             self.du:SetScript('OnLeave', function() e.tips:Hide() end)
@@ -286,7 +286,7 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
                 if self2.tips then
                     e.tips:SetOwner(self2, "ANCHOR_LEFT")
                     e.tips:ClearLines()
-                    e.tips:AddDoubleLine(e.onlyChinese and "升级：" or ITEM_UPGRADE_NEXT_UPGRADE, self2.tips)
+                    e.tips:AddLine((e.onlyChinese and "升级：" or ITEM_UPGRADE_NEXT_UPGRADE)..self2.tips)
                     e.tips:Show()
                 end
             end)
