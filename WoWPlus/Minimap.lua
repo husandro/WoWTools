@@ -279,7 +279,7 @@ local function set_vigentteButton_Event()
     end
 end
 
-local uiMapIDsTab= {2026, 2025, 2024, 2023}--, 2022}--地图, areaPoiIDs
+local uiMapIDsTab= {2026, 2025, 2024, 2023, 2022}--地图, areaPoiIDs
 local questIDTab= {--世界任务, 监视, ID
     [74378]=true,
 }
