@@ -684,28 +684,7 @@ local function All(self)--所有记录
 end
 
 local function Nu(self)--副本 完成/总次数 (本周, 全部)
-    if Save.hide then
-        if self.nu then self.nu:SetText('') end
-        if self.nu2 then self.nu2:SetText('') end
-        return
-    end
-    local to=GetNum(self.mapID, true)--全部
-    if to then
-        if not self.nu then
-            self.nu=e.Cstr(self)
-            self.nu:SetPoint('TOPLEFT',0,0)
-        end
-        self.nu:SetText(to)
-    end
 
-    to=GetNum(self.mapID)--本周
-    if to then
-        if not self.nu2 then
-            self.nu2=e.Cstr(self)
-            self.nu2:SetPoint('TOPRIGHT',0,0)
-        end
-        self.nu2:SetText(to)
-    end
 end
 
 local function Cur(self)--货币数量
@@ -779,6 +758,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
     if not self.maps or #self.maps==0 then
         return
     end
+    local currentChallengeMapID= C_MythicPlus.GetOwnedKeystoneChallengeMapID()--当前, KEY地图,ID
     for i=1, #self.maps do
         local frame = self.DungeonIcons[i]
         if frame and frame.mapID then
@@ -816,6 +796,8 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                 if frame.sc then frame.sc:SetText('') end
                 if frame['affixInfo1'] then frame['affixInfo1']:SetText('') end
                 if frame['affixInfo2'] then frame['affixInfo2']:SetText('') end
+                if frame.nu then frame.nu:SetText('') end
+                if frame.currentKey then frame.currentKey:SetShown(false) end
             else
 
                 local name = C_ChallengeMode.GetMapUIInfo(frame.mapID)--名称                        
@@ -840,38 +822,57 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                 if(overAllScore and inTimeInfo or overtimeInfo) then
                     if not frame.sc then--分数
                         frame.sc=e.Cstr(frame, {size=10})
-                        frame.sc:SetPoint('CENTER', 0,-3)
+                        frame.sc:SetPoint('LEFT', 0, -3)
                         if frame.HighestLevel then--移动层数位置
-                            frame.HighestLevel:ClearAllPoints()
-                            frame.HighestLevel:SetPoint('CENTER',0, 12)
+                            frame.HighestLevel:ClearAllPoints()  
+                            frame.HighestLevel:SetPoint('LEFT', 0, 12)
                         end
                     end
-                    local rgb=C_ChallengeMode.GetSpecificDungeonOverallScoreRarityColor(overAllScore) or HIGHLIGHT_FONT_COLOR--副本分数颜色
-                    frame.sc:SetTextColor(rgb.r, rgb.g, rgb.b)
-                    frame.sc:SetText(overAllScore)
+                    frame.sc:SetText('|A:AdventureMapIcon-MissionCombat:16:16|a'..e.GetKeystoneScorsoColor(overAllScore,nil,true))
                 end
 
                 if(affixScores and #affixScores > 0) then --最佳 
                     local nameA, _, filedataidA = C_ChallengeMode.GetAffixInfo(10)
                     local nameB, _, filedataidB = C_ChallengeMode.GetAffixInfo(9)
+                    local k=1
                     for _, info in ipairs(affixScores) do
                         if info.level and info.level>0 and (info.name == nameA or info.name==nameB) then
-                            if not frame[info.name] then
-                                frame[info.name]= e.Cstr(frame, {justifyH= info.name==nameB and 'RIGHT'})
+                            if not frame['affixInfo'..k] then
+                                frame['affixInfo'..k]= e.Cstr(frame, {justifyH= info.name==nameB and 'RIGHT'})
                                 if info.name== nameA then
-                                    frame[info.name]:SetPoint('BOTTOMLEFT')
+                                    frame['affixInfo'..k]:SetPoint('BOTTOMLEFT')
                                 else
-                                    frame[info.name]:SetPoint('BOTTOMLEFT', 0, 14)
+                                    frame['affixInfo'..k]:SetPoint('BOTTOMLEFT', 0, 14)
                                 end
                             end
                             local level= info.overTime and '|cnRED_FONT_COLOR:'..info.level..'|r' or info.level
-                            frame[info.name]:SetText('|T'..(info.name == nameA and filedataidA or filedataidB)..':0|t'..level)
+                            frame['affixInfo'..k]:SetText('|T'..(info.name == nameA and filedataidA or filedataidB)..':0|t'..level)
+                            k=k+1
                         end
                     end
                 end
+
+                local all= GetNum(frame.mapID, true)--副本 完成/总次数 (全部)
+                local weekAll= GetNum(frame.mapID)--本周
+                if all or weekAll then
+                    if not frame.nu then
+                        frame.nu=e.Cstr(frame)
+                        frame.nu:SetPoint('TOPLEFT')
+                    end
+                    frame.nu:SetText((all or '')..( weekAll and ' |cffffffff(|r'..weekAll..'|cffffffff)|r'))
+                end
+
+                if currentChallengeMapID== frame.mapID and not frame.currentKey then--提示, 包里KEY地图
+                    frame.currentKey= frame:CreateTexture(nil, 'OVERLAY')
+                    frame.currentKey:SetPoint('BOTTOM')
+                    frame.currentKey:SetAtlas('auctionhouse-icon-favorite')
+                    frame.currentKey:SetSize(14,14)
+                end
+                if frame.currentKey then
+                    frame.currentKey:SetShown(currentChallengeMapID== frame.mapID)
+                end
             end
             --set_Spell_Port(frame)--传送门
-            Nu(frame)--副本 完成/总次数 (全部)
         end
     end
 
@@ -937,6 +938,7 @@ local function Init()
                 GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
                 GameTooltip:ClearLines()
                 GameTooltip:AddDoubleLine(HISTORY, t..'/'..#infos, 0,1,0 ,0,1,0)
+
                 for k, v in pairs(IDs) do
                     local name, _, _, texture= C_ChallengeMode.GetMapUIInfo(k)
                     if name then
@@ -962,6 +964,8 @@ local function Init()
                         GameTooltip:AddDoubleLine(m, v.c..'/'..v.t, r,g,b , r,g,b)
                     end
                 end
+                GameTooltip:AddLine(' ')
+                GameTooltip:AddDoubleLine(id, addName)
                 GameTooltip:Show()
         end)
         self.sel:SetScript("OnLeave",function()
