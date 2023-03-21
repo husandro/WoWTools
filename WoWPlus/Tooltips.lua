@@ -595,7 +595,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             --text= text..LEVEL..' '..level..'  '..e.Race(nil, raceFile, sex)..raceName..' '..e.Class(nil, classFilename)..className..(UnitIsPVP(unit) and  '  (|cnRED_FONT_COLOR:PvP|r)' or '  (|cnGREEN_FONT_COLOR:PvE|r)')
             local info= C_PlayerInfo.GetPlayerMythicPlusRatingSummary(unit)--挑战, 分数
             if info and info.currentSeasonScore and info.currentSeasonScore>0 then
-                text= text..'  '..e.Class(nil, classFilename)..'  '..e.Race(nil, raceFile, sex)..'  '..(UnitIsPVP(unit) and  '(|cnGREEN_FONT_COLOR:PvP|r)' or '(PvE)')..'  '..e.GetKeystoneScorsoColor(info.currentSeasonScore,true)
+                text= text..'  '..e.Class(nil, classFilename)..e.Race(nil, raceFile, sex)..' '..(UnitIsPVP(unit) and  '|cnGREEN_FONT_COLOR:PvP|r' or 'PvE')..'  '..e.GetKeystoneScorsoColor(info.currentSeasonScore,true)
 
                 if info.runs and info.runs then
                     local bestRunLevel=0
