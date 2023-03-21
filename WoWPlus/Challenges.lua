@@ -86,15 +86,15 @@ local function getBagKey(self, point, x, y) --KEY链接
                             end
                     end)
                     self['key'..i]:SetScript("OnEnter",function(self2)
-                            GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
-                            GameTooltip:ClearLines()
-                            GameTooltip:SetHyperlink(self2.item)
-                            GameTooltip:AddDoubleLine(e.onlyChinese and '发送信息' or SEND_MESSAGE, e.Icon.left)
-                            GameTooltip:AddDoubleLine(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, e.Icon.right)
-                            GameTooltip:Show()
+                            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                            e.tips:ClearLines()
+                            e.tips:SetHyperlink(self2.item)
+                            e.tips:AddDoubleLine(e.onlyChinese and '发送信息' or SEND_MESSAGE, e.Icon.left)
+                            e.tips:AddDoubleLine(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, e.Icon.right)
+                            e.tips:Show()
                     end)
                     self['key'..i]:SetScript("OnLeave",function()
-                            GameTooltip:Hide()
+                            e.tips:Hide()
                     end)
                     self['key'..i].bag=e.Cstr(self)
                     if point:find('LEFT') then
@@ -392,7 +392,7 @@ local function makeAffix(parent, id2)
 
     frame.SetUp = ScenarioChallengeModeAffixMixin.SetUp
     frame:SetScript("OnEnter", ScenarioChallengeModeAffixMixin.OnEnter)
-    frame:SetScript("OnLeave", GameTooltip_Hide)
+    frame:SetScript("OnLeave", e.tips_Hide)
     frame:SetUp(id2)--Blizzard_ScenarioObjectiveTracker.lua
     return frame
 end
@@ -485,11 +485,11 @@ end
                 self.spell.tex:SetAlpha(0.4)
             end
             self.spell:SetScript("OnEnter",function(self2)
-                    GameTooltip:SetOwner(self2, "ANCHOR_RIGHT")
-                    GameTooltip:ClearLines()
-                    GameTooltip:SetSpellByID(spellID)
+                    e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+                    e.tips:ClearLines()
+                    e.tips:SetSpellByID(spellID)
                     if not IsSpellKnown(spellID) then--没学会
-                        GameTooltip:AddDoubleLine(SPELL_FAILED_NOT_KNOWN, e.Icon.X, 1,0,0)
+                        e.tips:AddDoubleLine(SPELL_FAILED_NOT_KNOWN, e.Icon.X, 1,0,0)
                     else
                         local startTime, duration= GetSpellCooldown(spellID)
                         if startTime and duration and duration>0 then
@@ -497,12 +497,12 @@ end
                             if startTime>t then t=t+86400 end
                             t=t-startTime
                             t=duration-t
-                            GameTooltip:AddDoubleLine('CD', SecondsToTime(t), 1,0,0, 1,0,0)
+                            e.tips:AddDoubleLine('CD', SecondsToTime(t), 1,0,0, 1,0,0)
                         end
                     end
-                    GameTooltip:Show()
+                    e.tips:Show()
             end)
-            self.spell:SetScript("OnLeave",function() GameTooltip:Hide() end)
+            self.spell:SetScript("OnLeave",function() e.tips:Hide() end)
         end
         self.spell:SetNormalTexture(IsSpellKnown(spellID) and GetSpellTexture(spellID) or e.Icon.O)
     end
@@ -731,13 +731,13 @@ local function Cur(self)--货币数量
                 self['cur'..k]:SetSize(16, 16)
 
                 self['cur'..k]:SetScript("OnEnter",function(self2)
-                        GameTooltip:SetOwner(self2, "ANCHOR_RIGHT")
-                        GameTooltip:ClearLines()
-                        GameTooltip:SetCurrencyByID(v)
-                        GameTooltip:Show()
+                        e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+                        e.tips:ClearLines()
+                        e.tips:SetCurrencyByID(v)
+                        e.tips:Show()
                 end)
                 self['cur'..k]:SetScript("OnLeave",function()
-                        GameTooltip:Hide()
+                        e.tips:Hide()
                 end)
 
                 self['cur'..k].text=e.Cstr(self['cur'..k], {size=10})
@@ -774,18 +774,67 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                 end)
                 frame:HookScript('OnEnter', function(self2)--提示
                     if self2.mapID then
-                        local _, _, timeLimit, texture, backgroundTexture = C_ChallengeMode.GetMapUIInfo(self2.mapID)
-                        GameTooltip:AddDoubleLine(' ')
-                        local a=GetNum(self2.mapID, true) or RED_FONT_COLOR_CODE..(e.onlyChinese and '无' or NONE)..'|r'--所有
-                        local w=GetNum(self2.mapID) or RED_FONT_COLOR_CODE..(e.onlyChinese and '无' or NONE)..'|r'--本周
-                        GameTooltip:AddDoubleLine((e.onlyChinese and '历史' or HISTORY)..': '..a, (e.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK)..': '..w)
-                        GameTooltip:AddDoubleLine('mapChallengeModeID |cnGREEN_FONT_COLOR:'.. self2.mapID..'|r', timeLimit and (e.onlyChinese and '限时' or GROUP_FINDER_PVE_PLAYSTYLE3)..' '.. SecondsToTime(timeLimit))
-                        if texture and backgroundTexture then
-                            GameTooltip:AddDoubleLine('|T'..texture..':0|t'..texture, '|T'..backgroundTexture..':0|t'..backgroundTexture)
+                        local intimeInfo, overtimeInfo = C_MythicPlus.GetSeasonBestForMap(self2.mapID)
+                        if intimeInfo then
+                            e.tips:AddLine(' ')
+                            for index, info in pairs(intimeInfo.members) do
+                                if info.name then
+                                    if index==1 then
+                                        if intimeInfo.completionDate and intimeInfo.level then--完成,日期
+                                            local d=intimeInfo.completionDate
+                                            local time= ('%s:%s %d/%d/%d %s'):format(d.hour<10 and '0'..d.hour or d.hour, d.minute<10 and '0'..d.minute or d.minute, d.day, d.month, d.year, '|r('..intimeInfo.level..')')
+                                            local time2
+                                            if overtimeInfo and overtimeInfo.completionDate and overtimeInfo.level then
+                                                d=overtimeInfo.completionDate
+                                                time2= ('%s %s:%s %d/%d/%d'):format('('..overtimeInfo.level..')|cffff0000', d.hour<10 and '0'..d.hour or d.hour, d.minute<10 and '0'..d.minute or d.minute, d.day, d.month, d.year)
+                                            end
+                                            e.tips:AddDoubleLine('|cnGREEN_FONT_COLOR:'..time, time2)
+                                        end
+                                    end
+
+                                    local text, text2= '', nil
+                                    if info.specID then
+                                        text= '|T'..select(4, GetSpecializationInfoByID(info.specID))..':0|t'
+                                    end
+                                    text= info.name== e.Player.name and text..info.name..e.Icon.star2 or text..info.name
+                                    if info.classID then
+                                        local classFile= select(2, GetClassInfo(info.classID))
+                                        local argbHex = classFile and select(4, GetClassColor(classFile))
+                                        if argbHex then
+                                            text= '|c'..argbHex..text..'|r'
+                                        end
+                                    end
+                                    if overtimeInfo and overtimeInfo.members and overtimeInfo.members[index] and overtimeInfo.members[index].name then
+                                        local info2= overtimeInfo.members[index]
+                                        text2= info2.name== e.Player.name and (e.Icon.star2..info2.name) or info2.name
+                                        if info2.specID then
+                                            text2= text2..'|T'..select(4, GetSpecializationInfoByID(info2.specID))..':0|t'
+                                        end
+                                        if info2.classID then
+                                            local classFile= select(2, GetClassInfo(info2.classID))
+                                            local argbHex = classFile and select(4, GetClassColor(classFile))
+                                            if argbHex then
+                                                text2= '|c'..argbHex..text2..'|r'
+                                            end
+                                        end
+                                    end
+                                    e.tips:AddDoubleLine(text, text2)
+                                end
+                            end
                         end
 
-                        GameTooltip:AddDoubleLine(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, e.Icon.left)
-                        GameTooltip:Show()
+                        e.tips:AddLine(' ')
+                        local _, _, timeLimit, texture, backgroundTexture = C_ChallengeMode.GetMapUIInfo(self2.mapID)
+                        local a=GetNum(self2.mapID, true) or RED_FONT_COLOR_CODE..(e.onlyChinese and '无' or NONE)..'|r'--所有
+                        local w=GetNum(self2.mapID) or RED_FONT_COLOR_CODE..(e.onlyChinese and '无' or NONE)..'|r'--本周
+                        e.tips:AddDoubleLine((e.onlyChinese and '历史' or HISTORY)..': '..a, (e.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK)..': '..w)
+                        e.tips:AddDoubleLine('mapChallengeModeID |cnGREEN_FONT_COLOR:'.. self2.mapID..'|r', timeLimit and (e.onlyChinese and '限时' or GROUP_FINDER_PVE_PLAYSTYLE3)..' '.. SecondsToTime(timeLimit))
+                        if texture and backgroundTexture then
+                            e.tips:AddDoubleLine('|T'..texture..':0|t'..texture, '|T'..backgroundTexture..':0|t'..backgroundTexture)
+                        end
+
+                        e.tips:AddDoubleLine(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, e.Icon.left)
+                        e.tips:Show()
                     end
                 end)
                 frame.tips=true
@@ -817,14 +866,14 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                     frame.nameStr:SetText(name)
                 end
 
-                local inTimeInfo, overtimeInfo = C_MythicPlus.GetSeasonBestForMap(frame.mapID)--分数 最佳
+                local intimeInfo, overtimeInfo = C_MythicPlus.GetSeasonBestForMap(frame.mapID)--分数 最佳
                 local affixScores, overAllScore = C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(frame.mapID)
-                if(overAllScore and inTimeInfo or overtimeInfo) then
+                if(overAllScore and intimeInfo or overtimeInfo) then
                     if not frame.sc then--分数
                         frame.sc=e.Cstr(frame, {size=10})
                         frame.sc:SetPoint('LEFT', 0, -3)
                         if frame.HighestLevel then--移动层数位置
-                            frame.HighestLevel:ClearAllPoints()  
+                            frame.HighestLevel:ClearAllPoints()
                             frame.HighestLevel:SetPoint('LEFT', 0, 12)
                         end
                     end
@@ -871,6 +920,8 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                 if frame.currentKey then
                     frame.currentKey:SetShown(currentChallengeMapID== frame.mapID)
                 end
+                
+                
             end
             --set_Spell_Port(frame)--传送门
         end
@@ -935,9 +986,9 @@ local function Init()
                     IDs[mapChallengeModeID].mapIDs=mapIDs[mapChallengeModeID]--本赛季
                 end
 
-                GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
-                GameTooltip:ClearLines()
-                GameTooltip:AddDoubleLine(HISTORY, t..'/'..#infos, 0,1,0 ,0,1,0)
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(HISTORY, t..'/'..#infos, 0,1,0 ,0,1,0)
 
                 for k, v in pairs(IDs) do
                     local name, _, _, texture= C_ChallengeMode.GetMapUIInfo(k)
@@ -961,15 +1012,15 @@ local function Init()
                             m=m..') '
                         end
                         m=m.. (bestOverAllScore or '')
-                        GameTooltip:AddDoubleLine(m, v.c..'/'..v.t, r,g,b , r,g,b)
+                        e.tips:AddDoubleLine(m, v.c..'/'..v.t, r,g,b , r,g,b)
                     end
                 end
-                GameTooltip:AddLine(' ')
-                GameTooltip:AddDoubleLine(id, addName)
-                GameTooltip:Show()
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(id, addName)
+                e.tips:Show()
         end)
         self.sel:SetScript("OnLeave",function()
-                GameTooltip:Hide()
+                e.tips:Hide()
         end)
     end
 
