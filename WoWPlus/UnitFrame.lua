@@ -28,7 +28,7 @@ end
 --拾取专精
 --#######
 local function set_LootSpecialization()--拾取专精
-    if PlayerFrame and PlayerFrame.lootSpecTexture then
+    if  PlayerFrame and PlayerFrame.lootSpecTexture then
         local find=false
         if PlayerFrame.unit~='vehicle' then
             local currentSpec = GetSpecialization()
@@ -36,10 +36,11 @@ local function set_LootSpecialization()--拾取专精
             if specID then
                 local lootSpecID = GetLootSpecialization()
                 if lootSpecID and lootSpecID~=specID then
-                    local texture= select(4, GetSpecializationInfoByID(lootSpecID))
-                    if texture then
+                    local name, _, texture= select(2, GetSpecializationInfoByID(lootSpecID))
+                    if texture and name then
                         SetPortraitToTexture(PlayerFrame.lootSpecTexture, texture)
                         find=true
+                        PlayerFrame.lootSpecTexture.tips= (e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..": "..name
                     end
                 end
             end
@@ -54,44 +55,55 @@ end
 --################
 local function set_Instance_Difficulty()
     if PlayerFrame and PlayerFrame.instanceFrame then
-        local ins, find, find2, name= IsInInstance(), false, false, nil
+        local ins, find, find2=  IsInInstance(), false, false
         if not ins and PlayerFrame.unit~= 'vehicle' then
-            local difficultyID = GetDungeonDifficultyID()
-            if difficultyID then
-                local name2, _, isHeroic, isChallengeMode, _, displayMythic = GetDifficultyInfo(difficultyID)
-                name= name2
-                if isHeroic and displayMythic then
+            PlayerFrame.instanceFrame.tips=nil
+            PlayerFrame.instanceFrame2.tips=nil
+
+            local name3, _, displayHeroic3, displayMythic3, name2, isHeroic2, displayMythic2
+            local difficultyID2 = GetDungeonDifficultyID()
+            local difficultyID3= GetRaidDifficultyID()
+            if difficultyID2 then
+                name2, _, isHeroic2, _, _, displayMythic2 = GetDifficultyInfo(difficultyID2)
+            end
+            if difficultyID3 then
+                name3, _, _, _, displayHeroic3, displayMythic3 = GetDifficultyInfo(difficultyID3)
+            end
+
+            local text3= (e.onlyChinese and '团队副本难度' or RAID_DIFFICULTY)..': '..(name3 or '')
+            local otherDifficulty = GetLegacyRaidDifficultyID()
+            local size3= otherDifficulty and DifficultyUtil.GetMaxPlayers(otherDifficulty)--UnitPopup.lua
+            if size3 and not displayMythic3 then
+                text3= text3..'\n'..(e.onlyChinese and '经典团队副本难度' or LEGACY_RAID_DIFFICULTY)..': '..(size3==10 and (e.onlyChinese and '10人' or RAID_DIFFICULTY1) or size3==25 and (e.onlyChinese and '25人' or RAID_DIFFICULTY2) or '')
+            end
+
+            if name2 then
+                if isHeroic2 and displayMythic2 then
                     PlayerFrame.instanceFrame.texture:SetVertexColor(1, 0, 1, 1)
-                elseif isHeroic then
+                elseif isHeroic2 then
                     PlayerFrame.instanceFrame.texture:SetVertexColor(0, 1, 0, 1)
                 else
                     PlayerFrame.instanceFrame.texture:SetVertexColor(1, 1, 1, 1)
                 end
+                local text2= (e.onlyChinese and '地下城难度' or DUNGEON_DIFFICULTY)..': '..name2
+
+                if name3==name2 or displayMythic3 then
+                    text2= text2..'\n'..text3
+                end
+                PlayerFrame.instanceFrame.tips=text2
                 find= true
             end
-            if find then
-                local text
-                local difficultyID2= GetRaidDifficultyID()
-                if difficultyID2 then
-                    local name3, _, _, _, displayHeroic, displayMythic = GetDifficultyInfo(difficultyID2)
-                    if name3~=name or not displayMythic then
-                        if displayMythic then
-                            PlayerFrame.instanceFrame2.texture:SetVertexColor(1, 0, 1, 1)
-                        elseif displayHeroic then
-                            PlayerFrame.instanceFrame2.texture:SetVertexColor(0, 1, 0, 1)
-                        else
-                            PlayerFrame.instanceFrame2.texture:SetVertexColor(1, 1, 1, 1)
-                        end
-                        find2=true
-                        if not displayMythic then
-                            local difficultyID3= GetLegacyRaidDifficultyID()
-                            if difficultyID3 then
-                                text= select(10, GetDifficultyInfo(difficultyID3))
-                            end
-                        end
-                    end
+            if name3 and (name3~=name2 or not displayMythic3) then
+                if displayMythic3 then
+                    PlayerFrame.instanceFrame2.texture:SetVertexColor(1, 0, 1, 1)
+                elseif displayHeroic3 then
+                    PlayerFrame.instanceFrame2.texture:SetVertexColor(0, 1, 0, 1)
+                else
+                    PlayerFrame.instanceFrame2.texture:SetVertexColor(1, 1, 1, 1)
                 end
-                PlayerFrame.instanceFrame2.text:SetText(text or '')
+                PlayerFrame.instanceFrame2.tips= text3
+                PlayerFrame.instanceFrame2.text:SetText((size3 and not displayMythic3) and size3 or '')
+                find2=true
             end
         end
         PlayerFrame.instanceFrame:SetShown(not ins and find)
@@ -459,10 +471,21 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
             end
 
             if self.unit=='player' and self~= PetFrame then
+                local frameLevel=self.PlayerFrameContainer:GetFrameLevel()+1
                 self.lootSpecTexture= self:CreateTexture(nil,'BORDER', nil, 6)--拾取专精
                 self.lootSpecTexture:SetSize(14,14)
                 self.lootSpecTexture:SetPoint('TOPRIGHT', self.classTexture, 'TOPLEFT', -0.5,4)
-                self.lootPortrait= self:CreateTexture(nil, 'OVERLAY', nil,7)--外框
+                self.lootSpecTexture:EnableMouse(true)
+                self.lootSpecTexture:SetScript('OnEnter', function(self2)
+                    if self2.tips then
+                        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                        e.tips:ClearLines()
+                        e.tips:AddLine(self2.tips)
+                        e.tips:Show()
+                    end
+                end)
+                self.lootSpecTexture:SetScript('OnLeave', function() e.tips:Hide() end)
+                self.lootPortrait= self.PlayerFrameContainer:CreateTexture(nil, 'OVERLAY', nil,7)--外框
                 self.lootPortrait:SetAtlas('DK-Base-Rune-CDFill')
                 self.lootPortrait:SetPoint('CENTER', self.lootSpecTexture)
                 self.lootPortrait:SetSize(20,20)
@@ -470,9 +493,19 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                 set_LootSpecialization()--拾取专精
 
                 self.instanceFrame2= CreateFrame("Frame", nil, self)--副本, 地下城，指示
-                self.instanceFrame2:SetFrameLevel(self:GetFrameLevel())
+                self.instanceFrame2:SetFrameLevel(frameLevel)
                 self.instanceFrame2:SetPoint('RIGHT', self.lootSpecTexture, 'LEFT',-2, -1)
                 self.instanceFrame2:SetSize(16,16)
+                self.instanceFrame2:EnableMouse(true)
+                self.instanceFrame2:SetScript('OnEnter', function(self2)
+                    if self2.tips then
+                        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                        e.tips:ClearLines()
+                        e.tips:AddLine(self2.tips)
+                        e.tips:Show()
+                    end
+                end)
+                self.instanceFrame2:SetScript('OnLeave', function() e.tips:Hide() end)
                 self.instanceFrame2.texture= self.instanceFrame2:CreateTexture(nil,'BORDER', nil, 1)
                 self.instanceFrame2.texture:SetAllPoints(self.instanceFrame2)
                 self.instanceFrame2.texture:SetAtlas('DungeonSkull')
@@ -485,12 +518,23 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                 self.instanceFrame2.text:SetPoint('TOP')
 
                 self.instanceFrame= CreateFrame("Frame", nil, self)--副本, 地下城，指示
-                self.instanceFrame:SetFrameLevel(self:GetFrameLevel())
+                self.instanceFrame:SetFrameLevel(frameLevel)
                 self.instanceFrame:SetPoint('RIGHT', self.instanceFrame2, 'LEFT',1, -6)
                 self.instanceFrame:SetSize(16,16)
+                self.instanceFrame:EnableMouse(true)
+                self.instanceFrame:SetScript('OnEnter', function(self2)
+                    if self2.tips then
+                        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                        e.tips:ClearLines()
+                        e.tips:AddLine(self2.tips)
+                        e.tips:Show()
+                    end
+                end)
+                self.instanceFrame:SetScript('OnLeave', function() e.tips:Hide() end)
                 self.instanceFrame.texture= self.instanceFrame:CreateTexture(nil,'BORDER', nil, 1)
                 self.instanceFrame.texture:SetAllPoints(self.instanceFrame)
                 self.instanceFrame.texture:SetAtlas('DungeonSkull')
+
                 portrait= self.instanceFrame:CreateTexture(nil, 'BORDER',nil,2)--外框
                 portrait:SetAtlas('DK-Base-Rune-CDFill')
                 portrait:SetPoint('CENTER')
@@ -820,7 +864,7 @@ local function set_RaidFrame()--设置,团队
     end)
 
     hooksecurefunc('CompactRaidGroup_InitializeForGroup', function(frame, groupIndex)--处理, 队伍号
-        frame.title:SetText('|A:'..e.Icon.number..groupIndex..':0:0|a')
+        frame.title:SetText('|A:'..e.Icon.number..groupIndex..':18:18|a')
     end)
 
 
@@ -988,7 +1032,7 @@ local function set_ToggleWarMode()--设置, 战争模式
         end
         PlayerFrame.warMode:SetNormalAtlas(isWar and 'pvptalents-warmode-swords' or 'pvptalents-warmode-swords-disabled')
         PlayerFrame.warMode:SetShown(true)
-    else
+    elseif PlayerFrame.warMode then
         PlayerFrame.warMode:SetShown(false)
     end
 end

@@ -474,7 +474,7 @@ end
 --#######
 --设置单位
 --#######
-local function setPlayerInfo(unit, guid)--设置玩家信息
+local function setPlayerInfo(guid)--设置玩家信息
     local info= e.UnitItemLevel[guid]
     if info then
         if info.itemLevel and info.itemLevel>1 then
@@ -508,6 +508,8 @@ local function setUnitInfo(self, unit)--设置单位提示信息
     local name, realm= UnitName(unit)
     local isPlayer = UnitIsPlayer(unit)
     local guid = UnitGUID(unit)
+    local isSelf=UnitIsUnit('player', unit)--我
+    local isGroupPlayer= (not isSelf and e.GroupGuid[guid]) and true or nil--队友
 
     --设置单位图标  
     local englishFaction = isPlayer and UnitFactionGroup(unit)
@@ -520,8 +522,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
         if CheckInteractDistance(unit, 1) and CanInspect(unit) then--取得装等
             NotifyInspect(unit);
         end
-        --getPlayerInfo(unit, guid)--取得玩家信息
-        setPlayerInfo(unit, guid)--取得玩家信息
+        setPlayerInfo(guid)--取得玩家信息
 
         local isWarModeDesired=C_PvP.IsWarModeDesired()
         local statusIcon, statusText= e.PlayerOnlineInfo(unit)--单位，状态信息
@@ -551,7 +552,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
         end
 
         realm= realm or e.Player.server--服务器
-        self.textRight:SetText(col..realm..'|r'..(e.Player.servers[realm] and '|cnGREEN_FONT_COLOR:*' or ''))
+        self.textRight:SetText(col..realm..'|r'..((not isSelf and (e.Player.servers[realm] or realm==e.Player.server)) and e.Icon.select2 or ''))
 
        --[[ local text=line:GetText()
         if text then
@@ -621,8 +622,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             end
         end
 
-        local isSelf=UnitIsUnit('player', unit)--我
-        local isGroupPlayer= (not isSelf and e.GroupGuid[guid]) and true or nil--队友
+        
 
         local num= isInGuild and 4 or 3
         local allNum= self:NumLines()

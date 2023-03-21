@@ -2094,7 +2094,13 @@
         "EFFECTIVE_LEVEL_FORMAT",
         "FULLDATE",
         "GameTooltipTextRight1",
-        "SPELL_FAILED_NOT_HERE"
+        "SPELL_FAILED_NOT_HERE",
+        "DUNGEON_DIFFICULTY",
+        "RAID_DIFFICULTY",
+        "LEGACY_RAID_DIFFICULTY",
+        "RAID_DIFFICULTY1",
+        "RAID_DIFFICULTY2",
+        "SELECT_LOOT_SPECIALIZATION"
     ],
     "Lua.diagnostics.disable": [
     ]
