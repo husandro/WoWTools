@@ -974,7 +974,7 @@ local function set_ToggleWarMode()--设置, 战争模式
             PlayerFrame.warMode:SetScript('OnClick',  C_PvP.ToggleWarMode)
             PlayerFrame.warMode:SetScript('OnEnter', function(self)
                 local war= C_PvP.IsWarModeDesired() and false or true
-                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:SetOwner(self, "ANCHOR_RIGHT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(e.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE, e.GetEnabeleDisable(war))
                 if not C_PvP.CanToggleWarMode(false)  then
@@ -992,6 +992,8 @@ local function set_ToggleWarMode()--设置, 战争模式
         PlayerFrame.warMode:SetShown(false)
     end
 end
+
+
 --######
 --初始化
 --######
