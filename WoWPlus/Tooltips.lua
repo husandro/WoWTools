@@ -586,15 +586,31 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                 text= text..'|cnGREEN_FONT_COLOR:'..level..'|r'
             end
 
-            if isPlayer then
-                local effectiveLevel= UnitEffectiveLevel(unit)
-                if effectiveLevel~=level then
-                    text= text..'(|cnGREEN_FONT_COLOR:'..effectiveLevel..'|r) '
-                end
+            local effectiveLevel= UnitEffectiveLevel(unit)
+            if effectiveLevel~=level then
+                text= text..'(|cnGREEN_FONT_COLOR:'..effectiveLevel..'|r) '
             end
+
             --className= col and col..className..'|r' or className
             --text= text..LEVEL..' '..level..'  '..e.Race(nil, raceFile, sex)..raceName..' '..e.Class(nil, classFilename)..className..(UnitIsPVP(unit) and  '  (|cnRED_FONT_COLOR:PvP|r)' or '  (|cnGREEN_FONT_COLOR:PvE|r)')
-            text= text..'  '..e.Class(nil, classFilename)..'  '..e.Race(nil, raceFile, sex)..raceName..'  '..(UnitIsPVP(unit) and  '(|cnRED_FONT_COLOR:PvP|r)' or '(|cnGREEN_FONT_COLOR:PvE|r)')
+            local info= C_PlayerInfo.GetPlayerMythicPlusRatingSummary(unit)--挑战, 分数
+            if info and info.currentSeasonScore and info.currentSeasonScore>0 then
+                text= text..'  '..e.Class(nil, classFilename)..'  '..e.Race(nil, raceFile, sex)..'  '..(UnitIsPVP(unit) and  '(|cnGREEN_FONT_COLOR:PvP|r)' or '(PvE)')..'  '..e.GetKeystoneScorsoColor(info.currentSeasonScore,true)
+
+                if info.runs and info.runs then
+                    local bestRunLevel=0
+                    for _, run in pairs(info.runs) do
+                        if run.bestRunLevel and run.bestRunLevel>bestRunLevel then
+                            bestRunLevel=run.bestRunLevel
+                        end
+                    end
+                    if bestRunLevel>0 then
+                        text= text..' ('..bestRunLevel..')'
+                    end
+                end
+            else
+                text= text..'  '..e.Class(nil, classFilename)..'  '..e.Race(nil, raceFile, sex)..raceName..'  '..(UnitIsPVP(unit) and  '(|cnGREEN_FONT_COLOR:PvP|r)' or '(PvE)')
+            end
             text= col and col..text..'|r' or text
             line:SetText(text)
 
@@ -614,15 +630,18 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             line=_G["GameTooltipTextLeft"..i]
             if line then
                 if i==num then
-                    if isSelf and (e.Player.Layer or isWarModeDesired) then--位面ID, 战争模式
+                    if isSelf then--位面ID, 战争模式
                         line:SetText(e.Player.Layer and '|A:nameplates-holypower2-on:0:0|a'..col..e.Player.LayerText..' '..e.Player.Layer..'|r' or ' ')
-                        if isWarModeDesired then
-                            line=_G["GameTooltipTextRight"..i]
-                            if line then
-                                line:SetText(col..(e.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE))
-                                line:SetShown(true)
+                        line=_G["GameTooltipTextRight"..i]
+                        if line then
+                            if isWarModeDesired then
+                                line:SetText('|cnRED_FONT_COLOR:'..(e.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE))
+                            else
+                                line:SetText(col..(e.onlyChinese and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF))
                             end
+                            line:SetShown(true)
                         end
+                        
                     elseif isGroupPlayer then----队友位置
                         local mapID= C_Map.GetBestMapForUnit(unit)--地图ID
                         local mapInfo= mapID and C_Map.GetMapInfo(mapID)

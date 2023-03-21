@@ -2092,7 +2092,8 @@
         "GameLimitedMode_IsActive",
         "CHAT_MSG_RESTRICTED",
         "EFFECTIVE_LEVEL_FORMAT",
-        "FULLDATE"
+        "FULLDATE",
+        "GameTooltipTextRight1"
     ],
     "Lua.diagnostics.disable": [
     ]

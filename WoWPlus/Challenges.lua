@@ -47,6 +47,7 @@ local spellIDs={--法术, 传送门, {mapChallengeModeID = 法术 SPELL ID}, BUG
 }
 ]]
 
+
 local function getBagKey(self, point, x, y) --KEY链接
     local find=point:find('LEFT')
     local i=1
@@ -842,8 +843,10 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                             end
                         end
 
+                        
+
                         e.tips:AddLine(' ')
-                        local _, _, timeLimit, texture, backgroundTexture = C_ChallengeMode.GetMapUIInfo(self2.mapID)
+                        local timeLimit, texture, backgroundTexture = select(3, C_ChallengeMode.GetMapUIInfo(self2.mapID))
                         local a=GetNum(self2.mapID, true) or RED_FONT_COLOR_CODE..(e.onlyChinese and '无' or NONE)..'|r'--所有
                         local w=GetNum(self2.mapID) or RED_FONT_COLOR_CODE..(e.onlyChinese and '无' or NONE)..'|r'--本周
                         e.tips:AddDoubleLine((e.onlyChinese and '历史' or HISTORY)..': '..a, (e.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK)..': '..w)
