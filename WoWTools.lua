@@ -1154,11 +1154,11 @@ e.Set_Item_Stats = function(self, link, point)
                 if index==1 then
                     text:SetPoint('BOTTOMLEFT', point or self, 'BOTTOMLEFT')
                 elseif index==2 then
-                    text:SetPoint('BOTTOMRIGHT', point or self, 'BOTTOMRIGHT')
+                    text:SetPoint('BOTTOMRIGHT', point or self, 'BOTTOMRIGHT', 4,0)
                 elseif index==3 then
                     text:SetPoint('TOPLEFT', point or self, 'TOPLEFT')
                 else
-                    text:SetPoint('TOPRIGHT', point or self, 'TOPRIGHT')
+                    text:SetPoint('TOPRIGHT', point or self, 'TOPRIGHT',4,0)
                 end
                 self['statText'..index]=text
             end
