@@ -2100,7 +2100,8 @@
         "LEGACY_RAID_DIFFICULTY",
         "RAID_DIFFICULTY1",
         "RAID_DIFFICULTY2",
-        "SELECT_LOOT_SPECIALIZATION"
+        "SELECT_LOOT_SPECIALIZATION",
+        "CAMERA_FOV"
     ],
     "Lua.diagnostics.disable": [
     ]
