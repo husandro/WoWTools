@@ -2093,7 +2093,8 @@
         "CHAT_MSG_RESTRICTED",
         "EFFECTIVE_LEVEL_FORMAT",
         "FULLDATE",
-        "GameTooltipTextRight1"
+        "GameTooltipTextRight1",
+        "SPELL_FAILED_NOT_HERE"
     ],
     "Lua.diagnostics.disable": [
     ]
