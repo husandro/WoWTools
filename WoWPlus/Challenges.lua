@@ -819,6 +819,25 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                                         end
                                     end
                                     e.tips:AddDoubleLine(text, text2)
+
+                                    if index==#intimeInfo.members and intimeInfo.affixIDs then
+                                        local affix, affix2='', ''
+                                        for index2, v in pairs(intimeInfo.affixIDs) do
+                                            local filedataid = select(3, C_ChallengeMode.GetAffixInfo(v))
+                                            if filedataid then
+                                                affix= affix.. '|T'..filedataid..':0|t'
+                                            end
+                                            if overtimeInfo and overtimeInfo.affixIDs and overtimeInfo.affixIDs[index2] then
+                                                filedataid = select(3, C_ChallengeMode.GetAffixInfo(overtimeInfo.affixIDs[index2]))
+                                                if filedataid then
+                                                    affix2= affix2.. '|T'..filedataid..':0|t'
+                                                end
+                                            end
+                                        end
+                                        if affix ~='' then
+                                            e.tips:AddDoubleLine(affix, affix2)
+                                        end
+                                    end
                                 end
                             end
                         end
