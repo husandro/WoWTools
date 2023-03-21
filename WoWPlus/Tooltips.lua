@@ -635,7 +635,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                         line=_G["GameTooltipTextRight"..i]
                         if line then
                             if isWarModeDesired then
-                                line:SetText('|cnRED_FONT_COLOR:'..(e.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE))
+                                line:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE))
                             else
                                 line:SetText(col..(e.onlyChinese and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF))
                             end
