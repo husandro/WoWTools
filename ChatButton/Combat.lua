@@ -227,6 +227,8 @@ local function set_Text_Button()--设置显示内容, 父框架button.textButton
             e.tips:AddDoubleLine((PetAll.num>0 and PetAll.win..'/'..PetAll.num or (e.onlyChinese and '宠物' or PET))..'|A:worldquest-icon-petbattle:0:0|a'..Save.pet.win..'|r/'..Save.pet.num, Save.pet.capture..' |T646379:0|t')
             e.tips:AddDoubleLine((e.onlyChinese and '离开' or AFK)..e.Icon.clock2..SecondsToTime(Save.afk.time), Save.afk.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
             e.tips:AddDoubleLine((e.onlyChinese and '副本' or INSTANCE)..'|A:BuildanAbomination-32x32:0:0|a'..Save.ins.kill..'|A:poi-soulspiritghost:0:0|a'..Save.ins.dead, Save.ins.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)..' |A:CrossedFlagsWithTimer:0:0|a'..e.GetTimeInfo(Save.ins.time))
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine((e.onlyChinese and '本周%s' or CURRENCY_THIS_WEEK):format('CD'), SecondsToTime(C_DateAndTime.GetSecondsUntilWeeklyReset()))
             e.tips:Show()
         end)
         button.textButton:SetScript("OnLeave", function(self, d)

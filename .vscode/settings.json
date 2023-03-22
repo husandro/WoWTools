@@ -2101,7 +2101,8 @@
         "RAID_DIFFICULTY1",
         "RAID_DIFFICULTY2",
         "SELECT_LOOT_SPECIALIZATION",
-        "CAMERA_FOV"
+        "CAMERA_FOV",
+        "CURRENCY_THIS_WEEK"
     ],
     "Lua.diagnostics.disable": [
     ]

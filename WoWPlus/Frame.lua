@@ -24,10 +24,10 @@ end
 --缩放
 --####
 local function show_Tips(frame, name, zeroAlpha)
-    local alpha= zeroAlpha and 0 or 0.1
     frame.name= name
-    frame:SetAlpha(alpha)
-    frame:SetScript("OnLeave", function(self) e.tips:Hide() self:SetAlpha(alpha) end)
+    frame.alpha= zeroAlpha and 0 or 0.1
+    frame:SetAlpha(frame.alpha)
+    frame:SetScript("OnLeave", function(self) e.tips:Hide() self:SetAlpha(self.alpha) end)
     frame:SetScript("OnEnter",function(self)
         if UnitAffectingCombat('player') then
             return
@@ -211,7 +211,21 @@ local function set_Move_Button(frame, tab)
             frame.moveButton:SetPoint('BOTTOM', pointFrame or frame, 'TOP')--,0,-13)
             frame.moveButton:SetFrameLevel(frame:GetFrameLevel()+5)
             frame.moveButton:SetNormalTexture('Interface\\Cursor\\UI-Cursor-Move')
+            frame.moveButton.alpha= zeroAlpha and 0 or 0.1
+            frame.moveButton:SetAlpha(frame.moveButton.alpha)
+            frame.moveButton:SetScript("OnEnter",function(self)
+                if UnitAffectingCombat('player') then
+                    return
+                end
+                self:SetAlpha(1)
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddLine(e.onlyChinese and '移动' or NPE_MOVE)
+                e.tips:AddDoubleLine(id, addName)
+                e.tips:Show()
+            end)
             Move(frame.moveButton, {frame= frame, save=save, zeroAlpha= zeroAlpha, notZoom= notZoom})
+            frame.moveButton:SetScript("OnLeave", function(self) ResetCursor() e.tips:Hide() self:SetAlpha(self.alpha) end)
         else
             local name= frame:GetName()
             if name then
