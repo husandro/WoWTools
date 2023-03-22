@@ -101,14 +101,12 @@ local function select_Reward()--自动:选择奖励
                     end
                 end
 
-                if not (notColleced and upItem) then
-                    if amount and sellPrice then
-                        local totalValue = (sellPrice and sellPrice * amount) or 0
-                        if totalValue > bestValue then
-                            bestValue = totalValue
-                            bestItem = i
-                            selectItemLink=itemLink
-                        end
+                if not (notColleced and upItem) and amount and sellPrice then
+                    local totalValue = (sellPrice and sellPrice * amount) or 0
+                    if totalValue > bestValue then
+                        bestValue = totalValue
+                        bestItem = i
+                        selectItemLink=itemLink
                     end
                 end
             end
