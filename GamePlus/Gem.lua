@@ -185,9 +185,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='SOCKET_INFO_CLOSE' then
         panel:UnregisterEvent('BAG_UPDATE_DELAYED')
 
-        if ItemSocketingFrame.setTipsFrame then
+        if ItemSocketingFrame and ItemSocketingFrame.setTipsFrame then
             ItemSocketingFrame.setTipsFrame:SetShown(false)--10.07 原石宝石，提示
         end
+
     elseif event=='BAG_UPDATE_DELAYED' then
         set_Gem()
     end
