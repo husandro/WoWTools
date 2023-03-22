@@ -8,76 +8,127 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
     if not ItemSocketingFrame or not ItemSocketingFrame:IsVisible() then
         return
     end
-    local index=1
+    
     local items={}
+    local links={}
     for bag=0, NUM_BAG_SLOTS do
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local info = C_Container.GetContainerItemInfo(bag, slot)
-            if info and info.hyperlink and info.itemID then
-                local classID = select(6, GetItemInfoInstant(info.hyperlink))
-                if classID==3 and not items[info.itemID] then
-                    local btn=Buttons[index]
-                    if not btn then
-                        btn= CreateFrame('ItemButton',nil, ItemSocketingFrame)
-                        btn:SetSize(25,25)
-                        if index==1 then
-                            btn:SetPoint('TOPRIGHT', ItemSocketingFrame, 'BOTTOMRIGHT',-10,-6)
-                        elseif select(2, math.modf(index / 9))==0 then
-                            local y=math.modf(index / 9)
-                            btn:SetPoint('TOPRIGHT', ItemSocketingFrame, 'BOTTOMRIGHT',-10, -y*44)
-                        else
-                            btn:SetPoint('RIGHT', Buttons[index-1], 'LEFT', -13,0)
-                        end
-                        btn:SetScript('OnMouseDown', function(self, d)
-                            if self.bag and self.slot then
-                                if d=='LeftButton' then
-                                    C_Container.PickupContainerItem(self.bag, self.slot)
-                                elseif d=='RightButton' then
-                                    ClearCursor()
-                                end
-                            end
-                        end)
-                        btn:SetScript('OnEnter', function(self)
-                            if self.bag and self.slot then
-                                e.tips:SetOwner(self, "ANCHOR_LEFT")
-                                e.tips:ClearLines()
-                                e.tips:SetBagItem(self.bag, self.slot)
-                                e.tips:AddLine(' ')
-                                e.tips:AddDoubleLine(id, addName)
-                                e.tips:Show()
-                            end
-                        end)
-                        btn:SetScript('OnLeave', function() e.tips:Hide() end)
-
-                        btn.text=e.Cstr(btn)
-                        btn.text:SetPoint('BOTTOMRIGHT')
-                        table.insert(Buttons, btn)
-                    end
-
-                    local text--数量
-                    text= GetItemCount(info.itemID)
-                    text= text>1 and text or ''
-                    if text~='' and info.quality then
-                        local hex = select(4, GetItemQualityColor(info.quality))
-                        text= hex and '|c'..hex..text..'|r' or text
-                    end
-                    btn.text:SetText(text)
-
-                    btn.bag=bag
-                    btn.slot=slot
-                    btn:SetItem(info.hyperlink)
-                    btn:SetShown(true)
-
-                    index= index+1
-                    items[info.itemID]=true
+            if info and info.hyperlink then
+                --local classID, subclassID = select(6, GetItemInfoInstant(info.hyperlink))
+                local classID, subclassID, _, expacID= select(12, GetItemInfo(info.hyperlink))
+                if classID==3 and not links[info.hyperlink] then
+                    e.LoadDate({id=info.hyperlink, type='item'})
+                    table.insert(items, {
+                        info= info,
+                        bag= bag,
+                        slot=slot,
+                        subclassID = subclassID,
+                        expacID= expacID or 0,
+                        level= GetDetailedItemLevelInfo(info.hyperlink) or 0,
+                    })
+                    links[info.hyperlink]= true
                 end
             end
         end
     end
-    for i= index, #Buttons do
-        Buttons[i]:SetShown(false)
-        Buttons[i]:Reset()
+    links=nil
+
+--[[
+local function sort_Level(a, b)
+    return a> b
+end
+local function sort_Quality(a, b)
+    return a> b
+end
+local function sort_subClass(a, b)
+    return a>b
+end
+local function sort_ExpacID(a, b)
+    return a>b
+end]]
+
+    table.sort(items, function(a, b)
+        if a.expacID> b.expacID then
+            return true
+        elseif a.info.quality> b.info.quality then
+            return true
+        elseif a.level > b.level then
+            return true
+        else
+            if a.subclassID > b.subclassID then
+                return true
+            else
+                return false
+            end
+        end
+    end)
+
+    for index=1, #items do
+        local btn=Buttons[index]
+        if not btn then
+            btn= CreateFrame('ItemButton',nil, ItemSocketingFrame)
+            btn:SetSize(25,25)
+            if index==1 then
+                btn:SetPoint('TOPRIGHT', ItemSocketingFrame, 'BOTTOMRIGHT',-10,-6)
+            elseif select(2, math.modf(index / 9))==0 then
+                local y=math.modf(index / 9)
+                btn:SetPoint('TOPRIGHT', ItemSocketingFrame, 'BOTTOMRIGHT',-10, -y*44)
+            else
+                btn:SetPoint('RIGHT', Buttons[index-1], 'LEFT', -13,0)
+            end
+            btn:SetScript('OnMouseDown', function(self, d)
+                if self.bag and self.slot then
+                    if d=='LeftButton' then
+                        C_Container.PickupContainerItem(self.bag, self.slot)
+                    elseif d=='RightButton' then
+                        ClearCursor()
+                    end
+                end
+            end)
+            btn:SetScript('OnEnter', function(self)
+                if self.bag and self.slot then
+                    e.tips:SetOwner(self, "ANCHOR_LEFT")
+                    e.tips:ClearLines()
+                    e.tips:SetBagItem(self.bag, self.slot)
+                    e.tips:AddLine(' ')
+                    e.tips:AddDoubleLine(id, addName)
+                    e.tips:Show()
+                end
+            end)
+            btn:SetScript('OnLeave', function() e.tips:Hide() end)
+
+            btn.level=e.Cstr(btn)
+            btn.level:SetPoint('TOP',0,5)
+
+            table.insert(Buttons, btn)
+        end
+
+        local info= items[index].info
+        btn.level:SetText((items[index].level and items[index].level>1) and items[index].level or '')
+        --local hex = info.quality and select(4, GetItemQualityColor(info.quality))
+
+        --[[local text--数量
+        text= GetItemCount(info.itemID)
+        text= text>1 and text or ''
+        if text~='' and hex then
+            text= hex and '|c'..hex..text..'|r' or text
+        end
+        btn.text:SetText(text)]]
+
+        btn:SetItemButtonCount(GetItemCount(info.hyperlink))
+
+        btn.bag= items[index].bag
+        btn.slot=  items[index].slot
+        btn:SetItem(info.hyperlink)
+        btn:SetShown(true)
     end
+
+    for index= #items+1, #Buttons, 1 do
+        Buttons[index]:SetShown(false)
+        Buttons[index]:Reset()
+    end
+
     items=nil
 end
 

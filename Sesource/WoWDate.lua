@@ -455,7 +455,7 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
             NotifyInspect('player')--取得,自已, 装等
         end
 
-    elseif event=='ENCOUNTER_START' then-- 给 e.REload用
+    elseif event=='ENCOUNTER_START' then-- 给 e.Reload用
         e.IsEncouter_Start= true
     elseif event=='ENCOUNTER_START' then
         e.IsEncouter_Start= nil
