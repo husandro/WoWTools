@@ -61,6 +61,7 @@ local Save={
         [192749]=true,
         [140192]=true,
         [110560]=true,
+        [405269]=true,
     },
     pet=true,
     open=true,
