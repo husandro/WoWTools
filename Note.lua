@@ -71,4 +71,6 @@ end
 ToggleCollectionsJournal(tabIndex) UIParent.lua
 
 ToggleEncounterJournal()
+
+Interface\Cursor\UI-Cursor-Move
 ]]

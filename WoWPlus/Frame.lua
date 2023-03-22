@@ -210,6 +210,7 @@ local function set_Move_Button(frame, tab)
             frame.moveButton= e.Cbtn(frame, {icon='hide', size={size,size}})
             frame.moveButton:SetPoint('BOTTOM', pointFrame or frame, 'TOP')--,0,-13)
             frame.moveButton:SetFrameLevel(frame:GetFrameLevel()+5)
+            frame.moveButton:SetNormalTexture('Interface\\Cursor\\UI-Cursor-Move')
             Move(frame.moveButton, {frame= frame, save=save, zeroAlpha= zeroAlpha, notZoom= notZoom})
         else
             local name= frame:GetName()
