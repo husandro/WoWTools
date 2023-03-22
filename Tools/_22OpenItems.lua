@@ -41,6 +41,26 @@ local Save={
 
     },
     no={--禁用使用
+        [139590]=true,--[传送卷轴：拉文霍德]
+        [141605]=true,--[飞行管理员的哨子]
+        [163604]=true,--[撒网器5000型]
+        [199900]=true,--[二手勘测工具]
+        [198083]=true,--探险队补给包
+        [191294]=true,--小型探险锹
+        [202087]=true,--匠械移除设备
+        [128353]=true,--海军上将的罗盘
+        [86143]=true,--pet
+        [5512]=true,--SS糖
+
+        [6948]=true,
+        [194510]=true,
+        [199197]=true,
+        [200613]=true,
+        [18149]=true,
+        [194701]=true,
+        [192749]=true,
+        [140192]=true,
+        [110560]=true,
     },
     pet=true,
     open=true,
@@ -56,28 +76,6 @@ local panel= CreateFrame("Frame")
 local button
 
 
-local noItemTable={
-    [139590]=true,--[传送卷轴：拉文霍德]
-    [141605]=true,--[飞行管理员的哨子]
-    [163604]=true,--[撒网器5000型]
-    [199900]=true,--[二手勘测工具]
-    [198083]=true,--探险队补给包
-    [191294]=true,--小型探险锹
-    [202087]=true,--匠械移除设备
-    [128353]=true,--海军上将的罗盘
-    [86143]=true,--pet
-    [5512]=true,--SS糖
-
-    [6948]=true,
-    [194510]=true,
-    [199197]=true,
-    [200613]=true,
-    [18149]=true,
-    [194701]=true,
-    [192749]=true,
-    [140192]=true,
-    [110560]=true,
-}
 --QUEST_REPUTATION_REWARD_TOOLTIP = "在%2$s中的声望提高%1$d点";
 local function setCooldown()--冷却条
     if button:IsShown() then
@@ -153,7 +151,7 @@ local function getItems()--取得背包物品信息
                         return
                     end
 
-                elseif not Save.no[info.itemID] and not noItemTable[info.itemID]  and not e.GetTooltipData(true, nil, nil, {bag=bag, slot=slot}) then--不出售, 可以使用
+                elseif not Save.no[info.itemID] and not e.GetTooltipData(true, nil, nil, {bag=bag, slot=slot}) then--不出售, 可以使用
                     local itemName, _, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, sellPrice, classID, subclassID, bindType, expacID, setID, isCraftingReagent= GetItemInfo(info.hyperlink)
                     if itemEquipLoc and _G[itemEquipLoc] then--幻化
                         if Save.mago and (itemMinLevel and itemMinLevel<=e.Player.level or not itemMinLevel) and info.quality and info.quality>1 then--and (not info.isBound or (classID==4 and (subclassID==0 or subclassID==5))) then
