@@ -37,13 +37,6 @@ e.LoadDate= function(tab)--加载法术, e.LoadDate({id=, type=''})
     elseif tab.type=='item' then
         if not C_Item.IsItemDataCachedByID(tab.id) then C_Item.RequestLoadItemDataByID(id) end
     end
-    --[[if ID then
-        if isSpell then
-            if not C_Spell.IsSpellDataCached(ID) then C_Spell.RequestLoadSpellData(ID) end
-        else
-            if not C_Item.IsItemDataCachedByID(ID) then C_Item.RequestLoadItemDataByID(ID) end
-        end
-    end]]
 end
 
 local itemLoadTab={--加载法术,或物品数据

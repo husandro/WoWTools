@@ -133,9 +133,11 @@ local function select_Reward(questID)--自动:选择奖励
     if Save.questRewardCheck[questID] and Save.questRewardCheck[questID]<=numQuests then
         bestItem= Save.questRewardCheck[questID]
         selectItemLink= GetQuestItemLink('choice', Save.questRewardCheck[questID])
+        e.LoadDate({id=selectItemLink, type='item'})
     else
         for i = 1, numQuests do
             local  itemLink = GetQuestItemLink('choice', i)
+            e.LoadDate({id=itemLink, type='item'})
             if itemLink then
                 local amount = select(3, GetQuestItemInfo('choice', i))--钱
                 local _, _, itemQuality, itemLevel, _, _,_,_, itemEquipLoc, _, sellPrice,classID, subclassID = GetItemInfo(itemLink)
@@ -175,7 +177,6 @@ local function select_Reward(questID)--自动:选择奖励
             end
         end
     end
-    --bestItem= bestLevelItem or bestItem
     if bestItem and not IsModifierKeyDown() then
         _G['QuestInfoRewardsFrameQuestInfoItem'..bestItem]:Click()--QuestFrame.lua
         if selectItemLink then
@@ -617,15 +618,33 @@ end
 local function InitMenu_Quest(self, level, type)
     local info
     if type=='REWARDSCHECK' then--三级菜单 ->自动:选择奖励
+        local num=0
         for questID, index in pairs(Save.questRewardCheck) do
+            e.LoadDate({id=questID, type='quest'})
             info={
-                text= questID..': |cnGREEN_FONT_COLOR:'..index,
+                text= (C_QuestLog.GetTitleForQuestID(questID) or ('questID: '..questID))..': |cnGREEN_FONT_COLOR:'..index,
                 notCheckable=true,
                 tooltipOnButton=true,
-                tooltipTitle= 
+                tooltipTitle='questID: '..questID,
+                func= function()
+                    Save.questRewardCheck[questID]=nil
+                end,
+            }
+            num=num+1
+            UIDropDownMenu_AddButton(info, level)
+        end
+        if num>0 then
+            UIDropDownMenu_AddSeparator(level)
+            info={
+                text= e.onlyChinese and '清除全部' or CLEAR_ALL,
+                notCheckable=true,
+                func= function()
+                    Save.questRewardCheck={}
+                end
             }
             UIDropDownMenu_AddButton(info, level)
         end
+
     elseif type=='CUSTOM' then
         for questID, text in pairs(Save.questOption) do
             info={
