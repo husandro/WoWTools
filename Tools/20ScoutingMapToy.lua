@@ -89,7 +89,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             end
 
         elseif arg1=='Blizzard_AchievementUI' then
-            C_Timer.After(2, function()
+            C_Timer.After(4, function()
                 if not UnitAffectingCombat('player') then
                     for itemID, _ in pairs(Toy) do--初始
                         if not(PlayerHasToy(itemID) and C_ToyBox.IsToyUsable(itemID)) then
