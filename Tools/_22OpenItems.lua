@@ -198,9 +198,9 @@ local function getItems()--取得背包物品信息
                             return
                         end
 
-                    elseif Save.alt then
-                        local spell= GetItemSpell(info.hyperlink)
-                        if spell and IsUsableSpell(spell) and not C_Item.IsAnimaItemByID(info.hyperlink) then
+                    elseif Save.alt and classID~=0 then
+                        local spell= select(2, GetItemSpell(info.hyperlink))
+                        if spell and IsUsableSpell(spell) and IsUsableItem(info.hyperlink) and not C_Item.IsAnimaItemByID(info.hyperlink) then
                             setAtt(bag, slot, info.iconFileID, info.itemID)
                             return
                         end

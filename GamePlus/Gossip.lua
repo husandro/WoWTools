@@ -423,17 +423,17 @@ local function Init_Gossip()
         local gossip= C_GossipInfo.GetOptions()
         local name=info.name
         local npc=e.GetNpcID('npc')
-        self.sel.id=info.gossipOptionID
+        self.sel.id=index
         self.sel.text=info.name
-        self.sel:SetChecked(Save.gossipOption[info.gossipOptionID])
+        self.sel:SetChecked(Save.gossipOption[index])
 
 
-        if IsModifierKeyDown() or not info.gossipOptionID or selectGissipIDTab[info.gossipOptionID] then
+        if IsModifierKeyDown() or not index or selectGissipIDTab[index] then
             return
         end
 
         local find
-        if Save.gossipOption[info.gossipOptionID] then--自定义
+        if Save.gossipOption[index] then--自定义
             C_GossipInfo.SelectOption(index)
             find=true
 
@@ -469,7 +469,7 @@ local function Init_Gossip()
         end
 
         if find then
-            selectGissipIDTab[info.gossipOptionID]=true
+            selectGissipIDTab[index]=true
             print(id, ENABLE_DIALOG, '|T'..(info.overrideIconID or info.icon or '')..':0|t', '|cffff00ff'..name)
         end
     end)

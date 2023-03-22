@@ -27,7 +27,7 @@ local RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightBu
 
 
 e.LoadDate= function(tab)--加载法术, e.LoadDate({id=, type=''})
-    if tab.id then
+    if not tab.id then
         return
     end
     if tab.type=='quest' then

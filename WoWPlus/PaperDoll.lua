@@ -1082,6 +1082,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='UPDATE_INVENTORY_DURABILITY' then
         GetDurationTotale()--装备,总耐久度
 
-    
+
     end
 end)

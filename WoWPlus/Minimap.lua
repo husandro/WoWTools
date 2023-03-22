@@ -280,6 +280,7 @@ local function set_vigentteButton_Event()
 end
 
 local uiMapIDsTab= {2026, 2025, 2024, 2023, 2022}--地图, areaPoiIDs
+
 local questIDTab= {--世界任务, 监视, ID
     [74378]=true,
 }
@@ -660,6 +661,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             checkAddIcon:SetScript('OnLeave', function() e.tips:Hide() end)
 
             if not Save.disabled then
+                if not e.Player.levelMax then
+                    uiMapIDsTab= {}
+                    questIDTab= {}
+                end
                 panel:RegisterEvent("ZONE_CHANGED_NEW_AREA")
                 panel:RegisterEvent('ZONE_CHANGED')
                 panel:RegisterEvent("PLAYER_ENTERING_WORLD")
