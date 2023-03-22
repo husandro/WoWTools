@@ -317,6 +317,9 @@ panel:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')--取得,自已, 装等
 panel:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED')--取得,自已, 装等
 panel:RegisterEvent('PLAYER_AVG_ITEM_LEVEL_UPDATE')--取得,自已, 装等
 
+panel:RegisterEvent('ENCOUNTER_START')-- 给 e.REload用
+panel:RegisterEvent('ENCOUNTER_END')
+
 panel:SetScript('OnEvent', function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" and arg1==id then
         local day= date('%x')--日期
@@ -452,5 +455,9 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
             NotifyInspect('player')--取得,自已, 装等
         end
 
+    elseif event=='ENCOUNTER_START' then-- 给 e.REload用
+        e.IsEncouter_Start= true
+    elseif event=='ENCOUNTER_START' then
+        e.IsEncouter_Start= nil
     end
 end)

@@ -28,8 +28,15 @@ local function Get_Use_Toy()
     if UnitAffectingCombat('player') then
         return
     end
+    local Tabs=Toy
+    for itemID, _ in pairs(Tabs) do--初始
+        if not(PlayerHasToy(itemID) and C_ToyBox.IsToyUsable(itemID)) then
+            Toy[itemID]=nil
+        end
+    end
+
     button.itemID=nil
-    for itemID, tab in pairs(Toy) do
+    for itemID, tab in pairs(Tabs) do
         for _, achievementID  in pairs(tab) do
             if not select(13,GetAchievementInfo(achievementID)) and itemID then
                 button.itemID=itemID
@@ -44,6 +51,7 @@ local function Get_Use_Toy()
         end
         Toy[itemID]=nil
     end
+
     button:SetShown(false)
     panel:UnregisterAllEvents()
 end
@@ -51,7 +59,7 @@ end
 
 --###########
 --加载保存数据
---###########2
+--###########
 panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" then
@@ -91,11 +99,6 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         elseif arg1=='Blizzard_AchievementUI' then
             C_Timer.After(4, function()
                 if not UnitAffectingCombat('player') then
-                    for itemID, _ in pairs(Toy) do--初始
-                        if not(PlayerHasToy(itemID) and C_ToyBox.IsToyUsable(itemID)) then
-                            Toy[itemID]=nil
-                        end
-                    end
                     Get_Use_Toy()
                 end
             end)
