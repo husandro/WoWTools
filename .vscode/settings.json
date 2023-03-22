@@ -2102,7 +2102,8 @@
         "RAID_DIFFICULTY2",
         "SELECT_LOOT_SPECIALIZATION",
         "CAMERA_FOV",
-        "CURRENCY_THIS_WEEK"
+        "CURRENCY_THIS_WEEK",
+        "PVEFrameCloseButton"
     ],
     "Lua.diagnostics.disable": [
     ]

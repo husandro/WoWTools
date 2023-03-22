@@ -1247,7 +1247,7 @@ e.ShowColorPicker= function(valueR, valueG, valueB, valueA, changedCallback)
 end
 
 e.Reload= function()
-    if not UnitAffectingCombat('player') then
+    if not UnitAffectingCombat('player') or not IsInInstance() then
         C_UI.Reload()
     else
         print(id, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))

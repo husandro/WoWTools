@@ -968,7 +968,7 @@ end
 --####################
 --添加一个按钮, 打开选项
 --####################
-local function add_Button_OpenOption(self)
+local function add_Button_OpenOption(self, notToggleCharacter)
     local btn= e.Cbtn(self, {icon=true})
     btn:SetSize(20,20)
     btn:SetPoint('RIGHT', self, 'LEFT',-2,0)
@@ -985,21 +985,27 @@ local function add_Button_OpenOption(self)
     end)
     btn:SetScript('OnLeave', function() e.tips:Hide() end)
 
-    local btn2= e.Cbtn(btn, {atlas='charactercreate-icon-customize-body-selected'})
-    btn2:SetSize(40,40)
-    btn2:SetPoint('TOP', btn, 'BOTTOM')
-    btn2:SetScript('OnClick', function()
-        ToggleCharacter("PaperDollFrame")
-    end)
-    btn2:SetScript('OnEnter', function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_Left")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭角色界面' or BINDING_NAME_TOGGLECHARACTER0, e.Icon.left)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, addName)
-        e.tips:Show()
-    end)
-    btn2:SetScript('OnLeave', function() e.tips:Hide() end)
+    if not notToggleCharacter then
+        local btn2= e.Cbtn(btn, {atlas='charactercreate-icon-customize-body-selected'})
+        btn2:SetSize(40,40)
+        btn2:SetPoint('TOP', btn, 'BOTTOM')
+        btn2:SetScript('OnClick', function()
+            ToggleCharacter("PaperDollFrame")
+        end)
+        btn2:SetScript('OnEnter', function(self2)
+            e.tips:SetOwner(self2, "ANCHOR_Left")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭角色界面' or BINDING_NAME_TOGGLECHARACTER0, e.Icon.left)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(id, addName)
+            e.tips:Show()
+        end)
+        btn2:SetScript('OnLeave', function() e.tips:Hide() end)
+
+        if not PaperDollFrame:IsVisible() or not PaperDollFrame:IsShown() then
+            ToggleCharacter("PaperDollFrame")
+        end
+    end
 
     if #e.Player.disabledLUA>0 then--禁用插件
         local btn3= e.Cbtn(btn, {atlas=e.Icon.disabled})
@@ -1021,9 +1027,7 @@ local function add_Button_OpenOption(self)
             e.tips:Show()
         end)
         btn3:SetScript('OnLeave', function() e.tips:Hide() end)
-    end
-    if not PaperDollFrame:IsVisible() or not PaperDollFrame:IsShown() then
-        ToggleCharacter("PaperDollFrame")
+        btn3:SetAlpha(0.5)
     end
 end
 --###########
@@ -1047,6 +1051,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 panel:RegisterEvent("EQUIPMENT_SWAP_FINISHED")
                 panel:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
                 Init()
+                C_Timer.After(2, function()
+                    add_Button_OpenOption(PVEFrameCloseButton, true)--地下城查找器,添加一个按钮
+                end)
             else
                 panel:UnregisterEvent('ADDON_LOADED')
             end
