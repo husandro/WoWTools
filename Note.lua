@@ -72,5 +72,5 @@ ToggleCollectionsJournal(tabIndex) UIParent.lua
 
 ToggleEncounterJournal()
 
-Interface\Cursor\UI-Cursor-Move
+Interface\Cursor\UI-Cursor-Move   Redlist.xml
 ]]
