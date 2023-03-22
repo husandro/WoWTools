@@ -8,23 +8,30 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
     if not ItemSocketingFrame or not ItemSocketingFrame:IsVisible() then
         return
     end
-    
+
     local items={}
     local links={}
+    local gem1007= select(2, GetSocketItemInfo())== 4638590 --204000, 204030
+
     for bag=0, NUM_BAG_SLOTS do
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local info = C_Container.GetContainerItemInfo(bag, slot)
-            if info and info.hyperlink then
+            if info
+                and info.hyperlink
+                and info.itemID
+                and (
+                        (gem1007 and info.itemID>=204000 and info.itemID<=204030)
+                    or (not gem1007 and (info.itemID<204000 or info.itemID>204030))
+                )
+            then
                 --local classID, subclassID = select(6, GetItemInfoInstant(info.hyperlink))
-                local classID, subclassID, _, expacID= select(12, GetItemInfo(info.hyperlink))
-                if classID==3 and not links[info.hyperlink] then
-                    e.LoadDate({id=info.hyperlink, type='item'})
+                e.LoadDate({id=info.hyperlink, type='item'})
+                local classID, _, _, expacID= select(12, GetItemInfo(info.hyperlink))
+                if classID==3 and e.ExpansionLevel== expacID and not links[info.hyperlink] then
                     table.insert(items, {
                         info= info,
                         bag= bag,
                         slot=slot,
-                        subclassID = subclassID,
-                        expacID= expacID or 0,
                         level= GetDetailedItemLevelInfo(info.hyperlink) or 0,
                     })
                     links[info.hyperlink]= true
@@ -34,33 +41,11 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
     end
     links=nil
 
---[[
-local function sort_Level(a, b)
-    return a> b
-end
-local function sort_Quality(a, b)
-    return a> b
-end
-local function sort_subClass(a, b)
-    return a>b
-end
-local function sort_ExpacID(a, b)
-    return a>b
-end]]
-
     table.sort(items, function(a, b)
-        if a.expacID> b.expacID then
-            return true
-        elseif a.info.quality> b.info.quality then
-            return true
-        elseif a.level > b.level then
-            return true
+        if a.info.quality== b.info.quality then
+           return a.level>b.level
         else
-            if a.subclassID > b.subclassID then
-                return true
-            else
-                return false
-            end
+           return a.info.quality>b.info.quality
         end
     end)
 
@@ -105,21 +90,12 @@ end]]
         end
 
         local info= items[index].info
-        btn.level:SetText((items[index].level and items[index].level>1) and items[index].level or '')
-        --local hex = info.quality and select(4, GetItemQualityColor(info.quality))
-
-        --[[local text--数量
-        text= GetItemCount(info.itemID)
-        text= text>1 and text or ''
-        if text~='' and hex then
-            text= hex and '|c'..hex..text..'|r' or text
-        end
-        btn.text:SetText(text)]]
+        btn.level:SetText(items[index].level>1 and items[index].level or '')
 
         btn:SetItemButtonCount(GetItemCount(info.hyperlink))
 
         btn.bag= items[index].bag
-        btn.slot=  items[index].slot
+        btn.slot= items[index].slot
         btn:SetItem(info.hyperlink)
         btn:SetShown(true)
     end
@@ -150,10 +126,47 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if Save.disabled then
                 panel:UnregisterAllEvents()
-            else
-                panel:UnregisterEvent('ADDON_LOADED')
+            --else
+                --panel:UnregisterEvent('ADDON_LOADED')
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
+
+        elseif arg1=='Blizzard_ItemSocketingUI' then--10.07 原石宝石，提示
+
+            ItemSocketingFrame.setTipsFrame= CreateFrame("Frame", nil, ItemSocketingFrame)
+            local x,y,n =2,-75, 0
+            for i=204000, 204030 do
+                local classID= select(6, GetItemInfoInstant(i))
+                if classID==3 then
+                    e.LoadDate({id=i, type='item'})
+                    local icon= C_Item.GetItemIconByID(i)
+                    if icon then
+                        local texture= ItemSocketingFrame.setTipsFrame:CreateTexture()
+                        texture:SetPoint('TOPLEFT', ItemSocketingFrame, 'TOPRIGHT',x, y)
+                        texture:SetSize(20,20)
+                        texture:SetTexture(icon)
+                        texture:EnableMouse(true)
+                        texture.id= i
+                        texture:SetScript('OnEnter', function(self2)
+                            e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+                            e.tips:ClearLines()
+                            e.tips:SetItemByID(self2.id)
+                            e.tips:AddLine(' ')
+                            e.tips:AddDoubleLine(id, addName)
+                            e.tips:Show()
+                        end)
+                        texture:SetScript('OnLeave', function() e.tips:Hide() end)
+                        n=n+1
+                        if select(2, math.modf(n / 10))==0 then
+                            x=x+20
+                            y=-75
+                        else
+                            y=y-20
+                        end
+                    end
+                end
+            end
+            ItemSocketingFrame.setTipsFrame:SetShown(select(2,GetSocketItemInfo())== 4638590)--10.07 原石宝石，提示
         end
 
     elseif event=='PLAYER_LOGOUT' then
@@ -164,9 +177,15 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='SOCKET_INFO_UPDATE' then
         panel:RegisterEvent('BAG_UPDATE_DELAYED')
         set_Gem()
+        if ItemSocketingFrame.setTipsFrame then
+            ItemSocketingFrame.setTipsFrame:SetShown(select(2,GetSocketItemInfo())== 4638590)--10.07 原石宝石，提示
+        end
     elseif event=='SOCKET_INFO_CLOSE' then
         panel:UnregisterEvent('BAG_UPDATE_DELAYED')
 
+        if ItemSocketingFrame.setTipsFrame then
+            ItemSocketingFrame.setTipsFrame:SetShown(false)--10.07 原石宝石，提示
+        end
     elseif event=='BAG_UPDATE_DELAYED' then
         set_Gem()
     end

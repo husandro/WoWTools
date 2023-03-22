@@ -827,7 +827,8 @@ local function Init_Quest()
         e.tips:AddDoubleLine(e.GetEnabeleDisable(Save.quest)..e.Icon.left, (e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..e.Icon.right)
         e.tips:AddDoubleLine(id, e.onlyChinese and '任务' or QUESTS_LABEL)
         e.tips:Show()
-        --set_Only_Show_Zone_Quest()
+        
+        set_Only_Show_Zone_Quest()
     end)
     questPanel:SetScript('OnLeave', function() e.tips:Hide() end)
 
