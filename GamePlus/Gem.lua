@@ -134,7 +134,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         elseif arg1=='Blizzard_ItemSocketingUI' then--10.07 原石宝石，提示
 
             ItemSocketingFrame.setTipsFrame= CreateFrame("Frame", nil, ItemSocketingFrame)
-            local x,y,n =2,-75, 0
+            ItemSocketingFrame.setTipsFrame:SetFrameStrata('HIGH')
+            --local x,y,n =0,-60, 0
+            local x,y,n= 54,-22,0
             for i=204000, 204030 do
                 local classID= select(6, GetItemInfoInstant(i))
                 if classID==3 then
@@ -142,13 +144,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     local icon= C_Item.GetItemIconByID(i)
                     if icon then
                         local texture= ItemSocketingFrame.setTipsFrame:CreateTexture()
-                        texture:SetPoint('TOPLEFT', ItemSocketingFrame, 'TOPRIGHT',x, y)
+                        --texture:SetPoint('TOPLEFT', ItemSocketingFrame, 'TOPRIGHT',x, y)
                         texture:SetSize(20,20)
                         texture:SetTexture(icon)
                         texture:EnableMouse(true)
                         texture.id= i
                         texture:SetScript('OnEnter', function(self2)
-                            e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+                            e.tips:SetOwner(self2, "ANCHOR_LEFT")
                             e.tips:ClearLines()
                             e.tips:SetItemByID(self2.id)
                             e.tips:AddLine(' ')
@@ -157,11 +159,19 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         end)
                         texture:SetScript('OnLeave', function() e.tips:Hide() end)
                         n=n+1
-                        if select(2, math.modf(n / 10))==0 then
+                        --[[if select(2, math.modf(n / 15))==0 then
                             x=x+20
-                            y=-75
+                            y=-60
                         else
                             y=y-20
+                        end]]
+                        texture:SetPoint('TOPLEFT', ItemSocketingFrame, 'TOPLEFT',x, y)
+                        local one,two= math.modf(n / 14)
+                        if two==0 and one==1 then
+                            x=-2
+                            y=y -20
+                        else
+                            x=x+20
                         end
                     end
                 end

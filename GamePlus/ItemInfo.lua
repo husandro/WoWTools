@@ -66,7 +66,7 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
                 if classID==0 and subclassID==5 then
                     topRightText= e.WA_Utf8Sub(POWER_TYPE_FOOD, 2,5)--食物
                 else
-                    topRightText= e.WA_Utf8Sub(itemSubType, 2,5)
+                    topRightText= e.WA_Utf8Sub(itemSubType~=OTHER and itemSubType or itemType, 2,3)
                 end
                 if expacID and expacID< e.ExpansionLevel and itemID~='5512' and itemID~='113509' then--低版本，5512糖 食物,113509[魔法汉堡]
                     topRightText= '|cff606060'..topRightText..'|r'

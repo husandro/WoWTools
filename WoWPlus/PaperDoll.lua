@@ -94,21 +94,15 @@ local function Gem(self, slot, link)--宝石
         return
     end
 
-    local gems={}
-    if link then
-        for i=1, MAX_NUM_SOCKETS do
-            local gemlink=select(2, GetItemGem(link, i))
-            e.LoadDate({id=gemlink, type='item'})
-            table.insert(gems, gemlink or false)
-        end
-    end
-    local n= 1
-    for _, gemLink in pairs(gems) do
+    local leftSlot= Slot(slot)--左边插曹
+    local x= leftSlot and 8 or -8
+    for n=1, MAX_NUM_SOCKETS do
+        local gemLink= link and select(2, GetItemGem(link, n))
         if gemLink then
+            e.LoadDate({id=gemLink, type='item'})
             if not self['gem'..n] then
-                local h=self:GetHeight()/3
                 self['gem'..n]=self:CreateTexture()
-                self['gem'..n]:SetSize(h,h)
+                self['gem'..n]:SetSize(12.3, 12.3)--local h=self:GetHeight()/3 37 12.3
                 self['gem'..n]:EnableMouse(true)
                 self['gem'..n]:SetScript('OnEnter' ,function(self2)
                     if self2.gemLink then
@@ -122,18 +116,10 @@ local function Gem(self, slot, link)--宝石
             else
                 self['gem'..n]:ClearAllPoints()
             end
-            if Slot(slot) then--左边插曹
-                if n==1 then
-                    self['gem'..n]:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT', 8, 0)
-                else
-                    self['gem'..n]:SetPoint('BOTTOMLEFT', self['gem'..(n-1)], 'BOTTOMRIGHT')
-                end
+            if leftSlot then--左边插曹
+                self['gem'..n]:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT', x, 0)
             else
-                if n==1 then
-                    self['gem'..n]:SetPoint('BOTTOMRIGHT', self, 'BOTTOMLEFT', -8, 0)
-                else
-                    self['gem'..n]:SetPoint('BOTTOMRIGHT', self['gem'..(n-1)], 'BOTTOMLEFT')
-                end
+                self['gem'..n]:SetPoint('BOTTOMRIGHT', self, 'BOTTOMLEFT', x, 0)
             end
         end
         if self['gem'..n] then
@@ -141,9 +127,8 @@ local function Gem(self, slot, link)--宝石
             self['gem'..n]:SetTexture(gemLink and C_Item.GetItemIconByID(gemLink) or 0)
             self['gem'..n]:SetShown(gemLink and true or false)
         end
-        if gemLink then
-            n=n+1
-        end
+
+        x= leftSlot and x+ 12.3 or x- 12.3--左边插曹
     end
 end
 
