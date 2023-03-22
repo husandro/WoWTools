@@ -1,7 +1,7 @@
 local id, e = ...
 local addName= INVITE
 local Save={InvNoFriend={},
-            LFGListAceInvite=true,--接受,LFD, 邀请
+            --LFGListAceInvite=true,--接受,LFD, 邀请
             FriendAceInvite=true,--接受, 好友, 邀请
             InvNoFriendNum=0,--拒绝, 次数
             restingTips=true,--休息区提示
@@ -16,6 +16,7 @@ local panel= CreateFrame("Frame")
 local function getLeader()--取得权限
     return UnitIsGroupAssistant('player') or UnitIsGroupLeader('player') or not IsInGroup()
 end
+--[[
 local function toRaidOrParty(number)--自动, 转团
     if Save.PartyToRaid then
         number= number or GetNumGroupMembers()
@@ -29,7 +30,7 @@ local function toRaidOrParty(number)--自动, 转团
         end
     end
 end
-
+--]]
 local function isInLFG()--是否有FB, 排除中
     for type=1, NUM_LE_LFG_CATEGORYS do
         if GetLFGQueueStats(type) then
@@ -38,7 +39,7 @@ local function isInLFG()--是否有FB, 排除中
     end
 end
 
-local function setTexture()--设置图标颜色, 是否有权限, 是否转团, 邀请选项提示
+--[[local function setTexture()--设置图标颜色, 是否有权限, 是否转团, 邀请选项提示
     button.texture:SetDesaturated(not getLeader() and true or false)
 
     if Save.PartyToRaid then
@@ -68,8 +69,8 @@ local function setTexture()--设置图标颜色, 是否有权限, 是否转团, 
         button.InvTar:SetShown((Save.Channel and Save.ChannelText))
     end
 
-    button.texture:SetDesaturated(not (Save.LFGListAceInvite and Save.FriendAceInvite))--自动接受,LFD, 好友, 邀请
-end
+    button.texture:SetDesaturated(not Save.FriendAceInvite)--自动接受,LFD, 好友, 邀请
+end]]
 
 --#######
 --邀请玩家
@@ -96,13 +97,13 @@ local InvUnitFunc=function()--邀请，周围玩家
         local n=1
         local co=GetNumGroupMembers()
         local raid=IsInRaid()
-        if (not raid and co==5) and not Save.PartyToRaid then
-            print(id, addName, format(e.onlyChinese and '请愿：%s' or PETITION_TITLE, '|cff00ff00'..(e.onlyChinese and '转团' or CONVERT_TO_RAID)..'|r'))
+        if (not raid and co==5)then
+            return
 
         elseif co==40 then
-            print(id, addName, RED_FONT_COLOR_CODE..'|r', co, e.onlyChinese and '队员' or PLAYERS_IN_GROUP)
+            return
         else
-            toRaidOrParty(co)--自动, 转团
+            --toRaidOrParty(co)--自动, 转团
             local tab= C_NamePlate.GetNamePlates() or {}
             for _, v in pairs(tab) do
                 local u = v.namePlateUnitToken or (v.UnitFrame and v.UnitFrame.unit)
@@ -130,7 +131,7 @@ local InvUnitFunc=function()--邀请，周围玩家
         end
     end)
 end
-
+--[[
 local Time
 local function set_LFGListApplicationViewer_UpdateApplicantMember(self, appID, memberIdx, status2, pendingStatus)--自动清邀请, 队伍查找器, LFGList.lua
     if not  Save.LFGAutoInv or not UnitIsGroupLeader('player') then
@@ -148,7 +149,7 @@ local function set_LFGListApplicationViewer_UpdateApplicantMember(self, appID, m
         if to>=40 or (not raid and currentCount==5 and not Save.PartyToRaid) then
             return
         end
-        toRaidOrParty(to)--自动, 转团,转小队
+        --toRaidOrParty(to)--自动, 转团,转小队
         self:GetParent().InviteButton:Click()
 
         local applicantID=applicantInfo.applicantID
@@ -174,7 +175,7 @@ local function set_LFGListApplicationViewer_UpdateApplicantMember(self, appID, m
         end
     end
 end
-
+]]
 local function set_event_PLAYER_TARGET_CHANGED()--设置, 邀请目标事件
     if Save.InvTar and not IsInInstance() then
         panel:RegisterEvent('PLAYER_TARGET_CHANGED')
@@ -208,7 +209,7 @@ local function set_PLAYER_TARGET_CHANGED()--设置, 邀请目标
         return
     end
 
-    toRaidOrParty(co)--自动, 转团
+    --toRaidOrParty(co)--自动, 转团
 
     C_PartyInfo.InviteUnit(name)
 
@@ -235,7 +236,7 @@ local function InvPlateGuidFunc()--从已邀请过列表里, 再次邀请
             return
         end
 
-        toRaidOrParty(num)--自动, 转团,转小队
+        --toRaidOrParty(num)--自动, 转团,转小队
         if name then
             C_PartyInfo.InviteUnit(name)
             n=n+1
@@ -244,7 +245,7 @@ local function InvPlateGuidFunc()--从已邀请过列表里, 再次邀请
         end
     end
 end
-
+--[[
 --#######
 --接受邀请
 --#######
@@ -286,7 +287,7 @@ local function set_LFGListInviteDialog(self)--队伍查找器, 自动接受邀�
         end)
     end
 end
-
+]]
 --###########
 --邀请, 对话框
 --###########
@@ -384,7 +385,7 @@ local function set_LFGPlus()--预创建队伍增强
     if not Save.LFGPlus then
         return
     end
-    local f=LFGListFrame.SearchPanel.RefreshButton--界面, 添加, 选项    
+    --[[local f=LFGListFrame.SearchPanel.RefreshButton--界面, 添加, 选项    
     f.ace = CreateFrame("CheckButton", nil, f, "InterfaceOptionsCheckButtonTemplate")--自动进组  选项
     f.ace:SetPoint('RIGHT',f, 'LEFT',-90,0)
     f.ace.Text:SetText('|cFFFFD000'..(e.onlyChinese and '自动接受' or AUTO_JOIN:gsub(JOIN, ACCEPT))..'|r')
@@ -410,7 +411,7 @@ local function set_LFGPlus()--预创建队伍增强
     f.raid:SetScript("OnMouseDown", function(s)
         Save.PartyToRaid=s:GetChecked()
     end)
-
+]]
     hooksecurefunc("LFGListSearchEntry_Update", function(self)----查询,自定义, 预创建队伍, LFG队长分数, 双击加入 LFGList.lua
         local info = self.resultID and  C_LFGList.GetSearchResultInfo(self.resultID)
         if info and not info.isDelisted then
@@ -450,13 +451,7 @@ local function set_LFGPlus()--预创建队伍增强
             end)
         end
     end)
-    --[[local buttons= self.ScrollBox and self --LFGListSearchPanel_UpdateResults'
-    self.ScrollBox:GetFrames() or {}
-    if not self.searching or self.totalResults~=0  and #buttons~=0 then
-    for _, button in pairs(buttons) do
-    ]]
 end
-
 --#######################
 --设置,内容,频道, 邀请,事件
 --#######################
@@ -514,7 +509,7 @@ local function InitList(self, level, type)
         }
         UIDropDownMenu_AddButton(info, level)
 
-        info={--邀请LFD
+        --[[info={--邀请LFD
             text= e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON,
             func=function()
                 Save.LFGAutoInv= not Save.LFGAutoInv and true or nil
@@ -528,7 +523,7 @@ local function InitList(self, level, type)
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '仅限: |cnRED_FONT_COLOR:队长|r' or format(GROUP_FINDER_CROSS_FACTION_LISTING_WITHOUT_PLAYSTLE, '|cff00ff00'..LEADER..'|r'),
         }
-        UIDropDownMenu_AddButton(info, level)
+        UIDropDownMenu_AddButton(info, level)]]
 
         info={
             text= e.onlyChinese and '邀请目标' or INVITE..TARGET,
@@ -539,7 +534,7 @@ local function InitList(self, level, type)
                 Save.InvTar= not Save.InvTar and true or nil
                 set_event_PLAYER_TARGET_CHANGED()--设置, 邀请目标事件
                 set_PLAYER_TARGET_CHANGED()--设置, 邀请目标事件
-                setTexture()--设置图标颜色, 是否有权限, 是否转团, 邀请选项提示
+                --setTexture()--设置图标颜色, 是否有权限, 是否转团, 邀请选项提示
             end,
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '仅限: 队长 |cnRED_FONT_COLOR:不在副本|r' or format(GROUP_FINDER_CROSS_FACTION_LISTING_WITHOUT_PLAYSTLE, '|cff00ff00'..LEADER..'|r'..NO..'|cnRED_FONT_COLOR:'..INSTANCE..'|r'),
@@ -558,7 +553,7 @@ local function InitList(self, level, type)
             func= function()
                 Save.Channel = not Save.Channel and true or nil
                 set_Chanell_Event()--设置,频道,事件
-                setTexture()--设置图标颜色, 是否有权限, 是否转团, 邀请选项提示
+                --setTexture()--设置图标颜色, 是否有权限, 是否转团, 邀请选项提示
             end
         }
         UIDropDownMenu_AddButton(info, level)
@@ -575,7 +570,7 @@ local function InitList(self, level, type)
         UIDropDownMenu_AddButton(info, level)
         UIDropDownMenu_AddSeparator(level)
 
-        info={--转团
+        --[[info={--转团
             text=e.onlyChinese and '转团' or CONVERT_TO_RAID,
             func=function()
                 Save.PartyToRaid= not Save.PartyToRaid and true or nil
@@ -583,13 +578,13 @@ local function InitList(self, level, type)
                 if f then
                     f:SetChecked(Save.PartyToRaid)
                 end
-                setTexture()--设置图标颜色, 是否有权限, 是否转团
+                --setTexture()--设置图标颜色, 是否有权限, 是否转团
             end,
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '仅限队伍查找器' or format(GROUP_FINDER_CROSS_FACTION_LISTING_WITHOUT_PLAYSTLE, '|cff00ff00'..DUNGEONS_BUTTON..'|r'),
             checked= Save.PartyToRaid,
         }
-        UIDropDownMenu_AddButton(info, level)
+        UIDropDownMenu_AddButton(info, level)]]
 
 
         info={
@@ -651,7 +646,7 @@ local function InitList(self, level, type)
         end
 
     elseif type=='ACEINVITE' then--自动接受邀请
-        info={--队伍查找器
+        --[[info={--队伍查找器
             text= e.onlyChinese and '接受邀请' or CALENDAR_ACCEPT_INVITATION,
             isTitle=true,
             notCheckable=true,
@@ -666,7 +661,7 @@ local function InitList(self, level, type)
                 setTexture()--设置图标颜色, 是否有权限, 是否转团, 邀请选项提示
             end,
         }
-        UIDropDownMenu_AddButton(info, level)
+        UIDropDownMenu_AddButton(info, level)]]
 
         info={
             text= e.onlyChinese and '好友' or FRIENDS,
@@ -675,7 +670,7 @@ local function InitList(self, level, type)
             tooltipTitle= e.onlyChinese and '战网, 好友, 公会' or (COMMUNITY_COMMAND_BATTLENET..', '..FRIENDS..', '..GUILD),
             func=function()
                 Save.FriendAceInvite= not Save.FriendAceInvite and true or nil
-                setTexture()--设置图标颜色, 是否有权限, 是否转团, 邀请选项提示
+                --setTexture()--设置图标颜色, 是否有权限, 是否转团, 邀请选项提示
             end,
         }
         UIDropDownMenu_AddButton(info, level)
@@ -818,7 +813,7 @@ local function Init()
     WoWToolsChatButtonFrame.last=button
 
     button.texture:SetAtlas('communities-icon-addgroupplus')
-    setTexture()--设置图标颜色, 是否有权限
+    --setTexture()--设置图标颜色, 是否有权限
 
     button.Menu= CreateFrame("Frame",nil, LFDMicroButton, "UIDropDownMenuTemplate")--菜单列表
     UIDropDownMenu_Initialize(button.Menu, InitList, "MENU")
@@ -836,21 +831,21 @@ local function Init()
     set_LFGPlus()--预创建队伍增强
     set_Chanell_Event()--设置,内容,频道, 邀请,事件
 
-    LFGListInviteDialog:SetScript("OnHide", function(self)--LFG,,自动接受邀请
+    --[[LFGListInviteDialog:SetScript("OnHide", function(self)--LFG,,自动接受邀请
         if self.LFGListInviteDialogTimer then
             self.LFGListInviteDialogTimer:Cancel()
         end
     end)
-    LFGListInviteDialog:SetScript("OnShow", set_LFGListInviteDialog)--队伍查找器, 自动接受邀请
+    --LFGListInviteDialog:SetScript("OnShow", set_LFGListInviteDialog)--队伍查找器, 自动接受邀请
 
-    hooksecurefunc("LFGListApplicationViewer_UpdateApplicantMember", set_LFGListApplicationViewer_UpdateApplicantMember)--自动清邀请, 队伍查找器, LFGList.lua
+    --hooksecurefunc("LFGListApplicationViewer_UpdateApplicantMember", set_LFGListApplicationViewer_UpdateApplicantMember)--自动清邀请, 队伍查找器, LFGList.lua
 
     StaticPopup1:SetScript('OnHide', function(self)--被邀请, 对话框, 取消记时器
         if self.InvTimer then
             self.InvTimer:Cancel()
         end
         notInviterGUID=nil
-    end)
+    end)]]
 
     StaticPopupDialogs["PARTY_INVITE"].button3= '|cff00ff00'..ALWAYS..'|r'..DECLINE..'|r'--添加总是拒绝按钮
     StaticPopupDialogs["PARTY_INVITE"].OnAlt=function()
@@ -899,6 +894,7 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent('LFG_LIST_APPLICATION_STATUS_UPDATED')
 
 panel:SetScript("OnEvent", function(self, event, arg1, ...)
     if event == "ADDON_LOADED" then
@@ -925,7 +921,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, ...)
         end
 
     elseif event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' then
-        setTexture()--设置图标颜色, 是否有权限
+        --setTexture()--设置图标颜色, 是否有权限
         set_Chanell_Event()--设置,内容,频道, 邀请,事件
 
     elseif event=='PLAYER_ENTERING_WORLD' then
@@ -950,7 +946,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, ...)
         local text= arg1 and string.upper(arg1)
         if Save.Channel and text and Save.ChannelText and text:find(Save.ChannelText) then
             local co= GetNumGroupMembers()
-            toRaidOrParty(co)--自动, 转团
+            --toRaidOrParty(co)--自动, 转团
             if co<5 or (IsInRaid() and co<40) then
                 local guid= select(11, ...)
                 local name= ...
