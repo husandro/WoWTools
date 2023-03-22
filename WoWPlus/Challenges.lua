@@ -930,7 +930,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                         frame.nu=e.Cstr(frame)
                         frame.nu:SetPoint('TOPLEFT')
                     end
-                    frame.nu:SetText((all or '')..( weekAll and ' |cffffffff(|r'..weekAll..'|cffffffff)|r'))
+                    frame.nu:SetText((all or '')..( weekAll and ' |cffffffff(|r'..weekAll..'|cffffffff)|r' or ''))
                 end
 
                 if currentChallengeMapID== frame.mapID and not frame.currentKey then--提示, 包里KEY地图
