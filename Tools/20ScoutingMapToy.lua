@@ -21,7 +21,7 @@ local Toy={
 }
 
 for itemID, _ in pairs(Toy) do
-    e.LoadSpellItemData(itemID)--加载法术, 物品数据
+    e.LoadDate({id=itemID, type='item'})
 end
 
 local function Get_Use_Toy()

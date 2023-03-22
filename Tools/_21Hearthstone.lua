@@ -32,7 +32,7 @@ local ModifiedTab={
     ctrl=110560,--要塞炉石
 }
 for _, itemID in pairs(ModifiedTab) do
-    e.LoadSpellItemData(itemID)--加载法术, 物品数据
+    e.LoadDate({id=itemID, type='item'})
 end
 
 
@@ -265,7 +265,7 @@ end
 
 local function Init()
     for itemID, _ in pairs(Save.items) do
-        e.LoadSpellItemData(itemID)--加载法术, 物品数据
+        e.LoadDate({id=itemID, type='item'})
     end
 
     if e.toolsFrame.size and e.toolsFrame.size~=30 then--设置大小

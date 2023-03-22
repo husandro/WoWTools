@@ -47,7 +47,7 @@ local function set_Button_Init(self)
         self:UnregisterAllEvents()
         return
     end
-    e.LoadSpellItemData(self.itemID)--加载法术, 物品数据
+    e.LoadDate({id=self.itemID, type='item'})
 
     self:SetAttribute("type", "item")
     self:SetAttribute("item", C_Item.GetItemNameByID(self.itemID))
@@ -95,7 +95,7 @@ local function find_Item_Type(class, subclass)
             if info and info.hyperlink and info.itemID and GetItemSpell(info.itemID) then
                 local classID, subClassID, _, expacID = select(12, GetItemInfo(info.hyperlink))
                 if classID==class and subClassID==subclass and (Save.onlyMaxExpansion and (info.itemID==113509 or e.ExpansionLevel==expacID) or not Save.onlyMaxExpansion) then
-                    e.LoadSpellItemData(info.itemID)--加载法术, 物品数据
+                    e.LoadDate({id=info.itemID, type='item'})
                     table.insert(tab, info.itemID)
                 end
             end
@@ -379,7 +379,7 @@ end
 --####
 local function Init()
     for itemID, _ in pairs(Save.noUseItems) do
-        e.LoadSpellItemData(itemID)--加载法术, 物品数据
+        e.LoadDate({id=itemID, type='item'})
     end
 
     setPanelPostion()--设置按钮位置

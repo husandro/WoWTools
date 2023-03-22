@@ -321,7 +321,7 @@ local function setCustomItemMenu(level)--二级菜单, 自定义出售
     UIDropDownMenu_AddButton(info, level)
     for itemID, boolean in pairs(Save.Sell) do
         if itemID  then
-            e.LoadSpellItemData(itemID)
+            e.LoadDate({id=itemID, type='item'})
             local itemLink= select(2, GetItemInfo(itemID))
             itemLink= itemLink or C_Item.GetItemNameByID(itemID) or ('itemID: ' .. itemID)
             info = UIDropDownMenu_CreateInfo()
@@ -349,7 +349,7 @@ local function setBossItemMenu(level)--二级菜单, BOSS
     UIDropDownMenu_AddButton(info, level)
     for itemID, _ in pairs(bossSave) do
         if itemID then
-            e.LoadSpellItemData(itemID)
+            e.LoadDate({id=itemID, type='item'})
             info = {
                 text= select(2,GetItemInfo(itemID)) or itemID,
                 notCheckable=true,

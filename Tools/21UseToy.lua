@@ -38,7 +38,7 @@ local ModifiedTab={
     ctrl=109183,--[世界缩小器]
 }
 for _, itemID in pairs(ModifiedTab) do
-    e.LoadSpellItemData(itemID)--加载法术, 物品数据
+    e.LoadDate({id=itemID, type='item'})
 end
 
 --#########
@@ -53,7 +53,7 @@ end
 local function getToy()--生成, 有效表格
     ItemsTab={}
     for itemID ,_ in pairs(Save.items) do
-        e.LoadSpellItemData(itemID)--加载法术, 物品数据
+        e.LoadDate({id=itemID, type='item'})
         if PlayerHasToy(itemID) then
             table.insert(ItemsTab, itemID)
         end

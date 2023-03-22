@@ -54,7 +54,7 @@ local Save={
 
 for _, tab in pairs(Save.list) do
     if tab and tab.spell and IsSpellKnown(tab.spell) then
-        e.LoadSpellItemData(tab.spell, true)--加载法术, 物品数据
+        e.LoadDate({id=tab.spell, type='spell'})
     end
 end
 

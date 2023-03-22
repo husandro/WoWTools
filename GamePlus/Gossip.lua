@@ -9,6 +9,7 @@ local Save={
         NPC={},
         gossipOption={},
         questOption={},
+        questRewardCheck={},--{任务ID= index}
 }
 
 local panel=e.Cbtn(nil, {icon='hide', size={15,15}})--闲话图标
@@ -60,62 +61,123 @@ end
     --return select(2,C_QuestLog.GetNumQuestLogEntries())==C_QuestLog.GetMaxNumQuestsCanAccept()
 end]]
 
-local function select_Reward()--自动:选择奖励
-    local numQuests = GetNumQuestChoices()
-    if not Save.autoSelectReward or not QuestInfoRewardsFrameQuestInfoItem1 or not numQuests or numQuests <2 then
+--取得， 任务ID
+local function questInfo_GetQuestID()--QuestInfo.lua
+    if ( QuestInfoFrame.questLog ) then
+		return C_QuestLog.GetSelectedQuest();
+	else
+		return GetQuestID();
+	end
+end
+
+local function select_Reward(questID)--自动:选择奖励
+    local numQuests = GetNumQuestChoices() or 0
+    if numQuests <2 then
+        local frame=_G['QuestInfoRewardsFrameQuestInfoItem1']
+        if frame and frame.check then
+            frame.check:SetShown(false)
+        end
         return
     end
 
     local bestValue, bestLevel= 0, 0
     local notColleced, upItem, selectItemLink, bestItem
-    for i = 1, numQuests do
-        local  itemLink = GetQuestItemLink('choice', i)
-        if itemLink then
-            local amount = select(3, GetQuestItemInfo('choice', i))--钱
-            local _, _, itemQuality, itemLevel, _, _,_,_, itemEquipLoc, _, sellPrice,classID, subclassID = GetItemInfo(itemLink)
 
-            if classID==19 or (classID==4 and subclassID==5) or itemLevel==1 or (not itemEquipLoc) then
-                return
-            end
-            if itemQuality and itemQuality<4 and IsEquippableItem(itemLink) then--最高 稀有的 3                                
-                local invSlot = itemEquipLoc and  e.itemSlotTable[itemEquipLoc]
-                if invSlot and itemLevel and itemLevel>1 then--装等
-                    local itemLinkPlayer = GetInventoryItemLink('player', invSlot)
-                    if itemLinkPlayer then
-                        local lv=GetDetailedItemLevelInfo(itemLinkPlayer)
-                        if lv and lv>1 and itemLevel-lv>0 and (bestLevel and bestLevel<lv or not bestLevel) then
-                            bestLevel=lv
-                            bestItem = i
-                            selectItemLink=itemLink
-                            upItem=true
+    for i = 1, numQuests do
+        local frame= _G['QuestInfoRewardsFrameQuestInfoItem'..i]
+        if frame and questID then
+            if not frame.check then
+                frame.check=CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")
+                frame.check:SetPoint("TOPRIGHT")
+                frame.check:SetScript('OnClick', function(self)
+                    if self.questID and self.index then
+                        if Save.questRewardCheck[self.questID] and Save.questRewardCheck[self.questID]==self.index then
+                            Save.questRewardCheck[self.questID]=nil
+                        else
+                            Save.questRewardCheck[self.questID]=self.index
+                        end
+                        for index=1, numQuests do
+                            local frame2=  _G['QuestInfoRewardsFrameQuestInfoItem'..index]
+                            if frame2 and frame2.check then
+                                if index==self.index then
+                                    if Save.questRewardCheck[self.questID] then
+                                        frame2:Click()
+                                        CompleteQuest()
+                                    end
+                                else
+                                    frame2.check:SetChecked(false)
+                                end
+                            end
                         end
                     end
-                end
-
-                if not upItem then
-                    local isCollected, isSelf= select(2, e.GetItemCollected(itemLink))--物品是否收集 
-                    if isCollected==false and isSelf then
-                        bestItem = i
-                        selectItemLink=itemLink
-                        notColleced=true
+                end)
+                frame.check:SetScript('OnEnter', function(self)
+                    if self.questID then
+                        e.tips:SetOwner(self, "ANCHOR_LEFT")
+                        e.tips:ClearLines()
+                        e.tips:AddDoubleLine('questID: '..self.questID, self.index)
+                        e.tips:AddDoubleLine(id, QUESTS_LABEL)
+                        e.tips:Show()
                     end
-                end
+                end)
+                frame.check:SetScript('OnLeave', function() e.tips:Hide() end)
+            end
+            frame.check:SetChecked(Save.questRewardCheck[questID] and Save.questRewardCheck[questID]==i)
+            frame.check.index= i
+            frame.check.questID= questID
+            frame.check.numQuests= numQuests
+            frame.check:SetShown(true)
+        end
+    end
 
-                if not (notColleced and upItem) and amount and sellPrice then
-                    local totalValue = (sellPrice and sellPrice * amount) or 0
-                    if totalValue > bestValue then
-                        bestValue = totalValue
-                        bestItem = i
-                        selectItemLink=itemLink
+    if Save.questRewardCheck[questID] and Save.questRewardCheck[questID]<=numQuests then
+        bestItem= Save.questRewardCheck[questID]
+        selectItemLink= GetQuestItemLink('choice', Save.questRewardCheck[questID])
+    else
+        for i = 1, numQuests do
+            local  itemLink = GetQuestItemLink('choice', i)
+            if itemLink then
+                local amount = select(3, GetQuestItemInfo('choice', i))--钱
+                local _, _, itemQuality, itemLevel, _, _,_,_, itemEquipLoc, _, sellPrice,classID, subclassID = GetItemInfo(itemLink)
+                if Save.autoSelectReward and not(classID==19 or (classID==4 and subclassID==5) or itemLevel==1) and itemQuality and itemQuality<4 and IsEquippableItem(itemLink) then--最高 稀有的 3                                
+                    local invSlot = itemEquipLoc and  e.itemSlotTable[itemEquipLoc]
+                    if invSlot and itemLevel and itemLevel>1 then--装等
+                        local itemLinkPlayer = GetInventoryItemLink('player', invSlot)
+                        if itemLinkPlayer then
+                            local lv=GetDetailedItemLevelInfo(itemLinkPlayer)
+                            if lv and lv>1 and itemLevel-lv>0 and (bestLevel and bestLevel<lv or not bestLevel) then
+                                bestLevel=lv
+                                bestItem = i
+                                selectItemLink=itemLink
+                                upItem=true
+                            end
+                        end
+                    end
+
+                    if not upItem then
+                        local isCollected, isSelf= select(2, e.GetItemCollected(itemLink))--物品是否收集 
+                        if isCollected==false and isSelf then
+                            bestItem = i
+                            selectItemLink=itemLink
+                            notColleced=true
+                        end
+                    end
+
+                    if not (notColleced and upItem) and amount and sellPrice then
+                        local totalValue = (sellPrice and sellPrice * amount) or 0
+                        if totalValue > bestValue then
+                            bestValue = totalValue
+                            bestItem = i
+                            selectItemLink=itemLink
+                        end
                     end
                 end
             end
         end
     end
-
     --bestItem= bestLevelItem or bestItem
-    if bestItem then
-        _G['QuestInfoRewardsFrameQuestInfoItem'..bestItem]:Click()
+    if bestItem and not IsModifierKeyDown() then
+        _G['QuestInfoRewardsFrameQuestInfoItem'..bestItem]:Click()--QuestFrame.lua
         if selectItemLink then
             print(id, QUESTS_LABEL, '|cffff00ff'..CHOOSE..'|r', selectItemLink)
         end
@@ -554,7 +616,17 @@ end
 
 local function InitMenu_Quest(self, level, type)
     local info
-   if type=='CUSTOM' then
+    if type=='REWARDSCHECK' then--三级菜单 ->自动:选择奖励
+        for questID, index in pairs(Save.questRewardCheck) do
+            info={
+                text= questID..': |cnGREEN_FONT_COLOR:'..index,
+                notCheckable=true,
+                tooltipOnButton=true,
+                tooltipTitle= 
+            }
+            UIDropDownMenu_AddButton(info, level)
+        end
+    elseif type=='CUSTOM' then
         for questID, text in pairs(Save.questOption) do
             info={
                 text= text,
@@ -609,6 +681,8 @@ local function InitMenu_Quest(self, level, type)
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '最高品质' or format(PROFESSIONS_CRAFTING_QUALITY, VIDEO_OPTIONS_ULTRA_HIGH),
             tooltipText= '|cff0000ff'..(e.onlyChinese and '稀有' or GARRISON_MISSION_RARE)..'|r',
+            menuList='REWARDSCHECK',
+            hasArrow=true,
             func= function()
                 Save.autoSelectReward= not Save.autoSelectReward and true or nil
             end
@@ -775,6 +849,10 @@ local function Init_Quest()
         else
             e.tips:AddDoubleLine(NONE, 'NPC ID')
         end
+        local questID=questInfo_GetQuestID()
+        if questID then
+            e.tips:AddDoubleLine('questID', questID)
+        end
         e.tips:Show()
     end)
     QuestFrame.sel:SetScript("OnLeave", function()
@@ -821,7 +899,7 @@ local function Init_Quest()
         QuestFrame.sel.name=UnitName("npc")
         QuestFrame.sel:SetChecked(Save.NPC[npc])
 
-        local questID=GetQuestID()
+        local questID= questInfo_GetQuestID()
 
         if not questID or not Save.quest or IsModifierKeyDown() or (Save.NPC[npc] and not Save.questOption[questID]) then
             return
@@ -870,12 +948,11 @@ local function Init_Quest()
         QuestFrame.sel.name=UnitName("npc")
         QuestFrame.sel:SetChecked(Save.NPC[npc])
 
-        local questID
-        if template.canHaveSealMaterial and not QuestUtil.QuestTextContrastEnabled() and template.questLog then
-                local frame = parentFrame:GetParent():GetParent()
-                questID = frame.questID
+        local questID= questInfo_GetQuestID()
+        if not questID and template.canHaveSealMaterial and not QuestUtil.QuestTextContrastEnabled() and template.questLog then
+            local frame = parentFrame:GetParent():GetParent()
+            questID = frame.questID
         end
-        questID= questID or GetQuestID()
 
         if not questID
             or not Save.quest
@@ -888,7 +965,7 @@ local function Init_Quest()
 
         local complete=IsQuestCompletable() or  C_QuestLog.IsComplete(questID)--QuestFrame.lua QuestFrameProgressPanel_OnShow(self) C_QuestLog.IsComplete(questID)
         if complete then
-            select_Reward()--自动:选择奖励
+            select_Reward(questID)--自动:选择奖励
         end
 
         local itemLink=''--QuestInfo.lua QuestInfo_ShowRewards()
@@ -906,7 +983,7 @@ local function Init_Quest()
         for rewardSpellIndex = 1, numSpellRewards do
             local texture, name, isTradeskillSpell, isSpellLearned, hideSpellLearnText, isBoostSpell, garrFollowerID, genericUnlock, spellID = GetRewardSpell(rewardSpellIndex)
             if spellID then
-                e.LoadSpellItemData(spellID, true)
+                e.LoadDate({id=spellID, type='spell'})
                local spellLink= GetSpellLink(spellID) or ((texture and name) and '|T'..texture..':0|t'..name)
                if spellLink then
                     itemLink= itemLink..spellLink
@@ -961,7 +1038,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave[addName] or Save
             Save.questOption = Save.questOption or {}
             Save.gossipOption= Save.gossipOption or {}
-
+            Save.questRewardCheck= Save.questRewardCheck or {}
              --添加控制面板        
             local sel=e.CPanel('|A:CampaignAvailableQuestIcon:0:0|a'..(e.onlyChinese and '对话和任务' or addName), not Save.disabled, true)
             sel:SetScript('OnMouseDown', function()

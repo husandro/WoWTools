@@ -820,7 +820,7 @@ local function set_FlyoutInfo(self, flyoutID)--法术, 弹出框
         local flyoutSpellID, overrideSpellID, isKnown2, spellName = GetFlyoutSlotInfo(flyoutID, slot)
         local spellID= overrideSpellID or flyoutSpellID
         if spellID then
-            e.LoadSpellItemData(spellID, true)
+            e.LoadDate({id=spellID, type='spell'})
             local name2, _, icon = GetSpellInfo(spellID)
             if name2 and icon then
                 self:AddDoubleLine('|T'..icon..':0|t'..(not isKnown2 and ' |cnRED_FONT_COLOR:' or '')..name2..'|r', spellID..' '..(e.onlyChinese and '法术' or SPELLS))

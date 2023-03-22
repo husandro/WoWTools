@@ -132,7 +132,7 @@ local function getItems()--取得背包物品信息
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local info = C_Container.GetContainerItemInfo(bag, slot)
             if info and info.itemID and info.hyperlink and not info.isLocked and info.iconFileID then
-                e.LoadSpellItemData(info.itemID)--加载法术, 物品数据
+                e.LoadDate({id=info.itemID, type='item'})
                 if Save.use[info.itemID] then--自定义
                     if Save.use[info.itemID]<=info.stackCount then
                         setAtt(bag, slot, info.iconFileID, info.itemID)

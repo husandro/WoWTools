@@ -25,14 +25,25 @@ end
 local LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp'
 local RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp'
 
-e.LoadSpellItemData= function(ID, isSpell)--加载法术, 物品数据
-    if ID then
+
+e.LoadDate= function(tab)--加载法术, e.LoadDate({id=, type=''})
+    if tab.id then
+        return
+    end
+    if tab.type=='quest' then
+        C_QuestLog.RequestLoadQuestByID(tab.id)
+    elseif tab.type=='spell' then
+        if not C_Spell.IsSpellDataCached(tab.id) then C_Spell.RequestLoadSpellData(tab.id) end
+    elseif tab.type=='item' then
+        if not C_Item.IsItemDataCachedByID(tab.id) then C_Item.RequestLoadItemDataByID(id) end
+    end
+    --[[if ID then
         if isSpell then
             if not C_Spell.IsSpellDataCached(ID) then C_Spell.RequestLoadSpellData(ID) end
         else
             if not C_Item.IsItemDataCachedByID(ID) then C_Item.RequestLoadItemDataByID(ID) end
         end
-    end
+    end]]
 end
 
 local itemLoadTab={--加载法术,或物品数据
@@ -48,16 +59,16 @@ local spellLoadTab={
         818,--火
     }
 for _, itemID in pairs(itemLoadTab) do
-    e.LoadSpellItemData(itemID)--加载法术, 物品数据
+    e.LoadDate({id=itemID, type='item'})
 end
 for _, spellID in pairs(spellLoadTab) do
-    e.LoadSpellItemData(spellID, true)
+    e.LoadDate({id=spellID, type='spell'})
 end
 for bag=0, NUM_BAG_SLOTS do
     for slot=1, C_Container.GetContainerNumSlots(bag) do
         local info = C_Container.GetContainerItemInfo(bag, slot)
         if info and info.itemID then
-            e.LoadSpellItemData(info.itemID)--加载法术, 物品数据
+            e.LoadDate({id=info.itemID, type='item'})
         end
     end
 end

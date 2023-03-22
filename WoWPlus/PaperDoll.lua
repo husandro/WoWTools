@@ -98,7 +98,7 @@ local function Gem(self, slot, link)--宝石
     if link then
         for i=1, MAX_NUM_SOCKETS do
             local gemlink=select(2, GetItemGem(link, i))
-            e.LoadSpellItemData(gemlink)--加载法术, 物品数据
+            e.LoadDate({id=gemlink, type='item'})
             table.insert(gems, gemlink or false)
         end
     end

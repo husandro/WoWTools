@@ -544,13 +544,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if not e.toolsFrame.disabled then
                 for _, ID in pairs(Save.item) do
-                    e.LoadSpellItemData(ID)--加载法术, 物品数据
+                    e.LoadDate({id=ID, type='item'})
                 end
                 for _, ID in pairs(Save.spell) do
-                    e.LoadSpellItemData(ID, true)--加载法术, 物品数据
+                    e.LoadDate({id=ID, type='spell'})
                 end
                 for _, ID in pairs(Save.equip) do
-                    e.LoadSpellItemData(ID)--加载法术, 物品数据
+                    e.LoadDate({id=ID, type='item'})
                 end
 
                 C_Timer.After(2.3, function()

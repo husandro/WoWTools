@@ -54,8 +54,8 @@ end
 
 for _, tab in pairs(Tab) do
     if IsSpellKnown(tab.spell) then
-        e.LoadSpellItemData(tab.spell, true)--加载法术, 物品数据
-        e.LoadSpellItemData(tab.spell2, true)--加载法术, 物品数据
+        e.LoadDate({id=tab.spell, type='spell'})
+        e.LoadDate({id=tab.spell2, type='spell'})
     end
 end
 

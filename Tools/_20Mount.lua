@@ -931,9 +931,9 @@ local function Init()
     for type, tab in pairs(Save.Mounts) do
         for ID, _ in pairs(tab) do
             if type==ITEMS then
-                e.LoadSpellItemData(ID)--加载法术, 物品数据
+                e.LoadDate({id=ID, type='item'})
             else
-                e.LoadSpellItemData(ID, true)--加载法术, 物品数据
+                e.LoadDate({id=ID, type='spell'})
             end
         end
     end
