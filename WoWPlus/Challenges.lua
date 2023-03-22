@@ -843,7 +843,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                             end
                         end
 
-                        
+
 
                         e.tips:AddLine(' ')
                         local timeLimit, texture, backgroundTexture = select(3, C_ChallengeMode.GetMapUIInfo(self2.mapID))
@@ -942,8 +942,6 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                 if frame.currentKey then
                     frame.currentKey:SetShown(currentChallengeMapID== frame.mapID)
                 end
-                
-                
             end
             --set_Spell_Port(frame)--传送门
         end
