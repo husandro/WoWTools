@@ -338,56 +338,58 @@ local function set_vigentteButton_Text()
             end
         end
     end
+    
+ 
 
     if e.Player.level==70 then
+        
         for _, uiMapID in pairs(uiMapIDsTab) do
             local areaPoiIDs = C_AreaPoiInfo.GetAreaPOIForMap(uiMapID) or {}
             for _, areaPoiID in pairs(areaPoiIDs) do
-                if areaPoiID and (areaPoiID<7234 or areaPoiID>7260) then--not areaPoiIDTab[areaPoiID] then--不显示, areaPoiID
-                    local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID)
-                    if poiInfo and poiInfo.name and poiInfo.atlasName and C_AreaPoiInfo.IsAreaPOITimed(areaPoiID) then
-
-                        local secondsLeft = C_AreaPoiInfo.GetAreaPOISecondsLeft(areaPoiID)
-                        if secondsLeft and secondsLeft>0 then
-                            text= text and text..'\n' or ''
-                            if poiInfo.widgetSetID then
-                                local widgets = C_UIWidgetManager.GetAllWidgetsBySetID(poiInfo.widgetSetID) or {}
-                                for _,widget in ipairs(widgets) do
-                                    if widget and widget.widgetID and  widget.widgetType==8 then
-                                        local widgetInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(widget.widgetID)
-                                        if widgetInfo and widgetInfo.shownState== 1  and widgetInfo.text then
-                                            local icon, num= widgetInfo.text:match('(|T.-|t).+(%d+)')
-                                            if icon and num then
-                                                text= text..'|cff00ff00'..num..'|r'..icon
-                                                break
-                                            end
+                --if areaPoiID then--and (areaPoiID<7234 or areaPoiID>7260) then--not areaPoiIDTab[areaPoiID] then--不显示, areaPoiID
+                local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID)
+                if poiInfo and poiInfo.name and poiInfo.atlasName and C_AreaPoiInfo.IsAreaPOITimed(areaPoiID) then
+                    local secondsLeft = C_AreaPoiInfo.GetAreaPOISecondsLeft(areaPoiID)
+                    if secondsLeft and secondsLeft>0 then
+                        text= text and text..'\n' or ''
+                        if poiInfo.widgetSetID then
+                            local widgets = C_UIWidgetManager.GetAllWidgetsBySetID(poiInfo.widgetSetID) or {}
+                            for _,widget in ipairs(widgets) do
+                                if widget and widget.widgetID and  widget.widgetType==8 then
+                                    local widgetInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(widget.widgetID)
+                                    if widgetInfo and widgetInfo.shownState== 1  and widgetInfo.text then
+                                        local icon, num= widgetInfo.text:match('(|T.-|t).+(%d+)')
+                                        if icon and num then
+                                            text= text..'|cff00ff00'..num..'|r'..icon
+                                            break
                                         end
                                     end
                                 end
                             end
+                        end
 
 
-                            text= text.. poiInfo.name
-                            if poiInfo.factionID and C_Reputation.IsMajorFaction(poiInfo.factionID) then
-                                local info = C_MajorFactions.GetMajorFactionData(poiInfo.factionID)
-                                if info and info.textureKit then
-                                    text= text..'|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'
-                                else
-                                    text= text..' '
-                                end
+                        text= text.. poiInfo.name
+                        if poiInfo.factionID and C_Reputation.IsMajorFaction(poiInfo.factionID) then
+                            local info = C_MajorFactions.GetMajorFactionData(poiInfo.factionID)
+                            if info and info.textureKit then
+                                text= text..'|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'
                             else
                                 text= text..' '
                             end
-                            local secText=SecondsToClock(secondsLeft,true)
-                            secText= secText:gsub('：',':')
-                            if secondsLeft<= 600 then
-                                secText= '|cnGREEN_FONT_COLOR:'..secText..'|r'
-                            end
-                            text= text..secText
-                            text= text..'|A:'..poiInfo.atlasName..':0:0|a'
+                        else
+                            text= text..' '
                         end
+                        local secText=SecondsToClock(secondsLeft,true)
+                        secText= secText:gsub('：',':')
+                        if secondsLeft<= 600 then
+                            secText= '|cnGREEN_FONT_COLOR:'..secText..'|r'
+                        end
+                        text= text..secText
+                        text= text..'|A:'..poiInfo.atlasName..':0:0|a'
                     end
                 end
+                --end
             end
         end
     end
