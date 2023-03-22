@@ -633,17 +633,16 @@ local function InitMenu_Quest(self, level, type)
             num=num+1
             UIDropDownMenu_AddButton(info, level)
         end
-        if num>0 then
-            UIDropDownMenu_AddSeparator(level)
-            info={
-                text= e.onlyChinese and '清除全部' or CLEAR_ALL,
-                notCheckable=true,
-                func= function()
-                    Save.questRewardCheck={}
-                end
-            }
-            UIDropDownMenu_AddButton(info, level)
-        end
+
+        UIDropDownMenu_AddSeparator(level)
+        info={
+            text= e.onlyChinese and '清除全部' or CLEAR_ALL,
+            notCheckable=true,
+            func= function()
+                Save.questRewardCheck={}
+            end
+        }
+        UIDropDownMenu_AddButton(info, level)
 
     elseif type=='CUSTOM' then
         for questID, text in pairs(Save.questOption) do
