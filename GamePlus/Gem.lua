@@ -26,15 +26,21 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
             then
                 --local classID, subclassID = select(6, GetItemInfoInstant(info.hyperlink))
                 e.LoadDate({id=info.hyperlink, type='item'})
+
+                local level= GetDetailedItemLevelInfo(info.hyperlink) or 0
                 local classID, _, _, expacID= select(12, GetItemInfo(info.hyperlink))
-                if classID==3 and e.ExpansionLevel== expacID and not links[info.hyperlink] then
+
+                if classID==3
+                    and (e.Player.levelMax and e.ExpansionLevel== expacID or not e.Player.levelMax)--最高等级
+                    and (not links[info.itemID] or links[info.itemID]~= level)--装等不一样
+                then
                     table.insert(items, {
                         info= info,
                         bag= bag,
                         slot=slot,
-                        level= GetDetailedItemLevelInfo(info.hyperlink) or 0,
+                        level= level,
                     })
-                    links[info.hyperlink]= true
+                    links[info.itemID]= level
                 end
             end
         end
