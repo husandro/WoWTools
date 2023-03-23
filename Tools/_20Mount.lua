@@ -25,6 +25,7 @@ local Save={
             --[376912]=true,--[热忱的载人奥獭]
             --[342680]=true,--[深星元水母]
             --[30174]=true,--[乌龟坐骑]
+            [98718]=true,
             [64731]=true,--[海龟]
         },
         [MOUNT_JOURNAL_FILTER_DRAGONRIDING]={
@@ -34,9 +35,10 @@ local Save={
             --[360954]=true,--[高地幼龙]
         },
         Shift={
-            [75973]=true,--X-53型观光火箭
+            --[[[75973]=true,--X-53型观光火箭
             [93326]=true,--沙石幼龙
-            [121820]=true,--黑耀夜之翼
+            [121820]=true,--黑耀夜之翼]]
+            [98718]=true,
         },
         Alt={[264058]=true,--雄壮商队雷龙
             [122708]=true,--雄壮远足牦牛
@@ -1154,7 +1156,6 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 panel:RegisterEvent('PLAYER_STARTED_MOVING')
 
                 Init()--初始
-
                 table.insert(e.Player.disabledLUA, 'Tools')--禁用插件, 给物品升级界面用
             else
                 e.toolsFrame.disabled=true
