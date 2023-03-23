@@ -26,7 +26,7 @@ local Save={
             --[342680]=true,--[深星元水母]
             --[30174]=true,--[乌龟坐骑]
             [98718]=true,
-            [64731]=true,--[海龟]
+            --[64731]=true,--[海龟]
         },
         [MOUNT_JOURNAL_FILTER_DRAGONRIDING]={
             [368896]=true,--[复苏始祖幼龙]
