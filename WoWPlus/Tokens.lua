@@ -1,6 +1,11 @@
 local id, e = ...
 local addName=TOKENS
-local Save={Hide=true, str=true}
+local Save={
+	Hide=true,
+	str=true,
+	tokens={},--指定显示，表
+	--indicato=nil,--指定显示
+}
 local panel= e.Cbtn(TokenFrame, {icon=false, size={18,18}})
 
 
@@ -68,6 +73,7 @@ local function set_Text()
 		return
 	end
 	local m=''
+	print(C_CurrencyInfo.GetCurrencyListSize())
     for i=1, C_CurrencyInfo.GetCurrencyListSize() do
         local info = C_CurrencyInfo.GetCurrencyListInfo(i)
         if  info.name==UNUSED then
@@ -325,6 +331,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
 		if arg1==id then
             Save= WoWToolsSave[addName] or Save
+			Save.tokens= Save.tokens or {}
 
             --添加控制面板        
             local sel=e.CPanel('|A:bags-junkcoin:0:0|a'..(e.onlyChinese and '货币' or addName), not Save.disabled)
