@@ -1013,7 +1013,7 @@ local function add_Button_OpenOption(self, notToggleCharacter)
             e.tips:Show()
         end)
         btn3:SetScript('OnLeave', function() e.tips:Hide() end)
-        btn3:SetAlpha(0.5)
+        btn3:SetAlpha(0.3)
     end
 end
 --###########

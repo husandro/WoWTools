@@ -1336,3 +1336,34 @@ e.Set_MinMap_Icon= function(tab)-- {name, texture, func, hide} 小地图，建�
     icon:Register(tab.name, bunnyLDB, {hide= tab.hide})
     return icon
 end
+
+e.Set_HelpTips= function(tab)--e.Set_HelpTips({frame=, topoint=, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=nil, show=})--设置，提示
+    if tab.show and not tab.frame.HelpTips then
+        tab.frame.HelpTips= e.Cbtn(tab.frame, {layer='OVERLAY',size=tab.size and {tab.size[1], tab.size[2]} or {40,40}})-- button:CreateTexture(nil, 'OVERLAY')
+        if tab.point=='right' then
+            tab.frame.HelpTips:SetPoint('BOTTOMLEFT', tab.topoint or tab.frame, 'BOTTOMRIGHT',0,-10)
+            tab.frame.HelpTips:SetNormalAtlas(tab.atlas or e.Icon.toLeft)
+        else--left
+            tab.frame.HelpTips:SetPoint('BOTTOMRIGHT', tab.topoint or tab.frame, 'BOTTOMLEFT',0,-10)
+            tab.frame.HelpTips:SetNormalAtlas(tab.atlas or e.Icon.toRight)
+        end
+        if tab.color then
+            SetItemButtonNormalTextureVertexColor(tab.frame.HelpTips, tab.color.r, tab.color.g, tab.color.b, tab.color.a or 1);
+        end
+        tab.frame.HelpTips.elapsed=0
+        tab.frame.HelpTips:SetScript('OnUpdate', function(self, elapsed)
+            self.elapsed= self.elapsed + elapsed
+            if self.elapsed>0.5 then
+                self.elapsed=0
+                self:SetScale(self:GetScale()==1 and 0.5 or 1)
+            end
+        end)
+        tab.frame.HelpTips:SetScript('OnEnter', function(self) self:SetShown(false) end)
+        if tab.onlyOne then
+            tab.frame.HelpTips.onlyOne=true
+        end
+    end
+    if tab.frame.HelpTips and not tab.frame.HelpTips.onlyOne then
+        tab.frame.HelpTips:SetShown(tab.show)
+    end
+end

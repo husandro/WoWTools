@@ -51,7 +51,7 @@ local function set_Money_Event()--设置, 钱, 事件
     end
 end
 
-local function setDurabiliy(re)
+local function setDurabiliy()
     local c = 0;
     local m = 0;
     for i = 1, 18 do
@@ -61,38 +61,38 @@ local function setDurabiliy(re)
             m =m + max;
         end
     end
-    local du;
+    local du, value= nil, 100
     if m>0 then
-        du = floor((c/m) * 100)
-        if du<30 then
-            du='|cnRED_FONT_COLOR:'..du..'%|r';
-        elseif du<=60 then
-            du='|cnYELLOW_FONT_COLOR:'..du..'%|r';
-        elseif du<=90 then
-            du='|cnGREEN_FONT_COLOR:'..du..'%|r';
-        else
-            du=du..'%'
+        value = floor((c/m) * 100)
+        du= format('%i%%', value)..'|T132281:8|t'
+        if value<30 then
+            du='|cnRED_FONT_COLOR:'..du..'|r';
+        elseif value<=60 then
+            du='|cnYELLOW_FONT_COLOR:'..du..'|r';
+        elseif value<=90 then
+            du='|cnGREEN_FONT_COLOR:'..du..'|r';
         end
-        du=du..'|T132281:8|t';
     end
-    if not re then
-        button.durabiliy:SetText(du)
-    else
-        return du or ''
-    end
+    button.durabiliy:SetText(du or '')
+    e.Set_HelpTips({frame=button, topoint=button.durabiliy, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=true, show=value<=40})--设置，提示
+    return du or ''
 end
+
 local function setEquipmentLevel()--角色图标显示装等
     local to, cu= GetAverageItemLevel()
-    local text
+    local text, red
     if to and cu and to>0 then
         text=math.modf(cu)
         if to-cu>5 then
             text='|cnRED_FONT_COLOR:'..text..'|r'
+            red= true
         end
         text=text..equipmentLevelIcon
     end
     button.equipmentLevel:SetText(text or '')
+    e.Set_HelpTips({frame=button, topoint=button.equipmentLevel, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=nil, show=red})--设置，提示
 end
+
 local function set_Durabiliy_EquipLevel_Event()--设置装等,耐久度,事件
     if Save.equipmetLevel or Save.durabiliy then
         button:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
@@ -213,7 +213,7 @@ local function InitMenu(self, level, type)--主菜单
         UIDropDownMenu_AddButton(info,level)
 
         info={
-            text= (e.onlyChinese and '耐久度' or DURABILITY)..': '..setDurabiliy(true),
+            text= (e.onlyChinese and '耐久度' or DURABILITY)..': '..setDurabiliy(),
             checked= Save.durabiliy,
             func= function()
                 Save.durabiliy = not Save.durabiliy and true or false
