@@ -923,6 +923,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                     end
                 end
 
+
                 local all= GetNum(frame.mapID, true)--副本 完成/总次数 (全部)
                 local weekAll= GetNum(frame.mapID)--本周
                 if all or weekAll then

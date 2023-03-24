@@ -8,7 +8,7 @@ local panel= e.Cbtn(TokenFrame, {icon=false, size={18,18}})
 --#############
 --套装,转换,货币
 --Blizzard_ItemInteractionUI.lua
-local function set_ItemInteractionFrame_Currency(self)
+--[[local function set_ItemInteractionFrame_Currency(self)
 	if not self then
 		return
 	end
@@ -57,7 +57,7 @@ local function set_ItemInteractionFrame_Currency(self)
 	if self.ItemInteractionFrameCurrencyText then
 		self.ItemInteractionFrameCurrencyText:SetText(text or '')
 	end
-end
+end]]
 
 
 local function set_Text()
@@ -310,10 +310,10 @@ local function Init()
 	panel.bag:SetScript('OnLeave', function() e.tips:Hide() end)
 
 	Set()
-	hooksecurefunc('TokenFrame_Update', function()
-		set_ItemInteractionFrame_Currency(TokenFrame)--套装,转换,货币
-		set_Text()
-	end)--设置, 文本
+	hooksecurefunc('TokenFrame_Update', set_Text)--function()
+		--set_ItemInteractionFrame_Currency(TokenFrame)--套装,转换,货币
+		--set_Text()
+	--end)--设置, 文本
 end
 
 
@@ -338,11 +338,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 				panel:SetShown(false)
             else
 				Init()
+				panel:UnregisterEvent('ADDON_LOADED')
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
-		elseif arg1=='Blizzard_ItemInteractionUI' then
-            hooksecurefunc(ItemInteractionFrame, 'SetupChargeCurrency', set_ItemInteractionFrame_Currency)
+		--[[elseif arg1=='Blizzard_ItemInteractionUI' then
+            hooksecurefunc(ItemInteractionFrame, 'SetupChargeCurrency', set_ItemInteractionFrame_Currency)]]
 		end
 
     elseif event == "PLAYER_LOGOUT" then
