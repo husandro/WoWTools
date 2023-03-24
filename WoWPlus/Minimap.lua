@@ -298,7 +298,7 @@ local function set_vigentteButton_Text()
         panel.vigentteButton.text:SetText('')
         return
     end
-
+    
     local text
     if e.Player.level==70 then--世界任务, 监视
         for questID,_ in pairs(questIDTab) do

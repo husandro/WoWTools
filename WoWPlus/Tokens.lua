@@ -3,12 +3,10 @@ local addName=TOKENS
 local Save={
 	Hide=true,
 	str=true,
-	tokens={},--指定显示，表
+	tokens={},--{[currencyID]=true}指定显示，表
 	--indicato=nil,--指定显示
 }
-local panel= e.Cbtn(TokenFrame, {icon=false, size={18,18}})
-
-
+local button
 
 --#############
 --套装,转换,货币
@@ -29,20 +27,20 @@ local function set_ItemInteractionFrame_Currency(self)
     if info and info.quantity and (info.discovered or info.quantity>0) then
         text= info.iconFileID and '|T'..info.iconFileID..':0|t' or ''
         text= text.. info.quantity
-		--[[if currencyID== 2167 then
-			text= text.. '/6'
-		else]]
-        	text= info.maxQuantity and text..'/'..info.maxQuantity or text
-		--end
+        text= info.maxQuantity and text..'/'..(currencyID==currencyID and 6 or info.maxQuantity) or text
         if not self.ItemInteractionFrameCurrencyText then
             self.ItemInteractionFrameCurrencyText= e.Cstr(self)
             self.ItemInteractionFrameCurrencyText:SetPoint('TOPLEFT', 55, -38)
 			self.ItemInteractionFrameCurrencyText:EnableMouse(true)
 			self.ItemInteractionFrameCurrencyText:SetScript('OnEnter', function(self2)
-				e.tips:SetOwner(self2, "ANCHOR_LEFT")
-				e.tips:ClearLines()
-				e.tips:SetCurrencyByID(self2.chargeCurrencyTypeId)
-				e.tips:Show()
+				if self2.chargeCurrencyTypeId then
+					e.tips:SetOwner(self2, "ANCHOR_LEFT")
+					e.tips:ClearLines()
+					e.tips:SetCurrencyByID(self2.chargeCurrencyTypeId)
+					e.tips:AddLine(' ')
+					e.tips:AddDoubleLine(id, addName)
+					e.tips:Show()
+				end
 			end)
 			self.ItemInteractionFrameCurrencyText:SetScript('OnLeave', function() e.tips:Hide() end)
         end
@@ -66,98 +64,65 @@ end
 
 
 local function set_Text()
-	if not Save.str or not panel.btn or not panel.btn:IsShown() then
-		if panel.btn then
-			panel.btn.text:SetText('')
+	if not Save.str or not button.btn or not button.btn:IsShown() then
+		if button.btn then
+			button.btn.text:SetText('')
 		end
 		return
 	end
 	local m=''
-	print(C_CurrencyInfo.GetCurrencyListSize())
-    for i=1, C_CurrencyInfo.GetCurrencyListSize() do
-        local info = C_CurrencyInfo.GetCurrencyListInfo(i)
-        if  info.name==UNUSED then
-			break
+
+	if Save.indicato then
+		for currentID, _ in pairs(Save.tokens) do
+			local text= e.Get_Currency({id=currentID, index=nil, link=nil, soloValue=nil, showIcon=true, showName=Save.nameShow, showID=Save.showID, bit=3, showMax=nil})--货币
+			if text then
+				m= m..text..'\n' or m
+			end
 		end
-        if info and (info.isHeader and info.isHeaderExpanded) or  not info.isHeader then
-			local t=''
-			if info.isHeader then
-				if Save.nameShow then
-                	t='|A:'..e.Icon.icon..':0:0|a|cffffffff'..info.name..'|r'
-				end
-            elseif info.quantity then
-				t= Save.nameShow and '   ' or t
-                if Save.showID then--显示ID
-					local link=C_CurrencyInfo.GetCurrencyListLink(i)
-					local id2 =link and C_CurrencyInfo.GetCurrencyIDFromLink(link)
-					t= id2 and t..id2..' ' or t
-				end
-                t=info.iconFileID and t..'|T'..info.iconFileID..':0|t' or t --图标
-				t=Save.nameShow and t..info.name..' ' or t--名称
-                if info.maxQuantity and info.maxQuantity>0 then
-					if info.quantity==info.maxQuantity then--最大数量
-                    	t=t..'|cnRED_FONT_COLOR:'..e.MK(info.quantity, 3)..'|r'..e.Icon.O2
-					else
-						t=t..e.MK(info.quantity, 3)--..' /'..e.MK(info.maxQuantity)
-					end
-                else
-                    t=t..e.MK(info.quantity, 3)--数量
-                end
-               	if info.useTotalEarnedForMaxQty  then--CD收入
-					local cd=' ('..info.quantityEarnedThisWeek..'/'..info.maxWeeklyQuantity..')'
-					if info.maxWeeklyQuantity==info.quantityEarnedThisWeek then
-						t=t..'|cnRED_FONT_COLOR:'..cd..'|r'
-					else
-						t=t..'|cnGREEN_FONT_COLOR:'..cd..'|r'
-                    end
-				end
-				if info.useTotalEarnedForMaxQty and info.totalEarned and info.maxQuantity and info.maxQuantity>0 then
-					local cd=e.MK(info.maxQuantity- info.totalEarned)
-					if info.totalEarned ==info.maxQuantity or info.quantity==info.maxQuantity then
-						t=t..' |cnRED_FONT_COLOR:+'..cd..'|r'
-					else
-						t=t..' |cnGREEN_FONT_COLOR:+'..cd..'|r'
-					end
-            	end
-        	end
-			m= t~=''and m..t..'|n' or m
-    	end
+	else
+		for index=1, C_CurrencyInfo.GetCurrencyListSize() do
+			local text= e.Get_Currency({id=nil, index=index, link=nil, soloValue=nil, showIcon=true, showName=Save.nameShow, showID=Save.showID, bit=3, showMax=nil})--货币
+			if text then
+				m= m..text..'\n' or m
+			end
+		end
 	end
 	if m=='' then
 		m='..'
 	end
-	panel.btn.text:SetText(m)
+	button.btn:SetNormalTexture(0)
+	button.btn.text:SetText(m)
 end
 
 
 local function Set()
-	panel:SetNormalAtlas(not Save.Hide and e.Icon.icon or e.Icon.disabled)
-	if not Save.Hide and not panel.btn then--监视声望按钮
-		panel.btn=e.Cbtn(nil, {icon=Save.str, size={18,18}})
+	button:SetNormalAtlas(not Save.Hide and e.Icon.icon or e.Icon.disabled)
+	if not Save.Hide and not button.btn then--监视声望按钮
+		button.btn=e.Cbtn(nil, {icon=Save.str, size={18,18}})
 		if Save.point then
-			panel.btn:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
+			button.btn:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
 		else
-			panel.btn:SetPoint('TOPLEFT', TokenFrame, 'TOPRIGHT',0, -35)
+			button.btn:SetPoint('TOPLEFT', TokenFrame, 'TOPRIGHT',0, -35)
 		end
-		panel.btn:RegisterForDrag("RightButton")
-		panel.btn:SetClampedToScreen(true);
-		panel.btn:SetMovable(true);
-		panel.btn:SetScript("OnDragStart", function(self2, d) if d=='RightButton' and not IsModifierKeyDown() then self2:StartMoving() end end)
-		panel.btn:SetScript("OnDragStop", function(self2)
+		button.btn:RegisterForDrag("RightButton")
+		button.btn:SetClampedToScreen(true);
+		button.btn:SetMovable(true);
+		button.btn:SetScript("OnDragStart", function(self2, d) if d=='RightButton' and not IsModifierKeyDown() then self2:StartMoving() end end)
+		button.btn:SetScript("OnDragStop", function(self2)
 				ResetCursor()
 				self2:StopMovingOrSizing()
 				Save.point={self2:GetPoint(1)}
 				Save.point[2]=nil
 		end)
-		panel.btn:SetScript("OnMouseUp", function() ResetCursor() end)
-		panel.btn:SetScript("OnMouseDown", function(self2, d)
+		button.btn:SetScript("OnMouseUp", function() ResetCursor() end)
+		button.btn:SetScript("OnMouseDown", function(self2, d)
 			local key=IsModifierKeyDown()
 			if d=='RightButton' and not key then--右击,移动
 				SetCursor('UI_MOVE_CURSOR')
 
 			elseif d=='LeftButton' and not key then--点击,显示隐藏
 				Save.str= not Save.str and true or nil
-				panel.btn:SetNormalAtlas(Save.str and e.Icon.icon or e.Icon.disabled)
+				button.btn:SetNormalAtlas(Save.str and e.Icon.icon or e.Icon.disabled)
 				print(id, addName, e.GetShowHide(Save.str))
 				set_Text()
 
@@ -172,7 +137,7 @@ local function Set()
 				set_Text()
 			end
 		end)
-		panel.btn:SetScript("OnEnter",function(self2)
+		button.btn:SetScript("OnEnter",function(self2)
 			e.tips:SetOwner(self2, "ANCHOR_LEFT");
 			e.tips:ClearLines();
 			e.tips:AddDoubleLine((e.onlyChinese and '文本' or LOCALE_TEXT_LABEL)..': '..e.GetShowHide(Save.str),e.Icon.left)
@@ -187,13 +152,13 @@ local function Set()
 			e.tips:AddDoubleLine(id, addName)
 			e.tips:Show();
 		end)
-		panel.btn:SetScript("OnLeave", function(self2)
+		button.btn:SetScript("OnLeave", function(self2)
 			self2:SetButtonState("NORMAL")
 			ResetCursor()
 			e.tips:Hide()
 		end);
-		panel.btn:EnableMouseWheel(true)
-		panel.btn:SetScript("OnMouseWheel", function (self2, d)
+		button.btn:EnableMouseWheel(true)
+		button.btn:SetScript("OnMouseWheel", function (self2, d)
 			if IsAltKeyDown() then
 				local n= Save.size or 12
 				if d==1 then
@@ -204,7 +169,7 @@ local function Set()
 				n= n<6 and 6 or n
 				n= n>32 and 32 or n
 				Save.size=n
-				e.Cstr(nil, {size=n, changeFont=panel.btn.text, color=true})--n, nil, panel.btn.text, true)
+				e.Cstr(nil, {size=n, changeFont=button.btn.text, color=true})--n, nil, button.btn.text, true)
 				print(id, addName, e.onlyChinese and '文本' or LOCALE_TEXT_LABEL, e.onlyChinese and '字体大小' or FONT_SIZE, n)
 			else
 				if d==1 and not TokenFrame:IsVisible() or d==-1 and TokenFrame:IsVisible() then
@@ -212,59 +177,122 @@ local function Set()
 				end
 			end
 		end)
-		panel.btn:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
-		panel.btn:RegisterEvent('PLAYER_ENTERING_WORLD')
-		panel.btn:RegisterEvent('PET_BATTLE_OPENING_DONE')
-		panel.btn:RegisterEvent('PET_BATTLE_CLOSE')
-		panel.btn:SetScript('OnEvent', function(self)
+		button.btn:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
+		button.btn:RegisterEvent('PLAYER_ENTERING_WORLD')
+		button.btn:RegisterEvent('PET_BATTLE_OPENING_DONE')
+		button.btn:RegisterEvent('PET_BATTLE_CLOSE')
+		button.btn:SetScript('OnEvent', function(self)
 			self:SetShown(not Save.Hide and not IsInInstance() and not C_PetBattles.IsInBattle())
 			set_Text()
 		end)
 
-		panel.btn.text=e.Cstr(panel.btn, {size=Save.size, color=true})--内容显示文本
-		panel.btn.text:SetPoint('TOPLEFT',3,-3)
+		button.btn.text=e.Cstr(button.btn, {size=Save.size, color=true})--内容显示文本
+		button.btn.text:SetPoint('TOPLEFT',3,-3)
 	end
-	if panel.btn then
-		panel.btn:SetShown(not Save.Hide and not IsInInstance() and not C_PetBattles.IsInBattle())
-		panel.btn:SetNormalAtlas(Save.str and e.Icon.icon or e.Icon.disabled)
+	if button.btn then
+		button.btn:SetShown(not Save.Hide and not IsInInstance() and not C_PetBattles.IsInBattle())
+		button.btn:SetNormalAtlas(Save.str and e.Icon.icon or e.Icon.disabled)
 		set_Text()
 	end
 end
 
 
+local function set_Tokens_Button(frame)--设置, 列表, 内容
+	if not frame or not frame.index then
+		return
+	end
+	local show
+	local info = C_CurrencyInfo.GetCurrencyListInfo(frame.index)
+	local link= C_CurrencyInfo.GetCurrencyListLink(frame.index)
+	local currencyID= link and C_CurrencyInfo.GetCurrencyIDFromLink(link)
+	if not frame.isHeader and info and currencyID then
+		if not frame.check then
+			frame.check= CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")
+			frame.check:SetPoint('RIGHT', 0,0)
+			--frame.check:SetFrameLevel(frame:GetFrameLevel()+5)
+			frame.check:SetScript('OnClick', function(self)
+				if self.currencyID then
+					Save.tokens[self.currencyID]= not Save.tokens[self.currencyID] and true or nil
+					set_Text()--设置, 文本
+				end
+			end)
+			frame.check:SetScript('OnEnter', function(self)
+				e.tips:SetOwner(self, "ANCHOR_RIGHT")
+				e.tips:ClearLines()
+				e.tips:AddDoubleLine((e.onlyChinese and '文本' or  LOCALE_TEXT_LABEL), e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
+				e.tips:AddLine(' ')
+				e.tips:AddDoubleLine(id, addName)
+				e.tips:Show()
+			end)
+			frame.check:SetScript('OnLeave', function() e.tips:Hide() end)
+			frame.check:SetAlpha(0.3)
+			frame.check:SetSize(15,15)
+			frame.check:SetCheckedTexture(e.Icon.icon)
+		end
+		frame.check.currencyID= currencyID
+		show= true
+	end
 
+	if frame.check then
+		frame.check:SetShown(show)
+		frame.check:SetChecked(Save.tokens[currencyID])
+	end
+
+	if info and frame.Count then--最大数
+		local max= info.quantity and info.quantity>0 and (
+						info.quantity==info.maxQuantity
+					or (info.canEarnPerWeek and info.maxWeeklyQuantity==info.quantityEarnedThisWeek)--本周
+					or (info.useTotalEarnedForMaxQty and info.totalEarned==info.maxQuantity)--赛季
+				)
+		if max then
+			frame.Count:SetTextColor(1,0,0)
+		elseif info.useTotalEarnedForMaxQty or info.canEarnPerWeek then
+			frame.Count:SetTextColor(1,0,1)
+		elseif info.maxQuantity and info.maxQuantity>0 then
+			frame.Count:SetTextColor(0,1,0)
+		else
+			frame.Count:SetTextColor(1,1,1)
+		end
+	end
+end
 
 --######
 --初始化
 --######
 local function Init()
-	panel:SetPoint("TOPRIGHT", TokenFrame, 'TOPRIGHT',-6,-35)
-	panel:SetScript('OnMouseDown', function (self, d)
+	button= e.Cbtn(TokenFrame, {icon=false, size={18,18}})
+	button:SetPoint("TOPRIGHT", TokenFrame, 'TOPRIGHT',-6,-35)
+	button:SetScript('OnClick', function (self, d)
 		Save.Hide= not Save.Hide and true or nil
 		print(id, addName, e.GetEnabeleDisable(not Save.Hide))
 		Set()
-		if panel.btn then
-			panel.btn:SetButtonState('PUSHED')
+		if button.btn then
+			button.btn:SetButtonState('PUSHED')
+		end
+		if Save.Hide then
+			button.indcatoCheck.text:SetTextColor(0.82, 0.82, 0.82, 0.5)
+		else
+			button.indcatoCheck.text:SetTextColor(1, 1, 1, 1)
 		end
 	end)
-	panel:SetScript("OnEnter", function(self2)
+	button:SetScript("OnEnter", function(self2)
 		e.tips:SetOwner(self2, "ANCHOR_LEFT")
 		e.tips:ClearLines()
 		e.tips:AddDoubleLine((e.onlyChinese and '文本' or  LOCALE_TEXT_LABEL)..': '..e.GetEnabeleDisable(not Save.Hide),e.Icon.left)
 		e.tips:AddLine(' ')
-		e.tips:AddDoubleLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '副本' or INSTANCE),'|cnRED_FONT_COLOR:'..(e.onlyChinese and '宠物对战' or SHOW_PET_BATTLES_ON_MAP_TEXT))
+		e.tips:AddDoubleLine(e.onlyChinese and '副本/宠物对战' or INSTANCE..'/'..SHOW_PET_BATTLES_ON_MAP_TEXT, e.GetEnabeleDisable(false))
 		e.tips:AddDoubleLine(id, addName)
 		e.tips:Show()
 	end)
-	panel:SetScript('OnLeave', function ()
+	button:SetScript('OnLeave', function ()
 		e.tips:Hide()
 	end)
 
 	--展开,合起
-	panel.down=e.Cbtn(panel, {icon=false, size={18,18}});
-	panel.down:SetPoint('RIGHT', panel, 'LEFT', -2,0)
-	panel.down:SetNormalTexture('Interface\\Buttons\\UI-MinusButton-Up')
-	panel.down:SetScript("OnMouseDown", function(self)
+	button.down=e.Cbtn(button, {icon=false, size={18,18}});
+	button.down:SetPoint('RIGHT', button, 'LEFT', -2,0)
+	button.down:SetNormalTexture('Interface\\Buttons\\UI-MinusButton-Up')
+	button.down:SetScript("OnMouseDown", function(self)
 			for i=1, C_CurrencyInfo.GetCurrencyListSize() do--展开所有
 				local info = C_CurrencyInfo.GetCurrencyListInfo(i)
 				if info  and info.isHeader and not info.isHeaderExpanded then
@@ -273,11 +301,11 @@ local function Init()
 			end
 			TokenFrame_Update()
 	end)
-	panel.up=e.Cbtn(panel, {icon=false, size={18,18}})
-	panel.up:SetPoint('RIGHT', panel.down, 'LEFT',-2,0)
-	panel.up:SetSize(18,18);
-	panel.up:SetNormalTexture("Interface\\Buttons\\UI-PlusButton-Up")
-	panel.up:SetScript("OnMouseDown", function(self)
+	button.up=e.Cbtn(button, {icon=false, size={18,18}})
+	button.up:SetPoint('RIGHT', button.down, 'LEFT',-2,0)
+	button.up:SetSize(18,18);
+	button.up:SetNormalTexture("Interface\\Buttons\\UI-PlusButton-Up")
+	button.up:SetScript("OnMouseDown", function(self)
 			for i=1, C_CurrencyInfo.GetCurrencyListSize() do--展开所有
 				local info = C_CurrencyInfo.GetCurrencyListInfo(i);
 				if info  and info.isHeader and info.isHeaderExpanded then
@@ -286,10 +314,10 @@ local function Init()
 			end
 			TokenFrame_Update();
 	end)
-	panel.bag=e.Cbtn(panel, {icon='hide', size={18,18}})
-	panel.bag:SetPoint('RIGHT', panel.up, 'LEFT',-2,0)
-	panel.bag:SetNormalAtlas(e.Icon.bag)
-	panel.bag:SetScript("OnMouseDown", function(self)
+	button.bag=e.Cbtn(button, {icon='hide', size={18,18}})
+	button.bag:SetPoint('RIGHT', button.up, 'LEFT',-2,0)
+	button.bag:SetNormalAtlas(e.Icon.bag)
+	button.bag:SetScript("OnMouseDown", function(self)
 			for index=1, BackpackTokenFrame:GetMaxTokensWatched() do--Blizzard_TokenUI.lua
 				local info = C_CurrencyInfo.GetBackpackCurrencyInfo(index)
 				if info then
@@ -301,7 +329,7 @@ local function Init()
 			ToggleAllBags()
 			TokenFrame_Update();
 	end)
-	panel.bag:SetScript('OnEnter', function(self2)
+	button.bag:SetScript('OnEnter', function(self2)
 		e.tips:SetOwner(self2, "ANCHOR_LEFT")
 		e.tips:ClearLines()
 		e.tips:AddDoubleLine(e.onlyChinese and '在行囊上显示' or SHOW_ON_BACKPACK, GetNumWatchedTokens())
@@ -313,19 +341,49 @@ local function Init()
 		end
 		e.tips:Show()
 	end)
-	panel.bag:SetScript('OnLeave', function() e.tips:Hide() end)
+	button.bag:SetScript('OnLeave', function() e.tips:Hide() end)
 
 	Set()
+
+	button.indcatoCheck= CreateFrame("CheckButton", nil, TokenFrame, "InterfaceOptionsCheckButtonTemplate")--指定显示, 选项
+	button.indcatoCheck:SetPoint('TOP', 0, -32)
+	button.indcatoCheck:SetScript('OnClick', function()
+		Save.indicato= not Save.indicato and true or nil
+		set_Text()--设置, 文本
+	end)
+	button.indcatoCheck:SetScript('OnEnter', function(self)
+		e.tips:SetOwner(self, "ANCHOR_LEFT")
+		e.tips:ClearLines()
+		e.tips:AddDoubleLine((e.onlyChinese and '文本' or  LOCALE_TEXT_LABEL), e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
+		e.tips:AddLine(' ')
+		e.tips:AddDoubleLine((e.onlyChinese and '文本' or  LOCALE_TEXT_LABEL), e.GetShowHide(not Save.Hide))
+		e.tips:AddDoubleLine(id, addName)
+		e.tips:Show()
+	end)
+	button.indcatoCheck:SetScript('OnLeave', function() e.tips:Hide() end)
+	button.indcatoCheck.text:SetText(e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
+	button.indcatoCheck:SetChecked(Save.indicato)
+	if Save.Hide then
+		button.indcatoCheck.text:SetTextColor(0.82, 0.82, 0.82, 0.5)
+	end
+
+	hooksecurefunc('TokenFrame_InitTokenButton',function(self, frame, elementData)--Blizzard_TokenUI.lua
+		set_Tokens_Button(frame)--设置, 列表, 内容
+	end)
 	hooksecurefunc('TokenFrame_Update', function()
+		for _, frame in pairs(TokenFrame.ScrollBox:GetFrames()) do
+			set_Tokens_Button(frame)--设置, 列表, 内容
+		end
 		set_ItemInteractionFrame_Currency(TokenFrame)--套装,转换,货币
-		set_Text()
-	end)--设置, 文本
+		set_Text()--设置, 文本
+	end)
 end
 
 
 --###########
 --加载保存数据
 --###########
+local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -342,7 +400,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if Save.disabled then
                 panel:UnregisterAllEvents()
-				panel:SetShown(false)
             else
 				Init()
             end
