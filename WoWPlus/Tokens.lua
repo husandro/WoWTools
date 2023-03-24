@@ -201,41 +201,37 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 	if not frame or not frame.index then
 		return
 	end
-	local show
 	local info = C_CurrencyInfo.GetCurrencyListInfo(frame.index)
 	local link= C_CurrencyInfo.GetCurrencyListLink(frame.index)
 	local currencyID= link and C_CurrencyInfo.GetCurrencyIDFromLink(link)
-	if not frame.isHeader and info and currencyID then
-		if not frame.check then
-			frame.check= CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")
-			frame.check:SetPoint('RIGHT', 0,0)
-			--frame.check:SetFrameLevel(frame:GetFrameLevel()+5)
-			frame.check:SetScript('OnClick', function(self)
-				if self.currencyID then
-					Save.tokens[self.currencyID]= not Save.tokens[self.currencyID] and true or nil
-					set_Text()--设置, 文本
-				end
-			end)
-			frame.check:SetScript('OnEnter', function(self)
-				e.tips:SetOwner(self, "ANCHOR_RIGHT")
-				e.tips:ClearLines()
-				e.tips:AddDoubleLine((e.onlyChinese and '文本' or  LOCALE_TEXT_LABEL), e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
-				e.tips:AddLine(' ')
-				e.tips:AddDoubleLine(id, addName)
-				e.tips:Show()
-			end)
-			frame.check:SetScript('OnLeave', function() e.tips:Hide() end)
-			frame.check:SetAlpha(0.3)
-			frame.check:SetSize(15,15)
-			frame.check:SetCheckedTexture(e.Icon.icon)
-		end
-		frame.check.currencyID= currencyID
-		show= true
+	if not frame.isHeader and info and currencyID  and not frame.check then
+		frame.check= CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")
+		frame.check:SetPoint('LEFT', -3,0)
+		frame.check:SetScript('OnClick', function(self)
+			if self.currencyID then
+				Save.tokens[self.currencyID]= not Save.tokens[self.currencyID] and true or nil
+				frame.check:SetAlpha(Save.tokens[self.currencyID] and 1 or 0.5)
+				set_Text()--设置, 文本
+			end
+		end)
+		frame.check:SetScript('OnEnter', function(self)
+			e.tips:SetOwner(self, "ANCHOR_RIGHT")
+			e.tips:ClearLines()
+			e.tips:AddDoubleLine((e.onlyChinese and '文本' or  LOCALE_TEXT_LABEL), e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
+			e.tips:AddLine(' ')
+			e.tips:AddDoubleLine(id, addName)
+			e.tips:Show()
+		end)
+		frame.check:SetScript('OnLeave', function() e.tips:Hide() end)
+		frame.check:SetSize(15,15)
+		frame.check:SetCheckedTexture(e.Icon.icon)
 	end
 
 	if frame.check then
-		frame.check:SetShown(show)
+		frame.check.currencyID= currencyID
+		frame.check:SetShown(not frame.isHeader)
 		frame.check:SetChecked(Save.tokens[currencyID])
+		frame.check:SetAlpha(Save.tokens[currencyID] and 1 or 0.5)
 	end
 
 	if info and frame.Count then--最大数
@@ -318,16 +314,16 @@ local function Init()
 	button.bag:SetPoint('RIGHT', button.up, 'LEFT',-2,0)
 	button.bag:SetNormalAtlas(e.Icon.bag)
 	button.bag:SetScript("OnMouseDown", function(self)
-			for index=1, BackpackTokenFrame:GetMaxTokensWatched() do--Blizzard_TokenUI.lua
-				local info = C_CurrencyInfo.GetBackpackCurrencyInfo(index)
-				if info then
-					local link=C_CurrencyInfo.GetCurrencyLink(info.currencyTypesID) or info.name
-					--C_CurrencyInfo.SetCurrencyBackpack(index, false)
-					print(link)
-				end
+		for index=1, BackpackTokenFrame:GetMaxTokensWatched() do--Blizzard_TokenUI.lua
+			local info = C_CurrencyInfo.GetBackpackCurrencyInfo(index)
+			if info then
+				local link=C_CurrencyInfo.GetCurrencyLink(info.currencyTypesID) or info.name
+				--C_CurrencyInfo.SetCurrencyBackpack(index, false)
+				print(link)
 			end
-			ToggleAllBags()
-			TokenFrame_Update();
+		end
+		ToggleAllBags()
+		TokenFrame_Update();
 	end)
 	button.bag:SetScript('OnEnter', function(self2)
 		e.tips:SetOwner(self2, "ANCHOR_LEFT")
@@ -347,14 +343,26 @@ local function Init()
 
 	button.indcatoCheck= CreateFrame("CheckButton", nil, TokenFrame, "InterfaceOptionsCheckButtonTemplate")--指定显示, 选项
 	button.indcatoCheck:SetPoint('TOP', 0, -32)
-	button.indcatoCheck:SetScript('OnClick', function()
-		Save.indicato= not Save.indicato and true or nil
+	button.indcatoCheck:SetScript('OnMouseDown', function(self, d)
+		if d=='LeftButton' then
+			Save.indicato= not Save.indicato and true or nil
+			print(id, addName, e.onlyChinese and '文本' or  LOCALE_TEXT_LABEL, e.GetShowHide(not Save.Hide))
+		elseif d=='RightButton' then
+			Save.tokens={}
+			print(id, addName, e.onlyChinese and '全部清除' or CLEAR_ALL, e.onlyChinese and '类型' or TYPE, e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
+			TokenFrame_Update()
+		end
 		set_Text()--设置, 文本
 	end)
 	button.indcatoCheck:SetScript('OnEnter', function(self)
+		local num= 0
+		for _, _ in pairs(Save.tokens) do
+			num= num+1
+		end
 		e.tips:SetOwner(self, "ANCHOR_LEFT")
 		e.tips:ClearLines()
-		e.tips:AddDoubleLine((e.onlyChinese and '文本' or  LOCALE_TEXT_LABEL), e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
+		e.tips:AddDoubleLine(e.onlyChinese and '文本 (类型): 指定' or  LOCALE_TEXT_LABEL..' ('..TYPE..'): '..COMBAT_ALLY_START_MISSION, e.Icon.left)
+		e.tips:AddDoubleLine( e.onlyChinese and '全部清除' or CLEAR_ALL, '|cnGREEN_FONT_COLOR:#'..num..'|r'.. e.Icon.right)
 		e.tips:AddLine(' ')
 		e.tips:AddDoubleLine((e.onlyChinese and '文本' or  LOCALE_TEXT_LABEL), e.GetShowHide(not Save.Hide))
 		e.tips:AddDoubleLine(id, addName)
