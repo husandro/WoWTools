@@ -90,7 +90,7 @@ local function setEquipmentLevel()--角色图标显示装等
         text=text..equipmentLevelIcon
     end
     button.equipmentLevel:SetText(text or '')
-    e.Set_HelpTips({frame=button, topoint=button.equipmentLevel, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=nil, show=red})--设置，提示
+    e.Set_HelpTips({frame=button, topoint=button.equipmentLevel, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=nil, show=red and not C_PvP.IsArena() and not C_PvP.IsBattleground()})--设置，提示
 end
 
 local function set_Durabiliy_EquipLevel_Event()--设置装等,耐久度,事件
