@@ -5,18 +5,20 @@ local Save={
 	factionUpdateTips=true,--更新, 提示
 	btnstr=true,--文本
 	factions={},--指定,显示,声望
+	--indicato=true,--指定
 }
 local addName=REPUTATION
 local panel= e.Cbtn(ReputationFrame, {icon=true,size={20, 20}})
 
 
-local function set_Faction_Info(tab)
+local function get_Faction_Info(tab)
 	local name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canBeLFGBonus 
 	if tab.index then
 		name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canBeLFGBonus= GetFactionInfo(tab.index)
 	else
 		name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canBeLFGBonus= GetFactionInfoByID(tab.factionID)
 	end
+
 	if tab.hid and name==HIDE then --隐藏 '隐藏声望'
 		return
 	end
@@ -119,7 +121,7 @@ end
 --#########
 --设置, 文本
 --#########
-local function Reputation_Text_setText()--设置, 文本
+local function set_Text()--设置, 文本
 	if not Save.btn or not Save.btnstr or (panel.btn and not panel.btn:IsShown())  then
 		if panel.btn and panel.btn.text then
 			panel.btn.text:SetText('')
@@ -130,11 +132,21 @@ local function Reputation_Text_setText()--设置, 文本
 	panel.btn:SetNormalTexture(0)
 
 	local m=''
-	for i=1, GetNumFactions() do
-		local t=set_Faction_Info({index= i, hide=true})
-		if t then
-			if m~='' then m=m..'|n' end
-			m=m..t
+	if Save.indicato then
+		for factionID, _ in pairs(Save.factions) do
+			local t=get_Faction_Info({factionID= factionID})
+			if t then
+				if m~='' then m=m..'|n' end
+				m=m..t
+			end
+		end
+	else
+		for i=1, GetNumFactions() do
+			local t=get_Faction_Info({index= i, hide=true})
+			if t then
+				if m~='' then m=m..'|n' end
+				m=m..t
+			end
 		end
 	end
 	if m=='' then
@@ -144,7 +156,7 @@ local function Reputation_Text_setText()--设置, 文本
 end
 
 
-local function Set_Reputation_Text()--监视, 文本
+local function text_Init()--监视, 文本
 	if Save.btn and not panel.btn then
 		panel.btn= e.Cbtn(nil, {icon=Save.btn, size={18,18}})
 		if Save.point then
@@ -171,16 +183,16 @@ local function Set_Reputation_Text()--监视, 文本
 			elseif d=='LeftButton' and not key then--点击,显示隐藏
 				Save.btnstr= not Save.btnstr and true or false
 				print(id, addName, e.GetShowHide(Save.btnstr))
-				Reputation_Text_setText()--设置, 文本
+				set_Text()--设置, 文本
 
 			elseif d=='LeftButton' and IsAltKeyDown() then
 				Save.btnStrHideHeader= not Save.btnStrHideHeader and true or false
-				Reputation_Text_setText()--设置, 文本
+				set_Text()--设置, 文本
 				print(id,addName, e.onlyChinese and '版本' or GAME_VERSION_LABEL,'('..NO..e.Icon.bank2..(e.onlyChinese and '奖励' or QUEST_REWARDS)..')', e.GetShowHide(not Save.btnStrHideHeader))
 
 			elseif d=='LeftButton' and IsShiftKeyDown() then--Shift+点击, 隐藏最高级, 且没有奖励声望
 				Save.btnStrHideCap= not Save.btnStrHideCap and true or false
-				Reputation_Text_setText()--设置, 文本
+				set_Text()--设置, 文本
 				print(id, addName, e.onlyChinese and '没有声望奖励时' or VIDEO_OPTIONS_ULTRA_HIGH..'('..NO..e.Icon.bank2..QUEST_REWARDS..')', e.GetShowHide(not Save.btnStrHideCap))
 			end
 		end)
@@ -238,7 +250,7 @@ local function Set_Reputation_Text()--监视, 文本
 			local show= Save.btn and not IsInInstance() and not C_PetBattles.IsInBattle()
 			self:SetShown(show)
 			if show then
-				Reputation_Text_setText()--设置, 文本
+				set_Text()--设置, 文本
 			end
 		end)
 
@@ -247,7 +259,7 @@ local function Set_Reputation_Text()--监视, 文本
 	end
 	if panel.btn then
 		panel.btn:SetShown(Save.btn and not IsInInstance() and not C_PetBattles.IsInBattle())
-		Reputation_Text_setText()--设置, 文本
+		set_Text()--设置, 文本
 	end
 end
 
@@ -272,6 +284,9 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 		end
 		if factionContainer.texture then--图标
 			factionContainer.texture:SetTexture(0)
+		end
+		if factionContainer.check then
+			factionContainer.check:SetShown(false)
 		end
 		return
 	end
@@ -382,6 +397,33 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 			factionContainer.texture:SetTexture(0)
 		end
 	end
+
+	if not factionContainer.check then
+		factionContainer.check= CreateFrame("CheckButton", nil, factionContainer, "InterfaceOptionsCheckButtonTemplate")
+		factionContainer.check:SetPoint('LEFT',-2,0)
+		factionContainer.check:SetScript('OnClick', function(self)
+			if self.factionID then
+				Save.factions[factionID]= not Save.factions[factionID] and true or nil
+				self:SetAlpha(Save.factions[factionID] and 1 or 0.5)
+				set_Text()--设置, 文本
+			end
+		end)
+		factionContainer.check:SetScript('OnEnter', function(self)
+			e.tips:SetOwner(self, "ANCHOR_RIGHT")
+			e.tips:ClearLines()
+			e.tips:AddDoubleLine((e.onlyChinese and '文本' or  LOCALE_TEXT_LABEL), e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
+			e.tips:AddLine(' ')
+			e.tips:AddDoubleLine(id, addName)
+			e.tips:Show()
+		end)
+		factionContainer.check:SetScript('OnLeave', function() e.tips:Hide() end)
+		factionContainer.check:SetSize(15,15)
+		factionContainer.check:SetCheckedTexture(e.Icon.icon)
+	end
+	factionContainer.check:SetShown(true)
+	factionContainer.check.factionID= factionID
+	factionContainer.check:SetChecked(Save.factions[factionID])
+	factionContainer.check:SetAlpha(Save.factions[factionID] and 1 or 0.5)
 end
 
 
@@ -480,46 +522,75 @@ end
 --#####
 local function InitMenu(self, level, type)
 	local info
-	info={
-		text= e.onlyChinese and '文本' or LOCALE_TEXT_LABEL,
-		colorCode= (IsInInstance() or C_PetBattles.IsInBattle()) and '|cff808080',
-		checked= Save.btn,
-		func= function()
-			Save.btn= not Save.btn and true or nil
-			Set_Reputation_Text()--监视, 文本
-			if panel.btn then
-				panel.btn:SetButtonState('PUSHED')
+	if type=='INDICATO' then
+		local n= 0
+		for _,_ in pairs(Save.factions) do
+			n=n+1
+		end
+		info={
+			text= (e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)..' |cnGREEN_FONT_COLOR:#'..n,
+			checked= Save.indicato,
+			func= function()
+				Save.indicato= not Save.indicato and true or nil
+				if Save.indicato and Save.notPlus then
+					Save.notPlus= nil
+					panel.down:SetShown(true)
+					panel.up:SetShown(true)
+					ReputationFrame_Update()
+					CloseDropDownMenus();
+				end
+				set_Text()--设置, 文本
 			end
-			print(id, addName, e.onlyChinese and '文本' or LOCALE_TEXT_LABEL, e.GetShowHide(Save.btn))
-		end
-	}
-	UIDropDownMenu_AddButton(info, level)
+		}
+		UIDropDownMenu_AddButton(info, level)
+	else
+		info={
+			text= e.onlyChinese and '文本' or LOCALE_TEXT_LABEL,
+			checked= Save.btn,
+			tooltipOnButton=true,
+			tooltipTitle= e.onlyChinese and '副本/宠物对战' or INSTANCE..'/'..SHOW_PET_BATTLES_ON_MAP_TEXT,
+			tooltipText= e.GetEnabeleDisable(false),
+			colorCode= (IsInInstance() or C_PetBattles.IsInBattle()) and '|cffff0000',
+			menuList='INDICATO',
+			hasArrow=true,
+			func= function()
+				Save.btn= not Save.btn and true or nil
+				text_Init()--监视, 文本
+				if panel.btn then
+					panel.btn:SetButtonState('PUSHED')
+				end
+				print(id, addName, e.onlyChinese and '文本' or LOCALE_TEXT_LABEL, e.GetShowHide(Save.btn))
+			end
+		}
+		UIDropDownMenu_AddButton(info, level)
 
-	info={
-		text= (e.onlyChinese and '声望变化' or COMBAT_TEXT_SHOW_REPUTATION_TEXT)..'|A:voicechat-icon-textchat-silenced:0:0|a',
-		tooltipOnButton=true,
-		tooltipTitle= e.onlyChinese and '展开选项 |A:editmode-down-arrow:16:11:0:-7|a 声望' or HUD_EDIT_MODE_EXPAND_OPTIONS..REPUTATION,
-		tooltipText= '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需求' or NEED),
-		checked= Save.factionUpdateTips,
-		func= function()
-			Save.factionUpdateTips= not Save.factionUpdateTips and true or nil
-			--set_RegisterEvent_CHAT_MSG_COMBAT_FACTION_CHANGE()--更新, 提示, 事件
-			print(id, addName, e.onlyChinese and '声望变化' or COMBAT_TEXT_SHOW_REPUTATION_TEXT,'|A:voicechat-icon-textchat-silenced:0:0|a', e.GetEnabeleDisable(Save.factionUpdateTips), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
-		end
-	}
-	UIDropDownMenu_AddButton(info, level)
+		info={
+			text= (e.onlyChinese and '声望变化' or COMBAT_TEXT_SHOW_REPUTATION_TEXT)..'|A:voicechat-icon-textchat-silenced:0:0|a',
+			tooltipOnButton=true,
+			tooltipTitle= e.onlyChinese and '展开选项 |A:editmode-down-arrow:16:11:0:-7|a 声望' or HUD_EDIT_MODE_EXPAND_OPTIONS..REPUTATION,
+			tooltipText= '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需求' or NEED),
+			checked= Save.factionUpdateTips,
+			func= function()
+				Save.factionUpdateTips= not Save.factionUpdateTips and true or nil
+				--set_RegisterEvent_CHAT_MSG_COMBAT_FACTION_CHANGE()--更新, 提示, 事件
+				print(id, addName, e.onlyChinese and '声望变化' or COMBAT_TEXT_SHOW_REPUTATION_TEXT,'|A:voicechat-icon-textchat-silenced:0:0|a', e.GetEnabeleDisable(Save.factionUpdateTips), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+			end
+		}
+		UIDropDownMenu_AddButton(info, level)
 
-	info={
-		text= 'UI Plus',
-		checked= not Save.notPlus,
-		func= function()
-			Save.notPlus= not Save.notPlus and true or nil
-			panel.down:SetShown(not Save.notPlus)
-			panel.up:SetShown(not Save.notPlus)
-			print(id, addName, 'UI Plus', e.GetEnabeleDisable(not Save.notPlus), e.onlyChinese and '需要刷新' or NEED..REFRESH)
-		end
-	}
-	UIDropDownMenu_AddButton(info, level)
+		info={
+			text= 'UI Plus',
+			checked= not Save.notPlus,
+			func= function()
+				Save.notPlus= not Save.notPlus and true or nil
+				panel.down:SetShown(not Save.notPlus)
+				panel.up:SetShown(not Save.notPlus)
+				ReputationFrame_Update()
+				--print(id, addName, 'UI Plus', e.GetEnabeleDisable(not Save.notPlus), e.onlyChinese and '需要刷新' or NEED..REFRESH)
+			end
+		}
+		UIDropDownMenu_AddButton(info, level)
+	end
 	--UIDropDownMenu_AddSeparator(level)
 end
 
@@ -528,8 +599,9 @@ end
 --初始化
 --######
 local function Init()
-	Set_Reputation_Text()--监视, 文本
-	hooksecurefunc('ReputationFrame_Update', Reputation_Text_setText)--更新, 监视, 文本
+	text_Init()--监视, 文本
+
+	hooksecurefunc('ReputationFrame_Update', set_Text)--更新, 监视, 文本
 
 	hooksecurefunc('ReputationFrame_InitReputationRow', set_ReputationFrame_InitReputationRow)-- 声望, 界面, 增强
 
@@ -591,6 +663,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             else
                 Init()
 				panel:UnregisterEvent('ADDON_LOADED')
+				panel:RegisterEvent('UPDATE_FACTION')
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 		end
@@ -599,5 +672,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if not e.ClearAllSave then
             WoWToolsSave[addName]=Save
         end
+	elseif event=='UPDATE_FACTION' then
+		C_Timer.After(0.5, set_Text)--设置, 文本
     end
 end)

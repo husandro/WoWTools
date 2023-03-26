@@ -2103,7 +2103,8 @@
         "SELECT_LOOT_SPECIALIZATION",
         "CAMERA_FOV",
         "CURRENCY_THIS_WEEK",
-        "PVEFrameCloseButton"
+        "PVEFrameCloseButton",
+        "ReputationFrame_Update"
     ],
     "Lua.diagnostics.disable": [
     ]
