@@ -83,7 +83,7 @@ local function get_Faction_Info(tab)
 		if ( isParagon ) then--奖励
 			local currentValue, threshold, rewardQuestID, hasRewardPending2, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID);
 			hasRewardPending=hasRewardPending2
-			if not tooLowLevelForParagon then
+			if not tooLowLevelForParagon and  currentValue and threshold then
 				local completed= math.modf(currentValue/threshold)--完成次数
 				currentValue= completed>0 and currentValue - threshold * completed or currentValue
 				value=('%i%%'):format(currentValue/threshold*100)
@@ -104,8 +104,10 @@ local function get_Faction_Info(tab)
 			elseif not verHeader then
 				t= t.. (icon or '    ')--('|A:'..e.Icon.icon..':0:0|a'))
 			end
-
-			t=t..(name:match('%- (.+)') or name)..(factionStandingtext and ' '..factionStandingtext or '')..(value and ' '..value or '')
+			if tab.name then--名称
+				t=t..(name:match('%- (.+)') or name)
+			end
+			t=t..(factionStandingtext and ' '..factionStandingtext or '')..(value and ' '..value or '')
 
 			if hasRewardPending then--有奖励
 				t=t..' '..e.Icon.bank2
@@ -118,6 +120,7 @@ local function get_Faction_Info(tab)
 		end
 	end
 end
+
 --#########
 --设置, 文本
 --#########
@@ -134,7 +137,7 @@ local function set_Text()--设置, 文本
 	local m=''
 	if Save.indicato then
 		for factionID, _ in pairs(Save.factions) do
-			local t=get_Faction_Info({factionID= factionID})
+			local t=get_Faction_Info({factionID= factionID, hide=nil, name=not Save.hideName,})
 			if t then
 				if m~='' then m=m..'|n' end
 				m=m..t
@@ -142,7 +145,7 @@ local function set_Text()--设置, 文本
 		end
 	else
 		for i=1, GetNumFactions() do
-			local t=get_Faction_Info({index= i, hide=true})
+			local t=get_Faction_Info({index= i, hide=true, name=not Save.hideName,})
 			if t then
 				if m~='' then m=m..'|n' end
 				m=m..t
@@ -376,7 +379,7 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 
 	if levelText and not factionContainer.levelText then--等级
 		factionContainer.levelText= e.Cstr(factionContainer, {size=10, justifyH='RIGHT'})--10, nil, nil, nil, nil, 'RIGHT')
-		factionContainer.levelText:SetPoint('RIGHT', factionContainer, 'LEFT',2,0)
+		factionContainer.levelText:SetPoint('RIGHT', factionContainer, 'LEFT',-2,0)
 	end
 	if factionContainer.levelText then
 		factionContainer.levelText:SetText(levelText or '')
@@ -400,7 +403,8 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 
 	if not factionContainer.check then
 		factionContainer.check= CreateFrame("CheckButton", nil, factionContainer, "InterfaceOptionsCheckButtonTemplate")
-		factionContainer.check:SetPoint('LEFT',-2,0)
+		factionContainer.check:SetPoint('LEFT',-4,0)
+		factionContainer.check:SetFrameStrata('DIALOG')
 		factionContainer.check:SetScript('OnClick', function(self)
 			if self.factionID then
 				Save.factions[factionID]= not Save.factions[factionID] and true or nil
@@ -412,7 +416,13 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 			e.tips:SetOwner(self, "ANCHOR_RIGHT")
 			e.tips:ClearLines()
 			e.tips:AddDoubleLine((e.onlyChinese and '文本' or  LOCALE_TEXT_LABEL), e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
+			if self.factionID then
+				e.tips:AddLine('factionID '..self.factionID)
+			end
 			e.tips:AddLine(' ')
+			if Save.btnStrHideCap then
+				e.tips:AddLine((e.onlyChinese and '隐藏最高' or (VIDEO_OPTIONS_ULTRA_HIGH..': '..HIDE)))
+			end
 			e.tips:AddDoubleLine(id, addName)
 			e.tips:Show()
 		end)
@@ -543,6 +553,27 @@ local function InitMenu(self, level, type)
 			end
 		}
 		UIDropDownMenu_AddButton(info, level)
+		info={
+			text= e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
+			notCheckable=true,
+			func= function()
+				Save.factions={}
+				ReputationFrame_Update()
+				set_Text()--设置, 文本
+			end
+		}
+		UIDropDownMenu_AddButton(info, level)
+
+		UIDropDownMenu_AddSeparator(level)
+		info={
+			text= e.onlyChinese and '名称' or NAME,
+			checked= not Save.hideName,
+			func= function()
+				Save.hideName= not Save.hideName and true or nil
+				set_Text()--设置, 文本
+			end
+		}
+		UIDropDownMenu_AddButton(info, level)
 	else
 		info={
 			text= e.onlyChinese and '文本' or LOCALE_TEXT_LABEL,
@@ -591,7 +622,6 @@ local function InitMenu(self, level, type)
 		}
 		UIDropDownMenu_AddButton(info, level)
 	end
-	--UIDropDownMenu_AddSeparator(level)
 end
 
 
