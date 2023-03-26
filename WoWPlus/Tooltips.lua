@@ -20,35 +20,71 @@ local function setInitItem(self, hide)--创建物品
         self.backgroundColor=self:CreateTexture(nil,'BACKGROUND')
         self.backgroundColor:SetAllPoints(self)
     end
-    if not self.itemModel then--3D模型
-        self.itemModel=CreateFrame("PlayerModel", nil, self)
-        self.itemModel:SetFacing(0.35)
-        self.itemModel:SetPoint("TOPRIGHT", self, 'TOPLEFT')
-        self.itemModel:SetSize(250, 250)
+    if not self.playerModel and not Save.hideModel then
+        self.playerModel=CreateFrame("PlayerModel", nil, self)
+        self.playerModel:SetFacing(-0.35)
+        self.playerModel:SetPoint("BOTTOM", self, 'TOP', 0, -12)
+        self.playerModel:SetSize(100, 100)
+        self.playerModel:SetShown(false)
     end
 
     if not self.Portrait then--右上角图标
         self.Portrait=self:CreateTexture(nil, 'BORDER')
         self.Portrait:SetPoint('TOPRIGHT',-2, -3)
         self.Portrait:SetSize(40,40)
-        --self.Portrait:SetMask(e.Icon.mask)
     end
 
     if hide then
         self.textLeft:SetText('')
         self.text2Left:SetText('')
         self.textRight:SetText('')
-        self.itemModel:ClearModel()
-        self.itemModel:SetShown(false)
         self.Portrait:SetShown(false)
         self.backgroundColor:SetShown(false)
-        self.creatureDisplayID=nil--物品
         if self.playerModel then
             self.playerModel:ClearModel()
             self.playerModel:SetShown(false)
-            self.playerModel.guid=nil
+            self.playerModel.id=nil
         end
     end
+end
+
+--###########
+--设置, 3D模型
+--###########
+local function set_Item_Model(self, tab)--set_Item_Model(self, {unit=nil, guid=nil, creatureDisplayID=nil, animID=nil, appearanceID=nil, visualID=nil})--设置, 3D模型
+    if Save.hideModel then
+        return
+    end
+    if tab.unit then
+        if self.playerModel.id~=tab.guid and self.playerModel:CanSetUnit(tab.unit) then
+            self.playerModel:SetUnit(tab.unit)
+            self.playerModel.guid=tab.guid
+            self.playerModel.id=tab.guid
+            self.playerModel:SetShown(true)
+        end
+    elseif tab.creatureDisplayID  then
+        if self.playerModel.id~= tab.creatureDisplayID then
+            self.playerModel:SetDisplayInfo(tab.creatureDisplayID)
+            if tab.animID then
+                self.playerModel:SetAnimation(tab.animID)
+            end
+            self.playerModel.id=tab.creatureDisplayID
+            self.playerModel:SetShown(true)
+        end
+    elseif tab.itemID then
+        if self.playerModel.id~= tab.itemID then
+            self.playerModel:SetItem(tab.itemID, tab.appearanceID, tab.visualID)
+            self.playerModel.id= tab.itemID
+            self.playerModel:SetShown(true)
+        end
+    --[[elseif tab.appearanceID then
+        if self.playerModel.id~= tab.appearanceID then
+            self.playerModel:SetItemAppearance(tab.appearanceID, tab.visualID)
+            self.playerModel.id= tab.appearanceID
+            self.playerModel:SetShown(true)
+        end]]
+    end
+
 end
 
 local function setMount(self, mountID)--坐骑    
@@ -64,12 +100,13 @@ local function setMount(self, mountID)--坐骑
     if source then
         self:AddLine(source,nil,nil,nil,true)
     end
-    if creatureDisplayInfoID and self.creatureDisplayID~=creatureDisplayInfoID then--3D模型
+    set_Item_Model(self, {creatureDisplayID=creatureDisplayInfoID, animID=animID, itemID=nil, appearanceID=nil, visualID=nil})--设置, 3D模型
+    --[[if creatureDisplayInfoID and self.creatureDisplayID~=creatureDisplayInfoID then--3D模型
         self.itemModel:SetShown(true)
         self.itemModel:SetDisplayInfo(creatureDisplayInfoID)
         self.itemModel:SetAnimation(animID)
         self.creatureDisplayID=creatureDisplayInfoID
-    end
+    end]]
 
     self.text2Left:SetText(isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
 end
@@ -114,11 +151,12 @@ local function setPet(self, speciesID, setSearchText)--宠物
         self.Portrait:SetTexture("Interface\\TargetingFrame\\PetBadge-"..PET_TYPE_SUFFIX[petType])
         self.Portrait:SetShown(true)
     end
-    if creatureDisplayID and self.creatureDisplayID~=creatureDisplayID then--3D模型
+    set_Item_Model(self, {creatureDisplayID=creatureDisplayID, animID=nil, itemID=nil, appearanceID=nil, visualID=nil})--设置, 3D模型
+    --[[if creatureDisplayID and self.creatureDisplayID~=creatureDisplayID then--3D模型
         self.itemModel:SetDisplayInfo(creatureDisplayID)
         self.itemModel:SetShown(true)
         self.creatureDisplayID=creatureDisplayID
-    end
+    end]]
 
     if setSearchText and speciesName and PetJournalSearchBox and PetJournalSearchBox:IsVisible() then--宠物手册，设置名称
         PetJournalSearchBox:SetText(speciesName)
@@ -183,14 +221,15 @@ local function setItem(self, ItemLink)
                 self.text2Left:SetText(sourceInfo.isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
             end
         end
-        if appearanceID then
+        set_Item_Model(self, {creatureDisplayID=nil, animID=nil, itemID=itemID, appearanceID=appearanceID, visualID=visualID})--设置, 3D模型
+        --[[if appearanceID then
             if self.creatureDisplayID~=appearanceID then
                 self.itemModel:SetItemAppearance(appearanceID, visualID)
-                --self.itemModel:SetItem(itemID, appearanceModID, itemVisualID)
+                
                 self.itemModel:SetShown(true)
                 self.creatureDisplayID=appearanceID
             end
-        end
+        end]]
         if bindType==LE_ITEM_BIND_ON_EQUIP or bindType==LE_ITEM_BIND_ON_USE then--绑定装备,使用时绑定
             self.Portrait:SetAtlas(e.Icon.unlocked)
         end
@@ -622,7 +661,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             end
         end
 
-        
+
 
         local num= isInGuild and 4 or 3
         local allNum= self:NumLines()
@@ -641,7 +680,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                             end
                             line:SetShown(true)
                         end
-                        
+
                     elseif isGroupPlayer then----队友位置
                         local mapID= C_Map.GetBestMapForUnit(unit)--地图ID
                         local mapInfo= mapID and C_Map.GetMapInfo(mapID)
@@ -737,13 +776,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
 
     set_Unit_Health_Bar(GameTooltipStatusBar,unit)--生命条提示
 
-    if self.playerModel:CanSetUnit(unit) then
-        if self.playerModel.guid~=guid then--3D模型
-            self.playerModel:SetUnit(unit)
-            self.playerModel.guid=guid
-        end
-        self.playerModel:SetShown(true)
-    end
+    set_Item_Model(self, {unit=unit, guid=guid, creatureDisplayID=nil, animID=nil, appearanceID=nil, visualID=nil})--设置, 3D模型
 end
 
 local function setCVar(reset, tips, notPrint)
@@ -784,13 +817,15 @@ local function setCVar(reset, tips, notPrint)
 
     if tips then
         for name, info in pairs(tab) do
-            e.tips:AddDoubleLine(name..': '..info.value..' (|cff00ff00'..C_CVar.GetCVar(name)..'|r)', info.msg)
+            if info.zh and LOCALE_zhCN or not info.zh then
+                e.tips:AddDoubleLine(name..': '..info.value..' (|cff00ff00'..C_CVar.GetCVar(name)..'|r)', info.msg)
+            end
         end
         return
     end
 
     for name, info in pairs(tab) do
-        if info.zh and e.Player.zh or not info.zh then
+        if info.zh and LOCALE_zhCN or not info.zh then
             if reset then
                 local defaultValue = C_CVar.GetCVarDefault(name)
                 local value = C_CVar.GetCVar(name)
@@ -842,8 +877,8 @@ local function set_Battle_Pet(self, speciesID, level, breedQuality, maxHealth, p
     if not self.Portrait then
         setInitItem(self, true)--创建物品
     end
-
-    self.itemModel:SetDisplayInfo(creatureDisplayID)
+    set_Item_Model(self, {creatureDisplayID=creatureDisplayID, animID=nil, itemID=nil, appearanceID=nil, visualID=nil})--设置, 3D模型
+    --self.itemModel:SetDisplayInfo(creatureDisplayID)
     if obtainable then
         local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesID)
         if numCollected==0 then
@@ -903,13 +938,13 @@ end
 --初始
 --####
 local function Init()
-    if not e.tips.playerModel then--单位3D模型
+    --[[if not e.tips.playerModel then--单位3D模型
         e.tips.playerModel=CreateFrame("PlayerModel", nil, e.tips)
         e.tips.playerModel:SetFacing(-0.35)
         e.tips.playerModel:SetPoint("BOTTOM", e.tips, 'TOP', 0, -12)
         e.tips.playerModel:SetSize(100, 100)
         e.tips.playerModel:SetShown(false)
-    end
+    end]]
     --panel:RegisterEvent('INSPECT_READY')
 
     setInitItem(ItemRefTooltip)
@@ -1006,7 +1041,7 @@ local function Init()
                 end
             else
                 self:ClearAllPoints();
-                self:SetOwner(parent, 'ANCHOR_CURSOR_LEFT')
+                self:SetOwner(parent, 'ANCHOR_CURSOR_LEFT', Save.cursorX, Save.cursorY)
             end
         elseif Save.setAnchor and Save.AnchorPoint then
             self:ClearAllPoints();
@@ -1130,7 +1165,7 @@ local function Init()
 
     setCVar(nil, nil, true)--设置CVar
 
-    if Save.setCVar and e.Player.zh then
+    if Save.setCVar and LOCALE_zhCN then
         ConsoleExec("portal TW")
         SetCVar("profanityFilter", '0')
 
@@ -1193,104 +1228,157 @@ local function Init_Panel()
     panel.parent= id
     InterfaceOptions_AddCategory(panel)
 
-    local restButton= CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')--重新加载UI
-    restButton:SetPoint('TOPLEFT')
-    restButton:SetText(e.onlyChinese and '重新加载UI' or RELOADUI)
-    restButton:SetSize(120, 28)
-    restButton:SetScript('OnMouseUp', e.Reload)
 
-    --添加控制面板 
-    local check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    check:SetChecked(not Save.disabled)
-    check:SetPoint('TOPLEFT', panel, 'TOP')
-    check.text:SetText(e.onlyChinese and '启用/禁用' or (ENABLE..'/'..DISABLE))
-    check:SetScript('OnMouseDown', function()
-        Save.disabled= not Save.disabled and true or nil
-        print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-    end)
+    e.ReloadPanel({panel=panel, addName= addName, restTips=true, checked=not Save.disabled,--重新加载UI, 重置, 按钮
+        disabledfunc=function()
+            Save.disabled= not Save.disabled and true or nil
+            print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end,
+        clearfunc= function() Save=nil e.Reload() end}
+    )
 
-    panel.setDefaultAnchor=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--设置默认提示位置
-    panel.setDefaultAnchor.Text:SetText('1) '..(e.onlyChinese and '跟随鼠标' or FOLLOW..MOUSE_LABEL))
-    panel.setDefaultAnchor:SetPoint('TOPLEFT', restButton, 'BOTTOMLEFT', 0, -32)
-    panel.setDefaultAnchor:SetChecked(Save.setDefaultAnchor)--提示位置            
-    panel.setDefaultAnchor:SetScript('OnMouseDown', function()
+
+    local setDefaultAnchor=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--设置默认提示位置
+    local inCombatDefaultAnchor=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    local Anchor=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--指定提示位置
+
+    setDefaultAnchor.text:SetText(e.onlyChinese and '跟随鼠标' or FOLLOW..MOUSE_LABEL)
+    setDefaultAnchor:SetPoint('TOPLEFT', 0, -48)
+    setDefaultAnchor:SetChecked(Save.setDefaultAnchor)--提示位置            
+    setDefaultAnchor:SetScript('OnMouseDown', function()
+        Save.setDefaultAnchor= not Save.setDefaultAnchor and true or nil
         if Save.setDefaultAnchor then
-            Save.setDefaultAnchor=nil
-        else
-            Save.setDefaultAnchor=true
             Save.setAnchor=nil
-            panel.Anchor:SetChecked(false)
+            Anchor:SetChecked(false)
         end
-        panel.inCombatDefaultAnchor:SetEnabled(Save.setDefaultAnchor)
     end)
 
-    panel.inCombatDefaultAnchor=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    panel.inCombatDefaultAnchor.Text:SetText(e.onlyChinese and '战斗中：默认' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..DEFAULT)
-    panel.inCombatDefaultAnchor:SetPoint('LEFT', panel.setDefaultAnchor.Text, 'RIGHT', 20, 0)
-    panel.inCombatDefaultAnchor:SetScript('OnMouseDown', function()
+
+    local sliderCursorX = e.Create_Slider(panel, {w=100, min=-100, max=100, value=Save.cursorX or 0, setp=1, color=nil,
+    text='X',
+    func=function(self, value)
+        value= tonumber(format('%i', value))
+        value= value==0 and 0 or value
+        self:SetValue(value)
+        self.Text:SetText(value)
+        Save.cursorX= value
+        e.tips:ClearAllPoints();
+        e.tips:SetOwner(UIParent, 'ANCHOR_CURSOR_LEFT', Save.cursorX, Save.cursorY)
+        e.tips:ClearLines()
+        e.tips:SetUnit('player')
+        e.tips:Show()
+    end})
+    sliderCursorX:SetPoint("LEFT", setDefaultAnchor.text, 'RIGHT',5,0)
+
+    local sliderCursorY = e.Create_Slider(panel, {w=100, min=-100, max=100, value=Save.cursorY or 0, setp=1, color=true,
+    text='Y',
+    func=function(self, value)
+        value= tonumber(format('%i', value))
+        value= value==0 and 0 or value
+        self:SetValue(value)
+        self.Text:SetText(value)
+        Save.cursorY= value
+        e.tips:ClearAllPoints();
+        e.tips:SetOwner(UIParent, 'ANCHOR_CURSOR_LEFT', Save.cursorX, Save.cursorY)
+        e.tips:ClearLines()
+        e.tips:SetUnit('player')
+        e.tips:Show()
+    end})
+    sliderCursorY:SetPoint("LEFT", sliderCursorX, 'RIGHT',10,0)
+
+
+    inCombatDefaultAnchor.text:SetText(e.onlyChinese and '战斗中：默认' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..DEFAULT)
+    inCombatDefaultAnchor:SetPoint('TOPLEFT', setDefaultAnchor, 'BOTTOMRIGHT')
+    inCombatDefaultAnchor:SetChecked(Save.inCombatDefaultAnchor)
+    inCombatDefaultAnchor:SetScript('OnMouseDown', function()
         Save.inCombatDefaultAnchor= not Save.inCombatDefaultAnchor and true or nil
     end)
-    panel.inCombatDefaultAnchor:SetEnabled(Save.setDefaultAnchor)
-    panel.inCombatDefaultAnchor:SetChecked(Save.inCombatDefaultAnchor)
 
-    panel.Anchor=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--指定提示位置
-    panel.Anchor.Text:SetText('2)' ..(e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION))
-    panel.Anchor:SetPoint('TOPLEFT', panel.setDefaultAnchor, 'BOTTOMLEFT', 0, -2)
 
-    panel.Anchor:SetChecked(Save.setAnchor)
-    panel.Anchor:SetScript('OnMouseDown', function(self)
+    Anchor.text:SetText(e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
+    Anchor:SetPoint('TOPLEFT', setDefaultAnchor, 'BOTTOMLEFT',0, -24)
+    Anchor:SetChecked(Save.setAnchor)
+    Anchor:SetScript('OnMouseDown', function()
+        Save.setAnchor= not Save.setAnchor and true or nil
         if Save.setAnchor then
-            Save.setAnchor=nil
-        else
-            Save.setAnchor=true
             Save.setDefaultAnchor=nil
-            panel.setDefaultAnchor:SetChecked(false)
+            setDefaultAnchor:SetChecked(false)
         end
-        panel.inCombatDefaultAnchor:SetEnabled(Save.setDefaultAnchor)
     end)
-    panel.Anchor.select=e.Cbtn(panel, {icon='hide', size={25,25}})
-    panel.Anchor.select:SetPoint('LEFT', panel.Anchor.text, 'RIGHT',5,0)
-    panel.Anchor.select:SetNormalAtlas('mechagon-projects')
 
-    panel.Anchor.select:SetScript('OnMouseDown',function(self)
+    Anchor.select=e.Cbtn(panel, {icon='hide', size={20,20}})
+    Anchor.select:SetPoint('LEFT', Anchor.text, 'RIGHT',5,0)
+    Anchor.select:SetNormalAtlas('mechagon-projects')
+    Anchor.select:SetScript('OnMouseDown',function(self)
         if not self.frame then
             self.frame=CreateFrame('Frame')
-            if Save.AnchorPoint and Save.AnchorPoint[1] and Save.AnchorPoint[3] and Save.AnchorPoint[4] and Save.AnchorPoint[5] then
+            self.frame:SetSize(100,100)
+            if Save.AnchorPoint then
                 self.frame:SetPoint(Save.AnchorPoint[1], UIParent, Save.AnchorPoint[3], Save.AnchorPoint[4], Save.AnchorPoint[5])
             else
                 self.frame:SetPoint('BOTTOMRIGHT', 0, 90)
             end
-            self.frame:SetSize(140,140)
-            self.frame.texture=self.frame:CreateTexture(nil,'ARTWORK')
-            self.frame.texture:SetAllPoints(self.frame)
-            self.frame.texture:SetTexture('Interface\\RaidFrame\\Absorb-Fill')
+            local texture=self.frame:CreateTexture(nil,'BACKGROUND')
+            texture:SetAllPoints(self.frame)
+            texture:SetTexture('Interface\\RaidFrame\\Absorb-Fill')
+            texture=self.frame:CreateTexture(nil,'BORDER')
+            texture:SetAllPoints(self.frame)
+            texture:SetAtlas('AdventureMap-InsetMapBorder')
         else
-            if self.frame:IsShown() then
-                self.frame:SetShown(false)
-            else
-                self.frame:SetShown(true)
-            end
+            self.frame:SetShown(not self.frame:IsShown())
         end
         self.frame:RegisterForDrag("LeftButton", "RightButton")
         self.frame:SetClampedToScreen(true)
         self.frame:SetMovable(true)
-        self.frame:SetScript("OnDragStart", function(self2) self2:StartMoving() end);
+        self.frame:SetScript("OnDragStart", function(self2, d)
+            if d=='LeftButton' then
+                self2:StartMoving()
+            end
+        end)
         self.frame:SetScript("OnDragStop", function(self2)
-                ResetCursor();
-                self2:StopMovingOrSizing();
-                Save.AnchorPoint={self2:GetPoint(1)}
-        end);
-        self.frame:SetScript('OnMouseUp',function()
-            ResetCursor()
+            self2:StopMovingOrSizing();
+            Save.AnchorPoint={self2:GetPoint(1)}
+            e.tips:ClearLines()
+            e.tips:SetUnit('player')
+            e.tips:Show()
+            e.tips:ClearAllPoints()
+            e.tips:SetPoint(Save.AnchorPoint[1], UIParent, Save.AnchorPoint[3], Save.AnchorPoint[4], Save.AnchorPoint[5])
+            SetCursor('UI_MOVE_CURSOR')
+        end)
+        self.frame:SetScript("OnMouseDown", function(self2, d)
+            if d=='RightButton' then
+                self2:SetShown(false)
+            end
+        end)
+        self.frame:SetScript('OnLeave',function() ResetCursor() e.tips:Hide() end)
+        self.frame:SetScript('OnEnter', function(self2)
+            e.tips:SetOwner(self2, "ANCHOR_TOPLEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(id, addName)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.left)
+            e.tips:AddDoubleLine(e.onlyChinese and '隐藏' or NPE_MOVE, e.Icon.right)
+            e.tips:Show()
+            SetCursor('UI_MOVE_CURSOR')
         end)
     end)
 
+    local modelCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    modelCheck.text:SetText(e.onlyChinese and '模型' or MODEL)
+    modelCheck:SetPoint('TOPLEFT', panel, 'TOP', 0, -48)
+    modelCheck:SetChecked(not Save.hideModel)
+    modelCheck:SetScript('OnMouseDown', function()
+        Save.hideModel= not Save.hideModel and true or nil
+        setInitItem(e.tips, true)--创建物品
+        setInitItem(ItemRefTooltip, true)
+    end)
+
    --设置CVar
-    panel.CVar=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    panel.CVar.Text:SetText((e.onlyChinese and '设置' or SETTINGS)..' CVar')
-    panel.CVar:SetPoint('TOPLEFT', panel.Anchor, 'BOTTOMLEFT', 0, -30)
-    panel.CVar:SetChecked(Save.setCVar)
-    panel.CVar:SetScript('OnMouseDown', function()
+    local cvar=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    cvar.text:SetText((e.onlyChinese and '设置' or SETTINGS)..' CVar')
+    cvar:SetPoint('BOTTOMLEFT')
+    cvar:SetChecked(Save.setCVar)
+    cvar:SetScript('OnMouseDown', function()
         if Save.setCVar then
             Save.setCVar=nil
             setCVar(true)
@@ -1299,7 +1387,7 @@ local function Init_Panel()
             setCVar()
         end
     end)
-    panel.CVar:SetScript('OnEnter',function(self)
+    cvar:SetScript('OnEnter',function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
@@ -1307,13 +1395,14 @@ local function Init_Panel()
         setCVar(nil, true)
         e.tips:Show()
     end)
-    panel.CVar:SetScript('OnLeave', function() e.tips:Hide() end)
-
+    cvar:SetScript('OnLeave', function() e.tips:Hide() end)
 end
---加载保存数据
-panel:RegisterEvent("ADDON_LOADED")
 
-panel:SetScript("OnEvent", function(self, event, arg1, arg2)
+--###########
+--加载保存数据
+--###########
+panel:RegisterEvent("ADDON_LOADED")
+panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save

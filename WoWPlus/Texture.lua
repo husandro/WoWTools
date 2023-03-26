@@ -792,12 +792,12 @@ local function Init_Set_AlphaAndColor()
     --小地图
     setAlpha(MinimapCompassTexture)
 
-    --对话框
+    --[[对话框
     if StaticPopup1 then
         if StaticPopup1.Border then
             setAlpha(StaticPopup1.Border.Bg)
         end
-    end
+    end]]
 
     local buttons = {
         CharacterMicroButton,--菜单
@@ -1526,31 +1526,22 @@ local function options_Init()--添加控制面板
     panel.parent =id
     InterfaceOptions_AddCategory(panel)
 
-    local restButton= CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')--重新加载UI
-    restButton:SetPoint('TOPLEFT')
-    restButton:SetText(e.onlyChinese and '重新加载UI' or RELOADUI)
-    restButton:SetSize(120, 28)
-    restButton:SetScript('OnMouseUp', e.Reload)
-
-    local enableDisbleButton=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    enableDisbleButton:SetChecked(not Save.disabled)
-    enableDisbleButton:SetPoint('TOPLEFT', panel, 'TOP')
-    enableDisbleButton.text:SetText(e.onlyChinese and '启用/禁用' or ENABLE..'/'..DISABLE)
-    enableDisbleButton:SetScript('OnMouseDown', function()
-        Save.disabled = not Save.disabled and true or nil
-    end)
+    e.ReloadPanel({panel=panel, addName= addName, restTips=true, checked=nil,--重新加载UI, 重置, 按钮
+        disabledfunc=nil,
+        clearfunc= function() Save=nil e.Reload() end}
+    )
 
     local textureCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     textureCheck.text:SetText('1)'..(e.onlyChinese and '隐藏材质' or HIDE..addName))
     textureCheck:SetChecked(not Save.disabledTexture)
-    textureCheck:SetPoint('TOPLEFT', restButton, 'BOTTOMLEFT',0, -16)
+    textureCheck:SetPoint('TOPLEFT', 0, -48)
     textureCheck:SetScript('OnMouseDown', function()
         Save.disabledTexture= not Save.disabledTexture and true or nil
     end)
 
     local alphaCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     alphaCheck.text:SetText('2)'..(e.onlyChinese and '透明度' or CHANGE_OPACITY))
-    alphaCheck:SetPoint('TOPLEFT', textureCheck, 'BOTTOMLEFT', 0, -32)
+    alphaCheck:SetPoint('TOPLEFT', textureCheck, 'BOTTOMLEFT', 0, -16)
     alphaCheck:SetChecked(not Save.disabledAlpha)
     alphaCheck:SetScript('OnMouseDown', function()
         Save.disabledAlpha= not Save.disabledAlpha and true or false
@@ -1576,7 +1567,7 @@ local function options_Init()--添加控制面板
     --聊天泡泡 ChatBubble
     local chatBubbleCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     chatBubbleCheck.text:SetText('3)'..(e.onlyChinese and '聊天泡泡: 副本无效' or (CHAT_BUBBLES_TEXT..': '..INSTANCE..' ('..NO..')')))
-    chatBubbleCheck:SetPoint('TOPLEFT', alphaCheck, 'BOTTOMLEFT', 0, -72)
+    chatBubbleCheck:SetPoint('TOPLEFT', alphaCheck, 'BOTTOMLEFT', 0, -16)
     chatBubbleCheck:SetChecked(not Save.disabledChatBubble)
     chatBubbleCheck:SetScript('OnMouseDown', function()
         Save.disabledChatBubble= not Save.disabledChatBubble and true or false
@@ -1636,11 +1627,6 @@ local function options_Init()--添加控制面板
         self.Text:SetText(value)
         Save.chatBubbleSacal=value
     end)
-
-    local needReload= e.Cstr(panel)
-    needReload:SetText(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-    needReload:SetPoint('TOPRIGHT')
-    needReload:SetTextColor(0,1,0)
 end
 --###########
 --加载保存数据
@@ -1654,7 +1640,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             options_Init()
 
-            if Save.disabled then
+            if Save.disabledTexture and Save.disabledAlpha and Save.disabledChatBubble then
                 panel:UnregisterAllEvents()
             else
                 Init_HideTexture()

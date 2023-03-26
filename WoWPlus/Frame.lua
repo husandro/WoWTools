@@ -462,7 +462,7 @@ local function Init_Move()
     end
 
     set_Move_Button(ZoneAbilityFrame, {frame=ZoneAbilityFrame.SpellButtonContainer, save=true, zeroAlpha=nil, notZoom=nil})
-    set_Move_Button(QueueStatusButton, {frame=nil, save=true, zeroAlpha=true, notZoom=nil})--小眼睛, 
+    set_Move_Button(QueueStatusButton, {frame=nil, save=true, zeroAlpha=nil, notZoom=nil})--小眼睛, 
 
     --########
     --小，背包

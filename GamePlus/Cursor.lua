@@ -737,19 +737,24 @@ local function Init()
     panel.parent =id
     InterfaceOptions_AddCategory(panel)
 
-    --重新加载UI, 按钮
+    e.ReloadPanel({panel=panel, addName= addName, restTips=true, checked=nil,--重新加载UI, 重置, 按钮
+        disabledfunc=nil,
+        clearfunc= function() Save=nil e.Reload() end}
+    )
+
+    --[[重新加载UI, 按钮
     local reloadButton=CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')
     reloadButton:SetPoint('TOPLEFT')
     reloadButton:SetText(e.onlyChinese and '重新加载UI' or RELOADUI)
     reloadButton:SetSize(120, 28)
-    reloadButton:SetScript('OnMouseUp', e.Reload)
+    reloadButton:SetScript('OnMouseUp', e.Reload)]]
 
     --设置, 大图片
     panel.Texture= panel:CreateTexture()--大图片
     panel.Texture:SetPoint('TOPRIGHT', panel, 'TOP', -20, 10)
     panel.Texture:SetSize(80,80)
 
-    --重置, 按钮
+    --[[重置, 按钮
     local restButton= e.Cbtn(panel, {type=false, size={20,20}})
     restButton:SetNormalAtlas('bags-button-autosort-up')
     restButton:SetPoint("TOPRIGHT")
@@ -765,14 +770,14 @@ local function Init()
             end,
         }
         StaticPopup_Show(id..addName..'restAllSetup')
-    end)
+    end)]]
 
     local useClassColorCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--职业颜色
     local colorText= e.Cstr(panel, {color={r=Save.color.r, g=Save.color.g, b=Save.color.b, a=Save.color.a}})--nil, nil, nil, {Save.color.r, Save.color.g, Save.color.b, Save.color.a})--自定义,颜色
     local notUseColorCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--不使用，颜色
 
     --职业颜色
-    useClassColorCheck:SetPoint("BOTTOMLEFT", 70,0)
+    useClassColorCheck:SetPoint("BOTTOMLEFT")
     useClassColorCheck.text:SetText(e.onlyChinese and '职业颜色' or CLASS_COLORS)
     useClassColorCheck.text:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
     useClassColorCheck:SetChecked(Save.usrClassColor)
@@ -887,7 +892,7 @@ local function Init()
     --Cursor, 启用/禁用
     panel.cursorCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     panel.cursorCheck:SetChecked(not Save.disabled)
-    panel.cursorCheck:SetPoint("TOPLEFT", reloadButton, 'BOTTOMLEFT', 0, -5)
+    panel.cursorCheck:SetPoint("TOPLEFT", 0, -35)
     panel.cursorCheck.text:SetText('1)|cnRED_FONT_COLOR:'..(e.onlyChinese and '启用' or ENABLE).. ' Cursor')
     panel.cursorCheck:SetScript('OnMouseDown', function()
         Save.disabled = not Save.disabled and true or nil

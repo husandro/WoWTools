@@ -1,20 +1,84 @@
 local id, e = ...
-local addName= 'spanelSettings'
+local addName= 'panel Settings'
 local Save={
     onlyChinese= e.Player.husandro,
     useClassColor= e.Player.husandro,--使用,职业, 颜色
     useCustomColor= nil,--使用, 自定义, 颜色
     useCustomColorTab= {r=1, g=0.82, b=0, a=1, hex='|cffffd100'},--自定义, 颜色, 表
 }
-local panel = CreateFrame("Frame")--Panel
 
+--#####################
+--重新加载UI, 重置, 按钮
+--#####################
+e.ReloadPanel= function(tab)
+    local rest= e.Cbtn(tab.panel, {type=false, size={25,25}})
+    rest:SetNormalAtlas('bags-button-autosort-up')
+    rest:SetPushedAtlas('bags-button-autosort-down')
+    rest:SetPoint('TOPLEFT')
+    rest.addName=tab.addName
+    rest.func=tab.clearfunc
+    rest:SetScript('OnClick', function(self)
+        StaticPopupDialogs[id..'restAllSetup']={
+            text =id..'  '..self.addName..'|n|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除全部' or CLEAR_ALL)..'|r '..(e.onlyChinese and '保存' or SAVE)..'|n|n'..(e.onlyChinese and '重新加载UI' or RELOADUI)..' /reload',
+            button1 = '|cnRED_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET),
+            button2 = e.onlyChinese and '取消' or CANCEL,
+            whileDead=true,timeout=30,hideOnEscape = 1,
+            OnAccept=self.func,
+        }
+        StaticPopup_Show(id..'restAllSetup')
+    end)
+    rest:SetScript('OnLeave', function() e.tips:Hide() end)
+    rest:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddLine(e.onlyChinese and '清除全部' or CLEAR_ALL, e.onlyChinese and '保存' or SAVE)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, self.addName)
+        e.tips:Show()
+    end)
+    local check
+    if tab.disabledfunc then
+        check=CreateFrame("CheckButton", nil, tab.panel, "InterfaceOptionsCheckButtonTemplate")
+        check:SetChecked(tab.checked)
+        check:SetPoint('LEFT', rest, 'RIGHT')
+        check:SetScript('OnClick', tab.disabledfunc)
+        check:SetScript('OnLeave', function() e.tips:Hide() end)
+        check.addName= tab.addName
+        check:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddLine(e.onlyChinese and '启用/禁用' or ENABLE..'/'..DISABLE)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(id, self.addName)
+            e.tips:Show()
+        end)
+    end
+    local reload= e.Cbtn(tab.panel, {type=false, size={25,25}})
+    reload:SetNormalAtlas('128-RedButton-Refresh')
+    reload:SetPushedAtlas('128-RedButton-Refresh-Pressed')
+    reload:SetPoint('LEFT', check or rest, 'RIGHT')
+    reload:SetScript('OnClick', e.Reload)
+    reload.addName=tab.addName
+    reload:SetScript('OnLeave', function() e.tips:Hide() end)
+    reload:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddLine(e.onlyChinese and '重新加载UI' or RELOADUI)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, self.addName)
+        e.tips:Show()
+    end)
+    if tab.restTips then
+        local needReload= e.Cstr(tab.panel)
+        needReload:SetText(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        needReload:SetPoint('BOTTOMRIGHT')
+        needReload:SetTextColor(0,1,0)
+    end
+end
+
+local panel = CreateFrame("Frame")--Panel
 panel.name = id--'|cffff00ffWoW|r|cff00ff00Tools|r'
 InterfaceOptions_AddCategory(panel)
-
-local reloadButton=CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')--重新加载UI
-reloadButton:SetPoint('TOPLEFT')
-reloadButton:SetSize(120, 28)
-reloadButton:SetScript('OnMouseUp', e.Reload)
 
 --##############
 --Instance Panel
@@ -27,13 +91,8 @@ InterfaceOptions_AddCategory(instancePane)
 --##############
 --创建, 添加控制面板
 --##############
-local gamePlus=e.Cstr(panel)
-gamePlus:SetPoint('TOPLEFT', panel,'TOP', 0, -14)
-gamePlus:SetText('Game Plus')
 
 local lastWoW, lastGame, lastInstance
-lastWoW, lastGame= reloadButton, gamePlus
-
 e.CPanel= function(name, value, GamePlus, Instance)
     local check=CreateFrame("CheckButton", nil, Instance and instancePane or panel, "InterfaceOptionsCheckButtonTemplate")
     check.text:SetText(name)
@@ -48,11 +107,19 @@ e.CPanel= function(name, value, GamePlus, Instance)
         end
 
     elseif GamePlus then--GamePlus, 大类
-        check:SetPoint('TOPLEFT', lastGame, 'BOTTOMLEFT')
+        if lastGame then
+            check:SetPoint('TOPLEFT', lastGame, 'BOTTOMLEFT')
+        else
+            check:SetPoint('TOPLEFT', panel, 'TOP', 0, -25)
+        end
         lastGame=check
 
     else--WoWPlus, 大类
-        check:SetPoint('TOPLEFT', lastWoW, 'BOTTOMLEFT')
+        if lastWoW then
+            check:SetPoint('TOPLEFT', lastWoW, 'BOTTOMLEFT')
+        else
+            check:SetPoint('TOPLEFT', 0, -25)
+        end
         lastWoW=check
     end
     return check
@@ -72,6 +139,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save.useCustomColorTab= Save.useCustomColorTab or {r=1, g=0.82, b=0, a=1, hex='|cffffd100'}
 
             e.onlyChinese= Save.onlyChinese
+
+            e.ReloadPanel({panel=panel, addName= addName, restTips=true, checked=not Save.disabled,--重新加载UI, 重置, 按钮
+                disabledfunc=nil,
+                clearfunc= function()
+                    e.ClearAllSave=true
+                    e.Reload()
+                end}
+            )
 
             if e.onlyChinese or LOCALE_zhCN or LOCALE_zhTW then
                 e.Player.LayerText= '位面'
@@ -184,29 +259,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end)
             check:SetScript('OnLeave', function() e.tips:Hide() end)
 
-            local restButton=CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')--全部重
-            restButton:SetPoint('TOPRIGHT',3,10)
-            restButton:SetSize(120, 28)
-            restButton:SetScript('OnMouseUp', function()
-                StaticPopupDialogs[id..'restAllSetup']={
-                    text =id..'|n|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除全部' or CLEAR_ALL)..'|r '..(e.onlyChinese and '保存' or SAVE)..'|n|n'..(e.onlyChinese and '重新加载UI' or RELOADUI)..' /reload',
-                    button1 = '|cnRED_FONT_COLOR:'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT),
-                    button2 = e.onlyChinese and '取消' or CANCEL,
-                    whileDead=true,timeout=30,hideOnEscape = 1,
-                    OnAccept=function()
-                        e.ClearAllSave=true
-                        e.Reload()
-                    end,
-                }
-                StaticPopup_Show(id..'restAllSetup')
-            end)
-            restButton:SetText('|cnRED_FONT_COLOR:'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT)..'|r')
-
             local textTips= e.Cstr(panel, {justifyH='CENTER'})--nil, nil, nil, nil, nil, 'CENTER')
             textTips:SetPoint('TOP',-70,10)
             textTips:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '启用' or ENABLE)..'|r/|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE))
-
-            reloadButton:SetText(e.onlyChinese and '重新加载UI' or RELOADUI)
 
             MainMenuMicroButton:EnableMouseWheel(true)--主菜单, 打开插件选项
             MainMenuMicroButton:SetScript('OnMouseWheel', function()

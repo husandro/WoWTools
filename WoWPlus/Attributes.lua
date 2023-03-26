@@ -1142,11 +1142,11 @@ end
 --##########
 local function set_Panle_Setting()--设置 panel
     local last, check, findTank, findDps
-    last=CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')--重新加载UI
+    --[[last=CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')--重新加载UI
     last:SetPoint('TOPLEFT')
     last:SetText(e.onlyChinese and '重新加载UI' or RELOADUI)
     last:SetSize(120, 28)
-    last:SetScript('OnMouseUp', e.Reload)
+    last:SetScript('OnMouseUp', e.Reload)]]
 
 
     for index, info in pairs(Tabs) do
@@ -1185,7 +1185,11 @@ local function set_Panle_Setting()--设置 panel
         check= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--禁用, 启用
         check:SetChecked(not Save.tab[info.name].hide)
         if info.name=='STATUS' or info.name=='SPEED' or info.name=='LIFESTEAL' then
-            check:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
+            if last then
+                check:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
+            else
+                check:SetPoint('TOPLEFT', 0, -32)
+            end
         else
             check:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, 6)
         end
@@ -1392,8 +1396,10 @@ local function set_Panle_Setting()--设置 panel
     end)
     sliderY.text= text
 
+
+
     local notTextCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    notTextCheck:SetPoint("TOPLEFT", panel.check, 'BOTTOMLEFT', 0, -12)
+    notTextCheck:SetPoint("TOPLEFT", panel, 'TOP', 0, -32)
     notTextCheck.text:SetText(e.onlyChinese and '隐藏数值' or HIDE..STATUS_TEXT_VALUE)
     notTextCheck:SetChecked(Save.notText)
     notTextCheck:SetScript('OnMouseDown', function()
@@ -1674,13 +1680,6 @@ local function set_Panle_Setting()--设置 panel
     end)
 
 
-
-
-
-
-
-
-
     local slider4= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--缩放
     slider4:SetPoint("TOPLEFT", slider3, 'BOTTOMLEFT', 0,-24)
     slider4:SetSize(200,20)
@@ -1710,7 +1709,7 @@ local function set_Panle_Setting()--设置 panel
     end})
     sliderButtonAlpha:SetPoint("TOPLEFT", slider4, 'BOTTOMLEFT', 0,-24)
 
-    local restButton= e.Cbtn(panel, {type=false, size={20,20}})--重置
+    --[[local restButton= e.Cbtn(panel, {type=false, size={20,20}})--重置
     restButton:SetNormalAtlas('bags-button-autosort-up')
     restButton:SetPoint("TOPRIGHT")
     restButton:SetScript('OnMouseUp', function()
@@ -1725,7 +1724,7 @@ local function set_Panle_Setting()--设置 panel
             end,
         }
         StaticPopup_Show(id..addName..'restAllSetup')
-    end)
+    end)]]
 
     local hideText= e.Cstr(panel)--隐藏
     hideText:SetPoint('BOTTOMLEFT')
@@ -1739,9 +1738,6 @@ local function set_Panle_Setting()--设置 panel
         set_ShowHide_Event()--显示，隐藏，事件
         button:SetShown(not Save.hideInPetBattle or not C_PetBattles.IsInBattle())
     end)
-
-
-
 end
 
 
@@ -1945,7 +1941,19 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             panel.parent =id
             InterfaceOptions_AddCategory(panel)
 
-            panel.check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+            e.ReloadPanel({panel=panel, addName= addName, restTips=nil, checked=not Save.disabled,--重新加载UI, 重置, 按钮
+            disabledfunc=function()
+                Save.disabled = not Save.disabled and true or nil
+                if not Save.disabled and not button then
+                    Init()
+                else
+                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                    frame_Init(true)--初始， 或设置
+                end
+            end,
+            clearfunc= function() Save=nil e.Reload() end}
+        )
+            --[[panel.check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
             panel.check:SetChecked(not Save.disabled)
             panel.check:SetPoint('TOPLEFT', panel, 'TOP')
             panel.check.text:SetText(e.onlyChinese and '启用/禁用' or (ENABLE..'/'..DISABLE))
@@ -1964,7 +1972,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 e.tips:AddLine(e.onlyChinese and '启用/禁用' or ENABLE..'/'..DISABLE)
                 e.tips:Show()
             end)
-            panel.check:SetScript('OnLeave', function() e.tips:Hide() end)
+            panel.check:SetScript('OnLeave', function() e.tips:Hide() end)]]
 
             if Save.disabled then
                 panel:UnregisterAllEvents()
