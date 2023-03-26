@@ -24,7 +24,7 @@ local function setInitItem(self, hide)--创建物品
         self.playerModel=CreateFrame("PlayerModel", nil, self)
         self.playerModel:SetFacing(-0.35)
         self.playerModel:SetPoint("BOTTOM", self, 'TOP', 0, -12)
-        self.playerModel:SetSize(100, 100)
+        self.playerModel:SetSize(Save.modelSize or 100, Save.modelSize or 100)
         self.playerModel:SetShown(false)
     end
 
@@ -1372,6 +1372,23 @@ local function Init_Panel()
         setInitItem(e.tips, true)--创建物品
         setInitItem(ItemRefTooltip, true)
     end)
+
+    local sliderModelSize = e.Create_Slider(panel, {w=100, min=50, max=200, value=Save.modelSize or 100, setp=1, color=nil,
+    text=e.onlyChinese and '大小' or 'Size',
+    func=function(self, value)
+        value= tonumber(format('%i', value))
+        value= value==0 and 0 or value
+        self:SetValue(value)
+        self.Text:SetText(value)
+        Save.modelSize= value
+        e.tips:ClearAllPoints();
+        e.tips:SetOwner(UIParent, 'ANCHOR_CURSOR_LEFT', Save.cursorX, Save.cursorY)
+        e.tips:ClearLines()
+        e.tips:SetUnit('player')
+        e.tips:Show()
+    end})
+    sliderModelSize:SetPoint("LEFT", modelCheck.text, 'RIGHT',10,0)
+
 
    --设置CVar
     local cvar=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
