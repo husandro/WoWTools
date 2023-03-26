@@ -8,6 +8,61 @@ local Save={
 }
 local button
 
+
+local Get_Currency= function(tab)--e.Get_Currency({id=nil, index=nil, link=nil, soloValue=nil, showIcon=true, showName=true, showID=true, bit=3, showMax=nil})--货币
+    local info = tab.index and C_CurrencyInfo.GetCurrencyListInfo(tab.index) or tab.id and C_CurrencyInfo.GetCurrencyInfo(tab.id) or C_CurrencyInfo.GetCurrencyInfoFromLink(tab.link)
+    if not info then--or (not info.discovered and info.quality==0 and not info.isHeader) then
+        return
+    end
+    if tab.soloValue then--仅，返回值
+        return info
+    end
+
+    if info.isHeader then
+        return tab.showName and (tab.showIcon and '|A:'..e.Icon.icon..':0:0|a|cffffffff' or '')..info.name..'|r'
+    end
+    if not info.quantity or info.quality==0 then
+        return
+    end
+    local t=''
+    t= tab.showName and '   ' or t
+    if tab.showID then--显示ID
+        local ID= tab.id or (tab.link and C_CurrencyInfo.GetCurrencyIDFromLink(tab.link))
+        if tab.index then
+            local link=tab.link or C_CurrencyInfo.GetCurrencyListLink(tab.index)
+            ID= link and C_CurrencyInfo.GetCurrencyIDFromLink(link)
+        end
+        if ID then
+            t= ID and t..ID..' ' or t
+        end
+    end
+    if tab.showIcon and info.iconFileID then--图标
+        t= t..'|T'..info.iconFileID..':0|t'
+    end
+    if tab.showName and info.name then--名称
+        t= t..info.name..' '
+    end
+
+    local max= info.quantity and info.quantity>0 and (
+            info.quantity==info.maxQuantity--最大数
+        or (info.canEarnPerWeek and info.maxWeeklyQuantity==info.quantityEarnedThisWeek)--本周
+        or (info.useTotalEarnedForMaxQty and info.totalEarned==info.maxQuantity)--赛季
+    )
+    if max then--最大数量
+        t=t..'|cnRED_FONT_COLOR:'..e.MK(info.quantity, tab.bit)..'|r'..e.Icon.O2
+    else
+        t=t..e.MK(info.quantity, tab.bit)..(tab.showMax and info.maxQuantity and info.maxQuantity>0 and ' /'..e.MK(info.maxQuantity, tab.bit) or '')
+    end
+
+    if info.canEarnPerWeek and info.quantityEarnedThisWeek< info.maxWeeklyQuantity then--本周,收入
+        t= t..' |cnGREEN_FONT_COLOR:(+'..e.MK(info.maxWeeklyQuantity - info.quantityEarnedThisWeek, tab.bit)..'|r'
+    elseif info.useTotalEarnedForMaxQty and info.totalEarned< info.maxQuantity  and info.totalEarned< info.maxQuantity then--赛季,收入
+        t= t..' |cnGREEN_FONT_COLOR:(+'..e.MK(info.maxQuantity- info.totalEarned, tab.bit)..'|r'
+    end
+
+    return t
+end
+
 --#############
 --套装,转换,货币
 --Blizzard_ItemInteractionUI.lua
@@ -74,14 +129,14 @@ local function set_Text()
 
 	if Save.indicato then
 		for currentID, _ in pairs(Save.tokens) do
-			local text= e.Get_Currency({id=currentID, index=nil, link=nil, soloValue=nil, showIcon=true, showName=Save.nameShow, showID=Save.showID, bit=3, showMax=nil})--货币
+			local text= Get_Currency({id=currentID, index=nil, link=nil, soloValue=nil, showIcon=true, showName=Save.nameShow, showID=Save.showID, bit=3, showMax=nil})--货币
 			if text then
 				m= m..text..'\n' or m
 			end
 		end
 	else
 		for index=1, C_CurrencyInfo.GetCurrencyListSize() do
-			local text= e.Get_Currency({id=nil, index=index, link=nil, soloValue=nil, showIcon=true, showName=Save.nameShow, showID=Save.showID, bit=3, showMax=nil})--货币
+			local text= Get_Currency({id=nil, index=index, link=nil, soloValue=nil, showIcon=true, showName=Save.nameShow, showID=Save.showID, bit=3, showMax=nil})--货币
 			if text then
 				m= m..text..'\n' or m
 			end
