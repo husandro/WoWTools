@@ -1,6 +1,12 @@
 local id, e = ...
 local addName= 'Tootips'
-local Save={setDefaultAnchor=true, setCVar=e.Player.husandro,inCombatDefaultAnchor=true}
+local Save={
+    setDefaultAnchor=true,--指定点
+    --AnchorPoint={},--指定点，位置
+    --cursorRight=nil,--'ANCHOR_CURSOR_RIGHT',
+    setCVar=e.Player.husandro,
+    inCombatDefaultAnchor=true
+}
 local panel=CreateFrame("Frame")
 
 local function setInitItem(self, hide)--创建物品
@@ -774,7 +780,9 @@ local function setUnitInfo(self, unit)--设置单位提示信息
         end
     end
 
-    set_Unit_Health_Bar(GameTooltipStatusBar,unit)--生命条提示
+    if not Save.hideHealth then
+        set_Unit_Health_Bar(GameTooltipStatusBar,unit)--生命条提示
+    end
 
     set_Item_Model(self, {unit=unit, guid=guid, creatureDisplayID=nil, animID=nil, appearanceID=nil, visualID=nil})--设置, 3D模型
 end
@@ -1040,8 +1048,8 @@ local function Init()
                     self:SetPoint(Save.AnchorPoint[1], UIParent, Save.AnchorPoint[3], Save.AnchorPoint[4], Save.AnchorPoint[5])
                 end
             else
-                self:ClearAllPoints();
-                self:SetOwner(parent, 'ANCHOR_CURSOR_LEFT', Save.cursorX, Save.cursorY)
+                self:ClearAllPoints()
+                self:SetOwner(parent, Save.cursorRight and 'ANCHOR_CURSOR_RIGHT' or 'ANCHOR_CURSOR_LEFT', Save.cursorX or 0, Save.cursorY or 0)
             end
         elseif Save.setAnchor and Save.AnchorPoint then
             self:ClearAllPoints();
@@ -1052,12 +1060,14 @@ local function Init()
     --#########
     --生命条提示
     --#########
-    GameTooltipStatusBar:SetScript("OnValueChanged", function(self)
-        local unit= select(2, TooltipUtil.GetDisplayedUnit(GameTooltip))
-        if unit then
-            set_Unit_Health_Bar(self, unit)
-        end
-    end);
+    if not Save.hideHealth then
+        GameTooltipStatusBar:SetScript("OnValueChanged", function(self)
+            local unit= select(2, TooltipUtil.GetDisplayedUnit(GameTooltip))
+            if unit then
+                set_Unit_Health_Bar(self, unit)
+            end
+        end);
+    end
 
     --####
     --声望
@@ -1220,6 +1230,13 @@ local function Init()
     end
 end
 
+local function set_Cursor_Tips(self)
+    GameTooltip_SetDefaultAnchor(e.tips, self or UIParent)
+    --e.tips:SetOwner(UIParent, 'ANCHOR_CURSOR_LEFT', Save.cursorX, Save.cursorY)
+    e.tips:ClearLines()
+    e.tips:SetUnit('player')
+    e.tips:Show()
+end
 --##########
 --设置 panel
 --##########
@@ -1244,17 +1261,19 @@ local function Init_Panel()
 
     setDefaultAnchor.text:SetText(e.onlyChinese and '跟随鼠标' or FOLLOW..MOUSE_LABEL)
     setDefaultAnchor:SetPoint('TOPLEFT', 0, -48)
-    setDefaultAnchor:SetChecked(Save.setDefaultAnchor)--提示位置            
-    setDefaultAnchor:SetScript('OnMouseDown', function()
+    setDefaultAnchor:SetChecked(Save.setDefaultAnchor)--提示位置
+    setDefaultAnchor:SetScript('OnLeave', function() e.tips:Hide() end)
+    setDefaultAnchor:SetScript('OnMouseDown', function(self)
         Save.setDefaultAnchor= not Save.setDefaultAnchor and true or nil
         if Save.setDefaultAnchor then
             Save.setAnchor=nil
             Anchor:SetChecked(false)
         end
+        set_Cursor_Tips(self)
     end)
 
 
-    local sliderCursorX = e.Create_Slider(panel, {w=100, min=-100, max=100, value=Save.cursorX or 0, setp=1, color=nil,
+    local sliderCursorX = e.Create_Slider(panel, {w=100, min=-150, max=150, value=Save.cursorX or 0, setp=1, color=nil,
     text='X',
     func=function(self, value)
         value= tonumber(format('%i', value))
@@ -1262,15 +1281,12 @@ local function Init_Panel()
         self:SetValue(value)
         self.Text:SetText(value)
         Save.cursorX= value
-        e.tips:ClearAllPoints();
-        e.tips:SetOwner(UIParent, 'ANCHOR_CURSOR_LEFT', Save.cursorX, Save.cursorY)
-        e.tips:ClearLines()
-        e.tips:SetUnit('player')
-        e.tips:Show()
+        set_Cursor_Tips(self)
     end})
-    sliderCursorX:SetPoint("LEFT", setDefaultAnchor.text, 'RIGHT',5,0)
+    sliderCursorX:SetPoint('TOPLEFT', setDefaultAnchor, 'BOTTOMRIGHT', 0, -16)
+    sliderCursorX:SetScript('OnLeave', function() e.tips:Hide() end)
 
-    local sliderCursorY = e.Create_Slider(panel, {w=100, min=-100, max=100, value=Save.cursorY or 0, setp=1, color=true,
+    local sliderCursorY = e.Create_Slider(panel, {w=100, min=-150, max=150, value=Save.cursorY or 0, setp=1, color=true,
     text='Y',
     func=function(self, value)
         value= tonumber(format('%i', value))
@@ -1278,33 +1294,41 @@ local function Init_Panel()
         self:SetValue(value)
         self.Text:SetText(value)
         Save.cursorY= value
-        e.tips:ClearAllPoints();
-        e.tips:SetOwner(UIParent, 'ANCHOR_CURSOR_LEFT', Save.cursorX, Save.cursorY)
-        e.tips:ClearLines()
-        e.tips:SetUnit('player')
-        e.tips:Show()
+        set_Cursor_Tips(self)
     end})
-    sliderCursorY:SetPoint("LEFT", sliderCursorX, 'RIGHT',10,0)
-
+    sliderCursorY:SetPoint("LEFT", sliderCursorX, 'RIGHT',20,0)
+    sliderCursorY:SetScript('OnLeave', function() e.tips:Hide() end)
 
     inCombatDefaultAnchor.text:SetText(e.onlyChinese and '战斗中：默认' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..DEFAULT)
-    inCombatDefaultAnchor:SetPoint('TOPLEFT', setDefaultAnchor, 'BOTTOMRIGHT')
+    inCombatDefaultAnchor:SetPoint('TOPLEFT', sliderCursorX.Low, 'BOTTOMLEFT',0,-16)
     inCombatDefaultAnchor:SetChecked(Save.inCombatDefaultAnchor)
     inCombatDefaultAnchor:SetScript('OnMouseDown', function()
         Save.inCombatDefaultAnchor= not Save.inCombatDefaultAnchor and true or nil
     end)
 
+    local courorRightCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--指定提示位置
+    courorRightCheck.text:SetText(e.onlyChinese and '右边' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT)
+    courorRightCheck:SetPoint('LEFT', inCombatDefaultAnchor.text, 'RIGHT',2,0)
+    courorRightCheck:SetChecked(Save.cursorRight)
+    courorRightCheck:SetScript('OnMouseDown', function(self)
+        Save.cursorRight= not Save.cursorRight and true or nil
+        set_Cursor_Tips(self)
+    end)
+    courorRightCheck:SetScript('OnLeave', function() e.tips:Hide() end)
+    
 
     Anchor.text:SetText(e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
-    Anchor:SetPoint('TOPLEFT', setDefaultAnchor, 'BOTTOMLEFT',0, -24)
+    Anchor:SetPoint('TOPRIGHT', inCombatDefaultAnchor, 'BOTTOMLEFT',0, -12)
     Anchor:SetChecked(Save.setAnchor)
-    Anchor:SetScript('OnMouseDown', function()
+    Anchor:SetScript('OnMouseDown', function(self)
         Save.setAnchor= not Save.setAnchor and true or nil
         if Save.setAnchor then
             Save.setDefaultAnchor=nil
             setDefaultAnchor:SetChecked(false)
         end
+        set_Cursor_Tips(self)
     end)
+    Anchor:SetScript('OnLeave', function() e.tips:Hide() end)
 
     Anchor.select=e.Cbtn(panel, {icon='hide', size={20,20}})
     Anchor.select:SetPoint('LEFT', Anchor.text, 'RIGHT',5,0)
@@ -1338,11 +1362,7 @@ local function Init_Panel()
         self.frame:SetScript("OnDragStop", function(self2)
             self2:StopMovingOrSizing();
             Save.AnchorPoint={self2:GetPoint(1)}
-            e.tips:ClearLines()
-            e.tips:SetUnit('player')
-            e.tips:Show()
-            e.tips:ClearAllPoints()
-            e.tips:SetPoint(Save.AnchorPoint[1], UIParent, Save.AnchorPoint[3], Save.AnchorPoint[4], Save.AnchorPoint[5])
+            set_Cursor_Tips(self2)
             SetCursor('UI_MOVE_CURSOR')
         end)
         self.frame:SetScript("OnMouseDown", function(self2, d)
@@ -1361,17 +1381,20 @@ local function Init_Panel()
             e.tips:Show()
             SetCursor('UI_MOVE_CURSOR')
         end)
+        set_Cursor_Tips(self.frame)
     end)
 
     local modelCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     modelCheck.text:SetText(e.onlyChinese and '模型' or MODEL)
     modelCheck:SetPoint('TOPLEFT', panel, 'TOP', 0, -48)
     modelCheck:SetChecked(not Save.hideModel)
-    modelCheck:SetScript('OnMouseDown', function()
+    modelCheck:SetScript('OnMouseDown', function(self)
         Save.hideModel= not Save.hideModel and true or nil
         setInitItem(e.tips, true)--创建物品
         setInitItem(ItemRefTooltip, true)
+        set_Cursor_Tips(self)
     end)
+    modelCheck:SetScript('OnLeave', function() e.tips:Hide() end)
 
     local sliderModelSize = e.Create_Slider(panel, {w=100, min=50, max=200, value=Save.modelSize or 100, setp=1, color=nil,
     text=e.onlyChinese and '大小' or 'Size',
@@ -1380,15 +1403,27 @@ local function Init_Panel()
         value= value==0 and 0 or value
         self:SetValue(value)
         self.Text:SetText(value)
+        if ItemRefTooltip.playerModel then
+            ItemRefTooltip.playerModel:SetSize(value, value)
+        end
+        if e.tips.playerModel then
+            e.tips.playerModel:SetSize(value, value)
+        end
         Save.modelSize= value
-        e.tips:ClearAllPoints();
-        e.tips:SetOwner(UIParent, 'ANCHOR_CURSOR_LEFT', Save.cursorX, Save.cursorY)
-        e.tips:ClearLines()
-        e.tips:SetUnit('player')
-        e.tips:Show()
+        set_Cursor_Tips(self)
     end})
     sliderModelSize:SetPoint("LEFT", modelCheck.text, 'RIGHT',10,0)
+    sliderModelSize:SetScript('OnLeave', function() e.tips:Hide() end)
 
+    local healthCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    healthCheck.text:SetText(e.onlyChinese and '生命值 ' or HEALTH)
+    healthCheck:SetPoint('TOPLEFT', modelCheck, 'BOTTOMLEFT')
+    healthCheck:SetChecked(not Save.hideHealth)
+    healthCheck:SetScript('OnMouseDown', function(self)
+        Save.hideHealth= not Save.hideHealth and true or nil
+        print(id, addName,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+    end)
+    healthCheck:SetScript('OnLeave', function() e.tips:Hide() end)
 
    --设置CVar
     local cvar=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
@@ -1423,7 +1458,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
-
             Init_Panel()--设置 panel
 
             if Save.disabled then

@@ -2104,7 +2104,9 @@
         "CAMERA_FOV",
         "CURRENCY_THIS_WEEK",
         "PVEFrameCloseButton",
-        "ReputationFrame_Update"
+        "ReputationFrame_Update",
+        "HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT",
+        "HEALTH"
     ],
     "Lua.diagnostics.disable": [
     ]
