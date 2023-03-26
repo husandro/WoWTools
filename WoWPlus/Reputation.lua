@@ -1,8 +1,121 @@
 local id, e = ...
-local Save={btnStrHideCap=true, btnStrHideHeader=true, factionUpdateTips=true, btnstr=true}
+local Save={
+	btnStrHideCap=true,-- 隐藏最高级, 且没有奖励声望
+	btnStrHideHeader=true, --隐藏, 版本标题
+	factionUpdateTips=true,--更新, 提示
+	btnstr=true,--文本
+	factions={},--指定,显示,声望
+}
 local addName=REPUTATION
 local panel= e.Cbtn(ReputationFrame, {icon=true,size={20, 20}})
 
+
+local function set_Faction_Info(tab)
+	local name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canBeLFGBonus 
+	if tab.index then
+		name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canBeLFGBonus= GetFactionInfo(tab.index)
+	else
+		name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canBeLFGBonus= GetFactionInfoByID(tab.factionID)
+	end
+	if tab.hid and name==HIDE then --隐藏 '隐藏声望'
+		return
+	end
+
+	if (hasRep or ((isHeader or isChild)  and not isCollapsed ) or (not isHeader and not isChild)) and factionID and name then
+		local isCapped= standingID == MAX_REPUTATION_REACTION
+		local factionStandingtext, value, icon
+		--local barColor = FACTION_BAR_COLORS[standingID]
+
+		local isMajorFaction = C_Reputation.IsMajorFaction(factionID)
+		local repInfo = C_GossipInfo.GetFriendshipReputation(factionID)
+
+		if (repInfo and repInfo.friendshipFactionID > 0) then--个人声望
+			if ( repInfo.nextThreshold ) then
+				factionStandingtext = repInfo.reaction
+				local rankInfo = C_GossipInfo.GetFriendshipReputationRanks(factionID)
+				if rankInfo and rankInfo.maxLevel>0  and rankInfo.currentLevel~=rankInfo.maxLevel then
+					factionStandingtext= factionStandingtext..' '..rankInfo.currentLevel..'/'..rankInfo.maxLevel
+				end
+				value=('%i%%'):format(repInfo.standing/repInfo.nextThreshold*100);
+				--barColor = FACTION_BAR_COLORS[standingID]					
+			else
+				--barColor = FACTION_ORANGE_COLOR
+				isCapped=true
+			end
+			if repInfo.texture and repInfo.texture~=0 then--图标
+				icon='|T'..repInfo.texture..':0|t'
+			end
+		elseif ( isMajorFaction ) then--名望
+			isCapped=C_MajorFactions.HasMaximumRenown(factionID)
+			local info = C_MajorFactions.GetMajorFactionData(factionID);
+			if not isCapped then
+				if info then
+					if info.name and info.name~=name then
+						factionStandingtext=name
+					end
+					value= info.renownLevel..' '..('%i%%'):format(info.renownReputationEarned/info.renownLevelThreshold*100)--名望RENOWN_LEVEL_LABEL
+				end
+			else
+				value= VIDEO_OPTIONS_ULTRA_HIGH
+			end
+
+			if info and info.textureKit then
+				icon='|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'
+			end
+		else
+			if (isHeader and hasRep) or not isHeader then
+				local gender = UnitSex("player");
+				factionStandingtext = GetText("FACTION_STANDING_LABEL"..standingID, gender)
+				if barValue and barMax then
+					if barMax==0 then
+						value=('%i%%'):format( (barMin-barValue)/barMin*100)
+					else
+						value=('%i%%'):format(barValue/barMax*100)
+					end
+				end
+			end
+		end
+
+		local isParagon = C_Reputation.IsFactionParagon(factionID)--奖励			
+		local hasRewardPending
+		if ( isParagon ) then--奖励
+			local currentValue, threshold, rewardQuestID, hasRewardPending2, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID);
+			hasRewardPending=hasRewardPending2
+			if not tooLowLevelForParagon then
+				local completed= math.modf(currentValue/threshold)--完成次数
+				currentValue= completed>0 and currentValue - threshold * completed or currentValue
+				value=('%i%%'):format(currentValue/threshold*100)
+				--value = completed>0 and value.. ' '..completed or value
+			end
+		end
+
+		local verHeader= isHeader and not isParagon and not hasRep and not isChild--版本声望
+		if not ((Save.btnStrHideCap and isCapped and not isParagon and not isHeader) or (Save.btnStrHideHeader and verHeader))then
+			local t=''
+
+			if verHeader then
+				t= t.. e.Icon.star2
+			end
+
+			if isChild and not isHeader then
+				t= t..e.Icon.toRight2..(icon or '')
+			elseif not verHeader then
+				t= t.. (icon or '    ')--('|A:'..e.Icon.icon..':0:0|a'))
+			end
+
+			t=t..(name:match('%- (.+)') or name)..(factionStandingtext and ' '..factionStandingtext or '')..(value and ' '..value or '')
+
+			if hasRewardPending then--有奖励
+				t=t..' '..e.Icon.bank2
+			end
+
+			if verHeader then
+				t='|cnGREEN_FONT_COLOR:'..t..'|r'
+			end
+			return t
+		end
+	end
+end
 --#########
 --设置, 文本
 --#########
@@ -17,108 +130,13 @@ local function Reputation_Text_setText()--设置, 文本
 	panel.btn:SetNormalTexture(0)
 
 	local m=''
-
 	for i=1, GetNumFactions() do
-		local name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canBeLFGBonus =GetFactionInfo(i)
-		if name==HIDE then break end--隐藏 '隐藏声望'
-
-		if (hasRep or ((isHeader or isChild)  and not isCollapsed ) or (not isHeader and not isChild)) and factionID and name then
-			local isCapped= standingID == MAX_REPUTATION_REACTION
-			local factionStandingtext, value, icon
-			--local barColor = FACTION_BAR_COLORS[standingID]
-
-			local isMajorFaction = C_Reputation.IsMajorFaction(factionID)
-			local repInfo = C_GossipInfo.GetFriendshipReputation(factionID)
-
-			if (repInfo and repInfo.friendshipFactionID > 0) then--个人声望
-				if ( repInfo.nextThreshold ) then
-					factionStandingtext = repInfo.reaction
-					local rankInfo = C_GossipInfo.GetFriendshipReputationRanks(factionID)
-					if rankInfo and rankInfo.maxLevel>0  and rankInfo.currentLevel~=rankInfo.maxLevel then
-						factionStandingtext= factionStandingtext..' '..rankInfo.currentLevel..'/'..rankInfo.maxLevel
-					end
-					value=('%i%%'):format(repInfo.standing/repInfo.nextThreshold*100);
-					--barColor = FACTION_BAR_COLORS[standingID]					
-				else
-					--barColor = FACTION_ORANGE_COLOR
-					isCapped=true
-				end
-				if repInfo.texture and repInfo.texture~=0 then--图标
-					icon='|T'..repInfo.texture..':0|t'
-				end
-			elseif ( isMajorFaction ) then--名望
-				isCapped=C_MajorFactions.HasMaximumRenown(factionID)
-				local info = C_MajorFactions.GetMajorFactionData(factionID);
-				if not isCapped then
-					if info then
-						if info.name and info.name~=name then
-							factionStandingtext=name
-						end
-						value= info.renownLevel..' '..('%i%%'):format(info.renownReputationEarned/info.renownLevelThreshold*100)--名望RENOWN_LEVEL_LABEL
-					end
-				else
-					value= VIDEO_OPTIONS_ULTRA_HIGH
-				end
-
-				if info and info.textureKit then
-					icon='|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'
-				end
-			else
-				if (isHeader and hasRep) or not isHeader then
-					local gender = UnitSex("player");
-					factionStandingtext = GetText("FACTION_STANDING_LABEL"..standingID, gender)
-					if barValue and barMax then
-						if barMax==0 then
-							value=('%i%%'):format( (barMin-barValue)/barMin*100)
-						else
-							value=('%i%%'):format(barValue/barMax*100)
-						end
-					end
-				end
-			end
-
-			local isParagon = C_Reputation.IsFactionParagon(factionID)--奖励			
-			local hasRewardPending
-			if ( isParagon ) then--奖励
-				local currentValue, threshold, rewardQuestID, hasRewardPending2, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID);
-				hasRewardPending=hasRewardPending2
-				if not tooLowLevelForParagon then
-					local completed= math.modf(currentValue/threshold)--完成次数
-					currentValue= completed>0 and currentValue - threshold * completed or currentValue
-					value=('%i%%'):format(currentValue/threshold*100)
-					--value = completed>0 and value.. ' '..completed or value
-				end
-			end
-
-			local verHeader= isHeader and not isParagon and not hasRep and not isChild--版本声望
-			if not ((Save.btnStrHideCap and isCapped and not isParagon and not isHeader) or (Save.btnStrHideHeader and verHeader))then
-				local t=''
-
-				if verHeader then
-					t= t.. e.Icon.star2
-				end
-
-				if isChild and not isHeader then
-					t= t..e.Icon.toRight2..(icon or '')
-				elseif not verHeader then
-					t= t.. (icon or '    ')--('|A:'..e.Icon.icon..':0:0|a'))
-				end
-
-				t=t..(name:match('%- (.+)') or name)..(factionStandingtext and ' '..factionStandingtext or '')..(value and ' '..value or '')
-
-				if hasRewardPending then--有奖励
-					t=t..' '..e.Icon.bank2
-				end
-
-				if verHeader then
-					t='|cnGREEN_FONT_COLOR:'..t..'|r'
-				end
-				if m~='' then m=m..'|n' end
-				m=m..t
-			end
+		local t=set_Faction_Info({index= i, hide=true})
+		if t then
+			if m~='' then m=m..'|n' end
+			m=m..t
 		end
 	end
-
 	if m=='' then
 		m='..'
 	end
@@ -370,14 +388,6 @@ end
 --#############
 --声望更新, 提示
 --#############
---[[local function set_RegisterEvent_CHAT_MSG_COMBAT_FACTION_CHANGE()--更新, 提示, 事件
-	if Save.factionUpdateTips or Save.btn then
-		panel:RegisterEvent('CHAT_MSG_COMBAT_FACTION_CHANGE')
-	else
-		panel:UnregisterEvent('CHAT_MSG_COMBAT_FACTION_CHANGE')
-	end
-end]]
-
 local factionStr=FACTION_STANDING_INCREASED:gsub("%%s", "(.-)")--你在%s中的声望值提高了%d点。
 factionStr = factionStr:gsub("%%d", ".-")
 local function FactionUpdate(self, event, text, ...)
@@ -567,7 +577,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
 		if arg1==id then
             Save= WoWToolsSave[addName] or Save
-
+			Save.factions= Save.factions or {}
             --添加控制面板        
             local sel=e.CPanel((e.Player.faction=='Alliance' and e.Icon.alliance2 or e.Icon.horde2 )..(e.onlyChinese and '声望' or addName), not Save.disabled)
             sel:SetScript('OnMouseDown', function()
