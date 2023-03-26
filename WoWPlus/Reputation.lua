@@ -19,7 +19,7 @@ local function get_Faction_Info(tab)
 		name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canBeLFGBonus= GetFactionInfoByID(tab.factionID)
 	end
 
-	if tab.hid and name==HIDE then --隐藏 '隐藏声望'
+	if tab.hide and name==HIDE then --隐藏 '隐藏声望'
 		return
 	end
 
