@@ -119,13 +119,26 @@ local function set_Item_Info(self, tab)
                     if subclassID==0 and dateInfo.text[classStr] then
                         local text=''
                         local n=1
-                        for className, icon in pairs (ClassNameIconTab) do
-                            if dateInfo.text[classStr]:find(className) then
-                                text= select(2, math.modf(n/4))==0 and text..'\n' or text
-                                text=text..icon
-                                n= n+1
+                        local findText=dateInfo.text[classStr]
+                        if findText:find(',') then
+                            findText= ' '..findText..','
+                            findText:gsub(' (.-),', function(t)
+                                if ClassNameIconTab[t] then
+                                    text= select(2, math.modf(n/4))==0 and text..'\n' or text
+                                    text=text..ClassNameIconTab[t]
+                                    n= n+1
+                                end
+                            end)
+                        else
+                            for className, icon in pairs (ClassNameIconTab) do
+                                if dateInfo.text[classStr]:find(className) then
+                                    text= select(2, math.modf(n/4))==0 and text..'\n' or text
+                                    text=text..icon
+                                    n= n+1
+                                end
                             end
                         end
+                        rightText= dateInfo.red and e.Icon.X2
                         topLeftText= text
                     end
                 end

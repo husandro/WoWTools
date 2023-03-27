@@ -245,7 +245,7 @@ local function setQueueStatus()--小眼睛, 信息
         button.tipsFrame:SetShown(text~='' and true or nil)
     end
 
-    if not button.enterInstance and Save.enterInstance then--自动进入,指示图标
+    --[[if not button.enterInstance and Save.enterInstance then--自动进入,指示图标
         button.enterInstance=button:CreateTexture(nil, 'ARTWORK')
         button.enterInstance:SetPoint('BOTTOMLEFT',3,3)
         button.enterInstance:SetSize(10,10)
@@ -254,7 +254,7 @@ local function setQueueStatus()--小眼睛, 信息
     end
     if button.enterInstance then
         button.enterInstance:SetShown(Save.enterInstance)
-    end
+    end]]
     if not button.leaveInstance and Save.leaveInstance then--自动离开,指示图标
         button.leaveInstance=button:CreateTexture(nil, 'ARTWORK')
         button.leaveInstance:SetPoint('BOTTOMRIGHT',-7,3)
@@ -493,7 +493,7 @@ end
 local function InitList(self, level, type)--LFDFrame.lua
     local info
     if type=='SETTINGS' then
-        info={--自动, 准备进入,选项
+        --[[info={--自动, 准备进入,选项
             text=e.Icon.toRight2..(e.onlyChinese and '准备进入' or BATTLEFIELD_CONFIRM_STATUS),
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '已经建好了一个队伍，准备前往' or SPECIFIC_DUNGEON_IS_READY,
@@ -504,7 +504,7 @@ local function InitList(self, level, type)--LFDFrame.lua
                 setQueueStatus()--小眼睛, 信息
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        UIDropDownMenu_AddButton(info, level)]]
 
         info={--自动, 离开副本,选项
             text=e.Icon.toLeft2..(e.onlyChinese and '离开副本' or (LEAVE..INSTANCE)),
@@ -651,6 +651,7 @@ end
 --###############
 --离开, 进入, 副本
 --###############
+--[[
 local function setLFGDungeonReadyDialog(self)--自动进入FB LFGDungeonReadyDialog:HookScript("OnShow"
     if Save.enterInstance then
         e.PlaySound()--播放, 声音
@@ -693,7 +694,7 @@ local function setLFGDungeonReadyDialog(self)--自动进入FB LFGDungeonReadyDia
         end
     end)
 end
-
+]]
 local ExitIns
 local function exitInstance()
     local ins
@@ -861,7 +862,7 @@ local function Init()
     end)
     button:SetScript('OnLeave', function() e.tips:Hide() end)
 
-    LFGDungeonReadyDialog:HookScript("OnShow", setLFGDungeonReadyDialog)--自动进入FB
+    --LFGDungeonReadyDialog:HookScript("OnShow", setLFGDungeonReadyDialog)--自动进入FB
 
     hooksecurefunc(QueueStatusFrame, 'Update', setQueueStatus)--小眼睛, 更新信息, QueueStatusFrame.lua
 

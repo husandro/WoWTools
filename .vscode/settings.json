@@ -2113,7 +2113,8 @@
         "LFGInvitePopupRoleButtonHealer",
         "LFGInvitePopupRoleButtonDPS",
         "LFGInvitePopupAccept_OnClick",
-        "LFGDungeonReadyDialogEnterDungeonButton"
+        "LFGDungeonReadyDialogEnterDungeonButton",
+        "ITEM_LEVEL"
     ],
     "Lua.diagnostics.disable": [
     ]
