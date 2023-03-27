@@ -7,11 +7,10 @@ local Save= {
 
 local panel= CreateFrame("Frame")
 local isPvPArena, isIns
-local PlaterADD
+
 --########################
 --怪物目标, 队员目标, 总怪物
 --########################
-
 --local distanceSquared, checkedDistance = UnitDistanceSquared(u)
 local function set_CreatureNum()
     local k,T,F=0,0,0
@@ -243,7 +242,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             set_Register_Event()
             if not Save.disabled then
-                PlaterADD= IsAddOnLoaded("Plater")
+                --PlaterADD= IsAddOnLoaded("Plater")
                 Init()
             end
         end
@@ -258,14 +257,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             local plate = C_NamePlate.GetNamePlateForUnit("target")
             if plate then
                 local frame
-                if PlaterADD then
-                    local text =plate.namePlateUnitToken
-                    if text then
-                        local num= text:match('(%d+)')
-                        frame= _G['NamePlate'..num..'PlaterUnitFrameHealthBar']
-                        print(num)
-                    end
-                elseif plate.UnitFrame then
+                if plate.UnitFrame then
                     if plate.UnitFrame.RaidTargetFrame and plate.UnitFrame.RaidTargetFrame.RaidTargetIcon:IsShown() then
                         frame= plate.UnitFrame.RaidTargetFrame
                     elseif plate.UnitFrame.ClassificationFrame and plate.UnitFrame.ClassificationFrame.classificationIndicator:IsShown() then
