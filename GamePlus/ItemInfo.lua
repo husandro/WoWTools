@@ -108,7 +108,7 @@ local function set_Item_Info(self, tab)
 
         elseif classID==2 or classID==4 then--装备
             if itemQuality and itemQuality>1 then
-                local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, text={equipStr, pvpItemStr, upgradeStr}, wow=true, red=true})--物品提示，信息
+                local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, text={equipStr, pvpItemStr, upgradeStr, classStr}, wow=true, red=true})--物品提示，信息
                 if dateInfo.text[equipStr] then--套装名称，
                     local text= dateInfo.text[equipStr]:match('(.+),') or dateInfo.text[equipStr]:match('(.+)，') or dateInfo.text[equipStr]
                     bottomLeftText=e.WA_Utf8Sub(text,3,5)
@@ -116,6 +116,18 @@ local function set_Item_Info(self, tab)
                     bottomLeftText='|cnRED_FONT_COLOR:'..itemMinLevel..'|r'
                 elseif dateInfo.wow then--战网
                     bottomLeftText= e.Icon.wow2
+                    if subclassID==0 and dateInfo.text[classStr] then
+                        local text=''
+                        local n=1
+                        for className, icon in pairs (ClassNameIconTab) do
+                            if dateInfo.text[classStr]:find(className) then
+                                text= select(2, math.modf(n/4))==0 and text..'\n' or text
+                                text=text..icon
+                                n= n+1
+                            end
+                        end
+                        topLeftText= text
+                    end
                 end
                 if dateInfo.text[pvpItemStr] then--PvP装备
                     rightText= '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'
