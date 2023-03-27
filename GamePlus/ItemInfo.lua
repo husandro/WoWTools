@@ -138,7 +138,7 @@ local function set_Item_Info(self, tab)
                                 end
                             end
                         end
-                        rightText= dateInfo.red and e.Icon.X2
+                        rightText= dateInfo.red and e.Icon.X2 or e.Icon.select2
                         topLeftText= text
                     end
                 end

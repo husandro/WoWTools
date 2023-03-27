@@ -519,31 +519,6 @@ local function InitList(self, level, type)--LFDFrame.lua
         }
         UIDropDownMenu_AddButton(info, level)
 
-        local num, text=0, ''
-        for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
-            local listNum, listText=getQueuedList(i,true)
-            if listNum and listText then
-                text= text~='' and text..'\n'..listText or listText
-                num=num+listNum
-            end
-        end
-        UIDropDownMenu_AddSeparator(level)
-
-        info={
-            text= (e.onlyChinese and '离开所有副本' or LEAVE_ALL_QUEUES)..' #'..num..'|r',
-            notCheckable=true,
-            disabled= num==0,
-            func=function ()
-                for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
-                    LeaveLFG(i)
-                end
-            end,
-            tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and '在队列中' or BATTLEFIELD_QUEUE_STATUS,
-            tooltipText=text,
-        }
-        UIDropDownMenu_AddButton(info, level)
-
         UIDropDownMenu_AddSeparator(level)
         info={--信息 QueueStatusFrame.lua
             text='|A:groupfinder-eye-frame:0:0|a'.. (e.onlyChinese and '列表信息' or SOCIAL_QUEUE_TOOLTIP_HEADER..INFO),
@@ -644,6 +619,32 @@ local function InitList(self, level, type)--LFDFrame.lua
             UIDropDownMenu_AddSeparator(level)
         end
         partyList(self, level, type)--随机
+
+        local num, text=0, ''
+        for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
+            local listNum, listText=getQueuedList(i,true)
+            if listNum and listText then
+                text= text~='' and text..'\n'..listText or listText
+                num=num+listNum
+            end
+        end
+        if num>0 then
+            UIDropDownMenu_AddSeparator(level)
+            info={
+                text= (e.onlyChinese and '离开所有副本' or LEAVE_ALL_QUEUES)..' |cnGREEN_FONT_COLOR:#'..num..'|r',
+                notCheckable=true,
+                disabled= num==0,
+                func=function ()
+                    for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
+                        LeaveLFG(i)
+                    end
+                end,
+                tooltipOnButton=true,
+                tooltipTitle= e.onlyChinese and '在队列中' or BATTLEFIELD_QUEUE_STATUS,
+                tooltipText=text,
+            }
+            UIDropDownMenu_AddButton(info, level)
+        end
     end
 end
 
@@ -656,6 +657,8 @@ local function setLFGDungeonReadyDialog(self)--自动进入FB LFGDungeonReadyDia
     if Save.enterInstance then
         e.PlaySound()--播放, 声音
     end
+    e.Ccool(self, nil, 38, nil, true, true)
+    
     local afk=UnitIsAFK('player')
     if not self.infoText then
         self.infoText=e.Cstr(self, {copyFont=LFGDungeonReadyDialogInstanceInfoFrame.name, color=true})--nil, LFGDungeonReadyDialogInstanceInfoFrame.name, nil, true)
@@ -673,7 +676,7 @@ local function setLFGDungeonReadyDialog(self)--自动进入FB LFGDungeonReadyDia
                 ..(isHoliday and '\n'..(e.onlyChinese and '节日' or CALENDAR_FILTER_HOLIDAYS).. ' '..(e.onlyChinese and '副本' or INSTANCE) or '')
     end
     self.infoText:SetText(text)
-    if not Save.enterInstance or afk then
+    --if not Save.enterInstance or afk then
         e.Ccool(self, nil, 38, nil, true, true)
         if Save.enterInstance and afk then
             print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '不能' or NO)..'|r', e.onlyChinese and '准备进入' or BATTLEFIELD_CONFIRM_STATUS, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '离开中' or CHAT_FLAG_AFK))
@@ -693,8 +696,7 @@ local function setLFGDungeonReadyDialog(self)--自动进入FB LFGDungeonReadyDia
             LFGDungeonReadyDialogEnterDungeonButton:Click()
         end
     end)
-end
-]]
+end]]
 local ExitIns
 local function exitInstance()
     local ins
@@ -862,7 +864,10 @@ local function Init()
     end)
     button:SetScript('OnLeave', function() e.tips:Hide() end)
 
-    --LFGDungeonReadyDialog:HookScript("OnShow", setLFGDungeonReadyDialog)--自动进入FB
+    LFGDungeonReadyDialog:HookScript("OnShow", function(self)
+        e.PlaySound()--播放, 声音
+        e.Ccool(self, nil, 38, nil, true, true)
+    end)--自动进入FB
 
     hooksecurefunc(QueueStatusFrame, 'Update', setQueueStatus)--小眼睛, 更新信息, QueueStatusFrame.lua
 
