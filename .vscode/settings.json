@@ -2106,7 +2106,8 @@
         "PVEFrameCloseButton",
         "ReputationFrame_Update",
         "HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT",
-        "HEALTH"
+        "HEALTH",
+        "ITEM_CLASSES_ALLOWED"
     ],
     "Lua.diagnostics.disable": [
     ]

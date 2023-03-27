@@ -160,8 +160,8 @@ local function getItems()--取得背包物品信息
                         return
                     end
 
-                elseif not Save.no[info.itemID] and not e.GetTooltipData(true, nil, nil, {bag=bag, slot=slot}) then--不出售, 可以使用
-                    local itemName, _, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, sellPrice, classID, subclassID, bindType, expacID, setID, isCraftingReagent= GetItemInfo(info.hyperlink)
+                elseif not Save.no[info.itemID] and not e.GetTooltipData({hyperLink=info.hyperlink, red=true, onlyRed=true}).red then--不出售, 可以使用
+                    local _, _, _, _, itemMinLevel, _, _, _, itemEquipLoc, _, _, classID, subclassID= GetItemInfo(info.hyperlink)
                     if itemEquipLoc and _G[itemEquipLoc] then--幻化
                         if Save.mago and (itemMinLevel and itemMinLevel<=e.Player.level or not itemMinLevel) and info.quality and info.quality>1 then--and (not info.isBound or (classID==4 and (subclassID==0 or subclassID==5))) then
                             local  isCollected, isSelf= select(2, e.GetItemCollected(info.hyperlink))

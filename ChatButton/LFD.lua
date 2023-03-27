@@ -951,8 +951,8 @@ local function Init()
             if classID==2 or classID==4 then
                 local invSlot = e.itemSlotTable[itemEquipLoc]
                 if invSlot and itemLevel and itemLevel>1 then--装等
-                    local noUse= e.GetTooltipData(true, nil, itemLink)--物品提示，信息
-                    if not noUse then
+                    local dateInfo= e.GetTooltipData({hyperLink=itemLink, red=true, onlyRed=true})--物品提示，信息
+                    if not dateInfo.red then
                         local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
                         if itemLinkPlayer then
                             local lv=GetDetailedItemLevelInfo(itemLinkPlayer)

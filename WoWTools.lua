@@ -1018,49 +1018,66 @@ e.GetExpansionText= function(expacID, questID)--版本数据
     end
 end
 
-
-e.GetTooltipData= function(colorRed, text, hyperLink, bag, guidBank, merchant, buyBack, inventory, text2, text3)--物品提示，信息
+--e.GetTooltipData({bag={bag=nil, slot=nil}, guidBank={tab=nil, slot=nil}, merchant={slot, buyBack=true}, inventory=nil, hyperLink=nil, text={}, onlyText=nil, wow=nil, onlyWoW=nil, red=nil, onlyRed=nil})--物品提示，信息
+e.GetTooltipData= function(tab)
     local tooltipData
-    if bag then
-        tooltipData= C_TooltipInfo.GetBagItem(bag.bag, bag.slot)
-    elseif guidBank then
-        tooltipData= C_TooltipInfo.GetGuildBankItem(guidBank.tab, guidBank.slot)
-    elseif merchant then
-        tooltipData= C_TooltipInfo.GetMerchantItem(merchant)--slot
-    elseif buyBack then
-        tooltipData= C_TooltipInfo.GetBuybackItem(buyBack)
-    elseif inventory then
-        tooltipData= C_TooltipInfo.GetInventoryItem('player', inventory)
+    if tab.bag then
+        tooltipData= C_TooltipInfo.GetBagItem(tab.bag.bag, tab.bag.slot)
+    elseif tab.guidBank then-- guidBank then
+        tooltipData= C_TooltipInfo.GetGuildBankItem(tab.guidBank.tab, tab.guidBank.slot)
+    elseif tab.merchant then
+        if tab.merchant.buyBack then
+            tooltipData= C_TooltipInfo.GetBuybackItem(tab.merchant.slot)
+        else
+            tooltipData= C_TooltipInfo.GetMerchantItem(tab.merchant.slot)--slot
+        end
+    elseif tab.inventory then
+        tooltipData= C_TooltipInfo.GetInventoryItem('player', tab.inventory)
     end
-    tooltipData=  tooltipData or (hyperLink and C_TooltipInfo.GetHyperlink(hyperLink))
-    if tooltipData and tooltipData.lines then
-        local noUse, findText, wow, findText2, findText3
+    tooltipData=  tooltipData or (tab.hyperLink and C_TooltipInfo.GetHyperlink(tab.hyperLink))
+    local date={
+        red=false,
+        wow=false,
+        text={},
+    }
+    if tooltipData and tooltipData.lines then        
+        local numText= tab.text and #tab.text or 0
+        local find= numText>0 or tab.wow
+        local numFind=0
         for _, line in ipairs(tooltipData.lines) do--是否
             TooltipUtil.SurfaceArgs(line)
-            if colorRed and noUse==nil then
+            if tab.red and not date.red then
                 local leftHex=line.leftColor and line.leftColor:GenerateHexColor()
                 local rightHex=line.rightColor and line.rightColor:GenerateHexColor()
                 if leftHex == 'ffff2020' or leftHex=='fefe1f1f' or rightHex== 'ffff2020' or rightHex=='fefe1f1f' then-- or hex=='fefe7f3f' then
-                    noUse=true
-                    if not text then
+                    date.red=true
+                    if tab.onlyRed then
                         break
                     end
                 end
             end
-            if line.leftText then
-                if text and line.leftText:find(text) then--字符
-                    findText= line.leftText:match(text) or line.leftText
-                elseif text2 and line.leftText:find(text2) then--字符2
-                    findText2= line.leftText:match(text2) or line.leftText
-                elseif text3 and line.leftText:find(text3) then
-                    findText3= line.leftText:match(text3) or line.leftText
-                elseif line.leftText==ITEM_BNETACCOUNTBOUND or line.leftText==ITEM_ACCOUNTBOUND then--暴雪游戏通行证绑定, 账号绑定
-                    wow=true
+            if line.leftText and find then
+                if tab.text then
+                    for _, text in pairs(tab.text) do
+                        if line.leftText:find(text) or line.leftText==text then
+                            date.text[text]= line.leftText:match(text) or line.leftText
+                            numFind= numFind +1
+                            if tab.onlyText and numFind==numText then
+                                break
+                            end
+                        end
+                    end
+                end
+                if tab.wow and not date.wow and (line.leftText==ITEM_BNETACCOUNTBOUND or line.leftText==ITEM_ACCOUNTBOUND) then--暴雪游戏通行证绑定, 账号绑定
+                    date.wow=true
+                    if tab.onlyWoW then
+                        break
+                    end
                 end
             end
         end
-        return noUse, findText, wow, findText2, findText3
     end
+    return date
 end
 
 e.PlaySound= function(soundKitID, setPlayerSound)--播放, 声音 SoundKitConstants.lua e.PlaySound()--播放, 声音

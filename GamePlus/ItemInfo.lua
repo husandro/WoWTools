@@ -4,27 +4,51 @@ local Save={}
 local panel=CreateFrame("Frame")
 
 local chargesStr= ITEM_SPELL_CHARGES:gsub('%%d', '%(%%d%+%)')--(%d+)次
-local keyStr= CHALLENGE_MODE_KEYSTONE_NAME:gsub('%%s','(.+) ')--钥石
-local equipStr= EQUIPMENT_SETS:gsub('%%s','(.+)')
+local keyStr= format(CHALLENGE_MODE_KEYSTONE_NAME,'(.+) ')--钥石
+local equipStr= format(EQUIPMENT_SETS, '(.+)')
 local pvpItemStr= PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在竞技场和战场中将物品等级提高至%d。"
 local upgradeStr= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(%%d%+/%%d%+)')-- "升级：%s/%s"
+local classStr= format(ITEM_CLASSES_ALLOWED, '(.+)') --"职业：%s";
 local size= 10--字体大小
 
-local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBank, buyBack)
+local ClassNameIconTab={}--职业图标 ClassNameIconTab['法师']=图标
+
+--set_Item_Info(itemButton, {bag={bag=bagID, slot=slotID}, merchant={slot=slot, buyBack= selectedTab==2}, guidBank={tab=tab, slot=i}})
+local function set_Item_Info(self, tab)
+    local itemLink, containerInfo, itemID
+    if tab.bag then
+        containerInfo =C_Container.GetContainerItemInfo(tab.bag.bag, tab.bag.slot)
+        if containerInfo then
+            itemLink= containerInfo.hyperlink
+            itemID= containerInfo.itemID
+        end
+    elseif tab.merchant then
+        if tab.merchant.buyBack then
+            itemLink= GetBuybackItemLink(tab.merchant.slot)
+        else
+            itemLink= GetMerchantItemLink(tab.merchant.slot)
+            itemID= GetMerchantItemID(tab.merchant.slot)
+        end
+    elseif tab.guidBank then
+        itemLink= GetGuildBankItemLink(tab.guidBank.tab, tab.guidBank.slot)
+    end
+
     local topLeftText, bottomRightText, leftText, rightText, bottomLeftText, topRightText, r, g ,b, setIDItem--, isWoWItem--setIDItem套装
+
     if itemLink then
+        itemID= itemID or GetItemInfoInstant(itemLink)
         local _, _, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, _, _, classID, subclassID, bindType, expacID, setID, isCraftingReagent = GetItemInfo(itemLink)
 
         setIDItem= setID and true or nil--套装
-        itemLevel=GetDetailedItemLevelInfo(itemLink) or itemLevel
+        itemLevel= GetDetailedItemLevelInfo(itemLink) or itemLevel
 
         if itemQuality then
             r,g,b = GetItemQualityColor(itemQuality)
         end
 
-        if bag and bag.hasLoot then--宝箱
-            local noUse= e.GetTooltipData(true, nil, itemLink, bag and {bag=bag.bagID, slot=bag.slotID}, guildBank and {tab= guildBank[1], slot=guildBank[2]}, merchantIndex, buyBack)--物品提示，信息
-            topRightText= noUse and '|A:Monuments-Lock:0:0|a' or '|A:talents-button-undo:0:0|a'
+        if containerInfo and containerInfo.hasLoot then--宝箱
+            local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, red=true, onlyRed=true})--物品提示，信息
+            topRightText= dateInfo.red and '|A:Monuments-Lock:0:0|a' or '|A:talents-button-undo:0:0|a'
 
         elseif C_Item.IsItemKeystoneByID(itemID) then--挑战
             local name=itemLink:match('%[(.-)]') or itemLink
@@ -56,12 +80,12 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
 
         elseif classID==1 then--背包
             bottomLeftText= e.WA_Utf8Sub(itemSubType, 2,5)
-            if bag and not bag.isBound then--没有锁定
+            if containerInfo and not containerInfo.isBound then--没有锁定
                 topRightText='|A:'..e.Icon.unlocked..':0:0|a'
             end
 
         elseif isCraftingReagent or classID==8 or classID==3 or classID==9 or (classID==0 and (subclassID==1 or subclassID==3 or subclassID==5)) or classID==19 or classID==7 then--附魔, 宝石,19专业装备 ,7商业技能
-            local noUse,findText, wow= e.GetTooltipData(true, ITEM_SPELL_KNOWN , itemLink, bag and {bag=bag.bagID, slot=bag.slotID}, guildBank and {tab= guildBank[1], slot=guildBank[2]}, merchantIndex, buyBack)--物品提示，信息
+            local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, text={ITEM_SPELL_KNOWN}, wow=true, red=true})--物品提示，信息 ITEM_SPELL_KNOWN = "已经学会";
             if not (classID==15 and (subclassID== 0 or subclassID==4)) then
                 if classID==0 and subclassID==5 then
                     topRightText= e.WA_Utf8Sub(POWER_TYPE_FOOD, 2,5)--食物
@@ -72,11 +96,11 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
                     topRightText= '|cff606060'..topRightText..'|r'
                 end
             end
-            if findText then
+            if dateInfo.text[ITEM_SPELL_KNOWN] then--"已经学会"
                 bottomRightText= e.Icon.X2
-            elseif noUse then
+            elseif dateInfo.red then--红色
                 bottomRightText= e.Icon.O2
-            elseif wow then
+            elseif dateInfo.wow then
                 bottomRightText= e.Icon.wow2
             end
         elseif classID==2 and subclassID==20 then-- 鱼竿
@@ -84,38 +108,33 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
 
         elseif classID==2 or classID==4 then--装备
             if itemQuality and itemQuality>1 then
-                local noUse, text, wow, text2, text3= e.GetTooltipData(true, equipStr, itemLink, bag and {bag=bag.bagID, slot=bag.slotID}, guildBank and {tab= guildBank[1], slot=guildBank[2]}, merchantIndex, buyBack, nil, pvpItemStr, upgradeStr)--物品提示，信息
-                if text then--套装名称，
-                    text= text:match('(.+),') or text:match('(.+)，') or text
+                local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, text={equipStr, pvpItemStr, upgradeStr}, wow=true, red=true})--物品提示，信息
+                if dateInfo.text[equipStr] then--套装名称，
+                    local text= dateInfo.text[equipStr]:match('(.+),') or dateInfo.text[equipStr]:match('(.+)，') or dateInfo.text[equipStr]
                     bottomLeftText=e.WA_Utf8Sub(text,3,5)
                 elseif itemMinLevel>e.Player.level then--低装等
                     bottomLeftText='|cnRED_FONT_COLOR:'..itemMinLevel..'|r'
-                elseif wow then--战网
+                elseif dateInfo.wow then--战网
                     bottomLeftText= e.Icon.wow2
                 end
-                if text2 then--PvP装备
+                if dateInfo.text[pvpItemStr] then--PvP装备
                     rightText= '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'
-                  --rightText="|A:pvptalents-warmode-swords:0:0|a"
                 end
-                if text3 then--"升级：%s/%s"
-                    if merchantIndex or guildBank then
-                        leftText= "|A:CovenantSanctum-Upgrade-Icon-Available:0:0|a"
-                    else
-                        local min, max= text3:match('(%d+)/(%d+)')
-                        if min and max then
-                            if min==max then
-                                leftText= "|A:VignetteKill:0:0|a"
-                            else
-                                min, max= tonumber(min), tonumber(max)
-                                leftText= '|cnGREEN_FONT_COLOR:'..max-min..'|r'
-                            end
+                if dateInfo.text[upgradeStr] then--"升级：%s/%s"
+                    local min, max= dateInfo.text[upgradeStr]:match('(%d+)/(%d+)')
+                    if min and max then
+                        if min==max then
+                            leftText= "|A:VignetteKill:0:0|a"
+                        else
+                            min, max= tonumber(min), tonumber(max)
+                            leftText= '|cnGREEN_FONT_COLOR:'..max-min..'|r'
                         end
                     end
                 end
 
                 local invSlot = e.itemSlotTable[itemEquipLoc]
                 if invSlot and itemLevel and itemLevel>1 then
-                    if not noUse then--装等
+                    if not dateInfo.red then--装等
                         local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
                         local upLevel, downLevel
                         if itemLinkPlayer then
@@ -143,10 +162,10 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
                     end
                 end
 
-                if bag and not bag.isBound or not bag then
+                if containerInfo and not containerInfo.isBound or not containerInfo then
                     bottomRightText = e.GetItemCollected(itemLink, nil, true)--幻化
                 end
-                if itemQuality and itemQuality>1 and ((bag and not bag.isBound) or guildBank or buyBack) then--没有锁定
+                if itemQuality and itemQuality>1 and ((containerInfo and not containerInfo.isBound) or tab.guidBank or (tab.merchant and tab.merchant.buyBack)) then--没有锁定
                     topRightText=itemSubType and e.WA_Utf8Sub(itemSubType,2,4) or '|A:'..e.Icon.unlocked..':0:0|a'
                 end
             end
@@ -178,12 +197,16 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
             bottomRightText= PlayerHasToy(itemID) and e.Icon.X2 or e.Icon.star2
 
         elseif itemStackCount==1 then
-            local noUse, text, wow= e.GetTooltipData(true, chargesStr, itemLink, bag and {bag=bag.bagID, slot=bag.slotID}, guildBank and {tab= guildBank[1], slot=guildBank[2]}, merchantIndex, buyBack)--物品提示，信息
-            bottomLeftText=text
-            topRightText= wow and e.Icon.wow2 or noUse and e.Icon.X2
+            local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, text={chargesStr}, wow=true, red=true})--物品提示，信息
+            bottomLeftText=dateInfo.text[chargesStr]
+            if dateInfo.wow then
+                topRightText= e.Icon.wow2
+            elseif dateInfo.red then
+                topRightText= e.Icon.X2
+            end
         end
 
-        if (bag and bag.bagID<=NUM_BAG_SLOTS+1 and bag.bagID>=0) or not bag then
+        if (tab.bag and tab.bag.bag<=NUM_BAG_SLOTS+1 and tab.bag.bag>=0) or not tab.bag then
             local num=GetItemCount(itemLink, true)-GetItemCount(itemLink)--银行数量
             if num>0  then
                 leftText= '+'..e.MK(num, 0)
@@ -268,22 +291,13 @@ local function set_Item_Info(self, itemLink, itemID, bag, merchantIndex, guildBa
 end
 
 local function setBags(self)--背包设置
-    for i, itemButton in self:EnumerateValidItems() do
-        local itemLink, itemID, isBound--, equipmentName
-        local slotID, bagID= itemButton:GetSlotAndBagID()--:GetID() GetBagID()
-        local info
+    for _, itemButton in self:EnumerateValidItems() do
         if itemButton.hasItem then
-            info=C_Container.GetContainerItemInfo(bagID, slotID)
-            if info and info.hyperlink and info.itemID then
-                itemLink= info.hyperlink
-                itemID= info.itemID
-
-                info.bagID=bagID
-                info.slotID=slotID
-            end
+            local slotID, bagID= itemButton:GetSlotAndBagID()--:GetID() GetBagID()
+            set_Item_Info(itemButton, {bag={bag=bagID, slot=slotID}})
+        else
+            set_Item_Info(itemButton, {})
         end
-
-        set_Item_Info(itemButton, itemLink, itemID, info)
     end
 end
 
@@ -292,20 +306,10 @@ local function setMerchantInfo()--商人设置
     local selectedTab= MerchantFrame.selectedTab
     local page= selectedTab == 1 and MERCHANT_ITEMS_PER_PAGE or BUYBACK_ITEMS_PER_PAGE
     for i=1, page do
-        local index = selectedTab==1 and (((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i) or i
+        local slot = selectedTab==1 and (((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i) or i
         local itemButton= _G["MerchantItem"..i..'ItemButton']
         if itemButton then
-            local itemLink,itemID
-           -- if itemButton:IsShown() then
-                if selectedTab==1 then
-                    itemLink= GetMerchantItemLink(index)
-                    itemID= GetMerchantItemID(index)
-                else
-                    itemLink= GetBuybackItemInfo(index)
-                    itemID= C_MerchantFrame.GetBuybackItemID(index)
-                end
-            --end
-            set_Item_Info(itemButton, itemLink, itemID, nil, selectedTab == 1 and index, nil, selectedTab ~= 1 and index)
+            set_Item_Info(itemButton, {merchant={slot=slot, buyBack= selectedTab==2}})
         end
     end
 end
@@ -325,9 +329,7 @@ local function setGuildBank()--公会银行,设置
             local column = ceil((i-0.5)/NUM_SLOTS_PER_GUILDBANK_GROUP);
             local button = (GuildBankFrame.Columns[column] and GuildBankFrame.Columns[column].Buttons) and GuildBankFrame.Columns[column].Buttons[index];
             if button then
-                local itemLink= GetGuildBankItemLink(tab, i)
-                local itemID= itemLink and GetItemInfoInstant(itemLink)
-                set_Item_Info(button, itemLink, itemID, nil, nil, {tab, i})
+                set_Item_Info(button,{guidBank={tab=tab, slot=i}})
             end
         end
     end
@@ -335,15 +337,8 @@ end
 
 
 local function set_BankFrameItemButton_Update(self)--银行, BankFrame.lua
-    local container = self:GetParent():GetID();
     if not self.isBag then
-        local buttonID = self:GetID();
-        local itemInfo = C_Container.GetContainerItemInfo(container, buttonID) or {};
-        local info={
-            bagID=container,
-            slotID=buttonID,
-        }
-        set_Item_Info(self, itemInfo.hyperlink, itemInfo.itemID, info)
+        set_Item_Info(self, {bag={bag=self:GetParent():GetID(), slot=self:GetID()}})
     else
         local slot = self:GetBagID()
         local numFreeSlots
@@ -366,6 +361,12 @@ end
 --初始
 --####
 local function Init()
+    for classID= 1, GetNumClasses() do--职业图标 ClassNameIconTab['法师']=图标
+        local classInfo = C_CreatureInfo.GetClassInfo(classID)
+        if classInfo and classInfo.className and classInfo.classFile then
+            ClassNameIconTab[classInfo.className]= e.Class(nil, classInfo.classFile, false)--职业图标
+        end
+    end
 --[[    if Bagnon then
         local item = Bagnon.ItemSlot  or Bagnon.Item
         if (item) and (item.Update)  then

@@ -186,9 +186,10 @@ local function Engineering(self, slot, use)--增加 [潘达利亚工程学: 地�
 end
 
 local function Enchant(self, slot, link)--附魔, 使用, 属性
-    local enchant, use, pvpItem, upgradeItem, _
+    local enchant, use, pvpItem, upgradeItem
     if link then
-        _, enchant, _ , pvpItem, upgradeItem=  e.GetTooltipData(nil, enchantStr, link, nil, nil, nil, nil, slot, pvpItemStr, upgradeStr)--物品提示，信息
+        local dateInfo= e.GetTooltipData({hyperLink=link, text={enchantStr, pvpItemStr, upgradeStr}, onlyText=true})--物品提示，信息
+        enchant, use, pvpItem, upgradeItem= dateInfo.text[enchantStr], dateInfo.red, dateInfo.text[pvpItemStr],  dateInfo.text[upgradeStr]
         if enchant and not self.enchant then--附魔
             local h=self:GetHeight()/3
             self.enchant=self:CreateTexture()
@@ -678,11 +679,8 @@ local function setFlyout(button, itemLink, slot)
     end
     button.level:SetText(text or '')
 
-    local upgrade, pvpItem, _
-    if itemLink then
-        _, upgrade, _, pvpItem= e.GetTooltipData(nil, upgradeStr, itemLink, nil, nil, nil, nil, nil, pvpItemStr)--物品提示，信息
-        --e.GetTooltipData= function(colorRed, text, hyperLink, bag, guidBank, merchant, buyBack, inventory, text2, text3)
-    end
+    local dateInfo= e.GetTooltipData({hyperLink=itemLink, text={upgradeStr, pvpItemStr}, onlyText=true})--物品提示，信息
+    local upgrade, pvpItem= dateInfo.text[upgradeStr], dateInfo.text[pvpItemStr]
 
     if upgrade and not button.upgrade then
         button.upgrade= e.Cstr(button, {color={r=0,g=1,b=0}})
