@@ -2107,7 +2107,13 @@
         "ReputationFrame_Update",
         "HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT",
         "HEALTH",
-        "ITEM_CLASSES_ALLOWED"
+        "ITEM_CLASSES_ALLOWED",
+        "LFGRole_GetChecked",
+        "LFGInvitePopupRoleButtonTank",
+        "LFGInvitePopupRoleButtonHealer",
+        "LFGInvitePopupRoleButtonDPS",
+        "LFGInvitePopupAccept_OnClick",
+        "LFGDungeonReadyDialogEnterDungeonButton"
     ],
     "Lua.diagnostics.disable": [
     ]

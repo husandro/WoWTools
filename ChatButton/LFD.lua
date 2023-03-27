@@ -689,7 +689,7 @@ local function setLFGDungeonReadyDialog(self)--自动进入FB LFGDungeonReadyDia
     e.Ccool(self, nil, sec, nil, true, true)
     C_Timer.After(sec, function()
         if self and self.enterButton and self:IsShown() and self.enterButton:IsEnabled() and not IsModifierKeyDown() then
-            self.enterButton:Click()
+            LFGDungeonReadyDialogEnterDungeonButton:Click()
         end
     end)
 end
