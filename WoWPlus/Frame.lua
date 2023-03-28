@@ -35,8 +35,10 @@ local function show_Tips(frame, name, zeroAlpha)
         self:SetAlpha(1)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE), Save.scale[self.name] or 1)
-        e.tips:AddDoubleLine('Frame', self.name)
+        --e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE), Save.scale[self.name] or 1)
+        e.tips:AddDoubleLine(e.onlyChinese and '放大' or ZOOM_IN, e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinese and '缩小' or ZOOM_OUT, e.Icon.right)
+        --e.tips:AddDoubleLine('Frame', self.name)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
@@ -81,15 +83,20 @@ local function ZoomFrame(self, notZoom, zeroAlpha)
     end
 
     self.ZoomIn:SetNormalAtlas('UI-HUD-Minimap-Zoom-In')
-    self.ZoomIn:SetScript('OnMouseDown', function(self2)
+    self.ZoomIn:SetScript('OnClick', function(self2,d)
         local n= Save.scale[self2.name] or self:GetScale() or 1
-        n= n+ 0.05
+        if d=='LeftButton' then
+            n= n+ 0.05
+        elseif d=='RightButton' then
+            n= n- 0.05
+        end
         n= n>2 and 2 or n
+        n= n< 0.5 and 0.5 or n
         Save.scale[self2.name]= n
         self:SetScale(n)
     end)
 
-    self.ZoomOut= e.Cbtn(frame, {icon='hide', size={size,size}})--缩小
+    --[[self.ZoomOut= e.Cbtn(frame, {icon='hide', size={size,size}})--缩小
     self.ZoomOut:SetFrameLevel(self.ZoomIn:GetFrameLevel())
     if self.moveButton then
         self.ZoomOut:SetPoint('LEFT',self.moveButton, 'RIGHT')
@@ -103,10 +110,10 @@ local function ZoomFrame(self, notZoom, zeroAlpha)
         n= n< 0.5 and 0.5 or n
         Save.scale[self2.name]= n
         self:SetScale(n)
-    end)
+    end)]]
 
     show_Tips(self.ZoomIn, name, zeroAlpha)
-    show_Tips(self.ZoomOut, name, zeroAlpha)
+    --show_Tips(self.ZoomOut, name, zeroAlpha)
 
     if Save.scale[name] and Save.scale[name]~=1 then
         self:SetScale(Save.scale[name])
