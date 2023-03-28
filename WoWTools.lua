@@ -26,7 +26,7 @@ local LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftBut
 local RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp'
 
 
-e.LoadDate= function(tab)--加载法术, e.LoadDate({id=, type=''})
+e.LoadDate= function(tab)--e.LoadDate({id=, type=''})--加载 item quest spell
     if not tab.id then
         return
     end

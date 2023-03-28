@@ -727,6 +727,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                 if self.transmogLocation:IsIllusion() then--WardrobeItemsModelMixin:OnMouseDown(button)
                     local link = select(2, C_TransmogCollection.GetIllusionStrings(model.visualInfo.sourceID))
                     if link then
+                        e.LoadDate({id=link, type='item'})----加载 item quest spell
                         table.insert(itemLinks, link)
                     end
                 else
@@ -734,6 +735,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                     for index= 1, #sources do
                         local link = WardrobeCollectionFrame:GetAppearanceItemHyperlink(sources[index]);
                         if link and not findLinks[link] then
+                            e.LoadDate({id=link, type='item'})----加载 item quest spell
                             table.insert(itemLinks, link)
                             findLinks[link]=true
                         end
