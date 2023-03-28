@@ -200,6 +200,8 @@ local Move=function(F, tab)
     F:SetScript("OnLeave", function() ResetCursor() end)
 
     ZoomFrame(F2, tab.notZoom, tab.zeroAlpha)
+
+    
 end
 
 local function set_Move_Button(frame, tab)
@@ -668,3 +670,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         set_Move_Button(classPowerFrame, {frame=nil, save=true, zeroAlpha=true, notZoom=nil})
     end
 end)
+--[[--缩放
+    br:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
+    br:SetHighlightTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
+    br:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
+]]
