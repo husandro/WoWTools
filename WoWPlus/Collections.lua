@@ -696,6 +696,141 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
     end)
 
     C_Timer.After(2, get_Items_Colleced)--物品, 幻化, 界面
+
+    hooksecurefunc(Frame, 'UpdateItems', function(self)--WardrobeItemsCollectionMixin:UpdateItems() Blizzard_Wardrobe.lua
+        --local indexOffset = (self.PagingFrame:GetCurrentPage() - 1) * self.PAGE_SIZE;
+        for i = 1, self.PAGE_SIZE do
+            local model = self.Models[i];
+            if model:IsShown() then
+                model.itemButton=model.itemButton or {}
+
+                if not model.texture then
+                    model.texture= model:CreateTexture(nil, 'OVERLAY')
+                    model.texture:SetPoint('BOTTOMRIGHT')
+                    model.texture:SetSize(20,20)
+                    model.texture:EnableMouse(true)
+                    model.texture:SetScript('OnLeave', function() e.tips:Hide() end)
+                    model.texture:SetScript("OnEnter", function(self2)
+                        if self2.link then
+                            e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+                            e.tips:ClearLines()
+                            e.tips:SetHyperlink(self2.link)
+                            e.tips:AddLine(' ')
+                            e.tips:AddDoubleLine(id, addName)
+                            e.tips:Show()
+                        end
+                    end)
+                end
+
+                local itemLinks={}
+                local findLinks={}
+                if self.transmogLocation:IsIllusion() then--WardrobeItemsModelMixin:OnMouseDown(button)
+                    local link = select(2, C_TransmogCollection.GetIllusionStrings(model.visualInfo.sourceID))
+                    if link then
+                        table.insert(itemLinks, link)
+                    end
+                else
+                    local sources = CollectionWardrobeUtil.GetSortedAppearanceSources(model.visualInfo.visualID, self:GetActiveCategory(), self.transmogLocation) or {}
+                    for index= 1, #sources do
+                        local link = WardrobeCollectionFrame:GetAppearanceItemHyperlink(sources[index]);
+                        if link and not findLinks[link] then
+                            table.insert(itemLinks, link)
+                            findLinks[link]=true
+                        end
+                    end
+                end
+                findLinks=nil
+
+                local y, x, h =0,0, 10
+                for index, link in pairs(itemLinks) do
+                    local btn= model.itemButton[index]
+                    if not btn then
+                        btn=e.Cbtn(model, {icon='hide', size={h,h}})
+                        btn:SetPoint('BOTTOMLEFT', x, y)
+                        if index>1 then
+                            btn:SetAlpha(0.3)
+                        end
+                        btn:SetScript("OnEnter",function(self2)
+                            if self2.link then
+                                self2:SetAlpha(1)
+                                e.tips:ClearLines()
+                                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                                e.tips:SetHyperlink(self2.link)
+                                e.tips:AddDoubleLine(id, addName)
+                                e.tips:AddDoubleLine(e.onlyChinese and '发送' or SEND_LABEL, e.Icon.left)
+                                e.tips:Show()
+                            end
+                        end)
+                        btn:SetScript("OnClick", function(self2)
+                            if ( self2.link ) then
+                                local chat=SELECTED_DOCK_FRAME
+                                ChatFrame_OpenChat((chat.editBox:GetText() or '')..self2.link, chat)
+                            end
+                        end)
+                        btn:SetScript("OnLeave",function(self2)
+                            if self2.index~=1 then
+                                self2:SetAlpha(0.3)
+                            end
+                            e.tips:Hide()
+                        end)
+                        model.itemButton[index]=btn
+                    end
+                    if index~=1 and select(2, math.modf(index / 10))==0 then
+                        x= x+ h
+                        y=0
+                    else
+                        y=y+ h
+                    end
+                    if index==1 then
+                        local icon = C_Item.GetItemIconByID(link)
+                        if icon then
+                            btn:SetNormalTexture(icon)
+                        else
+                            btn:SetNormalAtlas('adventure-missionend-line')
+                        end
+                    elseif index<=10 then
+                        btn:SetNormalAtlas('services-number-'..(index-1))
+                    else
+                        btn:SetNormalAtlas('adventure-missionend-line')
+                    end
+                    btn.link=link
+                    btn.index=index
+                    btn:SetShown(true)
+                end
+                for index= #itemLinks+1, #model.itemButton do
+                    model.itemButton[index]:SetShown(false)
+                end
+                    --[[if not model.itemButton[index] then
+                        model.itemButton[index]= model:CreateTexture(nil, 'OVERLAY')
+                        model.itemButton[index]:SetPoint('BOTTOMRIGHT')
+                        model.itemButton[index]:SetSize(10,10)
+                        model.itemButton[index]:EnableMouse(true)
+                        model.itemButton[index]:SetScript('OnLeave', function() e.tips:Hide() end)
+                        model.itemButton[index]:SetScript("OnEnter", function(self2)
+                            if self2.link then
+                                e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+                                e.tips:ClearLines()
+                                e.tips:SetHyperlink(self2.link)
+                                e.tips:AddLine(' ')
+                                e.tips:AddDoubleLine(id, addName)
+                                e.tips:Show()
+                            end
+                        end)
+                    end
+                end
+
+                local icon = C_Item.GetItemIconByID(link)
+                if icon then
+                    model.texture:SetTexture(icon)
+                else
+                    model.texture:SetAtlas('common-icon-zoomin')
+                end
+
+                model.texture.link=link
+                model.texture:SetShown(link and true or false)]]
+            end
+        end
+    end)
 end
 
 

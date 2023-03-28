@@ -27,7 +27,7 @@ local function setInitItem(self, hide)--创建物品
         self.backgroundColor:SetAllPoints(self)
     end
     if not self.playerModel and not Save.hideModel then
-        self.playerModel=CreateFrame("PlayerModel", nil, self)
+        self.playerModel=CreateFrame("PlayerModel", nil, self)--DressUpModel PlayerModel
         self.playerModel:SetFacing(-0.35)
         self.playerModel:SetPoint("BOTTOM", self, 'TOP', 0, -12)
         self.playerModel:SetSize(Save.modelSize or 100, Save.modelSize or 100)
@@ -228,14 +228,7 @@ local function setItem(self, ItemLink)
             end
         end
         set_Item_Model(self, {creatureDisplayID=nil, animID=nil, itemID=itemID, appearanceID=appearanceID, visualID=visualID})--设置, 3D模型
-        --[[if appearanceID then
-            if self.creatureDisplayID~=appearanceID then
-                self.itemModel:SetItemAppearance(appearanceID, visualID)
-                
-                self.itemModel:SetShown(true)
-                self.creatureDisplayID=appearanceID
-            end
-        end]]
+
         if bindType==LE_ITEM_BIND_ON_EQUIP or bindType==LE_ITEM_BIND_ON_USE then--绑定装备,使用时绑定
             self.Portrait:SetAtlas(e.Icon.unlocked)
         end

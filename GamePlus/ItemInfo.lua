@@ -37,6 +37,7 @@ local function set_Item_Info(self, tab)
 
     if itemLink then
         itemID= itemID or GetItemInfoInstant(itemLink)
+
         local _, _, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, _, _, classID, subclassID, bindType, expacID, setID, isCraftingReagent = GetItemInfo(itemLink)
 
         setIDItem= setID and true or nil--套装
@@ -116,39 +117,41 @@ local function set_Item_Info(self, tab)
                     bottomLeftText='|cnRED_FONT_COLOR:'..itemMinLevel..'|r'
                 elseif dateInfo.wow then--战网
                     bottomLeftText= e.Icon.wow2
-                    if itemLevel and itemLevel>1 then
-                        bottomLeftText= bottomLeftText.. itemLevel
-                        local level= GetAverageItemLevel()
-                        if not dateInfo.red then
-                            bottomLeftText= bottomLeftText.. (level<itemLevel and e.Icon.up2 or level>itemLevel and e.Icon.down2 or e.Icon.select2)
-                        else
-                            bottomLeftText= bottomLeftText..e.Icon.X2
-                        end
-                    end
-                    if subclassID==0 and dateInfo.text[classStr] then
-                        local text=''
-                        local n=1
-                        local findText=dateInfo.text[classStr]
-                        if findText:find(',') then
-                            findText= ' '..findText..','
-                            findText:gsub(' (.-),', function(t)
-                                if ClassNameIconTab[t] then
-                                    text= select(2, math.modf(n/4))==0 and text..'\n' or text
-                                    text=text..ClassNameIconTab[t]
-                                    n= n+1
-                                end
-                            end)
-                        else
-                            for className, icon in pairs (ClassNameIconTab) do
-                                if dateInfo.text[classStr]:find(className) then
-                                    text= select(2, math.modf(n/4))==0 and text..'\n' or text
-                                    text=text..icon
-                                    n= n+1
-                                end
+                    if subclassID==0 then
+                        if itemLevel and itemLevel>1 then
+                            bottomLeftText= bottomLeftText.. itemLevel
+                            local level= GetAverageItemLevel()
+                            if not dateInfo.red then
+                                bottomLeftText= bottomLeftText.. (level<itemLevel and e.Icon.up2 or e.Icon.select2)
+                            else
+                                bottomLeftText= bottomLeftText..e.Icon.X2
                             end
                         end
-                        --rightText= dateInfo.red and e.Icon.X2 or e.Icon.select2
-                        topLeftText= text
+                        if dateInfo.text[classStr] then
+                            local text=''
+                            local n=1
+                            local findText=dateInfo.text[classStr]
+                            if findText:find(',') then
+                                findText= ' '..findText..','
+                                findText:gsub(' (.-),', function(t)
+                                    if ClassNameIconTab[t] then
+                                        text= select(2, math.modf(n/4))==0 and text..'\n' or text
+                                        text=text..ClassNameIconTab[t]
+                                        n= n+1
+                                    end
+                                end)
+                            else
+                                for className, icon in pairs (ClassNameIconTab) do
+                                    if dateInfo.text[classStr]:find(className) then
+                                        text= select(2, math.modf(n/4))==0 and text..'\n' or text
+                                        text=text..icon
+                                        n= n+1
+                                    end
+                                end
+                            end
+                            --rightText= dateInfo.red and e.Icon.X2 or e.Icon.select2
+                            topLeftText= text
+                        end
                     end
                 end
                 if dateInfo.text[pvpItemStr] then--PvP装备
@@ -195,13 +198,12 @@ local function set_Item_Info(self, tab)
                         topLeftText=e.Icon.X2
                     end
                 end
-
-                if containerInfo and not containerInfo.isBound or not containerInfo then
-                    bottomRightText = e.GetItemCollected(itemLink, nil, true)--幻化
-                end
                 if itemQuality and itemQuality>1 and ((containerInfo and not containerInfo.isBound) or tab.guidBank or (tab.merchant and tab.merchant.buyBack)) then--没有锁定
                     topRightText=itemSubType and e.WA_Utf8Sub(itemSubType,2,4) or '|A:'..e.Icon.unlocked..':0:0|a'
                 end
+            end
+            if containerInfo and not containerInfo.isBound or not containerInfo then
+                bottomRightText = e.GetItemCollected(itemLink, nil, true)--幻化
             end
 
         elseif classID==17 or (classID==15 and subclassID==2) or itemLink:find('Hbattlepet:(%d+)') then--宠物

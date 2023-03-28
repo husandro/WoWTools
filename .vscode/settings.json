@@ -2185,7 +2185,9 @@
         "ClearItemButtonOverlay",
         "ItemButtonMixin",
         "ContainerFrameItemButton_CalculateItemTooltipAnchors",
-        "LE_FRAME_TUTORIAL_EQUIP_REAGENT_BAG"
+        "LE_FRAME_TUTORIAL_EQUIP_REAGENT_BAG",
+        "WardrobeItemsModelMixin",
+        "WardrobeItemsCollectionMixin"
     ],
     "Lua.diagnostics.disable": [
     ]
