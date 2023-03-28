@@ -395,43 +395,149 @@ end
 --初始
 --####
 local function Init()
-    for classID= 1, GetNumClasses() do--职业图标 ClassNameIconTab['法师']=图标
+    --#####################################
+    --职业图标 ClassNameIconTab['法师']=图标
+    --#####################################
+    for classID= 1, GetNumClasses() do
         local classInfo = C_CreatureInfo.GetClassInfo(classID)
         if classInfo and classInfo.className and classInfo.classFile then
             ClassNameIconTab[classInfo.className]= e.Class(nil, classInfo.classFile, false)--职业图标
         end
     end
---[[    if Bagnon then
-        local item = Bagnon.ItemSlot  or Bagnon.Item
-        if (item) and (item.Update)  then
-            hooksecurefunc(item, 'Update', Update)
-        end
-    elseif Baggins then
-        hooksecurefunc(Baggins, 'UpdateItemButton',
-            function (self, bag, button, bagID, slotID)
-                Update(button,bagID, slotID)
-        end)
 
-    elseif Combuctor then
+    --###############
+    --收起，背包小按钮
+    --###############
+    if C_CVar.GetCVarBool("expandBagBar") and C_CVar.GetCVarBool("combinedBags") then--MainMenuBarBagButtons.lua
+        C_CVar.SetCVar("expandBagBar", '0')
+    end
+
+    --#########
+    --背包, 数量
+    --MainMenuBarBagButtons.lua
+    if MainMenuBarBackpackButton then
+        if MainMenuBarBackpackButtonCount then
+            MainMenuBarBackpackButtonCount:SetShadowOffset(1, -1)
+        end
+        if e.Player.useColor and MainMenuBarBackpackButtonCount then
+            MainMenuBarBackpackButtonCount:SetTextColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b, e.Player.useColor.a)
+        end
+        hooksecurefunc(MainMenuBarBackpackButton, 'UpdateFreeSlots', function(self)
+            local totalFree
+            totalFree= 0
+            for i = BACKPACK_CONTAINER, NUM_TOTAL_EQUIPPED_BAG_SLOTS-1 do
+                local freeSlots, bagFamily= C_Container.GetContainerNumFreeSlots(i)
+                if ( bagFamily == 0 ) then
+                    totalFree = totalFree + freeSlots;
+                end
+            end
+            self.freeSlots= totalFree
+            if totalFree==0 then
+                MainMenuBarBackpackButtonIconTexture:SetColorTexture(1,0,0,1)
+                totalFree= '|cnRED_FONT_COLOR:'..totalFree..'|r'
+            elseif totalFree<=5 then
+                MainMenuBarBackpackButtonIconTexture:SetColorTexture(0,1,0,1)
+                totalFree= '|cnGREEN_FONT_COLOR:'..totalFree..'|r'
+            else
+                MainMenuBarBackpackButtonIconTexture:SetColorTexture(0,0,0,0)
+            end
+            self.Count:SetText(totalFree)
+        end)
+    end
+    --####
+    --商人
+    --####
+    hooksecurefunc('MerchantFrame_UpdateMerchantInfo', setMerchantInfo)--MerchantFrame.lua
+    hooksecurefunc('MerchantFrame_UpdateBuybackInfo', setMerchantInfo)
+
+    --######################
+    --##商人，物品，货币，数量
+    --MerchantFrame.lua
+    hooksecurefunc('MerchantFrame_UpdateAltCurrency', function(index, indexOnPage, canAfford)
+        local itemCount = GetMerchantItemCostInfo(index);
+        local frameName = "MerchantItem"..indexOnPage.."AltCurrencyFrame";
+        local usedCurrencies = 0;
+        if ( itemCount > 0 ) then
+            for i=1, MAX_ITEM_COST do
+                local _, itemValue, itemLink, currencyName = GetMerchantItemCostItem(index, i);
+                if itemLink then
+                    usedCurrencies = usedCurrencies + 1;
+                    local button = _G[frameName.."Item"..usedCurrencies];
+                    if button and button:IsShown() then
+                        local num
+                        if currencyName then
+                            num= C_CurrencyInfo.GetCurrencyInfoFromLink(itemLink).quantity
+                        else
+                            num= GetItemCount(itemLink, true)
+                        end
+                        if itemValue and num then
+                            if num>=itemValue then
+                                num= '|cnGREEN_FONT_COLOR:'..e.MK(num,0)..'|r'
+                            else
+                                num= '|cnRED_FONT_COLOR:'..e.MK(num,0)..'|r'
+                            end
+                        end
+                        if not button.quantityAll then
+                            button.quantityAll= e.Cstr(button, {size=10, justifyH='RIGHT'})--10, nil, nil, nil, nil, 'RIGHT')
+                            button.quantityAll:SetPoint('BOTTOMRIGHT', button, 'TOPRIGHT', 3,0)
+                            button:EnableMouse(true)
+                            button:SetScript('OnMouseDown', function(self)
+                                if self.itemLink then
+                                    local link= self.itemLink..(self.quantityAll.itemValue or '')
+                                    if not ChatEdit_InsertLink(link) then
+                                        ChatFrame_OpenChat(link)
+                                    end
+                                end
+                            end)
+                        end
+                        button.quantityAll.itemValue= itemValue
+                        button.quantityAll:SetText(num or '');
+                    end
+                end
+            end
+        end
+    end)
+
+
+    if IsAddOnLoaded("Bagnon") then
+        local itemButton = Bagnon.ItemSlot or Bagnon.Item
+        if (itemButton) and (itemButton.Update)  then
+            hooksecurefunc(itemButton, 'Update', function(self)
+                local slot, bag= self:GetSlotAndBagID()
+                if slot and bag then
+                    if self.hasItem then
+                        local slotID, bagID= self:GetSlotAndBagID()--:GetID() GetBagID()
+                        set_Item_Info(self, {bag={bag=bagID, slot=slotID}})
+                    else
+                        set_Item_Info(self, {})
+                    end
+                end
+            end)
+        end
+        return
+    elseif IsAddOnLoaded("Baggins") then
+        hooksecurefunc(Baggins, 'UpdateItemButton', function(_, _, button, bagID, slotID)
+            if button and bagID and slotID then
+                set_Item_Info(button, {bag={bag=bagID, slot=slotID}})
+            end
+        end)
+        return
+    elseif IsAddOnLoaded('Inventorian') then
+        if InventorianBagFrame and InventorianBagFrame.Item and InventorianBagFrame.Item.WrapItemButton then
+            hooksecurefunc(InventorianBagFrame.Item, 'WrapItemButton', function(button)
+                set_Item_Info(button, {bag={bag=button.bag, slot=button.slot}})
+            end)
+        end
+    end
+    --[[elseif Combuctor then
         local item = Combuctor.ItemSlot or Combuctor.Item
         if (item) and (item.Update)  then
             hooksecurefunc(item, 'Update', Update)
         end
-    els]]
-  --[[
-  if IsAddOnLoaded('Inventorian') then
-        C_Timer.After(3, function()
-            local frame=InventorianBagFrame
-            if frame then
-                
-            end
-        end)
-    else
-
+    end
 ]]
 
-    --hooksecurefunc(ContainerFrameCombinedBags,'Update', setBags)
-    --ContainerFrameCombinedBags.SetBagInfo=true
+    panel:RegisterEvent('BANKFRAME_OPENED')
     hooksecurefunc('ContainerFrame_GenerateFrame',function (self)
         for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
             if not frame.SetBagInfo then
@@ -442,12 +548,7 @@ local function Init()
         end
     end)
 
-    hooksecurefunc('MerchantFrame_UpdateMerchantInfo', setMerchantInfo)--MerchantFrame.lua
-    hooksecurefunc('MerchantFrame_UpdateBuybackInfo', setMerchantInfo)
     hooksecurefunc('BankFrameItemButton_Update', set_BankFrameItemButton_Update)--银行
-
-
-
     --############
     --排序:从右到左
     --############
@@ -503,58 +604,9 @@ local function Init()
         UIDropDownMenu_AddButton(info, 1)
     end)
 
-    --###############
-    --收起，背包小按钮
-    --###############
-    if C_CVar.GetCVarBool("expandBagBar") and C_CVar.GetCVarBool("combinedBags") then--MainMenuBarBagButtons.lua
-        C_CVar.SetCVar("expandBagBar", '0')
-    end
-
-    --######################
-    --##商人，物品，货币，数量
-    --MerchantFrame.lua
-    hooksecurefunc('MerchantFrame_UpdateAltCurrency', function(index, indexOnPage, canAfford)
-        local itemCount = GetMerchantItemCostInfo(index);
-        local frameName = "MerchantItem"..indexOnPage.."AltCurrencyFrame";
-        local usedCurrencies = 0;
-        if ( itemCount > 0 ) then
-            for i=1, MAX_ITEM_COST do
-                local _, itemValue, itemLink, currencyName = GetMerchantItemCostItem(index, i);
-                if itemLink then
-                    usedCurrencies = usedCurrencies + 1;
-                    local button = _G[frameName.."Item"..usedCurrencies];
-                    if button and button:IsShown() then
-                        local num
-                        if currencyName then
-                            num= C_CurrencyInfo.GetCurrencyInfoFromLink(itemLink).quantity
-                        else
-                            num= GetItemCount(itemLink, true)
-                        end
-                        if itemValue and num then
-                            if num>=itemValue then
-                                num= '|cnGREEN_FONT_COLOR:'..e.MK(num,0)..'|r'
-                            else
-                                num= '|cnRED_FONT_COLOR:'..e.MK(num,0)..'|r'
-                            end
-                        end
-                        if not button.quantityAll then
-                            button.quantityAll= e.Cstr(button, {size=10, justifyH='RIGHT'})--10, nil, nil, nil, nil, 'RIGHT')
-                            button.quantityAll:SetPoint('BOTTOMRIGHT', button, 'TOPRIGHT', 3,0)
-                            button:EnableMouse(true)
-                            button:SetScript('OnMouseDown', function(self)
-                                if self.itemLink then
-                                    local link= self.itemLink..(self.quantityAll.itemValue or '')
-                                    if not ChatEdit_InsertLink(link) then
-                                        ChatFrame_OpenChat(link)
-                                    end
-                                end
-                            end)
-                        end
-                        button.quantityAll.itemValue= itemValue
-                        button.quantityAll:SetText(num or '');
-                    end
-                end
-            end
+    MainMenuBarBackpackButton:HookScript('OnClick', function(_, d)
+        if d=='RightButton' then
+            ToggleAllBags()
         end
     end)
 end
@@ -566,7 +618,7 @@ panel:RegisterEvent("ADDON_LOADED")
 
 panel:RegisterEvent("GUILDBANKBAGSLOTS_CHANGED");
 panel:RegisterEvent("GUILDBANK_ITEM_LOCK_CHANGED");
-panel:RegisterEvent('BANKFRAME_OPENED')
+
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then

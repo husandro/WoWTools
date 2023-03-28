@@ -858,43 +858,6 @@ local function Init()
         end
     end)
 
-    --#########
-    --背包, 数量
-    --MainMenuBarBagButtons.lua
-    if MainMenuBarBackpackButton then
-        if MainMenuBarBackpackButtonCount then
-            MainMenuBarBackpackButtonCount:SetShadowOffset(1, -1)
-        end
-        if e.Player.useColor and MainMenuBarBackpackButtonCount then
-            MainMenuBarBackpackButtonCount:SetTextColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b, e.Player.useColor.a)
-        end
-        hooksecurefunc(MainMenuBarBackpackButton, 'UpdateFreeSlots', function(self)
-            local totalFree
-            totalFree= 0
-            for i = BACKPACK_CONTAINER, NUM_TOTAL_EQUIPPED_BAG_SLOTS-1 do
-                local freeSlots, bagFamily= C_Container.GetContainerNumFreeSlots(i)
-                if ( bagFamily == 0 ) then
-                    totalFree = totalFree + freeSlots;
-                end
-            end
-            self.freeSlots= totalFree
-            if totalFree==0 then
-                MainMenuBarBackpackButtonIconTexture:SetColorTexture(1,0,0,1)
-                totalFree= '|cnRED_FONT_COLOR:'..totalFree..'|r'
-            elseif totalFree<=5 then
-                MainMenuBarBackpackButtonIconTexture:SetColorTexture(0,1,0,1)
-                totalFree= '|cnGREEN_FONT_COLOR:'..totalFree..'|r'
-            else
-                MainMenuBarBackpackButtonIconTexture:SetColorTexture(0,0,0,0)
-            end
-            self.Count:SetText(totalFree)
-        end)
-    end
-    MainMenuBarBackpackButton:HookScript('OnClick', function(self, d)
-        if d=='RightButton' then
-            ToggleAllBags()
-        end
-    end)
 
     --#######
     --装备弹出
