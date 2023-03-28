@@ -116,6 +116,15 @@ local function set_Item_Info(self, tab)
                     bottomLeftText='|cnRED_FONT_COLOR:'..itemMinLevel..'|r'
                 elseif dateInfo.wow then--战网
                     bottomLeftText= e.Icon.wow2
+                    if itemLevel and itemLevel>1 then
+                        bottomLeftText= bottomLeftText.. itemLevel
+                        local level= GetAverageItemLevel()
+                        if not dateInfo.red then
+                            bottomLeftText= bottomLeftText.. (level<itemLevel and e.Icon.up2 or level>itemLevel and e.Icon.down2 or e.Icon.select2)
+                        else
+                            bottomLeftText= bottomLeftText..e.Icon.X2
+                        end
+                    end
                     if subclassID==0 and dateInfo.text[classStr] then
                         local text=''
                         local n=1
@@ -138,7 +147,7 @@ local function set_Item_Info(self, tab)
                                 end
                             end
                         end
-                        rightText= dateInfo.red and e.Icon.X2 or e.Icon.select2
+                        --rightText= dateInfo.red and e.Icon.X2 or e.Icon.select2
                         topLeftText= text
                     end
                 end
@@ -437,53 +446,7 @@ local function Init()
     hooksecurefunc('MerchantFrame_UpdateBuybackInfo', setMerchantInfo)
     hooksecurefunc('BankFrameItemButton_Update', set_BankFrameItemButton_Update)--银行
 
-    --######################
-    --##商人，物品，货币，数量
-    --MerchantFrame.lua
-    hooksecurefunc('MerchantFrame_UpdateAltCurrency', function(index, indexOnPage, canAfford)
-        local itemCount = GetMerchantItemCostInfo(index);
-        local frameName = "MerchantItem"..indexOnPage.."AltCurrencyFrame";
-        local usedCurrencies = 0;
-        if ( itemCount > 0 ) then
-            for i=1, MAX_ITEM_COST do
-                local _, itemValue, itemLink, currencyName = GetMerchantItemCostItem(index, i);
-                if itemLink then
-                    usedCurrencies = usedCurrencies + 1;
-                    local button = _G[frameName.."Item"..usedCurrencies];
-                    if button and button:IsShown() then
-                        local num
-                        if currencyName then
-                            num= C_CurrencyInfo.GetCurrencyInfoFromLink(itemLink).quantity
-                        else
-                            num= GetItemCount(itemLink, true)
-                        end
-                        if itemValue and num then
-                            if num>=itemValue then
-                                num= '|cnGREEN_FONT_COLOR:'..e.MK(num,0)..'|r'
-                            else
-                                num= '|cnRED_FONT_COLOR:'..e.MK(num,0)..'|r'
-                            end
-                        end
-                        if not button.quantityAll then
-                            button.quantityAll= e.Cstr(button, {size=10, justifyH='RIGHT'})--10, nil, nil, nil, nil, 'RIGHT')
-                            button.quantityAll:SetPoint('BOTTOMRIGHT', button, 'TOPRIGHT', 3,0)
-                            button:EnableMouse(true)
-                            button:SetScript('OnMouseDown', function(self)
-                                if self.itemLink then
-                                    local link= self.itemLink..(self.quantityAll.itemValue or '')
-                                    if not ChatEdit_InsertLink(link) then
-                                        ChatFrame_OpenChat(link)
-                                    end
-                                end
-                            end)
-                        end
-                        button.quantityAll.itemValue= itemValue
-                        button.quantityAll:SetText(num or '');
-                    end
-                end
-            end
-        end
-    end)
+
 
     --############
     --排序:从右到左
@@ -546,6 +509,54 @@ local function Init()
     if C_CVar.GetCVarBool("expandBagBar") and C_CVar.GetCVarBool("combinedBags") then--MainMenuBarBagButtons.lua
         C_CVar.SetCVar("expandBagBar", '0')
     end
+
+    --######################
+    --##商人，物品，货币，数量
+    --MerchantFrame.lua
+    hooksecurefunc('MerchantFrame_UpdateAltCurrency', function(index, indexOnPage, canAfford)
+        local itemCount = GetMerchantItemCostInfo(index);
+        local frameName = "MerchantItem"..indexOnPage.."AltCurrencyFrame";
+        local usedCurrencies = 0;
+        if ( itemCount > 0 ) then
+            for i=1, MAX_ITEM_COST do
+                local _, itemValue, itemLink, currencyName = GetMerchantItemCostItem(index, i);
+                if itemLink then
+                    usedCurrencies = usedCurrencies + 1;
+                    local button = _G[frameName.."Item"..usedCurrencies];
+                    if button and button:IsShown() then
+                        local num
+                        if currencyName then
+                            num= C_CurrencyInfo.GetCurrencyInfoFromLink(itemLink).quantity
+                        else
+                            num= GetItemCount(itemLink, true)
+                        end
+                        if itemValue and num then
+                            if num>=itemValue then
+                                num= '|cnGREEN_FONT_COLOR:'..e.MK(num,0)..'|r'
+                            else
+                                num= '|cnRED_FONT_COLOR:'..e.MK(num,0)..'|r'
+                            end
+                        end
+                        if not button.quantityAll then
+                            button.quantityAll= e.Cstr(button, {size=10, justifyH='RIGHT'})--10, nil, nil, nil, nil, 'RIGHT')
+                            button.quantityAll:SetPoint('BOTTOMRIGHT', button, 'TOPRIGHT', 3,0)
+                            button:EnableMouse(true)
+                            button:SetScript('OnMouseDown', function(self)
+                                if self.itemLink then
+                                    local link= self.itemLink..(self.quantityAll.itemValue or '')
+                                    if not ChatEdit_InsertLink(link) then
+                                        ChatFrame_OpenChat(link)
+                                    end
+                                end
+                            end)
+                        end
+                        button.quantityAll.itemValue= itemValue
+                        button.quantityAll:SetText(num or '');
+                    end
+                end
+            end
+        end
+    end)
 end
 
 --###########
