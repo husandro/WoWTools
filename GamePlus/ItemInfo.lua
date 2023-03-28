@@ -523,19 +523,18 @@ local function Init()
         end)
         return
     elseif IsAddOnLoaded('Inventorian') then
-        if InventorianBagFrame and InventorianBagFrame.Item and InventorianBagFrame.Item.WrapItemButton then
-            hooksecurefunc(InventorianBagFrame.Item, 'WrapItemButton', function(button)
-                set_Item_Info(button, {bag={bag=button.bag, slot=button.slot}})
-            end)
+        local ADDON = LibStub("AceAddon-3.0"):GetAddon("Inventorian")
+        local InvLevel = ADDON:NewModule('InventorianWoWToolsItemInfo')
+
+        function InvLevel:Update()
+            set_Item_Info(self, {bag={bag=self.bag, slot=self.slot}})
         end
-    end
-    --[[elseif Combuctor then
-        local item = Combuctor.ItemSlot or Combuctor.Item
-        if (item) and (item.Update)  then
-            hooksecurefunc(item, 'Update', Update)
+        function InvLevel:WrapItemButton(item)
+            hooksecurefunc(item, "Update", InvLevel.Update)
         end
+        hooksecurefunc(ADDON.Item, "WrapItemButton", InvLevel.WrapItemButton)
+        return
     end
-]]
 
     panel:RegisterEvent('BANKFRAME_OPENED')
     hooksecurefunc('ContainerFrame_GenerateFrame',function (self)
