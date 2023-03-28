@@ -113,7 +113,31 @@ local function ZoomFrame(self, notZoom, zeroAlpha)
     end
 end
 
-
+--[[####################
+--大小， 加个，三角图标
+--###################
+local function set_Size(self, tab)
+    if tab.size  and self then
+        self.Sizing= e.Cbtn(self, {size={15,15}})
+        self.Sizing:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
+        self.Sizing:SetHighlightTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
+        self.Sizing:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
+        self.Sizing:SetPoint('TOP', self, 'BOTTOM')
+        
+        self.Sizing:SetScript("OnDragStart", function(self2)
+            self2:GetParent():StartSizing() --'bottomleft'
+        end)
+        self.Sizing:SetScript("OnDragStop", function(self2)
+            local frame=self2:GetParent()
+            ResetCursor()
+            frame:StopMovingOrSizing()
+        end)
+        self.Sizing:RegisterForDrag("LeftButton", 'RightButton')
+        self:SetMovable(true)
+        self.Sizing:SetMovable(true)
+    end
+end
+set_Size(WorldMapFrame, {size=true})]]
 --####
 --移动
 --####
@@ -152,7 +176,7 @@ local Move=function(F, tab)
     end
     F:EnableMouse(true)
     F:SetScript("OnDragStart", function() F2:StartMoving() end)
-    F:SetScript("OnDragStop", function()
+    F:SetScript("OnDragStop", function(self2)
             ResetCursor()
             F2:StopMovingOrSizing()
             if save then
@@ -201,7 +225,7 @@ local Move=function(F, tab)
 
     ZoomFrame(F2, tab.notZoom, tab.zeroAlpha)
 
-    
+
 end
 
 local function set_Move_Button(frame, tab)
