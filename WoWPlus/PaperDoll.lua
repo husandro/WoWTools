@@ -739,6 +739,75 @@ local function setFlyout(button, itemLink, slot)
     end
 end
 
+--#########
+--目标, 装备
+--#########
+local function set_InspectPaperDollItemSlotButton_Update(self)
+    local slot= self:GetID()
+	local link = GetInventoryItemLink(InspectFrame.unit, slot);
+	e.LoadDate({id=link, type='item'})--加载 item quest spell
+    Gem(self, slot, link)
+    Enchant(self, slot, link)
+    e.Set_Item_Stats(self, link, self.icon)
+    if not self.OnEnter then
+        self:SetScript('OnEnter', function(self2)
+            if self2.link then
+                e.tips:ClearLines()
+                e.tips:SetOwner(InspectFrame, "ANCHOR_RIGHT")
+                e.tips:SetHyperlink(self2.link)
+                e.tips:Show()
+            end
+        end)
+        self:SetScript('OnLeave', function() e.tips:Hide() end)
+    end
+    self.link= link
+end
+
+local function set_InspectPaperDollFrame_SetLevel()--目标,天赋 装等
+    local unit=InspectFrame.unit
+    local guid= UnitGUID(unit)
+    local info= guid and e.UnitItemLevel[guid]
+    if info and info.itemLevel and info.specID then
+        local level, effectiveLevel, sex = UnitLevel(InspectFrame.unit), UnitEffectiveLevel(InspectFrame.unit), UnitSex(InspectFrame.unit);
+        local text= e.GetPlayerInfo(unit, guid, false)
+        local icon, role = select(4, GetSpecializationInfoByID(info.specID, sex))
+        if icon and role then
+            text=text..' |T'..icon..':0|t '..e.Icon[role]
+        end
+        if level and level>0 then
+            text= text..' '..level
+            if effectiveLevel~=level then
+                text= text..'(|cnGREEN_FONT_COLOR:'..effectiveLevel..'|r)'
+            end
+        end
+        text= text..(sex== 2 and ' |A:charactercreate-gendericon-male-selected:0:0|a' or sex==3 and ' |A:charactercreate-gendericon-female-selected:0:0|a' or ' |A:charactercreate-icon-customize-body-selected:0:0|a')
+        text= text.. info.itemLevel
+        if info.col then
+            text= info.col..text..'|r'
+        end
+        InspectLevelText:SetText(text)
+        InspectFrameTitleText:SetTextColor(info.r or 1, info.g or 1, info.b or 1)
+    end
+
+    --[[local unit, level, effectiveLevel, sex = InspectFrame.unit, UnitLevel(InspectFrame.unit), UnitEffectiveLevel(InspectFrame.unit), UnitSex(InspectFrame.unit);
+	local specID = GetInspectSpecialization(InspectFrame.unit);
+	
+	local classDisplayName, class = UnitClass(InspectFrame.unit); 
+	local classColorString = RAID_CLASS_COLORS[class].colorStr;
+	local specName, _;
+	
+	if (specID) then
+		_, specName = GetSpecializationInfoByID(specID, sex);
+	end
+	
+	if ( level == -1 or effectiveLevel == -1 ) then
+		level = "??";
+	elseif ( effectiveLevel ~= level ) then
+		level = EFFECTIVE_LEVEL_FORMAT:format(effectiveLevel, level);
+	end]]
+end
+
+
 --#####
 --初始化
 --#####
@@ -1023,6 +1092,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_ItemInteractionUI' then--套装转换, 界面
             add_Button_OpenOption(ItemInteractionFrameCloseButton)--添加一个按钮, 打开选项
+
+        elseif arg1=='Blizzard_InspectUI' then
+            hooksecurefunc('InspectPaperDollItemSlotButton_Update', set_InspectPaperDollItemSlotButton_Update)--目标, 装备
+            hooksecurefunc('InspectPaperDollFrame_SetLevel', set_InspectPaperDollFrame_SetLevel)--目标,天赋 装等
         end
 
     elseif event == "PLAYER_LOGOUT" then
@@ -1035,7 +1108,5 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='UPDATE_INVENTORY_DURABILITY' then
         GetDurationTotale()--装备,总耐久度
-
-
     end
 end)

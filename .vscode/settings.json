@@ -2189,7 +2189,10 @@
         "WardrobeItemsModelMixin",
         "WardrobeItemsCollectionMixin",
         "ITEM_MOD_CR_MULTISTRIKE_SHORT",
-        "OpenAllBags"
+        "OpenAllBags",
+        "InspectPaperDollItemSlotButton_Update",
+        "InspectLevelText",
+        "InspectFrameTitleText"
     ],
     "Lua.diagnostics.disable": [
     ]
