@@ -510,7 +510,7 @@ local function Init()
 
     button:SetScript('OnMouseDown', function(self, d)
         if d=='RightButton' then
-        ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+            ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
         elseif d=='LeftButton' then
             set_textButton_Disabled_Enable()--禁用, 启用, textButton
         end
