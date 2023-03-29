@@ -2188,7 +2188,8 @@
         "LE_FRAME_TUTORIAL_EQUIP_REAGENT_BAG",
         "WardrobeItemsModelMixin",
         "WardrobeItemsCollectionMixin",
-        "ITEM_MOD_CR_MULTISTRIKE_SHORT"
+        "ITEM_MOD_CR_MULTISTRIKE_SHORT",
+        "OpenAllBags"
     ],
     "Lua.diagnostics.disable": [
     ]

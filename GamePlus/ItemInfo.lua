@@ -541,7 +541,6 @@ local function Init()
         return
     end
 
-    panel:RegisterEvent('BANKFRAME_OPENED')
     hooksecurefunc('ContainerFrame_GenerateFrame',function (self)
         for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
             if not frame.SetBagInfo then
@@ -551,8 +550,8 @@ local function Init()
             end
         end
     end)
-
     hooksecurefunc('BankFrameItemButton_Update', set_BankFrameItemButton_Update)--银行
+
     --############
     --排序:从右到左
     --############
@@ -613,17 +612,16 @@ local function Init()
             ToggleAllBags()
         end
     end)
+
+    panel:RegisterEvent('BANKFRAME_OPENED')
+    panel:RegisterEvent("GUILDBANKBAGSLOTS_CHANGED");
+    panel:RegisterEvent("GUILDBANK_ITEM_LOCK_CHANGED");
 end
 
 --###########
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-
-panel:RegisterEvent("GUILDBANKBAGSLOTS_CHANGED");
-panel:RegisterEvent("GUILDBANK_ITEM_LOCK_CHANGED");
-
-
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
@@ -665,6 +663,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "GUILDBANKBAGSLOTS_CHANGED" or event =="GUILDBANK_ITEM_LOCK_CHANGED" then
         setGuildBank()--公会银行,设置
+        if event=='GUILDBANKBAGSLOTS_CHANGED' then--打开公会银行时, 打开背包 GUILDBANKFRAME_OPENED
+            local rankOrder= C_GuildInfo.GetGuildRankOrder(e.Player.guid)
+            if rankOrder and rankOrder <=2 then
+                OpenAllBags()
+            end
+        end
 
     elseif event=='BANKFRAME_OPENED' then--打开所有银行，背包
         for i=NUM_TOTAL_EQUIPPED_BAG_SLOTS+1, (NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS), 1 do
