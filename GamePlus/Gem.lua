@@ -71,7 +71,10 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
             btn:SetScript('OnMouseDown', function(self, d)
                 if self.bag and self.slot then
                     if d=='LeftButton' then
-                        C_Container.PickupContainerItem(self.bag, self.slot)
+                        local infoType, itemID, itemLink ,spellID= GetCursorInfo()
+                        if infoType ~='spell' or not spellID then
+                            C_Container.PickupContainerItem(self.bag, self.slot)
+                        end
                     elseif d=='RightButton' then
                         ClearCursor()
                     end
@@ -117,7 +120,9 @@ end
 panel:RegisterEvent('ADDON_LOADED')
 panel:RegisterEvent('SOCKET_INFO_CLOSE')
 panel:RegisterEvent('SOCKET_INFO_UPDATE')
+panel:RegisterEvent('UPDATE_EXTRA_ACTIONBAR')
 
+local ExtraActionButton1Point--记录打开10.07 宝石戒指, 额外技能条,位置
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
@@ -185,14 +190,34 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='SOCKET_INFO_UPDATE' then
         panel:RegisterEvent('BAG_UPDATE_DELAYED')
         set_Gem()
+
+        local gem1007= select(2, GetSocketItemInfo())== 4638590
         if ItemSocketingFrame.setTipsFrame then
-            ItemSocketingFrame.setTipsFrame:SetShown(select(2,GetSocketItemInfo())== 4638590)--10.07 原石宝石，提示
+            ItemSocketingFrame.setTipsFrame:SetShown(gem1007)--10.07 原石宝石，提示
         end
+        
+        if not IsInInstance() and gem1007 and ExtraActionButton1 and ExtraActionButton1:IsShown() and ExtraActionButton1.icon and ItemSocketingFrame and ItemSocketingFrame:IsVisible() then
+            local icon= ExtraActionButton1.icon:GetTexture()
+            if icon==4638590 or icon==876370 then
+                if not ExtraActionButton1Point then
+                    ExtraActionButton1Point= {ExtraActionButton1:GetPoint(1)}--记录打开10.07 宝石戒指, 额外技能条,位置
+                    ExtraActionButton1:ClearAllPoints()
+                    ExtraActionButton1:SetPoint('BOTTOMLEFT', ItemSocketingFrame, 'BOTTOMRIGHT', 0, 30)
+                end
+            end
+        end
+
     elseif event=='SOCKET_INFO_CLOSE' then
         panel:UnregisterEvent('BAG_UPDATE_DELAYED')
 
         if ItemSocketingFrame and ItemSocketingFrame.setTipsFrame then
             ItemSocketingFrame.setTipsFrame:SetShown(false)--10.07 原石宝石，提示
+        end
+
+        if ExtraActionButton1Point then--记录打开10.07 宝石戒指, 额外技能条,位置
+            ExtraActionButton1:ClearAllPoints()
+            ExtraActionButton1:SetPoint(ExtraActionButton1Point[1], ExtraActionButton1Point[2], ExtraActionButton1Point[3], ExtraActionButton1Point[4], ExtraActionButton1Point[5])
+            ExtraActionButton1Point=nil
         end
 
     elseif event=='BAG_UPDATE_DELAYED' then

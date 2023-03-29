@@ -73,6 +73,7 @@ local Save={
         [194743]=true,
         [194730]=true,
         [194519]=true,
+        [202620]=true,
     },
     pet=true,
     open=true,

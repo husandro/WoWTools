@@ -977,6 +977,15 @@ local function Init()
         local faction= e.Player.faction=='Alliance' and '|A:charcreatetest-logo-alliance:26:26|a' or e.Player.faction=='Horde' and '|A:charcreatetest-logo-horde:26:26|a' or ''
         CharacterLevelText:SetText('  '..faction..'|A:'..race..':26:26|a|A:'..class..':26:26|a  '..level)
     end)
+
+    --#################
+    --拾取时, 弹出, 物品提示，信息
+    hooksecurefunc('LootUpgradeFrame_SetUp', function(self, itemLink)--AlertFrameSystems.lua
+        e.Set_Item_Stats(self, itemLink, self.Icon)
+    end)
+    hooksecurefunc('LootWonAlertFrame_SetUp', function(self, itemLink)--AlertFrameSystems.lua
+        e.Set_Item_Stats(self, itemLink, self.lootItem.Icon or self.Icon)
+    end)
 end
 
 
