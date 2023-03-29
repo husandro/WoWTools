@@ -408,7 +408,7 @@ local function Init()
 
     --#################
     --拾取时, 弹出, 物品提示，信息
-    hooksecurefunc('LootUpgradeFrame_SetUp', function(self, itemLink)--AlertFrameSystems.lua
+    --[[hooksecurefunc('LootUpgradeFrame_SetUp', function(self, itemLink)--AlertFrameSystems.lua
         print(id,addName, itemLink,'LootUpgradeFrame_SetUp')
         e.Set_Item_Stats(self, itemLink, self.lootItem and self.lootItem.Icon or self.Icon)
     end)
@@ -419,7 +419,7 @@ local function Init()
     hooksecurefunc('LegendaryItemAlertFrame_SetUp', function(self, itemLink)
         print(id,addName, itemLink,'LegendaryItemAlertFrame_SetUp')
         e.Set_Item_Stats(self, itemLink, self.lootItem and self.lootItem.Icon or self.Icon)
-    end)
+    end)]]
 
     --#####################################
     --职业图标 ClassNameIconTab['法师']=图标
