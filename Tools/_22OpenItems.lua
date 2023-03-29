@@ -156,7 +156,8 @@ local function getItems()--取得背包物品信息
     for bag=0, NUM_BAG_SLOTS do
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local info = C_Container.GetContainerItemInfo(bag, slot)
-            if info and info.itemID and info.hyperlink and not info.isLocked and info.iconFileID then
+            local duration, enable = select(2, C_Container.GetContainerItemCooldown(bag, slot))
+            if info and info.itemID and info.hyperlink and not info.isLocked and info.iconFileID and not (duration and duration>2 or enable==0) then
                 e.LoadDate({id=info.itemID, type='item'})
                 if Save.use[info.itemID] then--自定义
                     if Save.use[info.itemID]<=info.stackCount then

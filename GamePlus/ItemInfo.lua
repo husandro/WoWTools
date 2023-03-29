@@ -13,9 +13,9 @@ local size= 10--字体大小
 
 local ClassNameIconTab={}--职业图标 ClassNameIconTab['法师']=图标
 
---set_Item_Info(itemButton, {bag={bag=bagID, slot=slotID}, merchant={slot=slot, buyBack= selectedTab==2}, guidBank={tab=tab, slot=i}})
+--set_Item_Info(itemButton, {bag={bag=bagID, slot=slotID}, merchant={slot=slot, buyBack= selectedTab==2}, guidBank={tab=tab, slot=i}, hyperLink=nil})
 local function set_Item_Info(self, tab)
-    local itemLink, containerInfo, itemID
+    local itemLink, containerInfo, itemID= tab.hyperLink, nil, nil
     if tab.bag then
         containerInfo =C_Container.GetContainerItemInfo(tab.bag.bag, tab.bag.slot)
         if containerInfo then
@@ -48,7 +48,7 @@ local function set_Item_Info(self, tab)
         end
 
         if containerInfo and containerInfo.hasLoot then--宝箱
-            local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, red=true, onlyRed=true})--物品提示，信息
+            local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, red=true, onlyRed=true})--物品提示，信息
             topRightText= dateInfo.red and '|A:Monuments-Lock:0:0|a' or '|A:talents-button-undo:0:0|a'
 
         elseif C_Item.IsItemKeystoneByID(itemID) then--挑战
@@ -86,7 +86,7 @@ local function set_Item_Info(self, tab)
             end
 
         elseif isCraftingReagent or classID==8 or classID==3 or classID==9 or (classID==0 and (subclassID==1 or subclassID==3 or subclassID==5)) or classID==19 or classID==7 then--附魔, 宝石,19专业装备 ,7商业技能
-            local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, text={ITEM_SPELL_KNOWN}, wow=true, red=true})--物品提示，信息 ITEM_SPELL_KNOWN = "已经学会";
+            local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={ITEM_SPELL_KNOWN}, wow=true, red=true})--物品提示，信息 ITEM_SPELL_KNOWN = "已经学会";
             if not (classID==15 and (subclassID== 0 or subclassID==4)) then
                 if classID==0 and subclassID==5 then
                     topRightText= e.WA_Utf8Sub(POWER_TYPE_FOOD, 2,5)--食物
@@ -104,12 +104,16 @@ local function set_Item_Info(self, tab)
             elseif dateInfo.wow then
                 bottomRightText= e.Icon.wow2
             end
+            if expacID and expacID== e.ExpansionLevel and itemLevel and itemLevel>20 then
+                bottomLeftText= itemLevel
+            end
+
         elseif classID==2 and subclassID==20 then-- 鱼竿
                 topRightText='|A:worldquest-icon-fishing:0:0|a'
 
         elseif classID==2 or classID==4 then--装备
             if itemQuality and itemQuality>1 then
-                local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, text={equipStr, pvpItemStr, upgradeStr, classStr}, wow=true, red=true})--物品提示，信息
+                local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={equipStr, pvpItemStr, upgradeStr, classStr}, wow=true, red=true})--物品提示，信息
                 if dateInfo.text[equipStr] then--套装名称，
                     local text= dateInfo.text[equipStr]:match('(.+),') or dateInfo.text[equipStr]:match('(.+)，') or dateInfo.text[equipStr]
                     bottomLeftText=e.WA_Utf8Sub(text,3,5)
@@ -237,7 +241,7 @@ local function set_Item_Info(self, tab)
             bottomRightText= PlayerHasToy(itemID) and e.Icon.X2 or e.Icon.star2
 
         elseif itemStackCount==1 then
-            local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, text={chargesStr}, wow=true, red=true})--物品提示，信息
+            local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={chargesStr}, wow=true, red=true})--物品提示，信息
             bottomLeftText=dateInfo.text[chargesStr]
             if dateInfo.wow then
                 topRightText= e.Icon.wow2
@@ -401,6 +405,22 @@ end
 --初始
 --####
 local function Init()
+
+    --#################
+    --拾取时, 弹出, 物品提示，信息
+    hooksecurefunc('LootUpgradeFrame_SetUp', function(self, itemLink)--AlertFrameSystems.lua
+        print(id,addName, itemLink,'LootUpgradeFrame_SetUp')
+        e.Set_Item_Stats(self, itemLink, self.lootItem and self.lootItem.Icon or self.Icon)
+    end)
+    hooksecurefunc('LootWonAlertFrame_SetUp', function(self, itemLink)
+        print(id,addName, itemLink,'LootWonAlertFrame_SetUp')
+        e.Set_Item_Stats(self, itemLink, self.lootItem and self.lootItem.Icon or self.Icon)
+    end)
+    hooksecurefunc('LegendaryItemAlertFrame_SetUp', function(self, itemLink)
+        print(id,addName, itemLink,'LegendaryItemAlertFrame_SetUp')
+        e.Set_Item_Stats(self, itemLink, self.lootItem and self.lootItem.Icon or self.Icon)
+    end)
+
     --#####################################
     --职业图标 ClassNameIconTab['法师']=图标
     --#####################################

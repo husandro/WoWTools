@@ -978,14 +978,7 @@ local function Init()
         CharacterLevelText:SetText('  '..faction..'|A:'..race..':26:26|a|A:'..class..':26:26|a  '..level)
     end)
 
-    --#################
-    --拾取时, 弹出, 物品提示，信息
-    hooksecurefunc('LootUpgradeFrame_SetUp', function(self, itemLink)--AlertFrameSystems.lua
-        e.Set_Item_Stats(self, itemLink, self.Icon)
-    end)
-    hooksecurefunc('LootWonAlertFrame_SetUp', function(self, itemLink)--AlertFrameSystems.lua
-        e.Set_Item_Stats(self, itemLink, self.lootItem.Icon or self.Icon)
-    end)
+
 end
 
 

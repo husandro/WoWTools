@@ -71,10 +71,7 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
             btn:SetScript('OnMouseDown', function(self, d)
                 if self.bag and self.slot then
                     if d=='LeftButton' then
-                        local infoType, itemID, itemLink ,spellID= GetCursorInfo()
-                        if infoType ~='spell' or not spellID then
-                            C_Container.PickupContainerItem(self.bag, self.slot)
-                        end
+                        C_Container.PickupContainerItem(self.bag, self.slot)
                     elseif d=='RightButton' then
                         ClearCursor()
                     end

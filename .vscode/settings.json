@@ -2246,7 +2246,8 @@
         "IsPlayerAtEffectiveMaxLevel",
         "NEW_RECIPE_LEARNED_TITLE",
         "UPGRADED_RECIPE_LEARNED_TITLE",
-        "TRADESKILL_RECIPE_LEVEL_RECIPE_FORMAT"
+        "TRADESKILL_RECIPE_LEVEL_RECIPE_FORMAT",
+        "LegendaryItemAlertFrame_SetUp"
     ],
     "Lua.diagnostics.disable": [
     ]
