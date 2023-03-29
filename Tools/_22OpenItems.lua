@@ -60,7 +60,7 @@ local Save={
         [86143]=true,--pet
         [5512]=true,--SS糖
 
-        [6948]=true,
+        [6948]=true,--10.0
         [194510]=true,
         [199197]=true,
         [200613]=true,
@@ -70,6 +70,9 @@ local Save={
         [140192]=true,
         [110560]=true,
         [204439]=true,
+        [194743]=true,
+        [194730]=true,
+        [194519]=true,
     },
     pet=true,
     open=true,

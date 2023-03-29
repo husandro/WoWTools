@@ -35,17 +35,17 @@ local getRewardInfo=function(dungeonID)--FB奖励
     local T,H,D--额外奖励
     local canTank, canHealer, canDamage = C_LFGList.GetAvailableRoles()
     for ii=1, LFG_ROLE_NUM_SHORTAGE_TYPES do
-        local eligible, forTank, forHealer, forDamage= GetLFGRoleShortageRewards(dungeonID, ii)
-        if eligible and ( forTank or forHealer or forDamage) then
+        local eligible, forTank, forHealer, forDamage, itemCount= GetLFGRoleShortageRewards(dungeonID, ii)
+        if eligible and itemCount~=0 and ( forTank and canTank or forHealer and canHealer or forDamage and canDamage ) then
             local rewardIcon = select(2, GetLFGDungeonShortageRewardInfo(dungeonID, ii, 1))
             if rewardIcon then--local tankLocked, healerLocked, damageLocked = GetLFDRoleRestrictions(dungeonID)
-                if forTank and canTank and rewardIcon then
+                if forTank then
                     T=(T or '')..'|T'..rewardIcon..':0|t'
                 end
-                if forHealer and canHealer and rewardIcon then
+                if forHealer then
                     H=(H or '')..'|T'..rewardIcon..':0|t'
                 end
-                if forDamage and canDamage and rewardIcon then
+                if forDamage then
                     D=(D or '')..'|T'..rewardIcon..':0|t'
                 end
             end
@@ -271,13 +271,15 @@ end
 --###############
 --副本， 菜单列表
 --###############
-local function setTexture(dungeonID, RaidID, name, texture)--设置图标, 点击,提示
+local function setTexture(dungeonID, RaidID, name, texture, atlas)--设置图标, 点击,提示
     if dungeonID or RaidID then
         button.dungeonID=dungeonID
         button.name=name
         button.RaidID=RaidID
     end
-    if texture then
+    if atlas then
+        button.texture:SetAtlas(atlas)
+    elseif texture then
         button.texture:SetTexture(texture)
     else
         if not Save.hideQueueStatus then
@@ -804,28 +806,43 @@ end
 local function setHoliday()--节日, 提示, button.texture
     button.dungeonID=nil
     button.name=nil
-    for i=1, GetNumRandomDungeons() do
-        local dungeonID, name = GetLFGRandomDungeonInfo(i)
+    local dungeonID, name, texturePath, atlas
+    local group= IsInGroup(LE_PARTY_CATEGORY_HOME)
+    local canTank, canHealer, canDamage = C_LFGList.GetAvailableRoles()
+    for dungeonIndex=1, GetNumRandomDungeons() do
+        dungeonID, name = GetLFGRandomDungeonInfo(dungeonIndex)
         if dungeonID then
             local isAvailableForAll, isAvailableForPlayer, hid2eIfNotJoinable = IsLFGDungeonJoinable(dungeonID)
             if (isAvailableForPlayer or not hid2eIfNotJoinable) and isAvailableForAll then
+                --name, typeID, subtypeID, minLevel, maxLevel, recLevel, minRecLevel, maxRecLevel, expansionLevel, groupID, textureFilename, difficulty, maxPlayers, description, isHoliday, bonusRepAmount, minPlayers, isTimeWalker, name2, minGearLevel, isScalingDungeon, lfgMapID = GetLFGDungeonInfo(dungeonID)
                 local isHoliday= select(15, GetLFGDungeonInfo(dungeonID))
                 if isHoliday then
+                    --local doneToday, moneyAmount, moneyVar, experienceGained, experienceVar, numRewards, spellID = GetLFGDungeonRewards(dungeonID)
                     local numRewards = select(6, GetLFGDungeonRewards(dungeonID))
                     if numRewards and numRewards>0 then--奖励物品
-                        for i2=1 , numRewards do
-                            local texturePath=select(2, GetLFGDungeonRewardInfo(dungeonID, i2))
+                        for rewardIndex=1 , numRewards do
+                            texturePath=select(2, GetLFGDungeonRewardInfo(dungeonID, rewardIndex))
                             if texturePath then
-                                setTexture(dungeonID, nil, name, texturePath)--设置图标, 点击,提示
-                                return
+                                break
                             end
+                        end
+                    end
+                elseif not group then
+                    for shortageIndex=1, LFG_ROLE_NUM_SHORTAGE_TYPES do
+                        local eligible, forTank, forHealer, forDamage, itemCount= GetLFGRoleShortageRewards(dungeonID, shortageIndex)
+                        if eligible and itemCount~=0 and (forTank and canTank or forHealer and canHealer or forDamage and canDamage) then
+                            atlas= format('groupfinder-icon-role-large-%s', forTank and 'tank' or forHealer and 'heal' or 'dps')
+                            break
                         end
                     end
                 end
             end
         end
     end
-    C_Timer.After(2, setTexture)--设置图标
+    if not (texturePath and atlas) then
+        dungeonID,name= nil,nil
+    end
+    setTexture(dungeonID, nil, name, texturePath,  atlas)--设置图标
 end
 
 --####
@@ -930,7 +947,7 @@ local function Init()
         end)
     end)
 
-    setHoliday()--节日, 提示, button.texture
+    C_Timer.After(2, setHoliday)--节日, 提示, button.texture
 
     --###########
     --历史, 拾取框

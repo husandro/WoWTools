@@ -404,6 +404,7 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
 
     elseif event=='CHALLENGE_MODE_MAPS_UPDATE' or event=='WEEKLY_REWARDS_UPDATE' then--地下城挑战
         updateChallengeMode()
+        C_MythicPlus.RequestRewards()
 
     elseif event=='CHALLENGE_MODE_COMPLETED' then
         C_MythicPlus.RequestMapInfo()
