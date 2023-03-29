@@ -125,6 +125,13 @@ local function CheckItemSell(itemID, quality)--检测是否是出售物品
         elseif bossSave[itemID] and not Save.notSellBoss then
             return e.onlyChinese and '首领' or BOSS
         elseif quality==0 and not Save.notSellJunk then--垃圾
+            local classID, subclassID = select(6, GetItemInfoInstant(itemID))
+            if (classID==2 or classID==4) and subclassID~=0 then
+                local isCollected = select(2, e.GetItemCollected(itemID, nil, nil))--物品是否收集
+                if isCollected==false then
+                    return
+                end
+            end
             return e.onlyChinese and '垃圾' or BAG_FILTER_JUNK
         end
     end
@@ -136,7 +143,6 @@ local function setSellItems()--出售物品
     local num, gruop, preceTotale= 0, 0, 0
     for bag=0, NUM_BAG_SLOTS do--背包        
         for slot=0, C_Container.GetContainerNumSlots(bag) do--背包数量
-            --local _, itemCount, locked, quality, _, _, itemLink, _, noValue, itemID = C_Container.GetContainerItemInfo(bag,slot);--物品信息
             local info = C_Container.GetContainerItemInfo(bag,slot)
             if info and info.hyperlink and info.itemID and info.quality and (info.quality<5 or Save.Sell[info.itemID] and not Save.notSellCustom) then
                 local checkText=CheckItemSell(info.itemID, info.quality)--检察 ,boss掉落, 指定 或 出售灰色,宠物

@@ -825,8 +825,7 @@ local function setHoliday()--节日, 提示, button.texture
             end
         end
     end
-
-    setTexture()--设置图标
+    C_Timer.After(2, setTexture)--设置图标
 end
 
 --####

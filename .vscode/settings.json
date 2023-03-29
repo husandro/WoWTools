@@ -2187,7 +2187,8 @@
         "ContainerFrameItemButton_CalculateItemTooltipAnchors",
         "LE_FRAME_TUTORIAL_EQUIP_REAGENT_BAG",
         "WardrobeItemsModelMixin",
-        "WardrobeItemsCollectionMixin"
+        "WardrobeItemsCollectionMixin",
+        "ITEM_MOD_CR_MULTISTRIKE_SHORT"
     ],
     "Lua.diagnostics.disable": [
     ]

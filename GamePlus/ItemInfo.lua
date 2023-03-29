@@ -41,7 +41,7 @@ local function set_Item_Info(self, tab)
         local _, _, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, _, _, classID, subclassID, bindType, expacID, setID, isCraftingReagent = GetItemInfo(itemLink)
 
         setIDItem= setID and true or nil--套装
-        itemLevel= GetDetailedItemLevelInfo(itemLink) or itemLevel
+        itemLevel=  itemLevel or GetDetailedItemLevelInfo(itemLink) or 1
 
         if itemQuality then
             r,g,b = GetItemQualityColor(itemQuality)
@@ -76,7 +76,7 @@ local function set_Item_Info(self, tab)
         elseif e.itemPetID[itemID] then
             topRightText='|A:WildBattlePetCapturable:0:0|a'
 
-        elseif itemQuality and itemQuality==0 then
+        elseif itemQuality==0 and not (classID==2 or classID==4 ) then
             topRightText='|A:Coin-Silver:0:0|a'
 
         elseif classID==1 then--背包
@@ -203,7 +203,11 @@ local function set_Item_Info(self, tab)
                 end
             end
             if containerInfo and not containerInfo.isBound or not containerInfo then
-                bottomRightText = e.GetItemCollected(itemLink, nil, true)--幻化
+                local isCollected
+                bottomRightText, isCollected= e.GetItemCollected(itemLink, nil, true)--幻化 
+            end
+            if itemQuality==0 then
+                topRightText='|A:Coin-Silver:0:0|a'
             end
 
         elseif classID==17 or (classID==15 and subclassID==2) or itemLink:find('Hbattlepet:(%d+)') then--宠物
@@ -527,7 +531,6 @@ local function Init()
     elseif IsAddOnLoaded('Inventorian') then
         local ADDON = LibStub("AceAddon-3.0"):GetAddon("Inventorian")
         local InvLevel = ADDON:NewModule('InventorianWoWToolsItemInfo')
-
         function InvLevel:Update()
             set_Item_Info(self, {bag={bag=self.bag, slot=self.slot}})
         end
@@ -637,10 +640,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 if e.onlyChinese then
-                    e.tips:AddDoubleLine('系统背包, 商人', '物品信息')
+                    e.tips:AddDoubleLine('系统背包', '商人')
                 else
-                    e.tips:AddDoubleLine(BAGSLOT..' '..MERCHANT, EMBLEM_SYMBOL..INFO)
+                    e.tips:AddDoubleLine(BAGSLOT, MERCHANT)
                 end
+                e.tips:AddDoubleLine('Inventorian, Baggins', 'Bagnon')
                 e.tips:Show()
             end)
             sel:SetScript('OnLeave', function() e.tips:Hide() end)

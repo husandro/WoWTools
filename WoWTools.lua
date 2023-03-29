@@ -924,7 +924,7 @@ e.GetSetsCollectedNum= function(setID)--套装 , 收集数量, 返回: 图标, �
 end
 
 e.GetItemCollected= function(link, sourceID, icon)--物品是否收集
-    sourceID= sourceID or link and select(2,C_TransmogCollection.GetItemInfo(link))
+    sourceID= sourceID or link and select(2, C_TransmogCollection.GetItemInfo(link))
     local sourceInfo = sourceID and C_TransmogCollection.GetSourceInfo(sourceID)
     if sourceInfo then
         local isSelf= select(2, C_TransmogCollection.PlayerCanCollectSource(sourceID))
@@ -1116,18 +1116,39 @@ e.Set_Item_Stats = function(self, link, point)
     local setID, itemLevel
     local tab={}
     if link then
+        local num=0
         local info= GetItemStats(link) or {}
         if info['ITEM_MOD_CRIT_RATING_SHORT'] then
-            table.insert(tab, {text=e.onlyChinese and '爆' or strlower(e.WA_Utf8Sub(STAT_CRITICAL_STRIKE, 1, 2)), value=info['ITEM_MOD_CRIT_RATING_SHORT']})
+            table.insert(tab, {text=e.onlyChinese and '爆' or strlower(e.WA_Utf8Sub(STAT_CRITICAL_STRIKE, 1, 2)), value=info['ITEM_MOD_CRIT_RATING_SHORT'], index=1})
+            num= num +1
         end
         if info['ITEM_MOD_HASTE_RATING_SHORT'] then
-            table.insert(tab, {text=e.onlyChinese and '急' or strlower(e.WA_Utf8Sub(STAT_HASTE, 1,2)), value=info['ITEM_MOD_HASTE_RATING_SHORT']})
+            table.insert(tab, {text=e.onlyChinese and '急' or strlower(e.WA_Utf8Sub(STAT_HASTE, 1,2)), value=info['ITEM_MOD_HASTE_RATING_SHORT'], index=1})
+            num= num +1
         end
         if info['ITEM_MOD_MASTERY_RATING_SHORT'] then
-            table.insert(tab, {text=e.onlyChinese and '精' or strlower(e.WA_Utf8Sub(STAT_MASTERY, 1,2)), value=info['ITEM_MOD_MASTERY_RATING_SHORT']})
+            table.insert(tab, {text=e.onlyChinese and '精' or strlower(e.WA_Utf8Sub(STAT_MASTERY, 1,2)), value=info['ITEM_MOD_MASTERY_RATING_SHORT'], index=1})
+            num= num +1
         end
         if info['ITEM_MOD_VERSATILITY'] then
-            table.insert(tab, {text=e.onlyChinese and '全' or strlower(e.WA_Utf8Sub(STAT_VERSATILITY, 1,2)), value=info['ITEM_MOD_VERSATILITY']})
+            table.insert(tab, {text=e.onlyChinese and '全' or strlower(e.WA_Utf8Sub(STAT_VERSATILITY, 1,2)), value=info['ITEM_MOD_VERSATILITY'], index=1})
+            num= num +1
+        end
+        if num<4 and info['ITEM_MOD_CR_AVOIDANCE_SHORT'] then
+            table.insert(tab, {text=e.onlyChinese and '闪' or strlower(e.WA_Utf8Sub(ITEM_MOD_CR_AVOIDANCE_SHORT, 1,2)), value=info['ITEM_MOD_CR_AVOIDANCE_SHORT'], index=2})
+            num= num +1
+        end
+        if num<4 and info['ITEM_MOD_CR_MULTISTRIKE_SHORT'] then
+            table.insert(tab, {text=e.onlyChinese and '吸' or strlower(e.WA_Utf8Sub(ITEM_MOD_CR_LIFESTEAL_SHORT, 1,2)), value=info['ITEM_MOD_CR_LIFESTEAL_SHORT'], index=2})
+            num= num +1
+        end
+        if num<4 and info['ITEM_MOD_CR_AVOIDANCE_SHORT'] then
+            table.insert(tab, {text=e.onlyChinese and '溅' or strlower(e.WA_Utf8Sub(ITEM_MOD_CR_MULTISTRIKE_SHORT, 1,2)), value=info['ITEM_MOD_CR_MULTISTRIKE_SHORT'], index=2})
+            num= num +1
+        end
+        if num<4 and info['ITEM_MOD_CR_SPEED_SHORT'] then
+            table.insert(tab, {text=e.onlyChinese and '速' or strlower(e.WA_Utf8Sub(ITEM_MOD_CR_SPEED_SHORT, 1,2)), value=info['ITEM_MOD_CR_SPEED_SHORT'], index=2})
+            num= num +1
         end
 
         setID= select(16 , GetItemInfo(link))--套装
@@ -1164,7 +1185,7 @@ e.Set_Item_Stats = function(self, link, point)
     if self.itemSet then self.itemSet:SetShown(setID) end--套装
     if self.itemLevel then self.itemLevel:SetText(itemLevel or '') end--装等
 
-    table.sort(tab, function(a,b) return a.value>b.value end)
+    table.sort(tab, function(a,b) return a.value>b.value and a.index== b.index end)
     for index=1 ,4 do
         local text=self['statText'..index]
         if tab[index] then
