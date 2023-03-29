@@ -405,7 +405,7 @@ local function Init_Menu(self, level, type)--主菜单
         UIDropDownMenu_AddSeparator(level)
 
         info={
-            text= e.Icon.O2..(e.onlyChinese and '聊天泡泡' or CHAT_BUBBLES_TEXT),
+            text= e.onlyChinese and '聊天泡泡' or CHAT_BUBBLES_TEXT,
             tooltipOnButton=true,
             --tooltipTitle= e.onlyChinese and '战斗中：禁用' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..DISABLE,
             --tooltipText= (e.onlyChinese and '仅限副本' or LFG_LIST_CROSS_FACTION:format(INSTANCE))..'\n\n
