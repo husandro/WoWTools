@@ -98,8 +98,10 @@ end
 local function set_Durabiliy_EquipLevel_Event()--设置装等,耐久度,事件
     if Save.equipmetLevel or Save.durabiliy then
         button:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
+        button:RegisterEvent('PLAYER_ENTERING_WORLD')
     else
         button:UnregisterEvent('PLAYER_EQUIPMENT_CHANGED')
+        button:UnregisterEvent('PLAYER_ENTERING_WORLD')
     end
 
     if Save.equipmetLevel then
@@ -431,7 +433,7 @@ button:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='UPDATE_INVENTORY_DURABILITY' then
         setDurabiliy()
 
-    elseif event=='PLAYER_EQUIPMENT_CHANGED' then
+    elseif event=='PLAYER_EQUIPMENT_CHANGED' or event=='PLAYER_ENTERING_WORLD' then
         if Save.durabiliy then
             setDurabiliy()
         end

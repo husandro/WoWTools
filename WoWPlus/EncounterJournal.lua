@@ -1,6 +1,9 @@
 local id, e = ...
 local addName= ADVENTURE_JOURNAL
-local Save={wowBossKill={}}
+local Save={
+    wowBossKill={},
+    loot= {[e.Player.class]= {}},
+}
 local panel=CreateFrame("Frame")
 
 
@@ -708,11 +711,101 @@ local function Init()--冒险指南界面
 
         e.Set_Item_Stats(self, self.link, self.icon)--显示, 物品, 属性
     end)
-    --boss, ID, 信息
-    hooksecurefunc('EncounterJournal_DisplayInstance', function(instanceID, noButton)--Blizzard_EncounterJournal.lua
-        if not EncounterJournal.encounter then
-            return
+
+    --#######################
+    --BOSS战时, 指定拾取, 专精
+    --#######################
+    local function set_Loot_Spec_Texture(self)
+        local specID=self.encounterID and Save.loot[e.Player.class][self.encounterID]
+        local icon= specID and select(4, GetSpecializationInfoByID(specID))
+        if icon then
+            self:SetNormalTexture(icon)
+        else
+            self:SetNormalAtlas(e.Icon.icon)
         end
+    end
+    local function Init_Loot_Menu(self, level, type)
+        local curSpec= GetSpecialization()
+        local info, find
+        for specIndex= 1, GetNumSpecializations() do
+            local specID, name, _ , icon= GetSpecializationInfo(specIndex)
+            if icon and specID and name then
+                info= {
+                    text=name..(curSpec==specIndex and e.Icon.star2 or ''),
+                    icon=icon,
+                    checked= Save.loot[e.Player.class][self.encounterID]== specID,
+                    tooltipOnButton=true,
+                    tooltipTitle= 'specID '..specID,
+                    arg1= {
+                        encounterID=self.encounterID,
+                        specID= specID,
+                        button=self.button},
+                    func=function(_,arg1)
+                        if not Save.loot[e.Player.class][arg1.encounterID] or Save.loot[e.Player.class][arg1.encounterID]~= arg1.specID then
+                            Save.loot[e.Player.class][arg1.encounterID]=arg1.specID
+                        else
+                            Save.loot[e.Player.class][arg1.encounterID]=nil
+                        end
+                        set_Loot_Spec_Texture(arg1.button)
+                    end
+                }
+                UIDropDownMenu_AddButton(info, level)
+                find=true
+            end
+        end
+        if find then
+            UIDropDownMenu_AddSeparator(level)
+            info= {
+                text= e.onlyChinese and '无' or NONE,
+                icon= 'xmarksthespot',
+                checked= not Save.loot[e.Player.class][self.encounterID],
+                arg1= self.encounterID,
+                arg2= self.button,
+                func=function(_,arg1, arg2)
+                    Save.loot[e.Player.class][arg1]=nil
+                    set_Loot_Spec_Texture(arg2)
+                end
+            }
+            UIDropDownMenu_AddButton(info, level)
+        end
+        UIDropDownMenu_AddSeparator(level)
+        info={
+            text= e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION,
+            icon= 'Banker',
+            isTitle=true,
+            notCheckable=true,
+        }
+        UIDropDownMenu_AddButton(info, level)
+        info={
+            text=id..' '..addName,
+            isTitle=true,
+            notCheckable=true,
+        }
+        UIDropDownMenu_AddButton(info, level)
+    end
+    EncounterJournal.encounter.LootSpecMenu=CreateFrame("Frame",nil, EncounterJournal.encounter, "UIDropDownMenuTemplate")
+    UIDropDownMenu_Initialize(EncounterJournal.encounter.LootSpecMenu, Init_Loot_Menu, 'MENU')
+
+
+    local function set_Loot_Spec(button)
+        if not button.LootButton then
+            button.LootButton= e.Cbtn(button, {size={20,20}, icon='hide'})
+            button.LootButton:SetPoint('LEFT', button, 'RIGHT')
+            button.LootButton:SetNormalAtlas(e.Icon.icon)
+            button.LootButton:SetScript('OnClick', function(self)
+                EncounterJournal.encounter.LootSpecMenu.encounterID=self.encounterID
+                EncounterJournal.encounter.LootSpecMenu.button=self
+                ToggleDropDownMenu(1, nil, EncounterJournal.encounter.LootSpecMenu, self, 15,0)
+            end)
+        end
+        button.LootButton.encounterID= button.encounterID
+        set_Loot_Spec_Texture(button.LootButton)
+    end
+
+    --##############
+    --boss, ID, 信息
+    --##############
+    hooksecurefunc('EncounterJournal_DisplayInstance', function(instanceID, noButton)--Blizzard_EncounterJournal.lua
         local self2 = EncounterJournal.encounter;
         if Save.hideEncounterJournal or not instanceID then
             if self2.instance.Killed then
@@ -746,33 +839,37 @@ local function Init()--冒险指南界面
             ..(loreImage and '|n|T'..loreImage..':0|t'..loreImage or '')
             self2.instance.LoreScrollingFont:SetText(description..'\n'..text)
         end
-       -- if not noButton then
-            for _, button in pairs(self2.info.BossesScrollBox:GetFrames()) do
-                --button.index= button.GetOrderIndex()
-                if not button.OnEnter then
-                    button:SetScript('OnEnter', function(self3)
-                        if not Save.hideEncounterJournal and self3.encounterID then
-                            local name2, _, journalEncounterID, rootSectionID, _, journalInstanceID, dungeonEncounterID, instanceID2= EJ_GetEncounterInfo(self3.encounterID)
-                            e.tips:SetOwner(self3, "ANCHOR_RIGHT")
-                            e.tips:ClearLines()
-                            e.tips:AddDoubleLine(name2,  'journalEncounterID: '..'|cnGREEN_FONT_COLOR:'..(journalEncounterID or self3.encounterID)..'|r')
-                            e.tips:AddDoubleLine(instanceID2 and 'instanceID: '..instanceID2, (rootSectionID and rootSectionID>0) and 'JournalEncounterSectionID: '..rootSectionID or ' ')
-                            if dungeonEncounterID then
-                                e.tips:AddDoubleLine('dungeonEncounterID: '..dungeonEncounterID, (journalInstanceID and journalInstanceID>0) and 'journalInstanceID: '..journalInstanceID or ' ' )
-                                local numKill=Save.wowBossKill[dungeonEncounterID]
-                                if numKill then
-                                    e.tips:AddDoubleLine(e.onlyChinese and '击杀' or KILLS, '|cnGREEN_FONT_COLOR:'..numKill..' |r'..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
-                                end
+        for _, button in pairs(self2.info.BossesScrollBox:GetFrames()) do
+            if not button.OnEnter then
+                button:SetScript('OnEnter', function(self3)
+                    if not Save.hideEncounterJournal and self3.encounterID then
+                        local name2, _, journalEncounterID, rootSectionID, _, journalInstanceID, dungeonEncounterID, instanceID2= EJ_GetEncounterInfo(self3.encounterID)--button.index= button.GetOrderIndex()
+                        e.tips:SetOwner(self3, "ANCHOR_RIGHT")
+                        e.tips:ClearLines()
+                        e.tips:AddDoubleLine(name2,  'journalEncounterID: '..'|cnGREEN_FONT_COLOR:'..(journalEncounterID or self3.encounterID)..'|r')
+                        e.tips:AddDoubleLine(instanceID2 and 'instanceID: '..instanceID2, (rootSectionID and rootSectionID>0) and 'JournalEncounterSectionID: '..rootSectionID or ' ')
+                        if dungeonEncounterID then
+                            e.tips:AddDoubleLine('dungeonEncounterID: '..dungeonEncounterID, (journalInstanceID and journalInstanceID>0) and 'journalInstanceID: '..journalInstanceID or ' ' )
+                            local numKill=Save.wowBossKill[dungeonEncounterID]
+                            if numKill then
+                                e.tips:AddDoubleLine(e.onlyChinese and '击杀' or KILLS, '|cnGREEN_FONT_COLOR:'..numKill..' |r'..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
                             end
-                            e.tips:AddLine(' ')
-                            e.tips:AddDoubleLine(id, addName)
-                            e.tips:Show()
                         end
-                    end)
-                    button:SetScript('OnLeave', function() e.tips:Hide() end)
-                end
+                        e.tips:AddLine(' ')
+                        e.tips:AddDoubleLine(id, addName)
+                        e.tips:Show()
+                    end
+                end)
+                button:SetScript('OnLeave', function() e.tips:Hide() end)
+                set_Loot_Spec(button)--BOSS战时, 指定拾取, 专精
             end
-        
+        end
+
+        hooksecurefunc(self2.info.BossesScrollBox,'SetScrollTargetOffset', function()
+            for _, button in pairs(self2.info.BossesScrollBox:GetFrames()) do
+                set_Loot_Spec(button)--BOSS战时, 指定拾取, 专精
+            end
+        end)
 
         if self2.instance.mapButton then
             self2.instance.mapButton:SetScript('OnEnter', function(self3)--综述,小地图提示
@@ -974,7 +1071,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
-
+            Save.loot= Save.loot or {}
+            Save.loot[e.Player.class]= Save.loot[e.Player.class] or {}
             --添加控制面板        
             local sel=e.CPanel('|A:UI-HUD-MicroMenu-AdventureGuide-Mouseover:0:0|a'..(e.onlyChinese and '冒险指南' or addName), not Save.disabled)
             sel:SetScript('OnMouseDown', function()
