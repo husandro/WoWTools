@@ -746,36 +746,33 @@ local function Init()--冒险指南界面
             ..(loreImage and '|n|T'..loreImage..':0|t'..loreImage or '')
             self2.instance.LoreScrollingFont:SetText(description..'\n'..text)
         end
-        if not noButton then
+       -- if not noButton then
             for _, button in pairs(self2.info.BossesScrollBox:GetFrames()) do
-                button:SetScript('OnEnter', function(self3)
-                    local index=self3.GetOrderIndex()
-                    if not Save.hideEncounterJournal and index then
-                        local name2, _, journalEncounterID, rootSectionID, _, journalInstanceID, dungeonEncounterID, instanceID2= EJ_GetEncounterInfoByIndex(index)
-                        e.tips:SetOwner(self3, "ANCHOR_RIGHT")
-                        e.tips:ClearLines()
-                        e.tips:AddDoubleLine(id, addName)
-                        e.tips:AddLine(' ')
-                        if instanceID2 then
-                            e.tips:AddDoubleLine(name2, 'instanceID: '..instanceID2)
-                        end
-                        if journalEncounterID then
-                            e.tips:AddDoubleLine('journalEncounterID: '..'|cnGREEN_FONT_COLOR:'..journalEncounterID..'|r', (rootSectionID and rootSectionID>0) and 'JournalEncounterSectionID: '..rootSectionID or ' ')
-                        end
-                        if dungeonEncounterID then
-                            e.tips:AddDoubleLine('dungeonEncounterID: '..dungeonEncounterID, (journalInstanceID and journalInstanceID>0) and 'journalInstanceID: '..journalInstanceID or ' ' )
-                            local numKill=Save.wowBossKill[dungeonEncounterID]
-                            if numKill then
-                                e.tips:AddDoubleLine(e.onlyChinese and '击杀' or KILLS, '|cnGREEN_FONT_COLOR:'..numKill..' |r'..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
+                --button.index= button.GetOrderIndex()
+                if not button.OnEnter then
+                    button:SetScript('OnEnter', function(self3)
+                        if not Save.hideEncounterJournal and self3.encounterID then
+                            local name2, _, journalEncounterID, rootSectionID, _, journalInstanceID, dungeonEncounterID, instanceID2= EJ_GetEncounterInfo(self3.encounterID)
+                            e.tips:SetOwner(self3, "ANCHOR_RIGHT")
+                            e.tips:ClearLines()
+                            e.tips:AddDoubleLine(name2,  'journalEncounterID: '..'|cnGREEN_FONT_COLOR:'..(journalEncounterID or self3.encounterID)..'|r')
+                            e.tips:AddDoubleLine(instanceID2 and 'instanceID: '..instanceID2, (rootSectionID and rootSectionID>0) and 'JournalEncounterSectionID: '..rootSectionID or ' ')
+                            if dungeonEncounterID then
+                                e.tips:AddDoubleLine('dungeonEncounterID: '..dungeonEncounterID, (journalInstanceID and journalInstanceID>0) and 'journalInstanceID: '..journalInstanceID or ' ' )
+                                local numKill=Save.wowBossKill[dungeonEncounterID]
+                                if numKill then
+                                    e.tips:AddDoubleLine(e.onlyChinese and '击杀' or KILLS, '|cnGREEN_FONT_COLOR:'..numKill..' |r'..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
+                                end
                             end
+                            e.tips:AddLine(' ')
+                            e.tips:AddDoubleLine(id, addName)
+                            e.tips:Show()
                         end
-
-                        e.tips:Show()
-                    end
-                end)
-                button:SetScript('OnLeave', function() e.tips:Hide() end)
+                    end)
+                    button:SetScript('OnLeave', function() e.tips:Hide() end)
+                end
             end
-        end
+        
 
         if self2.instance.mapButton then
             self2.instance.mapButton:SetScript('OnEnter', function(self3)--综述,小地图提示
@@ -973,9 +970,6 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-
-
-
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then

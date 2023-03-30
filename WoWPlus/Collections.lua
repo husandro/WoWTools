@@ -197,7 +197,7 @@ local function get_Sets_Colleced()--收集所有角色套装数据
 end
 
 local function Init_Wardrobe_Sets()
-    local frame= (WardrobeCollectionFrame and WardrobeCollectionFrame.SetsCollectionFrame) and WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame  
+    local frame= (WardrobeCollectionFrame and WardrobeCollectionFrame.SetsCollectionFrame) and WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame
     hooksecurefunc(WardrobeSetsScrollFrameButtonMixin, 'Init', function(button, displayData)--外观列表    
         local setID=displayData.setID
         local sets = C_TransmogSets.GetVariantSets(setID)
@@ -248,7 +248,7 @@ local function Init_Wardrobe_Sets()
         button.tips=(version and version..'\n\n' or '')..buttonTip--点击，显示套装情况
 
         tip=(header and header..'\n\n' or '').. tip
-        button:SetScript("OnEnter",function(self2)
+        button:SetScript("OnEnter",function()
             e.tips:SetOwner(WardrobeCollectionFrame, "ANCHOR_RIGHT",8,-300)
             e.tips:ClearLines()
             e.tips:SetText(tip)
