@@ -743,7 +743,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                 end
                 findLinks=nil
 
-                local y, x, h =0,0, 10
+                local y, x, h =0,0, 10.4
                 for index, link in pairs(itemLinks) do
                     local btn= model.itemButton[index]
                     if not btn then
@@ -756,7 +756,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                             if self2.link then
                                 self2:SetAlpha(1)
                                 e.tips:ClearLines()
-                                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                                e.tips:SetOwner(self2:GetParent():GetParent(), "ANCHOR_RIGHT")
                                 e.tips:SetHyperlink(self2.link)
                                 e.tips:AddDoubleLine(id, addName)
                                 e.tips:AddDoubleLine(e.onlyChinese and '发送' or SEND_LABEL, e.Icon.left)
@@ -802,34 +802,6 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                 for index= #itemLinks+1, #model.itemButton do
                     model.itemButton[index]:SetShown(false)
                 end
-                    --[[if not model.itemButton[index] then
-                        model.itemButton[index]= model:CreateTexture(nil, 'OVERLAY')
-                        model.itemButton[index]:SetPoint('BOTTOMRIGHT')
-                        model.itemButton[index]:SetSize(10,10)
-                        model.itemButton[index]:EnableMouse(true)
-                        model.itemButton[index]:SetScript('OnLeave', function() e.tips:Hide() end)
-                        model.itemButton[index]:SetScript("OnEnter", function(self2)
-                            if self2.link then
-                                e.tips:SetOwner(self2, "ANCHOR_RIGHT")
-                                e.tips:ClearLines()
-                                e.tips:SetHyperlink(self2.link)
-                                e.tips:AddLine(' ')
-                                e.tips:AddDoubleLine(id, addName)
-                                e.tips:Show()
-                            end
-                        end)
-                    end
-                end
-
-                local icon = C_Item.GetItemIconByID(link)
-                if icon then
-                    model.texture:SetTexture(icon)
-                else
-                    model.texture:SetAtlas('common-icon-zoomin')
-                end
-
-                model.texture.link=link
-                model.texture:SetShown(link and true or false)]]
             end
         end
     end)
@@ -885,12 +857,13 @@ local function Init_ToyBox()
     end)
 end
 
+
+
+
 --###########
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-
-
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
