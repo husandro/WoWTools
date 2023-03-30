@@ -748,6 +748,7 @@ local function Init()--冒险指南界面
         else
             self:SetNormalAtlas(e.Icon.icon)
         end
+        self:SetAlpha(icon and 1 or 0.3)
     end
     local function set_Loot_Spec_Menu_Init(self, level, type)
         local info

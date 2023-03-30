@@ -202,16 +202,20 @@ local function set_Item_Info(self, tab)
                         topLeftText=e.Icon.X2
                     end
                 end
-                if itemQuality and itemQuality>1 and ((containerInfo and not containerInfo.isBound) or tab.guidBank or (tab.merchant and tab.merchant.buyBack)) then--没有锁定
+                if (containerInfo and not containerInfo.isBound) or tab.guidBank or (tab.merchant and tab.merchant.buyBack) then--没有锁定
                     topRightText=itemSubType and e.WA_Utf8Sub(itemSubType,2,4) or '|A:'..e.Icon.unlocked..':0:0|a'
                 end
             end
             if containerInfo and not containerInfo.isBound or not containerInfo then
                 local isCollected
-                bottomRightText, isCollected= e.GetItemCollected(itemLink, nil, true)--幻化 
-            end
-            if itemQuality==0 then
-                topRightText='|A:Coin-Silver:0:0|a'
+                bottomRightText, isCollected= e.GetItemCollected(itemLink, nil, true)--幻化
+                if containerInfo and itemQuality and itemQuality<=1 then
+                    if itemQuality==0 and isCollected then
+                        topRightText='|A:Coin-Silver:0:0|a'
+                    elseif not isCollected then
+                        topRightText=itemSubType and e.WA_Utf8Sub(itemSubType,2,4)
+                    end
+                end
             end
 
         elseif classID==17 or (classID==15 and subclassID==2) or itemLink:find('Hbattlepet:(%d+)') then--宠物
