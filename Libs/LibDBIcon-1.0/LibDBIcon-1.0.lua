@@ -155,7 +155,6 @@ local function onMouseUp(self)
 	self.icon:UpdateCoord()
 end
 
-
 do
 	local deg, atan2 = math.deg, math.atan2
 	local function onUpdate(self)
@@ -272,7 +271,6 @@ local function createButton(name, object, db)
 	end
 	button:SetScript("OnMouseDown", onMouseDown)
 	button:SetScript("OnMouseUp", onMouseUp)
-	button:SetScript('OnMouseWheel', onMouseWheel)
 
 	button.fadeOut = button:CreateAnimationGroup()
 	local animOut = button.fadeOut:CreateAnimation("Alpha")

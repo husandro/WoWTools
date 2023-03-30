@@ -207,8 +207,9 @@ local function set_PlayerFrame()--PlayerFrame.lua
             PlayerLevelText:SetText('')
         end
     end)
-
-    PlayerFrame.PlayerFrameContainer.FrameTexture:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)--外框
+    if PlayerFrame.PlayerFrameContainer and PlayerFrame.PlayerFrameContainer.FrameTexture then
+        PlayerFrame.PlayerFrameContainer.FrameTexture:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)--外框
+    end
 end
 
 --####
@@ -232,7 +233,7 @@ local function set_TargetFrame()
         local classFilename= UnitClassBase(self.unit)
         if classFilename then
             local r,g,b=GetClassColor(classFilename)
-            if r and g and b then
+            if r and g and b and self.TargetFrameContainer then
                 if self.TargetFrameContainer.FrameTexture then
                     self.TargetFrameContainer.FrameTexture:SetVertexColor(r,g,b)
                 end
@@ -470,7 +471,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                 end
             end
 
-            if self.unit=='player' and self~= PetFrame then
+            if self.unit=='player' and self~= PetFrame and self.PlayerFrameContainer then
                 local frameLevel=self.PlayerFrameContainer:GetFrameLevel()+1
                 self.lootSpecTexture= self:CreateTexture(nil,'BORDER', nil, 6)--拾取专精
                 self.lootSpecTexture:SetSize(14,14)
