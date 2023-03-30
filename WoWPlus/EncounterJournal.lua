@@ -749,14 +749,76 @@ local function Init()--冒险指南界面
             self:SetNormalAtlas(e.Icon.icon)
         end
     end
-    local function Init_Loot_Menu(self, level, type)
+    local function set_Loot_Spec_Menu_Init(self, level, type)
+        local info
+        if type=='CLEAR' then
+            for class= 1, GetNumClasses() do
+                local classInfo = C_CreatureInfo.GetClassInfo(class)
+                if classInfo and classInfo.classFile then
+                    Save.loot[classInfo.classFile]= Save.loot[classInfo.classFile] or {}
+                    local n=0
+                    for _, _ in pairs(Save.loot[classInfo.classFile]) do
+                        n= n+1
+                    end
+                    local col= select(4, GetClassColor(classInfo.classFile))
+                    col= col and '|c'..col or col
+                    info={
+                        text= (e.Class(nil, classInfo.classFile) or '')..classInfo.className..(e.Player.class==classInfo.classFile and e.Icon.star2 or '')..(n>0 and ' |cnGREEN_FONT_COLOR:#'..n..'|r' or ''),
+                        colorCode= col,
+                        notCheckable=true,
+                        arg1= classInfo.classFile,
+                        arg2= classInfo.className,
+                        hasArrow= n>0,
+                        menuList= classInfo.classFile,
+                        func= function(_, arg1, arg2)
+                            Save.loot[arg1]={}
+                            print(id, addName, e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, e.Class(nil, arg1), arg2, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要刷新' or NEED..REFRESH))
+                        end
+                    }
+                    UIDropDownMenu_AddButton(info, level)
+                end
+            end
+            UIDropDownMenu_AddSeparator(level)
+            info={
+                text= e.onlyChinese and '全部清除' or CLEAR_ALL,
+                icon='bags-button-autosort-up',
+                notCheckable=true,
+                func= function()
+                    Save.loot={[e.Player.class]={}}
+                    print(id, addName, e.onlyChinese and '全部清除' or CLEAR_ALL, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要刷新' or NEED..REFRESH))
+                end
+            }
+            UIDropDownMenu_AddButton(info, level)
+            return
+        elseif type then
+            local col= select(4, GetClassColor(type))
+            col= col and '|c'..col or col
+            for dungeonEncounterID, specID in pairs(Save.loot[type]) do
+                info={
+                    text='dungeonEncounterID |cnGREEN_FONT_COLOR:'..dungeonEncounterID..'|r',
+                    icon= select(4,  GetSpecializationInfoByID(specID)),
+                    colorCode= col,
+                    notCheckable= true,
+                    arg1=type,
+                    arg2=dungeonEncounterID,
+                    func= function(_, arg1, arg2)
+                        Save.loot[arg1][arg2]=nil
+                        print(id, addName, e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, e.Class(nil, arg1), arg2, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要刷新' or NEED..REFRESH))
+                    end
+                }
+                UIDropDownMenu_AddButton(info, level)
+            end
+            return
+        end
+
         local curSpec= GetSpecialization()
-        local info, find
+        local find
         for specIndex= 1, GetNumSpecializations() do
             local specID, name, _ , icon= GetSpecializationInfo(specIndex)
             if icon and specID and name then
                 info= {
                     text=name..(curSpec==specIndex and e.Icon.star2 or ''),
+                    colorCode= e.Player.col,
                     icon=icon,
                     checked= Save.loot[e.Player.class][self.dungeonEncounterID]== specID,
                     tooltipOnButton=true,
@@ -796,8 +858,16 @@ local function Init()--冒险指南界面
         end
         UIDropDownMenu_AddSeparator(level)
         info={
+            text= e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
+            notCheckable=true,
+            hasArrow=true,
+            menuList='CLEAR',
+        }
+        UIDropDownMenu_AddButton(info, level)
+        UIDropDownMenu_AddSeparator(level)
+        info={
             text= e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION,
-            icon= 'Banker',
+            icon= e.Class('player', e.Player.class, true) or  'Banker',
             isTitle=true,
             notCheckable=true,
         }
@@ -810,7 +880,7 @@ local function Init()--冒险指南界面
         UIDropDownMenu_AddButton(info, level)
     end
     EncounterJournal.encounter.LootSpecMenu=CreateFrame("Frame",nil, EncounterJournal.encounter, "UIDropDownMenuTemplate")
-    UIDropDownMenu_Initialize(EncounterJournal.encounter.LootSpecMenu, Init_Loot_Menu, 'MENU')
+    UIDropDownMenu_Initialize(EncounterJournal.encounter.LootSpecMenu, set_Loot_Spec_Menu_Init, 'MENU')
 
 
     local function set_Loot_Spec(button)
@@ -824,7 +894,7 @@ local function Init()--冒险指南界面
                 ToggleDropDownMenu(1, nil, EncounterJournal.encounter.LootSpecMenu, self, 15,0)
             end)
         end
-        local dungeonEncounterID= select(7, EJ_GetEncounterInfo(button.encounterID))
+        local dungeonEncounterID= button.encounterID and select(7, EJ_GetEncounterInfo(button.encounterID))
         button.LootButton.dungeonEncounterID= dungeonEncounterID
         set_Loot_Spec_Texture(button.LootButton)
         button.LootButton:SetShown(not Save.hideEncounterJournal)
@@ -893,7 +963,7 @@ local function Init()--冒险指南界面
             end
         end
 
-        hooksecurefunc(self2.info.BossesScrollBox,'SetScrollTargetOffset', function()
+        hooksecurefunc(self2.info.BossesScrollBox, 'SetScrollTargetOffset', function()
             for _, button in pairs(self2.info.BossesScrollBox:GetFrames()) do
                 set_Loot_Spec(button)--BOSS战时, 指定拾取, 专精
             end
@@ -1154,21 +1224,25 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if indicatoSpec then
             local loot = GetLootSpecialization()
             local spec = GetSpecialization()
-            spec= spec GetSpecializationInfo(spec)
+            spec= spec and GetSpecializationInfo(spec)
             local loot2= loot==0 and spec or loot
             if loot2~= indicatoSpec then
                 lootSpceLog= loot
                 SetLootSpecialization(indicatoSpec)
                 local _, name, _, icon, role = GetSpecializationInfoByID(indicatoSpec)
-                print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..'|r', e.Icon[role], icon and '|T'..icon..':0|t', name)
+                print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..'|r', e.Icon[role], icon and '|T'..icon..':0|t', name and '|cffff00ff'..name)
             end
         end
 
     elseif event=='ENCOUNTER_END' then--BOSS战时, 指定拾取, 专精, 还原, 专精拾取
         if lootSpceLog  then
             SetLootSpecialization(lootSpceLog)
-            local _, name, _, icon, role = GetSpecializationInfoByID(lootSpceLog== 0 and  GetSpecialization() or lootSpceLog)
-            print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..'|r', e.Icon[role], icon and '|T'..icon..':0|t', name)
+            if lootSpceLog==0 then
+                local spec = GetSpecialization()
+                lootSpceLog= spec and GetSpecializationInfo(spec) or lootSpceLog
+            end
+            local _, name, _, icon, role = GetSpecializationInfoByID(lootSpceLog)
+            print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..'|r', e.Icon[role], icon and '|T'..icon..':0|t', name and '|cffff00ff'..name)
             lootSpceLog=nil
         end
     end
