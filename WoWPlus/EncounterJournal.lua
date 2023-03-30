@@ -425,6 +425,29 @@ local function set_EncounterJournal_Money_Tips(self)--险指南界面, 钱
     e.tips:Show()
 end
 
+
+
+
+
+
+
+
+
+
+
+
+--############################
+--BOSS战时, 指定拾取, 专精, 事件
+--############################
+local function set_Loot_Spec_Event()
+    if Save.hideEncounterJournal then
+        panel:UnregisterEvent('ENCOUNTER_START')
+        panel:UnregisterEvent('ENCOUNTER_END')
+    else
+        panel:RegisterEvent('ENCOUNTER_START')
+        panel:RegisterEvent('ENCOUNTER_END')
+    end
+end
 --######
 --初始化
 --######
@@ -450,6 +473,8 @@ local function Init()--冒险指南界面
             EncounterJournal.money:SetShown(not Save.hideEncounterJournal)
             EncounterJournal.btn:SetNormalAtlas(Save.hideEncounterJournal and e.Icon.disabled or e.Icon.icon )
             print(id, addName, e.GetShowHide(not Save.hideEncounterJournal), e.onlyChinese and '需要刷新' or NEED..REFRESH)
+            set_Loot_Spec_Event()--BOSS战时, 指定拾取, 专精, 事件
+
         elseif d=='RightButton' then
             if Save.hideEncounterJournal_All_Info_Text then
                 Save.hideEncounterJournal_All_Info_Text=nil
@@ -716,7 +741,7 @@ local function Init()--冒险指南界面
     --BOSS战时, 指定拾取, 专精
     --#######################
     local function set_Loot_Spec_Texture(self)
-        local specID=self.encounterID and Save.loot[e.Player.class][self.encounterID]
+        local specID=self.dungeonEncounterID and Save.loot[e.Player.class][self.dungeonEncounterID]
         local icon= specID and select(4, GetSpecializationInfoByID(specID))
         if icon then
             self:SetNormalTexture(icon)
@@ -733,18 +758,19 @@ local function Init()--冒险指南界面
                 info= {
                     text=name..(curSpec==specIndex and e.Icon.star2 or ''),
                     icon=icon,
-                    checked= Save.loot[e.Player.class][self.encounterID]== specID,
+                    checked= Save.loot[e.Player.class][self.dungeonEncounterID]== specID,
                     tooltipOnButton=true,
                     tooltipTitle= 'specID '..specID,
+                    tooltipText= self.dungeonEncounterID and 'dungeonEncounterID '..self.dungeonEncounterID,
                     arg1= {
-                        encounterID=self.encounterID,
+                        dungeonEncounterID=self.dungeonEncounterID,
                         specID= specID,
                         button=self.button},
                     func=function(_,arg1)
-                        if not Save.loot[e.Player.class][arg1.encounterID] or Save.loot[e.Player.class][arg1.encounterID]~= arg1.specID then
-                            Save.loot[e.Player.class][arg1.encounterID]=arg1.specID
+                        if not Save.loot[e.Player.class][arg1.dungeonEncounterID] or Save.loot[e.Player.class][arg1.dungeonEncounterID]~= arg1.specID then
+                            Save.loot[e.Player.class][arg1.dungeonEncounterID]=arg1.specID
                         else
-                            Save.loot[e.Player.class][arg1.encounterID]=nil
+                            Save.loot[e.Player.class][arg1.dungeonEncounterID]=nil
                         end
                         set_Loot_Spec_Texture(arg1.button)
                     end
@@ -758,8 +784,8 @@ local function Init()--冒险指南界面
             info= {
                 text= e.onlyChinese and '无' or NONE,
                 icon= 'xmarksthespot',
-                checked= not Save.loot[e.Player.class][self.encounterID],
-                arg1= self.encounterID,
+                checked= not Save.loot[e.Player.class][self.dungeonEncounterID],
+                arg1= self.dungeonEncounterID,
                 arg2= self.button,
                 func=function(_,arg1, arg2)
                     Save.loot[e.Player.class][arg1]=nil
@@ -793,13 +819,15 @@ local function Init()--冒险指南界面
             button.LootButton:SetPoint('LEFT', button, 'RIGHT')
             button.LootButton:SetNormalAtlas(e.Icon.icon)
             button.LootButton:SetScript('OnClick', function(self)
-                EncounterJournal.encounter.LootSpecMenu.encounterID=self.encounterID
+                EncounterJournal.encounter.LootSpecMenu.dungeonEncounterID=self.dungeonEncounterID
                 EncounterJournal.encounter.LootSpecMenu.button=self
                 ToggleDropDownMenu(1, nil, EncounterJournal.encounter.LootSpecMenu, self, 15,0)
             end)
         end
-        button.LootButton.encounterID= button.encounterID
+        local dungeonEncounterID= select(7, EJ_GetEncounterInfo(button.encounterID))
+        button.LootButton.dungeonEncounterID= dungeonEncounterID
         set_Loot_Spec_Texture(button.LootButton)
+        button.LootButton:SetShown(not Save.hideEncounterJournal)
     end
 
     --##############
@@ -1066,6 +1094,7 @@ end
 --###########
 --加载保存数据
 --###########
+local lootSpceLog--BOSS战时, 指定拾取, 专精, 还原, 专精拾取
 panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -1082,6 +1111,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if Save.disabled then
                 panel:UnregisterAllEvents()
+            else
+                if not Save.hideEncounterJournal then
+                    set_Loot_Spec_Event()--BOSS战时, 指定拾取, 专精, 事件
+                end
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
@@ -1115,5 +1148,28 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         C_Timer.After(2, function()
             EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示所数据
         end)
+
+    elseif event=='ENCOUNTER_START' and arg1 then--BOSS战时, 指定拾取, 专精
+        local indicatoSpec=Save.loot[e.Player.class][arg1]
+        if indicatoSpec then
+            local loot = GetLootSpecialization()
+            local spec = GetSpecialization()
+            spec= spec GetSpecializationInfo(spec)
+            local loot2= loot==0 and spec or loot
+            if loot2~= indicatoSpec then
+                lootSpceLog= loot
+                SetLootSpecialization(indicatoSpec)
+                local _, name, _, icon, role = GetSpecializationInfoByID(indicatoSpec)
+                print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..'|r', e.Icon[role], icon and '|T'..icon..':0|t', name)
+            end
+        end
+
+    elseif event=='ENCOUNTER_END' then--BOSS战时, 指定拾取, 专精, 还原, 专精拾取
+        if lootSpceLog  then
+            SetLootSpecialization(lootSpceLog)
+            local _, name, _, icon, role = GetSpecializationInfoByID(lootSpceLog== 0 and  GetSpecialization() or lootSpceLog)
+            print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..'|r', e.Icon[role], icon and '|T'..icon..':0|t', name)
+            lootSpceLog=nil
+        end
     end
 end)
