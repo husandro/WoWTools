@@ -823,8 +823,8 @@ local function Init()--冒险指南界面
                     icon=icon,
                     checked= Save.loot[e.Player.class][self.dungeonEncounterID]== specID,
                     tooltipOnButton=true,
-                    tooltipTitle= 'specID '..specID,
-                    tooltipText= self.dungeonEncounterID and 'dungeonEncounterID '..self.dungeonEncounterID,
+                    tooltipTitle= self.encounterID and EJ_GetEncounterInfo(self.encounterID) or '',
+                    tooltipText= 'specID '..specID..'\n'..(self.dungeonEncounterID and 'dungeonEncounterID '..self.dungeonEncounterID or ''),
                     arg1= {
                         dungeonEncounterID=self.dungeonEncounterID,
                         specID= specID,
@@ -892,11 +892,13 @@ local function Init()--冒险指南界面
             button.LootButton:SetScript('OnClick', function(self)
                 EncounterJournal.encounter.LootSpecMenu.dungeonEncounterID=self.dungeonEncounterID
                 EncounterJournal.encounter.LootSpecMenu.button=self
+                EncounterJournal.encounter.LootSpecMenu.encounterID= self.encounterID
                 ToggleDropDownMenu(1, nil, EncounterJournal.encounter.LootSpecMenu, self, 15,0)
             end)
         end
         local dungeonEncounterID= button.encounterID and select(7, EJ_GetEncounterInfo(button.encounterID))
         button.LootButton.dungeonEncounterID= dungeonEncounterID
+        button.LootButton.encounterID= button.encounterID
         set_Loot_Spec_Texture(button.LootButton)
         button.LootButton:SetShown(not Save.hideEncounterJournal)
     end
