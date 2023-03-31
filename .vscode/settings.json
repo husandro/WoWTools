@@ -2254,7 +2254,9 @@
         "LFGListApplicationViewer_UpdateApplicantMember",
         "LFGListUtil_IsStatusInactive",
         "CHAT_AUTO_JOIN",
-        "LFG_LIST_AUTO_ACCEPT"
+        "LFG_LIST_AUTO_ACCEPT",
+        "LootHistoryFrame_ResetHighlights",
+        "LootHistoryFrame_FullUpdate"
     ],
     "Lua.diagnostics.disable": [
     ]

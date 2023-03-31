@@ -1,4 +1,11 @@
 --[[
+
+local numItems = C_LootHistory.GetNumItems()
+for i=1, numItems do
+	local frame = LootHistoryFrame.itemFrames[i]
+	
+end
+
 BACKGROUND
 BORDER
 ARTWORK
