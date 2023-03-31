@@ -481,6 +481,34 @@ local function set_LFGPlus()--预创建队伍增强
         if self.autoAcceptTexture then
             self.autoAcceptTexture:SetShown(autoAccept)
         end
+        
+        local realm, realmText
+        if searchResultInfo.leaderName and not isAppFinished then
+            local server= searchResultInfo.leaderName:match('%-(.+)') or e.Player.server
+            server=e.Get_Region(server)--服务器，EU， US {col, text}
+            realm= server and server.col
+            realmText=server and server.realm
+        end
+        if realm and not self.realmText then
+            self.realmText= e.Cstr(self)
+            self.realmText:SetPoint('BOTTOMLEFT', self, 0, -2)
+            self.realmText:EnableMouse(true)
+            self.realmText:SetScript('OnEnter', function(self2)
+                if self2.realm then
+                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                    e.tips:ClearLines()
+                    e.tips:AddDoubleLine(e.onlyChinese and '服务器' or VAS_REALM_LABEL, '|cnGREEN_FONT_COLOR:'..self2.realm)
+                    e.tips:AddDoubleLine(id, addName)
+                    e.tips:Show()
+                end
+           end)
+           self.realmText:SetScript("OnLeave", function() e.tips:Hide() end)
+        end
+        if self.realmText then
+            self.realmText.realm= realmText
+            self.realmText:SetText(realm or '')
+        end
+
         self:SetScript('OnDoubleClick', function(self2)--LFGListApplicationDialogSignUpButton_OnClick(button) LFG队长分数, 双击加入 LFGListSearchPanel_UpdateResults
             if LFGListFrame.SearchPanel.SignUpButton:IsEnabled() then
                 LFGListFrame.SearchPanel.SignUpButton:Click()
@@ -509,7 +537,7 @@ local function set_LFGPlus()--预创建队伍增强
 
 
         local orderIndexes = {}--https://wago.io/klC4qqHaF
-        if categoryID == 2 and _G["ShowRIORaitingWA1NotShowClasses"] ~= true and not isAppFinished then
+        if categoryID == 2 and not isAppFinished then--_G["ShowRIORaitingWA1NotShowClasses"] ~= true
             for i=1, searchResultInfo.numMembers do
                 local role, class = C_LFGList.GetSearchResultMemberInfo(self.resultID, i)
                 local orderIndex = getIndex(LFG_LIST_GROUP_DATA_ROLE_ORDER, role)

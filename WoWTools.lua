@@ -1413,20 +1413,20 @@ end
 
 local Realms={}
 local regionColor = {--https://wago.io/6-GG3RMcC
-    ["deDE"] = {col="|cFF00FF00DE|r", text='DE'},
-    ["frFR"] = {col="|cFF00FFFFFR|r", text='FR'},
-    ["enGB"] = {col="|cFFFF00FFGB|r", text='GB'},
-    ["itIT"] = {col="|cFFFFFF00IT|r", text='IT'},
-    ["esES"] = {col="|cFFFFBF00ES|r", text='ES'},
-    ["ruRU"] = {col="|cFFCCCCFFRU|r" ,text='RU'},
-    ["ptBR"] = {col="|cFF8fce00PT|r", text='PT'},
-    ["oce"] = {col="|cFF00FF00OCE|r", text='CE'},
-    ["usp"] = {col="|cFF00FFFFUSP|r", text='USP'},
-    ["usm"] = {col="|cFFFF00FFUSM|r", text='USM'},
-    ["usc"] = {col="|cFFFFFF00USC|r", text='USC'},
-    ["use"] = {col="|cFFFFBF00USE|r", text='USE'},
-    ["mex"] = {col="|cFFCCCCFFMEX|r", text='MEX'},
-    ["bzl"] = {col="|cFF8fce00BZL|r", text='BZL'},
+    ["deDE"] = {col="|cFF00FF00DE|r", text='DE', realm="Germany"},
+    ["frFR"] = {col="|cFF00FFFFFR|r", text='FR', realm="France"},
+    ["enGB"] = {col="|cFFFF00FFGB|r", text='GB', realm="Great Britain"},
+    ["itIT"] = {col="|cFFFFFF00IT|r", text='IT', realm="Italy"},
+    ["esES"] = {col="|cFFFFBF00ES|r", text='ES', realm="Spain"},
+    ["ruRU"] = {col="|cFFCCCCFFRU|r" ,text='RU', realm="Russia"},
+    ["ptBR"] = {col="|cFF8fce00PT|r", text='PT', realm="Portuguese"},
+    ["oce"] = {col="|cFF00FF00OCE|r", text='CE', realm="Oceanic"},
+    ["usp"] = {col="|cFF00FFFFUSP|r", text='USP', realm="US Pacific"},
+    ["usm"] = {col="|cFFFF00FFUSM|r", text='USM', realm="US Mountain"},
+    ["usc"] = {col="|cFFFFFF00USC|r", text='USC', realm="US Central"},
+    ["use"] = {col="|cFFFFBF00USE|r", text='USE', realm="US East"},
+    ["mex"] = {col="|cFFCCCCFFMEX|r", text='MEX', realm="Mexico"},
+    ["bzl"] = {col="|cFF8fce00BZL|r", text='BZL', realm="Brazil"},
     --[[
     ["deDE"] = "|cFF00FF00DE|r",
     ["frFR"] = "|cFF00FFFFFR|r",
@@ -1572,6 +1572,6 @@ elseif e.Player.region==1 then
 else
     regionColor={}
 end
-e.Get_Region= function(server)--e.Get_Region(server)--服务器，EU， US
+e.Get_Region= function(server)--e.Get_Region(server)--服务器，EU， US {col, text}
     return Realms[server]
 end
