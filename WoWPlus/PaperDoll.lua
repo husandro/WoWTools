@@ -823,7 +823,8 @@ local function Init()
     panel.serverText:SetScript("OnEnter",function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddLine(e.onlyChinese and '服务器:' or FRIENDS_LIST_REALM)
+            local server= e.Get_Region(e.Player.server, nil, nil)--服务器，EU， US {col=, text=, realm=}
+            e.tips:AddDoubleLine(e.onlyChinese and '服务器:' or FRIENDS_LIST_REALM, server and server.col)
             local ok2
             for k, v in pairs(GetAutoCompleteRealms()) do
                 if v==e.Player.server then
