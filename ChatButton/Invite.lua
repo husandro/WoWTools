@@ -439,23 +439,25 @@ local function set_LFGPlus()--预创建队伍增强
                 else
                     text= text..' |A:pvptalents-warmode-swords:0:0|a'..text2
                 end
+                
                 color= searchResultInfo.isWarMode and color2 or color
             end
+            print(searchResultInfo.requiredPvpRating)
             color= color or {r=1,g=1,b=1}
-            if searchResultInfo.numBNetFriends and searchResultInfo.numBNetFriends>0 then
+            if searchResultInfo.numBNetFriends and searchResultInfo.numBNetFriends>0 then--好友, 数量
                 text= text..' '..e.Icon.wow2..searchResultInfo.numBNetFriends
             end
-            if searchResultInfo.numCharFriends and searchResultInfo.numCharFriends>0 then
+            if searchResultInfo.numCharFriends and searchResultInfo.numCharFriends>0 then--好友, 数量
                 text= text..' |A:socialqueuing-icon-group:0:0|a'..searchResultInfo.numCharFriends
             end
-            if searchResultInfo.numGuildMates and searchResultInfo.numGuildMates>0 then
+            if searchResultInfo.numGuildMates and searchResultInfo.numGuildMates>0 then--好友, 数量
                 text= text..' |A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a'..searchResultInfo.numCharFriends
             end
             autoAccept= searchResultInfo.autoAccept--自动, 邀请
         end
         if text~='' and not self.scorsoText then
             self.scorsoText= e.Cstr(self)
-            self.scorsoText:SetPoint('TOPLEFT', self.DataDisplay.Enumerate,0,7)
+            self.scorsoText:SetPoint('TOPLEFT', self.DataDisplay.Enumerate,0,5)
         end
         if self.scorsoText then
             self.scorsoText:SetText(text)
@@ -491,7 +493,8 @@ local function set_LFGPlus()--预创建队伍增强
         end
         if realm and not self.realmText then
             self.realmText= e.Cstr(self)
-            self.realmText:SetPoint('BOTTOMLEFT', self, 0, -2)
+            --self.realmText:SetPoint('BOTTOMLEFT', self, 0, -2)
+            self.realmText:SetPoint('BOTTOMLEFT', self.DataDisplay.Enumerate,0,-3)
             self.realmText:EnableMouse(true)
             self.realmText:SetScript('OnEnter', function(self2)
                 if self2.realm then
