@@ -39,6 +39,9 @@ local function SetChannels(link)
                 return link:gsub('%[.-]', v)
             end
         end
+        name= name:match('%-(.+)') or name
+        name=e.WA_Utf8Sub(name, 1, 4)
+        return link:gsub('%[.-]', name)
     end
 end
 
@@ -48,7 +51,7 @@ local function Realm(link)--去服务器为*, 加队友种族图标,和N,T
     local name= split:match('player:(.-):')
     local server= name and name:match('-(.+)')
     if name == e.Player.name or name==e.Player.name_server then
-        return '['..e.Player.col..COMBATLOG_FILTER_STRING_ME..'|r]'
+        return e.Icon.toRight2..e.Player.col..COMBATLOG_FILTER_STRING_ME..'|r'..e.Icon.toLeft2
     else
         --local server=link:match('|Hplayer:.-|h%[.-%-(.-)|r]|h') or link:match('|Hplayer:.-|h%[(.-)]|h')
         local  text
