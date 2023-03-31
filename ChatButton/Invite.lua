@@ -439,10 +439,8 @@ local function set_LFGPlus()--预创建队伍增强
                 else
                     text= text..' |A:pvptalents-warmode-swords:0:0|a'..text2
                 end
-                
                 color= searchResultInfo.isWarMode and color2 or color
             end
-            print(searchResultInfo.requiredPvpRating)
             color= color or {r=1,g=1,b=1}
             if searchResultInfo.numBNetFriends and searchResultInfo.numBNetFriends>0 then--好友, 数量
                 text= text..' '..e.Icon.wow2..searchResultInfo.numBNetFriends
@@ -483,7 +481,7 @@ local function set_LFGPlus()--预创建队伍增强
         if self.autoAcceptTexture then
             self.autoAcceptTexture:SetShown(autoAccept)
         end
-        
+
         local realm, realmText
         if searchResultInfo.leaderName and not isAppFinished then
             local server= searchResultInfo.leaderName:match('%-(.+)') or e.Player.server
@@ -608,7 +606,7 @@ local function set_LFGPlus()--预创建队伍增强
             end
             tooltip:Show()
         end
-        
+
     end)
 end
 --#######################

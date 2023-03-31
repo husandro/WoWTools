@@ -14,7 +14,7 @@ e.ReloadPanel= function(tab)
     local rest= e.Cbtn(tab.panel, {type=false, size={25,25}})
     rest:SetNormalAtlas('bags-button-autosort-up')
     rest:SetPushedAtlas('bags-button-autosort-down')
-    rest:SetPoint('TOPLEFT')
+    rest:SetPoint('TOPRIGHT')
     rest.addName=tab.addName
     rest.func=tab.clearfunc
     rest:SetScript('OnClick', function(self)
@@ -36,27 +36,10 @@ e.ReloadPanel= function(tab)
         e.tips:AddDoubleLine(id, self.addName)
         e.tips:Show()
     end)
-    local check
-    if tab.disabledfunc then
-        check=CreateFrame("CheckButton", nil, tab.panel, "InterfaceOptionsCheckButtonTemplate")
-        check:SetChecked(tab.checked)
-        check:SetPoint('LEFT', rest, 'RIGHT')
-        check:SetScript('OnClick', tab.disabledfunc)
-        check:SetScript('OnLeave', function() e.tips:Hide() end)
-        check.addName= tab.addName
-        check:SetScript('OnEnter', function(self)
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddLine(e.onlyChinese and '启用/禁用' or ENABLE..'/'..DISABLE)
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(id, self.addName)
-            e.tips:Show()
-        end)
-    end
     local reload= e.Cbtn(tab.panel, {type=false, size={25,25}})
     reload:SetNormalAtlas('128-RedButton-Refresh')
     reload:SetPushedAtlas('128-RedButton-Refresh-Pressed')
-    reload:SetPoint('LEFT', check or rest, 'RIGHT')
+    reload:SetPoint('TOPLEFT')
     reload:SetScript('OnClick', e.Reload)
     reload.addName=tab.addName
     reload:SetScript('OnLeave', function() e.tips:Hide() end)
@@ -74,6 +57,24 @@ e.ReloadPanel= function(tab)
         needReload:SetPoint('BOTTOMRIGHT')
         needReload:SetTextColor(0,1,0)
     end
+    if tab.disabledfunc then
+        local check=CreateFrame("CheckButton", nil, tab.panel, "InterfaceOptionsCheckButtonTemplate")
+        check.text:SetText(e.GetEnabeleDisable(true))
+        check:SetChecked(tab.checked)
+        check:SetPoint('LEFT', reload, 'RIGHT')
+        check:SetScript('OnClick', tab.disabledfunc)
+        check:SetScript('OnLeave', function() e.tips:Hide() end)
+        check.addName= tab.addName
+        check:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddLine(e.onlyChinese and '启用/禁用' or ENABLE..'/'..DISABLE)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(id, self.addName)
+            e.tips:Show()
+        end)
+    end
+    
 end
 
 local panel = CreateFrame("Frame")--Panel

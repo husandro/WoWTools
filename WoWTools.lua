@@ -1572,6 +1572,6 @@ elseif e.Player.region==1 then
 else
     regionColor={}
 end
-e.Get_Region= function(server)--e.Get_Region(server)--服务器，EU， US {col, text}
+e.Get_Region= function(server)--e.Get_Region(server)--服务器，EU， US {col=, text=, realm=}
     return Realms[server]
 end

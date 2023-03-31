@@ -43,11 +43,14 @@ local function SetChannels(link)
 end
 
 local function Realm(link)--去服务器为*, 加队友种族图标,和N,T
-    local name=link:match('|Hplayer:.-|h%[|cff......(.-)|r]') or link:match('|Hplayer:.-|h%[(.-)]|h')
+    --local name=link:match('|Hplayer:.-|h%[|cff......(.-)|r]') or link:match('|Hplayer:.-|h%[(.-)]|h')
+    local split= LinkUtil.SplitLink(link)
+    local name= split:match('player:(.-):')
+    local server= name and name:match('-(.+)')
     if name == e.Player.name or name==e.Player.name_server then
         return '['..e.Player.col..COMBATLOG_FILTER_STRING_ME..'|r]'
     else
-        local server=link:match('|Hplayer:.-|h%[.-%-(.-)|r]|h') or link:match('|Hplayer:.-|h%[(.-)]|h')
+        --local server=link:match('|Hplayer:.-|h%[.-%-(.-)|r]|h') or link:match('|Hplayer:.-|h%[(.-)]|h')
         local  text
         local tab=e.GroupGuid[name]--队伍成员
         if tab and tab.unit then--玩家种族图标
@@ -58,6 +61,10 @@ local function Realm(link)--去服务器为*, 加队友种族图标,和N,T
             end
         end
         if server then
+            local realm= e.Get_Region(server)--服务器，EU， US {col=, text=, realm=}
+            if realm then
+                text= text and realm.col..text or realm.col
+            end
             if server== e.Player.server then
                 return (text or '')..link:gsub('%-'..server..'|r]|h', '|r]|h')
             elseif e.Player.servers[server] then

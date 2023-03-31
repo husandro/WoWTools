@@ -698,6 +698,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                             end
                         end
                     else
+                        line:SetText('')
                         line:Hide()
                     end
                 else
