@@ -2250,7 +2250,11 @@
         "LegendaryItemAlertFrame_SetUp",
         "LFGListSearchPanel_UpdateResults",
         "LFGListApplicationViewer_UpdateResults",
-        "LFG_LIST_GROUP_DATA_ROLE_ORDER"
+        "LFG_LIST_GROUP_DATA_ROLE_ORDER",
+        "LFGListApplicationViewer_UpdateApplicantMember",
+        "LFGListUtil_IsStatusInactive",
+        "CHAT_AUTO_JOIN",
+        "LFG_LIST_AUTO_ACCEPT"
     ],
     "Lua.diagnostics.disable": [
     ]

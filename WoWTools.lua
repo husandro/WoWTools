@@ -265,6 +265,7 @@ e.Icon={
     FRIENDS_TEXTURE_AFK 离开 AFK FRIENDS_LIST_AWAY 
     FRIENDS_TEXTURE_ONLINE 	有空 FRIENDS_LIST_AVAILABLE
     format("\124T%s.tga:0\124t", FRIENDS_TEXTURE_AFK)
+    Interface\\FriendsFrame\\Battlenet-Portrait
 ]]
 
 
@@ -872,7 +873,7 @@ e.GetKeystoneScorsoColor= function(score, texture, overall)--地下城史诗, �
         if texture then
             score= '|T4352494:0|t'..score
         end
-        return score
+        return score, color
     end
 end
 
@@ -1412,6 +1413,21 @@ end
 
 local Realms={}
 local regionColor = {--https://wago.io/6-GG3RMcC
+    ["deDE"] = {col="|cFF00FF00DE|r", text='DE'},
+    ["frFR"] = {col="|cFF00FFFFFR|r", text='FR'},
+    ["enGB"] = {col="|cFFFF00FFGB|r", text='GB'},
+    ["itIT"] = {col="|cFFFFFF00IT|r", text='IT'},
+    ["esES"] = {col="|cFFFFBF00ES|r", text='ES'},
+    ["ruRU"] = {col="|cFFCCCCFFRU|r" ,text='RU'},
+    ["ptBR"] = {col="|cFF8fce00PT|r", text='PT'},
+    ["oce"] = {col="|cFF00FF00OCE|r", text='CE'},
+    ["usp"] = {col="|cFF00FFFFUSP|r", text='USP'},
+    ["usm"] = {col="|cFFFF00FFUSM|r", text='USM'},
+    ["usc"] = {col="|cFFFFFF00USC|r", text='USC'},
+    ["use"] = {col="|cFFFFBF00USE|r", text='USE'},
+    ["mex"] = {col="|cFFCCCCFFMEX|r", text='MEX'},
+    ["bzl"] = {col="|cFF8fce00BZL|r", text='BZL'},
+    --[[
     ["deDE"] = "|cFF00FF00DE|r",
     ["frFR"] = "|cFF00FFFFFR|r",
     ["enGB"] = "|cFFFF00FFGB|r",
@@ -1426,6 +1442,7 @@ local regionColor = {--https://wago.io/6-GG3RMcC
     ["use"] = "|cFFFFBF00USE|r",
     ["mex"] = "|cFFCCCCFFMEX|r",
     ["bzl"] = "|cFF8fce00BZL|r"
+    ]]
 }
 if e.Player.region==3 then--EU 
     Realms = {--3 EU
