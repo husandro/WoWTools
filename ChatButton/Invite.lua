@@ -5,7 +5,6 @@ local Save={InvNoFriend={},
             FriendAceInvite=true,--接受, 好友, 邀请
             InvNoFriendNum=0,--拒绝, 次数
             restingTips=true,--休息区提示
-            LFGPlus= true,--预创建队伍增强
             ChannelText=e.Player.cn and '1' or 'inv',--频道, 邀请, 事件,内容
             Summon= true,--接受, 召唤
 }
@@ -378,237 +377,6 @@ local function set_PLAYER_UPDATE_RESTING()--设置, 休息区提示
     end
 end
 
---############
---预创建队伍增强
---############
-local function set_LFGPlus()--预创建队伍增强
-    if not Save.LFGPlus then
-        return
-    end
-    --[[local f=LFGListFrame.SearchPanel.RefreshButton--界面, 添加, 选项    
-    f.ace = CreateFrame("CheckButton", nil, f, "InterfaceOptionsCheckButtonTemplate")--自动进组  选项
-    f.ace:SetPoint('RIGHT',f, 'LEFT',-90,0)
-    f.ace.Text:SetText('|cFFFFD000'..(e.onlyChinese and '自动接受' or AUTO_JOIN:gsub(JOIN, ACCEPT))..'|r')
-    f.ace:SetChecked(Save.LFGListAceInvite)
-    f.ace:SetScript("OnMouseDown", function (s)
-            Save.LFGListAceInvite=s:GetChecked()
-    end)
-
-    f=LFGListFrame.ApplicationViewer.DataDisplay --自动邀请 选项
-    f.inv = CreateFrame("CheckButton",nil, f, "InterfaceOptionsCheckButtonTemplate")
-    f.inv:SetPoint("BOTTOMLEFT", f, "TOPLEFT", 0, -10)
-    f.inv.Text:SetText('|cFFFFD000'..(e.onlyChinese and '自动邀请' or AUTO_JOIN:gsub(JOIN, INVITE))..'|r')
-    f.inv:SetChecked(Save.LFGAutoInv)
-    f.inv:SetScript("OnMouseDown", function(s)
-            Save.LFGAutoInv=s:GetChecked()
-    end)
-
-    f.raid = CreateFrame("CheckButton",nil, f, "InterfaceOptionsCheckButtonTemplate")--转化为团队 选项
-    f.raid:SetPoint("TOPLEFT", f, "BOTTOMLEFT", 0, 8)
-    f.raid.Text:SetText('|cFFFFD000'..(e.onlyChinese and '转团' or CONVERT_TO_RAID)..'|r')
-    f.raid:SetChecked(Save.PartyToRaid)
-
-    f.raid:SetScript("OnMouseDown", function(s)
-        Save.PartyToRaid=s:GetChecked()
-    end)
-]]
-    local function getIndex(values, val)
-        local index={}
-        for k,v in pairs(values) do
-            index[v]=k
-        end
-        return index[val]
-    end
-    hooksecurefunc("LFGListSearchEntry_Update", function(self)----查询,自定义, 预创建队伍, LFG队长分数, 双击加入 LFGList.lua
-        local resultID = self.resultID
-        if not C_LFGList.HasSearchResultInfo(resultID) then
-            return
-	    end
-        local searchResultInfo = C_LFGList.GetSearchResultInfo(resultID)
-        local categoryID= LFGListFrame.SearchPanel.categoryID
-        local _, appStatus, pendingStatus = C_LFGList.GetApplicationInfo(resultID)
-        local isAppFinished = LFGListUtil_IsStatusInactive(appStatus) or LFGListUtil_IsStatusInactive(pendingStatus) or searchResultInfo.isDelisted
-
-        local text, color, autoAccept = '', nil, nil
-        if not isAppFinished then
-            text, color=e.GetKeystoneScorsoColor(searchResultInfo.leaderOverallDungeonScore, true)--地下城, 分数
-            if searchResultInfo.leaderPvpRatingInfo and searchResultInfo.leaderPvpRatingInfo.rating and searchResultInfo.leaderPvpRatingInfo.rating>0 then--PVP, 分数
-                local text2, color2=e.GetKeystoneScorsoColor(searchResultInfo.leaderPvpRatingInfo.rating)
-                if searchResultInfo.isWarMode then
-                    text= '|A:pvptalents-warmode-swords:0:0|a'..text2..' '..text
-                else
-                    text= text..' |A:pvptalents-warmode-swords:0:0|a'..text2
-                end
-                color= searchResultInfo.isWarMode and color2 or color
-            end
-            color= color or {r=1,g=1,b=1}
-            if searchResultInfo.numBNetFriends and searchResultInfo.numBNetFriends>0 then--好友, 数量
-                text= text..' '..e.Icon.wow2..searchResultInfo.numBNetFriends
-            end
-            if searchResultInfo.numCharFriends and searchResultInfo.numCharFriends>0 then--好友, 数量
-                text= text..' |A:socialqueuing-icon-group:0:0|a'..searchResultInfo.numCharFriends
-            end
-            if searchResultInfo.numGuildMates and searchResultInfo.numGuildMates>0 then--好友, 数量
-                text= text..' |A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a'..searchResultInfo.numCharFriends
-            end
-            autoAccept= searchResultInfo.autoAccept--自动, 邀请
-        end
-        if text~='' and not self.scorsoText then
-            self.scorsoText= e.Cstr(self)
-            self.scorsoText:SetPoint('TOPLEFT', self.DataDisplay.Enumerate,0,5)
-        end
-        if self.scorsoText then
-            self.scorsoText:SetText(text)
-            if color then
-                self.Name:SetTextColor(color.r, color.g, color.b)
-            end
-        end
-        if autoAccept and not self.autoAcceptTexture then--自动, 邀请
-            self.autoAcceptTexture=self:CreateTexture(nil,'OVERLAY')
-            self.autoAcceptTexture:SetPoint('LEFT')
-            self.autoAcceptTexture:SetAtlas(e.Icon.select)
-            self.autoAcceptTexture:SetSize(12,12)
-            self.autoAcceptTexture:EnableMouse(true)
-            self.autoAcceptTexture:SetScript('OnEnter', function(self2)
-                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddLine(e.onlyChinese and '自动接受' or LFG_LIST_AUTO_ACCEPT)
-                e.tips:AddDoubleLine(id, addName)
-                e.tips:Show()
-            end)
-            self.autoAcceptTexture:SetScript("OnLeave", function() e.tips:Hide() end)
-        end
-        if self.autoAcceptTexture then
-            self.autoAcceptTexture:SetShown(autoAccept)
-        end
-
-        local realm, realmText
-        if searchResultInfo.leaderName and not isAppFinished then
-            local server= searchResultInfo.leaderName:match('%-(.+)') or e.Player.server
-            server=e.Get_Region(server)--服务器，EU， US {col, text}
-            realm= server and server.col
-            realmText=server and server.realm
-        end
-        if realm and not self.realmText then
-            self.realmText= e.Cstr(self)
-            --self.realmText:SetPoint('BOTTOMLEFT', self, 0, -2)
-            self.realmText:SetPoint('BOTTOMLEFT', self.DataDisplay.Enumerate,0,-3)
-            self.realmText:EnableMouse(true)
-            self.realmText:SetScript('OnEnter', function(self2)
-                if self2.realm then
-                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                    e.tips:ClearLines()
-                    e.tips:AddDoubleLine(e.onlyChinese and '服务器' or VAS_REALM_LABEL, '|cnGREEN_FONT_COLOR:'..self2.realm)
-                    e.tips:AddDoubleLine(id, addName)
-                    e.tips:Show()
-                end
-           end)
-           self.realmText:SetScript("OnLeave", function() e.tips:Hide() end)
-        end
-        if self.realmText then
-            self.realmText.realm= realmText
-            self.realmText:SetText(realm or '')
-        end
-
-        self:SetScript('OnDoubleClick', function(self2)--LFGListApplicationDialogSignUpButton_OnClick(button) LFG队长分数, 双击加入 LFGListSearchPanel_UpdateResults
-            if LFGListFrame.SearchPanel.SignUpButton:IsEnabled() then
-                LFGListFrame.SearchPanel.SignUpButton:Click()
-            end
-            local frame=LFGListApplicationDialog
-            if not frame.TankButton.CheckButton:GetChecked() and not frame.HealerButton.CheckButton:GetChecked() and not frame.DamagerButton.CheckButton:GetChecked() then
-                local specID=GetSpecialization()--当前专精
-                if specID then
-                    local role = select(5, GetSpecializationInfo(specID))
-                    if role=='DAMAGER' and frame.DamagerButton:IsShown() then
-                        frame.DamagerButton.CheckButton:SetChecked(true)
-
-                    elseif role=='TANK' and frame.TankButton:IsShown() then
-                        frame.TankButton.CheckButton:SetChecked(true)
-
-                    elseif role=='HEALER' and frame.HealerButton:IsShown() then
-                        frame.HealerButton.CheckButton:SetChecked(true)
-                    end
-                    LFGListApplicationDialog_UpdateValidState(frame)
-                end
-            end
-            if frame:IsShown() and frame.SignUpButton:IsEnabled() then
-                frame.SignUpButton:Click()
-            end
-        end)
-
-
-        local orderIndexes = {}--https://wago.io/klC4qqHaF
-        if categoryID == 2 and not isAppFinished then--_G["ShowRIORaitingWA1NotShowClasses"] ~= true
-            for i=1, searchResultInfo.numMembers do
-                local role, class = C_LFGList.GetSearchResultMemberInfo(self.resultID, i)
-                local orderIndex = getIndex(LFG_LIST_GROUP_DATA_ROLE_ORDER, role)
-                table.insert(orderIndexes, {orderIndex, class})
-            end
-            table.sort(orderIndexes, function(a,b) return a[1] < b[1] end)
-        end
-        local xOffset = -88
-        for i = 1, 5 do
-            local texture = "tex"..i
-            if orderIndexes[i] then
-                local class = orderIndexes[i][2]
-                local classColor = RAID_CLASS_COLORS[class]
-                local r, g, b= classColor:GetRGBA()
-                if (not self.DataDisplay.Enumerate[texture]) then
-                    self.DataDisplay.Enumerate[texture] = self.DataDisplay.Enumerate:CreateTexture(nil, "OVERLAY")
-                    self.DataDisplay.Enumerate[texture]:SetSize(10, 3)
-                    self.DataDisplay.Enumerate[texture]:SetPoint("RIGHT", self.DataDisplay.Enumerate, "RIGHT", xOffset, -10)
-                end
-                self.DataDisplay.Enumerate[texture]:SetColorTexture(r, g, b, 0.75)
-                self.DataDisplay.Enumerate[texture]:SetShown(true)
-
-            elseif self.DataDisplay.Enumerate[texture] then
-                self.DataDisplay.Enumerate[texture]:SetShown(false)
-            end
-            xOffset = xOffset + 18
-        end
-    end)
-
-    hooksecurefunc('LFGListUtil_SetSearchEntryTooltip', function(tooltip, resultID, autoAcceptOption)
-        local searchResultInfo = C_LFGList.GetSearchResultInfo(resultID)
-        local _, appStatus, pendingStatus = C_LFGList.GetApplicationInfo(resultID)
-        local isAppFinished = LFGListUtil_IsStatusInactive(appStatus) or LFGListUtil_IsStatusInactive(pendingStatus) or searchResultInfo.isDelisted
-        if isAppFinished then
-            return
-        end
-        local tab={}
-        for i=1, searchResultInfo.numMembers do
-            local role, classFile = C_LFGList.GetSearchResultMemberInfo(resultID, i)
-            if classFile then
-                tab[classFile]= tab[classFile] or {num=0, role={}}
-                tab[classFile].num= tab[classFile].num +1
-                table.insert(tab[classFile].role, {role=role, index= role=='TANK' and 1 or role=='HEALER' and 2 or 3})
-            end
-        end
-        tooltip:AddLine(' ')
-        for i=1,  GetNumClasses() do
-            local classInfo = C_CreatureInfo.GetClassInfo(i)
-            if classInfo and classInfo.classFile then
-                local col='|c'..select(4, GetClassColor(classInfo.classFile))
-                local text
-                if tab[classInfo.classFile] then
-                    local num=tab[classInfo.classFile].num
-                    text= ' '..col..num..'|r'
-                    local roleText=' '
-                    table.sort(tab[classInfo.classFile].role, function(a,b) return a.index< b.index end)
-                    for _, role in pairs(tab[classInfo.classFile].role) do
-                        if e.Icon[role.role] then
-                            roleText= roleText..e.Icon[role.role]
-                        end
-                    end
-                    text= text.. roleText
-                end
-                tooltip:AddDoubleLine(e.Class(nil, classInfo.classFile).. (text or ''), col..i)
-            end
-            tooltip:Show()
-        end
-
-    end)
-end
 --#######################
 --设置,内容,频道, 邀请,事件
 --#######################
@@ -725,7 +493,7 @@ local function InitList(self, level, type)
             tooltipTitle= e.onlyChinese and '邀请全部' or CALENDAR_INVITE_ALL,
         }
         UIDropDownMenu_AddButton(info, level)
-        UIDropDownMenu_AddSeparator(level)
+        
 
         --[[info={--转团
             text=e.onlyChinese and '转团' or CONVERT_TO_RAID,
@@ -742,19 +510,6 @@ local function InitList(self, level, type)
             checked= Save.PartyToRaid,
         }
         UIDropDownMenu_AddButton(info, level)]]
-
-
-        info={
-            text= e.onlyChinese and '预创建队伍增强' or SCORE_POWER_UPS:gsub(ITEMS,LFGLIST_NAME),
-            func=function()
-                Save.LFGPlus = not Save.LFGPlus and true or nil
-                print(id, addName, e.GetEnabeleDisable(Save.LFGPlus), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
-            end,
-            checked=Save.LFGPlus,
-            tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and '预创建队伍' or LFGLIST_NAME,
-        }
-        UIDropDownMenu_AddButton(info, level)
 
     elseif type=='InvUnitAll' then--三级列表，已邀请列表
         local n, all=0, 0
@@ -985,7 +740,6 @@ local function Init()
 
     set_event_PLAYER_TARGET_CHANGED()--设置, 邀请目标事件
     set_event_PLAYER_UPDATE_RESTING()--设置, 休息区提示事件
-    set_LFGPlus()--预创建队伍增强
     set_Chanell_Event()--设置,内容,频道, 邀请,事件
 
     --[[LFGListInviteDialog:SetScript("OnHide", function(self)--LFG,,自动接受邀请
