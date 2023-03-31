@@ -1552,5 +1552,5 @@ local regionColor = {--https://wago.io/6-GG3RMcC
     ["bzl"] = {col="|cFF8fce00BZL|r", text='BZL', realm="Brazil"},
 }
 e.Get_Region= function(server)--e.Get_Region(server)--服务器，EU， US {col=, text=, realm=}
-    return Realms[server] and regionColor[Realms[server]]
+    return server and Realms[server] and regionColor[Realms[server]]
 end

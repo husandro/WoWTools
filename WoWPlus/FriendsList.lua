@@ -118,26 +118,31 @@ local function set_FriendsList_Init()--好友列表, 初始化
     Save.Friends[e.Player.name_server]=Save.Friends[e.Player.name_server] or {}
 
     hooksecurefunc('FriendsFrame_UpdateFriendButton', function(button)
+        local m=''
+        local guid
         if button.buttonType == FRIENDS_BUTTON_TYPE_WOW then
             local info = C_FriendList.GetFriendInfoByIndex(button.id)
-            if ( info.connected ) and info.guid then
-                local m=''
-                if info.level and info.level~=MAX_PLAYER_LEVEL then m=m..'|cff00ff00'..info.level ..'|r' end
+            if info and info.connected and info.guid then
+                if info.level and info.level~=MAX_PLAYER_LEVEL then
+                    m=m..'|cff00ff00'..info.level ..'|r'
+                end
                 if info.guid then
                     m=m..e.GetPlayerInfo(nil, info.guid)
-                    if info.area then m=m..info.area end
-                    --if realm and realm~='' then m=m..(info.area and '-' or '')..realm end
-                    button.info:SetText(m)
-
+                    guid=info.guid
+                    if info.area then
+                        m=m..info.area
+                    end
                 end
             end
         elseif button.buttonType == FRIENDS_BUTTON_TYPE_BNET then--2战网                
             local info2 = C_BattleNet.GetFriendAccountInfo(button.id)
-            if not info2 then return end
+            if not info2 or not info2.gameAccountInfo then
+                return
+            end
             local info=info2.gameAccountInfo
-            if not info then return end
-            local m=''
-            if info.characterLevel and info.characterLevel~=MAX_PLAYER_LEVEL  then m=m..'|cff00ff00'..info.characterLevel..'|r' end--等级
+            if info.characterLevel and info.characterLevel~=MAX_PLAYER_LEVEL then--等级
+                m=m..'|cff00ff00'..info.characterLevel..'|r'
+            end
             if info.factionName then--派系
                 if info.factionName=='Alliance' then
                     m=m..'|A:charcreatetest-logo-alliance:0:0|a'
@@ -145,22 +150,34 @@ local function set_FriendsList_Init()--好友列表, 初始化
                     m=m..'|A:charcreatetest-logo-horde:0:0|a'
                 end
             end
-
             if info.playerGuid then
+                guid=info.playerGuid
                 m=e.GetPlayerInfo(nil, info.playerGuid)
-            else
-                if info.raceName then m=m..info.raceName end
+            elseif info.raceName then
+                m=m..info.raceName
             end
-            if info.areaName then
+            if info.areaName then--区域
                 if not info.richPresence or not info.richPresence:find(info.areaName) then
                     m=m..info.areaName
-                    if info.richPresence then m=m..'-' end
+                    if info.richPresence then
+                        m=m..'-'
+                    end
                 end
-            end--区域                
-            if info.richPresence then m=m..info.richPresence:gsub(' %- ','%-') end
-            if m~='' then
-                button.info:SetText(m)
             end
+            if info.richPresence then
+                m=m..info.richPresence:gsub(' %- ','%-')
+            end
+        end
+        if m~='' then
+            if guid then
+                local _, englishClass, _, _, _, _, realm = GetPlayerInfoByGUID(guid)
+                local server= e.Get_Region(realm)--服务器，EU， US {col=, text=, realm=}
+                m= server and server.col..m or m
+                if englishClass then
+                    m= '|c'..select(4, GetClassColor(englishClass))..m..'|r'
+                end
+            end
+            button.info:SetText(m)
         end
     end)
 
