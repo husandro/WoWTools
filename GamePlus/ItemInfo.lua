@@ -104,7 +104,7 @@ local function set_Item_Info(self, tab)
             elseif dateInfo.wow then
                 bottomRightText= e.Icon.wow2
             end
-            if expacID and expacID== e.ExpansionLevel and itemLevel and itemLevel>20 then
+            if classID==3 and expacID and expacID== e.ExpansionLevel and itemLevel and itemLevel>20 then--宝石，等级
                 bottomLeftText= itemLevel
             end
 

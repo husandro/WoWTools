@@ -2247,7 +2247,10 @@
         "NEW_RECIPE_LEARNED_TITLE",
         "UPGRADED_RECIPE_LEARNED_TITLE",
         "TRADESKILL_RECIPE_LEVEL_RECIPE_FORMAT",
-        "LegendaryItemAlertFrame_SetUp"
+        "LegendaryItemAlertFrame_SetUp",
+        "LFGListSearchPanel_UpdateResults",
+        "LFGListApplicationViewer_UpdateResults",
+        "LFG_LIST_GROUP_DATA_ROLE_ORDER"
     ],
     "Lua.diagnostics.disable": [
     ]
