@@ -824,7 +824,7 @@ local function Init()
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
             local server= e.Get_Region(e.Player.server, nil, nil)--服务器，EU， US {col=, text=, realm=}
-            e.tips:AddDoubleLine(e.onlyChinese and '服务器:' or FRIENDS_LIST_REALM, server and server.col)
+            e.tips:AddDoubleLine(e.onlyChinese and '服务器:' or FRIENDS_LIST_REALM, server and server.col..' '..server.realm)
             local ok2
             for k, v in pairs(GetAutoCompleteRealms()) do
                 if v==e.Player.server then
@@ -856,7 +856,8 @@ local function Init()
     end)
     panel.serverText:SetScript("OnLeave",function() e.tips:Hide() end)
     local ser=GetAutoCompleteRealms() or {}
-    panel.serverText:SetText((#ser>1 and #ser..' ' or '')..e.Player.col..e.Player.server..'|r')
+    local server= e.Get_Region(e.Player.server, nil, nil)
+    panel.serverText:SetText((#ser>1 and #ser..' ' or '')..e.Player.col..e.Player.server..'|r'..(server and ' '..server.col or ''))
 
     --#########
     --装备管理框
