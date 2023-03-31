@@ -413,21 +413,20 @@ local function set_LFGPlus()--预创建队伍增强
     end)
 ]]
     local function getIndex(values, val)
-        local index={};
+        local index={}
         for k,v in pairs(values) do
-            index[v]=k;
+            index[v]=k
         end
-        return index[val];
+        return index[val]
     end
     hooksecurefunc("LFGListSearchEntry_Update", function(self)----查询,自定义, 预创建队伍, LFG队长分数, 双击加入 LFGList.lua
         local resultID = self.resultID
         if not C_LFGList.HasSearchResultInfo(resultID) then
-            return;
+            return
 	    end
-        local searchResultInfo = C_LFGList.GetSearchResultInfo(resultID);
-	    --local activityName = C_LFGList.GetActivityFullName(searchResultInfo.activityID, nil, searchResultInfo.isWarMode);
+        local searchResultInfo = C_LFGList.GetSearchResultInfo(resultID)
         local categoryID= LFGListFrame.SearchPanel.categoryID
-        local _, appStatus, pendingStatus = C_LFGList.GetApplicationInfo(resultID);
+        local _, appStatus, pendingStatus = C_LFGList.GetApplicationInfo(resultID)
         local isAppFinished = LFGListUtil_IsStatusInactive(appStatus) or LFGListUtil_IsStatusInactive(pendingStatus) or searchResultInfo.isDelisted
 
         local text, color, autoAccept = '', nil, nil
@@ -443,7 +442,6 @@ local function set_LFGPlus()--预创建队伍增强
                 color= searchResultInfo.isWarMode and color2 or color
             end
             color= color or {r=1,g=1,b=1}
-            
             if searchResultInfo.numBNetFriends and searchResultInfo.numBNetFriends>0 then
                 text= text..' '..e.Icon.wow2..searchResultInfo.numBNetFriends
             end
@@ -510,35 +508,76 @@ local function set_LFGPlus()--预创建队伍增强
         end)
 
 
-        local orderIndexes = {};--https://wago.io/klC4qqHaF
+        local orderIndexes = {}--https://wago.io/klC4qqHaF
         if categoryID == 2 and _G["ShowRIORaitingWA1NotShowClasses"] ~= true and not isAppFinished then
             for i=1, searchResultInfo.numMembers do
                 local role, class = C_LFGList.GetSearchResultMemberInfo(self.resultID, i)
-                local orderIndex = getIndex(LFG_LIST_GROUP_DATA_ROLE_ORDER, role);
-                table.insert(orderIndexes, {orderIndex, class});
+                local orderIndex = getIndex(LFG_LIST_GROUP_DATA_ROLE_ORDER, role)
+                table.insert(orderIndexes, {orderIndex, class})
             end
-            table.sort(orderIndexes, function(a,b) return a[1] < b[1] end);
+            table.sort(orderIndexes, function(a,b) return a[1] < b[1] end)
         end
-        local xOffset = -88;
+        local xOffset = -88
         for i = 1, 5 do
-            local texture = "tex"..i;
+            local texture = "tex"..i
             if orderIndexes[i] then
-                local class = orderIndexes[i][2];
-                local classColor = RAID_CLASS_COLORS[class];
-                local r, g, b= classColor:GetRGBA();
+                local class = orderIndexes[i][2]
+                local classColor = RAID_CLASS_COLORS[class]
+                local r, g, b= classColor:GetRGBA()
                 if (not self.DataDisplay.Enumerate[texture]) then
-                    self.DataDisplay.Enumerate[texture] = self.DataDisplay.Enumerate:CreateTexture(nil, "OVERLAY");
-                    self.DataDisplay.Enumerate[texture]:SetSize(10, 3);
-                    self.DataDisplay.Enumerate[texture]:SetPoint("RIGHT", self.DataDisplay.Enumerate, "RIGHT", xOffset, -10);
+                    self.DataDisplay.Enumerate[texture] = self.DataDisplay.Enumerate:CreateTexture(nil, "OVERLAY")
+                    self.DataDisplay.Enumerate[texture]:SetSize(10, 3)
+                    self.DataDisplay.Enumerate[texture]:SetPoint("RIGHT", self.DataDisplay.Enumerate, "RIGHT", xOffset, -10)
                 end
-                self.DataDisplay.Enumerate[texture]:SetColorTexture(r, g, b, 0.75);
+                self.DataDisplay.Enumerate[texture]:SetColorTexture(r, g, b, 0.75)
                 self.DataDisplay.Enumerate[texture]:SetShown(true)
 
             elseif self.DataDisplay.Enumerate[texture] then
                 self.DataDisplay.Enumerate[texture]:SetShown(false)
             end
-            xOffset = xOffset + 18;
+            xOffset = xOffset + 18
         end
+    end)
+
+    hooksecurefunc('LFGListUtil_SetSearchEntryTooltip', function(tooltip, resultID, autoAcceptOption)
+        local searchResultInfo = C_LFGList.GetSearchResultInfo(resultID)
+        local _, appStatus, pendingStatus = C_LFGList.GetApplicationInfo(resultID)
+        local isAppFinished = LFGListUtil_IsStatusInactive(appStatus) or LFGListUtil_IsStatusInactive(pendingStatus) or searchResultInfo.isDelisted
+        if isAppFinished then
+            return
+        end
+        local tab={}
+        for i=1, searchResultInfo.numMembers do
+            local role, classFile = C_LFGList.GetSearchResultMemberInfo(resultID, i)
+            if classFile then
+                tab[classFile]= tab[classFile] or {num=0, role={}}
+                tab[classFile].num= tab[classFile].num +1
+                table.insert(tab[classFile].role, {role=role, index= role=='TANK' and 1 or role=='HEALER' and 2 or 3})
+            end
+        end
+        tooltip:AddLine(' ')
+        for i=1,  GetNumClasses() do
+            local classInfo = C_CreatureInfo.GetClassInfo(i)
+            if classInfo and classInfo.classFile then
+                local col='|c'..select(4, GetClassColor(classInfo.classFile))
+                local text
+                if tab[classInfo.classFile] then
+                    local num=tab[classInfo.classFile].num
+                    text= ' '..col..num..'|r'
+                    local roleText=' '
+                    table.sort(tab[classInfo.classFile].role, function(a,b) return a.index< b.index end)
+                    for _, role in pairs(tab[classInfo.classFile].role) do
+                        if e.Icon[role.role] then
+                            roleText= roleText..e.Icon[role.role]
+                        end
+                    end
+                    text= text.. roleText
+                end
+                tooltip:AddDoubleLine(e.Class(nil, classInfo.classFile).. (text or ''), col..i)
+            end
+            tooltip:Show()
+        end
+        
     end)
 end
 --#######################
