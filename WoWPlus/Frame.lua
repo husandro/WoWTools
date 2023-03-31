@@ -545,24 +545,24 @@ local function Init_Move()
         end
         frame.moveButton:SetShown(find)
 
-        if frame.ZoomIn and frame.ZoomOut then
+        if frame.ZoomIn then--and frame.ZoomOut then
             frame.ZoomIn:SetShown(find)
-            frame.ZoomOut:SetShown(find)
+            --frame.ZoomOut:SetShown(find)
             --显示, 隐藏, 缩放
             --Blizzard_UIWidgetManager.lua
             hooksecurefunc(frame, 'RemoveWidget', function(self, widgetID)
-                if self.ZoomIn and self.ZoomOut then
+                if self.ZoomIn then--and self.ZoomOut then
                     self.ZoomIn:SetShown(false)
-                    self.ZoomOut:SetShown(false)
+                    --self.ZoomOut:SetShown(false)
                 end
                 if self.moveButton then
                     self.moveButton:SetShown(false)
                 end
             end)
             hooksecurefunc(frame, 'CreateWidget', function(self)
-                if self.ZoomIn and self.ZoomOut then
+                if self.ZoomIn then--and self.ZoomOut then
                     self.ZoomIn:SetShown(true)
-                    self.ZoomOut:SetShown(true)
+                    --self.ZoomOut:SetShown(true)
                 end
                 if self.moveButton then
                     self.moveButton:SetShown(true)
