@@ -6,7 +6,7 @@ e.tips=GameTooltip
 local function GetWeek()--周数
     local d = date("*t")
     local cd=3
-    if  GetCurrentRegion()==5 then
+    if GetCurrentRegion()==5 then
         cd=4
     end
     for d3=1,15 do
@@ -168,7 +168,8 @@ e.Player={
     g= gPerc,
     b= bPerc,
     col= '|c'..argbHex,
-    zh= LOCALE_zhCN or LOCALE_zhTW,--GetLocale()== ("zhCN" or 'zhTW'),
+    --zh= LOCALE_zhCN or LOCALE_zhTW,--GetLocale()== ("zhCN" or 'zhTW'),
+    cn= GetCurrentRegion()==5,
     Lo= GetLocale(),
     week= GetWeek(),--周数
     guid= UnitGUID('player'),

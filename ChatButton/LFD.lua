@@ -1012,7 +1012,7 @@ local function Init()
                 if playerFrame.itemIdx and isWinner then
                     local itemLink = select(2, C_LootHistory.GetItem(playerFrame.itemIdx))
                     if itemLink then
-                        playerFrame.itemText = itemLink..(e.Player.zh and ' '..NEED..', '..VOICEMACRO_16_Dw_0 or ' need, please!')
+                        playerFrame.itemText = itemLink..(e.Player.cn and ' '..NEED..', '..VOICEMACRO_16_Dw_0 or ' need, please!')
                     end
                 end
                 playerFrame:EnableMouse(true)

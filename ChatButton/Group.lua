@@ -2,7 +2,7 @@ local id, e = ...
 local addName= 'ChatButtonGroup'
 local Save={
     mouseUP= SUMMON ..' '..COMBATLOG_FILTER_STRING_ME,
-    mouseDown= e.Player.zh and '1' or 'inv, thx' ,
+    mouseDown= e.Player.cn and '1' or 'inv, thx' ,
 }
 local button
 

@@ -14,7 +14,7 @@ local Save={
         ['成就']=true,
     },
     groupWelcome= true,--欢迎
-    groupWelcomeText= e.Player.zh and EMOTE103_CMD1:gsub('/','') or 'Hi{rt1}',
+    groupWelcomeText= e.Player.cn and EMOTE103_CMD1:gsub('/','') or 'Hi{rt1}',
     guildWelcome= true,
     --guildWelcomeText='',
     welcomeOnlyHomeGroup=true,--仅限, 手动组队

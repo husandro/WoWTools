@@ -1,6 +1,9 @@
 local id, e = ...
 local addName= 'Emoji'
-local Save={Channels={}, disabled= not e.Player.zh and not e.Player.husandro }
+local Save={
+    Channels={},
+    disabled= not e.Player.cn and not e.Player.husandro,
+ }
 local button
 
 local frame--控制图标,显示,隐藏

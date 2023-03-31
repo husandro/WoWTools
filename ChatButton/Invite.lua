@@ -6,7 +6,7 @@ local Save={InvNoFriend={},
             InvNoFriendNum=0,--拒绝, 次数
             restingTips=true,--休息区提示
             LFGPlus= true,--预创建队伍增强
-            ChannelText=e.Player.zh and '1' or 'inv',--频道, 邀请, 事件,内容
+            ChannelText=e.Player.cn and '1' or 'inv',--频道, 邀请, 事件,内容
             Summon= true,--接受, 召唤
 }
 local InvPlateGuid={}
@@ -483,7 +483,7 @@ local function InitList(self, level, type)
         button1= e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/',''),
         button2=CANCEL,
         OnShow = function(self2, data)
-            self2.editBox:SetText(Save.ChannelText or (e.Player.zh and '1' or 'inv'))
+            self2.editBox:SetText(Save.ChannelText or (e.Player.cn and '1' or 'inv'))
             --self.button3:SetEnabled(Save.Mounts[FLOOR][data.spellID] and true or false)
         end,
         OnAccept = function(self2, data)
