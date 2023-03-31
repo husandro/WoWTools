@@ -457,7 +457,7 @@ local function set_LFGPlus()--预创建队伍增强
         end
         if text~='' and not self.scorsoText then
             self.scorsoText= e.Cstr(self)
-            self.scorsoText:SetPoint('BOTTOMLEFT', self.DataDisplay.Enumerate,0,-7)
+            self.scorsoText:SetPoint('TOPLEFT', self.DataDisplay.Enumerate,0,7)
         end
         if self.scorsoText then
             self.scorsoText:SetText(text)
@@ -529,7 +529,7 @@ local function set_LFGPlus()--预创建队伍增强
                 if (not self.DataDisplay.Enumerate[texture]) then
                     self.DataDisplay.Enumerate[texture] = self.DataDisplay.Enumerate:CreateTexture(nil, "OVERLAY");
                     self.DataDisplay.Enumerate[texture]:SetSize(10, 3);
-                    self.DataDisplay.Enumerate[texture]:SetPoint("RIGHT", self.DataDisplay.Enumerate, "RIGHT", xOffset, 12);
+                    self.DataDisplay.Enumerate[texture]:SetPoint("RIGHT", self.DataDisplay.Enumerate, "RIGHT", xOffset, -10);
                 end
                 self.DataDisplay.Enumerate[texture]:SetColorTexture(r, g, b, 0.75);
                 self.DataDisplay.Enumerate[texture]:SetShown(true)
