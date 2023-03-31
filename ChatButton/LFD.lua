@@ -605,7 +605,7 @@ local function set_LFGPlus()--预创建队伍增强
         if realm and not self.realmText then
             self.realmText= e.Cstr(self)
             --self.realmText:SetPoint('BOTTOMLEFT', self, 0, -2)
-            self.realmText:SetPoint('BOTTOMLEFT', self.DataDisplay.Enumerate,0,-3)
+            self.realmText:SetPoint('BOTTOMRIGHT', self.DataDisplay.Enumerate,0,-3)
             self.realmText:EnableMouse(true)
             self.realmText:SetScript('OnEnter', function(self2)
                 if self2.realm then
