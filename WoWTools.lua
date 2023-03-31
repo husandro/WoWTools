@@ -1551,6 +1551,9 @@ local regionColor = {--https://wago.io/6-GG3RMcC
     ["mex"] = {col="|cFFCCCCFFMEX|r", text='MEX', realm="Mexico"},
     ["bzl"] = {col="|cFF8fce00BZL|r", text='BZL', realm="Brazil"},
 }
-e.Get_Region= function(server)--e.Get_Region(server)--服务器，EU， US {col=, text=, realm=}
+e.Get_Region= function(server, guid, unit)--e.Get_Region(server, guid, unit)--服务器，EU， US {col=, text=, realm=}
+    server= server
+            or (unit and ((select(2, UnitName(unit)) or e.Player.server)))
+            or (guid and select(7, GetPlayerInfoByGUID(guid)))
     return server and Realms[server] and regionColor[Realms[server]]
 end

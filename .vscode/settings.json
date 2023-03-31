@@ -2503,7 +2503,8 @@
         "GetQuestLogRewardCurrencyInfo",
         "GetQuestLogRewardMoney",
         "QuestPOIGetIconInfo",
-        "MapUtil"
+        "MapUtil",
+        "GetRealmID"
     ],
     "Lua.diagnostics.disable": [
     ]

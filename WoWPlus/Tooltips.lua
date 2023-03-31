@@ -698,7 +698,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                             end
                         end
                     else
-                        line:SetShown(true)
+                        line:SetShown(false)
                     end
                 else
                     --[[if allNum==i and isSelf and WoWDate[e.Player.guid] and WoWDate[e.Player.guid].Keystone then--挑战分数

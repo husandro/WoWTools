@@ -785,6 +785,8 @@ local function set_InspectPaperDollFrame_SetLevel()--目标,天赋 装等
         if info.col then
             text= info.col..text..'|r'
         end
+        local server= e.Get_Region(nil, guid, unit)--服务器，EU， US {col=, text=, realm=}
+        text= server and server.col..text or text
         InspectLevelText:SetText(text)
         InspectFrameTitleText:SetTextColor(info.r or 1, info.g or 1, info.b or 1)
     end
@@ -825,7 +827,7 @@ local function Init()
             local ok2
             for k, v in pairs(GetAutoCompleteRealms()) do
                 if v==e.Player.server then
-                    e.tips:AddDoubleLine(v, k, 0,1,0)
+                    e.tips:AddDoubleLine(v..e.Icon.star2, k, 0,1,0)
                 else
                     e.tips:AddDoubleLine(v, k)
                 end
@@ -834,6 +836,11 @@ local function Init()
             if not ok2 then
                 e.tips:AddDoubleLine(e.onlyChinese and '唯一' or ITEM_UNIQUE, e.Player.server)
             end
+
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine('realmID', GetRealmID())
+            e.tips:AddDoubleLine('regionID: '..GetCurrentRegion(),  GetCurrentRegionName())
+
             e.tips:AddLine(' ')
             if GameLimitedMode_IsActive() then
                 local rLevel, rMoney, profCap = GetRestrictedAccountData()
