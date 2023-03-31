@@ -590,7 +590,8 @@ local function setUnitInfo(self, unit)--设置单位提示信息
         end
 
         realm= realm or e.Player.server--服务器
-        self.textRight:SetText(col..realm..'|r'..((not isSelf and (e.Player.servers[realm] or realm==e.Player.server)) and e.Icon.select2 or ''))
+        local region= e.Get_Region(realm)--服务器，EU， US
+        self.textRight:SetText((region and region..' ' or '')..col..realm..'|r'..((not isSelf and (e.Player.servers[realm] or realm==e.Player.server)) and e.Icon.select2 or ''))
 
        --[[ local text=line:GetText()
         if text then

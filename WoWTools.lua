@@ -170,6 +170,7 @@ e.Player={
     col= '|c'..argbHex,
     --zh= LOCALE_zhCN or LOCALE_zhTW,--GetLocale()== ("zhCN" or 'zhTW'),
     cn= GetCurrentRegion()==5,
+    region=GetCurrentRegion(),--1US (includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
     Lo= GetLocale(),
     week= GetWeek(),--周数
     guid= UnitGUID('player'),
@@ -1041,7 +1042,7 @@ e.GetTooltipData= function(tab)
         wow=false,
         text={},
     }
-    if tooltipData and tooltipData.lines then        
+    if tooltipData and tooltipData.lines then
         local numText= tab.text and #tab.text or 0
         local find= numText>0 or tab.wow
         local numFind=0
@@ -1407,4 +1408,153 @@ e.Set_HelpTips= function(tab)--e.Set_HelpTips({frame=, topoint=, point='left', s
     if tab.frame.HelpTips and not tab.frame.HelpTips.onlyOne then
         tab.frame.HelpTips:SetShown(tab.show)
     end
+end
+
+local Realms={}
+local regionColor = {--https://wago.io/6-GG3RMcC
+    ["deDE"] = "|cFF00FF00DE|r",
+    ["frFR"] = "|cFF00FFFFFR|r",
+    ["enGB"] = "|cFFFF00FFGB|r",
+    ["itIT"] = "|cFFFFFF00IT|r",
+    ["esES"] = "|cFFFFBF00ES|r",
+    ["ruRU"] = "|cFFCCCCFFRU|r",
+    ["ptBR"] = "|cFF8fce00PT|r",
+    ["oce"] = "|cFF00FF00OCE|r",
+    ["usp"] = "|cFF00FFFFUSP|r",
+    ["usm"] = "|cFFFF00FFUSM|r",
+    ["usc"] = "|cFFFFFF00USC|r",
+    ["use"] = "|cFFFFBF00USE|r",
+    ["mex"] = "|cFFCCCCFFMEX|r",
+    ["bzl"] = "|cFF8fce00BZL|r"
+}
+if e.Player.region==3 then--EU 
+    Realms = {--3 EU
+        ["Aegwynn"]= regionColor["deDE"], ["Alexstrasza"]= regionColor["deDE"], ["Alleria"]= regionColor["deDE"], ["Aman’Thul"]= regionColor["deDE"], ["Aman'Thul"]= regionColor["deDE"], ["Ambossar"]= regionColor["deDE"],
+        ["Anetheron"]= regionColor["deDE"], ["Antonidas"]= regionColor["deDE"], ["Anub'arak"]= regionColor["deDE"], ["Area52"]= regionColor["deDE"], ["Arthas"]= regionColor["deDE"],
+        ["Arygos"]= regionColor["deDE"], ["Azshara"]= regionColor["deDE"], ["Baelgun"]= regionColor["deDE"], ["Blackhand"]= regionColor["deDE"], ["Blackmoore"]= regionColor["deDE"],
+        ["Blackrock"]= regionColor["deDE"], ["Blutkessel"]= regionColor["deDE"], ["Dalvengyr"]= regionColor["deDE"], ["DasKonsortium"]= regionColor["deDE"],
+        ["DasSyndikat"]= regionColor["deDE"], ["DerMithrilorden"]= regionColor["deDE"], ["DerRatvonDalaran"]= regionColor["deDE"],
+        ["DerAbyssischeRat"]= regionColor["deDE"], ["Destromath"]= regionColor["deDE"], ["Dethecus"]= regionColor["deDE"], ["DieAldor"]= regionColor["deDE"],
+        ["DieArguswacht"]= regionColor["deDE"], ["DieNachtwache"]= regionColor["deDE"], ["DieSilberneHand"]= regionColor["deDE"], ["DieTodeskrallen"]= regionColor["deDE"],
+        ["DieewigeWacht"]= regionColor["deDE"], ["DunMorogh"]= regionColor["deDE"], ["Durotan"]= regionColor["deDE"], ["Echsenkessel"]= regionColor["deDE"], ["Eredar"]= regionColor["deDE"],
+        ["FestungderStürme"]= regionColor["deDE"], ["Forscherliga"]= regionColor["deDE"], ["Frostmourne"]= regionColor["deDE"], ["Frostwolf"]= regionColor["deDE"],
+        ["Garrosh"]= regionColor["deDE"], ["Gilneas"]= regionColor["deDE"], ["Gorgonnash"]= regionColor["deDE"], ["Gul'dan"]= regionColor["deDE"], ["Kargath"]= regionColor["deDE"], ["Kel'Thuzad"]= regionColor["deDE"],
+        ["Khaz'goroth"]= regionColor["deDE"], ["Kil'jaeden"]= regionColor["deDE"], ["Krag'jin"]= regionColor["deDE"], ["KultderVerdammten"]= regionColor["deDE"], ["Lordaeron"]= regionColor["deDE"],
+        ["Lothar"]= regionColor["deDE"], ["Madmortem"]= regionColor["deDE"], ["Mal'Ganis"]= regionColor["deDE"], ["Malfurion"]= regionColor["deDE"], ["Malorne"]= regionColor["deDE"], ["Malygos"]= regionColor["deDE"], ["Mannoroth"]= regionColor["deDE"],
+        ["Mug'thol"]= regionColor["deDE"], ["Nathrezim"]= regionColor["deDE"], ["Nazjatar"]= regionColor["deDE"], ["Nefarian"]= regionColor["deDE"], ["Nera'thor"]= regionColor["deDE"], ["Nethersturm"]= regionColor["deDE"],
+        ["Norgannon"]= regionColor["deDE"], ["Nozdormu"]= regionColor["deDE"], ["Onyxia"]= regionColor["deDE"], ["Perenolde"]= regionColor["deDE"], ["Proudmoore"]= regionColor["deDE"], ["Rajaxx"]= regionColor["deDE"], ["Rexxar"]= regionColor["deDE"],
+        ["Sen'jin"]= regionColor["deDE"], ["Shattrath"]= regionColor["deDE"], ["Taerar"]= regionColor["deDE"], ["Teldrassil"]= regionColor["deDE"], ["Terrordar"]= regionColor["deDE"], ["Theradras"]= regionColor["deDE"], ["Thrall"]= regionColor["deDE"],
+        ["Tichondrius"]= regionColor["deDE"], ["Tirion"]= regionColor["deDE"], ["Todeswache"]= regionColor["deDE"], ["Ulduar"]= regionColor["deDE"], ["Un'Goro"]= regionColor["deDE"], ["Vek'lor"]= regionColor["deDE"], ["Wrathbringer"]= regionColor["deDE"],
+        ["Ysera"]= regionColor["deDE"], ["ZirkeldesCenarius"]= regionColor["deDE"], ["Zuluhed"]=regionColor["deDE"],
+
+        ["Arakarahm"]=regionColor["frFR"], ["Arathi"]=regionColor["frFR"], ["Archimonde"]=regionColor["frFR"], ["Chantséternels"]=regionColor["frFR"], ["Cho’gall"]=regionColor["frFR"], ["Cho'gall"]=regionColor["frFR"],
+        ["ConfrérieduThorium"]=regionColor["frFR"], ["ConseildesOmbres"]=regionColor["frFR"], ["Dalaran"]=regionColor["frFR"], ["Drek’Thar"]=regionColor["frFR"], ["Drek'Thar"]=regionColor["frFR"],
+        ["Eitrigg"]=regionColor["frFR"], ["Eldre’Thalas"]=regionColor["frFR"], ["Eldre'Thalas"]=regionColor["frFR"], ["Elune"]=regionColor["frFR"], ["Garona"]=regionColor["frFR"], ["Hyjal"]=regionColor["frFR"], ["Illidan"]=regionColor["frFR"],
+        ["Kael’thas"]=regionColor["frFR"], ["Kael'thas"]=regionColor["frFR"], ["KhazModan"]=regionColor["frFR"], ["KirinTor"]=regionColor["frFR"], ["Krasus"]=regionColor["frFR"], ["LaCroisadeécarlate"]=regionColor["frFR"],
+        ["LesClairvoyants"]=regionColor["frFR"], ["LesSentinelles"]=regionColor["frFR"], ["MarécagedeZangar"]=regionColor["frFR"], ["Medivh"]=regionColor["frFR"], ["Naxxramas"]=regionColor["frFR"],
+        ["Ner’zhul"]=regionColor["frFR"], ["Ner'zhul"]=regionColor["frFR"], ["Rashgarroth"]=regionColor["frFR"], ["Sargeras"]=regionColor["frFR"], ["Sinstralis"]=regionColor["frFR"], ["Suramar"]=regionColor["frFR"],
+        ["Templenoir"]=regionColor["frFR"], ["Throk’Feroth"]=regionColor["frFR"], ["Throk'Feroth"]=regionColor["frFR"], ["Uldaman"]=regionColor["frFR"], ["Varimathras"]=regionColor["frFR"], ["Vol’jin"]=regionColor["frFR"],
+        ["Vol'jin"]=regionColor["frFR"], ["Ysondre"]=regionColor["frFR"],
+
+        ["AeriePeak"]=regionColor["enGB"], ["Agamaggan"]=regionColor["enGB"], ["Aggramar"]=regionColor["enGB"], ["Ahn'Qiraj"]=regionColor["enGB"], ["Al'Akir"]=regionColor["enGB"], ["Alonsus"]=regionColor["enGB"], ["Anachronos"]=regionColor["enGB"],
+        ["Arathor"]=regionColor["enGB"], ["ArenaPass"]=regionColor["enGB"], ["ArenaPass1"]=regionColor["enGB"], ["ArgentDawn"]=regionColor["enGB"], ["Aszune"]=regionColor["enGB"], ["Auchindoun"]=regionColor["enGB"], ["AzjolNerub"]=regionColor["enGB"],
+        ["Azuremyst"]=regionColor["enGB"], ["Balnazzar"]=regionColor["enGB"], ["Blade'sEdge"]=regionColor["enGB"], ["Bladefist"]=regionColor["enGB"], ["Bloodfeather"]=regionColor["enGB"], ["Bloodhoof"]=regionColor["enGB"], ["Bloodscalp"]=regionColor["enGB"],
+        ["Boulderfist"]=regionColor["enGB"], ["BronzeDragonflight"]=regionColor["enGB"], ["Bronzebeard"]=regionColor["enGB"], ["BurningBlade"]=regionColor["enGB"], ["BurningLegion"]=regionColor["enGB"], ["BurningSteppes"]=regionColor["enGB"],
+        ["C'Thun"]=regionColor["enGB"], ["ChamberofAspects"]=regionColor["enGB"], ["Chromaggus"]=regionColor["enGB"], ["ColinasPardas"]=regionColor["enGB"], ["Crushridge"]=regionColor["enGB"], ["CultedelaRivenoire"]=regionColor["enGB"],
+        ["Daggerspine"]=regionColor["enGB"], ["DarkmoonFaire"]=regionColor["enGB"], ["Darksorrow"]=regionColor["enGB"], ["Darkspear"]=regionColor["enGB"], ["Deathwing"]=regionColor["enGB"], ["DefiasBrotherhood"]=regionColor["enGB"],
+        ["Dentarg"]=regionColor["enGB"], ["Doomhammer"]=regionColor["enGB"], ["Draenor"]=regionColor["enGB"], ["Dragonblight"]=regionColor["enGB"], ["Dragonmaw"]=regionColor["enGB"], ["Drak'thul"]=regionColor["enGB"], ["Dunemaul"]=regionColor["enGB"],
+        ["EarthenRing"]=regionColor["enGB"], ["EmeraldDream"]=regionColor["enGB"], ["Emeriss"]=regionColor["enGB"], ["Eonar"]=regionColor["enGB"], ["Executus"]=regionColor["enGB"], ["Frostmane"]=regionColor["enGB"], ["Frostwhisper"]=regionColor["enGB"],
+        ["Genjuros"]=regionColor["enGB"], ["Ghostlands"]=regionColor["enGB"], ["GrimBatol"]=regionColor["enGB"], ["Hakkar"]=regionColor["enGB"], ["Haomarush"]=regionColor["enGB"], ["Hellfire"]=regionColor["enGB"], ["Hellscream"]=regionColor["enGB"],
+        ["Jaedenar"]=regionColor["enGB"], ["Karazhan"]=regionColor["enGB"], ["Kazzak"]=regionColor["enGB"], ["Khadgar"]=regionColor["enGB"], ["Kilrogg"]=regionColor["enGB"], ["Kor'gall"]=regionColor["enGB"], ["KulTiras"]=regionColor["enGB"], ["LaughingSkull"]=regionColor["enGB"],
+        ["Lightbringer"]=regionColor["enGB"], ["Lightning'sBlade"]=regionColor["enGB"], ["Magtheridon"]=regionColor["enGB"], ["Mazrigos"]=regionColor["enGB"], ["Moonglade"]=regionColor["enGB"], ["Nagrand"]=regionColor["enGB"],
+        ["Neptulon"]=regionColor["enGB"] , ["Nordrassil"]=regionColor["enGB"], ["Outland"]=regionColor["enGB"], ["Quel'Thalas"]=regionColor["enGB"], ["Ragnaros"]=regionColor["enGB"], ["Ravencrest"]=regionColor["enGB"], ["Ravenholdt"]=regionColor["enGB"],
+        ["Runetotem"]=regionColor["enGB"], ["Saurfang"]=regionColor["enGB"], ["ScarshieldLegion"]=regionColor["enGB"], ["Shadowsong"]=regionColor["enGB"], ["ShatteredHalls"]=regionColor["enGB"], ["ShatteredHand"]=regionColor["enGB"],
+        ["Silvermoon"]=regionColor["enGB"], ["Skullcrusher"]=regionColor["enGB"], ["Spinebreaker"]=regionColor["enGB"], ["Sporeggar"]=regionColor["enGB"], ["SteamwheedleCartel"]=regionColor["enGB"], ["Stormrage"]=regionColor["enGB"],
+        ["Stormreaver"]=regionColor["enGB"], ["Stormscale"]=regionColor["enGB"], ["Sunstrider"]=regionColor["enGB"], ["Sylvanas"]=regionColor["enGB"], ["Talnivarr"]=regionColor["enGB"], ["TarrenMill"]=regionColor["enGB"], ["Terenas"]=regionColor["enGB"],
+        ["Terokkar"]=regionColor["enGB"], ["TheMaelstrom"]=regionColor["enGB"], ["TheSha'tar"]=regionColor["enGB"], ["TheVentureCo"]=regionColor["enGB"], ["Thunderhorn"]=regionColor["enGB"], ["Trollbane"]=regionColor["enGB"], ["Turalyon"]=regionColor["enGB"],
+        ["Twilight'sHammer"]=regionColor["enGB"], ["TwistingNether"]=regionColor["enGB"], ["Vashj"]=regionColor["enGB"], ["Vek'nilash"]=regionColor["enGB"], ["Wildhammer"]=regionColor["enGB"], ["Xavius"]=regionColor["enGB"], ["Zenedar"]=regionColor["enGB"],
+
+        ["Nemesis"]=regionColor["itIT"], ["Pozzodell'Eternità"]=regionColor["itIT"],
+
+        ["DunModr"]=regionColor["esES"], ["EuskalEncounter"]=regionColor["esES"], ["Exodar"]=regionColor["esES"], ["LosErrantes"]=regionColor["esES"],
+        ["Minahonda"]=regionColor["esES"], ["Sanguino"]=regionColor["esES"], ["Shen'dralar"]=regionColor["esES"],
+        ["Tyrande"]=regionColor["esES"], ["Uldum"]=regionColor["esES"], ["Zul'jin"]=regionColor["esES"],
+
+        ["Азурегос"]=regionColor["ruRU"], ["Борейскаятундра"]=regionColor["ruRU"], ["ВечнаяПесня"]=regionColor["ruRU"], ["Галакронд"]=regionColor["ruRU"], ["Голдринн"]=regionColor["ruRU"],
+        ["Гордунни"]=regionColor["ruRU"], ["Гром"]=regionColor["ruRU"], ["Дракономор"]=regionColor["ruRU"], ["Корольлич"]=regionColor["ruRU"], ["Пиратскаябухта"]=regionColor["ruRU"], ["Подземье"]=regionColor["ruRU"], ["ПропускнаАрену1"]=regionColor["ruRU"],
+        ["Разувий"]=regionColor["ruRU"], ["Ревущийфьорд"]=regionColor["ruRU"], ["СвежевательДуш"]=regionColor["ruRU"], ["Седогрив"]=regionColor["ruRU"], ["СтражСмерти"]=regionColor["ruRU"], ["Термоштепсель"]=regionColor["ruRU"],
+        ["ТкачСмерти"]=regionColor["ruRU"], ["ЧерныйШрам"]=regionColor["ruRU"], ["Ясеневыйлес"]=regionColor["ruRU"],
+
+        ["Aggra(Português)"]=regionColor["ptBR"],
+    }
+
+elseif e.Player.region==1 then
+    Realms = {--1 US
+        ["Aman'Thul"]=regionColor["oce"], ["Barthilas"]=regionColor["oce"], ["Caelestrasz"]=regionColor["oce"], ["Dath'Remar"]=regionColor["oce"], ["Dreadmaul"]=regionColor["oce"],
+        ["Frostmourne"]=regionColor["oce"], ["Gundrak"]=regionColor["oce"], ["Jubei'Thos"]=regionColor["oce"], ["Khaz'goroth"]=regionColor["oce"], ["Nagrand"]=regionColor["oce"],
+        ["Saurfang"]=regionColor["oce"], ["Thaurissan"]=regionColor["oce"],
+
+        ["Aerie Peak"]=regionColor["usp"], ["Anvilmar"]=regionColor["usp"], ["Arathor"]=regionColor["usp"], ["Antonidas"]=regionColor["usp"], ["Azuremyst"]=regionColor["usp"],
+        ["Baelgun"]=regionColor["usp"], ["Blade's Edge"]=regionColor["usp"], ["Bladefist"]=regionColor["usp"], ["Bronzebeard"]=regionColor["usp"], ["Cenarius"]=regionColor["usp"],
+        ["Darrowmere"]=regionColor["usp"], ["Draenor"]=regionColor["usp"], ["Dragonblight"]=regionColor["usp"], ["Echo Isles"]=regionColor["usp"], ["Galakrond"]=regionColor["usp"],
+        ["Gnomeregan"]=regionColor["usp"], ["Hyjal"]=regionColor["usp"], ["Kilrogg"]=regionColor["usp"], ["Korialstrasz"]=regionColor["usp"], ["Lightbringer"]=regionColor["usp"],
+        ["Misha"]=regionColor["usp"], ["Moonrunner"]=regionColor["usp"], ["Nordrassil"]=regionColor["usp"], ["Proudmoore"]=regionColor["usp"], ["Shadowsong"]=regionColor["usp"],
+        ["Shu'Halo"]=regionColor["usp"], ["Silvermoon"]=regionColor["usp"], ["Skywall"]=regionColor["usp"], ["Suramar"]=regionColor["usp"], ["Uldum"]=regionColor["usp"], ["Uther"]=regionColor["usp"],
+        ["Velen"]=regionColor["usp"], ["Windrunner"]=regionColor["usp"], ["Blackrock"]=regionColor["usp"], ["Blackwing Lair"]=regionColor["usp"], ["Bonechewer"]=regionColor["usp"],
+        ["Boulderfist"]=regionColor["usp"], ["Coilfang"]=regionColor["usp"], ["Crushridge"]=regionColor["usp"], ["Daggerspine"]=regionColor["usp"], ["Dark Iron"]=regionColor["usp"],
+        ["Destromath"]=regionColor["usp"], ["Dethecus"]=regionColor["usp"], ["Dragonmaw"]=regionColor["usp"], ["Dunemaul"]=regionColor["usp"], ["Frostwolf"]=regionColor["usp"],
+        ["Gorgonnash"]=regionColor["usp"], ["Gurubashi"]=regionColor["usp"], ["Kalecgos"]=regionColor["usp"], ["Kil'Jaeden"]=regionColor["usp"], ["Lethon"]=regionColor["usp"], ["Maiev"]=regionColor["usp"],
+        ["Nazjatar"]=regionColor["usp"], ["Ner'zhul"]=regionColor["usp"], ["Onyxia"]=regionColor["usp"], ["Rivendare"]=regionColor["usp"], ["Shattered Halls"]=regionColor["usp"],
+        ["Spinebreaker"]=regionColor["usp"], ["Spirestone"]=regionColor["usp"], ["Stonemaul"]=regionColor["usp"], ["Stormscale"]=regionColor["usp"], ["Tichondrius"]=regionColor["usp"],
+        ["Ursin"]=regionColor["usp"], ["Vashj"]=regionColor["usp"], ["Blackwater Raiders"]=regionColor["usp"], ["Cenarion Circle"]=regionColor["usp"],
+        ["Feathermoon"]=regionColor["usp"], ["Sentinels"]=regionColor["usp"], ["Silver Hand"]=regionColor["usp"], ["The Scryers"]=regionColor["usp"],
+        ["Wyrmrest Accord"]=regionColor["usp"], ["The Venture Co"]=regionColor["usp"],
+
+
+        ["Azjol-Nerub"]=regionColor["usm"], ["AzjolNerub"]=regionColor["usm"], ["Doomhammer"]=regionColor["usm"], ["Icecrown"]=regionColor["usm"], ["Perenolde"]=regionColor["usm"],
+        ["Terenas"]=regionColor["usm"], ["Zangarmarsh"]=regionColor["usm"], ["Kel'Thuzad"]=regionColor["usm"], ["Darkspear"]=regionColor["usm"], ["Deathwing"]=regionColor["usm"],
+        ["Bloodscalp"]=regionColor["usm"], ["Nathrezim"]=regionColor["usm"], ["Shadow Council"]=regionColor["usm"],
+
+
+        ["Aegwynn"]=regionColor["usc"], ["Agamaggan"]=regionColor["usc"], ["Aggramar"]=regionColor["usc"], ["Akama"]=regionColor["usc"], ["Alexstrasza"]=regionColor["usc"], ["Alleria"]=regionColor["usc"],
+        ["Archimonde"]=regionColor["usc"], ["Azgalor"]=regionColor["usc"], ["Azshara"]=regionColor["usc"], ["Balnazzar"]=regionColor["usc"], ["Blackhand"]=regionColor["usc"],
+        ["Blood Furnace"]=regionColor["usc"], ["Borean Tundra"]=regionColor["usc"], ["Burning Legion"]=regionColor["usc"], ["Cairne"]=regionColor["usc"],
+        ["Cho'gall"]=regionColor["usc"], ["Chromaggus"]=regionColor["usc"], ["Dawnbringer"]=regionColor["usc"], ["Dentarg"]=regionColor["usc"], ["Detheroc"]=regionColor["usc"],
+        ["Drak'tharon"]=regionColor["usc"], ["Drak'thul"]=regionColor["usc"], ["Draka"]=regionColor["usc"], ["Eitrigg"]=regionColor["usc"], ["Emerald Dream"]=regionColor["usc"],
+        ["Farstriders"]=regionColor["usc"], ["Fizzcrank"]=regionColor["usc"], ["Frostmane"]=regionColor["usc"], ["Garithos"]=regionColor["usc"], ["Garona"]=regionColor["usc"],
+        ["Ghostlands"]=regionColor["usc"], ["Greymane"]=regionColor["usc"], ["Gul'dan"]=regionColor["usc"], ["Hakkar"]=regionColor["usc"],
+        ["Hellscream"]=regionColor["usc"], ["Hydraxis"]=regionColor["usc"], ["Illidan"]=regionColor["usc"], ["Kael'thas"]=regionColor["usc"], ["Khaz Modan"]=regionColor["usc"],
+        ["Kirin Tor"]=regionColor["usc"], ["Korgath"]=regionColor["usc"], ["Kul Tiras"]=regionColor["usc"], ["Laughing Skull"]=regionColor["usc"], ["Lightninghoof"]=regionColor["usc"],
+        ["Madoran"]=regionColor["usc"], ["Maelstrom"]=regionColor["usc"], ["Mal'Ganis"]=regionColor["usc"], ["Malfurion"]=regionColor["usc"], ["Malorne"]=regionColor["usc"], ["Malygos"]=regionColor["usc"],
+        ["Mok'Nathal"]=regionColor["usc"], ["Moon Guard"]=regionColor["usc"], ["Mug'thol"]=regionColor["usc"], ["Muradin"]=regionColor["usc"], ["Nesingwary"]=regionColor["usc"],
+        ["Quel'Dorei"]=regionColor["usc"], ["Ravencrest"]=regionColor["usc"], ["Rexxar"]=regionColor["usc"], ["Runetotem"]=regionColor["usc"], ["Sargeras"]=regionColor["usc"],
+        ["Scarlet Crusade"]=regionColor["usc"], ["Sen'Jin"]=regionColor["usc"], ["Sisters of Elune"]=regionColor["usc"], ["Staghelm"]=regionColor["usc"],
+        ["Stormreaver"]=regionColor["usc"], ["Terokkar"]=regionColor["usc"], ["The Underbog"]=regionColor["usc"], ["Thorium Brotherhood"]=regionColor["usc"],
+        ["Thunderhorn"]=regionColor["usc"], ["Thunderlord"]=regionColor["usc"], ["Twisting Nether"]=regionColor["usc"], ["Vek'nilash"]=regionColor["usc"],
+        ["Whisperwind"]=regionColor["usc"], ["Wildhammer"]=regionColor["usc"], ["Winterhoof"]=regionColor["usc"],
+
+
+        ["Altar of Storms"]=regionColor["use"], ["Alterac Mountains"]=regionColor["use"], ["Andorhal"]=regionColor["use"], ["Anetheron"]=regionColor["use"],
+        ["Anub'arak"]=regionColor["use"], ["Area 52"]=regionColor["use"], ["Argent Dawn"]=regionColor["use"], ["Arthas"]=regionColor["use"], ["Arygos"]=regionColor["use"], ["Auchindoun"]=regionColor["use"],
+        ["Black Dragonflight"]=regionColor["use"], ["Bleeding Hollow"]=regionColor["use"], ["Bloodhoof"]=regionColor["use"], ["Burning Blade"]=regionColor["use"],
+        ["Dalaran"]=regionColor["use"], ["Dalvengyr"]=regionColor["use"], ["Demon Soul"]=regionColor["use"], ["Drenden"]=regionColor["use"], ["Durotan"]=regionColor["use"], ["Duskwood"]=regionColor["use"],
+        ["Earthen Ring"]=regionColor["use"], ["Eldre'Thalas"]=regionColor["use"], ["Elune"]=regionColor["use"], ["Eonar"]=regionColor["use"], ["Eredar"]=regionColor["use"], ["Executus"]=regionColor["use"],
+        ["Exodar"]=regionColor["use"], ["Fenris"]=regionColor["use"], ["Firetree"]=regionColor["use"], ["Garrosh"]=regionColor["use"], ["Gilneas"]=regionColor["use"], ["Gorefiend"]=regionColor["use"],
+        ["Grizzly Hills"]=regionColor["use"], ["Haomarush"]=regionColor["use"], ["Jaedenar"]=regionColor["use"], ["Kargath"]=regionColor["use"], ["Khadgar"]=regionColor["use"],
+        ["Lightning's Blade"]=regionColor["use"], ["Llane"]=regionColor["use"], ["Lothar"]=regionColor["use"], ["Magtheridon"]=regionColor["use"], ["Mannoroth"]=regionColor["use"],
+        ["Medivh"]=regionColor["use"], ["Nazgrel"]=regionColor["use"], ["Norgannon"]=regionColor["use"], ["Ravenholdt"]=regionColor["use"], ["Scilla"]=regionColor["use"], ["Shadowmoon"]=regionColor["use"],
+        ["Shandris"]=regionColor["use"], ["Shattered Hand"]=regionColor["use"], ["Skullcrusher"]=regionColor["use"], ["Smolderthorn"]=regionColor["use"],
+        ["Steamwheedle Cartel"]=regionColor["use"], ["Stormrage"]=regionColor["use"], ["Tanaris"]=regionColor["use"], ["The Forgotten Coast"]=regionColor["use"],
+        ["Thrall"]=regionColor["use"], ["Tortheldrin"]=regionColor["use"], ["Trollbane"]=regionColor["use"], ["Turalyon"]=regionColor["use"], ["Uldaman"]=regionColor["use"],
+        ["Undermine"]=regionColor["use"], ["Warsong"]=regionColor["use"], ["Ysera"]=regionColor["use"], ["Ysondre"]=regionColor["use"], ["Zul'jin"]=regionColor["use"], ["Zuluhed"]=regionColor["use"],
+
+        ["Drakkari"]=regionColor["mex"], ["Quel'Thalas"]=regionColor["mex"], ["Ragnaros"]=regionColor["mex"],
+
+        ["Azralon"]=regionColor["bzl"], ["Gallywix"]=regionColor["bzl"], ["Goldrinn"]=regionColor["bzl"], ["Nemesis"]=regionColor["bzl"], ["Tol Barad"]=regionColor["bzl"],
+    }
+else
+    regionColor={}
+end
+e.Get_Region= function(server)--e.Get_Region(server)--服务器，EU， US
+    return Realms[server]
 end
