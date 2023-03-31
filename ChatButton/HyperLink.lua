@@ -2,16 +2,10 @@ local id, e = ...
 local addName = COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK..EMBLEM_SYMBOL
 local Save={
     channels={--频道名称替换 
-        ['世界'] = '[世]',
-        [GENERAL]='['..GENERAL..']',
-        ['本地']='[本地]',
-        [PET_BATTLE_COMBAT_LOG]='['..PET..']',
-        [TRADE]= '['..TRADE..']',
-        [BUG_CATEGORY4]= '['..BUG_CATEGORY4..']',
+        --['世界'] = '[世]',
     },
     text={--内容颜色,
-        ['来人']=true,
-        ['成就']=true,
+        [ACHIEVEMENTS]=true,
     },
     groupWelcome= true,--欢迎
     groupWelcomeText= e.Player.cn and EMOTE103_CMD1:gsub('/','') or 'Hi{rt1}',
@@ -34,13 +28,16 @@ local set_LOOT_ITEM= LOOT_ITEM:gsub('%%s', '(.+)')--%s获得了战利品：%s。
 local function SetChannels(link)
     local name=link:match('%[(.-)]')
     if name then
+        if name:find("世界") then
+            return link:gsub('%[.-]', '[世]')
+        end
         for k, v in pairs(Save.channels) do
             if name:find(k) then
                 return link:gsub('%[.-]', v)
             end
         end
-        name= name:match('%-(.+)') or name:match('：(.+)') or name:match(':(.+)') or name
-        name=e.WA_Utf8Sub(name, 1, 4)
+        name= name:match('%- (.+)') or name:match('：(.+)') or name:match(':(.+)') or name
+        name=e.WA_Utf8Sub(name, 1, 5)
         return link:gsub('%[.-]', '['..name..']')
     end
 end
