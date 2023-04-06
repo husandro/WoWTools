@@ -1205,94 +1205,95 @@ local function Init()
     --###########
     --历史, 拾取框
     --LootHistory.lua
-    hooksecurefunc('LootHistoryFrame_FullUpdate', function(self)
-        LootHistoryFrame:SetWidth(350)
-        LootHistoryFrame.ScrollFrame.ScrollChild:SetWidth(350)
-    end)
-    hooksecurefunc('LootHistoryFrame_UpdateItemFrame', function(self, itemFrame)
-        itemFrame:SetWidth(315)
-        itemFrame.Divider:SetWidth(315)
-        itemFrame.ActiveHighlight:SetWidth(315)
-        if itemFrame.WinnerName and itemFrame:IsShown() then--修改, 自已名称
-           local text= itemFrame.WinnerName:GetText()
-           if text and text==e.Player.name then
-                itemFrame.WinnerName:SetText(COMBATLOG_FILTER_STRING_ME)
-           end
-        end
-        local itemLink= select(2, C_LootHistory.GetItem(itemFrame.itemIdx))
-        if itemLink then
-            local text
-            local _, _, _, itemLevel, _, _, _, _, itemEquipLoc, _, _, classID= GetItemInfo(itemLink)
-            if classID==2 or classID==4 then
-                local invSlot = e.itemSlotTable[itemEquipLoc]
-                if invSlot and itemLevel and itemLevel>1 then--装等
-                    local dateInfo= e.GetTooltipData({hyperLink=itemLink, red=true, onlyRed=true})--物品提示，信息
-                    if not dateInfo.red then
-                        local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
-                        if itemLinkPlayer then
-                            local lv=GetDetailedItemLevelInfo(itemLinkPlayer)
-                            if lv and itemLevel-lv>0 then
-                                text= e.Icon.up2..itemLevel-lv
+    if e.Player.ver then
+        hooksecurefunc('LootHistoryFrame_FullUpdate', function(self)
+            LootHistoryFrame:SetWidth(350)
+            LootHistoryFrame.ScrollFrame.ScrollChild:SetWidth(350)
+        end)
+        hooksecurefunc('LootHistoryFrame_UpdateItemFrame', function(self, itemFrame)
+            itemFrame:SetWidth(315)
+            itemFrame.Divider:SetWidth(315)
+            itemFrame.ActiveHighlight:SetWidth(315)
+            if itemFrame.WinnerName and itemFrame:IsShown() then--修改, 自已名称
+            local text= itemFrame.WinnerName:GetText()
+            if text and text==e.Player.name then
+                    itemFrame.WinnerName:SetText(COMBATLOG_FILTER_STRING_ME)
+            end
+            end
+            local itemLink= select(2, C_LootHistory.GetItem(itemFrame.itemIdx))
+            if itemLink then
+                local text
+                local _, _, _, itemLevel, _, _, _, _, itemEquipLoc, _, _, classID= GetItemInfo(itemLink)
+                if classID==2 or classID==4 then
+                    local invSlot = e.itemSlotTable[itemEquipLoc]
+                    if invSlot and itemLevel and itemLevel>1 then--装等
+                        local dateInfo= e.GetTooltipData({hyperLink=itemLink, red=true, onlyRed=true})--物品提示，信息
+                        if not dateInfo.red then
+                            local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
+                            if itemLinkPlayer then
+                                local lv=GetDetailedItemLevelInfo(itemLinkPlayer)
+                                if lv and itemLevel-lv>0 then
+                                    text= e.Icon.up2..itemLevel-lv
+                                end
+                            else
+                                text= e.Icon.up2..itemLevel
                             end
-                        else
-                            text= e.Icon.up2..itemLevel
                         end
                     end
-                end
 
-                if not text then
-                    local text2, _, isSelf= e.GetItemCollected(itemLink, nil, true)--幻化
-                    text= isSelf and text2
-                end
-                if text and not itemFrame.upOrMogText then
-                    itemFrame.upOrMogText= e.Cstr(itemFrame, {color={r=0,g=1,b=0}})--nil, nil, nil, {0,1,0})
-                    itemFrame.upOrMogText:SetPoint('BOTTOMRIGHT', itemFrame.Icon, 'BOTTOMRIGHT')
-                end
-            end
-
-            if itemFrame.upOrMogText then
-                itemFrame.upOrMogText:SetText(text or '')
-            end
-        end
-    end)
-    hooksecurefunc('LootHistoryFrame_UpdatePlayerFrame', function(self, playerFrame)
-        playerFrame.itemText= nil
-        playerFrame.itemPlayerName= nil
-        if playerFrame.playerIdx then
-            local name, _, _, _, isWinner = C_LootHistory.GetPlayerInfo(playerFrame.itemIdx, playerFrame.playerIdx)
-            if name then
-                playerFrame.itemPlayerName= name
-                if playerFrame.itemIdx and isWinner then
-                    local itemLink = select(2, C_LootHistory.GetItem(playerFrame.itemIdx))
-                    if itemLink then
-                        playerFrame.itemText = itemLink..(e.Player.cn and ' '..NEED..', '..VOICEMACRO_16_Dw_0 or ' need, please!')
+                    if not text then
+                        local text2, _, isSelf= e.GetItemCollected(itemLink, nil, true)--幻化
+                        text= isSelf and text2
+                    end
+                    if text and not itemFrame.upOrMogText then
+                        itemFrame.upOrMogText= e.Cstr(itemFrame, {color={r=0,g=1,b=0}})--nil, nil, nil, {0,1,0})
+                        itemFrame.upOrMogText:SetPoint('BOTTOMRIGHT', itemFrame.Icon, 'BOTTOMRIGHT')
                     end
                 end
-                playerFrame:EnableMouse(true)
-                playerFrame:SetScript('OnMouseDown',function(self2, d)
-                    if d=='LeftButton' then
-                        e.Say(nil, self2.itemPlayerName, nil, self2.itemText)
+
+                if itemFrame.upOrMogText then
+                    itemFrame.upOrMogText:SetText(text or '')
+                end
+            end
+        end)
+        hooksecurefunc('LootHistoryFrame_UpdatePlayerFrame', function(self, playerFrame)
+            playerFrame.itemText= nil
+            playerFrame.itemPlayerName= nil
+            if playerFrame.playerIdx then
+                local name, _, _, _, isWinner = C_LootHistory.GetPlayerInfo(playerFrame.itemIdx, playerFrame.playerIdx)
+                if name then
+                    playerFrame.itemPlayerName= name
+                    if playerFrame.itemIdx and isWinner then
+                        local itemLink = select(2, C_LootHistory.GetItem(playerFrame.itemIdx))
+                        if itemLink then
+                            playerFrame.itemText = itemLink..(e.Player.cn and ' '..NEED..', '..VOICEMACRO_16_Dw_0 or ' need, please!')
+                        end
+                    end
+                    playerFrame:EnableMouse(true)
+                    playerFrame:SetScript('OnMouseDown',function(self2, d)
+                        if d=='LeftButton' then
+                            e.Say(nil, self2.itemPlayerName, nil, self2.itemText)
+                        else
+                            e.Say(nil, self2.itemPlayerName)
+                        end
+                    end)
+                    if name== e.Player.name then
+                        playerFrame.PlayerName:SetText(e.Icon.player..COMBATLOG_FILTER_STRING_ME)
+                    elseif name:find('%-') then
+                        local server=name:match('%-(.+)')
+                        if server and e.Player.servers[server] then
+                            playerFrame.PlayerName:SetText(name..e.Icon.star2)
+                        end
                     else
-                        e.Say(nil, self2.itemPlayerName)
-                    end
-                end)
-                if name== e.Player.name then
-                    playerFrame.PlayerName:SetText(e.Icon.player..COMBATLOG_FILTER_STRING_ME)
-                elseif name:find('%-') then
-                    local server=name:match('%-(.+)')
-                    if server and e.Player.servers[server] then
                         playerFrame.PlayerName:SetText(name..e.Icon.star2)
                     end
                 else
-                    playerFrame.PlayerName:SetText(name..e.Icon.star2)
+                    playerFrame:SetScript('OnMouseDown',nil)
                 end
-            else
-                playerFrame:SetScript('OnMouseDown',nil)
+                playerFrame:SetWidth(300)
             end
-            playerFrame:SetWidth(300)
-        end
-    end)
-
+        end)
+    end
     --e.set_CVar('autoOpenLootHistory', Save.autoOpenLootHistory)--自动打开战利品掷骰窗口
 
     --hooksecurefunc('QueueStatusDropDown_Show', setQueueStatusMenu)--小眼睛, 信息, 设置菜单
