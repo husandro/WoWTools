@@ -1471,6 +1471,24 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 if text and not frame.textID  then
                     frame.textID= e.Cstr(frame)
                     frame.textID:SetPoint('BOTTOM', frame.texture, 'BOTTOM')
+                    frame.textID:EnableMouse(true)
+                    frame:SetScript('OnEnter', function(self3)
+                        if self3.ID then
+                            e.tips:SetOwner(self3, "ANCHOR_LEFT")
+                            e.tips:ClearLines()
+                            e.tips:AddDoubleLine(e.onlyChinese and '成就' or ACHIEVEMENTS, self3.ID)
+                            if self3.texture then
+                                local icon=self3.texture:GetTextureFileID()
+                                if icon then
+                                    e.tips:AddDoubleLine(e.onlyChinese and '图标' or EMBLEM_SYMBOL, '|T'..icon..':0|t'..icon)
+                                end
+                            end
+                            e.tips:AddLine(' ')
+                            e.tips:AddDoubleLine(id, addName)
+                            e.tips:Show()
+                        end
+                    end)
+                    frame.textID:SetScript('OnLeave', function() e.tips:Hide() end)
                 end
                 if frame.textID then
                     if text then
@@ -1480,18 +1498,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         end
                     end
                     frame.textID:SetText(text or '')
-                end
-
-                local icon= frame.texture:GetTextureFileID()
-                if icon and not frame.textIcon then
-                    frame.textIcon= e.Cstr(frame)
-                    frame.textIcon:SetPoint('BOTTOM', frame.texture, 'TOP',0,-3)
-                end
-                if frame and frame.textIcon then
-                    frame.textIcon:SetText(icon and '|T'..icon..':0|t'..icon or '')
+                    frame.ID=text
                 end
             end)
-
         elseif arg1=='Blizzard_Collections' then--宠物手册， 召唤随机，偏好宠物，技能ID    
             hooksecurefunc('PetJournalSummonRandomFavoritePetButton_OnEnter', function()--PetJournalSummonRandomFavoritePetButton
                 setSpell(e.tips, 243819)
