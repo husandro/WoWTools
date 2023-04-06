@@ -162,7 +162,7 @@ local function set_PlayerFrame()--PlayerFrame.lua
     PlayerCastingBarFrame:HookScript('OnShow', function(self)--图标
         self.Icon:SetShown(true)
     end)
-    PlayerCastingBarFrame:SetFrameStrata('TOOLTIP')--设置为， 最上层
+    PlayerCastingBarFrame:SetFrameStrata('FULLSCREEN')--设置为， 最上层
     set_SetTextColor(PlayerCastingBarFrame.Text, e.Player.r, e.Player.g, e.Player.b)--颜色
     PlayerCastingBarFrame.castingText= e.Cstr(PlayerCastingBarFrame, {color={r=e.Player.r, g=e.Player.g, b=e.Player.b}, justifyH='RIGHT'})
     PlayerCastingBarFrame.castingText:SetDrawLayer('OVERLAY', 2)
