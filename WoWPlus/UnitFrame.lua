@@ -167,16 +167,19 @@ local function set_PlayerFrame()--PlayerFrame.lua
     PlayerCastingBarFrame.castingText= e.Cstr(PlayerCastingBarFrame, {color={r=e.Player.r, g=e.Player.g, b=e.Player.b}, justifyH='RIGHT'})
     PlayerCastingBarFrame.castingText:SetDrawLayer('OVERLAY', 2)
     PlayerCastingBarFrame.castingText:SetPoint('RIGHT', PlayerCastingBarFrame.ChargeFlash, 'RIGHT')
+    PlayerCastingBarFrame.elapsed=0
     PlayerCastingBarFrame:HookScript('OnUpdate', function(self, elapsed)--玩家, 施法, 时间
-        if self.value and self.maxValue then
+        self.elapsed= self.elapsed+ elapsed
+        if self.elapsed>=0.01 and self.value and self.maxValue then
             local value= self.channeling and self.value or (self.maxValue-self.value)
-            if value==0 then
+            if value<=0 then
                 self.castingText:SetText(0)
             elseif value>=3 then
                 self.castingText:SetFormattedText('%i', value)
             else
                 self.castingText:SetFormattedText('%.01f', value)
             end
+            self.elapsed=0
         end
     end)
     hooksecurefunc('PlayerFrame_UpdateGroupIndicator', function()--处理,小队, 号码
