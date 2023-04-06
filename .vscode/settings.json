@@ -2504,7 +2504,8 @@
         "GetQuestLogRewardMoney",
         "QuestPOIGetIconInfo",
         "MapUtil",
-        "GetRealmID"
+        "GetRealmID",
+        "GetCurrentRegionName"
     ],
     "Lua.diagnostics.disable": [
     ]
