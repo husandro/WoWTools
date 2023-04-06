@@ -170,7 +170,9 @@ local function set_PlayerFrame()--PlayerFrame.lua
     PlayerCastingBarFrame:HookScript('OnUpdate', function(self, elapsed)--玩家, 施法, 时间
         if self.value and self.maxValue then
             local value= self.channeling and self.value or (self.maxValue-self.value)
-            if value>=3 then
+            if value==0 then
+                self.castingText:SetText(0)
+            elseif value>=3 then
                 self.castingText:SetFormattedText('%i', value)
             else
                 self.castingText:SetFormattedText('%.01f', value)
