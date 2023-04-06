@@ -684,10 +684,6 @@ local function All(self)--所有记录
     end
 end
 
-local function Nu(self)--副本 完成/总次数 (本周, 全部)
-
-end
-
 local function Cur(self)--货币数量
     local IDs={1602, 1191}
     for k, v in pairs(IDs) do
