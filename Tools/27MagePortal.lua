@@ -168,7 +168,20 @@ local function Init()
                 e.tips:SetSpellByID(tab.spell)
                 if rightSpell and name then
                     e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine((icon and '|T'..icon..':0|t' or '').. name..e.GetSpellCooldown(tab.spell2), e.Icon.right)
+                    local cd
+                    if tab.spell2 then
+                        local startTime, duration, enable = GetSpellCooldown(tab.spell2)
+                        if duration>0 and enable==1 then
+                            local t=GetTime()
+                            if startTime>t then t=t+86400 end
+                            t=t-startTime
+                            t=duration-t
+                            cd= '|cnRED_FONT_COLOR:'..SecondsToTime(t)..'|r'
+                        elseif enable==0 then
+                            cd= '|cnRED_FONT_COLOR:'..SPELL_RECAST_TIME_INSTANT..'|r'
+                        end
+                    end
+                    e.tips:AddDoubleLine((icon and '|T'..icon..':0|t' or '').. name..(cd or ''), e.Icon.right)
                 end
                 e.tips:AddDoubleLine(e.onlyChinese and '显示名称' or PROFESSIONS_FLYOUT_SHOW_NAME, e.Icon.mid)
                 e.tips:Show()

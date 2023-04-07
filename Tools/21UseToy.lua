@@ -324,8 +324,19 @@ local function showTips(self)--显示提示
                 local name = C_Item.GetItemNameByID(itemID..'') or ('itemID: '..itemID)
                 local icon = C_Item.GetItemIconByID(itemID..'')
                 name= (icon and '|T'..icon..':0|t' or '')..name
+                local cd
+                local startTime, duration, enable = GetItemCooldown(itemID)
+                if duration>0 and enable==1 then
+                    local t=GetTime()
+                    if startTime>t then t=t+86400 end
+                    t=t-startTime
+                    t=duration-t
+                    cd= '|cnRED_FONT_COLOR:'..SecondsToTime(t)..'|r'
+                elseif enable==0 then
+                    cd= '|cnRED_FONT_COLOR:'..SPELL_RECAST_TIME_INSTANT..'|r'
+                end
 
-                e.tips:AddDoubleLine(name..(e.GetItemCooldown(itemID) or ''), type..'+'..e.Icon.left)
+                e.tips:AddDoubleLine(name..(cd or ''), type..'+'..e.Icon.left)
             end
         end
         e.tips:AddLine(' ')

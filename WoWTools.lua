@@ -719,7 +719,7 @@ e.CStatusBar = function(self,value, size, VERTICAL, color, min, max,ReverseFill)
     self.Bar:SetValue(value);
 end
 
-]]
+
 
 e.GetItemCooldown= function(itemID)--物品冷却
     local startTime, duration, enable = GetItemCooldown(itemID)
@@ -748,7 +748,7 @@ e.GetSpellCooldown = function(spellID)--法术冷却
     end
     return ''
 end
-
+]]
 e.Cbtn2= function(name, parent, showTexture, rightClick)
     local button= CreateFrame("Button", name, parent or UIParent, "SecureActionButtonTemplate")
     local size= e.toolsFrame.size
