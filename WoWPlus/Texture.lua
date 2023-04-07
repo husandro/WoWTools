@@ -712,7 +712,7 @@ local function Init_Set_AlphaAndColor()
 
 
     --拾取, 历史
-    if e.Player.ver then
+    if not e.Player.ver then
         hideTexture(LootHistoryFrameScrollFrame.ScrollBarBackground)    
     end
     setAlpha(LootHistoryFrame.NineSlice.Center)

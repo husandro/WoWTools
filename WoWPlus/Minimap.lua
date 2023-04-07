@@ -280,7 +280,9 @@ local function set_vigentteButton_Event()
 end
 
 local uiMapIDsTab= {2026, 2025, 2024, 2023, 2022}--地图, areaPoiIDs
-
+if e.Player.ver then
+    table.insert(uiMapIDsTab, 2133)
+end
 local questIDTab= {--世界任务, 监视, ID
     [74378]=true,
 }

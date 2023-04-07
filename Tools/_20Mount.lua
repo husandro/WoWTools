@@ -14,7 +14,8 @@ local Save={
         [FLOOR]={},--{[spellID]=uiMapID}
         [MOUNT_JOURNAL_FILTER_GROUND]={
             --[339588]=true,--[罪奔者布兰契]
-            [163024]=true,--战火梦魇兽
+            --[163024]=true,--战火梦魇兽
+            [366962]=true,--[艾什阿达，晨曦使者]
         },
         [MOUNT_JOURNAL_FILTER_FLYING]={
             --[339588]=true,--[罪奔者布兰契]

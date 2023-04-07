@@ -1205,7 +1205,7 @@ local function Init()
     --###########
     --历史, 拾取框
     --LootHistory.lua
-    if e.Player.ver then
+    if not e.Player.ver then
         hooksecurefunc('LootHistoryFrame_FullUpdate', function(self)
             LootHistoryFrame:SetWidth(350)
             LootHistoryFrame.ScrollFrame.ScrollChild:SetWidth(350)

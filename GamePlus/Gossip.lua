@@ -997,7 +997,7 @@ local function Init_Quest()
                 end
             end
         end
-        if e.Player.ver then
+        if not e.Player.ver then
             local numSpellRewards = GetNumQuestLogRewardSpells()--法术 
             for rewardSpellIndex = 1, numSpellRewards do
                 local texture, name, isTradeskillSpell, isSpellLearned, hideSpellLearnText, isBoostSpell, garrFollowerID, genericUnlock, spellID = GetRewardSpell(rewardSpellIndex)
