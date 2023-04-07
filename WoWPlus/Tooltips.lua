@@ -1476,29 +1476,26 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         if self3.ID then
                             e.tips:SetOwner(self3, "ANCHOR_LEFT")
                             e.tips:ClearLines()
-                            e.tips:AddDoubleLine(e.onlyChinese and '成就' or ACHIEVEMENTS, self3.ID)
-                            if self3.texture then
-                                local icon=self3.texture:GetTextureFileID()
-                                if icon then
-                                    e.tips:AddDoubleLine(e.onlyChinese and '图标' or EMBLEM_SYMBOL, '|T'..icon..':0|t'..icon)
-                                end
+                            e.tips:SetAchievementByID(self3.ID)
+                            if select(9, GetAchievementInfo(self3.ID))==131072 then
+                                e.tips:AddLine(' ')
+                                e.tips:AddDoubleLine(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET, e.Icon.wow2..(e.onlyChinese and '通用' or SHARE_QUEST_ABBREV), 1,0,1, 1,0,1)
                             end
-                            e.tips:AddLine(' ')
-                            e.tips:AddDoubleLine(id, addName)
                             e.tips:Show()
                         end
                     end)
                     frame.textID:SetScript('OnLeave', function() e.tips:Hide() end)
                 end
                 if frame.textID then
+                    frame.ID=text
                     if text then
                         local flags= select(9, GetAchievementInfo(self2.id))
                         if flags==131072 then
-                            text= e.Icon.wow2..'|cnGREEN_FONT_COLOR:'..text..'|r'
+                            text= e.Icon.wow2..'|cffff00ff'..text..'|r'
                         end
                     end
                     frame.textID:SetText(text or '')
-                    frame.ID=text
+                    
                 end
             end)
         elseif arg1=='Blizzard_Collections' then--宠物手册， 召唤随机，偏好宠物，技能ID    

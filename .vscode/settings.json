@@ -2505,7 +2505,8 @@
         "QuestPOIGetIconInfo",
         "MapUtil",
         "GetRealmID",
-        "GetCurrentRegionName"
+        "GetCurrentRegionName",
+        "SHARE_QUEST_ABBREV"
     ],
     "Lua.diagnostics.disable": [
     ]
