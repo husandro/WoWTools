@@ -9,6 +9,8 @@ local equipStr= format(EQUIPMENT_SETS, '(.+)')
 local pvpItemStr= PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在竞技场和战场中将物品等级提高至%d。"
 local upgradeStr= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(%%d%+/%%d%+)')-- "升级：%s/%s"
 local classStr= format(ITEM_CLASSES_ALLOWED, '(.+)') --"职业：%s";
+local FMTab={}--附魔
+local useStr=ITEM_SPELL_TRIGGER_ONUSE..'(.+)'--使用：
 local size= 10--字体大小
 
 local ClassNameIconTab={}--职业图标 ClassNameIconTab['法师']=图标
@@ -85,8 +87,10 @@ local function set_Item_Info(self, tab)
                 topRightText='|A:'..e.Icon.unlocked..':0:0|a'
             end
 
+
+
         elseif isCraftingReagent or classID==8 or classID==3 or classID==9 or (classID==0 and (subclassID==1 or subclassID==3 or subclassID==5)) or classID==19 or classID==7 then--附魔, 宝石,19专业装备 ,7商业技能
-            local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={ITEM_SPELL_KNOWN}, wow=true, red=true})--物品提示，信息 ITEM_SPELL_KNOWN = "已经学会";
+            local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={ITEM_SPELL_KNOWN, useStr}, wow=true, red=true})--物品提示，信息 ITEM_SPELL_KNOWN = "已经学会";
             if not (classID==15 and (subclassID== 0 or subclassID==4)) then
                 if classID==0 and subclassID==5 then
                     topRightText= e.WA_Utf8Sub(POWER_TYPE_FOOD, 2,5)--食物
@@ -104,8 +108,20 @@ local function set_Item_Info(self, tab)
             elseif dateInfo.wow then
                 bottomRightText= e.Icon.wow2
             end
-            if classID==3 and expacID and expacID== e.ExpansionLevel and itemLevel and itemLevel>20 then--宝石，等级
-                bottomLeftText= itemLevel
+            if expacID== e.ExpansionLevel then
+                if classID==3 and itemLevel and itemLevel>20 then--宝石，等级
+                    bottomLeftText= itemLevel
+                elseif classID==8 and dateInfo.text[useStr] then--附魔
+                    local text= dateInfo.text[useStr]
+                    for k, v in pairs(FMTab) do
+                       if text:find(k) then
+                            leftText= text:match('%d+')
+                            bottomLeftText=v
+                            break
+                       end
+                    end
+                    
+                end
             end
 
         elseif classID==2 and subclassID==20 then-- 鱼竿
@@ -676,6 +692,20 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             else
                 Init()
                 panel:UnregisterEvent('ADDON_LOADED')
+
+                FMTab={--附魔
+                        [PRIMARY_STAT1_TOOLTIP_NAME]=  e.onlyChinese and "力" or strlower(e.WA_Utf8Sub(PRIMARY_STAT1_TOOLTIP_NAME, 1, 3)),
+                        [PRIMARY_STAT2_TOOLTIP_NAME]=  e.onlyChinese and "敏" or strlower(e.WA_Utf8Sub(PRIMARY_STAT2_TOOLTIP_NAME, 1, 3)),
+                        [PRIMARY_STAT3_TOOLTIP_NAME]=  e.onlyChinese and "耐" or strlower(e.WA_Utf8Sub(PRIMARY_STAT3_TOOLTIP_NAME, 1, 3)),
+                        [PRIMARY_STAT4_TOOLTIP_NAME]=  e.onlyChinese and "智" or strlower(e.WA_Utf8Sub(PRIMARY_STAT4_TOOLTIP_NAME, 1, 3)),
+                        [ITEM_MOD_CRIT_RATING_SHORT]= e.onlyChinese and '爆' or strlower(e.WA_Utf8Sub(STAT_CRITICAL_STRIKE, 1, 3)),
+                        [ITEM_MOD_HASTE_RATING_SHORT]= e.onlyChinese and '急' or strlower(e.WA_Utf8Sub(STAT_HASTE, 1,3)),
+                        [ITEM_MOD_MASTERY_RATING_SHORT]= e.onlyChinese and '精' or strlower(e.WA_Utf8Sub(STAT_MASTERY, 1,3)),
+                        [ITEM_MOD_VERSATILITY]= e.onlyChinese and '全' or strlower(e.WA_Utf8Sub(STAT_VERSATILITY, 1,3)),
+                        [ITEM_MOD_CR_AVOIDANCE_SHORT]= e.onlyChinese and '闪' or strlower(e.WA_Utf8Sub(ITEM_MOD_CR_AVOIDANCE_SHORT, 1,3)),
+                        [ITEM_MOD_CR_LIFESTEAL_SHORT]= e.onlyChinese and '吸' or strlower(e.WA_Utf8Sub(ITEM_MOD_CR_LIFESTEAL_SHORT, 1,3)),
+                        [ITEM_MOD_CR_SPEED_SHORT]= e.onlyChinese and '速' or strlower(e.WA_Utf8Sub(ITEM_MOD_CR_SPEED_SHORT, 1,3)),
+                    }
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
         end

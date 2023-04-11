@@ -2506,7 +2506,11 @@
         "MapUtil",
         "GetRealmID",
         "GetCurrentRegionName",
-        "SHARE_QUEST_ABBREV"
+        "SHARE_QUEST_ABBREV",
+        "PRIMARY_STAT4_TOOLTIP_NAME",
+        "PRIMARY_STAT3_TOOLTIP_NAME",
+        "PRIMARY_STAT2_TOOLTIP_NAME",
+        "PRIMARY_STAT1_TOOLTIP_NAME"
     ],
     "Lua.diagnostics.disable": [
     ]
