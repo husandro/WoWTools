@@ -36,6 +36,7 @@ local function SetChannels(link)
                 return link:gsub('%[.-]', v)
             end
         end
+        name= name:match('%d+%. (.+)') or name:match('%d+．(.+)') or name--去数字
         name= name:match('%- (.+)') or name:match('：(.+)') or name:match(':(.+)') or name
         name=e.WA_Utf8Sub(name, 1, 5)
         return link:gsub('%[.-]', '['..name..']')

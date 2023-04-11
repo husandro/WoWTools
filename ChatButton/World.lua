@@ -1,7 +1,7 @@
 local id, e = ...
 
 local Save={
-    world= CHANNEL_CATEGORY_WORLD--'大脚世界频道'
+    world= e.Player.cn and '大脚世界频道' or CHANNEL_CATEGORY_WORLD,
 }
 local addName='ChatButtonWorldChannel'
 local button
