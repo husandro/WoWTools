@@ -28,14 +28,15 @@ local EncounterJournal_Maps={--[mapChallengeModelID]= journalInstanceID
     [401]= 1203;--[碧蓝魔馆]
     [165]= 537,--[影月墓地]
 
-    [166]= 536,--暗轨之路(车站)
+    --[[[166]= 536,--暗轨之路(车站)
     [391]= 1194,--街头商贩之路(天街)
     [392]= 1194,--街头商贩之路(天街)
     [370]= 1178,--机械王子之路(麦卡贡)
     [369]= 1178,--机械王子之路(麦卡贡)
     [169]= 558,--铁船之路(码头)
     [227]= 860,--堕落守护者之路(卡拉赞)
-    [234]= 860,--堕落守护者之路(卡拉赞)
+    [234]= 860,--堕落守护者之路(卡拉赞)]]
+    
 }
 --[[
 local spellIDs={--法术, 传送门, {mapChallengeModeID = 法术 SPELL ID}, BUG, 战斗中关闭, 会出现错误
@@ -850,8 +851,10 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                         if texture and backgroundTexture then
                             e.tips:AddDoubleLine('|T'..texture..':0|t'..texture, '|T'..backgroundTexture..':0|t'..backgroundTexture)
                         end
-
-                        e.tips:AddDoubleLine(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, e.Icon.left)
+                        if EncounterJournal_Maps[self2.mapID] then
+                            e.tips:AddLine(' ')
+                            e.tips:AddDoubleLine(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, e.Icon.left)
+                        end
                         e.tips:Show()
                     end
                 end)
