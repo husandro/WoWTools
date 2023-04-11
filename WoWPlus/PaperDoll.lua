@@ -6,8 +6,8 @@ local panel = CreateFrame("Frame", nil, PaperDollFrame)
 
 local pvpItemStr= PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在竞技场和战场中将物品等级提高至%d。"
 local enchantStr= ENCHANTED_TOOLTIP_LINE:gsub('%%s','(.+)')--附魔
-local upgradeStr= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(%%d%+/%%d%+)')-- "升级：%s/%s"
-
+--local upgradeStr= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(%%d%+/%%d%+)')-- "升级：%s/%s"
+local upgradeStr= ITEM_UPGRADE_NEXT_UPGRADE..'(.+)' --"升级："
 local function Slot(slot)--左边插曹
     return slot==1 or slot==2 or slot==3 or slot==15 or slot==5 or slot==4 or slot==19 or slot==9 or slot==17 or slot==18
 end
@@ -681,7 +681,7 @@ local function setFlyout(button, itemLink, slot)
 
     local dateInfo= e.GetTooltipData({hyperLink=itemLink, text={upgradeStr, pvpItemStr}, onlyText=true})--物品提示，信息
     local upgrade, pvpItem= dateInfo.text[upgradeStr], dateInfo.text[pvpItemStr]
-
+    upgrade= upgrade and upgrade:match('(%d+/%d+)')
     if upgrade and not button.upgrade then
         button.upgrade= e.Cstr(button, {color={r=0,g=1,b=0}})
         button.upgrade:SetPoint('LEFT')
