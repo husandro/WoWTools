@@ -51,6 +51,7 @@ local FBList={--{spell=数字, ins=副本ID 数字 journalInstanceID, name=自�
     {spell=393766, ins=800},--大魔导师之路(群星庭院)
     {spell=393273, ins=1201},--巨龙学位之路(艾杰斯亚学院)
 }
+
 for _, tab in pairs(FBList) do
     if tab and tab.spell and IsSpellKnown(tab.spell) then
         e.LoadDate({id=tab.spell, type='spell'})
