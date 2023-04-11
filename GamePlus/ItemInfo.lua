@@ -11,6 +11,7 @@ local upgradeStr= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(%%d
 local classStr= format(ITEM_CLASSES_ALLOWED, '(.+)') --"职业：%s";
 local FMTab={}--附魔
 local useStr=ITEM_SPELL_TRIGGER_ONUSE..'(.+)'--使用：
+--local andStr = COVENANT_RENOWN_TOAST_REWARD_COMBINER:format('(.+)','(.+)')--"%s 和 %s";
 local size= 10--字体大小
 
 local ClassNameIconTab={}--职业图标 ClassNameIconTab['法师']=图标
@@ -90,7 +91,7 @@ local function set_Item_Info(self, tab)
 
 
         elseif isCraftingReagent or classID==8 or classID==3 or classID==9 or (classID==0 and (subclassID==1 or subclassID==3 or subclassID==5)) or classID==19 or classID==7 then--附魔, 宝石,19专业装备 ,7商业技能
-            local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={ITEM_SPELL_KNOWN, useStr}, wow=true, red=true})--物品提示，信息 ITEM_SPELL_KNOWN = "已经学会";
+            local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={ITEM_SPELL_KNOWN, useStr, andStr}, wow=true, red=true})--物品提示，信息 ITEM_SPELL_KNOWN = "已经学会";
             if not (classID==15 and (subclassID== 0 or subclassID==4)) then
                 if classID==0 and subclassID==5 then
                     topRightText= e.WA_Utf8Sub(POWER_TYPE_FOOD, 2,5)--食物
@@ -120,7 +121,6 @@ local function set_Item_Info(self, tab)
                             break
                        end
                     end
-                    
                 end
             end
 
@@ -694,6 +694,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 panel:UnregisterEvent('ADDON_LOADED')
 
                 FMTab={--附魔
+                        ['主属性']= '主',
+                        ['坐骑速度']= '骑',
                         [PRIMARY_STAT1_TOOLTIP_NAME]=  e.onlyChinese and "力" or strlower(e.WA_Utf8Sub(PRIMARY_STAT1_TOOLTIP_NAME, 1, 3)),
                         [PRIMARY_STAT2_TOOLTIP_NAME]=  e.onlyChinese and "敏" or strlower(e.WA_Utf8Sub(PRIMARY_STAT2_TOOLTIP_NAME, 1, 3)),
                         [PRIMARY_STAT3_TOOLTIP_NAME]=  e.onlyChinese and "耐" or strlower(e.WA_Utf8Sub(PRIMARY_STAT3_TOOLTIP_NAME, 1, 3)),
