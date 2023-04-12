@@ -7,6 +7,7 @@ local Save={
         vigentteButtonShowText=true,
         expansionScale= 0.85,
         addIcon= e.Player.husandro,
+        miniMapPoint={},--保存小图地, 按钮位置
         --expansionAlpha=0.3,
 }
 local panel=CreateFrame("Frame")
@@ -125,12 +126,28 @@ end
 --#######
 --盟约图标
 --#######
+local Set_MinMap_Icon= function(tab)-- {name, texture, func, hide} 小地图，建立一个图标 Hide("MyLDB") icon:Show("")
+    Save.miniMapPoint= Save.miniMapPoint or {}
+    local bunnyLDB = LibStub("LibDataBroker-1.1"):NewDataObject(tab.name, {
+        type = "data source",
+        text = tab.name,
+        icon = tab.texture,
+        OnClick = tab.func,
+        OnEnter= tab.enter,
+    })
+    local icon = LibStub("LibDBIcon-1.0")
+    --icon:Register(tab.name, bunnyLDB, {hide= tab.hide})
+    icon:Register(tab.name, bunnyLDB, Save.miniMapPoint)
+    
+    return icon
+end
+
 local function set_ExpansionLandingPageMinimapButton()
     if Save.addIcon then
         if ExpansionLandingPageMinimapButton then
             ExpansionLandingPageMinimapButton:SetShown(false)
         end
-        e.Set_MinMap_Icon({name= id, texture= 136235,
+        Set_MinMap_Icon({name= id, texture= 136235,
             func= function(self, d)
                 if d=='LeftButton' then
                     if IsAltKeyDown() then

@@ -1367,19 +1367,6 @@ e.CheckRange= function(unit, range, operator)
     end
 end
 
-e.Set_MinMap_Icon= function(tab)-- {name, texture, func, hide} 小地图，建立一个图标 Hide("MyLDB") icon:Show("")
-    local bunnyLDB = LibStub("LibDataBroker-1.1"):NewDataObject(tab.name, {
-        type = "data source",
-        text = tab.name,
-        icon = tab.texture,
-        OnClick = tab.func,
-        OnEnter= tab.enter,
-    })
-    local icon = LibStub("LibDBIcon-1.0")
-    icon:Register(tab.name, bunnyLDB, {hide= tab.hide})
-    return icon
-end
-
 e.Set_HelpTips= function(tab)--e.Set_HelpTips({frame=, topoint=, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=nil, show=})--设置，提示
     if tab.show and not tab.frame.HelpTips then
         tab.frame.HelpTips= e.Cbtn(tab.frame, {layer='OVERLAY',size=tab.size and {tab.size[1], tab.size[2]} or {40,40}})-- button:CreateTexture(nil, 'OVERLAY')
