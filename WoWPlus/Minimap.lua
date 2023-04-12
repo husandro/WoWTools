@@ -138,7 +138,6 @@ local Set_MinMap_Icon= function(tab)-- {name, texture, func, hide} 小地图，�
     local icon = LibStub("LibDBIcon-1.0")
     --icon:Register(tab.name, bunnyLDB, {hide= tab.hide})
     icon:Register(tab.name, bunnyLDB, Save.miniMapPoint)
-    
     return icon
 end
 
