@@ -2,6 +2,7 @@ local id, e = ...
 
 local Save={
     world= e.Player.cn and '大脚世界频道' or CHANNEL_CATEGORY_WORLD,
+    myChatFilter= true,--过滤，多次，内容
 }
 local addName='ChatButtonWorldChannel'
 local button
@@ -83,6 +84,21 @@ local function sendSay(name, channelNumber)--发送
     end
 end
 
+
+--#######
+--屏蔽内容
+--#######
+local filterTextTab={}--记录, 屏蔽内容
+local function myChatFilter(self, event, msg, name, ...)
+    if filterTextTab[msg] then
+        filterTextTab[msg].num= filterTextTab[msg].num +1
+        return true
+    else
+        filterTextTab[msg]={num=1, name=name}
+    end
+end
+
+
 --#####
 --主菜单
 --#####
@@ -124,8 +140,9 @@ local function addMenu(name, channelNumber, level)--添加菜单
 end
 
 local function InitMenu(self, level, type)--主菜单
+    local info
     if type=='WORLD' then
-        local info= {
+        info= {
             text= e.onlyChinese and '修改名称' or EQUIPMENT_SET_EDIT:gsub('/.+',''),
             notCheckable=true,
             func= function()
@@ -159,20 +176,70 @@ local function InitMenu(self, level, type)--主菜单
         }
         UIDropDownMenu_AddButton(info, level)
         return
+
+    elseif type=='IGNORE' then--屏蔽刷屏
+        for text, tab in pairs(filterTextTab) do
+            info={
+                text= text,
+                notCheckable=true,
+                tooltipOnButton=true,
+                tooltipTitle= format(e.onlyChinese and "%d次" or COMMUNITIES_INVITE_MANAGER_USES, tab.num),
+                tooltipText=tab.name,
+                arg1= tab.name,
+                func= function(_, arg1)
+                    if arg1 then
+                        e.Say(nil, arg1)
+                    end
+                end
+            }
+            UIDropDownMenu_AddButton(info, level)
+        end
+        return
     end
 
     local channelNumber2 = GetChannelName(Save.world)
     addMenu(Save.world , channelNumber2, level)
     UIDropDownMenu_AddSeparator(level)
 
+    local find
     local channels = {GetChannelList()}
     for i = 1, #channels, 3 do
         local channelNumber, name, disabled = channels[i], channels[i+1], channels[i+2]
         if not disabled and channelNumber and name~=Save.world then
             addMenu(name, channelNumber, level)
+            find=true
         end
     end
+
+    if find then
+        UIDropDownMenu_AddSeparator(level)
+    end
+    find=0
+    for _, _ in pairs(filterTextTab) do
+        find= find+1
+    end
+    info={
+        text= (e.onlyChinese and '屏蔽刷屏' or IGNORE..CLUB_FINDER_REPORT_SPAM).. (find>0 and ' |cnRED_FONT_COLOR:'..find..'|r' or ''),
+        checked= Save.myChatFilter,
+        menuList='IGNORE',
+        hasArrow=true,
+        func= function()
+            Save.myChatFilter= not Save.myChatFilter and true or nil
+            if Save.myChatFilter then
+                ChatFrame_AddMessageEventFilter("CHAT_MSG_CHANNEL", myChatFilter)
+            else
+                ChatFrame_RemoveMessageEventFilter("CHAT_MSG_CHANNEL", myChatFilter)
+            end
+        end,
+    }
+    if not Save.myChatFilter then
+        info.tooltipOnButton=true
+        info.tooltipTitle='CHAT_MSG_CHANNEL'
+    end
+    UIDropDownMenu_AddButton(info, level)
 end
+
+
 
 --####
 --初始
@@ -201,6 +268,9 @@ local function Init()
             setLeftClickTips(Save.lastName, channelNumber)
         end
     end
+    if Save.myChatFilter then
+        ChatFrame_AddMessageEventFilter("CHAT_MSG_CHANNEL", myChatFilter)
+    end
 end
 
 
@@ -209,10 +279,10 @@ end
 --###########
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1==id then
+    if event == "ADDON_LOADED" and arg1==id then
             if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
                 Save= WoWToolsSave[addName] or Save
                 Save.world= Save.world or CHANNEL_CATEGORY_WORLD
@@ -220,14 +290,20 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 button= e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
 
                 Init()
-                panel:RegisterEvent("PLAYER_LOGOUT")
+
+                panel:UnregisterEvent('ADDON_LOADED')
+            else
+                panel:UnregisterAllEvents()
             end
-            panel:UnregisterEvent('ADDON_LOADED')
-        end
+            panel:RegisterEvent("PLAYER_LOGOUT")
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             WoWToolsSave[addName]=Save
         end
+
+    elseif event== 'PLAYER_ENTERING_WORLD' then
+        filterTextTab={}--记录, 屏蔽内容
+
     end
 end)

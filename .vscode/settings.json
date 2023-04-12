@@ -2510,7 +2510,21 @@
         "PRIMARY_STAT4_TOOLTIP_NAME",
         "PRIMARY_STAT3_TOOLTIP_NAME",
         "PRIMARY_STAT2_TOOLTIP_NAME",
-        "PRIMARY_STAT1_TOOLTIP_NAME"
+        "PRIMARY_STAT1_TOOLTIP_NAME",
+        "ERR_INFORM_SUGGEST_INVITE_SS",
+        "ERR_INVITED_ALREADY_IN_GROUP_SS",
+        "ERR_REQUESTED_INVITE_TO_GROUP_SS",
+        "StringSplitIntoTable",
+        "StaticPopupSpecial_Hide",
+        "CommunitiesUtil",
+        "LFGInvitePopup",
+        "ChatFrame_GetMessageEventFilters",
+        "CHAT_FRAMES",
+        "ChatFrame_RemoveMessageEventFilter",
+        "FCF_Close",
+        "YELLOW_FONT_COLOR",
+        "CLUB_FINDER_REPORT_SPAM",
+        "COMMUNITIES_INVITE_MANAGER_USES"
     ],
     "Lua.diagnostics.disable": [
     ]

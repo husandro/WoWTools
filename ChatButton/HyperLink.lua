@@ -498,7 +498,6 @@ local function Waypoint(text)--地图标记xy, 格式 60.0 70.5
 end
 
 local showTimestamps--聊天中时间戳
-local playerName=UnitName('player')
 local function setAddMessageFunc(self, s, ...)
     local petChannel=s:find('|Hchannel:.-'..PET_BATTLE_COMBAT_LOG..']|h') and true or false
 
@@ -534,7 +533,7 @@ local function setAddMessageFunc(self, s, ...)
     if not showTimestamps and s:find(set_LOOT_ITEM) then--	%s获得了战利品：%s。
         local unitName= s:match(set_LOOT_ITEM)
         if unitName then
-            if unitName==playerName then
+            if unitName==e.Player.name then
                 s=s:gsub(unitName..'['..e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r]')
             else
                 s=s:gsub(Magic(unitName), e.PlayerLink(unitName))
