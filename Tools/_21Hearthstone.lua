@@ -45,7 +45,8 @@ local function getToy()--生成, 有效表格
             table.insert(button.items, itemID)
         end
     end
-    if not find and GetItemCount( 6948)~=0 then
+    if not find and GetItemCount(6948)~=0 then
+        
         button.items={6948}
     end
 end
