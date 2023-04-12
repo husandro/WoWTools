@@ -50,7 +50,10 @@ local function set_Item_Info(self, tab)
             r,g,b = GetItemQualityColor(itemQuality)
         end
 
-        if containerInfo and containerInfo.hasLoot then--宝箱
+        if itemID==6948 then--炉石
+            bottomLeftText= e.WA_Utf8Sub(GetBindLocation(), 2, 5)
+
+        elseif containerInfo and containerInfo.hasLoot then--宝箱
             local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, red=true, onlyRed=true})--物品提示，信息
             topRightText= dateInfo.red and '|A:Monuments-Lock:0:0|a' or '|A:talents-button-undo:0:0|a'
 
