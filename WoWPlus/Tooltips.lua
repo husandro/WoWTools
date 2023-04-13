@@ -1034,6 +1034,14 @@ local function Init()
     --****
     --位置
     --****
+if e.Player.ver then
+    hooksecurefunc("GameTooltip_SetDefaultAnchor", function(self, parent)
+        if Save.setDefaultAnchor and not (Save.inCombatDefaultAnchor or UnitAffectingCombat('player')) then
+            self:ClearAllPoints()
+            self:SetOwner(parent, Save.cursorRight and 'ANCHOR_CURSOR_RIGHT' or 'ANCHOR_CURSOR_LEFT', Save.cursorX or 0, Save.cursorY or 0)
+        end
+    end)
+else
     hooksecurefunc("GameTooltip_SetDefaultAnchor", function(self, parent)
         if Save.setDefaultAnchor then
             if Save.inCombatDefaultAnchor and UnitAffectingCombat('player') then
@@ -1050,7 +1058,7 @@ local function Init()
             self:SetPoint(Save.AnchorPoint[1], UIParent, Save.AnchorPoint[3], Save.AnchorPoint[4], Save.AnchorPoint[5])
         end
     end)
-
+end
     --#########
     --生命条提示
     --#########
@@ -1310,7 +1318,7 @@ local function Init_Panel()
     end)
     courorRightCheck:SetScript('OnLeave', function() e.tips:Hide() end)
     
-
+if not e.Player.ver then
     Anchor.text:SetText(e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
     Anchor:SetPoint('TOPRIGHT', inCombatDefaultAnchor, 'BOTTOMLEFT',0, -12)
     Anchor:SetChecked(Save.setAnchor)
@@ -1377,7 +1385,7 @@ local function Init_Panel()
         end)
         set_Cursor_Tips(self.frame)
     end)
-
+end
     local modelCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     modelCheck.text:SetText(e.onlyChinese and '模型' or MODEL)
     modelCheck:SetPoint('TOPLEFT', panel, 'TOP', 0, -48)
