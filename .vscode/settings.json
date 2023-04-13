@@ -2526,7 +2526,8 @@
         "CLUB_FINDER_REPORT_SPAM",
         "COMMUNITIES_INVITE_MANAGER_USES",
         "FlagsUtil",
-        "GENERAL_LABEL"
+        "GENERAL_LABEL",
+        "HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL"
     ],
     "Lua.diagnostics.disable": [
     ]

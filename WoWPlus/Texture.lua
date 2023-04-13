@@ -781,7 +781,7 @@ local function Init_Set_AlphaAndColor()
     setAlpha(AddonCharacterDropDownRight)
 
     --场景 Blizzard_ScenarioObjectiveTracker.lua
-    if ObjectiveTrackerBlocksFrame then
+    --[[if ObjectiveTrackerBlocksFrame then
         setAlpha(ObjectiveTrackerBlocksFrame.ScenarioHeader.Background)
         setAlpha(ObjectiveTrackerBlocksFrame.AchievementHeader.Background)
         setAlpha(ObjectiveTrackerBlocksFrame.QuestHeader.Background)
@@ -789,7 +789,7 @@ local function Init_Set_AlphaAndColor()
             setAlpha(stageBlock.NormalBG, nil, true)
             setAlpha(stageBlock.FinalBG)
         end)
-    end
+    end]]
 
     --小地图
     setAlpha(MinimapCompassTexture)
