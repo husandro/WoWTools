@@ -115,7 +115,7 @@ local function select_Reward(questID)--自动:选择奖励
                     if self.questID then
                         e.tips:SetOwner(self, "ANCHOR_LEFT")
                         e.tips:ClearLines()
-                        e.tips:AddDoubleLine('questID: '..self.questID, self.index)
+                        e.tips:AddDoubleLine('questID: |cnGREEN_FONT_COLOR:'..self.questID..'|r', self.index)
                         e.tips:AddDoubleLine(id, QUESTS_LABEL)
                         e.tips:Show()
                     end
@@ -362,7 +362,7 @@ local function Init_Gossip()
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
         if self.npc and self.name then
-            e.tips:AddDoubleLine(self.name, 'NPC '..self.npc)
+            e.tips:AddDoubleLine(self.name, 'NPC |cnGREEN_FONT_COLOR:'..self.npc..'|r')
         else
             e.tips:AddDoubleLine(NONE, 'NPC ID')
         end
@@ -397,8 +397,12 @@ local function Init_Gossip()
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(id, ENABLE_DIALOG)
                 e.tips:AddDoubleLine(' ')
+                if self2.spellID then
+                    e.tips:SetSpellByID(self2.spellID)
+                    e.tips:AddLine(' ')
+                end
                 if self2.id and self2.text then
-                    e.tips:AddDoubleLine(self2.text, 'gossipOption: '..self2.id)
+                    e.tips:AddDoubleLine(self2.text, 'gossipOption: |cnGREEN_FONT_COLOR:'..self2.id..'|r')
                 else
                     e.tips:AddDoubleLine(NONE, 'gossipOptionID',1,0,0)
                 end
@@ -425,8 +429,8 @@ local function Init_Gossip()
         local npc=e.GetNpcID('npc')
         self.sel.id=index
         self.sel.text=info.name
+        self.sel.spellID= info.spellID
         self.sel:SetChecked(Save.gossipOption[index])
-
 
         if IsModifierKeyDown() or not index or selectGissipIDTab[index] then
             return
@@ -491,7 +495,7 @@ local function Init_Gossip()
                 e.tips:AddDoubleLine(id, QUESTS_LABEL)
                 e.tips:AddDoubleLine(' ')
                 if self2.id and self2.text then
-                    e.tips:AddDoubleLine(self2.text, 'ID '..self2.id)
+                    e.tips:AddDoubleLine(self2.text, 'ID |cnGREEN_FONT_COLOR:'..self2.id..'|r')
                 else
                     e.tips:AddDoubleLine(NONE, QUESTS_LABEL..' ID',1,0,0)
                 end
