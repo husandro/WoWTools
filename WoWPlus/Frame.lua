@@ -480,7 +480,8 @@ local function Init_Move()
         --[StoreFrame.TitleContainer]={frame=StoreFrame},--商店
         ChannelFrame={},--聊天设置
         --StaticPopup1={},
-        [DressUpFrame.TitleContainer]= {frame = DressUpFrame},--试衣间 
+        --[DressUpFrame.TitleContainer]= {frame = DressUpFrame},--试衣间 
+        --[DressUpFrame]= {},--试衣间 
         [MailFrame.TitleContainer]= {frame=MailFrame},
         ColorPickerFrame={save=true, click='R'},--颜色选择器
     }
