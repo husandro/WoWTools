@@ -2525,7 +2525,8 @@
         "YELLOW_FONT_COLOR",
         "CLUB_FINDER_REPORT_SPAM",
         "COMMUNITIES_INVITE_MANAGER_USES",
-        "FlagsUtil"
+        "FlagsUtil",
+        "GENERAL_LABEL"
     ],
     "Lua.diagnostics.disable": [
     ]

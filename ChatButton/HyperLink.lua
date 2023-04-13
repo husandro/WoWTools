@@ -31,11 +31,15 @@ local function SetChannels(link)
         if name:find("世界") then
             return link:gsub('%[.-]', '[世]')
         end
-        for k, v in pairs(Save.channels) do
+        for k, v in pairs(Save.channels) do--自定义
             if name:find(k) then
                 return link:gsub('%[.-]', v)
             end
         end
+        if name:find(GENERAL_LABEL) then--综合
+            return link:gsub('%[.-]', '['..e.WA_Utf8Sub(GENERAL_LABEL, 1, 5)..']')
+        end
+        
         name= name:match('%d+%. (.+)') or name:match('%d+．(.+)') or name--去数字
         name= name:match('%- (.+)') or name:match('：(.+)') or name:match(':(.+)') or name
         name=e.WA_Utf8Sub(name, 1, 5)
