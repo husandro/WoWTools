@@ -997,7 +997,7 @@ local function Init_Quest()
                 end
             end
         end
-        if not e.Player.ver then
+        --[[if not e.Player.ver then
             local numSpellRewards = GetNumQuestLogRewardSpells()--法术 
             for rewardSpellIndex = 1, numSpellRewards do
                 local texture, name, isTradeskillSpell, isSpellLearned, hideSpellLearnText, isBoostSpell, garrFollowerID, genericUnlock, spellID = GetRewardSpell(rewardSpellIndex)
@@ -1009,7 +1009,7 @@ local function Init_Quest()
                 end
                 end
             end
-        end
+        end]]
         local skillName, skillIcon, skillPoints = GetRewardSkillPoints()--专业
         if skillName then
             itemLink= itemLink..(GetSpellLink(skillName) or ((skillIcon and '|T'..skillIcon..':0|t' or '')..skillName))..(skillPoints and '|cnGREEN_FONT_COLOR:+'..skillPoints..'|r' or '')

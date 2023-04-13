@@ -1205,7 +1205,7 @@ local function Init()
     --###########
     --历史, 拾取框
     --LootHistory.lua
-    if not e.Player.ver then
+    --[[if not e.Player.ver then
         hooksecurefunc('LootHistoryFrame_FullUpdate', function(self)
             LootHistoryFrame:SetWidth(350)
             LootHistoryFrame.ScrollFrame.ScrollChild:SetWidth(350)
@@ -1293,7 +1293,7 @@ local function Init()
                 playerFrame:SetWidth(300)
             end
         end)
-    end
+    end]]
     --e.set_CVar('autoOpenLootHistory', Save.autoOpenLootHistory)--自动打开战利品掷骰窗口
 
     --hooksecurefunc('QueueStatusDropDown_Show', setQueueStatusMenu)--小眼睛, 信息, 设置菜单

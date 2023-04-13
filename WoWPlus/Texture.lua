@@ -711,10 +711,10 @@ local function Init_Set_AlphaAndColor()
     hideTexture(SendMailMoneyInset.Bg)
 
 
-    --拾取, 历史
+    --[[拾取, 历史
     if not e.Player.ver then
         hideTexture(LootHistoryFrameScrollFrame.ScrollBarBackground)    
-    end
+    end]]
     setAlpha(LootHistoryFrame.NineSlice.Center)
 
     --频道, 设置

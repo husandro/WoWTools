@@ -182,7 +182,7 @@ e.Player={
     --useColor= {r=1, g=0.82, b=0, a=1, hex='|cffffd100'},--使用颜色
     LayerText= 'Layer',--位面文本
     --Layer= nil, 位面数字
-    ver= select(4,GetBuildInfo())>=100100,--版本 100100
+    --ver= select(4,GetBuildInfo())>=100100,--版本 100100
 }
  --MAX_PLAYER_LEVEL = GetMaxLevelForPlayerExpansion()
 

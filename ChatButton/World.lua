@@ -90,11 +90,13 @@ end
 --#######
 local filterTextTab={}--记录, 屏蔽内容
 local function myChatFilter(self, event, msg, name, ...)
-    if filterTextTab[msg] then
-        filterTextTab[msg].num= filterTextTab[msg].num +1
-        return true
-    else
-        filterTextTab[msg]={num=1, name=name}
+    if name~= e.Player.name_server then
+        if filterTextTab[msg] and filterTextTab[msg].name== name then
+            filterTextTab[msg].num= filterTextTab[msg].num +1
+            return true
+        else
+            filterTextTab[msg]={num=1, name=name}
+        end
     end
 end
 
@@ -223,6 +225,8 @@ local function InitMenu(self, level, type)--主菜单
         checked= Save.myChatFilter,
         menuList='IGNORE',
         hasArrow=true,
+        tooltipOnButton=true,
+        tooltipTitle='CHAT_MSG_CHANNEL',
         func= function()
             Save.myChatFilter= not Save.myChatFilter and true or nil
             if Save.myChatFilter then
@@ -232,10 +236,6 @@ local function InitMenu(self, level, type)--主菜单
             end
         end,
     }
-    if not Save.myChatFilter then
-        info.tooltipOnButton=true
-        info.tooltipTitle='CHAT_MSG_CHANNEL'
-    end
     UIDropDownMenu_AddButton(info, level)
 end
 
