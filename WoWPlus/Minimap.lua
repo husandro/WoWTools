@@ -204,12 +204,18 @@ local function set_ExpansionLandingPageMinimapButton()
 
         frame:SetScript("OnDragStop", function(self)
             self:StopMovingOrSizing()
+            Save.expansionLandingPagePoint={self:GetPoint(1)}
+            Save.expansionLandingPagePoint[2]=nil
         end)
         frame:SetScript('OnMouseDown', function(self, d)
             if d=='RightButton' and not IsModifierKeyDown() then
                 InterfaceOptionsFrame_OpenToCategory(id)
             end
         end)
+        if Save.expansionLandingPagePoint then
+            frame:ClearAllPoints()
+            frame:SetPoint(Save.expansionLandingPagePoint[1], UIParent, Save.expansionLandingPagePoint[3], Save.expansionLandingPagePoint[4], Save.expansionLandingPagePoint[5])
+        end
         --hooksecurefunc(DragonridingPanelSkillsButtonMixin, 'OnClick', function(self, d)--显示,飞龙技能
 
         frame:SetScript('OnEnter',function(self)--Minimap.lua
