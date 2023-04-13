@@ -279,7 +279,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         if event=='PLAYER_ENTERING_WORLD' then
             isPvPArena= C_PvP.IsBattleground() or C_PvP.IsArena()
-            isIns= IsInInstance() and IsInGroup()
+            isIns= IsInInstance() and GetNumGroupMembers()>3
             if Save.creatureNum then
                 set_Register_Event()
             end
