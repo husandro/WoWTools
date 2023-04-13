@@ -1015,6 +1015,7 @@ local function Init_Quest()
                 end
             end
         end]]
+
         local skillName, skillIcon, skillPoints = GetRewardSkillPoints()--专业
         if skillName then
             itemLink= itemLink..(GetSpellLink(skillName) or ((skillIcon and '|T'..skillIcon..':0|t' or '')..skillName))..(skillPoints and '|cnGREEN_FONT_COLOR:+'..skillPoints..'|r' or '')

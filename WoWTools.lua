@@ -33,7 +33,11 @@ e.LoadDate= function(tab)--e.LoadDate({id=, type=''})--加载 item quest spell
     if tab.type=='quest' then
         C_QuestLog.RequestLoadQuestByID(tab.id)
     elseif tab.type=='spell' then
-        if not C_Spell.IsSpellDataCached(tab.id) then C_Spell.RequestLoadSpellData(tab.id) end
+        local spellID= tab.id
+        if type(tab.id)=='string' then
+            spellID= select(7, GetSpellInfo(tab.id))
+        end
+        if spellID and not C_Spell.IsSpellDataCached(spellID) then C_Spell.RequestLoadSpellData(spellID) end
     elseif tab.type=='item' then
         if not C_Item.IsItemDataCachedByID(tab.id) then C_Item.RequestLoadItemDataByID(tab.id) end
     end
