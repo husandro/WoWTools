@@ -1036,7 +1036,7 @@ local function Init()
     --****
 if e.Player.ver then
     hooksecurefunc("GameTooltip_SetDefaultAnchor", function(self, parent)
-        if Save.setDefaultAnchor and not (Save.inCombatDefaultAnchor or UnitAffectingCombat('player')) then
+        if Save.setDefaultAnchor and not (Save.inCombatDefaultAnchor and UnitAffectingCombat('player')) then
             self:ClearAllPoints()
             self:SetOwner(parent, Save.cursorRight and 'ANCHOR_CURSOR_RIGHT' or 'ANCHOR_CURSOR_LEFT', Save.cursorX or 0, Save.cursorY or 0)
         end
@@ -1317,6 +1317,7 @@ local function Init_Panel()
         set_Cursor_Tips(self)
     end)
     courorRightCheck:SetScript('OnLeave', function() e.tips:Hide() end)
+
     
 if not e.Player.ver then
     Anchor.text:SetText(e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
@@ -1503,7 +1504,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         end
                     end
                     frame.textID:SetText(text or '')
-                    
+
                 end
             end)
         elseif arg1=='Blizzard_Collections' then--宠物手册， 召唤随机，偏好宠物，技能ID    
