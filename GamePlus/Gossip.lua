@@ -402,7 +402,7 @@ local function Init_Gossip()
                     e.tips:AddLine(' ')
                 end
                 if self2.id and self2.text then
-                    e.tips:AddDoubleLine(self2.text, 'gossipOption: |cnGREEN_FONT_COLOR:'..self2.id..'|r')
+                    e.tips:AddDoubleLine((self2.icon and '|T'..self2.icon..':0|t' or '')..self2.text, 'gossipOption: |cnGREEN_FONT_COLOR:'..self2.id..'|r')
                 else
                     e.tips:AddDoubleLine(NONE, 'gossipOptionID',1,0,0)
                 end
@@ -430,13 +430,14 @@ local function Init_Gossip()
         self.sel.id=index
         self.sel.text=info.name
         self.sel.spellID= info.spellID
-        self.sel:SetChecked(Save.gossipOption[index])
+        self.sel.icon= info.overrideIconID or info.icon
 
         if IsModifierKeyDown() or not index or selectGissipIDTab[index] then
             return
         end
 
         local find
+        local quest= FlagsUtil.IsSet(info.flags, Enum.GossipOptionRecFlags.QuestLabelPrepend)
         if Save.gossipOption[index] then--自定义
             C_GossipInfo.SelectOption(index)
             find=true
@@ -444,8 +445,8 @@ local function Init_Gossip()
         elseif (npc and Save.NPC[npc]) or not Save.gossip then
             return
 
-        elseif (info.flags == Enum.GossipOptionRecFlags.QuestLabelPrepend or name:find('|c') or  name:find(QUESTS_LABEL) or name:find(LOOT_JOURNAL_LEGENDARIES_SOURCE_QUEST)) and Save.quest then--任务
-            if info.flags == Enum.GossipOptionRecFlags.QuestLabelPrepend then
+        elseif Save.quest and  (quest or name:find('|c' or  name:find(QUESTS_LABEL) or name:find(LOOT_JOURNAL_LEGENDARIES_SOURCE_QUEST))) then--任务
+            if quest then
                 name=GOSSIP_QUEST_OPTION_PREPEND:format(info.name)
             end
             C_GossipInfo.SelectOption(index)
@@ -474,7 +475,7 @@ local function Init_Gossip()
 
         if find then
             selectGissipIDTab[index]=true
-            print(id, ENABLE_DIALOG, '|T'..(info.overrideIconID or info.icon or '')..':0|t', '|cffff00ff'..name)
+            print(id, ENABLE_DIALOG, '|T'..(info.overrideIconID or info.icon or '')..':0|t', '|cffff00ff'..name..'|r', index)
         end
     end)
 
@@ -831,7 +832,7 @@ local function Init_Quest()
         e.tips:AddDoubleLine(e.GetEnabeleDisable(Save.quest)..e.Icon.left, (e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..e.Icon.right)
         e.tips:AddDoubleLine(id, e.onlyChinese and '任务' or QUESTS_LABEL)
         e.tips:Show()
-        
+
         set_Only_Show_Zone_Quest()
     end)
     questPanel:SetScript('OnLeave', function() e.tips:Hide() end)

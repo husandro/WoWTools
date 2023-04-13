@@ -2524,7 +2524,8 @@
         "FCF_Close",
         "YELLOW_FONT_COLOR",
         "CLUB_FINDER_REPORT_SPAM",
-        "COMMUNITIES_INVITE_MANAGER_USES"
+        "COMMUNITIES_INVITE_MANAGER_USES",
+        "FlagsUtil"
     ],
     "Lua.diagnostics.disable": [
     ]
