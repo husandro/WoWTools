@@ -1,7 +1,9 @@
 local id, e = ...
 local addName = WORLD_MAP
 local addName2=RESET_POSITION:gsub(RESET, PLAYER)
-local Save={}
+local Save={
+    --PlayerXY=true,--玩家实时，坐标
+}
 local panel=CreateFrame("Frame")
 
 
@@ -165,26 +167,25 @@ local function setMapQuestList()--世界地图,任务, 加 - + 按钮
         f.btn:SetPushedAtlas('campaign_headericon_openpressed')
         f.btn:SetHighlightAtlas('Forge-ColorSwatchSelection')
         f.btn:SetSize(24,24)
-        f.btn:SetAlpha(0.3)
-        f.btn:SetScript('OnEnter', function(self) self:SetAlpha(1) end)
-        f.btn:SetScript('OnLeave', function(self) self:SetAlpha(0.3) end)
+        f.btn:SetAlpha(0.7)
+        --f.btn:SetScript('OnEnter', function(self) self:SetAlpha(1) end)
+        --f.btn:SetScript('OnLeave', function(self) self:SetAlpha(0.5) end)
         f.btn:SetScript("OnMouseDown", function() Exp() end)
 
         f.btn:SetFrameStrata('DIALOG')
-        f.btn2= CreateFrame("Button", nil, f)
+        f.btn2= CreateFrame("Button", nil, f.btn)
         f.btn2:SetPoint('BOTTOMRIGHT', f.btn, 'BOTTOMLEFT', 2, 0)
         f.btn2:SetNormalAtlas('campaign_headericon_closed')
         f.btn2:SetPushedAtlas('campaign_headericon_closedpressed')
         f.btn2:SetHighlightAtlas('Forge-ColorSwatchSelection')
         f.btn2:SetSize(24,24)
-        f.btn2:SetAlpha(0.3)
-        f.btn2:SetScript('OnEnter', function(self) self:SetAlpha(1) end)
-        f.btn2:SetScript('OnLeave', function(self) self:SetAlpha(0.3) end)
+        --f.btn2:SetAlpha(0.5)
+        --f.btn2:SetScript('OnEnter', function(self) self:SetAlpha(1) end)
+        --f.btn2:SetScript('OnLeave', function(self) self:SetAlpha(0.5) end)
         f.btn2:SetScript("OnMouseDown", function() Coll() end)
     end
     if f.btn then
         f.btn:SetShown(not Save.hide)
-        f.btn2:SetShown(not Save.hide)
     end
 end
 
@@ -248,6 +249,10 @@ local function sendPlayerPoint()--发送玩家位置
     end
 end
 
+
+--###############
+--实时玩家当前坐标
+--###############
 local function CursorPositionInt()
     local frame=WorldMapFrame
     if not Save.PlayerXY or frame.playerPostionBtn then
@@ -256,13 +261,14 @@ local function CursorPositionInt()
         end
         return
     end
-    frame.playerPostionBtn= e.Cbtn(nil, {icon=true, size={12,12}})-- CreateFrame('Button', nil, UIParent)--实时玩家当前坐标
+    frame.playerPostionBtn= e.Cbtn(nil, {icon='hide', size={12,12}})-- CreateFrame('Button', nil, UIParent)
     if not Save.PlayerXYPoint then
         frame.playerPostionBtn:SetPoint('BOTTOMRIGHT', frame, 'TOPRIGHT',-50, 5)
     else
         frame.playerPostionBtn:SetPoint(Save.PlayerXYPoint[1], UIParent, Save.PlayerXYPoint[3], Save.PlayerXYPoint[4], Save.PlayerXYPoint[5])
     end
 
+    frame.playerPostionBtn:SetFrameStrata('HIGH')
     frame.playerPostionBtn:SetMovable(true)
     frame.playerPostionBtn:RegisterForDrag("RightButton")
     frame.playerPostionBtn:SetClampedToScreen(true)
@@ -319,8 +325,8 @@ local function CursorPositionInt()
         print(id,addName, e.onlyChinese and '大小' or FONT_SIZE, size)
     end)
 
-    frame.playerPostionBtn.Text=e.Cstr(frame.playerPostionBtn, {size=Save.PlayerXYSize})
-    frame.playerPostionBtn.Text:SetPoint('RIGHT')
+    frame.playerPostionBtn.Text=e.Cstr(frame.playerPostionBtn, {size=Save.PlayerXYSize, color=true})
+    frame.playerPostionBtn.Text:SetPoint('BOTTOMRIGHT')
 
     local timeElapsed = 0
     frame.playerPostionBtn:HookScript("OnUpdate", function (self, elapsed)
