@@ -20,43 +20,71 @@ local function Du(self, slot, link) --耐久度
             du=min/max*100
         end
     end
-    if du then
-        if not self.du then
-            self.du= CreateFrame('StatusBar', nil, self)
-            --self.du:SetFrameLevel(self:GetFrameLevel()-1)
-            if Slot(slot) then
-               self.du:SetPoint('RIGHT', self, 'LEFT', -2.5,0)
-            else
-                self.du:SetPoint('LEFT', self, 'RIGHT', 2.5,0)
-            end
-            self.du:SetSize(4, self:GetHeight())--h37
-            self.du:SetMinMaxValues(0, 100)
-            self.du:SetOrientation("VERTICAL")
-            self.du:SetStatusBarTexture('Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_Smooth_Border')
-            self.du:EnableMouse(true)
-            self.du:SetScript('OnEnter', function(self2)
-                local value
-                value= self2:GetValue() or 0
-                value= format('%i%%', value)
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-				e.tips:ClearLines()
-				e.tips:AddLine((e.onlyChinese and '耐久度' or DURABILITY)..': '..value)
-				e.tips:Show()
-            end)
-            self.du:SetScript('OnLeave', function() e.tips:Hide() end)
-        end
-        if du >70 then
-            self.du:SetStatusBarColor(0,1,0)
-        elseif du >30 then
-            self.du:SetStatusBarColor(1,1,0)
+    if not self.du then
+        self.du= CreateFrame('StatusBar', nil, self)
+        local wq= slot==16 or slot==17 or slot==18--武器
+        if wq then
+            self.du:SetPoint('TOP', self, 'BOTTOM')
+        elseif Slot(slot) then
+            self.du:SetPoint('RIGHT', self, 'LEFT', -2.5,0)
         else
-            self.du:SetStatusBarColor(1,0,0)
+            self.du:SetPoint('LEFT', self, 'RIGHT', 2.5,0)
         end
-        self.du:SetValue(du)
+        if wq then
+            self.du:SetOrientation('HORIZONTAL')
+            self.du:SetSize(self:GetHeight(),4)--h37
+        else
+            self.du:SetOrientation("VERTICAL")
+            self.du:SetSize(4, self:GetHeight())--h37
+        end
+        self.du:SetStatusBarTexture('Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_Smooth_Border')
+        self.du:EnableMouse(true)
+        self.du:SetMinMaxValues(0, 100)
+        self.du:SetScript('OnEnter', function(self2)
+            if self2.du then
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine((e.onlyChinese and '耐久度' or DURABILITY),'%'..self2.du)
+                e.tips:Show()
+            end
+        end)
+        self.du:SetScript('OnLeave', function() e.tips:Hide() end)
     end
-    if self.du then
-        self.du:SetShown(du and true or false)
+    if du and du >70 then
+        self.du:SetStatusBarColor(0,1,0)
+    elseif du and du >30 then
+        self.du:SetStatusBarColor(1,1,0)
+    else
+        self.du:SetStatusBarColor(1,0,0)
     end
+    self.du:SetValue(du or 0)
+    self.du.du=du
+
+    if not self.slotText then
+        self.slotText=e.Cstr(self.du, {size=8})
+        self.slotText:EnableMouse(true)
+        self.slotText:SetScript('OnEnter', function(self2)
+            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine((e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS), self2.slot)
+            e.tips:Show()
+        end)
+        self.slotText:SetScript('OnLeave', function() e.tips:Hide() end)
+        if self.du then
+            self.slotText:SetPoint('CENTER', self.du)
+        else
+            local wq= slot==16 or slot==17 or slot==18--武器
+            if wq then
+                self.slotText:SetPoint('TOP', self.du or self, 'BOTTOM')
+            elseif Slot(slot) then
+                self.slotText:SetPoint('RIGHT', self.du or self, 'LEFT')
+            else
+                self.slotText:SetPoint('LEFT', self.du or self, 'RIGHT')
+            end
+        end
+    end
+    self.slotText.slot= slot
+    self.slotText:SetText(slot or '')
 end
 
 local function LvTo()--总装等
