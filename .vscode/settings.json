@@ -2527,7 +2527,11 @@
         "COMMUNITIES_INVITE_MANAGER_USES",
         "FlagsUtil",
         "GENERAL_LABEL",
-        "HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL"
+        "HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL",
+        "InspectPaperDollFrame",
+        "VIEW",
+        "InspectPaperDollItemsFrame",
+        "TALENT"
     ],
     "Lua.diagnostics.disable": [
     ]

@@ -323,6 +323,21 @@ local function Set(self, link)--套装
     end
     if self.set then self.set:SetShown(set) end
 end
+--[[
+local function AllItemName(self)
+    if link and not self.itemLinkText then
+        self.itemLinkText= e.Cstr(self)
+        local h=self:GetHeight()/3
+        if Slot(slot) then
+            self.itemLinkText:SetPoint('TOPLEFT', self, 'TOPRIGHT', 8+h, 0)
+        else
+            self.itemLinkText:SetPoint('RIGHT', self, 'LEFT', -8-h, 0)
+        end
+    end
+    if self.itemLinkText then
+        self.itemLinkText:SetText(link or '')
+    end
+end]]
 
 local function Title()--头衔数量
     if not PaperDollSidebarTab2 or not PAPERDOLL_SIDEBARS[2].IsActive() then
@@ -759,8 +774,31 @@ local function set_InspectPaperDollItemSlotButton_Update(self)
             end
         end)
         self:SetScript('OnLeave', function() e.tips:Hide() end)
+        self:SetScript('OnMouseDown', function(self2)
+            if self2.link then
+                local chat=SELECTED_DOCK_FRAME
+                ChatFrame_OpenChat((chat.editBox:GetText() or '')..self2.link, chat)
+            end
+        end)
     end
     self.link= link
+
+    if link and not self.itemLinkText then
+        self.itemLinkText= e.Cstr(self)
+        local h=self:GetHeight()/3
+        if slot==16 then
+            self.itemLinkText:SetPoint('BOTTOMRIGHT', InspectPaperDollFrame, 'BOTTOMLEFT', 6,15)
+        elseif slot==17 then
+            self.itemLinkText:SetPoint('BOTTOMLEFT', InspectPaperDollFrame, 'BOTTOMRIGHT', -5,15)
+        elseif Slot(slot) then
+            self.itemLinkText:SetPoint('RIGHT', self, 'LEFT', -2,0)
+        else
+            self.itemLinkText:SetPoint('LEFT', self, 'RIGHT', 5,0)
+        end
+    end
+    if self.itemLinkText then
+        self.itemLinkText:SetText(link or '')
+    end
 end
 
 local function set_InspectPaperDollFrame_SetLevel()--目标,天赋 装等
@@ -1105,6 +1143,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             add_Button_OpenOption(ItemInteractionFrameCloseButton)--添加一个按钮, 打开选项
 
         elseif arg1=='Blizzard_InspectUI' then
+            if InspectPaperDollFrame.ViewButton then
+                InspectPaperDollFrame.ViewButton:ClearAllPoints()
+                InspectPaperDollFrame.ViewButton:SetPoint('LEFT', InspectLevelText, 'RIGHT',4,0)
+                InspectPaperDollFrame.ViewButton:SetSize(25,25)
+                --InspectPaperDollFrame.ViewButton:SetNormalAtlas('common-icon-zoomin')
+                InspectPaperDollFrame.ViewButton:SetText(e.onlyChinese and '试' or e.WA_Utf8Sub(VIEW,1))
+            end
+            if InspectPaperDollItemsFrame.InspectTalents then
+                InspectPaperDollItemsFrame.InspectTalents:SetSize(25,25)
+                InspectPaperDollItemsFrame.InspectTalents:SetText(e.onlyChinese and '赋' or e.WA_Utf8Sub(TALENT,1))
+            end
+            
             hooksecurefunc('InspectPaperDollItemSlotButton_Update', set_InspectPaperDollItemSlotButton_Update)--目标, 装备
             hooksecurefunc('InspectPaperDollFrame_SetLevel', set_InspectPaperDollFrame_SetLevel)--目标,天赋 装等
         end
