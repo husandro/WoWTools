@@ -494,7 +494,7 @@ end
 local function Waypoint(text)--地图标记xy, 格式 60.0 70.5
     local uiMapID= WorldMapFrame:IsShown() and WorldMapFrame.mapID or C_Map.GetBestMapForUnit("player")
     if uiMapID and C_Map.CanSetUserWaypointOnMap(uiMapID) then
-        local x, y= text:match('(%d+%.%d) (%d+%.%d)')
+        local x, y= text:match('(%d+%.%d). (%d+%.%d)')
         if x and y then
             return '|cffffff00|Hworldmap:'..uiMapID..':'..x:gsub('%.','')..'0:'..y:gsub('%.','')..'0|h[|A:Waypoint-MapPin-ChatIcon:13:13:0:0|a'..text..']|h|r'
         end
@@ -532,7 +532,7 @@ local function setAddMessageFunc(self, s, ...)
     s=s:gsub('|Hjournal:.-]|h', Journal)
     s=s:gsub('|Hinstancelock:.-]|h', Instancelock)
 
-    s=s:gsub('(%d+%.%d %d+%.%d)', Waypoint)--地图标记xy, 格式 60.0 70.5
+    s=s:gsub('(%d+%.%d%d %d+%.%d%d)', Waypoint)--地图标记xy, 格式 60.00 70.50
 
     if not showTimestamps and s:find(set_LOOT_ITEM) then--	%s获得了战利品：%s。
         local unitName= s:match(set_LOOT_ITEM)

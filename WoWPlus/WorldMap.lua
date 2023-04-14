@@ -197,8 +197,8 @@ local function getPlayerXY()--当前世界地图位置
             local x,y
             x,y=position:GetXY()
             if x and y then
-                x=('%.1f'):format(x*100)
-                y=('%.1f'):format(y*100)
+                x=('%.2f'):format(x*100)
+                y=('%.2f'):format(y*100)
                 return x, y
             end
         end
@@ -343,7 +343,11 @@ local function CursorPositionInt()
     end)
 end
 
-local function setOnEnter(self)--地图ID提示
+
+--#########
+--地图ID提示
+--#########
+local function setOnEnter(self)
     local frame=WorldMapFrame
     e.tips:SetOwner(self, "ANCHOR_LEFT")
     e.tips:ClearLines()
@@ -505,22 +509,66 @@ local function set_Map_ID(self)--显示地图ID
                 sendPlayerPoint()--发送玩家位置
             end
         end)
+
+        self.playerPosition.edit= CreateFrame("EditBox", nil, self.playerPosition, 'InputBoxTemplate')
+        self.playerPosition.edit:SetSize(73,20)
+        self.playerPosition.edit:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
+        self.playerPosition.edit:SetAutoFocus(false)
+        self.playerPosition.edit:SetPoint('LEFT', self.playerPosition, 'RIGHT',2,0)
+
+        --[[local function setEditWay(self3)
+            if not (WorldMapFrame.mapID and C_Map.CanSetUserWaypointOnMap(WorldMapFrame.mapID)) then
+                if self3.text then
+                    self3.text:SetText('')
+                end
+                return
+            end
+            local text=self3:GetText()
+            local x,y=text:match('(%d+%.%d%d) (%d+%.%d%d)')
+            if not (x and y) then
+                x, y= text:match('(%d+%.%d%d), (%d+%.%d%d)')
+            end
+            if x and y then
+            end
+        end
+        self.playerPosition.edit:SetScript('OnTextChanged', function(self2)
+            if not self2:HasFocus() then
+                return
+            end
+            setEditWay(self2)
+        end)
+        self.playerPosition.edit:SetScript('OnEnterPressed', setEditWay)]]
+        self.playerPosition.edit:SetScript('OnEditFocusLost', function(self2)
+            self2:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
+        end)
+        self.playerPosition.edit:SetScript('OnEditFocusGained', function(self2)
+            --local bool= WorldMapFrame.mapID and C_Map.CanSetUserWaypointOnMap(WorldMapFrame.mapID)
+            self2:SetTextColor(1,1,1)
+        end)
+        self.playerPosition.edit.Left:SetAlpha(0.5)
+        self.playerPosition.edit.Middle:SetAlpha(0.5)
+        self.playerPosition.edit.Right:SetAlpha(0.5)
+
         self.playerPosition.Text=e.Cstr(self.playerPosition, {copyFont=WorldMapFrameTitleText})--玩家当前坐标
-        self.playerPosition.Text:SetPoint('LEFT',self.playerPosition, 'RIGHT')
-        local timeElapsed2=0
+        self.playerPosition.Text:SetPoint('LEFT',self.playerPosition.edit, 'RIGHT', 2,0)
+        self.playerPosition.elapsed=0
         self.playerPosition:HookScript("OnUpdate", function (self2, elapsed)
-            timeElapsed2 = timeElapsed2 + elapsed
-            if timeElapsed2 > 0.15 then
-                timeElapsed2 = 0
+            self2.elapsed = self2.elapsed + elapsed
+            if self2.elapsed > 0.15 then
+                self2.elapsed = 0
                 local text=''
                 local x, y= getPlayerXY()--玩家当前坐标
                 if x and y then
                     text=x..' '..y
                 end
-                x, y = WorldMapFrame.ScrollContainer:GetNormalizedCursorPosition()--当前世界地图位置            
+                if not self2.edit:HasFocus() then
+                    self2.edit:SetText(text)
+                end
+                x, y = WorldMapFrame.ScrollContainer:GetNormalizedCursorPosition()--当前世界地图位置
                 if x and y then
-                    text = text~='' and text..' |cnGREEN_FONT_COLOR:' or text
-                    text = text..('%.1f'):format(x*100)..' '..('%.1f'):format(y*100)
+                    text = ('%.2f'):format(x*100)..' '..('%.2f'):format(y*100)
+                else
+                    text=''
                 end
                 self.playerPosition.Text:SetText(text)
             end
