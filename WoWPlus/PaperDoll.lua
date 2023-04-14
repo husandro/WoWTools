@@ -770,6 +770,7 @@ local function set_InspectPaperDollItemSlotButton_Update(self)
                 e.tips:ClearLines()
                 e.tips:SetOwner(InspectFrame, "ANCHOR_RIGHT")
                 e.tips:SetHyperlink(self2.link)
+                e.tips:AddDoubleLine(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, e.Icon.left)
                 e.tips:Show()
             end
         end)
