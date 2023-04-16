@@ -415,14 +415,16 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 		factionContainer.check:SetScript('OnEnter', function(self)
 			e.tips:SetOwner(self, "ANCHOR_RIGHT")
 			e.tips:ClearLines()
-			e.tips:AddDoubleLine((e.onlyChinese and '文本' or  LOCALE_TEXT_LABEL), e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
 			if self.factionID then
-				e.tips:AddLine('factionID '..self.factionID)
+				local name2=GetFactionInfoByID(self.factionID)
+				e.tips:AddDoubleLine(name2, self.factionID, 0,1,0,0,1,0)
+				e.tips:AddLine(' ')
 			end
-			e.tips:AddLine(' ')
+			
 			if Save.btnStrHideCap then
-				e.tips:AddLine((e.onlyChinese and '隐藏最高' or (VIDEO_OPTIONS_ULTRA_HIGH..': '..HIDE)))
+				e.tips:AddLine('|cffff00ff'..(e.onlyChinese and '隐藏最高' or (VIDEO_OPTIONS_ULTRA_HIGH..': '..HIDE)))
 			end
+			e.tips:AddDoubleLine((e.onlyChinese and '文本' or  LOCALE_TEXT_LABEL), e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
 			e.tips:AddDoubleLine(id, addName)
 			e.tips:Show()
 		end)
