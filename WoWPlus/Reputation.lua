@@ -12,7 +12,7 @@ local panel= e.Cbtn(ReputationFrame, {icon=true,size={20, 20}})
 
 
 local function get_Faction_Info(tab)
-	local name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canBeLFGBonus 
+	local name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canBeLFGBonus
 	if tab.index then
 		name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canBeLFGBonus= GetFactionInfo(tab.index)
 	else
@@ -136,8 +136,13 @@ local function set_Text()--设置, 文本
 
 	local m=''
 	if Save.indicato then
-		for factionID, _ in pairs(Save.factions) do
-			local t=get_Faction_Info({factionID= factionID, hide=nil, name=not Save.hideName,})
+		local tab={}
+		for factionID, value in pairs(Save.factions) do
+			table.insert(tab, {factionID= factionID, index= value==true and 1 or value})
+		end
+		table.sort(tab, function(a, b) return a.index < b.index end)
+		for _, info in pairs(tab) do
+			local t=get_Faction_Info({factionID= info.factionID, hide=nil, name=not Save.hideName,})
 			if t then
 				if m~='' then m=m..'|n' end
 				m=m..t
@@ -407,7 +412,7 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 		factionContainer.check:SetFrameStrata('DIALOG')
 		factionContainer.check:SetScript('OnClick', function(self)
 			if self.factionID then
-				Save.factions[factionID]= not Save.factions[factionID] and true or nil
+				Save.factions[factionID]= not Save.factions[factionID] and self.factionIndex or nil
 				self:SetAlpha(Save.factions[factionID] and 1 or 0.5)
 				set_Text()--设置, 文本
 			end
@@ -420,7 +425,6 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 				e.tips:AddDoubleLine(name2, self.factionID, 0,1,0,0,1,0)
 				e.tips:AddLine(' ')
 			end
-			
 			if Save.btnStrHideCap then
 				e.tips:AddLine('|cffff00ff'..(e.onlyChinese and '隐藏最高' or (VIDEO_OPTIONS_ULTRA_HIGH..': '..HIDE)))
 			end
@@ -434,6 +438,7 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 	end
 	factionContainer.check:SetShown(true)
 	factionContainer.check.factionID= factionID
+	factionContainer.check.factionIndex= factionIndex
 	factionContainer.check:SetChecked(Save.factions[factionID])
 	factionContainer.check:SetAlpha(Save.factions[factionID] and 1 or 0.5)
 end

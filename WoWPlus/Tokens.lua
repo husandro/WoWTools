@@ -128,8 +128,13 @@ local function set_Text()
 	local m=''
 
 	if Save.indicato then
-		for currentID, _ in pairs(Save.tokens) do
-			local text= Get_Currency({id=currentID, index=nil, link=nil, soloValue=nil, showIcon=true, showName=Save.nameShow, showID=Save.showID, bit=3, showMax=nil})--货币
+		local tab={}
+		for currentID, index in pairs(Save.tokens) do
+			table.insert(tab, {currentID= currentID, index=index==true and 1 or index})
+		end
+		table.sort(tab, function(a,b) return a.index< b.index end)
+		for _, info in pairs(tab) do
+			local text= Get_Currency({id=info.currentID, index=nil, link=nil, soloValue=nil, showIcon=true, showName=Save.nameShow, showID=Save.showID, bit=3, showMax=nil})--货币
 			if text then
 				m= m..text..'\n' or m
 			end
@@ -264,7 +269,7 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 		frame.check:SetPoint('LEFT', -3,0)
 		frame.check:SetScript('OnClick', function(self)
 			if self.currencyID then
-				Save.tokens[self.currencyID]= not Save.tokens[self.currencyID] and true or nil
+				Save.tokens[self.currencyID]= not Save.tokens[self.currencyID] and self.index or nil
 				frame.check:SetAlpha(Save.tokens[self.currencyID] and 1 or 0.5)
 				set_Text()--设置, 文本
 			end
@@ -272,8 +277,14 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 		frame.check:SetScript('OnEnter', function(self)
 			e.tips:SetOwner(self, "ANCHOR_RIGHT")
 			e.tips:ClearLines()
+			if self.currencyID then
+				local info2=C_CurrencyInfo.GetCurrencyInfo(self.currencyID)
+				if info2 and info2.name then
+					e.tips:AddDoubleLine(info2.name, self.currencyID, 0,1,0, 0,1,0)
+					e.tips:AddLine(' ')
+				end
+			end
 			e.tips:AddDoubleLine((e.onlyChinese and '文本' or  LOCALE_TEXT_LABEL), e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
-			e.tips:AddLine(' ')
 			e.tips:AddDoubleLine(id, addName)
 			e.tips:Show()
 		end)
@@ -284,6 +295,7 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 
 	if frame.check then
 		frame.check.currencyID= currencyID
+		frame.check.index= frame.index
 		frame.check:SetShown(not frame.isHeader)
 		frame.check:SetChecked(Save.tokens[currencyID])
 		frame.check:SetAlpha(Save.tokens[currencyID] and 1 or 0.5)
