@@ -70,7 +70,7 @@ local function setPanelPostion()--设置按钮位置
         else
             button:SetPoint('CENTER')
         end]]
-        button:SetPoint('BOTTOMRIGHT', UIParent, 'BOTTOMRIGHT', -290, 6)
+        button:SetPoint('BOTTOMRIGHT', UIParent, 'BOTTOMRIGHT', -320, 6)
     end
 end
 
