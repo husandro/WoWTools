@@ -39,7 +39,7 @@ local function SetChannels(link)
         if name:find(GENERAL_LABEL) then--综合
             return link:gsub('%[.-]', '['..e.WA_Utf8Sub(GENERAL_LABEL, 1, 5)..']')
         end
-        
+
         name= name:match('%d+%. (.+)') or name:match('%d+．(.+)') or name--去数字
         name= name:match('%- (.+)') or name:match('：(.+)') or name:match(':(.+)') or name
         name=e.WA_Utf8Sub(name, 1, 5)
@@ -50,21 +50,28 @@ end
 local function Realm(link)--去服务器为*, 加队友种族图标,和N,T
     --local name=link:match('|Hplayer:.-|h%[|cff......(.-)|r]') or link:match('|Hplayer:.-|h%[(.-)]|h')
     local split= LinkUtil.SplitLink(link)
-    local name= split:match('player:(.-):')
+    local name= split and split:match('player:(.-):') or link:match('|Hplayer:.-|h%[|cff......(.-)|r]') or link:match('|Hplayer:.-|h%[(.-)]|h')
     local server= name and name:match('-(.+)')
     if name == e.Player.name or name==e.Player.name_server then
         return e.Icon.toRight2..e.Player.col..COMBATLOG_FILTER_STRING_ME..'|r'..e.Icon.toLeft2
     else
-        --local server=link:match('|Hplayer:.-|h%[.-%-(.-)|r]|h') or link:match('|Hplayer:.-|h%[(.-)]|h')
-        local  text
-        local tab=e.GroupGuid[name]--队伍成员
+        local text, guid
+
+        local tab= e.GroupGuid[name]--队伍成员
         if tab and tab.unit then--玩家种族图标
             local race=e.Race(tab.unit)
             text= race
             if tab.combatRole=='HEALER' or tab.combatRole=='TANK' then--职业图标
                 text= (text or '')..e.Icon[tab.combatRole]..(tab.subgroup or '')
             end
+            guid= tab.guid
         end
+
+        local friend= e.GetFriend(name, guid)--检测, 是否好友 
+        if friend then
+            text= friend..(text or '')
+        end
+
         if server then
             local realm= e.Get_Region(server)--服务器，EU， US {col=, text=, realm=}
             if realm then

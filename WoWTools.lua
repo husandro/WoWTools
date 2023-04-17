@@ -339,7 +339,8 @@ e.GetUnitMapName=function(unit)--单位, 地图名称
     return text, uiMapID
 end
 
-e.GetFriend = function(name, guid)--检测, 是否好友 
+e.GetFriend = function(name, guid, unit)--检测, 是否好友
+    guid= unit and UnitGUID(unit) or guid
     if guid then
         if C_FriendList.IsFriend(guid) then
             return '|A:groupfinder-icon-friend:0:0|a', nil--好友
@@ -348,7 +349,7 @@ e.GetFriend = function(name, guid)--检测, 是否好友
         elseif C_BattleNet.GetAccountInfoByGUID(guid) or C_BattleNet.GetGameAccountInfoByGUID(guid) then
             return e.Icon.wow2, true;
         end
-    else
+    elseif name then
         if C_FriendList.GetFriendInfo(name) or C_FriendList.GetFriendInfo(name:gsub('%-.+','')) then
             return '|A:groupfinder-icon-friend:0:0|a', nil--好友
         end
