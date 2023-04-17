@@ -2531,7 +2531,9 @@
         "InspectPaperDollFrame",
         "VIEW",
         "InspectPaperDollItemsFrame",
-        "TALENT"
+        "TALENT",
+        "ProfessionsSpecFrameMixin",
+        "PROFESSIONS_SPECS_ADD_KNOWLEDGE"
     ],
     "Lua.diagnostics.disable": [
     ]

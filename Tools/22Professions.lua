@@ -82,7 +82,7 @@ local function set_Blizzard_TrainerU()
         end
         btn:SetShown(show and not Save.disabledClassTrainer)
 
-        
+
         --[[for _, frame in pairs(ClassTrainerFrame.ScrollBox:GetFrames()) do
             print(_, frame, frame.skillIndex, frame.isTradeSkill )
         end]]
@@ -383,6 +383,38 @@ local function Init()
             end
         end
     end)
+
+    --Blizzard_ProfessionsSpecializations.lua
+    hooksecurefunc(ProfessionsFrame.SpecPage, 'UpdateDetailedPanel', function(self, setLocked)
+        local button=self.DetailedView.SpendAllPointsButton
+        if not button then
+            button= e.Cbtn(self.DetailedView.SpendPointsButton, {type=false, size={80, 22}})
+            button:SetPoint('LEFT', self.DetailedView.SpendPointsButton, 'RIGHT',40,0)
+            button:SetText(e.onlyChinese and '全部' or ALL)
+            button:SetScript('OnClick', function(self2)
+                local parent= self2:GetParent()
+                while parent:IsEnabled() do
+                    local success= C_Traits.PurchaseRank(self2.configID, self2.nodeID)
+                    if not success then
+                        return
+                    end
+                end
+            end)
+            button:SetScript('OnEnter', function(self2)
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(not e.onlyChinese and PROFESSIONS_SPECS_ADD_KNOWLEDGE or "运用知识", e.onlyChinese and '全部' or ALL)
+                e.tips:AddDoubleLine(id,addName)
+                e.tips:Show()
+            end)
+            button:SetScript('OnLeave', function() e.tips:Hide() end)
+            self.DetailedView.SpendAllPointsButton= button
+        end
+        button:SetShown(self.DetailedView.SpendPointsButton:IsShown())
+        button:SetEnabled(self.DetailedView.SpendPointsButton:IsEnabled())
+        button.nodeID= self:GetDetailedPanelNodeID();
+        button.configID= self:GetConfigID()
+    end)
 end
 
 --###########
@@ -413,7 +445,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            
+
             WoWToolsSave[addName..'Tools']=Save
         end
 
