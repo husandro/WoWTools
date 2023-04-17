@@ -78,7 +78,7 @@ local function setButtons()--设置按钮, 和位置
                     if d=='LeftButton' then--加载
                         for i=1, GetNumAddOns() do
                             local name2= GetAddOnInfo(i);
-                            if name2 and Save.buttons[name][name2] then
+                            if name2 and Save.buttons[self.name][name2] then
                                 EnableAddOn(i)
                             else
                                 DisableAddOn(i)
@@ -86,17 +86,26 @@ local function setButtons()--设置按钮, 和位置
                         end
                         e.Reload()
                     elseif d=='RightButton' then--移除
-                        StaticPopup_Show(id..addName..'DELETE', name, num, {name=name, frame=self})
+                        StaticPopup_Show(id..addName..'DELETE', self.name, num, {name=self.name, frame=self})
                     end
                 end)
                 panel.buttons[name]:SetScript('OnEnter', function(self)
                     e.tips:SetOwner(self, "ANCHOR_RIGHT");
                     e.tips:ClearLines();
-                    e.tips:AddDoubleLine((e.onlyChinese and '加载插件' or LOAD_ADDON)..e.Icon.left, (e.onlyChinese and '删除' or DELETE)..e.Icon.right,0,1,0, 0,1,0)
-                    local index=1
-                    for name2,_ in pairs(Save.buttons[name]) do
-                        e.tips:AddDoubleLine(name2, index)
-                        index=index+1
+                    e.tips:AddDoubleLine((e.onlyChinese and '加载插件' or LOAD_ADDON)..e.Icon.left, (e.onlyChinese and '删除' or DELETE)..e.Icon.right,1,0,1, 1,0,1)
+                    local addTab={}
+                    for name2, index2 in pairs(Save.buttons[self.name]) do
+                        table.insert(addTab, {name=name2, index= type(index2)=='number' and index2 or 1})
+                    end
+                    table.sort(addTab, function(a,b) return a.index< b.index end)
+                    local all=0
+                    for _, info in pairs(addTab) do
+                        all=all+1
+                        local name2= info.name
+                        if IsAddOnLoaded(name2) then
+                            name2= '|cnGREEN_FONT_COLOR:'..name2..'|r'..e.Icon.select2
+                        end
+                        e.tips:AddDoubleLine(name2, all)
                     end
                     e.tips:Show()
                 end)
@@ -106,6 +115,7 @@ local function setButtons()--设置按钮, 和位置
             panel.buttons[name]:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0,2)
             panel.buttons[name]:SetText('|cnGREEN_FONT_COLOR:'..num..'|r'..name)
             panel.buttons[name].totaleAddons=num
+            panel.buttons[name].name= name
         end
         if panel.buttons[name] then
             panel.buttons[name]:SetShown(num>0)
@@ -132,7 +142,7 @@ StaticPopupDialogs[id..addName..'NEW']={
             if GetAddOnEnableState(nil,i)==2 then
                 local name=GetAddOnInfo(i);
                 if name then
-                    Save.buttons[text][name]=true
+                    Save.buttons[text][name]=i
                 end
             end
         end
