@@ -340,7 +340,7 @@ e.GetUnitMapName=function(unit)--单位, 地图名称
 end
 
 e.GetFriend = function(name, guid, unit)--检测, 是否好友
-    guid= unit and UnitGUID(unit) or guid
+    guid= guid or (unit and UnitGUID(unit)) or (name and e.GroupGuid[name])
     if guid then
         if C_FriendList.IsFriend(guid) then
             return '|A:groupfinder-icon-friend:0:0|a', nil, guid--好友
