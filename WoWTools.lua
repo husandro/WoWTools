@@ -159,15 +159,15 @@ e.GetPlayerInfo= function(unit, guid, showName)--玩家信息图标
     return ''
 end
 
-local classFilename= UnitClassBase('player')
-local rPerc, gPerc, bPerc, argbHex = GetClassColor(classFilename)
+
+local rPerc, gPerc, bPerc, argbHex = GetClassColor(UnitClassBase('player'))
 e.Player={
     server= GetRealmName(),
     servers= {},--多服务器
     name_server= UnitName('player')..'-'..GetRealmName(),
     name= UnitName('player'),
     sex= UnitSex("player"),
-    class= classFilename,
+    class= UnitClassBase('player'),
     r= rPerc,
     g= gPerc,
     b= bPerc,
@@ -1118,49 +1118,55 @@ end
 --###############
 --显示, 物品, 属性
 --###############
+e.Get_Item_Stats= function(link)--物品，次属性，表
+    if not link then
+        return {}
+    end
+    local num, tab= 0, {}
+    local info= GetItemStats(link) or {}
+    if info['ITEM_MOD_CRIT_RATING_SHORT'] then
+        table.insert(tab, {text=e.onlyChinese and '爆' or strlower(e.WA_Utf8Sub(STAT_CRITICAL_STRIKE, 1, 2)), value=info['ITEM_MOD_CRIT_RATING_SHORT'] or 1, index=1})
+        num= num +1
+    end
+    if info['ITEM_MOD_HASTE_RATING_SHORT'] then
+        table.insert(tab, {text=e.onlyChinese and '急' or strlower(e.WA_Utf8Sub(STAT_HASTE, 1,2)), value=info['ITEM_MOD_HASTE_RATING_SHORT'] or 1, index=1})
+        num= num +1
+    end
+    if info['ITEM_MOD_MASTERY_RATING_SHORT'] then
+        table.insert(tab, {text=e.onlyChinese and '精' or strlower(e.WA_Utf8Sub(STAT_MASTERY, 1,2)), value=info['ITEM_MOD_MASTERY_RATING_SHORT'] or 1, index=1})
+        num= num +1
+    end
+    if info['ITEM_MOD_VERSATILITY'] then
+        table.insert(tab, {text=e.onlyChinese and '全' or strlower(e.WA_Utf8Sub(STAT_VERSATILITY, 1,2)), value=info['ITEM_MOD_VERSATILITY'] or 1, index=1})
+        num= num +1
+    end
+    if num<4 and info['ITEM_MOD_CR_AVOIDANCE_SHORT'] then
+        table.insert(tab, {text=e.onlyChinese and '闪' or strlower(e.WA_Utf8Sub(ITEM_MOD_CR_AVOIDANCE_SHORT, 1,2)), value=info['ITEM_MOD_CR_AVOIDANCE_SHORT'], index=2})
+        num= num +1
+    end
+    if num<4 and info['ITEM_MOD_CR_LIFESTEAL_SHORT'] then
+        table.insert(tab, {text=e.onlyChinese and '吸' or strlower(e.WA_Utf8Sub(ITEM_MOD_CR_LIFESTEAL_SHORT, 1,2)), value=info['ITEM_MOD_CR_LIFESTEAL_SHORT'] or 1, index=2})
+        num= num +1
+    end
+    --[[if num<4 and info['ITEM_MOD_CR_AVOIDANCE_SHORT'] then
+        table.insert(tab, {text=e.onlyChinese and '溅' or strlower(e.WA_Utf8Sub(ITEM_MOD_CR_MULTISTRIKE_SHORT, 1,2)), value=info['ITEM_MOD_CR_MULTISTRIKE_SHORT'] or 1, index=2})
+        num= num +1
+    end]]
+    if num<4 and info['ITEM_MOD_CR_SPEED_SHORT'] then
+        table.insert(tab, {text=e.onlyChinese and '速' or strlower(e.WA_Utf8Sub(ITEM_MOD_CR_SPEED_SHORT, 1,2)), value=info['ITEM_MOD_CR_SPEED_SHORT'] or 1, index=2})
+        num= num +1
+    end
+    return tab
+end
+
 e.Set_Item_Stats = function(self, link, point)
     if not self then
         return
     end
     local setID, itemLevel
-    local tab={}
+    local tab=e.Get_Item_Stats(link)--物品，次属性，表
     if link then
-        local num=0
-        local info= GetItemStats(link) or {}
-        if info['ITEM_MOD_CRIT_RATING_SHORT'] then
-            table.insert(tab, {text=e.onlyChinese and '爆' or strlower(e.WA_Utf8Sub(STAT_CRITICAL_STRIKE, 1, 2)), value=info['ITEM_MOD_CRIT_RATING_SHORT'] or 1, index=1})
-            num= num +1
-        end
-        if info['ITEM_MOD_HASTE_RATING_SHORT'] then
-            table.insert(tab, {text=e.onlyChinese and '急' or strlower(e.WA_Utf8Sub(STAT_HASTE, 1,2)), value=info['ITEM_MOD_HASTE_RATING_SHORT'] or 1, index=1})
-            num= num +1
-        end
-        if info['ITEM_MOD_MASTERY_RATING_SHORT'] then
-            table.insert(tab, {text=e.onlyChinese and '精' or strlower(e.WA_Utf8Sub(STAT_MASTERY, 1,2)), value=info['ITEM_MOD_MASTERY_RATING_SHORT'] or 1, index=1})
-            num= num +1
-        end
-        if info['ITEM_MOD_VERSATILITY'] then
-            table.insert(tab, {text=e.onlyChinese and '全' or strlower(e.WA_Utf8Sub(STAT_VERSATILITY, 1,2)), value=info['ITEM_MOD_VERSATILITY'] or 1, index=1})
-            num= num +1
-        end
-        if num<4 and info['ITEM_MOD_CR_AVOIDANCE_SHORT'] then
-            table.insert(tab, {text=e.onlyChinese and '闪' or strlower(e.WA_Utf8Sub(ITEM_MOD_CR_AVOIDANCE_SHORT, 1,2)), value=info['ITEM_MOD_CR_AVOIDANCE_SHORT'], index=2})
-            num= num +1
-        end
-        if num<4 and info['ITEM_MOD_CR_LIFESTEAL_SHORT'] then
-            table.insert(tab, {text=e.onlyChinese and '吸' or strlower(e.WA_Utf8Sub(ITEM_MOD_CR_LIFESTEAL_SHORT, 1,2)), value=info['ITEM_MOD_CR_LIFESTEAL_SHORT'] or 1, index=2})
-            num= num +1
-        end
-        --[[if num<4 and info['ITEM_MOD_CR_AVOIDANCE_SHORT'] then
-            table.insert(tab, {text=e.onlyChinese and '溅' or strlower(e.WA_Utf8Sub(ITEM_MOD_CR_MULTISTRIKE_SHORT, 1,2)), value=info['ITEM_MOD_CR_MULTISTRIKE_SHORT'] or 1, index=2})
-            num= num +1
-        end]]
-        if num<4 and info['ITEM_MOD_CR_SPEED_SHORT'] then
-            table.insert(tab, {text=e.onlyChinese and '速' or strlower(e.WA_Utf8Sub(ITEM_MOD_CR_SPEED_SHORT, 1,2)), value=info['ITEM_MOD_CR_SPEED_SHORT'] or 1, index=2})
-            num= num +1
-        end
-
-        setID= select(16 , GetItemInfo(link))--套装
+          setID= select(16 , GetItemInfo(link))--套装
         if setID and not self.itemSet then
             self.itemSet= self:CreateTexture()
             self.itemSet:SetAtlas(e.Icon.pushed)

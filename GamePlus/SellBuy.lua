@@ -278,34 +278,50 @@ local function setMerchantInfo()
     for i=1, page do
 		local index = selectedTab==1 and (((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i) or i
         local itemButton= _G["MerchantItem"..i]
-        if itemButton then
-            local num
-            if itemButton:IsShown() then
-                local itemID
-                if selectedTab==1 then
-                    itemID = GetMerchantItemID(index)
-                else
-                    itemID=C_MerchantFrame.GetBuybackItemID(index)
-                end
-                num=(not Save.notAutoBuy and itemID) and buySave[itemID]
-                num= num and num..'|T236994:0|t'
-                if not Save.notShowBagNum then
-                    local bag=itemID and GetItemCount(itemID,true)
-                    if bag and bag>0 then
-                        num=(num and num..'\n' or '')..bag..e.Icon.bank2
-                    end
-                end
-                if num then
-                    if not itemButton.buyItemNum then
-                        itemButton.buyItemNum=e.Cstr(itemButton)
-                        itemButton.buyItemNum:SetPoint('BOTTOMRIGHT')
-                    end
-                    itemButton.buyItemNum:SetText(num)
-                    num=true
+        if itemButton and itemButton:IsShown() then
+            local itemID, itemLink
+            if selectedTab==1 then
+                itemID= GetMerchantItemID(index)
+                itemLink= itemButton.link or GetMerchantItemLink(index)
+            else
+                itemID= C_MerchantFrame.GetBuybackItemID(index)
+                itemLink= itemButton.link or GetBuybackItemLink(index)
+            end
+
+            local num=(not Save.notAutoBuy and itemID) and buySave[itemID]--自动购买， 数量
+            num= num and num..'|T236994:0|t'
+            if not Save.notShowBagNum then--包里，银行，总数
+                local bag=itemID and GetItemCount(itemID,true)
+                if bag and bag>0 then
+                    num=(num and num..'\n' or '')..bag..e.Icon.bank2
                 end
             end
+            if num and not itemButton.buyItemNum then
+                itemButton.buyItemNum=e.Cstr(itemButton)
+                itemButton.buyItemNum:SetPoint('RIGHT')
+            end
             if itemButton.buyItemNum then
-                itemButton.buyItemNum:SetShown(num)
+                itemButton.buyItemNum:SetText(num or '')
+            end
+
+            local text
+            local classID= itemLink and select(6, GetItemInfoInstant(itemLink))
+            if classID==2 or classID==4 then--装备
+                local stat= e.Get_Item_Stats(itemLink)--物品，次属性，表
+                for _, tab in pairs(stat) do
+                    text= text and text..' ' or ''
+                    text= (text and text..' ' or '')..tab.text
+                end
+                if GetItemSpell(itemLink) then
+                    text= (text or '').. '|A:soulbinds_tree_conduit_icon_utility:10:10|a'
+                end
+                if text and not itemButton.stats then
+                    itemButton.stats=e.Cstr(itemButton, {size=10})
+                    itemButton.stats:SetPoint('TOPLEFT', itemButton, 'BOTTOMLEFT',0,6)
+                end
+            end
+            if itemButton.stats then
+                itemButton.stats:SetText(text or '')
             end
         end
     end
