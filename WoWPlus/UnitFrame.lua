@@ -88,7 +88,7 @@ local function set_Instance_Difficulty()
                 local text2= (e.onlyChinese and '地下城难度' or DUNGEON_DIFFICULTY)..': '..name2
 
                 if name3==name2 or displayMythic3 then
-                    text2= text2..'\n'..text3
+                    text2= text2..'\n\n'..text3
                 end
                 PlayerFrame.instanceFrame.tips=text2
                 find= true
