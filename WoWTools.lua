@@ -350,7 +350,8 @@ e.GetFriend = function(name, guid, unit)--检测, 是否好友
             return e.Icon.wow2, true, guid
         end
     elseif name then
-        local info=C_FriendList.GetFriendInfo(name) or C_FriendList.GetFriendInfo(name:gsub('%-.+',''))
+        local name2=name:match('(.-)%-')
+        local info=C_FriendList.GetFriendInfo(name) or (name2 and C_FriendList.GetFriendInfo(name2))
         if info then
             return '|A:groupfinder-icon-friend:0:0|a', nil, info.guid--好友
         end
