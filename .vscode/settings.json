@@ -2533,7 +2533,9 @@
         "InspectPaperDollItemsFrame",
         "TALENT",
         "ProfessionsSpecFrameMixin",
-        "PROFESSIONS_SPECS_ADD_KNOWLEDGE"
+        "PROFESSIONS_SPECS_ADD_KNOWLEDGE",
+        "DUNGEON_SCORE_BEST_AFFIX",
+        "CHALLENGE_COMPLETE_DUNGEON_SCORE"
     ],
     "Lua.diagnostics.disable": [
     ]

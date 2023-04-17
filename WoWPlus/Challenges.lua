@@ -899,15 +899,35 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                 local intimeInfo, overtimeInfo = C_MythicPlus.GetSeasonBestForMap(frame.mapID)--分数 最佳
                 local affixScores, overAllScore = C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(frame.mapID)
                 if(overAllScore and intimeInfo or overtimeInfo) then
-                    if not frame.sc then--分数
-                        frame.sc=e.Cstr(frame, {size=10})
-                        frame.sc:SetPoint('LEFT', 0, -3)
+                    local label=frame.sc
+                    if not label then--分数
+                        label=e.Cstr(frame, {size=10})
+                        label:SetPoint('LEFT', 0, -3)
+                        label:EnableMouse(true)
+                        label:SetScript('OnEnter', function(self2)
+                            e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
+                            e.tips:ClearLines()
+                            e.tips:AddLine((e.onlyChinese and '史诗钥石评分：%s' or CHALLENGE_COMPLETE_DUNGEON_SCORE ):format(self2.score))
+                            e.tips:Show()
+                        end)
+                        label:SetScript('OnLeave', function() e.tips:Hide() end)
+                        frame.sc= label
                         if frame.HighestLevel then--移动层数位置
                             frame.HighestLevel:ClearAllPoints()
                             frame.HighestLevel:SetPoint('LEFT', 0, 12)
+                            frame.HighestLevel:EnableMouse(true)
+                            frame.HighestLevel:SetScript('OnEnter', function(self2)
+                                e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
+                                e.tips:ClearLines()
+                                e.tips:AddLine((e.onlyChinese and '最佳%s' or DUNGEON_SCORE_BEST_AFFIX):format( (e.onlyChinese and '等级' or LEVEL)..': '..self2:GetText()))
+                                e.tips:Show()
+                            end)
+                            frame.HighestLevel:SetScript('OnLeave', function() e.tips:Hide() end)
                         end
                     end
-                    frame.sc:SetText('|A:AdventureMapIcon-MissionCombat:16:16|a'..e.GetKeystoneScorsoColor(overAllScore,nil,true))
+                    local score= '|A:AdventureMapIcon-MissionCombat:16:16|a'..e.GetKeystoneScorsoColor(overAllScore,nil,true)
+                    label:SetText(score)
+                    label.score= score
                 end
 
                 if(affixScores and #affixScores > 0) then --最佳 
@@ -916,16 +936,28 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                     local k=1
                     for _, info in ipairs(affixScores) do
                         if info.level and info.level>0 and (info.name == nameA or info.name==nameB) then
-                            if not frame['affixInfo'..k] then
-                                frame['affixInfo'..k]= e.Cstr(frame, {justifyH= info.name==nameB and 'RIGHT'})
+                            local label=frame['affixInfo'..k]
+                            if not label then
+                                label= e.Cstr(frame, {justifyH= info.name==nameB and 'RIGHT'})
                                 if info.name== nameA then
-                                    frame['affixInfo'..k]:SetPoint('BOTTOMLEFT')
+                                    label:SetPoint('BOTTOMLEFT')
                                 else
-                                    frame['affixInfo'..k]:SetPoint('BOTTOMLEFT', 0, 14)
+                                    label:SetPoint('BOTTOMLEFT', 0, 14)
                                 end
+                                label:EnableMouse(true)
+                                label:SetScript('OnEnter', function(self2)
+                                    e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
+                                    e.tips:ClearLines()
+                                    e.tips:AddLine((e.onlyChinese and '最佳%s' or DUNGEON_SCORE_BEST_AFFIX):format(self2.name))
+                                    e.tips:Show()
+                                end)
+                                label:SetScript('OnLeave', function() e.tips:Hide() end)
+                                frame['affixInfo'..k]= label
                             end
                             local level= info.overTime and '|cnRED_FONT_COLOR:'..info.level..'|r' or info.level
-                            frame['affixInfo'..k]:SetText('|T'..(info.name == nameA and filedataidA or filedataidB)..':0|t'..level)
+                            local icon='|T'..(info.name == nameA and filedataidA or filedataidB)..':0|t'
+                            label:SetText(icon..level)
+                            label.name= icon..info.name..': '..level
                             k=k+1
                         end
                     end
@@ -933,13 +965,26 @@ local function set_Update()--Blizzard_ChallengesUI.lua
 
 
                 local all= GetNum(frame.mapID, true)--副本 完成/总次数 (全部)
-                local weekAll= GetNum(frame.mapID)--本周
-                if all or weekAll then
-                    if not frame.nu then
-                        frame.nu=e.Cstr(frame)
-                        frame.nu:SetPoint('TOPLEFT')
+                local week= GetNum(frame.mapID)--本周
+                if all or week then
+                    local label= frame.nu
+                    if not label then
+                        label=e.Cstr(frame)
+                        label:SetPoint('TOPLEFT')
+                        label:EnableMouse(true)
+                        label:SetScript('OnEnter', function(self2)
+                            e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
+                            e.tips:ClearLines()
+                            e.tips:AddDoubleLine(e.onlyChinese and '历史' or HISTORY , self2.all or (e.onlyChinese and '无' or NONE))
+                            e.tips:AddDoubleLine(e.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK, self2.week or (e.onlyChinese and '无' or NONE))
+                            e.tips:Show()
+                        end)
+                        label:SetScript('OnLeave', function() e.tips:Hide() end)
+                        frame.nu= label
                     end
-                    frame.nu:SetText((all or '')..( weekAll and ' |cffffffff(|r'..weekAll..'|cffffffff)|r' or ''))
+                    label:SetText((all or '')..( week and ' |cffffffff(|r'..week..'|cffffffff)|r' or ''))
+                    label.all=all or week
+                    label.week= week
                 end
 
                 if currentChallengeMapID== frame.mapID and not frame.currentKey then--提示, 包里KEY地图
@@ -947,6 +992,22 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                     frame.currentKey:SetPoint('BOTTOM')
                     frame.currentKey:SetAtlas('auctionhouse-icon-favorite')
                     frame.currentKey:SetSize(14,14)
+                    frame.currentKey:EnableMouse(true)
+                    frame.currentKey:SetScript('OnEnter', function(self2)
+                        e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
+                        e.tips:ClearLines()
+                        for bag=0, NUM_BAG_SLOTS do
+                            for slot=1, C_Container.GetContainerNumSlots(bag) do
+                                local info = C_Container.GetContainerItemInfo(bag, slot)
+                                if info and C_Item.IsItemKeystoneByID(info.hyperlink) then
+                                    e.tips:SetBagItem(bag, slot)
+                                end
+                                break
+                            end
+                        end
+                        e.tips:Show()
+                    end)
+                    frame.currentKey:SetScript('OnLeave', function() e.tips:Hide() end)
                 end
                 if frame.currentKey then
                     frame.currentKey:SetShown(currentChallengeMapID== frame.mapID)
