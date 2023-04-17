@@ -48,8 +48,6 @@ local function SetChannels(link)
 end
 
 local function Realm(link)--去服务器为*, 加队友种族图标,和N,T
-    --local name=link:match('|Hplayer:.-|h%[|cff......(.-)|r]') or link:match('|Hplayer:.-|h%[(.-)]|h')
-    --local split= LinkUtil.SplitLink(link)
     local split= LinkUtil.SplitLink(link)
     local name= split and split:match('player:(.-):') or link:match('|Hplayer:.-|h%[|cff......(.-)|r]') or link:match('|Hplayer:.-|h%[(.-)]|h')
     local server= name and name:match('%-(.+)')
