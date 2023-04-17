@@ -1,5 +1,5 @@
 local id, e= ...
-if not e.Player.levelMax then
+if not e.Player.levelMax or select(4,GetBuildInfo())>= 100100 then
     return
 end
 

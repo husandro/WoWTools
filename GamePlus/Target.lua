@@ -6,7 +6,7 @@ local Save= {
 }
 
 local panel= CreateFrame("Frame")
-local isPvPArena, isIns
+local isPvPArena, isIns, isPvPZone
 
 --########################
 --怪物目标, 队员目标, 总怪物
@@ -79,6 +79,7 @@ local function find_Text(text)
     end
 end
 
+
 local function Get_Quest_Progress(unit)--GameTooltip.lua --local questID= line and line.id
     if not UnitIsPlayer(unit) then
         local type = UnitClassification(unit)
@@ -93,6 +94,12 @@ local function Get_Quest_Progress(unit)--GameTooltip.lua --local questID= line a
             if text then
                 return text~=true and text
             end
+        end
+    elseif not isIns and isPvPZone and not UnitInParty(unit) then
+        local faction= UnitFactionGroup(unit)--玩家, 派系  "Alliance", "Horde", "Neutral"
+        if faction ~=e.Player.faction and faction~='Neutral' then
+            --return faction=='Alliance' and '|A:'..e.Icon.alliance..':12:12|a' or ('|A:'..e.Icon.horde..':12:12:|a')
+            return faction=='Alliance' and e.Icon.alliance2 or e.Icon.horde2
         end
     end
 end
@@ -150,12 +157,16 @@ local function set_Register_Event()
 
             panel:RegisterEvent('NAME_PLATE_UNIT_ADDED')
             panel:RegisterEvent('NAME_PLATE_UNIT_REMOVED')
-            if not IsInInstance()  then
+            if not isIns  then
                 panel:RegisterEvent('UNIT_QUEST_LOG_CHANGED')
                 panel:RegisterEvent('SCENARIO_UPDATE')
                 panel:RegisterEvent('SCENARIO_CRITERIA_UPDATE')
                 panel:RegisterEvent('SCENARIO_COMPLETED')
                 panel:RegisterEvent('QUEST_POI_UPDATE')
+
+                panel:RegisterEvent('ZONE_CHANGED')
+                panel:RegisterEvent('ZONE_CHANGED_INDOORS')
+                panel:RegisterEvent('ZONE_CHANGED_NEW_AREA')
             end
 
         elseif panel.Text then
@@ -280,10 +291,15 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if event=='PLAYER_ENTERING_WORLD' then
             isPvPArena= C_PvP.IsBattleground() or C_PvP.IsArena()
             isIns= IsInInstance() and GetNumGroupMembers()>3
+
             if Save.creatureNum then
                 set_Register_Event()
             end
         end
+
+    elseif event=='ZONE_CHANGED' or event=='ZONE_CHANGED_INDOORS' or event=='ZONE_CHANGED_NEW_AREA' then
+        local pvpType, isFFA = GetZonePVPInfo()
+        isPvPZone= pvpType=='arena' and  isFFA
 
     elseif event=='PLAYER_REGEN_DISABLED' then--颜色
         panel.Texture:SetVertexColor(1,0,0)
