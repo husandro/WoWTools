@@ -401,7 +401,7 @@ local function Init()
                 end
             end)
             button:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                e.tips:SetOwner(self2, "ANCHOR_TOPLEFT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(not e.onlyChinese and PROFESSIONS_SPECS_ADD_KNOWLEDGE or "运用知识", e.onlyChinese and '全部' or ALL)
                 e.tips:AddDoubleLine(id,addName)
