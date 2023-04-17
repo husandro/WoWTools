@@ -56,7 +56,6 @@ local function Realm(link)--去服务器为*, 加队友种族图标,和N,T
         return e.Icon.toRight2..e.Player.col..COMBATLOG_FILTER_STRING_ME..'|r'..e.Icon.toLeft2
     else
         local text, guid
-
         local tab= e.GroupGuid[name]--队伍成员
         if tab and tab.unit then--玩家种族图标
             local race=e.Race(tab.unit)
@@ -67,8 +66,11 @@ local function Realm(link)--去服务器为*, 加队友种族图标,和N,T
             guid= tab.guid
         end
 
-        local friend= e.GetFriend(name, guid)--检测, 是否好友 
+        local friend, _, guid2= e.GetFriend(name, guid)--检测, 是否好友
         if friend then
+            if not text and guid2 then
+                text= e.GetPlayerInfo(nil, guid2, nil)--玩家信息图标
+            end
             text= friend..(text or '')
         end
 

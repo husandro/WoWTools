@@ -140,7 +140,7 @@ e.Class=function(unit, class, reAltlas)--职业图标
     end
 end
 
-e.GetPlayerInfo=function (unit, guid, showName)--, hideClassTexture)
+e.GetPlayerInfo= function(unit, guid, showName)--玩家信息图标
     guid= guid or UnitGUID(unit)
     if guid then
         if guid==e.Player.guid then
@@ -343,15 +343,16 @@ e.GetFriend = function(name, guid, unit)--检测, 是否好友
     guid= unit and UnitGUID(unit) or guid
     if guid then
         if C_FriendList.IsFriend(guid) then
-            return '|A:groupfinder-icon-friend:0:0|a', nil--好友
+            return '|A:groupfinder-icon-friend:0:0|a', nil, guid--好友
         elseif IsGuildMember(guid) then
-            return '|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a'--公会
+            return '|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a', nil, guid--公会
         elseif C_BattleNet.GetAccountInfoByGUID(guid) or C_BattleNet.GetGameAccountInfoByGUID(guid) then
-            return e.Icon.wow2, true;
+            return e.Icon.wow2, true, guid
         end
     elseif name then
-        if C_FriendList.GetFriendInfo(name) or C_FriendList.GetFriendInfo(name:gsub('%-.+','')) then
-            return '|A:groupfinder-icon-friend:0:0|a', nil--好友
+        local info=C_FriendList.GetFriendInfo(name) or C_FriendList.GetFriendInfo(name:gsub('%-.+',''))
+        if info then
+            return '|A:groupfinder-icon-friend:0:0|a', nil, info.guid--好友
         end
     end
 end
