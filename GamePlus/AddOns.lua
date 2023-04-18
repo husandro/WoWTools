@@ -31,50 +31,33 @@ local function getAddList()--检查列表, 选取数量, 总数, 数量/总数
     end
     return num, all, '|cff00ff00'.. num..'|r/'..all
 end
-local function getTabNumeri(tab)--取得表格里的数量
-    local num=0
-    for _ in pairs(tab) do
-        num=num+1
-    end
-    return num
-end
 
---###########
---对话框, 删除
---###########
-StaticPopupDialogs[id..addName..'DELETE']={
-    text =id..' '..addName..'\n\n< |cff00ff00%s|r >\n\n'..ADDONS..AUCTION_HOUSE_QUANTITY_LABEL..' %s',
-    button1 = DELETE,
-    button2 = CANCEL,
-    whileDead=true,
-    timeout=60,
-    hideOnEscape = true,
-    OnAccept=function(self,data)
-        Save.buttons[data.name]=nil
-        data.frame:SetShown(false)
-        local last=panel
-        for _, button in pairs(panel.buttons) do
-            if button and button:IsShown() then
-                button:ClearAllPoints()
-                button:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0,2)
-                last=button
-            end
-        end
-        AddonList_HasAnyChanged()
-    end,
-}
 
 --####
 --按钮
 --####
 local function setButtons()--设置按钮, 和位置
+
+    local function get_buttons()
+        local addTab={}
+        for name, tab in pairs(Save.buttons) do
+            local num=0
+            for _ in pairs(tab) do
+                num=num+1
+            end
+            table.insert(addTab, {name= name, tab= tab, num=num})
+        end
+        table.sort(addTab, function(a,b) return a.num< b.num end)
+        return addTab
+    end
+
     local last=panel
-    for name, tab in pairs(Save.buttons) do
-        local num=getTabNumeri(tab)
-        if num>0 then
-            if not panel.buttons[name] then
-                panel.buttons[name]=e.Cbtn(panel, {type=false, size={80,22}})
-                panel.buttons[name]:SetScript('OnMouseDown',function(self, d)
+    for _, info in pairs(get_buttons()) do
+        local button=panel.buttons[info.name]
+        if info.num>0 then
+            if not button then
+                button=e.Cbtn(panel, {type=false, size={88,22}})
+                button:SetScript('OnMouseDown',function(self, d)
                     if d=='LeftButton' then--加载
                         for i=1, GetNumAddOns() do
                             local name2= GetAddOnInfo(i);
@@ -85,89 +68,122 @@ local function setButtons()--设置按钮, 和位置
                             end
                         end
                         e.Reload()
+
                     elseif d=='RightButton' then--移除
-                        StaticPopup_Show(id..addName..'DELETE', self.name, num, {name=self.name, frame=self})
+                        StaticPopupDialogs[id..addName..'DELETE']={
+                            text =id..' '..addName..'\n\n< |cff00ff00%s|r >\n\n'..(e.onlyChinese and '插件数量' or  ADDONS..AUCTION_HOUSE_QUANTITY_LABEL)..' %s',
+                            button1 = e.onlyChinese and '删除' or DELETE,
+                            button2 = e.onlyChinese and '取消' or CANCEL,
+                            whileDead=true,
+                            timeout=60,
+                            hideOnEscape = true,
+                            OnAccept=function(self2,data)
+                                Save.buttons[data.name]=nil
+                                data.frame:SetShown(false)
+                                local last2=panel
+                                table.sort(panel.buttons, function(a,b) return a.totaleAddons> b.totaleAddons end)
+                                for _, button in pairs(panel.buttons) do
+                                    if button and button:IsShown() then
+                                        button:ClearAllPoints()
+                                        button:SetPoint('TOPLEFT', last2, 'BOTTOMLEFT',0,2)
+                                        last2=button
+                                    end
+                                end
+                                AddonList_HasAnyChanged()
+                            end,
+                        }
+                        StaticPopup_Show(id..addName..'DELETE', self.name, self.totaleAddons, {name=self.name, frame=self})
                     end
                 end)
-                panel.buttons[name]:SetScript('OnEnter', function(self)
+
+                button:SetScript('OnEnter', function(self)
                     e.tips:SetOwner(self, "ANCHOR_RIGHT");
                     e.tips:ClearLines();
                     e.tips:AddDoubleLine((e.onlyChinese and '加载插件' or LOAD_ADDON)..e.Icon.left, (e.onlyChinese and '删除' or DELETE)..e.Icon.right,1,0,1, 1,0,1)
+                    local addAll={}
                     local addTab={}
-                    for name2, index2 in pairs(Save.buttons[self.name]) do
-                        table.insert(addTab, {name=name2, index= type(index2)=='number' and index2 or 1})
+                    for i=1, GetNumAddOns() do
+                        addAll[GetAddOnInfo(i)]=true
                     end
-                    table.sort(addTab, function(a,b) return a.index< b.index end)
-                    local all=0
-                    for _, info in pairs(addTab) do
-                        all=all+1
-                        local name2= info.name
+                    for name2, _ in pairs(Save.buttons[self.name]) do
+                        table.insert(addTab, name2)
+                    end
+                    table.sort(addTab)
+                    for index, name2 in pairs(addTab) do
                         if IsAddOnLoaded(name2) then
                             name2= '|cnGREEN_FONT_COLOR:'..name2..'|r'..e.Icon.select2
+                        elseif not addAll[name2] then
+                            name2= '|cnRED_FONT_COLOR:'..name2..'|r'
+                        else
+                            name2= '|cffffffff'..name2..'|r'
                         end
-                        e.tips:AddDoubleLine(name2, all)
+                        e.tips:AddDoubleLine(name2, index)
                     end
                     e.tips:Show()
                 end)
-                panel.buttons[name]:SetScript('OnLeave', function() e.tips:Hide() end)
+                button:SetScript('OnLeave', function() e.tips:Hide() end)
             end
-            panel.buttons[name]:ClearAllPoints()
-            panel.buttons[name]:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0,2)
-            panel.buttons[name]:SetText('|cnGREEN_FONT_COLOR:'..num..'|r'..name)
-            panel.buttons[name].totaleAddons=num
-            panel.buttons[name].name= name
+
+            button:ClearAllPoints()
+            button:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0,2)
+            button:SetText(info.name)
+            button.totaleAddons=info.num
+            button.name= info.name
+
+            local lable= e.Cstr(button)--插件, 数量
+            lable:SetPoint('LEFT')
+            lable:SetTextColor(1,0,1)
+            lable:SetText(info.num)
+
+            panel.buttons[info.name]=button
         end
-        if panel.buttons[name] then
-            panel.buttons[name]:SetShown(num>0)
-            last=panel.buttons[name]
+        if button then
+            button:SetShown(info.num>0)
+            last=button
         end
     end
 end
-
---######
---对话框, 新建
---######
-StaticPopupDialogs[id..addName..'NEW']={
-    text =id..' '..addName..'\n\n'..ICON_SELECTION_TITLE_CURRENT..' %s\n\n'..PAPERDOLL_NEWEQUIPMENTSET,
-    button1 = NEW,
-    button2 = CANCEL,
-    hasEditBox=true,
-    whileDead=true,
-    timeout=60,
-    hideOnEscape = true,
-    OnAccept=function(self)
-        local text = self.editBox:GetText()
-        Save.buttons[text]={}
-        for i=1, GetNumAddOns() do
-            if GetAddOnEnableState(nil,i)==2 then
-                local name=GetAddOnInfo(i);
-                if name then
-                    Save.buttons[text][name]=i
-                end
-            end
-        end
-        setButtons()--设置按钮, 和位置
-        AddonList_HasAnyChanged()
-    end,
-    OnShow=function(self)
-        self.editBox:SetText(RESISTANCE_FAIR)
-    end,
-    EditBoxOnTextChanged=function(self, data)
-        local text= self:GetText()
-        text=text:gsub(' ', '')
-        local parent=self:GetParent()
-        parent.button1:SetEnabled(text~='' and not Save.buttons[text])
-    end,
-    EditBoxOnEscapePressed = function(self) self:GetParent():Hide() end,
-}
 
 --#####
 --初始化
 --#####
 local function Init()
-    panel:SetPoint('TOPLEFT', AddonList ,'TOPRIGHT',-2, -20)
+    panel:SetPoint('TOPLEFT', AddonList ,'TOPRIGHT',0, -20)
     panel:SetText(e.onlyChinese and '新建' or NEW)
-    panel:SetScript('OnMouseDown',function()
+    panel:SetScript('OnClick',function()
+        StaticPopupDialogs[id..addName..'NEW']={
+            text =id..' '..addName..'\n\n'..(e.onlyChinese and '当前已选择' or ICON_SELECTION_TITLE_CURRENT)..' %s\n\n'..(e.onlyChinese and '新的方案' or PAPERDOLL_NEWEQUIPMENTSET),
+            button1 = e.onlyChinese and '新建' or NEW,
+            button2 = e.onlyChinese and '取消' or CANCEL,
+            hasEditBox=true,
+            whileDead=true,
+            timeout=60,
+            hideOnEscape = true,
+            OnAccept=function(self)
+                local text = self.editBox:GetText()
+                Save.buttons[text]={}
+                for i=1, GetNumAddOns() do
+                    if GetAddOnEnableState(nil,i)==2 then
+                        local name=GetAddOnInfo(i);
+                        if name then
+                            Save.buttons[text][name]=true
+                        end
+                    end
+                end
+                setButtons()--设置按钮, 和位置
+                AddonList_HasAnyChanged()
+            end,
+            OnShow=function(self)
+                self.editBox:SetText(RESISTANCE_FAIR)
+            end,
+            EditBoxOnTextChanged=function(self, data)
+                local text= self:GetText()
+                text=text:gsub(' ', '')
+                local parent=self:GetParent()
+                parent.button1:SetEnabled(text~='' and not Save.buttons[text])
+            end,
+            EditBoxOnEscapePressed = function(self) self:GetParent():Hide() end,
+        }
         local text= select(3, getAddList())--检查列表, 选取数量, 总数, 数量/总数
         StaticPopup_Show(id..addName..'NEW', text, nil)--新建按钮
     end)
@@ -190,8 +206,8 @@ local function Init()
                     end
                     if find and not button.selected then
                         button.selected=button:CreateTexture()
-                        button.selected:SetPoint('LEFT', button, 'RIGHT', -2, 0)
-                        button.selected:SetSize(16,16)
+                        button.selected:SetPoint('RIGHT', 8, 0)
+                        button.selected:SetSize(22,22)
                         button.selected:SetAtlas(e.Icon.select)
                     end
                 end
