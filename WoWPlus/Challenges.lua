@@ -1032,87 +1032,85 @@ end
 --####
 local function Init()
     local self=ChallengesFrame
-    if not self.sel then
-        self.sel = CreateFrame("CheckButton", nil, self, "InterfaceOptionsCheckButtonTemplate")--隐藏选项
-        self.sel:SetPoint('TOPLEFT',60,-20)
-        self.sel:SetChecked(Save.hide)
-        self.sel.text:SetText(e.onlyChinese and '隐藏' or HIDE)
-        self.sel:SetScript("OnMouseDown", function ()
-            Save.hide = not Save.hide and true or nil
-            Kill(self)--副本PVP团本
-            self:Update()
-            Affix()
-            All(self)--所有记录   
-            Cur(self)--货币数量 
-        end)
+    self.sel= e.Cbtn(self, {size={22,22}, icon= not Save.hide})
+    self.sel:SetPoint('TOPLEFT',60,-20)
+    self.sel:SetScript("OnClick", function (self2)
+        Save.hide = not Save.hide and true or nil
+        Kill(ChallengesFrame)--副本PVP团本
+        ChallengesFrame:Update()
+        Affix()
+        All(ChallengesFrame)--所有记录   
+        Cur(ChallengesFrame)--货币数量
+        self2:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
+    end)
 
-        self.sel:SetScript("OnEnter",function(self2)
-                local mapIDs = {}
-                for _, v in pairs( (C_ChallengeMode.GetMapTable() or {})) do
-                    mapIDs[v]=true
+    self.sel:SetScript("OnEnter",function(self2)
+            local mapIDs = {}
+            for _, v in pairs( (C_ChallengeMode.GetMapTable() or {})) do
+                mapIDs[v]=true
+            end
+
+            local infos= C_MythicPlus.GetRunHistory(true, true)
+            if not infos then return end
+            local IDs={}
+            local t=0
+            for _, v in pairs(infos) do
+                local mapChallengeModeID=v.mapChallengeModeID
+                IDs[mapChallengeModeID]= IDs[mapChallengeModeID] or {c=0, t=0}
+                if v.completed then
+                    t=t+1
+                    IDs[mapChallengeModeID].c= IDs[mapChallengeModeID].c+1
                 end
-
-                local infos= C_MythicPlus.GetRunHistory(true, true)
-                if not infos then return end
-                local IDs={}
-                local t=0
-                for _, v in pairs(infos) do
-                    local mapChallengeModeID=v.mapChallengeModeID
-                    IDs[mapChallengeModeID]= IDs[mapChallengeModeID] or {c=0, t=0}
+                IDs[mapChallengeModeID].t= IDs[mapChallengeModeID].t+1
+                if v.level and ( not IDs[mapChallengeModeID].lv or  v.level > IDs[mapChallengeModeID].lv) then--最高等级
+                    IDs[mapChallengeModeID].lv=v.level
+                    IDs[mapChallengeModeID].completed=v.completed
                     if v.completed then
-                        t=t+1
-                        IDs[mapChallengeModeID].c= IDs[mapChallengeModeID].c+1
+                        if not IDs[mapChallengeModeID].lv2 or  v.level > IDs[mapChallengeModeID].lv2 then
+                            IDs[mapChallengeModeID].lv2=v.level
+                        end
                     end
-                    IDs[mapChallengeModeID].t= IDs[mapChallengeModeID].t+1
-                    if v.level and ( not IDs[mapChallengeModeID].lv or  v.level > IDs[mapChallengeModeID].lv) then--最高等级
-                        IDs[mapChallengeModeID].lv=v.level
-                        IDs[mapChallengeModeID].completed=v.completed
+                end
+                IDs[mapChallengeModeID].mapIDs=mapIDs[mapChallengeModeID]--本赛季
+            end
+
+            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(HISTORY, t..'/'..#infos, 0,1,0 ,0,1,0)
+
+            for k, v in pairs(IDs) do
+                local name, _, _, texture= C_ChallengeMode.GetMapUIInfo(k)
+                if name then
+                    local col, r, g, b
+                    local bestOverAllScore = select(2, C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(k))
+                    if  bestOverAllScore then
+                        col=C_ChallengeMode.GetSpecificDungeonOverallScoreRarityColor(bestOverAllScore)
+                    end
+                    if col then r,g,b= col.r, col.g, col.b end
+                    local m=not mapIDs[k] and e.Icon.X or ''
+                    m=m..(texture and '|T'..texture..':0|t' or '').. name
+                    if v.lv then
+                        m=m..'('
                         if v.completed then
-                            if not IDs[mapChallengeModeID].lv2 or  v.level > IDs[mapChallengeModeID].lv2 then
-                                IDs[mapChallengeModeID].lv2=v.level
-                            end
+                            m=m..'|cff00ff00'..v.lv..'|r'
+                        else
+                            m=m..RED_FONT_COLOR_CODE..v.lv..'|r'
+                            m=v.lv2 and m..'/|cff00ff00'..v.lv2..'|r' or m
                         end
+                        m=m..') '
                     end
-                    IDs[mapChallengeModeID].mapIDs=mapIDs[mapChallengeModeID]--本赛季
+                    m=m.. (bestOverAllScore or '')
+                    e.tips:AddDoubleLine(m, v.c..'/'..v.t, r,g,b , r,g,b)
                 end
-
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine(HISTORY, t..'/'..#infos, 0,1,0 ,0,1,0)
-
-                for k, v in pairs(IDs) do
-                    local name, _, _, texture= C_ChallengeMode.GetMapUIInfo(k)
-                    if name then
-                        local col, r, g, b
-                        local bestOverAllScore = select(2, C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(k))
-                        if  bestOverAllScore then
-                            col=C_ChallengeMode.GetSpecificDungeonOverallScoreRarityColor(bestOverAllScore)
-                        end
-                        if col then r,g,b= col.r, col.g, col.b end
-                        local m=not mapIDs[k] and e.Icon.X or ''
-                        m=m..(texture and '|T'..texture..':0|t' or '').. name
-                        if v.lv then
-                            m=m..'('
-                            if v.completed then
-                                m=m..'|cff00ff00'..v.lv..'|r'
-                            else
-                                m=m..RED_FONT_COLOR_CODE..v.lv..'|r'
-                                m=v.lv2 and m..'/|cff00ff00'..v.lv2..'|r' or m
-                            end
-                            m=m..') '
-                        end
-                        m=m.. (bestOverAllScore or '')
-                        e.tips:AddDoubleLine(m, v.c..'/'..v.t, r,g,b , r,g,b)
-                    end
-                end
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(id, addName)
-                e.tips:Show()
-        end)
-        self.sel:SetScript("OnLeave",function()
-                e.tips:Hide()
-        end)
-    end
+            end
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, e.Icon.left)
+            e.tips:AddDoubleLine(id, addName)
+            e.tips:Show()
+    end)
+    self.sel:SetScript("OnLeave",function()
+            e.tips:Hide()
+    end)
 
     if self.WeeklyInfo and self.WeeklyInfo.Child then--隐藏, 赛季最佳
         if self.WeeklyInfo.Child.SeasonBest then

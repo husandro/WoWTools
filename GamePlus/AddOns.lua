@@ -81,12 +81,16 @@ local function setButtons()--设置按钮, 和位置
                                 Save.buttons[data.name]=nil
                                 data.frame:SetShown(false)
                                 local last2=panel
-                                table.sort(panel.buttons, function(a,b) return a.totaleAddons> b.totaleAddons end)
-                                for _, button in pairs(panel.buttons) do
-                                    if button and button:IsShown() then
-                                        button:ClearAllPoints()
-                                        button:SetPoint('TOPLEFT', last2, 'BOTTOMLEFT',0,2)
-                                        last2=button
+                                local tabs={}
+                                for _, btn in pairs(panel.buttons) do
+                                    table.insert(tabs, btn)
+                                end
+                                table.sort(tabs, function(a,b) return a.totaleAddons< b.totaleAddons end)
+                                for _, btn in pairs(tabs) do
+                                    if btn and btn:IsShown() then
+                                        btn:ClearAllPoints()
+                                        btn:SetPoint('TOPLEFT', last2, 'BOTTOMLEFT',0,2)
+                                        last2=btn
                                     end
                                 end
                                 AddonList_HasAnyChanged()
@@ -122,6 +126,10 @@ local function setButtons()--设置按钮, 和位置
                     e.tips:Show()
                 end)
                 button:SetScript('OnLeave', function() e.tips:Hide() end)
+
+                button.lable= e.Cstr(button)--插件, 数量
+                button.lable:SetPoint('LEFT')
+                button.lable:SetTextColor(1,0,1)
             end
 
             button:ClearAllPoints()
@@ -129,17 +137,13 @@ local function setButtons()--设置按钮, 和位置
             button:SetText(info.name)
             button.totaleAddons=info.num
             button.name= info.name
-
-            local lable= e.Cstr(button)--插件, 数量
-            lable:SetPoint('LEFT')
-            lable:SetTextColor(1,0,1)
-            lable:SetText(info.num)
+            button.lable:SetText(info.num)
 
             panel.buttons[info.name]=button
+            last=button
         end
         if button then
             button:SetShown(info.num>0)
-            last=button
         end
     end
 end
