@@ -654,7 +654,7 @@ local function Init()--冒险指南界面
             if button and button.tooltipTitle and button.instanceID then--button.bgImage:GetTexture() button.name:GetText()
                 local text=EncounterJournal_ListInstances_set_Instance(button)--界面,击杀,数据
                 if not button.tipsText and text then
-                    button.tipsText=e.Cstr(button, {size=10, copyFont=button.name})--10, button.name)
+                    button.tipsText=e.Cstr(button, {size=e.onlyChinese and 12 or 10, copyFont=button.name})--10, button.name)
                     button.tipsText:SetPoint('BOTTOMRIGHT', -8, 8)
                     button.tipsText:SetJustifyH('RIGHT')
                 end
@@ -662,15 +662,66 @@ local function Init()--冒险指南界面
                     button.tipsText:SetText(text or '')
                 end
 
-                local info= C_ChallengeMode.GetMapTable()--挑战地图 mapChallengeModeID
+                local info= C_ChallengeMode.GetMapTable() or {}--挑战地图 mapChallengeModeID
+                local currentChallengeMapID= C_MythicPlus.GetOwnedKeystoneChallengeMapID()--当前, KEY地图,ID
                 local instanceName=button.name:GetText()
                 button.mapChallengeModeID=nil
+                local challengeText
                 for _, mapChallengeModeID in pairs(info) do
                     local name=C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
                     if name==instanceName then
-                        button.mapChallengeModeID= mapChallengeModeID
+                        button.mapChallengeModeID= mapChallengeModeID--挑战,地图ID
+
+                        local nu, all, leavel, runScore= 0, 0, 0, 0
+                        local infoChalleng=C_MythicPlus.GetRunHistory(true, true) or {}--挑战,全部, 次数
+                        for _,v in pairs(infoChalleng) do
+                            if v.mapChallengeModeID==mapChallengeModeID then
+                                if v.completed then
+                                    nu=nu+1
+                                end
+                                all=all+1
+                            end
+                        end
+
+                        local affix
+                        local affixScores, overAllScore= C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(mapChallengeModeID)--最佳, 词缀
+                        if(affixScores and #affixScores > 0) then
+                            local nameA, _, filedataidA = C_ChallengeMode.GetAffixInfo(10)
+                            local nameB, _, filedataidB = C_ChallengeMode.GetAffixInfo(9)
+                            for _, tab in ipairs(affixScores) do
+                                if tab.level and tab.level>0 and (tab.name == nameA or tab.name==nameB) then
+                                    local level= tab.overTime and '|cnRED_FONT_COLOR:'..tab.level..'|r' or tab.level
+                                    local icon='|T'..(tab.name == nameA and filedataidA or filedataidB)..':0|t'
+                                    affix= (affix and affix..'\n' or '').. icon..level
+                                end
+                            end
+                        end
+
+                        runScore= overAllScore or 0--最佳, 分数
+                        local intimeInfo= C_MythicPlus.GetSeasonBestForMap(mapChallengeModeID)--最佳, 等级
+                        if intimeInfo then
+                            leavel= intimeInfo.level
+                        end
+                        if all>0 then
+                            challengeText= '|cff00ff00'..nu..'|r/'..all
+                            ..'\n'..'|T4352494:0|t'..leavel
+                            ..'\n'..'|A:AdventureMapIcon-MissionCombat:0:0|a'..runScore
+                            ..(affix and '\n'..affix or '')
+                            ..(currentChallengeMapID== mapChallengeModeID and '|A:auctionhouse-icon-favorite:0:0|a' or '')--当前, KEY地图,ID
+                            local color= C_ChallengeMode.GetSpecificDungeonOverallScoreRarityColor(runScore)
+                            if color then
+                                challengeText= color:WrapTextInColorCode(challengeText)
+                            end
+                        end
                         break
                     end
+                end
+                if challengeText and not button.challengeText then
+                    button.challengeText= e.Cstr(button, {size=e.onlyChinese and 12 or 10})
+                    button.challengeText:SetPoint('LEFT')
+                end
+                if button.challengeText then
+                    button.challengeText:SetText(challengeText or '')
                 end
 
                 button:SetScript('OnEnter', function (self3)

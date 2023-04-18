@@ -1034,6 +1034,8 @@ local function Init()
     local self=ChallengesFrame
     self.sel= e.Cbtn(self, {size={22,22}, icon= not Save.hide})
     self.sel:SetPoint('TOPLEFT',60,-20)
+    --self.sel:SetChecked(Save.hide)
+    --self.sel.text:SetText(e.onlyChinese and '隐藏' or HIDE)
     self.sel:SetScript("OnClick", function (self2)
         Save.hide = not Save.hide and true or nil
         Kill(ChallengesFrame)--副本PVP团本

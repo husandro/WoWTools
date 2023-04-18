@@ -869,7 +869,7 @@ e.Say=function(type, name, wow, text)
     end
 end
 
-e.GetKeystoneScorsoColor= function(score, texture, overall)--地下城史诗, 分数,颜色 C_ChallengeMode.GetOverallDungeonScore()
+e.GetKeystoneScorsoColor= function(score, texture, overall)--地下城史诗, 分数, 颜色 C_ChallengeMode.GetOverallDungeonScore()
     if not score or score==0 then
         return ''
     else
