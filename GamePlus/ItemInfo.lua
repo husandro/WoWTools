@@ -11,7 +11,7 @@ local upgradeStr= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(%%d
 local classStr= format(ITEM_CLASSES_ALLOWED, '(.+)') --"职业：%s";
 local FMTab={}--附魔
 local useStr=ITEM_SPELL_TRIGGER_ONUSE..'(.+)'--使用：
---local andStr = COVENANT_RENOWN_TOAST_REWARD_COMBINER:format('(.+)','(.+)')--"%s 和 %s";
+local andStr = COVENANT_RENOWN_TOAST_REWARD_COMBINER:format('(.-)','(.+)')--"%s 和 %s";
 local size= 10--字体大小
 
 local ClassNameIconTab={}--职业图标 ClassNameIconTab['法师']=图标
@@ -91,15 +91,50 @@ local function set_Item_Info(self, tab)
                 topRightText='|A:'..e.Icon.unlocked..':0:0|a'
             end
 
+        elseif classID==3 then--宝石
+            if expacID== e.ExpansionLevel then
+                local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={'(%+%d+ .+)', }})--物品提示，信息
+                local text= dateInfo.text['(%+%d+ .+)']
+                if text and text:find('%+') then
+                    local str2, str3
+                    if text:find(', ') then
+                        str2, str3= text:match('(.-), (.+)')
+                    elseif text:find('，') then
+                        str2, str3= text:match('(.-)，(.+)')
+                    else
+                        str2, str3= text:match(andStr)
+                    end
+                    str2= str2 or text:match('%+%d+ .+')
+                    if str2 then
+                        str2= str2:match('%+(%d+ .+)')
+                        str2= str2:gsub(' ', '')
+                        str2= e.WA_Utf8Sub(str2,4,7)
+                        str2= str2:gsub('%d+', function(t) return '|cnGREEN_FONT_COLOR:'..t..'|r|cffffffff' end)
+                        bottomLeftText=str2
+                        if str3 then
+                            str3= str3:match('%+(%d+ .+)')
+                            str3= str3:gsub(' ', '')
+                            str3= e.WA_Utf8Sub(str3,4,7)
+                            str3= str3:gsub('%d+', function(t) return '|cnGREEN_FONT_COLOR:'..t..'|r|cffffffff' end)
+                            leftText= str3
+                        end
+                    end
+                end
+            end
+            bottomLeftText= bottomLeftText or itemLevel
 
+            topRightText= e.WA_Utf8Sub(subclassID==9 and itemType or itemSubType, 2,3)
+            if expacID and expacID< e.ExpansionLevel then
+                topRightText= '|cff606060'..topRightText..'|r'
+            end
 
-        elseif isCraftingReagent or classID==8 or classID==3 or classID==9 or (classID==0 and (subclassID==1 or subclassID==3 or subclassID==5)) or classID==19 or classID==7 then--附魔, 宝石,19专业装备 ,7商业技能
-            local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={ITEM_SPELL_KNOWN, useStr, andStr}, wow=true, red=true})--物品提示，信息 ITEM_SPELL_KNOWN = "已经学会";
+        elseif isCraftingReagent or classID==8 or classID==9 or (classID==0 and (subclassID==1 or subclassID==3 or subclassID==5)) or classID==19 or classID==7 then--附魔, 19专业装备 ,7商业技能
+            local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={ITEM_SPELL_KNOWN, useStr,}, wow=true, red=true})--物品提示，信息 ITEM_SPELL_KNOWN = "已经学会";
             if not (classID==15 and (subclassID== 0 or subclassID==4)) then
                 if classID==0 and subclassID==5 then
                     topRightText= e.WA_Utf8Sub(POWER_TYPE_FOOD, 2,5)--食物
                 else
-                    topRightText= e.WA_Utf8Sub(itemSubType~=OTHER and itemSubType or itemType, 2,3)
+                    topRightText= e.WA_Utf8Sub(itemSubType==OTHER and itemType or itemSubType, 2,3)
                 end
                 if expacID and expacID< e.ExpansionLevel and itemID~='5512' and itemID~='113509' then--低版本，5512糖 食物,113509[魔法汉堡]
                     topRightText= '|cff606060'..topRightText..'|r'
@@ -112,17 +147,15 @@ local function set_Item_Info(self, tab)
             elseif dateInfo.wow then
                 bottomRightText= e.Icon.wow2
             end
-            if expacID== e.ExpansionLevel then
-                if classID==3 and itemLevel and itemLevel>20 then--宝石，等级
-                    bottomLeftText= itemLevel
-                elseif classID==8 and dateInfo.text[useStr] then--附魔
-                    local text= dateInfo.text[useStr]
-                    for k, v in pairs(FMTab) do
-                       if text:find(k) then
-                            leftText= text:match('%d+')
-                            bottomLeftText=v
-                            break
-                       end
+
+            if expacID== e.ExpansionLevel and classID==8 and dateInfo.text[useStr] then--附魔
+                local text= dateInfo.text[useStr]
+                for k, v in pairs(FMTab) do
+                    if text:find(k) then
+                        leftText= text:match('%d+%%') or text:match('%d+%,%d+') or text:match('%d+')
+                        leftText= leftText and '|cnGREEN_FONT_COLOR:'..leftText..'|r'
+                        bottomLeftText= '|cffffffff'..v..'|r'
+                        break
                     end
                 end
             end
