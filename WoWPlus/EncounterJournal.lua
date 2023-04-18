@@ -117,7 +117,7 @@ local function EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示�
                 text = text~='' and text..'\n' or text
                 text = text..'     '
                 if r.unlocked then
-                    text = text..'|cnGREEN_FONT_COLOR:'..x..')'..r.difficulty.. ' '..'|cnGREEN_FONT_COLOR:'..COMPLETE..'|r'
+                    text = text..'|cnGREEN_FONT_COLOR:'..x..')'..r.difficulty.. ' '..COMPLETE..'|r'
                 else
                     text = text..x..')'..r.difficulty.. ' '..r.progress.."/"..r.threshold
                 end
@@ -144,8 +144,6 @@ local function EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示�
     for _,v in pairs(tab) do
         local info=C_CurrencyInfo.GetCurrencyInfo(v)
         if info and info.quantity and info.quantity>=0 and info.name then
-            local max=info.maxQuantity
-            local totalEarned=info.totalEarned
             local t=(info.iconFileID and '|T'..info.iconFileID..':0|t' or '')..info.name..': '
             t=t..e.MK(info.quantity,3)..((info.maxQuantity and info.maxQuantity>0) and '/'..e.MK(info.maxQuantity,3) or '')
             if info.maxQuantity and info.maxQuantity>0 and info.maxQuantity==info.quantity then
@@ -570,7 +568,7 @@ local function Init()--冒险指南界面
     setInstanceBossText()
 
     --Blizzard_EncounterJournal.lua
-    local function EncounterJournal_ListInstances_set_Instance(button,showTips)--界面,
+    local function EncounterJournal_ListInstances_set_Instance(button,showTips)--界面,击杀,数据
         local text,find
         if button.instanceID==1205 or button.instanceID==1192 or button.instanceID==1028 or button.instanceID==822 or button.instanceID==557 or button.instanceID==322 then--世界BOSS
             if showTips then
@@ -654,16 +652,25 @@ local function Init()--冒险指南界面
 
         for _, button in pairs(EncounterJournal.instanceSelect.ScrollBox:GetFrames()) do--ScrollBox.lua
             if button and button.tooltipTitle and button.instanceID then--button.bgImage:GetTexture() button.name:GetText()
-                local text=EncounterJournal_ListInstances_set_Instance(button)
+                local text=EncounterJournal_ListInstances_set_Instance(button)--界面,击杀,数据
                 if not button.tipsText and text then
                     button.tipsText=e.Cstr(button, {size=10, copyFont=button.name})--10, button.name)
                     button.tipsText:SetPoint('BOTTOMRIGHT', -8, 8)
-                    --button.tipsText:SetWidth(174)
                     button.tipsText:SetJustifyH('RIGHT')
-                    --button.tipsText:SetWordWrap(true)
                 end
                 if button.tipsText then
                     button.tipsText:SetText(text or '')
+                end
+
+                local info= C_ChallengeMode.GetMapTable()--挑战地图 mapChallengeModeID
+                local instanceName=button.name:GetText()
+                button.mapChallengeModeID=nil
+                for _, mapChallengeModeID in pairs(info) do
+                    local name=C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
+                    if name==instanceName then
+                        button.mapChallengeModeID= mapChallengeModeID
+                        break
+                    end
                 end
 
                 button:SetScript('OnEnter', function (self3)
@@ -672,13 +679,17 @@ local function Init()--冒险指南界面
                     end
                     e.tips:SetOwner(self3, "ANCHOR_LEFT");
                     e.tips:ClearLines();
-                    e.tips:AddDoubleLine(id, addName)
+                    local texture=self3.bgImage:GetTexture()
+                    e.tips:AddLine(self3.name:GetText())
+                    e.tips:AddDoubleLine('journalInstanceID: |cnGREEN_FONT_COLOR:'..self3.instanceID, texture and '|T'..texture..':0|t'..texture)
+                    if self3.mapChallengeModeID then
+                        e.tips:AddLine('mapChallengeModeID: |cnGREEN_FONT_COLOR:'.. self3.mapChallengeModeID)
+                    end
                     e.tips:AddLine(' ')
-                    if EncounterJournal_ListInstances_set_Instance(button,true) then
+                    if EncounterJournal_ListInstances_set_Instance(self3, true) then--界面,击杀,数据
                         e.tips:AddLine(' ')
                     end
-                    local texture=button.bgImage:GetTexture()
-                    e.tips:AddDoubleLine('journalInstanceID: '..button.instanceID, texture and '|T'..texture..':0|t'..texture)
+                    e.tips:AddDoubleLine(id, addName)
                     e.tips:Show()
                 end)
                 button:SetScript('OnLeave', function() e.tips:Hide() end)
@@ -993,7 +1004,7 @@ local function Init()--冒险指南界面
         end
         self2.instance.Killed.instanceID=instanceID
         self2.instance.Killed.tooltipTitle=name
-        local text= EncounterJournal_ListInstances_set_Instance(self2.instance.Killed)
+        local text= EncounterJournal_ListInstances_set_Instance(self2.instance.Killed)--界面,击杀,数据
         self2.instance.Killed:SetText(text or '')
     end)
 
