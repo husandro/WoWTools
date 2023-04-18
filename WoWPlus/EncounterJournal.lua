@@ -718,7 +718,7 @@ local function Init()--冒险指南界面
                 end
                 if challengeText and not button.challengeText then
                     button.challengeText= e.Cstr(button, {size=e.onlyChinese and 12 or 10})
-                    button.challengeText:SetPoint('LEFT')
+                    button.challengeText:SetPoint('LEFT',4,0)
                 end
                 if button.challengeText then
                     button.challengeText:SetText(challengeText or '')
@@ -728,7 +728,7 @@ local function Init()--冒险指南界面
                     if Save.hideEncounterJournal then
                         return
                     end
-                    e.tips:SetOwner(self3, "ANCHOR_LEFT");
+                    e.tips:SetOwner(self3, "ANCHOR_RIGHT");
                     e.tips:ClearLines();
                     local texture=self3.bgImage:GetTexture()
                     e.tips:AddLine(self3.name:GetText())
