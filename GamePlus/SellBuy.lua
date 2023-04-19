@@ -272,7 +272,7 @@ local function setBuyBackItems()
         end
     end)
 end
-local function setMerchantInfo()
+local function setMerchantInfo()--设置, 提示, 信息
     local selectedTab= MerchantFrame.selectedTab
     local page= selectedTab == 1 and MERCHANT_ITEMS_PER_PAGE or BUYBACK_ITEMS_PER_PAGE
     for i=1, page do
@@ -299,30 +299,59 @@ local function setMerchantInfo()
             if num and not itemButton.buyItemNum then
                 itemButton.buyItemNum=e.Cstr(itemButton)
                 itemButton.buyItemNum:SetPoint('RIGHT')
+                itemButton.buyItemNum:EnableMouse(true)
+                itemButton.buyItemNum:SetScript('OnLeave', function() e.tips:Hide() end)
+                itemButton.buyItemNum:SetScript('OnEnter', function(self2)
+                    if not self2.itemID then return end
+                    e.tips:SetOwner(self2, "ANCHOR_LEFT");
+					e.tips:ClearLines();
+                    e.tips:AddDoubleLine(id, addName)
+                    e.tips:AddLine(' ')
+                    e.tips:AddDoubleLine('|T236994:0|t'..(e.onlyChinese and '自动购买物品' or AUTO_JOIN:gsub(JOIN,PURCHASE)), not Save.notAutoBuy and buySave[self2.itemID] or (e.onlyChinese and '无' or NONE))
+                    local all= GetItemCount(self2.itemID, true)
+                    local bag= GetItemCount(self2.itemID)
+                    e.tips:AddDoubleLine(e.Icon.bank2..(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL), all..'= '.. e.Icon.bag2.. bag..'+ '..e.Icon.bank2..(all-bag))
+					e.tips:Show();
+                end)
             end
             if itemButton.buyItemNum then
                 itemButton.buyItemNum:SetText(num or '')
+                itemButton.buyItemNum.itemID= itemID
             end
 
-            local text
+            local text, spellID
             local classID= itemLink and select(6, GetItemInfoInstant(itemLink))
             if classID==2 or classID==4 then--装备
                 local stat= e.Get_Item_Stats(itemLink)--物品，次属性，表
-                table.sort(stat, function(a,b) return a.value>b.value and a.index== b.index end)                
+                table.sort(stat, function(a,b) return a.value>b.value and a.index== b.index end)
                 for _, tab in pairs(stat) do
                     text= text and text..' ' or ''
                     text= (text and text..' ' or '')..tab.text
                 end
-                if GetItemSpell(itemLink) then
+                spellID= select(2, GetItemSpell(itemLink))
+                if spellID then
                     text= (text or '').. '|A:soulbinds_tree_conduit_icon_utility:10:10|a'
                 end
                 if text and not itemButton.stats then
                     itemButton.stats=e.Cstr(itemButton, {size=10})
                     itemButton.stats:SetPoint('TOPLEFT', itemButton, 'BOTTOMLEFT',0,6)
+                    itemButton.stats:EnableMouse(true)
+                    itemButton.stats:SetScript('OnLeave', function() e.tips:Hide() end)
+                    itemButton.stats:SetScript('OnEnter', function(self2)
+                        if self2.spellID then
+                            e.tips:SetOwner(self2, "ANCHOR_LEFT");
+                            e.tips:ClearLines();
+                            e.tips:SetSpellByID(self2.spellID)
+                            e.tips:AddLine(' ')
+                            e.tips:AddDoubleLine(id, addName)
+                            e.tips:Show();
+                        end
+                    end)
                 end
             end
             if itemButton.stats then
                 itemButton.stats:SetText(text or '')
+                itemButton.stats.spellID= spellID
             end
         end
     end
@@ -392,7 +421,7 @@ local function setBuyItemMenu(level)--二级菜单, 购买物品
         notCheckable=true,
         func=function ()
             buySave={}
-            setMerchantInfo()
+            setMerchantInfo()--设置, 提示, 信息
             CloseDropDownMenus();
        end
     }
@@ -410,7 +439,7 @@ local function setBuyItemMenu(level)--二级菜单, 购买物品
             info.icon= C_Item.GetItemIconByID(itemID)
             info.func=function()
                 buySave[itemID]=nil
-                setMerchantInfo()
+                setMerchantInfo()--设置, 提示, 信息
             end
             UIDropDownMenu_AddButton(info, level)
         end
@@ -533,7 +562,7 @@ local function InitList(self, level, menuLit)
     end
     UIDropDownMenu_AddSeparator()
     info={--购买物品
-        text=  (e.onlyChinese and '自动购买物品' or AUTO_JOIN:gsub(JOIN,'')..PURCHASE)..'|cnGREEN_FONT_COLOR: #'..num..'|r',
+        text=  (e.onlyChinese and '自动购买物品' or AUTO_JOIN:gsub(JOIN,PURCHASE))..'|cnGREEN_FONT_COLOR: #'..num..'|r',
         checked=not Save.notAutoBuy,
         func=function ()
             if Save.notAutoBuy then
@@ -541,7 +570,7 @@ local function InitList(self, level, menuLit)
             else
                 Save.notAutoBuy=true
             end
-            setMerchantInfo()
+            setMerchantInfo()--设置, 提示, 信息
         end,
         menuList='BUY',
         hasArrow=true,
@@ -580,7 +609,7 @@ local function InitList(self, level, menuLit)
         checked= not Save.notShowBagNum,
         func=function ()
             Save.notShowBagNum= not Save.notShowBagNum and true or nil
-            setMerchantInfo()
+            setMerchantInfo()--设置, 提示, 信息
         end
     }
     UIDropDownMenu_AddButton(info)
@@ -646,12 +675,12 @@ local function setMenu()
         if infoType=='item' and itemID then
             if Save.Sell[itemID] then
                 Save.Sell[itemID]=nil
-                print(id, addName, '|cnRED_FONT_COLOR:'..REMOVE..'|r',AUCTION_HOUSE_SELL_TAB, itemLink)
+                print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB, itemLink)
             else
                 Save.Sell[itemID]=true
                 Save.noSell[itemID]=nil
                 buySave[itemID]=nil
-                print(id,addName, '|cnGREEN_FONT_COLOR:'..ADD..'|r'..AUCTION_HOUSE_SELL_TAB, itemLink )
+                print(id,addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r'..(e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB), itemLink )
                 C_Timer.After(0.2, function()
                     if MerchantFrame and MerchantFrame:IsShown() then --and MerchantFrame.selectedTab == 1 then
                         setSellItems()
@@ -669,24 +698,25 @@ local function setMenu()
                 icon= icon and '|T'..icon..':0|t' or ''
                 StaticPopupDialogs[id..addName..'Buy']={
                     text =id..' '..addName
-                    ..'\n\n'..AUTO_JOIN:gsub(JOIN,'')..PURCHASE..': '..icon ..itemLink
-                    ..'\n\n'..e.Icon.player..e.Player.name_server..': ' ..AUCTION_HOUSE_QUANTITY_LABEL
-                    ..'\n\n0: '..(CLEAR or KEY_NUMLOCK_MAC)
-                    ..(Save.notAutoBuy and '\n\n'..AUTO_JOIN:gsub(JOIN,PURCHASE)..': '..e.GetEnabeleDisable(false) or ''),
-                    button1 = PURCHASE,
-                    button2 = CANCEL,
+                    ..'\n\n'.. (e.onlyChinese and '自动购买' or AUTO_JOIN:gsub(JOIN,PURCHASE))..': '..icon ..itemLink
+                    ..'\n\n'..e.Icon.player..e.Player.name_server..': ' ..(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)
+                    ..'\n\n0: '..(e.onlyChinese and '清除' or CLEAR or KEY_NUMLOCK_MAC)
+                    ..(Save.notAutoBuy and '\n\n'..(e.onlyChinese and '自动购买' or AUTO_JOIN:gsub(JOIN,PURCHASE))..': '..e.GetEnabeleDisable(false) or ''),
+                    button1 = e.onlyChinese and '购买' or PURCHASE,
+                    button2 = e.onlyChinese and '取消' or CANCEL,
                     hasEditBox=true,whileDead=true,timeout=60,hideOnEscape = 1,
                     OnAccept=function(s)
                         local num= s.editBox:GetNumber()
                         if num==0 then
                             buySave[itemID]=nil
-                            print('|cnGREEN_FONT_COLOR:'..(CLEAR or KEY_NUMLOCK_MAC)..'|r', itemLink)
+                            print('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '清除' or CLEAR or KEY_NUMLOCK_MAC)..'|r', itemLink)
                         else
                             buySave[itemID]=num
                             Save.Sell[itemID]=nil
                             print(PURCHASE, '|cnGREEN_FONT_COLOR:'..num..'|r', itemLink)
                             setBuyItems()
                         end
+                        setMerchantInfo()--设置, 提示, 信息
                         ClearCursor();
                     end,
                     OnShow=function(s)
@@ -862,7 +892,7 @@ local function Init()
     end)
 
     hooksecurefunc('MerchantFrame_UpdateMerchantInfo',setMerchantInfo)--MerchantFrame.lua
-    hooksecurefunc('MerchantFrame_UpdateBuybackInfo', setMerchantInfo)
+    hooksecurefunc('MerchantFrame_UpdateBuybackInfo', setMerchantInfo)--设置, 提示, 信息
 
     hooksecurefunc(StackSplitFrame, 'OpenStackSplitFrame',set_StackSplitFrame_OpenStackSplitFrame)--StackSplitFrame.lua 堆叠,数量,框架
 

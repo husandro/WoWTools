@@ -106,22 +106,18 @@ local function set_Item_Info(self, tab)
                     end
                     str2= str2 or text:match('%+%d+ .+')
                     if str2 then
-                        str2= str2:match('%+(%d+ .+)')
-                        str2= str2:gsub(' ', '')
-                        str2= e.WA_Utf8Sub(str2,4,7)
-                        str2= str2:gsub('%d+', function(t) return '|cnGREEN_FONT_COLOR:'..t..'|r|cffffffff' end)
-                        bottomLeftText=str2
+                        str2= str2:match('%+%d+ (.+)')
+                        leftText=e.WA_Utf8Sub(str2,1,3)
+                        leftText= leftText and '|cffffffff'..leftText..'|r'
                         if str3 then
-                            str3= str3:match('%+(%d+ .+)')
-                            str3= str3:gsub(' ', '')
-                            str3= e.WA_Utf8Sub(str3,4,7)
-                            str3= str3:gsub('%d+', function(t) return '|cnGREEN_FONT_COLOR:'..t..'|r|cffffffff' end)
-                            leftText= str3
+                            str3= str3:match('%+%d+ (.+)')
+                            bottomLeftText= e.WA_Utf8Sub(str3,1,3)
+                            bottomLeftText= bottomLeftText and '|cffffffff'..bottomLeftText..'|r'
                         end
                     end
                 end
             end
-            bottomLeftText= bottomLeftText or itemLevel
+            rightText= itemLevel
 
             topRightText= e.WA_Utf8Sub(subclassID==9 and itemType or itemSubType, 2,3)
             if expacID and expacID< e.ExpansionLevel then

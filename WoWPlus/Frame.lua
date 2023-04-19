@@ -476,6 +476,7 @@ local function Init_Move()
         SendMailFrame={frame= MailFrame},
         MirrorTimer1={save=true},
         LootHistoryFrame= {},--拾取框
+        GroupLootHistoryFrame={},
         --EncounterBar={},
         --[StoreFrame.TitleContainer]={frame=StoreFrame},--商店
         ChannelFrame={},--聊天设置
