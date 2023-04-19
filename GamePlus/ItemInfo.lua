@@ -50,7 +50,20 @@ local function set_Item_Info(self, tab)
             r,g,b = GetItemQualityColor(itemQuality)
         end
 
-        if itemID==6948 then--炉石
+        local sellItem
+        if tab.bag and not containerInfo.isLocked and e.CheckItemSell then
+            sellItem= e.CheckItemSell(itemID, itemQuality)--检测是否是出售物品
+        end
+
+        if sellItem then--检测是否是出售物品
+            if itemQuality==0 then
+                topRightText='|A:Coin-Silver:0:0|a'
+            else
+                topLeftText= itemLevel and itemLevel>20 and (classID==2 or classID==4) and itemLevel
+                topRightText= '|T236994:0|t'
+            end
+
+        elseif itemID==6948 then--炉石
             bottomLeftText= e.WA_Utf8Sub(GetBindLocation(), 2, 5)
 
         elseif containerInfo and containerInfo.hasLoot then--宝箱

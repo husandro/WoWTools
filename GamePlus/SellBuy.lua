@@ -114,7 +114,10 @@ local function bossLoot(itemID, itemLink)--BOSS掉落
     end
 end
 
-local function CheckItemSell(itemID, quality)--检测是否是出售物品
+--####################
+--检测是否是出售物品
+--为 ItemInfo.lua, 用
+e.CheckItemSell= function(itemID, quality)
     if itemID then
         if Save.noSell[itemID] then
             return
@@ -136,7 +139,11 @@ local function CheckItemSell(itemID, quality)--检测是否是出售物品
         end
     end
 end
-local function setSellItems()--出售物品
+
+--#######
+--出售物品
+--#######
+local function setSellItems()
     if IsModifierKeyDown() then
         return
     end
@@ -145,7 +152,7 @@ local function setSellItems()--出售物品
         for slot=0, C_Container.GetContainerNumSlots(bag) do--背包数量
             local info = C_Container.GetContainerItemInfo(bag,slot)
             if info and info.hyperlink and info.itemID and info.quality and (info.quality<5 or Save.Sell[info.itemID] and not Save.notSellCustom) then
-                local checkText=CheckItemSell(info.itemID, info.quality)--检察 ,boss掉落, 指定 或 出售灰色,宠物
+                local checkText= e.CheckItemSell(info.itemID, info.quality)--检察 ,boss掉落, 指定 或 出售灰色,宠物
                 if not info.isLocked and checkText then
                     C_Container.UseContainerItem(bag, slot);--买出
                     local prece =0
@@ -984,6 +991,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
             check2:SetScript('OnLeave', function() e.tips:Hide() end)
 
             if Save.disabled then
+                e.CheckItemSell=nil
                 panel:UnregisterAllEvents()
             else
                 if WoWToolsSave then
@@ -1012,6 +1020,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
         setSellItems()--出售物品
         setBuyItems()--购买物品
         setMenu()--设置菜单
+
     elseif event=='UPDATE_INVENTORY_DURABILITY' then
         setDurabiliy()
 
