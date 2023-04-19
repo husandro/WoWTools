@@ -376,7 +376,7 @@ local function setAchievement(self, achievementID)--成就
     local _, name, points, completed, month, day, year, description, flags, icon, rewardText, isGuild, wasEarnedByMe, earnedBy, isStatistic = GetAchievementInfo(achievementID)
     self.textLeft:SetText(points..(e.onlyChinese and '点' or RESAMPLE_QUALITY_POINT))--点数
     self.text2Left:SetText(completed and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已完成' or CRITERIA_COMPLETED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未完成' or ACHIEVEMENTFRAME_FILTER_INCOMPLETE)..'|r')--否是完成
-    self.textRight:SetText(isGuild and (e.onlyChinese and '公会' or GUILD) or flags==131072 and e.Icon.wow2..(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET)  or '')
+    self.textRight:SetText(isGuild and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '公会' or GUILD) or flags==131072 and ('|cffff00ff'..e.Icon.wow2..(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET))  or '')
 
     self:AddDoubleLine((e.onlyChinese and '成就' or ACHIEVEMENTS)..' '..achievementID, icon and '|T'..icon..':0|t'..icon)
 end
@@ -1486,10 +1486,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                             e.tips:SetOwner(self3, "ANCHOR_LEFT")
                             e.tips:ClearLines()
                             e.tips:SetAchievementByID(self3.ID)
-                            if select(9, GetAchievementInfo(self3.ID))==131072 then
-                                e.tips:AddLine(' ')
-                                e.tips:AddDoubleLine(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET, e.Icon.wow2..(e.onlyChinese and '通用' or SHARE_QUEST_ABBREV), 1,0,1, 1,0,1)
-                            end
+                            e.tips:AddLine(' ')
+                            e.tips:AddDoubleLine(id, addName)
                             e.tips:Show()
                         end
                     end)
