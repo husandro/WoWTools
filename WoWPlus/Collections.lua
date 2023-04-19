@@ -895,6 +895,41 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Init_Heirloom()--传家宝
             Init_Wardrober_Items()--物品, 幻化, 界面
             Init_Wardrobe_Sets()--套装, 幻化, 界面
+
+            hooksecurefunc('MountJournal_UpdateMountDisplay', function(forceSceneChange)--坐骑
+                if not MountJournal.selectedMountID then
+                    if MountJournal.MountDisplay.infoText then
+                        MountJournal.MountDisplay.infoText:SetText('')
+                    end
+                    return
+                end
+                local creatureDisplayInfoID, description, source, isSelfMount, mountTypeID,
+                uiModelSceneID, animID, spellVisualKitID, disablePlayerMountPreview = C_MountJournal.GetMountInfoExtraByID(MountJournal.selectedMountID)
+
+                local showPlayer = GetCVarBool("mountJournalShowPlayer");
+				if not disablePlayerMountPreview and not showPlayer then
+					disablePlayerMountPreview = true;
+				end
+                if not disablePlayerMountPreview then
+                    if MountJournal.MountDisplay.infoText then
+                        MountJournal.MountDisplay.infoText:SetText('')
+                    end
+                    return
+                end
+                if not MountJournal.MountDisplay.infoText then
+                    MountJournal.MountDisplay.infoText= e.Cstr(MountJournal.MountDisplay)
+                    MountJournal.MountDisplay.infoText:SetPoint('BOTTOMLEFT')
+                end
+                local text= 'mountID '..MountJournal.selectedMountID
+                        ..'\n'..'creatureDisplayInfoID '..(creatureDisplayInfoID or '')
+                        ..'\n'..'isSelfMount '.. (isSelfMount and 'true' or 'false')
+                        ..'\n'..'mountTypeID '..(mountTypeID or '')
+                        ..'\n'..'uiModelSceneID '..(uiModelSceneID or '')
+                        ..'\n'..'animID '..(animID or '')
+                        ..'\n'..'spellVisualKitID '..(spellVisualKitID or '')
+
+                MountJournal.MountDisplay.infoText:SetText(text)
+            end)
         end
 
     elseif event == "PLAYER_LOGOUT" then
