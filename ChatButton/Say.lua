@@ -9,6 +9,12 @@ local addName= SAY
 local button
 local panel= CreateFrame("Frame")
 
+
+local function set_Target_Frame_Fun()--日标框, 向上:密语, 向下:跟随                   
+    print('next ver, func') 
+end
+
+
 local function setType(text)--使用,提示
     if not button.typeText then
         button.typeText=e.Cstr(button, {size=10, color=true})--10, nil, nil, true)
@@ -414,7 +420,8 @@ local function Init_Menu(self, level, type)--主菜单
             tooltipText= e.onlyChinese and '鼠标滚轮向上滚动: 密语'..e.Icon.up2..'\n鼠标滚轮向下滚动: 跟随'..e.Icon.down2 or (KEY_MOUSEWHEELUP..": "..SLASH_TEXTTOSPEECH_WHISPER..e.Icon.up2..'\n'..KEY_MOUSEWHEELDOWN..': '..FOLLOW)..e.Icon.down2,
             func=function()
                 Save.setTargetFrameFun= not Save.setTargetFrameFun and true or nil
-                print('next ver, func')
+                set_Target_Frame_Fun()
+                
             end
         }
         UIDropDownMenu_AddButton(info, level)
@@ -467,6 +474,9 @@ local function Init()
     end)
 
     set_chatBubbles_Tips()--提示，聊天泡泡，开启/禁用
+    if Save.setTargetFrameFun then
+        set_Target_Frame_Fun()
+    end
 end
 
 --###########
