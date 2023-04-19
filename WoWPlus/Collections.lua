@@ -933,6 +933,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                                   ..'\nicon '..(icon or '')
                                   ..'\nsourceType '..(sourceType or '').. (sourceType and _G['BATTLE_PET_SOURCE_'..sourceType] and ' ('.._G['BATTLE_PET_SOURCE_'..sourceType]..')' or '')
 
+                                  ..'\n\n'..id..' '..addName
 
                 MountJournal.MountDisplay.infoText:SetText(text)
             end)

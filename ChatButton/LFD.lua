@@ -717,9 +717,10 @@ local function set_LFGPlus()--预创建队伍增强
                 end
                 tooltip:AddDoubleLine(e.Class(nil, classInfo.classFile).. (text or ''), col..i)
             end
-            tooltip:Show()
         end
-
+        tooltip:AddLine(' ')
+        tooltip:AddDoubleLine(id, addName)
+        tooltip:Show()
     end)
 end
 
