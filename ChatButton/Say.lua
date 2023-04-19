@@ -3,6 +3,7 @@ local Save= {
     inInstanceBubblesDisabled= e.Player.husandro,
     saveWhisper=true,--保存, 密语
     --WhisperTab={}--保存, 密语, 内容
+    setTargetFrameFun= e.husandro,--日标框, 向上:密语, 向下:跟随
 }
 local addName= SAY
 local button
@@ -399,6 +400,21 @@ local function Init_Menu(self, level, type)--主菜单
             hasArrow=true,
             func=function()
                 ToggleFriendsFrame(2)
+            end
+        }
+        UIDropDownMenu_AddButton(info, level)
+        UIDropDownMenu_AddSeparator(level)
+
+        info={--
+            text= not e.onlyChinese and HUD_EDIT_MODE_TARGET_FRAME_LABEL or "目标框体",
+            icon= 'newplayertutorial-icon-mouse-middlebutton',
+            checked= Save.setTargetFrameFun,
+            tooltipOnButton=true,
+            tooltipTitle= e.onlyChinese and '仅限系统(玩家)\n' or (LFG_LIST_CROSS_FACTION:format(SYSTEM..' ('..PLAYER..')')),
+            tooltipText= e.onlyChinese and '鼠标滚轮向上滚动: 密语'..e.Icon.up2..'\n鼠标滚轮向下滚动: 跟随'..e.Icon.down2 or (KEY_MOUSEWHEELUP..": "..SLASH_TEXTTOSPEECH_WHISPER..e.Icon.up2..'\n'..KEY_MOUSEWHEELDOWN..': '..FOLLOW)..e.Icon.down2,
+            func=function()
+                Save.setTargetFrameFun= not Save.setTargetFrameFun and true or nil
+                print('next ver, func')
             end
         }
         UIDropDownMenu_AddButton(info, level)

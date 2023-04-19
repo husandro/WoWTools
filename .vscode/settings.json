@@ -2546,7 +2546,8 @@
         "FocusFrameToT",
         "TargetFrameToT",
         "FocusFrame",
-        "EMPTY"
+        "EMPTY",
+        "HUD_EDIT_MODE_TARGET_FRAME_LABEL"
     ],
     "Lua.diagnostics.disable": [
     ]
