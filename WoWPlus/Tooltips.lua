@@ -851,8 +851,8 @@ local function setCVar(reset, tips, notPrint)
 end
 
 local function set_FlyoutInfo(self, flyoutID)--法术, 弹出框
+    self:AddLine(' ')
     local _, _, numSlots, isKnown= GetFlyoutInfo(flyoutID)
-    self:AddDoubleLine((not isKnown and '|cnRED_FONT_COLOR:' or '')..'flyoutID|r '..flyoutID, numSlots..' '..(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL))
     for slot= 1, numSlots do
         local flyoutSpellID, overrideSpellID, isKnown2, spellName = GetFlyoutSlotInfo(flyoutID, slot)
         local spellID= overrideSpellID or flyoutSpellID
@@ -866,6 +866,9 @@ local function set_FlyoutInfo(self, flyoutID)--法术, 弹出框
             end
         end
     end
+    self:AddLine(' ')
+    self:AddDoubleLine((not isKnown and '|cnRED_FONT_COLOR:' or '')..'flyoutID|r '..flyoutID, numSlots..' '..(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL))
+    self:AddDoubleLine(id, addName)
 end
 
 --###########
