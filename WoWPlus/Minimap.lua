@@ -21,11 +21,6 @@ local function set_ZoomOut()--更新地区时,缩小化地图
     end
 end
 
-local function set_minimapTrackingShowAll()--追踪,镇民
-    if Save.minimapTrackingShowAll~=nil then
-        C_CVar.SetCVar('minimapTrackingShowAll', not Save.minimapTrackingShowAll and '0' or '1' )
-    end
-end
 
 --####
 --缩放
@@ -537,8 +532,7 @@ local function set_MinimapMenu()--小地图, 添加菜单
             tooltipTitle= e.onlyChinese and '显示: 追踪' or SHOW..': '..TRACKING,
             tooltipText= id..' '..addName..'\n\nCVar minimapTrackingShowAll',
             func= function()
-                Save.minimapTrackingShowAll= not C_CVar.GetCVarBool("minimapTrackingShowAll") and true or false
-                set_minimapTrackingShowAll()--追踪,镇民
+                C_CVar.SetCVar('minimapTrackingShowAll', not C_CVar.GetCVarBool("minimapTrackingShowAll") and '1' or '0' )
             end
         }
         UIDropDownMenu_AddButton(info, 1)
@@ -566,7 +560,7 @@ local function set_MinimapMenu()--小地图, 添加菜单
         end
         info={
             text= e.onlyChinese and '文本' or LOCALE_TEXT_LABEL,
-            icon='MajorFactions_MapIcons_Tuskarr64',
+            icon='VignetteKillElite',
             tooltipOnButton=true,
             tooltipTitle= id..'  '..addName,
             tooltipText= (e.onlyChinese and '小地图' or HUD_EDIT_MODE_MINIMAP_LABEL)..mapName,
@@ -592,7 +586,6 @@ local function Init()
     set_MinimapCluster()--缩放
     C_Timer.After(2, set_ExpansionLandingPageMinimapButton)--盟约图标
     set_MinimapMenu()--小地图, 添加菜单
-    set_minimapTrackingShowAll()--追踪,镇民
 
     if MinimapCluster then
         if MinimapCluster.InstanceDifficulty and MinimapCluster.InstanceDifficulty.Instance.Border then
@@ -720,13 +713,33 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not Minimap.ZoomIn.text then
                 Minimap.ZoomIn.text= e.Cstr(Minimap, {color=true})
                 Minimap.ZoomIn.text:SetPoint('BOTTOMLEFT', Minimap.ZoomIn, 'TOPLEFT',-2,-6)
+                Minimap.ZoomIn.text:EnableMouse(true)
+                Minimap.ZoomIn.text:SetScript('OnLeave', function() e.tips:Hide() end)
+                Minimap.ZoomIn.text:SetScript('OnEnter', function(self2)
+                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                    e.tips:ClearLines()
+                    e.tips:AddDoubleLine(e.onlyChinese and '当前等级' or BATTLEGROUND_RATING, (Minimap:GetZoom()+1)..'/'..(Minimap:GetZoomLevels()))
+                    e.tips:AddDoubleLine(id, addName)
+                    e.tips:Show()
+                end)
             end
             Minimap.ZoomIn.text:SetText(level-1-zoom)
+
             if not Minimap.ZoomOut.text then
                 Minimap.ZoomOut.text= e.Cstr(Minimap, {color=true})
                 Minimap.ZoomOut.text:SetPoint('BOTTOMLEFT', Minimap.ZoomOut, 'TOPLEFT',0,-2)
+                Minimap.ZoomOut.text:EnableMouse(true)
+                Minimap.ZoomOut.text:SetScript('OnLeave', function() e.tips:Hide() end)
+                Minimap.ZoomOut.text:SetScript('OnEnter', function(self2)
+                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                    e.tips:ClearLines()
+                    e.tips:AddDoubleLine(e.onlyChinese and '当前等级' or BATTLEGROUND_RATING, (Minimap:GetZoom()+1)..'/'..Minimap:GetZoomLevels())
+                    e.tips:AddDoubleLine(id, addName)
+                    e.tips:Show()
+                end)
             end
             Minimap.ZoomOut.text:SetText(zoom)
+            Minimap.ZoomOut.text.level= level
         else
             if Minimap.ZoomIn.text then
                 Minimap.ZoomIn.text:SetText('')
