@@ -319,7 +319,7 @@ local function Init_Menu(self, level, type)--主菜单
     else
         for index, tab in pairs(chatType) do
             info={
-                text=tab.text,
+                text=tab.text..(button.type==tab.type and e.Icon.left or ''),
                 notCheckable=true,
                 tooltipOnButton=true,
                 tooltipTitle=tab.type,

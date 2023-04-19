@@ -13,6 +13,7 @@ local Save={
     --guildWelcomeText='',
     welcomeOnlyHomeGroup=true,--仅限, 手动组队
     setPlayerSound= e.Player.husandro,--播放, 声音
+    focusKey='Shift',--焦点,快捷键, Ctrl, Alt
 }
 local button
 local panel= CreateFrame("Frame")
@@ -719,45 +720,44 @@ end
 --#################
 --Shift+点击设置焦点
 --#################
-local Frame = {
-    ['PlayerFrame']=true,
-    ['PetFrame']=true,
-    ['PartyMemberFrame1']=true,
-    ['PartyMemberFrame2']=true,
-    ['PartyMemberFrame3']=true,
-    ['PartyMemberFrame4']=true,
-    ['PartyMemberFrame1PetFrame']=true,
-    ['PartyMemberFrame2PetFrame']=true,
-    ['PartyMemberFrame3PetFrame']=true,
-    ['PartyMemberFrame4PetFrame']=true,
-    ['TargetFrame']=true,
-    ['TargetofTargetFrame']=true,
-    ['Boss1TargetFrame']=true,
-    ['Boss2TargetFrame']=true,
-    ['Boss3TargetFrame']=true,
-    ['Boss4TargetFrame']=true,
-    ['Boss5TargetFrame']=true,
-    ['FocusFrameToT']=true,
-    ['TargetFrameToT']=true,
-    ['FocusFrame']=true,
-}
+local clearFocusFrame
 local function set_Shift_Click_focurs()
     if UnitAffectingCombat('player') then
         panel:RegisterEvent('PLAYER_REGEN_ENABLED')
         return
     end
-    local key = 'shift'--设置快快捷键
-    for frame, _ in pairs(Frame) do--设置焦点
-        if _G[frame] and _G[frame]:CanChangeAttribute() then
-            if frame=='FocusFrame' then--取消焦点
-                _G[frame]:SetAttribute(key..'-type1','macro')
-                _G[frame]:SetAttribute(key..'-macrotext1','/clearfocus')
-            else
-                _G[frame]:SetAttribute(key..'-type1', 'focus')
-            end
-            Frame[frame]=nil
+
+    local tab = {
+        PlayerFrame,
+        PetFrame,
+        PartyFrame.MemberFrame1,
+        PartyFrame.MemberFrame2,
+        PartyFrame.MemberFrame3,
+        PartyFrame.MemberFrame4,
+        TargetFrame,
+        TargetFrameToT,
+        Boss1TargetFrame,
+        Boss2TargetFrame,
+        Boss3TargetFrame,
+        Boss4TargetFrame,
+        Boss5TargetFrame,
+        FocusFrameToT,
+    }
+
+    local key = Save.focusKey or 'shift'--设置快快捷键
+    for _, frame in pairs(tab) do--设置焦点
+        if frame and frame:CanChangeAttribute() then
+            frame:SetAttribute(key..'-type1', 'focus')
         end
     end
+
+    FocusFrame:SetAttribute(key..'-macrotext1','/clearfocus')
+    FocusFrame:SetAttribute(key..'-type1','macro')
+
+    clearFocusFrame= clearFocusFrame or e.Cbtn(nil, {type=true, name= id..addName..'clearFocusFrame'})
+    clearFocusFrame:SetAttribute('type','macro')
+    clearFocusFrame:SetAttribute('macrotext','/clearfocus')
+    e.SetButtonKey(clearFocusFrame, true, strupper(key)..'-BUTTON1', nil)--设置清除快捷键
 end
 
 --#########
@@ -827,7 +827,36 @@ StaticPopupDialogs[id..addName..'WELCOME']={--区域,设置对话框
 --#####
 local function InitMenu(self, level, type)
     local info
-    if type=='Welcome' then--欢迎
+    if type=='FOCUSKEY' then
+        local tab={
+            'Shift',
+            'Ctrl',
+            'Alt',
+        }
+        for _, key in pairs(tab) do
+            info={
+                text= key..' + '.. e.Icon.left,
+                checked= Save.focusKey== key or (not Save.focusKey and key=='Shift'),
+                disabled= UnitAffectingCombat('player'),
+                arg1= key,
+                func= function(_, arg1)
+                    Save.focusKey= arg1
+                    set_Shift_Click_focurs()--Shift+点击设置焦点
+                    print(id,addName, '|cnGREEN_FONT_COLOR:'..Save.focusKey..' + |r'..e.Icon.left, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end,
+            }
+            UIDropDownMenu_AddButton(info, level)    
+        end
+        UIDropDownMenu_AddSeparator(level)
+        info= {
+            text= (Save.focusKey or 'Shift')..' + '..e.Icon.left..' + '..(e.onlyChinese and '空' or EMPTY)..' = '..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
+            notCheckable=true,
+            isTitle=true,
+        }
+        UIDropDownMenu_AddButton(info, level)
+        return
+
+    elseif type=='Welcome' then--欢迎
         info={
             text= e.onlyChinese and '公会新成员' or LFG_LIST_GUILD_MEMBER,--公会新成员
             checked=Save.guildWelcome,
@@ -863,131 +892,136 @@ local function InitMenu(self, level, type)
             end
         }
         UIDropDownMenu_AddButton(info, level)
-
-    else
-        info={
-            text= (e.onlyChinese and '超链接图标'or addName)..e.Icon.left,
-            checked=not Save.disabed,
-            func=function()
-                setFunc()--使用，禁用
-            end,
-        }
-        UIDropDownMenu_AddButton(info, level)
-
-        local bool= C_CVar.GetCVarBool('textToSpeech')--文本转语音
-        info={
-            text= (e.onlyChinese and '文本转语音' or TEXT_TO_SPEECH),
-            checked=bool,
-            tooltipOnButton=true,
-            tooltipTitle='CVar: textToSpeech',
-            func=function()
-                if C_CVar.GetCVarBool('textToSpeech') then
-                    C_CVar.SetCVar("textToSpeech", 0)
-                else
-                    C_CVar.SetCVar("textToSpeech", 1)
-                end
-                print(id, addName, e.onlyChinese and '文本转语音' or TEXT_TO_SPEECH..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool('textToSpeech')))
-            end
-        }
-        UIDropDownMenu_AddButton(info, level)
-
-        info={
-            text= e.onlyChinese and '欢迎加入' or (EMOTE103_CMD1:gsub('/','')..JOIN),
-            checked= Save.guildWelcome or Save.groupWelcome,
-            func=function()
-                Save.guildWelcome=nil
-                Save.groupWelcome=nil
-                set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
-            end,
-            menuList='Welcome',
-            hasArrow=true,
-        }
-        UIDropDownMenu_AddButton(info, level)
-
-        UIDropDownMenu_AddSeparator(level)
-        info={
-            text= e.onlyChinese and '设置焦点' or SET_FOCUS,
-            checked=Save.setFucus,
-            tooltipOnButton=true,
-            tooltipTitle='Shift + '..e.Icon.left,
-            tooltipText= (e.onlyChinese and '仅限系统\n\n如果出现错误: 请取消' or LFG_LIST_CROSS_FACTION:format(SYSTEM)
-                ..'\n\n'..ENABLE_ERROR_SPEECH..': '..CANCEL)
-                ..'\n\n|cnRED_FONT_COLOR:'..(e.onlyChinese and '编辑模式: 错误' or HUD_EDIT_MODE_MENU..': '..ERRORS)..'|r',
-            func= function()
-                if Save.setFucus then
-                    Save.setFucus=nil
-                    print(id,addName, e.onlyChinese and '设置' or  SETTINGS, e.onlyChinese and '|cnRED_FONT_COLOR:重新加载UI|r' or '|cnGREEN_FONT_COLOR:'..RELOADUI..'|r')
-                else
-                    Save.setFucus=true
-                    set_Shift_Click_focurs()--Shift+点击设置焦点
-                end
-            end,
-        }
-        UIDropDownMenu_AddButton(info, level)
-
-        info={
-            text= e.onlyChinese and '事件声音' or EVENTS_LABEL..SOUND,
-            checked= Save.setPlayerSound,
-            colorCode= (not C_CVar.GetCVarBool('Sound_EnableAllSound') or C_CVar.GetCVar('Sound_MasterVolume')=='0') and '|cff606060',
-            func= function()
-                Save.setPlayerSound= not Save.setPlayerSound and true or nil
-                e.setPlayerSound= Save.setPlayerSound
-                if Save.setPlayerSound then
-                    e.PlaySound()--播放, 声音
-                end
-                set_START_TIMER_Event()--事件, 声音
-                print(id, addName, e.onlyChinese and "播放" or SLASH_STOPWATCH_PARAM_PLAY1, e.onlyChinese and '事件声音' or EVENTS_LABEL..SOUND)
-            end
-        }
-        UIDropDownMenu_AddButton(info, level)
-
-        UIDropDownMenu_AddSeparator(level)
-        info={
-            text= '|cffff00ffETR|rACE',
-            checked= IsAddOnLoaded("Blizzard_EventTrace") and EventTrace:IsShown(),
-            tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and '事件记录' or EVENTTRACE_HEADER,
-            func= function()
-                if not IsAddOnLoaded('Blizzard_EventTrace') then
-                    UIParentLoadAddOn("Blizzard_EventTrace")
-                else
-                    EventTrace:SetShown(not EventTrace:IsShown() and true or false)
-                end
-            end,
-        }
-        UIDropDownMenu_AddButton(info, level)
-
-        info={
-            text= '|cff00ff00FST|rACK',
-            checked= IsAddOnLoaded("Blizzard_DebugTools") and FrameStackTooltip_IsFramestackEnabled(),--Blizzard_DebugTools.lua
-            tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and '框架栈' or DEBUG_FRAMESTACK,
-            tooltipText='|cnGREEN_FONT_COLOR:Alt|r '..(e.onlyChinese and '切换' or HUD_EDIT_MODE_SWITCH)
-                        ..'\n|cnGREEN_FONT_COLOR:Ctrl|r '..(e.onlyChinese and '显示' or SHOW)
-                        ..'\n|cnGREEN_FONT_COLOR:Shift|r '..(e.onlyChinese and '材质信息' or TEXTURES_SUBHEADER..INFO)
-                        ..'\n|cnGREEN_FONT_COLOR:Ctrl+C|r '.. (e.onlyChinese and '复制' or CALENDAR_COPY_EVENT)..' \"File\" '..(e.onlyChinese and '类型' or TYPE),
-            func= function()--Bindings.xml
-                if not IsAddOnLoaded("Blizzard_DebugTools") then
-                    LoadAddOn("Blizzard_DebugTools")
-                end
-                FrameStackTooltip_ToggleDefaults()
-            end,
-        }
-        UIDropDownMenu_AddButton(info, level)
-
-        --UIDropDownMenu_AddSeparator(level)
-        info={--重载
-            text= e.onlyChinese and '重新加载UI' or RELOADUI,
-            notCheckable=true,
-            tooltipOnButton=true,
-            tooltipTitle='/reload',
-            colorCode='|cffff0000',
-            func=function()
-                e.Reload()
-            end
-        }
-        UIDropDownMenu_AddButton(info, level)
+        return
     end
+
+
+    info={
+        text= (e.onlyChinese and '超链接图标'or addName),
+        icon= 'newplayertutorial-icon-mouse-leftbutton',
+        checked=not Save.disabed,
+        func=function()
+            setFunc()--使用，禁用
+        end,
+    }
+    UIDropDownMenu_AddButton(info, level)
+
+    info={--文本转语音
+        text= (e.onlyChinese and '文本转语音' or TEXT_TO_SPEECH),
+        icon= 'chatframe-button-icon-TTS',
+        checked= C_CVar.GetCVarBool('textToSpeech'),
+        disabled= UnitAffectingCombat('player'),
+        tooltipOnButton=true,
+        tooltipTitle='CVar: textToSpeech',
+        func=function()
+            C_CVar.SetCVar("textToSpeech", not C_CVar.GetCVarBool('textToSpeech') and '1' or '0' )
+            print(id, addName, e.onlyChinese and '文本转语音' or TEXT_TO_SPEECH..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool('textToSpeech')))
+        end
+    }
+    UIDropDownMenu_AddButton(info, level)
+
+    info={
+        text= e.onlyChinese and '欢迎加入' or (EMOTE103_CMD1:gsub('/','')..JOIN),
+        checked= Save.guildWelcome or Save.groupWelcome,
+        func=function()
+            Save.guildWelcome=nil
+            Save.groupWelcome=nil
+            set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
+        end,
+        menuList='Welcome',
+        hasArrow=true,
+    }
+    UIDropDownMenu_AddButton(info, level)
+
+    UIDropDownMenu_AddSeparator(level)
+    info={
+        text= e.onlyChinese and '设置焦点' or SET_FOCUS,
+        checked= Save.setFucus,
+        disabled= UnitAffectingCombat('player'),
+        tooltipOnButton=true,
+        tooltipTitle= (Save.focusKey or 'Shift').. ' + '..e.Icon.left,
+        tooltipText= (e.onlyChinese and '仅限系统\n\n如果出现错误: 请取消' or LFG_LIST_CROSS_FACTION:format(SYSTEM)
+            ..'\n\n'..ENABLE_ERROR_SPEECH..': '..CANCEL)
+            ..'\n\n|cnRED_FONT_COLOR:'..(e.onlyChinese and '编辑模式: 错误' or HUD_EDIT_MODE_MENU..': '..ERRORS)..'|r',
+        hasArrow=true,
+        menuList='FOCUSKEY',
+        func= function()
+            if Save.setFucus then
+                Save.setFucus=nil
+            else
+                Save.setFucus=true
+                set_Shift_Click_focurs()--Shift+点击设置焦点
+            end
+            print(id,addName, e.GetEnabeleDisable(Save.setFucus), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end,
+    }
+    UIDropDownMenu_AddButton(info, level)
+
+    info={
+        text= e.onlyChinese and '事件声音' or EVENTS_LABEL..SOUND,
+        icon= 'chatframe-button-icon-voicechat',
+        checked= Save.setPlayerSound,
+        colorCode= (not C_CVar.GetCVarBool('Sound_EnableAllSound') or C_CVar.GetCVar('Sound_MasterVolume')=='0') and '|cff606060',
+        func= function()
+            Save.setPlayerSound= not Save.setPlayerSound and true or nil
+            e.setPlayerSound= Save.setPlayerSound
+            if Save.setPlayerSound then
+                e.PlaySound()--播放, 声音
+            end
+            set_START_TIMER_Event()--事件, 声音
+            print(id, addName, e.onlyChinese and "播放" or SLASH_STOPWATCH_PARAM_PLAY1, e.onlyChinese and '事件声音' or EVENTS_LABEL..SOUND)
+        end
+    }
+    UIDropDownMenu_AddButton(info, level)
+
+    UIDropDownMenu_AddSeparator(level)
+    info={
+        text= '|cffff00ffETR|rACE',
+        icon= 'minimap-genericevent-hornicon',
+        checked= IsAddOnLoaded("Blizzard_EventTrace") and EventTrace:IsShown(),
+        tooltipOnButton=true,
+        tooltipTitle= e.onlyChinese and '事件记录' or EVENTTRACE_HEADER,
+        func= function()
+            if not IsAddOnLoaded('Blizzard_EventTrace') then
+                UIParentLoadAddOn("Blizzard_EventTrace")
+            else
+                EventTrace:SetShown(not EventTrace:IsShown() and true or false)
+            end
+        end,
+    }
+    UIDropDownMenu_AddButton(info, level)
+
+    info={
+        text= '|cff00ff00FST|rACK',
+        icon= 'QuestLegendaryTurnin',
+        checked= IsAddOnLoaded("Blizzard_DebugTools") and FrameStackTooltip_IsFramestackEnabled(),--Blizzard_DebugTools.lua
+        tooltipOnButton=true,
+        tooltipTitle= e.onlyChinese and '框架栈' or DEBUG_FRAMESTACK,
+        tooltipText='|cnGREEN_FONT_COLOR:Alt|r '..(e.onlyChinese and '切换' or HUD_EDIT_MODE_SWITCH)
+                    ..'\n|cnGREEN_FONT_COLOR:Ctrl|r '..(e.onlyChinese and '显示' or SHOW)
+                    ..'\n|cnGREEN_FONT_COLOR:Shift|r '..(e.onlyChinese and '材质信息' or TEXTURES_SUBHEADER..INFO)
+                    ..'\n|cnGREEN_FONT_COLOR:Ctrl+C|r '.. (e.onlyChinese and '复制' or CALENDAR_COPY_EVENT)..' \"File\" '..(e.onlyChinese and '类型' or TYPE),
+        func= function()--Bindings.xml
+            if not IsAddOnLoaded("Blizzard_DebugTools") then
+                LoadAddOn("Blizzard_DebugTools")
+            end
+            FrameStackTooltip_ToggleDefaults()
+        end,
+    }
+    UIDropDownMenu_AddButton(info, level)
+
+    --UIDropDownMenu_AddSeparator(level)
+    info={--重载
+        text= e.onlyChinese and '重新加载UI' or RELOADUI,
+        notCheckable=true,
+        tooltipOnButton=true,
+        tooltipTitle='/reload',
+        colorCode='|cffff0000',
+        func=function()
+            e.Reload()
+        end
+    }
+    UIDropDownMenu_AddButton(info, level)
 end
 
 DEFAULT_CHAT_FRAME.ADD=DEFAULT_CHAT_FRAME.AddMessage
@@ -1022,7 +1056,7 @@ local function Init()
     set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
     if Save.setFucus then
         set_Shift_Click_focurs()--Shift+点击设置焦点
-        panel:RegisterEvent('GROUP_ROSTER_UPDATE')
+        --panel:RegisterEvent('GROUP_ROSTER_UPDATE')
     end
 
     showTimestamps= C_CVar.GetCVar("showTimestamps")~='none' and true or nil
@@ -1090,8 +1124,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
             showTimestamps= arg2~='none' and true or nil
         end
 
-    elseif event=='GROUP_ROSTER_UPDATE' then
-        set_Shift_Click_focurs()--Shift+点击设置焦点
+    --elseif event=='GROUP_ROSTER_UPDATE' then
+        --set_Shift_Click_focurs()--Shift+点击设置焦点
 
     elseif event=='PLAYER_REGEN_ENABLED' then
         set_Shift_Click_focurs()--Shift+点击设置焦点

@@ -2537,7 +2537,16 @@
         "DUNGEON_SCORE_BEST_AFFIX",
         "CHALLENGE_COMPLETE_DUNGEON_SCORE",
         "TRADESKILL_RECIPE_LEVEL_TOOLTIP_HIGHEST_RANK",
-        "BATTLEGROUND_RATING"
+        "BATTLEGROUND_RATING",
+        "Boss1TargetFrame",
+        "Boss2TargetFrame",
+        "Boss3TargetFrame",
+        "Boss4TargetFrame",
+        "Boss5TargetFrame",
+        "FocusFrameToT",
+        "TargetFrameToT",
+        "FocusFrame",
+        "EMPTY"
     ],
     "Lua.diagnostics.disable": [
     ]

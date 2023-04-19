@@ -153,7 +153,8 @@ local function InitMenu(self, level, type)--主菜单
 
     UIDropDownMenu_AddSeparator(level)
     info={
-        text= e.onlyChinese and '自动清除' or (AUTO_JOIN:gsub(JOIN,'')..(	CLEAR or KEY_NUMLOCK_MAC)),
+        text= e.onlyChinese and '自动清除' or AUTO_JOIN:gsub(JOIN,SLASH_STOPWATCH_PARAM_STOP2),
+        icon= 'bags-button-autosort-up',
         checked=Save.autoClear,
         tooltipOnButton=true,
         tooltipTitle= e.onlyChinese and '进入战斗时: 清除' or (ENTERING_COMBAT..': '..(CLEAR or KEY_NUMLOCK_MAC)),

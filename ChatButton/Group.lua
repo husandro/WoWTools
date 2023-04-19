@@ -141,15 +141,6 @@ StaticPopupDialogs[id..addName..'CUSTOM']={--区域,设置对话框
     end,
 }
 
-local function set_CVar_chatBubblesParty()--聊天泡泡
-    if Save.chatBubblesParty~=nil then
-        local value= Save.chatBubblesParty and '1' or '0'
-        if C_CVar.GetCVar("chatBubblesParty")~=value then
-            C_CVar.SetCVar("chatBubblesParty", value)
-        end
-    end
-end
-
 --#####
 --主菜单
 --#####
@@ -163,8 +154,8 @@ local function InitMenu(self, level, type)--主菜单
     local info
     if type then
         local tab2={
-            {type= 'mouseUP', text= e.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP},
-            {type= 'mouseDown', text= e.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN},
+            {type= 'mouseUP', text= e.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP, icon= 'bags-greenarrow'},
+            {type= 'mouseDown', text= e.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN, icon= 'UI-HUD-MicroMenu-StreamDLYellow-Up'},
         }
         for _, tab in pairs(tab2) do
             local text=(Save[tab.type] or tab.text)
@@ -173,6 +164,7 @@ local function InitMenu(self, level, type)--主菜单
             end
             info={
                 text= text,
+                icon= tab.icon,
                 notCheckable=true,
                 tooltipOnButton=true,
                 tooltipTitle=tab.text,
@@ -228,9 +220,8 @@ local function InitMenu(self, level, type)--主菜单
             tooltipTitle= 'CVar chatBubblesParty',
             checked= C_CVar.GetCVarBool("chatBubblesParty"),
             disabled= UnitAffectingCombat('player'),
-            func= function ()
-                Save.chatBubblesParty= not C_CVar.GetCVarBool("chatBubblesParty") and true or false
-                set_CVar_chatBubblesParty()
+            func= function()
+                C_CVar.SetCVar("chatBubblesParty", not C_CVar.GetCVarBool("chatBubblesParty") and '1' or '0')
             end
         }
         UIDropDownMenu_AddButton(info, level)
@@ -272,7 +263,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
         else
             role= UnitGroupRolesAssigned(unit)
         end
-        
+
         if guid and maxHP and role then
             info.name= (e.PlayerOnlineInfo(unit) or '')..e.GetPlayerInfo(nil, guid, true).. (e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLeve or '')
             info.maxHP= maxHP
@@ -372,8 +363,6 @@ local function Init()
     end)
 
     --button:SetScript('OnLeave', function() e.tips:Hide() end)
-
-    set_CVar_chatBubblesParty()--聊天泡泡
 
     C_Timer.After(0.3, function() setGroupTips() end)--队伍信息提示
 end
