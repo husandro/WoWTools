@@ -2535,7 +2535,8 @@
         "ProfessionsSpecFrameMixin",
         "PROFESSIONS_SPECS_ADD_KNOWLEDGE",
         "DUNGEON_SCORE_BEST_AFFIX",
-        "CHALLENGE_COMPLETE_DUNGEON_SCORE"
+        "CHALLENGE_COMPLETE_DUNGEON_SCORE",
+        "TRADESKILL_RECIPE_LEVEL_TOOLTIP_HIGHEST_RANK"
     ],
     "Lua.diagnostics.disable": [
     ]

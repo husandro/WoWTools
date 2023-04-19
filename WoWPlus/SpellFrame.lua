@@ -18,8 +18,21 @@ local function set_UpdateSpendText(self)
         self.maxText= e.Cstr(self, {fontType=self.SpendText})--nil, self.SpendText)
         self.maxText:SetPoint('LEFT', self.SpendText, 'RIGHT')
         self.maxText:SetTextColor(1, 0, 1)
+        self.maxText:EnableMouse(true)
+        self.maxText:SetScript('OnLeave', function() e.tips:Hide() end)
+        self.maxText:SetScript('OnEnter', function(self2)
+            if self2.maxRanks then
+                e.tips:SetOwner(self2, "ANCHOR_RIGHT");
+                e.tips:ClearLines();
+                e.tips:AddDoubleLine(e.onlyChinese and '最高等级' or TRADESKILL_RECIPE_LEVEL_TOOLTIP_HIGHEST_RANK, self2.maxRanks)
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(id, addName)
+                e.tips:Show();
+            end
+        end)
     end
     if self.maxText then
+        self.maxText.maxRanks= info and info.maxRanks
         self.maxText:SetText(text or '')
     end
 end
