@@ -859,7 +859,7 @@ local function InitList(self, level, type)--LFDFrame.lua
         UIDropDownMenu_AddButton(info, level)
         info= {
             text= e.onlyChinese and '战利品掷骰' or LOOT_ROLL,
-            checked= LootHistoryFrame:IsShown(),
+            checked= GroupLootHistoryFrame and GroupLootHistoryFrame:IsShown() or (LootHistoryFrame and LootHistoryFrame:IsShown()),
             icon= 'Levelup-Icon-Bag',
             tooltipOnButton= true,
             tooltipTitle= '/loot',

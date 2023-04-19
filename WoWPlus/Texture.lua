@@ -714,9 +714,9 @@ local function Init_Set_AlphaAndColor()
     --[[拾取, 历史
     if not e.Player.ver then
         hideTexture(LootHistoryFrameScrollFrame.ScrollBarBackground)    
-    end]]
+    end
     setAlpha(LootHistoryFrame.NineSlice.Center)
-
+]]
     --频道, 设置
     hideTexture(ChatConfigCategoryFrame.NineSlice.Center)
     hideTexture(ChatConfigBackgroundFrame.NineSlice.Center)
