@@ -163,18 +163,19 @@ local function checkItem()--检测物品
     end
 end
 
+local MountTab={
+    MOUNT_JOURNAL_FILTER_GROUND,
+    MOUNT_JOURNAL_FILTER_AQUATIC,
+    MOUNT_JOURNAL_FILTER_FLYING,
+    MOUNT_JOURNAL_FILTER_DRAGONRIDING,
+    'Shift', 'Alt', 'Ctrl',
+    FLOOR,
+}
+
 local function checkMount()--检测坐骑
-    local tab={
-        MOUNT_JOURNAL_FILTER_GROUND,
-        MOUNT_JOURNAL_FILTER_AQUATIC,
-        MOUNT_JOURNAL_FILTER_FLYING,
-        MOUNT_JOURNAL_FILTER_DRAGONRIDING,
-        'Shift', 'Alt', 'Ctrl',
-        FLOOR,
-    }
     local prima=IsSpellKnown(33388)
     local uiMapID= C_Map.GetBestMapForUnit("player")--当前地图
-    for index, type in pairs(tab) do
+    for index, type in pairs(MountTab) do
         if XD and XD[type] then
             button[type]={XD[type]}
 
@@ -207,7 +208,9 @@ local function getRandomRoll(type)--随机坐骑
     local tab=button[type]
     if #tab>0 then
         local index=math.random(1,#tab)
-        return tab[index]
+        if IsUsableSpell(tab[index]) then--C_MountJournal.GetMountUsabilityByID(tab[index], true)
+            return tab[index]
+        end
     end
 end
 local function setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
@@ -280,10 +283,12 @@ local function setClickAtt()--设置 Click属性
     end
     local spellID= IsIndoors() and button.spellID--进入战斗, 室内
                     or #button[FLOOR]>0 and getRandomRoll(FLOOR)--区域
-                    or (IsUsableSpell(368896) and select(5, C_MountJournal.GetMountInfoByID(1589))) and getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING)
+                    --or (IsUsableSpell(368896) and C_MountJournal.GetMountUsabilityByID(1589, true)) and getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING)
+                    or getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING)
                     or IsSubmerged() and getRandomRoll(MOUNT_JOURNAL_FILTER_AQUATIC)--水平中
                     or IsFlyableArea() and getRandomRoll(MOUNT_JOURNAL_FILTER_FLYING)--飞行区域
                     or IsOutdoors() and getRandomRoll(MOUNT_JOURNAL_FILTER_GROUND)--室外
+                    or button.spellID
 
     local name, _, icon
     if spellID then
@@ -581,7 +586,7 @@ local function InitMenu(self, level, menuList)--主菜单
                 end,
             }
             UIDropDownMenu_AddButton(info, level)
-    
+
             info={
                 text= (e.onlyChinese and '缩放' or UI_SCALE)..': |cnGREEN_FONT_COLOR:'..(Save.scale or 1)..'|r Alt+',
                 isTitle=true,
@@ -831,21 +836,13 @@ end
 --#############################
 --坐骑界面, 添加菜单, 设置提示内容
 --#############################
-local tabMenuList={
-    MOUNT_JOURNAL_FILTER_GROUND,
-    MOUNT_JOURNAL_FILTER_AQUATIC,
-    MOUNT_JOURNAL_FILTER_FLYING,
-    MOUNT_JOURNAL_FILTER_DRAGONRIDING,
-    'Shift', 'Alt', 'Ctrl',
-    FLOOR,
-}
 local function setMountJournal_InitMountButton(self, elementData)--Blizzard_MountCollection.lua
     --local creatureName, spellID, icon, active, isUsable, sourceType, isFavorite, isFactionSpecific, faction, isFiltered, isCollected, mountID, isForDragonriding = C_MountJournal.GetDisplayedMountInfo(elementData.index)
     if not self or not self.spellID or Save.disabled then
         return
     end
     local text
-    for _, type in pairs(tabMenuList) do
+    for _, type in pairs(MountTab) do
         local ID=Save.Mounts[type][self.spellID]
         if ID then
             text= text and text..'\n' or ''
@@ -883,7 +880,7 @@ local function setMountJournal_ShowMountDropdown(index)
     UIDropDownMenu_AddSeparator()
 
     local info
-    for _, type in pairs(tabMenuList) do
+    for _, type in pairs(MountTab) do
         if (type==MOUNT_JOURNAL_FILTER_DRAGONRIDING and isForDragonriding) or (type~=MOUNT_JOURNAL_FILTER_DRAGONRIDING and not isForDragonriding) then
             if type=='Shift'  or type==FLOOR then
                 UIDropDownMenu_AddSeparator()
@@ -939,11 +936,7 @@ end
 local function Init()
     for type, tab in pairs(Save.Mounts) do
         for ID, _ in pairs(tab) do
-            if type==ITEMS then
-                e.LoadDate({id=ID, type='item'})
-            else
-                e.LoadDate({id=ID, type='spell'})
-            end
+            e.LoadDate({id=ID, type= type==ITEMS and 'item' or 'spell'})
         end
     end
     setPanelPostion()--设置按钮位置

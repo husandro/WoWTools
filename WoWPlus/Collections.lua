@@ -921,12 +921,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     MountJournal.MountDisplay.infoText:SetPoint('BOTTOMLEFT')
                 end
                 local text= 'mountID '..MountJournal.selectedMountID
-                        ..'\n'..'creatureDisplayInfoID '..(creatureDisplayInfoID or '')
-                        ..'\n'..'isSelfMount '.. (isSelfMount and 'true' or 'false')
-                        ..'\n'..'mountTypeID '..(mountTypeID or '')
-                        ..'\n'..'uiModelSceneID '..(uiModelSceneID or '')
-                        ..'\n'..'animID '..(animID or '')
-                        ..'\n'..'spellVisualKitID '..(spellVisualKitID or '')
+                        ..'\nanimID '..(animID or '')
+                        ..'\nisSelfMount '.. (isSelfMount and 'true' or 'false')
+                        ..'\nmountTypeID '..(mountTypeID or '')
+                        ..'\nspellVisualKitID '..(spellVisualKitID or '')
+                        ..'\nuiModelSceneID '..(uiModelSceneID or '')
+                        ..'\ncreatureDisplayInfoID '..(creatureDisplayInfoID or '')
+
+                        local _, spellID, icon, _, _, sourceType= C_MountJournal.GetMountInfoByID(MountJournal.selectedMountID)
+                        text= text..'\n\nspellID '..(spellID or '')
+                                  ..'\nicon '..(icon or '')
+                                  ..'\nsourceType '..(sourceType or '').. (sourceType and _G['BATTLE_PET_SOURCE_'..sourceType] and ' ('.._G['BATTLE_PET_SOURCE_'..sourceType]..')' or '')
+
 
                 MountJournal.MountDisplay.infoText:SetText(text)
             end)
