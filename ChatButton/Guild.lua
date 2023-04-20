@@ -49,11 +49,11 @@ end
 local function InitMenu(self, level, type)--主菜单    
     local info
     local find
+    local map=e.GetUnitMapName('paleyr')
     for index=1,  GetNumGuildMembers() do
         local name, rankName, rankIndex, lv, _, zone, publicNote, officerNote, isOnline, status, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)
         if name and guid and isOnline and name~=e.Player.name_server then
             find=true
-            local map=e.GetUnitMapName('paleyr')
             local text=e.GetPlayerInfo(nil, guid, true, true)--名称
             text=(lv and lv~=MAX_PLAYER_LEVEL) and text..' |cnGREEN_FONT_COLOR:'..lv..'|r' or text--等级
             if zone then--地区
@@ -67,8 +67,9 @@ local function InitMenu(self, level, type)--主菜单
                 tooltipTitle=publicNote or '',
                 tooltipText=officerNote or '',
                 icon= status==1 and FRIENDS_TEXTURE_AFK or status==2 and FRIENDS_TEXTURE_DND,
-                func=function()
-                    e.Say(nil, name)
+                arg1=name,
+                func=function(self2, arg1)
+                    e.Say(nil, arg1)
                 end
             }
             securecall('UIDropDownMenu_AddButton', info, level)

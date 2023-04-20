@@ -362,6 +362,9 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
         RequestRaidInfo()
         C_MajorFactions.RequestCatchUpState()
         C_FriendList.ShowFriends()
+        if IsInGuild() then--请求，公会名单
+            C_GuildInfo.GuildRoster()
+        end
         --[[
             RequestRatedInfo()--从服务器请求有关玩家 PvP 评分的信息。
             RequestRandomBattlegroundInstanceInfo()--请求随机战场实例信息

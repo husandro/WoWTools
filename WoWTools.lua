@@ -140,7 +140,7 @@ e.Class=function(unit, class, reAltlas)--职业图标
     end
 end
 
-e.GetPlayerInfo= function(unit, guid, showName)--玩家信息图标
+e.GetPlayerInfo= function(unit, guid, showName, showRealm)--玩家信息图标
     guid= guid or UnitGUID(unit)
     if guid then
         if guid==e.Player.guid then
@@ -149,7 +149,7 @@ e.GetPlayerInfo= function(unit, guid, showName)--玩家信息图标
             local _, englishClass, _, englishRace, sex, name, realm = GetPlayerInfoByGUID(guid)
             if name and englishClass and englishRace and sex then
                 if showName then
-                    return (e.Race(nil, englishRace, sex) or '')..'|c'..select(4,GetClassColor(englishClass))..GetPlayerNameRemoveRealm(name, realm)..'|r'
+                    return (e.Race(nil, englishRace, sex) or '')..'|c'..select(4,GetClassColor(englishClass))..(not showRealm and GetPlayerNameRemoveRealm(name, realm) or (name..(realm and realm~='' and '-'..realm or '')))..'|r'
                 else
                     return (e.Race(nil, englishRace, sex) or '')..(e.Class(nil, englishClass) or '')
                 end

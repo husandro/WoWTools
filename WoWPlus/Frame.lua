@@ -352,6 +352,13 @@ local function setAddLoad(arg1)
 
     elseif arg1=='Blizzard_Calendar' then--日历
         Move(CalendarFrame, {})
+        Move(CalendarEventPickerFrame, {frame=CalendarFrame})
+        Move(CalendarTexturePickerFrame, {frame=CalendarFrame})
+        Move(CalendarMassInviteFrame, {frame=CalendarFrame})
+        Move(CalendarCreateEventFrame, {frame=CalendarFrame})
+        Move(CalendarViewEventFrame, {frame=CalendarFrame})
+        Move(CalendarViewHolidayFrame, {frame=CalendarFrame})
+        Move(CalendarViewRaidFrame, {frame=CalendarFrame})
 
     elseif arg1=='Blizzard_GarrisonUI' then--要塞
         Move(GarrisonShipyardFrame,{})--海军行动

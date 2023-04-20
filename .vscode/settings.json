@@ -2559,7 +2559,12 @@
         "CalendarCreateEventFrame",
         "FRIEND",
         "CalendarCreateEventInviteEdit",
-        "FRIENDS_LIST_OFFLINE"
+        "FRIENDS_LIST_OFFLINE",
+        "CalendarEventPickerFrame",
+        "CalendarTexturePickerFrame",
+        "CalendarMassInviteFrame",
+        "CalendarViewEventFrame",
+        "CalendarViewRaidFrame"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
