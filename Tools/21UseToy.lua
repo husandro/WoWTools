@@ -124,7 +124,7 @@ local function setToyBox_ShowToyDropdown(itemID, anchorTo, offsetX, offsetY)
                 ToySpellButton_UpdateButton(anchorTo)
             end,
         }
-    UIDropDownMenu_AddButton(info, 1)
+    securecall('UIDropDownMenu_AddButton', info, 1)
 end
 local function setToySpellButton_UpdateButton(self)--标记, 是否已选取
     local find = Save.items[self.itemID]
@@ -215,7 +215,7 @@ local function InitMenu(self, level, menuList)--主菜单
                     tooltipOnButton=true,
                     tooltipTitle= e.onlyChinese and '移除' or REMOVE,
                 }
-                UIDropDownMenu_AddButton(info, level)
+                securecall('UIDropDownMenu_AddButton', info, level)
             end
         elseif menuList=='SETTINGS' then--设置菜单
             info={--快捷键,设置对话框
@@ -265,9 +265,9 @@ local function InitMenu(self, level, menuList)--主菜单
                     StaticPopup_Show(id..addName..'KEY')
                 end,
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
 
-            UIDropDownMenu_AddSeparator(level)
+            securecall('UIDropDownMenu_AddSeparator', level)
             info={--清除
                 text='|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除' or CLEAR or KEY_NUMLOCK_MAC)..(e.onlyChinese and '玩具' or TOY)..'|r '..#ItemsTab..'/'..getAllSaveNum(),
                 notCheckable=true,
@@ -277,7 +277,7 @@ local function InitMenu(self, level, menuList)--主菜单
                     StaticPopup_Show(id..addName..'RESETALL')
                 end,
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
 
             info={--重置所有
                 text= e.onlyChinese and '重置' or RESET,
@@ -289,7 +289,7 @@ local function InitMenu(self, level, menuList)--主菜单
                     StaticPopup_Show(id..addName..'RESETALL')
                 end,
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
         end
     else
        info={
@@ -298,15 +298,15 @@ local function InitMenu(self, level, menuList)--主菜单
             menuList='TOY',
             hasArrow=true,
        }
-       UIDropDownMenu_AddButton(info, level)
-       -- UIDropDownMenu_AddSeparator()
+       securecall('UIDropDownMenu_AddButton', info, level)
+       -- securecall('UIDropDownMenu_AddSeparator') 
         info={
             text=Save.KEY or (e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL),
             notCheckable=true,
             menuList='SETTINGS',
             hasArrow=true,
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
     end
 end
 

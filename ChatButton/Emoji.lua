@@ -103,7 +103,7 @@ local function InitMenu(self, level, type)
                 print(id, addName, e.onlyChinese and '聊天频道' or CHAT_CHANNELS,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
         info={
             text= e.onlyChinese and '清除' or  CLEAR or KEY_NUMLOCK_MAC,--全清
             notCheckable=true,
@@ -114,8 +114,8 @@ local function InitMenu(self, level, type)
                 print(id, addName, e.onlyChinese and '聊天频道' or CHAT_CHANNELS,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         }
-        UIDropDownMenu_AddButton(info, level)
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddButton', info, level)
+        securecall('UIDropDownMenu_AddSeparator', level)
         for _, channel in pairs(Channels) do
             info={
                 text=_G[channel] or channel,
@@ -128,7 +128,7 @@ local function InitMenu(self, level, type)
                     print(id, addName, e.onlyChinese and '聊天频道' or CHAT_CHANNELS,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
         end
     else
         info={
@@ -138,7 +138,7 @@ local function InitMenu(self, level, type)
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '隐藏' or HIDE,
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
         info={
             text= e.onlyChinese and '移动' or NPE_MOVE,--移动时, 隐藏
@@ -147,7 +147,7 @@ local function InitMenu(self, level, type)
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '隐藏' or HIDE,
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
         info={
             text= e.onlyChinese and '过移图标时' or ENTER_LFG..EMBLEM_SYMBOL,--过移图标时,显示
@@ -156,16 +156,16 @@ local function InitMenu(self, level, type)
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '显示' or SHOW,
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddSeparator', level)
         info={
             text= e.onlyChinese and '聊天频道' or CHAT_CHANNELS,
             notCheckable=true,
             menuList='Channels',
             hasArrow=true,
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
         info={
             text= e.onlyChinese and '重置' or RESET,
             notCheckable=true,
@@ -174,7 +174,7 @@ local function InitMenu(self, level, type)
             tooltipTitle= e.onlyChinese and '重新加载UI' or RELOADUI,
             colorCode='|cffff0000'
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
     end
 end
 

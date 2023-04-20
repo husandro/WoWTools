@@ -172,7 +172,7 @@ local function InitMenu(self, level, type)--主菜单
                     StaticPopup_Show(id..addName..'CUSTOM', tab.text, nil , {type=tab.type})
                 end
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
         end
     else
         local isInGroup= IsInGroup()
@@ -202,17 +202,17 @@ local function InitMenu(self, level, type)--主菜单
             elseif (tab.text==RAID or tab.text=='团队') and not isInInstance then--在副本外,团
                 info.colorCode='|cffff0000'
             end
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
         end
 
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddSeparator', level)
         info={
             text=((Save.mouseDown or Save.mouseUP) and e.Icon.mid or '').. (e.onlyChinese and '自定义' or CUSTOM),
             notCheckable=true,
             menuList='CUSTOM',
             hasArrow=true,
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
         info={
             text= e.onlyChinese and '聊天泡泡' or CHAT_BUBBLES_TEXT,
@@ -224,7 +224,7 @@ local function InitMenu(self, level, type)--主菜单
                 C_CVar.SetCVar("chatBubblesParty", not C_CVar.GetCVarBool("chatBubblesParty") and '1' or '0')
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
     end
 end

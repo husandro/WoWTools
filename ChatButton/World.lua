@@ -138,7 +138,7 @@ local function addMenu(name, channelNumber, level)--添加菜单
             end
         end
     }
-    UIDropDownMenu_AddButton(info, level)
+    securecall('UIDropDownMenu_AddButton', info, level)
 end
 
 local function InitMenu(self, level, type)--主菜单
@@ -176,7 +176,7 @@ local function InitMenu(self, level, type)--主菜单
                 StaticPopup_Show(id..addName..'changeNamme')
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
         return
 
     elseif type=='IGNORE' then--屏蔽刷屏
@@ -194,14 +194,14 @@ local function InitMenu(self, level, type)--主菜单
                     end
                 end
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
         end
         return
     end
 
     local channelNumber2 = GetChannelName(Save.world)
     addMenu(Save.world , channelNumber2, level)
-    UIDropDownMenu_AddSeparator(level)
+    securecall('UIDropDownMenu_AddSeparator', level)
 
     local find
     local channels = {GetChannelList()}
@@ -214,7 +214,7 @@ local function InitMenu(self, level, type)--主菜单
     end
 
     if find then
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddSeparator', level)
     end
     find=0
     for _, _ in pairs(filterTextTab) do
@@ -236,7 +236,7 @@ local function InitMenu(self, level, type)--主菜单
             end
         end,
     }
-    UIDropDownMenu_AddButton(info, level)
+    securecall('UIDropDownMenu_AddButton', info, level)
 end
 
 

@@ -524,7 +524,7 @@ local function set_MinimapMenu()--小地图, 添加菜单
         return
     end
     MinimapCluster.Tracking.Button:HookScript( 'OnMouseDown', function()
-        UIDropDownMenu_AddSeparator(1)
+        securecall('UIDropDownMenu_AddSeparator', 1)
         local info={
             text=e.onlyChinese and '镇民' or TOWNSFOLK_TRACKING_TEXT,
             checked= C_CVar.GetCVarBool("minimapTrackingShowAll"),
@@ -535,7 +535,7 @@ local function set_MinimapMenu()--小地图, 添加菜单
                 C_CVar.SetCVar('minimapTrackingShowAll', not C_CVar.GetCVarBool("minimapTrackingShowAll") and '1' or '0' )
             end
         }
-        UIDropDownMenu_AddButton(info, 1)
+        securecall('UIDropDownMenu_AddButton', info, 1)
 
         info={
             text= e.onlyChinese and '缩小地图' or BINDING_NAME_MINIMAPZOOMOUT,
@@ -549,7 +549,7 @@ local function set_MinimapMenu()--小地图, 添加菜单
                 set_ZoomOut()--更新地区时,缩小化地图
             end
         }
-        UIDropDownMenu_AddButton(info, 1)
+        securecall('UIDropDownMenu_AddButton', info, 1)
 
         local mapName=''
         for _, mapID in pairs(uiMapIDsTab) do
@@ -574,7 +574,7 @@ local function set_MinimapMenu()--小地图, 添加菜单
                 end
             end
         }
-        UIDropDownMenu_AddButton(info, 1)
+        securecall('UIDropDownMenu_AddButton', info, 1)
     end)
 end
 

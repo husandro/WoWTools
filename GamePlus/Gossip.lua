@@ -202,10 +202,10 @@ local function InitMenu_Gossip(self, level, type)
                     print(id, ENABLE_DIALOG, e.onlyChinese and '移除' or REMOVE, text, 'gossipOptionID:', gossipOptionID)
                 end
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
         end
 
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddSeparator', level)
         info={
             text= e.onlyChinese and '清除全部' or CLEAR_ALL,
             notCheckable=true,
@@ -214,7 +214,7 @@ local function InitMenu_Gossip(self, level, type)
                 print(id, ENABLE_DIALOG, e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
     elseif type=='DISABLE' then--禁用NPC, 闲话,任务, 选项
         for npcID, name in pairs(Save.NPC) do
@@ -228,9 +228,9 @@ local function InitMenu_Gossip(self, level, type)
                     Save.NPC[npcID]=nil
                 end
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
         end
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddSeparator', level)
         info={
             text=e.onlyChinese and '清除全部' or CLEAR_ALL,
             notCheckable=true,
@@ -239,7 +239,7 @@ local function InitMenu_Gossip(self, level, type)
                 print(id, ENABLE_DIALOG, e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
     else
         info={--启用,禁用
             text=e.Icon.left..(e.onlyChinese and '自动对话' or AUTO_JOIN:gsub(JOIN, ENABLE_DIALOG)),
@@ -249,7 +249,7 @@ local function InitMenu_Gossip(self, level, type)
                 setTexture()--设置图标
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
         info={--唯一
             text= e.onlyChinese and '唯一对话' or ITEM_UNIQUE..ENABLE_DIALOG,
             checked= Save.unique,
@@ -257,16 +257,16 @@ local function InitMenu_Gossip(self, level, type)
                 Save.unique= not Save.unique and true or nil
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddSeparator', level)
         info={--自定义,闲话,选项
             text= e.onlyChinese and '自定义对话' or (CUSTOM..ENABLE_DIALOG),
             menuList='CUSTOM',
             notCheckable=true,
             hasArrow=true,
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
         info={--禁用NPC, 闲话,任务, 选项
             text= e.onlyChinese and '禁用 NPC' or (DISABLE..' NPC'),
@@ -277,15 +277,15 @@ local function InitMenu_Gossip(self, level, type)
             notCheckable=true,
             hasArrow=true,
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddSeparator', level)
         info={
             text=e.Icon.right..(e.onlyChinese and '移动' or NPE_MOVE),
             notCheckable=true,
             isTitle=true,
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
         info={
             text= e.onlyChinese and '重置位置' or RESET_POSITION,
             notCheckable=true,
@@ -296,15 +296,15 @@ local function InitMenu_Gossip(self, level, type)
                 setPoint()
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddSeparator', level)
         info={
             text=id..' '..(e.onlyChinese and '对话' or ENABLE_DIALOG),
             isTitle=true,
             notCheckable=true,
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
     end
 end
 
@@ -636,10 +636,10 @@ local function InitMenu_Quest(self, level, type)
                 end,
             }
             num=num+1
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
         end
 
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddSeparator', level)
         info={
             text= e.onlyChinese and '清除全部' or CLEAR_ALL,
             notCheckable=true,
@@ -647,7 +647,7 @@ local function InitMenu_Quest(self, level, type)
                 Save.questRewardCheck={}
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
     elseif type=='CUSTOM' then
         for questID, text in pairs(Save.questOption) do
@@ -661,10 +661,10 @@ local function InitMenu_Quest(self, level, type)
                     print(id, QUESTS_LABEL, e.onlyChinese and '移除' or REMOVE, text, 'ID', questID)
                 end
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
         end
 
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddSeparator', level)
         info={
             text= e.onlyChinese and '清除全部' or CLEAR_ALL,
             notCheckable=true,
@@ -673,7 +673,7 @@ local function InitMenu_Quest(self, level, type)
                 print(id, QUESTS_LABEL, e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
     else
         info={
@@ -684,7 +684,7 @@ local function InitMenu_Quest(self, level, type)
                 setTexture()--设置图标
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
         info={
             text='|A:TrivialQuests:0:0|a'..(e.onlyChinese and '其他任务' or MINIMAP_TRACKING_TRIVIAL_QUESTS),--低等任务
@@ -696,7 +696,7 @@ local function InitMenu_Quest(self, level, type)
                 get_set_IsQuestTrivialTracking(true)--其它任务,低等任务,追踪
             end,
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
         info={--自动:选择奖励
             text= e.onlyChinese and '自动选择奖励' or format(TITLE_REWARD, AUTO_JOIN:gsub(JOIN, CHOOSE)),
@@ -710,7 +710,7 @@ local function InitMenu_Quest(self, level, type)
                 Save.autoSelectReward= not Save.autoSelectReward and true or nil
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
         info={
             text= e.onlyChinese and '共享任务' or SHARE_QUEST,
@@ -723,15 +723,15 @@ local function InitMenu_Quest(self, level, type)
                 set_PushableQuest()--共享,任务
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddSeparator', level)
         info={
             text= e.onlyChinese and '追踪' or TRACKING,
             isTitle= true,
             notCheckable=true,
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
         info={
             text= e.onlyChinese and '自动任务追踪' or AUTO_QUEST_WATCH_TEXT,
@@ -742,7 +742,7 @@ local function InitMenu_Quest(self, level, type)
                 C_CVar.SetCVar("autoQuestWatch", C_CVar.GetCVarBool("autoQuestWatch") and '0' or '1')
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
         info={
             text= e.onlyChinese and '当前地图' or (REFORGE_CURRENT..WORLD_MAP),
@@ -755,9 +755,9 @@ local function InitMenu_Quest(self, level, type)
                 set_Auto_QuestWatch_Event()--仅显示本地图任务,事件
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddSeparator', level)
 
         info={--自定义,任务,选项
             text= e.onlyChinese and '自定义任务' or CUSTOM..QUESTS_LABEL,
@@ -765,7 +765,7 @@ local function InitMenu_Quest(self, level, type)
             notCheckable=true,
             hasArrow=true,
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
     end
 end
 

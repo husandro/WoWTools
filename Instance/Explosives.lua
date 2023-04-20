@@ -120,7 +120,7 @@ local function Init_Menu(self, level, type)
             end
         end,
     }
-    UIDropDownMenu_AddButton(info, level)
+    securecall('UIDropDownMenu_AddButton', info, level)
 
     info= {
         text= e.onlyChinese and '队伍标记' or BINDING_HEADER_RAID_TARGET,
@@ -129,7 +129,7 @@ local function Init_Menu(self, level, type)
             Save.mark= not Save.mark and true or nil
         end
     }
-    UIDropDownMenu_AddButton(info, level)
+    securecall('UIDropDownMenu_AddButton', info, level)
 
     info= {
         text= e.onlyChinese and '播放' or EVENTTRACE_BUTTON_PLAY,
@@ -143,7 +143,7 @@ local function Init_Menu(self, level, type)
             end
         end
     }
-    UIDropDownMenu_AddButton(info, level)
+    securecall('UIDropDownMenu_AddButton', info, level)
 end
 
 local function set_Button()

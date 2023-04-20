@@ -286,7 +286,7 @@ local function InitMenu(self, level, type)--主菜单
                 Text_Settings()--设置Tex
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
         info={
             text= e.onlyChinese and '职业颜色' or CLASS_COLORS,
@@ -296,7 +296,7 @@ local function InitMenu(self, level, type)--主菜单
                 Text_Settings()--设置Tex
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
         info={
             text= e.onlyChinese and '仅限: 正在活动' or LFG_LIST_CROSS_FACTION:format(CALENDAR_TOOLTIP_ONGOING),
@@ -306,7 +306,7 @@ local function InitMenu(self, level, type)--主菜单
                 set_Text()
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
         info={
             text= e.onlyChinese and '时间' or TIME_LABEL,
             checked= Save.showDate,
@@ -315,7 +315,7 @@ local function InitMenu(self, level, type)--主菜单
                 set_Text()
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
         info={
             text= e.onlyChinese and '节日 ID' or CALENDAR_FILTER_HOLIDAYS..' ID',--时间
             checked= Save.showID,
@@ -324,9 +324,9 @@ local function InitMenu(self, level, type)--主菜单
                 set_Text()
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddSeparator', level)
         info={
             text=e.onlyChinese and '还原位置' or RESET_POSITION,
             colorCode=not Save.point and '|cff606060',
@@ -339,7 +339,7 @@ local function InitMenu(self, level, type)--主菜单
             tooltipTitle=e.Icon.right..' '..NPE_MOVE,
             notCheckable=true,
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
     else
         info={
@@ -348,43 +348,43 @@ local function InitMenu(self, level, type)--主菜单
             menuList='SETTINGS',
             hasArrow=true,
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
         info={
             text=e.Icon.left..(e.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE)),
             isTitle=true,
             notCheckable=true
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
         info={--点击这里显示日历
             text=e.Icon.mid..(e.onlyChinese and '打开/关闭日历' or GAMETIME_TOOLTIP_TOGGLE_CALENDAR ),
             isTitle=true,
             notCheckable=true
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddSeparator', level)
         info={--提示移动
             text= e.Icon.right..(e.onlyChinese and '移动' or NPE_MOVE),
             isTitle=true,
             notCheckable=true
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
         info={
             text='Alt+'..e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE)..(Save.scale or 1),
             isTitle=true,
             notCheckable=true
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddSeparator', level)
         info={
             text=id..' '..addName,
             isTitle=true,
             notCheckable=true
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
     end
 end
 

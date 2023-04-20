@@ -1,3 +1,4 @@
+---@diagnostic disable: redundant-parameter
 local id, e = ...
 local Save={
 	btnStrHideCap=true,-- 隐藏最高级, 且没有奖励声望
@@ -559,7 +560,7 @@ local function InitMenu(self, level, type)
 				set_Text()--设置, 文本
 			end
 		}
-		UIDropDownMenu_AddButton(info, level)
+		securecall('UIDropDownMenu_AddButton', info, level)
 		info={
 			text= e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
 			notCheckable=true,
@@ -569,9 +570,9 @@ local function InitMenu(self, level, type)
 				set_Text()--设置, 文本
 			end
 		}
-		UIDropDownMenu_AddButton(info, level)
+		securecall('UIDropDownMenu_AddButton', info, level)
 
-		UIDropDownMenu_AddSeparator(level)
+		securecall('UIDropDownMenu_AddSeparator', level)
 		info={
 			text= e.onlyChinese and '名称' or NAME,
 			checked= not Save.hideName,
@@ -580,7 +581,7 @@ local function InitMenu(self, level, type)
 				set_Text()--设置, 文本
 			end
 		}
-		UIDropDownMenu_AddButton(info, level)
+		securecall('UIDropDownMenu_AddButton', info, level)
 	else
 		info={
 			text= e.onlyChinese and '文本' or LOCALE_TEXT_LABEL,
@@ -600,7 +601,7 @@ local function InitMenu(self, level, type)
 				print(id, addName, e.onlyChinese and '文本' or LOCALE_TEXT_LABEL, e.GetShowHide(Save.btn))
 			end
 		}
-		UIDropDownMenu_AddButton(info, level)
+		securecall('UIDropDownMenu_AddButton', info, level)
 
 		info={
 			text= (e.onlyChinese and '声望变化' or COMBAT_TEXT_SHOW_REPUTATION_TEXT)..'|A:voicechat-icon-textchat-silenced:0:0|a',
@@ -614,7 +615,7 @@ local function InitMenu(self, level, type)
 				print(id, addName, e.onlyChinese and '声望变化' or COMBAT_TEXT_SHOW_REPUTATION_TEXT,'|A:voicechat-icon-textchat-silenced:0:0|a', e.GetEnabeleDisable(Save.factionUpdateTips), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
 			end
 		}
-		UIDropDownMenu_AddButton(info, level)
+		securecall('UIDropDownMenu_AddButton', info, level)
 
 		info={
 			text= 'UI Plus',
@@ -627,7 +628,7 @@ local function InitMenu(self, level, type)
 				--print(id, addName, 'UI Plus', e.GetEnabeleDisable(not Save.notPlus), e.onlyChinese and '需要刷新' or NEED..REFRESH)
 			end
 		}
-		UIDropDownMenu_AddButton(info, level)
+		securecall('UIDropDownMenu_AddButton', info, level)
 	end
 end
 

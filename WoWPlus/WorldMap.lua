@@ -691,21 +691,21 @@ local function Init()
             return
         end
         if self.questID and not C_QuestLog.IsQuestDisabledForSession(self.questID) and button == "RightButton" then
-            UIDropDownMenu_AddSeparator()
+            securecall('UIDropDownMenu_AddSeparator') 
             local info= {
                 text= (e.onlyChinese and '显示' or SHOW)..'|A:campaign_headericon_open:0:0|a'..(e.onlyChinese and '全部' or ALL),
                 notCheckable=true,
                 func= Exp,
             }
-            UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
+            securecall('UIDropDownMenu_AddButton', info, UIDROPDOWNMENU_MENU_LEVEL)
             info ={
                 notCheckable=true,
                 text= (e.onlyChinese and '隐藏' or HIDE)..'|A:campaign_headericon_closed:0:0|a'..(e.onlyChinese and '全部' or ALL),
                 func= Coll,
             }
-            UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
+            securecall('UIDropDownMenu_AddButton', info, UIDROPDOWNMENU_MENU_LEVEL)
 
-            UIDropDownMenu_AddSeparator()
+            securecall('UIDropDownMenu_AddSeparator') 
             local text= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '放弃|A:groupfinder-icon-redx:0:0|a所有任务' or (ABANDON_QUEST..'|A:groupfinder-icon-redx:0:0|a'..ALL))..' #'..select(2, C_QuestLog.GetNumQuestLogEntries())..'|r'
             info={
                 text= text,
@@ -746,7 +746,7 @@ local function Init()
                     StaticPopup_Show(id..addName.."ABANDON_QUEST", '\n'..text)
                 end
             }
-            UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
+            securecall('UIDropDownMenu_AddButton', info, UIDROPDOWNMENU_MENU_LEVEL)
         end
     end)
 

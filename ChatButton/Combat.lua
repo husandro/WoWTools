@@ -364,7 +364,7 @@ local function InitMenu(self, level, type)--主菜单
                 Save.timeTypeText= not Save.timeTypeText and true or nil
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
         info={
             text= e.onlyChinese and '战斗中缩放 1.3' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..UI_SCALE..' 1.3',
@@ -379,7 +379,7 @@ local function InitMenu(self, level, type)--主菜单
                 end
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
         info={
             text= e.onlyChinese and '隐藏|cnRED_FONT_COLOR:战斗|r文本' or (HIDE..'|cnRED_FONT_COLOR:'..COMBAT..'|r'..LOCALE_TEXT_LABEL),
@@ -388,7 +388,7 @@ local function InitMenu(self, level, type)--主菜单
                 Save.hideCombatText= not Save.hideCombatText and true or nil
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
         info={
             text= ((e.onlyChinese and '战斗时间' or COMBAT)..'|A:communities-icon-chat:0:0|a'..(e.onlyChinese and '每: ' or EVENTTRACE_TIMESTAMP)..Save.Say),
@@ -399,7 +399,7 @@ local function InitMenu(self, level, type)--主菜单
                 Save.Say= not Save.Say and 120 or nil
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
 
         local tab=WoWDate[e.Player.guid].Time
@@ -415,9 +415,9 @@ local function InitMenu(self, level, type)--主菜单
                 end
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddSeparator', level)
         info={
             text= e.onlyChinese and '重置所有' or RESET..ALL,
             colorCode='|cffff0000',
@@ -430,7 +430,7 @@ local function InitMenu(self, level, type)--主菜单
                 e.Reload()
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
     elseif type=='AllOnlineTime' then--3级,所有角色时间
         local timeAll=0
@@ -444,17 +444,17 @@ local function InitMenu(self, level, type)--主菜单
                     tooltipOnButton=true,
                     tooltipTitle= tab.Time.levelTime and format(e.onlyChinese and '你在这个等级的游戏时间：%s' or TIME_PLAYED_LEVEL, '\n'..SecondsToTime(tab.Time.levelTime)),
                 }
-                UIDropDownMenu_AddButton(info, level)
+                securecall('UIDropDownMenu_AddButton', info, level)
             end
         end
         if timeAll>0 then
-            UIDropDownMenu_AddSeparator(level)
+            securecall('UIDropDownMenu_AddSeparator', level)
             info={
                 text= (e.onlyChinese and '总计：' or FROM_TOTAL).. SecondsToTime(timeAll),
                 notCheckable=true,
                 isTitle=true
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
         end
 
     else
@@ -463,7 +463,7 @@ local function InitMenu(self, level, type)--主菜单
             isTitle=true,
             notCheckable=true
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
         local tab=WoWDate[e.Player.guid].Time
         if tab and tab.totalTime then
@@ -472,9 +472,9 @@ local function InitMenu(self, level, type)--主菜单
                 isTitle=true,
                 notCheckable=true
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
         end
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddSeparator', level)
 
 
         info={
@@ -484,7 +484,7 @@ local function InitMenu(self, level, type)--主菜单
             menuList='SETTINGS',
             func=set_textButton_Disabled_Enable--禁用, 启用, textButton
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
     end
 end
 

@@ -166,7 +166,7 @@ local function InitMenu(self, level, type)--主菜单
                 end
             end
         }
-        UIDropDownMenu_AddButton(info,level)
+        securecall('UIDropDownMenu_AddButton', info,level)
     else
         info={
             text= 'fps ms',
@@ -178,7 +178,7 @@ local function InitMenu(self, level, type)--主菜单
                 set_Fps_Ms()--设置, fps, ms, 数值
             end
         }
-        UIDropDownMenu_AddButton(info,level)
+        securecall('UIDropDownMenu_AddButton', info,level)
 
         info={
             text= (e.onlyChinese and '系统' or SYSTEM).. ' fps ms',
@@ -188,7 +188,7 @@ local function InitMenu(self, level, type)--主菜单
                 set_System_FPSMS()--设置系统fps ms
             end
         }
-        UIDropDownMenu_AddButton(info,level)
+        securecall('UIDropDownMenu_AddButton', info,level)
 
         local numPlayer, allMoney, text  = 0, 0, ''
         for guid, infoMoney in pairs(WoWDate) do
@@ -214,7 +214,7 @@ local function InitMenu(self, level, type)--主菜单
                 set_Money_Event()--设置, 钱, 事件
             end
         }
-        UIDropDownMenu_AddButton(info,level)
+        securecall('UIDropDownMenu_AddButton', info,level)
 
         info={
             text= (e.onlyChinese and '耐久度' or DURABILITY)..': '..setDurabiliy(),
@@ -224,7 +224,7 @@ local function InitMenu(self, level, type)--主菜单
                 set_Durabiliy_EquipLevel_Event()--设置装等,耐久度,事件
             end
         }
-        UIDropDownMenu_AddButton(info,level)
+        securecall('UIDropDownMenu_AddButton', info,level)
 
         info={
             text= (e.onlyChinese and '装备等级' or EQUIPSET_EQUIP..LEVEL),
@@ -234,22 +234,22 @@ local function InitMenu(self, level, type)--主菜单
                 set_Durabiliy_EquipLevel_Event()--设置装等,耐久度,事件
             end
         }
-        UIDropDownMenu_AddButton(info,level)
+        securecall('UIDropDownMenu_AddButton', info,level)
 
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddSeparator', level)
         info={
             text=e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE)..': '..(Save.size or 12),
             isTitle=true,
             notCheckable=true,
         }
-        UIDropDownMenu_AddButton(info,level)
+        securecall('UIDropDownMenu_AddButton', info,level)
 
         info={
             text=e.Icon.right..(e.onlyChinese and '移动' or NPE_MOVE),
             isTitle=true,
             notCheckable=true,
         }
-        UIDropDownMenu_AddButton(info,level)
+        securecall('UIDropDownMenu_AddButton', info,level)
 
         info={
             text= (e.onlyChinese and '重置位置' or RESET_POSITION),
@@ -261,15 +261,15 @@ local function InitMenu(self, level, type)--主菜单
                 set_Point()--设置位置
             end
         }
-        UIDropDownMenu_AddButton(info,level)
+        securecall('UIDropDownMenu_AddButton', info,level)
 
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddSeparator', level)
         info={
             text= id ..' '.. addName,
             isTitle=true,
             notCheckable=true,
         }
-        UIDropDownMenu_AddButton(info,level)
+        securecall('UIDropDownMenu_AddButton', info,level)
     end
 end
 

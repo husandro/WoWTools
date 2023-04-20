@@ -223,10 +223,10 @@ local function InitMenu(self, level, type)--主菜单
                     set_Item_Button()
                 end
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
         end
 
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddSeparator', level)
         info={
             text= e.onlyChinese and '清除全部' or CLEAR_ALL,
             notCheckable=true,
@@ -237,7 +237,7 @@ local function InitMenu(self, level, type)--主菜单
                 print(id, addName, CLEAR_ALL, DISABLE, ITEMS, DONE)
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
     elseif type=='WHO' then
         info= {
@@ -250,7 +250,7 @@ local function InitMenu(self, level, type)--主菜单
                 Save.autoLogin= not Save.autoLogin and true or nil
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
         info= {--自动, 更新物品, 查询
             text= e.onlyChinese and '自动查找' or UPDATE..ITEMS,
@@ -265,7 +265,7 @@ local function InitMenu(self, level, type)--主菜单
                 set_auto_Who_Event()--设置事件,自动更新
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
         info={
             text= e.onlyChinese and '仅当前版本物品' or 	LFG_LIST_CROSS_FACTION:format(REFORGE_CURRENT..(VERSION or GAME_VERSION_LABEL)),
@@ -278,7 +278,7 @@ local function InitMenu(self, level, type)--主菜单
                 set_Item_Button()
             end,
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
     elseif type then
         for _, tab in pairs(itemClass) do
             if type==tab.className then
@@ -294,7 +294,7 @@ local function InitMenu(self, level, type)--主菜单
                         set_Item_Button()
                     end
                 }
-                UIDropDownMenu_AddButton(info, level)
+                securecall('UIDropDownMenu_AddButton', info, level)
             end
         end
     else
@@ -312,9 +312,9 @@ local function InitMenu(self, level, type)--主菜单
                 set_Item_Button()
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddSeparator', level)
         local find={}
         for _, tab in pairs(itemClass) do
             if not find[tab.className] then
@@ -324,7 +324,7 @@ local function InitMenu(self, level, type)--主菜单
                     menuList=tab.className,
                     hasArrow=true,
                 }
-                UIDropDownMenu_AddButton(info, level)
+                securecall('UIDropDownMenu_AddButton', info, level)
                 find[tab.className]=true
             end
         end
@@ -340,24 +340,24 @@ local function InitMenu(self, level, type)--主菜单
                 print(id, addName, CALENDAR_EVENT_REMOVED_MAIL_SUBJECT:format(ALL), DONE)
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddSeparator', level)
         info= {
             text= e.onlyChinese and '禁用' or DISABLE,
             notCheckable=true,
             menuList='DISABLE',
             hasArrow=true,
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddSeparator', level)
         info= {
             text= e.Icon.right.. (e.onlyChinese and '移动' or NPE_MOVE),
             isTitle= true,
             notCheckable= true,
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
         info={
             text= e.onlyChinese and '还原位置' or RESET_POSITION,
@@ -370,7 +370,7 @@ local function InitMenu(self, level, type)--主菜单
                 setPanelPostion()--设置按钮位置
             end,
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
     end
 end
 

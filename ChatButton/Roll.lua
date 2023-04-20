@@ -112,7 +112,7 @@ local function InitMenu(self, level, type)--主菜单
                     e.Chat(tab.text)
                 end,
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
         end
 
         info={
@@ -123,7 +123,7 @@ local function InitMenu(self, level, type)--主菜单
                 Save.save={}
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
         return
     end
 
@@ -148,10 +148,10 @@ local function InitMenu(self, level, type)--主菜单
             info.icon=450905
         end
         tabNew[tab.name]=true
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
     end
 
-    UIDropDownMenu_AddSeparator(level)
+    securecall('UIDropDownMenu_AddSeparator', level)
     info={
         text= e.onlyChinese and '自动清除' or AUTO_JOIN:gsub(JOIN,SLASH_STOPWATCH_PARAM_STOP2),
         icon= 'bags-button-autosort-up',
@@ -164,7 +164,7 @@ local function InitMenu(self, level, type)--主菜单
             setAutoClearRegisterEvent()--注册自动清除事件
         end
     }
-    UIDropDownMenu_AddButton(info, level)
+    securecall('UIDropDownMenu_AddButton', info, level)
 
     info={
         text= e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
@@ -176,7 +176,7 @@ local function InitMenu(self, level, type)--主菜单
             setRest()--重置
         end
     }
-    UIDropDownMenu_AddButton(info, level)
+    securecall('UIDropDownMenu_AddButton', info, level)
 end
 
 

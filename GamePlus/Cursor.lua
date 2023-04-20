@@ -389,7 +389,7 @@ local function Init_Cursor_Options()
                     cursor_Init_And_Set()--初始，设置
                 end
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
         end
     end
     dropDown:SetPoint("TOPLEFT", alphaSlider, 'BOTTOMLEFT', -18,-32)
@@ -629,7 +629,7 @@ local function Init_GCD_Options()
                     show_GCD_Frame_Tips()--显示GCD图片
                 end
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
         end
     end
     dropDown:SetPoint("TOPLEFT", checkReverse, 'BOTTOMLEFT', -18,-15)

@@ -78,9 +78,9 @@ local ObjectiveTrackerRemoveAll =function(self, tip)
                 QuestMapQuestOptions_AbandonQuest(arg1)--QuestMapFrame.lua
             end
         }
-        UIDropDownMenu_AddButton(info)
+        securecall('UIDropDownMenu_AddButton', info)
     end
-    UIDropDownMenu_AddSeparator()
+    securecall('UIDropDownMenu_AddSeparator') 
     local verText, verLevel=e.GetExpansionText(nil, questID)--任务版本
     if verLevel and verText then
         info={
@@ -88,7 +88,7 @@ local ObjectiveTrackerRemoveAll =function(self, tip)
             isTitle=true,
             notCheckable=true,
         }
-        UIDropDownMenu_AddButton(info)
+        securecall('UIDropDownMenu_AddButton', info)
     end
     local text
 
@@ -97,7 +97,7 @@ local ObjectiveTrackerRemoveAll =function(self, tip)
         isTitle = true,
         notCheckable = true,
     }
-    UIDropDownMenu_AddButton(info)
+    securecall('UIDropDownMenu_AddButton', info)
 
     info = UIDropDownMenu_CreateInfo()
     local totaleQest= C_QuestLog.GetNumQuestWatches()+C_QuestLog.GetNumWorldQuestWatches()
@@ -129,7 +129,7 @@ local ObjectiveTrackerRemoveAll =function(self, tip)
             end
         end,
     }
-    UIDropDownMenu_AddButton(info)
+    securecall('UIDropDownMenu_AddButton', info)
 end
 
 local Colla=function(type)
@@ -396,7 +396,7 @@ local function Init()
             info.icon=select(10,GetAchievementInfo(block.id))
             info.isTitle = 1
             info.notCheckable = 1
-            UIDropDownMenu_AddButton(info)
+            securecall('UIDropDownMenu_AddButton', info)
         end
         local info = UIDropDownMenu_CreateInfo()
         local trackedAchievements = { GetTrackedAchievements() }
@@ -410,7 +410,7 @@ local function Init()
                 RemoveTrackedAchievement(trackedAchievements[i])
             end
         end
-        UIDropDownMenu_AddButton(info)
+        securecall('UIDropDownMenu_AddButton', info)
     end)
     hooksecurefunc(mo[8], 'OnBlockHeaderClick', function(self, block, mouseButton)--清除所有专业追踪
         if mouseButton=='RightButton' then
@@ -419,7 +419,7 @@ local function Init()
             info.text =((recipeInfo and recipeInfo.icon) and '|T'..recipeInfo.icon..':0|t' or '')..(e.onlyChinese and '专业' or TRADE_SKILLS)..' '..block.id
             info.isTitle = true
             info.notCheckable = true
-            UIDropDownMenu_AddButton(info)
+            securecall('UIDropDownMenu_AddButton', info)
 
             info = UIDropDownMenu_CreateInfo()
             local tracked=C_TradeSkillUI.GetRecipesTracked() or {}
@@ -435,7 +435,7 @@ local function Init()
                     C_TradeSkillUI.SetRecipeTracked(recipeID, false);
                 end
             end
-            UIDropDownMenu_AddButton(info)
+            securecall('UIDropDownMenu_AddButton', info)
         end
     end)
     hooksecurefunc(mo[8], 'SetStringText', function(self, fontString, text, useFullHeight, colorStyle, useHighlight)

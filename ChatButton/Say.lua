@@ -149,7 +149,7 @@ local function Init_Menu(self, level, type)--主菜单
                             setType(e.onlyChinese and '战' or COMMUNITY_COMMAND_BATTLENET)--使用,提示
                         end
                     }
-                    UIDropDownMenu_AddButton(info, level)
+                    securecall('UIDropDownMenu_AddButton', info, level)
                 end
             end
         elseif type=='GAME' then--好友列表
@@ -180,7 +180,7 @@ local function Init_Menu(self, level, type)--主菜单
                             setType(e.onlyChinese and '密' or SLASH_TEXTTOSPEECH_WHISPER)--使用,提示
                         end
                     }
-                    UIDropDownMenu_AddButton(info, level)
+                    securecall('UIDropDownMenu_AddButton', info, level)
                 end
             end
         elseif type=='WHISPER' then--密语列表 --{name=name, wow=wow, guid=guid, msg={text=text, type=type,time=time}}
@@ -211,7 +211,7 @@ local function Init_Menu(self, level, type)--主菜单
                         setType(e.onlyChinese and '密' or SLASH_TEXTTOSPEECH_WHISPER)--使用,提示
                     end
                 }
-                UIDropDownMenu_AddButton(info, level)
+                securecall('UIDropDownMenu_AddButton', info, level)
                 find=true
             end
             if find then
@@ -222,9 +222,9 @@ local function Init_Menu(self, level, type)--主菜单
                         WhisperTab={}
                     end
                 }
-                UIDropDownMenu_AddButton(info, level)
+                securecall('UIDropDownMenu_AddButton', info, level)
 
-                UIDropDownMenu_AddSeparator(level)
+                securecall('UIDropDownMenu_AddSeparator', level)
             end
             info={
                 text= e.onlyChinese and '保存' or SAVE,--保存, 密语
@@ -233,7 +233,7 @@ local function Init_Menu(self, level, type)--主菜单
                     Save.saveWhisper= not Save.saveWhisper and true or nil
                 end
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
 
             numWhisper=0--最后密语,数量, 清空
             set_numWhisper_Tips()--最后密语,数量, 提示
@@ -296,7 +296,7 @@ local function Init_Menu(self, level, type)--主菜单
 
                         end
                         info.tooltipTitle=t2
-                        UIDropDownMenu_AddButton(info, level)
+                        securecall('UIDropDownMenu_AddButton', info, level)
                     end
                 end
             end
@@ -315,7 +315,7 @@ local function Init_Menu(self, level, type)--主菜单
                 end
 
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
         end
     else
         for index, tab in pairs(chatType) do
@@ -358,10 +358,10 @@ local function Init_Menu(self, level, type)--主菜单
                     info.text= '|cnGREEN_FONT_COLOR:'..num..'|r'..info.text
                 end
             end
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
         end
 
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddSeparator', level)
         local numOline
         numOline= 0;--战网在线数量
         for i=1 ,BNGetNumFriends() do
@@ -378,7 +378,7 @@ local function Init_Menu(self, level, type)--主菜单
             menuList='WOW',
             hasArrow=true
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
         numOline= C_FriendList.GetNumOnlineFriends()--好友列表
         numOline= (numOline and numOline>0) and '|cnGREEN_FONT_COLOR:'..numOline..'|r' or ''
@@ -388,7 +388,7 @@ local function Init_Menu(self, level, type)--主菜单
             menuList='GAME',
             hasArrow=true
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
         numOline = C_FriendList.GetNumWhoResults()
         numOline = (numOline and numOline>0)  and '|cnGREEN_FONT_COLOR:'..numOline..'|r' or ''
@@ -401,8 +401,8 @@ local function Init_Menu(self, level, type)--主菜单
                 ToggleFriendsFrame(2)
             end
         }
-        UIDropDownMenu_AddButton(info, level)
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddButton', info, level)
+        securecall('UIDropDownMenu_AddSeparator', level)
 
         info={
             text= e.onlyChinese and '聊天泡泡' or CHAT_BUBBLES_TEXT,
@@ -419,7 +419,7 @@ local function Init_Menu(self, level, type)--主菜单
                 C_CVar.SetCVar("chatBubbles", not C_CVar.GetCVarBool("chatBubbles") and '1' or '0')
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
     end
 end
 

@@ -291,7 +291,7 @@ local function setUseMenu(level)--二级, 使用
             CloseDropDownMenus()
         end
     }
-    UIDropDownMenu_AddButton(info,level)
+    securecall('UIDropDownMenu_AddButton', info,level)
     for itemID, num in pairs(Save.use) do
         info={
             text= (select(2, GetItemInfo(itemID)) or  ('itemID: '..itemID)).. (num>1 and ' |cnGREEN_FONT_COLOR:x'..num..'|r' or ''),
@@ -305,7 +305,7 @@ local function setUseMenu(level)--二级, 使用
                 getItems()
             end,
         }
-        UIDropDownMenu_AddButton(info,level)
+        securecall('UIDropDownMenu_AddButton', info,level)
     end
 end
 local function setNoMenu(level)--二级,禁用
@@ -318,7 +318,7 @@ local function setNoMenu(level)--二级,禁用
             CloseDropDownMenus()
         end,
     }
-    UIDropDownMenu_AddButton(info, level)
+    securecall('UIDropDownMenu_AddButton', info, level)
 
     for itemID, _ in pairs(Save.no) do
         info={
@@ -333,7 +333,7 @@ local function setNoMenu(level)--二级,禁用
                 getItems()
             end,
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
     end
 end
 local function setMenuList(self, level, menuList)--主菜单
@@ -366,8 +366,8 @@ local function setMenuList(self, level, menuList)--主菜单
         t.tooltipText= e.onlyChinese and '拖曳物品到这里' or (DRAG_MODEL..ITEMS)
     end
 
-    UIDropDownMenu_AddButton(t)
-    UIDropDownMenu_AddSeparator()
+    securecall('UIDropDownMenu_AddButton', t)
+    securecall('UIDropDownMenu_AddSeparator') 
 
     local no,use= 0, 0
     for _ in pairs(Save.no) do
@@ -381,14 +381,14 @@ local function setMenuList(self, level, menuList)--主菜单
     t.notCheckable=1
     t.menuList='NO'
     t.hasArrow=true
-    UIDropDownMenu_AddButton(t)
+    securecall('UIDropDownMenu_AddButton', t)
 
     t=UIDropDownMenu_CreateInfo()--自定义使用列表
     t.text= (e.onlyChinese and '使用' or USE)..' #'..use
     t.notCheckable=1
     t.menuList='USE'
     t.hasArrow=true
-    UIDropDownMenu_AddButton(t)
+    securecall('UIDropDownMenu_AddButton', t)
 
     t={
         text= e.onlyChinese and '<右键点击打开>' or ITEM_OPENABLE,
@@ -398,7 +398,7 @@ local function setMenuList(self, level, menuList)--主菜单
             getItems()
         end
     }
-    UIDropDownMenu_AddButton(t)
+    securecall('UIDropDownMenu_AddButton', t)
 
     t={
         text= e.onlyChinese and '宠物' or PET,
@@ -410,7 +410,7 @@ local function setMenuList(self, level, menuList)--主菜单
             getItems()
         end
     }
-    UIDropDownMenu_AddButton(t)
+    securecall('UIDropDownMenu_AddButton', t)
 
     t={
         text= e.onlyChinese and '玩具' or TOY,
@@ -420,7 +420,7 @@ local function setMenuList(self, level, menuList)--主菜单
             getItems()
         end
     }
-    UIDropDownMenu_AddButton(t)
+    securecall('UIDropDownMenu_AddButton', t)
 
     t={
         text= e.onlyChinese and '坐骑' or MOUNTS,
@@ -430,7 +430,7 @@ local function setMenuList(self, level, menuList)--主菜单
             getItems()
         end
     }
-    UIDropDownMenu_AddButton(t)
+    securecall('UIDropDownMenu_AddButton', t)
 
     t={
         text= e.onlyChinese and '幻化' or TRANSMOGRIFY,
@@ -440,7 +440,7 @@ local function setMenuList(self, level, menuList)--主菜单
             getItems()
         end,
     }
-    UIDropDownMenu_AddButton(t)
+    securecall('UIDropDownMenu_AddButton', t)
 
     t={
         text= e.onlyChinese and '配方' or TRADESKILL_SERVICE_LEARN,
@@ -450,7 +450,7 @@ local function setMenuList(self, level, menuList)--主菜单
             getItems()
         end,
     }
-    UIDropDownMenu_AddButton(t)
+    securecall('UIDropDownMenu_AddButton', t)
 
     t={
         text= e.onlyChinese and '其它' or BINDING_HEADER_OTHER,
@@ -460,9 +460,9 @@ local function setMenuList(self, level, menuList)--主菜单
             getItems()
         end
     }
-    UIDropDownMenu_AddButton(t)
+    securecall('UIDropDownMenu_AddButton', t)
 
-    UIDropDownMenu_AddSeparator()
+    securecall('UIDropDownMenu_AddSeparator') 
     t={
         text= e.onlyChinese and '自动隐藏' or (AUTO_JOIN:gsub(JOIN,'')..HIDE),
         tooltipOnButton=true,
@@ -473,9 +473,9 @@ local function setMenuList(self, level, menuList)--主菜单
         end,
         checked= Save.noItemHide
     }
-    UIDropDownMenu_AddButton(t)
+    securecall('UIDropDownMenu_AddButton', t)
 
-    UIDropDownMenu_AddButton({text= e.onlyChinese and '拖曳物品: 使用/禁用' or (DRAG_MODEL..ITEMS..'('..USE..'/'..DISABLE..')'), isTitle=true, notCheckable=true})
+    securecall('UIDropDownMenu_AddButton', {text= e.onlyChinese and '拖曳物品: 使用/禁用' or (DRAG_MODEL..ITEMS..'('..USE..'/'..DISABLE..')'), isTitle=true, notCheckable=true})
 end
 
 

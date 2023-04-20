@@ -101,7 +101,7 @@ local function InitMenu(self, level, type)--主菜单
             end
         end,
     }
-    UIDropDownMenu_AddButton(info, level)
+    securecall('UIDropDownMenu_AddButton', info, level)
 end
 
 --####

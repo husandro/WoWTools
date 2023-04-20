@@ -1,3 +1,4 @@
+---@diagnostic disable: redundant-parameter
 local id, e = ...
 local addName=USE_ITEM
 local panel=e.Cbtn(e.toolsFrame, {icon=true, size={20,20}})
@@ -155,8 +156,8 @@ local function InitMenu(self, level, type)--主菜单
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '重新加载UI' or RELOADUI
             }
-        UIDropDownMenu_AddButton(info, level)
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddButton', info, level)
+        securecall('UIDropDownMenu_AddSeparator', level)
 
         for index, ID in pairs(Save[type]) do
             local name, icon, _
@@ -182,7 +183,7 @@ local function InitMenu(self, level, type)--主菜单
                 info.text= e.Icon.O2..info.text
                 info.colorCode='|cff606060'
             end
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
 
         end
     else
@@ -198,9 +199,9 @@ local function InitMenu(self, level, type)--主菜单
                 hasArrow=true,
                 menuList=type2,
             }
-            UIDropDownMenu_AddButton(info, level);
+            securecall('UIDropDownMenu_AddButton', info, level);
         end
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddSeparator', level)
         info={
             text= e.onlyChinese and '重新加载UI' or RELOADUI,
             notCheckable=true,
@@ -210,8 +211,8 @@ local function InitMenu(self, level, type)--主菜单
                 e.Reload()
             end
         }
-        UIDropDownMenu_AddButton(info, level);
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddButton', info, level);
+        securecall('UIDropDownMenu_AddSeparator', level)
         info={
             text= e.onlyChinese and '重置' or RESET,
             colorCode='|cffff0000',
@@ -223,9 +224,9 @@ local function InitMenu(self, level, type)--主菜单
                 StaticPopup_Show(id..addName..'RESETALL')
             end
         }
-        UIDropDownMenu_AddButton(info, level);
-        UIDropDownMenu_AddButton({text=addName, isTitle=true, notCheckable=true}, level);
-        UIDropDownMenu_AddButton({text= e.onlyChinese and '拖曳: 物品, 法术, 装备' or (DRAG_MODEL..', '..SPELLS..', '..ITEMS), isTitle=true, notCheckable=true}, level);
+        securecall('UIDropDownMenu_AddButton', info, level);
+        securecall('UIDropDownMenu_AddButton', {text=addName, isTitle=true, notCheckable=true}, level);
+        securecall('UIDropDownMenu_AddButton', {text= e.onlyChinese and '拖曳: 物品, 法术, 装备' or (DRAG_MODEL..', '..SPELLS..', '..ITEMS), isTitle=true, notCheckable=true}, level);
     end
 end
 
@@ -500,10 +501,10 @@ local function setToyBox_ShowToyDropdown(itemID, anchorTo, offsetX, offsetY)
                 ToySpellButton_UpdateButton(anchorTo)
             end,
         }
-    UIDropDownMenu_AddButton(info, 1)
+    securecall('UIDropDownMenu_AddButton', info, 1)
 
-    UIDropDownMenu_AddSeparator()
-    UIDropDownMenu_AddButton({
+    securecall('UIDropDownMenu_AddSeparator') 
+    securecall('UIDropDownMenu_AddButton', {
         text=ITEMS..'ID: '..itemID,
         isTitle=true,
         notCheckable=true,

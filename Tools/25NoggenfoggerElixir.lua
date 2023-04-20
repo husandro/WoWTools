@@ -132,9 +132,9 @@ local function InitMenu(self, level)--主菜单
                 Save.aura[spellID] = not type and true or false
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
     end
-    UIDropDownMenu_AddSeparator(level)
+    securecall('UIDropDownMenu_AddSeparator', level)
     local info={--快捷键,设置对话框
         text= e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL,--..(Save.KEY and ' |cnGREEN_FONT_COLOR:'..Save.KEY..'|r' or ''),
         checked=Save.KEY and true or nil,
@@ -182,7 +182,7 @@ local function InitMenu(self, level)--主菜单
             StaticPopup_Show(id..addName..'KEY')
         end,
     }
-    UIDropDownMenu_AddButton(info, level)
+    securecall('UIDropDownMenu_AddButton', info, level)
 end
 --####
 --初始

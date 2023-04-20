@@ -838,10 +838,10 @@ local function Init()--冒险指南界面
                             print(id, addName, e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, e.Class(nil, arg1), arg2, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要刷新' or NEED..REFRESH))
                         end
                     }
-                    UIDropDownMenu_AddButton(info, level)
+                    securecall('UIDropDownMenu_AddButton', info, level)
                 end
             end
-            UIDropDownMenu_AddSeparator(level)
+            securecall('UIDropDownMenu_AddSeparator', level)
             info={
                 text= e.onlyChinese and '全部清除' or CLEAR_ALL,
                 icon='bags-button-autosort-up',
@@ -851,7 +851,7 @@ local function Init()--冒险指南界面
                     print(id, addName, e.onlyChinese and '全部清除' or CLEAR_ALL, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要刷新' or NEED..REFRESH))
                 end
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
             return
         elseif type then
             local col= select(4, GetClassColor(type))
@@ -869,7 +869,7 @@ local function Init()--冒险指南界面
                         print(id, addName, e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, e.Class(nil, arg1), arg2, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要刷新' or NEED..REFRESH))
                     end
                 }
-                UIDropDownMenu_AddButton(info, level)
+                securecall('UIDropDownMenu_AddButton', info, level)
             end
             return
         end
@@ -900,12 +900,12 @@ local function Init()--冒险指南界面
                         set_Loot_Spec_Texture(arg1.button)
                     end
                 }
-                UIDropDownMenu_AddButton(info, level)
+                securecall('UIDropDownMenu_AddButton', info, level)
                 find=true
             end
         end
         if find then
-            UIDropDownMenu_AddSeparator(level)
+            securecall('UIDropDownMenu_AddSeparator', level)
             info= {
                 text= e.onlyChinese and '无' or NONE,
                 icon= 'xmarksthespot',
@@ -917,30 +917,30 @@ local function Init()--冒险指南界面
                     set_Loot_Spec_Texture(arg2)
                 end
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
         end
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddSeparator', level)
         info={
             text= e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
             notCheckable=true,
             hasArrow=true,
             menuList='CLEAR',
         }
-        UIDropDownMenu_AddButton(info, level)
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddButton', info, level)
+        securecall('UIDropDownMenu_AddSeparator', level)
         info={
             text= e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION,
             icon= e.Class('player', e.Player.class, true) or  'Banker',
             isTitle=true,
             notCheckable=true,
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
         info={
             text=id..' '..addName,
             isTitle=true,
             notCheckable=true,
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
     end
     EncounterJournal.encounter.LootSpecMenu=CreateFrame("Frame", id..addName..'Menu', EncounterJournal.encounter, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(EncounterJournal.encounter.LootSpecMenu, set_Loot_Spec_Menu_Init, 'MENU')

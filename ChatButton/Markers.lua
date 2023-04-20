@@ -625,7 +625,7 @@ local function InitMenu(self, level, type)--主菜单
                     CloseDropDownMenus();
                 end
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
             info={
                 text=e.Icon.O2..(e.onlyChinese and '未就绪' or NOT_READY_FEMALE),--未就绪
                 colorCode='|cffff0000',
@@ -636,7 +636,7 @@ local function InitMenu(self, level, type)--主菜单
                     CloseDropDownMenus();
                 end
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
             info={--无
                 text= e.onlyChinese and '无' or NONE,
                 checked=not Save.autoReady,
@@ -646,9 +646,9 @@ local function InitMenu(self, level, type)--主菜单
                     CloseDropDownMenus();
                 end
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
 
-            UIDropDownMenu_AddSeparator(level)--队员提示信息
+            securecall('UIDropDownMenu_AddSeparator', level)--队员提示信息
             info={
                 text= e.onlyChinese and '队员就绪信息' or (PLAYERS_IN_GROUP..READY..INFO),
                 checked=Save.groupReadyTips,
@@ -657,7 +657,7 @@ local function InitMenu(self, level, type)--主菜单
                     setGroupReadyTipsEvent()--注册事件, 就绪,队员提示信息
                 end
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
 
         elseif type=='MakerFrameResetPost' then--重置位置， 队伍标记工具
             info={
@@ -670,13 +670,13 @@ local function InitMenu(self, level, type)--主菜单
                     setMarkersFrame_Postion()--设置标记框架, 位置
                 end
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
 
         else
             local num= NUM_RAID_ICONS+1
             for index=1, num do
                 if index==num then
-                    UIDropDownMenu_AddSeparator(level)
+                    securecall('UIDropDownMenu_AddSeparator', level)
                 end
                 info={
                     text= index==num and (e.onlyChinese and '无' or NONE) or _G['RAID_TARGET_'..index],
@@ -700,14 +700,14 @@ local function InitMenu(self, level, type)--主菜单
                         info.disabled= Save.tank==index
                     end
                 end
-                UIDropDownMenu_AddButton(info, level)
+                securecall('UIDropDownMenu_AddButton', info, level)
             end
             info={
                 text=format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, type=='tank2' and (e.onlyChinese and '团队' or RAID) or type=='healer' and (e.onlyChinese and '小队' or GROUP) or (e.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS)),
                 notCheckable=true,
                 isTitle=true,
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
         end
     else
         info={
@@ -724,8 +724,8 @@ local function InitMenu(self, level, type)--主菜单
                 setTexture()--设置,按钮图片
             end
         }
-        UIDropDownMenu_AddButton(info, level)
-        UIDropDownMenu_AddSeparator()
+        securecall('UIDropDownMenu_AddButton', info, level)
+        securecall('UIDropDownMenu_AddSeparator') 
 
         local tab={
                 {text= e.Icon.TANK..(e.onlyChinese and '坦克' or TANK), type='tank'},
@@ -746,13 +746,13 @@ local function InitMenu(self, level, type)--主菜单
             if tab2.type2 and Save.tank==0 then
                 info.disabled=true
             end
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
             if tab2.type=='healer' then
-                UIDropDownMenu_AddSeparator()
+                securecall('UIDropDownMenu_AddSeparator') 
             end
         end
 
-        UIDropDownMenu_AddSeparator()
+        securecall('UIDropDownMenu_AddSeparator') 
         info={
             text=e.onlyChinese and '队伍标记工具' or format(BINDING_HEADER_RAID_TARGET, PROFESSION_TOOL_TOOLTIP_LINE),
             checked=Save.markersFrame,
@@ -771,7 +771,7 @@ local function InitMenu(self, level, type)--主菜单
             end,
             disabled=not getAllSet(),--是不有权限
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
         info={
             text=(Save.autoReady==1 and e.Icon.select2 or Save.autoReady==2 and e.Icon.O2 or (e.onlyChinese and '无' or NONE)).. (e.onlyChinese and '自动' or AUTO_JOIN:gsub(JOIN,''))..((not Save.autoReady or Save.autoReady==1) and (e.onlyChinese and '就绪' or READY) or Save.autoReady==2 and (e.onlyChinese and '未就绪' or NOT_READY_FEMALE) or ''),
@@ -780,7 +780,7 @@ local function InitMenu(self, level, type)--主菜单
             menuList='ready',
             hasArrow=true,
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
     end
 end
 

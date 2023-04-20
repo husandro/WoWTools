@@ -377,7 +377,7 @@ local function InitList(self, level, type)
             notCheckable=true,
             isTitle=true,
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
 
 
@@ -395,7 +395,7 @@ local function InitList(self, level, type)
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '仅限: 队长 |cnRED_FONT_COLOR:不在副本|r' or format(GROUP_FINDER_CROSS_FACTION_LISTING_WITHOUT_PLAYSTLE, '|cff00ff00'..LEADER..'|r'..NO..'|cnRED_FONT_COLOR:'..INSTANCE..'|r'),
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
         info={--设置,频道,事件
             text= (e.onlyChinese and '频道' or CHANNEL)..(Save.ChannelText and '|cnGREEN_FONT_COLOR: '..Save.ChannelText..'|r' or ''),--内容,频道, 邀请
@@ -412,7 +412,7 @@ local function InitList(self, level, type)
                 --setTexture()--设置图标颜色, 是否有权限, 是否转团, 邀请选项提示
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
         info={--已邀请列表
             text= e.onlyChinese and '已邀请' or LFG_LIST_APP_INVITED,--三级列表，已邀请列表
@@ -423,7 +423,7 @@ local function InitList(self, level, type)
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '邀请全部' or CALENDAR_INVITE_ALL,
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
         return
 
     elseif type=='InvUnitAll' then--三级列表，已邀请列表
@@ -441,7 +441,7 @@ local function InitList(self, level, type)
                     end,
 
                 }
-                UIDropDownMenu_AddButton(info, level)
+                securecall('UIDropDownMenu_AddButton', info, level)
                 n=n+1
             end
             all=all+1
@@ -452,15 +452,15 @@ local function InitList(self, level, type)
                 notCheckable=true,
                 isTitle=true,
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
         else
-            UIDropDownMenu_AddSeparator(level)
+            securecall('UIDropDownMenu_AddSeparator', level)
             info={
                 text= '|cff00ff00'..(e.onlyChinese and '邀请全部' or CALENDAR_INVITE_ALL)..'|r',
                 notCheckable=true,
                 func= InvPlateGuidFunc,
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
 
             info={
                 text='|cffff0000'..(e.onlyChinese and '全部清除' or CLEAR_ALL)..'|r',
@@ -469,7 +469,7 @@ local function InitList(self, level, type)
                     InvPlateGuid={}
                 end,
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
         end
         return
 
@@ -484,9 +484,9 @@ local function InitList(self, level, type)
                 --setTexture()--设置图标颜色, 是否有权限, 是否转团, 邀请选项提示
             end,
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddSeparator', level)
         info={
             text= e.onlyChinese and '召唤' or SUMMON,
             icon='Raid-Icon-SummonPending',
@@ -498,7 +498,7 @@ local function InitList(self, level, type)
                 Save.Summon= not Save.Summon and true or nil
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
         return
 
     elseif type=='NoInv' then
@@ -508,7 +508,7 @@ local function InitList(self, level, type)
             menuList='NoInvList',
             hasArrow=true,
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
         info={
             text= e.onlyChinese and '|cnRED_FONT_COLOR:休息|r区' or ('|cnRED_FONT_COLOR:'..CALENDAR_STATUS_OUT..'|r'..ZONE),--休息区拒绝组队  
@@ -520,9 +520,9 @@ local function InitList(self, level, type)
                 Save.NoInvInResting= not Save.NoInvInResting and true or nil
             end,
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddSeparator', level)
         info={
             text= e.onlyChinese and '休息区信息' or CALENDAR_STATUS_OUT..ZONE..INFO,
             checked=Save.restingTips,
@@ -531,7 +531,7 @@ local function InitList(self, level, type)
                 set_PLAYER_UPDATE_RESTING()--设置, 休息区提示
             end,
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
         return
 
     elseif type=='NoInvList' then--三级列表，拒绝邀请列表
@@ -551,7 +551,7 @@ local function InitList(self, level, type)
                     tooltipTitle= e.onlyChinese and '移除' or REMOVE,
                     tooltipText= format(e.onlyChinese and '%d次' or ITEM_SPELL_CHARGES, nu)..'\n\n'..(select(7,GetPlayerInfoByGUID(guid)) or ''),
                 }
-                UIDropDownMenu_AddButton(info, level)
+                securecall('UIDropDownMenu_AddButton', info, level)
             end
         end
         if all==0 then
@@ -560,9 +560,9 @@ local function InitList(self, level, type)
                 notCheckable=true,
                 isTitle=true,
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
         else
-            UIDropDownMenu_AddSeparator(level)
+            securecall('UIDropDownMenu_AddSeparator', level)
             info={
                 text=e.onlyChinese and '全部清除' or CLEAR_ALL,
                 colorCode= '|cff00ff00',
@@ -572,7 +572,7 @@ local function InitList(self, level, type)
                     print(id, addName, '|cff00ff00'..(e.onlyChinese and '全部清除' or CLEAR_ALL)..'|r', e.onlyChinese and '完成' or DONE)
                 end,
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
         end
         return
 
@@ -610,7 +610,7 @@ local function InitList(self, level, type)
                 StaticPopup_Show(id..addName..'CHANNEL')
             end
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
         return
 
     elseif type=='FRAMEFUNC' then--日标框, 向上:密语, 向下:跟随
@@ -620,15 +620,15 @@ local function InitList(self, level, type)
             notCheckable=true,
             isTitle=true,
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
         info= {
             text= e.onlyChinese and'鼠标滚轮向下滚动: 跟随' or (KEY_MOUSEWHEELDOWN..': '..FOLLOW),
             icon= 'UI-HUD-MicroMenu-StreamDLRed-Up',
             notCheckable=true,
             isTitle=true,
         }
-        UIDropDownMenu_AddButton(info, level)
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddButton', info, level)
+        securecall('UIDropDownMenu_AddSeparator', level)
         local tab = {
             'Target',
             'Party1',
@@ -647,15 +647,15 @@ local function InitList(self, level, type)
                     set_Frame_Fun()
                 end,
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
         end
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddSeparator', level)
         info= {
             text=  e.onlyChinese and '仅限系统(玩家)\n' or (LFG_LIST_CROSS_FACTION:format(SYSTEM..' ('..PLAYER..')')),
             notCheckable=true,
             isTitle=true,
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
 
         info= {
             text= e.onlyChinese and '友情提示: 可能会出现错误' or ('note: '..ENABLE_ERROR_SPEECH),
@@ -663,7 +663,7 @@ local function InitList(self, level, type)
             notCheckable=true,
             isTitle=true,
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
         return
 
     elseif type=='FOCUSKEY' then
@@ -672,8 +672,8 @@ local function InitList(self, level, type)
             notCheckable=true,
             isTitle=true,
         }
-        UIDropDownMenu_AddButton(info, level)
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddButton', info, level)
+        securecall('UIDropDownMenu_AddSeparator', level)
         local tab={
             'Shift',
             'Ctrl',
@@ -691,22 +691,22 @@ local function InitList(self, level, type)
                     print(id,addName, '|cnGREEN_FONT_COLOR:'..Save.focusKey..' + |r'..e.Icon.left, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end,
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
         end
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddSeparator', level)
         info= {
             text= (e.onlyChinese and '仅限系统' or LFG_LIST_CROSS_FACTION:format(SYSTEM)),
             notCheckable=true,
             isTitle=true,
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
         info= {
             text= e.onlyChinese and'友情提示: 可能会出现错误' or ('note: '..ENABLE_ERROR_SPEECH),
             colorCode= '|cffff0000',
             notCheckable=true,
             isTitle=true,
         }
-        UIDropDownMenu_AddButton(info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)
         return
     end
 
@@ -720,14 +720,14 @@ local function InitList(self, level, type)
         hasArrow=true,
         colorCode=not getLeader() and '|cff606060',
     }
-    UIDropDownMenu_AddButton(info, level)
+    securecall('UIDropDownMenu_AddButton', info, level)
     info = {
         text= e.Icon.select2..(e.onlyChinese and '接受邀请' or CALENDAR_ACCEPT_INVITATION),
         notCheckable=true,
         menuList='ACEINVITE',
         hasArrow=true,
     }
-    UIDropDownMenu_AddButton(info, level)
+    securecall('UIDropDownMenu_AddButton', info, level)
 
     info = {
         text= e.Icon.O2..(e.onlyChinese and '拒绝邀请' or GUILD_INVITE_DECLINE),
@@ -737,8 +737,8 @@ local function InitList(self, level, type)
         tooltipOnButton=true,
         tooltipTitle= e.onlyChinese and ('拒绝 '..Save.InvNoFriendNum..' 次') or (DECLINE..' '..format(ITEM_SPELL_CHARGES, Save.InvNoFriendNum))
     }
-    UIDropDownMenu_AddButton(info, level)
-    UIDropDownMenu_AddSeparator(level)
+    securecall('UIDropDownMenu_AddButton', info, level)
+    securecall('UIDropDownMenu_AddSeparator', level)
 
     local num= 0
     for _,_ in pairs(Save.frameList) do
@@ -756,7 +756,7 @@ local function InitList(self, level, type)
             set_Frame_Fun()--日标框, 向上:密语, 向下:跟随
         end
     }
-    UIDropDownMenu_AddButton(info, level)
+    securecall('UIDropDownMenu_AddButton', info, level)
 
 
     info={
@@ -774,7 +774,7 @@ local function InitList(self, level, type)
            --print(id,addName, e.GetEnabeleDisable(Save.setFucus), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
     }
-    UIDropDownMenu_AddButton(info, level)
+    securecall('UIDropDownMenu_AddButton', info, level)
 end
 
 --####

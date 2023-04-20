@@ -574,7 +574,7 @@ local function InitMenu(self, level, menuList)--主菜单
                 end,
             }
             info.disabled=UnitAffectingCombat('player')
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
 
             info={
                 text= e.onlyChinese and '图标大小' or HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE,--HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_HEIGHT,--设置按钮大小
@@ -585,7 +585,7 @@ local function InitMenu(self, level, menuList)--主菜单
                     StaticPopup_Show(id..addName..'TEXTURESIZE')
                 end,
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
 
             info={
                 text= (e.onlyChinese and '缩放' or UI_SCALE)..': |cnGREEN_FONT_COLOR:'..(Save.scale or 1)..'|r Alt+',
@@ -593,7 +593,7 @@ local function InitMenu(self, level, menuList)--主菜单
                 notCheckable=true,
                 icon='newplayertutorial-icon-mouse-middlebutton',
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
 
             if ClassID==11 then--德鲁伊
                 info={
@@ -612,10 +612,10 @@ local function InitMenu(self, level, menuList)--主菜单
                         CloseDropDownMenus()
                     end
                 }
-                UIDropDownMenu_AddButton(info,level)
+                securecall('UIDropDownMenu_AddButton', info,level)
             end
 
-            UIDropDownMenu_AddSeparator(level)
+            securecall('UIDropDownMenu_AddSeparator', level)
             info={--坐骑展示,每3秒
                 text= e.onlyChinese and '坐骑展示' or ('Random'..SHOW),
                 notCheckable=true,
@@ -628,7 +628,7 @@ local function InitMenu(self, level, menuList)--主菜单
                     setMountShow()
                 end,
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
 
             info={--坐骑特效
                 text= e.onlyChinese and '坐骑特效' or (EMOTE171_CMD2:gsub('/','')..SHOW),
@@ -642,9 +642,9 @@ local function InitMenu(self, level, menuList)--主菜单
                     setMountShow()
                 end,
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
 
-            UIDropDownMenu_AddSeparator(level)
+            securecall('UIDropDownMenu_AddSeparator', level)
             info={
                 text= e.onlyChinese and '还原位置' or RESET_POSITION,
                 disabled=UnitAffectingCombat('player'),
@@ -659,14 +659,14 @@ local function InitMenu(self, level, menuList)--主菜单
                 tooltipTitle=e.Icon.right..(e.onlyChinese and '移动' or NPE_MOVE),
                 notCheckable=true,
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
 
             info={
                 text=id..' Tools',
                 isTitle=true,
                 notCheckable=true,
             }
-            UIDropDownMenu_AddButton(info,level)
+            securecall('UIDropDownMenu_AddButton', info,level)
 
         elseif menuList==ITEMS or menuList==SPELLS then
             for ID, _ in pairs(Save.Mounts[menuList]) do
@@ -712,7 +712,7 @@ local function InitMenu(self, level, menuList)--主菜单
                         colorCode= not known and '|cff606060',
                     }
                 end
-                UIDropDownMenu_AddButton(info, level);
+                securecall('UIDropDownMenu_AddButton', info, level);
             end
 
         elseif button[menuList] then--二级菜单
@@ -756,13 +756,13 @@ local function InitMenu(self, level, menuList)--主菜单
                         info.tooltipTitle='uiMapID: '..uiMapID
                     end
                 end
-                UIDropDownMenu_AddButton(info, level);
+                securecall('UIDropDownMenu_AddButton', info, level);
             end
         end
     else
         for _, type in pairs(mainMenuTable) do
             if type=='-' then
-                UIDropDownMenu_AddSeparator()
+                securecall('UIDropDownMenu_AddSeparator') 
 
             elseif type==SPELLS or type==ITEMS then
                 local num=getTableNum(type)--检测,表里的数量
@@ -774,7 +774,7 @@ local function InitMenu(self, level, menuList)--主菜单
                     notCheckable=true,
                     colorCode=num==0 and '|cff606060',
                 }
-                UIDropDownMenu_AddButton(info, level);
+                securecall('UIDropDownMenu_AddButton', info, level);
 
             elseif button[type] then
                 local tab=button[type]
@@ -810,18 +810,18 @@ local function InitMenu(self, level, menuList)--主菜单
                         end
                     end
                 end
-                UIDropDownMenu_AddButton(info, level);
+                securecall('UIDropDownMenu_AddButton', info, level);
             end
         end
 
-        UIDropDownMenu_AddSeparator()
+        securecall('UIDropDownMenu_AddSeparator') 
         info={
             text=Save.KEY or (e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL),
             notCheckable=true,
             menuList=SETTINGS,
             hasArrow=true,
         }
-        UIDropDownMenu_AddButton(info)
+        securecall('UIDropDownMenu_AddButton', info)
 
         info={--提示移动
             text= e.onlyChinese and '移动' or NPE_MOVE,
@@ -829,7 +829,7 @@ local function InitMenu(self, level, menuList)--主菜单
             notCheckable=true,
             icon= 'newplayertutorial-icon-mouse-rightbutton'
         }
-        UIDropDownMenu_AddButton(info)
+        securecall('UIDropDownMenu_AddButton', info)
     end
 end
 
@@ -877,13 +877,13 @@ local function setMountJournal_ShowMountDropdown(index)
     if not spellID then
         return
     end
-    UIDropDownMenu_AddSeparator()
+    securecall('UIDropDownMenu_AddSeparator') 
 
     local info
     for _, type in pairs(MountTab) do
         if (type==MOUNT_JOURNAL_FILTER_DRAGONRIDING and isForDragonriding) or (type~=MOUNT_JOURNAL_FILTER_DRAGONRIDING and not isForDragonriding) then
             if type=='Shift'  or type==FLOOR then
-                UIDropDownMenu_AddSeparator()
+                securecall('UIDropDownMenu_AddSeparator') 
             end
             info={
                 text= (e.onlyChinese and '设置' or SETTINGS)..' '..type..' #'..getTableNum(type),
@@ -916,18 +916,18 @@ local function setMountJournal_ShowMountDropdown(index)
                     MountJournal_UpdateMountList()
                 end
             }
-            UIDropDownMenu_AddButton(info, 1);
+            securecall('UIDropDownMenu_AddButton', info, 1);
         end
     end
 
 
-    UIDropDownMenu_AddSeparator()
+    securecall('UIDropDownMenu_AddSeparator') 
     info={
         text=id..' '..addName,
         isTitle=true,
         notCheckable=true,
     }
-    UIDropDownMenu_AddButton(info, 1);
+    securecall('UIDropDownMenu_AddButton', info, 1);
 end
 
 --######

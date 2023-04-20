@@ -9,10 +9,10 @@
         "REQUIRES_RELOAD",
         "TIMEMANAGER_TOOLTIP_TITLE",
         "AFK",
-        "UIDropDownMenu_AddButton",
+        "'UIDropDownMenu_AddButton'",
         "TIME_PLAYED_TOTAL",
         "SAY",
-        "UIDropDownMenu_AddSeparator",
+        "'UIDropDownMenu_AddSeparator'",
         "RESET",
         "PET_BATTLE_PVP_QUEUE",
         "CLEAR",
@@ -2553,8 +2553,28 @@
         "HUD_EDIT_MODE_FOCUS_FRAME_LABEL",
         "EditModeSystemMixin",
         "EditModeManagerFrameMixin",
-        "Add"
+        "Add",
+        "VAS_REALM_LABEL",
+        "GroupLootHistoryFrame",
+        "Bagnon",
+        "Baggins",
+        "GetMinimapShape",
+        "MainStatusTrackingBarContainer",
+        "EncounterJournalMonthlyActivitiesFrame",
+        "EncounterJournalMonthlyActivitiesTab",
+        "RematchJournalBg",
+        "RematchLoadoutPanel",
+        "RematchPetPanel",
+        "RematchQueuePanel",
+        "RematchTeamPanel",
+        "RematchOptionPanel"
     ],
     "Lua.diagnostics.disable": [
+        "redundant-parameter",
+        "missing-parameter",
+        "undefined-field",
+        "assign-type-mismatch",
+        "deprecated",
+        "duplicate-set-field"
     ]
 }

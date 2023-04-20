@@ -71,11 +71,11 @@ local function InitMenu(self, level, type)--主菜单
                     e.Say(nil, name)
                 end
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
         end
     end
     if find then
-        UIDropDownMenu_AddSeparator(level)
+        securecall('UIDropDownMenu_AddSeparator', level)
     end
     info={
         text=e.onlyChinese and '公会信息' or GUILD_INFORMATION,
@@ -87,7 +87,7 @@ local function InitMenu(self, level, type)--主菜单
             set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
         end
     }
-    UIDropDownMenu_AddButton(info, level)
+    securecall('UIDropDownMenu_AddButton', info, level)
 end
 
 --####

@@ -377,7 +377,7 @@ local function setCustomItemMenu(level)--二级菜单, 自定义出售
             CloseDropDownMenus();
         end,
     }
-    UIDropDownMenu_AddButton(info, level)
+    securecall('UIDropDownMenu_AddButton', info, level)
     for itemID, boolean in pairs(Save.Sell) do
         if itemID  then
             e.LoadDate({id=itemID, type='item'})
@@ -391,7 +391,7 @@ local function setCustomItemMenu(level)--二级菜单, 自定义出售
                 Save.Sell[itemID]=nil
                 print(id, addName, '|cnGREEN_FONT_COLOR:'..REMOVE..'|r'..AUCTION_HOUSE_SELL_TAB, itemLink)
             end
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
         end
     end
 end
@@ -405,7 +405,7 @@ local function setBossItemMenu(level)--二级菜单, BOSS
             CloseDropDownMenus();
         end
     }
-    UIDropDownMenu_AddButton(info, level)
+    securecall('UIDropDownMenu_AddButton', info, level)
     for itemID, _ in pairs(bossSave) do
         if itemID then
             e.LoadDate({id=itemID, type='item'})
@@ -417,7 +417,7 @@ local function setBossItemMenu(level)--二级菜单, BOSS
                     Save.bossSave[itemID]=nil
                 end,
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
         end
     end
 end
@@ -432,7 +432,7 @@ local function setBuyItemMenu(level)--二级菜单, 购买物品
             CloseDropDownMenus();
        end
     }
-    UIDropDownMenu_AddButton(info, level)
+    securecall('UIDropDownMenu_AddButton', info, level)
     for itemID, num in pairs(buySave) do
         if itemID and num then
             select(2, GetItemInfo(itemID))
@@ -448,7 +448,7 @@ local function setBuyItemMenu(level)--二级菜单, 购买物品
                 buySave[itemID]=nil
                 setMerchantInfo()--设置, 提示, 信息
             end
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
         end
     end
 end
@@ -461,7 +461,7 @@ local function setBuybackItemMenu(level)--二级菜单, 购回物品
             CloseDropDownMenus();
         end,
     }
-    UIDropDownMenu_AddButton(info, level)
+    securecall('UIDropDownMenu_AddButton', info, level)
 
     for itemID, _ in pairs(Save.noSell) do
         if itemID then
@@ -478,7 +478,7 @@ local function setBuybackItemMenu(level)--二级菜单, 购回物品
                     Save.noSell[itemID]=nil
                 end,
             }
-            UIDropDownMenu_AddButton(info, level)
+            securecall('UIDropDownMenu_AddButton', info, level)
         end
     end
 end
@@ -508,7 +508,7 @@ local function InitList(self, level, menuLit)
         tooltipTitle=id..' '.. addName,
         tooltipText='\n'..PROFESSIONS_CRAFTING_QUALITY:format('|cff606060'..ITEM_QUALITY0_DESC..'|r'),
     }
-    UIDropDownMenu_AddButton(info)
+    securecall('UIDropDownMenu_AddButton', info)
 
     num=0
     for _, boolean in pairs(Save.Sell) do
@@ -525,7 +525,7 @@ local function InitList(self, level, menuLit)
         menuList='CUSTOM',
         hasArrow=true,
     }
-    UIDropDownMenu_AddButton(info)
+    securecall('UIDropDownMenu_AddButton', info)
 
     num=0
     for itemID, _ in pairs(bossSave) do
@@ -544,9 +544,9 @@ local function InitList(self, level, menuLit)
         tooltipOnButton=true,
         tooltipTitle= (e.onlyChinese and '物品等级' or STAT_AVERAGE_ITEM_LEVEL)..' < ' ..(avgItemLevel and math.ceil(avgItemLevel)-15 or 15)
     }
-    UIDropDownMenu_AddButton(info)
+    securecall('UIDropDownMenu_AddButton', info)
 
-    UIDropDownMenu_AddSeparator()
+    securecall('UIDropDownMenu_AddSeparator') 
     num=0
     for _, boolean in pairs(Save.noSell) do
         if boolean then
@@ -559,7 +559,7 @@ local function InitList(self, level, menuLit)
         menuList='BUYBACK',
         hasArrow=true,
     }
-    UIDropDownMenu_AddButton(info)
+    securecall('UIDropDownMenu_AddButton', info)
 
     num=0
     for _, boolean in pairs(buySave) do
@@ -567,7 +567,7 @@ local function InitList(self, level, menuLit)
             num=num+1
         end
     end
-    UIDropDownMenu_AddSeparator()
+    securecall('UIDropDownMenu_AddSeparator') 
     info={--购买物品
         text=  (e.onlyChinese and '自动购买物品' or AUTO_JOIN:gsub(JOIN,PURCHASE))..'|cnGREEN_FONT_COLOR: #'..num..'|r',
         checked=not Save.notAutoBuy,
@@ -582,9 +582,9 @@ local function InitList(self, level, menuLit)
         menuList='BUY',
         hasArrow=true,
     }
-    UIDropDownMenu_AddButton(info)
+    securecall('UIDropDownMenu_AddButton', info)
 
-    UIDropDownMenu_AddSeparator()
+    securecall('UIDropDownMenu_AddSeparator') 
     info=UIDropDownMenu_CreateInfo()--自动修理
     info.text= e.onlyChinese and '修理所有物品' or REPAIR_ALL_ITEMS
     info.checked=not Save.notAutoRepairAll
@@ -608,9 +608,9 @@ local function InitList(self, level, menuLit)
         text=text..'\n\n'..GUILDBANK_REPAIR..'\n'..GetCoinTextureString(GetGuildBankMoney())
     end
     info.tooltipText=text
-    UIDropDownMenu_AddButton(info)
+    securecall('UIDropDownMenu_AddButton', info)
 
-    UIDropDownMenu_AddSeparator()
+    securecall('UIDropDownMenu_AddSeparator') 
     info= {--显示数物品,拥有数量,在商人界面
         text= e.onlyChinese and '显示数量'..e.Icon.bank2 or (SHOW..e.Icon.bank2..AUCTION_HOUSE_QUANTITY_LABEL),
         checked= not Save.notShowBagNum,
@@ -619,7 +619,7 @@ local function InitList(self, level, menuLit)
             setMerchantInfo()--设置, 提示, 信息
         end
     }
-    UIDropDownMenu_AddButton(info)
+    securecall('UIDropDownMenu_AddButton', info)
 
 
     info={--删除字符
@@ -631,7 +631,7 @@ local function InitList(self, level, menuLit)
         tooltipOnButton=true,
         tooltipTitle= e.onlyChinese and '你真的要摧毁%s吗？\n\n请在输入框中输入 DELETE 以确认。' or DELETE_GOOD_ITEM,
     }
-    UIDropDownMenu_AddButton(info)
+    securecall('UIDropDownMenu_AddButton', info)
 
     info= {--堆叠数量
         text= (e.onlyChinese and '堆叠数量' or AUCTION_STACK_SIZE).. ' Plus',
@@ -642,7 +642,7 @@ local function InitList(self, level, menuLit)
             Save.notStackSplit = not Save.notStackSplit and true or nil
         end,
     }
-    UIDropDownMenu_AddButton(info)
+    securecall('UIDropDownMenu_AddButton', info)
 end
 
 local function setMenu()

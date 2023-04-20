@@ -90,7 +90,7 @@ local function InitMenu(self, level)--主菜单
             setGuLaiTip()--设置 是否使用 /招手
         end,
     }
-    UIDropDownMenu_AddButton(info, level)
+    securecall('UIDropDownMenu_AddButton', info, level)
 
     info={--自动召唤
         text= e.onlyChinese and '自动召唤' or (AUTO_JOIN:gsub(JOIN,'')..SUMMONS),
@@ -105,7 +105,7 @@ local function InitMenu(self, level)--主菜单
             setAutoSummonTips()--设置, 自动召唤
         end
     }
-    UIDropDownMenu_AddButton(info, level)
+    securecall('UIDropDownMenu_AddButton', info, level)
 end
 
 --####
