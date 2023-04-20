@@ -1,7 +1,7 @@
 local id, e = ...
 local addName= 'panel Settings'
 local Save={
-    onlyChinese= e.Player.husandro,
+    onlyChinese= e.Player.husandro or LOCALE_zhCN,
     useClassColor= e.Player.husandro,--使用,职业, 颜色
     useCustomColor= nil,--使用, 自定义, 颜色
     useCustomColorTab= {r=1, g=0.82, b=0, a=1, hex='|cffffd100'},--自定义, 颜色, 表
@@ -148,7 +148,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     e.Reload()
                 end}
             )
-
+            
             if e.onlyChinese or LOCALE_zhCN or LOCALE_zhTW then
                 e.Player.LayerText= '位面'
             elseif LOCALE_koKR then

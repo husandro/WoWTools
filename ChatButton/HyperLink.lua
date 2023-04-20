@@ -13,6 +13,7 @@ local Save={
     --guildWelcomeText='',
     welcomeOnlyHomeGroup=true,--仅限, 手动组队
     setPlayerSound= e.Player.husandro,--播放, 声音
+    setFucus= e.Player.husandro,--焦点
     focusKey='Shift',--焦点,快捷键, Ctrl, Alt
 }
 local button
@@ -717,48 +718,7 @@ local function setMsg_CHAT_MSG_SYSTEM(text)--欢迎加入, 信息
     end
 end
 
---#################
---Shift+点击设置焦点
---#################
-local clearFocusFrame
-local function set_Shift_Click_focurs()
-    if UnitAffectingCombat('player') then
-        panel:RegisterEvent('PLAYER_REGEN_ENABLED')
-        return
-    end
 
-    local tab = {
-        PlayerFrame,
-        PetFrame,
-        PartyFrame.MemberFrame1,
-        PartyFrame.MemberFrame2,
-        PartyFrame.MemberFrame3,
-        PartyFrame.MemberFrame4,
-        TargetFrame,
-        TargetFrameToT,
-        Boss1TargetFrame,
-        Boss2TargetFrame,
-        Boss3TargetFrame,
-        Boss4TargetFrame,
-        Boss5TargetFrame,
-        FocusFrameToT,
-    }
-
-    local key = Save.focusKey or 'shift'--设置快快捷键
-    for _, frame in pairs(tab) do--设置焦点
-        if frame and frame:CanChangeAttribute() then
-            frame:SetAttribute(key..'-type1', 'focus')
-        end
-    end
-
-    FocusFrame:SetAttribute(key..'-macrotext1','/clearfocus')
-    FocusFrame:SetAttribute(key..'-type1','macro')
-
-    clearFocusFrame= clearFocusFrame or e.Cbtn(nil, {type=true, name= id..addName..'clearFocusFrame'})
-    clearFocusFrame:SetAttribute('type','macro')
-    clearFocusFrame:SetAttribute('macrotext','/clearfocus')
-    e.SetButtonKey(clearFocusFrame, true, strupper(key)..'-BUTTON1', nil)--设置清除快捷键
-end
 
 --#########
 --事件, 声音
@@ -827,36 +787,7 @@ StaticPopupDialogs[id..addName..'WELCOME']={--区域,设置对话框
 --#####
 local function InitMenu(self, level, type)
     local info
-    if type=='FOCUSKEY' then
-        local tab={
-            'Shift',
-            'Ctrl',
-            'Alt',
-        }
-        for _, key in pairs(tab) do
-            info={
-                text= key..' + '.. e.Icon.left,
-                checked= Save.focusKey== key or (not Save.focusKey and key=='Shift'),
-                disabled= UnitAffectingCombat('player'),
-                arg1= key,
-                func= function(_, arg1)
-                    Save.focusKey= arg1
-                    set_Shift_Click_focurs()--Shift+点击设置焦点
-                    print(id,addName, '|cnGREEN_FONT_COLOR:'..Save.focusKey..' + |r'..e.Icon.left, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                end,
-            }
-            UIDropDownMenu_AddButton(info, level)    
-        end
-        UIDropDownMenu_AddSeparator(level)
-        info= {
-            text= (Save.focusKey or 'Shift')..' + '..e.Icon.left..' + '..(e.onlyChinese and '空' or EMPTY)..' = '..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
-            notCheckable=true,
-            isTitle=true,
-        }
-        UIDropDownMenu_AddButton(info, level)
-        return
-
-    elseif type=='Welcome' then--欢迎
+    if type=='Welcome' then--欢迎
         info={
             text= e.onlyChinese and '公会新成员' or LFG_LIST_GUILD_MEMBER,--公会新成员
             checked=Save.guildWelcome,
@@ -921,42 +852,6 @@ local function InitMenu(self, level, type)
     UIDropDownMenu_AddButton(info, level)
 
     info={
-        text= e.onlyChinese and '欢迎加入' or (EMOTE103_CMD1:gsub('/','')..JOIN),
-        checked= Save.guildWelcome or Save.groupWelcome,
-        func=function()
-            Save.guildWelcome=nil
-            Save.groupWelcome=nil
-            set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
-        end,
-        menuList='Welcome',
-        hasArrow=true,
-    }
-    UIDropDownMenu_AddButton(info, level)
-
-    UIDropDownMenu_AddSeparator(level)
-    info={
-        text= e.onlyChinese and '设置焦点' or SET_FOCUS,
-        checked= Save.setFucus,
-        disabled= UnitAffectingCombat('player'),
-        tooltipOnButton=true,
-        tooltipTitle= (Save.focusKey or 'Shift').. ' + '..e.Icon.left,
-        tooltipText= (e.onlyChinese and '仅限系统' or LFG_LIST_CROSS_FACTION:format(SYSTEM))
-            ..'\n|cnRED_FONT_COLOR:note: '..(e.onlyChinese and '可能会出现错误' or ENABLE_ERROR_SPEECH)..'|r',
-        hasArrow=true,
-        menuList='FOCUSKEY',
-        func= function()
-            if Save.setFucus then
-                Save.setFucus=nil
-            else
-                Save.setFucus=true
-                set_Shift_Click_focurs()--Shift+点击设置焦点
-            end
-            print(id,addName, e.GetEnabeleDisable(Save.setFucus), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        end,
-    }
-    UIDropDownMenu_AddButton(info, level)
-
-    info={
         text= e.onlyChinese and '事件声音' or EVENTS_LABEL..SOUND,
         icon= 'chatframe-button-icon-voicechat',
         checked= Save.setPlayerSound,
@@ -970,6 +865,19 @@ local function InitMenu(self, level, type)
             set_START_TIMER_Event()--事件, 声音
             print(id, addName, e.onlyChinese and "播放" or SLASH_STOPWATCH_PARAM_PLAY1, e.onlyChinese and '事件声音' or EVENTS_LABEL..SOUND)
         end
+    }
+    UIDropDownMenu_AddButton(info, level)
+
+    info={
+        text= e.onlyChinese and '欢迎加入' or (EMOTE103_CMD1:gsub('/','')..JOIN),
+        checked= Save.guildWelcome or Save.groupWelcome,
+        func=function()
+            Save.guildWelcome=nil
+            Save.groupWelcome=nil
+            set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
+        end,
+        menuList='Welcome',
+        hasArrow=true,
     }
     UIDropDownMenu_AddButton(info, level)
 
@@ -1053,16 +961,37 @@ local function Init()
 
     setPanel()--设置控制面板
     set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
-    if Save.setFucus then
-        set_Shift_Click_focurs()--Shift+点击设置焦点
-        --panel:RegisterEvent('GROUP_ROSTER_UPDATE')
-    end
+
 
     showTimestamps= C_CVar.GetCVar("showTimestamps")~='none' and true or nil
 
     if Save.setPlayerSound then
         set_START_TIMER_Event()--事件, 声音
     end
+
+    LFGListInviteDialog:SetScript("OnShow", function(self)--队伍查找器, 接受邀请
+        if Save.setPlayerSound then
+            e.PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
+        end
+        e.Ccool(self, nil, STATICPOPUP_TIMEOUT, nil, true, true, nil)--冷却条
+        local status, _, _, role= select(2,C_LFGList.GetApplicationInfo(self.resultID))
+        if status=="invited" then
+            local info= C_LFGList.GetSearchResultInfo(self.resultID)
+            if self.AcceptButton and self.AcceptButton:IsEnabled() and info then
+                print(id, addName,
+                    info.leaderOverallDungeonScore and info.leaderOverallDungeonScore>0 and '|T4352494:0|t'..e.GetKeystoneScorsoColor(info.leaderOverallDungeonScore) or '',--地下城史诗,分数
+                    info.leaderPvpRatingInfo and  info.leaderPvpRatingInfo.rating and info.leaderPvpRatingInfo.rating>0 and '|A:pvptalents-warmode-swords:0:0|a|cnRED_FONT_COLOR:'..info.leaderPvpRatingInfo.rating..'|r' or '',--PVP 分数
+                    info.leaderName and (e.onlyChinese and '%s邀请你加入' or COMMUNITY_INVITATION_FRAME_INVITATION_TEXT):format(e.PlayerLink(info.leaderName)..' ') or '',--	%s邀请你加入
+                    info.name and info.name or '',--名称
+                    e.Icon[role] or '',
+                    info.numMembers and (e.onlyChinese and '队员' or PLAYERS_IN_GROUP)..'|cff00ff00 '..info.numMembers..'|r' or '',--队伍成员数量
+                    info.autoAccept and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '自动邀请' or AUTO_JOIN:gsub(JOIN,INVITE))..'|r' or '',--对方是否开启, 自动邀请
+                    info.activityID and '|cffff00ff'..C_LFGList.GetActivityFullName(info.activityID)..'|r' or '',--查找器,类型
+                    info.isWarMode~=nil and info.isWarMode ~= C_PvP.IsWarModeDesired() and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '战争模式' or TALENT_FRAME_LABEL_WARMODE)..'|r' or ''
+                )
+            end
+        end
+    end)
 end
 
 --###########
@@ -1122,13 +1051,6 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
         if arg1=='showTimestamps' then
             showTimestamps= arg2~='none' and true or nil
         end
-
-    --elseif event=='GROUP_ROSTER_UPDATE' then
-        --set_Shift_Click_focurs()--Shift+点击设置焦点
-
-    elseif event=='PLAYER_REGEN_ENABLED' then
-        set_Shift_Click_focurs()--Shift+点击设置焦点
-        panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
 
     elseif event=='START_TIMER' then--播放, 声音
         if arg2==0 and arg3==0 then

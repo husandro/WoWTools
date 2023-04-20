@@ -3,29 +3,10 @@ local Save= {
     inInstanceBubblesDisabled= e.Player.husandro,
     saveWhisper=true,--保存, 密语
     --WhisperTab={}--保存, 密语, 内容
-    setTargetFrameFun= e.husandro,--日标框, 向上:密语, 向下:跟随
 }
 local addName= SAY
 local button
 local panel= CreateFrame("Frame")
-
---日标框, 向上:密语, 向下:跟随   
-local function set_Target_Frame_Fun()--日标框, 向上:密语, 向下:跟随     
-    if not Save.setTargetFrameFun then
-        TargetFrame:SetScript('OnMouseWheel', nil)
-    else
-        TargetFrame:SetScript('OnMouseWheel', function(self, d)
-            if UnitIsUnit('player', 'target') or not UnitIsPlayer('target') or not UnitIsFriend('player', 'target') then
-                return
-            end
-            if d==1 then
-                e.Say(nil, UnitName('target'), nil, nil)--密语
-            elseif d==-1 then
-                FollowUnit('target')--跟随
-            end
-        end)
-    end
-end
 
 
 local function setType(text)--使用,提示
@@ -409,7 +390,6 @@ local function Init_Menu(self, level, type)--主菜单
         }
         UIDropDownMenu_AddButton(info, level)
 
-        UIDropDownMenu_AddSeparator(level)
         numOline = C_FriendList.GetNumWhoResults()
         numOline = (numOline and numOline>0)  and '|cnGREEN_FONT_COLOR:'..numOline..'|r' or ''
         info={--区域列表
@@ -423,23 +403,6 @@ local function Init_Menu(self, level, type)--主菜单
         }
         UIDropDownMenu_AddButton(info, level)
         UIDropDownMenu_AddSeparator(level)
-
-        info={--
-            text= not e.onlyChinese and HUD_EDIT_MODE_TARGET_FRAME_LABEL or "目标框体",
-            disabled= UnitAffectingCombat('player'),
-            icon= 'newplayertutorial-icon-mouse-middlebutton',
-            checked= Save.setTargetFrameFun,
-            tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and '仅限系统(玩家)\n' or (LFG_LIST_CROSS_FACTION:format(SYSTEM..' ('..PLAYER..')')),
-            tooltipText= e.onlyChinese and '鼠标滚轮向上滚动: 密语'..e.Icon.up2..'\n鼠标滚轮向下滚动: 跟随\n\n|cnRED_FONT_COLOR:可能会出现错误|r'..e.Icon.down2 or
-            (KEY_MOUSEWHEELUP..": "..SLASH_TEXTTOSPEECH_WHISPER..e.Icon.up2..'\n'..KEY_MOUSEWHEELDOWN..': '..FOLLOW..e.Icon.down2..'\n\n|cnRED_FONT_COLOR:note: '..ENABLE_ERROR_SPEECH..'|r'),
-            
-            func=function()
-                Save.setTargetFrameFun= not Save.setTargetFrameFun and true or nil
-                set_Target_Frame_Fun()--日标框, 向上:密语, 向下:跟随
-            end
-        }
-        UIDropDownMenu_AddButton(info, level)
 
         info={
             text= e.onlyChinese and '聊天泡泡' or CHAT_BUBBLES_TEXT,
@@ -488,9 +451,7 @@ local function Init()
     end)
 
     set_chatBubbles_Tips()--提示，聊天泡泡，开启/禁用
-    if Save.setTargetFrameFun then
-        set_Target_Frame_Fun()--日标框, 向上:密语, 向下:跟随   
-    end
+
 end
 
 --###########

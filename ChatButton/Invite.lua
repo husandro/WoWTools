@@ -1,12 +1,19 @@
 local id, e = ...
 local addName= INVITE
-local Save={InvNoFriend={},
-            --LFGListAceInvite=true,--接受,LFD, 邀请
-            FriendAceInvite=true,--接受, 好友, 邀请
-            InvNoFriendNum=0,--拒绝, 次数
-            restingTips=true,--休息区提示
-            ChannelText=e.Player.cn and '1' or 'inv',--频道, 邀请, 事件,内容
-            Summon= true,--接受, 召唤
+local Save={
+    InvNoFriend={},
+    --LFGListAceInvite=true,--接受,LFD, 邀请
+    FriendAceInvite=true,--接受, 好友, 邀请
+    InvNoFriendNum=0,--拒绝, 次数
+    restingTips=true,--休息区提示
+    ChannelText=e.Player.cn and '1' or 'inv',--频道, 邀请, 事件,内容
+    Summon= true,--接受, 召唤
+
+    setFrameFun= e.Player.husandro,--日标框, 向上:密语, 向下:跟随
+    frameList={['Target']=true, ['Party1']=true, ['Party2']=true, ['Party3']=true, ['Party4']=true},
+
+    setFucus= e.Player.husandro,--焦点
+    focusKey= 'Shift',
 }
 local InvPlateGuid={}
 local button
@@ -15,21 +22,7 @@ local panel= CreateFrame("Frame")
 local function getLeader()--取得权限
     return UnitIsGroupAssistant('player') or UnitIsGroupLeader('player') or not IsInGroup()
 end
---[[
-local function toRaidOrParty(number)--自动, 转团
-    if Save.PartyToRaid then
-        number= number or GetNumGroupMembers()
-        local raid= IsInRaid()
-        if number>5 and not raid then
-            C_PartyInfo.ConvertToRaid()
-            print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '转团' or CONVERT_TO_RAID)..'|r')
-        elseif number<5 and raid then
-            C_PartyInfo.ConvertToParty()
-            print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '转小队' or CONVERT_TO_RAID)..'|r')
-        end
-    end
-end
---]]
+
 local function isInLFG()--是否有FB, 排除中
     for type=1, NUM_LE_LFG_CATEGORYS do
         if GetLFGQueueStats(type) then
@@ -38,38 +31,6 @@ local function isInLFG()--是否有FB, 排除中
     end
 end
 
---[[local function setTexture()--设置图标颜色, 是否有权限, 是否转团, 邀请选项提示
-    button.texture:SetDesaturated(not getLeader() and true or false)
-
-    if Save.PartyToRaid then
-        button.border:SetAtlas('bag-border')
-    else
-        button.border:SetAtlas('bag-reagent-border')
-    end
-
-    if not button.LFGAutoInv and Save.LFGAutoInv then--邀请LFG,指示图标
-        button.LFGAutoInv=button:CreateTexture(nil, 'ARTWORK')
-        button.LFGAutoInv:SetPoint('BOTTOMLEFT',3,3)
-        button.LFGAutoInv:SetSize(10,10)
-        button.LFGAutoInv:SetAtlas(e.Icon.toRight)
-        button.LFGAutoInv:SetDesaturated(true)
-    end
-    if button.LFGAutoInv then
-        button.LFGAutoInv:SetShown(Save.LFGAutoInv)
-    end
-    if not button.InvTar and (Save.InvTar or (Save.Channel and Save.ChannelText)) then--邀请目标, 频道, 指示图标
-        button.InvTar=button:CreateTexture(nil, 'ARTWORK')
-        button.InvTar:SetPoint('BOTTOMRIGHT',-7,3)
-        button.InvTar:SetSize(10,10)
-        button.InvTar:SetAtlas(e.Icon.toLeft)
-        button.InvTar:SetDesaturated(true)
-    end
-    if button.InvTar then
-        button.InvTar:SetShown((Save.Channel and Save.ChannelText))
-    end
-
-    button.texture:SetDesaturated(not Save.FriendAceInvite)--自动接受,LFD, 好友, 邀请
-end]]
 
 --#######
 --邀请玩家
@@ -130,51 +91,7 @@ local InvUnitFunc=function()--邀请，周围玩家
         end
     end)
 end
---[[
-local Time
-local function set_LFGListApplicationViewer_UpdateApplicantMember(self, appID, memberIdx, status2, pendingStatus)--自动清邀请, 队伍查找器, LFGList.lua
-    if not  Save.LFGAutoInv or not UnitIsGroupLeader('player') then
-        return
-    end
 
-    local applicantInfo = C_LFGList.GetApplicantInfo(appID)
-    local status = applicantInfo and applicantInfo.applicationStatus
-    local numInvited = C_LFGList.GetNumInvitedApplicantMembers() --已邀请人数
-    local currentCount = GetNumGroupMembers(LE_PARTY_CATEGORY_HOME) --队伍人数            
-
-    if status == 'applied'  and self:GetParent().numMembers then
-        local to=numInvited + currentCount
-        local raid=IsInRaid()
-        if to>=40 or (not raid and currentCount==5 and not Save.PartyToRaid) then
-            return
-        end
-        --toRaidOrParty(to)--自动, 转团,转小队
-        self:GetParent().InviteButton:Click()
-
-        local applicantID=applicantInfo.applicantID
-
-        if not Time or GetTime() > Time + 1 then--刷新 
-            local name, class, _, level, itemLevel, honorLevel, tank, healer, damage, assignedRole, relationship, dungeonScore= C_LFGList.GetApplicantMemberInfo(applicantID, memberIdx)
-            print(id, addName,
-                level and MAX_PLAYER_LEVEL~=level and '|cff00ff00'..level..'|r' or '',--等级
-                e.Class(nil, class) or '',--职业图标
-                (tank and e.Icon.TANK or '')..(healer and e.Icon.HEALER or '')..(damage and e.Icon.DAMAGER or ''),
-                itemLevel and itemLevel>1 and BAG_FILTER_EQUIPMENT..'|cnGREEN_FONT_COLOR:'..('%i'):format(itemLevel)..'|r' or '',
-                e.PlayerLink(name) or '',
-                dungeonScore and e.GetKeystoneScorsoColor(dungeonScore) or '',
-                honorLevel and honorLevel>0 and '|A:pvptalents-warmode-swords:0:0|a|cnRED_FONT_COLOR:'..honorLevel or ''
-            )
-
-            C_Timer.After(1,function()
-                if LFGListFrame.ApplicationViewer.RefreshButton:IsEnabled() then
-                    LFGListFrame.ApplicationViewer.RefreshButton:Click()
-                end
-            end)
-            Time= GetTime()
-        end
-    end
-end
-]]
 local function set_event_PLAYER_TARGET_CHANGED()--设置, 邀请目标事件
     if Save.InvTar and not IsInInstance() then
         panel:RegisterEvent('PLAYER_TARGET_CHANGED')
@@ -244,49 +161,7 @@ local function InvPlateGuidFunc()--从已邀请过列表里, 再次邀请
         end
     end
 end
---[[
---#######
---接受邀请
---#######
-local function set_LFGListInviteDialog(self)--队伍查找器, 自动接受邀请
-    if not Save.LFGListAceInvite or not self.resultID then
-        return
-    end
-    local status, _, _, role= select(2,C_LFGList.GetApplicationInfo(self.resultID))
-    if status=="invited" then
-        local info= C_LFGList.GetSearchResultInfo(self.resultID)
-        if self.AcceptButton and self.AcceptButton:IsEnabled() and info then
-            print(id, e.onlyChinese and '接受' or ACCEPT, addName,
-                info.leaderOverallDungeonScore and info.leaderOverallDungeonScore>0 and '|T4352494:0|t'..e.GetKeystoneScorsoColor(info.leaderOverallDungeonScore) or '',--地下城史诗,分数
-                info.leaderPvpRatingInfo and  info.leaderPvpRatingInfo.rating and info.leaderPvpRatingInfo.rating>0 and '|A:pvptalents-warmode-swords:0:0|a|cnRED_FONT_COLOR:'..info.leaderPvpRatingInfo.rating..'|r' or '',--PVP 分数
-                info.leaderName and (e.onlyChinese and '%s邀请你加入' or COMMUNITY_INVITATION_FRAME_INVITATION_TEXT):format(e.PlayerLink(info.leaderName)..' ') or '',--	%s邀请你加入
-                info.name and info.name or '',--名称
-                e.Icon[role] or '',
-                info.numMembers and (e.onlyChinese and '队员' or PLAYERS_IN_GROUP)..'|cff00ff00 '..info.numMembers..'|r' or '',--队伍成员数量
-                info.autoAccept and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '自动邀请' or AUTO_JOIN:gsub(JOIN,INVITE))..'|r' or '',--对方是否开启, 自动邀请
-                info.activityID and '|cffff00ff'..C_LFGList.GetActivityFullName(info.activityID)..'|r' or '',--查找器,类型
-                info.isWarMode~=nil and info.isWarMode ~= C_PvP.IsWarModeDesired() and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '战争模式' or TALENT_FRAME_LABEL_WARMODE)..'|r' or ''
-            )
-            e.PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
-            e.Ccool(self, nil, 3, nil, true, true, nil)--冷却条
-            if self.LFGListInviteDialogTimer then self.LFGListInviteDialogTimer:Cancel() end
-            self.LFGListInviteDialogTimer=C_Timer.NewTimer(3, function()
-                if self.AcceptButton:IsEnabled() then
-                    self.AcceptButton:Click()
-                end
-            end)
-        end
-    elseif status=="inviteaccepted" then
-        e.Ccool(self, nil, 3, nil, true, true, nil)--冷却条
-        if self.LFGListInviteDialogTimer then self.LFGListInviteDialogTimer:Cancel() end
-        self.LFGListInviteDialogTimer=C_Timer.NewTimer(3, function()
-            if self.AcknowledgeButton:IsEnabled() then
-                self.AcknowledgeButton:Click()
-            end
-        end)
-    end
-end
-]]
+
 --###########
 --邀请, 对话框
 --###########
@@ -392,39 +267,110 @@ local function set_Chanell_Event()--设置,内容,频道, 邀请,事件
     end
 end
 
+--##########################
+--日标框, 向上:密语, 向下:跟随
+--##########################
+local function set_Frame_Fun()--日标框, 向上:密语, 向下:跟随
+    local tab = {
+        [TargetFrame]='Target',
+        [PartyFrame.MemberFrame1]='Party1',
+        [PartyFrame.MemberFrame2]='Party2',
+        [PartyFrame.MemberFrame3]='Party3',
+        [PartyFrame.MemberFrame4]='Party4',
+    }
+    for frame, unit in pairs(tab) do
+        if Save.setFrameFun and Save.frameList[unit] then--设置, 属性
+            frame:SetScript('OnMouseWheel', function(self, d)
+                if UnitIsUnit('player', 'target') or not UnitIsPlayer('target') or not UnitIsFriend('player', 'target') then
+                    return
+                end
+                if d==1 then
+                    e.Say(nil, UnitName('target'), nil, nil)--密语
+                elseif d==-1 then
+                    FollowUnit('target')--跟随
+                end
+            end)
+
+        elseif frame:GetScript('OnMouseWheel') then--取消, 属性
+            frame:SetScript('OnMouseWheel', nil)
+        end
+    end
+end
+
+--#################
+--Shift+点击设置焦点
+--#################
+local clearFocusFrame
+local function set_Shift_Click_focurs()
+    local tab = {
+        PlayerFrame,
+        PetFrame,
+        PartyFrame.MemberFrame1,
+        PartyFrame.MemberFrame2,
+        PartyFrame.MemberFrame3,
+        PartyFrame.MemberFrame4,
+        TargetFrame,
+        TargetFrameToT,
+        Boss1TargetFrame,
+        Boss2TargetFrame,
+        Boss3TargetFrame,
+        Boss4TargetFrame,
+        Boss5TargetFrame,
+        FocusFrameToT,
+    }
+    local keyTab={
+        'shift-type1',
+        'ctrl-type1',
+        'alt-type1',
+    }
+    local key= strlower(Save.focusKey)
+
+    for _, frame in pairs(tab) do--设置焦点
+        if frame and frame:CanChangeAttribute() then
+            if Save.setFucus then
+                frame:SetAttribute(key..'-type1', 'focus')--设置, 属性
+            else
+                for _, text in pairs(keyTab) do--取得, 所有属性
+                    if frame:GetAttribute(text) then
+                        frame:SetAttribute(key..'-type1', nil)
+                    end
+                end
+            end
+        end
+    end
+
+    if Save.setFucus then
+        FocusFrame:SetAttribute(key..'-type1','macro')
+        FocusFrame:SetAttribute(key..'-macrotext1','/clearfocus')
+    else
+        if FocusFrame:GetAttribute(key..'-type1') then
+            FocusFrame:SetAttribute(key..'-type1', nil)
+        end
+        if FocusFrame:GetAttribute(key..'-macrotext1') then
+            FocusFrame:SetAttribute(key..'-macrotext1', nil)
+        end
+    end
+
+    if Save.setFucus then
+        clearFocusFrame= clearFocusFrame or e.Cbtn(nil, {type=true, name= id..addName..'clearFocusFrame'})
+        clearFocusFrame:SetAttribute('type1','macro')
+        clearFocusFrame:SetAttribute('macrotext1','/clearfocus')
+        e.SetButtonKey(clearFocusFrame, true, strupper(key)..'-BUTTON1', nil)--设置, 快捷键
+    elseif clearFocusFrame then
+        if clearFocusFrame:GetAttribute(key..'-type1') then
+            FocusFrame:SetAttribute(key..'-type1', nil)
+        end
+        if clearFocusFrame:GetAttribute(key..'-macrotext1') then
+            clearFocusFrame:SetAttribute(key..'-macrotext1', nil)
+        end
+        e.SetButtonKey(clearFocusFrame, false, nil, nil)--清除, 快捷键
+    end
+end
+
+--#######
 --初始菜单
 --#######
 local function InitList(self, level, type)
-    --#####
-    --对话框
-    --#####
-    StaticPopupDialogs[id..addName..'CHANNEL']={--设置,内容,频道, 邀请,事件
-        text=id..' '..addName..' '..(e.onlyChinese and '频道' or CHANNEL)..'\n\n'..(e.onlyChinese and '关键词' or KBASE_DEFAULT_SEARCH_TEXT),
-        whileDead=1,
-        hideOnEscape=1,
-        exclusive=1,
-        timeout = 60,
-        hasEditBox=1,
-        button1= e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/',''),
-        button2=CANCEL,
-        OnShow = function(self2, data)
-            self2.editBox:SetText(Save.ChannelText or (e.Player.cn and '1' or 'inv'))
-            --self.button3:SetEnabled(Save.Mounts[FLOOR][data.spellID] and true or false)
-        end,
-        OnAccept = function(self2, data)
-            Save.ChannelText = string.upper(self.editBox:GetText())
-            print(id, addName, e.onlyChinese and '频道' or CHANNEL,'|cnGREEN_FONT_COLOR:'..Save.ChannelText..'|r')
-        end,
-        EditBoxOnTextChanged=function(self2, data)
-            local text= self2:GetText()
-            text=text:gsub(' ','')
-            self2:GetParent().button1:SetEnabled(text~='')
-        end,
-        EditBoxOnEscapePressed = function(s)
-            s:GetParent():Hide()
-        end,
-    }
-
     local info
     if type=='InvUnit' then--邀请单位    
         info={
@@ -434,21 +380,7 @@ local function InitList(self, level, type)
         }
         UIDropDownMenu_AddButton(info, level)
 
-        --[[info={--邀请LFD
-            text= e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON,
-            func=function()
-                Save.LFGAutoInv= not Save.LFGAutoInv and true or nil
-                local f=(LFGListFrame and LFGListFrame.ApplicationViewer) and LFGListFrame.ApplicationViewer.DataDisplay.inv
-                if f then
-                    f:SetChecked(Save.LFGAutoInv)
-                end
-                setTexture()--设置图标颜色, 是否有权限, 是否转团, 邀请选项提示
-            end,
-            checked=Save.LFGAutoInv,
-            tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and '仅限: |cnRED_FONT_COLOR:队长|r' or format(GROUP_FINDER_CROSS_FACTION_LISTING_WITHOUT_PLAYSTLE, '|cff00ff00'..LEADER..'|r'),
-        }
-        UIDropDownMenu_AddButton(info, level)]]
+
 
         info={
             text= e.onlyChinese and '邀请目标' or INVITE..TARGET,
@@ -493,23 +425,7 @@ local function InitList(self, level, type)
             tooltipTitle= e.onlyChinese and '邀请全部' or CALENDAR_INVITE_ALL,
         }
         UIDropDownMenu_AddButton(info, level)
-        
-
-        --[[info={--转团
-            text=e.onlyChinese and '转团' or CONVERT_TO_RAID,
-            func=function()
-                Save.PartyToRaid= not Save.PartyToRaid and true or nil
-                local f=(LFGListFrame and LFGListFrame.ApplicationViewer and LFGListFrame.ApplicationViewer.DataDisplay) and LFGListFrame.ApplicationViewer.DataDisplay.raid
-                if f then
-                    f:SetChecked(Save.PartyToRaid)
-                end
-                --setTexture()--设置图标颜色, 是否有权限, 是否转团
-            end,
-            tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and '仅限队伍查找器' or format(GROUP_FINDER_CROSS_FACTION_LISTING_WITHOUT_PLAYSTLE, '|cff00ff00'..DUNGEONS_BUTTON..'|r'),
-            checked= Save.PartyToRaid,
-        }
-        UIDropDownMenu_AddButton(info, level)]]
+        return
 
     elseif type=='InvUnitAll' then--三级列表，已邀请列表
         local n, all=0, 0
@@ -556,25 +472,9 @@ local function InitList(self, level, type)
             }
             UIDropDownMenu_AddButton(info, level)
         end
+        return
 
     elseif type=='ACEINVITE' then--自动接受邀请
-        --[[info={--队伍查找器
-            text= e.onlyChinese and '接受邀请' or CALENDAR_ACCEPT_INVITATION,
-            isTitle=true,
-            notCheckable=true,
-        }
-        UIDropDownMenu_AddButton(info, level)
-
-        info={
-            text= e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON,
-            checked=Save.LFGListAceInvite,
-            func=function()
-                Save.LFGListAceInvite= not Save.LFGListAceInvite and true or nil
-                setTexture()--设置图标颜色, 是否有权限, 是否转团, 邀请选项提示
-            end,
-        }
-        UIDropDownMenu_AddButton(info, level)]]
-
         info={
             text= e.onlyChinese and '好友' or FRIENDS,
             checked=Save.FriendAceInvite,
@@ -600,6 +500,7 @@ local function InitList(self, level, type)
             end
         }
         UIDropDownMenu_AddButton(info, level)
+        return
 
     elseif type=='NoInv' then
         info={
@@ -632,6 +533,7 @@ local function InitList(self, level, type)
             end,
         }
         UIDropDownMenu_AddButton(info, level)
+        return
 
     elseif type=='NoInvList' then--三级列表，拒绝邀请列表
         local all=0
@@ -673,48 +575,207 @@ local function InitList(self, level, type)
             }
             UIDropDownMenu_AddButton(info, level)
         end
+        return
 
     elseif type=='ChannelText' then--三级列表,修改,频道,关键词
         info={
             text= e.onlyChinese and '关键词' or KBASE_DEFAULT_SEARCH_TEXT,--在这里输入关键字。
             notCheckable=true,
             func= function()
+                StaticPopupDialogs[id..addName..'CHANNEL']={--设置,内容,频道, 邀请,事件
+                    text=id..' '..addName..' '..(e.onlyChinese and '频道' or CHANNEL)..'\n\n'..(e.onlyChinese and '关键词' or KBASE_DEFAULT_SEARCH_TEXT),
+                    whileDead=1,
+                    hideOnEscape=1,
+                    exclusive=1,
+                    timeout = 60,
+                    hasEditBox=1,
+                    button1= e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/',''),
+                    button2=CANCEL,
+                    OnShow = function(self2, data)
+                        self2.editBox:SetText(Save.ChannelText or (e.Player.cn and '1' or 'inv'))
+                        --self.button3:SetEnabled(Save.Mounts[FLOOR][data.spellID] and true or false)
+                    end,
+                    OnAccept = function(self2, data)
+                        Save.ChannelText = string.upper(self.editBox:GetText())
+                        print(id, addName, e.onlyChinese and '频道' or CHANNEL,'|cnGREEN_FONT_COLOR:'..Save.ChannelText..'|r')
+                    end,
+                    EditBoxOnTextChanged=function(self2, data)
+                        local text= self2:GetText()
+                        text=text:gsub(' ','')
+                        self2:GetParent().button1:SetEnabled(text~='')
+                    end,
+                    EditBoxOnEscapePressed = function(s)
+                        s:GetParent():Hide()
+                    end,
+                }
                 StaticPopup_Show(id..addName..'CHANNEL')
             end
         }
         UIDropDownMenu_AddButton(info, level)
+        return
 
-    else
-        info={
-            text=e.Icon.left..(e.onlyChinese and '邀请成员' or GUILDCONTROL_OPTION7),
+    elseif type=='FRAMEFUNC' then--日标框, 向上:密语, 向下:跟随
+        info= {
+            text= e.onlyChinese and '鼠标滚轮向上滚动: 密语' or (KEY_MOUSEWHEELUP..": "..SLASH_TEXTTOSPEECH_WHISPER),
+            icon= 'bags-greenarrow',
             notCheckable=true,
-            menuList='InvUnit',
-            func=InvUnitFunc,--邀请，周围玩家
-            tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and '邀请周围玩家' or (INVITE..e.Icon.left..SPELL_RANGE_AREA:gsub(SPELL_TARGET_CENTER_CASTER,'')),
-            hasArrow=true,
-            colorCode=not getLeader() and '|cff606060',
+            isTitle=true,
+        }
+        UIDropDownMenu_AddButton(info, level)
+        info= {
+            text= e.onlyChinese and'鼠标滚轮向下滚动: 跟随' or (KEY_MOUSEWHEELDOWN..': '..FOLLOW),
+            icon= 'UI-HUD-MicroMenu-StreamDLRed-Up',
+            notCheckable=true,
+            isTitle=true,
         }
         UIDropDownMenu_AddButton(info, level)
         UIDropDownMenu_AddSeparator(level)
-        info = {
-            text= e.onlyChinese and '接受邀请' or CALENDAR_ACCEPT_INVITATION,
+        local tab = {
+            'Target',
+            'Party1',
+            'Party2',
+            'Party3',
+            'Party4',
+        }
+        for _, unit in pairs(tab) do
+            info={
+                text= unit,
+                disabled= UnitAffectingCombat('player'),
+                checked= Save.frameList[unit],
+                arg1=unit,
+                func= function(self2, arg1)
+                    Save.frameList[arg1]= not Save.frameList[arg1] and true or nil
+                    set_Frame_Fun()
+                end,
+            }
+            UIDropDownMenu_AddButton(info, level)
+        end
+        UIDropDownMenu_AddSeparator(level)
+        info= {
+            text=  e.onlyChinese and '仅限系统(玩家)\n' or (LFG_LIST_CROSS_FACTION:format(SYSTEM..' ('..PLAYER..')')),
             notCheckable=true,
-            menuList='ACEINVITE',
-            hasArrow=true,
+            isTitle=true,
+        }
+        UIDropDownMenu_AddButton(info, level)
+
+        info= {
+            text= e.onlyChinese and'友情提示: 可能会出现错误' or ('note: '..ENABLE_ERROR_SPEECH),
+            colorCode= '|cffff0000',
+            notCheckable=true,
+            isTitle=true,
+        }
+        UIDropDownMenu_AddButton(info, level)
+        return
+
+    elseif type=='FOCUSKEY' then
+        info= {
+            text= (Save.focusKey or 'Shift')..' + '..e.Icon.left..' + '..(e.onlyChinese and '空' or EMPTY)..' = '..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
+            notCheckable=true,
+            isTitle=true,
         }
         UIDropDownMenu_AddButton(info, level)
         UIDropDownMenu_AddSeparator(level)
-        info = {
-            text= e.onlyChinese and '拒绝邀请' or GUILD_INVITE_DECLINE,
+        local tab={
+            'Shift',
+            'Ctrl',
+            'Alt',
+        }
+        for _, key in pairs(tab) do
+            info={
+                text= key..' + '.. e.Icon.left,
+                checked= Save.focusKey== key,
+                disabled= UnitAffectingCombat('player') or Save.focusKey== key,
+                arg1= key,
+                func= function(_, arg1)
+                    Save.focusKey= arg1
+                    set_Shift_Click_focurs()--Shift+点击设置焦点
+                    print(id,addName, '|cnGREEN_FONT_COLOR:'..Save.focusKey..' + |r'..e.Icon.left, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end,
+            }
+            UIDropDownMenu_AddButton(info, level)
+        end
+        UIDropDownMenu_AddSeparator(level)
+        info= {
+            text= (e.onlyChinese and '仅限系统' or LFG_LIST_CROSS_FACTION:format(SYSTEM)),
             notCheckable=true,
-            menuList='NoInv',
-            hasArrow=true,
-            tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and ('拒绝 '..Save.InvNoFriendNum..' 次') or (DECLINE..' '..format(ITEM_SPELL_CHARGES, Save.InvNoFriendNum))
+            isTitle=true,
         }
         UIDropDownMenu_AddButton(info, level)
+        info= {
+            text= e.onlyChinese and'友情提示: 可能会出现错误' or ('note: '..ENABLE_ERROR_SPEECH),
+            colorCode= '|cffff0000',
+            notCheckable=true,
+            isTitle=true,
+        }
+        UIDropDownMenu_AddButton(info, level)
+        return
     end
+
+    info={
+        text=e.Icon.left..(e.onlyChinese and '邀请成员' or GUILDCONTROL_OPTION7),
+        notCheckable=true,
+        menuList='InvUnit',
+        func=InvUnitFunc,--邀请，周围玩家
+        tooltipOnButton=true,
+        tooltipTitle= e.onlyChinese and '邀请周围玩家' or (INVITE..e.Icon.left..SPELL_RANGE_AREA:gsub(SPELL_TARGET_CENTER_CASTER,'')),
+        hasArrow=true,
+        colorCode=not getLeader() and '|cff606060',
+    }
+    UIDropDownMenu_AddButton(info, level)
+    info = {
+        text= e.Icon.select2..(e.onlyChinese and '接受邀请' or CALENDAR_ACCEPT_INVITATION),
+        notCheckable=true,
+        menuList='ACEINVITE',
+        hasArrow=true,
+    }
+    UIDropDownMenu_AddButton(info, level)
+
+    info = {
+        text= e.Icon.O2..(e.onlyChinese and '拒绝邀请' or GUILD_INVITE_DECLINE),
+        notCheckable=true,
+        menuList='NoInv',
+        hasArrow=true,
+        tooltipOnButton=true,
+        tooltipTitle= e.onlyChinese and ('拒绝 '..Save.InvNoFriendNum..' 次') or (DECLINE..' '..format(ITEM_SPELL_CHARGES, Save.InvNoFriendNum))
+    }
+    UIDropDownMenu_AddButton(info, level)
+    UIDropDownMenu_AddSeparator(level)
+
+    local num= 0
+    for _,_ in pairs(Save.frameList) do
+        num=num+1
+    end
+    info={
+        text= e.Icon.mid..(e.onlyChinese and '密语/跟随' or (SLASH_TEXTTOSPEECH_WHISPER..'/'..FOLLOW)).. '|cnGREEN_FONT_COLOR:'..num..'|r',
+        disabled= UnitAffectingCombat('player'),
+        colorCode= num==0 and '|cff606060',
+        checked= Save.setFrameFun,
+        hasArrow=true,
+        menuList='FRAMEFUNC',
+        func=function()
+            Save.setFrameFun= not Save.setFrameFun and true or nil
+            set_Frame_Fun()--日标框, 向上:密语, 向下:跟随
+        end
+    }
+    UIDropDownMenu_AddButton(info, level)
+
+
+    info={
+        text= e.Icon.left..(e.onlyChinese and '焦点' or HUD_EDIT_MODE_FOCUS_FRAME_LABEL)..'|cnGREEN_FONT_COLOR:'..Save.focusKey..'|r',
+        checked= Save.setFucus,
+        disabled= UnitAffectingCombat('player'),
+        hasArrow=true,
+        menuList='FOCUSKEY',
+        func= function()
+            Save.setFucus= not Save.setFucus and true or nil
+            set_Shift_Click_focurs()--Shift+点击设置焦点
+            if Save.setFucus then
+                print(id,addName, '|cnGREEN_FONT_COLOR:\nPlayerFrame','PetFrame','Party1','Party2','Party3','Party4','TargetFrame','TargetFrameToT','Boss1TargetFrame','Boss2TargetFrame','Boss3TargetFrame','Boss4TargetFrame','Boss5TargetFrame', 'FocusFrameToT')
+            end
+           --print(id,addName, e.GetEnabeleDisable(Save.setFucus), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end,
+    }
+    UIDropDownMenu_AddButton(info, level)
 end
 
 --####
@@ -742,21 +803,6 @@ local function Init()
     set_event_PLAYER_UPDATE_RESTING()--设置, 休息区提示事件
     set_Chanell_Event()--设置,内容,频道, 邀请,事件
 
-    --[[LFGListInviteDialog:SetScript("OnHide", function(self)--LFG,,自动接受邀请
-        if self.LFGListInviteDialogTimer then
-            self.LFGListInviteDialogTimer:Cancel()
-        end
-    end)
-    --LFGListInviteDialog:SetScript("OnShow", set_LFGListInviteDialog)--队伍查找器, 自动接受邀请
-
-    --hooksecurefunc("LFGListApplicationViewer_UpdateApplicantMember", set_LFGListApplicationViewer_UpdateApplicantMember)--自动清邀请, 队伍查找器, LFGList.lua
-
-    StaticPopup1:SetScript('OnHide', function(self)--被邀请, 对话框, 取消记时器
-        if self.InvTimer then
-            self.InvTimer:Cancel()
-        end
-        notInviterGUID=nil
-    end)]]
 
     StaticPopupDialogs["PARTY_INVITE"].button3= '|cff00ff00'..ALWAYS..'|r'..DECLINE..'|r'--添加总是拒绝按钮
     StaticPopupDialogs["PARTY_INVITE"].OnAlt=function()
@@ -799,6 +845,18 @@ local function Init()
     hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"],"OnCancel",function(self)
         if button.SummonTimer then button.SummonTimer:Cancel() end
     end)
+
+
+    if UnitAffectingCombat('player') and (Save.setFrameFun or Save.setFucus) then
+        panel:RegisterEvent('PLAYER_REGEN_ENABLED')
+    else
+        if Save.setFrameFun then
+            set_Frame_Fun()--日标框, 向上:密语, 向下:跟随
+        end
+        if Save.setFucus then
+            set_Shift_Click_focurs()--Shift+点击设置焦点
+        end
+    end
 end
 
 --###########
@@ -812,6 +870,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, ...)
         if arg1==id then
             if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
                 Save= WoWToolsSave[addName] or Save
+                Save.frameList= Save.frameList or {['Target']=true, ['Party1']=true, ['Party2']=true, ['Party3']=true, ['Party4']=true}--框架, 向上:密语, 向下:跟随
+                Save.focusKey= Save.focusKey or 'Shift'--焦点
 
                 button=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
                 Init()
@@ -822,8 +882,11 @@ panel:SetScript("OnEvent", function(self, event, arg1, ...)
                 panel:RegisterEvent('PARTY_INVITE_REQUEST')
                 panel:RegisterEvent('PLAYER_UPDATE_RESTING')----休息区提示
                 panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+
+                panel:UnregisterEvent('ADDON_LOADED')
+            else
+                panel:UnregisterAllEvents()
             end
-            panel:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event == "PLAYER_LOGOUT" then
@@ -870,5 +933,14 @@ panel:SetScript("OnEvent", function(self, event, arg1, ...)
                 end
             end
         end
+
+    elseif event=='PLAYER_REGEN_ENABLED' then
+        if Save.setFrameFun then
+            set_Frame_Fun()--日标框, 向上:密语, 向下:跟随
+        end
+        if Save.setFucus then
+            set_Shift_Click_focurs()--Shift+点击设置焦点
+        end
+        panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
     end
 end)

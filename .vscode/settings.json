@@ -2548,7 +2548,9 @@
         "FocusFrame",
         "EMPTY",
         "HUD_EDIT_MODE_TARGET_FRAME_LABEL",
-        "MainMenuBarMicroButtonMixin"
+        "MainMenuBarMicroButtonMixin",
+        "FOCUS",
+        "HUD_EDIT_MODE_FOCUS_FRAME_LABEL"
     ],
     "Lua.diagnostics.disable": [
     ]
