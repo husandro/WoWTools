@@ -496,6 +496,7 @@ local function Init()
     end)
 
 
+    --Blizzard_Calendar.lua
     local menu=CreateFrame("Frame", id..addName..'CalendarCreateEventFrameMenu', CalendarCreateEventFrame, "UIDropDownMenuTemplate")
     menu:SetPoint('BOTTOMLEFT', CalendarCreateEventFrame, 'BOTTOMRIGHT', 0,20)
     securecall('UIDropDownMenu_SetWidth', menu, 60)
