@@ -391,7 +391,7 @@ local function Init()
         e.tips:AddLine(' ')
         local version, build, date, tocversion, localizedVersion, buildType = GetBuildInfo()
         e.tips:AddLine((e.onlyChinese and '版本' or GAME_VERSION_LABEL).. ' '..version..' '..build..' |cffffffff(|r'..date..'|cffffffff)|r')
-        e.tips:AddLine((e.onlyChinese and '当前' or REFORGE_CURRENT)..' '..localizedVersion..' |cffffffff(|r'..tocversion..'|cffffffff)|r '..buildType)
+        e.tips:AddLine((e.onlyChinese and '当前' or REFORGE_CURRENT)..' '..(localizedVersion or '')..' |cffffffff(|r'..tocversion..'|cffffffff)|r '..(buildType or ''))
         e.tips:Show()
     end)
 end
