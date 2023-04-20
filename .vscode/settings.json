@@ -2565,7 +2565,8 @@
         "CalendarMassInviteFrame",
         "CalendarViewEventFrame",
         "CalendarViewRaidFrame",
-        "CalendarClassButton1"
+        "CalendarClassButton1",
+        "ERR_FRIEND_ONLINE_SS"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
