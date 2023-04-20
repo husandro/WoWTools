@@ -383,6 +383,17 @@ local function Init()
     if Save.equipmetLevel or Save.durabiliy then--设置装等,耐久度,事件
         set_Durabiliy_EquipLevel_Event()
     end
+
+    --#########
+    --添加版本号
+    --MainMenuBar.lua
+    hooksecurefunc('MainMenuBarPerformanceBarFrame_OnEnter', function(self)
+        e.tips:AddLine(' ')
+        local version, build, date, tocversion, localizedVersion, buildType = GetBuildInfo()
+        e.tips:AddLine((e.onlyChinese and '版本' or GAME_VERSION_LABEL).. ' '..version..' '..build..' |cffffffff(|r'..date..'|cffffffff)|r')
+        e.tips:AddLine((e.onlyChinese and '当前' or REFORGE_CURRENT)..' '..localizedVersion..' |cffffffff(|r'..tocversion..'|cffffffff)|r '..buildType)
+        e.tips:Show()
+    end)
 end
 
 button:RegisterEvent("ADDON_LOADED")
@@ -444,3 +455,5 @@ button:SetScript("OnEvent", function(self, event, arg1)
         end
     end
 end)
+
+
