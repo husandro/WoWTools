@@ -1355,6 +1355,8 @@ local function set_Alpha_Event(arg1)
                 frame:DisableDrawLayer('BACKGROUND')
             end
         end
+        setAlpha(CalendarCreateEventFrame.Border.Bg)
+
 
     elseif arg1=='Blizzard_FlightMap' then--飞行地图
         setAlpha(FlightMapFrame.BorderFrame.NineSlice.TopLeftCorner)

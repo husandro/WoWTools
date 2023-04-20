@@ -2564,7 +2564,8 @@
         "CalendarTexturePickerFrame",
         "CalendarMassInviteFrame",
         "CalendarViewEventFrame",
-        "CalendarViewRaidFrame"
+        "CalendarViewRaidFrame",
+        "CalendarClassButton1"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
