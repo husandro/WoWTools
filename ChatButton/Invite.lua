@@ -170,8 +170,7 @@ local function set_PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNati
     if not inviterGUID or not name then
         return
     end
-    local F=StaticPopup1
-    if not F or not F:IsShown() then
+    if not StaticPopup1 or not StaticPopup1:IsShown() then
         return
     end
     --local tex=StaticPopup1Text  
@@ -185,29 +184,29 @@ local function set_PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNati
             questSessionActive and (e.onlyChinese and '场景战役' or SCENARIOS) or '',--场景战役
             isNativeRealm and '|cnGREEN_FONT_COLOR:'..format(e.onlyChinese and '%s其它服务器' or INVITATION_XREALM, e.PlayerLink(nil, inviterGUID)) or e.PlayerLink(nil, inviterGUID)--转服务器
         )
-        e.Ccool(F, nil, sec, nil, true, true, nil)--冷却条    
+        e.Ccool(StaticPopup1, nil, sec, nil, true, true, nil)--冷却条    
     end
 
     local friend=e.GetFriend(name, inviterGUID)
     if friend then--好友
         if not Save.FriendAceInvite then
-            e.Ccool(F, nil, STATICPOPUP_TIMEOUT, nil, true, true, nil)--冷却条  
+            e.Ccool(StaticPopup1, nil, STATICPOPUP_TIMEOUT, nil, true, true, nil)--冷却条  
             return
         end
         local sec=isInLFG() and 10 or 3--是否有FB, 排除中
         setPrint(sec, '|cnGREEN_FONT_COLOR:'..ACCEPT..'|r'..FRIENDS)
-        if F.InvTimer then F.InvTimer:Cancel() end
-        F.InvTimer = C_Timer.NewTimer(sec, function()
+        if StaticPopup1.InvTimer then StaticPopup1.InvTimer:Cancel() end
+        StaticPopup1.InvTimer = C_Timer.NewTimer(sec, function()
                 AcceptGroup()
                 StaticPopup_Hide("PARTY_INVITE")
         end)
 
     elseif Save.InvNoFriend[inviterGUID] then--拒绝
         setPrint(3, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '拒绝' or DECLINE)..'|r'..Save.InvNoFriend[inviterGUID]..'/'..Save.InvNoFriendNum)
-        F.button3:SetText('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r'..(e.onlyChinese and '接受' or ACCEPT))
+        StaticPopup1.button3:SetText('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r'..(e.onlyChinese and '接受' or ACCEPT))
         notInviterGUID=inviterGUID
-        if F.InvTimer then F.InvTimer:Cancel() end
-        F.InvTimer = C_Timer.NewTimer(3, function()
+        if StaticPopup1.InvTimer then StaticPopup1.InvTimer:Cancel() end
+        StaticPopup1.InvTimer = C_Timer.NewTimer(3, function()
             DeclineGroup()
             StaticPopup_Hide("PARTY_INVITE")
             Save.InvNoFriendNum=Save.InvNoFriendNum+1
@@ -217,20 +216,20 @@ local function set_PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNati
     elseif IsResting() and Save.NoInvInResting and not questSessionActive then--休息区不组队
         setPrint(3, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '' or DECLINE)..'|r'..(e.onlyChinese and '休息区' or (CALENDAR_STATUS_OUT..ZONE)))
 
-        F.button3:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r'..(e.onlyChinese and '拒绝' or DECLINE))
+        StaticPopup1.button3:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r'..(e.onlyChinese and '拒绝' or DECLINE))
         notInviterGUID=inviterGUID
-        if F.InvTimer then F.InvTimer:Cancel() end
-        F.InvTimer = C_Timer.NewTimer(3, function()
+        if StaticPopup1.InvTimer then StaticPopup1.InvTimer:Cancel() end
+        StaticPopup1.InvTimer = C_Timer.NewTimer(3, function()
             DeclineGroup()
             StaticPopup_Hide("PARTY_INVITE")
             Save.InvNoFriendNum=Save.InvNoFriendNum+1
         end)
 
     else--添加 拒绝 陌生人
-        F.button3:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r'..(e.onlyChinese and '拒绝' or DECLINE))
+        StaticPopup1.button3:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r'..(e.onlyChinese and '拒绝' or DECLINE))
         notInviterGUID=inviterGUID
 
-        e.Ccool(F, nil, STATICPOPUP_TIMEOUT, nil, true, true, nil)--冷却条
+        e.Ccool(StaticPopup1, nil, STATICPOPUP_TIMEOUT, nil, true, true, nil)--冷却条
     end
 end
 
@@ -804,12 +803,12 @@ local function Init()
     set_Chanell_Event()--设置,内容,频道, 邀请,事件
 
 
-    StaticPopupDialogs["PARTY_INVITE"].button3= '|cff00ff00'..ALWAYS..'|r'..DECLINE..'|r'--添加总是拒绝按钮
+    StaticPopupDialogs["PARTY_INVITE"].button3= '|cff00ff00'..(e.onlyChinese and '总是' or ALWAYS)..'|r'..(e.onlyChinese and '拒绝' or DECLINE)..'|r'--添加总是拒绝按钮
     StaticPopupDialogs["PARTY_INVITE"].OnAlt=function()
         if notInviterGUID then
             if Save.InvNoFriend[notInviterGUID] then
                 Save.InvNoFriend[notInviterGUID] =nil
-                print(id, addName, '|cnRED_FONT_COLOR:'..REMOVE..'|r', e.PlayerLink(nil, notInviterGUID) or '', '|cnRED_FONT_COLOR:'..DECLINE..'|r'..INVITE)
+                print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', e.PlayerLink(nil, notInviterGUID) or '', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '拒绝' or DECLINE)..'|r'..(e.onlyChinese and '邀请' or INVITE))
                 AcceptGroup()
                 StaticPopup_Hide("PARTY_INVITE")
             else
@@ -817,7 +816,7 @@ local function Init()
                 Save.InvNoFriendNum=Save.InvNoFriendNum+1
                 DeclineGroup()
                 StaticPopup_Hide("PARTY_INVITE")
-                print(id,addName, '|cnGREEN_FONT_COLOR:'..ADD..'|r', e.PlayerLink(nil, notInviterGUID) or '', '|cnRED_FONT_COLOR:'..DECLINE..'|r'..INVITE)
+                print(id,addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r', e.PlayerLink(nil, notInviterGUID) or '', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '拒绝' or DECLINE)..'|r'..(e.onlyChinese and '邀请' or INVITE))
             end
         end
     end
