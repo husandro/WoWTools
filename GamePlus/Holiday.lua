@@ -106,9 +106,14 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
     local events = {};
 	for i = 1, numEvents do
 		local event = C_Calendar.GetDayEvent(monthOffset, day, i);
-		if event and (not Save.onGoing or (Save.onGoing and (event.sequenceType == "ONGOING" or _CalendarFrame_IsPlayerCreatedEvent(event.calendarType)))) then
-			tinsert(events, event);
-		end
+        if event then
+            if _CalendarFrame_IsPlayerCreatedEvent(event.calendarType)
+                or info2.monthDay~=day
+                or (Save.onGoing and event.sequenceType == "ONGOING" or not Save.onGoing)
+            then
+                tinsert(events, event);
+            end
+        end
 	end
 	table.sort(events, function(a, b)
 		if ((a.sequenceType == "ONGOING") ~= (b.sequenceType == "ONGOING")) then
@@ -458,12 +463,10 @@ local function Init()
     local function calendar_Uptate()
         local indexInfo = C_Calendar.GetEventIndex()
         local info= indexInfo and C_Calendar.GetDayEvent(indexInfo.offsetMonths, indexInfo.monthDay, indexInfo.eventIndex)
-        local text, texture
+        local text
         if info and info.eventID then
-            texture= info.iconTexture
-
-            text= (info.iconTexture and '|T'..info.iconTexture..':22|t'..info.iconTexture or '')
-                ..'\neventID '..info.eventID
+            text= (info.iconTexture and '|T'..info.iconTexture..':0|t'..info.iconTexture or '')
+                ..'  eventID '..info.eventID
                 ..(info.title and '\n'..info.title or '')
         end
         if text and not CalendarViewHolidayFrame.Text then
