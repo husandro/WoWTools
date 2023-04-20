@@ -395,7 +395,7 @@ local function Init()
         set_Item_Button()
     end
 
-    button.Menu=CreateFrame("Frame",nil, button, "UIDropDownMenuTemplate")
+    button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
     button:RegisterForDrag("RightButton")

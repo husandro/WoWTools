@@ -228,7 +228,7 @@ local function Init()
         ResetCursor()
     end)
 
-    button.Menu=CreateFrame("Frame",nil, button, "UIDropDownMenuTemplate")
+    button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
     setButtons()--设置按钮

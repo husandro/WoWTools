@@ -313,7 +313,7 @@ end
 --对话，初始化
 --###########
 local function Init_Gossip()
-    panel.MenuGossip=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
+    panel.MenuGossip=CreateFrame("Frame", id..addName..'MenuGossip', panel, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(panel.MenuGossip, InitMenu_Gossip, 'MENU')
 
     --panel:SetFrameStrata('HIGH')
@@ -773,7 +773,7 @@ end
 --任务，初始化
 --###########
 local function Init_Quest()
-    questPanel.MenuQest=CreateFrame("Frame",nil, questPanel, "UIDropDownMenuTemplate")
+    questPanel.MenuQest=CreateFrame("Frame", id..addName..'MenuQest', questPanel, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(questPanel.MenuQest, InitMenu_Quest, 'MENU')
 
     questPanel:SetPoint('RIGHT', panel, 'LEFT')

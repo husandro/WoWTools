@@ -644,7 +644,7 @@ local function Init()
 
 	--set_RegisterEvent_CHAT_MSG_COMBAT_FACTION_CHANGE()--更新, 提示, 事件
 
-	panel.Menu=CreateFrame("Frame",nil, panel, "UIDropDownMenuTemplate")
+	panel.Menu=CreateFrame("Frame", id..addName..'Menu', panel, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
 
 	panel:SetPoint("LEFT", ReputationFrameStandingLabel, 'RIGHT',5,0)

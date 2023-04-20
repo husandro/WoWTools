@@ -190,7 +190,7 @@ local function Init()
     setAutoClearRegisterEvent()--注册自动清除事件
 
     button.texture:SetTexture('Interface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47')
-    button.Menu=CreateFrame("Frame",nil, button, "UIDropDownMenuTemplate")
+    button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
     button:SetScript('OnMouseDown',function(self, d)

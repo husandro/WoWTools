@@ -276,7 +276,7 @@ local function Init()
         button:SetAttribute(type.."-item1",  C_Item.GetItemNameByID(itemID) or itemID)
     end
 
-    button.Menu=CreateFrame("Frame",nil, button, "UIDropDownMenuTemplate")
+    button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
     button:SetScript("OnEnter",function(self)

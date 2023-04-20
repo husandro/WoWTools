@@ -198,7 +198,7 @@ local function set_Button()
         button.count= e.Cstr(button, {size=32, color={r=1,g=1,b=1}, justifyH='CENTER'})--32, nil, nil, {1,1,1}, nil, 'CENTER')
         button.count:SetPoint('CENTER')
 
-        button.Menu=CreateFrame("Frame",nil, button, "UIDropDownMenuTemplate")
+        button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
         UIDropDownMenu_Initialize(button.Menu, Init_Menu, 'MENU')
     end
 

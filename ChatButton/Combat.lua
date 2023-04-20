@@ -505,7 +505,7 @@ local function Init()
     button.texture2:SetColorTexture(1,0,0)
     button.texture2:SetShown(false)
 
-    button.Menu=CreateFrame("Frame",nil, button, "UIDropDownMenuTemplate")--菜单框架
+    button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")--菜单框架
     UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
     button:SetScript('OnMouseDown', function(self, d)

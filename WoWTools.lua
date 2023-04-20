@@ -756,6 +756,7 @@ e.GetSpellCooldown = function(spellID)--法术冷却
     return ''
 end
 ]]
+
 e.Cbtn2= function(name, parent, showTexture, rightClick)
     local button= CreateFrame("Button", name, parent or UIParent, "SecureActionButtonTemplate")
     local size= e.toolsFrame.size

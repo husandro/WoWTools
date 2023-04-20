@@ -943,7 +943,7 @@ local function Init()
 
     setButtonSize()--设置按钮大小
 
-    button.Menu=CreateFrame("Frame",nil, button, "UIDropDownMenuTemplate")
+    button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
     XDInt()--德鲁伊设置
     checkSpell()--检测法术
@@ -1102,8 +1102,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             check:SetScript('OnEnter', function (self2)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
+                e.tips:AddDoubleLine(e.onlyChinese and '友情提示:' or 'note: ', e.onlyChinese and '可能会出现' or ENABLE_ERROR_SPEECH)
                 e.tips:AddDoubleLine(e.onlyChinese and '编辑模式' or HUD_EDIT_MODE_MENU, e.onlyChinese and '错误' or ERRORS, 1,0,0, 1,0,0)
-                e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(e.onlyChinese and '物品升级界面' or (ITEM_UPGRADE..' UI'), e.onlyChinese and '错误' or ERRORS, 1,0,0,1,0,0)
                 e.tips:AddDoubleLine(e.onlyChinese and '预创建队伍' or LFGLIST_NAME, e.onlyChinese and '错误' or ERRORS, 1,0,0, 1,0,0)
                 e.tips:AddDoubleLine(e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON, e.onlyChinese and '错误' or ERRORS, 1,0,0, 1,0,0)

@@ -1106,7 +1106,7 @@ local function Init()
     button:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
     WoWToolsChatButtonFrame.last=button
 
-    button.Menu= CreateFrame("Frame",nil, LFDMicroButton, "UIDropDownMenuTemplate")--菜单列表
+    button.Menu= CreateFrame("Frame", id..addName..'Menu', LFDMicroButton, "UIDropDownMenuTemplate")--菜单列表
     UIDropDownMenu_Initialize(button.Menu, InitList, "MENU")
 
     button:SetScript('OnMouseDown', function(self, d)

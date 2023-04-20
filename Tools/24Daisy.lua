@@ -128,7 +128,7 @@ local function Init()
     end
 
     e.ToolsSetButtonPoint(button)--设置位置
-    button.Menu=CreateFrame("Frame",nil, button, "UIDropDownMenuTemplate")
+    button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
     button:SetScript('OnMouseDown', function(self, d)

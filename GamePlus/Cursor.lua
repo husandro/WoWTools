@@ -352,7 +352,7 @@ local function Init_Cursor_Options()
     end})
     alphaSlider:SetPoint("TOPLEFT", sliderGravity, 'BOTTOMLEFT', 0, -20)
 
-    local dropDown = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")--下拉，菜单
+    local dropDown = CreateFrame("FRAME",  id..addName..'Menu', panel, "UIDropDownMenuTemplate")--下拉，菜单
     local delColorButton= e.Cbtn(panel, {icon='hide', size={20,20}})--删除, 按钮
     local addColorEdit= CreateFrame("EditBox", nil, panel, 'InputBoxTemplate')--EditBox
     local addColorButton= e.Cbtn(panel, {icon='hide', size={20,20}})--添加, 按钮
@@ -907,6 +907,7 @@ local function Init()
     panel.cursorCheck:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.onlyChinese and '友情提示:' or 'note: ', e.onlyChinese and '可能会出现' or ENABLE_ERROR_SPEECH)
         e.tips:AddDoubleLine(e.onlyChinese and '物品升级界面' or (ITEM_UPGRADE..' UI'), e.onlyChinese and '错误' or ERRORS, 1,0,0,1,0,0)
         e.tips:AddDoubleLine(e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON, e.onlyChinese and '错误' or ERRORS, 1,0,0, 1,0,0)
         e.tips:Show()
@@ -932,6 +933,7 @@ local function Init()
     panel.gcdCheck:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.onlyChinese and '友情提示:' or 'note: ', e.onlyChinese and '可能会出现' or ENABLE_ERROR_SPEECH)
         e.tips:AddDoubleLine(e.onlyChinese and '物品升级界面' or (ITEM_UPGRADE..' UI'), e.onlyChinese and '错误' or ERRORS, 1,0,0,1,0,0)
         e.tips:AddDoubleLine(e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON, e.onlyChinese and '错误' or ERRORS, 1,0,0, 1,0,0)
         e.tips:Show()

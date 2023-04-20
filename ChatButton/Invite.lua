@@ -658,7 +658,7 @@ local function InitList(self, level, type)
         UIDropDownMenu_AddButton(info, level)
 
         info= {
-            text= e.onlyChinese and'友情提示: 可能会出现错误' or ('note: '..ENABLE_ERROR_SPEECH),
+            text= e.onlyChinese and '友情提示: 可能会出现错误' or ('note: '..ENABLE_ERROR_SPEECH),
             colorCode= '|cffff0000',
             notCheckable=true,
             isTitle=true,
@@ -787,7 +787,7 @@ local function Init()
     button.texture:SetAtlas('communities-icon-addgroupplus')
     --setTexture()--设置图标颜色, 是否有权限
 
-    button.Menu= CreateFrame("Frame",nil, LFDMicroButton, "UIDropDownMenuTemplate")--菜单列表
+    button.Menu= CreateFrame("Frame", id..addName..'Menu', LFDMicroButton, "UIDropDownMenuTemplate")--菜单列表
     UIDropDownMenu_Initialize(button.Menu, InitList, "MENU")
 
     button:SetScript('OnMouseDown', function(self, d)

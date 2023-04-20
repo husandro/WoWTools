@@ -519,7 +519,7 @@ local function Init()
         button:SetSize(e.toolsFrame.size, e.toolsFrame.size)
     end
 
-    button.Menu=CreateFrame("Frame",nil, button, "UIDropDownMenuTemplate")--菜单列表
+    button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")--菜单列表
 
     button.count=e.Cstr(button, {size=10, color=true})--10, nil, nil, true)
     button.count:SetPoint('BOTTOM',0,2)

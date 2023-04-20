@@ -942,7 +942,7 @@ local function Init()--冒险指南界面
         }
         UIDropDownMenu_AddButton(info, level)
     end
-    EncounterJournal.encounter.LootSpecMenu=CreateFrame("Frame",nil, EncounterJournal.encounter, "UIDropDownMenuTemplate")
+    EncounterJournal.encounter.LootSpecMenu=CreateFrame("Frame", id..addName..'Menu', EncounterJournal.encounter, "UIDropDownMenuTemplate")
     UIDropDownMenu_Initialize(EncounterJournal.encounter.LootSpecMenu, set_Loot_Spec_Menu_Init, 'MENU')
 
 
