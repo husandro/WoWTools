@@ -448,29 +448,98 @@ local function Init()
     end)
 
     panel.Menu=CreateFrame("Frame", id..addName..'Menu', panel, "UIDropDownMenuTemplate")
-    UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
+    securecall('UIDropDownMenu_Initialize', panel.Menu, InitMenu, 'MENU')
 
     set_event()
     Text_Settings()--设置Text
 
-    hooksecurefunc('CalendarViewHolidayFrame_Update', function()
-        local indexInfo = C_Calendar.GetEventIndex();
-        if(indexInfo) then
-            local holidayInfo = C_Calendar.GetHolidayInfo(indexInfo.offsetMonths, indexInfo.monthDay, indexInfo.eventIndex);
-            local info= C_Calendar.GetDayEvent(indexInfo.offsetMonths, indexInfo.monthDay, indexInfo.eventIndex)
+    local function calendar_Uptate()
+        local indexInfo = C_Calendar.GetEventIndex()
+        local info= indexInfo and C_Calendar.GetDayEvent(indexInfo.offsetMonths, indexInfo.monthDay, indexInfo.eventIndex)
+        local text, texture
+        if info and info.eventID then
+            texture= info.iconTexture
 
-            if (holidayInfo and info and info.eventID) then
-                local description = holidayInfo.description;
-                if (holidayInfo.startTime and holidayInfo.endTime) then
-                    description = format(CALENDAR_HOLIDAYFRAME_BEGINSENDS, description, FormatShortDate(holidayInfo.startTime.monthDay, holidayInfo.startTime.month), GameTime_GetFormattedTime(holidayInfo.startTime.hour, holidayInfo.startTime.minute, true), FormatShortDate(holidayInfo.endTime.monthDay, holidayInfo.endTime.month), GameTime_GetFormattedTime(holidayInfo.endTime.hour, holidayInfo.endTime.minute, true));
+            text= (info.iconTexture and '|T'..info.iconTexture..':22|t'..info.iconTexture or '')
+                ..'\neventID '..info.eventID
+                ..(info.title and '\n'..info.title or '')
+        end
+        if text and not CalendarViewHolidayFrame.Text then
+            CalendarViewHolidayFrame.Text= e.Cstr(CalendarViewHolidayFrame)
+            CalendarViewHolidayFrame.Text:SetPoint('BOTTOMLEFT',12,12)
+            CalendarViewHolidayFrame.Texture2=CalendarViewHolidayFrame:CreateTexture()
+            local w,h= CalendarViewHolidayFrame:GetSize()
+            CalendarViewHolidayFrame.Texture2:SetSize(w-70, h-70)
+            CalendarViewHolidayFrame.Texture2:SetPoint('CENTER',40,-40)
+            CalendarViewHolidayFrame.Texture2:SetAlpha(0.5)
+        end
+        if CalendarViewHolidayFrame.Text then
+            CalendarViewHolidayFrame.Text:SetText(text or '')
+            CalendarViewHolidayFrame.Texture2:SetTexture(info.iconTexture or 0)
+        end
+    end
+    if CalendarViewHolidayFrame.update then
+        hooksecurefunc(CalendarViewHolidayFrame, 'update', calendar_Uptate)--提示节目ID
+    end
+    hooksecurefunc('CalendarViewHolidayFrame_Update', calendar_Uptate)
+
+    hooksecurefunc('CalendarCreateEventInviteListScrollFrame_Update', function()
+        local namesReady = C_Calendar.AreNamesReady();
+        if namesReady then
+            for index, button in pairs(CalendarCreateEventInviteList.ScrollBox:GetFrames()) do--ScrollBox.lua
+                local inviteInfo = C_Calendar.EventGetInvite(index)
+                if inviteInfo and inviteInfo.guid then
+                   button.Class:SetText(e.GetPlayerInfo(nil, inviteInfo.guid))
+                end
+            end
+        end
+    end)
+
+
+    local menu=CreateFrame("Frame", id..addName..'CalendarCreateEventFrameMenu', CalendarCreateEventFrame, "UIDropDownMenuTemplate")
+    menu:SetPoint('BOTTOMLEFT', CalendarCreateEventFrame, 'BOTTOMRIGHT', 0,20)
+    securecall('UIDropDownMenu_SetWidth', menu, 60)
+    securecall('UIDropDownMenu_SetText', menu, e.onlyChinese and '好友' or FRIEND)
+    securecall('UIDropDownMenu_Initialize', menu, function(self, level, type)
+        local map=e.GetUnitMapName('player');--玩家区域名称
+        local inviteTab={}
+        for index = 1, C_Calendar.GetNumInvites() do
+			local inviteInfo = C_Calendar.EventGetInvite(index);
+			if inviteInfo and inviteInfo.name then
+				inviteTab[inviteInfo.name]= true
+			end
+		end
+        for i=1 , C_FriendList.GetNumFriends() do
+            local game=C_FriendList.GetFriendInfoByIndex(i)
+            if game and (game.guid or game.name) then--and not game.afk and not game.dnd then 
+                if not game.name and game.guid then
+                    local name, realm = select(6, GetPlayerInfoByGUID(game.guid))
+                    game.name= (name and realm) and name..'-'..realm
+                end
+                local text=game.guid and e.GetPlayerInfo(nil, game.guid, true) or game.name--角色信息
+                text= (game.level and game.level~=MAX_PLAYER_LEVEL) and text .. ' |cff00ff00'..game.level..'|r' or text--等级
+                if game.area and game.connected then
+                    if game.area == map then--地区
+                        text= text..e.Icon.map2
+                    else
+                        text= text..' '..game.area
+                    end
+                elseif not game.connected then
+                    text= text..' '..(e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)
                 end
 
-                description=description..'\n\n'..(e.onlyChinese and '节日' or CALENDAR_FILTER_HOLIDAYS)..' ID '..info.eventID..(info.iconTexture and '    |T'..info.iconTexture..':0|t'..info.iconTexture or '')
-                CalendarViewHolidayFrame.ScrollingFont:SetText(description);
-
-                if info.iconTexture then
-                    CalendarViewHolidayFrame.Texture:SetTexture(info.iconTexture)
-                end
+                local info={
+                    text=text,
+                    checked= inviteTab[game.name],
+                    tooltipOnButton=true,
+                    tooltipTitle=game.notes,
+                    icon= game.afk and FRIENDS_TEXTURE_AFK or game.dnd and FRIENDS_TEXTURE_DND,
+                    arg1= game.name,
+                    func=function(self2, arg1)
+                        CalendarCreateEventInviteEdit:SetText(arg1 or '')
+                    end
+                }
+                securecall('UIDropDownMenu_AddButton', info, level)
             end
         end
     end)

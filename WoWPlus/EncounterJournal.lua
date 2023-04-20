@@ -943,7 +943,7 @@ local function Init()--冒险指南界面
         securecall('UIDropDownMenu_AddButton', info, level)
     end
     EncounterJournal.encounter.LootSpecMenu=CreateFrame("Frame", id..addName..'Menu', EncounterJournal.encounter, "UIDropDownMenuTemplate")
-    UIDropDownMenu_Initialize(EncounterJournal.encounter.LootSpecMenu, set_Loot_Spec_Menu_Init, 'MENU')
+    securecall('UIDropDownMenu_Initialize', EncounterJournal.encounter.LootSpecMenu, set_Loot_Spec_Menu_Init, 'MENU')
 
 
     local function set_Loot_Spec(button)

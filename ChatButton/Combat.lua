@@ -506,7 +506,7 @@ local function Init()
     button.texture2:SetShown(false)
 
     button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")--菜单框架
-    UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
+    securecall('UIDropDownMenu_Initialize', button.Menu, InitMenu, 'MENU')
 
     button:SetScript('OnMouseDown', function(self, d)
         if d=='RightButton' then

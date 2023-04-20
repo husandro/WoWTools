@@ -129,7 +129,7 @@ local function Init()
 
     e.ToolsSetButtonPoint(button)--设置位置
     button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-    UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
+    securecall('UIDropDownMenu_Initialize', button.Menu, InitMenu, 'MENU')
 
     button:SetScript('OnMouseDown', function(self, d)
         local key=IsModifierKeyDown()

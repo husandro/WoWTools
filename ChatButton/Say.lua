@@ -141,10 +141,11 @@ local function Init_Menu(self, level, type)--主菜单
                         icon=icon,
                         tooltipOnButton=true,
                         tooltipTitle=wow.note,
-                        func=function()
-                            e.Say(nil, wow.accountName, true)
+                        arg1= wow.accountName,
+                        func=function(self2, arg1)
+                            e.Say(nil, arg1, true)
                             button.type=nil
-                            button.name=wow.accountName
+                            button.name=arg1
                             button.wow=true
                             setType(e.onlyChinese and '战' or COMMUNITY_COMMAND_BATTLENET)--使用,提示
                         end
@@ -172,10 +173,11 @@ local function Init_Menu(self, level, type)--主菜单
                         tooltipOnButton=true,
                         tooltipTitle=game.notes,
                         icon= game.afk and FRIENDS_TEXTURE_AFK or game.dnd and FRIENDS_TEXTURE_DND,
-                        func=function()
-                            e.Say('/w', game.name)
+                        arg1= game.name,
+                        func=function(self2, arg1)
+                            e.Say('/w', arg1)
                             button.type='/w'
-                            button.name=game.name
+                            button.name=arg1
                             button.wow=nil
                             setType(e.onlyChinese and '密' or SLASH_TEXTTOSPEECH_WHISPER)--使用,提示
                         end
@@ -203,11 +205,13 @@ local function Init_Menu(self, level, type)--主菜单
                     tooltipOnButton=true,
                     tooltipTitle= e.onlyChinese and '记录: 密语' or (PVP_RECORD..SLASH_TEXTTOSPEECH_WHISPER),
                     tooltipText=text,
-                    func=function()
+                    arg1= tab.name,
+                    arg2= tab.wow,
+                    func=function(self2, arg1, arg2)
                         e.Say(nil, tab.name, tab.wow)
                         button.type='/w'
-                        button.name=tab.name
-                        button.wow=tab.wow
+                        button.name=arg1
+                        button.wow=arg2
                         setType(e.onlyChinese and '密' or SLASH_TEXTTOSPEECH_WHISPER)--使用,提示
                     end
                 }
@@ -250,10 +254,12 @@ local function Init_Menu(self, level, type)--主菜单
                             text=zone.fullName,
                             notCheckable=true,
                             tooltipOnButton=true,
-                            func=function(s, d)
-                                e.Say(nil, zone.fullName)
+                            arg1= zone.fullName,
+                            arg2= zone.fullGuildName,
+                            func=function(self2, arg1, arg2)
+                                e.Say(nil, arg1)
                                 button.type='/w'
-                                button.name=zone.fullGuildName
+                                button.name=arg2
                                 button.wow=nil
                             end
                         }
@@ -324,31 +330,36 @@ local function Init_Menu(self, level, type)--主菜单
                 notCheckable=true,
                 tooltipOnButton=true,
                 tooltipTitle=tab.type,
-                func=function()
-                    e.Say(tab.type)
-                    button.type=tab.type
+                arg1= tab.type,
+                arg2= tab.text,
+                func=function(self2, arg1, arg2)
+                    e.Say(arg1)
+                    button.type=arg1
                     button.name=nil
                     button.wow=nil
-                    setType(tab.text)--使用,提示
+                    setType(arg2)--使用,提示
                 end
             }
             if index==3 then --tab.text=='密语' or tab.text==SLASH_TEXTTOSPEECH_WHISPER then
                 local text= UnitIsPlayer('target') and GetUnitName('target', true)
                 if text then--目标密语
                     info.text= info.text..' '..text
-                    info.func=function()
-                        e.Say('/w', text)
+                    info.arg1= text
+                    info.arg2= tab.text
+                    info.func=function(self2, arg1, arg2)
+                        e.Say('/w', arg1)
                         button.type='/w'
-                        button.name=text
+                        button.name=arg1
                         button.wow=nil
-                        setType(tab.text)--使用,提示
+                        setType(arg2)--使用,提示
                     end
                 elseif button.name then--最后密语
                     info.text= info.text..' '.. button.name
-                    info.func=function()
-                        e.Say('/w', button.name, button.wow)
+                    info.arg1= {name=button.name, wow=button.wow, text=tab.text}
+                    info.func=function(self2, arg1)
+                        e.Say('/w', arg1.name, arg1.wow)
                         button.type='/w'
-                        setType(tab.text)--使用,提示
+                        setType(arg1.text)--使用,提示
                     end
                 end
                 info.menuList='WHISPER'
@@ -431,7 +442,7 @@ local function Init()
     WoWToolsChatButtonFrame.last=button
 
     button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-    UIDropDownMenu_Initialize(button.Menu, Init_Menu, 'MENU')
+    securecall('UIDropDownMenu_Initialize', button.Menu, Init_Menu, 'MENU')
 
     button.type=SLASH_SAY1
     setType(e.onlyChinese and '说' or SAY)--使用,提示

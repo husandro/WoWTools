@@ -1107,7 +1107,7 @@ local function Init()
     WoWToolsChatButtonFrame.last=button
 
     button.Menu= CreateFrame("Frame", id..addName..'Menu', LFDMicroButton, "UIDropDownMenuTemplate")--菜单列表
-    UIDropDownMenu_Initialize(button.Menu, InitList, "MENU")
+    securecall('UIDropDownMenu_Initialize', button.Menu, InitList, "MENU")
 
     button:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' and (self.dungeonID or self.RaidID) then

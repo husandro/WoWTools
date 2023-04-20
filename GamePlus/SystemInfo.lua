@@ -283,7 +283,7 @@ local function Init()
     button:SetFrameStrata('HIGH')
 
     button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-    UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
+    securecall('UIDropDownMenu_Initialize', button.Menu, InitMenu, 'MENU')
 
     button.fpsms:SetPoint('BOTTOMRIGHT')
     button.money:SetPoint('BOTTOMRIGHT', button.fpsms, 'BOTTOMLEFT', -4, 0)

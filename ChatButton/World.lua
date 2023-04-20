@@ -251,7 +251,7 @@ local function Init()
     button.texture:SetAtlas('128-Store-Main')
 
     button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-    UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
+    securecall('UIDropDownMenu_Initialize', button.Menu, InitMenu, 'MENU')
 
     button:SetScript("OnMouseDown",function(self,d)
         if d=='LeftButton' and self.channelNumber and self.channelNumber>0 then

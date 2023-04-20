@@ -199,7 +199,7 @@ local function set_Button()
         button.count:SetPoint('CENTER')
 
         button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-        UIDropDownMenu_Initialize(button.Menu, Init_Menu, 'MENU')
+        securecall('UIDropDownMenu_Initialize', button.Menu, Init_Menu, 'MENU')
     end
 
     set_Events(true)

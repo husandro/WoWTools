@@ -877,7 +877,7 @@ end
 --####
 local function Init()
     panel.Menu=CreateFrame("Frame", id..addName..'Menu', panel, "UIDropDownMenuTemplate")
-    UIDropDownMenu_Initialize(panel.Menu, InitList, 'MENU')
+    securecall('UIDropDownMenu_Initialize', panel.Menu, InitList, 'MENU')
 
     --######
     --DELETE

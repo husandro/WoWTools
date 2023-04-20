@@ -384,7 +384,7 @@ local function Init_Cursor_Options()
                     Save.atlasIndex=arg1
                     Save.randomTexture=nil
                     panel.randomTextureCheck:SetChecked(false)
-                    UIDropDownMenu_SetText(self, Save.Atlas[arg1])
+                    securecall('UIDropDownMenu_SetText', self, Save.Atlas[arg1])
                     set_panel_Texture()
                     cursor_Init_And_Set()--初始，设置
                 end
@@ -393,9 +393,9 @@ local function Init_Cursor_Options()
         end
     end
     dropDown:SetPoint("TOPLEFT", alphaSlider, 'BOTTOMLEFT', -18,-32)
-    UIDropDownMenu_SetWidth(dropDown, 180)
-    UIDropDownMenu_Initialize(dropDown, Init_Menu)
-    UIDropDownMenu_SetText(dropDown, Save.Atlas[Save.atlasIndex] or defaultTexture)
+    securecall('UIDropDownMenu_SetWidth', dropDown, 180)
+    securecall('UIDropDownMenu_Initialize', dropDown, Init_Menu)
+    securecall('UIDropDownMenu_SetText', dropDown, Save.Atlas[Save.atlasIndex] or defaultTexture)
 
     --删除，图片
     delColorButton:SetPoint('LEFT', dropDown, 'RIGHT',-10,0)
@@ -410,8 +410,8 @@ local function Init_Cursor_Options()
         set_panel_Texture()
         cursor_Init_And_Set()
         addColorEdit:SetText(texture or defaultTexture)
-        UIDropDownMenu_SetText(dropDown, Save.Atlas[Save.atlasIndex] or defaultTexture)
-        UIDropDownMenu_Initialize(dropDown, Init_Menu)
+        securecall('UIDropDownMenu_SetText', dropDown, Save.Atlas[Save.atlasIndex] or defaultTexture)
+        securecall('UIDropDownMenu_Initialize', dropDown, Init_Menu)
     end)
 
     --添加，自定义，图片
@@ -421,7 +421,7 @@ local function Init_Cursor_Options()
             table.insert(Save.Atlas, text)
             addColorEdit:SetText('')
             numColorText:SetText(#Save.Atlas)
-            UIDropDownMenu_Initialize(dropDown, Init_Menu)
+            securecall('UIDropDownMenu_Initialize', dropDown, Init_Menu)
         end
     end
     addColorEdit:SetPoint("TOPLEFT", dropDown, 'BOTTOMLEFT',22,-2)
@@ -624,7 +624,7 @@ local function Init_GCD_Options()
                     Save.gcdTextureIndex=arg1
                     Save.randomTexture=nil
                     panel.randomTextureCheck:SetChecked(false)
-                    UIDropDownMenu_SetText(self, Save.GCDTexture[arg1])
+                    securecall('UIDropDownMenu_SetText', self, Save.GCDTexture[arg1])
                     set_panel_Texture()
                     show_GCD_Frame_Tips()--显示GCD图片
                 end
@@ -633,9 +633,9 @@ local function Init_GCD_Options()
         end
     end
     dropDown:SetPoint("TOPLEFT", checkReverse, 'BOTTOMLEFT', -18,-15)
-    UIDropDownMenu_SetWidth(dropDown, 180)
-    UIDropDownMenu_Initialize(dropDown, Init_Menu)
-    UIDropDownMenu_SetText(dropDown, Save.GCDTexture[Save.gcdTextureIndex] or defaultGCDTexture)
+    securecall('UIDropDownMenu_SetWidth', dropDown, 180)
+    securecall('UIDropDownMenu_Initialize', dropDown, Init_Menu)
+    securecall('UIDropDownMenu_SetText', dropDown, Save.GCDTexture[Save.gcdTextureIndex] or defaultGCDTexture)
 
     --删除，图片
     delColorButton:SetPoint('LEFT', dropDown, 'RIGHT',-10,0)
@@ -650,8 +650,8 @@ local function Init_GCD_Options()
         set_panel_Texture()
         show_GCD_Frame_Tips()--显示GCD图片
         addColorEdit:SetText(texture or defaultGCDTexture)
-        UIDropDownMenu_SetText(dropDown, Save.GCDTexture[Save.gcdTextureIndex] or defaultGCDTexture)
-        UIDropDownMenu_Initialize(dropDown, Init_Menu)
+        securecall('UIDropDownMenu_SetText', dropDown, Save.GCDTexture[Save.gcdTextureIndex] or defaultGCDTexture)
+        securecall('UIDropDownMenu_Initialize', dropDown, Init_Menu)
     end)
 
     --添加，自定义，图片
@@ -661,7 +661,7 @@ local function Init_GCD_Options()
             table.insert(Save.GCDTexture, text)
             addColorEdit:SetText('')
             numColorText:SetText(#Save.GCDTexture)
-            UIDropDownMenu_Initialize(dropDown, Init_Menu)
+            securecall('UIDropDownMenu_Initialize', dropDown, Init_Menu)
         end
     end
     addColorEdit:SetPoint("TOPLEFT", dropDown, 'BOTTOMLEFT',22,-2)

@@ -334,7 +334,7 @@ local function Init()
     WoWToolsChatButtonFrame.last=button
 
     button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-    UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
+    securecall('UIDropDownMenu_Initialize', button.Menu, InitMenu, 'MENU')
 
     if IsInRaid() then
         button.type=SLASH_RAID2

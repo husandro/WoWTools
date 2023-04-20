@@ -109,7 +109,7 @@ end
 --####
 local function Init()
     panel.Menu=CreateFrame("Frame", id..addName..'Menu', panel, "UIDropDownMenuTemplate")
-    UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
+    securecall('UIDropDownMenu_Initialize', panel.Menu, InitMenu, 'MENU')
 
     panel.button={}
     local find

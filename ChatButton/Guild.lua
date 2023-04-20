@@ -98,7 +98,7 @@ local function Init()
     WoWToolsChatButtonFrame.last=button
 
     button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-    UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
+    securecall('UIDropDownMenu_Initialize', button.Menu, InitMenu, 'MENU')
 
     setMembers()--在线人数
     button.texture:SetAtlas('UI-HUD-MicroMenu-GuildCommunities-Up')

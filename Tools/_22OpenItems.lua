@@ -524,7 +524,7 @@ local function Init()
     button.count=e.Cstr(button, {size=10, color=true})--10, nil, nil, true)
     button.count:SetPoint('BOTTOM',0,2)
 
-    UIDropDownMenu_Initialize(button.Menu, setMenuList, 'MENU')
+    securecall('UIDropDownMenu_Initialize', button.Menu, setMenuList, 'MENU')
 
     getItems()--设置属性
 

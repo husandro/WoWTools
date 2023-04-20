@@ -944,7 +944,7 @@ local function Init()
     setButtonSize()--设置按钮大小
 
     button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-    UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
+    securecall('UIDropDownMenu_Initialize', button.Menu, InitMenu, 'MENU')
     XDInt()--德鲁伊设置
     checkSpell()--检测法术
     checkItem()--检测物品

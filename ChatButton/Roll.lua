@@ -191,7 +191,7 @@ local function Init()
 
     button.texture:SetTexture('Interface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47')
     button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-    UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
+    securecall('UIDropDownMenu_Initialize', button.Menu, InitMenu, 'MENU')
 
     button:SetScript('OnMouseDown',function(self, d)
         if d=='LeftButton' then

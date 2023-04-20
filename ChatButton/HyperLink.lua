@@ -942,7 +942,7 @@ local function Init()
     WoWToolsChatButtonFrame.last=button
 
     button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-    UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
+    securecall('UIDropDownMenu_Initialize', button.Menu, InitMenu, 'MENU')
     button.texture:SetAtlas(e.Icon.icon)
 
     button:SetScript('OnMouseDown', function(self, d)
