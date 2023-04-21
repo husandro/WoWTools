@@ -2567,7 +2567,17 @@
         "CalendarViewRaidFrame",
         "CalendarClassButton1",
         "ERR_FRIEND_ONLINE_SS",
-        "UNAVAILABLE"
+        "UNAVAILABLE",
+        "HEIRLOOM_UPGRADE_TOOLTIP_FORMAT",
+        "ITEM_TOURNAMENT_GEAR",
+        "ITEM_QUALITY7_DESC",
+        "WEAPON",
+        "UPGRADE",
+        "SHIELDSLOT",
+        "INVTYPE_WEAPON",
+        "INVTYPE_2HWEAPON",
+        "INVTYPE_RANGED",
+        "INVTYPE_RANGEDRIGHT"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

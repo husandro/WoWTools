@@ -796,7 +796,7 @@ local function Init()--冒险指南界面
             self.collectedText:SetText(text or '')
         end
 
-        e.Set_Item_Stats(self, self.link, self.icon)--显示, 物品, 属性
+        e.Set_Item_Stats(self, self.link, {point= self.icon})--显示, 物品, 属性
     end)
 
     --#######################

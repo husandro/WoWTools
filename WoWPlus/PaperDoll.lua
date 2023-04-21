@@ -791,7 +791,7 @@ local function set_InspectPaperDollItemSlotButton_Update(self)
 	e.LoadDate({id=link, type='item'})--加载 item quest spell
     Gem(self, slot, link)
     Enchant(self, slot, link)
-    e.Set_Item_Stats(self, link, self.icon)
+    e.Set_Item_Stats(self, link, {point=self.icon})
     if not self.OnEnter then
         self:SetScript('OnEnter', function(self2)
             if self2.link then
@@ -983,7 +983,7 @@ local function Init()
                 Gem(self, slot, link)
                 Enchant(self, slot, link)
                 --Set(self, slot, link)
-                e.Set_Item_Stats(self, link, self.icon)
+                e.Set_Item_Stats(self, link, {point=self.icon})
                 Equipment()
                 LvTo()--总装等
             elseif InventSlot_To_ContainerSlot[slot] and self:HasBagEquipped() then--背包数
@@ -1160,7 +1160,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     local frame = self2:GetActivityFrame(activityInfo.type, activityInfo.index);
                     local itemFrame= frame and frame.ItemFrame
                     if itemFrame then
-                        e.Set_Item_Stats(itemFrame, itemFrame.displayedItemDBID and C_WeeklyRewards.GetItemHyperlink(itemFrame.displayedItemDBID), itemFrame.Icon)
+                        e.Set_Item_Stats(itemFrame, itemFrame.displayedItemDBID and C_WeeklyRewards.GetItemHyperlink(itemFrame.displayedItemDBID), {point=itemFrame.Icon})
                     end
                 end
             end)

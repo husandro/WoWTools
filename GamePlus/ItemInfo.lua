@@ -15,6 +15,12 @@ local andStr = COVENANT_RENOWN_TOAST_REWARD_COMBINER:format('(.-)','(.+)')--"%s 
 local size= 10--字体大小
 
 local ClassNameIconTab={}--职业图标 ClassNameIconTab['法师']=图标
+local heirloomWeapontemEquipLocTab={--传家宝，武器，itemEquipLoc
+        ['INVTYPE_WEAPON']= true,
+        ['INVTYPE_2HWEAPON']= true,
+        ['INVTYPE_RANGED']= true,
+        ['INVTYPE_RANGEDRIGHT']= true,
+    }
 
 --set_Item_Info(itemButton, {bag={bag=bagID, slot=slotID}, merchant={slot=slot, buyBack= selectedTab==2}, guidBank={tab=tab, slot=i}, hyperLink=nil})
 local function set_Item_Info(self, tab)
@@ -156,7 +162,7 @@ local function set_Item_Info(self, tab)
             elseif dateInfo.wow then
                 bottomRightText= e.Icon.wow2
             end
-
+            
             if expacID== e.ExpansionLevel and classID==8 and dateInfo.text[useStr] then--附魔
                 local text= dateInfo.text[useStr]
                 for k, v in pairs(FMTab) do
@@ -299,8 +305,32 @@ local function set_Item_Info(self, tab)
         elseif classID==12 and itemQuality and itemQuality>0 then--任务
             topRightText= e.onlyChinese and '任务' or e.WA_Utf8Sub(itemSubType, 2,5)
 
-        elseif itemQuality==7 or itemQuality==8 then
+        elseif itemQuality==7 or itemQuality==8 then--7传家宝，8 WoWToken
             topRightText=e.Icon.wow2
+            if classID==0 and subclassID==8 and GetItemSpell(itemLink) then--传家宝，升级，物品
+                local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={useStr}, wow=true, red=true})--物品提示，信息
+                if dateInfo.text[useStr] and dateInfo.text[useStr]:find(UPGRADE) then--UPGRADE = "升级";
+                    local weapon= dateInfo.text[useStr]:find(WEAPON)--WEAPON = "武器";
+                    local shield= dateInfo.text[useStr]:find(SHIELDSLOT)--SHIELDSLOT = "盾牌";
+                    local num
+                    num= dateInfo.text[useStr]:match('%d+')
+                    num= num and tonumber(num)
+                    if num and (weapon or shield) then
+                        rightText= '|cnGREEN_FONT_COLOR:'..num..'|r'--设置, 最高,等级
+                        local heirloomNum=0
+                        for _, heirloomID in pairs(C_Heirloom.GetHeirloomItemIDs() or {}) do
+                            if heirloomID and C_Heirloom.PlayerHasHeirloom(heirloomID) then
+                                local _, itemEquipLoc2, _, _, upgradeLevel, _, _, _, _, maxLevel= C_Heirloom.GetHeirloomInfo(heirloomID)
+                                local maxUp=C_Heirloom.GetHeirloomMaxUpgradeLevel(heirloomID)
+                                if upgradeLevel< maxUp and maxLevel< num-1  and (weapon and heirloomWeapontemEquipLocTab[itemEquipLoc2] or (not weapon and shield)) then
+                                    heirloomNum= heirloomNum+1
+                                end
+                            end
+                        end
+                        topLeftText= heirloomNum==0 and '|cnRED_FONT_COLOR:'..heirloomNum..'|r' or heirloomNum
+                    end
+                end
+            end
 
         elseif C_ToyBox.GetToyInfo(itemID) then--玩具
             bottomRightText= PlayerHasToy(itemID) and e.Icon.X2 or e.Icon.star2
@@ -641,7 +671,7 @@ local function Init()
     --排序:从右到左
     --############
     ContainerFrameCombinedBagsPortraitButton:HookScript('OnMouseDown',function ()
-        securecall('UIDropDownMenu_AddSeparator') 
+        securecall('UIDropDownMenu_AddSeparator')
         local info={
             text= e.onlyChinese and '反向整理背包' or REVERSE_CLEAN_UP_BAGS_TEXT,
             checked= C_Container.GetSortBagsRightToLeft(),

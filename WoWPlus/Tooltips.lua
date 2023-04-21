@@ -197,7 +197,7 @@ local function setItem(self, ItemLink)
         if itemLevel and itemLevel>1 then
             local slot=itemEquipLoc and e.itemSlotTable[itemEquipLoc]--比较装等
             if slot then
-                self:AddDoubleLine(_G[itemEquipLoc], (e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)..' '..slot)--栏位
+                self:AddDoubleLine(_G[itemEquipLoc]..' '..itemEquipLoc, (e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)..' '..slot)--栏位
                 local slotLink=GetInventoryItemLink('player', slot)
                 local text
                 if slotLink then

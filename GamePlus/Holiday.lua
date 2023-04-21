@@ -241,6 +241,11 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
         panel:UnregisterEvent('QUEST_COMPLETE')
     end
     panel.Text:SetText(Text2)
+
+    panel:SetButtonState('PUSHED')
+    C_Timer.After(3, function()
+        panel:SetButtonState('NORMAL')
+    end)
 end
 
 local function set_event()--设置事件

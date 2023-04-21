@@ -1,7 +1,13 @@
 local id, e = ...
 local addName= COLLECTIONS
 local panel=CreateFrame("Frame")
-local Save={}
+local Save={
+    --hideDressUpOutfit= true,--试衣间, 外观列表
+    --hideSets= true,--套装, 幻化, 界面
+    --hideHeirloom= true,--传家宝
+    --hideItems= true,--物品, 幻化, 界面
+    --hideToyBox= true,--玩具
+}
 --外观保存数据wowSave={[1]={class=str,numCollected=number, numTotal=number}
 local wowSaveSets = {
     ['1']={['class']='WARRIOR'},
@@ -164,7 +170,7 @@ local function get_Sets_Colleced()--收集所有角色套装数据
 
     --显示数据
     local frame= (WardrobeCollectionFrame and WardrobeCollectionFrame.SetsCollectionFrame) and WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame
-    if not frame or Save.hideSets or Save.disabled then
+    if not frame or Save.hideSets then
         if frame and frame.PlayerCoollectedStr then
             frame.PlayerCoollectedStr:SetText('')
         end
@@ -484,31 +490,84 @@ local function Init_Heirloom()
             return
         end
         local name, itemEquipLoc, isPvP, itemTexture, upgradeLevel, source, searchFiltered, effectiveLevel, minLevel, maxLevel = C_Heirloom.GetHeirloomInfo(button.itemID);
-        local maxUp=C_Heirloom.GetHeirloomMaxUpgradeLevel(button.itemID) or 0;
+        local maxUp=C_Heirloom.GetHeirloomMaxUpgradeLevel(button.itemID)local maxUp=C_Heirloom.GetHeirloomMaxUpgradeLevel(button.itemID) or 0;
         local level=maxUp-upgradeLevel
         local has = C_Heirloom.PlayerHasHeirloom(button.itemID)
         if level >0 and has then--需要升级数
             if not button.upLevel then
                 button.upLevel = button:CreateTexture(nil, 'OVERLAY')
-                button.upLevel:SetPoint('TOPLEFT', -1, 1)
+                button.upLevel:SetPoint('TOPLEFT', -4, 4)
                 button.upLevel:SetSize(26,26)
+                button.upLevel:EnableMouse(true)
+                button.upLevel:SetScript('OnLeave', function() e.tips:Hide() end)
+                button.upLevel:SetScript('OnEnter', function(self2)
+                    if self2.maxUp and self2.upgradeLevel then
+                        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                        e.tips:ClearLines()
+                        e.tips:AddLine(format(e.onlyChinese and '传家宝升级等级：%d/%d' or HEIRLOOM_UPGRADE_TOOLTIP_FORMAT, self2.upgradeLevel, self2.maxUp))
+                        e.tips:AddDoubleLine(id, addName)
+                        e.tips:Show()
+                    end
+                end)
+                button.upLevel:SetScript('OnMouseDown', function(self2)
+                    local itemID= self2:GetParent().itemID
+                    if itemID and C_Heirloom.PlayerHasHeirloom(itemID) then
+                        C_Heirloom.CreateHeirloom(itemID)
+                    end
+                end)
             end
             button.upLevel:SetAtlas(e.Icon.number..level)
         end
         if button.upLevel then
+            button.upLevel.maxUp= maxUp
+            button.upLevel.upgradeLevel= upgradeLevel
             button.upLevel:SetShown(has and level>0)
         end
 
         if isPvP and not button.isPvP then
             button.isPvP=button:CreateTexture(nil, 'OVERLAY')
-            button.isPvP:SetPoint('TOPRIGHT', 1, 1)
+            button.isPvP:SetPoint('TOP')
             button.isPvP:SetSize(14, 14)
             button.isPvP:SetAtlas('honorsystem-icon-prestige-6')
+            button.isPvP:EnableMouse(true)
+            button.isPvP:SetScript('OnLeave', function() e.tips:Hide() end)
+            button.isPvP:SetScript('OnEnter', function(self2) 
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddLine(e.onlyChinese and '竞技装备' or ITEM_TOURNAMENT_GEAR)
+                e.tips:AddDoubleLine(id, addName)
+                e.tips:Show()
+            end)
+            button.isPvP:SetScript('OnMouseDown', function(self2)
+                local itemID= self2:GetParent().itemID
+                if itemID and C_Heirloom.PlayerHasHeirloom(itemID) then
+                    C_Heirloom.CreateHeirloom(itemID)
+                end
+            end)
         end
         if button.isPvP then
             button.isPvP:SetShown(isPvP)
         end
+        if not button.moved and button.level then--设置，等级数字，位置
+            button.level:ClearAllPoints()
+            button.level:SetPoint('TOPRIGHT', button, 'TOPRIGHT')
+            
+            button.levelBackground:ClearAllPoints()
+            button.levelBackground:SetPoint('TOPRIGHT', button, 'TOPRIGHT',-2,-2)
+            button.levelBackground:SetAlpha(0.5)
+
+            button.slotFrameCollected:SetTexture(0)--外框架
+            button.slotFrameCollected:SetShown(false)
+            button.slotFrameCollected:SetAlpha(0)
+            button.moved= true
+        end
+        if level==0 then
+            button.level:SetText(e.Icon.select2)
+        end
+        
+        e.Set_Item_Stats(button, C_Heirloom.GetHeirloomLink(button.itemID), {point=button.iconTexture , hideSet=true, hideLevel=level~=0, hideStats=false})--设置，物品，4个次属性，套装，装等，
     end)
+
     local Heirloomframe=HeirloomsJournal
     Heirloomframe.sel=e.Cbtn(Heirloomframe, {icon=not Save.hideHeirloom, size={18,18}})
     Heirloomframe.sel:SetPoint('BOTTOMRIGHT',-25, 35)
@@ -521,8 +580,9 @@ local function Init_Heirloom()
     Heirloomframe.sel:SetScript('OnEnter', function (self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, addName)
         e.tips:AddDoubleLine(e.GetEnabeleDisable(not Save.hideHeirloom), e.Icon.left)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
     end)
     Heirloomframe.sel:SetScript('OnLeave', function ()
@@ -571,24 +631,20 @@ local function get_Items_Colleced()
     end
     wowSaveItems[e.Player.class]=List
 
-    if Save.disabled then
-        return
-    end
 
     local Frame= WardrobeCollectionFrame and WardrobeCollectionFrame.ItemsCollectionFrame
     if not Frame then
         return
     elseif Save.hideItems then--禁用
-        for class, type in pairs (wowSaveItems) do
-            local str=Frame[addName..class]
-            if str then
-                str:SetText('')
-                str.tip=nil
+        for class, _ in pairs (wowSaveItems) do
+            local label=Frame[addName..class]
+            if label then
+                label:SetText('')
+                label.tip=nil
             end
         end
-        local str=Frame[addName..'All']--总数字符
-        if str then
-            str:SetText('')
+        if Frame[addName..'All'] then--总数字符
+            Frame[addName..'All']:SetText('')
         end
         return
     end
@@ -597,68 +653,72 @@ local function get_Items_Colleced()
     local last, initStr
     local totaleCollected, totaleAll, totaleClass = 0, 0, 0--总数
     for class, type in pairs (wowSaveItems) do
-        local tip={}--提示用
-        local collected, all = 0, 0
-        for _, info in pairs(type) do
-            collected = collected + info.Collected
-            all = all + info.All
-            table.insert(tip,{
-                name=info.Icon..(info.Collected==info.All and '|cnGREEN_FONT_COLOR:'..info.Name..'|r' or info.Name),
-                num= info.Collected==info.All and '|cnGREEN_FONT_COLOR:'..info.Collected..'/'.. info.All..'|r' or info.Collected..'/'.. info.All
-            })
-        end
-        local str=Frame[addName..class]
-        if not str then
-            str=e.Cstr(Frame)
+
+        local label=Frame[addName..class]
+        if not label then
+            label=e.Cstr(Frame)
             if not last then
-                initStr=str--总数字符用
-                str:SetPoint('BOTTOMRIGHT', 5, 80)
+                initStr=label--总数字符用
+                label:SetPoint('BOTTOMRIGHT', 5, 80)
             else
-                str:SetPoint('BOTTOMRIGHT', last, 'TOPRIGHT', 0, 2)
+                label:SetPoint('BOTTOMRIGHT', last, 'TOPRIGHT', 0, 2)
             end
-            str:SetJustifyH('RIGHT')
-            str:EnableMouse(true)
-            str:SetScript('OnEnter', function(self2)--鼠标提示
+            label:SetJustifyH('RIGHT')
+            label:EnableMouse(true)
+            label:SetScript('OnEnter', function(self2)--鼠标提示
                 if self2.tip then
                     e.tips:SetOwner(self2, "ANCHOR_RIGHT")
                     e.tips:ClearLines()
                     local n=1
-                    for _, info in pairs(self2.tip) do
-                        if info.name then
+                    for _, info2 in pairs(self2.tip) do
+                        if info2.name then
                             if select(2, math.modf(n/2))==0 then
-                                e.tips:AddDoubleLine(info.name, info.num, 1,0.5,0, 1, 0.5,0)
+                                e.tips:AddDoubleLine(info2.name, info2.num, 1,0.5,0, 1, 0.5,0)
                             else
-                                e.tips:AddDoubleLine(info.name, info.num)
+                                e.tips:AddDoubleLine(info2.name, info2.num)
                             end
                         else
                             e.tips:AddLine(' ')
                         end
                         n=n+1
                     end
+                    e.tips:AddLine(' ')
+                    e.tips:AddDoubleLine(id, addName, 1,1,1, 1,1,1)
                     e.tips:Show()
                 end
             end)
-            str:SetScript('OnLeave', function() e.tips:Hide() end)
+            label:SetScript('OnLeave', function() e.tips:Hide() end)
         end
 
-        totaleCollected=totaleCollected+collected
-        totaleAll=totaleAll+ all
-        totaleClass=totaleClass+1
+        local tip={}--提示用
+        local collected, all = 0, 0
+        for _, info in pairs(type) do
+            collected = collected + info.Collected
+            all = all + info.All
+            table.insert(tip, {
+                name=info.Icon..(info.Collected==info.All and '|cnGREEN_FONT_COLOR:'..info.Name..'|r' or (info.Name..format(' %i%%', info.Collected/info.All*100))),
+                num= info.Collected==info.All and '|cnGREEN_FONT_COLOR:'..info.Collected..'/'.. info.All..'|r' or info.Collected..'/'.. info.All
+            })
+        end
+        totaleCollected= totaleCollected+ collected
+        totaleAll= totaleAll+ all
+        totaleClass= totaleClass +1
 
         local per=(' %i%%'):format(collected/all*100)
-        collected, all = e.MK(collected,3), e.MK(all,3)
+        local collectedText, allText = e.MK(collected,3), e.MK(all,3)
 
         local col='|c'..select(4,GetClassColor(class))
-        str:SetText(col..collected..' '..per..'|A:classicon-'..class..':0:0|a|r')
-        table.insert(tip,1,{})
-        table.insert(tip,1,{
-            name='|A:classicon-'..class..':0:0|a '..col..per..'|r',
-            num=col..collected..'/'..all..'|r',
-        })
-        str.tip=tip
+        label:SetText(col..collectedText..' '..per..'|A:classicon-'..class..':0:0|a|r')
 
-        Frame[addName..class]=str
-        last=str
+        table.insert(tip,1,{})
+        table.insert(tip, 1, {
+            name='|A:classicon-'..class..':0:0|a '..col..per..'|r',
+            num=col..collectedText..'/'..allText..'|r',
+        })
+        label.tip=tip
+
+        Frame[addName..class]=label
+        last=label
     end
 
     local str= Frame[addName..'All']--总数字符
@@ -680,7 +740,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
     Frame.sel:SetAlpha(0.5)
     Frame.sel:SetScript('OnMouseDown',function (self2)
         Save.hideItems= not Save.hideItems and true or nil
-        print(id, addName,e.GetEnabeleDisable(not Save.hideItems))
+        print(id, addName,e.GetEnabeleDisable(not Save.hideItems), e.onlyChinese and '需求刷新' or NEED..REFRESH)
         self2:SetNormalAtlas(Save.hideItems and e.Icon.disabled or e.Icon.icon)
         get_Items_Colleced()
     end)
@@ -703,126 +763,110 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
             local model = self.Models[i];
             if model:IsShown() then
                 model.itemButton=model.itemButton or {}
-
-                if not model.texture then
-                    model.texture= model:CreateTexture(nil, 'OVERLAY')
-                    model.texture:SetPoint('BOTTOMRIGHT')
-                    model.texture:SetSize(20,20)
-                    model.texture:EnableMouse(true)
-                    model.texture:SetScript('OnLeave', function() e.tips:Hide() end)
-                    model.texture:SetScript("OnEnter", function(self2)
-                        if self2.link then
-                            e.tips:SetOwner(self2, "ANCHOR_RIGHT")
-                            e.tips:ClearLines()
-                            e.tips:SetHyperlink(self2.link)
-                            e.tips:AddLine(' ')
-                            e.tips:AddDoubleLine(id, addName)
-                            e.tips:Show()
-                        end
-                    end)
-                end
-
                 local itemLinks={}
-                local findLinks={}
-                if self.transmogLocation:IsIllusion() then--WardrobeItemsModelMixin:OnMouseDown(button)
-                    local link = select(2, C_TransmogCollection.GetIllusionStrings(model.visualInfo.sourceID))
-                    if link then
-                        e.LoadDate({id=link, type='item'})----加载 item quest spell
-                        table.insert(itemLinks, link)
-                    end
-                else
-                    local sources = CollectionWardrobeUtil.GetSortedAppearanceSources(model.visualInfo.visualID, self:GetActiveCategory(), self.transmogLocation) or {}
-                    for index= 1, #sources do
-                        local link = WardrobeCollectionFrame:GetAppearanceItemHyperlink(sources[index]);
-                        if link and not findLinks[link] then
+                if not Save.hideItems then
+                    local findLinks={}
+                    if self.transmogLocation:IsIllusion() then--WardrobeItemsModelMixin:OnMouseDown(button)
+                        local link = select(2, C_TransmogCollection.GetIllusionStrings(model.visualInfo.sourceID))
+                        if link then
                             e.LoadDate({id=link, type='item'})----加载 item quest spell
                             table.insert(itemLinks, link)
-                            findLinks[link]=true
                         end
-                    end
-                end
-                findLinks=nil
-
-                local y, x, h =0,0, 11
-                for index, link in pairs(itemLinks) do
-                    local btn= model.itemButton[index]
-                    if not btn then
-                        btn=e.Cbtn(model, {icon='hide', size=index==1 and {14.4, 14.4} or {h,h}})
-                        if index==1 then
-                            btn:SetPoint('BOTTOMLEFT', -4, -4)
-                        else
-                            btn:SetPoint('BOTTOMLEFT', x, y)
-                        end
-                        
-                        btn:SetAlpha(0.5)
-                        
-                        btn:SetScript("OnEnter",function(self2)
-                            if self2.link then
-                                self2:SetAlpha(1)
-                                e.tips:ClearLines()
-                                e.tips:SetOwner(self2:GetParent():GetParent(), "ANCHOR_RIGHT")
-                                if self2.illusionID then
-                                    local name, _, sourceText = C_TransmogCollection.GetIllusionStrings(self2.illusionID)
-                                    e.tips:AddLine(name)
-                                    e.tips:AddLine(' ')
-                                    e.tips:AddLine(sourceText, 1,1,1, true)
-                                    e.tips:AddLine(' ')
-                                    local info = C_TransmogCollection.GetIllusionInfo(self2.illusionID)
-                                    if info then
-                                        e.tips:AddDoubleLine('visualID '..(info.visualID or ''), 'sourceID '..(info.sourceID or ''))
-                                        e.tips:AddDoubleLine(info.icon and '|T'..info.icon..':0|t'..info.icon or '', 'isHideVisual '..(info.isHideVisual and 'true' or 'false'))
-                                        e.tips:AddDoubleLine(info.isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'),
-                                                            info.isUsable and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '可用' or AVAILABLE)..'|r' or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '不可用' or UNAVAILABLE)..'|r'))
-                                        e.tips:AddLine(' ')
-                                    end
-                                else
-                                    e.tips:SetHyperlink(self2.link)
-                                end
-                                e.tips:AddDoubleLine(id, addName)
-                                e.tips:AddDoubleLine(e.onlyChinese and '发送' or SEND_LABEL, e.Icon.left)
-                                e.tips:Show()
-                            end
-                        end)
-                        btn:SetScript("OnClick", function(self2)
-                            if ( self2.link ) then
-                                local chat=SELECTED_DOCK_FRAME
-                                ChatFrame_OpenChat((chat.editBox:GetText() or '')..self2.link, chat)
-                            end
-                        end)
-                        btn:SetScript("OnLeave",function(self2)
-                            self2:SetAlpha(0.5)
-                            e.tips:Hide()
-                        end)
-                        model.itemButton[index]=btn
-                    end
-                    if index~=1 and select(2, math.modf(index / 10))==0 then
-                        x= x+ h
-                        y=0
                     else
-                        y=y+ h
-                    end
-                    local illusionID= link:match('Htransmogillusion:(%d+)')
-                    if index==1 then
-                        local icon
-                        if illusionID then
-                            local info = C_TransmogCollection.GetIllusionInfo(illusionID)
-                            icon= info and info.icon
+                        local sources = CollectionWardrobeUtil.GetSortedAppearanceSources(model.visualInfo.visualID, self:GetActiveCategory(), self.transmogLocation) or {}
+                        for index= 1, #sources do
+                            local link = WardrobeCollectionFrame:GetAppearanceItemHyperlink(sources[index]);
+                            if link and not findLinks[link] then
+                                e.LoadDate({id=link, type='item'})----加载 item quest spell
+                                table.insert(itemLinks, link)
+                                findLinks[link]=true
+                            end
                         end
-                        icon= icon or C_Item.GetItemIconByID(link)
-                        if icon then
-                            btn:SetNormalTexture(icon)
+                    end
+                    findLinks=nil
+
+                    local y, x, h =0,0, 11
+                    for index, link in pairs(itemLinks) do
+                        local btn= model.itemButton[index]
+                        if not btn then
+                            btn=e.Cbtn(model, {icon='hide', size=index==1 and {14.4, 14.4} or {h,h}})
+                            if index==1 then
+                                btn:SetPoint('BOTTOMLEFT', -4, -4)
+                            else
+                                btn:SetPoint('BOTTOMLEFT', x, y)
+                            end
+
+                            btn:SetAlpha(0.5)
+
+                            btn:SetScript("OnEnter",function(self2)
+                                if self2.link then
+                                    self2:SetAlpha(1)
+                                    e.tips:ClearLines()
+                                    e.tips:SetOwner(self2:GetParent():GetParent(), "ANCHOR_RIGHT",8,-300)
+                                    if self2.illusionID then
+                                        local name, _, sourceText = C_TransmogCollection.GetIllusionStrings(self2.illusionID)
+                                        e.tips:AddLine(name)
+                                        e.tips:AddLine(' ')
+                                        e.tips:AddLine(sourceText, 1,1,1, true)
+                                        e.tips:AddLine(' ')
+                                        local info = C_TransmogCollection.GetIllusionInfo(self2.illusionID)
+                                        if info then
+                                            e.tips:AddDoubleLine('visualID '..(info.visualID or ''), 'sourceID '..(info.sourceID or ''))
+                                            e.tips:AddDoubleLine(info.icon and '|T'..info.icon..':0|t'..info.icon or '', 'isHideVisual '..(info.isHideVisual and 'true' or 'false'))
+                                            e.tips:AddDoubleLine(info.isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'),
+                                                                info.isUsable and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '可用' or AVAILABLE)..'|r' or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '不可用' or UNAVAILABLE)..'|r'))
+                                            e.tips:AddLine(' ')
+                                        end
+                                    else
+                                        e.tips:SetHyperlink(self2.link)
+                                    end
+                                    e.tips:AddLine(' ')
+                                    e.tips:AddDoubleLine(e.onlyChinese and '发送' or SEND_LABEL, e.Icon.left)
+                                    e.tips:AddDoubleLine(id, addName)
+                                    e.tips:Show()
+                                end
+                            end)
+                            btn:SetScript("OnClick", function(self2)
+                                if ( self2.link ) then
+                                    local chat=SELECTED_DOCK_FRAME
+                                    ChatFrame_OpenChat((chat.editBox:GetText() or '')..self2.link, chat)
+                                end
+                            end)
+                            btn:SetScript("OnLeave",function(self2)
+                                self2:SetAlpha(0.5)
+                                e.tips:Hide()
+                            end)
+                            model.itemButton[index]=btn
+                        end
+                        if index~=1 and select(2, math.modf(index / 10))==0 then
+                            x= x+ h
+                            y=0
+                        else
+                            y=y+ h
+                        end
+                        local illusionID= link:match('Htransmogillusion:(%d+)')
+                        if index==1 then
+                            local icon
+                            if illusionID then
+                                local info = C_TransmogCollection.GetIllusionInfo(illusionID)
+                                icon= info and info.icon
+                            end
+                            icon= icon or C_Item.GetItemIconByID(link)
+                            if icon then
+                                btn:SetNormalTexture(icon)
+                            else
+                                btn:SetNormalAtlas('adventure-missionend-line')
+                            end
+                        elseif index<=10 then
+                            btn:SetNormalAtlas('services-number-'..(index-1))
                         else
                             btn:SetNormalAtlas('adventure-missionend-line')
                         end
-                    elseif index<=10 then
-                        btn:SetNormalAtlas('services-number-'..(index-1))
-                    else
-                        btn:SetNormalAtlas('adventure-missionend-line')
+                        btn.link=link
+                        btn.illusionID= illusionID
+                        btn.index=index
+                        btn:SetShown(true)
                     end
-                    btn.link=link
-                    btn.illusionID= illusionID
-                    btn.index=index
-                    btn:SetShown(true)
                 end
                 for index= #itemLinks+1, #model.itemButton do
                     model.itemButton[index]:SetShown(false)
@@ -889,6 +933,10 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("TRANSMOGRIFY_ITEM_UPDATE")
+panel:RegisterEvent("TRANSMOG_SETS_UPDATE_FAVORITE")
+panel:RegisterEvent("PLAYER_LOGOUT")
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
@@ -907,13 +955,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 panel:UnregisterAllEvents()
             else
                 Init_DressUpFrames()--试衣间, 外观列表
+                C_Timer.After(2, get_Sets_Colleced)--收集所有角色套装数据
+                C_Timer.After(2, get_Items_Colleced)--物品, 幻化, 界面
             end
-
-            panel:RegisterEvent("TRANSMOGRIFY_ITEM_UPDATE")
-            panel:RegisterEvent("TRANSMOG_SETS_UPDATE_FAVORITE")
-            panel:RegisterEvent("PLAYER_LOGOUT")
-            C_Timer.After(2, get_Sets_Colleced)--收集所有角色套装数据
-            C_Timer.After(2, get_Items_Colleced)--物品, 幻化, 界面
 
         elseif arg1=='Blizzard_Collections' then
             Init_ToyBox()--玩具
