@@ -542,9 +542,9 @@ local function Init()
                         notCheckable=true,
                         tooltipOnButton=true,
                         tooltipTitle= wow and wow.note,
-                        arg1= wowInfo.characterName..'-'..wowInfo.realmName,
+                        arg1= wowInfo.characterName..(wowInfo.realmName and '-'..wowInfo.realmName or ''),
                         func=function(self2, arg1)
-                            CalendarCreateEventInviteEdit:SetText(arg1 or NONE)
+                            CalendarCreateEventInviteEdit:SetText(arg1)
                         end
                     }
                     securecall('UIDropDownMenu_AddButton', info, level)
@@ -593,7 +593,7 @@ local function Init()
                         icon= game.afk and FRIENDS_TEXTURE_AFK or game.dnd and FRIENDS_TEXTURE_DND,
                         arg1= game.name,
                         func=function(self2, arg1)
-                            CalendarCreateEventInviteEdit:SetText(arg1 or NONE)
+                            CalendarCreateEventInviteEdit:SetText(arg1)
                         end
                     }
                     securecall('UIDropDownMenu_AddButton', info, level)
@@ -637,7 +637,7 @@ local function Init()
                         icon= status==1 and FRIENDS_TEXTURE_AFK or status==2 and FRIENDS_TEXTURE_DND,
                         arg1=name,
                         func=function(self2, arg1)
-                            CalendarCreateEventInviteEdit:SetText(arg1 or NONE)
+                            CalendarCreateEventInviteEdit:SetText(arg1)
                         end
                     }
                     securecall('UIDropDownMenu_AddButton', info, level)
