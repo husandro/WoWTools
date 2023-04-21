@@ -542,7 +542,7 @@ local function Init()
                         notCheckable=true,
                         tooltipOnButton=true,
                         tooltipTitle= wow and wow.note,
-                        arg1= wowInfo.characterName,
+                        arg1= wowInfo.characterName..'-'..wowInfo.realmName,
                         func=function(self2, arg1)
                             CalendarCreateEventInviteEdit:SetText(arg1 or NONE)
                         end

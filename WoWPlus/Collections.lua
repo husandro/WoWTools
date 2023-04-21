@@ -743,28 +743,31 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                 end
                 findLinks=nil
 
-                local y, x, h =0,0, 10.4
+                local y, x, h =0,0, 11
                 for index, link in pairs(itemLinks) do
                     local btn= model.itemButton[index]
                     if not btn then
-                        btn=e.Cbtn(model, {icon='hide', size={h,h}})
-                        btn:SetPoint('BOTTOMLEFT', x, y)
-                        if index>1 then
-                            btn:SetAlpha(0.3)
+                        btn=e.Cbtn(model, {icon='hide', size=index==1 and {14.4, 14.4} or {h,h}})
+                        if index==1 then
+                            btn:SetPoint('BOTTOMLEFT', -4, -4)
+                        else
+                            btn:SetPoint('BOTTOMLEFT', x, y)
                         end
+                        
+                        btn:SetAlpha(0.5)
+                        
                         btn:SetScript("OnEnter",function(self2)
                             if self2.link then
                                 self2:SetAlpha(1)
                                 e.tips:ClearLines()
                                 e.tips:SetOwner(self2:GetParent():GetParent(), "ANCHOR_RIGHT")
-                                local illusionID= self2.link:match('Htransmogillusion:(%d+)')
-                                if illusionID then
-                                    local name, _, sourceText = C_TransmogCollection.GetIllusionStrings(illusionID)
+                                if self2.illusionID then
+                                    local name, _, sourceText = C_TransmogCollection.GetIllusionStrings(self2.illusionID)
                                     e.tips:AddLine(name)
                                     e.tips:AddLine(' ')
                                     e.tips:AddLine(sourceText, 1,1,1, true)
                                     e.tips:AddLine(' ')
-                                    local info = C_TransmogCollection.GetIllusionInfo(illusionID)
+                                    local info = C_TransmogCollection.GetIllusionInfo(self2.illusionID)
                                     if info then
                                         e.tips:AddDoubleLine('visualID '..(info.visualID or ''), 'sourceID '..(info.sourceID or ''))
                                         e.tips:AddDoubleLine(info.icon and '|T'..info.icon..':0|t'..info.icon or '', 'isHideVisual '..(info.isHideVisual and 'true' or 'false'))
@@ -787,9 +790,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                             end
                         end)
                         btn:SetScript("OnLeave",function(self2)
-                            if self2.index~=1 then
-                                self2:SetAlpha(0.3)
-                            end
+                            self2:SetAlpha(0.5)
                             e.tips:Hide()
                         end)
                         model.itemButton[index]=btn
@@ -800,8 +801,14 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                     else
                         y=y+ h
                     end
+                    local illusionID= link:match('Htransmogillusion:(%d+)')
                     if index==1 then
-                        local icon = C_Item.GetItemIconByID(link)
+                        local icon
+                        if illusionID then
+                            local info = C_TransmogCollection.GetIllusionInfo(illusionID)
+                            icon= info and info.icon
+                        end
+                        icon= icon or C_Item.GetItemIconByID(link)
                         if icon then
                             btn:SetNormalTexture(icon)
                         else
@@ -813,6 +820,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                         btn:SetNormalAtlas('adventure-missionend-line')
                     end
                     btn.link=link
+                    btn.illusionID= illusionID
                     btn.index=index
                     btn:SetShown(true)
                 end
