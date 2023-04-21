@@ -102,7 +102,6 @@ local function myChatFilter(self, event, msg, name, ...)
             end
             return true
         else
-            print(strlenutf8(msg))
             filterTextTab[msg]={num=1, name=name}
         end
     end
