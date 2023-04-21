@@ -757,7 +757,24 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                                 self2:SetAlpha(1)
                                 e.tips:ClearLines()
                                 e.tips:SetOwner(self2:GetParent():GetParent(), "ANCHOR_RIGHT")
-                                e.tips:SetHyperlink(self2.link)
+                                local illusionID= self2.link:match('Htransmogillusion:(%d+)')
+                                if illusionID then
+                                    local name, _, sourceText = C_TransmogCollection.GetIllusionStrings(illusionID)
+                                    e.tips:AddLine(name)
+                                    e.tips:AddLine(' ')
+                                    e.tips:AddLine(sourceText, 1,1,1, true)
+                                    e.tips:AddLine(' ')
+                                    local info = C_TransmogCollection.GetIllusionInfo(illusionID)
+                                    if info then
+                                        e.tips:AddDoubleLine('visualID '..(info.visualID or ''), 'sourceID '..(info.sourceID or ''))
+                                        e.tips:AddDoubleLine(info.icon and '|T'..info.icon..':0|t'..info.icon or '', 'isHideVisual '..(info.isHideVisual and 'true' or 'false'))
+                                        e.tips:AddDoubleLine(info.isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'),
+                                                            info.isUsable and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '可用' or AVAILABLE)..'|r' or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '不可用' or UNAVAILABLE)..'|r'))
+                                        e.tips:AddLine(' ')
+                                    end
+                                else
+                                    e.tips:SetHyperlink(self2.link)
+                                end
                                 e.tips:AddDoubleLine(id, addName)
                                 e.tips:AddDoubleLine(e.onlyChinese and '发送' or SEND_LABEL, e.Icon.left)
                                 e.tips:Show()
