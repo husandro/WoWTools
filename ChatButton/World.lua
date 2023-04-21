@@ -94,7 +94,15 @@ local function myChatFilter(self, event, msg, name, ...)
         if filterTextTab[msg] and filterTextTab[msg].name== name then
             filterTextTab[msg].num= filterTextTab[msg].num +1
             return true
+        elseif strlenutf8(msg)>130 or msg:find('<.->') or msg:find('WTS') then
+            if not filterTextTab[msg] then
+                filterTextTab[msg]={num=1, name=name}
+            else
+                filterTextTab[msg].num= filterTextTab[msg].num +1
+            end
+            return true
         else
+            print(strlenutf8(msg))
             filterTextTab[msg]={num=1, name=name}
         end
     end
