@@ -4,6 +4,30 @@ WoWDate={}
 e.GroupFrame={}--UnitFrame.lua 设置装等， 专精
 
 
+
+--##############
+--战网，好友GUID
+--##############
+e.WoWGUID={}
+local function get_WoW_GUID_Info(friendID)
+    if not friendID then
+        e.WoWGUID={}
+        for i=1 ,BNGetNumFriends() do
+            local accountInfo =C_BattleNet.GetFriendAccountInfo(i);
+            local info=accountInfo  and accountInfo .gameAccountInfo
+            if info and info.isOnline and info.playerGuid and info.characterName then
+                e.WoWGUID[info.characterName]= info.playerGuid
+            end
+        end
+    else
+        local accountInfo = C_BattleNet.GetAccountInfoByID(friendID)
+        local info=accountInfo  and accountInfo .gameAccountInfo
+        if info and info.isOnline and info.playerGuid and info.characterName then
+            e.WoWGUID[info.characterName]= info.playerGuid
+        end
+    end
+end
+
 --########
 --玩家装等
 --########
@@ -320,76 +344,85 @@ panel:RegisterEvent('PLAYER_AVG_ITEM_LEVEL_UPDATE')--取得,自已, 装等
 panel:RegisterEvent('ENCOUNTER_START')-- 给 e.REload用
 panel:RegisterEvent('ENCOUNTER_END')
 
+panel:RegisterEvent('BN_INFO_CHANGED')--战网，好友GUID
+panel:RegisterEvent('BN_REQUEST_FOF_SUCCEEDED')
+panel:RegisterEvent('BN_FRIEND_ACCOUNT_ONLINE')
+
 panel:SetScript('OnEvent', function(self, event, arg1, arg2)
-    if event == "ADDON_LOADED" and arg1==id then
-        local day= date('%x')--日期
-        WoWDate=WoWDate or {}
-        WoWDate[e.Player.guid] = WoWDate[e.Player.guid] or
-             {--默认数据
-                Item={},--{itemID={bag=包, bank=银行}},
-                Currency={},--{currencyID = 数量}
+    if event == "ADDON_LOADED" then 
+        if arg1==id then
+            local day= date('%x')--日期
+            WoWDate=WoWDate or {}
+            WoWDate[e.Player.guid] = WoWDate[e.Player.guid] or
+                {--默认数据
+                    Item={},--{itemID={bag=包, bank=银行}},
+                    Currency={},--{currencyID = 数量}
 
-                Keystone={itemLink={}, week=e.Player.week},--{score=总分数,itemLink={超连接}, weekLevel=本周最高, weekNum=本周次数, all=总次数,week=周数},
-                Instance={ins={}, week=e.Player.week},--ins={[名字]={[难度]=已击杀数}}
-                Worldboss={boss={}, week=e.Player.week},--{week=周数, boss=table}
-                Rare={day=day, boss={}},--稀有
-                Time={},--{totalTime=总游戏时间, levelTime=当前等级时间}总游戏时间
-                --Money=钱
-                --GuildInfo=公会信息,
-            }
+                    Keystone={itemLink={}, week=e.Player.week},--{score=总分数,itemLink={超连接}, weekLevel=本周最高, weekNum=本周次数, all=总次数,week=周数},
+                    Instance={ins={}, week=e.Player.week},--ins={[名字]={[难度]=已击杀数}}
+                    Worldboss={boss={}, week=e.Player.week},--{week=周数, boss=table}
+                    Rare={day=day, boss={}},--稀有
+                    Time={},--{totalTime=总游戏时间, levelTime=当前等级时间}总游戏时间
+                    --Money=钱
+                    --GuildInfo=公会信息,
+                }
 
-        for guid, tab in pairs(WoWDate) do--清除不是本周数据
-            if tab.Keystone.week ~=e.Player.week then
-                WoWDate[guid].Keystone={itemLink={}}
-            end
-            if tab.Instance.week~=e.Player.week then
-                WoWDate[guid].Instance={ins={}}
-            end
-            if tab.Worldboss.week~=e.Player.week then
-                WoWDate[guid].Worldboss={boss={}}
-            end
-
-            if tab.Rare.day~=day then
-                WoWDate[guid].Rare={day=day,boss={}}
-            end
-        end
-
-        if e.Player.levelMax then
-            C_MythicPlus.RequestMapInfo()
-            C_MythicPlus.RequestRewards()
-            C_MythicPlus.RequestCurrentAffixes()
-        end
-        RequestRaidInfo()
-        C_MajorFactions.RequestCatchUpState()
-        C_FriendList.ShowFriends()
-        if IsInGuild() then--请求，公会名单
-            C_GuildInfo.GuildRoster()
-        end
-        --[[
-            RequestRatedInfo()--从服务器请求有关玩家 PvP 评分的信息。
-            RequestRandomBattlegroundInstanceInfo()--请求随机战场实例信息
-            RequestBattlefieldScoreData()--请求战地得分数据
-        ]]
-        C_Timer.After(2, function()
-            NotifyInspect('player')--取得,自已, 装等
-            e.GetGroupGuidDate()--队伍数据收集    
-            set_Money()--钱
-            updateCurrency()--{currencyID = 数量}
-
-            --################
-            --开启, 新手編輯模式
-            --################ LFDFrame.lua
-            if C_PlayerInfo.IsPlayerNPERestricted() then
-                --C_PlayerInfo.IsPlayerNPERestricted= function() return false end
-                EditModeManagerFrame.CanEnterEditMode = function(self2)--EditModeManager.lua
-                    return TableIsEmpty(self2.FramesBlockingEditMode)
+            for guid, tab in pairs(WoWDate) do--清除不是本周数据
+                if tab.Keystone.week ~=e.Player.week then
+                    WoWDate[guid].Keystone={itemLink={}}
                 end
-                if Minimap then
-                    Minimap:SetShown(true)
-                    MinimapCluster:SetShown(true)
+                if tab.Instance.week~=e.Player.week then
+                    WoWDate[guid].Instance={ins={}}
+                end
+                if tab.Worldboss.week~=e.Player.week then
+                    WoWDate[guid].Worldboss={boss={}}
+                end
+
+                if tab.Rare.day~=day then
+                    WoWDate[guid].Rare={day=day,boss={}}
                 end
             end
-        end)
+
+            if e.Player.levelMax then
+                C_MythicPlus.RequestMapInfo()
+                C_MythicPlus.RequestRewards()
+                C_MythicPlus.RequestCurrentAffixes()
+            end
+            RequestRaidInfo()
+            C_MajorFactions.RequestCatchUpState()
+            C_FriendList.ShowFriends()
+            if IsInGuild() then--请求，公会名单
+                C_GuildInfo.GuildRoster()
+            end
+            --[[
+                RequestRatedInfo()--从服务器请求有关玩家 PvP 评分的信息。
+                RequestRandomBattlegroundInstanceInfo()--请求随机战场实例信息
+                RequestBattlefieldScoreData()--请求战地得分数据
+            ]]
+            C_Timer.After(2, function()
+                NotifyInspect('player')--取得,自已, 装等
+                e.GetGroupGuidDate()--队伍数据收集    
+                set_Money()--钱
+                updateCurrency()--{currencyID = 数量}
+
+                --################
+                --开启, 新手編輯模式
+                --################ LFDFrame.lua
+                if C_PlayerInfo.IsPlayerNPERestricted() then
+                    --C_PlayerInfo.IsPlayerNPERestricted= function() return false end
+                    EditModeManagerFrame.CanEnterEditMode = function(self2)--EditModeManager.lua
+                        return TableIsEmpty(self2.FramesBlockingEditMode)
+                    end
+                    if Minimap then
+                        Minimap:SetShown(true)
+                        MinimapCluster:SetShown(true)
+                    end
+                end
+
+                get_WoW_GUID_Info()--战网，好友GUID
+            end)
+            panel:UnregisterEvent('ADDON_LOADED')
+        end
 
     elseif event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' then--队伍数据
         e.GetGroupGuidDate()
@@ -464,5 +497,8 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
         e.IsEncouter_Start= true
     elseif event=='ENCOUNTER_START' then
         e.IsEncouter_Start= nil
+    
+    elseif event=='BN_INFO_CHANGED' or event=='BN_REQUEST_FOF_SUCCEEDED' or event=='BN_FRIEND_ACCOUNT_ONLINE' then
+        get_WoW_GUID_Info(arg1)--战网，好友GUID
     end
 end)

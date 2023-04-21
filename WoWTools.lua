@@ -274,16 +274,10 @@ e.Icon={
 
 
 e.PlayerLink=function(name, guid) --玩家超链接
-    if not guid and name then
-        local unit= e.GroupGuid[name] and e.GroupGuid[name].unit
-        if unit then
-            guid= UnitGUID(unit)
-        end
-    end
+    guid= guid or (name and (e.GroupGuid[name] and e.GroupGuid[name].guid or e.WoWGUID[name]))
     if name == COMBATLOG_FILTER_STRING_ME or name==e.Player.name or name==e.Player.name_server or guid==e.Player.guid then--自已
         return e.Icon.player..'|Hplayer:'..e.Player.name_server..'|h['..e.Player.col..COMBATLOG_FILTER_STRING_ME..'|r'..']|h'
     end
-
     if guid then
         local _, class, _, race, sex, name2, realm = GetPlayerInfoByGUID(guid)
         if name2 then
@@ -311,6 +305,7 @@ e.PlayerOnlineInfo=function(unit)--单位，状态信息
         end
     end
 end
+
 e.GetNpcID = function(unit)--NPC ID
     if UnitExists(unit) then
         local guid=UnitGUID(unit)
@@ -340,7 +335,7 @@ e.GetUnitMapName=function(unit)--单位, 地图名称
 end
 
 e.GetFriend = function(name, guid, unit)--检测, 是否好友
-    guid= guid or (unit and UnitGUID(unit)) or (name and e.GroupGuid[name])
+    guid= guid or (unit and UnitGUID(unit)) or (name and (e.GroupGuid[name] and e.GroupGuid[name].guid or e.WoWGUID[name]))
     if guid then
         if C_FriendList.IsFriend(guid) then
             return '|A:groupfinder-icon-friend:0:0|a', nil, guid--好友
