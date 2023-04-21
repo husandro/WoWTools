@@ -502,150 +502,152 @@ local function Init()
 
 
     --Blizzard_Calendar.lua
-    local menu=CreateFrame("Frame", id..addName..'CalendarCreateEventFrameMenuWoW', CalendarCreateEventFrame, "UIDropDownMenuTemplate")
-    menu:SetPoint('BOTTOMLEFT', CalendarCreateEventFrame, 'BOTTOMRIGHT', -22,74)
-    securecall('UIDropDownMenu_SetWidth', menu, 60)
-    securecall('UIDropDownMenu_SetText', menu, e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET)
-    securecall('UIDropDownMenu_Initialize', menu, function(self, level, type)
-        local map=e.GetUnitMapName('player');--玩家区域名称
-        local inviteTab={}
-        for index = 1, C_Calendar.GetNumInvites() do
-			local inviteInfo = C_Calendar.EventGetInvite(index);
-			if inviteInfo and inviteInfo.name then
-				inviteTab[inviteInfo.name]= true
-			end
-		end
-        local find
-        for i=1 ,BNGetNumFriends() do
-            local wow=C_BattleNet.GetFriendAccountInfo(i);
-            local wowInfo= wow and wow.gameAccountInfo
-            if wowInfo and wowInfo.playerGuid and wowInfo.characterName and not inviteTab[wowInfo.characterName] then
-
-                local text= e.GetPlayerInfo(nil, wowInfo.playerGuid, true, true) or wowInfo.characterName--角色信息
-                if wowInfo.areaName then --位置
-                    if wowInfo.areaName==map then
-                        text=text..e.Icon.map2
-                    else
-                        text=text..' '..wowInfo.areaName
-                    end
+    C_Timer.After(2, function()
+        local menu=CreateFrame("Frame", id..addName..'CalendarCreateEventFrameMenuWoW', CalendarCreateEventFrame, "UIDropDownMenuTemplate")
+        menu:SetPoint('BOTTOMLEFT', CalendarCreateEventFrame, 'BOTTOMRIGHT', -22,74)
+        securecall('UIDropDownMenu_SetWidth', menu, 60)
+        securecall('UIDropDownMenu_SetText', menu, e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET)
+        securecall('UIDropDownMenu_Initialize', menu, function(self, level, type)
+            local map=e.GetUnitMapName('player');--玩家区域名称
+            local inviteTab={}
+            for index = 1, C_Calendar.GetNumInvites() do
+                local inviteInfo = C_Calendar.EventGetInvite(index);
+                if inviteInfo and inviteInfo.name then
+                    inviteTab[inviteInfo.name]= true
                 end
-
-                if wowInfo.characterLevel and wowInfo.characterLevel~=MAX_PLAYER_LEVEL then--等级
-                    text=text ..' |cff00ff00'..wowInfo.characterLevel..'|r'
-                end
-                if not wowInfo.isOnline then
-                    text= text..' '..(e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)
-                end
-                local info={
-                    text=text,
-                    notCheckable=true,
-                    tooltipOnButton=true,
-                    tooltipTitle= wow and wow.note,
-                    arg1= wowInfo.characterName,
-                    func=function(self2, arg1)
-                        CalendarCreateEventInviteEdit:SetText(arg1 or NONE)
-                    end
-                }
-                securecall('UIDropDownMenu_AddButton', info, level)
-                find=true
             end
-        end
-        if not find then
-            securecall('UIDropDownMenu_AddButton', {text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
-        end
-    end)
+            local find
+            for i=1 ,BNGetNumFriends() do
+                local wow=C_BattleNet.GetFriendAccountInfo(i);
+                local wowInfo= wow and wow.gameAccountInfo
+                if wowInfo and wowInfo.playerGuid and wowInfo.characterName and not inviteTab[wowInfo.characterName] then
 
-    local menu2=CreateFrame("Frame", id..addName..'CalendarCreateEventFrameMenuFriend', CalendarCreateEventFrame, "UIDropDownMenuTemplate")
-    menu2:SetPoint('TOPRIGHT', menu, 'BOTTOMRIGHT')
-    securecall('UIDropDownMenu_SetWidth', menu2, 60)
-    securecall('UIDropDownMenu_SetText', menu2, e.onlyChinese and '好友' or FRIEND)
-    securecall('UIDropDownMenu_Initialize', menu2, function(self, level, type)
-        local map=e.GetUnitMapName('player');--玩家区域名称
-        local inviteTab={}
-        for index = 1, C_Calendar.GetNumInvites() do
-			local inviteInfo = C_Calendar.EventGetInvite(index);
-			if inviteInfo and inviteInfo.name then
-				inviteTab[inviteInfo.name]= true
-			end
-		end
-        local find
-        for i=1 , C_FriendList.GetNumFriends() do
-            local game=C_FriendList.GetFriendInfoByIndex(i)
-            if game and game.name and not inviteTab[game.name] then--and not game.afk and not game.dnd then 
-                local text=game.guid and e.GetPlayerInfo(nil, game.guid, true, true) or game.name--角色信息
-                text= (game.level and game.level~=MAX_PLAYER_LEVEL) and text .. ' |cff00ff00'..game.level..'|r' or text--等级
-                if game.area and game.connected then
-                    if game.area == map then--地区
-                        text= text..e.Icon.map2
-                    else
-                        text= text..' '..game.area
+                    local text= e.GetPlayerInfo(nil, wowInfo.playerGuid, true, true) or wowInfo.characterName--角色信息
+                    if wowInfo.areaName then --位置
+                        if wowInfo.areaName==map then
+                            text=text..e.Icon.map2
+                        else
+                            text=text..' '..wowInfo.areaName
+                        end
                     end
-                elseif not game.connected then
-                    text= text..' '..(e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)
+
+                    if wowInfo.characterLevel and wowInfo.characterLevel~=MAX_PLAYER_LEVEL then--等级
+                        text=text ..' |cff00ff00'..wowInfo.characterLevel..'|r'
+                    end
+                    if not wowInfo.isOnline then
+                        text= text..' '..(e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)
+                    end
+                    local info={
+                        text=text,
+                        notCheckable=true,
+                        tooltipOnButton=true,
+                        tooltipTitle= wow and wow.note,
+                        arg1= wowInfo.characterName,
+                        func=function(self2, arg1)
+                            CalendarCreateEventInviteEdit:SetText(arg1 or NONE)
+                        end
+                    }
+                    securecall('UIDropDownMenu_AddButton', info, level)
+                    find=true
                 end
-
-                local info={
-                    text=text,
-                    notCheckable= true,
-                    tooltipOnButton=true,
-                    tooltipTitle=game.notes,
-                    icon= game.afk and FRIENDS_TEXTURE_AFK or game.dnd and FRIENDS_TEXTURE_DND,
-                    arg1= game.name,
-                    func=function(self2, arg1)
-                        CalendarCreateEventInviteEdit:SetText(arg1 or NONE)
-                    end
-                }
-                securecall('UIDropDownMenu_AddButton', info, level)
-                find=true
             end
-        end
-        if not find then
-            securecall('UIDropDownMenu_AddButton', {text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
-        end
-    end)
+            if not find then
+                securecall('UIDropDownMenu_AddButton', {text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
+            end
+        end)
 
-    local last=CreateFrame("Frame", id..addName..'CalendarCreateEventFrameMenuFriend', CalendarCreateEventFrame, "UIDropDownMenuTemplate")
-    last:SetPoint('TOPRIGHT', menu2, 'BOTTOMRIGHT')
-    securecall('UIDropDownMenu_SetWidth', last, 60)
-    securecall('UIDropDownMenu_SetText', last, e.onlyChinese and '公会' or GUILD)
-    securecall('UIDropDownMenu_Initialize', last, function(self, level, type)
-        local map=e.GetUnitMapName('player');--玩家区域名称
-        local inviteTab={}
-        for index = 1, C_Calendar.GetNumInvites() do
-			local inviteInfo = C_Calendar.EventGetInvite(index);
-			if inviteInfo and inviteInfo.name then
-				inviteTab[inviteInfo.name]= true
-			end
-		end
-        local find
-        for index=1,  GetNumGuildMembers() do
-            local name, rankName, rankIndex, lv, _, zone, publicNote, officerNote, isOnline, status, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)
-            if name and guid and not inviteTab[name] and isOnline and name~=e.Player.name_server then
-                local text=e.GetPlayerInfo(nil, guid, true, true)--名称
-                text=(lv and lv~=MAX_PLAYER_LEVEL) and text..' |cnGREEN_FONT_COLOR:'..lv..'|r' or text--等级
-                if zone then--地区
-                    text= zone==map and text..e.Icon.map2 or text..' '..zone
+        local menu2=CreateFrame("Frame", id..addName..'CalendarCreateEventFrameMenuFriend', CalendarCreateEventFrame, "UIDropDownMenuTemplate")
+        menu2:SetPoint('TOPRIGHT', menu, 'BOTTOMRIGHT')
+        securecall('UIDropDownMenu_SetWidth', menu2, 60)
+        securecall('UIDropDownMenu_SetText', menu2, e.onlyChinese and '好友' or FRIEND)
+        securecall('UIDropDownMenu_Initialize', menu2, function(self, level, type)
+            local map=e.GetUnitMapName('player');--玩家区域名称
+            local inviteTab={}
+            for index = 1, C_Calendar.GetNumInvites() do
+                local inviteInfo = C_Calendar.EventGetInvite(index);
+                if inviteInfo and inviteInfo.name then
+                    inviteTab[inviteInfo.name]= true
                 end
-                text= rankName and text..' '..rankName..(rankIndex or '') or text
-                local info={
-                    text=text,
-                    notCheckable=true,
-                    tooltipOnButton=true,
-                    tooltipTitle=publicNote or '',
-                    tooltipText=officerNote or '',
-                    icon= status==1 and FRIENDS_TEXTURE_AFK or status==2 and FRIENDS_TEXTURE_DND,
-                    arg1=name,
-                    func=function(self2, arg1)
-                        CalendarCreateEventInviteEdit:SetText(arg1 or NONE)
-                    end
-                }
-                securecall('UIDropDownMenu_AddButton', info, level)
-                find=true
             end
-        end
-        if not find then
-            securecall('UIDropDownMenu_AddButton', {text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
-        end
+            local find
+            for i=1 , C_FriendList.GetNumFriends() do
+                local game=C_FriendList.GetFriendInfoByIndex(i)
+                if game and game.name and not inviteTab[game.name] then--and not game.afk and not game.dnd then 
+                    local text=game.guid and e.GetPlayerInfo(nil, game.guid, true, true) or game.name--角色信息
+                    text= (game.level and game.level~=MAX_PLAYER_LEVEL) and text .. ' |cff00ff00'..game.level..'|r' or text--等级
+                    if game.area and game.connected then
+                        if game.area == map then--地区
+                            text= text..e.Icon.map2
+                        else
+                            text= text..' '..game.area
+                        end
+                    elseif not game.connected then
+                        text= text..' '..(e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)
+                    end
+
+                    local info={
+                        text=text,
+                        notCheckable= true,
+                        tooltipOnButton=true,
+                        tooltipTitle=game.notes,
+                        icon= game.afk and FRIENDS_TEXTURE_AFK or game.dnd and FRIENDS_TEXTURE_DND,
+                        arg1= game.name,
+                        func=function(self2, arg1)
+                            CalendarCreateEventInviteEdit:SetText(arg1 or NONE)
+                        end
+                    }
+                    securecall('UIDropDownMenu_AddButton', info, level)
+                    find=true
+                end
+            end
+            if not find then
+                securecall('UIDropDownMenu_AddButton', {text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
+            end
+        end)
+
+        local last=CreateFrame("Frame", id..addName..'CalendarCreateEventFrameMenuFriend', CalendarCreateEventFrame, "UIDropDownMenuTemplate")
+        last:SetPoint('TOPRIGHT', menu2, 'BOTTOMRIGHT')
+        securecall('UIDropDownMenu_SetWidth', last, 60)
+        securecall('UIDropDownMenu_SetText', last, e.onlyChinese and '公会' or GUILD)
+        securecall('UIDropDownMenu_Initialize', last, function(self, level, type)
+            local map=e.GetUnitMapName('player');--玩家区域名称
+            local inviteTab={}
+            for index = 1, C_Calendar.GetNumInvites() do
+                local inviteInfo = C_Calendar.EventGetInvite(index);
+                if inviteInfo and inviteInfo.name then
+                    inviteTab[inviteInfo.name]= true
+                end
+            end
+            local find
+            for index=1,  GetNumGuildMembers() do
+                local name, rankName, rankIndex, lv, _, zone, publicNote, officerNote, isOnline, status, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)
+                if name and guid and not inviteTab[name] and isOnline and name~=e.Player.name_server then
+                    local text=e.GetPlayerInfo(nil, guid, true, true)--名称
+                    text=(lv and lv~=MAX_PLAYER_LEVEL) and text..' |cnGREEN_FONT_COLOR:'..lv..'|r' or text--等级
+                    if zone then--地区
+                        text= zone==map and text..e.Icon.map2 or text..' '..zone
+                    end
+                    text= rankName and text..' '..rankName..(rankIndex or '') or text
+                    local info={
+                        text=text,
+                        notCheckable=true,
+                        tooltipOnButton=true,
+                        tooltipTitle=publicNote or '',
+                        tooltipText=officerNote or '',
+                        icon= status==1 and FRIENDS_TEXTURE_AFK or status==2 and FRIENDS_TEXTURE_DND,
+                        arg1=name,
+                        func=function(self2, arg1)
+                            CalendarCreateEventInviteEdit:SetText(arg1 or NONE)
+                        end
+                    }
+                    securecall('UIDropDownMenu_AddButton', info, level)
+                    find=true
+                end
+            end
+            if not find then
+                securecall('UIDropDownMenu_AddButton', {text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
+            end
+        end)
     end)
 end
 
