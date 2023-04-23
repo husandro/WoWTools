@@ -24,7 +24,7 @@ local Save={
 
         ["SPEED"]= {r=1, g=0.82, b=0, current=true},--移动
     },
-    --toLeft=true--数值,放左边
+    --toLeft=true--数值,
     bar= true,--进度条
     barTexture2=true,--样式2
     barWidth= -60,--bar, 宽度
@@ -111,7 +111,7 @@ local function set_Tabs()
             if info.name=='STAGGER' and (e.Player.class~='MONK' or Role~='TANK') then--武僧, 醉拳
                 Tabs[index].hide= true
             elseif info.dps then--四属性, DPS
-                if Role~='DAMAGER' and Save.onlyDPS then
+                if Role~='DAMAGER' and Role~='HEALER' and Save.onlyDPS then
                     Tabs[index].hide= true
                 end
             elseif info.tank then--坦克
@@ -1155,9 +1155,9 @@ local function set_Panle_Setting()--设置 panel
             check:SetChecked(Save.onlyDPS)
             check:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
             if e.onlyChinese then
-                check.text:SetText("仅限DPS"..INLINE_DAMAGER_ICON)
+                check.text:SetText("仅限"..INLINE_DAMAGER_ICON..INLINE_HEALER_ICON)
             else
-                check.text:SetFormattedText(LFG_LIST_CROSS_FACTION , DAMAGER..INLINE_DAMAGER_ICON)
+                check.text:SetFormattedText(LFG_LIST_CROSS_FACTION , INLINE_DAMAGER_ICON..INLINE_HEALER_ICON)
             end
             check:SetScript('OnMouseUp',function(self)
                 Save.onlyDPS = not Save.onlyDPS and true or false
@@ -1170,9 +1170,9 @@ local function set_Panle_Setting()--设置 panel
             local text= e.Cstr(panel)
             text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
             if e.onlyChinese then
-                text:SetText("仅限坦克"..INLINE_TANK_ICON)
+                text:SetText("仅限"..INLINE_TANK_ICON)
             else
-                text:SetFormattedText(LFG_LIST_CROSS_FACTION , TANK..INLINE_TANK_ICON)
+                text:SetFormattedText(LFG_LIST_CROSS_FACTION , INLINE_TANK_ICON)
             end
             findTank=true
             last= text
