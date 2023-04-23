@@ -287,7 +287,7 @@ local function setItem(self, ItemLink)
                 find=true
                 end
                 if find then
-                    self:AddLine(e.GetPlayerInfo(nil, guid, true))
+                    self:AddLine(e.GetPlayerInfo({unit=nil, guid=guid, name=nil, reFriendFaction=true, reName=true, reRealm=true, reLink=false}))
                 end
             end
         end
@@ -307,7 +307,7 @@ local function setItem(self, ItemLink)
             if guid and info and guid~=e.Player.guid then
                 local tab=info.Item[itemID]
                 if tab and tab.bag and tab.bank then
-                    self:AddDoubleLine(e.GetPlayerInfo(nil, guid, true), e.Icon.bank2..(tab.bank==0 and '|cff606060'..tab.bank..'|r' or tab.bank)..' '..e.Icon.bag2..(tab.bag==0 and '|cff606060'..tab.bag..'|r' or tab.bag))
+                    self:AddDoubleLine(e.GetPlayerInfo({unit=nil, guid=guid, name=nil, reFriendFaction=true, reName=true, reRealm=true, reLink=false}), e.Icon.bank2..(tab.bank==0 and '|cff606060'..tab.bank..'|r' or tab.bank)..' '..e.Icon.bag2..(tab.bag==0 and '|cff606060'..tab.bag..'|r' or tab.bag))
                     bagAll=bagAll +tab.bag
                     bankAll=bankAll +tab.bank
                     numPlayer=numPlayer +1
@@ -360,7 +360,7 @@ local function setCurrency(self, currencyID)--货币
         if guid~=e.Player.guid then
             local quantity=info.Currency[currencyID]
             if quantity and quantity>0 then
-                self:AddDoubleLine(e.GetPlayerInfo(nil, guid, true), e.MK(quantity, 3))
+                self:AddDoubleLine(e.GetPlayerInfo({unit=nil, guid=guid, name=nil, reFriendFaction=true, reName=true, reRealm=true, reLink=false}), e.MK(quantity, 3))
                 all=all+quantity
                 numPlayer=numPlayer+1
             end
@@ -373,12 +373,19 @@ local function setCurrency(self, currencyID)--货币
 end
 
 local function setAchievement(self, achievementID)--成就
+    if not achievementID then
+        return
+    end
+    e.tips:AddLine(' ')
     local _, name, points, completed, month, day, year, description, flags, icon, rewardText, isGuild, wasEarnedByMe, earnedBy, isStatistic = GetAchievementInfo(achievementID)
     self.textLeft:SetText(points..(e.onlyChinese and '点' or RESAMPLE_QUALITY_POINT))--点数
     self.text2Left:SetText(completed and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已完成' or CRITERIA_COMPLETED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未完成' or ACHIEVEMENTFRAME_FILTER_INCOMPLETE)..'|r')--否是完成
-    self.textRight:SetText(isGuild and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '公会' or GUILD) or flags==131072 and ('|cffff00ff'..e.Icon.wow2..(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET))  or '')
+    self.textRight:SetText(isGuild and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '公会' or GUILD) or flags==0x4000 and ('|cffff00ff'..e.Icon.wow2..(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET))  or '')
 
-    self:AddDoubleLine((e.onlyChinese and '成就' or ACHIEVEMENTS)..' '..achievementID, icon and '|T'..icon..':0|t'..icon)
+    self:AddDoubleLine((e.onlyChinese and '成就' or ACHIEVEMENTS)..' '..(flags==0x20000 and '|cffff00ff'..e.Icon.wow2..achievementID..'|r' or achievementID), icon and '|T'..icon..':0|t'..icon)
+    if flags==0x20000 then
+        self.textRight:SetText(e.Icon.wow2..'|cffff00ff'..(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET))
+    end
 end
 
 local function setQuest(self, questID)
@@ -403,7 +410,8 @@ local function setBuff(type, self, ...)--Buff
             self.Portrait:SetShown(true)
         end
         local text= source=='player' and (e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
-                or source=='pet' and PET or UnitIsPlayer(source) and e.GetPlayerInfo(source, nil, true)
+                or source=='pet' and PET
+                or UnitIsPlayer(source) and e.GetPlayerInfo({unit=source, guid=UnitGUID(source), name=nil, reFriendFaction=true, reName=true, reRealm=true, reLink=false})
                 or UnitName(source) or _G[source] or source
         self:AddDoubleLine('|c'..(hex or 'ffffff')..(e.onlyChinese and '来原: '..text or format(e.onlyChinese and '"来源：%s' or RUNEFORGE_LEGENDARY_POWER_SOURCE_FORMAT, text)..'|r'))
         self:Show()
@@ -586,7 +594,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
 
         local line=GameTooltipTextLeft1--名称
         if line then
-            line:SetText(col..e.Icon.toRight2..name..e.Icon.toLeft2..'|r')
+            line:SetText(col..e.Icon.toRight2..(e.GetFriend(name, guid, unit) or '')..name..e.Icon.toLeft2..'|r')
         end
 
         realm= realm or e.Player.server--服务器
@@ -635,7 +643,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             --text= text..LEVEL..' '..level..'  '..e.Race(nil, raceFile, sex)..raceName..' '..e.Class(nil, classFilename)..className..(UnitIsPVP(unit) and  '  (|cnRED_FONT_COLOR:PvP|r)' or '  (|cnGREEN_FONT_COLOR:PvE|r)')
             local info= C_PlayerInfo.GetPlayerMythicPlusRatingSummary(unit)--挑战, 分数
             if info and info.currentSeasonScore and info.currentSeasonScore>0 then
-                text= text..' '..e.Race(nil, raceFile, sex)..' '..e.Class(nil, classFilename)..' '..(UnitIsPVP(unit) and  '|cnGREEN_FONT_COLOR:PvP|r' or 'PvE')..'  '..e.GetKeystoneScorsoColor(info.currentSeasonScore,true)
+                text= text..' '..(e.Race(nil, raceFile, sex) or '')..' '..e.Class(nil, classFilename)..' '..(UnitIsPVP(unit) and  '|cnGREEN_FONT_COLOR:PvP|r' or 'PvE')..'  '..e.GetKeystoneScorsoColor(info.currentSeasonScore,true)
 
                 if info.runs and info.runs then
                     local bestRunLevel=0
@@ -649,7 +657,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                     end
                 end
             else
-                text= text..' '..e.Race(nil, raceFile, sex)..raceName..' '..e.Class(nil, classFilename)..' '..(UnitIsPVP(unit) and  '(|cnGREEN_FONT_COLOR:PvP|r)' or '(PvE)')
+                text= text..' '..(e.Race(nil, raceFile, sex) or '')..(raceName or '')..' '..(e.Class(nil, classFilename) or '')..' '..(UnitIsPVP(unit) and  '(|cnGREEN_FONT_COLOR:PvP|r)' or '(PvE)')
             end
             text= col and col..text..'|r' or text
             line:SetText(text)
@@ -1497,14 +1505,61 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     frame.ID=text
                     if text then
                         local flags= select(9, GetAchievementInfo(self2.id))
-                        if flags==131072 then
+                        if flags==0x20000 then
                             text= e.Icon.wow2..'|cffff00ff'..text..'|r'
                         end
                     end
                     frame.textID:SetText(text or '')
-
                 end
             end)
+            hooksecurefunc('AchievementFrameComparison_UpdateDataProvider', function()--比较成就, Blizzard_AchievementUI.lua
+                for _, button in pairs(AchievementFrameComparison.AchievementContainer.ScrollBox:GetFrames()) do
+                    if not button.OnEnter then
+                        button:SetScript('OnLeave', function() e.tips:Hide() end)
+                        button:SetScript('OnEnter', function(self3)
+                            if self3.id then
+                                e.tips:SetOwner(AchievementFrameComparison, "ANCHOR_RIGHT",0,-250)
+                                e.tips:ClearLines()
+                                e.tips:SetAchievementByID(self3.id)
+                                e.tips:Show()
+                            end
+                        end)
+                        if button.Player and button.Player.Icon and not button.Player.idText then
+                            button.Player.idText= e.Cstr(button.Player)
+                            button.Player.idText:SetPoint('LEFT', button.Player.Icon, 'RIGHT', 0, 10)
+                        end
+                    end
+                    if button.Player and button.Player.idText then
+                        local flags= button.id and select(9, GetAchievementInfo(button.id))
+                        if flags==0x20000 then
+                            button.Player.idText:SetText(e.Icon.wow2..'|cffff00ff'..button.id..'|r')
+                        else
+                            button.Player.idText:SetText(button.id or '')
+                        end
+                    end
+                end
+            end)
+            hooksecurefunc('AchievementFrameComparison_SetUnit', function(unit)--比较成就
+                local text= e.GetPlayerInfo({unit=unit, guid=unit and UnitGUID(unit), name=nil, reFriendFaction=true, reName=true, reRealm=true, reLink=false})--玩家信息图标
+                if text~='' then
+                    AchievementFrameComparisonHeaderName:SetText(text)
+                end
+            end)
+            if AchievementFrameComparisonHeaderPortrait then
+                local function func()
+                    if AchievementFrameComparisonHeaderPortrait.unit then
+                        e.tips:SetOwner(AchievementFrameComparison, "ANCHOR_RIGHT",0,-250)
+                        e.tips:ClearLines()
+                        e.tips:SetUnit(AchievementFrameComparisonHeaderPortrait.unit)
+                        e.tips:Show()
+                    end
+                end
+                AchievementFrameComparisonHeader:EnableMouse(true)
+                AchievementFrameComparisonHeader:SetScript('OnLeave', function() e.tips:Hide() end)
+                AchievementFrameComparisonHeader:SetScript('OnEnter', func)
+
+            end
+
         elseif arg1=='Blizzard_Collections' then--宠物手册， 召唤随机，偏好宠物，技能ID    
             hooksecurefunc('PetJournalSummonRandomFavoritePetButton_OnEnter', function()--PetJournalSummonRandomFavoritePetButton
                 setSpell(e.tips, 243819)

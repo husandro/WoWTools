@@ -843,7 +843,7 @@ local function set_InspectPaperDollFrame_SetLevel()--目标,天赋 装等
     local info= guid and e.UnitItemLevel[guid]
     if info and info.itemLevel and info.specID then
         local level, effectiveLevel, sex = UnitLevel(InspectFrame.unit), UnitEffectiveLevel(InspectFrame.unit), UnitSex(InspectFrame.unit);
-        local text= e.GetPlayerInfo(unit, guid, false)
+        local text= e.GetPlayerInfo({unit=unit, guid=guid, name=nil, reFriendFaction=true, reName=false, reRealm=false, reLink=false})
         local icon, role = select(4, GetSpecializationInfoByID(info.specID, sex))
         if icon and role then
             text=text..' |T'..icon..':0|t '..e.Icon[role]
@@ -1058,10 +1058,8 @@ local function Init()
             level = EFFECTIVE_LEVEL_FORMAT:format('|cnGREEN_FONT_COLOR:'..effectiveLevel..'|r', level);
         end
         local faction= e.Player.faction=='Alliance' and '|A:charcreatetest-logo-alliance:26:26|a' or e.Player.faction=='Horde' and '|A:charcreatetest-logo-horde:26:26|a' or ''
-        CharacterLevelText:SetText('  '..faction..'|A:'..race..':26:26|a|A:'..class..':26:26|a  '..level)
+        CharacterLevelText:SetText('  '..faction..(race and '|A:'..race..':26:26|a' or '')..(class and '|A:'..class..':26:26|a  ' or '')..level)
     end)
-
-
 end
 
 

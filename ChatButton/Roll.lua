@@ -103,13 +103,14 @@ local function InitMenu(self, level, type)--主菜单
     if type=='SAVE' then
         for _, tab in pairs(Save.save) do
             info={
-                text='|cffffffff'..tab.roll..'|r '..(tab.guid and e.GetPlayerInfo(nil, tab.guid, true) or tab.name)..' '..tab.date,
+                text='|cffffffff'..tab.roll..'|r '..e.GetPlayerInfo({unit=tab.unit, guid=tab.guid, name=tab.name, reFriendFaction=true, reName=true, reRealm=true, reLink=false})..' '..tab.date,
                 notCheckable=true,
                 tooltipOnButton=true,
                 tooltipTitle=tab.text,
                 tooltipText=tab.date..'\n\n'..(e.onlyChinese and '发送信息' or SEND_MESSAGE)..e.Icon.left,
-                func=function()
-                    e.Chat(tab.text)
+                arg1=tab.text,
+                func=function(self2, arg1)
+                    e.Chat(arg1)
                 end,
             }
             securecall('UIDropDownMenu_AddButton', info, level)
@@ -130,13 +131,14 @@ local function InitMenu(self, level, type)--主菜单
     local tabNew={}
     for _, tab in pairs(Tab) do
         info={
-            text='|cffffffff'..tab.roll..'|r '..(tab.guid and e.GetPlayerInfo(nil, tab.guid, true) or tab.name)..' '..tab.date,
+            text='|cffffffff'..tab.roll..'|r '..e.GetPlayerInfo({unit=tab.unit, guid=tab.guid, name=tab.name, reFriendFaction=true, reName=true, reRealm=true, reLink=false}) ..' '..tab.date,
             notCheckable=true,
             tooltipOnButton=true,
             tooltipTitle=tab.text,
             tooltipText=tab.date..'\n\n'..(e.onlyChinese and '发送信息' or SEND_MESSAGE)..e.Icon.left,
-            func=function()
-                e.Chat(tab.text)
+            arg1=tab.arg1,
+            func=function(self2, arg1)
+                e.Chat(arg1)
             end,
         }
         if tabNew[tab.name] then

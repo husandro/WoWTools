@@ -127,7 +127,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
                     m=m..'|cff00ff00'..info.level ..'|r'
                 end
                 if info.guid then
-                    m=m..e.GetPlayerInfo(nil, info.guid)
+                    m=m..e.GetPlayerInfo({unit=nil, guid=info.guid, name=nil, reFriendFaction=true, reName=true, reRealm=true, reLink=false})
                     guid=info.guid
                     if info.area then
                         m=m..info.area
@@ -152,7 +152,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
             end
             if info.playerGuid then
                 guid=info.playerGuid
-                m=e.GetPlayerInfo(nil, info.playerGuid)
+                m=e.GetPlayerInfo({unit=nil, guid=guid, name=nil, reFriendFaction=true, reName=true, reRealm=true, reLink=false})
             elseif info.raceName then
                 m=m..info.raceName
             end
@@ -337,8 +337,7 @@ local function set_RaidGroupFrame_Update()--团队, 模块
                 end
 
                 if subframes.level and level==MAX_PLAYER_LEVEL then
-                    local text= e.Race(unit) or ''
-                    subframes.level:SetText(text)
+                    subframes.level:SetText(e.Race(unit) or '')
                 end
             end
         end

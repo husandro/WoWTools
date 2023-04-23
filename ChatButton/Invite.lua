@@ -133,7 +133,7 @@ local function set_PLAYER_TARGET_CHANGED()--设置, 邀请目标
     if guid then
         InvPlateGuid[guid]=name--保存到已邀请列表
     end
-    print(id, addName, TARGET, guid and e.GetPlayerInfo(nil, guid, true) or name)
+    print(id, addName, e.onlyChinese and '目标' or TARGET, e.GetPlayerInfo({unit=nil, guid=guid, name=name, reFriendFaction=true, reName=false, reRealm=false, reLink=true}))
 end
 
 local function InvPlateGuidFunc()--从已邀请过列表里, 再次邀请 
@@ -431,7 +431,7 @@ local function InitList(self, level, type)
         for guid, name in pairs(InvPlateGuid) do
             if not e.GroupGuid[guid] then
                 info={
-                    text=e.GetPlayerInfo(nil, guid, true),
+                    text=e.GetPlayerInfo({unit=nil, guid=guid, name=name, reFriendFaction=true, reName=true, reRealm=true}),
                     tooltipOnButton=true,
                     tooltipTitle= e.onlyChinese and '邀请' or INVITE,
                     tooltipText=name,
@@ -537,7 +537,7 @@ local function InitList(self, level, type)
     elseif type=='NoInvList' then--三级列表，拒绝邀请列表
         local all=0
         for guid, nu in pairs(Save.InvNoFriend) do
-            local text=e.GetPlayerInfo(nil, guid, true)
+            local text=e.GetPlayerInfo({unit=nil, guid=guid, name=nil, reFriendFaction=true, reName=true, reRealm=true})
             if text then
                 all=all+1
                 info={

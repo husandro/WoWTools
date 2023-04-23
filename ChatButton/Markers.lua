@@ -131,12 +131,13 @@ local function setGroupReadyTipsEvent()--注册事件, 就绪,队员提示信息
 end
 local function getReadyCheckStatus(unit, index)
     local stat=GetReadyCheckStatus(unit)
+    local text= e.GetPlayerInfo({unit=unit, guid=UnitGUID(unit), name=nil, reFriendFaction=true, reName=true, reRealm=true, reLink=false})
     if stat=='ready' then
-        return '|cnGREEN_FONT_COLOR:'..index..")|r"..e.Icon.select2..e.GetPlayerInfo(unit, nil, true)
+        return '|cnGREEN_FONT_COLOR:'..index..")|r"..e.Icon.select2..text
     elseif stat=='waiting' then
-        return index..")   "..e.GetPlayerInfo(unit, nil, true)
+        return index..")   "..text
     elseif stat=='notready' then
-        return '|cnRED_FONT_COLOR:'..index..")|r"..e.Icon.O2..e.GetPlayerInfo(unit, nil, true)..(UnitIsAFK(unit) and '|cff606060<'..AFK..'>|r' or not UnitIsConnected(unit) and 	'|cff606060<'..PLAYER_OFFLINE..'>|r' or '')
+        return '|cnRED_FONT_COLOR:'..index..")|r"..e.Icon.O2..text..(UnitIsAFK(unit) and '|cff606060<'..AFK..'>|r' or not UnitIsConnected(unit) and 	'|cff606060<'..(e.onlyChinese and '离线' or PLAYER_OFFLINE)..'>|r' or '')
     end
 end
 local function setGroupReadyTips(event, arg1, arg2)

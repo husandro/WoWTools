@@ -163,11 +163,11 @@ local function Party(frame)--队友位置
                 end
             end
 
-            tab =e.GroupGuid[guid]--职责
+            --[[tab =e.GroupGuid[guid]--职责
             if tab and tab.combatRole then
                 text= text..e.Icon[tab.combatRole]
-            end
-            text= text..e.GetPlayerInfo(nil, guid, true)--信息
+            end]]
+            text= text..e.GetPlayerInfo({unit=nil, guid=guid, name=name, reFriendFaction=true, reName=true, reRealm=true, reLink=false})--信息
             local name2, uiMapID2=e.GetUnitMapName(unit)
             if (name and name==name2) or (uiMapID and uiMapID==uiMapID2) then--地图名字
                 text=text..e.Icon.select2
@@ -677,7 +677,7 @@ local function All(self)--所有记录
             find=true
         end
         if find then
-            text= text..'\n'.. e.GetPlayerInfo(nil, guid, true)
+            text= text..'\n'.. e.GetPlayerInfo({unit=nil, guid=guid, name=nil, reFriendFaction=true, reName=true, reRealm=true, reLink=false})
         end
     end
     if  text and not self.WoWKeystones then

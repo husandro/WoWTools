@@ -122,7 +122,7 @@ local function Init_Menu(self, level, type)--主菜单
                             end
                         end
                         if gameAccountInfo.playerGuid then
-                            text=text..e.GetPlayerInfo(nil, gameAccountInfo.playerGuid, true)--角色信息
+                            text= text..e.GetPlayerInfo({unit=nil, guid=gameAccountInfo.playerGuid, name=nil, reFriendFaction=true, reName=true, reRealm=true, reLink=false})
                             if gameAccountInfo.areaName then --位置
                                 if gameAccountInfo.areaName==map then
                                     text=text..e.Icon.map2
@@ -158,7 +158,7 @@ local function Init_Menu(self, level, type)--主菜单
             for i=1 , C_FriendList.GetNumFriends() do
                 local game=C_FriendList.GetFriendInfoByIndex(i)
                 if game and game.connected and (game.guid or game.name) and not game.mobile then--and not game.afk and not game.dnd then 
-                    local text=game.guid and e.GetPlayerInfo(nil, game.guid, true) or game.name--角色信息
+                    local text=e.GetPlayerInfo({unit=nil, guid=game.guid, name=game.name, reFriendFaction=true, reName=true, reRealm=true, reLink=false})--角色信息
                     text= (game.level and game.level~=MAX_PLAYER_LEVEL) and text .. ' |cff00ff00'..game.level..'|r' or text--等级
                     if game.area then
                         if game.area == map then--地区
@@ -200,7 +200,7 @@ local function Init_Menu(self, level, type)--主菜单
                 end
 
                 info={
-                    text=(tab.wow and e.Icon.wow2 or '')..(tab.guid and e.GetPlayerInfo(nil, tab.guid, true) or tab.name),
+                    text=(tab.wow and e.Icon.wow2 or '')..e.GetPlayerInfo({unit=tab.unit, guid=tab.guid, name=tab.name, reFriendFaction=true, reName=true, reRealm=true, reLink=false}),
                     notCheckable=true,
                     tooltipOnButton=true,
                     tooltipTitle= e.onlyChinese and '记录: 密语' or (PVP_RECORD..SLASH_TEXTTOSPEECH_WHISPER),
@@ -208,7 +208,7 @@ local function Init_Menu(self, level, type)--主菜单
                     arg1= tab.name,
                     arg2= tab.wow,
                     func=function(self2, arg1, arg2)
-                        e.Say(nil, tab.name, tab.wow)
+                        e.Say(nil, arg1, arg2)
                         button.type='/w'
                         button.name=arg1
                         button.wow=arg2

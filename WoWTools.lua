@@ -103,57 +103,135 @@ end
 e.Race=function(unit, race, sex, reAtlas)--玩家种族图标
     race =race or unit and select(2,UnitRace(unit))
     sex=sex or unit and UnitSex(unit)
-    sex= sex==2 and 'male' or 'female'
-    if race=='Scourge' then
-        race='Undead'
-    elseif race=='HighmountainTauren' then
-        race='highmountain'
-    elseif race=='ZandalariTroll' then
-        race='zandalari'
-    elseif race=='LightforgedDraenei' then
-        race='lightforged'
-    elseif race=='Dracthyr' then
-        race='dracthyrvisage'
-    end
-    if race and sex then
+    sex= sex==2 and 'male' or (sex==1 and 'female')
+    if sex and race then
+        if race=='Scourge' then
+            race='Undead'
+        elseif race=='HighmountainTauren' then
+            race='highmountain'
+        elseif race=='ZandalariTroll' then
+            race='zandalari'
+        elseif race=='LightforgedDraenei' then
+            race='lightforged'
+        elseif race=='Dracthyr' then
+            race='dracthyrvisage'
+        end
         if reAtlas then
             return 'raceicon128-'..race..'-'..sex
         else
             return '|A:raceicon128-'..race..'-'..sex..':0:0|a'
         end
-    else
-        return ''
     end
 end
 
 e.Class=function(unit, class, reAltlas)--职业图标
     class=class or (unit and select(2, UnitClass(unit)))
-    if class=='EVOKER' then
-        class='classicon-evoker'
-    else
-        class=class and 'groupfinder-icon-class-'..class or 'groupfinder-icon-emptyslot'
-    end
-    if reAltlas then
-        return class
-    else
-        return '|A:'..class ..':0:0|a'
+    if class then
+        if class=='EVOKER' then
+            class='classicon-evoker'
+        else
+            class=class and 'groupfinder-icon-class-'..class or 'groupfinder-icon-emptyslot'
+        end
+        if reAltlas then
+            return class
+        else
+            return '|A:'..class ..':0:0|a'
+        end
     end
 end
 
-e.GetPlayerInfo= function(unit, guid, showName, showRealm)--玩家信息图标
-    guid= guid or UnitGUID(unit)
+local function getGUID(unit, name)--从名字,名unit, 获取GUID
+    if unit then
+        return UnitGUID(unit)
+    elseif name then
+        if e.GroupGuid[name] and e.GroupGuid[name].guid then--队友
+            return e.GroupGuid[name].guid
+        elseif e.WoWGUID[name] then--战网
+            return e.WoWGUID[name]
+        elseif UnitIsPlayer('target') and GetUnitName('target',true)==name then--目标
+            return UnitGUID('target')
+        elseif C_FriendList.GetFriendInfo(name) then--好友
+            local info=C_FriendList.GetFriendInfo(name)
+            return info and info.guid
+        elseif name==e.Player.name or name==e.Player.name_server then
+            return e.Player.guid
+        end
+    end
+end
+e.GetFriend= function(name, guid, unit)--检测, 是否好友
+    guid= guid or getGUID(unit, name)
     if guid then
-        if guid==e.Player.guid then
-           return e.Icon.player..(showName and e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r' or '')..e.Icon.star2
-        else
-            local _, englishClass, _, englishRace, sex, name, realm = GetPlayerInfoByGUID(guid)
-            if name and englishClass and englishRace and sex then
-                if showName then
-                    return (e.Race(nil, englishRace, sex) or '')..'|c'..select(4,GetClassColor(englishClass))..(not showRealm and GetPlayerNameRemoveRealm(name, realm) or (name..(realm and realm~='' and '-'..realm or '')))..'|r'
-                else
-                    return (e.Race(nil, englishRace, sex) or '')..(e.Class(nil, englishClass) or '')
-                end
+        if C_FriendList.IsFriend(guid) then
+            return '|A:groupfinder-icon-friend:0:0|a', nil, guid--好友
+        elseif IsGuildMember(guid) then
+            return '|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a', nil, guid--公会
+        elseif C_BattleNet.GetAccountInfoByGUID(guid) or C_BattleNet.GetGameAccountInfoByGUID(guid) then
+            return e.Icon.wow2, true, guid
+        end
+    elseif name then
+        local name2=name:match('(.-)%-')
+        local info=C_FriendList.GetFriendInfo(name) or (name2 and C_FriendList.GetFriendInfo(name2))
+        if info then
+            return '|A:groupfinder-icon-friend:0:0|a', nil, info.guid--好友
+        end
+    end
+end
+
+e.GetUnitFaction= function(unit)--检查, 是否同一阵营
+    local faction= UnitFactionGroup(unit)
+    if faction~= e.Player.faction and faction~='Neutral' then
+        return faction=='Horde' and e.Icon.horde2 or e.Icon.alliance2
+    end
+end
+
+
+e.PlayerLink=function(name, guid, slotLink) --玩家超链接
+    guid= guid or (name and (e.GroupGuid[name] and e.GroupGuid[name].guid or e.WoWGUID[name]))
+    if name == COMBATLOG_FILTER_STRING_ME or name==e.Player.name or name==e.Player.name_server or guid==e.Player.guid then--自已
+        return (not slotLink and e.Icon.player)..'|Hplayer:'..e.Player.name_server..'|h['..e.Player.col..COMBATLOG_FILTER_STRING_ME..'|r'..']|h'
+    end
+    if guid then
+        local _, class, _, race, sex, name2, realm = GetPlayerInfoByGUID(guid)
+        if name2 then
+            local showName= GetPlayerNameRemoveRealm(name2, realm)
+            if class then
+                showName= '|c'..select(4,GetClassColor(class))..showName..'|r'
             end
+            return (not slotLink and e.Race(nil, race, sex) or '')..'|Hplayer:'..name2..(realm and '-'..realm or '')..'|h['..showName..']|h'
+        end
+    elseif name then
+        return '|Hplayer:'..name..'|h['..GetPlayerNameRemoveRealm(name)..']|h'
+    end
+end
+
+--IsPlayerInGuildFromGUID(playerGUID)--玩家信息图标
+e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, reFriendFaction=true, reName=true, reRealm=true, reLink=false})
+    tab.guid= tab.guid or getGUID(tab.unit, tab.name)
+    if tab.guid==e.Player.guid or tab.name==e.Player.name or tab.name==e.Player.name_server then
+        return e.Icon.player..(tab.nameShow and e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r' or '')..e.Icon.star2
+    elseif tab.guid and C_PlayerInfo.GUIDIsPlayer(tab.guid) then
+        local _, englishClass, _, englishRace, sex, name, realm = GetPlayerInfoByGUID(tab.guid)
+        if name and englishClass and englishRace and sex then
+            tab.unit= tab.unit or (e.GroupGuid[tab.guid] and e.GroupGuid[tab.guid].unit)
+            local friend= e.GetFriend(tab.name, tab.guid, tab.unit)--检测, 是否好友
+            local faction= tab.unit and e.GetUnitFaction(tab.unit)--检查, 是否同一阵营
+            local groupTab= e.GroupGuid[tab.guid] or e.GroupGuid[tab.name]--队伍成员
+            local text=(friend or '')..(faction or '')..(e.Race(nil, englishRace, sex) or '')..(e.Class(tab.unit, englishClass) or '')
+            if groupTab and groupTab.combatRole=='HEALER' or groupTab.combatRole=='TANK' then--职业图标
+                text= text..e.Icon[tab.combatRole]..(tab.subgroup or '')
+            end
+            
+            if tab.reLink then
+                return text..e.PlayerLink(tab.name, tab.guid, true) --玩家超链接
+            elseif tab.reName then
+                if tab.reRealm then
+                    text= text..(name..(realm and realm~='' and '-'..realm or ''))
+                else
+                    text= text..GetPlayerNameRemoveRealm(name, realm)
+                end
+                text= '|c'..select(4,GetClassColor(englishClass))..text..'|r'
+            end
+            return text
         end
     end
     return ''
@@ -273,24 +351,6 @@ e.Icon={
 ]]
 
 
-e.PlayerLink=function(name, guid) --玩家超链接
-    guid= guid or (name and (e.GroupGuid[name] and e.GroupGuid[name].guid or e.WoWGUID[name]))
-    if name == COMBATLOG_FILTER_STRING_ME or name==e.Player.name or name==e.Player.name_server or guid==e.Player.guid then--自已
-        return e.Icon.player..'|Hplayer:'..e.Player.name_server..'|h['..e.Player.col..COMBATLOG_FILTER_STRING_ME..'|r'..']|h'
-    end
-    if guid then
-        local _, class, _, race, sex, name2, realm = GetPlayerInfoByGUID(guid)
-        if name2 then
-            local showName= GetPlayerNameRemoveRealm(name2, realm)
-            if class then
-                showName= '|c'..select(4,GetClassColor(class))..showName..'|r'
-            end
-            return ((race and sex) and e.Race(nil, race, sex) or '')..'|Hplayer:'..name2..(realm and '-'..realm or '')..'|h['..showName..']|h'
-        end
-    elseif name then
-        return '|Hplayer:'..name..'|h['..GetPlayerNameRemoveRealm(name)..']|h'
-    end
-end
 
 e.PlayerOnlineInfo=function(unit)--单位，状态信息
     if unit and UnitExists(unit) then
@@ -334,31 +394,7 @@ e.GetUnitMapName=function(unit)--单位, 地图名称
     return text, uiMapID
 end
 
-e.GetFriend = function(name, guid, unit)--检测, 是否好友
-    guid= guid or (unit and UnitGUID(unit)) or (name and (e.GroupGuid[name] and e.GroupGuid[name].guid or e.WoWGUID[name]))
-    if guid then
-        if C_FriendList.IsFriend(guid) then
-            return '|A:groupfinder-icon-friend:0:0|a', nil, guid--好友
-        elseif IsGuildMember(guid) then
-            return '|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a', nil, guid--公会
-        elseif C_BattleNet.GetAccountInfoByGUID(guid) or C_BattleNet.GetGameAccountInfoByGUID(guid) then
-            return e.Icon.wow2, true, guid
-        end
-    elseif name then
-        local name2=name:match('(.-)%-')
-        local info=C_FriendList.GetFriendInfo(name) or (name2 and C_FriendList.GetFriendInfo(name2))
-        if info then
-            return '|A:groupfinder-icon-friend:0:0|a', nil, info.guid--好友
-        end
-    end
-end
 
-e.GetUnitFaction= function(unit)--检查, 是否同一阵营
-    local faction= UnitFactionGroup(unit)
-    if faction~= e.Player.faction and faction~='Neutral' then
-        return faction=='Horde' and e.Icon.horde2 or e.Icon.alliance2
-    end
-end
 
 e.MK=function(number,bit)
     bit = bit or 1

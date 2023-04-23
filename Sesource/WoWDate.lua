@@ -32,7 +32,7 @@ end
 --玩家装等
 --########
 e.UnitItemLevel={}
-local function getPlayerInfo(guid)--取得玩家信息
+local function get_Player_Info(guid)--取得玩家信息
     local unit
     if e.GroupGuid[guid] then
         unit= e.GroupGuid[guid].unit
@@ -436,7 +436,7 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
         end
 
     elseif event=='INSPECT_READY' then--装等
-            getPlayerInfo(arg1)
+            get_Player_Info(arg1)
 
     elseif event=='CHALLENGE_MODE_MAPS_UPDATE' or event=='WEEKLY_REWARDS_UPDATE' then--地下城挑战
         updateChallengeMode()

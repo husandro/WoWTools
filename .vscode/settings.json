@@ -2578,7 +2578,11 @@
         "INVTYPE_2HWEAPON",
         "INVTYPE_RANGED",
         "INVTYPE_RANGEDRIGHT",
-        "CHARACTER_LINK_ITEM_LEVEL_TOOLTIP"
+        "CHARACTER_LINK_ITEM_LEVEL_TOOLTIP",
+        "AchievementFrameComparison",
+        "AchievementFrameComparisonHeaderName",
+        "AchievementFrameComparisonHeaderPortrait",
+        "AchievementFrameComparisonHeader"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

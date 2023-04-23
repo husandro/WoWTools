@@ -1400,7 +1400,7 @@ local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
                 local guid=UnitGUID(u2)
                 local line=e.PlayerOnlineInfo(u2)
                 if line and guid then
-                    print(line, e.GetPlayerInfo(nil, guid, true), e.Icon.map2, e.GetUnitMapName(u2))
+                    print(line, e.GetPlayerInfo({unit=nil, guid=true, name=nil, reFriendFaction=true, reName=false, reRealm=false, reLink=true}), e.Icon.map2, e.GetUnitMapName(u2))
                     find=true
                 end
             end
@@ -1445,7 +1445,7 @@ local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
                 end
                 local guid=UnitGUID(u2)
                 if guid then
-                    local info=(e.PlayerOnlineInfo(u2) or '')..e.GetPlayerInfo(nil, guid, true)
+                    local info=(e.PlayerOnlineInfo(u2) or '')..e.GetPlayerInfo({unit=nil, guid=guid, name=nil, reFriendFaction=true, reName=true, reRealm=true, reLink=false})
                     local name=GetUnitName(u2,true)
                     local player=UnitIsUnit('player', u2)
                     RoleC[name]={
