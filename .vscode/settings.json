@@ -2577,7 +2577,8 @@
         "INVTYPE_WEAPON",
         "INVTYPE_2HWEAPON",
         "INVTYPE_RANGED",
-        "INVTYPE_RANGEDRIGHT"
+        "INVTYPE_RANGEDRIGHT",
+        "CHARACTER_LINK_ITEM_LEVEL_TOOLTIP"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

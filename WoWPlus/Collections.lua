@@ -565,7 +565,7 @@ local function Init_Heirloom()
             button.level:SetText(e.Icon.select2)
         end
         
-        e.Set_Item_Stats(button, C_Heirloom.GetHeirloomLink(button.itemID), {point=button.iconTexture , hideSet=true, hideLevel=level~=0, hideStats=false})--设置，物品，4个次属性，套装，装等，
+        e.Set_Item_Stats(button, C_Heirloom.GetHeirloomLink(button.itemID), {point=button.iconTexture , hideSet=true, hideLevel=level~=0, hideStats=false, itemID=button.itemID})--设置，物品，4个次属性，套装，装等，
     end)
 
     local Heirloomframe=HeirloomsJournal

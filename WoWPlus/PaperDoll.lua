@@ -8,6 +8,7 @@ local pvpItemStr= PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在
 local enchantStr= ENCHANTED_TOOLTIP_LINE:gsub('%%s','(.+)')--附魔
 --local upgradeStr= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(%%d%+/%%d%+)')-- "升级：%s/%s"
 local upgradeStr= ITEM_UPGRADE_NEXT_UPGRADE..'(.+)' --"升级："
+local itemLevelStr= ITEM_LEVEL:gsub('%%d', '%(%%d%+%)')--"物品等级：%d"
 local function Slot(slot)--左边插曹
     return slot==1 or slot==2 or slot==3 or slot==15 or slot==5 or slot==4 or slot==19 or slot==9 or slot==17 or slot==18
 end
@@ -705,11 +706,18 @@ end
 --装备弹出
 --EquipmentFlyout.lua
 local function setFlyout(button, itemLink, slot)
-    local level= itemLink and GetDetailedItemLevelInfo(itemLink)
+    
     if not button.level then
         button.level= e.Cstr(button)
         button.level:SetPoint('BOTTOM')
     end
+    local dateInfo= e.GetTooltipData({hyperLink=itemLink, itemID=itemLink and GetItemInfoInstant(itemLink) , text={upgradeStr, pvpItemStr, itemLevelStr}, onlyText=true})--物品提示，信息
+
+    local level
+    if dateInfo and dateInfo.text[itemLevelStr] then
+        level= tonumber(dateInfo.text[itemLevelStr])
+    end
+    level= level or (itemLink and GetDetailedItemLevelInfo(itemLink))
     local text= level
     if text then
         local itemQuality = C_Item.GetItemQualityByID(itemLink)
@@ -721,8 +729,7 @@ local function setFlyout(button, itemLink, slot)
         end
     end
     button.level:SetText(text or '')
-
-    local dateInfo= e.GetTooltipData({hyperLink=itemLink, text={upgradeStr, pvpItemStr}, onlyText=true})--物品提示，信息
+    
     local upgrade, pvpItem= dateInfo.text[upgradeStr], dateInfo.text[pvpItemStr]
     upgrade= upgrade and upgrade:match('(%d+/%d+)')
     if upgrade and not button.upgrade then

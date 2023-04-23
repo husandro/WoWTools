@@ -1024,10 +1024,12 @@ e.GetExpansionText= function(expacID, questID)--版本数据
     end
 end
 
---e.GetTooltipData({bag={bag=nil, slot=nil}, guidBank={tab=nil, slot=nil}, merchant={slot, buyBack=true}, inventory=nil, hyperLink=nil, text={}, onlyText=nil, wow=nil, onlyWoW=nil, red=nil, onlyRed=nil})--物品提示，信息
+--e.GetTooltipData({bag={bag=nil, slot=nil}, guidBank={tab=nil, slot=nil}, merchant={slot, buyBack=true}, inventory=nil, hyperLink=nil, itemID=nil, text={}, onlyText=nil, wow=nil, onlyWoW=nil, red=nil, onlyRed=nil})--物品提示，信息
 e.GetTooltipData= function(tab)
     local tooltipData
-    if tab.bag then
+    if tab.itemID and C_Heirloom.IsItemHeirloom(tab.itemID) then
+        tooltipData= C_TooltipInfo.GetHeirloomByItemID(tab.itemID)
+    elseif tab.bag then
         tooltipData= C_TooltipInfo.GetBagItem(tab.bag.bag, tab.bag.slot)
     elseif tab.guidBank then-- guidBank then
         tooltipData= C_TooltipInfo.GetGuildBankItem(tab.guidBank.tab, tab.guidBank.slot)
@@ -1175,7 +1177,12 @@ e.Set_Item_Stats = function(self, link, setting)
         end
 
         if not setting.hideLevel then--物品, 装等
-            itemLevel= GetDetailedItemLevelInfo(link)
+            if C_Item.GetItemQualityByID(link)==7 then
+                local itemLevelStr=ITEM_LEVEL:gsub('%%d', '%(%%d%+%)')--"物品等级：%d"
+                local dateInfo= e.GetTooltipData({hyperLink=link, itemID= GetItemInfoInstant(link),text={itemLevelStr}})--物品提示，信息
+                itemLevel= tonumber(dateInfo.text[itemLevelStr])
+            end
+            itemLevel= itemLevel or GetDetailedItemLevelInfo(link)
             if itemLevel and itemLevel<3 then
                 itemLevel=nil
             end

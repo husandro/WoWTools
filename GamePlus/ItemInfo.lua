@@ -9,10 +9,12 @@ local equipStr= format(EQUIPMENT_SETS, '(.+)')
 local pvpItemStr= PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在竞技场和战场中将物品等级提高至%d。"
 local upgradeStr= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(%%d%+/%%d%+)')-- "升级：%s/%s"
 local classStr= format(ITEM_CLASSES_ALLOWED, '(.+)') --"职业：%s";
+local itemLevelStr= ITEM_LEVEL:gsub('%%d', '%(%%d%+%)')--"物品等级：%d"
 local FMTab={}--附魔
 local useStr=ITEM_SPELL_TRIGGER_ONUSE..'(.+)'--使用：
 local andStr = COVENANT_RENOWN_TOAST_REWARD_COMBINER:format('(.-)','(.+)')--"%s 和 %s";
 local size= 10--字体大小
+
 
 local ClassNameIconTab={}--职业图标 ClassNameIconTab['法师']=图标
 local heirloomWeapontemEquipLocTab={--传家宝，武器，itemEquipLoc
@@ -162,7 +164,7 @@ local function set_Item_Info(self, tab)
             elseif dateInfo.wow then
                 bottomRightText= e.Icon.wow2
             end
-            
+
             if expacID== e.ExpansionLevel and classID==8 and dateInfo.text[useStr] then--附魔
                 local text= dateInfo.text[useStr]
                 for k, v in pairs(FMTab) do
@@ -180,7 +182,11 @@ local function set_Item_Info(self, tab)
 
         elseif classID==2 or classID==4 then--装备
             if itemQuality and itemQuality>1 then
-                local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={equipStr, pvpItemStr, upgradeStr, classStr}, wow=true, red=true})--物品提示，信息
+                local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, itemID=itemID,
+                                                text={equipStr, pvpItemStr, upgradeStr, classStr, itemLevelStr}, wow=true, red=true})--物品提示，信息
+                if dateInfo.text[itemLevelStr] then--传家宝
+                    itemLevel= tonumber(dateInfo.text[itemLevelStr])
+                end
                 if dateInfo.text[equipStr] then--套装名称，
                     local text= dateInfo.text[equipStr]:match('(.+),') or dateInfo.text[equipStr]:match('(.+)，') or dateInfo.text[equipStr]
                     bottomLeftText=e.WA_Utf8Sub(text,3,5)
