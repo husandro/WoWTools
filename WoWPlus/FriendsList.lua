@@ -359,6 +359,15 @@ local function set_WhoList_Update()--查询, 名单列表
         end
         if r and g and b then
             if button.Name then
+                local nameText= e.GetFriend(info.fullName, nil, nil)--检测, 是否好友
+                if nameText then
+                    nameText= nameText..info.fullName
+                    if info.fullName== e.Player.name then
+                        nameText= nameText..e.Icon.star2
+                    end
+                    button.Name:SetText(nameText)
+                    
+                end
                 button.Name:SetTextColor(r,g,b)
             end
             if button.Variable then
