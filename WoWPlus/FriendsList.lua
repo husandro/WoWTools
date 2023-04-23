@@ -117,20 +117,27 @@ local function set_FriendsList_Init()--好友列表, 初始化
     local optionText = '|A:honorsystem-bar-lock:0:0|a'..(e.onlyChinese and '锁定' or LOCK).."\124T%s.tga:16:16:0:0\124t %s"--好友列表
     Save.Friends[e.Player.name_server]=Save.Friends[e.Player.name_server] or {}
 
-    hooksecurefunc('FriendsFrame_UpdateFriendButton', function(button)
+    hooksecurefunc('FriendsFrame_UpdateFriendButton', function(button)--FriendsFrame.lua
         local m=''
         local guid
         if button.buttonType == FRIENDS_BUTTON_TYPE_WOW then
             local info = C_FriendList.GetFriendInfoByIndex(button.id)
-            if info and info.connected and info.guid then
-                if info.level and info.level~=MAX_PLAYER_LEVEL then
+            if info and info.guid then
+                if info.level and info.level~=MAX_PLAYER_LEVEL and info.level>0 then
                     m=m..'|cff00ff00'..info.level ..'|r'
                 end
                 if info.guid then
-                    m=m..e.GetPlayerInfo({unit=nil, guid=info.guid, name=nil, reFriendFaction=true, reName=true, reRealm=true, reLink=false})
+                    m=m..e.GetPlayerInfo({unit=nil, guid=info.guid, name=nil, reFriendFaction=true, reName=false, reRealm=false, reLink=false})
                     guid=info.guid
-                    if info.area then
+                    if info.area and info.connected then
                         m=m..info.area
+                    end
+                end
+                if info.connected and button.name then
+                    local class= select(2, GetPlayerInfoByGUID(info.guid))
+                    if class then
+                        local rPerc, gPerc, bPerc = GetClassColor(class)
+                        button.name:SetTextColor(rPerc, gPerc, bPerc)
                     end
                 end
             end

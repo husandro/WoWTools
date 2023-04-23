@@ -217,7 +217,7 @@ e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, r
             local faction= tab.unit and e.GetUnitFaction(tab.unit)--检查, 是否同一阵营
             local groupTab= e.GroupGuid[tab.guid] or e.GroupGuid[tab.name]--队伍成员
             local text=(friend or '')..(faction or '')..(e.Race(nil, englishRace, sex) or '')..(e.Class(tab.unit, englishClass) or '')
-            if groupTab and groupTab.combatRole=='HEALER' or groupTab.combatRole=='TANK' then--职业图标
+            if groupTab and (groupTab.combatRole=='HEALER' or groupTab.combatRole=='TANK') then--职业图标
                 text= text..e.Icon[tab.combatRole]..(tab.subgroup or '')
             end
             
