@@ -931,7 +931,7 @@ local function Init()
     panel.serverText:SetScript("OnLeave",function() e.tips:Hide() end)
     local ser=GetAutoCompleteRealms() or {}
     local server= e.Get_Region(e.Player.server, nil, nil)
-    panel.serverText:SetText((#ser>1 and #ser..' ' or '')..e.Player.col..e.Player.server..'|r'..(server and ' '..server.col or ''))
+    panel.serverText:SetText((#ser>1 and '|cnGREEN_FONT_COLOR:'..#ser..' ' or '')..e.Player.col..e.Player.server..'|r'..(server and ' '..server.col or ''))
 
     --#########
     --装备管理框
