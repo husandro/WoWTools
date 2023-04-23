@@ -2584,7 +2584,8 @@
         "AchievementFrameComparisonHeaderPortrait",
         "AchievementFrameComparisonHeader",
         "CharacterFrameTab_OnClick",
-        "CharacterFrame_ToggleTokenFrame"
+        "CharacterFrame_ToggleTokenFrame",
+        "WhoList_Update"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

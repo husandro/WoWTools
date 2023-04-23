@@ -346,6 +346,38 @@ local function set_RaidGroupFrame_Update()--团队, 模块
     end
 end
 
+local function set_WhoList_Update()--查询, 名单列表
+    for _, button in pairs(WhoFrame.ScrollBox:GetFrames()) do
+        local info= button.index and C_FriendList.GetWhoInfo(button.index)
+        local r,g,b,hex, level
+        if info then
+            if RAID_CLASS_COLORS[info.filename] then
+                r,g,b= RAID_CLASS_COLORS[info.filename]:GetRGB()
+                hex= RAID_CLASS_COLORS[info.filename].colorStr
+            end
+           level= info.level
+        end
+        if r and g and b then
+            if button.Name then
+                button.Name:SetTextColor(r,g,b)
+            end
+            if button.Variable then
+                button.Variable:SetTextColor(r,g,b)
+            end
+            if button.Level then
+                if level==0 or level== MAX_PLAYER_LEVEL then
+                    button.Level:SetTextColor(r,g,b)
+                    button.Level:SetText('')
+                else
+                    button.Level:SetTextColor(0,1,0)
+                end
+            end
+        end
+        
+        
+    end
+    
+end
 
 --######
 --初始化
@@ -353,6 +385,7 @@ end
 local function Init()--FriendsFrame.lua
     set_QuinkJoin_Init()--快速加入, 模块
     set_FriendsList_Init()--好友列表, 模块
+    hooksecurefunc('WhoList_Update', set_WhoList_Update)
 end
 
 --###########

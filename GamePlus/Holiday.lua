@@ -536,7 +536,7 @@ local function Init()
                         end
                     end
 
-                    if wowInfo.characterLevel and wowInfo.characterLevel~=MAX_PLAYER_LEVEL then--等级
+                    if wowInfo.characterLevel and wowInfo.characterLevel~=MAX_PLAYER_LEVEL and wowInfo.characterLevel>0 then--等级
                         text=text ..' |cff00ff00'..wowInfo.characterLevel..'|r'
                     end
                     if not wowInfo.isOnline then
@@ -579,7 +579,7 @@ local function Init()
                 local game=C_FriendList.GetFriendInfoByIndex(i)
                 if game and game.name and not inviteTab[game.name] then--and not game.afk and not game.dnd then 
                     local text=e.GetPlayerInfo({unit=nil, guid=game.guid, name=game.name, reFriendFaction=true, reName=true, reRealm=true, reLink=false})--角色信息
-                    text= (game.level and game.level~=MAX_PLAYER_LEVEL) and text .. ' |cff00ff00'..game.level..'|r' or text--等级
+                    text= (game.level and game.level~=MAX_PLAYER_LEVEL and game.level>0) and text .. ' |cff00ff00'..game.level..'|r' or text--等级
                     if game.area and game.connected then
                         if game.area == map then--地区
                             text= text..e.Icon.map2
@@ -628,7 +628,7 @@ local function Init()
                 local name, rankName, rankIndex, lv, _, zone, publicNote, officerNote, isOnline, status, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)
                 if name and guid and not inviteTab[name] and isOnline and name~=e.Player.name_server then
                     local text=e.GetPlayerInfo({unit=nil, guid=guid, name=name, reFriendFaction=true, reName=true, reRealm=true, reLink=false})--名称
-                    text=(lv and lv~=MAX_PLAYER_LEVEL) and text..' |cnGREEN_FONT_COLOR:'..lv..'|r' or text--等级
+                    text=(lv and lv~=MAX_PLAYER_LEVEL and lv>0) and text..' |cnGREEN_FONT_COLOR:'..lv..'|r' or text--等级
                     if zone then--地区
                         text= zone==map and text..e.Icon.map2 or text..' '..zone
                     end

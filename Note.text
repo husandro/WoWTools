@@ -1,4 +1,7 @@
 
+for index, button in pairs(CalendarCreateEventInviteList.ScrollBox:GetFrames()) do--ScrollBox.lua
+	
+end
 
 local numItems = C_LootHistory.GetNumItems()
 for i=1, numItems do
