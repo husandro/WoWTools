@@ -1298,7 +1298,7 @@ e.Get_ColorFrame_RGBA= function()--取得, ColorFrame, 颜色
 	return r, g, b, 1-a
 end
 
-e.ShowColorPicker= function(valueR, valueG, valueB, valueA, changedCallback)
+e.ShowColorPicker= function(valueR, valueG, valueB, valueA, func, cancelFunc)
     ColorPickerFrame:SetShown(false); -- Need to run the OnShow handler.
     valueR= valueR or 1
     valueG= valueG or 0.8
@@ -1307,9 +1307,9 @@ e.ShowColorPicker= function(valueR, valueG, valueB, valueA, changedCallback)
     --valueA= 1- valueA
     ColorPickerFrame.hasOpacity= true
     --ColorPickerFrame.previousValues = {valueR, valueG , valueB , valueA}
-    ColorPickerFrame.func= changedCallback
-    ColorPickerFrame.opacityFunc= changedCallback
-    ColorPickerFrame.cancelFunc =  changedCallback
+    ColorPickerFrame.func= func
+    ColorPickerFrame.opacityFunc= func
+    ColorPickerFrame.cancelFunc = cancelFunc or func
     ColorPickerFrame:SetColorRGB(valueR, valueG, valueB)
     ColorPickerFrame.opacity = 1- valueA;
     ColorPickerFrame:SetShown(true)

@@ -1,4 +1,3 @@
-
 local id, e= ...
 local addName= STAT_CATEGORY_ATTRIBUTES--PaperDollFrame.lua
 local panel= CreateFrame('Frame')
@@ -819,7 +818,7 @@ local function set_Frame(frame, rest)--设置, frame
 
         set_Shadow(frame.label)--设置，字体阴影
         set_Shadow(frame.text)--设置，字体阴影
-
+        
         if frame.bar and frame:IsShown() then
             local value
             if frame.useNumber then
@@ -1219,13 +1218,9 @@ local function set_Panle_Setting()--设置 panel
             text.name= info.name
             text.text= info.text
             text:SetScript('OnMouseDown', function(self)
-                e.ShowColorPicker(self.r, self.g, self.b,self.a, function(restore)
-                    local setA, setR, setG, setB
-                    if not restore then
-                        setR, setG, setB, setA = e.Get_ColorFrame_RGBA()
-                    else
-                        setA, setR, setG, setB= self.a, self.r, self.g, self.b
-                    end
+                local R,G,B,A= self.r, self.g, self.b, self.a
+                local setA, setR, setG, setB
+                local function func()
                     Save.tab[self.name].r= setR
                     Save.tab[self.name].g= setG
                     Save.tab[self.name].b= setB
@@ -1239,7 +1234,15 @@ local function set_Panle_Setting()--设置 panel
                             button[self.name].bar:SetStatusBarColor(setR,setG,setB,setA)
                         end
                     end
-                end)
+                end
+                e.ShowColorPicker(self.r, self.g, self.b,self.a, function()
+                        setR, setG, setB, setA = e.Get_ColorFrame_RGBA()
+                        func()
+                    end,function()
+                         setR, setG, setB, setA= R,G,B,A
+                        func()
+                    end
+                )
             end)
             text:SetScript('OnEnter', function(self)
                 local r2= Save.tab[self.name].r or 1
@@ -1342,20 +1345,24 @@ local function set_Panle_Setting()--设置 panel
     text.r, text.g, text.b, text.a= Save.font.r, Save.font.g, Save.font.b, Save.font.a
     set_Shadow(text)--设置，字体阴影
     text:SetScript('OnMouseDown', function(self)
-        e.ShowColorPicker(self.r, self.g, self.b, self.a, function(restore)
-            local setA, setR, setG, setB
-            if not restore then
-                setR, setG, setB, setA = e.Get_ColorFrame_RGBA()
-            else
-                setA, setR, setG, setB= self.a, self.r, self.g, self.b
-            end
+        local R,G,B,A= self.r, self.g, self.b, self.a
+        local setA, setR, setG, setB
+        local function func()
             Save.font.r= setR
             Save.font.g= setG
             Save.font.b= setB
             Save.font.a= setA
             set_Shadow(self)--设置，字体阴影
             frame_Init(true)--初始，设置
-        end)
+        end
+        e.ShowColorPicker(self.r, self.g, self.b, self.a, function()
+                setR, setG, setB, setA = e.Get_ColorFrame_RGBA()
+                func()
+            end, function()
+                setR, setG, setB, setA= R,G,B,A
+                func()
+            end
+        )
     end)
 
     local sliderX= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--bar, 宽度
@@ -1420,17 +1427,21 @@ local function set_Panle_Setting()--设置 panel
     textColor:SetText('23%')
     e.RGB_to_HEX(Save.textColor.r, Save.textColor.g, Save.textColor.b, Save.textColor.a, textColor)
     textColor:SetScript('OnMouseDown', function(self)
-        local valueR, valueG, valueB, valueA= self.r, self.g, self.b, self.a
-        e.ShowColorPicker(self.r, self.g, self.b,self.a, function(restore)
-            local setA, setR, setG, setB
-            if not restore then
-                setR, setG, setB, setA= e.Get_ColorFrame_RGBA()
-            else
-                setR, setG, setB, setA= valueR, valueG, valueB, valueA
-            end
+        local setR, setG, setB, setA
+        local R,G,B,A= self.r, self.g, self.b, self.a
+        local function func()
             Save.textColor= {r=setR, g=setG, b=setB, a=setA}
+            self:SetTextColor(setR, setG, setB, setA)
             frame_Init(true)--初始，设置
-        end)
+        end
+        e.ShowColorPicker(self.r, self.g, self.b,self.a, function()
+                setR, setG, setB, setA= e.Get_ColorFrame_RGBA()
+                func()
+            end,function()
+                setR, setG, setB, setA= R,G,B,A
+                func()
+            end
+        )
     end)
 
 
@@ -1501,18 +1512,21 @@ local function set_Panle_Setting()--设置 panel
     panel.barGreenColor:SetText('+12')
     e.HEX_to_RGB(Save.greenColor, panel.barGreenColor)--设置, panel.barGreenColor. r g b hex
     panel.barGreenColor:SetScript('OnMouseDown', function(self)
-        local valueR, valueG, valueB, valueA= self.r, self.g, self.b, self.a
-        e.ShowColorPicker(self.r, self.g, self.b,self.a, function(restore)
-            local setA, setR, setG, setB
-            if not restore then
-                setR, setG, setB, setA= e.Get_ColorFrame_RGBA()
-            else
-                setR, setG, setB, setA= valueR, valueG, valueB, valueA
-            end
+        local setR, setG, setB, setA
+        local R,G,B,A= self.r, self.g, self.b, self.a
+        local function func()
             local hex= e.RGB_to_HEX(setR, setG, setB,setA, self)--RGB转HEX
             hex= hex and '|c'..hex or '|cffff8200'
             Save.greenColor= hex
-        end)
+        end
+        e.ShowColorPicker(self.r, self.g, self.b,self.a, function()
+                setR, setG, setB, setA= e.Get_ColorFrame_RGBA()
+                func()
+            end, function()
+                setR, setG, setB, setA= R,G,B,A
+                func()
+            end
+        )
     end)
 
     panel.barRedColor= e.Cstr(panel, {size=20})--20)
@@ -1528,18 +1542,21 @@ local function set_Panle_Setting()--设置 panel
     panel.barRedColor:SetText('-12')
     e.HEX_to_RGB(Save.redColor, panel.barRedColor)--设置, panel.barRedColor. r g b hex
     panel.barRedColor:SetScript('OnMouseDown', function(self)
-        local valueR, valueG, valueB, valueA= self.r, self.g, self.b, self.a
-        e.ShowColorPicker(self.r, self.g, self.b,self.a, function(restore)
-            local setA, setR, setG, setB
-            if not restore then
-                setR, setG, setB, setA= e.Get_ColorFrame_RGBA()
-            else
-                setR, setG, setB, setA= valueR, valueG, valueB, valueA
-            end
+        local setR, setG, setB, setA
+        local R,G,B,A= self.r, self.g, self.b, self.a
+        local function func()
             local hex= e.RGB_to_HEX(setR, setG, setB,setA, self)--RGB转HEX
             hex= hex and '|c'..hex or '|cffff0000'
             Save.redColor= hex
-        end)
+        end
+        e.ShowColorPicker(self.r, self.g, self.b,self.a, function()
+                setR, setG, setB, setA= e.Get_ColorFrame_RGBA()
+                func()
+            end, function()
+                setR, setG, setB, setA= R,G,B,A
+                func()
+            end
+        )
     end)
 
     local check2= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--bar

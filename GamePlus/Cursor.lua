@@ -803,12 +803,21 @@ local function Init()
         Save.notUseColor=nil
         useClassColorCheck:SetChecked(false)
         notUseColorCheck:SetChecked(false)
+
         local valueR, valueG, valueB, valueA= self.r, self.g, self.b, self.a
-        e.ShowColorPicker(self.r, self.g, self.b,self.a, function(restore)
-            local setA, setR, setG, setB
-            if not restore then
+        local setA, setR, setG, setB
+        local function func()
+            Save.color= {r=setR, g=setG, b=setB, a=setA}
+            self:SetTextColor(setR, setG, setB, setA)
+            set_Color()
+            if cursorFrame then
+                cursor_Init_And_Set()--初始，设置
+            end
+        end
+        e.ShowColorPicker(self.r, self.g, self.b,self.a, function()
                 setR, setG, setB, setA= e.Get_ColorFrame_RGBA()
-            else
+                func()
+            end, function()
                 setR, setG, setB, setA= valueR, valueG, valueB, valueA
                 if usrClassColor then
                     Save.usrClassColor=true
@@ -817,14 +826,9 @@ local function Init()
                     Save.notUseColor=true
                     notUseColorCheck:SetChecked(true)
                 end
+                func()
             end
-            Save.color= {r=setR, g=setG, b=setB, a=setA}
-            self:SetTextColor(setR, setG, setB, setA)
-            set_Color()
-            if cursorFrame then
-                cursor_Init_And_Set()--初始，设置
-            end
-        end)
+        )
     end)
     colorText:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")

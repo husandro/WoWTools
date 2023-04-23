@@ -226,20 +226,23 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             useCustomColor.text.r, useCustomColor.text.g, useCustomColor.text.b, useCustomColor.text.a, useCustomColor.text.hex= Save.useCustomColorTab.r, Save.useCustomColorTab.g, Save.useCustomColorTab.b, Save.useCustomColorTab.a, Save.useCustomColorTab.hex
             useCustomColor.text:SetScript('OnMouseDown', function(self2)
                 local valueR, valueG, valueB, valueA, class, custom= self2.r, self2.g, self2.b, self2.a, Save.useClassColor, Save.useCustomColor
-                e.ShowColorPicker(self2.r, self2.g, self2.b,self2.a, function(restore)
-                    local setA, setR, setG, setB, class2, custom2
-                    if not restore then
-                        setR, setG, setB, setA= e.Get_ColorFrame_RGBA()
-                        class2, custom2= nil, true
-                    else
-                        setR, setG, setB, setA= valueR, valueG, valueB, valueA
-                        class2, custom2= class, custom
-                    end
+                local setA, setR, setG, setB, class2, custom2
+                local function func()
                     e.RGB_to_HEX(setR, setG, setB, setA, self2)--RGB转HEX
                     Save.useCustomColorTab= {r=setR, g=setG, b=setB, a=setA, hex=self2.hex}
                     Save.useClassColor, Save.useCustomColor= class2, custom2
                     set_Use_Color()
-                end)
+                end
+                e.ShowColorPicker(self2.r, self2.g, self2.b,self2.a, function()
+                        setR, setG, setB, setA= e.Get_ColorFrame_RGBA()
+                        class2, custom2= nil, true
+                        func()
+                    end, function()
+                        setR, setG, setB, setA= valueR, valueG, valueB, valueA
+                        class2, custom2= class, custom
+                        func()
+                    end
+                )
             end)
 
             local check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--仅中文
