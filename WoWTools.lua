@@ -1158,7 +1158,7 @@ e.Get_Item_Stats= function(link)--物品，次属性，表
     return tab
 end
 
---e.Set_Item_Stats(self, itemLink, {point=self.icon , hideSet=false, hideLevel=false, hideStats=false})--设置，物品，4个次属性，套装，装等，
+--e.Set_Item_Stats(self, itemLink, {point=self.icon, itemID=nil, hideSet=false, hideLevel=false, hideStats=false})--设置，物品，4个次属性，套装，装等，
 e.Set_Item_Stats = function(self, link, setting)
     if not self then
         return
@@ -1177,9 +1177,10 @@ e.Set_Item_Stats = function(self, link, setting)
         end
 
         if not setting.hideLevel then--物品, 装等
-            if C_Item.GetItemQualityByID(link)==7 then
+            local quality = C_Item.GetItemQualityByID(link)--颜色
+            if quality==7 then
                 local itemLevelStr=ITEM_LEVEL:gsub('%%d', '%(%%d%+%)')--"物品等级：%d"
-                local dateInfo= e.GetTooltipData({hyperLink=link, itemID= GetItemInfoInstant(link),text={itemLevelStr}})--物品提示，信息
+                local dateInfo= e.GetTooltipData({hyperLink=link, itemID= setting.itemID or GetItemInfoInstant(link), text={itemLevelStr}, onlyText=true})--物品提示，信息
                 itemLevel= tonumber(dateInfo.text[itemLevelStr])
             end
             itemLevel= itemLevel or GetDetailedItemLevelInfo(link)
@@ -1188,20 +1189,21 @@ e.Set_Item_Stats = function(self, link, setting)
             end
             local avgItemLevel= itemLevel and select(2, GetAverageItemLevel())--已装备, 装等
             if itemLevel and avgItemLevel then
-                local quality = C_Item.GetItemQualityByID(link)--颜色
                 local lv = itemLevel- avgItemLevel
-                if lv>=6 then
-                    itemLevel= GREEN_FONT_COLOR_CODE..itemLevel..'|r'
-                elseif quality and quality<= 6 then
+                --if lv>=7 then
+                  --  itemLevel= GREEN_FONT_COLOR_CODE..itemLevel..'|r'
+                --elseif quality and quality<= 6 then
                     if lv <= -6  then
                         itemLevel =RED_FONT_COLOR_CODE..itemLevel..'|r'
+                    elseif lv>=7 then
+                        itemLevel= GREEN_FONT_COLOR_CODE..itemLevel..'|r'
                     else
                         local hexColor= quality and select(4, GetItemQualityColor(quality))
                         if hexColor then
                             itemLevel='|c'..hexColor..itemLevel..'|r'
                         end
                     end
-                end
+                --end
             end
             if not self.itemLevel and itemLevel then
                 self.itemLevel= e.Cstr(self, {justifyH='CENTER'})--nil, nil, nil,nil,nil, 'CENTER')
@@ -1213,29 +1215,27 @@ e.Set_Item_Stats = function(self, link, setting)
     if self.itemSet then self.itemSet:SetShown(setID) end--套装
     if self.itemLevel then self.itemLevel:SetText(itemLevel or '') end--装等
 
-    if not setting.hideStats then--4个次属性
-        local tab=e.Get_Item_Stats(link)--物品，次属性，表
-        table.sort(tab, function(a,b) return a.value>b.value and a.index== b.index end)
-        for index=1 ,4 do
-            local text=self['statText'..index]
-            if tab[index] then
-                if not text then
-                    text= e.Cstr(self,{justifyH= (index==2 or index==4) and 'RIGHT'})
-                    if index==1 then
-                        text:SetPoint('BOTTOMLEFT', setting.point or self, 'BOTTOMLEFT')
-                    elseif index==2 then
-                        text:SetPoint('BOTTOMRIGHT', setting.point or self, 'BOTTOMRIGHT', 4,0)
-                    elseif index==3 then
-                        text:SetPoint('TOPLEFT', setting.point or self, 'TOPLEFT')
-                    else
-                        text:SetPoint('TOPRIGHT', setting.point or self, 'TOPRIGHT',4,0)
-                    end
-                    self['statText'..index]=text
+    local tab= not setting.hideStats and e.Get_Item_Stats(link) or {}--物品，次属性，表
+    table.sort(tab, function(a,b) return a.value>b.value and a.index== b.index end)
+    for index=1 ,4 do
+        local text=self['statText'..index]
+        if tab[index] then
+            if not text then
+                text= e.Cstr(self,{justifyH= (index==2 or index==4) and 'RIGHT'})
+                if index==1 then
+                    text:SetPoint('BOTTOMLEFT', setting.point or self, 'BOTTOMLEFT')
+                elseif index==2 then
+                    text:SetPoint('BOTTOMRIGHT', setting.point or self, 'BOTTOMRIGHT', 4,0)
+                elseif index==3 then
+                    text:SetPoint('TOPLEFT', setting.point or self, 'TOPLEFT')
+                else
+                    text:SetPoint('TOPRIGHT', setting.point or self, 'TOPRIGHT',4,0)
                 end
-                text:SetText(tab[index].text)
-            elseif text then
-                text:SetText('')
+                self['statText'..index]=text
             end
+            text:SetText(tab[index].text)
+        elseif text then
+            text:SetText('')
         end
     end
 end

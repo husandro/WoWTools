@@ -489,15 +489,17 @@ local function Init_Heirloom()
             end
             return
         end
-        local name, itemEquipLoc, isPvP, itemTexture, upgradeLevel, source, searchFiltered, effectiveLevel, minLevel, maxLevel = C_Heirloom.GetHeirloomInfo(button.itemID);
-        local maxUp=C_Heirloom.GetHeirloomMaxUpgradeLevel(button.itemID)local maxUp=C_Heirloom.GetHeirloomMaxUpgradeLevel(button.itemID) or 0;
+        local _, _, isPvP, _, upgradeLevel = C_Heirloom.GetHeirloomInfo(button.itemID);
+
+        local maxUp=C_Heirloom.GetHeirloomMaxUpgradeLevel(button.itemID) or 0;
         local level=maxUp-upgradeLevel
         local has = C_Heirloom.PlayerHasHeirloom(button.itemID)
-        if level >0 and has then--需要升级数
+        if has then--需要升级数
             if not button.upLevel then
                 button.upLevel = button:CreateTexture(nil, 'OVERLAY')
                 button.upLevel:SetPoint('TOPLEFT', -4, 4)
                 button.upLevel:SetSize(26,26)
+                button.upLevel:SetVertexColor(1,0,0)
                 button.upLevel:EnableMouse(true)
                 button.upLevel:SetScript('OnLeave', function() e.tips:Hide() end)
                 button.upLevel:SetScript('OnEnter', function(self2)
@@ -531,7 +533,7 @@ local function Init_Heirloom()
             button.isPvP:SetAtlas('honorsystem-icon-prestige-6')
             button.isPvP:EnableMouse(true)
             button.isPvP:SetScript('OnLeave', function() e.tips:Hide() end)
-            button.isPvP:SetScript('OnEnter', function(self2) 
+            button.isPvP:SetScript('OnEnter', function(self2)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddLine(e.onlyChinese and '竞技装备' or ITEM_TOURNAMENT_GEAR)
@@ -551,7 +553,7 @@ local function Init_Heirloom()
         if not button.moved and button.level then--设置，等级数字，位置
             button.level:ClearAllPoints()
             button.level:SetPoint('TOPRIGHT', button, 'TOPRIGHT')
-            
+
             button.levelBackground:ClearAllPoints()
             button.levelBackground:SetPoint('TOPRIGHT', button, 'TOPRIGHT',-2,-2)
             button.levelBackground:SetAlpha(0.5)
@@ -562,10 +564,10 @@ local function Init_Heirloom()
             button.moved= true
         end
         if level==0 then
-            button.level:SetText(e.Icon.select2)
+            button.level:SetText('')
         end
-        
-        e.Set_Item_Stats(button, C_Heirloom.GetHeirloomLink(button.itemID), {point=button.iconTexture , hideSet=true, hideLevel=level~=0, hideStats=false, itemID=button.itemID})--设置，物品，4个次属性，套装，装等，
+
+        e.Set_Item_Stats(button, C_Heirloom.GetHeirloomLink(button.itemID), {point=button.iconTexture, itemID=button.itemID, hideSet=true, hideLevel=not has, hideStats=not has})--设置，物品，4个次属性，套装，装等，
     end)
 
     local Heirloomframe=HeirloomsJournal
@@ -902,7 +904,7 @@ local function Init_ToyBox()
         end
     end
 
-    hooksecurefunc('ToySpellButton_OnClick', ToyFun)
+    hooksecurefunc('ToySpellButton_OnClick', ToyFun)--Blizzard_ToyBox.lua
     hooksecurefunc('ToySpellButton_UpdateButton', ToyFun)
 
     local toyframe=ToyBox
