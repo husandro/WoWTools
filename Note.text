@@ -1,4 +1,4 @@
---[[
+
 
 local numItems = C_LootHistory.GetNumItems()
 for i=1, numItems do
@@ -80,4 +80,3 @@ ToggleCollectionsJournal(tabIndex) UIParent.lua
 ToggleEncounterJournal()
 
 Interface\Cursor\UI-Cursor-Move   Redlist.xml
-]]

@@ -158,28 +158,30 @@ local function getGUID(unit, name)--从名字,名unit, 获取GUID
         end
     end
 end
+
 e.GetFriend= function(name, guid, unit)--检测, 是否好友
     guid= guid or getGUID(unit, name)
     if guid then
-        if C_FriendList.IsFriend(guid) then
-            return '|A:groupfinder-icon-friend:0:0|a', nil, guid--好友
+        if C_BattleNet.GetAccountInfoByGUID(guid) or C_BattleNet.GetGameAccountInfoByGUID(guid) then
+            return e.Icon.wow2
+
+        elseif C_FriendList.IsFriend(guid) then
+            return '|A:groupfinder-icon-friend:0:0|a'--好友
         elseif IsGuildMember(guid) then
-            return '|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a', nil, guid--公会
-        elseif C_BattleNet.GetAccountInfoByGUID(guid) or C_BattleNet.GetGameAccountInfoByGUID(guid) then
-            return e.Icon.wow2, true, guid
+            return '|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a'--公会
         end
     elseif name then
         local name2=name:match('(.-)%-')
         local info=C_FriendList.GetFriendInfo(name) or (name2 and C_FriendList.GetFriendInfo(name2))
         if info then
-            return '|A:groupfinder-icon-friend:0:0|a', nil, info.guid--好友
+            return '|A:groupfinder-icon-friend:0:0|a'--好友
         end
     end
 end
 
-e.GetUnitFaction= function(unit)--检查, 是否同一阵营
-    local faction= UnitFactionGroup(unit)
-    if faction~= e.Player.faction and faction~='Neutral' then
+e.GetUnitFaction= function(unit, text, allShow)--检查, 是否同一阵营
+    local faction= unit and UnitFactionGroup(unit) or text
+    if faction and (not allShow and faction~= e.Player.faction or allShow) and faction~='Neutral' then
         return faction=='Horde' and e.Icon.horde2 or e.Icon.alliance2
     end
 end
@@ -296,6 +298,7 @@ e.Icon={
     map='poi-islands-table',
     map2='|A:poi-islands-table:0:0|a',
     wow2='|A:Icon-WoW:0:0|a',--136235
+    --wow2= '|A:128-Store-Main:0:0|a',
 
     horde='charcreatetest-logo-horde',
     alliance='charcreatetest-logo-alliance',

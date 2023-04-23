@@ -119,60 +119,37 @@ local function set_FriendsList_Init()--好友列表, 初始化
 
     hooksecurefunc('FriendsFrame_UpdateFriendButton', function(button)--FriendsFrame.lua
         local m=''
-        local guid
+        local guid, isOnline
         if button.buttonType == FRIENDS_BUTTON_TYPE_WOW then
             local info = C_FriendList.GetFriendInfoByIndex(button.id)
-            if info and info.guid then
-                if info.level and info.level~=MAX_PLAYER_LEVEL and info.level>0 then
-                    m=m..'|cff00ff00'..info.level ..'|r'
-                end
-                if info.guid then
-                    m=m..e.GetPlayerInfo({unit=nil, guid=info.guid, name=nil, reFriendFaction=true, reName=false, reRealm=false, reLink=false})
-                    guid=info.guid
-                    if info.area and info.connected then
-                        m=m..info.area
-                    end
-                end
-                if info.connected and button.name then
-                    local class= select(2, GetPlayerInfoByGUID(info.guid))
-                    if class then
-                        local rPerc, gPerc, bPerc = GetClassColor(class)
-                        button.name:SetTextColor(rPerc, gPerc, bPerc)
-                    end
-                end
+            if not info or not info.guid then
+                return
             end
+            guid=info.guid
+            isOnline= info.connected
+            m=e.GetPlayerInfo({unit=nil, guid=info.guid, name=nil, reFriendFaction=true, reName=false, reRealm=false, reLink=false})
+            if info.area and info.connected then
+                m=m..' '..info.area
+            end
+
         elseif button.buttonType == FRIENDS_BUTTON_TYPE_BNET then--2战网                
             local info2 = C_BattleNet.GetFriendAccountInfo(button.id)
-            if not info2 or not info2.gameAccountInfo then
+            if not info2 or not info2.gameAccountInfo or not info2.gameAccountInfo.playerGuid then
                 return
             end
             local info=info2.gameAccountInfo
-            if info.characterLevel and info.characterLevel~=MAX_PLAYER_LEVEL then--等级
-                m=m..'|cff00ff00'..info.characterLevel..'|r'
+            guid= info.playerGuid
+            isOnline= info.isOnline
+
+            if info.characterLevel and info.characterLevel~=MAX_PLAYER_LEVEL and info.characterLevel>0 then--等级
+                m='|cff00ff00'..info.characterLevel..'|r'
             end
-            if info.factionName then--派系
-                if info.factionName=='Alliance' then
-                    m=m..'|A:charcreatetest-logo-alliance:0:0|a'
-                elseif info.factionName=='Horde' then
-                    m=m..'|A:charcreatetest-logo-horde:0:0|a'
-                end
-            end
-            if info.playerGuid then
-                guid=info.playerGuid
-                m=e.GetPlayerInfo({unit=nil, guid=guid, name=nil, reFriendFaction=true, reName=true, reRealm=true, reLink=false})
-            elseif info.raceName then
-                m=m..info.raceName
-            end
-            if info.areaName then--区域
-                if not info.richPresence or not info.richPresence:find(info.areaName) then
-                    m=m..info.areaName
-                    if info.richPresence then
-                        m=m..'-'
-                    end
-                end
-            end
-            if info.richPresence then
-                m=m..info.richPresence:gsub(' %- ','%-')
+
+            m= m..(e.GetUnitFaction(nil, info.factionName, true) or '')--派系
+            m= m..e.GetPlayerInfo({unit=nil, guid=guid, name=nil, reFriendFaction=true, reName=true, reRealm=true, reLink=false})
+
+            if isOnline and info.areaName then
+                m=m..' '..info.areaName--区域
             end
         end
         if m~='' then
@@ -180,8 +157,17 @@ local function set_FriendsList_Init()--好友列表, 初始化
                 local _, englishClass, _, _, _, _, realm = GetPlayerInfoByGUID(guid)
                 local server= e.Get_Region(realm)--服务器，EU， US {col=, text=, realm=}
                 m= server and server.col..m or m
+
                 if englishClass then
                     m= '|c'..select(4, GetClassColor(englishClass))..m..'|r'
+                end
+
+                if isOnline and button.name then
+                    local class= select(2, GetPlayerInfoByGUID(guid))
+                    if class then
+                        local rPerc, gPerc, bPerc = GetClassColor(class)
+                        button.name:SetTextColor(rPerc, gPerc, bPerc)
+                    end
                 end
             end
             button.info:SetText(m)
@@ -204,7 +190,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
     end
 
     hooksecurefunc('FriendsFrameStatusDropDown_Initialize', function(self)
-        securecall('UIDropDownMenu_AddSeparator') 
+        securecall('UIDropDownMenu_AddSeparator')
         local info= {
             text = optionText:format(FRIENDS_TEXTURE_ONLINE, e.onlyChinese and '有空' or FRIENDS_LIST_AVAILABLE),
             checked= Save.Friends[e.Player.name_server].Availabel,
