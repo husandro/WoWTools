@@ -100,9 +100,13 @@ local GetPlayerNameRemoveRealm= function(name, realm)--玩家名称, 去服务�
     end
 end
 
-e.Race=function(unit, race, sex, reAtlas)--玩家种族图标
-    race =race or unit and select(2,UnitRace(unit))
-    sex=sex or unit and UnitSex(unit)
+e.GetUnitRaceInfo=function(tab)--e.GetUnitRaceInfo({unit=nil, guid=nil, race=nil, sex=nil, reAtlas=false})--玩家种族图标
+    local race =tab.race or (tab.unit and select(2,UnitRace(tab.unit)))
+    local sex= tab.sex
+    if not (race or sex) and tab.guid then
+        race, sex = select(4, GetPlayerInfoByGUID(tab.guid))
+    end
+    sex=sex or (tab.unit and UnitSex(tab.unit))
     sex= sex==2 and 'male' or (sex==1 and 'female')
     if sex and race then
         if race=='Scourge' then
@@ -116,7 +120,7 @@ e.Race=function(unit, race, sex, reAtlas)--玩家种族图标
         elseif race=='Dracthyr' then
             race='dracthyrvisage'
         end
-        if reAtlas then
+        if tab.reAtlas then
             return 'raceicon128-'..race..'-'..sex
         else
             return '|A:raceicon128-'..race..'-'..sex..':0:0|a'
@@ -199,7 +203,7 @@ e.PlayerLink=function(name, guid, slotLink) --玩家超链接
             if class then
                 showName= '|c'..select(4,GetClassColor(class))..showName..'|r'
             end
-            return (not slotLink and e.Race(nil, race, sex) or '')..'|Hplayer:'..name2..(realm and '-'..realm or '')..'|h['..showName..']|h'
+            return (not slotLink and e.GetUnitRaceInfo({unit=nil, guid=guid , race=race , sex=sex , reAtlas=false}) or '')..'|Hplayer:'..name2..(realm and '-'..realm or '')..'|h['..showName..']|h'
         end
     elseif name then
         return '|Hplayer:'..name..'|h['..GetPlayerNameRemoveRealm(name)..']|h'
@@ -215,14 +219,19 @@ e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, r
         local _, englishClass, _, englishRace, sex, name, realm = GetPlayerInfoByGUID(tab.guid)
         if name and englishClass and englishRace and sex then
             tab.unit= tab.unit or (e.GroupGuid[tab.guid] and e.GroupGuid[tab.guid].unit)
+
             local friend= e.GetFriend(tab.name, tab.guid, tab.unit)--检测, 是否好友
             local faction= tab.unit and e.GetUnitFaction(tab.unit)--检查, 是否同一阵营
             local groupTab= e.GroupGuid[tab.guid] or e.GroupGuid[tab.name]--队伍成员
-            local text=(friend or '')..(faction or '')..(e.Race(nil, englishRace, sex) or '')..(e.Class(tab.unit, englishClass) or '')
+            local text= (friend or '')
+                        ..(faction or '')
+                        ..(e.GetUnitRaceInfo({unit=tab.unit, guid=tab.guid , race=englishRace, sex=sex, reAtlas=false}) or '')
+                        ..(e.Class(tab.unit, englishClass) or '')
+
             if groupTab and (groupTab.combatRole=='HEALER' or groupTab.combatRole=='TANK') then--职业图标
                 text= text..e.Icon[tab.combatRole]..(tab.subgroup or '')
             end
-            
+
             if tab.reLink then
                 return text..e.PlayerLink(tab.name, tab.guid, true) --玩家超链接
             elseif tab.reName then
@@ -310,7 +319,7 @@ e.Icon={
     clock='socialqueuing-icon-clock',
     clock2='|A:socialqueuing-icon-clock:0:0|a',--auctionhouse-icon-clock
 
-    player=e.Race('player'),
+    player= e.GetUnitRaceInfo({unit='player', guid=nil , race=nil , sex=nil , reAtlas=false}),
 
     bank2='|A:Banker:0:0|a',
     bag='bag-main',

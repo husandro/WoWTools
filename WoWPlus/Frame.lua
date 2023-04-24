@@ -466,7 +466,10 @@ local function Init_Move()
         ChatConfigFrame={save=true},--聊天设置
         SettingsPanel={},--选项
         --UIWidgetPowerBarContainerFrame={},
+
         FriendsFrame={},--好友列表
+        RaidInfoFrame={frame=FriendsFrame},
+
         GossipFrame={},
         QuestFrame={},
         PetStableFrame={},--猎人，宠物

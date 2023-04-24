@@ -29,7 +29,7 @@ local function set_QuinkJoin_Init()--快速加入, 初始化
                 if guid then
                     local _, class, _, race, sex = GetPlayerInfoByGUID(guid)
                     if race and sex then
-                        icon=e.Race(nil, race, sex, true)
+                        icon=e.GetUnitRaceInfo({unit=nil, guid=guid, race=race, sex=sex , reAtlas=true})
                     end
                     if class then
                         icon2='groupfinder-icon-class-'..class
@@ -253,7 +253,7 @@ subframes.roleTexture = _G["RaidGroupButton"..i.."RoleTexture"];
 subframes.readyCheck = _G["RaidGroupButton"..i.."ReadyCheck"];
 button.subframes = subframes;
 ]]
-local setRaidGroupFrameLabel
+--local setRaidGroupFrameLabel
 local function set_RaidGroupFrame_Update()--团队, 模块
     if not IsInRaid() then
         return
@@ -330,7 +330,7 @@ local function set_RaidGroupFrame_Update()--团队, 模块
                 end
 
                 if subframes.level and level==MAX_PLAYER_LEVEL then
-                    subframes.level:SetText(e.Race(unit) or '')
+                    subframes.level:SetText(e.GetUnitRaceInfo({unit=unit, guid=guid, race=nil, sex=nil, reAtlas=false}) or '')
                 end
             end
         end
@@ -349,11 +349,11 @@ end
 local function set_WhoList_Update()--查询, 名单列表
     for _, button in pairs(WhoFrame.ScrollBox:GetFrames()) do
         local info= button.index and C_FriendList.GetWhoInfo(button.index)
-        local r,g,b,hex, level
+        local r,g,b,level
         if info then
             if RAID_CLASS_COLORS[info.filename] then
                 r,g,b= RAID_CLASS_COLORS[info.filename]:GetRGB()
-                hex= RAID_CLASS_COLORS[info.filename].colorStr
+                --hex= RAID_CLASS_COLORS[info.filename].colorStr
             end
            level= info.level
         end
@@ -366,7 +366,6 @@ local function set_WhoList_Update()--查询, 名单列表
                         nameText= nameText..e.Icon.star2
                     end
                     button.Name:SetText(nameText)
-                    
                 end
                 button.Name:SetTextColor(r,g,b)
             end
@@ -382,10 +381,7 @@ local function set_WhoList_Update()--查询, 名单列表
                 end
             end
         end
-        
-        
     end
-    
 end
 
 --######

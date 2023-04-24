@@ -2585,7 +2585,11 @@
         "AchievementFrameComparisonHeader",
         "CharacterFrameTab_OnClick",
         "CharacterFrame_ToggleTokenFrame",
-        "WhoList_Update"
+        "WhoList_Update",
+        "RaidInfoFrame",
+        "MapQuestInfoRewardsFrame",
+        "FriendsFrameBattlenetFrame",
+        "AddFriendFrame"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

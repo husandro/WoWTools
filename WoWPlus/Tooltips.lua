@@ -643,7 +643,10 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             --text= text..LEVEL..' '..level..'  '..e.Race(nil, raceFile, sex)..raceName..' '..e.Class(nil, classFilename)..className..(UnitIsPVP(unit) and  '  (|cnRED_FONT_COLOR:PvP|r)' or '  (|cnGREEN_FONT_COLOR:PvE|r)')
             local info= C_PlayerInfo.GetPlayerMythicPlusRatingSummary(unit)--挑战, 分数
             if info and info.currentSeasonScore and info.currentSeasonScore>0 then
-                text= text..' '..(e.Race(nil, raceFile, sex) or '')..' '..e.Class(nil, classFilename)..' '..(UnitIsPVP(unit) and  '|cnGREEN_FONT_COLOR:PvP|r' or 'PvE')..'  '..e.GetKeystoneScorsoColor(info.currentSeasonScore,true)
+                text= text..' '..(e.GetUnitRaceInfo({unit=unit, guid=guid, race=raceFile, sex=sex, reAtlas=false}) or '')
+                        ..' '..e.Class(nil, classFilename)
+                        ..' '..(UnitIsPVP(unit) and  '|cnGREEN_FONT_COLOR:PvP|r' or 'PvE')
+                        ..'  '..e.GetKeystoneScorsoColor(info.currentSeasonScore,true)
 
                 if info.runs and info.runs then
                     local bestRunLevel=0
@@ -657,7 +660,10 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                     end
                 end
             else
-                text= text..' '..(e.Race(nil, raceFile, sex) or '')..(raceName or '')..' '..(e.Class(nil, classFilename) or '')..' '..(UnitIsPVP(unit) and  '(|cnGREEN_FONT_COLOR:PvP|r)' or '(PvE)')
+                text= text..' '..(e.GetUnitRaceInfo({unit=unit, guid=guid, race=raceFile, sex=sex, reAtlas=false})  or '')
+                        ..(raceName or '')
+                        ..' '..(e.Class(nil, classFilename) or '')
+                        ..' '..(UnitIsPVP(unit) and '(|cnGREEN_FONT_COLOR:PvP|r)' or '(PvE)')
             end
             text= col and col..text..'|r' or text
             line:SetText(text)

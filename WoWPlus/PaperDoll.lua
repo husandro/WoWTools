@@ -1049,7 +1049,7 @@ local function Init()
     CharacterLevelText:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
     CharacterLevelText:SetJustifyH('LEFT')
     hooksecurefunc('PaperDollFrame_SetLevel', function()--PaperDollFrame.lua
-        local race= e.Race('player', nil, nil, true)
+        local race= e.GetUnitRaceInfo({unit='player', guid=nil , race=nil , sex=nil , reAtlas=true})
         local class= e.Class('player', nil, true)
         local level = UnitLevel("player");
         local effectiveLevel = UnitEffectiveLevel("player");
