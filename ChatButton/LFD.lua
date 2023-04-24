@@ -248,16 +248,6 @@ local function setQueueStatus()--小眼睛, 信息
         button.tipsFrame:SetShown(text~='' and true or nil)
     end
 
-    --[[if not button.enterInstance and Save.enterInstance then--自动进入,指示图标
-        button.enterInstance=button:CreateTexture(nil, 'ARTWORK')
-        button.enterInstance:SetPoint('BOTTOMLEFT',3,3)
-        button.enterInstance:SetSize(10,10)
-        button.enterInstance:SetAtlas(e.Icon.toRight)
-        button.enterInstance:SetDesaturated(true)
-    end
-    if button.enterInstance then
-        button.enterInstance:SetShown(Save.enterInstance)
-    end]]
     if not button.leaveInstance and Save.leaveInstance then--自动离开,指示图标
         button.leaveInstance=button:CreateTexture(nil, 'ARTWORK')
         button.leaveInstance:SetPoint('BOTTOMRIGHT',-7,3)
@@ -498,33 +488,6 @@ end
 --预创建队伍增强
 --############
 local function set_LFGPlus()--预创建队伍增强
-    --[[local f=LFGListFrame.SearchPanel.RefreshButton--界面, 添加, 选项    
-    f.ace = CreateFrame("CheckButton", nil, f, "InterfaceOptionsCheckButtonTemplate")--自动进组  选项
-    f.ace:SetPoint('RIGHT',f, 'LEFT',-90,0)
-    f.ace.Text:SetText('|cFFFFD000'..(e.onlyChinese and '自动接受' or AUTO_JOIN:gsub(JOIN, ACCEPT))..'|r')
-    f.ace:SetChecked(Save.LFGListAceInvite)
-    f.ace:SetScript("OnMouseDown", function (s)
-            Save.LFGListAceInvite=s:GetChecked()
-    end)
-
-    f=LFGListFrame.ApplicationViewer.DataDisplay --自动邀请 选项
-    f.inv = CreateFrame("CheckButton",nil, f, "InterfaceOptionsCheckButtonTemplate")
-    f.inv:SetPoint("BOTTOMLEFT", f, "TOPLEFT", 0, -10)
-    f.inv.Text:SetText('|cFFFFD000'..(e.onlyChinese and '自动邀请' or AUTO_JOIN:gsub(JOIN, INVITE))..'|r')
-    f.inv:SetChecked(Save.LFGAutoInv)
-    f.inv:SetScript("OnMouseDown", function(s)
-            Save.LFGAutoInv=s:GetChecked()
-    end)
-
-    f.raid = CreateFrame("CheckButton",nil, f, "InterfaceOptionsCheckButtonTemplate")--转化为团队 选项
-    f.raid:SetPoint("TOPLEFT", f, "BOTTOMLEFT", 0, 8)
-    f.raid.Text:SetText('|cFFFFD000'..(e.onlyChinese and '转团' or CONVERT_TO_RAID)..'|r')
-    f.raid:SetChecked(Save.PartyToRaid)
-
-    f.raid:SetScript("OnMouseDown", function(s)
-        Save.PartyToRaid=s:GetChecked()
-    end)
-]]
     local function getIndex(values, val)
         local index={}
         for k,v in pairs(values) do
@@ -752,19 +715,6 @@ end
 local function InitList(self, level, type)--LFDFrame.lua
     local info
     if type=='SETTINGS' then
-        --[[info={--自动, 准备进入,选项
-            text=e.Icon.toRight2..(e.onlyChinese and '准备进入' or BATTLEFIELD_CONFIRM_STATUS),
-            tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and '已经建好了一个队伍，准备前往' or SPECIFIC_DUNGEON_IS_READY,
-            checked=Save.enterInstance,
-            tooltipText= (e.onlyChinese and '自动进入' or AUTO_JOIN:gsub(JOIN, ENTER_LFG))..'\n'..(e.onlyChinese and '不能在 AFK 中' or format(ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS, '',AFK)).. '\n\n|cnGREEN_FONT_COLOR:Alt '..(e.onlyChinese and '取消' or CANCEL)..'|r\n\n'..id..' '..addName,
-            func=function()
-                Save.enterInstance= not Save.enterInstance and true or nil
-                setQueueStatus()--小眼睛, 信息
-            end
-        }
-        securecall('UIDropDownMenu_AddButton', info, level)]]
-
         info={--自动, 离开副本,选项
             text=e.onlyChinese and '离开副本' or (LEAVE..INSTANCE),
             tooltipOnButton=true,
@@ -925,55 +875,6 @@ local function InitList(self, level, type)--LFDFrame.lua
     end
 end
 
-
---###############
---离开, 进入, 副本
---###############
---[[
-local function setLFGDungeonReadyDialog(self)--自动进入FB LFGDungeonReadyDialog:HookScript("OnShow"
-    if Save.enterInstance then
-        e.PlaySound()--播放, 声音
-    end
-    e.Ccool(self, nil, 38, nil, true, true)
-    
-    local afk=UnitIsAFK('player')
-    if not self.infoText then
-        self.infoText=e.Cstr(self, {copyFont=LFGDungeonReadyDialogInstanceInfoFrame.name, color=true})--nil, LFGDungeonReadyDialogInstanceInfoFrame.name, nil, true)
-        self.infoText:SetPoint('LEFT', self, 'RIGHT')
-        self.infoText:SetJustifyH('LEFT')
-        self.infoText:SetShadowOffset(2, -2)
-    end
-    local proposalExists, dungeonID, typeID, subtypeID, name, backgroundTexture, role, hasResponded, totalEncounters, completedEncounters, numMembers, isLeader, isHoliday, proposalCategory , isSilent = GetLFGProposal()
-    local text=''
-    if dungeonID then
-        text='dungeonID: '..dungeonID
-                ..( role and _G[role] and '\n'.._G[role]..e.Icon[role] ..(isLeader and e.Icon.leader or ''))
-                ..(totalEncounters and completedEncounters and totalEncounters>0 and '\n|cnGREEN_FONT_COLOR:'..completedEncounters..'|r /'..totalEncounters..' '..(e.onlyChinese and '首领' or BOSS) or '')
-                ..(numMembers and '\n'..numMembers..' '..(e.onlyChinese and '玩家' or PLAYER)  or '')
-                ..(isHoliday and '\n'..(e.onlyChinese and '节日' or CALENDAR_FILTER_HOLIDAYS).. ' '..(e.onlyChinese and '副本' or INSTANCE) or '')
-    end
-    self.infoText:SetText(text)
-    --if not Save.enterInstance or afk then
-        e.Ccool(self, nil, 38, nil, true, true)
-        if Save.enterInstance and afk then
-            print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '不能' or NO)..'|r', e.onlyChinese and '准备进入' or BATTLEFIELD_CONFIRM_STATUS, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '离开中' or CHAT_FLAG_AFK))
-        end
-        return
-    end
-    if name then
-        print(id, addName, e.onlyChinese and '准备进入' or QUEUED_STATUS_PROPOSAL,'|cnGREEN_FONT_COLOR:'..sec..'|r', e.onlyChinese and '秒' or SECONDS)
-        if text~='' then
-            text=text:gsub('\n', ' ')
-            print(text)
-        end
-    end
-    e.Ccool(self, nil, sec, nil, true, true)
-    C_Timer.After(sec, function()
-        if self and self.enterButton and self:IsShown() and self.enterButton:IsEnabled() and not IsModifierKeyDown() then
-            LFGDungeonReadyDialogEnterDungeonButton:Click()
-        end
-    end)
-end]]
 local ExitIns
 local function exitInstance()
     local ins
