@@ -165,6 +165,9 @@ end
 
 e.GetFriend= function(name, guid, unit)--检测, 是否好友
     guid= guid or getGUID(unit, name)
+    if guid==e.Player.guid or name==e.Player.name or (unit and UnitIsUnit('player', unit)) then
+        return
+    end
     if guid then
         if C_BattleNet.GetAccountInfoByGUID(guid) or C_BattleNet.GetGameAccountInfoByGUID(guid) then
             return e.Icon.wow2

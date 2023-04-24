@@ -589,12 +589,22 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             end
         end
 
-        local isInGuild=IsPlayerInGuildFromGUID(guid)
+        local isInGuild= guid and IsPlayerInGuildFromGUID(guid)
         local col = e.UnitItemLevel[guid] and e.UnitItemLevel[guid].col or '|c'..select(4,GetClassColor(UnitClassBase(unit)))
 
         local line=GameTooltipTextLeft1--名称
         if line then
-            line:SetText((e.GetFriend(name, guid, unit) or '')..col..e.Icon.toRight2..name..e.Icon.toLeft2..'|r')
+            if isSelf then--魔兽世界时光徽章
+                local price= C_WowTokenPublic.GetCurrentMarketPrice()
+                C_WowTokenPublic.UpdateMarketPrice()
+                if price then
+                    GameTooltipTextRight1:SetText(e.Icon.wow2..col..e.MK(price/10000,2)..'|r|A:Front-Gold-Icon:0:0|a')
+                    GameTooltipTextRight1:SetShown(true)
+                end
+            end
+            line:SetText((isSelf and e.Icon.star2 or e.GetFriend(name, guid, unit) or '')
+                         ..col..e.Icon.toRight2..name..e.Icon.toLeft2
+                         ..'|r')
         end
 
         realm= realm or e.Player.server--服务器
@@ -695,7 +705,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                             line:SetShown(true)
                         end
 
-                    elseif isGroupPlayer then----队友位置
+                    elseif isGroupPlayer then--队友位置
                         local mapID= C_Map.GetBestMapForUnit(unit)--地图ID
                         local mapInfo= mapID and C_Map.GetMapInfo(mapID)
                         if mapInfo and mapInfo.name and _G["GameTooltipTextLeft"..i] then
@@ -793,6 +803,8 @@ local function setUnitInfo(self, unit)--设置单位提示信息
     end
 
     set_Item_Model(self, {unit=unit, guid=guid, creatureDisplayID=nil, animID=nil, appearanceID=nil, visualID=nil})--设置, 3D模型
+
+   
 end
 
 local function setCVar(reset, tips, notPrint)

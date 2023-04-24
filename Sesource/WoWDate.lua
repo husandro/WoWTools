@@ -15,14 +15,14 @@ local function get_WoW_GUID_Info(friendID)
         for i=1 ,BNGetNumFriends() do
             local accountInfo =C_BattleNet.GetFriendAccountInfo(i);
             local info=accountInfo  and accountInfo .gameAccountInfo
-            if info and info.isOnline and info.playerGuid and info.characterName then
+            if info and info.isOnline and info.playerGuid and info.characterName and info.playerGuid~=e.Player.guid then
                 e.WoWGUID[info.characterName]= info.playerGuid
             end
         end
     else
         local accountInfo = C_BattleNet.GetAccountInfoByID(friendID)
         local info=accountInfo  and accountInfo .gameAccountInfo
-        if info and info.isOnline and info.playerGuid and info.characterName then
+        if info and info.isOnline and info.playerGuid and info.characterName and info.playerGuid~=e.Player.guid then
             e.WoWGUID[info.characterName]= info.playerGuid
         end
     end
