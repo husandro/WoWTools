@@ -2598,7 +2598,9 @@
         "LFGListSearchPanel_SelectResult",
         "LFGListFrameDropDown",
         "LFGListUtil_GetSearchEntryMenu",
-        "LFGListSearchPanelUtil_CanSelectResult"
+        "LFGListSearchPanelUtil_CanSelectResult",
+        "ERR_VOICE_CHAT_CHANNEL_NAME_TOO_LONG",
+        "COMMUNITIES_CHANNEL_NAME_LABEL"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

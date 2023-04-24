@@ -234,6 +234,7 @@ local function InitMenu(self, level, type)--主菜单
         hasArrow=true,
         tooltipOnButton=true,
         tooltipTitle='CHAT_MSG_CHANNEL',
+        tooltipText= e.onlyChinese and '内容限130个字符以内' or string.gsub(ERR_VOICE_CHAT_CHANNEL_NAME_TOO_LONG, CHANNEL_CHANNEL_NAME,''):gsub('30','130'),
         func= function()
             Save.myChatFilter= not Save.myChatFilter and true or nil
             if Save.myChatFilter then

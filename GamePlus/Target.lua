@@ -97,7 +97,7 @@ local function Get_Quest_Progress(unit)--GameTooltip.lua --local questID= line a
         end
     elseif not isIns and isPvPZone and not UnitInParty(unit) then
         local wow= e.GetFriend(nil, nil, unit)--检测, 是否好友
-        local faction= e.GetUnitFaction(unit)--检查, 是否同一阵营
+        local faction= e.GetUnitFaction(unit, nil, nil)--检查, 是否同一阵营
         if wow or faction then
             return (wow or '')..(faction or '')
         end
