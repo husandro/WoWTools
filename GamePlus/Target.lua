@@ -17,7 +17,7 @@ local function set_CreatureNum()
 
     local nameplates= C_NamePlate.GetNamePlates() or {}
     for _, nameplat in pairs(nameplates) do
-        local u = nameplat.namePlateUnitToken or (nameplat.UnitFrame and nameplat.UnitFrame.unit)
+        local u = nameplat.namePlateUnitToken or nameplat.UnitFrame and nameplat.UnitFrame.unit
         local t= u and u..'target'
         local range= Save.range>0 and e.CheckRange(u, Save.range, '<=') or Save.range==0
         if t and UnitExists(u)
@@ -129,7 +129,7 @@ local function set_check_All_Plates()
         questChanging=true
         local plates= C_NamePlate.GetNamePlates() or {}
         for _, plate in pairs(plates) do
-            set_questProgress_Text(plate, plate.namePlateUnitToken or (plate.UnitFrame and plate.UnitFrame.unit))
+            set_questProgress_Text(plate, plate.namePlateUnitToken or plate.UnitFrame and plate.UnitFrame.unit)
         end
         questChanging=nil
     end

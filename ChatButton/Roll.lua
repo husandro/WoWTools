@@ -103,7 +103,7 @@ local function InitMenu(self, level, type)--主菜单
     if type=='SAVE' then
         for _, tab in pairs(Save.save) do
             info={
-                text='|cffffffff'..tab.roll..'|r '..e.GetPlayerInfo({unit=tab.unit, guid=tab.guid, name=tab.name, reFriendFaction=true, reName=true, reRealm=true, reLink=false})..' '..tab.date,
+                text='|cffffffff'..tab.roll..'|r '..e.GetPlayerInfo({unit=tab.unit, guid=tab.guid, name=tab.name,  reName=true, reRealm=true, reLink=false})..' '..tab.date,
                 notCheckable=true,
                 tooltipOnButton=true,
                 tooltipTitle=tab.text,
@@ -131,7 +131,7 @@ local function InitMenu(self, level, type)--主菜单
     local tabNew={}
     for _, tab in pairs(Tab) do
         info={
-            text='|cffffffff'..tab.roll..'|r '..e.GetPlayerInfo({unit=tab.unit, guid=tab.guid, name=tab.name, reFriendFaction=true, reName=true, reRealm=true, reLink=false}) ..' '..tab.date,
+            text='|cffffffff'..tab.roll..'|r '..e.GetPlayerInfo({unit=tab.unit, guid=tab.guid, name=tab.name,  reName=true, reRealm=true, reLink=false}) ..' '..tab.date,
             notCheckable=true,
             tooltipOnButton=true,
             tooltipTitle=tab.text,
@@ -159,7 +159,7 @@ local function InitMenu(self, level, type)--主菜单
         icon= 'bags-button-autosort-up',
         checked=Save.autoClear,
         tooltipOnButton=true,
-        tooltipTitle= e.onlyChinese and '进入战斗时: 清除' or (ENTERING_COMBAT..': '..(CLEAR or KEY_NUMLOCK_MAC)),
+        tooltipTitle= e.onlyChinese and '进入战斗时: 清除' or (ENTERING_COMBAT..': '..(SLASH_STOPWATCH_PARAM_STOP2)),
         --tooltipText= e.onlyChinese and '记录仅限有队伍' or (PVP_RECORD..LFG_LIST_CROSS_FACTION:format(HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS)),
         func=function()
             Save.autoClear= not Save.autoClear and true or false

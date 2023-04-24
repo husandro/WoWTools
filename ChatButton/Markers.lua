@@ -131,7 +131,7 @@ local function setGroupReadyTipsEvent()--注册事件, 就绪,队员提示信息
 end
 local function getReadyCheckStatus(unit, index)
     local stat=GetReadyCheckStatus(unit)
-    local text= e.GetPlayerInfo({unit=unit, guid=UnitGUID(unit), name=nil, reFriendFaction=true, reName=true, reRealm=true, reLink=false})
+    local text= e.GetPlayerInfo({unit=unit, guid=UnitGUID(unit), name=nil,  reName=true, reRealm=true, reLink=false})
     if stat=='ready' then
         return '|cnGREEN_FONT_COLOR:'..index..")|r"..e.Icon.select2..text
     elseif stat=='waiting' then
@@ -305,7 +305,7 @@ local function Clear(index)--取消标记标
     local u;--取消怪物标记
     local tab= C_NamePlate.GetNamePlates() or {}
     for _, v in pairs(tab) do
-        u = v.namePlateUnitToken or (v.UnitFrame and v.UnitFrame.unit)
+        u = v.namePlateUnitToken or v.UnitFrame and v.UnitFrame.unit
         C(u, index);
     end
     if IsInGroup() then
@@ -355,7 +355,7 @@ local function setMarkersFrame()--设置标记, 框架
     if not frame then
         local last
         frame=CreateFrame("Frame",nil, UIParent)
-        frame:SetFrameStrata('MEDIUM')
+        frame:SetFrameStrata('HIGH')
         setMarkersFrame_Postion()--设置标记框架, 位置
         frame:SetSize(1, 25)
         frame:SetMovable(true)
@@ -444,7 +444,7 @@ local function setMarkersFrame()--设置标记, 框架
                     e.tips:SetOwner(self, "ANCHOR_RIGHT")
                     e.tips:ClearLines()
                     e.tips:AddLine(getTexture(index)..(e.onlyChinese and '设置' or SETTINGS)..e.Icon.left, color[index].r, color[index].g, color[index].b)
-                    e.tips:AddLine(getTexture(index)..(e.onlyChinese and '清除' or CLEAR or KEY_NUMLOCK_MAC)..e.Icon.right, color[index].r, color[index].g, color[index].b)
+                    e.tips:AddLine(getTexture(index)..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..e.Icon.right, color[index].r, color[index].g, color[index].b)
                     e.tips:Show()
                 end)
             end
@@ -585,7 +585,7 @@ local function setMarkersFrame()--设置标记, 框架
                     e.tips:AddLine(e.Icon.O2..(e.onlyChinese and '清除全部' or CLEAR_ALL)..e.Icon.left)
                 else
                     e.tips:AddLine(getTexture(index)..(e.onlyChinese and '设置' or SETTINGS)..e.Icon.left, color[index].r, color[index].g, color[index].b)
-                    e.tips:AddLine(getTexture(index)..(e.onlyChinese and '清除' or CLEAR or KEY_NUMLOCK_MAC)..e.Icon.right, color[index].r, color[index].g, color[index].b)
+                    e.tips:AddLine(getTexture(index)..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..e.Icon.right, color[index].r, color[index].g, color[index].b)
                 end
                 e.tips:Show()
             end)

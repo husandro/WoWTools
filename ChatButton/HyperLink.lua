@@ -66,7 +66,7 @@ local function Realm(link)--去服务器为*, 加队友种族图标,和N,T
             end
             guid= tab.guid
         end]]
-        local text= e.GetPlayerInfo({unit=nil, guid=nil, name=name, reFriendFaction=true, reName=false, reRealm=false})
+        local text= e.GetPlayerInfo({unit=nil, guid=nil, name=name,  reName=false, reRealm=false})
         
         --[[local friend, _, guid2= e.GetFriend(name, guid)--检测, 是否好友
         if friend then

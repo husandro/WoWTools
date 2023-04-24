@@ -127,7 +127,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
             end
             guid=info.guid
             isOnline= info.connected
-            m=e.GetPlayerInfo({unit=nil, guid=info.guid, name=nil, reFriendFaction=true, reName=false, reRealm=false, reLink=false})
+            m=e.GetPlayerInfo({unit=nil, guid=info.guid, name=nil,  reName=false, reRealm=false, reLink=false})
             if info.area and info.connected then
                 m=m..' '..info.area
             end
@@ -146,7 +146,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
             end
 
             m= m..(e.GetUnitFaction(nil, info.factionName, true) or '')--派系
-            m= m..e.GetPlayerInfo({unit=nil, guid=guid, name=nil, reFriendFaction=true, reName=true, reRealm=true, reLink=false})
+            m= m..e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false})
 
             if isOnline and info.areaName then
                 m=m..' '..info.areaName--区域

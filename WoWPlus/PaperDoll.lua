@@ -717,7 +717,7 @@ local function setFlyout(button, itemLink, slot)
     if dateInfo and dateInfo.text[itemLevelStr] then
         level= tonumber(dateInfo.text[itemLevelStr])
     end
-    level= level or (itemLink and GetDetailedItemLevelInfo(itemLink))
+    level= level or itemLink and GetDetailedItemLevelInfo(itemLink)
     local text= level
     if text then
         local itemQuality = C_Item.GetItemQualityByID(itemLink)
@@ -843,7 +843,7 @@ local function set_InspectPaperDollFrame_SetLevel()--目标,天赋 装等
     local info= guid and e.UnitItemLevel[guid]
     if info and info.itemLevel and info.specID then
         local level, effectiveLevel, sex = UnitLevel(InspectFrame.unit), UnitEffectiveLevel(InspectFrame.unit), UnitSex(InspectFrame.unit);
-        local text= e.GetPlayerInfo({unit=unit, guid=guid, name=nil, reFriendFaction=true, reName=false, reRealm=false, reLink=false})
+        local text= e.GetPlayerInfo({unit=unit, guid=guid, name=nil,  reName=false, reRealm=false, reLink=false})
         local icon, role = select(4, GetSpecializationInfoByID(info.specID, sex))
         if icon and role then
             text=text..' |T'..icon..':0|t '..e.Icon[role]

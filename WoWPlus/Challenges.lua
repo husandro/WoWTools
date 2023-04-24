@@ -167,7 +167,7 @@ local function Party(frame)--队友位置
             if tab and tab.combatRole then
                 text= text..e.Icon[tab.combatRole]
             end]]
-            text= text..e.GetPlayerInfo({unit=nil, guid=guid, name=name, reFriendFaction=true, reName=true, reRealm=true, reLink=false})--信息
+            text= text..e.GetPlayerInfo({unit=nil, guid=guid, name=name,  reName=true, reRealm=true, reLink=false})--信息
             local name2, uiMapID2=e.GetUnitMapName(unit)
             if (name and name==name2) or (uiMapID and uiMapID==uiMapID2) then--地图名字
                 text=text..e.Icon.select2
@@ -232,7 +232,7 @@ local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     frame.clear = CreateFrame("Button",nil, frame, 'UIPanelButtonTemplate')--清除KEY
     frame.clear:SetPoint('RIGHT', -15, -50)
     frame.clear:SetSize(70,24)
-    frame.clear:SetText(e.onlyChinese and '清除' or  CLEAR or KEY_NUMLOCK_MAC)
+    frame.clear:SetText(e.onlyChinese and '清除' or  SLASH_STOPWATCH_PARAM_STOP2)
     frame.clear:SetScript("OnMouseDown",function()
             C_ChallengeMode.RemoveKeystone()
             frame:Reset()
@@ -677,7 +677,7 @@ local function All(self)--所有记录
             find=true
         end
         if find then
-            text= text..'\n'.. e.GetPlayerInfo({unit=nil, guid=guid, name=nil, reFriendFaction=true, reName=true, reRealm=true, reLink=false})
+            text= text..'\n'.. e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false})
         end
     end
     if  text and not self.WoWKeystones then

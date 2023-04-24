@@ -287,7 +287,7 @@ local function setItem(self, ItemLink)
                 find=true
                 end
                 if find then
-                    self:AddLine(e.GetPlayerInfo({unit=nil, guid=guid, name=nil, reFriendFaction=true, reName=true, reRealm=true, reLink=false}))
+                    self:AddLine(e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false}))
                 end
             end
         end
@@ -307,7 +307,7 @@ local function setItem(self, ItemLink)
             if guid and info and guid~=e.Player.guid then
                 local tab=info.Item[itemID]
                 if tab and tab.bag and tab.bank then
-                    self:AddDoubleLine(e.GetPlayerInfo({unit=nil, guid=guid, name=nil, reFriendFaction=true, reName=true, reRealm=true, reLink=false}), e.Icon.bank2..(tab.bank==0 and '|cff606060'..tab.bank..'|r' or tab.bank)..' '..e.Icon.bag2..(tab.bag==0 and '|cff606060'..tab.bag..'|r' or tab.bag))
+                    self:AddDoubleLine(e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false}), e.Icon.bank2..(tab.bank==0 and '|cff606060'..tab.bank..'|r' or tab.bank)..' '..e.Icon.bag2..(tab.bag==0 and '|cff606060'..tab.bag..'|r' or tab.bag))
                     bagAll=bagAll +tab.bag
                     bankAll=bankAll +tab.bank
                     numPlayer=numPlayer +1
@@ -360,7 +360,7 @@ local function setCurrency(self, currencyID)--货币
         if guid~=e.Player.guid then
             local quantity=info.Currency[currencyID]
             if quantity and quantity>0 then
-                self:AddDoubleLine(e.GetPlayerInfo({unit=nil, guid=guid, name=nil, reFriendFaction=true, reName=true, reRealm=true, reLink=false}), e.MK(quantity, 3))
+                self:AddDoubleLine(e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false}), e.MK(quantity, 3))
                 all=all+quantity
                 numPlayer=numPlayer+1
             end
@@ -411,7 +411,7 @@ local function setBuff(type, self, ...)--Buff
         end
         local text= source=='player' and (e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
                 or source=='pet' and PET
-                or UnitIsPlayer(source) and e.GetPlayerInfo({unit=source, guid=UnitGUID(source), name=nil, reFriendFaction=true, reName=true, reRealm=true, reLink=false})
+                or UnitIsPlayer(source) and e.GetPlayerInfo({unit=source, guid=UnitGUID(source), name=nil,  reName=true, reRealm=true, reLink=false})
                 or UnitName(source) or _G[source] or source
         self:AddDoubleLine('|c'..(hex or 'ffffff')..(e.onlyChinese and '来原: '..text or format(e.onlyChinese and '"来源：%s' or RUNEFORGE_LEGENDARY_POWER_SOURCE_FORMAT, text)..'|r'))
         self:Show()
@@ -594,7 +594,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
 
         local line=GameTooltipTextLeft1--名称
         if line then
-            line:SetText(col..e.Icon.toRight2..(e.GetFriend(name, guid, unit) or '')..name..e.Icon.toLeft2..'|r')
+            line:SetText((e.GetFriend(name, guid, unit) or '')..col..e.Icon.toRight2..name..e.Icon.toLeft2..'|r')
         end
 
         realm= realm or e.Player.server--服务器
@@ -1546,7 +1546,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             end)
             hooksecurefunc('AchievementFrameComparison_SetUnit', function(unit)--比较成就
-                local text= e.GetPlayerInfo({unit=unit, guid=unit and UnitGUID(unit), name=nil, reFriendFaction=true, reName=true, reRealm=true, reLink=false})--玩家信息图标
+                local text= e.GetPlayerInfo({unit=unit, guid=unit and UnitGUID(unit), name=nil,  reName=true, reRealm=true, reLink=false})--玩家信息图标
                 if text~='' then
                     AchievementFrameComparisonHeaderName:SetText(text)
                 end

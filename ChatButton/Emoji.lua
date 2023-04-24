@@ -105,7 +105,7 @@ local function InitMenu(self, level, type)
         }
         securecall('UIDropDownMenu_AddButton', info, level)
         info={
-            text= e.onlyChinese and '清除' or  CLEAR or KEY_NUMLOCK_MAC,--全清
+            text= e.onlyChinese and '清除' or  SLASH_STOPWATCH_PARAM_STOP2,--全清
             notCheckable=true,
             func=function()
                 for _, channel in pairs(Channels) do

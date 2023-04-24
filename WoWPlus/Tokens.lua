@@ -27,7 +27,7 @@ local Get_Currency= function(tab)--e.Get_Currency({id=nil, index=nil, link=nil, 
     local t=''
     t= tab.showName and '   ' or t
     if tab.showID then--显示ID
-        local ID= tab.id or (tab.link and C_CurrencyInfo.GetCurrencyIDFromLink(tab.link))
+        local ID= tab.id or tab.link and C_CurrencyInfo.GetCurrencyIDFromLink(tab.link)
         if tab.index then
             local link=tab.link or C_CurrencyInfo.GetCurrencyListLink(tab.index)
             ID= link and C_CurrencyInfo.GetCurrencyIDFromLink(link)

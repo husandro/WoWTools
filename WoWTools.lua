@@ -101,13 +101,13 @@ local GetPlayerNameRemoveRealm= function(name, realm)--玩家名称, 去服务�
 end
 
 e.GetUnitRaceInfo=function(tab)--e.GetUnitRaceInfo({unit=nil, guid=nil, race=nil, sex=nil, reAtlas=false})--玩家种族图标
-    local race =tab.race or (tab.unit and select(2,UnitRace(tab.unit)))
+    local race =tab.race or tab.unit and select(2,UnitRace(tab.unit))
     local sex= tab.sex
     if not (race or sex) and tab.guid then
         race, sex = select(4, GetPlayerInfoByGUID(tab.guid))
     end
-    sex=sex or (tab.unit and UnitSex(tab.unit))
-    sex= sex==2 and 'male' or (sex==1 and 'female')
+    sex=sex or tab.unit and UnitSex(tab.unit)
+    sex= sex==2 and 'male' or sex==3 and 'female'
     if sex and race then
         if race=='Scourge' then
             race='Undead'
@@ -129,7 +129,7 @@ e.GetUnitRaceInfo=function(tab)--e.GetUnitRaceInfo({unit=nil, guid=nil, race=nil
 end
 
 e.Class=function(unit, class, reAltlas)--职业图标
-    class=class or (unit and select(2, UnitClass(unit)))
+    class=class or unit and select(2, UnitClass(unit))
     if class then
         if class=='EVOKER' then
             class='classicon-evoker'
@@ -176,7 +176,7 @@ e.GetFriend= function(name, guid, unit)--检测, 是否好友
         end
     elseif name then
         local name2=name:match('(.-)%-')
-        local info=C_FriendList.GetFriendInfo(name) or (name2 and C_FriendList.GetFriendInfo(name2))
+        local info=C_FriendList.GetFriendInfo(name) or name2 and C_FriendList.GetFriendInfo(name2)
         if info then
             return '|A:groupfinder-icon-friend:0:0|a'--好友
         end
@@ -192,7 +192,7 @@ end
 
 
 e.PlayerLink=function(name, guid, slotLink) --玩家超链接
-    guid= guid or (name and (e.GroupGuid[name] and e.GroupGuid[name].guid or e.WoWGUID[name]))
+    guid= guid or name and e.GroupGuid[name] and e.GroupGuid[name].guid or e.WoWGUID[name]
     if name == COMBATLOG_FILTER_STRING_ME or name==e.Player.name or name==e.Player.name_server or guid==e.Player.guid then--自已
         return (not slotLink and e.Icon.player)..'|Hplayer:'..e.Player.name_server..'|h['..e.Player.col..COMBATLOG_FILTER_STRING_ME..'|r'..']|h'
     end
@@ -211,39 +211,47 @@ e.PlayerLink=function(name, guid, slotLink) --玩家超链接
 end
 
 --IsPlayerInGuildFromGUID(playerGUID)--玩家信息图标
-e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, reFriendFaction=true, reName=true, reRealm=true, reLink=false})
-    tab.guid= tab.guid or getGUID(tab.unit, tab.name)
-    if tab.guid==e.Player.guid or tab.name==e.Player.name or tab.name==e.Player.name_server then
-        return e.Icon.player..(tab.nameShow and e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r' or '')..e.Icon.star2
-    elseif tab.guid and C_PlayerInfo.GUIDIsPlayer(tab.guid) then
-        local _, englishClass, _, englishRace, sex, name, realm = GetPlayerInfoByGUID(tab.guid)
-        if name and englishClass and englishRace and sex then
-            tab.unit= tab.unit or (e.GroupGuid[tab.guid] and e.GroupGuid[tab.guid].unit)
+e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, reName=true, reLink=false})
+    local guid= tab.guid or getGUID(tab.unit, tab.name)
+    local unit= tab.unit
+                or guid and e.GroupGuid[guid] and e.GroupGuid[guid].unit
+                or tab.name and e.GroupGuid[tab.name] and e.GroupGuid[tab.name].unit
+    local name= tab.name or guid and e.GroupGuid[guid] and e.GroupGuid[guid].name
 
-            local friend= e.GetFriend(tab.name, tab.guid, tab.unit)--检测, 是否好友
-            local faction= tab.unit and e.GetUnitFaction(tab.unit)--检查, 是否同一阵营
-            local groupTab= e.GroupGuid[tab.guid] or e.GroupGuid[tab.name]--队伍成员
+    if guid==e.Player.guid or name==e.Player.name or name==e.Player.name_server or unit=='player' then
+        return e.Icon.player..((tab.reName or tab.reLink) and e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r' or '')..e.Icon.star2
+
+    elseif guid and C_PlayerInfo.GUIDIsPlayer(guid) then
+        local _, englishClass, _, englishRace, sex, name2, realm = GetPlayerInfoByGUID(guid)
+        name= name2
+        --if name and englishClass and englishRace and sex then
+
+            local friend= e.GetFriend(name, guid, unit)--检测, 是否好友
+            local faction= unit and e.GetUnitFaction(unit)--检查, 是否同一阵营
+            local groupInfo= e.GroupGuid[guid] or e.GroupGuid[name] or {}--队伍成员
+
             local text= (friend or '')
                         ..(faction or '')
-                        ..(e.GetUnitRaceInfo({unit=tab.unit, guid=tab.guid , race=englishRace, sex=sex, reAtlas=false}) or '')
-                        ..(e.Class(tab.unit, englishClass) or '')
+                        ..(e.GetUnitRaceInfo({unit=unit, guid=guid , race=englishRace, sex=sex, reAtlas=false}) or '')
+                        ..(e.Class(unit, englishClass) or '')
 
-            if groupTab and (groupTab.combatRole=='HEALER' or groupTab.combatRole=='TANK') then--职业图标
-                text= text..e.Icon[tab.combatRole]..(tab.subgroup or '')
+            if groupInfo.combatRole=='HEALER' or groupInfo.combatRole=='TANK' then--职业图标
+                text= text..e.Icon[groupInfo.combatRole]..(groupInfo.subgroup or '')
             end
 
             if tab.reLink then
-                return text..e.PlayerLink(tab.name, tab.guid, true) --玩家超链接
+                return text..e.PlayerLink(name, guid, true) --玩家超链接
             elseif tab.reName then
                 if tab.reRealm then
                     text= text..(name..(realm and realm~='' and '-'..realm or ''))
                 else
                     text= text..GetPlayerNameRemoveRealm(name, realm)
                 end
-                text= '|c'..select(4,GetClassColor(englishClass))..text..'|r'
+                text= '|c'..select(4,GetClassColor(englishClass))..text..'|r'                
             end
+            
             return text
-        end
+       -- end
     end
     return ''
 end
@@ -1007,7 +1015,7 @@ e.GetItemCollected= function(link, sourceID, icon)--物品是否收集
 end
 
 e.GetPetCollectedNum= function(speciesID, itemID)--总收集数量， 25 25 25， 3/3
-    speciesID = speciesID or (itemID and select(13, C_PetJournal.GetPetInfoByItemID(itemID)))--宠物物品
+    speciesID = speciesID or itemID and select(13, C_PetJournal.GetPetInfoByItemID(itemID))--宠物物品
     if not speciesID then
         return
     end
@@ -1090,7 +1098,7 @@ e.GetTooltipData= function(tab)
     elseif tab.inventory then
         tooltipData= C_TooltipInfo.GetInventoryItem('player', tab.inventory)
     end
-    tooltipData=  tooltipData or (tab.hyperLink and C_TooltipInfo.GetHyperlink(tab.hyperLink))
+    tooltipData= tooltipData or tab.hyperLink and C_TooltipInfo.GetHyperlink(tab.hyperLink)
     local date={
         red=false,
         wow=false,
@@ -1613,7 +1621,7 @@ local regionColor = {--https://wago.io/6-GG3RMcC
 }
 e.Get_Region= function(server, guid, unit)--e.Get_Region(server, guid, unit)--服务器，EU， US {col=, text=, realm=}
     server= server
-            or (unit and ((select(2, UnitName(unit)) or e.Player.server)))
-            or (guid and select(7, GetPlayerInfoByGUID(guid)))
+            or unit and ((select(2, UnitName(unit)) or e.Player.server))
+            or guid and select(7, GetPlayerInfoByGUID(guid))
     return server and Realms[server] and regionColor[Realms[server]]
 end

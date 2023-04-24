@@ -977,7 +977,7 @@ local function exitInstance()
     else
         C_PartyInfo.LeaveParty(LE_PARTY_CATEGORY_INSTANC)
     end
-    print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '离开' or LEAVE)..'|r'..(name or (e.onlyChinese and '副本' or INSTANCE)), name and '|cnGREEN_FONT_COLOR:'..wowSave[INSTANCE][name]..'|r'..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1) or '')
+    print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '离开' or LEAVE)..'|r'..(name or e.onlyChinese and '副本' or INSTANCE), name and '|cnGREEN_FONT_COLOR:'..wowSave[INSTANCE][name]..'|r'..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1) or '')
     ExitIns=nil
 end
 
@@ -1312,7 +1312,9 @@ local function setSTART_LOOT_ROLL(rollID, rollTime, lootHandle)--自动ROLL
 
     local _, _, _, quality, bindO_nPickUp, canNeed, canGreed, _, reasonNeed, reasonGreed = GetLootRollItemInfo(rollID)
     local rollType= canNeed and 1 or 2
-    local text= canNeed and (e.onlyChinese and '需求' or NEED)..'|TInterface\\Buttons\\UI-GroupLoot-Dice-Up:0|t' or canGreed and (e.onlyChinese and '贪婪' or GREED)..'|TInterface\\Buttons\\UI-GroupLoot-Coin-Up:0|t' or (e.onlyChinese and '无' or NONE)
+    local text= canNeed and (e.onlyChinese and '需求' or NEED)..'|TInterface\\Buttons\\UI-GroupLoot-Dice-Up:0|t'
+                 or canGreed and (e.onlyChinese and '贪婪' or GREED)..'|TInterface\\Buttons\\UI-GroupLoot-Coin-Up:0|t'
+                 or e.onlyChinese and '无' or NONE
     local link = GetLootRollItemLink(rollID)
     local find
 
@@ -1400,7 +1402,7 @@ local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
                 local guid=UnitGUID(u2)
                 local line=e.PlayerOnlineInfo(u2)
                 if line and guid then
-                    print(line, e.GetPlayerInfo({unit=nil, guid=true, name=nil, reFriendFaction=true, reName=false, reRealm=false, reLink=true}), e.Icon.map2, e.GetUnitMapName(u2))
+                    print(line, e.GetPlayerInfo({unit=nil, guid=true, name=nil,  reName=false, reRealm=false, reLink=true}), e.Icon.map2, e.GetUnitMapName(u2))
                     find=true
                 end
             end
@@ -1445,7 +1447,7 @@ local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
                 end
                 local guid=UnitGUID(u2)
                 if guid then
-                    local info=(e.PlayerOnlineInfo(u2) or '')..e.GetPlayerInfo({unit=nil, guid=guid, name=nil, reFriendFaction=true, reName=true, reRealm=true, reLink=false})
+                    local info=(e.PlayerOnlineInfo(u2) or '')..e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false})
                     local name=GetUnitName(u2,true)
                     local player=UnitIsUnit('player', u2)
                     RoleC[name]={

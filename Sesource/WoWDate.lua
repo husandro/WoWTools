@@ -46,7 +46,7 @@ local function get_Player_Info(guid)--取得玩家信息
 
     local itemLevel= unit and C_PaperDollInfo.GetInspectItemLevel(unit)
     if unit then
-        local name, realm= UnitFullName(unit)
+        
         local r, g, b, hex
         local class= UnitClassBase(unit)
         if class then
@@ -55,15 +55,15 @@ local function get_Player_Info(guid)--取得玩家信息
                 hex= '|c'..hex
             end
         end
-        if not itemLevel and  e.UnitItemLevel[guid] and e.UnitItemLevel[guid].level then
-            itemLevel=  e.UnitItemLevel[guid].level
-        end
+
+        itemLevel= itemLevel or e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLevel
+        --local name, realm= UnitFullName(unit)
         local specID= GetInspectSpecialization(unit)
         e.UnitItemLevel[guid] = {--玩家装等
             itemLevel= itemLevel,
             specID= specID,
-            name= name,
-            realm= realm,
+            --name= name,
+            --realm= realm,
             col= hex,
             r=r,
             g=g,

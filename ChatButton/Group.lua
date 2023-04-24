@@ -265,7 +265,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
         end
 
         if guid and maxHP and role then
-            info.name= (e.PlayerOnlineInfo(unit) or '')..e.GetPlayerInfo({unit=unit, guid=guid, name=nil, reFriendFaction=true, reName=true, reRealm=true}).. (e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLeve or '')
+            info.name= (e.PlayerOnlineInfo(unit) or '')..e.GetPlayerInfo({unit=unit, guid=guid, name=nil,  reName=true, reRealm=true}).. (e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLeve or '')
             info.maxHP= maxHP
 
             if uiMapID then--不在同地图

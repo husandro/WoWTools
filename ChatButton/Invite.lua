@@ -66,7 +66,7 @@ local InvUnitFunc=function()--邀请，周围玩家
             --toRaidOrParty(co)--自动, 转团
             local tab= C_NamePlate.GetNamePlates() or {}
             for _, v in pairs(tab) do
-                local u = v.namePlateUnitToken or (v.UnitFrame and v.UnitFrame.unit)
+                local u = v.namePlateUnitToken or v.UnitFrame and v.UnitFrame.unit
                 local name=GetUnitName(u,true)
                 local guid=UnitGUID(u)
                 if name and name~=UNKNOWNOBJECT and guid and not UnitInAnyGroup(u) and not UnitIsAFK(u) and UnitIsConnected(u) and UnitIsPlayer(u) and UnitIsFriend(u, 'player') and not UnitIsUnit('player',u) then
@@ -133,7 +133,7 @@ local function set_PLAYER_TARGET_CHANGED()--设置, 邀请目标
     if guid then
         InvPlateGuid[guid]=name--保存到已邀请列表
     end
-    print(id, addName, e.onlyChinese and '目标' or TARGET, e.GetPlayerInfo({unit=nil, guid=guid, name=name, reFriendFaction=true, reName=false, reRealm=false, reLink=true}))
+    print(id, addName, e.onlyChinese and '目标' or TARGET, e.GetPlayerInfo({unit=nil, guid=guid, name=name,  reName=false, reRealm=false, reLink=true}))
 end
 
 local function InvPlateGuidFunc()--从已邀请过列表里, 再次邀请 
@@ -431,7 +431,7 @@ local function InitList(self, level, type)
         for guid, name in pairs(InvPlateGuid) do
             if not e.GroupGuid[guid] then
                 info={
-                    text=e.GetPlayerInfo({unit=nil, guid=guid, name=name, reFriendFaction=true, reName=true, reRealm=true}),
+                    text=e.GetPlayerInfo({unit=nil, guid=guid, name=name,  reName=true, reRealm=true}),
                     tooltipOnButton=true,
                     tooltipTitle= e.onlyChinese and '邀请' or INVITE,
                     tooltipText=name,
@@ -537,7 +537,7 @@ local function InitList(self, level, type)
     elseif type=='NoInvList' then--三级列表，拒绝邀请列表
         local all=0
         for guid, nu in pairs(Save.InvNoFriend) do
-            local text=e.GetPlayerInfo({unit=nil, guid=guid, name=nil, reFriendFaction=true, reName=true, reRealm=true})
+            local text=e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true})
             if text then
                 all=all+1
                 info={
@@ -591,7 +591,7 @@ local function InitList(self, level, type)
                     button1= e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/',''),
                     button2=CANCEL,
                     OnShow = function(self2, data)
-                        self2.editBox:SetText(Save.ChannelText or (e.Player.cn and '1' or 'inv'))
+                        self2.editBox:SetText(Save.ChannelText or e.Player.cn and '1' or 'inv')
                         --self.button3:SetEnabled(Save.Mounts[FLOOR][data.spellID] and true or false)
                     end,
                     OnAccept = function(self2, data)

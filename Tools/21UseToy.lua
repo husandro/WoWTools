@@ -269,7 +269,7 @@ local function InitMenu(self, level, menuList)--主菜单
 
             securecall('UIDropDownMenu_AddSeparator', level)
             info={--清除
-                text='|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除' or CLEAR or KEY_NUMLOCK_MAC)..(e.onlyChinese and '玩具' or TOY)..'|r '..#ItemsTab..'/'..getAllSaveNum(),
+                text='|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..(e.onlyChinese and '玩具' or TOY)..'|r '..#ItemsTab..'/'..getAllSaveNum(),
                 notCheckable=true,
                 tooltipOnButton=true,
                 tooltipTitle= e.onlyChinese and '清除全部' or CLEAR_ALL,

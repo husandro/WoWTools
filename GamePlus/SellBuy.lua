@@ -707,7 +707,7 @@ local function setMenu()
                     text =id..' '..addName
                     ..'\n\n'.. (e.onlyChinese and '自动购买' or AUTO_JOIN:gsub(JOIN,PURCHASE))..': '..icon ..itemLink
                     ..'\n\n'..e.Icon.player..e.Player.name_server..': ' ..(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)
-                    ..'\n\n0: '..(e.onlyChinese and '清除' or CLEAR or KEY_NUMLOCK_MAC)
+                    ..'\n\n0: '..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
                     ..(Save.notAutoBuy and '\n\n'..(e.onlyChinese and '自动购买' or AUTO_JOIN:gsub(JOIN,PURCHASE))..': '..e.GetEnabeleDisable(false) or ''),
                     button1 = e.onlyChinese and '购买' or PURCHASE,
                     button2 = e.onlyChinese and '取消' or CANCEL,
@@ -716,7 +716,7 @@ local function setMenu()
                         local num= s.editBox:GetNumber()
                         if num==0 then
                             buySave[itemID]=nil
-                            print('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '清除' or CLEAR or KEY_NUMLOCK_MAC)..'|r', itemLink)
+                            print('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..'|r', itemLink)
                         else
                             buySave[itemID]=num
                             Save.Sell[itemID]=nil

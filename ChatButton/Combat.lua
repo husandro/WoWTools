@@ -60,7 +60,7 @@ local function setText()--设置显示内容
     end
 
     if OnInstanceTime then
-        text= text and text..'\n' or (LastText and LastText..'\n' or '')
+        text= text and text..'\n' or LastText and (LastText..'\n') or ''
         text=text..'|A:BuildanAbomination-32x32:0:0|a'..InstanceDate.kill..'|A:poi-soulspiritghost:0:0|a'..InstanceDate.dead..'|A:CrossedFlagsWithTimer:0:0|a'..e.GetTimeInfo(OnInstanceTime, not Save.timeTypeText)
     end
     button.text:SetText(text or LastText or '')
@@ -155,7 +155,7 @@ local function check_Event()--检测事件
             Save.ins.time= Save.ins.time +sec
         end
         LastText='|cnGREEN_FONT_COLOR:|A:CrossedFlagsWithTimer:0:0|a'..text..' |A:BuildanAbomination-32x32:0:0|a'..InstanceDate.kill..' |A:poi-soulspiritghost:0:0|a'..InstanceDate.dead..'|r'
-        print(id, InstanceDate.map or (e.onlyChinese and '副本' or INSTANCE), text)
+        print(id, InstanceDate.map or e.onlyChinese and '副本' or INSTANCE, text)
         button.textButton:UnregisterEvent('PLAYER_DEAD')
         button.textButton:UnregisterEvent('PLAYER_UNGHOST')
         button.textButton:UnregisterEvent('PLAYER_ALIVE')
@@ -219,7 +219,7 @@ local function set_Text_Button()--设置显示内容, 父框架button.textButton
         button.textButton:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.onlyChinese and '清除' or CLEAR or KEY_NUMLOCK_MAC, e.Icon.left)
+            e.tips:AddDoubleLine(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, e.Icon.left)
             e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
             e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE,'Alt+'..e.Icon.mid)
             e.tips:AddLine(' ')
@@ -439,7 +439,7 @@ local function InitMenu(self, level, type)--主菜单
             if time and time>0 then
                 timeAll= timeAll + time
                 info= {
-                    text= e.GetPlayerInfo({unit=nil, guid=guid, name=nil, reFriendFaction=true, reName=true, reRealm=true})..e.Icon.clock2..'  '..SecondsToTime(time),
+                    text= e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true})..e.Icon.clock2..'  '..SecondsToTime(time),
                     notCheckable=true,
                     tooltipOnButton=true,
                     tooltipTitle= tab.Time.levelTime and format(e.onlyChinese and '你在这个等级的游戏时间：%s' or TIME_PLAYED_LEVEL, '\n'..SecondsToTime(tab.Time.levelTime)),
