@@ -719,18 +719,16 @@ local function set_LFGPlus()--预创建队伍增强
             end
         end
         tooltip:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '申请' or SIGN_UP, (e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left, 0,1,0, 0,1,0)
+        tooltip:AddDoubleLine(e.onlyChinese and '申请' or SIGN_UP, (e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left, 0,1,0, 0,1,0)
         tooltip:AddDoubleLine(id, addName)
         tooltip:Show()
     end)
 
-    if e.Player.husandro then--会出现错误
+    if e.Player.husandro then--会出现错误, 双击， 预创建队伍，目录
         hooksecurefunc('LFGListCategorySelection_UpdateCategoryButtons', function(self2)
             for i=1, #self2.CategoryButtons do
                 local frame=self2.CategoryButtons[i]
                 if frame and frame:IsShown() then
-                    --local baseFilters = self2:GetParent().baseFilters;
-                    --local categories = C_LFGList.GetAvailableCategories(baseFilters);
                     if not frame.OnDoubleClick then
                         frame:SetScript('OnDoubleClick', function(self3, d)
                             local frame2= self3:GetParent()
