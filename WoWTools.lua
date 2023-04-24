@@ -241,7 +241,7 @@ e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, r
 
             if tab.reLink then
                 return text..e.PlayerLink(name, guid, true) --玩家超链接
-            elseif tab.reName then
+            elseif tab.reName and name then
                 if tab.reRealm then
                     text= text..(name..(realm and realm~='' and '-'..realm or ''))
                 else

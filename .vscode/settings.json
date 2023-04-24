@@ -17,7 +17,7 @@
         "PET_BATTLE_PVP_QUEUE",
         "CLEAR",
         "INSTANCE",
-        "SLASH_STOPWATCH_PARAM_STOP2",
+        "KEY_NUMLOCK_MAC",
         "VOICEMACRO_LABEL_CHARGE1",
         "PET",
         "EMBLEM_SYMBOL",
@@ -2589,7 +2589,16 @@
         "RaidInfoFrame",
         "MapQuestInfoRewardsFrame",
         "FriendsFrameBattlenetFrame",
-        "AddFriendFrame"
+        "AddFriendFrame",
+        "BUFFER_DOUBLE",
+        "SIGN_UP",
+        "LFGListCategorySelection_StartFindGroup",
+        "LFGListCategorySelectionFindGroupButton_OnClick",
+        "LFGListCategorySelectionStartGroupButton_OnClick",
+        "LFGListSearchPanel_SelectResult",
+        "LFGListFrameDropDown",
+        "LFGListUtil_GetSearchEntryMenu",
+        "LFGListSearchPanelUtil_CanSelectResult"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
