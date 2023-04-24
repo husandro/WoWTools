@@ -2,9 +2,12 @@ local id, e = ...
 local addName= MOUNT
 local Faction =  UnitFactionGroup('player')=='Horde' and 0 or UnitFactionGroup('player')=='Alliance' and 1
 local ClassID = select(2, UnitClassBase('player'))
-local ShiJI= Faction==0 and IsSpellKnown(179244) and 179244 or Faction==1 and IsSpellKnown(179245) and 179245--[召唤司机]
+local ShiJI= Faction==1 and 179244 or Faction==0 and 179245
+
 local XD
 local button
+e.LoadDate({id=179244, type= 'spell'})
+e.LoadDate({id=179245, type= 'spell'})
 
 local Save={
     disabled= not e.Player.husandro,
@@ -187,8 +190,11 @@ local function checkMount()--检测坐骑
             for spellID, mapID in pairs(Save.Mounts[type]) do
                 local mountID = C_MountJournal.GetMountFromSpell(spellID)
                 if mountID then
-                    mountID = mountID==678 and Faction==1 and 679 or mountID==679 and Faction==0 and 678 or mountID--[召唤司机]
-                    local name, _, icon, isActive, isUsable, sourceType, isFavorite, isFactionSpecific, faction, shouldHideOnChar, isCollected =C_MountJournal.GetMountInfoByID(mountID)
+                    --[[if mountID==678 or mountID==679 then
+                        spellID=ShiJI
+                    end]]
+                    --mountID = mountID==678 and Faction==1 and 679 or mountID==679 and Faction==0 and 678 or mountID--[召唤司机]
+                    local isFactionSpecific, faction, shouldHideOnChar, isCollected= select(8, C_MountJournal.GetMountInfoByID(mountID))
                     if not shouldHideOnChar and isCollected and (not isFactionSpecific or faction==Faction) then
                         if type==FLOOR then
                             if uiMapID and mapID==uiMapID and not XD then
