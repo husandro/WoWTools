@@ -101,11 +101,6 @@ local function Get_Quest_Progress(unit)--GameTooltip.lua --local questID= line a
         if wow or faction then
             return (wow or '')..(faction or '')
         end
-        --[[local faction= UnitFactionGroup(unit)--玩家, 派系  "Alliance", "Horde", "Neutral"
-        if faction ~=e.Player.faction and faction~='Neutral' then
-            --return faction=='Alliance' and '|A:'..e.Icon.alliance..':12:12|a' or ('|A:'..e.Icon.horde..':12:12:|a')
-            return faction=='Alliance' and e.Icon.alliance2 or e.Icon.horde2
-        end]]
     end
 end
 
