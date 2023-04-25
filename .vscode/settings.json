@@ -2600,7 +2600,9 @@
         "LFGListUtil_GetSearchEntryMenu",
         "LFGListSearchPanelUtil_CanSelectResult",
         "ERR_VOICE_CHAT_CHANNEL_NAME_TOO_LONG",
-        "COMMUNITIES_CHANNEL_NAME_LABEL"
+        "COMMUNITIES_CHANNEL_NAME_LABEL",
+        "COMMUNITIES_EDIT_DIALOG_CROSS_FACTION",
+        "CREATE_NEW_ARENA_TEAM"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

@@ -134,18 +134,19 @@ local function set_FriendsList_Init()--好友列表, 初始化
 
         elseif button.buttonType == FRIENDS_BUTTON_TYPE_BNET then--2战网                
             local info2 = C_BattleNet.GetFriendAccountInfo(button.id)
-            if not info2 or not info2.gameAccountInfo or not info2.gameAccountInfo.playerGuid then
+
+            if not info2 or not info2.gameAccountInfo or not info2.gameAccountInfo.playerGuid or info2.gameAccountInfo.wowProjectID~=1 then
                 return
             end
             local info=info2.gameAccountInfo
             guid= info.playerGuid
             isOnline= info.isOnline
 
+            m= (e.GetUnitFaction(nil, info.factionName) or '')--派系
             if info.characterLevel and info.characterLevel~=MAX_PLAYER_LEVEL and info.characterLevel>0 then--等级
-                m='|cff00ff00'..info.characterLevel..'|r'
+                m=m..'|cff00ff00'..info.characterLevel..'|r'
             end
 
-            m= m..(e.GetUnitFaction(nil, info.factionName, true) or '')--派系
             m= m..e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false})
 
             if isOnline and info.areaName then

@@ -915,7 +915,7 @@ local function Init()
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine('realmID', GetRealmID())
             e.tips:AddDoubleLine('regionID: '..GetCurrentRegion(),  GetCurrentRegionName())
-
+            
             e.tips:AddLine(' ')
             if GameLimitedMode_IsActive() then
                 local rLevel, rMoney, profCap = GetRestrictedAccountData()

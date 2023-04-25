@@ -206,6 +206,21 @@ local function InitMenu(self, level, type)--主菜单
         end
 
         securecall('UIDropDownMenu_AddSeparator', level)
+
+        info={
+            text= (e.onlyChinese and '跨阵营' or COMMUNITIES_EDIT_DIALOG_CROSS_FACTION)..' '..(isInGroup and e.GetYesNo(C_PartyInfo.IsCrossFactionParty) or (e.onlyChinese and '无' or NONE)),
+            notCheckable=true,
+            isTitle=true,
+        }
+        securecall('UIDropDownMenu_AddButton', info, level)
+
+        info={
+            text= format(e.onlyChinese and '创建%s战队' or CREATE_NEW_ARENA_TEAM, e.onlyChinese and '跨阵营' or COMMUNITIES_EDIT_DIALOG_CROSS_FACTION)..' '..e.GetEnabeleDisable(C_PartyInfo.CanFormCrossFactionParties()),
+            notCheckable=true,
+            isTitle=true,
+        }
+        securecall('UIDropDownMenu_AddButton', info, level)
+
         info={
             text=((Save.mouseDown or Save.mouseUP) and e.Icon.mid or '').. (e.onlyChinese and '自定义' or CUSTOM),
             notCheckable=true,

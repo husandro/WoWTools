@@ -9,21 +9,21 @@ e.GroupFrame={}--UnitFrame.lua 设置装等， 专精
 --战网，好友GUID
 --##############
 e.WoWGUID={}
-local function get_WoW_GUID_Info(friendID)
-    if not friendID then
+local function get_WoW_GUID_Info(friendIndex)
+    if friendIndex then
+        local accountInfo =C_BattleNet.GetFriendAccountInfo(friendIndex)
+        local info= accountInfo and accountInfo.gameAccountInfo
+        if info and info.characterName then
+            e.WoWGUID[info.characterName]= (info.isOnline and info.wowProjectID==1) and info.playerGuid or nil
+        end
+    else
         e.WoWGUID={}
         for i=1 ,BNGetNumFriends() do
             local accountInfo =C_BattleNet.GetFriendAccountInfo(i);
-            local info=accountInfo  and accountInfo .gameAccountInfo
-            if info and info.isOnline and info.playerGuid and info.characterName and info.playerGuid~=e.Player.guid then
+            local info= accountInfo and accountInfo.gameAccountInfo
+            if info and info.isOnline and info.playerGuid and info.characterName and info.wowProjectID==1 then
                 e.WoWGUID[info.characterName]= info.playerGuid
             end
-        end
-    else
-        local accountInfo = C_BattleNet.GetAccountInfoByID(friendID)
-        local info=accountInfo  and accountInfo .gameAccountInfo
-        if info and info.isOnline and info.playerGuid and info.characterName and info.playerGuid~=e.Player.guid then
-            e.WoWGUID[info.characterName]= info.playerGuid
         end
     end
 end
@@ -344,9 +344,7 @@ panel:RegisterEvent('PLAYER_AVG_ITEM_LEVEL_UPDATE')--取得,自已, 装等
 panel:RegisterEvent('ENCOUNTER_START')-- 给 e.REload用
 panel:RegisterEvent('ENCOUNTER_END')
 
-panel:RegisterEvent('BN_INFO_CHANGED')--战网，好友GUID
-panel:RegisterEvent('BN_REQUEST_FOF_SUCCEEDED')
-panel:RegisterEvent('BN_FRIEND_ACCOUNT_ONLINE')
+panel:RegisterEvent('BN_FRIEND_INFO_CHANGED')--战网，好友GUID
 
 panel:SetScript('OnEvent', function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" then
@@ -498,8 +496,9 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
     elseif event=='ENCOUNTER_START' then
         e.IsEncouter_Start= nil
 
-    elseif event=='BN_INFO_CHANGED' or event=='BN_REQUEST_FOF_SUCCEEDED' or event=='BN_FRIEND_ACCOUNT_ONLINE' then
-        get_WoW_GUID_Info(arg1)--战网，好友GUID
-
+    elseif event=='BN_FRIEND_INFO_CHANGED' then
+        if arg1 then
+            get_WoW_GUID_Info(arg1)--战网，好友GUID
+        end
     end
 end)

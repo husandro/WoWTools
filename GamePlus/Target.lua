@@ -97,7 +97,7 @@ local function Get_Quest_Progress(unit)--GameTooltip.lua --local questID= line a
         end
     elseif not (isIns and UnitInParty(unit)) then--if not isIns and isPvPZone and not UnitInParty(unit) then
         local wow= e.GetFriend(nil, nil, unit)--检测, 是否好友
-        local faction= e.GetUnitFaction(unit, nil, nil)--检查, 是否同一阵营
+        local faction= e.GetUnitFaction(unit)--检查, 是否同一阵营
         if wow or faction then
             return (wow or '')..(faction or '')
         end
@@ -164,9 +164,11 @@ local function set_Register_Event()
                 panel:RegisterEvent('SCENARIO_COMPLETED')
                 panel:RegisterEvent('QUEST_POI_UPDATE')
 
-                panel:RegisterEvent('ZONE_CHANGED')
+                --[[panel:RegisterEvent('ZONE_CHANGED')
                 panel:RegisterEvent('ZONE_CHANGED_INDOORS')
                 panel:RegisterEvent('ZONE_CHANGED_NEW_AREA')
+                panel:RegisterEvent('FRIENDLIST_UPDATE')
+                panel:RegisterEvent('BN_FRIEND_INFO_CHANGED')]]
             end
 
         elseif panel.Text then
@@ -297,8 +299,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
         end
 
-    elseif event=='ZONE_CHANGED' or event=='ZONE_CHANGED_INDOORS' or event=='ZONE_CHANGED_NEW_AREA' then
-        local pvpType, isFFA = GetZonePVPInfo()
+    --elseif event=='ZONE_CHANGED' or event=='ZONE_CHANGED_INDOORS' or event=='ZONE_CHANGED_NEW_AREA' then
+        --local pvpType, isFFA = GetZonePVPInfo()
         --isPvPZone= pvpType=='arena' and  isFFA
 
     elseif event=='PLAYER_REGEN_DISABLED' then--颜色

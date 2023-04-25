@@ -390,8 +390,15 @@ local function Init()
     hooksecurefunc('MainMenuBarPerformanceBarFrame_OnEnter', function(self)
         e.tips:AddLine(' ')
         local version, build, date, tocversion, localizedVersion, buildType = GetBuildInfo()
-        e.tips:AddLine((e.onlyChinese and '版本' or GAME_VERSION_LABEL).. ' '..version..' '..build..' |cffffffff(|r'..date..'|cffffffff)|r')
-        e.tips:AddLine((e.onlyChinese and '当前' or REFORGE_CURRENT)..' '..(localizedVersion or '')..' |cffffffff(|r'..tocversion..'|cffffffff)|r '..(buildType or ''))
+        e.tips:AddDoubleLine('|cffff8200'..(e.onlyChinese and '版本' or GAME_VERSION_LABEL).. ' '..version..' '..build, '|cffff8200'..date)
+        e.tips:AddDoubleLine((e.onlyChinese and '当前' or REFORGE_CURRENT)..' '..(localizedVersion or ''), 'toc '..tocversion..(buildType and ' ('.. buildType..')' or ''), 1,1,1, 1,1,1)
+        
+        e.tips:AddDoubleLine('realmID '..GetRealmID()..' '..GetNormalizedRealmName(), 'regionID: '..GetCurrentRegion()..' '..GetCurrentRegionName(), 0,1,0, 0,1,0)
+
+        local info=C_BattleNet.GetGameAccountInfoByGUID(e.Player.guid)
+        if info and info.wowProjectID then
+            e.tips:AddDoubleLine('wowProjectID '.. info.wowProjectID, info.realmID and 'realmID '..info.regionID)
+        end
         e.tips:Show()
     end)
 end

@@ -188,9 +188,9 @@ e.GetFriend= function(name, guid, unit)--检测, 是否好友
     end
 end
 
-e.GetUnitFaction= function(unit, text, allShow)--检查, 是否同一阵营
+e.GetUnitFaction= function(unit, text)--检查, 是否同一阵营
     local faction= unit and UnitFactionGroup(unit) or text
-    if faction and (allShow or faction~= e.Player.faction) then
+    if faction and faction~= e.Player.faction then
         return faction=='Horde' and e.Icon.horde2 or faction=='Alliance' and e.Icon.alliance2 or '|A:nameplates-icon-flag-neutral:0:0|a'
     end
 end
@@ -216,7 +216,7 @@ e.PlayerLink=function(name, guid, slotLink) --玩家超链接
 end
 
 --IsPlayerInGuildFromGUID(playerGUID)--玩家信息图标
-e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, reName=true, reLink=false})
+e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, factionName=nil, reName=true, reLink=false})
     local guid= tab.guid or getGUID(tab.unit, tab.name)
     local unit= tab.unit
                 or guid and e.GroupGuid[guid] and e.GroupGuid[guid].unit
@@ -282,7 +282,7 @@ e.Player={
     guid= UnitGUID('player'),
     levelMax= UnitLevel('player')==MAX_PLAYER_LEVEL,--玩家是否最高等级
     level= UnitLevel('player'),--UnitEffectiveLevel('player')
-    husandro= select(2, BNGetInfo()) == '古月剑龙#5972' or select(2, BNGetInfo())=='SandroChina#2690' or UnitName('player')=='Fuocco' or UnitName('player')=='活就好',
+    husandro= select(2, BNGetInfo())== '古月剑龙#5972' or select(2, BNGetInfo())=='SandroChina#2690' or UnitName('player')=='Fuocco' or UnitName('player')=='活就好' or select(2, BNGetInfo())=='Sandro126#2297',
     faction= UnitFactionGroup('player'),--玩家, 派系  "Alliance", "Horde", "Neutral"
     disabledLUA={},--禁用插件 {save='', text} e.DisabledLua=true
     --useColor= {r=1, g=0.82, b=0, a=1, hex='|cffffd100'},--使用颜色
@@ -291,7 +291,7 @@ e.Player={
     --ver= select(4,GetBuildInfo())>=100100,--版本 100100
 }
  --MAX_PLAYER_LEVEL = GetMaxLevelForPlayerExpansion()
-
+ 
 for k, v in pairs(GetAutoCompleteRealms()) do
     e.Player.servers[v]=k
 end
