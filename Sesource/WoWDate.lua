@@ -46,7 +46,7 @@ local function get_Player_Info(guid)--取得玩家信息
 
     local itemLevel= unit and C_PaperDollInfo.GetInspectItemLevel(unit)
     if unit then
-        
+
         local r, g, b, hex
         local class= UnitClassBase(unit)
         if class then
@@ -349,7 +349,7 @@ panel:RegisterEvent('BN_REQUEST_FOF_SUCCEEDED')
 panel:RegisterEvent('BN_FRIEND_ACCOUNT_ONLINE')
 
 panel:SetScript('OnEvent', function(self, event, arg1, arg2)
-    if event == "ADDON_LOADED" then 
+    if event == "ADDON_LOADED" then
         if arg1==id then
             local day= date('%x')--日期
             WoWDate=WoWDate or {}
@@ -484,7 +484,7 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
         e.Player.level= level
 
     elseif event=='NEUTRAL_FACTION_SELECT_RESULT' and arg1 then--玩家, 派系
-        e.Player.faction= UnitFactionGroup('player')
+        e.Player.faction= UnitFactionGroup('player')--玩家, 派系  "Alliance", "Horde", "Neutral"
 
     elseif event=='PLAYER_EQUIPMENT_CHANGED' or event=='PLAYER_SPECIALIZATION_CHANGED' or event=='PLAYER_AVG_ITEM_LEVEL_UPDATE' then--更新自已
         if event=='PLAYER_SPECIALIZATION_CHANGED' and UnitInParty(arg1) then
@@ -497,8 +497,9 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
         e.IsEncouter_Start= true
     elseif event=='ENCOUNTER_START' then
         e.IsEncouter_Start= nil
-    
+
     elseif event=='BN_INFO_CHANGED' or event=='BN_REQUEST_FOF_SUCCEEDED' or event=='BN_FRIEND_ACCOUNT_ONLINE' then
         get_WoW_GUID_Info(arg1)--战网，好友GUID
+
     end
 end)
