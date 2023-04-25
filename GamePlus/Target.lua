@@ -6,7 +6,7 @@ local Save= {
 }
 
 local panel= CreateFrame("Frame")
-local isPvPArena, isIns, isPvPZone
+local isPvPArena, isIns--, isPvPZone
 
 --########################
 --怪物目标, 队员目标, 总怪物
@@ -95,7 +95,7 @@ local function Get_Quest_Progress(unit)--GameTooltip.lua --local questID= line a
                 return text~=true and text
             end
         end
-    elseif not isIns then--if not isIns and isPvPZone and not UnitInParty(unit) then
+    elseif not (isIns and UnitInParty(unit)) then--if not isIns and isPvPZone and not UnitInParty(unit) then
         local wow= e.GetFriend(nil, nil, unit)--检测, 是否好友
         local faction= e.GetUnitFaction(unit, nil, nil)--检查, 是否同一阵营
         if wow or faction then
@@ -304,7 +304,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='ZONE_CHANGED' or event=='ZONE_CHANGED_INDOORS' or event=='ZONE_CHANGED_NEW_AREA' then
         local pvpType, isFFA = GetZonePVPInfo()
-        isPvPZone= pvpType=='arena' and  isFFA
+        --isPvPZone= pvpType=='arena' and  isFFA
 
     elseif event=='PLAYER_REGEN_DISABLED' then--颜色
         panel.Texture:SetVertexColor(1,0,0)
