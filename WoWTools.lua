@@ -190,8 +190,8 @@ end
 
 e.GetUnitFaction= function(unit, text, allShow)--检查, 是否同一阵营
     local faction= unit and UnitFactionGroup(unit) or text
-    if faction and (not allShow and faction~= e.Player.faction or allShow) and faction~='Neutral' then
-        return faction=='Horde' and e.Icon.horde2 or e.Icon.alliance2
+    if faction and (allShow or faction~= e.Player.faction) then
+        return faction=='Horde' and e.Icon.horde2 or faction=='Alliance' and e.Icon.alliance2 or '|A:nameplates-icon-flag-neutral:0:0|a'
     end
 end
 
