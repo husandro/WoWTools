@@ -1,8 +1,9 @@
 local id, e = ...
 local addName= MOUNT
-local Faction =  UnitFactionGroup('player')=='Horde' and 0 or UnitFactionGroup('player')=='Alliance' and 1
+local Faction =  e.Player.faction=='Horde' and 0 or e.Player.faction=='Alliance' and 1
+
 local ClassID = select(2, UnitClassBase('player'))
-local ShiJI= Faction==1 and 179244 or Faction==0 and 179245
+local ShiJI= Faction==0 and 179244 or Faction==1 and 179245
 
 local XD
 local button
@@ -68,11 +69,6 @@ local function setPanelPostion()--设置按钮位置
     if Save.Point and Save.Point[1] and Save.Point[3] and Save.Point[4] and Save.Point[5] then
         button:SetPoint(Save.Point[1], UIParent, Save.Point[3], Save.Point[4], Save.Point[5])
     else
-        --[[if CharacterReagentBag0Slot and CharacterReagentBag0Slot:IsVisible() then
-            button:SetPoint('RIGHT', CharacterReagentBag0Slot, 'LEFT', -10 ,0)
-        else
-            button:SetPoint('CENTER')
-        end]]
         button:SetPoint('BOTTOMRIGHT', UIParent, 'BOTTOMRIGHT', -320, 6)
     end
 end
@@ -188,6 +184,7 @@ local function checkMount()--检测坐骑
         else
             button[type]={}
             for spellID, mapID in pairs(Save.Mounts[type]) do
+                spellID= (spellID==179244 or spellID==179245) and ShiJI or spellID
                 local mountID = C_MountJournal.GetMountFromSpell(spellID)
                 if mountID then
                     --[[if mountID==678 or mountID==679 then
@@ -226,11 +223,10 @@ local function setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
     end
     local tab={'Shift', 'Alt', 'Ctrl'}
 
-    local name, _, icon
-    for _, type in pairs(tab) do
+    for index, type in pairs(tab) do
         button.textureModifier[type]=nil
         if button[type] and button[type][1] then
-            name, _, icon=GetSpellInfo(button[type][1])
+            local name, _, icon=GetSpellInfo(button[type][1])
             --if name and icon then
                 button:SetAttribute(type.."-spell1", name or button[type][1])
                 button.textureModifier[type]=icon
@@ -1160,6 +1156,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 panel:RegisterEvent('SPELL_UPDATE_USABLE')
                 panel:RegisterEvent('CHAT_MSG_AFK')
                 panel:RegisterEvent('PLAYER_STARTED_MOVING')
+                panel:RegisterEvent('NEUTRAL_FACTION_SELECT_RESULT')--ShiJI
 
                 Init()--初始
                 table.insert(e.Player.disabledLUA, 'Tools')--禁用插件, 给物品升级界面用
@@ -1243,5 +1240,10 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         if not UnitAffectingCombat('player') and e.toolsFrame:IsShown() then
             e.toolsFrame:SetShown(false)--设置, TOOLS 框架,隐藏
         end
+    
+    elseif event=='NEUTRAL_FACTION_SELECT_RESULT' then
+        ShiJI= Faction==0 and 179244 or Faction==1 and 179245
+        checkMount()--检测坐骑
+        setClickAtt()--设置属性
     end
 end)
