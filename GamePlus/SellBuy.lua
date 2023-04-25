@@ -706,7 +706,7 @@ local function setMenu()
                 StaticPopupDialogs[id..addName..'Buy']={
                     text =id..' '..addName
                     ..'\n\n'.. (e.onlyChinese and '自动购买' or AUTO_JOIN:gsub(JOIN,PURCHASE))..': '..icon ..itemLink
-                    ..'\n\n'..e.Icon.player..e.Player.name_server..': ' ..(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)
+                    ..'\n\n'..e.Icon.player..e.Player.name_realm..': ' ..(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)
                     ..'\n\n0: '..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
                     ..(Save.notAutoBuy and '\n\n'..(e.onlyChinese and '自动购买' or AUTO_JOIN:gsub(JOIN,PURCHASE))..': '..e.GetEnabeleDisable(false) or ''),
                     button1 = e.onlyChinese and '购买' or PURCHASE,
@@ -995,8 +995,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
                 panel:UnregisterAllEvents()
             else
                 if WoWToolsSave then
-                    buySave=WoWToolsSave.BuyItems and WoWToolsSave.BuyItems[e.Player.name_server] or buySave--购买物品
-                    RepairSave=WoWToolsSave.Repair and WoWToolsSave.Repair[e.Player.name_server] or RepairSave--修理
+                    buySave=WoWToolsSave.BuyItems and WoWToolsSave.BuyItems[e.Player.name_realm] or buySave--购买物品
+                    RepairSave=WoWToolsSave.Repair and WoWToolsSave.Repair[e.Player.name_realm] or RepairSave--修理
                 end
                 avgItemLevel= GetAverageItemLevel()--装等
 
@@ -1010,9 +1010,9 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
         if not e.ClearAllSave then
             WoWToolsSave[addName]=Save
             WoWToolsSave.BuyItems=WoWToolsSave.BuyItems or {}--购买物品
-            WoWToolsSave.BuyItems[e.Player.name_server]=buySave
+            WoWToolsSave.BuyItems[e.Player.name_realm]=buySave
             WoWToolsSave.Repair=WoWToolsSave.Repair or {}--修理
-            WoWToolsSave.Repair[e.Player.name_server] = RepairSave
+            WoWToolsSave.Repair[e.Player.name_realm] = RepairSave
         end
     elseif event=='MERCHANT_SHOW' then
         setDurabiliy()--显示耐久度

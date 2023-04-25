@@ -2602,7 +2602,8 @@
         "ERR_VOICE_CHAT_CHANNEL_NAME_TOO_LONG",
         "COMMUNITIES_CHANNEL_NAME_LABEL",
         "COMMUNITIES_EDIT_DIALOG_CROSS_FACTION",
-        "CREATE_NEW_ARENA_TEAM"
+        "CREATE_NEW_ARENA_TEAM",
+        "BATTLETAG_CREATE"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

@@ -897,11 +897,11 @@ local function Init()
     panel.serverText:SetScript("OnEnter",function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            local server= e.Get_Region(e.Player.server, nil, nil)--服务器，EU， US {col=, text=, realm=}
+            local server= e.Get_Region(e.Player.realm, nil, nil)--服务器，EU， US {col=, text=, realm=}
             e.tips:AddDoubleLine(e.onlyChinese and '服务器:' or FRIENDS_LIST_REALM, server and server.col..' '..server.realm)
             local ok2
             for k, v in pairs(GetAutoCompleteRealms()) do
-                if v==e.Player.server then
+                if v==e.Player.realm then
                     e.tips:AddDoubleLine(v..e.Icon.star2, k, 0,1,0)
                 else
                     e.tips:AddDoubleLine(v, k)
@@ -909,7 +909,7 @@ local function Init()
                 ok2=true
             end
             if not ok2 then
-                e.tips:AddDoubleLine(e.onlyChinese and '唯一' or ITEM_UNIQUE, e.Player.server)
+                e.tips:AddDoubleLine(e.onlyChinese and '唯一' or ITEM_UNIQUE, e.Player.realm)
             end
 
             e.tips:AddLine(' ')
@@ -930,8 +930,8 @@ local function Init()
     end)
     panel.serverText:SetScript("OnLeave",function() e.tips:Hide() end)
     local ser=GetAutoCompleteRealms() or {}
-    local server= e.Get_Region(e.Player.server, nil, nil)
-    panel.serverText:SetText((#ser>1 and '|cnGREEN_FONT_COLOR:'..#ser..' ' or '')..e.Player.col..e.Player.server..'|r'..(server and ' '..server.col or ''))
+    local server= e.Get_Region(e.Player.realm, nil, nil)
+    panel.serverText:SetText((#ser>1 and '|cnGREEN_FONT_COLOR:'..#ser..' ' or '')..e.Player.col..e.Player.realm..'|r'..(server and ' '..server.col or ''))
 
     --#########
     --装备管理框

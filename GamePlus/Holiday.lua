@@ -626,7 +626,7 @@ local function Init()
             local find
             for index=1,  GetNumGuildMembers() do
                 local name, rankName, rankIndex, lv, _, zone, publicNote, officerNote, isOnline, status, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)
-                if name and guid and not inviteTab[name] and isOnline and name~=e.Player.name_server then
+                if name and guid and not inviteTab[name] and isOnline and name~=e.Player.name_realm then
                     local text=e.GetPlayerInfo({unit=nil, guid=guid, name=name,  reName=true, reRealm=true, reLink=false})--名称
                     text=(lv and lv~=MAX_PLAYER_LEVEL and lv>0) and text..' |cnGREEN_FONT_COLOR:'..lv..'|r' or text--等级
                     if zone then--地区

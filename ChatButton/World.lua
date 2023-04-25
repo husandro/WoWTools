@@ -90,20 +90,21 @@ end
 --#######
 local filterTextTab={}--记录, 屏蔽内容
 local function myChatFilter(self, event, msg, name, ...)
-    if name~= e.Player.name_server then
-        if filterTextTab[msg] and filterTextTab[msg].name== name then
-            filterTextTab[msg].num= filterTextTab[msg].num +1
-            return true
-        elseif strlenutf8(msg)>130 or msg:find('<.->') or msg:find('WTS') then
-            if not filterTextTab[msg] then
-                filterTextTab[msg]={num=1, name=name}
-            else
-                filterTextTab[msg].num= filterTextTab[msg].num +1
-            end
-            return true
-        else
+    if name== e.Player.name_realm or e.GetFriend(name) then--自已, 好友
+        return
+
+    elseif filterTextTab[msg] and filterTextTab[msg].name== name then
+        filterTextTab[msg].num= filterTextTab[msg].num +1
+        return true
+    elseif strlenutf8(msg)>130 or msg:find('<.->') or msg:find('WTS') then
+        if not filterTextTab[msg] then
             filterTextTab[msg]={num=1, name=name}
+        else
+            filterTextTab[msg].num= filterTextTab[msg].num +1
         end
+        return true
+    else
+        filterTextTab[msg]={num=1, name=name}
     end
 end
 

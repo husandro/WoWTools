@@ -115,7 +115,7 @@ end
 --#############
 local function set_FriendsList_Init()--好友列表, 初始化
     local optionText = '|A:honorsystem-bar-lock:0:0|a'..(e.onlyChinese and '锁定' or LOCK).."\124T%s.tga:16:16:0:0\124t %s"--好友列表
-    Save.Friends[e.Player.name_server]=Save.Friends[e.Player.name_server] or {}
+    Save.Friends[e.Player.name_realm]=Save.Friends[e.Player.name_realm] or {}
 
     hooksecurefunc('FriendsFrame_UpdateFriendButton', function(button)--FriendsFrame.lua
         local m=''
@@ -177,14 +177,14 @@ local function set_FriendsList_Init()--好友列表, 初始化
 
 
     local Set=function()
-        if Save.Friends[e.Player.name_server].Availabel then
+        if Save.Friends[e.Player.name_realm].Availabel then
             BNSetAFK(false)
             BNSetDND(false)
             print(id, addName,string.format(optionText, FRIENDS_TEXTURE_ONLINE, e.onlyChinese and '有空' or FRIENDS_LIST_AVAILABLE))
-        elseif Save.Friends[e.Player.name_server].Away then
+        elseif Save.Friends[e.Player.name_realm].Away then
             BNSetAFK(true)
             print(id, addName, string.format(optionText, FRIENDS_TEXTURE_AFK, e.onlyChinese and '离开' or FRIENDS_LIST_AWAY))
-        elseif Save.Friends[e.Player.name_server].DND then
+        elseif Save.Friends[e.Player.name_realm].DND then
             BNSetDND(true)
             print(id, addName,string.format(optionText, FRIENDS_TEXTURE_DND, e.onlyChinese and '忙碌' or FRIENDS_LIST_BUSY))
         end
@@ -194,14 +194,14 @@ local function set_FriendsList_Init()--好友列表, 初始化
         securecall('UIDropDownMenu_AddSeparator')
         local info= {
             text = optionText:format(FRIENDS_TEXTURE_ONLINE, e.onlyChinese and '有空' or FRIENDS_LIST_AVAILABLE),
-            checked= Save.Friends[e.Player.name_server].Availabel,
+            checked= Save.Friends[e.Player.name_realm].Availabel,
             tooltipOnButton=true,
             tooltipTitle=id,
             tooltipText=addName,
             func=function()
-                Save.Friends[e.Player.name_server].Availabel = not Save.Friends[e.Player.name_server].Availabel and true or nil
-                Save.Friends[e.Player.name_server].Away= nil
-                Save.Friends[e.Player.name_server].DND= nil
+                Save.Friends[e.Player.name_realm].Availabel = not Save.Friends[e.Player.name_realm].Availabel and true or nil
+                Save.Friends[e.Player.name_realm].Away= nil
+                Save.Friends[e.Player.name_realm].DND= nil
                 Set()
             end
         }
@@ -209,14 +209,14 @@ local function set_FriendsList_Init()--好友列表, 初始化
 
         info= {
             text = optionText:format(FRIENDS_TEXTURE_AFK, e.onlyChinese and '离开' or FRIENDS_LIST_AWAY),
-            checked= Save.Friends[e.Player.name_server].Away,
+            checked= Save.Friends[e.Player.name_realm].Away,
             tooltipOnButton=true,
             tooltipTitle=id,
             tooltipText=addName,
             func=function()
-                Save.Friends[e.Player.name_server].Availabel = nil
-                Save.Friends[e.Player.name_server].Away= not Save.Friends[e.Player.name_server].Away and true or nil
-                Save.Friends[e.Player.name_server].DND=nil
+                Save.Friends[e.Player.name_realm].Availabel = nil
+                Save.Friends[e.Player.name_realm].Away= not Save.Friends[e.Player.name_realm].Away and true or nil
+                Save.Friends[e.Player.name_realm].DND=nil
                 Set()
             end
         }
@@ -224,14 +224,14 @@ local function set_FriendsList_Init()--好友列表, 初始化
 
         info= {
             text = optionText:format(FRIENDS_TEXTURE_DND, e.onlyChinese and '忙碌' or FRIENDS_LIST_BUSY),
-            checked= Save.Friends[e.Player.name_server].DND,
+            checked= Save.Friends[e.Player.name_realm].DND,
             tooltipOnButton=true,
             tooltipTitle=id,
             tooltipText=addName,
             func=function()
-                Save.Friends[e.Player.name_server].Availabel = nil
-                Save.Friends[e.Player.name_server].Away=nil
-                Save.Friends[e.Player.name_server].DND= not Save.Friends[e.Player.name_server].DND and true or nil
+                Save.Friends[e.Player.name_realm].Availabel = nil
+                Save.Friends[e.Player.name_realm].Away=nil
+                Save.Friends[e.Player.name_realm].DND= not Save.Friends[e.Player.name_realm].DND and true or nil
                 Set()
             end
         }

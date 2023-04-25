@@ -8,22 +8,23 @@ e.GroupFrame={}--UnitFrame.lua 设置装等， 专精
 --##############
 --战网，好友GUID
 --##############
-e.WoWGUID={}
+e.WoWGUID={}--e.WoWGUID[名称-服务器]=guid
+local function setwowguidTab(info)
+    if info and info.characterName and info.realmDisplayName then
+        local name=info.characterName..'-'..info.realmDisplayName
+        print(name)
+        e.WoWGUID[name]= (info.isOnline and info.wowProjectID==1) and info.playerGuid or nil
+    end
+end
 local function get_WoW_GUID_Info(friendIndex)
     if friendIndex then
         local accountInfo =C_BattleNet.GetFriendAccountInfo(friendIndex)
-        local info= accountInfo and accountInfo.gameAccountInfo
-        if info and info.characterName then
-            e.WoWGUID[info.characterName]= (info.isOnline and info.wowProjectID==1) and info.playerGuid or nil
-        end
+        setwowguidTab(accountInfo and accountInfo.gameAccountInfo)
     else
         e.WoWGUID={}
         for i=1 ,BNGetNumFriends() do
             local accountInfo =C_BattleNet.GetFriendAccountInfo(i);
-            local info= accountInfo and accountInfo.gameAccountInfo
-            if info and info.isOnline and info.playerGuid and info.characterName and info.wowProjectID==1 then
-                e.WoWGUID[info.characterName]= info.playerGuid
-            end
+            setwowguidTab(accountInfo and accountInfo.gameAccountInfo)
         end
     end
 end

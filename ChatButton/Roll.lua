@@ -30,6 +30,7 @@ local function setCHAT_MSG_SYSTEM(text)
     if not (name and roll and minText=='1' and maxText=='100') then
         return
     end
+    name=name:find('%-') and name or (name..'-'..e.Player.realm)
     if not findRolled(name) then
         if not Max or roll>Max then
             if Max then
@@ -53,7 +54,13 @@ local function setCHAT_MSG_SYSTEM(text)
             button.rightBottomText:SetText(Min)
         end
     end
-    table.insert(Tab, {name=name, roll=roll, date=date('%X'), text=text, guid= name==e.Player.name and e.Player.guid or e.GroupGuid[name] and e.GroupGuid[name].guid})
+    
+    table.insert(Tab, {name=name,
+                        roll=roll,
+                        date=date('%X'),
+                        text=text,
+                        guid= name==e.Player.name_realm and e.Player.guid or e.GroupGuid[name] and e.GroupGuid[name].guid
+                    })
 end
 
 

@@ -53,7 +53,7 @@ local function Realm(link)--去服务器为*, 加队友种族图标,和N,T
     local split= LinkUtil.SplitLink(link)
     local name= split and split:match('player:(.-):') or link:match('|Hplayer:.-|h%[|cff......(.-)|r]') or link:match('|Hplayer:.-|h%[(.-)]|h')
     local server= name and name:match('%-(.+)')
-    if name == e.Player.name or name==e.Player.name_server then
+    if name==e.Player.name_realm then
         return e.Icon.toRight2..e.Player.col..COMBATLOG_FILTER_STRING_ME..'|r'..e.Icon.toLeft2
     else
         --[[local text
@@ -67,7 +67,6 @@ local function Realm(link)--去服务器为*, 加队友种族图标,和N,T
             guid= tab.guid
         end]]
         local text= e.GetPlayerInfo({unit=nil, guid=nil, name=name,  reName=false, reRealm=false})
-        
         --[[local friend, _, guid2= e.GetFriend(name, guid)--检测, 是否好友
         if friend then
             if not text and guid2 then
@@ -82,9 +81,9 @@ local function Realm(link)--去服务器为*, 加队友种族图标,和N,T
             if realm then
                 text= text and realm.col..text or realm.col
             end
-            if server== e.Player.server then
+            if server== e.Player.realm then
                 return (text or '')..link:gsub('%-'..server..'|r]|h', '|r]|h')
-            elseif e.Player.servers[server] then
+            elseif e.Player.Realms[server] then
                 return (text or '')..link:gsub('%-'..server..'|r]|h', GREEN_FONT_COLOR_CODE..'*|r|r]|h')
             else
                 return (text or '')..link:gsub('%-'..server..'|r]|h', '*|r]|h')

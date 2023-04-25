@@ -52,7 +52,7 @@ local function findWhisper(name)
 end
 
 local function getWhisper(event, text, name, _, _, _, _, _, _, _, _, _, guid)
-    if e.Player.name_server~=name and name then
+    if e.Player.name_realm~=name and name then
         local type= event:find('INFORM') and true or nil--_INFORM 发送
         local index=findWhisper(name)
         --local tab={text=text, type=type, time=date('%X')}
@@ -249,7 +249,7 @@ local function Init_Menu(self, level, type)--主菜单
                 local map=e.GetUnitMapName('player');--玩家区域名称
                 for i=1, n2 do
                     local zone= C_FriendList.GetWhoInfo(i)
-                    if zone and zone.fullName and zone.fullName~= e.Player.name_server then
+                    if zone and zone.fullName and zone.fullName~= e.Player.name_realm then
                         info={
                             text=zone.fullName,
                             notCheckable=true,

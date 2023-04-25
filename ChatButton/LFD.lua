@@ -560,7 +560,7 @@ local function set_LFGPlus()--预创建队伍增强
 
         local realm, realmText
         if searchResultInfo.leaderName and not isAppFinished then
-            local server= searchResultInfo.leaderName:match('%-(.+)') or e.Player.server
+            local server= searchResultInfo.leaderName:match('%-(.+)') or e.Player.realm
             server=e.Get_Region(server)--服务器，EU， US {col, text}
             realm= server and server.col
             realmText=server and server.realm
@@ -1204,7 +1204,7 @@ local function Init()
                         playerFrame.PlayerName:SetText(e.Icon.player..COMBATLOG_FILTER_STRING_ME)
                     elseif name:find('%-') then
                         local server=name:match('%-(.+)')
-                        if server and e.Player.servers[server] then
+                        if server and e.Player.Realms[server] then
                             playerFrame.PlayerName:SetText(name..e.Icon.star2)
                         end
                     else

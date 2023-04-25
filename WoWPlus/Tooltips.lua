@@ -532,14 +532,14 @@ local function setPlayerInfo(guid)--设置玩家信息
             e.tips.text2Left:SetText("|T"..icon..':0|t')
         end
 --[[        if info.realm then
-            if e.Player.servers[info.realm] then--设置服务器
-                e.tips.textRight:SetText(info.col..info.realm..'|r'..(info.realm~=e.Player.server and '|cnGREEN_FONT_COLOR:*|r' or''))
+            if e.Player.Realms[info.realm] then--设置服务器
+                e.tips.textRight:SetText(info.col..info.realm..'|r'..(info.realm~=e.Player.realm and '|cnGREEN_FONT_COLOR:*|r' or''))
 
-            elseif info.realm and not e.Player.servers[info.realm] then--不同
+            elseif info.realm and not e.Player.Realms[info.realm] then--不同
                 e.tips.textRight:SetText(info.col..info.realm..'|r|cnRED_FONT_COLOR:*|r')
 
             elseif UnitIsUnit('player', unit) or UnitIsSameServer(unit) then--同
-                e.tips.textRight:SetText(info.col..e.Player.server..'|r')
+                e.tips.textRight:SetText(info.col..e.Player.realm..'|r')
             end
         end]]
         if info.r and info.b and info.g then
@@ -607,9 +607,9 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                          ..'|r')
         end
 
-        realm= realm or e.Player.server--服务器
+        realm= realm or e.Player.realm--服务器
         local region= e.Get_Region(realm)--服务器，EU， US
-        self.textRight:SetText(col..realm..'|r'..(isSelf and e.Icon.star2 or realm==e.Player.server and e.Icon.select2 or e.Player.servers[realm] and '|A:Adventures-Checkmark:0:0|a' or '')..(region and region.col or ''))
+        self.textRight:SetText(col..realm..'|r'..(isSelf and e.Icon.star2 or realm==e.Player.realm and e.Icon.select2 or e.Player.Realms[realm] and '|A:Adventures-Checkmark:0:0|a' or '')..(region and region.col or ''))
 
        --[[ local text=line:GetText()
         if text then
