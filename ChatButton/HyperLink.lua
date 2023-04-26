@@ -92,7 +92,7 @@ end
 
 local function Mount(id2, item)
     if id2 then
-        local mountID=item and C_MountJournal.GetMountFromItem(id2) or C_MountJournal.GetMountFromSpell(id2)
+        local mountID= item and C_MountJournal.GetMountFromItem(id2) or C_MountJournal.GetMountFromSpell(id2)
         if  mountID then
             local _, _, icon, _, _, _, _, _, _, _, isCollected =C_MountJournal.GetMountInfoByID(mountID)
             if isCollected then
