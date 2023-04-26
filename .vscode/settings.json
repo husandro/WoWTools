@@ -2604,7 +2604,7 @@
         "COMMUNITIES_EDIT_DIALOG_CROSS_FACTION",
         "CREATE_NEW_ARENA_TEAM",
         "BATTLETAG_CREATE",
-        "MONTHLY_ACTIVITIES_TRACKER_MODULE"
+        "QuestInfoSpellObjectiveFrame"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
