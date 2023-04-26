@@ -11,6 +11,11 @@ local button
 e.LoadDate({id=179244, type= 'spell'})
 e.LoadDate({id=179245, type= 'spell'})
 
+e.LoadDate({id=90265, type= 'spell'})
+e.LoadDate({id=33391, type= 'spell'})
+e.LoadDate({id=34090, type= 'spell'})
+e.LoadDate({id=34090, type= 'spell'})
+
 local Save={
     disabled= not e.Player.husandro,
     Mounts={
@@ -146,7 +151,7 @@ local function checkSpell()--检测法术
         button.spellID=XD[MOUNT_JOURNAL_FILTER_GROUND]
     else
         for spellID, _ in pairs(Save.Mounts[SPELLS]) do
-            if IsSpellKnownOrOverridesKnown(spellID) then
+            if IsSpellKnown(spellID) then
                 button.spellID=spellID
                 break
             end
