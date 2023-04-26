@@ -179,9 +179,12 @@ e.GetFriend= function(name, guid, unit)--检测, 是否好友
             end
         end
     elseif name then
+        print(name,1)
+        name= name:gsub('(%-'..e.Player.realm..')', '')
+        print(name,2)
         if e.WoWGUID[name] then
             return e.Icon.wow2
-        elseif C_FriendList.GetFriendInfo(name:gsub('(%-.+)',''))  then
+        elseif C_FriendList.GetFriendInfo(name)  then
             return '|A:groupfinder-icon-friend:0:0|a'--好友
         end
     end
@@ -196,8 +199,8 @@ end
 
 
 e.PlayerLink=function(name, guid, slotLink) --玩家超链接
-    guid= guid or name and e.GroupGuid[name] and e.GroupGuid[name].guid or e.WoWGUID[name]
-    if name == COMBATLOG_FILTER_STRING_ME or name==e.Player.name or name==e.Player.name_realm or guid==e.Player.guid then--自已
+    guid= guid or e.GetGUID(nil, name)
+    if guid==e.Player.guid then--自已
         return (not slotLink and e.Icon.player)..'|Hplayer:'..e.Player.name_realm..'|h['..e.Player.col..COMBATLOG_FILTER_STRING_ME..'|r'..']|h'
     end
     if guid then
@@ -230,7 +233,7 @@ e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, f
         
         --if name and englishClass and englishRace and sex then
 
-            local friend= e.GetFriend(name2, guid, unit)--检测, 是否好友
+            local friend= e.GetFriend(name, guid, unit)--检测, 是否好友
             local faction= unit and e.GetUnitFaction(unit)--检查, 是否同一阵营
             local groupInfo= e.GroupGuid[guid] or e.GroupGuid[name] or {}--队伍成员
 
