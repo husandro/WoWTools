@@ -95,7 +95,7 @@ local function Mount(id2, item)
         local mountID=item and C_MountJournal.GetMountFromItem(id2) or C_MountJournal.GetMountFromSpell(id2)
         if  mountID then
             local _, _, icon, _, _, _, _, _, _, _, isCollected =C_MountJournal.GetMountInfoByID(mountID)
-            if select(11, C_MountJournal.GetMountInfoByID(mountID)) then
+            if isCollected then
                 return e.Icon.select2, icon
             else
                 return e.Icon.info2, icon
