@@ -32,8 +32,8 @@ Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
 
 ##主要，不能删除
 WoWTools.lua
-Sesource\WoWDate.lua
-Sesource\Panel.lua
+WoWDate.lua
+WoWPanel.lua
 
 
 

@@ -10,9 +10,11 @@ e.GroupFrame={}--UnitFrame.lua 设置装等， 专精
 --##############
 e.WoWGUID={}--e.WoWGUID[名称-服务器]=guid
 local function setwowguidTab(info)
-    if info and info.characterName and info.realmDisplayName then
-        local name=info.characterName..'-'..info.realmDisplayName
-        print(name)
+    if info and info.characterName then
+        local name= info.characterName
+        if info.realmDisplayName and info.realmDisplayName~='' and info.realmDisplayName~=e.Player.realm then
+            name= name..'-'..info.realmDisplayName
+        end
         e.WoWGUID[name]= (info.isOnline and info.wowProjectID==1) and info.playerGuid or nil
     end
 end

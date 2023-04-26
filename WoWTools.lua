@@ -147,39 +147,23 @@ e.Class=function(unit, class, reAltlas)--职业图标
 end
 
 e.GetGUID= function(unit, name)--从名字,名unit, 获取GUID
-    local guid
     if unit then
-        guid= UnitGUID(unit)
-
+        return UnitGUID(unit)
     elseif name then
-        if name:find('%-') then
-            local info=C_FriendList.GetFriendInfo(name) or C_FriendList.GetFriendInfo(name:gsub('%-.+'))--好友
-            if info and info.playerGuid then
-                return info.playerGuid
-            end
-        else
-            local info=C_FriendList.GetFriendInfo(name)--好友
-            if info and info.playerGuid then
-                return info.playerGuid
-            end
-            name=name..'-'..e.Player.realm
-        end
-        if e.GroupGuid[name] and e.GroupGuid[name].guid then--队友
-            guid= e.GroupGuid[name].guid
+        name= name:gsub('(%-'..e.Player.realm..')', '')
+        local info=C_FriendList.GetFriendInfo(name)--好友
+        if info then
+            return info.playerGuid
+        elseif e.GroupGuid[name] then--队友
+            return e.GroupGuid[name].guid
         elseif e.WoWGUID[name] then--战网
-            guid= e.WoWGUID[name]
-        elseif C_FriendList.GetFriendInfo(name:gsub('%-.+')) then--好友
-            local info=C_FriendList.GetFriendInfo(name:gsub('%-.+'))
-            guid= info and info.guid
-
+            return e.WoWGUID[name]
+        elseif name==e.Player.name then
+            return e.Player.guid
         elseif UnitIsPlayer('target') and GetUnitName('target',true)==name then--目标
-            guid= UnitGUID('target')
-        
-        elseif name==e.Player.name_realm then
-            guid= e.Player.guid
+            return UnitGUID('target')
         end
     end
-    return guid
 end
 
 e.GetFriend= function(name, guid, unit)--检测, 是否好友
