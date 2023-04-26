@@ -249,8 +249,6 @@ e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, f
     return ''
 end
 
-
-local rPerc, gPerc, bPerc, argbHex = GetClassColor(UnitClassBase('player'))
 e.Player={
     realm= GetRealmName(),
     Realms= {},--多服务器
@@ -258,11 +256,10 @@ e.Player={
     name= UnitName('player'),
     sex= UnitSex("player"),
     class= UnitClassBase('player'),
-    r= rPerc,
-    g= gPerc,
-    b= bPerc,
-    col= '|c'..argbHex,
-    --zh= LOCALE_zhCN or LOCALE_zhTW,--GetLocale()== ("zhCN" or 'zhTW'),
+    r= GetClassColor(UnitClassBase('player')),
+    g= select(2,GetClassColor(UnitClassBase('player'))),
+    b= select(3, GetClassColor(UnitClassBase('player'))),
+    col= '|c'..select(4, GetClassColor(UnitClassBase('player'))),
     cn= GetCurrentRegion()==5,
     region=GetCurrentRegion(),--1US (includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
     Lo= GetLocale(),
@@ -273,13 +270,13 @@ e.Player={
     husandro= select(2, BNGetInfo())== '古月剑龙#5972' or select(2, BNGetInfo())=='SandroChina#2690' or UnitName('player')=='Fuocco' or UnitName('player')=='活就好' or select(2, BNGetInfo())=='Sandro126#2297',
     faction= UnitFactionGroup('player'),--玩家, 派系  "Alliance", "Horde", "Neutral"
     disabledLUA={},--禁用插件 {save='', text} e.DisabledLua=true
-    --useColor= {r=1, g=0.82, b=0, a=1, hex='|cffffd100'},--使用颜色
     LayerText= 'Layer',--位面文本
-    --Layer= nil, 位面数字
-    --ver= select(4,GetBuildInfo())>=100100,--版本 100100
+    Layer= nil, --位面数字
+    useColor= nil,--使用颜色
 }
  --MAX_PLAYER_LEVEL = GetMaxLevelForPlayerExpansion()
- 
+ --zh= LOCALE_zhCN or LOCALE_zhTW,--GetLocale()== ("zhCN" or 'zhTW'),
+ --ver= select(4,GetBuildInfo())>=100100,--版本 100100
 for k, v in pairs(GetAutoCompleteRealms()) do
     e.Player.Realms[v]=k
 end
@@ -308,7 +305,6 @@ e.Icon={
     map='poi-islands-table',
     map2='|A:poi-islands-table:0:0|a',
     wow2='|A:Icon-WoW:0:0|a',--136235
-    --wow2= '|A:128-Store-Main:0:0|a',
 
     horde='charcreatetest-logo-horde',
     alliance='charcreatetest-logo-alliance',
@@ -337,20 +333,13 @@ e.Icon={
     unlocked='tradeskills-icon-locked',--'Levelup-Icon-Lock',--没锁
     quest='AutoQuest-Badge-Campaign',--任务
     guild2='|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a',--guild2='|A:communities-guildbanner-background:0:0|a',
-    --mask="Interface\\ChatFrame\\UI-ChatIcon-HotS",--菱形
-    --mask='Interface\\CHARACTERFRAME\\TempPortraitAlphaMask',--圆形 :SetMask()
-    --mask='CircleMaskScalable',
-
 
     TANK='|A:groupfinder-icon-role-large-tank:0:0|a',
     HEALER='|A:groupfinder-icon-role-large-heal:0:0|a',
     DAMAGER='|A:groupfinder-icon-role-large-dps:0:0|a',
     NONE='|A:groupfinder-icon-emptyslot:0:0|a',
     leader='|A:UI-HUD-UnitFrame-Player-Group-GuideIcon:0:0|a',--队长
-    --INLINE_TANK_ICON
-    --INLINE_HEALER_ICON
-    --INLINE_DAMAGER_ICON
-
+ 
     info2='|A:questlegendary:0:0|a',--黄色!
     star2='|A:auctionhouse-icon-favorite:0:0|a',--星星
 }
@@ -361,6 +350,13 @@ e.Icon={
     FRIENDS_TEXTURE_ONLINE 	有空 FRIENDS_LIST_AVAILABLE
     format("\124T%s.tga:0\124t", FRIENDS_TEXTURE_AFK)
     Interface\\FriendsFrame\\Battlenet-Portrait
+    INLINE_TANK_ICON
+    INLINE_HEALER_ICON
+    INLINE_DAMAGER_ICON
+    mask="Interface\\ChatFrame\\UI-ChatIcon-HotS",--菱形
+    mask='Interface\\CHARACTERFRAME\\TempPortraitAlphaMask',--圆形 :SetMask()
+    mask='CircleMaskScalable',
+
 ]]
 
 
