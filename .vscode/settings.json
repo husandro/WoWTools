@@ -2604,7 +2604,9 @@
         "COMMUNITIES_EDIT_DIALOG_CROSS_FACTION",
         "CREATE_NEW_ARENA_TEAM",
         "BATTLETAG_CREATE",
-        "QuestInfoSpellObjectiveFrame"
+        "QuestInfoSpellObjectiveFrame",
+        "SLASH_RANDOMFAVORITEPET1",
+        "HUD_EDIT_MODE_RENAME_LAYOUT"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

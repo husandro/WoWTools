@@ -74,7 +74,7 @@ local function set_chatBubbles_Tips()--提示，聊天泡泡，开启/禁用
     local bool= C_CVar.GetCVarBool("chatBubbles")
     if not bool and not button.tipBubbles then
         button.tipBubbles= button:CreateTexture(nil, 'OVERLAY')
-        local size=e.toolsFrame.size/2
+        local size=15
         button.tipBubbles:SetSize(size, size)
         button.tipBubbles:SetPoint('TOPLEFT', 3, -3)
         button.tipBubbles:SetAtlas(e.Icon.disabled)

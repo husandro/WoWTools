@@ -516,10 +516,6 @@ end
 local function Init()
     button:SetAttribute("type", "macro")
 
-    if e.toolsFrame.size and e.toolsFrame.size~=30 then--设置大小
-        button:SetSize(e.toolsFrame.size, e.toolsFrame.size)
-    end
-
     button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")--菜单列表
 
     button.count=e.Cstr(button, {size=10, color=true})--10, nil, nil, true)

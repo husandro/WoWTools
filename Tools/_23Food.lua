@@ -383,8 +383,7 @@ local function Init()
     end
 
     setPanelPostion()--设置按钮位置
-    local size=e.toolsFrame.size or 30
-    button:SetSize(size,size)
+    button:SetSize(30, 30)
 
     set_Button_Init(button)--提示, 事件
 

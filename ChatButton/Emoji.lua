@@ -44,7 +44,7 @@ local function setframeEvent()--设置隐藏事件
 end
 
 local function setButtons()--设置按钮
-    local size= e.toolsFrame.size or 30
+    local size= 30
     local last, index, line=frame, 0, nil
     local function send(text, d)--发送信息
         text='{'..text..'}'
@@ -185,7 +185,7 @@ local function Init()
     button:SetPoint('LEFT', WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
     WoWToolsChatButtonFrame.last=button
 
-    frame=e.Cbtn(button,{icon='hide', size={10, e.toolsFrame.size}})--控制图标,显示,隐藏
+    frame=e.Cbtn(button,{icon='hide', size={10, 30}})--控制图标,显示,隐藏
     if Save.Point then
         frame:SetPoint(Save.Point[1], UIParent, Save.Point[3], Save.Point[4], Save.Point[5])
     else

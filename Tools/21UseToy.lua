@@ -349,9 +349,6 @@ end
 
 
 local function Init()
-    if e.toolsFrame.size and e.toolsFrame.size~=30 then--设置大小
-        button:SetSize(e.toolsFrame.size, e.toolsFrame.size)
-    end
     e.ToolsSetButtonPoint(button)--设置位置
 
     getToy()--生成, 有效表格

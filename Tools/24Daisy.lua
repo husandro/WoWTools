@@ -44,15 +44,7 @@ local function setSummonedPetGUID()--召唤信息
     local find, summoned = getSummoned()
     if find then--显示名字,提示是否召唤
         if not button.text then
-            local size=8
-            if e.toolsFrame.size then
-                if e.toolsFrame.size>40 then
-                    size=12
-                elseif e.toolsFrame.size>30 then
-                    size=10
-                end
-            end
-            button.text=e.Cstr(button, {size=size, color=true})-- size,nil,nil, true)
+            button.text=e.Cstr(button, {size=10, color=true})-- size,nil,nil, true)
             button.text:SetPoint('CENTER',0 , -5)
         end
     elseif not summoned
@@ -149,8 +141,10 @@ local function Init()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:SetCompanionPet(petGUID)
-        --e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.mid)
+        e.tips:AddLine(' ')
+        local name=C_PetJournal.GetPetInfoBySpeciesID(speciesID)
+        e.tips:AddDoubleLine(name and name..e.Icon.left, (e.onlyChinese and '随机偏好宠物' or SLASH_RANDOMFAVORITEPET1)..e.Icon.right, 0,1,0, 0,1,0)
+        e.tips:AddLine((e.onlyChinese and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU).. e.Icon.mid, 0,1,0)
         e.tips:Show()
     end)
     button:SetScript('OnLeave', function() e.tips:Hide() end)

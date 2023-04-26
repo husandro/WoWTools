@@ -79,15 +79,7 @@ local function Init()
             if name then
                 name = tab.name or e.WA_Utf8Sub(name, 2, 5)
                 if not buttons[tab.spell].name then
-                    local size=8
-                    if e.toolsFrame.size and e.toolsFrame.size>30 then
-                        if e.toolsFrame.size>40 then
-                            size=12
-                        elseif e.toolsFrame.size>30 then
-                            size=10
-                        end
-                    end
-                    buttons[tab.spell].name=e.Cstr(buttons[tab.spell], {size=size, color=true, justifyH='CENTER'})--size, nil, nil, true, nil,'CENTER')
+                    buttons[tab.spell].name=e.Cstr(buttons[tab.spell], {size=10, color=true, justifyH='CENTER'})--size, nil, nil, true, nil,'CENTER')
                 end
                 buttons[tab.spell].name:SetPoint('CENTER',0,-5)
                 buttons[tab.spell].name:SetText(name)

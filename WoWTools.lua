@@ -799,8 +799,7 @@ end
 
 e.Cbtn2= function(name, parent, showTexture, rightClick)
     local button= CreateFrame("Button", name, parent or UIParent, "SecureActionButtonTemplate")
-    local size= e.toolsFrame.size
-    button:SetSize(size,size)
+    button:SetSize(30, 30)
     if rightClick then
         button:RegisterForClicks(LeftButtonDown, RightButtonDown)
     elseif rightClick~=false then
@@ -846,13 +845,11 @@ e.toolsFrame:SetShown(false)
 e.toolsFrame.last=e.toolsFrame
 e.toolsFrame.line=1
 e.toolsFrame.index=0
-e.toolsFrame.size= 30
+
 e.ToolsSetButtonPoint=function(self, line, unoLine)--设置位置
-    if e.toolsFrame.size and e.toolsFrame.size~=30 then--设置大小
-        self:SetSize(e.toolsFrame.size, e.toolsFrame.size)
-    end
+    self:SetSize(30, 30)
     if (not unoLine and e.toolsFrame.index>0 and select(2, math.modf(e.toolsFrame.index / 10))==0) or line then
-        local x= - (e.toolsFrame.line * (e.toolsFrame.size or 30))
+        local x= - (e.toolsFrame.line * 30)
         self:SetPoint('BOTTOMRIGHT', e.toolsFrame , 'TOPRIGHT', x, 0)
         e.toolsFrame.line=e.toolsFrame.line + 1
         if line then

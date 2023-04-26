@@ -141,10 +141,9 @@ local function Init()
                 button:SetAttribute('type2', 'spell')
                 button:SetAttribute('spell2', name or tab.spell2)
 
-                local size= (e.toolsFrame.size or 30)/3
                 button.texture2=button:CreateTexture(nil,'OVERLAY')
                 button.texture2:SetPoint('TOPRIGHT',-6,-6)
-                button.texture2:SetSize(size, size)
+                button.texture2:SetSize(10, 10)
                 button.texture2:SetTexture(icon)
                 button.texture2:AddMaskTexture(button.mask)
                 button:RegisterEvent('PLAYER_REGEN_DISABLED')

@@ -204,7 +204,7 @@ local function setBagHearthstone()
         if find then
             if not button['texture'..type] then
                 button['texture'..type]=button:CreateTexture(nil,'OVERLAY')
-                local size=(e.toolsFrame.size or 30)/3
+                local size=10
                 button['texture'..type]:SetSize(size, size)
                 if type=='alt' then
                     button['texture'..type]:SetPoint('BOTTOMRIGHT',-3,3)
@@ -268,9 +268,7 @@ local function Init()
         e.LoadDate({id=itemID, type='item'})
     end
 
-    if e.toolsFrame.size and e.toolsFrame.size~=30 then--设置大小
-        button:SetSize(e.toolsFrame.size, e.toolsFrame.size)
-    end
+    button:SetSize(30, 30)
 
     for type, itemID in pairs(ModifiedTab) do
         button:SetAttribute(type.."-item1",  C_Item.GetItemNameByID(itemID) or itemID)
