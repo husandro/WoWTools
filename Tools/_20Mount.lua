@@ -20,7 +20,18 @@ local Save={
     disabled= not e.Player.husandro,
     Mounts={
         [ITEMS]={[174464]=true, [168035]=true},--幽魂缰绳 噬渊鼠缰绳
-        [SPELLS]={[2645]=true, [111400]=true, [343016]=true, [195072]=true, [2983]=true, [190784]=true, [48265]=true, [186257]=true, [6544]=true},
+        [SPELLS]={
+            [2645]=true,
+            [111400]=true,
+            [343016]=true,
+            [195072]=true,
+            [2983]=true,
+            [190784]=true,
+            [48265]=true,
+            [186257]=true,
+            [6544]=true,
+            [358267]= true,--悬空
+        },
         [FLOOR]={},--{[spellID]=uiMapID}
         [MOUNT_JOURNAL_FILTER_GROUND]={
             --[339588]=true,--[罪奔者布兰契]
@@ -765,7 +776,7 @@ local function InitMenu(self, level, menuList)--主菜单
     else
         for _, type in pairs(mainMenuTable) do
             if type=='-' then
-                securecall('UIDropDownMenu_AddSeparator') 
+                securecall('UIDropDownMenu_AddSeparator')
 
             elseif type==SPELLS or type==ITEMS then
                 local num=getTableNum(type)--检测,表里的数量
@@ -817,7 +828,7 @@ local function InitMenu(self, level, menuList)--主菜单
             end
         end
 
-        securecall('UIDropDownMenu_AddSeparator') 
+        securecall('UIDropDownMenu_AddSeparator')
         info={
             text=Save.KEY or (e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL),
             notCheckable=true,
@@ -880,13 +891,13 @@ local function setMountJournal_ShowMountDropdown(index)
     if not spellID then
         return
     end
-    securecall('UIDropDownMenu_AddSeparator') 
+    securecall('UIDropDownMenu_AddSeparator')
 
     local info
     for _, type in pairs(MountTab) do
         if (type==MOUNT_JOURNAL_FILTER_DRAGONRIDING and isForDragonriding) or (type~=MOUNT_JOURNAL_FILTER_DRAGONRIDING and not isForDragonriding) then
             if type=='Shift'  or type==FLOOR then
-                securecall('UIDropDownMenu_AddSeparator') 
+                securecall('UIDropDownMenu_AddSeparator')
             end
             info={
                 text= (e.onlyChinese and '设置' or SETTINGS)..' '..type..' #'..getTableNum(type),
@@ -924,7 +935,7 @@ local function setMountJournal_ShowMountDropdown(index)
     end
 
 
-    securecall('UIDropDownMenu_AddSeparator') 
+    securecall('UIDropDownMenu_AddSeparator')
     info={
         text=id..' '..addName,
         isTitle=true,
@@ -1249,7 +1260,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         if not UnitAffectingCombat('player') and e.toolsFrame:IsShown() then
             e.toolsFrame:SetShown(false)--设置, TOOLS 框架,隐藏
         end
-    
+
     elseif event=='NEUTRAL_FACTION_SELECT_RESULT' then
         ShiJI= Faction==0 and 179244 or Faction==1 and 179245
         checkMount()--检测坐骑
