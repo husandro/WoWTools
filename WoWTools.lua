@@ -215,9 +215,8 @@ e.PlayerLink=function(name, guid, slotLink) --玩家超链接
     end
 end
 
---IsPlayerInGuildFromGUID(playerGUID)--玩家信息图标
 e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, factionName=nil, reName=true, reLink=false})
-    local guid= tab.guid or e.GetGUID(tab.unit, tab.name and tab.name)
+    local guid= tab.guid or e.GetGUID(tab.unit, tab.name)
     if guid==e.Player.guid then
         return e.Icon.player..((tab.reName or tab.reLink) and e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r' or '')..e.Icon.star2
     elseif guid and C_PlayerInfo.GUIDIsPlayer(guid) then
