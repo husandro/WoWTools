@@ -354,19 +354,22 @@ local function set_WhoList_Update()--查询, 名单列表
         if info then
             if RAID_CLASS_COLORS[info.filename] then
                 r,g,b= RAID_CLASS_COLORS[info.filename]:GetRGB()
-                --hex= RAID_CLASS_COLORS[info.filename].colorStr
             end
            level= info.level
         end
         if r and g and b then
-            if button.Name then
-                local nameText= e.GetFriend(info.fullName, nil, nil)--检测, 是否好友
-                if nameText then
-                    nameText= nameText..info.fullName
-                    if info.fullName== e.Player.name then
-                        nameText= nameText..e.Icon.star2
+            if button.Name and info.fullName then                
+                if info.fullName== e.Player.name then
+                    button.Name:SetText(e.Icon.toRight2..COMBATLOG_FILTER_STRING_ME..e.Icon.toLeft2)
+                else
+                    local nameText= e.GetFriend(info.fullName, nil, nil)--检测, 是否好友
+                    if nameText then
+                        nameText= nameText..info.fullName
+                        if info.fullName== e.Player.name then
+                            nameText= nameText..e.Icon.star2
+                        end
+                        button.Name:SetText(nameText)
                     end
-                    button.Name:SetText(nameText)
                 end
                 button.Name:SetTextColor(r,g,b)
             end

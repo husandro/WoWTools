@@ -602,7 +602,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                     GameTooltipTextRight1:SetShown(true)
                 end
             end
-            line:SetText((isSelf and e.Icon.star2 or e.GetFriend(name, guid, unit) or '')
+            line:SetText((isSelf and e.Icon.star2 or e.GetFriend(nil, guid, nil) or '')
                          ..col..e.Icon.toRight2..name..e.Icon.toLeft2
                          ..'|r')
         end
@@ -611,12 +611,6 @@ local function setUnitInfo(self, unit)--设置单位提示信息
         local region= e.Get_Region(realm)--服务器，EU， US
         self.textRight:SetText(col..realm..'|r'..(isSelf and e.Icon.star2 or realm==e.Player.realm and e.Icon.select2 or e.Player.Realms[realm] and '|A:Adventures-Checkmark:0:0|a' or '')..(region and region.col or ''))
 
-       --[[ local text=line:GetText()
-        if text then
-            text=text:gsub('(%-.+)','')
-            text=text:gsub(name, e.Icon.toRight2..name..e.Icon.toLeft2)
-            line:SetText(col..text..'|r')
-        end]]
         line=isInGuild and GameTooltipTextLeft2
         if line then
             local text=line:GetText()
@@ -649,8 +643,6 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                 text= text..'(|cnGREEN_FONT_COLOR:'..effectiveLevel..'|r) '
             end
 
-            --className= col and col..className..'|r' or className
-            --text= text..LEVEL..' '..level..'  '..e.Race(nil, raceFile, sex)..raceName..' '..e.Class(nil, classFilename)..className..(UnitIsPVP(unit) and  '  (|cnRED_FONT_COLOR:PvP|r)' or '  (|cnGREEN_FONT_COLOR:PvE|r)')
             local info= C_PlayerInfo.GetPlayerMythicPlusRatingSummary(unit)--挑战, 分数
             if info and info.currentSeasonScore and info.currentSeasonScore>0 then
                 text= text..' '..(e.GetUnitRaceInfo({unit=unit, guid=guid, race=raceFile, sex=sex, reAtlas=false}) or '')
@@ -685,8 +677,6 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             end
         end
 
-
-
         local num= isInGuild and 4 or 3
         local allNum= self:NumLines()
         for i=num, allNum do
@@ -713,36 +703,12 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                                 line=_G["GameTooltipTextLeft"..i]
                                 line:SetText(e.Icon.map2..col..mapInfo.name)
                                 line:SetShown(true)
-
-                                --[[line=_G["GameTooltipTextRight"..i]
-                                if line then
-                                    line:SetText(' ')
-                                    line:SetShown(true)
-                                end]]
                             end
                         end
                     else
                         line:SetShown(false)
                     end
                 else
-                    --[[if allNum==i and isSelf and WoWDate[e.Player.guid] and WoWDate[e.Player.guid].Keystone then--挑战分数
-                        local score= WoWDate[e.Player.guid].Keystone.score
-                        local numAll= WoWDate[e.Player.guid].Keystone.all or 0
-                        local weekNum= WoWDate[e.Player.guid].Keystone.weekNum or 0
-                        local weekLevel= WoWDate[e.Player.guid].Keystone.weekLevel or 0
-
-                        if score and score>0 then
-                            line:SetText(e.GetKeystoneScorsoColor(score, true)..'  '..col..weekLevel)
-                            if _G["GameTooltipTextRight"..i] then
-                                _G["GameTooltipTextRight"..i]:SetText(col..weekNum..'/'..numAll)
-                                _G["GameTooltipTextRight"..i]:SetShown(true)
-                            end
-                        else
-                            line:Hide()
-                        end
-                    else
-                        line:Hide()
-                    end]]
                     line:Hide()
                 end
             end
@@ -803,8 +769,6 @@ local function setUnitInfo(self, unit)--设置单位提示信息
     end
 
     set_Item_Model(self, {unit=unit, guid=guid, creatureDisplayID=nil, animID=nil, appearanceID=nil, visualID=nil})--设置, 3D模型
-
-   
 end
 
 local function setCVar(reset, tips, notPrint)

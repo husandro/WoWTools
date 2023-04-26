@@ -150,7 +150,7 @@ e.GetGUID= function(unit, name)--从名字,名unit, 获取GUID
     if unit then
         return UnitGUID(unit)
     elseif name then
-        name= name:gsub('(%-'..e.Player.realm..')', '')
+        name= name:gsub('%-'..e.Player.realm, '')
         local info=C_FriendList.GetFriendInfo(name)--好友
         if info then
             return info.playerGuid
@@ -179,9 +179,7 @@ e.GetFriend= function(name, guid, unit)--检测, 是否好友
             end
         end
     elseif name then
-        print(name,1)
-        name= name:gsub('(%-'..e.Player.realm..')', '')
-        print(name,2)
+        name= name:gsub('%-'..e.Player.realm, '')
         if e.WoWGUID[name] then
             return e.Icon.wow2
         elseif C_FriendList.GetFriendInfo(name)  then
@@ -220,45 +218,34 @@ end
 --IsPlayerInGuildFromGUID(playerGUID)--玩家信息图标
 e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, factionName=nil, reName=true, reLink=false})
     local guid= tab.guid or e.GetGUID(tab.unit, tab.name and tab.name)
-    local unit= tab.unit
-                or guid and e.GroupGuid[guid] and e.GroupGuid[guid].unit
-                or tab.name and e.GroupGuid[tab.name] and e.GroupGuid[tab.name].unit
-    local name= tab.name or guid and e.GroupGuid[guid] and e.GroupGuid[guid].name
-
-    if guid==e.Player.guid or name==e.Player.name or name==e.Player.name_realm or unit=='player' then
+    if guid==e.Player.guid then
         return e.Icon.player..((tab.reName or tab.reLink) and e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r' or '')..e.Icon.star2
-
     elseif guid and C_PlayerInfo.GUIDIsPlayer(guid) then
-        local _, englishClass, _, englishRace, sex, name2, realm = GetPlayerInfoByGUID(guid)
-        
-        --if name and englishClass and englishRace and sex then
+        local _, englishClass, _, englishRace, sex, name, realm = GetPlayerInfoByGUID(guid)
+        local unit= tab.unit or guid and e.GroupGuid[guid] and e.GroupGuid[guid].unit
+        local friend= e.GetFriend(nil, guid, nil)--检测, 是否好友
+        local faction= unit and e.GetUnitFaction(unit)--检查, 是否同一阵营
+        local groupInfo= e.GroupGuid[guid] or {}--队伍成员
+        local text= (friend or '')
+                    ..(faction or '')
+                    ..(e.GetUnitRaceInfo({unit=unit, guid=guid , race=englishRace, sex=sex, reAtlas=false}) or '')
+                    ..(e.Class(unit, englishClass) or '')
 
-            local friend= e.GetFriend(name, guid, unit)--检测, 是否好友
-            local faction= unit and e.GetUnitFaction(unit)--检查, 是否同一阵营
-            local groupInfo= e.GroupGuid[guid] or e.GroupGuid[name] or {}--队伍成员
+        if groupInfo.combatRole=='HEALER' or groupInfo.combatRole=='TANK' then--职业图标
+            text= text..e.Icon[groupInfo.combatRole]..(groupInfo.subgroup or '')
+        end
 
-            local text= (friend or '')
-                        ..(faction or '')
-                        ..(e.GetUnitRaceInfo({unit=unit, guid=guid , race=englishRace, sex=sex, reAtlas=false}) or '')
-                        ..(e.Class(unit, englishClass) or '')
-
-            if groupInfo.combatRole=='HEALER' or groupInfo.combatRole=='TANK' then--职业图标
-                text= text..e.Icon[groupInfo.combatRole]..(groupInfo.subgroup or '')
+        if tab.reLink then
+            return text..e.PlayerLink(name, guid, true) --玩家超链接
+        elseif tab.reName and name then
+            if tab.reRealm then
+                text= text..(name..(realm and realm~='' and '-'..realm or ''))
+            else
+                text= text..GetPlayerNameRemoveRealm(name, realm)
             end
-
-            if tab.reLink then
-                return text..e.PlayerLink(name, guid, true) --玩家超链接
-            elseif tab.reName and name then
-                if tab.reRealm then
-                    text= text..(name..(realm and realm~='' and '-'..realm or ''))
-                else
-                    text= text..GetPlayerNameRemoveRealm(name, realm)
-                end
-                text= '|c'..select(4,GetClassColor(englishClass))..text..'|r'                
-            end
-            
-            return text
-       -- end
+            text= '|c'..select(4,GetClassColor(englishClass))..text..'|r'                
+        end
+        return text
     end
     return ''
 end

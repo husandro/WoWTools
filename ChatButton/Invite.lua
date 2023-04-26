@@ -187,7 +187,7 @@ local function set_PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNati
         e.Ccool(StaticPopup1, nil, sec, nil, true, true, nil)--冷却条    
     end
 
-    local friend=e.GetFriend(name, inviterGUID)
+    local friend=e.GetFriend(nil, inviterGUID, nil)
     if friend then--好友
         if not Save.FriendAceInvite then
             e.Ccool(StaticPopup1, nil, STATICPOPUP_TIMEOUT, nil, true, true, nil)--冷却条  
