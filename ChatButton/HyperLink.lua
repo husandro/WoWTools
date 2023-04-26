@@ -56,26 +56,7 @@ local function Realm(link)--去服务器为*, 加队友种族图标,和N,T
     if name==e.Player.name_realm then
         return e.Icon.toRight2..e.Player.col..COMBATLOG_FILTER_STRING_ME..'|r'..e.Icon.toLeft2
     else
-        --[[local text
-        local tab= e.GroupGuid[name]--队伍成员
-        if tab and tab.unit then--玩家种族图标
-            local race=e.Race(tab.unit)
-            text= race
-            if tab.combatRole=='HEALER' or tab.combatRole=='TANK' then--职业图标
-                text= (text or '')..e.Icon[tab.combatRole]..(tab.subgroup or '')
-            end
-            guid= tab.guid
-        end]]
         local text= e.GetPlayerInfo({unit=nil, guid=nil, name=name,  reName=false, reRealm=false})
-        --[[local friend, _, guid2= e.GetFriend(name, guid)--检测, 是否好友
-        if friend then
-            if not text and guid2 then
-                text= e.GetPlayerInfo(nil, guid2, nil)--玩家信息图标
-            end
-            text= friend..(text or '')
-        end]]
-        
-
         if server then
             local realm= e.Get_Region(server)--服务器，EU， US {col=, text=, realm=}
             if realm then
