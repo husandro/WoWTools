@@ -3,15 +3,17 @@ local addName=	TRACK_QUEST
 local Save={scale= 0.85, alpha=1, autoHide=true}
 --local F=ObjectiveTrackerFrame--移动任务框
 --local btn=ObjectiveTrackerFrame.HeaderMenu.MinimizeButton
-local mo={
-    SCENARIO_CONTENT_TRACKER_MODULE,--1 场景战役 SCENARIOS
-    UI_WIDGET_TRACKER_MODULE,--2
-    BONUS_OBJECTIVE_TRACKER_MODULE,--3 	奖励目标 SCENARIO_BONUS_OBJECTIVES
-    WORLD_QUEST_TRACKER_MODULE,--4世界任务 TRACKER_HEADER_WORLD_QUESTS
-    CAMPAIGN_QUEST_TRACKER_MODULE,--5战役 TRACKER_HEADER_CAMPAIGN_QUESTS
-    QUEST_TRACKER_MODULE,--6 	追踪任务 TRACK_QUEST
-    ACHIEVEMENT_TRACKER_MODULE,--7 追踪成就 TRACKING..
-    PROFESSION_RECIPE_TRACKER_MODULE,--追踪配方 PROFESSIONS_TRACK_RECIPE
+
+local ModulTab={--Blizzard_ObjectiveTracker.lua
+    'SCENARIO_CONTENT_TRACKER_MODULE',--1 场景战役 SCENARIOS
+    'UI_WIDGET_TRACKER_MODULE',--2
+    'BONUS_OBJECTIVE_TRACKER_MODULE',--3 	奖励目标 SCENARIO_BONUS_OBJECTIVES
+    'WORLD_QUEST_TRACKER_MODULE',--4世界任务 TRACKER_HEADER_WORLD_QUESTS
+    'CAMPAIGN_QUEST_TRACKER_MODULE',--5战役 TRACKER_HEADER_CAMPAIGN_QUESTS
+    'QUEST_TRACKER_MODULE',--6 	追踪任务 TRACK_QUEST
+    'ACHIEVEMENT_TRACKER_MODULE',--7 追踪成就 TRACKING..
+    'PROFESSION_RECIPE_TRACKER_MODULE',--8 追踪配方 PROFESSIONS_TRACK_RECIPE
+    'MONTHLY_ACTIVITIES_TRACKER_MODULE',--9
 }
 
 local Color={
@@ -132,10 +134,11 @@ local ObjectiveTrackerRemoveAll =function(self, tip)
     securecall('UIDropDownMenu_AddButton', info)
 end
 
-local Colla=function(type)
-    for _, self in pairs(mo) do
+local colla_Module=function(type)
+    for _, self in pairs(ModulTab) do
+        self= _G[self]
         if self and self.Header and self.Header.MinimizeButton then
-            if self.collapsed ~=type  then
+            if self.collapsed ~=type and self.Header.added and self.Header:IsVisible() then
                 local module = self.Header.MinimizeButton:GetParent().module
                 module:SetCollapsed(type)
                 ObjectiveTracker_Update(0, nil, module)
@@ -219,7 +222,8 @@ local function hideTrecker()--挑战,进入FB时, 隐藏Blizzard_ObjectiveTracke
     end
     local ins=IsInInstance()--local sc=C_Scenario.IsInScenario();   
     if ins then
-        for index, self in pairs(mo) do
+        for index, self in pairs(ModulTab) do
+            self= _G[self]
             if index>2 and self and self.Header and self.Header.MinimizeButton then
                 if not self.collapsed  then
                     --local module = self.Header.MinimizeButton:GetParent().module;
@@ -231,7 +235,8 @@ local function hideTrecker()--挑战,进入FB时, 隐藏Blizzard_ObjectiveTracke
             end
         end
     else
-        for index, self in pairs(mo) do
+        for index, self in pairs(ModulTab) do
+            self= _G[self]
             if index>2 and self and self.Header and self.Header.MinimizeButton then
                 if self.setColla then
                     if self.collapsed  then
@@ -292,10 +297,10 @@ local function Init()
     end)
     btn:SetScript('OnMouseWheel',function(self,d)
         if d == 1 and not IsModifierKeyDown() then
-            Colla(true)
+            colla_Module(true)
             print(id, addName,'|cnRED_FONT_COLOR:', e.onlyChinese and '全部隐藏' or (HIDE..ALL))
         elseif d == -1 and not IsModifierKeyDown() then
-            Colla()
+            colla_Module()
             print(id, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '显示全部' or (SHOW..ALL))
         elseif d==1 and IsControlKeyDown() then
             Save.scale=Save.scale+0.05
@@ -412,7 +417,7 @@ local function Init()
         end
         securecall('UIDropDownMenu_AddButton', info)
     end)
-    hooksecurefunc(mo[8], 'OnBlockHeaderClick', function(self, block, mouseButton)--清除所有专业追踪
+    hooksecurefunc(PROFESSION_RECIPE_TRACKER_MODULE, 'OnBlockHeaderClick', function(self, block, mouseButton)--清除所有专业追踪
         if mouseButton=='RightButton' then
             local recipeInfo =C_TradeSkillUI.GetRecipeInfo(block.id)
             local info = UIDropDownMenu_CreateInfo()
@@ -438,7 +443,7 @@ local function Init()
             securecall('UIDropDownMenu_AddButton', info)
         end
     end)
-    hooksecurefunc(mo[8], 'SetStringText', function(self, fontString, text, useFullHeight, colorStyle, useHighlight)
+    hooksecurefunc(PROFESSION_RECIPE_TRACKER_MODULE, 'SetStringText', function(self, fontString, text, useFullHeight, colorStyle, useHighlight)
         local te=text:gsub('%d+/%d+ ','')
         if te then
             local icon = C_Item.GetItemIconByID(te)

@@ -2603,7 +2603,8 @@
         "COMMUNITIES_CHANNEL_NAME_LABEL",
         "COMMUNITIES_EDIT_DIALOG_CROSS_FACTION",
         "CREATE_NEW_ARENA_TEAM",
-        "BATTLETAG_CREATE"
+        "BATTLETAG_CREATE",
+        "MONTHLY_ACTIVITIES_TRACKER_MODULE"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

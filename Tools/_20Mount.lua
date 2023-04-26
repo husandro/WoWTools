@@ -4,6 +4,7 @@ local Faction =  e.Player.faction=='Horde' and 0 or e.Player.faction=='Alliance'
 
 local ClassID = select(2, UnitClassBase('player'))
 local ShiJI= Faction==0 and 179244 or Faction==1 and 179245
+local OkMount--是否已学, 骑术
 
 local XD
 local button
@@ -114,8 +115,8 @@ end
 local function XDInt()--德鲁伊设置
     XD=nil
     if Save.XD and ClassID==11 then
-        local ground=IsSpellKnown(768) and 768
-        local flying=IsSpellKnown(783) and 783
+        local ground=IsSpellKnownOrOverridesKnown(768) and 768
+        local flying=IsSpellKnownOrOverridesKnown(783) and 783
         if ground then
             XD={
                 [MOUNT_JOURNAL_FILTER_GROUND]= ground,
@@ -145,7 +146,7 @@ local function checkSpell()--检测法术
         button.spellID=XD[MOUNT_JOURNAL_FILTER_GROUND]
     else
         for spellID, _ in pairs(Save.Mounts[SPELLS]) do
-            if IsSpellKnown(spellID) then
+            if IsSpellKnownOrOverridesKnown(spellID) then
                 button.spellID=spellID
                 break
             end
@@ -172,13 +173,12 @@ local MountTab={
 }
 
 local function checkMount()--检测坐骑
-    local prima=IsSpellKnown(33388)
     local uiMapID= C_Map.GetBestMapForUnit("player")--当前地图
     for index, type in pairs(MountTab) do
         if XD and XD[type] then
             button[type]={XD[type]}
 
-        elseif index<=3 and not prima and ShiJI then--33388初级骑术 33391中级骑术 3409高级骑术 34091专家级骑术 90265大师级骑术 783旅行形态
+        elseif index<=3 and not OkMount and ShiJI then--33388初级骑术 33391中级骑术 3409高级骑术 34091专家级骑术 90265大师级骑术 783旅行形态
             button[type]={ShiJI}
 
         else
@@ -187,10 +187,6 @@ local function checkMount()--检测坐骑
                 spellID= (spellID==179244 or spellID==179245) and ShiJI or spellID
                 local mountID = C_MountJournal.GetMountFromSpell(spellID)
                 if mountID then
-                    --[[if mountID==678 or mountID==679 then
-                        spellID=ShiJI
-                    end]]
-                    --mountID = mountID==678 and Faction==1 and 679 or mountID==679 and Faction==0 and 678 or mountID--[召唤司机]
                     local isFactionSpecific, faction, shouldHideOnChar, isCollected= select(8, C_MountJournal.GetMountInfoByID(mountID))
                     if not shouldHideOnChar and isCollected and (not isFactionSpecific or faction==Faction) then
                         if type==FLOOR then
@@ -223,7 +219,7 @@ local function setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
     end
     local tab={'Shift', 'Alt', 'Ctrl'}
 
-    for index, type in pairs(tab) do
+    for _, type in pairs(tab) do
         button.textureModifier[type]=nil
         if button[type] and button[type][1] then
             local name, _, icon=GetSpellInfo(button[type][1])
@@ -700,7 +696,7 @@ local function InitMenu(self, level, menuList)--主菜单
                 else--法术, 二级菜单
                     local name, _, icon = GetSpellInfo(ID)
                     name=name or ('spellID: '..ID)
-                    local known= IsSpellKnown(ID)
+                    local known= IsSpellKnownOrOverridesKnown(ID)
                     name= not known and e.Icon.O2.. name or name
                     info={
                         text= name,
@@ -936,6 +932,12 @@ end
 --初始化
 --######
 local function Init()
+    OkMount= IsSpellKnownOrOverridesKnown(90265)--是否已学, 骑术
+                or IsSpellKnownOrOverridesKnown(33391)
+                or IsSpellKnownOrOverridesKnown(34090)
+                or IsSpellKnownOrOverridesKnown(33388)
+
+
     for type, tab in pairs(Save.Mounts) do
         for ID, _ in pairs(tab) do
             e.LoadDate({id=ID, type= type==ITEMS and 'item' or 'spell'})
@@ -1002,7 +1004,7 @@ local function Init()
         elseif d=='LeftButton' then
             if IsMounted() then
                 C_MountJournal.Dismiss()
-            elseif IsSpellKnown(111400) and not UnitAffectingCombat('player') then--SS爆燃冲刺
+            elseif IsSpellKnownOrOverridesKnown(111400) and not UnitAffectingCombat('player') then--SS爆燃冲刺
                 for i = 1, 40 do
                     local spell = select(10, UnitBuff('player', i, 'PLAYER'))
                     if not spell then
@@ -1156,7 +1158,9 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 panel:RegisterEvent('SPELL_UPDATE_USABLE')
                 panel:RegisterEvent('CHAT_MSG_AFK')
                 panel:RegisterEvent('PLAYER_STARTED_MOVING')
+
                 panel:RegisterEvent('NEUTRAL_FACTION_SELECT_RESULT')--ShiJI
+                panel:RegisterEvent('LEARNED_SPELL_IN_TAB')
 
                 Init()--初始
                 table.insert(e.Player.disabledLUA, 'Tools')--禁用插件, 给物品升级界面用
@@ -1245,5 +1249,12 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         ShiJI= Faction==0 and 179244 or Faction==1 and 179245
         checkMount()--检测坐骑
         setClickAtt()--设置属性
+
+    elseif event=='LEARNED_SPELL_IN_TAB' then
+        OkMount= IsSpellKnownOrOverridesKnown(90265)--是否已学, 骑术
+                or IsSpellKnownOrOverridesKnown(33391)
+                or IsSpellKnownOrOverridesKnown(34090)
+                or IsSpellKnownOrOverridesKnown(33388)
+
     end
 end)

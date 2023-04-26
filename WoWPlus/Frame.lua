@@ -621,12 +621,21 @@ local function Init_Move()
     Move(LootFrame, {save=false})--物品拾取
 
     --场景 
-    if ObjectiveTrackerBlocksFrame then
-        Move(ObjectiveTrackerBlocksFrame.ScenarioHeader, {frame=ObjectiveTrackerFrame, notZoom=true})
-        Move(ObjectiveTrackerBlocksFrame.AchievementHeader, {frame=ObjectiveTrackerFrame, notZoom=true})
-        Move(ObjectiveTrackerBlocksFrame.QuestHeader, {frame=ObjectiveTrackerFrame, zeroAlpha=true, notZoom=true})
-        Move(ObjectiveTrackerBlocksFrame.CampaignQuestHeader, {frame=ObjectiveTrackerFrame, notZoom=true})
-    end
+    C_Timer.After(2, function()
+        if ObjectiveTrackerFrame and ObjectiveTrackerFrame.MODULES then--Blizzard_ObjectiveTracker.lua ObjectiveTracker_GetVisibleHeaders()
+            for _, module in ipairs(ObjectiveTrackerFrame.MODULES) do
+                local header = module.Header;
+                Move(header, {frame=ObjectiveTrackerFrame, notZoom=true})
+            end
+        end
+    end)
+    --[[Move(ObjectiveTrackerBlocksFrame.ScenarioHeader, {frame=ObjectiveTrackerFrame, notZoom=true})
+    Move(ObjectiveTrackerBlocksFrame.AchievementHeader, {frame=ObjectiveTrackerFrame, notZoom=true})
+    Move(ObjectiveTrackerBlocksFrame.QuestHeader, {frame=ObjectiveTrackerFrame, zeroAlpha=true, notZoom=true})
+    Move(ObjectiveTrackerBlocksFrame.CampaignQuestHeader, {frame=ObjectiveTrackerFrame, notZoom=true})
+    Move(ObjectiveTrackerBlocksFrame.ProfessionHeader, {frame=ObjectiveTrackerFrame, notZoom=true})
+    Move(ObjectiveTrackerBlocksFrame.MonthlyActivitiesHeader, {frame=ObjectiveTrackerFrame, notZoom=true})]]
+    
 end
 
 local function set_PopupDialogs()
