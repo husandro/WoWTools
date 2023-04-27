@@ -750,7 +750,7 @@ local function Init()--冒险指南界面
 
     --Boss, 战利品, 信息
     hooksecurefunc(EncounterJournalItemMixin,'Init',function(self, elementData)--Blizzard_EncounterJournal.lua
-        local text
+        local text, collectText='', nil
         if not Save.hideEncounterJournal and self.link and self.itemID and self.slot then
             local specTable = GetItemSpecInfo(self.link) or {}--专精图标
             local specTableNum=#specTable
@@ -758,26 +758,27 @@ local function Init()--冒险指南界面
                 local specA=''
                 local class
                 table.sort(specTable, function (a2, b2) return a2<b2 end)
+                collectText= e.onlyChinese and '拾取专精' or format(PROFESSIONS_SPECIALIZATION_TITLE, UNIT_FRAME_DROPDOWN_SUBSECTION_TITLE_LOOT )
                 for _,  specID in pairs(specTable) do
                     local icon2, _, classFile=select(4, GetSpecializationInfoByID(specID))
                     if icon2 and classFile then
                         icon2='|T'..icon2..':0|t'
                         specA = specA..((class and class~=classFile) and '  ' or '')..icon2
                         class=classFile
+                        collectText= collectText..'\n'..icon2..classFile
                     end
                 end
                 if specA~='' then
-                    text= text or ''
                     text= text..specA
                 end
             end
 
             local item, collected = e.GetItemCollected(self.link, nil, true)--物品是否收集, 返回图标, 幻化
-            if item  then
-                if not collected then
-                    text= text and '' or '   '
+            if item and not collected then
+                    text= text~='' and text..'   ' or text
                     text= text..item
-                end
+                    collectText= collectText~='' and collectText..'\n\n' or collectText
+                    collectText= collectText..item..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
             else
                 local mountID = C_MountJournal.GetMountFromItem(self.itemID)--坐骑物品
                 local speciesID = select(13, C_PetJournal.GetPetInfoByItemID(self.itemID))--宠物物品
@@ -789,11 +790,25 @@ local function Init()--冒险指南界面
             end
         end
         if text and not self.collectedText and self.slot then
-            self.collectedText= e.Cstr(self, {justifyH='CENTER'})--nil,nil,nil,nil,nil,'CENTER')
-            self.collectedText:SetPoint('CENTER', self.slot, 'CENTER', 5, 0)
+            self.collectedText= e.Cstr(self)--nil,nil,nil,nil,nil,'CENTER')
+            self.collectedText:SetPoint('LEFT', self.slot, 'CENTER', 5, 0)
+            self.collectedText:EnableMouse(true)
+            self.collectedText:SetScript('OnEnter', function(self2)
+                if self2.collectText and self2.collectText~='' then
+                    e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+                    e.tips:ClearLines()
+                    e.tips:AddLine(collectText)
+                    e.tips:AddLine(' ')
+                    e.tips:AddDoubleLine(id, addName)
+                    e.tips:Show()
+                end
+            end)
+            self.collectedText:SetScript('OnLeave', function() e.tips:Hide() end)
         end
         if self.collectedText then
             self.collectedText:SetText(text or '')
+            self.collectedText.collectText= collectText
+            --self.collectedText:SetShown(text and true or false)
         end
 
         e.Set_Item_Stats(self, self.link, {point= self.icon, itemID= self.itemID})--显示, 物品, 属性
@@ -975,55 +990,7 @@ local function Init()--冒险指南界面
         button.LootButton:SetShown(not Save.hideEncounterJournal)
     end
 
-    --##############
-    --boss, ID, 信息
-    --[[##############
-    hooksecurefunc('EncounterJournal_DisplayInstance', function(instanceID, noButton)--Blizzard_EncounterJournal.lua
-        local self2 = EncounterJournal.encounter
-        if Save.hideEncounterJournal or not instanceID or not noButton then
-            if self2.instance.Killed then
-                self2.instance.Killed:SetText('')
-            end
-            return
-        end
-        local name, description, bgImage, buttonImage1, loreImage, buttonImage, dungeonAreaMapID = EJ_GetInstanceInfo(instanceID)
-        if description then
-            local mapName, parentMapID
-            if dungeonAreaMapID and dungeonAreaMapID > 0 then
-                local mapInfo= C_Map.GetMapInfo(dungeonAreaMapID)
-                if mapInfo then
-                    mapName= mapInfo.name
-                    parentMapID= mapInfo.parentMapID
-                    if parentMapID then
-                        mapInfo=C_Map.GetMapInfo(parentMapID)
-                        if mapInfo and mapInfo.name then
-                            parentMapID=mapInfo.name..'UiMapID: '..parentMapID
-                        end
-                    end
-                end
-            end
-            local text='journalInstanceID: '..instanceID
-            --..((dungeonAreaMapID and dungeonAreaMapID>0) and ' UiMapID: '..dungeonAreaMapID or '')
-            ..(mapName and '|n'..mapName..'UiMapID: '..dungeonAreaMapID or '')
-            ..(parentMapID and '|n'.. parentMapID or '')
-            ..(buttonImage and '|n|T'..buttonImage..':0|t'..buttonImage or '')
-            ..((buttonImage1 and buttonImage1~=buttonImage) and '|n|T'..buttonImage1..':0|t'..buttonImage1 or '')
-            ..(bgImage and '|n|T'..bgImage..':0|t'..bgImage or '')
-            ..(loreImage and '|n|T'..loreImage..':0|t'..loreImage or '')
-            self2.instance.LoreScrollingFont:SetText(description..'\n'..text)
-        end
-
-        if not self2.instance.Killed then--综述, 添加副本击杀情况
-            self2.instance.Killed=e.Cstr(self2.instance, {justifyH='RIGHT'})--nil, nil,nil,nil,nil,'RIGHT')
-            self2.instance.Killed:SetPoint('BOTTOMRIGHT', -33, 126)
-        end
-        self2.instance.Killed.instanceID=instanceID
-        self2.instance.Killed.tooltipTitle=name
-        local text= EncounterJournal_ListInstances_set_Instance(self2.instance.Killed)--界面,击杀,数据
-        self2.instance.Killed:SetText(text or '')
-    end)]]
-
-
+ 
     EncounterJournal.encounter.instance.mapButton:SetScript('OnEnter', function(self3)--综述,小地图提示
         local name, description, bgImage, buttonImage1, loreImage, buttonImage2, dungeonAreaMapID, link, _, mapID= EJ_GetInstanceInfo()
         if not name then return end
@@ -1209,26 +1176,6 @@ local function Init()--冒险指南界面
             EncounterJournal.creatureDisplayIDText:SetText(text or '')
         end
     end)
-
-    --[[记录上次选择版本
-    hooksecurefunc('EncounterJournal_TierDropDown_Select', function(_, tier)
-        Save.EncounterJournalTier=tier
-    end)
-
-    --记录上次选择TAB
-    hooksecurefunc('EJ_ContentTab_Select', function(id2)
-        Save.EncounterJournalSelectTabID=id2
-    end)]]
-    --[[if not Save.hideEncounterJournal and Save.EncounterJournalTier then
-        local numTier=EJ_GetNumTiers()
-        if numTier and Save.EncounterJournalTier~=numTier then
-            print(numTier,id, addName)
-            EJ_SelectTier(Save.EncounterJournalTier)
-        end
-        if Save.EncounterJournalSelectTabID then
-            EJ_ContentTab_Select(Save.EncounterJournalSelectTabID)
-        end
-    end]]
 end
 
 --###########
