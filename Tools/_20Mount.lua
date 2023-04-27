@@ -376,7 +376,7 @@ local function setMountShow()--坐骑展示
                 return
             elseif timeElapsed>3 then
                 if specialEffects then
-                    DEFAULT_CHAT_FRAME.editBox:SetText(	EMOTE171_CMD2)
+                    DEFAULT_CHAT_FRAME.editBox:SetText(EMOTE171_CMD2)
                     ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox,0)
                 else
                     getMountShow()
@@ -391,52 +391,6 @@ end
 --#####
 --对话框
 --#####
-StaticPopupDialogs[id..addName..'FLOOR']={--区域,设置对话框
-    text=id..' '..addName..' '..FLOOR..'\n\n%s\n%s',
-    whileDead=1,
-    hideOnEscape=1,
-    exclusive=1,
-	timeout = 60,
-    hasEditBox=1,
-    button1=FLOOR,
-    button2=CANCEL,
-    button3=REMOVE,
-    OnShow = function(self, data)
-        self.editBox:SetNumeric(true)
-        local num= Save.Mounts[FLOOR][data.spellID] or C_Map.GetBestMapForUnit("player")
-        if num and num>1 then
-            self.editBox:SetNumber(num)
-        end
-        self.button3:SetEnabled(Save.Mounts[FLOOR][data.spellID] and true or false)
-	end,
-    OnAccept = function(self, data)
-		local num= self.editBox:GetNumber()
-        num = num<1 and 1 or num
-        Save.Mounts[FLOOR][data.spellID]=num
-        checkMount()--检测坐骑
-        setClickAtt()--设置 Click属性
-        if MountJournal_UpdateMountList then MountJournal_UpdateMountList() end
-	end,
-    OnAlt = function(self, data)
-        Save.Mounts[FLOOR][data.spellID]=nil
-        checkMount()--检测坐骑
-        setClickAtt()--设置 Click属性
-        if MountJournal_UpdateMountList then MountJournal_UpdateMountList() end
-    end,
-    EditBoxOnTextChanged=function(self, data)
-       local num= self:GetNumber()
-       local mapInfo = num>0 and num<2147483647 and C_Map.GetMapInfo(num)
-       if mapInfo and mapInfo.name then
-        self:GetParent().button1:SetText('|cnGREEN_FONT_COLOR:'..mapInfo.name..'|r')
-       else
-        self:GetParent().button1:SetText(NONE)
-       end
-       self:GetParent().button1:SetEnabled(num>0 and num<2147483647)
-    end,
-    EditBoxOnEscapePressed = function(s)
-        s:GetParent():Hide()
-    end,
-}
 StaticPopupDialogs[id..addName..'ITEMS']={--物品, 设置对话框
     text=id..' '..addName..' '..ITEMS..'\n\n%s\n%s',
     whileDead=1,
@@ -907,7 +861,7 @@ local function InitMenu(self, level, type)--主菜单
 
     securecall('UIDropDownMenu_AddSeparator')
     info={
-        text=Save.KEY or (e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL),
+        text=Save.KEY or (e.onlyChinese and '设置' or SETTINGS),
         notCheckable=true,
         menuList=SETTINGS,
         hasArrow=true,
@@ -981,24 +935,75 @@ local function setMountJournal_ShowMountDropdown(index)
                 tooltipOnButton=true,
                 tooltipTitle=id,
                 tooltipText=addName,
+                arg1=type,
+                arg2=spellID,
                 func= type==FLOOR and
-                function ()
-                    local exits=Save.Mounts[FLOOR][spellID] and ERR_ZONE_EXPLORED:format(PROFESSIONS_CURRENT_LISTINGS) or NEW
+                function(_, arg1, arg2)
+                    local exits=Save.Mounts[FLOOR][arg2] and (e.onlyChinese and '已存在' or ERR_ZONE_EXPLORED:format(PROFESSIONS_CURRENT_LISTINGS)) or NEW
                     exits= exits.. '\n\n'..WORLD_MAP..' uiMapID: '..(C_Map.GetBestMapForUnit("player") or '')
-                    local text= (icon and '|T'..icon..':0|t' or '').. (creatureName or ('spellID: '..spellID))
-                    StaticPopup_Show(id..addName..'FLOOR',text,exits , {spellID=spellID})
-                end
-                or
-                function()
-                    if Save.Mounts[type][spellID] then
-                        Save.Mounts[type][spellID]=nil
-                    else
-                        if type=='Shift' or type=='Alt' or type=='Ctrl' then--唯一
-                            Save.Mounts[type]={[spellID]=true}
+                    local text= (icon and '|T'..icon..':0|t' or '').. (creatureName or ('spellID: '..arg2))
+
+                    StaticPopupDialogs[id..addName..'FLOOR']={--区域,设置对话框
+                        text=id..' '..addName..' '..FLOOR..'\n\n%s\n%s',
+                        whileDead=1,
+                        hideOnEscape=1,
+                        exclusive=1,
+                        timeout = 60,
+                        hasEditBox=1,
+                        button1=e.onlyChinese and '区域' or FLOOR,
+                        button2=e.onlyChinese and '取消' or CANCEL,
+                        button3=e.onlyChinese and '移除' or REMOVE,
+                        OnShow = function(self, data)
+                            self.editBox:SetNumeric(true)
+                            local num= Save.Mounts[FLOOR][data.spellID] or C_Map.GetBestMapForUnit("player")
+                            if num and num>1 then
+                                self.editBox:SetNumber(num)
+                            end
+                            self.button3:SetEnabled(Save.Mounts[FLOOR][data.spellID] and true or false)
+                        end,
+                        OnAccept = function(self, data)
+                            local num= self.editBox:GetNumber()
+                            num = num<1 and 1 or num
+                            Save.Mounts[FLOOR][data.spellID]=num
+                            checkMount()--检测坐骑
+                            setClickAtt()--设置 Click属性
+                            if MountJournal_UpdateMountList then MountJournal_UpdateMountList() end
+                        end,
+                        OnAlt = function(self, data)
+                            Save.Mounts[FLOOR][data.spellID]=nil
+                            checkMount()--检测坐骑
+                            setClickAtt()--设置 Click属性
+                            if MountJournal_UpdateMountList then MountJournal_UpdateMountList() end
+                        end,
+                        EditBoxOnTextChanged=function(self, data)
+                        local num= self:GetNumber()
+                        local mapInfo = num>0 and num<2147483647 and C_Map.GetMapInfo(num)
+                        if mapInfo and mapInfo.name then
+                            self:GetParent().button1:SetText('|cnGREEN_FONT_COLOR:'..mapInfo.name..'|r')
                         else
-                            Save.Mounts[type][spellID]=true
+                            self:GetParent().button1:SetText(NONE)
                         end
-                        removeTable(type, spellID)--移除, 表里, 其他同样的项目
+                        self:GetParent().button1:SetEnabled(num>0 and num<2147483647)
+                        end,
+                        EditBoxOnEscapePressed = function(s)
+                            s:GetParent():Hide()
+                        end,
+                    }
+                    StaticPopup_Show(id..addName..'FLOOR',text,exits , {spellID=arg2})
+                end
+
+                or
+
+                function(self, arg1, arg2)
+                    if Save.Mounts[arg1][arg2] then
+                        Save.Mounts[arg1][arg2]=nil
+                    else
+                        if arg1=='Shift' or arg1=='Alt' or arg1=='Ctrl' then--唯一
+                            Save.Mounts[arg1]={[arg2]=true}
+                        else
+                            Save.Mounts[arg1][arg2]=true
+                        end
+                        removeTable(arg1, arg2)--移除, 表里, 其他同样的项目
                     end
                     checkMount()--检测坐骑
                     setClickAtt()--设置属性
@@ -1173,6 +1178,7 @@ local function Init()
             e.tips:AddLine(' ')
         end
 
+        e.tips:AddLine('')
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE), '|cnGREEN_FONT_COLOR:'..(Save.scale or 1)..'|r Alt+'..e.Icon.mid)
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
@@ -1272,6 +1278,9 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
 
                 if Save.AFKRandom then
                     panel:RegisterUnitEvent('PLAYER_FLAGS_CHANGED', 'player')--AFK
+                    if not UnitAffectingCombat('player') and UnitIsAFK('player') and IsOutdoors() then
+                        setMountShow()--坐骑展示
+                    end
                 end
 
                 Init()--初始
