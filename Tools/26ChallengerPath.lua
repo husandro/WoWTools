@@ -90,25 +90,28 @@ local function Init()
                 e.tips:ClearLines()
                 e.tips:SetSpellByID(tab.spell)
                 e.tips:AddLine(' ')
-                local insName, _, _, buttonImage1 = EJ_GetInstanceInfo(tab.ins)
+                --[[local insName, _, _, buttonImage1 = EJ_GetInstanceInfo(tab.ins)
                 if tab.ins then
                     e.tips:AddDoubleLine((buttonImage1 and '|T'..buttonImage1..':0|t' or '')..(insName or ('journalInstanceID: '..tab.ins)), ADVENTURE_JOURNAL..e.Icon.right)
-                end
+                end]]
                 --e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.mid)
                 e.tips:Show()
             end)
             buttons[tab.spell]:SetScript('OnLeave', function() e.tips:Hide() end)
 
-            buttons[tab.spell]:SetScript('OnMouseDown', function(self, d)
+            --[[buttons[tab.spell]:SetScript('OnMouseDown', function(self, d)
+                if d=='RightButton' then
+                    ToggleEncounterJournal();
+                end
                 if d=='RightButton' and tab.ins then
                     local frame=EncounterJournal;
                     if not frame or not frame:IsShown() then
                         ToggleEncounterJournal();
                     end
-                    NavBar_Reset(EncounterJournal.navBar)
-                    EncounterJournal_DisplayInstance(tab.ins)
+                    securecall('NavBar_Reset', EncounterJournal.navBar)
+                    securecall('EncounterJournal_DisplayInstance', tab.ins)
                 end
-            end)
+            end)]]
             buttons[tab.spell]:RegisterEvent('PLAYER_REGEN_DISABLED')--设置, 冷却
             buttons[tab.spell]:RegisterEvent('PLAYER_REGEN_ENABLED')
             buttons[tab.spell]:RegisterEvent('SPELL_UPDATE_COOLDOWN')

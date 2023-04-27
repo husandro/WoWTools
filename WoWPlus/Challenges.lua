@@ -18,7 +18,7 @@ local affixSchedule = {-- AngryKeystones Schedule Dragonflight Season 1,史诗�
 	[9]  = { [1]=11,  [2]=13,  [3]=10, }, -- Fortified | Bursting | Explosive
 	[10] = { [1]=7,   [2]=3,   [3]=9,  }, -- Tyrannical | Bolstering | Volcanica
 }
-local EncounterJournal_Maps={--[mapChallengeModelID]= journalInstanceID
+--[[local EncounterJournal_Maps={--[mapChallengeModelID]= journalInstanceID
     [2]= 313,--青龙寺
     [400]= 1198,--诺库德阻击战
     [200]= 721,--[英灵殿]
@@ -27,7 +27,7 @@ local EncounterJournal_Maps={--[mapChallengeModelID]= journalInstanceID
     [399]= 1202,--[红玉新生法池]
     [401]= 1203;--[碧蓝魔馆]
     [165]= 537,--[影月墓地]
-
+}]]
     --[[[166]= 536,--暗轨之路(车站)
     [391]= 1194,--街头商贩之路(天街)
     [392]= 1194,--街头商贩之路(天街)
@@ -46,7 +46,7 @@ local EncounterJournal_Maps={--[mapChallengeModelID]= journalInstanceID
     --[]=1022,--地渊孢林
     --[]=1001,--自由镇
     --[]=767,--奈萨里奥的巢穴
-}
+
 --[[
 local spellIDs={--法术, 传送门, {mapChallengeModeID = 法术 SPELL ID}, BUG, 战斗中关闭, 会出现错误
     [166]=159900,--暗轨之路(车站)
@@ -771,13 +771,14 @@ local function set_Update()--Blizzard_ChallengesUI.lua
         if frame and frame.mapID then
             if not frame.tips then
                 frame:SetScript("OnMouseDown",function(self2)
-                    if not EncounterJournal or not EncounterJournal:IsShown() then
+                    ToggleEncounterJournal()
+                    --[[if not EncounterJournal or not EncounterJournal:IsShown() then
                         ToggleEncounterJournal()
                     end
                     if self2.mapID and EncounterJournal_Maps[self2.mapID] then
-                        NavBar_Reset(EncounterJournal.navBar)
-                        EncounterJournal_DisplayInstance(EncounterJournal_Maps[self2.mapID])
-                    end
+                        securecall('NavBar_Reset', EncounterJournal.navBar)
+                        securecall('EncounterJournal_DisplayInstance', EncounterJournal_Maps[self2.mapID])
+                    end]]
                 end)
                 frame:HookScript('OnEnter', function(self2)--提示
                     if self2.mapID then
@@ -860,10 +861,10 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                         if texture and backgroundTexture then
                             e.tips:AddDoubleLine('|T'..texture..':0|t'..texture, '|T'..backgroundTexture..':0|t'..backgroundTexture)
                         end
-                        if EncounterJournal_Maps[self2.mapID] then
+                        --if EncounterJournal_Maps[self2.mapID] then
                             e.tips:AddLine(' ')
                             e.tips:AddDoubleLine(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, e.Icon.left)
-                        end
+                        --end
                         e.tips:Show()
                     end
                 end)

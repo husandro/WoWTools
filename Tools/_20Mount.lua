@@ -486,6 +486,8 @@ local function InitMenu(self, level, type)--主菜单
         info={
             text= '<'..(e.onlyChinese and '离开' or AFK)..'>: '..(e.onlyChinese and '自动' or AUTO_JOIN:gsub(JOIN, '')),
             checked= Save.AFKRandom,
+            tooltipOnButton=true,
+            tooltipTitle=e.onlyChinese and '注意: 掉落' or ('note: '..STRING_ENVIRONMENTAL_DAMAGE_FALLING),
             func= function()
                 Save.AFKRandom= not Save.AFKRandom and true or nil
                 if Save.AFKRandom then

@@ -967,10 +967,10 @@ local function Init()--冒险指南界面
 
     --##############
     --boss, ID, 信息
-    --##############
+    --[[##############
     hooksecurefunc('EncounterJournal_DisplayInstance', function(instanceID, noButton)--Blizzard_EncounterJournal.lua
-        local self2 = EncounterJournal.encounter;
-        if Save.hideEncounterJournal or not instanceID then
+        local self2 = EncounterJournal.encounter
+        if Save.hideEncounterJournal or not instanceID or not noButton then
             if self2.instance.Killed then
                 self2.instance.Killed:SetText('')
             end
@@ -1002,7 +1002,39 @@ local function Init()--冒险指南界面
             ..(loreImage and '|n|T'..loreImage..':0|t'..loreImage or '')
             self2.instance.LoreScrollingFont:SetText(description..'\n'..text)
         end
-        for _, button in pairs(self2.info.BossesScrollBox:GetFrames()) do
+
+        if not self2.instance.Killed then--综述, 添加副本击杀情况
+            self2.instance.Killed=e.Cstr(self2.instance, {justifyH='RIGHT'})--nil, nil,nil,nil,nil,'RIGHT')
+            self2.instance.Killed:SetPoint('BOTTOMRIGHT', -33, 126)
+        end
+        self2.instance.Killed.instanceID=instanceID
+        self2.instance.Killed.tooltipTitle=name
+        local text= EncounterJournal_ListInstances_set_Instance(self2.instance.Killed)--界面,击杀,数据
+        self2.instance.Killed:SetText(text or '')
+    end)]]
+
+
+    EncounterJournal.encounter.instance.mapButton:SetScript('OnEnter', function(self3)--综述,小地图提示
+        local name, description, bgImage, buttonImage1, loreImage, buttonImage2, dungeonAreaMapID, link, _, mapID= EJ_GetInstanceInfo()
+        if not name then return end
+        e.tips:SetOwner(self3, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(link or name, (dungeonAreaMapID and 'UiMapID|cnGREEN_FONT_COLOR:'..dungeonAreaMapID..'|r' or '')..(mapID and ' mapID|cnGREEN_FONT_COLOR:'..mapID..'|r' or ''))
+        e.tips:AddLine(' ')
+        e.tips:AddLine(description, nil,nil,nil, true)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(bgImage and '|T'..bgImage..':26|t'..bgImage, loreImage and '|T'..loreImage..':26|t'..loreImage)
+        e.tips:AddDoubleLine(buttonImage1 and '|T'..buttonImage1..':26|t'..buttonImage1, buttonImage2 and '|T'..buttonImage2..':26|t'..buttonImage2)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:Show()
+    end)
+    EncounterJournal.encounter.instance.mapButton:SetScript('OnLeave', function() e.tips:Hide() end)
+
+
+
+    hooksecurefunc(EncounterJournal.encounter.info.BossesScrollBox, 'SetScrollTargetOffset', function(self2)
+        for _, button in pairs(self2:GetFrames()) do
             if not button.OnEnter then
                 button:SetScript('OnEnter', function(self3)
                     if not Save.hideEncounterJournal and self3.encounterID then
@@ -1024,39 +1056,9 @@ local function Init()--冒险指南界面
                     end
                 end)
                 button:SetScript('OnLeave', function() e.tips:Hide() end)
-                set_Loot_Spec(button)--BOSS战时, 指定拾取, 专精
             end
+            set_Loot_Spec(button)--BOSS战时, 指定拾取, 专精
         end
-
-        hooksecurefunc(self2.info.BossesScrollBox, 'SetScrollTargetOffset', function()
-            for _, button in pairs(self2.info.BossesScrollBox:GetFrames()) do
-                set_Loot_Spec(button)--BOSS战时, 指定拾取, 专精
-            end
-        end)
-
-        if self2.instance.mapButton then
-            self2.instance.mapButton:SetScript('OnEnter', function(self3)--综述,小地图提示
-                local instanceName, description2, _, _, _, _, dungeonAreaMapID2 = EJ_GetInstanceInfo();
-                if dungeonAreaMapID2 and instanceName then
-                    e.tips:SetOwner(self3, "ANCHOR_LEFT")
-                    e.tips:ClearLines()
-                    e.tips:AddDoubleLine(instanceName, 'UiMapID: '..dungeonAreaMapID2)
-                    e.tips:AddLine(' ')
-                    e.tips:AddLine(description2, nil,nil,nil, true)
-                    e.tips:Show()
-                end
-            end)
-            self2.instance.mapButton:SetScript('OnLeave', function() e.tips:Hide() end)
-        end
-
-        if not self2.instance.Killed then--综述, 添加副本击杀情况
-            self2.instance.Killed=e.Cstr(self2.instance, {justifyH='RIGHT'})--nil, nil,nil,nil,nil,'RIGHT')
-            self2.instance.Killed:SetPoint('BOTTOMRIGHT', -33, 126)
-        end
-        self2.instance.Killed.instanceID=instanceID
-        self2.instance.Killed.tooltipTitle=name
-        local text= EncounterJournal_ListInstances_set_Instance(self2.instance.Killed)--界面,击杀,数据
-        self2.instance.Killed:SetText(text or '')
     end)
 
     --战利品, 套装, 收集数
@@ -1073,7 +1075,7 @@ local function Init()--冒险指南界面
         end
     end)
 
-    --战利品, 套装 , 收集数量
+    --[[战利品, 套装 , 收集数量
     local function lootSet(self2)
         if Save.hideEncounterJournal then
             return
@@ -1094,10 +1096,10 @@ local function Init()--冒险指南界面
     end
     hooksecurefunc(EncounterJournal.LootJournalItems.ItemSetsFrame, 'UpdateList', lootSet);
     hooksecurefunc('HybridScrollFrame_Update', function(self2)
-            if EncounterJournal and self2==EncounterJournal.LootJournalItems.ItemSetsFrame then
-                lootSet(self2)
-            end
-    end)
+        if EncounterJournal and self2==EncounterJournal.LootJournalItems.ItemSetsFrame then
+            lootSet(self2)
+        end
+    end)]]
 
     --BOSS技能 Blizzard_EncounterJournal.lua
     local function EncounterJournal_SetBullets_setLink(text)--技能加图标
@@ -1156,7 +1158,8 @@ local function Init()--冒险指南界面
             end
         end
     end)
-    hooksecurefunc('EncounterJournal_OnClick', function(self2, d)--右击发送超链接
+    
+    --[[hooksecurefunc('EncounterJournal_OnClick', function(self2, d)--(可能会出错误),右击发送超链接
         if d=='RightButton' and self2.link and not Save.hideEncounterJournal then
             if not ChatEdit_GetActiveWindow() then
                 ChatFrame_OpenChat(self2.link, SELECTED_DOCK_FRAME)
@@ -1165,22 +1168,28 @@ local function Init()--冒险指南界面
             end
             return
         end
-    end)
+    end)]]
     hooksecurefunc('EncounterJournal_UpdateButtonState', function(self2)--技能提示
-        self2:EnableMouse(true)
-        --self2:RegisterForClicks("LeftButtonDown","RightButtonDown")
-        self2:SetScript("OnEnter", function(self3)
-            local frame2=self3:GetParent()
-            local spellID= frame2 and frame2.spellID
-            if spellID and not Save.hideEncounterJournal then
+        if not self2.OnEnter then
+            --self2:EnableMouse(true)
+            --self2:RegisterForClicks("LeftButtonDown","RightButtonDown")
+            self2:SetScript("OnEnter", function(self3)
+                local spellID= self3:GetParent().spellID
+                --local link= self3.link
+                if Save.hideEncounterJournal or not spellID or spellID==0 then
+                    return
+                end
                 e.tips:SetOwner(self3, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:SetSpellByID(spellID)
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(id, addName)
                 e.tips:Show()
-            end
-        end)
-        self2:SetScript('OnLeave', function() e.tips:Hide() end)
+            end)
+            self2:SetScript('OnLeave', function() e.tips:Hide() end)
+        end
     end)
+
     --BOSS模型 Blizzard_EncounterJournal.lua
     hooksecurefunc('EncounterJournal_DisplayCreature', function(self, forceUpdate)
         local text
@@ -1206,7 +1215,7 @@ local function Init()--冒险指南界面
         end
     end)
 
-    --记录上次选择版本
+    --[[记录上次选择版本
     hooksecurefunc('EncounterJournal_TierDropDown_Select', function(_, tier)
         Save.EncounterJournalTier=tier
     end)
@@ -1223,7 +1232,7 @@ local function Init()--冒险指南界面
         if Save.EncounterJournalSelectTabID then
             EJ_ContentTab_Select(Save.EncounterJournalSelectTabID)
         end
-    end
+    end]]
 end
 
 --###########
