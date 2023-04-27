@@ -18,7 +18,7 @@ local affixSchedule = {-- AngryKeystones Schedule Dragonflight Season 1,史诗�
 	[9]  = { [1]=11,  [2]=13,  [3]=10, }, -- Fortified | Bursting | Explosive
 	[10] = { [1]=7,   [2]=3,   [3]=9,  }, -- Tyrannical | Bolstering | Volcanica
 }
---[[local EncounterJournal_Maps={--[mapChallengeModelID]= journalInstanceID
+local EncounterJournal_Maps={--[mapChallengeModelID]= journalInstanceID
     [2]= 313,--青龙寺
     [400]= 1198,--诺库德阻击战
     [200]= 721,--[英灵殿]
@@ -27,7 +27,7 @@ local affixSchedule = {-- AngryKeystones Schedule Dragonflight Season 1,史诗�
     [399]= 1202,--[红玉新生法池]
     [401]= 1203;--[碧蓝魔馆]
     [165]= 537,--[影月墓地]
-}]]
+}
     --[[[166]= 536,--暗轨之路(车站)
     [391]= 1194,--街头商贩之路(天街)
     [392]= 1194,--街头商贩之路(天街)
@@ -771,14 +771,12 @@ local function set_Update()--Blizzard_ChallengesUI.lua
         if frame and frame.mapID then
             if not frame.tips then
                 frame:SetScript("OnMouseDown",function(self2)
-                    ToggleEncounterJournal()
-                    --[[if not EncounterJournal or not EncounterJournal:IsShown() then
+                    if not IsAddOnLoaded("Blizzard_EncounterJournal.lua") then LoadAddOn("Blizzard_EncounterJournal.lua") end
+                    if not EncounterJournal:IsVisible() then
                         ToggleEncounterJournal()
                     end
-                    if self2.mapID and EncounterJournal_Maps[self2.mapID] then
-                        securecall('NavBar_Reset', EncounterJournal.navBar)
-                        securecall('EncounterJournal_DisplayInstance', EncounterJournal_Maps[self2.mapID])
-                    end]]
+                    --securecall('NavBar_Reset', EncounterJournal.navBar)
+                    --securecall('EncounterJournal_DisplayInstance', EncounterJournal_Maps[self2.mapID])
                 end)
                 frame:HookScript('OnEnter', function(self2)--提示
                     if self2.mapID then

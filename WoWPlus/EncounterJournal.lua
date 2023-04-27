@@ -905,7 +905,7 @@ local function Init()--冒险指南界面
             end
         end
         if find then
-            securecall('UIDropDownMenu_AddSeparator', level)
+            --securecall('UIDropDownMenu_AddSeparator', level)
             info= {
                 text= e.onlyChinese and '无' or NONE,
                 icon= 'xmarksthespot',
@@ -919,6 +919,16 @@ local function Init()--冒险指南界面
             }
             securecall('UIDropDownMenu_AddButton', info, level)
         end
+        
+        local name=self.encounterID and EJ_GetEncounterInfo(self.encounterID)
+        if name and self.dungeonEncounterID then
+            info= {
+                text= name..' '..self.dungeonEncounterID,
+                notCheckable=true,
+                isTitle=true,
+            }
+        end
+        securecall('UIDropDownMenu_AddButton', info, level)
         securecall('UIDropDownMenu_AddSeparator', level)
         info={
             text= e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
@@ -927,7 +937,7 @@ local function Init()--冒险指南界面
             menuList='CLEAR',
         }
         securecall('UIDropDownMenu_AddButton', info, level)
-        securecall('UIDropDownMenu_AddSeparator', level)
+        --securecall('UIDropDownMenu_AddSeparator', level)
         info={
             text= e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION,
             icon= e.Class('player', e.Player.class, true) or  'Banker',
@@ -1032,7 +1042,6 @@ local function Init()--冒险指南界面
     EncounterJournal.encounter.instance.mapButton:SetScript('OnLeave', function() e.tips:Hide() end)
 
 
-
     hooksecurefunc(EncounterJournal.encounter.info.BossesScrollBox, 'SetScrollTargetOffset', function(self2)
         for _, button in pairs(self2:GetFrames()) do
             if not button.OnEnter then
@@ -1044,7 +1053,7 @@ local function Init()--冒险指南界面
                         e.tips:AddDoubleLine(name2,  'journalEncounterID: '..'|cnGREEN_FONT_COLOR:'..(journalEncounterID or self3.encounterID)..'|r')
                         e.tips:AddDoubleLine(instanceID2 and 'instanceID: '..instanceID2, (rootSectionID and rootSectionID>0) and 'JournalEncounterSectionID: '..rootSectionID or ' ')
                         if dungeonEncounterID then
-                            e.tips:AddDoubleLine('dungeonEncounterID: '..dungeonEncounterID, (journalInstanceID and journalInstanceID>0) and 'journalInstanceID: '..journalInstanceID or ' ' )
+                            e.tips:AddDoubleLine('dungeonEncounterID: |cffff00ff'..dungeonEncounterID, (journalInstanceID and journalInstanceID>0) and 'journalInstanceID: '..journalInstanceID or ' ' )
                             local numKill=Save.wowBossKill[dungeonEncounterID]
                             if numKill then
                                 e.tips:AddDoubleLine(e.onlyChinese and '击杀' or KILLS, '|cnGREEN_FONT_COLOR:'..numKill..' |r'..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
@@ -1062,7 +1071,7 @@ local function Init()--冒险指南界面
     end)
 
     --战利品, 套装, 收集数
-    hooksecurefunc(EncounterJournal.LootJournalItems.ItemSetsFrame,'ConfigureItemButton', function(self2, button)--Blizzard_LootJournalItems.lua
+    --[[hooksecurefunc(EncounterJournal.LootJournalItems.ItemSetsFrame,'ConfigureItemButton', function(self2, button)--Blizzard_LootJournalItems.lua
         local has = C_TransmogCollection.PlayerHasTransmogByItemInfo(button.itemID)
         if has==false and not button.tex and not Save.hideEncounterJournal then
             button.tex=button:CreateTexture()
@@ -1075,7 +1084,7 @@ local function Init()--冒险指南界面
         end
     end)
 
-    --[[战利品, 套装 , 收集数量
+    --战利品, 套装 , 收集数量
     local function lootSet(self2)
         if Save.hideEncounterJournal then
             return
@@ -1158,24 +1167,11 @@ local function Init()--冒险指南界面
             end
         end
     end)
-    
-    --[[hooksecurefunc('EncounterJournal_OnClick', function(self2, d)--(可能会出错误),右击发送超链接
-        if d=='RightButton' and self2.link and not Save.hideEncounterJournal then
-            if not ChatEdit_GetActiveWindow() then
-                ChatFrame_OpenChat(self2.link, SELECTED_DOCK_FRAME)
-            else
-                ChatEdit_InsertLink(self2.link)
-            end
-            return
-        end
-    end)]]
+
     hooksecurefunc('EncounterJournal_UpdateButtonState', function(self2)--技能提示
         if not self2.OnEnter then
-            --self2:EnableMouse(true)
-            --self2:RegisterForClicks("LeftButtonDown","RightButtonDown")
             self2:SetScript("OnEnter", function(self3)
-                local spellID= self3:GetParent().spellID
-                --local link= self3.link
+                local spellID= self3:GetParent().spellID--self3.link
                 if Save.hideEncounterJournal or not spellID or spellID==0 then
                     return
                 end
@@ -1198,7 +1194,6 @@ local function Init()--冒险指南界面
                 EncounterJournal.creatureDisplayIDText=e.Cstr(self,{size=10, fontType=EncounterJournal.encounter.info.model.imageTitle})--10, EncounterJournal.encounter.info.model.imageTitle)
                 EncounterJournal.creatureDisplayIDText:SetPoint('BOTTOM', EncounterJournal.encounter.info.model.imageTitle, 'TOP', 0 , 10)
             end
-
             if EncounterJournal.iconImage  then
                 text= (text or '')..'|T'..EncounterJournal.iconImage..':0|t'..EncounterJournal.iconImage..'\n'
             end
@@ -1223,10 +1218,11 @@ local function Init()--冒险指南界面
     --记录上次选择TAB
     hooksecurefunc('EJ_ContentTab_Select', function(id2)
         Save.EncounterJournalSelectTabID=id2
-    end)
-    if not Save.hideEncounterJournal then
+    end)]]
+    --[[if not Save.hideEncounterJournal and Save.EncounterJournalTier then
         local numTier=EJ_GetNumTiers()
-        if numTier and Save.EncounterJournalTier and Save.EncounterJournalTier<=numTier then
+        if numTier and Save.EncounterJournalTier~=numTier then
+            print(numTier,id, addName)
             EJ_SelectTier(Save.EncounterJournalTier)
         end
         if Save.EncounterJournalSelectTabID then
