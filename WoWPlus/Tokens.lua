@@ -71,7 +71,7 @@ local function set_ItemInteractionFrame_Currency(self)
 		return
 	end
     local itemInfo= C_ItemInteraction.GetItemInteractionInfo()
-    local currencyID= itemInfo and itemInfo.currencyTypeId or self.chargeCurrencyTypeId or 2167
+    local currencyID= itemInfo and itemInfo.currencyTypeId or self.chargeCurrencyTypeId or 2533--2167
 
 	if self==ItemInteractionFrame then
 		TokenFrame.chargeCurrencyTypeId= currencyID
@@ -82,7 +82,7 @@ local function set_ItemInteractionFrame_Currency(self)
     if info and info.quantity and (info.discovered or info.quantity>0) then
         text= info.iconFileID and '|T'..info.iconFileID..':0|t' or ''
         text= text.. info.quantity
-        text= info.maxQuantity and text..'/'..(currencyID==currencyID and 6 or info.maxQuantity) or text
+        text= info.maxQuantity and text..'/'..info.maxQuantity or text
         if not self.ItemInteractionFrameCurrencyText then
             self.ItemInteractionFrameCurrencyText= e.Cstr(self)
             self.ItemInteractionFrameCurrencyText:SetPoint('TOPLEFT', 55, -38)
