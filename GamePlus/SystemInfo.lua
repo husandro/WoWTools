@@ -390,14 +390,28 @@ local function Init()
     hooksecurefunc('MainMenuBarPerformanceBarFrame_OnEnter', function(self)
         e.tips:AddLine(' ')
         local version, build, date, tocversion, localizedVersion, buildType = GetBuildInfo()
-        e.tips:AddDoubleLine('|cffff8200'..(e.onlyChinese and '版本' or GAME_VERSION_LABEL).. ' '..version..' '..build, '|cffff8200'..date)
-        e.tips:AddDoubleLine((e.onlyChinese and '当前' or REFORGE_CURRENT)..' '..(localizedVersion or ''), 'toc '..tocversion..(buildType and ' ('.. buildType..')' or ''), 1,1,1, 1,1,1)
-        
-        e.tips:AddDoubleLine('realmID '..GetRealmID()..' '..GetNormalizedRealmName(), 'regionID: '..GetCurrentRegion()..' '..GetCurrentRegionName(), 0,1,0, 0,1,0)
+        e.tips:AddLine(version..' '..build.. ' '..date.. ' '..tocversion..(buildType and ' '..buildType or ''), 1,0,1)
+        if localizedVersion and localizedVersion~='' then
+            e.tips:AddLine((e.onlyChinese and '本地' or REFORGE_CURRENT)..localizedVersion, 1,0,0)
+        end
+        local curRegion= GetCurrentRegion()
+        e.tips:AddLine('realmID '..GetRealmID()..' '..GetNormalizedRealmName(), 1,0.82,0)
+        e.tips:AddLine('regionID '..curRegion..' '..GetCurrentRegionName(), 1,0.82,0)
 
         local info=C_BattleNet.GetGameAccountInfoByGUID(e.Player.guid)
         if info and info.wowProjectID then
-            e.tips:AddDoubleLine('wowProjectID '.. info.wowProjectID, info.realmID and 'realmID '..info.regionID)
+            if info.richPresence and info.realmName and not info.richPresence:find(info.realmName) then
+                e.tips:AddLine(info.richPresence, 0,1,0)
+            end
+            local region=''
+            if info.regionID and info.regionID~=curRegion then
+                region=' regionID'..(e.onlyChinese and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..info.regionID..'|r'
+            end
+            if e.onlyChinese then
+                e.tips:AddLine('跨服'..e.GetYesNo(not info.isInCurrentRegion)..region, 1,1,1)
+            else
+                e.tips:AddLine('isInCurrentRegion'..e.GetYesNo(info.isInCurrentRegion)..region, 1,1,1)
+            end
         end
         e.tips:Show()
     end)
