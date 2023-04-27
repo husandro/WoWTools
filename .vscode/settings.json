@@ -2606,7 +2606,11 @@
         "BATTLETAG_CREATE",
         "QuestInfoSpellObjectiveFrame",
         "SLASH_RANDOMFAVORITEPET1",
-        "HUD_EDIT_MODE_RENAME_LAYOUT"
+        "HUD_EDIT_MODE_RENAME_LAYOUT",
+        "LE_MOUNT_JOURNAL_FILTER_COLLECTED",
+        "LE_MOUNT_JOURNAL_FILTER_NOT_COLLECTED",
+        "LE_MOUNT_JOURNAL_FILTER_UNUSABLE",
+        "JAILERS_TOWER_SCENARIO_FLOOR"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

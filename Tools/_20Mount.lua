@@ -1,20 +1,5 @@
 local id, e = ...
 local addName= MOUNT
-local Faction =  e.Player.faction=='Horde' and 0 or e.Player.faction=='Alliance' and 1
-
-local ClassID = select(2, UnitClassBase('player'))
-local ShiJI= Faction==0 and 179244 or Faction==1 and 179245
-local OkMount--是否已学, 骑术
-
-local XD
-local button
-e.LoadDate({id=179244, type= 'spell'})
-e.LoadDate({id=179245, type= 'spell'})
-
-e.LoadDate({id=90265, type= 'spell'})
-e.LoadDate({id=33391, type= 'spell'})
-e.LoadDate({id=34090, type= 'spell'})
-e.LoadDate({id=34090, type= 'spell'})
 
 local Save={
     disabled= not e.Player.husandro,
@@ -36,11 +21,13 @@ local Save={
         [MOUNT_JOURNAL_FILTER_GROUND]={
             --[339588]=true,--[罪奔者布兰契]
             --[163024]=true,--战火梦魇兽
-            [366962]=true,--[艾什阿达，晨曦使者]
+            --[366962]=true,--[艾什阿达，晨曦使者]
+            [256123]=true,--[斯克维里加全地形载具]
         },
         [MOUNT_JOURNAL_FILTER_FLYING]={
-            --[339588]=true,--[罪奔者布兰契]
-            [163024]=true,--战火梦魇兽
+            [339588]=true,--[罪奔者布兰契]
+            --[163024]=true,--战火梦魇兽
+            [366962]=true,--[艾什阿达，晨曦使者]
         },
         [MOUNT_JOURNAL_FILTER_AQUATIC]={
             --[359379]=true,--闪光元水母
@@ -79,7 +66,23 @@ local Save={
     },
     XD= true,
     KEY= e.Player.husandro and 'BUTTON5', --为我自定义, 按键
+    AFKRandom=e.Player.husandro,--离开时, 随机坐骑
 }
+
+local panel= CreateFrame("Frame")
+local button
+local Faction =  e.Player.faction=='Horde' and 0 or e.Player.faction=='Alliance' and 1
+local ClassID = select(2, UnitClassBase('player'))
+local ShiJI= Faction==0 and 179244 or Faction==1 and 179245
+local OkMount--是否已学, 骑术
+local XD
+
+e.LoadDate({id=179244, type= 'spell'})
+e.LoadDate({id=179245, type= 'spell'})
+e.LoadDate({id=90265, type= 'spell'})
+e.LoadDate({id=33391, type= 'spell'})
+e.LoadDate({id=34090, type= 'spell'})
+e.LoadDate({id=34090, type= 'spell'})
 
 
 local function setPanelPostion()--设置按钮位置
@@ -173,7 +176,7 @@ local function checkItem()--检测物品
     end
 end
 
-local MountTab={
+local MountType={
     MOUNT_JOURNAL_FILTER_GROUND,
     MOUNT_JOURNAL_FILTER_AQUATIC,
     MOUNT_JOURNAL_FILTER_FLYING,
@@ -181,18 +184,19 @@ local MountTab={
     'Shift', 'Alt', 'Ctrl',
     FLOOR,
 }
+MountTab={}--MountTab[MountType]={}
 
 local function checkMount()--检测坐骑
     local uiMapID= C_Map.GetBestMapForUnit("player")--当前地图
-    for index, type in pairs(MountTab) do
+    for index, type in pairs(MountType) do
         if XD and XD[type] then
-            button[type]={XD[type]}
+            MountTab[type]={XD[type]}
 
         elseif index<=3 and not OkMount and ShiJI then--33388初级骑术 33391中级骑术 3409高级骑术 34091专家级骑术 90265大师级骑术 783旅行形态
-            button[type]={ShiJI}
+            MountTab[type]={ShiJI}
 
         else
-            button[type]={}
+            MountTab[type]={}
             for spellID, mapID in pairs(Save.Mounts[type]) do
                 spellID= (spellID==179244 or spellID==179245) and ShiJI or spellID
                 local mountID = C_MountJournal.GetMountFromSpell(spellID)
@@ -201,10 +205,10 @@ local function checkMount()--检测坐骑
                     if not shouldHideOnChar and isCollected and (not isFactionSpecific or faction==Faction) then
                         if type==FLOOR then
                             if uiMapID and mapID==uiMapID and not XD then
-                                table.insert(button[type], spellID)
+                                table.insert(MountTab[type], spellID)
                             end
                         else
-                            table.insert(button[type], spellID)
+                            table.insert(MountTab[type], spellID)
                         end
                     end
                 end
@@ -214,7 +218,7 @@ local function checkMount()--检测坐骑
 end
 
 local function getRandomRoll(type)--随机坐骑
-    local tab=button[type] or {}
+    local tab=MountTab[type] or {}
     if #tab>0 then
         local index=math.random(1,#tab)
         if IsUsableSpell(tab[index]) and not select(2, C_MountJournal.GetMountUsabilityByID(tab[index], true)) then
@@ -231,13 +235,13 @@ local function setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
 
     for _, type in pairs(tab) do
         button.textureModifier[type]=nil
-        if button[type] and button[type][1] then
-            local name, _, icon=GetSpellInfo(button[type][1])
+        if MountTab[type] and MountTab[type][1] then
+            local name, _, icon=GetSpellInfo(MountTab[type][1])
             --if name and icon then
-                button:SetAttribute(type.."-spell1", name or button[type][1])
+                button:SetAttribute(type.."-spell1", name or MountTab[type][1])
                 button.textureModifier[type]=icon
                 button.typeSpell=true--提示用
-                button.typeID=button[type][1]
+                button.typeID=MountTab[type][1]
             --end
         end
     end
@@ -310,7 +314,7 @@ local function setClickAtt()--设置 Click属性
     elseif button.itemID then
         button:SetAttribute("type1", "item")
         button:SetAttribute("item1", C_Item.GetItemNameByID(button.itemID)  or button.itemID)
-        button.typeID=button[type][1]
+        button.typeID=MountTab[type][1]
         button.typeSpell=nil--提示用
         button.typeID=spellID
     else
@@ -330,8 +334,11 @@ end
 --坐骑展示
 --#######
 local function getMountShow()
-    C_MountJournal.SetCollectedFilterSetting(2,false)
-    C_MountJournal.SetCollectedFilterSetting(3,false)
+    C_MountJournal.SetDefaultFilters()
+    C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_NOT_COLLECTED,false)
+    --C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_COLLECTED, true)
+    --C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_NOT_COLLECTED,false)
+    --C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_UNUSABLE,false)
     local num=C_MountJournal.GetNumDisplayedMounts()
     local n=1
     while n<num and button.showFrame:IsShown() and IsOutdoors() and not UnitIsDeadOrGhost('player') and not UnitAffectingCombat('player') and not IsPlayerMoving() do
@@ -485,17 +492,59 @@ StaticPopupDialogs[id..addName..'SPELLS']={--法术, 设置对话框
     end,
 }
 
-
-
+local function set_ToggleCollectionsJournal(mountID, type, showNotCollected)--打开界面, 收藏, 坐骑
+    if not IsAddOnLoaded("Blizzard_Collections") then LoadAddOn('Blizzard_Collections') end
+    if MountJournal and not MountJournal:IsVisible() then
+        ToggleCollectionsJournal(1)
+    end
+    C_MountJournal.SetDefaultFilters()
+    if not showNotCollected then
+        C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_NOT_COLLECTED, false)
+    end
+    if mountID then
+        local name= C_MountJournal.GetMountInfoByID(mountID)
+        if name then
+            MountJournalSearchBox:SetText(name)
+            --C_MountJournal.SetSearch(name)
+            return --不, 过滤, 类型
+        end
+    end
+    local tab={--过滤, 类型, Blizzard_MountCollection.lua
+        [MOUNT_JOURNAL_FILTER_GROUND]= Enum.MountType.Ground,
+        [MOUNT_JOURNAL_FILTER_AQUATIC]= Enum.MountType.Aquatic,
+        [MOUNT_JOURNAL_FILTER_FLYING]=Enum.MountType.Flying,
+        [MOUNT_JOURNAL_FILTER_DRAGONRIDING]= Enum.MountType.Dragonriding,
+    }
+    MountJournalSearchBox:SetText('')
+    if type and tab[type] then
+        for i=0, Enum.MountTypeMeta.NumValues do
+            C_MountJournal.SetTypeFilter(i, i==tab[type]+1)
+        end
+    end
+end
 
 --#####
 --主菜单
 --#####
-
-
 local function InitMenu(self, level, type)--主菜单
     local info
-    if type==SETTINGS then--设置菜单
+    if type=='RANDOM' then--三级, 离开时, 随机坐骑
+        info={
+            text= '<'..(e.onlyChinese and '离开' or AFK)..'>: '..(e.onlyChinese and '自动' or AUTO_JOIN:gsub(JOIN, '')),
+            checked= Save.AFKRandom,
+            func= function()
+                Save.AFKRandom= not Save.AFKRandom and true or nil
+                if Save.AFKRandom then
+                    panel:RegisterUnitEvent('PLAYER_FLAGS_CHANGED', 'player')--AFK
+                else
+                    panel:UnregisterEvent('PLAYER_FLAGS_CHANGED')
+                end
+            end
+        }
+        securecall('UIDropDownMenu_AddButton', info, level)
+        return
+
+    elseif type==SETTINGS then--设置菜单
         info={--快捷键,设置对话框
             text= e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL,--..(Save.KEY and ' |cnGREEN_FONT_COLOR:'..Save.KEY..'|r' or ''),
             checked=Save.KEY and true or nil,
@@ -545,13 +594,14 @@ local function InitMenu(self, level, type)--主菜单
         info.disabled=UnitAffectingCombat('player')
         securecall('UIDropDownMenu_AddButton', info, level)
 
+        --[[
         info={
             text= (e.onlyChinese and '缩放' or UI_SCALE)..': |cnGREEN_FONT_COLOR:'..(Save.scale or 1)..'|r Alt+',
             isTitle=true,
             notCheckable=true,
             icon='newplayertutorial-icon-mouse-middlebutton',
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        securecall('UIDropDownMenu_AddButton', info, level)]]
 
         if ClassID==11 then--德鲁伊
             info={
@@ -571,12 +621,13 @@ local function InitMenu(self, level, type)--主菜单
 
         securecall('UIDropDownMenu_AddSeparator', level)
         info={--坐骑展示,每3秒
-            text= e.onlyChinese and '坐骑展示' or ('Random'..SHOW),
+            text= e.Icon.mid..(e.onlyChinese and '坐骑展示' or ('Random'..SHOW)),
             notCheckable=true,
             tooltipOnButton=true,
+            hasArrow=true,
+            menuList='RANDOM',
             tooltipTitle= e.onlyChinese and '每隔 3 秒, 召唤' or ('3 '..SECONDS..MOUNT),
             tooltipText= (e.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP)..e.Icon.mid,
-            icon='newplayertutorial-icon-mouse-middlebutton',
             func=function()
                 specialEffects=nil
                 setMountShow()
@@ -585,12 +636,11 @@ local function InitMenu(self, level, type)--主菜单
         securecall('UIDropDownMenu_AddButton', info, level)
 
         info={--坐骑特效
-            text= e.onlyChinese and '坐骑特效' or (EMOTE171_CMD2:gsub('/','')..SHOW),
+            text= e.Icon.mid..(e.onlyChinese and '坐骑特效' or (EMOTE171_CMD2:gsub('/','')..SHOW)),
             notCheckable=true,
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '每隔 3 秒' or ('3 '..SECONDS..EMOTE171_CMD2:gsub('/','')),
             tooltipText= (e.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN)..e.Icon.mid,
-            icon='newplayertutorial-icon-mouse-middlebutton',
             func=function()
                 specialEffects=true
                 setMountShow()
@@ -659,32 +709,69 @@ local function InitMenu(self, level, type)--主菜单
 
     elseif type==SPELLS then--法术, 二级菜单
         for spellID, _ in pairs(Save.Mounts[SPELLS]) do
-                local name, _, icon = GetSpellInfo(spellID)
-                local text= (icon and '|T'..icon..':0|t' or '').. (name or ('spellID: '..spellID))
-                local known= IsSpellKnownOrOverridesKnown(spellID)
-                text= text..(known and e.Icon.select2 or e.Icon.O2)
-                info={
-                    text= text,
-                    tooltipOnButton=true,
-                    tooltipTitle= (e.onlyChinese and '修改' or HUD_EDIT_MODE_RENAME_LAYOUT)..e.Icon.left,
-                    colorCode= not known and '|cff606060',
-                    notCheckable=true,
-                    arg1= spellID,
-                    arg2= text,
-                    func=function(self2, arg1, arg2)
-                        StaticPopup_Show(id..addName..'SPELLS',
-                                arg2,
-                                Save.Mounts[SPELLS][arg1] and (e.onlyChinese and '法术已存在' or ERR_ZONE_EXPLORED:format(PROFESSIONS_CURRENT_LISTINGS)) or (e.onlyChinese and '新建' or NEW),
-                                {spellID=ID}
-                        )
-                    end,
-                }
+            local name, _, icon = GetSpellInfo(spellID)
+            local text= (icon and '|T'..icon..':0|t' or '').. (name or ('spellID: '..spellID))
+            local known= IsSpellKnownOrOverridesKnown(spellID)
+            text= text..(known and e.Icon.select2 or e.Icon.O2)
+            info={
+                text= text,
+                tooltipOnButton=true,
+                tooltipTitle= (e.onlyChinese and '修改' or HUD_EDIT_MODE_RENAME_LAYOUT)..e.Icon.left,
+                colorCode= not known and '|cff606060',
+                notCheckable=true,
+                arg1= spellID,
+                arg2= text,
+                func=function(self2, arg1, arg2)
+                    StaticPopup_Show(id..addName..'SPELLS',
+                            arg2,
+                            Save.Mounts[SPELLS][arg1] and (e.onlyChinese and '法术已存在' or ERR_ZONE_EXPLORED:format(PROFESSIONS_CURRENT_LISTINGS)) or (e.onlyChinese and '新建' or NEW),
+                            {spellID=ID}
+                    )
+                end,
+            }
             securecall('UIDropDownMenu_AddButton', info, level);
         end
         return
 
-    elseif type and button[type] then--二级菜单
-        for _, spellID in pairs(button[type]) do
+    elseif type=='Shift' or type=='Alt' or type=='Ctrl' then--二级菜单
+        info={
+            text= format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, format(e.onlyChinese and '第%d个' or JAILERS_TOWER_SCENARIO_FLOOR, 1)),
+            isTitle=true,
+            notCheckable=true,
+        }
+        securecall('UIDropDownMenu_AddButton', info, level);
+        for spellID, _ in pairs(Save.Mounts[type]) do
+            local name, _, icon
+            local mountID = C_MountJournal.GetMountFromSpell(spellID)
+            if mountID then
+                name, _, icon = C_MountJournal.GetMountInfoByID(mountID)
+            end
+            info={
+                text=name or ('spellID '..spellID),
+                icon=icon,
+                colorCode= spellID~=MountTab[type][1] and '|cff606060' or '|cnGREEN_FONT_COLOR:',
+                notCheckable=true,
+                tooltipOnButton= true,
+                tooltipTitle= e.onlyChinese and '添加/移除' or (ADD..'/'..REMOVE),
+                tooltipText= (e.onlyChinese and '藏品->坐骑' or (COLLECTIONS..'->'..MOUNTS))..e.Icon.left,
+                arg1= mountID,
+                arg2= type,
+                func=function(_, arg1, arg2)
+                    set_ToggleCollectionsJournal(arg1, arg2, true)--打开界面, 收藏, 坐骑
+                end
+            }
+            if mountID then
+                local useError = select(2, C_MountJournal.GetMountUsabilityByID(mountID, true))
+                if useError then
+                    info.tooltipText= info.tooltipText..'\n|cnRED_FONT_COLOR:'..useError
+                end
+            end
+            securecall('UIDropDownMenu_AddButton', info, level);
+        end
+        return
+
+    elseif type and MountTab[type] then--二级菜单
+        for _, spellID in pairs(MountTab[type]) do
             local name, _, icon, mountID
             local isXDSpell= XD and XD[type]
             if isXDSpell then
@@ -698,14 +785,16 @@ local function InitMenu(self, level, type)--主菜单
             end
 
             info={
-                text=name or ('ID '..spellID),
+                text=name or ('spellID '..spellID),
                 icon=icon,
                 notCheckable=true,
                 tooltipOnButton= not isXDSpell,
                 tooltipTitle= e.onlyChinese and '添加/移除' or (ADD..'/'..REMOVE),
                 tooltipText= (e.onlyChinese and '藏品->坐骑' or (COLLECTIONS..'->'..MOUNTS))..e.Icon.left,
+                arg1= mountID,
+                arg2= type,
             }
-            
+
             if type==FLOOR and Save.Mounts[FLOOR][spellID] then
                 local uiMapID=Save.Mounts[FLOOR][spellID]
                 local mapInfo = C_Map.GetMapInfo(uiMapID)
@@ -715,14 +804,14 @@ local function InitMenu(self, level, type)--主菜单
                     ..(mapInfo and mapInfo.name and '\n'..mapInfo.name or '')
             end
             if not isXDSpell then
-                info.func=function()
-                    ToggleCollectionsJournal(1)
+                info.func=function(_, arg1, arg2)
+                    set_ToggleCollectionsJournal(arg1, arg2)--打开界面, 收藏, 坐骑, 不过滤类型
                 end
                 if mountID then
                     local useError = select(2, C_MountJournal.GetMountUsabilityByID(mountID, true))
                     if useError then
                         info.tooltipText= info.tooltipText..'\n|cnRED_FONT_COLOR:'..useError
-                        
+
                     end
                 end
             end
@@ -759,113 +848,62 @@ local function InitMenu(self, level, type)--主菜单
             }
             securecall('UIDropDownMenu_AddButton', info, level);
 
+        elseif indexType=='Shift' or indexType=='Alt' or indexType=='Ctrl' then
+            local tab=MountTab[indexType] or {}
+            local spellID=tab[1]
+            local icon =spellID and GetSpellTexture(spellID)
+            local mountID= spellID and C_MountJournal.GetMountFromSpell(spellID)
+            local useError = mountID and select(2, C_MountJournal.GetMountUsabilityByID(mountID, true))
+            info={
+                text= (icon and '|T'..icon..':0|t' or '').. indexType,
+                notCheckable= true,
+                tooltipOnButton=true,
+                hasArrow=true,
+                menuList=indexType,
+                tooltipTitle= (spellID and (e.onlyChinese and '召唤' or SUMMON) or (e.onlyChinese and '设置' or SETTINGS))..e.Icon.left,
+                tooltipText= useError and '|cnRED_FONT_COLOR:'..useError,
+                arg1= mountID,
+                func= function(_, arg1)
+                    if arg1 then
+                        C_MountJournal.SummonByID(arg1)
+                    else
+                        set_ToggleCollectionsJournal(nil, nil, true)--打开界面, 收藏, 坐骑
+                    end
+                end
+            }
+            securecall('UIDropDownMenu_AddButton', info, level);
         else
-            
-            if indexType=='Shift' or indexType=='Alt' or indexType=='Ctrl' then
-                local tab=button[indexType] or {}
-                local spellID=tab[1]
-                local icon =spellID and GetSpellTexture(spellID)
-                local mountID= spellID and C_MountJournal.GetMountFromSpell(spellID)
-                local useError = mountID and select(2, C_MountJournal.GetMountUsabilityByID(mountID, true))
-                info={
-                    text= (icon and '|T'..icon..':0|t' or '').. indexType,
-                    notCheckable= true,
-                    tooltipOnButton=true,
-                    tooltipTitle= (spellID and (e.onlyChinese and '召唤' or SUMMON) or (e.onlyChinese and '设置' or SETTINGS))..e.Icon.left,
-                    tooltipText= useError and '|cnRED_FONT_COLOR:'..useError,
-                    arg1= mountID,
-                    func= function(_, arg1)
-                        if arg1 then
-                            C_MountJournal.SummonByID(arg1)
-                        else
-                            ToggleCollectionsJournal(1)
-                        end
-                    end
-                }
-                securecall('UIDropDownMenu_AddButton', info, level);
-            else
-                local tab=button[indexType] or {}
-                local spellID= tab[1]
-                local icon= spellID and GetSpellTexture(spellID)
-                local isXDSpell= XD and XD[indexType]
-                local mountID= not isXDSpell and spellID and C_MountJournal.GetMountFromSpell(spellID)
-                info={
-                    text= (icon and '|T'..icon..':0|t' or '').. indexType,
-                    menuList=indexType,
-                    hasArrow= spellID and true or false,
-                    notCheckable= true,
-                    tooltipOnButton=not isXDSpell,
-                    tooltipTitle= (mountID and (e.onlyChinese and '召唤' or SUMMON) or (e.onlyChinese and '设置' or SETTINGS))..e.Icon.left,
-                    arg1= mountID,
-                    arg2= isXDSpell,
-                    func= function(_, arg1, arg2)
-                        if not arg2 then
-                            if arg1 then
-                                C_MountJournal.SummonByID(arg1)
-                            else
-                                ToggleCollectionsJournal(1)
-                            end
-                        end
-                    end
-                }
-                if mountID then
-                    local useError = select(2, C_MountJournal.GetMountUsabilityByID(mountID, true))
-                    if useError then
-                        info.tooltipText= '|cnRED_FONT_COLOR:'..useError
+            local tab=MountTab[indexType] or {}
+            local spellID= tab[1]
+            local icon= spellID and GetSpellTexture(spellID)
+            local isXDSpell= XD and XD[indexType]
+            local mountID= not isXDSpell and spellID and C_MountJournal.GetMountFromSpell(spellID)
+            info={
+                text= (icon and '|T'..icon..':0|t' or '').. indexType,
+                menuList=indexType,
+                hasArrow= #tab>0 and true or false,
+                notCheckable= true,
+                tooltipOnButton=not isXDSpell,
+                tooltipTitle= (mountID and (e.onlyChinese and '召唤' or SUMMON) or (e.onlyChinese and '设置' or SETTINGS))..e.Icon.left,
+                arg1= mountID,
+                arg2= indexType,
+                func= function(_, arg1, arg2)
+                    if arg1 then
+                        C_MountJournal.SummonByID(arg1)
+                    else
+                        set_ToggleCollectionsJournal(nil, arg2)--打开界面, 收藏, 坐骑
                     end
                 end
-                securecall('UIDropDownMenu_AddButton', info, level);
-            end
-        end
-    end
-            --[[if button[indexType] then
-            local tab=button[indexType]
-            local num, spellID = #tab, tab[1]
-            local icon
-            icon =spellID and GetSpellTexture(spellID)
-            icon = icon and '|T'..icon..':0|t' or ''
-            info={text=(num>1 and '|cnGREEN_FONT_COLOR:'..num..'|r' or num and num>1 and num..' ' or '')..icon..indexType}
-            info.notCheckable=true
-            if indexType~='Shift' and indexType~='Ctrl' and indexType~='Alt' then
-                info.menuList=indexType
-                info.hasArrow= num>0 and true or nil
-            end
-            info.func=function()
-                local mountID = spellID and C_MountJournal.GetMountFromSpell(spellID)
-                if mountID then
-                    C_MountJournal.SummonByID(mountID)
-                end
-            end
-            if num==0 then
-                info.colorCode='|cff606060'
-            elseif indexType==FLOOR then
-                info.colorCode='|cffff00ff'
-            end
-            if indexType==FLOOR then
-                local uiMapID= C_Map.GetBestMapForUnit("player")--当前地图
-                if uiMapID then
-                    info.tooltipOnButton=true
-                    info.tooltipTitle= (e.onlyChinese and '当前' or REFORGE_CURRENT)..' MapID: '..uiMapID
-                    local mapInfo = C_Map.GetMapInfo(uiMapID)
-                    if mapInfo and mapInfo.name then
-                        info.tooltipText= mapInfo.name
-                    end
-                end
-            elseif indexType=='Shift' or indexType=='Alt' or indexType=='Ctrl' then
-                info.tooltipOnButton=true
-                if num>0 then
-                    info.tooltipTitle= (e.onlyChinese and '召唤' or SUMMON)..e.Icon.left
-                else
-                    info.tooltipTitle= (e.onlyChinese and '设置' or SETTINGS)..e.Icon.left
-                    info.func=function()
-                        
-                    end
+            }
+            if mountID then
+                local useError = select(2, C_MountJournal.GetMountUsabilityByID(mountID, true))
+                if useError then
+                    info.tooltipText= '|cnRED_FONT_COLOR:'..useError
                 end
             end
             securecall('UIDropDownMenu_AddButton', info, level);
         end
     end
-    ]]
 
     securecall('UIDropDownMenu_AddSeparator')
     info={
@@ -876,13 +914,13 @@ local function InitMenu(self, level, type)--主菜单
     }
     securecall('UIDropDownMenu_AddButton', info)
 
-    info={--提示移动
+    --[[info={--提示移动
         text= e.onlyChinese and '移动' or NPE_MOVE,
         isTitle=true,
         notCheckable=true,
         icon= 'newplayertutorial-icon-mouse-rightbutton'
     }
-    securecall('UIDropDownMenu_AddButton', info)
+    securecall('UIDropDownMenu_AddButton', info)]]
 end
 
 --#############################
@@ -894,7 +932,7 @@ local function setMountJournal_InitMountButton(self, elementData)--Blizzard_Moun
         return
     end
     local text
-    for _, type in pairs(MountTab) do
+    for _, type in pairs(MountType) do
         local ID=Save.Mounts[type][self.spellID]
         if ID then
             text= text and text..'\n' or ''
@@ -932,7 +970,7 @@ local function setMountJournal_ShowMountDropdown(index)
     securecall('UIDropDownMenu_AddSeparator')
 
     local info
-    for _, type in pairs(MountTab) do
+    for _, type in pairs(MountType) do
         if (type==MOUNT_JOURNAL_FILTER_DRAGONRIDING and isForDragonriding) or (type~=MOUNT_JOURNAL_FILTER_DRAGONRIDING and not isForDragonriding) then
             if type=='Shift'  or type==FLOOR then
                 securecall('UIDropDownMenu_AddSeparator')
@@ -1108,18 +1146,37 @@ local function Init()
         if not UnitAffectingCombat('player') then
             e.toolsFrame:SetShown(true)--设置, TOOLS 框架, 显示
         end
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+
         if self.typeID then
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
             if self.typeSpell then
                 e.tips:SetSpellByID(self.typeID)
             else
                 e.tips:SetItemByID(self.typeID)
             end
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
-            e.tips:Show()
         end
+
+        local infoType, itemID, itemLink ,spellID= GetCursorInfo()
+        if infoType == "item" and itemID then
+            local exits=Save.Mounts[ITEMS][itemID] and ERR_ZONE_EXPLORED:format(PROFESSIONS_CURRENT_LISTINGS) or NEW
+            local icon = C_Item.GetItemIconByID(itemID)
+            local text= (icon and '|T'..icon..':0|t' or '').. (itemLink or ('itemID: '..itemID))
+            e.tips:AddDoubleLine(text, exits..e.Icon.left, 0,1,0, 0,1,0)
+            e.tips:AddLine(' ')
+        elseif infoType =='spell' and spellID then
+            local exits=Save.Mounts[SPELLS][spellID] and ERR_ZONE_EXPLORED:format(PROFESSIONS_CURRENT_LISTINGS) or NEW
+            local icon = GetSpellTexture(spellID)
+            local text= (icon and '|T'..icon..':0|t' or '').. (GetSpellLink(spellID) or ('spellID: '..spellID))
+            e.tips:AddDoubleLine(text, exits..e.Icon.left, 0,1,0, 0,1,0)
+            e.tips:AddLine(' ')
+        end
+
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE), '|cnGREEN_FONT_COLOR:'..(Save.scale or 1)..'|r Alt+'..e.Icon.mid)
+        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+        e.tips:Show()
     end)
     button:SetScript("OnLeave",function(self)
         e.tips:Hide()
@@ -1141,7 +1198,6 @@ end
 --###########
 --加载保存数据
 --###########
-local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" then
@@ -1171,6 +1227,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             check:SetScript('OnLeave', function() e.tips:Hide() end)
 
             if not Save.disabled then
+                if not IsAddOnLoaded("Blizzard_Collections") then LoadAddOn('Blizzard_Collections') end
+
                 button=e.Cbtn2('WoWToolsMountButton')
                 button:SetAttribute("type1", "spell")
                 button:SetAttribute("target-spell", "cursor")
@@ -1206,13 +1264,15 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 panel:RegisterEvent('ZONE_CHANGED_NEW_AREA')
                 panel:RegisterEvent('SPELL_UPDATE_COOLDOWN')
                 panel:RegisterEvent('SPELL_UPDATE_USABLE')
-                
+
                 panel:RegisterEvent('PLAYER_STARTED_MOVING')--设置, TOOLS 框架,隐藏
 
                 panel:RegisterEvent('NEUTRAL_FACTION_SELECT_RESULT')--ShiJI
                 panel:RegisterEvent('LEARNED_SPELL_IN_TAB')--OkMount
 
-                panel:RegisterUnitEvent('PLAYER_FLAGS_CHANGED', 'player')--AFK
+                if Save.AFKRandom then
+                    panel:RegisterUnitEvent('PLAYER_FLAGS_CHANGED', 'player')--AFK
+                end
 
                 Init()--初始
                 table.insert(e.Player.disabledLUA, 'Tools')--禁用插件, 给物品升级界面用

@@ -401,7 +401,7 @@ local function Init()
         local info=C_BattleNet.GetGameAccountInfoByGUID(e.Player.guid)
         if info and info.wowProjectID then
             if info.richPresence and info.realmName and not info.richPresence:find(info.realmName) then
-                e.tips:AddLine(info.richPresence, 0,1,0)
+                e.tips:AddLine(info.richPresence, 1,0.82,0)
             end
             local region=''
             if info.regionID and info.regionID~=curRegion then
