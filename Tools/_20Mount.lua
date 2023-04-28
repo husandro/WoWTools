@@ -667,7 +667,7 @@ local function InitMenu(self, level, type)--主菜单
         for spellID, _ in pairs(Save.Mounts[SPELLS]) do
             local name, _, icon = GetSpellInfo(spellID)
             local text= (icon and '|T'..icon..':0|t' or '').. (name or ('spellID: '..spellID))
-            local known= IsSpellKnownOrOverridesKnown(spellID)
+            local known= spellID and IsSpellKnownOrOverridesKnown(spellID)
             text= text..(known and e.Icon.select2 or e.Icon.O2)
             info={
                 text= text,
@@ -681,7 +681,7 @@ local function InitMenu(self, level, type)--主菜单
                     StaticPopup_Show(id..addName..'SPELLS',
                             arg2,
                             Save.Mounts[SPELLS][arg1] and (e.onlyChinese and '法术已存在' or ERR_ZONE_EXPLORED:format(PROFESSIONS_CURRENT_LISTINGS)) or (e.onlyChinese and '新建' or NEW),
-                            {spellID=ID}
+                            {spellID=arg1}
                     )
                 end,
             }
@@ -976,6 +976,7 @@ local function setMountJournal_ShowMountDropdown(index)
                             checkMount()--检测坐骑
                             setClickAtt()--设置 Click属性
                             if MountJournal_UpdateMountList then MountJournal_UpdateMountList() end
+                            
                         end,
                         EditBoxOnTextChanged=function(self, data)
                         local num= self:GetNumber()
