@@ -127,7 +127,7 @@ end
 --##################
 --挑战,钥石,插入,界面
 --##################
-local function Party(frame)--队友位置
+local function UI_Party_Info(frame)--队友位置
     if IsInRaid() or not IsInGroup(LE_PARTY_CATEGORY_HOME) then
         frame.party:SetText('')
         return
@@ -157,17 +157,30 @@ local function Party(frame)--队友位置
             local tab= e.UnitItemLevel[guid]--装等
             if tab then
                 if tab.itemLevel then
-                    text= text..tab.itemLevel
+                    text= text..'|A:charactercreate-icon-customize-body-selected:0:0|a'..tab.itemLevel
                 else
                     table.insert(UnitTab, unit)
                 end
             end
 
-            --[[tab =e.GroupGuid[guid]--职责
-            if tab and tab.combatRole then
-                text= text..e.Icon[tab.combatRole]
-            end]]
+            local info= C_PlayerInfo.GetPlayerMythicPlusRatingSummary(unit)--挑战, 分数
+            if info and info.currentSeasonScore and info.currentSeasonScore>0 then
+                text= text..e.GetKeystoneScorsoColor(info.currentSeasonScore, true)
+                if info.runs and info.runs then
+                    local bestRunLevel=0
+                    for _, run in pairs(info.runs) do
+                        if run.bestRunLevel and run.bestRunLevel>bestRunLevel then
+                            bestRunLevel=run.bestRunLevel
+                        end
+                    end
+                    if bestRunLevel>0 then
+                        text= text..'('..bestRunLevel..')'
+                    end
+                end
+            end
+
             text= text..e.GetPlayerInfo({unit=nil, guid=guid, name=name,  reName=true, reRealm=true, reLink=false})--信息
+
             local name2, uiMapID2=e.GetUnitMapName(unit)
             if (name and name==name2) or (uiMapID and uiMapID==uiMapID2) then--地图名字
                 text=text..e.Icon.select2
@@ -189,6 +202,7 @@ local function Party(frame)--队友位置
                     text= text..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '时空漫游' or PLAYER_DIFFICULTY_TIMEWALKER)..'|r'
                 end
             end
+
 
         end
     end
@@ -265,7 +279,7 @@ local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
 
     frame:HookScript('OnShow', function()
             getBagKey(frame, 'BOTTOMRIGHT', -15, 170)--KEY链接
-            Party(frame)
+            UI_Party_Info(frame)
     end)
 
     if frame.DungeonName then
@@ -317,7 +331,7 @@ local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     frame:HookScript("OnUpdate", function (self, elapsed)--更新队伍数据
         timeElapsed = timeElapsed + elapsed
         if timeElapsed > 0.8 then
-            Party(frame)
+            UI_Party_Info(frame)
             timeElapsed=0
         end
     end)
