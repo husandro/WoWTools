@@ -90,7 +90,7 @@ end
 --#######
 local filterTextTab={}--记录, 屏蔽内容
 local function myChatFilter(self, event, msg, name, ...)
-    if name== e.Player.name_realm or e.GetFriend(name) then--自已, 好友
+    if name== e.Player.name_realm or e.GetFriend(name) or e.GroupGuid[name:gsub('%-'..e.Player.realm, '')] then--自已, 好友
         return
 
     elseif filterTextTab[msg] and filterTextTab[msg].name== name then
