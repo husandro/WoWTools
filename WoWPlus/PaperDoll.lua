@@ -706,7 +706,7 @@ end
 --装备弹出
 --EquipmentFlyout.lua
 local function setFlyout(button, itemLink, slot)
-    
+
     if not button.level then
         button.level= e.Cstr(button)
         button.level:SetPoint('BOTTOM')
@@ -729,7 +729,7 @@ local function setFlyout(button, itemLink, slot)
         end
     end
     button.level:SetText(text or '')
-    
+
     local upgrade, pvpItem= dateInfo.text[upgradeStr], dateInfo.text[pvpItemStr]
     upgrade= upgrade and upgrade:match('(%d+/%d+)')
     if upgrade and not button.upgrade then
@@ -915,7 +915,7 @@ local function Init()
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine('realmID', GetRealmID())
             e.tips:AddDoubleLine('regionID: '..GetCurrentRegion(),  GetCurrentRegionName())
-            
+
             e.tips:AddLine(' ')
             if GameLimitedMode_IsActive() then
                 local rLevel, rMoney, profCap = GetRestrictedAccountData()
@@ -1066,7 +1066,7 @@ end
 
 --####################
 --添加一个按钮, 打开选项
---####################
+--[[####################
 local function add_Button_OpenOption(self, notToggleCharacter)
     local btn= e.Cbtn(self, {icon=true})
     btn:SetSize(20,20)
@@ -1128,7 +1128,7 @@ local function add_Button_OpenOption(self, notToggleCharacter)
         btn3:SetScript('OnLeave', function() e.tips:Hide() end)
         btn3:SetAlpha(0.3)
     end
-end
+end]]
 --###########
 --加载保存数据
 --###########
@@ -1150,9 +1150,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 panel:RegisterEvent("EQUIPMENT_SWAP_FINISHED")
                 panel:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
                 Init()
-                C_Timer.After(2, function()
+                --[[C_Timer.After(2, function()
                     add_Button_OpenOption(PVEFrameCloseButton, true)--地下城查找器,添加一个按钮
-                end)
+                end)]]
             else
                 panel:UnregisterEvent('ADDON_LOADED')
             end
@@ -1170,11 +1170,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             end)
 
-        elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级, 界面
-            add_Button_OpenOption(ItemUpgradeFrameCloseButton)--添加一个按钮, 打开选项
+        --elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级, 界面
+            --add_Button_OpenOption(ItemUpgradeFrameCloseButton)--添加一个按钮, 打开选项
 
-        elseif arg1=='Blizzard_ItemInteractionUI' then--套装转换, 界面
-            add_Button_OpenOption(ItemInteractionFrameCloseButton)--添加一个按钮, 打开选项
+        --elseif arg1=='Blizzard_ItemInteractionUI' then--套装转换, 界面
+            --add_Button_OpenOption(ItemInteractionFrameCloseButton)--添加一个按钮, 打开选项
 
         elseif arg1=='Blizzard_InspectUI' then
             if InspectPaperDollFrame.ViewButton then
@@ -1188,7 +1188,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 InspectPaperDollItemsFrame.InspectTalents:SetSize(25,25)
                 InspectPaperDollItemsFrame.InspectTalents:SetText(e.onlyChinese and '赋' or e.WA_Utf8Sub(TALENT,1))
             end
-            
+
             hooksecurefunc('InspectPaperDollItemSlotButton_Update', set_InspectPaperDollItemSlotButton_Update)--目标, 装备
             hooksecurefunc('InspectPaperDollFrame_SetLevel', set_InspectPaperDollFrame_SetLevel)--目标,天赋 装等
         end

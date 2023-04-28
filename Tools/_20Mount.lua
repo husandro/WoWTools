@@ -1217,7 +1217,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 Save.disabled= not Save.disabled and true or nil
                 print(id, 'Tools', e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end)
-            check:SetScript('OnEnter', function (self2)
+            --[[check:SetScript('OnEnter', function (self2)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(e.onlyChinese and '友情提示:' or 'note: ', e.onlyChinese and '可能会出现' or ENABLE_ERROR_SPEECH)
@@ -1228,7 +1228,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 e.tips:Show()
             end)
             check.text:SetTextColor(1,0,0)
-            check:SetScript('OnLeave', function() e.tips:Hide() end)
+            check:SetScript('OnLeave', function() e.tips:Hide() end)--]]
 
             if not Save.disabled then
                 if not IsAddOnLoaded("Blizzard_Collections") then LoadAddOn('Blizzard_Collections') end
@@ -1282,7 +1282,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 end
 
                 Init()--初始
-                table.insert(e.Player.disabledLUA, 'Tools')--禁用插件, 给物品升级界面用
+                --table.insert(e.Player.disabledLUA, 'Tools')--禁用插件, 给物品升级界面用
             else
                 e.toolsFrame.disabled=true
                 panel:UnregisterAllEvents()
@@ -1311,9 +1311,9 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            if e.DisabledLua then--禁用插件, 给物品升级界面用
+            --[[if e.DisabledLua then--禁用插件, 给物品升级界面用
                 Save.disabled=true
-            end
+            end]]
             WoWToolsSave[addName]=Save
         end
 

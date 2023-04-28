@@ -270,7 +270,6 @@ e.Player={
     level= UnitLevel('player'),--UnitEffectiveLevel('player')
     husandro= select(2, BNGetInfo())== '古月剑龙#5972' or select(2, BNGetInfo())=='SandroChina#2690' or UnitName('player')=='Fuocco' or UnitName('player')=='活就好' or select(2, BNGetInfo())=='Sandro126#2297',
     faction= UnitFactionGroup('player'),--玩家, 派系  "Alliance", "Horde", "Neutral"
-    disabledLUA={},--禁用插件 {save='', text} e.DisabledLua=true
     LayerText= 'Layer',--位面文本
     Layer= nil, --位面数字
     useColor= nil,--使用颜色
@@ -278,6 +277,7 @@ e.Player={
  --MAX_PLAYER_LEVEL = GetMaxLevelForPlayerExpansion()
  --zh= LOCALE_zhCN or LOCALE_zhTW,--GetLocale()== ("zhCN" or 'zhTW'),
  --ver= select(4,GetBuildInfo())>=100100,--版本 100100
+ --disabledLUA={},--禁用插件 {save='', text} e.DisabledLua=true
 for k, v in pairs(GetAutoCompleteRealms()) do
     e.Player.Realms[v]=k
 end

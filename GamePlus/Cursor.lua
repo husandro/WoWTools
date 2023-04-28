@@ -733,7 +733,7 @@ end
 --初始化
 --######
 local function Init()
-    panel.name = e.Icon.left..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '鼠标' or MOUSE_LABEL)..'|r'
+    panel.name = e.Icon.left..(e.onlyChinese and '鼠标' or MOUSE_LABEL)..'|r'
     panel.parent =id
     InterfaceOptions_AddCategory(panel)
 
@@ -897,7 +897,7 @@ local function Init()
     panel.cursorCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     panel.cursorCheck:SetChecked(not Save.disabled)
     panel.cursorCheck:SetPoint("TOPLEFT", 0, -35)
-    panel.cursorCheck.text:SetText('1)|cnRED_FONT_COLOR:'..(e.onlyChinese and '启用' or ENABLE).. ' Cursor')
+    panel.cursorCheck.text:SetText('1)'..(e.onlyChinese and '启用' or ENABLE).. ' Cursor')
     panel.cursorCheck:SetScript('OnMouseDown', function()
         Save.disabled = not Save.disabled and true or nil
         if not Save.disabled and not cursorFrame then
@@ -908,7 +908,7 @@ local function Init()
             cursorFrame:SetShown(not Save.disabled)
         end
     end)
-    panel.cursorCheck:SetScript('OnEnter', function(self)
+    --[[panel.cursorCheck:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '友情提示:' or 'note: ', e.onlyChinese and '可能会出现' or ENABLE_ERROR_SPEECH)
@@ -916,13 +916,13 @@ local function Init()
         e.tips:AddDoubleLine(e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON, e.onlyChinese and '错误' or ERRORS, 1,0,0, 1,0,0)
         e.tips:Show()
     end)
-    panel.cursorCheck:SetScript('OnLeave', function() e.tips:Hide() end)
+    panel.cursorCheck:SetScript('OnLeave', function() e.tips:Hide() end)]]
 
     --GCD, 启用/禁用
     panel.gcdCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     panel.gcdCheck:SetChecked(not Save.disabledGCD)
     panel.gcdCheck:SetPoint("TOPLEFT", panel, 'TOP', 0, -35)
-    panel.gcdCheck.text:SetText('2)|cnRED_FONT_COLOR:'..(e.onlyChinese and '启用' or ENABLE).. ' GCD')
+    panel.gcdCheck.text:SetText('2)'..(e.onlyChinese and '启用' or ENABLE).. ' GCD')
     panel.gcdCheck:SetScript('OnMouseDown', function()
         Save.disabledGCD = not Save.disabledGCD and true or nil
         if not Save.disabledGCD and not gcdFrame then
@@ -934,7 +934,7 @@ local function Init()
             set_GCD()--设置 GCD
         end
     end)
-    panel.gcdCheck:SetScript('OnEnter', function(self)
+    --[[panel.gcdCheck:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '友情提示:' or 'note: ', e.onlyChinese and '可能会出现' or ENABLE_ERROR_SPEECH)
@@ -942,7 +942,7 @@ local function Init()
         e.tips:AddDoubleLine(e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON, e.onlyChinese and '错误' or ERRORS, 1,0,0, 1,0,0)
         e.tips:Show()
     end)
-    panel.gcdCheck:SetScript('OnLeave', function() e.tips:Hide() end)
+    panel.gcdCheck:SetScript('OnLeave', function() e.tips:Hide() end)]]
 
 
 
@@ -980,12 +980,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if not Save.disabled then
                 C_Timer.After(2, Cursor_Init)
-                table.insert(e.Player.disabledLUA, addName..' CURSOR')--禁用插件, 给物品升级界面用
+                --table.insert(e.Player.disabledLUA, addName..' CURSOR')--禁用插件, 给物品升级界面用
             end
 
             if not Save.disabledGCD then
                 C_Timer.After(2, GCD_Init)
-                table.insert(e.Player.disabledLUA, addName..' GCD')--禁用插件, 给物品升级界面用
+                --table.insert(e.Player.disabledLUA, addName..' GCD')--禁用插件, 给物品升级界面用
             end
             panel:UnregisterEvent('ADDON_LOADED')
             panel:RegisterEvent("PLAYER_LOGOUT")
@@ -993,10 +993,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            if e.DisabledLua then--禁用插件, 给物品升级界面用
+            --[[if e.DisabledLua then--禁用插件, 给物品升级界面用
                 Save.disabled=true
                 Save.disabledGCD=true
-            end
+            end]]
             WoWToolsSave[addName]=Save
         end
     end
