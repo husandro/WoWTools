@@ -96,7 +96,7 @@ local function myChatFilter(self, event, msg, name, ...)
     elseif filterTextTab[msg] and filterTextTab[msg].name== name then
         filterTextTab[msg].num= filterTextTab[msg].num +1
         return true
-    elseif strlenutf8(msg)>130 or msg:find('<.->') or msg:find('WTS') then
+    elseif strlenutf8(msg)>100 or msg:find('<.->') or msg:find('WTS') then
         if not filterTextTab[msg] then
             filterTextTab[msg]={num=1, name=name}
         else
@@ -235,7 +235,7 @@ local function InitMenu(self, level, type)--主菜单
         hasArrow=true,
         tooltipOnButton=true,
         tooltipTitle='CHAT_MSG_CHANNEL',
-        tooltipText= e.onlyChinese and '内容限130个字符以内' or string.gsub(ERR_VOICE_CHAT_CHANNEL_NAME_TOO_LONG, CHANNEL_CHANNEL_NAME,''):gsub('30','130'),
+        tooltipText= e.onlyChinese and '内容限100个字符以内' or string.gsub(ERR_VOICE_CHAT_CHANNEL_NAME_TOO_LONG, CHANNEL_CHANNEL_NAME,''):gsub('30','100'),
         func= function()
             Save.myChatFilter= not Save.myChatFilter and true or nil
             if Save.myChatFilter then

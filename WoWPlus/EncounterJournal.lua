@@ -1038,24 +1038,26 @@ local function Init()--冒险指南界面
 
 
     --战利品, 套装, 收集数 Blizzard_LootJournalItems.lua
-    hooksecurefunc(EncounterJournal.LootJournalItems.ItemSetsFrame.ScrollBox, 'Update', function(self)
-        for _, frame in pairs(self:GetFrames()) do
-            local ItemButtons=frame.ItemButtons or {}
-            for _, itemButton in pairs(ItemButtons) do
-                local itemID= not Save.hideEncounterJournal and itemButton and itemButton.itemID
-                local has =itemID and C_TransmogCollection.PlayerHasTransmogByItemInfo(itemID)
-                if has and not itemButton.collection then
-                    itemButton.collection= itemButton:CreateTexture()
-                    itemButton.collection:SetSize(16,16)
-                    itemButton.collection:SetPoint('BOTTOMRIGHT', 2, -2)
-                    itemButton.collection:SetAtlas(e.Icon.select)
-                end
-                if itemButton.collection then
-                    itemButton.collection:SetShown(has)
+    if EncounterJournal.LootJournalItems.ItemSetsFrame and EncounterJournal.LootJournalItems.ItemSetsFrame.ScrollBox and EncounterJournal.LootJournalItems.ItemSetsFrame.ScrollBox.Update then
+        hooksecurefunc(EncounterJournal.LootJournalItems.ItemSetsFrame.ScrollBox, 'Update', function(self)
+            for _, frame in pairs(self:GetFrames()) do
+                local ItemButtons=frame.ItemButtons or {}
+                for _, itemButton in pairs(ItemButtons) do
+                    local itemID= not Save.hideEncounterJournal and itemButton and itemButton.itemID
+                    local has =itemID and C_TransmogCollection.PlayerHasTransmogByItemInfo(itemID)
+                    if has and not itemButton.collection then
+                        itemButton.collection= itemButton:CreateTexture()
+                        itemButton.collection:SetSize(16,16)
+                        itemButton.collection:SetPoint('BOTTOMRIGHT', 2, -2)
+                        itemButton.collection:SetAtlas(e.Icon.select)
+                    end
+                    if itemButton.collection then
+                        itemButton.collection:SetShown(has)
+                    end
                 end
             end
-        end
-    end)
+        end)
+    end
     
     --[[hooksecurefunc(EncounterJournal.LootJournalItems.ItemSetsFrame,'ConfigureItemButton', function(self2, button)--Blizzard_LootJournalItems.lua
         local has = C_TransmogCollection.PlayerHasTransmogByItemInfo(button.itemID)
