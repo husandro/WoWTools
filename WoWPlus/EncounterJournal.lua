@@ -760,12 +760,12 @@ local function Init()--冒险指南界面
                 table.sort(specTable, function (a2, b2) return a2<b2 end)
                 collectText= e.onlyChinese and '拾取专精' or format(PROFESSIONS_SPECIALIZATION_TITLE, UNIT_FRAME_DROPDOWN_SUBSECTION_TITLE_LOOT )
                 for _,  specID in pairs(specTable) do
-                    local icon2, _, classFile=select(4, GetSpecializationInfoByID(specID))
+                    local _, name,_, icon2, _, classFile= GetSpecializationInfoByID(specID)
                     if icon2 and classFile then
                         icon2='|T'..icon2..':0|t'
                         specA = specA..((class and class~=classFile) and '  ' or '')..icon2
                         class=classFile
-                        collectText= collectText..'\n'..icon2..classFile
+                        collectText= collectText..'\n'..icon2..name
                     end
                 end
                 if specA~='' then
@@ -775,10 +775,9 @@ local function Init()--冒险指南界面
 
             local item, collected = e.GetItemCollected(self.link, nil, true)--物品是否收集, 返回图标, 幻化
             if item and not collected then
-                    text= text~='' and text..'   ' or text
-                    text= text..item
-                    collectText= collectText~='' and collectText..'\n\n' or collectText
-                    collectText= collectText..item..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
+                text= text..item
+                collectText= collectText and collectText..'\n\n' or ''
+                collectText= collectText..item..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
             else
                 local mountID = C_MountJournal.GetMountFromItem(self.itemID)--坐骑物品
                 local speciesID = select(13, C_PetJournal.GetPetInfoByItemID(self.itemID))--宠物物品
@@ -794,10 +793,10 @@ local function Init()--冒险指南界面
             self.collectedText:SetPoint('LEFT', self.slot, 'CENTER', 5, 0)
             self.collectedText:EnableMouse(true)
             self.collectedText:SetScript('OnEnter', function(self2)
-                if self2.collectText and self2.collectText~='' then
+                if self2.collectText then
                     e.tips:SetOwner(self2, "ANCHOR_RIGHT")
                     e.tips:ClearLines()
-                    e.tips:AddLine(collectText)
+                    e.tips:AddLine(self2.collectText)
                     e.tips:AddLine(' ')
                     e.tips:AddDoubleLine(id, addName)
                     e.tips:Show()
@@ -806,7 +805,7 @@ local function Init()--冒险指南界面
             self.collectedText:SetScript('OnLeave', function() e.tips:Hide() end)
         end
         if self.collectedText then
-            self.collectedText:SetText(text or '')
+            self.collectedText:SetText(text)
             self.collectedText.collectText= collectText
             --self.collectedText:SetShown(text and true or false)
         end
