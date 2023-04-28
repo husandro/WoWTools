@@ -2625,7 +2625,9 @@
         "VIDEO_QUALITY_LABEL6",
         "TooltipBackdropTemplateMixin",
         "SharedTooltip_SetBackdropStyle",
-        "UIDropDownMenuButton_OnClick"
+        "UIDropDownMenuButton_OnClick",
+        "LootJournalItemSetsMixin",
+        "HybridScrollFrame_Update"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

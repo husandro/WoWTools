@@ -1036,9 +1036,30 @@ local function Init()--冒险指南界面
         end
     end)
 
+
     --战利品, 套装, 收集数
+    hooksecurefunc(EncounterJournal.LootJournalItems.ItemSetsFrame.ScrollBox, 'Update', function(self)
+        for _, frame in pairs(self:GetFrames()) do
+            local ItemButtons=frame.ItemButtons or {}
+            for _, itemButton in pairs(ItemButtons) do
+                local itemID= not Save.hideEncounterJournal and itemButton and itemButton.itemID
+                local has =itemID and C_TransmogCollection.PlayerHasTransmogByItemInfo(itemID)
+                if has and not itemButton.collection then
+                    itemButton.collection= itemButton:CreateTexture()
+                    itemButton.collection:SetSize(16,16)
+                    itemButton.collection:SetPoint('BOTTOMRIGHT', 2, -2)
+                    itemButton.collection:SetAtlas(e.Icon.select)
+                end
+                if itemButton.collection then
+                    itemButton.collection:SetShown(has)
+                end
+            end
+        end
+    end)
+    
     --[[hooksecurefunc(EncounterJournal.LootJournalItems.ItemSetsFrame,'ConfigureItemButton', function(self2, button)--Blizzard_LootJournalItems.lua
         local has = C_TransmogCollection.PlayerHasTransmogByItemInfo(button.itemID)
+        print(has, id, addName)
         if has==false and not button.tex and not Save.hideEncounterJournal then
             button.tex=button:CreateTexture()
             button.tex:SetSize(16,16)
@@ -1048,23 +1069,25 @@ local function Init()--冒险指南界面
         if button.tex then
             button.tex:SetShown(has==false and not Save.hideEncounterJournal)
         end
-    end)
+    end)]]
 
-    --战利品, 套装 , 收集数量
+    --[[战利品, 套装 , 收集数量
     local function lootSet(self2)
         if Save.hideEncounterJournal then
             return
         end
         local buttons = self2.buttons;
         local offset = HybridScrollFrame_GetOffset(self2)
-        for i = 1, #buttons do
-            local button= buttons[i];
-            local index = offset + i;
-            if ( index <= #self2.itemSets ) then
-                local setID=self2.itemSets[index].setID
-                local collected= e.GetSetsCollectedNum(setID)--收集数量
-                if collected and self2.itemSets[index].name then
-                    button.SetName:SetText(self2.itemSets[index].name..collected)
+        if self2.buttons then
+            for i = 1, #buttons do
+                local button= buttons[i];
+                local index = offset + i;
+                if ( index <= #self2.itemSets ) then
+                    local setID=self2.itemSets[index].setID
+                    local collected= e.GetSetsCollectedNum(setID)--收集数量
+                    if collected and self2.itemSets[index].name then
+                        button.SetName:SetText(self2.itemSets[index].name..collected)
+                    end
                 end
             end
         end
@@ -1074,8 +1097,8 @@ local function Init()--冒险指南界面
         if EncounterJournal and self2==EncounterJournal.LootJournalItems.ItemSetsFrame then
             lootSet(self2)
         end
-    end)]]
-
+    end)
+]]
     --BOSS技能 Blizzard_EncounterJournal.lua
     local function EncounterJournal_SetBullets_setLink(text)--技能加图标
         local find
