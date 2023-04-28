@@ -2624,7 +2624,8 @@
         "GameFontNormalSmallLeft",
         "VIDEO_QUALITY_LABEL6",
         "TooltipBackdropTemplateMixin",
-        "SharedTooltip_SetBackdropStyle"
+        "SharedTooltip_SetBackdropStyle",
+        "UIDropDownMenuButton_OnClick"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

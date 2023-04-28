@@ -694,11 +694,9 @@ local function set_LFGPlus()--预创建队伍增强
                 if frame and frame:IsShown() then
                     if not frame.OnDoubleClick then
                         frame:SetScript('OnDoubleClick', function(self3, d)
-                            local frame2= self3:GetParent()
-                            if frame2 and frame2.FindGroupButton then
-                                if frame2.FindGroupButton then
-                                    securecall('LFGListCategorySelectionFindGroupButton_OnClick', frame2.FindGroupButton)
-                                end
+                            local frame2 = self3:GetParent();
+                            if frame2.selectedCategory then
+                                LFGListCategorySelection_StartFindGroup(frame2)
                             end
                         end)
                     end

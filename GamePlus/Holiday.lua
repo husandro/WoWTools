@@ -509,7 +509,7 @@ local function Init()
 
     --Blizzard_Calendar.lua
     C_Timer.After(2, function()
-        local menu=CreateFrame("Frame", id..addName..'CalendarCreateEventFrameMenuWoW', CalendarCreateEventFrame, "UIDropDownMenuTemplate")
+        local menu=CreateFrame("Frame", nil, CalendarCreateEventFrame, "UIDropDownMenuTemplate")
         menu:SetPoint('BOTTOMLEFT', CalendarCreateEventFrame, 'BOTTOMRIGHT', -22,74)
         e.LibDD:UIDropDownMenu_SetWidth(menu, 60)
         e.LibDD:UIDropDownMenu_SetText(menu, e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET)
@@ -561,8 +561,9 @@ local function Init()
                 e.LibDD:UIDropDownMenu_AddButton({text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
             end
         end)
+        menu.Button:SetScript('OnClick', function(self) e.LibDD:ToggleDropDownMenu(1,nil,self:GetParent(), self, 15,0) end)
 
-        local menu2=CreateFrame("Frame", id..addName..'CalendarCreateEventFrameMenuFriend', CalendarCreateEventFrame, "UIDropDownMenuTemplate")
+        local menu2=CreateFrame("Frame", nil, CalendarCreateEventFrame, "UIDropDownMenuTemplate")
         menu2:SetPoint('TOPRIGHT', menu, 'BOTTOMRIGHT')
         e.LibDD:UIDropDownMenu_SetWidth(menu2, 60)
         e.LibDD:UIDropDownMenu_SetText(menu2, e.onlyChinese and '好友' or FRIEND)
@@ -578,14 +579,14 @@ local function Init()
             local find
             for i=1 , C_FriendList.GetNumFriends() do
                 local game=C_FriendList.GetFriendInfoByIndex(i)
-                if game and game.name and not inviteTab[game.name] then--and not game.afk and not game.dnd then 
+                if game and game.name and not inviteTab[game.name] then--and not game.afk and not game.dnd then
                     local text=e.GetPlayerInfo({unit=nil, guid=game.guid, name=game.name,  reName=true, reRealm=true, reLink=false})--角色信息
                     text= (game.level and game.level~=MAX_PLAYER_LEVEL and game.level>0) and text .. ' |cff00ff00'..game.level..'|r' or text--等级
                     if game.area and game.connected then
                         if game.area == map then--地区
                             text= text..e.Icon.map2
                         else
-                            text= text..' '..game.area
+                            text= text..' |cnGREEN_FONT_COLOR:'..game.area..'|r'
                         end
                     elseif not game.connected then
                         text= text..' '..(e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)
@@ -610,8 +611,9 @@ local function Init()
                 e.LibDD:UIDropDownMenu_AddButton({text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
             end
         end)
+        menu2.Button:SetScript('OnClick', function(self) e.LibDD:ToggleDropDownMenu(1,nil,self:GetParent(), self, 15,0) end)
 
-        local last=CreateFrame("Frame", id..addName..'CalendarCreateEventFrameMenuFriend', CalendarCreateEventFrame, "UIDropDownMenuTemplate")
+        local last=CreateFrame("Frame", nil, CalendarCreateEventFrame, "UIDropDownMenuTemplate")
         last:SetPoint('TOPRIGHT', menu2, 'BOTTOMRIGHT')
         e.LibDD:UIDropDownMenu_SetWidth(last, 60)
         e.LibDD:UIDropDownMenu_SetText(last, e.onlyChinese and '公会' or GUILD)
@@ -654,6 +656,7 @@ local function Init()
                 e.LibDD:UIDropDownMenu_AddButton({text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
             end
         end)
+        last.Button:SetScript('OnClick', function(self) e.LibDD:ToggleDropDownMenu(1,nil,self:GetParent(), self, 15,0) end)
     end)
 end
 

@@ -396,6 +396,7 @@ local function Init_Cursor_Options()
     e.LibDD:UIDropDownMenu_SetWidth(dropDown, 180)
     e.LibDD:UIDropDownMenu_Initialize(dropDown, Init_Menu)
     e.LibDD:UIDropDownMenu_SetText(dropDown, Save.Atlas[Save.atlasIndex] or defaultTexture)
+    dropDown.Button:SetScript('OnClick', function(self) e.LibDD:ToggleDropDownMenu(1,nil,self:GetParent(), self, 15,0) end)
 
     --删除，图片
     delColorButton:SetPoint('LEFT', dropDown, 'RIGHT',-10,0)
@@ -636,6 +637,7 @@ local function Init_GCD_Options()
     e.LibDD:UIDropDownMenu_SetWidth(dropDown, 180)
     e.LibDD:UIDropDownMenu_Initialize(dropDown, Init_Menu)
     e.LibDD:UIDropDownMenu_SetText(dropDown, Save.GCDTexture[Save.gcdTextureIndex] or defaultGCDTexture)
+    dropDown.Button:SetScript('OnClick', function(self) e.LibDD:ToggleDropDownMenu(1,nil,self:GetParent(), self, 15,0) end)
 
     --删除，图片
     delColorButton:SetPoint('LEFT', dropDown, 'RIGHT',-10,0)
