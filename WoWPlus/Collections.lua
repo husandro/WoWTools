@@ -763,7 +763,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
         --local indexOffset = (self.PagingFrame:GetCurrentPage() - 1) * self.PAGE_SIZE;
         for i = 1, self.PAGE_SIZE do
             local model = self.Models[i];
-            if model:IsShown() then
+            if model and model:IsShown() then
                 model.itemButton=model.itemButton or {}
                 local itemLinks={}
                 if not Save.hideItems then
