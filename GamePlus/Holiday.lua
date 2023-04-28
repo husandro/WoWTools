@@ -78,6 +78,8 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
         return
     end
 
+    panel:SetButtonState('PUSHED')
+
     local monthOffset,day
     local info= C_Calendar.GetEventIndex()
     local info2= C_DateAndTime.GetCurrentCalendarTime()
@@ -242,8 +244,7 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
     end
     panel.Text:SetText(Text2)
 
-    panel:SetButtonState('PUSHED')
-    C_Timer.After(3, function()
+    C_Timer.After(1, function()
         panel:SetButtonState('NORMAL')
     end)
 end
@@ -667,10 +668,6 @@ panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if not WoWToolsSave[addName] then
-                panel:SetButtonState('PUSHED')
-            end
-
             Save= WoWToolsSave[addName] or Save
 
             --添加控制面板        
