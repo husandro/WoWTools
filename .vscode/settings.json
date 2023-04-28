@@ -2627,7 +2627,9 @@
         "SharedTooltip_SetBackdropStyle",
         "UIDropDownMenuButton_OnClick",
         "LootJournalItemSetsMixin",
-        "HybridScrollFrame_Update"
+        "HybridScrollFrame_Update",
+        "UIDropDownMenu_AddButton",
+        "UIDropDownMenu_AddSeparator"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
