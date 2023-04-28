@@ -786,7 +786,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
             if not frame.tips then
                 frame:SetScript("OnMouseDown",function(self2)
                     if not IsAddOnLoaded("Blizzard_EncounterJournal.lua") then LoadAddOn("Blizzard_EncounterJournal.lua") end
-                    if not EncounterJournal:IsVisible() then
+                    if not EncounterJournal or not EncounterJournal:IsVisible() then
                         ToggleEncounterJournal()
                     end
                     --securecall('NavBar_Reset', EncounterJournal.navBar)

@@ -488,6 +488,7 @@ local function Init()
             CalendarViewHolidayFrame.Texture2:SetTexture(info.iconTexture or 0)
         end
     end
+
     if CalendarViewHolidayFrame.update then
         hooksecurefunc(CalendarViewHolidayFrame, 'update', calendar_Uptate)--提示节目ID
     end
@@ -506,7 +507,8 @@ local function Init()
     end)
 
 
-    --Blizzard_Calendar.lua
+    --Blizzard_Calendar.lua bug
+    --[[
     C_Timer.After(2, function()
         local menu=CreateFrame("Frame", id..addName..'CalendarCreateEventFrameMenuWoW', CalendarCreateEventFrame, "UIDropDownMenuTemplate")
         menu:SetPoint('BOTTOMLEFT', CalendarCreateEventFrame, 'BOTTOMRIGHT', -22,74)
@@ -653,7 +655,7 @@ local function Init()
                 securecall('UIDropDownMenu_AddButton', {text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
             end
         end)
-    end)
+    end)]]
 end
 
 

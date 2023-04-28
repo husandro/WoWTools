@@ -687,7 +687,7 @@ local function set_LFGPlus()--预创建队伍增强
         tooltip:Show()
     end)
 
-    if e.Player.husandro then--会出现错误, 双击， 预创建队伍，目录
+    --[[if e.Player.husandro then--会出现错误, 双击， 预创建队伍，目录
         hooksecurefunc('LFGListCategorySelection_UpdateCategoryButtons', function(self2)
             for i=1, #self2.CategoryButtons do
                 local frame=self2.CategoryButtons[i]
@@ -705,7 +705,7 @@ local function set_LFGPlus()--预创建队伍增强
                 end
             end
         end)
-    end
+    end]]
 end
 
 
