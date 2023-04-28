@@ -74,7 +74,6 @@ e.ReloadPanel= function(tab)
             e.tips:Show()
         end)
     end
-    
 end
 
 local panel = CreateFrame("Frame")--Panel
@@ -148,7 +147,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     e.Reload()
                 end}
             )
-            
+
             if e.onlyChinese or LOCALE_zhCN or LOCALE_zhTW then
                 e.Player.LayerText= '位面'
             elseif LOCALE_koKR then

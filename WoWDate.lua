@@ -409,7 +409,7 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
                 --################
                 --开启, 新手編輯模式
                 --################ LFDFrame.lua
-                --[[if C_PlayerInfo.IsPlayerNPERestricted() then
+                if C_PlayerInfo.IsPlayerNPERestricted() then
                     --C_PlayerInfo.IsPlayerNPERestricted= function() return false end
                     EditModeManagerFrame.CanEnterEditMode = function(self2)--EditModeManager.lua
                         return TableIsEmpty(self2.FramesBlockingEditMode)
@@ -418,7 +418,7 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
                         Minimap:SetShown(true)
                         MinimapCluster:SetShown(true)
                     end
-                end]]
+                end
 
                 get_WoW_GUID_Info()--战网，好友GUID
             end)
