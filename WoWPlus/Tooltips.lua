@@ -331,14 +331,28 @@ end
 
 local function setSpell(self, spellID)--法术
     spellID = spellID or select(2, self:GetSpell())
-    local spellTexture= spellID and GetSpellTexture(spellID)
     if not spellID then
         return
     end
+    local _, _, icon, _, _, _, _, originalIcon= GetSpellInfo(spellID)
+    local spellTexture=  originalIcon or icon or GetSpellTexture(spellID)
     self:AddDoubleLine((e.onlyChinese and '法术' or SPELLS)..' '..spellID, spellTexture and '|T'..spellTexture..':0|t'..spellTexture)
     local mountID = C_MountJournal.GetMountFromSpell(spellID)--坐骑
     if mountID then
         setMount(self, mountID)
+    else
+        local overrideSpellID = FindSpellOverrideByID(spellID)
+        if overrideSpellID and overrideSpellID~=spellID then
+            e.LoadDate({id=overrideSpellID, type='spell'})--加载 item quest spell
+            local link= GetSpellLink(overrideSpellID)
+            local name2, _, icon2, _, _, _, _, originalIcon2= GetSpellInfo(overrideSpellID)
+            link= link or name2
+            link= link and link..overrideSpellID or ('overrideSpellID '..overrideSpellID)
+            if link then 
+                spellTexture=  originalIcon2 or icon2 or GetSpellTexture(overrideSpellID)
+                e.tips:AddDoubleLine(format(e.onlyChinese and '代替%s' or REPLACES_SPELL, link), spellTexture and '|T'..spellTexture..':0|t'..spellTexture)
+            end        
+        end
     end
 end
 
@@ -1308,7 +1322,7 @@ local function Init_Panel()
     end)
     courorRightCheck:SetScript('OnLeave', function() e.tips:Hide() end)
 
-    
+
 --[[if not e.Player.ver then
     Anchor.text:SetText(e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
     Anchor:SetPoint('TOPRIGHT', inCombatDefaultAnchor, 'BOTTOMLEFT',0, -12)

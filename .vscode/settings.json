@@ -2612,7 +2612,8 @@
         "LE_MOUNT_JOURNAL_FILTER_UNUSABLE",
         "JAILERS_TOWER_SCENARIO_FLOOR",
         "STRING_ENVIRONMENTAL_DAMAGE_FALLING",
-        "UNIT_FRAME_DROPDOWN_SUBSECTION_TITLE_LOOT"
+        "UNIT_FRAME_DROPDOWN_SUBSECTION_TITLE_LOOT",
+        "REPLACES_SPELL"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
