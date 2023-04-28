@@ -677,7 +677,7 @@ local function Init()
     --排序:从右到左
     --############
     ContainerFrameCombinedBagsPortraitButton:HookScript('OnMouseDown',function ()
-        securecall('UIDropDownMenu_AddSeparator')
+        e.LibDD:UIDropDownMenu_AddSeparator()
         local info={
             text= e.onlyChinese and '反向整理背包' or REVERSE_CLEAN_UP_BAGS_TEXT,
             checked= C_Container.GetSortBagsRightToLeft(),
@@ -688,7 +688,7 @@ local function Init()
                 C_Container.SetSortBagsRightToLeft(not C_Container.GetSortBagsRightToLeft() and true or false)
             end,
         }
-        securecall('UIDropDownMenu_AddButton', info, 1)
+        e.LibDD:UIDropDownMenu_AddButton(info, 1)
 
         info={--排序:从右到左
             text= e.onlyChinese and '新物品: 最左边' or BUG_CATEGORY11..'('..NEW_CAPS..'): '..HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT,
@@ -700,7 +700,7 @@ local function Init()
                 C_Container.SetInsertItemsLeftToRight(not C_Container.GetInsertItemsLeftToRight() and true or false)
             end,
         }
-        securecall('UIDropDownMenu_AddButton', info, 1)
+        e.LibDD:UIDropDownMenu_AddButton(info, 1)
 
         info={
             text= e.onlyChinese and '自动排序' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY..' ('..AUTO_JOIN:gsub(JOIN,'')..')',
@@ -712,7 +712,7 @@ local function Init()
                 C_Container.SetBackpackAutosortDisabled(not C_Container.GetBackpackAutosortDisabled() and true or false)
             end,
         }
-        securecall('UIDropDownMenu_AddButton', info, 1)
+        e.LibDD:UIDropDownMenu_AddButton(info, 1)
 
         info={
             text= e.onlyChinese and '自动排序 (银行)' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY..' ('..AUTO_JOIN:gsub(JOIN,'')..') '.. BANK,
@@ -725,7 +725,7 @@ local function Init()
                 C_Container.SetBankAutosortDisabled(not C_Container.GetBankAutosortDisabled() and true or false)
             end,
         }
-        securecall('UIDropDownMenu_AddButton', info, 1)
+        e.LibDD:UIDropDownMenu_AddButton(info, 1)
     end)
 
     MainMenuBarBackpackButton:HookScript('OnClick', function(_, d)

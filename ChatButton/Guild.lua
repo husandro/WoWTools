@@ -72,11 +72,11 @@ local function InitMenu(self, level, type)--主菜单
                     e.Say(nil, arg1)
                 end
             }
-            securecall('UIDropDownMenu_AddButton', info, level)
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
     end
     if find then
-        securecall('UIDropDownMenu_AddSeparator', level)
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
     end
     info={
         text=e.onlyChinese and '公会信息' or GUILD_INFORMATION,
@@ -88,7 +88,7 @@ local function InitMenu(self, level, type)--主菜单
             set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
         end
     }
-    securecall('UIDropDownMenu_AddButton', info, level)
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
 
 --####
@@ -99,7 +99,7 @@ local function Init()
     WoWToolsChatButtonFrame.last=button
 
     button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-    securecall('UIDropDownMenu_Initialize', button.Menu, InitMenu, 'MENU')
+    e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
     setMembers()--在线人数
     button.texture:SetAtlas('UI-HUD-MicroMenu-GuildCommunities-Up')
@@ -109,7 +109,7 @@ local function Init()
         if d=='LeftButton' then
             e.Say('/g')
         else
-            ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+            e.LibDD:ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
             --ToggleGuildFrame()
         end
     end)

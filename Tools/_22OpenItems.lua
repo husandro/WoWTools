@@ -111,7 +111,7 @@ local function setCooldown()--冷却条
 end
 
 local function setAtt(bag, slot, icon, itemID)--设置属性
-    if UnitAffectingCombat('player') or EditModeManagerFrame:IsEditModeActive() then
+    if UnitAffectingCombat('player') then
         Opening= nil
         Combat= true
         return
@@ -289,10 +289,10 @@ local function setUseMenu(level)--二级, 使用
         func=function()
             Save.use={}
             getItems()
-            CloseDropDownMenus()
+            e.LibDD:CloseDropDownMenus()
         end
     }
-    securecall('UIDropDownMenu_AddButton', info,level)
+    e.LibDD:UIDropDownMenu_AddButton(info,level)
     for itemID, num in pairs(Save.use) do
         info={
             text= (select(2, GetItemInfo(itemID)) or  ('itemID: '..itemID)).. (num>1 and ' |cnGREEN_FONT_COLOR:x'..num..'|r' or ''),
@@ -306,7 +306,7 @@ local function setUseMenu(level)--二级, 使用
                 getItems()
             end,
         }
-        securecall('UIDropDownMenu_AddButton', info,level)
+        e.LibDD:UIDropDownMenu_AddButton(info,level)
     end
 end
 local function setNoMenu(level)--二级,禁用
@@ -316,10 +316,10 @@ local function setNoMenu(level)--二级,禁用
         func=function()
             Save.no={}
             getItems()
-            CloseDropDownMenus()
+            e.LibDD:CloseDropDownMenus()
         end,
     }
-    securecall('UIDropDownMenu_AddButton', info, level)
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     for itemID, _ in pairs(Save.no) do
         info={
@@ -334,7 +334,7 @@ local function setNoMenu(level)--二级,禁用
                 getItems()
             end,
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
 end
 local function setMenuList(self, level, menuList)--主菜单
@@ -346,7 +346,7 @@ local function setMenuList(self, level, menuList)--主菜单
         return
     end
 
-    local t=UIDropDownMenu_CreateInfo()
+    local t={}
     t.notCheckable=true
     if Bag.bag and Bag.slot then
         t.text=C_Container.GetContainerItemLink(Bag.bag, Bag.slot) or ('bag: '..Bag.bag ..' slot: '..Bag.slot)
@@ -367,8 +367,8 @@ local function setMenuList(self, level, menuList)--主菜单
         t.tooltipText= e.onlyChinese and '拖曳物品到这里' or (DRAG_MODEL..ITEMS)
     end
 
-    securecall('UIDropDownMenu_AddButton', t)
-    securecall('UIDropDownMenu_AddSeparator') 
+    e.LibDD:UIDropDownMenu_AddButton(t)
+    e.LibDD:UIDropDownMenu_AddSeparator()
 
     local no,use= 0, 0
     for _ in pairs(Save.no) do
@@ -377,19 +377,19 @@ local function setMenuList(self, level, menuList)--主菜单
     for _ in pairs(Save.use) do
         use=use+1
     end
-    t=UIDropDownMenu_CreateInfo()--自定义禁用列表
+    t={}--自定义禁用列表
     t.text= (e.onlyChinese and '禁用' or DISABLE)..' #'..no
     t.notCheckable=1
     t.menuList='NO'
     t.hasArrow=true
-    securecall('UIDropDownMenu_AddButton', t)
+    e.LibDD:UIDropDownMenu_AddButton(t)
 
-    t=UIDropDownMenu_CreateInfo()--自定义使用列表
+    t={}--自定义使用列表
     t.text= (e.onlyChinese and '使用' or USE)..' #'..use
     t.notCheckable=1
     t.menuList='USE'
     t.hasArrow=true
-    securecall('UIDropDownMenu_AddButton', t)
+    e.LibDD:UIDropDownMenu_AddButton(t)
 
     t={
         text= e.onlyChinese and '<右键点击打开>' or ITEM_OPENABLE,
@@ -399,7 +399,7 @@ local function setMenuList(self, level, menuList)--主菜单
             getItems()
         end
     }
-    securecall('UIDropDownMenu_AddButton', t)
+    e.LibDD:UIDropDownMenu_AddButton(t)
 
     t={
         text= e.onlyChinese and '宠物' or PET,
@@ -411,7 +411,7 @@ local function setMenuList(self, level, menuList)--主菜单
             getItems()
         end
     }
-    securecall('UIDropDownMenu_AddButton', t)
+    e.LibDD:UIDropDownMenu_AddButton(t)
 
     t={
         text= e.onlyChinese and '玩具' or TOY,
@@ -421,7 +421,7 @@ local function setMenuList(self, level, menuList)--主菜单
             getItems()
         end
     }
-    securecall('UIDropDownMenu_AddButton', t)
+    e.LibDD:UIDropDownMenu_AddButton(t)
 
     t={
         text= e.onlyChinese and '坐骑' or MOUNTS,
@@ -431,7 +431,7 @@ local function setMenuList(self, level, menuList)--主菜单
             getItems()
         end
     }
-    securecall('UIDropDownMenu_AddButton', t)
+    e.LibDD:UIDropDownMenu_AddButton(t)
 
     t={
         text= e.onlyChinese and '幻化' or TRANSMOGRIFY,
@@ -441,7 +441,7 @@ local function setMenuList(self, level, menuList)--主菜单
             getItems()
         end,
     }
-    securecall('UIDropDownMenu_AddButton', t)
+    e.LibDD:UIDropDownMenu_AddButton(t)
 
     t={
         text= e.onlyChinese and '配方' or TRADESKILL_SERVICE_LEARN,
@@ -451,7 +451,7 @@ local function setMenuList(self, level, menuList)--主菜单
             getItems()
         end,
     }
-    securecall('UIDropDownMenu_AddButton', t)
+    e.LibDD:UIDropDownMenu_AddButton(t)
 
     t={
         text= e.onlyChinese and '其它' or BINDING_HEADER_OTHER,
@@ -461,9 +461,9 @@ local function setMenuList(self, level, menuList)--主菜单
             getItems()
         end
     }
-    securecall('UIDropDownMenu_AddButton', t)
+    e.LibDD:UIDropDownMenu_AddButton(t)
 
-    securecall('UIDropDownMenu_AddSeparator') 
+    e.LibDD:UIDropDownMenu_AddSeparator()
     t={
         text= e.onlyChinese and '自动隐藏' or (AUTO_JOIN:gsub(JOIN,'')..HIDE),
         tooltipOnButton=true,
@@ -474,9 +474,9 @@ local function setMenuList(self, level, menuList)--主菜单
         end,
         checked= Save.noItemHide
     }
-    securecall('UIDropDownMenu_AddButton', t)
+    e.LibDD:UIDropDownMenu_AddButton(t)
 
-    securecall('UIDropDownMenu_AddButton', {text= e.onlyChinese and '拖曳物品: 使用/禁用' or (DRAG_MODEL..ITEMS..'('..USE..'/'..DISABLE..')'), isTitle=true, notCheckable=true})
+    e.LibDD:UIDropDownMenu_AddButton({text= e.onlyChinese and '拖曳物品: 使用/禁用' or (DRAG_MODEL..ITEMS..'('..USE..'/'..DISABLE..')'), isTitle=true, notCheckable=true})
 end
 
 
@@ -521,7 +521,7 @@ local function Init()
     button.count=e.Cstr(button, {size=10, color=true})--10, nil, nil, true)
     button.count:SetPoint('BOTTOM',0,2)
 
-    securecall('UIDropDownMenu_Initialize', button.Menu, setMenuList, 'MENU')
+    e.LibDD:UIDropDownMenu_Initialize(button.Menu, setMenuList, 'MENU')
 
     getItems()--设置属性
 
@@ -593,7 +593,7 @@ local function Init()
     button:SetScript("OnMouseDown", function(self,d)
         local key= IsModifierKeyDown()
         if (d=='RightButton' and not key) or not(Bag.bag and Bag.slot) then
-            ToggleDropDownMenu(1,nil,button.Menu,self,self:GetWidth(),0)
+            e.LibDD:ToggleDropDownMenu(1,nil,button.Menu,self,self:GetWidth(),0)
         else
             if d=='LeftButton' and not key and equipItem and not PaperDollFrame:IsVisible() then
                 ToggleCharacter("PaperDollFrame")
@@ -608,7 +608,7 @@ local function Init()
         if d == 1 and not IsModifierKeyDown() then
             if Bag.slot and Bag.bag then
                 setDisableCursorItem()--禁用当物品
-                CloseDropDownMenus()
+                e.LibDD:CloseDropDownMenus()
                 shoTips(self)--显示提示
             end
         end

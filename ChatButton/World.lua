@@ -146,7 +146,7 @@ local function addMenu(name, channelNumber, level)--添加菜单
             end
         end
     }
-    securecall('UIDropDownMenu_AddButton', info, level)
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
 
 local function InitMenu(self, level, type)--主菜单
@@ -184,7 +184,7 @@ local function InitMenu(self, level, type)--主菜单
                 StaticPopup_Show(id..addName..'changeNamme')
             end
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
         return
 
     elseif type=='IGNORE' then--屏蔽刷屏
@@ -202,14 +202,14 @@ local function InitMenu(self, level, type)--主菜单
                     end
                 end
             }
-            securecall('UIDropDownMenu_AddButton', info, level)
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
         return
     end
 
     local channelNumber2 = GetChannelName(Save.world)
     addMenu(Save.world , channelNumber2, level)
-    securecall('UIDropDownMenu_AddSeparator', level)
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
 
     local find
     local channels = {GetChannelList()}
@@ -222,7 +222,7 @@ local function InitMenu(self, level, type)--主菜单
     end
 
     if find then
-        securecall('UIDropDownMenu_AddSeparator', level)
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
     end
     find=0
     for _, _ in pairs(filterTextTab) do
@@ -245,7 +245,7 @@ local function InitMenu(self, level, type)--主菜单
             end
         end,
     }
-    securecall('UIDropDownMenu_AddButton', info, level)
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
 
 
@@ -260,13 +260,13 @@ local function Init()
     button.texture:SetAtlas('128-Store-Main')
 
     button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-    securecall('UIDropDownMenu_Initialize', button.Menu, InitMenu, 'MENU')
+    e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
     button:SetScript("OnMouseDown",function(self,d)
         if d=='LeftButton' and self.channelNumber and self.channelNumber>0 then
             e.Say('/'..self.channelNumber)
         else
-            ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
+            e.LibDD:ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
         end
     end)
 

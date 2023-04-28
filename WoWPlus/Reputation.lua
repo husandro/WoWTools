@@ -555,12 +555,12 @@ local function InitMenu(self, level, type)
 					panel.down:SetShown(true)
 					panel.up:SetShown(true)
 					ReputationFrame_Update()
-					CloseDropDownMenus();
+					e.LibDD:CloseDropDownMenus();
 				end
 				set_Text()--设置, 文本
 			end
 		}
-		securecall('UIDropDownMenu_AddButton', info, level)
+		e.LibDD:UIDropDownMenu_AddButton(info, level)
 		info={
 			text= e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
 			notCheckable=true,
@@ -570,9 +570,9 @@ local function InitMenu(self, level, type)
 				set_Text()--设置, 文本
 			end
 		}
-		securecall('UIDropDownMenu_AddButton', info, level)
+		e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-		securecall('UIDropDownMenu_AddSeparator', level)
+		e.LibDD:UIDropDownMenu_AddSeparator(level)
 		info={
 			text= e.onlyChinese and '名称' or NAME,
 			checked= not Save.hideName,
@@ -581,7 +581,7 @@ local function InitMenu(self, level, type)
 				set_Text()--设置, 文本
 			end
 		}
-		securecall('UIDropDownMenu_AddButton', info, level)
+		e.LibDD:UIDropDownMenu_AddButton(info, level)
 	else
 		info={
 			text= e.onlyChinese and '文本' or LOCALE_TEXT_LABEL,
@@ -601,7 +601,7 @@ local function InitMenu(self, level, type)
 				print(id, addName, e.onlyChinese and '文本' or LOCALE_TEXT_LABEL, e.GetShowHide(Save.btn))
 			end
 		}
-		securecall('UIDropDownMenu_AddButton', info, level)
+		e.LibDD:UIDropDownMenu_AddButton(info, level)
 
 		info={
 			text= (e.onlyChinese and '声望变化' or COMBAT_TEXT_SHOW_REPUTATION_TEXT)..'|A:voicechat-icon-textchat-silenced:0:0|a',
@@ -615,7 +615,7 @@ local function InitMenu(self, level, type)
 				print(id, addName, e.onlyChinese and '声望变化' or COMBAT_TEXT_SHOW_REPUTATION_TEXT,'|A:voicechat-icon-textchat-silenced:0:0|a', e.GetEnabeleDisable(Save.factionUpdateTips), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
 			end
 		}
-		securecall('UIDropDownMenu_AddButton', info, level)
+		e.LibDD:UIDropDownMenu_AddButton(info, level)
 
 		info={
 			text= 'UI Plus',
@@ -628,7 +628,7 @@ local function InitMenu(self, level, type)
 				--print(id, addName, 'UI Plus', e.GetEnabeleDisable(not Save.notPlus), e.onlyChinese and '需要刷新' or NEED..REFRESH)
 			end
 		}
-		securecall('UIDropDownMenu_AddButton', info, level)
+		e.LibDD:UIDropDownMenu_AddButton(info, level)
 	end
 end
 
@@ -646,11 +646,11 @@ local function Init()
 	--set_RegisterEvent_CHAT_MSG_COMBAT_FACTION_CHANGE()--更新, 提示, 事件
 
 	panel.Menu=CreateFrame("Frame", id..addName..'Menu', panel, "UIDropDownMenuTemplate")
-    securecall('UIDropDownMenu_Initialize', panel.Menu, InitMenu, 'MENU')
+    e.LibDD:UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
 
 	panel:SetPoint("LEFT", ReputationFrameStandingLabel, 'RIGHT',5,0)
 	panel:SetScript("OnMouseDown", function(self,d)
-        ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+        e.LibDD:ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
     end)
 
 	panel.up=CreateFrame("Button",nil, panel, 'UIPanelButtonTemplate')--收起所有

@@ -120,7 +120,7 @@ local function InitMenu(self, level, type)--主菜单
                     e.Chat(arg1)
                 end,
             }
-            securecall('UIDropDownMenu_AddButton', info, level)
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
 
         info={
@@ -131,7 +131,7 @@ local function InitMenu(self, level, type)--主菜单
                 Save.save={}
             end
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
         return
     end
 
@@ -157,10 +157,10 @@ local function InitMenu(self, level, type)--主菜单
             info.icon=450905
         end
         tabNew[tab.name]=true
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
 
-    securecall('UIDropDownMenu_AddSeparator', level)
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
         text= e.onlyChinese and '自动清除' or AUTO_JOIN:gsub(JOIN,SLASH_STOPWATCH_PARAM_STOP2),
         icon= 'bags-button-autosort-up',
@@ -173,7 +173,7 @@ local function InitMenu(self, level, type)--主菜单
             setAutoClearRegisterEvent()--注册自动清除事件
         end
     }
-    securecall('UIDropDownMenu_AddButton', info, level)
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     info={
         text= e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
@@ -185,7 +185,7 @@ local function InitMenu(self, level, type)--主菜单
             setRest()--重置
         end
     }
-    securecall('UIDropDownMenu_AddButton', info, level)
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
 
 
@@ -200,13 +200,13 @@ local function Init()
 
     button.texture:SetTexture('Interface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47')
     button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-    securecall('UIDropDownMenu_Initialize', button.Menu, InitMenu, 'MENU')
+    e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
     button:SetScript('OnMouseDown',function(self, d)
         if d=='LeftButton' then
             RandomRoll(1, 100)
         else
-            ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
+            e.LibDD:ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
         end
     end)
 end

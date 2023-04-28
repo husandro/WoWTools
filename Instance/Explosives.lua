@@ -120,7 +120,7 @@ local function Init_Menu(self, level, type)
             end
         end,
     }
-    securecall('UIDropDownMenu_AddButton', info, level)
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     info= {
         text= e.onlyChinese and '队伍标记' or BINDING_HEADER_RAID_TARGET,
@@ -129,7 +129,7 @@ local function Init_Menu(self, level, type)
             Save.mark= not Save.mark and true or nil
         end
     }
-    securecall('UIDropDownMenu_AddButton', info, level)
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     info= {
         text= e.onlyChinese and '播放' or EVENTTRACE_BUTTON_PLAY,
@@ -143,7 +143,7 @@ local function Init_Menu(self, level, type)
             end
         end
     }
-    securecall('UIDropDownMenu_AddButton', info, level)
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
 
 local function set_Button()
@@ -176,7 +176,7 @@ local function set_Button()
             if d=='RightButton' and not IsModifierKeyDown() then
                 SetCursor('UI_MOVE_CURSOR');
             elseif d=='LeftButton' then
-                ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
+                e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
             end
         end)
         button:SetScript('OnEnter', function(self2)
@@ -199,7 +199,7 @@ local function set_Button()
         button.count:SetPoint('CENTER')
 
         button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-        securecall('UIDropDownMenu_Initialize', button.Menu, Init_Menu, 'MENU')
+        e.LibDD:UIDropDownMenu_Initialize(button.Menu, Init_Menu, 'MENU')
     end
 
     set_Events(true)

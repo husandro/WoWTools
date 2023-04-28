@@ -80,9 +80,9 @@ local ObjectiveTrackerRemoveAll =function(self, tip)
                 QuestMapQuestOptions_AbandonQuest(arg1)--QuestMapFrame.lua
             end
         }
-        securecall('UIDropDownMenu_AddButton', info)
+        e.LibDD:UIDropDownMenu_AddButton(info)
     end
-    securecall('UIDropDownMenu_AddSeparator') 
+    e.LibDD:UIDropDownMenu_AddSeparator()
     local verText, verLevel=e.GetExpansionText(nil, questID)--任务版本
     if verLevel and verText then
         info={
@@ -90,7 +90,7 @@ local ObjectiveTrackerRemoveAll =function(self, tip)
             isTitle=true,
             notCheckable=true,
         }
-        securecall('UIDropDownMenu_AddButton', info)
+        e.LibDD:UIDropDownMenu_AddButton(info)
     end
     local text
 
@@ -99,9 +99,9 @@ local ObjectiveTrackerRemoveAll =function(self, tip)
         isTitle = true,
         notCheckable = true,
     }
-    securecall('UIDropDownMenu_AddButton', info)
+    e.LibDD:UIDropDownMenu_AddButton(info)
 
-    info = UIDropDownMenu_CreateInfo()
+    info = {}
     local totaleQest= C_QuestLog.GetNumQuestWatches()+C_QuestLog.GetNumWorldQuestWatches()
     info={
         text = (e.onlyChinese and '全部清除' or REMOVE_WORLD_MARKERS)..' '..totaleQest,
@@ -131,7 +131,7 @@ local ObjectiveTrackerRemoveAll =function(self, tip)
             end
         end,
     }
-    securecall('UIDropDownMenu_AddButton', info)
+    e.LibDD:UIDropDownMenu_AddButton(info)
 end
 
 local colla_Module=function(type)
@@ -396,14 +396,14 @@ local function Init()
     hooksecurefunc('AchievementObjectiveTracker_OnOpenDropDown', function(self)--清除所有成就追踪
         local block = self.activeFrame
         if block and block.id then
-            local info = UIDropDownMenu_CreateInfo()
+            local info = {}
             info.text = (e.onlyChinese and '成就 ' or ACHIEVEMENTS)..' '..block.id
             info.icon=select(10,GetAchievementInfo(block.id))
             info.isTitle = 1
             info.notCheckable = 1
-            securecall('UIDropDownMenu_AddButton', info)
+            e.LibDD:UIDropDownMenu_AddButton(info)
         end
-        local info = UIDropDownMenu_CreateInfo()
+        local info = {}
         local trackedAchievements = { GetTrackedAchievements() }
         info.text = (e.onlyChinese and '全部清除' or REMOVE_WORLD_MARKERS)..' '..#trackedAchievements
         info.notCheckable = 1
@@ -415,18 +415,18 @@ local function Init()
                 RemoveTrackedAchievement(trackedAchievements[i])
             end
         end
-        securecall('UIDropDownMenu_AddButton', info)
+        e.LibDD:UIDropDownMenu_AddButton(info)
     end)
     hooksecurefunc(PROFESSION_RECIPE_TRACKER_MODULE, 'OnBlockHeaderClick', function(self, block, mouseButton)--清除所有专业追踪
         if mouseButton=='RightButton' then
             local recipeInfo =C_TradeSkillUI.GetRecipeInfo(block.id)
-            local info = UIDropDownMenu_CreateInfo()
+            local info = {}
             info.text =((recipeInfo and recipeInfo.icon) and '|T'..recipeInfo.icon..':0|t' or '')..(e.onlyChinese and '专业' or TRADE_SKILLS)..' '..block.id
             info.isTitle = true
             info.notCheckable = true
-            securecall('UIDropDownMenu_AddButton', info)
+            e.LibDD:UIDropDownMenu_AddButton(info)
 
-            info = UIDropDownMenu_CreateInfo()
+            info = {}
             local tracked=C_TradeSkillUI.GetRecipesTracked() or {}
             info.text ='|A:'..Icon.clear..':0:0|a'..(e.onlyChinese and '全部清除' or REMOVE_WORLD_MARKERS)..' '..#tracked
             info.notCheckable = true
@@ -440,7 +440,7 @@ local function Init()
                     C_TradeSkillUI.SetRecipeTracked(recipeID, false);
                 end
             end
-            securecall('UIDropDownMenu_AddButton', info)
+            e.LibDD:UIDropDownMenu_AddButton(info)
         end
     end)
     hooksecurefunc(PROFESSION_RECIPE_TRACKER_MODULE, 'SetStringText', function(self, fontString, text, useFullHeight, colorStyle, useHighlight)

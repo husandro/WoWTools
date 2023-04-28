@@ -707,14 +707,12 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
     CompactPartyFrame.moveFrame:SetMovable(true)
     CompactPartyFrame.moveFrame:RegisterForDrag('RightButton')
     CompactPartyFrame.moveFrame:SetScript("OnDragStart", function(self,d)
-        if d=='RightButton' and not IsModifierKeyDown() and not EditModeManagerFrame:IsEditModeActive() then
+        if d=='RightButton' and not IsModifierKeyDown() then
             CompactPartyFrame:StartMoving()
         end
     end)
     CompactPartyFrame.moveFrame:SetScript("OnDragStop", function(self)
-        if not EditModeManagerFrame:IsEditModeActive() then
-            CompactPartyFrame:StopMovingOrSizing()
-        end
+        CompactPartyFrame:StopMovingOrSizing()
     end)
     CompactPartyFrame.moveFrame:SetScript("OnMouseDown", function(self, d)
         if d=='RightButton' and not IsModifierKeyDown() then

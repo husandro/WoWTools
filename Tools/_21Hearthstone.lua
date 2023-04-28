@@ -83,7 +83,7 @@ local function setToyBox_ShowToyDropdown(itemID, anchorTo, offsetX, offsetY)
     if Save.disabled or not itemID then
         return
     end
-    securecall('UIDropDownMenu_AddSeparator') 
+    e.LibDD:UIDropDownMenu_AddSeparator()
     local info={
             text='|T134414:0|t'..addName,
             checked=Save.items[itemID],
@@ -101,7 +101,7 @@ local function setToyBox_ShowToyDropdown(itemID, anchorTo, offsetX, offsetY)
             tooltipTitle=addName,
             tooltipText=id,
         }
-    securecall('UIDropDownMenu_AddButton', info, 1)
+    e.LibDD:UIDropDownMenu_AddButton(info, 1)
 end
 local function setToySpellButton_UpdateButton(self)--标记, 是否已选取
     if Save.disabled or not self.itemID then
@@ -157,7 +157,7 @@ local function InitMenu(self, level, menuList)--主菜单
                 tooltipOnButton=true,
                 tooltipTitle=REMOVE,
             }
-            securecall('UIDropDownMenu_AddButton', info, level)
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
     elseif menuList=='BIND' then--炉石, 绑定位置, 截取名称SHORT
         info={
@@ -168,7 +168,7 @@ local function InitMenu(self, level, menuList)--主菜单
                 set_BindLocation()--显示, 炉石, 绑定位置
             end
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
     else
        info={
             text='|cnGREEN_FONT_COLOR:'..#button.items..'|r'.. addName,
@@ -176,7 +176,7 @@ local function InitMenu(self, level, menuList)--主菜单
             menuList='TOY',
             hasArrow=true,
        }
-       securecall('UIDropDownMenu_AddButton', info, level)
+       e.LibDD:UIDropDownMenu_AddButton(info, level)
        info={
             text=TUTORIAL_TITLE31..NAME,
             checked=Save.showBindName,
@@ -187,7 +187,7 @@ local function InitMenu(self, level, menuList)--主菜单
                 set_BindLocation()--显示, 炉石, 绑定位置
             end
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
 end
 
@@ -275,7 +275,7 @@ local function Init()
     end
 
     button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-    securecall('UIDropDownMenu_Initialize', button.Menu, InitMenu, 'MENU')
+    e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
     button:SetScript("OnEnter",function(self)
         showTips(self)--显示提示
@@ -285,7 +285,7 @@ local function Init()
     end)
     button:SetScript("OnMouseDown", function(self,d)
         if d=='RightButton' and not IsModifierKeyDown() then
-            ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+            e.LibDD:ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
         end
     end)
 

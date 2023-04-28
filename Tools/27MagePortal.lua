@@ -101,7 +101,7 @@ local function InitMenu(self, level, type)--主菜单
             end
         end,
     }
-    securecall('UIDropDownMenu_AddButton', info, level)
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
 
 --####
@@ -109,7 +109,7 @@ end
 --####
 local function Init()
     panel.Menu=CreateFrame("Frame", id..addName..'Menu', panel, "UIDropDownMenuTemplate")
-    securecall('UIDropDownMenu_Initialize', panel.Menu, InitMenu, 'MENU')
+    e.LibDD:UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
 
     panel.button={}
     local find
@@ -188,7 +188,7 @@ local function Init()
            button:SetScript('OnLeave', function() e.tips:Hide() end)
 
            button:SetScript('OnMouseWheel', function(self, d)
-                ToggleDropDownMenu(1,nil, panel.Menu, self, 0,0, {button=self})
+                e.LibDD:ToggleDropDownMenu(1,nil, panel.Menu, self, 0,0, {button=self})
            end)
         end
     end

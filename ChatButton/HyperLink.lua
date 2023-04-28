@@ -743,7 +743,7 @@ StaticPopupDialogs[id..addName..'WELCOME']={--区域,设置对话框
             Save.groupWelcomeText= text
             Save.groupWelcome=true
         end
-        CloseDropDownMenus()
+        e.LibDD:CloseDropDownMenus()
         set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
 	end,
     OnAlt = function(self, data)
@@ -752,7 +752,7 @@ StaticPopupDialogs[id..addName..'WELCOME']={--区域,设置对话框
         else
             Save.groupWelcome=nil
         end
-        CloseDropDownMenus()
+        e.LibDD:CloseDropDownMenus()
         set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
     end,
     EditBoxOnTextChanged=function(self, data)
@@ -780,9 +780,9 @@ local function InitMenu(self, level, type)
                 StaticPopup_Show(id..addName..'WELCOME', e.onlyChinese and '公会新成员' or LFG_LIST_GUILD_MEMBER, nil, {guild= true})
             end,
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-        securecall('UIDropDownMenu_AddSeparator', level)
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
         info={
             text= e.onlyChinese and '队伍新成员' or SPELL_TARGET_TYPE14_DESC,--队伍新成员
             checked=Save.groupWelcome,
@@ -793,7 +793,7 @@ local function InitMenu(self, level, type)
                 StaticPopup_Show(id..addName..'WELCOME', e.onlyChinese and '队伍新成员' or SPELL_TARGET_TYPE14_DESC, nil, {group= true})
             end,
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
         info={--仅限, 手动组队,不是在随机队伍里
             text= e.onlyChinese and format('仅限%s', '组队邀请') or LFG_LIST_CROSS_FACTION:format(GROUP_INVITE),
             checked= Save.welcomeOnlyHomeGroup,
@@ -804,7 +804,7 @@ local function InitMenu(self, level, type)
                 Save.welcomeOnlyHomeGroup= not Save.welcomeOnlyHomeGroup and true or nil
             end
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
         return
     end
 
@@ -817,7 +817,7 @@ local function InitMenu(self, level, type)
             setFunc()--使用，禁用
         end,
     }
-    securecall('UIDropDownMenu_AddButton', info, level)
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     info={--文本转语音
         text= (e.onlyChinese and '文本转语音' or TEXT_TO_SPEECH),
@@ -831,7 +831,7 @@ local function InitMenu(self, level, type)
             print(id, addName, e.onlyChinese and '文本转语音' or TEXT_TO_SPEECH..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool('textToSpeech')))
         end
     }
-    securecall('UIDropDownMenu_AddButton', info, level)
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     info={
         text= e.onlyChinese and '事件声音' or EVENTS_LABEL..SOUND,
@@ -848,7 +848,7 @@ local function InitMenu(self, level, type)
             print(id, addName, e.onlyChinese and "播放" or SLASH_STOPWATCH_PARAM_PLAY1, e.onlyChinese and '事件声音' or EVENTS_LABEL..SOUND)
         end
     }
-    securecall('UIDropDownMenu_AddButton', info, level)
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     info={
         text= e.onlyChinese and '欢迎加入' or (EMOTE103_CMD1:gsub('/','')..JOIN),
@@ -861,9 +861,9 @@ local function InitMenu(self, level, type)
         menuList='Welcome',
         hasArrow=true,
     }
-    securecall('UIDropDownMenu_AddButton', info, level)
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    securecall('UIDropDownMenu_AddSeparator', level)
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
         text= '|cffff00ffETR|rACE',
         icon= 'minimap-genericevent-hornicon',
@@ -878,7 +878,7 @@ local function InitMenu(self, level, type)
             end
         end,
     }
-    securecall('UIDropDownMenu_AddButton', info, level)
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     info={
         text= '|cff00ff00FST|rACK',
@@ -897,9 +897,9 @@ local function InitMenu(self, level, type)
             FrameStackTooltip_ToggleDefaults()
         end,
     }
-    securecall('UIDropDownMenu_AddButton', info, level)
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    --securecall('UIDropDownMenu_AddSeparator', level)
+    --e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={--重载
         text= e.onlyChinese and '重新加载UI' or RELOADUI,
         notCheckable=true,
@@ -910,7 +910,7 @@ local function InitMenu(self, level, type)
             e.Reload()
         end
     }
-    securecall('UIDropDownMenu_AddButton', info, level)
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
 
 DEFAULT_CHAT_FRAME.ADD=DEFAULT_CHAT_FRAME.AddMessage
@@ -924,14 +924,14 @@ local function Init()
     WoWToolsChatButtonFrame.last=button
 
     button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-    securecall('UIDropDownMenu_Initialize', button.Menu, InitMenu, 'MENU')
+    e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
     button.texture:SetAtlas(e.Icon.icon)
 
     button:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
             setFunc()--使用，禁用
         else
-            ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+            e.LibDD:ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
         end
     end)
 

@@ -296,7 +296,7 @@ local function InitMenu(self, level, type)--主菜单
                 Text_Settings()--设置Tex
             end
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
 
         info={
             text= e.onlyChinese and '职业颜色' or CLASS_COLORS,
@@ -306,7 +306,7 @@ local function InitMenu(self, level, type)--主菜单
                 Text_Settings()--设置Tex
             end
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
 
         info={
             text= e.onlyChinese and '仅限: 正在活动' or LFG_LIST_CROSS_FACTION:format(CALENDAR_TOOLTIP_ONGOING),
@@ -316,7 +316,7 @@ local function InitMenu(self, level, type)--主菜单
                 set_Text()
             end
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
 
         info={
             text= e.onlyChinese and '时间' or TIME_LABEL,
@@ -326,7 +326,7 @@ local function InitMenu(self, level, type)--主菜单
                 set_Text()
             end
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
 
         info={
             text= e.onlyChinese and '节日 ID' or CALENDAR_FILTER_HOLIDAYS..' ID',--时间
@@ -336,9 +336,9 @@ local function InitMenu(self, level, type)--主菜单
                 set_Text()
             end
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-        securecall('UIDropDownMenu_AddSeparator', level)
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
         info={
             text=e.onlyChinese and '还原位置' or RESET_POSITION,
             colorCode=not Save.point and '|cff606060',
@@ -351,7 +351,7 @@ local function InitMenu(self, level, type)--主菜单
             tooltipTitle=e.Icon.right..' '..NPE_MOVE,
             notCheckable=true,
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     else
         info={
@@ -360,43 +360,43 @@ local function InitMenu(self, level, type)--主菜单
             menuList='SETTINGS',
             hasArrow=true,
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
 
         info={
             text=e.Icon.left..(e.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE)),
             isTitle=true,
             notCheckable=true
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
         info={--点击这里显示日历
             text=e.Icon.mid..(e.onlyChinese and '打开/关闭日历' or GAMETIME_TOOLTIP_TOGGLE_CALENDAR ),
             isTitle=true,
             notCheckable=true
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-        securecall('UIDropDownMenu_AddSeparator', level)
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
         info={--提示移动
             text= e.Icon.right..(e.onlyChinese and '移动' or NPE_MOVE),
             isTitle=true,
             notCheckable=true
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
 
         info={
             text='Alt+'..e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE)..(Save.scale or 1),
             isTitle=true,
             notCheckable=true
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-        securecall('UIDropDownMenu_AddSeparator', level)
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
         info={
             text=id..' '..addName,
             isTitle=true,
             notCheckable=true
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
 end
 
@@ -427,7 +427,7 @@ local function Init()
         self:StopMovingOrSizing()
         Save.point={self:GetPoint(1)}
         Save.point[2]=nil
-        CloseDropDownMenus()
+        e.LibDD:CloseDropDownMenus()
     end)
     panel:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
@@ -435,7 +435,7 @@ local function Init()
             set_event()--设置事件
             set_Text()
         elseif d=='RightButton' then
-            ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+            e.LibDD:ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
         end
     end)
     panel:SetScript('OnMouseWheel', function(self, d)--缩放
@@ -460,7 +460,7 @@ local function Init()
     end)
 
     panel.Menu=CreateFrame("Frame", id..addName..'Menu', panel, "UIDropDownMenuTemplate")
-    securecall('UIDropDownMenu_Initialize', panel.Menu, InitMenu, 'MENU')
+    e.LibDD:UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
 
     set_event()
     Text_Settings()--设置Text
@@ -507,14 +507,13 @@ local function Init()
     end)
 
 
-    --Blizzard_Calendar.lua bug
-    --[[
+    --Blizzard_Calendar.lua
     C_Timer.After(2, function()
         local menu=CreateFrame("Frame", id..addName..'CalendarCreateEventFrameMenuWoW', CalendarCreateEventFrame, "UIDropDownMenuTemplate")
         menu:SetPoint('BOTTOMLEFT', CalendarCreateEventFrame, 'BOTTOMRIGHT', -22,74)
-        securecall('UIDropDownMenu_SetWidth', menu, 60)
-        securecall('UIDropDownMenu_SetText', menu, e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET)
-        securecall('UIDropDownMenu_Initialize', menu, function(self, level, type)
+        e.LibDD:UIDropDownMenu_SetWidth(menu, 60)
+        e.LibDD:UIDropDownMenu_SetText(menu, e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET)
+        e.LibDD:UIDropDownMenu_Initialize(menu, function(self, level, type)
             local map=e.GetUnitMapName('player');--玩家区域名称
             local inviteTab={}
             for index = 1, C_Calendar.GetNumInvites() do
@@ -554,20 +553,20 @@ local function Init()
                             CalendarCreateEventInviteEdit:SetText(arg1)
                         end
                     }
-                    securecall('UIDropDownMenu_AddButton', info, level)
+                    e.LibDD:UIDropDownMenu_AddButton(info, level)
                     find=true
                 end
             end
             if not find then
-                securecall('UIDropDownMenu_AddButton', {text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
+                e.LibDD:UIDropDownMenu_AddButton({text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
             end
         end)
 
         local menu2=CreateFrame("Frame", id..addName..'CalendarCreateEventFrameMenuFriend', CalendarCreateEventFrame, "UIDropDownMenuTemplate")
         menu2:SetPoint('TOPRIGHT', menu, 'BOTTOMRIGHT')
-        securecall('UIDropDownMenu_SetWidth', menu2, 60)
-        securecall('UIDropDownMenu_SetText', menu2, e.onlyChinese and '好友' or FRIEND)
-        securecall('UIDropDownMenu_Initialize', menu2, function(self, level, type)
+        e.LibDD:UIDropDownMenu_SetWidth(menu2, 60)
+        e.LibDD:UIDropDownMenu_SetText(menu2, e.onlyChinese and '好友' or FRIEND)
+        e.LibDD:UIDropDownMenu_Initialize(menu2, function(self, level, type)
             local map=e.GetUnitMapName('player');--玩家区域名称
             local inviteTab={}
             for index = 1, C_Calendar.GetNumInvites() do
@@ -603,20 +602,20 @@ local function Init()
                             CalendarCreateEventInviteEdit:SetText(arg1)
                         end
                     }
-                    securecall('UIDropDownMenu_AddButton', info, level)
+                    e.LibDD:UIDropDownMenu_AddButton(info, level)
                     find=true
                 end
             end
             if not find then
-                securecall('UIDropDownMenu_AddButton', {text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
+                e.LibDD:UIDropDownMenu_AddButton({text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
             end
         end)
 
         local last=CreateFrame("Frame", id..addName..'CalendarCreateEventFrameMenuFriend', CalendarCreateEventFrame, "UIDropDownMenuTemplate")
         last:SetPoint('TOPRIGHT', menu2, 'BOTTOMRIGHT')
-        securecall('UIDropDownMenu_SetWidth', last, 60)
-        securecall('UIDropDownMenu_SetText', last, e.onlyChinese and '公会' or GUILD)
-        securecall('UIDropDownMenu_Initialize', last, function(self, level, type)
+        e.LibDD:UIDropDownMenu_SetWidth(last, 60)
+        e.LibDD:UIDropDownMenu_SetText(last, e.onlyChinese and '公会' or GUILD)
+        e.LibDD:UIDropDownMenu_Initialize(last, function(self, level, type)
             local map=e.GetUnitMapName('player');--玩家区域名称
             local inviteTab={}
             for index = 1, C_Calendar.GetNumInvites() do
@@ -647,15 +646,15 @@ local function Init()
                             CalendarCreateEventInviteEdit:SetText(arg1)
                         end
                     }
-                    securecall('UIDropDownMenu_AddButton', info, level)
+                    e.LibDD:UIDropDownMenu_AddButton(info, level)
                     find=true
                 end
             end
             if not find then
-                securecall('UIDropDownMenu_AddButton', {text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
+                e.LibDD:UIDropDownMenu_AddButton({text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
             end
         end)
-    end)]]
+    end)
 end
 
 

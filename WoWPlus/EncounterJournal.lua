@@ -853,10 +853,10 @@ local function Init()--冒险指南界面
                             print(id, addName, e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, e.Class(nil, arg1), arg2, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要刷新' or NEED..REFRESH))
                         end
                     }
-                    securecall('UIDropDownMenu_AddButton', info, level)
+                    e.LibDD:UIDropDownMenu_AddButton(info, level)
                 end
             end
-            securecall('UIDropDownMenu_AddSeparator', level)
+            e.LibDD:UIDropDownMenu_AddSeparator(level)
             info={
                 text= e.onlyChinese and '全部清除' or CLEAR_ALL,
                 icon='bags-button-autosort-up',
@@ -866,7 +866,7 @@ local function Init()--冒险指南界面
                     print(id, addName, e.onlyChinese and '全部清除' or CLEAR_ALL, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要刷新' or NEED..REFRESH))
                 end
             }
-            securecall('UIDropDownMenu_AddButton', info, level)
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
             return
         elseif type then
             local col= select(4, GetClassColor(type))
@@ -884,7 +884,7 @@ local function Init()--冒险指南界面
                         print(id, addName, e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, e.Class(nil, arg1), arg2, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要刷新' or NEED..REFRESH))
                     end
                 }
-                securecall('UIDropDownMenu_AddButton', info, level)
+                e.LibDD:UIDropDownMenu_AddButton(info, level)
             end
             return
         end
@@ -915,12 +915,12 @@ local function Init()--冒险指南界面
                         set_Loot_Spec_Texture(arg1.button)
                     end
                 }
-                securecall('UIDropDownMenu_AddButton', info, level)
+                e.LibDD:UIDropDownMenu_AddButton(info, level)
                 find=true
             end
         end
         if find then
-            --securecall('UIDropDownMenu_AddSeparator', level)
+            --e.LibDD:UIDropDownMenu_AddSeparator(level)
             info= {
                 text= e.onlyChinese and '无' or NONE,
                 icon= 'xmarksthespot',
@@ -932,7 +932,7 @@ local function Init()--冒险指南界面
                     set_Loot_Spec_Texture(arg2)
                 end
             }
-            securecall('UIDropDownMenu_AddButton', info, level)
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
         
         local name=self.encounterID and EJ_GetEncounterInfo(self.encounterID)
@@ -943,32 +943,32 @@ local function Init()--冒险指南界面
                 isTitle=true,
             }
         end
-        securecall('UIDropDownMenu_AddButton', info, level)
-        securecall('UIDropDownMenu_AddSeparator', level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
         info={
             text= e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
             notCheckable=true,
             hasArrow=true,
             menuList='CLEAR',
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
-        --securecall('UIDropDownMenu_AddSeparator', level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        --e.LibDD:UIDropDownMenu_AddSeparator(level)
         info={
             text= e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION,
             icon= e.Class('player', e.Player.class, true) or  'Banker',
             isTitle=true,
             notCheckable=true,
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
         info={
             text=id..' '..addName,
             isTitle=true,
             notCheckable=true,
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
     EncounterJournal.encounter.LootSpecMenu=CreateFrame("Frame", id..addName..'Menu', EncounterJournal.encounter, "UIDropDownMenuTemplate")
-    securecall('UIDropDownMenu_Initialize', EncounterJournal.encounter.LootSpecMenu, set_Loot_Spec_Menu_Init, 'MENU')
+    e.LibDD:UIDropDownMenu_Initialize(EncounterJournal.encounter.LootSpecMenu, set_Loot_Spec_Menu_Init, 'MENU')
 
 
     local function set_Loot_Spec(button)
@@ -980,7 +980,7 @@ local function Init()--冒险指南界面
                 EncounterJournal.encounter.LootSpecMenu.dungeonEncounterID=self.dungeonEncounterID
                 EncounterJournal.encounter.LootSpecMenu.button=self
                 EncounterJournal.encounter.LootSpecMenu.encounterID= self.encounterID
-                ToggleDropDownMenu(1, nil, EncounterJournal.encounter.LootSpecMenu, self, 15,0)
+                e.LibDD:ToggleDropDownMenu(1, nil, EncounterJournal.encounter.LootSpecMenu, self, 15,0)
             end)
         end
         local dungeonEncounterID= button.encounterID and select(7, EJ_GetEncounterInfo(button.encounterID))

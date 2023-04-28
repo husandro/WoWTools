@@ -206,18 +206,16 @@ local function setGroupReadyTips(event, arg1, arg2)
             button.groupReadyTips:SetClampedToScreen(true)
 
             button.groupReadyTips:SetScript("OnDragStart", function(self,d )
-                if not IsModifierKeyDown() and d=='RightButton' and not EditModeManagerFrame:IsEditModeActive() then
+                if not IsModifierKeyDown() and d=='RightButton' then
                     self:StartMoving()
                 end
             end)
             button.groupReadyTips:SetScript("OnDragStop", function(self)
-                if not EditModeManagerFrame:IsEditModeActive() then
-                    ResetCursor()
-                    self:StopMovingOrSizing()
-                    Save.groupReadyTipsPoint={self:GetPoint(1)}
-                    Save.groupReadyTipsPoint[2]=nil
-                    print(id, addName, RESET_POSITION, 'Alt+'..e.Icon.right)
-                end
+                ResetCursor()
+                self:StopMovingOrSizing()
+                Save.groupReadyTipsPoint={self:GetPoint(1)}
+                Save.groupReadyTipsPoint[2]=nil
+                print(id, addName, RESET_POSITION, 'Alt+'..e.Icon.right)
             end)
             button.groupReadyTips:SetScript('OnHide', function(self)
                 if self.timer then
@@ -375,17 +373,15 @@ local function setMarkersFrame()--设置标记, 框架
                 btn:SetNormalTexture('Interface\\AddOns\\WeakAuras\\Media\\Textures\\cancel-mark.tga')
                 btn:RegisterForDrag("RightButton")
                 btn:SetScript("OnDragStart", function(self,d )
-                    if d=='RightButton' and not IsModifierKeyDown() and not EditModeManagerFrame:IsEditModeActive() then
+                    if d=='RightButton' and not IsModifierKeyDown() then
                         frame:StartMoving()
                     end
                 end)
                 btn:SetScript("OnDragStop", function(self)
-                    if not EditModeManagerFrame:IsEditModeActive() then
-                        ResetCursor()
-                        frame:StopMovingOrSizing()
-                        Save.markersFramePoint={frame:GetPoint(1)}
-                        Save.markersFramePoint[2]=nil
-                    end
+                    ResetCursor()
+                    frame:StopMovingOrSizing()
+                    Save.markersFramePoint={frame:GetPoint(1)}
+                    Save.markersFramePoint[2]=nil
                 end)
                 btn:SetScript('OnMouseDown', function(self, d)
                     local key=IsModifierKeyDown()
@@ -623,10 +619,10 @@ local function InitMenu(self, level, type)--主菜单
                 func=function()
                     Save.autoReady=1
                     setReadyTexureTips()--自动就绪, 主图标, 提示
-                    CloseDropDownMenus();
+                    e.LibDD:CloseDropDownMenus();
                 end
             }
-            securecall('UIDropDownMenu_AddButton', info, level)
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
             info={
                 text=e.Icon.O2..(e.onlyChinese and '未就绪' or NOT_READY_FEMALE),--未就绪
                 colorCode='|cffff0000',
@@ -634,22 +630,22 @@ local function InitMenu(self, level, type)--主菜单
                 func=function()
                     Save.autoReady=2
                     setReadyTexureTips()--自动就绪, 主图标, 提示
-                    CloseDropDownMenus();
+                    e.LibDD:CloseDropDownMenus();
                 end
             }
-            securecall('UIDropDownMenu_AddButton', info, level)
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
             info={--无
                 text= e.onlyChinese and '无' or NONE,
                 checked=not Save.autoReady,
                 func=function()
                     Save.autoReady=nil
                     setReadyTexureTips()--自动就绪, 主图标, 提示
-                    CloseDropDownMenus();
+                    e.LibDD:CloseDropDownMenus();
                 end
             }
-            securecall('UIDropDownMenu_AddButton', info, level)
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-            securecall('UIDropDownMenu_AddSeparator', level)--队员提示信息
+            e.LibDD:UIDropDownMenu_AddSeparator(level)--队员提示信息
             info={
                 text= e.onlyChinese and '队员就绪信息' or (PLAYERS_IN_GROUP..READY..INFO),
                 checked=Save.groupReadyTips,
@@ -658,7 +654,7 @@ local function InitMenu(self, level, type)--主菜单
                     setGroupReadyTipsEvent()--注册事件, 就绪,队员提示信息
                 end
             }
-            securecall('UIDropDownMenu_AddButton', info, level)
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
 
         elseif type=='MakerFrameResetPost' then--重置位置， 队伍标记工具
             info={
@@ -671,13 +667,13 @@ local function InitMenu(self, level, type)--主菜单
                     setMarkersFrame_Postion()--设置标记框架, 位置
                 end
             }
-            securecall('UIDropDownMenu_AddButton', info, level)
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
 
         else
             local num= NUM_RAID_ICONS+1
             for index=1, num do
                 if index==num then
-                    securecall('UIDropDownMenu_AddSeparator', level)
+                    e.LibDD:UIDropDownMenu_AddSeparator(level)
                 end
                 info={
                     text= index==num and (e.onlyChinese and '无' or NONE) or _G['RAID_TARGET_'..index],
@@ -686,7 +682,7 @@ local function InitMenu(self, level, type)--主菜单
                     colorCode=colorCode[index],
                     func=function()
                         Save[type]=index
-                        CloseDropDownMenus()
+                        e.LibDD:CloseDropDownMenus()
                         if type=='tank' then
                             setTexture()--图标, 自动标记
                         end
@@ -701,14 +697,14 @@ local function InitMenu(self, level, type)--主菜单
                         info.disabled= Save.tank==index
                     end
                 end
-                securecall('UIDropDownMenu_AddButton', info, level)
+                e.LibDD:UIDropDownMenu_AddButton(info, level)
             end
             info={
                 text=format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, type=='tank2' and (e.onlyChinese and '团队' or RAID) or type=='healer' and (e.onlyChinese and '小队' or GROUP) or (e.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS)),
                 notCheckable=true,
                 isTitle=true,
             }
-            securecall('UIDropDownMenu_AddButton', info, level)
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
     else
         info={
@@ -725,8 +721,8 @@ local function InitMenu(self, level, type)--主菜单
                 setTexture()--设置,按钮图片
             end
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
-        securecall('UIDropDownMenu_AddSeparator') 
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        e.LibDD:UIDropDownMenu_AddSeparator()
 
         local tab={
                 {text= e.Icon.TANK..(e.onlyChinese and '坦克' or TANK), type='tank'},
@@ -747,13 +743,13 @@ local function InitMenu(self, level, type)--主菜单
             if tab2.type2 and Save.tank==0 then
                 info.disabled=true
             end
-            securecall('UIDropDownMenu_AddButton', info, level)
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
             if tab2.type=='healer' then
-                securecall('UIDropDownMenu_AddSeparator') 
+                e.LibDD:UIDropDownMenu_AddSeparator()
             end
         end
 
-        securecall('UIDropDownMenu_AddSeparator') 
+        e.LibDD:UIDropDownMenu_AddSeparator()
         info={
             text=e.onlyChinese and '队伍标记工具' or format(BINDING_HEADER_RAID_TARGET, PROFESSION_TOOL_TOOLTIP_LINE),
             checked=Save.markersFrame,
@@ -772,7 +768,7 @@ local function InitMenu(self, level, type)--主菜单
             end,
             disabled=not getAllSet(),--是不有权限
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
 
         info={
             text=(Save.autoReady==1 and e.Icon.select2 or Save.autoReady==2 and e.Icon.O2 or (e.onlyChinese and '无' or NONE)).. (e.onlyChinese and '自动' or AUTO_JOIN:gsub(JOIN,''))..((not Save.autoReady or Save.autoReady==1) and (e.onlyChinese and '就绪' or READY) or Save.autoReady==2 and (e.onlyChinese and '未就绪' or NOT_READY_FEMALE) or ''),
@@ -781,7 +777,7 @@ local function InitMenu(self, level, type)--主菜单
             menuList='ready',
             hasArrow=true,
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
 end
 
@@ -799,13 +795,13 @@ local function Init()
     setGroupReadyTipsEvent()--注册事件, 就绪,队员提示信息
 
     button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-    securecall('UIDropDownMenu_Initialize', button.Menu, InitMenu, 'MENU')
+    e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
     button:SetScript("OnMouseDown", function(self,d)
         if d=='LeftButton' then
             setTankHealer()--设置队伍标记
         else
-            ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+            e.LibDD:ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
         end
     end)
 

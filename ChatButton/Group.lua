@@ -172,7 +172,7 @@ local function InitMenu(self, level, type)--主菜单
                     StaticPopup_Show(id..addName..'CUSTOM', tab.text, nil , {type=tab.type})
                 end
             }
-            securecall('UIDropDownMenu_AddButton', info, level)
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
     else
         local isInGroup= IsInGroup()
@@ -202,10 +202,10 @@ local function InitMenu(self, level, type)--主菜单
             elseif (tab.text==RAID or tab.text=='团队') and not isInInstance then--在副本外,团
                 info.colorCode='|cffff0000'
             end
-            securecall('UIDropDownMenu_AddButton', info, level)
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
 
-        securecall('UIDropDownMenu_AddSeparator', level)
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
 
         info={
             text= (e.onlyChinese and '跨阵营' or COMMUNITIES_EDIT_DIALOG_CROSS_FACTION)
@@ -215,7 +215,7 @@ local function InitMenu(self, level, type)--主菜单
             notCheckable=true,
             isTitle=true,
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
 
         info={
             text=((Save.mouseDown or Save.mouseUP) and e.Icon.mid or '').. (e.onlyChinese and '自定义' or CUSTOM),
@@ -223,7 +223,7 @@ local function InitMenu(self, level, type)--主菜单
             menuList='CUSTOM',
             hasArrow=true,
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
 
         info={
             text= e.onlyChinese and '聊天泡泡' or CHAT_BUBBLES_TEXT,
@@ -235,7 +235,7 @@ local function InitMenu(self, level, type)--主菜单
                 C_CVar.SetCVar("chatBubblesParty", not C_CVar.GetCVarBool("chatBubblesParty") and '1' or '0')
             end
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     end
 end
@@ -344,7 +344,7 @@ local function Init()
     WoWToolsChatButtonFrame.last=button
 
     button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-    securecall('UIDropDownMenu_Initialize', button.Menu, InitMenu, 'MENU')
+    e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
     if IsInRaid() then
         button.type=SLASH_RAID2
@@ -360,7 +360,7 @@ local function Init()
             e.Say(button.type)
         else
             show_Group_Info_Toolstip()--玩家,信息, 提示
-            ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+            e.LibDD:ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
         end
     end)
 

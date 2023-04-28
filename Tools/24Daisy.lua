@@ -82,7 +82,7 @@ local function InitMenu(self, level)--主菜单
             setGuLaiTip()--设置 是否使用 /招手
         end,
     }
-    securecall('UIDropDownMenu_AddButton', info, level)
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     info={--自动召唤
         text= e.onlyChinese and '自动召唤' or (AUTO_JOIN:gsub(JOIN,'')..SUMMONS),
@@ -97,7 +97,7 @@ local function InitMenu(self, level)--主菜单
             setAutoSummonTips()--设置, 自动召唤
         end
     }
-    securecall('UIDropDownMenu_AddButton', info, level)
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
 
 --####
@@ -121,7 +121,7 @@ local function Init()
 
     e.ToolsSetButtonPoint(button)--设置位置
     button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-    securecall('UIDropDownMenu_Initialize', button.Menu, InitMenu, 'MENU')
+    e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
     button:SetScript('OnMouseDown', function(self, d)
         local key=IsModifierKeyDown()
@@ -134,7 +134,7 @@ local function Init()
     end)
 
     button:SetScript('OnMouseWheel', function(self, d)
-        ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+        e.LibDD:ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
    end)
 
    button:SetScript('OnEnter', function(self)

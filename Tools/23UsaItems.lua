@@ -156,8 +156,8 @@ local function InitMenu(self, level, type)--主菜单
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '重新加载UI' or RELOADUI
             }
-        securecall('UIDropDownMenu_AddButton', info, level)
-        securecall('UIDropDownMenu_AddSeparator', level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
 
         for index, ID in pairs(Save[type]) do
             local name, icon, _
@@ -183,7 +183,7 @@ local function InitMenu(self, level, type)--主菜单
                 info.text= e.Icon.O2..info.text
                 info.colorCode='|cff606060'
             end
-            securecall('UIDropDownMenu_AddButton', info, level)
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
 
         end
     else
@@ -199,9 +199,9 @@ local function InitMenu(self, level, type)--主菜单
                 hasArrow=true,
                 menuList=type2,
             }
-            securecall('UIDropDownMenu_AddButton', info, level);
+            e.LibDD:UIDropDownMenu_AddButton(info, level);
         end
-        securecall('UIDropDownMenu_AddSeparator', level)
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
         info={
             text= e.onlyChinese and '重新加载UI' or RELOADUI,
             notCheckable=true,
@@ -211,8 +211,8 @@ local function InitMenu(self, level, type)--主菜单
                 e.Reload()
             end
         }
-        securecall('UIDropDownMenu_AddButton', info, level);
-        securecall('UIDropDownMenu_AddSeparator', level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level);
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
         info={
             text= e.onlyChinese and '重置' or RESET,
             colorCode='|cffff0000',
@@ -224,9 +224,9 @@ local function InitMenu(self, level, type)--主菜单
                 StaticPopup_Show(id..addName..'RESETALL')
             end
         }
-        securecall('UIDropDownMenu_AddButton', info, level);
-        securecall('UIDropDownMenu_AddButton', {text=addName, isTitle=true, notCheckable=true}, level);
-        securecall('UIDropDownMenu_AddButton', {text= e.onlyChinese and '拖曳: 物品, 法术, 装备' or (DRAG_MODEL..', '..SPELLS..', '..ITEMS), isTitle=true, notCheckable=true}, level);
+        e.LibDD:UIDropDownMenu_AddButton(info, level);
+        e.LibDD:UIDropDownMenu_AddButton({text=addName, isTitle=true, notCheckable=true}, level);
+        e.LibDD:UIDropDownMenu_AddButton({text= e.onlyChinese and '拖曳: 物品, 法术, 装备' or (DRAG_MODEL..', '..SPELLS..', '..ITEMS), isTitle=true, notCheckable=true}, level);
     end
 end
 
@@ -432,7 +432,7 @@ local function Init()
     end
 
     panel.Menu=CreateFrame("Frame", id..addName..'Menu', panel, "UIDropDownMenuTemplate")
-    securecall('UIDropDownMenu_Initialize', panel.Menu, InitMenu, 'MENU')
+    e.LibDD:UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
 
     panel:SetScript('OnMouseDown',function(self, d)--添加, 移除
         local infoType, itemID, itemLink ,spellID= GetCursorInfo()
@@ -460,7 +460,7 @@ local function Init()
             e.tips:AddDoubleLine(MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
             e.tips:Show()
         elseif d=='RightButton' then
-            ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+            e.LibDD:ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
         end
     end)
     panel:SetScript('OnEnter',function (self)
@@ -501,10 +501,10 @@ local function setToyBox_ShowToyDropdown(itemID, anchorTo, offsetX, offsetY)
                 ToySpellButton_UpdateButton(anchorTo)
             end,
         }
-    securecall('UIDropDownMenu_AddButton', info, 1)
+    e.LibDD:UIDropDownMenu_AddButton(info, 1)
 
-    securecall('UIDropDownMenu_AddSeparator') 
-    securecall('UIDropDownMenu_AddButton', {
+    e.LibDD:UIDropDownMenu_AddSeparator()
+    e.LibDD:UIDropDownMenu_AddButton({
         text=ITEMS..'ID: '..itemID,
         isTitle=true,
         notCheckable=true,

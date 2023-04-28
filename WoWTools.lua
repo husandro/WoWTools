@@ -2,6 +2,7 @@ local id, e = ...
 e.L=e.L or {}--多语言
 e.tips=GameTooltip
 
+e.LibDD=LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 
 local function GetWeek()--周数
     local d = date("*t")

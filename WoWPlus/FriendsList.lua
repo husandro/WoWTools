@@ -191,7 +191,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
     end
 
     hooksecurefunc('FriendsFrameStatusDropDown_Initialize', function(self)
-        securecall('UIDropDownMenu_AddSeparator')
+        e.LibDD:UIDropDownMenu_AddSeparator()
         local info= {
             text = optionText:format(FRIENDS_TEXTURE_ONLINE, e.onlyChinese and '有空' or FRIENDS_LIST_AVAILABLE),
             checked= Save.Friends[e.Player.name_realm].Availabel,
@@ -205,7 +205,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
                 Set()
             end
         }
-        securecall('UIDropDownMenu_AddButton', info)
+        e.LibDD:UIDropDownMenu_AddButton(info)
 
         info= {
             text = optionText:format(FRIENDS_TEXTURE_AFK, e.onlyChinese and '离开' or FRIENDS_LIST_AWAY),
@@ -220,7 +220,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
                 Set()
             end
         }
-        securecall('UIDropDownMenu_AddButton', info)
+        e.LibDD:UIDropDownMenu_AddButton(info)
 
         info= {
             text = optionText:format(FRIENDS_TEXTURE_DND, e.onlyChinese and '忙碌' or FRIENDS_LIST_BUSY),
@@ -235,7 +235,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
                 Set()
             end
         }
-        securecall('UIDropDownMenu_AddButton', info)
+        e.LibDD:UIDropDownMenu_AddButton(info)
     end)
 end
 

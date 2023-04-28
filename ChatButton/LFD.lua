@@ -300,7 +300,7 @@ local function partyList(self, level, type)--随机 LFDFrame.lua
         local dungeonID, name = GetLFGRandomDungeonInfo(i)
         local isAvailableForAll, isAvailableForPlayer, hid2eIfNotJoinable = IsLFGDungeonJoinable(dungeonID)
         if (isAvailableForPlayer or not hid2eIfNotJoinable) then
-            info = UIDropDownMenu_CreateInfo()
+            info = {}
             if isAvailableForAll then
                 local lfd=GetLFGQueueStats(LE_LFG_CATEGORY_LFD, dungeonID)--是否有排本
                 info.text = name..getRewardInfo(dungeonID)
@@ -342,7 +342,7 @@ local function partyList(self, level, type)--随机 LFDFrame.lua
 				info.tooltipTitle = YOU_MAY_NOT_QUEUE_FOR_THIS
 				info.tooltipText = LFGConstructDeclinedMessage(dungeonID)
             end
-            securecall('UIDropDownMenu_AddButton', info, level)
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
     end
 end
@@ -393,15 +393,15 @@ local raidList=function(self, level, type)--团队本
     local currentMapName = nil
     for i = 1, #sortedDungeons do
         if ( currentMapName ~= sortedDungeons[i].mapName ) then
-            local info = UIDropDownMenu_CreateInfo()
+            local info = {}
             currentMapName = sortedDungeons[i].mapName
             info.text = sortedDungeons[i].mapName
             info.isTitle = 1
             info.notCheckable = 1
-            securecall('UIDropDownMenu_AddButton', info, level)
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
 
-        local info = UIDropDownMenu_CreateInfo()
+        local info = {}
         if ( sortedDungeons[i].isAvailable ) then
             local sele=GetLFGQueueStats(LE_LFG_CATEGORY_RF, sortedDungeons[i].id)
             info.text = sortedDungeons[i].name..getRewardInfo(sortedDungeons[i].id)
@@ -477,7 +477,7 @@ local raidList=function(self, level, type)--团队本
 			info.tooltipTitle = YOU_MAY_NOT_QUEUE_FOR_THIS
 			info.tooltipText = LFGConstructDeclinedMessage(sortedDungeons[i].id) .. modifiedInstanceTooltipText
         end
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
     return find
 end
@@ -727,9 +727,9 @@ local function InitList(self, level, type)--LFDFrame.lua
                 setQueueStatus()--小眼睛, 信息
             end
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-        securecall('UIDropDownMenu_AddSeparator', level)
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
         info={--信息 QueueStatusFrame.lua
             text=e.onlyChinese and '列表信息' or SOCIAL_QUEUE_TOOLTIP_HEADER..INFO,
             checked=not Save.hideQueueStatus,
@@ -739,7 +739,7 @@ local function InitList(self, level, type)--LFDFrame.lua
                 setQueueStatus()
             end,
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
 
         info={--自动,战利品掷骰
             text=e.onlyChinese and '战利品掷骰' or LOOT_ROLL,
@@ -751,7 +751,7 @@ local function InitList(self, level, type)--LFDFrame.lua
                 Save.autoROLL= not Save.autoROLL and true or nil
             end
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
 --[[
         info= {
             text= e.onlyChinese and '自动打开战利品掷骰窗口' or AUTO_OPEN_LOOT_HISTORY_TEXT,
@@ -766,9 +766,9 @@ local function InitList(self, level, type)--LFDFrame.lua
                 e.set_CVar('autoOpenLootHistory', Save.autoOpenLootHistory)--自动打开战利品掷骰窗口
             end
         }
-        securecall('UIDropDownMenu_AddButton', info, level)]]
+        e.LibDD:UIDropDownMenu_AddButton(info, level)]]
 
-        securecall('UIDropDownMenu_AddSeparator', level)
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
         info={
             text= e.onlyChinese and '预创建队伍增强' or SCORE_POWER_UPS:gsub(ITEMS,LFGLIST_NAME),
             icon='UI-HUD-MicroMenu-Groupfinder-Mouseover',
@@ -780,7 +780,7 @@ local function InitList(self, level, type)--LFDFrame.lua
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '预创建队伍' or LFGLIST_NAME,
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     elseif type=='BATTLEFIELDS' then--战场
         info={
@@ -790,7 +790,7 @@ local function InitList(self, level, type)--LFDFrame.lua
                 Save.ReMe= not Save.ReMe and true or nil
             end
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
 
         info={
             text= e.onlyChinese and '职责确认' or ROLE_POLL,
@@ -799,7 +799,7 @@ local function InitList(self, level, type)--LFDFrame.lua
                 Save.autoSetPvPRole= not Save.autoSetPvPRole and true or nil
             end
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     else
         local isLeader, isTank, isHealer, isDPS = GetLFGRoles()--角色职责
@@ -816,7 +816,7 @@ local function InitList(self, level, type)--LFDFrame.lua
             menuList='SETTINGS',
             hasArrow=true,
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
 
         isTank, isHealer, isDPS = GetPVPRoles()--检测是否选定角色pve
         info={
@@ -828,7 +828,7 @@ local function InitList(self, level, type)--LFDFrame.lua
             menuList='BATTLEFIELDS',
             hasArrow=true,
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
         info= {
             text= e.onlyChinese and '战利品掷骰' or LOOT_ROLL,
             checked= GroupLootHistoryFrame and GroupLootHistoryFrame:IsShown() or (LootHistoryFrame and LootHistoryFrame:IsShown()),
@@ -840,10 +840,10 @@ local function InitList(self, level, type)--LFDFrame.lua
                 ToggleLootHistoryFrame()--LootHistory.lua
             end
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
-        securecall('UIDropDownMenu_AddSeparator', level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
         if  raidList(self, level, type) then --团本
-            securecall('UIDropDownMenu_AddSeparator', level)
+            e.LibDD:UIDropDownMenu_AddSeparator(level)
         end
         partyList(self, level, type)--随机
 
@@ -856,7 +856,7 @@ local function InitList(self, level, type)--LFDFrame.lua
             end
         end
         if num>0 then
-            securecall('UIDropDownMenu_AddSeparator', level)
+            e.LibDD:UIDropDownMenu_AddSeparator(level)
             info={
                 text= (e.onlyChinese and '离开所有副本' or LEAVE_ALL_QUEUES)..' |cnGREEN_FONT_COLOR:#'..num..'|r',
                 notCheckable=true,
@@ -870,7 +870,7 @@ local function InitList(self, level, type)--LFDFrame.lua
                 tooltipTitle= e.onlyChinese and '在队列中' or BATTLEFIELD_QUEUE_STATUS,
                 tooltipText=text,
             }
-            securecall('UIDropDownMenu_AddButton', info, level)
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
     end
 end
@@ -1029,7 +1029,7 @@ local function Init()
     WoWToolsChatButtonFrame.last=button
 
     button.Menu= CreateFrame("Frame", id..addName..'Menu', LFDMicroButton, "UIDropDownMenuTemplate")--菜单列表
-    securecall('UIDropDownMenu_Initialize', button.Menu, InitList, "MENU")
+    e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitList, "MENU")
 
     button:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' and (self.dungeonID or self.RaidID) then
@@ -1043,7 +1043,7 @@ local function Init()
                 printListInfo()--输出当前列表
             end
         else
-            ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+            e.LibDD:ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
         end
     end)
     button:SetScript('OnEnter',function(self)
@@ -1220,7 +1220,7 @@ local function Init()
     --e.set_CVar('autoOpenLootHistory', Save.autoOpenLootHistory)--自动打开战利品掷骰窗口
 
     --hooksecurefunc('QueueStatusDropDown_Show', setQueueStatusMenu)--小眼睛, 信息, 设置菜单
-    --LFDMicroButton:HookScript('OnEnter', function(self2) ToggleDropDownMenu(1, nil, menuList, self2, -250,250) end)
+    --LFDMicroButton:HookScript('OnEnter', function(self2) e.LibDD:ToggleDropDownMenu(1, nil, menuList, self2, -250,250) end)
     if Save.LFGPlus then--预创建队伍增强
         set_LFGPlus()
      end
@@ -1576,7 +1576,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
 end)
 
 --test11
---ToggleDropDownMenu(level, value, dropDownFrame, anchorName, xOffset, yOffset, menuList, button, autoHideDelay)
+--e.LibDD:ToggleDropDownMenu(level, value, dropDownFrame, anchorName, xOffset, yOffset, menuList, button, autoHideDelay)
 --MainMenuBarMicroButtons.lua
 --[[
 local Category={--NUM_LE_LFG_CATEGORYS 

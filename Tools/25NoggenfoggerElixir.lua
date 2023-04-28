@@ -132,9 +132,9 @@ local function InitMenu(self, level)--主菜单
                 Save.aura[spellID] = not type and true or false
             end
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
-    securecall('UIDropDownMenu_AddSeparator', level)
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
     local info={--快捷键,设置对话框
         text= e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL,--..(Save.KEY and ' |cnGREEN_FONT_COLOR:'..Save.KEY..'|r' or ''),
         checked=Save.KEY and true or nil,
@@ -182,7 +182,7 @@ local function InitMenu(self, level)--主菜单
             StaticPopup_Show(id..addName..'KEY')
         end,
     }
-    securecall('UIDropDownMenu_AddButton', info, level)
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
 --####
 --初始
@@ -197,7 +197,7 @@ local function Init()
     setAura()--光环取消
 
     button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-    securecall('UIDropDownMenu_Initialize', button.Menu, InitMenu, 'MENU')
+    e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
     button:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -216,7 +216,7 @@ local function Init()
     button:SetScript('OnLeave', function() e.tips:Hide() end)
     button:SetScript('OnMouseUp', function(self, d)
         if d=='RightButton' then
-            ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+            e.LibDD:ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
         end
    end)
 

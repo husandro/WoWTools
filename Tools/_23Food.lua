@@ -205,16 +205,16 @@ local function get_Save_Numer_SubClass(name)--子类, 选中数量
 end
 
 local function InitMenu(self, level, type)--主菜单
+    if UnitAffectingCombat('player') then
+        return
+    end
     local info
-    local bat= UnitAffectingCombat('player')
-
     if type=='DISABLE' then
         for itemID, _ in pairs(Save.noUseItems) do
             local itemLink, _, _, _, _, _,_, _, itemTexture = select(2, GetItemInfo(itemID))
             info={
                 text= itemLink or ('itemID '..itemID),
                 notCheckable=true,
-                disabled= bat,
                 icon=itemTexture,
                 tooltipOnButton=true,
                 tooltipTitle=e.Icon.left..(e.onlyChinese and '移除' or REMOVE),
@@ -223,10 +223,10 @@ local function InitMenu(self, level, type)--主菜单
                     set_Item_Button()
                 end
             }
-            securecall('UIDropDownMenu_AddButton', info, level)
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
 
-        securecall('UIDropDownMenu_AddSeparator', level)
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
         info={
             text= e.onlyChinese and '清除全部' or CLEAR_ALL,
             notCheckable=true,
@@ -237,7 +237,8 @@ local function InitMenu(self, level, type)--主菜单
                 print(id, addName, CLEAR_ALL, DISABLE, ITEMS, DONE)
             end
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        return
 
     elseif type=='WHO' then
         info= {
@@ -250,7 +251,7 @@ local function InitMenu(self, level, type)--主菜单
                 Save.autoLogin= not Save.autoLogin and true or nil
             end
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
 
         info= {--自动, 更新物品, 查询
             text= e.onlyChinese and '自动查找' or UPDATE..ITEMS,
@@ -265,12 +266,11 @@ local function InitMenu(self, level, type)--主菜单
                 set_auto_Who_Event()--设置事件,自动更新
             end
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
 
         info={
             text= e.onlyChinese and '仅当前版本物品' or 	LFG_LIST_CROSS_FACTION:format(REFORGE_CURRENT..(VERSION or GAME_VERSION_LABEL)),
             checked= Save.onlyMaxExpansion,
-            disabled= bat,
             tooltipOnButton=true,
             tooltipTitle= e.ExpansionLevel,
             func= function()
@@ -278,14 +278,15 @@ local function InitMenu(self, level, type)--主菜单
                 set_Item_Button()
             end,
         }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        return
+
     elseif type then
         for _, tab in pairs(itemClass) do
             if type==tab.className then
                 info={
                     text=tab.subClassID..' '..tab.subclassName,
                     checked= Save.itemClass[tab.className..tab.subclassName],
-                    disabled= bat,
                     tooltipOnButton=true,
                     tooltipTitle= tab.className.. ' classID |cnGREEN_FONT_COLOR:'..tab.classID..'|r',
                     tooltipText= tab.subclassName..' subClassID |cnGREEN_FONT_COLOR:'..tab.subClassID..'|r',
@@ -294,84 +295,83 @@ local function InitMenu(self, level, type)--主菜单
                         set_Item_Button()
                     end
                 }
-                securecall('UIDropDownMenu_AddButton', info, level)
+                e.LibDD:UIDropDownMenu_AddButton(info, level)
             end
         end
-    else
-        local classNum=get_Save_itemClass_Select()
-        info={
-            text='|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '查找' or WHO).. e.Icon.mid..' '..classNum,
-            colorCode='|cff00ff00',
-            notCheckable=true,
-            disabled=bat or classNum==0,
-            menuList='WHO',
-            hasArrow=true,
-            tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN,
-            func= function()
-                set_Item_Button()
-            end
-        }
-        securecall('UIDropDownMenu_AddButton', info, level)
-
-        securecall('UIDropDownMenu_AddSeparator', level)
-        local find={}
-        for _, tab in pairs(itemClass) do
-            if not find[tab.className] then
-                info={
-                    text=get_Save_Numer_SubClass(tab.className)..tab.className,
-                    notCheckable=true,
-                    menuList=tab.className,
-                    hasArrow=true,
-                }
-                securecall('UIDropDownMenu_AddButton', info, level)
-                find[tab.className]=true
-            end
-        end
-
-        info={
-            text=e.Icon.up2.. (e.onlyChinese and '全部取消' or CALENDAR_EVENT_REMOVED_MAIL_SUBJECT:format(ALL)),
-            colorCode= '|cffff0000',
-            notCheckable=true,
-            disabled=bat,
-            func= function()
-                Save.itemClass={}
-                set_Item_Button()
-                print(id, addName, CALENDAR_EVENT_REMOVED_MAIL_SUBJECT:format(ALL), DONE)
-            end
-        }
-        securecall('UIDropDownMenu_AddButton', info, level)
-
-        securecall('UIDropDownMenu_AddSeparator', level)
-        info= {
-            text= e.onlyChinese and '禁用' or DISABLE,
-            notCheckable=true,
-            menuList='DISABLE',
-            hasArrow=true,
-        }
-        securecall('UIDropDownMenu_AddButton', info, level)
-
-        securecall('UIDropDownMenu_AddSeparator', level)
-        info= {
-            text= e.Icon.right.. (e.onlyChinese and '移动' or NPE_MOVE),
-            isTitle= true,
-            notCheckable= true,
-        }
-        securecall('UIDropDownMenu_AddButton', info, level)
-
-        info={
-            text= e.onlyChinese and '还原位置' or RESET_POSITION,
-            notCheckable=true,
-            colorCode= not Save.point and'|cff606060',
-            disabled=bat,
-            func=function()
-                Save.point=nil
-                button:ClearAllPoints()
-                setPanelPostion()--设置按钮位置
-            end,
-        }
-        securecall('UIDropDownMenu_AddButton', info, level)
+        return
     end
+
+    local classNum=get_Save_itemClass_Select()
+    info={
+        text='|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '查找' or WHO).. e.Icon.mid..' '..classNum,
+        colorCode='|cff00ff00',
+        notCheckable=true,
+        disabled=classNum==0,
+        menuList='WHO',
+        hasArrow=true,
+        tooltipOnButton=true,
+        tooltipTitle= e.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN,
+        func= function()
+            set_Item_Button()
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
+    local find={}
+    for _, tab in pairs(itemClass) do
+        if not find[tab.className] then
+            info={
+                text=get_Save_Numer_SubClass(tab.className)..tab.className,
+                notCheckable=true,
+                menuList=tab.className,
+                hasArrow=true,
+            }
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
+            find[tab.className]=true
+        end
+    end
+
+    info={
+        text=e.Icon.up2.. (e.onlyChinese and '全部取消' or CALENDAR_EVENT_REMOVED_MAIL_SUBJECT:format(ALL)),
+        colorCode= '|cffff0000',
+        notCheckable=true,
+        func= function()
+            Save.itemClass={}
+            set_Item_Button()
+            print(id, addName, CALENDAR_EVENT_REMOVED_MAIL_SUBJECT:format(ALL), DONE)
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
+    info= {
+        text= e.onlyChinese and '禁用' or DISABLE,
+        notCheckable=true,
+        menuList='DISABLE',
+        hasArrow=true,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
+    info= {
+        text= e.Icon.right.. (e.onlyChinese and '移动' or NPE_MOVE),
+        isTitle= true,
+        notCheckable= true,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    info={
+        text= e.onlyChinese and '还原位置' or RESET_POSITION,
+        notCheckable=true,
+        colorCode= not Save.point and'|cff606060',
+        func=function()
+            Save.point=nil
+            button:ClearAllPoints()
+            setPanelPostion()--设置按钮位置
+        end,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
 
 --####
@@ -395,28 +395,24 @@ local function Init()
     end
 
     button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-    securecall('UIDropDownMenu_Initialize', button.Menu, InitMenu, 'MENU')
+    e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
     button:RegisterForDrag("RightButton")
     button:SetMovable(true)
     button:SetClampedToScreen(true)
     button:SetScript("OnDragStart", function(self,d)
-        if not EditModeManagerFrame:IsEditModeActive() then
-            self:StartMoving()
-        end
+        self:StartMoving()
     end)
     button:SetScript("OnDragStop", function(self)
-        if not EditModeManagerFrame:IsEditModeActive() then
-            ResetCursor()
-            self:StopMovingOrSizing()
-            Save.point={self:GetPoint(1)}
-            Save.point[2]=nil
-            CloseDropDownMenus()
-        end
+        ResetCursor()
+        self:StopMovingOrSizing()
+        Save.point={self:GetPoint(1)}
+        Save.point[2]=nil
+        e.LibDD:CloseDropDownMenus()
     end)
     button:SetScript("OnMouseDown", function(self,d)
         if d=='RightButton' then
-            ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+            e.LibDD:ToggleDropDownMenu(1, nil,self.Menu, self, 15, 0)
         end
     end)
     button:SetScript("OnMouseUp", function(self, d)
@@ -473,7 +469,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            
             WoWToolsSave[addName..'Tools']=Save
         end
 
