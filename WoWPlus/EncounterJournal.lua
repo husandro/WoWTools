@@ -1037,7 +1037,7 @@ local function Init()--冒险指南界面
     end)
 
 
-    --战利品, 套装, 收集数
+    --战利品, 套装, 收集数 Blizzard_LootJournalItems.lua
     hooksecurefunc(EncounterJournal.LootJournalItems.ItemSetsFrame.ScrollBox, 'Update', function(self)
         for _, frame in pairs(self:GetFrames()) do
             local ItemButtons=frame.ItemButtons or {}
