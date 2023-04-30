@@ -95,7 +95,7 @@ local function set_vigentteButton_Text()
     end
 
     local text
-    if e.Player.level==70 then--世界任务, 监视
+    if e.Player.levelMax then--世界任务, 监视
         for questID,_ in pairs(questIDTab) do
             if C_TaskQuest.IsActive(questID) then--世界任务
                 if not HaveQuestRewardData(questID) then
@@ -377,9 +377,7 @@ end
 
 
 local function set_ExpansionLandingPageMinimapButton()
-        if ExpansionLandingPageMinimapButton then
-            ExpansionLandingPageMinimapButton:SetShown(false)
-        end
+        if ExpansionLandingPageMinimapButton then ExpansionLandingPageMinimapButton:SetShown(false) end
         Set_MinMap_Icon({name= id, texture= 136235,
             func= function(self, d)
                 local key= IsModifierKeyDown()
@@ -396,37 +394,34 @@ local function set_ExpansionLandingPageMinimapButton()
                         end
                         e.LibDD:ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
                     elseif not key then
-                        if ExpansionLandingPageMinimapButton and ExpansionLandingPageMinimapButton.ToggleLandingPage and ExpansionLandingPageMinimapButton.title then
-                            ExpansionLandingPageMinimapButton.ToggleLandingPage(ExpansionLandingPageMinimapButton)--Minimap.lua
+                        local expButton=ExpansionLandingPageMinimapButton
+                        if expButton and expButton.ToggleLandingPage and expButton.title then
+                            expButton.ToggleLandingPage(expButton)--Minimap.lua
                         else
-                            InterfaceOptionsFrame_OpenToCategory(id)
+                            securecallfunction(InterfaceOptionsFrame_OpenToCategory, id)
                         end
                     end
                 elseif not key then
-                    InterfaceOptionsFrame_OpenToCategory(id)
+                    securecallfunction(InterfaceOptionsFrame_OpenToCategory, id)               
                 end
             end,
             enter= function(self)
-                if ExpansionLandingPageMinimapButton and ExpansionLandingPageMinimapButton.OnEnter and ExpansionLandingPageMinimapButton.title then--Minimap.lua
-                    ExpansionLandingPageMinimapButton.OnEnter(ExpansionLandingPageMinimapButton)
+                local expButton=ExpansionLandingPageMinimapButton
+                if expButton and expButton.OnEnter and expButton.title then--Minimap.lua
+                    expButton.OnEnter(expButton)
                     e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), 'Alt'..e.Icon.left, 0,1,0, 0,1,0)
-                    e.tips:AddDoubleLine(e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , 'Shift'..e.Icon.left, 1,0,1, 1,0,1)
-                    e.tips:AddDoubleLine(e.onlyChinese and '设置选项' or OPTIONS, e.Icon.right, 0,1,0, 0,1,0)
-                    e.tips:AddDoubleLine(id, addName)
-                    e.tips:Show()
                 else
                     e.tips:SetOwner(self, "ANCHOR_Left")
                     e.tips:ClearLines()
-                    e.tips:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), 'Alt'..e.Icon.left, 0,1,0, 0,1,0)
-                    e.tips:AddDoubleLine(e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , 'Shift'..e.Icon.left, 1,0,1, 1,0,1)
-                    e.tips:AddDoubleLine(e.onlyChinese and '设置选项' or OPTIONS, e.Icon.right, 0,1,0, 0,1,0)
-                    e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine(id, addName)
-                    e.tips:Show()
                 end
-                if ExpansionLandingPageMinimapButton and ExpansionLandingPageMinimapButton:IsShown() then
-                    ExpansionLandingPageMinimapButton:SetShown(false)
+                e.tips:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), 'Alt'..e.Icon.left, 0,1,0, 0,1,0)
+                e.tips:AddDoubleLine(e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , 'Shift'..e.Icon.left, 1,0,1, 1,0,1)
+                e.tips:AddDoubleLine(e.onlyChinese and '选项' or SETTINGS_TITLE , e.Icon.right, 0,1,0, 0,1,0)
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(id, addName)
+                e.tips:Show()
+                if expButton and expButton:IsShown() then
+                    expButton:SetShown(false)
                 end
             end
         })

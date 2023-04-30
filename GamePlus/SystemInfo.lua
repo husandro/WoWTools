@@ -412,14 +412,14 @@ local function Init()
             end
         end
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine((e.onlyChinese and '插件' or SETTINGS_TAB_ADDONS)..'('..(e.onlyChinesel and '选项' or SETTINGS_TITLE)..')', e.Icon.mid)
+        e.tips:AddDoubleLine((e.onlyChinesel and '选项' or SETTINGS_TITLE), e.Icon.mid)
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
     end)
 
     MainMenuMicroButton:EnableMouseWheel(true)--主菜单, 打开插件选项
     MainMenuMicroButton:SetScript('OnMouseWheel', function()
-        InterfaceOptionsFrame_OpenToCategory(id, STAT_CATEGORY_ATTRIBUTES)
+        securecallfunction(InterfaceOptionsFrame_OpenToCategory, id)
     end)
 
     button:SetButtonState('PUSHED')
