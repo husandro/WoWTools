@@ -721,7 +721,7 @@ local function Init()
                     text= e.onlyChinese and '自动排序 (银行)' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY..' ('..AUTO_JOIN:gsub(JOIN,'')..') '.. BANK,
                     checked=not C_Container.GetBankAutosortDisabled(),
                     tooltipOnButton=true,
-                    tooltipTitle='C_Container.\nGetBankAutosortDisabled',
+                    tooltipTitle='C_Container.\nSetBankAutosortDisabled',
                     icon= 'Banker',
                     func= function()
                         C_Container.SetBankAutosortDisabled(not C_Container.GetBankAutosortDisabled() and true or false)
