@@ -343,8 +343,8 @@ local function Init_Menu(self, level, type)
         text= e.onlyChinese and '文本' or LOCALE_TEXT_LABEL,
         icon='VignetteKillElite',
         tooltipOnButton=true,
-        tooltipTitle= id..'  '..addName,
-        tooltipText= (e.onlyChinese and '小地图' or HUD_EDIT_MODE_MINIMAP_LABEL)..mapName,
+        tooltipTitle='|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '小地图' or HUD_EDIT_MODE_MINIMAP_LABEL),
+        tooltipText='|cffff00ff'..mapName,
         checked= Save.vigentteButton,
         disabled= IsInInstance(),
         func= function ()

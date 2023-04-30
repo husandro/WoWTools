@@ -429,6 +429,7 @@ local function Init()
         Save.point={self:GetPoint(1)}
         Save.point[2]=nil
         e.LibDD:CloseDropDownMenus()
+        ResetCursor()
     end)
     panel:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
@@ -441,7 +442,11 @@ local function Init()
                 e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
             end
             e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
+            SetCursor('UI_MOVE_CURSOR')
         end
+    end)
+    panel:SetScript('OnMouseUp', function()
+        ResetCursor()
     end)
     panel:SetScript('OnMouseWheel', function(self, d)--缩放
         if IsAltKeyDown() then

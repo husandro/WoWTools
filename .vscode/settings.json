@@ -2634,7 +2634,10 @@
         "BAG_CLEANUP_BANK",
         "OPTION_TOOLTIP_REVERSE_CLEAN_UP_BAGS",
         "REVERSE_NEW_LOOT_TEXT",
-        "OPTION_TOOLTIP_DISPLAY_FREE_BAG_SLOTS"
+        "OPTION_TOOLTIP_DISPLAY_FREE_BAG_SLOTS",
+        "SettingsPanelMixin",
+        "SETTINGS_TAB_ADDONS",
+        "SETTINGS_TITLE"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

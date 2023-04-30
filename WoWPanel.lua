@@ -266,10 +266,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             textTips:SetPoint('TOP',-70,10)
             textTips:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '启用' or ENABLE)..'|r/|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE))
 
-            MainMenuMicroButton:EnableMouseWheel(true)--主菜单, 打开插件选项
-            MainMenuMicroButton:SetScript('OnMouseWheel', function()
-                InterfaceOptionsFrame_OpenToCategory(id)
-            end)
+         
+
 
             panel:UnregisterEvent('ADDON_LOADED')
         end

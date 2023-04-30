@@ -85,3 +85,4 @@ ToggleEncounterJournal()
 Interface\Cursor\UI-Cursor-Move   Redlist.xml
 
 securecall('',)
+securecallfunction
