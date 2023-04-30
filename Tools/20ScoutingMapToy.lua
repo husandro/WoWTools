@@ -25,7 +25,11 @@ for itemID, _ in pairs(Toy) do
 end
 
 local function Get_Use_Toy()
-    if UnitAffectingCombat('player') then
+    local bat= UnitAffectingCombat('player')
+    if bat or e.Player.faction=='Neutral' then
+        if not bat then
+            button:SetShown(false)
+        end
         return
     end
     local Tabs=Toy
@@ -83,6 +87,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 panel:RegisterEvent('UI_ERROR_MESSAGE')
                 panel:RegisterEvent('RECEIVED_ACHIEVEMENT_LIST')
                 panel:RegisterEvent('CRITERIA_UPDATE')
+                
+                panel:RegisterEvent('RECEIVED_ACHIEVEMENT_LIST')
 
                 if not IsAddOnLoaded('Blizzard_AchievementUI') then
                     LoadAddOn("Blizzard_AchievementUI")
@@ -122,5 +128,9 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         C_Timer.After(0.3, function()
             Get_Use_Toy()
         end)
+    elseif event=='RECEIVED_ACHIEVEMENT_LIST' then
+        if arg1 then
+            Get_Use_Toy()
+        end
     end
 end)

@@ -484,8 +484,10 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
         e.Player.levelMax= level==MAX_PLAYER_LEVEL--玩家是否最高等级
         e.Player.level= level
 
-    elseif event=='NEUTRAL_FACTION_SELECT_RESULT' and arg1 then--玩家, 派系
-        e.Player.faction= UnitFactionGroup('player')--玩家, 派系  "Alliance", "Horde", "Neutral"
+    elseif event=='NEUTRAL_FACTION_SELECT_RESULT' then--玩家, 派系
+        if arg1 then
+            e.Player.faction= UnitFactionGroup('player')--玩家, 派系  "Alliance", "Horde", "Neutral"
+        end
 
     elseif event=='PLAYER_EQUIPMENT_CHANGED' or event=='PLAYER_SPECIALIZATION_CHANGED' or event=='PLAYER_AVG_ITEM_LEVEL_UPDATE' then--更新自已
         if event=='PLAYER_SPECIALIZATION_CHANGED' and UnitInParty(arg1) then
