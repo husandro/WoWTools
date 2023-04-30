@@ -979,7 +979,6 @@ local function setMountJournal_ShowMountDropdown(index)
                             checkMount()--检测坐骑
                             setClickAtt()--设置 Click属性
                             if MountJournal_UpdateMountList then MountJournal_UpdateMountList() end
-                            
                         end,
                         EditBoxOnTextChanged=function(self, data)
                         local num= self:GetNumber()

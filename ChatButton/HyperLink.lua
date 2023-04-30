@@ -53,7 +53,7 @@ local function Realm(link)--去服务器为*, 加队友种族图标,和N,T
     local split= LinkUtil.SplitLink(link)
     local name= split and split:match('player:(.-):') or link:match('|Hplayer:.-|h%[|cff......(.-)|r]') or link:match('|Hplayer:.-|h%[(.-)]|h')
     local server= name and name:match('%-(.+)')
-    if name==e.Player.name_realm or name==e.Plaeyr.name then
+    if name==e.Player.name_realm or name==e.Player.name then
         return e.Icon.toRight2..e.Player.col..COMBATLOG_FILTER_STRING_ME..'|r'..e.Icon.toLeft2
     else
         local text= e.GetPlayerInfo({unit=nil, guid=nil, name=name,  reName=false, reRealm=false})
@@ -714,6 +714,7 @@ local function set_START_TIMER_Event()--事件, 声音
         panel:UnregisterEvent('STOP_TIMER_OF_TYPE')
     end
 end
+
 
 --#####
 --对话框

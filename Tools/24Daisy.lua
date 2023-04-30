@@ -120,7 +120,6 @@ local function Init()
     end
 
     e.ToolsSetButtonPoint(button)--设置位置
-    
 
     button:SetScript('OnMouseDown', function(self, d)
         local key=IsModifierKeyDown()
@@ -163,8 +162,6 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-
-
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
@@ -198,7 +195,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            
+
             WoWToolsSave[addName..'Tools']=Save
         end
 

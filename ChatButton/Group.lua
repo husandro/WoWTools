@@ -1,8 +1,8 @@
 local id, e = ...
 local addName= 'ChatButtonGroup'
 local Save={
-    mouseUP= SUMMON ..' '..COMBATLOG_FILTER_STRING_ME,
-    mouseDown= e.Player.cn and '1' or 'inv, thx' ,
+    mouseUP= not LOCALE_zhCN and SUMMON ..' '..COMBATLOG_FILTER_STRING_ME or '求拉, 谢谢',
+    mouseDown= not LOCALE_zhCN and 'inv, thx' or '1' ,
 }
 local button
 
@@ -129,44 +129,49 @@ local function InitMenu(self, level, type)--主菜单
                 notCheckable=true,
                 tooltipOnButton=true,
                 tooltipTitle=tab.text,
-                func=function()
+                arg1=tab.text,
+                arg2=tab.type,
+                func=function(_, arg1, arg2)
                     StaticPopupDialogs[id..addName..'CUSTOM']={--区域,设置对话框
-                    text=id..'    '..addName..'\n\n'..CUSTOM..SEND_MESSAGE..'\n\n|cnGREEN_FONT_COLOR:%s\n%%s|r '..AUTOCOMPLETE_LABEL_GROUP..LFG_LIST_CROSS_FACTION:format(RAID),
-                    whileDead=1,
-                    hideOnEscape=1,
-                    exclusive=1,
-                    timeout = 60,
-                    hasEditBox=1,
-                    button1= e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/',''),
-                    button2= e.onlyChinese and '取消' or CANCEL,
-                    OnShow = function(self2, data)
-                        self2.editBox:SetWidth(self2:GetWidth()-30)
-                        if Save[data.type] then
-                            self2.editBox:SetText(Save[data.type])
-                        end
-                    end,
-                    OnAccept = function(self2, data)
-                        local text2= self2.editBox:GetText()
-                        if text2:gsub(' ','')=='' then
-                            Save[data.type]=nil
-                        else
-                            Save[data.type]=text2
-                        end
-                    end,
-                    EditBoxOnTextChanged=function(self2, data)
-                        local text2= self2:GetText()
-                        if text2:gsub(' ','')=='' then
-                            self2:GetParent().button1:SetText(e.onlyChinese and '移除' or REMOVE)
-                        else
-                            self2:GetParent().button1:SetText(e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/',''))
-                        end
-                    end,
-                    EditBoxOnEscapePressed = function(s)
-                        s:SetAutoFocus(false)
-                        s:GetParent():Hide()
-                    end,
+                        text=id..'    '..addName
+                            ..'\n\n'..(e.onlyChinese and '自定义发送信息' or (CUSTOM..SEND_MESSAGE))
+                            ..'\n\n|cnGREEN_FONT_COLOR:%s|r\n\n'
+                            ..(e.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS),
+                        whileDead=1,
+                        hideOnEscape=1,
+                        exclusive=1,
+                        timeout = 60,
+                        hasEditBox=1,
+                        button1= e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/',''),
+                        button2= e.onlyChinese and '取消' or CANCEL,
+                        OnShow = function(self2, data)
+                            self2.editBox:SetWidth(self2:GetWidth()-30)
+                            if Save[data.type] then
+                                self2.editBox:SetText(Save[data.type])
+                            end
+                        end,
+                        OnAccept = function(self2, data)
+                            local text2= self2.editBox:GetText()
+                            if text2:gsub(' ','')=='' then
+                                Save[data.type]=nil
+                            else
+                                Save[data.type]=text2
+                            end
+                        end,
+                        EditBoxOnTextChanged=function(self2, data)
+                            local text2= self2:GetText()
+                            if text2:gsub(' ','')=='' then
+                                self2:GetParent().button1:SetText(e.onlyChinese and '移除' or REMOVE)
+                            else
+                                self2:GetParent().button1:SetText(e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/',''))
+                            end
+                        end,
+                        EditBoxOnEscapePressed = function(s)
+                            --s:SetAutoFocus(false)
+                            s:GetParent():Hide()
+                        end,
                     }
-                    StaticPopup_Show(id..addName..'CUSTOM', tab.text, nil , {type=tab.type})
+                    StaticPopup_Show(id..addName..'CUSTOM', arg1, nil , {type=arg2})
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)

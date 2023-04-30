@@ -260,37 +260,6 @@ local function setAllTextrue()--主图标,是否有权限
 end
 
 
---#####
---对话框
---#####
-StaticPopupDialogs[id..addName..'COUNTDOWN']={--区域,设置对话框
-    text=id..' '..addName..'\n'..READY..'\n\n1 - 3600',
-    whileDead=1,
-    hideOnEscape=1,
-    exclusive=1,
-	timeout = 60,
-    hasEditBox=1,
-    button1=SETTINGS,
-    button2=CANCEL,
-    OnShow = function(self, data)
-        self.editBox:SetNumeric(true)
-        self.editBox:SetNumber(Save.countdown or 7)
-	end,
-    OnAccept = function(self, data)
-		local num= self.editBox:GetNumber()
-        Save.countdown=num
-	end,
-    EditBoxOnTextChanged=function(self, data)
-       local num= self:GetNumber()
-       self:GetParent().button1:SetEnabled(num>0 and num<=3600)
-       self:GetParent().button1:SetText(SecondsToClock(num))
-    end,
-    EditBoxOnEscapePressed = function(s)
-        s:SetAutoFocus(false)
-        s:GetParent():Hide()
-    end,
-}
-
 --#############
 --设置标记, 框架
 --#############
@@ -490,7 +459,35 @@ local function setMarkersFrame()--设置标记, 框架
                     C_PartyInfo.DoCountdown(0)
                 end
                 e.Chat(BINDING_NAME_STOPATTACK)
+
             elseif d=='RightButton' and IsControlKeyDown() then--设置时间
+                StaticPopupDialogs[id..addName..'COUNTDOWN']={--区域,设置对话框
+                    text=id..' '..addName..'\n'..(e.onlyChinese and '就绪' or READY)..'\n\n1 - 3600',
+                    whileDead=1,
+                    hideOnEscape=1,
+                    exclusive=1,
+                    timeout = 60,
+                    hasEditBox=1,
+                    button1= e.onlyChinese and '设置' or SETTINGS,
+                    button2= e.onlyChinese and '取消' or CANCEL,
+                    OnShow = function(self2, data)
+                        self2.editBox:SetNumeric(true)
+                        self2.editBox:SetNumber(Save.countdown or 7)
+                    end,
+                    OnAccept = function(self2, data)
+                        local num= self2.editBox:GetNumber()
+                        Save.countdown=num
+                    end,
+                    EditBoxOnTextChanged=function(self2, data)
+                        local num= self2:GetNumber()
+                        self2:GetParent().button1:SetEnabled(num>0 and num<=3600)
+                        self2:GetParent().button1:SetText(SecondsToClock(num))
+                    end,
+                    EditBoxOnEscapePressed = function(s)
+                        s:SetAutoFocus(false)
+                        s:GetParent():Hide()
+                    end,
+                }
                 StaticPopup_Show(id..addName..'COUNTDOWN')
             end
         end)

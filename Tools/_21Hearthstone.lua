@@ -34,7 +34,9 @@ local ModifiedTab={
 for _, itemID in pairs(ModifiedTab) do
     e.LoadDate({id=itemID, type='item'})
 end
-
+for itemID, _ in pairs(Save.items) do
+    e.LoadDate({id=itemID, type='item'})
+end
 
 local function getToy()--生成, 有效表格
     button.items={}

@@ -174,7 +174,7 @@ local function InitMenu(self, level, type)--主菜单
                 notCheckable=true,
                 icon=icon,
                 func=function()
-                    StaticPopup_Show(id..addName..'REMOVE',text ,nil, {type=type, index=index, name=text, ID=ID})
+                    StaticPopup_Show(id..addName..'REMOVE', text, nil, {type=type, index=index, name=text, ID=ID})
                 end,
                 tooltipOnButton=true,
                 tooltipTitle='|cnRED_FONT_COLOR:'..REMOVE..'|r',

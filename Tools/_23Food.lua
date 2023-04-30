@@ -394,8 +394,6 @@ local function Init()
         set_Item_Button()
     end
 
-    
-
     button:RegisterForDrag("RightButton")
     button:SetMovable(true)
     button:SetClampedToScreen(true)
