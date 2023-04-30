@@ -291,6 +291,7 @@ end
 local function Init_Menu(self, level, type)
     local info={
         text=e.onlyChinese and '镇民' or TOWNSFOLK_TRACKING_TEXT,
+        icon='UI-HUD-Minimap-Tracking-Mouseover',
         checked= C_CVar.GetCVarBool("minimapTrackingShowAll"),
         tooltipOnButton=true,
         tooltipTitle= e.onlyChinese and '显示: 追踪' or SHOW..': '..TRACKING,
@@ -303,6 +304,7 @@ local function Init_Menu(self, level, type)
 
     info={
         text= e.onlyChinese and '缩小地图' or BINDING_NAME_MINIMAPZOOMOUT,
+        icon= 'UI-HUD-Minimap-Zoom-Out',
         checked= Save.ZoomOut,
         tooltipOnButton=true,
         tooltipTitle= e.onlyChinese and '更新地区时' or UPDATE..ZONE,
@@ -316,6 +318,7 @@ local function Init_Menu(self, level, type)
 
     info={
         text= e.onlyChinese and '信息' or INFO,--当前缩放，显示数值
+        icon= 'common-icon-zoomin',
         checked= Save.ZoomOutInfo,
         tooltipOnButton=true,
         tooltipTitle=(e.onlyChinese and '镜头视野范围' or CAMERA_FOV)..': '..format(e.onlyChinese and '%s码' or IN_GAME_NAVIGATION_RANGE, format('%i', C_Minimap.GetViewRadius() or 100)),
