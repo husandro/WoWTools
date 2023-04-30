@@ -78,6 +78,11 @@ local function Init()
             end
         end
     end)
+
+    panel:SetButtonState('PUSHED')
+    C_Timer.After(4, function()
+        panel:SetButtonState('NORMAL')
+    end)
 end
 
 --###########
@@ -89,10 +94,6 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if not WoWToolsSave[addName] then
-                panel:SetButtonState('PUSHED')
-            end
-
             Save= WoWToolsSave[addName] or Save
 
             --添加控制面板        

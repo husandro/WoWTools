@@ -344,9 +344,6 @@ local function Init()
             e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
         end
     end)
-    button:SetScript('OnLeave', function (self)
-        self:SetButtonState('NORMAL')
-    end)
 
     button.fpsmsFrame:HookScript("OnUpdate", function (self, elapsed)--fpsms
         timeElapsed = timeElapsed + elapsed
@@ -415,6 +412,11 @@ local function Init()
             end
         end
         e.tips:Show()
+    end)
+
+    button:SetButtonState('PUSHED')
+    C_Timer.After(4, function()
+        button:SetButtonState('NORMAL')
     end)
 end
 
