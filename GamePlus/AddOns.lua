@@ -186,7 +186,10 @@ local function Init()
                 local parent=self:GetParent()
                 parent.button1:SetEnabled(text~='' and not Save.buttons[text])
             end,
-            EditBoxOnEscapePressed = function(self) self:GetParent():Hide() end,
+            EditBoxOnEscapePressed = function(self)
+                self:SetAutoFocus(false)
+                self:GetParent():Hide()
+            end,
         }
         local text= select(3, getAddList())--检查列表, 选取数量, 总数, 数量/总数
         StaticPopup_Show(id..addName..'NEW', text, nil)--新建按钮

@@ -566,6 +566,7 @@ local function Init()
                     end
                 end,
                 EditBoxOnEscapePressed = function(s)
+                    s:SetAutoFocus(false)
                     s:GetParent():Hide()
                 end,
             }

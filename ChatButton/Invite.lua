@@ -604,6 +604,7 @@ local function InitList(self, level, type)
                         self2:GetParent().button1:SetEnabled(text~='')
                     end,
                     EditBoxOnEscapePressed = function(s)
+                        s:SetAutoFocus(false)
                         s:GetParent():Hide()
                     end,
                 }

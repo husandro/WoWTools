@@ -178,6 +178,7 @@ local function InitMenu(self, level, type)--主菜单
                         self2:GetParent().button1:SetEnabled(text~= Save.world and text:gsub(' ', '')~='')
                     end,
                     EditBoxOnEscapePressed = function(self2)
+                        self2:SetAutoFocus(false)
                         self2:GetParent():Hide()
                     end,
                 }

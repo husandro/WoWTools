@@ -415,6 +415,7 @@ StaticPopupDialogs[id..addName..'ITEMS']={--物品, 设置对话框
         setClickAtt()--设置 Click属性
     end,
     EditBoxOnEscapePressed = function(s)
+        s:SetAutoFocus(false)
         s:GetParent():Hide()
     end,
 }
@@ -442,6 +443,7 @@ StaticPopupDialogs[id..addName..'SPELLS']={--法术, 设置对话框
         setClickAtt()--设置 Click属性
     end,
     EditBoxOnEscapePressed = function(s)
+        s:SetAutoFocus(false)
         s:GetParent():Hide()
     end,
 }
@@ -541,6 +543,7 @@ local function InitMenu(self, level, type)--主菜单
                         self2:GetParent().button1:SetEnabled(text~='')
                     end,
                     EditBoxOnEscapePressed = function(s)
+                        s:SetAutoFocus(false)
                         s:GetParent():Hide()
                     end,
                 }
@@ -989,6 +992,7 @@ local function setMountJournal_ShowMountDropdown(index)
                         self:GetParent().button1:SetEnabled(num>0 and num<2147483647)
                         end,
                         EditBoxOnEscapePressed = function(s)
+                            s:SetAutoFocus(false)
                             s:GetParent():Hide()
                         end,
                     }

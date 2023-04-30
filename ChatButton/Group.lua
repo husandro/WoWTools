@@ -103,45 +103,6 @@ end
 
 
 --#####
---对话框
---#####
-StaticPopupDialogs[id..addName..'CUSTOM']={--区域,设置对话框
-    text=id..'    '..addName..'\n\n'..CUSTOM..SEND_MESSAGE..'\n\n|cnGREEN_FONT_COLOR:%s\n%%s|r '..AUTOCOMPLETE_LABEL_GROUP..LFG_LIST_CROSS_FACTION:format(RAID),
-    whileDead=1,
-    hideOnEscape=1,
-    exclusive=1,
-	timeout = 60,
-    hasEditBox=1,
-    button1=SLASH_CHAT_MODERATE2:gsub('/',''),
-    button2=CANCEL,
-    OnShow = function(self, data)
-        self.editBox:SetWidth(self:GetWidth()-30)
-        if Save[data.type] then
-            self.editBox:SetText(Save[data.type])
-        end
-	end,
-    OnAccept = function(self, data)
-		local text= self.editBox:GetText()
-        if text:gsub(' ','')=='' then
-            Save[data.type]=nil
-        else
-            Save[data.type]=text
-        end
-    end,
-    EditBoxOnTextChanged=function(self, data)
-        local text= self:GetText()
-        if text:gsub(' ','')=='' then
-            self:GetParent().button1:SetText(REMOVE)
-        else
-            self:GetParent().button1:SetText(SLASH_CHAT_MODERATE2:gsub('/',''))
-        end
-    end,
-    EditBoxOnEscapePressed = function(s)
-        s:GetParent():Hide()
-    end,
-}
-
---#####
 --主菜单
 --#####
 local function InitMenu(self, level, type)--主菜单
@@ -169,6 +130,42 @@ local function InitMenu(self, level, type)--主菜单
                 tooltipOnButton=true,
                 tooltipTitle=tab.text,
                 func=function()
+                    StaticPopupDialogs[id..addName..'CUSTOM']={--区域,设置对话框
+                    text=id..'    '..addName..'\n\n'..CUSTOM..SEND_MESSAGE..'\n\n|cnGREEN_FONT_COLOR:%s\n%%s|r '..AUTOCOMPLETE_LABEL_GROUP..LFG_LIST_CROSS_FACTION:format(RAID),
+                    whileDead=1,
+                    hideOnEscape=1,
+                    exclusive=1,
+                    timeout = 60,
+                    hasEditBox=1,
+                    button1= e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/',''),
+                    button2= e.onlyChinese and '取消' or CANCEL,
+                    OnShow = function(self2, data)
+                        self2.editBox:SetWidth(self2:GetWidth()-30)
+                        if Save[data.type] then
+                            self2.editBox:SetText(Save[data.type])
+                        end
+                    end,
+                    OnAccept = function(self2, data)
+                        local text2= self2.editBox:GetText()
+                        if text2:gsub(' ','')=='' then
+                            Save[data.type]=nil
+                        else
+                            Save[data.type]=text2
+                        end
+                    end,
+                    EditBoxOnTextChanged=function(self2, data)
+                        local text2= self2:GetText()
+                        if text2:gsub(' ','')=='' then
+                            self2:GetParent().button1:SetText(e.onlyChinese and '移除' or REMOVE)
+                        else
+                            self2:GetParent().button1:SetText(e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/',''))
+                        end
+                    end,
+                    EditBoxOnEscapePressed = function(s)
+                        s:SetAutoFocus(false)
+                        s:GetParent():Hide()
+                    end,
+                    }
                     StaticPopup_Show(id..addName..'CUSTOM', tab.text, nil , {type=tab.type})
                 end
             }

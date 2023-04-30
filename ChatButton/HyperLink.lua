@@ -760,6 +760,7 @@ StaticPopupDialogs[id..addName..'WELCOME']={--区域,设置对话框
         self:GetParent().button1:SetEnabled(text:gsub(' ', '')~='')
     end,
     EditBoxOnEscapePressed = function(s)
+        s:SetAutoFocus(false)
         s:GetParent():Hide()
     end,
 }

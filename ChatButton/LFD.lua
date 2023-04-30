@@ -916,6 +916,7 @@ StaticPopupDialogs[addName..'ExitIns']={
         end
     end,
     EditBoxOnEscapePressed = function(s)
+        s:SetAutoFocus(false)
         ExitIns=nil
         print(id,addName,'|cff00ff00'..(e.onlyChinese and '取消' or CANCEL)..'|r', e.onlyChinese and '离开' or LEAVE)
         s:GetParent():Hide()

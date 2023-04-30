@@ -77,46 +77,6 @@ local function set_KEY()--设置捷键
     end
 end
 
-StaticPopupDialogs[id..addName..'KEY']={--快捷键,设置对话框
-    text=id..' '..addName..'\n'..SETTINGS_KEYBINDINGS_LABEL..'\n\nQ, BUTTON5',
-    whileDead=1,
-    hideOnEscape=1,
-    exclusive=1,
-    timeout = 60,
-    hasEditBox=1,
-    button1=SETTINGS,
-    button2=CANCEL,
-    button3=REMOVE,
-    OnShow = function(self, data)
-        self.editBox:SetText(Save.KEY or ';')
-        if Save.KEY then
-            self.button1:SetText(SLASH_CHAT_MODERATE2:gsub('/', ''))--修该
-        end
-        self.button3:SetEnabled(Save.KEY)
-    end,
-    OnAccept = function(self, data)
-        local text= self.editBox:GetText()
-        text=text:gsub(' ','')
-        text=text:gsub('%[','')
-        text=text:gsub(']','')
-        text=text:upper()
-        Save.KEY=text
-        set_KEY()--设置捷键
-    end,
-    OnAlt = function()
-        Save.KEY=nil
-        set_KEY()--设置捷键
-    end,
-    EditBoxOnTextChanged=function(self, data)
-        local text= self:GetText()
-        text=text:gsub(' ','')
-        self:GetParent().button1:SetEnabled(text~='')
-    end,
-    EditBoxOnEscapePressed = function(s)
-        s:GetParent():Hide()
-    end,
-}
-
 --#####
 --主菜单
 --#####
@@ -176,6 +136,7 @@ local function InitMenu(self, level)--主菜单
                     self:GetParent().button1:SetEnabled(text~='')
                 end,
                 EditBoxOnEscapePressed = function(s)
+                    s:SetAutoFocus(false)
                     s:GetParent():Hide()
                 end,
             }

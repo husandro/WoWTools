@@ -259,6 +259,7 @@ local function InitMenu(self, level, menuList)--主菜单
                             self:GetParent().button1:SetEnabled(text~='')
                         end,
                         EditBoxOnEscapePressed = function(s)
+                            s:SetAutoFocus(false)
                             s:GetParent():Hide()
                         end,
                     }

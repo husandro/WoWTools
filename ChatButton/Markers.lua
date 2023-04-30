@@ -286,6 +286,7 @@ StaticPopupDialogs[id..addName..'COUNTDOWN']={--区域,设置对话框
        self:GetParent().button1:SetText(SecondsToClock(num))
     end,
     EditBoxOnEscapePressed = function(s)
+        s:SetAutoFocus(false)
         s:GetParent():Hide()
     end,
 }

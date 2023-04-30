@@ -732,7 +732,10 @@ local function setMenu()
                             s.editBox:SetText(buySave[itemID])
                         end
                     end,
-                    EditBoxOnEscapePressed = function(s) s:GetParent():Hide() end,
+                    EditBoxOnEscapePressed = function(s)
+                        s:SetAutoFocus(false)
+                        s:GetParent():Hide()
+                    end,
                 }
                 StaticPopup_Show(id..addName..'Buy');
             end
