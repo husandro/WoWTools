@@ -2,13 +2,10 @@ local id, e = ...
 local addName= HUD_EDIT_MODE_MINIMAP_LABEL
 local Save={
         scale=e.Player.husandro and 1 or 0.85,
-        ZoomOut=true,
+        ZoomOut=true,--更新地区时,缩小化地图
         vigentteButton=e.Player.husandro,
         vigentteButtonShowText=true,
-        expansionScale= 0.85,
-        addIcon= e.Player.husandro,
         miniMapPoint={},--保存小图地, 按钮位置
-        --expansionAlpha=0.3,
 }
 local uiMapIDsTab= {2026, 2025, 2024, 2023, 2022, 2133}--监视, areaPoiIDs，
 local questIDTab= {--世界任务, 监视, ID
@@ -28,92 +25,6 @@ local function set_ZoomOut()
         end
     end
 end
-
-
---####
---缩放
---####
-local function set_MinimapCluster()--缩放
-    local frame=MinimapCluster
-    local function set_Minimap_Zoom(d)
-        local scale = Save.scale or 1
-        if d==1 then
-            scale= scale-0.05
-        elseif d==-1 then
-            scale= scale+0.05
-        end
-        scale= scale>2 and 2 or scale<0.4 and 0.4 or scale
-        frame:SetScale(scale)
-        Save.scale=scale
-        print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
-    end
-
-    frame.ScaleIn=e.Cbtn(Minimap, {icon='hide', size={20,20}})
-    frame.ScaleIn:SetPoint('TOP',-2, 13)
-    frame.ScaleIn:SetScript('OnMouseDown', function(self, d)
-        if d=='RightButton' then
-            SetCursor('UI_MOVE_CURSOR')
-        else
-            set_Minimap_Zoom(1)
-        end
-    end)
-    frame.ScaleIn:SetScript('OnEnter', function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, addName)
-        e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE, (e.onlyChinese and '缩小' or ZOOM_OUT)..(Save.scale or 1)..e.Icon.left)
-
-        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
-        e.tips:Show()
-    end)
-    frame.ScaleIn:SetScript('OnLeave', function() e.tips:Hide() ResetCursor() end)
-    frame.ScaleIn:SetScript('OnMouseUp', function() ResetCursor() end)
-
-    frame.ScaleOut=e.Cbtn(Minimap, {icon='hide', size={20,20}})
-    frame.ScaleOut:SetPoint('BOTTOM', -1, -13)
-    frame.ScaleOut:SetScript('OnMouseDown', function(self, d)
-        if d=='RightButton' then
-            SetCursor('UI_MOVE_CURSOR')
-        else
-            set_Minimap_Zoom(-1)
-        end
-    end)
-    frame.ScaleOut:SetScript('OnEnter', function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, addName)
-        e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE,(e.onlyChinese and '放大' or ZOOM_IN)..(Save.scale or 1)..e.Icon.left)
-        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
-        e.tips:Show()
-    end)
-    frame.ScaleOut:SetScript('OnLeave', function() e.tips:Hide() ResetCursor() end)
-    frame.ScaleOut:SetScript('OnMouseUp', function() ResetCursor() end)
-    if Save.scale and Save.scale~=1 then
-        frame:SetScale(Save.scale)
-    end
-
-    frame:SetMovable(true)
-    frame:SetClampedToScreen(true)
-    frame.ScaleIn:RegisterForDrag("RightButton")
-    frame.ScaleIn:SetScript("OnDragStart", function()
-        frame:StartMoving()
-    end)
-    frame.ScaleIn:SetScript("OnDragStop", function()
-        ResetCursor()
-        frame:StopMovingOrSizing()
-    end)
-
-    frame.ScaleOut:RegisterForDrag("RightButton")
-    frame.ScaleOut:SetScript("OnDragStart", function()
-        frame:StartMoving()
-    end)
-    frame.ScaleOut:SetScript("OnDragStop", function()
-        ResetCursor()
-        frame:StopMovingOrSizing()
-    end)
-
-end
-
 
 
 --#################
@@ -466,7 +377,6 @@ end
 --初始
 --####
 local function Init()
-    set_MinimapCluster()--缩放
     C_Timer.After(2, set_ExpansionLandingPageMinimapButton)--盟约图标
 
     if MinimapCluster then
