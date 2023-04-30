@@ -993,15 +993,17 @@ local function Init()
                 e.Set_Item_Stats(self, link, {point=self.icon})
                 Equipment()
                 LvTo()--总装等
-            elseif InventSlot_To_ContainerSlot[slot] and self:HasBagEquipped() then--背包数
+            elseif InventSlot_To_ContainerSlot[slot] then
                 local numFreeSlots
-                numFreeSlots = C_Container.GetContainerNumFreeSlots(InventSlot_To_ContainerSlot[slot])
-                if numFreeSlots==0 then
-                    numFreeSlots= nil
-                end
-                if numFreeSlots and not self.numFreeSlots then
-                    self.numFreeSlots=e.Cstr(self, {color=true, justifyH='CENTER'})
-                    self.numFreeSlots:SetPoint('BOTTOM',0 ,6)
+                if self:HasBagEquipped() then--背包数
+                    numFreeSlots = C_Container.GetContainerNumFreeSlots(InventSlot_To_ContainerSlot[slot])
+                    if numFreeSlots==0 then
+                        numFreeSlots= '|cnRED_FONT_COLOR:'..numFreeSlots..'|r'
+                    end
+                    if not self.numFreeSlots then
+                        self.numFreeSlots=e.Cstr(self, {color=true, justifyH='CENTER'})
+                        self.numFreeSlots:SetPoint('BOTTOM',0 ,6)
+                    end
                 end
                 if self.numFreeSlots then
                     self.numFreeSlots:SetText(numFreeSlots or '')

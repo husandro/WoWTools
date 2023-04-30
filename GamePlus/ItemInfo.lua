@@ -13,6 +13,7 @@ local itemLevelStr= ITEM_LEVEL:gsub('%%d', '%(%%d%+%)')--"物品等级：%d"
 local FMTab={}--附魔
 local useStr=ITEM_SPELL_TRIGGER_ONUSE..'(.+)'--使用：
 local andStr = COVENANT_RENOWN_TOAST_REWARD_COMBINER:format('(.-)','(.+)')--"%s 和 %s";
+local bagNumStr=CONTAINER_SLOTS:gsub('%%d', '%(%%d%+%)'):gsub('%%s','.+') -- "%d格%s";
 local size= 10--字体大小
 
 
@@ -111,6 +112,8 @@ local function set_Item_Info(self, tab)
             if containerInfo and not containerInfo.isBound then--没有锁定
                 topRightText='|A:'..e.Icon.unlocked..':0:0|a'
             end
+            local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={bagNumStr}})
+            topLeftText= dateInfo.text[bagNumStr]--格数
 
         elseif classID==3 then--宝石
             if expacID== e.ExpansionLevel then
@@ -688,6 +691,7 @@ local function Init()
                     checked= C_Container.GetSortBagsRightToLeft(),
                     tooltipOnButton=true,
                     tooltipTitle='C_Container.\nSetSortBagsRightToLeft',
+                    tooltipText= e.onlyChinese and '整理背包会将物品移动到你最右边的背包里' or OPTION_TOOLTIP_REVERSE_CLEAN_UP_BAGS,
                     func= function()
                         C_Container.SetSortBagsRightToLeft(not C_Container.GetSortBagsRightToLeft() and true or false)
                     end,
@@ -695,7 +699,10 @@ local function Init()
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
 
                 info={--排序:从右到左
-                    text= e.onlyChinese and '新物品: 最左边' or (BUG_CATEGORY11..'('..NEW_CAPS..'): '..HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT),
+                    --text= e.onlyChinese and '新物品: 最左边' or (BUG_CATEGORY11..'('..NEW_CAPS..'): '..HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT),
+                    --text=(e.onlyChinese and '放入物品' or ITEMS)..': '.. (format(e.onlyChinese and '%s到%s' or INT_SPELL_POINTS_SPREAD_TEMPLATE, e.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_LEFT, e.onlyChinese and '右' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_RIGHT)),
+                    text= e.onlyChinese and '将战利品放入最左边的背包' or REVERSE_NEW_LOOT_TEXT ,
+                    icon= e.Icon.toLeft,
                     checked= C_Container.GetInsertItemsLeftToRight(),
                     tooltipOnButton=true,
                     tooltipTitle='C_Container.\nSetInsertItemsLeftToRight',
@@ -707,7 +714,8 @@ local function Init()
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
 
                 info={
-                    text= e.onlyChinese and '自动排序' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY..' ('..AUTO_JOIN:gsub(JOIN,'')..')',
+                    text= e.onlyChinese and '整理背包: 自动' or (BAG_CLEANUP_BAGS..': '..AUTO_JOIN:gsub(JOIN,'')),
+                    icon= 'bags-button-autosort-up',
                     checked=not C_Container.GetBackpackAutosortDisabled(),
                     tooltipOnButton=true,
                     tooltipTitle='C_Container.\nSetBackpackAutosortDisabled',
@@ -718,11 +726,11 @@ local function Init()
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
 
                 info={
-                    text= e.onlyChinese and '自动排序 (银行)' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY..' ('..AUTO_JOIN:gsub(JOIN,'')..') '.. BANK,
+                    text= e.onlyChinese and '整理银行: 自动' or (BAG_CLEANUP_BANK..': '..AUTO_JOIN:gsub(JOIN,'')),
+                    icon= 'bags-button-autosort-up',
                     checked=not C_Container.GetBankAutosortDisabled(),
                     tooltipOnButton=true,
                     tooltipTitle='C_Container.\nSetBankAutosortDisabled',
-                    icon= 'Banker',
                     func= function()
                         C_Container.SetBankAutosortDisabled(not C_Container.GetBankAutosortDisabled() and true or false)
                     end,

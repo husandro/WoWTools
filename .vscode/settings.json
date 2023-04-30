@@ -2630,7 +2630,11 @@
         "HybridScrollFrame_Update",
         "UIDropDownMenu_AddButton",
         "UIDropDownMenu_AddSeparator",
-        "CloseDropDownMenus"
+        "CloseDropDownMenus",
+        "BAG_CLEANUP_BANK",
+        "OPTION_TOOLTIP_REVERSE_CLEAN_UP_BAGS",
+        "REVERSE_NEW_LOOT_TEXT",
+        "OPTION_TOOLTIP_DISPLAY_FREE_BAG_SLOTS"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
