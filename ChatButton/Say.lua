@@ -441,8 +441,7 @@ local function Init()
     button:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
     WoWToolsChatButtonFrame.last=button
 
-    button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-    e.LibDD:UIDropDownMenu_Initialize(button.Menu, Init_Menu, 'MENU')
+    
 
     button.type=SLASH_SAY1
     setType(e.onlyChinese and '说' or SAY)--使用,提示
@@ -457,7 +456,11 @@ local function Init()
                 e.Say(button.type, button.name, button.wow)
             end
         else
-            e.LibDD:ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+            if not self.Menu then
+                self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
+                e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Menu, 'MENU')
+            end
+            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
         end
     end)
 

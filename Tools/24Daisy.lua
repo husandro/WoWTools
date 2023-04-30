@@ -120,8 +120,7 @@ local function Init()
     end
 
     e.ToolsSetButtonPoint(button)--设置位置
-    button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-    e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
+    
 
     button:SetScript('OnMouseDown', function(self, d)
         local key=IsModifierKeyDown()
@@ -133,8 +132,12 @@ local function Init()
         end
     end)
 
-    button:SetScript('OnMouseWheel', function(self, d)
-        e.LibDD:ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+    button:SetScript('OnMouseWheel', function(self)
+        if not self.Menu then
+            self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
+            e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
+        end
+        e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
    end)
 
    button:SetScript('OnEnter', function(self)

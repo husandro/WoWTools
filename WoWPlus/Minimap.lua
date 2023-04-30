@@ -10,9 +10,17 @@ local Save={
         miniMapPoint={},--保存小图地, 按钮位置
         --expansionAlpha=0.3,
 }
+local uiMapIDsTab= {2026, 2025, 2024, 2023, 2022, 2133}--监视, areaPoiIDs，
+local questIDTab= {--世界任务, 监视, ID
+    [74378]=true,
+}
 local panel=CreateFrame("Frame")
 
-local function set_ZoomOut()--更新地区时,缩小化地图
+
+--###################
+--更新地区时,缩小化地图
+--###################
+local function set_ZoomOut()
     if Save.ZoomOut then
         local value= Minimap:GetZoomLevels()
         if value~=0 then
@@ -39,17 +47,6 @@ local function set_MinimapCluster()--缩放
         Save.scale=scale
         print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
     end
-    --[[Minimap:SetScript('OnMouseWheel', function(self, d)--Minimap.lua
-        if IsAltKeyDown() then
-            set_Minimap_Zoom(d)
-        else
-            if d > 0 then
-                Minimap_ZoomIn();
-            elseif d < 0 then
-                Minimap_ZoomOut();
-            end
-        end
-    end)]]
 
     frame.ScaleIn=e.Cbtn(Minimap, {icon='hide', size={20,20}})
     frame.ScaleIn:SetPoint('TOP',-2, 13)
@@ -118,165 +115,6 @@ local function set_MinimapCluster()--缩放
 end
 
 
---#######
---盟约图标
---#######
-local Set_MinMap_Icon= function(tab)-- {name, texture, func, hide} 小地图，建立一个图标 Hide("MyLDB") icon:Show("")
-    Save.miniMapPoint= Save.miniMapPoint or {}
-    local bunnyLDB = LibStub("LibDataBroker-1.1"):NewDataObject(tab.name, {
-        type = "data source",
-        text = tab.name,
-        icon = tab.texture,
-        OnClick = tab.func,
-        OnEnter= tab.enter,
-    })
-    local icon = LibStub("LibDBIcon-1.0")
-    --icon:Register(tab.name, bunnyLDB, {hide= tab.hide})
-    icon:Register(tab.name, bunnyLDB, Save.miniMapPoint)
-    return icon
-end
-
-local function set_ExpansionLandingPageMinimapButton()
-    if Save.addIcon then
-        if ExpansionLandingPageMinimapButton then
-            ExpansionLandingPageMinimapButton:SetShown(false)
-        end
-        Set_MinMap_Icon({name= id, texture= 136235,
-            func= function(self, d)
-                if d=='LeftButton' then
-                    if IsAltKeyDown() then
-                        if not IsAddOnLoaded("Blizzard_WeeklyRewards") then--周奖励面板
-                            LoadAddOn("Blizzard_WeeklyRewards")
-                        end
-                        WeeklyRewards_ShowUI()--WeeklyReward.lua
-                    else
-                        if ExpansionLandingPageMinimapButton and ExpansionLandingPageMinimapButton.ToggleLandingPage and ExpansionLandingPageMinimapButton.title then
-                            ExpansionLandingPageMinimapButton.ToggleLandingPage(ExpansionLandingPageMinimapButton)--Minimap.lua
-                        else
-                            InterfaceOptionsFrame_OpenToCategory(id)
-                        end
-                    end
-                else
-                    InterfaceOptionsFrame_OpenToCategory(id)
-                end
-            end,
-            enter= function(self)
-                if ExpansionLandingPageMinimapButton and ExpansionLandingPageMinimapButton.OnEnter and ExpansionLandingPageMinimapButton.title then--Minimap.lua
-                    ExpansionLandingPageMinimapButton.OnEnter(ExpansionLandingPageMinimapButton)
-                    e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine(e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , 'Alt'..e.Icon.left)
-                    e.tips:AddDoubleLine(e.onlyChinese and '设置选项' or OPTIONS, e.Icon.right)
-                    e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine(id, addName)
-                    e.tips:Show()
-                else
-                    e.tips:SetOwner(self, "ANCHOR_Left")
-                    e.tips:ClearLines()
-                    e.tips:AddDoubleLine(e.onlyChinese and '设置选项' or OPTIONS, e.Icon.right)
-                    e.tips:AddDoubleLine(e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , 'Alt'..e.Icon.left)
-                    e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine(id, addName)
-                    e.tips:Show()
-                end
-                if ExpansionLandingPageMinimapButton and ExpansionLandingPageMinimapButton:IsShown() then
-                    ExpansionLandingPageMinimapButton:SetShown(false)
-                end
-            end
-        })
-
-    else
-        local frame=ExpansionLandingPageMinimapButton
-        frame:SetFrameStrata('TOOLTIP')
-        frame:SetMovable(true)--移动
-        frame:RegisterForDrag("RightButton")
-        frame:SetClampedToScreen(true)
-        frame:EnableMouseWheel(true)
-        frame:SetScript("OnDragStart", function(self, d)
-            if d=='RightButton' and IsAltKeyDown() then
-                self:StartMoving()
-            end
-        end)
-
-        frame:SetScript("OnDragStop", function(self)
-            self:StopMovingOrSizing()
-            Save.expansionLandingPagePoint={self:GetPoint(1)}
-            Save.expansionLandingPagePoint[2]=nil
-        end)
-        frame:SetScript('OnMouseDown', function(self, d)
-            if d=='RightButton' and not IsModifierKeyDown() then
-                InterfaceOptionsFrame_OpenToCategory(id)
-            end
-        end)
-        if Save.expansionLandingPagePoint then
-            frame:ClearAllPoints()
-            frame:SetPoint(Save.expansionLandingPagePoint[1], UIParent, Save.expansionLandingPagePoint[3], Save.expansionLandingPagePoint[4], Save.expansionLandingPagePoint[5])
-        end
-        --hooksecurefunc(DragonridingPanelSkillsButtonMixin, 'OnClick', function(self, d)--显示,飞龙技能
-
-        frame:SetScript('OnEnter',function(self)--Minimap.lua
-            self:SetAlpha(1)
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:SetText(self.title, 1, 1, 1);
-            e.tips:AddLine(self.description, nil, nil, nil, true);
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.onlyChinese and '设置选项' or OPTIONS, e.Icon.right)
-            e.tips:AddDoubleLine(e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , e.Icon.mid)
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE, (Save.expansionScale and Save.expansionScale or '')..' Alt+'..e.Icon.mid)
-            e.tips:AddDoubleLine(e.onlyChinese and '透明度' or CHANGE_OPACITY, (Save.expansionScale and Save.expansionScale or '')..' Ctrl+'..e.Icon.mid)
-            e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(id, addName)
-            e.tips:Show()
-        end)
-        frame:SetScript('OnLeave', function(self)
-            e.tips:Hide()
-            if Save.expansionAlpha and Save.expansionAlpha~=1 then
-                self:SetAlpha(Save.expansionAlpha)
-            end
-        end)
-        frame:SetScript('OnMouseWheel', function(self, d)
-            if not IsModifierKeyDown() then--打开, 插件, 选项
-                if not IsAddOnLoaded("Blizzard_WeeklyRewards") then--周奖励面板
-                    LoadAddOn("Blizzard_WeeklyRewards")
-                end
-                WeeklyRewards_ShowUI()--WeeklyReward.lua
-            elseif IsAltKeyDown() then--缩放
-                local n= Save.expansionScale or 1
-                if d==1 then
-                    n= n+0.1
-                elseif d==-1 then
-                    n= n-0.1
-                end
-                n= n>2 and 2 or n<0.3 and 0.3 or n
-                self:SetScale(n)
-                Save.expansionScale=n
-                print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..n)
-            elseif IsControlKeyDown() then--透明度
-                local n= Save.expansionAlpha or 1
-                if d==1 then
-                    n= n+0.1
-                elseif d==-1 then
-                    n= n-0.1
-                end
-                n= n>1 and 1 or n<0.3 and 0.3 or n
-                self:SetAlpha(n)
-                Save.expansionAlpha=n
-                print(id, addName, e.onlyChinese and '透明度' or CHANGE_OPACITY, '|cnGREEN_FONT_COLOR:'..n)
-            end
-        end)
-        if Save.expansionScale and Save.expansionScale~=1 then
-            frame:SetScale(Save.expansionScale)
-        end
-        C_Timer.After(8, function()--盟约图标停止闪烁
-            frame.MinimapLoopPulseAnim:Stop()
-            if Save.expansionAlpha and Save.expansionAlpha~=1 then
-                frame:SetAlpha(Save.expansionAlpha)
-            end
-        end)
-    end
-end
 
 --#################
 --小地图, 标记, 文本
@@ -296,26 +134,13 @@ local function set_vigentteButton_Event()
     end
 end
 
-local uiMapIDsTab= {2026, 2025, 2024, 2023, 2022, 2133}--地图, areaPoiIDs
 
-local questIDTab= {--世界任务, 监视, ID
-    [74378]=true,
-}
---[[local areaPoiIDTab={--不显示, areaPoiID
-    [7239]=true,--元素入
-    [7245]=true,
-    [7248]=true,
-    [7249]=true,
-    [7255]=true,
-    [7260]=true,
-    
-}]]
 local function set_vigentteButton_Text()
     if not Save.vigentteButtonShowText then
         panel.vigentteButton.text:SetText('')
         return
     end
-    
+
     local text
     if e.Player.level==70 then--世界任务, 监视
         for questID,_ in pairs(questIDTab) do
@@ -355,15 +180,11 @@ local function set_vigentteButton_Text()
             end
         end
     end
-    
- 
 
-    if e.Player.level==70 then
-        
+    if e.Player.level== e.Player.levelMax then
         for _, uiMapID in pairs(uiMapIDsTab) do
             local areaPoiIDs = C_AreaPoiInfo.GetAreaPOIForMap(uiMapID) or {}
             for _, areaPoiID in pairs(areaPoiIDs) do
-                --if areaPoiID then--and (areaPoiID<7234 or areaPoiID>7260) then--not areaPoiIDTab[areaPoiID] then--不显示, areaPoiID
                 local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID)
                 if poiInfo and poiInfo.name and poiInfo.atlasName and C_AreaPoiInfo.IsAreaPOITimed(areaPoiID) then
                     local secondsLeft = C_AreaPoiInfo.GetAreaPOISecondsLeft(areaPoiID)
@@ -406,7 +227,6 @@ local function set_vigentteButton_Text()
                         text= text..'|A:'..poiInfo.atlasName..':0:0|a'
                     end
                 end
-                --end
             end
         end
     end
@@ -427,7 +247,6 @@ local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
         if Save.pointVigentteButton then
             panel.vigentteButton:SetPoint(Save.pointVigentteButton[1], UIParent, Save.pointVigentteButton[3], Save.pointVigentteButton[4], Save.pointVigentteButton[5])
         else
-            --panel.vigentteButton:SetPoint('BOTTOMRIGHT', Minimap, 'BOTTOMLEFT', -10,5)
             panel.vigentteButton:SetPoint('CENTER', -330, -240)
         end
         if not Save.vigentteButtonShowText then
@@ -460,7 +279,6 @@ local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
                 set_vigentteButton_Text()
             elseif d=='RightButton' and key then
                 self:ClearAllPoints()
-                --self:SetPoint('BOTTOMRIGHT', Minimap, 'BOTTOMLEFT', -10,5)
                 panel.vigentteButton:SetPoint('CENTER', -330, -240)
                 Save.pointVigentteButton=nil
             elseif d=='RightButton' and not key then
@@ -516,68 +334,133 @@ local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
     set_vigentteButton_Text()
 end
 
---###############
---小地图, 添加菜单
---###############
-local function set_MinimapMenu()--小地图, 添加菜单
-    if not MinimapCluster or not MinimapCluster.Tracking or not MinimapCluster.Tracking.Button then
-        return
+
+local function Init_Menu(self, level, type)
+    local info={
+        text=e.onlyChinese and '镇民' or TOWNSFOLK_TRACKING_TEXT,
+        checked= C_CVar.GetCVarBool("minimapTrackingShowAll"),
+        tooltipOnButton=true,
+        tooltipTitle= e.onlyChinese and '显示: 追踪' or SHOW..': '..TRACKING,
+        tooltipText= id..' '..addName..'\n\nCVar minimapTrackingShowAll',
+        func= function()
+            C_CVar.SetCVar('minimapTrackingShowAll', not C_CVar.GetCVarBool("minimapTrackingShowAll") and '1' or '0' )
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    info={
+        text= e.onlyChinese and '缩小地图' or BINDING_NAME_MINIMAPZOOMOUT,
+        icon='UI-HUD-Minimap-Zoom-Out',
+        checked= Save.ZoomOut,
+        tooltipOnButton=true,
+        tooltipTitle= e.onlyChinese and '更新地区时' or UPDATE..ZONE,
+        tooltipText= id..' '..addName,
+        func= function()
+            Save.ZoomOut= not Save.ZoomOut and true or nil
+            set_ZoomOut()--更新地区时,缩小化地图
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    local mapName=''
+    for _, mapID in pairs(uiMapIDsTab) do
+        local mapInfo=C_Map.GetMapInfo(mapID)
+        if mapInfo and mapInfo.name then
+            mapName= mapName..'\n'..mapInfo.name
+        end
     end
-    MinimapCluster.Tracking.Button:HookScript( 'OnMouseDown', function()
-        e.LibDD:UIDropDownMenu_AddSeparator(1)
-        local info={
-            text=e.onlyChinese and '镇民' or TOWNSFOLK_TRACKING_TEXT,
-            checked= C_CVar.GetCVarBool("minimapTrackingShowAll"),
-            tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and '显示: 追踪' or SHOW..': '..TRACKING,
-            tooltipText= id..' '..addName..'\n\nCVar minimapTrackingShowAll',
-            func= function()
-                C_CVar.SetCVar('minimapTrackingShowAll', not C_CVar.GetCVarBool("minimapTrackingShowAll") and '1' or '0' )
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, 1)
-
-        info={
-            text= e.onlyChinese and '缩小地图' or BINDING_NAME_MINIMAPZOOMOUT,
-            icon='UI-HUD-Minimap-Zoom-Out',
-            checked= Save.ZoomOut,
-            tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and '更新地区时' or UPDATE..ZONE,
-            tooltipText= id..' '..addName,
-            func= function()
-                Save.ZoomOut= not Save.ZoomOut and true or nil
-                set_ZoomOut()--更新地区时,缩小化地图
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, 1)
-
-        local mapName=''
-        for _, mapID in pairs(uiMapIDsTab) do
-            local mapInfo=C_Map.GetMapInfo(mapID)
-            if mapInfo and mapInfo.name then
-                mapName= mapName..'\n'..mapInfo.name
+    info={
+        text= e.onlyChinese and '文本' or LOCALE_TEXT_LABEL,
+        icon='VignetteKillElite',
+        tooltipOnButton=true,
+        tooltipTitle= id..'  '..addName,
+        tooltipText= (e.onlyChinese and '小地图' or HUD_EDIT_MODE_MINIMAP_LABEL)..mapName,
+        checked= Save.vigentteButton,
+        disabled= IsInInstance(),
+        func= function ()
+            Save.vigentteButton= not Save.vigentteButton and true or nil
+            set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
+            if panel.vigentteButton then
+                panel.vigentteButton:SetButtonState('PUSHED')
             end
         end
-        info={
-            text= e.onlyChinese and '文本' or LOCALE_TEXT_LABEL,
-            icon='VignetteKillElite',
-            tooltipOnButton=true,
-            tooltipTitle= id..'  '..addName,
-            tooltipText= (e.onlyChinese and '小地图' or HUD_EDIT_MODE_MINIMAP_LABEL)..mapName,
-            checked= Save.vigentteButton,
-            disabled= IsInInstance(),
-            func= function ()
-                Save.vigentteButton= not Save.vigentteButton and true or nil
-                set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
-                if panel.vigentteButton then
-                    panel.vigentteButton:SetButtonState('PUSHED')
-                end
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, 1)
-    end)
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
 
+--#######
+--盟约图标
+--#######
+local Set_MinMap_Icon= function(tab)-- {name, texture, func, hide} 小地图，建立一个图标 Hide("MyLDB") icon:Show("")
+    Save.miniMapPoint= Save.miniMapPoint or {}
+    local bunnyLDB = LibStub("LibDataBroker-1.1"):NewDataObject(tab.name, {
+        type = "data source",
+        text = tab.name,
+        icon = tab.texture,
+        OnClick = tab.func,
+        OnEnter= tab.enter,
+    })
+    local icon = LibStub("LibDBIcon-1.0")
+    icon:Register(tab.name, bunnyLDB, Save.miniMapPoint)
+    return icon
+end
+
+
+local function set_ExpansionLandingPageMinimapButton()
+        if ExpansionLandingPageMinimapButton then
+            ExpansionLandingPageMinimapButton:SetShown(false)
+        end
+        Set_MinMap_Icon({name= id, texture= 136235,
+            func= function(self, d)
+                if d=='LeftButton' then
+                    if IsShiftKeyDown() then
+                        if not IsAddOnLoaded("Blizzard_WeeklyRewards") then--周奖励面板
+                            LoadAddOn("Blizzard_WeeklyRewards")
+                        end
+                        WeeklyRewards_ShowUI()--WeeklyReward.lua
+                    elseif IsAltKeyDown() then
+                        if not self.menu then
+                            self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
+                            e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Menu, 'MENU')
+                        end
+                        e.LibDD:ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
+                    else
+                        if ExpansionLandingPageMinimapButton and ExpansionLandingPageMinimapButton.ToggleLandingPage and ExpansionLandingPageMinimapButton.title then
+                            ExpansionLandingPageMinimapButton.ToggleLandingPage(ExpansionLandingPageMinimapButton)--Minimap.lua
+                        else
+                            InterfaceOptionsFrame_OpenToCategory(id)
+                        end
+                    end
+                else
+                    InterfaceOptionsFrame_OpenToCategory(id)
+                end
+            end,
+            enter= function(self)
+                if ExpansionLandingPageMinimapButton and ExpansionLandingPageMinimapButton.OnEnter and ExpansionLandingPageMinimapButton.title then--Minimap.lua
+                    ExpansionLandingPageMinimapButton.OnEnter(ExpansionLandingPageMinimapButton)
+                    e.tips:AddLine(' ')
+                    e.tips:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), 'Alt'..e.Icon.left, 0,1,0, 0,1,0)
+                    e.tips:AddDoubleLine(e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , 'Shift'..e.Icon.left, 1,0,1, 1,0,1)
+                    e.tips:AddDoubleLine(e.onlyChinese and '设置选项' or OPTIONS, e.Icon.right, 0,1,0, 0,1,0)
+                    e.tips:AddDoubleLine(id, addName)
+                    e.tips:Show()
+                else
+                    e.tips:SetOwner(self, "ANCHOR_Left")
+                    e.tips:ClearLines()
+                    e.tips:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), 'Alt'..e.Icon.left, 0,1,0, 0,1,0)
+                    e.tips:AddDoubleLine(e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , 'Shift'..e.Icon.left, 1,0,1, 1,0,1)
+                    e.tips:AddDoubleLine(e.onlyChinese and '设置选项' or OPTIONS, e.Icon.right, 0,1,0, 0,1,0)
+                    e.tips:AddLine(' ')
+                    e.tips:AddDoubleLine(id, addName)
+                    e.tips:Show()
+                end
+                if ExpansionLandingPageMinimapButton and ExpansionLandingPageMinimapButton:IsShown() then
+                    ExpansionLandingPageMinimapButton:SetShown(false)
+                end
+            end
+        })
+
+end
 
 --####
 --初始
@@ -585,7 +468,6 @@ end
 local function Init()
     set_MinimapCluster()--缩放
     C_Timer.After(2, set_ExpansionLandingPageMinimapButton)--盟约图标
-    set_MinimapMenu()--小地图, 添加菜单
 
     if MinimapCluster then
         if MinimapCluster.InstanceDifficulty and MinimapCluster.InstanceDifficulty.Instance.Border then
@@ -658,24 +540,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Save.disabled = not Save.disabled and true or nil
                 print(id, addName, e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
              end)
-
-             --添加一个图标，隐藏要塞图标
-             local checkAddIcon=CreateFrame("CheckButton", nil, check, "InterfaceOptionsCheckButtonTemplate")
-             checkAddIcon:SetChecked(Save.addIcon)
-             checkAddIcon.text:SetText(e.Icon.wow2..(e.onlyChinese and '图标' or EMBLEM_SYMBOL))
-             checkAddIcon:SetScript('OnMouseUp', function()
-                 Save.addIcon = not Save.addIcon and true or false
-                 print(id, addName, e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
-             end)
-             checkAddIcon:SetPoint("LEFT", check.text, 'RIGHT', 2, 0)
-             checkAddIcon:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_RIGHT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine(e.onlyChinese and '添加' or ADD, e.Icon.wow2..(e.onlyChinese and '图标' or EMBLEM_SYMBOL))
-                e.tips:AddDoubleLine(e.onlyChinese and "要塞报告" or GARRISON_LANDING_PAGE_TITLE, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '隐藏' or HIDE))
-                e.tips:Show()
-            end)
-            checkAddIcon:SetScript('OnLeave', function() e.tips:Hide() end)
 
             if not Save.disabled then
                 if not e.Player.levelMax then

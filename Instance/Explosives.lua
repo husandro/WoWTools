@@ -176,6 +176,10 @@ local function set_Button()
             if d=='RightButton' and not IsModifierKeyDown() then
                 SetCursor('UI_MOVE_CURSOR');
             elseif d=='LeftButton' then
+                if not self.Menu then
+                    self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
+                    e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Menu, 'MENU')
+                end
                 e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
             end
         end)
@@ -198,8 +202,7 @@ local function set_Button()
         button.count= e.Cstr(button, {size=32, color={r=1,g=1,b=1}, justifyH='CENTER'})--32, nil, nil, {1,1,1}, nil, 'CENTER')
         button.count:SetPoint('CENTER')
 
-        button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-        e.LibDD:UIDropDownMenu_Initialize(button.Menu, Init_Menu, 'MENU')
+
     end
 
     set_Events(true)

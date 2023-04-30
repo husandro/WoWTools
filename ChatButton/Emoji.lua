@@ -228,8 +228,7 @@ local function Init()
         ResetCursor()
     end)
 
-    button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-    e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
+    
 
     setButtons()--设置按钮
 
@@ -243,7 +242,11 @@ local function Init()
         if d=='LeftButton' then
             frame:SetShown(not frame:IsShown())
         else
-            e.LibDD:ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)--主菜单
+            if not self.Menu then
+                self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
+                e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
+            end
+            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)--主菜单
         end
     end)
 
@@ -315,6 +318,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
 
                 Init()
+            else
+                File=nil
             end
             panel:UnregisterEvent('ADDON_LOADED')
             panel:RegisterEvent("PLAYER_LOGOUT")

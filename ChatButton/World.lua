@@ -259,14 +259,15 @@ local function Init()
 
     button.texture:SetAtlas('128-Store-Main')
 
-    button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-    e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
-
     button:SetScript("OnMouseDown",function(self,d)
         if d=='LeftButton' and self.channelNumber and self.channelNumber>0 then
             e.Say('/'..self.channelNumber)
         else
-            e.LibDD:ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
+            if not self.Menu then
+                self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
+                e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
+            end
+            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
         end
     end)
 

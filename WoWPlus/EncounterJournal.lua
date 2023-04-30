@@ -919,7 +919,6 @@ local function Init()--冒险指南界面
             end
         end
         if find then
-            --e.LibDD:UIDropDownMenu_AddSeparator(level)
             info= {
                 text= e.onlyChinese and '无' or NONE,
                 icon= 'xmarksthespot',
@@ -933,7 +932,7 @@ local function Init()--冒险指南界面
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
-        
+
         local name=self.encounterID and EJ_GetEncounterInfo(self.encounterID)
         if name and self.dungeonEncounterID then
             info= {
@@ -966,9 +965,6 @@ local function Init()--冒险指南界面
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
-    EncounterJournal.encounter.LootSpecMenu=CreateFrame("Frame", id..addName..'Menu', EncounterJournal.encounter, "UIDropDownMenuTemplate")
-    e.LibDD:UIDropDownMenu_Initialize(EncounterJournal.encounter.LootSpecMenu, set_Loot_Spec_Menu_Init, 'MENU')
-
 
     local function set_Loot_Spec(button)
         if not button.LootButton then
@@ -976,10 +972,15 @@ local function Init()--冒险指南界面
             button.LootButton:SetPoint('LEFT', button, 'RIGHT')
             button.LootButton:SetNormalAtlas(e.Icon.icon)
             button.LootButton:SetScript('OnClick', function(self)
-                EncounterJournal.encounter.LootSpecMenu.dungeonEncounterID=self.dungeonEncounterID
-                EncounterJournal.encounter.LootSpecMenu.button=self
-                EncounterJournal.encounter.LootSpecMenu.encounterID= self.encounterID
-                e.LibDD:ToggleDropDownMenu(1, nil, EncounterJournal.encounter.LootSpecMenu, self, 15,0)
+                local menu= EncounterJournal.encounter.LootSpecMenu
+                if not menu then
+                    menu=CreateFrame("Frame", id..addName..'Menu', EncounterJournal.encounter, "UIDropDownMenuTemplate")
+                    e.LibDD:UIDropDownMenu_Initialize(menu, set_Loot_Spec_Menu_Init, 'MENU')
+                end
+                menu.dungeonEncounterID=self.dungeonEncounterID
+                menu.button=self
+                menu.encounterID= self.encounterID
+                e.LibDD:ToggleDropDownMenu(1, nil, menu, self, 15,0)
             end)
         end
         local dungeonEncounterID= button.encounterID and select(7, EJ_GetEncounterInfo(button.encounterID))
@@ -989,7 +990,7 @@ local function Init()--冒险指南界面
         button.LootButton:SetShown(not Save.hideEncounterJournal)
     end
 
- 
+
     EncounterJournal.encounter.instance.mapButton:SetScript('OnEnter', function(self3)--综述,小地图提示
         local name, description, bgImage, buttonImage1, loreImage, buttonImage2, dungeonAreaMapID, link, _, mapID= EJ_GetInstanceInfo()
         if not name then return end
@@ -1058,7 +1059,7 @@ local function Init()--冒险指南界面
             end
         end)
     end
-    
+
     --[[hooksecurefunc(EncounterJournal.LootJournalItems.ItemSetsFrame,'ConfigureItemButton', function(self2, button)--Blizzard_LootJournalItems.lua
         local has = C_TransmogCollection.PlayerHasTransmogByItemInfo(button.itemID)
         print(has, id, addName)

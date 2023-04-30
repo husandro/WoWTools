@@ -313,8 +313,6 @@ end
 --对话，初始化
 --###########
 local function Init_Gossip()
-    panel.MenuGossip=CreateFrame("Frame", id..addName..'MenuGossip', panel, "UIDropDownMenuTemplate")
-    e.LibDD:UIDropDownMenu_Initialize(panel.MenuGossip, InitMenu_Gossip, 'MENU')
 
     --panel:SetFrameStrata('HIGH')
     panel:SetMovable(true)--移动
@@ -339,7 +337,11 @@ local function Init_Gossip()
             Save.gossip= not Save.gossip and true or nil
             setTexture()
         elseif d=='RightButton' and not key then
-            e.LibDD:ToggleDropDownMenu(1, nil, self.MenuGossip, self, 15,0)
+            if not self.MenuGossip then
+                self.MenuGossip=CreateFrame("Frame", id..addName..'MenuGossip', self, "UIDropDownMenuTemplate")
+                e.LibDD:UIDropDownMenu_Initialize(self.MenuGossip, InitMenu_Gossip, 'MENU')
+            end
+            e.LibDD:ToggleDropDownMenu(1, nil, self.MenuGossip, self, 15, 0)
         end
     end)
     panel:SetScript('OnMouseUp', function()
@@ -773,8 +775,7 @@ end
 --任务，初始化
 --###########
 local function Init_Quest()
-    questPanel.MenuQest=CreateFrame("Frame", id..addName..'MenuQest', questPanel, "UIDropDownMenuTemplate")
-    e.LibDD:UIDropDownMenu_Initialize(questPanel.MenuQest, InitMenu_Quest, 'MENU')
+    
 
     questPanel:SetPoint('RIGHT', panel, 'LEFT')
 
@@ -785,7 +786,11 @@ local function Init_Quest()
             Save.quest= not Save.quest and true or nil
             setTexture()--设置图标
         elseif d=='RightButton' then
-            e.LibDD:ToggleDropDownMenu(1, nil, self.MenuQest, self, 15,0)
+            if not self.MenuQest then
+                self.MenuQest=CreateFrame("Frame", id..addName..'MenuQest', self, "UIDropDownMenuTemplate")
+                e.LibDD:UIDropDownMenu_Initialize(self.MenuQest, InitMenu_Quest, 'MENU')
+            end
+            e.LibDD:ToggleDropDownMenu(1, nil, self.MenuQest, self, 15, 0)
         end
     end)
     questPanel:SetScript('OnEnter', function(self)

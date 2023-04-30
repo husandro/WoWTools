@@ -274,9 +274,6 @@ local function Init()
         button:SetAttribute(type.."-item1",  C_Item.GetItemNameByID(itemID) or itemID)
     end
 
-    button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-    e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
-
     button:SetScript("OnEnter",function(self)
         showTips(self)--显示提示
     end)
@@ -285,7 +282,11 @@ local function Init()
     end)
     button:SetScript("OnMouseDown", function(self,d)
         if d=='RightButton' and not IsModifierKeyDown() then
-            e.LibDD:ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+            if not self.Menu then
+                button.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
+                e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
+            end
+            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
         end
     end)
 

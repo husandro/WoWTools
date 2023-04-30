@@ -98,9 +98,6 @@ local function Init()
     button:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
     WoWToolsChatButtonFrame.last=button
 
-    button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-    e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
-
     setMembers()--在线人数
     button.texture:SetAtlas('UI-HUD-MicroMenu-GuildCommunities-Up')
     button.texture:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
@@ -109,7 +106,11 @@ local function Init()
         if d=='LeftButton' then
             e.Say('/g')
         else
-            e.LibDD:ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+            if not self.Menu then
+                self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
+                e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
+            end
+            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
             --ToggleGuildFrame()
         end
     end)

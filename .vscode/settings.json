@@ -2629,7 +2629,8 @@
         "LootJournalItemSetsMixin",
         "HybridScrollFrame_Update",
         "UIDropDownMenu_AddButton",
-        "UIDropDownMenu_AddSeparator"
+        "UIDropDownMenu_AddSeparator",
+        "CloseDropDownMenus"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

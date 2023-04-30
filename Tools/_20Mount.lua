@@ -1046,9 +1046,6 @@ local function Init()
     setPanelPostion()--设置按钮位置
 
     --setButtonSize()--设置按钮大小
-
-    button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-    e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
     XDInt()--德鲁伊设置
     checkSpell()--检测法术
     checkItem()--检测物品
@@ -1095,7 +1092,11 @@ local function Init()
             SetCursor('UI_MOVE_CURSOR')
 
         elseif d=='RightButton' and not IsModifierKeyDown() then
-           e.LibDD:ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+            if not self.Menu then
+                self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
+                e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
+            end
+           e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
 
         elseif d=='LeftButton' then
             if IsMounted() then

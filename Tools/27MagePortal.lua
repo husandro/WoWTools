@@ -108,9 +108,6 @@ end
 --初始
 --####
 local function Init()
-    panel.Menu=CreateFrame("Frame", id..addName..'Menu', panel, "UIDropDownMenuTemplate")
-    e.LibDD:UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
-
     panel.button={}
     local find
     for index, tab in pairs(Tab) do
@@ -188,7 +185,11 @@ local function Init()
            button:SetScript('OnLeave', function() e.tips:Hide() end)
 
            button:SetScript('OnMouseWheel', function(self, d)
-                e.LibDD:ToggleDropDownMenu(1,nil, panel.Menu, self, 0,0, {button=self})
+                if not self.Menu then
+                    self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
+                    e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
+                end
+                e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 0, 0, {button=self})
            end)
         end
     end

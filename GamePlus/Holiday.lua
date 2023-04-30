@@ -436,7 +436,11 @@ local function Init()
             set_event()--设置事件
             set_Text()
         elseif d=='RightButton' then
-            e.LibDD:ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+            if not self.Menu then
+                self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
+                e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
+            end
+            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
         end
     end)
     panel:SetScript('OnMouseWheel', function(self, d)--缩放
@@ -460,8 +464,7 @@ local function Init()
         end
     end)
 
-    panel.Menu=CreateFrame("Frame", id..addName..'Menu', panel, "UIDropDownMenuTemplate")
-    e.LibDD:UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
+    
 
     set_event()
     Text_Settings()--设置Text
@@ -509,12 +512,15 @@ local function Init()
 
 
     --Blizzard_Calendar.lua
-    C_Timer.After(2, function()
-        local menu=CreateFrame("Frame", nil, CalendarCreateEventFrame, "UIDropDownMenuTemplate")
-        menu:SetPoint('BOTTOMLEFT', CalendarCreateEventFrame, 'BOTTOMRIGHT', -22,74)
-        e.LibDD:UIDropDownMenu_SetWidth(menu, 60)
-        e.LibDD:UIDropDownMenu_SetText(menu, e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET)
-        e.LibDD:UIDropDownMenu_Initialize(menu, function(self, level, type)
+    CalendarCreateEventFrame:SetScript('OnShow', function(self)
+        if self.menu then
+            return
+        end
+        self.menu=CreateFrame("Frame", nil, CalendarCreateEventFrame, "UIDropDownMenuTemplate")
+        self.menu:SetPoint('BOTTOMLEFT', CalendarCreateEventFrame, 'BOTTOMRIGHT', -22,74)
+        e.LibDD:UIDropDownMenu_SetWidth(self.menu, 60)
+        e.LibDD:UIDropDownMenu_SetText(self.menu, e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET)
+        e.LibDD:UIDropDownMenu_Initialize(self.menu, function(self, level, type)
             local map=e.GetUnitMapName('player');--玩家区域名称
             local inviteTab={}
             for index = 1, C_Calendar.GetNumInvites() do
@@ -562,10 +568,12 @@ local function Init()
                 e.LibDD:UIDropDownMenu_AddButton({text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
             end
         end)
-        menu.Button:SetScript('OnClick', function(self) e.LibDD:ToggleDropDownMenu(1,nil,self:GetParent(), self, 15,0) end)
+        self.menu.Button:SetScript('OnClick', function(self2)
+            e.LibDD:ToggleDropDownMenu(1, nil, self2:GetParent(), self2, 15, 0)
+        end)
 
         local menu2=CreateFrame("Frame", nil, CalendarCreateEventFrame, "UIDropDownMenuTemplate")
-        menu2:SetPoint('TOPRIGHT', menu, 'BOTTOMRIGHT')
+        menu2:SetPoint('TOPRIGHT', self.menu, 'BOTTOMRIGHT')
         e.LibDD:UIDropDownMenu_SetWidth(menu2, 60)
         e.LibDD:UIDropDownMenu_SetText(menu2, e.onlyChinese and '好友' or FRIEND)
         e.LibDD:UIDropDownMenu_Initialize(menu2, function(self, level, type)
@@ -612,13 +620,15 @@ local function Init()
                 e.LibDD:UIDropDownMenu_AddButton({text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
             end
         end)
-        menu2.Button:SetScript('OnClick', function(self) e.LibDD:ToggleDropDownMenu(1,nil,self:GetParent(), self, 15,0) end)
+        menu2.Button:SetScript('OnClick', function(self2)
+            e.LibDD:ToggleDropDownMenu(1, nil, self2:GetParent(), self2, 15, 0)
+        end)
 
         local last=CreateFrame("Frame", nil, CalendarCreateEventFrame, "UIDropDownMenuTemplate")
         last:SetPoint('TOPRIGHT', menu2, 'BOTTOMRIGHT')
         e.LibDD:UIDropDownMenu_SetWidth(last, 60)
         e.LibDD:UIDropDownMenu_SetText(last, e.onlyChinese and '公会' or GUILD)
-        e.LibDD:UIDropDownMenu_Initialize(last, function(self, level, type)
+        e.LibDD:UIDropDownMenu_Initialize(last, function(self2, level, type)
             local map=e.GetUnitMapName('player');--玩家区域名称
             local inviteTab={}
             for index = 1, C_Calendar.GetNumInvites() do
@@ -645,7 +655,7 @@ local function Init()
                         tooltipText=officerNote or '',
                         icon= status==1 and FRIENDS_TEXTURE_AFK or status==2 and FRIENDS_TEXTURE_DND,
                         arg1=name,
-                        func=function(self2, arg1)
+                        func=function(self3, arg1)
                             CalendarCreateEventInviteEdit:SetText(arg1)
                         end
                     }
@@ -657,7 +667,10 @@ local function Init()
                 e.LibDD:UIDropDownMenu_AddButton({text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
             end
         end)
-        last.Button:SetScript('OnClick', function(self) e.LibDD:ToggleDropDownMenu(1,nil,self:GetParent(), self, 15,0) end)
+        last.Button:SetScript('OnClick', function(self2)
+            e.LibDD:CloseDropDownMenus()
+            e.LibDD:ToggleDropDownMenu(1, nil, self2:GetParent(), self2, 15, 0)
+        end)
     end)
 end
 

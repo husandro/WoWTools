@@ -794,14 +794,17 @@ local function Init()
     setReadyTexureTips()--自动就绪, 主图标, 提示
     setGroupReadyTipsEvent()--注册事件, 就绪,队员提示信息
 
-    button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-    e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
+    
 
     button:SetScript("OnMouseDown", function(self,d)
         if d=='LeftButton' then
             setTankHealer()--设置队伍标记
         else
-            e.LibDD:ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+            if not self.Menu then
+                self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
+                e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
+            end
+            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
         end
     end)
 

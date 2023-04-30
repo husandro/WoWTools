@@ -643,14 +643,13 @@ local function Init()
 
 	hooksecurefunc('ReputationFrame_InitReputationRow', set_ReputationFrame_InitReputationRow)-- 声望, 界面, 增强
 
-	--set_RegisterEvent_CHAT_MSG_COMBAT_FACTION_CHANGE()--更新, 提示, 事件
-
-	panel.Menu=CreateFrame("Frame", id..addName..'Menu', panel, "UIDropDownMenuTemplate")
-    e.LibDD:UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
-
 	panel:SetPoint("LEFT", ReputationFrameStandingLabel, 'RIGHT',5,0)
 	panel:SetScript("OnMouseDown", function(self,d)
-        e.LibDD:ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+		if not self.Menu then
+			self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
+    		e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
+		end
+        e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
     end)
 
 	panel.up=CreateFrame("Button",nil, panel, 'UIPanelButtonTemplate')--收起所有

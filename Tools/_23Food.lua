@@ -394,8 +394,7 @@ local function Init()
         set_Item_Button()
     end
 
-    button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-    e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
+    
 
     button:RegisterForDrag("RightButton")
     button:SetMovable(true)
@@ -412,7 +411,11 @@ local function Init()
     end)
     button:SetScript("OnMouseDown", function(self,d)
         if d=='RightButton' then
-            e.LibDD:ToggleDropDownMenu(1, nil,self.Menu, self, 15, 0)
+            if not self.Menu then
+                self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
+                e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
+            end
+            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
         end
     end)
     button:SetScript("OnMouseUp", function(self, d)

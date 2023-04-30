@@ -282,9 +282,6 @@ local function Init()
     button:SetPushedAtlas(e.Icon.pushed)
     button:SetFrameStrata('HIGH')
 
-    button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-    e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
-
     button.fpsms:SetPoint('BOTTOMRIGHT')
     button.money:SetPoint('BOTTOMRIGHT', button.fpsms, 'BOTTOMLEFT', -4, 0)
     button.durabiliy:SetPoint('BOTTOMRIGHT', button.money, 'BOTTOMLEFT', -4, 0)
@@ -340,7 +337,11 @@ local function Init()
         if d=='RightButton' then--移动光标
             SetCursor('UI_MOVE_CURSOR')
         else
-            e.LibDD:ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
+            if not self.Menu then
+                button.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
+                e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
+            end
+            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
         end
     end)
     button:SetScript('OnLeave', function (self)

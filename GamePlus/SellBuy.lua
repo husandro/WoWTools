@@ -737,7 +737,11 @@ local function setMenu()
                 StaticPopup_Show(id..addName..'Buy');
             end
         else
-            e.LibDD:ToggleDropDownMenu(1, nil, panel.Menu, self2, 15,0)
+            if not self2.Menu then
+                self2.Menu=CreateFrame("Frame", id..addName..'Menu', self2, "UIDropDownMenuTemplate")
+                e.LibDD:UIDropDownMenu_Initialize(self2.Menu, InitList, 'MENU')
+            end
+            e.LibDD:ToggleDropDownMenu(1, nil, self2.Menu, self2, 15, 0)
         end
     end)
     panel.set:SetScript('OnLeave', function() e.tips:Hide() end)
@@ -876,9 +880,6 @@ end
 --初始
 --####
 local function Init()
-    panel.Menu=CreateFrame("Frame", id..addName..'Menu', panel, "UIDropDownMenuTemplate")
-    e.LibDD:UIDropDownMenu_Initialize(panel.Menu, InitList, 'MENU')
-
     --######
     --DELETE
     --######

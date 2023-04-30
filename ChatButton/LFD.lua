@@ -1026,8 +1026,7 @@ local function Init()
     button:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
     WoWToolsChatButtonFrame.last=button
 
-    button.Menu= CreateFrame("Frame", id..addName..'Menu', LFDMicroButton, "UIDropDownMenuTemplate")--菜单列表
-    e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitList, "MENU")
+    
 
     button:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' and (self.dungeonID or self.RaidID) then
@@ -1041,6 +1040,10 @@ local function Init()
                 printListInfo()--输出当前列表
             end
         else
+            if not self.Menu then
+                self.Menu= CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")--菜单列表
+                e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitList, "MENU")
+            end
             e.LibDD:ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
         end
     end)

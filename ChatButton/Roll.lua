@@ -199,14 +199,17 @@ local function Init()
     setAutoClearRegisterEvent()--注册自动清除事件
 
     button.texture:SetTexture('Interface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47')
-    button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-    e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
+    
 
     button:SetScript('OnMouseDown',function(self, d)
         if d=='LeftButton' then
             RandomRoll(1, 100)
         else
-            e.LibDD:ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
+            if not self.Menu then
+                self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
+                e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
+            end
+            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
         end
     end)
 end

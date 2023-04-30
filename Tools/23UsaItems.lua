@@ -431,8 +431,7 @@ local function Init()
         end
     end
 
-    panel.Menu=CreateFrame("Frame", id..addName..'Menu', panel, "UIDropDownMenuTemplate")
-    e.LibDD:UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
+    
 
     panel:SetScript('OnMouseDown',function(self, d)--添加, 移除
         local infoType, itemID, itemLink ,spellID= GetCursorInfo()
@@ -460,7 +459,11 @@ local function Init()
             e.tips:AddDoubleLine(MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
             e.tips:Show()
         elseif d=='RightButton' then
-            e.LibDD:ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+            if not self.Menu then
+                self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
+                e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
+            end
+            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
         end
     end)
     panel:SetScript('OnEnter',function (self)

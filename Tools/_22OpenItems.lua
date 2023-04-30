@@ -515,13 +515,8 @@ end
 --######
 local function Init()
     button:SetAttribute("type", "macro")
-
-    button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")--菜单列表
-
     button.count=e.Cstr(button, {size=10, color=true})--10, nil, nil, true)
     button.count:SetPoint('BOTTOM',0,2)
-
-    e.LibDD:UIDropDownMenu_Initialize(button.Menu, setMenuList, 'MENU')
 
     getItems()--设置属性
 
@@ -593,7 +588,11 @@ local function Init()
     button:SetScript("OnMouseDown", function(self,d)
         local key= IsModifierKeyDown()
         if (d=='RightButton' and not key) or not(Bag.bag and Bag.slot) then
-            e.LibDD:ToggleDropDownMenu(1,nil,button.Menu,self,self:GetWidth(),0)
+            if not self.Menu then
+                button.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")--菜单列表
+                e.LibDD:UIDropDownMenu_Initialize(self.Menu, setMenuList, 'MENU')
+            end
+            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
         else
             if d=='LeftButton' and not key and equipItem and not PaperDollFrame:IsVisible() then
                 ToggleCharacter("PaperDollFrame")

@@ -7,7 +7,7 @@ local Save={
     text={--内容颜色,
         [ACHIEVEMENTS]=true,
     },
-    groupWelcome= true,--欢迎
+    groupWelcome= e.Player.husandro,--欢迎
     groupWelcomeText= e.Player.cn and EMOTE103_CMD1:gsub('/','') or 'Hi{rt1}',
     guildWelcome= true,
     --guildWelcomeText='',
@@ -922,16 +922,17 @@ local function Init()
     button:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')
 
     WoWToolsChatButtonFrame.last=button
-
-    button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-    e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
     button.texture:SetAtlas(e.Icon.icon)
 
     button:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
             setFunc()--使用，禁用
         else
-            e.LibDD:ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+            if not self.Menu then
+                self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
+                e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
+            end
+            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
         end
     end)
 
