@@ -25,7 +25,7 @@ local Save={
             [256123]=true,--[斯克维里加全地形载具]
         },
         [MOUNT_JOURNAL_FILTER_FLYING]={
-            [339588]=true,--[罪奔者布兰契]
+            --[339588]=true,--[罪奔者布兰契]
             --[163024]=true,--战火梦魇兽
             [366962]=true,--[艾什阿达，晨曦使者]
         },
@@ -484,7 +484,7 @@ local function InitMenu(self, level, type)--主菜单
     local info
     if type=='RANDOM' then--三级, 离开时, 随机坐骑
         info={
-            text= '<'..(e.onlyChinese and '离开' or AFK)..'>: '..(e.onlyChinese and '自动' or AUTO_JOIN:gsub(JOIN, '')),
+            text= '<AFK>'..(e.onlyChinese and '自动' or AUTO_JOIN:gsub(JOIN, '')),
             checked= Save.AFKRandom,
             tooltipOnButton=true,
             tooltipTitle=e.onlyChinese and '注意: 掉落' or ('note: '..STRING_ENVIRONMENTAL_DAMAGE_FALLING),

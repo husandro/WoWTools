@@ -377,55 +377,57 @@ end
 
 
 local function set_ExpansionLandingPageMinimapButton()
-        if ExpansionLandingPageMinimapButton then ExpansionLandingPageMinimapButton:SetShown(false) end
-        Set_MinMap_Icon({name= id, texture= 136235,
-            func= function(self, d)
-                local key= IsModifierKeyDown()
-                if d=='LeftButton' then
-                    if IsShiftKeyDown() then
-                        if not IsAddOnLoaded("Blizzard_WeeklyRewards") then--周奖励面板
-                            LoadAddOn("Blizzard_WeeklyRewards")
-                        end
-                        WeeklyRewards_ShowUI()--WeeklyReward.lua
-                    elseif IsAltKeyDown() then
-                        if not self.menu then
-                            self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
-                            e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Menu, 'MENU')
-                        end
-                        e.LibDD:ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
-                    elseif not key then
-                        local expButton=ExpansionLandingPageMinimapButton
-                        if expButton and expButton.ToggleLandingPage and expButton.title then
-                            expButton.ToggleLandingPage(expButton)--Minimap.lua
-                        else
-                            securecallfunction(InterfaceOptionsFrame_OpenToCategory, id)
-                        end
+    Set_MinMap_Icon({name= id, texture= 136235,
+        func= function(self, d)
+            local key= IsModifierKeyDown()
+            if d=='LeftButton' then
+                if IsShiftKeyDown() then
+                    if not IsAddOnLoaded("Blizzard_WeeklyRewards") then--周奖励面板
+                        LoadAddOn("Blizzard_WeeklyRewards")
                     end
+                    WeeklyRewards_ShowUI()--WeeklyReward.lua
+                elseif IsAltKeyDown() then
+                    if not self.menu then
+                        self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
+                        e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Menu, 'MENU')
+                    end
+                    e.LibDD:ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
                 elseif not key then
-                    securecallfunction(InterfaceOptionsFrame_OpenToCategory, id)               
+                    local expButton=ExpansionLandingPageMinimapButton
+                    if expButton and expButton.ToggleLandingPage and expButton.title then
+                        expButton.ToggleLandingPage(expButton)--Minimap.lua
+                    else
+                        securecallfunction(InterfaceOptionsFrame_OpenToCategory, id)
+                    end
                 end
-            end,
-            enter= function(self)
-                local expButton=ExpansionLandingPageMinimapButton
-                if expButton and expButton.OnEnter and expButton.title then--Minimap.lua
-                    expButton.OnEnter(expButton)
-                    e.tips:AddLine(' ')
-                else
-                    e.tips:SetOwner(self, "ANCHOR_Left")
-                    e.tips:ClearLines()
-                end
-                e.tips:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), 'Alt'..e.Icon.left, 0,1,0, 0,1,0)
-                e.tips:AddDoubleLine(e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , 'Shift'..e.Icon.left, 1,0,1, 1,0,1)
-                e.tips:AddDoubleLine(e.onlyChinese and '选项' or SETTINGS_TITLE , e.Icon.right, 0,1,0, 0,1,0)
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(id, addName)
-                e.tips:Show()
-                if expButton and expButton:IsShown() then
-                    expButton:SetShown(false)
-                end
+            elseif not key then
+                securecallfunction(InterfaceOptionsFrame_OpenToCategory, id)               
             end
-        })
+        end,
+        enter= function(self)
+            local expButton=ExpansionLandingPageMinimapButton
+            if expButton and expButton.OnEnter and expButton.title then--Minimap.lua
+                expButton.OnEnter(expButton)
+                e.tips:AddLine(' ')
+            else
+                e.tips:SetOwner(self, "ANCHOR_Left")
+                e.tips:ClearLines()
+            end
+            e.tips:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), 'Alt'..e.Icon.left, 0,1,0, 0,1,0)
+            e.tips:AddDoubleLine(e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , 'Shift'..e.Icon.left, 1,0,1, 1,0,1)
+            e.tips:AddDoubleLine(e.onlyChinese and '选项' or SETTINGS_TITLE , e.Icon.right, 0,1,0, 0,1,0)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(id, addName)
+            e.tips:Show()
+            if expButton and expButton:IsShown() then
+                expButton:SetShown(false)
+            end
+        end
+    })
 
+    C_Timer.After(2, function()
+        if ExpansionLandingPageMinimapButton then ExpansionLandingPageMinimapButton:SetShown(false) end
+    end)
 end
 
 --####
