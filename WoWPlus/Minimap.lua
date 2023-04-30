@@ -3,6 +3,7 @@ local addName= HUD_EDIT_MODE_MINIMAP_LABEL
 local Save={
         scale=e.Player.husandro and 1 or 0.85,
         ZoomOut=true,--更新地区时,缩小化地图
+        ZoomOutInfo=true,--小地图, 缩放, 信息
         vigentteButton=e.Player.husandro,
         vigentteButtonShowText=true,
         miniMapPoint={},--保存小图地, 按钮位置
@@ -26,6 +27,47 @@ local function set_ZoomOut()
     end
 end
 
+
+--################
+--当前缩放，显示数值
+--Minimap.lua
+local function set_Event_MINIMAP_UPDATE_ZOOM()
+    if Save.ZoomOutInfo then
+        panel:RegisterEvent('MINIMAP_UPDATE_ZOOM')
+    else
+        panel:UnregisterEvent('MINIMAP_UPDATE_ZOOM')
+        if Minimap.zoomText then
+            Minimap.zoomText:SetText('')
+        end
+        if Minimap.viewRadius then
+            Minimap.viewRadius:SetText('')
+        end
+    end
+end
+local function set_MINIMAP_UPDATE_ZOOM()
+    local zoom = Minimap:GetZoom()
+    local level= Minimap:GetZoomLevels()
+    if not Minimap.zoomText then
+        Minimap.zoomText= e.Cstr(Minimap, {color=true})
+        Minimap.zoomText:SetPoint('BOTTOM', Minimap.ZoomOut, 'TOP', 3, 0)
+    end
+    Minimap.zoomText:SetText(zoom and level and (level-zoom)..'/'..level or '')
+
+    if not Minimap.viewRadius then
+        Minimap.viewRadius=e.Cstr(Minimap, {color=true, justifyH='CENTER'})
+        Minimap.viewRadius:SetPoint('BOTTOMLEFT', Minimap, 'BOTTOM', 8, -8)
+        Minimap.viewRadius:EnableMouse(true)
+        Minimap.viewRadius:SetScript('OnEnter', function(self2)
+            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(e.onlyChinese and '镜头视野范围' or CAMERA_FOV, (e.onlyChinese and '%s码' or IN_GAME_NAVIGATION_RANGE):format( format('%i', C_Minimap.GetViewRadius() or 100)))
+            e.tips:AddDoubleLine(id, addName)
+            e.tips:Show()
+        end)
+        Minimap.viewRadius:SetScript('OnLeave', function() e.tips:Hide() end)
+    end
+    Minimap.viewRadius:SetFormattedText('%i', C_Minimap.GetViewRadius() or 100)
+end
 
 --#################
 --小地图, 标记, 文本
@@ -261,7 +303,6 @@ local function Init_Menu(self, level, type)
 
     info={
         text= e.onlyChinese and '缩小地图' or BINDING_NAME_MINIMAPZOOMOUT,
-        icon='UI-HUD-Minimap-Zoom-Out',
         checked= Save.ZoomOut,
         tooltipOnButton=true,
         tooltipTitle= e.onlyChinese and '更新地区时' or UPDATE..ZONE,
@@ -269,6 +310,21 @@ local function Init_Menu(self, level, type)
         func= function()
             Save.ZoomOut= not Save.ZoomOut and true or nil
             set_ZoomOut()--更新地区时,缩小化地图
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    info={
+        text= e.onlyChinese and '信息' or INFO,--当前缩放，显示数值
+        checked= Save.ZoomOutInfo,
+        tooltipOnButton=true,
+        tooltipTitle=(e.onlyChinese and '镜头视野范围' or CAMERA_FOV)..': '..format(e.onlyChinese and '%s码' or IN_GAME_NAVIGATION_RANGE, format('%i', C_Minimap.GetViewRadius() or 100)),
+        func= function()
+            Save.ZoomOutInfo= not Save.ZoomOutInfo and true or nil
+            set_Event_MINIMAP_UPDATE_ZOOM()
+            if Save.ZoomOutInfo then
+                set_MINIMAP_UPDATE_ZOOM()
+            end
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -323,6 +379,7 @@ local function set_ExpansionLandingPageMinimapButton()
         end
         Set_MinMap_Icon({name= id, texture= 136235,
             func= function(self, d)
+                local key= IsModifierKeyDown()
                 if d=='LeftButton' then
                     if IsShiftKeyDown() then
                         if not IsAddOnLoaded("Blizzard_WeeklyRewards") then--周奖励面板
@@ -335,14 +392,14 @@ local function set_ExpansionLandingPageMinimapButton()
                             e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Menu, 'MENU')
                         end
                         e.LibDD:ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
-                    else
+                    elseif not key then
                         if ExpansionLandingPageMinimapButton and ExpansionLandingPageMinimapButton.ToggleLandingPage and ExpansionLandingPageMinimapButton.title then
                             ExpansionLandingPageMinimapButton.ToggleLandingPage(ExpansionLandingPageMinimapButton)--Minimap.lua
                         else
                             InterfaceOptionsFrame_OpenToCategory(id)
                         end
                     end
-                else
+                elseif not key then
                     InterfaceOptionsFrame_OpenToCategory(id)
                 end
             end,
@@ -459,7 +516,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 panel:RegisterEvent("ZONE_CHANGED_NEW_AREA")
                 panel:RegisterEvent('ZONE_CHANGED')
                 panel:RegisterEvent("PLAYER_ENTERING_WORLD")
-                panel:RegisterEvent('MINIMAP_UPDATE_ZOOM')
+                if Save.ZoomOutInfo then
+                    set_Event_MINIMAP_UPDATE_ZOOM()--当前缩放，显示数值
+                end
                 Init()
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
@@ -480,62 +539,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event=='MINIMAP_UPDATE_ZOOM' then--当前缩放，显示数值 Minimap.lua
-        local zoomIn, zoomOut= Minimap.ZoomIn:IsEnabled(), Minimap.ZoomOut:IsEnabled()
-        local zoom = Minimap:GetZoom();
-        local level= Minimap:GetZoomLevels()
-        if zoomOut and zoomIn then
-            if not Minimap.ZoomIn.text then
-                Minimap.ZoomIn.text= e.Cstr(Minimap, {color=true})
-                Minimap.ZoomIn.text:SetPoint('BOTTOMLEFT', Minimap.ZoomIn, 'TOPLEFT',-2,-6)
-                Minimap.ZoomIn.text:EnableMouse(true)
-                Minimap.ZoomIn.text:SetScript('OnLeave', function() e.tips:Hide() end)
-                Minimap.ZoomIn.text:SetScript('OnEnter', function(self2)
-                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                    e.tips:ClearLines()
-                    e.tips:AddDoubleLine(e.onlyChinese and '当前等级' or BATTLEGROUND_RATING, (Minimap:GetZoom()+1)..'/'..(Minimap:GetZoomLevels()))
-                    e.tips:AddDoubleLine(id, addName)
-                    e.tips:Show()
-                end)
-            end
-            Minimap.ZoomIn.text:SetText(level-1-zoom)
-
-            if not Minimap.ZoomOut.text then
-                Minimap.ZoomOut.text= e.Cstr(Minimap, {color=true})
-                Minimap.ZoomOut.text:SetPoint('BOTTOMLEFT', Minimap.ZoomOut, 'TOPLEFT',0,-2)
-                Minimap.ZoomOut.text:EnableMouse(true)
-                Minimap.ZoomOut.text:SetScript('OnLeave', function() e.tips:Hide() end)
-                Minimap.ZoomOut.text:SetScript('OnEnter', function(self2)
-                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                    e.tips:ClearLines()
-                    e.tips:AddDoubleLine(e.onlyChinese and '当前等级' or BATTLEGROUND_RATING, (Minimap:GetZoom()+1)..'/'..Minimap:GetZoomLevels())
-                    e.tips:AddDoubleLine(id, addName)
-                    e.tips:Show()
-                end)
-            end
-            Minimap.ZoomOut.text:SetText(zoom)
-            Minimap.ZoomOut.text.level= level
-        else
-            if Minimap.ZoomIn.text then
-                Minimap.ZoomIn.text:SetText('')
-            end
-            if Minimap.ZoomOut.text then
-                Minimap.ZoomOut.text:SetText('')
-            end
-        end
-
-        if not Minimap.viewRadius then
-            Minimap.viewRadius=e.Cstr(Minimap, {color=true, justifyH='CENTER'})
-            Minimap.viewRadius:SetPoint('BOTTOMLEFT', Minimap, 'BOTTOM', 8, -8)
-            Minimap.viewRadius:EnableMouse(true)
-            Minimap.viewRadius:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine(e.onlyChinese and '镜头视野范围' or CAMERA_FOV, (e.onlyChinese and '%s码' or IN_GAME_NAVIGATION_RANGE):format( format('%i', C_Minimap.GetViewRadius() or 100)))
-                e.tips:AddDoubleLine(id, addName)
-                e.tips:Show()
-            end)
-            Minimap.viewRadius:SetScript('OnLeave', function() e.tips:Hide() end)
-        end
-        Minimap.viewRadius:SetFormattedText('%i', C_Minimap.GetViewRadius() or 100)
+        set_MINIMAP_UPDATE_ZOOM()
     end
 end)
