@@ -783,9 +783,15 @@ e.GetItemCooldown= function(itemID)--物品冷却
     return ''
 end
 
-e.GetSpellCooldown = function(spellID)--法术冷却
-    local startTime, duration, enable = GetSpellCooldown(spellID)
-    if duration>0 and enable==1 then
+]]
+e.GetSpellItemCooldown = function(spellID, itemID)--法术冷却
+    local startTime, duration, enable
+    if spellID then
+        startTime, duration, enable = GetSpellCooldown(spellID)
+    elseif itemID then
+        startTime, duration, enable = GetItemCooldown(itemID)
+    end
+    if duration and duration>0 and enable==1 then
         local t=GetTime()
         if startTime>t then t=t+86400 end
         t=t-startTime
@@ -794,9 +800,7 @@ e.GetSpellCooldown = function(spellID)--法术冷却
     elseif enable==0 then
         return '|cnRED_FONT_COLOR:'..SPELL_RECAST_TIME_INSTANT..'|r'
     end
-    return ''
 end
-]]
 
 e.Cbtn2= function(name, parent, showTexture, rightClick)
     local button= CreateFrame("Button", name, parent or UIParent, "SecureActionButtonTemplate")

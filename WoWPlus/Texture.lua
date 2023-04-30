@@ -825,8 +825,15 @@ local function Init_Set_AlphaAndColor()
     if MainStatusTrackingBarContainer then--货币，XP，追踪，最下面BAR
         hideTexture(MainStatusTrackingBarContainer.BarFrameTexture)
     end
+    
 
     C_Timer.After(3, function()
+        if SpellFlyout and SpellFlyout.Background then--Spell Flyout
+            hideTexture(SpellFlyout.Background.HorizontalMiddle)
+            hideTexture(SpellFlyout.Background.End)
+            hideTexture(SpellFlyout.Background.VerticalMiddle)
+        end
+
         for i=1, GetNumAddOns() do
             local t= GetAddOnEnableState(nil,i);
             if t==2 then

@@ -1,16 +1,9 @@
-local className, _, classId = UnitClass('player')
-if classId~=8 then--不是法师, 不加载
+local id, e= ...
+if e.Player.class~='MAGE' then
     return
 end
-local englishFaction = UnitFactionGroup('player')
-
-local id, e= ...
-local addName=UNITNAME_SUMMON_TITLE14:format(className)
-local Save={}
-local panel=CreateFrame("Frame")
-
 local Tab
-if englishFaction=='Horde' then--部落
+if e.Player.faction=='Horde' then--部落
     Tab={
         {spell=3567, spell2=11417, luce=true,},--传送门：奥格瑞玛
         {spell=3563, spell2=11418,},--传送门：幽暗城
@@ -29,7 +22,7 @@ if englishFaction=='Horde' then--部落
         {spell=120145,},--远古传送：达拉然
         {spell=193759,},--传送：守护者圣殿
     }
-elseif englishFaction=='Alliance' then
+elseif e.Player.faction=='Alliance' then
     Tab={
         {spell=3561, spell2=10059, luce=true,},--传送门：暴风城
         {spell=3562, spell2=11416,},--传送门：铁炉堡
@@ -52,88 +45,48 @@ else
     return
 end
 
+local addName=UNITNAME_SUMMON_TITLE14:format(UnitClass('player'))
+local Save={}
+local panel=CreateFrame("Frame")
+
 for _, tab in pairs(Tab) do
-    if IsSpellKnownOrOverridesKnown(tab.spell) then
-        e.LoadDate({id=tab.spell, type='spell'})
-        e.LoadDate({id=tab.spell2, type='spell'})
-    end
+    e.LoadDate({id=tab.spell, type='spell'})
+    e.LoadDate({id=tab.spell2, type='spell'})
 end
 
-
-local function setCooldown(self, spellID)--设置冷却
-    local start, duration, _, modRate = GetSpellCooldown(spellID)
-    e.Ccool(self, start, duration, modRate, true, nil, true)--冷却条
-end
-
-local function setName(self)--设置名称
-    if not Save.notShowName then
-        if not self.text then
-            self.text=e.Cstr(self, {color= not self.luce})-- nil, nil, nil, not self.luce)
-            self.text:SetPoint('RIGHT', self, 'LEFT')
-        end
-        local text=self.name:gsub('(.+):','')
-        text=text:gsub('(.+)：','');
-        text=text:gsub('(.+)-','');
-        self.text:SetText(text)
-    elseif self.text then
-        self.text:SetText('')
-    end
-end
-
---#####
---主菜单
---#####
-local function InitMenu(self, level, type)--主菜单
-    if not type then
-        return
-    end
-    local info={
-        text= e.onlyChinese and '显示名称' or PROFESSIONS_FLYOUT_SHOW_NAME,
-        checked= not Save.notShowName,
-        func=function()
-            if not Save.notShowName then
-                Save.notShowName=true
-            else
-                Save.notShowName=false
-            end
-            for _, button in pairs(panel.button) do
-                setName(button)--设置名称
-            end
-        end,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-end
 
 --####
 --初始
 --####
 local function Init()
-    panel.button={}
     local find
-    for index, tab in pairs(Tab) do
-        if IsSpellKnownOrOverridesKnown(tab.spell) then
+    for _, tab in pairs(Tab) do
+        if IsSpellKnown(tab.spell) then
             local button=e.Cbtn2(nil, e.toolsFrame, true, true)
-            panel.button[index]=button
+
             e.ToolsSetButtonPoint(button, not find, true)--设置位置
             find=true
 
+            button.spell= tab.spell
+            button.spell2= tab.spell2
             local name,_,icon = GetSpellInfo(tab.spell)
-            button:SetAttribute('type', 'spell')
+
+            button:SetAttribute('type', 'spell')--设置属性
             button:SetAttribute('spell', name or tab.spell)
             button.texture:SetTexture(icon)
 
+            button.text=e.Cstr(button, {color= not tab.luce})
+            button.text:SetPoint('RIGHT', button, 'LEFT')
             local text=name:gsub('(.+):','')
             text=text:gsub('(.+)：','');
             text=text:gsub('(.+)-','');
-            button.name=text
-            button.luce=tab.luce
-            setName(button)--设置名称
+            button.text:SetText(text)
+
             if tab.luce then
                 button.border:SetAtlas('bag-border')--设置高亮
             end
 
-            local rightSpell= tab.spell2 and IsSpellKnownOrOverridesKnown(tab.spell2)
-            if rightSpell then--右击
+            if tab.spell2 and IsSpellKnown(tab.spell2) then--右击
                 name,_,icon = GetSpellInfo(tab.spell2)
                 button:SetAttribute('type2', 'spell')
                 button:SetAttribute('spell2', name or tab.spell2)
@@ -146,10 +99,12 @@ local function Init()
                 button:RegisterEvent('PLAYER_REGEN_DISABLED')
                 button:RegisterEvent('PLAYER_REGEN_ENABLED')
                 button:RegisterEvent('SPELL_UPDATE_COOLDOWN')
-                setCooldown(button, tab.spell2)--设置冷却
+
+                e.SetItemSpellCool(button, nil, tab.spell)--设置冷却
+
                 button:SetScript("OnEvent", function(self, event)
                     if event=='SPELL_UPDATE_COOLDOWN' then
-                        setCooldown(self, tab.spell2)
+                        e.SetItemSpellCool(self, nil, self.spell2)--设置冷却
                     elseif event=='PLAYER_REGEN_DISABLED' then
                         self:RegisterEvent('SPELL_UPDATE_COOLDOWN')
                     elseif event=='PLAYER_REGEN_ENABLED' then
@@ -158,41 +113,26 @@ local function Init()
                 end)
             end
 
+            button.spell= tab.spell
+            button.spell2= tab.spell2
             button:SetScript('OnEnter', function(self)
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:SetSpellByID(tab.spell)
-                if rightSpell and name then
+                e.tips:SetSpellByID(self.spell)
+                if self.spell2 then
                     e.tips:AddLine(' ')
-                    local cd
-                    if tab.spell2 then
-                        local startTime, duration, enable = GetSpellCooldown(tab.spell2)
-                        if duration>0 and enable==1 then
-                            local t=GetTime()
-                            if startTime>t then t=t+86400 end
-                            t=t-startTime
-                            t=duration-t
-                            cd= '|cnRED_FONT_COLOR:'..SecondsToTime(t)..'|r'
-                        elseif enable==0 then
-                            cd= '|cnRED_FONT_COLOR:'..SPELL_RECAST_TIME_INSTANT..'|r'
-                        end
-                    end
-                    e.tips:AddDoubleLine((icon and '|T'..icon..':0|t' or '').. name..(cd or ''), e.Icon.right)
+                    local link= icon and '|T'..icon..':0|t' or ''
+                    link= link.. (GetSpellLink(self.spell2) or GetSpellInfo(self.spell2) or ('spellID'..self.spell2))
+                    link= link .. (e.GetSpellItemCooldown(self.spell2, nil) or '')
+                    e.tips:AddDoubleLine(link, e.Icon.right)
                 end
-                e.tips:AddDoubleLine(e.onlyChinese and '显示名称' or PROFESSIONS_FLYOUT_SHOW_NAME, e.Icon.mid)
                 e.tips:Show()
             end)
-           button:SetScript('OnLeave', function() e.tips:Hide() end)
-
-           button:SetScript('OnMouseWheel', function(self, d)
-                if not self.Menu then
-                    self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
-                    e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
-                end
-                e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 0, 0, {button=self})
-           end)
+            button:SetScript('OnLeave', function() e.tips:Hide() end)
         end
     end
+
+    Tab=nil
 end
 
 --###########

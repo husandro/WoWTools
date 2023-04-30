@@ -53,7 +53,7 @@ local FBList={--{spell=数字, ins=副本ID 数字 journalInstanceID, name=自�
 }
 
 for _, tab in pairs(FBList) do
-    if tab and tab.spell and IsSpellKnownOrOverridesKnown(tab.spell) then
+    if tab and tab.spell and IsSpellKnown(tab.spell) then
         e.LoadDate({id=tab.spell, type='spell'})
     end
 end
@@ -64,7 +64,7 @@ end
 local function Init()
     local find
     for _, tab in pairs(FBList) do
-        if IsSpellKnownOrOverridesKnown(tab.spell) then
+        if IsSpellKnown(tab.spell) then
             buttons[tab.spell]=e.Cbtn2(nil, e.toolsFrame, true)
 
             local name, _, icon = GetSpellInfo(tab.spell)

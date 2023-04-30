@@ -2637,7 +2637,8 @@
         "OPTION_TOOLTIP_DISPLAY_FREE_BAG_SLOTS",
         "SettingsPanelMixin",
         "SETTINGS_TAB_ADDONS",
-        "SETTINGS_TITLE"
+        "SETTINGS_TITLE",
+        "SpellFlyout"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

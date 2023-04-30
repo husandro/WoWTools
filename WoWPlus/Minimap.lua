@@ -362,7 +362,6 @@ end
 --盟约图标
 --#######
 local Set_MinMap_Icon= function(tab)-- {name, texture, func, hide} 小地图，建立一个图标 Hide("MyLDB") icon:Show("")
-    Save.miniMapPoint= Save.miniMapPoint or {}
     local bunnyLDB = LibStub("LibDataBroker-1.1"):NewDataObject(tab.name, {
         type = "data source",
         text = tab.name,
@@ -375,8 +374,9 @@ local Set_MinMap_Icon= function(tab)-- {name, texture, func, hide} 小地图，�
     return icon
 end
 
-
 local function set_ExpansionLandingPageMinimapButton()
+    Save.miniMapPoint= Save.miniMapPoint or {}
+
     Set_MinMap_Icon({name= id, texture= 136235,
         func= function(self, d)
             local key= IsModifierKeyDown()

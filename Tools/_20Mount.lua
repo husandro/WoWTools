@@ -25,7 +25,7 @@ local Save={
             [256123]=true,--[斯克维里加全地形载具]
         },
         [MOUNT_JOURNAL_FILTER_FLYING]={
-            --[339588]=true,--[罪奔者布兰契]
+            [339588]=true,--[罪奔者布兰契]
             --[163024]=true,--战火梦魇兽
             [366962]=true,--[艾什阿达，晨曦使者]
         },
@@ -128,8 +128,8 @@ end
 local function XDInt()--德鲁伊设置
     XD=nil
     if Save.XD and ClassID==11 then
-        local ground=IsSpellKnownOrOverridesKnown(768) and 768
-        local flying=IsSpellKnownOrOverridesKnown(783) and 783
+        local ground=IsSpellKnown(768) and 768
+        local flying=IsSpellKnown(783) and 783
         if ground then
             XD={
                 [MOUNT_JOURNAL_FILTER_GROUND]= ground,
@@ -667,7 +667,7 @@ local function InitMenu(self, level, type)--主菜单
         for spellID, _ in pairs(Save.Mounts[SPELLS]) do
             local name, _, icon = GetSpellInfo(spellID)
             local text= (icon and '|T'..icon..':0|t' or '').. (name or ('spellID: '..spellID))
-            local known= spellID and IsSpellKnownOrOverridesKnown(spellID)
+            local known= spellID and IsSpellKnown(spellID)
             text= text..(known and e.Icon.select2 or e.Icon.O2)
             info={
                 text= text,
@@ -1032,10 +1032,10 @@ end
 --初始化
 --######
 local function Init()
-    OkMount= IsSpellKnownOrOverridesKnown(90265)--是否已学, 骑术
-                or IsSpellKnownOrOverridesKnown(33391)
-                or IsSpellKnownOrOverridesKnown(34090)
-                or IsSpellKnownOrOverridesKnown(33388)
+    OkMount= IsSpellKnown(90265)--是否已学, 骑术
+                or IsSpellKnown(33391)
+                or IsSpellKnown(34090)
+                or IsSpellKnown(33388)
 
 
     for type, tab in pairs(Save.Mounts) do
@@ -1101,7 +1101,7 @@ local function Init()
         elseif d=='LeftButton' then
             if IsMounted() then
                 C_MountJournal.Dismiss()
-            elseif IsSpellKnownOrOverridesKnown(111400) and not UnitAffectingCombat('player') then--SS爆燃冲刺
+            elseif IsSpellKnown(111400) and not UnitAffectingCombat('player') then--SS爆燃冲刺
                 for i = 1, 40 do
                     local spell = select(10, UnitBuff('player', i, 'PLAYER'))
                     if not spell then
@@ -1372,10 +1372,10 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         setClickAtt()--设置属性
 
     elseif event=='LEARNED_SPELL_IN_TAB' then
-        OkMount= IsSpellKnownOrOverridesKnown(90265)--是否已学, 骑术
-                or IsSpellKnownOrOverridesKnown(33391)
-                or IsSpellKnownOrOverridesKnown(34090)
-                or IsSpellKnownOrOverridesKnown(33388)
+        OkMount= IsSpellKnown(90265)--是否已学, 骑术
+                or IsSpellKnown(33391)
+                or IsSpellKnown(34090)
+                or IsSpellKnown(33388)
 
     end
 end)
