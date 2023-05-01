@@ -197,14 +197,14 @@ local function checkMount()--检测坐骑
 
         else
             MountTab[type]={}
-            for spellID, mapID in pairs(Save.Mounts[type]) do
+            for spellID, tab in pairs(Save.Mounts[type]) do
                 spellID= (spellID==179244 or spellID==179245) and ShiJI or spellID
                 local mountID = C_MountJournal.GetMountFromSpell(spellID)
                 if mountID then
                     local isFactionSpecific, faction, shouldHideOnChar, isCollected= select(8, C_MountJournal.GetMountInfoByID(mountID))
                     if not shouldHideOnChar and isCollected and (not isFactionSpecific or faction==Faction) then
                         if type==FLOOR then
-                            if uiMapID and mapID==uiMapID and not XD then
+                            if uiMapID and tab[uiMapID] and not XD then
                                 table.insert(MountTab[type], spellID)
                             end
                         else
@@ -314,7 +314,7 @@ local function setClickAtt()--设置 Click属性
     elseif button.itemID then
         button:SetAttribute("type1", "item")
         button:SetAttribute("item1", C_Item.GetItemNameByID(button.itemID)  or button.itemID)
-        button.typeID=MountTab[type][1]
+        button.typeID= MountTab[type][1]
         button.typeSpell=nil--提示用
         button.typeID=spellID
     else
@@ -388,67 +388,210 @@ local function setMountShow()--坐骑展示
     button.showFrame:SetShown(true)
 end
 
---#####
---对话框
---#####
-StaticPopupDialogs[id..addName..'ITEMS']={--物品, 设置对话框
-    text=id..' '..addName..' '..ITEMS..'\n\n%s\n%s',
-    whileDead=1,
-    hideOnEscape=1,
-    exclusive=1,
-	timeout = 60,
-    button1=ADD,
-    button2=CANCEL,
-    button3=REMOVE,
-    OnShow = function(self, data)
-        self.button3:SetEnabled(Save.Mounts[ITEMS][data.itemID] and true or false)
-        self.button1:SetEnabled(not Save.Mounts[ITEMS][data.itemID] and true or false)
-	end,
-    OnAccept = function(self, data)
-        Save.Mounts[ITEMS][data.itemID]=true
-        checkItem()--检测物品
-        setClickAtt()--设置 Click属性
-	end,
-    OnAlt = function(self, data)
-        Save.Mounts[ITEMS][data.itemID]=nil
-        checkItem()--检测物品
-        setClickAtt()--设置 Click属性
-    end,
-    EditBoxOnEscapePressed = function(s)
-        s:SetAutoFocus(false)
-        s:GetParent():Hide()
-    end,
-}
-StaticPopupDialogs[id..addName..'SPELLS']={--法术, 设置对话框
-    text=id..' '..addName..' '..SPELLS..'\n\n%s\n%s',
-    whileDead=1,
-    hideOnEscape=1,
-    exclusive=1,
-	timeout = 60,
-    button1=ADD,
-    button2=CANCEL,
-    button3=REMOVE,
-    OnShow = function(self, data)
-        self.button3:SetEnabled(Save.Mounts[SPELLS][data.spellID] and true or false)
-        self.button1:SetEnabled(not Save.Mounts[SPELLS][data.spellID] and true or false)
-	end,
-    OnAccept = function(self, data)
-        Save.Mounts[SPELLS][data.spellID]=true
-        checkItem()--检测物品
-        setClickAtt()--设置 Click属性
-	end,
-    OnAlt = function(self, data)
-        Save.Mounts[SPELLS][data.spellID]=nil
-        checkSpell()--检测法术
-        setClickAtt()--设置 Click属性
-    end,
-    EditBoxOnEscapePressed = function(s)
-        s:SetAutoFocus(false)
-        s:GetParent():Hide()
-    end,
-}
+--#############
+--初始化，对话框
+--#############
+local function Init_Dialogs()
+    StaticPopupDialogs[id..addName..'ITEMS']={--物品, 设置对话框
+        text=id..' '..addName..' '..(e.onlyChinese and '物品' or ITEMS)..'\n\n%s\n%s',
+        whileDead=1,
+        hideOnEscape=1,
+        exclusive=1,
+        timeout = 60,
+        button1= e.onlyChinese and '添加' or ADD,
+        button2= e.onlyChinese and '取消' or CANCEL,
+        button3= e.onlyChinese and '移除' or REMOVE,
+        OnShow = function(self, data)
+            self.button3:SetEnabled(Save.Mounts[ITEMS][data.itemID] and true or false)
+            self.button1:SetEnabled(not Save.Mounts[ITEMS][data.itemID] and true or false)
+        end,
+        OnAccept = function(self, data)
+            Save.Mounts[ITEMS][data.itemID]=true
+            checkItem()--检测物品
+            setClickAtt()--设置 Click属性
+        end,
+        OnAlt = function(self, data)
+            Save.Mounts[ITEMS][data.itemID]=nil
+            checkItem()--检测物品
+            setClickAtt()--设置 Click属性
+        end,
+        EditBoxOnEscapePressed = function(s)
+            s:SetAutoFocus(false)
+            s:GetParent():Hide()
+        end,
+    }
 
-local function set_ToggleCollectionsJournal(mountID, type, showNotCollected)--打开界面, 收藏, 坐骑
+    StaticPopupDialogs[id..addName..'SPELLS']={--法术, 设置对话框
+        text=id..' '..addName..' '..(e.onlyChinese and '法术' or SPELLS)..'\n\n%s\n%s',
+        whileDead=1,
+        hideOnEscape=1,
+        exclusive=1,
+        timeout = 60,
+        button1=ADD,
+        button2=CANCEL,
+        button3=REMOVE,
+        OnShow = function(self, data)
+            self.button3:SetEnabled(Save.Mounts[SPELLS][data.spellID] and true or false)
+            self.button1:SetEnabled(not Save.Mounts[SPELLS][data.spellID] and true or false)
+        end,
+        OnAccept = function(self, data)
+            Save.Mounts[SPELLS][data.spellID]=true
+            checkItem()--检测物品
+            setClickAtt()--设置 Click属性
+        end,
+        OnAlt = function(self, data)
+            Save.Mounts[SPELLS][data.spellID]=nil
+            checkSpell()--检测法术
+            setClickAtt()--设置 Click属性
+        end,
+        EditBoxOnEscapePressed = function(s)
+            s:SetAutoFocus(false)
+            s:GetParent():Hide()
+        end,
+    }
+
+    StaticPopupDialogs[id..addName..'KEY']={--快捷键,设置对话框
+        text=id..' '..addName..'\n'..(e.onlyChinese and '快捷键"' or SETTINGS_KEYBINDINGS_LABEL)..'\n\nQ, BUTTON5',
+        whileDead=1,
+        hideOnEscape=1,
+        exclusive=1,
+        timeout = 60,
+        hasEditBox=1,
+        button1= e.onlyChinese and '设置' or SETTINGS,
+        button2= e.onlyChinese and '取消' or CANCEL,
+        button3= e.onlyChinese and '移除' or REMOVE,
+        OnShow = function(self2, data)
+            self2.editBox:SetText(Save.KEY or 'BUTTON5')
+            if Save.KEY then
+                self2.button1:SetText(SLASH_CHAT_MODERATE2:gsub('/', ''))--修该
+            end
+            self2.button3:SetEnabled(Save.KEY)
+        end,
+        OnAccept = function(self2, data)
+            local text= self2.editBox:GetText()
+            text=text:gsub(' ','')
+            text=text:gsub('%[','')
+            text=text:gsub(']','')
+            text=text:upper()
+            Save.KEY=text
+            setKEY()--设置捷键
+        end,
+        OnAlt = function()
+            Save.KEY=nil
+            setKEY()--设置捷键
+        end,
+        EditBoxOnTextChanged=function(self2, data)
+            local text= self2:GetText()
+            text=text:gsub(' ','')
+            self2:GetParent().button1:SetEnabled(text~='')
+        end,
+        EditBoxOnEscapePressed = function(s)
+            s:SetAutoFocus(false)
+            s:GetParent():Hide()
+        end,
+    }
+
+    StaticPopupDialogs[id..addName..'FLOOR'] = {--区域,设置对话框
+        text=id..' '..addName..' '..(e.onlyChinese and '区域' or FLOOR)..'\n\n%s\n%s',
+        whileDead=1,
+        hideOnEscape=1,
+        exclusive=1,
+        timeout = 60,
+        hasEditBox=1,
+        button1=e.onlyChinese and '区域' or FLOOR,
+        button2=e.onlyChinese and '取消' or CANCEL,
+        button3=e.onlyChinese and '移除' or REMOVE,
+        OnShow = function(self4, data)
+            self4.editBox:SetNumeric(true)
+            local num= Save.Mounts[FLOOR][data.spellID] or C_Map.GetBestMapForUnit("player")
+            if num and num>1 then
+                self4.editBox:SetNumber(num)
+            end
+            self4.button3:SetEnabled(Save.Mounts[FLOOR][data.spellID] and true or false)
+        end,
+        OnAccept = function(self4, data)
+            local num= self4.editBox:GetNumber()
+            num = num<1 and 1 or num
+            Save.Mounts[FLOOR][data.spellID]=num
+            checkMount()--检测坐骑
+            setClickAtt()--设置 Click属性
+            if MountJournal_UpdateMountList then securecallfunction(MountJournal_UpdateMountList) end
+        end,
+        OnAlt = function(self4, data)
+            Save.Mounts[FLOOR][data.spellID]=nil
+            checkMount()--检测坐骑
+            setClickAtt()--设置 Click属性
+            if MountJournal_UpdateMountList then securecallfunction(MountJournal_UpdateMountList) end
+        end,
+        EditBoxOnTextChanged=function(self4, data)
+        local num= self4:GetNumber()
+        local mapInfo = num>0 and num<2147483647 and C_Map.GetMapInfo(num)
+        if mapInfo and mapInfo.name then
+            self4:GetParent().button1:SetText('|cnGREEN_FONT_COLOR:'..mapInfo.name..'|r')
+        else
+            self4:GetParent().button1:SetText(NONE)
+        end
+        self4:GetParent().button1:SetEnabled(num>0 and num<2147483647)
+        end,
+        EditBoxOnEscapePressed = function(s)
+            s:SetAutoFocus(false)
+            s:GetParent():Hide()
+        end,
+    }
+
+    StaticPopupDialogs[id..addName..'FLOOR']={--区域,设置对话框
+        text=id..' '..addName..' '..(e.onlyChinese and '区域' or FLOOR)..'\n\n%s\n%s',
+        whileDead=1,
+        hideOnEscape=1,
+        exclusive=1,
+        timeout = 60,
+        hasEditBox=1,
+        button1=e.onlyChinese and '区域' or FLOOR,
+        button2=e.onlyChinese and '取消' or CANCEL,
+        button3=e.onlyChinese and '移除' or REMOVE,
+        OnShow = function(self, data)
+            self.editBox:SetNumeric(true)
+            local num= Save.Mounts[FLOOR][data.spellID] or C_Map.GetBestMapForUnit("player")
+            if num and num>1 then
+                self.editBox:SetNumber(num)
+            end
+            self.button3:SetEnabled(Save.Mounts[FLOOR][data.spellID] and true or false)
+        end,
+        OnAccept = function(self, data)
+            local num= self.editBox:GetNumber()
+            num = num<1 and 1 or num
+            Save.Mounts[FLOOR][data.spellID]=num
+            checkMount()--检测坐骑
+            setClickAtt()--设置 Click属性
+            if MountJournal_UpdateMountList then MountJournal_UpdateMountList() end
+        end,
+        OnAlt = function(self, data)
+            Save.Mounts[FLOOR][data.spellID]=nil
+            checkMount()--检测坐骑
+            setClickAtt()--设置 Click属性
+            if MountJournal_UpdateMountList then MountJournal_UpdateMountList() end
+        end,
+        EditBoxOnTextChanged=function(self, data)
+        local num= self:GetNumber()
+        local mapInfo = num>0 and num<2147483647 and C_Map.GetMapInfo(num)
+        if mapInfo and mapInfo.name then
+            self:GetParent().button1:SetText('|cnGREEN_FONT_COLOR:'..mapInfo.name..'|r')
+        else
+            self:GetParent().button1:SetText(NONE)
+        end
+        self:GetParent().button1:SetEnabled(num>0 and num<2147483647)
+        end,
+        EditBoxOnEscapePressed = function(s)
+            s:SetAutoFocus(false)
+            s:GetParent():Hide()
+        end,
+    }
+end
+
+--##################
+--打开界面, 收藏, 坐骑
+--##################
+local function set_ToggleCollectionsJournal(mountID, type, showNotCollected)
     if not IsAddOnLoaded("Blizzard_Collections") then LoadAddOn('Blizzard_Collections') end
     if MountJournal and not MountJournal:IsVisible() then
         ToggleCollectionsJournal(1)
@@ -507,60 +650,11 @@ local function InitMenu(self, level, type)--主菜单
             text= e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL,--..(Save.KEY and ' |cnGREEN_FONT_COLOR:'..Save.KEY..'|r' or ''),
             checked=Save.KEY and true or nil,
             func=function()
-                StaticPopupDialogs[id..addName..'KEY']={--快捷键,设置对话框
-                    text=id..' '..addName..'\n'..(e.onlyChinese and '快捷键"' or SETTINGS_KEYBINDINGS_LABEL)..'\n\nQ, BUTTON5',
-                    whileDead=1,
-                    hideOnEscape=1,
-                    exclusive=1,
-                    timeout = 60,
-                    hasEditBox=1,
-                    button1= e.onlyChinese and '设置' or SETTINGS,
-                    button2= e.onlyChinese and '取消' or CANCEL,
-                    button3= e.onlyChinese and '移除' or REMOVE,
-                    OnShow = function(self2, data)
-                        self2.editBox:SetText(Save.KEY or 'BUTTON5')
-                        if Save.KEY then
-                            self2.button1:SetText(SLASH_CHAT_MODERATE2:gsub('/', ''))--修该
-                        end
-                        self2.button3:SetEnabled(Save.KEY)
-                    end,
-                    OnAccept = function(self2, data)
-                        local text= self2.editBox:GetText()
-                        text=text:gsub(' ','')
-                        text=text:gsub('%[','')
-                        text=text:gsub(']','')
-                        text=text:upper()
-                        Save.KEY=text
-                        setKEY()--设置捷键
-                    end,
-                    OnAlt = function()
-                        Save.KEY=nil
-                        setKEY()--设置捷键
-                    end,
-                    EditBoxOnTextChanged=function(self2, data)
-                        local text= self2:GetText()
-                        text=text:gsub(' ','')
-                        self2:GetParent().button1:SetEnabled(text~='')
-                    end,
-                    EditBoxOnEscapePressed = function(s)
-                        s:SetAutoFocus(false)
-                        s:GetParent():Hide()
-                    end,
-                }
                 StaticPopup_Show(id..addName..'KEY')
             end,
         }
         info.disabled=UnitAffectingCombat('player')
         e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-        --[[
-        info={
-            text= (e.onlyChinese and '缩放' or UI_SCALE)..': |cnGREEN_FONT_COLOR:'..(Save.scale or 1)..'|r Alt+',
-            isTitle=true,
-            notCheckable=true,
-            icon='newplayertutorial-icon-mouse-middlebutton',
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)]]
 
         if ClassID==11 then--德鲁伊
             info={
@@ -788,8 +882,8 @@ local function InitMenu(self, level, type)--主菜单
         'Shift', 'Alt', 'Ctrl',
         '-',
         SPELLS,
-        FLOOR,
         ITEMS,
+        FLOOR,
     }
     for _, indexType in pairs(mainMenuTable) do
         if indexType=='-' then
@@ -872,22 +966,87 @@ local function InitMenu(self, level, type)--主菜单
         hasArrow=true,
     }
     e.LibDD:UIDropDownMenu_AddButton(info)
-
-    --[[info={--提示移动
-        text= e.onlyChinese and '移动' or NPE_MOVE,
-        isTitle=true,
-        notCheckable=true,
-        icon= 'newplayertutorial-icon-mouse-rightbutton'
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info)]]
 end
 
 --#############################
 --坐骑界面, 添加菜单, 设置提示内容
 --#############################
+local function Init_Menu_Set_UI(self, level, menuList)--主菜单
+    local frame= self:GetParent()
+    local spellID= frame.spellID
+    local mountID = frame.mountID
+    if not mountID then
+        return
+    end
+    local name, _, icon, _, _, _, _, _, _, _, _, _, isForDragonriding = C_MountJournal.GetMountInfoByID(mountID)
+    local info
+    for _, type in pairs(MountType) do
+        if (type==MOUNT_JOURNAL_FILTER_DRAGONRIDING and isForDragonriding) or (type~=MOUNT_JOURNAL_FILTER_DRAGONRIDING and not isForDragonriding) then
+            if type=='Shift' or type==FLOOR then
+                e.LibDD:UIDropDownMenu_AddSeparator(level)
+            end
+            info={
+                text= (e.onlyChinese and '设置' or SETTINGS)..' '..type..' #'..getTableNum(type),
+                checked=Save.Mounts[type][spellID] and true or nil,
+                tooltipOnButton=true,
+                tooltipTitle=id,
+                tooltipText=addName,
+                arg1={type= type, spellID= spellID, name= name},
+                func= type==FLOOR and
+                function(_, tab)
+                    StaticPopup_Show(id..addName..'FLOOR',
+                        (tab.icon and '|T'..tab.icon..':0|t' or '').. (tab.name or ('spellID: '..tab.spellID)),
+                        (Save.Mounts[FLOOR][tab.spellID] and (e.onlyChinese and '已存在' or ERR_ZONE_EXPLORED:format(PROFESSIONS_CURRENT_LISTINGS)) or (e.onlyChinese and '新建' or NEW))..'\n\n uiMapID: '..(C_Map.GetBestMapForUnit("player") or ''),
+                        {spellID=tab.spellID}
+                    )
+                end
+
+                or
+
+                function(_, tab)
+                    if Save.Mounts[tab.type][tab.spellID] then
+                        Save.Mounts[tab.type][tab.spellID]=nil
+                    else
+                        if tab.type=='Shift' or tab.type=='Alt' or tab.type=='Ctrl' then--唯一
+                            Save.Mounts[tab.type]={[tab.spellID]=true}
+                        else
+                            Save.Mounts[tab.type][tab.spellID]=true
+                        end
+                        removeTable(tab.type, tab.spellID)--移除, 表里, 其他同样的项目
+                    end
+                    checkMount()--检测坐骑
+                    setClickAtt()--设置属性
+                    setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
+                    MountJournal_UpdateMountList()
+                end
+            }
+            e.LibDD:UIDropDownMenu_AddButton(info, level);
+        end
+    end
+
+
+    e.LibDD:UIDropDownMenu_AddSeparator()
+    info={
+        text=name,
+        icon=icon,
+        isTitle=true,
+        notCheckable=true,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level);
+
+    info={
+        text=id..' '..addName..'(Tools)',
+        isTitle=true,
+        notCheckable=true,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level);
+end
 local function setMountJournal_InitMountButton(self, elementData)--Blizzard_MountCollection.lua
-    --local creatureName, spellID, icon, active, isUsable, sourceType, isFavorite, isFactionSpecific, faction, isFiltered, isCollected, mountID, isForDragonriding = C_MountJournal.GetDisplayedMountInfo(elementData.index)
-    if not self or not self.spellID or Save.disabled then
+   --print(self.spellID, self.mountID, self.index)
+    if not self or not self.spellID then
+        if self and self.btn then
+            self.btn:SetShown(false)
+        end
         return
     end
     local text
@@ -907,7 +1066,7 @@ local function setMountJournal_InitMountButton(self, elementData)--Blizzard_Moun
             end
         end
     end
-    if text and not self.text then
+    if text and not self.text then--提示， 文本
         self.text=e.Cstr(self, {copyFont=self.name, justifyH='RIGHT'})--nil, self.name, nil,nil,nil,'RIGHT')
         self.text:SetPoint('RIGHT')
         self.text:SetFontObject('GameFontNormal')
@@ -916,125 +1075,44 @@ local function setMountJournal_InitMountButton(self, elementData)--Blizzard_Moun
     if self.text then
         self.text:SetText(text or '')
     end
-end
-
-local function setMountJournal_ShowMountDropdown(index)
-    if not index and Save.disabled then
-        return
-    end
-    local creatureName, spellID, icon, active, isUsable, sourceType, isFavorite, isFactionSpecific, faction, isFiltered, isCollected, mountID, isForDragonriding = C_MountJournal.GetDisplayedMountInfo(index)
-    if not spellID then
-        return
-    end
-    e.LibDD:UIDropDownMenu_AddSeparator()
-
-    local info
-    for _, type in pairs(MountType) do
-        if (type==MOUNT_JOURNAL_FILTER_DRAGONRIDING and isForDragonriding) or (type~=MOUNT_JOURNAL_FILTER_DRAGONRIDING and not isForDragonriding) then
-            if type=='Shift'  or type==FLOOR then
-                e.LibDD:UIDropDownMenu_AddSeparator()
+    if not self.btn then--建立，图标，菜单
+        self.btn=e.Cbtn(self, {icon=true, size={18,18}})
+        self.btn:SetPoint('BOTTOMRIGHT')
+        self.btn:SetAlpha(0.3)
+        self.btn:SetScript('OnEnter', function(self2)
+            self2:SetAlpha(1)
+        end)
+        self.btn:SetScript('OnLeave', function(self2) self2:SetAlpha(0.3) end)
+        self.btn:SetScript('OnClick', function(self2)
+            if not self2.Menu then
+                self2.Menu=CreateFrame("Frame", nil, self2, "UIDropDownMenuTemplate")
+                e.LibDD:UIDropDownMenu_Initialize(self2.Menu, Init_Menu_Set_UI, 'MENU')
             end
-            info={
-                text= (e.onlyChinese and '设置' or SETTINGS)..' '..type..' #'..getTableNum(type),
-                checked=Save.Mounts[type][spellID] and true or nil,
-                tooltipOnButton=true,
-                tooltipTitle=id,
-                tooltipText=addName,
-                arg1=type,
-                arg2=spellID,
-                func= type==FLOOR and
-                function(_, arg1, arg2)
-                    local exits=Save.Mounts[FLOOR][arg2] and (e.onlyChinese and '已存在' or ERR_ZONE_EXPLORED:format(PROFESSIONS_CURRENT_LISTINGS)) or NEW
-                    exits= exits.. '\n\n'..WORLD_MAP..' uiMapID: '..(C_Map.GetBestMapForUnit("player") or '')
-                    local text= (icon and '|T'..icon..':0|t' or '').. (creatureName or ('spellID: '..arg2))
-
-                    StaticPopupDialogs[id..addName..'FLOOR']={--区域,设置对话框
-                        text=id..' '..addName..' '..FLOOR..'\n\n%s\n%s',
-                        whileDead=1,
-                        hideOnEscape=1,
-                        exclusive=1,
-                        timeout = 60,
-                        hasEditBox=1,
-                        button1=e.onlyChinese and '区域' or FLOOR,
-                        button2=e.onlyChinese and '取消' or CANCEL,
-                        button3=e.onlyChinese and '移除' or REMOVE,
-                        OnShow = function(self, data)
-                            self.editBox:SetNumeric(true)
-                            local num= Save.Mounts[FLOOR][data.spellID] or C_Map.GetBestMapForUnit("player")
-                            if num and num>1 then
-                                self.editBox:SetNumber(num)
-                            end
-                            self.button3:SetEnabled(Save.Mounts[FLOOR][data.spellID] and true or false)
-                        end,
-                        OnAccept = function(self, data)
-                            local num= self.editBox:GetNumber()
-                            num = num<1 and 1 or num
-                            Save.Mounts[FLOOR][data.spellID]=num
-                            checkMount()--检测坐骑
-                            setClickAtt()--设置 Click属性
-                            if MountJournal_UpdateMountList then MountJournal_UpdateMountList() end
-                        end,
-                        OnAlt = function(self, data)
-                            Save.Mounts[FLOOR][data.spellID]=nil
-                            checkMount()--检测坐骑
-                            setClickAtt()--设置 Click属性
-                            if MountJournal_UpdateMountList then MountJournal_UpdateMountList() end
-                        end,
-                        EditBoxOnTextChanged=function(self, data)
-                        local num= self:GetNumber()
-                        local mapInfo = num>0 and num<2147483647 and C_Map.GetMapInfo(num)
-                        if mapInfo and mapInfo.name then
-                            self:GetParent().button1:SetText('|cnGREEN_FONT_COLOR:'..mapInfo.name..'|r')
-                        else
-                            self:GetParent().button1:SetText(NONE)
-                        end
-                        self:GetParent().button1:SetEnabled(num>0 and num<2147483647)
-                        end,
-                        EditBoxOnEscapePressed = function(s)
-                            s:SetAutoFocus(false)
-                            s:GetParent():Hide()
-                        end,
-                    }
-                    StaticPopup_Show(id..addName..'FLOOR',text,exits , {spellID=arg2})
-                end
-
-                or
-
-                function(self, arg1, arg2)
-                    if Save.Mounts[arg1][arg2] then
-                        Save.Mounts[arg1][arg2]=nil
-                    else
-                        if arg1=='Shift' or arg1=='Alt' or arg1=='Ctrl' then--唯一
-                            Save.Mounts[arg1]={[arg2]=true}
-                        else
-                            Save.Mounts[arg1][arg2]=true
-                        end
-                        removeTable(arg1, arg2)--移除, 表里, 其他同样的项目
-                    end
-                    checkMount()--检测坐骑
-                    setClickAtt()--设置属性
-                    setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
-                    MountJournal_UpdateMountList()
-                end
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, 1);
-        end
+            e.LibDD:ToggleDropDownMenu(1, nil, self2.Menu, self2, 10, 0)
+        end)
     end
+    self.btn.mountID= self.mountID
+    self.btn.spellID= self.spellID
+    self.btn:SetShown(true)
 
-
-    e.LibDD:UIDropDownMenu_AddSeparator()
-    info={
-        text=id..' '..addName,
-        isTitle=true,
-        notCheckable=true,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, 1);
+    if not MountJournal.MountDisplay.tipsMenu then
+        MountJournal.MountDisplay.tipsMenu= e.Cbtn(MountJournal.MountDisplay, {icon=true, size={22,22}})
+        MountJournal.MountDisplay.tipsMenu:SetPoint('LEFT')
+        MountJournal.MountDisplay.tipsMenu:SetAlpha(0.3)
+        MountJournal.MountDisplay.tipsMenu:SetScript('OnEnter', function(self2)
+            e.LibDD:ToggleDropDownMenu(1, nil, button.Menu, self2, 15, 0)
+            self2:SetAlpha(1)
+        end)
+        MountJournal.MountDisplay.tipsMenu:SetScript('OnLeave', function(self2) self2:SetAlpha(0.3) end)
+    end
 end
 
 --######
 --初始化
 --######
 local function Init()
+    Init_Dialogs()--初始化，对话框
+
     OkMount= IsSpellKnown(90265)--是否已学, 骑术
                 or IsSpellKnown(33391)
                 or IsSpellKnown(34090)
@@ -1060,7 +1138,9 @@ local function Init()
         setKEY()--设置捷键
     end
 
-    --button:EnableMouseWheel(true)
+    button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
+    e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
+    
     button:RegisterForDrag("RightButton")
     button:SetMovable(true)
     button:SetClampedToScreen(true)
@@ -1095,10 +1175,6 @@ local function Init()
             SetCursor('UI_MOVE_CURSOR')
 
         elseif d=='RightButton' and not IsModifierKeyDown() then
-            if not self.Menu then
-                self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
-                e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
-            end
            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
 
         elseif d=='LeftButton' then
@@ -1222,20 +1298,14 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 Save.disabled= not Save.disabled and true or nil
                 print(id, 'Tools', e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end)
-            --[[check:SetScript('OnEnter', function (self2)
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine(e.onlyChinese and '友情提示:' or 'note: ', e.onlyChinese and '可能会出现' or ENABLE_ERROR_SPEECH)
-                e.tips:AddDoubleLine(e.onlyChinese and '编辑模式' or HUD_EDIT_MODE_MENU, e.onlyChinese and '错误' or ERRORS, 1,0,0, 1,0,0)
-                e.tips:AddDoubleLine(e.onlyChinese and '物品升级界面' or (ITEM_UPGRADE..' UI'), e.onlyChinese and '错误' or ERRORS, 1,0,0,1,0,0)
-                e.tips:AddDoubleLine(e.onlyChinese and '预创建队伍' or LFGLIST_NAME, e.onlyChinese and '错误' or ERRORS, 1,0,0, 1,0,0)
-                e.tips:AddDoubleLine(e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON, e.onlyChinese and '错误' or ERRORS, 1,0,0, 1,0,0)
-                e.tips:Show()
-            end)
-            check.text:SetTextColor(1,0,0)
-            check:SetScript('OnLeave', function() e.tips:Hide() end)--]]
 
             if not Save.disabled then
+                for spellID, tab in pairs(Save.Mounts[FLOOR]) do
+                    if type(tab)~='table' then
+                        Save.Mounts[FLOOR][spellID]=nil
+                    end
+                end
+
                 if not IsAddOnLoaded("Blizzard_Collections") then LoadAddOn('Blizzard_Collections') end
 
                 button=e.Cbtn2('WoWToolsMountButton')
@@ -1287,7 +1357,6 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 end
 
                 Init()--初始
-                --table.insert(e.Player.disabledLUA, 'Tools')--禁用插件, 给物品升级界面用
             else
                 e.toolsFrame.disabled=true
                 panel:UnregisterAllEvents()
@@ -1296,7 +1365,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
 
         elseif arg1=='Blizzard_Collections' then
             hooksecurefunc('MountJournal_InitMountButton',setMountJournal_InitMountButton)
-            hooksecurefunc('MountJournal_ShowMountDropdown',setMountJournal_ShowMountDropdown)
+            
+            --hooksecurefunc('MountJournal_ShowMountDropdown',setMountJournal_ShowMountDropdown)
         end
 
     elseif event=='PLAYER_REGEN_DISABLED' then
@@ -1316,9 +1386,6 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            --[[if e.DisabledLua then--禁用插件, 给物品升级界面用
-                Save.disabled=true
-            end]]
             WoWToolsSave[addName]=Save
         end
 
@@ -1334,10 +1401,10 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     elseif event=='NEW_MOUNT_ADDED' then
         checkMount()--检测坐骑
 
-    --[[elseif event=='ZONE_CHANGED' or event=='ZONE_CHANGED_INDOORS' or event=='ZONE_CHANGED_NEW_AREA' then
+    elseif event=='ZONE_CHANGED' or event=='ZONE_CHANGED_INDOORS' or event=='ZONE_CHANGED_NEW_AREA' then
         if not XD then
             checkMount()--检测坐骑
-        end]]
+        end
     elseif event=='MOUNT_JOURNAL_USABILITY_CHANGED' or event=='PLAYER_MOUNT_DISPLAY_CHANGED' then-- or event=='AREA_POIS_UPDATED' then
         setClickAtt()--设置属性
 
