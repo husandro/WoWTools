@@ -148,7 +148,7 @@ local function getTableNum(type)--检测,表里的数量
 end
 local function removeTable(type, ID)--移除, 表里, 其他同样的项目
     for type2, _ in pairs(Save.Mounts) do
-        if type2~=type then
+        if type2~=type and type2~=FLOOR then
             Save.Mounts[type2][ID]=nil
         end
     end
@@ -491,28 +491,51 @@ local function Init_Dialogs()
         end,
     }
 
+    local function get_UIMapIDs(text)--从text取得uiMapID表
+        local tab, reText={}, nil
+        text:gsub('%d+', function(self)
+            local uiMapID= tonumber(self)
+            local info= uiMapID and C_Map.GetMapInfo(uiMapID)
+            if uiMapID and info and info.name then--uiMapID<2147483647
+                tab[uiMapID]=true
+                reText= reText and reText..'\n' or ''
+                reText= reText..uiMapID..info.name
+            end
+        end)
+        return tab, reText
+    end
+
     StaticPopupDialogs[id..addName..'FLOOR'] = {--区域,设置对话框
         text=id..' '..addName..' '..(e.onlyChinese and '区域' or FLOOR)..'\n\n%s\n%s',
-        whileDead=1,
-        hideOnEscape=1,
-        exclusive=1,
-        timeout = 60,
-        hasEditBox=1,
+        --whileDead=1,
+        --hideOnEscape=1,
+        --exclusive=1,
+        timeout= 0,
+        hasEditBox= true,
         button1=e.onlyChinese and '区域' or FLOOR,
         button2=e.onlyChinese and '取消' or CANCEL,
         button3=e.onlyChinese and '移除' or REMOVE,
         OnShow = function(self4, data)
-            self4.editBox:SetNumeric(true)
-            local num= Save.Mounts[FLOOR][data.spellID] or C_Map.GetBestMapForUnit("player")
-            if num and num>1 then
-                self4.editBox:SetNumber(num)
+            self4.editBox:SetAutoFocus(false)
+            self4.editBox:ClearFocus()
+            local text
+            text= ''
+            local tab= Save.Mounts[FLOOR][data.spellID] or {}
+            for uiMapID, _ in pairs(tab) do
+                text= text..uiMapID..', '
             end
+            if text=='' then
+                text= C_Map.GetBestMapForUnit("player") or text
+                text= text..', '
+            end
+            self4.editBox:SetText(text)
             self4.button3:SetEnabled(Save.Mounts[FLOOR][data.spellID] and true or false)
         end,
         OnAccept = function(self4, data)
-            local num= self4.editBox:GetNumber()
-            num = num<1 and 1 or num
-            Save.Mounts[FLOOR][data.spellID]=num
+            local tab, text= get_UIMapIDs(self4.editBox:GetText())
+            print('|cnGREEN_FONT_COLOR:', data.name, data.spellID, data.mountID, ':|r\n|cffff00ff', text, '\n|r'..id, addName, 'Tools','...')
+
+            Save.Mounts[FLOOR][data.spellID]= tab
             checkMount()--检测坐骑
             setClickAtt()--设置 Click属性
             if MountJournal_UpdateMountList then securecallfunction(MountJournal_UpdateMountList) end
@@ -524,66 +547,14 @@ local function Init_Dialogs()
             if MountJournal_UpdateMountList then securecallfunction(MountJournal_UpdateMountList) end
         end,
         EditBoxOnTextChanged=function(self4, data)
-        local num= self4:GetNumber()
-        local mapInfo = num>0 and num<2147483647 and C_Map.GetMapInfo(num)
-        if mapInfo and mapInfo.name then
-            self4:GetParent().button1:SetText('|cnGREEN_FONT_COLOR:'..mapInfo.name..'|r')
-        else
-            self4:GetParent().button1:SetText(NONE)
-        end
-        self4:GetParent().button1:SetEnabled(num>0 and num<2147483647)
+            local _, text= get_UIMapIDs(self4:GetText())
+            local btn=self4:GetParent().button1
+            btn:SetEnabled(text and true or false)
+            btn:SetText(text or (e.onlyChinese and '无' or NONE))
         end,
         EditBoxOnEscapePressed = function(s)
             s:SetAutoFocus(false)
-            s:GetParent():Hide()
-        end,
-    }
-
-    StaticPopupDialogs[id..addName..'FLOOR']={--区域,设置对话框
-        text=id..' '..addName..' '..(e.onlyChinese and '区域' or FLOOR)..'\n\n%s\n%s',
-        whileDead=1,
-        hideOnEscape=1,
-        exclusive=1,
-        timeout = 60,
-        hasEditBox=1,
-        button1=e.onlyChinese and '区域' or FLOOR,
-        button2=e.onlyChinese and '取消' or CANCEL,
-        button3=e.onlyChinese and '移除' or REMOVE,
-        OnShow = function(self, data)
-            self.editBox:SetNumeric(true)
-            local num= Save.Mounts[FLOOR][data.spellID] or C_Map.GetBestMapForUnit("player")
-            if num and num>1 then
-                self.editBox:SetNumber(num)
-            end
-            self.button3:SetEnabled(Save.Mounts[FLOOR][data.spellID] and true or false)
-        end,
-        OnAccept = function(self, data)
-            local num= self.editBox:GetNumber()
-            num = num<1 and 1 or num
-            Save.Mounts[FLOOR][data.spellID]=num
-            checkMount()--检测坐骑
-            setClickAtt()--设置 Click属性
-            if MountJournal_UpdateMountList then MountJournal_UpdateMountList() end
-        end,
-        OnAlt = function(self, data)
-            Save.Mounts[FLOOR][data.spellID]=nil
-            checkMount()--检测坐骑
-            setClickAtt()--设置 Click属性
-            if MountJournal_UpdateMountList then MountJournal_UpdateMountList() end
-        end,
-        EditBoxOnTextChanged=function(self, data)
-        local num= self:GetNumber()
-        local mapInfo = num>0 and num<2147483647 and C_Map.GetMapInfo(num)
-        if mapInfo and mapInfo.name then
-            self:GetParent().button1:SetText('|cnGREEN_FONT_COLOR:'..mapInfo.name..'|r')
-        else
-            self:GetParent().button1:SetText(NONE)
-        end
-        self:GetParent().button1:SetEnabled(num>0 and num<2147483647)
-        end,
-        EditBoxOnEscapePressed = function(s)
-            s:SetAutoFocus(false)
-            s:GetParent():Hide()
+            s:ClearFocus()
         end,
     }
 end
@@ -849,12 +820,13 @@ local function InitMenu(self, level, type)--主菜单
             }
 
             if type==FLOOR and Save.Mounts[FLOOR][spellID] then
-                local uiMapID=Save.Mounts[FLOOR][spellID]
-                local mapInfo = C_Map.GetMapInfo(uiMapID)
-                info.tooltipText= info.tooltipText
-                    ..'\n\n'..'uiMapID: '
-                    ..(uiMapID or (e.onlyChinese and '无' or NONE))
-                    ..(mapInfo and mapInfo.name and '\n'..mapInfo.name or '')
+                local text
+                for uiMapID, _ in pairs(Save.Mounts[FLOOR][spellID]) do
+                    local mapInfo = C_Map.GetMapInfo(uiMapID)
+                    text= text and text..'\n' or ''
+                    text= text..uiMapID..' '..(mapInfo and mapInfo.name or (e.onlyChinese and '无' or NONE))
+                end
+                info.tooltipText= text
             end
             if not isXDSpell then
                 info.func=function(_, arg1, arg2)
@@ -971,59 +943,72 @@ end
 --#############################
 --坐骑界面, 添加菜单, 设置提示内容
 --#############################
-local function Init_Menu_Set_UI(self, level, menuList)--主菜单
+local function Init_Menu_Set_UI(self, level, menuList)--坐骑界面, 菜单
     local frame= self:GetParent()
     local spellID= frame.spellID
     local mountID = frame.mountID
     if not mountID then
         return
     end
-    local name, _, icon, _, _, _, _, _, _, _, _, _, isForDragonriding = C_MountJournal.GetMountInfoByID(mountID)
+    local name, _, icon, isActive, isUsable, sourceType, isFavorite, isFactionSpecific, faction, shouldHideOnChar, isCollected, _, isForDragonriding = C_MountJournal.GetMountInfoByID(mountID)
     local info
     for _, type in pairs(MountType) do
-        if (type==MOUNT_JOURNAL_FILTER_DRAGONRIDING and isForDragonriding) or (type~=MOUNT_JOURNAL_FILTER_DRAGONRIDING and not isForDragonriding) then
-            if type=='Shift' or type==FLOOR then
-                e.LibDD:UIDropDownMenu_AddSeparator(level)
-            end
-            info={
-                text= (e.onlyChinese and '设置' or SETTINGS)..' '..type..' #'..getTableNum(type),
-                checked=Save.Mounts[type][spellID] and true or nil,
-                tooltipOnButton=true,
-                tooltipTitle=id,
-                tooltipText=addName,
-                arg1={type= type, spellID= spellID, name= name},
-                func= type==FLOOR and
-                function(_, tab)
-                    StaticPopup_Show(id..addName..'FLOOR',
-                        (tab.icon and '|T'..tab.icon..':0|t' or '').. (tab.name or ('spellID: '..tab.spellID)),
-                        (Save.Mounts[FLOOR][tab.spellID] and (e.onlyChinese and '已存在' or ERR_ZONE_EXPLORED:format(PROFESSIONS_CURRENT_LISTINGS)) or (e.onlyChinese and '新建' or NEW))..'\n\n uiMapID: '..(C_Map.GetBestMapForUnit("player") or ''),
-                        {spellID=tab.spellID}
-                    )
-                end
-
-                or
-
-                function(_, tab)
-                    if Save.Mounts[tab.type][tab.spellID] then
-                        Save.Mounts[tab.type][tab.spellID]=nil
-                    else
-                        if tab.type=='Shift' or tab.type=='Alt' or tab.type=='Ctrl' then--唯一
-                            Save.Mounts[tab.type]={[tab.spellID]=true}
-                        else
-                            Save.Mounts[tab.type][tab.spellID]=true
-                        end
-                        removeTable(tab.type, tab.spellID)--移除, 表里, 其他同样的项目
-                    end
-                    checkMount()--检测坐骑
-                    setClickAtt()--设置属性
-                    setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
-                    MountJournal_UpdateMountList()
-                end
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level);
+        if type=='Shift' or type==FLOOR then
+            e.LibDD:UIDropDownMenu_AddSeparator(level)
         end
+        info={
+            text= (e.onlyChinese and '设置' or SETTINGS)..' '..type..' #'..getTableNum(type),
+            checked= Save.Mounts[type][spellID] and true or nil,
+            arg1={type= type, spellID= spellID, name= name, mountID= mountID},
+            colorCode= (
+                    (type==MOUNT_JOURNAL_FILTER_DRAGONRIDING and not isForDragonriding)
+                    or (type~=MOUNT_JOURNAL_FILTER_DRAGONRIDING and isForDragonriding)
+                    or not isCollected
+                    or shouldHideOnChar
+                    or (isFactionSpecific and faction~=Faction)
+                ) and '|cff606060'
+        }
+        if type==FLOOR then
+            info.func= function(_, tab)
+                StaticPopup_Show(
+                    id..addName..'FLOOR',
+                    (tab.icon and '|T'..tab.icon..':0|t' or '').. (tab.name or ('spellID: '..tab.spellID)),
+                    (Save.Mounts[FLOOR][tab.spellID] and (e.onlyChinese and '已存在' or ERR_ZONE_EXPLORED:format(PROFESSIONS_CURRENT_LISTINGS)) or (e.onlyChinese and '新建' or NEW))..'\n\n uiMapID: '..(C_Map.GetBestMapForUnit("player") or ''),
+                    tab
+                )
+            end
+            if info.checked then
+                local text
+                for uiMapID,_ in pairs(Save.Mounts[type][spellID]) do
+                    local mapInfo= uiMapID and C_Map.GetMapInfo(uiMapID)
+                    text= text and text..'\n' or ''
+                    text= text..'uiMapID '..uiMapID..' '..(mapInfo and mapInfo.name or (e.onlyChinese and '无' or NONE))
+                end
+                if text then
+                    info.tooltipOnButton=true
+                    info.tooltipTitle= text
+                end
+            end
+        else
+            info.func= function(_, tab)
+                if Save.Mounts[tab.type][tab.spellID] then
+                    Save.Mounts[tab.type][tab.spellID]=nil
+                else
+                    if tab.type=='Shift' or tab.type=='Alt' or tab.type=='Ctrl' then--唯一
+                        Save.Mounts[tab.type]={[tab.spellID]=true}
+                    else
+                        Save.Mounts[tab.type][tab.spellID]=true
+                    end
+                    removeTable(tab.type, tab.spellID)--移除, 表里, 其他同样的项目
+                end
+                checkMount()--检测坐骑
+                setClickAtt()--设置属性
+                setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
+                MountJournal_UpdateMountList()
+            end
+        end
+        e.LibDD:UIDropDownMenu_AddButton(info, level);
     end
-
 
     e.LibDD:UIDropDownMenu_AddSeparator()
     info={
@@ -1035,7 +1020,7 @@ local function Init_Menu_Set_UI(self, level, menuList)--主菜单
     e.LibDD:UIDropDownMenu_AddButton(info, level);
 
     info={
-        text=id..' '..addName..'(Tools)',
+        text=id..' '..addName,
         isTitle=true,
         notCheckable=true,
     }
@@ -1055,15 +1040,13 @@ local function setMountJournal_InitMountButton(self, elementData)--Blizzard_Moun
         if ID then
             text= text and text..'\n' or ''
             if type==FLOOR then
-                local mapInfo = ID<2147483647 and C_Map.GetMapInfo(ID)
-                if mapInfo and mapInfo.name then
-                    text= text..mapInfo.name
-                else
-                    text= text..type
+                local num=0
+                for _, _ in pairs(ID) do
+                    num=num+1
                 end
-            else
-                text= text..type
+                text=text..'|cnGREEN_FONT_COLOR:'..num..'|r'
             end
+            text= text..type
         end
     end
     if text and not self.text then--提示， 文本

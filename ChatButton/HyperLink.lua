@@ -589,7 +589,7 @@ local function setPanel()
     local str=e.Cstr(frame)--内容加颜色
     str:SetPoint('TOPLEFT')
     str:SetText(e.onlyChinese and '颜色: 关键词 (|cnGREEN_FONT_COLOR:空格|r) 分开' or (COLOR..': '..KBASE_DEFAULT_SEARCH_TEXT..'|cnGREEN_FONT_COLOR:( '..KEY_SPACE..' )|r'))
-    local editBox=e.CeditBox(frame)
+    local editBox=e.Cedit(frame)
     editBox:SetPoint('TOPLEFT', str, 'BOTTOMLEFT',0,-5)
     editBox:SetTextColor(0,1,0)
     if Save.text then
@@ -627,7 +627,7 @@ local function setPanel()
     local str2=e.Cstr(frame)--频道名称替换
     str2:SetPoint('TOPLEFT', editBox, 'BOTTOMLEFT', 0,-20)
     str2:SetText(e.onlyChinese and '频道名称替换: 关键词|cnGREEN_FONT_COLOR:=|r替换' or (CHANNEL_CHANNEL_NAME..': '..COMMUNITIES_SETTINGS_SHORT_NAME_LABEL..'  |cnGREEN_FONT_COLOR:= |r'))
-    local editBox2=e.CeditBox(frame)
+    local editBox2=e.Cedit(frame)
     editBox2:SetPoint('TOPLEFT', str2, 'BOTTOMLEFT',0,-5)
     if Save.channels then
         local t3=''

@@ -516,7 +516,7 @@ e.Cstr=function(self, tab)--self, {size, copyFont, changeFont, color={r=,g=,b=,a
 end
 
 
-e.CeditBox= function(self, width, height)
+e.Cedit= function(self, width, height)
     width = width or 400
     height= height or 400
 
