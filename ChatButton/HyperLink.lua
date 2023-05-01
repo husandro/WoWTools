@@ -762,6 +762,7 @@ StaticPopupDialogs[id..addName..'WELCOME']={--区域,设置对话框
     end,
     EditBoxOnEscapePressed = function(s)
         s:SetAutoFocus(false)
+        s:ClearFocus()
         s:GetParent():Hide()
     end,
 }
@@ -1011,6 +1012,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
             edit:SetPoint('BOTTOMRIGHT', btn, 'BOTTOMLEFT')
             edit:SetSize(390, 20)
             edit:SetAutoFocus(false)
+            edit:ClearFocus()
             edit.elapsed= 0
             edit:SetScript('OnUpdate', function(self2, elapsed)
                     self2.elapsed= self2.elapsed +elapsed

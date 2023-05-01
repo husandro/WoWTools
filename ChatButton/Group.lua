@@ -167,7 +167,8 @@ local function InitMenu(self, level, type)--主菜单
                             end
                         end,
                         EditBoxOnEscapePressed = function(s)
-                            --s:SetAutoFocus(false)
+                            s:SetAutoFocus(false)
+                            s:ClearFocus()
                             s:GetParent():Hide()
                         end,
                     }

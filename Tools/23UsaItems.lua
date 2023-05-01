@@ -1,9 +1,10 @@
----@diagnostic disable: redundant-parameter
 local id, e = ...
 local addName=USE_ITEM
-local panel=e.Cbtn(e.toolsFrame, {icon=true, size={20,20}})
+local panel=e.Cbtn(e.toolsFrame, {atlas='Soulbinds_Tree_Conduit_Icon_Utility', size={20,20}})
+
 panel:SetPoint('BOTTOMLEFT', e.toolsFrame, 'TOPRIGHT',-2,5)
 panel:SetAlpha(0.1)
+
 local Save= {
         item={
             --156833,--[凯蒂的印哨]
@@ -146,19 +147,6 @@ StaticPopupDialogs[id..addName..'ADD']={--添加, 移除
 local function InitMenu(self, level, type)--主菜单
     local info
     if type then
-        local cleraAllText='|cnRED_FONT_COLOR:'..(e.onlyChinese and '全部清除' or CLEAR_ALL)..'|r '..(type=='spell' and (e.onlyChinese and '法术' or SPELLS) or type=='item' and (e.onlyChinese and '物品' or ITEMS) or (e.onlyChinese and '装备' or EQUIPSET_EQUIP))..' #'..'|cnGREEN_FONT_COLOR:'..#Save[type]..'|r'
-        info={--清除全部
-            text=cleraAllText,
-            notCheckable=true,
-            func=function()
-                StaticPopup_Show(id..addName..'REMOVE', cleraAllText ,nil, {type=type, clearAll=true})
-            end,
-            tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and '重新加载UI' or RELOADUI
-            }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-
         for index, ID in pairs(Save[type]) do
             local name, icon, _
             if type=='spell' then
@@ -173,61 +161,101 @@ local function InitMenu(self, level, type)--主菜单
                 text= name,
                 notCheckable=true,
                 icon=icon,
-                func=function()
-                    StaticPopup_Show(id..addName..'REMOVE', text, nil, {type=type, index=index, name=text, ID=ID})
-                end,
-                tooltipOnButton=true,
-                tooltipTitle='|cnRED_FONT_COLOR:'..REMOVE..'|r',
             }
+
             if (type=='spell' and not IsSpellKnown(ID)) or ((type=='item' or type=='equip') and GetItemCount(ID)==0 and not PlayerHasToy(ID)) then
                 info.text= e.Icon.O2..info.text
                 info.colorCode='|cff606060'
             end
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
 
+            local isToy= type=='item' and C_ToyBox.GetToyInfo(ID)
+            if isToy then
+                info.text= '|A:soulbinds_tree_conduit_icon_utility:0:0|a'..info.text
+                info.tooltipOnButton=true
+                info.tooltipTitle= e.onlyChinese and '添加/移除' or (ADD..'/'..REMOVE)
+                info.tooltipText= (e.onlyChinese and '藏品->玩具箱' or (COLLECTIONS..'->'..TOY_BOX))..e.Icon.left
+                info.arg1=ID
+                info.func=function(_, arg1)
+                    if ToyBox and not ToyBox:IsVisible() then
+                        ToggleCollectionsJournal(3)
+                    end
+                    local name2= arg1 and select(2, C_ToyBox.GetToyInfo(arg1))
+                    if name2 then
+                        C_ToyBoxInfo.SetDefaultFilters()
+                        if ToyBox.searchBox then
+                            ToyBox.searchBox:SetText(name2)
+                        end
+                    end
+                end
+            else
+                info.arg1={type=type, index=index, name=text, ID=ID}
+                info.func=function(_, arg1)
+                    StaticPopup_Show(id..addName..'REMOVE',arg1.name, '', arg1)
+                end
+                info.tooltipOnButton=true
+                info.tooltipTitle='|cnRED_FONT_COLOR:'..REMOVE..'|r'
+            end
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
-    else
-        local tab={
-            [e.onlyChinese and '物品' or ITEMS]='item',
-            [e.onlyChinese and '法术' or SPELLS]='spell',
-            [e.onlyChinese and '装备' or EQUIPSET_EQUIP]='equip'
-        }
-        for text, type2 in pairs(tab) do
-            info={
-                text=text..' |cnGREEN_FONT_COLOR:'..#Save[type2]..'|r',
-                notCheckable=true,
-                hasArrow=true,
-                menuList=type2,
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level);
-        end
+        
         e.LibDD:UIDropDownMenu_AddSeparator(level)
-        info={
-            text= e.onlyChinese and '重新加载UI' or RELOADUI,
+        local cleraAllText='|cnRED_FONT_COLOR:'..(e.onlyChinese and '全部清除' or CLEAR_ALL)..'|r '..(type=='spell' and (e.onlyChinese and '法术' or SPELLS) or type=='item' and (e.onlyChinese and '物品' or ITEMS) or (e.onlyChinese and '装备' or EQUIPSET_EQUIP))..' #'..'|cnGREEN_FONT_COLOR:'..#Save[type]..'|r'
+        info={--清除全部
+            text=cleraAllText,
             notCheckable=true,
             tooltipOnButton=true,
-            tooltipTitle='/reload',
-            func=function()
-                e.Reload()
-            end
+            tooltipTitle= e.onlyChinese and '重新加载UI' or RELOADUI,
+            arg1=cleraAllText,
+            arg2= type,
+            func=function(_, arg1, arg2)
+                StaticPopup_Show(id..addName..'REMOVE', arg1 ,nil, {type=arg2, clearAll=true})
+            end,
         }
-        e.LibDD:UIDropDownMenu_AddButton(info, level);
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-        info={
-            text= e.onlyChinese and '重置' or RESET,
-            colorCode='|cffff0000',
-            notCheckable=true,
-            tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT,
-            tooltipText= e.onlyChinese and '重新加载UI' or RELOADUI,
-            func=function()
-                StaticPopup_Show(id..addName..'RESETALL')
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level);
-        e.LibDD:UIDropDownMenu_AddButton({text=addName, isTitle=true, notCheckable=true}, level);
-        e.LibDD:UIDropDownMenu_AddButton({text= e.onlyChinese and '拖曳: 物品, 法术, 装备' or (DRAG_MODEL..', '..SPELLS..', '..ITEMS), isTitle=true, notCheckable=true}, level);
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        return
     end
+
+    local tab={
+        [e.onlyChinese and '物品' or ITEMS]='item',
+        [e.onlyChinese and '法术' or SPELLS]='spell',
+        [e.onlyChinese and '装备' or EQUIPSET_EQUIP]='equip'
+    }
+    for text, type2 in pairs(tab) do
+        info={
+            text=text..' |cnGREEN_FONT_COLOR:'..#Save[type2]..'|r',
+            notCheckable=true,
+            hasArrow=true,
+            menuList=type2,
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level);
+    end
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
+    info={
+        text= e.onlyChinese and '重新加载UI' or RELOADUI,
+        notCheckable=true,
+        tooltipOnButton=true,
+        tooltipTitle='/reload',
+        func=function()
+            e.Reload()
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level);
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
+    info={
+        text= e.onlyChinese and '重置' or RESET,
+        colorCode='|cffff0000',
+        notCheckable=true,
+        tooltipOnButton=true,
+        tooltipTitle= e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT,
+        tooltipText= e.onlyChinese and '重新加载UI' or RELOADUI,
+        func=function()
+            StaticPopup_Show(id..addName..'RESETALL')
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level);
+    e.LibDD:UIDropDownMenu_AddButton({text=addName, isTitle=true, notCheckable=true}, level);
+    e.LibDD:UIDropDownMenu_AddButton({text= e.onlyChinese and '拖曳: 物品, 法术, 装备' or (DRAG_MODEL..', '..SPELLS..', '..ITEMS), isTitle=true, notCheckable=true}, level);
+
 end
 
 
@@ -369,26 +397,28 @@ local function setSpellButton(self)--设置按钮
     e.SetItemSpellCool(self, nil, self.spellID)
     setSpellCount(self)
 end
+
+
 --###
 --初始
 --###
-local Button={}
 local function Init()
-   local index=1
+    panel.Menu=CreateFrame("Frame", id..addName..'Menu', panel, "UIDropDownMenuTemplate")
+    e.LibDD:UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
+
    for _, itemID in pairs(Save.item) do
         local name ,icon
         if getFind(itemID) then
             name = C_Item.GetItemNameByID(itemID..'')
             icon = C_Item.GetItemIconByID(itemID..'')
             if name and icon then
-                Button[index]=e.Cbtn2(nil, e.toolsFrame, true, true)
-                Button[index].itemID=itemID
-                setItemButton(Button[index])
-                e.ToolsSetButtonPoint(Button[index])--设置位置
-                Button[index]:SetAttribute('type', 'item')
-                Button[index]:SetAttribute('item', name)
-                Button[index].texture:SetTexture(icon)
-                index=index+1
+                local btn=e.Cbtn2(nil, e.toolsFrame, true, true)
+                btn.itemID=itemID
+                setItemButton(btn)
+                e.ToolsSetButtonPoint(btn)--设置位置
+                btn:SetAttribute('type', 'item')
+                btn:SetAttribute('item', name)
+                btn.texture:SetTexture(icon)
             end
         end
    end
@@ -397,14 +427,13 @@ local function Init()
             local name, _, icon = GetSpellInfo(spellID)
             if name and icon then
                 if name and icon then
-                    Button[index]=e.Cbtn2(nil, e.toolsFrame, true, true)
-                    Button[index].spellID=spellID
-                    setSpellButton(Button[index])
-                    e.ToolsSetButtonPoint(Button[index])--设置位置
-                    Button[index]:SetAttribute('type', 'spell')
-                    Button[index]:SetAttribute('spell', name)
-                    Button[index].texture:SetTexture(icon)
-                    index=index+1
+                    local btn=e.Cbtn2(nil, e.toolsFrame, true, true)
+                    btn.spellID=spellID
+                    setSpellButton(btn)
+                    e.ToolsSetButtonPoint(btn)--设置位置
+                    btn:SetAttribute('type', 'spell')
+                    btn:SetAttribute('spell', name)
+                    btn.texture:SetTexture(icon)
                 end
             end
         end
@@ -417,21 +446,18 @@ local function Init()
             icon =icon2 or C_Item.GetItemIconByID(itemID..'')
             local slot=itemEquipLoc and e.itemSlotTable[itemEquipLoc]
             if name and icon and slot then
-                Button[index]=e.Cbtn2(nil, e.toolsFrame, true, true)
-                Button[index].itemID=itemID
-                Button[index].slot=slot
-                setItemButton(Button[index], true)
-                e.ToolsSetButtonPoint(Button[index])--设置位置
-                Button[index]:SetAttribute('type', 'item')
-                Button[index]:SetAttribute('item', name)
-                Button[index]:SetAttribute('type2', 'item')
-                Button[index].texture:SetTexture(icon)
-                index=index+1
+                local btn=e.Cbtn2(nil, e.toolsFrame, true, true)
+                btn.itemID=itemID
+                btn.slot=slot
+                setItemButton(btn, true)
+                e.ToolsSetButtonPoint(btn)--设置位置
+                btn:SetAttribute('type', 'item')
+                btn:SetAttribute('item', name)
+                btn:SetAttribute('type2', 'item')
+                btn.texture:SetTexture(icon)
             end
         end
     end
-
-    
 
     panel:SetScript('OnMouseDown',function(self, d)--添加, 移除
         local infoType, itemID, itemLink ,spellID= GetCursorInfo()
@@ -459,10 +485,6 @@ local function Init()
             e.tips:AddDoubleLine(MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
             e.tips:Show()
         elseif d=='RightButton' then
-            if not self.Menu then
-                self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
-                e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
-            end
             e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
         end
     end)
@@ -473,60 +495,46 @@ local function Init()
         self:SetAlpha(0.1)
         e.tips:Hide()
     end)
-    panel:SetScript('OnMouseUp',function ()
-        panel:SetAlpha(0.1)
-    end)
 end
 
 
 --#############
 --玩具界面, 菜单
 --#############
-local function setToyBox_ShowToyDropdown(itemID, anchorTo, offsetX, offsetY)
-    if e.toolsFrame.disabled or not itemID then
-        return
-    end
-    local find = findType('item', itemID)
-    local info={
-            text='|A:'..e.Icon.icon..':0:0|a'..addName,
-            checked=find and true or nil,
-            tooltipOnButton=true,
-            tooltipTitle=addName,
-            tooltipText=id..'\n\n|cnRED_FONT_COLOR:'..REQUIRES_RELOAD..'|r',
-            func=function()
+local function setToySpellButton_UpdateButton(self)--标记, 是否已选取
+    if not self.useItem then
+        self.useItem= e.Cbtn(self,{size={16,16}, atlas='soulbinds_tree_conduit_icon_utility'})
+        self.useItem:SetPoint('TOPLEFT',self.name,'BOTTOMLEFT', 32,0)
+        self.useItem:SetScript('OnLeave', function() e.tips:Hide() end)
+        self.useItem:SetScript('OnEnter', function(self2)
+            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            local itemID=self2:GetParent().itemID
+            e.tips:AddDoubleLine(itemID and C_ToyBox.GetToyLink(itemID) or itemID, e.GetEnabeleDisable(not findType('item', itemID))..e.Icon.left)
+            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(id,'|A:soulbinds_tree_conduit_icon_utility:0:0|a'..addName)
+            e.tips:Show()
+        end)
+        self.useItem:SetScript('OnClick', function(self2, d)
+            if d=='LeftButton' then
+                local frame=self2:GetParent()
+                local itemID= frame and frame.itemID
+                local find=findType('item', itemID)
                 if find then
                     table.remove(Save.item, find)
                 else
                     table.insert(Save.item, itemID)
                 end
-                local name= select(2, GetItemInfo(itemID)) or (ITEMS..' ID: '..itemID)
-                print(id, addName, find and '|cnRED_FONT_COLOR:'..REMOVE..'|r' or '|cnGREEN_FONT_COLOR:'..ADD..'|r', name, 	REQUIRES_RELOAD)
-                ToySpellButton_UpdateButton(anchorTo)
-            end,
-        }
-    e.LibDD:UIDropDownMenu_AddButton(info, 1)
+                print(id, addName, C_ToyBox.GetToyLink(itemID), find and (e.onlyChinese and '移除' or REMOVE) or (e.onlyChinese and '添加' or ADD), '|cffff00ff', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                securecallfunction(ToySpellButton_UpdateButton, frame)
+            else
+                e.LibDD:ToggleDropDownMenu(1, nil, panel.Menu, self2, 15, 0)
+            end
+        end)
+    end
+    self.useItem:SetAlpha(findType('item', self.itemID) and 1 or 0.1)
 
-    e.LibDD:UIDropDownMenu_AddSeparator()
-    e.LibDD:UIDropDownMenu_AddButton({
-        text=ITEMS..'ID: '..itemID,
-        isTitle=true,
-        notCheckable=true,
-    }, 1)
-end
-local function setToySpellButton_UpdateButton(self)--标记, 是否已选取
-    if e.toolsFrame.disabled or not self.itemID then
-        return
-    end
-    local find = findType('item', self.itemID)
-    if find and not self.useitem then
-        self.useitem=self:CreateTexture(nil, 'ARTWORK')
-        self.useitem:SetPoint('TOPLEFT',self.name,'BOTTOMLEFT',24,0)
-        self.useitem:SetAtlas(e.Icon.icon)
-        self.useitem:SetSize(12, 12)
-    end
-    if self.useitem then
-        self.useitem:SetShown(find)
-    end
 end
 
 --###########
@@ -571,13 +579,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
 
         elseif arg1=='Blizzard_Collections' then
-            hooksecurefunc('ToyBox_ShowToyDropdown', setToyBox_ShowToyDropdown)
+            --hooksecurefunc('ToyBox_ShowToyDropdown', setToyBox_ShowToyDropdown)
             hooksecurefunc('ToySpellButton_UpdateButton', setToySpellButton_UpdateButton)
         end
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            
+
             WoWToolsSave[addName..'Tools']=Save
         end
 

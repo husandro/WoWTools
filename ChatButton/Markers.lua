@@ -485,6 +485,7 @@ local function setMarkersFrame()--设置标记, 框架
                     end,
                     EditBoxOnEscapePressed = function(s)
                         s:SetAutoFocus(false)
+                        s:ClearFocus()
                         s:GetParent():Hide()
                     end,
                 }

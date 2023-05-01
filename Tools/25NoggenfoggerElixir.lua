@@ -137,6 +137,7 @@ local function InitMenu(self, level)--主菜单
                 end,
                 EditBoxOnEscapePressed = function(s)
                     s:SetAutoFocus(false)
+                    s:ClearFocus()
                     s:GetParent():Hide()
                 end,
             }
@@ -170,7 +171,7 @@ local function Init()
             name= (icon and '|T'..icon..':0|t' or '')..name
             e.tips:AddDoubleLine(name, type and	'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL)..'|r' or '...')
         end
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.mid)
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.mid)
         e.tips:Show()
     end)
     button:SetScript('OnLeave', function() e.tips:Hide() end)

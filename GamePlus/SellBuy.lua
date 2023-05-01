@@ -673,7 +673,7 @@ local function setMenu()
             e.tips:AddDoubleLine((e.onlyChinese and '购买' or PURCHASE)..((itemID and buySave[itemID]) and '|cnRED_FONT_COLOR:'..(e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('%/',''))..' '..buySave[itemID]..'|r' or '' ), e.onlyChinese and '物品' or ITEMS, 0,1,0, 0,1,0)
         else
             e.tips:AddDoubleLine((e.onlyChinese and '拖曳' or DRAG_MODEL)..e.Icon.left..(e.onlyChinese and '物品' or ITEMS), e.onlyChinese and '出售/购买' or (AUCTION_HOUSE_SELL_TAB..'/'..PURCHASE))
-            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
+            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
         end
         e.tips:Show()
     end)
@@ -734,6 +734,7 @@ local function setMenu()
                     end,
                     EditBoxOnEscapePressed = function(s)
                         s:SetAutoFocus(false)
+                        s:ClearFocus()
                         s:GetParent():Hide()
                     end,
                 }
@@ -850,6 +851,7 @@ local function set_StackSplitFrame_OpenStackSplitFrame(self, maxStack, parent, a
         self.editBox:SetSize(100, 23)
         self.editBox:SetPoint('RIGHT', self.RightButton, 'LEFT',-12, 0)
         self.editBox:SetAutoFocus(false)
+        self.editBox:ClearFocus()
         self.editBox:SetFontObject("ChatFontNormal")
         self.editBox:SetMultiLine(false)
         self.editBox:SetNumeric(true)

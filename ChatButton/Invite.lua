@@ -605,6 +605,7 @@ local function InitList(self, level, type)
                     end,
                     EditBoxOnEscapePressed = function(s)
                         s:SetAutoFocus(false)
+                        s:ClearFocus()
                         s:GetParent():Hide()
                     end,
                 }

@@ -413,7 +413,7 @@ local function set_ExpansionLandingPageMinimapButton()
                 e.tips:SetOwner(self, "ANCHOR_Left")
                 e.tips:ClearLines()
             end
-            e.tips:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), 'Alt'..e.Icon.left, 0,1,0, 0,1,0)
+            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, 'Alt'..e.Icon.left, 0,1,0, 0,1,0)
             e.tips:AddDoubleLine(e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , 'Shift'..e.Icon.left, 1,0,1, 1,0,1)
             e.tips:AddDoubleLine(e.onlyChinese and '选项' or SETTINGS_TITLE , e.Icon.right, 0,1,0, 0,1,0)
             e.tips:AddLine(' ')

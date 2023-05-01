@@ -2,24 +2,21 @@ local id, e = ...
 local addName= SLASH_RANDOM3:gsub('/','').. TUTORIAL_TITLE31
 local Save={
     items={
-        [193588]=true,--时光旅行者的炉石
-        [188952]=true,--被统御的炉石
-        [172179]=true,--永恒旅者的炉石
-        [190237]=true,--掮灵传送矩阵
-        [168907]=true,--全息数字化炉石
         [142542]=true,--城镇传送之书
         [162973]=true,--冬天爷爷的炉石
-        [166746]=true,--吞火者的炉石
-        [165802]=true,--复活节的炉石
-        [165670]=true,--小匹德菲特的可爱炉石
         [163045]=true,--无头骑士的炉石
         [165669]=true,--春节长者的炉石
+        [165670]=true,--小匹德菲特的可爱炉石
+        [165802]=true,--复活节的炉石
+        [166746]=true,--吞火者的炉石
         [166747]=true,--美酒节狂欢者的炉石
-        [391042]=true,--欧恩伊尔轻风贤者的炉石
-        --[[93672,-- 
-        172179,-- 
-        6948,-- 
-        188952,--]]
+        [168907]=true,--全息数字化炉石
+        [172179]=true,--永恒旅者的炉石
+        [188952]=true,--被统御的炉石
+        [190196]=true,--开悟者炉石
+        [190237]=true,--掮灵传送矩阵
+        [193588]=true,--时光旅行者的炉石
+        [391042]=true,--欧恩伊尔轻风贤者的炉石, 找不到数据
     },
     showBindNameShort=true,
     showBindName=true,
@@ -79,17 +76,27 @@ end
 
 
 --#############
---玩具界面, 菜单
+--玩具界面, 按钮
 --#############
-local function setToyBox_ShowToyDropdown(itemID, anchorTo, offsetX, offsetY)
-    if Save.disabled or not itemID then
-        return
-    end
-    e.LibDD:UIDropDownMenu_AddSeparator()
-    local info={
-            text='|T134414:0|t'..addName,
-            checked=Save.items[itemID],
-            func=function()
+local function setToySpellButton_UpdateButton(self)--标记, 是否已选取
+    if not self.hearthstone then
+        self.hearthstone= e.Cbtn(self,{size={16,16}, texture=134414})
+        self.hearthstone:SetPoint('TOPLEFT',self.name,'BOTTOMLEFT')
+        self.hearthstone:SetScript('OnLeave', function() e.tips:Hide() end)
+        self.hearthstone:SetScript('OnEnter', function(self2)
+            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            local itemID=self2:GetParent().itemID
+            e.tips:AddDoubleLine(itemID and C_ToyBox.GetToyLink(itemID) or itemID, e.GetEnabeleDisable(not Save.items[self.itemID])..e.Icon.left)
+            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(id,'|T134414:0|t'..addName)
+            e.tips:Show()
+        end)
+        self.hearthstone:SetScript('OnClick', function(self2, d)
+            if d=='LeftButton' then
+                local frame=self2:GetParent()
+                local itemID= frame and frame.itemID
                 if Save.items[itemID] then
                     Save.items[itemID]=nil
                 else
@@ -97,28 +104,13 @@ local function setToyBox_ShowToyDropdown(itemID, anchorTo, offsetX, offsetY)
                 end
                 getToy()--生成, 有效表格
                 setAtt()--设置属性
-                ToySpellButton_UpdateButton(anchorTo)
-            end,
-            tooltipOnButton=true,
-            tooltipTitle=addName,
-            tooltipText=id,
-        }
-    e.LibDD:UIDropDownMenu_AddButton(info, 1)
-end
-local function setToySpellButton_UpdateButton(self)--标记, 是否已选取
-    if Save.disabled or not self.itemID then
-        return
+                securecallfunction(ToySpellButton_UpdateButton, frame)
+            else
+                e.LibDD:ToggleDropDownMenu(1, nil, button.Menu, self2, 15, 0)
+            end
+        end)
     end
-    local find = Save.items[self.itemID]
-    if find and not self.hearthstone then
-        self.hearthstone=self:CreateTexture(nil, 'ARTWORK')
-        self.hearthstone:SetPoint('TOPLEFT',self.name,'BOTTOMLEFT')
-        self.hearthstone:SetTexture(134414)
-        self.hearthstone:SetSize(12, 12)
-    end
-    if self.hearthstone then
-        self.hearthstone:SetShown(find)
-    end
+    self.hearthstone:SetAlpha(Save.items[self.itemID] and 1 or 0.1)
 end
 
 local function set_BindLocation()--显示, 炉石, 绑定位置
@@ -145,22 +137,32 @@ local function InitMenu(self, level, menuList)--主菜单
     local info
     if menuList=='TOY' then
         for itemID, _ in pairs(Save.items) do
-            local find=PlayerHasToy(itemID)
+            local _, toyName, icon = C_ToyBox.GetToyInfo(itemID)
             info={
-                text= (C_Item.GetItemNameByID(itemID..'') or ('itemID '..itemID))..(not find and e.Icon.O2 or ''),
-                colorCode=not find and '|cff606060',
+                text= toyName or itemID,
+                icon= icon or C_Item.GetItemIconByID(itemID),
+                colorCode=not PlayerHasToy(itemID) and '|cff606060',
                 notCheckable=true,
-                icon= C_Item.GetItemIconByID(itemID..''),
-                func=function ()
-                    Save.items[itemID]=nil
-                    getToy()--生成, 有效表格
-                    setAtt()--设置属性
-                end,
                 tooltipOnButton=true,
-                tooltipTitle=REMOVE,
+                tooltipTitle= e.onlyChinese and '添加/移除' or (ADD..'/'..REMOVE),
+                tooltipText= (e.onlyChinese and '藏品->玩具箱' or (COLLECTIONS..'->'..TOY_BOX))..e.Icon.left,
+                arg1= itemID,
+                func=function(_, arg1)
+                    if ToyBox and not ToyBox:IsVisible() then
+                        ToggleCollectionsJournal(3)
+                    end
+                    local name= arg1 and select(2, C_ToyBox.GetToyInfo(arg1))
+                    if name then
+                        C_ToyBoxInfo.SetDefaultFilters()
+                        if ToyBox.searchBox then
+                            ToyBox.searchBox:SetText(name)
+                        end
+                    end
+                end,
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
+
     elseif menuList=='BIND' then--炉石, 绑定位置, 截取名称SHORT
         info={
             text=SHORT..NAME,
@@ -226,9 +228,6 @@ local function setBagHearthstone()
     end
 end
 
---####
---初始
---####
 local function showTips(self)--显示提示
     if self.itemID then
         e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -252,7 +251,7 @@ local function showTips(self)--显示提示
             end
         end
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         e.tips:Show()
         if e.tips.textRight then
             local text=GetBindLocation()--显示,绑定位置
@@ -265,10 +264,17 @@ local function showTips(self)--显示提示
     end
 end
 
+
+--###
+--初始
+--###
 local function Init()
     for itemID, _ in pairs(Save.items) do
         e.LoadDate({id=itemID, type='item'})
     end
+
+    button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
+    e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
     button:SetSize(30, 30)
 
@@ -284,10 +290,6 @@ local function Init()
     end)
     button:SetScript("OnMouseDown", function(self,d)
         if d=='RightButton' and not IsModifierKeyDown() then
-            if not self.Menu then
-                button.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
-                e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
-            end
             e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
         end
     end)
@@ -342,19 +344,19 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
                 panel:RegisterEvent('HEARTHSTONE_BOUND')
 
+                if not IsAddOnLoaded("Blizzard_Collections") then LoadAddOn('Blizzard_Collections') end
                 Init()--初始
             else
                 panel:UnregisterEvent('ADDON_LOADED')
             end
 
         elseif arg1=='Blizzard_Collections' then
-            hooksecurefunc('ToyBox_ShowToyDropdown', setToyBox_ShowToyDropdown)
+            --hooksecurefunc('ToyBox_ShowToyDropdown', setToyBox_ShowToyDropdown)
             hooksecurefunc('ToySpellButton_UpdateButton', setToySpellButton_UpdateButton)
         end
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            
             WoWToolsSave[addName..'Tools']=Save
         end
 

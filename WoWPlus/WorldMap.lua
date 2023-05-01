@@ -514,6 +514,7 @@ local function set_Map_ID(self)--显示地图ID
         self.playerPosition.edit:SetSize(73,20)
         self.playerPosition.edit:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
         self.playerPosition.edit:SetAutoFocus(false)
+        self.playerPosition.edit:ClearFocus()
         self.playerPosition.edit:SetPoint('LEFT', self.playerPosition, 'RIGHT',2,0)
 
         --[[local function setEditWay(self3)

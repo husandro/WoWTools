@@ -357,7 +357,7 @@ e.Icon={
     mask="Interface\\ChatFrame\\UI-ChatIcon-HotS",--菱形
     mask='Interface\\CHARACTERFRAME\\TempPortraitAlphaMask',--圆形 :SetMask()
     mask='CircleMaskScalable',
-
+    soulbinds_tree_conduit_icon_utility 闪电形
 ]]
 
 
@@ -523,6 +523,7 @@ e.Cedit= function(self, width, height)
     local editBox = CreateFrame("EditBox", nil, self)
     editBox:SetSize(width, height)
     editBox:SetAutoFocus(false)
+    editBox:ClearFocus()
     editBox:SetFontObject("ChatFontNormal")
     editBox:SetMultiLine(true)
     --editBox:SetAltArrowKeyMode(false)

@@ -2638,7 +2638,9 @@
         "SettingsPanelMixin",
         "SETTINGS_TAB_ADDONS",
         "SETTINGS_TITLE",
-        "SpellFlyout"
+        "SpellFlyout",
+        "TOY_BOX",
+        "ClearFocus"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

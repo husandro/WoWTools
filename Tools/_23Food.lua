@@ -64,7 +64,7 @@ local function set_Button_Init(self)
         e.tips:SetItemByID(self2.itemID)
         e.tips:AddLine(' ')
         if self==button then
-            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         else
             e.tips:AddDoubleLine(e.onlyChinese and '禁用' or DISABLE, 'Shift+'..e.Icon.right)
         end

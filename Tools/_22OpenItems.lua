@@ -542,6 +542,7 @@ local function Init()
                     local num=Save.use[data.itemID] or 1
                     self2.editBox:SetNumber(num)
                     self2.editBox:SetAutoFocus(false)
+                    self2.editBox:ClearFocus()
                 end,
                 OnAccept = function(self2, data)
                     local num= self2.editBox:GetNumber()
@@ -567,6 +568,7 @@ local function Init()
                 end,
                 EditBoxOnEscapePressed = function(s)
                     s:SetAutoFocus(false)
+                    s:ClearFocus()
                     s:GetParent():Hide()
                 end,
             }

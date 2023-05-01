@@ -417,6 +417,7 @@ local function Init_Dialogs()
         end,
         EditBoxOnEscapePressed = function(s)
             s:SetAutoFocus(false)
+            s:ClearFocus()
             s:GetParent():Hide()
         end,
     }
@@ -446,6 +447,7 @@ local function Init_Dialogs()
         end,
         EditBoxOnEscapePressed = function(s)
             s:SetAutoFocus(false)
+            s:ClearFocus()
             s:GetParent():Hide()
         end,
     }
@@ -487,6 +489,7 @@ local function Init_Dialogs()
         end,
         EditBoxOnEscapePressed = function(s)
             s:SetAutoFocus(false)
+            s:ClearFocus()
             s:GetParent():Hide()
         end,
     }
@@ -1243,7 +1246,7 @@ local function Init()
         e.tips:AddLine('')
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE), '|cnGREEN_FONT_COLOR:'..(Save.scale or 1)..'|r Alt+'..e.Icon.mid)
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         e.tips:Show()
     end)
     button:SetScript("OnLeave",function(self)

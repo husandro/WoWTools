@@ -103,17 +103,29 @@ local function getAllSaveNum()--Save中玩具数量
     end
     return num
 end
+
 --#############
 --玩具界面, 菜单
 --#############
-local function setToyBox_ShowToyDropdown(itemID, anchorTo, offsetX, offsetY)
-    local info={
-            text='|T133567:0|t'..addName,
-            checked=Save.items[itemID],
-            tooltipOnButton=true,
-            tooltipTitle=addName,
-            tooltipText=id,
-            func=function()
+local function setToySpellButton_UpdateButton(self)--标记, 是否已选取
+    if not self.toy then
+        self.toy= e.Cbtn(self,{size={16,16}, texture=133567})
+        self.toy:SetPoint('TOPLEFT',self.name,'BOTTOMLEFT', 16,0)
+        self.toy:SetScript('OnLeave', function() e.tips:Hide() end)
+        self.toy:SetScript('OnEnter', function(self2)
+            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            local itemID=self2:GetParent().itemID
+            e.tips:AddDoubleLine(itemID and C_ToyBox.GetToyLink(itemID) or itemID, e.GetEnabeleDisable(not Save.items[self.itemID])..e.Icon.left)
+            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(id,'|T133567:0|t'..addName)
+            e.tips:Show()
+        end)
+        self.toy:SetScript('OnClick', function(self2, d)
+            if d=='LeftButton' then
+                local frame=self2:GetParent()
+                local itemID= frame and frame.itemID
                 if Save.items[itemID] then
                     Save.items[itemID]=nil
                 else
@@ -121,22 +133,13 @@ local function setToyBox_ShowToyDropdown(itemID, anchorTo, offsetX, offsetY)
                 end
                 getToy()--生成, 有效表格
                 setAtt()--设置属性
-                ToySpellButton_UpdateButton(anchorTo)
-            end,
-        }
-    e.LibDD:UIDropDownMenu_AddButton(info, 1)
-end
-local function setToySpellButton_UpdateButton(self)--标记, 是否已选取
-    local find = Save.items[self.itemID]
-    if find and not self.toy then
-        self.toy=self:CreateTexture(nil, 'ARTWORK')
-        self.toy:SetPoint('TOPLEFT',self.name,'BOTTOMLEFT',12,0)
-        self.toy:SetTexture(133567)
-        self.toy:SetSize(12, 12)
+                securecallfunction(ToySpellButton_UpdateButton, frame)
+            else
+                e.LibDD:ToggleDropDownMenu(1, nil, button.Menu, self2, 15, 0)
+            end
+        end)
     end
-    if self.toy then
-        self.toy:SetShown(find)
-    end
+    self.toy:SetAlpha(Save.items[self.itemID] and 1 or 0.1)
 end
 
 --######
@@ -180,7 +183,7 @@ end
 
 
 StaticPopupDialogs[id..addName..'RESETALL']={--重置所有,清除全部玩具
-    text=id..' '..addName..'\n'..	CLEAR_ALL..'\n\n'.. RELOADUI,
+    text=id..' '..addName..'\n'..CLEAR_ALL..'\n\n'.. RELOADUI,
     whileDead=1,
     hideOnEscape=1,
     exclusive=1,
@@ -199,116 +202,189 @@ StaticPopupDialogs[id..addName..'RESETALL']={--重置所有,清除全部玩具
 --#####
 local function InitMenu(self, level, menuList)--主菜单
     local info
-    if menuList then
-        if menuList=='TOY' then
-            for _, itemID in pairs(ItemsTab) do
-                info={
-                    text= C_Item.GetItemNameByID(itemID) or ('itemID '..itemID),
-                    notCheckable=true,
-                    icon= C_Item.GetItemIconByID(itemID),
-                    func=function()
-                        Save.items[itemID]=nil
-                        getToy()--生成, 有效表格
-                        setAtt()--设置属性                        
-                        print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', e.onlyChinese and '完成' or COMPLETE, select(2, GetItemInfo(itemID)) or (TOY..'ID: '..itemID))
-                    end,
-                    tooltipOnButton=true,
-                    tooltipTitle= e.onlyChinese and '移除' or REMOVE,
-                }
-                e.LibDD:UIDropDownMenu_AddButton(info, level)
-            end
-        elseif menuList=='SETTINGS' then--设置菜单
-            info={--快捷键,设置对话框
-                text= e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL,--..(Save.KEY and ' |cnGREEN_FONT_COLOR:'..Save.KEY..'|r' or ''),
-                checked=Save.KEY and true or nil,
-                disabled=UnitAffectingCombat('player'),
-                func=function()
-                    StaticPopupDialogs[id..addName..'KEY']={--快捷键,设置对话框
-                        text=id..' '..addName..'\n'..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..'\n\nQ, BUTTON5',
-                        whileDead=1,
-                        hideOnEscape=1,
-                        exclusive=1,
-                        timeout = 60,
-                        hasEditBox=1,
-                        button1=SETTINGS,
-                        button2=CANCEL,
-                        button3=REMOVE,
-                        OnShow = function(self, data)
-                            self.editBox:SetText(Save.KEY or ';')
-                            if Save.KEY then
-                                self.button1:SetText(SLASH_CHAT_MODERATE2:gsub('/', ''))--修该
-                            end
-                            self.button3:SetEnabled(Save.KEY)
-                        end,
-                        OnAccept = function(self, data)
-                            local text= self.editBox:GetText()
-                            text=text:gsub(' ','')
-                            text=text:gsub('%[','')
-                            text=text:gsub(']','')
-                            text=text:upper()
-                            Save.KEY=text
-                            set_KEY()--设置捷键
-                        end,
-                        OnAlt = function()
-                            Save.KEY=nil
-                            set_KEY()--设置捷键
-                        end,
-                        EditBoxOnTextChanged=function(self, data)
-                            local text= self:GetText()
-                            text=text:gsub(' ','')
-                            self:GetParent().button1:SetEnabled(text~='')
-                        end,
-                        EditBoxOnEscapePressed = function(s)
-                            s:SetAutoFocus(false)
-                            s:GetParent():Hide()
-                        end,
-                    }
-                    StaticPopup_Show(id..addName..'KEY')
-                end,
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-            e.LibDD:UIDropDownMenu_AddSeparator(level)
-            info={--清除
-                text='|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..(e.onlyChinese and '玩具' or TOY)..'|r '..#ItemsTab..'/'..getAllSaveNum(),
+    if menuList=='TOY' then
+        for _, itemID in pairs(ItemsTab) do
+            local _, toyName, icon = C_ToyBox.GetToyInfo(itemID)
+            info={
+                text= toyName or itemID,
+                icon= icon or C_Item.GetItemIconByID(itemID),
+                colorCode=not PlayerHasToy(itemID) and '|cff606060',
                 notCheckable=true,
                 tooltipOnButton=true,
-                tooltipTitle= e.onlyChinese and '清除全部' or CLEAR_ALL,
-                func=function ()
-                    StaticPopup_Show(id..addName..'RESETALL')
-                end,
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-            info={--重置所有
-                text= e.onlyChinese and '重置' or RESET,
-                colorCode="|cffff0000",
-                notCheckable=true,
-                tooltipOnButton=true,
-                tooltipTitle= e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT,
-                func=function ()
-                    StaticPopup_Show(id..addName..'RESETALL')
+                tooltipTitle= e.onlyChinese and '添加/移除' or (ADD..'/'..REMOVE),
+                tooltipText= (e.onlyChinese and '藏品->玩具箱' or (COLLECTIONS..'->'..TOY_BOX))..e.Icon.left,
+                arg1= itemID,
+                func=function(_, arg1)
+                    if ToyBox and not ToyBox:IsVisible() then
+                        ToggleCollectionsJournal(3)
+                    end
+                    local name= arg1 and select(2, C_ToyBox.GetToyInfo(arg1))
+                    if name then
+                        C_ToyBoxInfo.SetDefaultFilters()
+                        if ToyBox.searchBox then
+                            ToyBox.searchBox:SetText(name)
+                        end
+                    end
                 end,
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
-    else
-       info={
-            text='|cnGREEN_FONT_COLOR:'..#ItemsTab..'|r'.. addName,
-            notCheckable=true,
-            menuList='TOY',
-            hasArrow=true,
-       }
-       e.LibDD:UIDropDownMenu_AddButton(info, level)
-       -- e.LibDD:UIDropDownMenu_AddSeparator()
+        return
+
+    elseif menuList=='notTOY' then
+        local num=0
+        for itemID, _ in pairs(Save.items) do
+            if not PlayerHasToy(itemID) then
+                local _, toyName, icon = C_ToyBox.GetToyInfo(itemID)
+                info={
+                    text= toyName or itemID,
+                    icon= icon or C_Item.GetItemIconByID(itemID),
+                    colorCode='|cff606060',
+                    notCheckable=true,
+                    tooltipOnButton=true,
+                    tooltipTitle= e.onlyChinese and '添加/移除' or (ADD..'/'..REMOVE),
+                    tooltipText= (e.onlyChinese and '藏品->玩具箱' or (COLLECTIONS..'->'..TOY_BOX))..e.Icon.left,
+                    arg1= itemID,
+                    func=function(_, arg1)
+                        if ToyBox and not ToyBox:IsVisible() then
+                            ToggleCollectionsJournal(3)
+                        end
+                        local name= arg1 and select(2, C_ToyBox.GetToyInfo(arg1))
+                        if name then
+                            C_ToyBoxInfo.SetDefaultFilters()
+                            if ToyBox.searchBox then
+                                ToyBox.searchBox:SetText(name)
+                            end
+                        end
+                    end,
+                }
+                e.LibDD:UIDropDownMenu_AddButton(info, level)
+                num=num+1
+            end
+        end
+
+        if num>0 then
+            e.LibDD:UIDropDownMenu_AddSeparator(level)
+        end
         info={
-            text=Save.KEY or (e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL),
+            text= '|cnRED_FONT_COLOR:#'..num..' '..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..' ('..(e.onlyChinese and '未收集' or NOT_COLLECTED)..')',
             notCheckable=true,
-            menuList='SETTINGS',
-            hasArrow=true,
+            func= function()
+                local num2=0
+                for itemID, _ in pairs(Save.items) do
+                    if not PlayerHasToy(itemID) then
+                        Save.items[itemID]= nil
+                        num2= num2+1
+                    end
+                end
+                print(id, addName, e.onlyChinese and '未收集' or NOT_COLLECTED, '|cnRED_FONT_COLOR:#'..num2..'|r', e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
+            end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
+        return
+
+    elseif menuList=='SETTINGS' then--设置菜单
+        info={--快捷键,设置对话框
+            text= e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL,--..(Save.KEY and ' |cnGREEN_FONT_COLOR:'..Save.KEY..'|r' or ''),
+            checked=Save.KEY and true or nil,
+            disabled=UnitAffectingCombat('player'),
+            func=function()
+                StaticPopupDialogs[id..addName..'KEY']={--快捷键,设置对话框
+                    text=id..' '..addName..'\n'..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..'\n\nQ, BUTTON5',
+                    whileDead=1,
+                    hideOnEscape=1,
+                    exclusive=1,
+                    timeout = 60,
+                    hasEditBox=1,
+                    button1= e.onlyChinese and '设置' or SETTINGS,
+                    button2= e.onlyChinese and '取消' or CANCEL,
+                    button3= e.onlyChinese and '取消' or REMOVE,
+                    OnShow = function(self2, data)
+                        self2.editBox:SetText(Save.KEY or ';')
+                        if Save.KEY then
+                            self2.button1:SetText(SLASH_CHAT_MODERATE2:gsub('/', ''))--修该
+                        end
+                        self2.button3:SetEnabled(Save.KEY)
+                    end,
+                    OnAccept = function(self2, data)
+                        local text= self2.editBox:GetText()
+                        text=text:gsub(' ','')
+                        text=text:gsub('%[','')
+                        text=text:gsub(']','')
+                        text=text:upper()
+                        Save.KEY=text
+                        set_KEY()--设置捷键
+                    end,
+                    OnAlt = function()
+                        Save.KEY=nil
+                        set_KEY()--设置捷键
+                    end,
+                    EditBoxOnTextChanged=function(self2, data)
+                        local text= self2:GetText()
+                        text=text:gsub(' ','')
+                        self2:GetParent().button1:SetEnabled(text~='')
+                    end,
+                    EditBoxOnEscapePressed = function(s)
+                        s:SetAutoFocus(false)
+                        s:ClearFocus()
+                        s:GetParent():Hide()
+                    end,
+                }
+                StaticPopup_Show(id..addName..'KEY')
+            end,
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
+        info={--清除
+            text='|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..(e.onlyChinese and '玩具' or TOY)..'|r '..#ItemsTab..'/'..getAllSaveNum(),
+            notCheckable=true,
+            tooltipOnButton=true,
+            tooltipTitle= e.onlyChinese and '清除全部' or CLEAR_ALL,
+            func=function ()
+                StaticPopup_Show(id..addName..'RESETALL')
+            end,
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+        info={--重置所有
+            text= e.onlyChinese and '重置' or RESET,
+            colorCode="|cffff0000",
+            notCheckable=true,
+            tooltipOnButton=true,
+            tooltipTitle= e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT,
+            func=function ()
+                StaticPopup_Show(id..addName..'RESETALL')
+            end,
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        return
     end
+
+    info={
+        text='|cnGREEN_FONT_COLOR:'..#ItemsTab..'|r '..(e.onlyChinese and '玩具' or TOY),
+        notCheckable=true,
+        menuList='TOY',
+        hasArrow=true,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    info={
+        text=e.onlyChinese and '未收集' or NOT_COLLECTED,
+        notCheckable=true,
+        menuList='notTOY',
+        hasArrow=true,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+    
+    -- e.LibDD:UIDropDownMenu_AddSeparator()
+    info={
+        text=Save.KEY or (e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL),
+        notCheckable=true,
+        menuList='SETTINGS',
+        hasArrow=true,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
 
 --####
@@ -341,7 +417,7 @@ local function showTips(self)--显示提示
             end
         end
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         e.tips:Show()
     else
         e.tips:Hide()
@@ -351,6 +427,9 @@ end
 
 local function Init()
     e.ToolsSetButtonPoint(button)--设置位置
+
+    button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
+    e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
     getToy()--生成, 有效表格
     setAtt()--设置属性
@@ -366,10 +445,6 @@ local function Init()
     button:SetScript("OnLeave",function() e.tips:Hide() end)
     button:SetScript("OnMouseDown", function(self,d)
         if d=='RightButton' and not IsModifierKeyDown() then
-            if not self.Menu then
-                self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
-                e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
-            end
             e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
         end
     end)
@@ -407,6 +482,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 panel:RegisterEvent('TOYS_UPDATED')
                 panel:RegisterEvent('SPELL_UPDATE_USABLE')
 
+                if not IsAddOnLoaded("Blizzard_Collections") then LoadAddOn('Blizzard_Collections') end
                 C_Timer.After(2.1, function()
                     if UnitAffectingCombat('player') then
                         panel.combat= true
@@ -420,7 +496,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
 
         elseif arg1=='Blizzard_Collections' then
-            hooksecurefunc('ToyBox_ShowToyDropdown', setToyBox_ShowToyDropdown)
+            --hooksecurefunc('ToyBox_ShowToyDropdown', setToyBox_ShowToyDropdown)
             hooksecurefunc('ToySpellButton_UpdateButton', setToySpellButton_UpdateButton)
         end
 

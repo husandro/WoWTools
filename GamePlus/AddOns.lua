@@ -188,6 +188,7 @@ local function Init()
             end,
             EditBoxOnEscapePressed = function(self)
                 self:SetAutoFocus(false)
+                self:ClearFocus()
                 self:GetParent():Hide()
             end,
         }
