@@ -2640,7 +2640,22 @@
         "SETTINGS_TITLE",
         "SpellFlyout",
         "TOY_BOX",
-        "ClearFocus"
+        "ClearFocus",
+        "MountJournal_SetCollectedFilter",
+        "MountJournal_GetCollectedFilter",
+        "MountJournal_SetNotCollectedFilter",
+        "MountJournal_GetNotCollectedFilter",
+        "MOUNT_JOURNAL_FILTER_UNUSABLE",
+        "MountJournal_SetUnusableFilter",
+        "MountJournal_GetUnusableFilter",
+        "MOUNT_JOURNAL_FILTER_TYPE",
+        "MountJournal_AddInMountTypes",
+        "FilterComponent",
+        "CHECK_ALL",
+        "UNCHECK_ALL",
+        "MountJournal_SetAllSourceFilters",
+        "FilterDropDownSystem",
+        "MountJournalResetFiltersButton_UpdateVisibility"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

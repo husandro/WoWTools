@@ -696,7 +696,8 @@ local function set_LFGPlus()--预创建队伍增强
                         frame:SetScript('OnDoubleClick', function(self3, d)
                             local frame2 = self3:GetParent();
                             if frame2.selectedCategory then
-                                LFGListCategorySelection_StartFindGroup(frame2)
+                                securecallfunction(LFGListCategorySelection_StartFindGroup, frame2)
+
                             end
                         end)
                     end
