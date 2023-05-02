@@ -136,29 +136,42 @@ elseif LOCALE_koKR then
 end
 
 --get_Web_Link({frame=self, type='npc', id=companionID, name=speciesName, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell
+--get_Web_Link({unitName=name, realm=realm, col=nil})--取得单位, raider.io 网页，数据链接
+local RegionName= GetCurrentRegionName()
 local function get_Web_Link(tab)
-    if Save.ctrl and tab.id and not UnitAffectingCombat('player') then --and not UnitCastingInfo('player') and not UnitChannelInfo('player') then
-        if tab.type=='quest' then
-            if not tab.name then
-                local index= C_QuestLog.GetLogIndexForQuestID(tab.id)
-                local info= index and C_QuestLog.GetInfo(index)
-                tab.name= info and info.title
+    if Save.ctrl and not UnitAffectingCombat('player') then --and not UnitCastingInfo('player') and not UnitChannelInfo('player') then
+        if tab.id then
+            if tab.type=='quest' then
+                if not tab.name then
+                    local index= C_QuestLog.GetLogIndexForQuestID(tab.id)
+                    local info= index and C_QuestLog.GetInfo(index)
+                    tab.name= info and info.title
+                end
             end
-        end
-        local web=format(wowheadText, tab.type, tab.id, tab.name or '')
-        if tab.isPetUI then
-            if tab.frame then
-                BattlePetTooltipTemplate_AddTextLine(tab.frame, 'wowhead  Ctrl+Shift')
+            local web=format(wowheadText, tab.type, tab.id, tab.name or '')
+            if tab.isPetUI then
+                if tab.frame then
+                    BattlePetTooltipTemplate_AddTextLine(tab.frame, 'wowhead  Ctrl+Shift')
+                end
+            else
+                tab.frame:AddDoubleLine((tab.col or '')..'wowhead', (tab.col or '')..'Ctrl+Shift')
             end
-        else
-            tab.frame:AddDoubleLine((tab.col or '')..'wowhead', (tab.col or '')..'Ctrl+Shift')
-        end
-        if IsControlKeyDown() and IsShiftKeyDown() then
-            StaticPopup_Show("WowheadQuickLinkUrl",
-                'wowhead',
-                nil,
-                web
-            )
+            if IsControlKeyDown() and IsShiftKeyDown() then
+                StaticPopup_Show("WowheadQuickLinkUrl",
+                    'wowhead',
+                    nil,
+                    web
+                )
+            end
+        elseif tab.unitName then
+            --e.tips:AddDoubleLine((tab.col or '')..'raider.io', (tab.col or '')..'Ctrl+Shift')
+            if IsControlKeyDown() and IsShiftKeyDown() then
+                StaticPopup_Show("WowheadQuickLinkUrl",
+                    'raider.io',
+                    nil,
+                    format('https://raider.io/characters/%s/%s/%s', RegionName, tab.realm or e.Player.realm, tab.unitName)
+                )
+            end
         end
     end
 end
@@ -693,11 +706,11 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             local text=line:GetText()
             if text then
                 line:SetText(e.Icon.guild2..col..text:gsub('(%-.+)','')..'|r')
-                line= GameTooltipTextRight2
+                --[[line= GameTooltipTextRight2
                 if line then
                     line:SetText(' ')
-                    line:SetShown()
-                end
+                    line:SetShown(false)
+                end]]
             end
         end
 
@@ -847,7 +860,11 @@ local function setUnitInfo(self, unit)--设置单位提示信息
 
     set_Item_Model(self, {unit=unit, guid=guid, creatureDisplayID=nil, animID=nil, appearanceID=nil, visualID=nil})--设置, 3D模型
 
-    get_Web_Link({frame=self, type='npc', id=NPCID, name=name, col=col, isPetUI=false})--取得网页，数据链接
+    if isPlayer then
+        get_Web_Link({unitName=name, realm=realm, col=col})--取得单位, raider.io 网页，数据链接
+    else
+        get_Web_Link({frame=self, type='npc', id=NPCID, name=name, col=col, isPetUI=false})--取得网页，数据链接
+    end
 end
 
 local function setCVar(reset, tips, notPrint)

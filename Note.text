@@ -87,3 +87,13 @@ Interface\Cursor\UI-Cursor-Move   Redlist.xml
 securecall('',)
 
 securecallfunction(GameTooltip_AddQuest, self, questID)
+
+function IsRetail()
+    return WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
+end
+function IsClassic()
+    return WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+end
+function IsWrath()
+    return WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC
+end

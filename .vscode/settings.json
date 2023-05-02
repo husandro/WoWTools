@@ -2658,7 +2658,8 @@
         "MountJournalResetFiltersButton_UpdateVisibility",
         "CLOSE",
         "BROWSER_COPY_LINK",
-        "GameTooltip_AddQuest"
+        "GameTooltip_AddQuest",
+        "FauxScrollFrame_GetOffset"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
