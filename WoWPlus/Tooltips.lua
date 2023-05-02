@@ -541,28 +541,6 @@ end
 --####
 --Buff
 --####
-local function setBuff(type, self, ...)--Buff
-    local source= type=='Buff' and select(7, UnitBuff(...)) or type=='Debuff' and select(7, UnitDebuff(...)) or select(7, UnitAura(...))
-    if source then
-        local r, g ,b , col= GetClassColor(UnitClassBase(source))
-
-        if r and g and b then
-            self.backgroundColor:SetColorTexture(r, g, b, 0.3)
-            self.backgroundColor:SetShown(true)
-        end
-        if source~='player' then
-            SetPortraitTexture(self.Portrait, source)
-            self.Portrait:SetShown(true)
-        end
-        local text= source=='player' and (e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
-                or source=='pet' and PET
-                or UnitIsPlayer(source) and e.GetPlayerInfo({unit=source, guid=UnitGUID(source), name=nil,  reName=true, reRealm=true, reLink=false})
-                or UnitName(source) or _G[source] or source
-        self:AddDoubleLine('|c'..(col or 'ffffff')..(e.onlyChinese and '来原: '..text or format(e.onlyChinese and '"来源：%s' or RUNEFORGE_LEGENDARY_POWER_SOURCE_FORMAT, text)..'|r'))
-        self:Show()
-    end
-end
-
 local function set_Aura(self, auraID)--Aura
     local name, _, icon, _, _, _, spellID = GetSpellInfo(auraID)
    if icon and spellID then
@@ -873,7 +851,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
         if guid then
             local zone, npc = select(5, strsplit("-", guid))--位面,NPCID
             if zone then
-                self:AddDoubleLine(e.Player.LayerText..' '..zone, 'NPC '..npc, r,g,b, r,g,b)
+                self:AddDoubleLine(col..e.Player.LayerText..' '..zone, col..'NPC '..npc, r,g,b, r,g,b)
                 e.Player.Layer=zone
             end
             get_Web_Link({frame=self, type='npc', id=npc, name=name, col=col, isPetUI=false})--取得网页，数据链接
@@ -1250,20 +1228,6 @@ local function Init()
         if ReputationDetailFrame.factionIDText then
             ReputationDetailFrame.factionIDText:SetText(factionID and (e.onlyChinese and '声望' or REPUTATION)..' '..factionID or '')
         end
-    end)
-
-
-    --####
-    --Buff
-    --####
-    hooksecurefunc(e.tips, "SetUnitBuff", function(...)
-        setBuff('Buff', ...)
-    end)
-    hooksecurefunc(e.tips, "SetUnitDebuff", function(...)
-        setBuff('Debuff', ...)
-    end)
-    hooksecurefunc(e.tips, "SetUnitAura", function(...)
-        setBuff('Aura', ...)
     end)
 
     --###########
@@ -1687,3 +1651,37 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
     end
 end)
+
+    --#### 不知什么用,
+    --Buff
+    --[[####
+    local function setBuff(type, self, ...)--Buff
+        local source= type=='Buff' and select(7, UnitBuff(...)) or type=='Debuff' and select(7, UnitDebuff(...)) or select(7, UnitAura(...))
+        if source then
+            local r, g ,b , col= GetClassColor(UnitClassBase(source))
+    
+            if r and g and b then
+                self.backgroundColor:SetColorTexture(r, g, b, 0.3)
+                self.backgroundColor:SetShown(true)
+            end
+            if source~='player' then
+                SetPortraitTexture(self.Portrait, source)
+                self.Portrait:SetShown(true)
+            end
+            local text= source=='player' and (e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
+                    or source=='pet' and PET
+                    or UnitIsPlayer(source) and e.GetPlayerInfo({unit=source, guid=UnitGUID(source), name=nil,  reName=true, reRealm=true, reLink=false})
+                    or UnitName(source) or _G[source] or source
+            self:AddDoubleLine('|c'..(col or 'ffffff')..(e.onlyChinese and '来原: '..text or format(e.onlyChinese and '"来源：%s' or RUNEFORGE_LEGENDARY_POWER_SOURCE_FORMAT, text)..'|r'))
+            self:Show()
+        end
+    end
+    [hooksecurefunc(e.tips, "SetUnitBuff", function(...)
+        setBuff('Buff', ...)
+    end)
+    hooksecurefunc(e.tips, "SetUnitDebuff", function(...)
+        setBuff('Debuff', ...)
+    end)
+    hooksecurefunc(e.tips, "SetUnitAura", function(...)
+        setBuff('Aura', ...)
+    end)]]
