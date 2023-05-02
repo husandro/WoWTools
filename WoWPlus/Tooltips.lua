@@ -94,18 +94,18 @@ end
 StaticPopupDialogs["WowheadQuickLinkUrl"] = {
     text= '%s |cnGREEN_FONT_COLOR:CTRL+C '..BROWSER_COPY_LINK..'|r',
     button1 = e.onlyChinese and '关闭' or CLOSE,
-    OnShow = function(self, data)
+    OnShow = function(self, web)
         self.editBox:SetScript("OnEscapePressed", function(s) s:ClearFocus() s:GetParent():Hide() end)
         self.editBox:SetScript("OnEnterPressed", function(s) s:ClearFocus() s:GetParent():Hide() end)
         self.editBox:SetScript("OnKeyUp", function(s, key)
             if IsControlKeyDown() and key == "C" then
                 s:ClearFocus() s:GetParent():Hide()
-                print(id,addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r', data.web)
+                print(id,addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r', web)
             end
         end)
         self.editBox:SetMaxLetters(0)
         self.editBox:SetWidth(self:GetWidth())
-        self.editBox:SetText(data.web)
+        self.editBox:SetText(web)
         self.editBox:HighlightText()
     end,
     hasEditBox = true,
@@ -137,10 +137,19 @@ end
 
 --get_Web_Link({frame=self, type='npc', id=companionID, name=speciesName, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell
 local function get_Web_Link(tab)
-    if Save.ctrl and tab.id and tab.name and not UnitAffectingCombat('player') then --and not UnitCastingInfo('player') and not UnitChannelInfo('player') then
-        tab.web=format(wowheadText, tab.type, tab.id, tab.name)
-        if tab.isPetUI and tab.frame then
-            BattlePetTooltipTemplate_AddTextLine(tab.frame, 'wowhead  Ctrl+Shift')
+    if Save.ctrl and tab.id and not UnitAffectingCombat('player') then --and not UnitCastingInfo('player') and not UnitChannelInfo('player') then
+        if tab.type=='quest' then
+            if not tab.name then
+                local index= C_QuestLog.GetLogIndexForQuestID(tab.id)
+                local info= index and C_QuestLog.GetInfo(index)
+                tab.name= info and info.title
+            end
+        end
+        local web=format(wowheadText, tab.type, tab.id, tab.name or '')
+        if tab.isPetUI then
+            if tab.frame then
+                BattlePetTooltipTemplate_AddTextLine(tab.frame, 'wowhead  Ctrl+Shift')
+            end
         else
             tab.frame:AddDoubleLine((tab.col or '')..'wowhead', (tab.col or '')..'Ctrl+Shift')
         end
@@ -148,7 +157,7 @@ local function get_Web_Link(tab)
             StaticPopup_Show("WowheadQuickLinkUrl",
                 'wowhead',
                 nil,
-                tab
+                web
             )
         end
     end
@@ -1257,37 +1266,25 @@ local function Init()
     end
 
     hooksecurefunc('QuestMapFrame_ShowQuestDetails', function(questID)
-        local btn= QuestMapFrame.DetailsFrame.wowhead
+        local label= QuestMapFrame.DetailsFrame.wowhead
         if questID then
-            if not btn then
-                btn= e.Cbtn(QuestMapFrame.DetailsFrame, {type=false, size={90,22}})
-                btn:SetPoint('BOTTOMRIGHT',QuestMapFrame.DetailsFrame, 'TOPRIGHT', 0, 10)
-                QuestMapFrame.DetailsFrame.wowhead=btn
-                QuestMapFrame.DetailsFrame.wowhead:SetScript('OnClick', function(self)
-                    if self.questID then
-                        local info = C_QuestLog.GetQuestTagInfo(self.questID)
-                        local name= info and info.tagName
-                        if not name then
-                            local index= C_QuestLog.GetLogIndexForQuestID(self.questID)
-                            local info2= index and C_QuestLog.GetInfo(index)
-                            name= info2 and info2.title
-                        end
-                        StaticPopup_Show("WowheadQuickLinkUrl",
-                            'wowhead',
-                            nil,
-                            {
-                                type='npc',
-                                id= self.questID,
-                                web=format(wowheadText, 'quest', self.questID, name or '')
-                            }
-                        )
-                    end
+            if not label then
+                label= e.Cstr(QuestMapFrame.DetailsFrame)
+                label:SetPoint('BOTTOMRIGHT',QuestMapFrame.DetailsFrame, 'TOPRIGHT', 20, 10)
+                label:EnableMouse(true)
+                label:SetScript('OnLeave', function() e.tips:Hide() end)
+                label:SetScript('OnEnter', function(self)
+                    e.tips:SetOwner(self, "ANCHOR_LEFT")
+                    e.tips:ClearLines()
+                    securecallfunction(GameTooltip_AddQuest, self, self.questID)
                 end)
+                QuestMapFrame.DetailsFrame.wowhead=label
             end
-            btn:SetText(questID)
-            btn.questID= questID
-        elseif QuestMapFrame.DetailsFrame.wowhead then
-            QuestMapFrame.DetailsFrame.wowhead:SetShown(false)
+            label:SetText(questID)
+            label.questID= questID
+        end
+        if label then
+            label:SetShown(questID and true or false)
         end
     end)
     hooksecurefunc("QuestMapLogTitleButton_OnEnter", function(self)--任务日志 显示ID
@@ -1296,41 +1293,34 @@ local function Init()
             return
         end
         e.tips:AddDoubleLine(e.GetExpansionText(nil, info.questID))--任务版本
-        local t=''
         local lv=C_QuestLog.GetQuestDifficultyLevel(info.questID)--ID
-        if lv then t=t..'['..lv..']' else t=t..' 'end
-        if C_QuestLog.IsComplete(info.questID) then t=t..'|cFF00FF00'..(e.onlyChinese and '完成' or COMPLETE)..'|r' else t=t..(e.onlyChinese and '未完成' or INCOMPLETE) end
-        if t=='' then t=t..(e.onlyChinese and '任务' or QUESTS_LABEL) end
-        t=t..' ID'
-        e.tips:AddDoubleLine(t, info.questID)
+
+        e.tips:AddDoubleLine((e.onlyChinese and '任务' or QUESTS_LABEL)..(lv and '['..lv..']' or ''), info.questID)
         local distanceSq= C_QuestLog.GetDistanceSqToQuest(info.questID)--距离
         if distanceSq then
-            t= ''
             local _, x, y = QuestPOIGetIconInfo(info.questID)
             if x and y then
                 x=math.modf(x*100) y=math.modf(y*100)
-                if x and y then t='XY '..x..', '..y end
             end
-            e.tips:AddDoubleLine(t,  (e.onlyChinese and '距离' or TRACK_QUEST_PROXIMITY_SORTING)..' '..e.MK(distanceSq))--format(IN_GAME_NAVIGATION_RANGE, e.MK(distanceSq)))
+            e.tips:AddDoubleLine(x and y and 'XY '..x..', '..y,  (e.onlyChinese and '距离' or TRACK_QUEST_PROXIMITY_SORTING)..' '..e.MK(distanceSq))--format(IN_GAME_NAVIGATION_RANGE, e.MK(distanceSq)))
         end
         if IsInGroup() then
-            t= e.GetYesNo(C_QuestLog.IsPushableQuest(info.questID))--共享
             local t2= (e.onlyChinese and '共享' or SHARE_QUEST)..' '
-            local u if IsInRaid() then u='raid' else u='party' end
-            local n,acceto=GetNumGroupMembers(), 0
+            local u= IsInRaid() and 'raid' or 'party'
+            local n, acceto= GetNumGroupMembers(), 0
             for i=1, n do
                 local u2
-                if u=='party' and i==n then u2='player' else u2=u..i end
-                if C_QuestLog.IsUnitOnQuest(u2, info.questID) then acceto=acceto+1 end
+                if u=='party' and i==n then
+                    u2='player'
+                else
+                    u2=u..i
+                end
+                if C_QuestLog.IsUnitOnQuest(u2, info.questID) then
+                    acceto=acceto+1
+                end
             end
             t2=e.tips..acceto..'/'..n
-            e.tips:AddDoubleLine(t2, t)
-        end
-        local all=C_QuestLog.GetAllCompletedQuestIDs()--完成次数
-        if all and #all>0 then
-            t= GetDailyQuestsCompleted() or '0'
-            t=t..(e.onlyChinese and '日常' or DAILY)..' '..#all..(e.onlyChinese and '任务' or QUESTS_LABEL)
-            e.tips:AddDoubleLine(e.onlyChinese and '已完成任务' or TRACKER_FILTER_COMPLETED_QUESTS, t)
+            e.tips:AddDoubleLine(t2, e.GetYesNo(C_QuestLog.IsPushableQuest(info.questID)))
         end
         get_Web_Link({frame=e.tips, type='quest', id=info.questID, name=info.title, col=nil, isPetUI=false})--取得网页，数据链接
         e.tips:Show()

@@ -2657,7 +2657,8 @@
         "FilterDropDownSystem",
         "MountJournalResetFiltersButton_UpdateVisibility",
         "CLOSE",
-        "BROWSER_COPY_LINK"
+        "BROWSER_COPY_LINK",
+        "GameTooltip_AddQuest"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

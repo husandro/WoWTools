@@ -85,4 +85,5 @@ ToggleEncounterJournal()
 Interface\Cursor\UI-Cursor-Move   Redlist.xml
 
 securecall('',)
-securecallfunction
+
+securecallfunction(GameTooltip_AddQuest, self, questID)
