@@ -628,6 +628,7 @@ local function Init_Move()
                 Move(header, {frame=ObjectiveTrackerFrame, notZoom=true})
             end
         end
+        ObjectiveTrackerFrame:SetClampedToScreen(false)
     end)
     --[[Move(ObjectiveTrackerBlocksFrame.ScenarioHeader, {frame=ObjectiveTrackerFrame, notZoom=true})
     Move(ObjectiveTrackerBlocksFrame.AchievementHeader, {frame=ObjectiveTrackerFrame, notZoom=true})
