@@ -58,81 +58,7 @@ local function ItemNum(button)--增加物品数量
 end
 
 
-local ObjectiveTrackerRemoveAll =function(self, tip)
-    local block = self.activeFrame
-    if not block then
-        return
-    end
-    local questID= tip=='Q' and block.id or block.TrackedQuest and block.TrackedQuest.questID
-    if not questID then
-        return
-    end
 
-    local info
-    if tip=='Q' then
-        info={
-            text = e.onlyChinese and '放弃任务' or ABANDON_QUEST,
-            notCheckable = 1,
-            icon= Icon.x2,
-            disabled= not C_QuestLog.CanAbandonQuest(questID),
-            arg1 = questID,
-            func = function(_, arg1)
-                QuestMapQuestOptions_AbandonQuest(arg1)--QuestMapFrame.lua
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info)
-    end
-    e.LibDD:UIDropDownMenu_AddSeparator()
-    local verText, verLevel=e.GetExpansionText(nil, questID)--任务版本
-    if verLevel and verText then
-        info={
-            text=verText..' '..verLevel,
-            isTitle=true,
-            notCheckable=true,
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info)
-    end
-    local text
-
-    info={
-        text = (e.onlyChinese and '任务' or QUESTS_LABEL)..' '..questID..'  '..(e.onlyChinese and '等级' or LEVEL)..' '.. C_QuestLog.GetQuestDifficultyLevel(questID),
-        isTitle = true,
-        notCheckable = true,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info)
-
-    info = {}
-    local totaleQest= C_QuestLog.GetNumQuestWatches()+C_QuestLog.GetNumWorldQuestWatches()
-    info={
-        text = (e.onlyChinese and '全部清除' or REMOVE_WORLD_MARKERS)..' '..totaleQest,
-        notCheckable = true,
-        tooltipOnButton=true,
-        tooltipTitle= e.onlyChinese and '任务 +' or (QUESTS_LABEL..' +'),
-        tooltipText= e.onlyChinese and '世界任务' or TRACKER_HEADER_WORLD_QUESTS,
-        icon=Icon.clear,
-        colorCode= totaleQest==0 and '|cff606060',
-        func = function()
-            local nu=C_QuestLog.GetNumQuestWatches()
-            while nu>0 do
-                questID=C_QuestLog.GetQuestIDForQuestWatchIndex(1)
-                if not questID then questID= C_SuperTrack.GetSuperTrackedQuestID() end
-                if questID then
-                    C_QuestLog.RemoveQuestWatch(questID)
-                end
-                nu=C_QuestLog.GetNumQuestWatches()
-            end
-            nu=C_QuestLog.GetNumWorldQuestWatches()
-            while nu>0 do
-                questID= C_QuestLog.GetQuestIDForWorldQuestWatchIndex(1)
-                if questID then
-                    C_QuestLog.RemoveWorldQuestWatch(questID)
-                end
-                nu=C_QuestLog.GetNumWorldQuestWatches()
-            end
-        end,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info)
-end
 
 local colla_Module=function(type)
     for _, self in pairs(ModulTab) do
@@ -206,7 +132,6 @@ local function setColor(block, questID)
                 line:SetAlpha(0.3)
             end
             if block.r and block.g and block.b then
-                --    line.Text.colorStyle = {r=block.r, g=block.g, b=block.b}
                 line.Text:SetTextColor(block.r, block.g, block.b)
             end
         end
@@ -228,7 +153,7 @@ local function hideTrecker()--挑战,进入FB时, 隐藏Blizzard_ObjectiveTracke
                 if not self.collapsed  then
                     --local module = self.Header.MinimizeButton:GetParent().module;
                     self:SetCollapsed(true);
-                    ObjectiveTracker_Update(0, nil, self);
+                    securecallfunction(ObjectiveTracker_Update, 0, nil, self)
                     self.Header.MinimizeButton:SetCollapsed(true);
                     self.setColla=true;
                 end
@@ -241,7 +166,7 @@ local function hideTrecker()--挑战,进入FB时, 隐藏Blizzard_ObjectiveTracke
                 if self.setColla then
                     if self.collapsed  then
                         self:SetCollapsed(false);
-                        ObjectiveTracker_Update(0, nil, self);
+                        securecallfunction(ObjectiveTracker_Update, 0, nil, self)
                         self.Header.MinimizeButton:SetCollapsed(false);
                     end
                     self.setColla=nil;
@@ -258,41 +183,17 @@ local function Init()
     if Save.scale and Save.scale~=1 then
         Scale()
     end--缩放
-    if Save.alpha and Save.alpha~=1 then
-        Alpha()
-    end--透明度
-
-    ObjectiveTrackerFrame:SetMovable(true)
-    ObjectiveTrackerFrame:EnableMouse(true)
 
     local btn=ObjectiveTrackerFrame.HeaderMenu.MinimizeButton
-    btn:RegisterForDrag("RightButton")
-    btn:SetScript("OnDragStart", function() ObjectiveTrackerFrame:StartMoving() end)
-    btn:SetScript("OnDragStop", function()
-            ResetCursor()
-            ObjectiveTrackerFrame:StopMovingOrSizing()
-    end)
-    btn:SetScript("OnMouseUp", function(self)
-        ResetCursor()
-    end)
-    btn:SetScript("OnMouseDown", function(self,d)
-        if d=='RightButton' then
-            SetCursor('UI_MOVE_CURSOR')
-        end
-    end)
-    btn:SetScript("OnLeave", function(self)
-        ResetCursor()
-        e.tips:Hide()
-    end)
+    btn:SetScript("OnLeave", function(self) e.tips:Hide() end)
     btn:SetScript("OnEnter",function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
+
         e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE), e.Icon.mid)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..': '..(Save.scale or 1), 'Ctrl + '..e.Icon.mid)
-        e.tips:AddDoubleLine((e.onlyChinese and '透明度' or CHANGE_OPACITY)..': '..(Save.alpha or 1), 'Shift + '..e.Icon.mid)
         e.tips:Show()
     end)
     btn:SetScript('OnMouseWheel',function(self,d)
@@ -308,12 +209,6 @@ local function Init()
         elseif d==-1 and IsControlKeyDown() then
             Save.scale=Save.scale-0.05
             Scale(true)
-        elseif d==1 and IsShiftKeyDown() then
-            Save.alpha=Save.alpha+0.1
-            Alpha(true)
-        elseif d==-1 and IsShiftKeyDown() then
-            Save.alpha=Save.alpha-0.1
-            Alpha(true)
         end
     end)
 
@@ -328,10 +223,6 @@ local function Init()
         local m=''
         block.r, block.g, block.b=nil, nil, nil
         if questID then
-    --[[Day={0.10, 0.72, 1},--日常
-        Week={0.02, 1, 0.66},--周长
-        Legendary={1, 0.49, 0},--传说
-        Calling={1, 0, 0.9},--使命]]
             if C_QuestLog.IsComplete(questID) then m=m..e.Icon.select2 elseif C_QuestLog.IsFailed(questID) then m=m.e.Icon.X2 end
             local factionGroup = GetQuestFactionGroup(questID)
             if factionGroup == LE_QUEST_FACTION_HORDE then
@@ -365,9 +256,6 @@ local function Init()
                         block.r, block.g, block.b= Color.Week[1], Color.Week[2], Color.Week[3]
                     end
                 end
-                --[[if info.isOnMap then
-                    m=m..e.Icon.map2
-                end]]
                 local ver=GetQuestExpansion(questID or info.questID)--版本
                 if ver and ver~= e.ExpansionLevel then
                     m=m..(ver<e.ExpansionLevel and  '|cff606060' or '|cnRED_FONT_COLOR:')..'['..(ver+1)..']|r'
@@ -384,65 +272,6 @@ local function Init()
         if m~='' then block.HeaderText:SetText(m..text) end
     end)
 
-
-    hooksecurefunc('BonusObjectiveTracker_OnOpenDropDown', function(self)--ID,清除世界任务追踪
-        ObjectiveTrackerRemoveAll(self,'W')
-    end)--Blizzard_BonusObjectiveTracker.lua
-
-    hooksecurefunc('QuestObjectiveTracker_OnOpenDropDown', function(self)--ID,清除任务追踪
-        ObjectiveTrackerRemoveAll(self,'Q')
-    end)--Blizzard_QuestObjectiveTracker.lua
-
-    hooksecurefunc('AchievementObjectiveTracker_OnOpenDropDown', function(self)--清除所有成就追踪
-        local block = self.activeFrame
-        if block and block.id then
-            local info = {}
-            info.text = (e.onlyChinese and '成就 ' or ACHIEVEMENTS)..' '..block.id
-            info.icon=select(10,GetAchievementInfo(block.id))
-            info.isTitle = 1
-            info.notCheckable = 1
-            e.LibDD:UIDropDownMenu_AddButton(info)
-        end
-        local info = {}
-        local trackedAchievements = { GetTrackedAchievements() }
-        info.text = (e.onlyChinese and '全部清除' or REMOVE_WORLD_MARKERS)..' '..#trackedAchievements
-        info.notCheckable = 1
-        info.checked = false
-        info.icon=Icon.clear
-        if #trackedAchievements<2 then info.disabled=true end
-        info.func = function ()
-            for i = 1, #trackedAchievements do
-                RemoveTrackedAchievement(trackedAchievements[i])
-            end
-        end
-        e.LibDD:UIDropDownMenu_AddButton(info)
-    end)
-    hooksecurefunc(PROFESSION_RECIPE_TRACKER_MODULE, 'OnBlockHeaderClick', function(self, block, mouseButton)--清除所有专业追踪
-        if mouseButton=='RightButton' then
-            local recipeInfo =C_TradeSkillUI.GetRecipeInfo(block.id)
-            local info = {}
-            info.text =((recipeInfo and recipeInfo.icon) and '|T'..recipeInfo.icon..':0|t' or '')..(e.onlyChinese and '专业' or TRADE_SKILLS)..' '..block.id
-            info.isTitle = true
-            info.notCheckable = true
-            e.LibDD:UIDropDownMenu_AddButton(info)
-
-            info = {}
-            local tracked=C_TradeSkillUI.GetRecipesTracked() or {}
-            info.text ='|A:'..Icon.clear..':0:0|a'..(e.onlyChinese and '全部清除' or REMOVE_WORLD_MARKERS)..' '..#tracked
-            info.notCheckable = true
-            info.checked = false
-            --info.icon=Icon.clear
-            if #tracked<2 then
-                info.disabled=true
-            end
-            info.func = function ()
-                for _, recipeID in pairs(tracked) do
-                    C_TradeSkillUI.SetRecipeTracked(recipeID, false);
-                end
-            end
-            e.LibDD:UIDropDownMenu_AddButton(info)
-        end
-    end)
     hooksecurefunc(PROFESSION_RECIPE_TRACKER_MODULE, 'SetStringText', function(self, fontString, text, useFullHeight, colorStyle, useHighlight)
         local te=text:gsub('%d+/%d+ ','')
         if te then
@@ -467,70 +296,42 @@ local function Init()
         end
     end)
 
-
-    hooksecurefunc('QuestObjectiveItem_OnEnter', function(self)
-        if self.setMove and e.tips:IsShown() then
-            e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
-            e.tips:Show()
-        end
-    end)
-
-
-    hooksecurefunc('QuestObjectiveSetupBlockButton_AddRightButton', function(block, button)--物品按钮左边,放大
-        if not button or not block or not button:IsShown()  or block.groupFinderButton == button then
+    hooksecurefunc('QuestObjectiveSetupBlockButton_AddRightButton', function(block, button)--物品按钮左边,放大 --Blizzard_ObjectiveTrackerShared.lua
+        if not button or not block or not button:IsShown()  or block.groupFinderButton == button or button.setMove then
             return
         end
-        button:ClearAllPoints()
-        if not button.point then
-            button:SetPoint('TOPRIGHT',block,'TOPLEFT',-25, 0)
-        else
-            button:SetPoint(button.point[1], button.point[2], button.point[3], button.point[4], button.point[5])
-        end
 
-        if not button.setMove then
-            button:SetSize(35,35)--右击移动
-            if  button.NormalTexture then button.NormalTexture:SetSize(60,60) end
-            button:SetClampedToScreen(true)--保存
-            button:SetMovable(true)
-            button:RegisterForDrag("RightButton")
-            button:SetScript("OnDragStart", function(self)
-                    if not IsModifierKeyDown()  then  self:StartMoving() end
-            end)
-            button:SetScript("OnDragStop", function(self)
-                    self:StopMovingOrSizing()
-                    self.point={self:GetPoint(1)}
-                    print(id, addName, '|cFF00FF00Alt+'..e.Icon.right..(e.onlyChinese and '鼠标右键' or KEY_BUTTON2)..'|r', e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
-            end)
-            button:SetScript("OnMouseDown", function(self, d)
-                    if d=='RightButton' and IsAltKeyDown() and not self.Moving then
-                        self:ClearAllPoints()
-                        self:SetPoint('TOPRIGHT',block,'TOPLEFT',-25, 0)
-                        self.point=nil
-                    end
-            end)
+        button:SetSize(35,35)--右击移动
+        if  button.NormalTexture then button.NormalTexture:SetSize(60,60) end
+        button:SetClampedToScreen(true)--保存
+        button:SetMovable(true)
+        button:RegisterForDrag("RightButton")
+        button:SetScript("OnDragStart", function(self)
+            self:StartMoving()
+        end)
+        button:SetScript("OnDragStop", function(self)
+                self:StopMovingOrSizing()
+        end)
 
-            button.itemLink=GetQuestLogSpecialItemInfo(button:GetID())--物品数量
-            if button.itemLink then
+        button.itemLink=GetQuestLogSpecialItemInfo(button:GetID())--物品数量
+        if button.itemLink then
+            button:RegisterEvent("BAG_UPDATE")
+            ItemNum(button)
+            button:SetScript("OnEvent", function(_, event)
+                if event == "BAG_UPDATE" then
+                    ItemNum(button)
+                end
+            end)
+            button:SetScript("OnShow", function()
+                button.itemLink=GetQuestLogSpecialItemInfo(button:GetID())
                 button:RegisterEvent("BAG_UPDATE")
-                ItemNum(button)
-                button:SetScript("OnEvent", function(_, event)
-                        if event == "BAG_UPDATE" then
-                            ItemNum(button)
-                        end
-                end)
-                button:SetScript("OnShow", function()
-                        button.itemLink=GetQuestLogSpecialItemInfo(button:GetID())
-                        button:RegisterEvent("BAG_UPDATE")
-                end)
-                button:SetScript("OnHide", function()
-                        button.itemLink=nil
-                        button:UnregisterEvent("BAG_UPDATE")
-                end)
-            end
-            button.setMove=true
+            end)
+            button:SetScript("OnHide", function()
+                button.itemLink=nil
+                button:UnregisterEvent("BAG_UPDATE")
+            end)
         end
-    end)--Blizzard_ObjectiveTrackerShared.lua
-
+    end)
 end
 
 --###########
@@ -597,3 +398,140 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     end
 end)
+
+
+--[[
+    local ObjectiveTrackerRemoveAll =function(self, tip)
+        local block = self.activeFrame
+        if not block then
+            return
+        end
+        local questID= tip=='Q' and block.id or block.TrackedQuest and block.TrackedQuest.questID
+        if not questID then
+            return
+        end
+    
+        local info
+        if tip=='Q' then
+            info={
+                text = e.onlyChinese and '放弃任务' or ABANDON_QUEST,
+                notCheckable = 1,
+                icon= Icon.x2,
+                disabled= not C_QuestLog.CanAbandonQuest(questID),
+                arg1 = questID,
+                func = function(_, arg1)
+                    QuestMapQuestOptions_AbandonQuest(arg1)--QuestMapFrame.lua
+                end
+            }
+            e.LibDD:UIDropDownMenu_AddButton(info)
+        end
+        e.LibDD:UIDropDownMenu_AddSeparator()
+        local verText, verLevel=e.GetExpansionText(nil, questID)--任务版本
+        if verLevel and verText then
+            info={
+                text=verText..' '..verLevel,
+                isTitle=true,
+                notCheckable=true,
+            }
+            e.LibDD:UIDropDownMenu_AddButton(info)
+        end
+        local text
+    
+        info={
+            text = (e.onlyChinese and '任务' or QUESTS_LABEL)..' '..questID..'  '..(e.onlyChinese and '等级' or LEVEL)..' '.. C_QuestLog.GetQuestDifficultyLevel(questID),
+            isTitle = true,
+            notCheckable = true,
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info)
+    
+        info = {}
+        local totaleQest= C_QuestLog.GetNumQuestWatches()+C_QuestLog.GetNumWorldQuestWatches()
+        info={
+            text = (e.onlyChinese and '全部清除' or REMOVE_WORLD_MARKERS)..' '..totaleQest,
+            notCheckable = true,
+            tooltipOnButton=true,
+            tooltipTitle= e.onlyChinese and '任务 +' or (QUESTS_LABEL..' +'),
+            tooltipText= e.onlyChinese and '世界任务' or TRACKER_HEADER_WORLD_QUESTS,
+            icon=Icon.clear,
+            colorCode= totaleQest==0 and '|cff606060',
+            func = function()
+                local nu=C_QuestLog.GetNumQuestWatches()
+                while nu>0 do
+                    questID=C_QuestLog.GetQuestIDForQuestWatchIndex(1)
+                    if not questID then questID= C_SuperTrack.GetSuperTrackedQuestID() end
+                    if questID then
+                        C_QuestLog.RemoveQuestWatch(questID)
+                    end
+                    nu=C_QuestLog.GetNumQuestWatches()
+                end
+                nu=C_QuestLog.GetNumWorldQuestWatches()
+                while nu>0 do
+                    questID= C_QuestLog.GetQuestIDForWorldQuestWatchIndex(1)
+                    if questID then
+                        C_QuestLog.RemoveWorldQuestWatch(questID)
+                    end
+                    nu=C_QuestLog.GetNumWorldQuestWatches()
+                end
+            end,
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info)
+    end
+    hooksecurefunc('BonusObjectiveTracker_OnOpenDropDown', function(self)--ID,清除世界任务追踪
+        ObjectiveTrackerRemoveAll(self,'W')
+    end)--Blizzard_BonusObjectiveTracker.lua
+
+    hooksecurefunc('QuestObjectiveTracker_OnOpenDropDown', function(self)--ID,清除任务追踪
+        ObjectiveTrackerRemoveAll(self,'Q')
+    end)--Blizzard_QuestObjectiveTracker.lua
+
+    hooksecurefunc('AchievementObjectiveTracker_OnOpenDropDown', function(self)--清除所有成就追踪
+        local block = self.activeFrame
+        if block and block.id then
+            local info = {}
+            info.text = (e.onlyChinese and '成就 ' or ACHIEVEMENTS)..' '..block.id
+            info.icon=select(10,GetAchievementInfo(block.id))
+            info.isTitle = 1
+            info.notCheckable = 1
+            e.LibDD:UIDropDownMenu_AddButton(info)
+        end
+        local info = {}
+        local trackedAchievements = { GetTrackedAchievements() }
+        info.text = (e.onlyChinese and '全部清除' or REMOVE_WORLD_MARKERS)..' '..#trackedAchievements
+        info.notCheckable = 1
+        info.checked = false
+        info.icon=Icon.clear
+        if #trackedAchievements<2 then info.disabled=true end
+        info.func = function ()
+            for i = 1, #trackedAchievements do
+                RemoveTrackedAchievement(trackedAchievements[i])
+            end
+        end
+        e.LibDD:UIDropDownMenu_AddButton(info)
+    end)
+    hooksecurefunc(PROFESSION_RECIPE_TRACKER_MODULE, 'OnBlockHeaderClick', function(self, block, mouseButton)--清除所有专业追踪
+        if mouseButton=='RightButton' then
+            local recipeInfo =C_TradeSkillUI.GetRecipeInfo(block.id)
+            local info = {}
+            info.text =((recipeInfo and recipeInfo.icon) and '|T'..recipeInfo.icon..':0|t' or '')..(e.onlyChinese and '专业' or TRADE_SKILLS)..' '..block.id
+            info.isTitle = true
+            info.notCheckable = true
+            e.LibDD:UIDropDownMenu_AddButton(info)
+
+            info = {}
+            local tracked=C_TradeSkillUI.GetRecipesTracked() or {}
+            info.text ='|A:'..Icon.clear..':0:0|a'..(e.onlyChinese and '全部清除' or REMOVE_WORLD_MARKERS)..' '..#tracked
+            info.notCheckable = true
+            info.checked = false
+            --info.icon=Icon.clear
+            if #tracked<2 then
+                info.disabled=true
+            end
+            info.func = function ()
+                for _, recipeID in pairs(tracked) do
+                    C_TradeSkillUI.SetRecipeTracked(recipeID, false);
+                end
+            end
+            e.LibDD:UIDropDownMenu_AddButton(info)
+        end
+    end)
+]]
