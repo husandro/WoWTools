@@ -92,7 +92,7 @@ end
 --取得网页，数据链接
 --################
 StaticPopupDialogs["WowheadQuickLinkUrl"] = {
-    text= '%s |cnGREEN_FONT_COLOR:CTRL+C '..BROWSER_COPY_LINK..'|r',
+    text= '|cffff00ffCtrl+Shift|r %s\n |cnGREEN_FONT_COLOR:CTRL+C |r'..BROWSER_COPY_LINK,
     button1 = e.onlyChinese and '关闭' or CLOSE,
     OnShow = function(self, web)
         self.editBox:SetScript("OnEscapePressed", function(s) s:ClearFocus() s:GetParent():Hide() end)
@@ -117,23 +117,33 @@ StaticPopupDialogs["WowheadQuickLinkUrl"] = {
 }
 
 local wowheadText= 'https://www.wowhead.com/%s=%d/%s'
+local raiderioText= 'https://raider.io/characters/%s/%s/%s'
 if LOCALE_zhCN or LOCALE_zhTW then
     wowheadText= 'https://www.wowhead.com/cn/%s=%d/%s'
+    raiderioText= 'https://raider.io/cn/characters/%s/%s/%s'
 elseif LOCALE_deDE then
     wowheadText= 'https://www.wowhead.com/de/%s=%d/%s'
+    raiderioText= 'https://raider.io/de/characters/%s/%s/%s'
 elseif LOCALE_esES or LOCALE_esMX then
     wowheadText= 'https://www.wowhead.com/es/%s=%d/%s'
+    raiderioText= 'https://raider.io/es/characters/%s/%s/%s'
 elseif LOCALE_frFR then
     wowheadText= 'https://www.wowhead.com/fr/%s=%d/%s'
+    raiderioText= 'https://raider.io/fr/characters/%s/%s/%s'
 elseif LOCALE_itIT then
-    wowheadText= 'https://www.wowhead.com/if/%s=%d/%s'
+    wowheadText= 'https://www.wowhead.com/it/%s=%d/%s'
+    raiderioText= 'https://raider.io/it/characters/%s/%s/%s'
 elseif LOCALE_ptBR then
     wowheadText= 'https://www.wowhead.com/pt/%s=%d/%s'
+    raiderioText= 'https://raider.io/br/characters/%s/%s/%s'
 elseif LOCALE_ruRU then
     wowheadText= 'https://www.wowhead.com/ru/%s=%d/%s'
+    raiderioText= 'https://raider.io/ru/characters/%s/%s/%s'
 elseif LOCALE_koKR then
     wowheadText= 'https://www.wowhead.com/ko/%s=%d/%s'
+    raiderioText= 'https://raider.io/kr/characters/%s/%s/%s'
 end
+
 
 --get_Web_Link({frame=self, type='npc', id=companionID, name=speciesName, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell
 --get_Web_Link({unitName=name, realm=realm, col=nil})--取得单位, raider.io 网页，数据链接
@@ -154,22 +164,28 @@ local function get_Web_Link(tab)
                     BattlePetTooltipTemplate_AddTextLine(tab.frame, 'wowhead  Ctrl+Shift')
                 end
             else
-                tab.frame:AddDoubleLine((tab.col or '')..'wowhead', (tab.col or '')..'Ctrl+Shift')
+                tab.frame:AddDoubleLine((tab.col or '')..'WoWHead', (tab.col or '')..'Ctrl+Shift')
             end
             if IsControlKeyDown() and IsShiftKeyDown() then
                 StaticPopup_Show("WowheadQuickLinkUrl",
-                    'wowhead',
+                    'WoWHead',
                     nil,
                     web
                 )
             end
         elseif tab.unitName then
-            --e.tips:AddDoubleLine((tab.col or '')..'raider.io', (tab.col or '')..'Ctrl+Shift')
+            if tab.frame then
+                tab.frame:SetText(e.Icon.info2..tab.col..'Raider.IO Shift+Ctrl')
+                tab.frame:SetShown(true)
+            else
+                e.tips:AddDoubleLine(e.Icon.info2..(tab.col or '')..'Raider.IO', (tab.col or '')..'Ctrl+Shift')
+                e.tips:Shown(true)
+            end
             if IsControlKeyDown() and IsShiftKeyDown() then
                 StaticPopup_Show("WowheadQuickLinkUrl",
-                    'raider.io',
+                    'Raider.IO',
                     nil,
-                    format('https://raider.io/characters/%s/%s/%s', RegionName, tab.realm or e.Player.realm, tab.unitName)
+                    format(raiderioText, RegionName, tab.realm or e.Player.realm, tab.unitName)
                 )
             end
         end
@@ -646,10 +662,11 @@ local function setUnitInfo(self, unit)--设置单位提示信息
     local isGroupPlayer= (not isSelf and e.GroupGuid[guid]) and true or nil--队友
     local r,g,b, col = GetClassColor(UnitClassBase(unit))--颜色
           col= col and '|c'..col or ''
-    local NPCID--取得网页，数据链接
     --设置单位图标  
     local englishFaction = isPlayer and UnitFactionGroup(unit)
     if isPlayer then
+        local hideLine--取得网页，数据链接
+
         if (englishFaction=='Alliance' or englishFaction=='Horde') then--派系
             self.Portrait:SetAtlas(englishFaction=='Alliance' and e.Icon.alliance or e.Icon.horde)
             self.Portrait:SetShown(true)
@@ -706,11 +723,10 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             local text=line:GetText()
             if text then
                 line:SetText(e.Icon.guild2..col..text:gsub('(%-.+)','')..'|r')
-                --[[line= GameTooltipTextRight2
-                if line then
-                    line:SetText(' ')
-                    line:SetShown(false)
-                end]]
+                if GameTooltipTextRight2 then
+                    GameTooltipTextRight2:SetText(' ')
+                    GameTooltipTextRight2:SetShown(false)
+                end
             end
         end
 
@@ -760,11 +776,11 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             text= col and col..text..'|r' or text
             line:SetText(text)
 
-            --[[line= isInGuild and GameTooltipTextRight3 or GameTooltipTextRight2
+            line= isInGuild and GameTooltipTextRight3 or GameTooltipTextRight2
             if line then
                 line:SetText(' ')
                 line:SetShown(true)
-            end]]
+            end
         end
 
         local num= isInGuild and 4 or 3
@@ -797,18 +813,24 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                         end
                     else
                         line:SetShown(false)
+                        if not hideLine then
+                            hideLine=line
+                        end
                     end
                 else
-                    line:Hide()
+                    line:SetShown(false)
+                    if not hideLine then
+                        hideLine=line
+                    end
                 end
             end
         end
+        get_Web_Link({frame=hideLine, unitName=name, realm=realm, col=col})--取得单位, raider.io 网页，数据链接
 
     elseif (UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit)) then--宠物TargetFrame.lua
         setPet(self, UnitBattlePetSpeciesID(unit), true)
 
     else
-
         if GameTooltipTextLeft1 then GameTooltipTextLeft1:SetTextColor(r,g,b) end
         if GameTooltipTextLeft2 then GameTooltipTextLeft2:SetTextColor(r,g,b) end
         if GameTooltipTextLeft3 then GameTooltipTextLeft3:SetTextColor(r,g,b) end
@@ -817,9 +839,9 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             local zone, npc = select(5, strsplit("-", guid))--位面,NPCID
             if zone then
                 self:AddDoubleLine(e.Player.LayerText..' '..zone, 'NPC '..npc, r,g,b, r,g,b)
-                NPCID=npc
                 e.Player.Layer=zone
             end
+            get_Web_Link({frame=self, type='npc', id=npc, name=name, col=col, isPetUI=false})--取得网页，数据链接
         end
 
         --怪物, 图标
@@ -852,6 +874,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
         if type and not type:find(COMBAT_ALLY_START_MISSION) then
             self.textRight:SetText(col..type..'|r')
         end
+        
     end
 
     if not Save.hideHealth then
@@ -859,12 +882,6 @@ local function setUnitInfo(self, unit)--设置单位提示信息
     end
 
     set_Item_Model(self, {unit=unit, guid=guid, creatureDisplayID=nil, animID=nil, appearanceID=nil, visualID=nil})--设置, 3D模型
-
-    if isPlayer then
-        get_Web_Link({unitName=name, realm=realm, col=col})--取得单位, raider.io 网页，数据链接
-    else
-        get_Web_Link({frame=self, type='npc', id=NPCID, name=name, col=col, isPetUI=false})--取得网页，数据链接
-    end
 end
 
 local function setCVar(reset, tips, notPrint)
@@ -1519,6 +1536,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 panel:UnregisterAllEvents()
             else
                 Init()--初始
+                if e.onlyChinese then
+                    raiderioText= 'https://raider.io/cn/characters/%s/%s/%s'
+                end
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
