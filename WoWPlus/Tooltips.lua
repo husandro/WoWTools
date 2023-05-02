@@ -177,7 +177,7 @@ local function get_Web_Link(tab)
             ItemRefTooltip.wowhead.web=format(wowheadText, tab.type, tab.id, tab.name or '')
             ItemRefTooltip.wowhead:SetShown(true)
         end
-    elseif Save.ctrl and not UnitAffectingCombat('player') then --and not UnitCastingInfo('player') and not UnitChannelInfo('player') then
+    elseif Save.ctrl and not UnitAffectingCombat('player') then
         if tab.id then
             if tab.type=='quest' then
                 if not tab.name then
@@ -844,10 +844,13 @@ local function setUnitInfo(self, unit)--设置单位提示信息
         setPet(self, UnitBattlePetSpeciesID(unit), true)
 
     else
-        if GameTooltipTextLeft1 then GameTooltipTextLeft1:SetTextColor(r,g,b) end
-        if GameTooltipTextLeft2 then GameTooltipTextLeft2:SetTextColor(r,g,b) end
-        if GameTooltipTextLeft3 then GameTooltipTextLeft3:SetTextColor(r,g,b) end
-        if GameTooltipTextLeft4 then GameTooltipTextLeft4:SetTextColor(r,g,b) end
+        for i=1, self:NumLines() do
+            local line=_G["GameTooltipTextLeft"..i]
+            if line then
+                line:SetTextColor(r,g,b)
+            end
+        end
+
         if guid then
             local zone, npc = select(5, strsplit("-", guid))--位面,NPCID
             if zone then
@@ -1492,7 +1495,7 @@ local function Init_Panel()
     end)
 
     local ctrlCopy=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    ctrlCopy.text:SetText('Ctrl+Shift'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..' (wowhead)')
+    ctrlCopy.text:SetText('Ctrl+Shift'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..' (wowhead Raider.IO)')
     ctrlCopy:SetPoint('TOPLEFT', healthCheck, 'BOTTOMLEFT')
     ctrlCopy:SetChecked(Save.ctrl)
     ctrlCopy:SetScript('OnMouseDown', function(self)
