@@ -100,54 +100,6 @@ end
 --#######
 --任务日志
 --#######
---local Code=IN_GAME_NAVIGATION_RANGE:gsub('d','s')--%s码    
-local function Quest(self, questID)--任务
-    if not HaveQuestData(questID) then return end
-
-    self:AddDoubleLine(e.GetExpansionText(nil, questID))--任务版本
-
-    local t=''
-    local lv=C_QuestLog.GetQuestDifficultyLevel(questID)--ID
-    if lv then t=t..'['..lv..']' else t=t..' 'end
-    if C_QuestLog.IsComplete(questID) then t=t..'|cFF00FF00'..(e.onlyChinese and '完成' or COMPLETE)..'|r' else t=t..(e.onlyChinese and '未完成' or INCOMPLETE) end
-    if t=='' then t=t..(e.onlyChinese and '任务' or QUESTS_LABEL) end
-    t=t..' ID'
-    self:AddDoubleLine(t, questID)
-
-    local distanceSq= C_QuestLog.GetDistanceSqToQuest(questID)--距离
-    if distanceSq then
-        t= ''
-        local _, x, y = QuestPOIGetIconInfo(questID)
-        if x and y then
-            x=math.modf(x*100) y=math.modf(y*100)
-            if x and y then t='XY '..x..', '..y end
-        end
-        self:AddDoubleLine(t,  (e.onlyChinese and '距离' or TRACK_QUEST_PROXIMITY_SORTING)..' '..e.MK(distanceSq))--format(IN_GAME_NAVIGATION_RANGE, e.MK(distanceSq)))
-    end
-    if IsInGroup() then
-        t= e.GetYesNo(C_QuestLog.IsPushableQuest(questID))--共享
-        local t2= (e.onlyChinese and '共享' or SHARE_QUEST)..' '
-        local u if IsInRaid() then u='raid' else u='party' end
-        local n,acceto=GetNumGroupMembers(), 0
-        for i=1, n do
-            local u2
-            if u=='party' and i==n then u2='player' else u2=u..i end
-            if C_QuestLog.IsUnitOnQuest(u2, questID) then acceto=acceto+1 end
-        end
-        t2=t2..acceto..'/'..n
-        self:AddDoubleLine(t2, t)
-    end
-    local all=C_QuestLog.GetAllCompletedQuestIDs()--完成次数
-    if all and #all>0 then
-        t= GetDailyQuestsCompleted() or '0'
-        t=t..(e.onlyChinese and '日常' or DAILY)..' '..#all..(e.onlyChinese and '任务' or QUESTS_LABEL)
-        self:AddDoubleLine(e.onlyChinese and '已完成任务' or TRACKER_FILTER_COMPLETED_QUESTS, t)
-    end
-    --local info=C_QuestLog.GetQuestDetailsTheme(questID)--POI图标
-    --if info and info.poiIcon then e.playerTexSet(info.poiIcon, nil) end--设置图,像
-    self:Show()
-end
-
 local function Coll()
     for i=1, C_QuestLog.GetNumQuestLogEntries() do
         CollapseQuestHeader(i)
@@ -678,14 +630,7 @@ local function Init()
     --任务日志
     --#######
     setMapQuestList()--世界地图,任务, 加 - + 按钮
-    hooksecurefunc("QuestMapLogTitleButton_OnEnter", function(self)--任务日志 显示ID
-        if Save.hide or not self.questLogIndex then
-            return
-        end
-        local info = C_QuestLog.GetInfo(self.questLogIndex)
-        if not info or not info.questID then return end
-        Quest(e.tips, info.questID)
-    end)
+   
 
     hooksecurefunc('QuestMapLogTitleButton_OnClick',function(self, button)--任务日志 展开所有, 收起所有--QuestMapFrame.lua
         if Save.hide or ChatEdit_TryInsertQuestLinkForQuestID(self.questID) then

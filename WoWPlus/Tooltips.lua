@@ -5,7 +5,8 @@ local Save={
     --AnchorPoint={},--指定点，位置
     --cursorRight=nil,--'ANCHOR_CURSOR_RIGHT',
     setCVar=e.Player.husandro,
-    inCombatDefaultAnchor=true
+    inCombatDefaultAnchor=true,
+    ctrl= e.Player.husandro,--取得网页，数据链接
 }
 local panel=CreateFrame("Frame")
 
@@ -83,17 +84,78 @@ local function set_Item_Model(self, tab)--set_Item_Model(self, {unit=nil, guid=n
             self.playerModel.id= tab.itemID
             self.playerModel:SetShown(true)
         end
-    --[[elseif tab.appearanceID then
-        if self.playerModel.id~= tab.appearanceID then
-            self.playerModel:SetItemAppearance(tab.appearanceID, tab.visualID)
-            self.playerModel.id= tab.appearanceID
-            self.playerModel:SetShown(true)
-        end]]
     end
-
 end
 
-local function setMount(self, mountID)--坐骑    
+
+--################
+--取得网页，数据链接
+--################
+StaticPopupDialogs["WowheadQuickLinkUrl"] = {
+    text= '%s |cnGREEN_FONT_COLOR:CTRL+C '..BROWSER_COPY_LINK..'|r',
+    button1 = e.onlyChinese and '关闭' or CLOSE,
+    OnShow = function(self, data)
+        self.editBox:SetScript("OnEscapePressed", function(s) s:ClearFocus() s:GetParent():Hide() end)
+        self.editBox:SetScript("OnEnterPressed", function(s) s:ClearFocus() s:GetParent():Hide() end)
+        self.editBox:SetScript("OnKeyUp", function(s, key)
+            if IsControlKeyDown() and key == "C" then
+                s:ClearFocus() s:GetParent():Hide()
+                print(id,addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r', data.web)
+            end
+        end)
+        self.editBox:SetMaxLetters(0)
+        self.editBox:SetWidth(self:GetWidth())
+        self.editBox:SetText(data.web)
+        self.editBox:HighlightText()
+    end,
+    hasEditBox = true,
+    editBoxWidth = 240,
+    timeout = 0,
+    whileDead = true,
+    hideOnEscape = true,
+    --preferredIndex = 3,
+}
+
+local wowheadText= 'https://www.wowhead.com/%s=%d/%s'
+if LOCALE_zhCN or LOCALE_zhTW then
+    wowheadText= 'https://www.wowhead.com/cn/%s=%d/%s'
+elseif LOCALE_deDE then
+    wowheadText= 'https://www.wowhead.com/de/%s=%d/%s'
+elseif LOCALE_esES or LOCALE_esMX then
+    wowheadText= 'https://www.wowhead.com/es/%s=%d/%s'
+elseif LOCALE_frFR then
+    wowheadText= 'https://www.wowhead.com/fr/%s=%d/%s'
+elseif LOCALE_itIT then
+    wowheadText= 'https://www.wowhead.com/if/%s=%d/%s'
+elseif LOCALE_ptBR then
+    wowheadText= 'https://www.wowhead.com/pt/%s=%d/%s'
+elseif LOCALE_ruRU then
+    wowheadText= 'https://www.wowhead.com/ru/%s=%d/%s'
+elseif LOCALE_koKR then
+    wowheadText= 'https://www.wowhead.com/ko/%s=%d/%s'
+end
+
+--get_Web_Link({frame=self, type='npc', id=companionID, name=speciesName, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell
+local function get_Web_Link(tab)
+    if Save.ctrl and tab.id and tab.name and not UnitAffectingCombat('player') then --and not UnitCastingInfo('player') and not UnitChannelInfo('player') then
+        tab.web=format(wowheadText, tab.type, tab.id, tab.name)
+        if tab.isPetUI and tab.frame then
+            BattlePetTooltipTemplate_AddTextLine(tab.frame, 'wowhead  Ctrl+Shift')
+        else
+            tab.frame:AddDoubleLine((tab.col or '')..'wowhead', (tab.col or '')..'Ctrl+Shift')
+        end
+        if IsControlKeyDown() and IsShiftKeyDown() then
+            StaticPopup_Show("WowheadQuickLinkUrl",
+                'wowhead',
+                nil,
+                tab
+            )
+        end
+    end
+end
+
+local function setMount(self, mountID)--坐骑 
+    self:AddLine(' ')
     local name, spellID, icon, isActive, isUsable, sourceType, isFavorite, isFactionSpecific, faction, shouldHideOnChar, isCollected=C_MountJournal.GetMountInfoByID(mountID)
     self:AddDoubleLine((e.onlyChinese and '坐骑' or MOUNTS)..' '..mountID, spellID and (e.onlyChinese and '召唤技能' or (SUMMON..ABILITIES))..' '..spellID)
     if isFactionSpecific then
@@ -107,14 +169,10 @@ local function setMount(self, mountID)--坐骑
         self:AddLine(source,nil,nil,nil,true)
     end
     set_Item_Model(self, {creatureDisplayID=creatureDisplayInfoID, animID=animID, itemID=nil, appearanceID=nil, visualID=nil})--设置, 3D模型
-    --[[if creatureDisplayInfoID and self.creatureDisplayID~=creatureDisplayInfoID then--3D模型
-        self.itemModel:SetShown(true)
-        self.itemModel:SetDisplayInfo(creatureDisplayInfoID)
-        self.itemModel:SetAnimation(animID)
-        self.creatureDisplayID=creatureDisplayInfoID
-    end]]
 
     self.text2Left:SetText(isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
+
+    get_Web_Link({frame=self, type='spell', id=spellID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
 end
 
 
@@ -158,15 +216,12 @@ local function setPet(self, speciesID, setSearchText)--宠物
         self.Portrait:SetShown(true)
     end
     set_Item_Model(self, {creatureDisplayID=creatureDisplayID, animID=nil, itemID=nil, appearanceID=nil, visualID=nil})--设置, 3D模型
-    --[[if creatureDisplayID and self.creatureDisplayID~=creatureDisplayID then--3D模型
-        self.itemModel:SetDisplayInfo(creatureDisplayID)
-        self.itemModel:SetShown(true)
-        self.creatureDisplayID=creatureDisplayID
-    end]]
 
     if setSearchText and speciesName and PetJournalSearchBox and PetJournalSearchBox:IsVisible() then--宠物手册，设置名称
         PetJournalSearchBox:SetText(speciesName)
     end
+
+    get_Web_Link({frame=self, type='npc', id=companionID, name=speciesName, col= nil, isPetUI=false})--取得网页，数据链接
 end
 
 --############
@@ -179,10 +234,10 @@ local function setItem(self, ItemLink)
     local itemName, _, itemQuality, itemLevel, _, _, _, _, _, _, _, _, _, bindType, expacID, setID = GetItemInfo(ItemLink)
     local itemID, itemType, itemSubType, itemEquipLoc, itemTexture, classID, subclassID = GetItemInfoInstant(ItemLink)
     itemID = itemID or ItemLink:match(':(%d+):')
-    local r, g, b, hex= 1,1,1,e.Player.col
+    local r, g, b, col= 1,1,1,e.Player.col
     if itemQuality then
-        r, g, b, hex= GetItemQualityColor(itemQuality)
-        hex=hex and '|c'..hex
+        r, g, b, col= GetItemQualityColor(itemQuality)
+        col=col and '|c'..col
     end
     if expacID then--版本数据
         self:AddDoubleLine(e.GetExpansionText(expacID))
@@ -213,7 +268,7 @@ local function setItem(self, ItemLink)
                 else
                     text=itemLevel..e.Icon.up2
                 end
-                text= hex..(text or itemLevel)..'|r'
+                text= col..(text or itemLevel)..'|r'
                 self.textLeft:SetText(text)
             end
         end
@@ -270,7 +325,7 @@ local function setItem(self, ItemLink)
     local spellName, spellID = GetItemSpell(ItemLink)--物品法术
     if spellName and spellID then
         local spellTexture=GetSpellTexture(spellID)
-        self:AddDoubleLine((itemName~=spellName and hex..'['..spellName..']|r' or '')..(e.onlyChinese and '法术' or SPELLS)..' '..spellID, spellTexture and spellTexture~=itemTexture  and '|T'..spellTexture..':0|t'..spellTexture or ' ')
+        self:AddDoubleLine((itemName~=spellName and col..'['..spellName..']|r' or '')..(e.onlyChinese and '法术' or SPELLS)..' '..spellID, spellTexture and spellTexture~=itemTexture  and '|T'..spellTexture..':0|t'..spellTexture or ' ')
     end
 
     local wowNum= 0--WoW 数量
@@ -320,12 +375,15 @@ local function setItem(self, ItemLink)
         end
     end
 
-    self.textRight:SetText(hex..e.MK(wowNum, 3)..e.Icon.wow2..' '..e.MK(bank, 3)..e.Icon.bank2..' '..e.MK(bag, 3)..e.Icon.bag2..'|r')
+    self.textRight:SetText(col..e.MK(wowNum, 3)..e.Icon.wow2..' '..e.MK(bank, 3)..e.Icon.bank2..' '..e.MK(bag, 3)..e.Icon.bag2..'|r')
 
     --setItemCooldown(self, itemID)--物品冷却
 
     self.backgroundColor:SetColorTexture(r, g, b, 0.15)--颜色
     self.backgroundColor:SetShown(true)
+
+    get_Web_Link({frame=self, type='item', id=itemID, name=itemName, col=col, isPetUI=false})--取得网页，数据链接
+
     self:Show()
 end
 
@@ -334,7 +392,7 @@ local function setSpell(self, spellID)--法术
     if not spellID then
         return
     end
-    local _, _, icon, _, _, _, _, originalIcon= GetSpellInfo(spellID)
+    local name, _, icon, _, _, _, _, originalIcon= GetSpellInfo(spellID)
     local spellTexture=  originalIcon or icon or GetSpellTexture(spellID)
     self:AddDoubleLine((e.onlyChinese and '法术' or SPELLS)..' '..spellID, spellTexture and '|T'..spellTexture..':0|t'..spellTexture)
     local mountID = C_MountJournal.GetMountFromSpell(spellID)--坐骑
@@ -348,11 +406,12 @@ local function setSpell(self, spellID)--法术
             local name2, _, icon2, _, _, _, _, originalIcon2= GetSpellInfo(overrideSpellID)
             link= link or name2
             link= link and link..overrideSpellID or ('overrideSpellID '..overrideSpellID)
-            if link then 
+            if link then
                 spellTexture=  originalIcon2 or icon2 or GetSpellTexture(overrideSpellID)
                 e.tips:AddDoubleLine(format(e.onlyChinese and '代替%s' or REPLACES_SPELL, link), spellTexture and '|T'..spellTexture..':0|t'..spellTexture)
-            end        
+            end
         end
+        get_Web_Link({frame=self, type='spell', id=spellID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
     end
 end
 
@@ -400,11 +459,14 @@ local function setAchievement(self, achievementID)--成就
     if flags==0x20000 then
         self.textRight:SetText(e.Icon.wow2..'|cffff00ff'..(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET))
     end
+    get_Web_Link({frame=self, type='achievement', id=achievementID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
 end
 
 local function setQuest(self, questID)
     self:AddDoubleLine(e.GetExpansionText(nil, questID))--任务版本
     self:AddDoubleLine(e.onlyChinese and '任务' or QUESTS_LABEL, questID)
+    local info = C_QuestLog.GetQuestTagInfo(questID)
+    get_Web_Link({frame=self, type='quest', id=questID, name=info and info.tagName, col=nil, isPetUI=false})--取得网页，数据链接
 end
 
 --####
@@ -413,7 +475,7 @@ end
 local function setBuff(type, self, ...)--Buff
     local source= type=='Buff' and select(7, UnitBuff(...)) or type=='Debuff' and select(7, UnitDebuff(...)) or select(7, UnitAura(...))
     if source then
-        local r, g ,b , hex= GetClassColor(UnitClassBase(source))
+        local r, g ,b , col= GetClassColor(UnitClassBase(source))
 
         if r and g and b then
             self.backgroundColor:SetColorTexture(r, g, b, 0.3)
@@ -427,7 +489,7 @@ local function setBuff(type, self, ...)--Buff
                 or source=='pet' and PET
                 or UnitIsPlayer(source) and e.GetPlayerInfo({unit=source, guid=UnitGUID(source), name=nil,  reName=true, reRealm=true, reLink=false})
                 or UnitName(source) or _G[source] or source
-        self:AddDoubleLine('|c'..(hex or 'ffffff')..(e.onlyChinese and '来原: '..text or format(e.onlyChinese and '"来源：%s' or RUNEFORGE_LEGENDARY_POWER_SOURCE_FORMAT, text)..'|r'))
+        self:AddDoubleLine('|c'..(col or 'ffffff')..(e.onlyChinese and '来原: '..text or format(e.onlyChinese and '"来源：%s' or RUNEFORGE_LEGENDARY_POWER_SOURCE_FORMAT, text)..'|r'))
         self:Show()
     end
 end
@@ -479,10 +541,10 @@ local function set_Unit_Health_Bar(self, unit)
     end
     local value= unit and UnitHealth(unit)
     local max= unit and UnitHealthMax(unit)
-    local r, g, b, left, right, hex, text
+    local r, g, b, left, right, col, text
 
     if value and max then
-        r, g, b, hex = GetClassColor(select(2, UnitClass(unit)))
+        r, g, b, col = GetClassColor(select(2, UnitClass(unit)))
         if UnitIsFeignDeath(unit) then
             text= e.onlyChinese and '假死' or BOOST2_HUNTERBEAST_FEIGNDEATH:match('|cFFFFFFFF(.+)|r') or NO..DEAD
         elseif value <= 0 then
@@ -497,7 +559,7 @@ local function set_Unit_Health_Bar(self, unit)
             elseif hp<90 then
                 text='|cnYELLOW_FONT_COLOR:'..text..'|r'
             else
-                text= '|c'..hex..text..'|r'
+                text= '|c'..col..text..'|r'
             end
             left =e.MK(value, 2)
         end
@@ -545,17 +607,7 @@ local function setPlayerInfo(guid)--设置玩家信息
         if icon then
             e.tips.text2Left:SetText("|T"..icon..':0|t')
         end
---[[        if info.realm then
-            if e.Player.Realms[info.realm] then--设置服务器
-                e.tips.textRight:SetText(info.col..info.realm..'|r'..(info.realm~=e.Player.realm and '|cnGREEN_FONT_COLOR:*|r' or''))
 
-            elseif info.realm and not e.Player.Realms[info.realm] then--不同
-                e.tips.textRight:SetText(info.col..info.realm..'|r|cnRED_FONT_COLOR:*|r')
-
-            elseif UnitIsUnit('player', unit) or UnitIsSameServer(unit) then--同
-                e.tips.textRight:SetText(info.col..e.Player.realm..'|r')
-            end
-        end]]
         if info.r and info.b and info.g then
             e.tips.backgroundColor:SetColorTexture(info.r, info.g, info.b, 0.2)--背景颜色
             e.tips.backgroundColor:SetShown(true)
@@ -570,7 +622,9 @@ local function setUnitInfo(self, unit)--设置单位提示信息
     local guid = UnitGUID(unit)
     local isSelf=UnitIsUnit('player', unit)--我
     local isGroupPlayer= (not isSelf and e.GroupGuid[guid]) and true or nil--队友
-
+    local r,g,b, col = GetClassColor(UnitClassBase(unit))--颜色
+          col= col and '|c'..col or ''
+    local NPCID--取得网页，数据链接
     --设置单位图标  
     local englishFaction = isPlayer and UnitFactionGroup(unit)
     if isPlayer then
@@ -604,7 +658,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
         end
 
         local isInGuild= guid and IsPlayerInGuildFromGUID(guid)
-        local col = e.UnitItemLevel[guid] and e.UnitItemLevel[guid].col or '|c'..select(4,GetClassColor(UnitClassBase(unit)))
+        --local col = e.UnitItemLevel[guid] and e.UnitItemLevel[guid].col or '|c'..select(4,GetClassColor(UnitClassBase(unit)))
 
         local line=GameTooltipTextLeft1--名称
         if line then
@@ -732,8 +786,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
         setPet(self, UnitBattlePetSpeciesID(unit), true)
 
     else
-        local r,g,b, hex = GetClassColor(UnitClassBase(unit))--颜色
-        hex= hex and '|c'..hex or ''
+
         if GameTooltipTextLeft1 then GameTooltipTextLeft1:SetTextColor(r,g,b) end
         if GameTooltipTextLeft2 then GameTooltipTextLeft2:SetTextColor(r,g,b) end
         if GameTooltipTextLeft3 then GameTooltipTextLeft3:SetTextColor(r,g,b) end
@@ -742,6 +795,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             local zone, npc = select(5, strsplit("-", guid))--位面,NPCID
             if zone then
                 self:AddDoubleLine(e.Player.LayerText..' '..zone, 'NPC '..npc, r,g,b, r,g,b)
+                NPCID=npc
                 e.Player.Layer=zone
             end
         end
@@ -752,18 +806,18 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             self.Portrait:SetShown(true)
 
         elseif UnitIsBossMob(unit) then--世界BOSS
-            self.textLeft:SetText(hex..(e.onlyChinese and '首领' or BOSS)..'|r')
+            self.textLeft:SetText(col..(e.onlyChinese and '首领' or BOSS)..'|r')
             self.Portrait:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare')
             self.Portrait:SetShown(true)
         else
             local classification = UnitClassification(unit);--TargetFrame.lua
             if classification == "rareelite" then--稀有, 精英
-                self.textLeft:SetText(hex..(e.onlyChinese and '稀有' or GARRISON_MISSION_RARE)..'|r')
+                self.textLeft:SetText(col..(e.onlyChinese and '稀有' or GARRISON_MISSION_RARE)..'|r')
                 self.Portrait:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare')
                 self.Portrait:SetShown(true)
 
             elseif classification == "rare" then--稀有
-                self.textLeft:SetText(hex..(e.onlyChinese and '稀有' or GARRISON_MISSION_RARE)..'|r')
+                self.textLeft:SetText(col..(e.onlyChinese and '稀有' or GARRISON_MISSION_RARE)..'|r')
                 self.Portrait:SetAtlas('UUnitFrame-Target-PortraitOn-Boss-Rare-Star')
                 self.Portrait:SetShown(true)
             else
@@ -774,7 +828,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
 
         local type=UnitCreatureType(unit)--生物类型
         if type and not type:find(COMBAT_ALLY_START_MISSION) then
-            self.textRight:SetText(hex..type..'|r')
+            self.textRight:SetText(col..type..'|r')
         end
     end
 
@@ -783,6 +837,8 @@ local function setUnitInfo(self, unit)--设置单位提示信息
     end
 
     set_Item_Model(self, {unit=unit, guid=guid, creatureDisplayID=nil, animID=nil, appearanceID=nil, visualID=nil})--设置, 3D模型
+
+    get_Web_Link({frame=self, type='npc', id=NPCID, name=name, col=col, isPetUI=false})--取得网页，数据链接
 end
 
 local function setCVar(reset, tips, notPrint)
@@ -815,10 +871,6 @@ local function setCVar(reset, tips, notPrint)
             value= "1",
             msg= e.onlyChinese and '总是显示目标的目标' or OPTION_TOOLTIP_TARGETOFTARGET5,
         },
---[[        ["showTargetCastbar"]={
-            value= "1",
-            msg= e.onlyChinese and '显示目标施法条' or SHOW..TARGET..HUD_EDIT_MODE_CAST_BAR_LABEL,
-        },]]
     }
 
     if tips then
@@ -931,6 +983,8 @@ local function set_Battle_Pet(self, speciesID, level, breedQuality, maxHealth, p
     self.textLeft:SetText(CollectedNum or '')
     self.text2Left:SetText(CollectedText or '')
     self.textRight:SetText(not CollectedNum and AllCollected or '')
+
+    get_Web_Link({frame=self, type='npc', id=companionID, name=speciesName, col=nil, isPetUI=true})--取得网页，数据链接
 end
 
 local function set_Azerite(self, powerID)--艾泽拉斯之心
@@ -943,19 +997,14 @@ local function set_Azerite(self, powerID)--艾泽拉斯之心
         end
     end
 end
+
+
+
+
 --####
 --初始
 --####
 local function Init()
-    --[[if not e.tips.playerModel then--单位3D模型
-        e.tips.playerModel=CreateFrame("PlayerModel", nil, e.tips)
-        e.tips.playerModel:SetFacing(-0.35)
-        e.tips.playerModel:SetPoint("BOTTOM", e.tips, 'TOP', 0, -12)
-        e.tips.playerModel:SetSize(100, 100)
-        e.tips.playerModel:SetShown(false)
-    end]]
-    --panel:RegisterEvent('INSPECT_READY')
-
     setInitItem(ItemRefTooltip)
     setInitItem(e.tips)
     e.tips:HookScript("OnHide", function(self)--隐藏
@@ -1023,20 +1072,9 @@ local function Init()
             elseif e.Player.husandro then
                 tooltip:AddDoubleLine('id '..date.id, 'type '..date.type)
             end
-        --elseif date.type or date.id then
-            --tooltip:AddDoubleLine(date.id and 'ID '..date.id, date.type and 'type '..date.type)
         end
     end)
---[[    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(tooltip,date)--宠物手册，设置名称
-        local unit= select(2, TooltipUtil.GetDisplayedUnit(tooltip))
-        if unit and tooltip==e.tips  and (UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit)) then
-            local speciesID = UnitBattlePetSpeciesID(unit)
-            local speciesName= speciesID and C_PetJournal.GetPetInfoBySpeciesID(speciesID)
-            if speciesName and PetJournalSearchBox and PetJournalSearchBox:IsVisible()then
-                PetJournalSearchBox:SetText(speciesName)
-            end
-        end
-    end)]]
+
 
     --****
     --位置
@@ -1047,22 +1085,7 @@ local function Init()
             self:SetOwner(parent, Save.cursorRight and 'ANCHOR_CURSOR_RIGHT' or 'ANCHOR_CURSOR_LEFT', Save.cursorX or 0, Save.cursorY or 0)
         end
     end)
-    --[[hooksecurefunc("GameTooltip_SetDefaultAnchor", function(self, parent)
-        if Save.setDefaultAnchor then
-            if Save.inCombatDefaultAnchor and UnitAffectingCombat('player') then
-                if Save.AnchorPoint then
-                    self:ClearAllPoints();
-                    self:SetPoint(Save.AnchorPoint[1], UIParent, Save.AnchorPoint[3], Save.AnchorPoint[4], Save.AnchorPoint[5])
-                end
-            else
-                self:ClearAllPoints()
-                self:SetOwner(parent, Save.cursorRight and 'ANCHOR_CURSOR_RIGHT' or 'ANCHOR_CURSOR_LEFT', Save.cursorX or 0, Save.cursorY or 0)
-            end
-        elseif Save.setAnchor and Save.AnchorPoint then
-            self:ClearAllPoints();
-            self:SetPoint(Save.AnchorPoint[1], UIParent, Save.AnchorPoint[3], Save.AnchorPoint[4], Save.AnchorPoint[5])
-        end
-    end)]]
+
     --#########
     --生命条提示
     --#########
@@ -1177,8 +1200,6 @@ local function Init()
         setPet(self, speciesID)--宠物
     end)
 
-
-
     setCVar(nil, nil, true)--设置CVar
 
     if Save.setCVar and LOCALE_zhCN then
@@ -1234,6 +1255,86 @@ local function Init()
             end
         end)
     end
+
+    hooksecurefunc('QuestMapFrame_ShowQuestDetails', function(questID)
+        local btn= QuestMapFrame.DetailsFrame.wowhead
+        if questID then
+            if not btn then
+                btn= e.Cbtn(QuestMapFrame.DetailsFrame, {type=false, size={90,22}})
+                btn:SetPoint('BOTTOMRIGHT',QuestMapFrame.DetailsFrame, 'TOPRIGHT', 0, 10)
+                QuestMapFrame.DetailsFrame.wowhead=btn
+                QuestMapFrame.DetailsFrame.wowhead:SetScript('OnClick', function(self)
+                    if self.questID then
+                        local info = C_QuestLog.GetQuestTagInfo(self.questID)
+                        local name= info and info.tagName
+                        if not name then
+                            local index= C_QuestLog.GetLogIndexForQuestID(self.questID)
+                            local info2= index and C_QuestLog.GetInfo(index)
+                            name= info2 and info2.title
+                        end
+                        StaticPopup_Show("WowheadQuickLinkUrl",
+                            'wowhead',
+                            nil,
+                            {
+                                type='npc',
+                                id= self.questID,
+                                web=format(wowheadText, 'quest', self.questID, name or '')
+                            }
+                        )
+                    end
+                end)
+            end
+            btn:SetText(questID)
+            btn.questID= questID
+        elseif QuestMapFrame.DetailsFrame.wowhead then
+            QuestMapFrame.DetailsFrame.wowhead:SetShown(false)
+        end
+    end)
+    hooksecurefunc("QuestMapLogTitleButton_OnEnter", function(self)--任务日志 显示ID
+        local info= self.questLogIndex and C_QuestLog.GetInfo(self.questLogIndex)
+        if not info or not info.questID or not HaveQuestData(info.questID) then
+            return
+        end
+        e.tips:AddDoubleLine(e.GetExpansionText(nil, info.questID))--任务版本
+        local t=''
+        local lv=C_QuestLog.GetQuestDifficultyLevel(info.questID)--ID
+        if lv then t=t..'['..lv..']' else t=t..' 'end
+        if C_QuestLog.IsComplete(info.questID) then t=t..'|cFF00FF00'..(e.onlyChinese and '完成' or COMPLETE)..'|r' else t=t..(e.onlyChinese and '未完成' or INCOMPLETE) end
+        if t=='' then t=t..(e.onlyChinese and '任务' or QUESTS_LABEL) end
+        t=t..' ID'
+        e.tips:AddDoubleLine(t, info.questID)
+        local distanceSq= C_QuestLog.GetDistanceSqToQuest(info.questID)--距离
+        if distanceSq then
+            t= ''
+            local _, x, y = QuestPOIGetIconInfo(info.questID)
+            if x and y then
+                x=math.modf(x*100) y=math.modf(y*100)
+                if x and y then t='XY '..x..', '..y end
+            end
+            e.tips:AddDoubleLine(t,  (e.onlyChinese and '距离' or TRACK_QUEST_PROXIMITY_SORTING)..' '..e.MK(distanceSq))--format(IN_GAME_NAVIGATION_RANGE, e.MK(distanceSq)))
+        end
+        if IsInGroup() then
+            t= e.GetYesNo(C_QuestLog.IsPushableQuest(info.questID))--共享
+            local t2= (e.onlyChinese and '共享' or SHARE_QUEST)..' '
+            local u if IsInRaid() then u='raid' else u='party' end
+            local n,acceto=GetNumGroupMembers(), 0
+            for i=1, n do
+                local u2
+                if u=='party' and i==n then u2='player' else u2=u..i end
+                if C_QuestLog.IsUnitOnQuest(u2, info.questID) then acceto=acceto+1 end
+            end
+            t2=e.tips..acceto..'/'..n
+            e.tips:AddDoubleLine(t2, t)
+        end
+        local all=C_QuestLog.GetAllCompletedQuestIDs()--完成次数
+        if all and #all>0 then
+            t= GetDailyQuestsCompleted() or '0'
+            t=t..(e.onlyChinese and '日常' or DAILY)..' '..#all..(e.onlyChinese and '任务' or QUESTS_LABEL)
+            e.tips:AddDoubleLine(e.onlyChinese and '已完成任务' or TRACKER_FILTER_COMPLETED_QUESTS, t)
+        end
+        get_Web_Link({frame=e.tips, type='quest', id=info.questID, name=info.title, col=nil, isPetUI=false})--取得网页，数据链接
+        e.tips:Show()
+    end)
 end
 
 local function set_Cursor_Tips(self)
@@ -1323,74 +1424,6 @@ local function Init_Panel()
     courorRightCheck:SetScript('OnLeave', function() e.tips:Hide() end)
 
 
---[[if not e.Player.ver then
-    Anchor.text:SetText(e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
-    Anchor:SetPoint('TOPRIGHT', inCombatDefaultAnchor, 'BOTTOMLEFT',0, -12)
-    Anchor:SetChecked(Save.setAnchor)
-    Anchor:SetScript('OnMouseDown', function(self)
-        Save.setAnchor= not Save.setAnchor and true or nil
-        if Save.setAnchor then
-            Save.setDefaultAnchor=nil
-            setDefaultAnchor:SetChecked(false)
-        end
-        set_Cursor_Tips(self)
-    end)
-    Anchor:SetScript('OnLeave', function() e.tips:Hide() end)
-
-    Anchor.select=e.Cbtn(panel, {icon='hide', size={20,20}})
-    Anchor.select:SetPoint('LEFT', Anchor.text, 'RIGHT',5,0)
-    Anchor.select:SetNormalAtlas('mechagon-projects')
-    Anchor.select:SetScript('OnMouseDown',function(self)
-        if not self.frame then
-            self.frame=CreateFrame('Frame')
-            self.frame:SetSize(100,100)
-            if Save.AnchorPoint then
-                self.frame:SetPoint(Save.AnchorPoint[1], UIParent, Save.AnchorPoint[3], Save.AnchorPoint[4], Save.AnchorPoint[5])
-            else
-                self.frame:SetPoint('BOTTOMRIGHT', 0, 90)
-            end
-            local texture=self.frame:CreateTexture(nil,'BACKGROUND')
-            texture:SetAllPoints(self.frame)
-            texture:SetTexture('Interface\\RaidFrame\\Absorb-Fill')
-            texture=self.frame:CreateTexture(nil,'BORDER')
-            texture:SetAllPoints(self.frame)
-            texture:SetAtlas('AdventureMap-InsetMapBorder')
-        else
-            self.frame:SetShown(not self.frame:IsShown())
-        end
-        self.frame:RegisterForDrag("LeftButton", "RightButton")
-        self.frame:SetClampedToScreen(true)
-        self.frame:SetMovable(true)
-        self.frame:SetScript("OnDragStart", function(self2, d)
-            if d=='LeftButton' then
-                self2:StartMoving()
-            end
-        end)
-        self.frame:SetScript("OnDragStop", function(self2)
-            self2:StopMovingOrSizing();
-            Save.AnchorPoint={self2:GetPoint(1)}
-            set_Cursor_Tips(self2)
-            SetCursor('UI_MOVE_CURSOR')
-        end)
-        self.frame:SetScript("OnMouseDown", function(self2, d)
-            if d=='RightButton' then
-                self2:SetShown(false)
-            end
-        end)
-        self.frame:SetScript('OnLeave',function() ResetCursor() e.tips:Hide() end)
-        self.frame:SetScript('OnEnter', function(self2)
-            e.tips:SetOwner(self2, "ANCHOR_TOPLEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(id, addName)
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.left)
-            e.tips:AddDoubleLine(e.onlyChinese and '隐藏' or NPE_MOVE, e.Icon.right)
-            e.tips:Show()
-            SetCursor('UI_MOVE_CURSOR')
-        end)
-        set_Cursor_Tips(self.frame)
-    end)
-end]]
     local modelCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     modelCheck.text:SetText(e.onlyChinese and '模型' or MODEL)
     modelCheck:SetPoint('TOPLEFT', panel, 'TOP', 0, -48)
@@ -1430,7 +1463,14 @@ end]]
         Save.hideHealth= not Save.hideHealth and true or nil
         print(id, addName,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
-    healthCheck:SetScript('OnLeave', function() e.tips:Hide() end)
+
+    local ctrlCopy=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    ctrlCopy.text:SetText('Ctrl+Shift'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..' (wowhead)')
+    ctrlCopy:SetPoint('TOPLEFT', healthCheck, 'BOTTOMLEFT')
+    ctrlCopy:SetChecked(Save.ctrl)
+    ctrlCopy:SetScript('OnMouseDown', function(self)
+        Save.ctrl= not Save.ctrl and true or nil
+    end)
 
    --设置CVar
     local cvar=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
@@ -1456,6 +1496,7 @@ end]]
     end)
     cvar:SetScript('OnLeave', function() e.tips:Hide() end)
 end
+
 
 --###########
 --加载保存数据
@@ -1572,30 +1613,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     end
                 end
             end)
-
-        --[[elseif arg1=='Blizzard_ClassTalentUI' then--天赋，显示专精ID
-            hooksecurefunc(ClassTalentFrame.SpecTab, 'UpdateSpecContents', function(self2)--Blizzard_ClassTalentSpecTab.lua
-                if self2.isInitialized and self2.numSpecs and self2.numSpecs>0 then
-                    for i = 1, self2.numSpecs do
-                        local contentFrame = self2.SpecContentFramePool:Acquire();
-                        if contentFrame then
-                            local specID= GetSpecializationInfo(i)
-                            if specID and not contentFrame.specText then
-                                contentFrame.specText= e.Cstr(contentFrame, {size=64})
-                                contentFrame.specText:SetPoint('BOTTOM', contentFrame.RoleIcon)
-                                --contentFrame.specText:SetPoint('RIGHT', contentFrame.RoleIcon, 'LEFT')
-                            end
-                            if contentFrame.specText then
-                                local text
-                                if specID then
-                                    text= (e.onlyChinese and '专精' or SPECIALIZATION)..' '..specID
-                                end
-                                contentFrame.specText:SetText(text or '')
-                            end
-                        end
-                    end
-                end
-            end)]]
         end
 
     elseif event == "PLAYER_LOGOUT" then
@@ -1603,27 +1620,4 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave[addName]=Save
         end
     end
-
 end)
---[[
-local function setItemCooldown(self, itemID)--物品冷却
-    local startTime, duration, enable = GetItemCooldown(itemID)
-    if duration>4 and enable==1 then
-        local t=GetTime()
-        if startTime>t then t=t+86400 end
-        t=t-startTime
-        t=duration-t
-        self:AddDoubleLine(ON_COOLDOWN, SecondsToTime(t), 1,0,0, 1,0,0)
-    end
-end
-local function setSpellCooldown(self, spellID)--法术冷却
-    local startTime, duration, enable = GetSpellCooldown(spellID)
-    if duration and duration>4 and enable==1 and gcdMS~=duration then
-        local t=GetTime()
-        if startTime>t then t=t+86400 end
-        t=t-startTime
-        t=duration-t
-        self:AddDoubleLine(ON_COOLDOWN, SecondsToTime(t), 1,0,0, 1,0,0)
-    end
-end
-]]

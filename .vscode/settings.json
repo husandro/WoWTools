@@ -2655,7 +2655,9 @@
         "UNCHECK_ALL",
         "MountJournal_SetAllSourceFilters",
         "FilterDropDownSystem",
-        "MountJournalResetFiltersButton_UpdateVisibility"
+        "MountJournalResetFiltersButton_UpdateVisibility",
+        "CLOSE",
+        "BROWSER_COPY_LINK"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

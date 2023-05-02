@@ -954,7 +954,16 @@ local function Init_Quest()
                 end
                 local text=GetProgressText()
                 C_Timer.After(0.5, function()
-                    print(id, QUESTS_LABEL, GetQuestLink(questID) or ('|cnGREEN_FONT_COLOR:'..questID..'|r'), text and '|cffff00ff'..text..'|r', link, QuestFrameGoodbyeButton and '|cnRED_FONT_COLOR:'..QuestFrameGoodbyeButton:GetText())
+                    local questLink=GetQuestLink(questID)
+                    if not questLink then
+                        local index= C_QuestLog.GetLogIndexForQuestID(questID)
+                        local info2= index and C_QuestLog.GetInfo(index)
+                        if info2 and info2.title and info2.level then
+                            questLink= '|Hquest:'..questID..':'..info2.level..'|h['..info2.title..']|h'
+                        end
+                        questLink=questLink or ('|cnGREEN_FONT_COLOR:'..questID..'|r')
+                    end
+                    print(id, QUESTS_LABEL, questLink, text and '|cffff00ff'..text..'|r', link, QuestFrameGoodbyeButton and '|cnRED_FONT_COLOR:'..QuestFrameGoodbyeButton:GetText())
                 end)
                -- questSelect[questID]=true
             end
