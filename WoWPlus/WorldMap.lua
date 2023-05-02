@@ -468,35 +468,18 @@ local function set_Map_ID(self)--显示地图ID
         self.playerPosition.edit:SetAutoFocus(false)
         self.playerPosition.edit:ClearFocus()
         self.playerPosition.edit:SetPoint('LEFT', self.playerPosition, 'RIGHT',2,0)
-
-        --[[local function setEditWay(self3)
-            if not (WorldMapFrame.mapID and C_Map.CanSetUserWaypointOnMap(WorldMapFrame.mapID)) then
-                if self3.text then
-                    self3.text:SetText('')
-                end
-                return
-            end
-            local text=self3:GetText()
-            local x,y=text:match('(%d+%.%d%d) (%d+%.%d%d)')
-            if not (x and y) then
-                x, y= text:match('(%d+%.%d%d), (%d+%.%d%d)')
-            end
-            if x and y then
-            end
-        end
-        self.playerPosition.edit:SetScript('OnTextChanged', function(self2)
-            if not self2:HasFocus() then
-                return
-            end
-            setEditWay(self2)
-        end)
-        self.playerPosition.edit:SetScript('OnEnterPressed', setEditWay)]]
         self.playerPosition.edit:SetScript('OnEditFocusLost', function(self2)
             self2:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
         end)
         self.playerPosition.edit:SetScript('OnEditFocusGained', function(self2)
-            --local bool= WorldMapFrame.mapID and C_Map.CanSetUserWaypointOnMap(WorldMapFrame.mapID)
+            self2:HighlightText()
             self2:SetTextColor(1,1,1)
+        end)
+        self.playerPosition.edit:SetScript("OnKeyUp", function(s, key)
+            if IsControlKeyDown() and key == "C" then
+                s:ClearFocus()
+                print(id,addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r', s:GetText())
+            end
         end)
         self.playerPosition.edit.Left:SetAlpha(0.5)
         self.playerPosition.edit.Middle:SetAlpha(0.5)

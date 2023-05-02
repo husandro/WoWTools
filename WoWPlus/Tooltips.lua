@@ -92,7 +92,7 @@ end
 --取得网页，数据链接
 --################
 StaticPopupDialogs["WowheadQuickLinkUrl"] = {
-    text= '%s |cnGREEN_FONT_COLOR:CTRL+C |r'..BROWSER_COPY_LINK,
+    text= '|cffff00ff%s|r |cnGREEN_FONT_COLOR:CTRL+C |r'..BROWSER_COPY_LINK,
     button1 = e.onlyChinese and '关闭' or CLOSE,
     OnShow = function(self, web)
         self.editBox:SetScript("OnEscapePressed", function(s) s:ClearFocus() s:GetParent():Hide() end)
@@ -100,13 +100,23 @@ StaticPopupDialogs["WowheadQuickLinkUrl"] = {
         self.editBox:SetScript("OnKeyUp", function(s, key)
             if IsControlKeyDown() and key == "C" then
                 s:ClearFocus() s:GetParent():Hide()
-                print(id,addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r', web)
+                print(id,addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r', s:GetText())
             end
+        end)
+        self.editBox:SetScript('OnEditFocusLost', function(self2)
+            self2:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
+        end)
+        self.editBox:SetScript('OnEditFocusGained', function(s)
+            s:SetTextColor(0,1,0)
+            s:HighlightText()
         end)
         self.editBox:SetMaxLetters(0)
         self.editBox:SetWidth(self:GetWidth())
         self.editBox:SetText(web)
         self.editBox:HighlightText()
+        self.editBox:SetAutoFocus(false)
+        self.editBox:SetFocus(true)
+        self.editBox:SetTextColor(0,1,0)
     end,
     hasEditBox = true,
     editBoxWidth = 240,
@@ -144,12 +154,30 @@ elseif LOCALE_koKR then
     raiderioText= 'https://raider.io/kr/characters/%s/%s/%s'
 end
 
+ItemRefTooltip.wowhead=e.Cbtn(ItemRefTooltip, {size={20,20},type=false})--取得网页，数据链接
+ItemRefTooltip.wowhead:SetPoint('RIGHT',ItemRefTooltip.CloseButton, 'LEFT',0,2)
+ItemRefTooltip.wowhead:SetNormalAtlas('questlegendary')
+ItemRefTooltip.wowhead:SetScript('OnClick', function(self)
+    if self.web then
+        StaticPopup_Show("WowheadQuickLinkUrl",
+            'WoWHead',
+            nil,
+            self.web
+        )
+    end
+end)
+ItemRefTooltip.wowhead:SetShown(false)
 
---get_Web_Link({frame=self, type='npc', id=companionID, name=speciesName, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell
+--get_Web_Link({frame=self, type='npc', id=companionID, name=speciesName, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
 --get_Web_Link({unitName=name, realm=realm, col=nil})--取得单位, raider.io 网页，数据链接
 local RegionName= GetCurrentRegionName()
 local function get_Web_Link(tab)
-    if Save.ctrl and not UnitAffectingCombat('player') then --and not UnitCastingInfo('player') and not UnitChannelInfo('player') then
+    if tab.frame==ItemRefTooltip then
+        if tab.type and tab.id then
+            ItemRefTooltip.wowhead.web=format(wowheadText, tab.type, tab.id, tab.name or '')
+            ItemRefTooltip.wowhead:SetShown(true)
+        end
+    elseif Save.ctrl and not UnitAffectingCombat('player') then --and not UnitCastingInfo('player') and not UnitChannelInfo('player') then
         if tab.id then
             if tab.type=='quest' then
                 if not tab.name then
@@ -480,6 +508,9 @@ local function setCurrency(self, currencyID)--货币
     if numPlayer>1 then
         self:AddDoubleLine(e.Icon.wow2..numPlayer..(e.onlyChinese and '角色' or CHARACTER), e.MK(all,3))
     end
+
+    get_Web_Link({frame=self, type='currency', id=currencyID, name=info2.name, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
+
     self:Show()
 end
 
@@ -533,12 +564,14 @@ local function setBuff(type, self, ...)--Buff
 end
 
 local function set_Aura(self, auraID)--Aura
-    local _, _, icon, _, _, _, spellID = GetSpellInfo(auraID)
+    local name, _, icon, _, _, _, spellID = GetSpellInfo(auraID)
    if icon and spellID then
         self:AddDoubleLine((e.onlyChinese and '光环' or AURAS)..' '..spellID, '|T'..icon..':0|t'..icon)
         local mountID = C_MountJournal.GetMountFromSpell(spellID)
         if mountID then
             setMount(self, mountID)
+        else
+            get_Web_Link({frame=self, type='spell', id=spellID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
         end
     end
 end
@@ -552,6 +585,7 @@ local setFriendshipFaction=function(self, friendshipID)--friend声望
 	if ( repInfo and repInfo.friendshipFactionID and repInfo.friendshipFactionID > 0) then
         local icon = (repInfo.texture and repInfo.texture>0) and repInfo.texture
         self:AddDoubleLine((e.onlyChinese and '个人声望' or (INDIVIDUALS..REPUTATION))..' '..friendshipID, icon and '|T'..icon..':0|t'..icon)
+        get_Web_Link({frame=self, type='faction', id=friendshipID, name=repInfo.name, col=nil, isPetUI=false})--取得网页，数据链接
         self:Show()
     end
 end
@@ -565,6 +599,7 @@ local function setMajorFactionRenown(self, majorFactionID)--名望
             self.textLeft:SetText('|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'..'MajorFactions_Icons_'..info.textureKit..'512')
         end
         self:AddDoubleLine((e.onlyChinese and '名望' or RENOWN_LEVEL_LABEL)..' '..majorFactionID, format(e.onlyChinese and '名望等级 %d' or MAJOR_FACTION_RENOWN_LEVEL_TOAST, info.renownLevel)..' '..('%i%%'):format(info.renownReputationEarned/info.renownLevelThreshold*100))
+        get_Web_Link({frame=self, type='faction', id=majorFactionID, name=info.name, col=nil, isPetUI=false})--取得网页，数据链接
         self:Show()
     end
 end
@@ -874,7 +909,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
         if type and not type:find(COMBAT_ALLY_START_MISSION) then
             self.textRight:SetText(col..type..'|r')
         end
-        
+
     end
 
     if not Save.hideHealth then
@@ -1055,6 +1090,8 @@ local function Init()
     end)
     ItemRefTooltip:HookScript("OnHide", function (self)--隐藏
         setInitItem(self, true)
+        ItemRefTooltip.wowhead.web=nil--取得网页，数据链接
+        ItemRefTooltip.wowhead:SetShown(false)
     end)
 
     hooksecurefunc('GameTooltip_AddQuestRewardsToTooltip', setQuest)--世界任务ID GameTooltip_AddQuest
@@ -1188,9 +1225,11 @@ local function Init()
                 end
 
                 e.tips:AddDoubleLine((e.onlyChinese and '声望' or REPUTATION)..' '..self.factionID or factionID, completedParagon)
+                get_Web_Link({frame=e.tips, type='faction', id=factionID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
                 e.tips:Show();
             elseif factionID or self.factionID then
                 e.tips:AddDoubleLine((e.onlyChinese and '声望' or REPUTATION)..' '..(self.factionID or factionID), completedParagon)
+                get_Web_Link({frame=e.tips, type='faction', id=factionID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
                 e.tips:Show()
             end
         end
