@@ -92,7 +92,7 @@ end
 --取得网页，数据链接
 --################
 StaticPopupDialogs["WowheadQuickLinkUrl"] = {
-    text= '|cffff00ffCtrl+Shift|r %s\n |cnGREEN_FONT_COLOR:CTRL+C |r'..BROWSER_COPY_LINK,
+    text= '%s |cnGREEN_FONT_COLOR:CTRL+C |r'..BROWSER_COPY_LINK,
     button1 = e.onlyChinese and '关闭' or CLOSE,
     OnShow = function(self, web)
         self.editBox:SetScript("OnEscapePressed", function(s) s:ClearFocus() s:GetParent():Hide() end)
