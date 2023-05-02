@@ -760,11 +760,11 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             text= col and col..text..'|r' or text
             line:SetText(text)
 
-            line= isInGuild and GameTooltipTextRight3 or GameTooltipTextRight2
+            --[[line= isInGuild and GameTooltipTextRight3 or GameTooltipTextRight2
             if line then
                 line:SetText(' ')
                 line:SetShown(true)
-            end
+            end]]
         end
 
         local num= isInGuild and 4 or 3
