@@ -1364,22 +1364,23 @@ local function Init()
             e.tips:AddDoubleLine(x and y and 'XY '..x..', '..y,  (e.onlyChinese and '距离' or TRACK_QUEST_PROXIMITY_SORTING)..' '..e.MK(distanceSq))--format(IN_GAME_NAVIGATION_RANGE, e.MK(distanceSq)))
         end
         if IsInGroup() then
-            local t2= (e.onlyChinese and '共享' or SHARE_QUEST)..' '
-            local u= IsInRaid() and 'raid' or 'party'
-            local n, acceto= GetNumGroupMembers(), 0
-            for i=1, n do
-                local u2
-                if u=='party' and i==n then
-                    u2='player'
-                else
-                    u2=u..i
+            local n=GetNumGroupMembers()
+            if n >1 then
+                local acceto=0
+                local u= IsInRaid() and 'raid' or 'party'
+                for i=1, n do
+                    local u2
+                    if u=='party' and i==n then
+                        u2='player'
+                    else
+                        u2=u..i
+                    end
+                    if C_QuestLog.IsUnitOnQuest(u2, info.questID) then
+                        acceto=acceto+1
+                    end
                 end
-                if C_QuestLog.IsUnitOnQuest(u2, info.questID) then
-                    acceto=acceto+1
-                end
+                e.tips:AddDoubleLine((e.onlyChinese and '共享' or SHARE_QUEST)..' '..(acceto..'/'..(n-1)), e.GetYesNo(C_QuestLog.IsPushableQuest(info.questID)))
             end
-            t2=e.tips..acceto..'/'..n
-            e.tips:AddDoubleLine(t2, e.GetYesNo(C_QuestLog.IsPushableQuest(info.questID)))
         end
         get_Web_Link({frame=e.tips, type='quest', id=info.questID, name=info.title, col=nil, isPetUI=false})--取得网页，数据链接
         e.tips:Show()

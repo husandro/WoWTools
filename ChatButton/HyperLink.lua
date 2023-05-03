@@ -58,10 +58,10 @@ local function Realm(link)--去服务器为*, 加队友种族图标,和N,T
     else
         local text= e.GetPlayerInfo({unit=nil, guid=nil, name=name,  reName=false, reRealm=false})
         if server then
-            local realm= e.Get_Region(server)--服务器，EU， US {col=, text=, realm=}
+            --[[local realm= e.Get_Region(server)--服务器，EU， US {col=, text=, realm=}
             if realm then
                 text= text and realm.col..text or realm.col
-            end
+            end]]
             if server== e.Player.realm then
                 return (text or '')..link:gsub('%-'..server..'|r]|h', '|r]|h')
             elseif e.Player.Realms[server] then
