@@ -1029,8 +1029,6 @@ local function Init()
     button:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
     WoWToolsChatButtonFrame.last=button
 
-    
-
     button:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' and (self.dungeonID or self.RaidID) then
             if self.dungeonID then
@@ -1057,8 +1055,16 @@ local function Init()
             e.tips:AddLine(self.name..e.Icon.left)
             e.tips:Show()
         end
+        if self.tipsFrame and self.tipsFrame:IsShown() then
+            self.tipsFrame:SetButtonState('PUSHED')
+        end
     end)
-    button:SetScript('OnLeave', function() e.tips:Hide() end)
+    button:SetScript('OnLeave', function(self)
+        e.tips:Hide()
+        if self.tipsFrame then
+            self.tipsFrame:SetButtonState('NORMAL')
+        end
+    end)
 
     LFGDungeonReadyDialog:HookScript("OnShow", function(self)
         e.PlaySound()--播放, 声音

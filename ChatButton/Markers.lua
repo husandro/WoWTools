@@ -397,6 +397,7 @@ local function setMarkersFrame()--设置标记, 框架
                         Save.markersScale=sacle
                     end
                 end)
+                button.markersFrame=btn--给 SetButtonState('PUSHED') 用
             else
                 btn:SetNormalTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
                 btn:SetScript('OnMouseDown', function(self, d)
@@ -793,8 +794,6 @@ local function Init()
     setReadyTexureTips()--自动就绪, 主图标, 提示
     setGroupReadyTipsEvent()--注册事件, 就绪,队员提示信息
 
-    
-
     button:SetScript("OnMouseDown", function(self,d)
         if d=='LeftButton' then
             setTankHealer()--设置队伍标记
@@ -804,6 +803,23 @@ local function Init()
                 e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
             end
             e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
+        end
+    end)
+
+    button:SetScript('OnEnter', function(self)
+        if self.groupReadyTips and self.groupReadyTips:IsShown() then
+            self.groupReadyTips:SetButtonState('PUSHED')
+        end
+        if self.markersFrame and self.markersFrame:IsShown() then
+            self.markersFrame:SetButtonState('PUSHED')
+        end
+    end)
+    button:SetScript('OnLeave', function(self)
+        if self.groupReadyTips then
+            self.groupReadyTips:SetButtonState('NORMAL')
+        end
+        if self.markersFrame then
+            self.markersFrame:SetButtonState('NORMAL')
         end
     end)
 

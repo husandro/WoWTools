@@ -495,7 +495,7 @@ end
 local function Init()
     OnLineTime=GetTime()
 
-    button:SetPoint('BOTTOMLEFT',WoWToolsChatButtonFrame.last, 'BOTTOMRIGHT')--设置位置
+    button:SetPoint('BOTTOMLEFT', WoWToolsChatButtonFrame.last, 'BOTTOMRIGHT')--设置位置
 
     button.texture:SetDesaturated(Save.disabledText)
 
@@ -515,6 +515,19 @@ local function Init()
         elseif d=='LeftButton' then
             set_textButton_Disabled_Enable()--禁用, 启用, textButton
         end
+    end)
+
+    button:SetScript('OnEnter', function(self)
+        if self.textButton and self.textButton:IsShown() then
+            self.textButton:SetButtonState('PUSHED')
+        end
+        WoWToolsChatButtonFrame:SetButtonState('PUSHED')
+    end)
+    button:SetScript('OnLeave', function(self)
+        if self.textButton then
+            self.textButton:SetButtonState('NORMAL')
+        end
+        WoWToolsChatButtonFrame:SetButtonState('NORMAL')
     end)
 
     set_Text_Button()--设置显示内容,框架 button.textButton,内容 button.text
