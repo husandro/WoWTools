@@ -2664,7 +2664,8 @@
         "LootFrameBaseElementMixin",
         "includes",
         "SLASH_SMART_WHISPER2",
-        "GroupLootHistoryFrame"
+        "GroupLootHistoryFrame",
+        "GroupLootHistoryFrameBg"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

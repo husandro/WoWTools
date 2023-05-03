@@ -711,12 +711,28 @@ local function Init_Set_AlphaAndColor()
     hideTexture(SendMailMoneyInset.Bg)
 
 
-    --[[拾取, 历史
-    if not e.Player.ver then
-        hideTexture(LootHistoryFrameScrollFrame.ScrollBarBackground)    
-    end
-    setAlpha(LootHistoryFrame.NineSlice.Center)
-]]
+    --拾取, 历史
+    setAlpha(GroupLootHistoryFrame.NineSlice.TopRightCorner)
+    setAlpha(GroupLootHistoryFrame.NineSlice.TopEdge)
+    setAlpha(GroupLootHistoryFrame.NineSlice.TopLeftCorner)
+    setAlpha(GroupLootHistoryFrame.NineSlice.RightEdge)
+    setAlpha(GroupLootHistoryFrame.NineSlice.LeftEdge)
+    setAlpha(GroupLootHistoryFrame.NineSlice.BottomLeftCorner)
+    setAlpha(GroupLootHistoryFrame.NineSlice.BottomRightCorner)
+    setAlpha(GroupLootHistoryFrame.NineSlice.BottomEdge)
+    setAlpha(GroupLootHistoryFrameBg)
+    setAlpha(GroupLootHistoryFrame.ScrollBar.Track.Middle)
+    setAlpha(GroupLootHistoryFrame.ScrollBar.Track.Begin)
+    setAlpha(GroupLootHistoryFrame.ScrollBar.Track.End)
+
+    setAlpha(GroupLootHistoryFrameMiddle)
+    setAlpha(GroupLootHistoryFrameLeft)
+    setAlpha(GroupLootHistoryFrameRight)
+    setAlpha()
+
+    
+    
+
     --频道, 设置
     hideTexture(ChatConfigCategoryFrame.NineSlice.Center)
     hideTexture(ChatConfigBackgroundFrame.NineSlice.Center)

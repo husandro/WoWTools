@@ -1132,7 +1132,7 @@ local function Init()
 
     --###########
     --历史, 拾取框
-    --LootHistory.lua GroupLootHistoryFrame
+    --LootHistory.lua
     hooksecurefunc(GroupLootHistoryFrame , 'OpenToEncounter', function(self, encounterID)
         for _, btn in pairs(self.ScrollBox:GetFrames()) do
             local playerName, itemSubType, collectedText
