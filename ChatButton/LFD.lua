@@ -1178,13 +1178,18 @@ local function Init()
                 itemSubType= subclassID==0 and itemEquipLoc and _G[itemEquipLoc] or itemSubType2
                 if not btn.itemSubTypeLabel then
                     btn.itemSubTypeLabel= e.Cstr(btn)
-                    btn.itemSubTypeLabel:SetPoint('BOTTOMLEFT', btn.Item.IconBorder, 'BOTTOMRIGHT',4,-6)
+                    btn.itemSubTypeLabel:SetPoint('BOTTOMLEFT', btn.Item.IconBorder, 'BOTTOMRIGHT',4,-8)
                 end
             end
 
             local collected, _, isSelfCollected= e.GetItemCollected(itemLink, nil, false)--物品是否收集
             if collected and isSelfCollected then
                 itemSubType= itemSubType and itemSubType..' '..collected..' ' or collected
+            end
+
+            local start= e.GetTimeInfo(btn.dropInfo.startTime/1000, true, nil)
+            if start then
+                itemSubType= itemSubType and itemSubType..' '..start..' ' or start
             end
         end
         if btn.chatTexure then
