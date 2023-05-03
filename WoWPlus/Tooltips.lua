@@ -207,7 +207,7 @@ local function get_Web_Link(tab)
                 tab.frame:SetShown(true)
             else
                 e.tips:AddDoubleLine(e.Icon.info2..(tab.col or '')..'Raider.IO', (tab.col or '')..'Ctrl+Shift')
-                e.tips:Shown(true)
+                e.tips:SetShown(true)
             end
             if IsControlKeyDown() and IsShiftKeyDown() then
                 StaticPopup_Show("WowheadQuickLinkUrl",
@@ -369,22 +369,21 @@ local function setItem(self, ItemLink)
             end
             self:AddDoubleLine(specA, ' ')
         end
+
+    --[[elseif setID then--套装
+        local collectedNum= select(4, e.GetSetsCollectedNum(setID))
+        if collectedNum then
+            self.text2Left:SetText(collectedNum)
+        end]]
+    elseif C_ToyBox.GetToyInfo(itemID) then--玩具
+        self.text2Left:SetText(PlayerHasToy(itemID) and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
     else
-        if setID then--套装
-            local collectedNum= select(4, e.GetSetsCollectedNum(setID))
-            if collectedNum then
-                self.text2Left:SetText(collectedNum)
-            end
-        elseif C_ToyBox.GetToyInfo(itemID) then--玩具
-            self.text2Left:SetText(PlayerHasToy(itemID) and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
-        else
-            local mountID = C_MountJournal.GetMountFromItem(itemID)--坐骑物品
-            local speciesID = select(13, C_PetJournal.GetPetInfoByItemID(itemID))
-            if mountID then
-                setMount(self, mountID)--坐骑
-            elseif speciesID then
-                setPet(self, speciesID, true)--宠物
-            end
+        local mountID = C_MountJournal.GetMountFromItem(itemID)--坐骑物品
+        local speciesID = select(13, C_PetJournal.GetPetInfoByItemID(itemID))
+        if mountID then
+            setMount(self, mountID)--坐骑
+        elseif speciesID then
+            setPet(self, speciesID, true)--宠物
         end
     end
 

@@ -7,7 +7,7 @@ e.LibDD=LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 local function GetWeek()--周数
     local d = date("*t")
     local cd=3
-    if GetCurrentRegion()==5 then
+    if GetCurrentRegion()==5 then --1US(includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
         cd=4
     end
     for d3=1,15 do
@@ -1094,6 +1094,9 @@ e.GetTooltipData= function(tab)
         tooltipData= C_TooltipInfo.GetInventoryItem('player', tab.inventory)
     end
     tooltipData= tooltipData or tab.hyperLink and C_TooltipInfo.GetHyperlink(tab.hyperLink)
+    if not tooltipData then
+        return {}
+    end
     local date={
         red=false,
         wow=false,
@@ -1210,12 +1213,11 @@ e.Get_Item_Stats= function(link)--物品，次属性，表
 end
 
 --e.Set_Item_Stats(self, itemLink, {point=self.icon, itemID=nil, hideSet=false, hideLevel=false, hideStats=false})--设置，物品，4个次属性，套装，装等，
-e.Set_Item_Stats = function(self, link, setting)
+e.Set_Item_Stats = function(self, link, setting) --setting= setting or {}
     if not self then
         return
     end
     local setID, itemLevel
-    --setting= setting or {}
 
     if link then
         if not setting.hideSet then

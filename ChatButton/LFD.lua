@@ -751,18 +751,14 @@ local function InitList(self, level, type)--LFDFrame.lua
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
---[[
-        info= {
+
+        --[[info= {
             text= e.onlyChinese and '自动打开战利品掷骰窗口' or AUTO_OPEN_LOOT_HISTORY_TEXT,
             tooltipOnButton= true,
-            tooltipTitle= 'SetCVar("autoOpenLootHistory", "1")',
-            tooltipText= '\n/loot\nLootHistoryFrame:SetWidth(350)',
-            checked= Save.autoOpenLootHistory~=nil and  Save.autoOpenLootHistory or C_CVar.GetCVarBool("autoOpenLootHistory"),
+            tooltipTitle= 'SetCVar\nautoOpenLootHistory',
+            checked= C_CVar.GetCVarBool("autoOpenLootHistory"),
             func= function ()
-                local value= C_CVar.GetCVarBool("autoOpenLootHistory")
-                Save.autoOpenLootHistory= not value and true or false
-                LootHistoryFrame:SetWidth(Save.autoOpenLootHistory and 210 or 350)
-                e.set_CVar('autoOpenLootHistory', Save.autoOpenLootHistory)--自动打开战利品掷骰窗口
+                C_CVar.SetCVar("autoOpenLootHistory", C_CVar.GetCVarBool("autoOpenLootHistory") and '0' or '1')
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)]]
@@ -830,11 +826,10 @@ local function InitList(self, level, type)--LFDFrame.lua
         e.LibDD:UIDropDownMenu_AddButton(info, level)
         info= {
             text= e.onlyChinese and '战利品掷骰' or LOOT_ROLL,
-            checked= GroupLootHistoryFrame and GroupLootHistoryFrame:IsShown() or (LootHistoryFrame and LootHistoryFrame:IsShown()),
+            checked= GroupLootHistoryFrame:IsShown(),
             icon= 'Levelup-Icon-Bag',
             tooltipOnButton= true,
             tooltipTitle= '/loot',
-            --tooltipText= 'SetCVar("autoOpenLootHistory", "1")',
             func= function()
                 ToggleLootHistoryFrame()--LootHistory.lua
             end
@@ -1137,7 +1132,72 @@ local function Init()
 
     --###########
     --历史, 拾取框
-    --LootHistory.lua
+    --LootHistory.lua GroupLootHistoryFrame
+    hooksecurefunc(GroupLootHistoryFrame , 'OpenToEncounter', function(self, encounterID)
+        for _, btn in pairs(self.ScrollBox:GetFrames()) do
+            local playerName, itemSubType, collectedText
+            local itemLink= btn.dropInfo and btn.dropInfo.itemHyperlink
+
+            local info=e.GetTooltipData({bag=nil, guidBank=nil, merchant=nil, inventory=nil, hyperLink=itemLink, itemID=nil, text={}, onlyText=nil, wow=nil, onlyWoW=nil, red=true, onlyRed=true})--物品提示，信息
+
+            e.Set_Item_Stats(btn.Item, not info.red and itemLink, {point=btn.Item.IconBorder})--设置，物品，4个次属性，套装，装等
+            
+            if itemLink and not info.red then
+                if btn.dropInfo.currentLeader and not btn.dropInfo.currentLeader.isSelf then--建立,一个密语图标
+                    playerName= btn.dropInfo.currentLeader.playerName
+                    if not btn.chatTexure then
+                        btn.chatTexure= e.Cbtn(btn, {size={14,14}, atlas='transmog-icon-chat'})
+                        btn.chatTexure:SetPoint('BOTTOMRIGHT', btn.NameFrame, 6, 4)
+                        local region= GetCurrentRegion()--1US(includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
+                        btn.chatTexure.text= (region==1 or region==3) and ' need, please!{rt1}' or (' '..NEED..', '..VOICEMACRO_16_Dw_0..'{rt1}')
+                        btn.chatTexure:SetScript('OnLeave', function() e.tips:Hide() end)
+                        btn.chatTexure:SetScript('OnEnter', function(self2)
+                            e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+                            e.tips:ClearLines()
+                            e.tips:AddDoubleLine(SLASH_SMART_WHISPER2..' '..(self2.playerName or ''), (self2.itemLink or '')..self2.text)
+                            e.tips:AddLine(' ')
+                            e.tips:AddDoubleLine(id, addName)
+                            e.tips:Show()
+                        end)
+                        btn.chatTexure:SetScript('OnClick', function(self2)
+                            if self2.playerName then
+                                e.Say(type, self2.playerName, nil, (self2.itemLink or '')..self2.text)
+                            end
+                        end)
+                    end
+                end
+
+                local _, _, itemSubType2, itemEquipLoc, _, classID, subclassID = GetItemInfoInstant(itemLink)--提示,装备,子类型
+                if classID==2 or classID==4 then
+                    itemSubType= subclassID==0 and itemEquipLoc and _G[itemEquipLoc] or itemSubType2
+                    if not btn.itemSubTypeLabel then
+                        btn.itemSubTypeLabel= e.Cstr(btn)
+                        --btn.itemSubTypeLabel:SetPoint('TOPLEFT', btn.Item.IconBorder, 'BOTTOMRIGHT',2,2)
+                        btn.itemSubTypeLabel:SetPoint('BOTTOMLEFT', btn.Item.IconBorder, 'BOTTOMRIGHT',4,-6)
+                    end
+                end
+
+                local collected=e.GetItemCollected(itemLink, nil, nil)--物品是否收集
+                if collected then
+                    itemSubType= itemSubType and itemSubType..' '..collected..' ' or collected
+                end
+            end
+            if btn.chatTexure then
+                btn.chatTexure.playerName=playerName
+                btn.chatTexure.itemLink= itemLink
+                btn.chatTexure:SetShown(playerName and true or false)
+            end
+            if btn.itemSubTypeLabel then
+                btn.itemSubTypeLabel:SetText(itemSubType or '')
+            end
+
+            if btn.WinningRollInfo and btn.WinningRollInfo.Check and not btn.WinningRollInfo.Check.move then--移动, √图标
+                btn.WinningRollInfo.Check:ClearAllPoints()
+                btn.WinningRollInfo.Check:SetPoint('BOTTOMRIGHT', btn.NameFrame, 8, 0)
+                btn.WinningRollInfo.Check.move=true
+            end
+        end
+    end)
     --[[if not e.Player.ver then
         hooksecurefunc('LootHistoryFrame_FullUpdate', function(self)
             LootHistoryFrame:SetWidth(350)
@@ -1519,11 +1579,12 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
         if Save.leaveInstance and IsLFGComplete() and IsInInstance() then
             e.PlaySound()--播放, 声音
             ExitIns=true
-            C_Timer.After(sec, function()
+            local leaveSce=IsInGroup(LE_PARTY_CATEGORY_HOME) and 10 or sec
+            C_Timer.After(leaveSce, function()
                 exitInstance()
             end)
             StaticPopup_Show(addName..'ExitIns')
-            e.Ccool(StaticPopup1, nil, sec, nil, true)--冷却条
+            e.Ccool(StaticPopup1, nil, leaveSce, nil, true)--冷却条
         end
 
     elseif event=='PLAYER_ENTERING_WORLD' then

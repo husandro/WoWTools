@@ -2659,7 +2659,12 @@
         "CLOSE",
         "BROWSER_COPY_LINK",
         "GameTooltip_AddQuest",
-        "FauxScrollFrame_GetOffset"
+        "FauxScrollFrame_GetOffset",
+        "LootFrameMixin",
+        "LootFrameBaseElementMixin",
+        "includes",
+        "SLASH_SMART_WHISPER2",
+        "GroupLootHistoryFrame"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
