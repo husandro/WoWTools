@@ -824,7 +824,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                             end
                         end
                     else
-                        if not hideLine and Save.shift then
+                        if not hideLine and Save.ctrl then
                             hideLine=line
                         else
                             line:SetText('')
@@ -832,7 +832,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                         end
                     end
                 else
-                    if not hideLine and Save.shift then
+                    if not hideLine and Save.ctrl then
                         hideLine=line
                     else
                         line:SetText('')
