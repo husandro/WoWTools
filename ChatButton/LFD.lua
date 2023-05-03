@@ -1143,6 +1143,8 @@ local function Init()
             e.Set_Item_Stats(btn.Item, not info.red and itemLink, {point=btn.Item.IconBorder})--设置，物品，4个次属性，套装，装等
            
             if itemLink and not info.red then
+                info= btn.dropInfo
+                for k, v in pairs(info) do if v and type(v)=='table' then print('---------',k..'STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('---------',k..'END') end print(k,v) end
                 if btn.dropInfo.currentLeader and not btn.dropInfo.currentLeader.isSelf then--建立,一个密语图标
                     playerName= btn.dropInfo.currentLeader.playerName
                     if not btn.chatTexure then
