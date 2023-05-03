@@ -402,11 +402,11 @@ local function Init()
             if info.regionID and info.regionID~=curRegion then
                 region=' regionID'..(e.onlyChinese and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..info.regionID..'|r'
             end
-            if e.onlyChinese then
-                e.tips:AddLine('跨服'..e.GetYesNo(not info.isInCurrentRegion)..region, 1,1,1)
-            else
-                e.tips:AddLine('isInCurrentRegion'..e.GetYesNo(info.isInCurrentRegion)..region, 1,1,1)
-            end
+            --if e.onlyChinese then
+                --e.tips:AddLine('跨服'..e.GetYesNo(not info.isInCurrentRegion)..region, 1,1,1)
+            --else
+            e.tips:AddLine('isInCurrentRegion'..e.GetYesNo(info.isInCurrentRegion)..region, 1,1,1)
+            --end
         end
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine((e.onlyChinesel and '选项' or SETTINGS_TITLE), e.Icon.mid)
