@@ -2664,8 +2664,7 @@
         "LootFrameBaseElementMixin",
         "includes",
         "SLASH_SMART_WHISPER2",
-        "GroupLootHistoryFrame",
-        "GroupLootHistoryFrameBg"
+        "PROFESSIONS_CRAFTING_FORM_CRAFTER_DURATION_REMAINING"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

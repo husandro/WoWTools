@@ -1133,70 +1133,85 @@ local function Init()
     --###########
     --历史, 拾取框
     --LootHistory.lua
+    local function set_LootFrame_btn(btn)
+        local playerName, itemSubType
+        local itemLink= btn.dropInfo and btn.dropInfo.itemHyperlink
+
+        local info=e.GetTooltipData({bag=nil, guidBank=nil, merchant=nil, inventory=nil, hyperLink=itemLink, itemID=nil, text={}, onlyText=nil, wow=nil, onlyWoW=nil, red=true, onlyRed=true})--物品提示，信息
+
+        e.Set_Item_Stats(btn.Item, not info.red and itemLink, {point=btn.Item.IconBorder})--设置，物品，4个次属性，套装，装等
+
+        if itemLink and not info.red then
+            if btn.dropInfo.currentLeader and not btn.dropInfo.currentLeader.isSelf then--建立,一个密语图标
+                playerName= btn.dropInfo.currentLeader.playerName
+                if not btn.chatTexure then
+                    btn.chatTexure= e.Cbtn(btn, {size={14,14}, atlas='transmog-icon-chat'})
+                    btn.chatTexure:SetPoint('BOTTOMRIGHT', btn.NameFrame, 6, 4)
+                    local region= GetCurrentRegion()--1US(includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
+                    btn.chatTexure.text= (region==1 or region==3) and ' need, please!{rt1}' or (' '..NEED..', '..VOICEMACRO_16_Dw_0..'{rt1}')
+                    btn.chatTexure:SetScript('OnLeave', function() e.tips:Hide() end)
+                    btn.chatTexure:SetScript('OnEnter', function(self2)
+                        e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+                        e.tips:ClearLines()
+                        if self2.startTime then
+                            local start= e.GetTimeInfo(self2.startTime/1000, false, nil)
+                            e.tips:AddDoubleLine('|cnRED_FONT_COLOR:'..start,
+                                self2.duration and '|cnGREEN_FONT_COLOR:'..format(e.onlyChinese and '持续时间：%s' or PROFESSIONS_CRAFTING_FORM_CRAFTER_DURATION_REMAINING, SecondsToTime(self2.duration/100))
+                            )
+                            e.tips:AddLine(' ')
+                        end
+                        e.tips:AddDoubleLine(SLASH_SMART_WHISPER2..' '..(self2.playerName or ''), (self2.itemLink or '')..self2.text)
+                        e.tips:AddLine(' ')
+                        e.tips:AddDoubleLine(id, addName)
+                        e.tips:Show()
+                    end)
+                    btn.chatTexure:SetScript('OnClick', function(self2)
+                        if self2.playerName then
+                            e.Say(type, self2.playerName, nil, (self2.itemLink or '')..self2.text)
+                        end
+                    end)
+                end
+            end
+
+            local _, _, itemSubType2, itemEquipLoc, _, classID, subclassID = GetItemInfoInstant(itemLink)--提示,装备,子类型
+            if classID==2 or classID==4 then
+                itemSubType= subclassID==0 and itemEquipLoc and _G[itemEquipLoc] or itemSubType2
+                if not btn.itemSubTypeLabel then
+                    btn.itemSubTypeLabel= e.Cstr(btn)
+                    btn.itemSubTypeLabel:SetPoint('BOTTOMLEFT', btn.Item.IconBorder, 'BOTTOMRIGHT',4,-6)
+                end
+            end
+
+            local collected, _, isSelfCollected= e.GetItemCollected(itemLink, nil, false)--物品是否收集
+            if collected and isSelfCollected then
+                itemSubType= itemSubType and itemSubType..' '..collected..' ' or collected
+            end
+        end
+        if btn.chatTexure then
+            btn.chatTexure.playerName=playerName
+            btn.chatTexure.itemLink= itemLink
+            btn.chatTexure.duration= btn.dropInfo and btn.dropInfo.duration
+            btn.chatTexure.startTime= btn.dropInfo and btn.dropInfo.startTime
+            btn.chatTexure:SetShown(playerName and true or false)
+        end
+        if btn.itemSubTypeLabel then
+            btn.itemSubTypeLabel:SetText(itemSubType or '')
+        end
+
+        if btn.WinningRollInfo and btn.WinningRollInfo.Check and not btn.WinningRollInfo.Check.move then--移动, √图标
+            btn.WinningRollInfo.Check:ClearAllPoints()
+            btn.WinningRollInfo.Check:SetPoint('BOTTOMRIGHT', btn.NameFrame, 8, 0)
+            btn.WinningRollInfo.Check.move=true
+        end
+    end
+    hooksecurefunc(GroupLootHistoryFrame.ScrollBox, 'SetScrollTargetOffset', function(self)
+        for _, btn in pairs(self:GetFrames()) do
+            set_LootFrame_btn(btn)
+        end
+    end)
     hooksecurefunc(GroupLootHistoryFrame , 'OpenToEncounter', function(self, encounterID)
         for _, btn in pairs(self.ScrollBox:GetFrames()) do
-            local playerName, itemSubType, collectedText
-            local itemLink= btn.dropInfo and btn.dropInfo.itemHyperlink
-
-            local info=e.GetTooltipData({bag=nil, guidBank=nil, merchant=nil, inventory=nil, hyperLink=itemLink, itemID=nil, text={}, onlyText=nil, wow=nil, onlyWoW=nil, red=true, onlyRed=true})--物品提示，信息
-
-            e.Set_Item_Stats(btn.Item, not info.red and itemLink, {point=btn.Item.IconBorder})--设置，物品，4个次属性，套装，装等
-           
-            if itemLink and not info.red then
-                info= btn.dropInfo
-                for k, v in pairs(info) do if v and type(v)=='table' then print('---------',k..'STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('---------',k..'END') end print(k,v) end
-                if btn.dropInfo.currentLeader and not btn.dropInfo.currentLeader.isSelf then--建立,一个密语图标
-                    playerName= btn.dropInfo.currentLeader.playerName
-                    if not btn.chatTexure then
-                        btn.chatTexure= e.Cbtn(btn, {size={14,14}, atlas='transmog-icon-chat'})
-                        btn.chatTexure:SetPoint('BOTTOMRIGHT', btn.NameFrame, 6, 4)
-                        local region= GetCurrentRegion()--1US(includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
-                        btn.chatTexure.text= (region==1 or region==3) and ' need, please!{rt1}' or (' '..NEED..', '..VOICEMACRO_16_Dw_0..'{rt1}')
-                        btn.chatTexure:SetScript('OnLeave', function() e.tips:Hide() end)
-                        btn.chatTexure:SetScript('OnEnter', function(self2)
-                            e.tips:SetOwner(self2, "ANCHOR_RIGHT")
-                            e.tips:ClearLines()
-                            e.tips:AddDoubleLine(SLASH_SMART_WHISPER2..' '..(self2.playerName or ''), (self2.itemLink or '')..self2.text)
-                            e.tips:AddLine(' ')
-                            e.tips:AddDoubleLine(id, addName)
-                            e.tips:Show()
-                        end)
-                        btn.chatTexure:SetScript('OnClick', function(self2)
-                            if self2.playerName then
-                                e.Say(type, self2.playerName, nil, (self2.itemLink or '')..self2.text)
-                            end
-                        end)
-                    end
-                end
-
-                local _, _, itemSubType2, itemEquipLoc, _, classID, subclassID = GetItemInfoInstant(itemLink)--提示,装备,子类型
-                if classID==2 or classID==4 then
-                    itemSubType= subclassID==0 and itemEquipLoc and _G[itemEquipLoc] or itemSubType2
-                    if not btn.itemSubTypeLabel then
-                        btn.itemSubTypeLabel= e.Cstr(btn)
-                        btn.itemSubTypeLabel:SetPoint('BOTTOMLEFT', btn.Item.IconBorder, 'BOTTOMRIGHT',4,-6)
-                    end
-                end
-
-                local collected, _, isSelfCollected= e.GetItemCollected(itemLink, nil, false)--物品是否收集
-                if collected and isSelfCollected then
-                    itemSubType= itemSubType and itemSubType..' '..collected..' ' or collected
-                end
-            end
-            if btn.chatTexure then
-                btn.chatTexure.playerName=playerName
-                btn.chatTexure.itemLink= itemLink
-                btn.chatTexure:SetShown(playerName and true or false)
-            end
-            if btn.itemSubTypeLabel then
-                btn.itemSubTypeLabel:SetText(itemSubType or '')
-            end
-
-            if btn.WinningRollInfo and btn.WinningRollInfo.Check and not btn.WinningRollInfo.Check.move then--移动, √图标
-                btn.WinningRollInfo.Check:ClearAllPoints()
-                btn.WinningRollInfo.Check:SetPoint('BOTTOMRIGHT', btn.NameFrame, 8, 0)
-                btn.WinningRollInfo.Check.move=true
-            end
+            set_LootFrame_btn(btn)
         end
     end)
 
