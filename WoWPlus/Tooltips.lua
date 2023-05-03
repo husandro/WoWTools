@@ -824,17 +824,17 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                                 line:SetShown(true)
                             end
                         end
-                    else
-                        line:SetShown(false)
-                        if not hideLine then
+                    elseif not hideLine then
+                        --line:SetShown(false)
+                        --if not hideLine then
                             hideLine=line
-                        end
+                        --end
                     end
-                else
-                    line:SetShown(false)
-                    if not hideLine then
+                elseif not hideLine then
+                    --line:SetShown(false)
+                    --if not hideLine then
                         hideLine=line
-                    end
+                    --end
                 end
             end
         end
