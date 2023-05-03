@@ -1189,6 +1189,7 @@ local function Init()
 
             local start= e.GetTimeInfo(btn.dropInfo.startTime/1000, true, nil)
             if start then
+                start= '|cnRED_FONT_COLOR:'..start..'|r'
                 itemSubType= itemSubType and itemSubType..' '..start..' ' or start
             end
         end
