@@ -1308,28 +1308,44 @@ local function Init()
         end)
     end
 
-    hooksecurefunc('QuestMapFrame_ShowQuestDetails', function(questID)
-        local label= QuestMapFrame.DetailsFrame.wowhead
-        if questID then
-            if not label then
-                label= e.Cstr(QuestMapFrame.DetailsFrame)
-                label:SetPoint('BOTTOMRIGHT',QuestMapFrame.DetailsFrame, 'TOPRIGHT', 20, 10)
-                label:EnableMouse(true)
-                label:SetScript('OnLeave', function() e.tips:Hide() end)
-                label:SetScript('OnEnter', function(self)
-                    e.tips:SetOwner(self, "ANCHOR_LEFT")
+    local function create_Quest_Label(self)--添加任务ID
+        if not self.questIDLabel then
+            self.questIDLabel= e.Cstr(self)
+            self.questIDLabel:EnableMouse(true)
+            self.questIDLabel:SetScript('OnLeave', function() e.tips:Hide() end)
+            self.questIDLabel:SetScript('OnEnter', function(self2)
+                if self2.questID then
+                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
                     e.tips:ClearLines()
-                    securecallfunction(GameTooltip_AddQuest, self, self.questID)
-                end)
-                QuestMapFrame.DetailsFrame.wowhead=label
-            end
-            label:SetText(questID)
-            label.questID= questID
+                    securecallfunction(GameTooltip_AddQuest, self2, self2.questID)
+                    e.tips:AddLine(' ')
+                    e.tips:AddDoubleLine(id, addName)
+                    e.tips:Show()
+                end
+            end)
         end
-        if label then
-            label:SetShown(questID and true or false)
+        return self.questIDLabel
+    end
+    hooksecurefunc('QuestMapFrame_ShowQuestDetails', function(questID)
+        local label= QuestMapFrame.DetailsFrame.questIDLabel
+        if not label then
+            label= create_Quest_Label(QuestMapFrame.DetailsFrame)
+            label:SetPoint('BOTTOMRIGHT',QuestMapFrame.DetailsFrame, 'TOPRIGHT', 20, 10)
         end
+        label:SetText(questID or '')
+        label.questID= questID
     end)
+    QuestFrame:HookScript('OnShow', function(self)
+        local questID= QuestInfoFrame.questLog and  C_QuestLog.GetSelectedQuest() or GetQuestID()
+        local label= self.questIDLabel
+        if not label then
+            label= create_Quest_Label(self)
+            label:SetPoint('TOPRIGHT', self, -30,-35)
+        end
+        label:SetText(questID or '')
+        label.questID= questID
+    end)
+
     hooksecurefunc("QuestMapLogTitleButton_OnEnter", function(self)--任务日志 显示ID
         local info= self.questLogIndex and C_QuestLog.GetInfo(self.questLogIndex)
         if not info or not info.questID or not HaveQuestData(info.questID) then

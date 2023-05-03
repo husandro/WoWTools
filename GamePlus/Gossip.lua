@@ -775,8 +775,6 @@ end
 --任务，初始化
 --###########
 local function Init_Quest()
-    
-
     questPanel:SetPoint('RIGHT', panel, 'LEFT')
 
     questPanel.Text=e.Cstr(questPanel, {justifyH='RIGHT'})--nil, nil,nil, nil,nil, 'RIGHT')--任务数量
