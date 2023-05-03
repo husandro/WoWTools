@@ -813,7 +813,6 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                             end
                             line:SetShown(true)
                         end
-
                     elseif isGroupPlayer then--队友位置
                         local mapID= C_Map.GetBestMapForUnit(unit)--地图ID
                         local mapInfo= mapID and C_Map.GetMapInfo(mapID)
@@ -824,17 +823,21 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                                 line:SetShown(true)
                             end
                         end
-                    elseif not hideLine then
-                        --line:SetShown(false)
-                        --if not hideLine then
+                    else
+                        if not hideLine and Save.shift then
                             hideLine=line
-                        --end
+                        else
+                            line:SetText('')
+                            line:SetShown(false)
+                        end
                     end
-                elseif not hideLine then
-                    --line:SetShown(false)
-                    --if not hideLine then
+                else
+                    if not hideLine and Save.shift then
                         hideLine=line
-                    --end
+                    else
+                        line:SetText('')
+                        line:SetShown(false)
+                    end
                 end
             end
         end

@@ -1101,7 +1101,7 @@ e.GetTooltipData= function(tab)
         local find= numText>0 or tab.wow
         local numFind=0
         for _, line in ipairs(tooltipData.lines) do--是否
-            TooltipUtil.SurfaceArgs(line)
+            --TooltipUtil.SurfaceArgs(line)
             if tab.red and not date.red then
                 local leftHex=line.leftColor and line.leftColor:GenerateHexColor()
                 local rightHex=line.rightColor and line.rightColor:GenerateHexColor()
