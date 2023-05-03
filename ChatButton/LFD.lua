@@ -1141,7 +1141,7 @@ local function Init()
             local info=e.GetTooltipData({bag=nil, guidBank=nil, merchant=nil, inventory=nil, hyperLink=itemLink, itemID=nil, text={}, onlyText=nil, wow=nil, onlyWoW=nil, red=true, onlyRed=true})--物品提示，信息
 
             e.Set_Item_Stats(btn.Item, not info.red and itemLink, {point=btn.Item.IconBorder})--设置，物品，4个次属性，套装，装等
-            
+           
             if itemLink and not info.red then
                 if btn.dropInfo.currentLeader and not btn.dropInfo.currentLeader.isSelf then--建立,一个密语图标
                     playerName= btn.dropInfo.currentLeader.playerName
@@ -1172,13 +1172,12 @@ local function Init()
                     itemSubType= subclassID==0 and itemEquipLoc and _G[itemEquipLoc] or itemSubType2
                     if not btn.itemSubTypeLabel then
                         btn.itemSubTypeLabel= e.Cstr(btn)
-                        --btn.itemSubTypeLabel:SetPoint('TOPLEFT', btn.Item.IconBorder, 'BOTTOMRIGHT',2,2)
                         btn.itemSubTypeLabel:SetPoint('BOTTOMLEFT', btn.Item.IconBorder, 'BOTTOMRIGHT',4,-6)
                     end
                 end
 
-                local collected=e.GetItemCollected(itemLink, nil, nil)--物品是否收集
-                if collected then
+                local collected, _, isSelfCollected= e.GetItemCollected(itemLink, nil, false)--物品是否收集
+                if collected and isSelfCollected then
                     itemSubType= itemSubType and itemSubType..' '..collected..' ' or collected
                 end
             end
@@ -1198,99 +1197,7 @@ local function Init()
             end
         end
     end)
-    --[[if not e.Player.ver then
-        hooksecurefunc('LootHistoryFrame_FullUpdate', function(self)
-            LootHistoryFrame:SetWidth(350)
-            LootHistoryFrame.ScrollFrame.ScrollChild:SetWidth(350)
-        end)
-        hooksecurefunc('LootHistoryFrame_UpdateItemFrame', function(self, itemFrame)
-            itemFrame:SetWidth(315)
-            itemFrame.Divider:SetWidth(315)
-            itemFrame.ActiveHighlight:SetWidth(315)
-            if itemFrame.WinnerName and itemFrame:IsShown() then--修改, 自已名称
-            local text= itemFrame.WinnerName:GetText()
-            if text and text==e.Player.name then
-                    itemFrame.WinnerName:SetText(COMBATLOG_FILTER_STRING_ME)
-            end
-            end
-            local itemLink= select(2, C_LootHistory.GetItem(itemFrame.itemIdx))
-            if itemLink then
-                local text
-                local _, _, _, itemLevel, _, _, _, _, itemEquipLoc, _, _, classID= GetItemInfo(itemLink)
-                if classID==2 or classID==4 then
-                    local invSlot = e.itemSlotTable[itemEquipLoc]
-                    if invSlot and itemLevel and itemLevel>1 then--装等
-                        local dateInfo= e.GetTooltipData({hyperLink=itemLink, red=true, onlyRed=true})--物品提示，信息
-                        if not dateInfo.red then
-                            local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
-                            if itemLinkPlayer then
-                                local lv=GetDetailedItemLevelInfo(itemLinkPlayer)
-                                if lv and itemLevel-lv>0 then
-                                    text= e.Icon.up2..itemLevel-lv
-                                end
-                            else
-                                text= e.Icon.up2..itemLevel
-                            end
-                        end
-                    end
 
-                    if not text then
-                        local text2, _, isSelf= e.GetItemCollected(itemLink, nil, true)--幻化
-                        text= isSelf and text2
-                    end
-                    if text and not itemFrame.upOrMogText then
-                        itemFrame.upOrMogText= e.Cstr(itemFrame, {color={r=0,g=1,b=0}})--nil, nil, nil, {0,1,0})
-                        itemFrame.upOrMogText:SetPoint('BOTTOMRIGHT', itemFrame.Icon, 'BOTTOMRIGHT')
-                    end
-                end
-
-                if itemFrame.upOrMogText then
-                    itemFrame.upOrMogText:SetText(text or '')
-                end
-            end
-        end)
-        hooksecurefunc('LootHistoryFrame_UpdatePlayerFrame', function(self, playerFrame)
-            playerFrame.itemText= nil
-            playerFrame.itemPlayerName= nil
-            if playerFrame.playerIdx then
-                local name, _, _, _, isWinner = C_LootHistory.GetPlayerInfo(playerFrame.itemIdx, playerFrame.playerIdx)
-                if name then
-                    playerFrame.itemPlayerName= name
-                    if playerFrame.itemIdx and isWinner then
-                        local itemLink = select(2, C_LootHistory.GetItem(playerFrame.itemIdx))
-                        if itemLink then
-                            playerFrame.itemText = itemLink..(e.Player.cn and ' '..NEED..', '..VOICEMACRO_16_Dw_0 or ' need, please!')
-                        end
-                    end
-                    playerFrame:EnableMouse(true)
-                    playerFrame:SetScript('OnMouseDown',function(self2, d)
-                        if d=='LeftButton' then
-                            e.Say(nil, self2.itemPlayerName, nil, self2.itemText)
-                        else
-                            e.Say(nil, self2.itemPlayerName)
-                        end
-                    end)
-                    if name== e.Player.name then
-                        playerFrame.PlayerName:SetText(e.Icon.player..COMBATLOG_FILTER_STRING_ME)
-                    elseif name:find('%-') then
-                        local server=name:match('%-(.+)')
-                        if server and e.Player.Realms[server] then
-                            playerFrame.PlayerName:SetText(name..e.Icon.star2)
-                        end
-                    else
-                        playerFrame.PlayerName:SetText(name..e.Icon.star2)
-                    end
-                else
-                    playerFrame:SetScript('OnMouseDown',nil)
-                end
-                playerFrame:SetWidth(300)
-            end
-        end)
-    end]]
-    --e.set_CVar('autoOpenLootHistory', Save.autoOpenLootHistory)--自动打开战利品掷骰窗口
-
-    --hooksecurefunc('QueueStatusDropDown_Show', setQueueStatusMenu)--小眼睛, 信息, 设置菜单
-    --LFDMicroButton:HookScript('OnEnter', function(self2) e.LibDD:ToggleDropDownMenu(1, nil, menuList, self2, -250,250) end)
     if Save.LFGPlus then--预创建队伍增强
         set_LFGPlus()
      end
