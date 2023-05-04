@@ -1,5 +1,7 @@
 local id, e = ...
-local Save={notPrint= e.Player.husandro}
+local Save={
+    --notPrint= e.Player.husandro
+}
 local addName= HIDE..'NPC'..VOICE_TALKING
 local panel=CreateFrame('Frame')
 
@@ -52,15 +54,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave[addName]=Save
         end
 
-    elseif event=='TALKINGHEAD_REQUESTED' then
+    elseif event=='TALKINGHEAD_REQUESTED' then--TalkingHeadUI.lua
         local _, _, vo, _, _, _, name, text, isNewTalkingHead = C_TalkingHead.GetCurrentLineInfo();
         if vo and vo>0 and self.soundKitID~=vo then
-            PlaySound(vo, "Dialog")
-            --if e.setPlayerSound then
-            --    e.PlaySound(vo)--, "Dialog");
-            --else
-              --  e.PlaySound(vo, "Dialog");
-            --end
+            PlaySound(vo, "Talking Head", true, true)
             if not Save.notPrint then
                 print('|cff00ff00'..name..'|r','|cffff00ff'..text..'|r',id, addName, 'soundKitID', vo)
             end
