@@ -239,7 +239,7 @@ local function text_Init()--监视, 文本
 				num= num>32 and 32 or num
 				Save.size= num
 				e.Cstr(nil, {size=num, changeFont=panel.btn.text, color=true})
-				print(id, addName, e.onlyChinese and '文本' or LOCALE_TEXT_LABEL, e.onlyChinese and '字体大小' or FONT_SIZE, num)
+				print(id, addName, e.onlyChinese and '追踪' or TRACKING, e.onlyChinese and '字体大小' or FONT_SIZE, num)
 
 			elseif d==1 then
 				if not ReputationFrame:IsVisible() then
@@ -429,7 +429,7 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 			if Save.btnStrHideCap then
 				e.tips:AddLine('|cffff00ff'..(e.onlyChinese and '隐藏最高' or (VIDEO_OPTIONS_ULTRA_HIGH..': '..HIDE)))
 			end
-			e.tips:AddDoubleLine((e.onlyChinese and '文本' or  LOCALE_TEXT_LABEL), e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
+			e.tips:AddDoubleLine(e.onlyChinese and '追踪' or TRACKING, e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
 			e.tips:AddDoubleLine(id, addName)
 			e.tips:Show()
 		end)
@@ -584,7 +584,7 @@ local function InitMenu(self, level, type)
 		e.LibDD:UIDropDownMenu_AddButton(info, level)
 	else
 		info={
-			text= e.onlyChinese and '文本' or LOCALE_TEXT_LABEL,
+			text= e.onlyChinese and '追踪' or TRACKING,
 			checked= Save.btn,
 			tooltipOnButton=true,
 			tooltipTitle= e.onlyChinese and '副本/宠物对战' or INSTANCE..'/'..SHOW_PET_BATTLES_ON_MAP_TEXT,
@@ -598,7 +598,7 @@ local function InitMenu(self, level, type)
 				if panel.btn then
 					panel.btn:SetButtonState('PUSHED')
 				end
-				print(id, addName, e.onlyChinese and '文本' or LOCALE_TEXT_LABEL, e.GetShowHide(Save.btn))
+				print(id, addName,e.onlyChinese and '追踪' or TRACKING, e.GetShowHide(Save.btn))
 			end
 		}
 		e.LibDD:UIDropDownMenu_AddButton(info, level)

@@ -261,7 +261,7 @@ local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
             e.tips:AddDoubleLine(id, addName)
-            e.tips:AddDoubleLine(e.onlyChinese and '文本' or LOCALE_TEXT_LABEL, e.GetShowHide(Save.vigentteButtonShowText)..e.Icon.left)
+            e.tips:AddDoubleLine(e.onlyChinese and '追踪' or TRACKING, e.GetShowHide(Save.vigentteButtonShowText)..e.Icon.left)
             e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
             e.tips:AddDoubleLine((e.onlyChinese and '字体大小' or FONT_SIZE)..': '..(Save.vigentteButtonSize or 12), 'Alt+'..e.Icon.mid)
             e.tips:Show()
@@ -340,7 +340,7 @@ local function Init_Menu(self, level, type)
         end
     end
     info={
-        text= e.onlyChinese and '文本' or LOCALE_TEXT_LABEL,
+        text= e.onlyChinese and '追踪' or TRACKING,
         icon='VignetteKillElite',
         tooltipOnButton=true,
         tooltipTitle='|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '小地图' or HUD_EDIT_MODE_MINIMAP_LABEL),
