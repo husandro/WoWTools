@@ -1247,7 +1247,7 @@ local function Init()
         end
     end)
 
-    hooksecurefunc(GroupLootHistoryFrame,'UpdateTimer', function(self)
+    --[[hooksecurefunc(GroupLootHistoryFrame,'UpdateTimer', function(self)
         if self.Timer then
             if not self.TimerLabel then
                 self.TimerLabel= e.Cstr(self.Timer)
@@ -1255,7 +1255,7 @@ local function Init()
             end
             self.TimerLabel:SetText(self.Timer:GetValue() )
         end
-    end)
+    end)]]
     if Save.LFGPlus then--预创建队伍增强
         set_LFGPlus()
      end
