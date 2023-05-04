@@ -265,11 +265,9 @@ end
 --副本， 菜单列表
 --###############
 local function setTexture(dungeonID, RaidID, name, texture, atlas)--设置图标, 点击,提示
-    if dungeonID or RaidID then
-        button.dungeonID=dungeonID
-        button.name=name
-        button.RaidID=RaidID
-    end
+    button.dungeonID=dungeonID
+    button.name=name
+    button.RaidID=RaidID
     if atlas then
         button.texture:SetAtlas(atlas)
     elseif texture then
@@ -413,8 +411,8 @@ local raidList=function(self, level, type)--团队本
                 if sele then
                     LeaveSingleLFG(LE_LFG_CATEGORY_RF, sortedDungeons[i].id)
                 else
-                    RaidFinderQueueFrame_SetRaid(sortedDungeons[i].id)
-                    RaidFinderQueueFrame_Join()
+                    securecallfunction(RaidFinderQueueFrame_SetRaid, sortedDungeons[i].id)
+                    securecallfunction(RaidFinderQueueFrame_Join)
                     printListInfo()--输出当前列表
 
                     setTexture(nil, sortedDungeons[i].id, sortedDungeons[i].name, nil)--设置图标, 点击,提示
@@ -825,9 +823,8 @@ local function InitList(self, level, type)--LFDFrame.lua
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
         info= {
-            text= e.onlyChinese and '战利品掷骰' or LOOT_ROLL,
+            text= (e.onlyChinese and '战利品掷骰' or LOOT_ROLL)..'|A:Levelup-Icon-Bag:0:0|a',
             checked= GroupLootHistoryFrame:IsShown(),
-            icon= 'Levelup-Icon-Bag',
             tooltipOnButton= true,
             tooltipTitle= '/loot',
             func= function()
@@ -835,6 +832,29 @@ local function InitList(self, level, type)--LFDFrame.lua
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+        local deserterExpiration = GetLFGDeserterExpiration();--LFDQueueFrameRandomCooldownFrame_Update() LFDFrame.lua
+        local hasDeserter=''
+        local myExpireTime;
+        if ( deserterExpiration ) then
+            myExpireTime = deserterExpiration;
+            hasDeserter= (e.onlyChinese and '逃亡者' or DESERTER)..'|T236347:0|t'
+        else
+            myExpireTime = GetLFGRandomCooldownExpiration();
+        end
+        if myExpireTime and myExpireTime>0 then
+            local timeRemaining = myExpireTime - GetTime();
+            if ( timeRemaining > 0 ) then
+                e.LibDD:UIDropDownMenu_AddSeparator(level)
+                info={
+                    text=hasDeserter..SecondsToTime(ceil(timeRemaining)),
+                    colorCode='|cffff0000',
+                    notCheckable=true,
+                }
+                e.LibDD:UIDropDownMenu_AddButton(info, level)
+            end
+        end
+
         e.LibDD:UIDropDownMenu_AddSeparator(level)
         if  raidList(self, level, type) then --团本
             e.LibDD:UIDropDownMenu_AddSeparator(level)
@@ -976,8 +996,8 @@ end
 
 
 local function setHoliday()--节日, 提示, button.texture
-    button.dungeonID=nil
-    button.name=nil
+    --button.dungeonID=nil
+    --button.name=nil
     local dungeonID, name, texturePath, atlas
     local group= IsInGroup(LE_PARTY_CATEGORY_HOME)
     local canTank, canHealer, canDamage = C_LFGList.GetAvailableRoles()
@@ -987,16 +1007,20 @@ local function setHoliday()--节日, 提示, button.texture
             local isAvailableForAll, isAvailableForPlayer, hid2eIfNotJoinable = IsLFGDungeonJoinable(dungeonID)
             if (isAvailableForPlayer or not hid2eIfNotJoinable) and isAvailableForAll then
                 --name, typeID, subtypeID, minLevel, maxLevel, recLevel, minRecLevel, maxRecLevel, expansionLevel, groupID, textureFilename, difficulty, maxPlayers, description, isHoliday, bonusRepAmount, minPlayers, isTimeWalker, name2, minGearLevel, isScalingDungeon, lfgMapID = GetLFGDungeonInfo(dungeonID)
-                local isHoliday= select(15, GetLFGDungeonInfo(dungeonID))
-                if isHoliday then
+                if select(15, GetLFGDungeonInfo(dungeonID)) then
                     --local doneToday, moneyAmount, moneyVar, experienceGained, experienceVar, numRewards, spellID = GetLFGDungeonRewards(dungeonID)
                     local numRewards = select(6, GetLFGDungeonRewards(dungeonID))
                     if numRewards and numRewards>0 then--奖励物品
+                        local find
                         for rewardIndex=1 , numRewards do
                             texturePath=select(2, GetLFGDungeonRewardInfo(dungeonID, rewardIndex))
                             if texturePath then
+                                find=true
                                 break
                             end
+                        end
+                        if find then
+                            break
                         end
                     end
                 elseif not group then
@@ -1011,7 +1035,7 @@ local function setHoliday()--节日, 提示, button.texture
             end
         end
     end
-    if not (texturePath and atlas) then
+    if not texturePath and not atlas then
         dungeonID,name= nil,nil
     end
     setTexture(dungeonID, nil, name, texturePath,  atlas)--设置图标
@@ -1025,14 +1049,16 @@ local function Init()
     WoWToolsChatButtonFrame.last=button
 
     button:SetScript('OnMouseDown', function(self, d)
+        print(self.dungeonID,self.name)
         if d=='LeftButton' and (self.dungeonID or self.RaidID) then
+
             if self.dungeonID then
-                LFDQueueFrame_SetType(self.dungeonID)
-                LFDQueueFrame_Join()
+                securecallfunction(LFDQueueFrame_SetType, self.dungeonID)
+                securecallfunction(LFDQueueFrame_Join)
                 printListInfo()--输出当前列表
             else
-                RaidFinderQueueFrame_SetRaid(self.RaidID)
-                RaidFinderQueueFrame_Join()
+                securecallfunction(RaidFinderQueueFrame_SetRaid, self.RaidID)
+                securecallfunction(RaidFinderQueueFrame_Join)
                 printListInfo()--输出当前列表
             end
         else
@@ -1155,7 +1181,7 @@ local function Init()
                         e.tips:ClearLines()
                         if self2.startTime then
                             local start= e.GetTimeInfo(self2.startTime/1000, false, nil)
-                            e.tips:AddDoubleLine('|cnRED_FONT_COLOR:'..start,
+                            e.tips:AddDoubleLine('|cnRED_FONT_COLOR:'..(start or ''),
                                 self2.duration and '|cnGREEN_FONT_COLOR:'..format(e.onlyChinese and '持续时间：%s' or PROFESSIONS_CRAFTING_FORM_CRAFTER_DURATION_REMAINING, SecondsToTime(self2.duration/100))
                             )
                             e.tips:AddLine(' ')
@@ -1221,6 +1247,15 @@ local function Init()
         end
     end)
 
+    hooksecurefunc(GroupLootHistoryFrame,'UpdateTimer', function(self)
+        if self.Timer then
+            if not self.TimerLabel then
+                self.TimerLabel= e.Cstr(self.Timer)
+                self.TimerLabel:SetPoint('RIGHT')
+            end
+            self.TimerLabel:SetText(self.Timer:GetValue())
+        end
+    end)
     if Save.LFGPlus then--预创建队伍增强
         set_LFGPlus()
      end

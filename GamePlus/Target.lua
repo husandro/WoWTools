@@ -89,7 +89,7 @@ local function Get_Quest_Progress(unit)--GameTooltip.lua --local questID= line a
         local tooltipData = C_TooltipInfo.GetUnit(unit)
         for i = 4, #tooltipData.lines do
             local line = tooltipData.lines[i]
-            --TooltipUtil.SurfaceArgs(line)
+            TooltipUtil.SurfaceArgs(line)
             local text= find_Text(line.leftText)
             if text then
                 return text~=true and text

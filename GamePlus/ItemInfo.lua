@@ -13,7 +13,6 @@ local itemLevelStr= ITEM_LEVEL:gsub('%%d', '%(%%d%+%)')--"物品等级：%d"
 local FMTab={}--附魔
 local useStr=ITEM_SPELL_TRIGGER_ONUSE..'(.+)'--使用：
 local andStr = COVENANT_RENOWN_TOAST_REWARD_COMBINER:format('(.-)','(.+)')--"%s 和 %s";
-local bagNumStr=CONTAINER_SLOTS:gsub('%%d', '%(%%d%+%)'):gsub('%%s','.+') -- "%d格%s";
 local size= 10--字体大小
 
 
@@ -112,9 +111,9 @@ local function set_Item_Info(self, tab)
             if containerInfo and not containerInfo.isBound then--没有锁定
                 topRightText='|A:'..e.Icon.unlocked..':0:0|a'
             end
-            local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={bagNumStr}})
-            topLeftText= dateInfo.text[bagNumStr]--格数
-
+            --local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={bagNumStr}})
+            --topLeftText= dateInfo.text[bagNumStr]--格数 CONTAINER_SLOTS  不知怎样处理--%2$s da %1$d |4scomparto:scomparti
+         
         elseif classID==3 then--宝石
             if expacID== e.ExpansionLevel then
                 local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={'(%+%d+ .+)', }})--物品提示，信息

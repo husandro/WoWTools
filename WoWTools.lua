@@ -1094,9 +1094,6 @@ e.GetTooltipData= function(tab)
         tooltipData= C_TooltipInfo.GetInventoryItem('player', tab.inventory)
     end
     tooltipData= tooltipData or tab.hyperLink and C_TooltipInfo.GetHyperlink(tab.hyperLink)
-    if not tooltipData then
-        return {}
-    end
     local date={
         red=false,
         wow=false,
@@ -1104,10 +1101,10 @@ e.GetTooltipData= function(tab)
     }
     if tooltipData and tooltipData.lines then
         local numText= tab.text and #tab.text or 0
-        local find= numText>0 or tab.wow
+        local findText= numText>0 or tab.wow
         local numFind=0
         for _, line in ipairs(tooltipData.lines) do--是否
-            --TooltipUtil.SurfaceArgs(line)
+            TooltipUtil.SurfaceArgs(line)
             if tab.red and not date.red then
                 local leftHex=line.leftColor and line.leftColor:GenerateHexColor()
                 local rightHex=line.rightColor and line.rightColor:GenerateHexColor()
@@ -1118,10 +1115,10 @@ e.GetTooltipData= function(tab)
                     end
                 end
             end
-            if line.leftText and find then
+            if line.leftText and findText then
                 if tab.text then
                     for _, text in pairs(tab.text) do
-                        if line.leftText:find(text) or line.leftText==text then
+                        if text and (line.leftText:find(text) or line.leftText==text) then
                             date.text[text]= line.leftText:match(text) or line.leftText
                             numFind= numFind +1
                             if tab.onlyText and numFind==numText then

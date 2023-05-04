@@ -132,12 +132,13 @@ end
 local function getReadyCheckStatus(unit, index)
     local stat=GetReadyCheckStatus(unit)
     local text= e.GetPlayerInfo({unit=unit, guid=UnitGUID(unit), name=nil,  reName=true, reRealm=true, reLink=false})
+    local hasCoolText= UnitHasLFGRandomCooldown(unit) and '|T236347:0|t|cnRED_FONT_COLOR:'..(e.onlyChinese and '逃亡者' or DESERTER)..'|r' or ''
     if stat=='ready' then
-        return '|cnGREEN_FONT_COLOR:'..index..")|r"..e.Icon.select2..text
+        return '|cnGREEN_FONT_COLOR:'..index..")|r"..e.Icon.select2..text..hasCoolText
     elseif stat=='waiting' then
-        return index..")   "..text
+        return index..")   "..text..hasCoolText
     elseif stat=='notready' then
-        return '|cnRED_FONT_COLOR:'..index..")|r"..e.Icon.O2..text..(UnitIsAFK(unit) and '|cff606060<'..AFK..'>|r' or not UnitIsConnected(unit) and 	'|cff606060<'..(e.onlyChinese and '离线' or PLAYER_OFFLINE)..'>|r' or '')
+        return '|cnRED_FONT_COLOR:'..index..")|r"..e.Icon.O2..text..(UnitIsAFK(unit) and '|cff606060<'..AFK..'>|r' or not UnitIsConnected(unit) and 	'|cff606060<'..(e.onlyChinese and '离线' or PLAYER_OFFLINE)..'>|r' or '')..hasCoolText
     end
 end
 local function setGroupReadyTips(event, arg1, arg2)

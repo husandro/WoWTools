@@ -2,7 +2,7 @@ local id, e = ...
 --local addName= ADVENTURE_MAP_TITLE..TOY
 local panel= CreateFrame("Frame")
 
-local Toy={
+local ToyTab={
     [187869]={14663, 14303, 14304, 14305, 14306},--暗影界
     [187875]={10665,10666, 10667, 10668, 10669, 11543},--破碎群岛
     [187895]={8938, 8939, 8940, 8941, 8937, 8942, 10260},--德拉诺
@@ -19,7 +19,7 @@ local Toy={
     [150745]={858, 859, 627, 776, 775, 768, 765, 802, 782, 766, 772, 777, 779, 770, 774, 780, 769, 773, 778, 841, 4995, 761, 771, 781, 868},--东部王国
 }
 
-for itemID, _ in pairs(Toy) do
+for itemID, _ in pairs(ToyTab) do
     e.LoadDate({id=itemID, type='item'})
 end
 
@@ -34,7 +34,7 @@ local function Get_Use_Toy()
     end
 
     local notFindName
-    for itemID, tab in pairs(Toy) do
+    for itemID, tab in pairs(ToyTab) do
         if PlayerHasToy(itemID) and C_ToyBox.IsToyUsable(itemID) then
             for _, achievementID  in pairs(tab) do
                 local _, name, _, _, _, _, _, _, _, _, _, _, wasEarnedByMe=GetAchievementInfo(achievementID)

@@ -646,7 +646,7 @@ end
 --#######
 --设置单位
 --#######
-local function setPlayerInfo(guid)--设置玩家信息
+local function setPlayerInfo(self, unit, guid)--设置玩家信息
     local info= e.UnitItemLevel[guid]
     if info then
         if info.itemLevel and info.itemLevel>1 then
@@ -663,6 +663,26 @@ local function setPlayerInfo(guid)--设置玩家信息
             e.tips.backgroundColor:SetShown(true)
         end
     end
+
+    local isWarModeDesired=C_PvP.IsWarModeDesired()
+    local statusIcon, statusText= e.PlayerOnlineInfo(unit)--单位，状态信息
+    if statusIcon and statusText then
+       self.textLeft:SetText(statusText..statusIcon)
+    else
+        local reason=UnitPhaseReason(unit)
+        if reason then
+            if reason==0 then
+                self.textLeft:SetText(e.onlyChinese and '不同了阶段' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1','')))
+            elseif reason==1 then
+                self.textLeft:SetText(e.onlyChinese and '不在同位面' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', e.Player.LayerText))
+            elseif reason==2 then--战争模
+                self.textLeft:SetText(isWarModeDesired and (e.onlyChinese and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF) or (e.onlyChinese and '开启战争模式' or ERR_PVP_WARMODE_TOGGLE_ON))
+            elseif reason==3 then
+                self.textLeft:SetText(e.onlyChinese and '时空漫游' or PLAYER_DIFFICULTY_TIMEWALKER)
+            end
+        end
+    end
+
 end
 
 
@@ -672,7 +692,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
     local guid = UnitGUID(unit)
     local isSelf=UnitIsUnit('player', unit)--我
     local isGroupPlayer= (not isSelf and e.GroupGuid[guid]) and true or nil--队友
-    local r,g,b, col = GetClassColor(UnitClassBase(unit))--颜色
+    local r, g, b, col = GetClassColor(UnitClassBase(unit))--颜色
           col= col and '|c'..col or ''
     --设置单位图标  
     local englishFaction = isPlayer and UnitFactionGroup(unit)
@@ -687,30 +707,52 @@ local function setUnitInfo(self, unit)--设置单位提示信息
         if CheckInteractDistance(unit, 1) and CanInspect(unit) then--取得装等
             NotifyInspect(unit);
         end
-        setPlayerInfo(guid)--取得玩家信息
 
-        local isWarModeDesired=C_PvP.IsWarModeDesired()
+        --取得玩家信息
+        local textLeft, text2Left
+        local info= e.UnitItemLevel[guid]
+        if info then
+            if info.itemLevel and info.itemLevel>1 then--设置装等
+                textLeft= col..info.itemLevel..'|r'
+            end
+            local icon= info.specID and select(4, GetSpecializationInfoByID(info.specID))--设置天赋
+            if icon then
+                text2Left="|T"..icon..':0|t'
+            end
+        end
+        self.backgroundColor:SetColorTexture(r, g, b, 0.2)--背景颜色
+        self.backgroundColor:SetShown(true)
+
+        local isWarModeDesired=C_PvP.IsWarModeDesired()--争模式
         local statusIcon, statusText= e.PlayerOnlineInfo(unit)--单位，状态信息
         if statusIcon and statusText then
-           self.textLeft:SetText(statusText..statusIcon)
-        else
+            textLeft= (textLeft or '')..statusIcon..statusText
+
+        elseif isGroupPlayer then--队友
             local reason=UnitPhaseReason(unit)
             if reason then
                 if reason==0 then
-                    self.textLeft:SetText(e.onlyChinese and '不同了阶段' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1','')))
+                    textLeft= (e.onlyChinese and '不同了阶段' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1','')))..(textLeft or '')
                 elseif reason==1 then
-                    self.textLeft:SetText(e.onlyChinese and '不在同位面' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', e.Player.LayerText))
+                    textLeft= (e.onlyChinese and '不在同位面' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', e.Player.LayerText))..(textLeft or '')
                 elseif reason==2 then--战争模
-                    self.textLeft:SetText(isWarModeDesired and (e.onlyChinese and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF) or (e.onlyChinese and '开启战争模式' or ERR_PVP_WARMODE_TOGGLE_ON))
+                    textLeft= (isWarModeDesired and (e.onlyChinese and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF) or (e.onlyChinese and '开启战争模式' or ERR_PVP_WARMODE_TOGGLE_ON))..(textLeft or '')
                 elseif reason==3 then
-                    self.textLeft:SetText(e.onlyChinese and '时空漫游' or PLAYER_DIFFICULTY_TIMEWALKER)
+                    textLeft= (e.onlyChinese and '时空漫游' or PLAYER_DIFFICULTY_TIMEWALKER)..(textLeft or '')
                 end
             end
         end
+        if UnitHasLFGRandomCooldown(unit) then
+            text2Left= (text2Left or '')..'|T236347:0|t'
+        end
+        if textLeft then
+            self.textLeft:SetText(textLeft)
+        end
+        if text2Left then
+            self.text2Left:SetText(text2Left)
+        end
 
         local isInGuild= guid and IsPlayerInGuildFromGUID(guid)
-        --local col = e.UnitItemLevel[guid] and e.UnitItemLevel[guid].col or '|c'..select(4,GetClassColor(UnitClassBase(unit)))
-
         local line=GameTooltipTextLeft1--名称
         if line then
             if isSelf then--魔兽世界时光徽章
@@ -910,7 +952,7 @@ local function setCVar(reset, tips, notPrint)
         },
         ['nameplateOccludedAlphaMult']={
             value='0.15',
-            msg= e.onlyChinese and '不在视野里, 姓名板透明度: 0.15' or SPELL_FAILED_LINE_OF_SIGHT..'('..SHOW_TARGET_CASTBAR_IN_V_KEY..')'..CHANGE_OPACITY,
+            msg= e.onlyChinese and '不在视野里, 姓名板透明度' or (SPELL_FAILED_LINE_OF_SIGHT..'('..SHOW_TARGET_CASTBAR_IN_V_KEY..')'..CHANGE_OPACITY),
         },
         ['dontShowEquipmentSetsOnItems']={
             value='0',
@@ -937,7 +979,14 @@ local function setCVar(reset, tips, notPrint)
     if tips then
         for name, info in pairs(tab) do
             if info.zh and LOCALE_zhCN or not info.zh then
-                e.tips:AddDoubleLine(name..': '..info.value..' (|cff00ff00'..C_CVar.GetCVar(name)..'|r)', info.msg)
+                local curValue= C_CVar.GetCVar(name)
+                e.tips:AddDoubleLine(
+                    (curValue== info.value and '|cnGREEN_FONT_COLOR:' or '')
+                    ..name..' '
+                    ..(e.onlyChinese and '设置' or SETTINGS)..'|cffff00ff'..info.value..'|r'
+                    ..' ('..(e.onlyChinese and '当前' or REFORGE_CURRENT)..'|cffff00ff'..C_CVar.GetCVar(name)..'|r) |r'
+                    ..(e.onlyChinese and '默认' or DEFAULT)..'|cffff00ff'..C_CVar.GetCVarDefault(name)..'|r',
+                    info.msg)
             end
         end
         return
@@ -954,7 +1003,7 @@ local function setCVar(reset, tips, notPrint)
                         print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '恢复默认设置' or RESET_TO_DEFAULT)..'|r', name, defaultValue, info.msg)
                     end
                 end
-            elseif Save.setCVar then
+            else
                 local value = C_CVar.GetCVar(name)
                 if value~=info.value then
                     C_CVar.SetCVar(name, info.value)
