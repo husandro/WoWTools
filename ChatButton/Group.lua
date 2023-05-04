@@ -346,8 +346,6 @@ local function Init()
     button:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
     WoWToolsChatButtonFrame.last=button
 
-    
-
     if IsInRaid() then
         button.type=SLASH_RAID2
         setType(RAID)--使用,提示

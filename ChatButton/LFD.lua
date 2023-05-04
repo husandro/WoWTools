@@ -1253,7 +1253,7 @@ local function Init()
                 self.TimerLabel= e.Cstr(self.Timer)
                 self.TimerLabel:SetPoint('RIGHT')
             end
-            self.TimerLabel:SetText(self.Timer:GetValue())
+            self.TimerLabel:SetText(self.Timer:GetValue() )
         end
     end)
     if Save.LFGPlus then--预创建队伍增强

@@ -177,7 +177,7 @@ local function get_Web_Link(tab)
             ItemRefTooltip.wowhead.web=format(wowheadText, tab.type, tab.id, tab.name or '')
             ItemRefTooltip.wowhead:SetShown(true)
         end
-    elseif Save.ctrl and not UnitAffectingCombat('player') then
+    elseif Save.ctrl and  not UnitAffectingCombat('player') then
         if tab.id then
             if tab.type=='quest' then
                 if not tab.name then
@@ -217,6 +217,9 @@ local function get_Web_Link(tab)
                 )
             end
         end
+    elseif tab.frame and not tab.isPetUI then
+        tab.frame:SetText('')
+        tab.frame:SetShown(false)
     end
 end
 
@@ -646,46 +649,6 @@ end
 --#######
 --设置单位
 --#######
-local function setPlayerInfo(self, unit, guid)--设置玩家信息
-    local info= e.UnitItemLevel[guid]
-    if info then
-        if info.itemLevel and info.itemLevel>1 then
-            e.tips.textLeft:SetText(info.col and info.col..info.itemLevel..'|r' or info.itemLeveljqt)--设置装等
-        end
-
-        local icon= info.specID and select(4, GetSpecializationInfoByID(info.specID))--设置天赋
-        if icon then
-            e.tips.text2Left:SetText("|T"..icon..':0|t')
-        end
-
-        if info.r and info.b and info.g then
-            e.tips.backgroundColor:SetColorTexture(info.r, info.g, info.b, 0.2)--背景颜色
-            e.tips.backgroundColor:SetShown(true)
-        end
-    end
-
-    local isWarModeDesired=C_PvP.IsWarModeDesired()
-    local statusIcon, statusText= e.PlayerOnlineInfo(unit)--单位，状态信息
-    if statusIcon and statusText then
-       self.textLeft:SetText(statusText..statusIcon)
-    else
-        local reason=UnitPhaseReason(unit)
-        if reason then
-            if reason==0 then
-                self.textLeft:SetText(e.onlyChinese and '不同了阶段' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1','')))
-            elseif reason==1 then
-                self.textLeft:SetText(e.onlyChinese and '不在同位面' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', e.Player.LayerText))
-            elseif reason==2 then--战争模
-                self.textLeft:SetText(isWarModeDesired and (e.onlyChinese and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF) or (e.onlyChinese and '开启战争模式' or ERR_PVP_WARMODE_TOGGLE_ON))
-            elseif reason==3 then
-                self.textLeft:SetText(e.onlyChinese and '时空漫游' or PLAYER_DIFFICULTY_TIMEWALKER)
-            end
-        end
-    end
-
-end
-
-
 local function setUnitInfo(self, unit)--设置单位提示信息
     local name, realm= UnitName(unit)
     local isPlayer = UnitIsPlayer(unit)
@@ -865,7 +828,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                             end
                         end
                     else
-                        if not hideLine and Save.ctrl then
+                        if not hideLine  then
                             hideLine=line
                         else
                             line:SetText('')
@@ -873,7 +836,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                         end
                     end
                 else
-                    if not hideLine and Save.ctrl then
+                    if not hideLine then
                         hideLine=line
                     else
                         line:SetText('')
