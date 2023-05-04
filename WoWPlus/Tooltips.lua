@@ -742,7 +742,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                 end
             end
         end
-        if UnitHasLFGRandomCooldown(unit) then
+        if not IsInInstance() and UnitHasLFGRandomCooldown(unit) then
             text2Left= (text2Left or '')..'|T236347:0|t'
         end
         if textLeft then

@@ -1068,9 +1068,9 @@ end
 
 --####################
 --添加一个按钮, 打开选项
---[[####################
+--####################
 local function add_Button_OpenOption(self, notToggleCharacter)
-    local btn= e.Cbtn(self, {icon=true})
+    --[[local btn= e.Cbtn(self, {icon=true})
     btn:SetSize(20,20)
     btn:SetPoint('RIGHT', self, 'LEFT',-2,0)
     btn:SetScript('OnClick', function()
@@ -1086,10 +1086,10 @@ local function add_Button_OpenOption(self, notToggleCharacter)
     end)
     btn:SetScript('OnLeave', function() e.tips:Hide() end)
 
-    if not notToggleCharacter then
-        local btn2= e.Cbtn(btn, {atlas='charactercreate-icon-customize-body-selected'})
+    if not notToggleCharacter then]]
+        local btn2= e.Cbtn(self, {atlas='charactercreate-icon-customize-body-selected'})
         btn2:SetSize(40,40)
-        btn2:SetPoint('TOP', btn, 'BOTTOM')
+        btn2:SetPoint('TOPRIGHT',-5,-25)
         btn2:SetScript('OnClick', function()
             ToggleCharacter("PaperDollFrame")
         end)
@@ -1103,10 +1103,10 @@ local function add_Button_OpenOption(self, notToggleCharacter)
         end)
         btn2:SetScript('OnLeave', function() e.tips:Hide() end)
 
-        if not PaperDollFrame:IsVisible() or not PaperDollFrame:IsShown() then
+        if not (PaperDollFrame:IsVisible() or PaperDollFrame:IsShown()) and self:IsShown() then
             ToggleCharacter("PaperDollFrame")
         end
-    end
+    --[[end
 
     if #e.Player.disabledLUA>0 then--禁用插件
         local btn3= e.Cbtn(btn, {atlas=e.Icon.disabled})
@@ -1129,8 +1129,8 @@ local function add_Button_OpenOption(self, notToggleCharacter)
         end)
         btn3:SetScript('OnLeave', function() e.tips:Hide() end)
         btn3:SetAlpha(0.3)
-    end
-end]]
+    end]]
+end
 --###########
 --加载保存数据
 --###########
@@ -1172,11 +1172,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             end)
 
-        --elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级, 界面
-            --add_Button_OpenOption(ItemUpgradeFrameCloseButton)--添加一个按钮, 打开选项
+        elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级, 界面
+            add_Button_OpenOption(ItemUpgradeFrameCloseButton)--添加一个按钮, 打开选项
 
-        --elseif arg1=='Blizzard_ItemInteractionUI' then--套装转换, 界面
-            --add_Button_OpenOption(ItemInteractionFrameCloseButton)--添加一个按钮, 打开选项
+        elseif arg1=='Blizzard_ItemInteractionUI' then--套装转换, 界面
+            add_Button_OpenOption(ItemInteractionFrameCloseButton)--添加一个按钮, 打开选项
 
         elseif arg1=='Blizzard_InspectUI' then
             if InspectPaperDollFrame.ViewButton then
