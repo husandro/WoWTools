@@ -129,47 +129,51 @@ end
 
 
 local function set_Text_Item()
-	local text=''
-	if Save.str then
-		for itemID in pairs(Save.item) do
-			local num= GetItemCount(itemID , nil, true, true)
-			local icon= C_Item.GetItemIconByID(itemID) or select(10, GetItemInfo(itemID))
-			if icon and num>0 then
-				text= text~='' and text..'\n' or text
-				text= text..'|T'..icon..':0|t'..num
-			elseif not icon then
-				e.LoadDate({id=itemID, type='item'})--加载 item quest spell
+	if button.btn then
+		local text=''
+		if Save.str then
+			for itemID in pairs(Save.item) do
+				local num= GetItemCount(itemID , nil, true, true)
+				local icon= C_Item.GetItemIconByID(itemID) or select(10, GetItemInfo(itemID))
+				if icon and num>0 then
+					text= text~='' and text..'\n' or text
+					text= text..'|T'..icon..':0|t'..num
+				elseif not icon then
+					e.LoadDate({id=itemID, type='item'})--加载 item quest spell
+				end
 			end
 		end
+		button.btn.text2:SetText(text)
 	end
-	button.btn.text2:SetText(text)
 end
 
 local function set_Text()
-	local m=''
-	if Save.str then
-		if Save.indicato then
-			local tab={}
-			for currentID, index in pairs(Save.tokens) do
-				table.insert(tab, {currentID= currentID, index=index==true and 1 or index})
-			end
-			table.sort(tab, function(a,b) return a.index< b.index end)
-			for _, info in pairs(tab) do
-				local text= Get_Currency({id=info.currentID, index=nil, link=nil, soloValue=nil, showIcon=true, showName=Save.nameShow, showID=Save.showID, bit=3, showMax=nil})--货币
-				if text then
-					m= m..text..'\n' or m
+	if button.btn then
+		local m=''
+		if Save.str then
+			if Save.indicato then
+				local tab={}
+				for currentID, index in pairs(Save.tokens) do
+					table.insert(tab, {currentID= currentID, index=index==true and 1 or index})
 				end
-			end
-		else
-			for index=1, C_CurrencyInfo.GetCurrencyListSize() do
-				local text= Get_Currency({id=nil, index=index, link=nil, soloValue=nil, showIcon=true, showName=Save.nameShow, showID=Save.showID, bit=3, showMax=nil})--货币
-				if text then
-					m= m..text..'\n' or m
+				table.sort(tab, function(a,b) return a.index< b.index end)
+				for _, info in pairs(tab) do
+					local text= Get_Currency({id=info.currentID, index=nil, link=nil, soloValue=nil, showIcon=true, showName=Save.nameShow, showID=Save.showID, bit=3, showMax=nil})--货币
+					if text then
+						m= m..text..'\n' or m
+					end
+				end
+			else
+				for index=1, C_CurrencyInfo.GetCurrencyListSize() do
+					local text= Get_Currency({id=nil, index=index, link=nil, soloValue=nil, showIcon=true, showName=Save.nameShow, showID=Save.showID, bit=3, showMax=nil})--货币
+					if text then
+						m= m..text..'\n' or m
+					end
 				end
 			end
 		end
+		button.btn.text:SetText(m)
 	end
-	button.btn.text:SetText(m)
 end
 
 
