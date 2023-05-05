@@ -2666,7 +2666,11 @@
         "SLASH_SMART_WHISPER2",
         "PROFESSIONS_CRAFTING_FORM_CRAFTER_DURATION_REMAINING",
         "DESERTER",
-        "GroupLootHistoryFrame"
+        "GroupLootHistoryFrame",
+        "PaperDollFrame_SetSidebar",
+        "ITEM_UPGRADE_PVP_ITEM_LEVEL_STAT_FORMAT",
+        "RENOWN_REWARD_TITLE_NAME_FORMAT",
+        "PROFESSIONS_SPECIALIZATIONS_PAGE_NAME"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
