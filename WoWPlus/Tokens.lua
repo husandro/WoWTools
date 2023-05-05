@@ -14,6 +14,12 @@ local Get_Currency= function(tab)--e.Get_Currency({id=nil, index=nil, link=nil, 
     if not info or (info.quantity==0 and not info.isHeader) then--or (not info.discovered and info.quality==0 and not info.isHeader) then
         return
     end
+	if tab.index then
+		local info2=C_CurrencyInfo.GetCurrencyListInfo(tab.index+1)
+		if not info2 or info2.isHeader then
+			return
+		end
+	end
     if tab.soloValue then--仅，返回值
         return info
     end
@@ -127,7 +133,7 @@ local function set_Text_Item()
 	local text=''
 	for itemID in pairs(Save.item) do
 		local num= GetItemCount(itemID , nil, true, true)
-		
+
 		local icon= C_Item.GetItemIconByID(itemID)
 		if icon and num>0 then
 			text= text~='' and text..'\n' or text
@@ -139,13 +145,13 @@ local function set_Text_Item()
 				text= text..(GetItemInfo(itemID) or '')..' '
 			end
 			text= text..e.MK(num, 3)
-			
+
 		elseif not icon then
 			e.LoadDate({id=itemID, type='item'})--加载 item quest spell
 		end
 	end
 	button.btn.text2:SetText(text)
-	
+
 end
 
 local function set_Text()
@@ -185,7 +191,7 @@ local function get_Item_Num(tab)--物品数量
 end
 
 local function set_btn_ShowHide()--设置btn 显示,隐藏
-	local hide= Save.Hide 
+	local hide= Save.Hide
 				or (button.btn.text.num==0 and button.btn.text2.num==0)
 				or IsInInstance()
 				or C_PetBattles.IsInBattle()
@@ -352,9 +358,9 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 			if self.currencyID then
 				Save.tokens[self.currencyID]= not Save.tokens[self.currencyID] and self.index or nil
 				frame.check:SetAlpha(Save.tokens[self.currencyID] and 1 or 0.5)
-				
+
 				set_Text()--设置, 文本
-				
+
 			end
 		end)
 		frame.check:SetScript('OnEnter', function(self)

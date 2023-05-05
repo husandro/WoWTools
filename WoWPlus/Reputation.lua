@@ -9,7 +9,7 @@ local Save={
 	--indicato=true,--指定
 }
 local addName=REPUTATION
-local panel= e.Cbtn(ReputationFrame, {icon=true,size={20, 20}})
+local panel= e.Cbtn(ReputationFrame, {atlas='auctionhouse-icon-favorite',size={20, 20}})
 
 
 local function get_Faction_Info(tab)
