@@ -823,7 +823,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             hooksecurefunc(PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer.ScrollBox, 'SetScrollTargetOffset', function(self2)
                 for _, btn in pairs(self2:GetFrames()) do
                     local itemName, itemLink, itemRarity, _, _, _, _, _, _, itemTexture = GetItemInfo(btn.itemID);
-                    print(itemLink)
+                    --print(itemLink)
                     set_Item_Info(btn, {hyperLink=itemLink})
                 end
             end)
