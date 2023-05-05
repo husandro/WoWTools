@@ -20,97 +20,80 @@ end
 local function set_QuinkJoin_Init()--快速加入, 初始化
     set_SOCIAL_QUEUE_UPDATE()
 
-    local function get_Player_Link(self)
-        local player=self:GetParent().Members[1].playerLink
-        if player then
-           return LinkUtil.SplitLink(player)
-        end
-    end
     hooksecurefunc(QuickJoinEntryMixin, 'ApplyToFrame', function(self, frame)
-        if not frame or not self.guid then
+        if not frame then
             return
         end
         for i=1, #self.displayedMembers do
-            local name, color, relationship, playerLink = SocialQueueUtil_GetRelationshipInfo(self.displayedMembers[i].guid, nil, self.displayedMembers[i].clubId);
-            local nameObj = frame.Members[i];
-            if ( not nameObj ) then
-                nameObj = frame:CreateFontString(nil, "ARTWORK", "QuickJoinButtonMemberTemplate");
-                nameObj:SetPoint("TOPLEFT", frame.Members[i-1], "BOTTOMLEFT", 0, -QUICK_JOIN_NAME_SEPARATION);
-                frame.Members[i] = nameObj;
-            end
-    
-            nameObj.playerLink = playerLink;
-            nameObj.name = name;
-    
-            if ( i < #self.displayedMembers ) then
-                name = name..",";
-            end
-    
-            local displayName = playerLink or name;
-            if ( self.zombieMemberIndices[i] or not self:CanJoin() ) then
-                name = ("%s%s|r"):format(DISABLED_FONT_COLOR_CODE, displayName);
-            else
-                --Use the color code for our relationship
-                name = ("%s%s|r"):format(color, displayName);
-            end
-    
-            nameObj:SetText(name);
-            nameObj:Show();
-    
-        local icon, icon2 = nil, ''--角色图标
-        local guid= select(8, C_SocialQueue.GetGroupInfo(self.guid))
-        if guid then
-            local _, class, _, race, sex = GetPlayerInfoByGUID(guid)
-            if race and sex then
-                icon=e.GetUnitRaceInfo({unit=nil, guid=guid, race=race, sex=sex , reAtlas=true})
-            end
-            if class then
-                icon2= e.Class(nil, class, true)--职业图标
+            local guid=self.displayedMembers[i].guid
+            local nameObj = frame.Members[i]
+            local name = nameObj and nameObj.name
+            if guid and name then
+                local _, class, _, race, sex = GetPlayerInfoByGUID(guid)
+                local raceTexture=e.GetUnitRaceInfo({unit=nil, guid=guid, race=race, sex=sex , reAtlas=false})
+                local hex= select(4, GetClassColor(class))
+                hex= '|c'..hex
+                name= (raceTexture or '').. name
+                name=hex..name..'|r'
+                nameObj:SetText(name)
+
+                nameObj.guid=guid
+                nameObj.col= hex
+                if not nameObj:IsMouseEnabled() then
+                    nameObj:EnableMouse(true)
+                    nameObj:SetScript('OnLeave', function() e.tips:Hide() end)
+                    nameObj:SetScript('OnEnter', function(self2)
+                        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                        e.tips:ClearLines()
+                        e.tips:AddDoubleLine(e.onlyChinese and '/密语' or SLASH_SMART_WHISPER2, self2.col..self2.name)
+                        e.tips:AddLine(' ')
+                        e.tips:AddDoubleLine(id, addName)
+                        e.tips:Show()
+                    end)
+                    nameObj:SetScript('OnMouseDown',function(self2)
+                        e.Say(nil, self2.name, self2.guid2 and C_BattleNet.GetGameAccountInfoByGUID(self2.guid))
+                    end)
+                end
             end
         end
 
-        if not frame.chat then--悄悄话
-            frame.chat=e.Cbtn(frame, {icon='hide', size={18,18}})
-            frame.chat:SetPoint('RIGHT', (frame.Icon or frame), 'LEFT')
-            frame.chat:SetScript('OnLeave', function() e.tips:Hide() end)
-            frame.chat:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                local name= select(2, get_Player_Link(self2))
-                e.tips:AddDoubleLine(e.onlyChinese and '/密语' or SLASH_SMART_WHISPER2, name)
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(id, addName)
-                e.tips:Show()
-            end)
-            frame.chat:SetScript('OnMouseDown',function(self2)
-                local link, name = get_Player_Link(self2)
-                securecallfunction(SetItemRef, link, name, "LeftButton")
-            end)
-            frame:HookScript("OnDoubleClick", function()
+        if not frame.OnDoubleClick then--设置, 双击, 加入
+            frame:HookScript("OnDoubleClick", function()--QuickJoin.lua
                 QuickJoinFrame:JoinQueue()
             end)
-        end
-        frame.chat:SetNormalAtlas(icon or 'communities-icon-chat')
-
-        if not frame.class and icon2 then--角色职业图标
-            frame.class=frame:CreateTexture()
-            frame.class:SetSize(20,20)
-            frame.class:SetPoint('RIGHT', frame, 'RIGHT', 0,0)
+            hooksecurefunc(frame,'OnEnter', function()
+                print(id,addName)
+             end)
         end
 
-        if frame.class then--种族图标
-            if icon2 then
-                frame.class:SetAtlas(icon2)
+        local text--需求职责, 提示
+        if self.guid then
+            local canJoin, numQueues, needTank, needHealer, needDamage, isSoloQueuePart, questSessionActive, leaderGUID = C_SocialQueue.GetGroupInfo(self.guid)
+            if canJoin then
+                if numQueues and numQueues>0 then
+                    text= '|cnGREEN_FONT_COLOR:'..numQueues..'|r'
+                end
+                if needTank or needHealer or needDamage then
+                    text= (text or '')..(needTank and INLINE_TANK_ICON or '')..(needHealer and INLINE_HEALER_ICON or '')..(needDamage and INLINE_DAMAGER_ICON or '')
+                end
+                if questSessionActive then
+                    text= (text or '')..'|A:QuestPortraitIcon-SandboxQuest:0:0|a'
+                end
             end
-            frame.class:SetShown(icon2 and true or false)
         end
-        
+        if text and not frame.roleTips then
+            frame.roleTips= e.Cstr(frame)
+            frame.roleTips:SetPoint('BOTTOMRIGHT')
+        end
+        if frame.roleTips then
+            frame.roleTips:SetText(text or '')
+        end
     end)
 
     hooksecurefunc(QuickJoinRoleSelectionFrame, 'ShowForGroup', function(self, guid)--职责选择框
         local t, h ,dps=self.RoleButtonTank.CheckButton, self.RoleButtonHealer.CheckButton, self.RoleButtonDPS.CheckButton--选择职责
         local t3, h3, dps3 =t:GetChecked(), h:GetChecked(), dps:GetChecked()
-        if not t3 and  not h3 and not dps3 then
+        if not t3 and not h3 and not dps3 then
             local sid=GetSpecialization()
             if sid and sid>0 then
                 local role = select(5, GetSpecializationInfo(sid))
@@ -124,21 +107,20 @@ local function set_QuinkJoin_Init()--快速加入, 初始化
             end
         end
 
-        local player= select(8, C_SocialQueue.GetGroupInfo(guid))--玩家名称
-        if player then
-            local name, realm = select(6, GetPlayerInfoByGUID(player))
-            if name then
-                if not self.name then
-                    self.name=self:CreateFontString()
-                    self.name:SetFontObject('GameFontNormal')
-                    self.name:SetPoint('BOTTOM', self.CancelButton, 'TOPLEFT', 2, 0)
-                end
-                if realm and realm=='' then realm=nil end
-                name=name..(realm and ' - '..realm or '')
-                self.name:SetText(name)
-            else
-                if self.name then self.name:SetText('') end
-            end
+        local leaderGUID = select(8, C_SocialQueue.GetGroupInfo(guid))--玩家名称
+        local text= leaderGUID and e.GetPlayerInfo({unit=nil, guid=leaderGUID , name=nil, factionName=nil, reName=true, reLink=false})
+        if text and not self.nameInfo then
+            self.nameInfo= e.Cstr(self)
+            self.nameInfo:SetPoint('BOTTOM', self.CancelButton, 'TOPLEFT', 2, 0)
+        end
+        if self.nameInfo then
+            self.nameInfo:SetText('')
+        end
+
+        if self.AcceptButton:IsEnabled() and not IsModifierKeyDown() then
+            local tank2, healer2, dps2= self:GetSelectedRoles()
+            self.AcceptButton:Click()
+            print(id, addName, tank2 and INLINE_TANK_ICON, healer2 and INLINE_HEALER_ICON, dps2 and INLINE_DAMAGER_ICON, e.GetEnabeleDisable(false)..'Alt')
         end
     end)
 

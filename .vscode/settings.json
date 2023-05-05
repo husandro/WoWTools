@@ -2673,7 +2673,9 @@
         "PROFESSIONS_SPECIALIZATIONS_PAGE_NAME",
         "SocialQueueUtil_GetRelationshipInfo",
         "QUICK_JOIN_NAME_SEPARATION",
-        "DISABLED_FONT_COLOR_CODE"
+        "DISABLED_FONT_COLOR_CODE",
+        "LFGListApplicationDialog_Show",
+        "RoleSelectionRoleMixin"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
