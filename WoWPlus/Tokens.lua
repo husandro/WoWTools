@@ -129,7 +129,7 @@ end
 
 
 local function set_Text_Item()
-	if button.btn then
+	if button.btn and button:IsShown() then
 		local text=''
 		if Save.str then
 			for itemID in pairs(Save.item) do
@@ -148,7 +148,7 @@ local function set_Text_Item()
 end
 
 local function set_Text()
-	if button.btn then
+	if button.btn and button:IsShown() then
 		local m=''
 		if Save.str then
 			if Save.indicato then
