@@ -759,6 +759,8 @@ local function Init()
     panel:RegisterEvent('BANKFRAME_OPENED')
     panel:RegisterEvent("GUILDBANKBAGSLOTS_CHANGED");
     panel:RegisterEvent("GUILDBANK_ITEM_LOCK_CHANGED");
+
+   
 end
 
 --###########
@@ -794,7 +796,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 panel:UnregisterAllEvents()
             else
                 Init()
-                panel:UnregisterEvent('ADDON_LOADED')
+                --panel:UnregisterEvent('ADDON_LOADED')
 
                 FMTab={--附魔
                         ['主属性']= '主',
@@ -813,6 +815,24 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     }
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
+
+        elseif arg1=='Blizzard_PerksProgram' then
+            --PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer.ScrollBox.ScrollTarget.21a09ca2300.ContentsContainer
+
+            
+            hooksecurefunc(PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer.ScrollBox, 'SetScrollTargetOffset', function(self2)
+                for _, btn in pairs(self2:GetFrames()) do
+                    local itemName, itemLink, itemRarity, _, _, _, _, _, _, itemTexture = GetItemInfo(btn.itemID);
+                    set_Item_Info(btn, {hyperLink=itemLink})
+                end
+            end)
+            --[[PerksProgramFrame:HookScript('OnShow', function()
+                hooksecurefunc(GroupLootHistoryFrame.ScrollBox, 'SetScrollTargetOffset', function(self)
+                    for _, btn in pairs(self:GetFrames()) do
+                        set_LootFrame_btn(btn)
+                    end
+                end)
+            end)]]
         end
 
     elseif event == "PLAYER_LOGOUT" then

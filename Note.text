@@ -1,4 +1,9 @@
 
+hooksecurefunc(GroupLootHistoryFrame.ScrollBox, 'SetScrollTargetOffset', function(self)
+    for _, btn in pairs(self:GetFrames()) do
+        set_LootFrame_btn(btn)
+    end
+end)
 for index, button in pairs(CalendarCreateEventInviteList.ScrollBox:GetFrames()) do--ScrollBox.lua
 	
 end
