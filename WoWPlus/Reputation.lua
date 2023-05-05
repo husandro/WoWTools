@@ -9,7 +9,7 @@ local Save={
 	--indicato=true,--指定
 }
 local addName=REPUTATION
-local panel= e.Cbtn(ReputationFrame, {atlas='auctionhouse-icon-favorite',size={20, 20}})
+local panel= e.Cbtn(ReputationFrame, {atlas='auctionhouse-icon-favorite',size={18, 18}})
 
 
 local function get_Faction_Info(tab)
@@ -221,7 +221,6 @@ local function text_Init()--监视, 文本
 			e.tips:Show();
 		end)
 		panel.btn:SetScript("OnLeave", function(self2)
-			self2:SetButtonState("NORMAL")
 			ResetCursor()
 			e.tips:Hide()
 		end);
@@ -413,8 +412,8 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 		factionContainer.check:SetFrameStrata('DIALOG')
 		factionContainer.check:SetScript('OnClick', function(self)
 			if self.factionID then
-				Save.factions[factionID]= not Save.factions[factionID] and self.factionIndex or nil
-				self:SetAlpha(Save.factions[factionID] and 1 or 0.5)
+				Save.factions[self.factionID ]= not Save.factions[self.factionID ] and self.factionIndex or nil
+				self:SetAlpha(Save.factions[self.factionID] and 1 or 0.5)
 				set_Text()--设置, 文本
 			end
 		end)
@@ -540,33 +539,68 @@ end
 --#####
 local function InitMenu(self, level, type)
 	local info
-	if type=='INDICATO' then
+	if type=='INDICATOLIST' then
+		local find
+		for factionID, index in pairs(Save.factions) do
+			local name=GetFactionInfoByID(factionID)
+			name= name and name..' '..factionID or ('factionID '..factionID)
+			info={
+				text= name..' |cnGREEN_FONT_COLOR:'..index..'|r',
+				tooltipOnButton=true,
+				tooltipTitle= e.onlyChinese and '移除' or REMOVE,
+				notCheckable= true,
+				arg1= name,
+				arg2= factionID,
+				func= function(_,arg1, arg2)
+					Save.factions[arg2]=nil
+					securecallfunction(ReputationFrame_Update)
+					print(id, addName, e.onlyChinese and '移除' or REMOVE, arg1, arg2)
+				end
+			}
+			find=true
+			e.LibDD:UIDropDownMenu_AddButton(info, level)
+		end
+		if find then
+			e.LibDD:UIDropDownMenu_AddSeparator(level)
+			info={
+				text= e.onlyChinese and '全部清除' or CLEAR_ALL,
+				notCheckable=true,
+				func= function()
+					Save.factions={}
+					securecallfunction(ReputationFrame_Update)
+					set_Text()--设置, 文本
+				end
+			}
+			e.LibDD:UIDropDownMenu_AddButton(info, level)
+		else
+			info={
+				text= e.onlyChinese and '无' or NONE,
+				notCheckable=true,
+				isTitle=true,
+			}
+			e.LibDD:UIDropDownMenu_AddButton(info, level)
+		end
+		return
+
+	elseif type=='INDICATO' then
 		local n= 0
-		for _,_ in pairs(Save.factions) do
+		for _ in pairs(Save.factions) do
 			n=n+1
 		end
 		info={
 			text= (e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)..' |cnGREEN_FONT_COLOR:#'..n,
 			checked= Save.indicato,
+			menuList='INDICATOLIST',
+			hasArrow=true,
 			func= function()
 				Save.indicato= not Save.indicato and true or nil
 				if Save.indicato and Save.notPlus then
 					Save.notPlus= nil
 					panel.down:SetShown(true)
 					panel.up:SetShown(true)
-					ReputationFrame_Update()
-					e.LibDD:CloseDropDownMenus();
+					securecallfunction(ReputationFrame_Update)
+					--e.LibDD:CloseDropDownMenus();
 				end
-				set_Text()--设置, 文本
-			end
-		}
-		e.LibDD:UIDropDownMenu_AddButton(info, level)
-		info={
-			text= e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
-			notCheckable=true,
-			func= function()
-				Save.factions={}
-				ReputationFrame_Update()
 				set_Text()--设置, 文本
 			end
 		}
@@ -582,54 +616,60 @@ local function InitMenu(self, level, type)
 			end
 		}
 		e.LibDD:UIDropDownMenu_AddButton(info, level)
-	else
-		info={
-			text= e.onlyChinese and '追踪' or TRACKING,
-			checked= Save.btn,
-			tooltipOnButton=true,
-			tooltipTitle= e.onlyChinese and '副本/宠物对战' or INSTANCE..'/'..SHOW_PET_BATTLES_ON_MAP_TEXT,
-			tooltipText= e.GetEnabeleDisable(false),
-			colorCode= (IsInInstance() or C_PetBattles.IsInBattle()) and '|cffff0000',
-			menuList='INDICATO',
-			hasArrow=true,
-			func= function()
-				Save.btn= not Save.btn and true or nil
-				text_Init()--监视, 文本
-				if panel.btn then
-					panel.btn:SetButtonState('PUSHED')
-				end
-				print(id, addName,e.onlyChinese and '追踪' or TRACKING, e.GetShowHide(Save.btn))
-			end
-		}
-		e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-		info={
-			text= (e.onlyChinese and '声望变化' or COMBAT_TEXT_SHOW_REPUTATION_TEXT)..'|A:voicechat-icon-textchat-silenced:0:0|a',
-			tooltipOnButton=true,
-			tooltipTitle= e.onlyChinese and '展开选项 |A:editmode-down-arrow:16:11:0:-7|a 声望' or HUD_EDIT_MODE_EXPAND_OPTIONS..REPUTATION,
-			tooltipText= '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需求' or NEED),
-			checked= Save.factionUpdateTips,
-			func= function()
-				Save.factionUpdateTips= not Save.factionUpdateTips and true or nil
-				--set_RegisterEvent_CHAT_MSG_COMBAT_FACTION_CHANGE()--更新, 提示, 事件
-				print(id, addName, e.onlyChinese and '声望变化' or COMBAT_TEXT_SHOW_REPUTATION_TEXT,'|A:voicechat-icon-textchat-silenced:0:0|a', e.GetEnabeleDisable(Save.factionUpdateTips), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
-			end
-		}
-		e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-		info={
-			text= 'UI Plus',
-			checked= not Save.notPlus,
-			func= function()
-				Save.notPlus= not Save.notPlus and true or nil
-				panel.down:SetShown(not Save.notPlus)
-				panel.up:SetShown(not Save.notPlus)
-				ReputationFrame_Update()
-				--print(id, addName, 'UI Plus', e.GetEnabeleDisable(not Save.notPlus), e.onlyChinese and '需要刷新' or NEED..REFRESH)
-			end
-		}
-		e.LibDD:UIDropDownMenu_AddButton(info, level)
+		return
 	end
+
+	info={
+		text= e.onlyChinese and '追踪' or TRACKING,
+		checked= Save.btn,
+		tooltipOnButton=true,
+		tooltipTitle= e.onlyChinese and '副本/宠物对战' or INSTANCE..'/'..SHOW_PET_BATTLES_ON_MAP_TEXT,
+		tooltipText= e.GetEnabeleDisable(false),
+		colorCode= (IsInInstance() or C_PetBattles.IsInBattle()) and '|cffff0000',
+		menuList='INDICATO',
+		hasArrow=true,
+		func= function()
+			Save.btn= not Save.btn and true or nil
+			text_Init()--监视, 文本
+			print(id, addName,e.onlyChinese and '追踪' or TRACKING, e.GetShowHide(Save.btn))
+		end
+	}
+	e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+	info={
+		text= (e.onlyChinese and '声望变化' or COMBAT_TEXT_SHOW_REPUTATION_TEXT)..'|A:voicechat-icon-textchat-silenced:0:0|a',
+		tooltipOnButton=true,
+		tooltipTitle= e.onlyChinese and '展开选项 |A:editmode-down-arrow:16:11:0:-7|a 声望' or HUD_EDIT_MODE_EXPAND_OPTIONS..REPUTATION,
+		tooltipText= '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需求' or NEED),
+		checked= Save.factionUpdateTips,
+		func= function()
+			Save.factionUpdateTips= not Save.factionUpdateTips and true or nil
+			--set_RegisterEvent_CHAT_MSG_COMBAT_FACTION_CHANGE()--更新, 提示, 事件
+			print(id, addName, e.onlyChinese and '声望变化' or COMBAT_TEXT_SHOW_REPUTATION_TEXT,'|A:voicechat-icon-textchat-silenced:0:0|a', e.GetEnabeleDisable(Save.factionUpdateTips), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+		end
+	}
+	e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+	info={
+		text= 'UI Plus',
+		checked= not Save.notPlus,
+		func= function()
+			Save.notPlus= not Save.notPlus and true or nil
+			panel.down:SetShown(not Save.notPlus)
+			panel.up:SetShown(not Save.notPlus)
+			securecallfunction(ReputationFrame_Update)
+			--print(id, addName, 'UI Plus', e.GetEnabeleDisable(not Save.notPlus), e.onlyChinese and '需要刷新' or NEED..REFRESH)
+		end
+	}
+	e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+	e.LibDD:UIDropDownMenu_AddSeparator(level)
+	info={
+		text= id..' '..addName,
+		isTitle=true,
+		notCheckable=true,
+	}
+	e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
 
 
@@ -644,13 +684,23 @@ local function Init()
 	hooksecurefunc('ReputationFrame_InitReputationRow', set_ReputationFrame_InitReputationRow)-- 声望, 界面, 增强
 
 	panel:SetPoint("LEFT", ReputationFrameStandingLabel, 'RIGHT',5,0)
-	panel:SetScript("OnMouseDown", function(self,d)
+	panel:SetScript("OnClick", function(self,d)
 		if not self.Menu then
 			self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
     		e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
 		end
         e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
     end)
+	panel:SetScript('OnEnter', function(self)
+		if self.btn and self.btn:IsShown() then
+			self.btn:SetButtonState('PUSHED')
+		end
+	end)
+	panel:SetScript('OnLeave', function(self)
+		if self.btn then
+			self.btn:SetButtonState("NORMAL")
+		end
+	end)
 
 	panel.up=CreateFrame("Button",nil, panel, 'UIPanelButtonTemplate')--收起所有
 	panel.up:SetShown(not Save.notPlus)
