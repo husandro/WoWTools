@@ -4,16 +4,14 @@ local Save={
 	Hide=true,
 	str=true,
 	tokens={},--{[currencyID]=true}指定显示，表
-	item={
-		[202196]= true
-	},
+	item={},--[202196]= true
 	--indicato=nil,--指定显示
 }
 local button
 
 local Get_Currency= function(tab)--e.Get_Currency({id=nil, index=nil, link=nil, soloValue=nil, showIcon=true, showName=true, showID=true, bit=3, showMax=nil})--货币
     local info = tab.index and C_CurrencyInfo.GetCurrencyListInfo(tab.index) or tab.id and C_CurrencyInfo.GetCurrencyInfo(tab.id) or C_CurrencyInfo.GetCurrencyInfoFromLink(tab.link)
-    if not info then--or (not info.discovered and info.quality==0 and not info.isHeader) then
+    if not info or (info.quantity==0 and not info.isHeader) then--or (not info.discovered and info.quality==0 and not info.isHeader) then
         return
     end
     if tab.soloValue then--仅，返回值
@@ -119,6 +117,65 @@ local function set_ItemInteractionFrame_Currency(self)
 	end
 end
 
+
+
+
+local function set_Text_Item()
+	if not button.btn or not button.btn:IsShown() then
+		return
+	end
+	local text=''
+	for itemID in pairs(Save.item) do
+		local num= GetItemCount(itemID , nil, true, true)
+		
+		local icon= C_Item.GetItemIconByID(itemID)
+		if icon and num>0 then
+			text= text~='' and text..'\n' or text
+			if Save.showID then
+				text= text..itemID
+			end
+			text= text..'|T'..icon..':0|t'
+			if Save.nameShow then
+				text= text..(GetItemInfo(itemID) or '')..' '
+			end
+			text= text..e.MK(num, 3)
+			
+		elseif not icon then
+			e.LoadDate({id=itemID, type='item'})--加载 item quest spell
+		end
+	end
+	button.btn.text2:SetText(text)
+	
+end
+
+local function set_Text()
+	if not button.btn or not button.btn:IsShown() then
+		return
+	end
+	local m=''
+	if Save.indicato then
+		local tab={}
+		for currentID, index in pairs(Save.tokens) do
+			table.insert(tab, {currentID= currentID, index=index==true and 1 or index})
+		end
+		table.sort(tab, function(a,b) return a.index< b.index end)
+		for _, info in pairs(tab) do
+			local text= Get_Currency({id=info.currentID, index=nil, link=nil, soloValue=nil, showIcon=true, showName=Save.nameShow, showID=Save.showID, bit=3, showMax=nil})--货币
+			if text then
+				m= m..text..'\n' or m
+			end
+		end
+	else
+		for index=1, C_CurrencyInfo.GetCurrencyListSize() do
+			local text= Get_Currency({id=nil, index=index, link=nil, soloValue=nil, showIcon=true, showName=Save.nameShow, showID=Save.showID, bit=3, showMax=nil})--货币
+			if text then
+				m= m..text..'\n' or m
+			end
+		end
+	end
+	button.btn.text:SetText(m)
+end
+
 local function get_Item_Num(tab)--物品数量
 	local num= 0
 	for _ in pairs(tab) do
@@ -127,59 +184,32 @@ local function get_Item_Num(tab)--物品数量
 	return num
 end
 
-
-local function set_Text_Item()
-	if button.btn and button:IsShown() then
-		local text=''
-		if Save.str then
-			for itemID in pairs(Save.item) do
-				local num= GetItemCount(itemID , nil, true, true)
-				local icon= C_Item.GetItemIconByID(itemID) or select(10, GetItemInfo(itemID))
-				if icon and num>0 then
-					text= text~='' and text..'\n' or text
-					text= text..'|T'..icon..':0|t'..num
-				elseif not icon then
-					e.LoadDate({id=itemID, type='item'})--加载 item quest spell
-				end
-			end
-		end
-		button.btn.text2:SetText(text)
+local function set_btn_ShowHide()--设置btn 显示,隐藏
+	local hide= Save.Hide 
+				or (button.btn.text.num==0 and button.btn.text2.num==0)
+				or IsInInstance()
+				or C_PetBattles.IsInBattle()
+	button.btn:SetShown(not hide)
+	if Save.str then
+		button.btn:SetNormalTexture(0)
+	else
+		button.btn:SetNormalAtlas(e.Icon.icon)
 	end
 end
 
-local function set_Text()
-	if button.btn and button:IsShown() then
-		local m=''
-		if Save.str then
-			if Save.indicato then
-				local tab={}
-				for currentID, index in pairs(Save.tokens) do
-					table.insert(tab, {currentID= currentID, index=index==true and 1 or index})
-				end
-				table.sort(tab, function(a,b) return a.index< b.index end)
-				for _, info in pairs(tab) do
-					local text= Get_Currency({id=info.currentID, index=nil, link=nil, soloValue=nil, showIcon=true, showName=Save.nameShow, showID=Save.showID, bit=3, showMax=nil})--货币
-					if text then
-						m= m..text..'\n' or m
-					end
-				end
-			else
-				for index=1, C_CurrencyInfo.GetCurrencyListSize() do
-					local text= Get_Currency({id=nil, index=index, link=nil, soloValue=nil, showIcon=true, showName=Save.nameShow, showID=Save.showID, bit=3, showMax=nil})--货币
-					if text then
-						m= m..text..'\n' or m
-					end
-				end
-			end
-		end
-		button.btn.text:SetText(m)
+local function set_btn_CurrencyAndItem_Text()--设置btn text
+	if button.btn:IsShown() and Save.str then
+		set_Text()
+		set_Text_Item()
+	else
+		button.btn.text:SetText('')
+		button.btn.text2:SetText('')
 	end
 end
-
 
 local function Set_btn()
 	if not Save.Hide and not button.btn then--监视声望按钮
-		button.btn=e.Cbtn(nil, {icon=Save.str, size={18,18}})
+		button.btn=e.Cbtn(nil, {atlas=e.Icon.icon, size={18,18}})
 		if Save.point then
 			button.btn:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
 		else
@@ -203,22 +233,27 @@ local function Set_btn()
 
 			elseif d=='LeftButton' and not key then--点击,显示隐藏
 				Save.str= not Save.str and true or nil
-				button.btn:SetNormalAtlas(Save.str and e.Icon.icon or e.Icon.disabled)
+				set_btn_ShowHide()--设置btn 显示,隐藏
+				set_btn_CurrencyAndItem_Text()--设置btn text
 				print(id, addName, e.GetShowHide(Save.str))
-				set_Text()
 
 			elseif d=='LeftButton' and IsAltKeyDown() then--显示名称
 				Save.nameShow= not Save.nameShow and true or nil
-				set_Text()
+				set_btn_ShowHide()--设置btn 显示,隐藏
+				set_btn_CurrencyAndItem_Text()--设置btn text
 				print(id, addName, SHOW, NAME, e.GetShowHide(Save.nameShow))
 
 			elseif d=='LeftButton' and IsControlKeyDown() then --显示ID
 				Save.showID= not Save.showID and true or nil
 				print(id, addName, SHOW, 'ID', e.GetShowHide(Save.showID))
-				set_Text()
+				set_btn_ShowHide()--设置btn 显示,隐藏
+				set_btn_CurrencyAndItem_Text()--设置btn text
 			end
 		end)
 		button.btn:SetScript("OnEnter",function(self2)
+			if UnitAffectingCombat('player') then
+				return
+			end
 			e.tips:SetOwner(self2, "ANCHOR_LEFT");
 			e.tips:ClearLines();
 			e.tips:AddDoubleLine((e.onlyChinese and '追踪' or TRACKING)..': '..e.GetShowHide(Save.str),e.Icon.left)
@@ -260,10 +295,11 @@ local function Set_btn()
 		end)
 
 		button.btn:SetScript('OnEvent', function(self, event)
-			self:SetShown(not Save.Hide and not IsInInstance() and not C_PetBattles.IsInBattle())
-			if event=='BAG_UPDATE_DELAYED' then
+			if event=='PLAYER_ENTERING_WORLD' or event=='PET_BATTLE_OPENING_DONE' or event=='PET_BATTLE_CLOSE' then
+				set_btn_ShowHide()--设置btn 显示,隐藏
+			elseif event=='BAG_UPDATE_DELAYED' then
 				set_Text_Item()
-			else
+			elseif event=='CURRENCY_DISPLAY_UPDATE' then
 				set_Text()
 			end
 		end)
@@ -271,34 +307,32 @@ local function Set_btn()
 		button.btn.text=e.Cstr(button.btn, {size=Save.size, color=true})--内容显示文本
 		button.btn.text:SetPoint('TOPLEFT',3,-3)
 
-		button.btn.text2=e.Cstr(button.btn, {size=Save.size, color=true})----物品, 内容显示文本
+		button.btn.text2=e.Cstr(button.btn, {size=Save.size, color=true})--物品, 内容显示文本
 		button.btn.text2:SetPoint('TOPLEFT', button.btn.text, 'BOTTOMLEFT', 0, -8)
 	end
 	if button.btn then
-		button.btn:SetShown(not Save.Hide and not IsInInstance() and not C_PetBattles.IsInBattle())
-		button.btn:SetNormalAtlas(Save.str and e.Icon.icon or e.Icon.disabled)
-		
 		local events={
 			'CURRENCY_DISPLAY_UPDATE',
 			'PLAYER_ENTERING_WORLD',
 			'PET_BATTLE_OPENING_DONE',
 			'PET_BATTLE_CLOSE',
 		}
-		if Save.Hide or get_Item_Num(Save.tokens)==0 then
-			FrameUtil.UnregisterFrameForEvents(button.btn, events)
-			button.btn.text:SetText('')
+		if Save.indicato then
+			button.btn.text.num= get_Item_Num(Save.tokens)
 		else
-			FrameUtil.RegisterFrameForEvents(button.btn, events)
-			set_Text()
+			button.btn.text.num= 1
 		end
+		button.btn.text2.num= get_Item_Num(Save.item)
 
-		--物品数量
-		if Save.Hide or get_Item_Num(Save.item)==0 then
-			button.btn:UnregisterEvent('BAG_UPDATE_DELAYED')
-			button.btn.text2:SetText('')
+		set_btn_ShowHide()--设置btn 显示,隐藏
+		set_btn_CurrencyAndItem_Text()--设置btn Text
+
+		if not button.btn:IsShown() then--注册,事件
+			FrameUtil.UnregisterFrameForEvents(button.btn, events)
+			button.btn:UnregisterEvent('BAG_UPDATE_DELAYED')--物品数量
 		else
 			button.btn:RegisterEvent('BAG_UPDATE_DELAYED')
-			set_Text_Item()
+			FrameUtil.RegisterFrameForEvents(button.btn, events)
 		end
 	end
 end
@@ -318,7 +352,9 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 			if self.currencyID then
 				Save.tokens[self.currencyID]= not Save.tokens[self.currencyID] and self.index or nil
 				frame.check:SetAlpha(Save.tokens[self.currencyID] and 1 or 0.5)
+				
 				set_Text()--设置, 文本
+				
 			end
 		end)
 		frame.check:SetScript('OnEnter', function(self)
@@ -419,7 +455,13 @@ local function InitMenu(self, level, menuList)--主菜单
 					print(id, addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
 				end
 			}
-			find=true
+			e.LibDD:UIDropDownMenu_AddButton(info, level)
+		else
+			info={
+				text= e.onlyChinese and '无' or NONE,
+				notCheckable=true,
+				isTitle=true,
+			}
 			e.LibDD:UIDropDownMenu_AddButton(info, level)
 		end
 		return
@@ -621,18 +663,19 @@ local function Init()
 		button.indcatoCheck.text:SetTextColor(0.82, 0.82, 0.82, 0.5)
 	end
 
-	hooksecurefunc('TokenFrame_InitTokenButton',function(self, frame, elementData)--Blizzard_TokenUI.lua
-		set_Tokens_Button(frame)--设置, 列表, 内容
-	end)
-	hooksecurefunc('TokenFrame_Update', function()
-		for _, frame in pairs(TokenFrame.ScrollBox:GetFrames()) do
+	C_Timer.After(2, function()
+		Set_btn()
+		hooksecurefunc('TokenFrame_InitTokenButton',function(self, frame, elementData)--Blizzard_TokenUI.lua
 			set_Tokens_Button(frame)--设置, 列表, 内容
-		end
-		set_ItemInteractionFrame_Currency(TokenFrame)--套装,转换,货币
-		set_Text()--设置, 文本
+		end)
+		hooksecurefunc('TokenFrame_Update', function()
+			for _, frame in pairs(TokenFrame.ScrollBox:GetFrames()) do
+				set_Tokens_Button(frame)--设置, 列表, 内容
+			end
+			set_ItemInteractionFrame_Currency(TokenFrame)--套装,转换,货币
+			set_Text()--设置, 文本
+		end)
 	end)
-
-	C_Timer.After(2, Set_btn)
 end
 
 
