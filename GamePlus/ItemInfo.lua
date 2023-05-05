@@ -819,10 +819,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         elseif arg1=='Blizzard_PerksProgram' then
             --PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer.ScrollBox.ScrollTarget.21a09ca2300.ContentsContainer
 
-            
+            --https://github.com/tomrus88/BlizzardInterfaceCode/blob/299c331498019b728b6b2ea4dbe7a17ffe6c0506/Interface/AddOns/Blizzard_PerksProgram/Blizzard_PerksProgram.lua#L4
             hooksecurefunc(PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer.ScrollBox, 'SetScrollTargetOffset', function(self2)
                 for _, btn in pairs(self2:GetFrames()) do
                     local itemName, itemLink, itemRarity, _, _, _, _, _, _, itemTexture = GetItemInfo(btn.itemID);
+                    print(itemLink)
                     set_Item_Info(btn, {hyperLink=itemLink})
                 end
             end)
