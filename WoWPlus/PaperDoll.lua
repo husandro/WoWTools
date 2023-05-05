@@ -118,7 +118,7 @@ local function LvTo()--总装等
             e.tips:AddLine(CharacterStatsPane.ItemLevelFrame.tooltip)
             e.tips:AddLine(CharacterStatsPane.ItemLevelFrame.tooltip2)
             e.tips:AddLine(' ')
-            e.tips:AddLine('|cnGREEN_FONT_COLOR:'..format(CHARACTER_LINK_ITEM_LEVEL_TOOLTIP, self.avgItemLevel or '0'))
+            e.tips:AddLine('|cnGREEN_FONT_COLOR:'..format(e.onlyChinese and '物品等级：%d' or CHARACTER_LINK_ITEM_LEVEL_TOOLTIP, self.avgItemLevel or '0'))
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
         end)
@@ -143,7 +143,7 @@ local function LvTo()--总装等
             e.tips:AddLine(CharacterStatsPane.ItemLevelFrame.tooltip)
             e.tips:AddLine(CharacterStatsPane.ItemLevelFrame.tooltip2)
             e.tips:AddLine(' ')
-            e.tips:AddLine('|cnGREEN_FONT_COLOR:'..format(ITEM_UPGRADE_PVP_ITEM_LEVEL_STAT_FORMAT, self.avgItemLevel or '0'))
+            e.tips:AddLine('|cnGREEN_FONT_COLOR:'..format(e.onlyChinese and 'PvP物品等级 %d' or ITEM_UPGRADE_PVP_ITEM_LEVEL_STAT_FORMAT, self.avgItemLevel or '0'))
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
         end)
@@ -413,7 +413,7 @@ local function Title()--头衔数量
         PaperDollSidebarTab2.titleNumeri:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(format(RENOWN_REWARD_TITLE_NAME_FORMAT, self.num or ''), e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)
+            e.tips:AddDoubleLine(format(e.onlyChinese and '头衔：%s' or RENOWN_REWARD_TITLE_NAME_FORMAT, self.num or ''), e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL, 0,1,0, 0,1,0)
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
@@ -478,7 +478,7 @@ local function set_PaperDollSidebarTab3_Text()--标签, 内容,提示
         PaperDollSidebarTab3.set=e.Cstr(PaperDollSidebarTab3, {justifyH='CENTER'})
         PaperDollSidebarTab3.set:SetPoint('BOTTOM', 2, 0)
         set_set_PaperDollSidebarTab3_Text_Tips(PaperDollSidebarTab3.set)
-        PaperDollSidebarTab3.set.tooltip= e.onlyChinese and '名称' or NAME
+        PaperDollSidebarTab3.set.tooltip= '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '名称' or NAME)..'|r'
     end
     if PaperDollSidebarTab3.set then
         PaperDollSidebarTab3.set:SetText(name or '')
@@ -504,7 +504,7 @@ local function set_PaperDollSidebarTab3_Text()--标签, 内容,提示
         local h, w= PaperDollSidebarTab3:GetSize()
         PaperDollSidebarTab3.spec:SetSize(h/3+2, w/3+2)
         set_set_PaperDollSidebarTab3_Text_Tips(PaperDollSidebarTab3.spec)
-        PaperDollSidebarTab3.spec.tooltip= format(e.onlyChinese and '%s专精' or PROFESSIONS_SPECIALIZATIONS_PAGE_NAME, e.onlyChinese and '装备管理' or EQUIPMENT_MANAGER)
+        PaperDollSidebarTab3.spec.tooltip= '|cnGREEN_FONT_COLOR:'..format(e.onlyChinese and '%s专精' or PROFESSIONS_SPECIALIZATIONS_PAGE_NAME, e.onlyChinese and '装备管理' or EQUIPMENT_MANAGER)..'|r'
     end
     if PaperDollSidebarTab3.spec then
         PaperDollSidebarTab3.spec:SetTexture(specIcon or 0)
@@ -516,7 +516,7 @@ local function set_PaperDollSidebarTab3_Text()--标签, 内容,提示
     if not PaperDollSidebarTab3.nu and nu then--套装数量
         PaperDollSidebarTab3.nu=e.Cstr(PaperDollSidebarTab3, {justifyH='RIGHT'})
         PaperDollSidebarTab3.nu:SetPoint('LEFT', PaperDollSidebarTab3, 'RIGHT',0, 4)
-        PaperDollSidebarTab3.nu.tooltip= e.onlyChinese and '装备' or EQUIPSET_EQUIP
+        PaperDollSidebarTab3.nu.tooltip= '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '装备' or EQUIPSET_EQUIP)
         set_set_PaperDollSidebarTab3_Text_Tips(PaperDollSidebarTab3.nu)
     end
     if PaperDollSidebarTab3.nu then
