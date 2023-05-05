@@ -20,52 +20,91 @@ end
 local function set_QuinkJoin_Init()--快速加入, 初始化
     set_SOCIAL_QUEUE_UPDATE()
 
+    local function get_Player_Link(self)
+        local player=self:GetParent().Members[1].playerLink
+        if player then
+           return LinkUtil.SplitLink(player)
+        end
+    end
     hooksecurefunc(QuickJoinEntryMixin, 'ApplyToFrame', function(self, frame)
-            if not frame then return end
-
-            local icon, icon2 = nil, ''--角色图标
-            if self.guid then
-                local guid= select(8, C_SocialQueue.GetGroupInfo(self.guid))
-                if guid then
-                    local _, class, _, race, sex = GetPlayerInfoByGUID(guid)
-                    if race and sex then
-                        icon=e.GetUnitRaceInfo({unit=nil, guid=guid, race=race, sex=sex , reAtlas=true})
-                    end
-                    if class then
-                        icon2='groupfinder-icon-class-'..class
-                    end
-                end
-
-                if not frame.chat then--悄悄话
-                    frame.chat=e.Cbtn(frame, {icon='hide', size={20,20}})
-                    frame.chat:SetPoint('RIGHT', (frame.Icon or frame), 'LEFT')
-                    frame.chat:SetScript('OnMouseDown',function()
-                        local player=frame.Members[1].playerLink
-                        if player then
-                            local link, text = LinkUtil.SplitLink(player)
-                            SetItemRef(link, text, "LeftButton")
-                        end
-                    end)
-                    frame:HookScript("OnDoubleClick", function()
-                        QuickJoinFrame:JoinQueue()
-                    end)
-                end
-                icon=icon or 'communities-icon-chat'
-                frame.chat:SetNormalAtlas(icon)
-
-                if not frame.class and icon2 then--角色职业图标
-                    frame.class=frame:CreateTexture()
-                    frame.class:SetSize(20,20)
-                    frame.class:SetPoint('RIGHT', frame, 'RIGHT', 0,0)
-                end
-
-                if frame.class then--种族图标
-                    if icon2 then
-                        frame.class:SetAtlas(icon2)
-                    end
-                    frame.class:SetShown(icon2 and true or false)
-                end
+        if not frame or not self.guid then
+            return
+        end
+        for i=1, #self.displayedMembers do
+            local name, color, relationship, playerLink = SocialQueueUtil_GetRelationshipInfo(self.displayedMembers[i].guid, nil, self.displayedMembers[i].clubId);
+            local nameObj = frame.Members[i];
+            if ( not nameObj ) then
+                nameObj = frame:CreateFontString(nil, "ARTWORK", "QuickJoinButtonMemberTemplate");
+                nameObj:SetPoint("TOPLEFT", frame.Members[i-1], "BOTTOMLEFT", 0, -QUICK_JOIN_NAME_SEPARATION);
+                frame.Members[i] = nameObj;
             end
+    
+            nameObj.playerLink = playerLink;
+            nameObj.name = name;
+    
+            if ( i < #self.displayedMembers ) then
+                name = name..",";
+            end
+    
+            local displayName = playerLink or name;
+            if ( self.zombieMemberIndices[i] or not self:CanJoin() ) then
+                name = ("%s%s|r"):format(DISABLED_FONT_COLOR_CODE, displayName);
+            else
+                --Use the color code for our relationship
+                name = ("%s%s|r"):format(color, displayName);
+            end
+    
+            nameObj:SetText(name);
+            nameObj:Show();
+    
+        local icon, icon2 = nil, ''--角色图标
+        local guid= select(8, C_SocialQueue.GetGroupInfo(self.guid))
+        if guid then
+            local _, class, _, race, sex = GetPlayerInfoByGUID(guid)
+            if race and sex then
+                icon=e.GetUnitRaceInfo({unit=nil, guid=guid, race=race, sex=sex , reAtlas=true})
+            end
+            if class then
+                icon2= e.Class(nil, class, true)--职业图标
+            end
+        end
+
+        if not frame.chat then--悄悄话
+            frame.chat=e.Cbtn(frame, {icon='hide', size={18,18}})
+            frame.chat:SetPoint('RIGHT', (frame.Icon or frame), 'LEFT')
+            frame.chat:SetScript('OnLeave', function() e.tips:Hide() end)
+            frame.chat:SetScript('OnEnter', function(self2)
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                local name= select(2, get_Player_Link(self2))
+                e.tips:AddDoubleLine(e.onlyChinese and '/密语' or SLASH_SMART_WHISPER2, name)
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(id, addName)
+                e.tips:Show()
+            end)
+            frame.chat:SetScript('OnMouseDown',function(self2)
+                local link, name = get_Player_Link(self2)
+                securecallfunction(SetItemRef, link, name, "LeftButton")
+            end)
+            frame:HookScript("OnDoubleClick", function()
+                QuickJoinFrame:JoinQueue()
+            end)
+        end
+        frame.chat:SetNormalAtlas(icon or 'communities-icon-chat')
+
+        if not frame.class and icon2 then--角色职业图标
+            frame.class=frame:CreateTexture()
+            frame.class:SetSize(20,20)
+            frame.class:SetPoint('RIGHT', frame, 'RIGHT', 0,0)
+        end
+
+        if frame.class then--种族图标
+            if icon2 then
+                frame.class:SetAtlas(icon2)
+            end
+            frame.class:SetShown(icon2 and true or false)
+        end
+        
     end)
 
     hooksecurefunc(QuickJoinRoleSelectionFrame, 'ShowForGroup', function(self, guid)--职责选择框

@@ -2670,7 +2670,10 @@
         "PaperDollFrame_SetSidebar",
         "ITEM_UPGRADE_PVP_ITEM_LEVEL_STAT_FORMAT",
         "RENOWN_REWARD_TITLE_NAME_FORMAT",
-        "PROFESSIONS_SPECIALIZATIONS_PAGE_NAME"
+        "PROFESSIONS_SPECIALIZATIONS_PAGE_NAME",
+        "SocialQueueUtil_GetRelationshipInfo",
+        "QUICK_JOIN_NAME_SEPARATION",
+        "DISABLED_FONT_COLOR_CODE"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
