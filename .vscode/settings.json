@@ -2685,7 +2685,7 @@
         "ToggleGameMenu",
         "FRAMERATE_LABEL",
         "FRAMERATE_FREQUENCY",
-        "MONTHLY_ACTIVITIES_PROGRESSED"
+        "LOG_IN"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

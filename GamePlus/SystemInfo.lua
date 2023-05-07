@@ -5,14 +5,14 @@ local Save={
     money=true,
     moneyWoW=true,
     --moneyBit=0,
-
-
     equipmetLevel=true,
     durabiliy=true,
-
     perksPoints=true,
     parent= e.Player.husandro,--父框架
     --size= e.Player.husandro and 10
+    --framerateSize=12,
+    --frameratePlus=true,--为FramerateText 帧数, 建立一个按钮, 移动, 大小
+    --framerateLogIn=false,--进入游戏时,显示系统FPS
 }
 
 local panel= CreateFrame("Frame")
@@ -40,7 +40,7 @@ local function create_Set_lable(self, text)--建立,或设置,Labels
             down= ToggleAllBags
 
         elseif text=='perksPoints' then
-            label.tooltip= function() 
+            label.tooltip= function()
                 local info=C_CurrencyInfo.GetCurrencyInfo(2032)
                 local str=''
                 if info and info.quantity and info.iconFileID then
@@ -54,7 +54,7 @@ local function create_Set_lable(self, text)--建立,或设置,Labels
             label.tooltip= e.onlyChinese and '耐久度' or DURABILITY
             down= function() ToggleCharacter("PaperDollFrame"); end
         elseif text=='equipmentLevel' then
-            label.tooltip= e.onlyChinese and '物品等级' or STAT_AVERAGE_ITEM_LEVEL 
+            label.tooltip= e.onlyChinese and '物品等级' or STAT_AVERAGE_ITEM_LEVEL
             down= function() ToggleCharacter("PaperDollFrame"); end
         end
 
@@ -151,11 +151,8 @@ local function set_Durabiliy()
     if not Save.parent and du then
         du= du..'|T132281:0|t '
     end
-    if Labels.durabiliy then
-        Labels.durabiliy:SetText(du or '')
-        e.Set_HelpTips({frame=button, topoint=Labels.durabiliy, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=true, show=value<=40})--设置，提示
-    end
-    return du or ''
+    Labels.durabiliy:SetText(du or '')
+    e.Set_HelpTips({frame=button, topoint=Labels.durabiliy, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=true, show=value<=40})--设置，提示
 end
 local function set_EquipmentLevel()--装等
     local to, cu= GetAverageItemLevel()
@@ -214,7 +211,7 @@ local function set_Fps_Ms(self, elapsed)
 
         if Save.parent then
             Labels.ms:SetText((ms>400 and '|cnRED_FONT_COLOR:'..ms..'|r' or ms>120 and ('|cnYELLOW_FONT_COLOR:'..ms..'|r') or ms)..'ms')
-            Labels.fps:SetText((fps<10 and '|cnGREEN_FONT_COLOR:'..math.modf(fps)..'|r' or fps<20 and '|cnYELLOW_FONT_COLOR:'..math.modf(fps)..'|r' or math.modf(fps))..'fps')
+            Labels.fps:SetText((fps<10 and '|cnGREEN_FONT_COLOR:'..math.modf(fps)..'|r' or fps<20 and '|cnYELLOW_FONT_COLOR:'..math.modf(fps)..'|r' or math.modf(fps)))
         else
             Labels.ms:SetText((ms>400 and '|cnRED_FONT_COLOR:'..ms..'|r' or ms>120 and ('|cnYELLOW_FONT_COLOR:'..ms..'|r') or ms)..'ms')
             Labels.fps:SetText((fps<10 and '|cnGREEN_FONT_COLOR:'..math.modf(fps)..'|r' or fps<20 and '|cnYELLOW_FONT_COLOR:'..math.modf(fps)..'|r' or math.modf(fps))..'fps ')
@@ -305,7 +302,7 @@ local function set_Label_Point(clear)--设置 Label Poinst
                     label:SetPoint('BOTTOM', MainMenuMicroButton, 'TOP',0,-4)
                     label:SetParent(MainMenuMicroButton)
                 elseif text=='ms' then
-                    label:SetPoint('TOP', MainMenuMicroButton, 'BOTTOM',0,4)
+                    label:SetPoint('TOP', MainMenuMicroButton, 'BOTTOM',0,6)
                     label:SetParent(MainMenuMicroButton)
 
                 elseif text=='money' then
@@ -347,6 +344,16 @@ local function InitMenu(self, level, type)--主菜单
                 Save.moneyWoW= not Save.moneyWoW and true or nil
                 set_Money_Event()
                 set_Label_Point(true)
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info,level)
+        return
+    elseif type=='LOG_IN' then
+        info={
+            text= (e.onlyChinese and '登入' or LOG_IN)..' WoW: '..e.GetShowHide(true),
+            checked= Save.framerateLogIn,
+            func= function()
+                Save.framerateLogIn= not Save.framerateLogIn and true or nil
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info,level)
@@ -408,10 +415,10 @@ local function InitMenu(self, level, type)--主菜单
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info,level)
-     
+
 
     info={
-        text= (e.onlyChinese and '耐久度' or DURABILITY)..': '..set_Durabiliy(),
+        text= (e.onlyChinese and '耐久度' or DURABILITY),
         checked= Save.durabiliy,
         func= function()
             Save.durabiliy = not Save.durabiliy and true or false
@@ -443,6 +450,21 @@ local function InitMenu(self, level, type)--主菜单
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info,level)
+    info={
+        text= (e.onlyChinese and '每秒帧数:' or FRAMERATE_LABEL)..' Plus',
+        checked= Save.frameratePlus,
+        menuList='LOG_IN',
+        hasArrow=true,
+        tooltipOnButton=true,
+        tooltipTitle= e.onlyChinese and '移动/大小' or (NPE_MOVE..'/'..UI_SCALE),
+        tooltipText= (e.onlyChinese and '系统' or SYSTEM)..' FPS',
+        func= function()
+            Save.frameratePlus= not Save.frameratePlus and true or nil
+            print(id, addName, e.GetEnabeleDisable(Save.frameratePlus) ,e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info,level)
+
 
     info={
         text= (e.onlyChinese and '重置位置' or RESET_POSITION),
@@ -512,16 +534,15 @@ local function Init()
         print(id, addName, e.onlyChinese and '字体大小' or FONT_SIZE,'|cnGREEN_FONT_COLOR:'..size)
     end)
 
+    button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
+    e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
+
     button:SetScript('OnClick', function(self, d)
         if d=='RightButton' then--移动光标
             SetCursor('UI_MOVE_CURSOR')
-            if not self.Menu then
-                self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
-                e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
-            end
             e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
         elseif d=='LeftButton' then
-            ToggleFramerate()--FramerateLabel
+            ToggleFramerate()--FramerateLabel FramerateText
         end
     end)
     button:SetScript('OnLeave', function() e.tips:Hide() end)
@@ -534,18 +555,108 @@ local function Init()
         e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE, (Save.size or 12)..e.Icon.mid)
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
-        button:SetButtonState('PUSHED')
     end)
-    
+
 
     button:SetButtonState('PUSHED')
     C_Timer.After(4, function()
         button:SetButtonState('NORMAL')
     end)
 
-    hooksecurefunc(FramerateDisplayMixin, 'UpdateAnchor', function()
-        print(id,addName)
-    end)
+    --为FramerateText 帧数, 建立一个按钮, 移动, 大小
+    if Save.frameratePlus then
+        local moveFrame= e.Cbtn(nil, {size={16,16}, icon='hide'})
+        local function set_FramerateText_Point()
+            FramerateText:ClearAllPoints()
+            FramerateText:SetPoint('RIGHT')
+        end
+        if Save.frameratePoint then
+            moveFrame:SetPoint(Save.frameratePoint[1], UIParent, Save.frameratePoint[3], Save.frameratePoint[4], Save.frameratePoint[5])
+        else
+            moveFrame:SetPoint(FramerateText:GetPoint(1))
+        end
+        FramerateText:SetParent(moveFrame)
+        QueueStatusButton:HookScript('OnShow', set_FramerateText_Point)
+        QueueStatusButton:HookScript('OnHide', set_FramerateText_Point)
+
+        set_FramerateText_Point()
+        moveFrame:SetFrameStrata('HIGH')
+        moveFrame:SetMovable(true)
+        moveFrame:RegisterForDrag("RightButton");
+        moveFrame:SetClampedToScreen(true);
+        moveFrame:SetScript("OnDragStart", function(self2, d)
+            if d=='RightButton' then
+                SetCursor('UI_MOVE_CURSOR')
+                self2:StartMoving()
+            end
+        end)
+        moveFrame:SetScript("OnDragStop", function(self)
+            self:StopMovingOrSizing()
+            Save.frameratePoint={self:GetPoint(1)}
+            Save.frameratePoint[2]=nil
+            ResetCursor()
+        end)
+        moveFrame:SetScript("OnMouseUp", function(self2,d)
+            ResetCursor()
+        end)
+
+        moveFrame:SetShown(FramerateText:IsShown())
+        FramerateLabel:SetText('')--去掉FPS
+        FramerateLabel:SetShown(false)
+        hooksecurefunc('ToggleFramerate', function()--修改位置
+            local show = FramerateText:IsShown()
+            moveFrame:SetShown(show)
+            if show then
+                set_FramerateText_Point()
+            end
+        end)
+        moveFrame:SetScript('OnEnter', function(self2)--提示
+            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+            e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
+            e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE, (Save.framerateSize or 12)..e.Icon.mid)
+            e.tips:AddDoubleLine(id, addName)
+            e.tips:Show()
+            button:SetButtonState('PUSHED')
+        end)
+        moveFrame:SetScript('OnLeave', function()
+            e.tips:Hide()
+            button:SetButtonState('NORMAL')
+        end)
+
+        local function set_FramerateText_Size()--修改大小
+            e.Cstr(nil, {size=Save.framerateSize or 12, changeFont=FramerateText, color=true})--Save.size, nil , Labels.fpsms, true)    
+        end
+        set_FramerateText_Size()
+
+        moveFrame:SetScript('OnMouseWheel',function(self, d)
+            if IsModifierKeyDown() then
+                return
+            end
+            local size=Save.framerateSize or 12
+            if d==1 then
+                size=size+1
+                size = size>72 and 72 or size
+            elseif d==-1 then
+                size=size-1
+                size= size<6 and 6 or size
+            end
+            Save.framerateSize=size
+            set_FramerateText_Size()
+            print(id, addName, e.onlyChinese and '字体大小' or FONT_SIZE,'|cnGREEN_FONT_COLOR:'..size)
+        end)
+
+        moveFrame:SetScript('OnClick', function(self, d)
+            if d=='RightButton' then--移动光标
+                SetCursor('UI_MOVE_CURSOR')
+            end
+            e.LibDD:ToggleDropDownMenu(1, nil, button.Menu, self, 15, 0)
+        end)
+        if Save.framerateLogIn and not FramerateText:IsShown() then
+            ToggleFramerate()--FramerateLabel FramerateText
+        end
+    end
 
     --#########
     --添加版本号
@@ -580,11 +691,14 @@ local function Init()
         securecallfunction(InterfaceOptionsFrame_OpenToCategory, id)
     end)
 
+    if Save.parent then
+        MainMenuMicroButton.MainMenuBarPerformanceBar:ClearAllPoints()
+        MainMenuMicroButton.MainMenuBarPerformanceBar:SetPoint('BOTTOM',0,4)
+    end
 
     C_Timer.After(2, function()
         set_Label_Size_Color()
         set_Money_Event()--设置,钱,事件
-        --set_System_FPSMS()--设置系统fps ms
         set_Fps_Ms_Show_Hide()--设置, fps, ms, 数值
         set_Durabiliy_EquipLevel_Event()--设置装等,耐久度,事件
         set_perksActivitiesLastPoints_Event()--贸易站, 点数

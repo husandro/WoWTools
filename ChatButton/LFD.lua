@@ -1049,7 +1049,6 @@ local function Init()
     WoWToolsChatButtonFrame.last=button
 
     button:SetScript('OnMouseDown', function(self, d)
-        print(self.dungeonID,self.name)
         if d=='LeftButton' and (self.dungeonID or self.RaidID) then
 
             if self.dungeonID then
