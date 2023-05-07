@@ -722,7 +722,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                 local price= C_WowTokenPublic.GetCurrentMarketPrice()
                 C_WowTokenPublic.UpdateMarketPrice()
                 if price then
-                    GameTooltipTextRight1:SetText('|A:token-choice-wow:0:0|a'..col..e.MK(price/10000,2)..'|r|A:Front-Gold-Icon:0:0|a')
+                    GameTooltipTextRight1:SetText('|A:token-choice-wow:0:0|a'..col..e.MK(price/10000,3)..'|r|A:Front-Gold-Icon:0:0|a')
                     GameTooltipTextRight1:SetShown(true)
                 end
             end
