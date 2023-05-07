@@ -213,8 +213,8 @@ local function set_Fps_Ms(self, elapsed)
             Labels.ms:SetText((ms>400 and '|cnRED_FONT_COLOR:'..ms..'|r' or ms>120 and ('|cnYELLOW_FONT_COLOR:'..ms..'|r') or ms)..'ms')
             Labels.fps:SetText((fps<10 and '|cnGREEN_FONT_COLOR:'..math.modf(fps)..'|r' or fps<20 and '|cnYELLOW_FONT_COLOR:'..math.modf(fps)..'|r' or math.modf(fps)))
         else
-            Labels.ms:SetText((ms>400 and '|cnRED_FONT_COLOR:'..ms..'|r' or ms>120 and ('|cnYELLOW_FONT_COLOR:'..ms..'|r') or ms)..'ms')
-            Labels.fps:SetText((fps<10 and '|cnGREEN_FONT_COLOR:'..math.modf(fps)..'|r' or fps<20 and '|cnYELLOW_FONT_COLOR:'..math.modf(fps)..'|r' or math.modf(fps))..'fps ')
+            Labels.ms:SetText((ms>400 and '|cnRED_FONT_COLOR:'..ms..'|r' or ms>120 and ('|cnYELLOW_FONT_COLOR:'..ms..'|r') or ms)..'ms ')
+            Labels.fps:SetText((fps<10 and '|cnGREEN_FONT_COLOR:'..math.modf(fps)..'|r' or fps<20 and '|cnYELLOW_FONT_COLOR:'..math.modf(fps)..'|r' or math.modf(fps))..'fps')
         end
     end
 end
@@ -447,6 +447,9 @@ local function InitMenu(self, level, type)--主菜单
         func= function()
             Save.parent= not Save.parent and true or nil
             set_Label_Point(true)--设置parent
+            for str, label in pairs(Labels) do
+                create_Set_lable(label, str)
+            end
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info,level)

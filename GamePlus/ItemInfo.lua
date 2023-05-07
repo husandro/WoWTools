@@ -820,19 +820,21 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             --##########################
             --商站
             --Blizzard_PerksProgram.lua
-            hooksecurefunc(PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer.ScrollBox, 'SetScrollTargetOffset', function(self2)
-                for _, btn in pairs(self2:GetFrames()) do
-                    local itemLink= btn.itemID and select(2, GetItemInfo(btn.itemID))
-                    set_Item_Info(btn.ContentsContainer, {hyperLink=itemLink, point=btn.ContentsContainer.Icon})
-                end
-            end)
-            local frozenItemFrame = PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer.PerksProgramHoldFrame.FrozenItemFrame.FrozenButton
-	            --print(frozenItemFrame.FrozenButton:GetItemLink())
+          
+            local function set_FrozenButton_Tips()
                 local frame= PerksProgramFrame:GetFrozenItemFrame()
                 if frame then
                     local itemLink= frame.FrozenButton.itemID and select(2, GetItemInfo(frame.FrozenButton.itemID))
                     set_Item_Info(frame.FrozenButton, {hyperLink=itemLink})
                 end
+            end
+            hooksecurefunc(PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer.ScrollBox, 'SetScrollTargetOffset', function(self2)
+                for _, btn in pairs(self2:GetFrames()) do
+                    local itemLink= btn.itemID and select(2, GetItemInfo(btn.itemID))
+                    set_Item_Info(btn.ContentsContainer, {hyperLink=itemLink, point=btn.ContentsContainer.Icon})
+                end
+                set_FrozenButton_Tips()
+            end)  
         end
 
     elseif event == "PLAYER_LOGOUT" then
