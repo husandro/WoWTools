@@ -177,8 +177,8 @@ local function set_FriendsList_Init()--好友列表, 初始化
         if m~='' then
             if guid then
                 local _, englishClass, _, _, _, _, realm = GetPlayerInfoByGUID(guid)
-                local server= e.Get_Region(realm)--服务器，EU， US {col=, text=, realm=}
-                m= server and server.col..m or m
+                --local server= e.Get_Region(realm)--服务器，EU， US {col=, text=, realm=}
+                --m= server and server.col..m or m
 
                 if englishClass then
                     m= '|c'..select(4, GetClassColor(englishClass))..m..'|r'
