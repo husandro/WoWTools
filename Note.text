@@ -84,8 +84,14 @@ elseif ( name == "CharacterFrameTab3" ) then
 		CharacterFrame_ToggleTokenFrame();
 end
 ToggleCollectionsJournal(tabIndex) UIParent.lua
+ToggleCollectionsJournal();
 
+ToggleCharacter("PaperDollFrame");
 ToggleEncounterJournal()
+ToggleTalentFrame(self.suggestedTab)
+TogglToggleAchievementFrame();
+ToggleQuestLog();
+ToggleGuildFrame();
 
 Interface\Cursor\UI-Cursor-Move   Redlist.xml
 
