@@ -24,7 +24,7 @@ local heirloomWeapontemEquipLocTab={--传家宝，武器，itemEquipLoc
         ['INVTYPE_RANGEDRIGHT']= true,
     }
 
---set_Item_Info(itemButton, {bag={bag=bagID, slot=slotID}, merchant={slot=slot, buyBack= selectedTab==2}, guidBank={tab=tab, slot=i}, hyperLink=nil})
+--set_Item_Info(itemButton, {bag={bag=bagID, slot=slotID}, merchant={slot=slot, buyBack= selectedTab==2}, guidBank={tab=tab, slot=i}, hyperLink=nil, point=nil})
 local function set_Item_Info(self, tab)
     local itemLink, containerInfo, itemID= tab.hyperLink, nil, nil
     if tab.bag then
@@ -363,7 +363,7 @@ local function set_Item_Info(self, tab)
 
     if topRightText and not self.topRightText then
         self.topRightText=e.Cstr(self, {size=size})--size, nil, nil, nil, 'OVERLAY')
-        self.topRightText:SetPoint('TOPRIGHT',2,0)
+        self.topRightText:SetPoint('TOPRIGHT', tab.point or self, 2,0)
     end
     if self.topRightText then
         self.topRightText:SetText(topRightText or '')
@@ -373,7 +373,7 @@ local function set_Item_Info(self, tab)
     end
     if topLeftText and not self.topLeftText then
         self.topLeftText=e.Cstr(self, {size=size})--size, nil, nil, nil, 'OVERLAY')
-        self.topLeftText:SetPoint('TOPLEFT')
+        self.topLeftText:SetPoint('TOPLEFT', tab.point or self)
     end
     if self.topLeftText then
         self.topLeftText:SetText(topLeftText or '')
@@ -384,7 +384,7 @@ local function set_Item_Info(self, tab)
     if bottomRightText then
         if not self.bottomRightText then
             self.bottomRightText=e.Cstr(self, {size=size})--size, nil, nil, nil, 'OVERLAY')
-            self.bottomRightText:SetPoint('BOTTOMRIGHT')
+            self.bottomRightText:SetPoint('BOTTOMRIGHT', tab.point or self)
         end
     end
     if self.bottomRightText then
@@ -396,7 +396,7 @@ local function set_Item_Info(self, tab)
 
     if leftText and not self.leftText then
         self.leftText=e.Cstr(self, {size=size})--size, nil, nil, nil, 'OVERLAY')
-        self.leftText:SetPoint('LEFT')
+        self.leftText:SetPoint('LEFT', tab.point or self)
     end
     if self.leftText then
         self.leftText:SetText(leftText or '')
@@ -407,7 +407,7 @@ local function set_Item_Info(self, tab)
 
     if rightText and not self.rightText then
         self.rightText=e.Cstr(self, {size=size})--size, nil, nil, nil, 'OVERLAY')
-        self.rightText:SetPoint('RIGHT')
+        self.rightText:SetPoint('RIGHT', tab.point or self)
     end
     if self.rightText then
         self.rightText:SetText(rightText or '')
@@ -418,7 +418,7 @@ local function set_Item_Info(self, tab)
 
     if bottomLeftText and not self.bottomLeftText then
         self.bottomLeftText=e.Cstr(self, {size=size})--size)
-        self.bottomLeftText:SetPoint('BOTTOMLEFT')
+        self.bottomLeftText:SetPoint('BOTTOMLEFT', tab.point or self)
     end
     if self.bottomLeftText then
         self.bottomLeftText:SetText(bottomLeftText or '')
@@ -817,23 +817,22 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             panel:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_PerksProgram' then
-            --PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer.ScrollBox.ScrollTarget.21a09ca2300.ContentsContainer
-
-            --https://github.com/tomrus88/BlizzardInterfaceCode/blob/299c331498019b728b6b2ea4dbe7a17ffe6c0506/Interface/AddOns/Blizzard_PerksProgram/Blizzard_PerksProgram.lua#L4
+            --##########################
+            --商站
+            --Blizzard_PerksProgram.lua
             hooksecurefunc(PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer.ScrollBox, 'SetScrollTargetOffset', function(self2)
                 for _, btn in pairs(self2:GetFrames()) do
-                    local itemName, itemLink, itemRarity, _, _, _, _, _, _, itemTexture = GetItemInfo(btn.itemID);
-                    --print(itemLink)
-                    set_Item_Info(btn, {hyperLink=itemLink})
+                    local itemLink= btn.itemID and select(2, GetItemInfo(btn.itemID))
+                    set_Item_Info(btn.ContentsContainer, {hyperLink=itemLink, point=btn.ContentsContainer.Icon})
                 end
             end)
-            --[[PerksProgramFrame:HookScript('OnShow', function()
-                hooksecurefunc(GroupLootHistoryFrame.ScrollBox, 'SetScrollTargetOffset', function(self)
-                    for _, btn in pairs(self:GetFrames()) do
-                        set_LootFrame_btn(btn)
-                    end
-                end)
-            end)]]
+            local frozenItemFrame = PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer.PerksProgramHoldFrame.FrozenItemFrame.FrozenButton
+	            --print(frozenItemFrame.FrozenButton:GetItemLink())
+                local frame= PerksProgramFrame:GetFrozenItemFrame()
+                if frame then
+                    local itemLink= frame.FrozenButton.itemID and select(2, GetItemInfo(frame.FrozenButton.itemID))
+                    set_Item_Info(frame.FrozenButton, {hyperLink=itemLink})
+                end
         end
 
     elseif event == "PLAYER_LOGOUT" then

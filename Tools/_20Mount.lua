@@ -1251,6 +1251,7 @@ local function Init()
     end)
     button:SetScript("OnLeave",function(self)
         e.tips:Hide()
+        setClickAtt()--设置属性
         ResetCursor()
         self.border:SetAtlas('bag-reagent-border')
     end)
@@ -1314,6 +1315,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 button.Up:SetAtlas('NPE_ArrowUp')
                 button.Up:SetSize(20,20)
 
+                Init()--初始
+
                 panel:RegisterEvent('PLAYER_REGEN_DISABLED')
                 panel:RegisterEvent('PLAYER_REGEN_ENABLED')
                 panel:RegisterEvent('SPELLS_CHANGED')
@@ -1344,7 +1347,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                     end
                 end
 
-                Init()--初始
+                
             else
                 e.toolsFrame.disabled=true
                 panel:UnregisterAllEvents()

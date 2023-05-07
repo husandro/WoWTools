@@ -2675,7 +2675,8 @@
         "QUICK_JOIN_NAME_SEPARATION",
         "DISABLED_FONT_COLOR_CODE",
         "LFGListApplicationDialog_Show",
-        "RoleSelectionRoleMixin"
+        "RoleSelectionRoleMixin",
+        "PerksProgramFrame"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
