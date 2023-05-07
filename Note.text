@@ -83,15 +83,28 @@ elseif ( name == "CharacterFrameTab2" ) then
 elseif ( name == "CharacterFrameTab3" ) then
 		CharacterFrame_ToggleTokenFrame();
 end
-ToggleCollectionsJournal(tabIndex) UIParent.lua
-ToggleCollectionsJournal();
 
+ToggleCollectionsJournal(tabIndex) UIParent.lua
 ToggleCharacter("PaperDollFrame");
 ToggleEncounterJournal()
 ToggleTalentFrame(self.suggestedTab)
 TogglToggleAchievementFrame();
 ToggleQuestLog();
 ToggleGuildFrame();
+ToggleCommunitiesFrame()
+ToggleToyCollection(autoPageToCollectedToyID)
+TogglePVPUI()
+ToggleStoreUI()
+ToggleGarrisonMissionUI()
+ToggleCovenantMissionUI()
+ToggleOrderHallTalentUI()
+ToggleCovenantRenown()
+ToggleExpansionLandingPage()
+ToggleFramerate(true);
+ToggleOrderHallTalentUI();
+ToggleGameMenu()
+ToggleFrame(frame)
+OpenAchievementFrameToAchievement(achievementID)
 
 Interface\Cursor\UI-Cursor-Move   Redlist.xml
 

@@ -2681,7 +2681,11 @@
         "LootFrameElementMixin",
         "FPS_FORMAT",
         "TUTORIAL_PERKS_PROGRAM_ACTIVITIES_OPEN",
-        "FPS_FORMATL"
+        "FPS_FORMATL",
+        "ToggleGameMenu",
+        "FRAMERATE_LABEL",
+        "FRAMERATE_FREQUENCY",
+        "MONTHLY_ACTIVITIES_PROGRESSED"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
