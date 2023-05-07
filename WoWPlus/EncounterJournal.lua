@@ -1060,48 +1060,6 @@ local function Init()--冒险指南界面
         end)
     end
 
-    --[[hooksecurefunc(EncounterJournal.LootJournalItems.ItemSetsFrame,'ConfigureItemButton', function(self2, button)--Blizzard_LootJournalItems.lua
-        local has = C_TransmogCollection.PlayerHasTransmogByItemInfo(button.itemID)
-        print(has, id, addName)
-        if has==false and not button.tex and not Save.hideEncounterJournal then
-            button.tex=button:CreateTexture()
-            button.tex:SetSize(16,16)
-            button.tex:SetPoint('BOTTOMRIGHT',2,-2)
-            button.tex:SetAtlas(e.Icon.transmogHide)
-        end
-        if button.tex then
-            button.tex:SetShown(has==false and not Save.hideEncounterJournal)
-        end
-    end)]]
-
-    --[[战利品, 套装 , 收集数量
-    local function lootSet(self2)
-        if Save.hideEncounterJournal then
-            return
-        end
-        local buttons = self2.buttons;
-        local offset = HybridScrollFrame_GetOffset(self2)
-        if self2.buttons then
-            for i = 1, #buttons do
-                local button= buttons[i];
-                local index = offset + i;
-                if ( index <= #self2.itemSets ) then
-                    local setID=self2.itemSets[index].setID
-                    local collected= e.GetSetsCollectedNum(setID)--收集数量
-                    if collected and self2.itemSets[index].name then
-                        button.SetName:SetText(self2.itemSets[index].name..collected)
-                    end
-                end
-            end
-        end
-    end
-    hooksecurefunc(EncounterJournal.LootJournalItems.ItemSetsFrame, 'UpdateList', lootSet);
-    hooksecurefunc('HybridScrollFrame_Update', function(self2)
-        if EncounterJournal and self2==EncounterJournal.LootJournalItems.ItemSetsFrame then
-            lootSet(self2)
-        end
-    end)
-]]
     --BOSS技能 Blizzard_EncounterJournal.lua
     local function EncounterJournal_SetBullets_setLink(text)--技能加图标
         local find

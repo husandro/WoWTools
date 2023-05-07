@@ -1206,7 +1206,7 @@ local function Init()
                 e.tips:AddLine(name..' '..standingID..'/'..MAX_REPUTATION_REACTION, 1,1,1)
                 e.tips:AddLine(description, nil,nil,nil, true)
                 e.tips:AddLine(' ')
-                local gender = UnitSex("player");
+                local gender = e.Player.sex
                 local factionStandingtext = GetText("FACTION_STANDING_LABEL"..standingID, gender)
                 local barColor = FACTION_BAR_COLORS[standingID]
                 factionStandingtext=barColor:WrapTextInColorCode(factionStandingtext)--颜色

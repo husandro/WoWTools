@@ -67,7 +67,7 @@ local function get_Faction_Info(tab)
 			end
 		else
 			if (isHeader and hasRep) or not isHeader then
-				local gender = UnitSex("player");
+				local gender = e.Player.sex
 				factionStandingtext = GetText("FACTION_STANDING_LABEL"..standingID, gender)
 				if barValue and barMax then
 					if barMax==0 then
@@ -493,7 +493,7 @@ local function FactionUpdate(self, event, text, ...)
 					icon='|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'
 				end
 			else
-				local gender = UnitSex("player");
+				local gender = e.Player.sex
 				factionStandingtext = GetText("FACTION_STANDING_LABEL"..standingID, gender)
 				if isCapped then
 					barColor = FACTION_ORANGE_COLOR
