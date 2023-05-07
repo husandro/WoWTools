@@ -210,8 +210,8 @@ local function set_Fps_Ms(self, elapsed)
         fps=math.modf(fps)
 
         if Save.parent then
-            Labels.ms:SetText((ms>400 and '|cnRED_FONT_COLOR:'..ms..'|r' or ms>120 and ('|cnYELLOW_FONT_COLOR:'..ms..'|r') or ms)..'ms')
-            Labels.fps:SetText((fps<10 and '|cnGREEN_FONT_COLOR:'..math.modf(fps)..'|r' or fps<20 and '|cnYELLOW_FONT_COLOR:'..math.modf(fps)..'|r' or math.modf(fps)))
+            Labels.ms:SetText(ms>400 and '|cnRED_FONT_COLOR:'..ms..'|r' or ms>120 and ('|cnYELLOW_FONT_COLOR:'..ms..'|r') or ms)
+            Labels.fps:SetText(fps<10 and '|cnGREEN_FONT_COLOR:'..math.modf(fps)..'|r' or fps<20 and '|cnYELLOW_FONT_COLOR:'..math.modf(fps)..'|r' or math.modf(fps))
         else
             Labels.ms:SetText((ms>400 and '|cnRED_FONT_COLOR:'..ms..'|r' or ms>120 and ('|cnYELLOW_FONT_COLOR:'..ms..'|r') or ms)..'ms ')
             Labels.fps:SetText((fps<10 and '|cnGREEN_FONT_COLOR:'..math.modf(fps)..'|r' or fps<20 and '|cnYELLOW_FONT_COLOR:'..math.modf(fps)..'|r' or math.modf(fps))..'fps')
@@ -234,10 +234,6 @@ local function set_Fps_Ms_Show_Hide()--设置, fps, ms, 数值
         end
     end
 end
-
-
-
-
 
 
 --###########
@@ -302,7 +298,7 @@ local function set_Label_Point(clear)--设置 Label Poinst
                     label:SetPoint('BOTTOM', MainMenuMicroButton, 'TOP',0,-4)
                     label:SetParent(MainMenuMicroButton)
                 elseif text=='ms' then
-                    label:SetPoint('TOP', MainMenuMicroButton, 'BOTTOM',0,6)
+                    label:SetPoint('BOTTOM', MainMenuMicroButton, 'BOTTOM')
                     label:SetParent(MainMenuMicroButton)
 
                 elseif text=='money' then
@@ -694,10 +690,7 @@ local function Init()
         securecallfunction(InterfaceOptionsFrame_OpenToCategory, id)
     end)
 
-    if Save.parent then
-        MainMenuMicroButton.MainMenuBarPerformanceBar:ClearAllPoints()
-        MainMenuMicroButton.MainMenuBarPerformanceBar:SetPoint('BOTTOM',0,4)
-    end
+    
 
     C_Timer.After(2, function()
         set_Label_Size_Color()
@@ -706,6 +699,10 @@ local function Init()
         set_Durabiliy_EquipLevel_Event()--设置装等,耐久度,事件
         set_perksActivitiesLastPoints_Event()--贸易站, 点数
         set_Label_Point()--设置 Label Poinst
+        if Save.parent and Labels.ms then
+            MainMenuMicroButton.MainMenuBarPerformanceBar:ClearAllPoints()
+            MainMenuMicroButton.MainMenuBarPerformanceBar:SetPoint('BOTTOM',0,-6)
+        end
     end)
 end
 

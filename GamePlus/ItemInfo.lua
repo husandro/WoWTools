@@ -819,8 +819,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         elseif arg1=='Blizzard_PerksProgram' then
             --##########################
             --商站
-            --Blizzard_PerksProgram.lua
-          
+            --Blizzard_PerksProgram.lua          
             local function set_FrozenButton_Tips()
                 local frame= PerksProgramFrame:GetFrozenItemFrame()
                 if frame then
@@ -834,7 +833,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     set_Item_Info(btn.ContentsContainer, {hyperLink=itemLink, point=btn.ContentsContainer.Icon})
                 end
                 set_FrozenButton_Tips()
-            end)  
+            end)
         end
 
     elseif event == "PLAYER_LOGOUT" then
