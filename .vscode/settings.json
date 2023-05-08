@@ -2685,7 +2685,8 @@
         "ToggleGameMenu",
         "FRAMERATE_LABEL",
         "FRAMERATE_FREQUENCY",
-        "LOG_IN"
+        "LOG_IN",
+        "ChatFrame1"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
