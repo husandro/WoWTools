@@ -41,8 +41,7 @@ local Icon={
 
 local function ItemNum(button)--增加物品数量
     if button.itemLink then
-        local nu=GetItemCount(button.itemLink)
-
+        local nu=GetItemCount(button.itemLink, true, true,true)
         if nu>1 then
             if not button.num then
                 button.num=e.Cstr(button)
@@ -297,39 +296,45 @@ local function Init()
     end)
 
     hooksecurefunc('QuestObjectiveSetupBlockButton_AddRightButton', function(block, button)--物品按钮左边,放大 --Blizzard_ObjectiveTrackerShared.lua
-        if not button or not block or not button:IsShown()  or block.groupFinderButton == button or button.setMove then
+        if not button or not block or not button:IsShown() or block.groupFinderButton == button then
             return
         end
 
-        button:SetSize(35,35)--右击移动
-        if  button.NormalTexture then button.NormalTexture:SetSize(60,60) end
-        button:SetClampedToScreen(true)--保存
-        button:SetMovable(true)
-        button:RegisterForDrag("RightButton")
-        button:SetScript("OnDragStart", function(self)
-            self:StartMoving()
-        end)
-        button:SetScript("OnDragStop", function(self)
-                self:StopMovingOrSizing()
-        end)
-
         button.itemLink=GetQuestLogSpecialItemInfo(button:GetID())--物品数量
-        if button.itemLink then
-            button:RegisterEvent("BAG_UPDATE")
-            ItemNum(button)
-            button:SetScript("OnEvent", function(_, event)
-                if event == "BAG_UPDATE" then
-                    ItemNum(button)
-                end
+        if not button.setMove then
+            button:SetSize(35,35)--右击移动
+            if  button.NormalTexture then button.NormalTexture:SetSize(60,60) end
+            button:SetClampedToScreen(true)--保存
+            button:SetMovable(true)
+            button:RegisterForDrag("RightButton")
+            button:SetScript("OnDragStart", function(self)
+                self:StartMoving()
+            end)
+            button:SetScript("OnDragStop", function(self)
+                    self:StopMovingOrSizing()
+            end)
+            button:RegisterEvent('BAG_UPDATE_DELAYED')
+            button:SetScript("OnEvent", function(self2)
+                ItemNum(self2)
             end)
             button:SetScript("OnShow", function()
-                button.itemLink=GetQuestLogSpecialItemInfo(button:GetID())
                 button:RegisterEvent("BAG_UPDATE")
             end)
             button:SetScript("OnHide", function()
                 button.itemLink=nil
                 button:UnregisterEvent("BAG_UPDATE")
             end)
+            ItemNum(button)
+            button.setMove=true
+        end
+
+        button:ClearAllPoints()
+        if block.HeaderText then
+            button:SetPoint('TOPRIGHT',  block.HeaderText, 'TOPLEFT',-28,0)
+        elseif block.TrackedQuest then
+            button:SetPoint('TOPRIGHT',  block.TrackedQuest, 'TOPLEFT',-5,0)
+        else
+            button:SetPoint('TOPRIGHT',  block, 'TOPLEFT',-20,0)
         end
     end)
 end
