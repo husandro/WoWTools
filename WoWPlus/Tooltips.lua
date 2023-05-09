@@ -437,6 +437,7 @@ local function setItem(self, ItemLink)
                 end
             end
         end
+
         if numPlayer>0 then
             wowNum= bagAll+ bankAll
             self:AddDoubleLine(numPlayer..' '..(e.onlyChinese and '角色' or CHARACTER)..' '..e.MK(wowNum+bag+bank, 3), e.Icon.wow2..e.MK(bagAll+bankAll, 3)..' = '..e.Icon.bank2..(bankAll==0 and '|cff606060'..bankAll..'|r' or e.MK(bankAll,3))..' '..e.Icon.bag2..(bagAll==0 and '|cff606060'..bagAll..'|r' or e.MK(bagAll, 3)))
@@ -722,7 +723,8 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                 local price= C_WowTokenPublic.GetCurrentMarketPrice()
                 C_WowTokenPublic.UpdateMarketPrice()
                 if price then
-                    GameTooltipTextRight1:SetText('|A:token-choice-wow:0:0|a'..col..e.MK(price/10000,3)..'|r|A:Front-Gold-Icon:0:0|a')
+                    local all, numPlayer= e.GetItemWoWNum(122284)--取得WOW物品数量
+                    GameTooltipTextRight1:SetText(col..all..(numPlayer>1 and '('..numPlayer..')' or '')..'|A:token-choice-wow:0:0|a'..e.MK(price/10000,3)..'|r|A:Front-Gold-Icon:0:0|a')
                     GameTooltipTextRight1:SetShown(true)
                 end
             end

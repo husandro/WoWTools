@@ -290,7 +290,6 @@ local function setAddLoad(arg1)
     elseif arg1=='Blizzard_AchievementUI' then--成就
         Move(AchievementFrame.Header,{frame=AchievementFrame})
         Move(AchievementFrame,{})
-
         Move(AchievementFrameComparisonHeader, {frame=AchievementFrame})
 
     elseif arg1=='Blizzard_EncounterJournal' then--冒险指南
