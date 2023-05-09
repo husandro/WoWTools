@@ -1156,7 +1156,7 @@ local function Init()
     --#####################
     --等级 => 每周/完成, 提示
     --#####################
-    ChallengesFrame.itemLevelTips= e.Cbtn(ChallengesFrame.WeeklyInfo.Child,{size={20,20}, atlas='auctionhouse-icon-favorite'})
+    ChallengesFrame.itemLevelTips= e.Cbtn(ChallengesFrame.WeeklyInfo.Child,{size={16,16}, atlas='auctionhouse-icon-favorite'})
     ChallengesFrame.itemLevelTips:SetPoint('TOPRIGHT', -2,-14)
     ChallengesFrame.itemLevelTips:SetAlpha(0.5)
     ChallengesFrame.itemLevelTips.Text=e.Cstr(ChallengesFrame)
