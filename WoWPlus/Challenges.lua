@@ -1207,7 +1207,7 @@ local function Init()
         e.tips:Show()
     end)
     ChallengesFrame.itemLevelTips:SetScript('OnLeave', function() e.tips:Hide() end)
-    C_Timer.After(2, set_itemLevelTips)
+    C_Timer.After(1, set_itemLevelTips)
 end
 
 
