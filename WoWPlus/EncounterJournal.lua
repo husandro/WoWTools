@@ -718,7 +718,8 @@ local function Init()--冒险指南界面
                 end
                 if challengeText and not button.challengeText then
                     button.challengeText= e.Cstr(button, {size=e.onlyChinese and 12 or 10})
-                    button.challengeText:SetPoint('LEFT',4,0)
+                    --button.challengeText:SetPoint('LEFT',4,0)
+                    button.challengeText:SetPoint('BOTTOMLEFT',4,4)
                 end
                 if button.challengeText then
                     button.challengeText:SetText(challengeText or '')
