@@ -193,9 +193,9 @@ local function UI_Party_Info(frame)--队友位置
             local reason=UnitPhaseReason(unit)--位面
             if reason then
                 if reason==0 then--不同了阶段
-                    text= text ..'|cnRED_FONT_COLOR:'..ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', e.onlyChinese and '阶段' or MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1',''))..'|r'
+                    text= text ..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '不同了阶段' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('',  MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1','')))..'|r'
                 elseif reason==1 then--不在同位面
-                    text= text ..'|cnRED_FONT_COLOR:'..ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', e.Player.LayerText)..'|r'
+                    text= text ..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '不在同位面' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', e.Player.LayerText))..'|r'
                 elseif reason==2 then--战争模式
                     text= text ..(C_PvP.IsWarModeDesired() and '|cnRED_FONT_COLOR:'..(e.onlyChinese and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '开启战争模式' or ERR_PVP_WARMODE_TOGGLE_ON)..'|r')
                 elseif reason==3 then
@@ -275,7 +275,8 @@ local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     end)
 
     frame.party=e.Cstr(frame)--队伍信息
-    frame.party:SetPoint('LEFT', 15, -50)
+    --frame.party:SetPoint('LEFT', 15, -50)
+    frame.party:SetPoint('BOTTOMLEFT', frame, 'TOPLEFT')
 
     frame:HookScript('OnShow', function()
             getBagKey(frame, 'BOTTOMRIGHT', -15, 170)--KEY链接

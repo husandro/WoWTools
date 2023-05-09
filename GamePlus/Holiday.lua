@@ -78,8 +78,6 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
         return
     end
 
-    panel:SetButtonState('PUSHED')
-
     local monthOffset,day
     local info= C_Calendar.GetEventIndex()
     local info2= C_DateAndTime.GetCurrentCalendarTime()
@@ -145,7 +143,16 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
         if title:find(PVP) then
             msg= msg..'|A:pvptalents-warmode-swords:0:0|a'--pvp
         elseif event.calendarType=='HOLIDAY' and event.eventID then
-            if event.eventID==1063 or event.eventID==617 or event.eventID==623 or event.eventID==629 or event.eventID==654 or event.eventID==1068 or event.eventID==1277 or event.eventID==1269 then--时光
+            if event.eventID==1063
+                or event.eventID==616
+                or event.eventID==617
+                or event.eventID==623
+                or event.eventID==629
+                or event.eventID==654
+                or event.eventID==1068
+                or event.eventID==1277
+                or event.eventID==1269 then--时光
+
                 local tab={40168, 40173, 40786, 45563, 55499, 40168, 40173, 40787, 45563, 55498, 64710,64709}
                 msg= msg..set_Quest_Completed(tab)--任务是否完成
                 find_Quest=true
@@ -244,7 +251,8 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
     end
     panel.Text:SetText(Text2)
 
-    C_Timer.After(1, function()
+    panel:SetButtonState('PUSHED')
+    C_Timer.After(2, function()
         panel:SetButtonState('NORMAL')
     end)
 end
@@ -281,6 +289,10 @@ local function Text_Settings()--设置Text
         end
     end
     C_Timer.After(2, set_Text)
+end
+
+local function set_Point()--设置, 位置
+    panel:SetPoint('TOPRIGHT', Minimap, 'BOTTOMLEFT', -20,0)
 end
 
 --#####
@@ -346,7 +358,7 @@ local function InitMenu(self, level, type)--主菜单
             func=function()
                 Save.point=nil
                 panel:ClearAllPoints()
-                panel:SetPoint('TOP', Minimap, 'BOTTOM',-20,0)
+                set_Point()
             end,
             tooltipOnButton=true,
             tooltipTitle=e.Icon.right..' '..NPE_MOVE,
@@ -413,7 +425,7 @@ local function Init()
     if Save.point then
         panel:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
     else
-        panel:SetPoint('TOP', Minimap, 'BOTTOM',-20,0)
+        set_Point()
     end
 
     panel:RegisterForDrag("RightButton")
@@ -469,7 +481,7 @@ local function Init()
         end
     end)
 
-    
+
 
     set_event()
     Text_Settings()--设置Text
