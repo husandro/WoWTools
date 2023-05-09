@@ -49,7 +49,7 @@ local function hide_Frame_Texture(frame, tab)
     end
 end
 
---透明度, 颜色, frame, 子材质
+--透明度, 颜色, frame, 子材质 set_Alpha_Frame_Texture(frame, {index=nil, notAlpha=nil, notColor=nil})
 local function set_Alpha_Frame_Texture(frame, tab)
     if frame then
         tab=tab or {}
@@ -64,10 +64,10 @@ local function set_Alpha_Frame_Texture(frame, tab)
                 end
                 return
             elseif icon:GetObjectType()=="Texture" then
-                if not Save.disabledAlpha  then
+                if not Save.disabledAlpha and not tab.notAlpha  then
                     icon:SetAlpha(Save.alpha)
                 end
-                if e.Player.useColor then
+                if e.Player.useColor and not tab.notColor then
                     icon:SetVertexColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
                 end
             end
@@ -730,8 +730,8 @@ local function Init_Set_AlphaAndColor()
     setAlpha(GroupLootHistoryFrameRight)
     setAlpha()
 
-    
-    
+
+
 
     --频道, 设置
     hideTexture(ChatConfigCategoryFrame.NineSlice.Center)
@@ -841,11 +841,13 @@ local function Init_Set_AlphaAndColor()
     if MainStatusTrackingBarContainer then--货币，XP，追踪，最下面BAR
         hideTexture(MainStatusTrackingBarContainer.BarFrameTexture)
     end
-    
+
     hide_Frame_Texture(AddonCompartmentFrame)
     if e.Player.useColor then
         AddonCompartmentFrame.Text:SetTextColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
     end
+
+    set_Alpha_Frame_Texture(MinimapCluster.BorderTop)
 
     C_Timer.After(3, function()
         if SpellFlyout and SpellFlyout.Background then--Spell Flyout
@@ -864,6 +866,7 @@ local function Init_Set_AlphaAndColor()
                 end
             end
         end
+        
     end)
 end
 
@@ -896,6 +899,10 @@ local function set_Alpha_Event(arg1)
         setAlpha(TimeManagerAlarmMessageEditBox.Middle)
         setAlpha(TimeManagerAlarmMessageEditBox.Left)
         setAlpha(TimeManagerAlarmMessageEditBox.Right)
+        if e.Player.useColor then
+            TimeManagerClockTicker:SetTextColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
+        end
+        
 
     elseif arg1=='Blizzard_ClassTalentUI' and not Save.disabledAlpha then--天赋
         setAlpha(ClassTalentFrame.TalentsTab.BottomBar)--下面
@@ -1529,6 +1536,7 @@ local function set_Alpha_Event(arg1)
         end)
     elseif arg1=='Blizzard_MajorFactions' then--派系声望
         setAlpha(MajorFactionRenownFrame.Background)
+
     end
 end
 

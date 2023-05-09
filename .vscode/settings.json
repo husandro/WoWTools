@@ -2688,7 +2688,17 @@
         "LOG_IN",
         "ChatFrame1",
         "ObjectiveTracker_GetPaddingBetweenButtons",
-        "AddonCompartmentFrame"
+        "AddonCompartmentFrame",
+        "TimeManagerClockButton",
+        "TimeManagerFrameTicker",
+        "TimeManagerClockTicker",
+        "GameTime_GetTime",
+        "TimeManagerClockButton_Update",
+        "TimeManagerAlarmEnabledButton",
+        "TIMEMANAGER_TOOLTIP_REALMTIME",
+        "GameTimeFrame",
+        "TimeManagerClockButton_OnEnter",
+        "TimeManagerClockButton_OnLeave"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

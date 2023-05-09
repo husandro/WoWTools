@@ -7,6 +7,7 @@ local Save={
         vigentteButton=e.Player.husandro,
         vigentteButtonShowText=true,
         miniMapPoint={},--保存小图地, 按钮位置
+        useServerTimer=true,--小时图，使用服务器, 时间
 }
 local uiMapIDsTab= {2026, 2025, 2024, 2023, 2022, 2133}--监视, areaPoiIDs，
 local questIDTab= {--世界任务, 监视, ID
@@ -487,15 +488,13 @@ local function Init()
             end
         end)
     end
-
-
 end
+
 
 --###########
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if  arg1==id then
@@ -508,7 +507,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 print(id, addName, e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
              end)
 
-            if not Save.disabled then
+            if Save.disabled then
+                panel:UnregisterAllEvents()
+            else
                 if not e.Player.levelMax then
                     uiMapIDsTab= {}
                     questIDTab= {}
@@ -522,7 +523,44 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Init()
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
-            panel:UnregisterEvent('ADDON_LOADED')
+            --panel:UnregisterEvent('ADDON_LOADED')
+
+        elseif arg1=='Blizzard_TimeManager' then
+            local TimeManagerClockButton_Update_R= TimeManagerClockButton_Update--小时图，使用服务器, 时间
+            local function set_Server_Timer()--小时图，使用服务器, 时间
+                if Save.useServerTimer then
+                    TimeManagerClockButton_Update=function()
+                        TimeManagerClockTicker:SetText(SecondsToClock(GetServerTime()))
+                    end
+                else
+                    TimeManagerClockButton_Update= TimeManagerClockButton_Update_R
+                end
+            end
+            if Save.useServerTimer then
+                set_Server_Timer()
+            end
+            local check= CreateFrame("CheckButton", nil, TimeManagerFrame, "InterfaceOptionsCheckButtonTemplate")
+            check:SetPoint('TOPLEFT', TimeManagerFrame, 'BOTTOMLEFT')
+            check.Text:SetText(e.onlyChinese and '服务器时间' or TIMEMANAGER_TOOLTIP_REALMTIME)
+            check:SetChecked(Save.useServerTimer)
+            check:SetScript('OnClick', function()
+                Save.useServerTimer= not Save.useServerTimer and true or nil
+                set_Server_Timer()
+            end)
+            check:SetScript('OnEnter', function(self2)
+                e.tips:SetOwner(self2, "ANCHOR_LEFT");
+                e.tips:ClearLines();
+                e.tips:AddDoubleLine(e.onlyChinese and '时间信息' or TIMEMANAGER_TOOLTIP_TITLE, e.onlyChinese and '使用' or USE)
+                e.tips:AddDoubleLine(id, addName)
+                e.tips:Show()
+            end)
+            check:SetScript('OnLeave', function() e.tips:Hide() end)
+
+            hooksecurefunc('TimeManagerClockButton_UpdateTooltip', function()
+                e.tips:AddDoubleLine(e.Icon.left..(e.onlyChinese and '服务器时间' or TIMEMANAGER_TOOLTIP_REALMTIME), SecondsToClock(GetServerTime()))
+                e.tips:AddDoubleLine(id, addName)
+                e.tips:Show()
+            end)
         end
 
     elseif event == "PLAYER_LOGOUT" then

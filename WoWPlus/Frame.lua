@@ -231,8 +231,6 @@ local Move=function(F, tab)
     F:SetScript("OnLeave", function() ResetCursor() end)
 
     ZoomFrame(F2, tab.notZoom, tab.zeroAlpha)
-
-
 end
 
 local function set_Move_Button(frame, tab)
@@ -279,7 +277,15 @@ end
 
 local function setAddLoad(arg1)
     if arg1=='Blizzard_TimeManager' then--小时图，时间
-        Move(TimeManagerFrame,{})
+        Move(TimeManagerFrame,{save=true})
+        Move(TimeManagerClockButton,{save=true, click="R", notZoom=true})
+        hooksecurefunc('TimeManagerClockButton_UpdateTooltip', function()
+            e.tips:AddLine(' ')
+            e.tips:AddLine(e.Icon.right..(e.onlyChinese and '移动' or NPE_MOVE))
+            e.tips:AddDoubleLine(id, addName)
+            e.tips:Show()
+        end)
+        TimeManagerClockButton:HookScript('OnLeave', TimeManagerClockButton_OnLeave)
 
     elseif arg1=='Blizzard_AchievementUI' then--成就
         Move(AchievementFrame.Header,{frame=AchievementFrame})
