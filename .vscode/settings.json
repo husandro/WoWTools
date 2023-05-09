@@ -2687,7 +2687,8 @@
         "FRAMERATE_FREQUENCY",
         "LOG_IN",
         "ChatFrame1",
-        "ObjectiveTracker_GetPaddingBetweenButtons"
+        "ObjectiveTracker_GetPaddingBetweenButtons",
+        "AddonCompartmentFrame"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

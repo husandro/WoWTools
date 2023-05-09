@@ -842,6 +842,11 @@ local function Init_Set_AlphaAndColor()
         hideTexture(MainStatusTrackingBarContainer.BarFrameTexture)
     end
     
+    hide_Frame_Texture(AddonCompartmentFrame)
+    if e.Player.useColor then
+        AddonCompartmentFrame.Text:SetTextColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
+    end
+
     C_Timer.After(3, function()
         if SpellFlyout and SpellFlyout.Background then--Spell Flyout
             hideTexture(SpellFlyout.Background.HorizontalMiddle)
