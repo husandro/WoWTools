@@ -129,18 +129,19 @@ local function set_Keystones_Date()--挑战，数据
         local info = C_MythicPlus.GetRunHistory(false, true)--本周记录
         if info then
             local num= 0
-            local level
+            local level, completed
             for _, runs  in pairs(info) do
-                if runs and runs.level and runs.completed then
+                if runs and runs.level then
                     num= num+ 1
                     if not level or level< runs.level then
                         level= runs.level
+                        completed= runs.completed
                     end
                 end
             end
             if num>0 and level then
-                if level>=15 then
-                    level= '|cnGREEN_FONT_COLOR:'..level..'|r'
+                if not completed then
+                    level= '|cff606060'..level..'|r'
                 end
                 text= text..' ('..level..') '..num
             end
@@ -583,7 +584,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
         if self==PlayerFrame then
             set_Instance_Difficulty()--副本, 地下城，指示
             set_LootSpecialization()--拾取专精
-            set_Keystones_Date()--挑战，数据
+            C_Timer.After(2, set_Keystones_Date)--挑战，数据
         end
 
         if self.itemLevel then
@@ -1201,14 +1202,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             self:UnregisterEvent('CHAT_MSG_SYSTEM')
         end
         set_Instance_Difficulty()--副本, 地下城，指示
-        set_Keystones_Date()--挑战，数据
+        C_Timer.After(2, set_Keystones_Date)--挑战，数据
         set_ToggleWarMode()--设置, 战争模式
 
     elseif event=='PLAYER_FLAGS_CHANGED' or event=='PLAYER_UPDATE_RESTING' then
         set_ToggleWarMode()--设置, 战争模式
 
     elseif event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' then
-        set_Keystones_Date()--挑战，数据
+        C_Timer.After(2, set_Keystones_Date)--挑战，数据
 
     elseif event=='CHAT_MSG_SYSTEM' then--"地下城难度已设置为%s。团队副本难度设置为%s。已将经典团队副本难度设置为%s。
         if arg1 and (arg1:find(dungeonDifficultyStr) or arg1:find(raidDifficultyStr) or arg1:find(legacyRaidDifficultyStr)) then

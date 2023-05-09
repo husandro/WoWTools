@@ -2698,7 +2698,10 @@
         "TIMEMANAGER_TOOLTIP_REALMTIME",
         "GameTimeFrame",
         "TimeManagerClockButton_OnEnter",
-        "TimeManagerClockButton_OnLeave"
+        "TimeManagerClockButton_OnLeave",
+        "PVP_WEEKLY_REWARD",
+        "CALENDAR_REPEAT_WEEKLY",
+        "RETRIEVING_DATA"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
