@@ -186,7 +186,7 @@ local function get_Web_Link(tab)
                     tab.name= info and info.title
                 end
             end
-            local web=format(wowheadText, tab.type, tab.id, tab.name or '')
+            
             if tab.isPetUI then
                 if tab.frame then
                     BattlePetTooltipTemplate_AddTextLine(tab.frame, 'wowhead  Ctrl+Shift')
@@ -198,7 +198,7 @@ local function get_Web_Link(tab)
                 StaticPopup_Show("WowheadQuickLinkUrl",
                     'WoWHead',
                     nil,
-                    web
+                    format(wowheadText, tab.type, tab.id, tab.name or '')
                 )
             end
         elseif tab.unitName then
@@ -1336,6 +1336,16 @@ local function Init()
                     e.tips:Show()
                 end
             end)
+            self.questIDLabel:SetScript('OnMouseDown', function(self2)
+                if self2.questID then
+                    local web=
+                    StaticPopup_Show("WowheadQuickLinkUrl",
+                    'WoWHead',
+                    nil,
+                    format(wowheadText, 'quest', self2.questID, '')
+                )
+                end
+            end)
         end
         return self.questIDLabel
     end
@@ -1577,6 +1587,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Init()--初始
                 if e.onlyChinese then
                     raiderioText= 'https://raider.io/cn/characters/%s/%s/%s'
+                    if not LOCALE_zhCN then
+                        wowheadText= 'https://www.wowhead.com/cn/%s=%d'
+                    end
                 end
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
