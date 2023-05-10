@@ -1331,17 +1331,18 @@ local function Init()
                     e.tips:SetOwner(self2, "ANCHOR_LEFT")
                     e.tips:ClearLines()
                     securecallfunction(GameTooltip_AddQuest, self2, self2.questID)
-                    e.tips:AddLine(' ')
+                    --e.tips:AddLine(' ')
                     e.tips:AddDoubleLine(id, addName)
                     e.tips:Show()
                 end
             end)
             self.questIDLabel:SetScript('OnMouseDown', function(self2)
                 if self2.questID then
+                    local info = C_QuestLog.GetQuestTagInfo(self2.questID)
                     StaticPopup_Show("WowheadQuickLinkUrl",
                     'WoWHead',
                     nil,
-                    format(wowheadText, 'quest', self2.questID, '')
+                    format(wowheadText, 'quest', self2.questID, info and info.tagName or '')
                 )
                 end
             end)
