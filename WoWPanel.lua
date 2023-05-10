@@ -83,30 +83,32 @@ InterfaceOptions_AddCategory(panel)
 --##############
 --Instance Panel
 --##############
+--[[
 local instancePane= CreateFrame('Frame')
 instancePane.name = '|A:poi-rift1:0:0|a'..INSTANCE
 instancePane.parent =id;
 InterfaceOptions_AddCategory(instancePane)
+]]
 
 --##############
 --创建, 添加控制面板
 --##############
-
 local lastWoW, lastGame, lastInstance
-e.CPanel= function(name, value, GamePlus, Instance)
-    local check=CreateFrame("CheckButton", nil, Instance and instancePane or panel, "InterfaceOptionsCheckButtonTemplate")
+e.CPanel= function(name, value, GamePlus)--, Instance)
+    --local check=CreateFrame("CheckButton", nil, Instance and instancePane or panel, "InterfaceOptionsCheckButtonTemplate")
+    local check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     check.text:SetText(name)
     check:SetChecked(value)
 
-    if Instance then--副本, 大类
+--[[if Instance then--副本, 大类
         if not lastInstance then
             check:SetPoint('TOPLEFT')
             lastInstance= check
         else
             check:SetPoint('TOPLEFT', lastInstance, 'BOTTOMLEFT')
         end
-
-    elseif GamePlus then--GamePlus, 大类
+]]
+    if GamePlus then--GamePlus, 大类
         if lastGame then
             check:SetPoint('TOPLEFT', lastGame, 'BOTTOMLEFT')
         else
