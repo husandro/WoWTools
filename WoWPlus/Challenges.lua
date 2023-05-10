@@ -1034,6 +1034,80 @@ local function set_Update()--Blizzard_ChallengesUI.lua
     end
 end
 
+
+--#####################
+--等级 => 每周/完成, 提示
+--#####################
+local function set_itemLevelTips_Text(text)--设置, 文本
+    if Save.showItemLevelTipsText and text then
+        ChallengesFrame.itemLevelTips.Text:SetText((e.onlyChinese and '等级  每周  完成' or (LEVEL..'  '..CALENDAR_REPEAT_WEEKLY..'  '..COMPLETE))..'\n'..text)
+    else
+        ChallengesFrame.itemLevelTips.Text:SetText('')
+    end
+end
+local function set_itemLevelTips_GetTextAndTooltip(showTooltip)--设置, 文本, 提示, 内容
+    local text
+    local curLevel=0
+    local curKey= C_MythicPlus.GetOwnedKeystoneLevel() or 0
+    local info = C_MythicPlus.GetRunHistory(false, true) or {}--本周记录
+    for _, runs  in pairs(info) do
+        if runs and runs.level then
+            curLevel= runs.level>curLevel and runs.level or curLevel
+        end
+    end
+
+    for i=2, 25 do
+        local col= curLevel==i and '|cff00ff00' or select(2, math.modf(i/2))==0 and '|cffff8200' or '|cffffffff'
+        local weeklyRewardLevel, endOfRunRewardLevel = C_MythicPlus.GetRewardLevelForDifficultyLevel(i)
+        if weeklyRewardLevel and weeklyRewardLevel>0 then
+            local str=col..(i<10 and i..' ' or i)..'  '..weeklyRewardLevel..'  '..(endOfRunRewardLevel or 0)..'|r'
+            if showTooltip then
+                e.tips:AddLine(str)
+            end
+            if i>=5 and i<=20 then
+                text= text and text..'\n' or ''
+                text= text.. str..(curKey==i and e.Icon.star2 or '')
+            end
+        end
+    end
+    set_itemLevelTips_Text(text)
+    return text
+end
+local function set_itemLevelTips(self)--等级 => 每周/完成, 提示
+    if Save.hide then
+        if self.itemLevelTips then
+            self.itemLevelTips.Text:SetText('')
+            self.itemLevelTips:SetShown(false)
+        end
+        return
+    end
+    if not self.itemLevelTips then
+        self.itemLevelTips= e.Cbtn(self.WeeklyInfo.Child,{size={16,16}, atlas='auctionhouse-icon-favorite'})
+        self.itemLevelTips:SetPoint('TOPRIGHT', -2,-14)
+        self.itemLevelTips:SetAlpha(0.5)
+        self.itemLevelTips.Text=e.Cstr(self)
+        self.itemLevelTips.Text:SetPoint('TOPLEFT', self.WoWKeystones, 'BOTTOMLEFT',0,-12)
+        self.itemLevelTips:SetScript('OnClick', function()
+            Save.showItemLevelTipsText= not Save.showItemLevelTipsText and true or nil
+            set_itemLevelTips_GetTextAndTooltip(false)
+        end)
+        self.itemLevelTips:SetScript('OnEnter', function(self2)
+            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddLine(e.onlyChinese and '等级 每周 完成' or (LEVEL..' '..CALENDAR_REPEAT_WEEKLY..' '..COMPLETE))
+            if not set_itemLevelTips_GetTextAndTooltip(true) then
+                e.tips:AddDoubleLine(e.onlyChinese and '获取数据' or RETRIEVING_DATA, e.onlyChinese and '无' or NONE)
+            end
+            e.tips:Show()
+        end)
+        self.itemLevelTips:SetScript('OnLeave', function() e.tips:Hide() end)
+        self.itemLevelTips:SetScript('OnShow', set_itemLevelTips_GetTextAndTooltip)
+    else
+        self.itemLevelTips:SetShown(true)
+    end
+    set_itemLevelTips_GetTextAndTooltip(false)
+end
+
 --####
 --初始
 --####
@@ -1047,6 +1121,7 @@ local function Init()
         Affix()
         All(ChallengesFrame)--所有记录   
         Cur(ChallengesFrame)--货币数量
+        set_itemLevelTips(ChallengesFrame)--等级 => 每周/完成, 提示
         self2:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
     end)
 
@@ -1135,12 +1210,12 @@ local function Init()
     end
 
 
-   Kill(ChallengesFrame)--副本PVP团本
-   hooksecurefunc(ChallengesFrame, 'Update', set_Update)
-   Affix()
-   All(ChallengesFrame)--所有记录   
-   Cur(ChallengesFrame)--货币数量
-
+    Kill(ChallengesFrame)--副本PVP团本
+    hooksecurefunc(ChallengesFrame, 'Update', set_Update)
+    Affix()
+    All(ChallengesFrame)--所有记录   
+    Cur(ChallengesFrame)--货币数量
+    set_itemLevelTips(ChallengesFrame)--等级 => 每周/完成, 提示
 
     if ChallengesFrame.WeeklyInfo and ChallengesFrame.WeeklyInfo.Child then
         if ChallengesFrame.WeeklyInfo.Child.Description and ChallengesFrame.WeeklyInfo.Child.Description:IsVisible() then
@@ -1153,66 +1228,7 @@ local function Init()
         end
     end
 
-    --#####################
-    --等级 => 每周/完成, 提示
-    --#####################
-    ChallengesFrame.itemLevelTips= e.Cbtn(ChallengesFrame.WeeklyInfo.Child,{size={16,16}, atlas='auctionhouse-icon-favorite'})
-    ChallengesFrame.itemLevelTips:SetPoint('TOPRIGHT', -2,-14)
-    ChallengesFrame.itemLevelTips:SetAlpha(0.5)
-    ChallengesFrame.itemLevelTips.Text=e.Cstr(ChallengesFrame)
-    ChallengesFrame.itemLevelTips.Text:SetPoint('TOPLEFT', ChallengesFrame.WoWKeystones, 'BOTTOMLEFT',0,-12)
 
-    local function set_itemLevelTips_Text(text)--设置, 文本
-        if Save.showItemLevelTipsText and text then
-            ChallengesFrame.itemLevelTips.Text:SetText((e.onlyChinese and '等级  每周  完成' or (LEVEL..'  '..CALENDAR_REPEAT_WEEKLY..'  '..COMPLETE))..'\n'..text)
-        else
-            ChallengesFrame.itemLevelTips.Text:SetText('')
-        end
-    end
-    local function set_itemLevelTips(tooltip)
-        local text
-        local curLevel=0
-        local curKey= C_MythicPlus.GetOwnedKeystoneLevel() or 0
-        local info = C_MythicPlus.GetRunHistory(false, true) or {}--本周记录
-        for _, runs  in pairs(info) do
-            if runs and runs.level then
-                curLevel= runs.level>curLevel and runs.level or curLevel
-            end
-        end
-
-        for i=2, 25 do
-            local col= curLevel==i and '|cff00ff00' or select(2, math.modf(i/2))==0 and '|cffff8200' or '|cffffffff'
-            local weeklyRewardLevel, endOfRunRewardLevel = C_MythicPlus.GetRewardLevelForDifficultyLevel(i)
-            if weeklyRewardLevel and weeklyRewardLevel>0 then
-                local str=col..(i<10 and i..' ' or i)..'  '..weeklyRewardLevel..'  '..(endOfRunRewardLevel or 0)..'|r'
-                if tooltip then
-                    e.tips:AddLine(str)
-                end
-                if i>=5 and i<=20 then
-                    text= text and text..'\n' or ''
-                    text= text.. str..(curKey==i and e.Icon.star2 or '')
-                end
-            end
-        end
-        set_itemLevelTips_Text(text)
-        return text
-    end
-    ChallengesFrame.itemLevelTips:SetScript('OnClick', function()
-        Save.showItemLevelTipsText= not Save.showItemLevelTipsText and true or nil
-        set_itemLevelTips()
-    end)
-    ChallengesFrame.itemLevelTips:SetScript('OnEnter', function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddLine(e.onlyChinese and '等级 每周 完成' or (LEVEL..' '..CALENDAR_REPEAT_WEEKLY..' '..COMPLETE))
-        if not set_itemLevelTips(true) then
-            e.tips:AddDoubleLine(e.onlyChinese and '获取数据' or RETRIEVING_DATA, e.onlyChinese and '无' or NONE)
-        end
-        e.tips:Show()
-    end)
-    ChallengesFrame.itemLevelTips:SetScript('OnLeave', function() e.tips:Hide() end)
-    ChallengesFrame.itemLevelTips:SetScript('OnShow', set_itemLevelTips)
-    C_Timer.After(2, set_itemLevelTips)
 end
 
 

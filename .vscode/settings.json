@@ -2701,7 +2701,9 @@
         "TimeManagerClockButton_OnLeave",
         "PVP_WEEKLY_REWARD",
         "CALENDAR_REPEAT_WEEKLY",
-        "RETRIEVING_DATA"
+        "RETRIEVING_DATA",
+        "HEADER_COLON",
+        "GameTooltip_AddColoredLine"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
