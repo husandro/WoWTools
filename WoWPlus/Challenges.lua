@@ -20,6 +20,7 @@ local affixSchedule = {-- AngryKeystones Schedule Dragonflight Season 1,史诗�
 	[9]  = { [1]=11,  [2]=13,  [3]=10, }, -- Fortified | Bursting | Explosive
 	[10] = { [1]=7,   [2]=3,   [3]=9,  }, -- Tyrannical | Bolstering | Volcanica
 }
+--[[
 local EncounterJournal_Maps={--[mapChallengeModelID]= journalInstanceID
     [2]= 313,--青龙寺
     [400]= 1198,--诺库德阻击战
@@ -29,27 +30,27 @@ local EncounterJournal_Maps={--[mapChallengeModelID]= journalInstanceID
     [399]= 1202,--[红玉新生法池]
     [401]= 1203;--[碧蓝魔馆]
     [165]= 537,--[影月墓地]
-}
-    --[[[166]= 536,--暗轨之路(车站)
+
+    [166]= 536,--暗轨之路(车站)
     [391]= 1194,--街头商贩之路(天街)
     [392]= 1194,--街头商贩之路(天街)
     [370]= 1178,--机械王子之路(麦卡贡)
     [369]= 1178,--机械王子之路(麦卡贡)
     [169]= 558,--铁船之路(码头)
     [227]= 860,--堕落守护者之路(卡拉赞)
-    [234]= 860,--堕落守护者之路(卡拉赞)]]
+    [234]= 860,--堕落守护者之路(卡拉赞)
 
-    --[]= 68,--旋云之巅
-    --[]= 1197,--奥达曼：提尔的遗产
-    --[]= 1199,--奈萨鲁斯
-    --[]= 1196,--蕨皮山谷
+    [438]= 68,--旋云之巅
+    [403]= 1197,--奥达曼：提尔的遗产
+    [404]= 1199,--奈萨鲁斯
+    [405]= 1196,--蕨皮山谷
 
-    --[]=1204,--注能大厅
-    --[]=1022,--地渊孢林
-    --[]=1001,--自由镇
-    --[]=767,--奈萨里奥的巢穴
+    [406]=1204,--注能大厅
+    [251]=1022,--地渊孢林
+    [245]=1001,--自由镇
+    [206]=767,--奈萨里奥的巢穴
+}
 
---[[
 local spellIDs={--法术, 传送门, {mapChallengeModeID = 法术 SPELL ID}, BUG, 战斗中关闭, 会出现错误
     [166]=159900,--暗轨之路(车站)
     [391]=367416,--街头商贩之路(天街)
@@ -782,8 +783,8 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                     if not EncounterJournal or not EncounterJournal:IsVisible() then
                         ToggleEncounterJournal()
                     end
-                    --securecall('NavBar_Reset', EncounterJournal.navBar)
-                    --securecall('EncounterJournal_DisplayInstance', EncounterJournal_Maps[self2.mapID])
+                    --[[securecall('NavBar_Reset', EncounterJournal.navBar)--BUG
+                    securecall('EncounterJournal_DisplayInstance', EncounterJournal_Maps[self2.mapID])]]
                 end)
                 frame:HookScript('OnEnter', function(self2)--提示
                     if self2.mapID then
@@ -1037,11 +1038,8 @@ end
 --初始
 --####
 local function Init()
-    --local ChallengesFrame=ChallengesFrame
     ChallengesFrame.sel= e.Cbtn(ChallengesFrame, {size={22,22}, icon= not Save.hide})
     ChallengesFrame.sel:SetPoint('TOPLEFT',60,-20)
-    --ChallengesFrame.sel:SetChecked(Save.hide)
-    --ChallengesFrame.sel.text:SetText(e.onlyChinese and '隐藏' or HIDE)
     ChallengesFrame.sel:SetScript("OnClick", function (self2)
         Save.hide = not Save.hide and true or nil
         Kill(ChallengesFrame)--副本PVP团本
@@ -1059,7 +1057,9 @@ local function Init()
             end
 
             local infos= C_MythicPlus.GetRunHistory(true, true)
-            if not infos then return end
+            if not infos then
+                return
+            end
             local IDs={}
             local t=0
             for _, v in pairs(infos) do
@@ -1084,7 +1084,7 @@ local function Init()
 
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(HISTORY, t..'/'..#infos, 0,1,0 ,0,1,0)
+            e.tips:AddDoubleLine(e.onlyChinese and '历史' or HISTORY, t..'/'..#infos, 0,1,0 ,0,1,0)
 
             for k, v in pairs(IDs) do
                 local name, _, _, texture= C_ChallengeMode.GetMapUIInfo(k)
@@ -1172,6 +1172,7 @@ local function Init()
     local function set_itemLevelTips(tooltip)
         local text
         local curLevel=0
+        local curKey= C_MythicPlus.GetOwnedKeystoneLevel() or 0
         local info = C_MythicPlus.GetRunHistory(false, true) or {}--本周记录
         for _, runs  in pairs(info) do
             if runs and runs.level then
@@ -1187,7 +1188,7 @@ local function Init()
                     e.tips:AddLine(str)
                 end
                 text= text and text..'\n' or ''
-                text= text.. str
+                text= text.. str..(curKey==i and e.Icon.star2 or '')
             end
         end
         set_itemLevelTips_Text(text)
@@ -1207,7 +1208,8 @@ local function Init()
         e.tips:Show()
     end)
     ChallengesFrame.itemLevelTips:SetScript('OnLeave', function() e.tips:Hide() end)
-    C_Timer.After(1, set_itemLevelTips)
+    ChallengesFrame.itemLevelTips:SetScript('OnShow', set_itemLevelTips)
+    C_Timer.After(2, set_itemLevelTips)
 end
 
 
