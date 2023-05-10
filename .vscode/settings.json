@@ -2704,7 +2704,8 @@
         "RETRIEVING_DATA",
         "HEADER_COLON",
         "GameTooltip_AddColoredLine",
-        "GUILD_INTEREST_RP"
+        "GUILD_INTEREST_RP",
+        "MONTHLY_ACTIVITIES_PROGRESSED"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
