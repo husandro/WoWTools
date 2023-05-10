@@ -1338,7 +1338,6 @@ local function Init()
             end)
             self.questIDLabel:SetScript('OnMouseDown', function(self2)
                 if self2.questID then
-                    local web=
                     StaticPopup_Show("WowheadQuickLinkUrl",
                     'WoWHead',
                     nil,
