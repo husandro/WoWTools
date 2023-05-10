@@ -1204,7 +1204,7 @@ local function Init()
     ChallengesFrame.itemLevelTips:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddLine(e.onlyChinese and '等级  每周/完成' or (LEVEL..'  '..CALENDAR_REPEAT_WEEKLY..'/'..COMPLETE))
+        e.tips:AddLine(e.onlyChinese and '等级 每周 完成' or (LEVEL..' '..CALENDAR_REPEAT_WEEKLY..' '..COMPLETE))
         if not set_itemLevelTips(true) then
             e.tips:AddDoubleLine(e.onlyChinese and '获取数据' or RETRIEVING_DATA, e.onlyChinese and '无' or NONE)
         end
