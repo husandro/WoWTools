@@ -126,7 +126,7 @@ StaticPopupDialogs["WowheadQuickLinkUrl"] = {
     --preferredIndex = 3,
 }
 
-local wowheadText= 'https://www.wowhead.com/%s=%d/%s'
+local wowheadText= 'https://www.wowhead.com/%s=%d'
 local raiderioText= 'https://raider.io/characters/%s/%s/%s'
 if LOCALE_zhCN or LOCALE_zhTW then
     wowheadText= 'https://www.wowhead.com/cn/%s=%d/%s'
