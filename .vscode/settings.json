@@ -2703,7 +2703,8 @@
         "CALENDAR_REPEAT_WEEKLY",
         "RETRIEVING_DATA",
         "HEADER_COLON",
-        "GameTooltip_AddColoredLine"
+        "GameTooltip_AddColoredLine",
+        "GUILD_INTEREST_RP"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
