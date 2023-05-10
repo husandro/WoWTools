@@ -4,7 +4,7 @@ if not e.Player.levelMax then
 end
 local addName= CHALLENGES
 local Save= {
-    --showItemLevelTipsText=true,--等级 =>每周/完成, 提示
+    showItemLevelTipsText=true,--等级 =>每周/完成, 提示
 }
 local panel=CreateFrame("Frame")
 
@@ -698,7 +698,7 @@ local function All(self)--所有记录
             text= text..'\n'.. e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false})
         end
     end
-    
+
     self.WoWKeystones:SetText(text)
 end
 
@@ -1164,7 +1164,7 @@ local function Init()
 
     local function set_itemLevelTips_Text(text)--设置, 文本
         if Save.showItemLevelTipsText and text then
-            ChallengesFrame.itemLevelTips.Text:SetText((e.onlyChinese and '等级  每周/完成' or (LEVEL..'  '..CALENDAR_REPEAT_WEEKLY..'/'..COMPLETE))..'\n'..text)
+            ChallengesFrame.itemLevelTips.Text:SetText((e.onlyChinese and '等级  每周  完成' or (LEVEL..'  '..CALENDAR_REPEAT_WEEKLY..'  '..COMPLETE))..'\n'..text)
         else
             ChallengesFrame.itemLevelTips.Text:SetText('')
         end
@@ -1179,23 +1179,26 @@ local function Init()
                 curLevel= runs.level>curLevel and runs.level or curLevel
             end
         end
-        for i=5, 25 do
+
+        for i=2, 25 do
             local col= curLevel==i and '|cff00ff00' or select(2, math.modf(i/2))==0 and '|cffff8200' or '|cffffffff'
             local weeklyRewardLevel, endOfRunRewardLevel = C_MythicPlus.GetRewardLevelForDifficultyLevel(i)
             if weeklyRewardLevel and weeklyRewardLevel>0 then
-                local str=col..(i<10 and i..' ' or i)..'  '..weeklyRewardLevel..' / '..(endOfRunRewardLevel or 0)..'|r'
+                local str=col..(i<10 and i..' ' or i)..'  '..weeklyRewardLevel..'  '..(endOfRunRewardLevel or 0)..'|r'
                 if tooltip then
                     e.tips:AddLine(str)
                 end
-                text= text and text..'\n' or ''
-                text= text.. str..(curKey==i and e.Icon.star2 or '')
+                if i>=5 and i<=20 then
+                    text= text and text..'\n' or ''
+                    text= text.. str..(curKey==i and e.Icon.star2 or '')
+                end
             end
         end
         set_itemLevelTips_Text(text)
         return text
     end
     ChallengesFrame.itemLevelTips:SetScript('OnClick', function()
-        Save.showItemLevelTipsText= not Save.showItemLevelTipsText and true or nil     
+        Save.showItemLevelTipsText= not Save.showItemLevelTipsText and true or nil
         set_itemLevelTips()
     end)
     ChallengesFrame.itemLevelTips:SetScript('OnEnter', function(self2)
