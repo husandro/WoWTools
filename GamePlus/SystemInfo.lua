@@ -692,7 +692,7 @@ local function Init()
 
     
 
-    C_Timer.After(2, function()
+    C_Timer.After(3, function()
         set_Label_Size_Color()
         set_Money_Event()--设置,钱,事件
         set_Fps_Ms_Show_Hide()--设置, fps, ms, 数值
