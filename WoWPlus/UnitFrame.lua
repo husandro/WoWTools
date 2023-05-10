@@ -140,9 +140,6 @@ local function set_Keystones_Date()--挑战，数据
                 end
             end
             if num>0 and level then
-                if not completed then
-                    level= '|cff606060'..level..'|r'
-                end
                 text= text..' ('..level..') '..num
             end
         end
