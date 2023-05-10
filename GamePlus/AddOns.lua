@@ -6,10 +6,7 @@ local Save={
         buttons={
             [RESISTANCE_FAIR]={
                 ['WeakAuras']=true,
-                ['WeakAurasArchive']=true,
-                ['WeakAurasModelPaths']=true,
                 ['WeakAurasOptions']=true,
-                ['WeakAurasTemplates']=true,
                 ['BugSack']=true,
                 ['!BugGrabber']=true,
                 ['TextureAtlasViewer']=true,
@@ -260,16 +257,11 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
                     ['BugSack']=true,
                     ['!BugGrabber']=true,
                     ['WeakAuras']=true,
-                    ['WeakAurasArchive']=true,
-                    ['WeakAurasModelPaths']=true,
                     ['WeakAurasOptions']=true,
-                    ['WeakAurasTemplates']=true,
                     ['Details']=true,
                     ['DBM-Core']=true,
                     ['DBM-Challenges']=true,
-                    ['DBM-GUI']=true,
                     ['DBM-StatusBarTimers']=true,
-                    ['DBM-DMF']=true,
                     [id]=true,
                 }
             end
