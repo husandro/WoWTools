@@ -2718,7 +2718,9 @@
         "RematchPetPanel",
         "RematchQueuePanel",
         "RematchTeamPanel",
-        "RematchOptionPanel"
+        "RematchOptionPanel",
+        "PVP_PROGRESS_REWARDS_HEADER",
+        "RED_GEM"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

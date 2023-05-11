@@ -1,25 +1,44 @@
 local id, e= ...
-local addName= TARGET..COMBAT_ALLY_START_MISSION
+local addName= TARGET
 local Save= {
-    creatureNum= true,
-    range=35,
+    target= true,
+    targetInCombat=true,
+    w=40,
+    h=20,
+    x=0,
+    y=0,
+
+    creature= true,--怪物数量
+    creatureRange=35,
+    creatureFontSize=10,
+
+    quest= true,
 }
 
 local panel= CreateFrame("Frame")
+local targetFrame
 local isPvPArena, isIns--, isPvPZone
+--local PlaterADD
+
+
+
 
 --########################
 --怪物目标, 队员目标, 总怪物
 --########################
 --local distanceSquared, checkedDistance = UnitDistanceSquared(u)
-local function set_CreatureNum()
+local createRun
+local function set_Creature_Num()
+    if not (Save.creature and targetFrame:IsShown()) or createRun then
+        return
+    end
+    createRun=true
     local k,T,F=0,0,0
-
     local nameplates= C_NamePlate.GetNamePlates() or {}
     for _, nameplat in pairs(nameplates) do
         local u = nameplat.namePlateUnitToken or nameplat.UnitFrame and nameplat.UnitFrame.unit
         local t= u and u..'target'
-        local range= Save.range>0 and e.CheckRange(u, Save.range, '<=') or Save.range==0
+        local range= Save.creatureRange>0 and e.CheckRange(u, Save.creatureRange, '<=') or Save.creatureRange==0
         if t and UnitExists(u)
             and not UnitIsDeadOrGhost(u)
             and not UnitInParty(u)
@@ -52,8 +71,8 @@ local function set_CreatureNum()
             end
         end
     end
-
-    panel.Text:SetText((T==0 and '-' or T)..' |cff00ff00'..(F==0 and '-' or F)..'|r '..(k==0 and '-' or k))
+    targetFrame.Creature:SetText(e.Player.col..(T==0 and '-' or  T)..'|r |cff00ff00'..(F==0 and '-' or F)..'|r '..(k==0 and '-' or k))
+    createRun=nil
 end
 
 --#########
@@ -105,7 +124,7 @@ local function Get_Quest_Progress(unit)--GameTooltip.lua --local questID= line a
 end
 
 local function set_questProgress_Text(plate, unit)
-    if UnitExists(unit) and plate then
+    if UnitExists(unit) and plate and Save.quest then
         local text= Get_Quest_Progress(unit)
         if text and not plate.questProgress then
             local frame= plate.UnitFrame and plate.UnitFrame.healthBar or plate
@@ -120,14 +139,74 @@ end
 
 local questChanging
 local function set_check_All_Plates()
-    if not questChanging then
+    local plates= C_NamePlate.GetNamePlates() or {}
+    if not Save.quest then--清除
+        for _, plate in pairs(plates) do
+            if plate.questProgress then
+                plate.questProgress:SetText('')
+            end
+        end
+        questChanging=nil
+    elseif not questChanging then--设置
         questChanging=true
-        local plates= C_NamePlate.GetNamePlates() or {}
         for _, plate in pairs(plates) do
             set_questProgress_Text(plate, plate.namePlateUnitToken or plate.UnitFrame and plate.UnitFrame.unit)
         end
         questChanging=nil
     end
+
+end
+
+--##########################
+--设置,指示目标,位置,显示,隐藏
+--##########################
+local function set_Target()
+local plate = C_NamePlate.GetNamePlateForUnit("target")
+    if plate then
+        local frame
+        if plate.UnitFrame then
+            if plate.UnitFrame.RaidTargetFrame and plate.UnitFrame.RaidTargetFrame.RaidTargetIcon:IsShown() then
+                frame= plate.UnitFrame.RaidTargetFrame
+            elseif plate.UnitFrame.ClassificationFrame and plate.UnitFrame.ClassificationFrame.classificationIndicator:IsShown() then
+                frame= plate.UnitFrame.ClassificationFrame.classificationIndicator
+            elseif plate.UnitFrame.healthBar then
+                frame= plate.UnitFrame.healthBar
+            end
+        end
+
+        targetFrame:ClearAllPoints()
+        targetFrame:SetPoint('RIGHT', frame or plate, 'LEFT',Save.x, Save.y)
+        if Save.target then
+            targetFrame.Target:SetShown(true)
+        end
+        set_Creature_Num()
+    end
+    targetFrame:SetShown(plate and true or false)
+end
+
+
+--####################################
+--设置 targetFrame Target Creature 属性
+--####################################
+local function set_Created_Texture_Text()
+    targetFrame:SetSize(Save.w, Save.h)
+    if not targetFrame.Target and Save.target then
+        targetFrame.Target= targetFrame:CreateTexture(nil, 'BACKGROUND')
+        targetFrame.Target:SetAllPoints(targetFrame)
+        targetFrame.Target:SetAtlas('common-icon-rotateright')
+    end
+    if targetFrame.Target then
+        targetFrame.Target:SetShown(false)
+    end
+    if not targetFrame.Creature and Save.creature then
+        targetFrame.Creature= e.Cstr(targetFrame, {size=Save.creatureFontSize, color={r=1,g=1,b=1}, layer='BORDER', justifyH='RIGHT'})--10, nil, nil, {1,1,1}, 'BORDER', 'RIGHT')
+        targetFrame.Creature:SetPoint('RIGHT', -8, 0)
+    end
+    if targetFrame.Creature then
+        targetFrame.Creature:SetText('')
+        targetFrame.Creature:SetTextColor(1,1,1)
+    end
+    targetFrame:SetShown(false)
 end
 
 
@@ -135,197 +214,245 @@ end
 --事件
 --####
 local function set_Register_Event()
-    panel:UnregisterAllEvents()
-    if Save.disabled then
-        if panel.Texture then
-            panel.Texture:SetShown(false)
-        end
-        if panel.Text then
-            panel.Text:SetText('')
-        end
-    else
-        panel:RegisterEvent('PLAYER_TARGET_CHANGED')
-        panel:RegisterEvent('PLAYER_ENTERING_WORLD')
-        panel:RegisterEvent('RAID_TARGET_UPDATE')
-        panel:RegisterUnitEvent('UNIT_FLAGS', 'target')
+    targetFrame:UnregisterAllEvents()
+    targetFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
 
-        panel:RegisterEvent('PLAYER_REGEN_DISABLED')
-        panel:RegisterEvent('PLAYER_REGEN_ENABLED')
-
-        if Save.creatureNum then
-            panel:RegisterEvent('UNIT_TARGET')
-
-            panel:RegisterEvent('NAME_PLATE_UNIT_ADDED')
-            panel:RegisterEvent('NAME_PLATE_UNIT_REMOVED')
-            if not isIns  then
-                panel:RegisterEvent('UNIT_QUEST_LOG_CHANGED')
-                panel:RegisterEvent('SCENARIO_UPDATE')
-                panel:RegisterEvent('SCENARIO_CRITERIA_UPDATE')
-                panel:RegisterEvent('SCENARIO_COMPLETED')
-                panel:RegisterEvent('QUEST_POI_UPDATE')
-
-                --[[panel:RegisterEvent('ZONE_CHANGED')
-                panel:RegisterEvent('ZONE_CHANGED_INDOORS')
-                panel:RegisterEvent('ZONE_CHANGED_NEW_AREA')
-                panel:RegisterEvent('FRIENDLIST_UPDATE')
-                panel:RegisterEvent('BN_FRIEND_INFO_CHANGED')]]
-            end
-
-        elseif panel.Text then
-            panel.Text:SetText('')
-        end
+    if Save.target or Save.creature then
+        targetFrame:RegisterEvent('PLAYER_TARGET_CHANGED')
+        targetFrame:RegisterEvent('RAID_TARGET_UPDATE')
+        targetFrame:RegisterUnitEvent('UNIT_FLAGS', 'target')
     end
 
-    panel:RegisterEvent('PLAYER_LOGOUT')
-end
+    if Save.target and Save.targetInCombat then
+        targetFrame:RegisterEvent('PLAYER_REGEN_DISABLED')
+        targetFrame:RegisterEvent('PLAYER_REGEN_ENABLED')
+    end
 
+    if Save.creature then
+        targetFrame:RegisterEvent('UNIT_TARGET')
+    end
+
+    if (not isIns and Save.quest) or Save.creature then
+        targetFrame:RegisterEvent('NAME_PLATE_UNIT_ADDED')
+        targetFrame:RegisterEvent('NAME_PLATE_UNIT_REMOVED')
+    end
+
+    isPvPArena= C_PvP.IsBattleground() or C_PvP.IsArena()
+    isIns= IsInInstance() and GetNumGroupMembers()>2
+
+    if not isIns and Save.quest  then
+        targetFrame:RegisterEvent('UNIT_QUEST_LOG_CHANGED')
+        targetFrame:RegisterEvent('SCENARIO_UPDATE')
+        targetFrame:RegisterEvent('SCENARIO_CRITERIA_UPDATE')
+        targetFrame:RegisterEvent('SCENARIO_COMPLETED')
+        targetFrame:RegisterEvent('QUEST_POI_UPDATE')
+    end
+end
 
 --####
 --初始
 --####
 local function Init()
-    panel:SetSize(40, 20)
+    targetFrame= CreateFrame("Frame")
+    set_Created_Texture_Text()
+    set_Register_Event()
+    set_check_All_Plates()
 
-    panel.Texture= panel:CreateTexture(nil, 'BACKGROUND')
-    panel.Texture:SetAtlas('common-icon-rotateright')
-    panel.Texture:SetAllPoints(panel)
+    targetFrame:SetScript("OnEvent", function(self, event, arg1)
+        if event=='PLAYER_TARGET_CHANGED' or event=='PLAYER_ENTERING_WORLD' or event=='RAID_TARGET_UPDATE' or event=='UNIT_FLAGS' then
+            C_Timer.After(0.15, set_Target)
 
-    panel.Text= e.Cstr(panel, {size=10, color={r=1,g=1,b=1}, layer='BORDER', justifyH='RIGHT'})--10, nil, nil, {1,1,1}, 'BORDER', 'RIGHT')
-    panel.Text:SetPoint('RIGHT', -8, 0)
-    --panel.Text:SetShadowOffset(2, -2)
+            if event=='PLAYER_ENTERING_WORLD' then
+                set_Register_Event()
+            end
+
+        elseif event=='PLAYER_REGEN_DISABLED' then--颜色
+            targetFrame.Target:SetVertexColor(1,0,0)
+
+        elseif event=='PLAYER_REGEN_ENABLED' then
+            targetFrame.Target:SetVertexColor(1,1,1)
+
+        elseif event=='UNIT_QUEST_LOG_CHANGED' or event=='QUEST_POI_UPDATE' or event=='SCENARIO_COMPLETED' or event=='SCENARIO_UPDATE' or event=='SCENARIO_CRITERIA_UPDATE' then
+            C_Timer.After(2, set_check_All_Plates)
+
+        else
+            if not isIns and arg1 then
+                if event=='NAME_PLATE_UNIT_ADDED' then
+                    set_questProgress_Text(C_NamePlate.GetNamePlateForUnit(arg1), arg1)
+
+                elseif event=='NAME_PLATE_UNIT_REMOVED' then
+                    local plate = C_NamePlate.GetNamePlateForUnit(arg1)
+                    if plate and plate.questProgress then
+                        plate.questProgress:SetText('')
+                    end
+                end
+            end
+            set_Creature_Num()
+        end
+    end)
 end
 
-panel:RegisterEvent('ADDON_LOADED')
 
+--#################
+--选项, 添加控制面板      
+--#################
+local function set_Option()
+    local sel=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    sel:SetPoint('TOPLEFT', 0, -40)
+    sel.Text:SetText(e.Icon.toRight2..(e.onlyChinese and '目标' or addName))
+    sel:SetChecked(Save.target)
+    sel:SetScript('OnClick', function()
+        Save.target= not Save.target and true or nil
+        set_Register_Event()
+        set_Created_Texture_Text()
+    end)
+    sel:SetScript('OnEnter', function(self2)
+        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+        e.tips:AddDoubleLine(e.onlyChinese and '显示敌方姓名板' or BINDING_NAME_NAMEPLATES, e.GetEnabeleDisable(C_CVar.GetCVarBool("nameplateShowEnemies")))
+        e.tips:Show()
+    end)
+    sel:SetScript('OnLeave', function() e.tips:Hide() end)
+
+    local combatCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    combatCheck:SetPoint('LEFT', sel.Text, 'RIGHT', 15,0)
+    combatCheck.Text:SetText(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+    combatCheck:SetChecked(Save.targetInCombat)
+    combatCheck:SetScript('OnClick', function()
+        Save.targetInCombat= not Save.targetInCombat and true or nil
+        set_Register_Event()
+        set_Created_Texture_Text()
+    end)
+    combatCheck:SetScript('OnEnter', function(self2)
+        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+        e.tips:AddDoubleLine(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '红色' or RED_GEM)..e.Icon.toRight2)
+        e.tips:Show()
+    end)
+    combatCheck:SetScript('OnLeave', function() e.tips:Hide() end)
+
+    local sliderX = e.Create_Slider(panel, {min=-250, max=250, value=Save.x, setp=1, w= 100,
+    text= 'X',
+    func=function(self2, value)
+        value= math.floor(value)
+        self2:SetValue(value)
+        self2.Text:SetText(value)
+        Save.x= value
+        set_Target()--设置,指示目标,位置,显示,隐藏
+    end})
+    sliderX:SetPoint("TOPLEFT", sel, 'BOTTOMRIGHT',0, -12)
+    local sliderY = e.Create_Slider(panel, {min=-250, max=250, value=Save.y, setp=1, w= 100,
+    text= 'Y',
+    func=function(self2, value)
+        value= math.floor(value)
+        self2:SetValue(value)
+        self2.Text:SetText(value)
+        Save.y= value
+        set_Target()--设置,指示目标,位置,显示,隐藏
+    end})
+    sliderY:SetPoint("LEFT", sliderX, 'RIGHT',15,0)
+    local sliderW = e.Create_Slider(panel, {min=10, max=100, value=Save.w, setp=1, w= 100,
+    text= 'W',
+    func=function(self2, value)
+        value= math.floor(value)
+        self2:SetValue(value)
+        self2.Text:SetText(value)
+        Save.w= value
+        targetFrame:SetWidth(value)
+    end})
+    sliderW:SetPoint("LEFT", sliderY, 'RIGHT',15,0)
+    local sliderH = e.Create_Slider(panel, {min=10, max=100, value=Save.h, setp=1, w= 100,
+    text= 'H',
+    func=function(self2, value)
+        value= math.floor(value)
+        self2:SetValue(value)
+        self2.Text:SetText(value)
+        Save.h= value
+        targetFrame:SetHeight(value)
+    end})
+    sliderH:SetPoint("LEFT", sliderW, 'RIGHT',15,0)
+
+
+    
+    local sel2=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    sel2.text:SetText(e.onlyChinese and e.Player.col..'怪物目标(你)|r |cnGREEN_FONT_COLOR:队友目标(你)|r |cffffffff怪物数量|r'
+                or (e.Player.col..CREATURE..'('..YOU..')'..TARGET..'|r |cnGREEN_FONT_COLOR:'..PLAYERS_IN_GROUP..'('..YOU..')'..TARGET..'|r |cffffffff'..CREATURE..AUCTION_HOUSE_QUANTITY_LABEL..'|r')
+            )
+    sel2:SetPoint('TOPLEFT', sel, 'BOTTOMLEFT',0, -60)
+    sel2:SetChecked(Save.creature)
+    sel2:SetScript('OnClick', function()
+        Save.creature= not Save.creature and true or nil
+        set_Register_Event()
+        set_Created_Texture_Text()
+    end)
+
+    local sliderRange = e.Create_Slider(panel, {min=0, max=60, value=Save.creatureRange, setp=1, w= 100 ,
+    text=e.onlyChinese and '码' or IN_GAME_NAVIGATION_RANGE:gsub('%%s',''),
+    func=function(self2, value)
+        value= math.floor(value)
+        self2:SetValue(value)
+        self2.Text:SetText(value)
+        Save.creatureRange= value
+        set_Creature_Num()
+    end})
+    sliderRange:SetPoint("LEFT", sel2.text, 'RIGHT',12, 0)
+
+    local sliderCreatureFontSize = e.Create_Slider(panel, {min=8, max=32, value=Save.creatureFontSize, setp=1, w=100,
+    text=e.onlyChinese and '大小' or FONT_SIZE,
+    func=function(self2, value)
+        value= math.floor(value)
+        self2:SetValue(value)
+        self2.Text:SetText(value)
+        Save.creatureFontSize= value
+        e.Cstr(nil, {changeFont=targetFrame.Creature, size=value})
+        set_Creature_Num()
+    end})
+    sliderCreatureFontSize:SetPoint("LEFT", sliderRange, 'RIGHT',15,0)
+
+
+
+    local questCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    questCheck.Text:SetText(e.onlyChinese and '任务进度' or (QUESTS_LABEL..PVP_PROGRESS_REWARDS_HEADER))
+    questCheck:SetPoint('TOPLEFT', sel2, 'BOTTOMLEFT', 60)
+    questCheck:SetChecked(Save.quest)
+    questCheck:SetScript('OnClick', function()
+        Save.quest= not Save.quest and true or nil
+        set_check_All_Plates()
+    end)
+end
+
+panel:RegisterEvent('PLAYER_LOGOUT')
+panel:RegisterEvent('ADDON_LOADED')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
-            Save.range= Save.range or 35
 
-            --添加控制面板        
-            local sel=e.CPanel(e.Icon.toRight2..(e.onlyChinese and '目标指示' or addName), not Save.disabled, true)
-            sel:SetScript('OnMouseDown', function()
-                Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end)
-            sel:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                e.tips:AddDoubleLine(e.onlyChinese and '显示敌方姓名板' or BINDING_NAME_NAMEPLATES, e.GetEnabeleDisable(C_CVar.GetCVarBool("nameplateShowEnemies")))
-                e.tips:Show()
-            end)
-            sel:SetScript('OnLeave', function() e.tips:Hide() end)
+            panel.name = e.Icon.toRight2..(e.onlyChinese and '目标指示' or addName)..'|r'
+            panel.parent = id
+            InterfaceOptions_AddCategory(panel)
 
-            local sel2=CreateFrame("CheckButton", nil, sel, "InterfaceOptionsCheckButtonTemplate")
-            sel2.text:SetText(e.onlyChinese and '怪物数量' or CREATURE..AUCTION_HOUSE_QUANTITY_LABEL)
-            sel2:SetPoint('LEFT', sel.text, 'RIGHT')
-            sel2:SetChecked(Save.creatureNum)
-            sel2:SetScript('OnMouseDown', function()
-                Save.creatureNum= not Save.creatureNum and true or nil
-                if panel.Text then
-                    set_Register_Event()
-                    if Save.creatureNum then
-                        set_CreatureNum()
+            e.ReloadPanel({panel=panel, addName= addName, restTips=true, checked=true,--重新加载UI, 重置, 按钮
+                disabledfunc=function()
+                    Save.disabled= not Save.disabled and true or nil
+                    if not targetFrame and not Save.disabled  then
+                        set_Option()
+                        Init()
                     end
-                end
-            end)
-            sel2:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine('|cffffffff'..(e.onlyChinese and '怪物目标' or CREATURE..TARGET), e.onlyChinese and '你' or YOU)
-                e.tips:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '队友目标' or PLAYERS_IN_GROUP ..TARGET), e.onlyChinese and '你' or YOU)
-                e.tips:AddDoubleLine('|cffffffff'..(e.onlyChinese and '怪物' or CREATURE), e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(e.onlyChinese and '任务' or QUESTS_LABEL, e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(e.onlyChinese and '显示敌方姓名板' or BINDING_NAME_NAMEPLATES, (e.onlyChinese and '当前' or REFORGE_CURRENT)..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool("nameplateShowEnemies")))
-                e.tips:Show()
-            end)
-            sel2:SetScript('OnLeave', function() e.tips:Hide() end)
+                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), Save.disabled and (e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD) or '')
+                end,
+                clearfunc= function() Save=nil e.Reload() end}
+            )
 
-            local sliderRange = e.Create_Slider(sel, {min=0, max=60, value=Save.range, setp=1, w= e.onlyChinese and 150 or 100,
-            text=e.onlyChinese and '码' or IN_GAME_NAVIGATION_RANGE:gsub('%%s',''),
-            func=function(self2, value)
-                value= math.floor(value)
-                self2:SetValue(value)
-                self2.Text:SetText(value)
-                Save.range= value
-            end})
-            sliderRange:SetPoint("LEFT", sel2.text, 'RIGHT', 2, 0)
-
-            set_Register_Event()
             if not Save.disabled then
                 --PlaterADD= IsAddOnLoaded("Plater")
+                set_Option()
                 Init()
             end
+            panel:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             WoWToolsSave[addName]=Save
-        end
-
-    elseif event=='PLAYER_TARGET_CHANGED' or event=='PLAYER_ENTERING_WORLD' or event=='RAID_TARGET_UPDATE' or (event=='UNIT_FLAGS' and arg1=='target') then
-        C_Timer.After(0.15, function()
-            local plate = C_NamePlate.GetNamePlateForUnit("target")
-            if plate then
-                local frame
-                if plate.UnitFrame then
-                    if plate.UnitFrame.RaidTargetFrame and plate.UnitFrame.RaidTargetFrame.RaidTargetIcon:IsShown() then
-                        frame= plate.UnitFrame.RaidTargetFrame
-                    elseif plate.UnitFrame.ClassificationFrame and plate.UnitFrame.ClassificationFrame.classificationIndicator:IsShown() then
-                        frame= plate.UnitFrame.ClassificationFrame.classificationIndicator
-                    elseif plate.UnitFrame.healthBar then
-                        frame= plate.UnitFrame.healthBar
-                    end
-                end
-
-                panel:ClearAllPoints()
-                panel:SetPoint('RIGHT', frame or plate, 'LEFT')
-
-                if Save.creatureNum then
-                    set_CreatureNum()
-                end
-            end
-            panel:SetShown(plate and true or false)
-        end)
-
-        if event=='PLAYER_ENTERING_WORLD' then
-            isPvPArena= C_PvP.IsBattleground() or C_PvP.IsArena()
-            isIns= IsInInstance() and GetNumGroupMembers()>2
-
-            if Save.creatureNum then
-                set_Register_Event()
-            end
-        end
-
-    --elseif event=='ZONE_CHANGED' or event=='ZONE_CHANGED_INDOORS' or event=='ZONE_CHANGED_NEW_AREA' then
-        --local pvpType, isFFA = GetZonePVPInfo()
-        --isPvPZone= pvpType=='arena' and  isFFA
-
-    elseif event=='PLAYER_REGEN_DISABLED' then--颜色
-        panel.Texture:SetVertexColor(1,0,0)
-
-    elseif event=='PLAYER_REGEN_ENABLED' then
-        panel.Texture:SetVertexColor(1,1,1)
-
-    elseif event=='UNIT_QUEST_LOG_CHANGED' or event=='QUEST_POI_UPDATE' or event=='SCENARIO_COMPLETED' or event=='SCENARIO_UPDATE' or event=='SCENARIO_CRITERIA_UPDATE' then
-        C_Timer.After(2, set_check_All_Plates)
-
-    else
-        if not isIns and arg1 then
-            if event=='NAME_PLATE_UNIT_ADDED' then
-                set_questProgress_Text(C_NamePlate.GetNamePlateForUnit(arg1), arg1)
-
-            elseif event=='NAME_PLATE_UNIT_REMOVED' then
-                local plate = C_NamePlate.GetNamePlateForUnit(arg1)
-                if plate and plate.questProgress then
-                    plate.questProgress:SetText('')
-                end
-            end
-        end
-        if self:IsShown() then
-            set_CreatureNum()
         end
     end
 end)
