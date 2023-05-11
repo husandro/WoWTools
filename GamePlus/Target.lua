@@ -13,15 +13,22 @@ local Save= {
     creatureFontSize=10,
 
     quest= true,
+    --questShowAllFaction=nil,
 }
 
 local panel= CreateFrame("Frame")
 local targetFrame
 local isPvPArena, isIns--, isPvPZone
---local PlaterADD
-
-
-
+--local isAddOnPlater--IsAddOnLoaded("Plater")
+--[[
+local function get_isAddOnPlater(unit)
+    if isAddOnPlater and unit then
+        local num= unit:match('%d+')
+        if num then
+            return _G['NamePlate'..num..'PlaterUnitFrameHealthBar']
+        end
+    end
+end]]
 
 --########################
 --怪物目标, 队员目标, 总怪物
@@ -116,7 +123,7 @@ local function Get_Quest_Progress(unit)--GameTooltip.lua --local questID= line a
         end
     elseif not (isIns and UnitInParty(unit)) then--if not isIns and isPvPZone and not UnitInParty(unit) then
         local wow= e.GetFriend(nil, UnitGUID(unit), nil)--检测, 是否好友
-        local faction= e.GetUnitFaction(unit)--检查, 是否同一阵营
+        local faction= e.GetUnitFaction(unit, nil, Save.questShowAllFaction)--检查, 是否同一阵营
         if wow or faction then
             return (wow or '')..(faction or '')
         end
@@ -124,10 +131,10 @@ local function Get_Quest_Progress(unit)--GameTooltip.lua --local questID= line a
 end
 
 local function set_questProgress_Text(plate, unit)
-    if UnitExists(unit) and plate and Save.quest then
+    if UnitExists(unit) and plate and plate.UnitFrame and Save.quest then
         local text= Get_Quest_Progress(unit)
         if text and not plate.questProgress then
-            local frame= plate.UnitFrame and plate.UnitFrame.healthBar or plate
+            local frame=  plate.UnitFrame and plate.UnitFrame.healthBar or plate
             plate.questProgress= e.Cstr(frame, {size=14, color={r=0,g=1,b=0}})--14, nil, nil, {0,1,0}, nil,'LEFT')
             plate.questProgress:SetPoint('LEFT', frame, 'RIGHT', 2,0)
         end
@@ -162,9 +169,9 @@ end
 --##########################
 local function set_Target()
 local plate = C_NamePlate.GetNamePlateForUnit("target")
-    if plate then
-        local frame
-        if plate.UnitFrame then
+    if plate and plate.UnitFrame then
+        local frame--= get_isAddOnPlater(plate.UnitFrame.unit)--IsAddOnLoaded("Plater")
+        if not frame then
             if plate.UnitFrame.RaidTargetFrame and plate.UnitFrame.RaidTargetFrame.RaidTargetIcon:IsShown() then
                 frame= plate.UnitFrame.RaidTargetFrame
             elseif plate.UnitFrame.ClassificationFrame and plate.UnitFrame.ClassificationFrame.classificationIndicator:IsShown() then
@@ -196,15 +203,20 @@ local function set_Created_Texture_Text()
         targetFrame.Target:SetAtlas('common-icon-rotateright')
     end
     if targetFrame.Target then
+        if UnitAffectingCombat('player') then
+            targetFrame.Target:SetVertexColor(1,0,0)
+        else
+            targetFrame.Target:SetVertexColor(1,1,1)
+        end
         targetFrame.Target:SetShown(false)
     end
     if not targetFrame.Creature and Save.creature then
         targetFrame.Creature= e.Cstr(targetFrame, {size=Save.creatureFontSize, color={r=1,g=1,b=1}, layer='BORDER', justifyH='RIGHT'})--10, nil, nil, {1,1,1}, 'BORDER', 'RIGHT')
         targetFrame.Creature:SetPoint('RIGHT', -8, 0)
+        targetFrame.Creature:SetTextColor(1,1,1)
     end
     if targetFrame.Creature then
         targetFrame.Creature:SetText('')
-        targetFrame.Creature:SetTextColor(1,1,1)
     end
     targetFrame:SetShown(false)
 end
@@ -371,7 +383,6 @@ local function set_Option()
     sliderH:SetPoint("LEFT", sliderW, 'RIGHT',15,0)
 
 
-    
     local sel2=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     sel2.text:SetText(e.onlyChinese and e.Player.col..'怪物目标(你)|r |cnGREEN_FONT_COLOR:队友目标(你)|r |cffffffff怪物数量|r'
                 or (e.Player.col..CREATURE..'('..YOU..')'..TARGET..'|r |cnGREEN_FONT_COLOR:'..PLAYERS_IN_GROUP..'('..YOU..')'..TARGET..'|r |cffffffff'..CREATURE..AUCTION_HOUSE_QUANTITY_LABEL..'|r')
@@ -411,10 +422,19 @@ local function set_Option()
 
     local questCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     questCheck.Text:SetText(e.onlyChinese and '任务进度' or (QUESTS_LABEL..PVP_PROGRESS_REWARDS_HEADER))
-    questCheck:SetPoint('TOPLEFT', sel2, 'BOTTOMLEFT', 60)
+    questCheck:SetPoint('TOPLEFT', sel2, 'BOTTOMLEFT',0,-24)
     questCheck:SetChecked(Save.quest)
     questCheck:SetScript('OnClick', function()
         Save.quest= not Save.quest and true or nil
+        set_check_All_Plates()
+    end)
+
+    local questAllFactionCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    questAllFactionCheck.Text:SetText((e.onlyChinese and '提示所有阵营' or (SHOW..'('..ALL..')'..FACTION))..e.Icon.horde2..e.Icon.alliance2)
+    questAllFactionCheck:SetPoint('LEFT', questCheck.Text, 'RIGHT')
+    questAllFactionCheck:SetChecked(Save.questShowAllFaction)
+    questAllFactionCheck:SetScript('OnClick', function()
+        Save.questShowAllFaction= not Save.questShowAllFaction and true or nil
         set_check_All_Plates()
     end)
 end
@@ -443,7 +463,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             )
 
             if not Save.disabled then
-                --PlaterADD= IsAddOnLoaded("Plater")
+                --isAddOnPlater= IsAddOnLoaded("Plater")
                 set_Option()
                 Init()
             end
@@ -456,3 +476,4 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
     end
 end)
+--NamePlate2PlaterUnitFrameHealthBar

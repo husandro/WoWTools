@@ -187,9 +187,9 @@ e.GetFriend= function(name, guid, unit)--检测, 是否好友
     end
 end
 
-e.GetUnitFaction= function(unit, text)--检查, 是否同一阵营
+e.GetUnitFaction= function(unit, text, all)--检查, 是否同一阵营
     local faction= unit and UnitFactionGroup(unit) or text
-    if faction and faction~= e.Player.faction then
+    if faction and (faction~= e.Player.faction or all) then
         return faction=='Horde' and e.Icon.horde2 or faction=='Alliance' and e.Icon.alliance2 or '|A:nameplates-icon-flag-neutral:0:0|a'
     end
 end

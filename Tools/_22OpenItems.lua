@@ -282,93 +282,111 @@ end
 --####
 --菜单
 --####
-local function setUseMenu(level)--二级, 使用
-    local info={
-        text= e.onlyChinese and '全部清除' or CLEAR_ALL,
-        notCheckable=true,
-        func=function()
-            Save.use={}
-            getItems()
-            e.LibDD:CloseDropDownMenus()
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info,level)
-    for itemID, num in pairs(Save.use) do
-        info={
-            text= (select(2, GetItemInfo(itemID)) or  ('itemID: '..itemID)).. (num>1 and ' |cnGREEN_FONT_COLOR:x'..num..'|r' or ''),
-            icon= C_Item.GetItemIconByID(itemID),
-            checked=true,
-            tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and '移除' or REMOVE,
-            tooltipText=num>1 and '\n'..(e.onlyChinese and '组合物品' or COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS))..'\n'..(e.onlyChinese and '数量' or AUCTION_STACK_SIZE)..': '..num..'\nitemID: '..itemID,
-            func=function()
-                Save.use[itemID]=nil
-                getItems()
-            end,
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info,level)
-    end
-end
-local function setNoMenu(level)--二级,禁用
-    local info={
-        text= e.onlyChinese and '全部清除' or CLEAR_ALL,
-        notCheckable=true,
-        func=function()
-            Save.no={}
-            getItems()
-            e.LibDD:CloseDropDownMenus()
-        end,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    for itemID, _ in pairs(Save.no) do
-        info={
-            text=select(2, GetItemInfo(itemID)) or  ('itemID: '..itemID),
-            icon=C_Item.GetItemIconByID(itemID),
-            checked=true,
-            tooltipOnButton=true,
-            tooltipTitle=REMOVE,
-            tooltipText= 'itemID: '..itemID,
-            func=function()
-                Save.no[itemID]=nil
-                getItems()
-            end,
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-    end
-end
 local function setMenuList(self, level, menuList)--主菜单
+    local info={}
     if menuList=='USE' then
-        setUseMenu(level)
+        local find
+        for itemID, num in pairs(Save.use) do--二级, 使用
+            info={
+                text= (select(2, GetItemInfo(itemID)) or  ('itemID: '..itemID)).. (num>1 and ' |cnGREEN_FONT_COLOR:x'..num..'|r' or ''),
+                icon= C_Item.GetItemIconByID(itemID),
+                checked=true,
+                tooltipOnButton=true,
+                tooltipTitle= e.onlyChinese and '移除' or REMOVE,
+                tooltipText=num>1 and '\n'..(e.onlyChinese and '组合物品' or COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS))..'\n'..(e.onlyChinese and '数量' or AUCTION_STACK_SIZE)..': '..num..'\nitemID: '..itemID,
+                func=function()
+                    Save.use[itemID]=nil
+                    getItems()
+                end,
+            }
+            e.LibDD:UIDropDownMenu_AddButton(info,level)
+            find= true
+        end
+        if find then
+            e.LibDD:UIDropDownMenu_AddSeparator(level)
+            info={
+                text= e.onlyChinese and '全部清除' or CLEAR_ALL,
+                notCheckable=true,
+                func=function()
+                    Save.use={}
+                    getItems()
+                    e.LibDD:CloseDropDownMenus()
+                end
+            }
+        else
+            info={
+                text=e.onlyChinese and '无' or NONE,
+                isTitle=true,
+                notCheckable=true,
+            }
+        end
+        e.LibDD:UIDropDownMenu_AddButton(info,level)
         return
+
     elseif menuList=='NO' then
-        setNoMenu(level)
+        local find
+        for itemID, _ in pairs(Save.no) do
+            info={
+                text=select(2, GetItemInfo(itemID)) or  ('itemID: '..itemID),
+                icon=C_Item.GetItemIconByID(itemID),
+                checked=true,
+                tooltipOnButton=true,
+                tooltipTitle=REMOVE,
+                tooltipText= 'itemID: '..itemID,
+                func=function()
+                    Save.no[itemID]=nil
+                    getItems()
+                end,
+            }
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
+            find=true
+        end
+        if find then
+            e.LibDD:UIDropDownMenu_AddSeparator(level)
+            info={
+                text= e.onlyChinese and '全部清除' or CLEAR_ALL,
+                notCheckable=true,
+                func=function()
+                    Save.no={}
+                    getItems()
+                    e.LibDD:CloseDropDownMenus()
+                end,
+            }
+        else
+            info={
+                text=e.onlyChinese and '无' or NONE,
+                isTitle=true,
+                notCheckable=true,
+            }
+        end
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
         return
     end
 
-    local t={}
-    t.notCheckable=true
+
+    info={
+        notCheckable=true,
+        tooltipOnButton=true,
+    }
     if Bag.bag and Bag.slot then
-        t.text=C_Container.GetContainerItemLink(Bag.bag, Bag.slot) or ('bag: '..Bag.bag ..' slot: '..Bag.slot)
+        info.text=C_Container.GetContainerItemLink(Bag.bag, Bag.slot) or ('bag: '..Bag.bag ..' slot: '..Bag.slot)
         local bagInfo=C_Container.GetContainerItemInfo(Bag.bag, Bag.slot)
-        t.icon= bagInfo and bagInfo.iconFileID
-        t.func=function()
+        info.icon= bagInfo and bagInfo.iconFileID
+        info.func=function()
             setDisableCursorItem()--禁用当物品
         end
-        t.tooltipOnButton=true
         if not UnitAffectingCombat('player') then
-            t.tooltipTitle='|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE)..'|r'..e.Icon.mid..(e.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP)
+            info.tooltipTitle='|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE)..'|r'..e.Icon.mid..(e.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP)
         end
     else
-        t.text=addName..': '..(e.onlyChinese and '无' or  NONE)
-        t.isTitle=true
-        t.tooltipOnButton=true
-        t.tooltipTitle= e.onlyChinese and '使用/禁用' or (USE..'/'..DISABLE)
-        t.tooltipText= e.onlyChinese and '拖曳物品到这里' or (DRAG_MODEL..ITEMS)
+        info.text=addName..': '..(e.onlyChinese and '无' or  NONE)
+        info.isTitle=true
+        info.tooltipTitle= e.onlyChinese and '使用/禁用' or (USE..'/'..DISABLE)
+        info.tooltipText= e.onlyChinese and '拖曳物品到这里' or (DRAG_MODEL..ITEMS)
     end
 
-    e.LibDD:UIDropDownMenu_AddButton(t)
-    e.LibDD:UIDropDownMenu_AddSeparator()
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
 
     local no,use= 0, 0
     for _ in pairs(Save.no) do
@@ -377,21 +395,24 @@ local function setMenuList(self, level, menuList)--主菜单
     for _ in pairs(Save.use) do
         use=use+1
     end
-    t={}--自定义禁用列表
-    t.text= (e.onlyChinese and '禁用' or DISABLE)..' #'..no
-    t.notCheckable=1
-    t.menuList='NO'
-    t.hasArrow=true
-    e.LibDD:UIDropDownMenu_AddButton(t)
 
-    t={}--自定义使用列表
-    t.text= (e.onlyChinese and '使用' or USE)..' #'..use
-    t.notCheckable=1
-    t.menuList='USE'
-    t.hasArrow=true
-    e.LibDD:UIDropDownMenu_AddButton(t)
+    info={--自定义禁用列表
+        text= (e.onlyChinese and '禁用' or DISABLE)..' #'..no,
+        notCheckable=1,
+        menuList='NO',
+        hasArrow=true,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    t={
+    info={--自定义使用列表
+        text= (e.onlyChinese and '使用' or USE)..' #'..use,
+        notCheckable=1,
+        menuList='USE',
+        hasArrow=true,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    info={
         text= e.onlyChinese and '<右键点击打开>' or ITEM_OPENABLE,
         checked=Save.open,
         func=function()
@@ -399,9 +420,9 @@ local function setMenuList(self, level, menuList)--主菜单
             getItems()
         end
     }
-    e.LibDD:UIDropDownMenu_AddButton(t)
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    t={
+    info={
         text= e.onlyChinese and '宠物' or PET,
         tooltipOnButton=true,
         tooltipTitle= '<3',
@@ -411,9 +432,9 @@ local function setMenuList(self, level, menuList)--主菜单
             getItems()
         end
     }
-    e.LibDD:UIDropDownMenu_AddButton(t)
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    t={
+    info={
         text= e.onlyChinese and '玩具' or TOY,
         checked=Save.toy,
         func=function()
@@ -421,9 +442,9 @@ local function setMenuList(self, level, menuList)--主菜单
             getItems()
         end
     }
-    e.LibDD:UIDropDownMenu_AddButton(t)
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    t={
+    info={
         text= e.onlyChinese and '坐骑' or MOUNTS,
         checked=Save.mount,
         func=function()
@@ -431,9 +452,9 @@ local function setMenuList(self, level, menuList)--主菜单
             getItems()
         end
     }
-    e.LibDD:UIDropDownMenu_AddButton(t)
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    t={
+    info={
         text= e.onlyChinese and '幻化' or TRANSMOGRIFY,
         checked=Save.mago,
         func=function()
@@ -441,9 +462,9 @@ local function setMenuList(self, level, menuList)--主菜单
             getItems()
         end,
     }
-    e.LibDD:UIDropDownMenu_AddButton(t)
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    t={
+    info={
         text= e.onlyChinese and '配方' or TRADESKILL_SERVICE_LEARN,
         checked=Save.ski,
         func=function()
@@ -451,9 +472,9 @@ local function setMenuList(self, level, menuList)--主菜单
             getItems()
         end,
     }
-    e.LibDD:UIDropDownMenu_AddButton(t)
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    t={
+    info={
         text= e.onlyChinese and '其它' or BINDING_HEADER_OTHER,
         checked=Save.alt,
         func=function()
@@ -461,10 +482,10 @@ local function setMenuList(self, level, menuList)--主菜单
             getItems()
         end
     }
-    e.LibDD:UIDropDownMenu_AddButton(t)
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    e.LibDD:UIDropDownMenu_AddSeparator()
-    t={
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
+    info={
         text= e.onlyChinese and '自动隐藏' or (AUTO_JOIN:gsub(JOIN,'')..HIDE),
         tooltipOnButton=true,
         tooltipTitle= e.onlyChinese and '未发现物品' or BROWSE_NO_RESULTS,
@@ -474,7 +495,7 @@ local function setMenuList(self, level, menuList)--主菜单
         end,
         checked= Save.noItemHide
     }
-    e.LibDD:UIDropDownMenu_AddButton(t)
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     e.LibDD:UIDropDownMenu_AddButton({text= e.onlyChinese and '拖曳物品: 使用/禁用' or (DRAG_MODEL..ITEMS..'('..USE..'/'..DISABLE..')'), isTitle=true, notCheckable=true})
 end

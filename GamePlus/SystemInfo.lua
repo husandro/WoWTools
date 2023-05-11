@@ -94,6 +94,7 @@ local function create_Set_lable(self, text)--建立,或设置,Labels
                 end
                 --e.tips:AddLine(type(self2.tooltip)=='function' and self2.tooltip() or self2.tooltip)
             end
+            e.tips:AddDoubleLine(id,addName)
             e.tips:Show()
             button:SetButtonState('PUSHED')
         end)
