@@ -19,6 +19,24 @@ local panel= CreateFrame("Frame")
 local Labels
 local button
 
+--########
+--设置, 钱
+--########
+local function get_Mony_Tips()
+    local numPlayer, allMoney, text  = 0, 0, ''
+    for guid, infoMoney in pairs(WoWDate) do
+        if infoMoney.Money then
+            text= text~='' and text..'\n' or text
+            text= text..e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false})..'  '.. GetCoinTextureString(infoMoney.Money)
+            numPlayer=numPlayer+1
+            allMoney= allMoney + infoMoney.Money
+        end
+    end
+    return text, (e.onlyChinese and '角色' or CHARACTER)..'|cnGREEN_FONT_COLOR:'..numPlayer..'|r  '..(e.onlyChinese and '总计: ' or FROM_TOTAL)..'|cnGREEN_FONT_COLOR:'..(allMoney >=10000 and e.MK(allMoney/10000, 3) or GetCoinTextureString(allMoney))..'|r'
+end
+
+
+
 local function set_Label_Size_Color()
     for _, label in pairs(Labels) do
         e.Cstr(nil, {size=Save.size, changeFont=label, color=true})--Save.size, nil , Labels.fpsms, true)    
@@ -32,11 +50,17 @@ local function create_Set_lable(self, text)--建立,或设置,Labels
             label.tooltip= 'FPS'
             down= function() securecallfunction(InterfaceOptionsFrame_OpenToCategory, id) end
         elseif text=='ms' then
-            label.tooltip= function() return format(e.onlyChinese and  "延迟：\n%.0f ms （本地）\n%.0f ms （世界）" or MAINMENUBAR_LATENCY_LABEL, select(3, GetNetStats())) end
+            label.tooltip= function()
+                e.tips:AddLine(format(e.onlyChinese and  "延迟：\n%.0f ms （本地）\n%.0f ms （世界）" or MAINMENUBAR_LATENCY_LABEL, select(3, GetNetStats())))
+            end
             down= function() securecallfunction(InterfaceOptionsFrame_OpenToCategory, id) end
 
         elseif text=='money' then
-            label.tooltip= e.onlyChinese and '钱' or MONEY
+            label.tooltip= function()
+                local text1, text2= get_Mony_Tips()
+                e.tips:AddLine(text2)
+                e.tips:AddLine(text1)
+            end
             down= ToggleAllBags
 
         elseif text=='perksPoints' then
@@ -46,7 +70,7 @@ local function create_Set_lable(self, text)--建立,或设置,Labels
                 if info and info.quantity and info.iconFileID then
                     str= '|T'..info.iconFileID..':0|t'..info.quantity..'\n'
                 end
-                return str..(e.onlyChinese and '旅行者日志进度' or MONTHLY_ACTIVITIES_PROGRESSED)
+                e.tips:AddLine(str..(e.onlyChinese and '旅行者日志进度' or MONTHLY_ACTIVITIES_PROGRESSED))
             end
             down= function() ToggleEncounterJournal() end
 
@@ -63,7 +87,12 @@ local function create_Set_lable(self, text)--建立,或设置,Labels
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
             if self2.tooltip then
-                e.tips:AddLine(type(self2.tooltip)=='function' and self2.tooltip() or self2.tooltip)
+                if type(self2.tooltip)=='function' then
+                    self2:tooltip()
+                else
+                    e.tips:AddLine(self2.tooltip)
+                end
+                --e.tips:AddLine(type(self2.tooltip)=='function' and self2.tooltip() or self2.tooltip)
             end
             e.tips:Show()
             button:SetButtonState('PUSHED')
@@ -369,27 +398,15 @@ local function InitMenu(self, level, type)--主菜单
     }
     e.LibDD:UIDropDownMenu_AddButton(info,level)
 
-
-
-    local numPlayer, allMoney, text  = 0, 0, ''
-    for guid, infoMoney in pairs(WoWDate) do
-        if infoMoney.Money then
-            text= text~='' and text..'\n' or text
-            text= text..e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false})..'  '.. GetCoinTextureString(infoMoney.Money, true)
-            numPlayer=numPlayer+1
-            allMoney= allMoney + infoMoney.Money
-        end
-    end
-    --e.tips:AddDoubleLine(CHARACTER..numPlayer..' '..FROM_TOTAL..e.MK(allMoney/10000, 3), GetCoinTextureString(allMoney))
-
+   local text1, text2= get_Mony_Tips()
     info={
         text= (e.onlyChinese and '钱' or MONEY),
         checked=Save.money,
         menuList='wowMony',
         hasArrow=true,
         tooltipOnButton=true,
-        tooltipTitle= (e.onlyChinese and '角色' or CHARACTER)..'|cnGREEN_FONT_COLOR:'..numPlayer..'|r  '..(e.onlyChinese and '总计: ' or FROM_TOTAL)..'|cnGREEN_FONT_COLOR:'..(allMoney >=10000 and e.MK(allMoney/10000, 3) or GetCoinTextureString(allMoney, true))..'|r',
-        tooltipText= text,
+        tooltipTitle= text2,
+        tooltipText= text1,
         func= function()
             Save.money= not Save.money and true or nil
             set_Money_Event()--设置, 钱, 事件
@@ -402,8 +419,6 @@ local function InitMenu(self, level, type)--主菜单
     info={
         text= (e.onlyChinese and '旅行者日志进度' or MONTHLY_ACTIVITIES_PROGRESSED),
         checked=Save.perksPoints,
-        tooltipOnButton=true,
-        tooltipTitle= (e.onlyChinese and '旅行者日志进度' or MONTHLY_ACTIVITIES_PROGRESSED)..'|cnGREEN_FONT_COLOR:'..numPlayer..'|r  '..(e.onlyChinese and '总计: ' or FROM_TOTAL)..'|cnGREEN_FONT_COLOR:'..(allMoney >=10000 and e.MK(allMoney/10000, 3) or GetCoinTextureString(allMoney, true))..'|r',
         func= function()
             Save.perksPoints= not Save.perksPoints and true or nil
             set_perksActivitiesLastPoints_Event()--贸易站, 点数

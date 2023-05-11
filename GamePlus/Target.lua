@@ -339,7 +339,7 @@ local function set_Option()
         set_Target()--设置,指示目标,位置,显示,隐藏
     end})
     sliderX:SetPoint("TOPLEFT", sel, 'BOTTOMRIGHT',0, -12)
-    local sliderY = e.Create_Slider(panel, {min=-250, max=250, value=Save.y, setp=1, w= 100,
+    local sliderY = e.Create_Slider(panel, {min=-250, max=250, value=Save.y, setp=1, w= 100, color=true,
     text= 'Y',
     func=function(self2, value)
         value= math.floor(value)
@@ -359,7 +359,7 @@ local function set_Option()
         targetFrame:SetWidth(value)
     end})
     sliderW:SetPoint("LEFT", sliderY, 'RIGHT',15,0)
-    local sliderH = e.Create_Slider(panel, {min=10, max=100, value=Save.h, setp=1, w= 100,
+    local sliderH = e.Create_Slider(panel, {min=10, max=100, value=Save.h, setp=1, w= 100, color=true,
     text= 'H',
     func=function(self2, value)
         value= math.floor(value)
@@ -395,7 +395,7 @@ local function set_Option()
     end})
     sliderRange:SetPoint("LEFT", sel2.text, 'RIGHT',12, 0)
 
-    local sliderCreatureFontSize = e.Create_Slider(panel, {min=8, max=32, value=Save.creatureFontSize, setp=1, w=100,
+    local sliderCreatureFontSize = e.Create_Slider(panel, {min=8, max=32, value=Save.creatureFontSize, setp=1, w=100, color=true,
     text=e.onlyChinese and '大小' or FONT_SIZE,
     func=function(self2, value)
         value= math.floor(value)
