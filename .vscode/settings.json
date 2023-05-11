@@ -2705,7 +2705,20 @@
         "HEADER_COLON",
         "GameTooltip_AddColoredLine",
         "GUILD_INTEREST_RP",
-        "MONTHLY_ACTIVITIES_PROGRESSED"
+        "MONTHLY_ACTIVITIES_PROGRESSED",
+        "GroupLootHistoryFrameBg",
+        "GroupLootHistoryFrameMiddle",
+        "GroupLootHistoryFrameLeft",
+        "GroupLootHistoryFrameRight",
+        "MainStatusTrackingBarContainer",
+        "EncounterJournalMonthlyActivitiesFrame",
+        "EncounterJournalMonthlyActivitiesTab",
+        "RematchJournalBg",
+        "RematchLoadoutPanel",
+        "RematchPetPanel",
+        "RematchQueuePanel",
+        "RematchTeamPanel",
+        "RematchOptionPanel"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
