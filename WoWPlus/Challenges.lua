@@ -1038,13 +1038,6 @@ end
 --#####################
 --等级 => 每周/完成, 提示
 --#####################
-local function set_itemLevelTips_Text(text)--设置, 文本
-    if Save.showItemLevelTipsText and text then
-        ChallengesFrame.itemLevelTips.Text:SetText((e.onlyChinese and '等级  每周  完成' or (LEVEL..'  '..CALENDAR_REPEAT_WEEKLY..'  '..COMPLETE))..'\n'..text)
-    else
-        ChallengesFrame.itemLevelTips.Text:SetText('')
-    end
-end
 local function set_itemLevelTips_GetTextAndTooltip(showTooltip)--设置, 文本, 提示, 内容
     local text
     local curLevel=0
@@ -1070,7 +1063,11 @@ local function set_itemLevelTips_GetTextAndTooltip(showTooltip)--设置, 文本,
             end
         end
     end
-    set_itemLevelTips_Text(text)
+    if text then
+        text= (e.onlyChinese and '难度 每周 完成' or (PROFESSIONS_CRAFTING_STAT_TT_DIFFICULTY_HEADER..' '..CALENDAR_REPEAT_WEEKLY..' '..COMPLETE))..'\n'..text
+    end
+
+    ChallengesFrame.itemLevelTips.Text:SetText(Save.showItemLevelTipsText and text or '')
     return text
 end
 local function set_itemLevelTips(self)--等级 => 每周/完成, 提示
@@ -1094,7 +1091,6 @@ local function set_itemLevelTips(self)--等级 => 每周/完成, 提示
         self.itemLevelTips:SetScript('OnEnter', function(self2)
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddLine(e.onlyChinese and '等级 每周 完成' or (LEVEL..' '..CALENDAR_REPEAT_WEEKLY..' '..COMPLETE))
             if not set_itemLevelTips_GetTextAndTooltip(true) then
                 e.tips:AddDoubleLine(e.onlyChinese and '获取数据' or RETRIEVING_DATA, e.onlyChinese and '无' or NONE)
             end

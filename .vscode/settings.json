@@ -2721,7 +2721,8 @@
         "RematchOptionPanel",
         "PVP_PROGRESS_REWARDS_HEADER",
         "RED_GEM",
-        "ScenarioChallengeDeathCountMixin"
+        "ScenarioChallengeDeathCountMixin",
+        "PROFESSIONS_CRAFTING_STAT_TT_DIFFICULTY_HEADER"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
