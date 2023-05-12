@@ -13,10 +13,13 @@ local classPowerFrame--职业，能量条
 --####
 local Point=function(frame, name2)
     local p=Save.point
-    p=p[name2]
-    if p and p[1] and p[3] and p[4] and p[5] then
-        frame:ClearAllPoints()
-        frame:SetPoint(p[1], UIParent, p[3], p[4], p[5])
+    name2= name2 or frame:GetName()
+    if name2 then
+        p=p[name2]
+        if p and p[1] and p[3] and p[4] and p[5] then
+            frame:ClearAllPoints()
+            frame:SetPoint(p[1], UIParent, p[3], p[4], p[5])
+        end
     end
 end
 
@@ -514,8 +517,9 @@ local function Init_Move()
     end
 
     set_Move_Button(ZoneAbilityFrame, {frame=ZoneAbilityFrame.SpellButtonContainer, save=true, zeroAlpha=nil, notZoom=nil})
-    set_Move_Button(QueueStatusButton, {frame=nil, save=false, zeroAlpha=true, notZoom=true})--小眼睛, 
-
+    
+        
+    
 
     --########
     --小，背包
@@ -625,8 +629,8 @@ local function Init_Move()
     Move(LootFrame.TitleContainer, {frame=LootFrame, save=false})--物品拾取
     Move(LootFrame, {save=false})--物品拾取
 
-    --场景 
     C_Timer.After(2, function()
+        --场景 
         if ObjectiveTrackerFrame and ObjectiveTrackerFrame.MODULES then--Blizzard_ObjectiveTracker.lua ObjectiveTracker_GetVisibleHeaders()
             for _, module in ipairs(ObjectiveTrackerFrame.MODULES) do
                 local header = module.Header;
@@ -634,6 +638,13 @@ local function Init_Move()
             end
         end
         ObjectiveTrackerFrame:SetClampedToScreen(false)
+
+        set_Move_Button(QueueStatusButton, {frame=nil, save=true, zeroAlpha=false, notZoom=true})--小眼睛, 
+        QueueStatusButton:HookScript('OnShow', function(self)
+            if EditModeManagerFrame:IsEditModeActive() then
+                Point(self)
+            end
+        end)
     end)
     --[[Move(ObjectiveTrackerBlocksFrame.ScenarioHeader, {frame=ObjectiveTrackerFrame, notZoom=true})
     Move(ObjectiveTrackerBlocksFrame.AchievementHeader, {frame=ObjectiveTrackerFrame, notZoom=true})
