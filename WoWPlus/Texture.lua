@@ -848,6 +848,7 @@ local function Init_Set_AlphaAndColor()
     end
 
     set_Alpha_Frame_Texture(MinimapCluster.BorderTop)
+    set_Alpha_Frame_Texture(MinimapCluster.Tracking.Button)
 
     C_Timer.After(3, function()
         if SpellFlyout and SpellFlyout.Background then--Spell Flyout
