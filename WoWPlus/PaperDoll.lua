@@ -908,8 +908,6 @@ local function set_InspectPaperDollFrame_SetLevel()--目标,天赋 装等
         if info.col then
             text= info.col..text..'|r'
         end
-        local server= e.Get_Region(nil, guid, unit)--服务器，EU， US {col=, text=, realm=}
-        text= server and server.col..text or text
         InspectLevelText:SetText(text)
         InspectFrameTitleText:SetTextColor(info.r or 1, info.g or 1, info.b or 1)
     end
