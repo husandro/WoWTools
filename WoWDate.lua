@@ -459,9 +459,10 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
         C_MythicPlus.RequestRewards()
 
     elseif event=='CHALLENGE_MODE_COMPLETED' then
-        C_MythicPlus.RequestMapInfo()
-        C_MythicPlus.RequestRewards()
-
+        C_Timer.After(2, function()
+            C_MythicPlus.RequestMapInfo()
+            C_MythicPlus.RequestRewards()
+        end)
     elseif event=='ZONE_CHANGED_NEW_AREA' then--位面, 清除
         e.Player.Layer=nil
 

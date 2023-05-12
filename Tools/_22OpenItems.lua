@@ -46,7 +46,7 @@ local Save={
         [190328]=10,--[活力之霜]
         [198326]=10,--[活力之气]
         [190320]=10,--[活力之火]]
-        
+
     },
     no={--禁用使用
         [139590]=true,--[传送卷轴：拉文霍德]
@@ -90,7 +90,6 @@ local Save={
 local Combat, Bag, Opening= nil,{},nil
 local panel= CreateFrame("Frame")
 local button
-
 
 --QUEST_REPUTATION_REWARD_TOOLTIP = "在%2$s中的声望提高%1$d点";
 local function setCooldown()--冷却条
@@ -162,101 +161,115 @@ local function getItems()--取得背包物品信息
             local duration, enable = select(2, C_Container.GetContainerItemCooldown(bag, slot))
             local classID= info and info.itemID and select(6, GetItemInfoInstant(info.itemID))
 
-            if info and info.itemID and info.hyperlink and not info.isLocked and info.iconFileID and not (duration and duration>2 or enable==0) and classID~=8 then
+            if info
+                and info.itemID
+                and (not Save.no[info.itemID] or Save.use[info.itemID])
+                and info.hyperlink
+                and not info.isLocked
+                and info.iconFileID
+                and not (duration and duration>2 or enable==0) and classID~=8
+            then
+
                 e.LoadDate({id=info.itemID, type='item'})
+
                 if Save.use[info.itemID] then--自定义
                     if Save.use[info.itemID]<=info.stackCount then
                         setAtt(bag, slot, info.iconFileID, info.itemID)
                         return
                     end
 
-                elseif not Save.no[info.itemID] and not e.GetTooltipData({hyperLink=info.hyperlink, red=true, onlyRed=true}).red then--不出售, 可以使用
-                    local _, _, _, _, itemMinLevel, _, _, _, itemEquipLoc, _, _, classID2, subclassID= GetItemInfo(info.hyperlink)
-                    classID= classID or classID2
-                    if itemEquipLoc and _G[itemEquipLoc] then--幻化
-                        if Save.mago and (itemMinLevel and itemMinLevel<=e.Player.level or not itemMinLevel) and info.quality then--and (not info.isBound or (classID==4 and (subclassID==0 or subclassID==5))) then
-                            local  isCollected, isSelf= select(2, e.GetItemCollected(info.hyperlink))
-                            if not isCollected and isSelf then
-                                setAtt(bag, slot, info.iconFileID, info.itemID)
-                                equipItem=true
-                                return
-                            end
-                        end
+                else
+                    local dateInfo= e.GetTooltipData({hyperLink=info.hyperlink, red=true, onlyRed=true, text={}})
 
-                    elseif info.hyperlink:find('Hbattlepet:(%d+)') or (classID==15 and subclassID==2) then--宠物, 收集数量
-                        if Save.pet then
-                            local speciesID = info.hyperlink:match('Hbattlepet:(%d+)') or select(13, C_PetJournal.GetPetInfoByItemID(info.itemID))--宠物物品                        
-                            if speciesID then
-                                local numCollected, limit= C_PetJournal.GetNumCollectedInfo(speciesID)
-                                if numCollected and limit and numCollected <  limit then
+                    if not dateInfo.red then--不出售, 可以使用
+                        local _, _, _, _, itemMinLevel, _, _, _, itemEquipLoc, _, _, classID2, subclassID= GetItemInfo(info.hyperlink)
+                        classID= classID or classID2
+                        
+                        if itemEquipLoc and _G[itemEquipLoc] then--幻化
+                            if Save.mago and (itemMinLevel and itemMinLevel<=e.Player.level or not itemMinLevel) and info.quality then--and (not info.isBound or (classID==4 and (subclassID==0 or subclassID==5))) then
+                                local  isCollected, isSelf= select(2, e.GetItemCollected(info.hyperlink))
+                                if not isCollected and isSelf then
                                     setAtt(bag, slot, info.iconFileID, info.itemID)
+                                    equipItem=true
                                     return
                                 end
                             end
-                        end
-                    elseif info.hasLoot then--可打开
-                        if Save.open then
-                            setAtt(bag, slot, info.iconFileID, info.itemID)
-                            return
-                        end
 
-                    elseif classID==9 then--配方                    
-                        if Save.ski then
-                            if subclassID == 0 then
-                                if GetItemSpell(info.hyperlink) then
+                        elseif info.hyperlink:find('Hbattlepet:(%d+)') or (classID==15 and subclassID==2) then--宠物, 收集数量
+                            if Save.pet then
+                                local speciesID = info.hyperlink:match('Hbattlepet:(%d+)') or select(13, C_PetJournal.GetPetInfoByItemID(info.itemID))--宠物物品                        
+                                if speciesID then
+                                    local numCollected, limit= C_PetJournal.GetNumCollectedInfo(speciesID)
+                                    if numCollected and limit and numCollected <  limit then
+                                        setAtt(bag, slot, info.iconFileID, info.itemID)
+                                        return
+                                    end
+                                end
+                            end
+                        elseif info.hasLoot then--可打开
+                            if Save.open then
+                                setAtt(bag, slot, info.iconFileID, info.itemID)
+                                return
+                            end
+
+                        elseif classID==9 then--配方                    
+                            if Save.ski then
+                                if subclassID == 0 then
+                                    if GetItemSpell(info.hyperlink) then
+                                        setAtt(bag, slot, info.iconFileID, info.itemID)
+                                    end
+                                else
                                     setAtt(bag, slot, info.iconFileID, info.itemID)
                                 end
+                                return
+                            end
+
+                        elseif classID==15 and  subclassID==5 then--坐骑
+                            if Save.mount then
+                                local mountID = C_MountJournal.GetMountFromItem(info.itemID)
+                                if mountID then
+                                    local isCollected =select(11, C_MountJournal.GetMountInfoByID(mountID))
+                                    if not isCollected then
+                                        setAtt(bag, slot, info.iconFileID, info.itemID)
+                                        return
+                                    end
+                                end
+                            end
+
+                        elseif C_ToyBox.GetToyInfo(info.itemID) then
+                            if Save.toy and not PlayerHasToy(info.itemID) then--玩具 
+                                setAtt(bag, slot, info.iconFileID, info.itemID)
+                                return
+                            end
+
+                        elseif Save.alt and (classID~=0 or classID==0 and subclassID==8) then-- 8 使用: 在龙鳞探险队中的声望提高1000点
+                            local spell= select(2, GetItemSpell(info.hyperlink))
+                            if spell and IsUsableSpell(spell) and not C_Item.IsAnimaItemByID(info.hyperlink) then
+                                setAtt(bag, slot, info.iconFileID, info.itemID)
+                                return
+                            end
+                            --[[if classID==0 and subclassID==8  then--声望，物品
+                                setAtt(bag, slot, info.iconFileID, info.itemID)
+                                return
                             else
-                                setAtt(bag, slot, info.iconFileID, info.itemID)
-                            end
-                            return
-                        end
-
-                    elseif classID==15 and  subclassID==5 then--坐骑
-                        if Save.mount then
-                            local mountID = C_MountJournal.GetMountFromItem(info.itemID)
-                            if mountID then
-                                local isCollected =select(11, C_MountJournal.GetMountInfoByID(mountID))
-                                if not isCollected then
-                                    setAtt(bag, slot, info.iconFileID, info.itemID)
-                                    return
-                                end
-                            end
-                        end
-
-                    elseif C_ToyBox.GetToyInfo(info.itemID) then
-                        if Save.toy and not PlayerHasToy(info.itemID) then--玩具 
-                            setAtt(bag, slot, info.iconFileID, info.itemID)
-                            return
-                        end
-
-                    elseif Save.alt and classID~=0 then
-                        local spell= select(2, GetItemSpell(info.hyperlink))
-                        if spell and IsUsableSpell(spell) and not C_Item.IsAnimaItemByID(info.hyperlink) then
-                            setAtt(bag, slot, info.iconFileID, info.itemID)
-                            return
-                        end
-                        --[[if classID==0 and subclassID==8  then--声望，物品
-                            setAtt(bag, slot, info.iconFileID, info.itemID)
-                            return
-                        else
-                            --print(C_Item.IsItemSpecificToPlayerClass(info.hyperlink), info.hyperlink)
-                        if C_Item.IsItemSpecificToPlayerClass(info.hyperlink) then
-                            setAtt(bag, slot, info.iconFileID, info.itemID)
-                            return
-                        else]]
-                        --[[if classID==15 and subclassID==4 then--其它
-                            if info.itemID == 193201 or info.itemID==191251 then--钥匙框架
-                                if GetItemCount(193201)>=3 and GetItemCount(191251)>=30 then
-                                    setAtt(bag, slot, info.iconFileID, info.itemID)
-                                    return
-                                end
-                            elseif not C_Item.IsAnimaItemByID(info.hyperlink) then
-                                
+                                --print(C_Item.IsItemSpecificToPlayerClass(info.hyperlink), info.hyperlink)
+                            if C_Item.IsItemSpecificToPlayerClass(info.hyperlink) then
                                 setAtt(bag, slot, info.iconFileID, info.itemID)
                                 return
-                            end
-                        end]]
+                            else]]
+                            --[[if classID==15 and subclassID==4 then--其它
+                                if info.itemID == 193201 or info.itemID==191251 then--钥匙框架
+                                    if GetItemCount(193201)>=3 and GetItemCount(191251)>=30 then
+                                        setAtt(bag, slot, info.iconFileID, info.itemID)
+                                        return
+                                    end
+                                elseif not C_Item.IsAnimaItemByID(info.hyperlink) then
+                                    
+                                    setAtt(bag, slot, info.iconFileID, info.itemID)
+                                    return
+                                end
+                            end]]
+                        end
                     end
                 end
             end

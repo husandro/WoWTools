@@ -235,7 +235,8 @@ local function set_Fps_Ms(self, elapsed)
     self.elapsed = self.elapsed + elapsed
     if self.elapsed > 0.4 then
         self.elapsed = 0
-        local ms = select(4, GetNetStats()) or 0--ms
+        local latencyHome, latencyWorld= select(3, GetNetStats())--ms
+        local ms= math.max(latencyHome, latencyWorld) or 0
         local fps=GetFramerate() or 0
         fps=math.modf(fps)
 
