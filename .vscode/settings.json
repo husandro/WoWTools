@@ -2727,7 +2727,11 @@
         "TRACKER_HEADER_QUESTS",
         "TRACKER_HEADER_ACHIEVEMENTS",
         "MONTHLY_ACTIVITIES_TRACKER_MODULE",
-        "TRACKER_HEADER_MONTHLY_ACTIVITIES"
+        "TRACKER_HEADER_MONTHLY_ACTIVITIES",
+        "C_QuestInfoSystem",
+        "Bagnon",
+        "Baggins",
+        "VAS_REALM_LABEL"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

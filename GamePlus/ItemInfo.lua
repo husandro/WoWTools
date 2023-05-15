@@ -187,7 +187,7 @@ local function set_Item_Info(self, tab)
                 local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, itemID=itemID,
                                                 text={equipStr, pvpItemStr, upgradeStr, classStr, itemLevelStr}, wow=true, red=true})--物品提示，信息
                 if dateInfo.text[itemLevelStr] then--传家宝
-                    itemLevel= tonumber(dateInfo.text[itemLevelStr])
+                    itemLevel= tonumber(dateInfo.text[itemLevelStr]) or 0
                 end
                 if dateInfo.text[equipStr] then--套装名称，
                     local text= dateInfo.text[equipStr]:match('(.+),') or dateInfo.text[equipStr]:match('(.+)，') or dateInfo.text[equipStr]

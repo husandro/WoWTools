@@ -1014,25 +1014,12 @@ local function Init_Quest()
                 end
             end
         end
-        if C_QuestInfoSystem then
-            local spellRewards = C_QuestInfoSystem.GetQuestRewardSpells(questID) or {}--QuestInfo.lua QuestInfo_ShowRewards()
-            for _, spellID in pairs(spellRewards) do
-                e.LoadDate({id=spellID, type='spell'})
-                local spellLink= GetSpellLink(spellID)
-                itemLink= itemLink.. (spellLink or (' spellID'..spellID)) 
-            end
-        elseif GetNumQuestLogRewardSpells then
-                local numSpellRewards = GetNumQuestLogRewardSpells()--法术 
-                for rewardSpellIndex = 1, numSpellRewards do
-                    local texture, name, _, _, _, _, _, _, spellID = GetRewardSpell(rewardSpellIndex)
-                    if spellID then
-                        e.LoadDate({id=spellID, type='spell'})
-                    local spellLink= GetSpellLink(spellID) or ((texture and name) and '|T'..texture..':0|t'..name)
-                    if spellLink then
-                            itemLink= itemLink..spellLink
-                    end
-                end
-            end
+
+        local spellRewards = C_QuestInfoSystem.GetQuestRewardSpells(questID) or {}--QuestInfo.lua QuestInfo_ShowRewards()
+        for _, spellID in pairs(spellRewards) do
+            e.LoadDate({id=spellID, type='spell'})
+            local spellLink= GetSpellLink(spellID)
+            itemLink= itemLink.. (spellLink or (' spellID'..spellID)) 
         end
 
         local skillName, skillIcon, skillPoints = GetRewardSkillPoints()--专业
