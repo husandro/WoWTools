@@ -362,9 +362,9 @@ local function Init()
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
             if self2.tooltip then
-                e.tips:AddDoubleLine('|cnGREEN_FONT_COLOR:'..self2.tooltip, '|A:bags-button-autosort-up:0:0|a')
+                e.tips:AddDoubleLine('|cnGREEN_FONT_COLOR:'..self2.tooltip)
             end
-            e.tips:AddDoubleLine(e.onlyChinese and '全部清除' or CLEAR_ALL, e.onlyChinese and '双击'..e.Icon.left or (BUFFER_DOUBLE..e.Icon.left))
+            e.tips:AddDoubleLine('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL), e.onlyChinese and '双击'..e.Icon.left or (BUFFER_DOUBLE..e.Icon.left))
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
@@ -376,7 +376,7 @@ local function Init()
             if module== WORLD_QUEST_TRACKER_MODULE then--4世界任务 TRACKER_HEADER_WORLD_QUESTS
                 create_ClearAll_Button(module.Header)
                 module.Header.clearAll.tooltip= e.onlyChinese and '世界任务' or TRACKER_HEADER_WORLD_QUESTS
-                module.Header.clearAll:SetScript('OnDoubleClick', function()
+                module.Header.clearAll:SetScript('OnDoubleClick', function(self2)
                     local questIDS={}
                     for i= 1, C_QuestLog.GetNumWorldQuestWatches() do
                         local questID= C_QuestLog.GetQuestIDForWorldQuestWatchIndex(i)
@@ -384,16 +384,21 @@ local function Init()
                             table.insert(questIDS, questID)
                         end
                     end
+                    local num=0
                     for _, questID in pairs(questIDS) do
-                        C_QuestLog.RemoveWorldQuestWatch(questID)
+                        local wasRemoved= C_QuestLog.RemoveWorldQuestWatch(questID)
+                        if wasRemoved then
+                            num=num+1
+                        end
                     end
+                    print(id, addName, e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, self2.tooltip, '|cffff00ff'..num)
                 end)
 
             elseif module== QUEST_TRACKER_MODULE or module== CAMPAIGN_QUEST_TRACKER_MODULE then--6 追踪任务 TRACK_QUEST
                 create_ClearAll_Button(module.Header)
                 module.Header.clearAll.tooltip= e.onlyChinese and '战役\n任务' or (TRACKER_HEADER_CAMPAIGN_QUESTS..'\n'..TRACKER_HEADER_QUESTS)
-                module.Header.clearAll:SetScript('OnDoubleClick', function()
-                    local questIDS={}
+                module.Header.clearAll:SetScript('OnDoubleClick', function(self2)
+                    local questIDS, num= {}, 0
                     for i= 1, C_QuestLog.GetNumQuestWatches() do
                         local questID= C_QuestLog.GetQuestIDForQuestWatchIndex(i)
                         if questID and questID>0 then
@@ -401,17 +406,23 @@ local function Init()
                         end
                     end
                     for _, questID in pairs(questIDS) do
-                        C_QuestLog.RemoveQuestWatch(questID)
+                       local wasRemoved= C_QuestLog.RemoveQuestWatch(questID)
+                       if wasRemoved then
+                            num=num+1
+                        end
                     end
+                    print(id, addName, e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, self2.tooltip, '|cffff00ff'..num)
                 end)
 
             elseif module== ACHIEVEMENT_TRACKER_MODULE then--7 追踪成就 TRACKING
                 create_ClearAll_Button(module.Header)
                 module.Header.clearAll.tooltip= e.onlyChinese and '成就' or TRACKER_HEADER_ACHIEVEMENTS
-                module.Header.clearAll:SetScript('OnDoubleClick', function()
+                module.Header.clearAll:SetScript('OnDoubleClick', function(self2)
+                    local num=0
                     for _, achievementID in pairs({GetTrackedAchievements()}) do
                         RemoveTrackedAchievement(achievementID)
                     end
+                    print(id, addName, e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, self2.tooltip, '|cffff00ff'..num)
                 end)
 
             elseif module== PROFESSION_RECIPE_TRACKER_MODULE then--8 追踪配方 PROFESSIONS_TRACK_RECIPE
@@ -419,22 +430,34 @@ local function Init()
                 module.Header.clearAll.tooltip= e.onlyChinese and '商业技能' or TRADESKILLS 
                 module.Header.clearAll:SetScript('OnDoubleClick', function()
                     local tab= C_TradeSkillUI.GetRecipesTracked(false) or {}
+                    local num= 0
                     for _, recipeID in pairs(tab) do
                         C_TradeSkillUI.SetRecipeTracked(recipeID, false, false)
+                        num=num+1
                     end
 
                     local tab2= C_TradeSkillUI.GetRecipesTracked(true) or {}
                     for _, recipeID in pairs(tab2) do
                         C_TradeSkillUI.SetRecipeTracked(recipeID, false, true)
+                        num=num+1
                     end
+                    print(id, addName, e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, self2.tooltip, '|cffff00ff'..num)
                 end)
 
             elseif module== MONTHLY_ACTIVITIES_TRACKER_MODULE then--9
-                local tab= C_PerksActivities.GetTrackedPerksActivities() or {}
-                for _, perksActivityID in pairs(tab) do
-                    print(_, perksActivityID)
-                    --C_PerksActivities.RemoveTrackedPerksActivity(perksActivityID)
-                end
+                create_ClearAll_Button(module.Header)
+                module.Header.clearAll.tooltip= e.onlyChinese and '旅行者日志' or TRACKER_HEADER_MONTHLY_ACTIVITIES
+                module.Header.clearAll:SetScript('OnDoubleClick', function(self2)
+                    local tab= C_PerksActivities.GetTrackedPerksActivities() or {}
+                    local num=0
+                    for _, perksActivityIDs in pairs(tab) do                        
+                        for _, perksActivityID in pairs(perksActivityIDs) do
+                            C_PerksActivities.RemoveTrackedPerksActivity(perksActivityID)
+                            num= num+1
+                        end
+                    end
+                    print(id, addName, e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, self2.tooltip, '|cffff00ff'..num)
+                end)
             end
         end
     end)
