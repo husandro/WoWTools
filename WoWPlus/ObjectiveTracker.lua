@@ -4,8 +4,7 @@ local Save={
         scale= 0.85,
         autoHide=true
     }
---local F=ObjectiveTrackerFrame--移动任务框
---local btn=ObjectiveTrackerFrame.HeaderMenu.MinimizeButton
+
 
 local ModulTab={--Blizzard_ObjectiveTracker.lua
     'SCENARIO_CONTENT_TRACKER_MODULE',--1 场景战役 SCENARIOS
