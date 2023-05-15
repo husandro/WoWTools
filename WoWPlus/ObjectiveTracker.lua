@@ -494,6 +494,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     e.tips:AddDoubleLine(e.onlyChinese and '追踪任务' or TRACK_QUEST, text)
                     e.tips:AddDoubleLine(e.onlyChinese and '追踪成就' or (TRACKER_HEADER_ACHIEVEMENTS), text)
                     e.tips:AddDoubleLine(e.onlyChinese and '追踪配方' or PROFESSIONS_TRACK_RECIPE, text)
+                    e.tips:AddDoubleLine(e.onlyChinese and '追踪配方' or PROFESSIONS_TRACK_RECIPE, text)
+                    
                     e.tips:Show()
                 end)
                 sel2:SetScript('OnLeave', function() e.tips:Hide() end)
