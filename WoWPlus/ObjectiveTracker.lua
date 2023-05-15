@@ -30,17 +30,6 @@ local Color={
     Difficult={1, 0.43, 0.42},--3
     Impossible={1, 0, 0.08},--4
 }
-local Icon={
-    day='|A:UI-DailyQuestPoiCampaign-QuestBang:10:10|a',
-    legend='|A:questlegendary:10:10|a',
-    week='|A:weeklyrewards-orb-unlocked:10:10|a',
-    start='|A:vignetteevent:10:10|a',
-    campa='|A:campaignavailabledailyquesticon:10:10|a',
-    x2='Interface\\AddOns\\WeakAuras\\Media\\Textures\\cancel-icon.tga',
-    clear='bags-button-autosort-up'
-}
-
-
 
 local function ItemNum(button)--增加物品数量
     if button.itemLink then
@@ -58,8 +47,6 @@ local function ItemNum(button)--增加物品数量
         button.num:SetText('')
     end
 end
-
-
 
 
 local colla_Module=function(type)
@@ -224,12 +211,12 @@ local function Init()
                 end
             end
             if  C_QuestLog.IsQuestCalling(questID) then--使命
-                m=m..Icon.campa
+                m=m..'|A:campaignavailabledailyquesticon:10:10|a'
                 block.r, block.g, block.b=Color.Calling[1],Color.Calling[2],Color.Calling[3]
             end
             if C_QuestLog.IsAccountQuest(questID) then m=m..e.Icon.wow2 end--帐户
             if C_QuestLog.IsLegendaryQuest(questID) then
-                m=m..Icon.legend
+                m=m..'|A:questlegendary:10:10|a'
                 block.r, block.g, block.b=Color.Legendary[1],Color.Legendary[2],Color.Legendary[3]
             end--传奇                            
         end
@@ -237,14 +224,14 @@ local function Init()
             local info = C_QuestLog.GetInfo(questLogIndex)
             if info then
                 if info.startEvent then--事件开始
-                    m=m..Icon.start
+                    m=m..'|A:vignetteevent:10:10|a'
                 end
                 if info.frequency then
                     if info.frequency==Enum.QuestFrequency.Daily then--日常
-                        m=m..Icon.day
+                        m=m..'|A:UI-DailyQuestPoiCampaign-QuestBang:10:10|a'
                         block.r, block.g, block.b=Color.Day[1],Color.Day[2],Color.Day[3]
                     elseif info.frequency==Enum.QuestFrequency.Weekly then--周常
-                        m=m..Icon.week
+                        m=m..'|A:weeklyrewards-orb-unlocked:10:10|a'
                         block.r, block.g, block.b= Color.Week[1], Color.Week[2], Color.Week[3]
                     end
                 end
