@@ -1,6 +1,9 @@
 local id, e = ...
 local addName=	TRACK_QUEST
-local Save={scale= 0.85, alpha=1, autoHide=true}
+local Save={
+        scale= 0.85,
+        autoHide=true
+    }
 --local F=ObjectiveTrackerFrame--移动任务框
 --local btn=ObjectiveTrackerFrame.HeaderMenu.MinimizeButton
 
@@ -85,17 +88,7 @@ local function Scale(setPrint)
     end
 end
 
-local function Alpha(setPrint)
-    if Save.alpha<0.3 then
-        Save.alpha=0.3
-    elseif Save.alpha>1 then
-         Save.alpha=1
-    end
-    ObjectiveTrackerFrame:SetAlpha(Save.alpha)
-    if setPrint then
-        print(id, addName, e.onlyChinese and '改变透明度' or CHANGE_OPACITY, '(0.1 - 1)', '|cnGREEN_FONT_COLOR:'..Save.alpha)
-    end
-end
+
 
 --任务颜色
 local function setColor(block, questID)
