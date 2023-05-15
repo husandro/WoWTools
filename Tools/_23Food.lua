@@ -230,7 +230,6 @@ local function InitMenu(self, level, type)--主菜单
         info={
             text= e.onlyChinese and '清除全部' or CLEAR_ALL,
             notCheckable=true,
-            disabled=bat,
             func= function()
                 Save.noUseItems={}
                 set_Item_Button()
