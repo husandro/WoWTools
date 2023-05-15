@@ -2723,7 +2723,10 @@
         "RED_GEM",
         "ScenarioChallengeDeathCountMixin",
         "PROFESSIONS_CRAFTING_STAT_TT_DIFFICULTY_HEADER",
-        "BonusObjectiveTrackerModuleMixin"
+        "BonusObjectiveTrackerModuleMixin",
+        "TRACKER_HEADER_QUESTS",
+        "TRACKER_HEADER_ACHIEVEMENTS",
+        "MONTHLY_ACTIVITIES_TRACKER_MODULE"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
