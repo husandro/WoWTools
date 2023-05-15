@@ -1408,6 +1408,41 @@ local function Init()
         get_Web_Link({frame=e.tips, type='quest', id=info.questID, name=info.title, col=nil, isPetUI=false})--取得网页，数据链接
         e.tips:Show()
     end)
+
+
+
+    hooksecurefunc('BonusObjectiveTracker_OnBlockEnter', function(block)
+        if block.id and not block.module.tooltipBlock and block.TrackedQuest then
+            e.tips:SetOwner(block, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            securecallfunction(GameTooltip_AddQuest, block.TrackedQuest, block.id)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(id, addName)
+            e.tips:Show()
+        end
+    end)
+
+    --[[hooksecurefunc(BONUS_OBJECTIVE_TRACKER_MODULE,'Update', function(self)
+        if ( SCENARIO_TRACKER_MODULE.BlocksFrame.slidingAction and self.contentsHeight == 0 ) then
+            return;
+        end
+
+    end)
+    --Blizzard_ObjectiveTracker.lua ObjectiveTracker_GetVisibleHeaders() self==ObjectiveTrackerFrame
+    hooksecurefunc('ObjectiveTracker_Initialize', function(self)
+        for _, module in ipairs(self.MODULES) do
+            --local header = module.Header
+            hooksecurefunc(module, 'SetBlockHeader', function(self, block, text, questLogIndex, isQuestComplete, questID)
+                if not block.wowhead and questID then
+                    block.wowhead= e.Cbtn(block, {size={16,16}, atlas=e.Icon.icon})
+                    block.wowhead:SetFrameStrata('MEDIUM')
+                    block.wowhead:SetPoint('RIGHT', block.HeaderText)
+                end
+            end)
+        end
+        self:SetClampedToScreen(false)
+    end)]]
+
 end
 
 local function set_Cursor_Tips(self)

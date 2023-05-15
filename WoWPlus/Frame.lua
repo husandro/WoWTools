@@ -629,16 +629,16 @@ local function Init_Move()
     Move(LootFrame.TitleContainer, {frame=LootFrame, save=false})--物品拾取
     Move(LootFrame, {save=false})--物品拾取
 
-    C_Timer.After(2, function()
-        --场景 
-        if ObjectiveTrackerFrame and ObjectiveTrackerFrame.MODULES then--Blizzard_ObjectiveTracker.lua ObjectiveTracker_GetVisibleHeaders()
-            for _, module in ipairs(ObjectiveTrackerFrame.MODULES) do
-                local header = module.Header;
-                Move(header, {frame=ObjectiveTrackerFrame, notZoom=true})
-            end
+    hooksecurefunc('ObjectiveTracker_Initialize', function(self)--场景 self==ObjectiveTrackerFrame
+        --if self and self.MODULES then--Blizzard_ObjectiveTracker.lua ObjectiveTracker_GetVisibleHeaders()
+        for _, module in ipairs(self.MODULES) do
+            local header = module.Header;
+            Move(header, {frame=self, notZoom=true})
         end
-        ObjectiveTrackerFrame:SetClampedToScreen(false)
+        self:SetClampedToScreen(false)
+    end)
 
+    C_Timer.After(2, function()
         set_Move_Button(QueueStatusButton, {frame=nil, save=true, zeroAlpha=false, notZoom=true})--小眼睛, 
         QueueStatusButton:HookScript('OnShow', function(self)
             if EditModeManagerFrame:IsEditModeActive() then
@@ -646,6 +646,7 @@ local function Init_Move()
             end
         end)
     end)
+
     --[[Move(ObjectiveTrackerBlocksFrame.ScenarioHeader, {frame=ObjectiveTrackerFrame, notZoom=true})
     Move(ObjectiveTrackerBlocksFrame.AchievementHeader, {frame=ObjectiveTrackerFrame, notZoom=true})
     Move(ObjectiveTrackerBlocksFrame.QuestHeader, {frame=ObjectiveTrackerFrame, zeroAlpha=true, notZoom=true})

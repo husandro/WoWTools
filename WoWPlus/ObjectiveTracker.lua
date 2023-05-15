@@ -337,6 +337,80 @@ local function Init()
             button:SetPoint('TOPRIGHT',  block, 'TOPLEFT',-20,0)
         end
     end)
+
+    --[[ModulTab=
+            'SCENARIO_CONTENT_TRACKER_MODULE',--1 场景战役 SCENARIOS
+            'UI_WIDGET_TRACKER_MODULE',--2
+            'BONUS_OBJECTIVE_TRACKER_MODULE',--3 奖励目标 SCENARIO_BONUS_OBJECTIVES
+            'WORLD_QUEST_TRACKER_MODULE',--4世界任务 TRACKER_HEADER_WORLD_QUESTS
+            'CAMPAIGN_QUEST_TRACKER_MODULE',--5战役 TRACKER_HEADER_CAMPAIGN_QUESTS
+            'QUEST_TRACKER_MODULE',--6 	追踪任务 TRACK_QUEST
+            'ACHIEVEMENT_TRACKER_MODULE',--7 追踪成就 TRACKING..
+            'PROFESSION_RECIPE_TRACKER_MODULE',--8 追踪配方 PROFESSIONS_TRACK_RECIPE
+            'MONTHLY_ACTIVITIES_TRACKER_MODULE',--9
+    ]]
+
+    --##########
+    --清除, 追踪
+    --##########
+    local function create_ClearAll_Button(self)
+        self.clearAll= e.Cbtn(self, {atlas='bags-button-autosort-up', size={22,22}})
+        self.clearAll:SetPoint('RIGHT', self.MinimizeButton, 'LEFT',-2,0)
+        self.clearAll:SetAlpha(0.3)
+        self.clearAll:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.3) end)
+        self.clearAll:SetScript('OnEnter', function(self2)
+            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(e.onlyChinese and '全部清除' or CLEAR_ALL, e.onlyChinese and '双击'..e.Icon.left or (BUFFER_DOUBLE..e.Icon.left))
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(id, addName)
+            e.tips:Show()
+            self2:SetAlpha(1)
+        end)
+    end
+    hooksecurefunc('ObjectiveTracker_Initialize', function(self)
+        for _, module in ipairs(self.MODULES) do
+            if module== WORLD_QUEST_TRACKER_MODULE then--4世界任务 TRACKER_HEADER_WORLD_QUESTS
+                create_ClearAll_Button(module.Header)
+                module.Header.clearAll:SetScript('OnDoubleClick', function(self2)
+                    local questIDS={}
+                    for i= 1, C_QuestLog.GetNumWorldQuestWatches() do
+                        local questID= C_QuestLog.GetQuestIDForWorldQuestWatchIndex(i)
+                        if questID and questID>0 then
+                            table.insert(questIDS, questID)
+                        end
+                    end
+                    for _, questID in pairs(questIDS) do
+                        C_QuestLog.RemoveWorldQuestWatch(questID)
+                    end
+                end)
+
+            elseif module== QUEST_TRACKER_MODULE or module== CAMPAIGN_QUEST_TRACKER_MODULE then--6 追踪任务 TRACK_QUEST
+                create_ClearAll_Button(module.Header)
+                module.Header.clearAll:SetScript('OnDoubleClick', function(self2)
+                    local questIDS={}
+                    for i= 1, C_QuestLog.GetNumQuestWatches() do
+                        local questID= C_QuestLog.GetQuestIDForQuestWatchIndex(i)
+                        if questID and questID>0 then
+                            table.insert(questIDS, questID)
+                        end
+                    end
+                    for _, questID in pairs(questIDS) do
+                        C_QuestLog.RemoveQuestWatch(questID)
+                    end
+                end)
+
+            elseif module== ACHIEVEMENT_TRACKER_MODULE then--7 追踪成就 TRACKING
+                create_ClearAll_Button(module.Header)
+                module.Header.clearAll:SetScript('OnDoubleClick', function(self2)
+                    for _, achievementID in pairs({GetTrackedAchievements()}) do
+                        RemoveTrackedAchievement(achievementID)
+                    end
+                end)
+
+            end
+        end
+    end)
 end
 
 --###########
