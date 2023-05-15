@@ -14,9 +14,9 @@ local ModulTab={--Blizzard_ObjectiveTracker.lua
     'WORLD_QUEST_TRACKER_MODULE',--4世界任务 TRACKER_HEADER_WORLD_QUESTS
     'CAMPAIGN_QUEST_TRACKER_MODULE',--5战役 TRACKER_HEADER_CAMPAIGN_QUESTS
     'QUEST_TRACKER_MODULE',--6 	追踪任务 TRACK_QUEST
-    'ACHIEVEMENT_TRACKER_MODULE',--7 追踪成就 TRACKING..
+    'ACHIEVEMENT_TRACKER_MODULE',--7 追踪成就 TRACKER_HEADER_ACHIEVEMENTS
     'PROFESSION_RECIPE_TRACKER_MODULE',--8 追踪配方 PROFESSIONS_TRACK_RECIPE
-    'MONTHLY_ACTIVITIES_TRACKER_MODULE',--9
+    'MONTHLY_ACTIVITIES_TRACKER_MODULE',--9 旅行者日志 TRACKER_HEADER_MONTHLY_ACTIVITIES
 }
 
 local Color={
@@ -420,8 +420,8 @@ local function Init()
 
             elseif module== PROFESSION_RECIPE_TRACKER_MODULE then--8 追踪配方 PROFESSIONS_TRACK_RECIPE
                 create_ClearAll_Button(module.Header)
-                module.Header.clearAll.tooltip= e.onlyChinese and '商业技能' or TRADESKILLS 
-                module.Header.clearAll:SetScript('OnDoubleClick', function()
+                module.Header.clearAll.tooltip= e.onlyChinese and '追踪配方' or PROFESSIONS_TRACK_RECIPE 
+                module.Header.clearAll:SetScript('OnDoubleClick', function(self2)
                     local tab= C_TradeSkillUI.GetRecipesTracked(false) or {}
                     local num= 0
                     for _, recipeID in pairs(tab) do
@@ -443,7 +443,7 @@ local function Init()
                 module.Header.clearAll:SetScript('OnDoubleClick', function(self2)
                     local tab= C_PerksActivities.GetTrackedPerksActivities() or {}
                     local num=0
-                    for _, perksActivityIDs in pairs(tab) do                        
+                    for _, perksActivityIDs in pairs(tab) do
                         for _, perksActivityID in pairs(perksActivityIDs) do
                             C_PerksActivities.RemoveTrackedPerksActivity(perksActivityID)
                             num= num+1
@@ -492,7 +492,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     e.tips:AddDoubleLine(e.onlyChinese and '世界任务' or TRACKER_HEADER_WORLD_QUESTS, text)
                     e.tips:AddDoubleLine(e.onlyChinese and '战役' or TRACKER_HEADER_CAMPAIGN_QUESTS, text)
                     e.tips:AddDoubleLine(e.onlyChinese and '追踪任务' or TRACK_QUEST, text)
-                    e.tips:AddDoubleLine(e.onlyChinese and '追踪成就' or (TRACKING..ACHIEVEMENTS), text)
+                    e.tips:AddDoubleLine(e.onlyChinese and '追踪成就' or (TRACKER_HEADER_ACHIEVEMENTS), text)
                     e.tips:AddDoubleLine(e.onlyChinese and '追踪配方' or PROFESSIONS_TRACK_RECIPE, text)
                     e.tips:Show()
                 end)
