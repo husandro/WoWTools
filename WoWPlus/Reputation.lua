@@ -505,27 +505,28 @@ local function FactionUpdate(self, event, text, ...)
 					end
 				end
 			end
-			local isParagon = C_Reputation.IsFactionParagon(factionID)--奖励
-			local hasRewardPending
-			if ( isParagon ) then--奖励
-				local currentValue, threshold, rewardQuestID, hasRewardPending2, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID);
+
+			local hasRewardPending, rewardQuestID
+			if C_Reputation.IsFactionParagon(factionID) then--奖励
+				local currentValue, threshold, rewardQuestID2, hasRewardPending2, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID);
 				hasRewardPending=hasRewardPending2
+				rewardQuestID= rewardQuestID2
 				if not tooLowLevelForParagon then
 					local completed= math.modf(currentValue/threshold)
 					currentValue= completed>0 and currentValue - threshold*completed or currentValue
-					value=('%i%%'):format(currentValue/threshold*100).. (completed>0 and ' '..QUEST_REWARDS..'|cnGREEN_FONT_COLOR:'..completed..'|r'..VOICEMACRO_LABEL_CHARGE1 or '')
+					value=('%i%%'):format(currentValue/threshold*100).. (completed>0 and ' '..(e.onlyChinese and '奖励' or QUEST_REWARDS)..'|cnGREEN_FONT_COLOR: '..completed..' |r'..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1) or '')
 				end
 			end
-			local m=factionStandingtext and factionStandingtext or ''
+			local m= factionStandingtext and factionStandingtext or ''
 			if barColor then
-				m=barColor:WrapTextInColorCode(m)
+				m= barColor:WrapTextInColorCode(m)
 			end
 			if value then
-				m=m..' |cffffffff'..value..'|r'
+				m=m..' |cffff00ff'..value..'|r'
 			end
 			m=(icon or ('|A:'..e.Icon.icon..':0:0|a'))..m
 			if hasRewardPending then
-				m=m..e.Icon.bank2
+				m=m..e.Icon.bank2..(rewardQuestID and GetQuestLink(rewardQuestID) or '')
 			end
 
 			return false, text..m, ...
