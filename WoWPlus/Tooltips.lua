@@ -214,7 +214,7 @@ local function get_Web_Link(tab)
             if tab.frame then
                 BattlePetTooltipTemplate_AddTextLine(tab.frame, 'wowhead  Ctrl+Shift')
             end
-        else
+        elseif tab.frame== e.tips then
             tab.frame:AddDoubleLine((tab.col or '')..'WoWHead', (tab.col or '')..'Ctrl+Shift')
         end
         if IsControlKeyDown() and IsShiftKeyDown() then
@@ -226,7 +226,7 @@ local function get_Web_Link(tab)
         end
     elseif tab.unitName then
         if tab.frame then
-            tab.frame:SetText(e.Icon.info2..tab.col..'Raider.IO Shift+Ctrl')
+            tab.frame:SetText(e.Icon.info2..tab.col..'Raider.IO Ctrl+Shift')
             tab.frame:SetShown(true)
         else
             e.tips:AddDoubleLine(e.Icon.info2..(tab.col or '')..'Raider.IO', (tab.col or '')..'Ctrl+Shift')
@@ -1120,9 +1120,15 @@ local function Init()
     hooksecurefunc('SharedPetBattleAbilityTooltip_SetAbility', function(self, abilityInfo, additionalText)
         local abilityID = abilityInfo:GetAbilityID();
         if abilityID then
-            local _, _, icon, _, unparsedDescription = C_PetBattles.GetAbilityInfoByID(abilityID)
+            local _, name, icon, _, unparsedDescription = C_PetBattles.GetAbilityInfoByID(abilityID)
             local description = SharedPetAbilityTooltip_ParseText(abilityInfo, unparsedDescription)
-            self.Description:SetText(description..'\n\n'..(e.onlyChinese and '技能' or ABILITIES)..' '..abilityID..(icon and '  |T'..icon..':0|t'..icon or ''))
+            self.Description:SetText(description
+                                    ..'\n\n'..(e.onlyChinese and '技能' or ABILITIES)
+                                    ..' '..abilityID
+                                    ..(icon and '  |T'..icon..':0|t'..icon or '')
+                                    ..(Save.ctrl and '\nWoWHead Ctrl+Shift' or '')
+                                )            
+            get_Web_Link({frame=self, type='pet-ability', id=abilityID, name=name, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
         end
     end)
 
