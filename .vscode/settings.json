@@ -2734,7 +2734,9 @@
         "VAS_REALM_LABEL",
         "CompactPartyFrame_UpdateVisibility",
         "SPELL_FAILED_CUSTOM_ERROR_248",
-        "WEEKLY_REWARDS_UNCLAIMED_TITLE"
+        "WEEKLY_REWARDS_UNCLAIMED_TITLE",
+        "OverrideActionBar_StatusBars_ShowTooltip",
+        "OverrideActionBarMixin"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

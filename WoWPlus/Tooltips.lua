@@ -139,7 +139,7 @@ StaticPopupDialogs["WowheadQuickLinkUrl"] = {
     hideOnEscape = true,
     --preferredIndex = 3,
 }
-
+--https://www.wowhead.com/cn/pet-ability=509/汹涌
 local wowheadText= 'https://www.wowhead.com/%s=%d'
 local raiderioText= 'https://raider.io/characters/%s/%s/%s'
 if LOCALE_zhCN or LOCALE_zhTW then
@@ -168,28 +168,33 @@ elseif LOCALE_koKR then
     raiderioText= 'https://raider.io/kr/characters/%s/%s/%s'
 end
 
-ItemRefTooltip.wowhead=e.Cbtn(ItemRefTooltip, {size={20,20},type=false})--取得网页，数据链接
-ItemRefTooltip.wowhead:SetPoint('RIGHT',ItemRefTooltip.CloseButton, 'LEFT',0,2)
-ItemRefTooltip.wowhead:SetNormalAtlas('questlegendary')
-ItemRefTooltip.wowhead:SetScript('OnClick', function(self)
-    if self.web then
-        StaticPopup_Show("WowheadQuickLinkUrl",
-            'WoWHead',
-            nil,
-            self.web
-        )
-    end
-end)
-ItemRefTooltip.wowhead:SetShown(false)
+local function create_Tooltip_Button(self)
+    self.wowhead=e.Cbtn(self, {size={20,20},type=false})--取得网页，数据链接
+    self.wowhead:SetPoint('RIGHT',self.CloseButton, 'LEFT',0,2)
+    self.wowhead:SetNormalAtlas('questlegendary')
+    self.wowhead:SetScript('OnClick', function(self)
+        if self.web then
+            StaticPopup_Show("WowheadQuickLinkUrl",
+                'WoWHead',
+                nil,
+                self.web
+            )
+        end
+    end)
+    self.wowhead:SetShown(false)
+end
 
 --get_Web_Link({frame=self, type='npc', id=companionID, name=speciesName, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
 --get_Web_Link({unitName=name, realm=realm, col=nil})--取得单位, raider.io 网页，数据链接
 local RegionName= GetCurrentRegionName()
 local function get_Web_Link(tab)
-    if tab.frame==ItemRefTooltip then
+    if tab.frame==ItemRefTooltip or tab.frame==FloatingBattlePetTooltip then
         if tab.type and tab.id then
-            ItemRefTooltip.wowhead.web=format(wowheadText, tab.type, tab.id, tab.name or '')
-            ItemRefTooltip.wowhead:SetShown(true)
+            if not tab.frame.wowhead then
+                create_Tooltip_Button(tab.frame)
+            end
+            tab.frame.wowhead.web=format(wowheadText, tab.type, tab.id, tab.name or '')
+            tab.frame.wowhead:SetShown(true)
         end
         return
     end
@@ -1282,6 +1287,8 @@ local function Init()
         local speciesID= petGUID and C_PetJournal.GetPetInfoByPetID(petGUID)
         setPet(self, speciesID)--宠物
     end)
+
+
 
     setCVar(nil, nil, true)--设置CVar
 
