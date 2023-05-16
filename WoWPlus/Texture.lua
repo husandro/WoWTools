@@ -472,6 +472,7 @@ local function Init_Set_AlphaAndColor()
     setAlpha(LFDParentFrameInset.Bg)
     setAlpha(LFDParentFrameRoleBackground)
 
+    --专业
     setAlpha(ProfessionsFrame.NineSlice.TopLeftCorner)
     setAlpha(ProfessionsFrame.NineSlice.TopEdge)
     setAlpha(ProfessionsFrame.NineSlice.TopRightCorner)
@@ -487,6 +488,10 @@ local function Init_Set_AlphaAndColor()
     hideTexture(ProfessionsFrame.SpecPage.DetailedView.Background)
     setAlpha(ProfessionsFrame.SpecPage.DetailedView.Path.DialBG)
     setAlpha(ProfessionsFrame.SpecPage.DetailedView.UnspentPoints.CurrencyBackground)
+
+    setAlpha(InspectRecipeFrameBg)
+    setAlpha(InspectRecipeFrame.SchematicForm.MinimalBackground)
+    
 
     setAlpha(GossipFrame.NineSlice.TopEdge)
     setAlpha(GossipFrame.NineSlice.TopLeftCorner)

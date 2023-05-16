@@ -250,7 +250,94 @@ local function Init()
         if m~='' then block.HeaderText:SetText(m..text) end
     end)
 
-    hooksecurefunc(PROFESSION_RECIPE_TRACKER_MODULE, 'SetStringText', function(self, fontString, text, useFullHeight, colorStyle, useHighlight)
+    --##################################
+    --8 追踪配方 PROFESSIONS_TRACK_RECIPE
+    --Blizzard_ProfessionsRecipeTracker.lua
+    hooksecurefunc(PROFESSION_RECIPE_TRACKER_MODULE, 'Update', function(self)
+        local function AddObjectives(isRecraft)
+			for _, recipeID in ipairs(C_TradeSkillUI.GetRecipesTracked(isRecraft)) do
+				local recipeSchematic = C_TradeSkillUI.GetRecipeSchematic(recipeID, isRecraft);
+				local blockID = NegateIf(recipeID, isRecraft);
+				local block = self:GetBlock(blockID);
+				local blockName = isRecraft and format(e.onlyChinese and '再造：%s' or PROFESSIONS_CRAFTING_FORM_RECRAFTING_HEADER, recipeSchematic.name)
+                                            --or recipeSchematic.name;
+                                
+                if recipeSchematic.icon and recipeSchematic.icon>0 then
+                    block.HeaderText:SetText('|T'..recipeSchematic.icon..':0|t'..blockName)
+                end
+				--self:SetBlockHeader(block, blockName);
+                
+				local eligibleSlots = {};
+				for slotIndex, reagentSlotSchematic in ipairs(recipeSchematic.reagentSlotSchematics) do
+					if Professions.IsReagentSlotRequired(reagentSlotSchematic) then
+						if Professions.IsReagentSlotModifyingRequired(reagentSlotSchematic) then
+							table.insert(eligibleSlots, 1, {slotIndex = slotIndex, reagentSlotSchematic = reagentSlotSchematic});
+						else
+							table.insert(eligibleSlots, {slotIndex = slotIndex, reagentSlotSchematic = reagentSlotSchematic});
+						end
+					end
+				end
+
+				for _, tbl in ipairs(eligibleSlots) do
+					local slotIndex = tbl.slotIndex;
+					local reagentSlotSchematic = tbl.reagentSlotSchematic;
+					if Professions.IsReagentSlotRequired(reagentSlotSchematic) then
+						local reagent = reagentSlotSchematic.reagents[1];
+						local quantityRequired = reagentSlotSchematic.quantityRequired;
+						local quantity = Professions.AccumulateReagentsInPossession(reagentSlotSchematic.reagents);
+						local name, icon
+
+						if Professions.IsReagentSlotBasicRequired(reagentSlotSchematic) then
+							if reagent.itemID then
+								local item = Item:CreateFromItemID(reagent.itemID);
+								name = item:GetItemName();
+                                icon= item:GetItemIcon()
+
+							elseif reagent.currencyID then
+								local currencyInfo = C_CurrencyInfo.GetCurrencyInfo(reagent.currencyID);
+								if currencyInfo then
+									name = currencyInfo.name;
+                                    icon= currencyInfo.iconFileID
+								end
+							end
+						elseif Professions.IsReagentSlotModifyingRequired(reagentSlotSchematic) then
+							if reagentSlotSchematic.slotInfo then
+								name = reagentSlotSchematic.slotInfo.slotText;
+                                icon= reagentSlotSchematic.icon
+							end
+						end
+						
+
+						if name and icon then
+                            local text = format('%s %s', '|T'..icon..':0|t'..format('%s/%d', quantity, quantityRequired), name)
+							local metQuantity = quantity >= quantityRequired;
+
+                            local line= block.lines[slotIndex]
+                            if line then
+                                line.Text:SetText(text)
+                                line:SetAlpha(metQuantity and 0.5 or 1)
+                            end
+						end
+					end
+				end
+
+				--block:SetHeight(block.height);
+
+				--[[if ( ObjectiveTracker_AddBlock(block) ) then
+					block:Show();
+					self:FreeUnusedLines(block);
+				else
+					block.used = false;
+					break;
+				end]]
+			end
+		end
+
+		AddObjectives(true);
+		AddObjectives(false);
+    end)
+
+    --[[hooksecurefunc(PROFESSION_RECIPE_TRACKER_MODULE, 'SetStringText', function(self, fontString, text, useFullHeight, colorStyle, useHighlight)
         local te=text:gsub('%d+/%d+ ','')
         if te then
             local icon = C_Item.GetItemIconByID(te)
@@ -272,7 +359,7 @@ local function Init()
                 fontString:SetText(str)
             end
         end
-    end)
+    end)]]
 
     hooksecurefunc('QuestObjectiveSetupBlockButton_AddRightButton', function(block, button)--物品按钮左边,放大 --Blizzard_ObjectiveTrackerShared.lua
         if not button or not block or not button:IsShown() or block.groupFinderButton == button then

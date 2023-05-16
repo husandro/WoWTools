@@ -463,6 +463,9 @@ local function Init_Move()
         AddonList={},--插件
         GameMenuFrame={save=true,},--菜单
         ProfessionsFrame={},--专业
+        InspectRecipeFrame={},
+        [InspectRecipeFrame.TitleContainer]={frame=InspectRecipeFrame},
+
         CharacterFrame={},--角色
         ReputationDetailFrame={save=true},--声望描述q
         TokenFramePopup={save=true},--货币设置
@@ -518,7 +521,14 @@ local function Init_Move()
 
     set_Move_Button(ZoneAbilityFrame, {frame=ZoneAbilityFrame.SpellButtonContainer, save=true, zeroAlpha=nil, notZoom=nil})
     
-        
+    --专业
+    InspectRecipeFrame:HookScript('OnShow', function(self)
+        local name= self:GetName()
+        if name and Save.scale[name] and Save.scale[name]~=1 then
+            self:SetScale(Save.scale[name])
+        end
+    end)
+    
     
 
     --########
