@@ -807,8 +807,7 @@ local function Init_Set_AlphaAndColor()
         end)
     end]]
 
-    --小地图
-    setAlpha(MinimapCompassTexture)
+   
 
     --[[对话框
     if StaticPopup1 then
@@ -847,8 +846,11 @@ local function Init_Set_AlphaAndColor()
         AddonCompartmentFrame.Text:SetTextColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
     end
 
+    --小地图
+    setAlpha(MinimapCompassTexture)
     set_Alpha_Frame_Texture(MinimapCluster.BorderTop)
     set_Alpha_Frame_Texture(MinimapCluster.Tracking.Button)
+    set_Alpha_Frame_Texture(GameTimeFrame)
 
     C_Timer.After(3, function()
         if SpellFlyout and SpellFlyout.Background then--Spell Flyout
