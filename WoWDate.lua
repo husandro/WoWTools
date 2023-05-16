@@ -241,20 +241,38 @@ end
 --#######
 --更新货币
 --#######
-local function updateCurrency(arg1)--{currencyID = 数量}
+local function updateCurrency(arg1, setPrint)--{currencyID = 数量}
     if arg1 and arg1~=2032 then
         local info = C_CurrencyInfo.GetCurrencyInfo(arg1)
         if info and info.quantity then
             WoWDate[e.Player.guid].Currency[arg1]=info.quantity==0 and nil or info.quantity
         end
     else
+        local tab
         for i=1, C_CurrencyInfo.GetCurrencyListSize() do
             local link =C_CurrencyInfo.GetCurrencyListLink(i)
             local currencyID = link and C_CurrencyInfo.GetCurrencyIDFromLink(link)
             local info = C_CurrencyInfo.GetCurrencyListInfo(i)
             if currencyID and info and info.quantity and currencyID~=2032 then
                 WoWDate[e.Player.guid].Currency[currencyID]= info.quantity<=0 and nil or info.quantity
+                if setPrint and info.quantity and info.quantity>0 and (
+                            info.quantity==info.maxQuantity--最大数
+                        or (info.canEarnPerWeek and info.maxWeeklyQuantity==info.quantityEarnedThisWeek)--本周
+                        or (info.useTotalEarnedForMaxQty and info.totalEarned==info.maxQuantity)--赛季
+                    )
+                    and link
+                then
+                    tab= tab or {}
+                    tab[link]=true
+                end
             end
+        end
+        if tab then
+            local text=''
+            for link, _ in pairs(tab) do
+                text= text..link
+            end
+            print(id, text, '|cffff00ff'..(e.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248))
         end
     end
 end
@@ -417,7 +435,7 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
                 NotifyInspect('player')--取得,自已, 装等
                 e.GetGroupGuidDate()--队伍数据收集    
                 set_Money()--钱
-                updateCurrency()--{currencyID = 数量}
+                updateCurrency(nil, true)--{currencyID = 数量}
 
                 --################
                 --开启, 新手編輯模式
@@ -477,7 +495,7 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
     elseif event=='BOSS_KILL' then
         RequestRaidInfo()
     elseif event=='CURRENCY_DISPLAY_UPDATE' then--货币
-        updateCurrency(arg1)
+        updateCurrency(arg1, false)
 
     elseif event=='BAG_UPDATE_DELAYED' then
         updateItems()
