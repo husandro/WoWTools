@@ -1068,7 +1068,7 @@ e.GetExpansionText= function(expacID, questID)--版本数据
         if e.ExpansionLevel==expacID then
             return _G['EXPANSION_NAME'..expacID], (e.onlyChinese and '版本' or GAME_VERSION_LABEL)..' '..(expacID+1)
         else
-            return '|cff606060'.._G['EXPANSION_NAME'..expacID]..'|r', '|cff606060'..(e.onlyChinese and '版本' or GAME_VERSION_LABEL)..' '..(expacID+1)..'|r'
+            return '|cff828282'.._G['EXPANSION_NAME'..expacID]..'|r', '|cff828282'..(e.onlyChinese and '版本' or GAME_VERSION_LABEL)..' '..(expacID+1)..'|r'
         end
     end
 end

@@ -331,10 +331,11 @@ local function setItem(self, ItemLink)
         r, g, b, col= GetItemQualityColor(itemQuality)
         col=col and '|c'..col
     end
+    self:AddLine(' ')
     if expacID then--版本数据
         self:AddDoubleLine(e.GetExpansionText(expacID))
     end
-    self:AddDoubleLine(itemID and (e.onlyChinese and '物品' or ITEMS)..' '.. itemID or ' ' , itemTexture and '|T'..itemTexture..':0|t'..itemTexture)--ID, texture
+    self:AddDoubleLine(itemID and (e.onlyChinese and '物品' or ITEMS)..' '.. itemID or ' ' , itemTexture and '|T'..itemTexture..':0|t'..itemTexture, 1,1,1, 1,1,1)--ID, texture
     if classID and subclassID then
         self:AddDoubleLine((itemType and itemType..' classID'  or 'classID') ..' '..classID, (itemSubType and itemSubType..' subID' or 'subclassID')..' '..subclassID)
     end
@@ -344,7 +345,7 @@ local function setItem(self, ItemLink)
         if itemLevel and itemLevel>1 then
             local slot=itemEquipLoc and e.itemSlotTable[itemEquipLoc]--比较装等
             if slot then
-                self:AddDoubleLine(_G[itemEquipLoc]..' '..itemEquipLoc, (e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)..' '..slot)--栏位
+                self:AddDoubleLine(_G[itemEquipLoc]..' '..itemEquipLoc, (e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)..' '..slot, 1,1,1, 1,1,1)--栏位
                 local slotLink=GetInventoryItemLink('player', slot)
                 local text
                 if slotLink then
@@ -479,14 +480,15 @@ local function setItem(self, ItemLink)
     self:Show()
 end
 
-local function setSpell(self, spellID)--法术
+local function set_Spell(self, spellID)--法术
     spellID = spellID or select(2, self:GetSpell())
     if not spellID then
         return
     end
     local name, _, icon, _, _, _, _, originalIcon= GetSpellInfo(spellID)
     local spellTexture=  originalIcon or icon or GetSpellTexture(spellID)
-    self:AddDoubleLine((e.onlyChinese and '法术' or SPELLS)..' '..spellID, spellTexture and '|T'..spellTexture..':0|t'..spellTexture)
+    self:AddLine(' ')
+    self:AddDoubleLine((e.onlyChinese and '法术' or SPELLS)..' '..spellID, spellTexture and '|T'..spellTexture..':0|t'..spellTexture, 1,1,1, 1,1,1)
     local mountID = C_MountJournal.GetMountFromSpell(spellID)--坐骑
     if mountID then
         setMount(self, mountID)
@@ -570,6 +572,7 @@ end
 local function set_Aura(self, auraID)--Aura
     local name, _, icon, _, _, _, spellID = GetSpellInfo(auraID)
    if icon and spellID then
+        self:AddLine(' ')
         self:AddDoubleLine((e.onlyChinese and '光环' or AURAS)..' '..spellID, '|T'..icon..':0|t'..icon)
         local mountID = C_MountJournal.GetMountFromSpell(spellID)
         if mountID then
@@ -1091,7 +1094,7 @@ local function set_Azerite(self, powerID)--艾泽拉斯之心
         self:AddDoubleLine('powerID', powerID)
         local info = C_AzeriteEmpoweredItem.GetPowerInfo(powerID)
         if info and info.spellID then
-            setSpell(self, info.spellID)--法术
+            set_Spell(self, info.spellID)--法术
         end
     end
 end
@@ -1152,7 +1155,7 @@ local function Init()
                 setItem(tooltip, itemLink)
 
             elseif date.type==1 then
-                setSpell(tooltip, date.id)--法术
+                set_Spell(tooltip, date.id)--法术
 
             elseif date.type==5 then
                 setCurrency(tooltip, date.id)--货币
@@ -1175,8 +1178,35 @@ local function Init()
             elseif date.type==23 then
                 setQuest(tooltip, date.id)--任务
 
+            elseif date.type==25 then--宏
+                local frame= GetMouseFocus()
+                if frame and frame.action then
+                    local type, macroID= GetActionInfo(frame.action)
+                    if type=='macro' and macroID then
+                        local spellID= GetMacroSpell(macroID)
+                        if spellID then
+                            set_Spell(tooltip, spellID)
+                            tooltip:AddLine(' ')
+                        end
+                        local text=GetMacroBody(macroID)
+                        if text then
+                            tooltip:AddLine(text)
+                        end
+                    end
+                end
+
             elseif e.Player.husandro then
                 tooltip:AddDoubleLine('id '..date.id, 'type '..date.type)
+                
+                --[[
+                if frame then
+                    info= frame
+                    for k, v in pairs(info) do if v and type(v)=='table' then print('---------',k..'STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('---------',k..'END') end print(k,v) end
+                end
+                
+                    frame.action
+                    frame.index
+                ]]
             end
         end
     end)
@@ -1722,7 +1752,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_Collections' then--宠物手册， 召唤随机，偏好宠物，技能ID    
             hooksecurefunc('PetJournalSummonRandomFavoritePetButton_OnEnter', function()--PetJournalSummonRandomFavoritePetButton
-                setSpell(e.tips, 243819)
+                set_Spell(e.tips, 243819)
                 e.tips:Show()
             end)
 
