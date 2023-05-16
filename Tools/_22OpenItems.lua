@@ -49,6 +49,10 @@ local Save={
 
     },
     no={--禁用使用
+        [6948]=true,--炉石
+        [140192]=true,--达拉然炉石
+        [110560]=true,--要塞炉石
+
         [139590]=true,--[传送卷轴：拉文霍德]
         [141605]=true,--[飞行管理员的哨子]
         [163604]=true,--[撒网器5000型]
@@ -60,23 +64,23 @@ local Save={
         [86143]=true,--pet
         [5512]=true,--SS糖
 
-        [6948]=true,--10.0
-        [194510]=true,
-        [199197]=true,
-        [200613]=true,
-        [18149]=true,
-        [194701]=true,
-        [192749]=true,
-        [140192]=true,
-        [110560]=true,
-        [204439]=true,
-        [194743]=true,
-        [194730]=true,
-        [194519]=true,
-        [202620]=true,
+        --10.0
+        [194510]=true,--伊斯卡拉鱼叉
+        [199197]=true,--瓶装精
+        [200613]=true,--艾拉格风石碎片
+        [18149]=true,--召回符文
+        [194701]=true,--不祥海螺
+        [192749]=true,--时空水晶
+
+        [204439]=true,--研究宝箱钥匙
+        [194743]=true,--古尔查克的指示器
+        [194730]=true,--鳞腹鲭鱼
+        [194519]=true,--欧索利亚的协助
+        [202620]=true,--毒素解药
 
         --10.1
-        [203708]=true
+        [203708]=true,--蜗壳哨
+        [205982]=true,--失落的挖掘地图
     },
     pet=true,
     open=true,
@@ -184,7 +188,7 @@ local function getItems()--取得背包物品信息
                     if not dateInfo.red then--不出售, 可以使用
                         local _, _, _, _, itemMinLevel, _, _, _, itemEquipLoc, _, _, classID2, subclassID= GetItemInfo(info.hyperlink)
                         classID= classID or classID2
-                        
+
                         if itemEquipLoc and _G[itemEquipLoc] then--幻化
                             if Save.mago and (itemMinLevel and itemMinLevel<=e.Player.level or not itemMinLevel) and info.quality then--and (not info.isBound or (classID==4 and (subclassID==0 or subclassID==5))) then
                                 local  isCollected, isSelf= select(2, e.GetItemCollected(info.hyperlink))
