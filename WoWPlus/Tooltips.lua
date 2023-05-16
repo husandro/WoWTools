@@ -1126,8 +1126,8 @@ local function Init()
                                     ..'\n\n'..(e.onlyChinese and '技能' or ABILITIES)
                                     ..' '..abilityID
                                     ..(icon and '  |T'..icon..':0|t'..icon or '')
-                                    ..(Save.ctrl and '\nWoWHead Ctrl+Shift' or '')
-                                )            
+                                    ..(Save.ctrl and not UnitAffectingCombat('player') and '\nWoWHead Ctrl+Shift' or '')
+                                )
             get_Web_Link({frame=self, type='pet-ability', id=abilityID, name=name, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
         end
     end)
