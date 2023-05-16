@@ -236,6 +236,12 @@ local function Currency(link)--货币
         local nu=''
         if info.quantity and info.quantity>0 then
             nu=MK(info.quantity, 3)
+            if (info.quantity==info.maxQuantity--最大数
+                or (info.canEarnPerWeek and info.maxWeeklyQuantity==info.quantityEarnedThisWeek)--本周
+                or (info.useTotalEarnedForMaxQty and info.totalEarned==info.maxQuantity)--赛季
+            ) then
+                nu= '|cnRED_FONT_COLOR:'..nu..'|r'
+            end
         end
         return  '|T'..info.iconFileID..':0|t'..link..nu
     end

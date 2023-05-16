@@ -681,6 +681,28 @@ local function Init()
 			set_ItemInteractionFrame_Currency(TokenFrame)--套装,转换,货币
 			set_Text()--设置, 文本
 		end)
+
+		local tab
+        for i=1, C_CurrencyInfo.GetCurrencyListSize() do
+            local link =C_CurrencyInfo.GetCurrencyListLink(i)
+            local info = C_CurrencyInfo.GetCurrencyListInfo(i)
+            if link and info and info.quantity and info.quantity>0 and (
+                            info.quantity==info.maxQuantity--最大数
+                        or (info.canEarnPerWeek and info.maxWeeklyQuantity==info.quantityEarnedThisWeek)--本周
+                        or (info.useTotalEarnedForMaxQty and info.totalEarned==info.maxQuantity)--赛季
+                    )
+			then
+				tab= tab or {}
+				tab[link]=true
+            end
+        end
+        if tab then
+            local text=''
+            for link, _ in pairs(tab) do
+                text= text..link
+            end
+            print(id, addName, text, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248))
+        end
 	end)
 end
 

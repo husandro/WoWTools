@@ -725,14 +725,12 @@ local function Init()
 	if Save.factionUpdateTips then--声望更新, 提示
 		ChatFrame_AddMessageEventFilter('CHAT_MSG_COMBAT_FACTION_CHANGE', FactionUpdate)
 
-
 		local text
 		for i=1, GetNumFactions() do--声望更新, 提示
 			local name, _, _, _, _, _, _, _, _, _, _, _, _, factionID = GetFactionInfo(i)
 			if name and factionID and C_Reputation.IsFactionParagon(factionID) and select(4, C_Reputation.GetFactionParagonInfo(factionID)) then--奖励
 				text= text and text..' ' or ''
-				local icon
-
+				
 				local repInfo = C_GossipInfo.GetFriendshipReputation(factionID)
 				if repInfo and repInfo.texture and repInfo.texture>0 then
 					text= text..'|T'..repInfo.texture..':0|t'

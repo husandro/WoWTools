@@ -1,7 +1,7 @@
 --@curseforge-project-slug: libspecialization@
 if WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE then return end
 
-local LS, oldminor = LibStub:NewLibrary("LibSpecialization", 4)
+local LS, oldminor = LibStub:NewLibrary("LibSpecialization", 5)
 if not LS then return end -- No upgrade needed
 
 -- Positions of roles
@@ -21,6 +21,7 @@ LS.positionTable = LS.positionTable or {
 	-- Evoker
 	[1467] = "RANGED", -- Devastation (DPS)
 	[1468] = "RANGED", -- Preservation (Heal)
+	[1473] = "RANGED", -- Augmentation (DPS)
 	-- Hunter
 	[253] = "RANGED", -- Beast Mastery
 	[254] = "RANGED", -- Marksmanship
@@ -75,6 +76,7 @@ LS.roleTable = LS.roleTable or {
 	-- Evoker
 	[1467] = "DAMAGER", -- Devastation (DPS)
 	[1468] = "HEALER", -- Preservation (Heal)
+	[1473] = "DAMAGER", -- Augmentation (DPS)
 	-- Hunter
 	[253] = "DAMAGER", -- Beast Mastery
 	[254] = "DAMAGER", -- Marksmanship
@@ -137,7 +139,7 @@ local starterSpecs = {
 }
 
 local next, type, error, tonumber, format = next, type, error, tonumber, string.format
-local Ambiguate, geterrorhandler, GetTime, IsInGroup = Ambiguate, geterrorhandler, GetTime, IsInGroup
+local Ambiguate, GetTime, IsInGroup = Ambiguate, GetTime, IsInGroup
 local GetSpecialization, GetSpecializationInfo = GetSpecialization, GetSpecializationInfo
 local SendAddonMessage, CTimerAfter = C_ChatInfo.SendAddonMessage, C_Timer.After
 local pName = UnitName("player")
@@ -244,7 +246,7 @@ function LS:MySpecialization()
 			if position then
 				return specId, role, position
 			elseif not starterSpecs[specId] then
-				geterrorhandler()(format("LibSpecialization: Unknown specId %q", specId))
+				error(format("LibSpecialization: Unknown specId %q", specId))
 			end
 		end
 	end
