@@ -1,5 +1,5 @@
 local id, e = ...
-local addName= 'panel Settings'
+local addName= 'Panel Settings'
 local Save={
     onlyChinese= e.Player.husandro or LOCALE_zhCN,
     useClassColor= e.Player.husandro,--使用,职业, 颜色

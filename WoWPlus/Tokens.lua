@@ -1,5 +1,5 @@
 local id, e = ...
-local addName=TOKENS
+local addName= TOKENS
 local Save={
 	Hide=true,
 	str=true,

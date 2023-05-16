@@ -103,13 +103,25 @@ StaticPopupDialogs["WowheadQuickLinkUrl"] = {
                 print(id,addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r', s:GetText())
             end
         end)
-        self.editBox:SetScript('OnEditFocusLost', function(self2)
-            self2:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
+        self.editBox:SetScript('OnEditFocusLost', function(s)
+            s:SetTextColor(0.82, 0.82, 0.82)
         end)
         self.editBox:SetScript('OnEditFocusGained', function(s)
+            s:SetText(web)
             s:SetTextColor(0,1,0)
             s:HighlightText()
         end)
+        self.editBox:SetScript('OnTextChanged', function(s)
+            s:SetText(web)
+            s:SetTextColor(0,1,0)
+            s:HighlightText()
+        end)
+        self.editBox:SetScript('OnCursorChanged', function(s)
+            s:SetText(web)
+            s:SetTextColor(0,1,0)
+            s:HighlightText()
+        end)
+
         self.editBox:SetMaxLetters(0)
         self.editBox:SetWidth(self:GetWidth())
         self.editBox:SetText(web)
@@ -117,9 +129,11 @@ StaticPopupDialogs["WowheadQuickLinkUrl"] = {
         self.editBox:SetAutoFocus(false)
         self.editBox:SetFocus(true)
         self.editBox:SetTextColor(0,1,0)
+
+        self.button1:SetText(e.onlyChinese and '关闭' or CLOSE)
     end,
     hasEditBox = true,
-    editBoxWidth = 240,
+    editBoxWidth = 320,
     timeout = 0,
     whileDead = true,
     hideOnEscape = true,
@@ -186,7 +200,6 @@ local function get_Web_Link(tab)
                     tab.name= info and info.title
                 end
             end
-            
             if tab.isPetUI then
                 if tab.frame then
                     BattlePetTooltipTemplate_AddTextLine(tab.frame, 'wowhead  Ctrl+Shift')

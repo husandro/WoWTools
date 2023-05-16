@@ -3,8 +3,6 @@ local panel=CreateFrame("Frame")
 WoWDate={}
 e.GroupFrame={}--UnitFrame.lua 设置装等， 专精
 
-
-
 --##############
 --战网，好友GUID
 --##############
@@ -255,7 +253,7 @@ local function updateCurrency(arg1)--{currencyID = 数量}
             local currencyID = link and C_CurrencyInfo.GetCurrencyIDFromLink(link)
             local info = C_CurrencyInfo.GetCurrencyListInfo(i)
             if currencyID and info and info.quantity and currencyID~=2032 then
-                WoWDate[e.Player.guid].Currency[currencyID]=info.quantity==0 and nil or info.quantity
+                WoWDate[e.Player.guid].Currency[currencyID]= info.quantity<=0 and nil or info.quantity
             end
         end
     end
