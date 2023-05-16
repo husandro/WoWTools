@@ -1,5 +1,6 @@
 local id, e = ...
 local panel=CreateFrame("Frame")
+local addName= 'WoWDate'
 WoWDate={}
 e.GroupFrame={}--UnitFrame.lua 设置装等， 专精
 
@@ -272,7 +273,7 @@ local function updateCurrency(arg1, setPrint)--{currencyID = 数量}
             for link, _ in pairs(tab) do
                 text= text..link
             end
-            print(id, text, '|cffff00ff'..(e.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248))
+            print(id, addName, text, '|cffff00ff'..(e.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248))
         end
     end
 end

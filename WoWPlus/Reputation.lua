@@ -724,8 +724,8 @@ local function Init()
 
 	if Save.factionUpdateTips then--声望更新, 提示
 		ChatFrame_AddMessageEventFilter('CHAT_MSG_COMBAT_FACTION_CHANGE', FactionUpdate)
-	
-		
+
+
 		local text
 		for i=1, GetNumFactions() do--声望更新, 提示
 			local name, _, _, _, _, _, _, _, _, _, _, _, _, factionID = GetFactionInfo(i)
