@@ -92,7 +92,7 @@ end
 --取得网页，数据链接
 --################
 StaticPopupDialogs["WowheadQuickLinkUrl"] = {
-    text= '|cffff00ff%s|r |cnGREEN_FONT_COLOR:CTRL+C |r'..BROWSER_COPY_LINK,
+    text= id..' '..addName..'\n|cffff00ff%s|r |cnGREEN_FONT_COLOR:Ctrl+C |r'..BROWSER_COPY_LINK,
     button1 = e.onlyChinese and '关闭' or CLOSE,
     OnShow = function(self, web)
         self.editBox:SetScript("OnEscapePressed", function(s) s:ClearFocus() s:GetParent():Hide() end)
@@ -1126,9 +1126,9 @@ local function Init()
             local _, name, icon, _, unparsedDescription = C_PetBattles.GetAbilityInfoByID(abilityID)
             local description = SharedPetAbilityTooltip_ParseText(abilityInfo, unparsedDescription)
             self.Description:SetText(description
-                                    ..'\n\n'..(e.onlyChinese and '技能' or ABILITIES)
+                                    ..'\n\n|cffffffff'..(e.onlyChinese and '技能' or ABILITIES)
                                     ..' '..abilityID
-                                    ..(icon and '  |T'..icon..':0|t'..icon or '')
+                                    ..(icon and '  |T'..icon..':0|t'..icon or '')..'|r'
                                     ..(Save.ctrl and not UnitAffectingCombat('player') and '\nWoWHead Ctrl+Shift' or '')
                                 )
             get_Web_Link({frame=self, type='pet-ability', id=abilityID, name=name, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
@@ -1148,7 +1148,7 @@ local function Init()
                 end
             end
 
-        elseif date.id and date.type then--and date.type~= 25 then
+        elseif date.id and date.type then
             if date.type==0 or date.type==19 then--TooltipUtil.lua 0物品 19玩具
                 local itemID, itemLink=TooltipUtil.GetDisplayedItem(tooltip)
                 itemLink= itemLink or itemID or date.id
@@ -1197,16 +1197,6 @@ local function Init()
 
             elseif e.Player.husandro then
                 tooltip:AddDoubleLine('id '..date.id, 'type '..date.type)
-                
-                --[[
-                if frame then
-                    info= frame
-                    for k, v in pairs(info) do if v and type(v)=='table' then print('---------',k..'STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('---------',k..'END') end print(k,v) end
-                end
-                
-                    frame.action
-                    frame.index
-                ]]
             end
         end
     end)
