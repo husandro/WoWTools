@@ -191,49 +191,54 @@ local function get_Web_Link(tab)
             ItemRefTooltip.wowhead.web=format(wowheadText, tab.type, tab.id, tab.name or '')
             ItemRefTooltip.wowhead:SetShown(true)
         end
-    elseif Save.ctrl and  not UnitAffectingCombat('player') then
-        if tab.id then
-            if tab.type=='quest' then
-                if not tab.name then
-                    local index= C_QuestLog.GetLogIndexForQuestID(tab.id)
-                    local info= index and C_QuestLog.GetInfo(index)
-                    tab.name= info and info.title
-                end
-            end
-            if tab.isPetUI then
-                if tab.frame then
-                    BattlePetTooltipTemplate_AddTextLine(tab.frame, 'wowhead  Ctrl+Shift')
-                end
-            else
-                tab.frame:AddDoubleLine((tab.col or '')..'WoWHead', (tab.col or '')..'Ctrl+Shift')
-            end
-            if IsControlKeyDown() and IsShiftKeyDown() then
-                StaticPopup_Show("WowheadQuickLinkUrl",
-                    'WoWHead',
-                    nil,
-                    format(wowheadText, tab.type, tab.id, tab.name or '')
-                )
-            end
-        elseif tab.unitName then
-            if tab.frame then
-                tab.frame:SetText(e.Icon.info2..tab.col..'Raider.IO Shift+Ctrl')
-                tab.frame:SetShown(true)
-            else
-                e.tips:AddDoubleLine(e.Icon.info2..(tab.col or '')..'Raider.IO', (tab.col or '')..'Ctrl+Shift')
-                e.tips:SetShown(true)
-            end
-            if IsControlKeyDown() and IsShiftKeyDown() then
-                StaticPopup_Show("WowheadQuickLinkUrl",
-                    'Raider.IO',
-                    nil,
-                    format(raiderioText, RegionName, tab.realm or e.Player.realm, tab.unitName)
-                )
+        return
+    end
+    if not Save.ctrl or UnitAffectingCombat('player')  then
+        return
+    end
+
+    if tab.id then
+        if tab.type=='quest' then
+            if not tab.name then
+                local index= C_QuestLog.GetLogIndexForQuestID(tab.id)
+                local info= index and C_QuestLog.GetInfo(index)
+                tab.name= info and info.title
             end
         end
-    elseif tab.frame and not tab.isPetUI then
+        if tab.isPetUI then
+            if tab.frame then
+                BattlePetTooltipTemplate_AddTextLine(tab.frame, 'wowhead  Ctrl+Shift')
+            end
+        else
+            tab.frame:AddDoubleLine((tab.col or '')..'WoWHead', (tab.col or '')..'Ctrl+Shift')
+        end
+        if IsControlKeyDown() and IsShiftKeyDown() then
+            StaticPopup_Show("WowheadQuickLinkUrl",
+                'WoWHead',
+                nil,
+                format(wowheadText, tab.type, tab.id, tab.name or '')
+            )
+        end
+    elseif tab.unitName then
+        if tab.frame then
+            tab.frame:SetText(e.Icon.info2..tab.col..'Raider.IO Shift+Ctrl')
+            tab.frame:SetShown(true)
+        else
+            e.tips:AddDoubleLine(e.Icon.info2..(tab.col or '')..'Raider.IO', (tab.col or '')..'Ctrl+Shift')
+            e.tips:SetShown(true)
+        end
+        if IsControlKeyDown() and IsShiftKeyDown() then
+            StaticPopup_Show("WowheadQuickLinkUrl",
+                'Raider.IO',
+                nil,
+                format(raiderioText, RegionName, tab.realm or e.Player.realm, tab.unitName)
+            )
+        end
+    end
+    --[[if tab.frame and not tab.isPetUI then
         tab.frame:SetText('')
         tab.frame:SetShown(false)
-    end
+    end]]
 end
 
 local function setMount(self, mountID)--坐骑 
@@ -879,7 +884,8 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                 self:AddDoubleLine(col..e.Player.LayerText..' '..zone, col..'NPC '..npc, r,g,b, r,g,b)
                 e.Player.Layer=zone
             end
-            get_Web_Link({frame=self, type='npc', id=npc, name=name, col=col, isPetUI=false})--取得网页，数据链接
+            
+            get_Web_Link({frame=self, type='npc', id=npc, name=name, col=col, isPetUI=false})--取得网页，数据链接 
         end
 
         --怪物, 图标
@@ -912,7 +918,6 @@ local function setUnitInfo(self, unit)--设置单位提示信息
         if type and not type:find(COMBAT_ALLY_START_MISSION) then
             self.textRight:SetText(col..type..'|r')
         end
-
     end
 
     if not Save.hideHealth then
@@ -1185,7 +1190,7 @@ local function Init()
             if unit then
                 set_Unit_Health_Bar(self, unit)
             end
-        end);
+        end)
     end
 
     --####
@@ -1423,12 +1428,12 @@ local function Init()
     end)
 
 
-
+    --追踪栏
     hooksecurefunc('BonusObjectiveTracker_OnBlockEnter', function(block)
         if block.id and not block.module.tooltipBlock and block.TrackedQuest then
             e.tips:SetOwner(block, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            securecallfunction(GameTooltip_AddQuest, block.TrackedQuest, block.id)
+            securecallfunction(GameTooltip_AddQuest, block.TrackedQuest or block, block.id)
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
@@ -1436,6 +1441,10 @@ local function Init()
     end)
 end
 
+
+--##########
+--设置 panel
+--##########
 local function set_Cursor_Tips(self)
     GameTooltip_SetDefaultAnchor(e.tips, self or UIParent)
     --e.tips:SetOwner(UIParent, 'ANCHOR_CURSOR_LEFT', Save.cursorX, Save.cursorY)
@@ -1443,9 +1452,6 @@ local function set_Cursor_Tips(self)
     e.tips:SetUnit('player')
     e.tips:Show()
 end
---##########
---设置 panel
---##########
 local function Init_Panel()
     panel.name = e.Icon.mid..addName;--添加新控制面板
     panel.parent= id
@@ -1699,7 +1705,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 AchievementFrameComparisonHeader:EnableMouse(true)
                 AchievementFrameComparisonHeader:SetScript('OnLeave', function() e.tips:Hide() end)
                 AchievementFrameComparisonHeader:SetScript('OnEnter', func)
-
             end
 
         elseif arg1=='Blizzard_Collections' then--宠物手册， 召唤随机，偏好宠物，技能ID    

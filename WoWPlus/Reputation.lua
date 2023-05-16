@@ -514,7 +514,7 @@ local function FactionUpdate(self, event, text, ...)
 				if not tooLowLevelForParagon then
 					local completed= math.modf(currentValue/threshold)
 					currentValue= completed>0 and currentValue - threshold*completed or currentValue
-					value=('%i%%'):format(currentValue/threshold*100).. (completed>0 and ' '..(e.onlyChinese and '奖励' or QUEST_REWARDS)..'|cnGREEN_FONT_COLOR: '..completed..' |r'..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1) or '')
+					value= '|cnGREEN_FONT_COLOR:'..format('%i%%',currentValue/threshold*100)..'|r'..(completed>0 and ' '..(e.onlyChinese and '奖励' or QUEST_REWARDS)..'|cnGREEN_FONT_COLOR: '..completed..' |r'..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1) or '')
 				end
 			end
 			local m= factionStandingtext and factionStandingtext or ''
