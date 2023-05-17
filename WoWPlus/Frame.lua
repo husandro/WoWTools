@@ -9,7 +9,6 @@ local Save={
 }
 local addName= NPE_MOVE..'Frame'
 local panel= CreateFrame("Frame")
-local classPowerFrame--职业，能量条
 
 --###############
 --设置, 移动, 位置
@@ -99,6 +98,20 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name)--放大
 
     if Save.scale[tab.name] and Save.scale[tab.name]~=1 then
         self:SetScale(Save.scale[tab.name])
+    end
+    if tab.zeroAlpha then
+        self:HookScript('OnEnter', function(self2)
+            self2.ZoomIn:SetAlpha(1)
+            if self2.moveButton then
+                self2.moveButton:SetAlpha(1)
+            end
+        end)
+        self:HookScript('OnLeave', function(self2)
+            self2.ZoomIn:SetAlpha(0)
+            if self2.moveButton then
+                self2.moveButton:SetAlpha(0)
+            end
+        end)
     end
 end
 
@@ -224,7 +237,6 @@ local function created_Move_Button(self, tab)--created_Move_Button(self, {frame=
         set_Frame_Point(self)--设置, 移动, 位置)
     end
 end
-
 
 
 local combatCollectionsJournal--藏品
@@ -395,7 +407,32 @@ local function setAddLoad(arg1)
     end
 end
 
+--###########
+--职业，能量条
+--###########
+local function set_classPowerBar()
+    local tab={
+        PlayerFrame.classPowerBar,
+        TotemFrame,
+        RuneFrame,
+        MonkStaggerBar,
+        --MageArcaneChargesFrame,
+    }
 
+    for _, self in pairs(tab) do
+        if self and self:IsShown() then
+            if self.FrameName then
+                set_Frame_Point(self)
+            else
+                set_Move_Frame(self, {save=true, zeroAlpha=true})
+            end
+        end
+    end
+end
+
+--########
+--初始,移动
+--########
 local function Init_Move()
     local FrameTab={
         AddonList={},--插件
@@ -450,14 +487,13 @@ local function Init_Move()
             end
         end
     end
-    FrameTab=nil
-
     --[[for text, tab in pairs(UIPanelWindows) do
        local frame=_G[text]
        if frame and not FrameTab[frame] then
             set_Move_Frame(_G[text])
        end
     end--]]
+    FrameTab=nil
 
     created_Move_Button(ZoneAbilityFrame, {frame=ZoneAbilityFrame.SpellButtonContainer, save=true})
 
@@ -502,7 +538,7 @@ local function Init_Move()
 
     if UIWidgetPowerBarContainerFrame then--移动, 能量条
         created_Move_Button(UIWidgetPowerBarContainerFrame, {})
-        
+
        local tab= UIWidgetPowerBarContainerFrame.widgetFrames or {}
         local find=false
         for widgetID,_ in pairs(tab) do
@@ -533,28 +569,13 @@ local function Init_Move()
         end
     end
 
-    --职业,能量条
-    if PlayerFrame.classPowerBar then--PlayerFrame.lua
-        classPowerFrame= PlayerFrame.classPowerBar
-    elseif (e.Player.class == "SHAMAN") then
-        classPowerFrame= TotemFrame
-    elseif (e.Player.class == "DEATHKNIGHT") then
-        classPowerFrame= RuneFrame
-    elseif (e.Player.class == "PRIEST") then
-        classPowerFrame= PriestBarFrame
-    end
-    if classPowerFrame then
-        panel:RegisterUnitEvent('UNIT_DISPLAYPOWER', "player")
-        C_Timer.After(2, function()
-            created_Move_Button(classPowerFrame, {save=true, zeroAlpha=true})
-        end)
-        hooksecurefunc('PlayerFrame_ToPlayerArt', function()
-            C_Timer.After(0.3, function()
-                created_Move_Button(classPowerFrame, {save=true, zeroAlpha=true})
-            end)
-        end)
-    end
 
+    panel:RegisterUnitEvent('UNIT_DISPLAYPOWER', "player")
+    panel:RegisterEvent('PLAYER_TALENT_UPDATE')
+    hooksecurefunc('PlayerFrame_ToPlayerArt', function()
+        C_Timer.After(0.5, set_classPowerBar)
+    end)
+   
     set_Move_Frame(LootFrame, {save=false})--物品拾取
 
     --################################
@@ -659,8 +680,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
         panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
 
-    elseif event=='UNIT_DISPLAYPOWER' then
-        created_Move_Button(classPowerFrame, {save=true, zeroAlpha=true})
+    elseif event=='UNIT_DISPLAYPOWER' or event=='PLAYER_TALENT_UPDATE' then        
+        C_Timer.After(0.5, set_classPowerBar)
     end
 end)
 --[[--缩放
