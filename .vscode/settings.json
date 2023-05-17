@@ -2744,7 +2744,10 @@
         "PROFESSIONS_TRACKER_REAGENT_FORMAT",
         "PROFESSIONS_TRACKER_REAGENT_COUNT_FORMAT",
         "InspectRecipeFrame",
-        "InspectRecipeFrameBg"
+        "InspectRecipeFrameBg",
+        "UIParentManagedFrameContainerMixin",
+        "ValidateFramePosition",
+        "GameMenuFrame"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
