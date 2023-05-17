@@ -570,7 +570,8 @@ local function Init()
 
 	button.bagButton= e.Cbtn(ContainerFrameCombinedBags, {size={18,18}})--背包中, 增加一个图标, 用来添加或移除
 	button.bagButton:SetPoint('RIGHT', ContainerFrameCombinedBags.CloseButton, 'LEFT',-4,0)
-
+	button.bagButton:SetFrameStrata('HIGH')
+	button.bagButton:SetAlpha(0.5)
 	button:SetScript('OnClick', click)
 	button:SetScript('OnEnter', enter)
 	button:SetScript('OnLeave', leave)

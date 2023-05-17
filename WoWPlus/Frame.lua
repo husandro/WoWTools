@@ -1,21 +1,21 @@
 local id, e = ...
 local Save={
         point={},--移动
-        scale={UIWidgetPowerBarContainerFrame=0.85},--缩放
+        scale={--缩放
+            ['UIWidgetPowerBarContainerFrame']= 0.85,
+        },
 }
 local addName= NPE_MOVE..'Frame'
 local panel= CreateFrame("Frame")
-local size= 16--放大， 缩小，移动，按钮大小
 local classPowerFrame--职业，能量条
 
---####
---移动
---####
-local Point=function(frame, name2)
-    local p=Save.point
-    name2= name2 or frame:GetName()
-    if name2 then
-        p=p[name2]
+--###############
+--设置, 移动, 位置
+--###############
+local function set_Frame_Point(frame, name)--设置, 移动, 位置
+    name= name or frame:GetName()
+    if name then
+        local p= Save.point[name]
         if p and p[1] and p[3] and p[4] and p[5] then
             frame:ClearAllPoints()
             frame:SetPoint(p[1], UIParent, p[3], p[4], p[5])
@@ -26,68 +26,47 @@ end
 --####
 --缩放
 --####
-local function show_Tips(frame, name, zeroAlpha)
-    frame.name= name
-    frame.alpha= zeroAlpha and 0 or 0.1
-    frame:SetAlpha(frame.alpha)
-    frame:SetScript("OnLeave", function(self) e.tips:Hide() self:SetAlpha(self.alpha) end)
-    frame:SetScript("OnEnter",function(self)
-        if UnitAffectingCombat('player') then
-            return
-        end
-        self:SetAlpha(1)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        --e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE), Save.scale[self.name] or 1)
-        e.tips:AddDoubleLine(e.onlyChinese and '放大' or ZOOM_IN, '|cff00ff00'..(Save.scale[self.name] or 1)..'|r '..e.Icon.left)
-        e.tips:AddDoubleLine(e.onlyChinese and '缩小' or ZOOM_OUT, e.Icon.right)
-        --e.tips:AddDoubleLine('Frame', self.name)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, addName)
-        e.tips:Show()
-    end)
-end
-local function ZoomFrame(self, notZoom, zeroAlpha)
-    local name= (self and not notZoom and not Save.disabledZoom) and self:GetName()
-    if not name then
+local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name)--放大
+    local self= tab.frame or frame
+    if not self or self.ZoomIn or tab.notZoom or Save.disabledZoom or not tab.name then
         return
     end
-    local frame= nil
+    self.ZoomIn= e.Cbtn(
+                        self.moveButton
+                        or self.Header
+                        or self.SpellButtonContainer
+                        or self.TitleContainer
+                        or self.BorderFrame and self.BorderFrame.TitleContainer
+                        or self,
+                    {atlas='UI-HUD-Minimap-Zoom-In', size={18,18}}
+                    )
+    self.ZoomIn.name= tab.name
+    self.ZoomIn.ZoomFrame= self
+    self.ZoomIn.alpha= tab.zeroAlpha and 0 or 0.2
+
     if self.moveButton then
-        frame= self
-        self.ZoomIn= e.Cbtn(frame, {icon='hide', size={size,size}})
         self.ZoomIn:SetPoint('RIGHT', self.moveButton, 'LEFT')
 
     elseif self.BorderFrame and self.BorderFrame.TitleContainer then
-        frame= self.BorderFrame.TitleContainer
-        self.ZoomIn= e.Cbtn(frame, {icon='hide', size={size,size}})--放大
         self.ZoomIn:SetPoint('LEFT',35,-2)
 
     elseif self.SpellButtonContainer then
-        frame=self.SpellButtonContainer
-        self.ZoomIn= e.Cbtn(frame, {icon='hide', size={size,size}})
-        self.ZoomIn:SetPoint('BOTTOM', frame, 'TOP', -20,0)
-        self.ZoomIn:SetFrameLevel(frame:GetFrameLevel()+7)
+        self.ZoomIn:SetPoint('BOTTOM', self.SpellButtonContainer, 'TOP', -20,0)
+        self.ZoomIn:SetFrameLevel(self.SpellButtonContainer:GetFrameLevel()+7)
 
     elseif self.TitleContainer then
-        frame= self.TitleContainer
-        self.ZoomIn= e.Cbtn(frame, {icon='hide', size={size,size}})
         self.ZoomIn:SetPoint('LEFT',35,-2)
 
     elseif self.Header then
-        frame= self.Header
-        self.ZoomIn= e.Cbtn(frame, {icon='hide', size={size,size}})
         self.ZoomIn:SetPoint('LEFT')
+
     else
-        frame= self
-        self.ZoomIn= e.Cbtn(frame, {icon='hide', size={size,size}})
-        self.ZoomIn:SetPoint('BOTTOMLEFT', frame, 'TOPLEFT')
-        self.ZoomIn:SetFrameLevel(frame:GetFrameLevel()+7)
+        self.ZoomIn:SetPoint('BOTTOMLEFT', self, 'TOPLEFT')
+        self.ZoomIn:SetFrameLevel(self:GetFrameLevel()+7)
     end
 
-    self.ZoomIn:SetNormalAtlas('UI-HUD-Minimap-Zoom-In')
-    self.ZoomIn:SetScript('OnClick', function(self2,d)
-        local n= Save.scale[self2.name] or self:GetScale() or 1
+    self.ZoomIn:SetScript('OnClick', function(self2, d)
+        local n= Save.scale[self2.name] or self2.ZoomFrame:GetScale() or 1
         if d=='LeftButton' then
             n= n+ 0.05
         elseif d=='RightButton' then
@@ -96,176 +75,149 @@ local function ZoomFrame(self, notZoom, zeroAlpha)
         n= n>2 and 2 or n
         n= n< 0.5 and 0.5 or n
         Save.scale[self2.name]= n
-        self:SetScale(n)
+        self2.ZoomFrame:SetScale(n)
     end)
 
-    --[[self.ZoomOut= e.Cbtn(frame, {icon='hide', size={size,size}})--缩小
-    self.ZoomOut:SetFrameLevel(self.ZoomIn:GetFrameLevel())
-    if self.moveButton then
-        self.ZoomOut:SetPoint('LEFT',self.moveButton, 'RIGHT')
+    self.ZoomIn:SetAlpha(self.ZoomIn.alpha)
+    self.ZoomIn:SetScript("OnLeave", function(self2)
+        e.tips:Hide()
+        self2:SetAlpha(self2.alpha)
+    end)
+    self.ZoomIn:SetScript("OnEnter",function(self2)
+        self2:SetAlpha(1)
+        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.onlyChinese and '放大' or ZOOM_IN, '|cff00ff00'..(Save.scale[self2.name] or 1)..'|r/2|r '..e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinese and '缩小' or ZOOM_OUT, '0.5'..e.Icon.right)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:Show()
+    end)
+
+    if Save.scale[tab.name] and Save.scale[tab.name]~=1 then
+        self:SetScale(Save.scale[tab.name])
+    end
+end
+
+--#################
+--设置Frame,移动属性
+--#################
+local function set_Frame_Drag(self)
+    self:SetClampedToScreen(self.SavePoint)
+    self:SetMovable(true)
+    self:EnableMouse(true)
+    if self.MoveFrame then
+        self.MoveFrame:SetClampedToScreen(self.SavePoint)
+        self.MoveFrame:SetMovable(true)
+    end
+    if self.ClickTypeMove=='R' then
+        self:RegisterForDrag("RightButton")
+    elseif self.ClickTypeMove=='L' then
+        self:RegisterForDrag("LeftButton")
     else
-        self.ZoomOut:SetPoint('LEFT',self.ZoomIn, 'RIGHT')
+        self:RegisterForDrag("LeftButton", "RightButton")
     end
-    self.ZoomOut:SetNormalAtlas('UI-HUD-Minimap-Zoom-Out')
-    self.ZoomOut:SetScript('OnMouseDown', function(self2)
-        local n= Save.scale[self2.name] or self:GetScale() or 1
-        n= n- 0.05
-        n= n< 0.5 and 0.5 or n
-        Save.scale[self2.name]= n
-        self:SetScale(n)
-    end)]]
-
-    show_Tips(self.ZoomIn, name, zeroAlpha)
-    --show_Tips(self.ZoomOut, name, zeroAlpha)
-
-    if Save.scale[name] and Save.scale[name]~=1 then
-        self:SetScale(Save.scale[name])
-    end
+    self:SetScript("OnDragStart", function(self2)--开始移动
+        local moveFrame= self2.MoveFrame or self2
+        moveFrame:StartMoving()
+    end)
+    self:SetScript("OnDragStop", function(self2)
+        ResetCursor()
+        local moveFrame= self2.MoveFrame or self2
+        moveFrame:StopMovingOrSizing()
+        if self2.SavePoint then--保存点
+            local frameName= moveFrame:GetName()
+            if frameName then
+                Save.point[frameName]={moveFrame:GetPoint(1)}
+                Save.point[frameName][2]=nil
+            end
+        end
+    end)
+    self:HookScript("OnMouseUp", function(self2)
+        local moveFrame= self2.MoveFrame or self2
+        moveFrame:StopMovingOrSizing()
+        ResetCursor()--还原，光标
+    end)
+    self:HookScript("OnMouseDown", function(self2, d)--设置, 光标
+        if not self2.ClickTypeMove or (self2.ClickTypeMove=='R' and d=='RightButton') or (self2.ClickTypeMove=='L' and d=='LeftButton') then
+            SetCursor('UI_MOVE_CURSOR')
+        end
+    end)
 end
 
---[[####################
---大小， 加个，三角图标
---###################
-local function set_Size(self, tab)
-    if tab.size  and self then
-        self.Sizing= e.Cbtn(self, {size={15,15}})
-        self.Sizing:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
-        self.Sizing:SetHighlightTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
-        self.Sizing:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
-        self.Sizing:SetPoint('TOP', self, 'BOTTOM')
-        
-        self.Sizing:SetScript("OnDragStart", function(self2)
-            self2:GetParent():StartSizing() --'bottomleft'
-        end)
-        self.Sizing:SetScript("OnDragStop", function(self2)
-            local frame=self2:GetParent()
-            ResetCursor()
-            frame:StopMovingOrSizing()
-        end)
-        self.Sizing:RegisterForDrag("LeftButton", 'RightButton')
-        self:SetMovable(true)
-        self.Sizing:SetMovable(true)
-    end
-end
-set_Size(WorldMapFrame, {size=true})]]
 --####
 --移动
 --####
-local Move=function(F, tab)
-    tab=tab or {}
-    local F2, click, save, enter, show,  re =tab.frame, tab.click, tab.save, tab.enter, tab.show, tab.re --, tab.hook 
-    if not F then
+local set_Move=function(self, tab)--set_Move(frame, {frame=nil, click=nil, save=nil, show=nil, zeroAlpha=nil, notZoom=true})    
+    if not self then
         return
     end
-    local name
-    if F2 then
-        name=F2:GetName()
-        if not name and save then
-            return true
-        end
-        if save then
-            F2:SetClampedToScreen(true)
-        end
-        F2:SetMovable(true)
-    else
-        F2=F
-        name= F:GetName()
-        if not name and save then
-            return
-        end
-    end
-    F:SetClampedToScreen(save and true or false)
-    F:SetMovable(true)
+    tab= tab or {}
+    local name= tab.frame and tab.frame:GetName() or self and self:GetName()
 
-    if click=='R' then
-        F:RegisterForDrag("RightButton")
-    elseif click=='L' then
-        F:RegisterForDrag("LeftButton")
-    else
-        F:RegisterForDrag("LeftButton", "RightButton")
-    end
-    F:EnableMouse(true)
-    F:SetScript("OnDragStart", function() F2:StartMoving() end)
-    F:SetScript("OnDragStop", function(self2)
-            ResetCursor()
-            F2:StopMovingOrSizing()
-            if save then
-                Save.point[name]={F2:GetPoint(1)}
-                Save.point[name][2]=nil
-            end
-    end)
+    self.SavePoint= (tab.save and name) and true or false--是否保存
+    self.ClickTypeMove= tab.click--点击,或右击
+    self.MoveFrame= tab.frame--要移动的Frame
 
-    if save then
-        Point(F2,name)
-        local Re={}
-        local n=F2:GetNumPoints()
-        for i=1,n do
-            table.insert(Re, {F2:GetPoint(i)})
-        end
-        F:SetScript("OnMouseUp", function(self,D)--还原 Alt+右击
-                if D=='RightButton' and IsAltKeyDown() then
-                    Save.point[name]=nil
-                    F2:ClearAllPoints()
-                    local point=Re[1]
-                    if point then
-                        F2:SetPoint(point[1], point[2], point[3], point[4], point[5])
-                    end
-                end
-                ResetCursor()
-        end)
-        if enter then
-            F:SetScript("OnEnter", function() Point(F2,name) end)
-        end
-        if show  then
-            F:SetScript("OnShow", function() Point(F2,name) end)
-        end
+    set_Frame_Drag(self)--设置Frame,移动属性
 
+    local header= self.Header or self.HeaderFrame or self.TitleContainer or self.TitleButton
+    if header then
+        header.SavePoint= self.SavePoint
+        header.ClickTypeMove= self.ClickTypeMove
+        header.MoveFrame= self
+        set_Frame_Drag(header)--设置Frame,移动属性
     end
-    if re then
-        F2:SetResizable(true)
-    end
-    F:SetScript("OnMouseDown", function(self,d)
-            if IsModifierKeyDown()
-            or (click=='R' and d~='RightButton')
-            or (click=='L' and d~='LeftButton')
-            then return end
-            SetCursor('UI_MOVE_CURSOR')
-    end)
-    F:SetScript("OnLeave", function() ResetCursor() end)
 
-    ZoomFrame(F2, tab.notZoom, tab.zeroAlpha)
+    if self.SavePoint then
+        set_Frame_Point(self, name)--设置, 移动, 位置
+    end
+
+    if tab.show then
+        self:HookScript("OnShow", function(self2) set_Frame_Point(self2) end)--设置, 移动, 位置
+    end
+
+    self:HookScript("OnLeave", ResetCursor)
+
+    tab.name= name
+    set_Zoom_Frame(self, tab)
 end
 
-local function set_Move_Button(frame, tab)
-    tab= tab or {}
-    local pointFrame, save, zeroAlpha, notZoom= tab.frame, tab.save, tab.zeroAlpha, tab.notZoom
-    if frame then
-        if not frame.moveButton then
-            frame.moveButton= e.Cbtn(frame, {icon='hide', size={size,size}})
-            frame.moveButton:SetPoint('BOTTOM', pointFrame or frame, 'TOP')--,0,-13)
-            frame.moveButton:SetFrameLevel(frame:GetFrameLevel()+5)
-            frame.moveButton:SetNormalTexture('Interface\\Cursor\\UI-Cursor-Move')
-            frame.moveButton.alpha= zeroAlpha and 0 or 0.1
-            frame.moveButton:SetAlpha(frame.moveButton.alpha)
-            frame.moveButton:SetScript("OnEnter",function(self)
-                if UnitAffectingCombat('player') then
-                    return
-                end
-                self:SetAlpha(1)
-                e.tips:SetOwner(self, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, tab.click=='R' and e.Icon.right or e.Icon.left)
-                e.tips:AddDoubleLine(id, addName)
-                e.tips:Show()
-            end)
-            Move(frame.moveButton, {frame= frame, save=save, zeroAlpha= zeroAlpha, notZoom= notZoom})
-            frame.moveButton:SetScript("OnLeave", function(self) ResetCursor() e.tips:Hide() self:SetAlpha(self.alpha) end)
-        else
-            local name= frame:GetName()
-            if name then
-                Point(frame, name)
+
+--#################
+--创建, 一个移动按钮
+--#################
+local function created_Move_Button(self, tab)--created_Move_Button(self, {point=nil, save=true, zeroAlpha=nil, notZoom=nil})
+    if not self then
+        return
+    end
+    if not self.moveButton then
+        self.moveButton= e.Cbtn(tab.point or self, {icon='hide', size={16,16}})
+        self.moveButton:SetPoint('BOTTOM', tab.point or self, 'TOP')
+        self.moveButton:SetFrameLevel(self:GetFrameLevel()+5)
+        self.moveButton:SetNormalTexture('Interface\\Cursor\\UI-Cursor-Move')
+        self.moveButton.alpha= tab.zeroAlpha and 0 or 0.2
+        self.moveButton:SetAlpha(self.moveButton.alpha)
+        self.moveButton:SetScript("OnEnter",function(self2)
+            if UnitAffectingCombat('player') then
+                return
             end
-        end
+            self2:SetAlpha(1)
+            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, tab.click=='R' and e.Icon.right or e.Icon.left)
+            e.tips:AddDoubleLine(id, addName)
+            e.tips:Show()
+        end)
+        tab.frame=self
+        set_Move(self.moveButton, tab)
+        self.moveButton:SetScript("OnLeave", function(self2)
+            ResetCursor()
+            e.tips:Hide()
+            self2:SetAlpha(self2.alpha)
+        end)
+    else
+        set_Frame_Point(self)--设置, 移动, 位置
     end
 end
 
@@ -273,15 +225,15 @@ end
 
 local combatCollectionsJournal--藏品
 local function set_Move_CollectionJournal()--藏品
-    Move(CollectionsJournal, {})--藏品
-    Move(RematchJournal, {frame=CollectionsJournal})--藏品
-    Move(WardrobeFrame, {})--幻化
+    set_Move(CollectionsJournal)--藏品
+    set_Move(RematchJournal, {frame=CollectionsJournal})--藏品
+    set_Move(WardrobeFrame)--幻化
 end
 
 local function setAddLoad(arg1)
     if arg1=='Blizzard_TimeManager' then--小时图，时间
-        Move(TimeManagerFrame,{save=true})
-        Move(TimeManagerClockButton,{save=true, click="R", notZoom=true})
+        set_Move(TimeManagerFrame, {save=true})
+        set_Move(TimeManagerClockButton, {save=true, click="R", notZoom=true})
         hooksecurefunc('TimeManagerClockButton_UpdateTooltip', function()
             e.tips:AddLine(' ')
             e.tips:AddLine(e.Icon.right..(e.onlyChinese and '移动' or NPE_MOVE))
@@ -291,19 +243,19 @@ local function setAddLoad(arg1)
         TimeManagerClockButton:HookScript('OnLeave', TimeManagerClockButton_OnLeave)
 
     elseif arg1=='Blizzard_AchievementUI' then--成就
-        Move(AchievementFrame.Header,{frame=AchievementFrame})
-        Move(AchievementFrame,{})
-        Move(AchievementFrameComparisonHeader, {frame=AchievementFrame})
+        --set_Move(AchievementFrame.Header, {frame=AchievementFrame})
+        set_Move(AchievementFrame)
+        set_Move(AchievementFrameComparisonHeader, {frame=AchievementFrame})
 
     elseif arg1=='Blizzard_EncounterJournal' then--冒险指南
-        Move(EncounterJournal, {})
+        set_Move(EncounterJournal)
 
     elseif arg1=='Blizzard_ClassTalentUI' then--天赋
         local frame=ClassTalentFrame
         if frame then
-            Move(frame, {save=true})
+            set_Move(frame, {save=true})
             if frame.TalentsTab and frame.TalentsTab.ButtonsParent then
-                Move(frame.TalentsTab.ButtonsParent,{save=true, frame=frame})--里面, 背景
+                set_Move(frame.TalentsTab.ButtonsParent, {save=true, frame=frame})--里面, 背景
             end
             if frame.ZoomIn then
                 --设置,大小
@@ -317,11 +269,13 @@ local function setAddLoad(arg1)
                     end
                 end)
             end
+
+            --####################
             --专精 UpdateSpecFrame
             --Blizzard_ClassTalentSpecTab.lua
             if frame.SpecTab and frame.SpecTab.SpecContentFramePool then
                 for specContentFrame in frame.SpecTab.SpecContentFramePool:EnumerateActive() do
-                    Move(specContentFrame, {frame= frame, save=true})
+                    set_Move(specContentFrame, {frame= frame, save=true})
                 end
             end
             hooksecurefunc(frame.SpecTab, 'UpdateSpecContents', function()--Blizzard_ClassTalentSpecTab.lua
@@ -335,18 +289,13 @@ local function setAddLoad(arg1)
         end
 
     elseif arg1=='Blizzard_AuctionHouseUI' then--拍卖行
-        Move(AuctionHouseFrame, {})
+        set_Move(AuctionHouseFrame)
 
     elseif arg1=='Blizzard_BlackMarketUI' then--黑市
-        Move(BlackMarketFrame, {})
+        set_Move(BlackMarketFrame)
 
     elseif arg1=='Blizzard_Communities' then--公会和社区
-        --[[local dialog = CommunitiesFrame.NotificationSettingsDialog or nil
-        if dialog then
-            dialog:ClearAllPoints()
-            dialog:SetAllPoints()
-        end--]]
-        Move(CommunitiesFrame, {})
+        set_Move(CommunitiesFrame)
 
     elseif arg1=='Blizzard_Collections' then--收藏
         local checkbox = WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox
@@ -361,99 +310,85 @@ local function setAddLoad(arg1)
         end
 
     elseif arg1=='Blizzard_Calendar' then--日历
-        Move(CalendarFrame, {})
-        Move(CalendarEventPickerFrame, {frame=CalendarFrame})
-        Move(CalendarTexturePickerFrame, {frame=CalendarFrame})
-        Move(CalendarMassInviteFrame, {frame=CalendarFrame})
-        Move(CalendarCreateEventFrame, {frame=CalendarFrame})
-        Move(CalendarViewEventFrame, {frame=CalendarFrame})
-        Move(CalendarViewHolidayFrame, {frame=CalendarFrame})
-        Move(CalendarViewRaidFrame, {frame=CalendarFrame})
+        set_Move(CalendarFrame)
+        set_Move(CalendarEventPickerFrame, {frame=CalendarFrame})
+        set_Move(CalendarTexturePickerFrame, {frame=CalendarFrame})
+        set_Move(CalendarMassInviteFrame, {frame=CalendarFrame})
+        set_Move(CalendarCreateEventFrame, {frame=CalendarFrame})
+        set_Move(CalendarViewEventFrame, {frame=CalendarFrame})
+        set_Move(CalendarViewHolidayFrame, {frame=CalendarFrame})
+        set_Move(CalendarViewRaidFrame, {frame=CalendarFrame})
 
     elseif arg1=='Blizzard_GarrisonUI' then--要塞
-        Move(GarrisonShipyardFrame,{})--海军行动
-        Move(GarrisonMissionFrame, {})--要塞任务
-        Move(GarrisonCapacitiveDisplayFrame, {})--要塞订单
-        Move(GarrisonLandingPage, {})--要塞报告
-        Move(OrderHallMissionFrame, {})
+        set_Move(GarrisonShipyardFrame)--海军行动
+        set_Move(GarrisonMissionFrame)--要塞任务
+        set_Move(GarrisonCapacitiveDisplayFrame)--要塞订单
+        set_Move(GarrisonLandingPage)--要塞报告
+        set_Move(OrderHallMissionFrame)
 
     elseif arg1=='Blizzard_PlayerChoice' then
-        Move(PlayerChoiceFrame, {})--任务选择
+        set_Move(PlayerChoiceFrame)--任务选择
 
-    elseif arg1=="Blizzard_GuildBankUI" then--公会银行--Move(GuildBankFrame.Emblem, {frame=GuildBankFrame})
-        Move(GuildBankFrame, {})
+    elseif arg1=="Blizzard_GuildBankUI" then--公会银行
+        set_Move(GuildBankFrame)
 
     elseif arg1=='Blizzard_FlightMap' then--飞行地图
-        Move(FlightMapFrame, {})
+        set_Move(FlightMapFrame)
 
     elseif arg1=='Blizzard_OrderHallUI' then
-        Move(OrderHallTalentFrame,{})
+        set_Move(OrderHallTalentFrame)
 
     elseif arg1=='Blizzard_GenericTraitUI' then--欲龙术
-        Move(GenericTraitFrame,{})
-        Move(GenericTraitFrame.ButtonsParent,{frame=GenericTraitFrame})
+        set_Move(GenericTraitFrame)
+        set_Move(GenericTraitFrame.ButtonsParent, {frame=GenericTraitFrame})
 
     elseif arg1=='Blizzard_WeeklyRewards' then--'Blizzard_EventTrace' then--周奖励面板
-        Move(WeeklyRewardsFrame, {})
-        Move(WeeklyRewardsFrame.Blackout, {frame=WeeklyRewardsFrame})
+        set_Move(WeeklyRewardsFrame)
+        set_Move(WeeklyRewardsFrame.Blackout, {frame=WeeklyRewardsFrame})
 
     elseif arg1=='Blizzard_ItemSocketingUI' then--镶嵌宝石，界面
-        Move(ItemSocketingFrame,{})
-        if ItemSocketingFrame.TitleContainer then
-            Move(ItemSocketingFrame.TitleContainer, {frame=ItemSocketingFrame})
-        end
-
+        set_Move(ItemSocketingFrame)
     elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级,界面
-        if ItemUpgradeFrame then
-            if ItemUpgradeFrame.TitleContainer then
-                Move(ItemUpgradeFrame.TitleContainer,{frame=ItemUpgradeFrame})
-            end
-            Move(ItemUpgradeFrame,{})
-        end
+        set_Move(ItemUpgradeFrame)
 
     elseif arg1=='Blizzard_InspectUI' then--玩家, 观察角色, 界面
         if InspectFrame then
-            if InspectFrame.TitleContainer then
-                Move(InspectFrame.TitleContainer,{frame=InspectFrame})
-            end
-            Move(InspectFrame,{})
+            set_Move(InspectFrame)
         end
 
     elseif arg1=='Blizzard_ChallengesUI' then--挑战, 钥匙插件, 界面
-        Move(ChallengesKeystoneFrame, {save=true})
+        set_Move(ChallengesKeystoneFrame, {save=true})
 
     elseif arg1=='Blizzard_ItemInteractionUI' then--套装, 转换
-        Move(ItemInteractionFrame, {})
+        set_Move(ItemInteractionFrame)
 
     elseif arg1=='Blizzard_ProfessionsCustomerOrders' then--专业定制
-        Move(ProfessionsCustomerOrdersFrame, {})
+        set_Move(ProfessionsCustomerOrdersFrame)
 
     elseif arg1=='Blizzard_VoidStorageUI' then--虚空，仓库
-         Move(VoidStorageFrame, {})
+         set_Move(VoidStorageFrame)
 
     elseif arg1=='Blizzard_ChromieTimeUI' then--时光漫游
-        Move(ChromieTimeFrame, {})
+        set_Move(ChromieTimeFrame)
 
     elseif arg1=='Blizzard_TrainerUI' then--专业训练师
-        Move(ClassTrainerFrame, {})
+        set_Move(ClassTrainerFrame)
 
     elseif arg1=='Blizzard_BFAMissionUI' then--侦查地图
-        Move(BFAMissionFrame, {})
+        set_Move(BFAMissionFrame)
 
     elseif arg1=='Blizzard_MacroUI' then--宏
-        Move(MacroFrame, {})
+        set_Move(MacroFrame)
 
     elseif arg1=='Blizzard_MajorFactions' then--派系声望
-        Move(MajorFactionRenownFrame, {})
-        Move(MajorFactionRenownFrame.HeaderFrame, {frame=MajorFactionRenownFrame})
+        set_Move(MajorFactionRenownFrame)
 
     elseif arg1=='Blizzard_DebugTools' then--FSTACK
-        Move(TableAttributeDisplay.TitleButton, {frame= TableAttributeDisplay})
-        Move(TableAttributeDisplay,{})
+        set_Move(TableAttributeDisplay.TitleButton, {frame= TableAttributeDisplay})
+        set_Move(TableAttributeDisplay)
 
     elseif arg1=='Blizzard_EventTrace' then--ETRACE
-        Move(EventTrace.TitleContainer, {frame=EventTrace, notZoom=true})
-        Move(EventTrace, {notZoom=true, save=true})
+        set_Move(EventTrace, {notZoom=true, save=true})
     end
 end
 
@@ -464,7 +399,6 @@ local function Init_Move()
         GameMenuFrame={save=true,},--菜单
         ProfessionsFrame={},--专业
         InspectRecipeFrame={},
-        [InspectRecipeFrame.TitleContainer]={frame=InspectRecipeFrame},
 
         CharacterFrame={},--角色
         ReputationDetailFrame={save=true},--声望描述q
@@ -476,8 +410,7 @@ local function Init_Move()
         ExtraActionButton1={click='R',  },--额外技能
         ChatConfigFrame={save=true},--聊天设置
         SettingsPanel={},--选项
-        --UIWidgetPowerBarContainerFrame={},
-
+        
         FriendsFrame={},--好友列表
         RaidInfoFrame={frame=FriendsFrame},
 
@@ -493,19 +426,16 @@ local function Init_Move()
         ContainerFrameCombinedBags={save=true},--{notZoom=true},--包
         VehicleSeatIndicator={},--车辆，指示
         ExpansionLandingPage={},--要塞
-        --MainMenuBarBackpackButton={save=true, click='R', frame=MicroButtonAndBagsBar},--主菜单
+        
         PlayerPowerBarAlt={},--UnitPowerBarAlt.lua
         MailFrame={},
         SendMailFrame={frame= MailFrame},
         MirrorTimer1={save=true},
-        --LootHistoryFrame= {},--拾取框
+        
         GroupLootHistoryFrame={},
-        --EncounterBar={},
-        --[StoreFrame.TitleContainer]={frame=StoreFrame},--商店
+        
         ChannelFrame={},--聊天设置
-        --StaticPopup1={},
-        [DressUpFrame.TitleContainer]= {frame = DressUpFrame},--试衣间 
-        [MailFrame.TitleContainer]= {frame=MailFrame},
+        
         ColorPickerFrame={save=true, click='R'},--颜色选择器
     }
 
@@ -513,13 +443,13 @@ local function Init_Move()
         if v then
             local f= _G[k]
             if f then
-                Move(f, v)
+                set_Move(f, v)
                 FrameTab[k]=nil
             end
         end
     end
 
-    set_Move_Button(ZoneAbilityFrame, {frame=ZoneAbilityFrame.SpellButtonContainer, save=true, zeroAlpha=nil, notZoom=nil})
+    created_Move_Button(ZoneAbilityFrame, {point=ZoneAbilityFrame.SpellButtonContainer, save=true, zeroAlpha=nil, notZoom=nil})
     
     --专业
     InspectRecipeFrame:HookScript('OnShow', function(self)
@@ -528,8 +458,6 @@ local function Init_Move()
             self:SetScale(Save.scale[name])
         end
     end)
-    
-    
 
     --########
     --小，背包
@@ -537,14 +465,10 @@ local function Init_Move()
     for i=1 ,NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS+1 do
         local frame= _G['ContainerFrame'..i]
         if frame then
-            if frame.TitleContainer then
-                if i==1 then
-                    Move(frame.TitleContainer, {frame=frame, save=true})
-                    Move(frame, {save=true})
-                else
-                    Move(frame.TitleContainer, {frame=frame})
-                    Move(frame, {})
-                end
+            if i==1 then
+                set_Move(frame, {save=true})
+            else
+                set_Move(frame)
             end
         end
     end
@@ -556,9 +480,9 @@ local function Init_Move()
                     frame:SetScale(Save.scale[name])
                 end
                 if (frame==ContainerFrameCombinedBags or frame==ContainerFrame1) then--位置
-                    Point(frame, name)
+                    set_Frame_Point(frame, name)--设置, 移动, 位置
                 elseif frame==ContainerFrame1 then
-                    Point(frame, name)
+                    set_Frame_Point(frame, name)--设置, 移动, 位置
                 end
             end
         end
@@ -566,37 +490,30 @@ local function Init_Move()
 
 
     if UIWidgetPowerBarContainerFrame then--移动, 能量条
-        local frame=UIWidgetPowerBarContainerFrame
-        set_Move_Button(frame, {frame=nil, save=nil, zeroAlpha=nil, notZoom=nil})
+        created_Move_Button(UIWidgetPowerBarContainerFrame, {point=nil, save=nil, zeroAlpha=nil, notZoom=nil})
 
-        local tab= frame.widgetFrames or {}
-        local find
+       local tab= UIWidgetPowerBarContainerFrame.widgetFrames or {}
+        local find=false
         for widgetID,_ in pairs(tab) do
             if widgetID then
                 find=true
                 break
             end
         end
-        frame.moveButton:SetShown(find)
-
-        if frame.ZoomIn then--and frame.ZoomOut then
-            frame.ZoomIn:SetShown(find)
-            --frame.ZoomOut:SetShown(find)
-            --显示, 隐藏, 缩放
-            --Blizzard_UIWidgetManager.lua
-            hooksecurefunc(frame, 'RemoveWidget', function(self, widgetID)
-                if self.ZoomIn then--and self.ZoomOut then
+        UIWidgetPowerBarContainerFrame.moveButton:SetShown(find)
+        if UIWidgetPowerBarContainerFrame.ZoomIn then--and frame.ZoomOut then
+            UIWidgetPowerBarContainerFrame.ZoomIn:SetShown(find)
+            hooksecurefunc(UIWidgetPowerBarContainerFrame, 'RemoveWidget', function(self, widgetID)--Blizzard_UIWidgetManager.lua frame.ZoomOut:SetShown(find)
+                if self.ZoomIn then
                     self.ZoomIn:SetShown(false)
-                    --self.ZoomOut:SetShown(false)
                 end
                 if self.moveButton then
                     self.moveButton:SetShown(false)
                 end
             end)
-            hooksecurefunc(frame, 'CreateWidget', function(self)
+            hooksecurefunc(UIWidgetPowerBarContainerFrame, 'CreateWidget', function(self)
                 if self.ZoomIn then--and self.ZoomOut then
                     self.ZoomIn:SetShown(true)
-                    --self.ZoomOut:SetShown(true)
                 end
                 if self.moveButton then
                     self.moveButton:SetShown(true)
@@ -618,76 +535,36 @@ local function Init_Move()
     if classPowerFrame then
         panel:RegisterUnitEvent('UNIT_DISPLAYPOWER', "player")
         C_Timer.After(2, function()
-            set_Move_Button(classPowerFrame, {frame=nil, save=true, zeroAlpha=true, notZoom=nil})
+            created_Move_Button(classPowerFrame, {point=nil, save=true, zeroAlpha=true, notZoom=nil})
         end)
         hooksecurefunc('PlayerFrame_ToPlayerArt', function()
             C_Timer.After(0.5, function()
-                set_Move_Button(classPowerFrame, {frame=nil, save=true, zeroAlpha=true, notZoom=nil})
+                created_Move_Button(classPowerFrame, {point=nil, save=true, zeroAlpha=true, notZoom=nil})
             end)
         end)
     end
 
-    --[[hooksecurefunc(LootFrame,'Open', function(self2)--物品拾取LootFrame.lua
-        if not GetCVarBool("autoLootDefault") and not GetCVarBool("lootUnderMouse") then
-            local p=Save.point.LootFrame and Save.point.LootFrame[1]
-            if p and p[1] and p[3] and p[4] and p[5] then
-                self2:ClearAllPoints()
-                self2:SetPoint(p[1], nil, p[3], p[4], p[5])
-            end
-        end
-    end)]]
-    Move(LootFrame.TitleContainer, {frame=LootFrame, save=false})--物品拾取
-    Move(LootFrame, {save=false})--物品拾取
+    set_Move(LootFrame, {save=false})--物品拾取
 
-    hooksecurefunc('ObjectiveTracker_Initialize', function(self)--场景 self==ObjectiveTrackerFrame
-        --if self and self.MODULES then--Blizzard_ObjectiveTracker.lua ObjectiveTracker_GetVisibleHeaders()
+    --################################
+    --场景 self==ObjectiveTrackerFrame
+    --Blizzard_ObjectiveTracker.lua ObjectiveTracker_GetVisibleHeaders()
+    hooksecurefunc('ObjectiveTracker_Initialize', function(self)
         for _, module in ipairs(self.MODULES) do
-            local header = module.Header;
-            Move(header, {frame=self, notZoom=true})
+            set_Move(module.Header, {frame=self, notZoom=true})
         end
         self:SetClampedToScreen(false)
     end)
 
     C_Timer.After(2, function()
-        set_Move_Button(QueueStatusButton, {frame=nil, save=true, zeroAlpha=false, notZoom=true})--小眼睛, 
+        created_Move_Button(QueueStatusButton, {point=nil, save=true, zeroAlpha=false, notZoom=true})--小眼睛, 
         QueueStatusButton:HookScript('OnShow', function(self)
-            if EditModeManagerFrame:IsEditModeActive() then
-                Point(self)
+            if not EditModeManagerFrame:IsEditModeActive() then
+                set_Frame_Point(self)--设置, 移动, 位置
             end
         end)
     end)
-
-    --[[Move(ObjectiveTrackerBlocksFrame.ScenarioHeader, {frame=ObjectiveTrackerFrame, notZoom=true})
-    Move(ObjectiveTrackerBlocksFrame.AchievementHeader, {frame=ObjectiveTrackerFrame, notZoom=true})
-    Move(ObjectiveTrackerBlocksFrame.QuestHeader, {frame=ObjectiveTrackerFrame, zeroAlpha=true, notZoom=true})
-    Move(ObjectiveTrackerBlocksFrame.CampaignQuestHeader, {frame=ObjectiveTrackerFrame, notZoom=true})
-    Move(ObjectiveTrackerBlocksFrame.ProfessionHeader, {frame=ObjectiveTrackerFrame, notZoom=true})
-    Move(ObjectiveTrackerBlocksFrame.MonthlyActivitiesHeader, {frame=ObjectiveTrackerFrame, notZoom=true})]]
-    
 end
-
-local function set_PopupDialogs()
-    StaticPopupDialogs[id..addName..'MoveZoom']={
-        text =id..' '..addName..'\n\n'..(e.onlyChinese and '清除全部' or REMOVE_WORLD_MARKERS)..' ('..(e.onlyChinese and '保存' or SAVE)..')'..'\n\n|cnRED_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI),
-        button1 = '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移动' or NPE_MOVE),
-        button2 = e.onlyChinese and '取消' or CANCEL,
-        button3 = '|cnRED_FONT_COLOR:'..(e.onlyChinese and '缩放' or UI_SCALE),
-        whileDead=true,
-        timeout=60,
-        hideOnEscape = true,
-        OnAccept=function(self,data)
-            Save.point={}
-            e.Reload()
-        end,
-        OnAlt= function()
-            Save.scale={}
-            e.Reload()
-        end,
-    }
-    StaticPopup_Show(id..addName..'MoveZoom')
-end
-
-
 
 --###########
 --加载保存数据
@@ -724,7 +601,26 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             local button= e.Cbtn(check, {icon='hide', size={20,20}})
             button:SetPoint('LEFT', panel.check2.text, 'RIGHT',2,0)
             button:SetNormalAtlas('bags-button-autosort-up')
-            button:SetScript('OnClick', set_PopupDialogs)
+            button:SetScript('OnClick', function()
+                StaticPopupDialogs[id..addName..'MoveZoom']={
+                    text =id..' '..addName..'\n\n'..(e.onlyChinese and '清除全部' or REMOVE_WORLD_MARKERS)..' ('..(e.onlyChinese and '保存' or SAVE)..')'..'\n\n|cnRED_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI),
+                    button1 = '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移动' or NPE_MOVE),
+                    button2 = e.onlyChinese and '取消' or CANCEL,
+                    button3 = '|cnRED_FONT_COLOR:'..(e.onlyChinese and '缩放' or UI_SCALE),
+                    whileDead=true,
+                    timeout=60,
+                    hideOnEscape = true,
+                    OnAccept=function()
+                        Save.point={}
+                        e.Reload()
+                    end,
+                    OnAlt= function()
+                        Save.scale={}
+                        e.Reload()
+                    end,
+                }
+                StaticPopup_Show(id..addName..'MoveZoom')
+            end)
 
             if not Save.disabled then
                 Init_Move()--移动
@@ -750,7 +646,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
 
     elseif event=='UNIT_DISPLAYPOWER' then
-        set_Move_Button(classPowerFrame, {frame=nil, save=true, zeroAlpha=true, notZoom=nil})
+        created_Move_Button(classPowerFrame, {point=nil, save=true, zeroAlpha=true, notZoom=nil})
     end
 end)
 --[[--缩放
