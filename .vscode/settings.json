@@ -2759,6 +2759,8 @@
         "PlayerFrameAlternateManaBarRightBorder",
         "ClassNameplateBarDruidFrame",
         "ClassNameplateBarRogueFrame",
+        "ClassNameplateBarWindwalkerMonkFrame",
+        "ENERGY",
         "ClassNameplateBarFeralDruidFrame",
         "RogueComboPointBarFrame"
     ],

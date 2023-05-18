@@ -6,6 +6,7 @@ local Save={
     alpha= 0.5,
     chatBubbleAlpha= 0.5,--聊天泡泡
     chatBubbleSacal= 0.85,
+    classPowerNum= e.Player.husandro,--职业，显示数字
 }
 local panel=CreateFrame("Frame")
 
@@ -346,8 +347,17 @@ local function Init_Set_AlphaAndColor()
 
     --####
     --职业
-    --骑士，能量条
-    if e.Player.class=='PALADIN' then
+    --####
+    local function set_Num_Texture(self)
+        if not self.numTexture and self.layoutIndex and Save.classPowerNum then
+            self.numTexture= self:CreateTexture(nil, 'OVERLAY')
+            self.numTexture:SetSize(12,12)
+            self.numTexture:SetPoint('CENTER')
+            self.numTexture:SetAtlas(e.Icon.number..self.layoutIndex)
+            set_Alpha(self.numTexture, true)
+        end
+    end
+    if e.Player.class=='PALADIN' then--QS
         if PlayerFrame.classPowerBar and PlayerFrame.classPowerBar.Background and PlayerFrame.classPowerBar.ActiveTexture then--PaladinPowerBarFrame
             hide_Texture(PlayerFrame.classPowerBar.Background, true)
             hide_Texture(PlayerFrame.classPowerBar.ActiveTexture, true)
@@ -378,34 +388,84 @@ local function Init_Set_AlphaAndColor()
         end
 
     elseif e.Player.class=='DRUID' then--DruidComboPointBarFrame
-        if DruidComboPointBarFrame and DruidComboPointBarFrame.classResourceButtonPool and DruidComboPointBarFrame.classResourceButtonPool.activeObjects then
-            for btn, _ in pairs(DruidComboPointBarFrame.classResourceButtonPool.activeObjects) do
-                hide_Texture(btn.BG_Active)
-                hide_Texture(btn.BG_Inactive)
+        local function set_DruidComboPointBarFrame(self)
+            if self then
+                for btn, _ in pairs(self) do
+                    hide_Texture(btn.BG_Active)
+                    hide_Texture(btn.BG_Inactive)
+                    set_Num_Texture(btn)
+                end
             end
+        end
+        set_DruidComboPointBarFrame(DruidComboPointBarFrame and DruidComboPointBarFrame.classResourceButtonPool and DruidComboPointBarFrame.classResourceButtonPool.activeObjects)
+        if DruidComboPointBarFrame then
+            DruidComboPointBarFrame:HookScript('OnEvent', function(self)
+                set_DruidComboPointBarFrame(self.classResourceButtonPool.activeObjects)
+            end)
         end
         if ClassNameplateBarFeralDruidFrame and ClassNameplateBarFeralDruidFrame.classResourceButtonTable then
             for _, btn in pairs(ClassNameplateBarFeralDruidFrame.classResourceButtonTable) do
                 hide_Texture(btn.BG_Active)
                 hide_Texture(btn.BG_Inactive)
+                set_Num_Texture(btn)
             end
         end
 
-    elseif e.Player.class=='ROGUE' then--RogueComboPointBarFrame
-        if RogueComboPointBarFrame and RogueComboPointBarFrame.classResourceButtonTable then
-            for _, btn in pairs(RogueComboPointBarFrame.classResourceButtonTable) do
-                hide_Texture(btn.BGActive)
-                hide_Texture(btn.BGInactive)
-                set_Alpha(btn.BGShadow, nil, nil, 0.3)
-            end
-            if ClassNameplateBarRogueFrame and ClassNameplateBarRogueFrame.classResourceButtonTable then
-                for _, btn in pairs(ClassNameplateBarRogueFrame.classResourceButtonTable) do
-                    hide_Texture(btn.BGActive)
-                    hide_Texture(btn.BGInactive)
-                    set_Alpha(btn.BGShadow, nil, nil, 0.3)
+    elseif e.Player.class=='ROGUE' then--DZ RogueComboPointBarFrame
+        if RogueComboPointBarFrame and RogueComboPointBarFrame.UpdateMaxPower then
+            hooksecurefunc(RogueComboPointBarFrame, 'UpdateMaxPower',function(self)
+                if self and self.classResourceButtonTable then
+                    for _, btn in pairs(self.classResourceButtonTable) do
+                        hide_Texture(btn.BGActive)
+                        hide_Texture(btn.BGInactive)
+                        set_Alpha(btn.BGShadow, nil, nil, 0.3)
+                        set_Num_Texture(btn)
+                        
+                    end
+                    if ClassNameplateBarRogueFrame and ClassNameplateBarRogueFrame.classResourceButtonTable then
+                        for _, btn in pairs(ClassNameplateBarRogueFrame.classResourceButtonTable) do
+                            hide_Texture(btn.BGActive)
+                            hide_Texture(btn.BGInactive)
+                            set_Alpha(btn.BGShadow, nil, nil, 0.3)
+                            set_Num_Texture(btn)
+                        end
+                    end
                 end
+            end)
+        end
+
+    elseif e.Player.class=='MONK' then--MonkHarmonyBarFrame
+        local function set_MonkHarmonyBarFrame(btn)
+            if btn then
+                hide_Texture(btn.Chi_BG_Active)
+                hide_Texture(btn.BGInactive)
+                set_Alpha(btn.Chi_BG, nil, nil, 0.2)
+                set_Num_Texture(btn)
             end
         end
+        hooksecurefunc(MonkHarmonyBarFrame, 'UpdateMaxPower', function(self)
+            for i = 1, #self.classResourceButtonTable do
+                set_MonkHarmonyBarFrame(self.classResourceButtonTable[i])
+            end
+            local tab= ClassNameplateBarWindwalkerMonkFrame and ClassNameplateBarWindwalkerMonkFrame.classResourceButtonTable or {}
+            for i = 1, #tab do
+                set_MonkHarmonyBarFrame(tab[i])
+            end
+        end)
+        hooksecurefunc(MonkHarmonyBarFrame, 'UpdatePower', function(self)
+            for _, btn in pairs(self.classResourceButtonTable or {}) do
+                if btn.Chi_BG then
+                    btn.Chi_BG:SetAlpha(0.2)
+                end
+            end
+            if ClassNameplateBarWindwalkerMonkFrame then
+                for _, btn in pairs(ClassNameplateBarWindwalkerMonkFrame.classResourceButtonTable or {}) do
+                    if btn.Chi_BG then
+                        btn.Chi_BG:SetAlpha(0.2)
+                    end
+                end
+            end
+        end)
     end
 
 
@@ -999,7 +1059,6 @@ local function set_Alpha_Event(arg1)
         set_Alpha(ClassTalentFrame.TalentsTab.SearchBox.Right)
 
     elseif arg1=='Blizzard_AchievementUI' then--成就
-
         set_Alpha(AchievementFrame.Header.PointBorder)
         hide_Texture(AchievementFrameSummary.Background)
         hide_Texture(AchievementFrameCategoriesBG)
@@ -1658,6 +1717,15 @@ local function options_Init()--添加控制面板
         self:SetValue(value)
         self.Text:SetText(value)
         Save.alpha= value==0 and 0 or value
+    end)
+
+    --职业，显示数字
+    local classNumCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    classNumCheck.text:SetText((e.onlyChinese and '职业能量数字' or (CLASS..'('..AUCTION_HOUSE_QUANTITY_LABEL..')'..ENERGY))..format(e.Icon.number2,1)..format(e.Icon.number2,2)..format(e.Icon.number2,3))
+    classNumCheck:SetPoint('LEFT', alphaValue, 'RIGHT', 6, 0)
+    classNumCheck:SetChecked(Save.classPowerNum)
+    classNumCheck:SetScript('OnMouseDown', function()
+        Save.classPowerNum= not Save.classPowerNum and true or nil
     end)
 
 
