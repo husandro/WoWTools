@@ -10,16 +10,17 @@ local Save={
 --#####################
 --重新加载UI, 重置, 按钮
 --#####################
-e.ReloadPanel= function(tab)
+function e.ReloadPanel(tab)
     local rest= e.Cbtn(tab.panel, {type=false, size={25,25}})
     rest:SetNormalAtlas('bags-button-autosort-up')
     rest:SetPushedAtlas('bags-button-autosort-down')
     rest:SetPoint('TOPRIGHT')
     rest.addName=tab.addName
     rest.func=tab.clearfunc
+    rest.clearTips=tab.clearTips
     rest:SetScript('OnClick', function(self)
         StaticPopupDialogs[id..'restAllSetup']={
-            text =id..'  '..self.addName..'|n|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除全部' or CLEAR_ALL)..'|r '..(e.onlyChinese and '保存' or SAVE)..'|n|n'..(e.onlyChinese and '重新加载UI' or RELOADUI)..' /reload',
+            text =id..'  '..self.addName..'|n|n|cnRED_FONT_COLOR:'..(self.clearTips or (e.onlyChinese and '当前保存' or (ITEM_UPGRADE_CURRENT..SAVE)))..'|r '..(e.onlyChinese and '保存' or SAVE)..'|n|n'..(e.onlyChinese and '重新加载UI' or RELOADUI)..' /reload',
             button1 = '|cnRED_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET),
             button2 = e.onlyChinese and '取消' or CANCEL,
             whileDead=true,timeout=30,hideOnEscape = 1,
@@ -31,7 +32,7 @@ e.ReloadPanel= function(tab)
     rest:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddLine(e.onlyChinese and '清除全部' or CLEAR_ALL, e.onlyChinese and '保存' or SAVE)
+        e.tips:AddLine(self.clearTips or (e.onlyChinese and '当前保存' or (ITEM_UPGRADE_CURRENT..SAVE)))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, self.addName)
         e.tips:Show()
@@ -142,7 +143,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             e.onlyChinese= Save.onlyChinese
 
-            e.ReloadPanel({panel=panel, addName= addName, restTips=true, checked=not Save.disabled,--重新加载UI, 重置, 按钮
+            e.ReloadPanel({panel=panel, addName= addName, restTips=true, checked=not Save.disabled, clearTips=e.onlyChinese and '清除全部' or CLEAR_ALL,--重新加载UI, 重置, 按钮
                 disabledfunc=nil,
                 clearfunc= function()
                     e.ClearAllSave=true

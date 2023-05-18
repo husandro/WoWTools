@@ -1491,7 +1491,7 @@ local function Init_Panel()
     InterfaceOptions_AddCategory(panel)
 
 
-    e.ReloadPanel({panel=panel, addName= addName, restTips=true, checked=not Save.disabled,--重新加载UI, 重置, 按钮
+    e.ReloadPanel({panel=panel, addName= addName, restTips=true, checked=not Save.disabled, clearTips=nil,--重新加载UI, 重置, 按钮
         disabledfunc=function()
             Save.disabled= not Save.disabled and true or nil
             print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)

@@ -741,7 +741,7 @@ local function Init()
     panel.parent =id
     InterfaceOptions_AddCategory(panel)
 
-    e.ReloadPanel({panel=panel, addName= addName, restTips=true, checked=nil,--重新加载UI, 重置, 按钮
+    e.ReloadPanel({panel=panel, addName= addName, restTips=true, checked=nil, clearTips=nil,--重新加载UI, 重置, 按钮
         disabledfunc=nil,
         clearfunc= function() Save=nil e.Reload() end}
     )

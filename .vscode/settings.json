@@ -2749,7 +2749,10 @@
         "ValidateFramePosition",
         "GameMenuFrame",
         "ClassNameplateBarPaladinFrame",
-        "DruidComboPointBarFrame"
+        "DruidComboPointBarFrame",
+        "ArcaneChargeMixin",
+        "ClassNameplateBarMageFrame",
+        "CHOOSE_LOCATION"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

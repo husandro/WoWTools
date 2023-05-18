@@ -357,11 +357,23 @@ local function Init_Set_AlphaAndColor()
             hide_Texture(self2.ActiveTexture, true)
         end)
     end
-
     if ClassNameplateBarPaladinFrame then
         hide_Texture(ClassNameplateBarPaladinFrame.Background)
         hide_Texture(ClassNameplateBarPaladinFrame.ActiveTexture)
     end
+
+    --法师
+    if MageArcaneChargesFrame and MageArcaneChargesFrame.classResourceButtonTable then
+        for _, mage in pairs(MageArcaneChargesFrame.classResourceButtonTable) do
+            hide_Texture(mage.ArcaneBG)
+        end
+        if ClassNameplateBarMageFrame and ClassNameplateBarMageFrame.classResourceButtonTable then
+            for _, mage in pairs(ClassNameplateBarMageFrame.classResourceButtonTable) do
+                hide_Texture(mage.ArcaneBG)
+            end
+        end
+    end
+
 
     --角色，界面
     setAlpha(CharacterFrameBg)
@@ -1580,7 +1592,7 @@ local function options_Init()--添加控制面板
     panel.parent =id
     InterfaceOptions_AddCategory(panel)
 
-    e.ReloadPanel({panel=panel, addName= addName, restTips=true, checked=nil,--重新加载UI, 重置, 按钮
+    e.ReloadPanel({panel=panel, addName= addName, restTips=true, checked=nil, clearTips=nil,--重新加载UI, 重置, 按钮
         disabledfunc=nil,
         clearfunc= function() Save=nil e.Reload() end}
     )

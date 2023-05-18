@@ -1,30 +1,34 @@
 local id, e = ...
 local Save={
+        --disabledMove=true,--禁用移动
         point={},--移动
-        --SavePoint= e.Player.husandro,--保存窗口,位置
+        SavePoint= e.Player.husandro,--保存窗口,位置
+
+        --disabledZoom=true,--禁用缩放
         scale={--缩放
             ['UIWidgetPowerBarContainerFrame']= 0.85,
         },
-        --disabledZoom=true,--禁用缩放
 }
-local addName= NPE_MOVE..'Frame'
+local addName= 'Frame'
 local panel= CreateFrame("Frame")
+
 
 --###############
 --设置, 移动, 位置
 --###############
 local function set_Frame_Point(self, name)--设置, 移动, 位置
-    name= name or self.FrameName or self:GetName()
-    if name then
-        local p= Save.point[name]
-        if p and p[1] and p[3] and p[4] and p[5] then
-            local frame= self.MoveFrame or self
-            frame:ClearAllPoints()
-            frame:SetPoint(p[1], UIParent, p[3], p[4], p[5])
+    if not Save.disabledMove then
+        name= name or self.FrameName or self:GetName()
+        if name then
+            local p= Save.point[name]
+            if p and p[1] and p[3] and p[4] and p[5] then
+                local frame= self.MoveFrame or self
+                frame:ClearAllPoints()
+                frame:SetPoint(p[1], UIParent, p[3], p[4], p[5])
+            end
         end
     end
 end
-
 
 
 --####
@@ -43,7 +47,7 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name)--放大
                         or self
         , {atlas='UI-HUD-Minimap-Zoom-In', size={18,18}})
 
-    self.ZoomIn.name= tab.name
+    self.ZoomIn.ScaleName= tab.name
     self.ZoomIn.ZoomFrame= self
     self.ZoomIn.alpha= tab.zeroAlpha and 0 or 0.2
     self.ZoomIn:SetFrameLevel(self.ZoomIn:GetFrameLevel() +5)
@@ -68,15 +72,15 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name)--放大
     end
 
     self.ZoomIn:SetScript('OnClick', function(self2, d)
-        local n= Save.scale[self2.name] or self2.ZoomFrame:GetScale() or 1
+        local n= Save.scale[self2.ScaleName] or 1
         if d=='LeftButton' then
             n= n+ 0.05
         elseif d=='RightButton' then
             n= n- 0.05
         end
-        n= n>2 and 2 or n
+        n= n>3 and 3 or n
         n= n< 0.5 and 0.5 or n
-        Save.scale[self2.name]= n
+        Save.scale[self2.ScaleName]= n
         self2.ZoomFrame:SetScale(n)
     end)
 
@@ -89,7 +93,8 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name)--放大
         self2:SetAlpha(1)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '放大' or ZOOM_IN, '|cff00ff00'..(Save.scale[self2.name] or 1)..'|r/2|r '..e.Icon.left)
+        e.tips:AddLine('|cff00ff00'..(Save.scale[self2.ScaleName] or 1))
+        e.tips:AddDoubleLine(e.onlyChinese and '放大' or ZOOM_IN, '3'..e.Icon.left)
         e.tips:AddDoubleLine(e.onlyChinese and '缩小' or ZOOM_OUT, '0.5'..e.Icon.right)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
@@ -118,6 +123,14 @@ end
 --############
 --设置Frame属性
 --############
+local function stop_Drag(self)--停止移动
+    if self.MoveFrame and self.MoveFrame:IsMovable() then
+        self.MoveFrame:StopMovingOrSizing()
+    end
+    if self and self:IsMovable() then
+        self:StopMovingOrSizing()
+    end
+end
 local function set_Frame_Drag(self)
     self:SetClampedToScreen(self.SavePoint)
     self:SetMovable(true)
@@ -138,9 +151,8 @@ local function set_Frame_Drag(self)
         moveFrame:StartMoving()
     end)
     self:SetScript("OnDragStop", function(self2)
-        ResetCursor()
+        stop_Drag(self)--停止移动
         local moveFrame= self2.MoveFrame or self2
-        moveFrame:StopMovingOrSizing()
         local frameName= self2.FrameName or moveFrame:GetName()
         if frameName then
             if self2.SavePoint then--保存点
@@ -152,10 +164,10 @@ local function set_Frame_Drag(self)
         end
     end)
     self:HookScript("OnMouseUp", function(self2)
-        local moveFrame= self2.MoveFrame or self2
-        moveFrame:StopMovingOrSizing()
+        stop_Drag(self2)--停止移动
         ResetCursor()--还原，光标
     end)
+    self:HookScript('OnHide', stop_Drag)--停止移动
     self:HookScript("OnMouseDown", function(self2, d)--设置, 光标
         if not self2.ClickTypeMove or (self2.ClickTypeMove=='R' and d=='RightButton') or (self2.ClickTypeMove=='L' and d=='LeftButton') then
             SetCursor('UI_MOVE_CURSOR')
@@ -171,34 +183,35 @@ local set_Move_Frame=function(self, tab)--set_Move_Frame(frame, {frame=nil, clic
         return
     end
     tab= tab or {}
-    local name= tab.frame and tab.frame:GetName() or self and self:GetName()
+    if not Save.disabledMove then
+        local name= tab.frame and tab.frame:GetName() or self and self:GetName()
 
-    self.SavePoint= (tab.save and name) and true or false--是否保存
-    self.ClickTypeMove= tab.click--点击,或右击
-    self.MoveFrame= tab.frame--要移动的Frame
-    self.FrameName= name
+        self.SavePoint= ((tab.save and name) or Save.SavePoint) and true or false--是否保存
+        self.ClickTypeMove= tab.click--点击,或右击
+        self.MoveFrame= tab.frame--要移动的Frame
+        self.FrameName= name
 
-    set_Frame_Drag(self)--设置Frame,移动属性
+        set_Frame_Drag(self)--设置Frame,移动属性
 
-    local header= self.Header or self.HeaderFrame or self.TitleContainer or self.TitleButton
-    if header then
-        header.SavePoint= self.SavePoint
-        header.ClickTypeMove= self.ClickTypeMove
-        header.MoveFrame= self
-        header.FrameName=name
-        set_Frame_Drag(header)--设置Frame,移动属性
+        local header= self.Header or self.HeaderFrame or self.TitleContainer or self.TitleButton
+        if header then
+            header.SavePoint= self.SavePoint
+            header.ClickTypeMove= self.ClickTypeMove
+            header.MoveFrame= self
+            header.FrameName=name
+            set_Frame_Drag(header)--设置Frame,移动属性
+        end
+
+        set_Frame_Point(self, name)--设置, 移动, 位置
+
+        if tab.show or Save.SavePoint then
+            self:HookScript("OnShow", set_Frame_Point)--设置, 移动, 位置
+        end
+
+        self:HookScript("OnLeave", ResetCursor)
+
+        tab.name= name
     end
-
-    set_Frame_Point(self, name)--设置, 移动, 位置
-
-    if tab.show then
-        self:HookScript("OnShow", set_Frame_Point)--设置, 移动, 位置
-    end
-
-    self:HookScript("OnLeave", ResetCursor)
-
-    tab.name= name
-
     set_Zoom_Frame(self, tab)
 end
 
@@ -207,7 +220,7 @@ end
 --创建, 一个移动按钮
 --#################
 local function created_Move_Button(self, tab)--created_Move_Button(self, {frame=nil, save=true, zeroAlpha=nil, notZoom=nil})
-    if not self then
+    if not self or Save.disabledMove then
         return
     end
     if not self.moveButton then
@@ -413,10 +426,10 @@ end
 local function set_classPowerBar()
     local tab={
         PlayerFrame.classPowerBar,
-        TotemFrame,
         RuneFrame,
         MonkStaggerBar,
         --MageArcaneChargesFrame,
+        --TotemFrame,
     }
 
     for _, self in pairs(tab) do
@@ -428,7 +441,21 @@ local function set_classPowerBar()
             end
         end
     end
+
+    if TotemFrame and TotemFrame:IsShown() and TotemFrame.totemPool and TotemFrame.totemPool.activeObjects then
+        for btn, _ in pairs(TotemFrame.totemPool.activeObjects) do
+            if btn:IsShown() then
+                if btn.FrameName then
+                    set_Frame_Point(btn)
+                else
+                    set_Move_Frame(btn, {frame=TotemFrame, save=true, zeroAlpha=true})
+                end
+            end
+        end
+    end
 end
+
+
 
 --########
 --初始,移动
@@ -487,12 +514,12 @@ local function Init_Move()
             end
         end
     end
-    --[[for text, tab in pairs(UIPanelWindows) do
+    for text, _ in pairs(UIPanelWindows) do
        local frame=_G[text]
        if frame and not FrameTab[frame] then
             set_Move_Frame(_G[text])
        end
-    end--]]
+    end
     FrameTab=nil
 
     created_Move_Button(ZoneAbilityFrame, {frame=ZoneAbilityFrame.SpellButtonContainer, save=true})
@@ -547,9 +574,13 @@ local function Init_Move()
                 break
             end
         end
-        UIWidgetPowerBarContainerFrame.moveButton:SetShown(find)
-        if UIWidgetPowerBarContainerFrame.ZoomIn then--and frame.ZoomOut then
-            UIWidgetPowerBarContainerFrame.ZoomIn:SetShown(find)
+        if UIWidgetPowerBarContainerFrame.ZoomIn or UIWidgetPowerBarContainerFrame.moveButton then--and frame.ZoomOut then
+            if UIWidgetPowerBarContainerFrame.moveButton then
+                UIWidgetPowerBarContainerFrame.moveButton:SetShown(find)
+            end
+            if UIWidgetPowerBarContainerFrame.ZoomIn then
+                UIWidgetPowerBarContainerFrame.ZoomIn:SetShown(find)
+            end
             hooksecurefunc(UIWidgetPowerBarContainerFrame, 'RemoveWidget', function(self, widgetID)--Blizzard_UIWidgetManager.lua frame.ZoomOut:SetShown(find)
                 if self.ZoomIn then
                     self.ZoomIn:SetShown(false)
@@ -570,12 +601,10 @@ local function Init_Move()
     end
 
 
-    panel:RegisterUnitEvent('UNIT_DISPLAYPOWER', "player")
-    panel:RegisterEvent('PLAYER_TALENT_UPDATE')
     hooksecurefunc('PlayerFrame_ToPlayerArt', function()
         C_Timer.After(0.5, set_classPowerBar)
     end)
-   
+
     set_Move_Frame(LootFrame, {save=false})--物品拾取
 
     --################################
@@ -588,17 +617,88 @@ local function Init_Move()
         self:SetClampedToScreen(false)
     end)
 
-    --[[if Save.SavePoint then
+    if Save.SavePoint then
         hooksecurefunc('UpdateUIPanelPositions',function(currentFrame)
             if currentFrame then
-                set_Frame_Point(currentFrame)--设置, 移动, 位置
+                if not currentFrame.FrameName then
+                    set_Move_Frame(currentFrame)
+                else
+                    set_Frame_Point(currentFrame)--设置, 移动, 位置
+                end
             end
         end)
-    end]]
+    end
+
+    --职业，能量条
+    if TotemFrame then
+        TotemFrame:HookScript('OnEvent', function()
+            set_classPowerBar()
+        end)
+    end
+    panel:RegisterUnitEvent('UNIT_DISPLAYPOWER', "player")
+    panel:RegisterEvent('PLAYER_TALENT_UPDATE')
 
     C_Timer.After(2, function()
         created_Move_Button(QueueStatusButton, {save=true, notZoom=true, show=true})--小眼睛, 
+
+        --编辑模式
+        hooksecurefunc(EditModeManagerFrame, 'ExitEditMode', function()
+            set_classPowerBar()--职业，能量条
+            created_Move_Button(QueueStatusButton, {save=true, notZoom=true, show=true})--小眼睛, 
+       end)
     end)
+end
+
+local function Init_Options()
+    panel.check= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    panel.check.Text:SetText('|TInterface\\Cursor\\UI-Cursor-Move:0|t'..(e.onlyChinese and '移动' or NPE_MOVE))
+    panel.check:SetPoint('TOPLEFT', 0, -48)
+    panel.check:SetChecked(not Save.disabledMove)
+    panel.check:SetScript('OnMouseDown', function()
+        Save.disabledMove= not Save.disabledMove and true or nil
+        print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+    end)
+
+    local checkPoint=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    checkPoint.Text:SetText(e.onlyChinese and '位置' or CHOOSE_LOCATION:gsub(CHOOSE , ''))
+    checkPoint:SetPoint('LEFT', panel.check.Text, 'RIGHT',4,0)
+    checkPoint:SetChecked(not Save.disabledZoom)
+    checkPoint:SetScript('OnMouseDown', function()
+        Save.SavePoint= not Save.SavePoint and true or nil
+        print(id, addName, e.GetEnabeleDisable(not Save.disabledZoom), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+    end)
+
+    local check2=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    check2.Text:SetText('|A:UI-HUD-Minimap-Zoom-In:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE))
+    check2:SetPoint('TOPLEFT', panel.check, 'BOTTOMLEFT',0,-16)
+    check2:SetChecked(not Save.disabledZoom)
+    check2:SetScript('OnMouseDown', function()
+        Save.disabledZoom= not Save.disabledZoom and true or nil
+        print(id, addName, e.GetEnabeleDisable(not Save.disabledZoom), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+    end)
+
+    --[[local btn= e.Cbtn(panel, {atlas='bags-button-autosort-up', size={20,20}})
+    btn:SetPoint('TOPLEFT', check2, 'BOTTOMLEFT',0,-16)
+    btn:SetScript('OnClick', function()
+        StaticPopupDialogs[id..addName..'MoveZoom']={
+            text =id..' '..addName..'\n\n'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2 )..' ('..(e.onlyChinese and '保存' or SAVE)..')',
+            button1 = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '移动' or NPE_MOVE),
+            button2 = e.onlyChinese and '取消' or CANCEL,
+            button3 = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '缩放' or UI_SCALE),
+            whileDead=true,
+            timeout=60,
+            hideOnEscape = true,
+            OnAccept=function()
+                Save.point={}
+                print(id, addName, e.onlyChinese and '重设到默认位置' or HUD_EDIT_MODE_RESET_POSITION, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
+            end,
+            OnAlt= function()
+                Save.scale={}
+                print(id, addName, (e.onlyChinese and '缩放' or UI_SCALE)..': 1', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
+            end,
+        }
+        StaticPopup_Show(id..addName..'MoveZoom')
+    end)]]
 end
 
 --###########
@@ -612,55 +712,26 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave[addName] or Save
             Save.scale= Save.scale or {}
 
-            --添加控制面板        
-            local check=e.CPanel('|A:communities-chat-icon-plus:0:0|a'..(e.onlyChinese and '框架移动' or addName), not Save.disabled)
-            check:SetScript('OnMouseDown', function()
-                Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                if Save.disabled then
-                    panel.check2.text:SetText('|cff808080'..(e.onlyChinese and '缩放' or UI_SCALE))
-                else
-                    panel.check2.text:SetText(e.onlyChinese and '缩放' or UI_SCALE)
-                end
-            end)
+            --添加控制面板
+            panel.name= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..('框架' or addName)
+            panel.parent= id
+            InterfaceOptions_AddCategory(panel)
 
-            panel.check2=CreateFrame("CheckButton", nil, check, "InterfaceOptionsCheckButtonTemplate")
-            panel.check2.text:SetText(e.onlyChinese and '缩放' or UI_SCALE)
-            panel.check2:SetPoint('LEFT', check.text, 'RIGHT')
-            panel.check2:SetChecked(not Save.disabledZoom)
-            panel.check2:SetScript('OnMouseDown', function()
-                Save.disabledZoom= not Save.disabledZoom and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabledZoom), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end)
-
-            local button= e.Cbtn(check, {icon='hide', size={20,20}})
-            button:SetPoint('LEFT', panel.check2.text, 'RIGHT',2,0)
-            button:SetNormalAtlas('bags-button-autosort-up')
-            button:SetScript('OnClick', function()
-                StaticPopupDialogs[id..addName..'MoveZoom']={
-                    text =id..' '..addName..'\n\n'..(e.onlyChinese and '清除全部' or REMOVE_WORLD_MARKERS)..' ('..(e.onlyChinese and '保存' or SAVE)..')'..'\n\n|cnRED_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI),
-                    button1 = '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移动' or NPE_MOVE),
-                    button2 = e.onlyChinese and '取消' or CANCEL,
-                    button3 = '|cnRED_FONT_COLOR:'..(e.onlyChinese and '缩放' or UI_SCALE),
-                    whileDead=true,
-                    timeout=60,
-                    hideOnEscape = true,
-                    OnAccept=function()
-                        Save.point={}
-                        e.Reload()
-                    end,
-                    OnAlt= function()
-                        Save.scale={}
-                        e.Reload()
-                    end,
-                }
-                StaticPopup_Show(id..addName..'MoveZoom')
-            end)
+            e.ReloadPanel({panel=panel, addName= addName, restTips=true, checked= not Save.disabled, clearTips=nil,--重新加载UI, 重置, 按钮
+                            disabledfunc=function()
+                                            Save.disabled= not Save.disabled and true or nil
+                                            if not Save.disabled and not panel.check then
+                                                Init_Options()--初始, 选项
+                                            end
+                                            print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                                        end,
+                            clearfunc= function() Save=nil e.Reload() end}
+                        )
 
             if not Save.disabled then
-                Init_Move()--移动
+                Init_Options()--初始, 选项
+                Init_Move()--初始, 移动
             else
-                panel.check2.text:SetText('|cff808080'..(e.onlyChinese and '缩放' or UI_SCALE))
                 panel:UnregisterAllEvents()
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
@@ -671,6 +742,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
+            WoWToolsSave[NPE_MOVE..'Frame']=nil--清除上版本内容
             WoWToolsSave[addName]=Save
         end
 
