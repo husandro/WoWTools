@@ -870,6 +870,10 @@ local function Init_Set_AlphaAndColor()
         AddonCompartmentFrame.Text:SetTextColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
     end
 
+    hide_Texture(PlayerFrameAlternateManaBarBorder)
+    hide_Texture(PlayerFrameAlternateManaBarLeftBorder)
+    hide_Texture(PlayerFrameAlternateManaBarRightBorder)
+
     --小地图
     setAlpha(MinimapCompassTexture)
     set_Alpha_Frame_Texture(MinimapCluster.BorderTop)

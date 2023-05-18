@@ -2752,7 +2752,11 @@
         "DruidComboPointBarFrame",
         "ArcaneChargeMixin",
         "ClassNameplateBarMageFrame",
-        "CHOOSE_LOCATION"
+        "CHOOSE_LOCATION",
+        "PlayerFrameAlternateManaBar",
+        "PlayerFrameAlternateManaBarBorder",
+        "PlayerFrameAlternateManaBarLeftBorder",
+        "PlayerFrameAlternateManaBarRightBorder"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
