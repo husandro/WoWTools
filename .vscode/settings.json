@@ -2761,8 +2761,8 @@
         "ClassNameplateBarRogueFrame",
         "ClassNameplateBarWindwalkerMonkFrame",
         "ENERGY",
-        "ClassNameplateBarFeralDruidFrame",
-        "RogueComboPointBarFrame"
+        "RuneFrameMixin",
+        "DeathKnightResourceOverlayFrame"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

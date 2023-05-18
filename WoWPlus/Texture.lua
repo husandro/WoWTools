@@ -348,13 +348,17 @@ local function Init_Set_AlphaAndColor()
     --####
     --职业
     --####
-    local function set_Num_Texture(self)
+    local function set_Num_Texture(self, num, color)
         if not self.numTexture and self.layoutIndex and Save.classPowerNum then
             self.numTexture= self:CreateTexture(nil, 'OVERLAY')
             self.numTexture:SetSize(12,12)
-            self.numTexture:SetPoint('CENTER')
-            self.numTexture:SetAtlas(e.Icon.number..self.layoutIndex)
-            set_Alpha(self.numTexture, true)
+            self.numTexture:SetPoint('CENTER', self, 'CENTER')
+            self.numTexture:SetAtlas(e.Icon.number..(num or self.layoutIndex))
+            if not color then
+                set_Alpha(self.numTexture, true)
+            else
+                self.numTexture:SetVertexColor(color.r, color.g, color.b)
+            end
         end
     end
     if e.Player.class=='PALADIN' then--QS
@@ -414,13 +418,12 @@ local function Init_Set_AlphaAndColor()
     elseif e.Player.class=='ROGUE' then--DZ RogueComboPointBarFrame
         if RogueComboPointBarFrame and RogueComboPointBarFrame.UpdateMaxPower then
             hooksecurefunc(RogueComboPointBarFrame, 'UpdateMaxPower',function(self)
-                if self and self.classResourceButtonTable then
-                    for _, btn in pairs(self.classResourceButtonTable) do
+                C_Timer.After(0.5, function()
+                    for _, btn in pairs(self.classResourceButtonTable or {}) do
                         hide_Texture(btn.BGActive)
                         hide_Texture(btn.BGInactive)
                         set_Alpha(btn.BGShadow, nil, nil, 0.3)
                         set_Num_Texture(btn)
-                        
                     end
                     if ClassNameplateBarRogueFrame and ClassNameplateBarRogueFrame.classResourceButtonTable then
                         for _, btn in pairs(ClassNameplateBarRogueFrame.classResourceButtonTable) do
@@ -430,7 +433,7 @@ local function Init_Set_AlphaAndColor()
                             set_Num_Texture(btn)
                         end
                     end
-                end
+                end)
             end)
         end
 
@@ -444,13 +447,15 @@ local function Init_Set_AlphaAndColor()
             end
         end
         hooksecurefunc(MonkHarmonyBarFrame, 'UpdateMaxPower', function(self)
-            for i = 1, #self.classResourceButtonTable do
-                set_MonkHarmonyBarFrame(self.classResourceButtonTable[i])
-            end
-            local tab= ClassNameplateBarWindwalkerMonkFrame and ClassNameplateBarWindwalkerMonkFrame.classResourceButtonTable or {}
-            for i = 1, #tab do
-                set_MonkHarmonyBarFrame(tab[i])
-            end
+            C_Timer.After(0.5, function()
+                for i = 1, #self.classResourceButtonTable do
+                    set_MonkHarmonyBarFrame(self.classResourceButtonTable[i])
+                end
+                local tab= ClassNameplateBarWindwalkerMonkFrame and ClassNameplateBarWindwalkerMonkFrame.classResourceButtonTable or {}
+                for i = 1, #tab do
+                    set_MonkHarmonyBarFrame(tab[i])
+                end
+            end)
         end)
         hooksecurefunc(MonkHarmonyBarFrame, 'UpdatePower', function(self)
             for _, btn in pairs(self.classResourceButtonTable or {}) do
@@ -466,6 +471,19 @@ local function Init_Set_AlphaAndColor()
                 end
             end
         end)
+    elseif e.Player.class=='DEATHKNIGHT' then
+        if RuneFrame.Runes then     
+            for _, btn in pairs(RuneFrame.Runes) do
+                hide_Texture(btn.BG_Active)
+                hide_Texture(btn.BG_Inactive)
+            end
+        end
+        if DeathKnightResourceOverlayFrame.Runes then
+            for _, btn in pairs(DeathKnightResourceOverlayFrame.Runes) do
+                hide_Texture(btn.BG_Active)
+                hide_Texture(btn.BG_Inactive)
+            end
+        end
     end
 
 
