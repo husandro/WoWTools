@@ -4,6 +4,7 @@ local Save={
         point={},--移动
         SavePoint= e.Player.husandro,--保存窗口,位置
         moveToScreenFuori=e.Player.husandro,--可以移到屏幕外
+
         --disabledZoom=true,--禁用缩放
         scale={--缩放
             ['UIWidgetPowerBarContainerFrame']= 0.85,
@@ -760,7 +761,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
         panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
 
-    elseif event=='UNIT_DISPLAYPOWER' or event=='PLAYER_TALENT_UPDATE' then        
+    elseif event=='UNIT_DISPLAYPOWER' or event=='PLAYER_TALENT_UPDATE' then
         C_Timer.After(0.5, set_classPowerBar)
     end
 end)
