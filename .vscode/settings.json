@@ -2758,7 +2758,9 @@
         "PlayerFrameAlternateManaBarLeftBorder",
         "PlayerFrameAlternateManaBarRightBorder",
         "ClassNameplateBarDruidFrame",
-        "ClassNameplateBarFeralDruidFrame"
+        "ClassNameplateBarRogueFrame",
+        "ClassNameplateBarFeralDruidFrame",
+        "RogueComboPointBarFrame"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
