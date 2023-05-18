@@ -3,7 +3,7 @@ local Save={
         --disabledMove=true,--禁用移动
         point={},--移动
         SavePoint= e.Player.husandro,--保存窗口,位置
-
+        moveToScreenFuori=e.Player.husandro,--可以移到屏幕外
         --disabledZoom=true,--禁用缩放
         scale={--缩放
             ['UIWidgetPowerBarContainerFrame']= 0.85,
@@ -131,14 +131,19 @@ local function stop_Drag(self)--停止移动
         self:StopMovingOrSizing()
     end
 end
+local function set_SetClampedToScreen(self)
+    if self then
+        if Save.moveToScreenFuori then
+            self:SetClampedToScreen(false)
+        else
+            self:SetClampedToScreen(self.SavePoint and true or false)
+        end
+        self:SetMovable(true)
+    end--self:EnableMouse(true)
+end
 local function set_Frame_Drag(self)
-    self:SetClampedToScreen(self.SavePoint)
-    self:SetMovable(true)
-    --self:EnableMouse(true)
-    if self.MoveFrame then
-        self.MoveFrame:SetClampedToScreen(self.SavePoint)
-        self.MoveFrame:SetMovable(true)
-    end
+    set_SetClampedToScreen(self)
+    set_SetClampedToScreen(self.MoveFrame)
     if self.ClickTypeMove=='R' then
         self:RegisterForDrag("RightButton")
     elseif self.ClickTypeMove=='L' then
@@ -185,32 +190,31 @@ local set_Move_Frame=function(self, tab)--set_Move_Frame(frame, {frame=nil, clic
     tab= tab or {}
     if not Save.disabledMove then
         local name= tab.frame and tab.frame:GetName() or self and self:GetName()
-
-        self.SavePoint= ((tab.save and name) or Save.SavePoint) and true or false--是否保存
-        self.ClickTypeMove= tab.click--点击,或右击
-        self.MoveFrame= tab.frame--要移动的Frame
-        self.FrameName= name
-
-        set_Frame_Drag(self)--设置Frame,移动属性
-
-        local header= self.Header or self.HeaderFrame or self.TitleContainer or self.TitleButton
-        if header then
-            header.SavePoint= self.SavePoint
-            header.ClickTypeMove= self.ClickTypeMove
-            header.MoveFrame= self
-            header.FrameName=name
-            set_Frame_Drag(header)--设置Frame,移动属性
-        end
-
-        set_Frame_Point(self, name)--设置, 移动, 位置
-
-        if tab.show or Save.SavePoint then
-            self:HookScript("OnShow", set_Frame_Point)--设置, 移动, 位置
-        end
-
-        self:HookScript("OnLeave", ResetCursor)
-
         tab.name= name
+        if name and not self.FrameName then
+            self.SavePoint= ((tab.save and name) or Save.SavePoint) and true or false--是否保存
+            self.ClickTypeMove= tab.click--点击,或右击
+            self.MoveFrame= tab.frame--要移动的Frame
+            self.FrameName= name
+            
+            set_Frame_Drag(self)--设置Frame,移动属性
+
+            local header= self.Header or self.HeaderFrame or self.TitleContainer or self.TitleButton
+            if header then
+                header.SavePoint= self.SavePoint
+                header.ClickTypeMove= self.ClickTypeMove
+                header.MoveFrame= self
+                header.FrameName=name
+                set_Frame_Drag(header)--设置Frame,移动属性
+            end
+
+            if tab.show or Save.SavePoint then
+                self:HookScript("OnShow", set_Frame_Point)--设置, 移动, 位置
+            end
+
+            self:HookScript("OnLeave", ResetCursor)
+        end
+        set_Frame_Point(self, name)--设置, 移动, 位置
     end
     set_Zoom_Frame(self, tab)
 end
@@ -617,15 +621,9 @@ local function Init_Move()
         self:SetClampedToScreen(false)
     end)
 
-    if Save.SavePoint then
+    if Save.SavePoint then--在指定位置,显示
         hooksecurefunc('UpdateUIPanelPositions',function(currentFrame)
-            if currentFrame then
-                if not currentFrame.FrameName then
-                    set_Move_Frame(currentFrame)
-                else
-                    set_Frame_Point(currentFrame)--设置, 移动, 位置
-                end
-            end
+            set_Move_Frame(currentFrame)
         end)
     end
 
@@ -668,6 +666,15 @@ local function Init_Options()
         print(id, addName, e.GetEnabeleDisable(not Save.disabledZoom), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
+    local checkMoveToScreenFuori=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    checkMoveToScreenFuori.Text:SetText(e.onlyChinese and '可以移到屏幕外' or 'Can be moved off screen')
+    checkMoveToScreenFuori:SetPoint('LEFT', checkPoint.Text, 'RIGHT',4,0)
+    checkMoveToScreenFuori:SetChecked(Save.moveToScreenFuori)
+    checkMoveToScreenFuori:SetScript('OnMouseDown', function()
+        Save.moveToScreenFuori= not Save.moveToScreenFuori and true or nil
+        print(id, addName, e.GetEnabeleDisable(not Save.disabledZoom), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+    end)
+
     local check2=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     check2.Text:SetText('|A:UI-HUD-Minimap-Zoom-In:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE))
     check2:SetPoint('TOPLEFT', panel.check, 'BOTTOMLEFT',0,-16)
@@ -677,7 +684,7 @@ local function Init_Options()
         print(id, addName, e.GetEnabeleDisable(not Save.disabledZoom), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
-    --[[local btn= e.Cbtn(panel, {atlas='bags-button-autosort-up', size={20,20}})
+    local btn= e.Cbtn(panel, {atlas='bags-button-autosort-up', size={20,20}})
     btn:SetPoint('TOPLEFT', check2, 'BOTTOMLEFT',0,-16)
     btn:SetScript('OnClick', function()
         StaticPopupDialogs[id..addName..'MoveZoom']={
@@ -698,7 +705,7 @@ local function Init_Options()
             end,
         }
         StaticPopup_Show(id..addName..'MoveZoom')
-    end)]]
+    end)
 end
 
 --###########
