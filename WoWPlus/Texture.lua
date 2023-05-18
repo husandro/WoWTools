@@ -344,32 +344,50 @@ local function Init_Set_AlphaAndColor()
         return
     end
 
+    --####
+    --职业
     --骑士，能量条
-    if PlayerFrame.classPowerBar and PlayerFrame.classPowerBar.Background and PlayerFrame.classPowerBar.ActiveTexture then
-        hide_Texture(PlayerFrame.classPowerBar.Background, true)
-        hide_Texture(PlayerFrame.classPowerBar.ActiveTexture, true)
-        PlayerFrame.classPowerBar:HookScript('OnEnter', function(self2)
-            self2.Background:SetShown(true)
-            self2.ActiveTexture:SetShown(true)
-        end)
-        PlayerFrame.classPowerBar:HookScript('OnLeave', function(self2)
-            hide_Texture(self2.Background, true)
-            hide_Texture(self2.ActiveTexture, true)
-        end)
-    end
-    if ClassNameplateBarPaladinFrame then
-        hide_Texture(ClassNameplateBarPaladinFrame.Background)
-        hide_Texture(ClassNameplateBarPaladinFrame.ActiveTexture)
-    end
-
-    --法师
-    if MageArcaneChargesFrame and MageArcaneChargesFrame.classResourceButtonTable then
-        for _, mage in pairs(MageArcaneChargesFrame.classResourceButtonTable) do
-            hide_Texture(mage.ArcaneBG)
+    if e.Player.class=='PALADIN' then
+        if PlayerFrame.classPowerBar and PlayerFrame.classPowerBar.Background and PlayerFrame.classPowerBar.ActiveTexture then--PaladinPowerBarFrame
+            hide_Texture(PlayerFrame.classPowerBar.Background, true)
+            hide_Texture(PlayerFrame.classPowerBar.ActiveTexture, true)
+            PlayerFrame.classPowerBar:HookScript('OnEnter', function(self2)
+                self2.Background:SetShown(true)
+                self2.ActiveTexture:SetShown(true)
+            end)
+            PlayerFrame.classPowerBar:HookScript('OnLeave', function(self2)
+                hide_Texture(self2.Background, true)
+                hide_Texture(self2.ActiveTexture, true)
+            end)
+            if ClassNameplateBarPaladinFrame then
+                hide_Texture(ClassNameplateBarPaladinFrame.Background)
+                hide_Texture(ClassNameplateBarPaladinFrame.ActiveTexture)
+            end
         end
-        if ClassNameplateBarMageFrame and ClassNameplateBarMageFrame.classResourceButtonTable then
-            for _, mage in pairs(ClassNameplateBarMageFrame.classResourceButtonTable) do
+
+    elseif e.Player.class=='MAGE' then--法师
+        if MageArcaneChargesFrame and MageArcaneChargesFrame.classResourceButtonTable then
+            for _, mage in pairs(MageArcaneChargesFrame.classResourceButtonTable) do
                 hide_Texture(mage.ArcaneBG)
+            end
+            if ClassNameplateBarMageFrame and ClassNameplateBarMageFrame.classResourceButtonTable then
+                for _, mage in pairs(ClassNameplateBarMageFrame.classResourceButtonTable) do
+                    hide_Texture(mage.ArcaneBG)
+                end
+            end
+        end
+
+    elseif e.Player.class=='DRUID' then--DruidComboPointBarFrame
+        if DruidComboPointBarFrame and DruidComboPointBarFrame.classResourceButtonPool and DruidComboPointBarFrame.classResourceButtonPool.activeObjects then
+            for btn, _ in pairs(DruidComboPointBarFrame.classResourceButtonPool.activeObjects) do
+                hide_Texture(btn.BG_Active)
+                hide_Texture(btn.BG_Inactive)
+            end
+        end
+        if ClassNameplateBarFeralDruidFrame and ClassNameplateBarFeralDruidFrame.classResourceButtonTable then
+            for _, btn in pairs(ClassNameplateBarFeralDruidFrame.classResourceButtonTable) do
+                hide_Texture(btn.BG_Active)
+                hide_Texture(btn.BG_Inactive)
             end
         end
     end
@@ -831,14 +849,6 @@ local function Init_Set_AlphaAndColor()
         end)
     end]]
 
-   
-
-    --[[对话框
-    if StaticPopup1 then
-        if StaticPopup1.Border then
-            setAlpha(StaticPopup1.Border.Bg)
-        end
-    end]]
 
     local buttons = {
         CharacterMicroButton,--菜单
@@ -860,6 +870,7 @@ local function Init_Set_AlphaAndColor()
             setAlpha(frame:GetNormalTexture(), true)
         end
     end
+    buttons=nil
 
     if MainStatusTrackingBarContainer then--货币，XP，追踪，最下面BAR
         hide_Texture(MainStatusTrackingBarContainer.BarFrameTexture)
