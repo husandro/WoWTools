@@ -36,42 +36,45 @@ end
 --####
 local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name)--放大
     local self= tab.frame or frame
-    if not self or self.ZoomIn or tab.notZoom or Save.disabledZoom or not tab.name then
+    if not tab.name then
+        tab.name= self and self:GetName()
+    end
+    if not self or self.ZoomInOutFrame or tab.notZoom or Save.disabledZoom or not tab.name then
         return
     end
 
-    self.ZoomIn= e.Cbtn(self.Header
+    self.ZoomInOutFrame= e.Cbtn(self.Header
                         or self.TitleContainer
                         or self.SpellButtonContainer
                         or self.BorderFrame and self.BorderFrame.TitleContainer
                         or self
         , {atlas='UI-HUD-Minimap-Zoom-In', size={18,18}})
 
-    self.ZoomIn.ScaleName= tab.name
-    self.ZoomIn.ZoomFrame= self
-    self.ZoomIn.alpha= tab.zeroAlpha and 0 or 0.2
-    self.ZoomIn:SetFrameLevel(self.ZoomIn:GetFrameLevel() +5)
+    self.ZoomInOutFrame.ScaleName= tab.name
+    self.ZoomInOutFrame.ZoomFrame= self
+    self.ZoomInOutFrame.alpha= tab.zeroAlpha and 0 or 0.2
+    self.ZoomInOutFrame:SetFrameLevel(self.ZoomInOutFrame:GetFrameLevel() +5)
 
     if self.moveButton then
-        self.ZoomIn:SetPoint('RIGHT', self.moveButton, 'LEFT')
+        self.ZoomInOutFrame:SetPoint('RIGHT', self.moveButton, 'LEFT')
 
     elseif self.Header then
-        self.ZoomIn:SetPoint('LEFT')
+        self.ZoomInOutFrame:SetPoint('LEFT')
 
     elseif self.TitleContainer then
-        self.ZoomIn:SetPoint('LEFT', 35,-2)
+        self.ZoomInOutFrame:SetPoint('LEFT', 35,-2)
 
     elseif self.SpellButtonContainer then
-        self.ZoomIn:SetPoint('BOTTOM', self.SpellButtonContainer, 'TOP', -20,0)
+        self.ZoomInOutFrame:SetPoint('BOTTOM', self.SpellButtonContainer, 'TOP', -20,0)
 
     elseif self.BorderFrame and self.BorderFrame.TitleContainer then
-        self.ZoomIn:SetPoint('LEFT', 35,-2)
+        self.ZoomInOutFrame:SetPoint('LEFT', 35,-2)
 
     else
-        self.ZoomIn:SetPoint('BOTTOMLEFT', self, 'TOPLEFT')
+        self.ZoomInOutFrame:SetPoint('BOTTOMLEFT', self, 'TOPLEFT')
     end
 
-    self.ZoomIn:SetScript('OnClick', function(self2, d)
+    self.ZoomInOutFrame:SetScript('OnClick', function(self2, d)
         local n= Save.scale[self2.ScaleName] or 1
         if d=='LeftButton' then
             n= n+ 0.05
@@ -84,12 +87,12 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name)--放大
         self2.ZoomFrame:SetScale(n)
     end)
 
-    self.ZoomIn:SetAlpha(self.ZoomIn.alpha)
-    self.ZoomIn:SetScript("OnLeave", function(self2)
+    self.ZoomInOutFrame:SetAlpha(self.ZoomInOutFrame.alpha)
+    self.ZoomInOutFrame:SetScript("OnLeave", function(self2)
         e.tips:Hide()
         self2:SetAlpha(self2.alpha)
     end)
-    self.ZoomIn:SetScript("OnEnter",function(self2)
+    self.ZoomInOutFrame:SetScript("OnEnter",function(self2)
         self2:SetAlpha(1)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -106,13 +109,13 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name)--放大
     end
     if tab.zeroAlpha then
         self:HookScript('OnEnter', function(self2)
-            self2.ZoomIn:SetAlpha(1)
+            self2.ZoomInOutFrame:SetAlpha(1)
             if self2.moveButton then
                 self2.moveButton:SetAlpha(1)
             end
         end)
         self:HookScript('OnLeave', function(self2)
-            self2.ZoomIn:SetAlpha(0)
+            self2.ZoomInOutFrame:SetAlpha(0)
             if self2.moveButton then
                 self2.moveButton:SetAlpha(0)
             end
@@ -130,6 +133,7 @@ local function stop_Drag(self)--停止移动
     if self and self:IsMovable() then
         self:StopMovingOrSizing()
     end
+    ResetCursor()--还原，光标
 end
 local function set_SetClampedToScreen(self)
     if self then
@@ -168,10 +172,7 @@ local function set_Frame_Drag(self)
             end
         end
     end)
-    self:HookScript("OnMouseUp", function(self2)
-        stop_Drag(self2)--停止移动
-        ResetCursor()--还原，光标
-    end)
+    self:HookScript("OnMouseUp", stop_Drag)--停止移动
     self:HookScript('OnHide', stop_Drag)--停止移动
     self:HookScript("OnMouseDown", function(self2, d)--设置, 光标
         if not self2.ClickTypeMove or (self2.ClickTypeMove=='R' and d=='RightButton') or (self2.ClickTypeMove=='L' and d=='LeftButton') then
@@ -196,7 +197,7 @@ local set_Move_Frame=function(self, tab)--set_Move_Frame(frame, {frame=nil, clic
             self.ClickTypeMove= tab.click--点击,或右击
             self.MoveFrame= tab.frame--要移动的Frame
             self.FrameName= name
-            
+
             set_Frame_Drag(self)--设置Frame,移动属性
 
             local header= self.Header or self.HeaderFrame or self.TitleContainer or self.TitleButton
@@ -290,7 +291,7 @@ local function setAddLoad(arg1)
             if frame.TalentsTab and frame.TalentsTab.ButtonsParent then
                 set_Move_Frame(frame.TalentsTab.ButtonsParent, {save=true, frame=frame})--里面, 背景
             end
-            if frame.ZoomIn then
+            if frame.ZoomInOutFrame then
                 --设置,大小
                 --Blizzard_SharedTalentFrame.lua
                 hooksecurefunc(TalentFrameBaseMixin, 'OnShow', function (self)
@@ -554,7 +555,7 @@ local function Init_Move()
         for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
             local name= frame and frame:GetName()
             if name then
-                if frame.ZoomIn and Save.scale[name] and Save.scale[name]~=1 then--缩放
+                if frame.ZoomInOutFrame and Save.scale[name] and Save.scale[name]~=1 then--缩放
                     frame:SetScale(Save.scale[name])
                 end
                 if (frame==ContainerFrameCombinedBags or frame==ContainerFrame1) then--位置
@@ -578,24 +579,24 @@ local function Init_Move()
                 break
             end
         end
-        if UIWidgetPowerBarContainerFrame.ZoomIn or UIWidgetPowerBarContainerFrame.moveButton then--and frame.ZoomOut then
+        if UIWidgetPowerBarContainerFrame.ZoomInOutFrame or UIWidgetPowerBarContainerFrame.moveButton then--and frame.ZoomOut then
             if UIWidgetPowerBarContainerFrame.moveButton then
                 UIWidgetPowerBarContainerFrame.moveButton:SetShown(find)
             end
-            if UIWidgetPowerBarContainerFrame.ZoomIn then
-                UIWidgetPowerBarContainerFrame.ZoomIn:SetShown(find)
+            if UIWidgetPowerBarContainerFrame.ZoomInOutFrame then
+                UIWidgetPowerBarContainerFrame.ZoomInOutFrame:SetShown(find)
             end
             hooksecurefunc(UIWidgetPowerBarContainerFrame, 'RemoveWidget', function(self, widgetID)--Blizzard_UIWidgetManager.lua frame.ZoomOut:SetShown(find)
-                if self.ZoomIn then
-                    self.ZoomIn:SetShown(false)
+                if self.ZoomInOutFrame then
+                    self.ZoomInOutFrame:SetShown(false)
                 end
                 if self.moveButton then
                     self.moveButton:SetShown(false)
                 end
             end)
             hooksecurefunc(UIWidgetPowerBarContainerFrame, 'CreateWidget', function(self)
-                if self.ZoomIn then--and self.ZoomOut then
-                    self.ZoomIn:SetShown(true)
+                if self.ZoomInOutFrame then--and self.ZoomOut then
+                    self.ZoomInOutFrame:SetShown(true)
                 end
                 if self.moveButton then
                     self.moveButton:SetShown(true)
@@ -621,11 +622,11 @@ local function Init_Move()
         self:SetClampedToScreen(false)
     end)
 
-    if Save.SavePoint then--在指定位置,显示
-        hooksecurefunc('UpdateUIPanelPositions',function(currentFrame)
-            set_Move_Frame(currentFrame)
-        end)
-    end
+    --if Save.SavePoint then--在指定位置,显示
+    hooksecurefunc('UpdateUIPanelPositions',function(currentFrame)
+        set_Move_Frame(currentFrame)
+    end)
+    --end
 
     --职业，能量条
     if TotemFrame then
@@ -684,7 +685,7 @@ local function Init_Options()
         print(id, addName, e.GetEnabeleDisable(not Save.disabledZoom), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
-    local btn= e.Cbtn(panel, {atlas='bags-button-autosort-up', size={20,20}})
+    local btn= e.Cbtn(panel, {atlas='bags-button-autosort-up', size={24,24}})
     btn:SetPoint('TOPLEFT', check2, 'BOTTOMLEFT',0,-16)
     btn:SetScript('OnClick', function()
         StaticPopupDialogs[id..addName..'MoveZoom']={
