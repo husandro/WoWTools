@@ -2764,7 +2764,10 @@
         "RuneFrameMixin",
         "DeathKnightResourceOverlayFrame",
         "PaladinPowerBar",
-        "GroupLootFrame_OnShow"
+        "GroupLootFrame_OnShow",
+        "NUM_GROUP_LOOT_FRAMES",
+        "GroupLootContainer_AddFrame",
+        "GroupLootContainer"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

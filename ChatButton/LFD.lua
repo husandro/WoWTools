@@ -296,7 +296,7 @@ local function partyList(self, level, type)--5人，随机 LFDFrame.lua
     local info
     for i=1, GetNumRandomDungeons() do
         local dungeonID, name = GetLFGRandomDungeonInfo(i)
-        
+
         local isAvailableForAll, isAvailableForPlayer, hid2eIfNotJoinable = IsLFGDungeonJoinable(dungeonID)
         if (isAvailableForPlayer or not hid2eIfNotJoinable) then
             if isAvailableForAll then
@@ -384,7 +384,7 @@ local raidList=function(self, level, type)--团队本
         end
     end
 
-    
+
     local scenarioInfo = C_ScenarioInfo.GetScenarioInfo()
     local scenarioName= scenarioInfo and scenarioInfo.name--场景名称
     scenarioName= scenarioName and strlower(scenarioName)
@@ -475,7 +475,7 @@ local raidList=function(self, level, type)--团队本
 			info.tooltipText = LFGConstructDeclinedMessage(sortedDungeons[i].id) .. modifiedInstanceTooltipText
             e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
-        
+
     end
     return find
 end
@@ -1041,79 +1041,110 @@ local function setHoliday()--节日, 提示, button.texture
     setTexture(dungeonID, nil, name, texturePath,  atlas)--设置图标
 end
 
---local function setSTART_LOOT_ROLL(rollID, rollTime, lootHandle)--自动ROLL
-local function set_GroupLootFrame_OnShow(self)
-    if not Save.autoROLL then
+--#######
+--自动ROLL
+local function set_RollOnLoot(rollID, rollType, link)
+    RollOnLoot(rollID, rollType)
+    link= link or GetLootRollItemLink(rollID)
+    C_Timer.After(2, function()
+        print(id, addName, '|cnGREEN_FONT_COLOR:',
+            rollType==1 and (e.onlyChinese and '需求' or NEED)..'|A:lootroll-toast-icon-need-up:0:0|a'
+            or ((e.onlyChinese and '贪婪' or GREED)..'|A:lootroll-toast-icon-transmog-up:0:0|a'),
+            link)
+    end)
+end
+local function set_ROLL_Check(rollID)
+    if not Save.autoROLL or not rollID then
         return
     end
 
-    local _, _, _, quality, _, canNeed, canGreed = GetLootRollItemInfo(self.rollID)
-    local rollType= 2
-    local text= canNeed and (e.onlyChinese and '需求' or NEED)..'|A:lootroll-toast-icon-need-up:0:0|a'
-                    or canGreed and (e.onlyChinese and '贪婪' or GREED)..'|A:lootroll-toast-icon-transmog-up:0:0|a'
-                    or e.onlyChinese and '无' or NONE
-    local link = GetLootRollItemLink(self.rollID)
-    
+    local _, _, _, _, _, canNeed, canGreed = GetLootRollItemInfo(rollID)
+    local link = GetLootRollItemLink(rollID)
+    if not link or not(canGreed and canNeed) then
+        return
+    end
 
-    if (quality and quality>=4) or not canNeed or select(10, GetInstanceInfo()) or not link then
-        rollType= canNeed and 1 or 2
+    if not canNeed or select(10, GetInstanceInfo()) then
+        set_RollOnLoot(rollID, canNeed and 1 or 2, link)
+        return
+    end
 
-    else
-        if not C_TransmogCollection.PlayerHasTransmogByItemInfo(link) then--幻化
-            local sourceID=select(2,C_TransmogCollection.GetItemInfo(link))
-            if sourceID then
-                local hasItemData, canCollect =  C_TransmogCollection.PlayerCanCollectSource(sourceID)
-                if hasItemData and canCollect then
-                    local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
-                    if sourceInfo and not sourceInfo.isCollected then
-                        rollType= canNeed and 1 or 2
-                    end
+    if not C_TransmogCollection.PlayerHasTransmogByItemInfo(link) then--幻化
+        local sourceID=select(2,C_TransmogCollection.GetItemInfo(link))
+        if sourceID then
+            local hasItemData, canCollect =  C_TransmogCollection.PlayerCanCollectSource(sourceID)
+            if hasItemData and canCollect then
+                local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
+                if sourceInfo and not sourceInfo.isCollected then
+                    set_RollOnLoot(rollID, 1, link)
+                    return
                 end
-            end
-        end
-        if not find then
-            local itemID, _, itemSubType, itemEquipLoc, _, classID, subclassID = GetItemInfoInstant(link)
-            local slot=itemEquipLoc and e.itemSlotTable[itemEquipLoc]--比较装等
-            if slot then
-                local slotLink=GetInventoryItemLink('player', slot)
-                if slotLink then
-                    local slotItemLevel= GetDetailedItemLevelInfo(slotLink) or 0
-                    local itemLevel= GetDetailedItemLevelInfo(link)
-                    if itemLevel then
-                        local num=itemLevel-slotItemLevel
-                        if num>0 then
-                            rollType= canNeed and 1 or 2
-                        end
-                    end
-                else--没有装备
-                    rollType= canNeed and 1 or 2
-                end
-
-            elseif classID==15 and subclassID==2 then--宠物物品
-                rollType= canNeed and 1 or 2
-                
-            elseif classID==15 and  subclassID==5 then--坐骑
-                local mountID = C_MountJournal.GetMountFromItem(itemID)
-                if mountID then
-                    local isCollected =select(11, C_MountJournal.GetMountInfoByID(mountID))
-                    if not isCollected then
-                        rollType= canNeed and 1 or 2
-                    end
-                end
-
-            elseif C_ToyBox.GetToyInfo(itemID) and not PlayerHasToy(itemID) then--玩具 
-                rollType= canNeed and 1 or 2
             end
         end
     end
 
-    RollOnLoot(self.rollID, rollType)
+    local itemID, _, _, itemEquipLoc, _, classID, subclassID = GetItemInfoInstant(link)
+    local slot=itemEquipLoc and e.itemSlotTable[itemEquipLoc]--比较装等
+    if slot then
+        local slotLink=GetInventoryItemLink('player', slot)
+        if slotLink then
+            local slotItemLevel= GetDetailedItemLevelInfo(slotLink) or 0
+            local itemLevel= GetDetailedItemLevelInfo(link)
+            if itemLevel then
+                local num=itemLevel-slotItemLevel
+                if num>0 then
+                    set_RollOnLoot(rollID, 1, link)
+                    return
+                end
+            end
+        else--没有装备
+            set_RollOnLoot(rollID, 1, link)
+            return
+        end
 
-    C_Timer.After(2, function()
-        print(id, addName, link, '|cnGREEN_FONT_COLOR:'..text)
-    end)
-    
+    elseif classID==15 and subclassID==2 then--宠物物品
+        set_RollOnLoot(rollID, 1, link)
+        return
+
+    elseif classID==15 and  subclassID==5 then--坐骑
+        local mountID = C_MountJournal.GetMountFromItem(itemID)
+        if mountID then
+            local isCollected =select(11, C_MountJournal.GetMountInfoByID(mountID))
+            if not isCollected then
+                set_RollOnLoot(rollID, 1, link)
+                return
+            end
+        end
+
+    elseif C_ToyBox.GetToyInfo(itemID) and not PlayerHasToy(itemID) then--玩具 
+        set_RollOnLoot(rollID, 1, link)
+        return
+
+    elseif classID==0 or subclassID==0 then
+        set_RollOnLoot(rollID, 1, link)
+        return
+    end
 end
+
+hooksecurefunc('GroupLootFrame_OnShow', function(self)
+    print(self.rollID,'GroupLootFrame_OnShow', self.rollID and GetLootRollItemLink(self.rollID), self.Timer)
+end)
+
+hooksecurefunc('GroupLootContainer_AddFrame', function(_, frame)
+    --print(_,frame,'GroupLootContainer_AddFrame', frame and frame.rollID and GetLootRollItemLink(frame.rollID))
+   -- if frame and frame.rollID then--frame.rollTime  frame.Timer
+        --set_ROLL_Check(frame.rollID)
+        if frame and not frame.Timer.Text and frame:IsShown() then
+            frame.Timer.Text=e.Cstr(frame.Timer)
+            frame.Timer.Text:SetPoint('RIGHT')
+            frame.Timer:HookScript("OnUpdate", function(self2)
+                --print(self2:GetValue(),'GroupLootContainer_AddFrame')
+                self2.Text:SetText(format('%i', self2:GetValue()))
+            end)
+        end
+    --end
+end)
+
 --####
 --初始
 --####
@@ -1332,7 +1363,7 @@ local function Init()
         set_LFGPlus()
     end
 
-    hooksecurefunc('GroupLootFrame_OnShow', set_GroupLootFrame_OnShow)
+    --hooksecurefunc('GroupLootFrame_OnShow', set_GroupLootFrame_OnShow)
 end
 
 
@@ -1574,8 +1605,9 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
     elseif event=='LFG_UPDATE_RANDOM_INFO' then
         setHoliday()--节日, 提示, button.texture
 
-    --elseif event=='START_LOOT_ROLL' then
-        --setSTART_LOOT_ROLL(arg1, arg2, arg3)
+    elseif event=='START_LOOT_ROLL' then
+        print(event,arg1)
+        set_ROLL_Check(arg1)
 
     elseif event=='CORPSE_IN_RANGE' or event=='PLAYER_DEAD' or event=='AREA_SPIRIT_HEALER_IN_RANGE' then--仅限战场，释放, 复活
         if Save.ReMe and (C_PvP.IsBattleground() or C_PvP.IsArena()) then
