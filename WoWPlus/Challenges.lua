@@ -528,7 +528,7 @@ local function set_Spell_Port(self)--传送门
                     e.tips:ClearLines()
                     e.tips:SetSpellByID(spellID)
                     if not IsSpellKnown(spellID) then--没学会
-                        e.tips:AddLine(e.onlyChinese and '法术尚未学会' or SPELL_FAILED_NOT_KNOWN, 1,0,0)
+                        e.tips:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '法术尚未学会' or SPELL_FAILED_NOT_KNOWN))
                     end
                     e.tips:Show()
             end)
