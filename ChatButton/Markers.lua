@@ -710,6 +710,7 @@ local function InitMenu(self, level, type)--主菜单
     else
         info={
             text= e.onlyChinese and '自动标记' or (AUTO_JOIN:gsub(JOIN,'')..EVENTTRACE_MARKER)..e.Icon.TANK..e.Icon.HEALER,
+            icon= 'Warfronts-BaseMapIcons-Horde-Workshop-Minimap',
             checked= Save.autoSet,
             disabled= Save.tank==0 and Save.healer==0,
             func=function()

@@ -14,7 +14,7 @@ function e.ReloadPanel(tab)
     local rest= e.Cbtn(tab.panel, {type=false, size={25,25}})
     rest:SetNormalAtlas('bags-button-autosort-up')
     rest:SetPushedAtlas('bags-button-autosort-down')
-    rest:SetPoint('TOPRIGHT')
+    rest:SetPoint('TOPRIGHT',0,8)
     rest.addName=tab.addName
     rest.func=tab.clearfunc
     rest.clearTips=tab.clearTips
@@ -38,9 +38,10 @@ function e.ReloadPanel(tab)
         e.tips:Show()
     end)
     local reload= e.Cbtn(tab.panel, {type=false, size={25,25}})
-    reload:SetNormalAtlas('128-RedButton-Refresh')
-    reload:SetPushedAtlas('128-RedButton-Refresh-Pressed')
-    reload:SetPoint('TOPLEFT')
+    reload:SetNormalTexture('Interface\\Vehicles\\UI-Vehicles-Button-Exit-Up')
+    reload:SetPushedTexture('Interface\\Vehicles\\UI-Vehicles-Button-Exit-Down')
+    --reload:SetHighlightTexture('Interface\\Buttons\\ButtonHilight-Square')
+    reload:SetPoint('TOPLEFT',-12, 8)
     reload:SetScript('OnClick', e.Reload)
     reload.addName=tab.addName
     reload:SetScript('OnLeave', function() e.tips:Hide() end)

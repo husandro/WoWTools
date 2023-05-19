@@ -911,6 +911,7 @@ local function InitMenu(self, level, type)
     --e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={--重载
         text= e.onlyChinese and '重新加载UI' or RELOADUI,
+        icon='Interface\\Vehicles\\UI-Vehicles-Button-Exit-Up',
         notCheckable=true,
         tooltipOnButton=true,
         tooltipTitle='/reload',
