@@ -1126,11 +1126,11 @@ local function set_ROLL_Check(rollID)
     end
 end
 
-hooksecurefunc('GroupLootFrame_OnShow', function(self)
+--[[hooksecurefunc('GroupLootFrame_OnShow', function(self)
     print(self.rollID,'GroupLootFrame_OnShow', self.rollID and GetLootRollItemLink(self.rollID), self.Timer)
-end)
+end)]]
 
-hooksecurefunc('GroupLootContainer_AddFrame', function(_, frame)
+hooksecurefunc('GroupLootContainer_AddFrame', function(_, frame)--GroupLootFrame.lua
     --print(_,frame,'GroupLootContainer_AddFrame', frame and frame.rollID and GetLootRollItemLink(frame.rollID))
    -- if frame and frame.rollID then--frame.rollTime  frame.Timer
         --set_ROLL_Check(frame.rollID)

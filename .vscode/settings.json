@@ -2767,7 +2767,9 @@
         "GroupLootFrame_OnShow",
         "NUM_GROUP_LOOT_FRAMES",
         "GroupLootContainer_AddFrame",
-        "GroupLootContainer"
+        "GroupLootContainer",
+        "ClassNameplateBarFeralDruidFrame",
+        "RogueComboPointBarFrame"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
