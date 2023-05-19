@@ -1548,7 +1548,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
                 panel:RegisterEvent('PLAYER_ENTERING_WORLD')
                 panel:RegisterEvent('ISLAND_COMPLETED')
                 panel:RegisterEvent('LFG_UPDATE_RANDOM_INFO')
-                --panel:RegisterEvent('START_LOOT_ROLL')
+                panel:RegisterEvent('START_LOOT_ROLL')
                 panel:RegisterEvent('PVP_MATCH_COMPLETE')
                 panel:RegisterEvent('CORPSE_IN_RANGE')--仅限战场，释放, 复活
                 panel:RegisterEvent('PLAYER_DEAD')
@@ -1606,7 +1606,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
         setHoliday()--节日, 提示, button.texture
 
     elseif event=='START_LOOT_ROLL' then
-        print(event,arg1)
+        --print(event,arg1)
         set_ROLL_Check(arg1)
 
     elseif event=='CORPSE_IN_RANGE' or event=='PLAYER_DEAD' or event=='AREA_SPIRIT_HEALER_IN_RANGE' then--仅限战场，释放, 复活
