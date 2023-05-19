@@ -125,6 +125,7 @@ local function InitMenu(self, level, type)--主菜单
 
         info={
             text= e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
+            icon= 'bags-button-autosort-up',
             notCheckable=true,
             colorCode= #Save.save==0 and '|cff606060',
             func=function()

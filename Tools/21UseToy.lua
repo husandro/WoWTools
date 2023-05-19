@@ -268,6 +268,7 @@ local function InitMenu(self, level, menuList)--主菜单
         end
         info={
             text= '|cnRED_FONT_COLOR:#'..num..' '..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..' ('..(e.onlyChinese and '未收集' or NOT_COLLECTED)..')',
+            icon= 'bags-button-autosort-up',
             notCheckable=true,
             func= function()
                 local num2=0
@@ -338,6 +339,7 @@ local function InitMenu(self, level, menuList)--主菜单
         e.LibDD:UIDropDownMenu_AddSeparator(level)
         info={--清除
             text='|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..(e.onlyChinese and '玩具' or TOY)..'|r '..#ItemsTab..'/'..getAllSaveNum(),
+            icon= 'bags-button-autosort-up',
             notCheckable=true,
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '清除全部' or CLEAR_ALL,

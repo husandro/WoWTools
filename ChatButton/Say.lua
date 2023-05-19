@@ -221,6 +221,7 @@ local function Init_Menu(self, level, type)--主菜单
             if find then
                 info={
                     text= e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2 ,--清除, 密语
+                    icon= 'bags-button-autosort-up',
                     notCheckable=true,
                     func= function()
                         WhisperTab={}
