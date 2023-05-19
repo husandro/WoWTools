@@ -472,7 +472,7 @@ local function Init_Set_AlphaAndColor()
             end
         end)
     elseif e.Player.class=='DEATHKNIGHT' then
-        if RuneFrame.Runes then     
+        if RuneFrame.Runes then
             for _, btn in pairs(RuneFrame.Runes) do
                 hide_Texture(btn.BG_Active)
                 hide_Texture(btn.BG_Inactive)
@@ -622,7 +622,7 @@ local function Init_Set_AlphaAndColor()
 
     set_Alpha(InspectRecipeFrameBg)
     set_Alpha(InspectRecipeFrame.SchematicForm.MinimalBackground)
-    
+
 
     set_Alpha(GossipFrame.NineSlice.TopEdge)
     set_Alpha(GossipFrame.NineSlice.TopLeftCorner)
@@ -1002,7 +1002,7 @@ local function Init_Set_AlphaAndColor()
                 end
             end
         end
-        
+
     end)
 end
 
@@ -1038,7 +1038,7 @@ local function set_Alpha_Event(arg1)
         if e.Player.useColor then
             TimeManagerClockTicker:SetTextColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
         end
-        
+
 
     elseif arg1=='Blizzard_ClassTalentUI' and not Save.disabledAlpha then--天赋
         set_Alpha(ClassTalentFrame.TalentsTab.BottomBar)--下面
