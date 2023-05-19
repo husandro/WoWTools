@@ -50,17 +50,24 @@ local EncounterJournal_Maps={--[mapChallengeModelID]= journalInstanceID
     [245]=1001,--自由镇
     [206]=767,--奈萨里奥的巢穴
 }
-
-local spellIDs={--法术, 传送门, {mapChallengeModeID = 法术 SPELL ID}, BUG, 战斗中关闭, 会出现错误
-    [166]=159900,--暗轨之路(车站)
-    [391]=367416,--街头商贩之路(天街)
-    [370]=373274,--机械王子之路(麦卡贡)
-    [169]=159896,--铁船之路(码头)
-    [227]=373262,--堕落守护者之路(卡拉赞)
-}
 ]]
-
-
+local function get_Spell_MapChallengeID(mapChallengeID)
+    local tabs={
+        {spell=396129, ins=1196, map=405},--传送：蕨皮山谷
+        {spell=396130, ins=1204, map=406},--传送：注能大厅
+        {spell=396128, ins=1199, map=404},--传送：奈萨鲁斯
+        {spell=396127, ins=1197, map=403},--传送：奥达曼：提尔的遗产
+        {spell=272262, ins=1001, map=245},--传送到自由镇
+        {spell=272269, ins=1022, map=251},--传送：地渊孢林
+        {spell=205379, ins=767, map=206},--传送：奈萨里奥的巢穴
+        {spell=88775, ins=68, 438},--传送到旋云之巅
+    }
+    for _, tab in pairs(tabs) do
+        if tab.map==mapChallengeID then
+            return tab.spell
+        end
+    end
+end
 local function getBagKey(self, point, x, y) --KEY链接
     local find=point:find('LEFT')
     local i=1
@@ -495,18 +502,21 @@ local function GetNum(mapID, all)--取得完成次数,如 1/10
 end
 
 
---[[local function set_Spell_Port(self)--传送门
-    local spellID=spellIDs[self.mapID]
+local function set_Spell_Port(self)--传送门
+    
+    local spellID= get_Spell_MapChallengeID(self.mapID)
     if spellID then
         if not self.spell then
-            self.spell=CreateFrame("Button", nil, self, 'SecureActionButtonTemplate')
+            --[[self.spell=CreateFrame("Button", nil, self, 'SecureActionButtonTemplate')
             self.spell:SetHighlightAtlas('Forge-ColorSwatchSelection')
             self.spell:SetPushedTexture('Interface\\Buttons\\UI-Quickslot-Depress')
-            self.spell:RegisterForClicks("LeftButtonDown")
-            self.spell:SetAttribute("type*", "spell")
-            self.spell:SetAttribute( "spell*", spellID)
-            self.spell:SetPoint('RIGHT',0, 0)
-            self.spell:SetSize(h+8, h+8)
+            self.spell:RegisterForClicks("LeftButtonDown")--]]
+            local h=self:GetWidth()/2
+            self.spell= e.Cbtn(self, {type=true, size={h, h}})
+            self.spell:SetAttribute("type", "spell")
+            self.spell:SetAttribute( "spell", spellID)
+            self.spell:SetPoint('TOPRIGHT')
+            
             if IsSpellKnown(spellID) then--加个外框
                 self.spell.tex=self.spell:CreateTexture(nil, 'OVERLAY')
                 self.spell.tex:SetAllPoints(self.spell)
@@ -518,24 +528,19 @@ end
                     e.tips:ClearLines()
                     e.tips:SetSpellByID(spellID)
                     if not IsSpellKnown(spellID) then--没学会
-                        e.tips:AddDoubleLine(SPELL_FAILED_NOT_KNOWN, e.Icon.X, 1,0,0)
-                    else
-                        local startTime, duration= GetSpellCooldown(spellID)
-                        if startTime and duration and duration>0 then
-                            local t=GetTime()
-                            if startTime>t then t=t+86400 end
-                            t=t-startTime
-                            t=duration-t
-                            e.tips:AddDoubleLine('CD', SecondsToTime(t), 1,0,0, 1,0,0)
-                        end
+                        e.tips:AddLine(e.onlyChinese and '法术尚未学会' or SPELL_FAILED_NOT_KNOWN, 1,0,0)
                     end
                     e.tips:Show()
             end)
             self.spell:SetScript("OnLeave",function() e.tips:Hide() end)
         end
-        self.spell:SetNormalTexture(IsSpellKnown(spellID) and GetSpellTexture(spellID) or e.Icon.O)
+        if IsSpellKnown(spellID) then
+            self.spell:SetNormalTexture(GetSpellTexture(spellID))
+        else
+            self.spell:SetNormalAtlas('WarlockPortalHorde')
+        end
     end
-end]]
+end
 
 local function Kill(self)--副本PVP团本
     if Save.hide then
@@ -1020,7 +1025,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                     frame.currentKey:SetShown(currentChallengeMapID== frame.mapID)
                 end
             end
-            --set_Spell_Port(frame)--传送门
+            set_Spell_Port(frame)--传送门
         end
     end
 

@@ -50,15 +50,15 @@ local FBList={--{spell=数字, ins=副本ID 数字 journalInstanceID, name=自�
     {spell=393222, ins=1197},--看护者遗产之路 [奥达曼：提尔的遗产]
     {spell=393766, ins=800},--大魔导师之路(群星庭院)
     {spell=393273, ins=1201},--巨龙学位之路(艾杰斯亚学院)
-
-    {spell=88775, ins=68},--传送到旋云之巅
-    {spell=396127, ins=1197},--传送：奥达曼：提尔的遗产
-    {spell=396128, ins=1199},--传送：奈萨鲁斯
+  
     {spell=396129, ins=1196},--传送：蕨皮山谷
     {spell=396130, ins=1204},--传送：注能大厅
-    {spell=272269, ins=1022},--传送：地渊孢林
+    {spell=396128, ins=1199},--传送：奈萨鲁斯
+    {spell=396127, ins=1197},--传送：奥达曼：提尔的遗产
     {spell=272262, ins=1001},--传送到自由镇
+    {spell=272269, ins=1022},--传送：地渊孢林
     {spell=205379, ins=767},--传送：奈萨里奥的巢穴
+    {spell=88775, ins=68},--传送到旋云之巅
 }
 
 for _, tab in pairs(FBList) do
@@ -73,7 +73,7 @@ end
 local function Init()
     local find
     for _, tab in pairs(FBList) do
-        if IsSpellKnown(tab.spell) then
+        if IsSpellKnown(tab.spell) then--or not IsSpellKnown(tab.spell) then
             buttons[tab.spell]=e.Cbtn2(nil, e.toolsFrame, true)
 
             local name, _, icon = GetSpellInfo(tab.spell)
@@ -145,7 +145,6 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
 panel:RegisterEvent('PLAYER_REGEN_ENABLED')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
@@ -165,9 +164,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end)
                 panel:UnregisterEvent('ADDON_LOADED')
             else
+                FBList=nil
                 panel:UnregisterAllEvents()
             end
         end
+        panel:RegisterEvent("PLAYER_LOGOUT")
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then

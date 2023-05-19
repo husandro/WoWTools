@@ -534,7 +534,7 @@ e.Cedit= function(self, width, height)
     return editBox
 end
 
-e.Cbtn= function(self, tab)--type, icon, name, size
+function e.Cbtn(self, tab)--type, icon, name, size
     tab=tab or {}
     self= self or UIParent
     local button
