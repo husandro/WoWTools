@@ -349,33 +349,40 @@ local function Init_Set_AlphaAndColor()
     --职业
     --####
     local function set_Num_Texture(self, num, color)
-        if not self.numTexture and self.layoutIndex and Save.classPowerNum then
+        if not self.numTexture and (self.layoutIndex or num) and Save.classPowerNum then
             self.numTexture= self:CreateTexture(nil, 'OVERLAY')
             self.numTexture:SetSize(12,12)
             self.numTexture:SetPoint('CENTER', self, 'CENTER')
             self.numTexture:SetAtlas(e.Icon.number..(num or self.layoutIndex))
-            if not color then
-                set_Alpha(self.numTexture, true)
-            else
-                self.numTexture:SetVertexColor(color.r, color.g, color.b)
+            if color~=false then
+                if not color then
+                    set_Alpha(self.numTexture, true)
+                else
+                    self.numTexture:SetVertexColor(color.r, color.g, color.b)
+                end
             end
         end
     end
-    if e.Player.class=='PALADIN' then--QS
-        if PlayerFrame.classPowerBar and PlayerFrame.classPowerBar.Background and PlayerFrame.classPowerBar.ActiveTexture then--PaladinPowerBarFrame
-            hide_Texture(PlayerFrame.classPowerBar.Background, true)
-            hide_Texture(PlayerFrame.classPowerBar.ActiveTexture, true)
-            PlayerFrame.classPowerBar:HookScript('OnEnter', function(self2)
+    if e.Player.class=='PALADIN' then--QS PaladinPowerBarFrame
+        if PaladinPowerBarFrame and PaladinPowerBarFrame.Background and PaladinPowerBarFrame.ActiveTexture then
+            hide_Texture(PaladinPowerBarFrame.Background, true)
+            hide_Texture(PaladinPowerBarFrame.ActiveTexture, true)
+            PaladinPowerBarFrame:HookScript('OnEnter', function(self2)
                 self2.Background:SetShown(true)
                 self2.ActiveTexture:SetShown(true)
             end)
-            PlayerFrame.classPowerBar:HookScript('OnLeave', function(self2)
+            PaladinPowerBarFrame:HookScript('OnLeave', function(self2)
                 hide_Texture(self2.Background, true)
                 hide_Texture(self2.ActiveTexture, true)
             end)
             if ClassNameplateBarPaladinFrame then
                 hide_Texture(ClassNameplateBarPaladinFrame.Background)
                 hide_Texture(ClassNameplateBarPaladinFrame.ActiveTexture)
+            end
+            local maxHolyPower = UnitPowerMax('player', Enum.PowerType.HolyPower)--UpdatePower
+            for i=1,maxHolyPower do
+                local holyRune = PaladinPowerBarFrame["rune"..i]
+                set_Num_Texture(holyRune, i, false)
             end
         end
 
@@ -1694,28 +1701,21 @@ local function Init_chatBubbles()--聊天泡泡
     end
 end
 
-
-local function options_Init()--添加控制面板
-    panel.name = '|A:AnimCreate_Icon_Texture:0:0|a'..(e.onlyChinese and '材质' or addName)
-    panel.parent =id
-    InterfaceOptions_AddCategory(panel)
-
-    e.ReloadPanel({panel=panel, addName= addName, restTips=true, checked=nil, clearTips=nil,--重新加载UI, 重置, 按钮
-        disabledfunc=nil,
-        clearfunc= function() Save=nil e.Reload() end}
-    )
-
-    local textureCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    textureCheck.text:SetText('1)'..(e.onlyChinese and '隐藏材质' or HIDE..addName))
-    textureCheck:SetChecked(not Save.disabledTexture)
-    textureCheck:SetPoint('TOPLEFT', 0, -48)
-    textureCheck:SetScript('OnMouseDown', function()
+--###########
+--添加控制面板
+--###########
+local function options_Init()--初始，选项
+    panel.check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    panel.check.text:SetText('1)'..(e.onlyChinese and '隐藏材质' or HIDE..addName))
+    panel.check:SetChecked(not Save.disabledTexture)
+    panel.check:SetPoint('TOPLEFT', 0, -48)
+    panel.check:SetScript('OnMouseDown', function()
         Save.disabledTexture= not Save.disabledTexture and true or nil
     end)
 
     local alphaCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     alphaCheck.text:SetText('2)'..(e.onlyChinese and '透明度' or CHANGE_OPACITY))
-    alphaCheck:SetPoint('TOPLEFT', textureCheck, 'BOTTOMLEFT', 0, -16)
+    alphaCheck:SetPoint('TOPLEFT', panel.check, 'BOTTOMLEFT', 0, -16)
     alphaCheck:SetChecked(not Save.disabledAlpha)
     alphaCheck:SetScript('OnMouseDown', function()
         Save.disabledAlpha= not Save.disabledAlpha and true or false
@@ -1723,7 +1723,7 @@ local function options_Init()--添加控制面板
 
     local alphaValue= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')
     alphaValue:SetPoint("LEFT", alphaCheck.text, 'RIGHT', 6,0)
-    alphaValue:SetSize(200,20)
+    alphaValue:SetSize(120,20)
     alphaValue:SetMinMaxValues(0, 0.9)
     alphaValue:SetValue(Save.alpha)
     alphaValue.Low:SetText('0')
@@ -1765,7 +1765,7 @@ local function options_Init()--添加控制面板
 
     local chatBubbleAlpha=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     chatBubbleAlpha.text:SetText(e.onlyChinese and '透明度' or CHANGE_OPACITY)
-    chatBubbleAlpha:SetPoint('TOPLEFT', chatBubbleCheck, 'BOTTOMRIGHT')
+    chatBubbleAlpha:SetPoint('TOPLEFT', chatBubbleCheck, 'BOTTOMRIGHT',0,-10)
     chatBubbleAlpha:SetChecked(not Save.disabledChatBubbleAlpha)
     chatBubbleAlpha:SetScript('OnMouseDown', function()
         Save.disabledChatBubbleAlpha= not Save.disabledChatBubbleAlpha and true or false
@@ -1773,7 +1773,7 @@ local function options_Init()--添加控制面板
 
     local chaAlphaValue= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')
     chaAlphaValue:SetPoint("LEFT", chatBubbleAlpha.text, 'RIGHT', 6,0)
-    chaAlphaValue:SetSize(200,20)
+    chaAlphaValue:SetSize(120,20)
     chaAlphaValue:SetMinMaxValues(0, 0.9)
     chaAlphaValue:SetValue(Save.chatBubbleAlpha)
     chaAlphaValue.Low:SetText('0')
@@ -1797,7 +1797,7 @@ local function options_Init()--添加控制面板
 
     local chaScaleValue= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')
     chaScaleValue:SetPoint("LEFT", chatBubbleSacale.text, 'RIGHT', 6,0)
-    chaScaleValue:SetSize(200,20)
+    chaScaleValue:SetSize(120,20)
     chaScaleValue:SetMinMaxValues(0.3, 2)
     chaScaleValue:SetValue(Save.chatBubbleSacal)
     chaScaleValue.Low:SetText('0.3')
@@ -1821,9 +1821,22 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== id then
             Save= WoWToolsSave[addName] or Save
 
-            options_Init()
+            panel.name = '|A:AnimCreate_Icon_Texture:0:0|a'..(e.onlyChinese and '材质' or addName)
+            panel.parent =id
+            InterfaceOptions_AddCategory(panel)
 
-            if Save.disabledTexture and Save.disabledAlpha and Save.disabledChatBubble then
+            e.ReloadPanel({panel=panel, addName= addName, restTips=true, checked= not Save.disabled, clearTips=nil,--重新加载UI, 重置, 按钮
+                disabledfunc= function()
+                                Save.disabled= not Save.disabled and true or nil
+                                if not Save.disabled and not panel.check then
+                                    options_Init()--初始，选项
+                                end
+                                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                            end,
+                clearfunc= function() Save=nil e.Reload() end}
+            )
+
+            if Save.disabled then
                 panel:UnregisterAllEvents()
             else
                 Init_HideTexture()
@@ -1831,6 +1844,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 if not Save.disabledChatBubble then
                     Init_chatBubbles()
                 end
+                options_Init()--初始，选项
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 

@@ -54,7 +54,7 @@ function e.ReloadPanel(tab)
     end)
     if tab.restTips then
         local needReload= e.Cstr(tab.panel)
-        needReload:SetText(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        needReload:SetText(e.Icon.toRight2..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)..e.Icon.toLeft2)
         needReload:SetPoint('BOTTOMRIGHT')
         needReload:SetTextColor(0,1,0)
     end
