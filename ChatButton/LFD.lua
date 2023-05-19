@@ -1540,7 +1540,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
         end
 
     elseif event=='LFG_COMPLETION_REWARD' or event=='LOOT_CLOSED' then--自动离开
-        if Save.leaveInstance and IsLFGComplete() and IsInInstance() then
+        local scenarioInfo = C_ScenarioInfo.GetScenarioInfo()
+        if Save.leaveInstance and (IsLFGComplete() or scenarioInfo.isComplete) and IsInInstance() then
             e.PlaySound()--播放, 声音
             ExitIns=true
             local leaveSce=IsInGroup(LE_PARTY_CATEGORY_HOME) and 10 or sec
