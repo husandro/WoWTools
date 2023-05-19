@@ -2763,7 +2763,8 @@
         "ENERGY",
         "RuneFrameMixin",
         "DeathKnightResourceOverlayFrame",
-        "PaladinPowerBar"
+        "PaladinPowerBar",
+        "GroupLootFrame_OnShow"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

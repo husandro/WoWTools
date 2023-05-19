@@ -387,7 +387,7 @@ local raidList=function(self, level, type)--团队本
     
     local scenarioInfo = C_ScenarioInfo.GetScenarioInfo()
     local scenarioName= scenarioInfo and scenarioInfo.name--场景名称
-    scenarioName= strlower(scenarioName)
+    scenarioName= scenarioName and strlower(scenarioName)
 
     local currentMapName = nil
     for i = 1, #sortedDungeons do
@@ -1041,6 +1041,79 @@ local function setHoliday()--节日, 提示, button.texture
     setTexture(dungeonID, nil, name, texturePath,  atlas)--设置图标
 end
 
+--local function setSTART_LOOT_ROLL(rollID, rollTime, lootHandle)--自动ROLL
+local function set_GroupLootFrame_OnShow(self)
+    if not Save.autoROLL then
+        return
+    end
+
+    local _, _, _, quality, _, canNeed, canGreed = GetLootRollItemInfo(self.rollID)
+    local rollType= 2
+    local text= canNeed and (e.onlyChinese and '需求' or NEED)..'|A:lootroll-toast-icon-need-up:0:0|a'
+                    or canGreed and (e.onlyChinese and '贪婪' or GREED)..'|A:lootroll-toast-icon-transmog-up:0:0|a'
+                    or e.onlyChinese and '无' or NONE
+    local link = GetLootRollItemLink(self.rollID)
+    
+
+    if (quality and quality>=4) or not canNeed or select(10, GetInstanceInfo()) or not link then
+        rollType= canNeed and 1 or 2
+
+    else
+        if not C_TransmogCollection.PlayerHasTransmogByItemInfo(link) then--幻化
+            local sourceID=select(2,C_TransmogCollection.GetItemInfo(link))
+            if sourceID then
+                local hasItemData, canCollect =  C_TransmogCollection.PlayerCanCollectSource(sourceID)
+                if hasItemData and canCollect then
+                    local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
+                    if sourceInfo and not sourceInfo.isCollected then
+                        rollType= canNeed and 1 or 2
+                    end
+                end
+            end
+        end
+        if not find then
+            local itemID, _, itemSubType, itemEquipLoc, _, classID, subclassID = GetItemInfoInstant(link)
+            local slot=itemEquipLoc and e.itemSlotTable[itemEquipLoc]--比较装等
+            if slot then
+                local slotLink=GetInventoryItemLink('player', slot)
+                if slotLink then
+                    local slotItemLevel= GetDetailedItemLevelInfo(slotLink) or 0
+                    local itemLevel= GetDetailedItemLevelInfo(link)
+                    if itemLevel then
+                        local num=itemLevel-slotItemLevel
+                        if num>0 then
+                            rollType= canNeed and 1 or 2
+                        end
+                    end
+                else--没有装备
+                    rollType= canNeed and 1 or 2
+                end
+
+            elseif classID==15 and subclassID==2 then--宠物物品
+                rollType= canNeed and 1 or 2
+                
+            elseif classID==15 and  subclassID==5 then--坐骑
+                local mountID = C_MountJournal.GetMountFromItem(itemID)
+                if mountID then
+                    local isCollected =select(11, C_MountJournal.GetMountInfoByID(mountID))
+                    if not isCollected then
+                        rollType= canNeed and 1 or 2
+                    end
+                end
+
+            elseif C_ToyBox.GetToyInfo(itemID) and not PlayerHasToy(itemID) then--玩具 
+                rollType= canNeed and 1 or 2
+            end
+        end
+    end
+
+    RollOnLoot(self.rollID, rollType)
+
+    C_Timer.After(2, function()
+        print(id, addName, link, '|cnGREEN_FONT_COLOR:'..text)
+    end)
+    
+end
 --####
 --初始
 --####
@@ -1257,86 +1330,12 @@ local function Init()
     end)]]
     if Save.LFGPlus then--预创建队伍增强
         set_LFGPlus()
-     end
+    end
+
+    hooksecurefunc('GroupLootFrame_OnShow', set_GroupLootFrame_OnShow)
 end
 
-local function setSTART_LOOT_ROLL(rollID, rollTime, lootHandle)--自动ROLL
-    local isRandomInstance=select(10, GetInstanceInfo()) and true or nil
-    if not (Save.autoROLL or (Save.leaveInstance and isRandomInstance)) or not rollID then
-        return
-    end
 
-    local _, _, _, quality, bindO_nPickUp, canNeed, canGreed, _, reasonNeed, reasonGreed = GetLootRollItemInfo(rollID)
-    local rollType= canNeed and 1 or 2
-    local text= canNeed and (e.onlyChinese and '需求' or NEED)..'|TInterface\\Buttons\\UI-GroupLoot-Dice-Up:0|t'
-                 or canGreed and (e.onlyChinese and '贪婪' or GREED)..'|TInterface\\Buttons\\UI-GroupLoot-Coin-Up:0|t'
-                 or e.onlyChinese and '无' or NONE
-    local link = GetLootRollItemLink(rollID)
-    local find
-
-    if (quality and quality>=4) or not canNeed or isRandomInstance or not link then
-        RollOnLoot(rollID, rollType)
-        find=true
-
-    else
-        if not C_TransmogCollection.PlayerHasTransmogByItemInfo(link) then--幻化
-            local sourceID=select(2,C_TransmogCollection.GetItemInfo(link))
-            if sourceID then
-                local hasItemData, canCollect =  C_TransmogCollection.PlayerCanCollectSource(sourceID)
-                if hasItemData and canCollect then
-                    local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
-                    if sourceInfo and not sourceInfo.isCollected then
-                        RollOnLoot(rollID, rollType)
-                        find=true
-                    end
-                end
-            end
-        end
-        if not find then
-            local itemID, _, itemSubType, itemEquipLoc, _, classID, subclassID = GetItemInfoInstant(link)
-            local slot=itemEquipLoc and e.itemSlotTable[itemEquipLoc]--比较装等
-            if slot then
-                local slotLink=GetInventoryItemLink('player', slot)
-                if slotLink then
-                    local slotItemLevel= GetDetailedItemLevelInfo(slotLink) or 0
-                    local itemLevel= GetDetailedItemLevelInfo(link)
-                    if itemLevel then
-                        local num=itemLevel-slotItemLevel
-                        if num>0 then
-                            RollOnLoot(rollID, rollType)
-                            find=true
-                        end
-                    end
-                else--没有装备
-                    RollOnLoot(rollID, rollType)
-                    find=true
-                end
-
-            elseif classID==15 and subclassID==2 then--宠物物品
-                RollOnLoot(rollID, rollType)
-                find=true
-            elseif classID==15 and  subclassID==5 then--坐骑
-                local mountID = C_MountJournal.GetMountFromItem(itemID)
-                if mountID then
-                    local isCollected =select(11, C_MountJournal.GetMountInfoByID(mountID))
-                    if not isCollected then
-                        RollOnLoot(rollID, rollType)
-                        find=true
-                    end
-                end
-
-            elseif C_ToyBox.GetToyInfo(itemID) and not PlayerHasToy(itemID) then--玩具 
-                RollOnLoot(rollID, rollType)
-                find=true
-            end
-        end
-    end
-    if find then
-        C_Timer.After(1, function()
-            print(id, addName, link, text)
-        end)
-    end
-end
 
 local RoleC
 local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
@@ -1518,7 +1517,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
                 panel:RegisterEvent('PLAYER_ENTERING_WORLD')
                 panel:RegisterEvent('ISLAND_COMPLETED')
                 panel:RegisterEvent('LFG_UPDATE_RANDOM_INFO')
-                panel:RegisterEvent('START_LOOT_ROLL')
+                --panel:RegisterEvent('START_LOOT_ROLL')
                 panel:RegisterEvent('PVP_MATCH_COMPLETE')
                 panel:RegisterEvent('CORPSE_IN_RANGE')--仅限战场，释放, 复活
                 panel:RegisterEvent('PLAYER_DEAD')
@@ -1575,8 +1574,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
     elseif event=='LFG_UPDATE_RANDOM_INFO' then
         setHoliday()--节日, 提示, button.texture
 
-    elseif event=='START_LOOT_ROLL' then
-        setSTART_LOOT_ROLL(arg1, arg2, arg3)
+    --elseif event=='START_LOOT_ROLL' then
+        --setSTART_LOOT_ROLL(arg1, arg2, arg3)
 
     elseif event=='CORPSE_IN_RANGE' or event=='PLAYER_DEAD' or event=='AREA_SPIRIT_HEALER_IN_RANGE' then--仅限战场，释放, 复活
         if Save.ReMe and (C_PvP.IsBattleground() or C_PvP.IsArena()) then
