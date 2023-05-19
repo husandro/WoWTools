@@ -1,6 +1,15 @@
 local id, e = ...
 local addName= BINDING_HEADER_RAID_TARGET
-local Save={ autoSet=true, tank=2, tank2=6, healer=1, countdown=7, groupReadyTips=true, markersScale=0.85, markersFrame= e.Player.husandro}
+local Save={
+        autoSet=true,
+        tank=2,
+        tank2=6,
+        healer=1,
+        countdown=7,
+        groupReadyTips=true,
+        markersScale=0.85,
+        markersFrame= e.Player.husandro
+    }
 
 local button
 local panel= CreateFrame("Frame")
@@ -54,8 +63,9 @@ local function setRaidTarget()--设置团队标记
     if num> 0 then
         table.sort(tab, function(a,b) return a.hp<b.hp end)
         setTaget(tab[1].unit, Save.tank)--设置,目标,标记
+
         if num>=2 and Save.tank2~=0 then
-            setTaget(tab[2].unit, Save.tank)--设置,目标,标记
+            setTaget(tab[2].unit, Save.tank2)--设置,目标,标记
         end
     end
 end

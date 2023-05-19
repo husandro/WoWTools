@@ -353,7 +353,7 @@ local function isRaidFinderDungeonDisplayable(dungeonID)--RaidFinder.lua
     return myLevel >= minLevel and myLevel <= maxLevel and EXPANSION_LEVEL >= expansionLevel
 end
 local raidList=function(self, level, type)--团队本
-    local sortedDungeons, find = {}, nil
+    local sortedDungeons, find, info = {}, nil, {}
     local function InsertDungeonData(dungeonID, name, mapName, isAvailable, mapID)
         local t = { id = dungeonID, name = name, mapName = mapName, isAvailable = isAvailable, mapID = mapID }
         local foundMap = false
@@ -384,84 +384,85 @@ local raidList=function(self, level, type)--团队本
         end
     end
 
-    local ScInsName--场景名称
-    local infos=C_ScenarioInfo.GetScenarioInfo()
-    if infos and infos.name then
-        ScInsName=infos.name
-    end
+    
+    local scenarioInfo = C_ScenarioInfo.GetScenarioInfo()
+    local scenarioName= scenarioInfo and scenarioInfo.name--场景名称
+    scenarioName= strlower(scenarioName)
 
     local currentMapName = nil
     for i = 1, #sortedDungeons do
         if ( currentMapName ~= sortedDungeons[i].mapName ) then
-            local info = {}
             currentMapName = sortedDungeons[i].mapName
-            info.text = sortedDungeons[i].mapName
-            info.isTitle = 1
-            info.notCheckable = 1
+            info= {
+                text = sortedDungeons[i].mapName,
+                icon= select(11, GetLFGDungeonInfo(sortedDungeons[i].id)),
+                isTitle = 1,
+                notCheckable = 1,
+            }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
 
-        local info = {}
         if ( sortedDungeons[i].isAvailable ) then
-            local sele=GetLFGQueueStats(LE_LFG_CATEGORY_RF, sortedDungeons[i].id)
-            info.text = sortedDungeons[i].name..getRewardInfo(sortedDungeons[i].id)
-            if ScInsName==sortedDungeons[i].name then--当前副本
-                info.text='|A:auctionhouse-icon-favorite:0:0|a'..info.text
-            end
-            info.value = sortedDungeons[i].id
-            info.func = function()
-                if sele then
-                    LeaveSingleLFG(LE_LFG_CATEGORY_RF, sortedDungeons[i].id)
-                else
-                    securecallfunction(RaidFinderQueueFrame_SetRaid, sortedDungeons[i].id)
-                    securecallfunction(RaidFinderQueueFrame_Join)
-                    printListInfo()--输出当前列表
+            local check= GetLFGQueueStats(LE_LFG_CATEGORY_RF, sortedDungeons[i].id)
 
-                    setTexture(nil, sortedDungeons[i].id, sortedDungeons[i].name, nil)--设置图标, 点击,提示
-                end
-            end
-            info.checked = sele
-            info.tooltipOnButton = 1
-            info.tooltipTitle = RAID_BOSSES
             local encounters=''
-            local numEncounters = GetLFGDungeonNumEncounters(sortedDungeons[i].id)
+            local numEncounters = GetLFGDungeonNumEncounters(sortedDungeons[i].id) or 0
             local kill=0
-            local k2=''
+            local killText=''
             for j = 1, numEncounters do
                 local bossName, _, isKilled = GetLFGDungeonEncounterInfo(sortedDungeons[i].id, j)
-                local colorCode = ""
                 if ( isKilled ) then
-                    colorCode = RED_FONT_COLOR_CODE
                     kill=kill+1
-                    k2=k2..'|cffff0000x|r'
+                    killText= killText..' |cffff0000x|r'
                 else
-                    k2=k2..'|cff00ff00'..j..'|r'
+                    killText= killText..' |cff00ff00'..j..'|r'
                 end
-                if encounters then
-                    encounters = encounters.."|n"..colorCode..bossName..'|r'
-                else
-                    encounters = colorCode..bossName..'|r'
-                end
-            end
-            info.text=info.text..' '..kill..'/'..numEncounters--击杀数量
-            if kill>0 and kill~=numEncounters then  info.text=info.text..' '..k2 end
-            if kill==numEncounters then
-                info.colorCode='|cffff0000'
+                encounters= (encounters and encounters..'|n' or '')..(isKilled and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:')..bossName..(isKilled and e.Icon.select2 or '')..'|r'
             end
 
-            local modifiedInstanceTooltipText = ""
-            if(sortedDungeons[i].mapID) then
+            local modifiedInstanceTooltipText, icon
+            if (sortedDungeons[i].mapID) then
                 local modifiedInstanceInfo = C_ModifiedInstance.GetModifiedInstanceInfoFromMapID(sortedDungeons[i].mapID)
                 if (modifiedInstanceInfo) then
-                    info.icon = GetFinalNameFromTextureKit("%s-small", modifiedInstanceInfo.uiTextureKit)
+                    icon = GetFinalNameFromTextureKit("%s-small", modifiedInstanceInfo.uiTextureKit)
                     modifiedInstanceTooltipText = "|n|n" .. modifiedInstanceInfo.description
                 end
-                info.iconXOffset = -6
             end
-            info.tooltipText = encounters .. modifiedInstanceTooltipText..'|n|n|cffffffffID '..sortedDungeons[i].id
+
+            info={
+                text= (scenarioName== strlower(sortedDungeons[i].name or '') and e.Icon.star2 or '')--在当前副本
+                    ..(kill==numEncounters and '|cnRED_FONT_COLOR:' or '')..sortedDungeons[i].name..'|r'..getRewardInfo(sortedDungeons[i].id)--名称
+                    ..killText,
+                icon= icon,
+                iconXOffset= icon and -6 or nil,
+                checked= check,
+                colorCode= kill==numEncounters and '|cffff0000' or nil,
+                tooltipOnButton= true,
+                tooltipTitle= (e.onlyChinese and '首领' or RAID_BOSSES)..' '..kill..'/'..numEncounters,--击杀数量
+                tooltipText = encounters..(modifiedInstanceTooltipText or '')..'|n|n|cffffffffID '..sortedDungeons[i].id,
+                arg1= {id= sortedDungeons[i].id, name= sortedDungeons[i].name, check= check},
+                func= function(_, arg1)
+                    if arg1.check then
+                        LeaveSingleLFG(LE_LFG_CATEGORY_RF, arg1.id)
+                    else
+                        securecallfunction(RaidFinderQueueFrame_SetRaid, arg1.id)
+                        securecallfunction(RaidFinderQueueFrame_Join)
+                        printListInfo()--输出当前列表
+                        setTexture(nil, arg1, arg1.name, nil)--设置图标, 点击,提示
+                    end
+                end
+            }
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
+
         else
-            info.text = sortedDungeons[i].name
-			info.value = sortedDungeons[i].id
+            info= {
+                text = sortedDungeons[i].name,
+			    value = sortedDungeons[i].id,
+                disabled = 1,
+			    tooltipWhileDisabled = 1,
+			    tooltipOnButton = 1,
+			    tooltipTitle = e.onlyChinese and '你不能进入此队列。' or YOU_MAY_NOT_QUEUE_FOR_THIS,
+            }
 			local modifiedInstanceTooltipText = ""
 			if(sortedDungeons[i].mapID) then
 				local modifiedInstanceInfo = C_ModifiedInstance.GetModifiedInstanceInfoFromMapID(sortedDungeons[i].mapID)
@@ -471,13 +472,10 @@ local raidList=function(self, level, type)--团队本
 				end
 				info.iconXOffset = -6
 			end
-			info.disabled = 1
-			info.tooltipWhileDisabled = 1
-			info.tooltipOnButton = 1
-			info.tooltipTitle = YOU_MAY_NOT_QUEUE_FOR_THIS
 			info.tooltipText = LFGConstructDeclinedMessage(sortedDungeons[i].id) .. modifiedInstanceTooltipText
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        
     end
     return find
 end
