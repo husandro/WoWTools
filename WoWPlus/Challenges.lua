@@ -60,7 +60,7 @@ local function get_Spell_MapChallengeID(mapChallengeID)
         {spell=272262, ins=1001, map=245},--传送到自由镇
         {spell=272269, ins=1022, map=251},--传送：地渊孢林
         {spell=205379, ins=767, map=206},--传送：奈萨里奥的巢穴
-        {spell=88775, ins=68, 438},--传送到旋云之巅
+        {spell=88775, ins=68, map=438},--传送到旋云之巅
     }
     for _, tab in pairs(tabs) do
         if tab.map==mapChallengeID then
