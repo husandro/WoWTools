@@ -1166,6 +1166,9 @@ local function Init()--冒险指南界面
         end
     end)
 
+    --#####
+    --贸易站
+    --#####
     hooksecurefunc(EncounterJournalMonthlyActivitiesFrame.ScrollBox, 'SetScrollTargetOffset', function(self2)
         if Save.hideEncounterJournal then
             return

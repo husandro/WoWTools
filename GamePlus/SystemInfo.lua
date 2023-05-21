@@ -564,7 +564,12 @@ local function Init()
             ToggleFramerate()--FramerateLabel FramerateText
         end
     end)
-    button:SetScript('OnLeave', function() e.tips:Hide() end)
+    button:SetScript('OnLeave', function(self2)
+        e.tips:Hide()
+        if self2.moveFPSFrame then
+            self2.moveFPSFrame:SetButtonState('NORMAL')
+        end
+    end)
     button:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -574,6 +579,9 @@ local function Init()
         e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE, (Save.size or 12)..e.Icon.mid)
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
+        if self2.moveFPSFrame then
+            self2.moveFPSFrame:SetButtonState('PUSHED')
+        end
     end)
 
 
@@ -584,52 +592,52 @@ local function Init()
 
     --为FramerateText 帧数, 建立一个按钮, 移动, 大小
     if Save.frameratePlus then
-        local moveFrame= e.Cbtn(nil, {size={16,16}, icon='hide'})
+        button.moveFPSFrame= e.Cbtn(nil, {size={16,16}, icon='hide'})
         local function set_FramerateText_Point()
             FramerateText:ClearAllPoints()
             FramerateText:SetPoint('RIGHT')
         end
         if Save.frameratePoint then
-            moveFrame:SetPoint(Save.frameratePoint[1], UIParent, Save.frameratePoint[3], Save.frameratePoint[4], Save.frameratePoint[5])
+            button.moveFPSFrame:SetPoint(Save.frameratePoint[1], UIParent, Save.frameratePoint[3], Save.frameratePoint[4], Save.frameratePoint[5])
         else
-            moveFrame:SetPoint(FramerateText:GetPoint(1))
+            button.moveFPSFrame:SetPoint(FramerateText:GetPoint(1))
         end
-        FramerateText:SetParent(moveFrame)
+        FramerateText:SetParent(button.moveFPSFrame)
         QueueStatusButton:HookScript('OnShow', set_FramerateText_Point)
         QueueStatusButton:HookScript('OnHide', set_FramerateText_Point)
 
         set_FramerateText_Point()
-        moveFrame:SetFrameStrata('HIGH')
-        moveFrame:SetMovable(true)
-        moveFrame:RegisterForDrag("RightButton");
-        moveFrame:SetClampedToScreen(true);
-        moveFrame:SetScript("OnDragStart", function(self2, d)
+        button.moveFPSFrame:SetFrameStrata('HIGH')
+        button.moveFPSFrame:SetMovable(true)
+        button.moveFPSFrame:RegisterForDrag("RightButton");
+        button.moveFPSFrame:SetClampedToScreen(true);
+        button.moveFPSFrame:SetScript("OnDragStart", function(self2, d)
             if d=='RightButton' then
                 SetCursor('UI_MOVE_CURSOR')
                 self2:StartMoving()
             end
         end)
-        moveFrame:SetScript("OnDragStop", function(self)
+        button.moveFPSFrame:SetScript("OnDragStop", function(self)
             self:StopMovingOrSizing()
             Save.frameratePoint={self:GetPoint(1)}
             Save.frameratePoint[2]=nil
             ResetCursor()
         end)
-        moveFrame:SetScript("OnMouseUp", function(self2,d)
+        button.moveFPSFrame:SetScript("OnMouseUp", function(self2,d)
             ResetCursor()
         end)
 
-        moveFrame:SetShown(FramerateText:IsShown())
+        button.moveFPSFrame:SetShown(FramerateText:IsShown())
         FramerateLabel:SetText('')--去掉FPS
         FramerateLabel:SetShown(false)
         hooksecurefunc('ToggleFramerate', function()--修改位置
             local show = FramerateText:IsShown()
-            moveFrame:SetShown(show)
+            button.moveFPSFrame:SetShown(show)
             if show then
                 set_FramerateText_Point()
             end
         end)
-        moveFrame:SetScript('OnEnter', function(self2)--提示
+        button.moveFPSFrame:SetScript('OnEnter', function(self2)--提示
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
             e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
@@ -639,7 +647,7 @@ local function Init()
             e.tips:Show()
             button:SetButtonState('PUSHED')
         end)
-        moveFrame:SetScript('OnLeave', function()
+        button.moveFPSFrame:SetScript('OnLeave', function()
             e.tips:Hide()
             button:SetButtonState('NORMAL')
         end)
@@ -649,7 +657,7 @@ local function Init()
         end
         set_FramerateText_Size()
 
-        moveFrame:SetScript('OnMouseWheel',function(self, d)
+        button.moveFPSFrame:SetScript('OnMouseWheel',function(self, d)
             if IsModifierKeyDown() then
                 return
             end
@@ -666,7 +674,7 @@ local function Init()
             print(id, addName, e.onlyChinese and '字体大小' or FONT_SIZE,'|cnGREEN_FONT_COLOR:'..size)
         end)
 
-        moveFrame:SetScript('OnClick', function(self, d)
+        button.moveFPSFrame:SetScript('OnClick', function(self, d)
             if d=='RightButton' then--移动光标
                 SetCursor('UI_MOVE_CURSOR')
             end
@@ -709,8 +717,6 @@ local function Init()
     MainMenuMicroButton:SetScript('OnMouseWheel', function()
         securecallfunction(InterfaceOptionsFrame_OpenToCategory, id)
     end)
-
-    
 
     C_Timer.After(3, function()
         set_Label_Size_Color()

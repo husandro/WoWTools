@@ -1030,7 +1030,6 @@ local function Init_Menu_Set_UI(self, level, menuList)--坐骑界面, 菜单
     e.LibDD:UIDropDownMenu_AddButton(info, level);
 end
 local function setMountJournal_InitMountButton(self, elementData)--Blizzard_MountCollection.lua
-   --print(self.spellID, self.mountID, self.index)
     if not self or not self.spellID then
         if self and self.btn then
             self.btn:SetShown(false)
@@ -1356,7 +1355,6 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
 
         elseif arg1=='Blizzard_Collections' then
             hooksecurefunc('MountJournal_InitMountButton',setMountJournal_InitMountButton)
-            
             --hooksecurefunc('MountJournal_ShowMountDropdown',setMountJournal_ShowMountDropdown)
         end
 
