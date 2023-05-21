@@ -2769,7 +2769,8 @@
         "GroupLootContainer_AddFrame",
         "GroupLootContainer",
         "SPELL_FAILED_NOT_KNOWN",
-        "CHALLENGE_MODE"
+        "CHALLENGE_MODE",
+        "EncounterJournal_ListInstances"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

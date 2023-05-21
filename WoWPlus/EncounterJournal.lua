@@ -460,7 +460,7 @@ local function Init()--冒险指南界面
         e.tips:AddDoubleLine(e.onlyChinese and '奖励' or QUEST_REWARDS, e.GetShowHide(not Save.hideEncounterJournal_All_Info_Text))
         e.tips:Show()
     end)
-    EncounterJournal.btn:SetScript('OnMouseDown', function(self2, d)
+    EncounterJournal.btn:SetScript('OnClick', function(self2, d)
         if d=='LeftButton' then
             Save.hideEncounterJournal= not Save.hideEncounterJournal and true or nil
             EncounterJournal.instance:SetShown(not Save.hideEncounterJournal)
@@ -470,9 +470,9 @@ local function Init()--冒险指南界面
             end
             EncounterJournal.money:SetShown(not Save.hideEncounterJournal)
             EncounterJournal.btn:SetNormalAtlas(Save.hideEncounterJournal and e.Icon.disabled or e.Icon.icon )
-            print(id, addName, e.GetShowHide(not Save.hideEncounterJournal), e.onlyChinese and '需要刷新' or NEED..REFRESH)
+            --print(id, addName, e.GetShowHide(not Save.hideEncounterJournal), e.onlyChinese and '需要刷新' or NEED..REFRESH)
             set_Loot_Spec_Event()--BOSS战时, 指定拾取, 专精, 事件
-
+            securecall(EncounterJournal_ListInstances)
         elseif d=='RightButton' then
             if Save.hideEncounterJournal_All_Info_Text then
                 Save.hideEncounterJournal_All_Info_Text=nil
@@ -643,8 +643,13 @@ local function Init()--冒险指南界面
     hooksecurefunc('EncounterJournal_ListInstances', function()--界面, 副本击杀
         if Save.hideEncounterJournal then
             for _, button in pairs(EncounterJournal.instanceSelect.ScrollBox:GetFrames()) do
-                if button and button.tipsText then
-                    button.tipsText:SetText('')
+                if button then
+                    if button.tipsText then
+                        button.tipsText:SetText('')
+                    end
+                    if button.challengeText then
+                        button.challengeText:SetText('')
+                    end
                 end
             end
             return
@@ -1190,14 +1195,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             panel:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_EncounterJournal' then---冒险指南
-            if not Save.disabled then
-                Init()--冒险指南界面
-                EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示所数据
-                panel:RegisterEvent('BOSS_KILL')
-                panel:RegisterEvent('UPDATE_INSTANCE_INFO')
-                panel:RegisterEvent('PLAYER_ENTERING_WORLD')
-                panel:RegisterEvent('WEEKLY_REWARDS_UPDATE')
-            end
+            Init()--冒险指南界面
+            EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示所数据
+            panel:RegisterEvent('BOSS_KILL')
+            panel:RegisterEvent('UPDATE_INSTANCE_INFO')
+            panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+            panel:RegisterEvent('WEEKLY_REWARDS_UPDATE')
         end
 
     elseif event == "PLAYER_LOGOUT" then
