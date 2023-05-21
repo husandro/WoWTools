@@ -2768,7 +2768,8 @@
         "NUM_GROUP_LOOT_FRAMES",
         "GroupLootContainer_AddFrame",
         "GroupLootContainer",
-        "SPELL_FAILED_NOT_KNOWN"
+        "SPELL_FAILED_NOT_KNOWN",
+        "CHALLENGE_MODE"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

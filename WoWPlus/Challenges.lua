@@ -197,7 +197,7 @@ local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     frame.ready:SetPoint('LEFT', frame.StartButton, 'RIGHT',2, 0)
     frame.ready:SetSize(100,24)
     frame.ready:SetScript("OnMouseDown",function()
-            DoReadyCheck()
+        DoReadyCheck()
     end)
 
     frame.mark = CreateFrame("Button",nil, frame, 'UIPanelButtonTemplate')--标记
@@ -470,9 +470,49 @@ local function GetNum(mapID, all)--取得完成次数,如 1/10
     end
 end
 
-
-local function set_Spell_Port(self)--传送门
-    if Save.hide then
+--######
+--传送门
+--######
+local function set_check_Show_Spell_Port()--传送门, 启用/禁用
+    local find--是否有找到,如果没有赛季数据更新,就禁用
+    for _, mapID in pairs(C_ChallengeMode.GetMapTable() or {}) do
+        find= get_Spell_MapChallengeID(mapID)
+        if find then
+            break
+        end
+    end
+    if not find then
+        Save.showSpellPort=nil
+    end
+    local btn=ChallengesFrame.sel.showSpellPort
+    if not Save.hide and not btn and find then
+        btn= e.Cbtn(ChallengesFrame, {size={22,22}, atlas='WarlockPortal-Yellow-32x32'})
+        btn:SetPoint('LEFT', ChallengesFrame.sel, 'RIGHT')
+        btn:SetAlpha(0.5)
+        btn:SetScript('OnClick', function()
+            Save.showSpellPort= not Save.showSpellPort and true or nil
+            securecallfunction(ChallengesFrame.Update,ChallengesFrame)
+        end)
+        btn:SetScript('OnLeave', function() e.tips:Hide() end)
+        btn:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            if e.onlyChinese then
+                e.tips:AddDoubleLine('挑战20层','限时传送门')
+                e.tips:AddDoubleLine('如果出现错误', '请禁用此功能')
+            else
+                e.tips:AddLine(format(UNITNAME_SUMMON_TITLE14, CHALLENGE_MODE..' (20) '))
+                e.tips:AddDoubleLine(ERRORS..'('..SHOW..')', DISABLE)
+            end
+            e.tips:Show()
+        end)
+        ChallengesFrame.sel.showSpellPort= btn
+    end
+    if btn then
+        btn:SetShown(not Save.hide)
+    end
+end
+local function set_Spell_Port(self)
+    if Save.hide or not Save.showSpellPort then
         if self.spell then
             self.spell:SetShown(false)
         end
@@ -486,10 +526,10 @@ local function set_Spell_Port(self)--传送门
             self.spell:SetHighlightAtlas('Forge-ColorSwatchSelection')
             self.spell:SetPushedTexture('Interface\\Buttons\\UI-Quickslot-Depress')
             self.spell:RegisterForClicks("LeftButtonDown")--]]
-            local h=self:GetWidth()/3
+            local h=self:GetWidth()/3 +8
             self.spell= e.Cbtn(self, {type=true, size={h, h}})
-            self.spell:SetAttribute("type", "spell")
-            self.spell:SetAttribute( "spell", spellID)
+            self.spell:SetAttribute("type*", "spell")
+            self.spell:SetAttribute("spell*", spellID)
             self.spell:SetPoint('TOPRIGHT')
             if IsSpellKnown(spellID) then--加个外框
                 self.spell.tex=self.spell:CreateTexture(nil, 'OVERLAY')
@@ -508,7 +548,7 @@ local function set_Spell_Port(self)--传送门
             end)
             self.spell:SetScript("OnLeave",function() e.tips:Hide() end)
         end
-        local icon= GetSpellTexture(spellID) --IsSpellKnown(spellID) and GetSpellTexture(spellID)
+        local icon= IsSpellKnown(spellID) and GetSpellTexture(spellID)
         if icon then
             self.spell:SetNormalTexture(GetSpellTexture(spellID))
         else
@@ -1062,8 +1102,10 @@ local function set_itemLevelTips(self)--等级 => 每周/完成, 提示
         return
     end
     if not self.itemLevelTips then
-        self.itemLevelTips= e.Cbtn(self.WeeklyInfo.Child,{size={16,16}, atlas='auctionhouse-icon-favorite'})
-        self.itemLevelTips:SetPoint('TOPRIGHT', -2,-14)
+        --self.itemLevelTips= e.Cbtn(self.WeeklyInfo.Child,{size={16,16}, atlas='auctionhouse-icon-favorite'})
+        --self.itemLevelTips:SetPoint('TOPRIGHT', -2,-14)
+        self.itemLevelTips= e.Cbtn(self, {size={16,16}, atlas='auctionhouse-icon-favorite'})
+        self.itemLevelTips:SetPoint('LEFT', self.sel, 'RIGHT', 22,0)
         self.itemLevelTips:SetAlpha(0.5)
         self.itemLevelTips.Text=e.Cstr(self)
         self.itemLevelTips.Text:SetPoint('TOPLEFT', self.WoWKeystones, 'BOTTOMLEFT',0,-12)
@@ -1096,14 +1138,14 @@ local function Init()
     ChallengesFrame.sel:SetScript("OnClick", function (self2)
         Save.hide = not Save.hide and true or nil
         Kill(ChallengesFrame)--副本PVP团本
-        ChallengesFrame:Update()
+        securecallfunction(ChallengesFrame.Update,ChallengesFrame)
         Affix()
         All(ChallengesFrame)--所有记录   
         Cur(ChallengesFrame)--货币数量
         set_itemLevelTips(ChallengesFrame)--等级 => 每周/完成, 提示
+        set_check_Show_Spell_Port()--传送门, 启用/禁用
         self2:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
     end)
-
     ChallengesFrame.sel:SetScript("OnEnter",function(self2)
             local mapIDs = {}
             for _, v in pairs( (C_ChallengeMode.GetMapTable() or {})) do
@@ -1174,12 +1216,13 @@ local function Init()
             e.tips:Hide()
     end)
 
+    
+
     if ChallengesFrame.WeeklyInfo and ChallengesFrame.WeeklyInfo.Child then--隐藏, 赛季最佳
         if ChallengesFrame.WeeklyInfo.Child.SeasonBest then
             ChallengesFrame.WeeklyInfo.Child.SeasonBest:SetText('')
         end
    end
-
 
    ChallengesFrame.WoWKeystones= e.Cstr(ChallengesFrame)--最右边, 数据
     if IsAddOnLoaded('RaiderIO') and RaiderIO_ProfileTooltip then
@@ -1188,13 +1231,14 @@ local function Init()
         ChallengesFrame.WoWKeystones:SetPoint('TOPLEFT', ChallengesFrame, 'TOPRIGHT', 2, -10)
     end
 
-
+    set_check_Show_Spell_Port()--传送门, 启用/禁用, 要放在Update前面
     Kill(ChallengesFrame)--副本PVP团本
     hooksecurefunc(ChallengesFrame, 'Update', set_Update)
     Affix()
     All(ChallengesFrame)--所有记录   
     Cur(ChallengesFrame)--货币数量
     set_itemLevelTips(ChallengesFrame)--等级 => 每周/完成, 提示
+
 
     if ChallengesFrame.WeeklyInfo and ChallengesFrame.WeeklyInfo.Child then
         if ChallengesFrame.WeeklyInfo.Child.Description and ChallengesFrame.WeeklyInfo.Child.Description:IsVisible() then
@@ -1206,8 +1250,6 @@ local function Init()
             end
         end
     end
-
-
 end
 
 
