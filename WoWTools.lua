@@ -21,8 +21,8 @@ local function GetWeek()--周数
     return week
 end
 
-local LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp'
-local RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp'
+e.LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'e.LeftButtonDown' or 'LeftButtonUp'
+e.RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'e.RightButtonDown' or 'RightButtonUp'
 
 
 e.LoadDate= function(tab)--e.LoadDate({id=, type=''})--加载 item quest spell
@@ -560,7 +560,7 @@ function e.Cbtn(self, tab)--type, icon, name, size
             end
         end
     end
-    button:RegisterForClicks(LeftButtonDown, RightButtonDown)
+    button:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
     button:EnableMouseWheel(true)
     if tab.size then
         button:SetSize(tab.size[1], tab.size[2])
@@ -808,9 +808,9 @@ e.Cbtn2= function(name, parent, showTexture, rightClick)
     local button= CreateFrame("Button", name, parent or UIParent, "SecureActionButtonTemplate")
     button:SetSize(30, 30)
     if rightClick then
-        button:RegisterForClicks(LeftButtonDown, RightButtonDown)
+        button:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
     elseif rightClick~=false then
-        button:RegisterForClicks(LeftButtonDown)
+        button:RegisterForClicks(e.LeftButtonDown)
     end
     button:EnableMouseWheel(true)
 

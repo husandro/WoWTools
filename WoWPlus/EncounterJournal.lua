@@ -1165,6 +1165,51 @@ local function Init()--冒险指南界面
             EncounterJournal.creatureDisplayIDText:SetText(text or '')
         end
     end)
+
+    hooksecurefunc(EncounterJournalMonthlyActivitiesFrame.ScrollBox, 'SetScrollTargetOffset', function(self2)
+        if Save.hideEncounterJournal then
+            return
+        end
+        for _, btn in pairs(self2:GetFrames()) do
+            if not btn.showPerksActivityID then
+                btn:HookScript('OnEnter', function(self3)
+                    if self3.id and not Save.hideEncounterJournal then
+                        e.tips:AddLine(' ')
+                        e.tips:AddDoubleLine('perksActivityID', self3.id)
+                        e.tips:AddDoubleLine((self3.completed and '|cff606060' or '|cff00ff00')..(e.onlyChinese and '追踪' or TRACKING), e.Icon.left)
+                        e.tips:AddDoubleLine((not C_PerksActivities.GetPerksActivityChatLink(self3.id) and '|cff606060' or '|cff00ff00')..(e.onlyChinese and '超链接' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK), e.Icon.right)
+                        e.tips:AddDoubleLine(id, addName)
+                        e.tips:Show()
+                    end
+                end)
+
+                btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
+                btn:HookScript('OnClick', function(self3, d)
+                    if IsModifierKeyDown() or not self3.id or Save.hideEncounterJournal then
+                        return
+                    end
+                    if d=='RightButton' then
+                        local link=C_PerksActivities.GetPerksActivityChatLink(self3.id)
+                        if link then
+                            if ChatEdit_GetActiveWindow() then
+                                securecall(ChatEdit_InsertLink, link)
+                            else
+                                securecall(ChatFrame_OpenChat, link)
+                            end
+                        end
+                    elseif d=='LeftButton' then
+                        if self3.tracked then
+                            C_PerksActivities.RemoveTrackedPerksActivity(self3.id);
+                        elseif not self3.completed then
+                            C_PerksActivities.AddTrackedPerksActivity(self3.id);
+                        end
+                    end
+                end)
+
+                btn.showPerksActivityID= true
+            end
+        end
+    end)
 end
 
 --###########

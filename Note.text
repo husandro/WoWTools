@@ -46,6 +46,12 @@ if IsModifiedClick("CHATLINK") then
     ChatEdit_InsertLink(spellLink);
 end
 
+if ChatEdit_GetActiveWindow() then
+    securecall(ChatEdit_InsertLink, link)
+else
+    securecall(ChatFrame_OpenChat, link)
+end
+
 SetItemButtonTextureVertexColor(button, 1.0, 1.0, 1.0);
 SetItemButtonNormalTextureVertexColor(button, 1.0, 1.0, 1.0);
 

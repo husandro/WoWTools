@@ -283,7 +283,7 @@ local function set_perksActivitiesLastPoints_CVar()--贸易站, 点数
     end
 end
 local function set_perksActivitiesLastPoints_Event()
-    if Save.perksPoints then
+    if Save.perksPoints and not ( IsTrialAccount() or IsVeteranTrialAccount()) then
         Labels.perksPoints= create_Set_lable(button, 'perksPoints')--建立,或设置,Labels
         panel:RegisterEvent('CVAR_UPDATE')
         set_perksActivitiesLastPoints_CVar()
@@ -296,7 +296,10 @@ local function set_perksActivitiesLastPoints_Event()
 end
 
 
-local function set_Point()--设置位置
+--#######
+--设置位置
+--#######
+local function set_Point()
     if Save.point then
         button:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
     else
