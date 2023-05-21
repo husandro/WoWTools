@@ -492,6 +492,9 @@ local function set_check_Show_Spell_Port()--传送门, 启用/禁用
         btn:SetScript('OnClick', function()
             Save.showSpellPort= not Save.showSpellPort and true or nil
             securecallfunction(ChallengesFrame.Update,ChallengesFrame)
+            if not Save.showSpellPort then
+                print(id, addName, e.GetEnabeleDisable(Save.showSpellPort), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            end
         end)
         btn:SetScript('OnLeave', function() e.tips:Hide() end)
         btn:SetScript('OnEnter', function(self)
@@ -499,9 +502,11 @@ local function set_check_Show_Spell_Port()--传送门, 启用/禁用
             if e.onlyChinese then
                 e.tips:AddDoubleLine('挑战20层','限时传送门')
                 e.tips:AddDoubleLine('如果出现错误', '请禁用此功能')
+                e.tips:AddDoubleLine('显示/隐藏'..e.Icon.left, e.GetEnabeleDisable(Save.showSpellPort))
             else
                 e.tips:AddLine(format(UNITNAME_SUMMON_TITLE14, CHALLENGE_MODE..' (20) '))
                 e.tips:AddDoubleLine(ERRORS..'('..SHOW..')', DISABLE)
+                e.tips:AddDoubleLine(SHOW..'/'..HIDE..e.Icon.left, e.GetEnabeleDisable(Save.showSpellPort))
             end
             e.tips:Show()
         end)
