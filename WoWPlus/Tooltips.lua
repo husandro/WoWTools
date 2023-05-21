@@ -1756,6 +1756,41 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     end
                 end
             end)
+
+        elseif arg1=='Blizzard_EncounterJournal' then
+            hooksecurefunc(EncounterJournalMonthlyActivitiesFrame.ScrollBox, 'SetScrollTargetOffset', function(self2)
+                for _, btn in pairs(self2:GetFrames()) do
+                    if not btn.showPerksActivityID then
+                        btn:HookScript('OnEnter', function(self3)
+                            if self3.id then
+                                e.tips:AddLine(' ')
+                                e.tips:AddDoubleLine('perksActivityID', self3.id)
+                                e.tips:AddDoubleLine(id, addName)
+                                e.tips:Show()
+                            end
+                        end)
+                        btn.showPerksActivityID= true
+                    end
+                end
+            end)
+            --[[
+            dataProvider:Insert({
+				id = activity.ID,
+				name = activity.activityName,
+				description = activity.description,
+				points = activity.thresholdContributionAmount,
+				completed = activity.completed,
+				requirementsList = activity.requirementsList,
+				tracked = activity.tracked,
+				rewardAvailable = not self.allRewardsEarned,
+				pendingComplete = self.pendingComplete[activity.ID],
+				thresholdMax = self.thresholdMax,
+				restricted = restricted,
+				uiPriority = activity.uiPriority,
+			});]]
+            --[[hooksecurefunc(EncounterJournalMonthlyActivitiesFrame, 'UpdateActivities', function()
+                
+            end)--]]
         end
 
     elseif event == "PLAYER_LOGOUT" then

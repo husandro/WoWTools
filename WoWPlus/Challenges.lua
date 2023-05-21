@@ -1034,13 +1034,14 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                         for bag=0, NUM_BAG_SLOTS do
                             for slot=1, C_Container.GetContainerNumSlots(bag) do
                                 local info = C_Container.GetContainerItemInfo(bag, slot)
-                                if info and C_Item.IsItemKeystoneByID(info.hyperlink) then
+                                if info and info.itemID and C_Item.IsItemKeystoneByID(info.itemID) then
                                     e.tips:SetBagItem(bag, slot)
+                                    break
                                 end
-                                break
                             end
                         end
                         e.tips:Show()
+                        print(id,addName)
                     end)
                     frame.currentKey:SetScript('OnLeave', function() e.tips:Hide() end)
                 end
