@@ -20,37 +20,7 @@ local affixSchedule = {-- AngryKeystones Schedule Dragonflight Season 1,史诗�
 	[9]  = { [1]=11,  [2]=13,  [3]=10, }, -- Fortified | Bursting | Explosive
 	[10] = { [1]=7,   [2]=3,   [3]=9,  }, -- Tyrannical | Bolstering | Volcanica
 }
---[[
-local EncounterJournal_Maps={--[mapChallengeModelID]= journalInstanceID
-    [2]= 313,--青龙寺
-    [400]= 1198,--诺库德阻击战
-    [200]= 721,--[英灵殿]
-    [402]= 1201,--[艾杰斯亚学院]
-    [210]= 800,--[群星庭院]
-    [399]= 1202,--[红玉新生法池]
-    [401]= 1203;--[碧蓝魔馆]
-    [165]= 537,--[影月墓地]
 
-    [166]= 536,--暗轨之路(车站)
-    [391]= 1194,--街头商贩之路(天街)
-    [392]= 1194,--街头商贩之路(天街)
-    [370]= 1178,--机械王子之路(麦卡贡)
-    [369]= 1178,--机械王子之路(麦卡贡)
-    [169]= 558,--铁船之路(码头)
-    [227]= 860,--堕落守护者之路(卡拉赞)
-    [234]= 860,--堕落守护者之路(卡拉赞)
-
-    [438]= 68,--旋云之巅
-    [403]= 1197,--奥达曼：提尔的遗产
-    [404]= 1199,--奈萨鲁斯
-    [405]= 1196,--蕨皮山谷
-
-    [406]=1204,--注能大厅
-    [251]=1022,--地渊孢林
-    [245]=1001,--自由镇
-    [206]=767,--奈萨里奥的巢穴
-}
-]]
 local function get_Spell_MapChallengeID(mapChallengeID)
     local tabs={
         {spell=396129, ins=1196, map=405},--传送：蕨皮山谷
@@ -285,7 +255,6 @@ local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     end)
 
     frame.party=e.Cstr(frame)--队伍信息
-    --frame.party:SetPoint('LEFT', 15, -50)
     frame.party:SetPoint('BOTTOMLEFT', frame, 'TOPLEFT')
 
     frame:HookScript('OnShow', function()
@@ -503,20 +472,25 @@ end
 
 
 local function set_Spell_Port(self)--传送门
-    
+    if Save.hide then
+        if self.spell then
+            self.spell:SetShown(false)
+        end
+        return
+    end
     local spellID= get_Spell_MapChallengeID(self.mapID)
     if spellID then
+        e.LoadDate({id= spellID, type='spell'})--加载 item quest spell
         if not self.spell then
             --[[self.spell=CreateFrame("Button", nil, self, 'SecureActionButtonTemplate')
             self.spell:SetHighlightAtlas('Forge-ColorSwatchSelection')
             self.spell:SetPushedTexture('Interface\\Buttons\\UI-Quickslot-Depress')
             self.spell:RegisterForClicks("LeftButtonDown")--]]
-            local h=self:GetWidth()/2
+            local h=self:GetWidth()/3
             self.spell= e.Cbtn(self, {type=true, size={h, h}})
             self.spell:SetAttribute("type", "spell")
             self.spell:SetAttribute( "spell", spellID)
             self.spell:SetPoint('TOPRIGHT')
-            
             if IsSpellKnown(spellID) then--加个外框
                 self.spell.tex=self.spell:CreateTexture(nil, 'OVERLAY')
                 self.spell.tex:SetAllPoints(self.spell)
@@ -534,11 +508,15 @@ local function set_Spell_Port(self)--传送门
             end)
             self.spell:SetScript("OnLeave",function() e.tips:Hide() end)
         end
-        if IsSpellKnown(spellID) then
+        local icon= GetSpellTexture(spellID) --IsSpellKnown(spellID) and GetSpellTexture(spellID)
+        if icon then
             self.spell:SetNormalTexture(GetSpellTexture(spellID))
         else
             self.spell:SetNormalAtlas('WarlockPortalHorde')
         end
+    end
+    if self.spell then
+        self.spell:SetShown(true)
     end
 end
 

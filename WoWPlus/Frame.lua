@@ -18,7 +18,7 @@ local panel= CreateFrame("Frame")
 --设置, 移动, 位置
 --###############
 local function set_Frame_Point(self, name)--设置, 移动, 位置
-    if not Save.disabledMove then
+    if not Save.disabledMove and self then
         name= name or self.FrameName or self:GetName()
         if name then
             local p= Save.point[name]
@@ -626,7 +626,7 @@ local function Init_Move()
 
     --if Save.SavePoint then--在指定位置,显示
     hooksecurefunc('UpdateUIPanelPositions',function(currentFrame)
-        set_Move_Frame(currentFrame)
+        set_Frame_Point(currentFrame)
     end)
     --end
 
