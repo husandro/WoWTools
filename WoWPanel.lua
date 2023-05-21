@@ -270,8 +270,55 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             textTips:SetPoint('TOP',-70,10)
             textTips:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '启用' or ENABLE)..'|r/|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE))
 
-         
-
+            if e.Player.region==1 or e.Player.region==3 then--US EU realm提示
+                local realmCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+                realmCheck:SetPoint('LEFT', check.text, 'RIGHT',8,0)
+                realmCheck:SetChecked(not Save.disabledRealm)
+                realmCheck.Text:SetText(e.onlyChinese and '服务器' or 'Realm')
+                realmCheck:SetScript('OnClick', function()
+                    Save.disabledRealm= not Save.disabledRealm and true or nil
+                    if Save.disabledRealm then
+                        e.Get_Region(nil, nil, nil, true)
+                        e.Get_Region=function() end
+                    else
+                        print(id, addName, e.GetEnabeleDisable(true), '|cffff00ff', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    end
+                end)
+                realmCheck:SetScript('OnLeave', function() e.tips:Hide() end)
+                realmCheck:SetScript('OnEnter', function(self2)
+                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                    e.tips:ClearLines()
+                    local tabs= e.Player.region==3 and
+                                {
+                                    ["deDE"] = {col="|cFF00FF00DE|r", text='DE', realm="Germany"},
+                                    ["frFR"] = {col="|cFF00FFFFFR|r", text='FR', realm="France"},
+                                    ["enGB"] = {col="|cFFFF00FFGB|r", text='GB', realm="Great Britain"},
+                                    ["itIT"] = {col="|cFFFFFF00IT|r", text='IT', realm="Italy"},
+                                    ["esES"] = {col="|cFFFFBF00ES|r", text='ES', realm="Spain"},
+                                    ["ruRU"] = {col="|cFFCCCCFFRU|r" ,text='RU', realm="Russia"},
+                                    ["ptBR"] = {col="|cFF8fce00PT|r", text='PT', realm="Portuguese"},
+                                }
+                            or e.Player.region==1 and
+                                {
+                                    ["oce"] = {col="|cFF00FF00OCE|r", text='CE', realm="Oceanic"},
+                                    ["usp"] = {col="|cFF00FFFFUSP|r", text='USP', realm="US Pacific"},
+                                    ["usm"] = {col="|cFFFF00FFUSM|r", text='USM', realm="US Mountain"},
+                                    ["usc"] = {col="|cFFFFFF00USC|r", text='USC', realm="US Central"},
+                                    ["use"] = {col="|cFFFFBF00USE|r", text='USE', realm="US East"},
+                                    ["mex"] = {col="|cFFCCCCFFMEX|r", text='MEX', realm="Mexico"},
+                                    ["bzl"] = {col="|cFF8fce00BZL|r", text='BZL', realm="Brazil"},
+                                }
+                            or {}
+                    for text, tab in pairs(tabs) do
+                        e.tips:AddDoubleLine(tab.realm.. ' ('..tab.text..') '.. text, tab.col)
+                    end
+                    e.tips:Show()
+                end)
+                if Save.disabledRealm then
+                    e.Get_Region(nil, nil, nil, true)
+                    e.Get_Region=function() end
+                end
+            end
 
             panel:UnregisterEvent('ADDON_LOADED')
         end

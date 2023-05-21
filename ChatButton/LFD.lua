@@ -572,7 +572,7 @@ local function set_LFGPlus()--预创建队伍增强
                 if self2.realm then
                     e.tips:SetOwner(self2, "ANCHOR_LEFT")
                     e.tips:ClearLines()
-                    e.tips:AddDoubleLine(e.onlyChinese and '服务器' or VAS_REALM_LABEL or 'Server', '|cnGREEN_FONT_COLOR:'..self2.realm)
+                    e.tips:AddDoubleLine(e.onlyChinese and '服务器' or 'Realm', '|cnGREEN_FONT_COLOR:'..self2.realm)
                     e.tips:AddDoubleLine(id, addName)
                     e.tips:Show()
                 end
