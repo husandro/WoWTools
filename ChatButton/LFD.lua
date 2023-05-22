@@ -1043,6 +1043,7 @@ end
 
 --#######
 --自动ROLL
+--GroupLootFrame.lua --frame.rollTime  frame.Timer
 local function set_RollOnLoot(rollID, rollType, link)
     RollOnLoot(rollID, rollType)
     link= link or GetLootRollItemLink(rollID)
@@ -1053,19 +1054,26 @@ local function set_RollOnLoot(rollID, rollType, link)
             link)
     end)
 end
-local function set_ROLL_Check(rollID)
+local function set_Timer_Text(frame)--提示，剩余时间
+    if frame and frame.Timer and not frame.Timer.Text and frame:IsShown() then
+        frame.Timer.Text= e.Cstr(frame.Timer)
+        frame.Timer.Text:SetPoint('RIGHT')
+        frame.Timer:HookScript("OnUpdate", function(self2)
+            self2.Text:SetText(SecondsToClock(self2:GetValue()))
+        end)
+    end
+end
+hooksecurefunc('GroupLootContainer_AddFrame', function(_, frame)
+    local rollID= frame and frame.rollID
     if not Save.autoROLL or not rollID then
+        set_Timer_Text(frame)--提示，剩余时间
         return
     end
 
     local _, _, _, _, _, canNeed = GetLootRollItemInfo(rollID)
     local link = GetLootRollItemLink(rollID)
-    if not link then
-        set_RollOnLoot(rollID, canNeed and 1 or 2, link)
-        return
-    end
 
-    if not canNeed or select(10, GetInstanceInfo()) then
+    if not canNeed or select(10, GetInstanceInfo()) or not link then
         set_RollOnLoot(rollID, canNeed and 1 or 2, link)
         return
     end
@@ -1125,19 +1133,8 @@ local function set_ROLL_Check(rollID)
         set_RollOnLoot(rollID, 1, link)
         return
     end
-end
 
-hooksecurefunc('GroupLootContainer_AddFrame', function(_, frame)--GroupLootFrame.lua
-    if frame and frame.rollID then--frame.rollTime  frame.Timer
-        set_ROLL_Check(frame.rollID)
-        if frame and not frame.Timer.Text and frame:IsShown() then
-            frame.Timer.Text=e.Cstr(frame.Timer)
-            frame.Timer.Text:SetPoint('RIGHT')
-            frame.Timer:HookScript("OnUpdate", function(self2)
-                self2.Text:SetText(SecondsToClock(self2:GetValue()))
-            end)
-        end
-    end
+    set_Timer_Text(frame)--提示，剩余时间
 end)
 
 --####
