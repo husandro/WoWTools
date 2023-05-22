@@ -1058,9 +1058,10 @@ local function set_ROLL_Check(rollID)
         return
     end
 
-    local _, _, _, _, _, canNeed, canGreed = GetLootRollItemInfo(rollID)
+    local _, _, _, _, _, canNeed = GetLootRollItemInfo(rollID)
     local link = GetLootRollItemLink(rollID)
-    if not link or not(canGreed and canNeed) then
+    if not link then
+        set_RollOnLoot(rollID, canNeed and 1 or 2, link)
         return
     end
 
@@ -1126,23 +1127,17 @@ local function set_ROLL_Check(rollID)
     end
 end
 
-hooksecurefunc('GroupLootFrame_OnShow', function(self)
-    print(self.rollID,'GroupLootFrame_OnShow', self.rollID and GetLootRollItemLink(self.rollID), self.Timer)
-end)
-
 hooksecurefunc('GroupLootContainer_AddFrame', function(_, frame)--GroupLootFrame.lua
-    print(_,frame,'GroupLootContainer_AddFrame', frame and frame.rollID and GetLootRollItemLink(frame.rollID))
-   -- if frame and frame.rollID then--frame.rollTime  frame.Timer
-        --set_ROLL_Check(frame.rollID)
+    if frame and frame.rollID then--frame.rollTime  frame.Timer
+        set_ROLL_Check(frame.rollID)
         if frame and not frame.Timer.Text and frame:IsShown() then
             frame.Timer.Text=e.Cstr(frame.Timer)
             frame.Timer.Text:SetPoint('RIGHT')
             frame.Timer:HookScript("OnUpdate", function(self2)
-                --print(self2:GetValue(),'GroupLootContainer_AddFrame')
-                self2.Text:SetText(format('%i', self2:GetValue()))
+                self2.Text:SetText(SecondsToClock(self2:GetValue()))
             end)
         end
-    --end
+    end
 end)
 
 --####
@@ -1268,7 +1263,7 @@ local function Init()
 
         local info=e.GetTooltipData({bag=nil, guidBank=nil, merchant=nil, inventory=nil, hyperLink=itemLink, itemID=nil, text={}, onlyText=nil, wow=nil, onlyWoW=nil, red=true, onlyRed=true})--物品提示，信息
 
-        e.Set_Item_Stats(btn.Item, not info.red and itemLink, {point=btn.Item.IconBorder})--设置，物品，4个次属性，套装，装等
+        e.Set_Item_Stats(btn.Item, not info.red and itemLink, {point= btn.Item and btn.Item.IconBorder})--设置，物品，4个次属性，套装，装等
 
         if itemLink and not info.red then
             if btn.dropInfo.currentLeader and not btn.dropInfo.currentLeader.isSelf then--建立,一个密语图标
@@ -1548,7 +1543,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
                 panel:RegisterEvent('PLAYER_ENTERING_WORLD')
                 panel:RegisterEvent('ISLAND_COMPLETED')
                 panel:RegisterEvent('LFG_UPDATE_RANDOM_INFO')
-                panel:RegisterEvent('START_LOOT_ROLL')
+                --panel:RegisterEvent('START_LOOT_ROLL')
                 panel:RegisterEvent('PVP_MATCH_COMPLETE')
                 panel:RegisterEvent('CORPSE_IN_RANGE')--仅限战场，释放, 复活
                 panel:RegisterEvent('PLAYER_DEAD')
@@ -1605,9 +1600,9 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
     elseif event=='LFG_UPDATE_RANDOM_INFO' then
         setHoliday()--节日, 提示, button.texture
 
-    elseif event=='START_LOOT_ROLL' then
+    --elseif event=='START_LOOT_ROLL' then
         --print(event,arg1)
-        set_ROLL_Check(arg1)
+      --  set_ROLL_Check(arg1)
 
     elseif event=='CORPSE_IN_RANGE' or event=='PLAYER_DEAD' or event=='AREA_SPIRIT_HEALER_IN_RANGE' then--仅限战场，释放, 复活
         if Save.ReMe and (C_PvP.IsBattleground() or C_PvP.IsArena()) then
