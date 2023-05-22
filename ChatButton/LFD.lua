@@ -1063,7 +1063,7 @@ local function set_Timer_Text(frame)--提示，剩余时间
         end)
     end
 end
-hooksecurefunc('GroupLootContainer_AddFrame', function(_, frame)
+local function set_ROLL_Check(frame)
     local rollID= frame and frame.rollID
     if not Save.autoROLL or not rollID then
         set_Timer_Text(frame)--提示，剩余时间
@@ -1135,7 +1135,9 @@ hooksecurefunc('GroupLootContainer_AddFrame', function(_, frame)
     end
 
     set_Timer_Text(frame)--提示，剩余时间
-end)
+end
+
+
 
 --####
 --初始
@@ -1355,7 +1357,9 @@ local function Init()
         set_LFGPlus()
     end
 
-    --hooksecurefunc('GroupLootFrame_OnShow', set_GroupLootFrame_OnShow)
+    hooksecurefunc('GroupLootContainer_AddFrame', function(_, frame)--自动ROLL
+        set_ROLL_Check(frame)
+    end)
 end
 
 
@@ -1537,6 +1541,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
                 Init()
                 panel:RegisterEvent("PLAYER_LOGOUT")
                 panel:RegisterEvent('LFG_COMPLETION_REWARD')
+                panel:RegisterEvent('SCENARIO_COMPLETED')
                 panel:RegisterEvent('PLAYER_ENTERING_WORLD')
                 panel:RegisterEvent('ISLAND_COMPLETED')
                 panel:RegisterEvent('LFG_UPDATE_RANDOM_INFO')
@@ -1561,17 +1566,22 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
             WoWToolsSave[INSTANCE]=wowSave
         end
 
-    elseif event=='LFG_COMPLETION_REWARD' or event=='LOOT_CLOSED' then--自动离开
-        local scenarioInfo = C_ScenarioInfo.GetScenarioInfo()
-        if Save.leaveInstance and (IsLFGComplete() or scenarioInfo.isComplete) and select(10, GetInstanceInfo()) then
-            e.PlaySound()--播放, 声音
-            ExitIns=true
-            local leaveSce=IsInGroup(LE_PARTY_CATEGORY_HOME) and 10 or sec
-            C_Timer.After(leaveSce, function()
-                exitInstance()
-            end)
-            StaticPopup_Show(addName..'ExitIns')
-            e.Ccool(StaticPopup1, nil, leaveSce, nil, true)--冷却条
+    elseif event=='LFG_COMPLETION_REWARD' or event=='LOOT_CLOSED' or event=='SCENARIO_COMPLETED' then--自动离开
+        if Save.leaveInstance then
+            local scenarioInfo = C_ScenarioInfo.GetScenarioInfo()
+            local isCompleteScenario= scenarioInfo and scenarioInfo.isComplete
+            local lfgComplete= select(10, GetInstanceInfo()) and IsLFGComplete()
+            if isCompleteScenario or lfgComplete then
+                e.PlaySound()--播放, 声音
+
+                local leaveSce= (lfgComplete and Save.autoROLL) and sec or 30
+                ExitIns=true
+                C_Timer.After(leaveSce, function()
+                    exitInstance()
+                end)
+                StaticPopup_Show(addName..'ExitIns')
+                e.Ccool(StaticPopup1, nil, leaveSce, nil, true)--冷却条
+            end
         end
 
     elseif event=='PLAYER_ENTERING_WORLD' then

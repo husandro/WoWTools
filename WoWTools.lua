@@ -584,6 +584,11 @@ e.Ccool=function(self, start, duration, modRate, HideCountdownNumbers, Reverse, 
         if SwipeTexture then
             self.cooldown:SetSwipeTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')--圆框架
         end
+        self:HookScript('OnHide', function(self2)
+            if self2.cooldown then
+                self2.cooldown:Clear()
+            end
+        end)
     end
     start=start or GetTime()
     self.cooldown:SetCooldown(start, duration, modRate)
