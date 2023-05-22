@@ -56,7 +56,7 @@ local function Du(self, slot, link) --耐久度
             if self2.du then
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine((e.onlyChinese and '耐久度' or DURABILITY),'%'..self2.du)
+                e.tips:AddDoubleLine((e.onlyChinese and '耐久度' or DURABILITY),format('%.1f%', self2.du))
                 e.tips:Show()
             end
         end)
@@ -74,6 +74,7 @@ local function Du(self, slot, link) --耐久度
 
     if not self.slotText then
         self.slotText=e.Cstr(self.du, {size=8})
+        self.slotText:SetAlpha(0.5)
         self.slotText:EnableMouse(true)
         self.slotText:SetScript('OnEnter', function(self2)
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
