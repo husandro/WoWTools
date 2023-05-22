@@ -1567,10 +1567,10 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
         end
 
     elseif event=='LFG_COMPLETION_REWARD' or event=='LOOT_CLOSED' or event=='SCENARIO_COMPLETED' then--自动离开
-        if Save.leaveInstance then
+        if Save.leaveInstance and select(10, GetInstanceInfo()) then
             local scenarioInfo = C_ScenarioInfo.GetScenarioInfo()
             local isCompleteScenario= scenarioInfo and scenarioInfo.isComplete
-            local lfgComplete= select(10, GetInstanceInfo()) and IsLFGComplete()
+            local lfgComplete=  IsLFGComplete()
             if isCompleteScenario or lfgComplete then
                 e.PlaySound()--播放, 声音
 

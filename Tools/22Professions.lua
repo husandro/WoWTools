@@ -81,11 +81,6 @@ local function set_Blizzard_TrainerU()
             btn:SetText(btn.all..' '..btn.name)
         end
         btn:SetShown(show and not Save.disabledClassTrainer)
-
-
-        --[[for _, frame in pairs(ClassTrainerFrame.ScrollBox:GetFrames()) do
-            print(_, frame, frame.skillIndex, frame.isTradeSkill )
-        end]]
 	end)
 
     local btn2= e.Cbtn(ClassTrainerFrame, {icon=true})
