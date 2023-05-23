@@ -21,8 +21,8 @@ local function GetWeek()--周数
     return week
 end
 
-local LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp'
-local RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp'
+e.LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'e.LeftButtonDown' or 'LeftButtonUp'
+e.RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'e.RightButtonDown' or 'RightButtonUp'
 
 
 e.LoadDate= function(tab)--e.LoadDate({id=, type=''})--加载 item quest spell
@@ -129,8 +129,8 @@ e.GetUnitRaceInfo=function(tab)--e.GetUnitRaceInfo({unit=nil, guid=nil, race=nil
     end
 end
 
-e.Class=function(unit, class, reAltlas)--职业图标
-    class=class or unit and select(2, UnitClass(unit))
+function e.Class(unit, class, reAltlas)--职业图标
+    class= unit and select(2, UnitClass(unit)) or class
     if class then
         if class=='EVOKER' then
             class='classicon-evoker'
@@ -534,7 +534,7 @@ e.Cedit= function(self, width, height)
     return editBox
 end
 
-e.Cbtn= function(self, tab)--type, icon, name, size
+function e.Cbtn(self, tab)--type, icon, name, size
     tab=tab or {}
     self= self or UIParent
     local button
@@ -560,7 +560,7 @@ e.Cbtn= function(self, tab)--type, icon, name, size
             end
         end
     end
-    button:RegisterForClicks(LeftButtonDown, RightButtonDown)
+    button:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
     button:EnableMouseWheel(true)
     if tab.size then
         button:SetSize(tab.size[1], tab.size[2])
@@ -584,6 +584,11 @@ e.Ccool=function(self, start, duration, modRate, HideCountdownNumbers, Reverse, 
         if SwipeTexture then
             self.cooldown:SetSwipeTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')--圆框架
         end
+        self:HookScript('OnHide', function(self2)
+            if self2.cooldown then
+                self2.cooldown:Clear()
+            end
+        end)
     end
     start=start or GetTime()
     self.cooldown:SetCooldown(start, duration, modRate)
@@ -808,9 +813,9 @@ e.Cbtn2= function(name, parent, showTexture, rightClick)
     local button= CreateFrame("Button", name, parent or UIParent, "SecureActionButtonTemplate")
     button:SetSize(30, 30)
     if rightClick then
-        button:RegisterForClicks(LeftButtonDown, RightButtonDown)
+        button:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
     elseif rightClick~=false then
-        button:RegisterForClicks(LeftButtonDown)
+        button:RegisterForClicks(e.LeftButtonDown)
     end
     button:EnableMouseWheel(true)
 
@@ -1603,6 +1608,7 @@ local regionColor = {--https://wago.io/6-GG3RMcC
     ["esES"] = {col="|cFFFFBF00ES|r", text='ES', realm="Spain"},
     ["ruRU"] = {col="|cFFCCCCFFRU|r" ,text='RU', realm="Russia"},
     ["ptBR"] = {col="|cFF8fce00PT|r", text='PT', realm="Portuguese"},
+
     ["oce"] = {col="|cFF00FF00OCE|r", text='CE', realm="Oceanic"},
     ["usp"] = {col="|cFF00FFFFUSP|r", text='USP', realm="US Pacific"},
     ["usm"] = {col="|cFFFF00FFUSM|r", text='USM', realm="US Mountain"},
@@ -1611,9 +1617,14 @@ local regionColor = {--https://wago.io/6-GG3RMcC
     ["mex"] = {col="|cFFCCCCFFMEX|r", text='MEX', realm="Mexico"},
     ["bzl"] = {col="|cFF8fce00BZL|r", text='BZL', realm="Brazil"},
 }
-e.Get_Region= function(server, guid, unit)--e.Get_Region(server, guid, unit)--服务器，EU， US {col=, text=, realm=}
-    server= server
-            or unit and ((select(2, UnitName(unit)) or e.Player.realm))
-            or guid and select(7, GetPlayerInfoByGUID(guid))
-    return server and Realms[server] and regionColor[Realms[server]]
+e.Get_Region= function(server, guid, unit, disabled)--e.Get_Region(server, guid, unit)--服务器，EU， US {col=, text=, realm=}
+    if disabled then
+        regionColor={}
+        Realms={}
+    else
+        server= server
+                or unit and ((select(2, UnitName(unit)) or e.Player.realm))
+                or guid and select(7, GetPlayerInfoByGUID(guid))
+        return server and Realms[server] and regionColor[Realms[server]]
+    end
 end

@@ -95,27 +95,7 @@ end
 local function InitMenu(self, level, type)
     local info
     if type then
-        info={
-            text= e.onlyChinese and '全选' or  MENU_EDIT_SELECT_ALL or ALL,--全选
-            notCheckable=true,
-            func=function()
-                Save.Channels={}
-                print(id, addName, e.onlyChinese and '聊天频道' or CHAT_CHANNELS,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-        info={
-            text= e.onlyChinese and '清除' or  SLASH_STOPWATCH_PARAM_STOP2,--全清
-            notCheckable=true,
-            func=function()
-                for _, channel in pairs(Channels) do
-                    Save.Channels[channel]=true
-                end
-                print(id, addName, e.onlyChinese and '聊天频道' or CHAT_CHANNELS,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
+ 
         for _, channel in pairs(Channels) do
             info={
                 text=_G[channel] or channel,
@@ -130,9 +110,33 @@ local function InitMenu(self, level, type)
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
+        info={
+            text= e.onlyChinese and '全选' or  MENU_EDIT_SELECT_ALL or ALL,--全选
+            notCheckable=true,
+            func=function()
+                Save.Channels={}
+                print(id, addName, e.onlyChinese and '聊天频道' or CHAT_CHANNELS,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        info={
+            text= e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,--全清
+            icon= 'bags-button-autosort-up',
+            notCheckable=true,
+            func=function()
+                for _, channel in pairs(Channels) do
+                    Save.Channels[channel]=true
+                end
+                print(id, addName, e.onlyChinese and '聊天频道' or CHAT_CHANNELS,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        
     else
         info={
             text= e.onlyChinese and '进入战斗' or ENTERING_COMBAT,--进入战斗时, 隐藏
+            icon= 'Warfronts-BaseMapIcons-Horde-Barracks-Minimap',
             checked=not Save.notHideCombat,
             func=function() Save.notHideCombat = not Save.notHideCombat and true or nil setframeEvent() end,
             tooltipOnButton=true,
@@ -142,6 +146,7 @@ local function InitMenu(self, level, type)
 
         info={
             text= e.onlyChinese and '移动' or NPE_MOVE,--移动时, 隐藏
+            icon= 'transmog-nav-slot-feet',
             checked=not Save.notHideMoving,
             func=function() Save.notHideMoving = not Save.notHideMoving and true or nil setframeEvent() end,
             tooltipOnButton=true,
@@ -151,6 +156,7 @@ local function InitMenu(self, level, type)
 
         info={
             text= e.onlyChinese and '过移图标时' or ENTER_LFG..EMBLEM_SYMBOL,--过移图标时,显示
+            icon= 'newplayertutorial-drag-cursor',
             checked=Save.showEnter,
             func=function() Save.showEnter = not Save.showEnter and true or nil end,
             tooltipOnButton=true,
@@ -168,6 +174,7 @@ local function InitMenu(self, level, type)
         e.LibDD:UIDropDownMenu_AddButton(info, level)
         info={
             text= e.onlyChinese and '重置' or RESET,
+            icon= 'bags-button-autosort-up',
             notCheckable=true,
             func=function() Save=nil e.Reload() end,
             tooltipOnButton=true,

@@ -126,10 +126,10 @@ local function set_vigentteButton_Text()
         local info= C_VignetteInfo.GetVignetteInfo(guid)
         if info and info.atlasName and not info.isDead then
             if info.onMinimap then
-                text= text and text..'\n' or ''
+                text= text and text..'|n' or ''
                 text= text..(info.name and '|cnGREEN_FONT_COLOR:'..info.name..'|r' or '')..'|A:'..info.atlasName..':0:0|a'
             elseif info.onWorldMap then
-                text= text and text..'\n' or ''
+                text= text and text..'|n' or ''
                 text= text..(info.name and '|cffff00ff'..info.name..'|r' or '')..'|A:'..info.atlasName..':0:0|a'
             end
         end
@@ -143,7 +143,7 @@ local function set_vigentteButton_Text()
                 if poiInfo and poiInfo.name and poiInfo.atlasName and C_AreaPoiInfo.IsAreaPOITimed(areaPoiID) then
                     local secondsLeft = C_AreaPoiInfo.GetAreaPOISecondsLeft(areaPoiID)
                     if secondsLeft and secondsLeft>0 then
-                        text= text and text..'\n' or ''
+                        text= text and text..'|n' or ''
                         if poiInfo.widgetSetID then
                             local widgets = C_UIWidgetManager.GetAllWidgetsBySetID(poiInfo.widgetSetID) or {}
                             for _,widget in ipairs(widgets) do
@@ -296,7 +296,7 @@ local function Init_Menu(self, level, type)
         checked= C_CVar.GetCVarBool("minimapTrackingShowAll"),
         tooltipOnButton=true,
         tooltipTitle= e.onlyChinese and '显示: 追踪' or SHOW..': '..TRACKING,
-        tooltipText= id..' '..addName..'\n\nCVar minimapTrackingShowAll',
+        tooltipText= id..' '..addName..'|n|nCVar minimapTrackingShowAll',
         func= function()
             C_CVar.SetCVar('minimapTrackingShowAll', not C_CVar.GetCVarBool("minimapTrackingShowAll") and '1' or '0' )
         end
@@ -337,7 +337,7 @@ local function Init_Menu(self, level, type)
     for _, mapID in pairs(uiMapIDsTab) do
         local mapInfo=C_Map.GetMapInfo(mapID)
         if mapInfo and mapInfo.name then
-            mapName= mapName..'\n'..mapInfo.name
+            mapName= mapName..'|n'..mapInfo.name
         end
     end
     info={

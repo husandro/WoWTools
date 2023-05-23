@@ -239,7 +239,7 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
         end
 
         if msg~='' then
-            Text2= Text2~='' and Text2..'\n' or Text2
+            Text2= Text2~='' and Text2..'|n' or Text2
             Text2= Text2..msg..' '
         end
 	end
@@ -493,7 +493,7 @@ local function Init()
         if info and info.eventID then
             text= (info.iconTexture and '|T'..info.iconTexture..':0|t'..info.iconTexture or '')
                 ..'  eventID '..info.eventID
-                ..(info.title and '\n'..info.title or '')
+                ..(info.title and '|n'..info.title or '')
         end
         if text and not CalendarViewHolidayFrame.Text then
             CalendarViewHolidayFrame.Text= e.Cstr(CalendarViewHolidayFrame)

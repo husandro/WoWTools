@@ -136,7 +136,7 @@ local function set_Text_Item()
 
 		local icon= C_Item.GetItemIconByID(itemID)
 		if icon and num>0 then
-			text= text~='' and text..'\n' or text
+			text= text~='' and text..'|n' or text
 			if Save.showID then
 				text= text..itemID
 			end
@@ -168,14 +168,14 @@ local function set_Text()
 		for _, info in pairs(tab) do
 			local text= Get_Currency({id=info.currentID, index=nil, link=nil, soloValue=nil, showIcon=true, showName=Save.nameShow, showID=Save.showID, bit=3, showMax=nil})--货币
 			if text then
-				m= m..text..'\n' or m
+				m= m..text..'|n' or m
 			end
 		end
 	else
 		for index=1, C_CurrencyInfo.GetCurrencyListSize() do
 			local text= Get_Currency({id=nil, index=index, link=nil, soloValue=nil, showIcon=true, showName=Save.nameShow, showID=Save.showID, bit=3, showMax=nil})--货币
 			if text then
-				m= m..text..'\n' or m
+				m= m..text..'|n' or m
 			end
 		end
 	end

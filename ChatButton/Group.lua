@@ -134,8 +134,8 @@ local function InitMenu(self, level, type)--主菜单
                 func=function(_, arg1, arg2)
                     StaticPopupDialogs[id..addName..'CUSTOM']={--区域,设置对话框
                         text=id..'    '..addName
-                            ..'\n\n'..(e.onlyChinese and '自定义发送信息' or (CUSTOM..SEND_MESSAGE))
-                            ..'\n\n|cnGREEN_FONT_COLOR:%s|r\n\n'
+                            ..'|n|n'..(e.onlyChinese and '自定义发送信息' or (CUSTOM..SEND_MESSAGE))
+                            ..'|n|n|cnGREEN_FONT_COLOR:%s|r|n|n'
                             ..(e.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS),
                         whileDead=1,
                         hideOnEscape=1,

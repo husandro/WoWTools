@@ -80,7 +80,7 @@ end
 --添加, 对话框
 --###########
 StaticPopupDialogs[id..addName..'REMOVE']={
-    text=id..' '..addName..'\n\n%s',
+    text=id..' '..addName..'|n|n%s',
     whileDead=1,
     hideOnEscape=1,
     exclusive=1,
@@ -103,7 +103,7 @@ StaticPopupDialogs[id..addName..'REMOVE']={
 }
 
 StaticPopupDialogs[id..addName..'RESETALL']={--重置所有
-    text=id..' '..addName..'\n\n'..RESET_ALL_BUTTON_TEXT..'\n\n'..RELOADUI,
+    text=id..' '..addName..'|n|n'..RESET_ALL_BUTTON_TEXT..'|n|n'..RELOADUI,
     whileDead=1,
     hideOnEscape=1,
     exclusive=1,
@@ -117,7 +117,7 @@ StaticPopupDialogs[id..addName..'RESETALL']={--重置所有
 }
 
 StaticPopupDialogs[id..addName..'ADD']={--添加, 移除
-    text=id..' '..addName..'\n\n%s: %s',
+    text=id..' '..addName..'|n|n%s: %s',
     whileDead=1,
     hideOnEscape=1,
     exclusive=1,

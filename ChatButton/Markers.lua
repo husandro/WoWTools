@@ -1,6 +1,15 @@
 local id, e = ...
 local addName= BINDING_HEADER_RAID_TARGET
-local Save={ autoSet=true, tank=2, tank2=6, healer=1, countdown=7, groupReadyTips=true, markersScale=0.85, markersFrame= e.Player.husandro}
+local Save={
+        autoSet=true,
+        tank=2,
+        tank2=6,
+        healer=1,
+        countdown=7,
+        groupReadyTips=true,
+        markersScale=0.85,
+        markersFrame= e.Player.husandro
+    }
 
 local button
 local panel= CreateFrame("Frame")
@@ -54,8 +63,9 @@ local function setRaidTarget()--设置团队标记
     if num> 0 then
         table.sort(tab, function(a,b) return a.hp<b.hp end)
         setTaget(tab[1].unit, Save.tank)--设置,目标,标记
+
         if num>=2 and Save.tank2~=0 then
-            setTaget(tab[2].unit, Save.tank)--设置,目标,标记
+            setTaget(tab[2].unit, Save.tank2)--设置,目标,标记
         end
     end
 end
@@ -151,19 +161,19 @@ local function setGroupReadyTips(event, arg1, arg2)
             for index= 1, num do
                 local text2=getReadyCheckStatus(unit..index, index)
                 if text2 then
-                    text= (text~='' and text..'\n' or text)..text2
+                    text= (text~='' and text..'|n' or text)..text2
                 end
             end
         else
             for index= 1, num-1 do
                 local text2=getReadyCheckStatus(unit..index, index)
                 if text2 then
-                    text= (text~='' and text..'\n' or text)..text2
+                    text= (text~='' and text..'|n' or text)..text2
                 end
             end
             local text2=getReadyCheckStatus('player', num)
             if text2 then
-                text= (text~='' and text..'\n' or text)..text2
+                text= (text~='' and text..'|n' or text)..text2
             end
         end
         if text~='' and not button.groupReadyTips then
@@ -464,7 +474,7 @@ local function setMarkersFrame()--设置标记, 框架
 
             elseif d=='RightButton' and IsControlKeyDown() then--设置时间
                 StaticPopupDialogs[id..addName..'COUNTDOWN']={--区域,设置对话框
-                    text=id..' '..addName..'\n'..(e.onlyChinese and '就绪' or READY)..'\n\n1 - 3600',
+                    text=id..' '..addName..'|n'..(e.onlyChinese and '就绪' or READY)..'|n|n1 - 3600',
                     whileDead=1,
                     hideOnEscape=1,
                     exclusive=1,
@@ -710,6 +720,7 @@ local function InitMenu(self, level, type)--主菜单
     else
         info={
             text= e.onlyChinese and '自动标记' or (AUTO_JOIN:gsub(JOIN,'')..EVENTTRACE_MARKER)..e.Icon.TANK..e.Icon.HEALER,
+            icon= 'Warfronts-BaseMapIcons-Horde-Workshop-Minimap',
             checked= Save.autoSet,
             disabled= Save.tank==0 and Save.healer==0,
             func=function()
@@ -839,9 +850,9 @@ local function Init()
             if self.autoReadyText then
                 local text=''
                 if Save.autoReady==1 then
-                    text=id..' '..addName..'\n|cnGREEN_FONT_COLOR:'..AUTO_JOIN:gsub(JOIN, '')..READY..'|r'..e.Icon.select2
+                    text=id..' '..addName..'|n|cnGREEN_FONT_COLOR:'..AUTO_JOIN:gsub(JOIN, '')..READY..'|r'..e.Icon.select2
                 elseif Save.autoReady==2 then
-                    text=id..' '..addName..'\n|cnRED_FONT_COLOR:'..AUTO_JOIN:gsub(JOIN, '')..NOT_READY_FEMALE..'|r'..e.Icon.O2
+                    text=id..' '..addName..'|n|cnRED_FONT_COLOR:'..AUTO_JOIN:gsub(JOIN, '')..NOT_READY_FEMALE..'|r'..e.Icon.O2
                 end
                self.autoReadyText:SetText(text)
             end

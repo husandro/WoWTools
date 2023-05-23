@@ -92,7 +92,7 @@ end
 --取得网页，数据链接
 --################
 StaticPopupDialogs["WowheadQuickLinkUrl"] = {
-    text= id..' '..addName..'\n|cffff00ff%s|r |cnGREEN_FONT_COLOR:Ctrl+C |r'..BROWSER_COPY_LINK,
+    text= id..' '..addName..'|n|cffff00ff%s|r |cnGREEN_FONT_COLOR:Ctrl+C |r'..BROWSER_COPY_LINK,
     button1 = e.onlyChinese and '关闭' or CLOSE,
     OnShow = function(self, web)
         self.editBox:SetScript("OnEscapePressed", function(s) s:ClearFocus() s:GetParent():Hide() end)
@@ -794,7 +794,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                 text= text..'(|cnGREEN_FONT_COLOR:'..effectiveLevel..'|r) '
             end
 
-            local info= C_PlayerInfo.GetPlayerMythicPlusRatingSummary(unit)--挑战, 分数
+            info= C_PlayerInfo.GetPlayerMythicPlusRatingSummary(unit)--挑战, 分数
             if info and info.currentSeasonScore and info.currentSeasonScore>0 then
                 text= text..' '..(e.GetUnitRaceInfo({unit=unit, guid=guid, race=raceFile, sex=sex, reAtlas=false}) or '')
                         ..' '..e.Class(nil, classFilename)
@@ -858,6 +858,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                     else
                         if not hideLine  then
                             hideLine=line
+                            line:SetTextColor(r,g,b)
                         else
                             line:SetText('')
                             line:SetShown(false)
@@ -866,6 +867,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                 else
                     if not hideLine then
                         hideLine=line
+                        line:SetTextColor(r,g,b)
                     else
                         line:SetText('')
                         line:SetShown(false)
@@ -892,7 +894,6 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                 self:AddDoubleLine(col..e.Player.LayerText..' '..zone, col..'NPC '..npc, r,g,b, r,g,b)
                 e.Player.Layer=zone
             end
-            
             get_Web_Link({frame=self, type='npc', id=npc, name=name, col=col, isPetUI=false})--取得网页，数据链接 
         end
 
@@ -1126,10 +1127,10 @@ local function Init()
             local _, name, icon, _, unparsedDescription = C_PetBattles.GetAbilityInfoByID(abilityID)
             local description = SharedPetAbilityTooltip_ParseText(abilityInfo, unparsedDescription)
             self.Description:SetText(description
-                                    ..'\n\n|cffffffff'..(e.onlyChinese and '技能' or ABILITIES)
+                                    ..'|n|n|cffffffff'..(e.onlyChinese and '技能' or ABILITIES)
                                     ..' '..abilityID
                                     ..(icon and '  |T'..icon..':0|t'..icon or '')..'|r'
-                                    ..(Save.ctrl and not UnitAffectingCombat('player') and '\nWoWHead Ctrl+Shift' or '')
+                                    ..(Save.ctrl and not UnitAffectingCombat('player') and '|nWoWHead Ctrl+Shift' or '')
                                 )
             get_Web_Link({frame=self, type='pet-ability', id=abilityID, name=name, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
         end
@@ -1404,7 +1405,11 @@ local function Init()
         local label= QuestMapFrame.DetailsFrame.questIDLabel
         if not label then
             label= create_Quest_Label(QuestMapFrame.DetailsFrame)
-            label:SetPoint('BOTTOMRIGHT',QuestMapFrame.DetailsFrame, 'TOPRIGHT', 20, 10)
+            if IsAddOnLoaded('WoWeuCN_Quests') then
+                label:SetPoint('BOTTOMRIGHT',QuestMapFrame.DetailsFrame, 'TOPRIGHT', 25, 28)
+            else
+                label:SetPoint('BOTTOMRIGHT',QuestMapFrame.DetailsFrame, 'TOPRIGHT', 20, 10)
+            end
         end
         label:SetText(questID or '')
         label.questID= questID

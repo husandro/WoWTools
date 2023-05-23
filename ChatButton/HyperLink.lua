@@ -616,7 +616,7 @@ local function setPanel()
         local s=editBox:GetText()
         if s:gsub(' ','')~='' then
             s=s..' '
-            s=s:gsub('\n', ' ')
+            s=s:gsub('|n', ' ')
             s:gsub('.- ', function(t)
                 t=t:gsub(' ','')
                 if t and t~='' then
@@ -638,7 +638,7 @@ local function setPanel()
     if Save.channels then
         local t3=''
         for k, v in pairs(Save.channels) do
-            if t3~='' then t3=t3..'\n' end
+            if t3~='' then t3=t3..'|n' end
             t3=t3..k..'='..v
         end
        editBox2:SetText(t3)
@@ -653,7 +653,7 @@ local function setPanel()
         local s=editBox2:GetText()
         if s:gsub(' ','')~='' then
             s=s..' '
-            s=s:gsub('\n', ' ')
+            s=s:gsub('|n', ' ')
             s:gsub('.-=.- ', function(t)
                 local name,name2=t:match('(.-)=(.-) ')
                 if name and name2 and name~='' and name2~='' then
@@ -726,7 +726,7 @@ end
 --对话框
 --#####
 StaticPopupDialogs[id..addName..'WELCOME']={--区域,设置对话框
-    text=id..' '..addName..'\n\n'..	EMOTE103_CMD1:gsub('/','').. JOIN..' |cnGREEN_FONT_COLOR:%s|r',
+    text=id..' '..addName..'|n|n'..	EMOTE103_CMD1:gsub('/','').. JOIN..' |cnGREEN_FONT_COLOR:%s|r',
     whileDead=1,
     hideOnEscape=1,
     exclusive=1,
@@ -896,9 +896,9 @@ local function InitMenu(self, level, type)
         tooltipOnButton=true,
         tooltipTitle= e.onlyChinese and '框架栈' or DEBUG_FRAMESTACK,
         tooltipText='|cnGREEN_FONT_COLOR:Alt|r '..(e.onlyChinese and '切换' or HUD_EDIT_MODE_SWITCH)
-                    ..'\n|cnGREEN_FONT_COLOR:Ctrl|r '..(e.onlyChinese and '显示' or SHOW)
-                    ..'\n|cnGREEN_FONT_COLOR:Shift|r '..(e.onlyChinese and '材质信息' or TEXTURES_SUBHEADER..INFO)
-                    ..'\n|cnGREEN_FONT_COLOR:Ctrl+C|r '.. (e.onlyChinese and '复制' or CALENDAR_COPY_EVENT)..' \"File\" '..(e.onlyChinese and '类型' or TYPE),
+                    ..'|n|cnGREEN_FONT_COLOR:Ctrl|r '..(e.onlyChinese and '显示' or SHOW)
+                    ..'|n|cnGREEN_FONT_COLOR:Shift|r '..(e.onlyChinese and '材质信息' or TEXTURES_SUBHEADER..INFO)
+                    ..'|n|cnGREEN_FONT_COLOR:Ctrl+C|r '.. (e.onlyChinese and '复制' or CALENDAR_COPY_EVENT)..' \"File\" '..(e.onlyChinese and '类型' or TYPE),
         func= function()--Bindings.xml
             if not IsAddOnLoaded("Blizzard_DebugTools") then
                 LoadAddOn("Blizzard_DebugTools")
@@ -911,6 +911,7 @@ local function InitMenu(self, level, type)
     --e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={--重载
         text= e.onlyChinese and '重新加载UI' or RELOADUI,
+        icon='Interface\\Vehicles\\UI-Vehicles-Button-Exit-Up',
         notCheckable=true,
         tooltipOnButton=true,
         tooltipTitle='/reload',

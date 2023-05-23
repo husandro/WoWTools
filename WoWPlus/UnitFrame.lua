@@ -74,7 +74,7 @@ local function set_Instance_Difficulty()
             local otherDifficulty = GetLegacyRaidDifficultyID()
             local size3= otherDifficulty and DifficultyUtil.GetMaxPlayers(otherDifficulty)--UnitPopup.lua
             if size3 and not displayMythic3 then
-                text3= text3..'\n'..(e.onlyChinese and '经典团队副本难度' or LEGACY_RAID_DIFFICULTY)..': '..(size3==10 and (e.onlyChinese and '10人' or RAID_DIFFICULTY1) or size3==25 and (e.onlyChinese and '25人' or RAID_DIFFICULTY2) or '')
+                text3= text3..'|n'..(e.onlyChinese and '经典团队副本难度' or LEGACY_RAID_DIFFICULTY)..': '..(size3==10 and (e.onlyChinese and '10人' or RAID_DIFFICULTY1) or size3==25 and (e.onlyChinese and '25人' or RAID_DIFFICULTY2) or '')
             end
 
             if name2 then
@@ -88,7 +88,7 @@ local function set_Instance_Difficulty()
                 local text2= (e.onlyChinese and '地下城难度' or DUNGEON_DIFFICULTY)..': '..name2
 
                 if name3==name2 or displayMythic3 then
-                    text2= text2..'\n\n'..text3
+                    text2= text2..'|n|n'..text3
                 end
                 PlayerFrame.instanceFrame.tips=text2
                 find= true
@@ -259,7 +259,7 @@ local function set_TargetFrame()
             local mi, ma= e.GetRange('target')
             local text
             if mi and ma then
-                text=mi..'\n'..ma
+                text=mi..'|n'..ma
                 if mi>40 then
                     text='|cFFFF0000'..text--红色
                 elseif mi>35 then

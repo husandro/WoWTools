@@ -191,7 +191,7 @@ local function Init_Menu(self, level, type)--主菜单
                 local text
 
                 for _, msg in pairs(tab.msg) do
-                    text= text and text..'\n' or ''
+                    text= text and text..'|n' or ''
                     if msg.type then--发送
                         text= text..msg.time..' '..e.Icon.toLeft2..e.Player.col..msg.text..'|r'
                     else--接收
@@ -221,6 +221,7 @@ local function Init_Menu(self, level, type)--主菜单
             if find then
                 info={
                     text= e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2 ,--清除, 密语
+                    icon= 'bags-button-autosort-up',
                     notCheckable=true,
                     func= function()
                         WhisperTab={}
@@ -283,7 +284,7 @@ local function Init_Menu(self, level, type)--主菜单
                         end--等级
 
                         if zone.fullGuildName then--公会
-                            if t2~='' then t2=t2..'\n' end
+                            if t2~='' then t2=t2..'|n' end
                             if zone.fullGuildName==playerGuildName then --同公会
                                 info.text=info.text..'|A:communities-guildbanner-background:0:0|a';
                                 t2=t2..'|A:communities-guildbanner-background:0:0|a';
@@ -291,7 +292,7 @@ local function Init_Menu(self, level, type)--主菜单
                             t2=t2..GUILD..': '..zone.fullGuildName;
                         end
                         if zone.area then --区域
-                            if t2~='' then t2=t2..'\n' end
+                            if t2~='' then t2=t2..'|n' end
                             if zone.area==map then
                                 info.text=info.text..e.Icon.map2
                                 t2=t2..e.Icon.map2;
@@ -419,7 +420,7 @@ local function Init_Menu(self, level, type)--主菜单
             text= e.onlyChinese and '聊天泡泡' or CHAT_BUBBLES_TEXT,
             tooltipOnButton=true,
             --tooltipTitle= e.onlyChinese and '战斗中：禁用' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..DISABLE,
-            --tooltipText= (e.onlyChinese and '仅限副本' or LFG_LIST_CROSS_FACTION:format(INSTANCE))..'\n\n
+            --tooltipText= (e.onlyChinese and '仅限副本' or LFG_LIST_CROSS_FACTION:format(INSTANCE))..'|n|n
             tooltipTitle= 'CVar chatBubbles',
             tooltipText= (e.onlyChinese and '当前' or REFORGE_CURRENT)..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool("chatBubbles")),
             menuList= 'BUBBLES',

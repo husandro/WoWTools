@@ -183,7 +183,7 @@ end
 
 
 StaticPopupDialogs[id..addName..'RESETALL']={--重置所有,清除全部玩具
-    text=id..' '..addName..'\n'..CLEAR_ALL..'\n\n'.. RELOADUI,
+    text=id..' '..addName..'|n'..CLEAR_ALL..'|n|n'.. RELOADUI,
     whileDead=1,
     hideOnEscape=1,
     exclusive=1,
@@ -268,6 +268,7 @@ local function InitMenu(self, level, menuList)--主菜单
         end
         info={
             text= '|cnRED_FONT_COLOR:#'..num..' '..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..' ('..(e.onlyChinese and '未收集' or NOT_COLLECTED)..')',
+            icon= 'bags-button-autosort-up',
             notCheckable=true,
             func= function()
                 local num2=0
@@ -290,7 +291,7 @@ local function InitMenu(self, level, menuList)--主菜单
             disabled=UnitAffectingCombat('player'),
             func=function()
                 StaticPopupDialogs[id..addName..'KEY']={--快捷键,设置对话框
-                    text=id..' '..addName..'\n'..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..'\n\nQ, BUTTON5',
+                    text=id..' '..addName..'|n'..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..'|n|nQ, BUTTON5',
                     whileDead=1,
                     hideOnEscape=1,
                     exclusive=1,
@@ -338,6 +339,7 @@ local function InitMenu(self, level, menuList)--主菜单
         e.LibDD:UIDropDownMenu_AddSeparator(level)
         info={--清除
             text='|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..(e.onlyChinese and '玩具' or TOY)..'|r '..#ItemsTab..'/'..getAllSaveNum(),
+            icon= 'bags-button-autosort-up',
             notCheckable=true,
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '清除全部' or CLEAR_ALL,

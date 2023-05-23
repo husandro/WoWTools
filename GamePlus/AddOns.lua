@@ -68,7 +68,7 @@ local function setButtons()--设置按钮, 和位置
 
                     elseif d=='RightButton' then--移除
                         StaticPopupDialogs[id..addName..'DELETE']={
-                            text =id..' '..addName..'\n\n< |cff00ff00%s|r >\n\n'..(e.onlyChinese and '插件数量' or  ADDONS..AUCTION_HOUSE_QUANTITY_LABEL)..' %s',
+                            text =id..' '..addName..'|n|n< |cff00ff00%s|r >|n|n'..(e.onlyChinese and '插件数量' or  ADDONS..AUCTION_HOUSE_QUANTITY_LABEL)..' %s',
                             button1 = e.onlyChinese and '删除' or DELETE,
                             button2 = e.onlyChinese and '取消' or CANCEL,
                             whileDead=true,
@@ -153,7 +153,7 @@ local function Init()
     panel:SetText(e.onlyChinese and '新建' or NEW)
     panel:SetScript('OnClick',function()
         StaticPopupDialogs[id..addName..'NEW']={
-            text =id..' '..addName..'\n\n'..(e.onlyChinese and '当前已选择' or ICON_SELECTION_TITLE_CURRENT)..' %s\n\n'..(e.onlyChinese and '新的方案' or PAPERDOLL_NEWEQUIPMENTSET),
+            text =id..' '..addName..'|n|n'..(e.onlyChinese and '当前已选择' or ICON_SELECTION_TITLE_CURRENT)..' %s|n|n'..(e.onlyChinese and '新的方案' or PAPERDOLL_NEWEQUIPMENTSET),
             button1 = e.onlyChinese and '新建' or NEW,
             button2 = e.onlyChinese and '取消' or CANCEL,
             hasEditBox=true,

@@ -109,7 +109,7 @@ local function Init()
 			colorTab[text]= true
 			local texture= create_Texture(col.r, col.g, col.b, col.a)
 			texture:SetPoint('TOPLEFT', ColorPickerFrame, 'TOPRIGHT', x, y)
-			texture.tooltip= col.hex.._G["ITEM_QUALITY" .. index.. "_DESC"]..'\nITEM_QUALITY' ..index.. '_DESC'
+			texture.tooltip= col.hex.._G["ITEM_QUALITY" .. index.. "_DESC"]..'|nITEM_QUALITY' ..index.. '_DESC'
 			if n==10 then
 				n=0
 				x= x+ size

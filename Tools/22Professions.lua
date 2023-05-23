@@ -81,11 +81,6 @@ local function set_Blizzard_TrainerU()
             btn:SetText(btn.all..' '..btn.name)
         end
         btn:SetShown(show and not Save.disabledClassTrainer)
-
-
-        --[[for _, frame in pairs(ClassTrainerFrame.ScrollBox:GetFrames()) do
-            print(_, frame, frame.skillIndex, frame.isTradeSkill )
-        end]]
 	end)
 
     local btn2= e.Cbtn(ClassTrainerFrame, {icon=true})
@@ -271,7 +266,7 @@ local function set_Button()
                         if PlayerHasToy(134020) then--玩具,大厨的帽子
                             local toyname=C_Item.GetItemNameByID('134020')
                             if toyname then
-                                text= '/use '..toyname..'\n'
+                                text= '/use '..toyname..'|n'
                             end
                         end
                         text=text..'/cast [@player]'..name2

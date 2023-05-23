@@ -20,47 +20,24 @@ local affixSchedule = {-- AngryKeystones Schedule Dragonflight Season 1,史诗�
 	[9]  = { [1]=11,  [2]=13,  [3]=10, }, -- Fortified | Bursting | Explosive
 	[10] = { [1]=7,   [2]=3,   [3]=9,  }, -- Tyrannical | Bolstering | Volcanica
 }
---[[
-local EncounterJournal_Maps={--[mapChallengeModelID]= journalInstanceID
-    [2]= 313,--青龙寺
-    [400]= 1198,--诺库德阻击战
-    [200]= 721,--[英灵殿]
-    [402]= 1201,--[艾杰斯亚学院]
-    [210]= 800,--[群星庭院]
-    [399]= 1202,--[红玉新生法池]
-    [401]= 1203;--[碧蓝魔馆]
-    [165]= 537,--[影月墓地]
 
-    [166]= 536,--暗轨之路(车站)
-    [391]= 1194,--街头商贩之路(天街)
-    [392]= 1194,--街头商贩之路(天街)
-    [370]= 1178,--机械王子之路(麦卡贡)
-    [369]= 1178,--机械王子之路(麦卡贡)
-    [169]= 558,--铁船之路(码头)
-    [227]= 860,--堕落守护者之路(卡拉赞)
-    [234]= 860,--堕落守护者之路(卡拉赞)
-
-    [438]= 68,--旋云之巅
-    [403]= 1197,--奥达曼：提尔的遗产
-    [404]= 1199,--奈萨鲁斯
-    [405]= 1196,--蕨皮山谷
-
-    [406]=1204,--注能大厅
-    [251]=1022,--地渊孢林
-    [245]=1001,--自由镇
-    [206]=767,--奈萨里奥的巢穴
-}
-
-local spellIDs={--法术, 传送门, {mapChallengeModeID = 法术 SPELL ID}, BUG, 战斗中关闭, 会出现错误
-    [166]=159900,--暗轨之路(车站)
-    [391]=367416,--街头商贩之路(天街)
-    [370]=373274,--机械王子之路(麦卡贡)
-    [169]=159896,--铁船之路(码头)
-    [227]=373262,--堕落守护者之路(卡拉赞)
-}
-]]
-
-
+local function get_Spell_MapChallengeID(mapChallengeID)
+    local tabs={
+        {spell=396129, ins=1196, map=405},--传送：蕨皮山谷
+        {spell=396130, ins=1204, map=406},--传送：注能大厅
+        {spell=396128, ins=1199, map=404},--传送：奈萨鲁斯
+        {spell=396127, ins=1197, map=403},--传送：奥达曼：提尔的遗产
+        {spell=272262, ins=1001, map=245},--传送到自由镇
+        {spell=272269, ins=1022, map=251},--传送：地渊孢林
+        {spell=205379, ins=767, map=206},--传送：奈萨里奥的巢穴
+        {spell=88775, ins=68, map=438},--传送到旋云之巅
+    }
+    for _, tab in pairs(tabs) do
+        if tab.map==mapChallengeID then
+            return tab.spell
+        end
+    end
+end
 local function getBagKey(self, point, x, y) --KEY链接
     local find=point:find('LEFT')
     local i=1
@@ -146,7 +123,7 @@ local function UI_Party_Info(frame)--队友位置
         end
         local guid=UnitGUID(unit)
         if guid then
-            text= text and text..'\n' or ''
+            text= text and text..'|n' or ''
 
             local stat=GetReadyCheckStatus(unit)
             if stat=='ready' then
@@ -220,7 +197,7 @@ local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     frame.ready:SetPoint('LEFT', frame.StartButton, 'RIGHT',2, 0)
     frame.ready:SetSize(100,24)
     frame.ready:SetScript("OnMouseDown",function()
-            DoReadyCheck()
+        DoReadyCheck()
     end)
 
     frame.mark = CreateFrame("Button",nil, frame, 'UIPanelButtonTemplate')--标记
@@ -278,7 +255,6 @@ local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     end)
 
     frame.party=e.Cstr(frame)--队伍信息
-    --frame.party:SetPoint('LEFT', 15, -50)
     frame.party:SetPoint('BOTTOMLEFT', frame, 'TOPLEFT')
 
     frame:HookScript('OnShow', function()
@@ -494,19 +470,72 @@ local function GetNum(mapID, all)--取得完成次数,如 1/10
     end
 end
 
-
---[[local function set_Spell_Port(self)--传送门
-    local spellID=spellIDs[self.mapID]
+--######
+--传送门
+--######
+local function set_check_Show_Spell_Port()--传送门, 启用/禁用
+    local find--是否有找到,如果没有赛季数据更新,就禁用
+    for _, mapID in pairs(C_ChallengeMode.GetMapTable() or {}) do
+        find= get_Spell_MapChallengeID(mapID)
+        if find then
+            break
+        end
+    end
+    if not find then
+        Save.showSpellPort=nil
+    end
+    local btn=ChallengesFrame.sel.showSpellPort
+    if not Save.hide and not btn and find then
+        btn= e.Cbtn(ChallengesFrame, {size={22,22}, atlas='WarlockPortal-Yellow-32x32'})
+        btn:SetPoint('LEFT', ChallengesFrame.sel, 'RIGHT')
+        btn:SetAlpha(0.5)
+        btn:SetScript('OnClick', function()
+            Save.showSpellPort= not Save.showSpellPort and true or nil
+            securecallfunction(ChallengesFrame.Update,ChallengesFrame)
+            if not Save.showSpellPort then
+                print(id, addName, e.GetEnabeleDisable(Save.showSpellPort), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            end
+        end)
+        btn:SetScript('OnLeave', function() e.tips:Hide() end)
+        btn:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            if e.onlyChinese then
+                e.tips:AddDoubleLine('挑战20层','限时传送门')
+                e.tips:AddDoubleLine('如果出现错误', '请禁用此功能')
+                e.tips:AddDoubleLine('显示/隐藏'..e.Icon.left, e.GetEnabeleDisable(Save.showSpellPort))
+            else
+                e.tips:AddLine(format(UNITNAME_SUMMON_TITLE14, CHALLENGE_MODE..' (20) '))
+                e.tips:AddDoubleLine(ERRORS..'('..SHOW..')', DISABLE)
+                e.tips:AddDoubleLine(SHOW..'/'..HIDE..e.Icon.left, e.GetEnabeleDisable(Save.showSpellPort))
+            end
+            e.tips:Show()
+        end)
+        ChallengesFrame.sel.showSpellPort= btn
+    end
+    if btn then
+        btn:SetShown(not Save.hide)
+    end
+end
+local function set_Spell_Port(self)
+    if Save.hide or not Save.showSpellPort then
+        if self.spell then
+            self.spell:SetShown(false)
+        end
+        return
+    end
+    local spellID= get_Spell_MapChallengeID(self.mapID)
     if spellID then
+        e.LoadDate({id= spellID, type='spell'})--加载 item quest spell
         if not self.spell then
-            self.spell=CreateFrame("Button", nil, self, 'SecureActionButtonTemplate')
+            --[[self.spell=CreateFrame("Button", nil, self, 'SecureActionButtonTemplate')
             self.spell:SetHighlightAtlas('Forge-ColorSwatchSelection')
             self.spell:SetPushedTexture('Interface\\Buttons\\UI-Quickslot-Depress')
-            self.spell:RegisterForClicks("LeftButtonDown")
+            self.spell:RegisterForClicks("LeftButtonDown")--]]
+            local h=self:GetWidth()/3 +8
+            self.spell= e.Cbtn(self, {type=true, size={h, h}})
             self.spell:SetAttribute("type*", "spell")
-            self.spell:SetAttribute( "spell*", spellID)
-            self.spell:SetPoint('RIGHT',0, 0)
-            self.spell:SetSize(h+8, h+8)
+            self.spell:SetAttribute("spell*", spellID)
+            self.spell:SetPoint('TOPRIGHT')
             if IsSpellKnown(spellID) then--加个外框
                 self.spell.tex=self.spell:CreateTexture(nil, 'OVERLAY')
                 self.spell.tex:SetAllPoints(self.spell)
@@ -518,24 +547,23 @@ end
                     e.tips:ClearLines()
                     e.tips:SetSpellByID(spellID)
                     if not IsSpellKnown(spellID) then--没学会
-                        e.tips:AddDoubleLine(SPELL_FAILED_NOT_KNOWN, e.Icon.X, 1,0,0)
-                    else
-                        local startTime, duration= GetSpellCooldown(spellID)
-                        if startTime and duration and duration>0 then
-                            local t=GetTime()
-                            if startTime>t then t=t+86400 end
-                            t=t-startTime
-                            t=duration-t
-                            e.tips:AddDoubleLine('CD', SecondsToTime(t), 1,0,0, 1,0,0)
-                        end
+                        e.tips:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '法术尚未学会' or SPELL_FAILED_NOT_KNOWN))
                     end
                     e.tips:Show()
             end)
             self.spell:SetScript("OnLeave",function() e.tips:Hide() end)
         end
-        self.spell:SetNormalTexture(IsSpellKnown(spellID) and GetSpellTexture(spellID) or e.Icon.O)
+        local icon= IsSpellKnown(spellID) and GetSpellTexture(spellID)
+        if icon then
+            self.spell:SetNormalTexture(GetSpellTexture(spellID))
+        else
+            self.spell:SetNormalAtlas('WarlockPortalHorde')
+        end
     end
-end]]
+    if self.spell then
+        self.spell:SetShown(true)
+    end
+end
 
 local function Kill(self)--副本PVP团本
     if Save.hide then
@@ -585,12 +613,12 @@ local function Kill(self)--副本PVP团本
     local T=''
     for i,v in pairs(R) do
 
-        T=T..'\n'..'|T450908:0|t'
+        T=T..'|n'..'|T450908:0|t'
         local he=GetRewardTypeHead(i)
         if he then T=T..he end
 
         for x,r in pairs(v) do
-            if T~='' then T=T..'\n' end
+            if T~='' then T=T..'|n' end
             T=T..'   '
             if r.unlocked then
                 T=T.. '|cff00ff00'..x..')'..r.difficulty.. ' '..COMPLETE..'|r'
@@ -631,14 +659,14 @@ local function All(self)--所有记录
     end
     --[[m=m..(e.onlyChinese and '每周最佳纪录: ' or CHALLENGE_MODE_WEEKLY_BEST..': ')..currentWeekBestLevel.. ' ('..weeklyRewardLevel..')'
     if nextDifficultyWeeklyRewardLevel and nextBestLevel and nextDifficultyWeeklyRewardLevel>0 and nextBestLevel>0 and currentWeekBestLevel<nextDifficultyWeeklyRewardLevel then
-        m=m..'\n'..(e.onlyChinese and '下一级：' or NEXT_RANK_COLON)..nextDifficultyWeeklyRewardLevel..' ('..nextBestLevel..')'
+        m=m..'|n'..(e.onlyChinese and '下一级：' or NEXT_RANK_COLON)..nextDifficultyWeeklyRewardLevel..' ('..nextBestLevel..')'
     end]]
 
     local mapChallengeModeID, level = C_MythicPlus.GetLastWeeklyBestInformation()
     if mapChallengeModeID and level and level>0 and mapChallengeModeID>0 then
         local name, _, _, texture, _ = C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
         if name then
-            m= (m~='' and m..'\n\n' or m)..(e.onlyChinese and '上周' or HONOR_LASTWEEK)..': '.. (texture and '|T'..texture..':0|t' or '')..name..' '..level
+            m= (m~='' and m..'|n|n' or m)..(e.onlyChinese and '上周' or HONOR_LASTWEEK)..': '.. (texture and '|T'..texture..':0|t' or '')..name..' '..level
         end
     end
 
@@ -646,7 +674,7 @@ local function All(self)--所有记录
     if info then
         local nu=#C_MythicPlus.GetRunHistory(true) or {}
         local nu2=#info
-        m= (m~='' and m..'\n\n' or m)..(e.onlyChinese and '历史' or HISTORY)..': |cff00ff00'..nu.. '/'.. nu2.. ' |r(|cffffffff'..nu2-nu..'|r)'
+        m= (m~='' and m..'|n|n' or m)..(e.onlyChinese and '历史' or HISTORY)..': |cff00ff00'..nu.. '/'.. nu2.. ' |r(|cffffffff'..nu2-nu..'|r)'
     end
 
     info = C_MythicPlus.GetRunHistory(false, true)--本周记录
@@ -687,15 +715,15 @@ local function All(self)--所有记录
         if m2~='' then m=(m~='' and m..'|n' or '')..(e.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK)..': |cff00ff00'..n..'/'..n2..'|r  (|cffffffff'..(n2-n)..'|r)|n'..m2 end
     end
 
-    local text= m..'\n'--所有角色KEY
+    local text= m..'|n'--所有角色KEY
     for guid, infoWoW in pairs(WoWDate) do
         local find
         for link, _ in pairs(infoWoW.Keystone.itemLink) do
-            text=text..'\n    '..link
+            text=text..'|n    '..link
             find=true
         end
         if find then
-            text= text..'\n'.. e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false})
+            text= text..'|n'.. e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false})
         end
     end
 
@@ -1006,13 +1034,14 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                         for bag=0, NUM_BAG_SLOTS do
                             for slot=1, C_Container.GetContainerNumSlots(bag) do
                                 local info = C_Container.GetContainerItemInfo(bag, slot)
-                                if info and C_Item.IsItemKeystoneByID(info.hyperlink) then
+                                if info and info.itemID and C_Item.IsItemKeystoneByID(info.itemID) then
                                     e.tips:SetBagItem(bag, slot)
+                                    break
                                 end
-                                break
                             end
                         end
                         e.tips:Show()
+                        print(id,addName)
                     end)
                     frame.currentKey:SetScript('OnLeave', function() e.tips:Hide() end)
                 end
@@ -1020,7 +1049,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                     frame.currentKey:SetShown(currentChallengeMapID== frame.mapID)
                 end
             end
-            --set_Spell_Port(frame)--传送门
+            set_Spell_Port(frame)--传送门
         end
     end
 
@@ -1058,13 +1087,13 @@ local function set_itemLevelTips_GetTextAndTooltip(showTooltip)--设置, 文本,
                 e.tips:AddLine(str)
             end
             if i>=5 and i<=20 then
-                text= text and text..'\n' or ''
+                text= text and text..'|n' or ''
                 text= text.. str..(curKey==i and e.Icon.star2 or '')
             end
         end
     end
     if text then
-        text= (e.onlyChinese and '难度 每周 完成' or (PROFESSIONS_CRAFTING_STAT_TT_DIFFICULTY_HEADER..' '..CALENDAR_REPEAT_WEEKLY..' '..COMPLETE))..'\n'..text
+        text= (e.onlyChinese and '难度 每周 完成' or (PROFESSIONS_CRAFTING_STAT_TT_DIFFICULTY_HEADER..' '..CALENDAR_REPEAT_WEEKLY..' '..COMPLETE))..'|n'..text
     end
 
     ChallengesFrame.itemLevelTips.Text:SetText(Save.showItemLevelTipsText and text or '')
@@ -1079,8 +1108,10 @@ local function set_itemLevelTips(self)--等级 => 每周/完成, 提示
         return
     end
     if not self.itemLevelTips then
-        self.itemLevelTips= e.Cbtn(self.WeeklyInfo.Child,{size={16,16}, atlas='auctionhouse-icon-favorite'})
-        self.itemLevelTips:SetPoint('TOPRIGHT', -2,-14)
+        --self.itemLevelTips= e.Cbtn(self.WeeklyInfo.Child,{size={16,16}, atlas='auctionhouse-icon-favorite'})
+        --self.itemLevelTips:SetPoint('TOPRIGHT', -2,-14)
+        self.itemLevelTips= e.Cbtn(self, {size={16,16}, atlas='auctionhouse-icon-favorite'})
+        self.itemLevelTips:SetPoint('LEFT', self.sel, 'RIGHT', 22,0)
         self.itemLevelTips:SetAlpha(0.5)
         self.itemLevelTips.Text=e.Cstr(self)
         self.itemLevelTips.Text:SetPoint('TOPLEFT', self.WoWKeystones, 'BOTTOMLEFT',0,-12)
@@ -1113,14 +1144,14 @@ local function Init()
     ChallengesFrame.sel:SetScript("OnClick", function (self2)
         Save.hide = not Save.hide and true or nil
         Kill(ChallengesFrame)--副本PVP团本
-        ChallengesFrame:Update()
+        securecallfunction(ChallengesFrame.Update,ChallengesFrame)
         Affix()
         All(ChallengesFrame)--所有记录   
         Cur(ChallengesFrame)--货币数量
         set_itemLevelTips(ChallengesFrame)--等级 => 每周/完成, 提示
+        set_check_Show_Spell_Port()--传送门, 启用/禁用
         self2:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
     end)
-
     ChallengesFrame.sel:SetScript("OnEnter",function(self2)
             local mapIDs = {}
             for _, v in pairs( (C_ChallengeMode.GetMapTable() or {})) do
@@ -1191,12 +1222,13 @@ local function Init()
             e.tips:Hide()
     end)
 
+    
+
     if ChallengesFrame.WeeklyInfo and ChallengesFrame.WeeklyInfo.Child then--隐藏, 赛季最佳
         if ChallengesFrame.WeeklyInfo.Child.SeasonBest then
             ChallengesFrame.WeeklyInfo.Child.SeasonBest:SetText('')
         end
    end
-
 
    ChallengesFrame.WoWKeystones= e.Cstr(ChallengesFrame)--最右边, 数据
     if IsAddOnLoaded('RaiderIO') and RaiderIO_ProfileTooltip then
@@ -1205,13 +1237,14 @@ local function Init()
         ChallengesFrame.WoWKeystones:SetPoint('TOPLEFT', ChallengesFrame, 'TOPRIGHT', 2, -10)
     end
 
-
+    set_check_Show_Spell_Port()--传送门, 启用/禁用, 要放在Update前面
     Kill(ChallengesFrame)--副本PVP团本
     hooksecurefunc(ChallengesFrame, 'Update', set_Update)
     Affix()
     All(ChallengesFrame)--所有记录   
     Cur(ChallengesFrame)--货币数量
     set_itemLevelTips(ChallengesFrame)--等级 => 每周/完成, 提示
+
 
     if ChallengesFrame.WeeklyInfo and ChallengesFrame.WeeklyInfo.Child then
         if ChallengesFrame.WeeklyInfo.Child.Description and ChallengesFrame.WeeklyInfo.Child.Description:IsVisible() then
@@ -1223,8 +1256,6 @@ local function Init()
             end
         end
     end
-
-
 end
 
 

@@ -18,7 +18,7 @@ local panel= CreateFrame("Frame")
 --设置, 移动, 位置
 --###############
 local function set_Frame_Point(self, name)--设置, 移动, 位置
-    if not Save.disabledMove then
+    if not Save.disabledMove and self then
         name= name or self.FrameName or self:GetName()
         if name then
             local p= Save.point[name]
@@ -80,6 +80,19 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name)--放大
         if d=='LeftButton' then
             n= n+ 0.05
         elseif d=='RightButton' then
+            n= n- 0.05
+        end
+        n= n>3 and 3 or n
+        n= n< 0.5 and 0.5 or n
+        Save.scale[self2.ScaleName]= n
+        self2.ZoomFrame:SetScale(n)
+    end)
+
+    self.ZoomInOutFrame:SetScript('OnMouseWheel', function(self2,d)
+        local n= Save.scale[self2.ScaleName] or 1
+        if d==-1 then
+            n= n+ 0.05
+        elseif d==1 then
             n= n- 0.05
         end
         n= n>3 and 3 or n
@@ -626,7 +639,7 @@ local function Init_Move()
 
     --if Save.SavePoint then--在指定位置,显示
     hooksecurefunc('UpdateUIPanelPositions',function(currentFrame)
-        set_Move_Frame(currentFrame)
+        set_Frame_Point(currentFrame)
     end)
     --end
 
@@ -691,7 +704,7 @@ local function Init_Options()
     btn:SetPoint('TOPLEFT', check2, 'BOTTOMLEFT',0,-16)
     btn:SetScript('OnClick', function()
         StaticPopupDialogs[id..addName..'MoveZoom']={
-            text =id..' '..addName..'\n\n'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2 )..' ('..(e.onlyChinese and '保存' or SAVE)..')',
+            text =id..' '..addName..'|n|n'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2 )..' ('..(e.onlyChinese and '保存' or SAVE)..')',
             button1 = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '移动' or NPE_MOVE),
             button2 = e.onlyChinese and '取消' or CANCEL,
             button3 = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '缩放' or UI_SCALE),

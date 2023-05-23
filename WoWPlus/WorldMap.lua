@@ -100,46 +100,102 @@ end
 --#######
 --任务日志
 --#######
-local function Coll()
-    for i=1, C_QuestLog.GetNumQuestLogEntries() do
-        CollapseQuestHeader(i)
-    end
-end
-local function Exp()
-    for i=1, C_QuestLog.GetNumQuestLogEntries() do
-        ExpandQuestHeader(i)
-    end
-end
 local function setMapQuestList()--世界地图,任务, 加 - + 按钮
-    local f=QuestScrollFrame
-    if not Save.hide and not f.btn then
-        f.btn= CreateFrame("Button", nil, f)
-        f.btn:SetPoint('TOP', f,'BOTTOM')
-        f.btn:SetNormalAtlas('campaign_headericon_open')
-        f.btn:SetPushedAtlas('campaign_headericon_openpressed')
-        f.btn:SetHighlightAtlas('Forge-ColorSwatchSelection')
-        f.btn:SetSize(24,24)
-        f.btn:SetAlpha(0.7)
-        --f.btn:SetScript('OnEnter', function(self) self:SetAlpha(1) end)
-        --f.btn:SetScript('OnLeave', function(self) self:SetAlpha(0.5) end)
-        f.btn:SetScript("OnMouseDown", function() Exp() end)
+    if not Save.hide and not QuestScrollFrame.btnExpand then
+        QuestScrollFrame.btnCollapse= e.Cbtn(QuestScrollFrame, {size={22,22}, atlas='campaign_headericon_closed'})--campaign_headericon_closed
+        QuestScrollFrame.btnCollapse:SetPoint('TOPLEFT', QuestScrollFrame,'BOTTOMLEFT', 24,0)
+        QuestScrollFrame.btnCollapse:SetPushedAtlas('campaign_headericon_closedpressed')
+        QuestScrollFrame.btnCollapse:SetHighlightAtlas('Forge-ColorSwatchSelection')
+        QuestScrollFrame.btnCollapse:SetAlpha(0.5)
+        QuestScrollFrame.btnCollapse:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.5) end)
+        QuestScrollFrame.btnCollapse:SetScript('OnEnter', function(self2)
+            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddLine(not e.onlyChinese and HUD_EDIT_MODE_COLLAPSE_OPTIONS or "收起选项 |A:editmode-up-arrow:16:11:0:3|a")
+            e.tips:Show()
+            self2:SetAlpha(1)
+        end)
+        QuestScrollFrame.btnCollapse:SetScript("OnMouseDown", function()
+            for i=1, C_QuestLog.GetNumQuestLogEntries() do
+                CollapseQuestHeader(i)
+            end
+        end)
 
-        f.btn:SetFrameStrata('DIALOG')
-        f.btn2= CreateFrame("Button", nil, f.btn)
-        f.btn2:SetPoint('BOTTOMRIGHT', f.btn, 'BOTTOMLEFT', 2, 0)
-        f.btn2:SetNormalAtlas('campaign_headericon_closed')
-        f.btn2:SetPushedAtlas('campaign_headericon_closedpressed')
-        f.btn2:SetHighlightAtlas('Forge-ColorSwatchSelection')
-        f.btn2:SetSize(24,24)
-        --f.btn2:SetAlpha(0.5)
-        --f.btn2:SetScript('OnEnter', function(self) self:SetAlpha(1) end)
-        --f.btn2:SetScript('OnLeave', function(self) self:SetAlpha(0.5) end)
-        f.btn2:SetScript("OnMouseDown", function() Coll() end)
+        QuestScrollFrame.btnExpand= e.Cbtn(QuestScrollFrame, {size={22,22}, atlas='campaign_headericon_open'})
+        QuestScrollFrame.btnExpand:SetPoint('LEFT', QuestScrollFrame.btnCollapse, 'RIGHT', 2, 0)
+        QuestScrollFrame.btnExpand:SetPushedAtlas('campaign_headericon_openpressed')
+        QuestScrollFrame.btnExpand:SetHighlightAtlas('Forge-ColorSwatchSelection')
+        QuestScrollFrame.btnExpand:SetAlpha(0.5)
+        QuestScrollFrame.btnExpand:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.5) end)
+        QuestScrollFrame.btnExpand:SetScript('OnEnter', function(self2)
+            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddLine(not e.onlyChinese and HUD_EDIT_MODE_EXPAND_OPTIONS or "展开选项 |A:editmode-down-arrow:16:11:0:-7|a")
+            e.tips:Show()
+            self2:SetAlpha(1)
+        end)
+        QuestScrollFrame.btnExpand:SetScript("OnMouseDown", function()
+            for i=1, C_QuestLog.GetNumQuestLogEntries() do
+                ExpandQuestHeader(i)
+            end
+        end)
+
+        QuestScrollFrame.btnDeleteAllQuest=e.Cbtn(QuestScrollFrame,{size={18,18}, atlas='xmarksthespot'})
+        QuestScrollFrame.btnDeleteAllQuest:SetPoint('RIGHT', QuestScrollFrame.btnCollapse, 'LEFT', -2, 0)
+        QuestScrollFrame.btnDeleteAllQuest:SetAlpha(0.5)
+        QuestScrollFrame.btnDeleteAllQuest:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.5) end)
+        QuestScrollFrame.btnDeleteAllQuest:SetScript('OnEnter', function(self2)
+            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(not e.onlyChinese and LOOT_HISTORY_ALL_PASSED or "全部放弃", '|cnRED_FONT_COLOR:'..(not e.onlyChinese and VOICEMACRO_1_Sc_0 or "危险！"))
+            e.tips:Show()
+            self2:SetAlpha(1)
+        end)
+        QuestScrollFrame.btnDeleteAllQuest:SetScript("OnMouseDown", function()
+            StaticPopupDialogs[id..addName.."ABANDON_QUEST"] = {
+                text= (e.onlyChinese and "放弃\"%s\"？" or ABANDON_QUEST_CONFIRM)..'|n|n|cnYELLOW_FONT_COLOR:'..(not e.onlyChinese and VOICEMACRO_1_Sc_0..' ' or "危险！")..(not e.onlyChinese and VOICEMACRO_1_Sc_0..' ' or "危险！")..(not e.onlyChinese and VOICEMACRO_1_Sc_0 or "危险！"),
+                button1 = '|cnRED_FONT_COLOR:'..(not e.onlyChinese and ABANDON_QUEST_ABBREV or "放弃"),
+                button2 = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL),
+                OnAccept = function(self2)
+                    local n=0
+                    for index=1 , C_QuestLog.GetNumQuestLogEntries() do
+                        local questInfo=C_QuestLog.GetInfo(index)
+                        if questInfo and questInfo.questID and C_QuestLog.CanAbandonQuest(questInfo.questID) then
+                            local linkQuest=GetQuestLink(questInfo.questID)
+                            C_QuestLog.SetSelectedQuest(questInfo.questID)
+                            C_QuestLog.SetAbandonQuest();
+                            C_QuestLog.AbandonQuest()
+                            n=n+1
+                            if linkQuest then
+                                print(id, addName,  e.onlyChinese and '放弃|A:groupfinder-icon-redx:0:0|a' or (ABANDON_QUEST_ABBREV..'|A:groupfinder-icon-redx:0:0|a'), linkQuest, n..'|cnRED_FONT_COLOR:)')
+                            end
+                        end
+                        if IsModifierKeyDown() then
+                            break
+                        end
+                    end
+                    PlaySound(SOUNDKIT.IG_QUEST_LOG_ABANDON_QUEST);
+                end,
+                timeout = 30,
+                whileDead = true,
+                exclusive = true,
+                hideOnEscape = true,
+                showAlert= true,
+            }
+            StaticPopup_Show(id..addName.."ABANDON_QUEST", '|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '|n|A:groupfinder-icon-redx:0:0|a所有任务' or ('|n|A:groupfinder-icon-redx:0:0|a'..ALL))..' |r#|cnGREEN_FONT_COLOR:'..select(2, C_QuestLog.GetNumQuestLogEntries())..'|r')
+        end)
+
     end
-    if f.btn then
-        f.btn:SetShown(not Save.hide)
+
+    if QuestScrollFrame.btnExpand then
+        QuestScrollFrame.btnExpand:SetShown(not Save.hide)
+        QuestScrollFrame.btnCollapse:SetShown(not Save.hide)
+        QuestScrollFrame.btnDeleteAllQuest:SetShown(not Save.hide)
     end
 end
+
+
+
 
 local function getPlayerXY()--当前世界地图位置
     local uiMapID= C_Map.GetBestMapForUnit("player")--当前地图        
@@ -542,7 +598,7 @@ local function set_AreaPOIPinMixin_OnAcquired(poiInfo)--地图POI提示 AreaPOID
         end
         t=C_AreaPoiInfo.GetAreaPOIInfo(1543,6640).name
         for _,v in pairs(R) do
-            t=t..'\n '..v
+            t=t..'|n '..v
         end
     elseif poiInfo.name then
         t=poiInfo.name
@@ -568,7 +624,7 @@ local function set_AreaPOIPinMixin_OnAcquired(poiInfo)--地图POI提示 AreaPOID
     if poiInfo.areaPoiID and C_AreaPoiInfo.IsAreaPOITimed(poiInfo.areaPoiID) then
         local seconds= C_AreaPoiInfo.GetAreaPOISecondsLeft(poiInfo.areaPoiID)
         if seconds and seconds>0 then
-            t= t~='' and t..'\n' or t
+            t= t~='' and t..'|n' or t
             t= t..'|cnGREEN_FONT_COLOR:'..SecondsToTime(seconds)..'|r'
         end
     end
@@ -579,7 +635,7 @@ local function set_AreaPOIPinMixin_OnAcquired(poiInfo)--地图POI提示 AreaPOID
             if widget and widget.widgetID and  widget.widgetType==8 then
                 local widgetInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(widget.widgetID)
                 if widgetInfo and widgetInfo.shownState== 1  and widgetInfo.text then
-                    
+
                     local icon, num= widgetInfo.text:match('(|T.-|t).-]|r.-(%d+)')
                     local text= widgetInfo.text:match('(%d+/%d+)')--次数
                     if icon and num then
@@ -608,80 +664,8 @@ local function Init()
     hooksecurefunc(WorldMapFrame, 'OnMapChanged', set_Map_ID)--Blizzard_WorldMap.lua
     CursorPositionInt()
     hooksecurefunc(AreaPOIPinMixin,'OnAcquired', set_AreaPOIPinMixin_OnAcquired)--地图POI提示 AreaPOIDataProvider.lua
-
-    --#######
-    --任务日志
-    --#######
     setMapQuestList()--世界地图,任务, 加 - + 按钮
-   
-
-    hooksecurefunc('QuestMapLogTitleButton_OnClick',function(self, button)--任务日志 展开所有, 收起所有--QuestMapFrame.lua
-        if Save.hide or ChatEdit_TryInsertQuestLinkForQuestID(self.questID) then
-            return
-        end
-        if self.questID and not C_QuestLog.IsQuestDisabledForSession(self.questID) and button == "RightButton" then
-            e.LibDD:UIDropDownMenu_AddSeparator()
-            local info= {
-                text= (e.onlyChinese and '显示' or SHOW)..'|A:campaign_headericon_open:0:0|a'..(e.onlyChinese and '全部' or ALL),
-                notCheckable=true,
-                func= Exp,
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
-            info ={
-                notCheckable=true,
-                text= (e.onlyChinese and '隐藏' or HIDE)..'|A:campaign_headericon_closed:0:0|a'..(e.onlyChinese and '全部' or ALL),
-                func= Coll,
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
-
-            e.LibDD:UIDropDownMenu_AddSeparator()
-            local text= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '放弃|A:groupfinder-icon-redx:0:0|a所有任务' or (ABANDON_QUEST..'|A:groupfinder-icon-redx:0:0|a'..ALL))..' #'..select(2, C_QuestLog.GetNumQuestLogEntries())..'|r'
-            info={
-                text= text,
-                tooltipOnButton=true,
-                tooltipTitle= '|cffff0000'..(e.onlyChinese and '危险！' or VOICEMACRO_1_Sc_0)..'|r',
-                tooltipText= id..' '..addName,
-                notCheckable=true,
-                func= function()
-                    StaticPopupDialogs[id..addName.."ABANDON_QUEST"] = {
-                        text = ABANDON_QUEST_CONFIRM,
-                        button1 = text,
-                        button2 = e.onlyChinese and '取消' or CANCEL,
-                        OnAccept = function(self2)
-                            local n=0
-                            for index=1 , C_QuestLog.GetNumQuestLogEntries() do
-                                local questInfo=C_QuestLog.GetInfo(index)
-                                if questInfo and questInfo.questID and C_QuestLog.CanAbandonQuest(questInfo.questID) then
-                                    local linkQuest=GetQuestLink(questInfo.questID)
-                                    C_QuestLog.SetSelectedQuest(questInfo.questID)
-                                    C_QuestLog.SetAbandonQuest();
-                                    C_QuestLog.AbandonQuest()
-                                    n=n+1
-                                    if linkQuest then
-                                        print(id, addName,  e.onlyChinese and '放弃|A:groupfinder-icon-redx:0:0|a' or (ABANDON_QUEST_ABBREV..'|A:groupfinder-icon-redx:0:0|a'), linkQuest, n)
-                                    end
-                                end
-                                if IsModifierKeyDown() then
-                                    break
-                                end
-                            end
-                            PlaySound(SOUNDKIT.IG_QUEST_LOG_ABANDON_QUEST);
-                        end,
-                        timeout = 0,
-                        whileDead = 1,
-                        exclusive = 1,
-                        hideOnEscape = 1
-                    }
-                    StaticPopup_Show(id..addName.."ABANDON_QUEST", '\n'..text)
-                end
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
-        end
-    end)
-
-    if Save.scale and Save.scale~=1 then--缩放
-        WorldMapFrame:SetScale(Save.scale)
-    end
+    --hooksecurefunc('QuestMapLogTitleButton_OnClick',function(self, button)--任务日志 展开所有, 收起所有--QuestMapFrame.lua
 end
 
 --加载保存数据
