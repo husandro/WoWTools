@@ -664,76 +664,8 @@ local function Init()
     hooksecurefunc(WorldMapFrame, 'OnMapChanged', set_Map_ID)--Blizzard_WorldMap.lua
     CursorPositionInt()
     hooksecurefunc(AreaPOIPinMixin,'OnAcquired', set_AreaPOIPinMixin_OnAcquired)--地图POI提示 AreaPOIDataProvider.lua
-
-    --#######
-    --任务日志
-    --#######
     setMapQuestList()--世界地图,任务, 加 - + 按钮
-
-
-    --[[hooksecurefunc('QuestMapLogTitleButton_OnClick',function(self, button)--任务日志 展开所有, 收起所有--QuestMapFrame.lua
-        if Save.hide or ChatEdit_TryInsertQuestLinkForQuestID(self.questID) then
-            return
-        end
-        if self.questID and not C_QuestLog.IsQuestDisabledForSession(self.questID) and button == "RightButton" then
-            e.LibDD:UIDropDownMenu_AddSeparator()
-            local info= {
-                text= (e.onlyChinese and '显示' or SHOW)..'|A:campaign_headericon_open:0:0|a'..(e.onlyChinese and '全部' or ALL),
-                notCheckable=true,
-                func= Exp,
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
-            info ={
-                notCheckable=true,
-                text= (e.onlyChinese and '隐藏' or HIDE)..'|A:campaign_headericon_closed:0:0|a'..(e.onlyChinese and '全部' or ALL),
-                func= Coll,
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
-
-            e.LibDD:UIDropDownMenu_AddSeparator()
-            local text= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '放弃|A:groupfinder-icon-redx:0:0|a所有任务' or (ABANDON_QUEST..'|A:groupfinder-icon-redx:0:0|a'..ALL))..' #'..select(2, C_QuestLog.GetNumQuestLogEntries())..'|r'
-            info={
-                text= text,
-                tooltipOnButton=true,
-                tooltipTitle= '|cffff0000'..(e.onlyChinese and '危险！' or VOICEMACRO_1_Sc_0)..'|r',
-                tooltipText= id..' '..addName,
-                notCheckable=true,
-                func= function()
-                    StaticPopupDialogs[id..addName.."ABANDON_QUEST"] = {
-                        text = ABANDON_QUEST_CONFIRM,
-                        button1 = text,
-                        button2 = e.onlyChinese and '取消' or CANCEL,
-                        OnAccept = function(self2)
-                            local n=0
-                            for index=1 , C_QuestLog.GetNumQuestLogEntries() do
-                                local questInfo=C_QuestLog.GetInfo(index)
-                                if questInfo and questInfo.questID and C_QuestLog.CanAbandonQuest(questInfo.questID) then
-                                    local linkQuest=GetQuestLink(questInfo.questID)
-                                    C_QuestLog.SetSelectedQuest(questInfo.questID)
-                                    C_QuestLog.SetAbandonQuest();
-                                    C_QuestLog.AbandonQuest()
-                                    n=n+1
-                                    if linkQuest then
-                                        print(id, addName,  e.onlyChinese and '放弃|A:groupfinder-icon-redx:0:0|a' or (ABANDON_QUEST_ABBREV..'|A:groupfinder-icon-redx:0:0|a'), linkQuest, n)
-                                    end
-                                end
-                                if IsModifierKeyDown() then
-                                    break
-                                end
-                            end
-                            PlaySound(SOUNDKIT.IG_QUEST_LOG_ABANDON_QUEST);
-                        end,
-                        timeout = 0,
-                        whileDead = 1,
-                        exclusive = 1,
-                        hideOnEscape = 1
-                    }
-                    StaticPopup_Show(id..addName.."ABANDON_QUEST", '\n'..text)
-                end
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
-        end
-    end)]]
+    --hooksecurefunc('QuestMapLogTitleButton_OnClick',function(self, button)--任务日志 展开所有, 收起所有--QuestMapFrame.lua
 end
 
 --加载保存数据
