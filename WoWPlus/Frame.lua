@@ -88,6 +88,19 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name)--放大
         self2.ZoomFrame:SetScale(n)
     end)
 
+    self.ZoomInOutFrame:SetScript('OnMouseWheel', function(self2,d)
+        local n= Save.scale[self2.ScaleName] or 1
+        if d==-1 then
+            n= n+ 0.05
+        elseif d==1 then
+            n= n- 0.05
+        end
+        n= n>3 and 3 or n
+        n= n< 0.5 and 0.5 or n
+        Save.scale[self2.ScaleName]= n
+        self2.ZoomFrame:SetScale(n)
+    end)
+
     self.ZoomInOutFrame:SetAlpha(self.ZoomInOutFrame.alpha)
     self.ZoomInOutFrame:SetScript("OnLeave", function(self2)
         e.tips:Hide()
