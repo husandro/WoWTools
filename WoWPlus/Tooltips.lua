@@ -92,7 +92,7 @@ end
 --取得网页，数据链接
 --################
 StaticPopupDialogs["WowheadQuickLinkUrl"] = {
-    text= id..' '..addName..'\n|cffff00ff%s|r |cnGREEN_FONT_COLOR:Ctrl+C |r'..BROWSER_COPY_LINK,
+    text= id..' '..addName..'|n|cffff00ff%s|r |cnGREEN_FONT_COLOR:Ctrl+C |r'..BROWSER_COPY_LINK,
     button1 = e.onlyChinese and '关闭' or CLOSE,
     OnShow = function(self, web)
         self.editBox:SetScript("OnEscapePressed", function(s) s:ClearFocus() s:GetParent():Hide() end)
@@ -1127,10 +1127,10 @@ local function Init()
             local _, name, icon, _, unparsedDescription = C_PetBattles.GetAbilityInfoByID(abilityID)
             local description = SharedPetAbilityTooltip_ParseText(abilityInfo, unparsedDescription)
             self.Description:SetText(description
-                                    ..'\n\n|cffffffff'..(e.onlyChinese and '技能' or ABILITIES)
+                                    ..'|n|n|cffffffff'..(e.onlyChinese and '技能' or ABILITIES)
                                     ..' '..abilityID
                                     ..(icon and '  |T'..icon..':0|t'..icon or '')..'|r'
-                                    ..(Save.ctrl and not UnitAffectingCombat('player') and '\nWoWHead Ctrl+Shift' or '')
+                                    ..(Save.ctrl and not UnitAffectingCombat('player') and '|nWoWHead Ctrl+Shift' or '')
                                 )
             get_Web_Link({frame=self, type='pet-ability', id=abilityID, name=name, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
         end

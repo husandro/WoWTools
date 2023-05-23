@@ -45,9 +45,9 @@ local function Init()
     local Vstr=function(t)--垂直文字
         local len = select(2, t:gsub("[^\128-\193]", ""))
         if(len == #t) then
-            return t:gsub(".", "%1\n")
+            return t:gsub(".", "%1|n")
         else
-            return t:gsub("([%z\1-\127\194-\244][\128-\191]*)", "%1\n")
+            return t:gsub("([%z\1-\127\194-\244][\128-\191]*)", "%1|n")
         end
     end
     hooksecurefunc('SpellFlyoutButton_UpdateGlyphState', function(self, reason)

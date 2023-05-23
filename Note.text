@@ -115,6 +115,7 @@ OpenAchievementFrameToAchievement(achievementID)
 Interface\Cursor\UI-Cursor-Move   Redlist.xml
 
 securecall('',)
+wrapFunc(C_PetBattles.DeclineQueuedPVPMatch);
 
 securecallfunction(GameTooltip_AddQuest, self, questID)
 

@@ -493,7 +493,7 @@ local function InitList(self, level, type)
             checked= Save.Summon,
             tooltipOnButton=true,
             tooltipTitle= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL)..'|r',
-            tooltipText= e.onlyChinese and '战斗中\n离开\nalt' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..'\n'..AFK..'\nalt',
+            tooltipText= e.onlyChinese and '战斗中|n离开|nalt' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..'|n'..AFK..'|nalt',
             func= function()
                 Save.Summon= not Save.Summon and true or nil
             end
@@ -549,7 +549,7 @@ local function InitList(self, level, type)
                     end,
                     tooltipOnButton=true,
                     tooltipTitle= e.onlyChinese and '移除' or REMOVE,
-                    tooltipText= format(e.onlyChinese and '%d次' or ITEM_SPELL_CHARGES, nu)..'\n\n'..(select(7,GetPlayerInfoByGUID(guid)) or ''),
+                    tooltipText= format(e.onlyChinese and '%d次' or ITEM_SPELL_CHARGES, nu)..'|n|n'..(select(7,GetPlayerInfoByGUID(guid)) or ''),
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
             end
@@ -582,7 +582,7 @@ local function InitList(self, level, type)
             notCheckable=true,
             func= function()
                 StaticPopupDialogs[id..addName..'CHANNEL']={--设置,内容,频道, 邀请,事件
-                    text=id..' '..addName..' '..(e.onlyChinese and '频道' or CHANNEL)..'\n\n'..(e.onlyChinese and '关键词' or KBASE_DEFAULT_SEARCH_TEXT),
+                    text=id..' '..addName..' '..(e.onlyChinese and '频道' or CHANNEL)..'|n|n'..(e.onlyChinese and '关键词' or KBASE_DEFAULT_SEARCH_TEXT),
                     whileDead=1,
                     hideOnEscape=1,
                     exclusive=1,
@@ -653,7 +653,7 @@ local function InitList(self, level, type)
         end
         e.LibDD:UIDropDownMenu_AddSeparator(level)
         info= {
-            text=  e.onlyChinese and '仅限系统(玩家)\n' or (LFG_LIST_CROSS_FACTION:format(SYSTEM..' ('..PLAYER..')')),
+            text=  e.onlyChinese and '仅限系统(玩家)|n' or (LFG_LIST_CROSS_FACTION:format(SYSTEM..' ('..PLAYER..')')),
             notCheckable=true,
             isTitle=true,
         }
@@ -771,7 +771,7 @@ local function InitList(self, level, type)
             Save.setFucus= not Save.setFucus and true or nil
             set_Shift_Click_focurs()--Shift+点击设置焦点
             if Save.setFucus then
-                print(id,addName, '|cnGREEN_FONT_COLOR:\nPlayerFrame','PetFrame','Party1','Party2','Party3','Party4','TargetFrame','TargetFrameToT','Boss1TargetFrame','Boss2TargetFrame','Boss3TargetFrame','Boss4TargetFrame','Boss5TargetFrame', 'FocusFrameToT')
+                print(id,addName, '|cnGREEN_FONT_COLOR:|nPlayerFrame','PetFrame','Party1','Party2','Party3','Party4','TargetFrame','TargetFrameToT','Boss1TargetFrame','Boss2TargetFrame','Boss3TargetFrame','Boss4TargetFrame','Boss5TargetFrame', 'FocusFrameToT')
             end
            --print(id,addName, e.GetEnabeleDisable(Save.setFucus), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,

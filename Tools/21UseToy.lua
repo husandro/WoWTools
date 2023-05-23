@@ -183,7 +183,7 @@ end
 
 
 StaticPopupDialogs[id..addName..'RESETALL']={--重置所有,清除全部玩具
-    text=id..' '..addName..'\n'..CLEAR_ALL..'\n\n'.. RELOADUI,
+    text=id..' '..addName..'|n'..CLEAR_ALL..'|n|n'.. RELOADUI,
     whileDead=1,
     hideOnEscape=1,
     exclusive=1,
@@ -291,7 +291,7 @@ local function InitMenu(self, level, menuList)--主菜单
             disabled=UnitAffectingCombat('player'),
             func=function()
                 StaticPopupDialogs[id..addName..'KEY']={--快捷键,设置对话框
-                    text=id..' '..addName..'\n'..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..'\n\nQ, BUTTON5',
+                    text=id..' '..addName..'|n'..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..'|n|nQ, BUTTON5',
                     whileDead=1,
                     hideOnEscape=1,
                     exclusive=1,

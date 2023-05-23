@@ -41,7 +41,7 @@ local function setText()--设置显示内容
                 end
             end
         end
-        text= text and text..'\n' or ''
+        text= text and text..'|n' or ''
         if Save.hideCombatText then
             text= text ..'|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a|cnRED_FONT_COLOR:'..combat..'|r'
         else
@@ -50,17 +50,17 @@ local function setText()--设置显示内容
     end
 
     if OnAFKTime then
-        text= text and text..'\n' or ''
+        text= text and text..'|n' or ''
         text= text .. (e.onlyChinese and '离开' or AFK)..e.Icon.clock2..e.GetTimeInfo(OnAFKTime, not Save.timeTypeText)
     end
 
     if OnPetTime then
-        text= text and text..'\n' or ''
+        text= text and text..'|n' or ''
         text= text ..(PetRound.text or '|TInterface\\Icons\\PetJournalPortrait:0|t')..' '..e.GetTimeInfo(OnPetTime, not Save.timeTypeText)
     end
 
     if OnInstanceTime then
-        text= text and text..'\n' or LastText and (LastText..'\n') or ''
+        text= text and text..'|n' or LastText and (LastText..'|n') or ''
         text=text..'|A:BuildanAbomination-32x32:0:0|a'..InstanceDate.kill..'|A:poi-soulspiritghost:0:0|a'..InstanceDate.dead..'|A:CrossedFlagsWithTimer:0:0|a'..e.GetTimeInfo(OnInstanceTime, not Save.timeTypeText)
     end
     button.text:SetText(text or LastText or '')
@@ -359,7 +359,7 @@ local function InitMenu(self, level, type)--主菜单
             checked= Save.timeTypeText,
             tooltipOnButton=true,
             tooltipTitle=  e.onlyChinese and '类型' or TYPE,
-            tooltipText='00:35\n'..SecondsToTime(35),
+            tooltipText='00:35|n'..SecondsToTime(35),
             func= function()
                 Save.timeTypeText= not Save.timeTypeText and true or nil
             end
@@ -442,7 +442,7 @@ local function InitMenu(self, level, type)--主菜单
                     text= e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true})..e.Icon.clock2..'  '..SecondsToTime(time),
                     notCheckable=true,
                     tooltipOnButton=true,
-                    tooltipTitle= tab.Time.levelTime and format(e.onlyChinese and '你在这个等级的游戏时间：%s' or TIME_PLAYED_LEVEL, '\n'..SecondsToTime(tab.Time.levelTime)),
+                    tooltipTitle= tab.Time.levelTime and format(e.onlyChinese and '你在这个等级的游戏时间：%s' or TIME_PLAYED_LEVEL, '|n'..SecondsToTime(tab.Time.levelTime)),
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
             end

@@ -161,19 +161,19 @@ local function setGroupReadyTips(event, arg1, arg2)
             for index= 1, num do
                 local text2=getReadyCheckStatus(unit..index, index)
                 if text2 then
-                    text= (text~='' and text..'\n' or text)..text2
+                    text= (text~='' and text..'|n' or text)..text2
                 end
             end
         else
             for index= 1, num-1 do
                 local text2=getReadyCheckStatus(unit..index, index)
                 if text2 then
-                    text= (text~='' and text..'\n' or text)..text2
+                    text= (text~='' and text..'|n' or text)..text2
                 end
             end
             local text2=getReadyCheckStatus('player', num)
             if text2 then
-                text= (text~='' and text..'\n' or text)..text2
+                text= (text~='' and text..'|n' or text)..text2
             end
         end
         if text~='' and not button.groupReadyTips then
@@ -474,7 +474,7 @@ local function setMarkersFrame()--设置标记, 框架
 
             elseif d=='RightButton' and IsControlKeyDown() then--设置时间
                 StaticPopupDialogs[id..addName..'COUNTDOWN']={--区域,设置对话框
-                    text=id..' '..addName..'\n'..(e.onlyChinese and '就绪' or READY)..'\n\n1 - 3600',
+                    text=id..' '..addName..'|n'..(e.onlyChinese and '就绪' or READY)..'|n|n1 - 3600',
                     whileDead=1,
                     hideOnEscape=1,
                     exclusive=1,
@@ -850,9 +850,9 @@ local function Init()
             if self.autoReadyText then
                 local text=''
                 if Save.autoReady==1 then
-                    text=id..' '..addName..'\n|cnGREEN_FONT_COLOR:'..AUTO_JOIN:gsub(JOIN, '')..READY..'|r'..e.Icon.select2
+                    text=id..' '..addName..'|n|cnGREEN_FONT_COLOR:'..AUTO_JOIN:gsub(JOIN, '')..READY..'|r'..e.Icon.select2
                 elseif Save.autoReady==2 then
-                    text=id..' '..addName..'\n|cnRED_FONT_COLOR:'..AUTO_JOIN:gsub(JOIN, '')..NOT_READY_FEMALE..'|r'..e.Icon.O2
+                    text=id..' '..addName..'|n|cnRED_FONT_COLOR:'..AUTO_JOIN:gsub(JOIN, '')..NOT_READY_FEMALE..'|r'..e.Icon.O2
                 end
                self.autoReadyText:SetText(text)
             end

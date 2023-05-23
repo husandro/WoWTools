@@ -157,7 +157,7 @@ local function InitMenu(self, level, type)--主菜单
             notCheckable=true,
             func= function()
                 StaticPopupDialogs[id..addName..'changeNamme']={
-                    text=(e.onlyChinese and '修改名称' or EQUIPMENT_SET_EDIT:gsub('/.+',''))..'\n\n'..(e.onlyChinese and '重新加载UI' or RELOADUI ),
+                    text=(e.onlyChinese and '修改名称' or EQUIPMENT_SET_EDIT:gsub('/.+',''))..'|n|n'..(e.onlyChinese and '重新加载UI' or RELOADUI ),
                     whileDead=1,
                     hideOnEscape=1,
                     exclusive=1,

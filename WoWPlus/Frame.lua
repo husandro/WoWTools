@@ -704,7 +704,7 @@ local function Init_Options()
     btn:SetPoint('TOPLEFT', check2, 'BOTTOMLEFT',0,-16)
     btn:SetScript('OnClick', function()
         StaticPopupDialogs[id..addName..'MoveZoom']={
-            text =id..' '..addName..'\n\n'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2 )..' ('..(e.onlyChinese and '保存' or SAVE)..')',
+            text =id..' '..addName..'|n|n'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2 )..' ('..(e.onlyChinese and '保存' or SAVE)..')',
             button1 = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '移动' or NPE_MOVE),
             button2 = e.onlyChinese and '取消' or CANCEL,
             button3 = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '缩放' or UI_SCALE),

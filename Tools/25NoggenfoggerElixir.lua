@@ -101,7 +101,7 @@ local function InitMenu(self, level)--主菜单
         disabled=UnitAffectingCombat('player'),
         func=function()
             StaticPopupDialogs[id..addName..'KEY']={--快捷键,设置对话框
-                text=id..' '..addName..'\n'..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..'\n\nQ, BUTTON5',
+                text=id..' '..addName..'|n'..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..'|n|nQ, BUTTON5',
                 whileDead=1,
                 hideOnEscape=1,
                 exclusive=1,

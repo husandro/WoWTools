@@ -23,9 +23,9 @@ local function set_PetBattleUnitFrame_UpdateDisplay(self)--Blizzard_PetBattleUI.
                 local speed = C_PetBattles.GetSpeed(petOwner, petIndex)
                 local power = C_PetBattles.GetPower(petOwner, petIndex)
                 if speed and power then
-                    t=t and t..'\n' or ''
-                    t=t..power..'\n'..speed
-                    --t=t..'|A:Soulbinds_Tree_Conduit_Icon_Attack:0:0|a'..power..'\n'..'|A:Soulbinds_Tree_Conduit_Icon_Utility:0:0|a'..speed
+                    t=t and t..'|n' or ''
+                    t=t..power..'|n'..speed
+                    --t=t..'|A:Soulbinds_Tree_Conduit_Icon_Attack:0:0|a'..power..'|n'..'|A:Soulbinds_Tree_Conduit_Icon_Utility:0:0|a'..speed
                 end
             end
         end

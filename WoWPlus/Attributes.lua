@@ -293,7 +293,7 @@ local function set_STATUS_Tooltip(self)
         if role == "TANK" then
             local increasedParryChance = GetParryChanceFromAttribute();
             if ( increasedParryChance > 0 ) then
-                text = text~='' and text..'\n' or text
+                text = text~='' and text..'|n' or text
                 text= text..format(e.onlyChinese and '"招架几率提高%.2f%%|n|cff888888（在效果递减之前）|r"' or CR_PARRY_BASE_STAT_TOOLTIP, increasedParryChance);
             end
         end
@@ -410,13 +410,13 @@ local function set_CRITCHANCE_Tooltip(self)
 	local extraCritRating = GetCombatRating(rating);
 	if (GetCritChanceProvidesParryEffect()) then
         if e.onlyChinese then
-            e.tips:AddLine(format("攻击和法术造成额外效果的几率。\n爆击：%s [+%.2f%%]\n招架几率提高%.2f%%。", BreakUpLargeNumbers(extraCritRating), extraCritChance, GetCombatRatingBonusForCombatRatingValue(CR_PARRY, extraCritRating)), nil,nil,nil,true)
+            e.tips:AddLine(format("攻击和法术造成额外效果的几率。|n爆击：%s [+%.2f%%]|n招架几率提高%.2f%%。", BreakUpLargeNumbers(extraCritRating), extraCritChance, GetCombatRatingBonusForCombatRatingValue(CR_PARRY, extraCritRating)), nil,nil,nil,true)
         else
             e.tips:AddLine(format(CR_CRIT_PARRY_RATING_TOOLTIP, BreakUpLargeNumbers(extraCritRating), extraCritChance, GetCombatRatingBonusForCombatRatingValue(CR_PARRY, extraCritRating)), nil,nil,nil,true)
         end
 	else
         if e.onlyChinese then
-		    e.tips:AddLine(format( "攻击和法术造成额外效果的几率。\n爆击：%s [+%.2f%%]", BreakUpLargeNumbers(extraCritRating), extraCritChance), nil,nil,nil,true)
+		    e.tips:AddLine(format( "攻击和法术造成额外效果的几率。|n爆击：%s [+%.2f%%]", BreakUpLargeNumbers(extraCritRating), extraCritChance), nil,nil,nil,true)
         else
             e.tips:AddLine(format(CR_CRIT_TOOLTIP, BreakUpLargeNumbers(extraCritRating), extraCritChance), nil,nil,nil,true)
         end
@@ -510,7 +510,7 @@ local function set_VERSATILITY_Tooltip(self)
 	local versatilityDamageBonus = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE);
 	local versatilityDamageTakenReduction = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_TAKEN) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_TAKEN);
     e.tips:AddDoubleLine(frame.nameText, format('%.2f%%',  versatilityDamageBonus))
-	e.tips:AddLine(format(e.onlyChinese and "造成的伤害值和治疗量提高%.2f%%，\n受到的伤害降低%.2f%%。\n全能：%s [%.2f%%/%.2f%%]" or CR_VERSATILITY_TOOLTIP, versatilityDamageBonus, versatilityDamageTakenReduction, BreakUpLargeNumbers(versatility), versatilityDamageBonus, versatilityDamageTakenReduction), nil,nil,nil,true)
+	e.tips:AddLine(format(e.onlyChinese and "造成的伤害值和治疗量提高%.2f%%，|n受到的伤害降低%.2f%%。|n全能：%s [%.2f%%/%.2f%%]" or CR_VERSATILITY_TOOLTIP, versatilityDamageBonus, versatilityDamageTakenReduction, BreakUpLargeNumbers(versatility), versatilityDamageBonus, versatilityDamageTakenReduction), nil,nil,nil,true)
     e.tips:Show()
 end
 
@@ -537,7 +537,7 @@ local function set_LIFESTEAL_Tooltip(self)
 
     local lifesteal = GetLifesteal();
 	e.tips:AddDoubleLine(frame.nameText,  format("%0.2f%%", lifesteal))
-    e.tips:AddLine(format(e.onlyChinese and '你所造成伤害和治疗的一部分将转而治疗你。\n\n吸血：%s [+%.2f%%]' or CR_LIFESTEAL_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(CR_LIFESTEAL)), GetCombatRatingBonus(CR_LIFESTEAL)), nil,nil,nil,true)
+    e.tips:AddLine(format(e.onlyChinese and '你所造成伤害和治疗的一部分将转而治疗你。|n|n吸血：%s [+%.2f%%]' or CR_LIFESTEAL_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(CR_LIFESTEAL)), GetCombatRatingBonus(CR_LIFESTEAL)), nil,nil,nil,true)
     e.tips:Show()
 end
 
@@ -564,7 +564,7 @@ local function set_AVOIDANCE_Tooltip(self)
 
     local Avoidance = GetAvoidance();
 	e.tips:AddDoubleLine(frame.nameText,  format("%0.2f%%", Avoidance))
-    e.tips:AddLine(format(e.onlyChinese and '范围效果法术的伤害降低。\n\n闪避：%s [+%.2f%%' or CR_AVOIDANCE_TOOLTIP , BreakUpLargeNumbers(GetCombatRating(CR_AVOIDANCE)), GetCombatRatingBonus(CR_AVOIDANCE)), nil,nil,nil,true)
+    e.tips:AddLine(format(e.onlyChinese and '范围效果法术的伤害降低。|n|n闪避：%s [+%.2f%%' or CR_AVOIDANCE_TOOLTIP , BreakUpLargeNumbers(GetCombatRating(CR_AVOIDANCE)), GetCombatRatingBonus(CR_AVOIDANCE)), nil,nil,nil,true)
     e.tips:Show()
 end
 
@@ -591,7 +591,7 @@ local function set_DODGE_Tooltip(self)
 
     local chance = GetDodgeChance();
 	e.tips:AddDoubleLine(frame.nameText,  format("%0.2f%%", chance))
-    e.tips:AddLine( format(e.onlyChinese and '%d点躲闪可使躲闪几率提高%.2f%%\n|cff888888（在效果递减之前）|r' or CR_DODGE_TOOLTIP, GetCombatRating(CR_DODGE), GetCombatRatingBonus(CR_DODGE)), nil,nil,nil,true)
+    e.tips:AddLine( format(e.onlyChinese and '%d点躲闪可使躲闪几率提高%.2f%%|n|cff888888（在效果递减之前）|r' or CR_DODGE_TOOLTIP, GetCombatRating(CR_DODGE), GetCombatRatingBonus(CR_DODGE)), nil,nil,nil,true)
     e.tips:Show()
 end
 
@@ -627,7 +627,7 @@ local function set_ARMOR_Tooltip(self)
     local armorReduction = PaperDollFrame_GetArmorReduction(effectiveArmor, UnitEffectiveLevel('player'));
 	local armorReductionAgainstTarget = PaperDollFrame_GetArmorReductionAgainstTarget(effectiveArmor);
 
-    e.tips:AddLine(format(e.onlyChinese and '物理伤害减免：%0.2f%%\n|cff888888（对抗与你实力相当的敌人时）|r' or STAT_ARMOR_TOOLTIP, armorReduction), nil,nil,nil,true)
+    e.tips:AddLine(format(e.onlyChinese and '物理伤害减免：%0.2f%%|n|cff888888（对抗与你实力相当的敌人时）|r' or STAT_ARMOR_TOOLTIP, armorReduction), nil,nil,nil,true)
 
 	if (armorReductionAgainstTarget) then
 		e.tips:AddLine(format(e.onlyChinese and '（对当前目标：%0.2f%%）' or STAT_ARMOR_TARGET_TOOLTIP, armorReductionAgainstTarget), nil,nil,nil,true)
@@ -658,7 +658,7 @@ local function set_PARRY_Tooltip(self)
 
     local chance = GetParryChance();
 	e.tips:AddDoubleLine(frame.nameText,  format("%0.2f%%", chance))
-    e.tips:AddLine(format(e.onlyChinese and '%d点招架可使招架几率提高%.2f%%\n|cff888888（在效果递减之前）|r' or CR_PARRY_TOOLTIP, GetCombatRating(CR_PARRY), GetCombatRatingBonus(CR_PARRY)), nil,nil,nil,true)
+    e.tips:AddLine(format(e.onlyChinese and '%d点招架可使招架几率提高%.2f%%|n|cff888888（在效果递减之前）|r' or CR_PARRY_TOOLTIP, GetCombatRating(CR_PARRY), GetCombatRatingBonus(CR_PARRY)), nil,nil,nil,true)
     e.tips:Show()
 end
 
@@ -690,7 +690,7 @@ local function set_BLOCK_Tooltip(self)
 	local blockArmorReduction = PaperDollFrame_GetArmorReduction(shieldBlockArmor, UnitEffectiveLevel('player'));
 	local blockArmorReductionAgainstTarget = PaperDollFrame_GetArmorReductionAgainstTarget(shieldBlockArmor);
 
-	e.tips:AddLine(format(e.onlyChinese and '格挡可使一次攻击的伤害降低%0.2f%%.\n|cff888888（对抗与你实力相当的敌人时）|r' or CR_BLOCK_TOOLTIP, blockArmorReduction), nil,nil,nil,true)
+	e.tips:AddLine(format(e.onlyChinese and '格挡可使一次攻击的伤害降低%0.2f%%.|n|cff888888（对抗与你实力相当的敌人时）|r' or CR_BLOCK_TOOLTIP, blockArmorReduction), nil,nil,nil,true)
 	if (blockArmorReductionAgainstTarget) then
 		e.tips:AddLine(format(e.onlyChinese and '（对当前目标：%0.2f%%）' or STAT_BLOCK_TARGET_TOOLTIP, blockArmorReductionAgainstTarget), nil,nil,nil,true)
 	end

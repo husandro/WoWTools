@@ -26,7 +26,7 @@ local function get_Mony_Tips()
     local numPlayer, allMoney, text  = 0, 0, ''
     for guid, infoMoney in pairs(WoWDate) do
         if infoMoney.Money then
-            text= text~='' and text..'\n' or text
+            text= text~='' and text..'|n' or text
             text= text..e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false})..'  '.. GetCoinTextureString(infoMoney.Money)
             numPlayer=numPlayer+1
             allMoney= allMoney + infoMoney.Money
@@ -51,7 +51,7 @@ local function create_Set_lable(self, text)--建立,或设置,Labels
             down= function() securecallfunction(InterfaceOptionsFrame_OpenToCategory, id) end
         elseif text=='ms' then
             label.tooltip= function()
-                e.tips:AddLine(format(e.onlyChinese and  "延迟：\n%.0f ms （本地）\n%.0f ms （世界）" or MAINMENUBAR_LATENCY_LABEL, select(3, GetNetStats())))
+                e.tips:AddLine(format(e.onlyChinese and  "延迟：|n%.0f ms （本地）|n%.0f ms （世界）" or MAINMENUBAR_LATENCY_LABEL, select(3, GetNetStats())))
             end
             down= function() securecallfunction(InterfaceOptionsFrame_OpenToCategory, id) end
 
@@ -68,7 +68,7 @@ local function create_Set_lable(self, text)--建立,或设置,Labels
                 local info=C_CurrencyInfo.GetCurrencyInfo(2032)
                 local str=''
                 if info and info.quantity and info.iconFileID then
-                    str= '|T'..info.iconFileID..':0|t'..info.quantity..'\n'
+                    str= '|T'..info.iconFileID..':0|t'..info.quantity..'|n'
                 end
                 e.tips:AddLine(str..(e.onlyChinese and '旅行者日志进度' or MONTHLY_ACTIVITIES_PROGRESSED))
             end
@@ -394,7 +394,7 @@ local function InitMenu(self, level, type)--主菜单
         text= 'fps ms',
         checked= not Save.hideFpsMs,
         tooltipOnButton=true,
-        tooltipTitle=format(e.onlyChinese and  "延迟：\n%.0f ms （本地）\n%.0f ms （世界）" or MAINMENUBAR_LATENCY_LABEL, select(3, GetNetStats())),
+        tooltipTitle=format(e.onlyChinese and  "延迟：|n%.0f ms （本地）|n%.0f ms （世界）" or MAINMENUBAR_LATENCY_LABEL, select(3, GetNetStats())),
         func= function()
             Save.hideFpsMs= not Save.hideFpsMs and true or nil
             set_Fps_Ms_Show_Hide()--设置, fps, ms, 数值

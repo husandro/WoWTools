@@ -300,7 +300,7 @@ local function setMerchantInfo()--设置, 提示, 信息
             if not Save.notShowBagNum then--包里，银行，总数
                 local bag=itemID and GetItemCount(itemID,true)
                 if bag and bag>0 then
-                    num=(num and num..'\n' or '')..bag..e.Icon.bank2
+                    num=(num and num..'|n' or '')..bag..e.Icon.bank2
                 end
             end
             if num and not itemButton.buyItemNum then
@@ -506,7 +506,7 @@ local function InitList(self, level, menuLit)
         end,
         tooltipOnButton=true,
         tooltipTitle=id..' '.. addName,
-        tooltipText='\n'..PROFESSIONS_CRAFTING_QUALITY:format('|cff606060'..ITEM_QUALITY0_DESC..'|r'),
+        tooltipText='|n'..PROFESSIONS_CRAFTING_QUALITY:format('|cff606060'..ITEM_QUALITY0_DESC..'|r'),
     }
     e.LibDD:UIDropDownMenu_AddButton(info)
 
@@ -599,13 +599,13 @@ local function InitList(self, level, menuLit)
     info.tooltipOnButton=true
     info.tooltipTitle=GUILD_BANK_MONEY_LOG.. ' '..RepairSave.date
     local text=	MINIMAP_TRACKING_REPAIR..': '..RepairSave.num..' '..VOICEMACRO_LABEL_CHARGE1
-                ..'\n'..GUILD..': '..GetCoinTextureString(RepairSave.guild)
-                ..'\n'..PLAYER..': '..GetCoinTextureString(RepairSave.player)
+                ..'|n'..GUILD..': '..GetCoinTextureString(RepairSave.guild)
+                ..'|n'..PLAYER..': '..GetCoinTextureString(RepairSave.player)
     if RepairSave.guild>0 and RepairSave.player>0 then
-        text=text..'\n\n'..TOTAL..': '..GetCoinTextureString(RepairSave.guild+RepairSave.player)
+        text=text..'|n|n'..TOTAL..': '..GetCoinTextureString(RepairSave.guild+RepairSave.player)
     end
     if CanGuildBankRepair() then
-        text=text..'\n\n'..GUILDBANK_REPAIR..'\n'..GetCoinTextureString(GetGuildBankMoney())
+        text=text..'|n|n'..GUILDBANK_REPAIR..'|n'..GetCoinTextureString(GetGuildBankMoney())
     end
     info.tooltipText=text
     e.LibDD:UIDropDownMenu_AddButton(info)
@@ -629,7 +629,7 @@ local function InitList(self, level, menuLit)
             Save.notDELETE= not Save.notDELETE and true or nil
         end,
         tooltipOnButton=true,
-        tooltipTitle= e.onlyChinese and '你真的要摧毁%s吗？\n\n请在输入框中输入 DELETE 以确认。' or DELETE_GOOD_ITEM,
+        tooltipTitle= e.onlyChinese and '你真的要摧毁%s吗？|n|n请在输入框中输入 DELETE 以确认。' or DELETE_GOOD_ITEM,
     }
     e.LibDD:UIDropDownMenu_AddButton(info)
 
@@ -705,10 +705,10 @@ local function setMenu()
                 icon= icon and '|T'..icon..':0|t' or ''
                 StaticPopupDialogs[id..addName..'Buy']={
                     text =id..' '..addName
-                    ..'\n\n'.. (e.onlyChinese and '自动购买' or AUTO_JOIN:gsub(JOIN,PURCHASE))..': '..icon ..itemLink
-                    ..'\n\n'..e.Icon.player..e.Player.name_realm..': ' ..(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)
-                    ..'\n\n0: '..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
-                    ..(Save.notAutoBuy and '\n\n'..(e.onlyChinese and '自动购买' or AUTO_JOIN:gsub(JOIN,PURCHASE))..': '..e.GetEnabeleDisable(false) or ''),
+                    ..'|n|n'.. (e.onlyChinese and '自动购买' or AUTO_JOIN:gsub(JOIN,PURCHASE))..': '..icon ..itemLink
+                    ..'|n|n'..e.Icon.player..e.Player.name_realm..': ' ..(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)
+                    ..'|n|n0: '..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
+                    ..(Save.notAutoBuy and '|n|n'..(e.onlyChinese and '自动购买' or AUTO_JOIN:gsub(JOIN,PURCHASE))..': '..e.GetEnabeleDisable(false) or ''),
                     button1 = e.onlyChinese and '购买' or PURCHASE,
                     button2 = e.onlyChinese and '取消' or CANCEL,
                     hasEditBox=true,whileDead=true,timeout=60,hideOnEscape = 1,

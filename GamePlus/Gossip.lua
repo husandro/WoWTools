@@ -196,7 +196,7 @@ local function InitMenu_Gossip(self, level, type)
                 text= text,
                 notCheckable=true,
                 tooltipOnButton=true,
-                tooltipTitle='gossipOptionID '..gossipOptionID..'\n\n'..e.Icon.left..(e.onlyChinese and '移除' or REMOVE),
+                tooltipTitle='gossipOptionID '..gossipOptionID..'|n|n'..e.Icon.left..(e.onlyChinese and '移除' or REMOVE),
                 func=function()
                     Save.gossipOption[gossipOptionID]=nil
                     print(id, ENABLE_DIALOG, e.onlyChinese and '移除' or REMOVE, text, 'gossipOptionID:', gossipOptionID)
@@ -657,7 +657,7 @@ local function InitMenu_Quest(self, level, type)
                 text= text,
                 notCheckable=true,
                 tooltipOnButton=true,
-                tooltipTitle='questID  '..questID..'\n\n'..e.Icon.left..REMOVE,
+                tooltipTitle='questID  '..questID..'|n|n'..e.Icon.left..REMOVE,
                 func=function()
                     Save.questOption[questID]=nil
                     print(id, QUESTS_LABEL, e.onlyChinese and '移除' or REMOVE, text, 'ID', questID)

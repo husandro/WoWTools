@@ -289,7 +289,7 @@ local function setMenuList(self, level, menuList)--主菜单
                 checked=true,
                 tooltipOnButton=true,
                 tooltipTitle= e.onlyChinese and '移除' or REMOVE,
-                tooltipText=num>1 and '\n'..(e.onlyChinese and '组合物品' or COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS))..'\n'..(e.onlyChinese and '数量' or AUCTION_STACK_SIZE)..': '..num..'\nitemID: '..itemID,
+                tooltipText=num>1 and '|n'..(e.onlyChinese and '组合物品' or COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS))..'|n'..(e.onlyChinese and '数量' or AUCTION_STACK_SIZE)..': '..num..'|nitemID: '..itemID,
                 func=function()
                     Save.use[itemID]=nil
                     getItems()
@@ -545,7 +545,7 @@ local function Init()
             end
             --添加，移除
             StaticPopupDialogs['OpenItmesUseOrDisableItem']={
-                text=id..' '..addName..'\n\n%s\n%s\n\n'..(e.onlyChinese and '合成物品' or COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS))..' >1: ',
+                text=id..' '..addName..'|n|n%s|n%s|n|n'..(e.onlyChinese and '合成物品' or COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS))..' >1: ',
                 whileDead=1,
                 hideOnEscape=1,
                 exclusive=1,

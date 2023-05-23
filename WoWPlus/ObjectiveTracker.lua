@@ -450,7 +450,7 @@ local function Init()
 
             elseif module== QUEST_TRACKER_MODULE or module== CAMPAIGN_QUEST_TRACKER_MODULE then--6 追踪任务 TRACK_QUEST
                 create_ClearAll_Button(module.Header)
-                module.Header.clearAll.tooltip= e.onlyChinese and '战役\n任务' or (TRACKER_HEADER_CAMPAIGN_QUESTS..'\n'..TRACKER_HEADER_QUESTS)
+                module.Header.clearAll.tooltip= e.onlyChinese and '战役|n任务' or (TRACKER_HEADER_CAMPAIGN_QUESTS..'|n'..TRACKER_HEADER_QUESTS)
                 module.Header.clearAll:SetScript('OnDoubleClick', function(self2)
                     local questIDS, num= {}, 0
                     for i= 1, C_QuestLog.GetNumQuestWatches() do

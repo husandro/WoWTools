@@ -2772,7 +2772,14 @@
         "EncounterJournal_ListInstances",
         "QuestInfoTitleHeader",
         "HUD_EDIT_MODE_COLLAPSE_OPTIONS",
-        "LOOT_HISTORY_ALL_PASSED"
+        "LOOT_HISTORY_ALL_PASSED",
+        "SPEC_ACTIVE",
+        "QUEUED_STATUS_SUSPENDED",
+        "PVPTimerFrame",
+        "BATTLEFIELD_TIMER_THRESHOLDS",
+        "PVPReadyDialog",
+        "PetJournalLoadoutPet1Icon",
+        "RAF_RECRUITMENT"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

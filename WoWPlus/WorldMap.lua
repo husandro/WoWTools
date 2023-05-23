@@ -153,7 +153,7 @@ local function setMapQuestList()--世界地图,任务, 加 - + 按钮
         end)
         QuestScrollFrame.btnDeleteAllQuest:SetScript("OnMouseDown", function()
             StaticPopupDialogs[id..addName.."ABANDON_QUEST"] = {
-                text= (e.onlyChinese and "放弃\"%s\"？" or ABANDON_QUEST_CONFIRM)..'\n\n|cnYELLOW_FONT_COLOR:'..(not e.onlyChinese and VOICEMACRO_1_Sc_0..' ' or "危险！")..(not e.onlyChinese and VOICEMACRO_1_Sc_0..' ' or "危险！")..(not e.onlyChinese and VOICEMACRO_1_Sc_0 or "危险！"),
+                text= (e.onlyChinese and "放弃\"%s\"？" or ABANDON_QUEST_CONFIRM)..'|n|n|cnYELLOW_FONT_COLOR:'..(not e.onlyChinese and VOICEMACRO_1_Sc_0..' ' or "危险！")..(not e.onlyChinese and VOICEMACRO_1_Sc_0..' ' or "危险！")..(not e.onlyChinese and VOICEMACRO_1_Sc_0 or "危险！"),
                 button1 = '|cnRED_FONT_COLOR:'..(not e.onlyChinese and ABANDON_QUEST_ABBREV or "放弃"),
                 button2 = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL),
                 OnAccept = function(self2)
@@ -182,7 +182,7 @@ local function setMapQuestList()--世界地图,任务, 加 - + 按钮
                 hideOnEscape = true,
                 showAlert= true,
             }
-            StaticPopup_Show(id..addName.."ABANDON_QUEST", '\n|cnRED_FONT_COLOR:'..(e.onlyChinese and '\n|A:groupfinder-icon-redx:0:0|a所有任务' or ('\n|A:groupfinder-icon-redx:0:0|a'..ALL))..' |r#|cnGREEN_FONT_COLOR:'..select(2, C_QuestLog.GetNumQuestLogEntries())..'|r')
+            StaticPopup_Show(id..addName.."ABANDON_QUEST", '|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '|n|A:groupfinder-icon-redx:0:0|a所有任务' or ('|n|A:groupfinder-icon-redx:0:0|a'..ALL))..' |r#|cnGREEN_FONT_COLOR:'..select(2, C_QuestLog.GetNumQuestLogEntries())..'|r')
         end)
 
     end
@@ -598,7 +598,7 @@ local function set_AreaPOIPinMixin_OnAcquired(poiInfo)--地图POI提示 AreaPOID
         end
         t=C_AreaPoiInfo.GetAreaPOIInfo(1543,6640).name
         for _,v in pairs(R) do
-            t=t..'\n '..v
+            t=t..'|n '..v
         end
     elseif poiInfo.name then
         t=poiInfo.name
@@ -624,7 +624,7 @@ local function set_AreaPOIPinMixin_OnAcquired(poiInfo)--地图POI提示 AreaPOID
     if poiInfo.areaPoiID and C_AreaPoiInfo.IsAreaPOITimed(poiInfo.areaPoiID) then
         local seconds= C_AreaPoiInfo.GetAreaPOISecondsLeft(poiInfo.areaPoiID)
         if seconds and seconds>0 then
-            t= t~='' and t..'\n' or t
+            t= t~='' and t..'|n' or t
             t= t..'|cnGREEN_FONT_COLOR:'..SecondsToTime(seconds)..'|r'
         end
     end

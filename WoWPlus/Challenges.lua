@@ -123,7 +123,7 @@ local function UI_Party_Info(frame)--队友位置
         end
         local guid=UnitGUID(unit)
         if guid then
-            text= text and text..'\n' or ''
+            text= text and text..'|n' or ''
 
             local stat=GetReadyCheckStatus(unit)
             if stat=='ready' then
@@ -613,12 +613,12 @@ local function Kill(self)--副本PVP团本
     local T=''
     for i,v in pairs(R) do
 
-        T=T..'\n'..'|T450908:0|t'
+        T=T..'|n'..'|T450908:0|t'
         local he=GetRewardTypeHead(i)
         if he then T=T..he end
 
         for x,r in pairs(v) do
-            if T~='' then T=T..'\n' end
+            if T~='' then T=T..'|n' end
             T=T..'   '
             if r.unlocked then
                 T=T.. '|cff00ff00'..x..')'..r.difficulty.. ' '..COMPLETE..'|r'
@@ -659,14 +659,14 @@ local function All(self)--所有记录
     end
     --[[m=m..(e.onlyChinese and '每周最佳纪录: ' or CHALLENGE_MODE_WEEKLY_BEST..': ')..currentWeekBestLevel.. ' ('..weeklyRewardLevel..')'
     if nextDifficultyWeeklyRewardLevel and nextBestLevel and nextDifficultyWeeklyRewardLevel>0 and nextBestLevel>0 and currentWeekBestLevel<nextDifficultyWeeklyRewardLevel then
-        m=m..'\n'..(e.onlyChinese and '下一级：' or NEXT_RANK_COLON)..nextDifficultyWeeklyRewardLevel..' ('..nextBestLevel..')'
+        m=m..'|n'..(e.onlyChinese and '下一级：' or NEXT_RANK_COLON)..nextDifficultyWeeklyRewardLevel..' ('..nextBestLevel..')'
     end]]
 
     local mapChallengeModeID, level = C_MythicPlus.GetLastWeeklyBestInformation()
     if mapChallengeModeID and level and level>0 and mapChallengeModeID>0 then
         local name, _, _, texture, _ = C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
         if name then
-            m= (m~='' and m..'\n\n' or m)..(e.onlyChinese and '上周' or HONOR_LASTWEEK)..': '.. (texture and '|T'..texture..':0|t' or '')..name..' '..level
+            m= (m~='' and m..'|n|n' or m)..(e.onlyChinese and '上周' or HONOR_LASTWEEK)..': '.. (texture and '|T'..texture..':0|t' or '')..name..' '..level
         end
     end
 
@@ -674,7 +674,7 @@ local function All(self)--所有记录
     if info then
         local nu=#C_MythicPlus.GetRunHistory(true) or {}
         local nu2=#info
-        m= (m~='' and m..'\n\n' or m)..(e.onlyChinese and '历史' or HISTORY)..': |cff00ff00'..nu.. '/'.. nu2.. ' |r(|cffffffff'..nu2-nu..'|r)'
+        m= (m~='' and m..'|n|n' or m)..(e.onlyChinese and '历史' or HISTORY)..': |cff00ff00'..nu.. '/'.. nu2.. ' |r(|cffffffff'..nu2-nu..'|r)'
     end
 
     info = C_MythicPlus.GetRunHistory(false, true)--本周记录
@@ -715,15 +715,15 @@ local function All(self)--所有记录
         if m2~='' then m=(m~='' and m..'|n' or '')..(e.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK)..': |cff00ff00'..n..'/'..n2..'|r  (|cffffffff'..(n2-n)..'|r)|n'..m2 end
     end
 
-    local text= m..'\n'--所有角色KEY
+    local text= m..'|n'--所有角色KEY
     for guid, infoWoW in pairs(WoWDate) do
         local find
         for link, _ in pairs(infoWoW.Keystone.itemLink) do
-            text=text..'\n    '..link
+            text=text..'|n    '..link
             find=true
         end
         if find then
-            text= text..'\n'.. e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false})
+            text= text..'|n'.. e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false})
         end
     end
 
@@ -1087,13 +1087,13 @@ local function set_itemLevelTips_GetTextAndTooltip(showTooltip)--设置, 文本,
                 e.tips:AddLine(str)
             end
             if i>=5 and i<=20 then
-                text= text and text..'\n' or ''
+                text= text and text..'|n' or ''
                 text= text.. str..(curKey==i and e.Icon.star2 or '')
             end
         end
     end
     if text then
-        text= (e.onlyChinese and '难度 每周 完成' or (PROFESSIONS_CRAFTING_STAT_TT_DIFFICULTY_HEADER..' '..CALENDAR_REPEAT_WEEKLY..' '..COMPLETE))..'\n'..text
+        text= (e.onlyChinese and '难度 每周 完成' or (PROFESSIONS_CRAFTING_STAT_TT_DIFFICULTY_HEADER..' '..CALENDAR_REPEAT_WEEKLY..' '..COMPLETE))..'|n'..text
     end
 
     ChallengesFrame.itemLevelTips.Text:SetText(Save.showItemLevelTipsText and text or '')

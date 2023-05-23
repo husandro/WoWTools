@@ -114,7 +114,7 @@ local function InitMenu(self, level, type)--主菜单
                 notCheckable=true,
                 tooltipOnButton=true,
                 tooltipTitle=tab.text,
-                tooltipText=tab.date..'\n\n'..(e.onlyChinese and '发送信息' or SEND_MESSAGE)..e.Icon.left,
+                tooltipText=tab.date..'|n|n'..(e.onlyChinese and '发送信息' or SEND_MESSAGE)..e.Icon.left,
                 arg1=tab.text,
                 func=function(self2, arg1)
                     e.Chat(arg1)
@@ -143,7 +143,7 @@ local function InitMenu(self, level, type)--主菜单
             notCheckable=true,
             tooltipOnButton=true,
             tooltipTitle=tab.text,
-            tooltipText=tab.date..'\n\n'..(e.onlyChinese and '发送信息' or SEND_MESSAGE)..e.Icon.left,
+            tooltipText=tab.date..'|n|n'..(e.onlyChinese and '发送信息' or SEND_MESSAGE)..e.Icon.left,
             arg1=tab.arg1,
             func=function(self2, arg1)
                 e.Chat(arg1)

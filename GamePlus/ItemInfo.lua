@@ -214,7 +214,7 @@ local function set_Item_Info(self, tab)
                                 findText= ' '..findText..','
                                 findText:gsub(' (.-),', function(t)
                                     if ClassNameIconTab[t] then
-                                        text= select(2, math.modf(n/4))==0 and text..'\n' or text
+                                        text= select(2, math.modf(n/4))==0 and text..'|n' or text
                                         text=text..ClassNameIconTab[t]
                                         n= n+1
                                     end
@@ -222,7 +222,7 @@ local function set_Item_Info(self, tab)
                             else
                                 for className, icon in pairs (ClassNameIconTab) do
                                     if dateInfo.text[classStr]:find(className) then
-                                        text= select(2, math.modf(n/4))==0 and text..'\n' or text
+                                        text= select(2, math.modf(n/4))==0 and text..'|n' or text
                                         text=text..icon
                                         n= n+1
                                     end
@@ -689,7 +689,7 @@ local function Init()
                     text= e.onlyChinese and '反向整理背包' or REVERSE_CLEAN_UP_BAGS_TEXT,
                     checked= C_Container.GetSortBagsRightToLeft(),
                     tooltipOnButton=true,
-                    tooltipTitle='C_Container.\nSetSortBagsRightToLeft',
+                    tooltipTitle='C_Container.|nSetSortBagsRightToLeft',
                     tooltipText= e.onlyChinese and '整理背包会将物品移动到你最右边的背包里' or OPTION_TOOLTIP_REVERSE_CLEAN_UP_BAGS,
                     func= function()
                         C_Container.SetSortBagsRightToLeft(not C_Container.GetSortBagsRightToLeft() and true or false)
@@ -704,7 +704,7 @@ local function Init()
                     icon= e.Icon.toLeft,
                     checked= C_Container.GetInsertItemsLeftToRight(),
                     tooltipOnButton=true,
-                    tooltipTitle='C_Container.\nSetInsertItemsLeftToRight',
+                    tooltipTitle='C_Container.|nSetInsertItemsLeftToRight',
                     tooltipText= e.onlyChinese and '新物品会出现在你最左边的背包里' or OPTION_TOOLTIP_REVERSE_NEW_LOOT,
                     func= function()
                         C_Container.SetInsertItemsLeftToRight(not C_Container.GetInsertItemsLeftToRight() and true or false)
@@ -717,7 +717,7 @@ local function Init()
                     icon= 'bags-button-autosort-up',
                     checked=not C_Container.GetBackpackAutosortDisabled(),
                     tooltipOnButton=true,
-                    tooltipTitle='C_Container.\nSetBackpackAutosortDisabled',
+                    tooltipTitle='C_Container.|nSetBackpackAutosortDisabled',
                     func= function()
                         C_Container.SetBackpackAutosortDisabled(not C_Container.GetBackpackAutosortDisabled() and true or false)
                     end,
@@ -729,7 +729,7 @@ local function Init()
                     icon= 'bags-button-autosort-up',
                     checked=not C_Container.GetBankAutosortDisabled(),
                     tooltipOnButton=true,
-                    tooltipTitle='C_Container.\nSetBankAutosortDisabled',
+                    tooltipTitle='C_Container.|nSetBankAutosortDisabled',
                     func= function()
                         C_Container.SetBankAutosortDisabled(not C_Container.GetBankAutosortDisabled() and true or false)
                     end,

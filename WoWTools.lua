@@ -129,8 +129,8 @@ e.GetUnitRaceInfo=function(tab)--e.GetUnitRaceInfo({unit=nil, guid=nil, race=nil
     end
 end
 
-e.Class=function(unit, class, reAltlas)--职业图标
-    class=class or unit and select(2, UnitClass(unit))
+function e.Class(unit, class, reAltlas)--职业图标
+    class= unit and select(2, UnitClass(unit)) or class
     if class then
         if class=='EVOKER' then
             class='classicon-evoker'

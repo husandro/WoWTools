@@ -33,14 +33,14 @@ local function EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示�
     local tab=WoWDate[e.Player.guid].Instance.ins
     local text=''
     for insName, info in pairs(tab) do
-        text= text~='' and text..'\n' or text
+        text= text~='' and text..'|n' or text
         text= text..'|T450908:0|t'..insName
         for difficultyName, index in pairs(info) do
-            text=text..'\n     '..index..' '..difficultyName
+            text=text..'|n     '..index..' '..difficultyName
         end
     end
     if text~='' then
-        m= m~='' and m..'\n\n'..text or text
+        m= m~='' and m..'|n|n'..text or text
     end
 
     text=''--世界BOSS
@@ -52,7 +52,7 @@ local function EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示�
         text=text.. getBossNameSort(bossName)
     end
     if text~='' then
-        m= m~='' and m..'\n\n' or m
+        m= m~='' and m..'|n|n' or m
         m=m..num..' |cnGREEN_FONT_COLOR:'..text..'|r'
     end
 
@@ -64,7 +64,7 @@ local function EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示�
         num=num+1
     end
     if text~='' then
-        m= m~='' and m..'\n\n' or m
+        m= m~='' and m..'|n|n' or m
         m= m..num..' '..'|cnGREEN_FONT_COLOR:'..text..'|r'
     end
 
@@ -105,7 +105,7 @@ local function EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示�
             head = PVP
         end
         if head then
-            text = text~='' and text..'\n' or text
+            text = text~='' and text..'|n' or text
             text = text..'|T450908:0|t'..head
             if head==MYTHIC_DUNGEONS and WoWDate[e.Player.guid].Keystone then
                 local weekLevel= WoWDate[e.Player.guid].Keystone.weekLevel--本周最高
@@ -114,7 +114,7 @@ local function EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示�
                 end
             end
             for x,r in pairs(v) do
-                text = text~='' and text..'\n' or text
+                text = text~='' and text..'|n' or text
                 text = text..'     '
                 if r.unlocked then
                     text = text..'|cnGREEN_FONT_COLOR:'..x..')'..r.difficulty.. ' '..COMPLETE..'|r'
@@ -136,7 +136,7 @@ local function EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示�
             end
         end
     end
-    m= m~='' and m..'\n\n'..text or text
+    m= m~='' and m..'|n|n'..text or text
 
     --征服点数 Conquest 1602 1191/勇气点数
     tab={1191, 1602, 1792}
@@ -149,15 +149,15 @@ local function EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示�
             if info.maxQuantity and info.maxQuantity>0 and info.maxQuantity==info.quantity then
                 t='|cnRED_FONT_COLOR:'..t..'|r'
             end
-            text= text~='' and text..'\n'..t or t
+            text= text~='' and text..'|n'..t or t
         end
     end
     if text~='' then
-        m= m~='' and m..'\n\n'..text or text
+        m= m~='' and m..'|n|n'..text or text
     end
     --本周还可获取奖励
     if C_WeeklyRewards.CanClaimRewards() then
-        m=m..'\n\n|cFF00FF00'.. string.format(LFD_REWARD_DESCRIPTION_WEEKLY,1)..'|r|T134140:0|t'
+        m=m..'|n|n|cFF00FF00'.. string.format(LFD_REWARD_DESCRIPTION_WEEKLY,1)..'|r|T134140:0|t'
     end
     self.AllText:SetText(m)
 end
@@ -285,7 +285,7 @@ local function setWorldbossText()--显示世界BOSS击杀数据Text
                 text= text..'|cnGREEN_FONT_COLOR:'..numAll..')|r'..getBossNameSort(bossName)
             end
             if text then
-                msg= msg and msg..'\n' or ''
+                msg= msg and msg..'|n' or ''
                 msg= msg..text
                 find= true
             end
@@ -297,12 +297,12 @@ local function setWorldbossText()--显示世界BOSS击杀数据Text
                 text= text..'|cnGREEN_FONT_COLOR:'..numAll..')|r'..getBossNameSort(bossName)
             end
             if text then
-                msg= msg and msg..'\n' or ''
+                msg= msg and msg..'|n' or ''
                 msg= msg..text
                 find= true
             end
             if find then
-                msg= msg..'\n'..e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false})
+                msg= msg..'|n'..e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false})
             end
         end
         msg= msg or '...'
@@ -365,14 +365,14 @@ local function setInstanceBossText()--显示副本击杀数据
         for guid, info in pairs(WoWDate) do
             local text
             for bossName, tab in pairs(info.Instance.ins) do--ins={[名字]={[难度]=已击杀数}}
-                text= text and text..'\n   '..bossName or '   '..bossName
+                text= text and text..'|n   '..bossName or '   '..bossName
                 for difficultyName, killed in pairs(tab) do
                     text= text..' '..difficultyName..' '..killed
                 end
             end
             if text then
-                msg=msg and msg..'\n' or ''
-                msg= msg ..e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false})..'\n'
+                msg=msg and msg..'|n' or ''
+                msg= msg ..e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false})..'|n'
                 msg= msg.. text
             end
         end
@@ -581,7 +581,7 @@ local function Init()--冒险指南界面
                         for bossName, _ in pairs(info.Worldboss.boss) do
                             text= text and text..' ' or ''
                             if num>0 and math.modf(num/3)==0 then
-                                text=text..'\n'
+                                text=text..'|n'
                             end
                             text= text..'|cnGREEN_FONT_COLOR:'..num..')'..getBossNameSort(bossName)
                         end
@@ -624,7 +624,7 @@ local function Init()--冒险指南界面
                         end;
                         find=true
                     else
-                        text= text and text..'\n' or ''
+                        text= text and text..'|n' or ''
                         difficultyName=difficultyName:gsub('%(', '')
                         difficultyName=difficultyName:gsub('%)', '')
                         difficultyName=difficultyName:gsub('（', ' ')
@@ -697,7 +697,7 @@ local function Init()--冒险指南界面
                                 if tab.level and tab.level>0 and (tab.name == nameA or tab.name==nameB) then
                                     local level= tab.overTime and '|cnRED_FONT_COLOR:'..tab.level..'|r' or tab.level
                                     local icon='|T'..(tab.name == nameA and filedataidA or filedataidB)..':0|t'
-                                    affix= (affix and affix..'\n' or '').. icon..level
+                                    affix= (affix and affix..'|n' or '').. icon..level
                                 end
                             end
                         end
@@ -709,9 +709,9 @@ local function Init()--冒险指南界面
                         end
                         if all>0 then
                             challengeText= '|cff00ff00'..nu..'|r/'..all
-                            ..'\n'..'|T4352494:0|t'..leavel
-                            ..'\n'..'|A:AdventureMapIcon-MissionCombat:0:0|a'..runScore
-                            ..(affix and '\n'..affix or '')
+                            ..'|n'..'|T4352494:0|t'..leavel
+                            ..'|n'..'|A:AdventureMapIcon-MissionCombat:0:0|a'..runScore
+                            ..(affix and '|n'..affix or '')
                             ..(currentChallengeMapID== mapChallengeModeID and '|A:auctionhouse-icon-favorite:0:0|a' or '')--当前, KEY地图,ID
                             local color= C_ChallengeMode.GetSpecificDungeonOverallScoreRarityColor(runScore)
                             if color then
@@ -771,7 +771,7 @@ local function Init()--冒险指南界面
                         icon2='|T'..icon2..':0|t'
                         specA = specA..((class and class~=classFile) and '  ' or '')..icon2
                         class=classFile
-                        collectText= collectText..'\n'..icon2..name
+                        collectText= collectText..'|n'..icon2..name
                     end
                 end
                 if specA~='' then
@@ -782,7 +782,7 @@ local function Init()--冒险指南界面
             local item, collected = e.GetItemCollected(self.link, nil, true)--物品是否收集, 返回图标, 幻化
             if item and not collected then
                 text= text..item
-                collectText= collectText and collectText..'\n\n' or ''
+                collectText= collectText and collectText..'|n|n' or ''
                 collectText= collectText..item..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
             else
                 local mountID = C_MountJournal.GetMountFromItem(self.itemID)--坐骑物品
@@ -906,7 +906,7 @@ local function Init()--冒险指南界面
                     checked= Save.loot[e.Player.class][self.dungeonEncounterID]== specID,
                     tooltipOnButton=true,
                     tooltipTitle= self.encounterID and EJ_GetEncounterInfo(self.encounterID) or '',
-                    tooltipText= 'specID '..specID..'\n'..(self.dungeonEncounterID and 'dungeonEncounterID '..self.dungeonEncounterID or ''),
+                    tooltipText= 'specID '..specID..'|n'..(self.dungeonEncounterID and 'dungeonEncounterID '..self.dungeonEncounterID or ''),
                     arg1= {
                         dungeonEncounterID=self.dungeonEncounterID,
                         specID= specID,
@@ -1151,13 +1151,13 @@ local function Init()--冒险指南界面
                 EncounterJournal.creatureDisplayIDText:SetPoint('BOTTOM', EncounterJournal.encounter.info.model.imageTitle, 'TOP', 0 , 10)
             end
             if EncounterJournal.iconImage  then
-                text= (text or '')..'|T'..EncounterJournal.iconImage..':0|t'..EncounterJournal.iconImage..'\n'
+                text= (text or '')..'|T'..EncounterJournal.iconImage..':0|t'..EncounterJournal.iconImage..'|n'
             end
             if self.id then
-                text= (text or '')..'JournalEncounterCreatureID '.. self.id..'\n'
+                text= (text or '')..'JournalEncounterCreatureID '.. self.id..'|n'
             end
             if self.uiModelSceneID  then
-                text= (text or '')..'uiModelSceneID '..self.uiModelSceneID..'\n'
+                text= (text or '')..'uiModelSceneID '..self.uiModelSceneID..'|n'
             end
             text= (text or '')..'CreatureDisplayID ' .. self.displayInfo
         end

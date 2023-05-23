@@ -188,7 +188,7 @@ local function get_Sets_Colleced()--收集所有角色套装数据
             t=t..((value<10 and '  ') or (value<100 and ' ') or '')..value..'%'
             t=t..' '..info.numCollected..'/'..info.numTotal
             t = info.numCollected<info.numTotal and '|c'..select(4,GetClassColor(info.class))..t..'|r' or '|cnGREEN_FONT_COLOR:'..t..'|r'
-            m=m..t..'\n'
+            m=m..t..'|n'
         end
     end
     if numTotal>0 then
@@ -234,26 +234,26 @@ local function Init_Wardrobe_Sets()
                     maxNum= (not maxNum or maxNum<numAll) and numAll or maxNum
                     if not header then
                         header= info.name
-                        header= info.limitedTimeSet and header..'\n'..e.Icon.clock2..'|cnRED_FONT_COLOR:'..TRANSMOG_SET_LIMITED_TIME_SET..'|r' or header
-                        header = info.label and header..'\n|cnBRIGHTBLUE_FONT_COLOR:'..info.label..'|r' or header
+                        header= info.limitedTimeSet and header..'|n'..e.Icon.clock2..'|cnRED_FONT_COLOR:'..TRANSMOG_SET_LIMITED_TIME_SET..'|r' or header
+                        header = info.label and header..'|n|cnBRIGHTBLUE_FONT_COLOR:'..info.label..'|r' or header
                         version=info.expansionID and _G['EXPANSION_NAME'..info.expansionID]
-                        header = header ..(version and '\n'..'|cnGREEN_FONT_COLOR:'..version..'|r' or '')..(info.patchID and ' toc v.'..info.patchID or '')
+                        header = header ..(version and '|n'..'|cnGREEN_FONT_COLOR:'..version..'|r' or '')..(info.patchID and ' toc v.'..info.patchID or '')
 
                     end
                     lable=lable..numCollected..' '
 
                     local num=numCollected..'/'..(numAll<=9 and e.Icon.number2:format(numAll) or numAll)
-                    tip=tip..num..(info.description or info.name)..(info.limitedTimeSet and e.Icon.clock2 or '')..(info.setID and ' setID: '..info.setID or '')..'\n'
-                    buttonTip=buttonTip..num..(info.description or info.name)..(info.limitedTimeSet and e.Icon.clock2 or '')..'\n'
+                    tip=tip..num..(info.description or info.name)..(info.limitedTimeSet and e.Icon.clock2 or '')..(info.setID and ' setID: '..info.setID or '')..'|n'
+                    buttonTip=buttonTip..num..(info.description or info.name)..(info.limitedTimeSet and e.Icon.clock2 or '')..'|n'
 
                     Limited= info.limitedTimeSet and true or Limited
                 end
             end
         end
 
-        button.tips=(version and version..'\n\n' or '')..buttonTip--点击，显示套装情况
+        button.tips=(version and version..'|n|n' or '')..buttonTip--点击，显示套装情况
 
-        tip=(header and header..'\n\n' or '').. tip
+        tip=(header and header..'|n|n' or '').. tip
         button:SetScript("OnEnter",function()
             e.tips:SetOwner(WardrobeCollectionFrame, "ANCHOR_RIGHT",8,-300)
             e.tips:ClearLines()
@@ -412,7 +412,7 @@ local function Init_Wardrobe_Sets()
                     t=t..((value<10 and '  ') or (value<100 and ' ') or '')..value..'%'
                     t=t..'|A:classicon-'..info.class..':0:0|a'
                     t='|c'..select(4,GetClassColor(info.class))..t..'|r'
-                    m=m..t..'\n'
+                    m=m..t..'|n'
                     collected=info.collected + collected
                     all=info.all + all
                 end
@@ -421,10 +421,10 @@ local function Init_Wardrobe_Sets()
                 m=m..collected..'/'..all..' '..('%i%%'):format(collected/all*100)..' '..LFG_LIST_CROSS_FACTION:format(CLASS)
             end
             if a > 0 or h>0 or o>0 then
-                m=m..'\n\n'..h..' |A:communities-create-button-wow-horde:0:0|a'
-                m=m..'\n'..a..' |A:communities-create-button-wow-alliance:0:0|a'
-                m=m..'\n'..o..' |A:communities-guildbanner-background:0:0|a'
-                m=m..'\n'..#sets..' '..LFG_LIST_CROSS_FACTION:format(FACTION)
+                m=m..'|n|n'..h..' |A:communities-create-button-wow-horde:0:0|a'
+                m=m..'|n'..a..' |A:communities-create-button-wow-alliance:0:0|a'
+                m=m..'|n'..o..' |A:communities-guildbanner-background:0:0|a'
+                m=m..'|n'..#sets..' '..LFG_LIST_CROSS_FACTION:format(FACTION)
             end
             if not frame.AllSets then
                 frame.AllSets=e.Cstr(frame)
@@ -958,19 +958,19 @@ local function Init_Mount()
             MountJournal.MountDisplay.infoText:SetPoint('BOTTOMLEFT')
         end
         local text= 'mountID '..MountJournal.selectedMountID
-                ..'\nanimID '..(animID or '')
-                ..'\nisSelfMount '.. (isSelfMount and 'true' or 'false')
-                ..'\nmountTypeID '..(mountTypeID or '')
-                ..'\nspellVisualKitID '..(spellVisualKitID or '')
-                ..'\nuiModelSceneID '..(uiModelSceneID or '')
-                ..'\ncreatureDisplayInfoID '..(creatureDisplayInfoID or '')
+                ..'|nanimID '..(animID or '')
+                ..'|nisSelfMount '.. (isSelfMount and 'true' or 'false')
+                ..'|nmountTypeID '..(mountTypeID or '')
+                ..'|nspellVisualKitID '..(spellVisualKitID or '')
+                ..'|nuiModelSceneID '..(uiModelSceneID or '')
+                ..'|ncreatureDisplayInfoID '..(creatureDisplayInfoID or '')
 
                 local _, spellID, icon, _, _, sourceType= C_MountJournal.GetMountInfoByID(MountJournal.selectedMountID)
-                text= text..'\n\nspellID '..(spellID or '')
-                            ..'\nicon '..(icon or '')
-                            ..'\nsourceType '..(sourceType or '').. (sourceType and _G['BATTLE_PET_SOURCE_'..sourceType] and ' ('.._G['BATTLE_PET_SOURCE_'..sourceType]..')' or '')
+                text= text..'|n|nspellID '..(spellID or '')
+                            ..'|nicon '..(icon or '')
+                            ..'|nsourceType '..(sourceType or '').. (sourceType and _G['BATTLE_PET_SOURCE_'..sourceType] and ' ('.._G['BATTLE_PET_SOURCE_'..sourceType]..')' or '')
 
-                            ..'\n\n'..id..' '..addName
+                            ..'|n|n'..id..' '..addName
 
         MountJournal.MountDisplay.infoText:SetText(text)
     end)

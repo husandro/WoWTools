@@ -60,7 +60,7 @@ local getRewardInfo=function(dungeonID)--FB奖励
     return t
 end
 
-local function getQueuedList(type, raiTips)--排队情况
+local function get_Queued_List(type, raiTips)--排队情况
     local list=GetLFGQueuedList(type)
     if not GetLFGQueueStats(type) or not list then
         return
@@ -86,7 +86,7 @@ local function getQueuedList(type, raiTips)--排队情况
                     local mapName=select(19, GetLFGDungeonInfo(dungeonID))
                     if mapName then name=name.. '('..mapName..')' end
                 end
-                m=(m and m..'\n  ' or '  ').. num..') '..name..boss.. getRewardInfo(dungeonID)
+                m=(m and m..'|n  ' or '  ')..num..')|r '..name..boss.. getRewardInfo(dungeonID)
             end
         end
     end
@@ -96,156 +96,10 @@ end
 --#####
 --小眼睛
 --#####
-local function setQueueStatus()--小眼睛, 信息
-    local text=''
-    if not Save.hideQueueStatus then
-        if not button.tipsFrame then
-            button.tipsFrame=e.Cbtn(nil, {icon='hide', size={20,20}})
-            if Save.tipsFramePoint then
-                button.tipsFrame:SetPoint(Save.tipsFramePoint[1], UIParent, Save.tipsFramePoint[3], Save.tipsFramePoint[4], Save.tipsFramePoint[5])
-            else
-                button.tipsFrame:SetPoint('BOTTOMLEFT', button, 'TOPLEFT',0,2)
-            end
-            button.tipsFrame:RegisterForDrag("RightButton",'LeftButton')
-            button.tipsFrame:SetMovable(true)
-            button.tipsFrame:SetClampedToScreen(true)
-
-            button.tipsFrame:SetScript("OnDragStart", function(self,d )
-                self:StartMoving()
-            end)
-            button.tipsFrame:SetScript("OnDragStop", function(self)
-                ResetCursor()
-                self:StopMovingOrSizing()
-                Save.tipsFramePoint={self:GetPoint(1)}
-                Save.tipsFramePoint[2]=nil
-            end)
-            button.tipsFrame:SetScript('OnMouseWheel', function(self, d)
-                local n= Save.tipsFrameTextSize or 12
-                if d==1 then
-                    n=n+1
-                elseif d==-1 then
-                    n=n-1
-                end
-                n= n>30 and 30 or n<6 and 6 or n
-                Save.tipsFrameTextSize= n
-                e.Cstr(nil, {size=n, changeFont=self.text, color=true})--Save.tipsFrameTextSize, nil, self.text, true)
-                print(id, addName, e.onlyChinese and '字体大小' or FONT_SIZE, '|cnGREEN_FONT_COLOR:'..Save.tipsFrameTextSize)
-            end)
-            button.tipsFrame:SetScript("OnMouseDown", function(self,d)
-                SetCursor('UI_MOVE_CURSOR')
-            end)
-            button.tipsFrame:SetScript("OnLeave", function()
-                e.tips:Hide()
-                ResetCursor()
-            end)
-            button.tipsFrame:SetScript('OnEnter', function(self)
-                e.tips:SetOwner(self, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.left)
-                e.tips:AddDoubleLine(e.onlyChinese and '字体大小' or FONT_SIZE, (Save.tipsFrameTextSize or 12).. e.Icon.mid)
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(e.onlyChinese and '列表信息' or (SOCIAL_QUEUE_TOOLTIP_HEADER..INFO), '|A:groupfinder-eye-frame:0:0|a')
-                e.tips:AddDoubleLine(id, addName)
-                e.tips:Show()
-            end)
-            button.tipsFrame.text=e.Cstr(button.tipsFrame, {size=Save.tipsFrameTextSize, color=true})--Save.tipsFrameTextSize, nil, nil, true)
-            button.tipsFrame.text:SetPoint('BOTTOMLEFT')
-        end
-
-        local num= 0
-        for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
-            local listNum, listText=getQueuedList(i,true)
-            if listNum and listText then
-                text= text~='' and text..'\n'..listText or listText
-                text=text..' '
-                num=num+listNum
-            end
-        end
-
-        local pvp=''
-        for i=1,  GetMaxBattlefieldID() do --PVP
-            local status, mapName, teamSize, _, _, _, gameType = GetBattlefieldStatus(i)
-            if (status=='queued' or status=='confirm') and mapName then
-                if pvp~='' then pvp=pvp..'\n' end
-                if status=='confirm' then pvp=pvp..'(|cFF00FF00'..COVENANT_MISSIONS_CONFIRM_START_MISSION..'|r)' end
-                pvp=pvp..mapName
-                if (teamSize and teamSize>0) or (gameType and gameType~='') then
-                    pvp=pvp..'(' if teamSize and teamSize >0 then pvp=pvp..teamSize end
-                    if gameType then pvp=pvp..gameType end
-                    pvp=pvp..')'
-                end
-            end
-        end
-        if pvp~='' then
-            text=text~='' and text..'\n' or text
-            text=text..'|cFF00FF00*PvP|r'..pvp
-            local tank, healer, dps = GetPVPRoles()
-            if tank or healer or dps then
-                text=text..(tank and e.Icon.TANK or '')..(healer and e.Icon.HEALER or '')..(dps and e.Icon.DAMAGER or '')
-            end
-            text=text..' '
-        end
-
-        local sta=C_PetBattles.GetPVPMatchmakingInfo()--PET
-        if sta=='queued' then
-            text=text~='' and  text..'\n' or text
-            text=text..PET_BATTLE_PVP_QUEUE ..'|A:worldquest-icon-petbattle:0:0|a'
-            text=text..' '
-        end
-
-        if C_LFGList.HasActiveEntryInfo() then--已激活LFG
-            local list
-            local info =C_LFGList.GetActiveEntryInfo()
-            if info and info.name then
-                list=info.name--名称
-                local ap=C_LFGList.GetApplicants()--申请人数
-                if ap and #ap>0 then
-                    list=list..' |cFF00FF00#'..#ap..'|r'
-                end
-                if info.autoAccept then
-                    list=list..'|A:runecarving-icon-reagent-empty:0:0|a'
-                end--自动邀请
-                if info.activityID then--名称
-                    local name2=C_LFGList.GetActivityFullName(info.activityID)
-                    if name2 then
-                        list=list..' ('..name2..')'
-                    end
-                end
-                if info.duration then--时长
-                    local time=SecondsToClock(1800-info.duration)
-                    time=time:gsub('：',':')
-                    time=time:gsub(' ','')
-                    list=list..' '..time
-                end
-                if info.privateGroup then--私人
-                    list=list..LFG_LIST_PRIVATE
-                end
-            end
-            if list then
-                text=text~='' and text..'\n'..list or list
-                text=text..' '
-            end
-        end
-
-        local sea=''--LFG申请列表
-        local apps = C_LFGList.GetApplications() or {}
-        for i=1, #apps do
-            local _, appStatus = C_LFGList.GetApplicationInfo(apps[i])
-            if ( appStatus == "applied" or appStatus == "invited" ) then
-                local searchResultInfo = C_LFGList.GetSearchResultInfo(apps[i])
-                local activityName = C_LFGList.GetActivityFullName(searchResultInfo.activityID, nil, searchResultInfo.isWarMode)
-                sea=sea..'\n'..searchResultInfo.name..'('.. activityName..')|cFF00FF00*|r'
-                text=text..' '
-            end
-        end
-        if sea~='' then
-            text=text~='' and text..'\n'..QUEUED_STATUS_SIGNED_UP..'(|cFF00FF00LFG|r)'..sea or sea
-            text=text..' '
-        end
-    end
+local function set_tipsFrame_Tips(text)
     if button.tipsFrame then
-        button.tipsFrame.text:SetText(text)
-        button.tipsFrame:SetShown(text~='' and true or nil)
+        button.tipsFrame.text:SetText(text or '')
+        button.tipsFrame:SetShown(text and true or false)
     end
 
     if not button.leaveInstance and Save.leaveInstance then--自动离开,指示图标
@@ -258,6 +112,338 @@ local function setQueueStatus()--小眼睛, 信息
     if button.leaveInstance then
         button.leaveInstance:SetShown(Save.leaveInstance)
     end
+end
+local function get_Status_Text(status)--列表，状态，信息
+    return status=='queued' and ('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '在队列中' or BATTLEFIELD_QUEUE_STATUS)..'|r')
+        or status=='confirm' and ('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '就绪' or READY)..'|r')
+        or status=='active' and ('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '激活' or SPEC_ACTIVE)..'|r')
+        or status=='proposal' and ('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '准备进入' or QUEUED_STATUS_PROPOSAL)..'|r')
+        or status=='error' and ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '错误' or ERRORS)..'|r')
+        or status=='none' and ('|cnYELLOW_FONT_COLOR:'..(e.onlyChinese and '无' or NONE)..'|r')
+        or status=='suspended' and ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '暂停' or QUEUED_STATUS_SUSPENDED)..'|r')
+        or status or ''
+end
+local function setQueueStatus()--小眼睛, 信息
+    local text
+    if Save.hideQueueStatus then--列表信息 
+        set_tipsFrame_Tips()
+       return
+    end 
+        local num= 0
+        local pve
+        for i=1, NUM_LE_LFG_CATEGORYS do--PVE
+            local listNum, listText= get_Queued_List(i,true)
+            if listNum and listText then
+                listText= listText:gsub('|n', '|n ')
+                pve= pve and pve..'|n' or ''
+                pve= pve..' '..listText..' '
+                num= num+ listNum
+            end
+        end
+        if pve then
+            local _, tank, healer, dps= GetLFGRoles()--检测是否选定角色pve
+            text= text and text..'|n' or ''
+            text= text..'|A:groupfinder-icon-friend:0:0|a|cnGREEN_FONT_COLOR:PvE|r'
+                    ..(tank and INLINE_TANK_ICON or '')
+                    ..(healer and INLINE_HEALER_ICON or '')
+                    ..(dps and INLINE_DAMAGER_ICON or '')
+                    ..' '
+            text= text..'|n'..pve..' '
+        end
+
+        local pvp
+        for i=1, GetMaxBattlefieldID() do --PVP
+            local status, mapName, teamSize, registeredMatch, suspendedQueue, queueType, gameType, role, asGroup, shortDescription, longDescription = GetBattlefieldStatus(i)
+            if status and mapName then
+                pvp= pvp and pvp..'|n' or ''
+                pvp= pvp..'   '..i..') '
+                    ..mapName
+                    ..(status~='queued' and ' '..get_Status_Text(status) or '')
+                    ..(teamSize and teamSize>0 and registeredMatch and (' '..registeredMatch..'/'..teamSize) or '')
+                    ..(suspendedQueue and ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '暂停' or QUEUED_STATUS_SUSPENDED)..'|r') or '')
+                    ..(e.Icon[role] or '')
+                    ..' '
+            end
+        end
+        if pvp then
+            local tank, healer, dps = GetPVPRoles()
+            text= text and text..'|n' or ''
+            text= text..'|A:honorsystem-icon-prestige-6:0:0|a|cnGREEN_FONT_COLOR:PvP|r'
+                ..(tank and INLINE_TANK_ICON or '')
+                ..(healer and INLINE_HEALER_ICON or '')
+                ..(dps and INLINE_DAMAGER_ICON or '')
+                ..' '
+            text= text..'|n'..pvp
+        end
+
+
+        local queueState= C_PetBattles.GetPVPMatchmakingInfo() --PET
+        if queueState then
+            local pet= '|A:worldquest-icon-petbattle:0:0|a|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '宠物对战' or PET_BATTLE_PVP_QUEUE)..'|r'
+            if queueState~='queued' then
+                pet= pet..' '..get_Status_Text(queueState)--列表，状态，信息
+            end
+            pet= pet..' '
+            for slotIndex= 1, 3 do
+                local tab= {C_PetJournal.GetPetLoadOutInfo(slotIndex)}--petID, ability1, ability2, ability3 = C_PetJournal.GetPetLoadOutInfo(slotIndex)
+                if tab[1] then
+                    local _, _, level, _, _, _, _, _, icon = C_PetJournal.GetPetInfoByPetID(tab[1])
+                    if icon then
+                        level= level or 1
+                        pet= pet..'|n   '..slotIndex..') '
+                            ..'|T'..icon..':0|t'
+                            ..' '..(level<25 and '|cnRED_FONT_COLOR:'..level..'|r' or level)
+                        for index= 2, 4 do
+                            local abilityID= tab[index]
+                            local abilityIcon= abilityID and select(2, C_PetJournal.GetPetAbilityInfo(abilityID))
+                            if abilityIcon then
+                                pet= pet..(index==2 and ' ' or '')..'|T'..abilityIcon..':0|t'
+                            end
+                        end
+                        pet= pet..' '
+                    end
+                end
+            end
+            text= text and text..'|n' or ''
+            text= text..pet
+        end
+
+        if C_LFGList.HasActiveEntryInfo() then--已激活LFG
+            local list
+            local info= C_LFGList.GetActiveEntryInfo() or {}
+            if info and info.name then
+                list= '   '..info.name--名称
+                local applicants =C_LFGList.GetApplicants() or {}--申请人数
+                local applicantsNum= #applicants
+                if applicantsNum >0 then
+                    list= list..' |cFF00FF00#'..applicantsNum ..'|r'
+                end
+
+                if info.autoAccept then --自动邀请
+                    list= list..'|A:runecarving-icon-reagent-empty:0:0|a'
+                end
+
+                if info.activityID then--名称
+                    local name2=C_LFGList.GetActivityFullName(info.activityID)
+                    if name2 then
+                        list=list..' |r'..name2..' '
+                    end
+                end
+                if info.privateGroup then--私人
+                    list= list..(e.onlyChinese and '私人' or LFG_LIST_PRIVATE)
+                end
+
+                local member
+                local okTab={}
+                if not info.autoAccept and applicantsNum>0 then
+                    local n=0
+                    for _, applicantID in pairs(applicants) do
+                        local applicantInfo = not okTab[applicantID] and C_LFGList.GetApplicantInfo(applicantID)
+                        if applicantInfo and applicantInfo.numMembers then
+                            local memberText
+                            for index=1 , applicantInfo.numMembers do
+                                local name, class, _, level, itemLevel, honorLevel, tank, healer, dps, _, _, dungeonScore, pvpItemLevel= C_LFGList.GetApplicantMemberInfo(applicantID, index)
+                                local icon= e.Class(nil, class)
+                                if icon and name then
+                                    local col= '|c'..select(4, GetClassColor(class))
+                                    local levelText=''
+                                    if level and level~=MAX_PLAYER_LEVEL then
+                                        levelText=' |cnRED_FONT_COLOR:'..level..'|r'
+                                    end
+                                    local itemLevelText
+                                    if  itemLevel and itemLevel>20 then
+                                        itemLevelText= format('%i',itemLevel)
+                                        if pvpItemLevel and pvpItemLevel-itemLevel>9 then
+                                            itemLevelText= itemLevelText..'/'..format('%i', pvpItemLevel)
+                                        end
+                                    end
+                                    memberText= memberText and ' '..memberText or ''
+                                    memberText= memberText..col
+                                        ..icon
+                                        ..(itemLevelText or '')
+                                        ..(tank and INLINE_TANK_ICON or '')
+                                        ..(healer and INLINE_HEALER_ICON or '')
+                                        ..(dps and INLINE_DAMAGER_ICON or '')
+                                        ..e.GetKeystoneScorsoColor(dungeonScore, true)
+                                        ..(honorLevel and honorLevel>1 and ' |A:pvptalents-warmode-swords:0:0|a'..honorLevel or '')
+                                        --..name
+                                        ..levelText
+                                        ..'|r '
+                                end
+                            end
+                            if memberText then
+                                n=n+1
+                                member= member and member..'|n' or ''
+                                member= member..'      '..n..') '..memberText
+                            end
+                            if n>30 then
+                                break
+                            end
+                        end
+                        okTab[applicantID]= true
+                    end
+                end
+                okTab=nil
+                if member then
+                    list= list..'|n'..member
+                end
+            end
+            if list then
+                text= text and text..'|n' or ''
+                text= text..e.Icon.player..(e.onlyChinese and '招募' or RAF_RECRUITMENT)
+                text= text..'|n'..list
+            end
+        end
+
+        local lfg--LFG申请列表
+        local apps = C_LFGList.GetApplications() or {}
+        for i=1, #apps do
+            local _, appStatus = C_LFGList.GetApplicationInfo(apps[i])
+            if ( appStatus == "applied" or appStatus == "invited" ) then
+                local info = C_LFGList.GetSearchResultInfo(apps[i]) or {}
+                local activityName = C_LFGList.GetActivityFullName(info.activityID, nil, info.isWarMode)
+                if info and info.name then
+                    local pvpRating--PVP分数
+                    local icon
+                    if info.leaderPvpRatingInfo then
+                        if info.leaderPvpRatingInfo.tier and info.leaderPvpRatingInfo.tier>0 then
+                            icon= ('|A:honorsystem-icon-prestige-'..info.leaderPvpRatingInfo.tier..':0:0|a')
+                        elseif info.leaderPvpRatingInfo.rating and info.leaderPvpRatingInfo.rating> 0 then
+                            icon= '|A:pvptalents-warmode-swords:0:0|a'
+                        end
+                        if info.leaderPvpRatingInfo.rating and info.leaderPvpRatingInfo.rating> 0 then
+                            pvpRating= info.leaderPvpRatingInfo.rating
+                        end
+                    end
+
+                    local numMembers--人数
+                    if info.numMembers and info.numMembers>0 then
+                        numMembers= ' '..info.numMembers..(e.onlyChinese and '队员' or PLAYERS_IN_GROUP)
+                        local friendly
+                        if info.numBNetFriends and info.numBNetFriends>0 then
+                            friendly = (friendly and friendly..' ' or '')..info.numBNetFriends..e.Icon.wow2
+                        end
+                        if info.numCharFriends and info.numCharFriends>0 then
+                            friendly = (friendly and friendly..' ' or '')..info.numCharFriends..'|A:recruitafriend_V2_tab_icon:0:0|a'
+                        end
+                        if info.numGuildMates and info.numGuildMates>0 then
+                            friendly = (friendly and friendly..' ' or '')..info.numGuildMates..'|A:communities-guildbanner-background:0:0|a'
+                        end
+                        if friendly then
+                            numMembers= numMembers..' ('..friendly..')'
+                        end
+                    end
+                    lfg= lfg and lfg..'\n   ' or '   '
+                    lfg= lfg..i..') '..info.name
+                        ..' '.. (activityName or '')
+                        ..(numMembers or '')
+                        ..e.GetKeystoneScorsoColor(info.leaderOverallDungeonScore, true)
+                        ..(icon or '')
+                        ..(pvpRating or '')
+                        ..(info.questID and '|A:AutoQuest-Badge-Campaign:0:0|a' or '')
+                        ..' '
+                end
+
+            end
+        end
+        if lfg then
+            text= text and text..'|n' or ''
+            text= text.. '|A:charactercreate-icon-dice:0:0|a|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已登记' or QUEUED_STATUS_SIGNED_UP)..'|r'
+            text= text..'|n'..lfg
+        end
+        set_tipsFrame_Tips(text)
+end
+
+local function Init_tipsFrame()
+    button.tipsFrame=e.Cbtn(nil, {icon='hide', size={20,20}})
+    if Save.tipsFramePoint then
+        button.tipsFrame:SetPoint(Save.tipsFramePoint[1], UIParent, Save.tipsFramePoint[3], Save.tipsFramePoint[4], Save.tipsFramePoint[5])
+    else
+        button.tipsFrame:SetPoint('BOTTOMLEFT', button, 'TOPLEFT',0,2)
+    end
+    button.tipsFrame:RegisterForDrag("RightButton")
+    button.tipsFrame:SetMovable(true)
+    button.tipsFrame:SetClampedToScreen(true)
+
+    button.tipsFrame:SetScript("OnDragStart", function(self,d )
+        self:StartMoving()
+    end)
+    button.tipsFrame:SetScript("OnDragStop", function(self)
+        ResetCursor()
+        self:StopMovingOrSizing()
+        Save.tipsFramePoint={self:GetPoint(1)}
+        Save.tipsFramePoint[2]=nil
+    end)
+    button.tipsFrame:SetScript('OnMouseWheel', function(self, d)
+        local n= Save.tipsFrameTextSize or 12
+        if d==1 then
+            n=n+1
+        elseif d==-1 then
+            n=n-1
+        end
+        n= n>30 and 30 or n<6 and 6 or n
+        Save.tipsFrameTextSize= n
+        e.Cstr(nil, {size=n, changeFont=self.text, color=true})--Save.tipsFrameTextSize, nil, self.text, true)
+        print(id, addName, e.onlyChinese and '字体大小' or FONT_SIZE, '|cnGREEN_FONT_COLOR:'..Save.tipsFrameTextSize)
+    end)
+    button.tipsFrame:SetScript("OnMouseDown", function(self,d)
+        if d=='RightButton' then
+            SetCursor('UI_MOVE_CURSOR')
+        end
+    end)
+    button.tipsFrame:SetScript('OnMouseUp', ResetCursor)
+    button.tipsFrame:SetScript("OnLeave", function()
+        e.tips:Hide()
+        ResetCursor()
+        button:SetButtonState('NORMAL')
+    end)
+    button.tipsFrame:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '离开所有队列' or LEAVE_ALL_QUEUES), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '字体大小' or FONT_SIZE, (Save.tipsFrameTextSize or 12).. e.Icon.mid)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '列表信息' or (SOCIAL_QUEUE_TOOLTIP_HEADER..INFO), '|A:groupfinder-eye-frame:0:0|a')
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:Show()
+        button:SetButtonState('PUSHED')
+    end)
+
+    button.tipsFrame:SetScript('OnDoubleClick', function(self2, d)--离开所有队列
+        if d~= 'LeftButton' or IsModifierKeyDown() then
+            return
+        end
+        for i=1, NUM_LE_LFG_CATEGORYS do--pve
+            LeaveLFG(i)
+        end
+        C_PetBattles.StopPVPMatchmaking()--PetC_PetBattles.DeclineQueuedPVPMatch()
+        RejectProposal()
+        for i=1,  GetNumWorldPVPAreas() do --PVP QueueStatusFrame.lua
+            local status, mapName, queueID = GetWorldPVPQueueStatus(i);
+            if queueID then
+                BattlefieldMgrExitRequest(queueID)
+            end
+        end
+        
+    end)
+
+    --[[button.tipsFrame.elapsed=0
+    button.tipsFrame:SetScript('OnUpdate', function(self, elapsed)
+        if UnitAffectingCombat('player') then
+            return
+        end
+        self.elapsed= self.elapsed + elapsed
+        if self.elapsed>2 then
+            securecall(QueueStatusFrame.Update, QueueStatusFrame)--小眼睛, 更新信息, QueueStatusFrame.lua
+            --setQueueStatus()--小眼睛, 更新信息
+            self.elapsed=0
+        end
+    end)]]
+
+    button.tipsFrame.text=e.Cstr(button.tipsFrame, {size=Save.tipsFrameTextSize, color=true})--Save.tipsFrameTextSize, nil, nil, true)
+    button.tipsFrame.text:SetPoint('BOTTOMLEFT')
 end
 
 
@@ -284,7 +470,7 @@ end
 local function printListInfo()--输出当前列表
     C_Timer.After(1.2, function()
         for i=1, NUM_LE_LFG_CATEGORYS  do--列表信息
-            local n, text =getQueuedList(i, true)--排5人本
+            local n, text =get_Queued_List(i, true)--排5人本
             if n and n>0 and text then
                 print(id, addName, date('%X'))
                 print(text)
@@ -307,7 +493,7 @@ local function partyList(self, level, type)--5人，随机 LFDFrame.lua
                     tooltip= (tooltip or '')..e.Icon.left..'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '离开队列' or LEAVE_QUEUE)..'|r'
                 end
                 if doneToday then
-                    tooltip=(tooltip and tooltip..'\n' or '')..(e.onlyChinese and '今天' or GUILD_EVENT_TODAY)..e.Icon.select2..(e.onlyChinese and '完成' or COMPLETE)
+                    tooltip=(tooltip and tooltip..'|n' or '')..(e.onlyChinese and '今天' or GUILD_EVENT_TODAY)..e.Icon.select2..(e.onlyChinese and '完成' or COMPLETE)
                 end
                 info= {
                     text= name
@@ -498,34 +684,36 @@ local function set_LFGPlus()--预创建队伍增强
         if not C_LFGList.HasSearchResultInfo(resultID) then
             return
 	    end
-        local searchResultInfo = C_LFGList.GetSearchResultInfo(resultID)
+        local info = C_LFGList.GetSearchResultInfo(resultID)
         local categoryID= LFGListFrame.SearchPanel.categoryID
         local _, appStatus, pendingStatus = C_LFGList.GetApplicationInfo(resultID)
-        local isAppFinished = LFGListUtil_IsStatusInactive(appStatus) or LFGListUtil_IsStatusInactive(pendingStatus) or searchResultInfo.isDelisted
+        local isAppFinished = LFGListUtil_IsStatusInactive(appStatus) or LFGListUtil_IsStatusInactive(pendingStatus) or info.isDelisted
 
         local text, color, autoAccept = '', nil, nil
         if not isAppFinished then
-            text, color=e.GetKeystoneScorsoColor(searchResultInfo.leaderOverallDungeonScore, true)--地下城, 分数
-            if searchResultInfo.leaderPvpRatingInfo and searchResultInfo.leaderPvpRatingInfo.rating and searchResultInfo.leaderPvpRatingInfo.rating>0 then--PVP, 分数
-                local text2, color2=e.GetKeystoneScorsoColor(searchResultInfo.leaderPvpRatingInfo.rating)
-                if searchResultInfo.isWarMode then
-                    text= '|A:pvptalents-warmode-swords:0:0|a'..text2..' '..text
+            text, color=e.GetKeystoneScorsoColor(info.leaderOverallDungeonScore, true)--地下城, 分数
+            if info.leaderPvpRatingInfo and info.leaderPvpRatingInfo.rating and info.leaderPvpRatingInfo.rating>0 then--PVP, 分数
+                local text2, color2=e.GetKeystoneScorsoColor(info.leaderPvpRatingInfo.rating)
+                local icon= info.leaderPvpRatingInfo.tier and info.leaderPvpRatingInfo.tier>0 and ('|A:honorsystem-icon-prestige-'..info.leaderPvpRatingInfo.tier..':0:0|a') or '|A:pvptalents-warmode-swords:0:0|a'
+                if info.isWarMode then
+                    text= icon..text2..' '..text
                 else
-                    text= text..' |A:pvptalents-warmode-swords:0:0|a'..text2
+                    text= text..' '..icon..text2
                 end
-                color= searchResultInfo.isWarMode and color2 or color
+                color= info.isWarMode and color2 or color
+
             end
             color= color or {r=1,g=1,b=1}
-            if searchResultInfo.numBNetFriends and searchResultInfo.numBNetFriends>0 then--好友, 数量
-                text= text..' '..e.Icon.wow2..searchResultInfo.numBNetFriends
+            if info.numBNetFriends and info.numBNetFriends>0 then--好友, 数量
+                text= text..' '..e.Icon.wow2..info.numBNetFriends
             end
-            if searchResultInfo.numCharFriends and searchResultInfo.numCharFriends>0 then--好友, 数量
-                text= text..' |A:socialqueuing-icon-group:0:0|a'..searchResultInfo.numCharFriends
+            if info.numCharFriends and info.numCharFriends>0 then--好友, 数量
+                text= text..' |A:socialqueuing-icon-group:0:0|a'..info.numCharFriends
             end
-            if searchResultInfo.numGuildMates and searchResultInfo.numGuildMates>0 then--好友, 数量
-                text= text..' |A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a'..searchResultInfo.numCharFriends
+            if info.numGuildMates and info.numGuildMates>0 then--好友, 数量
+                text= text..' |A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a'..info.numCharFriends
             end
-            autoAccept= searchResultInfo.autoAccept--自动, 邀请
+            autoAccept= info.autoAccept--自动, 邀请
         end
         if text~='' and not self.scorsoText then
             self.scorsoText= e.Cstr(self)
@@ -557,8 +745,8 @@ local function set_LFGPlus()--预创建队伍增强
         end
 
         local realm, realmText
-        if searchResultInfo.leaderName and not isAppFinished then
-            local server= searchResultInfo.leaderName:match('%-(.+)') or e.Player.realm
+        if info.leaderName and not isAppFinished then
+            local server= info.leaderName:match('%-(.+)') or e.Player.realm
             server=e.Get_Region(server)--服务器，EU， US {col, text}
             realm= server and server.col
             realmText=server and server.realm
@@ -613,7 +801,7 @@ local function set_LFGPlus()--预创建队伍增强
 
         local orderIndexes = {}--https://wago.io/klC4qqHaF
         if categoryID == 2 and not isAppFinished then--_G["ShowRIORaitingWA1NotShowClasses"] ~= true
-            for i=1, searchResultInfo.numMembers do
+            for i=1, info.numMembers do
                 local role, class = C_LFGList.GetSearchResultMemberInfo(self.resultID, i)
                 local orderIndex = getIndex(LFG_LIST_GROUP_DATA_ROLE_ORDER, role)
                 table.insert(orderIndexes, {orderIndex, class})
@@ -643,14 +831,14 @@ local function set_LFGPlus()--预创建队伍增强
     end)
 
     hooksecurefunc('LFGListUtil_SetSearchEntryTooltip', function(tooltip, resultID, autoAcceptOption)
-        local searchResultInfo = C_LFGList.GetSearchResultInfo(resultID)
+        local info = C_LFGList.GetSearchResultInfo(resultID)
         local _, appStatus, pendingStatus = C_LFGList.GetApplicationInfo(resultID)
-        local isAppFinished = LFGListUtil_IsStatusInactive(appStatus) or LFGListUtil_IsStatusInactive(pendingStatus) or searchResultInfo.isDelisted
+        local isAppFinished = LFGListUtil_IsStatusInactive(appStatus) or LFGListUtil_IsStatusInactive(pendingStatus) or info.isDelisted
         if isAppFinished then
             return
         end
         local tab={}
-        for i=1, searchResultInfo.numMembers do
+        for i=1, info.numMembers do
             local role, classFile = C_LFGList.GetSearchResultMemberInfo(resultID, i)
             if classFile then
                 tab[classFile]= tab[classFile] or {num=0, role={}}
@@ -717,7 +905,7 @@ local function InitList(self, level, type)--LFDFrame.lua
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '离开副本和战场' or (LEAVE..INSTANCE..' '..BATTLEFIELDS),
             checked=Save.leaveInstance,
-            tooltipText= (e.onlyChinese and '离开随机(自动 Roll)' or  AUTO_JOIN:gsub(JOIN, LEAVE)..' ('..AUTO_JOIN:gsub(JOIN,'')..LOOT_ROLL) .. ')\n\n|cnGREEN_FONT_COLOR:Alt '..(e.onlyChinese and '取消' or CANCEL)..'|r\n\n'..id..' '..addName,
+            tooltipText= (e.onlyChinese and '离开随机(自动 Roll)' or  AUTO_JOIN:gsub(JOIN, LEAVE)..' ('..AUTO_JOIN:gsub(JOIN,'')..LOOT_ROLL) .. ')|n|n|cnGREEN_FONT_COLOR:Alt '..(e.onlyChinese and '取消' or CANCEL)..'|r|n|n'..id..' '..addName,
             icon=e.Icon.toLeft,
             func=function()
                 Save.leaveInstance= not Save.leaveInstance and true or nil
@@ -753,7 +941,7 @@ local function InitList(self, level, type)--LFDFrame.lua
         --[[info= {
             text= e.onlyChinese and '自动打开战利品掷骰窗口' or AUTO_OPEN_LOOT_HISTORY_TEXT,
             tooltipOnButton= true,
-            tooltipTitle= 'SetCVar\nautoOpenLootHistory',
+            tooltipTitle= 'SetCVar|nautoOpenLootHistory',
             checked= C_CVar.GetCVarBool("autoOpenLootHistory"),
             func= function ()
                 C_CVar.SetCVar("autoOpenLootHistory", C_CVar.GetCVarBool("autoOpenLootHistory") and '0' or '1')
@@ -863,16 +1051,16 @@ local function InitList(self, level, type)--LFDFrame.lua
 
         local num, text=0, ''
         for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
-            local listNum, listText=getQueuedList(i,true)
+            local listNum, listText= get_Queued_List(i,true)
             if listNum and listText then
-                text= text~='' and text..'\n'..listText or listText
+                text= text~='' and text..'|n'..listText or listText
                 num=num+listNum
             end
         end
         if num>0 then
             e.LibDD:UIDropDownMenu_AddSeparator(level)
             info={
-                text= (e.onlyChinese and '离开所有副本' or LEAVE_ALL_QUEUES)..' |cnGREEN_FONT_COLOR:#'..num..'|r',
+                text= (e.onlyChinese and '离开列队' or LEAVE_QUEUE)..' |cnGREEN_FONT_COLOR:#'..num..'|r',
                 notCheckable=true,
                 disabled= num==0,
                 func=function ()
@@ -918,7 +1106,7 @@ local function exitInstance()
 end
 
 StaticPopupDialogs[addName..'ExitIns']={
-    text =id..'('..addName..')\n\n|cff00ff00'..(e.onlyChinese and '离开' or LEAVE)..'|r: ' ..(e.onlyChinese and '副本' or INSTANCE).. '|cff00ff00 '..sec..' |r'..(e.onlyChinese and '秒' or SECONDS),
+    text =id..'('..addName..')|n|n|cff00ff00'..(e.onlyChinese and '离开' or LEAVE)..'|r: ' ..(e.onlyChinese and '副本' or INSTANCE).. '|cff00ff00 '..sec..' |r'..(e.onlyChinese and '秒' or SECONDS),
     button1 = LEAVE,
     button2 = CANCEL,
     OnAccept=function()
@@ -1189,6 +1377,7 @@ local function Init()
         e.Ccool(self, nil, 38, nil, true, true)
     end)--自动进入FB
 
+    Init_tipsFrame()--建立，小眼睛, 更新信息
     hooksecurefunc(QueueStatusFrame, 'Update', setQueueStatus)--小眼睛, 更新信息, QueueStatusFrame.lua
 
     local isLeader, isTank, isHealer, isDPS = GetLFGRoles()--检测是否选定角色pve
@@ -1360,6 +1549,15 @@ local function Init()
     hooksecurefunc('GroupLootContainer_AddFrame', function(_, frame)--自动ROLL
         set_ROLL_Check(frame)
     end)
+
+    PVPTimerFrame:HookScript('OnShow', function(self2)
+        e.PlaySound()--播放, 声音
+        e.Ccool(self2, nil, BATTLEFIELD_TIMER_THRESHOLDS[3] or 60, nil, true)--冷却条
+    end)
+    PVPReadyDialog:HookScript('OnShow', function(self2)
+        e.PlaySound()--播放, 声音
+        e.Ccool(self2, nil, BATTLEFIELD_TIMER_THRESHOLDS[3] or 60, nil, true)--冷却条
+    end)
 end
 
 
@@ -1457,7 +1655,7 @@ local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
         local playerMapID=select(2, e.GetUnitMapName('player'))
         for k, v in pairs(RoleC) do
             if v then
-                if m~='' then m=m..'\n' end
+                if m~='' then m=m..'|n' end
                 m=m..(v.role and v.role or v.index..')')..(v.info or k)
                 if v.role then
                     all=all+1
@@ -1567,21 +1765,24 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
         end
 
     elseif event=='LFG_COMPLETION_REWARD' or event=='LOOT_CLOSED' or event=='SCENARIO_COMPLETED' then--自动离开
-        if Save.leaveInstance and select(10, GetInstanceInfo()) then
-            local scenarioInfo = C_ScenarioInfo.GetScenarioInfo()
-            local isCompleteScenario= scenarioInfo and scenarioInfo.isComplete
-            local lfgComplete=  IsLFGComplete()
-            if isCompleteScenario or lfgComplete then
+        if Save.leaveInstance and IsInLFGDungeon() and IsLFGComplete() then
+            --local scenarioInfo = C_ScenarioInfo.GetScenarioInfo()
+            --local isCompleteScenario= scenarioInfo and scenarioInfo.isComplete
+            --local lfgComplete=  IsLFGComplete()
+            --if isCompleteScenario or lfgComplete then
                 e.PlaySound()--播放, 声音
 
-                local leaveSce= (lfgComplete and Save.autoROLL) and sec or 30
+                local leaveSce= 30
+                if Save.autoROLL and event=='LOOT_CLOSED' then
+                    leaveSce= sec
+                end
                 ExitIns=true
                 C_Timer.After(leaveSce, function()
                     exitInstance()
                 end)
                 StaticPopup_Show(addName..'ExitIns')
                 e.Ccool(StaticPopup1, nil, leaveSce, nil, true)--冷却条
-            end
+            --end
         end
 
     elseif event=='PLAYER_ENTERING_WORLD' then
