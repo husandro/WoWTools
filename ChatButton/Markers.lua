@@ -139,22 +139,23 @@ local function setGroupReadyTipsEvent()--注册事件, 就绪,队员提示信息
         panel:UnregisterEvent('CHAT_MSG_SYSTEM')
     end
 end
-local function getReadyCheckStatus(unit, index)
+local function getReadyCheckStatus(unit, index, uiMapID)
     local stat= GetReadyCheckStatus(unit)
-    if stat~='ready' then
-        local text= e.GetPlayerInfo({unit=unit, guid=UnitGUID(unit), name=nil,  reName=true, reRealm=true, reLink=false})
-        local hasCoolText= UnitHasLFGRandomCooldown(unit) and '|T236347:0|t|cnRED_FONT_COLOR:'..(e.onlyChinese and '逃亡者' or DESERTER)..'|r' or ''
-        --[[if stat=='ready' then
-            return '|cnGREEN_FONT_COLOR:'..index..")|r"..e.Icon.select2..text..hasCoolText
-        else]]
-        if stat=='waiting' then
-            return (index<10 and ' ' or '').. index..")   "..text..hasCoolText
-        elseif stat=='notready' then
-            return '|cnRED_FONT_COLOR:'..index..")|r"..e.Icon.O2..text..(UnitIsAFK(unit) and '|cff606060<'..AFK..'>|r' or not UnitIsConnected(unit) and 	'|cff606060<'..(e.onlyChinese and '离线' or PLAYER_OFFLINE)..'>|r' or '')..hasCoolText
-        elseif stat then
-            return '|cnRED_FONT_COLOR:'..index..")|r"..stat..text..(UnitIsAFK(unit) and '|cff606060<'..AFK..'>|r' or not UnitIsConnected(unit) and 	'|cff606060<'..(e.onlyChinese and '离线' or PLAYER_OFFLINE)..'>|r' or '')..hasCoolText
-        end
+    if stat=='ready' then
+        return
     end
+    local mapText, mapID e.GetUnitMapName(unit)--单位, 地图名称
+    return (
+                stat== 'waiting' and '|A:QuestTurnin:0:0|a'
+                or stat== 'notready' and e.Icon.X2
+                or stat
+            )
+            ..(index<10 and ' ' or '')..index..')'--编号号
+            ..(e.PlayerOnlineInfo(unit) or '')
+            ..e.GetPlayerInfo({unit=unit, guid=UnitGUID(unit), name=nil,  reName=true, reRealm=true, reLink=false})
+            ..(UnitHasLFGRandomCooldown(unit) and '|cnRED_FONT_COLOR:<'..(e.onlyChinese and '逃亡者' or DESERTER)..'>|r' or '')
+            ..(uiMapID~=mapID and mapText or '')--地图名称
+            ..' '
 end
 local function setGroupReadyTips(event, arg1, arg2)
     local text=''
@@ -162,21 +163,22 @@ local function setGroupReadyTips(event, arg1, arg2)
         local isInRaid=IsInRaid()
         local unit=isInRaid and 'raid' or 'party'
         local num=GetNumGroupMembers()
+        local uiMapID= C_Map.GetBestMapForUnit('player')
         if isInRaid then
             for index= 1, num do
-                local text2=getReadyCheckStatus(unit..index, index)
+                local text2=getReadyCheckStatus(unit..index, index, uiMapID)
                 if text2 then
                     text= (text~='' and text..'|n' or text)..text2
                 end
             end
         else
             for index= 1, num-1 do
-                local text2=getReadyCheckStatus(unit..index, index)
+                local text2=getReadyCheckStatus(unit..index, index, uiMapID)
                 if text2 then
                     text= (text~='' and text..'|n' or text)..text2
                 end
             end
-            local text2=getReadyCheckStatus('player', num)
+            local text2=getReadyCheckStatus('player', num, uiMapID)
             if text2 then
                 text= (text~='' and text..'|n' or text)..text2
             end
@@ -245,7 +247,7 @@ local function setGroupReadyTips(event, arg1, arg2)
         end
         if event=='READY_CHECK' and text~='' then
             if button.groupReadyTips.timer then button.groupReadyTips.timer:Cancel() end
-            button.groupReadyTips.timer=C_Timer.NewTimer(arg2 or 35, function()
+            button.groupReadyTips.timer= C_Timer.NewTimer(arg2 or 35, function()
                 button.groupReadyTips.text:SetText('')
                 button.groupReadyTips:SetShown(false)
             end)

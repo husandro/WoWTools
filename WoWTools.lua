@@ -363,7 +363,7 @@ e.Icon={
 
 
 
-e.PlayerOnlineInfo=function(unit)--单位，状态信息
+function e.PlayerOnlineInfo(unit)--单位，状态信息
     if unit and UnitExists(unit) then
         if not UnitIsConnected(unit) then
             return format("\124T%s.tga:0\124t", FRIENDS_TEXTURE_DND), e.onlyChinese and '离线' or PLAYER_OFFLINE
@@ -386,7 +386,7 @@ e.GetNpcID = function(unit)--NPC ID
     end
 end
 
-e.GetUnitMapName=function(unit)--单位, 地图名称
+function e.GetUnitMapName(unit)--单位, 地图名称
     local text
     local uiMapID= C_Map.GetBestMapForUnit(unit)
     if unit=='player' and IsInInstance() then
