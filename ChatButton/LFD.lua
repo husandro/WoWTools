@@ -128,7 +128,7 @@ local function setQueueStatus()--小眼睛, 信息
     if Save.hideQueueStatus then--列表信息 
         set_tipsFrame_Tips()
        return
-    end 
+    end
         local num= 0
         local pve
         for i=1, NUM_LE_LFG_CATEGORYS do--PVE
@@ -246,10 +246,12 @@ local function setQueueStatus()--小眼睛, 信息
                                 local icon= e.Class(nil, class)
                                 if icon and name and class then
                                     local col= '|c'..select(4, GetClassColor(class))--颜色
+
                                     local levelText--等级
                                     if level and level~=MAX_PLAYER_LEVEL then
                                         levelText=' |cnRED_FONT_COLOR:'..level..'|r'
                                     end
+
                                     local itemLevelText--装等/PVP装有情
                                     if  itemLevel and itemLevel>20 then
                                         itemLevelText= format('%i',itemLevel)
@@ -257,22 +259,35 @@ local function setQueueStatus()--小眼睛, 信息
                                             itemLevelText= itemLevelText..'/'..format('%i', pvpItemLevel)
                                         end
                                     end
+
                                     local realmText--服务器，名称
                                     local realm= name:match('%-(.+)')
                                     if realm then
-                                        realmText = e.Get_Region(realm) or (' '..realm)
+                                        local realmTab = e.Get_Region(realm)
+                                        if realmTab and realmTab.col then
+                                            realmText= ' '..realmTab.col
+                                        else
+                                            realmText= realm
+                                        end
                                     end
-                                    memberText= (memberText or '')..col
+
+                                    local scorsoText= e.GetKeystoneScorsoColor(dungeonScore, true) or ''--挑战分数，荣誉等级
+                                    if honorLevel and honorLevel>1 then
+                                        scorsoText= scorsoText~='' and scorsoText..' ' or scorsoText
+                                        scorsoText= scorsoText..'|A:pvptalents-warmode-swords:0:0|a'..honorLevel
+                                    end
+                                    
+                                    memberText= memberText and memberText..' ' or ''
+                                    memberText= memberText..col
                                         ..icon
                                         ..(itemLevelText or '')
                                         ..(tank and INLINE_TANK_ICON or '')
                                         ..(healer and INLINE_HEALER_ICON or '')
                                         ..(dps and INLINE_DAMAGER_ICON or '')
-                                        ..e.GetKeystoneScorsoColor(dungeonScore, true)
-                                        ..(honorLevel and honorLevel>1 and ' |A:pvptalents-warmode-swords:0:0|a'..honorLevel or '')
+                                        ..scorsoText
                                         ..(levelText or '')
                                         ..(realmText or '')
-                                        ..'|r'
+                                        ..'|r '
                                 end
                             end
                             if memberText then
@@ -430,7 +445,7 @@ local function Init_tipsFrame()
                 BattlefieldMgrExitRequest(queueID)
             end
         end
-        
+
     end)
 
     --[[button.tipsFrame.elapsed=0
@@ -1263,7 +1278,7 @@ local function set_ROLL_Check(frame)
     end
 
     local _, _, _, quality, _, canNeed, canGreed, canDisenchant, reasonNeed, reasonGreed, reasonDisenchant, deSkillRequired, canTransmog = GetLootRollItemInfo(rollID)
-    
+
     local link = GetLootRollItemLink(rollID)
 
     if not canNeed or (IsInLFGDungeon() and quality and quality>=4) or not link then
