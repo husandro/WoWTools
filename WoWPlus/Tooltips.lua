@@ -226,7 +226,7 @@ local function get_Web_Link(tab)
         end
     elseif tab.unitName then
         if tab.frame then
-            tab.frame:SetText(e.Icon.info2..tab.col..'Raider.IO Ctrl+Shift')
+            tab.frame:SetText(e.Icon.info2..(tab.col or '')..'Raider.IO Ctrl+Shift')
             tab.frame:SetShown(true)
         else
             e.tips:AddDoubleLine(e.Icon.info2..(tab.col or '')..'Raider.IO', (tab.col or '')..'Ctrl+Shift')
@@ -875,7 +875,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                 end
             end
         end
-        get_Web_Link({frame=hideLine, unitName=name, realm=realm, col=col})--取得单位, raider.io 网页，数据链接
+        get_Web_Link({frame=hideLine, unitName=name, realm=realm, col=nil})--取得单位, raider.io 网页，数据链接
 
     elseif (UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit)) then--宠物TargetFrame.lua
         setPet(self, UnitBattlePetSpeciesID(unit), true)

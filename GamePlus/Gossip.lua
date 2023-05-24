@@ -650,6 +650,7 @@ local function InitMenu_Quest(self, level, type)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
+        return
 
     elseif type=='CUSTOM' then
         for questID, text in pairs(Save.questOption) do
@@ -676,18 +677,9 @@ local function InitMenu_Quest(self, level, type)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
+        return
 
-    else
-        info={
-            text=e.Icon.left..(e.onlyChinese and '自动接受' or QUICK_JOIN_IS_AUTO_ACCEPT_TOOLTIP),
-            checked=Save.quest,
-            func= function()
-                Save.quest= not Save.quest and true or nil
-                setTexture()--设置图标
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
+    elseif type=='QUEST' then
         info={
             text='|A:TrivialQuests:0:0|a'..(e.onlyChinese and '其他任务' or MINIMAP_TRACKING_TRIVIAL_QUESTS),--低等任务
             checked= isQuestTrivialTracking,
@@ -699,76 +691,89 @@ local function InitMenu_Quest(self, level, type)
             end,
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-        info={--自动:选择奖励
-            text= e.onlyChinese and '自动选择奖励' or format(TITLE_REWARD, AUTO_JOIN:gsub(JOIN, CHOOSE)),
-            checked= Save.autoSelectReward,
-            tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and '最高品质' or format(PROFESSIONS_CRAFTING_QUALITY, VIDEO_OPTIONS_ULTRA_HIGH),
-            tooltipText= '|cff0000ff'..(e.onlyChinese and '稀有' or GARRISON_MISSION_RARE)..'|r',
-            menuList='REWARDSCHECK',
-            hasArrow=true,
-            func= function()
-                Save.autoSelectReward= not Save.autoSelectReward and true or nil
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-        info={
-            text= e.onlyChinese and '共享任务' or SHARE_QUEST,
-            checked=Save.pushable,
-            colorCode= not IsInGroup() and '|cff606060',
-            tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and '仅限在队伍中' or format(LFG_LIST_CROSS_FACTION, AGGRO_WARNING_IN_PARTY),
-            func= function()
-                Save.pushable= not Save.pushable and true or nil
-                set_PushableQuest()--共享,任务
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-        info={
-            text= e.onlyChinese and '追踪' or TRACKING,
-            isTitle= true,
-            notCheckable=true,
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-        info={
-            text= e.onlyChinese and '自动任务追踪' or AUTO_QUEST_WATCH_TEXT,
-            checked=C_CVar.GetCVarBool("autoQuestWatch"),
-            tooltipOnButton=true,
-            tooltipTitle= format(e.onlyChinese and '接受任务：%s' or ERR_QUEST_ACCEPTED_S, 'Cvar autoQuestWatch'),
-            func=function()
-                C_CVar.SetCVar("autoQuestWatch", C_CVar.GetCVarBool("autoQuestWatch") and '0' or '1')
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-        info={
-            text= e.onlyChinese and '当前地图' or (REFORGE_CURRENT..WORLD_MAP),
-            checked= Save.autoSortQuest,
-            tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and '仅显示当前地图任务' or format(GROUP_FINDER_CROSS_FACTION_LISTING_WITH_PLAYSTLE, SHOW,FLOOR..QUESTS_LABEL),--仅限-本区域任务
-            tooltipText= e.onlyChinese and '触发事件: 更新区域' or (EVENTS_LABEL..':' ..UPDATE..FLOOR),
-            func=function()
-                Save.autoSortQuest= not Save.autoSortQuest and true or nil
-                set_Auto_QuestWatch_Event()--仅显示本地图任务,事件
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-
-        info={--自定义,任务,选项
-            text= e.onlyChinese and '自定义任务' or CUSTOM..QUESTS_LABEL,
-            menuList='CUSTOM',
-            notCheckable=true,
-            hasArrow=true,
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        return
     end
+
+    info={
+        text=e.Icon.left..(e.onlyChinese and '自动接受' or QUICK_JOIN_IS_AUTO_ACCEPT_TOOLTIP),
+        checked= Save.quest,
+        menuList= 'QUEST',
+        hasArrow= true,
+        func= function()
+            Save.quest= not Save.quest and true or nil
+            setTexture()--设置图标
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    info={--自动:选择奖励
+        text= e.onlyChinese and '自动选择奖励' or format(TITLE_REWARD, AUTO_JOIN:gsub(JOIN, CHOOSE)),
+        checked= Save.autoSelectReward,
+        tooltipOnButton=true,
+        tooltipTitle= e.onlyChinese and '最高品质' or format(PROFESSIONS_CRAFTING_QUALITY, VIDEO_OPTIONS_ULTRA_HIGH),
+        tooltipText= '|cff0000ff'..(e.onlyChinese and '稀有' or GARRISON_MISSION_RARE)..'|r',
+        menuList='REWARDSCHECK',
+        hasArrow=true,
+        func= function()
+            Save.autoSelectReward= not Save.autoSelectReward and true or nil
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    info={
+        text= e.onlyChinese and '共享任务' or SHARE_QUEST,
+        checked=Save.pushable,
+        colorCode= not IsInGroup() and '|cff606060',
+        tooltipOnButton=true,
+        tooltipTitle= e.onlyChinese and '仅限在队伍中' or format(LFG_LIST_CROSS_FACTION, AGGRO_WARNING_IN_PARTY),
+        func= function()
+            Save.pushable= not Save.pushable and true or nil
+            set_PushableQuest()--共享,任务
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
+    info={
+        text= e.onlyChinese and '追踪' or TRACKING,
+        isTitle= true,
+        notCheckable=true,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    info={
+        text= e.onlyChinese and '自动任务追踪' or AUTO_QUEST_WATCH_TEXT,
+        checked=C_CVar.GetCVarBool("autoQuestWatch"),
+        tooltipOnButton=true,
+        tooltipTitle= format(e.onlyChinese and '接受任务：%s' or ERR_QUEST_ACCEPTED_S, 'Cvar autoQuestWatch'),
+        func=function()
+            C_CVar.SetCVar("autoQuestWatch", C_CVar.GetCVarBool("autoQuestWatch") and '0' or '1')
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    info={
+        text= e.onlyChinese and '当前地图' or (REFORGE_CURRENT..WORLD_MAP),
+        checked= Save.autoSortQuest,
+        tooltipOnButton=true,
+        tooltipTitle= e.onlyChinese and '仅显示当前地图任务' or format(GROUP_FINDER_CROSS_FACTION_LISTING_WITH_PLAYSTLE, SHOW,FLOOR..QUESTS_LABEL),--仅限-本区域任务
+        tooltipText= e.onlyChinese and '触发事件: 更新区域' or (EVENTS_LABEL..':' ..UPDATE..FLOOR),
+        func=function()
+            Save.autoSortQuest= not Save.autoSortQuest and true or nil
+            set_Auto_QuestWatch_Event()--仅显示本地图任务,事件
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
+
+    info={--自定义,任务,选项
+        text= e.onlyChinese and '自定义任务' or CUSTOM..QUESTS_LABEL,
+        menuList='CUSTOM',
+        notCheckable=true,
+        hasArrow=true,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
 
 --###########

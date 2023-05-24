@@ -84,7 +84,7 @@ local function setColor(block, questID)
     end
     local r, g, b=block.r, block.g, block.b
 
-    if not r or not g or not b then
+    if (not r or not g or not b)  and UnitEffectiveLevel('player')== e.Player.level then
         local lv= C_PlayerInfo.GetContentDifficultyQuestForPlayer(questID)
         if lv then
             if lv== 0 then--Trivial    
