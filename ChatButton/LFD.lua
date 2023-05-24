@@ -1740,7 +1740,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
                 Init()
                 panel:RegisterEvent("PLAYER_LOGOUT")
                 panel:RegisterEvent('LFG_COMPLETION_REWARD')
-                panel:RegisterEvent('SCENARIO_COMPLETED')
+                --panel:RegisterEvent('SCENARIO_COMPLETED')
                 panel:RegisterEvent('PLAYER_ENTERING_WORLD')
                 panel:RegisterEvent('ISLAND_COMPLETED')
                 panel:RegisterEvent('LFG_UPDATE_RANDOM_INFO')
@@ -1765,7 +1765,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
             WoWToolsSave[INSTANCE]=wowSave
         end
 
-    elseif event=='LFG_COMPLETION_REWARD' or event=='LOOT_CLOSED' or event=='SCENARIO_COMPLETED' then--自动离开
+    elseif event=='LFG_COMPLETION_REWARD' or event=='LOOT_CLOSED' then--or event=='SCENARIO_COMPLETED' then--自动离开
         if Save.leaveInstance and IsInLFGDungeon() and IsLFGComplete() then
             --local scenarioInfo = C_ScenarioInfo.GetScenarioInfo()
             --local isCompleteScenario= scenarioInfo and scenarioInfo.isComplete

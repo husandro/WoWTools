@@ -96,12 +96,20 @@ local function set_vigentteButton_Event()
     end
 end
 
-
+local setVigentteButtonText
 local function set_vigentteButton_Text()
     if not Save.vigentteButtonShowText then
         panel.vigentteButton.text:SetText('')
+        setVigentteButtonText=nil
         return
     end
+
+    if setVigentteButtonText then
+        return
+    else
+        setVigentteButtonText=true
+    end
+
     local text
     if e.Player.levelMax then--世界任务, 监视
         for questID,_ in pairs(questIDTab) do
@@ -194,6 +202,7 @@ local function set_vigentteButton_Text()
 
 
     panel.vigentteButton.text:SetText(text or '..')
+    setVigentteButtonText=nil
 end
 
 local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
