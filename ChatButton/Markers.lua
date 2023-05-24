@@ -140,15 +140,18 @@ local function setGroupReadyTipsEvent()--注册事件, 就绪,队员提示信息
     end
 end
 local function getReadyCheckStatus(unit, index)
-    local stat=GetReadyCheckStatus(unit)
-    local text= e.GetPlayerInfo({unit=unit, guid=UnitGUID(unit), name=nil,  reName=true, reRealm=true, reLink=false})
-    local hasCoolText= UnitHasLFGRandomCooldown(unit) and '|T236347:0|t|cnRED_FONT_COLOR:'..(e.onlyChinese and '逃亡者' or DESERTER)..'|r' or ''
-    if stat=='ready' then
-        return '|cnGREEN_FONT_COLOR:'..index..")|r"..e.Icon.select2..text..hasCoolText
-    elseif stat=='waiting' then
-        return index..")   "..text..hasCoolText
-    elseif stat=='notready' then
-        return '|cnRED_FONT_COLOR:'..index..")|r"..e.Icon.O2..text..(UnitIsAFK(unit) and '|cff606060<'..AFK..'>|r' or not UnitIsConnected(unit) and 	'|cff606060<'..(e.onlyChinese and '离线' or PLAYER_OFFLINE)..'>|r' or '')..hasCoolText
+    local stat= GetReadyCheckStatus(unit)
+    if stat~='ready' then
+        local text= e.GetPlayerInfo({unit=unit, guid=UnitGUID(unit), name=nil,  reName=true, reRealm=true, reLink=false})
+        local hasCoolText= UnitHasLFGRandomCooldown(unit) and '|T236347:0|t|cnRED_FONT_COLOR:'..(e.onlyChinese and '逃亡者' or DESERTER)..'|r' or ''
+        --[[if stat=='ready' then
+            return '|cnGREEN_FONT_COLOR:'..index..")|r"..e.Icon.select2..text..hasCoolText
+        else]]
+        if stat=='waiting' then
+            return (index<10 and ' ' or '').. index..")   "..text..hasCoolText
+        elseif stat=='notready' then
+            return '|cnRED_FONT_COLOR:'..index..")|r"..e.Icon.O2..text..(UnitIsAFK(unit) and '|cff606060<'..AFK..'>|r' or not UnitIsConnected(unit) and 	'|cff606060<'..(e.onlyChinese and '离线' or PLAYER_OFFLINE)..'>|r' or '')..hasCoolText
+        end
     end
 end
 local function setGroupReadyTips(event, arg1, arg2)
@@ -177,13 +180,13 @@ local function setGroupReadyTips(event, arg1, arg2)
             end
         end
         if text~='' and not button.groupReadyTips then
-            button.groupReadyTips=e.Cbtn(nil, {icon='hide', size={20,20}})
+            button.groupReadyTips= e.Cbtn(nil, {icon='hide', size={20,20}})
             if Save.groupReadyTipsPoint then
                 button.groupReadyTips:SetPoint(Save.groupReadyTipsPoint[1], UIParent, Save.groupReadyTipsPoint[3], Save.groupReadyTipsPoint[4], Save.groupReadyTipsPoint[5])
             else
                 button.groupReadyTips:SetPoint('BOTTOMLEFT', button, 'TOPLEFT', 0, 20)
             end
-            button.groupReadyTips:SetScript('OnMouseDown', function(self,d)
+            button.groupReadyTips:SetScript('OnClick', function(self, d)
                 local key=IsModifierKeyDown()
                 if d=='LeftButton' and not key then
                     self.text:SetText('')
@@ -203,10 +206,12 @@ local function setGroupReadyTips(event, arg1, arg2)
                 e.tips:AddDoubleLine(e.onlyChinese and '清除全部' or  CLEAR_ALL, e.Icon.left)
                 e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
                 e.tips:Show()
+                button:SetButtonState('PUSHED')
             end)
             button.groupReadyTips:SetScript('OnLeave', function()
                 ResetCursor()
                 e.tips:Hide()
+                button:SetButtonState('NORMAL')
             end)
             button.groupReadyTips:SetScript("OnMouseUp", function(self, d)
                 ResetCursor()
