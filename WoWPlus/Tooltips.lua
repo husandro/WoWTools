@@ -240,10 +240,6 @@ local function get_Web_Link(tab)
             )
         end
     end
-    --[[if tab.frame and not tab.isPetUI then
-        tab.frame:SetText('')
-        tab.frame:SetShown(false)
-    end]]
 end
 
 local function setMount(self, mountID)--坐骑 
