@@ -934,7 +934,7 @@ e.GetKeystoneScorsoColor= function(score, texture, overall)--地下城史诗, �
     end
 end
 
-e.GetTimeInfo= function(value, chat, time)
+function e.GetTimeInfo(value, chat, time)
     if value>0 then
         time= time or GetTime()
         time= time < value and time + 86400 or time
