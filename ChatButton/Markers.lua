@@ -644,7 +644,7 @@ local function InitMenu(self, level, type)--主菜单
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
             info={
-                text=e.Icon.O2..(e.onlyChinese and '未就绪' or NOT_READY_FEMALE),--未就绪
+                text=e.Icon.X2..(e.onlyChinese and '未就绪' or NOT_READY_FEMALE),--未就绪
                 colorCode='|cffff0000',
                 checked=Save.autoReady==2,
                 func=function()
@@ -792,7 +792,18 @@ local function InitMenu(self, level, type)--主菜单
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
         info={
-            text=(Save.autoReady==1 and e.Icon.select2 or Save.autoReady==2 and e.Icon.O2 or (e.onlyChinese and '无' or NONE)).. (e.onlyChinese and '自动' or AUTO_JOIN:gsub(JOIN,''))..((not Save.autoReady or Save.autoReady==1) and (e.onlyChinese and '就绪' or READY) or Save.autoReady==2 and (e.onlyChinese and '未就绪' or NOT_READY_FEMALE) or ''),
+            text=(
+                    Save.autoReady==1 and e.Icon.select2
+                    or Save.autoReady==2 and e.Icon.O2
+                    or (e.onlyChinese and '无' or NONE)
+                )
+                ..(e.onlyChinese and '自动' or AUTO_JOIN:gsub(JOIN,''))
+                ..(
+                    (not Save.autoReady or Save.autoReady==1) and (e.onlyChinese and '就绪' or READY)
+                    or Save.autoReady==2 and (e.onlyChinese and '未就绪'
+                    or NOT_READY_FEMALE)
+                    or ''
+                ),
             checked= Save.autoReady==1 or Save.autoReady==2,
             colorCode= Save.autoReady==1 and '|cff00ff00' or Save.autoReady==2 and '|cffff0000',
             menuList='ready',
