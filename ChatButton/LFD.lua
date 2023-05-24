@@ -276,8 +276,8 @@ local function setQueueStatus()--小眼睛, 信息
                                         scorsoText= scorsoText~='' and scorsoText..' ' or scorsoText
                                         scorsoText= scorsoText..'|A:pvptalents-warmode-swords:0:0|a'..honorLevel
                                     end
-                                    
-                                    memberText= memberText and memberText..' ' or ''
+
+                                    memberText= memberText and memberText..'|n          ' or ''
                                     memberText= memberText..col
                                         ..icon
                                         ..(itemLevelText or '')
@@ -295,7 +295,7 @@ local function setQueueStatus()--小眼睛, 信息
                                 member= member and member..'|n' or ''
                                 member= member..'      '.. (n<10 and ' '..n or n)..')'..memberText..' '
                             end
-                            if n>30 then
+                            if n>=30 then
                                 break
                             end
                         end
