@@ -9,12 +9,22 @@ local Save={
         miniMapPoint={},--保存小图地, 按钮位置
         useServerTimer=true,--小时图，使用服务器, 时间
 }
-local uiMapIDsTab= {2026, 2025, 2024, 2023, 2022, 2133}--监视, areaPoiIDs，
+local uiMapIDsTab= {--地图ID
+    2026,
+    2025,
+    2024,
+    2023,
+    2022,
+    2133}
+    --监视, areaPoiIDs，
 local questIDTab= {--世界任务, 监视, ID
     [74378]=true,
 }
-local panel=CreateFrame("Frame")
+local areaPoiIDsTab={
+    [7471]=true
+}
 
+local panel=CreateFrame("Frame")
 
 --###################
 --更新地区时,缩小化地图
