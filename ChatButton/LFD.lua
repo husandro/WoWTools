@@ -155,6 +155,7 @@ local function setQueueStatus()--小眼睛, 信息
         for i=1, GetMaxBattlefieldID() do --PVP
             local status, mapName, teamSize, registeredMatch, suspendedQueue, queueType, gameType, role, asGroup, shortDescription, longDescription = GetBattlefieldStatus(i)
             if status and mapName then
+                local queuedTime = GetBattlefieldTimeWaited(i) / 1000
                 pvp= pvp and pvp..'|n' or ''
                 pvp= pvp..'   '..i..') '
                     ..mapName
@@ -162,6 +163,7 @@ local function setQueueStatus()--小眼睛, 信息
                     ..(teamSize and teamSize>0 and registeredMatch and (' '..registeredMatch..'/'..teamSize) or '')
                     ..(suspendedQueue and ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '暂停' or QUEUED_STATUS_SUSPENDED)..'|r') or '')
                     ..(e.Icon[role] or '')
+                    ..' '.. SecondsToClock(queuedTime)
                     ..' '
             end
         end
@@ -177,12 +179,16 @@ local function setQueueStatus()--小眼睛, 信息
         end
 
 
-        local queueState= C_PetBattles.GetPVPMatchmakingInfo() --PET
+        local queueState, _, queuedTime= C_PetBattles.GetPVPMatchmakingInfo() --PET
         if queueState then
             local pet= '|A:worldquest-icon-petbattle:0:0|a|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '宠物对战' or PET_BATTLE_PVP_QUEUE)..'|r'
-            if queueState~='queued' then
-                pet= pet..' '..get_Status_Text(queueState)--列表，状态，信息
+            if queuedTime then
+                pet= pet..' '..e.GetTimeInfo(queuedTime, true)
             end
+            if queueState~='queued' then
+                pet= pet..' '..get_Status_Text(queueState)
+            end
+            
             pet= pet..' '
             for slotIndex= 1, 3 do
                 local tab= {C_PetJournal.GetPetLoadOutInfo(slotIndex)}--petID, ability1, ability2, ability3 = C_PetJournal.GetPetLoadOutInfo(slotIndex)
@@ -210,7 +216,7 @@ local function setQueueStatus()--小眼睛, 信息
 
         if C_LFGList.HasActiveEntryInfo() then--已激活LFG
             local list
-            local info= C_LFGList.GetActiveEntryInfo() or {}
+            local info= C_LFGList.GetActiveEntryInfo()
             if info and info.name then
                 list= '   '..info.name--名称
                 local applicants =C_LFGList.GetApplicants() or {}--申请人数
@@ -232,14 +238,16 @@ local function setQueueStatus()--小眼睛, 信息
                 if info.privateGroup then--私人
                     list= list..(e.onlyChinese and '私人' or LFG_LIST_PRIVATE)
                 end
+                if info.duration then--时间
+                    list= list..' '..SecondsToClock(info.duration)
+                end
 
                 local member
-                local okTab={}
                 if not info.autoAccept and applicantsNum>0 then
                     local n=0
                     for _, applicantID in pairs(applicants) do
-                        local applicantInfo = not okTab[applicantID] and C_LFGList.GetApplicantInfo(applicantID)
-                        if applicantInfo and applicantInfo.numMembers then
+                        local applicantInfo = C_LFGList.GetApplicantInfo(applicantID)
+                        if applicantInfo and applicantInfo.numMembers and applicantInfo.applicationStatus=='applied' then
                             local memberText
                             for index=1 , applicantInfo.numMembers do
                                 local name, class, _, level, itemLevel, honorLevel, tank, healer, dps, _, _, dungeonScore, pvpItemLevel= C_LFGList.GetApplicantMemberInfo(applicantID, index)
@@ -265,9 +273,9 @@ local function setQueueStatus()--小眼睛, 信息
                                     if realm then
                                         local realmTab = e.Get_Region(realm)
                                         if realmTab and realmTab.col then
-                                            realmText= ' '..realmTab.col
+                                            realmText= ' '..name ..' '..realmTab.col
                                         else
-                                            realmText= realm
+                                            realmText= name
                                         end
                                     end
 
@@ -280,10 +288,10 @@ local function setQueueStatus()--小眼睛, 信息
                                     memberText= memberText and memberText..'|n          ' or ''
                                     memberText= memberText..col
                                         ..icon
-                                        ..(itemLevelText or '')
                                         ..(tank and INLINE_TANK_ICON or '')
                                         ..(healer and INLINE_HEALER_ICON or '')
                                         ..(dps and INLINE_DAMAGER_ICON or '')
+                                        ..(itemLevelText or '')
                                         ..scorsoText
                                         ..(levelText or '')
                                         ..(realmText or '')
@@ -293,16 +301,14 @@ local function setQueueStatus()--小眼睛, 信息
                             if memberText then
                                 n=n+1
                                 member= member and member..'|n' or ''
-                                member= member..'      '.. (n<10 and ' '..n or n)..')'..memberText..' '
+                                member= member..'      '.. (n<10 and ' '..n or n)..')'..memberText
                             end
                             if n>=30 then
                                 break
                             end
                         end
-                        okTab[applicantID]= true
                     end
                 end
-                okTab=nil
                 if member then
                     list= list..'|n'..member
                 end
@@ -428,6 +434,7 @@ local function Init_tipsFrame()
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
         button:SetButtonState('PUSHED')
+        setQueueStatus()--小眼睛, 更新信息
     end)
 
     button.tipsFrame:SetScript('OnDoubleClick', function(self2, d)--离开所有队列
@@ -440,7 +447,7 @@ local function Init_tipsFrame()
         C_PetBattles.StopPVPMatchmaking()--PetC_PetBattles.DeclineQueuedPVPMatch()
         RejectProposal()
         for i=1,  GetNumWorldPVPAreas() do --PVP QueueStatusFrame.lua
-            local status, mapName, queueID = GetWorldPVPQueueStatus(i);
+            local queueID = select(3, GetWorldPVPQueueStatus(i))
             if queueID then
                 BattlefieldMgrExitRequest(queueID)
             end
@@ -448,20 +455,20 @@ local function Init_tipsFrame()
 
     end)
 
-    --[[button.tipsFrame.elapsed=0
+    button.tipsFrame.elapsed=0
     button.tipsFrame:SetScript('OnUpdate', function(self, elapsed)
         if UnitAffectingCombat('player') then
             return
         end
         self.elapsed= self.elapsed + elapsed
-        if self.elapsed>2 then
+        if self.elapsed>=1 then
             securecall(QueueStatusFrame.Update, QueueStatusFrame)--小眼睛, 更新信息, QueueStatusFrame.lua
-            --setQueueStatus()--小眼睛, 更新信息
+            --securecall(LFGListUtil_SetAutoAccept, C_LFGList.CanActiveEntryUseAutoAccept())--LFGList.lua 不可用
             self.elapsed=0
         end
-    end)]]
+    end)
 
-    button.tipsFrame.text=e.Cstr(button.tipsFrame, {size=Save.tipsFrameTextSize, color=true})--Save.tipsFrameTextSize, nil, nil, true)
+    button.tipsFrame.text= e.Cstr(button.tipsFrame, {size=Save.tipsFrameTextSize, color=true})--Save.tipsFrameTextSize, nil, nil, true)
     button.tipsFrame.text:SetPoint('BOTTOMLEFT')
 end
 

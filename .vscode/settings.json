@@ -2779,7 +2779,8 @@
         "BATTLEFIELD_TIMER_THRESHOLDS",
         "PVPReadyDialog",
         "PetJournalLoadoutPet1Icon",
-        "RAF_RECRUITMENT"
+        "RAF_RECRUITMENT",
+        "LFGListUtil_SetAutoAccept"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
