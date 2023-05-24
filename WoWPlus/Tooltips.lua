@@ -240,10 +240,10 @@ local function get_Web_Link(tab)
             )
         end
     end
-    if tab.frame and not tab.isPetUI then
+    --[[if tab.frame and not tab.isPetUI then
         tab.frame:SetText('')
         tab.frame:SetShown(false)
-    end
+    end]]
 end
 
 local function setMount(self, mountID)--坐骑 
@@ -875,7 +875,14 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                 end
             end
         end
-        get_Web_Link({frame=hideLine, unitName=name, realm=realm, col=nil})--取得单位, raider.io 网页，数据链接
+        if UnitAffectingCombat('player') then
+                if hideLine then
+                    hideLine:SetText('')
+                    hideLine:SetShow(false)
+                end
+        else
+            get_Web_Link({frame=hideLine, unitName=name, realm=realm, col=nil})--取得单位, raider.io 网页，数据链接
+        end
 
     elseif (UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit)) then--宠物TargetFrame.lua
         setPet(self, UnitBattlePetSpeciesID(unit), true)
