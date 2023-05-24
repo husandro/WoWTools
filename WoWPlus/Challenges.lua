@@ -5,6 +5,7 @@ end
 local addName= CHALLENGES
 local Save= {
     showItemLevelTipsText=true,--等级 =>每周/完成, 提示
+    showSpellPort= e.Player.husandro,--传送门
 }
 local panel=CreateFrame("Frame")
 

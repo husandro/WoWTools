@@ -151,6 +151,8 @@ local function getReadyCheckStatus(unit, index)
             return (index<10 and ' ' or '').. index..")   "..text..hasCoolText
         elseif stat=='notready' then
             return '|cnRED_FONT_COLOR:'..index..")|r"..e.Icon.O2..text..(UnitIsAFK(unit) and '|cff606060<'..AFK..'>|r' or not UnitIsConnected(unit) and 	'|cff606060<'..(e.onlyChinese and '离线' or PLAYER_OFFLINE)..'>|r' or '')..hasCoolText
+        elseif stat then
+            return '|cnRED_FONT_COLOR:'..index..")|r"..stat..text..(UnitIsAFK(unit) and '|cff606060<'..AFK..'>|r' or not UnitIsConnected(unit) and 	'|cff606060<'..(e.onlyChinese and '离线' or PLAYER_OFFLINE)..'>|r' or '')..hasCoolText
         end
     end
 end

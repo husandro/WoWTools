@@ -1258,15 +1258,16 @@ local function set_ROLL_Check(frame)
         return
     end
 
-    local _, _, _, _, _, canNeed = GetLootRollItemInfo(rollID)
+    local _, _, _, quality, _, canNeed, canGreed, canDisenchant, reasonNeed, reasonGreed, reasonDisenchant, deSkillRequired, canTransmog = GetLootRollItemInfo(rollID)
+    
     local link = GetLootRollItemLink(rollID)
 
-    if not canNeed or select(10, GetInstanceInfo()) or not link then
+    if not canNeed or (IsInLFGDungeon() and quality and quality>=4) or not link then
         set_RollOnLoot(rollID, canNeed and 1 or 2, link)
         return
     end
 
-    if not C_TransmogCollection.PlayerHasTransmogByItemInfo(link) then--幻化
+    if canTransmog and not C_TransmogCollection.PlayerHasTransmogByItemInfo(link) then--幻化
         local sourceID=select(2,C_TransmogCollection.GetItemInfo(link))
         if sourceID then
             local hasItemData, canCollect =  C_TransmogCollection.PlayerCanCollectSource(sourceID)
@@ -1294,9 +1295,9 @@ local function set_ROLL_Check(frame)
                     return
                 end
             end
-        else--没有装备
-            set_RollOnLoot(rollID, 1, link)
-            return
+        --else--没有装备
+            --set_RollOnLoot(rollID, 1, link)
+            --return
         end
 
     elseif classID==15 and subclassID==2 then--宠物物品
@@ -1809,8 +1810,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
         setHoliday()--节日, 提示, button.texture
 
     --elseif event=='START_LOOT_ROLL' then
-        --print(event,arg1)
-      --  set_ROLL_Check(arg1)
+        --set_ROLL_Check(nil, arg1)
 
     elseif event=='CORPSE_IN_RANGE' or event=='PLAYER_DEAD' or event=='AREA_SPIRIT_HEALER_IN_RANGE' then--仅限战场，释放, 复活
         if Save.ReMe and (C_PvP.IsBattleground() or C_PvP.IsArena()) then
