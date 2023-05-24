@@ -244,21 +244,25 @@ local function setQueueStatus()--小眼睛, 信息
                             for index=1 , applicantInfo.numMembers do
                                 local name, class, _, level, itemLevel, honorLevel, tank, healer, dps, _, _, dungeonScore, pvpItemLevel= C_LFGList.GetApplicantMemberInfo(applicantID, index)
                                 local icon= e.Class(nil, class)
-                                if icon and name then
-                                    local col= '|c'..select(4, GetClassColor(class))
-                                    local levelText=''
+                                if icon and name and class then
+                                    local col= '|c'..select(4, GetClassColor(class))--颜色
+                                    local levelText--等级
                                     if level and level~=MAX_PLAYER_LEVEL then
                                         levelText=' |cnRED_FONT_COLOR:'..level..'|r'
                                     end
-                                    local itemLevelText
+                                    local itemLevelText--装等/PVP装有情
                                     if  itemLevel and itemLevel>20 then
                                         itemLevelText= format('%i',itemLevel)
                                         if pvpItemLevel and pvpItemLevel-itemLevel>9 then
                                             itemLevelText= itemLevelText..'/'..format('%i', pvpItemLevel)
                                         end
                                     end
-                                    memberText= memberText and ' '..memberText or ''
-                                    memberText= memberText..col
+                                    local realmText--服务器，名称
+                                    local realm= name:match('%-(.+)')
+                                    if realm then
+                                        realmText = e.Get_Region(realm) or (' '..realm)
+                                    end
+                                    memberText= (memberText or '')..col
                                         ..icon
                                         ..(itemLevelText or '')
                                         ..(tank and INLINE_TANK_ICON or '')
@@ -266,15 +270,15 @@ local function setQueueStatus()--小眼睛, 信息
                                         ..(dps and INLINE_DAMAGER_ICON or '')
                                         ..e.GetKeystoneScorsoColor(dungeonScore, true)
                                         ..(honorLevel and honorLevel>1 and ' |A:pvptalents-warmode-swords:0:0|a'..honorLevel or '')
-                                        --..name
-                                        ..levelText
-                                        ..'|r '
+                                        ..(levelText or '')
+                                        ..(realmText or '')
+                                        ..'|r'
                                 end
                             end
                             if memberText then
                                 n=n+1
                                 member= member and member..'|n' or ''
-                                member= member..'      '..n..') '..memberText
+                                member= member..'      '.. (n<10 and ' '..n or n)..')'..memberText..' '
                             end
                             if n>30 then
                                 break
