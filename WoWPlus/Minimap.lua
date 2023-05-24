@@ -9,19 +9,17 @@ local Save={
         miniMapPoint={},--保存小图地, 按钮位置
         useServerTimer=true,--小时图，使用服务器, 时间
 }
-local uiMapIDsTab= {--地图ID
+local uiMapIDsTab= {--地图ID 监视, areaPoiIDs，
     2026,
     2025,
     2024,
     2023,
     2022,
-    2133}
-    --监视, areaPoiIDs，
-local questIDTab= {--世界任务, 监视, ID
-    [74378]=true,
+    2133
 }
-local areaPoiIDsTab={
-    [7471]=true
+    
+local questIDTab= {--世界任务, 监视, ID
+   -- [74378]=true,
 }
 
 local panel=CreateFrame("Frame")
@@ -104,7 +102,6 @@ local function set_vigentteButton_Text()
         panel.vigentteButton.text:SetText('')
         return
     end
-
     local text
     if e.Player.levelMax then--世界任务, 监视
         for questID,_ in pairs(questIDTab) do
@@ -145,55 +142,57 @@ local function set_vigentteButton_Text()
         end
     end
 
-    if e.Player.level== e.Player.levelMax then
+    if e.Player.levelMax then
         for _, uiMapID in pairs(uiMapIDsTab) do
             local areaPoiIDs = C_AreaPoiInfo.GetAreaPOIForMap(uiMapID) or {}
             for _, areaPoiID in pairs(areaPoiIDs) do
                 local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID)
-                if poiInfo and poiInfo.name and poiInfo.atlasName and C_AreaPoiInfo.IsAreaPOITimed(areaPoiID) then
-                    local secondsLeft = C_AreaPoiInfo.GetAreaPOISecondsLeft(areaPoiID)
-                    if secondsLeft and secondsLeft>0 then
-                        text= text and text..'|n' or ''
-                        if poiInfo.widgetSetID then
-                            local widgets = C_UIWidgetManager.GetAllWidgetsBySetID(poiInfo.widgetSetID) or {}
-                            for _,widget in ipairs(widgets) do
-                                if widget and widget.widgetID and  widget.widgetType==8 then
-                                    local widgetInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(widget.widgetID)
-                                    if widgetInfo and widgetInfo.shownState== 1  and widgetInfo.text then
-                                        local icon, num= widgetInfo.text:match('(|T.-|t).+(%d+)')
-                                        if icon and num then
-                                            text= text..'|cff00ff00'..num..'|r'..icon
-                                            break
-                                        end
+                local secondsLeft = C_AreaPoiInfo.GetAreaPOISecondsLeft(areaPoiID)
+                if poiInfo and poiInfo.name and poiInfo.atlasName and secondsLeft and secondsLeft>0 then-- C_AreaPoiInfo.IsAreaPOITimed(areaPoiID) then
+                    text= text and text..'|n' or ''
+                    if poiInfo.widgetSetID then
+                        local widgets = C_UIWidgetManager.GetAllWidgetsBySetID(poiInfo.widgetSetID) or {}
+                        for _,widget in ipairs(widgets) do
+                            if widget and widget.widgetID and  widget.widgetType==8 then
+                                local widgetInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(widget.widgetID)
+                                if widgetInfo and widgetInfo.shownState== 1  and widgetInfo.text then
+                                    local icon, num= widgetInfo.text:match('(|T.-|t).+(%d+)')
+                                    if icon and num then
+                                        text= text..'|cff00ff00'..num..'|r'..icon
+                                        break
                                     end
                                 end
                             end
                         end
+                    end
 
 
-                        text= text.. poiInfo.name
-                        if poiInfo.factionID and C_Reputation.IsMajorFaction(poiInfo.factionID) then
-                            local info = C_MajorFactions.GetMajorFactionData(poiInfo.factionID)
-                            if info and info.textureKit then
-                                text= text..'|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'
-                            else
-                                text= text..' '
-                            end
+                    text= text.. poiInfo.name
+                    if poiInfo.factionID and C_Reputation.IsMajorFaction(poiInfo.factionID) then
+                        local info = C_MajorFactions.GetMajorFactionData(poiInfo.factionID)
+                        if info and info.textureKit then
+                            text= text..'|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'
                         else
                             text= text..' '
                         end
+                    else
+                        text= text..' '
+                    end
+                    if secondsLeft and secondsLeft>0 then
                         local secText=SecondsToClock(secondsLeft,true)
                         secText= secText:gsub('：',':')
                         if secondsLeft<= 600 then
                             secText= '|cnGREEN_FONT_COLOR:'..secText..'|r'
                         end
                         text= text..secText
-                        text= text..'|A:'..poiInfo.atlasName..':0:0|a'
                     end
+                    text= text..'|A:'..poiInfo.atlasName..':0:0|a'
                 end
             end
         end
     end
+
+
     panel.vigentteButton.text:SetText(text or '..')
 end
 
