@@ -2782,7 +2782,8 @@
         "RAF_RECRUITMENT",
         "LFGListUtil_SetAutoAccept",
         "MerchantFrame_UpdateMerchantInfo",
-        "MerchantBuyBackItemItemButton"
+        "MerchantBuyBackItemItemButton",
+        "TRANSMOGRIFICATION"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
