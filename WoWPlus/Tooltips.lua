@@ -874,7 +874,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
         if UnitAffectingCombat('player') then
             if hideLine then
                 hideLine:SetText('')
-                hideLine:SetShow(false)
+                hideLine:SetShown(false)
             end
         else
             get_Web_Link({frame=hideLine, unitName=name, realm=realm, col=nil})--取得单位, raider.io 网页，数据链接
