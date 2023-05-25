@@ -95,7 +95,6 @@ end
 local function InitMenu(self, level, type)
     local info
     if type then
- 
         for _, channel in pairs(Channels) do
             info={
                 text=_G[channel] or channel,
@@ -132,7 +131,7 @@ local function InitMenu(self, level, type)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
-        
+
     else
         info={
             text= e.onlyChinese and '进入战斗' or ENTERING_COMBAT,--进入战斗时, 隐藏
@@ -234,8 +233,6 @@ local function Init()
     frame:SetScript("OnLeave",function()
         ResetCursor()
     end)
-
-    
 
     setButtons()--设置按钮
 
