@@ -376,7 +376,7 @@ local function setQueueStatus()--小眼睛, 信息
                 if info.crossFactionListing then
                     if info.leaderFactionGroup==0 then
                         factionText= e.Icon.horde2
-                    elseif info.info.leaderFactionGroup==1 then
+                    elseif info.leaderFactionGroup==1 then
                         factionText= e.Icon.alliance2
                     end
                 end

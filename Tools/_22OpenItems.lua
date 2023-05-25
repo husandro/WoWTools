@@ -42,10 +42,9 @@ local Save={
         [204578]=1,
         [204579]=1,
 
-        --[[[190315]=10,--[活力之土] 没， 包含材料包
-        [190328]=10,--[活力之霜]
-        [198326]=10,--[活力之气]
-        [190320]=10,--[活力之火]]
+        [204075]=15,--雏龙的暗影烈焰纹章碎片 10.1
+        [204076]=15,
+        [204077]=15,
 
     },
     no={--禁用使用
@@ -516,7 +515,7 @@ local function shoTips(self)--显示提示
             e.tips:SetBagItem(Bag.bag, Bag.slot)
             if not UnitAffectingCombat('player') then
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(e.Icon.mid..(e.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP), e.onlyChinese and '禁用' or DISABLE, 1,0,0, 1,0,0 )
+                e.tips:AddDoubleLine(e.Icon.mid..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE))
             end
             e.tips:Show()
         end
