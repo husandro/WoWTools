@@ -1106,13 +1106,16 @@ end
 --####################
 --添加一个按钮, 打开选项
 --####################
-local function add_Button_OpenOption(self, notToggleCharacter)
-    local btn2= e.Cbtn(self, {atlas='charactercreate-icon-customize-body-selected', size={40,40}})
-    btn2:SetPoint('TOPRIGHT',-5,-25)
-    btn2:SetScript('OnClick', function()
+local function add_Button_OpenOption(self)
+    if not self then
+        return
+    end
+    local btn= e.Cbtn(self, {atlas='charactercreate-icon-customize-body-selected', size={40,40}})
+    btn:SetPoint('TOPRIGHT',-5,-25)
+    btn:SetScript('OnClick', function()
         ToggleCharacter("PaperDollFrame")
     end)
-    btn2:SetScript('OnEnter', function(self2)
+    btn:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_Left")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭角色界面' or BINDING_NAME_TOGGLECHARACTER0, e.Icon.left)
@@ -1120,11 +1123,52 @@ local function add_Button_OpenOption(self, notToggleCharacter)
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
     end)
-    btn2:SetScript('OnLeave', function() e.tips:Hide() end)
+    btn:SetScript('OnLeave', function() e.tips:Hide() end)
+    self:HookScript('OnShow', function()
+        if not PaperDollFrame:IsVisible() then
+            ToggleCharacter("PaperDollFrame")
+        end
+    end)
 
-    if not (PaperDollFrame:IsVisible() or PaperDollFrame:IsShown()) and self:IsShown() then
-        ToggleCharacter("PaperDollFrame")
+    if self==ItemUpgradeFrameCloseButton then--装备升级, 界面
+        local function set_item_Num_Text(self2)
+            local tab={--物品数量提示
+                204196,--10.1
+                204195,
+                204194,
+                204193,
+            }
+            local text
+            for _, itemID in pairs(tab) do
+                e.LoadDate({id=itemID, type='item'})--加载 item quest spell
+                local num= GetItemCount(itemID , true, nil, true)
+                if num>0 then 
+                    local icon= C_Item.GetItemIconByID(itemID)
+                    if icon then
+                        text= text and text..'|n' or ''
+                        text= text..'|T'..icon..':0|t'..num
+                    end
+                end
+            end
+            if text and not self2.text then
+                self2.text= e.Cstr(self2)
+                self2.text:SetPoint('BOTTOMLEFT', ItemUpgradeFrame, 'BOTTOMLEFT', 6, 385)
+            end
+            if self2.text then
+                self2.text:SetText(text or '')
+            end
+        end
+        btn:SetScript("OnEvent", set_item_Num_Text)
+        btn:SetScript('OnShow', function(self2)
+            self2:RegisterEvent('BAG_UPDATE_DELAYED')
+        end)
+        btn:SetScript('OnHide', function(self2)
+            self2:UnregisterEvent('BAG_UPDATE_DELAYED')
+        end)
+        set_item_Num_Text(btn)
     end
+
+   
 end
 --###########
 --加载保存数据

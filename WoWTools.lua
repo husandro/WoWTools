@@ -25,7 +25,7 @@ e.LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'e.LeftButto
 e.RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'e.RightButtonDown' or 'RightButtonUp'
 
 
-e.LoadDate= function(tab)--e.LoadDate({id=, type=''})--加载 item quest spell
+function e.LoadDate(tab)--e.LoadDate({id=, type=''})--加载 item quest spell
     if not tab.id then
         return
     end
@@ -263,7 +263,7 @@ e.Player={
     b= select(3, GetClassColor(UnitClassBase('player'))),
     col= '|c'..select(4, GetClassColor(UnitClassBase('player'))),
     cn= GetCurrentRegion()==5,
-    region=GetCurrentRegion(),--1US (includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
+    region= GetCurrentRegion(),--1US (includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
     Lo= GetLocale(),
     week= GetWeek(),--周数
     guid= UnitGUID('player'),
@@ -476,7 +476,7 @@ e.GetDifficultyColor = function(string, difficultyID)--DifficultyUtil.lua
     end
 end
 
-e.Cstr=function(self, tab)--self, {size, copyFont, changeFont, color={r=,g=,b=,a=}, layer=, justifyH}
+function e.Cstr(self, tab)--self, {size, copyFont, changeFont, color={r=,g=,b=,a=}, layer=, justifyH}
     tab= tab or {}--Fonts.xml FontStyles.xml
     self= self or UIParent
     local font= tab.changeFont or self:CreateFontString(nil, (tab.layer or 'OVERLAY'), 'GameFontNormal', 5)
