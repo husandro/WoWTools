@@ -299,7 +299,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.GetEnabeleDisable(not WoWToolsChatButtonFrame.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end)
 
-            if not (WoWToolsChatButtonFrame.disabled or Save.disabled) then--禁用Chat Button
+            if WoWToolsChatButtonFrame.disabled or Save.disabled then--禁用Chat Button
+                File=nil
+            else
                 button=e.Cbtn2('WoWToolsChatButtonEmoji', WoWToolsChatButtonFrame, true, false)
 
                 if LOCALE_zhCN then
@@ -325,8 +327,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
 
                 Init()
-            else
-                File=nil
             end
             panel:UnregisterEvent('ADDON_LOADED')
             panel:RegisterEvent("PLAYER_LOGOUT")
