@@ -162,32 +162,43 @@ local function setSellItems()
     for bag= Enum.BagIndex.Backpack, Constants.InventoryConstants.NumBagSlots do
         for slot=0, C_Container.GetContainerNumSlots(bag) do--背包数量
             local info = C_Container.GetContainerItemInfo(bag,slot)
-            if info and info.hyperlink and info.itemID and info.quality and (info.quality<5 or Save.Sell[info.itemID] and not Save.notSellCustom) then
+            if info
+                and info.hyperlink
+                and info.itemID
+                and info.quality
+                and (info.quality<5 or Save.Sell[info.itemID]and not Save.notSellCustom)
+            then
                 local checkText= e.CheckItemSell(info.itemID, info.quality)--检察 ,boss掉落, 指定 或 出售灰色,宠物
                 if not info.isLocked and checkText then
-                    C_Container.UseContainerItem(bag, slot);--买出
+                    C_Container.UseContainerItem(bag, slot)--买出
+
                     local prece =0
                     if not info.hasNoValue then--卖出钱
                         prece = (select(11, GetItemInfo(info.hyperlink)) or 0) * (C_Container.stackCount or 1);--价格
                         preceTotale = preceTotale + prece
                     end
-                    num=num+ (C_Container.stackCount or 1)--数量
-                    if not (info.quality==0 and e.Player.husandro)then
-                        gruop= gruop+1--组
-                    end
-                    print(addName, e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB, checkText or '', info.hyperlink, GetCoinTextureString(prece))
-                    if gruop>= 12 then
+                    gruop= gruop+ 1
+                    num= num+ (C_Container.stackCount or 1)--数量
+
+                    print('|cnRED_FONT_COLOR:'..gruop..')|r', checkText or '', info.hyperlink, GetCoinTextureString(prece))
+
+                    if gruop>= 11 then
                         break
                     end
                 end
-                if gruop>= 12 then
+                if gruop>= 11 then
                     break
                 end
             end
         end
     end
     if num > 0 then
-        print(id, addName, AUCTION_HOUSE_SELL_TAB, '|cnGREEN_FONT_COLOR:'..gruop..'|r'..AUCTION_PRICE_PER_STACK, '|cnGREEN_FONT_COLOR:'..num..'|r'..AUCTION_HOUSE_QUANTITY_LABEL, GetCoinTextureString(preceTotale))
+        print(
+            id, addName,
+            (e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB)..' |cnGREEN_FONT_COLOR:'..gruop..'|r'..(e.onlyChinese and '组' or AUCTION_PRICE_PER_STACK),
+            '|cnGREEN_FONT_COLOR:'..num..'|r'..(e.onlyChinese and '件' or AUCTION_HOUSE_QUANTITY_LABEL),
+            GetCoinTextureString(preceTotale)
+        )
     end
 end
 
@@ -518,6 +529,7 @@ local function Init_Menu(self, level, type)
         text= e.onlyChinese and '出售垃圾' or AUCTION_HOUSE_SELL_TAB..BAG_FILTER_JUNK,
         checked= not Save.notSellJunk,
         menuList= 'SELLJUNK',
+        hasArrow= true,
         func=function ()
             Save.notSellJunk= not Save.notSellJunk and true or nil
         end,
