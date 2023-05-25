@@ -25,13 +25,13 @@ RANGE_INDICATOR = "●"
 UIPanelWindows[]
 
 GetClassColoredTextForUnit(unit, text)
-FrameUtil.RegisterFrameForEvents(self, table);
-FrameUtil.UnregisterFrameForEvents(self, table);
+FrameUtil.RegisterFrameForEvents(self, table)
+FrameUtil.UnregisterFrameForEvents(self, table)
 SetPortraitTexture(textureObject, unitToken [, disableMasking])
 SetPortraitToTexture(textureObject, texturePath)
 Region:SetVertexColor(colorR, colorG, colorB [, a])
 ... = securecall(func or functionName, ...)
-frame:SetFrameLevel(self:GetFrameLevel() + 5);
+frame:SetFrameLevel(self:GetFrameLevel() + 5)
 UnitPopupSharedMenus.lua
 UnitHasVehiclePlayerFrameUI("player")
 
@@ -42,8 +42,8 @@ local item = Item:CreateFromItemLink(outputItemInfo.hyperlink)
 quality = item:GetItemQuality()
 
 if IsModifiedClick("CHATLINK") then
-    local spellLink = GetSpellLink(self:GetSpellID());
-    ChatEdit_InsertLink(spellLink);
+    local spellLink = GetSpellLink(self:GetSpellID())
+    ChatEdit_InsertLink(spellLink)
 end
 
 if ChatEdit_GetActiveWindow() then
@@ -52,8 +52,8 @@ else
     securecall(ChatFrame_OpenChat, link)
 end
 
-SetItemButtonTextureVertexColor(button, 1.0, 1.0, 1.0);
-SetItemButtonNormalTextureVertexColor(button, 1.0, 1.0, 1.0);
+SetItemButtonTextureVertexColor(button, 1.0, 1.0, 1.0)
+SetItemButtonNormalTextureVertexColor(button, 1.0, 1.0, 1.0)
 
 Day={0.10, 0.72, 1},--日常 |cff19b7ff  任务颜色
 Week={0.02, 1, 0.66},--周长 |cff05ffa8
@@ -75,7 +75,7 @@ LOCALE_itIT  11
 StaticPopupDialogs
 https://wowpedia.fandom.com/wiki/Creating_simple_pop-up_dialog_boxes
 
-local hasPetUI, isHunterPet = HasPetUI();
+local hasPetUI, isHunterPet = HasPetUI()
 Frame:DisableDrawLayer('BACKGROUND')
 
 fileID = GetFileIDFromPath(filePath)--检查,自定义,文件是否存在
@@ -84,22 +84,27 @@ InterfaceOptionsFrame_OpenToCategory(id)
 
 CharacterFrameTab_OnClick (self, button)
 if ( name == "CharacterFrameTab1" ) then
-		ToggleCharacter("PaperDollFrame");
+		ToggleCharacter("PaperDollFrame")
 elseif ( name == "CharacterFrameTab2" ) then
-		ToggleCharacter("ReputationFrame");
+		ToggleCharacter("ReputationFrame")
 elseif ( name == "CharacterFrameTab3" ) then
-		CharacterFrame_ToggleTokenFrame();
+		CharacterFrame_ToggleTokenFrame()
 end
 
-ToggleCollectionsJournal(tabIndex) UIParent.lua
-ToggleCharacter("PaperDollFrame");
-ToggleEncounterJournal()
-ToggleTalentFrame(self.suggestedTab)
-TogglToggleAchievementFrame();
-ToggleQuestLog();
-ToggleGuildFrame();
-ToggleCommunitiesFrame()
+ToggleCollectionsJournal(tabIndex) UIParent.lua--收藏
 ToggleToyCollection(autoPageToCollectedToyID)
+
+ToggleCharacter("PaperDollFrame")--角色
+
+ToggleEncounterJournal()
+
+ToggleTalentFrame(self.suggestedTab)--天赋
+
+TogglToggleAchievementFrame()--成就
+ToggleQuestLog()--
+ToggleGuildFrame()
+ToggleCommunitiesFrame()
+
 TogglePVPUI()
 ToggleStoreUI()
 ToggleGarrisonMissionUI()
@@ -107,16 +112,22 @@ ToggleCovenantMissionUI()
 ToggleOrderHallTalentUI()
 ToggleCovenantRenown()
 ToggleExpansionLandingPage()
-ToggleFramerate(true);
-ToggleOrderHallTalentUI();
+ToggleFramerate(true)
+ToggleOrderHallTalentUI()
 ToggleGameMenu()
 ToggleFrame(frame)
 OpenAchievementFrameToAchievement(achievementID)
 
+PVEFrame_ToggleFrame();
+PVEFrame_ToggleFrame("GroupFinderFrame", LFDParentFrame);
+PVEFrame_ToggleFrame("GroupFinderFrame", RaidFinderFrame);
+PVEFrame_ToggleFrame("GroupFinderFrame", nil);
+
+
 Interface\Cursor\UI-Cursor-Move   Redlist.xml
 
 securecall('',)
-wrapFunc(C_PetBattles.DeclineQueuedPVPMatch);
+wrapFunc(C_PetBattles.DeclineQueuedPVPMatch)
 
 securecallfunction(GameTooltip_AddQuest, self, questID)
 

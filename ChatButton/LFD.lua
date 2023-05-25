@@ -457,6 +457,7 @@ local function Init_tipsFrame()
     button.tipsFrame:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
+        e.tips:AddDoubleLine(not e.onlyChinese and DUNGEONS_BUTTON or "队伍查找器", e.Icon.left)
         e.tips:AddDoubleLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '离开所有队列' or LEAVE_ALL_QUEUES), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
@@ -484,7 +485,9 @@ local function Init_tipsFrame()
                 BattlefieldMgrExitRequest(queueID)
             end
         end
-
+    end)
+    button.tipsFrame:SetScript('OnClick', function()
+        PVEFrame_ToggleFrame()
     end)
 
     button.tipsFrame.elapsed=0
