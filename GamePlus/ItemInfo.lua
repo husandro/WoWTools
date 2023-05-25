@@ -72,7 +72,7 @@ local function set_Item_Info(self, tab)
             end
 
         elseif itemID==6948 then--炉石
-            bottomLeftText= e.WA_Utf8Sub(GetBindLocation(), 2, 5)
+            bottomLeftText= e.WA_Utf8Sub(GetBindLocation(), 2, 3)
 
         elseif containerInfo and containerInfo.hasLoot then--宝箱
             local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, red=true, onlyRed=true})--物品提示，信息
@@ -107,7 +107,7 @@ local function set_Item_Info(self, tab)
             topRightText='|A:Coin-Silver:0:0|a'
 
         elseif classID==1 then--背包
-            bottomLeftText= e.WA_Utf8Sub(itemSubType, 2,5)
+            bottomLeftText= e.WA_Utf8Sub(itemSubType, 2,3)
             if containerInfo and not containerInfo.isBound then--没有锁定
                 topRightText='|A:'..e.Icon.unlocked..':0:0|a'
             end
@@ -151,7 +151,7 @@ local function set_Item_Info(self, tab)
             local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={ITEM_SPELL_KNOWN, useStr,}, wow=true, red=true})--物品提示，信息 ITEM_SPELL_KNOWN = "已经学会";
             if not (classID==15 and (subclassID== 0 or subclassID==4)) then
                 if classID==0 and subclassID==5 then
-                    topRightText= e.WA_Utf8Sub(POWER_TYPE_FOOD, 2,5)--食物
+                    topRightText= e.WA_Utf8Sub(POWER_TYPE_FOOD, 2,3)--食物
                 else
                     topRightText= e.WA_Utf8Sub(itemSubType==OTHER and itemType or itemSubType, 2,3)
                 end
@@ -191,7 +191,7 @@ local function set_Item_Info(self, tab)
                 end
                 if dateInfo.text[equipStr] then--套装名称，
                     local text= dateInfo.text[equipStr]:match('(.+),') or dateInfo.text[equipStr]:match('(.+)，') or dateInfo.text[equipStr]
-                    bottomLeftText=e.WA_Utf8Sub(text,3,5)
+                    bottomLeftText=e.WA_Utf8Sub(text,3,3)
                 elseif itemMinLevel>e.Player.level then--低装等
                     bottomLeftText='|cnRED_FONT_COLOR:'..itemMinLevel..'|r'
                 elseif dateInfo.wow then--战网
@@ -277,8 +277,8 @@ local function set_Item_Info(self, tab)
                         topLeftText=e.Icon.X2
                     end
                 end
-                if (containerInfo and not containerInfo.isBound) or tab.guidBank or (tab.merchant and tab.merchant.buyBack) then--没有锁定
-                    topRightText=itemSubType and e.WA_Utf8Sub(itemSubType,2,4) or '|A:'..e.Icon.unlocked..':0:0|a'
+                if (containerInfo and not containerInfo.isBound) or tab.guidBank then--没有锁定
+                    topRightText=itemSubType and e.WA_Utf8Sub(itemSubType,2,3) or '|A:'..e.Icon.unlocked..':0:0|a'
                 end
             end
             if containerInfo and not containerInfo.isBound or not containerInfo then
@@ -288,7 +288,7 @@ local function set_Item_Info(self, tab)
                     if itemQuality==0 and isCollected then
                         topRightText='|A:Coin-Silver:0:0|a'
                     elseif not isCollected then
-                        topRightText=itemSubType and e.WA_Utf8Sub(itemSubType,2,4)
+                        topRightText=itemSubType and e.WA_Utf8Sub(itemSubType,2,3)
                     end
                 end
             end
@@ -311,7 +311,7 @@ local function set_Item_Info(self, tab)
 
 
         elseif classID==12 and itemQuality and itemQuality>0 then--任务
-            topRightText= e.onlyChinese and '任务' or e.WA_Utf8Sub(itemSubType, 2,5)
+            topRightText= e.onlyChinese and '任务' or e.WA_Utf8Sub(itemSubType, 2,3)
 
         elseif itemQuality==7 or itemQuality==8 then--7传家宝，8 WoWToken
             topRightText=e.Icon.wow2
