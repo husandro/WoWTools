@@ -459,6 +459,8 @@ local function setMerchantInfo()--商人设置
             set_Item_Info(itemButton, {merchant={slot=slot, buyBack= selectedTab==2}})
         end
     end
+	set_Item_Info(MerchantBuyBackItemItemButton, {merchant={slot=GetNumBuybackItems(), buyBack=true}})
+    
 end
 
 

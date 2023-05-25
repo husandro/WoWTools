@@ -2780,7 +2780,9 @@
         "PVPReadyDialog",
         "PetJournalLoadoutPet1Icon",
         "RAF_RECRUITMENT",
-        "LFGListUtil_SetAutoAccept"
+        "LFGListUtil_SetAutoAccept",
+        "MerchantFrame_UpdateMerchantInfo",
+        "MerchantBuyBackItemItemButton"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
