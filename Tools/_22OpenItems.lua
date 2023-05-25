@@ -45,6 +45,7 @@ local Save={
         [204075]=15,--雏龙的暗影烈焰纹章碎片 10.1
         [204076]=15,
         [204077]=15,
+        [204717]=2,
 
     },
     no={--禁用使用
@@ -157,8 +158,7 @@ local function getItems()--取得背包物品信息
     Opening= true
     equipItem=nil
     Bag={}
-
-    for bag=0, NUM_BAG_SLOTS do
+    for bag= Enum.BagIndex.Backpack, Constants.InventoryConstants.NumBagSlots+1 do
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local info = C_Container.GetContainerItemInfo(bag, slot)
             local duration, enable = select(2, C_Container.GetContainerItemCooldown(bag, slot))
@@ -166,10 +166,10 @@ local function getItems()--取得背包物品信息
 
             if info
                 and info.itemID
-                and (not Save.no[info.itemID] or Save.use[info.itemID])
                 and info.hyperlink
                 and not info.isLocked
                 and info.iconFileID
+                and (not Save.no[info.itemID] or Save.use[info.itemID])
                 and not (duration and duration>2 or enable==0) and classID~=8
             then
 
@@ -551,11 +551,18 @@ local function Init()
                 timeout = 60,
                 hasEditBox=1,
                 button1='|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '使用' or USE)..'|r',
-                button2=CANCEL,
+                button2= e.onlyChinese and '取消' or CANCEL,
                 button3='|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE)..'|r',
                 OnShow = function(self2, data)
                     self2.editBox:SetNumeric(true)
-                    local num=Save.use[data.itemID] or 1
+                    local num=Save.use[data.itemID]
+                    if not num then
+                        local useStr=ITEM_SPELL_TRIGGER_ONUSE..'(.+)'--使用：
+                        local dateInfo= e.GetTooltipData({bag=nil, guidBank=nil, merchant=nil, inventory=nil, hyperLink=data.itemLink, itemID=nil, text={useStr}, onlyText=true, wow=nil, onlyWoW=nil, red=nil, onlyRed=nil})--物品提示，信息 使用：
+                        num= dateInfo.text[useStr] and dateInfo.text[useStr]:match('%d+')
+                        num= num and tonumber(num)
+                    end
+                    num=num or 1
                     self2.editBox:SetNumber(num)
                     self2.editBox:SetAutoFocus(false)
                     self2.editBox:ClearFocus()
@@ -593,7 +600,7 @@ local function Init()
             icon= C_Item.GetItemIconByID(itemID)
             icon = icon and '|T'..icon..':0|t'..itemLink or ''
             local list=Save.use[itemID] and (e.onlyChinese and '当前列表' or PROFESSIONS_CURRENT_LISTINGS)..': |cff00ff00'..(e.onlyChinese and '使用' or USE)..'|r' or Save.no[itemID] and (e.onlyChinese and '当前列表' or PROFESSIONS_CURRENT_LISTINGS)..': |cffff0000'..(e.onlyChinese and '禁用' or DISABLE)..'|r' or ''
-            StaticPopup_Show('OpenItmesUseOrDisableItem',icon,list, {itemID=itemID, itemLink=itemLink})
+            StaticPopup_Show('OpenItmesUseOrDisableItem', icon, list, {itemID=itemID, itemLink=itemLink})
             ClearCursor()
         else
             shoTips(self)--显示提示

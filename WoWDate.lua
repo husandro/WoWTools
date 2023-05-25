@@ -203,7 +203,7 @@ end
 local function updateItems()
     WoWDate[e.Player.guid].Keystone.itemLink={}
     WoWDate[e.Player.guid].Item={}--{itemID={bag=包, bank=银行}}
-    for bagID=0, NUM_BAG_SLOTS do
+    for bagID= Enum.BagIndex.Backpack, Constants.InventoryConstants.NumBagSlots+1 do
         for slotID=1, C_Container.GetContainerNumSlots(bagID) do
             local itemID = C_Container.GetContainerItemID(bagID, slotID)
             if itemID then

@@ -148,7 +148,7 @@ local function setSellItems()
         return
     end
     local num, gruop, preceTotale= 0, 0, 0
-    for bag=0, NUM_BAG_SLOTS do--背包        
+    for bag= Enum.BagIndex.Backpack, Constants.InventoryConstants.NumBagSlots do  
         for slot=0, C_Container.GetContainerNumSlots(bag) do--背包数量
             local info = C_Container.GetContainerItemInfo(bag,slot)
             if info and info.hyperlink and info.itemID and info.quality and (info.quality<5 or Save.Sell[info.itemID] and not Save.notSellCustom) then

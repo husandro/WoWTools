@@ -353,7 +353,7 @@ local function set_Item_Info(self, tab)
             end
         end
 
-        if (tab.bag and tab.bag.bag<=NUM_BAG_SLOTS+1 and tab.bag.bag>=0) or not tab.bag then
+        if (tab.bag and tab.bag.bag <= NUM_BAG_SLOTS+1 and tab.bag.bag>=0) or not tab.bag then
             local num=GetItemCount(itemLink, true)-GetItemCount(itemLink)--银行数量
             if num>0  then
                 leftText= '+'..e.MK(num, 0)

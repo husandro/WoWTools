@@ -62,7 +62,7 @@ end
 for _, spellID in pairs(spellLoadTab) do
     e.LoadDate({id=spellID, type='spell'})
 end
-for bag=0, NUM_BAG_SLOTS do
+for bag= Enum.BagIndex.Backpack, Constants.InventoryConstants.NumBagSlots+1 do
     for slot=1, C_Container.GetContainerNumSlots(bag) do
         local info = C_Container.GetContainerItemInfo(bag, slot)
         if info and info.itemID then
@@ -1079,7 +1079,7 @@ e.GetExpansionText= function(expacID, questID)--版本数据
 end
 
 --e.GetTooltipData({bag={bag=nil, slot=nil}, guidBank={tab=nil, slot=nil}, merchant={slot, buyBack=true}, inventory=nil, hyperLink=nil, itemID=nil, text={}, onlyText=nil, wow=nil, onlyWoW=nil, red=nil, onlyRed=nil})--物品提示，信息
-e.GetTooltipData= function(tab)
+function e.GetTooltipData(tab)
     local tooltipData
     if tab.itemID and C_Heirloom.IsItemHeirloom(tab.itemID) then
         tooltipData= C_TooltipInfo.GetHeirloomByItemID(tab.itemID)
@@ -1097,7 +1097,7 @@ e.GetTooltipData= function(tab)
         tooltipData= C_TooltipInfo.GetInventoryItem('player', tab.inventory)
     end
     tooltipData= tooltipData or tab.hyperLink and C_TooltipInfo.GetHyperlink(tab.hyperLink)
-    local date={
+    local data={
         red=false,
         wow=false,
         text={},
@@ -1108,11 +1108,11 @@ e.GetTooltipData= function(tab)
         local numFind=0
         for _, line in ipairs(tooltipData.lines) do--是否
             TooltipUtil.SurfaceArgs(line)
-            if tab.red and not date.red then
+            if tab.red and not data.red then
                 local leftHex=line.leftColor and line.leftColor:GenerateHexColor()
                 local rightHex=line.rightColor and line.rightColor:GenerateHexColor()
                 if leftHex == 'ffff2020' or leftHex=='fefe1f1f' or rightHex== 'ffff2020' or rightHex=='fefe1f1f' then-- or hex=='fefe7f3f' then
-                    date.red=true
+                    data.red=true
                     if tab.onlyRed then
                         break
                     end
@@ -1122,7 +1122,7 @@ e.GetTooltipData= function(tab)
                 if tab.text then
                     for _, text in pairs(tab.text) do
                         if text and (line.leftText:find(text) or line.leftText==text) then
-                            date.text[text]= line.leftText:match(text) or line.leftText
+                            data.text[text]= line.leftText:match(text) or line.leftText
                             numFind= numFind +1
                             if tab.onlyText and numFind==numText then
                                 break
@@ -1130,8 +1130,8 @@ e.GetTooltipData= function(tab)
                         end
                     end
                 end
-                if tab.wow and not date.wow and (line.leftText==ITEM_BNETACCOUNTBOUND or line.leftText==ITEM_ACCOUNTBOUND) then--暴雪游戏通行证绑定, 账号绑定
-                    date.wow=true
+                if tab.wow and not data.wow and (line.leftText==ITEM_BNETACCOUNTBOUND or line.leftText==ITEM_ACCOUNTBOUND) then--暴雪游戏通行证绑定, 账号绑定
+                    data.wow=true
                     if tab.onlyWoW then
                         break
                     end
@@ -1139,7 +1139,7 @@ e.GetTooltipData= function(tab)
             end
         end
     end
-    return date
+    return data
 end
 
 e.PlaySound= function(soundKitID, setPlayerSound)--播放, 声音 SoundKitConstants.lua e.PlaySound()--播放, 声音
@@ -1233,8 +1233,8 @@ e.Set_Item_Stats = function(self, link, setting) --setting= setting or {}
             local quality = C_Item.GetItemQualityByID(link)--颜色
             if quality==7 then
                 local itemLevelStr=ITEM_LEVEL:gsub('%%d', '%(%%d%+%)')--"物品等级：%d"
-                local dateInfo= e.GetTooltipData({hyperLink=link, itemID= setting.itemID or GetItemInfoInstant(link), text={itemLevelStr}, onlyText=true})--物品提示，信息
-                itemLevel= tonumber(dateInfo.text[itemLevelStr])
+                local dataInfo= e.GetTooltipData({hyperLink=link, itemID= setting.itemID or GetItemInfoInstant(link), text={itemLevelStr}, onlyText=true})--物品提示，信息
+                itemLevel= tonumber(dataInfo.text[itemLevelStr])
             end
             itemLevel= itemLevel or GetDetailedItemLevelInfo(link)
             if itemLevel and itemLevel<3 then

@@ -42,7 +42,7 @@ end
 local function getBagKey(self, point, x, y) --KEY链接
     local find=point:find('LEFT')
     local i=1
-    for bagID=0, NUM_BAG_SLOTS do
+    for bagID= Enum.BagIndex.Backpack, Constants.InventoryConstants.NumBagSlots do
         for slotID=1,C_Container.GetContainerNumSlots(bagID) do
             local icon, itemLink, itemID
             local info= C_Container.GetContainerItemInfo(bagID, slotID)
