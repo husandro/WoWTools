@@ -21,8 +21,8 @@ local function GetWeek()--周数
     return week
 end
 
-e.LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'e.LeftButtonDown' or 'LeftButtonUp'
-e.RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'e.RightButtonDown' or 'RightButtonUp'
+e.LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp'
+e.RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp'
 
 
 function e.LoadDate(tab)--e.LoadDate({id=, type=''})--加载 item quest spell
