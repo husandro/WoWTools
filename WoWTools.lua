@@ -809,7 +809,7 @@ e.GetSpellItemCooldown = function(spellID, itemID)--法术冷却
     end
 end
 
-e.Cbtn2= function(name, parent, showTexture, rightClick)
+function e.Cbtn2(name, parent, showTexture, rightClick)
     local button= CreateFrame("Button", name, parent or UIParent, "SecureActionButtonTemplate")
     button:SetSize(30, 30)
     if rightClick then
