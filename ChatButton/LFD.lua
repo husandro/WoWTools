@@ -542,7 +542,6 @@ local function Init_tipsButton()
         end
         n= n>2.5 and 2.5 or n<0.5 and 0.5 or n
         Save.tipsScale= n
-        print(n)
         self:SetScale(n)
         print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..n)
     end)
