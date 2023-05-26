@@ -680,10 +680,10 @@ end
 
 ]]
 
-e.WA_Utf8Sub = function(input, size, letterSize)
+function e.WA_Utf8Sub(input, size, letterSize, lower)
     local output = ""
     if type(input) ~= "string" then
-      return output
+      return output or ''
     end
     local i = 1
 
@@ -719,7 +719,7 @@ e.WA_Utf8Sub = function(input, size, letterSize)
       end
       i = i + 1
     end
-    return output
+    return lower and strlower(output) or output
 end
 --[[
 e.HEX=function(r, g, b, a)
@@ -1178,35 +1178,35 @@ e.Get_Item_Stats= function(link)--物品，次属性，表
     local num, tab= 0, {}
     local info= GetItemStats(link) or {}
     if info['ITEM_MOD_CRIT_RATING_SHORT'] then
-        table.insert(tab, {text=e.onlyChinese and '爆' or strlower(e.WA_Utf8Sub(STAT_CRITICAL_STRIKE, 1, 2)), value=info['ITEM_MOD_CRIT_RATING_SHORT'] or 1, index=1})
+        table.insert(tab, {text=e.onlyChinese and '爆' or e.WA_Utf8Sub(STAT_CRITICAL_STRIKE, 1, 2, true), value=info['ITEM_MOD_CRIT_RATING_SHORT'] or 1, index=1})
         num= num +1
     end
     if info['ITEM_MOD_HASTE_RATING_SHORT'] then
-        table.insert(tab, {text=e.onlyChinese and '急' or strlower(e.WA_Utf8Sub(STAT_HASTE, 1,2)), value=info['ITEM_MOD_HASTE_RATING_SHORT'] or 1, index=1})
+        table.insert(tab, {text=e.onlyChinese and '急' or e.WA_Utf8Sub(STAT_HASTE, 1, 2, true), value=info['ITEM_MOD_HASTE_RATING_SHORT'] or 1, index=1})
         num= num +1
     end
     if info['ITEM_MOD_MASTERY_RATING_SHORT'] then
-        table.insert(tab, {text=e.onlyChinese and '精' or strlower(e.WA_Utf8Sub(STAT_MASTERY, 1,2)), value=info['ITEM_MOD_MASTERY_RATING_SHORT'] or 1, index=1})
+        table.insert(tab, {text=e.onlyChinese and '精' or e.WA_Utf8Sub(STAT_MASTERY, 1, 2, true), value=info['ITEM_MOD_MASTERY_RATING_SHORT'] or 1, index=1})
         num= num +1
     end
     if info['ITEM_MOD_VERSATILITY'] then
-        table.insert(tab, {text=e.onlyChinese and '全' or strlower(e.WA_Utf8Sub(STAT_VERSATILITY, 1,2)), value=info['ITEM_MOD_VERSATILITY'] or 1, index=1})
+        table.insert(tab, {text=e.onlyChinese and '全' or e.WA_Utf8Sub(STAT_VERSATILITY, 1, 2, true), value=info['ITEM_MOD_VERSATILITY'] or 1, index=1})
         num= num +1
     end
     if num<4 and info['ITEM_MOD_CR_AVOIDANCE_SHORT'] then
-        table.insert(tab, {text=e.onlyChinese and '闪' or strlower(e.WA_Utf8Sub(ITEM_MOD_CR_AVOIDANCE_SHORT, 1,2)), value=info['ITEM_MOD_CR_AVOIDANCE_SHORT'], index=2})
+        table.insert(tab, {text=e.onlyChinese and '闪' or e.WA_Utf8Sub(ITEM_MOD_CR_AVOIDANCE_SHORT, 1, 2, true), value=info['ITEM_MOD_CR_AVOIDANCE_SHORT'], index=2})
         num= num +1
     end
     if num<4 and info['ITEM_MOD_CR_LIFESTEAL_SHORT'] then
-        table.insert(tab, {text=e.onlyChinese and '吸' or strlower(e.WA_Utf8Sub(ITEM_MOD_CR_LIFESTEAL_SHORT, 1,2)), value=info['ITEM_MOD_CR_LIFESTEAL_SHORT'] or 1, index=2})
+        table.insert(tab, {text=e.onlyChinese and '吸' or e.WA_Utf8Sub(ITEM_MOD_CR_LIFESTEAL_SHORT, 1, 2, true), value=info['ITEM_MOD_CR_LIFESTEAL_SHORT'] or 1, index=2})
         num= num +1
     end
     --[[if num<4 and info['ITEM_MOD_CR_AVOIDANCE_SHORT'] then
-        table.insert(tab, {text=e.onlyChinese and '溅' or strlower(e.WA_Utf8Sub(ITEM_MOD_CR_MULTISTRIKE_SHORT, 1,2)), value=info['ITEM_MOD_CR_MULTISTRIKE_SHORT'] or 1, index=2})
+        table.insert(tab, {text=e.onlyChinese and '溅' or e.WA_Utf8Sub(ITEM_MOD_CR_MULTISTRIKE_SHORT, 1,2,true), value=info['ITEM_MOD_CR_MULTISTRIKE_SHORT'] or 1, index=2})
         num= num +1
     end]]
     if num<4 and info['ITEM_MOD_CR_SPEED_SHORT'] then
-        table.insert(tab, {text=e.onlyChinese and '速' or strlower(e.WA_Utf8Sub(ITEM_MOD_CR_SPEED_SHORT, 1,2)), value=info['ITEM_MOD_CR_SPEED_SHORT'] or 1, index=2})
+        table.insert(tab, {text=e.onlyChinese and '速' or e.WA_Utf8Sub(ITEM_MOD_CR_SPEED_SHORT, 1,2,true), value=info['ITEM_MOD_CR_SPEED_SHORT'] or 1, index=2})
         num= num +1
     end
     return tab
