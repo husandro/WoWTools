@@ -1132,6 +1132,8 @@ local function Init()
         MainMenuBarVehicleLeaveButton:SetScript('OnUpdate', get_UnitSpeed)
         MainMenuBarVehicleLeaveButton:SetScript('OnHide', hide_SpeedText)
     end
+
+    C_Timer.After(2, set_ToggleWarMode)--设置, 战争模式
 end
 
 --###########
@@ -1207,12 +1209,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         else
             self:UnregisterEvent('CHAT_MSG_SYSTEM')
         end
-        set_Instance_Difficulty()--副本, 地下城，指示
-        C_Timer.After(2, set_Keystones_Date)--挑战，数据
-        set_ToggleWarMode()--设置, 战争模式
+       
+        C_Timer.After(4, function()
+            set_Instance_Difficulty()--副本, 地下城，指示
+            set_Keystones_Date()--挑战，数据
+            set_ToggleWarMode()--设置, 战争模式
+        end)
+        
 
     elseif event=='PLAYER_FLAGS_CHANGED' or event=='PLAYER_UPDATE_RESTING' then
-        set_ToggleWarMode()--设置, 战争模式
+        C_Timer.After(1, set_ToggleWarMode)--设置, 战争模式
 
     elseif event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' then
         C_Timer.After(2, set_Keystones_Date)--挑战，数据
