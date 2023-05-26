@@ -72,7 +72,7 @@ local function set_Item_Info(self, tab)
             end
 
         elseif itemID==6948 then--炉石
-            bottomLeftText= e.WA_Utf8Sub(GetBindLocation(), 2, 3)
+            bottomLeftText= e.WA_Utf8Sub(GetBindLocation(), 2, 3, true)
 
         elseif containerInfo and containerInfo.hasLoot then--宝箱
             local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, red=true, onlyRed=true})--物品提示，信息
@@ -85,7 +85,7 @@ local function set_Item_Info(self, tab)
                 name=name:gsub('%((%d+)%)','')
                 name=name:match('（(.-)）') or name:match('%((.-)%)') or name:match('%- (.+)') or name:match(keyStr)--名称
                 if name then
-                    bottomLeftText=e.WA_Utf8Sub(name, 3,6)
+                    bottomLeftText= e.WA_Utf8Sub(name, 3,6, true)
                 end
                 local activities=C_WeeklyRewards.GetActivities(1)--本周完成
                 if activities then
@@ -107,7 +107,7 @@ local function set_Item_Info(self, tab)
             topRightText='|A:Coin-Silver:0:0|a'
 
         elseif classID==1 then--背包
-            bottomLeftText= e.WA_Utf8Sub(itemSubType, 2,3)
+            bottomLeftText= e.WA_Utf8Sub(itemSubType, 2,3, true)
             if containerInfo and not containerInfo.isBound then--没有锁定
                 topRightText='|A:'..e.Icon.unlocked..':0:0|a'
             end
@@ -130,11 +130,11 @@ local function set_Item_Info(self, tab)
                     str2= str2 or text:match('%+%d+ .+')
                     if str2 then
                         str2= str2:match('%+%d+ (.+)')
-                        leftText=e.WA_Utf8Sub(str2,1,3)
+                        leftText= e.WA_Utf8Sub(str2,1,3, true)
                         leftText= leftText and '|cffffffff'..leftText..'|r'
                         if str3 then
                             str3= str3:match('%+%d+ (.+)')
-                            bottomLeftText= e.WA_Utf8Sub(str3,1,3)
+                            bottomLeftText= e.WA_Utf8Sub(str3,1,3, true)
                             bottomLeftText= bottomLeftText and '|cffffffff'..bottomLeftText..'|r'
                         end
                     end
@@ -151,9 +151,9 @@ local function set_Item_Info(self, tab)
             local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={ITEM_SPELL_KNOWN, useStr,}, wow=true, red=true})--物品提示，信息 ITEM_SPELL_KNOWN = "已经学会";
             if not (classID==15 and (subclassID== 0 or subclassID==4)) then
                 if classID==0 and subclassID==5 then
-                    topRightText= e.WA_Utf8Sub(POWER_TYPE_FOOD, 2,3)--食物
+                    topRightText= e.WA_Utf8Sub(POWER_TYPE_FOOD, 2,3, true)--食物
                 else
-                    topRightText= e.WA_Utf8Sub(itemSubType==OTHER and itemType or itemSubType, 2,3)
+                    topRightText= e.WA_Utf8Sub(itemSubType==OTHER and itemType or itemSubType, 2,3, true)
                 end
                 if expacID and expacID< e.ExpansionLevel and itemID~='5512' and itemID~='113509' then--低版本，5512糖 食物,113509[魔法汉堡]
                     topRightText= '|cff606060'..topRightText..'|r'
@@ -191,7 +191,7 @@ local function set_Item_Info(self, tab)
                 end
                 if dateInfo.text[equipStr] then--套装名称，
                     local text= dateInfo.text[equipStr]:match('(.+),') or dateInfo.text[equipStr]:match('(.+)，') or dateInfo.text[equipStr]
-                    bottomLeftText=e.WA_Utf8Sub(text,3,3)
+                    bottomLeftText= e.WA_Utf8Sub(text,3,3, true)
                 elseif itemMinLevel>e.Player.level then--低装等
                     bottomLeftText='|cnRED_FONT_COLOR:'..itemMinLevel..'|r'
                 elseif dateInfo.wow then--战网
@@ -278,16 +278,17 @@ local function set_Item_Info(self, tab)
                     end
                 end
                 --[[if (containerInfo and not containerInfo.isBound) or tab.guidBank then--没有锁定
-                    topRightText=itemSubType and e.WA_Utf8Sub(itemSubType,2,3) or '|A:'..e.Icon.unlocked..':0:0|a'
+                    topRightText=itemSubType and e.WA_Utf8Sub(itemSubType,2,3, true) or '|A:'..e.Icon.unlocked..':0:0|a'
                 end]]
             end
             if containerInfo and not containerInfo.isBound or not containerInfo then
                 local isCollected
                 bottomRightText, isCollected= e.GetItemCollected(itemLink, nil, true)--幻化
                 if itemQuality==0 and isCollected then
-                    topRightText='|A:Coin-Silver:0:0|a'
-                elseif not isCollected then
-                    topRightText= itemSubType and e.WA_Utf8Sub(itemSubType,2,3)
+                    topRightText= '|A:Coin-Silver:0:0|a'
+                elseif not isCollected and itemSubType then
+                    topRightText= e.WA_Utf8Sub(itemSubType,2,3, true)
+
                 end
             end
 
@@ -309,7 +310,7 @@ local function set_Item_Info(self, tab)
 
 
         elseif classID==12 and itemQuality and itemQuality>0 then--任务
-            topRightText= e.onlyChinese and '任务' or e.WA_Utf8Sub(itemSubType, 2,3)
+            topRightText= e.onlyChinese and '任务' or e.WA_Utf8Sub(itemSubType, 2,3, true)
 
         elseif itemQuality==7 or itemQuality==8 then--7传家宝，8 WoWToken
             topRightText=e.Icon.wow2
@@ -801,17 +802,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 FMTab={--附魔
                         ['主属性']= '主',
                         ['坐骑速度']= '骑',
-                        [PRIMARY_STAT1_TOOLTIP_NAME]=  e.onlyChinese and "力" or strlower(e.WA_Utf8Sub(PRIMARY_STAT1_TOOLTIP_NAME, 1, 3)),
-                        [PRIMARY_STAT2_TOOLTIP_NAME]=  e.onlyChinese and "敏" or strlower(e.WA_Utf8Sub(PRIMARY_STAT2_TOOLTIP_NAME, 1, 3)),
-                        [PRIMARY_STAT3_TOOLTIP_NAME]=  e.onlyChinese and "耐" or strlower(e.WA_Utf8Sub(PRIMARY_STAT3_TOOLTIP_NAME, 1, 3)),
-                        [PRIMARY_STAT4_TOOLTIP_NAME]=  e.onlyChinese and "智" or strlower(e.WA_Utf8Sub(PRIMARY_STAT4_TOOLTIP_NAME, 1, 3)),
-                        [ITEM_MOD_CRIT_RATING_SHORT]= e.onlyChinese and '爆' or strlower(e.WA_Utf8Sub(STAT_CRITICAL_STRIKE, 1, 3)),
-                        [ITEM_MOD_HASTE_RATING_SHORT]= e.onlyChinese and '急' or strlower(e.WA_Utf8Sub(STAT_HASTE, 1,3)),
-                        [ITEM_MOD_MASTERY_RATING_SHORT]= e.onlyChinese and '精' or strlower(e.WA_Utf8Sub(STAT_MASTERY, 1,3)),
-                        [ITEM_MOD_VERSATILITY]= e.onlyChinese and '全' or strlower(e.WA_Utf8Sub(STAT_VERSATILITY, 1,3)),
-                        [ITEM_MOD_CR_AVOIDANCE_SHORT]= e.onlyChinese and '闪' or strlower(e.WA_Utf8Sub(ITEM_MOD_CR_AVOIDANCE_SHORT, 1,3)),
-                        [ITEM_MOD_CR_LIFESTEAL_SHORT]= e.onlyChinese and '吸' or strlower(e.WA_Utf8Sub(ITEM_MOD_CR_LIFESTEAL_SHORT, 1,3)),
-                        [ITEM_MOD_CR_SPEED_SHORT]= e.onlyChinese and '速' or strlower(e.WA_Utf8Sub(ITEM_MOD_CR_SPEED_SHORT, 1,3)),
+                        [PRIMARY_STAT1_TOOLTIP_NAME]=  e.onlyChinese and "力" or e.WA_Utf8Sub(PRIMARY_STAT1_TOOLTIP_NAME, 1, 3, true),
+                        [PRIMARY_STAT2_TOOLTIP_NAME]=  e.onlyChinese and "敏" or e.WA_Utf8Sub(PRIMARY_STAT2_TOOLTIP_NAME, 1, 3, true),
+                        [PRIMARY_STAT3_TOOLTIP_NAME]=  e.onlyChinese and "耐" or e.WA_Utf8Sub(PRIMARY_STAT3_TOOLTIP_NAME, 1, 3, true),
+                        [PRIMARY_STAT4_TOOLTIP_NAME]=  e.onlyChinese and "智" or e.WA_Utf8Sub(PRIMARY_STAT4_TOOLTIP_NAME, 1, 3, true),
+                        [ITEM_MOD_CRIT_RATING_SHORT]= e.onlyChinese and '爆' or e.WA_Utf8Sub(STAT_CRITICAL_STRIKE, 1, 3, true),
+                        [ITEM_MOD_HASTE_RATING_SHORT]= e.onlyChinese and '急' or e.WA_Utf8Sub(STAT_HASTE, 1, 3, true),
+                        [ITEM_MOD_MASTERY_RATING_SHORT]= e.onlyChinese and '精' or e.WA_Utf8Sub(STAT_MASTERY, 1, 3, true),
+                        [ITEM_MOD_VERSATILITY]= e.onlyChinese and '全' or e.WA_Utf8Sub(STAT_VERSATILITY, 1, 3, true),
+                        [ITEM_MOD_CR_AVOIDANCE_SHORT]= e.onlyChinese and '闪' or e.WA_Utf8Sub(ITEM_MOD_CR_AVOIDANCE_SHORT, 1, 3, true),
+                        [ITEM_MOD_CR_LIFESTEAL_SHORT]= e.onlyChinese and '吸' or e.WA_Utf8Sub(ITEM_MOD_CR_LIFESTEAL_SHORT, 1, 3, true),
+                        [ITEM_MOD_CR_SPEED_SHORT]= e.onlyChinese and '速' or e.WA_Utf8Sub(ITEM_MOD_CR_SPEED_SHORT, 1, 3, true),
                     }
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
