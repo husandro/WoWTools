@@ -13,7 +13,7 @@ for i=1, numItems do
 	local frame = LootHistoryFrame.itemFrames[i]
 	
 end
-
+LFGListUtil_IsEntryEmpowered() 是否,队长,助理 (UnitIsGroupAssistant('player') or UnitIsGroupLeader('player'))
 BACKGROUND
 BORDER
 ARTWORK

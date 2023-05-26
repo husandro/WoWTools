@@ -2783,7 +2783,8 @@
         "LFGListUtil_SetAutoAccept",
         "MerchantFrame_UpdateMerchantInfo",
         "MerchantBuyBackItemItemButton",
-        "TRANSMOGRIFICATION"
+        "TRANSMOGRIFICATION",
+        "LFGListUtil_IsEntryEmpowered"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

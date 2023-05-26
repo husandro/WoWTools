@@ -227,112 +227,7 @@ local function setQueueStatus()--小眼睛, 信息
         text= text..pet
     end
 
-    if C_LFGList.HasActiveEntryInfo() then--已激活LFG
-        local list
-        local info= C_LFGList.GetActiveEntryInfo()
-        if info and info.name then
-            list= '   '..info.name--名称
-            local applicants =C_LFGList.GetApplicants() or {}--申请人数
-            local applicantsNum= #applicants
-            if applicantsNum >0 then
-                list= list..' |cFF00FF00#'..applicantsNum ..'|r'
-            end
-
-            if info.autoAccept then --自动邀请
-                list= list..'|A:runecarving-icon-reagent-empty:0:0|a'
-            end
-
-            if info.activityID then--名称
-                local name2=C_LFGList.GetActivityFullName(info.activityID)
-                if name2 then
-                    list=list..' |r'..name2..' '
-                end
-            end
-            if info.privateGroup then--私人
-                list= list..(e.onlyChinese and '私人' or LFG_LIST_PRIVATE)
-            end
-            if info.duration then--时间
-                list= list..' '..SecondsToClock(info.duration)
-            end
-
-            local member
-            if not info.autoAccept and applicantsNum>0 then
-                local n=0
-                for _, applicantID in pairs(applicants) do
-                    local applicantInfo = C_LFGList.GetApplicantInfo(applicantID)
-                    if applicantInfo and applicantInfo.numMembers and applicantInfo.applicationStatus=='applied' then
-                        local memberText
-                        for index=1 , applicantInfo.numMembers do
-                            local name, class, _, level, itemLevel, honorLevel, tank, healer, dps, _, _, dungeonScore, pvpItemLevel= C_LFGList.GetApplicantMemberInfo(applicantID, index)
-                            local icon= e.Class(nil, class)
-                            if icon and name and class then
-                                local col= '|c'..select(4, GetClassColor(class))--颜色
-
-                                local levelText--等级
-                                if level and level~=MAX_PLAYER_LEVEL then
-                                    levelText=' |cnRED_FONT_COLOR:'..level..'|r'
-                                end
-
-                                local itemLevelText--装等/PVP装有情
-                                if  itemLevel and itemLevel>20 then
-                                    itemLevelText= format('%i',itemLevel)
-                                    if pvpItemLevel and pvpItemLevel-itemLevel>9 then
-                                        itemLevelText= itemLevelText..'/'..format('%i', pvpItemLevel)
-                                    end
-                                end
-
-                                local realmText--服务器，名称
-                                local realm= name:match('%-(.+)')
-                                if realm then
-                                    local realmTab = e.Get_Region(realm)
-                                    if realmTab and realmTab.col then
-                                        realmText= ' '..name ..' '..realmTab.col
-                                    else
-                                        realmText= name
-                                    end
-                                end
-
-                                local scorsoText= e.GetKeystoneScorsoColor(dungeonScore, true) or ''--挑战分数，荣誉等级
-                                if honorLevel and honorLevel>1 then
-                                    scorsoText= scorsoText~='' and scorsoText..' ' or scorsoText
-                                    scorsoText= scorsoText..'|A:pvptalents-warmode-swords:0:0|a'..honorLevel
-                                end
-
-                                memberText= memberText and memberText..'|n          ' or ''
-                                memberText= memberText..col
-                                    ..icon
-                                    ..(tank and INLINE_TANK_ICON or '')
-                                    ..(healer and INLINE_HEALER_ICON or '')
-                                    ..(dps and INLINE_DAMAGER_ICON or '')
-                                    ..(itemLevelText or '')
-                                    ..scorsoText
-                                    ..(levelText or '')
-                                    ..(realmText or '')
-                                    ..'|r '
-                            end
-                        end
-                        if memberText then
-                            n=n+1
-                            member= member and member..'|n' or ''
-                            member= member..'      '.. (n<10 and ' '..n or n)..')'..memberText
-                        end
-                        if n>=30 then
-                            break
-                        end
-                    end
-                end
-            end
-            if member then
-                list= list..'|n'..member
-            end
-        end
-        if list then
-            text= (text and text..'|n' or '')
-            ..((UnitIsGroupAssistant('player') or UnitIsGroupLeader('player')) and e.Icon.star2 or e.Icon.player)
-            ..(e.onlyChinese and '招募' or RAF_RECRUITMENT)
-            ..'|n'..list
-        end
-    end
+    
 
     local lfg--LFG，申请，列表
     local apps = C_LFGList.GetApplications() or {}
@@ -409,6 +304,99 @@ local function setQueueStatus()--小眼睛, 信息
         text= text..'|A:charactercreate-icon-dice:0:0|a|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已登记' or QUEUED_STATUS_SIGNED_UP)..'|r'
         text= text..'|n'..lfg
     end
+
+    if C_LFGList.HasActiveEntryInfo() then--已激活LFG
+        local list
+        local info= C_LFGList.GetActiveEntryInfo()
+        if info and info.name then
+
+            local applicants =C_LFGList.GetApplicants() or {}--申请人数
+            local applicantsNum= #applicants
+
+            local member
+            if not info.autoAccept and applicantsNum>0 then
+                local n=0
+                for _, applicantID in pairs(applicants) do
+                    local applicantInfo = C_LFGList.GetApplicantInfo(applicantID)
+                    if applicantInfo and applicantInfo.numMembers and applicantInfo.applicationStatus=='applied' then
+                        local memberText
+                        for index=1 , applicantInfo.numMembers do
+                            local name, class, _, level, itemLevel, honorLevel, tank, healer, dps, _, _, dungeonScore, pvpItemLevel= C_LFGList.GetApplicantMemberInfo(applicantID, index)
+                            local icon= e.Class(nil, class)
+                            if icon and name and class then
+                                local col= '|c'..select(4, GetClassColor(class))--颜色
+
+                                local levelText--等级
+                                if level and level~=MAX_PLAYER_LEVEL then
+                                    levelText=' |cnRED_FONT_COLOR:'..level..'|r'
+                                end
+
+                                local itemLevelText--装等/PVP装有情
+                                if  itemLevel and itemLevel>20 then
+                                    itemLevelText= format('%i',itemLevel)
+                                    if pvpItemLevel and pvpItemLevel-itemLevel>9 then
+                                        itemLevelText= itemLevelText..'/'..format('%i', pvpItemLevel)
+                                    end
+                                end
+
+                                local realmText--服务器，名称
+                                local realm= name:match('%-(.+)')
+                                if realm then
+                                    local realmTab = e.Get_Region(realm)
+                                    if realmTab and realmTab.col then
+                                        realmText= ' '..name ..' '..realmTab.col
+                                    else
+                                        realmText= name
+                                    end
+                                end
+
+                                local scorsoText= e.GetKeystoneScorsoColor(dungeonScore, true) or ''--挑战分数，荣誉等级
+                                if honorLevel and honorLevel>1 then
+                                    scorsoText= scorsoText~='' and scorsoText..' ' or scorsoText
+                                    scorsoText= scorsoText..'|A:pvptalents-warmode-swords:0:0|a'..honorLevel
+                                end
+
+                                memberText= memberText and memberText..'|n          ' or ''
+                                memberText= memberText..col
+                                    ..icon
+                                    ..(tank and INLINE_TANK_ICON or '')
+                                    ..(healer and INLINE_HEALER_ICON or '')
+                                    ..(dps and INLINE_DAMAGER_ICON or '')
+                                    ..(itemLevelText or '')
+                                    ..scorsoText
+                                    ..(levelText or '')
+                                    ..(realmText or '')
+                                    ..'|r '
+                            end
+                        end
+                        if memberText then
+                            n=n+1
+                            member= member and member..'|n' or ''
+                            member= member..'      '.. (n<10 and ' '..n or n)..')'..memberText
+                        end
+                    end
+                end
+            end
+
+            local name2= info.activityID and C_LFGList.GetActivityFullName(info.activityID)--名称
+            list= '   '..info.name--名称
+                ..' |cFF00FF00#'..applicantsNum..'|r'--数量
+                ..(info.autoAccept and '|A:runecarving-icon-reagent-empty:0:0|a' or '')--自动邀请
+                ..(name2 and ' '..name2 or '')--名称
+                ..(info.privateGroup and  (e.onlyChinese and '私人' or LFG_LIST_PRIVATE) or '')--私人
+                ..(info.duration and  ' '..SecondsToClock(info.duration) or '')--时间
+            if member then
+                list= list..'|n'..member
+            end
+        end
+        if list then
+            text= (text and text..'|n' or '')
+            ..(LFGListUtil_IsEntryEmpowered() and e.Icon.player or e.Icon.star2)
+            ..(e.onlyChinese and '招募' or RAF_RECRUITMENT)
+            ..'|n'..list
+        end
+    end
+
     set_tipsFrame_Tips(text)
 end
 
