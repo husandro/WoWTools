@@ -161,7 +161,7 @@ local function set_PlayerFrame()--PlayerFrame.lua
         self.Icon:SetShown(true)
         self:SetFrameStrata('FULLSCREEN_DIALOG')--设置为， 最上层
     end)
-    
+
     if not PlayerCastingBarFrame.CastTimeText then
         PlayerCastingBarFrame.castingText= e.Cstr(PlayerCastingBarFrame, {color={r=e.Player.r, g=e.Player.g, b=e.Player.b}, justifyH='RIGHT'})
         PlayerCastingBarFrame.castingText:SetDrawLayer('OVERLAY', 2)
@@ -1052,10 +1052,12 @@ local function Init()
     set_RaidFrame()--团队
 
     set_CompactPartyFrame()--小队, 使用团框架
-    
-    if CompactPartyFrame_UpdateVisibility then--10.1.5出错
-        hooksecurefunc('CompactPartyFrame_UpdateVisibility', set_CompactPartyFrame)
-    end
+
+    --if CompactPartyFrame_UpdateVisibility then--10.1.5出错
+        if CompactPartyFrame_UpdateVisibility then
+            hooksecurefunc('CompactPartyFrame_UpdateVisibility', set_CompactPartyFrame)
+        end
+   -- end
 
     set_PlayerFrame()--玩家
     set_TargetFrame()--目标
@@ -1209,13 +1211,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         else
             self:UnregisterEvent('CHAT_MSG_SYSTEM')
         end
-       
+
         C_Timer.After(4, function()
             set_Instance_Difficulty()--副本, 地下城，指示
             set_Keystones_Date()--挑战，数据
             set_ToggleWarMode()--设置, 战争模式
         end)
-        
+
 
     elseif event=='PLAYER_FLAGS_CHANGED' or event=='PLAYER_UPDATE_RESTING' then
         C_Timer.After(1, set_ToggleWarMode)--设置, 战争模式
