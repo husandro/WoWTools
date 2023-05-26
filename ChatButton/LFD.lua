@@ -7,11 +7,12 @@ local Save={
     ReMe=true,--仅限战场，释放，复活
     autoSetPvPRole=true,--自动职责确认， 排副本
     LFGPlus=e.Player.husandro,--预创建队伍增强
+    --tipsScale=1,--提示内容,缩放
 }
 local wowSave={[INSTANCE]={}}--{[ISLANDS_HEADER]=次数, [副本名称..难度=次数]}
 
 local sec=3--时间 timer
-local button
+local button, tipsButton
 local panel= CreateFrame("Frame")
 
 local getRewardInfo=function(dungeonID)--FB奖励
@@ -108,10 +109,100 @@ end
 --#####
 --小眼睛
 --#####
-local function set_tipsFrame_Tips(text)
-    if button.tipsFrame then
-        button.tipsFrame.text:SetText(text or '')
-        button.tipsFrame:SetShown(text and true or false)
+local function get_InviteButton_Frame(index)
+    local frame= tipsButton.lfgTextTab[index]
+    if not frame then
+        local size=14
+        frame= CreateFrame("Frame", nil, tipsButton)
+        frame:SetSize(1,1)
+        if index==1 then
+            frame:SetPoint('TOPLEFT', tipsButton.text, 'BOTTOMLEFT')
+        else
+            frame:SetPoint('TOPLEFT', tipsButton.lfgTextTab[index-1], 'BOTTOMLEFT')
+        end
+
+        frame.ChatButton= e.Cbtn(frame, {size={size,size}, atlas= 'transmog-icon-chat'})
+        frame.ChatButton:SetPoint('TOPLEFT')
+        frame.ChatButton:SetScript('OnClick', function(self2)
+            e.Say(nil, self2:GetParent().name)
+        end)
+        frame.ChatButton:SetScript('OnLeave', function() e.tips:Hide() end)
+        frame.ChatButton:SetScript('OnEnter', function(self2)
+            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine( self2:GetParent().name, e.onlyChinese and '/密语' or SLASH_SMART_WHISPER2)
+            e.tips:AddLine(self2:GetParent().tooltip)
+            e.tips:Show()
+        end)
+
+        frame.InviteButton= e.Cbtn(frame, {size={size,size}, atlas= e.Icon.select})
+        frame.InviteButton:SetPoint('LEFT', frame.ChatButton, 'RIGHT')
+        frame.InviteButton:SetScript('OnClick', function(self2)
+            if ( not IsInRaid(LE_PARTY_CATEGORY_HOME) and GetNumGroupMembers(LE_PARTY_CATEGORY_HOME) + self2:GetParent().numMembers + C_LFGList.GetNumInvitedApplicantMembers() > MAX_PARTY_MEMBERS + 1 ) then
+                local dialog = StaticPopup_Show("LFG_LIST_INVITING_CONVERT_TO_RAID")
+                if ( dialog ) then
+                    dialog.data = self2:GetParent().applicantID;
+                end
+            else
+                C_LFGList.InviteApplicant(self2:GetParent().applicantID);
+            end
+        end)
+        frame.InviteButton:SetScript('OnLeave', function() e.tips:Hide() end)
+        frame.InviteButton:SetScript('OnEnter', function(self2)
+            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(self2:GetParent().applicantID, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '邀请' or INVITE))
+            e.tips:AddLine(self2:GetParent().tooltip)
+            e.tips:Show()
+        end)
+
+        frame.DeclineButton= e.Cbtn(frame, {size={size,size}, atlas= 'communities-icon-redx'})
+        frame.DeclineButton:SetPoint('LEFT', frame.InviteButton, 'RIGHT')
+        frame.DeclineButton:SetScript('OnClick', function(self2)
+            --C_LFGList.RemoveApplicant(self2:GetParent().applicantID);
+            C_LFGList.DeclineApplicant(self2:GetParent().applicantID);
+        end)
+        frame.DeclineButton:SetScript('OnLeave', function() e.tips:Hide() end)
+        frame.DeclineButton:SetScript('OnEnter', function(self2)
+            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine( self2:GetParent().applicantID, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '拒绝' or DECLINE))
+            e.tips:AddLine(self2:GetParent().tooltip)
+            e.tips:Show()
+        end)
+
+        frame.text= e.Cstr(frame, {size=Save.tipsFrameTextSize, color=true})
+        frame.text:SetPoint('TOPLEFT', frame.DeclineButton, 'TOPRIGHT')
+
+        tipsButton.lfgTextTab[index]= frame
+    end
+    return frame
+end
+local function set_tipsFrame_Tips(text, LFGListTab)
+    tipsButton.text:SetText(text or '')
+    tipsButton:SetShown(text and true or false)
+
+    table.sort(LFGListTab, function(a, b)
+        if a.index== b.index then
+            return a.itemLevel> b.itemLevel
+        else
+            return a.index< b.index
+        end
+    end)
+    for index, tab in pairs(LFGListTab) do
+        local frame= get_InviteButton_Frame(index)
+        frame.text:SetText((index<10 and ' ' or '')..index..') '..tab.text)
+        frame:SetHeight(frame.text:GetHeight())
+        frame.applicantID= tab.applicantID
+        frame.numMembers= tab.numMembers
+        frame.tooltip= tab.text
+        frame.name= tab.name
+        frame:SetShown(true)
+    end
+
+    for index= #LFGListTab+1, #tipsButton.lfgTextTab do
+        tipsButton.lfgTextTab[index].text:SetText('')
+        tipsButton.lfgTextTab[index]:SetShown(false)
     end
 
     if not button.leaveInstance and Save.leaveInstance then--自动离开,指示图标
@@ -136,12 +227,13 @@ local function get_Status_Text(status)--列表，状态，信息
         or status or ''
 end
 local function setQueueStatus()--小眼睛, 信息
-    local text
     if Save.hideQueueStatus then--列表信息 
-        set_tipsFrame_Tips()
+        set_tipsFrame_Tips(nil, {})
        return
     end
 
+    local isLeader= LFGListUtil_IsEntryEmpowered()
+    local text
     local num= 0
     local pve
     for i=1, NUM_LE_LFG_CATEGORYS do--PVE
@@ -227,14 +319,11 @@ local function setQueueStatus()--小眼睛, 信息
         text= text..pet
     end
 
-    
-
     local lfg--LFG，申请，列表
-    local apps = C_LFGList.GetApplications() or {}
-    for i=1, #apps do
-        local _, appStatus, _, appDuration, role = C_LFGList.GetApplicationInfo(apps[i])-- id, appStatus, pendingStatus, appDuration, role 
+    for index, applicantID in pairs(C_LFGList.GetApplications() or {}) do
+        local _, appStatus, _, appDuration, role = C_LFGList.GetApplicationInfo(applicantID)-- id, appStatus, pendingStatus, appDuration, role 
         if appStatus == "applied"  and appDuration and appDuration>0 then--invited,none
-            local info = C_LFGList.GetSearchResultInfo(apps[i]) or {}
+            local info = C_LFGList.GetSearchResultInfo(applicantID) or {}
             local activityName = C_LFGList.GetActivityFullName(info.activityID, nil, info.isWarMode)
             if info and info.name and not info.autoAccept and not info.isDelisted then
                 local pvpRating--PVP分数
@@ -283,7 +372,7 @@ local function setQueueStatus()--小眼睛, 信息
                 end
 
                 lfg= lfg and lfg..'\n   ' or '   '
-                lfg= lfg..i..') '..info.name
+                lfg= lfg..index..') '..info.name
                     ..' '.. (activityName or '')
                     ..(numMembers or '')
                     ..(info.leaderOverallDungeonScore and info.leaderOverallDungeonScore>0 and ' '..e.GetKeystoneScorsoColor(info.leaderOverallDungeonScore, true) or '')
@@ -305,11 +394,13 @@ local function setQueueStatus()--小眼睛, 信息
         text= text..'|n'..lfg
     end
 
-    if C_LFGList.HasActiveEntryInfo() then--已激活LFG
+    --已激活LFG
+    local LFGListTab= {}
+    if C_LFGList.HasActiveEntryInfo() then
         local list
         local info= C_LFGList.GetActiveEntryInfo()
-        if info and info.name then
 
+        if info and info.name then
             local applicants =C_LFGList.GetApplicants() or {}--申请人数
             local applicantsNum= #applicants
 
@@ -320,6 +411,9 @@ local function setQueueStatus()--小眼睛, 信息
                     local applicantInfo = C_LFGList.GetApplicantInfo(applicantID)
                     if applicantInfo and applicantInfo.numMembers and applicantInfo.applicationStatus=='applied' then
                         local memberText
+                        local roleIndex= 3
+                        local unitItemLevel= 0
+                        local leaderName
                         for index=1 , applicantInfo.numMembers do
                             local name, class, _, level, itemLevel, honorLevel, tank, healer, dps, _, _, dungeonScore, pvpItemLevel= C_LFGList.GetApplicantMemberInfo(applicantID, index)
                             local icon= e.Class(nil, class)
@@ -355,9 +449,10 @@ local function setQueueStatus()--小眼睛, 信息
                                     scorsoText= scorsoText~='' and scorsoText..' ' or scorsoText
                                     scorsoText= scorsoText..'|A:pvptalents-warmode-swords:0:0|a'..honorLevel
                                 end
-
-                                memberText= memberText and memberText..'|n          ' or ''
+                                
+                                memberText= memberText and memberText..(isLeader and '|n     ' or '|n          ') or ''
                                 memberText= memberText..col
+                                    ..(e.GetFriend(name) or '')
                                     ..icon
                                     ..(tank and INLINE_TANK_ICON or '')
                                     ..(healer and INLINE_HEALER_ICON or '')
@@ -367,9 +462,26 @@ local function setQueueStatus()--小眼睛, 信息
                                     ..(levelText or '')
                                     ..(realmText or '')
                                     ..'|r '
+
+                                local roleIndex2= tank and 1 or healer and 2 or 3--索引
+                                roleIndex= roleIndex< roleIndex2 and roleIndex2 or roleIndex
+                                if index==1 then
+                                    leaderName= name
+                                end
+                                if itemLevel then--物品等级
+                                    unitItemLevel= itemLevel> unitItemLevel and itemLevel or unitItemLevel
+                                end
                             end
                         end
-                        if memberText then
+                        if memberText and isLeader then--队长, 内容
+                            table.insert(LFGListTab, {
+                                text= memberText,
+                                applicantID= applicantID,
+                                index= roleIndex,
+                                itemLevel= unitItemLevel,
+                                numMembers= applicantInfo.numMembers,
+                                name= leaderName,
+                            })
                             n=n+1
                             member= member and member..'|n' or ''
                             member= member..'      '.. (n<10 and ' '..n or n)..')'..memberText
@@ -385,7 +497,8 @@ local function setQueueStatus()--小眼睛, 信息
                 ..(name2 and ' '..name2 or '')--名称
                 ..(info.privateGroup and  (e.onlyChinese and '私人' or LFG_LIST_PRIVATE) or '')--私人
                 ..(info.duration and  ' '..SecondsToClock(info.duration) or '')--时间
-            if member then
+
+            if member and not isLeader then--不是队长, 显示, 内容
                 list= list..'|n'..member
             end
         end
@@ -397,60 +510,61 @@ local function setQueueStatus()--小眼睛, 信息
         end
     end
 
-    set_tipsFrame_Tips(text)
+    set_tipsFrame_Tips(text, LFGListTab)
 end
 
-local function Init_tipsFrame()
-    button.tipsFrame=e.Cbtn(nil, {icon='hide', size={20,20}})
+local function Init_tipsButton()
+    tipsButton= e.Cbtn(nil, {size={18,18}, atlas= 'UI-HUD-MicroMenu-Groupfinder-Mouseover'})
     if Save.tipsFramePoint then
-        button.tipsFrame:SetPoint(Save.tipsFramePoint[1], UIParent, Save.tipsFramePoint[3], Save.tipsFramePoint[4], Save.tipsFramePoint[5])
+        tipsButton:SetPoint(Save.tipsFramePoint[1], UIParent, Save.tipsFramePoint[3], Save.tipsFramePoint[4], Save.tipsFramePoint[5])
     else
-        button.tipsFrame:SetPoint('BOTTOMLEFT', button, 'TOPLEFT',0,2)
+        tipsButton:SetPoint('BOTTOMLEFT', button, 'TOPLEFT',0,2)
     end
-    button.tipsFrame:RegisterForDrag("RightButton")
-    button.tipsFrame:SetMovable(true)
-    button.tipsFrame:SetClampedToScreen(true)
+    tipsButton:RegisterForDrag("RightButton")
+    tipsButton:SetMovable(true)
+    tipsButton:SetClampedToScreen(true)
 
-    button.tipsFrame:SetScript("OnDragStart", function(self,d )
+    tipsButton:SetScript("OnDragStart", function(self,d )
         self:StartMoving()
     end)
-    button.tipsFrame:SetScript("OnDragStop", function(self)
+    tipsButton:SetScript("OnDragStop", function(self)
         ResetCursor()
         self:StopMovingOrSizing()
         Save.tipsFramePoint={self:GetPoint(1)}
         Save.tipsFramePoint[2]=nil
     end)
-    button.tipsFrame:SetScript('OnMouseWheel', function(self, d)
-        local n= Save.tipsFrameTextSize or 12
+    tipsButton:SetScript('OnMouseWheel', function(self, d)
+        local n= Save.tipsScale or 1
         if d==1 then
-            n=n+1
+            n=n+ 0.05
         elseif d==-1 then
-            n=n-1
+            n=n- 0.05
         end
-        n= n>30 and 30 or n<6 and 6 or n
-        Save.tipsFrameTextSize= n
-        e.Cstr(nil, {size=n, changeFont=self.text, color=true})--Save.tipsFrameTextSize, nil, self.text, true)
-        print(id, addName, e.onlyChinese and '字体大小' or FONT_SIZE, '|cnGREEN_FONT_COLOR:'..Save.tipsFrameTextSize)
+        n= n>2.5 and 2.5 or n<0.5 and 0.5 or n
+        Save.tipsScale= n
+        print(n)
+        self:SetScale(n)
+        print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..n)
     end)
-    button.tipsFrame:SetScript("OnMouseDown", function(self,d)
+    tipsButton:SetScript("OnMouseDown", function(self,d)
         if d=='RightButton' then
             SetCursor('UI_MOVE_CURSOR')
         end
     end)
-    button.tipsFrame:SetScript('OnMouseUp', ResetCursor)
-    button.tipsFrame:SetScript("OnLeave", function()
+    tipsButton:SetScript('OnMouseUp', ResetCursor)
+    tipsButton:SetScript("OnLeave", function()
         e.tips:Hide()
         ResetCursor()
         button:SetButtonState('NORMAL')
     end)
-    button.tipsFrame:SetScript('OnEnter', function(self)
+    tipsButton:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(not e.onlyChinese and DUNGEONS_BUTTON or "队伍查找器", e.Icon.left)
         e.tips:AddDoubleLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '离开所有队列' or LEAVE_ALL_QUEUES), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
-        e.tips:AddDoubleLine(e.onlyChinese and '字体大小' or FONT_SIZE, (Save.tipsFrameTextSize or 12).. e.Icon.mid)
+        e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE, (Save.tipsScale or 1).. e.Icon.mid)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '列表信息' or (SOCIAL_QUEUE_TOOLTIP_HEADER..INFO), '|A:groupfinder-eye-frame:0:0|a')
         e.tips:AddDoubleLine(id, addName)
@@ -459,7 +573,7 @@ local function Init_tipsFrame()
         setQueueStatus()--小眼睛, 更新信息
     end)
 
-    button.tipsFrame:SetScript('OnDoubleClick', function(self2, d)--离开所有队列
+    tipsButton:SetScript('OnDoubleClick', function(self2, d)--离开所有队列
         if d~= 'LeftButton' or IsModifierKeyDown() then
             return
         end
@@ -474,13 +588,17 @@ local function Init_tipsFrame()
                 BattlefieldMgrExitRequest(queueID)
             end
         end
+        C_LFGList.RemoveListing()
+        C_LFGList.ClearSearchResults()
     end)
-    button.tipsFrame:SetScript('OnClick', function()
-        PVEFrame_ToggleFrame()
+    tipsButton:SetScript('OnClick', function()
+        if not PVEFrame:IsShown() then
+            PVEFrame_ToggleFrame()
+        end
     end)
 
-    button.tipsFrame.elapsed=0
-    button.tipsFrame:SetScript('OnUpdate', function(self, elapsed)
+    tipsButton.elapsed=0
+    tipsButton:SetScript('OnUpdate', function(self, elapsed)
         if UnitAffectingCombat('player') then
             return
         end
@@ -492,8 +610,13 @@ local function Init_tipsFrame()
         end
     end)
 
-    button.tipsFrame.text= e.Cstr(button.tipsFrame, {size=Save.tipsFrameTextSize, color=true})--Save.tipsFrameTextSize, nil, nil, true)
-    button.tipsFrame.text:SetPoint('BOTTOMLEFT')
+    tipsButton.text= e.Cstr(tipsButton, {size=Save.tipsFrameTextSize, color=true})--Save.tipsFrameTextSize, nil, nil, true)
+    tipsButton.text:SetPoint('BOTTOMLEFT', tipsButton, 'BOTTOMRIGHT')
+
+    tipsButton.lfgTextTab= {}
+    tipsButton.lfgTextTab[1]= get_InviteButton_Frame(1)
+    
+    tipsButton:SetScale(Save.tipsScale or 1)--设置, 缩放
 end
 
 
@@ -1376,18 +1499,16 @@ local function set_ROLL_Check(frame)
     set_Timer_Text(frame)--提示，剩余时间
 end
 
-
-
 --####
 --初始
 --####
 local function Init()
+    button=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, true)
     button:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
     WoWToolsChatButtonFrame.last=button
 
-    button:SetScript('OnMouseDown', function(self, d)
+    button:SetScript('OnClick', function(self, d)
         if d=='LeftButton' and (self.dungeonID or self.RaidID) then
-
             if self.dungeonID then
                 securecallfunction(LFDQueueFrame_SetType, self.dungeonID)
                 securecallfunction(LFDQueueFrame_Join)
@@ -1412,14 +1533,14 @@ local function Init()
             e.tips:AddLine(self.name..e.Icon.left)
             e.tips:Show()
         end
-        if self.tipsFrame and self.tipsFrame:IsShown() then
-            self.tipsFrame:SetButtonState('PUSHED')
+        if tipsButton and tipsButton:IsShown() then
+            tipsButton:SetButtonState('PUSHED')
         end
     end)
     button:SetScript('OnLeave', function(self)
         e.tips:Hide()
-        if self.tipsFrame then
-            self.tipsFrame:SetButtonState('NORMAL')
+        if tipsButton and tipsButton:IsShown() then
+            tipsButton:SetButtonState('NORMAL')
         end
     end)
 
@@ -1428,7 +1549,7 @@ local function Init()
         e.Ccool(self, nil, 38, nil, true, true)
     end)--自动进入FB
 
-    Init_tipsFrame()--建立，小眼睛, 更新信息
+    Init_tipsButton()--建立，小眼睛, 更新信息
     hooksecurefunc(QueueStatusFrame, 'Update', setQueueStatus)--小眼睛, 更新信息, QueueStatusFrame.lua
 
     local isLeader, isTank, isHealer, isDPS = GetLFGRoles()--检测是否选定角色pve
@@ -1783,9 +1904,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
         if arg1==id then
             if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
                 Save= WoWToolsSave[addName] or Save
-                wowSave=WoWToolsSave[INSTANCE] or wowSave
-
-                button=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
+                wowSave=WoWToolsSave[INSTANCE] or wowSave                
 
                 Init()
                 panel:RegisterEvent("PLAYER_LOGOUT")
