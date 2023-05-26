@@ -757,7 +757,9 @@ local function Init()
         end)
     end
 
-    panel:RegisterEvent('BANKFRAME_OPENED')
+    if not IsAddOnLoaded('ArkInventory') then
+        panel:RegisterEvent('BANKFRAME_OPENED')
+    end
     panel:RegisterEvent("GUILDBANKBAGSLOTS_CHANGED");
     panel:RegisterEvent("GUILDBANK_ITEM_LOCK_CHANGED");
 
@@ -855,5 +857,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         for i=NUM_TOTAL_EQUIPPED_BAG_SLOTS+1, (NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS), 1 do
             ToggleBag(i);
         end
+        
     end
 end)
