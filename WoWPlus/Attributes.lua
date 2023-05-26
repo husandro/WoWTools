@@ -258,7 +258,7 @@ local function set_STATUS_Tooltip(self)
         get_PrimaryStat()--取得主属
     end
     local frame= self:GetParent()
-    e.tips:SetOwner(button, "ANCHOR_RIGHT")
+    e.tips:SetOwner(self, "ANCHOR_RIGHT")
     e.tips:ClearLines()
     local stat, effectiveStat, posBuff, negBuff = UnitStat('player', PrimaryStat);
     local effectiveStatDisplay = BreakUpLargeNumbers(effectiveStat);
@@ -388,7 +388,7 @@ local function set_CRITCHANCE_Text(frame)
 end
 local function set_CRITCHANCE_Tooltip(self)
     local frame= self:GetParent()
-    e.tips:SetOwner(button, "ANCHOR_RIGHT")
+    e.tips:SetOwner(self, "ANCHOR_RIGHT")
     e.tips:ClearLines()
     local spellCrit = get_minCrit() or 0
 	local rangedCrit = GetRangedCritChance();
@@ -442,7 +442,7 @@ local function set_HASTE_Text(frame)
 end
 local function set_HASTE_Tooltip(self)
     local frame= self:GetParent()
-    e.tips:SetOwner(button, "ANCHOR_RIGHT")
+    e.tips:SetOwner(self, "ANCHOR_RIGHT")
     e.tips:ClearLines()
 
     local haste = GetHaste();
@@ -504,7 +504,7 @@ local function set_VERSATILITY_Text(frame)
 end
 local function set_VERSATILITY_Tooltip(self)
     local frame= self:GetParent()
-    e.tips:SetOwner(button, "ANCHOR_RIGHT")
+    e.tips:SetOwner(self, "ANCHOR_RIGHT")
     e.tips:ClearLines()
     local versatility = GetCombatRating(CR_VERSATILITY_DAMAGE_DONE);
 	local versatilityDamageBonus = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE);
@@ -532,7 +532,7 @@ local function set_LIFESTEAL_Text(frame)
 end
 local function set_LIFESTEAL_Tooltip(self)
     local frame= self:GetParent()
-    e.tips:SetOwner(button, "ANCHOR_RIGHT")
+    e.tips:SetOwner(self, "ANCHOR_RIGHT")
     e.tips:ClearLines()
 
     local lifesteal = GetLifesteal();
@@ -559,7 +559,7 @@ local function set_AVOIDANCE_Text(frame)
 end
 local function set_AVOIDANCE_Tooltip(self)
     local frame= self:GetParent()
-    e.tips:SetOwner(button, "ANCHOR_RIGHT")
+    e.tips:SetOwner(self, "ANCHOR_RIGHT")
     e.tips:ClearLines()
 
     local Avoidance = GetAvoidance();
@@ -586,7 +586,7 @@ local function set_DODGE_Text(frame)
 end
 local function set_DODGE_Tooltip(self)
     local frame= self:GetParent()
-    e.tips:SetOwner(button, "ANCHOR_RIGHT")
+    e.tips:SetOwner(self, "ANCHOR_RIGHT")
     e.tips:ClearLines()
 
     local chance = GetDodgeChance();
@@ -618,7 +618,7 @@ local function set_ARMOR_Text(frame)
 end
 local function set_ARMOR_Tooltip(self)
     local frame= self:GetParent()
-    e.tips:SetOwner(button, "ANCHOR_RIGHT")
+    e.tips:SetOwner(self, "ANCHOR_RIGHT")
     e.tips:ClearLines()
 
     local baselineArmor, effectiveArmor, armor, bonusArmor = UnitArmor('player');
@@ -653,7 +653,7 @@ local function set_PARRY_Text(frame)
 end
 local function set_PARRY_Tooltip(self)
     local frame= self:GetParent()
-    e.tips:SetOwner(button, "ANCHOR_RIGHT")
+    e.tips:SetOwner(self, "ANCHOR_RIGHT")
     e.tips:ClearLines()
 
     local chance = GetParryChance();
@@ -680,7 +680,7 @@ local function set_BLOCK_Text(frame)
 end
 local function set_BLOCK_Tooltip(self)
     local frame= self:GetParent()
-    e.tips:SetOwner(button, "ANCHOR_RIGHT")
+    e.tips:SetOwner(self, "ANCHOR_RIGHT")
     e.tips:ClearLines()
 
     local chance = GetBlockChance();
@@ -710,7 +710,7 @@ local function set_STAGGER_Tooltip(self)
         return
     end
     local frame= self:GetParent()
-    e.tips:SetOwner(button, "ANCHOR_RIGHT")
+    e.tips:SetOwner(self, "ANCHOR_RIGHT")
     e.tips:ClearLines()
     e.tips:AddDoubleLine(frame.nameText,  format("%0.2f%%", stagger))
 	e.tips:AddLine(format(e.onlyChinese and '你的醉拳可化解%0.2f%%的伤害' or STAT_STAGGER_TOOLTIP, stagger), nil,nil,nil,true)
@@ -750,7 +750,7 @@ local function set_SPEED_Text(frame, elapsed)
 end
 local function set_SPEED_Tooltip(self)
     local frame= self:GetParent()
-    e.tips:SetOwner(button, "ANCHOR_RIGHT")
+    e.tips:SetOwner(self, "ANCHOR_RIGHT")
     e.tips:ClearLines()
     local currentSpeed, runSpeed, flightSpeed, swimSpeed = GetUnitSpeed('player')
     e.tips:AddDoubleLine(frame.nameText, 'player')
