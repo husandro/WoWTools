@@ -327,9 +327,10 @@ local function setQueueStatus()--小眼睛, 信息
             end
         end
         if list then
-            text= text and text..'|n' or ''
-            text= text..e.Icon.player..(e.onlyChinese and '招募' or RAF_RECRUITMENT)
-            text= text..'|n'..list
+            text= (text and text..'|n' or '')
+            ..((UnitIsGroupAssistant('player') or UnitIsGroupLeader('player')) and e.Icon.star2 or e.Icon.player)
+            ..(e.onlyChinese and '招募' or RAF_RECRUITMENT)
+            ..'|n'..list
         end
     end
 
@@ -405,7 +406,7 @@ local function setQueueStatus()--小眼睛, 信息
     end
     if lfg then
         text= text and text..'|n' or ''
-        text= text.. '|A:charactercreate-icon-dice:0:0|a|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已登记' or QUEUED_STATUS_SIGNED_UP)..'|r'
+        text= text..'|A:charactercreate-icon-dice:0:0|a|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已登记' or QUEUED_STATUS_SIGNED_UP)..'|r'
         text= text..'|n'..lfg
     end
     set_tipsFrame_Tips(text)

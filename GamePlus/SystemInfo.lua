@@ -459,7 +459,7 @@ local function InitMenu(self, level, type)--主菜单
     info={
         text= (e.onlyChinese and '框架' or DEBUG_FRAMESTACK)..' MicroMenu',
         checked= Save.parent,
-        colorCode= not StoreMicroButton:IsVisible() and '|cff606060',
+        colorCode= not StoreMicroButton:IsVisible() and '|cnRED_FONT_COLOR:',
         func= function()
             Save.parent= not Save.parent and true or nil
             set_Label_Point(true)--设置parent
