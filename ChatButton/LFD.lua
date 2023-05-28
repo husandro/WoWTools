@@ -360,9 +360,9 @@ local function setQueueStatus()--小眼睛, 信息
 
                 local factionText--指定，派系
                 if info.crossFactionListing then
-                    if info.leaderFactionGroup==0 and e.Plaeyr.faction=='Alliance' then
+                    if info.leaderFactionGroup==0 and e.Player.faction=='Alliance' then
                         factionText= e.Icon.horde2
-                    elseif info.leaderFactionGroup==1 and e.Plaeyr.faction=='Horde' then
+                    elseif info.leaderFactionGroup==1 and e.Player.faction=='Horde' then
                         factionText= e.Icon.alliance2
                     end
                 end
