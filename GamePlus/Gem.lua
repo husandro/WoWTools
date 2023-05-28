@@ -192,7 +192,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if ItemSocketingFrame.setTipsFrame then
             ItemSocketingFrame.setTipsFrame:SetShown(gem1007)--10.07 原石宝石，提示
         end
-        
+
         if not IsInInstance() and gem1007 and ExtraActionButton1 and ExtraActionButton1:IsShown() and ExtraActionButton1.icon and ItemSocketingFrame and ItemSocketingFrame:IsVisible() then
             local icon= ExtraActionButton1.icon:GetTexture()
             if icon==4638590 or icon==876370 then

@@ -152,7 +152,7 @@ e.GetGUID= function(unit, name)--从名字,名unit, 获取GUID
         name= name:gsub('%-'..e.Player.realm, '')
         local info=C_FriendList.GetFriendInfo(name)--好友
         if info then
-            return info.playerGuid
+            return info.guid
         elseif e.GroupGuid[name] then--队友
             return e.GroupGuid[name].guid
         elseif e.WoWGUID[name] then--战网
@@ -220,12 +220,16 @@ e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, f
         return e.Icon.player..((tab.reName or tab.reLink) and e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r' or '')..e.Icon.star2
     elseif guid and C_PlayerInfo.GUIDIsPlayer(guid) then
         local _, englishClass, _, englishRace, sex, name, realm = GetPlayerInfoByGUID(guid)
+        if (not name or name=='') and tab.name then
+            name=tab.name
+        end
+        
         local unit= tab.unit or guid and e.GroupGuid[guid] and e.GroupGuid[guid].unit
         local friend= e.GetFriend(nil, guid, nil)--检测, 是否好友
         local faction= unit and e.GetUnitFaction(unit)--检查, 是否同一阵营
         local groupInfo= e.GroupGuid[guid] or {}--队伍成员
         local server= e.Get_Region(realm)--服务器，EU， US {col=, text=, realm=}
-        
+
         local text= (server and server.col or '')
                     ..(friend or '')
                     ..(faction or '')
@@ -238,14 +242,16 @@ e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, f
 
         if tab.reLink then
             return text..e.PlayerLink(name, guid, true) --玩家超链接
+
         elseif tab.reName and name then
             if tab.reRealm then
                 text= text..(name..(realm and realm~='' and '-'..realm or ''))
             else
                 text= text..GetPlayerNameRemoveRealm(name, realm)
             end
-            text= '|c'..select(4,GetClassColor(englishClass))..text..'|r'                
+            text= '|c'..select(4,GetClassColor(englishClass))..text..'|r'
         end
+
         return text
     end
     return ''
@@ -341,7 +347,7 @@ e.Icon={
     DAMAGER='|A:groupfinder-icon-role-large-dps:0:0|a',
     NONE='|A:groupfinder-icon-emptyslot:0:0|a',
     leader='|A:UI-HUD-UnitFrame-Player-Group-GuideIcon:0:0|a',--队长
- 
+
     info2='|A:questlegendary:0:0|a',--黄色!
     star2='|A:auctionhouse-icon-favorite:0:0|a',--星星
 }

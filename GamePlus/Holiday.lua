@@ -537,7 +537,7 @@ local function Init()
         self.menu:SetPoint('BOTTOMLEFT', CalendarCreateEventFrame, 'BOTTOMRIGHT', -22,74)
         e.LibDD:UIDropDownMenu_SetWidth(self.menu, 60)
         e.LibDD:UIDropDownMenu_SetText(self.menu, e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET)
-        e.LibDD:UIDropDownMenu_Initialize(self.menu, function(self, level, type)
+        e.LibDD:UIDropDownMenu_Initialize(self.menu, function(_, level)
             local map=e.GetUnitMapName('player');--玩家区域名称
             local inviteTab={}
             for index = 1, C_Calendar.GetNumInvites() do
@@ -550,7 +550,7 @@ local function Init()
             for i=1 ,BNGetNumFriends() do
                 local wow=C_BattleNet.GetFriendAccountInfo(i);
                 local wowInfo= wow and wow.gameAccountInfo
-                if wowInfo and wowInfo.playerGuid and wowInfo.characterName and not inviteTab[wowInfo.characterName] then
+                if wowInfo and wowInfo.playerGuid and wowInfo.characterName and not inviteTab[wowInfo.characterName] and wowInfo.wowProjectID==1 then
 
                     local text= e.GetPlayerInfo({unit=nil, guid=wowInfo.playerGuid, name=wowInfo.characterName,  reName=true, reRealm=true, reLink=false})--角色信息
                     if wowInfo.areaName then --位置
@@ -593,7 +593,7 @@ local function Init()
         menu2:SetPoint('TOPRIGHT', self.menu, 'BOTTOMRIGHT')
         e.LibDD:UIDropDownMenu_SetWidth(menu2, 60)
         e.LibDD:UIDropDownMenu_SetText(menu2, e.onlyChinese and '好友' or FRIEND)
-        e.LibDD:UIDropDownMenu_Initialize(menu2, function(self, level, type)
+        e.LibDD:UIDropDownMenu_Initialize(menu2, function(_, level)
             local map=e.GetUnitMapName('player');--玩家区域名称
             local inviteTab={}
             for index = 1, C_Calendar.GetNumInvites() do

@@ -2788,7 +2788,11 @@
         "PVP_MATCH_READY_ERROR",
         "EncounterJournal_TierDropDown_Select",
         "EJ_ContentTab_SetEnabled",
-        "IsBagOpen"
+        "IsBagOpen",
+        "BUTTON_LAG_MAIL",
+        "SendMailNameEditBox",
+        "MailFrameTab_OnClick",
+        "BNET_CLIENT_WOW"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
