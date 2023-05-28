@@ -358,13 +358,11 @@ local function setQueueStatus()--小眼睛, 信息
                     end
                 end
 
-                local factionText--指定，派系
-                if info.crossFactionListing then
-                    if info.leaderFactionGroup==0 and e.Player.faction=='Alliance' then
-                        factionText= e.Icon.horde2
-                    elseif info.leaderFactionGroup==1 and e.Player.faction=='Horde' then
-                        factionText= e.Icon.alliance2
-                    end
+                local factionText--指定，派系 info.crossFactionListing
+                if info.leaderFactionGroup==0 and e.Player.faction=='Alliance' then
+                    factionText= e.Icon.horde2
+                elseif info.leaderFactionGroup==1 and e.Player.faction=='Horde' then
+                    factionText= e.Icon.alliance2
                 end
 
                 local roleText--职责
