@@ -113,7 +113,7 @@ local function set_Item_Info(self, tab)
             end
             --local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={bagNumStr}})
             --topLeftText= dateInfo.text[bagNumStr]--格数 CONTAINER_SLOTS  不知怎样处理--%2$s da %1$d |4scomparto:scomparti
-         
+
         elseif classID==3 then--宝石
             if expacID== e.ExpansionLevel then
                 local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={'(%+%d+ .+)', }})--物品提示，信息
@@ -459,7 +459,7 @@ local function setMerchantInfo()--商人设置
         end
     end
 	set_Item_Info(MerchantBuyBackItemItemButton, {merchant={slot=GetNumBuybackItems(), buyBack=true}})
-    
+
 end
 
 
@@ -645,6 +645,7 @@ local function Init()
             end)
         end
         return
+
     elseif IsAddOnLoaded("Baggins") then
         hooksecurefunc(Baggins, 'UpdateItemButton', function(_, _, button, bagID, slotID)
             if button and bagID and slotID then
@@ -652,6 +653,7 @@ local function Init()
             end
         end)
         return
+
     elseif IsAddOnLoaded('Inventorian') then
         local ADDON = LibStub("AceAddon-3.0"):GetAddon("Inventorian")
         local InvLevel = ADDON:NewModule('InventorianWoWToolsItemInfo')
@@ -663,6 +665,11 @@ local function Init()
         end
         hooksecurefunc(ADDON.Item, "WrapItemButton", InvLevel.WrapItemButton)
         return
+
+    else
+        panel:RegisterEvent('BANKFRAME_OPENED')--打开所有银行，背包
+        panel:RegisterEvent("GUILDBANKBAGSLOTS_CHANGED")--打开公会银行时, 打开背包
+        panel:RegisterEvent("GUILDBANK_ITEM_LOCK_CHANGED")
     end
 
     hooksecurefunc('ContainerFrame_GenerateFrame',function (self)
@@ -756,14 +763,6 @@ local function Init()
             end
         end)
     end
-
-    if not IsAddOnLoaded('ArkInventory') then
-        panel:RegisterEvent('BANKFRAME_OPENED')
-    end
-    panel:RegisterEvent("GUILDBANKBAGSLOTS_CHANGED");
-    panel:RegisterEvent("GUILDBANK_ITEM_LOCK_CHANGED");
-
-   
 end
 
 --###########
@@ -857,6 +856,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         for i=NUM_TOTAL_EQUIPPED_BAG_SLOTS+1, (NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS), 1 do
             ToggleBag(i);
         end
-        
+
     end
 end)

@@ -2784,7 +2784,8 @@
         "MerchantFrame_UpdateMerchantInfo",
         "MerchantBuyBackItemItemButton",
         "TRANSMOGRIFICATION",
-        "LFGListUtil_IsEntryEmpowered"
+        "LFGListUtil_IsEntryEmpowered",
+        "PVP_MATCH_READY_ERROR"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
