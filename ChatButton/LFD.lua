@@ -320,7 +320,8 @@ local function setQueueStatus()--小眼睛, 信息
     end
 
     local lfg--LFG，申请，列表
-    for index, applicantID in pairs(C_LFGList.GetApplications() or {}) do
+    local LFGTab= C_LFGList.GetApplications() or {}
+    for index, applicantID in pairs(LFGTab) do
         local _, appStatus, _, appDuration, role = C_LFGList.GetApplicationInfo(applicantID)-- id, appStatus, pendingStatus, appDuration, role 
         if appStatus == "applied"  and appDuration and appDuration>0 then--invited,none
             local info = C_LFGList.GetSearchResultInfo(applicantID) or {}
@@ -359,9 +360,9 @@ local function setQueueStatus()--小眼睛, 信息
 
                 local factionText--指定，派系
                 if info.crossFactionListing then
-                    if info.leaderFactionGroup==0 then
+                    if info.leaderFactionGroup==0 and e.Plaeyr.faction=='Alliance' then
                         factionText= e.Icon.horde2
-                    elseif info.leaderFactionGroup==1 then
+                    elseif info.leaderFactionGroup==1 and e.Plaeyr.faction=='Horde' then
                         factionText= e.Icon.alliance2
                     end
                 end
@@ -390,7 +391,7 @@ local function setQueueStatus()--小眼睛, 信息
     end
     if lfg then
         text= text and text..'|n' or ''
-        text= text..'|A:charactercreate-icon-dice:0:0|a|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已登记' or QUEUED_STATUS_SIGNED_UP)..'|r'
+        text= text..'|A:charactercreate-icon-dice:0:0|a|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已登记' or QUEUED_STATUS_SIGNED_UP)..'|r #'..#LFGTab
         text= text..'|n'..lfg
     end
 
