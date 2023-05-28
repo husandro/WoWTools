@@ -970,7 +970,7 @@ local function set_LFGPlus()--预创建队伍增强
         end)
 
 
-        local orderIndexes = {}--https://wago.io/klC4qqHaF
+        --[[local orderIndexes = {}--https://wago.io/klC4qqHaF
         if categoryID == 2 and not isAppFinished then--_G["ShowRIORaitingWA1NotShowClasses"] ~= true
             for i=1, info.numMembers do
                 local role, class = C_LFGList.GetSearchResultMemberInfo(self.resultID, i)
@@ -996,6 +996,33 @@ local function set_LFGPlus()--预创建队伍增强
 
             elseif self.DataDisplay.Enumerate[texture] then
                 self.DataDisplay.Enumerate[texture]:SetShown(false)
+            end
+            xOffset = xOffset + 18
+        end]]
+        local orderIndexes = {}
+        if categoryID == 2 and not isAppFinished then--_G["ShowRIORaitingWA1NotShowClasses"] ~= true
+            for i=1, info.numMembers do
+                local role, class = C_LFGList.GetSearchResultMemberInfo(self.resultID, i)
+                local orderIndex = getIndex(LFG_LIST_GROUP_DATA_ROLE_ORDER, role)
+                table.insert(orderIndexes, {orderIndex, class})
+            end
+            table.sort(orderIndexes, function(a,b) return a[1] < b[1] end)
+        end
+        local xOffset = -88
+        for i = 1, 5 do
+            local texture = "tex"..i
+            local class= orderIndexes[i] and orderIndexes[i][2] and e.Class(nil, orderIndexes[i][2], true)
+            if class and not self.DataDisplay.Enumerate[texture] then
+                self.DataDisplay.Enumerate[texture] = self.DataDisplay.Enumerate:CreateTexture(nil, "OVERLAY")
+                self.DataDisplay.Enumerate[texture]:SetSize(12, 12)
+                self.DataDisplay.Enumerate[texture]:SetPoint("RIGHT", self.DataDisplay.Enumerate, "RIGHT", xOffset, -10)
+            end
+            if self.DataDisplay.Enumerate[texture] then
+                if class then
+                    self.DataDisplay.Enumerate[texture]:SetAtlas(class)
+                else
+                    self.DataDisplay.Enumerate[texture]:SetTexture(0)
+                end
             end
             xOffset = xOffset + 18
         end
