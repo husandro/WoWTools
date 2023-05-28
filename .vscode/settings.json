@@ -2785,7 +2785,9 @@
         "MerchantBuyBackItemItemButton",
         "TRANSMOGRIFICATION",
         "LFGListUtil_IsEntryEmpowered",
-        "PVP_MATCH_READY_ERROR"
+        "PVP_MATCH_READY_ERROR",
+        "EncounterJournal_TierDropDown_Select",
+        "EJ_ContentTab_SetEnabled"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

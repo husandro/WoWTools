@@ -536,13 +536,13 @@ local function set_Spell_Port(self)
             self.spell= e.Cbtn(self, {type=true, size={h, h}})
             self.spell:SetAttribute("type*", "spell")
             self.spell:SetAttribute("spell*", spellID)
-            self.spell:SetPoint('TOPRIGHT')
-            if IsSpellKnown(spellID) then--加个外框
+            self.spell:SetPoint('BOTTOMRIGHT',4,-4)
+            --[[if IsSpellKnown(spellID) then--加个外框
                 self.spell.tex=self.spell:CreateTexture(nil, 'OVERLAY')
                 self.spell.tex:SetAllPoints(self.spell)
                 self.spell.tex:SetAtlas(e.Icon.tex)
                 self.spell.tex:SetAlpha(0.4)
-            end
+            end]]
             self.spell:SetScript("OnEnter",function(self2)
                     e.tips:SetOwner(self2, "ANCHOR_RIGHT")
                     e.tips:ClearLines()
@@ -808,12 +808,23 @@ local function set_Update()--Blizzard_ChallengesUI.lua
         if frame and frame.mapID then
             if not frame.tips then
                 frame:SetScript("OnMouseDown",function(self2)
-                    if not IsAddOnLoaded("Blizzard_EncounterJournal.lua") then LoadAddOn("Blizzard_EncounterJournal.lua") end
+                    if not IsAddOnLoaded("Blizzard_EncounterJournal.lua") then
+                        LoadAddOn("Blizzard_EncounterJournal.lua")
+                    end
                     if not EncounterJournal or not EncounterJournal:IsVisible() then
                         ToggleEncounterJournal()
                     end
-                    --[[securecall('NavBar_Reset', EncounterJournal.navBar)--BUG
-                    securecall('EncounterJournal_DisplayInstance', EncounterJournal_Maps[self2.mapID])]]
+                    --[[EJ_ContentTab_Select(EncounterJournalDungeonTab:GetID())
+                    local tier= EJ_GetNumTiers()
+                    for i2= tier, 1, -1 do
+                        if EJ_GetTierInfo(i2)== CHALLENGES  then
+                            tier= i2
+                            break
+                        end
+                    end
+                    --securecall(EncounterJournal_TierDropDown_Select, nil,  tier)--EJ_SelectTier(EJ_GetNumTiers())
+                    ]]
+                    
                 end)
                 frame:HookScript('OnEnter', function(self2)--提示
                     if self2.mapID then
@@ -1223,7 +1234,7 @@ local function Init()
             e.tips:Hide()
     end)
 
-    
+
 
     if ChallengesFrame.WeeklyInfo and ChallengesFrame.WeeklyInfo.Child then--隐藏, 赛季最佳
         if ChallengesFrame.WeeklyInfo.Child.SeasonBest then

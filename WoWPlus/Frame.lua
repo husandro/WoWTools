@@ -223,9 +223,9 @@ local set_Move_Frame=function(self, tab)--set_Move_Frame(frame, {frame=nil, clic
                 set_Frame_Drag(header)--设置Frame,移动属性
             end
 
-            if tab.show or Save.SavePoint then
+            --[[if tab.show or Save.SavePoint then
                 self:HookScript("OnShow", set_Frame_Point)--设置, 移动, 位置
-            end
+            end]]
 
             self:HookScript("OnLeave", ResetCursor)
         end
