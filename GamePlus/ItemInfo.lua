@@ -854,7 +854,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='BANKFRAME_OPENED' then--打开所有银行，背包
         for i=NUM_TOTAL_EQUIPPED_BAG_SLOTS+1, (NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS), 1 do
-            ToggleBag(i);
+            if not  IsBagOpen(i) then
+                OpenBag(i)
+            end
+            --ToggleBag(i);
         end
 
     end

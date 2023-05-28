@@ -2787,7 +2787,8 @@
         "LFGListUtil_IsEntryEmpowered",
         "PVP_MATCH_READY_ERROR",
         "EncounterJournal_TierDropDown_Select",
-        "EJ_ContentTab_SetEnabled"
+        "EJ_ContentTab_SetEnabled",
+        "IsBagOpen"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

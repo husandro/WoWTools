@@ -448,7 +448,7 @@ local function setQueueStatus()--小眼睛, 信息
                                     scorsoText= scorsoText~='' and scorsoText..' ' or scorsoText
                                     scorsoText= scorsoText..'|A:pvptalents-warmode-swords:0:0|a'..honorLevel
                                 end
-                                
+
                                 memberText= memberText and memberText..(isLeader and '|n     ' or '|n          ') or ''
                                 memberText= memberText..col
                                     ..(e.GetFriend(name) or '')
@@ -613,7 +613,7 @@ local function Init_tipsButton()
 
     tipsButton.lfgTextTab= {}
     tipsButton.lfgTextTab[1]= get_InviteButton_Frame(1)
-    
+
     tipsButton:SetScale(Save.tipsScale or 1)--设置, 缩放
 end
 
@@ -1902,7 +1902,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
         if arg1==id then
             if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
                 Save= WoWToolsSave[addName] or Save
-                wowSave=WoWToolsSave[INSTANCE] or wowSave                
+                wowSave=WoWToolsSave[INSTANCE] or wowSave
 
                 Init()
                 panel:RegisterEvent("PLAYER_LOGOUT")

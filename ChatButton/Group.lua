@@ -53,21 +53,21 @@ local function setGroupTips()--队伍信息提示
         button.membersText:SetText(isInGroup and num or '')
     end
 
-    local subgroup, combatRole
+    local combatRole--subgroup,
     local tab=e.GroupGuid[e.Player.guid]
     if tab then
-        subgroup= tab and tab.subgroup
+      --  subgroup= tab and tab.subgroup
         combatRole=tab.combatRole
     end
 
-    if subgroup and not button.subgroupTexture then--小队号
+    --[[if subgroup and not button.subgroupTexture then--小队号
         button.subgroupTexture=e.Cstr(button, {size=10, colro=true, justifyH='RIGHT'})--10, nil, nil, true, nil, 'RIGHT')
         button.subgroupTexture:SetPoint('TOPRIGHT',-6,-3)
         button.subgroupTexture:SetTextColor(0,1,0)
     end
     if button.subgroupTexture then
         button.subgroupTexture:SetText(subgroup or '')
-    end
+    end]]
 
     if isInRaid and not isInInstance and not button.textureNotInstance then--在副本外, 在团时, 提示
         button.textureNotInstance=button:CreateTexture(nil,'BACKGROUND')
