@@ -2792,7 +2792,12 @@
         "BUTTON_LAG_MAIL",
         "SendMailNameEditBox",
         "MailFrameTab_OnClick",
-        "BNET_CLIENT_WOW"
+        "BNET_CLIENT_WOW",
+        "LookingForDropdownMixin",
+        "ClubFinderOptionsMixin",
+        "ClubFinderRoleMixin",
+        "ClubFinderRequestToJoinMixin",
+        "ClubFinderGetPlayerSpecIds"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

@@ -646,7 +646,7 @@ local function Init()
         e.LibDD:UIDropDownMenu_SetWidth(last, 60)
         e.LibDD:UIDropDownMenu_SetText(last, e.onlyChinese and '公会' or GUILD)
         e.LibDD:UIDropDownMenu_Initialize(last, function(self2, level, type)
-            local map=e.GetUnitMapName('player');--玩家区域名称
+            local map=e.GetUnitMapName('player')
             local inviteTab={}
             for index = 1, C_Calendar.GetNumInvites() do
                 local inviteInfo = C_Calendar.EventGetInvite(index);
