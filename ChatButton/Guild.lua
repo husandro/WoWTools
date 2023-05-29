@@ -213,9 +213,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 panel:RegisterEvent('PLAYER_LOGOUT')
                 panel:RegisterEvent('GUILD_ROSTER_UPDATE')
             end
-            --panel:UnregisterEvent('ADDON_LOADED')
 
-        elseif arg1=='Blizzard_Communities' then--自动, 查找社区， 自动加入， 设置1
+        elseif arg1=='Blizzard_Communities' then
             set_check(ClubFinderGuildFinderFrame.OptionsList.Search and ClubFinderGuildFinderFrame.OptionsList and ClubFinderGuildFinderFrame.OptionsList.Search)
             set_check(ClubFinderCommunityAndGuildFinderFrame.OptionsList.Search and ClubFinderCommunityAndGuildFinderFrame.OptionsList and ClubFinderCommunityAndGuildFinderFrame.OptionsList.Search)
 
