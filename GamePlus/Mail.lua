@@ -28,7 +28,7 @@ if e.Player.husandro and #Save.player==0 then
 end
 
 
-local function set_Text_SendMailNameEditBox(_, name)
+local function set_Text_SendMailNameEditBox(_, name)--设置，发送名称，文
     if name then
         name= name:gsub('%-'..e.Player.realm, '')
         SendMailNameEditBox:SetText(name)
@@ -36,12 +36,32 @@ local function set_Text_SendMailNameEditBox(_, name)
     end
 end
 
-local function get_Name_For_guid(guid)
+local function get_Name_For_guid(guid)--取得名称-服务器
     local name, realm = select(6, GetPlayerInfoByGUID(guid))
     if name then
         realm= (not realm or realm=='') and e.Player.realm or realm
         return name..'-'..realm
     end
+end
+
+local function get_Name_Info(name, notName)--取得名称，信息
+    local text= e.GetPlayerInfo({name=name, reName=not notName, reRealm=true})
+    if text=='' then
+        for guid, _ in pairs(WoWDate) do
+            local name2, realm = select(6, GetPlayerInfoByGUID(guid))
+            realm= (not realm or realm=='') and e.Player.realm or realm
+            if name==(name2..'-'..realm) then
+                return e.Icon.star2..e.GetPlayerInfo({guid=guid, reName=not notName, realm=true})
+            end
+        end
+        if notName then
+            return ''
+        else
+            name= name:gsub('%-'..e.Player.realm, '')
+            return name
+        end
+    end
+    return text
 end
 
 --#######
@@ -162,20 +182,7 @@ local function Init_Menu(self, level, type)
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
 
-local function get_Name_Info(name)
-    local text= e.GetPlayerInfo({name=name, reName=true, reRealm=true})
-    if text=='' then
-        for guid, _ in pairs(WoWDate) do
-            local name2, realm = select(6, GetPlayerInfoByGUID(guid))
-            if name==name2 or name==name2..'-'..realm then
-                return e.Icon.star2..e.GetPlayerInfo({guid=guid, reName=true})
-            end
-        end
-        name= name:gsub('%-'..e.Player.realm, '')
-        return name
-    end
-    return text
-end
+
 
 local function Init_Send_Player_button()
     SendMailFrame.SendPlayer= SendMailFrame.SendPlayer or {}
@@ -183,8 +190,12 @@ local function Init_Send_Player_button()
         local label= SendMailFrame.SendPlayer[index]
         if not label then
             label= e.Cstr(SendMailFrame, {justifyH='RIGHT', mouse=true})
-            label:SetPoint('TOPRIGHT', SendMailFrame.SendPlayer[index-1] or SendMailFrame.ClearPlayerLable, 'BOTTOMRIGHT')
-    
+            if index==1 then
+                label:SetPoint('TOPRIGHT', SendMailFrame.ClearPlayerLable, 'BOTTOMRIGHT', 0, -12)
+            else
+                label:SetPoint('TOPRIGHT', SendMailFrame.SendPlayer[index-1], 'BOTTOMRIGHT')
+            end
+
             label:SetScript('OnMouseDown', function(self2)
                 set_Text_SendMailNameEditBox(nil, self2.name)
             end)
@@ -200,9 +211,9 @@ local function Init_Send_Player_button()
         else
             label:SetShown(true)
         end
-        
+
         label.name= name
-        label:SetText(get_Name_Info(name))
+        label:SetText(get_Name_Info(name)..' '..(index<10 and ' ' or '')..'|cnGREEN_FONT_COLOR:('..index)
     end
 
     for index= #Save.player+1, #SendMailFrame.SendPlayer do
@@ -210,6 +221,7 @@ local function Init_Send_Player_button()
         SendMailFrame.SendPlayer[index]:SetText('')
     end
 end
+
 
 local SendName
 local function set_Send_Name()--SendName，设置，发送成功，名字
@@ -248,15 +260,17 @@ local function Init()--SendMailNameEditBox
             SendMailFrame.ClearPlayerLable= e.Cstr(SendMailFrame, {justifyH='RIGHT', mouse=true})
             SendMailFrame.ClearPlayerLable:SetPoint('TOPRIGHT', SendMailFrame, 'TOPLEFT', 0, -40)
             SendMailFrame.ClearPlayerLable:SetText(not e.onlyChinese and SLASH_STOPWATCH_PARAM_STOP2 or "清除")
-            SendMailFrame.ClearPlayerLable:SetScript('OnMouseDown', function()
-                Save.player={}
-                Init_Send_Player_button()
+            SendMailFrame.ClearPlayerLable:SetScript('OnMouseDown', function(_, d)
+                if IsAltKeyDown() and d=='LeftButton' then
+                    Save.player={}
+                    Init_Send_Player_button()
+                end
             end)
             SendMailFrame.ClearPlayerLable:SetScript('OnLeave', function() e.tips:Hide() end)
             SendMailFrame.ClearPlayerLable:SetScript('OnEnter', function(self3)
                 e.tips:SetOwner(self3, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine(' ', not e.onlyChinese and CLEAR_ALL or "全部清除")
+                e.tips:AddDoubleLine((not e.onlyChinese and CLEAR_ALL or "全部清除")..' |cnGREEN_FONT_COLOR:#'..#Save.player, '|cnGREEN_FONT_COLOR:Alt+'.. e.Icon.left)
                 e.tips:AddDoubleLine(id, addName)
                 e.tips:Show()
             end)
@@ -272,7 +286,11 @@ local function Init()--SendMailNameEditBox
     SendMailNameEditBox.tipsText= e.Cstr(btn)
     SendMailNameEditBox.tipsText:SetPoint('BOTTOM', btn, 'TOP')
     SendMailNameEditBox:SetScript('OnTextChanged', function(self2)
-        self2.tipsText:SetText(get_Name_Info(self2:GetText()))
+        local name= self2:GetText()
+        if name and not name:find('%-') then
+            name= name..'-'..e.Player.realm
+        end
+        self2.tipsText:SetText(get_Name_Info(name, true))
     end)
 
     SendMailMailButton:HookScript('OnClick', function()--SendName，设置，发送成功，名字
@@ -302,7 +320,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if Save.disabled then
                 panel:UnregisterAllEvents()
             else
-                Init()                
+                Init()
             end
 
             panel:UnregisterEvent('ADDON_LOADED')

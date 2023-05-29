@@ -152,6 +152,7 @@ function e.GetGUID(unit, name)--从名字,名unit, 获取GUID
     elseif name then
         name= name:gsub('%-'..e.Player.realm, '')
         local info=C_FriendList.GetFriendInfo(name)--好友
+        
         if info then
             return info.guid
 
@@ -219,10 +220,11 @@ e.PlayerLink=function(name, guid, slotLink) --玩家超链接
     end
 end
 
-e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, factionName=nil, reName=true, reLink=false})
+e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, factionName=nil, reName=true, reLink=false, reRealm=false})
     local guid= tab.guid or e.GetGUID(tab.unit, tab.name)
     if guid==e.Player.guid then
         return e.Icon.player..((tab.reName or tab.reLink) and e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r' or '')..e.Icon.star2
+
     elseif guid and C_PlayerInfo.GUIDIsPlayer(guid) then
         local _, englishClass, _, englishRace, sex, name, realm = GetPlayerInfoByGUID(guid)
         if (not name or name=='') and tab.name then
