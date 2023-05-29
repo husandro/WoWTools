@@ -14,8 +14,34 @@ local Save={
 --#######
 local function Init_Menu(self, level, type)
     local info
-    if type=='FRIEND'  then
-        local map=e.GetUnitMapName('player');--玩家区域名称
+    if type=='SELF' then
+        local find
+        for guid, _ in pairs(WoWDate) do
+            local name, realm = select(6, GetPlayerInfoByGUID(guid))
+            local name_realm= name
+            if realm and realm~='' and realm~=e.Player.realm then
+                name_realm= name_realm..'-'..realm
+            end
+            info={
+                text= e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false}),
+                icon= 'auctionhouse-icon-favorite',
+                notCheckable= true,
+                arg1= name_realm,
+                func=function(self2, arg1)
+                    SendMailNameEditBox:SetText(arg1)
+                    SendMailNameEditBox:SetCursorPosition(0)
+                end
+            }
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
+            find=true
+        end
+        if not find then
+            e.LibDD:UIDropDownMenu_AddButton({text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
+        end
+        return
+
+    elseif type=='FRIEND'  then
+        local map=e.GetUnitMapName('player')
         local find
         for i=1 , C_FriendList.GetNumFriends() do
             local game=C_FriendList.GetFriendInfoByIndex(i)
@@ -31,13 +57,13 @@ local function Init_Menu(self, level, type)
                 elseif not game.connected then
                     text= text..' '..(e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)
                 end
-
-                local info={
+                
+                info={
                     text=text,
+                    icon= WoWDate[game.guid] and 'auctionhouse-icon-favorite',
                     notCheckable= true,
                     tooltipOnButton=true,
                     tooltipTitle=game.notes,
-                    icon= game.afk and FRIENDS_TEXTURE_AFK or game.dnd and FRIENDS_TEXTURE_DND,
                     arg1= game.name,
                     func=function(self2, arg1)
                         SendMailNameEditBox:SetText(arg1)
@@ -68,7 +94,7 @@ local function Init_Menu(self, level, type)
                 if wowInfo.characterLevel and wowInfo.characterLevel~=MAX_PLAYER_LEVEL and wowInfo.characterLevel>0 then--等级
                     text=text ..' |cff00ff00'..wowInfo.characterLevel..'|r'
                 end
-                local info={
+                info={
                     text= text,
                     notCheckable=true,
                     tooltipOnButton=true,
@@ -105,6 +131,14 @@ local function Init_Menu(self, level, type)
         hasArrow= true,
         notCheckable=true,
         menuList= 'FRIEND',
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    info={
+        text= e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME,
+        hasArrow= true,
+        notCheckable=true,
+        menuList= 'SELF',
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
