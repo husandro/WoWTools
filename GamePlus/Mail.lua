@@ -210,11 +210,18 @@ local function Init_Menu(self, level, menuList)
         end
 
     elseif menuList and type(menuList)=='number' then--社区
-        local num=0
+        info= {
+            text= e.onlyChinese and '在线' or FRIENDS_LIST_ONLINE,
+            notCheckable=true,
+            isTitle=true,
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+        local find
         local members= C_Club.GetClubMembers(menuList) or {}
         for index, memberID in pairs(members) do
             local tab = C_Club.GetMemberInfo(menuList, memberID) or {}
-            if tab.guid and tab.name and (tab.zone or Save.showOffLine) and not tab.isSelf then
+            if tab.guid and tab.name and tab.zone and not tab.isSelf and not WoWDate[tab.guid] then
                 local faction= tab.faction==Enum.PvPFaction.Alliance and 'Alliance' or tab.faction==Enum.PvPFaction.Horde and 'Horde'
                 local  text= e.GetPlayerInfo({guid=tab.guid,  reName=true, reRealm=true, factionName=faction})--角色信息
 
@@ -222,10 +229,16 @@ local function Init_Menu(self, level, menuList)
                 if tab.zone then
                     text= text..' '..tab.zone
                 end
+                local icon
+                if tab.role == Enum.ClubRoleIdentifier.Owner or tab.role == Enum.ClubRoleIdentifier.Leader then
+                    icon= "Interface\\GroupFrame\\UI-Group-LeaderIcon"
+                elseif tab.role == Enum.ClubRoleIdentifier.Moderator then
+                    icon= "Interface\\GroupFrame\\UI-Group-AssistantIcon"
+                end
 
                 info={
                     text= index..(index<10 and ')  ' or ') ')..text,
-                    icon= WoWDate[tab.guid] and 'auctionhouse-icon-favorite',
+                    icon= icon,
                     notCheckable=true,
                     tooltipOnButton=true,
                     tooltipTitle=tab.memberNote or '',
@@ -234,13 +247,10 @@ local function Init_Menu(self, level, menuList)
                     func= set_Text_SendMailNameEditBox,
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
-                num=num+1
-                if num>100 then
-                    break
-                end
+                find=true
             end
         end
-        if num>0 then
+        if not find then
             e.LibDD:UIDropDownMenu_AddButton({text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
         end
     end

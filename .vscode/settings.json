@@ -2801,7 +2801,12 @@
         "SendMailMailButton",
         "COMMUNITIES_MEMBER_LIST_SHOW_OFFLINE",
         "ClassNameplateBarFeralDruidFrame",
-        "RogueComboPointBarFrame"
+        "RogueComboPointBarFrame",
+        "FRIENDS_LIST_ONLINE",
+        "COMMUNITY_MEMBER_ROLE_NAMES",
+        "COMMUNITY_MEMBER_ROLE_NAME_OWNER",
+        "COMMUNITY_MEMBER_ROLE_NAME_LEADER",
+        "COMMUNITY_MEMBER_ROLE_NAME_MODERATOR"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
