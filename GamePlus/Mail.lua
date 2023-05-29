@@ -368,10 +368,8 @@ local function Init_Send_Player_button()
                 e.tips:Show()
             end)
             self.SendPlayer[index]= label
-        else
-            label:SetShown(true)
         end
-
+        label:SetShown(name~=e.Player.name_realm)
         label.name= name
         label:SetText(get_Name_Info(name)..' '..(index<10 and ' ' or '')..'|cnGREEN_FONT_COLOR:('..index)
     end
@@ -539,7 +537,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if e.Player.husandro and #Save.player==0 then
                 local region= GetCurrentRegion()--1US(includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
-                if region~=3 then
+                if region==3 then
                     Save.player= {
                         'Zans-Nemesis',
                         'Qisi-Nemesis',
