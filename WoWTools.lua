@@ -233,7 +233,7 @@ e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, f
 
         local unit= tab.unit or guid and e.GroupGuid[guid] and e.GroupGuid[guid].unit
         local friend= e.GetFriend(nil, guid, nil)--检测, 是否好友
-        local faction= unit and e.GetUnitFaction(unit)--检查, 是否同一阵营
+        local faction= e.GetUnitFaction(unit, tab.factionName)--检查, 是否同一阵营
         local groupInfo= e.GroupGuid[guid] or {}--队伍成员
         local server= e.Get_Region(realm)--服务器，EU， US {col=, text=, realm=}
 

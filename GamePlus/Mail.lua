@@ -51,9 +51,9 @@ end
 --#######
 --设置菜单
 --#######
-local function Init_Menu(self, level, type)
+local function Init_Menu(self, level, menuList)
     local info
-    if type=='SELF' then
+    if menuList=='SELF' then
         local find
         for guid, _ in pairs(WoWDate) do
             if guid and guid~= e.Player.guid then
@@ -71,9 +71,8 @@ local function Init_Menu(self, level, type)
         if not find then
             e.LibDD:UIDropDownMenu_AddButton({text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
         end
-        return
 
-    elseif type=='FRIEND'  then
+    elseif menuList=='FRIEND'  then
         local find
         for i=1 , C_FriendList.GetNumFriends() do
             local game=C_FriendList.GetFriendInfoByIndex(i)
@@ -103,9 +102,8 @@ local function Init_Menu(self, level, type)
         if not find then
             e.LibDD:UIDropDownMenu_AddButton({text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
         end
-        return
 
-    elseif type=='WOW' then
+    elseif menuList=='WOW' then
         local find
         for i=1 ,BNGetNumFriends() do
             local wow=C_BattleNet.GetFriendAccountInfo(i);
@@ -144,9 +142,8 @@ local function Init_Menu(self, level, type)
         if not find then
             e.LibDD:UIDropDownMenu_AddButton({text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
         end
-        return
 
-    elseif type=='GUILD' then
+    elseif menuList=='GUILD' then
         local find
         for index=1,  GetNumGuildMembers() do
             local name, rankName, rankIndex, lv, _, zone, publicNote, officerNote, isOnline, status, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)
@@ -179,9 +176,8 @@ local function Init_Menu(self, level, type)
         if not find then
             e.LibDD:UIDropDownMenu_AddButton({text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
         end
-        return
 
-    elseif type=='GROUP' then
+    elseif menuList=='GROUP' then
         local find
         local u=  IsInRaid() and 'raid' or 'party'--取消队友标记
         for i=1, GetNumGroupMembers() do
@@ -212,6 +208,44 @@ local function Init_Menu(self, level, type)
         if not find then
             e.LibDD:UIDropDownMenu_AddButton({text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
         end
+
+    elseif menuList and type(menuList)=='number' then--社区
+        local num=0
+        local members= C_Club.GetClubMembers(menuList) or {}
+        for index, memberID in pairs(members) do
+            local tab = C_Club.GetMemberInfo(menuList, memberID) or {}
+            if tab.guid and tab.name and (tab.zone or Save.showOffLine) and not tab.isSelf then
+                local faction= tab.faction==Enum.PvPFaction.Alliance and 'Alliance' or tab.faction==Enum.PvPFaction.Horde and 'Horde'
+                local  text= e.GetPlayerInfo({guid=tab.guid,  reName=true, reRealm=true, factionName=faction})--角色信息
+
+                text= (tab.level and tab.level~=MAX_PLAYER_LEVEL and tab.level>0) and text .. ' |cff00ff00'..tab.level..'|r' or text--等级
+                if tab.zone then
+                    text= text..' '..tab.zone
+                end
+
+                info={
+                    text= index..(index<10 and ')  ' or ') ')..text,
+                    icon= WoWDate[tab.guid] and 'auctionhouse-icon-favorite',
+                    notCheckable=true,
+                    tooltipOnButton=true,
+                    tooltipTitle=tab.memberNote or '',
+                    tooltipText=tab.officerNote,
+                    arg1= tab.name,
+                    func= set_Text_SendMailNameEditBox,
+                }
+                e.LibDD:UIDropDownMenu_AddButton(info, level)
+                num=num+1
+                if num>100 then
+                    break
+                end
+            end
+        end
+        if num>0 then
+            e.LibDD:UIDropDownMenu_AddButton({text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
+        end
+    end
+
+    if menuList then
         return
     end
 
@@ -259,7 +293,22 @@ local function Init_Menu(self, level, type)
         menuList= 'GROUP',
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
-    
+ 
+
+    local clubs= C_Club.GetSubscribedClubs() or {}--社区
+    if #clubs>0 then
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
+    end
+    for _, tab in pairs(clubs) do
+        info={
+            text= (tab.avatarId and '|T'..tab.avatarId..':0|t' or '')..(tab.shortName or tab.name),
+            hasArrow= true,
+            notCheckable=true,
+            menuList= tab.clubId,
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+    end
+
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
         text= e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE,
