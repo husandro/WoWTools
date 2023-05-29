@@ -4,7 +4,10 @@ local addName='ChatButtonGuild'
 local button
 local panel= CreateFrame("Frame")
 
-local function setMembers()--在线人数
+--#######
+--在线人数
+--#######
+local function setMembers()
     local num = select(2, GetNumGuildMembers())
     num = (num and num>1) and num-1 or nil
     if not button.membersText and num then
@@ -36,13 +39,20 @@ local function set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
     end
 end
 
-local function setMsg_CHAT_MSG_SYSTEM(text)--欢迎加入, 信息
+--#############
+--欢迎加入, 信息
+--#############
+local function setMsg_CHAT_MSG_SYSTEM(text)
     if text:find(guildMS) then
         WoWDate[e.Player.guid].GuildInfo= text
         panel:UnregisterEvent('CHAT_MSG_SYSTEM')
     end
 end
 
+
+--###############
+--自动选取当前专精
+--###############
 local function set_RequestToJoinFrame(self)
     local text
     if self.MessageFrame and self.MessageFrame.MessageScroll and self.MessageFrame.MessageScroll.EditBox then
@@ -84,6 +94,39 @@ local function set_RequestToJoinFrame(self)
         self.Apply:Click()
     end
 end
+
+--####################
+--设置，自动申请，check
+--####################
+local function set_check(search)
+    if not search then
+        return
+    end
+    local w=search:GetHeight()
+    search:SetWidth(search:GetWidth()- w)
+    local point, relativeTo, relativePoint, offsetX, offsetY=search:GetPoint()
+    search:ClearAllPoints()
+    search:SetPoint(point, relativeTo, relativePoint, offsetX-(w/2), offsetY)
+    local check= CreateFrame("CheckButton", nil, search, "InterfaceOptionsCheckButtonTemplate")
+    check:SetPoint('LEFT', search, 'RIGHT',-2, -1)
+    check:SetChecked(not Save.notAutoRequestToJoinClub)
+    check:SetScript('OnClick', function()
+        Save.notAutoRequestToJoinClub= not Save.notAutoRequestToJoinClub and true or nil
+    end)
+    check:SetScript('OnLeave', function() e.tips:Hide() end)
+    check:SetScript('OnEnter', function(self2)
+        e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine('|A:communities-icon-addgroupplus:0:0|a'..(e.onlyChinese and '自动申请' or AUTO_JOIN), e.GetEnabeleDisable(not Save.notAutoRequestToJoinClub))
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:Show()
+    end)
+    check:SetScript('OnShow', function(self2)
+        self2:SetChecked(not Save.notAutoRequestToJoinClub)
+    end)
+end
+
 
 --#####
 --主菜单
@@ -166,34 +209,7 @@ local function Init()
     C_Timer.After(2, set_CHAT_MSG_SYSTEM)--事件, 公会新成员, 队伍新成员
 end
 
-local function set_check(search)
-    if not search then
-        return
-    end
-    local w=search:GetHeight()
-    search:SetWidth(search:GetWidth()- w)
-    local point, relativeTo, relativePoint, offsetX, offsetY=search:GetPoint()
-    search:ClearAllPoints()
-    search:SetPoint(point, relativeTo, relativePoint, offsetX-(w/2), offsetY)
-    local check= CreateFrame("CheckButton", nil, search, "InterfaceOptionsCheckButtonTemplate")---设置，自动申请，check
-    check:SetPoint('LEFT', search, 'RIGHT',-2, -1)
-    check:SetChecked(not Save.notAutoRequestToJoinClub)
-    check:SetScript('OnClick', function()
-        Save.notAutoRequestToJoinClub= not Save.notAutoRequestToJoinClub and true or nil
-    end)
-    check:SetScript('OnLeave', function() e.tips:Hide() end)
-    check:SetScript('OnEnter', function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_RIGHT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine('|A:communities-icon-addgroupplus:0:0|a'..(e.onlyChinese and '自动申请' or AUTO_JOIN), e.GetEnabeleDisable(not Save.notAutoRequestToJoinClub))
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, addName)
-        e.tips:Show()
-    end)
-    check:SetScript('OnShow', function(self2)
-        self2:SetChecked(not Save.notAutoRequestToJoinClub)
-    end)
-end
+
 
 --###########
 --加载保存数据
