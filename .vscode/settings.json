@@ -2798,7 +2798,8 @@
         "ClubFinderRoleMixin",
         "ClubFinderRequestToJoinMixin",
         "ClubFinderGetPlayerSpecIds",
-        "SendMailMailButton"
+        "SendMailMailButton",
+        "COMMUNITIES_MEMBER_LIST_SHOW_OFFLINE"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
