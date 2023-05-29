@@ -8,6 +8,7 @@ local Save={
     player= {--保存玩家数据
         --{name='Fuocco', text=nil},
     },
+    --sacleClearPlayerButton=1.2,--清除历史数据，缩放
 }
 
 if e.Player.husandro and #Save.player==0 then
@@ -155,8 +156,49 @@ local function Init_Menu(self, level, type)
             e.LibDD:UIDropDownMenu_AddButton({text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
         end
         return
+
+    elseif type=='GUILD' then
+        local find
+        for index=1,  GetNumGuildMembers() do
+            local name, rankName, rankIndex, lv, _, zone, publicNote, officerNote, isOnline, status, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)
+            if name and guid and guid~=e.Player.guid then
+                local text=e.GetPlayerInfo({unit=nil, guid=guid, name=name,  reName=true, reRealm=true, reLink=false})--名称
+                text=(lv and lv~=MAX_PLAYER_LEVEL and lv>0) and text..' |cnGREEN_FONT_COLOR:'..lv..'|r' or text--等级
+               
+                text= rankName and text..' '..rankName..(rankIndex or '') or text
+                info={
+                    text=text,
+                    notCheckable=true,
+                    tooltipOnButton=true,
+                    tooltipTitle=publicNote or '',
+                    tooltipText=officerNote or '',
+                    icon= status==1 and FRIENDS_TEXTURE_AFK or status==2 and FRIENDS_TEXTURE_DND,
+                    arg1=name,
+                    func=function(self3, arg1)
+                        CalendarCreateEventInviteEdit:SetText(arg1)
+                    end
+                }
+                e.LibDD:UIDropDownMenu_AddButton(info, level)
+                find=true
+            end
+        end
+        if not find then
+            e.LibDD:UIDropDownMenu_AddButton({text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
+
+        end
+        return
+
     end
 
+    info={
+        text= '|A:auctionhouse-icon-favorite:0:0|a'..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME),
+        hasArrow= true,
+        notCheckable=true,
+        menuList= 'SELF',
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
         text= e.Icon.wow2..(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET),
         hasArrow= true,
@@ -173,11 +215,22 @@ local function Init_Menu(self, level, type)
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
+    if IsInGuild() then
+        info={
+            text= '|A:communities-guildbanner-background:0:0|a'..(e.onlyChinese and '公会' or GUILD),
+            hasArrow= true,
+            notCheckable=true,
+            menuList= 'GUILD',
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+    end
+
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
-        text= '|A:auctionhouse-icon-favorite:0:0|a'..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME),
-        hasArrow= true,
-        notCheckable=true,
-        menuList= 'SELF',
+        text= id..' '..addName,
+        icon= 'UI-HUD-Minimap-Mail-Mouseover',
+        notCheckable= true,
+        isTitle=true,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
@@ -189,9 +242,9 @@ local function Init_Send_Player_button()
     for index, name in pairs(Save.player) do
         local label= SendMailFrame.SendPlayer[index]
         if not label then
-            label= e.Cstr(SendMailFrame, {justifyH='RIGHT', mouse=true})
+            label= e.Cstr(SendMailFrame.ClearPlayerButton, {justifyH='RIGHT', mouse=true})
             if index==1 then
-                label:SetPoint('TOPRIGHT', SendMailFrame.ClearPlayerLable, 'BOTTOMRIGHT', 0, -12)
+                label:SetPoint('TOPRIGHT', SendMailFrame.ClearPlayerButton, 'BOTTOMRIGHT', 0, -6)
             else
                 label:SetPoint('TOPRIGHT', SendMailFrame.SendPlayer[index-1], 'BOTTOMRIGHT')
             end
@@ -256,24 +309,41 @@ local function Init()--SendMailNameEditBox
     end)
 
     MailFrame:HookScript('OnShow', function(self2)
-        if not SendMailFrame.ClearPlayerLable then
-            SendMailFrame.ClearPlayerLable= e.Cstr(SendMailFrame, {justifyH='RIGHT', mouse=true})
-            SendMailFrame.ClearPlayerLable:SetPoint('TOPRIGHT', SendMailFrame, 'TOPLEFT', 0, -40)
-            SendMailFrame.ClearPlayerLable:SetText(not e.onlyChinese and SLASH_STOPWATCH_PARAM_STOP2 or "清除")
-            SendMailFrame.ClearPlayerLable:SetScript('OnMouseDown', function(_, d)
+        if not SendMailFrame.ClearPlayerButton then
+            SendMailFrame.ClearPlayerButton= e.Cbtn(SendMailFrame, {size={18,18}, atlas='bags-button-autosort-up'})--e.Cstr(SendMailFrame, {justifyH='RIGHT', mouse=true})
+            SendMailFrame.ClearPlayerButton:SetPoint('TOPRIGHT', SendMailFrame, 'TOPLEFT', 0, -30)
+            SendMailFrame.ClearPlayerButton:SetText(not e.onlyChinese and SLASH_STOPWATCH_PARAM_STOP2 or "清除")
+            SendMailFrame.ClearPlayerButton:SetScript('OnClick', function(_, d)
                 if IsAltKeyDown() and d=='LeftButton' then
                     Save.player={}
                     Init_Send_Player_button()
                 end
             end)
-            SendMailFrame.ClearPlayerLable:SetScript('OnLeave', function() e.tips:Hide() end)
-            SendMailFrame.ClearPlayerLable:SetScript('OnEnter', function(self3)
+            SendMailFrame.ClearPlayerButton:SetScript('OnMouseWheel', function(self3, d)
+                local num= Save.sacleClearPlayerButton or 1
+                if d==1 then
+                    num= num- 0.05
+                elseif d==-1 then
+                    num= num+ 0.05
+                end
+                num= num<0.5 and 0.5 or num>2 and 2 or num
+                print(id, addName,e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(Save.sacleClearPlayerButton or 1) )
+                Save.sacleClearPlayerButton= num
+                self3:SetScale(num)
+            end)
+            SendMailFrame.ClearPlayerButton:SetScript('OnLeave', function() e.tips:Hide() end)
+            SendMailFrame.ClearPlayerButton:SetScript('OnEnter', function(self3)
                 e.tips:SetOwner(self3, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine((not e.onlyChinese and CLEAR_ALL or "全部清除")..' |cnGREEN_FONT_COLOR:#'..#Save.player, '|cnGREEN_FONT_COLOR:Alt+'.. e.Icon.left)
+                e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.sacleClearPlayerButton or 1), e.Icon.mid)
                 e.tips:AddDoubleLine(id, addName)
                 e.tips:Show()
             end)
+            if Save.sacleClearPlayerButton then
+
+                SendMailFrame.ClearPlayerButton:SetScale(Save.sacleClearPlayerButton)
+            end
         end
         Init_Send_Player_button()
         C_Timer.After(0.3, function()
@@ -304,14 +374,13 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent('ADDON_LOADED')
-panel:RegisterEvent('MAIL_SEND_SUCCESS')
-panel:RegisterEvent('MAIL_FAILED')
-
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
+            Save= WoWToolsSave[addName] or Save
+
             --添加控制面板
-            local check=e.CPanel(e.Icon.bank2..(e.onlyChinese and '商人' or addName), not Save.disabled, true)
+            local check=e.CPanel('|A:UI-HUD-Minimap-Mail-Mouseover:0:0|a'..(e.onlyChinese and '邮件' or addName), not Save.disabled, true)
             check:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
@@ -321,9 +390,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 panel:UnregisterAllEvents()
             else
                 Init()
-            end
 
-            panel:UnregisterEvent('ADDON_LOADED')
+                panel:RegisterEvent('MAIL_SEND_SUCCESS')
+                panel:RegisterEvent('MAIL_FAILED')
+
+                panel:UnregisterEvent('ADDON_LOADED')
+            end
             panel:RegisterEvent('PLAYER_LOGOUT')
         end
 

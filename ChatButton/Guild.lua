@@ -43,6 +43,48 @@ local function setMsg_CHAT_MSG_SYSTEM(text)--欢迎加入, 信息
     end
 end
 
+local function set_RequestToJoinFrame(self)
+    local text
+    if self.MessageFrame and self.MessageFrame.MessageScroll and self.MessageFrame.MessageScroll.EditBox then
+        local avgItemLevel, _, avgItemLevelPvp = GetAverageItemLevel()
+        if avgItemLevel then
+            local region= GetCurrentRegion()
+            local cd= region==1 or region==3--1US(includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
+            text= format(cd and 'Item Level %d' or CHARACTER_LINK_ITEM_LEVEL_TOOLTIP, avgItemLevel)
+            if avgItemLevelPvp and avgItemLevelPvp- avgItemLevel>=10 then
+                text= text..'|n'..format(cd and 'PvP Item Level %d' or ITEM_UPGRADE_PVP_ITEM_LEVEL_STAT_FORMAT, avgItemLevelPvp)--PvP物品等级 %d
+            end
+            self.MessageFrame.MessageScroll.EditBox:SetText(text)
+        end
+    end
+
+    local text2
+    if self.SpecsPool and self.SpecsPool.activeObjects then--专精，职责，图标，自动选取当前专精
+        local currSpecID= GetSpecializationInfo(GetSpecialization() or 0)
+        for frame, _ in pairs(self.SpecsPool.activeObjects) do
+            if frame.specID then
+                local _, name, _, icon, role
+                _, name, _, icon, role =GetSpecializationInfoByID(frame.specID)
+                if frame.CheckBox and frame.CheckBox.Click and currSpecID== frame.specID then
+                    frame.CheckBox:Click()--自动选取当前专精
+                    text2= (icon and '|T'..icon..':0|t' or '')..(e.Icon[role] or '')..name
+                end
+                _, name, _, icon, role =GetSpecializationInfoByID(frame.specID)
+                if name and frame.SpecName then
+                    frame.SpecName:SetText((icon and '|T'..icon..':0|t' or '')..(e.Icon[role] or '')..name)
+                end
+            end
+        end
+    end
+    if self.Apply and self.Apply:IsEnabled() and self.Apply.Click
+        and not IsModifierKeyDown()
+        and not Save.notAutoRequestToJoinClub
+    then
+        print(id, addName, '|cnGREEN_FONT_COLOR:'..self.Apply:GetText()..'|r', text2, '|cffff00ff'..(text or ''))
+        self.Apply:Click()
+    end
+end
+
 --#####
 --主菜单
 --#####
@@ -124,6 +166,35 @@ local function Init()
     C_Timer.After(2, set_CHAT_MSG_SYSTEM)--事件, 公会新成员, 队伍新成员
 end
 
+local function set_check(search)
+    if not search then
+        return
+    end
+    local w=search:GetHeight()
+    search:SetWidth(search:GetWidth()- w)
+    local point, relativeTo, relativePoint, offsetX, offsetY=search:GetPoint()
+    search:ClearAllPoints()
+    search:SetPoint(point, relativeTo, relativePoint, offsetX-(w/2), offsetY)
+    local check= CreateFrame("CheckButton", nil, search, "InterfaceOptionsCheckButtonTemplate")---设置，自动申请，check
+    check:SetPoint('LEFT', search, 'RIGHT',-2, -1)
+    check:SetChecked(not Save.notAutoRequestToJoinClub)
+    check:SetScript('OnClick', function()
+        Save.notAutoRequestToJoinClub= not Save.notAutoRequestToJoinClub and true or nil
+    end)
+    check:SetScript('OnLeave', function() e.tips:Hide() end)
+    check:SetScript('OnEnter', function(self2)
+        e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine('|A:communities-icon-addgroupplus:0:0|a'..(e.onlyChinese and '自动申请' or AUTO_JOIN), e.GetEnabeleDisable(not Save.notAutoRequestToJoinClub))
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:Show()
+    end)
+    check:SetScript('OnShow', function(self2)
+        self2:SetChecked(not Save.notAutoRequestToJoinClub)
+    end)
+end
+
 --###########
 --加载保存数据
 --###########
@@ -145,70 +216,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             --panel:UnregisterEvent('ADDON_LOADED')
 
         elseif arg1=='Blizzard_Communities' then--自动, 查找社区， 自动加入， 设置1
-            local search= ClubFinderCommunityAndGuildFinderFrame.OptionsList.Search and ClubFinderCommunityAndGuildFinderFrame.OptionsList and ClubFinderCommunityAndGuildFinderFrame.OptionsList.Search
-            if search then--设置，自动申请，check
-                local w=search:GetHeight()
-                search:SetWidth(search:GetWidth()- w)
-                local point, relativeTo, relativePoint, offsetX, offsetY=search:GetPoint()
-                search:ClearAllPoints()
-                search:SetPoint(point, relativeTo, relativePoint, offsetX-(w/2), offsetY)
-                local check= CreateFrame("CheckButton", nil, search, "InterfaceOptionsCheckButtonTemplate")--bar，图片，样式2
-                check:SetPoint('LEFT', search, 'RIGHT',-2, -1)
-                check:SetChecked(not Save.notAutoRequestToJoinClub)
-                check:SetScript('OnClick', function()
-                    Save.notAutoRequestToJoinClub= not Save.notAutoRequestToJoinClub and true or nil
-                end)
-                check:SetScript('OnLeave', function() e.tips:Hide() end)
-                check:SetScript('OnEnter', function(self2)
-                    e.tips:SetOwner(self2, "ANCHOR_RIGHT")
-                    e.tips:ClearLines()
-                    e.tips:AddDoubleLine('|A:communities-icon-addgroupplus:0:0|a'..(e.onlyChinese and '自动申请' or AUTO_JOIN), e.GetEnabeleDisable(not Save.notAutoRequestToJoinClub))
-                    e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine(id, addName)
-                    e.tips:Show()
-                end)
-            end
-            hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.RequestToJoinFrame, 'Initialize', function(self2)
-                local text
-                if self2.MessageFrame and self2.MessageFrame.MessageScroll and self2.MessageFrame.MessageScroll.EditBox then
-                    local avgItemLevel, _, avgItemLevelPvp = GetAverageItemLevel()
-                    if avgItemLevel then
-                        local region= GetCurrentRegion()
-                        local cd= region==1 or region==3--1US(includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
-                        text= format(cd and 'Item Level %d' or CHARACTER_LINK_ITEM_LEVEL_TOOLTIP, avgItemLevel)
-                        if avgItemLevelPvp and avgItemLevelPvp- avgItemLevel>=10 then
-                            text= text..'|n'..format(cd and 'PvP Item Level %d' or ITEM_UPGRADE_PVP_ITEM_LEVEL_STAT_FORMAT, avgItemLevelPvp)--PvP物品等级 %d
-                        end
-                        self2.MessageFrame.MessageScroll.EditBox:SetText(text)
-                    end
-                end
+            set_check(ClubFinderGuildFinderFrame.OptionsList.Search and ClubFinderGuildFinderFrame.OptionsList and ClubFinderGuildFinderFrame.OptionsList.Search)
+            set_check(ClubFinderCommunityAndGuildFinderFrame.OptionsList.Search and ClubFinderCommunityAndGuildFinderFrame.OptionsList and ClubFinderCommunityAndGuildFinderFrame.OptionsList.Search)
 
-                local text2
-                if self2.SpecsPool and self2.SpecsPool.activeObjects then--专精，职责，图标，自动选取当前专精
-                    local currSpecID= GetSpecializationInfo(GetSpecialization() or 0)
-                    for frame, _ in pairs(self2.SpecsPool.activeObjects) do
-                        if frame.specID then
-                            local _, name, _, icon, role
-                            _, name, _, icon, role =GetSpecializationInfoByID(frame.specID)
-                            if frame.CheckBox and frame.CheckBox.Click and currSpecID== frame.specID then
-                                frame.CheckBox:Click()--自动选取当前专精
-                                text2= (icon and '|T'..icon..':0|t' or '')..(e.Icon[role] or '')..name
-                            end
-                            _, name, _, icon, role =GetSpecializationInfoByID(frame.specID)
-                            if name and frame.SpecName then
-                                frame.SpecName:SetText((icon and '|T'..icon..':0|t' or '')..(e.Icon[role] or '')..name)
-                            end
-                        end
-                    end
-                end
-                if self2.Apply and self2.Apply:IsEnabled() and self2.Apply.Click
-                    and not IsModifierKeyDown()
-                    and not Save.notAutoRequestToJoinClub
-                then
-                    print(id, addName, '|cnGREEN_FONT_COLOR:'..self2.Apply:GetText()..'|r', text2, '|cffff00ff'..(text or ''))
-                    self2.Apply:Click()
-                end
-            end)
+            hooksecurefunc(ClubFinderGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_RequestToJoinFrame)
+            hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_RequestToJoinFrame)
         end
 
     elseif event == "PLAYER_LOGOUT" then

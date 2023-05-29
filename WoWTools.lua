@@ -489,7 +489,7 @@ e.GetDifficultyColor = function(string, difficultyID)--DifficultyUtil.lua
     end
 end
 
-function e.Cstr(self, tab)--self, {size, copyFont, changeFont, color={r=,g=,b=,a=}, layer=, justifyH=, mouse}
+function e.Cstr(self, tab)--self, {size, copyFont, changeFont, color={r=,g=,b=,a=}, layer=, justifyH=, mouse=false, wheel=false}
     tab= tab or {}--Fonts.xml FontStyles.xml
     self= self or UIParent
     local font= tab.changeFont or self:CreateFontString(nil, (tab.layer or 'OVERLAY'), 'GameFontNormal', 5)
@@ -528,6 +528,9 @@ function e.Cstr(self, tab)--self, {size, copyFont, changeFont, color={r=,g=,b=,a
     end
     if tab.mouse then
         font:EnableMouse(true)
+    end
+    if tab.wheel then
+        font:EnableMouseWheel(true)
     end
     return font
 end
