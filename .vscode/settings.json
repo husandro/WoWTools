@@ -2799,7 +2799,9 @@
         "ClubFinderRequestToJoinMixin",
         "ClubFinderGetPlayerSpecIds",
         "SendMailMailButton",
-        "COMMUNITIES_MEMBER_LIST_SHOW_OFFLINE"
+        "COMMUNITIES_MEMBER_LIST_SHOW_OFFLINE",
+        "ClassNameplateBarFeralDruidFrame",
+        "RogueComboPointBarFrame"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
