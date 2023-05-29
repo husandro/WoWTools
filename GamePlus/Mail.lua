@@ -119,6 +119,7 @@ local function Init_Menu(self, level, type)
                 local name=get_Name_For_guid(wowInfo.playerGuid) or wowInfo.characterName
 
                 local text= e.GetPlayerInfo({guid=wowInfo.playerGuid, reName=true, reRealm=true})--角色信息
+
                 if wowInfo.characterLevel and wowInfo.characterLevel~=MAX_PLAYER_LEVEL and wowInfo.characterLevel>0 then--等级
                     text=text ..' |cff00ff00'..wowInfo.characterLevel..'|r'
                 end
@@ -152,6 +153,7 @@ local function Init_Menu(self, level, type)
             if name and guid and guid~=e.Player.guid and (isOnline or Save.showOffLine) then
 
                 local text= e.GetPlayerInfo({unit=nil, guid=guid,  reName=true, reRealm=true, reLink=false})--角色信息
+
                 text= (lv and lv~=MAX_PLAYER_LEVEL and lv>0) and text .. ' |cff00ff00'..lv..'|r' or text--等级
                 if zone and isOnline then
                     text= text..' '..zone
@@ -179,6 +181,38 @@ local function Init_Menu(self, level, type)
         end
         return
 
+    elseif type=='GROUP' then
+        local find
+        local u=  IsInRaid() and 'raid' or 'party'--取消队友标记
+        for i=1, GetNumGroupMembers() do
+            local unit= u..i
+            local isOnline= UnitIsConnected(unit)
+            if (Save.showOffLine or isOnline) and not UnitIsUnit('player', unit) then
+                local name= GetUnitName(unit, true)
+                local text=  i..')'.. (i<10 and '  ' or ' ')..e.GetPlayerInfo({unit= unit, reName=true, reRealm=true})
+
+                local lv= UnitLevel(unit)
+                text= (lv and lv~=MAX_PLAYER_LEVEL and lv>0) and text .. ' |cff00ff00'..lv..'|r' or text--等级
+                if not isOnline then
+                    text= text..' '..(e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)
+                end
+
+                info={
+                    text= text,
+                    notCheckable=true,
+                    tooltipOnButton=true,
+                    tooltipTitle= name,
+                    arg1= name,
+                    func= set_Text_SendMailNameEditBox,
+                }
+                e.LibDD:UIDropDownMenu_AddButton(info, level)
+                find= true
+            end
+        end
+        if not find then
+            e.LibDD:UIDropDownMenu_AddButton({text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
+        end
+        return
     end
 
     info={
@@ -206,18 +240,27 @@ local function Init_Menu(self, level, type)
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    if IsInGuild() then
-        info={
-            text= '|A:communities-guildbanner-background:0:0|a'..(e.onlyChinese and '公会' or GUILD),
-            hasArrow= true,
-            notCheckable=true,
-            menuList= 'GUILD',
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-    end
+
+    info={
+        text= '|A:communities-guildbanner-background:0:0|a'..(e.onlyChinese and '公会' or GUILD),
+        disabled= not IsInGuild(),
+        hasArrow= true,
+        notCheckable=true,
+        menuList= 'GUILD',
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     e.LibDD:UIDropDownMenu_AddSeparator(level)
-
+    info={
+        text= '|A:UI-HUD-UnitFrame-Player-Group-GuideIcon-2x:0:0|a'..(e.onlyChinese and '队员' or PLAYERS_IN_GROUP),
+        disabled= GetNumGroupMembers()<2,
+        hasArrow= true,
+        notCheckable=true,
+        menuList= 'GROUP',
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+    
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
         text= e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE,
         icon= 'mechagon-projects',
@@ -241,7 +284,8 @@ end
 
 
 
-local function Init_Send_Player_button(self)
+local function Init_Send_Player_button()
+    local self= SendMailFrame
     self.SendPlayer= self.SendPlayer or {}
     for index, name in pairs(Save.player) do
         local label= self.SendPlayer[index]
@@ -301,14 +345,8 @@ local function set_Send_Name()--SendName，设置，发送成功，名字
     end
 end
 
-local function get_Target_Name()
-    if UnitExists('target') and UnitIsPlayer('target') then
-        return GetUnitName('target', true), e.GetUnitRaceInfo({unit= 'target', reAtlas=true})
-    end
-end
-
 local function set_GetTargetNameButton_Texture(self)
-    if UnitExists('target') and UnitIsPlayer('target') then
+    if UnitExists('target') and UnitIsPlayer('target') and not UnitIsUnit('player', 'target') then
         local name, atlas= GetUnitName('target', true), e.GetUnitRaceInfo({unit= 'target', reAtlas=true})
         if name and atlas then
             self.name=name
@@ -349,17 +387,19 @@ local function Init_Settings_Button(self)
     end)
 
     --目标，名称
-    self.GetTargetNameButton= e.Cbtn(self, {size={22,22}})
-    self.GetTargetNameButton:SetPoint('LEFT', btn, 'RIGHT')
+    self.GetTargetNameButton= e.Cbtn(self, {size={20,20}})
+    self.GetTargetNameButton:SetPoint('LEFT', btn, 'RIGHT',2,2)
+    self.GetTargetNameButton:SetScript('OnEvent', set_GetTargetNameButton_Texture)
     self.GetTargetNameButton:SetScript('OnClick', function(self2)
         if self2.name then
             set_Text_SendMailNameEditBox(nil, self2.name)
         end
     end)
+    self.GetTargetNameButton:SetScript('OnLeave', function() e.tips:Hide() end)
     self.GetTargetNameButton:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(GetUnitName('target'), e.GetPlayerInfo({unit='target'}))
+        e.tips:AddDoubleLine(GetUnitName('target', true), e.GetPlayerInfo({unit='target', reName=true, reRealm=true}))
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
     end)
@@ -391,7 +431,7 @@ local function Init_Settings_Button(self)
     self.ClearPlayerButton:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine((not e.onlyChinese and CLEAR_ALL or "全部清除")..' |cnGREEN_FONT_COLOR:#'..#Save.player, '|cnGREEN_FONT_COLOR:Alt+'.. e.Icon.left)
+        e.tips:AddDoubleLine((not e.onlyChinese and CLEAR_ALL or "全部清除")..' |cnGREEN_FONT_COLOR:#'..#Save.player..'|r/20', '|cnGREEN_FONT_COLOR:Alt+'.. e.Icon.left)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.sacleClearPlayerButton or 1), e.Icon.mid)
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
@@ -404,7 +444,7 @@ end
 local function Init()--SendMailNameEditBox
     MailFrame:HookScript('OnShow', function(self2)
         Init_Settings_Button(SendMailFrame)--目标，名称
-        Init_Send_Player_button(SendMailFrame)
+        Init_Send_Player_button()
         C_Timer.After(0.3, function()
             if GetInboxNumItems()==0 then--如果没有信，转到，发信
                 MailFrameTab_OnClick(self2, 2)
@@ -439,20 +479,23 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave[addName] or Save
 
             if e.Player.husandro and #Save.player==0 then
-                Save.player= {
-                    'Zans-Nemesis',
-                    'Qisi-Nemesis',
-                    'Sandroxx-Nemesis',
-                    'Fuocco-Nemesis',
-                    'Sm-Nemesis',
-                    'Xiaod-Nemesis',
-                    'Dz-Nemesis',
-                    'Ws-Nemesis',
-                    'Sosi-Nemesis',
-                    'Maggoo-Nemesis',
-                    'Dhb-Nemesis',
-                    'Ms-Nemesis',--最大存20个
-                }
+                local region= GetCurrentRegion()--1US(includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
+                if region~=3 then
+                    Save.player= {
+                        'Zans-Nemesis',
+                        'Qisi-Nemesis',
+                        'Sandroxx-Nemesis',
+                        'Fuocco-Nemesis',
+                        'Sm-Nemesis',
+                        'Xiaod-Nemesis',
+                        'Dz-Nemesis',
+                        'Ws-Nemesis',
+                        'Sosi-Nemesis',
+                        'Maggoo-Nemesis',
+                        'Dhb-Nemesis',
+                        'Ms-Nemesis',--最大存20个
+                    }
+                end
             end
 
             --添加控制面板

@@ -1,7 +1,7 @@
 local id, e = ...
 
 local Save={
-    world= e.Player.cn and '大脚世界频道' or CHANNEL_CATEGORY_WORLD,
+    world= GetCurrentRegion()==5 and '大脚世界频道' or CHANNEL_CATEGORY_WORLD,
     myChatFilter= true,--过滤，多次，内容
 }
 local addName='ChatButtonWorldChannel'
