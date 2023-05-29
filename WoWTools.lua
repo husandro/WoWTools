@@ -145,20 +145,25 @@ function e.Class(unit, class, reAltlas)--职业图标
     end
 end
 
-e.GetGUID= function(unit, name)--从名字,名unit, 获取GUID
+function e.GetGUID(unit, name)--从名字,名unit, 获取GUID
     if unit then
         return UnitGUID(unit)
+
     elseif name then
         name= name:gsub('%-'..e.Player.realm, '')
         local info=C_FriendList.GetFriendInfo(name)--好友
         if info then
             return info.guid
+
         elseif e.GroupGuid[name] then--队友
             return e.GroupGuid[name].guid
+
         elseif e.WoWGUID[name] then--战网
             return e.WoWGUID[name]
+
         elseif name==e.Player.name then
             return e.Player.guid
+
         elseif UnitIsPlayer('target') and GetUnitName('target',true)==name then--目标
             return UnitGUID('target')
         end
@@ -223,7 +228,7 @@ e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, f
         if (not name or name=='') and tab.name then
             name=tab.name
         end
-        
+
         local unit= tab.unit or guid and e.GroupGuid[guid] and e.GroupGuid[guid].unit
         local friend= e.GetFriend(nil, guid, nil)--检测, 是否好友
         local faction= unit and e.GetUnitFaction(unit)--检查, 是否同一阵营
@@ -482,7 +487,7 @@ e.GetDifficultyColor = function(string, difficultyID)--DifficultyUtil.lua
     end
 end
 
-function e.Cstr(self, tab)--self, {size, copyFont, changeFont, color={r=,g=,b=,a=}, layer=, justifyH}
+function e.Cstr(self, tab)--self, {size, copyFont, changeFont, color={r=,g=,b=,a=}, layer=, justifyH=, mouse}
     tab= tab or {}--Fonts.xml FontStyles.xml
     self= self or UIParent
     local font= tab.changeFont or self:CreateFontString(nil, (tab.layer or 'OVERLAY'), 'GameFontNormal', 5)
@@ -518,6 +523,9 @@ function e.Cstr(self, tab)--self, {size, copyFont, changeFont, color={r=,g=,b=,a
                 font:SetTextColor(0.82, 0.82, 0.82)
             end
         end
+    end
+    if tab.mouse then
+        font:EnableMouse(true)
     end
     return font
 end

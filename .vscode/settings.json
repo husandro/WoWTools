@@ -2797,7 +2797,8 @@
         "ClubFinderOptionsMixin",
         "ClubFinderRoleMixin",
         "ClubFinderRequestToJoinMixin",
-        "ClubFinderGetPlayerSpecIds"
+        "ClubFinderGetPlayerSpecIds",
+        "SendMailMailButton"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

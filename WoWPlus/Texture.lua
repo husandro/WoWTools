@@ -852,6 +852,12 @@ local function Init_Set_AlphaAndColor()
     set_Alpha(SendMailMoneyBgRight)
     set_Alpha(SendMailMoneyBgLeft)
     hide_Texture(SendMailMoneyInset.Bg)
+    set_Alpha(MailFrame.NineSlice.LeftEdge)
+    set_Alpha(MailFrame.NineSlice.RightEdge)
+    set_Alpha(MailFrame.NineSlice.BottomRightCorner)
+    set_Alpha(MailFrame.NineSlice.BottomLeftCorner)
+    set_Alpha(MailFrame.NineSlice.BottomEdge)
+    set_Alpha(MailFrameInset.NineSlice.LeftEdge)
 
 
     --拾取, 历史
