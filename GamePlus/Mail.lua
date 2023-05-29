@@ -17,23 +17,25 @@ local function Init_Menu(self, level, type)
     if type=='SELF' then
         local find
         for guid, _ in pairs(WoWDate) do
-            local name, realm = select(6, GetPlayerInfoByGUID(guid))
-            local name_realm= name
-            if realm and realm~='' and realm~=e.Player.realm then
-                name_realm= name_realm..'-'..realm
-            end
-            info={
-                text= e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false}),
-                icon= 'auctionhouse-icon-favorite',
-                notCheckable= true,
-                arg1= name_realm,
-                func=function(self2, arg1)
-                    SendMailNameEditBox:SetText(arg1)
-                    SendMailNameEditBox:SetCursorPosition(0)
+            if guid~= e.Player.guid then
+                local name, realm = select(6, GetPlayerInfoByGUID(guid))
+                local name_realm= name
+                if realm and realm~='' and realm~=e.Player.realm then
+                    name_realm= name_realm..'-'..realm
                 end
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-            find=true
+                info={
+                    text= e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false}),
+                    icon= 'auctionhouse-icon-favorite',
+                    notCheckable= true,
+                    arg1= name_realm,
+                    func=function(_, arg1)
+                        SendMailNameEditBox:SetText(arg1)
+                        SendMailNameEditBox:SetCursorPosition(0)
+                    end
+                }
+                e.LibDD:UIDropDownMenu_AddButton(info, level)
+                find=true
+            end
         end
         if not find then
             e.LibDD:UIDropDownMenu_AddButton({text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
@@ -46,7 +48,7 @@ local function Init_Menu(self, level, type)
         for i=1 , C_FriendList.GetNumFriends() do
             local game=C_FriendList.GetFriendInfoByIndex(i)
             if game and game.name and game.guid then
-                local text=e.GetPlayerInfo({unit=nil, guid=game.guid, name=game.name,  reName=true, reRealm=true, reLink=false})--角色信息
+                local text= e.GetPlayerInfo({unit=nil, guid=game.guid, name=game.name,  reName=true, reRealm=true, reLink=false})--角色信息
                 text= (game.level and game.level~=MAX_PLAYER_LEVEL and game.level>0) and text .. ' |cff00ff00'..game.level..'|r' or text--等级
                 if game.area and game.connected then
                     if game.area == map then--地区
@@ -101,7 +103,7 @@ local function Init_Menu(self, level, type)
                     tooltipTitle= wow and wow.note or '',
                     tooltipText= name_realm,
                     arg1= name_realm,
-                    func=function(self2, arg1)
+                    func=function(_, arg1)
                         if arg1 then
                             SendMailNameEditBox:SetText(arg1)
                             SendMailNameEditBox:SetCursorPosition(0)
@@ -119,7 +121,7 @@ local function Init_Menu(self, level, type)
     end
 
     info={
-        text= e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET,
+        text= e.Icon.wow2..(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET),
         hasArrow= true,
         notCheckable=true,
         menuList= 'WOW',
@@ -127,7 +129,7 @@ local function Init_Menu(self, level, type)
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     info={
-        text= e.onlyChinese and '好友' or FRIEND,
+        text= '|A:groupfinder-icon-friend:0:0|a'..(e.onlyChinese and '好友' or FRIEND),
         hasArrow= true,
         notCheckable=true,
         menuList= 'FRIEND',
@@ -135,7 +137,7 @@ local function Init_Menu(self, level, type)
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     info={
-        text= e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME,
+        text= '|A:auctionhouse-icon-favorite:0:0|a'..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME),
         hasArrow= true,
         notCheckable=true,
         menuList= 'SELF',
