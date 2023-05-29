@@ -138,12 +138,17 @@ local function Init()--SendMailNameEditBox
 end
 
 
-local id, e= ...
 local panel= CreateFrame("Frame")
 panel:RegisterEvent('ADDON_LOADED')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
+            --添加控制面板
+            local check=e.CPanel(e.Icon.bank2..(e.onlyChinese and '商人' or addName), not Save.disabled, true)
+            check:SetScript('OnMouseDown', function()
+                Save.disabled= not Save.disabled and true or nil
+                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+            end)
 
             if Save.disabled then
                 panel:UnregisterAllEvents()
