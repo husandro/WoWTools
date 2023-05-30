@@ -634,13 +634,10 @@ local function Init_Button_Quick_Button()
                 set_Text_SendMailNameEditBox(_, Save.fast[self2.name])--设置，发送名称，文
 
                 local slotTab= get_Send_Max_Item()--能发送，数量
-                print( #slotTab)
                 if #slotTab==0 then
                     return
                 end
-                
-                
-                
+
                 for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+ NUM_REAGENTBAG_FRAMES do
                     for slot=1, C_Container.GetContainerNumSlots(bag) do
                         local info = C_Container.GetContainerItemInfo(bag, slot)
