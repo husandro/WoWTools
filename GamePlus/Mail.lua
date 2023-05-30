@@ -835,7 +835,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
---[[
+
             if e.Player.husandro and #Save.player==0 then
                 local region= GetCurrentRegion()--1US(includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
                 if region==3 then
@@ -855,7 +855,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     }
                 end
             end
-]]
+            
             --添加控制面板
             local check=e.CPanel('|A:UI-HUD-Minimap-Mail-Mouseover:0:0|a'..(e.onlyChinese and '邮件' or addName), not Save.disabled, true)
             check:SetScript('OnMouseDown', function()
