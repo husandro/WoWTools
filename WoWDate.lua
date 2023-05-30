@@ -10,11 +10,12 @@ e.GroupFrame={}--UnitFrame.lua 设置装等， 专精
 e.WoWGUID={}--e.WoWGUID[名称-服务器]=guid
 local function setwowguidTab(info)
     if info and info.characterName then
-        local name= info.characterName
-        if info.realmDisplayName and info.realmDisplayName~='' and info.realmDisplayName~=e.Player.realm then
-            name= name..'-'..info.realmDisplayName
+        local name= e.GetUnitName(info.characterName)
+        if info.isOnline and info.wowProjectID==1 then
+            e.WoWGUID[name]={guid=info.playerGuid, faction=info.factionName}
+        else
+            e.WoWGUID[name]=nil
         end
-        e.WoWGUID[name]= (info.isOnline and info.wowProjectID==1) and info.playerGuid or nil
     end
 end
 local function get_WoW_GUID_Info(friendIndex)
@@ -59,7 +60,6 @@ local function get_Player_Info(guid)--取得玩家信息
         end
 
         itemLevel= itemLevel or e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLevel
-        --local name, realm= UnitFullName(unit)
         local specID= GetInspectSpecialization(unit)
         e.UnitItemLevel[guid] = {--玩家装等
             itemLevel= itemLevel,

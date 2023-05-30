@@ -84,11 +84,11 @@ e.itemPetID={--宠物对换, wow9.0
 }
 
 local GetPlayerNameRemoveRealm= function(name, realm)--玩家名称, 去服务器为*
-    realm = realm=='' and nil or realm
+    name= name and name:match('(.+)%-') or name
     if name then
+        realm= realm=='' and nil or realm
         realm= realm or name:match('%-(.+)')
         if realm then
-            name= name:match('(.+)%-') or name
             if realm==e.Player.realm then
                 return name
             elseif e.Player.Realms[realm] then
@@ -97,11 +97,11 @@ local GetPlayerNameRemoveRealm= function(name, realm)--玩家名称, 去服务�
                 return name..'*'
             end
         end
-        return name
     end
+    return name
 end
 
-function e.GetUnitName(unit, guid, name)--取得全名
+function e.GetUnitName(name, unit, guid)--取得全名
     if name then
         if not name:find('%-') then
             name= name..'-'..e.Player.realm
@@ -176,22 +176,22 @@ function e.GetGUID(unit, name)--从名字,名unit, 获取GUID
         return UnitGUID(unit)
 
     elseif name then
-        --name= name:gsub('%-'..e.Player.realm, '')
         local info=C_FriendList.GetFriendInfo(name:gsub('%-'..e.Player.realm, ''))--好友
-
         if info then
             return info.guid
-
-        elseif e.GroupGuid[name] then--队友
+        end
+        
+        name= e.GetUnitName(name)
+        if e.GroupGuid[name] then--队友
             return e.GroupGuid[name].guid
 
         elseif e.WoWGUID[name] then--战网
-            return e.WoWGUID[name]
+            return e.WoWGUID[name].guid
 
         elseif name==e.Player.name then
             return e.Player.guid
 
-        elseif UnitIsPlayer('target') and GetUnitName('target',true)==name then--目标
+        elseif UnitIsPlayer('target') and e.GetUnitName(nil, 'target')==name then--目标
             return UnitGUID('target')
         end
     end
@@ -210,11 +210,11 @@ e.GetFriend= function(name, guid, unit)--检测, 是否好友
             end
         end
     elseif name then
-        name= name:gsub('%-'..e.Player.realm, '')
-        if e.WoWGUID[name] then
-            return e.Icon.wow2
-        elseif C_FriendList.GetFriendInfo(name)  then
+        if C_FriendList.GetFriendInfo(name:gsub('%-'..e.Player.realm, ''))  then
             return '|A:groupfinder-icon-friend:0:0|a'--好友
+        end
+        if e.WoWGUID[e.GetUnitName(name)] then
+            return e.Icon.wow2
         end
     end
 end
@@ -255,15 +255,19 @@ e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, f
 
     elseif guid and C_PlayerInfo.GUIDIsPlayer(guid) then
         local _, englishClass, _, englishRace, sex, name, realm = GetPlayerInfoByGUID(guid)
+
         if (not name or name=='') and tab.name then
             name=tab.name
         end
 
         local unit= tab.unit
-        if guid and e.GroupGuid[guid] then
-            unit = unit or e.GroupGuid[guid].unit
-            tab.faction= tab.faction or e.GroupGuid[guid].faction
+        if guid and (not tab.faction or unit) then
+            if e.GroupGuid[guid] then
+                unit = unit or e.GroupGuid[guid].unit
+                tab.faction= tab.faction or e.GroupGuid[guid].faction
+            end
         end
+
         local friend= e.GetFriend(nil, guid, nil)--检测, 是否好友
         local groupInfo= e.GroupGuid[guid] or {}--队伍成员
         local server= e.Get_Region(realm)--服务器，EU， US {col=, text=, realm=}
@@ -283,7 +287,7 @@ e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, f
 
         elseif tab.reName and name then
             if tab.reRealm then
-                text= text..(name..(realm and realm~='' and '-'..realm or ''))
+                text= text..e.GetUnitName(name)
             else
                 text= text..GetPlayerNameRemoveRealm(name, realm)
             end
@@ -1667,14 +1671,15 @@ local regionColor = {--https://wago.io/6-GG3RMcC
     ["mex"] = {col="|cFFCCCCFFMEX|r", text='MEX', realm="Mexico"},
     ["bzl"] = {col="|cFF8fce00BZL|r", text='BZL', realm="Brazil"},
 }
-e.Get_Region= function(server, guid, unit, disabled)--e.Get_Region(server, guid, unit)--服务器，EU， US {col=, text=, realm=}
+e.Get_Region= function(realm, guid, unit, disabled)--e.Get_Region(server, guid, unit)--服务器，EU， US {col=, text=, realm=}
     if disabled then
         regionColor={}
         Realms={}
     else
-        server= server
+        realm= realm=='' and e.Player.realm
+                or realm
                 or unit and ((select(2, UnitName(unit)) or e.Player.realm))
                 or guid and select(7, GetPlayerInfoByGUID(guid))
-        return server and Realms[server] and regionColor[Realms[server]]
+        return realm and Realms[realm] and regionColor[Realms[realm]]
     end
 end
