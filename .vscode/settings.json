@@ -2849,7 +2849,9 @@
         "OpenMailSubject",
         "SendMailBodyEditBox",
         "OpenMailFrame",
-        "MailFrameCloseButton"
+        "MailFrameCloseButton",
+        "MAIL_TO_LABEL",
+        "SendMailFrame_Update"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

@@ -499,7 +499,11 @@ local function Init_Settings_Button()
     self.ClearPlayerButton:SetPoint('TOPRIGHT', self, 'TOPLEFT', 0, -30)
     self.ClearPlayerButton:SetText(not e.onlyChinese and SLASH_STOPWATCH_PARAM_STOP2 or "清除")
     self.ClearPlayerButton:SetScript('OnClick', function(_, d)
-        if IsAltKeyDown() and d=='LeftButton' then
+        if d=='LeftButton' and not IsModifierKeyDown() then
+            SendMailNameEditBox:SetText('')
+            securecall(SendMailFrame_Update)
+
+        elseif IsAltKeyDown() and d=='LeftButton' then
             Save.player={}
             Init_Send_Player_button()
         end
@@ -520,6 +524,8 @@ local function Init_Settings_Button()
     self.ClearPlayerButton:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, (e.onlyChinese and '收件人' or MAIL_TO_LABEL)..e.Icon.left)
+        e.tips:AddLine(' ')
         e.tips:AddDoubleLine((not e.onlyChinese and CLEAR_ALL or "全部清除")..' |cnGREEN_FONT_COLOR:#'..#Save.player..'|r/20', '|cnGREEN_FONT_COLOR:Alt+'.. e.Icon.left)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.sacleClearPlayerButton or 1), e.Icon.mid)
         e.tips:AddDoubleLine(id, addName)
@@ -568,11 +574,7 @@ local function set_Label_Text(self2)--设置提示，数量，堆叠
 end
 
 local function set_Player_Lable(self2)--设置指定发送，玩家, 提示
-    local name=''
-    if Save.fast[self2.name] then
-        name= e.GetPlayerInfo({name=Save.fast[self2.name], reName=true, reNotRegion=true})
-    end
-    self2.playerLable:SetText(name)
+    self2.playerTexture:SetShown(Save.fast[self2.name] and true or false)
 end
 
 local function get_SendMailNameEditBox_Text()--取得， SendMailNameEditBox， 名称
@@ -590,10 +592,11 @@ end
 
 local function Init_Button_Quick_Button()
     local self= SendMailFrame
-    if self.FastButtons then
+    if not self or self.ClearPlayerButton then
         return
     end
-    self.FastButtons={}
+
+    local last, btn
     local fast={
         {4620681, 7, 5, e.onlyChinese and '布'},--1
         {4620678, 7, 6, e.onlyChinese and '皮革'},--2
@@ -609,10 +612,9 @@ local function Init_Button_Quick_Button()
         {"Interface/Icons/INV_Misc_Rune_09", 7, 11, e.onlyChinese and '其它'},--12
         {"Interface/Icons/Ability_Ensnare", 7, 0, e.onlyChinese and '贸易品'},--13
     }
-
-    local last, btn
+    local size=25
     for _, tab in pairs(fast) do
-        btn=e.Cbtn(self, {size={25,25}, texture=tab[1]})
+        btn=e.Cbtn(self, {size={size,size}, texture=tab[1]})
         if not last then
             btn:SetPoint('TOPLEFT', MailFrameCloseButton, 'BOTTOMRIGHT')
         else
@@ -625,9 +627,10 @@ local function Init_Button_Quick_Button()
         btn.numLable:SetPoint('TOPLEFT')
         btn.stackLable= e.Cstr(btn)
         btn.stackLable:SetPoint('BOTTOMRIGHT')
-        btn.playerLable= e.Cstr(btn)
-        btn.playerLable:SetPoint('BOTTOMLEFT', btn, 'BOTTOMRIGHT')
-        set_Player_Lable(btn)
+        btn.playerTexture= btn:CreateTexture(nil, 'OVERLAY')
+        btn.playerTexture:SetAtlas('AnimaChannel-Bar-Necrolord-Gem')
+        btn.playerTexture:SetSize(size/2, size/2)
+        btn.playerTexture:SetPoint('BOTTOMLEFT')
 
         btn:SetScript('OnClick', function(self2, d)
             if d=='LeftButton' then
@@ -647,9 +650,6 @@ local function Init_Button_Quick_Button()
                             and not info.isLocked
                             and not info.isBound
                         then
-                            --[[local itemName, itemLink, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType,
-                            itemStackCount, itemEquipLoc, itemTexture, sellPrice, classID, subclassID, bindType,
-                            expacID, setID, isCraftingReagent = GetItemInfo(info.hyperlink)]]
                             local classID, subclassID = select(6, GetItemInfoInstant(info.hyperlink))
                             if classID==self2.classID and subclassID==self2.subclassID then
                                 C_Container.PickupContainerItem(bag, slot)
@@ -685,6 +685,7 @@ local function Init_Button_Quick_Button()
         btn:SetScript('OnShow', function(self2)
             self2:RegisterEvent('BAG_UPDATE_DELAYED')
             set_Label_Text(self2)
+            set_Player_Lable(self2)
         end)
         btn:SetScript('OnHide', function(self2)
             self2:UnregisterAllEvents()
@@ -722,29 +723,12 @@ local function Init_Button_Quick_Button()
         self2:SetAlpha(num==0 and 0.3 or 1)
     end)
 end
-    --[[
-	local ofsxBase, ofsyBase, ofsyGap = 0, 0, 0
-	local scale = 0.73 -- gives good results for classic and retail
-	local TempButton, QAButtonCharName
-	TempButton = CreateFrame("Button", name, SendMailFrame, "ActionButtonTemplate")
-	local buttonHeight = math.floor(TempButton:GetHeight() + 0.5)
-	TempButton:SetScale(scale)
-	TempButton.icon:SetTexture(texture) 
-	TempButton:ClearAllPoints()
-	TempButton:SetPoint("TOPLEFT", "MailFrame", "TOPRIGHT", ofsxBase, ofsyBase - (buttonHeight + ofsyGap) * QAButtonPos)
-	TempButton:RegisterForClicks("AnyUp")
-	TempButton:SetScript("OnClick", function(self, button, down) Postal_QuickAttachButtonClick(button, classID, subclassID) end)
-	TempButton:SetFrameLevel(TempButton:GetFrameLevel() + 1)
-	QAButtonCharName = Postal_QuickAttachGetQAButtonCharName(classID, subclassID)
-	if QAButtonCharName ~= "" then toolTip = toolTip.."\n"..L["Default recipient:"].." "..QAButtonCharName end
-	SetQAButtonGameTooltip(TempButton, toolTip)
-	QAButtonPos = QAButtonPos + 1
-]]
+
 
 local function Init()--SendMailNameEditBox
     MailFrame:HookScript('OnShow', function(self2)
         Init_Button_Quick_Button()
-        Init_Settings_Button()--目标，名称
+        Init_Settings_Button()
         Init_Send_Player_button()
         C_Timer.After(0.3, function()
             if GetInboxNumItems()==0 then--如果没有信，转到，发信
