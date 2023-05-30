@@ -599,6 +599,8 @@ local function set_Label_Text(self2)--设置提示，数量，堆叠
     self2.numLable:SetText(num>0 and num or '')
     self2.stackLable:SetText(stack>0 and stack or '' )
     self2:SetAlpha(stack==0 and 0.1 or 1)
+    self2.num=num
+    self2.stack=stack
 end
 
 local function set_Player_Lable(self2)--设置指定发送，玩家, 提示
@@ -748,6 +750,9 @@ local function Init_Fast_Button()
             e.tips:AddDoubleLine((e.onlyChinese and '玩家' or PLAYER)..e.Icon.right..(name or ''),
                                     Save.fast[self2.name] and e.GetPlayerInfo({name= Save.fast[self2.name], reName=true, reRealm=true}) or (e.onlyChinese and '无' or NONE)
                                 )
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL, self2.num)
+            e.tips:AddDoubleLine(e.onlyChinese and '组数' or AUCTION_NUM_STACKS, self2.stack)
             e.tips:Show()
             self2:SetAlpha(1)
         end)
