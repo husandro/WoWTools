@@ -570,7 +570,7 @@ local function set_Label_Text(self2)--设置提示，数量，堆叠
     end
     self2.numLable:SetText(num>0 and num or '')
     self2.stackLable:SetText(stack>0 and stack or '' )
-    self2:SetAlpha(stack==0 and 0.3 or 1)
+    self2:SetAlpha(stack==0 and 0.1 or 1)
 end
 
 local function set_Player_Lable(self2)--设置指定发送，玩家, 提示
