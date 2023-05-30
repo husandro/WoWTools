@@ -212,17 +212,16 @@ local function Init_Menu(self, level, menuList,...)
 
     elseif menuList=='GROUP' then
         local find
-        local u=  IsInRaid() and 'raid' or 'party'--取消队友标记
+        local u=  IsInRaid() and 'raid' or 'party'
         for i=1, GetNumGroupMembers() do
             local unit= u..i
-            local isOnline= UnitIsConnected(unit)
-            if isOnline and not UnitIsUnit('player', unit) then
+            if not UnitIsUnit('player', unit) and UnitExists(unit) then
                 local name= GetUnitName(unit, true)
                 local text=  i..')'.. (i<10 and '  ' or ' ')..e.GetPlayerInfo({unit= unit, reName=true, reRealm=true})
 
                 local lv= UnitLevel(unit)
                 text= (lv and lv~=MAX_PLAYER_LEVEL and lv>0) and text .. ' |cff00ff00'..lv..'|r' or text--等级
-                if not isOnline then
+                if not UnitIsConnected(unit) then
                     text= text..' '..(e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)
                 end
 
