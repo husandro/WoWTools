@@ -178,7 +178,7 @@ function e.GetGUID(unit, name)--从名字,名unit, 获取GUID
         if info then
             return info.guid
         end
-        
+
         name= e.GetUnitName(name)
         if e.GroupGuid[name] then--队友
             return e.GroupGuid[name].guid
@@ -253,7 +253,7 @@ e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, f
 
     elseif guid and C_PlayerInfo.GUIDIsPlayer(guid) then
         local _, englishClass, _, englishRace, sex, name, realm = GetPlayerInfoByGUID(guid)
-        
+
         local unit= tab.unit
         if guid and (not tab.faction or unit) then
             if e.GroupGuid[guid] then

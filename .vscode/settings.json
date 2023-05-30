@@ -2851,7 +2851,13 @@
         "OpenMailFrame",
         "MailFrameCloseButton",
         "MAIL_TO_LABEL",
-        "SendMailFrame_Update"
+        "SendMailFrame_Update",
+        "MailFrameTitleText",
+        "SENDMAIL",
+        "SendMailCancelButton",
+        "SendMailAttachment7",
+        "SendMailAttachment6",
+        "HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

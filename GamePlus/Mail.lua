@@ -11,9 +11,12 @@ local Save={
         --['GUILD']=true,--公会
     },
     fast={},--快速，加载，物品，指定玩家
-    --scale=1.2,--清除历史数据，缩放
+    fastShow=true,--显示，按钮
+    --scaleClearPlayerButton=1.2,--清除历史数据，缩放
 }
-local size=25--图标大小
+
+local size=23--图标大小
+local button
 
 local function set_Text_SendMailNameEditBox(_, name)--设置，发送名称，文
     if name then
@@ -376,16 +379,15 @@ end
 
 
 local function Init_Player_List()
-    local self= SendMailFrame
-    self.SendPlayer= self.SendPlayer or {}
+    button.SendPlayer= button.SendPlayer or {}
     for index, name in pairs(Save.player) do
-        local label= self.SendPlayer[index]
+        local label= button.SendPlayer[index]
         if not label then
-            label= e.Cstr(self.ClearPlayerButton, {justifyH='RIGHT', mouse=true, size=16})
+            label= e.Cstr(button.ClearPlayerButton, {justifyH='RIGHT', mouse=true, size=14})
             if index==1 then
-                label:SetPoint('TOPRIGHT', self.ClearPlayerButton, 'BOTTOMRIGHT', 0, -6)
+                label:SetPoint('TOPRIGHT', button.ClearPlayerButton, 'BOTTOMRIGHT', 0, -6)
             else
-                label:SetPoint('TOPRIGHT', self.SendPlayer[index-1], 'BOTTOMRIGHT')
+                label:SetPoint('TOPRIGHT', button.SendPlayer[index-1], 'BOTTOMRIGHT')
             end
 
             label:SetScript('OnMouseDown', function(self2)
@@ -399,103 +401,130 @@ local function Init_Player_List()
                 e.tips:AddDoubleLine(id,addName)
                 e.tips:Show()
             end)
-            self.SendPlayer[index]= label
+            button.SendPlayer[index]= label
         end
         label:SetShown(name~=e.Player.name_realm)
         label.name= name
         label:SetText(get_Name_Info(name)..' '..(index<10 and ' ' or '')..'|cnGREEN_FONT_COLOR:('..index)
     end
 
-    for index= #Save.player+1, #self.SendPlayer do
-        self.SendPlayer[index]:SetShown(false)
-        self.SendPlayer[index]:SetText('')
+    for index= #Save.player+1, #button.SendPlayer do
+        button.SendPlayer[index]:SetShown(false)
+        button.SendPlayer[index]:SetText('')
     end
 end
 
-
-local SendName
-local function set_Send_Name()--SendName，设置，发送成功，名字
-    if SendName then
+--SendName，设置，发送成功，名字
+local function set_Send_Name()
+    if button.SendName then
         local find
         for _, name in pairs(Save.player) do
-            if name==SendName then
+            if name==button.SendName then
                 find=true
                 break
             end
         end
         if not find then
-            table.insert(Save.player, 1, SendName)
+            table.insert(Save.player, 1, button.SendName)
             if #Save.player>20 then
                 table.remove(Save.player, #Save.player)
             end
         end
         Init_Player_List()
-        SendName=nil
+        button.SendName=nil
     end
 end
 
-local function set_GetTargetNameButton_Texture(self)
+--目标，名称
+local function set_GetTargetNameButton_Texture(self2)
     if UnitExists('target') and UnitIsPlayer('target') and not UnitIsUnit('player', 'target') then
-        local name, atlas= GetUnitName('target', true), e.GetUnitRaceInfo({unit= 'target', reAtlas=true})
+        local name= GetUnitName('target', true)
+        local atlas= e.GetUnitRaceInfo({unit= 'target', reAtlas=true})
         if name and atlas then
-            self.name=name
-            self:SetNormalAtlas(atlas)
-            self:SetShown(true)
+            self2.name=name
+            self2:SetNormalAtlas(atlas)
+            self2:SetShown(true)
             return
         end
     end
-    self.name=nil
-    self:SetShown(false)
-end
+    self2.name=nil
+    self2:SetShown(false)
+end  
 
 local function Init_Button()
-    local self= SendMailFrame
+    if button then
+        return
+    end
     --下拉，菜单
-    self.MenuButton= e.Cbtn(self,{size={25,25}, atlas='common-icon-rotateleft'})
-    self.MenuButton:SetPoint('TOP', 15, -33)
-    self.MenuButton:SetScript('OnClick', function(self2)
+    button= e.Cbtn(SendMailFrame, {size={size, size}, atlas='common-icon-rotateleft'})
+    button:SetPoint('LEFT', SendMailNameEditBox, 'RIGHT', 2, 0)
+    button:SetScript('OnClick', function(self2)
         if not self2.Menu then
             self2.Menu= CreateFrame("Frame", id..addName..'Menu', self2, "UIDropDownMenuTemplate")
             e.LibDD:UIDropDownMenu_Initialize(self2.Menu, Init_Menu, 'MENU')
         end
         e.LibDD:ToggleDropDownMenu(1, nil, self2.Menu, self2, 15, 0)
     end)
+    button:RegisterEvent('MAIL_SEND_SUCCESS')--SendName，设置，发送成功，名字
+    button:RegisterEvent('MAIL_FAILED')
+    button:SetScript('OnEvent', function(self2, event)
+        if event=='MAIL_SEND_SUCCESS' then
+            set_Send_Name()--SendName，设置，发送成功，名字
 
-    --提示，内容
-    SendMailNameEditBox.tipsText= e.Cstr(self.MenuButton, {size=16})
-    SendMailNameEditBox.tipsText:SetPoint('BOTTOM', self.MenuButton, 'TOP')
-    SendMailNameEditBox:SetScript('OnTextChanged', function(self2)
-        local name= self2:GetText()
+        elseif event=='MAIL_FAILED' then
+            self2.SendName=nil
+        end
+    end)
+    SendMailMailButton:HookScript('OnClick', function()--SendName，设置，发送成功，名字
+        local name= SendMailNameEditBox:GetText() or ''
+        name= name:gsub(' ', '')
+        name= name=='' and nil or name
         if name and not name:find('%-') then
             name= name..'-'..e.Player.realm
         end
-        self2.tipsText:SetText(get_Name_Info(name, true))
+        button.SendName= name
+    end)
+
+
+    --提示，内容
+    --SendMailNameEditBox.tipsText= e.Cstr(button, {size=16})
+    --SendMailNameEditBox.tipsText:SetPoint('BOTTOM', SendMailNameEditBox, 'TOP')
+    SendMailNameEditBox:HookScript('OnTextChanged', function(self2)
+        local name= self2:GetText() or ''
+        if name and name~='' and not name:find('%-') then
+            name= name..'-'..e.Player.realm
+        end
+        if name ~='' then
+            MailFrameTitleText:SetText(get_Name_Info(name))
+        else
+            MailFrameTitleText:SetText(e.onlyChinese and '发件箱' or SENDMAIL)
+        end
     end)
 
     --目标，名称
-    self.GetTargetNameButton= e.Cbtn(self, {size={20,20}})
-    self.GetTargetNameButton:SetPoint('LEFT', self.MenuButton, 'RIGHT',2,2)
-    self.GetTargetNameButton:SetScript('OnEvent', set_GetTargetNameButton_Texture)
-    self.GetTargetNameButton:SetScript('OnClick', function(self2)
+    button.GetTargetNameButton= e.Cbtn(button, {size={size,size}})
+    button.GetTargetNameButton:SetPoint('LEFT', button, 'RIGHT',2,2)
+    button.GetTargetNameButton:SetScript('OnClick', function(self2)
         if self2.name then
             set_Text_SendMailNameEditBox(nil, self2.name)
         end
     end)
-    self.GetTargetNameButton:SetScript('OnLeave', function() e.tips:Hide() end)
-    self.GetTargetNameButton:SetScript('OnEnter', function(self2)
+    button.GetTargetNameButton:SetScript('OnLeave', function() e.tips:Hide() end)
+    button.GetTargetNameButton:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(GetUnitName('target', true), e.GetPlayerInfo({unit='target', reName=true, reRealm=true}))
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
     end)
-    set_GetTargetNameButton_Texture(self.GetTargetNameButton)
+    button.GetTargetNameButton:SetScript('OnEvent', set_GetTargetNameButton_Texture)
+    
 
     --历史记录
-    self.ClearPlayerButton= e.Cbtn(self, {size={size,size}, atlas='bags-button-autosort-up'})
-    self.ClearPlayerButton:SetPoint('TOPRIGHT', self, 'TOPLEFT', 0, -28)
-    self.ClearPlayerButton:SetText(not e.onlyChinese and SLASH_STOPWATCH_PARAM_STOP2 or "清除")
-    self.ClearPlayerButton:SetScript('OnClick', function(_, d)
+    button.ClearPlayerButton= e.Cbtn(button, {size={size,size}, atlas='bags-button-autosort-up'})
+    button.ClearPlayerButton:SetPoint('TOPRIGHT', SendMailFrame, 'TOPLEFT', 0, -28)
+    button.ClearPlayerButton:SetText(not e.onlyChinese and SLASH_STOPWATCH_PARAM_STOP2 or "清除")
+    button.ClearPlayerButton:SetScript('OnClick', function(_, d)
         if d=='LeftButton' and not IsModifierKeyDown() then
             SendMailNameEditBox:SetText('')
             securecall(SendMailFrame_Update)
@@ -505,31 +534,33 @@ local function Init_Button()
             Init_Player_List()
         end
     end)
-    self.ClearPlayerButton:SetScript('OnMouseWheel', function(self2, d)
-        local num= Save.scale or 1
+    button.ClearPlayerButton:SetScript('OnMouseWheel', function(self2, d)
+        local num= Save.scaleClearPlayerButton or 1
         if d==1 then
             num= num- 0.05
         elseif d==-1 then
             num= num+ 0.05
         end
         num= num<0.5 and 0.5 or num>2 and 2 or num
-        print(id, addName,e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(Save.scale or 1) )
-        Save.scale= num
+        print(id, addName,e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(Save.scaleClearPlayerButton or 1) )
+        Save.scaleClearPlayerButton= num
         self2:SetScale(num)
     end)
-    self.ClearPlayerButton:SetScript('OnLeave', function() e.tips:Hide() end)
-    self.ClearPlayerButton:SetScript('OnEnter', function(self2)
+    button.ClearPlayerButton:SetScript('OnLeave', function() e.tips:Hide() end)
+    button.ClearPlayerButton:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, (e.onlyChinese and '收件人' or MAIL_TO_LABEL)..e.Icon.left)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine((not e.onlyChinese and CLEAR_ALL or "全部清除")..' |cnGREEN_FONT_COLOR:#'..#Save.player..'|r/20', '|cnGREEN_FONT_COLOR:Alt+'.. e.Icon.left)
-        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scale or 1), e.Icon.mid)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scaleClearPlayerButton or 1), e.Icon.mid)
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
     end)
-    if Save.scale then
-        self.ClearPlayerButton:SetScale(Save.scale)
+
+    if Save.scaleClearPlayerButton and Save.scaleClearPlayerButton~=1 then
+        button.ClearPlayerButton:SetScale(Save.scaleClearPlayerButton)
     end
 end
 
@@ -588,14 +619,50 @@ local function get_SendMailNameEditBox_Text()--取得， SendMailNameEditBox， 
 end
 
 local function Init_Fast_Button()
-    local self= SendMailFrame
-    if not self or self.FastButton then
+    if button.FastButton then
         return
     end
 
-    self.FastButton= e.Cbtn(self, {size={size, size}})
+    button.FastButton= e.Cbtn(button, {size={size, size}, atlas= Save.fastShow and 'NPE_ArrowDown' or 'NPE_ArrowUp'})
+    button.FastButton:SetPoint('BOTTOMLEFT', MailFrameCloseButton, 'BOTTOMRIGHT', 0,2)
+    button.FastButton:SetAlpha(0.3)
+    button.FastButton.frame= CreateFrame('Frame', nil, button)
+    button.FastButton.frame:SetSize(size, 2)
+    button.FastButton.frame:SetPoint('TOPLEFT', button.FastButton, 'BOTTOMLEFT')
+    button.FastButton:SetScript('OnClick', function(self2)
+        Save.fastShow= not Save.fastShow and true or nil
+        self2:SetNormalAtlas(Save.fastShow and 'NPE_ArrowDown' or 'NPE_ArrowUp')
+        self2.frame:SetShown(Save.fastShow)
+    end)
+    button.FastButton:SetScript('OnMouseWheel', function(self2, d)
+        local num= Save.scaleFastButton or 1
+        if d==1 then
+            num= num- 0.05
+        elseif d==-1 then
+            num= num+ 0.05
+        end
+        num= num<0.5 and 0.5 or num>2 and 2 or num
+        print(id, addName,e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(Save.scaleFastButton or 1) )
+        Save.scaleFastButton= num
+        self2.frame:SetScale(num)
+    end)
+    button.FastButton:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.3) end)
+    button.FastButton:SetScript('OnEnter', function(self2)
+        self2:SetAlpha(1) 
+        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.onlyChinese and '收起选项 |A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS, e.GetYesNo(not Save.fastShow)..e.Icon.left)
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scaleFastButton or 1), e.Icon.mid)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:Show()
+    end)
 
-    local last, btn
+    if Save.scaleFastButton and Save.scaleFastButton~=1 then
+        button.FastButton.frame:SetScale(Save.scaleFastButton)
+    end
+    button.FastButton.frame:SetShown(Save.fastShow)
+
     local fast={
         {4620681, 7, 5, e.onlyChinese and '布'},--1
         {4620678, 7, 6, e.onlyChinese and '皮革'},--2
@@ -611,14 +678,14 @@ local function Init_Fast_Button()
         {"Interface/Icons/INV_Misc_Rune_09", 7, 11, e.onlyChinese and '其它'},--12
         {"Interface/Icons/Ability_Ensnare", 7, 0, e.onlyChinese and '贸易品'},--13
     }
-    
+    local last, btn
     for _, tab in pairs(fast) do
-        btn=e.Cbtn(self, {size={size,size}, texture=tab[1]})
-        if not last then
-            btn:SetPoint('TOPLEFT', MailFrameCloseButton, 'BOTTOMRIGHT')
-        else
-            btn:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -2)
-        end
+        btn= e.Cbtn(button.FastButton.frame, {size={size,size}, texture=tab[1]})
+        --if not last then
+        --    btn:SetPoint('TOPLEFT', button.FastButton.frame, 'BOTTOMLEFT')
+        --else
+            btn:SetPoint('TOPLEFT', last or button.FastButton.frame, 'BOTTOMLEFT')--,0, -2)
+        --end
         btn.classID= tab[2]
         btn.subclassID= tab[3]
         btn.name= tab[4] or GetItemSubClassInfo(tab[2], tab[3])
@@ -668,7 +735,10 @@ local function Init_Fast_Button()
             end
         end)
         
-        btn:SetScript('OnLeave', function() e.tips:Hide() end)
+        btn:SetScript('OnLeave', function(self2)
+            set_Label_Text(self2)--设置提示，数量，堆叠
+            e.tips:Hide()
+        end)
         btn:SetScript('OnEnter', function(self2)
             set_Player_Lable(self2)--设置指定发送，玩家, 提示
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
@@ -679,6 +749,7 @@ local function Init_Fast_Button()
                                     Save.fast[self2.name] and e.GetPlayerInfo({name= Save.fast[self2.name], reName=true, reRealm=true}) or (e.onlyChinese and '无' or NONE)
                                 )
             e.tips:Show()
+            self2:SetAlpha(1)
         end)
 
         btn:SetScript('OnShow', function(self2)
@@ -687,15 +758,15 @@ local function Init_Fast_Button()
             set_Player_Lable(self2)
         end)
         btn:SetScript('OnHide', function(self2)
-            self2:UnregisterAllEvents()
+            self2:UnregisterEvent('BAG_UPDATE_DELAYED')
         end)
         btn:SetScript('OnEvent', set_Label_Text)
 
         last= btn
     end
 
-    btn=e.Cbtn(self, {size={size,size}, atlas='bags-button-autosort-up'})
-    btn:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -12)
+    btn=e.Cbtn(button.FastButton.frame, {size={size,size}, atlas='bags-button-autosort-up'})
+    btn:SetPoint('BOTTOMRIGHT', SendMailAttachment6, 'TOPRIGHT',15, -2)
     btn:SetScript('OnClick', function()
         for i= 1, ATTACHMENTS_MAX_SEND do
             if HasSendMailItem(i) then
@@ -703,7 +774,7 @@ local function Init_Fast_Button()
             end
         end
     end)
-    btn:SetScript('OnHide', function() e.tips:Hide() end)
+    btn:SetScript('OnLeave', function() e.tips:Hide() end)
     btn:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -725,35 +796,24 @@ end
 
 
 local function Init()--SendMailNameEditBox
-    Init_Button()
-    Init_Fast_Button()
-
     MailFrame:HookScript('OnShow', function(self2)
+        Init_Button()
+        Init_Fast_Button()
         Init_Player_List()
 
+        button.GetTargetNameButton:RegisterEvent('PLAYER_TARGET_CHANGED')
         C_Timer.After(0.3, function()
             if GetInboxNumItems()==0 then--如果没有信，转到，发信
                 MailFrameTab_OnClick(self2, 2)
             end
+            set_GetTargetNameButton_Texture(button.GetTargetNameButton)
         end)
-
-        SendMailFrame.GetTargetNameButton:RegisterEvent('PLAYER_TARGET_CHANGED')--目标，名称
-        set_GetTargetNameButton_Texture(SendMailFrame.GetTargetNameButton)--目标，名称
-
     end)
 
-    MailFrame:HookScript('OnHide', function()
-        SendMailFrame.GetTargetNameButton:UnregisterAllEvents()--目标，名称
-        SendName=nil--设置，发送成功，名字
+    MailFrame:HookScript('OnHide', function(self2)
+        button.GetTargetNameButton:UnregisterAllEvents()
     end)
 
-
-    SendMailMailButton:HookScript('OnClick', function()--SendName，设置，发送成功，名字
-        SendName= SendMailNameEditBox:GetText()
-        if SendName and not SendName:find('%-') then
-            SendName= SendName..'-'..e.Player.realm
-        end
-    end)
 end
 
 
@@ -763,7 +823,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
-
+--[[
             if e.Player.husandro and #Save.player==0 then
                 local region= GetCurrentRegion()--1US(includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
                 if region==3 then
@@ -783,7 +843,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     }
                 end
             end
-
+]]
             --添加控制面板
             local check=e.CPanel('|A:UI-HUD-Minimap-Mail-Mouseover:0:0|a'..(e.onlyChinese and '邮件' or addName), not Save.disabled, true)
             check:SetScript('OnMouseDown', function()
@@ -795,10 +855,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 panel:UnregisterAllEvents()
             else
                 Init()
-
-                panel:RegisterEvent('MAIL_SEND_SUCCESS')
-                panel:RegisterEvent('MAIL_FAILED')
-
                 panel:UnregisterEvent('ADDON_LOADED')
             end
             panel:RegisterEvent('PLAYER_LOGOUT')
@@ -808,12 +864,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if not e.ClearAllSave then
             WoWToolsSave[addName]=Save
         end
-
-    elseif event=='MAIL_SEND_SUCCESS' then
-        set_Send_Name()--SendName，设置，发送成功，名字
-
-    elseif event=='MAIL_FAILED' then
-        SendName=nil
     end
 
 end)
