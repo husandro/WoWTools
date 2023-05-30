@@ -84,21 +84,19 @@ e.itemPetID={--宠物对换, wow9.0
 }
 
 local GetPlayerNameRemoveRealm= function(name, realm)--玩家名称, 去服务器为*
-    name= name and name:match('(.+)%-') or name
-    if name then
-        realm= realm=='' and nil or realm
-        realm= realm or name:match('%-(.+)')
-        if realm then
-            if realm==e.Player.realm then
-                return name
-            elseif e.Player.Realms[realm] then
-                return name..'|cnGREEN_FONT_COLOR:*|r'
-            else
-                return name..'*'
-            end
-        end
+    if not name then
+        return
     end
-    return name
+    local reName= name:match('(.+)%-') or name
+    local reRealm= name:match('%-(.+)') or realm
+    if not reName or reRealm=='' or reRealm==e.Player.realm then
+        return reName
+    elseif e.Player.Realms[reRealm] then
+        return reName..'|cnGREEN_FONT_COLOR:*|r'
+    elseif reRealm then
+        return reName..'*'
+    end
+    return reName
 end
 
 function e.GetUnitName(name, unit, guid)--取得全名
@@ -255,11 +253,7 @@ e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, f
 
     elseif guid and C_PlayerInfo.GUIDIsPlayer(guid) then
         local _, englishClass, _, englishRace, sex, name, realm = GetPlayerInfoByGUID(guid)
-
-        if (not name or name=='') and tab.name then
-            name=tab.name
-        end
-
+        
         local unit= tab.unit
         if guid and (not tab.faction or unit) then
             if e.GroupGuid[guid] then
@@ -287,7 +281,11 @@ e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, f
 
         elseif tab.reName and name then
             if tab.reRealm then
-                text= text..e.GetUnitName(name)
+                if not realm or realm=='' or realm==e.Player.realm then
+                    text= text..name
+                else
+                    text= text..name..'-'..realm
+                end
             else
                 text= text..GetPlayerNameRemoveRealm(name, realm)
             end

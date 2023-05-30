@@ -79,7 +79,7 @@ local function Init_Menu(self, level, menuList,...)
             local game=C_FriendList.GetFriendInfoByIndex(i)
             if game and game.guid and (game.connected or Save.show['FRIEND']) and not WoWDate[game.guid] then
 
-                local text= e.GetPlayerInfo({unit=nil, guid=game.guid,  reName=true, reRealm=true, reLink=false})--角色信息
+                local text= e.GetPlayerInfo({unit=nil, guid=game.guid, reName=true})--角色信息
                 text= (game.level and game.level~=MAX_PLAYER_LEVEL and game.level>0) and text .. ' |cff00ff00'..game.level..'|r' or text--等级
                 if game.area and game.connected then
                     text= text..' '..game.area
@@ -158,11 +158,11 @@ local function Init_Menu(self, level, menuList,...)
 
     elseif menuList=='GUILD' then
         local num=0
-        for index=1,  GetNumGuildMembers() do
+        for index=1, GetNumGuildMembers() do
             local name, rankName, rankIndex, lv, _, zone, publicNote, officerNote, isOnline, status, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)
-            if name and guid and (isOnline or rankIndex<2 or (Save.show['GUILD'] and num<60)) and guid~=e.Player.guid and not WoWDate[guid] then
+            if name and guid and (isOnline or rankIndex<2 or (Save.show['GUILD'] and num<60)) and not WoWDate[guid] then
 
-                local text= e.GetPlayerInfo({unit=nil, guid=guid,  reName=true, reRealm=true, reLink=false})--角色信息
+                local text= e.GetPlayerInfo({guid=guid, reName=true, reRealm=true,})--角色信息
 
                 text= (lv and lv~=MAX_PLAYER_LEVEL and lv>0) and text .. ' |cff00ff00'..lv..'|r' or text--等级
                 if zone and isOnline then
@@ -215,7 +215,7 @@ local function Init_Menu(self, level, menuList,...)
         local u=  IsInRaid() and 'raid' or 'party'
         for i=1, GetNumGroupMembers() do
             local unit= u..i
-            if not UnitIsUnit('player', unit) and UnitExists(unit) then
+            if UnitExists(unit) and not UnitIsUnit('player', unit) then
                 local name= GetUnitName(unit, true)
                 local text=  i..')'.. (i<10 and '  ' or ' ')..e.GetPlayerInfo({unit= unit, reName=true, reRealm=true})
 
@@ -246,14 +246,17 @@ local function Init_Menu(self, level, menuList,...)
         local members= C_Club.GetClubMembers(menuList) or {}
         for index, memberID in pairs(members) do
             local tab = C_Club.GetMemberInfo(menuList, memberID) or {}
-            if tab.guid and tab.name and (tab.zone or tab.role<4 or (Save.show[menuList] and num<60)) and not tab.isSelf and not WoWDate[tab.guid] then
+            if tab.guid and tab.name and (tab.zone or tab.role<4 or (Save.show[menuList] and num<60)) and not WoWDate[tab.guid] then
                 local faction= tab.faction==Enum.PvPFaction.Alliance and 'Alliance' or tab.faction==Enum.PvPFaction.Horde and 'Horde'
                 local  text= e.GetPlayerInfo({guid=tab.guid,  reName=true, reRealm=true, factionName=faction})--角色信息
 
                 text= (tab.level and tab.level~=MAX_PLAYER_LEVEL and tab.level>0) and text .. ' |cff00ff00'..tab.level..'|r' or text--等级
                 if tab.zone then
                     text= text..' '..tab.zone
+                else
+                    text= text..' '..(e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)
                 end
+
                 local icon
                 if tab.role == Enum.ClubRoleIdentifier.Owner or tab.role == Enum.ClubRoleIdentifier.Leader then
                     icon= "Interface\\GroupFrame\\UI-Group-LeaderIcon"
