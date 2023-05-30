@@ -696,7 +696,7 @@ local function Init_Fast_Button()
         btn.stackLable= e.Cstr(btn)
         btn.stackLable:SetPoint('BOTTOMRIGHT')
         btn.playerTexture= btn:CreateTexture(nil, 'OVERLAY')
-        btn.playerTexture:SetAtlas('AnimaChannel-Bar-Necrolord-Gem')
+        btn.playerTexture:SetAtlas('AnimaChannel-Bar-Venthyr-Gem')
         btn.playerTexture:SetSize(size/2, size/2)
         btn.playerTexture:SetPoint('BOTTOMLEFT')
 
@@ -731,9 +731,10 @@ local function Init_Fast_Button()
                     end
                 end
 
-            elseif d=='RightButton' then
+            elseif d=='RightButton' and IsAltKeyDown() then
                 Save.fast[self2.name]= get_SendMailNameEditBox_Text()--取得， SendMailNameEditBox， 名称
                 set_Player_Lable(self2)--设置指定发送，玩家, 提示
+                print(id, addName, self2.name, Save.fast[self2.name] or (e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2))
             end
         end)
         
@@ -747,8 +748,8 @@ local function Init_Fast_Button()
             e.tips:ClearLines()
             e.tips:AddDoubleLine((e.onlyChinese and '添加' or ADD)..e.Icon.left, self2.name)
             local name=  get_SendMailNameEditBox_Text()--取得， SendMailNameEditBox， 名称
-            e.tips:AddDoubleLine((e.onlyChinese and '玩家' or PLAYER)..e.Icon.right..(name or ''),
-                                    Save.fast[self2.name] and e.GetPlayerInfo({name= Save.fast[self2.name], reName=true, reRealm=true}) or (e.onlyChinese and '无' or NONE)
+            e.tips:AddDoubleLine('Alt+'..e.Icon.right..(name or (e.onlyChinese and '玩家' or PLAYER)),
+                                    Save.fast[self2.name] and '|A:AnimaChannel-Bar-Venthyr-Gem:0:0|a|cnGREEN_FONT_COLOR:'..e.GetPlayerInfo({name= Save.fast[self2.name], reName=true, reRealm=true}) or (e.onlyChinese and '无' or NONE)
                                 )
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL, self2.num)
