@@ -101,7 +101,33 @@ local GetPlayerNameRemoveRealm= function(name, realm)--玩家名称, 去服务�
     end
 end
 
-e.GetUnitRaceInfo=function(tab)--e.GetUnitRaceInfo({unit=nil, guid=nil, race=nil, sex=nil, reAtlas=false})--玩家种族图标
+function e.GetUnitName(unit, guid, name)--取得全名
+    if name then
+        if not name:find('%-') then
+            name= name..'-'..e.Player.realm
+        end
+        return name
+    elseif guid then
+        local name2, realm = select(6, GetPlayerInfoByGUID(guid))
+        if name2 then
+            if not realm or realm=='' then
+                realm= e.Player.realm
+            end
+            return name2..'-'..realm
+        end
+    elseif unit then
+        local name2, realm= UnitName(unit)
+        if name2 then
+            if not realm or realm=='' then
+                realm= e.Player.realm
+            end
+            return name2..'-'..realm
+        end
+    end
+    return ''
+end
+
+function e.GetUnitRaceInfo(tab)--e.GetUnitRaceInfo({unit=nil, guid=nil, race=nil, sex=nil, reAtlas=false})--玩家种族图标
     local race =tab.race or tab.unit and select(2,UnitRace(tab.unit))
     local sex= tab.sex
     if not (race or sex) and tab.guid then
@@ -150,9 +176,9 @@ function e.GetGUID(unit, name)--从名字,名unit, 获取GUID
         return UnitGUID(unit)
 
     elseif name then
-        name= name:gsub('%-'..e.Player.realm, '')
-        local info=C_FriendList.GetFriendInfo(name)--好友
-        
+        --name= name:gsub('%-'..e.Player.realm, '')
+        local info=C_FriendList.GetFriendInfo(name:gsub('%-'..e.Player.realm, ''))--好友
+
         if info then
             return info.guid
 
@@ -193,8 +219,10 @@ e.GetFriend= function(name, guid, unit)--检测, 是否好友
     end
 end
 
-e.GetUnitFaction= function(unit, text, all)--检查, 是否同一阵营
-    local faction= unit and UnitFactionGroup(unit) or text
+e.GetUnitFaction= function(unit, faction, all)--检查, 是否同一阵营
+    if not faction and unit then
+        faction= UnitFactionGroup(unit)
+    end
     if faction and (faction~= e.Player.faction or all) then
         return faction=='Horde' and e.Icon.horde2 or faction=='Alliance' and e.Icon.alliance2 or '|A:nameplates-icon-flag-neutral:0:0|a'
     end
@@ -220,7 +248,7 @@ e.PlayerLink=function(name, guid, slotLink) --玩家超链接
     end
 end
 
-e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, factionName=nil, reName=true, reLink=false, reRealm=false})
+e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, faction=nil, reName=true, reLink=false, reRealm=false})
     local guid= tab.guid or e.GetGUID(tab.unit, tab.name)
     if guid==e.Player.guid then
         return e.Icon.player..((tab.reName or tab.reLink) and e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r' or '')..e.Icon.star2
@@ -231,15 +259,18 @@ e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, f
             name=tab.name
         end
 
-        local unit= tab.unit or guid and e.GroupGuid[guid] and e.GroupGuid[guid].unit
+        local unit= tab.unit
+        if guid and e.GroupGuid[guid] then
+            unit = unit or e.GroupGuid[guid].unit
+            tab.faction= tab.faction or e.GroupGuid[guid].faction
+        end
         local friend= e.GetFriend(nil, guid, nil)--检测, 是否好友
-        local faction= e.GetUnitFaction(unit, tab.factionName)--检查, 是否同一阵营
         local groupInfo= e.GroupGuid[guid] or {}--队伍成员
         local server= e.Get_Region(realm)--服务器，EU， US {col=, text=, realm=}
 
         local text= (server and server.col or '')
                     ..(friend or '')
-                    ..(faction or '')
+                    ..(e.GetUnitFaction(unit, tab.faction) or '')--检查, 是否同一阵营
                     ..(e.GetUnitRaceInfo({unit=unit, guid=guid , race=englishRace, sex=sex, reAtlas=false}) or '')
                     ..(e.Class(unit, englishClass) or '')
 
@@ -321,7 +352,7 @@ e.Icon={
     map2='|A:poi-islands-table:0:0|a',
     wow2='|A:Icon-WoW:0:0|a',--136235
 
-    horde='charcreatetest-logo-horde',
+    horde= 'charcreatetest-logo-horde',
     alliance='charcreatetest-logo-alliance',
     horde2='|A:charcreatetest-logo-horde:0:0|a',
     alliance2='|A:charcreatetest-logo-alliance:0:0|a',

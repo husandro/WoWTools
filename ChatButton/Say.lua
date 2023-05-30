@@ -55,12 +55,12 @@ local function getWhisper(event, text, name, _, _, _, _, _, _, _, _, _, guid)
     if e.Player.name_realm~=name and name then
         local type= event:find('INFORM') and true or nil--_INFORM 发送
         local index=findWhisper(name)
-        --local tab={text=text, type=type, time=date('%X')}
+        local tab= {text=text, type=type, time=date('%X')}
         if index then
-            table.insert(WhisperTab[index].msg, {text=text, type=type, time=date('%X')})
+            table.insert(WhisperTab[index].msg, tab)
         else
             local wow= event:find('MSG_BN') and true or nil
-            table.insert(WhisperTab, {name=name, wow=wow, guid=guid, msg={{text=text, type=type, time=date('%X')}}})
+            table.insert(WhisperTab, {name=name, wow=wow, guid=guid, msg={tab}})
         end
         if not type then
             numWhisper= numWhisper + 1--最后密语,数量
@@ -122,7 +122,7 @@ local function Init_Menu(self, level, type)--主菜单
                             end
                         end
                         if gameAccountInfo.playerGuid then
-                            text= text..e.GetPlayerInfo({unit=nil, guid=gameAccountInfo.playerGuid, name=nil,  reName=true, reRealm=true, reLink=false})
+                            text= text..e.GetPlayerInfo({guid=gameAccountInfo.playerGuid, faction=gameAccountInfo.factionName, reName=true, reRealm=true,})
                             if gameAccountInfo.areaName then --位置
                                 if gameAccountInfo.areaName==map then
                                     text=text..e.Icon.map2
@@ -157,8 +157,8 @@ local function Init_Menu(self, level, type)--主菜单
             local map=e.GetUnitMapName('player');--玩家区域名称
             for i=1 , C_FriendList.GetNumFriends() do
                 local game=C_FriendList.GetFriendInfoByIndex(i)
-                if game and game.connected and (game.guid or game.name) and not game.mobile then--and not game.afk and not game.dnd then 
-                    local text=e.GetPlayerInfo({unit=nil, guid=game.guid, name=game.name,  reName=true, reRealm=true, reLink=false})--角色信息
+                if game and game.connected and game.guid and not game.mobile then--and not game.afk and not game.dnd then 
+                    local text=e.GetPlayerInfo({guid=game.guid, reName=true, reRealm=true})--角色信息
                     text= (game.level and game.level~=MAX_PLAYER_LEVEL) and text .. ' |cff00ff00'..game.level..'|r' or text--等级
                     if game.area then
                         if game.area == map then--地区
@@ -200,14 +200,14 @@ local function Init_Menu(self, level, type)--主菜单
                 end
 
                 info={
-                    text=(tab.wow and e.Icon.wow2 or '')..e.GetPlayerInfo({unit=tab.unit, guid=tab.guid, name=tab.name,  reName=true, reRealm=true, reLink=false}),
+                    text=(tab.wow and e.Icon.wow2 or '')..e.GetPlayerInfo({unit=tab.unit, guid=tab.guid, name=tab.name, faction=tab.faction, reName=true, reRealm=true}),
                     notCheckable=true,
                     tooltipOnButton=true,
                     tooltipTitle= e.onlyChinese and '记录: 密语' or (PVP_RECORD..SLASH_TEXTTOSPEECH_WHISPER),
                     tooltipText=text,
                     arg1= tab.name,
                     arg2= tab.wow,
-                    func=function(self2, arg1, arg2)
+                    func=function(_, arg1, arg2)
                         e.Say(nil, arg1, arg2)
                         button.type='/w'
                         button.name=arg1

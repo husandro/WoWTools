@@ -1,6 +1,6 @@
 local id, e = ...
 local panel=CreateFrame("Frame")
-local addName= 'WoWDate'
+--local addName= 'WoWDate'
 WoWDate={}
 e.GroupFrame={}--UnitFrame.lua 设置装等， 专精
 
@@ -64,8 +64,7 @@ local function get_Player_Info(guid)--取得玩家信息
         e.UnitItemLevel[guid] = {--玩家装等
             itemLevel= itemLevel,
             specID= specID,
-            --name= name,
-            --realm= realm,
+            faction= UnitFactionGroup(unit),
             col= hex,
             r=r,
             g=g,
@@ -127,6 +126,7 @@ function e.GetGroupGuidDate()--队伍数据收集
                         unit=unit,
                         subgroup= subgroup,
                         combatRole= role or combatRole,
+                        faction= UnitFactionGroup(unit),
                     }
                     e.GroupGuid[guid]= tab
                     tab.guid= guid
@@ -148,6 +148,7 @@ function e.GetGroupGuidDate()--队伍数据收集
                         unit= unit,
                         combatRole= UnitGroupRolesAssigned(unit),
                         guid=guid,
+                        faction= UnitFactionGroup(unit),
                     }
                     e.GroupGuid[guid]= tab
                     tab.guid= guid
@@ -381,6 +382,7 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
                     --Money=钱
                     --GuildInfo=公会信息,
                 }
+            WoWDate[e.Player.guid].faction= e.Player.faction--派系
 
             for guid, tab in pairs(WoWDate) do--清除不是本周数据
                 if tab.Keystone.week ~=e.Player.week then

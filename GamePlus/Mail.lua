@@ -32,11 +32,11 @@ end
 local function get_Name_Info(name, notName)--取得名称，信息
     local text= e.GetPlayerInfo({name=name, reName=not notName, reRealm=true})
     if text=='' then
-        for guid, _ in pairs(WoWDate) do
+        for guid, tab in pairs(WoWDate) do
             local name2, realm = select(6, GetPlayerInfoByGUID(guid))
             realm= (not realm or realm=='') and e.Player.realm or realm
             if name==(name2..'-'..realm) then
-                return e.Icon.star2..e.GetPlayerInfo({guid=guid, reName=not notName, realm=true})
+                return e.Icon.star2..e.GetPlayerInfo({guid=guid, faction=tab.faction, reName=not notName, realm=true})
             end
         end
         if notName then
@@ -120,7 +120,7 @@ local function Init_Menu(self, level, menuList,...)
     elseif menuList=='WOW' then
         local find
         for i=1 ,BNGetNumFriends() do
-            local wow=C_BattleNet.GetFriendAccountInfo(i);
+            local wow= C_BattleNet.GetFriendAccountInfo(i);
             local wowInfo= wow and wow.gameAccountInfo
             if wowInfo
                 and wowInfo.playerGuid
@@ -129,7 +129,7 @@ local function Init_Menu(self, level, menuList,...)
             then
                 local name=get_Name_For_guid(wowInfo.playerGuid) or wowInfo.characterName
 
-                local text= e.GetPlayerInfo({guid=wowInfo.playerGuid, reName=true, reRealm=true})--角色信息
+                local text= e.GetPlayerInfo({guid=wowInfo.playerGuid, reName=true, reRealm=true, factionName=wowInfo.factionName})--角色信息
 
                 if wowInfo.characterLevel and wowInfo.characterLevel~=MAX_PLAYER_LEVEL and wowInfo.characterLevel>0 then--等级
                     text=text ..' |cff00ff00'..wowInfo.characterLevel..'|r'
@@ -160,7 +160,7 @@ local function Init_Menu(self, level, menuList,...)
         local num=0
         for index=1,  GetNumGuildMembers() do
             local name, rankName, rankIndex, lv, _, zone, publicNote, officerNote, isOnline, status, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)
-            if name and guid and guid~=e.Player.guid and (isOnline or rankIndex<2 or (Save.show['GUILD'] and num<60)) and not WoWDate[guid] then
+            if name and guid and (isOnline or rankIndex<2 or (Save.show['GUILD'] and num<60)) and guid~=e.Player.guid and not WoWDate[guid] then
 
                 local text= e.GetPlayerInfo({unit=nil, guid=guid,  reName=true, reRealm=true, reLink=false})--角色信息
 

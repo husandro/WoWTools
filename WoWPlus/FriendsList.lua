@@ -108,19 +108,28 @@ local function set_QuinkJoin_Init()--快速加入, 初始化
         end
 
         local leaderGUID = select(8, C_SocialQueue.GetGroupInfo(guid))--玩家名称
-        local text= leaderGUID and e.GetPlayerInfo({unit=nil, guid=leaderGUID , name=nil, factionName=nil, reName=true, reLink=false})
-        if text and not self.nameInfo then
+        local link= leaderGUID and e.GetPlayerInfo({guid=leaderGUID, reName=true, reRealm=true, reLink=true,})
+        if link and not self.nameInfo then
             self.nameInfo= e.Cstr(self)
             self.nameInfo:SetPoint('BOTTOM', self.CancelButton, 'TOPLEFT', 2, 0)
+            self:HookScript('OnHide', function(self2)
+                if self2.nameInfo then
+                    self2.nameInfo:SetText('')
+                end
+            end)
         end
         if self.nameInfo then
-            self.nameInfo:SetText('')
+            self.nameInfo:SetText(link or '')
         end
 
         if self.AcceptButton:IsEnabled() and not IsModifierKeyDown() then
             local tank2, healer2, dps2= self:GetSelectedRoles()
             self.AcceptButton:Click()
-            print(id, addName, tank2 and INLINE_TANK_ICON, healer2 and INLINE_HEALER_ICON, dps2 and INLINE_DAMAGER_ICON, e.GetEnabeleDisable(false)..'Alt')
+            print(id, addName,
+                    tank2 and INLINE_TANK_ICON, healer2 and INLINE_HEALER_ICON, dps2 and INLINE_DAMAGER_ICON,
+                    e.GetEnabeleDisable(false)..'Alt',
+                    link
+                )
         end
     end)
 
@@ -148,7 +157,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
             end
             guid=info.guid
             isOnline= info.connected
-            m=e.GetPlayerInfo({unit=nil, guid=info.guid, name=nil,  reName=false, reRealm=false, reLink=false})
+            m=e.GetPlayerInfo({guid=info.guid})
             if info.area and info.connected then
                 m=m..' '..info.area
             end
@@ -168,7 +177,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
                 m=m..'|cff00ff00'..info.characterLevel..'|r'
             end
 
-            m= m..e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false})
+            m= m..e.GetPlayerInfo({guid=guid, reName=true, reRealm=true})
 
             if isOnline and info.areaName then
                 m=m..' '..info.areaName--区域
@@ -176,10 +185,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
         end
         if m~='' then
             if guid then
-                local _, englishClass, _, _, _, _, realm = GetPlayerInfoByGUID(guid)
-                --local server= e.Get_Region(realm)--服务器，EU， US {col=, text=, realm=}
-                --m= server and server.col..m or m
-
+                local _, englishClass= GetPlayerInfoByGUID(guid)
                 if englishClass then
                     m= '|c'..select(4, GetClassColor(englishClass))..m..'|r'
                 end

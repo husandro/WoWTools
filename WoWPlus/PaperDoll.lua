@@ -888,12 +888,15 @@ local function set_InspectPaperDollItemSlotButton_Update(self)
 end
 
 local function set_InspectPaperDollFrame_SetLevel()--目标,天赋 装等
-    local unit=InspectFrame.unit
-    local guid= UnitGUID(unit)
+    local unit= InspectFrame.unit
+    local guid= unit and UnitGUID(unit)
     local info= guid and e.UnitItemLevel[guid]
-    if info and info.itemLevel and info.specID then
-        local level, effectiveLevel, sex = UnitLevel(InspectFrame.unit), UnitEffectiveLevel(InspectFrame.unit), UnitSex(InspectFrame.unit);
-        local text= e.GetPlayerInfo({unit=unit, guid=guid, name=nil,  reName=false, reRealm=false, reLink=false})
+    if info and info.itemLevel and info.specID  then
+        local level= UnitLevel(unit)
+        local effectiveLevel= UnitEffectiveLevel(unit)
+        local sex = UnitSex(unit)
+
+        local text= e.GetPlayerInfo({unit=unit, guid=guid})
         local icon, role = select(4, GetSpecializationInfoByID(info.specID, sex))
         if icon and role then
             text=text..' |T'..icon..':0|t '..e.Icon[role]
@@ -910,7 +913,7 @@ local function set_InspectPaperDollFrame_SetLevel()--目标,天赋 装等
             text= info.col..text..'|r'
         end
         InspectLevelText:SetText(text)
-        InspectFrameTitleText:SetTextColor(info.r or 1, info.g or 1, info.b or 1)
+        --InspectFrameTitleText:SetTextColor(info.r or 1, info.g or 1, info.b or 1)
     end
 end
 

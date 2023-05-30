@@ -430,7 +430,7 @@ local function setItem(self, ItemLink)
                 find=true
                 end
                 if find then
-                    self:AddLine(e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false}))
+                    self:AddLine(e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}))
                 end
             end
         end
@@ -450,7 +450,7 @@ local function setItem(self, ItemLink)
             if guid and info and guid~=e.Player.guid then
                 local tab=info.Item[itemID]
                 if tab and tab.bag and tab.bank then
-                    self:AddDoubleLine(e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false}), e.Icon.bank2..(tab.bank==0 and '|cff606060'..tab.bank..'|r' or tab.bank)..' '..e.Icon.bag2..(tab.bag==0 and '|cff606060'..tab.bag..'|r' or tab.bag))
+                    self:AddDoubleLine(e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), e.Icon.bank2..(tab.bank==0 and '|cff606060'..tab.bank..'|r' or tab.bank)..' '..e.Icon.bag2..(tab.bag==0 and '|cff606060'..tab.bag..'|r' or tab.bag))
                     bagAll=bagAll +tab.bag
                     bankAll=bankAll +tab.bank
                     numPlayer=numPlayer +1
@@ -523,7 +523,7 @@ local function setCurrency(self, currencyID)--货币
         if guid~=e.Player.guid then
             local quantity=info.Currency[currencyID]
             if quantity and quantity>0 then
-                self:AddDoubleLine(e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false}), e.MK(quantity, 3))
+                self:AddDoubleLine(e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), e.MK(quantity, 3))
                 all=all+quantity
                 numPlayer=numPlayer+1
             end
@@ -1729,7 +1729,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             end)
             hooksecurefunc('AchievementFrameComparison_SetUnit', function(unit)--比较成就
-                local text= e.GetPlayerInfo({unit=unit, guid=unit and UnitGUID(unit), name=nil,  reName=true, reRealm=true, reLink=false})--玩家信息图标
+                local text= e.GetPlayerInfo({unit=unit, reName=true, reRealm=true})--玩家信息图标
                 if text~='' then
                     AchievementFrameComparisonHeaderName:SetText(text)
                 end

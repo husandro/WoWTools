@@ -160,7 +160,7 @@ local function UI_Party_Info(frame)--队友位置
                 end
             end
 
-            text= text..e.GetPlayerInfo({unit=nil, guid=guid, name=name,  reName=true, reRealm=true, reLink=false})--信息
+            text= text..e.GetPlayerInfo({guid=guid, unit=unit, name=name, reName=true, reRealm=true})--信息
 
             local name2, uiMapID2=e.GetUnitMapName(unit)
             if (name and name==name2) or (uiMapID and uiMapID==uiMapID2) then--地图名字
@@ -724,7 +724,7 @@ local function All(self)--所有记录
             find=true
         end
         if find then
-            text= text..'|n'.. e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false})
+            text= text..'|n'.. e.GetPlayerInfo({guid=guid, faction=infoWoW.faction, reName=true, reRealm=true})
         end
     end
 

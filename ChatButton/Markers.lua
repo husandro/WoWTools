@@ -152,7 +152,7 @@ local function getReadyCheckStatus(unit, index, uiMapID)
             )
             ..(index<10 and ' ' or '')..index..')'--编号号
             ..(e.PlayerOnlineInfo(unit) or '')
-            ..e.GetPlayerInfo({unit=unit, guid=UnitGUID(unit), name=nil,  reName=true, reRealm=true, reLink=false})
+            ..e.GetPlayerInfo({guid=UnitGUID(unit), unit=unit, reName=true, reRealm=true})
             ..(UnitHasLFGRandomCooldown(unit) and '|cnRED_FONT_COLOR:<'..(e.onlyChinese and '逃亡者' or DESERTER)..'>|r' or '')
             ..(uiMapID~=mapID and mapText or '')--地图名称
             ..' '

@@ -521,7 +521,7 @@ local function Init()
             for index, button in pairs(CalendarCreateEventInviteList.ScrollBox:GetFrames()) do--ScrollBox.lua
                 local inviteInfo = C_Calendar.EventGetInvite(index)
                 if inviteInfo and inviteInfo.guid then
-                   button.Class:SetText(e.GetPlayerInfo({unit=nil, guid=inviteInfo.guid, name=inviteInfo.name,  reName=false, reRealm=false, reLink=false}))
+                   button.Class:SetText(e.GetPlayerInfo({guid=inviteInfo.guid, name=inviteInfo.name}))
                 end
             end
         end
@@ -552,7 +552,7 @@ local function Init()
                 local wowInfo= wow and wow.gameAccountInfo
                 if wowInfo and wowInfo.playerGuid and wowInfo.characterName and not inviteTab[wowInfo.characterName] and wowInfo.wowProjectID==1 then
 
-                    local text= e.GetPlayerInfo({unit=nil, guid=wowInfo.playerGuid, name=wowInfo.characterName,  reName=true, reRealm=true, reLink=false})--角色信息
+                    local text= e.GetPlayerInfo({guid=wowInfo.playerGuid, faction=wowInfo.factionName, name=wowInfo.characterName, reName=true, reRealm=true})--角色信息
                     if wowInfo.areaName then --位置
                         if wowInfo.areaName==map then
                             text=text..e.Icon.map2
@@ -606,7 +606,7 @@ local function Init()
             for i=1 , C_FriendList.GetNumFriends() do
                 local game=C_FriendList.GetFriendInfoByIndex(i)
                 if game and game.name and not inviteTab[game.name] then--and not game.afk and not game.dnd then
-                    local text=e.GetPlayerInfo({unit=nil, guid=game.guid, name=game.name,  reName=true, reRealm=true, reLink=false})--角色信息
+                    local text=e.GetPlayerInfo({guid=game.guid, name=game.name,  reName=true, reRealm=true})--角色信息
                     text= (game.level and game.level~=MAX_PLAYER_LEVEL and game.level>0) and text .. ' |cff00ff00'..game.level..'|r' or text--等级
                     if game.area and game.connected then
                         if game.area == map then--地区
@@ -658,7 +658,7 @@ local function Init()
             for index=1,  GetNumGuildMembers() do
                 local name, rankName, rankIndex, lv, _, zone, publicNote, officerNote, isOnline, status, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)
                 if name and guid and not inviteTab[name] and isOnline and name~=e.Player.name_realm then
-                    local text=e.GetPlayerInfo({unit=nil, guid=guid, name=name,  reName=true, reRealm=true, reLink=false})--名称
+                    local text=e.GetPlayerInfo({guid=guid, name=name,  reName=true, reRealm=true})--名称
                     text=(lv and lv~=MAX_PLAYER_LEVEL and lv>0) and text..' |cnGREEN_FONT_COLOR:'..lv..'|r' or text--等级
                     if zone then--地区
                         text= zone==map and text..e.Icon.map2 or text..' '..zone

@@ -439,7 +439,7 @@ local function InitMenu(self, level, type)--主菜单
             if time and time>0 then
                 timeAll= timeAll + time
                 info= {
-                    text= e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true})..e.Icon.clock2..'  '..SecondsToTime(time),
+                    text= e.GetPlayerInfo({guid=guid,  reName=true, reRealm=true, factionName=tab.faction})..e.Icon.clock2..'  '..SecondsToTime(time),
                     notCheckable=true,
                     tooltipOnButton=true,
                     tooltipTitle= tab.Time.levelTime and format(e.onlyChinese and '你在这个等级的游戏时间：%s' or TIME_PLAYED_LEVEL, '|n'..SecondsToTime(tab.Time.levelTime)),

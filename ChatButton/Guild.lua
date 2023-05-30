@@ -139,7 +139,7 @@ local function InitMenu(self, level, type)--主菜单
         local name, rankName, rankIndex, lv, _, zone, publicNote, officerNote, isOnline, status, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)
         if name and guid and isOnline and name~=e.Player.name_realm then
             find=true
-            local text=e.GetPlayerInfo({unit=nil, guid=guid, name=name,  reName=true, reRealm=true})
+            local text=e.GetPlayerInfo({guid=guid, name=name, reName=true, reRealm=true})
             text=(lv and lv~=MAX_PLAYER_LEVEL) and text..' |cnGREEN_FONT_COLOR:'..lv..'|r' or text--等级
             if zone then--地区
                 text= zone==map and text..e.Icon.map2 or text..' '..zone

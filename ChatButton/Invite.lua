@@ -133,7 +133,7 @@ local function set_PLAYER_TARGET_CHANGED()--设置, 邀请目标
     if guid then
         InvPlateGuid[guid]=name--保存到已邀请列表
     end
-    print(id, addName, e.onlyChinese and '目标' or TARGET, e.GetPlayerInfo({unit=nil, guid=guid, name=name,  reName=false, reRealm=false, reLink=true}))
+    print(id, addName, e.onlyChinese and '目标' or TARGET, e.GetPlayerInfo({guid=guid, name=name, reLink=true}))
 end
 
 local function InvPlateGuidFunc()--从已邀请过列表里, 再次邀请 
@@ -173,8 +173,6 @@ local function set_PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNati
     if not StaticPopup1 or not StaticPopup1:IsShown() then
         return
     end
-    --local tex=StaticPopup1Text  
-    --local playerInfo= e.GetPlayerInfo(nil, inviterGUID, true)
 
     local function setPrint(sec, text)
         e.PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
@@ -182,7 +180,8 @@ local function set_PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNati
             '|cnGREEN_FONT_COLOR:'..sec.. ' |r'..(e.onlyChinese and '秒' or SECONDS),
             (isTank and e.Icon.TANK or '')..(isHealer and e.Icon.HEALER or '')..(isDamage and e.Icon.DAMAGER or ''),
             questSessionActive and (e.onlyChinese and '场景战役' or SCENARIOS) or '',--场景战役
-            isNativeRealm and '|cnGREEN_FONT_COLOR:'..format(e.onlyChinese and '%s其它服务器' or INVITATION_XREALM, e.PlayerLink(nil, inviterGUID)) or e.PlayerLink(nil, inviterGUID)--转服务器
+            isNativeRealm and '|cnGREEN_FONT_COLOR:'..format(e.onlyChinese and '%s其它服务器' or INVITATION_XREALM,
+            e.PlayerLink(nil, inviterGUID))--转服务器
         )
         e.Ccool(StaticPopup1, nil, sec, nil, true, true, nil)--冷却条    
     end

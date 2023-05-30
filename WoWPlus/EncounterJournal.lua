@@ -191,7 +191,7 @@ local function set_EncounterJournal_World_Tips(self2)--所有角色已击杀世�
             find=true
         end
         if find then
-            e.tips:AddDoubleLine(e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=false, reRealm=false, reLink=false}), guid==e.Player.guid and e.Icon.star2)
+            e.tips:AddDoubleLine(e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), guid==e.Player.guid and e.Icon.star2)
         end
     end
     e.tips:Show()
@@ -302,7 +302,7 @@ local function setWorldbossText()--显示世界BOSS击杀数据Text
                 find= true
             end
             if find then
-                msg= msg..'|n'..e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false})
+                msg= msg..'|n'..e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true})
             end
         end
         msg= msg or '...'
@@ -372,7 +372,7 @@ local function setInstanceBossText()--显示副本击杀数据
             end
             if text then
                 msg=msg and msg..'|n' or ''
-                msg= msg ..e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false})..'|n'
+                msg= msg ..e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true})..'|n'
                 msg= msg.. text
             end
         end
@@ -396,7 +396,7 @@ local function set_EncounterJournal_Keystones_Tips(self)--险指南界面, 挑�
                 find=true
             end
             if find then
-                e.tips:AddLine(e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false}))
+                e.tips:AddLine(e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}))
             end
         end
     end
@@ -409,7 +409,7 @@ local function set_EncounterJournal_Money_Tips(self)--险指南界面, 钱
     local numPlayer, allMoney  = 0, 0
     for guid, info in pairs(WoWDate) do
         if info.Money then
-            e.tips:AddDoubleLine(e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false}), GetCoinTextureString(info.Money))
+            e.tips:AddDoubleLine(e.GetPlayerInfo({ guid=guid, faction=info.faction, reName=true, reRealm=true}), GetCoinTextureString(info.Money))
             numPlayer=numPlayer+1
             allMoney= allMoney + info.Money
         end
@@ -504,7 +504,7 @@ local function Init()--冒险指南界面
                     find= true
                 end
                 if find then
-                    e.tips:AddLine(e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false}))
+                    e.tips:AddLine(e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}))
                 end
             end
         end

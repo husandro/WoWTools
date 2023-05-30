@@ -27,7 +27,7 @@ local function get_Mony_Tips()
     for guid, infoMoney in pairs(WoWDate) do
         if infoMoney.Money then
             text= text~='' and text..'|n' or text
-            text= text..e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false})..'  '.. GetCoinTextureString(infoMoney.Money)
+            text= text..e.GetPlayerInfo({guid=guid, faction=infoMoney.faction, reName=true, reRealm=true})..'  '.. GetCoinTextureString(infoMoney.Money)
             numPlayer=numPlayer+1
             allMoney= allMoney + infoMoney.Money
         end

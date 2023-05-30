@@ -1769,18 +1769,21 @@ local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
         local co=GetNumGroupMembers()
         if co and co>0 then
             local find
-            local raid=IsInRaid()
-            local u= raid and 'raid' or 'party'
+            local u= IsInRaid() and 'raid' or 'party'
             for i=1, co do
-                local u2=u..i
-                if not raid and i==co then
-                    u2='player'
-                end
-                local guid=UnitGUID(u2)
-                local line=e.PlayerOnlineInfo(u2)
-                if line and guid then
-                    print(line, e.GetPlayerInfo({unit=nil, guid=true, name=nil,  reName=false, reRealm=false, reLink=true}), e.Icon.map2, e.GetUnitMapName(u2))
-                    find=true
+                local unit=u..i
+                if UnitExists(unit) and not UnitIsUnit('player', unit) then
+                    local guid=UnitGUID(unit)
+                    local line= e.PlayerOnlineInfo(unit)
+                    if line and guid then
+                        print(i..')',
+                                line,
+                                e.GetPlayerInfo({guid=guid, faction=UnitFactionGroup(unit), reLink=true}),
+                                e.Icon.map2,
+                                e.GetUnitMapName(unit)
+                            )
+                        find=true
+                    end
                 end
             end
             if find then
@@ -1824,7 +1827,8 @@ local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
                 end
                 local guid=UnitGUID(u2)
                 if guid then
-                    local info=(e.PlayerOnlineInfo(u2) or '')..e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false})
+                    local info=(e.PlayerOnlineInfo(u2) or '')
+                                ..e.GetPlayerInfo({guid=guid, unit=u2, reName=true, reRealm=true})
                     local name=GetUnitName(u2,true)
                     local player=UnitIsUnit('player', u2)
                     RoleC[name]={
