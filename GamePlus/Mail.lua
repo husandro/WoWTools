@@ -578,6 +578,10 @@ local function get_Send_Max_Item()--能发送，数量
     return tab
 end
 local function set_Label_Text(self2)--设置提示，数量，堆叠
+    if self2.run then
+        return
+    end
+    self2.run=true
     local num, stack= 0, 0
     for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+ NUM_REAGENTBAG_FRAMES do
         for slot=1, C_Container.GetContainerNumSlots(bag) do
@@ -601,6 +605,7 @@ local function set_Label_Text(self2)--设置提示，数量，堆叠
     self2:SetAlpha(stack==0 and 0.1 or 1)
     self2.num=num
     self2.stack=stack
+    self2.run=false
 end
 
 local function set_Player_Lable(self2)--设置指定发送，玩家, 提示
@@ -696,7 +701,7 @@ local function Init_Fast_Button()
         btn.stackLable= e.Cstr(btn)
         btn.stackLable:SetPoint('BOTTOMRIGHT')
         btn.playerTexture= btn:CreateTexture(nil, 'OVERLAY')
-        btn.playerTexture:SetAtlas('AnimaChannel-Bar-Venthyr-Gem')
+        btn.playerTexture:SetAtlas('AnimaChannel-Bar-Necrolord-Gem')
         btn.playerTexture:SetSize(size/2, size/2)
         btn.playerTexture:SetPoint('BOTTOMLEFT')
 
@@ -749,7 +754,7 @@ local function Init_Fast_Button()
             e.tips:AddDoubleLine((e.onlyChinese and '添加' or ADD)..e.Icon.left, self2.name)
             local name=  get_SendMailNameEditBox_Text()--取得， SendMailNameEditBox， 名称
             e.tips:AddDoubleLine('Alt+'..e.Icon.right..(name or (e.onlyChinese and '玩家' or PLAYER)),
-                                    Save.fast[self2.name] and '|A:AnimaChannel-Bar-Venthyr-Gem:0:0|a|cnGREEN_FONT_COLOR:'..e.GetPlayerInfo({name= Save.fast[self2.name], reName=true, reRealm=true}) or (e.onlyChinese and '无' or NONE)
+                                    Save.fast[self2.name] and '|A:AnimaChannel-Bar-Necrolord-Gem:0:0|a|cnGREEN_FONT_COLOR:'..e.GetPlayerInfo({name= Save.fast[self2.name], reName=true, reRealm=true}) or (e.onlyChinese and '无' or NONE)
                                 )
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL, self2.num)
@@ -760,11 +765,12 @@ local function Init_Fast_Button()
 
         btn:SetScript('OnShow', function(self2)
             self2:RegisterEvent('BAG_UPDATE_DELAYED')
+            self2:RegisterEvent('MAIL_SEND_INFO_UPDATE')
             set_Label_Text(self2)
             set_Player_Lable(self2)
         end)
         btn:SetScript('OnHide', function(self2)
-            self2:UnregisterEvent('BAG_UPDATE_DELAYED')
+            self2:UnregisterAllEvents()
         end)
         btn:SetScript('OnEvent', set_Label_Text)
 
