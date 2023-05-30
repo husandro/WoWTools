@@ -158,7 +158,7 @@ local function getItems()--取得背包物品信息
     Opening= true
     equipItem=nil
     Bag={}
-    for bag= Enum.BagIndex.Backpack, Constants.InventoryConstants.NumBagSlots+1 do
+    for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--Constants.InventoryConstants.NumBagSlots
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local info = C_Container.GetContainerItemInfo(bag, slot)
             local duration, enable = select(2, C_Container.GetContainerItemCooldown(bag, slot))
@@ -172,7 +172,6 @@ local function getItems()--取得背包物品信息
                 and (not Save.no[info.itemID] or Save.use[info.itemID])
                 and not (duration and duration>2 or enable==0) and classID~=8
             then
-
                 e.LoadDate({id=info.itemID, type='item'})
 
                 if Save.use[info.itemID] then--自定义

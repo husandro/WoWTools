@@ -10,6 +10,7 @@ local Save={
         ['FRIEND']=true,--好友
         --['GUILD']=true,--公会
     },
+    fast={},--快速，加载，物品，指定玩家
     --sacleClearPlayerButton=1.2,--清除历史数据，缩放
 }
 
@@ -446,7 +447,8 @@ local function set_GetTargetNameButton_Texture(self)
     self:SetShown(false)
 end
 
-local function Init_Settings_Button(self)
+local function Init_Settings_Button()
+    local self= SendMailFrame
     if not self or self.ClearPlayerButton then
         return
     end
@@ -528,9 +530,339 @@ local function Init_Settings_Button(self)
     end
 end
 
+
+--##############
+--快速，加载，物品
+--##############
+
+-- Attach as many items as possible of the specified type to the current send mail.
+function Postal_QuickAttachLeftButtonClick(classID, subclassID)
+	local bagID, bindType, itemclassID, itemID, itemsubclassID, locked, numberOfSlots, slot, slotIndex
+	local name = Postal_QuickAttachGetQAButtonCharName(classID, subclassID)
+	if name ~= "" then
+		SendMailNameEditBox:SetText(name)
+		SendMailNameEditBox:HighlightText()
+	end
+	local bagIDmax = NUM_BAG_FRAMES
+	if Postal.WOWRetail then
+		bagIDmax = bagIDmax + NUM_REAGENTBAG_FRAMES
+	end
+	for bagID = 0, bagIDmax, 1 do
+		if (bagID == 0) and Postal.db.profile.QuickAttach.EnableBag0 or
+			(bagID == 1) and Postal.db.profile.QuickAttach.EnableBag1 or
+			(bagID == 2) and Postal.db.profile.QuickAttach.EnableBag2 or
+			(bagID == 3) and Postal.db.profile.QuickAttach.EnableBag3 or
+			(bagID == 4) and Postal.db.profile.QuickAttach.EnableBag4 or
+			(bagID == 5) and Postal.db.profile.QuickAttach.EnableBag5
+		then
+			if Postal.WOWClassic or Postal.WOWBCClassic then
+				numberOfSlots = GetContainerNumSlots(bagID)
+			else
+				numberOfSlots = C_Container.GetContainerNumSlots(bagID)
+			end
+			for slotIndex = 1, numberOfSlots, 1 do
+				if Postal.WOWClassic or Postal.WOWBCClassic then
+					locked = select(3, GetContainerItemInfo(bagID, slotIndex))
+				else
+					if C_Container and C_Container.GetContainerItemInfo(bagID, slotIndex) then
+						local itemInfo = C_Container.GetContainerItemInfo(bagID, slotIndex)
+						locked = itemInfo.isLocked
+					else
+						locked = false
+					end
+				end
+				if locked == false then
+					if Postal.WOWClassic or Postal.WOWBCClassic then
+						itemID = select(10, GetContainerItemInfo(bagID, slotIndex))
+					else
+						if C_Container and C_Container.GetContainerItemInfo(bagID, slotIndex) then
+							local itemInfo = C_Container.GetContainerItemInfo(bagID, slotIndex)
+							itemID = itemInfo.itemID
+						else
+							itemID = nil
+						end
+					end
+					if itemID then
+						bindType = select(14, GetItemInfo(itemID))
+						if bindType ~= 	LE_ITEM_BIND_ON_ACQUIRE then
+							itemclassID = select(12, GetItemInfo(itemID))
+							if itemclassID == classID then
+								itemsubclassID = select(13, GetItemInfo(itemID))
+								if itemsubclassID == subclassID or subclassID == -1 then
+										if SendMailNumberOfFreeSlots() > 0 then
+											if Postal.WOWClassic or Postal.WOWBCClassic then
+												PickupContainerItem(bagID, slotIndex)
+											else
+												C_Container.PickupContainerItem(bagID, slotIndex)
+											end
+											ClickSendMailItemButton()
+									end
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
+function Postal_QuickAttachRightButtonClick(classID, subclassID)
+	local name = Postal_QuickAttachGetQAButtonCharName(classID, subclassID)
+	QAButtonDialogInfo = name.."|"..classID.."|"..subclassID
+    StaticPopupDialogs["POSTAL_QUICKATTACH_CHARACTER_NAME"] = {
+        text = L["Default recipient:"],
+        button1 = ACCEPT,
+        button2 = CANCEL,
+        hasEditBox = 1,
+        maxLetters = 128,
+        editBoxWidth = 350,  -- Needed in Cata
+        OnAccept = function(self)
+            local name, classID, subclassID = strsplit("|", QAButtonDialogInfo)
+            name = strtrim(self.editBox:GetText())
+            Postal_QuickAttachSetQAButtonCharName(name, classID, subclassID)	
+        end,
+        OnShow = function(self)
+            local name, classID, subclassID = strsplit("|", QAButtonDialogInfo)
+            self.editBox:SetText(name)
+            self.editBox:HighlightText()
+            self.editBox:SetFocus()
+        end,
+        OnHide = StaticPopupDialogs["SET_GUILDPLAYERNOTE"].OnHide,
+        EditBoxOnEnterPressed = function(self)
+            local parent = self:GetParent()
+            local name, classID, subclassID = strsplit("|", QAButtonDialogInfo)
+            name = strtrim(parent.editBox:GetText())
+            Postal_QuickAttachSetQAButtonCharName(name, classID, subclassID)	
+            parent:Hide()
+        end,
+        EditBoxOnEscapePressed = StaticPopupDialogs["SET_GUILDPLAYERNOTE"].EditBoxOnEscapePressed,
+        timeout = 0,
+        exclusive = 1,
+        whileDead = 1,
+        hideOnEscape = 1
+    }
+	StaticPopup_Show("POSTAL_QUICKATTACH_CHARACTER_NAME")
+end
+
+
+--##################
+--设置，快送选取，按钮
+--##################
+local function get_Send_Max_Item()--能发送，数量
+    local tab={}
+    for i= 1, ATTACHMENTS_MAX_SEND do
+        if not HasSendMailItem(i) then
+            table.insert(tab, i)
+        end
+    end
+    return tab
+end
+local function set_Label_Text(self2)--设置提示，数量，堆叠
+    local num, stack= 0, 0
+    for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+ NUM_REAGENTBAG_FRAMES do
+        for slot=1, C_Container.GetContainerNumSlots(bag) do
+            local info = C_Container.GetContainerItemInfo(bag, slot)
+            if info
+                and info.itemID
+                and info.hyperlink
+                and not info.isLocked
+                and not info.isBound
+            then
+                local classID, subclassID = select(6, GetItemInfoInstant(info.hyperlink))
+                if classID==self2.classID and subclassID==self2.subclassID then
+                    num= num+ info.stackCount
+                    stack= stack+1
+                end
+            end
+        end
+    end
+    self2.numLable:SetText(num>0 and num or '')
+    self2.stackLable:SetText(stack>0 and stack or '' )
+    self2:SetAlpha(stack==0 and 0.3 or 1)
+end
+
+local function set_Player_Lable(self2)--设置指定发送，玩家, 提示
+    local name=''
+    if Save.fast[self2.name] then
+        name= e.GetPlayerInfo({name=Save.fast[self2.name], reName=true, reNotRegion=true})
+    end
+    self2.playerLable:SetText(name)
+end
+
+local function get_SendMailNameEditBox_Text()--取得， SendMailNameEditBox， 名称
+    local name= SendMailNameEditBox:GetText() or ''
+    name= name:gsub(' ','')
+    if name=='' then
+        return nil
+    else
+        if not name:find('%-') then
+            name= name..'-'..e.Player.realm
+        end
+        return name
+    end
+end
+
+local function Init_Button_Quick_Button()
+    local self= SendMailFrame
+    if self.FastButtons then
+        return
+    end
+    self.FastButtons={}
+    local fast={
+        {4620681, 7, 5, e.onlyChinese and '布'},--1
+        {4620678, 7, 6, e.onlyChinese and '皮革'},--2
+        {4625105, 7, 7, e.onlyChinese and '金属 矿石'},--3
+        {4620671, 7, 8, e.onlyChinese and '烹饪'},--4
+        {133939, 7, 9, e.onlyChinese and '草药'},--5
+        {4620672, 7, 12, e.onlyChinese and '附魔'},--6
+        {4620676, 7, 16, e.onlyChinese and '铭文'},--7
+        {4620677, 7, 4, e.onlyChinese and '珠宝加工'},--8
+        {"Interface/Icons/INV_Gizmo_FelIronCasing", 7, 1, e.onlyChinese and '零部'},--9
+        {"Interface/Icons/INV_Elemental_Primal_Air", 7, 10, e.onlyChinese and '元素'},--10
+        {"Interface/Icons/INV_Bijou_Green", 7, 18, e.onlyChinese and '可选材料'},--11
+        {"Interface/Icons/INV_Misc_Rune_09", 7, 11, e.onlyChinese and '其它'},--12
+        {"Interface/Icons/Ability_Ensnare", 7, 0, e.onlyChinese and '贸易品'},--13
+    }
+
+    local last, btn
+    for _, tab in pairs(fast) do
+        btn=e.Cbtn(self, {size={25,25}, texture=tab[1]})
+        if not last then
+            btn:SetPoint('TOPLEFT', MailFrameCloseButton, 'BOTTOMRIGHT')
+        else
+            btn:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -2)
+        end
+        btn.classID= tab[2]
+        btn.subclassID= tab[3]
+        btn.name= tab[4] or GetItemSubClassInfo(tab[2], tab[3])
+        btn.numLable= e.Cstr(btn)
+        btn.numLable:SetPoint('TOPLEFT')
+        btn.stackLable= e.Cstr(btn)
+        btn.stackLable:SetPoint('BOTTOMRIGHT')
+        btn.playerLable= e.Cstr(btn)
+        btn.playerLable:SetPoint('BOTTOMLEFT', btn, 'BOTTOMRIGHT')
+        set_Player_Lable(btn)
+
+        btn:SetScript('OnClick', function(self2, d)
+            if d=='LeftButton' then
+                set_Text_SendMailNameEditBox(_, Save.fast[self2.name])--设置，发送名称，文
+
+                local slotTab= get_Send_Max_Item()--能发送，数量
+                print( #slotTab)
+                if #slotTab==0 then
+                    return
+                end
+                
+                
+                
+                for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+ NUM_REAGENTBAG_FRAMES do
+                    for slot=1, C_Container.GetContainerNumSlots(bag) do
+                        local info = C_Container.GetContainerItemInfo(bag, slot)
+                        if info
+                            and info.itemID
+                            and info.hyperlink
+                            and not info.isLocked
+                            and not info.isBound
+                        then
+                            --[[local itemName, itemLink, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType,
+                            itemStackCount, itemEquipLoc, itemTexture, sellPrice, classID, subclassID, bindType,
+                            expacID, setID, isCraftingReagent = GetItemInfo(info.hyperlink)]]
+                            local classID, subclassID = select(6, GetItemInfoInstant(info.hyperlink))
+                            if classID==self2.classID and subclassID==self2.subclassID then
+                                C_Container.PickupContainerItem(bag, slot)
+                                ClickSendMailItemButton(slotTab[1])
+                                slotTab= get_Send_Max_Item()--能发送，数量
+                                if #slotTab==0 then
+                                    return
+                                end
+                            end
+                        end
+                    end
+                end
+
+            elseif d=='RightButton' then
+                Save.fast[self2.name]= get_SendMailNameEditBox_Text()--取得， SendMailNameEditBox， 名称
+                set_Player_Lable(self2)--设置指定发送，玩家, 提示
+            end
+        end)
+        
+        btn:SetScript('OnLeave', function() e.tips:Hide() end)
+        btn:SetScript('OnEnter', function(self2)
+            set_Player_Lable(self2)--设置指定发送，玩家, 提示
+            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine((e.onlyChinese and '添加' or ADD)..e.Icon.left, self2.name)
+            local name=  get_SendMailNameEditBox_Text()--取得， SendMailNameEditBox， 名称
+            e.tips:AddDoubleLine((e.onlyChinese and '玩家' or PLAYER)..e.Icon.right..(name or ''),
+                                    Save.fast[self2.name] and e.GetPlayerInfo({name= Save.fast[self2.name], reName=true, reRealm=true}) or (e.onlyChinese and '无' or NONE)
+                                )
+            e.tips:Show()
+        end)
+
+        btn:SetScript('OnShow', function(self2)
+            self2:RegisterEvent('BAG_UPDATE_DELAYED')
+            set_Label_Text(self2)
+        end)
+        btn:SetScript('OnHide', function(self2)
+            self2:UnregisterAllEvents()
+        end)
+        btn:SetScript('OnEvent', set_Label_Text)
+
+        last= btn
+    end
+
+    btn=e.Cbtn(self, {size={25,25}, atlas='bags-button-autosort-up'})
+    btn:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -12)
+    btn:SetScript('OnClick', function()
+        for i= 1, ATTACHMENTS_MAX_SEND do
+            if HasSendMailItem(i) then
+                ClickSendMailItemButton(i, true)
+            end
+        end
+    end)
+    btn:SetScript('OnHide', function() e.tips:Hide() end)
+    btn:SetScript('OnEnter', function(self2)
+        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddLine(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
+        e.tips:Show()
+    end)
+    btn:SetAlpha(0.3)
+    btn:RegisterEvent('MAIL_SEND_INFO_UPDATE')
+    btn:SetScript('OnEvent', function(self2)
+        local num= 0
+        for i= 1, ATTACHMENTS_MAX_SEND do
+            if HasSendMailItem(i) then
+                num= num+1
+            end
+        end
+        self2:SetAlpha(num==0 and 0.3 or 1)
+    end)
+end
+    --[[
+	local ofsxBase, ofsyBase, ofsyGap = 0, 0, 0
+	local scale = 0.73 -- gives good results for classic and retail
+	local TempButton, QAButtonCharName
+	TempButton = CreateFrame("Button", name, SendMailFrame, "ActionButtonTemplate")
+	local buttonHeight = math.floor(TempButton:GetHeight() + 0.5)
+	TempButton:SetScale(scale)
+	TempButton.icon:SetTexture(texture) 
+	TempButton:ClearAllPoints()
+	TempButton:SetPoint("TOPLEFT", "MailFrame", "TOPRIGHT", ofsxBase, ofsyBase - (buttonHeight + ofsyGap) * QAButtonPos)
+	TempButton:RegisterForClicks("AnyUp")
+	TempButton:SetScript("OnClick", function(self, button, down) Postal_QuickAttachButtonClick(button, classID, subclassID) end)
+	TempButton:SetFrameLevel(TempButton:GetFrameLevel() + 1)
+	QAButtonCharName = Postal_QuickAttachGetQAButtonCharName(classID, subclassID)
+	if QAButtonCharName ~= "" then toolTip = toolTip.."\n"..L["Default recipient:"].." "..QAButtonCharName end
+	SetQAButtonGameTooltip(TempButton, toolTip)
+	QAButtonPos = QAButtonPos + 1
+]]
+
 local function Init()--SendMailNameEditBox
     MailFrame:HookScript('OnShow', function(self2)
-        Init_Settings_Button(SendMailFrame)--目标，名称
+        Init_Button_Quick_Button()
+        Init_Settings_Button()--目标，名称
         Init_Send_Player_button()
         C_Timer.After(0.3, function()
             if GetInboxNumItems()==0 then--如果没有信，转到，发信

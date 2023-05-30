@@ -246,7 +246,7 @@ e.PlayerLink=function(name, guid, slotLink) --玩家超链接
     end
 end
 
-e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, faction=nil, reName=true, reLink=false, reRealm=false})
+e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, faction=nil, reName=true, reLink=false, reRealm=false, reNotRegion=false})
     local guid= tab.guid or e.GetGUID(tab.unit, tab.name)
     if guid==e.Player.guid then
         return e.Icon.player..((tab.reName or tab.reLink) and e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r' or '')..e.Icon.star2
@@ -264,7 +264,7 @@ e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, f
 
         local friend= e.GetFriend(nil, guid, nil)--检测, 是否好友
         local groupInfo= e.GroupGuid[guid] or {}--队伍成员
-        local server= e.Get_Region(realm)--服务器，EU， US {col=, text=, realm=}
+        local server= not tab.reNotRegion and e.Get_Region(realm)--服务器，EU， US {col=, text=, realm=}
 
         local text= (server and server.col or '')
                     ..(friend or '')
@@ -291,9 +291,23 @@ e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, f
             end
             text= '|c'..select(4,GetClassColor(englishClass))..text..'|r'
         end
-
         return text
+
+    elseif tab.name then
+        if tab.reLink then
+            return e.PlayerLink(tab.name, nil, true) --玩家超链接
+
+        elseif tab.reName then
+            local name=tab.name
+            if tab.reRealm then
+                name= name:gsub('%-'..e.Player.realm, '')
+            else
+                name= GetPlayerNameRemoveRealm(name)
+            end
+            return name
+        end
     end
+
     return ''
 end
 
