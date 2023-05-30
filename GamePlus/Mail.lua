@@ -5,11 +5,12 @@ end
 local id, e= ...
 local addName= BUTTON_LAG_MAIL
 local Save={
-    player= {--保存玩家数据
-        --{name='Fuocco', text=nil},
+    player= {},--保存玩家数据 --{'Fuocco',},
+    show={--显示离线成员
+        ['FRIEND']=true,--好友
+        --['GUILD']=true,--公会
     },
     --sacleClearPlayerButton=1.2,--清除历史数据，缩放
-    --showOffLine=true,--显示离线成员
 }
 
 local function set_Text_SendMailNameEditBox(_, name)--设置，发送名称，文
@@ -51,7 +52,7 @@ end
 --#######
 --设置菜单
 --#######
-local function Init_Menu(self, level, menuList)
+local function Init_Menu(self, level, menuList,...)
     local info
     if menuList=='SELF' then
         local find
@@ -76,7 +77,7 @@ local function Init_Menu(self, level, menuList)
         local find
         for i=1 , C_FriendList.GetNumFriends() do
             local game=C_FriendList.GetFriendInfoByIndex(i)
-            if game and game.guid and (game.connected or Save.showOffLine) then
+            if game and game.guid and (game.connected or Save.show['FRIEND']) then
 
                 local text= e.GetPlayerInfo({unit=nil, guid=game.guid,  reName=true, reRealm=true, reLink=false})--角色信息
                 text= (game.level and game.level~=MAX_PLAYER_LEVEL and game.level>0) and text .. ' |cff00ff00'..game.level..'|r' or text--等级
@@ -102,6 +103,19 @@ local function Init_Menu(self, level, menuList)
         if not find then
             e.LibDD:UIDropDownMenu_AddButton({text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
         end
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
+        info={
+            text= e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE,
+            icon= 'mechagon-projects',
+            checked= Save.show['FRIEND'],
+            tooltipOnButton= true,
+            tooltipTitle= e.onlyChinese and '显示离线成员' or COMMUNITIES_MEMBER_LIST_SHOW_OFFLINE,
+            tooltipText= e.GetEnabeleDisable(Save.show['FRIEND']),
+            func= function()
+                Save.show['FRIEND']= not Save.show['FRIEND'] and true or nil
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     elseif menuList=='WOW' then
         local find
@@ -110,9 +124,8 @@ local function Init_Menu(self, level, menuList)
             local wowInfo= wow and wow.gameAccountInfo
             if wowInfo
                 and wowInfo.playerGuid
-                --and wowInfo.characterName
                 and wowInfo.wowProjectID==1
-                and (wowInfo.isOnline or Save.showOffLine)
+                and wowInfo.isOnline
             then
                 local name=get_Name_For_guid(wowInfo.playerGuid) or wowInfo.characterName
 
@@ -144,10 +157,10 @@ local function Init_Menu(self, level, menuList)
         end
 
     elseif menuList=='GUILD' then
-        local find
+        local num=0
         for index=1,  GetNumGuildMembers() do
             local name, rankName, rankIndex, lv, _, zone, publicNote, officerNote, isOnline, status, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)
-            if name and guid and guid~=e.Player.guid and (isOnline or Save.showOffLine) then
+            if name and guid and guid~=e.Player.guid and (isOnline or (Save.show['GUILD'] and num<70)) then
 
                 local text= e.GetPlayerInfo({unit=nil, guid=guid,  reName=true, reRealm=true, reLink=false})--角色信息
 
@@ -170,12 +183,25 @@ local function Init_Menu(self, level, menuList)
                     func= set_Text_SendMailNameEditBox,
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
-                find=true
+                num= num+1
             end
         end
-        if not find then
+        if num==0 then
             e.LibDD:UIDropDownMenu_AddButton({text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
         end
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
+        info={
+            text= e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE,
+            icon= 'mechagon-projects',
+            checked= Save.show['GUILD'],
+            tooltipOnButton= true,
+            tooltipTitle= e.onlyChinese and '显示离线成员' or COMMUNITIES_MEMBER_LIST_SHOW_OFFLINE,
+            tooltipText= e.GetEnabeleDisable(Save.show['GUILD']),
+            func= function()
+                Save.show['GUILD']= not Save.show['GUILD'] and true or nil
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     elseif menuList=='GROUP' then
         local find
@@ -183,7 +209,7 @@ local function Init_Menu(self, level, menuList)
         for i=1, GetNumGroupMembers() do
             local unit= u..i
             local isOnline= UnitIsConnected(unit)
-            if (Save.showOffLine or isOnline) and not UnitIsUnit('player', unit) then
+            if isOnline and not UnitIsUnit('player', unit) then
                 local name= GetUnitName(unit, true)
                 local text=  i..')'.. (i<10 and '  ' or ' ')..e.GetPlayerInfo({unit= unit, reName=true, reRealm=true})
 
@@ -210,18 +236,11 @@ local function Init_Menu(self, level, menuList)
         end
 
     elseif menuList and type(menuList)=='number' then--社区
-        info= {
-            text= e.onlyChinese and '在线' or FRIENDS_LIST_ONLINE,
-            notCheckable=true,
-            isTitle=true,
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-        local find
+        local num=0
         local members= C_Club.GetClubMembers(menuList) or {}
         for index, memberID in pairs(members) do
             local tab = C_Club.GetMemberInfo(menuList, memberID) or {}
-            if tab.guid and tab.name and tab.zone and not tab.isSelf and not WoWDate[tab.guid] then
+            if tab.guid and tab.name and (tab.zone or (Save.show[menuList] and num<70)) and not tab.isSelf and not WoWDate[tab.guid] then
                 local faction= tab.faction==Enum.PvPFaction.Alliance and 'Alliance' or tab.faction==Enum.PvPFaction.Horde and 'Horde'
                 local  text= e.GetPlayerInfo({guid=tab.guid,  reName=true, reRealm=true, factionName=faction})--角色信息
 
@@ -237,7 +256,7 @@ local function Init_Menu(self, level, menuList)
                 end
 
                 info={
-                    text= index..(index<10 and ')  ' or ') ')..text,
+                    text= index..(index<10 and ')  ' or ') ')..text.. (tab.zone and e.Icon.select2 or ''),
                     icon= icon,
                     notCheckable=true,
                     tooltipOnButton=true,
@@ -247,12 +266,26 @@ local function Init_Menu(self, level, menuList)
                     func= set_Text_SendMailNameEditBox,
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
-                find=true
+                num= num+1
             end
         end
-        if not find then
+        if num==0 then
             e.LibDD:UIDropDownMenu_AddButton({text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
         end
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
+        info={
+            text= e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE,
+            icon= 'mechagon-projects',
+            checked= Save.show[menuList],
+            tooltipOnButton= true,
+            tooltipTitle= e.onlyChinese and '显示离线成员' or COMMUNITIES_MEMBER_LIST_SHOW_OFFLINE,
+            tooltipText= e.GetEnabeleDisable(Save.show[menuList]),
+            func= function()
+                Save.show[menuList]= not Save.show[menuList] and true or nil
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
     end
 
     if menuList then
@@ -320,18 +353,6 @@ local function Init_Menu(self, level, menuList)
     end
 
     e.LibDD:UIDropDownMenu_AddSeparator(level)
-    info={
-        text= e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE,
-        icon= 'mechagon-projects',
-        checked= Save.showOffLine,
-        tooltipOnButton= true,
-        tooltipTitle= not e.onlyChinese and COMMUNITIES_MEMBER_LIST_SHOW_OFFLINE or "显示离线成员",
-        tooltipText= e.GetEnabeleDisable(Save.showOffLine),
-        func= function()
-            Save.showOffLine= not Save.showOffLine and true or nil
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
     info={
         text= id..' '..addName,
         icon= 'UI-HUD-Minimap-Mail-Mouseover',
