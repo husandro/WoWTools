@@ -866,9 +866,9 @@ local function Init_Fast_Button()
             btn.name= tab[4] or not tab[3] and GetItemClassInfo(tab[2]) or GetItemSubClassInfo(tab[2], tab[3])
             btn.findString= tab[5]
             
-            btn.numLable= e.Cstr(btn)
+            btn.numLable= e.Cstr(btn, {size=10})
             btn.numLable:SetPoint('TOPLEFT')
-            btn.stackLable= e.Cstr(btn)
+            btn.stackLable= e.Cstr(btn, {size=10})
             btn.stackLable:SetPoint('BOTTOMRIGHT')
             btn.playerTexture= btn:CreateTexture(nil, 'OVERLAY')
             btn.playerTexture:SetAtlas('AnimaChannel-Bar-Necrolord-Gem')
