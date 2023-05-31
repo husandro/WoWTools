@@ -465,7 +465,7 @@ local function Init_Button()
 
     --下拉，菜单
     button= e.Cbtn(SendMailFrame, {size={size, size}, atlas='common-icon-rotateleft'})
-    button:SetPoint('LEFT', Postal_BlackBookButton or SendMailNameEditBox, 'RIGHT', 2, 0)--IsAddOnLoaded('Postal')
+    button:SetPoint('LEFT', _G['Postal_BlackBookButton'] or SendMailNameEditBox, 'RIGHT', 2, 0)--IsAddOnLoaded('Postal')
     button:SetScript('OnClick', function(self2)
         if not self2.Menu then
             self2.Menu= CreateFrame("Frame", id..addName..'Menu', self2, "UIDropDownMenuTemplate")
@@ -505,7 +505,7 @@ local function Init_Button()
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
     end)
-    button.GetTargetNameButton:SetScript('OnEvent', set_GetTargetNameButton_Texture)   
+    button.GetTargetNameButton:SetScript('OnEvent', set_GetTargetNameButton_Texture)
 
     --历史记录
     button.ClearPlayerButton= e.Cbtn(button, {size={size,size}, atlas='bags-button-autosort-up'})
@@ -536,7 +536,7 @@ local function Init_Button()
             button.SendPlayerFrame:SetScale(num)
 
         elseif not IsModifierKeyDown() then
-            Save.hideSendPlayerList= d==1 and true or nil 
+            Save.hideSendPlayerList= d==1 and true or nil
             button.SendPlayerFrame:SetShown(not Save.hideSendPlayerList and true or false)
             print(id, addName, e.GetShowHide(not Save.hideSendPlayerList), '|cnGREEN_FONT_COLOR:'..#Save.lastSendPlayerList..' '..(e.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER))
         end
@@ -729,8 +729,8 @@ local function Init_Fast_Button()
     end
 
     button.FastButton= e.Cbtn(button, {size={size, size}, atlas= Save.fastShow and 'NPE_ArrowDown' or 'NPE_ArrowUp'})
-    if Postal_QuickAttachButton1 then--IsAddOnLoaded('Postal')
-        button.FastButton:SetPoint('BOTTOMLEFT', Postal_QuickAttachButton1, 'TOPRIGHT', 2, 0)
+    if _G['Postal_QuickAttachButton1'] then--IsAddOnLoaded('Postal')
+        button.FastButton:SetPoint('BOTTOMLEFT', _G['Postal_QuickAttachButton1'], 'TOPRIGHT', 2, 0)
     else
         button.FastButton:SetPoint('BOTTOMLEFT', MailFrameCloseButton, 'BOTTOMRIGHT', 0, 2)
     end
@@ -803,10 +803,20 @@ local function Init_Fast_Button()
         {132722, 4, 2, e.onlyChinese and '皮甲'},--2
         {132629, 4, 3, e.onlyChinese and '锁甲'},--3
         {132738, 4, 4, e.onlyChinese and '板甲'},--4
-        {134966, 4, 6, e.onlyChinese and '盾牌'},
-        {135317, 2, nil, e.onlyChinese and '武器'},
-        {644389, 15, 2, e.onlyChinese and '宠物' or PET, 'Hbattlepet'}
-        }
+        {134966, 4, 6, e.onlyChinese and '盾牌'},--5
+        {135317, 2, nil, e.onlyChinese and '武器'},--6
+        {644389, 15, 2, e.onlyChinese and '宠物' or PET, 'Hbattlepet'},--7
+
+        --{133035, 0, 0, e.onlyChinese and '装置'},
+        {463931, 0, 1, e.onlyChinese and '药水'},
+        {609902, 0, 3, e.onlyChinese and '合计'},
+        --{609902, 0, 7, e.onlyChinese and '绷带'},
+        {133974, 0, 5, e.onlyChinese and '食物'},
+        {1528795, 0, 9, e.onlyChinese and '符文'},
+
+        {466645, 3, nil, e.onlyChinese and '宝石'},
+        {463531, 8, nil, e.onlyChinese and '附魔'},
+    }
 
 
 
@@ -943,23 +953,11 @@ local function Init()--SendMailNameEditBox
                 button.GetTargetNameButton:RegisterEvent('PLAYER_TARGET_CHANGED')
             end
 
-            C_Timer.After(0.3, function()
-                if GetInboxNumItems()==0 then--如果没有信，转到，发信
-                    MailFrameTab_OnClick(MailFrame, 2)
-                end
-
-                set_GetTargetNameButton_Texture(button.GetTargetNameButton)--目标，名称
-
-                if Save.lastSendPlayer then--记录 SendMailNameEditBox，内容
-                    set_Text_SendMailNameEditBox(nil, Save.lastSendPlayer)--设置，发送名称，文
-                    SendMailNameEditBox:ClearFocus()
-                end
-            end)
         else
             if button then
                 button.GetTargetNameButton:UnregisterAllEvents()
             end
-            MailFrameTitleText:SetText(e.onlyChinese and '发件箱' or SENDMAIL)
+            --MailFrameTitleText:SetText(e.onlyChinese and '发件箱' or SENDMAIL)
         end
 
         if button then
@@ -992,7 +990,22 @@ local function Init()--SendMailNameEditBox
     end)
 
 
-    MailFrame:HookScript('OnShow', set_button_Show_Hide)
+    MailFrame:HookScript('OnShow', function()
+        set_button_Show_Hide()
+
+        C_Timer.After(0.5, function()
+            if GetInboxNumItems()==0 then--如果没有信，转到，发信
+                MailFrameTab_OnClick(MailFrame, 2)
+            end
+
+            set_GetTargetNameButton_Texture(button.GetTargetNameButton)--目标，名称
+
+            if Save.lastSendPlayer then--记录 SendMailNameEditBox，内容
+                set_Text_SendMailNameEditBox(nil, Save.lastSendPlayer)--设置，发送名称，文
+                SendMailNameEditBox:ClearFocus()
+            end
+        end)
+    end)
 
     MailFrame:HookScript('OnHide', function()
         if button then
@@ -1000,7 +1013,7 @@ local function Init()--SendMailNameEditBox
         end
     end)
 
-   
+
     SendMailNameEditBox:HookScript('OnEditFocusLost', function(self2)
         local name= get_Text_SendMailNameEditBox()--取得，收件人，名称
         if name then--记录 SendMailNameEditBox，内容
