@@ -600,7 +600,9 @@ local function set_Label_Text(self2)--设置提示，数量，堆叠
             end
         end
     end
-    self2.numLable:SetText(num>0 and num or '')
+    if self2.classID~=2 and self2.classID~=4 then
+        self2.numLable:SetText(num>0 and num or '')
+    end
     self2.stackLable:SetText(stack>0 and stack or '' )
     self2:SetAlpha(stack==0 and 0.1 or 1)
     self2.num=num
@@ -684,100 +686,111 @@ local function Init_Fast_Button()
         {"Interface/Icons/INV_Bijou_Green", 7, 18, e.onlyChinese and '可选材料'},--11
         {"Interface/Icons/INV_Misc_Rune_09", 7, 11, e.onlyChinese and '其它'},--12
         {"Interface/Icons/Ability_Ensnare", 7, 0, e.onlyChinese and '贸易品'},--13
-    }
-    local last, btn
+        '-',
+        {132690, 4, 1, e.onlyChinese and '布甲'},--1
+        {132722, 4, 2, e.onlyChinese and '皮甲'},--2
+        {132629, 4, 3, e.onlyChinese and '锁甲'},--3
+        {132738, 4, 4, e.onlyChinese and '板甲'},--4
+        {134966, 4, 6, e.onlyChinese and '盾牌'},
+        
+        }
+    --local last, btn
+    local x, y=0, 0
     for _, tab in pairs(fast) do
-        btn= e.Cbtn(button.FastButton.frame, {size={size,size}, texture=tab[1]})
-        --if not last then
-        --    btn:SetPoint('TOPLEFT', button.FastButton.frame, 'BOTTOMLEFT')
-        --else
-            btn:SetPoint('TOPLEFT', last or button.FastButton.frame, 'BOTTOMLEFT')--,0, -2)
-        --end
-        btn.classID= tab[2]
-        btn.subclassID= tab[3]
-        btn.name= tab[4] or GetItemSubClassInfo(tab[2], tab[3])
-        btn.numLable= e.Cstr(btn)
-        btn.numLable:SetPoint('TOPLEFT')
-        btn.stackLable= e.Cstr(btn)
-        btn.stackLable:SetPoint('BOTTOMRIGHT')
-        btn.playerTexture= btn:CreateTexture(nil, 'OVERLAY')
-        btn.playerTexture:SetAtlas('AnimaChannel-Bar-Necrolord-Gem')
-        btn.playerTexture:SetSize(size/2, size/2)
-        btn.playerTexture:SetPoint('BOTTOMLEFT')
+        if tab~='-' then
+            local btn= e.Cbtn(button.FastButton.frame, {size={size,size}, texture=tab[1]})
+            --btn:SetPoint('TOPLEFT', last or button.FastButton.frame, 'BOTTOMLEFT')
+            btn:SetPoint('TOPLEFT', button.FastButton.frame,'BOTTOMLEFT', x, y)
+            btn.classID= tab[2]
+            btn.subclassID= tab[3]
+            btn.name= tab[4] or GetItemSubClassInfo(tab[2], tab[3])
+            btn.numLable= e.Cstr(btn)
+            btn.numLable:SetPoint('TOPLEFT')
+            btn.stackLable= e.Cstr(btn)
+            btn.stackLable:SetPoint('BOTTOMRIGHT')
+            btn.playerTexture= btn:CreateTexture(nil, 'OVERLAY')
+            btn.playerTexture:SetAtlas('AnimaChannel-Bar-Necrolord-Gem')
+            btn.playerTexture:SetSize(size/2, size/2)
+            btn.playerTexture:SetPoint('BOTTOMLEFT')
 
-        btn:SetScript('OnClick', function(self2, d)
-            if d=='LeftButton' then
-                set_Text_SendMailNameEditBox(_, Save.fast[self2.name])--设置，发送名称，文
+            btn:SetScript('OnClick', function(self2, d)
+                if d=='LeftButton' then
+                    set_Text_SendMailNameEditBox(_, Save.fast[self2.name])--设置，发送名称，文
 
-                local slotTab= get_Send_Max_Item()--能发送，数量
-                if #slotTab==0 then
-                    return
-                end
+                    local slotTab= get_Send_Max_Item()--能发送，数量
+                    if #slotTab==0 then
+                        return
+                    end
 
-                for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+ NUM_REAGENTBAG_FRAMES do
-                    for slot=1, C_Container.GetContainerNumSlots(bag) do
-                        local info = C_Container.GetContainerItemInfo(bag, slot)
-                        if info
-                            and info.itemID
-                            and info.hyperlink
-                            and not info.isLocked
-                            and not info.isBound
-                        then
-                            local classID, subclassID = select(6, GetItemInfoInstant(info.hyperlink))
-                            if classID==self2.classID and subclassID==self2.subclassID then
-                                C_Container.PickupContainerItem(bag, slot)
-                                ClickSendMailItemButton(slotTab[1])
-                                slotTab= get_Send_Max_Item()--能发送，数量
-                                if #slotTab==0 then
-                                    return
+                    for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+ NUM_REAGENTBAG_FRAMES do
+                        for slot=1, C_Container.GetContainerNumSlots(bag) do
+                            local info = C_Container.GetContainerItemInfo(bag, slot)
+                            if info
+                                and info.itemID
+                                and info.hyperlink
+                                and not info.isLocked
+                                and not info.isBound
+                            then
+                                local classID, subclassID = select(6, GetItemInfoInstant(info.hyperlink))
+                                if classID==self2.classID and subclassID==self2.subclassID then
+                                    C_Container.PickupContainerItem(bag, slot)
+                                    ClickSendMailItemButton(slotTab[1])
+                                    slotTab= get_Send_Max_Item()--能发送，数量
+                                    if #slotTab==0 then
+                                        return
+                                    end
                                 end
                             end
                         end
                     end
+
+                elseif d=='RightButton' and IsAltKeyDown() then
+                    Save.fast[self2.name]= get_SendMailNameEditBox_Text()--取得， SendMailNameEditBox， 名称
+                    set_Player_Lable(self2)--设置指定发送，玩家, 提示
+                    print(id, addName, self2.name, Save.fast[self2.name] or (e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2))
                 end
-
-            elseif d=='RightButton' and IsAltKeyDown() then
-                Save.fast[self2.name]= get_SendMailNameEditBox_Text()--取得， SendMailNameEditBox， 名称
+            end)
+            
+            btn:SetScript('OnLeave', function(self2)
+                set_Label_Text(self2)--设置提示，数量，堆叠
+                e.tips:Hide()
+            end)
+            btn:SetScript('OnEnter', function(self2)
                 set_Player_Lable(self2)--设置指定发送，玩家, 提示
-                print(id, addName, self2.name, Save.fast[self2.name] or (e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2))
-            end
-        end)
-        
-        btn:SetScript('OnLeave', function(self2)
-            set_Label_Text(self2)--设置提示，数量，堆叠
-            e.tips:Hide()
-        end)
-        btn:SetScript('OnEnter', function(self2)
-            set_Player_Lable(self2)--设置指定发送，玩家, 提示
-            e.tips:SetOwner(self2, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine((e.onlyChinese and '添加' or ADD)..e.Icon.left, self2.name)
-            local name=  get_SendMailNameEditBox_Text()--取得， SendMailNameEditBox， 名称
-            e.tips:AddDoubleLine('Alt+'..e.Icon.right..(name or (e.onlyChinese and '玩家' or PLAYER)),
-                                    Save.fast[self2.name] and '|A:AnimaChannel-Bar-Necrolord-Gem:0:0|a|cnGREEN_FONT_COLOR:'..e.GetPlayerInfo({name= Save.fast[self2.name], reName=true, reRealm=true}) or (e.onlyChinese and '无' or NONE)
-                                )
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL, self2.num)
-            e.tips:AddDoubleLine(e.onlyChinese and '组数' or AUCTION_NUM_STACKS, self2.stack)
-            e.tips:Show()
-            self2:SetAlpha(1)
-        end)
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine((e.onlyChinese and '添加' or ADD)..e.Icon.left, self2.name)
+                local name=  get_SendMailNameEditBox_Text()--取得， SendMailNameEditBox， 名称
+                e.tips:AddDoubleLine('Alt+'..e.Icon.right..(name or (e.onlyChinese and '玩家' or PLAYER)),
+                                        Save.fast[self2.name] and '|A:AnimaChannel-Bar-Necrolord-Gem:0:0|a|cnGREEN_FONT_COLOR:'..e.GetPlayerInfo({name= Save.fast[self2.name], reName=true, reRealm=true}) or (e.onlyChinese and '无' or NONE)
+                                    )
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL, self2.num)
+                e.tips:AddDoubleLine(e.onlyChinese and '组数' or AUCTION_NUM_STACKS, self2.stack)
+                e.tips:Show()
+                self2:SetAlpha(1)
+            end)
 
-        btn:SetScript('OnShow', function(self2)
-            self2:RegisterEvent('BAG_UPDATE_DELAYED')
-            self2:RegisterEvent('MAIL_SEND_INFO_UPDATE')
-            set_Label_Text(self2)
-            set_Player_Lable(self2)
-        end)
-        btn:SetScript('OnHide', function(self2)
-            self2:UnregisterAllEvents()
-        end)
-        btn:SetScript('OnEvent', set_Label_Text)
+            btn:SetScript('OnShow', function(self2)
+                self2:RegisterEvent('BAG_UPDATE_DELAYED')
+                self2:RegisterEvent('MAIL_SEND_INFO_UPDATE')
+                set_Label_Text(self2)
+                set_Player_Lable(self2)
+            end)
+            btn:SetScript('OnHide', function(self2)
+                self2:UnregisterAllEvents()
+            end)
+            btn:SetScript('OnEvent', set_Label_Text)
 
-        last= btn
+            y= y- size
+        else
+            x= x+ size
+            y=0
+        end
+        --last= btn
     end
 
-    btn=e.Cbtn(button.FastButton.frame, {size={size,size}, atlas='bags-button-autosort-up'})
+    local btn=e.Cbtn(button.FastButton.frame, {size={size,size}, atlas='bags-button-autosort-up'})
     btn:SetPoint('BOTTOMRIGHT', SendMailAttachment6, 'TOPRIGHT',15, -2)
     btn:SetScript('OnClick', function()
         for i= 1, ATTACHMENTS_MAX_SEND do
@@ -855,7 +868,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     }
                 end
             end
-            
+
             --添加控制面板
             local check=e.CPanel('|A:UI-HUD-Minimap-Mail-Mouseover:0:0|a'..(e.onlyChinese and '邮件' or addName), not Save.disabled, true)
             check:SetScript('OnMouseDown', function()
