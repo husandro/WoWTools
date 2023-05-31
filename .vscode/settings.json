@@ -2861,7 +2861,8 @@
         "AUCTION_NUM_STACKS",
         "SendMailCostMoneyFrame",
         "SendMailNameEditBoxMiddle",
-        "EVENTTRACE_LOG_HEADER"
+        "EVENTTRACE_LOG_HEADER",
+        "Postal_BlackBookButton"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

@@ -1,7 +1,7 @@
-if IsAddOnLoaded('Postal') then
+--[[if IsAddOnLoaded('Postal') then
     return
 end
-
+]]
 local id, e= ...
 local addName= BUTTON_LAG_MAIL
 local Save={
@@ -467,7 +467,7 @@ local function Init_Button()
 
     --下拉，菜单
     button= e.Cbtn(SendMailFrame, {size={size, size}, atlas='common-icon-rotateleft'})
-    button:SetPoint('LEFT', SendMailNameEditBox, 'RIGHT', 2, 0)
+    button:SetPoint('LEFT', Postal_BlackBookButton or SendMailNameEditBox, 'RIGHT', 2, 0)
     button:SetScript('OnClick', function(self2)
         if not self2.Menu then
             self2.Menu= CreateFrame("Frame", id..addName..'Menu', self2, "UIDropDownMenuTemplate")
@@ -621,10 +621,12 @@ local function Init_Button()
         if self2:GetText():find(' ') then
             text=' (|cnRED_FONT_COLOR:'..(e.onlyChinese and '空格键' or KEY_SPACE)..'|r)'
         end
+
         local name= get_Text_SendMailNameEditBox()
+        Save.lastSendPlayer= name or Save.lastSendPlayer--记录 SendMailNameEditBox，内容
+
         name= name and get_Name_Info(name)
         self2.playerTipsLable:SetText((name or '')..text)
-
         button.ClearPlayerButton:SetAlpha(self2:GetText()=='' and 0.3 or 1)
     end)
 end
