@@ -76,7 +76,7 @@ end
 --#######
 --设置菜单
 --#######
-local function Init_Menu(self, level, menuList,...)
+local function Init_Menu(_, level, menuList)
     local info
     if menuList=='SELF' then
         local find
@@ -468,7 +468,7 @@ local function Init_Button()
     button:SetPoint('LEFT', _G['Postal_BlackBookButton'] or SendMailNameEditBox, 'RIGHT', 2, 0)--IsAddOnLoaded('Postal')
     button:SetScript('OnClick', function(self2)
         if not self2.Menu then
-            self2.Menu= CreateFrame("Frame", id..addName..'Menu', self2, "UIDropDownMenuTemplate")
+            self2.Menu= CreateFrame("Frame", nil, self2, "UIDropDownMenuTemplate")
             e.LibDD:UIDropDownMenu_Initialize(self2.Menu, Init_Menu, 'MENU')
         end
         e.LibDD:ToggleDropDownMenu(1, nil, self2.Menu, self2, 15, 0)
@@ -751,6 +751,9 @@ local function set_Player_Lable(self2)--设置指定发送，玩家, 提示
     self2.playerTexture:SetShown(Save.fast[self2.name] and true or false)
 end
 
+local function Init_Fast_Menu(_, level, menuList)
+end
+
 local function Init_Fast_Button()
     if button.FastButton then
         return
@@ -772,7 +775,11 @@ local function Init_Fast_Button()
             self2:SetNormalAtlas(Save.fastShow and 'NPE_ArrowDown' or 'NPE_ArrowUp')
             self2.frame:SetShown(Save.fastShow)
         elseif d=='RightButton' then
-
+            if not self2.Menu then
+                self2.Menu= CreateFrame("Frame", nil, self2, "UIDropDownMenuTemplate")
+                e.LibDD:UIDropDownMenu_Initialize(self2.Menu, Init_Fast_Menu, 'MENU')
+            end
+            e.LibDD:ToggleDropDownMenu(1, nil, self2.Menu, self2, 15, 0)
         end
     end)
     button.FastButton:SetScript('OnMouseWheel', function(self2, d)

@@ -338,7 +338,7 @@ local function Init_Gossip()
             setTexture()
         elseif d=='RightButton' and not key then
             if not self.MenuGossip then
-                self.MenuGossip=CreateFrame("Frame", id..addName..'MenuGossip', self, "UIDropDownMenuTemplate")
+                self.MenuGossip=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
                 e.LibDD:UIDropDownMenu_Initialize(self.MenuGossip, InitMenu_Gossip, 'MENU')
             end
             e.LibDD:ToggleDropDownMenu(1, nil, self.MenuGossip, self, 15, 0)
@@ -790,7 +790,7 @@ local function Init_Quest()
             setTexture()--设置图标
         elseif d=='RightButton' then
             if not self.MenuQest then
-                self.MenuQest=CreateFrame("Frame", id..addName..'MenuQest', self, "UIDropDownMenuTemplate")
+                self.MenuQest=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
                 e.LibDD:UIDropDownMenu_Initialize(self.MenuQest, InitMenu_Quest, 'MENU')
             end
             e.LibDD:ToggleDropDownMenu(1, nil, self.MenuQest, self, 15, 0)
