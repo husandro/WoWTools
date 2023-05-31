@@ -674,7 +674,7 @@ local function set_Label_Text(self2)--设置提示，数量，堆叠
         return
     end
     self2.run=true
-    local num, stack= 0, 0
+    local num, stack= 0, 0 --C_Item.GetItemMaxStackSizeByID(info.itemID)
     for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+ NUM_REAGENTBAG_FRAMES do
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local info=check_Enabled_Item(self2, bag, slot)
@@ -684,9 +684,8 @@ local function set_Label_Text(self2)--设置提示，数量，堆叠
             end
         end
     end
-    if self2.classID~=2 and self2.classID~=4 then
-        self2.numLable:SetText(num>0 and num or '')
-    end
+
+    self2.numLable:SetText(num==stack and '' or num)
     self2.stackLable:SetText(stack>0 and stack or '' )
     self2:SetAlpha((stack==0 or panel.ItemMaxNum==0) and 0.1 or 1)
     self2.num=num
