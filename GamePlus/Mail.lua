@@ -593,7 +593,7 @@ local function set_Label_Text(self2)--设置提示，数量，堆叠
                 and not info.isBound
             then
                 local classID, subclassID = select(6, GetItemInfoInstant(info.hyperlink))
-                if classID==self2.classID and subclassID==self2.subclassID then
+                if classID==self2.classID and (not self2.subclassID or subclassID==self2.subclassID) then
                     num= num+ info.stackCount
                     stack= stack+1
                 end
@@ -672,6 +672,13 @@ local function Init_Fast_Button()
     end
     button.FastButton.frame:SetShown(Save.fastShow)
 
+
+    local function set_Fast_Event(self2)
+        set_Label_Text(self2)
+        self2:RegisterEvent('BAG_UPDATE_DELAYED')
+        self2:RegisterEvent('MAIL_SEND_INFO_UPDATE')
+        
+    end
     local fast={
         {4620681, 7, 5, e.onlyChinese and '布'},--1
         {4620678, 7, 6, e.onlyChinese and '皮革'},--2
@@ -692,6 +699,7 @@ local function Init_Fast_Button()
         {132629, 4, 3, e.onlyChinese and '锁甲'},--3
         {132738, 4, 4, e.onlyChinese and '板甲'},--4
         {134966, 4, 6, e.onlyChinese and '盾牌'},
+        {135317, 2, nil, e.onlyChinese and '武器'},
         
         }
     --local last, btn
@@ -703,7 +711,7 @@ local function Init_Fast_Button()
             btn:SetPoint('TOPLEFT', button.FastButton.frame,'BOTTOMLEFT', x, y)
             btn.classID= tab[2]
             btn.subclassID= tab[3]
-            btn.name= tab[4] or GetItemSubClassInfo(tab[2], tab[3])
+            btn.name= tab[4] or not tab[3] and GetItemClassInfo(tab[2]) or  GetItemSubClassInfo(tab[2], tab[3])
             btn.numLable= e.Cstr(btn)
             btn.numLable:SetPoint('TOPLEFT')
             btn.stackLable= e.Cstr(btn)
@@ -722,6 +730,8 @@ local function Init_Fast_Button()
                         return
                     end
 
+                    self2:UnregisterAllEvents()
+
                     for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+ NUM_REAGENTBAG_FRAMES do
                         for slot=1, C_Container.GetContainerNumSlots(bag) do
                             local info = C_Container.GetContainerItemInfo(bag, slot)
@@ -732,17 +742,20 @@ local function Init_Fast_Button()
                                 and not info.isBound
                             then
                                 local classID, subclassID = select(6, GetItemInfoInstant(info.hyperlink))
-                                if classID==self2.classID and subclassID==self2.subclassID then
+                                if classID==self2.classID and (not self2.subclassID or subclassID==self2.subclassID) then
                                     C_Container.PickupContainerItem(bag, slot)
                                     ClickSendMailItemButton(slotTab[1])
                                     slotTab= get_Send_Max_Item()--能发送，数量
                                     if #slotTab==0 then
+                                        set_Fast_Event(self2)
                                         return
                                     end
                                 end
                             end
                         end
                     end
+
+                    set_Fast_Event(self2)
 
                 elseif d=='RightButton' and IsAltKeyDown() then
                     Save.fast[self2.name]= get_SendMailNameEditBox_Text()--取得， SendMailNameEditBox， 名称
@@ -772,9 +785,7 @@ local function Init_Fast_Button()
             end)
 
             btn:SetScript('OnShow', function(self2)
-                self2:RegisterEvent('BAG_UPDATE_DELAYED')
-                self2:RegisterEvent('MAIL_SEND_INFO_UPDATE')
-                set_Label_Text(self2)
+                set_Fast_Event(self2)
                 set_Player_Lable(self2)
             end)
             btn:SetScript('OnHide', function(self2)
