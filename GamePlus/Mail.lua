@@ -633,7 +633,7 @@ end
 --##################
 --设置，快速选取，按钮
 --##################
-local function check_Enabled_Item(btn, bag, slot)
+local function check_Enabled_Item(classID, subClassID, findString, bag, slot)
     local info = C_Container.GetContainerItemInfo(bag, slot)
     if info
         and info.itemID
@@ -641,14 +641,14 @@ local function check_Enabled_Item(btn, bag, slot)
         and not info.isLocked
         and not info.isBound
     then
-        local classID, subclassID = select(6, GetItemInfoInstant(info.hyperlink))
-        if (btn.findString and info.hyperlink:find(btn.findString))
+        local class, sub = select(6, GetItemInfoInstant(info.hyperlink))
+        if (findString and info.hyperlink:find(findString))
             or (
-                classID==btn.classID
-                and (not btn.subclassID or subclassID==btn.subclassID)
+                class==classID
+                and (not subClassID or sub==subClassID)
             )
         then
-            if classID==2 or classID==4 then--幻化
+            if class==2 or class==4 then--幻化
                 local text, isCollected =e.GetItemCollected(info.hyperlink)
                 if text and not isCollected then
                     return info
@@ -659,7 +659,9 @@ local function check_Enabled_Item(btn, bag, slot)
         end
     end
 end
-local function get_Send_Max_Item()--能发送，数量
+
+--能发送，数量
+local function get_Send_Max_Item()
     local tab={}
     for i= 1, ATTACHMENTS_MAX_SEND do
         if not HasSendMailItem(i) then
@@ -669,7 +671,9 @@ local function get_Send_Max_Item()--能发送，数量
     panel.ItemMaxNum= #tab
     return tab
 end
-local function set_Label_Text(self2)--设置提示，数量，堆叠
+
+--设置提示，数量，堆叠
+local function set_Label_Text(self2)
     if self2.run then
         return
     end
@@ -677,7 +681,7 @@ local function set_Label_Text(self2)--设置提示，数量，堆叠
     local num, stack= 0, 0 --C_Item.GetItemMaxStackSizeByID(info.itemID)
     for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+ NUM_REAGENTBAG_FRAMES do
         for slot=1, C_Container.GetContainerNumSlots(bag) do
-            local info=check_Enabled_Item(self2, bag, slot)
+            local info= check_Enabled_Item(self2.classID, self2.subClassID, self2.findString, bag, slot)
             if info then
                 num= num+ info.stackCount
                 stack= stack+1
@@ -690,7 +694,57 @@ local function set_Label_Text(self2)--设置提示，数量，堆叠
     self2:SetAlpha((stack==0 or panel.ItemMaxNum==0) and 0.1 or 1)
     self2.num=num
     self2.stack=stack
-    self2.run=false
+    self2.run=nil
+end
+
+--清除，注册，事件
+local function set_Fast_Event(frame, unregisterAllEvents)
+    if frame then
+        if unregisterAllEvents then
+            frame:UnregisterAllEvents()
+        else
+            set_Label_Text(frame)
+            frame:RegisterEvent('BAG_UPDATE_DELAYED')
+            frame:RegisterEvent('MAIL_SEND_INFO_UPDATE')
+        end
+    else
+        for _, btn in pairs(button.FastButtonS) do
+            if unregisterAllEvents then
+                btn:UnregisterAllEvents()
+            else
+                set_Label_Text(btn)
+                btn:RegisterEvent('BAG_UPDATE_DELAYED')
+                btn:RegisterEvent('MAIL_SEND_INFO_UPDATE')
+            end
+        end
+    end
+end
+
+--自动放物品
+local function set_PickupContainerItem(classID, subClassID, findString)
+    local slotTab= get_Send_Max_Item()--能发送，数量
+    if #slotTab==0 then
+        return
+    end
+
+    set_Fast_Event(nil, true)--清除，注册，事件
+    for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+ NUM_REAGENTBAG_FRAMES do
+        for slot=1, C_Container.GetContainerNumSlots(bag) do
+            local info=check_Enabled_Item(classID, subClassID, findString, bag, slot)
+            if info then
+                C_Container.PickupContainerItem(bag, slot)
+                ClickSendMailItemButton(slotTab[1])
+                table.remove(slotTab, 1)
+                if #slotTab==0 then
+                    slotTab= get_Send_Max_Item()--能发送，数量
+                    set_Fast_Event()--清除，注册，事件
+                    return
+                end
+            end
+        end
+    end
+    get_Send_Max_Item()--能发送，数量
+    set_Fast_Event()--清除，注册，事件
 end
 
 local function set_Player_Lable(self2)--设置指定发送，玩家, 提示
@@ -705,28 +759,6 @@ local function Init_Fast_Button()
     button.FastButtonS={}
     panel.ItemMaxNum= ATTACHMENTS_MAX_SEND
 
-    local function set_Fast_Event(frame, unregisterAllEvents)--清除，注册，事件
-        if frame then
-            if unregisterAllEvents then
-                frame:UnregisterAllEvents()
-            else
-                set_Label_Text(frame)
-                frame:RegisterEvent('BAG_UPDATE_DELAYED')
-                frame:RegisterEvent('MAIL_SEND_INFO_UPDATE')
-            end
-        else
-            for _, btn in pairs(button.FastButtonS) do
-                if unregisterAllEvents then
-                    btn:UnregisterAllEvents()
-                else
-                    set_Label_Text(btn)
-                    btn:RegisterEvent('BAG_UPDATE_DELAYED')
-                    btn:RegisterEvent('MAIL_SEND_INFO_UPDATE')
-                end
-            end
-        end
-    end
-
     button.FastButton= e.Cbtn(button, {size={size, size}, atlas= Save.fastShow and 'NPE_ArrowDown' or 'NPE_ArrowUp'})
     if _G['Postal_QuickAttachButton1'] then--IsAddOnLoaded('Postal')
         button.FastButton:SetPoint('BOTTOMLEFT', _G['Postal_QuickAttachButton1'], 'TOPRIGHT', 2, 0)
@@ -734,10 +766,14 @@ local function Init_Fast_Button()
         button.FastButton:SetPoint('BOTTOMLEFT', MailFrameCloseButton, 'BOTTOMRIGHT', 0, 2)
     end
     button.FastButton:SetAlpha(0.3)
-    button.FastButton:SetScript('OnClick', function(self2)
-        Save.fastShow= not Save.fastShow and true or nil
-        self2:SetNormalAtlas(Save.fastShow and 'NPE_ArrowDown' or 'NPE_ArrowUp')
-        self2.frame:SetShown(Save.fastShow)
+    button.FastButton:SetScript('OnClick', function(self2, d)
+        if d=='LeftButton' then
+            Save.fastShow= not Save.fastShow and true or nil
+            self2:SetNormalAtlas(Save.fastShow and 'NPE_ArrowDown' or 'NPE_ArrowUp')
+            self2.frame:SetShown(Save.fastShow)
+        elseif d=='RightButton' then
+
+        end
     end)
     button.FastButton:SetScript('OnMouseWheel', function(self2, d)
         local num= Save.scaleFastButton or 1
@@ -826,10 +862,10 @@ local function Init_Fast_Button()
             btn:SetPoint('TOPLEFT', button.FastButton.frame,'BOTTOMLEFT', x, y)
 
             btn.classID= tab[2]
-            btn.subclassID= tab[3]
+            btn.subClassID= tab[3]
+            btn.name= tab[4] or not tab[3] and GetItemClassInfo(tab[2]) or GetItemSubClassInfo(tab[2], tab[3])
             btn.findString= tab[5]
-
-            btn.name= tab[4] or not tab[3] and GetItemClassInfo(tab[2]) or  GetItemSubClassInfo(tab[2], tab[3])
+            
             btn.numLable= e.Cstr(btn)
             btn.numLable:SetPoint('TOPLEFT')
             btn.stackLable= e.Cstr(btn)
@@ -843,27 +879,7 @@ local function Init_Fast_Button()
                 if d=='LeftButton' and not IsMetaKeyDown() then
                     set_Text_SendMailNameEditBox(_, Save.fast[self2.name])--设置，发送名称，文
 
-                    local slotTab= get_Send_Max_Item()--能发送，数量
-                    if #slotTab==0 then
-                        return
-                    end
-
-                    set_Fast_Event(nil, true)--清除，注册，事件
-                    for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+ NUM_REAGENTBAG_FRAMES do
-                        for slot=1, C_Container.GetContainerNumSlots(bag) do
-                            local info=check_Enabled_Item(self2, bag, slot)
-                            if info then
-                                C_Container.PickupContainerItem(bag, slot)
-                                ClickSendMailItemButton(slotTab[1])
-                                slotTab= get_Send_Max_Item()--能发送，数量
-                                if #slotTab==0 then
-                                    set_Fast_Event()--清除，注册，事件
-                                    return
-                                end
-                            end
-                        end
-                    end
-                    set_Fast_Event()--清除，注册，事件
+                    set_PickupContainerItem(self2.classID, self2.subClassID, self2.findString)--自动放物品
 
                 elseif d=='RightButton' and IsAltKeyDown() then
                     Save.fast[self2.name]= get_Text_SendMailNameEditBox()--取得， SendMailNameEditBox， 名称
