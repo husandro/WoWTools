@@ -195,7 +195,7 @@ function e.GetGUID(unit, name)--从名字,名unit, 获取GUID
     end
 end
 
-e.GetFriend= function(name, guid, unit)--检测, 是否好友
+function e.GetFriend(name, guid, unit)--检测, 是否好友
     if guid or unit then
         guid= guid or e.GetGUID(unit, name)
         if guid and guid~=e.Player.guid then
