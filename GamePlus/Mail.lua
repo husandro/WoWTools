@@ -761,7 +761,7 @@ local function Init_Fast_Menu(_, level, menuList)
 
         for _, tab in pairs(newTab) do
             local info={
-                text= GetItemSubClassInfo(menuList.class, tab.subClass)
+                text= (tab.subClass<10 and ' ' or '')..tab.subClass..') '.. GetItemSubClassInfo(menuList.class, tab.subClass)
                 ..' |cnGREEN_FONT_COLOR:#'..tab.num,
                 notCheckable=true,
                 tooltipOnButton=true,
@@ -817,7 +817,7 @@ local function Init_Fast_Menu(_, level, menuList)
 
     for _, tab2 in pairs(newTab) do
         local info={
-            text= GetItemClassInfo(tab2.class)..' |cnGREEN_FONT_COLOR:#'..tab2.num,
+            text= (tab2.class<10 and ' ' or '')..tab2.class..') '.. GetItemClassInfo(tab2.class)..' |cnGREEN_FONT_COLOR:#'..tab2.num,
             notCheckable=true,
             menuList= {class=tab2.class, subClass=tab2.subClass},
             hasArrow=true,
