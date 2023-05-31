@@ -702,7 +702,7 @@ local function set_Fast_Event(frame, unregisterAllEvents)
     if frame then
         if unregisterAllEvents then
             frame:UnregisterAllEvents()
-        else
+        elseif frame:IsShown() then
             set_Label_Text(frame)
             frame:RegisterEvent('BAG_UPDATE_DELAYED')
             frame:RegisterEvent('MAIL_SEND_INFO_UPDATE')
@@ -711,7 +711,7 @@ local function set_Fast_Event(frame, unregisterAllEvents)
         for _, btn in pairs(button.FastButtonS) do
             if unregisterAllEvents then
                 btn:UnregisterAllEvents()
-            else
+            elseif btn:IsShown() then
                 set_Label_Text(btn)
                 btn:RegisterEvent('BAG_UPDATE_DELAYED')
                 btn:RegisterEvent('MAIL_SEND_INFO_UPDATE')
@@ -752,6 +752,84 @@ local function set_Player_Lable(self2)--设置指定发送，玩家, 提示
 end
 
 local function Init_Fast_Menu(_, level, menuList)
+    if menuList then
+        local newTab={}
+        for subClass, num in pairs(menuList.subClass) do
+            table.insert(newTab, {subClass= subClass, num= num})
+        end
+        table.sort(newTab, function(a,b) return a.subClass< b.subClass end)
+
+        for _, tab in pairs(newTab) do
+            local info={
+                text= GetItemSubClassInfo(menuList.class, tab.subClass)
+                ..' |cnGREEN_FONT_COLOR:#'..tab.num,
+                notCheckable=true,
+                tooltipOnButton=true,
+                tooltipTitle= 'class '..menuList.class..'  subClass '..tab.subClass,
+                arg1=menuList.class,
+                arg2= tab.subClass,
+                func= function(_, arg1, arg2)
+                    set_PickupContainerItem(arg1, arg2)
+                end
+            }
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
+        end
+        return
+    end
+    
+    local tab={}
+    for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+ NUM_REAGENTBAG_FRAMES do
+        for slot=1, C_Container.GetContainerNumSlots(bag) do
+            local info2 = C_Container.GetContainerItemInfo(bag, slot)
+            if info2
+                and info2.hyperlink
+                and not info2.isLocked
+                and not info2.isBound
+            then
+                local class, sub = select(6, GetItemInfoInstant(info2.hyperlink))
+                if class and sub then
+                    local find=true
+                    if class==2 or class==4 then--幻化
+                        local text, isCollected= e.GetItemCollected(info2.hyperlink)
+                        if not text or isCollected then
+                            find= false
+                        end
+                    end
+                    if find then
+                        tab[class]= tab[class] or {
+                                            num= 0,
+                                            subClass= {[sub]=0}
+                                        }
+                        tab[class].num= tab[class].num+ info2.stackCount
+                        tab[class]['subClass'][sub]= tab[class]['subClass'][sub] or 0
+                        tab[class]['subClass'][sub]= tab[class]['subClass'][sub]+ info2.stackCount
+                    end
+                end
+            end
+        end
+    end
+
+    local newTab={}
+    for class, tab2 in pairs(tab) do
+        table.insert(newTab, {class=class, num=tab2.num, subClass= tab2.subClass})
+    end
+    table.sort(newTab, function(a,b) return a.class< b.class end)
+
+    for _, tab2 in pairs(newTab) do
+        local info={
+            text= GetItemClassInfo(tab2.class)..' |cnGREEN_FONT_COLOR:#'..tab2.num,
+            notCheckable=true,
+            menuList= {class=tab2.class, subClass=tab2.subClass},
+            hasArrow=true,
+            tooltipOnButton=true,
+            tooltipTitle= 'class '..tab2.class,
+            arg1=tab2.class,
+            func= function(_, arg1)
+                set_PickupContainerItem(arg1)
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+    end
 end
 
 local function Init_Fast_Button()
@@ -936,8 +1014,8 @@ local function Init_Fast_Button()
         end
     end
 
-    button.clearAllItmeButton=e.Cbtn(button.FastButton.frame, {size={size,size}, atlas='bags-button-autosort-up'})
-    button.clearAllItmeButton:SetPoint('BOTTOMRIGHT', SendMailAttachment6, 'TOPRIGHT',15, -2)
+    button.clearAllItmeButton=e.Cbtn(button, {size={size,size}, atlas='bags-button-autosort-up'})
+    button.clearAllItmeButton:SetPoint('BOTTOMLEFT', SendMailAttachment7, 'TOPLEFT')
     button.clearAllItmeButton:SetScript('OnClick', function()
         set_Fast_Event(nil, true)--清除，注册，事件
         for i= 1, ATTACHMENTS_MAX_SEND do
