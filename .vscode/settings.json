@@ -2858,7 +2858,9 @@
         "SendMailAttachment7",
         "SendMailAttachment6",
         "HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP",
-        "AUCTION_NUM_STACKS"
+        "AUCTION_NUM_STACKS",
+        "SendMailCostMoneyFrame",
+        "SendMailNameEditBoxMiddle"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

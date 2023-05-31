@@ -851,6 +851,12 @@ local function Init()--SendMailNameEditBox
         button.GetTargetNameButton:UnregisterAllEvents()
     end)
 
+    --[[
+    if SendMailCostMoneyFrame then
+        SendMailCostMoneyFrame:ClearAllPoints()
+        SendMailCostMoneyFrame:SetPoint('BOTTOMRIGHT', SendMailCancelButton, 'TOPRIGHT', 10, 6)
+    end
+    SendMailNameEditBox:SetSize(SendMailSubjectEditBox:GetWidth()-size, 23)]]
 end
 
 
