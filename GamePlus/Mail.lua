@@ -13,6 +13,7 @@ local Save={
     fast={},--快速，加载，物品，指定玩家
     fastShow=true,--显示，按钮
     --scaleClearPlayerButton=1.2,--清除历史数据，缩放
+    scaleFastButton=1.25,
 }
 
 local size=23--图标大小
