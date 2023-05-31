@@ -846,8 +846,24 @@ local function Init_Set_AlphaAndColor()
     set_Alpha(MailFrameBg)
     hide_Texture(InboxFrameBg)
     hide_Texture(MailFrameInset.Bg)
+
+    
+    SendMailBodyEditBox:HookScript('OnEditFocusLost', function()
+        set_Alpha(SendStationeryBackgroundLeft)
+        set_Alpha(SendStationeryBackgroundRight)
+    end)
+    SendMailBodyEditBox:HookScript('OnEditFocusGained', function()
+        if SendStationeryBackgroundLeft then
+            SendStationeryBackgroundLeft:SetAlpha(1)
+            SendStationeryBackgroundLeft:SetVertexColor(1,1,1)
+            SendStationeryBackgroundRight:SetAlpha(1)
+            SendStationeryBackgroundRight:SetVertexColor(1,1,1)
+        end
+    end)
     set_Alpha(SendStationeryBackgroundLeft)
     set_Alpha(SendStationeryBackgroundRight)
+    
+
     set_Alpha(SendMailMoneyBgMiddle)
     set_Alpha(SendMailMoneyBgRight)
     set_Alpha(SendMailMoneyBgLeft)

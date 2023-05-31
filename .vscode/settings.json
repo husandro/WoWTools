@@ -2862,8 +2862,9 @@
         "SendMailCostMoneyFrame",
         "SendMailNameEditBoxMiddle",
         "EVENTTRACE_LOG_HEADER",
-        "Postal_BlackBookButton",
-        "Postal_QuickAttachButton1"
+        "TRANSMOGRIFY_STYLE_UNCOLLECTED",
+        "SendMailScrollChildFrame",
+        "SendMailScrollFrame"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

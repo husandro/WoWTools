@@ -1,7 +1,3 @@
---[[if IsAddOnLoaded('Postal') then
-    return
-end
-]]
 local id, e= ...
 local addName= BUTTON_LAG_MAIL
 local Save={
@@ -23,9 +19,11 @@ local Save={
     scaleFastButton=1.25,
 }
 
+
 local size=23--图标大小
 local panel= CreateFrame("Frame")
 local button
+local t= panel:CreateTexture()
 
 local function set_Text_SendMailNameEditBox(_, name)--设置，发送名称，文
     if name then
@@ -467,7 +465,7 @@ local function Init_Button()
 
     --下拉，菜单
     button= e.Cbtn(SendMailFrame, {size={size, size}, atlas='common-icon-rotateleft'})
-    button:SetPoint('LEFT', Postal_BlackBookButton or SendMailNameEditBox, 'RIGHT', 2, 0)
+    button:SetPoint('LEFT', Postal_BlackBookButton or SendMailNameEditBox, 'RIGHT', 2, 0)--IsAddOnLoaded('Postal')
     button:SetScript('OnClick', function(self2)
         if not self2.Menu then
             self2.Menu= CreateFrame("Frame", id..addName..'Menu', self2, "UIDropDownMenuTemplate")
@@ -633,7 +631,7 @@ end
 
 
 --##################
---设置，快送选取，按钮
+--设置，快速选取，按钮
 --##################
 local function check_Enabled_Item(btn, bag, slot)
     local info = C_Container.GetContainerItemInfo(bag, slot)
@@ -644,8 +642,20 @@ local function check_Enabled_Item(btn, bag, slot)
         and not info.isBound
     then
         local classID, subclassID = select(6, GetItemInfoInstant(info.hyperlink))
-        if classID==btn.classID and (not btn.subclassID or subclassID==btn.subclassID) then
-            return info
+        if (btn.findString and info.hyperlink:find(btn.findString))
+            or (
+                classID==btn.classID
+                and (not btn.subclassID or subclassID==btn.subclassID)
+            )
+        then
+            if classID==2 or classID==4 then--幻化
+                local text, isCollected =e.GetItemCollected(info.hyperlink)
+                if text and not isCollected then
+                    return info
+                end
+            else
+                return info
+            end
         end
     end
 end
@@ -795,7 +805,7 @@ local function Init_Fast_Button()
         {132738, 4, 4, e.onlyChinese and '板甲'},--4
         {134966, 4, 6, e.onlyChinese and '盾牌'},
         {135317, 2, nil, e.onlyChinese and '武器'},
-
+        {644389, 15, 2, e.onlyChinese and '宠物' or PET, 'Hbattlepet'}
         }
 
 
@@ -805,8 +815,11 @@ local function Init_Fast_Button()
         if tab~='-' then
             local btn= e.Cbtn(button.FastButton.frame, {size={size,size}, texture=tab[1]})
             btn:SetPoint('TOPLEFT', button.FastButton.frame,'BOTTOMLEFT', x, y)
+
             btn.classID= tab[2]
             btn.subclassID= tab[3]
+            btn.findString= tab[5]
+
             btn.name= tab[4] or not tab[3] and GetItemClassInfo(tab[2]) or  GetItemSubClassInfo(tab[2], tab[3])
             btn.numLable= e.Cstr(btn)
             btn.numLable:SetPoint('TOPLEFT')
@@ -818,7 +831,7 @@ local function Init_Fast_Button()
             btn.playerTexture:SetPoint('BOTTOMLEFT')
 
             btn:SetScript('OnClick', function(self2, d)
-                if d=='LeftButton' then
+                if d=='LeftButton' and not IsMetaKeyDown() then
                     set_Text_SendMailNameEditBox(_, Save.fast[self2.name])--设置，发送名称，文
 
                     local slotTab= get_Send_Max_Item()--能发送，数量
@@ -866,6 +879,10 @@ local function Init_Fast_Button()
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL, self2.num)
                 e.tips:AddDoubleLine(e.onlyChinese and '组数' or AUCTION_NUM_STACKS, self2.stack)
+                if self2.classID==2 or self2.classID==4 then
+                    e.tips:AddLine(' ')
+                    e.tips:AddDoubleLine(' ', format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.onlyChinese and '你还没有收藏过此外观' or TRANSMOGRIFY_STYLE_UNCOLLECTED))
+                end
                 e.tips:Show()
                 self2:SetAlpha(1)
             end)
