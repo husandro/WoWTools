@@ -823,6 +823,7 @@ local function Init_Fast_Menu(_, level, menuList)
             hasArrow=true,
             tooltipOnButton=true,
             tooltipTitle= 'class '..tab2.class,
+            tooltipText= (tab2.class==2 or tab2.class==4) and format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.onlyChinese and '你还没有收藏过此外观' or TRANSMOGRIFY_STYLE_UNCOLLECTED),
             arg1=tab2.class,
             func= function(_, arg1)
                 set_PickupContainerItem(arg1)
