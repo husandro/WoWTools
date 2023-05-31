@@ -539,7 +539,7 @@ end
 function e.Cstr(self, tab)--self, {size, copyFont, changeFont, color={r=,g=,b=,a=}, layer=, justifyH=, mouse=false, wheel=false}
     tab= tab or {}--Fonts.xml FontStyles.xml
     self= self or UIParent
-    local font= tab.changeFont or self:CreateFontString(nil, (tab.layer or 'OVERLAY'), 'GameFontNormal', 5)
+    local font= tab.changeFont or self:CreateFontString(nil, (tab.layer or 'OVERLAY'), 'GameFontNormal',  5)
     if tab.copyFont then
         --[[font:CopyFontObject(tab.copyFont)
         if tab.size then

@@ -763,6 +763,8 @@ local function Init()
             end
         end)
     end
+    
+    --使用插件时，会退出，不要在下面加代码
 end
 
 --###########

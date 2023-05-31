@@ -1200,7 +1200,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             panel:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_WeeklyRewards' then--周奖励, 物品提示，信息
-            hooksecurefunc(WeeklyRewardsFrame, 'Refresh', function(self2)--Blizzard_WeeklyRewards.lua
+            hooksecurefunc(WeeklyRewardsFrame, 'Refresh', function(self2)--Blizzard_WeeklyRewards.lua WeeklyRewardsMixin:Refresh(playSheenAnims)
                 local activities = C_WeeklyRewards.GetActivities();
                 for _, activityInfo in ipairs(activities) do
                     local frame = self2:GetActivityFrame(activityInfo.type, activityInfo.index);
