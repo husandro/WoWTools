@@ -2862,7 +2862,8 @@
         "SendMailCostMoneyFrame",
         "SendMailNameEditBoxMiddle",
         "EVENTTRACE_LOG_HEADER",
-        "Postal_BlackBookButton"
+        "Postal_BlackBookButton",
+        "Postal_QuickAttachButton1"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

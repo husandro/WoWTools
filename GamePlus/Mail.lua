@@ -719,7 +719,11 @@ local function Init_Fast_Button()
     end
 
     button.FastButton= e.Cbtn(button, {size={size, size}, atlas= Save.fastShow and 'NPE_ArrowDown' or 'NPE_ArrowUp'})
-    button.FastButton:SetPoint('BOTTOMLEFT', MailFrameCloseButton, 'BOTTOMRIGHT', 0,2)
+    if Postal_QuickAttachButton1 then--IsAddOnLoaded('Postal')
+        button.FastButton:SetPoint('BOTTOMLEFT', Postal_QuickAttachButton1, 'TOPRIGHT', 2, 0)
+    else
+        button.FastButton:SetPoint('BOTTOMLEFT', MailFrameCloseButton, 'BOTTOMRIGHT', 0, 2)
+    end
     button.FastButton:SetAlpha(0.3)
     button.FastButton:SetScript('OnClick', function(self2)
         Save.fastShow= not Save.fastShow and true or nil
