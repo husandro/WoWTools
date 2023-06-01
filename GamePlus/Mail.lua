@@ -1248,7 +1248,23 @@ local function Init()--SendMailNameEditBox
                 if sender then
                     _G["MailItem"..i.."Sender"]:SetText(get_Name_Info(sender))
                 end
-                
+                local moneyPaga= CODAmount and CODAmount>0
+                if moneyPaga and not btn.CODAmountTips then--提示，需要付钱
+                    btn.CODAmountTips= btn:CreateTexture(nil, 'OVERLAY')
+                    btn.CODAmountTips:SetAllPoints(_G['MailItem'..i])
+                    btn.CODAmountTips:SetAtlas('communities-create-button-bnet-highlight')
+                end
+                if btn.CODAmountTips then
+                    btn.CODAmountTips:SetShown(moneyPaga)
+                end
+
+                if moneyPaga and not btn.moneyPagaTip then
+                    btn.moneyPagaTip= e.Cstr(btn, {color={r=1,g=0,b=0}})
+                    btn.moneyPagaTip:SetPoint('BOTTOM', _G['MailItem'..i])
+                end
+                if btn.moneyPagaTip then
+                    btn.moneyPagaTip:SetText(moneyPaga and (e.onlyChinese and '付款' or COD)..' '..e.MK(CODAmount/1e4, 3)..'|TInterface/moneyframe/ui-goldicon:0|t' or '')
+                end
             end
         end
     end)

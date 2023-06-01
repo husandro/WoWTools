@@ -2869,7 +2869,9 @@
         "INBOXITEMS_TO_DISPLAY",
         "OpenMailFrame_IsValidMailID",
         "ATTACHMENTS_MAX",
-        "ATTACHMENTS_PER_ROW_RECEIVE"
+        "ATTACHMENTS_PER_ROW_RECEIVE",
+        "COD",
+        "MailItem4"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
