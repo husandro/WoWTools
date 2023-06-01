@@ -2873,7 +2873,10 @@
         "COD",
         "MailItem4",
         "OpenMailFrameBg",
-        "OpenMailFrameInset"
+        "OpenMailFrameInset",
+        "OpenMailSender",
+        "OpenMailScrollChildFrame",
+        "OpenAllMailMixin"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

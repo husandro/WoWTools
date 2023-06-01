@@ -377,6 +377,18 @@ local function Init_Menu(self, level, type)
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
 
+local Set_MinMap_Icon= function(tab)-- {name, texture, func, hide} 小地图，建立一个图标 Hide("MyLDB") icon:Show("")
+    local bunnyLDB = LibStub("LibDataBroker-1.1"):NewDataObject(tab.name, {
+        type = "data source",
+        text = tab.name,
+        icon = tab.texture,
+        OnClick = tab.func,
+        OnEnter= tab.enter,
+    })
+    local icon = LibStub("LibDBIcon-1.0")
+    icon:Register(tab.name, bunnyLDB, Save.miniMapPoint)
+    return icon
+end
 
 --####
 --初始
@@ -437,18 +449,7 @@ local function Init()
     --########
     --盟约图标
     --########
-    local Set_MinMap_Icon= function(tab)-- {name, texture, func, hide} 小地图，建立一个图标 Hide("MyLDB") icon:Show("")
-        local bunnyLDB = LibStub("LibDataBroker-1.1"):NewDataObject(tab.name, {
-            type = "data source",
-            text = tab.name,
-            icon = tab.texture,
-            OnClick = tab.func,
-            OnEnter= tab.enter,
-        })
-        local icon = LibStub("LibDBIcon-1.0")
-        icon:Register(tab.name, bunnyLDB, Save.miniMapPoint)
-        return icon
-    end
+
 
     Save.miniMapPoint= Save.miniMapPoint or {}
     Set_MinMap_Icon({name= id, texture= 136235,
@@ -505,6 +506,7 @@ local function Init()
             self2:SetShown(false)
         end)
     end
+
 end
 
 
@@ -579,6 +581,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end)
         --elseif arg1=='Blizzard_ExpansionLandingPage' then
         end
+
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             WoWToolsSave[addName]=Save

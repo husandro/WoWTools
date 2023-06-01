@@ -706,37 +706,6 @@ local function get_Send_Max_Item()
     return tab
 end
 
---设置提示，数量，堆叠
-local function set_Label_Text(self2)
-    if self2.run then
-        return
-    end
-    self2.run=true
-    local num, stack= 0, 0 --C_Item.GetItemMaxStackSizeByID(info.itemID)
-    for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+ NUM_REAGENTBAG_FRAMES do
-        for slot=1, C_Container.GetContainerNumSlots(bag) do
-            local info= check_Enabled_Item(self2.classID, self2.subClassID, self2.findString, bag, slot)
-            if info then
-                num= num+ info.stackCount
-                stack= stack+1
-            end
-        end
-    end
-
-    self2.numLable:SetText(num==stack and '' or num)
-    self2.stackLable:SetText(stack>0 and stack or '' )
-    local alpha= 1
-    if panel.ItemMaxNum==0 then
-        alpha= stack>0 and 0.5 or 0.1
-    elseif stack==0 then
-        alpha= 0.1
-    end
-    self2:SetAlpha(alpha)
-    self2.num=num
-    self2.stack=stack
-    self2.run=nil
-end
-
 
 --####################
 --快速，加载，物品，菜单
@@ -937,7 +906,7 @@ local function Init_Fast_Button()
             if unregisterAllEvents then
                 frame:UnregisterAllEvents()
             elseif frame:IsShown() then
-                set_Label_Text(frame)
+                frame:GetParent().set_Label_Text(frame)
                 frame:RegisterEvent('BAG_UPDATE_DELAYED')
                 frame:RegisterEvent('MAIL_SEND_INFO_UPDATE')
             end
@@ -946,7 +915,7 @@ local function Init_Fast_Button()
                 if unregisterAllEvents then
                     btn:UnregisterAllEvents()
                 elseif btn:IsShown() then
-                    set_Label_Text(btn)
+                    btn:GetParent().set_Label_Text(btn)
                     btn:RegisterEvent('BAG_UPDATE_DELAYED')
                     btn:RegisterEvent('MAIL_SEND_INFO_UPDATE')
                 end
@@ -988,6 +957,35 @@ local function Init_Fast_Button()
         button.FastButton.frame:SetScale(Save.scaleFastButton)
     end
     button.FastButton.frame:SetShown(Save.fastShow)
+    button.FastButton.frame.set_Label_Text= function(self2)--设置提示，数量，堆叠
+        if self2.run or not self2:IsShown() then
+            return
+        end
+        self2.run=true
+        local num, stack= 0, 0 --C_Item.GetItemMaxStackSizeByID(info.itemID)
+        for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+ NUM_REAGENTBAG_FRAMES do
+            for slot=1, C_Container.GetContainerNumSlots(bag) do
+                local info= check_Enabled_Item(self2.classID, self2.subClassID, self2.findString, bag, slot)
+                if info then
+                    num= num+ info.stackCount
+                    stack= stack+1
+                end
+            end
+        end
+    
+        self2.numLable:SetText(num==stack and '' or num)
+        self2.stackLable:SetText(stack>0 and stack or '' )
+        local alpha= 1
+        if panel.ItemMaxNum==0 then
+            alpha= stack>0 and 0.5 or 0.1
+        elseif stack==0 then
+            alpha= 0.1
+        end
+        self2:SetAlpha(alpha)
+        self2.num=num
+        self2.stack=stack
+        self2.run=nil
+    end
 
     local fast={
         {GetSpellTexture(3908) or 4620681, 7, 5, e.onlyChinese and '布'},--1
@@ -1062,7 +1060,7 @@ local function Init_Fast_Button()
             end)
 
             btn:SetScript('OnLeave', function(self2)
-                set_Label_Text(self2)--设置提示，数量，堆叠
+                self2:GetParet().set_Label_Text(self2)--设置提示，数量，堆叠
                 e.tips:Hide()
             end)
             btn:SetScript('OnEnter', function(self2)
@@ -1095,7 +1093,9 @@ local function Init_Fast_Button()
             btn:SetScript('OnHide', function(self2)
                 button.FastButton.set_Fast_Event(self2, true)--清除，注册，事件，显示/隐藏，设置数量
             end)
-            btn:SetScript('OnEvent', set_Label_Text)
+            btn:SetScript('OnEvent', function(self2)
+                self2:GetParent().set_Label_Text()
+            end)
             button.FastButtonS[index]= btn
 
             y= y- size
@@ -1250,31 +1250,62 @@ local function Init()--SendMailNameEditBox
                 end
                 local moneyPaga= CODAmount and CODAmount>0
                 if moneyPaga and not btn.CODAmountTips then--提示，需要付钱
-                    btn.CODAmountTips= btn:CreateTexture(nil, 'ARTWORK')
+                    btn.CODAmountTips= btn:CreateTexture(nil, 'OVERLAY')
                     btn.CODAmountTips:SetAllPoints(_G['MailItem'..i])
                     btn.CODAmountTips:SetAtlas('CovenantSanctum-Upgrade-Border-Kyrian')
                     btn.CODAmountTips:SetVertexColor(1,0,0)
-                end
-                if btn.CODAmountTips then
-                    btn.CODAmountTips:SetShown(moneyPaga)
-                end
 
-                if moneyPaga and not btn.moneyPagaTip then
                     btn.moneyPagaTip= e.Cstr(btn, {color={r=1,g=0,b=0}})
                     btn.moneyPagaTip:SetPoint('BOTTOM', _G['MailItem'..i],0,4)
                 end
-                if btn.moneyPagaTip then
+                if btn.CODAmountTips then
+                    btn.CODAmountTips:SetShown(moneyPaga)
                     btn.moneyPagaTip:SetText(moneyPaga and (e.onlyChinese and '付款' or COD)..' '..e.MK(CODAmount/1e4, 3)..'|TInterface/moneyframe/ui-goldicon:0|t' or '')
                 end
             end
         end
     end)
+
+    hooksecurefunc('OpenMail_Update', function()--多物品，打开时
+        if not OpenMailFrame_IsValidMailID() then
+            return
+        end
+        
+        local packageIcon, stationeryIcon, sender, subject, money, CODAmount, daysLeft, itemCount, wasRead, x, y, z, isGM, firstItemQuantity, firstItemLink = GetInboxHeaderInfo(InboxFrame.openMailID)
+        
+        
+        if sender then
+            local newName= get_Name_Info(sender)
+            if newName~=sender and not OpenMailFrame.sendTips then
+                OpenMailFrame.sendTips= e.Cstr(OpenMailFrame)
+                OpenMailFrame.sendTips:SetPoint('BOTTOMLEFT', OpenMailSender.Name, 'TOPLEFT')
+            end
+            if OpenMailFrame.sendTips then
+                OpenMailFrame.sendTips:SetText(newName==sender and '' or newName)
+            end
+        end
+
+        local moneyPaga= CODAmount and CODAmount>0
+        if moneyPaga and not OpenMailFrame.CODAmountTips then--提示，需要付钱
+            OpenMailFrame.CODAmountTips= OpenMailFrame:CreateTexture(nil, 'OVERLAY')
+            OpenMailFrame.CODAmountTips:SetSize(150, 25)
+            OpenMailFrame.CODAmountTips:SetPoint('BOTTOM',0, 68)
+            OpenMailFrame.CODAmountTips:SetAtlas('jailerstower-wayfinder-rewardbackground-selected')
+            OpenMailFrame.CODAmountTips:SetVertexColor(1,0,0)
+
+            OpenMailFrame.moneyPagaTip= e.Cstr(OpenMailFrame, {color={r=1,g=0,b=0}})
+            OpenMailFrame.moneyPagaTip:SetPoint('CENTER', OpenMailFrame.CODAmountTips)
+
+        end
+        if OpenMailFrame.CODAmountTips then
+            OpenMailFrame.CODAmountTips:SetShown(moneyPaga)
+            OpenMailFrame.moneyPagaTip:SetText(moneyPaga and (e.onlyChinese and '付款' or COD)..' '..e.MK(CODAmount/1e4, 3)..'|TInterface/moneyframe/ui-goldicon:0|t' or '')
+        end
+    end)
     
-    --[[if SendMailCostMoneyFrame then
-        SendMailCostMoneyFrame:ClearAllPoints()
-        SendMailCostMoneyFrame:SetPoint('BOTTOMRIGHT', SendMailCancelButton, 'TOPRIGHT', 10, 6)
-    end
-    SendMailNameEditBox:SetSize(SendMailSubjectEditBox:GetWidth()-size, 23)]]
+    hooksecurefunc(OpenAllMailMixin, 'StartOpening', function()
+        print(id,addName)
+    end)
 end
 
 
