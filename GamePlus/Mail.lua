@@ -579,8 +579,8 @@ local function Init_Button()
 
     --设置，历史记录，内容
     button.ClearPlayerButton.Init_Player_List= function()
-        local tab=Save.lastSendPlayerList
-        for _, name in pairs(tab) do
+        local tab={}
+        for _, name in pairs(Save.lastSendPlayerList) do
             if name==e.Player.name_realm then
                 table.insert(tab, name)
             end
@@ -625,8 +625,8 @@ local function Init_Button()
                 elseif d=='RightButton' then--移除，单个，名字
                     for i, name in pairs(Save.lastSendPlayerList) do
                         if name==self2.name then
-                            print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', self2.name, get_Name_Info(name))
-                            table.remove(Save.lastSendPlayerList, index)
+                            print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', get_Name_Info(name))
+                            table.remove(Save.lastSendPlayerList, i)
                             button.ClearPlayerButton.Init_Player_List()--设置，历史记录，内容
                             break
                         end
