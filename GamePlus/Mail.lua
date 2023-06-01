@@ -35,8 +35,8 @@ local function set_Text_SendMailNameEditBox(_, name)--设置，发送名称，�
 end
 
 local function get_Name_Info(name)--取得名称，信息
-    local reName
     if name then
+        local reName
         for guid, tab in pairs(WoWDate) do
             if name== e.GetUnitName(nil, nil, guid) then
                 reName= e.Icon.star2..e.GetPlayerInfo({guid=guid, faction=tab.faction, reName=true, realm=true})
@@ -44,8 +44,8 @@ local function get_Name_Info(name)--取得名称，信息
             end
         end
         reName= reName or e.GetPlayerInfo({name=name, reName=true, reRealm=true})
+        return reName and reName:gsub('%-'..e.Player.realm, '') or name
     end
-    return reName and reName:gsub('%-'..e.Player.realm, '') or name
 end
 
 --#######
@@ -611,18 +611,18 @@ local function Init_Button()
             label:SetScript('OnLeave', function(self2)
                 e.tips:Hide()
                 self2:SetAlpha(1)
+                self2:GetParent():GetParent().ClearPlayerButton:SetButtonState('NORMAL')
             end)
             label:SetScript('OnEnter', function(self2)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine(' ', e.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER)
-                e.tips:AddDoubleLine(self2:GetText() or ' ', (self2.name or (e.onlyChinese and '无' or NONE))..e.Icon.left)
+                e.tips:AddLine(e.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER)
+                e.tips:AddLine(self2:GetText()..e.Icon.left)
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(e.onlyChinese and '移除' or REMOVE, e.Icon.right)
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(id,addName)
+                e.tips:AddLine((e.onlyChinese and '移除' or REMOVE)..e.Icon.right)
                 e.tips:Show()
                 self2:SetAlpha(0.5)
+                self2:GetParent():GetParent().ClearPlayerButton:SetButtonState('PUSHED')
             end)
             table.insert(button.SendPlayerFrame.tab, label)
         end
@@ -1072,11 +1072,8 @@ local function Init_Fast_Button()
                 e.tips:AddDoubleLine(e.onlyChinese and '组数' or AUCTION_NUM_STACKS, self2.stack)
                 e.tips:AddLine(' ')
                 local name= e.GetUnitName(SendMailNameEditBox:GetText())--取得， SendMailNameEditBox， 名称
-                e.tips:AddDoubleLine((e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)..' ('..(e.onlyChinese and '玩家' or PLAYER)..')',
-                                        (Save.fast[self2.name] and '|A:AnimaChannel-Bar-Necrolord-Gem:0:0|a|cnGREEN_FONT_COLOR:'..get_Name_Info(Save.fast[self2.name])
-                                             or (e.onlyChinese and '无' or NONE))
-                                        ..'|A:NPE_ArrowDown:0:0|a'
-                                    )
+                e.tips:AddDoubleLine((e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)..'|A:AnimaChannel-Bar-Necrolord-Gem:0:0|a'..(e.onlyChinese and '收件人' or MAIL_TO_LABEL),
+                                    (get_Name_Info(Save.fast[self2.name]) or (e.onlyChinese and '无' or NONE))..'|A:NPE_ArrowDown:0:0|a')
 
                 e.tips:AddDoubleLine('Alt+'..e.Icon.right..(name or ''), (name and (e.onlyChinese and '设置' or SETTINGS) or (e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2))..'|A:NPE_ArrowUp:0:0|a')
                 if self2.classID==2 or self2.classID==4 then
