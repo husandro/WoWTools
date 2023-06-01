@@ -578,34 +578,37 @@ local function Init_Button()
 
     --设置，历史记录，内容
     button.ClearPlayerButton.Init_Player_List= function()
-        if not button then
-            return
-        end
-        for index, name in pairs(Save.lastSendPlayerList) do
-            local label= button.SendPlayerFrame.createdButton(index)
-            label:SetShown(name~=e.Player.name_realm)
-            label.name= name
-            label:SetText(get_Name_Info(name)..' '..(index<10 and ' ' or '')..'|cnGREEN_FONT_COLOR:'..index)
+        local tab=Save.lastSendPlayerList
+        for index, name in pairs(tab) do
+            if name==e.Player.name_realm then
+                table.remove(tab, index)
+                break
+            end
         end
 
-        for index= #Save.lastSendPlayerList+1, #button.SendPlayerFrame.tab do
+        for index, name in pairs(tab) do
+            local label= button.SendPlayerFrame.createdButton(index)
+            label.name= name
+            label:SetText(get_Name_Info(name)..' '..(index<10 and ' ' or '')..'|cnGREEN_FONT_COLOR:'..index..' ')
+        end
+
+        for index= #tab+1, #button.SendPlayerFrame.tab do
             button.SendPlayerFrame.tab[index]:SetShown(false)
             button.SendPlayerFrame.tab[index]:SetText('')
         end
     end
 
     --移动 收件人：字符
-    for index, label in pairs({SendMailNameEditBox:GetRegions()}) do
-        if index==3 and label:GetObjectType()=='FontString' then
-            label:ClearAllPoints()
-            label:SetPoint('RIGHT', button.ClearPlayerButton, 'LEFT')
-            break
-        end
+    local labelSend={SendMailNameEditBox:GetRegions()}
+    labelSend=labelSend[3]
+    if labelSend and labelSend:GetObjectType()=='FontString' then
+        labelSend:ClearAllPoints()
+        labelSend:SetPoint('RIGHT', button.ClearPlayerButton, 'LEFT')
     end
 
     --历史记录
     button.SendPlayerFrame= CreateFrame('Frame', nil, button)
-    button.SendPlayerFrame:SetPoint('TOPRIGHT', SendMailFrame, 'TOPLEFT', 0, -40)
+    button.SendPlayerFrame:SetPoint('TOPRIGHT', SendMailFrame, 'TOPLEFT', 4, -40)
     button.SendPlayerFrame:SetSize(1,1)
     button.SendPlayerFrame:SetShown(not Save.hideSendPlayerList)
     button.SendPlayerFrame.tab={}
@@ -651,8 +654,6 @@ local function Init_Button()
         end
         return label
     end
-
-    
 
     button.ClearPlayerButton.Init_Player_List()--设置，历史记录，内容
 
@@ -1075,13 +1076,18 @@ local function Init_Fast_Button()
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine((e.onlyChinese and '添加' or ADD)..e.Icon.left, self2.name)
-                local name=  get_Text_SendMailNameEditBox()--取得， SendMailNameEditBox， 名称
-                e.tips:AddDoubleLine('Alt+'..e.Icon.right..(name or (e.onlyChinese and '玩家' or PLAYER)),
-                                        Save.fast[self2.name] and '|A:AnimaChannel-Bar-Necrolord-Gem:0:0|a|cnGREEN_FONT_COLOR:'..e.GetPlayerInfo({name= Save.fast[self2.name], reName=true, reRealm=true}) or (e.onlyChinese and '无' or NONE)
-                                    )
                 e.tips:AddLine(' ')
+      
                 e.tips:AddDoubleLine(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL, self2.num)
                 e.tips:AddDoubleLine(e.onlyChinese and '组数' or AUCTION_NUM_STACKS, self2.stack)
+                e.tips:AddLine(' ')
+                local name=  get_Text_SendMailNameEditBox()--取得， SendMailNameEditBox， 名称
+                e.tips:AddDoubleLine((e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)..' ('..(e.onlyChinese and '玩家' or PLAYER)..')',
+                                        Save.fast[self2.name] and '|A:AnimaChannel-Bar-Necrolord-Gem:0:0|a|cnGREEN_FONT_COLOR:'..e.GetPlayerInfo({name= Save.fast[self2.name], reName=true, reRealm=true})
+                                             or (e.onlyChinese and '无' or NONE)
+                                    )
+                
+                e.tips:AddDoubleLine('Alt+'..e.Icon.right..(name or ''), name and (e.onlyChinese and '设置' or SETTINGS) or (e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)                                )
                 if self2.classID==2 or self2.classID==4 then
                     e.tips:AddLine(' ')
                     e.tips:AddDoubleLine(' ', format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.onlyChinese and '你还没有收藏过此外观' or TRANSMOGRIFY_STYLE_UNCOLLECTED))
@@ -1122,7 +1128,7 @@ local function Init_Fast_Button()
     button.clearAllItmeButton:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddLine(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
+        e.tips:AddDoubleLine((e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..(panel.ItemMaxNum and ' '..ATTACHMENTS_MAX_SEND-panel.ItemMaxNum or ''))
         e.tips:Show()
     end)
     button.clearAllItmeButton:SetShown(false)
