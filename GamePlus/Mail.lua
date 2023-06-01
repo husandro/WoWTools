@@ -16,6 +16,8 @@ local Save={
     fastShow=true,--显示，按钮
 
     --scaleSendPlayerFrame=1.2,--清除历史数据，缩放
+    --disabledSandPlayerList=true,--禁用记录
+
     scaleFastButton=1.25,
 }
 
@@ -319,6 +321,8 @@ local function Init_Menu(_, level, menuList)
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
+    elseif menuList=='SETTINGS' then
+
     end
 
     if menuList then
@@ -387,6 +391,15 @@ local function Init_Menu(_, level, menuList)
 
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
+        text= e.onlyChinese and '设置' or SETTINGS,
+        hasArrow=true,
+        menuList='SETTINGS',
+        notCheckable=true,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
+    info={
         text= id..' '..addName,
         icon= 'UI-HUD-Minimap-Mail-Mouseover',
         notCheckable= true,
@@ -403,7 +416,7 @@ local function Init_Player_List()
         return
     end
     for index, name in pairs(Save.lastSendPlayerList) do
-        local label=button.SendPlayerFrame.createdButton(index)
+        local label= button.SendPlayerFrame.createdButton(index)
         label:SetShown(name~=e.Player.name_realm)
         label.name= name
         label:SetText(get_Name_Info(name)..' '..(index<10 and ' ' or '')..'|cnGREEN_FONT_COLOR:'..index)
@@ -433,7 +446,7 @@ local function set_Send_Name()
                 table.remove(Save.lastSendPlayerList, #Save.lastSendPlayerList)
             end
         end
-        Init_Player_List()
+        Init_Player_List()--历史记录
         button.SendName=nil
     end
 end
@@ -445,11 +458,21 @@ local function set_GetTargetNameButton_Texture(self)
     if self then
         if UnitExists('target') and UnitIsPlayer('target') and not UnitIsUnit('player', 'target') then
             local name= GetUnitName('target', true)
-            local atlas= e.GetUnitRaceInfo({unit= 'target', reAtlas=true})
-            if name and atlas then
-                self.name=name
-                self:SetNormalAtlas(atlas)
+            if name then
+                local atlas, texture
+                local index= GetRaidTargetIndex('target') or 0
+                if index>0 and index<9 then
+                    texture= 'Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index
+                else
+                    atlas= e.GetUnitRaceInfo({unit= 'target', reAtlas=true})
+                end
+                if texture then
+                    self:SetNormalTexture(texture)
+                else
+                    self:SetNormalAtlas(atlas or 'Adventures-Target-Indicator')
+                end
                 self:SetShown(true)
+                self.name=name
                 return
             end
         end
@@ -488,7 +511,7 @@ local function Init_Button()
     end)
 
     --目标，名称
-    button.GetTargetNameButton= e.Cbtn(button, {size={size,size}})
+    button.GetTargetNameButton= e.Cbtn(button, {size={size,size}, icon='hide'})
     button.GetTargetNameButton:SetPoint('LEFT', button, 'RIGHT',2,2)
     button.GetTargetNameButton:SetScript('OnClick', function(self2)
         if self2.name then
@@ -506,6 +529,7 @@ local function Init_Button()
         e.tips:Show()
     end)
     button.GetTargetNameButton:SetScript('OnEvent', set_GetTargetNameButton_Texture)
+    button.GetTargetNameButton:SetShown(false)
 
     --历史记录
     button.ClearPlayerButton= e.Cbtn(button, {size={size,size}, atlas='bags-button-autosort-up'})
@@ -519,10 +543,11 @@ local function Init_Button()
 
         elseif IsAltKeyDown() and d=='LeftButton' then
             Save.lastSendPlayerList={}
-            Init_Player_List()
+            Save.lastSendPlayer=nil
+            Init_Player_List()--历史记录
         end
     end)
-    button.ClearPlayerButton:SetScript('OnMouseWheel', function(self2, d)
+    button.ClearPlayerButton:SetScript('OnMouseWheel', function(_, d)
         if IsAltKeyDown() then
             local num= Save.scaleSendPlayerFrame or 1
             if d==1 then
@@ -566,6 +591,7 @@ local function Init_Button()
         end
     end
 
+    --历史记录
     button.SendPlayerFrame= CreateFrame('Frame', nil, button)
     button.SendPlayerFrame:SetPoint('TOPRIGHT', SendMailFrame, 'TOPLEFT', 0, -40)
     button.SendPlayerFrame:SetSize(1,1)
@@ -606,6 +632,8 @@ local function Init_Button()
         end
         return label
     end
+
+    Init_Player_List()--历史记录
 
     if Save.scaleSendPlayerFrame and Save.scaleSendPlayerFrame~=1 then
         button.SendPlayerFrame:SetScale(Save.scaleSendPlayerFrame)
@@ -847,7 +875,6 @@ local function Init_Fast_Button()
     else
         button.FastButton:SetPoint('BOTTOMLEFT', MailFrameCloseButton, 'BOTTOMRIGHT', 0, 2)
     end
-    button.FastButton:SetAlpha(0.3)
     button.FastButton:SetScript('OnClick', function(self2, d)
         if d=='LeftButton' then
             Save.fastShow= not Save.fastShow and true or nil
@@ -862,28 +889,29 @@ local function Init_Fast_Button()
         end
     end)
     button.FastButton:SetScript('OnMouseWheel', function(self2, d)
-        local num= Save.scaleFastButton or 1
-        if d==1 then
-            num= num- 0.05
-        elseif d==-1 then
-            num= num+ 0.05
+        if IsAltKeyDown() then
+            local num= Save.scaleFastButton or 1
+            if d==1 then
+                num= num- 0.05
+            elseif d==-1 then
+                num= num+ 0.05
+            end
+            num= num<0.5 and 0.5 or num>2 and 2 or num
+            print(id, addName,e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(Save.scaleFastButton or 1) )
+            Save.scaleFastButton= num
+            self2.frame:SetScale(num)
         end
-        num= num<0.5 and 0.5 or num>2 and 2 or num
-        print(id, addName,e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(Save.scaleFastButton or 1) )
-        Save.scaleFastButton= num
-        self2.frame:SetScale(num)
     end)
 
     button.FastButton:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '收起选项 |A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS, e.GetYesNo(not Save.fastShow)..e.Icon.left)
-        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scaleFastButton or 1), e.Icon.mid)
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scaleFastButton or 1), 'Alt+'..e.Icon.mid)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
-
-        self2:SetAlpha(1)
         set_Fast_Event(nil, true)--清除，注册，事件
         for _, btn in pairs(button.FastButtonS) do
             btn:SetAlpha(1)
@@ -892,7 +920,6 @@ local function Init_Fast_Button()
     end)
     button.FastButton:SetScript('OnLeave', function(self2)
         e.tips:Hide()
-        self2:SetAlpha(0.3)
         set_Fast_Event() --清除，注册，事件
         button.clearAllItmeButton:SetShown(panel.ItemMaxNum<ATTACHMENTS_MAX_SEND)
     end)
@@ -1048,10 +1075,10 @@ local function Init()--SendMailNameEditBox
         if not Save.hide then
             Init_Button()
             Init_Fast_Button()
-            Init_Player_List()
 
             if button then
                 button.GetTargetNameButton:RegisterEvent('PLAYER_TARGET_CHANGED')
+                button.GetTargetNameButton:RegisterEvent('RAID_TARGET_UPDATE')
             end
 
         else
@@ -1103,7 +1130,7 @@ local function Init()--SendMailNameEditBox
                 set_GetTargetNameButton_Texture(button.GetTargetNameButton)--目标，名称
             end
 
-            if Save.lastSendPlayer then--记录 SendMailNameEditBox，内容
+            if Save.lastSendPlayer and not Save.hideSendPlayerList then--记录 SendMailNameEditBox，内容
                 set_Text_SendMailNameEditBox(nil, Save.lastSendPlayer)--设置，发送名称，文
                 SendMailNameEditBox:ClearFocus()
             end
