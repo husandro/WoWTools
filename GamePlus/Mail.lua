@@ -809,10 +809,9 @@ local function set_PickupContainerItem(classID, subClassID, findString)
     set_Fast_Event()--清除，注册，事件
 end
 
-local function set_Player_Lable(self2)--设置指定发送，玩家, 提示
-    self2.playerTexture:SetShown(Save.fast[self2.name] and true or false)
-end
-
+--####################
+--快速，加载，物品，菜单
+--####################
 local function Init_Fast_Menu(_, level, menuList)
     local info
     if menuList then
@@ -1066,6 +1065,9 @@ local function Init_Fast_Button()
             btn.playerTexture:SetAtlas('AnimaChannel-Bar-Necrolord-Gem')
             btn.playerTexture:SetSize(size/2, size/2)
             btn.playerTexture:SetPoint('BOTTOMLEFT')
+            btn.set_Player_Lable= function(self2)--设置指定发送，玩家, 提示
+                self2.playerTexture:SetShown(Save.fast[self2.name] and true or false)
+            end
 
             btn:SetScript('OnClick', function(self2, d)
                 if d=='LeftButton' and not IsMetaKeyDown() then
@@ -1075,7 +1077,7 @@ local function Init_Fast_Button()
 
                 elseif d=='RightButton' and IsAltKeyDown() then
                     Save.fast[self2.name]= get_Text_SendMailNameEditBox()--取得， SendMailNameEditBox， 名称
-                    set_Player_Lable(self2)--设置指定发送，玩家, 提示
+                    self2.set_Player_Lable(self2)--设置指定发送，玩家, 提示
                     print(id, addName, self2.name, Save.fast[self2.name] or (e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2))
                 end
             end)
@@ -1085,7 +1087,7 @@ local function Init_Fast_Button()
                 e.tips:Hide()
             end)
             btn:SetScript('OnEnter', function(self2)
-                set_Player_Lable(self2)--设置指定发送，玩家, 提示
+                self2.set_Player_Lable(self2)--设置指定发送，玩家, 提示
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine((e.onlyChinese and '添加' or ADD)..e.Icon.left, self2.name)
@@ -1112,7 +1114,7 @@ local function Init_Fast_Button()
 
             btn:SetScript('OnShow', function(self2)
                 set_Fast_Event(self2)--清除，注册，事件
-                set_Player_Lable(self2)
+                self2.set_Player_Lable(self2)--设置指定发送，玩家, 提示
             end)
             btn:SetScript('OnHide', function(self2)
                 set_Fast_Event(self2, true)--清除，注册，事件
@@ -1128,7 +1130,7 @@ local function Init_Fast_Button()
     end
 
     button.clearAllItmeButton=e.Cbtn(button, {size={size,size}, atlas='bags-button-autosort-up'})
-    button.clearAllItmeButton:SetPoint('BOTTOMLEFT', SendMailAttachment7, 'TOPLEFT')
+    button.clearAllItmeButton:SetPoint('BOTTOMLEFT', SendMailAttachment7, 'TOPLEFT',0, -4)
     button.clearAllItmeButton:SetScript('OnClick', function()
         set_Fast_Event(nil, true)--清除，注册，事件
         for i= 1, ATTACHMENTS_MAX_SEND do
@@ -1142,7 +1144,10 @@ local function Init_Fast_Button()
     button.clearAllItmeButton:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine((e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..(panel.ItemMaxNum and ' '..ATTACHMENTS_MAX_SEND-panel.ItemMaxNum or ''))
+
+        e.tips:AddDoubleLine(' ', e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
+        e.tips:AddDoubleLine((self2.numItem or 0)..' '..(e.onlyChinese and '个' or AUCTION_HOUSE_QUANTITY_LABEL),
+                            (panel.ItemMaxNum and ATTACHMENTS_MAX_SEND-panel.ItemMaxNum or 0)..'/'..ATTACHMENTS_MAX_SEND..' '..(e.onlyChinese and '组' or AUCTION_NUM_STACKS))
         e.tips:Show()
     end)
     button.clearAllItmeButton:SetShown(false)
@@ -1150,7 +1155,21 @@ local function Init_Fast_Button()
     button.clearAllItmeButton:SetScript('OnEvent', function(self2)
         get_Send_Max_Item()--能发送，数量
         self2:SetShown(panel.ItemMaxNum<ATTACHMENTS_MAX_SEND)
+        local num= 0
+        if self2:IsShown() then
+            for index= 1, ATTACHMENTS_MAX_SEND do
+                if HasSendMailItem(index) then
+                   num= num+ (select(4, GetSendMailItem(index)) or 0)
+                end
+            end
+            self2.itemNumLabel:SetText(num)
+        else
+            self2.itemNumLabel:SetText('')
+        end
+        self2.numItem= num
     end)
+    button.clearAllItmeButton.itemNumLabel= e.Cstr(button.clearAllItmeButton)
+    button.clearAllItmeButton.itemNumLabel:SetPoint('BOTTOMRIGHT', button.clearAllItmeButton, 'BOTTOMLEFT',0,4)
 end
 
 
