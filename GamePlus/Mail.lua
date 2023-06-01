@@ -1250,9 +1250,10 @@ local function Init()--SendMailNameEditBox
                 end
                 local moneyPaga= CODAmount and CODAmount>0
                 if moneyPaga and not btn.CODAmountTips then--提示，需要付钱
-                    btn.CODAmountTips= btn:CreateTexture(nil, 'OVERLAY')
+                    btn.CODAmountTips= btn:CreateTexture(nil, 'ARTWORK')
                     btn.CODAmountTips:SetAllPoints(_G['MailItem'..i])
-                    btn.CODAmountTips:SetAtlas('transmog-frame-red')
+                    btn.CODAmountTips:SetAtlas('CovenantSanctum-Upgrade-Border-Kyrian')
+                    btn.CODAmountTips:SetVertexColor(1,0,0)
                 end
                 if btn.CODAmountTips then
                     btn.CODAmountTips:SetShown(moneyPaga)
@@ -1260,7 +1261,7 @@ local function Init()--SendMailNameEditBox
 
                 if moneyPaga and not btn.moneyPagaTip then
                     btn.moneyPagaTip= e.Cstr(btn, {color={r=1,g=0,b=0}})
-                    btn.moneyPagaTip:SetPoint('BOTTOM', _G['MailItem'..i])
+                    btn.moneyPagaTip:SetPoint('BOTTOM', _G['MailItem'..i],0,4)
                 end
                 if btn.moneyPagaTip then
                     btn.moneyPagaTip:SetText(moneyPaga and (e.onlyChinese and '付款' or COD)..' '..e.MK(CODAmount/1e4, 3)..'|TInterface/moneyframe/ui-goldicon:0|t' or '')
@@ -1282,7 +1283,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
-            
+
             Save.lastSendPlayerList= Save.lastSendPlayerList or {}
             if e.Player.husandro and #Save.lastSendPlayerList==0 then
                 local region= GetCurrentRegion()--1US(includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
