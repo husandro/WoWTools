@@ -33,45 +33,19 @@ local function set_Text_SendMailNameEditBox(_, name)--设置，发送名称，�
         SendMailNameEditBox:SetCursorPosition(0)
     end
 end
-local function get_Text_SendMailNameEditBox()--取得，收件人，名称
-    local name= SendMailNameEditBox:GetText() or ''
-    name= name:gsub(' ','')
-    if name=='' then
-        return
-    else
-        if not name:find('%-') then
-            name= name..'-'..e.Player.realm
-        end
-        return name
-    end
-end
 
-local function get_Name_For_guid(guid)--取得名称-服务器
-    local name, realm = select(6, GetPlayerInfoByGUID(guid))
+local function get_Name_Info(name)--取得名称，信息
+    local reName
     if name then
-        realm= (not realm or realm=='') and e.Player.realm or realm
-        return name..'-'..realm
-    end
-end
-
-local function get_Name_Info(name, notName)--取得名称，信息
-    local text= e.GetPlayerInfo({name=name, reName=not notName, reRealm=true})
-    if text=='' then
         for guid, tab in pairs(WoWDate) do
-            local name2, realm = select(6, GetPlayerInfoByGUID(guid))
-            realm= (not realm or realm=='') and e.Player.realm or realm
-            if name==(name2..'-'..realm) then
-                return e.Icon.star2..e.GetPlayerInfo({guid=guid, faction=tab.faction, reName=not notName, realm=true})
+            if name== e.GetUnitName(nil, nil, guid) then
+                reName= e.Icon.star2..e.GetPlayerInfo({guid=guid, faction=tab.faction, reName=true, realm=true})
+                break
             end
         end
-        if notName then
-            return ''
-        else
-            name= name:gsub('%-'..e.Player.realm, '')
-            return name
-        end
+        reName= reName or e.GetPlayerInfo({name=name, reName=true, reRealm=true})
     end
-    return text
+    return reName and reName:gsub('%-'..e.Player.realm, '') or name
 end
 
 --#######
@@ -84,11 +58,11 @@ local function Init_Menu(_, level, menuList)
         for guid, _ in pairs(WoWDate) do
             if guid and guid~= e.Player.guid then
                 info={
-                    text= e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false}),
+                    text= e.GetPlayerInfo({guid=guid, reName=true, reRealm=true}),
                     icon= 'auctionhouse-icon-favorite',
                     keepShownOnClick= true,
                     notCheckable= true,
-                    arg1= get_Name_For_guid(guid),
+                    arg1= e.GetUnitName(nil, nil, guid),
                     func= set_Text_SendMailNameEditBox,
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -105,7 +79,7 @@ local function Init_Menu(_, level, menuList)
             local game=C_FriendList.GetFriendInfoByIndex(i)
             if game and game.guid and (game.connected or Save.show['FRIEND']) and not WoWDate[game.guid] then
 
-                local text= e.GetPlayerInfo({unit=nil, guid=game.guid, reName=true})--角色信息
+                local text= e.GetPlayerInfo({guid=game.guid, reName=true, reRealm=true})--角色信息
                 text= (game.level and game.level~=MAX_PLAYER_LEVEL and game.level>0) and text .. ' |cff00ff00'..game.level..'|r' or text--等级
                 if game.area and game.connected then
                     text= text..' '..game.area
@@ -120,7 +94,7 @@ local function Init_Menu(_, level, menuList)
                     tooltipOnButton=true,
                     keepShownOnClick= true,
                     tooltipTitle=game.notes,
-                    arg1= get_Name_For_guid(game.guid),
+                    arg1= e.GetUnitName(nil, nil, game.guid),
                     func= set_Text_SendMailNameEditBox,
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -154,7 +128,7 @@ local function Init_Menu(_, level, menuList)
                 and wowInfo.wowProjectID==1
                 and wowInfo.isOnline
             then
-                local name=get_Name_For_guid(wowInfo.playerGuid) or wowInfo.characterName
+                local name= e.GetUnitName(wowInfo.characterName, nil, wowInfo.playerGuid)
 
                 local text= e.GetPlayerInfo({guid=wowInfo.playerGuid, reName=true, reRealm=true, factionName=wowInfo.factionName})--角色信息
 
@@ -457,7 +431,7 @@ local function Init_Button()
         end
     end)
     SendMailMailButton:HookScript('OnClick', function()--SendName，设置，发送成功，名字
-        button.SendName= get_Text_SendMailNameEditBox()--取得，收件人，名称
+        button.SendName= e.GetUnitName(SendMailNameEditBox:GetText())--取得，收件人，名称
     end)
 
     --#########
@@ -670,11 +644,11 @@ local function Init_Button()
 
     --#########
     --提示，内容
-    --#########
-    SendMailNameEditBox.playerTipsLable= e.Cstr(button, {justifyH='CENTER', size=14})
+    --MailFrameTitleText:SetText(e.onlyChinese and '发件箱' or SENDMAIL)
+    SendMailNameEditBox.playerTipsLable= e.Cstr(button, {justifyH='CENTER', size=10})
     SendMailNameEditBox.playerTipsLable:SetPoint('BOTTOM', SendMailNameEditBox, 'TOP',0,-3)
     SendMailNameEditBox:HookScript('OnTextChanged', function(self2)
-        local name= get_Text_SendMailNameEditBox()
+        local name= e.GetUnitName(self2:GetText())
         Save.lastSendPlayer= name or Save.lastSendPlayer--记录 SendMailNameEditBox，内容
 
         if Save.hide or Save.hideSendPlayerList then--隐藏
@@ -686,8 +660,8 @@ local function Init_Button()
         if self2:GetText():find(' ') then
             text=' (|cnRED_FONT_COLOR:'..(e.onlyChinese and '空格键' or KEY_SPACE)..'|r)'
         end
-        name= name and get_Name_Info(name)
-        self2.playerTipsLable:SetText((name or '')..text)
+
+        self2.playerTipsLable:SetText((get_Name_Info(name) or '')..text)
         button.ClearPlayerButton:SetAlpha(self2:GetText()=='' and 0.3 or 1)
     end)
 end
@@ -1084,7 +1058,7 @@ local function Init_Fast_Button()
                     set_PickupContainerItem(self2.classID, self2.subClassID, self2.findString)--自动放物品
 
                 elseif d=='RightButton' and IsAltKeyDown() then
-                    Save.fast[self2.name]= get_Text_SendMailNameEditBox()--取得， SendMailNameEditBox， 名称
+                    Save.fast[self2.name]= e.GetUnitName(SendMailNameEditBox:GetText())--取得， SendMailNameEditBox， 名称
                     self2.set_Player_Lable(self2)--设置指定发送，玩家, 提示
                     print(id, addName, self2.name, Save.fast[self2.name] or (e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2))
                 end
@@ -1104,7 +1078,7 @@ local function Init_Fast_Button()
                 e.tips:AddDoubleLine(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL, self2.num)
                 e.tips:AddDoubleLine(e.onlyChinese and '组数' or AUCTION_NUM_STACKS, self2.stack)
                 e.tips:AddLine(' ')
-                local name=  get_Text_SendMailNameEditBox()--取得， SendMailNameEditBox， 名称
+                local name= e.GetUnitName(SendMailNameEditBox:GetText())--取得， SendMailNameEditBox， 名称
                 e.tips:AddDoubleLine((e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)..' ('..(e.onlyChinese and '玩家' or PLAYER)..')',
                                         (Save.fast[self2.name] and '|A:AnimaChannel-Bar-Necrolord-Gem:0:0|a|cnGREEN_FONT_COLOR:'..e.GetPlayerInfo({name= Save.fast[self2.name], reName=true, reRealm=true})
                                              or (e.onlyChinese and '无' or NONE))
@@ -1193,7 +1167,7 @@ local function Init()--SendMailNameEditBox
             end
         else
             if button then
-                button.GetTargetNameButton:UnregisterAllEvents()--MailFrameTitleText:SetText(e.onlyChinese and '发件箱' or SENDMAIL)
+                button.GetTargetNameButton:UnregisterAllEvents()
             end
         end
         if button then
@@ -1253,7 +1227,7 @@ local function Init()--SendMailNameEditBox
     end)
 
     SendMailNameEditBox:HookScript('OnEditFocusLost', function(self2)
-        Save.lastSendPlayer= get_Text_SendMailNameEditBox() or Save.lastSendPlayer----记录 SendMailNameEditBox，内容
+        Save.lastSendPlayer= e.GetUnitName(self2:GetText()) or Save.lastSendPlayer----记录 SendMailNameEditBox，内容
     end)
 
     --[[

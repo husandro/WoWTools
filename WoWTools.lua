@@ -100,7 +100,7 @@ local GetPlayerNameRemoveRealm= function(name, realm)--玩家名称, 去服务�
 end
 
 function e.GetUnitName(name, unit, guid)--取得全名
-    if name then
+    if name and name:gsub(' ','')~='' then
         if not name:find('%-') then
             name= name..'-'..e.Player.realm
         end
@@ -122,7 +122,6 @@ function e.GetUnitName(name, unit, guid)--取得全名
             return name2..'-'..realm
         end
     end
-    return ''
 end
 
 function e.GetUnitRaceInfo(tab)--e.GetUnitRaceInfo({unit=nil, guid=nil, race=nil, sex=nil, reAtlas=false})--玩家种族图标
@@ -299,9 +298,7 @@ e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, f
 
         elseif tab.reName then
             local name=tab.name
-            if tab.reRealm then
-                name= name:gsub('%-'..e.Player.realm, '')
-            else
+            if not tab.reRealm then
                 name= GetPlayerNameRemoveRealm(name)
             end
             return name
