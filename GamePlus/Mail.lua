@@ -826,15 +826,16 @@ local function Init_Fast_Menu(_, level, menuList)
             local tooltip
             for link, num in pairs(tab.item) do
                 local icon= C_Item.GetItemIconByID(link)
-                tooltip= tooltip and tooltip..'|n' or ''
-                tooltip= tooltip..(icon and '|T'..icon..':0|t' or '')..link..'|cnGREEN_FONT_COLOR:#'..num..'|r '
+                tooltip= (tooltip and tooltip..'|n' or '|n')..(icon and '|T'..icon..':0|t' or '')..link..'|cnGREEN_FONT_COLOR:#'..num..'|r'
             end
+            local text =(tab.subClass<10 and ' ' or '')..tab.subClass..') '.. GetItemSubClassInfo(menuList.class, tab.subClass)
             info={
-                text= (tab.subClass<10 and ' ' or '')..tab.subClass..') '.. GetItemSubClassInfo(menuList.class, tab.subClass)
-                ..' |cnGREEN_FONT_COLOR:#'..tab.num,
+                text= text..' |cnGREEN_FONT_COLOR:#'..tab.num,
+                keepShownOnClick= true,
                 notCheckable=true,
                 tooltipOnButton=true,
-                tooltipTitle= tooltip,
+                tooltipTitle= text,
+                tooltipText= tooltip,
                 arg1=menuList.class,
                 arg2= tab.subClass,
                 func= function(_, arg1, arg2)
@@ -844,12 +845,22 @@ local function Init_Fast_Menu(_, level, menuList)
             e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
 
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
         info= {
-            text= '|A:NPE_ArrowRight:0:0|a'..menuList.class..') '..GetItemClassInfo(menuList.class),
+            text= menuList.class..') '..GetItemClassInfo(menuList.class)..' #'..menuList.num,
             notCheckable= true,
             isTitle= true,
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
+        if menuList.class==2 or menuList.class==4 then
+            info= {
+                text= e.Icon.okTransmog2..format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.onlyChinese and '你还没有收藏过此外观' or TRANSMOGRIFY_STYLE_UNCOLLECTED),
+                notCheckable= true,
+                isTitle= true,
+            }
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
+            
+        end
         return
     end
 
@@ -886,7 +897,6 @@ local function Init_Fast_Menu(_, level, menuList)
                         tab[class]['subClass'][sub]['num']= tab[class]['subClass'][sub]['num'] + info2.stackCount
 
                         tab[class]['subClass'][sub]['item'][info2.hyperlink]= (tab[class]['subClass'][sub]['item'][info2.hyperlink] or 0)+ info2.stackCount
-                        
                     end
                 end
             end
@@ -902,12 +912,11 @@ local function Init_Fast_Menu(_, level, menuList)
     local find
     for _, tab2 in pairs(newTab) do
         info={
-            text= (tab2.class<10 and ' ' or '')..tab2.class..') '.. GetItemClassInfo(tab2.class)..' |cnGREEN_FONT_COLOR:#'..tab2.num,
+            text= (tab2.class<10 and ' ' or '')..tab2.class..') '.. GetItemClassInfo(tab2.class)..((tab2.class==2 or tab2==4) and e.Icon.okTransmog2 or ' ')..'|cnGREEN_FONT_COLOR:#'..tab2.num,
             notCheckable=true,
-            menuList= {class=tab2.class, subClass=tab2.subClass},
+            menuList= {class=tab2.class, subClass=tab2.subClass, num=tab2.num},
             hasArrow=true,
             tooltipOnButton= true,
-            tooltipTitle= (tab2.class==2 or tab2.class==4) and format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.onlyChinese and '你还没有收藏过此外观' or TRANSMOGRIFY_STYLE_UNCOLLECTED),
             arg1=tab2.class,
             func= function(_, arg1)
                 set_PickupContainerItem(arg1)
