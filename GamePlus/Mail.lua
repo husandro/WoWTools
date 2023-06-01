@@ -859,7 +859,7 @@ local function Init_Fast_Menu(_, level, menuList)
                 isTitle= true,
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
-            
+
         end
         return
     end
@@ -935,6 +935,10 @@ local function Init_Fast_Menu(_, level, menuList)
     end
 end
 
+
+--####################
+--快速，加载，物品，按钮
+--####################
 local function Init_Fast_Button()
     if button.FastButton then
         return
@@ -1009,14 +1013,15 @@ local function Init_Fast_Button()
     button.FastButton.frame:SetShown(Save.fastShow)
 
     local fast={
-        {4620681, 7, 5, e.onlyChinese and '布'},--1
-        {4620678, 7, 6, e.onlyChinese and '皮革'},--2
-        {4625105, 7, 7, e.onlyChinese and '金属 矿石'},--3
-        {4620671, 7, 8, e.onlyChinese and '烹饪'},--4
-        {133939, 7, 9, e.onlyChinese and '草药'},--5
-        {4620672, 7, 12, e.onlyChinese and '附魔'},--6
-        {4620676, 7, 16, e.onlyChinese and '铭文'},--7
-        {4620677, 7, 4, e.onlyChinese and '珠宝加工'},--8
+        {GetSpellTexture(3908) or 4620681, 7, 5, e.onlyChinese and '布'},--1
+        {GetSpellTexture(2108) or 4620678, 7, 6, e.onlyChinese and '皮革'},--2
+        {GetSpellTexture(2656) or 4625105, 7, 7, e.onlyChinese and '金属 矿石'},--3
+        {GetSpellTexture(2550) or 4620671, 7, 8, e.onlyChinese and '烹饪'},--4
+        {GetSpellTexture(2383) or 133939, 7, 9, e.onlyChinese and '草药'},--5
+        {GetSpellTexture(7411) or 4620672, 7, 12, e.onlyChinese and '附魔'},--6
+        {GetSpellTexture(45357) or 4620676, 7, 16, e.onlyChinese and '铭文'},--7
+        {GetSpellTexture(25229) or 4620677, 7, 4, e.onlyChinese and '珠宝加工'},--8
+
         {"Interface/Icons/INV_Gizmo_FelIronCasing", 7, 1, e.onlyChinese and '零部'},--9
         {"Interface/Icons/INV_Elemental_Primal_Air", 7, 10, e.onlyChinese and '元素'},--10
         {"Interface/Icons/INV_Bijou_Green", 7, 18, e.onlyChinese and '可选材料'},--11
@@ -1041,8 +1046,6 @@ local function Init_Fast_Button()
         {466645, 3, nil, e.onlyChinese and '宝石'},
         {463531, 8, nil, e.onlyChinese and '附魔'},
     }
-
-
 
     local x, y=0, 0
     for index, tab in pairs(fast) do
@@ -1087,17 +1090,18 @@ local function Init_Fast_Button()
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine((e.onlyChinese and '添加' or ADD)..e.Icon.left, self2.name)
                 e.tips:AddLine(' ')
-      
+
                 e.tips:AddDoubleLine(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL, self2.num)
                 e.tips:AddDoubleLine(e.onlyChinese and '组数' or AUCTION_NUM_STACKS, self2.stack)
                 e.tips:AddLine(' ')
                 local name=  get_Text_SendMailNameEditBox()--取得， SendMailNameEditBox， 名称
                 e.tips:AddDoubleLine((e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)..' ('..(e.onlyChinese and '玩家' or PLAYER)..')',
-                                        Save.fast[self2.name] and '|A:AnimaChannel-Bar-Necrolord-Gem:0:0|a|cnGREEN_FONT_COLOR:'..e.GetPlayerInfo({name= Save.fast[self2.name], reName=true, reRealm=true})
-                                             or (e.onlyChinese and '无' or NONE)
+                                        (Save.fast[self2.name] and '|A:AnimaChannel-Bar-Necrolord-Gem:0:0|a|cnGREEN_FONT_COLOR:'..e.GetPlayerInfo({name= Save.fast[self2.name], reName=true, reRealm=true})
+                                             or (e.onlyChinese and '无' or NONE))
+                                        ..'|A:NPE_ArrowDown:0:0|a'
                                     )
-                
-                e.tips:AddDoubleLine('Alt+'..e.Icon.right..(name or ''), name and (e.onlyChinese and '设置' or SETTINGS) or (e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)                                )
+
+                e.tips:AddDoubleLine('Alt+'..e.Icon.right..(name or ''), (name and (e.onlyChinese and '设置' or SETTINGS) or (e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2))..'|A:NPE_ArrowUp:0:0|a')
                 if self2.classID==2 or self2.classID==4 then
                     e.tips:AddLine(' ')
                     e.tips:AddDoubleLine(' ', format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.onlyChinese and '你还没有收藏过此外观' or TRANSMOGRIFY_STYLE_UNCOLLECTED))
@@ -1207,7 +1211,7 @@ local function Init()--SendMailNameEditBox
                 MailFrameTab_OnClick(MailFrame, 2)
             end
 
-            
+
 
             if Save.lastSendPlayer and not Save.hideSendPlayerList and not Save.hide then--记录 SendMailNameEditBox，内容
                 set_Text_SendMailNameEditBox(nil, Save.lastSendPlayer)--设置，发送名称，文
@@ -1216,7 +1220,7 @@ local function Init()--SendMailNameEditBox
             if button then
                 button.GetTargetNameButton.set_GetTargetNameButton_Texture(button.GetTargetNameButton)--目标，名称，按钮，显示/隐藏--目标，名称
                 button.ClearPlayerButton.setAlpha(button.ClearPlayerButton)--设置，历史记录，清除按钮透明度
-                
+
             end
         end)
     end)
