@@ -430,7 +430,7 @@ local function Init_Button()
             if self2.SendName then--SendName，设置，发送成功，名字
                 local find
                 for _, name in pairs(Save.lastSendPlayerList) do
-                    if name==button.SendName then
+                    if name==self2.SendName then
                         find=true
                         break
                     end
@@ -438,7 +438,7 @@ local function Init_Button()
                 if not find then
                     table.insert(Save.lastSendPlayerList, 1, self2.SendName)
                     self2.ClearPlayerButton.set_showHidetips_Texture(self2.ClearPlayerButton)--隐藏，历史记录, 提示, 设置图片
-                    if #Save.lastSendPlayerList>20 then
+                    if #Save.lastSendPlayerList>21 then
                         table.remove(Save.lastSendPlayerList, #Save.lastSendPlayerList)
                     end
                 end
@@ -520,6 +520,7 @@ local function Init_Button()
             Save.lastSendPlayer=nil
             self2.Init_Player_List()--设置，历史记录，内容
             self2.set_showHidetips_Texture(self2)--隐藏，历史记录, 提示, 设置图片
+            print(id, addName, e.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '全部清除' or CLEAR_ALL))
         end
     end)
     button.ClearPlayerButton:SetScript('OnMouseWheel', function(self2, d)
@@ -552,7 +553,7 @@ local function Init_Button()
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, (e.onlyChinese and '收件人' or MAIL_TO_LABEL)..e.Icon.left)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine((not e.onlyChinese and CLEAR_ALL or "全部清除")..' |cnGREEN_FONT_COLOR:#'..#Save.lastSendPlayerList..'|r/20', '|cnGREEN_FONT_COLOR:Alt+'.. e.Icon.left)
+        e.tips:AddDoubleLine((e.onlyChinese and '全部清除' or CLEAR_ALL)..' |cnGREEN_FONT_COLOR:#'..#Save.lastSendPlayerList..'|r/20', '|cnGREEN_FONT_COLOR:Alt+'.. e.Icon.left)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine((e.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER)..' '..(Save.hideSendPlayerList and '|A:AnimaChannel-Bar-Venthyr-Gem:0:0|a' or '|A:AnimaChannel-Bar-Necrolord-Gem:0:0|a')..e.GetShowHide(not Save.hideSendPlayerList), e.Icon.mid)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scaleSendPlayerFrame or 1), 'Alt+'..e.Icon.mid)
@@ -579,10 +580,9 @@ local function Init_Button()
     --设置，历史记录，内容
     button.ClearPlayerButton.Init_Player_List= function()
         local tab=Save.lastSendPlayerList
-        for index, name in pairs(tab) do
+        for _, name in pairs(tab) do
             if name==e.Player.name_realm then
-                table.remove(tab, index)
-                break
+                table.insert(tab, name)
             end
         end
 
