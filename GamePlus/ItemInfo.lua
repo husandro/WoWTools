@@ -509,11 +509,33 @@ end
 --初始
 --####
 local function Init()
-
+    --################
+    --设置，收信箱，物品
+    --################
+    hooksecurefunc('InboxFrame_Update',function()
+        for i=1, INBOXITEMS_TO_DISPLAY do
+            local btn=_G["MailItem"..i.."Button"]
+            if btn and btn:IsShown() then
+                --local packageIcon, stationeryIcon, sender, subject, money, CODAmount, daysLeft, itemCount, wasRead, x, y, z, isGM, firstItemQuantity, firstItemLink = GetInboxHeaderInfo(btn.index)
+                set_Item_Info(btn, {hyperLink= select(15, GetInboxHeaderInfo(btn.index))})
+            end
+        end
+    end)
+    hooksecurefunc('OpenMail_Update', function()--多物品，打开时
+        if not OpenMailFrame_IsValidMailID() then
+            return
+        end
+        for i=1, ATTACHMENTS_MAX_RECEIVE do
+            local attachmentButton = OpenMailFrame.OpenMailAttachments[i];
+            if attachmentButton and attachmentButton:IsShown() then
+                set_Item_Info(attachmentButton, {hyperLink= HasInboxItem(InboxFrame.openMailID, i) and GetInboxItemLink(InboxFrame.openMailID, i)})
+            end
+        end
+    end)
     --#################
     --拾取时, 弹出, 物品提示，信息
     --[[hooksecurefunc('LootUpgradeFrame_SetUp', function(self, itemLink)--AlertFrameSystems.lua
-        print(id,addName, itemLink,'LootUpgradeFrame_SetUp')
+        
         e.Set_Item_Stats(self, itemLink, self.lootItem and self.lootItem.Icon or self.Icon)
     end)
     hooksecurefunc('LootWonAlertFrame_SetUp', function(self, itemLink)

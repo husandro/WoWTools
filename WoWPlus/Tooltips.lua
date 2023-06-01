@@ -1069,7 +1069,11 @@ local function set_Battle_Pet(self, speciesID, level, breedQuality, maxHealth, p
     end
     BattlePetTooltipTemplate_AddTextLine(self, abilityIcon)
 
-    BattlePetTooltipTemplate_AddTextLine(self, tooltipSource)--来源提示
+    if tooltipSource then
+        tooltipSource= tooltipSource:gsub(':', ':|n')
+        tooltipSource= tooltipSource:gsub('：', ':|n')
+        BattlePetTooltipTemplate_AddTextLine(self, tooltipSource)--来源提示
+    end
 
     if PetJournalSearchBox and PetJournalSearchBox:IsVisible() then--设置搜索
         PetJournalSearchBox:SetText(speciesName)

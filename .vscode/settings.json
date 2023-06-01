@@ -2865,7 +2865,11 @@
         "TRANSMOGRIFY_STYLE_UNCOLLECTED",
         "SendMailScrollChildFrame",
         "SendMailScrollFrame",
-        "MailFrame_RefreshInbox"
+        "MailFrame_RefreshInbox",
+        "INBOXITEMS_TO_DISPLAY",
+        "OpenMailFrame_IsValidMailID",
+        "ATTACHMENTS_MAX",
+        "ATTACHMENTS_PER_ROW_RECEIVE"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

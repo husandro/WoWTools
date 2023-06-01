@@ -13,10 +13,9 @@ local Save={
     },
 
     fast={},--快速，加载，物品，指定玩家
-    fastShow=true,--显示，按钮
+    fastShow=true,--显示/隐藏，快速，加载，按钮
 
     --scaleSendPlayerFrame=1.2,--清除历史数据，缩放
-    --disabledSandPlayerList=true,--禁用记录
 
     scaleFastButton=1.25,
 }
@@ -431,14 +430,13 @@ local function Init_Button()
 
                 self2.SendName=nil
             end
+            self2.FastButton.set_Fast_Event()--清除，注册，事件，显示/隐藏，设置数量
 
         elseif event=='MAIL_FAILED' then
             self2.SendName=nil
         end
     end)
-    SendMailMailButton:HookScript('OnClick', function()--SendName，设置，发送成功，名字
-        button.SendName= e.GetUnitName(SendMailNameEditBox:GetText())--取得，收件人，名称
-    end)
+
 
     --#########
     --目标，名称
@@ -739,55 +737,6 @@ local function set_Label_Text(self2)
     self2.run=nil
 end
 
---清除，注册，事件
-local function set_Fast_Event(frame, unregisterAllEvents)
-    if frame then
-        if unregisterAllEvents then
-            frame:UnregisterAllEvents()
-        elseif frame:IsShown() then
-            set_Label_Text(frame)
-            frame:RegisterEvent('BAG_UPDATE_DELAYED')
-            frame:RegisterEvent('MAIL_SEND_INFO_UPDATE')
-        end
-    else
-        for _, btn in pairs(button.FastButtonS) do
-            if unregisterAllEvents then
-                btn:UnregisterAllEvents()
-            elseif btn:IsShown() then
-                set_Label_Text(btn)
-                btn:RegisterEvent('BAG_UPDATE_DELAYED')
-                btn:RegisterEvent('MAIL_SEND_INFO_UPDATE')
-            end
-        end
-    end
-end
-
---自动放物品
-local function set_PickupContainerItem(classID, subClassID, findString)
-    local slotTab= get_Send_Max_Item()--能发送，数量
-    if #slotTab==0 then
-        return
-    end
-
-    set_Fast_Event(nil, true)--清除，注册，事件
-    for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+ NUM_REAGENTBAG_FRAMES do
-        for slot=1, C_Container.GetContainerNumSlots(bag) do
-            local info=check_Enabled_Item(classID, subClassID, findString, bag, slot)
-            if info then
-                C_Container.PickupContainerItem(bag, slot)
-                ClickSendMailItemButton(slotTab[1])
-                table.remove(slotTab, 1)
-                if #slotTab==0 then
-                    slotTab= get_Send_Max_Item()--能发送，数量
-                    set_Fast_Event()--清除，注册，事件
-                    return
-                end
-            end
-        end
-    end
-    get_Send_Max_Item()--能发送，数量
-    set_Fast_Event()--清除，注册，事件
-end
 
 --####################
 --快速，加载，物品，菜单
@@ -818,7 +767,7 @@ local function Init_Fast_Menu(_, level, menuList)
                 arg1=menuList.class,
                 arg2= tab.subClass,
                 func= function(_, arg1, arg2)
-                    set_PickupContainerItem(arg1, arg2)
+                    button.FastButton.set_PickupContainerItem(arg1, arg2)
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -899,7 +848,7 @@ local function Init_Fast_Menu(_, level, menuList)
             tooltipOnButton= true,
             arg1=tab2.class,
             func= function(_, arg1)
-                set_PickupContainerItem(arg1)
+                button.FastButton.set_PickupContainerItem(arg1)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -971,7 +920,7 @@ local function Init_Fast_Button()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
-        set_Fast_Event(nil, true)--清除，注册，事件
+        self2.set_Fast_Event(nil, true)--清除，注册，事件，显示/隐藏，设置数量
         for _, btn in pairs(button.FastButtonS) do
             btn:SetAlpha(1)
         end
@@ -979,9 +928,58 @@ local function Init_Fast_Button()
     end)
     button.FastButton:SetScript('OnLeave', function(self2)
         e.tips:Hide()
-        set_Fast_Event() --清除，注册，事件
+        self2.set_Fast_Event()--清除，注册，事件，显示/隐藏，设置数量
         button.clearAllItmeButton:SetShown(panel.ItemMaxNum<ATTACHMENTS_MAX_SEND)
     end)
+
+    button.FastButton.set_Fast_Event= function(frame, unregisterAllEvents)--清除，注册，事件，显示/隐藏，设置数量
+        if frame then
+            if unregisterAllEvents then
+                frame:UnregisterAllEvents()
+            elseif frame:IsShown() then
+                set_Label_Text(frame)
+                frame:RegisterEvent('BAG_UPDATE_DELAYED')
+                frame:RegisterEvent('MAIL_SEND_INFO_UPDATE')
+            end
+        else
+            for _, btn in pairs(button.FastButtonS) do
+                if unregisterAllEvents then
+                    btn:UnregisterAllEvents()
+                elseif btn:IsShown() then
+                    set_Label_Text(btn)
+                    btn:RegisterEvent('BAG_UPDATE_DELAYED')
+                    btn:RegisterEvent('MAIL_SEND_INFO_UPDATE')
+                end
+            end
+        end
+    end
+
+    button.FastButton.set_PickupContainerItem= function(classID, subClassID, findString)--自动放物品
+        local slotTab= get_Send_Max_Item()--能发送，数量
+        if #slotTab==0 then
+            return
+        end
+
+        button.FastButton.set_Fast_Event(nil, true)--清除，注册，事件，显示/隐藏，设置数量
+        for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+ NUM_REAGENTBAG_FRAMES do
+            for slot=1, C_Container.GetContainerNumSlots(bag) do
+                local info=check_Enabled_Item(classID, subClassID, findString, bag, slot)
+                if info then
+                    C_Container.PickupContainerItem(bag, slot)
+                    ClickSendMailItemButton(slotTab[1])
+                    table.remove(slotTab, 1)
+                    if #slotTab==0 then
+                        slotTab= get_Send_Max_Item()--能发送，数量
+                        button.FastButton.set_Fast_Event()--清除，注册，事件，显示/隐藏，设置数量
+                        return
+                    end
+                end
+            end
+        end
+        get_Send_Max_Item()--能发送，数量
+        button.FastButton.set_Fast_Event()--清除，注册，事件，显示/隐藏，设置数量
+    end
+
 
     button.FastButton.frame= CreateFrame('Frame', nil, button)
     button.FastButton.frame:SetSize(size, 2)
@@ -1054,7 +1052,7 @@ local function Init_Fast_Button()
                 if d=='LeftButton' and not IsMetaKeyDown() then
                     set_Text_SendMailNameEditBox(nil, Save.fast[self2.name])--设置，发送名称，文
 
-                    set_PickupContainerItem(self2.classID, self2.subClassID, self2.findString)--自动放物品
+                    button.FastButton.set_PickupContainerItem(self2.classID, self2.subClassID, self2.findString)--自动放物品
 
                 elseif d=='RightButton' and IsAltKeyDown() then
                     Save.fast[self2.name]= e.GetUnitName(SendMailNameEditBox:GetText())--取得， SendMailNameEditBox， 名称
@@ -1091,11 +1089,11 @@ local function Init_Fast_Button()
             end)
 
             btn:SetScript('OnShow', function(self2)
-                set_Fast_Event(self2)--清除，注册，事件
+                button.FastButton.set_Fast_Event(self2)--清除，注册，事件，显示/隐藏，设置数量
                 self2.set_Player_Lable(self2)--设置指定发送，玩家, 提示
             end)
             btn:SetScript('OnHide', function(self2)
-                set_Fast_Event(self2, true)--清除，注册，事件
+                button.FastButton.set_Fast_Event(self2, true)--清除，注册，事件，显示/隐藏，设置数量
             end)
             btn:SetScript('OnEvent', set_Label_Text)
             button.FastButtonS[index]= btn
@@ -1110,13 +1108,13 @@ local function Init_Fast_Button()
     button.clearAllItmeButton=e.Cbtn(button, {size={size,size}, atlas='bags-button-autosort-up'})
     button.clearAllItmeButton:SetPoint('BOTTOMLEFT', SendMailAttachment7, 'TOPLEFT',0, -4)
     button.clearAllItmeButton:SetScript('OnClick', function()
-        set_Fast_Event(nil, true)--清除，注册，事件
+        button.FastButton.set_Fast_Event(nil, true)--清除，注册，事件，显示/隐藏，设置数量
         for i= 1, ATTACHMENTS_MAX_SEND do
             if HasSendMailItem(i) then
                 ClickSendMailItemButton(i, true)
             end
         end
-        set_Fast_Event() --清除，注册，事件
+        button.FastButton.set_Fast_Event()--清除，注册，事件，显示/隐藏，设置数量
     end)
     button.clearAllItmeButton:SetScript('OnLeave', function() e.tips:Hide() end)
     button.clearAllItmeButton:SetScript('OnEnter', function(self2)
@@ -1229,9 +1227,30 @@ local function Init()--SendMailNameEditBox
         Save.lastSendPlayer= e.GetUnitName(self2:GetText()) or Save.lastSendPlayer----记录 SendMailNameEditBox，内容
     end)
 
+    SendMailMailButton:HookScript('OnClick', function()--SendName，设置，发送成功，名字
+        if button then
+            button.SendName= e.GetUnitName(SendMailNameEditBox:GetText())--取得，收件人，名称
+        end
+    end)
+
+    --#################
+    --收信箱，物品，提示
+    --MailFrame.lua
+    --_G["MailItem"..i.."Button"]:Hide();
+    --_G["MailItem"..i.."Sender"]:SetText("");
+    --_G["MailItem"..i.."Subject"]:SetText("");
+    --_G["MailItem"..i.."ExpireTime"]:Hide();
     hooksecurefunc('InboxFrame_Update',function()
-        local numItems, totalItems = GetInboxNumItems()
-        print(GetInboxNumItems())
+        for i=1, INBOXITEMS_TO_DISPLAY do
+            local btn=_G["MailItem"..i.."Button"]
+            if btn and btn:IsShown() then
+                local packageIcon, stationeryIcon, sender, subject, money, CODAmount, daysLeft, itemCount, wasRead, x, y, z, isGM, firstItemQuantity, firstItemLink = GetInboxHeaderInfo(btn.index)
+                if sender then
+                    _G["MailItem"..i.."Sender"]:SetText(get_Name_Info(sender))
+                end
+                
+            end
+        end
     end)
     
     --[[if SendMailCostMoneyFrame then
