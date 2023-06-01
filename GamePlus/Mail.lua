@@ -579,10 +579,11 @@ local function Init_Button()
 
     --设置，历史记录，内容
     button.ClearPlayerButton.Init_Player_List= function()
-        local tab={}
-        for _, name in pairs(Save.lastSendPlayerList) do
+        local tab=Save.lastSendPlayerList
+        for index, name in pairs(Save.lastSendPlayerList) do
             if name==e.Player.name_realm then
-                table.insert(tab, name)
+                table.remove(tab, index)
+                break
             end
         end
 
@@ -955,7 +956,6 @@ local function Init_Fast_Button()
     button.FastButton:SetScript('OnClick', function(self2, d)
         if IsAltKeyDown() and d=='LeftButton' then--展开/缩起
             Save.fastShow= not Save.fastShow and true or nil
-            --self2:SetNormalAtlas(Save.fastShow and 'NPE_ArrowDown' or 'NPE_ArrowRight')
             self2.frame:SetShown(Save.fastShow)
 
         else--菜单
@@ -1068,6 +1068,7 @@ local function Init_Fast_Button()
             btn.set_Player_Lable= function(self2)--设置指定发送，玩家, 提示
                 self2.playerTexture:SetShown(Save.fast[self2.name] and true or false)
             end
+            btn.set_Player_Lable(btn)
 
             btn:SetScript('OnClick', function(self2, d)
                 if d=='LeftButton' and not IsMetaKeyDown() then
@@ -1291,6 +1292,15 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         'Maggoo-Nemesis',
                         'Dhb-Nemesis',
                         'Ms-Nemesis',--最大存20个
+                    }
+                    Save.fast={
+                        [e.onlyChinese and '布甲' or GetItemSubClassInfo(4, 1)]= 'Maggoo-Nemesis',--布甲
+                        [e.onlyChinese and '皮甲' or GetItemSubClassInfo(4, 2)]= 'Xiaod-Nemesis',--皮甲
+                        [e.onlyChinese and '锁甲' or GetItemSubClassInfo(4, 3)]= 'Fuocco-Nemesis',--锁甲
+                        [e.onlyChinese and '板甲' or GetItemSubClassInfo(4, 4)]= 'Zans-Nemesis',--板甲
+                        [e.onlyChinese and '盾牌' or GetItemSubClassInfo(4, 6)]= 'Zans-Nemesis',--盾牌
+                        [e.onlyChinese and '武器' or GetItemClassInfo(2)]= 'Zans-Nemesis',--武器
+
                     }
                 end
             end
