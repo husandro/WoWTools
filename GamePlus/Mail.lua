@@ -1252,7 +1252,7 @@ local function Init()--SendMailNameEditBox
                 if moneyPaga and not btn.CODAmountTips then--提示，需要付钱
                     btn.CODAmountTips= btn:CreateTexture(nil, 'OVERLAY')
                     btn.CODAmountTips:SetAllPoints(_G['MailItem'..i])
-                    btn.CODAmountTips:SetAtlas('communities-create-button-bnet-highlight')
+                    btn.CODAmountTips:SetAtlas('transmog-frame-red')
                 end
                 if btn.CODAmountTips then
                     btn.CODAmountTips:SetShown(moneyPaga)
