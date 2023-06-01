@@ -25,7 +25,6 @@ local Save={
 local size=23--图标大小
 local panel= CreateFrame("Frame")
 local button
-local t= panel:CreateTexture()
 
 local function set_Text_SendMailNameEditBox(_, name)--设置，发送名称，文
     if name then
@@ -408,78 +407,6 @@ local function Init_Menu(_, level, menuList)
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
 
---#######
---历史记录
---#######
-local function Init_Player_List()
-    if not button then
-        return
-    end
-    for index, name in pairs(Save.lastSendPlayerList) do
-        local label= button.SendPlayerFrame.createdButton(index)
-        label:SetShown(name~=e.Player.name_realm)
-        label.name= name
-        label:SetText(get_Name_Info(name)..' '..(index<10 and ' ' or '')..'|cnGREEN_FONT_COLOR:'..index)
-    end
-
-    for index= #Save.lastSendPlayerList+1, #button.SendPlayerFrame.tab do
-        button.SendPlayerFrame.tab[index]:SetShown(false)
-        button.SendPlayerFrame.tab[index]:SetText('')
-    end
-end
-
---############################
---SendName，设置，发送成功，名字
---############################
-local function set_Send_Name()
-    if button.SendName then
-        local find
-        for _, name in pairs(Save.lastSendPlayerList) do
-            if name==button.SendName then
-                find=true
-                break
-            end
-        end
-        if not find then
-            table.insert(Save.lastSendPlayerList, 1, button.SendName)
-            if #Save.lastSendPlayerList>20 then
-                table.remove(Save.lastSendPlayerList, #Save.lastSendPlayerList)
-            end
-        end
-        Init_Player_List()--历史记录
-        button.SendName=nil
-    end
-end
-
---#########
---目标，名称
---#########
-local function set_GetTargetNameButton_Texture(self)
-    if self then
-        if UnitExists('target') and UnitIsPlayer('target') and not UnitIsUnit('player', 'target') then
-            local name= GetUnitName('target', true)
-            if name then
-                local atlas, texture
-                local index= GetRaidTargetIndex('target') or 0
-                if index>0 and index<9 then
-                    texture= 'Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index
-                else
-                    atlas= e.GetUnitRaceInfo({unit= 'target', reAtlas=true})
-                end
-                if texture then
-                    self:SetNormalTexture(texture)
-                else
-                    self:SetNormalAtlas(atlas or 'Adventures-Target-Indicator')
-                end
-                self:SetShown(true)
-                self.name=name
-                return
-            end
-        end
-        self.name=nil
-        self:SetShown(false)
-    end
-end
 
 local function Init_Button()
     if button then
@@ -500,7 +427,24 @@ local function Init_Button()
     button:RegisterEvent('MAIL_FAILED')
     button:SetScript('OnEvent', function(self2, event)
         if event=='MAIL_SEND_SUCCESS' then
-            set_Send_Name()--SendName，设置，发送成功，名字
+            if self2.SendName then--SendName，设置，发送成功，名字
+                local find
+                for _, name in pairs(Save.lastSendPlayerList) do
+                    if name==button.SendName then
+                        find=true
+                        break
+                    end
+                end
+                if not find then
+                    table.insert(Save.lastSendPlayerList, 1, self2.SendName)
+                    self2.ClearPlayerButton.set_showHidetips_Texture(self2.ClearPlayerButton)--隐藏，历史记录, 提示, 设置图片
+                    if #Save.lastSendPlayerList>20 then
+                        table.remove(Save.lastSendPlayerList, #Save.lastSendPlayerList)
+                    end
+                end
+                self2.ClearPlayerButton.Init_Player_List()--设置，历史记录，内容
+                self2.SendName=nil
+            end
 
         elseif event=='MAIL_FAILED' then
             self2.SendName=nil
@@ -530,8 +474,35 @@ local function Init_Button()
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
     end)
-    button.GetTargetNameButton:SetScript('OnEvent', set_GetTargetNameButton_Texture)
-    button.GetTargetNameButton:SetShown(false)
+    button.GetTargetNameButton.set_GetTargetNameButton_Texture= function(self)
+        if self then
+            if UnitExists('target') and UnitIsPlayer('target') and not UnitIsUnit('player', 'target') then
+                local name= GetUnitName('target', true)
+                if name then
+                    local atlas, texture
+                    local index= GetRaidTargetIndex('target') or 0
+                    if index>0 and index<9 then
+                        texture= 'Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index
+                    else
+                        atlas= e.GetUnitRaceInfo({unit= 'target', reAtlas=true})
+                    end
+                    if texture then
+                        self:SetNormalTexture(texture)
+                    else
+                        self:SetNormalAtlas(atlas or 'Adventures-Target-Indicator')
+                    end
+                    self:SetShown(true)
+                    self.name=name
+                    return
+                end
+            end
+            self.name=nil
+            self:SetShown(false)
+        end
+    end
+    button.GetTargetNameButton:SetScript('OnEvent',  button.GetTargetNameButton.set_GetTargetNameButton_Texture)
+    button.GetTargetNameButton.set_GetTargetNameButton_Texture(button.GetTargetNameButton)--目标，名称，按钮，显示/隐藏
+
 
     --#######
     --历史记录
@@ -539,8 +510,7 @@ local function Init_Button()
     button.ClearPlayerButton= e.Cbtn(button, {size={size,size}, atlas='bags-button-autosort-up'})
     button.ClearPlayerButton:SetPoint('RIGHT', SendMailNameEditBox, 'LEFT', -2, 0)
     button.ClearPlayerButton:SetText(not e.onlyChinese and SLASH_STOPWATCH_PARAM_STOP2 or "清除")
-    button.ClearPlayerButton:SetAlpha(0.3)
-    button.ClearPlayerButton:SetScript('OnClick', function(_, d)
+    button.ClearPlayerButton:SetScript('OnClick', function(self2, d)
         if d=='LeftButton' and not IsModifierKeyDown() then
             SendMailNameEditBox:SetText('')
             securecall(SendMailFrame_Update)
@@ -548,7 +518,8 @@ local function Init_Button()
         elseif IsAltKeyDown() and d=='LeftButton' then
             Save.lastSendPlayerList={}
             Save.lastSendPlayer=nil
-            Init_Player_List()--历史记录
+            self2.Init_Player_List()--设置，历史记录，内容
+            self2.set_showHidetips_Texture(self2)--隐藏，历史记录, 提示, 设置图片
         end
     end)
     button.ClearPlayerButton:SetScript('OnMouseWheel', function(self2, d)
@@ -571,7 +542,11 @@ local function Init_Button()
             self2.set_showHidetips_Texture(self2)--隐藏，历史记录, 提示, 设置图片
         end
     end)
-    button.ClearPlayerButton:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.3) end)
+    button.ClearPlayerButton:SetScript('OnLeave', function(self2)
+        e.tips:Hide()
+        self2.setAlpha(self2)
+        self2:GetParent().SendPlayerFrame:SetAlpha(1)
+    end)
     button.ClearPlayerButton:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -579,26 +554,46 @@ local function Init_Button()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine((not e.onlyChinese and CLEAR_ALL or "全部清除")..' |cnGREEN_FONT_COLOR:#'..#Save.lastSendPlayerList..'|r/20', '|cnGREEN_FONT_COLOR:Alt+'.. e.Icon.left)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine((e.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER)..' '..e.GetShowHide(not Save.hideSendPlayerList), e.Icon.mid)
+        e.tips:AddDoubleLine((e.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER)..' '..(Save.hideSendPlayerList and '|A:AnimaChannel-Bar-Venthyr-Gem:0:0|a' or '|A:AnimaChannel-Bar-Necrolord-Gem:0:0|a')..e.GetShowHide(not Save.hideSendPlayerList), e.Icon.mid)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scaleSendPlayerFrame or 1), 'Alt+'..e.Icon.mid)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
         self2:SetAlpha(1)
+        self2:GetParent().SendPlayerFrame:SetAlpha(0.5)
     end)
-
-    --隐藏，历史记录, 提示
-    local function set_showHidetips_Texture(btn)
-        btn.showHidetips:SetAtlas(Save.hideSendPlayerList and 'AnimaChannel-Bar-Venthyr-Gem' or 'AnimaChannel-Bar-Necrolord-Gem')
+    button.ClearPlayerButton.setAlpha= function(self2)--设置，历史记录，清除按钮透明度
+        self2:SetAlpha(SendMailNameEditBox:GetText()=='' and 0.3 or 1)
     end
+    button.ClearPlayerButton.setAlpha(button.ClearPlayerButton)--设置，历史记录，清除按钮透明度
+
+    --隐藏/显示，历史记录, 提示
     button.ClearPlayerButton.showHidetips= button.ClearPlayerButton:CreateTexture(nil,'OVERLAY')
     button.ClearPlayerButton.showHidetips:SetSize(size/2,size/2)
     button.ClearPlayerButton.showHidetips:SetPoint('TOPLEFT')
     button.ClearPlayerButton.set_showHidetips_Texture= function(self2)--隐藏，历史记录, 提示, 设置图片
-        self2.showHidetips:SetAtlas(Save.hideSendPlayerList and 'AnimaChannel-Bar-Venthyr-Gem' or 'AnimaChannel-Bar-Necrolord-Gem')
+        self2.showHidetips:SetAtlas((Save.hideSendPlayerList or #Save.lastSendPlayerList==0) and 'AnimaChannel-Bar-Venthyr-Gem' or 'AnimaChannel-Bar-Necrolord-Gem')
     end
-    set_showHidetips_Texture(button.ClearPlayerButton)--隐藏，历史记录, 提示, 设置图片
-    
+    button.ClearPlayerButton.set_showHidetips_Texture(button.ClearPlayerButton)--隐藏，历史记录, 提示, 设置图片
+
+    --设置，历史记录，内容
+    button.ClearPlayerButton.Init_Player_List= function()
+        if not button then
+            return
+        end
+        for index, name in pairs(Save.lastSendPlayerList) do
+            local label= button.SendPlayerFrame.createdButton(index)
+            label:SetShown(name~=e.Player.name_realm)
+            label.name= name
+            label:SetText(get_Name_Info(name)..' '..(index<10 and ' ' or '')..'|cnGREEN_FONT_COLOR:'..index)
+        end
+
+        for index= #Save.lastSendPlayerList+1, #button.SendPlayerFrame.tab do
+            button.SendPlayerFrame.tab[index]:SetShown(false)
+            button.SendPlayerFrame.tab[index]:SetText('')
+        end
+    end
+
     --移动 收件人：字符
     for index, label in pairs({SendMailNameEditBox:GetRegions()}) do
         if index==3 and label:GetObjectType()=='FontString' then
@@ -619,19 +614,22 @@ local function Init_Button()
         if not label then
             label= e.Cstr(button.SendPlayerFrame, {justifyH='RIGHT', mouse=true, size=16})
             label:SetPoint('TOPRIGHT', index==1 and button.SendPlayerFrame or button.SendPlayerFrame.tab[index-1], 'BOTTOMRIGHT')
+            label:SetScript('OnMouseUp',function(self2) self2:SetAlpha(0.5) end)
             label:SetScript('OnMouseDown', function(self2, d)
                 if d=='LeftButton' then
                     set_Text_SendMailNameEditBox(nil, self2.name)--设置，收件人，名字
+
                 elseif d=='RightButton' then--移除，单个，名字
                     for i, name in pairs(Save.lastSendPlayerList) do
                         if name==self2.name then
                             print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', self2.name, get_Name_Info(name))
                             table.remove(Save.lastSendPlayerList, index)
-                            Init_Player_List()--历史记录
+                            button.ClearPlayerButton.Init_Player_List()--设置，历史记录，内容
                             break
                         end
                     end
                 end
+                self2:SetAlpha(0)
             end)
             label:SetScript('OnLeave', function(self2)
                 e.tips:Hide()
@@ -649,14 +647,14 @@ local function Init_Button()
                 e.tips:Show()
                 self2:SetAlpha(0.5)
             end)
-            label:SetScript('OnMouseDown',function(self2) self2:SetAlpha(0) end)
-            label:SetScript('OnMouseUp',function(self2) self2:SetAlpha(0.5) end)
             table.insert(button.SendPlayerFrame.tab, label)
         end
         return label
     end
 
-    Init_Player_List()--历史记录
+    
+
+    button.ClearPlayerButton.Init_Player_List()--设置，历史记录，内容
 
     if Save.scaleSendPlayerFrame and Save.scaleSendPlayerFrame~=1 then
         button.SendPlayerFrame:SetScale(Save.scaleSendPlayerFrame)
@@ -825,17 +823,24 @@ local function Init_Fast_Menu(_, level, menuList)
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
         local newTab={}
-        for subClass, num in pairs(menuList.subClass) do
-            table.insert(newTab, {subClass= subClass, num= num})
+        for subClass, tab in pairs(menuList.subClass) do
+            table.insert(newTab, {subClass= subClass, num= tab.num, item= tab.item})
         end
         table.sort(newTab, function(a,b) return a.subClass< b.subClass end)
 
         for _, tab in pairs(newTab) do
+            local tooltip
+            for link, num in pairs(tab.item) do
+                local icon= C_Item.GetItemIconByID(link)
+                tooltip= tooltip and tooltip..'\n' or ''
+                tooltip= tooltip..(icon and '|T'..icon..':0|t' or '')..link
+            end
             info={
                 text= (tab.subClass<10 and ' ' or '')..tab.subClass..') '.. GetItemSubClassInfo(menuList.class, tab.subClass)
                 ..' |cnGREEN_FONT_COLOR:#'..tab.num,
                 notCheckable=true,
                 tooltipOnButton=true,
+                tooltipTitle= tooltip,
                 arg1=menuList.class,
                 arg2= tab.subClass,
                 func= function(_, arg1, arg2)
@@ -868,11 +873,18 @@ local function Init_Fast_Menu(_, level, menuList)
                     if find then
                         tab[class]= tab[class] or {
                                             num= 0,
-                                            subClass= {[sub]=0}
+                                            subClass= {
+                                                        [sub]={num=0, item={}}
+                                                    }
                                         }
                         tab[class].num= tab[class].num+ info2.stackCount
-                        tab[class]['subClass'][sub]= tab[class]['subClass'][sub] or 0
-                        tab[class]['subClass'][sub]= tab[class]['subClass'][sub]+ info2.stackCount
+
+
+                        tab[class]['subClass'][sub]= tab[class]['subClass'][sub] or {num=0, item={}}
+
+                        tab[class]['subClass'][sub]['num']= tab[class]['subClass'][sub]['num'] + info2.stackCount
+
+                        tab[class]['subClass'][sub]['item'][info2.hyperlink]=true
                     end
                 end
             end
@@ -927,7 +939,7 @@ local function Init_Fast_Button()
         button.FastButton:SetPoint('BOTTOMLEFT', MailFrameCloseButton, 'BOTTOMRIGHT', 0, 2)
     end
     button.FastButton:SetScript('OnClick', function(self2, d)
-        if IsAltKeyDown() and d=='RightButton' then--展开/缩起
+        if IsAltKeyDown() and d=='LeftButton' then--展开/缩起
             Save.fastShow= not Save.fastShow and true or nil
             --self2:SetNormalAtlas(Save.fastShow and 'NPE_ArrowDown' or 'NPE_ArrowRight')
             self2.frame:SetShown(Save.fastShow)
@@ -960,7 +972,7 @@ local function Init_Fast_Button()
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine((e.onlyChinese and '收起选项 |A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)..' '..e.GetYesNo(not Save.fastShow), 'Alt+'..e.Icon.right)
+        e.tips:AddDoubleLine((e.onlyChinese and '收起选项 |A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)..' '..e.GetYesNo(not Save.fastShow), 'Alt+'..e.Icon.left)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scaleFastButton or 1), 'Alt+'..e.Icon.mid)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
@@ -1186,8 +1198,9 @@ local function Init()--SendMailNameEditBox
                 SendMailNameEditBox:ClearFocus()
             end
             if button then
-                set_GetTargetNameButton_Texture(button.GetTargetNameButton)--目标，名称
-                button.ClearPlayerButton:SetAlpha(SendMailNameEditBox:GetText()=='' and 0.3 or 1)
+                button.GetTargetNameButton.set_GetTargetNameButton_Texture(button.GetTargetNameButton)--目标，名称，按钮，显示/隐藏--目标，名称
+                button.ClearPlayerButton.setAlpha(button.ClearPlayerButton)--设置，历史记录，清除按钮透明度
+                
             end
         end)
     end)
