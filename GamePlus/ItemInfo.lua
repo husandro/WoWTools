@@ -78,7 +78,7 @@ local function set_Item_Info(self, tab)
             local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, red=true, onlyRed=true})--物品提示，信息
             topRightText= dateInfo.red and '|A:Monuments-Lock:0:0|a' or '|A:talents-button-undo:0:0|a'
 
-        elseif C_Item.IsItemKeystoneByID(itemID) then--挑战
+        elseif itemID and C_Item.IsItemKeystoneByID(itemID) then--挑战
             local name=itemLink:match('%[(.-)]') or itemLink
             if name then
                 topLeftText=name:match('%((%d+)%)') or C_MythicPlus.GetOwnedKeystoneLevel() --等级
@@ -529,6 +529,14 @@ local function Init()
             local attachmentButton = OpenMailFrame.OpenMailAttachments[i];
             if attachmentButton and attachmentButton:IsShown() then
                 set_Item_Info(attachmentButton, {hyperLink= HasInboxItem(InboxFrame.openMailID, i) and GetInboxItemLink(InboxFrame.openMailID, i)})
+            end
+        end
+    end)
+    hooksecurefunc('SendMailFrame_Update', function()--发信箱，物品
+        for i=1, ATTACHMENTS_MAX_SEND do
+            local sendMailAttachmentButton = SendMailFrame.SendMailAttachments[i]
+            if sendMailAttachmentButton and sendMailAttachmentButton:IsShown() then
+                set_Item_Info(sendMailAttachmentButton, {hyperLink= HasSendMailItem(i) and GetSendMailItemLink(i)})
             end
         end
     end)

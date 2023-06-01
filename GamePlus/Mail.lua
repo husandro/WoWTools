@@ -694,18 +694,6 @@ local function check_Enabled_Item(classID, subClassID, findString, bag, slot)
     end
 end
 
---能发送，数量
-local function get_Send_Max_Item()
-    local tab={}
-    for i= 1, ATTACHMENTS_MAX_SEND do
-        if not HasSendMailItem(i) then
-            table.insert(tab, i)
-        end
-    end
-    panel.ItemMaxNum= #tab
-    return tab
-end
-
 
 --####################
 --快速，加载，物品，菜单
@@ -901,30 +889,43 @@ local function Init_Fast_Button()
         button.clearAllItmeButton:SetShown(panel.ItemMaxNum<ATTACHMENTS_MAX_SEND)
     end)
 
+    button.FastButton.get_Send_Max_Item= function()--能发送，数量
+        local tab={}
+        for i= 1, ATTACHMENTS_MAX_SEND do
+            if not HasSendMailItem(i) then
+                table.insert(tab, i)
+            end
+        end
+        panel.ItemMaxNum= #tab
+        return tab
+    end
+
     button.FastButton.set_Fast_Event= function(frame, unregisterAllEvents)--清除，注册，事件，显示/隐藏，设置数量
         if frame then
             if unregisterAllEvents then
                 frame:UnregisterAllEvents()
             elseif frame:IsShown() then
-                frame:GetParent().set_Label_Text(frame)
+                button.FastButton.frame.set_Label_Text(frame)
                 frame:RegisterEvent('BAG_UPDATE_DELAYED')
                 frame:RegisterEvent('MAIL_SEND_INFO_UPDATE')
+                frame:RegisterEvent('MAIL_SEND_SUCCESS')
             end
         else
             for _, btn in pairs(button.FastButtonS) do
                 if unregisterAllEvents then
                     btn:UnregisterAllEvents()
                 elseif btn:IsShown() then
-                    btn:GetParent().set_Label_Text(btn)
+                    button.FastButton.frame.set_Label_Text(btn)
                     btn:RegisterEvent('BAG_UPDATE_DELAYED')
                     btn:RegisterEvent('MAIL_SEND_INFO_UPDATE')
+                    btn:RegisterEvent('MAIL_SEND_SUCCESS')
                 end
             end
         end
     end
 
     button.FastButton.set_PickupContainerItem= function(classID, subClassID, findString)--自动放物品
-        local slotTab= get_Send_Max_Item()--能发送，数量
+        local slotTab= button.FastButton.get_Send_Max_Item()--能发送，数量
         if #slotTab==0 then
             return
         end
@@ -938,14 +939,14 @@ local function Init_Fast_Button()
                     ClickSendMailItemButton(slotTab[1])
                     table.remove(slotTab, 1)
                     if #slotTab==0 then
-                        slotTab= get_Send_Max_Item()--能发送，数量
+                        slotTab= button.FastButton.get_Send_Max_Item()--能发送，数量
                         button.FastButton.set_Fast_Event()--清除，注册，事件，显示/隐藏，设置数量
                         return
                     end
                 end
             end
         end
-        get_Send_Max_Item()--能发送，数量
+        button.FastButton.get_Send_Max_Item()--能发送，数量
         button.FastButton.set_Fast_Event()--清除，注册，事件，显示/隐藏，设置数量
     end
 
@@ -958,10 +959,9 @@ local function Init_Fast_Button()
     end
     button.FastButton.frame:SetShown(Save.fastShow)
     button.FastButton.frame.set_Label_Text= function(self2)--设置提示，数量，堆叠
-        if self2.run or not self2:IsShown() then
+        if not self2 or not self2:IsShown() then
             return
         end
-        self2.run=true
         local num, stack= 0, 0 --C_Item.GetItemMaxStackSizeByID(info.itemID)
         for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+ NUM_REAGENTBAG_FRAMES do
             for slot=1, C_Container.GetContainerNumSlots(bag) do
@@ -972,7 +972,6 @@ local function Init_Fast_Button()
                 end
             end
         end
-    
         self2.numLable:SetText(num==stack and '' or num)
         self2.stackLable:SetText(stack>0 and stack or '' )
         local alpha= 1
@@ -984,7 +983,6 @@ local function Init_Fast_Button()
         self2:SetAlpha(alpha)
         self2.num=num
         self2.stack=stack
-        self2.run=nil
     end
 
     local fast={
@@ -1060,7 +1058,7 @@ local function Init_Fast_Button()
             end)
 
             btn:SetScript('OnLeave', function(self2)
-                self2:GetParet().set_Label_Text(self2)--设置提示，数量，堆叠
+                button.FastButton.frame.set_Label_Text(self2)--设置提示，数量，堆叠
                 e.tips:Hide()
             end)
             btn:SetScript('OnEnter', function(self2)
@@ -1094,7 +1092,7 @@ local function Init_Fast_Button()
                 button.FastButton.set_Fast_Event(self2, true)--清除，注册，事件，显示/隐藏，设置数量
             end)
             btn:SetScript('OnEvent', function(self2)
-                self2:GetParent().set_Label_Text()
+                button.FastButton.frame.set_Label_Text()
             end)
             button.FastButtonS[index]= btn
 
@@ -1129,7 +1127,7 @@ local function Init_Fast_Button()
     button.clearAllItmeButton:SetShown(false)
     button.clearAllItmeButton:RegisterEvent('MAIL_SEND_INFO_UPDATE')
     button.clearAllItmeButton:SetScript('OnEvent', function(self2)
-        get_Send_Max_Item()--能发送，数量
+        button.FastButton.get_Send_Max_Item()--能发送，数量
         self2:SetShown(panel.ItemMaxNum<ATTACHMENTS_MAX_SEND)
         local num= 0
         if self2:IsShown() then
