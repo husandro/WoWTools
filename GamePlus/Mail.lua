@@ -816,13 +816,6 @@ end
 local function Init_Fast_Menu(_, level, menuList)
     local info
     if menuList then
-        info= {
-            text= '|A:NPE_ArrowRight:0:0|a'..menuList.class..') '..GetItemClassInfo(menuList.class),
-            notCheckable= true,
-            isTitle= true,
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
         local newTab={}
         for subClass, tab in pairs(menuList.subClass) do
             table.insert(newTab, {subClass= subClass, num= tab.num, item= tab.item})
@@ -833,8 +826,8 @@ local function Init_Fast_Menu(_, level, menuList)
             local tooltip
             for link, num in pairs(tab.item) do
                 local icon= C_Item.GetItemIconByID(link)
-                tooltip= tooltip and tooltip..'\n' or ''
-                tooltip= tooltip..(icon and '|T'..icon..':0|t' or '')..link
+                tooltip= tooltip and tooltip..'|n' or ''
+                tooltip= tooltip..(icon and '|T'..icon..':0|t' or '')..link..'|cnGREEN_FONT_COLOR:#'..num..'|r '
             end
             info={
                 text= (tab.subClass<10 and ' ' or '')..tab.subClass..') '.. GetItemSubClassInfo(menuList.class, tab.subClass)
@@ -850,6 +843,13 @@ local function Init_Fast_Menu(_, level, menuList)
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
+
+        info= {
+            text= '|A:NPE_ArrowRight:0:0|a'..menuList.class..') '..GetItemClassInfo(menuList.class),
+            notCheckable= true,
+            isTitle= true,
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
         return
     end
 
@@ -885,7 +885,8 @@ local function Init_Fast_Menu(_, level, menuList)
 
                         tab[class]['subClass'][sub]['num']= tab[class]['subClass'][sub]['num'] + info2.stackCount
 
-                        tab[class]['subClass'][sub]['item'][info2.hyperlink]=true
+                        tab[class]['subClass'][sub]['item'][info2.hyperlink]= (tab[class]['subClass'][sub]['item'][info2.hyperlink] or 0)+ info2.stackCount
+                        
                     end
                 end
             end
