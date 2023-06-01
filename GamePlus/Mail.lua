@@ -1099,7 +1099,9 @@ local function Init()--SendMailNameEditBox
                 MailFrameTab_OnClick(MailFrame, 2)
             end
 
-            set_GetTargetNameButton_Texture(button.GetTargetNameButton)--目标，名称
+            if button then
+                set_GetTargetNameButton_Texture(button.GetTargetNameButton)--目标，名称
+            end
 
             if Save.lastSendPlayer then--记录 SendMailNameEditBox，内容
                 set_Text_SendMailNameEditBox(nil, Save.lastSendPlayer)--设置，发送名称，文
