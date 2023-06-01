@@ -517,6 +517,7 @@ local function Init_Move()
         PlayerPowerBarAlt={},--UnitPowerBarAlt.lua
         MailFrame={},
         SendMailFrame={frame= MailFrame},
+        OpenMailFrame={},
         MirrorTimer1={save=true},
 
         GroupLootHistoryFrame={},

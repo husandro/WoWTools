@@ -2871,7 +2871,9 @@
         "ATTACHMENTS_MAX",
         "ATTACHMENTS_PER_ROW_RECEIVE",
         "COD",
-        "MailItem4"
+        "MailItem4",
+        "OpenMailFrameBg",
+        "OpenMailFrameInset"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
