@@ -17,7 +17,7 @@ local uiMapIDsTab= {--地图ID 监视, areaPoiIDs，
     2022,
     2133
 }
-    
+
 local questIDTab= {--世界任务, 监视, ID
    -- [74378]=true,
 }
@@ -420,7 +420,7 @@ local function set_ExpansionLandingPageMinimapButton()
                     end
                 end
             elseif not key then
-                securecallfunction(InterfaceOptionsFrame_OpenToCategory, id)               
+                securecallfunction(InterfaceOptionsFrame_OpenToCategory, id)
             end
         end,
         enter= function(self)
@@ -445,7 +445,14 @@ local function set_ExpansionLandingPageMinimapButton()
     })
 
     C_Timer.After(2, function()
-        if ExpansionLandingPageMinimapButton then ExpansionLandingPageMinimapButton:SetShown(false) end
+        if ExpansionLandingPageMinimapButton then
+            ExpansionLandingPageMinimapButton:SetShown(false)
+            ExpansionLandingPageMinimapButton:HookScript('OnShow', function(self2)
+                C_Timer.After(2, function()
+                    self2:SetShown(false)
+                end)
+            end)
+        end
     end)
 end
 
