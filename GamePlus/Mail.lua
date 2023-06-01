@@ -815,7 +815,15 @@ local function set_Player_Lable(self2)--设置指定发送，玩家, 提示
 end
 
 local function Init_Fast_Menu(_, level, menuList)
+    local info
     if menuList then
+        info= {
+            text= menuList.GetItemClassInfo(menuList.class)..') '..GetItemClassInfo(menuList.class),
+            notCheckable= true,
+            isTitle= true,
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
         local newTab={}
         for subClass, num in pairs(menuList.subClass) do
             table.insert(newTab, {subClass= subClass, num= num})
@@ -823,7 +831,7 @@ local function Init_Fast_Menu(_, level, menuList)
         table.sort(newTab, function(a,b) return a.subClass< b.subClass end)
 
         for _, tab in pairs(newTab) do
-            local info={
+            info={
                 text= (tab.subClass<10 and ' ' or '')..tab.subClass..') '.. GetItemSubClassInfo(menuList.class, tab.subClass)
                 ..' |cnGREEN_FONT_COLOR:#'..tab.num,
                 notCheckable=true,
@@ -880,13 +888,11 @@ local function Init_Fast_Menu(_, level, menuList)
 
     local find
     for _, tab2 in pairs(newTab) do
-        local info={
+        info={
             text= (tab2.class<10 and ' ' or '')..tab2.class..') '.. GetItemClassInfo(tab2.class)..' |cnGREEN_FONT_COLOR:#'..tab2.num,
             notCheckable=true,
             menuList= {class=tab2.class, subClass=tab2.subClass},
             hasArrow=true,
-            tooltipOnButton=true,
-            tooltipTitle= 'class '..tab2.class,
             tooltipText= (tab2.class==2 or tab2.class==4) and format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.onlyChinese and '你还没有收藏过此外观' or TRANSMOGRIFY_STYLE_UNCOLLECTED),
             arg1=tab2.class,
             func= function(_, arg1)
@@ -897,7 +903,7 @@ local function Init_Fast_Menu(_, level, menuList)
         find=true
     end
     if not find then
-        local info={
+        info={
             text= e.onlyChinese and '无' or NONE,
             notCheckable= true,
             isTitle= true,
