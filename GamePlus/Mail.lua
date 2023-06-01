@@ -559,21 +559,14 @@ local function Init_Button()
 
     --设置，历史记录，内容
     button.ClearPlayerButton.Init_Player_List= function()
-        local tab=Save.lastSendPlayerList
-        for index, name in pairs(tab) do
-            if name==e.Player.name_realm then
-                table.remove(tab, index)
-                break
-            end
-        end
-
-        for index, name in pairs(tab) do
+        for index, name in pairs(Save.lastSendPlayerList) do
             local label= button.SendPlayerFrame.createdButton(index)
             label.name= name
             label:SetText(get_Name_Info(name)..' '..(index<10 and ' ' or '')..'|cnGREEN_FONT_COLOR:'..index..' ')
+            label:SetShown(name~=e.Player.name_realm)
         end
 
-        for index= #tab+1, #button.SendPlayerFrame.tab do
+        for index= #Save.lastSendPlayerList+1, #button.SendPlayerFrame.tab do
             button.SendPlayerFrame.tab[index]:SetShown(false)
             button.SendPlayerFrame.tab[index]:SetText('')
         end
