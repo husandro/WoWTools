@@ -1073,7 +1073,7 @@ local function Init_Fast_Button()
                 e.tips:AddLine(' ')
                 local name= e.GetUnitName(SendMailNameEditBox:GetText())--取得， SendMailNameEditBox， 名称
                 e.tips:AddDoubleLine((e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)..' ('..(e.onlyChinese and '玩家' or PLAYER)..')',
-                                        (Save.fast[self2.name] and '|A:AnimaChannel-Bar-Necrolord-Gem:0:0|a|cnGREEN_FONT_COLOR:'..e.GetPlayerInfo({name= Save.fast[self2.name], reName=true, reRealm=true})
+                                        (Save.fast[self2.name] and '|A:AnimaChannel-Bar-Necrolord-Gem:0:0|a|cnGREEN_FONT_COLOR:'..get_Name_Info(Save.fast[self2.name])
                                              or (e.onlyChinese and '无' or NONE))
                                         ..'|A:NPE_ArrowDown:0:0|a'
                                     )
