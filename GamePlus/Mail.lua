@@ -818,7 +818,7 @@ local function Init_Fast_Menu(_, level, menuList)
     local info
     if menuList then
         info= {
-            text= menuList.class..') '..GetItemClassInfo(menuList.class),
+            text= '|A:NPE_ArrowRight:0:0|a'..menuList.class..') '..GetItemClassInfo(menuList.class),
             notCheckable= true,
             isTitle= true,
         }
