@@ -321,7 +321,7 @@ local function Init_Menu(_, level, menuList)
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    elseif menuList=='SETTINGS' then
+    --elseif menuList=='SETTINGS' then
 
     end
 
@@ -389,14 +389,14 @@ local function Init_Menu(_, level, menuList)
         e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
 
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
+    --[[e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
         text= e.onlyChinese and '设置' or SETTINGS,
         hasArrow=true,
         menuList='SETTINGS',
         notCheckable=true,
     }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
+    e.LibDD:UIDropDownMenu_AddButton(info, level)]]
 
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
@@ -823,8 +823,7 @@ local function Init_Fast_Menu(_, level, menuList)
             isTitle= true,
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
-        
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
+
         local newTab={}
         for subClass, num in pairs(menuList.subClass) do
             table.insert(newTab, {subClass= subClass, num= num})
