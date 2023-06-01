@@ -2864,7 +2864,8 @@
         "EVENTTRACE_LOG_HEADER",
         "TRANSMOGRIFY_STYLE_UNCOLLECTED",
         "SendMailScrollChildFrame",
-        "SendMailScrollFrame"
+        "SendMailScrollFrame",
+        "MailFrame_RefreshInbox"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

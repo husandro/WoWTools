@@ -31,6 +31,7 @@ local function set_Text_SendMailNameEditBox(_, name)--设置，发送名称，�
         name= name:gsub('%-'..e.Player.realm, '')
         SendMailNameEditBox:SetText(name)
         SendMailNameEditBox:SetCursorPosition(0)
+        SendMailNameEditBox:ClearFocus()
     end
 end
 
@@ -423,6 +424,11 @@ local function Init_Button()
                     end
                 end
                 self2.ClearPlayerButton.Init_Player_List()--设置，历史记录，内容
+                if not Save.hide and not Save.hideSendPlayerList then
+                    set_Text_SendMailNameEditBox(nil, self2.SendName)
+
+                end
+
                 self2.SendName=nil
             end
 
@@ -1190,24 +1196,27 @@ local function Init()--SendMailNameEditBox
     end)
     panel.showButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
 
+    local function set_Show_MailFrame_Init()
+        if GetInboxNumItems()==0 then--如果没有信，转到，发信
+            MailFrameTab_OnClick(MailFrame, 2)
+        end
+        if Save.lastSendPlayer and not Save.hideSendPlayerList and not Save.hide then--记录 SendMailNameEditBox，内容
+            set_Text_SendMailNameEditBox(nil, Save.lastSendPlayer)--设置，发送名称，文
+            
+        end
+        if button then
+            button.GetTargetNameButton.set_GetTargetNameButton_Texture(button.GetTargetNameButton)--目标，名称，按钮，显示/隐藏--目标，名称
+            button.ClearPlayerButton.setAlpha(button.ClearPlayerButton)--设置，历史记录，清除按钮透明度
+        end
+    end
     MailFrame:HookScript('OnShow', function()
         set_button_Show_Hide()
-
-        C_Timer.After(0.5, function()
-            if GetInboxNumItems()==0 then--如果没有信，转到，发信
-                MailFrameTab_OnClick(MailFrame, 2)
-            end
-
-            if Save.lastSendPlayer and not Save.hideSendPlayerList and not Save.hide then--记录 SendMailNameEditBox，内容
-                set_Text_SendMailNameEditBox(nil, Save.lastSendPlayer)--设置，发送名称，文
-                SendMailNameEditBox:ClearFocus()
-            end
-            if button then
-                button.GetTargetNameButton.set_GetTargetNameButton_Texture(button.GetTargetNameButton)--目标，名称，按钮，显示/隐藏--目标，名称
-                button.ClearPlayerButton.setAlpha(button.ClearPlayerButton)--设置，历史记录，清除按钮透明度
-
-            end
-        end)
+        local canCheck, timeUntilAvailable = C_Mail.CanCheckInbox()
+        if canCheck then
+            set_Show_MailFrame_Init()
+        else
+            C_Timer.After(timeUntilAvailable, set_Show_MailFrame_Init)
+        end
     end)
 
     MailFrame:HookScript('OnHide', function()
@@ -1220,8 +1229,12 @@ local function Init()--SendMailNameEditBox
         Save.lastSendPlayer= e.GetUnitName(self2:GetText()) or Save.lastSendPlayer----记录 SendMailNameEditBox，内容
     end)
 
-    --[[
-    if SendMailCostMoneyFrame then
+    hooksecurefunc('InboxFrame_Update',function()
+        local numItems, totalItems = GetInboxNumItems()
+        print(GetInboxNumItems())
+    end)
+    
+    --[[if SendMailCostMoneyFrame then
         SendMailCostMoneyFrame:ClearAllPoints()
         SendMailCostMoneyFrame:SetPoint('BOTTOMRIGHT', SendMailCancelButton, 'TOPRIGHT', 10, 6)
     end
