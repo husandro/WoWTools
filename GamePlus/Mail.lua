@@ -86,6 +86,7 @@ local function Init_Menu(_, level, menuList)
                 info={
                     text= e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true, reLink=false}),
                     icon= 'auctionhouse-icon-favorite',
+                    keepShownOnClick= true,
                     notCheckable= true,
                     arg1= get_Name_For_guid(guid),
                     func= set_Text_SendMailNameEditBox,
@@ -117,6 +118,7 @@ local function Init_Menu(_, level, menuList)
                     icon= WoWDate[game.guid] and 'auctionhouse-icon-favorite',
                     notCheckable= true,
                     tooltipOnButton=true,
+                    keepShownOnClick= true,
                     tooltipTitle=game.notes,
                     arg1= get_Name_For_guid(game.guid),
                     func= set_Text_SendMailNameEditBox,
@@ -166,6 +168,7 @@ local function Init_Menu(_, level, menuList)
                 info={
                     text= text,
                     icon= WoWDate[wowInfo.playerGuid] and 'auctionhouse-icon-favorite',
+                    keepShownOnClick= true,
                     notCheckable=true,
                     tooltipOnButton=true,
                     tooltipTitle= wow and wow.note or '',
@@ -207,6 +210,7 @@ local function Init_Menu(_, level, menuList)
                 info={
                     text=text,
                     icon=icon,
+                    keepShownOnClick= true,
                     notCheckable=true,
                     tooltipOnButton=true,
                     tooltipTitle=publicNote or '',
@@ -252,6 +256,7 @@ local function Init_Menu(_, level, menuList)
 
                 info={
                     text= text,
+                    keepShownOnClick= true,
                     notCheckable=true,
                     tooltipOnButton=true,
                     tooltipTitle= name,
@@ -292,6 +297,7 @@ local function Init_Menu(_, level, menuList)
                 info={
                     text= index..(index<10 and ')  ' or ') ')..text.. (tab.zone and e.Icon.select2 or ''),
                     icon= icon,
+                    keepShownOnClick= true,
                     notCheckable=true,
                     tooltipOnButton=true,
                     tooltipTitle=tab.memberNote or '',
@@ -439,7 +445,7 @@ local function Init_Button()
                     table.insert(Save.lastSendPlayerList, 1, self2.SendName)
                     self2.ClearPlayerButton.set_showHidetips_Texture(self2.ClearPlayerButton)--隐藏，历史记录, 提示, 设置图片
                     if #Save.lastSendPlayerList>21 then
-                        table.remove(Save.lastSendPlayerList, #Save.lastSendPlayerList)
+                        table.remove(Save.lastSendPlayerList)
                     end
                 end
                 self2.ClearPlayerButton.Init_Player_List()--设置，历史记录，内容
@@ -580,7 +586,7 @@ local function Init_Button()
     --设置，历史记录，内容
     button.ClearPlayerButton.Init_Player_List= function()
         local tab=Save.lastSendPlayerList
-        for index, name in pairs(Save.lastSendPlayerList) do
+        for index, name in pairs(tab) do
             if name==e.Player.name_realm then
                 table.remove(tab, index)
                 break
@@ -913,6 +919,7 @@ local function Init_Fast_Menu(_, level, menuList)
     for _, tab2 in pairs(newTab) do
         info={
             text= (tab2.class<10 and ' ' or '')..tab2.class..') '.. GetItemClassInfo(tab2.class)..((tab2.class==2 or tab2==4) and e.Icon.okTransmog2 or ' ')..'|cnGREEN_FONT_COLOR:#'..tab2.num,
+            keepShownOnClick= true,
             notCheckable=true,
             menuList= {class=tab2.class, subClass=tab2.subClass, num=tab2.num},
             hasArrow=true,
@@ -1180,23 +1187,18 @@ local function Init()--SendMailNameEditBox
         if not Save.hide then
             Init_Button()
             Init_Fast_Button()
-
             if button then
                 button.GetTargetNameButton:RegisterEvent('PLAYER_TARGET_CHANGED')
                 button.GetTargetNameButton:RegisterEvent('RAID_TARGET_UPDATE')
             end
-
         else
             if button then
-                button.GetTargetNameButton:UnregisterAllEvents()
+                button.GetTargetNameButton:UnregisterAllEvents()--MailFrameTitleText:SetText(e.onlyChinese and '发件箱' or SENDMAIL)
             end
-            --MailFrameTitleText:SetText(e.onlyChinese and '发件箱' or SENDMAIL)
         end
-
         if button then
             button:SetShown(not Save.hide)
         end
-        panel.showButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
     end
 
     panel.showButton= e.Cbtn(SendMailFrame, {size={size,size}, icon='hide'})
@@ -1206,6 +1208,7 @@ local function Init()--SendMailNameEditBox
     panel.showButton:SetScript('OnClick', function()
         Save.hide= not Save.hide and true or nil
         set_button_Show_Hide()
+        panel.showButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
     end)
 
     panel.showButton:SetScript('OnLeave', function(self2)
@@ -1221,7 +1224,7 @@ local function Init()--SendMailNameEditBox
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
     end)
-
+    panel.showButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
 
     MailFrame:HookScript('OnShow', function()
         set_button_Show_Hide()
@@ -1230,8 +1233,6 @@ local function Init()--SendMailNameEditBox
             if GetInboxNumItems()==0 then--如果没有信，转到，发信
                 MailFrameTab_OnClick(MailFrame, 2)
             end
-
-
 
             if Save.lastSendPlayer and not Save.hideSendPlayerList and not Save.hide then--记录 SendMailNameEditBox，内容
                 set_Text_SendMailNameEditBox(nil, Save.lastSendPlayer)--设置，发送名称，文
@@ -1251,15 +1252,9 @@ local function Init()--SendMailNameEditBox
         end
     end)
 
-
     SendMailNameEditBox:HookScript('OnEditFocusLost', function(self2)
-        local name= get_Text_SendMailNameEditBox()--取得，收件人，名称
-        if name then--记录 SendMailNameEditBox，内容
-            Save.lastSendPlayer=name
-        end
+        Save.lastSendPlayer= get_Text_SendMailNameEditBox() or Save.lastSendPlayer----记录 SendMailNameEditBox，内容
     end)
-
-
 
     --[[
     if SendMailCostMoneyFrame then

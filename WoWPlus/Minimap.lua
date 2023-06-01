@@ -377,91 +377,11 @@ local function Init_Menu(self, level, type)
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
 
---#######
---盟约图标
---#######
-local Set_MinMap_Icon= function(tab)-- {name, texture, func, hide} 小地图，建立一个图标 Hide("MyLDB") icon:Show("")
-    local bunnyLDB = LibStub("LibDataBroker-1.1"):NewDataObject(tab.name, {
-        type = "data source",
-        text = tab.name,
-        icon = tab.texture,
-        OnClick = tab.func,
-        OnEnter= tab.enter,
-    })
-    local icon = LibStub("LibDBIcon-1.0")
-    icon:Register(tab.name, bunnyLDB, Save.miniMapPoint)
-    return icon
-end
-
-local function set_ExpansionLandingPageMinimapButton()
-    Save.miniMapPoint= Save.miniMapPoint or {}
-
-    Set_MinMap_Icon({name= id, texture= 136235,
-        func= function(self, d)
-            local key= IsModifierKeyDown()
-            if d=='LeftButton' then
-                if IsShiftKeyDown() then
-                    if not IsAddOnLoaded("Blizzard_WeeklyRewards") then--周奖励面板
-                        LoadAddOn("Blizzard_WeeklyRewards")
-                    end
-                    WeeklyRewards_ShowUI()--WeeklyReward.lua
-                elseif IsAltKeyDown() then
-                    if not self.menu then
-                        self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
-                        e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Menu, 'MENU')
-                    end
-                    e.LibDD:ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
-                elseif not key then
-                    local expButton=ExpansionLandingPageMinimapButton
-                    if expButton and expButton.ToggleLandingPage and expButton.title then
-                        expButton.ToggleLandingPage(expButton)--Minimap.lua
-                    else
-                        securecallfunction(InterfaceOptionsFrame_OpenToCategory, id)
-                    end
-                end
-            elseif not key then
-                securecallfunction(InterfaceOptionsFrame_OpenToCategory, id)
-            end
-        end,
-        enter= function(self)
-            local expButton=ExpansionLandingPageMinimapButton
-            if expButton and expButton.OnEnter and expButton.title then--Minimap.lua
-                expButton.OnEnter(expButton)
-                e.tips:AddLine(' ')
-            else
-                e.tips:SetOwner(self, "ANCHOR_Left")
-                e.tips:ClearLines()
-            end
-            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, 'Alt'..e.Icon.left, 0,1,0, 0,1,0)
-            e.tips:AddDoubleLine(e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , 'Shift'..e.Icon.left, 1,0,1, 1,0,1)
-            e.tips:AddDoubleLine(e.onlyChinese and '选项' or SETTINGS_TITLE , e.Icon.right, 0,1,0, 0,1,0)
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(id, addName)
-            e.tips:Show()
-            if expButton and expButton:IsShown() then
-                expButton:SetShown(false)
-            end
-        end
-    })
-
-    C_Timer.After(2, function()
-        if ExpansionLandingPageMinimapButton then
-            ExpansionLandingPageMinimapButton:SetShown(false)
-            ExpansionLandingPageMinimapButton:HookScript('OnShow', function(self2)
-                C_Timer.After(2, function()
-                    self2:SetShown(false)
-                end)
-            end)
-        end
-    end)
-end
 
 --####
 --初始
 --####
 local function Init()
-    C_Timer.After(2, set_ExpansionLandingPageMinimapButton)--盟约图标
-
     if MinimapCluster then
         if MinimapCluster.InstanceDifficulty and MinimapCluster.InstanceDifficulty.Instance.Border then
             MinimapCluster.InstanceDifficulty.Instance.Border:SetVertexColor(e.Player.r, e.Player.g, e.Player.b, 1)--外框， 颜色
@@ -513,6 +433,78 @@ local function Init()
             end
         end)
     end
+
+    --########
+    --盟约图标
+    --########
+    local Set_MinMap_Icon= function(tab)-- {name, texture, func, hide} 小地图，建立一个图标 Hide("MyLDB") icon:Show("")
+        local bunnyLDB = LibStub("LibDataBroker-1.1"):NewDataObject(tab.name, {
+            type = "data source",
+            text = tab.name,
+            icon = tab.texture,
+            OnClick = tab.func,
+            OnEnter= tab.enter,
+        })
+        local icon = LibStub("LibDBIcon-1.0")
+        icon:Register(tab.name, bunnyLDB, Save.miniMapPoint)
+        return icon
+    end
+
+    Save.miniMapPoint= Save.miniMapPoint or {}
+    Set_MinMap_Icon({name= id, texture= 136235,
+        func= function(self, d)
+            local key= IsModifierKeyDown()
+            if d=='LeftButton' then
+                if IsShiftKeyDown() then
+                    if not IsAddOnLoaded("Blizzard_WeeklyRewards") then--周奖励面板
+                        LoadAddOn("Blizzard_WeeklyRewards")
+                    end
+                    WeeklyRewards_ShowUI()--WeeklyReward.lua
+                elseif IsAltKeyDown() then
+                    if not self.menu then
+                        self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
+                        e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Menu, 'MENU')
+                    end
+                    e.LibDD:ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
+                elseif not key then
+                    local expButton=ExpansionLandingPageMinimapButton
+                    if expButton and expButton.ToggleLandingPage and expButton.title then
+                        expButton.ToggleLandingPage(expButton)--Minimap.lua
+                    else
+                        securecallfunction(InterfaceOptionsFrame_OpenToCategory, id)
+                    end
+                end
+            elseif not key then
+                securecallfunction(InterfaceOptionsFrame_OpenToCategory, id)
+            end
+        end,
+        enter= function(self)
+            local expButton=ExpansionLandingPageMinimapButton
+            if expButton and expButton.OnEnter and expButton.title then--Minimap.lua
+                expButton.OnEnter(expButton)
+                e.tips:AddLine(' ')
+            else
+                e.tips:SetOwner(self, "ANCHOR_Left")
+                e.tips:ClearLines()
+            end
+            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, 'Alt'..e.Icon.left, 0,1,0, 0,1,0)
+            e.tips:AddDoubleLine(e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , 'Shift'..e.Icon.left, 1,0,1, 1,0,1)
+            e.tips:AddDoubleLine(e.onlyChinese and '选项' or SETTINGS_TITLE , e.Icon.right, 0,1,0, 0,1,0)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(id, addName)
+            e.tips:Show()
+            if expButton and expButton:IsShown() then
+                expButton:SetShown(false)
+            end
+        end
+    })
+
+    if ExpansionLandingPageMinimapButton then
+        ExpansionLandingPageMinimapButton:SetShown(false)
+        ExpansionLandingPageMinimapButton:HookScript('OnShow', function(self2)
+            self2:SetShown(false)
+        end)
+    end
 end
 
 
@@ -522,7 +514,7 @@ end
 panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
-        if  arg1==id then
+        if arg1==id then
             Save= WoWToolsSave[addName] or Save
 
              --添加控制面板        
@@ -548,7 +540,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Init()
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
-            --panel:UnregisterEvent('ADDON_LOADED')
 
         elseif arg1=='Blizzard_TimeManager' then
             local TimeManagerClockButton_Update_R= TimeManagerClockButton_Update--小时图，使用服务器, 时间
@@ -586,8 +577,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 e.tips:AddDoubleLine(id, addName)
                 e.tips:Show()
             end)
+        --elseif arg1=='Blizzard_ExpansionLandingPage' then
         end
-
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             WoWToolsSave[addName]=Save
