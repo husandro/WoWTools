@@ -1207,13 +1207,22 @@ local function Init_InBox()
         securecall(OpenMail_Delete)--删除，或退信 MailFrame.lua
     end
     hooksecurefunc('InboxFrame_Update',function()
+        --信件，总数量
+        local totalItems= select(2, GetInboxNumItems())
+        local totalItemsText= (totalItems and totalItems> INBOXITEMS_TO_DISPLAY) and totalItems or nil
+        if totalItemsText and not InboxFrame.totalItemsLable then
+            InboxFrame.totalItemsLable= e.Cstr(InboxFrame)
+            InboxFrame.totalItemsLable:SetPoint('BOTTOMRIGHT', _G['MailItem1'], 'TOPLEFT',5, 5)
+        end
+        InboxFrame.totalItemsLable:SetText(totalItemsText or totalItemsText)
+
         local numCanDelete= 0--可以删除，数量
 
         for i=1, INBOXITEMS_TO_DISPLAY do
             local btn=_G["MailItem"..i.."Button"]
             if btn and btn:IsShown() then
                 local packageIcon, stationeryIcon, sender, subject, money, CODAmount, _, itemCount, _, _, _, _, _, _, firstItemLink = GetInboxHeaderInfo(btn.index)
-                print(btn.index..')', HasInboxItem(btn.index,1), itemCount, firstItemLink)
+                --print(btn.index..')', HasInboxItem(btn.index,1), itemCount, firstItemLink)
 
                 --发信人，提示, 点击回复
                 if sender then
