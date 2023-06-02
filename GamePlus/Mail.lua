@@ -1364,18 +1364,15 @@ local function Init_InBox()
                         btn.DeleteButton:SetScript('OnEnter', function(self2)
                             e.tips:SetOwner(self2, "ANCHOR_LEFT")
                             e.tips:ClearLines()
+                            local allCount=0
                             if self2.itemCount then
-                                local allCount=0
                                 for itemIndex= 1, self2.itemCount do
                                     local itemIndexLink= GetInboxItemLink(self2.openMailID, itemIndex)
                                     if itemIndexLink then
                                         local texture, count = select(3, GetInboxItem(i, itemIndex))
                                         allCount= allCount+ (count or 1)
-                                        e.tips:AddDoubleLine(itemIndex..')', '|cnGREEN_FONT_COLOR:'..(count or 1)..'x|r '..(texture and '|T'..texture..':0|t' or '')..itemIndexLink)
+                                        e.tips:AddLine(itemIndex..')'..(texture and '|T'..texture..':0|t' or '')..itemIndexLink..'|cnGREEN_FONT_COLOR: x'..(count or 1)..'|r')
                                     end
-                                end
-                                if allCount>1 then
-                                    e.tips:AddDoubleLine(' ', '#'..e.MK(allCount,3))
                                 end
                                 e.tips:AddLine(' ')
                             end
@@ -1384,7 +1381,7 @@ local function Init_InBox()
                                 e.tips:AddLine(text, nil,nil,nil, true)
                                 e.tips:AddLine(' ')
                             end
-                            e.tips:AddDoubleLine(self2.openMailID, self2.canDelete and (e.onlyChinese and '删除' or DELETE) or (e.onlyChinese and '退信' or MAIL_RETURN))
+                            e.tips:AddLine('|cffff00ff'..self2.openMailID..'|r'..(self2.icon and '|T'..self2.icon..':0|t')..(self2.canDelete and (e.onlyChinese and '删除' or DELETE) or (e.onlyChinese and '退信' or MAIL_RETURN))..(allCount>1 and ' |cffff00ff'..e.MK(allCount,3) or ''))
                             e.tips:Show()
                         end)
                         btn.DeleteButton:SetScript('OnLeave', function() e.tips:Hide() end)
