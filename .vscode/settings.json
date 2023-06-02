@@ -2883,7 +2883,8 @@
         "MAIL_REPLY_PREFIX",
         "OpenMail_Reply",
         "REPLY_MESSAGE",
-        "EMOTE56_CMD1"
+        "EMOTE56_CMD1",
+        "MAIL_LABEL"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
