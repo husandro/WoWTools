@@ -2890,7 +2890,8 @@
         "ITEM_TEXT_FROM",
         "MailItem1Button",
         "MailItem5Button",
-        "MailItem1"
+        "MailItem1",
+        "MailItem1ExpireTime"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
