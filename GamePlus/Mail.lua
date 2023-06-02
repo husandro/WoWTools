@@ -1198,7 +1198,7 @@ local function Init()--SendMailNameEditBox
         end
         if Save.lastSendPlayer and not Save.hideSendPlayerList and not Save.hide then--记录 SendMailNameEditBox，内容
             set_Text_SendMailNameEditBox(nil, Save.lastSendPlayer)--设置，发送名称，文
-            
+
         end
         if button then
             button.GetTargetNameButton.set_GetTargetNameButton_Texture(button.GetTargetNameButton)--目标，名称，按钮，显示/隐藏--目标，名称
@@ -1255,7 +1255,7 @@ local function Init()--SendMailNameEditBox
                     btn.CODAmountTips= btn:CreateTexture(nil, 'OVERLAY')
                     btn.CODAmountTips:SetAllPoints(_G['MailItem'..i])
                     btn.CODAmountTips:SetAtlas('CovenantSanctum-Upgrade-Border-Kyrian')
-                    
+
 
                     btn.moneyPagaTip= e.Cstr(btn)
                     btn.moneyPagaTip:SetPoint('BOTTOM', _G['MailItem'..i], 0, 4)
@@ -1287,12 +1287,17 @@ local function Init()--SendMailNameEditBox
                         local text2
                         if self2.canDelete and  not self2.itemName and not self2.money then
                             text2= '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE)..'|r'
-                        
+
                         else
                             text2= '|cFFFF00FF:'..(e.onlyChinese and '退信' or MAIL_RETURN)..'|r'
                         end
-                        
-                        print(id, addName, text, self2.send, self2,subject, text and '|n' or '', text, self2.itemName or '', self2.money and GetMoneyString(self2.money,true) or '')
+                        print(id, addName,
+                                    e.PlayerLink(self2.sender),
+                                    self2.subject,
+                                    self2.itemName or '',
+                                    self2.money and GetMoneyString(self2.money,true) or '',
+                                    text2 and '|n' or '',
+                                    text)
                         securecall(OpenMail_Delete)
                     end)
                     btn.DeleteButton:SetScript('OnEnter', function(self2)
