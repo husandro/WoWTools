@@ -1702,7 +1702,8 @@ local function Init()--SendMailNameEditBox
 
     local function set_Show_MailFrame_Init()
         if GetInboxNumItems()==0 then--如果没有信，转到，发信
-            MailFrameTab_OnClick(MailFrame, 2)
+            print(GetInboxNumItems())
+            MailFrameTab_OnClick(SendMailFrame, 2)
         end
         if Save.lastSendPlayer and not Save.hideSendPlayerList and not Save.hide then--记录 SendMailNameEditBox，内容
             set_Text_SendMailNameEditBox(nil, Save.lastSendPlayer)--设置，发送名称，文
