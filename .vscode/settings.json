@@ -2876,7 +2876,10 @@
         "OpenMailFrameInset",
         "OpenMailSender",
         "OpenMailScrollChildFrame",
-        "OpenAllMailMixin"
+        "OpenAllMailMixin",
+        "OpenMailDeleteButton",
+        "OpenMail_Delete",
+        "WITHDRAW"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

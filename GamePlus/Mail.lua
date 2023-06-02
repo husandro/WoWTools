@@ -1246,20 +1246,73 @@ local function Init()--SendMailNameEditBox
                 if sender then
                     _G["MailItem"..i.."Sender"]:SetText(get_Name_Info(sender))
                 end
+
+                --local bodyText, stationeryID1, stationeryID2, isTakeable, isInvoice, isConsortium = GetInboxText(InboxFrame.openMailID);
                 local moneyPaga= CODAmount and CODAmount>0
-                if moneyPaga and not btn.CODAmountTips then--提示，需要付钱
+                local moneyGet= money and money>0
+
+                if (moneyPaga or moneyGet) and not btn.CODAmountTips then--提示，需要付钱
                     btn.CODAmountTips= btn:CreateTexture(nil, 'OVERLAY')
                     btn.CODAmountTips:SetAllPoints(_G['MailItem'..i])
                     btn.CODAmountTips:SetAtlas('CovenantSanctum-Upgrade-Border-Kyrian')
-                    btn.CODAmountTips:SetVertexColor(1,0,0)
+                    
 
-                    btn.moneyPagaTip= e.Cstr(btn, {color={r=1,g=0,b=0}})
-                    btn.moneyPagaTip:SetPoint('BOTTOM', _G['MailItem'..i],0,4)
+                    btn.moneyPagaTip= e.Cstr(btn)
+                    btn.moneyPagaTip:SetPoint('BOTTOM', _G['MailItem'..i], 0, 4)
                 end
                 if btn.CODAmountTips then
-                    btn.CODAmountTips:SetShown(moneyPaga)
-                    btn.moneyPagaTip:SetText(moneyPaga and (e.onlyChinese and '付款' or COD)..' '..e.MK(CODAmount/1e4, 3)..'|TInterface/moneyframe/ui-goldicon:0|t' or '')
+                    btn.CODAmountTips:SetShown(moneyPaga or moneyGet)
+                    if moneyPaga then
+                        btn.CODAmountTips:SetVertexColor(1,0,0)
+                        btn.moneyPagaTip:SetTextColor(1,0,0)
+                    else
+                        btn.CODAmountTips:SetVertexColor(0,1,0)
+                        btn.moneyPagaTip:SetTextColor(0,1,0)
+                    end
+                    btn.moneyPagaTip:SetText(moneyPaga and (e.onlyChinese and '付款' or COD) or (e.onlyChinese and '可取' or WITHDRAW)
+                                            ..' '..e.MK((CODAmount or money)/1e4, 3)
+                                            ..'|TInterface/moneyframe/ui-goldicon:0|t' or '')
                 end
+
+                if not btn.DeleteButton then
+                    btn.DeleteButton= e.Cbtn(btn, {size={18,18}})
+                    btn.DeleteButton:SetPoint('BOTTOMRIGHT', _G['MailItem'..i])
+                    btn.DeleteButton:SetScript('OnClick', function(self2)--OpenMail_Delete()
+                        InboxFrame.openMailID= self2.openMailID
+                        OpenMailFrame.itemName= self2.itemName
+                        OpenMailFrame.money= self2.money
+
+                        local text= GetInboxText(InboxFrame.openMailID) or ''
+                        text= text:gsub(' ','') and nil or text
+                        local text2
+                        if self2.canDelete and  not self2.itemName and not self2.money then
+                            text2= '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE)..'|r'
+                        
+                        else
+                            text2= '|cFFFF00FF:'..(e.onlyChinese and '退信' or MAIL_RETURN)..'|r'
+                        end
+                        
+                        print(id, addName, text, self2.send, self2,subject, text and '|n' or '', text, self2.itemName or '', self2.money and GetMoneyString(self2.money,true) or '')
+                        securecall(OpenMail_Delete)
+                    end)
+                    btn.DeleteButton:SetScript('OnEnter', function(self2)
+                        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                        e.tips:ClearLines()
+                        e.tips:AddLine(self2.canDelete and (e.onlyChinese and '删除' or DELETE) or (e.onlyChinese and '退信' or MAIL_RETURN))
+                        e.tips:Show()
+                    end)
+                    btn.DeleteButton:SetScript('OnLeave', function() e.tips:Hide() end)
+                end
+
+                local canDelete= InboxItemCanDelete(btn.index)
+                btn.DeleteButton:SetNormalTexture(canDelete and 'xmarksthespot' or 'UI-RefreshButton')
+                btn.DeleteButton.openMailID=i
+                btn.DeleteButton.canDelete= canDelete
+                btn.DeleteButton.itemName= (itemCount and itemCount>0) and firstItemLink
+                btn.DeleteButton.money= (money and money>0) and money
+                btn.DeleteButton.name= sender
+                btn.DeleteButton.subject=subject
+
             end
         end
     end)
@@ -1268,10 +1321,7 @@ local function Init()--SendMailNameEditBox
         if not OpenMailFrame_IsValidMailID() then
             return
         end
-        
         local packageIcon, stationeryIcon, sender, subject, money, CODAmount, daysLeft, itemCount, wasRead, x, y, z, isGM, firstItemQuantity, firstItemLink = GetInboxHeaderInfo(InboxFrame.openMailID)
-        
-        
         if sender then
             local newName= get_Name_Info(sender)
             if newName~=sender and not OpenMailFrame.sendTips then
@@ -1300,9 +1350,8 @@ local function Init()--SendMailNameEditBox
             OpenMailFrame.moneyPagaTip:SetText(moneyPaga and (e.onlyChinese and '付款' or COD)..' '..e.MK(CODAmount/1e4, 3)..'|TInterface/moneyframe/ui-goldicon:0|t' or '')
         end
     end)
-    
     hooksecurefunc(OpenAllMailMixin, 'StartOpening', function()
-        print(id,addName)
+        print(id,addName,'StartOpening')
     end)
 end
 
