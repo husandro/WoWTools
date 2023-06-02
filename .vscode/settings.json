@@ -2887,7 +2887,8 @@
         "MAIL_LABEL",
         "COMMUNITIES_FRAME_JUMP_TO_UNREAD",
         "MailItem1ButtonCOD",
-        "ITEM_TEXT_FROM"
+        "ITEM_TEXT_FROM",
+        "MailItem1Button"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
