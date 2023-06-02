@@ -1284,7 +1284,7 @@ local function Init()--SendMailNameEditBox
                 end
 
                 if not btn.DeleteButton then
-                    btn.DeleteButton= e.Cbtn(btn, {size={18,18}})
+                    btn.DeleteButton= e.Cbtn(btn, {size={22,22}})
                     btn.DeleteButton:SetPoint('BOTTOMRIGHT', _G['MailItem'..i])
                     btn.DeleteButton:SetScript('OnClick', function(self2)--OpenMail_Delete()
                         InboxFrame.openMailID= self2.openMailID
