@@ -37,6 +37,7 @@ end
 local function get_Name_Info(name)--取得名称，信息
     if name then
         local reName
+        name = e.GetUnitName(name)
         for guid, tab in pairs(WoWDate) do
             if name== e.GetUnitName(nil, nil, guid) then
                 reName= e.Icon.star2..e.GetPlayerInfo({guid=guid, faction=tab.faction, reName=true, realm=true})
@@ -1238,6 +1239,13 @@ local function Init()--SendMailNameEditBox
     --_G["MailItem"..i.."Sender"]:SetText("");
     --_G["MailItem"..i.."Subject"]:SetText("");
     --_G["MailItem"..i.."ExpireTime"]:Hide();
+    local function get_Money(num)
+        if num>1e4 then
+            return e.MK(num/1e4, 3)..'|TInterface/moneyframe/ui-goldicon:0|t'
+        else
+            return GetMoneyString(num, true)
+        end
+    end
     hooksecurefunc('InboxFrame_Update',function()
         --local num=0
 
@@ -1278,7 +1286,7 @@ local function Init()--SendMailNameEditBox
                         text= (e.onlyChinese and '可取' or WITHDRAW)
                     end
                     if text then
-                        text= text..' '..e.MK((CODAmount or money)/1e4, 3)..'|TInterface/moneyframe/ui-goldicon:0|t'
+                        text= text..' '..get_Money(CODAmount or money)
                     end
                     btn.moneyPagaTip:SetText(text or '')
                 end
@@ -1367,7 +1375,7 @@ local function Init()--SendMailNameEditBox
         end
         if OpenMailFrame.CODAmountTips then
             OpenMailFrame.CODAmountTips:SetShown(moneyPaga)
-            OpenMailFrame.moneyPagaTip:SetText(moneyPaga and (e.onlyChinese and '付款' or COD)..' '..e.MK(CODAmount/1e4, 3)..'|TInterface/moneyframe/ui-goldicon:0|t' or '')
+            OpenMailFrame.moneyPagaTip:SetText(moneyPaga and (e.onlyChinese and '付款' or COD)..' '..get_Money(CODAmount) or '')
         end
     end)
     hooksecurefunc(OpenAllMailMixin, 'StartOpening', function()
