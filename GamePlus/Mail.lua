@@ -1059,8 +1059,10 @@ local function Init_Fast_Button()
 
             btn:SetScript('OnClick', function(self2, d)
                 if d=='LeftButton' and not IsMetaKeyDown() then
-                    set_Text_SendMailNameEditBox(nil, Save.fast[self2.name])--设置，发送名称，文
-
+                    local name= Save.fast[self2.name]
+                    if name and name~=e.Player.name_realm then
+                        set_Text_SendMailNameEditBox(nil, name)--设置，发送名称，文
+                    end
                     button.FastButton.set_PickupContainerItem(self2.classID, self2.subClassID, self2.findString)--自动放物品
 
                 elseif d=='RightButton' and IsAltKeyDown() then

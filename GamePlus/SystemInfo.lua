@@ -59,7 +59,9 @@ local function create_Set_lable(self, text)--建立,或设置,Labels
             label.tooltip= function()
                 local text1, text2= get_Mony_Tips()
                 e.tips:AddLine(text2)
+                e.tips:AddLine(' ')
                 e.tips:AddLine(text1)
+                e.tips:AddLine(' ')
             end
             down= ToggleAllBags
 
