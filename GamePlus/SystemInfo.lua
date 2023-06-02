@@ -24,15 +24,34 @@ local button
 --########
 local function get_Mony_Tips()
     local numPlayer, allMoney, text  = 0, 0, ''
+    local tab={}
     for guid, infoMoney in pairs(WoWDate) do
         if infoMoney.Money then
             text= text~='' and text..'|n' or text
-            text= text..e.GetPlayerInfo({guid=guid, faction=infoMoney.faction, reName=true, reRealm=true})..'  '.. GetCoinTextureString(infoMoney.Money)
+
+            local nameText= e.GetPlayerInfo({guid=guid, faction=infoMoney.faction, reName=true, reRealm=true})
+            local moneyText= GetCoinTextureString(infoMoney.Money)
+
+            local class= select(2, GetPlayerInfoByGUID(guid))
+            local col= '|c'..select(4, GetClassColor(class))
+
+            text= text..nameText..'  '..col.. moneyText..'|r'
             numPlayer=numPlayer+1
             allMoney= allMoney + infoMoney.Money
+
+            table.insert(tab, {text=nameText, col=col, index= infoMoney.Money})
         end
     end
-    return text, (e.onlyChinese and '角色' or CHARACTER)..'|cnGREEN_FONT_COLOR:'..numPlayer..'|r  '..(e.onlyChinese and '总计: ' or FROM_TOTAL)..'|cnGREEN_FONT_COLOR:'..(allMoney >=10000 and e.MK(allMoney/10000, 3) or GetCoinTextureString(allMoney))..'|r'
+    local all=(e.onlyChinese and '角色' or CHARACTER)..'|cnGREEN_FONT_COLOR:'..numPlayer..'|r  '
+            ..(e.onlyChinese and '总计: ' or FROM_TOTAL)
+            ..'|cnGREEN_FONT_COLOR:'..(allMoney >=10000 and e.MK(allMoney/10000, 3) or GetCoinTextureString(allMoney))..'|r'
+    table.insert(tab, {text= all,
+                        index=0,
+                        col= e.Player.col
+                    }
+                )
+    table.sort(tab, function(a,b) return a.index< b.index end)
+    return text , all, tab
 end
 
 
