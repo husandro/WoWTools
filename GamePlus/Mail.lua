@@ -1263,11 +1263,13 @@ local function Init_InBox()
                 end
 
                 --信件，索引，提示
-                if not btn.indexText then
-                    btn.indexText= e.Cstr(btn)
-                    btn.indexText:SetPoint('RIGHT', btn, 'LEFT',-2,0)
+                if not _G['PostalSelectReturnButton'] then
+                    if not btn.indexText then
+                        btn.indexText= e.Cstr(btn)
+                        btn.indexText:SetPoint('RIGHT', btn, 'LEFT',-2,0)
+                    end
+                    btn.indexText:SetText(btn.index or '')
                 end
-                btn.indexText:SetText(btn.index or '')
 
 
                 local moneyPaga= (CODAmount and CODAmount>0) and CODAmount or nil
@@ -1370,8 +1372,11 @@ local function Init_InBox()
         --删除所有信，按钮
         if numCanDelete>0 and not InboxFrame.DeleteAllButton then
             InboxFrame.DeleteAllButton= e.Cbtn(InboxFrame, {size={25,25}, atlas='xmarksthespot'})
-            InboxFrame.DeleteAllButton:SetPoint('BOTTOMRIGHT', _G['MailItem1'], 'TOPRIGHT', 15, 15)
-
+            if _G['PostalSelectReturnButton'] then
+                InboxFrame.DeleteAllButton:SetPoint('LEFT', _G['PostalSelectReturnButton'], 'RIGHT')
+            else
+                InboxFrame.DeleteAllButton:SetPoint('BOTTOMRIGHT', _G['MailItem1'], 'TOPRIGHT', 15, 15)
+            end
             local function set_Tooltips_DeleteAll(self2)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
