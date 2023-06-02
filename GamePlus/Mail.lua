@@ -1147,9 +1147,277 @@ local function Init_Fast_Button()
     button.clearAllItmeButton.itemNumLabel:SetPoint('BOTTOMRIGHT', button.clearAllItmeButton, 'BOTTOMLEFT',0,4)
 end
 
+--################
+--收信箱，物品，提示
+--MailFrame.lua
+--_G["MailItem"..i.."Button"]:Hide();
+--_G["MailItem"..i.."Sender"]:SetText("");
+--_G["MailItem"..i.."Subject"]:SetText("");
+--_G["MailItem"..i.."ExpireTime"]:Hide();
+--local packageIcon, stationeryIcon, sender, subject, money, CODAmount, daysLeft, itemCount, wasRead, x, y, z, isGM, firstItemQuantity, firstItemLink = GetInboxHeaderInfo(btn.index)
+--local bodyText, stationeryID1, stationeryID2, isTakeable, isInvoice, isConsortium = GetInboxText(InboxFrame.openMailID);
+local function Init_InBox()
+    local function get_Money(num)
+        if num then
+            if num>1e4 then
+                return e.MK(num/1e4, 3)..'|TInterface/moneyframe/ui-goldicon:0|t'
+            else
+                return GetMoneyString(num, true)
+            end
+        end
+    end
 
+    --删除，或退信
+    local function return_delete_InBox(openMailID, itemName, money, CODAmount, canDelete, icon, sender, subject)--删除，或退信
+        InboxFrame.openMailID= openMailID
+        OpenMailFrame.itemName= itemName
+        OpenMailFrame.money= money
 
+        local text= GetInboxText(InboxFrame.openMailID) or ''
+        text= text:gsub(' ','') and nil or text
+        local delOrRe
+        if canDelete then
+            delOrRe= '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE)..'|r'
+        else
+            delOrRe= '|cFFFF00FF:'..(e.onlyChinese and '退信' or MAIL_RETURN)..'|r'
+        end
+        print('|cFFFF00FF'..openMailID..')|r',
+            ((icon and not itemName) and '|T'..icon..':0|t' or '')..delOrRe,
+            e.PlayerLink(sender, nil, true),
+            subject,
+            itemName or '',
+            money and GetMoneyString(money or CODAmount, true) or '',
+            text and '|n' or '',
+            text or '')
+        securecall(OpenMail_Delete)--删除，或退信 MailFrame.lua
+    end
+    hooksecurefunc('InboxFrame_Update',function()
+        local numCanDelete= 0--可以删除，数量
+
+        for i=1, INBOXITEMS_TO_DISPLAY do
+            local btn=_G["MailItem"..i.."Button"]
+            if btn and btn:IsShown() then
+                local packageIcon, stationeryIcon, sender, subject, money, CODAmount, _, itemCount, _, _, _, _, _, _, firstItemLink = GetInboxHeaderInfo(i)
+                if sender then
+                    _G["MailItem"..i.."Sender"]:SetText(get_Name_Info(sender))
+                end
+                --提示，需要付钱, 可收取钱
+                local moneyPaga= CODAmount and CODAmount>0 and CODAmount or nil
+                local moneyGet= money and money>0 and money or nil
+
+                if (moneyPaga or moneyGet) and not btn.CODAmountTips then
+                    btn.CODAmountTips= btn:CreateTexture(nil, 'OVERLAY')
+                    btn.CODAmountTips:SetSize(150, 20)
+                    btn.CODAmountTips:SetPoint('BOTTOM', _G['MailItem'..i], 0,-4)
+                    btn.CODAmountTips:SetAtlas('jailerstower-wayfinder-rewardbackground-selected')
+                    btn.moneyPagaTip= e.Cstr(btn)
+                    btn.moneyPagaTip:SetPoint('CENTER', btn.CODAmountTips)
+                end
+                if btn.CODAmountTips then
+                    btn.CODAmountTips:SetShown(moneyPaga or moneyGet)
+                    if moneyPaga then
+                        btn.CODAmountTips:SetVertexColor(1,0,0)
+                        btn.moneyPagaTip:SetTextColor(1,0,0)
+                    else
+                        btn.CODAmountTips:SetVertexColor(0,1,0)
+                        btn.moneyPagaTip:SetTextColor(0,1,0)
+                    end
+                    local text
+                    if moneyPaga then
+                        text= (e.onlyChinese and '付款' or COD)
+                    elseif moneyGet then
+                        text= (e.onlyChinese and '可取' or WITHDRAW)
+                    end
+                    if text then
+                        text= text..' '..get_Money(moneyPaga or moneyGet)
+                    end
+                    btn.moneyPagaTip:SetText(text or '')
+                end
+
+                --删除，或退信，按钮
+                if not btn.DeleteButton then
+                    btn.DeleteButton= e.Cbtn(btn, {size={22,22}})
+                    btn.DeleteButton:SetPoint('BOTTOMRIGHT', _G['MailItem'..i])
+                    btn.DeleteButton:SetScript('OnClick', function(self2)--OpenMail_Delete()
+                        return_delete_InBox(self2.openMailID, self2.itemName, self2.money, self2.CODAmount, self2.canDelete, self2.icon, self2.sender, self2.subject)--删除，或退信
+                    end)
+                    btn.DeleteButton:SetScript('OnEnter', function(self2)
+                        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                        e.tips:ClearLines()
+                        e.tips:AddLine(self2.canDelete and (e.onlyChinese and '删除' or DELETE) or (e.onlyChinese and '退信' or MAIL_RETURN))
+                        e.tips:Show()
+                    end)
+                    btn.DeleteButton:SetScript('OnLeave', function() e.tips:Hide() end)
+                end
+
+                local canDelete= InboxItemCanDelete(i)
+                btn.DeleteButton:SetNormalTexture(canDelete and 'xmarksthespot' or 'UI-RefreshButton')
+                btn.DeleteButton.openMailID=i
+                btn.DeleteButton.canDelete= canDelete
+                btn.DeleteButton.itemName= firstItemLink
+                btn.DeleteButton.money= moneyGet
+                btn.DeleteButton.CODAmount= moneyPaga
+
+                btn.DeleteButton.sender= sender
+                btn.DeleteButton.subject=subject
+                btn.DeleteButton.icon= packageIcon or stationeryIcon
+
+                if not(moneyGet and moneyPaga) then
+                    numCanDelete= numCanDelete +1--可以删除，数量
+                end
+            end
+        end
+
+        --####################
+        --所有，删除，退信，按钮
+        --####################
+        for i= INBOXITEMS_TO_DISPLAY+1, ATTACHMENTS_MAX_SEND do
+            if InboxItemCanDelete(i) then
+                local packageIcon, stationeryIcon, sender, subject, money, CODAmount, daysLeft, itemCount, wasRead, x, y, z, isGM, firstItemQuantity, firstItemLink = GetInboxHeaderInfo(i)
+                if sender then
+                    local moneyPaga= CODAmount and CODAmount>0
+                    local moneyGet= money and money>0
+                    if not (moneyPaga and moneyGet) then
+                        numCanDelete= numCanDelete +1--可以删除，数量
+                    end
+                end
+            end
+        end
+
+        --删除所有信，按钮
+        if numCanDelete>1 and not InboxFrame.DeleteAllButton then
+            InboxFrame.DeleteAllButton= e.Cbtn(InboxFrame, {size={22,22}, atlas='xmarksthespot'})
+            InboxFrame.DeleteAllButton:SetPoint('BOTTOMRIGHT', _G['MailItem1'], 'TOPRIGHT', 15, 18)
+            InboxFrame.DeleteAllButton:SetScript('OnClick', function(self2)--OpenMail_Delete()
+                InboxFrame.openMailID= self2.openMailID
+                OpenMailFrame.itemName= self2.itemName
+                OpenMailFrame.money= self2.money
+
+                local text= GetInboxText(InboxFrame.openMailID) or ''
+                text= text:gsub(' ','') and nil or text
+                local delOrRe
+                if self2.canDelete then
+                    delOrRe= '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE)..'|r'
+                else
+                    delOrRe= '|cFFFF00FF:'..(e.onlyChinese and '退信' or MAIL_RETURN)..'|r'
+                end
+                print(id, addName,
+                    ((self2.icon and not self2.itemName) and '|T'..self2.icon..':0|t' or '')..delOrRe,
+                    e.PlayerLink(self2.name, nil, true),
+                    self2.subject,
+                    self2.itemName or '',
+                    self2.money and GetMoneyString(self2.money,true) or '',
+                    text and '|n' or '',
+                    text or '')
+                securecall(OpenMail_Delete)
+            end)
+
+            --提示，要删除信，内容
+            InboxFrame.DeleteAllButton:SetScript('OnEnter', function(self2)
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(id, addName)
+                local num=0
+                for i=1, ATTACHMENTS_MAX_SEND do
+                    if InboxItemCanDelete(i) then
+                        local packageIcon, stationeryIcon, sender, subject, money, CODAmount, daysLeft, itemCount, wasRead, x, y, z, isGM, firstItemQuantity, firstItemLink = GetInboxHeaderInfo(i)
+                        local moneyPaga= CODAmount and CODAmount>0 and CODAmount
+                        local moneyGet= money and money>0 and money
+                        local itemLink= itemCount and itemCount>0 and firstItemLink
+                        if not (moneyPaga and moneyGet and itemLink) then
+                            e.tips:AddDoubleLine((i<10 and ' ' or '')..i..') |T'..(packageIcon or stationeryIcon)..':0|t'..get_Name_Info(sender), subject)
+                            num=num+1
+                        end
+                    end
+                end
+                e.tips:AddDoubleLine(' ', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE)..'|r |cnGREEN_FONT_COLOR:#'..num)
+                e.tips:Show()
+            end)
+
+            --删除信
+            InboxFrame.DeleteAllButton:SetScript('OnClick', function(self2)
+                local num=0
+                for i=1, ATTACHMENTS_MAX_SEND do
+                    if InboxItemCanDelete(i) then
+                        local packageIcon, stationeryIcon, sender, subject, money, CODAmount, daysLeft, itemCount, wasRead, x, y, z, isGM, firstItemQuantity, firstItemLink = GetInboxHeaderInfo(i)
+                        local moneyPaga= CODAmount and CODAmount>0 and CODAmount
+                        local moneyGet= money and money>0 and money
+                        local itemLink= itemCount and itemCount>0 and firstItemLink
+                        if not (moneyPaga and moneyGet and itemLink) then
+                            return_delete_InBox(i, itemLink, money, CODAmount, true, packageIcon or stationeryIcon, sender, subject)--删除，或退信
+                            num= num+ 1
+                        end
+                    end
+                end
+                print(id, addName, e.onlyChinese and '删除' or DELETE, '|cnGREEN_FONT_COLOR:#'..num)
+            end)
+
+            InboxFrame.DeleteAllButton.Text= e.Cstr(InboxFrame.DeleteAllButton)
+            InboxFrame.DeleteAllButton.Text:SetPoint('BOTTOMRIGHT')
+        end
+        if InboxFrame.DeleteAllButton then
+            InboxFrame.DeleteAllButton.Text:SetText(numCanDelete)
+            InboxFrame.DeleteAllButton:SetShown(numCanDelete>1)
+        end
+    end)
+
+    --提示，需要付钱, 可收取钱
+    hooksecurefunc('OpenMail_Update', function()--多物品，打开时
+        if not OpenMailFrame_IsValidMailID() then
+            return
+        end
+         
+        local packageIcon, stationeryIcon, sender, subject, money, CODAmount, daysLeft, itemCount, wasRead, x, y, z, isGM, firstItemQuantity, firstItemLink = GetInboxHeaderInfo(InboxFrame.openMailID)
+
+        if sender then
+            local newName= get_Name_Info(sender)
+            if newName~=sender and not OpenMailFrame.sendTips then
+                OpenMailFrame.sendTips= e.Cstr(OpenMailFrame)
+                OpenMailFrame.sendTips:SetPoint('BOTTOMLEFT', OpenMailSender.Name, 'TOPLEFT')
+            end
+            if OpenMailFrame.sendTips then
+                OpenMailFrame.sendTips:SetText(newName==sender and '' or newName)
+            end
+        end
+        
+        local moneyPaga= CODAmount and CODAmount>0 and CODAmount
+        local moneyGet= money and money>0 and money
+        if (moneyPaga or moneyGet) and not OpenMailFrame.CODAmountTips then--提示，需要付钱
+            OpenMailFrame.CODAmountTips= OpenMailFrame:CreateTexture(nil, 'OVERLAY')
+            OpenMailFrame.CODAmountTips:SetSize(150, 25)
+            OpenMailFrame.CODAmountTips:SetPoint('BOTTOM',0, 68)
+            OpenMailFrame.CODAmountTips:SetAtlas('jailerstower-wayfinder-rewardbackground-selected')
+            OpenMailFrame.moneyPagaTip= e.Cstr(OpenMailFrame)
+            OpenMailFrame.moneyPagaTip:SetPoint('CENTER', OpenMailFrame.CODAmountTips)
+
+        end
+        if OpenMailFrame.CODAmountTips then
+            if moneyPaga then
+                OpenMailFrame.CODAmountTips:SetVertexColor(1,0,0)
+                OpenMailFrame.moneyPagaTip:SetTextColor(1,0,0)
+            elseif moneyGet then
+                OpenMailFrame.CODAmountTips:SetVertexColor(0,1,0)
+                OpenMailFrame.moneyPagaTip:SetTextColor(0,1,0)
+            end
+            OpenMailFrame.CODAmountTips:SetShown(moneyPaga or moneyGet)
+            if (moneyPaga or moneyGet) then
+                local text
+                if moneyPaga then
+                    text= (e.onlyChinese and '付款' or COD)
+                elseif moneyGet then
+                    text= (e.onlyChinese and '可取' or WITHDRAW)
+                end
+                text= text..' '..get_Money(moneyPaga or moneyGet)
+                OpenMailFrame.moneyPagaTip:SetText(text)
+            else
+                OpenMailFrame.moneyPagaTip:SetText('')
+            end
+        end
+    end)
+end
 local function Init()--SendMailNameEditBox
+    Init_InBox()--收信箱，物品，提示
+
     local function set_button_Show_Hide()
         if not Save.hide then
             Init_Button()
@@ -1230,156 +1498,6 @@ local function Init()--SendMailNameEditBox
         if button then
             button.SendName= e.GetUnitName(SendMailNameEditBox:GetText())--取得，收件人，名称
         end
-    end)
-
-    --#################
-    --收信箱，物品，提示
-    --MailFrame.lua
-    --_G["MailItem"..i.."Button"]:Hide();
-    --_G["MailItem"..i.."Sender"]:SetText("");
-    --_G["MailItem"..i.."Subject"]:SetText("");
-    --_G["MailItem"..i.."ExpireTime"]:Hide();
-    local function get_Money(num)
-        if num>1e4 then
-            return e.MK(num/1e4, 3)..'|TInterface/moneyframe/ui-goldicon:0|t'
-        else
-            return GetMoneyString(num, true)
-        end
-    end
-    hooksecurefunc('InboxFrame_Update',function()
-        --local num=0
-
-        for i=1, INBOXITEMS_TO_DISPLAY do
-            local btn=_G["MailItem"..i.."Button"]
-            if btn and btn:IsShown() then
-                local packageIcon, stationeryIcon, sender, subject, money, CODAmount, daysLeft, itemCount, wasRead, x, y, z, isGM, firstItemQuantity, firstItemLink = GetInboxHeaderInfo(btn.index)
-                if sender then
-                    _G["MailItem"..i.."Sender"]:SetText(get_Name_Info(sender))
-                end
-
-                --local bodyText, stationeryID1, stationeryID2, isTakeable, isInvoice, isConsortium = GetInboxText(InboxFrame.openMailID);
-                local moneyPaga= CODAmount and CODAmount>0
-                local moneyGet= money and money>0
-
-                if (moneyPaga or moneyGet) and not btn.CODAmountTips then--提示，需要付钱
-                    btn.CODAmountTips= btn:CreateTexture(nil, 'OVERLAY')
-                    btn.CODAmountTips:SetAllPoints(_G['MailItem'..i])
-                    btn.CODAmountTips:SetAtlas('CovenantSanctum-Upgrade-Border-Kyrian')
-
-
-                    btn.moneyPagaTip= e.Cstr(btn)
-                    btn.moneyPagaTip:SetPoint('BOTTOM', _G['MailItem'..i], 0, 4)
-                end
-                if btn.CODAmountTips then
-                    btn.CODAmountTips:SetShown(moneyPaga or moneyGet)
-                    if moneyPaga then
-                        btn.CODAmountTips:SetVertexColor(1,0,0)
-                        btn.moneyPagaTip:SetTextColor(1,0,0)
-                    else
-                        btn.CODAmountTips:SetVertexColor(0,1,0)
-                        btn.moneyPagaTip:SetTextColor(0,1,0)
-                    end
-                    local text
-                    if moneyPaga then
-                        text= (e.onlyChinese and '付款' or COD)
-                    elseif moneyGet then
-                        text= (e.onlyChinese and '可取' or WITHDRAW)
-                    end
-                    if text then
-                        text= text..' '..get_Money(CODAmount or money)
-                    end
-                    btn.moneyPagaTip:SetText(text or '')
-                end
-
-                if not btn.DeleteButton then
-                    btn.DeleteButton= e.Cbtn(btn, {size={22,22}})
-                    btn.DeleteButton:SetPoint('BOTTOMRIGHT', _G['MailItem'..i])
-                    btn.DeleteButton:SetScript('OnClick', function(self2)--OpenMail_Delete()
-                        InboxFrame.openMailID= self2.openMailID
-                        OpenMailFrame.itemName= self2.itemName
-                        OpenMailFrame.money= self2.money
-
-                        local text= GetInboxText(InboxFrame.openMailID) or ''
-                        text= text:gsub(' ','') and nil or text
-                        local delOrRe
-                        if self2.canDelete then
-                            delOrRe= '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE)..'|r'
-                        else
-                            delOrRe= '|cFFFF00FF:'..(e.onlyChinese and '退信' or MAIL_RETURN)..'|r'
-                        end
-                        print(id, addName,
-                                    delOrRe,
-                                    e.PlayerLink(self2.name, nil, true),
-                                    self2.subject,
-                                    self2.itemName or '',
-                                    self2.money and GetMoneyString(self2.money,true) or '',
-                                    text and '|n' or '',
-                                    text or '')
-                        securecall(OpenMail_Delete)
-                    end)
-                    btn.DeleteButton:SetScript('OnEnter', function(self2)
-                        e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                        e.tips:ClearLines()
-                        e.tips:AddLine(self2.canDelete and (e.onlyChinese and '删除' or DELETE) or (e.onlyChinese and '退信' or MAIL_RETURN))
-                        e.tips:Show()
-                    end)
-                    btn.DeleteButton:SetScript('OnLeave', function() e.tips:Hide() end)
-                end
-
-                local canDelete= InboxItemCanDelete(btn.index)
-                btn.DeleteButton:SetNormalTexture(canDelete and 'xmarksthespot' or 'UI-RefreshButton')
-                btn.DeleteButton.openMailID=i
-                btn.DeleteButton.canDelete= canDelete
-                btn.DeleteButton.itemName= (itemCount and itemCount>0) and firstItemLink
-                btn.DeleteButton.money= (money and money>0) and money
-                btn.DeleteButton.name= sender
-                btn.DeleteButton.subject=subject
-
-                --num= num +1
-            end
-        end
-
-        --[[for i= INBOXITEMS_TO_DISPLAY+1, ATTACHMENTS_MAX_SEND do
-            local packageIcon, stationeryIcon, sender, subject, money, CODAmount, daysLeft, itemCount, wasRead, x, y, z, isGM, firstItemQuantity, firstItemLink = GetInboxHeaderInfo(i)
-            
-        end]]
-    end)
-
-    hooksecurefunc('OpenMail_Update', function()--多物品，打开时
-        if not OpenMailFrame_IsValidMailID() then
-            return
-        end
-        local packageIcon, stationeryIcon, sender, subject, money, CODAmount, daysLeft, itemCount, wasRead, x, y, z, isGM, firstItemQuantity, firstItemLink = GetInboxHeaderInfo(InboxFrame.openMailID)
-        if sender then
-            local newName= get_Name_Info(sender)
-            if newName~=sender and not OpenMailFrame.sendTips then
-                OpenMailFrame.sendTips= e.Cstr(OpenMailFrame)
-                OpenMailFrame.sendTips:SetPoint('BOTTOMLEFT', OpenMailSender.Name, 'TOPLEFT')
-            end
-            if OpenMailFrame.sendTips then
-                OpenMailFrame.sendTips:SetText(newName==sender and '' or newName)
-            end
-        end
-
-        local moneyPaga= CODAmount and CODAmount>0
-        if moneyPaga and not OpenMailFrame.CODAmountTips then--提示，需要付钱
-            OpenMailFrame.CODAmountTips= OpenMailFrame:CreateTexture(nil, 'OVERLAY')
-            OpenMailFrame.CODAmountTips:SetSize(150, 25)
-            OpenMailFrame.CODAmountTips:SetPoint('BOTTOM',0, 68)
-            OpenMailFrame.CODAmountTips:SetAtlas('jailerstower-wayfinder-rewardbackground-selected')
-            OpenMailFrame.CODAmountTips:SetVertexColor(1,0,0)
-
-            OpenMailFrame.moneyPagaTip= e.Cstr(OpenMailFrame, {color={r=1,g=0,b=0}})
-            OpenMailFrame.moneyPagaTip:SetPoint('CENTER', OpenMailFrame.CODAmountTips)
-
-        end
-        if OpenMailFrame.CODAmountTips then
-            OpenMailFrame.CODAmountTips:SetShown(moneyPaga)
-            OpenMailFrame.moneyPagaTip:SetText(moneyPaga and (e.onlyChinese and '付款' or COD)..' '..get_Money(CODAmount) or '')
-        end
-    end)
-    hooksecurefunc(OpenAllMailMixin, 'StartOpening', function()
-        print(id,addName,'StartOpening')
     end)
 end
 
