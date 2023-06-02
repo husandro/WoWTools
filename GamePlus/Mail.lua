@@ -1239,6 +1239,8 @@ local function Init()--SendMailNameEditBox
     --_G["MailItem"..i.."Subject"]:SetText("");
     --_G["MailItem"..i.."ExpireTime"]:Hide();
     hooksecurefunc('InboxFrame_Update',function()
+        --local num=0
+
         for i=1, INBOXITEMS_TO_DISPLAY do
             local btn=_G["MailItem"..i.."Button"]
             if btn and btn:IsShown() then
@@ -1269,9 +1271,16 @@ local function Init()--SendMailNameEditBox
                         btn.CODAmountTips:SetVertexColor(0,1,0)
                         btn.moneyPagaTip:SetTextColor(0,1,0)
                     end
-                    btn.moneyPagaTip:SetText(moneyPaga and (e.onlyChinese and '付款' or COD) or (e.onlyChinese and '可取' or WITHDRAW)
-                                            ..' '..e.MK((CODAmount or money)/1e4, 3)
-                                            ..'|TInterface/moneyframe/ui-goldicon:0|t' or '')
+                    local text
+                    if moneyPaga then
+                        text= (e.onlyChinese and '付款' or COD)
+                    elseif moneyGet then
+                        text= (e.onlyChinese and '可取' or WITHDRAW)
+                    end
+                    if text then
+                        text= text..' '..e.MK((CODAmount or money)/1e4, 3)..'|TInterface/moneyframe/ui-goldicon:0|t'
+                    end
+                    btn.moneyPagaTip:SetText(text or '')
                 end
 
                 if not btn.DeleteButton then
@@ -1284,20 +1293,20 @@ local function Init()--SendMailNameEditBox
 
                         local text= GetInboxText(InboxFrame.openMailID) or ''
                         text= text:gsub(' ','') and nil or text
-                        local text2
-                        if self2.canDelete and  not self2.itemName and not self2.money then
-                            text2= '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE)..'|r'
-
+                        local delOrRe
+                        if self2.canDelete then
+                            delOrRe= '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE)..'|r'
                         else
-                            text2= '|cFFFF00FF:'..(e.onlyChinese and '退信' or MAIL_RETURN)..'|r'
+                            delOrRe= '|cFFFF00FF:'..(e.onlyChinese and '退信' or MAIL_RETURN)..'|r'
                         end
                         print(id, addName,
-                                    e.PlayerLink(self2.sender),
+                                    delOrRe,
+                                    e.PlayerLink(self2.name, nil, true),
                                     self2.subject,
                                     self2.itemName or '',
                                     self2.money and GetMoneyString(self2.money,true) or '',
-                                    text2 and '|n' or '',
-                                    text)
+                                    text and '|n' or '',
+                                    text or '')
                         securecall(OpenMail_Delete)
                     end)
                     btn.DeleteButton:SetScript('OnEnter', function(self2)
@@ -1318,8 +1327,14 @@ local function Init()--SendMailNameEditBox
                 btn.DeleteButton.name= sender
                 btn.DeleteButton.subject=subject
 
+                --num= num +1
             end
         end
+
+        --[[for i= INBOXITEMS_TO_DISPLAY+1, ATTACHMENTS_MAX_SEND do
+            local packageIcon, stationeryIcon, sender, subject, money, CODAmount, daysLeft, itemCount, wasRead, x, y, z, isGM, firstItemQuantity, firstItemLink = GetInboxHeaderInfo(i)
+            
+        end]]
     end)
 
     hooksecurefunc('OpenMail_Update', function()--多物品，打开时
