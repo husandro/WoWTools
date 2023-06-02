@@ -2884,7 +2884,10 @@
         "OpenMail_Reply",
         "REPLY_MESSAGE",
         "EMOTE56_CMD1",
-        "MAIL_LABEL"
+        "MAIL_LABEL",
+        "COMMUNITIES_FRAME_JUMP_TO_UNREAD",
+        "MailItem1ButtonCOD",
+        "ITEM_TEXT_FROM"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

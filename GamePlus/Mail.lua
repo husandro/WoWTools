@@ -1173,7 +1173,7 @@ end
 --local bodyText, stationeryID1, stationeryID2, isTakeable, isInvoice, isConsortium = GetInboxText(InboxFrame.openMailID);
 local function Init_InBox()
     local function get_Money(num)
-        if num then
+        if num and num>0 then
             if num>=1e4 then
                 return e.MK(num/1e4, 3)..'|TInterface/moneyframe/ui-goldicon:0|t'
             else
@@ -1220,13 +1220,10 @@ local function Init_InBox()
         end
         return itemLink
     end
+
     hooksecurefunc('InboxFrame_Update',function()
-        local textAllTips=''
-        local numItems, totalItems = GetInboxNumItems()  --信件，总数量
-        if totalItems then
-            textAllTips= textAllTips..totalItems..(e.onlyChinese and '信件' or MAIL_LABEL)..' '
-        end
-        
+        local totalItems= select(2, GetInboxNumItems())  --信件，总数量   
+
         for i=1, INBOXITEMS_TO_DISPLAY do
             local btn=_G["MailItem"..i.."Button"]
             if btn and btn:IsShown() then
@@ -1276,7 +1273,7 @@ local function Init_InBox()
                 local moneyPaga= (CODAmount and CODAmount>0) and CODAmount or nil
                 local moneyGet= (money and money>0) and money or nil
                 local itemLink= find_itemLink(itemCount, btn.index, firstItemLink)--查找，信件里的第一个物品，超链接
-                
+
                 --提示，需要付钱, 可收取钱
                 if (moneyPaga or moneyGet) and not btn.CODAmountTips then
                     btn.CODAmountTips= btn:CreateTexture(nil, 'OVERLAY')--图片
@@ -1305,6 +1302,8 @@ local function Init_InBox()
                         text= text..' '..get_Money(moneyPaga or moneyGet)
                     end
                     btn.moneyPagaTip:SetText(text or '')
+                    _G['MailItem'..i..'ButtonCOD']:SetShown(false)
+                    _G['MailItem'..i..'ButtonCOD']:SetText('')
                 end
 
                 --删除，或退信，按钮
@@ -1340,6 +1339,12 @@ local function Init_InBox()
         --####################
         --所有，删除，退信，按钮
         --####################
+        local allMoney= 0--总，可收取钱
+        local allCODAmount= 0--总，要付款钱
+        local allItemCount= 0--总，物品数
+        local allSender= 0--总，发信人数
+        local allSenderTab= {}--总，发信人数,表
+
         local numCanDelete= 0--可以删除，数量
         for i= 1, totalItems do
             local packageIcon, stationeryIcon, sender, subject, money, CODAmount, daysLeft, itemCount, wasRead, x, y, z, isGM, firstItemQuantity, firstItemLink = GetInboxHeaderInfo(i)
@@ -1349,20 +1354,58 @@ local function Init_InBox()
                     local moneyGet= (money and money>0) and money or nil
                     local itemLink= find_itemLink(itemCount, i, firstItemLink)--查找，信件里的第一个物品，超链接
                     if not moneyPaga and not moneyGet and not itemLink then
-                        numCanDelete= numCanDelete +1--可以删除，数量
+                        numCanDelete= numCanDelete +1
                     end
+                end
+                allMoney= allMoney+ (money or 0)
+                allCODAmount= allCODAmount+ (CODAmount or 0)
+                allItemCount= allItemCount+ (itemCount or 0)
+                if not allSenderTab[sender] then
+                    allSenderTab[sender]=true
+                    allSender= allSender +1
                 end
             end
         end
 
         --删除所有信，按钮
         if numCanDelete>0 and not InboxFrame.DeleteAllButton then
-            InboxFrame.DeleteAllButton= e.Cbtn(InboxFrame, {size={22,22}, atlas='xmarksthespot'})
-            InboxFrame.DeleteAllButton:SetPoint('BOTTOMRIGHT', _G['MailItem1'], 'TOPRIGHT', 15, 18)
+            InboxFrame.DeleteAllButton= e.Cbtn(InboxFrame, {size={25,25}, atlas='xmarksthespot'})
+            InboxFrame.DeleteAllButton:SetPoint('BOTTOMRIGHT', _G['MailItem1'], 'TOPRIGHT', 15, 15)
+
+            local function set_Tooltips_DeleteAll(self2)
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine('|cffff00ff'..id, '|cffff00ff'..addName)
+                local num=0
+                for i=1, select(2, GetInboxNumItems()) do
+                    if InboxItemCanDelete(i) then
+                        local packageIcon, stationeryIcon, sender, subject, money, CODAmount, daysLeft, itemCount, wasRead, x, y, z, isGM, firstItemQuantity, firstItemLink = GetInboxHeaderInfo(i)
+                        local moneyPaga= (CODAmount and CODAmount>0) and CODAmount or nil
+                        local moneyGet= (money and money>0) and money or nil
+                        local itemLink= find_itemLink(itemCount, i, firstItemLink)--查找，信件里的第一个物品，超链接
+                        if not moneyPaga and not moneyGet and not itemLink then
+                            e.tips:AddDoubleLine((i<10 and ' ' or '')
+                                                    ..i..') |T'..(packageIcon or stationeryIcon)..':0|t'
+                                                    ..get_Name_Info(sender)
+                                                    ..(not wasRead and ' |cnRED_FONT_COLOR:'..(e.onlyChinese and '未读' or COMMUNITIES_FRAME_JUMP_TO_UNREAD) or '')
+                                                , subject)
+                            num=num+1
+                        end
+                    end
+                end
+                e.tips:AddDoubleLine(' ', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE)..'|r |cnGREEN_FONT_COLOR:#'..num)
+                e.tips:Show()
+            end
+            InboxFrame.DeleteAllButton:SetScript('OnEnter', set_Tooltips_DeleteAll)--提示，要删除信，内容
+            InboxFrame.DeleteAllButton:SetScript('OnLeave', function()
+                C_Timer.After(0.2, function()
+                    e.tips:Hide()
+                end)
+            end)
+
             --删除信
             InboxFrame.DeleteAllButton:SetScript('OnClick', function(self2)
-                local num=0
-                for i=1, totalItems do
+                for i=1, select(2, GetInboxNumItems()) do
                     if InboxItemCanDelete(i) then
                         local packageIcon, stationeryIcon, sender, subject, money, CODAmount, daysLeft, itemCount, wasRead, x, y, z, isGM, firstItemQuantity, firstItemLink = GetInboxHeaderInfo(i)
                         local moneyPaga= (CODAmount and CODAmount>0) and CODAmount or nil
@@ -1370,35 +1413,14 @@ local function Init_InBox()
                         local itemLink= find_itemLink(itemCount, i, firstItemLink)--查找，信件里的第一个物品，超链接
                         if not moneyPaga and not moneyGet and not itemLink then
                             return_delete_InBox(i, itemLink, moneyGet, moneyPaga, true, packageIcon or stationeryIcon, sender, subject)--删除，或退信
-                            num= num+ 1
+                            break
                         end
                     end
                 end
-                print(id, addName, e.onlyChinese and '删除' or DELETE, '|cnGREEN_FONT_COLOR:#'..num)
+                C_Timer.After(0.3, function()
+                    set_Tooltips_DeleteAll(self2)
+                end)
             end)
-            --提示，要删除信，内容
-            InboxFrame.DeleteAllButton:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine(id, addName)
-                local num=0
-                for i=1, totalItems do
-                    if InboxItemCanDelete(i) then
-                        local packageIcon, stationeryIcon, sender, subject, money, CODAmount, daysLeft, itemCount, wasRead, x, y, z, isGM, firstItemQuantity, firstItemLink = GetInboxHeaderInfo(i)
-                        local moneyPaga= (CODAmount and CODAmount>0) and CODAmount or nil
-                        local moneyGet= (money and money>0) and money or nil
-                        local itemLink= find_itemLink(itemCount, i, firstItemLink)--查找，信件里的第一个物品，超链接
-                        if not moneyPaga and not moneyGet and not itemLink then
-                            e.tips:AddDoubleLine((i<10 and ' ' or '')..i..') |T'..(packageIcon or stationeryIcon)..':0|t'..get_Name_Info(sender), subject)
-                            num=num+1
-                        end
-                    end
-                end
-                e.tips:AddDoubleLine(' ', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE)..'|r |cnGREEN_FONT_COLOR:#'..num)
-                e.tips:Show()
-            end)
-
-           
 
             InboxFrame.DeleteAllButton.Text= e.Cstr(InboxFrame.DeleteAllButton)
             InboxFrame.DeleteAllButton.Text:SetPoint('BOTTOMRIGHT')
@@ -1408,14 +1430,29 @@ local function Init_InBox()
             InboxFrame.DeleteAllButton:SetShown(numCanDelete>0)
         end
 
-       
-         
-         if not InboxFrame.textAllTips then
-            InboxFrame.totalItemsLable= e.Cstr(InboxFrame)
-            InboxFrame.totalItemsLable:SetPoint('BOTTOMLEFT', MailFrameInset.NineSlice, 'TOPLEFT',0, -8)
+        --总，内容，提示
+        local text=''
+        local allMoneyText= get_Money(allMoney)
+        local allCODAmountText= get_Money(allCODAmount)
+        local allSenderText
+        if e.onlyChinese then
+            allSenderText= '发信人'
+        else
+            allSenderText= ITEM_TEXT_FROM:gsub(':','')
+            allSenderText= allSenderText:gsub('：','')
         end
-        InboxFrame.totalItemsLable:SetText(totalItems>0 and textAllTips or '')
- 
+        if totalItems>0 then
+            text= totalItems..(e.onlyChinese and '信件' or MAIL_LABEL)..' '--总，发信人数
+                ..allSender..allSenderText..' '--总，发信人数
+                ..(allItemCount>0 and allItemCount..(e.onlyChinese and '物品' or ITEMS)..' ' or '')--总，物品数
+                ..(allMoneyText and '|cnGREEN_FONT_COLOR:'..allMoneyText..(e.onlyChinese and '可取' or WITHDRAW)..'|r ' or '')--总，可收取钱
+                ..(allCODAmountText and '|cnRED_FONT_COLOR:'..allCODAmountText..(e.onlyChinese and '付款' or COD)..'|r ' or '')--总，要付款钱
+        end
+         if not InboxFrame.AllTipsLable then
+            InboxFrame.AllTipsLable= e.Cstr(InboxFrame)
+            InboxFrame.AllTipsLable:SetPoint('BOTTOMLEFT', MailFrameInset.NineSlice, 'TOPLEFT', 10, -8)
+        end
+        InboxFrame.AllTipsLable:SetText(text)
     end)
 
     --提示，需要付钱, 可收取钱
