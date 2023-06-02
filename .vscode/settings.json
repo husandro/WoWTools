@@ -2888,7 +2888,9 @@
         "COMMUNITIES_FRAME_JUMP_TO_UNREAD",
         "MailItem1ButtonCOD",
         "ITEM_TEXT_FROM",
-        "MailItem1Button"
+        "MailItem1Button",
+        "MailItem5Button",
+        "MailItem1"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

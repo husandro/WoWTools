@@ -1222,7 +1222,12 @@ local function Init_InBox()
     end
 
     local function set_Tooltips_DeleteAll(self2, del)--所有，删除，退信，提示
-        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+        if self2.enterTipTextureIndex then
+            _G["MailItem"..self2.enterTipTextureIndex.."Button"].DeleteButton.enterTipTexture:SetShown(false)
+            self2.enterTipTextureIndex=nil
+        end
+
+        e.tips:SetOwner(self2, "ANCHOR_RIGHT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine('|cffff00ff'..id, '|cffff00ff'..addName)
         local num=0
@@ -1255,6 +1260,11 @@ local function Init_InBox()
                     end
                     e.tips:AddLine(' ')
                 end
+                local btn=_G["MailItem"..i.."Button"]
+                if btn and btn.index==i then
+                    btn.DeleteButton.enterTipTexture:SetShown(true)
+                    self2.enterTipTextureIndex=i
+                end
                 findReTips=true
                 num=num+1
             end
@@ -1264,6 +1274,7 @@ local function Init_InBox()
                             or ('|cFFFF00FF'..(e.onlyChinese and '退信' or MAIL_RETURN)..'|r |cnGREEN_FONT_COLOR:#'..num)
                         )
         e.tips:Show()
+
     end
 
     hooksecurefunc('InboxFrame_Update',function()
@@ -1362,7 +1373,7 @@ local function Init_InBox()
                             return_delete_InBox(self2.openMailID, self2.itemName, self2.money, self2.CODAmount, self2.canDelete, self2.icon, self2.sender, self2.subject)--删除，或退信
                         end)
                         btn.DeleteButton:SetScript('OnEnter', function(self2)
-                            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                            e.tips:SetOwner(self2, "ANCHOR_RIGHT")
                             e.tips:ClearLines()
                             local allCount=0
                             if self2.itemCount then
@@ -1383,11 +1394,20 @@ local function Init_InBox()
                             end
                             e.tips:AddLine('|cffff00ff'..self2.openMailID..'|r'..(self2.icon and '|T'..self2.icon..':0|t')..(self2.canDelete and (e.onlyChinese and '删除' or DELETE) or (e.onlyChinese and '退信' or MAIL_RETURN))..(allCount>1 and ' |cffff00ff'..e.MK(allCount,3) or ''))
                             e.tips:Show()
+                            self2.enterTipTexture:SetShown(true)
                         end)
-                        btn.DeleteButton:SetScript('OnLeave', function() e.tips:Hide() end)
+                        btn.DeleteButton:SetScript('OnLeave', function(self2)
+                            self2.enterTipTexture:SetShown(false)
+                            e.tips:Hide()
+                        end)
 
                         btn.DeleteButton.numItemLabel= e.Cstr(btn.DeleteButton)
                         btn.DeleteButton.numItemLabel:SetPoint('BOTTOMRIGHT')
+                        btn.DeleteButton.enterTipTexture= btn:CreateTexture(nil, 'OVERLAY', nil, 7)
+                        btn.DeleteButton.enterTipTexture:SetAtlas('jailerstower-wayfinder-rewardbackground-selected')
+                        btn.DeleteButton.enterTipTexture:SetAllPoints(_G['MailItem'..i])
+                        btn.DeleteButton.enterTipTexture:SetVertexColor(0,1,0)
+                        btn.DeleteButton.enterTipTexture:Hide()
                     end
                     --删除，或退信，按钮，设置参数
                     local canDelete= InboxItemCanDelete(btn.index)
@@ -1454,7 +1474,13 @@ local function Init_InBox()
             InboxFrame.DeleteAllButton:SetScript('OnEnter', function(self2)--提示，要删除信，内容
                 set_Tooltips_DeleteAll(self2, tonumber)
             end)
-            InboxFrame.DeleteAllButton:SetScript('OnLeave', function() e.tips:Hide() end)
+            InboxFrame.DeleteAllButton:SetScript('OnLeave', function(self2)
+                if self2.enterTipTextureIndex then
+                    _G["MailItem"..self2.enterTipTextureIndex.."Button"].DeleteButton.enterTipTexture:SetShown(false)
+                    self2.enterTipTextureIndex=nil
+                end
+                e.tips:Hide()
+            end)
 
             --删除信
             InboxFrame.DeleteAllButton:SetScript('OnClick', function(self2)
@@ -1496,7 +1522,13 @@ local function Init_InBox()
             InboxFrame.ReAllButton:SetScript('OnEnter', function(self2)--提示，要删除信，内容
                 set_Tooltips_DeleteAll(self2, false)
             end)
-            InboxFrame.ReAllButton:SetScript('OnLeave', function() e.tips:Hide() end)
+            InboxFrame.ReAllButton:SetScript('OnLeave', function(self2)
+                if self2.enterTipTextureIndex then
+                    _G["MailItem"..self2.enterTipTextureIndex.."Button"].DeleteButton.enterTipTexture:SetShown(false)
+                    self2.enterTipTextureIndex=nil
+                end
+                e.tips:Hide()
+            end)
 
             --删除信
             InboxFrame.ReAllButton:SetScript('OnClick', function(self2)
