@@ -2879,7 +2879,11 @@
         "OpenAllMailMixin",
         "OpenMailDeleteButton",
         "OpenMail_Delete",
-        "WITHDRAW"
+        "WITHDRAW",
+        "MAIL_REPLY_PREFIX",
+        "OpenMail_Reply",
+        "REPLY_MESSAGE",
+        "EMOTE56_CMD1"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
