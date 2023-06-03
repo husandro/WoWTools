@@ -1510,7 +1510,7 @@ local function Init_InBox()
             end
 
             InboxFrame.DeleteAllButton:SetScript('OnEnter', function(self2)--提示，要删除信，内容
-                set_Tooltips_DeleteAll(self2, tonumber)
+                set_Tooltips_DeleteAll(self2)
             end)
             InboxFrame.DeleteAllButton:SetScript('OnLeave', function(self2)
                 set_btn_enterTipTexture_Hide_All()--隐藏，所有，选中提示
