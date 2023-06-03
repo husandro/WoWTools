@@ -37,19 +37,17 @@ local function get_Mony_Tips()
             numPlayer=numPlayer+1
             allMoney= allMoney + infoMoney.Money
 
-            table.insert(tab, {text=nameText, moeny=moneyText, col=col, index= infoMoney.Money})
+            table.insert(tab, {text=nameText, money=moneyText, col=col, index=infoMoney.Money})
         end
     end
+    table.sort(tab, function(a,b) return a.index< b.index end)
+
     local all=(e.onlyChinese and '角色' or CHARACTER)..'|cnGREEN_FONT_COLOR:'..numPlayer..'|r  '
             ..(e.onlyChinese and '总计: ' or FROM_TOTAL)
             ..'|cnGREEN_FONT_COLOR:'..(allMoney >=10000 and e.MK(allMoney/10000, 3) or GetCoinTextureString(allMoney))..'|r'
-            table.sort(tab, function(a,b) return a.index< b.index end)
-            table.insert(tab, {text= all,
-                        index=0,
-                        col= e.Player.col
-                    }
-                )
-    return tab
+            
+            --table.insert(tab, {text= all,
+    return all, tab
 end
 
 
@@ -74,12 +72,10 @@ local function create_Set_lable(self, text)--建立,或设置,Labels
 
         elseif text=='money' then
             label.tooltip= function()
-                for index, tab in pairs(get_Mony_Tips()) do
-                    if index==1 then
-                        e.tips:AddDoubleLine(tab.text, ' ')
-                    else
-                        e.tips:AddDoubleLine(' ', tab.col..tab.money)
-                    end
+                local text2, tab2= get_Mony_Tips()
+                e.tips:AddLine(text2)
+                for _, tab in pairs(tab2) do
+                    e.tips:AddDoubleLine(tab.text, tab.col..tab.money)
                 end
             end
             down= ToggleAllBags
@@ -424,25 +420,23 @@ local function InitMenu(self, level, type)--主菜单
     }
     e.LibDD:UIDropDownMenu_AddButton(info,level)
 
+    local text2, tab2= get_Mony_Tips()
     info={
         text= (e.onlyChinese and '钱' or MONEY),
         checked=Save.money,
         menuList='wowMony',
         hasArrow=true,
         tooltipOnButton=true,
+        tooltipTitle=text2,
         func= function()
             Save.money= not Save.money and true or nil
             set_Money_Event()--设置, 钱, 事件
             set_Label_Point(true)
         end
     }
-    for index, tab in pairs(get_Mony_Tips()) do
-        if index==1 then
-            info.tooltipTitle= tab.text
-        else
-            info.tooltipText= (info.tooltipText and info.tooltipText..'|n' or '')..tab.text..' '..tab.col..tab.money..'|r'
-            e.tips:AddDoubleLine(' ', tab.col..tab.money)
-        end
+    for _, tab3 in pairs(tab2) do
+        info.tooltipText= (info.tooltipText or '')..'|n'..tab3.col..tab3.money.. ' '.. tab3.text..'|r'
+
     end
     e.LibDD:UIDropDownMenu_AddButton(info,level)
 
