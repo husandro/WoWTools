@@ -1413,7 +1413,7 @@ local function Init_InBox()
                             e.tips:AddLine(text, nil,nil,nil, true)
                             e.tips:AddLine(' ')
                         end
-                        e.tips:AddLine('|cffff00ff'..self2.openMailID..' |r'..(self2.icon and '|T'..self2.icon..':0|t')..(self2.canDelete and (e.onlyChinese and '删除' or DELETE) or (e.onlyChinese and '退信' or MAIL_RETURN))..(allCount>1 and ' |cffff00ff'..e.MK(allCount,3) or ''))
+                        e.tips:AddLine('|cffff00ff'..self2.openMailID..' |r'..(self2.icon and '|T'..self2.icon..':0|t')..(self2.canDelete and (e.onlyChinese and '删除' or DELETE) or (e.onlyChinese and '退信' or MAIL_RETURN))..(allCount>1 and ' '..e.MK(allCount,3)..(e.onlyChinese and '物品' or ITEMS) or ''))
                         e.tips:Show()
                         self2.enterTipTexture:SetShown(true)
                     end)
