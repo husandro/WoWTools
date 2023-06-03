@@ -1401,8 +1401,9 @@ local function Init_InBox()
                                 local itemIndexLink= GetInboxItemLink(self2.openMailID, itemIndex)
                                 if itemIndexLink then
                                     local texture, count = select(3, GetInboxItem(i, itemIndex))
+                                    texture = texture or C_Item.GetItemIconByID(itemIndexLink)
                                     allCount= allCount+ (count or 1)
-                                    e.tips:AddLine(itemIndex..') '..(texture and '|T'..texture..':0|t' or '')..itemIndexLink..'|cnGREEN_FONT_COLOR: x'..(count or 1)..'|r')
+                                    e.tips:AddLine((itemIndex<10 and ' ' or '')..itemIndex..') '..(texture and '|T'..texture..':0|t' or '')..itemIndexLink..'|cnGREEN_FONT_COLOR: x'..(count or 1)..'|r')
                                 end
                             end
                             e.tips:AddLine(' ')
