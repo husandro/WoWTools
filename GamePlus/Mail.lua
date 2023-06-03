@@ -1227,7 +1227,7 @@ local function Init_InBox()
     local function set_btn_enterTipTexture_Hide_All()
         for i=1, INBOXITEMS_TO_DISPLAY do
             local btn=_G["MailItem"..i.."Button"]
-            if btn and btn.DeleteButton.enterTipTexture then
+            if btn and btn.DeleteButton and btn.DeleteButton.enterTipTexture then
                 btn.DeleteButton.enterTipTexture:SetShown(false)
             end
         end
