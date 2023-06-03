@@ -444,7 +444,6 @@ local function Init_Button()
                 self2.SendName=nil
             end
             self2.FastButton.set_Fast_Event()--清除，注册，事件，显示/隐藏，设置数量
-
         elseif event=='MAIL_FAILED' then
             self2.SendName=nil
         end
@@ -901,6 +900,12 @@ local function Init_Fast_Button()
         self2.set_Fast_Event()--清除，注册，事件，显示/隐藏，设置数量
         button.clearAllItmeButton:SetShown(panel.ItemMaxNum<ATTACHMENTS_MAX_SEND)
     end)
+    
+    button.FastButton:RegisterEvent('MAIL_SEND_INFO_UPDATE')
+    button.FastButton:RegisterEvent('MAIL_SEND_SUCCESS')
+    button.FastButton:SetScript('OnEvent', function(self2, arg1)
+        self2.get_Send_Max_Item()--能发送，数量
+    end)
 
     button.FastButton.get_Send_Max_Item= function()--能发送，数量
         local tab={}
@@ -918,7 +923,7 @@ local function Init_Fast_Button()
             if unregisterAllEvents then
                 frame:UnregisterAllEvents()
             elseif frame:IsShown() then
-                button.FastButton.frame.set_Label_Text(frame)
+                button.FastButton.set_Label_Text(frame)
                 frame:RegisterEvent('BAG_UPDATE_DELAYED')
                 frame:RegisterEvent('MAIL_SEND_INFO_UPDATE')
                 frame:RegisterEvent('MAIL_SEND_SUCCESS')
@@ -928,7 +933,7 @@ local function Init_Fast_Button()
                 if unregisterAllEvents then
                     btn:UnregisterAllEvents()
                 elseif btn:IsShown() then
-                    button.FastButton.frame.set_Label_Text(btn)
+                    button.FastButton.set_Label_Text(btn)
                     btn:RegisterEvent('BAG_UPDATE_DELAYED')
                     btn:RegisterEvent('MAIL_SEND_INFO_UPDATE')
                     btn:RegisterEvent('MAIL_SEND_SUCCESS')
@@ -963,15 +968,7 @@ local function Init_Fast_Button()
         button.FastButton.set_Fast_Event()--清除，注册，事件，显示/隐藏，设置数量
     end
 
-
-    button.FastButton.frame= CreateFrame('Frame', nil, button)
-    button.FastButton.frame:SetSize(size, 2)
-    button.FastButton.frame:SetPoint('TOPLEFT', button.FastButton, 'BOTTOMLEFT')
-    if Save.scaleFastButton and Save.scaleFastButton~=1 then
-        button.FastButton.frame:SetScale(Save.scaleFastButton)
-    end
-    button.FastButton.frame:SetShown(Save.fastShow)
-    button.FastButton.frame.set_Label_Text= function(self2)--设置提示，数量，堆叠
+    button.FastButton.set_Label_Text= function(self2)--设置提示，数量，堆叠
         if not self2 or not self2:IsShown() then
             return
         end
@@ -997,6 +994,14 @@ local function Init_Fast_Button()
         self2.num=num
         self2.stack=stack
     end
+
+    button.FastButton.frame= CreateFrame('Frame', nil, button)
+    button.FastButton.frame:SetSize(size, 2)
+    button.FastButton.frame:SetPoint('TOPLEFT', button.FastButton, 'BOTTOMLEFT')
+    if Save.scaleFastButton and Save.scaleFastButton~=1 then
+        button.FastButton.frame:SetScale(Save.scaleFastButton)
+    end
+    button.FastButton.frame:SetShown(Save.fastShow)
 
     local fast={
         {GetSpellTexture(3908) or 4620681, 7, 5, e.onlyChinese and '布'},--1
@@ -1073,7 +1078,7 @@ local function Init_Fast_Button()
             end)
 
             btn:SetScript('OnLeave', function(self2)
-                button.FastButton.frame.set_Label_Text(self2)--设置提示，数量，堆叠
+                button.FastButton.set_Label_Text(self2)--设置提示，数量，堆叠
                 e.tips:Hide()
             end)
             btn:SetScript('OnEnter', function(self2)
@@ -1106,10 +1111,8 @@ local function Init_Fast_Button()
             btn:SetScript('OnHide', function(self2)
                 button.FastButton.set_Fast_Event(self2, true)--清除，注册，事件，显示/隐藏，设置数量
             end)
-            btn:SetScript('OnEvent', function()
-                C_Timer.After(0.5, function()
-                    button.FastButton.frame.set_Label_Text()
-                end)
+            btn:SetScript('OnEvent', function(self2, arg1)
+                button.FastButton.set_Label_Text()
             end)
             button.FastButtonS[index]= btn
 
@@ -1395,6 +1398,8 @@ local function Init_InBox()
                     btn.DeleteButton:SetScript('OnEnter', function(self2)
                         e.tips:SetOwner(self2, "ANCHOR_RIGHT")
                         e.tips:ClearLines()
+                        e.tips:AddDoubleLine(id, addName)
+                        e.tips:AddLine(' ')
                         local allCount=0
                         if self2.itemCount then
                             for itemIndex= 1, self2.itemCount do
@@ -1413,7 +1418,7 @@ local function Init_InBox()
                             e.tips:AddLine(text, nil,nil,nil, true)
                             e.tips:AddLine(' ')
                         end
-                        e.tips:AddLine('|cffff00ff'..self2.openMailID..' |r'..(self2.icon and '|T'..self2.icon..':0|t')..(self2.canDelete and (e.onlyChinese and '删除' or DELETE) or (e.onlyChinese and '退信' or MAIL_RETURN))..(allCount>1 and ' '..e.MK(allCount,3)..(e.onlyChinese and '物品' or ITEMS) or ''))
+                        e.tips:AddLine('|cffff00ff'..self2.openMailID..' |r'..(self2.icon and '|T'..self2.icon..':0|t')..(self2.canDelete and (e.onlyChinese and '删除' or DELETE) or (e.onlyChinese and '退信' or MAIL_RETURN))..(allCount>1 and ' |cnGREEN_FONT_COLOR:'..e.MK(allCount,3)..'|r'..(e.onlyChinese and '物品' or ITEMS) or ''))
                         e.tips:Show()
                         self2.enterTipTexture:SetShown(true)
                     end)
