@@ -443,7 +443,9 @@ local function Init_Button()
 
                 self2.SendName=nil
             end
+            self2.FastButton.get_Send_Max_Item()--能发送，数量
             self2.FastButton.set_Fast_Event()--清除，注册，事件，显示/隐藏，设置数量
+
         elseif event=='MAIL_FAILED' then
             self2.SendName=nil
         end
@@ -889,6 +891,7 @@ local function Init_Fast_Button()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
+        self2.FastButton.get_Send_Max_Item()--能发送，数量
         self2.set_Fast_Event(nil, true)--清除，注册，事件，显示/隐藏，设置数量
         for _, btn in pairs(button.FastButtonS) do
             btn:SetAlpha(1)
@@ -897,15 +900,16 @@ local function Init_Fast_Button()
     end)
     button.FastButton:SetScript('OnLeave', function(self2)
         e.tips:Hide()
+        self2.FastButton.get_Send_Max_Item()--能发送，数量
         self2.set_Fast_Event()--清除，注册，事件，显示/隐藏，设置数量
         button.clearAllItmeButton:SetShown(panel.ItemMaxNum<ATTACHMENTS_MAX_SEND)
     end)
 
-    button.FastButton:RegisterEvent('MAIL_SEND_INFO_UPDATE')
+    --[[button.FastButton:RegisterEvent('MAIL_SEND_INFO_UPDATE')
     button.FastButton:RegisterEvent('MAIL_SEND_SUCCESS')
     button.FastButton:SetScript('OnEvent', function(self2, arg1)
         self2.get_Send_Max_Item()--能发送，数量
-    end)
+    end)]]
 
     button.FastButton.get_Send_Max_Item= function()--能发送，数量
         local tab={}
@@ -923,12 +927,16 @@ local function Init_Fast_Button()
             if unregisterAllEvents then
                 frame:UnregisterAllEvents()
             elseif frame:IsShown() then
+                button.FastButton.get_Send_Max_Item()--能发送，数量
                 button.FastButton.set_Label_Text(frame)
                 frame:RegisterEvent('BAG_UPDATE_DELAYED')
                 frame:RegisterEvent('MAIL_SEND_INFO_UPDATE')
                 frame:RegisterEvent('MAIL_SEND_SUCCESS')
             end
         else
+            if not unregisterAllEvents then
+                button.FastButton.get_Send_Max_Item()--能发送，数量
+            end
             for _, btn in pairs(button.FastButtonS) do
                 if unregisterAllEvents then
                     btn:UnregisterAllEvents()
@@ -949,6 +957,7 @@ local function Init_Fast_Button()
         end
 
         button.FastButton.set_Fast_Event(nil, true)--清除，注册，事件，显示/隐藏，设置数量
+
         for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+ NUM_REAGENTBAG_FRAMES do
             for slot=1, C_Container.GetContainerNumSlots(bag) do
                 local info=check_Enabled_Item(classID, subClassID, findString, bag, slot)
@@ -964,6 +973,7 @@ local function Init_Fast_Button()
                 end
             end
         end
+
         button.FastButton.get_Send_Max_Item()--能发送，数量
         button.FastButton.set_Fast_Event()--清除，注册，事件，显示/隐藏，设置数量
     end
@@ -1132,6 +1142,7 @@ local function Init_Fast_Button()
                 ClickSendMailItemButton(i, true)
             end
         end
+        button.FastButton.get_Send_Max_Item()--能发送，数量
         button.FastButton.set_Fast_Event()--清除，注册，事件，显示/隐藏，设置数量
     end)
     button.clearAllItmeButton:SetScript('OnLeave', function() e.tips:Hide() end)
@@ -1746,6 +1757,13 @@ local function Init()--SendMailNameEditBox
     SendMailMailButton:HookScript('OnClick', function()--SendName，设置，发送成功，名字
         if button then
             button.SendName= e.GetUnitName(SendMailNameEditBox:GetText())--取得，收件人，名称
+
+            if not Save.hide and Save.fastShow then
+                C_Timer.After(1.5, function()
+                    button.FastButton.get_Send_Max_Item()--能发送，数量
+                    button.FastButton.set_Fast_Event()--清除，注册，事件，显示/隐藏，设置数量
+                end)
+            end
         end
     end)
 end
