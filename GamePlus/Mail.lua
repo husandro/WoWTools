@@ -900,7 +900,7 @@ local function Init_Fast_Button()
         self2.set_Fast_Event()--清除，注册，事件，显示/隐藏，设置数量
         button.clearAllItmeButton:SetShown(panel.ItemMaxNum<ATTACHMENTS_MAX_SEND)
     end)
-    
+
     button.FastButton:RegisterEvent('MAIL_SEND_INFO_UPDATE')
     button.FastButton:RegisterEvent('MAIL_SEND_SUCCESS')
     button.FastButton:SetScript('OnEvent', function(self2, arg1)
@@ -1225,7 +1225,7 @@ local function Init_InBox()
         end
         return itemLink
     end
-    
+
     --隐藏，所有，选中提示
     local function set_btn_enterTipTexture_Hide_All()
         for i=1, INBOXITEMS_TO_DISPLAY do
@@ -1293,7 +1293,7 @@ local function Init_InBox()
                         )
         e.tips:Show()
     end
-    
+
 
     hooksecurefunc('InboxFrame_Update',function()
         local totalItems= select(2, GetInboxNumItems())  --信件，总数量   
@@ -1497,7 +1497,7 @@ local function Init_InBox()
             else
                 InboxFrame.DeleteAllButton:SetPoint('BOTTOMRIGHT', _G['MailItem1'], 'TOPRIGHT', 15, 15)
             end
-            
+
             InboxFrame.DeleteAllButton:SetScript('OnEnter', function(self2)--提示，要删除信，内容
                 set_Tooltips_DeleteAll(self2, tonumber)
             end)
@@ -1542,7 +1542,7 @@ local function Init_InBox()
             else
                 InboxFrame.ReAllButton:SetPoint('RIGHT', InboxFrame.DeleteAllButton,'LEFT')
             end
-           
+
             InboxFrame.ReAllButton:SetScript('OnEnter', function(self2)--提示，要删除信，内容
                 set_Tooltips_DeleteAll(self2, false)
             end)
