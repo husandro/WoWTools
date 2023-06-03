@@ -1709,9 +1709,6 @@ local function Init()--SendMailNameEditBox
     panel.showButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
 
     local function set_Show_MailFrame_Init()
-        if GetInboxNumItems()==0 then--如果没有信，转到，发信
-            MailFrameTab_OnClick(SendMailFrame, 2)
-        end
         if Save.lastSendPlayer and not Save.hideSendPlayerList and not Save.hide and Save.lastSendPlayer~=e.Player.name_realm then--记录 SendMailNameEditBox，内容
             set_Text_SendMailNameEditBox(nil, Save.lastSendPlayer)--设置，发送名称，文
 
@@ -1729,6 +1726,11 @@ local function Init()--SendMailNameEditBox
         else
             C_Timer.After(timeUntilAvailable, set_Show_MailFrame_Init)
         end
+        C_Timer.After(0.5, function()
+            if GetInboxNumItems()==0 then--如果没有信，转到，发信
+                MailFrameTab_OnClick(nil, 2)
+            end
+        end)
     end)
 
     MailFrame:HookScript('OnHide', function()
