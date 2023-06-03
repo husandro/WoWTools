@@ -985,10 +985,10 @@ local function Init_Fast_Button()
         self2.numLable:SetText(num==stack and '' or num)
         self2.stackLable:SetText(stack>0 and stack or '' )
         local alpha= 1
-        if panel.ItemMaxNum==0 then
-            alpha= stack>0 and 0.5 or 0.1
-        elseif stack==0 then
-            alpha= 0.1
+        if panel.ItemMaxNum==0 and stack>0 then
+            alpha= 0.5
+        elseif panel.ItemMaxNum==0 or stack==0 then
+            alpha=0.1
         end
         self2:SetAlpha(alpha)
         self2.num=num
