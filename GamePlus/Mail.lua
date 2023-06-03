@@ -6,7 +6,7 @@ local Save={
     lastSendPlayerList= {},--历史记录, {'名字-服务器',},
     --hideSendPlayerList=true,--隐藏，历史记录
     lastMaxSendPlayerList=20,--记录, 最大数
-    --lastSendPlayer='Fuocco',--记录 SendMailNameEditBox，内容
+    --lastSendPlayer='Fuocco-server',--记录 SendMailNameEditBox，内容
 
     show={--显示离线成员
         ['FRIEND']=true,--好友
@@ -1704,10 +1704,9 @@ local function Init()--SendMailNameEditBox
 
     local function set_Show_MailFrame_Init()
         if GetInboxNumItems()==0 then--如果没有信，转到，发信
-            print(GetInboxNumItems())
             MailFrameTab_OnClick(SendMailFrame, 2)
         end
-        if Save.lastSendPlayer and not Save.hideSendPlayerList and not Save.hide then--记录 SendMailNameEditBox，内容
+        if Save.lastSendPlayer and not Save.hideSendPlayerList and not Save.hide and Save.lastSendPlayer~=e.Player.name_realm then--记录 SendMailNameEditBox，内容
             set_Text_SendMailNameEditBox(nil, Save.lastSendPlayer)--设置，发送名称，文
 
         end
