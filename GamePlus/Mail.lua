@@ -1402,7 +1402,7 @@ local function Init_InBox()
                                 if itemIndexLink then
                                     local texture, count = select(3, GetInboxItem(i, itemIndex))
                                     allCount= allCount+ (count or 1)
-                                    e.tips:AddLine(itemIndex..')'..(texture and '|T'..texture..':0|t' or '')..itemIndexLink..'|cnGREEN_FONT_COLOR: x'..(count or 1)..'|r')
+                                    e.tips:AddLine(itemIndex..') '..(texture and '|T'..texture..':0|t' or '')..itemIndexLink..'|cnGREEN_FONT_COLOR: x'..(count or 1)..'|r')
                                 end
                             end
                             e.tips:AddLine(' ')
@@ -1412,7 +1412,7 @@ local function Init_InBox()
                             e.tips:AddLine(text, nil,nil,nil, true)
                             e.tips:AddLine(' ')
                         end
-                        e.tips:AddLine('|cffff00ff'..self2.openMailID..'|r'..(self2.icon and '|T'..self2.icon..':0|t')..(self2.canDelete and (e.onlyChinese and '删除' or DELETE) or (e.onlyChinese and '退信' or MAIL_RETURN))..(allCount>1 and ' |cffff00ff'..e.MK(allCount,3) or ''))
+                        e.tips:AddLine('|cffff00ff'..self2.openMailID..' |r'..(self2.icon and '|T'..self2.icon..':0|t')..(self2.canDelete and (e.onlyChinese and '删除' or DELETE) or (e.onlyChinese and '退信' or MAIL_RETURN))..(allCount>1 and ' |cffff00ff'..e.MK(allCount,3) or ''))
                         e.tips:Show()
                         self2.enterTipTexture:SetShown(true)
                     end)
