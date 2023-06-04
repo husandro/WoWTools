@@ -697,20 +697,21 @@ local function Init()
         return
 
     else
+        hooksecurefunc('ContainerFrame_GenerateFrame',function (self)
+            for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
+                if not frame.SetBagInfo then
+                    setBags(frame)
+                    hooksecurefunc(frame, 'UpdateItems', setBags)
+                    frame.SetBagInfo=true
+                end
+            end
+        end)
+
         panel:RegisterEvent('BANKFRAME_OPENED')--打开所有银行，背包
         panel:RegisterEvent("GUILDBANKBAGSLOTS_CHANGED")--打开公会银行时, 打开背包
         panel:RegisterEvent("GUILDBANK_ITEM_LOCK_CHANGED")
     end
 
-    hooksecurefunc('ContainerFrame_GenerateFrame',function (self)
-        for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
-            if not frame.SetBagInfo then
-                setBags(frame)
-                hooksecurefunc(frame, 'UpdateItems', setBags)
-                frame.SetBagInfo=true
-            end
-        end
-    end)
     hooksecurefunc('BankFrameItemButton_Update', set_BankFrameItemButton_Update)--银行
 
     --############
