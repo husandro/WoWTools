@@ -2913,7 +2913,8 @@
         "GOLD_AMOUNT",
         "SILVER_AMOUNT",
         "COPPER_AMOUNT",
-        "MoneyInputFrame_GetCopper"
+        "MoneyInputFrame_GetCopper",
+        "MAIL_MULTIPLE_ITEMS"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

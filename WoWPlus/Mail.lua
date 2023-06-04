@@ -15,7 +15,7 @@ local Save={
 
     fast={},--快速，加载，物品，指定玩家
     fastShow=true,--显示/隐藏，快速，加载，按钮
-
+    CtrlFast=true,--Ctrl+RightButton,快速，加载，物品
     --scaleSendPlayerFrame=1.2,--清除历史数据，缩放
 
     scaleFastButton=1.25,
@@ -309,7 +309,16 @@ local function Init_Menu(_, level, menuList)
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    --elseif menuList=='SETTINGS' then
+    elseif menuList=='SETTINGS' then
+        info={
+            text= 'Ctrl+'..e.Icon.right,
+            checked= not Save.disableCtrlFast,
+            tooltipOnButton=true, 
+            tooltipTitle= e.onlyChinese and '多物品' or MAIL_MULTIPLE_ITEMS,
+            func= function()
+                Save.disableCtrlFast= not Save.disableCtrlFast and true or nil
+            end
+        }
 
     end
 
@@ -377,14 +386,14 @@ local function Init_Menu(_, level, menuList)
         e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
 
-    --[[e.LibDD:UIDropDownMenu_AddSeparator(level)
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
         text= e.onlyChinese and '设置' or SETTINGS,
         hasArrow=true,
         menuList='SETTINGS',
         notCheckable=true,
     }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)]]
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
@@ -682,9 +691,6 @@ end
 --设置，快速选取，按钮
 --##################
 local function check_Enabled_Item(classID, subClassID, findString, bag, slot)
-    if ((classID and subClassID) or findString) and bag and slot then
-        return
-    end
     local info = C_Container.GetContainerItemInfo(bag, slot)
     if info
         and info.itemID
@@ -1865,13 +1871,16 @@ local function Init()--SendMailNameEditBox
 
 
     hooksecurefunc('HandleModifiedItemClick', function(itemLink, itemLocation)
-        if not Save.hide and button and itemLink and itemLocation~=nil and itemLocation.bagID and itemLocation.slotIndex and SendMailFrame:IsShown() and GetMouseButtonClicked()=='RightButton' and IsModifierKeyDown() then
+        if not Save.disableCtrlFast and not Save.hide and button and itemLink and itemLocation~=nil and itemLocation.bagID and itemLocation.slotIndex and SendMailFrame:IsShown() and GetMouseButtonClicked()=='RightButton' and IsModifierKeyDown() then
             local findString
             if itemLink:find('Hbattlepet') then
                 findString= 'Hbattlepet'
             end
             local classID, subClassID= select(6,  GetItemInfoInstant(itemLink))
-            button.FastButton.set_PickupContainerItem(classID, subClassID, findString, {bag= itemLocation.bagID, slot= itemLocation.slotIndex})
+            if classID==2 or classID==4 then
+                subClassID=nil
+            end
+            button.FastButton.set_PickupContainerItem(classID, subClassID, findString, {bag= itemLocation.bagID, slot= itemLocation.slotIndex, itemLink= itemLink})
         end
     end)
 end
