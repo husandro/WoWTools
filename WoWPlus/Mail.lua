@@ -682,6 +682,9 @@ end
 --设置，快速选取，按钮
 --##################
 local function check_Enabled_Item(classID, subClassID, findString, bag, slot)
+    if ((classID and subClassID) or findString) and bag and slot then
+        return
+    end
     local info = C_Container.GetContainerItemInfo(bag, slot)
     if info
         and info.itemID
@@ -950,7 +953,7 @@ local function Init_Fast_Button()
         end
     end
 
-    button.FastButton.set_PickupContainerItem= function(classID, subClassID, findString)--自动放物品
+    button.FastButton.set_PickupContainerItem= function(classID, subClassID, findString, onlyBag)--自动放物品
         local slotTab= button.FastButton.get_Send_Max_Item()--能发送，数量
         if #slotTab==0 then
             return
@@ -958,9 +961,28 @@ local function Init_Fast_Button()
 
         button.FastButton.set_Fast_Event(nil, true)--清除，注册，事件，显示/隐藏，设置数量
 
+        if onlyBag then
+            local info= check_Enabled_Item(classID, subClassID, findString, onlyBag.bag, onlyBag.slot)
+            if info then
+
+                C_Container.PickupContainerItem(onlyBag.bag, onlyBag.slot)
+                ClickSendMailItemButton(slotTab[1])
+                table.remove(slotTab, 1)
+
+                if #slotTab==0 then
+                    slotTab= button.FastButton.get_Send_Max_Item()--能发送，数量
+                    button.FastButton.set_Fast_Event()--清除，注册，事件，显示/隐藏，设置数量
+                    return
+                end
+            else
+                return
+            end
+        end
+
         for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+ NUM_REAGENTBAG_FRAMES do
             for slot=1, C_Container.GetContainerNumSlots(bag) do
-                local info=check_Enabled_Item(classID, subClassID, findString, bag, slot)
+                local info= check_Enabled_Item(classID, subClassID, findString, bag, slot)
+                
                 if info then
                     C_Container.PickupContainerItem(bag, slot)
                     ClickSendMailItemButton(slotTab[1])
@@ -1838,6 +1860,25 @@ local function Init()--SendMailNameEditBox
                     button.FastButton.set_Fast_Event()--清除，注册，事件，显示/隐藏，设置数量
                 end)
             end
+        end
+    end)
+
+    hooksecurefunc('ContainerFrame_GenerateFrame',function (self)
+        for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
+            frame:SetScript('OnMouseDown', function()
+                print(id,addName)
+            end)
+        end
+    end)
+
+    hooksecurefunc('HandleModifiedItemClick', function(itemLink, itemLocation)
+        if not Save.hide and button and itemLink and itemLocation~=nil and itemLocation.bagID and itemLocation.slotIndex and SendMailFrame:IsShown() and GetMouseButtonClicked()=='RightButton' and IsModifierKeyDown() then
+            local findString
+            if itemLink:find('Hbattlepet') then
+                findString= 'Hbattlepet'
+            end
+            local classID, subClassID= select(6,  GetItemInfoInstant(itemLink))
+            button.FastButton.set_PickupContainerItem(classID, subClassID, findString, {bag= itemLocation.bagID, slot= itemLocation.slotIndex})
         end
     end)
 end
