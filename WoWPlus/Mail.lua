@@ -1411,10 +1411,6 @@ local function Init_InBox()
                         end
                     end
                     btn.moneyPagaTip:SetText(text or '')
-                    if not Save.hide then
-                        --_G['MailItem'..i..'ButtonCOD']:SetShown(moneyPaga)
-                        --_G['MailItem'..i..'ButtonCOD']:SetText('')
-                    end
                 end
 
                 --删除，或退信，按钮
