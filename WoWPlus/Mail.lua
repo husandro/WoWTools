@@ -1863,13 +1863,6 @@ local function Init()--SendMailNameEditBox
         end
     end)
 
-    hooksecurefunc('ContainerFrame_GenerateFrame',function (self)
-        for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
-            frame:SetScript('OnMouseDown', function()
-                print(id,addName)
-            end)
-        end
-    end)
 
     hooksecurefunc('HandleModifiedItemClick', function(itemLink, itemLocation)
         if not Save.hide and button and itemLink and itemLocation~=nil and itemLocation.bagID and itemLocation.slotIndex and SendMailFrame:IsShown() and GetMouseButtonClicked()=='RightButton' and IsModifierKeyDown() then
