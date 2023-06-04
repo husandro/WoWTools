@@ -2914,6 +2914,7 @@
         "SILVER_AMOUNT",
         "COPPER_AMOUNT",
         "MoneyInputFrame_GetCopper",
+        "MAIL_MULTIPLE_ITEMS",
         "MAIL_MULTIPLE_ITEMS"
     ],
     "Lua.diagnostics.disable": [

@@ -311,10 +311,8 @@ local function Init_Menu(_, level, menuList)
 
     elseif menuList=='SETTINGS' then
         info={
-            text= 'Ctrl+'..e.Icon.right,
+            text= 'Ctrl + '..e.Icon.right..' '..(e.onlyChinese and '多物品' or MAIL_MULTIPLE_ITEMS),
             checked= not Save.disableCtrlFast,
-            tooltipOnButton=true, 
-            tooltipTitle= e.onlyChinese and '多物品' or MAIL_MULTIPLE_ITEMS,
             func= function()
                 Save.disableCtrlFast= not Save.disableCtrlFast and true or nil
             end
