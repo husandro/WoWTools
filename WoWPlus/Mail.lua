@@ -1203,52 +1203,65 @@ local function Init_InBox()
             end
         end
     end
+        --查找，信件里的第一个物品，超链接
+        local function find_itemLink(itemCount, openMailID, itemLink)
+            itemLink= (itemCount and itemCount>0) and itemLink
+            if itemCount and itemCount>0 and not itemLink then
+                for i= 1, itemCount do
+                    itemLink= GetInboxItemLink(openMailID, i)
+                    if itemLink then
+                        break
+                    end
+                end
+            end
+            return itemLink
+        end
 
     --删除，或退信
-    local function return_delete_InBox(openMailID, itemName, money, CODAmount, canDelete, icon, sender, subject)--删除，或退信
-        InboxFrame.openMailID= openMailID
-        OpenMailFrame.itemName= itemName
-        OpenMailFrame.money= money
+    local function return_delete_InBox(openMailID)--删除，或退信
+        local packageIcon, stationeryIcon, sender, subject, money, CODAmount, daysLeft, itemCount, wasRead, x, y, z, isGM, firstItemQuantity, firstItemLink = GetInboxHeaderInfo(openMailID)
 
-        local text= GetInboxText(InboxFrame.openMailID) or ''
+        local itemName= find_itemLink(itemCount, openMailID, firstItemLink)
+        local icon=packageIcon or stationeryIcon
+
+        local text= GetInboxText(openMailID) or ''
         text= text:gsub(' ','') and nil or text
+
         local delOrRe
-        if canDelete then
+        local canDelete= InboxItemCanDelete(openMailID)
+        if InboxItemCanDelete(openMailID) then
             delOrRe= '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE)..'|r'
         else
             delOrRe= '|cFFFF00FF'..(e.onlyChinese and '退信' or MAIL_RETURN)..'|r'
         end
+
+        if canDelete and (not money or money==0) and (not CODAmount or CODAmount==0) and (not itemCount or itemCount) then
+            DeleteInboxItem(openMailID)
+        else
+            InboxFrame.openMailID= openMailID
+            OpenMailFrame.itemName= (itemCount and itemCount>0) and itemName or nil
+            OpenMailFrame.money= money
+            securecall(OpenMail_Delete)--删除，或退信 MailFrame.lua
+        end
+
         print('|cFFFF00FF'..openMailID..')|r',
             ((icon and not itemName) and '|T'..icon..':0|t' or '')..delOrRe,
             e.PlayerLink(sender, nil, true),
             subject,
             itemName or '',
-            money and GetMoneyString(money or CODAmount, true) or '',
+            (money and money>0) and GetMoneyString(money, true) or '',
+            (CODAmount and CODAmount>0) and GetMoneyString(CODAmount, true) or '',
             text and '|n' or '',
             text or '')
-        securecall(OpenMail_Delete)--删除，或退信 MailFrame.lua
     end
 
-    --查找，信件里的第一个物品，超链接
-    local function find_itemLink(itemCount, index, itemLink)
-        itemLink= (itemCount and itemCount>0) and itemLink
-        if itemCount and itemCount>0 and not itemLink then
-            for i= 1, itemCount do
-                itemLink= GetInboxItemLink(index, i)
-                if itemLink then
-                    break
-                end
-            end
-        end
-        return itemLink
-    end
 
     --隐藏，所有，选中提示
     local function set_btn_enterTipTexture_Hide_All()
         for i=1, INBOXITEMS_TO_DISPLAY do
             local btn=_G["MailItem"..i.."Button"]
-            if btn and btn.DeleteButton and btn.DeleteButton.enterTipTexture then
-                btn.DeleteButton.enterTipTexture:SetShown(false)
+            if btn and btn.enterTipTexture then
+                btn.enterTipTexture:SetShown(false)
             end
         end
     end
@@ -1290,11 +1303,11 @@ local function Init_InBox()
                     e.tips:AddLine(' ')
                 end
 
-                if not findReTips then--显示，所有，选中提示
+                if not findReTips and not Save.hide then--显示，所有，选中提示
                     for i2=1, INBOXITEMS_TO_DISPLAY do
                         local btn=_G["MailItem"..i2.."Button"]
-                        if btn and btn.DeleteButton.enterTipTexture and btn.index==i then
-                            btn.DeleteButton.enterTipTexture:SetShown(true)
+                        if btn and btn.enterTipTexture and btn.index==i then
+                            btn.enterTipTexture:SetShown(true)
                             break
                         end
                     end
@@ -1311,6 +1324,43 @@ local function Init_InBox()
         e.tips:Show()
     end
 
+    local function eventEnter(self2, get)--enter 提示，删除，或退信，按钮
+        e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddLine(' ')
+        local packageIcon, stationeryIcon, _, _, _, _, _, itemCount = GetInboxHeaderInfo(self2.openMailID)
+        local allCount=0
+        if itemCount then
+            for itemIndex= 1, itemCount do
+                local itemIndexLink= GetInboxItemLink(self2.openMailID, itemIndex)
+                if itemIndexLink then
+                    local texture, count = select(3, GetInboxItem(self2.openMailID, itemIndex))
+                    texture = texture or C_Item.GetItemIconByID(itemIndexLink)
+                    allCount= allCount+ (count or 1)
+                    e.tips:AddLine((itemIndex<10 and ' ' or '')..itemIndex..') '..(texture and '|T'..texture..':0|t' or '')..itemIndexLink..'|cnGREEN_FONT_COLOR: x'..(count or 1)..'|r')
+                end
+            end
+            e.tips:AddLine(' ')
+        end
+        local text= GetInboxText(self2.openMailID)
+        if text and text:gsub(' ', '')~='' then
+            e.tips:AddLine(text, nil,nil,nil, true)
+            e.tips:AddLine(' ')
+        end
+
+        local text2
+        if get then
+            text2= e.onlyChinese and '提取' or WITHDRAW
+        elseif self2.canDelete then
+            text2= e.onlyChinese and '删除' or DELETE
+        else
+            text2= e.onlyChinese and '退信' or MAIL_RETURN
+        end
+        local icon= packageIcon or stationeryIcon
+        e.tips:AddLine('|cffff00ff'..self2.openMailID..' |r'..(icon and '|T'..icon..':0|t')..text2..(allCount>1 and ' |cnGREEN_FONT_COLOR:'..e.MK(allCount,3)..'|r'..(e.onlyChinese and '物品' or ITEMS) or ''))
+        e.tips:Show()
+    end
 
     hooksecurefunc('InboxFrame_Update',function()
         local totalItems= select(2, GetInboxNumItems())  --信件，总数量   
@@ -1318,7 +1368,11 @@ local function Init_InBox()
         for i=1, INBOXITEMS_TO_DISPLAY do
             local btn=_G["MailItem"..i.."Button"]
             if btn and btn:IsShown() then
-                local packageIcon, stationeryIcon, sender, subject, money, CODAmount, _, itemCount, _, _, _, _, _, _, firstItemLink = GetInboxHeaderInfo(btn.index)
+                local _, _, sender, subject, money2, CODAmount2, _, itemCount2 = GetInboxHeaderInfo(btn.index)
+                local CODAmount= (CODAmount2 and CODAmount2>0) and CODAmount2 or nil
+                local money= (money2 and money2>0) and money2 or nil
+                local itemCount= (itemCount2 and itemCount2>0) and itemCount2 or nil
+
                 --发信人，提示, 点击回复
                 if sender then
                     local frame=_G["MailItem"..i.."Sender"]
@@ -1353,7 +1407,6 @@ local function Init_InBox()
                                     self2:SetAlpha(1)
                                 end
                             end)
-                            --frame.setReply=true
                         end
                         frame.sender= sender
                         frame.subject= subject
@@ -1372,13 +1425,8 @@ local function Init_InBox()
                     end
                 end
 
-
-                local moneyPaga= (CODAmount and CODAmount>0) and CODAmount or nil
-                local moneyGet= (money and money>0) and money or nil
-                local itemLink= find_itemLink(itemCount, btn.index, firstItemLink)--查找，信件里的第一个物品，超链接
-
                 --提示，需要付钱, 可收取钱
-                if (moneyPaga or moneyGet) and not btn.CODAmountTips and not Save.hide then
+                if (money or CODAmount) and not btn.CODAmountTips and not Save.hide then
                     btn.CODAmountTips= btn:CreateTexture(nil, 'OVERLAY')--图片
                     btn.CODAmountTips:SetSize(150, 20)
                     btn.CODAmountTips:SetPoint('BOTTOM', _G['MailItem'..i], 0,-4)
@@ -1389,9 +1437,9 @@ local function Init_InBox()
                     btn.moneyPagaTip:EnableMouse(true)
                 end
                 if btn.CODAmountTips then
-                    btn.CODAmountTips:SetShown((moneyPaga or moneyGet) and not Save.hide)
+                    btn.CODAmountTips:SetShown((money or CODAmount) and not Save.hide)
 
-                    if moneyPaga then
+                    if CODAmount then
                         btn.CODAmountTips:SetVertexColor(1,0,0)
                         btn.moneyPagaTip:SetTextColor(1,0,0)
                     else
@@ -1400,14 +1448,14 @@ local function Init_InBox()
                     end
 
                     local text
-                    if not Save.hide then
-                        if moneyPaga then
+                    if not Save.hide and (money or CODAmount) then
+                        if CODAmount then
                             text= (e.onlyChinese and '付款' or COD)
-                        elseif moneyGet then
+                        elseif money then
                             text= (e.onlyChinese and '可取' or WITHDRAW)
                         end
                         if text then
-                            text= text..' '..get_Money(moneyPaga or moneyGet)
+                            text= text..' '..get_Money(CODAmount or money)
                         end
                     end
                     btn.moneyPagaTip:SetText(text or '')
@@ -1422,67 +1470,55 @@ local function Init_InBox()
                         btn.DeleteButton:SetPoint('BOTTOMRIGHT', _G['MailItem'..i])
                     end
                     btn.DeleteButton:SetScript('OnClick', function(self2)--OpenMail_Delete()
-                        return_delete_InBox(self2.openMailID, self2.itemName, self2.money, self2.CODAmount, self2.canDelete, self2.icon, self2.sender, self2.subject)--删除，或退信
+                        return_delete_InBox(self2.openMailID)--删除，或退信
                     end)
                     btn.DeleteButton:SetScript('OnEnter', function(self2)
-                        e.tips:SetOwner(self2, "ANCHOR_RIGHT")
-                        e.tips:ClearLines()
-                        e.tips:AddDoubleLine(id, addName)
-                        e.tips:AddLine(' ')
-                        local allCount=0
-                        if self2.itemCount then
-                            for itemIndex= 1, self2.itemCount do
-                                local itemIndexLink= GetInboxItemLink(self2.openMailID, itemIndex)
-                                if itemIndexLink then
-                                    local texture, count = select(3, GetInboxItem(i, itemIndex))
-                                    texture = texture or C_Item.GetItemIconByID(itemIndexLink)
-                                    allCount= allCount+ (count or 1)
-                                    e.tips:AddLine((itemIndex<10 and ' ' or '')..itemIndex..') '..(texture and '|T'..texture..':0|t' or '')..itemIndexLink..'|cnGREEN_FONT_COLOR: x'..(count or 1)..'|r')
-                                end
-                            end
-                            e.tips:AddLine(' ')
-                        end
-                        local text= GetInboxText(self2.openMailID)
-                        if text and text:gsub(' ', '')~='' then
-                            e.tips:AddLine(text, nil,nil,nil, true)
-                            e.tips:AddLine(' ')
-                        end
-                        e.tips:AddLine('|cffff00ff'..self2.openMailID..' |r'..(self2.icon and '|T'..self2.icon..':0|t')..(self2.canDelete and (e.onlyChinese and '删除' or DELETE) or (e.onlyChinese and '退信' or MAIL_RETURN))..(allCount>1 and ' |cnGREEN_FONT_COLOR:'..e.MK(allCount,3)..'|r'..(e.onlyChinese and '物品' or ITEMS) or ''))
-                        e.tips:Show()
-                        self2.enterTipTexture:SetShown(true)
+                        eventEnter(self2)
+                        local frame= self2:GetParent()
+                        frame.enterTipTexture:SetShown(true)
                     end)
                     btn.DeleteButton:SetScript('OnLeave', function(self2)
-                        self2.enterTipTexture:SetShown(false)
+                        local frame= self2:GetParent()
+                        frame.enterTipTexture:SetShown(false)
                         e.tips:Hide()
                     end)
 
                     --移过时，提示，选中，信件
                     btn.DeleteButton.numItemLabel= e.Cstr(btn.DeleteButton)
                     btn.DeleteButton.numItemLabel:SetPoint('BOTTOMRIGHT')
-                    btn.DeleteButton.enterTipTexture= btn:CreateTexture(nil, 'OVERLAY', nil, 7)
-                    btn.DeleteButton.enterTipTexture:SetAtlas('jailerstower-wayfinder-rewardbackground-selected')
-                    btn.DeleteButton.enterTipTexture:SetAllPoints(_G['MailItem'..i])
-                    btn.DeleteButton.enterTipTexture:SetVertexColor(0,1,0)
-                    btn.DeleteButton.enterTipTexture:Hide()
+                    btn.enterTipTexture= btn:CreateTexture(nil, 'OVERLAY', nil, 7)
+                    btn.enterTipTexture:SetAtlas('jailerstower-wayfinder-rewardbackground-selected')
+                    btn.enterTipTexture:SetAllPoints(_G['MailItem'..i])
+                    btn.enterTipTexture:SetVertexColor(0,1,0)
+                    btn.enterTipTexture:Hide()
+
+                    --提取，物品，和钱
+                    btn.outItemOrMoney= e.Cbtn(btn, {size={22, 20}, atlas='talents-search-notonactionbarhidden'})
+                    btn.outItemOrMoney:SetPoint('RIGHT', btn.DeleteButton, 'LEFT', -22, 0)
+                    btn.outItemOrMoney:SetScript('OnClick', function(self2)
+                        securecall(InboxFrame_OnModifiedClick, self2:GetParent(), self2.openMailID)
+                    end)
+                    btn.outItemOrMoney:SetScript('OnLeave' ,function(self2)
+                        local frame=self2:GetParent()
+                        frame.enterTipTexture:SetShown(false)
+                        e.tips:Hide()
+                    end)
+                    btn.outItemOrMoney:SetScript('OnEnter', function(self2)
+                        eventEnter(self2, true)
+                        local frame= self2:GetParent()
+                        frame.enterTipTexture:SetShown(true)
+                    end)
                 end
 
-                if btn.DeleteButton then
-                    --删除，或退信，按钮，设置参数
-                    local canDelete= InboxItemCanDelete(btn.index)
-                    btn.DeleteButton:SetNormalTexture(canDelete and 'xmarksthespot' or 'UI-RefreshButton')
-
+                if btn.DeleteButton then--删除，或退信，按钮，设置参数
+                    btn.DeleteButton:SetNormalTexture(InboxItemCanDelete(btn.index) and 'xmarksthespot' or 'common-icon-undo')
                     btn.DeleteButton.openMailID= btn.index
-                    btn.DeleteButton.canDelete= canDelete
-                    btn.DeleteButton.itemName= itemLink
-                    btn.DeleteButton.money= moneyGet
-                    btn.DeleteButton.CODAmount= moneyPaga
-                    btn.DeleteButton.sender= sender
-                    btn.DeleteButton.subject=subject
-                    btn.DeleteButton.icon= packageIcon or stationeryIcon
-
-                    btn.DeleteButton.itemCount= (itemCount and itemCount>0) and itemCount
-                    btn.DeleteButton.numItemLabel:SetText(btn.DeleteButton.itemCount or '')
                     btn.DeleteButton:SetShown(not Save.hide)
+
+                    btn.DeleteButton.numItemLabel:SetText(itemCount or '')
+
+                    btn.outItemOrMoney.openMailID= btn.index
+                    btn.outItemOrMoney:SetShown((money or itemCount) and not CODAmount and not Save.hide)
                 end
             end
         end
@@ -1504,10 +1540,7 @@ local function Init_InBox()
                 local _, _, sender, _, money, CODAmount, _, itemCount, _, _, _, _, _, _, firstItemLink = GetInboxHeaderInfo(i)
                 if sender then
                     if InboxItemCanDelete(i) then
-                        local moneyPaga= (CODAmount and CODAmount>0) and CODAmount or nil
-                        local moneyGet= (money and money>0) and money or nil
-                        local itemLink= find_itemLink(itemCount, i, firstItemLink)--查找，信件里的第一个物品，超链接
-                        if not moneyPaga and not moneyGet and not itemLink then
+                        if (not CODAmount or CODAmount==0) and (not money or money==0) and (not itemCount or itemCount==0) then
                             numCanDelete= numCanDelete +1
                         end
                     else
@@ -1534,7 +1567,7 @@ local function Init_InBox()
             end
 
             InboxFrame.DeleteAllButton:SetScript('OnEnter', function(self2)--提示，要删除信，内容
-                set_Tooltips_DeleteAll(self2)
+                set_Tooltips_DeleteAll(self2, true)
             end)
             InboxFrame.DeleteAllButton:SetScript('OnLeave', function(self2)
                 set_btn_enterTipTexture_Hide_All()--隐藏，所有，选中提示
@@ -1543,14 +1576,13 @@ local function Init_InBox()
 
             --删除信
             InboxFrame.DeleteAllButton:SetScript('OnClick', function(self2)
-                for i=1, select(2, GetInboxNumItems()) do
+
+                for i=1, select(2, GetInboxNumItems())do
                     if InboxItemCanDelete(i) then
-                        local packageIcon, stationeryIcon, sender, subject, money, CODAmount, _, itemCount, _, _, _, _, _, _, firstItemLink = GetInboxHeaderInfo(i)
-                        local moneyPaga= (CODAmount and CODAmount>0) and CODAmount or nil
-                        local moneyGet= (money and money>0) and money or nil
-                        local itemLink= find_itemLink(itemCount, i, firstItemLink)--查找，信件里的第一个物品，超链接
-                        if not moneyPaga and not moneyGet and not itemLink then
-                            return_delete_InBox(i, itemLink, moneyGet, moneyPaga, true, packageIcon or stationeryIcon, sender, subject)--删除，或退信
+                        local money, CODAmount, _, itemCount= select(5, GetInboxHeaderInfo(i))
+                        if (not money or money==0) and (not CODAmount or CODAmount==0) and (not itemCount or itemCount==0) then
+                            return_delete_InBox(i)--删除，或退信
+                            --DeleteInboxItem(i);
                             break
                         end
                     end
@@ -1571,7 +1603,7 @@ local function Init_InBox()
 
         --退回，所有信，按钮
         if numCanRe>0 and not InboxFrame.ReAllButton then
-            InboxFrame.ReAllButton= e.Cbtn(InboxFrame, {size={25,25}, atlas='UI-RefreshButton'})
+            InboxFrame.ReAllButton= e.Cbtn(InboxFrame, {size={25,25}, atlas='common-icon-undo'})
             if _G['PostalSelectReturnButton'] then
                 InboxFrame.ReAllButton:SetPoint('RIGHT', _G['PostalSelectOpenButton'], 'LEFT')
             else
@@ -1590,11 +1622,7 @@ local function Init_InBox()
             InboxFrame.ReAllButton:SetScript('OnClick', function(self2)
                 for i=1, select(2, GetInboxNumItems()) do
                     if not InboxItemCanDelete(i) then
-                        local packageIcon, stationeryIcon, sender, subject, money, CODAmount, _, itemCount, _, _, _, _, _, _, firstItemLink = GetInboxHeaderInfo(i)
-                        local moneyPaga= (CODAmount and CODAmount>0) and CODAmount or nil
-                        local moneyGet= (money and money>0) and money or nil
-                        local itemLink= find_itemLink(itemCount, i, firstItemLink)--查找，信件里的第一个物品，超链接
-                        return_delete_InBox(i, itemLink, moneyGet, moneyPaga, false, packageIcon or stationeryIcon, sender, subject)--删除，或退信
+                        return_delete_InBox(i)--删除，或退信
                         break
                     end
                 end
@@ -1735,7 +1763,7 @@ local function Init()--SendMailNameEditBox
         panel.showButton:SetPoint('LEFT', MailFrame.TitleContainer, -5, 0)
         panel.showButton:SetFrameLevel(MailFrame.TitleContainer:GetFrameLevel()+1)
     end
-    
+
     panel.showButton:SetAlpha(0.3)
     panel.showButton:SetScript('OnClick', function()
         Save.hide= not Save.hide and true or nil

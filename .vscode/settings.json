@@ -2892,7 +2892,8 @@
         "MailItem5Button",
         "MailItem1",
         "MailItem1ExpireTime",
-        "OpenMail_Update"
+        "OpenMail_Update",
+        "InboxFrame_OnModifiedClick"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
