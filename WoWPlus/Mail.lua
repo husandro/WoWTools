@@ -319,7 +319,7 @@ local function Init_Menu(_, level, menuList)
                 Save.disableCtrlFast= not Save.disableCtrlFast and true or nil
             end
         }
-
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
 
     if menuList then
