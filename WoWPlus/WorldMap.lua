@@ -494,7 +494,11 @@ local function set_Map_ID(self)--显示地图ID
 
     if not self.playerPosition then--玩家坐标
         self.playerPosition=e.Cbtn(self.BorderFrame.TitleContainer, {icon='hide', size={22,22}})
-        self.playerPosition:SetPoint('LEFT', self.BorderFrame.TitleContainer, 'LEFT', 75, -2)
+        if _G['MoveZoomInButtonPerWorldMapFrame'] then
+            self.playerPosition:SetPoint('LEFT', _G['MoveZoomInButtonPerWorldMapFrame'], 'RIGHT')
+        else
+            self.playerPosition:SetPoint('LEFT', self.BorderFrame.TitleContainer, 'LEFT', 75, -2)
+        end
         self.playerPosition:SetNormalAtlas(e.Icon.player:match('|A:(.-):'))
         self.playerPosition:RegisterForClicks("LeftButtonUp", "RightButtonUp")
         self.playerPosition:SetScript('OnLeave', function() e.tips:Hide() end)
