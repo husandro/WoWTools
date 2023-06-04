@@ -72,7 +72,8 @@ WoWPlus\EncounterJournal.lua
 ##史诗钥石地下城, 挑战增强
 WoWPlus\Challenges.lua
 ##WowPlus\AuctionHouse.lua
-
+##邮件，增加
+WoWPlus\mail.lua
 
 
 
@@ -104,7 +105,7 @@ GamePlus\Color.lua
 GamePlus\SystemInfo.lua
 ##鼠标 Mouse https://wago.io/CVmKEpl6E
 GamePlus\Cursor.lua
-GamePlus\mail.lua
+
 
 
 
