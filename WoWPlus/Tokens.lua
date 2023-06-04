@@ -584,6 +584,8 @@ local function Init()
 	button.bagButton:SetScript('OnClick', click)
 	button.bagButton:SetScript('OnEnter', enter)
 	button.bagButton:SetScript('OnLeave',leave)
+	button.bagButton:HookScript('OnEnter', function(self2) self2:SetAlpha(1) end)
+	button.bagButton:HookScript('OnLeave', function(self2) self2:SetAlpha(0.5) end)
 
 	set_bagButtonTexture()
 

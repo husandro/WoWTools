@@ -789,7 +789,8 @@ local function Init()
         end
         e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
     end)
-
+    btn:SetScript('OnEnter', function(self2) self2:SetAlpha(1) end)
+    btn:SetScript('OnLeave', function(self2) self2:SetAlpha(0.5) end)
     if not MainMenuBarBackpackButton.OnClick then
         MainMenuBarBackpackButton:HookScript('OnClick', function(_, d)
             if d=='RightButton' then
