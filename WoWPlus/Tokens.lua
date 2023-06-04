@@ -569,7 +569,12 @@ local function Init()
 	e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
 	button.bagButton= e.Cbtn(ContainerFrameCombinedBags, {size={18,18}})--背包中, 增加一个图标, 用来添加或移除
-	button.bagButton:SetPoint('RIGHT', ContainerFrameCombinedBags.CloseButton, 'LEFT',-4,0)
+	if _G['MoveZoomInButtonPerContainerFrameCombinedBags'] then
+        button.bagButton:SetPoint('LEFT', _G['MoveZoomInButtonPerContainerFrameCombinedBags'], 'RIGHT')
+    else
+        button.bagButton:SetPoint('RIGHT', ContainerFrameCombinedBags.CloseButton, 'LEFT',-4,0)
+    end
+	
 	button.bagButton:SetFrameStrata('HIGH')
 	button.bagButton:SetAlpha(0.5)
 	button:SetScript('OnClick', click)

@@ -716,10 +716,14 @@ local function Init()
     --############
     --排序:从右到左
     --############
-    local button= e.Cbtn(ContainerFrameCombinedBags.TitleContainer, {icon=true, size={20,20}})
-    button:SetPoint('LEFT')
-    button:SetAlpha(0.5)
-    button:SetScript('OnClick', function(self, d)
+    local btn= e.Cbtn(ContainerFrameCombinedBags.TitleContainer, {icon=true, size={20,20}, name= 'ITEMSINFOMenuButton'})
+    if _G['MoveZoomInButtonPerContainerFrameCombinedBags'] then
+        btn:SetPoint('RIGHT', _G['MoveZoomInButtonPerContainerFrameCombinedBags'], 'LEFT')
+    else
+        btn:SetPoint('LEFT')
+    end
+    btn:SetAlpha(0.5)
+    btn:SetScript('OnClick', function(self, d)
         if not self.Menu then
             self.Menu= CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")--菜单列表
             e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(self2, level, type)

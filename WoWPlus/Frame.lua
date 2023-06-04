@@ -40,7 +40,8 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name)--放大
     if not tab.name then
         tab.name= self and self:GetName()
     end
-    if not self or self.ZoomInOutFrame or tab.notZoom or Save.disabledZoom or not tab.name then
+
+    if not self or self.ZoomInOutFrame or tab.notZoom or Save.disabledZoom or not tab.name or _G['MoveZoomInButtonPer'..tab.name] then
         return
     end
 
@@ -49,7 +50,7 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name)--放大
                         or self.SpellButtonContainer
                         or self.BorderFrame and self.BorderFrame.TitleContainer
                         or self
-        , {atlas='UI-HUD-Minimap-Zoom-In', size={18,18}})
+        , {atlas='UI-HUD-Minimap-Zoom-In', size={18,18}, name='MoveZoomInButtonPer'..tab.name})
 
     self.ZoomInOutFrame.ScaleName= tab.name
     self.ZoomInOutFrame.ZoomFrame= self

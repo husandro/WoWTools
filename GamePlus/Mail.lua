@@ -1733,8 +1733,13 @@ local function Init()--SendMailNameEditBox
     end
 
     panel.showButton= e.Cbtn(MailFrame.TitleContainer, {size={size,size}, icon='hide'})
-    panel.showButton:SetPoint('LEFT', MailFrame.TitleContainer, -5, 0)
-    panel.showButton:SetFrameLevel(MailFrame.TitleContainer:GetFrameLevel()+1)
+    if _G['MoveZoomInButtonPerMailFrame'] then
+        panel.showButton:SetPoint('RIGHT', _G['MoveZoomInButtonPerMailFrame'], 'LEFT')
+    else
+        panel.showButton:SetPoint('LEFT', MailFrame.TitleContainer, -5, 0)
+        panel.showButton:SetFrameLevel(MailFrame.TitleContainer:GetFrameLevel()+1)
+    end
+    
     panel.showButton:SetAlpha(0.3)
     panel.showButton:SetScript('OnClick', function()
         Save.hide= not Save.hide and true or nil
