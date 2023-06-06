@@ -1223,25 +1223,25 @@ local function Init_InBox()
     local function get_Money(num)
         if num and num>0 then
             if num>=1e4 then
-                return e.MK(num/1e4, 3)..'|TInterface/moneyframe/ui-goldicon:0|t'
+                return e.MK(num/1e4, 0)..'|TInterface/moneyframe/ui-goldicon:0|t'
             else
-                return GetMoneyString(num, true)
+                return GetMoneyString(num)
             end
         end
     end
-        --查找，信件里的第一个物品，超链接
-        local function find_itemLink(itemCount, openMailID, itemLink)
-            itemLink= (itemCount and itemCount>0) and itemLink
-            if itemCount and itemCount>0 and not itemLink then
-                for i= 1, itemCount do
-                    itemLink= GetInboxItemLink(openMailID, i)
-                    if itemLink then
-                        break
-                    end
+    --查找，信件里的第一个物品，超链接
+    local function find_itemLink(itemCount, openMailID, itemLink)
+        itemLink= (itemCount and itemCount>0) and itemLink
+        if itemCount and itemCount>0 and not itemLink then
+            for i= 1, itemCount do
+                itemLink= GetInboxItemLink(openMailID, i)
+                if itemLink then
+                    break
                 end
             end
-            return itemLink
         end
+        return itemLink
+    end
 
     --删除，或退信
     local function return_delete_InBox(openMailID)--删除，或退信
@@ -1394,7 +1394,9 @@ local function Init_InBox()
         for i=1, INBOXITEMS_TO_DISPLAY do
             local btn=_G["MailItem"..i.."Button"]
             if btn and btn:IsShown() then
-                local _, _, sender, subject, money2, CODAmount2, _, itemCount2 = GetInboxHeaderInfo(btn.index)
+                local _, _, sender, subject, money2, CODAmount2, _, itemCount2, wasRead, wasReturned, textCreated, canReply, isGM = GetInboxHeaderInfo(btn.index)
+                
+                local invoiceType, itemName, playerName, bid, buyout, deposit, consignment = GetInboxInvoiceInfo(btn.index)
                 local CODAmount= (CODAmount2 and CODAmount2>0) and CODAmount2 or nil
                 local money= (money2 and money2>0) and money2 or nil
                 local itemCount= (itemCount2 and itemCount2>0) and itemCount2 or nil
@@ -1403,15 +1405,13 @@ local function Init_InBox()
                 if sender then
                     local frame=_G["MailItem"..i.."Sender"]
                     if frame then
-                        if not Save.hide then
-                            frame:SetText(get_Name_Info(sender))--发信人，提示 
-                        end
+                      
 
                         if not frame:IsMouseEnabled()  then--回复
                             frame:EnableMouse(true)
                             frame:SetScript('OnMouseDown', function(self2)
-                                if not Save.hide then
-                                    OpenMailSender.Name:SetText(self2.sender)
+                                if not Save.hide and not self2.isGM and (self2.playerName or self2.sender)  then
+                                    OpenMailSender.Name:SetText(self2.playerName or self2.sender)
                                     OpenMailSubject:SetText(self2.subject)
                                     InboxFrame.openMailID= self2.openMailID
                                     securecall(OpenMail_Reply)--回复
@@ -1419,24 +1419,29 @@ local function Init_InBox()
                                 end
                             end)
                             frame:SetScript('OnEnter', function(self2)
-                                if not Save.hide then
+                                if not Save.hide and not self2.isGM and (self2.playerName or self2.sender)  then
                                     e.tips:SetOwner(self2, "ANCHOR_LEFT")
                                     e.tips:ClearLines()
-                                    e.tips:AddDoubleLine(self2.sender, e.onlyChinese and '回复' or REPLY_MESSAGE)
+                                    e.tips:AddDoubleLine(e.onlyChinese and '回复' or REPLY_MESSAGE, self2.playerName or self2.sender)
                                     e.tips:Show()
                                     self2:SetAlpha(0.3)
                                 end
                             end)
                             frame:SetScript('OnLeave', function(self2)
-                                if not Save.hide then
-                                    e.tips:Hide()
-                                    self2:SetAlpha(1)
-                                end
+                                e.tips:Hide()
+                                self2:SetAlpha(1)
                             end)
                         end
                         frame.sender= sender
                         frame.subject= subject
                         frame.openMailID= btn.index
+
+                        frame.playerName= (invoiceType=='buyer' or invoiceType=='seller') and playerName or nil
+                        frame.isGM= isGM
+
+                        if not Save.hide and sender  then
+                            frame:SetText(playerName and sender..'  '..get_Name_Info(playerName) or get_Name_Info(sender))--发信人，提示 
+                        end
                     end
                 end
 
@@ -1477,11 +1482,15 @@ local function Init_InBox()
                     if not Save.hide and (money or CODAmount) then
                         if CODAmount then
                             text= (e.onlyChinese and '付款' or COD)
-                        elseif money then
+                        elseif money or invoiceType=='seller' then
                             text= (e.onlyChinese and '可取' or WITHDRAW)
                         end
                         if text then
-                            text= text..' '..get_Money(CODAmount or money)
+                            if bid and deposit and consignment then
+                                text= text..' '..get_Money(bid+deposit-consignment)
+                            else
+                                text= text..' '..get_Money(money)
+                            end
                         end
                     end
                     btn.moneyPagaTip:SetText(text or '')
@@ -1539,8 +1548,7 @@ local function Init_InBox()
                 if btn.DeleteButton then--删除，或退信，按钮，设置参数
                     btn.DeleteButton:SetNormalTexture(InboxItemCanDelete(btn.index) and 'xmarksthespot' or 'common-icon-undo')
                     btn.DeleteButton.openMailID= btn.index
-                    btn.DeleteButton:SetShown(not Save.hide)
-
+                    btn.DeleteButton:SetShown(not Save.hide and not invoiceType)
                     btn.DeleteButton.numItemLabel:SetText(itemCount or '')
 
                     btn.outItemOrMoney.openMailID= btn.index
@@ -1563,7 +1571,8 @@ local function Init_InBox()
 
         if not Save.hide then
             for i= 1, totalItems do
-                local _, _, sender, _, money, CODAmount, _, itemCount, _, _, _, _, _, _, firstItemLink = GetInboxHeaderInfo(i)
+                local _, _, sender, _, money, CODAmount, _, itemCount, _, _, _, _, isGM= GetInboxHeaderInfo(i)
+                local invoiceType= GetInboxInvoiceInfo(i)
                 if sender then
                     if InboxItemCanDelete(i) then
                         if (not CODAmount or CODAmount==0) and (not money or money==0) and (not itemCount or itemCount==0) then
@@ -1575,7 +1584,7 @@ local function Init_InBox()
                     allMoney= allMoney+ (money or 0)
                     allCODAmount= allCODAmount+ (CODAmount or 0)
                     allItemCount= allItemCount+ (itemCount or 0)
-                    if not allSenderTab[sender] then
+                    if not allSenderTab[sender] and not isGM and not invoiceType then
                         allSenderTab[sender]=true
                         allSender= allSender +1
                     end
@@ -1669,21 +1678,22 @@ local function Init_InBox()
         --总，内容，提示
         local text=''
         if not Save.hide then
-            local allMoneyText= get_Money(allMoney)
-            local allCODAmountText= get_Money(allCODAmount)
-            local allSenderText
-            if e.onlyChinese then
-                allSenderText= '发信人'
-            else
-                allSenderText= ITEM_TEXT_FROM:gsub(',','')
-                allSenderText= allSenderText:gsub('，','')
+            local allSenderText--总，发信人数
+            if allSender>0 then
+                if e.onlyChinese then
+                    allSenderText= '发信人'
+                else
+                    allSenderText= ITEM_TEXT_FROM:gsub(',','')
+                    allSenderText= allSenderText:gsub('，','')
+                end
+                allSenderText= allSender..allSenderText..' '
             end
             if totalItems>0 then
-                text= totalItems..(e.onlyChinese and '信件' or MAIL_LABEL)..' '--总，发信人数
-                    ..allSender..allSenderText..' '--总，发信人数
-                    ..(allItemCount>0 and allItemCount..(e.onlyChinese and '物品' or ITEMS)..' ' or '')--总，物品数
-                    ..(allMoneyText and '|cnGREEN_FONT_COLOR:'..allMoneyText..(e.onlyChinese and '可取' or WITHDRAW)..'|r ' or '')--总，可收取钱
-                    ..(allCODAmountText and '|cnRED_FONT_COLOR:'..allCODAmountText..(e.onlyChinese and '付款' or COD)..'|r ' or '')--总，要付款钱
+                text= '|cnGREEN_FONT_COLOR:'..totalItems..'|r'..(e.onlyChinese and '信件' or MAIL_LABEL)..' '--总，信件
+                    ..(allSenderText or '')--总，发信人数
+                    ..(allItemCount>0 and '|cnGREEN_FONT_COLOR:'..allItemCount..'|r'..(e.onlyChinese and '物品' or ITEMS)..' ' or '')--总，物品数
+                    ..(allMoney>0 and '|cnGREEN_FONT_COLOR:'..get_Money(allMoney)..'|r'..(e.onlyChinese and '可取' or WITHDRAW)..' ' or '')--总，可收取钱
+                    ..(allCODAmount>0 and '|cnRED_FONT_COLOR:'.. get_Money(allCODAmount)..'|r'..(e.onlyChinese and '付款' or COD)..' ' or '')--总，要付款钱
             end
             if not InboxFrame.AllTipsLable then
                 InboxFrame.AllTipsLable= e.Cstr(InboxFrame)
@@ -1812,7 +1822,7 @@ local function Init()--SendMailNameEditBox
         self2:SetAlpha(1)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(not e.onlyChinese and SHOW..'/'..'HIDE' or '显示/隐藏')
+        e.tips:AddDoubleLine(not e.onlyChinese and SHOW..'/'..HIDE or '显示/隐藏')
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()

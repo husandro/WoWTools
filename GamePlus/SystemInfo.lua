@@ -74,8 +74,14 @@ local function create_Set_lable(self, text)--建立,或设置,Labels
             label.tooltip= function()
                 local text2, tab2= get_Mony_Tips()
                 e.tips:AddLine(text2)
+                e.tips:AddLine(' ')
+                local find
                 for _, tab in pairs(tab2) do
                     e.tips:AddDoubleLine(tab.text, tab.col..tab.money)
+                    find=true
+                end
+                if find then
+                    e.tips:AddLine(' ')
                 end
             end
             down= ToggleAllBags
