@@ -1877,7 +1877,6 @@ local function Init()--SendMailNameEditBox
         end
     end)
 
-
     hooksecurefunc('HandleModifiedItemClick', function(itemLink, itemLocation)
         if not Save.disableCtrlFast and not Save.hide and button and itemLink and itemLocation~=nil and itemLocation.bagID and itemLocation.slotIndex and SendMailFrame:IsShown() and GetMouseButtonClicked()=='RightButton' and IsModifierKeyDown() then
             local findString
@@ -1888,6 +1887,7 @@ local function Init()--SendMailNameEditBox
             if classID==2 or classID==4 then
                 subClassID=nil
             end
+            MailFrame_Show()
             button.FastButton.set_PickupContainerItem(classID, subClassID, findString, {bag= itemLocation.bagID, slot= itemLocation.slotIndex, itemLink= itemLink})
         end
     end)

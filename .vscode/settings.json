@@ -2925,7 +2925,9 @@
         "BOOSTED_CHAR_LOCKED_SPELL_TIP",
         "EMOTE49_CMD1",
         "MailFrameTab1",
-        "MailFrameTab2"
+        "MailFrameTab2",
+        "MailFrame_Show",
+        "PlayerInteractionFrameManagerMixin"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
