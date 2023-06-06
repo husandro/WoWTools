@@ -2923,7 +2923,9 @@
         "SPELLS_PER_PAGE",
         "LE_FRAME_TUTORIAL_BOOSTED_SPELL_BOOK",
         "BOOSTED_CHAR_LOCKED_SPELL_TIP",
-        "EMOTE49_CMD1"
+        "EMOTE49_CMD1",
+        "MailFrameTab1",
+        "MailFrameTab2"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

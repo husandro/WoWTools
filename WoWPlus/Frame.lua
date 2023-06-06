@@ -20,7 +20,7 @@ local panel= CreateFrame("Frame")
 local function set_Frame_Point(self, name)--设置, 移动, 位置
     if not Save.disabledMove and self then
         name= name or self.FrameName or self:GetName()
-        if name then
+        if name and name~='SettingsPanel' then
             local p= Save.point[name]
             if p and p[1] and p[3] and p[4] and p[5] then
                 local frame= self.MoveFrame or self
@@ -178,7 +178,7 @@ local function set_Frame_Drag(self)
         stop_Drag(self)--停止移动
         local moveFrame= self2.MoveFrame or self2
         local frameName= self2.FrameName or moveFrame:GetName()
-        if frameName then
+        if frameName and frameName~='SettingsPanel' then
             if self2.SavePoint then--保存点
                 Save.point[frameName]= {moveFrame:GetPoint(1)}
                 Save.point[frameName][2]= nil
