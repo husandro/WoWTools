@@ -249,7 +249,7 @@ local function setQueueStatus()--小眼睛, 信息
     if pve then
         local _, tank, healer, dps= GetLFGRoles()--检测是否选定角色pve
         text= text and text..'|n' or ''
-        text= text..'|A:groupfinder-icon-friend:0:0|a|cnGREEN_FONT_COLOR:PvE|r'
+        text= text..'|A:groupfinder-icon-friend:0:0|a|cnGREEN_FONT_COLOR:'..(e.onlyChinese and 'PVE' or TRANSMOG_SET_PVE)..'|r'
                 ..(tank and INLINE_TANK_ICON or '')
                 ..(healer and INLINE_HEALER_ICON or '')
                 ..(dps and INLINE_DAMAGER_ICON or '')

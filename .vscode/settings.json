@@ -2927,7 +2927,9 @@
         "MailFrameTab1",
         "MailFrameTab2",
         "MailFrame_Show",
-        "PlayerInteractionFrameManagerMixin"
+        "PlayerInteractionFrameManagerMixin",
+        "TRANSMOG_SET_PVE",
+        "TRANSMOG_SET_PVP"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

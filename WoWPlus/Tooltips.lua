@@ -812,7 +812,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                 text= text..' '..(e.GetUnitRaceInfo({unit=unit, guid=guid, race=raceFile, sex=sex, reAtlas=false})  or '')
                         ..(raceName or '')
                         ..' '..(e.Class(nil, classFilename) or '')
-                        ..' '..(UnitIsPVP(unit) and '(|cnGREEN_FONT_COLOR:PvP|r)' or '(PvE)')
+                        ..' '..(UnitIsPVP(unit) and '(|cnGREEN_FONT_COLOR:'..(e.onlyChinese and 'PvP' or TRANSMOG_SET_PVP)..'|r)' or ('('..(e.onlyChinese and 'PvE' or TRANSMOG_SET_PVE)..')'))
             end
             text= col and col..text..'|r' or text
             line:SetText(text)
