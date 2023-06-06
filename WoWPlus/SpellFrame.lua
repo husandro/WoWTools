@@ -145,3 +145,27 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
     end
 end)
+
+--[[
+--UpdateButton
+hooksecurefunc('SpellBookFrame_Update', function()
+    if SpellBookFrame.bookType ~= BOOKTYPE_SPELL then
+        return
+    end
+    local spellSlot;
+    for i = 1, SPELLS_PER_PAGE do
+        local btn = _G["SpellButton" .. i];
+        if btn then
+            if not btn.setScript then
+                hooksecurefunc(btn, 'UpdateButton', function(self)
+                
+                end)
+            end
+            btn:SetShown(true)
+        end
+        local slotType = select(2,SpellBook_GetSpellBookSlot(btn));
+        if (slotType == "FUTURESPELL") then
+            btn:SetShown(true)
+        end
+	end    
+end)]]

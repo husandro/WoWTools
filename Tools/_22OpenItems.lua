@@ -625,6 +625,9 @@ local function Init()
             if MerchantFrame:IsVisible() then
                 MerchantFrame:SetShown(false)
             end
+            if SendMailFrame:IsShown() then
+                MailFrame:SetShown(false)
+            end
         end
     end)
 

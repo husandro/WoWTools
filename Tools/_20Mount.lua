@@ -1098,22 +1098,11 @@ end
 local function Init()
     Init_Dialogs()--初始化，对话框
 
-    OkMount= IsSpellKnown(90265)--是否已学, 骑术
-                or IsSpellKnown(33391)
-                or IsSpellKnown(34090)
-                or IsSpellKnown(33388)
+    OkMount= IsSpellKnownOrOverridesKnown(90265)--是否已学, 骑术
+                or IsSpellKnownOrOverridesKnown(33391)
+                or IsSpellKnownOrOverridesKnown(34090)
+                or IsSpellKnownOrOverridesKnown(33388)
 
-C_Timer.After(2, function()
-    OkMount= IsSpellKnown(90265)--是否已学, 骑术
-    or IsSpellKnown(33391)
-    or IsSpellKnown(34090)
-    or IsSpellKnown(33388)
-    print(OkMount,
-    IsPassiveSpell(90265)--是否已学, 骑术
-    , IsPassiveSpell(33391)
-    , IsPassiveSpell(34090)
-    , IsPassiveSpell(33388))
-end)
     for type, tab in pairs(Save.Mounts) do
         for ID, _ in pairs(tab) do
             e.LoadDate({id=ID, type= type==ITEMS and 'item' or 'spell'})
@@ -1441,10 +1430,10 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         setClickAtt()--设置属性
 
     elseif event=='LEARNED_SPELL_IN_TAB' then
-        OkMount= IsSpellKnown(90265)--是否已学, 骑术
-                or IsSpellKnown(33391)
-                or IsSpellKnown(34090)
-                or IsSpellKnown(33388)
+        OkMount= IsSpellKnownOrOverridesKnown(90265)--是否已学, 骑术
+                or IsSpellKnownOrOverridesKnown(33391)
+                or IsSpellKnownOrOverridesKnown(34090)
+                or IsSpellKnownOrOverridesKnown(33388)
 
     end
 end)

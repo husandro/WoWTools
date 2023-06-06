@@ -898,7 +898,7 @@ local function Init_Fast_Button()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
-        self2.FastButton.get_Send_Max_Item()--能发送，数量
+        self2.get_Send_Max_Item()--能发送，数量
         self2.set_Fast_Event(nil, true)--清除，注册，事件，显示/隐藏，设置数量
         for _, btn in pairs(button.FastButtonS) do
             btn:SetAlpha(1)
@@ -907,7 +907,7 @@ local function Init_Fast_Button()
     end)
     button.FastButton:SetScript('OnLeave', function(self2)
         e.tips:Hide()
-        self2.FastButton.get_Send_Max_Item()--能发送，数量
+        self2.get_Send_Max_Item()--能发送，数量
         self2.set_Fast_Event()--清除，注册，事件，显示/隐藏，设置数量
         button.clearAllItmeButton:SetShown(panel.ItemMaxNum<ATTACHMENTS_MAX_SEND)
     end)

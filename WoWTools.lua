@@ -348,7 +348,7 @@ e.Icon={
     select2='|A:AlliedRace-UnlockingFrame-Checkmark:0:0|a',--绿色√
     selectYellow='Adventures-Checkmark',--黄色√
     X2='|A:xmarksthespot:0:0|a',
-    O2='|A:talents-button-reset:0:0|t',--￠
+    O2='|A:talents-button-reset:0:0|a',--￠
 
     right='|A:newplayertutorial-icon-mouse-rightbutton:0:0|a',
     left='|A:newplayertutorial-icon-mouse-leftbutton:0:0|a',
@@ -1170,7 +1170,7 @@ function e.GetTooltipData(tab)
         local findText= numText>0 or tab.wow
         local numFind=0
         for _, line in ipairs(tooltipData.lines) do--是否
-            TooltipUtil.SurfaceArgs(line)
+           -- TooltipUtil.SurfaceArgs(line)
             if tab.red and not data.red then
                 local leftHex=line.leftColor and line.leftColor:GenerateHexColor()
                 local rightHex=line.rightColor and line.rightColor:GenerateHexColor()

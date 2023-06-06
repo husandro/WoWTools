@@ -49,7 +49,7 @@ local function Du(self, slot, link) --耐久度
             self.du:SetOrientation("VERTICAL")
             self.du:SetSize(4, self:GetHeight())--h37
         end
-        self.du:SetStatusBarTexture('Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_Smooth_Border')
+        self.du:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
         self.du:EnableMouse(true)
         self.du:SetMinMaxValues(0, 100)
         self.du:SetScript('OnEnter', function(self2)

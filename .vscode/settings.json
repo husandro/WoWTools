@@ -2915,7 +2915,14 @@
         "COPPER_AMOUNT",
         "MoneyInputFrame_GetCopper",
         "MAIL_MULTIPLE_ITEMS",
-        "MAIL_MULTIPLE_ITEMS"
+        "MAIL_MULTIPLE_ITEMS",
+        "SpellBook_GetSpellBookSlot",
+        "UpdateProfessionButton",
+        "Kiosk",
+        "SpellBookFrame_Update",
+        "SPELLS_PER_PAGE",
+        "LE_FRAME_TUTORIAL_BOOSTED_SPELL_BOOK",
+        "BOOSTED_CHAR_LOCKED_SPELL_TIP"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
