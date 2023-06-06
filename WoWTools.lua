@@ -348,7 +348,7 @@ e.Icon={
     select2='|A:AlliedRace-UnlockingFrame-Checkmark:0:0|a',--绿色√
     selectYellow='Adventures-Checkmark',--黄色√
     X2='|A:xmarksthespot:0:0|a',
-    O2='|TInterface\\AddOns\\WeakAuras\\Media\\Textures\\cancel-mark.tga:0|t',--￠
+    O2='|A:talents-button-reset:0:0|t',--￠
 
     right='|A:newplayertutorial-icon-mouse-rightbutton:0:0|a',
     left='|A:newplayertutorial-icon-mouse-leftbutton:0:0|a',

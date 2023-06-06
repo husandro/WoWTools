@@ -1103,7 +1103,17 @@ local function Init()
                 or IsSpellKnown(34090)
                 or IsSpellKnown(33388)
 
-
+C_Timer.After(2, function()
+    OkMount= IsSpellKnown(90265)--是否已学, 骑术
+    or IsSpellKnown(33391)
+    or IsSpellKnown(34090)
+    or IsSpellKnown(33388)
+    print(OkMount,
+    IsPassiveSpell(90265)--是否已学, 骑术
+    , IsPassiveSpell(33391)
+    , IsPassiveSpell(34090)
+    , IsPassiveSpell(33388))
+end)
     for type, tab in pairs(Save.Mounts) do
         for ID, _ in pairs(tab) do
             e.LoadDate({id=ID, type= type==ITEMS and 'item' or 'spell'})

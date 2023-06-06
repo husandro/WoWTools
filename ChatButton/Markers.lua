@@ -360,7 +360,7 @@ local function setMarkersFrame()--设置标记, 框架
                 btn:SetPoint('BOTTOMRIGHT', last or frame, 'BOTTOMLEFT')
             end
             if index==0 then
-                btn:SetNormalTexture('Interface\\AddOns\\WeakAuras\\Media\\Textures\\cancel-mark.tga')
+                btn:SetNormalAtlas(e.Icon.disabled)
                 btn:RegisterForDrag("RightButton")
                 btn:SetScript("OnDragStart", function(self,d )
                     if d=='RightButton' and not IsModifierKeyDown() then
@@ -587,7 +587,7 @@ local function setMarkersFrame()--设置标记, 框架
             btn:SetAttribute("marker2", index==0 and 0 or tab[index])
             btn:SetAttribute("action2", "clear")
             if index==0 then
-                btn:SetNormalTexture('Interface\\AddOns\\WeakAuras\\Media\\Textures\\cancel-mark.tga')
+                btn:SetNormalAtlas(e.Icon.disabled)
             else
                 btn:SetNormalTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
             end

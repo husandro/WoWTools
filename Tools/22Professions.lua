@@ -9,13 +9,13 @@ local panel=CreateFrame("Frame")
 
 --添一个,全学,专业, 按钮, 插件 TrainAll 
 local function set_Blizzard_TrainerU()
-    local btn= e.Cbtn(ClassTrainerTrainButton, {type=false, size={ClassTrainerTrainButton:GetSize()}})
-    btn:SetPoint('RIGHT', ClassTrainerTrainButton, 'LEFT',-2,0)
-    btn.name=e.onlyChinese and '全部' or ALL
-    btn.all= 0
-    btn.cost= 0
-	btn:SetText(btn.name)
-    btn:SetScript("OnEnter",function(self)
+    ClassTrainerFrame.BuyAll= e.Cbtn(ClassTrainerFrame, {type=false, size={ClassTrainerTrainButton:GetSize()}})
+    ClassTrainerFrame.BuyAll:SetPoint('RIGHT', ClassTrainerTrainButton, 'LEFT',-2,0)
+    ClassTrainerFrame.BuyAll.name=e.onlyChinese and '全部' or ALL
+    ClassTrainerFrame.BuyAll.all= 0
+    ClassTrainerFrame.BuyAll.cost= 0
+	ClassTrainerFrame.BuyAll:SetText(ClassTrainerFrame.BuyAll.name)
+    ClassTrainerFrame.BuyAll:SetScript("OnEnter",function(self)
         local text= GetCoinTextureString(self.cost)
         if self.cost< GetMoney() then
             text= '|cnGREEN_FONT_COLOR:'..text..'|r'
@@ -30,9 +30,9 @@ local function set_Blizzard_TrainerU()
         e.tips:AddDoubleLine(id, addName)
 		e.tips:Show()
 	end)
-	btn:SetScript("OnLeave",function() e.tips:Hide() end)
+	ClassTrainerFrame.BuyAll:SetScript("OnLeave",function() e.tips:Hide() end)
 
-	btn:SetScript("OnClick",function()
+	ClassTrainerFrame.BuyAll:SetScript("OnClick",function()
         local index= WOW_PROJECT_ID==WOW_PROJECT_MAINLINE and 2 or 3
         local num, cost= 0, 0
         local tab={}
@@ -61,49 +61,62 @@ local function set_Blizzard_TrainerU()
         end)
 	end)
 
-	hooksecurefunc("ClassTrainerFrame_Update",function()--Blizzard_TrainerUI.lua 
+	hooksecurefunc("ClassTrainerFrame_Update",function(self2)--Blizzard_TrainerUI.lua 
         local show= IsTradeskillTrainer()
         if show then
             local index= WOW_PROJECT_ID==WOW_PROJECT_MAINLINE and 2 or 3
-            btn.all=0
-            btn.cost=0
+            ClassTrainerFrame.BuyAll.all=0
+            ClassTrainerFrame.BuyAll.cost=0
             local tradeSkillStepIndex = GetTrainerServiceStepIndex();
             local category= tradeSkillStepIndex and select(index, GetTrainerServiceInfo(tradeSkillStepIndex))
             if tradeSkillStepIndex and (category=='used' or category=='available') then
                 for i=1,GetNumTrainerServices() do
                     if select(index, GetTrainerServiceInfo(i))=="available" then
-                        btn.all= btn.all +1
-                        btn.cost= btn.cost +(GetTrainerServiceCost(i) or 0)
+                        ClassTrainerFrame.BuyAll.all= ClassTrainerFrame.BuyAll.all +1
+                        ClassTrainerFrame.BuyAll.cost= ClassTrainerFrame.BuyAll.cost +(GetTrainerServiceCost(i) or 0)
                     end
                 end
             end
-            btn:SetEnabled(btn.all>0)
-            btn:SetText(btn.all..' '..btn.name)
+            ClassTrainerFrame.BuyAll:SetEnabled(ClassTrainerFrame.BuyAll.all>0)
+            ClassTrainerFrame.BuyAll:SetText(ClassTrainerFrame.BuyAll.all..' '..ClassTrainerFrame.BuyAll.name)
+            ClassTrainerFrame.BuyAll:SetText((ClassTrainerFrame.BuyAll.cost>GetMoney() and '|cnRED_FONT_COLOR:' or '').. ClassTrainerFrame.BuyAll.name)
         end
-        btn:SetShown(show and not Save.disabledClassTrainer)
+        ClassTrainerFrame.BuyAll:SetShown(show and not Save.disabledClassTrainer)
 	end)
 
-    local btn2= e.Cbtn(ClassTrainerFrame, {icon=true})
-    btn2:SetPoint('LEFT', ClassTrainerFrame.TitleContainer, -5, -1)
+    local btn2= e.Cbtn(ClassTrainerFrame.TitleContainer, {atlas= Save.disabledClassTrainer and e.Icon.disabled or e.Icon.icon})
+    if _G['MoveZoomInButtonPerClassTrainerFrame'] then
+        btn2:SetPoint('RIGHT', _G['MoveZoomInButtonPerClassTrainerFrame'], 'LEFT')
+    else
+        btn2:SetPoint('LEFT', ClassTrainerFrame.TitleContainer, -5, -1)
+    end
     btn2:SetSize(20,20)
-    btn2:SetAlpha(0.3)
-    btn2:SetScript('OnClick', function()
+    btn2:SetAlpha(0.5)
+    btn2:SetScript('OnClick', function(self2)
         Save.disabledClassTrainer= not Save.disabledClassTrainer and true or nil
-        btn:SetShown(not Save.disabledClassTrainer)
+        ClassTrainerFrame.BuyAll:SetShown(not Save.disabledClassTrainer)
+        self2:SetNormalAtlas(Save.disabledClassTrainer and e.Icon.disabled or e.Icon.icon)
     end)
-    btn2:SetScript("OnEnter",function(self)
+    btn2:SetScript("OnEnter",function(self2)
 		e.tips:SetOwner(ClassTrainerFrame.TitleContainer, "ANCHOR_TOPLEFT")
 		e.tips:ClearLines()
 		e.tips:AddDoubleLine(e.onlyChinese and '全部学习' or (ALL..' '.. LEARN), e.GetShowHide(not Save.disabledClassTrainer))
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, addName)
 		e.tips:Show()
+        self2:SetAlpha(1)
+        ClassTrainerFrame.BuyAll:SetButtonState('PUSHED')
 	end)
-	btn2:SetScript("OnLeave",function() e.tips:Hide() end)
-
-    hooksecurefunc('ClassTrainerFrame_InitServiceButton', function(skillButton, elementData,...)
+	btn2:SetScript("OnLeave",function(self2)
+        e.tips:Hide()
+        self2:SetAlpha(0.5)
+        ClassTrainerFrame.BuyAll:SetButtonState('NORMAL')
+    end)
+    --[[hooksecurefunc('ClassTrainerFrame_InitServiceButton', function(skillButton, elementData,...)
         local skillIndex = elementData.skillIndex;
         local isTradeSkill = elementData.isTradeSkill;
         local serviceName, serviceType, texture, reqLevel = GetTrainerServiceInfo(skillIndex);
-    end)
+    end)]]
 end
 
 
