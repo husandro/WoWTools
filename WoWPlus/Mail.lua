@@ -1686,7 +1686,7 @@ local function Init_InBox()
                     allSenderText= ITEM_TEXT_FROM:gsub(',','')
                     allSenderText= allSenderText:gsub('，','')
                 end
-                allSenderText= allSender..allSenderText..' '
+                allSenderText= '|cnGREEN_FONT_COLOR:'..allSender..'|r'..allSenderText..' '
             end
             if totalItems>0 then
                 text= '|cnGREEN_FONT_COLOR:'..totalItems..'|r'..(e.onlyChinese and '信件' or MAIL_LABEL)..' '--总，信件
