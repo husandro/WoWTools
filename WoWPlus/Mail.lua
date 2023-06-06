@@ -1887,7 +1887,6 @@ local function Init()--SendMailNameEditBox
             if classID==2 or classID==4 then
                 subClassID=nil
             end
-            MailFrame_Show()
             button.FastButton.set_PickupContainerItem(classID, subClassID, findString, {bag= itemLocation.bagID, slot= itemLocation.slotIndex, itemLink= itemLink})
         end
     end)
