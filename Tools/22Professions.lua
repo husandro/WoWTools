@@ -122,7 +122,11 @@ end
 
 local function set_ProfessionsFrame_Button()--专业界面, 按钮
     local setButton= e.Cbtn(ProfessionsFrame.TitleContainer, {icon=not Save.notProfessionsFrameButtuon, size={20, 20}})
-    setButton:SetPoint('RIGHT', ProfessionsFrameTitleText, 'RIGHT', -24, 2)
+    if _G['MoveZoomInButtonPerProfessionsFrame'] then
+        setButton:SetPoint('LEFT', _G['MoveZoomInButtonPerProfessionsFrame'], 'RIGHT')
+    else
+        setButton:SetPoint('RIGHT', ProfessionsFrameTitleText, 'RIGHT', -24, 2)
+    end
     setButton:SetScript('OnMouseDown', function(self)
         Save.notProfessionsFrameButtuon= not Save.notProfessionsFrameButtuon and true or nil
         setButton.frame:SetShown(not Save.notProfessionsFrameButtuon)
