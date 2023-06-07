@@ -373,11 +373,11 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
                             e.tips:Show()
                         end
                     end)
-                    self.upgradeItem:SetScript('OnLeave', function() e.tips:Hide() end)
+                    self.upgradeItemText:SetScript('OnLeave', function() e.tips:Hide() end)
                 end
-                self.upgradeItemText.tips= upgradeItemText
+                self.upgradeItemText.tips= upgradeItem
                 local quality = GetInventoryItemQuality('player', slot)--颜色
-                local hex = quality and select(3, GetItemQualityColor(quality))
+                local hex = quality and select(4, GetItemQualityColor(quality))
                 if hex then
                     upgradeItemText= '|c'..hex..upgradeItemText..'|r'
                 end

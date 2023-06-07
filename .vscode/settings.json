@@ -2930,7 +2930,8 @@
         "PlayerInteractionFrameManagerMixin",
         "TRANSMOG_SET_PVE",
         "TRANSMOG_SET_PVP",
-        "ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT_STRING"
+        "ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT_STRING",
+        "GroupLootContainer_Update"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

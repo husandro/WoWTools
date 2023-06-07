@@ -1730,21 +1730,39 @@ local function Init()
         end
     end)
 
-    --[[hooksecurefunc(GroupLootHistoryFrame,'UpdateTimer', function(self)
-        if self.Timer then
-            if not self.TimerLabel then
-                self.TimerLabel= e.Cstr(self.Timer)
-                self.TimerLabel:SetPoint('RIGHT')
+    hooksecurefunc(GroupLootHistoryFrame, 'UpdateTimer', function(self)
+        if self.Timer and self.Timer:IsShown() then
+            local text
+            if self.encounterInfo and self.encounterInfo.startTime and self.encounterInfo.duration then
+                if not self.TimerLabel then
+                    self.TimerLabel= e.Cstr(self.Timer)
+                    self.TimerLabel:SetPoint('RIGHT')
+                end
+                local info= self.encounterInfo--C_LootHistory.GetInfoForEncounter(encounterID)
+                text= info.duration- (GetTime() - info.startTime)
+                time= text and SecondsToClock(text) or ''
             end
-            self.TimerLabel:SetText(self.Timer:GetValue() )
+            if self.TimerLabel then
+                self.TimerLabel:SetText(text or '')
+            end
         end
-    end)]]
+    end)
+
     if Save.LFGPlus then--预创建队伍增强
         set_LFGPlus()
     end
 
-    hooksecurefunc('GroupLootContainer_AddFrame', function(_, frame)--自动ROLL
+    hooksecurefunc('GroupLootContainer_AddFrame', function(_, frame)--自动 ROLL
         set_ROLL_Check(frame)
+    end)
+
+    hooksecurefunc('GroupLootContainer_Update', function(self)
+        for i=1, self.maxIndex do
+            local frame = self.rollFrames[i];
+            if frame and frame:IsShown()  then
+                set_ROLL_Check(frame)
+            end
+        end
     end)
 
     PVPTimerFrame:HookScript('OnShow', function(self2)

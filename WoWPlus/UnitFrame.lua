@@ -513,9 +513,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                     end
                 end)
                 set_LootSpecialization()--拾取专精
-
-
-                
+               
                 self.instanceFrame2= CreateFrame("Frame", nil, self)--Riad 副本, 地下城，指示
                 self.instanceFrame2:SetFrameLevel(frameLevel)
                 self.instanceFrame2:SetPoint('RIGHT', self.lootSpecFrame, 'LEFT',-2, 1)
