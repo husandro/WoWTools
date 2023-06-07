@@ -2931,7 +2931,16 @@
         "TRANSMOG_SET_PVE",
         "TRANSMOG_SET_PVP",
         "ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT_STRING",
-        "GroupLootContainer_Update"
+        "GroupLootContainer_Update",
+        "PaperDollItemSlotButton_Update",
+        "GearSetButton_UpdateSpecInfo",
+        "GearSetButton_SetSpecInfo",
+        "PaperDollEquipmentManagerPane_Update",
+        "PaperDollFrame_UpdateSidebarTabs",
+        "InspectFrameTab1",
+        "InspectFrameTab_OnClick",
+        "InspectPaperDollFrame_SetLevel",
+        "PaperDollFrame_ClearIgnoredSlots"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

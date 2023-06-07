@@ -855,7 +855,7 @@ local function Init()--冒险指南界面
                         menuList= classInfo.classFile,
                         func= function(_, arg1, arg2)
                             Save.loot[arg1]={}
-                            print(id, addName, e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, e.Class(nil, arg1), arg2, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要刷新' or NEED..REFRESH))
+                            print(id, addName, e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, e.Class(nil, arg1), arg2, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要刷新' or (NEED..REFRESH)))
                         end
                     }
                     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -868,7 +868,7 @@ local function Init()--冒险指南界面
                 notCheckable=true,
                 func= function()
                     Save.loot={[e.Player.class]={}}
-                    print(id, addName, e.onlyChinese and '全部清除' or CLEAR_ALL, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要刷新' or NEED..REFRESH))
+                    print(id, addName, e.onlyChinese and '全部清除' or CLEAR_ALL, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要刷新' or (NEED..REFRESH)))
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)

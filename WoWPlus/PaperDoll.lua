@@ -5,6 +5,7 @@ local Save={
     equipment= e.Player.husandro,--装备管理, 开关,
     --Equipment=nil--装备管理, 位置保存
     equipmentFrameScale=1.1--装备管理, 缩放
+    --hide=true,--隐藏
 }
 local panel = CreateFrame("Frame", nil, PaperDollFrame)
 
@@ -12,7 +13,8 @@ local pvpItemStr= PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在
 local enchantStr= ENCHANTED_TOOLTIP_LINE:gsub('%%s','(.+)')--附魔
 local upgradeStr= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(.-%%d%+/%%d%+)')-- "升级：%s/%s"
 local itemLevelStr= ITEM_LEVEL:gsub('%%d', '%(%%d%+%)')--"物品等级：%d"
-local function Slot(slot)--左边插曹
+
+local function is_Left_Slot(slot)--左边插曹
     return slot==1 or slot==2 or slot==3 or slot==15 or slot==5 or slot==4 or slot==19 or slot==9 or slot==17 or slot==18
 end
 
@@ -24,20 +26,20 @@ for i=1, NUM_TOTAL_EQUIPPED_BAG_SLOTS  do
     end
 end
 
-local function Du(self, slot, link) --耐久度    
+local function set_Du(self, slot, link) --耐久度    
     local du
-    if link then
+    if link and not Save.hide then
         local min, max=GetInventoryItemDurability(slot)
         if min and max and max>0 then
             du=min/max*100
         end
     end
-    if not self.du then
+    if not self.du and du then
         self.du= CreateFrame('StatusBar', nil, self)
         local wq= slot==16 or slot==17 or slot==18--武器
         if wq then
             self.du:SetPoint('TOP', self, 'BOTTOM')
-        elseif Slot(slot) then
+        elseif is_Left_Slot(slot) then
             self.du:SetPoint('RIGHT', self, 'LEFT', -2.5,0)
         else
             self.du:SetPoint('LEFT', self, 'RIGHT', 2.5,0)
@@ -62,17 +64,21 @@ local function Du(self, slot, link) --耐久度
         end)
         self.du:SetScript('OnLeave', function() e.tips:Hide() end)
     end
-    if du and du >70 then
-        self.du:SetStatusBarColor(0,1,0)
-    elseif du and du >30 then
-        self.du:SetStatusBarColor(1,1,0)
-    else
-        self.du:SetStatusBarColor(1,0,0)
+    if self.du then
+        if du then
+            if du and du >70 then
+                self.du:SetStatusBarColor(0,1,0)
+            elseif du and du >30 then
+                self.du:SetStatusBarColor(1,1,0)
+            else
+                self.du:SetStatusBarColor(1,0,0)
+            end
+        end
+        self.du:SetValue(du or 0)
+        self.du.du=du
     end
-    self.du:SetValue(du or 0)
-    self.du.du=du
 
-    if not self.slotText then
+    if not self.slotText and not Save.hide then
         self.slotText=e.Cstr(self.du, {size=8})
         self.slotText:SetAlpha(0.5)
         self.slotText:EnableMouse(true)
@@ -89,117 +95,121 @@ local function Du(self, slot, link) --耐久度
             local wq= slot==16 or slot==17 or slot==18--武器
             if wq then
                 self.slotText:SetPoint('TOP', self.du or self, 'BOTTOM')
-            elseif Slot(slot) then
+            elseif is_Left_Slot(slot) then
                 self.slotText:SetPoint('RIGHT', self.du or self, 'LEFT')
             else
                 self.slotText:SetPoint('LEFT', self.du or self, 'RIGHT')
             end
         end
     end
-    self.slotText.slot= slot
-    self.slotText:SetText(slot or '')
+    if self.slotText then
+        self.slotText.slot= slot
+        self.slotText:SetText(not Save.hide and slot or '')
+    end
 end
 
 local function LvTo()--总装等
     if not PaperDollSidebarTab1 then
         return
     end
-    local avgItemLevel,_, avgItemLevelPvp = GetAverageItemLevel()
-    if not PaperDollSidebarTab1.itemLevelText then--PVE
-        PaperDollSidebarTab1.itemLevelText=e.Cstr(PaperDollSidebarTab1, {justifyH='CENTER'})
-        PaperDollSidebarTab1.itemLevelText:SetPoint('BOTTOM')
-        PaperDollSidebarTab1.itemLevelText:EnableMouse(true)
-        PaperDollSidebarTab1.itemLevelText:SetScript('OnLeave', function() e.tips:Hide() end)
-        PaperDollSidebarTab1.itemLevelText:SetScript('OnMouseDown', function(self)
-            securecallfunction(PaperDollFrame_SetSidebar, PaperDollSidebarTab1, 1)--PaperDollFrame.lua
-        end)
-        PaperDollSidebarTab1.itemLevelText:SetScript('OnEnter', function(self)
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddLine(CharacterStatsPane.ItemLevelFrame.tooltip)
-            e.tips:AddLine(CharacterStatsPane.ItemLevelFrame.tooltip2)
-            e.tips:AddLine(' ')
-            e.tips:AddLine('|cnGREEN_FONT_COLOR:'..format(e.onlyChinese and '物品等级：%d' or CHARACTER_LINK_ITEM_LEVEL_TOOLTIP, self.avgItemLevel or '0'))
-            e.tips:AddDoubleLine(id, addName)
-            e.tips:Show()
-        end)
-    end
-    if avgItemLevel and avgItemLevel>0 then
-        PaperDollSidebarTab1.itemLevelText:SetFormattedText('%i', avgItemLevel)
-    else
-        PaperDollSidebarTab1.itemLevelText:SetText('')
-    end
-    PaperDollSidebarTab1.itemLevelText.avgItemLevel= avgItemLevel
+    local avgItemLevel,_, avgItemLevelPvp
+    if not Save.hide then
+        avgItemLevel,_, avgItemLevelPvp= GetAverageItemLevel()
+        if not PaperDollSidebarTab1.itemLevelText then--PVE
+            PaperDollSidebarTab1.itemLevelText=e.Cstr(PaperDollSidebarTab1, {justifyH='CENTER'})
+            PaperDollSidebarTab1.itemLevelText:SetPoint('BOTTOM')
+            PaperDollSidebarTab1.itemLevelText:EnableMouse(true)
+            PaperDollSidebarTab1.itemLevelText:SetScript('OnLeave', function() e.tips:Hide() end)
+            PaperDollSidebarTab1.itemLevelText:SetScript('OnMouseDown', function(self)
+                securecallfunction(PaperDollFrame_SetSidebar, PaperDollSidebarTab1, 1)--PaperDollFrame.lua
+            end)
+            PaperDollSidebarTab1.itemLevelText:SetScript('OnEnter', function(self)
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddLine(CharacterStatsPane.ItemLevelFrame.tooltip)
+                e.tips:AddLine(CharacterStatsPane.ItemLevelFrame.tooltip2)
+                e.tips:AddLine(' ')
+                e.tips:AddLine('|cnGREEN_FONT_COLOR:'..format(e.onlyChinese and '物品等级：%d' or CHARACTER_LINK_ITEM_LEVEL_TOOLTIP, self.avgItemLevel or ''))
+                e.tips:AddDoubleLine(id, addName)
+                e.tips:Show()
+            end)
+        end
+        PaperDollSidebarTab1.itemLevelText.avgItemLevel= avgItemLevel
 
-
-    if avgItemLevel~= avgItemLevelPvp and avgItemLevelPvp and not PaperDollSidebarTab1.itemLevelPvPText then--PVP
-        PaperDollSidebarTab1.itemLevelPvPText=e.Cstr(PaperDollSidebarTab1, {justifyH='CENTER'})
-        PaperDollSidebarTab1.itemLevelPvPText:SetPoint('TOP')
-        PaperDollSidebarTab1.itemLevelPvPText:SetScript('OnMouseDown', function(self)
-            securecallfunction(PaperDollFrame_SetSidebar, PaperDollSidebarTab1, 1)--PaperDollFrame.lua
-        end)
-        PaperDollSidebarTab1.itemLevelPvPText:SetScript('OnEnter', function(self)
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddLine(CharacterStatsPane.ItemLevelFrame.tooltip)
-            e.tips:AddLine(CharacterStatsPane.ItemLevelFrame.tooltip2)
-            e.tips:AddLine(' ')
-            e.tips:AddLine('|cnGREEN_FONT_COLOR:'..format(e.onlyChinese and 'PvP物品等级 %d' or ITEM_UPGRADE_PVP_ITEM_LEVEL_STAT_FORMAT, self.avgItemLevel or '0'))
-            e.tips:AddDoubleLine(id, addName)
-            e.tips:Show()
-        end)
+        if avgItemLevel~= avgItemLevelPvp and avgItemLevelPvp and not PaperDollSidebarTab1.itemLevelPvPText then--PVP
+            PaperDollSidebarTab1.itemLevelPvPText=e.Cstr(PaperDollSidebarTab1, {justifyH='CENTER'})
+            PaperDollSidebarTab1.itemLevelPvPText:SetPoint('TOP')
+            PaperDollSidebarTab1.itemLevelPvPText:SetScript('OnMouseDown', function(self)
+                securecallfunction(PaperDollFrame_SetSidebar, PaperDollSidebarTab1, 1)--PaperDollFrame.lua
+            end)
+            PaperDollSidebarTab1.itemLevelPvPText:SetScript('OnEnter', function(self)
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddLine(CharacterStatsPane.ItemLevelFrame.tooltip)
+                e.tips:AddLine(CharacterStatsPane.ItemLevelFrame.tooltip2)
+                e.tips:AddLine(' ')
+                e.tips:AddLine('|cnGREEN_FONT_COLOR:'..format(e.onlyChinese and 'PvP物品等级 %d' or ITEM_UPGRADE_PVP_ITEM_LEVEL_STAT_FORMAT, self.avgItemLevel or '0'))
+                e.tips:AddDoubleLine(id, addName)
+                e.tips:Show()
+            end)
+        end
+    end
+    if PaperDollSidebarTab1.itemLevelText then
+        PaperDollSidebarTab1.itemLevelText:SetText(avgItemLevel and avgItemLevel>0 and format('%i', avgItemLevel) or '')
     end
 
     if PaperDollSidebarTab1.itemLevelPvPText then
-        if avgItemLevel~= avgItemLevelPvp and avgItemLevelPvp then
-            PaperDollSidebarTab1.itemLevelPvPText:SetFormattedText('%i', avgItemLevelPvp)
-            PaperDollSidebarTab1.itemLevelPvPText:SetShown(true)
-        else
-            PaperDollSidebarTab1.itemLevelText:SetShown(false)
-        end
+        PaperDollSidebarTab1.itemLevelPvPText:SetText(avgItemLevelPvp and avgItemLevelPvp>0 and format('%i', avgItemLevelPvp) or '')
     end
 end
 
-local function Gem(self, slot, link)--宝石
+local function set_Gem(self, slot, link)--宝石
     if not slot or slot>17 or slot<1 or slot==4 then
         return
     end
-
-    local leftSlot= Slot(slot)--左边插曹
-    local x= leftSlot and 8 or -8
-    for n=1, MAX_NUM_SOCKETS do
-        local gemLink= link and select(2, GetItemGem(link, n))
-        if gemLink then
-            e.LoadDate({id=gemLink, type='item'})
-            if not self['gem'..n] then
-                self['gem'..n]=self:CreateTexture()
-                self['gem'..n]:SetSize(12.3, 12.3)--local h=self:GetHeight()/3 37 12.3
-                self['gem'..n]:EnableMouse(true)
-                self['gem'..n]:SetScript('OnEnter' ,function(self2)
-                    if self2.gemLink then
-                        e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                        e.tips:ClearLines()
-                        e.tips:SetHyperlink(self2.gemLink)
-                        e.tips:Show()
-                    end
-                end)
-                self['gem'..n]:SetScript('OnLeave',function() e.tips:Hide() end)
-            else
-                self['gem'..n]:ClearAllPoints()
+    if not Save.hide then
+        local leftSlot= is_Left_Slot(slot)--左边插曹
+        local x= leftSlot and 8 or -8
+        for n=1, MAX_NUM_SOCKETS do
+            local gemLink= link and select(2, GetItemGem(link, n))
+            if gemLink then
+                e.LoadDate({id=gemLink, type='item'})
+                if not self['gem'..n] then
+                    self['gem'..n]=self:CreateTexture()
+                    self['gem'..n]:SetSize(12.3, 12.3)--local h=self:GetHeight()/3 37 12.3
+                    self['gem'..n]:EnableMouse(true)
+                    self['gem'..n]:SetScript('OnEnter' ,function(self2)
+                        if self2.gemLink then
+                            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                            e.tips:ClearLines()
+                            e.tips:SetHyperlink(self2.gemLink)
+                            e.tips:Show()
+                        end
+                    end)
+                    self['gem'..n]:SetScript('OnLeave',function() e.tips:Hide() end)
+                else
+                    self['gem'..n]:ClearAllPoints()
+                end
+                if leftSlot then--左边插曹
+                    self['gem'..n]:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT', x, 0)
+                else
+                    self['gem'..n]:SetPoint('BOTTOMRIGHT', self, 'BOTTOMLEFT', x, 0)
+                end
             end
-            if leftSlot then--左边插曹
-                self['gem'..n]:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT', x, 0)
-            else
-                self['gem'..n]:SetPoint('BOTTOMRIGHT', self, 'BOTTOMLEFT', x, 0)
+            if self['gem'..n] then
+                self['gem'..n].gemLink= gemLink
+                self['gem'..n]:SetTexture(gemLink and C_Item.GetItemIconByID(gemLink) or 0)
+                self['gem'..n]:SetShown(not gemLink and false or true)
+            end
+
+            x= leftSlot and x+ 12.3 or x- 12.3--左边插曹
+        end
+    else
+        for n=1, MAX_NUM_SOCKETS do
+            if self['gem'..n] then
+                self['gem'..n]:SetShown(false)
             end
         end
-        if self['gem'..n] then
-            self['gem'..n].gemLink= gemLink
-            self['gem'..n]:SetTexture(gemLink and C_Item.GetItemIconByID(gemLink) or 0)
-            self['gem'..n]:SetShown(gemLink and true or false)
-        end
-
-        x= leftSlot and x+ 12.3 or x- 12.3--左边插曹
     end
 end
 
@@ -208,7 +218,7 @@ local function recipeLearned(recipeSpellID)--是否已学配方
     return info and info.learned
 end
 local function Engineering(self, slot, use)--增加 [潘达利亚工程学: 地精滑翔器][诺森德工程学: 氮气推进器]
-    if not ((slot==15 and recipeLearned(126392)) or (slot==6 and recipeLearned(55016))) or use then
+    if not ((slot==15 and recipeLearned(126392)) or (slot==6 and recipeLearned(55016))) or use and Save.hide then
         if self.engineering  then
             self.engineering:SetShown(false)
         end
@@ -219,7 +229,7 @@ local function Engineering(self, slot, use)--增加 [潘达利亚工程学: 地�
         local h=self:GetHeight()/3
         self.engineering=e.Cbtn(self, {icon='hide',size={h,h}})
         self.engineering:SetNormalTexture(136243)
-        if Slot(slot) then
+        if is_Left_Slot(slot) then
             self.engineering:SetPoint('TOPLEFT', self, 'TOPRIGHT', 8, 0)
         else
             self.engineering:SetPoint('TOPRIGHT', self, 'TOPLEFT', -8, 0)
@@ -258,14 +268,14 @@ end
 
 local function Enchant(self, slot, link)--附魔, 使用, 属性
     local enchant, use, pvpItem, upgradeItem, upgradeItemText
-    if link then
+    if link and not Save.hide then
         local dateInfo= e.GetTooltipData({hyperLink=link, text={enchantStr, pvpItemStr, upgradeStr}, onlyText=true})--物品提示，信息
         enchant, use, pvpItem, upgradeItem= dateInfo.text[enchantStr], dateInfo.red, dateInfo.text[pvpItemStr],  dateInfo.text[upgradeStr]
         if enchant and not self.enchant then--附魔
             local h=self:GetHeight()/3
             self.enchant=self:CreateTexture()
             self.enchant:SetSize(h,h)
-            if Slot(slot) then
+            if is_Left_Slot(slot) then
                 self.enchant:SetPoint('LEFT', self, 'RIGHT', 8, 0)
             else
                 self.enchant:SetPoint('RIGHT', self, 'LEFT', -8, 0)
@@ -288,7 +298,7 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
             local h=self:GetHeight()/3
             self.use=self:CreateTexture()
             self.use:SetSize(h,h)
-            if Slot(slot) then
+            if is_Left_Slot(slot) then
                 self.use:SetPoint('TOPLEFT', self, 'TOPRIGHT', 8, 0)
             else
                 self.use:SetPoint('TOPRIGHT', self, 'TOPLEFT', -8, 0)
@@ -312,7 +322,7 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
             local h=self:GetHeight()/3
             self.pvpItem=self:CreateTexture(nil,'OVERLAY',nil,7)
             self.pvpItem:SetSize(h,h)
-            if Slot(slot) then
+            if is_Left_Slot(slot) then
                 self.pvpItem:SetPoint('LEFT', self, 'RIGHT', -2.5,0)
             else
                 self.pvpItem:SetPoint('RIGHT', self, 'LEFT', 2.5,0)
@@ -333,7 +343,7 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
 
         if upgradeItem then
             if not self.upgradeItem then--"升级：%s/%s"
-                if Slot(slot) then
+                if is_Left_Slot(slot) then
                     self.upgradeItem= e.Cstr(self, {color={r=0,g=1,b=0}})
                     self.upgradeItem:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT',1,0)
                 else
@@ -357,7 +367,7 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
             if upgradeItemText then
                 if not self.upgradeItemText then
                     local h= self:GetHeight()/3
-                    if Slot(slot) then
+                    if is_Left_Slot(slot) then
                         self.upgradeItemText= e.Cstr(self, {color={r=0,g=1,b=0}})
                         self.upgradeItemText:SetPoint('LEFT', self, 'RIGHT',h+8,0)
                     else
@@ -413,14 +423,13 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
         self.upgradeItem:SetText(upgradeItem or '')
     end
     if  self.upgradeItemText then--"升级：%s %s/%s"
-        
         self.upgradeItemText:SetText(upgradeItemText or '')
     end
 end
 
-local function Set(self, link)--套装
+local function set_item_Set(self, link)--套装
     local set
-    if link then
+    if link and not Save.hide then
         set=select(16 , GetItemInfo(link))
         if set then
             if set and not self.set then
@@ -430,7 +439,9 @@ local function Set(self, link)--套装
             end
         end
     end
-    if self.set then self.set:SetShown(set) end
+    if self.set then
+        self.set:SetShown(set and true or false)
+    end
 end
 
 local function Title()--头衔数量
@@ -438,28 +449,32 @@ local function Title()--头衔数量
         return
     end
     local nu
-    local to=GetKnownTitles() or {}
-    nu= #to-1
-    nu= nu>0 and nu or nil
-    if not PaperDollSidebarTab2.titleNumeri then
-        PaperDollSidebarTab2.titleNumeri=e.Cstr(PaperDollSidebarTab2, {justifyH='CENTER'})
-        PaperDollSidebarTab2.titleNumeri:SetPoint('BOTTOM')
-        PaperDollSidebarTab2.titleNumeri:EnableMouse(true)
-        PaperDollSidebarTab2.titleNumeri:SetScript('OnLeave', function() e.tips:Hide() end)
-        PaperDollSidebarTab2.titleNumeri:SetScript('OnMouseDown', function(self)
-            securecallfunction(PaperDollFrame_SetSidebar, PaperDollSidebarTab2, 2)--PaperDollFrame.lua
-        end)
-        PaperDollSidebarTab2.titleNumeri:SetScript('OnEnter', function(self)
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(format(e.onlyChinese and '头衔：%s' or RENOWN_REWARD_TITLE_NAME_FORMAT, self.num or ''), e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL, 0,1,0, 0,1,0)
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(id, addName)
-            e.tips:Show()
-        end)
+    if not Save.hide then
+        local to=GetKnownTitles() or {}
+        nu= #to-1
+        nu= nu>0 and nu or nil
+        if not PaperDollSidebarTab2.titleNumeri then
+            PaperDollSidebarTab2.titleNumeri=e.Cstr(PaperDollSidebarTab2, {justifyH='CENTER'})
+            PaperDollSidebarTab2.titleNumeri:SetPoint('BOTTOM')
+            PaperDollSidebarTab2.titleNumeri:EnableMouse(true)
+            PaperDollSidebarTab2.titleNumeri:SetScript('OnLeave', function() e.tips:Hide() end)
+            PaperDollSidebarTab2.titleNumeri:SetScript('OnMouseDown', function(self)
+                securecallfunction(PaperDollFrame_SetSidebar, PaperDollSidebarTab2, 2)--PaperDollFrame.lua
+            end)
+            PaperDollSidebarTab2.titleNumeri:SetScript('OnEnter', function(self)
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(format(e.onlyChinese and '头衔：%s' or RENOWN_REWARD_TITLE_NAME_FORMAT, self.num or ''), e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL, 0,1,0, 0,1,0)
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(id, addName)
+                e.tips:Show()
+            end)
+        end
     end
-    PaperDollSidebarTab2.titleNumeri.num= nu
-    PaperDollSidebarTab2.titleNumeri:SetText(nu or '')
+    if PaperDollSidebarTab2.titleNumeri then
+        PaperDollSidebarTab2.titleNumeri.num= nu
+        PaperDollSidebarTab2.titleNumeri:SetText(nu or '')
+    end
 end
 
 
@@ -469,7 +484,7 @@ end
 local function set_set_PaperDollSidebarTab3_Text_Tips(self)
     self:EnableMouse(true)
     self:SetScript('OnLeave', function() e.tips:Hide() end)
-    self:SetScript('OnMouseDown', function(self2)
+    self:SetScript('OnMouseDown', function()
         securecallfunction(PaperDollFrame_SetSidebar, PaperDollSidebarTab3, 3)--PaperDollFrame.lua
     end)
     self:SetScript('OnEnter', function(self2)
@@ -485,84 +500,87 @@ local function set_set_PaperDollSidebarTab3_Text_Tips(self)
     end)
 end
 local function set_PaperDollSidebarTab3_Text()--标签, 内容,提示
-    if not PaperDollSidebarTab3 then
+    local self= PaperDollSidebarTab3
+    if not self then
         return
     end
     local name, icon, specIcon,nu
-    local setIDs=C_EquipmentSet.GetEquipmentSetIDs()
     local specName, setID
-    for _, v in pairs(setIDs) do
-        local name2, icon2, _, isEquipped, numItems= C_EquipmentSet.GetEquipmentSetInfo(v)
-        if isEquipped then
-            name=name2
-            name=e.WA_Utf8Sub(name, 2, 5)
-            if icon2 and icon2~=134400 then
-                icon=icon2
-            end
-            local specIndex=C_EquipmentSet.GetEquipmentSetAssignedSpec(v)
-            if specIndex then
-                local _, specName2, _, icon3 = GetSpecializationInfo(specIndex)
-                specName= specName2
-                if icon3 then
-                    specIcon=icon3
+    if not Save.hide then
+        local setIDs=C_EquipmentSet.GetEquipmentSetIDs()
+        for _, v in pairs(setIDs) do
+            local name2, icon2, _, isEquipped, numItems= C_EquipmentSet.GetEquipmentSetInfo(v)
+            if isEquipped then
+                name=name2
+                name=e.WA_Utf8Sub(name, 2, 5)
+                if icon2 and icon2~=134400 then
+                    icon=icon2
                 end
+                local specIndex=C_EquipmentSet.GetEquipmentSetAssignedSpec(v)
+                if specIndex then
+                    local _, specName2, _, icon3 = GetSpecializationInfo(specIndex)
+                    specName= specName2
+                    if icon3 then
+                        specIcon=icon3
+                    end
+                end
+                nu=numItems
+                setID= v
+                break
             end
-            nu=numItems
-            setID= v
-            break
         end
     end
 
-    if not PaperDollSidebarTab3.set and name then--名称
-        PaperDollSidebarTab3.set=e.Cstr(PaperDollSidebarTab3, {justifyH='CENTER'})
-        PaperDollSidebarTab3.set:SetPoint('BOTTOM', 2, 0)
-        set_set_PaperDollSidebarTab3_Text_Tips(PaperDollSidebarTab3.set)
-        PaperDollSidebarTab3.set.tooltip= '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '名称' or NAME)..'|r'
+    if not self.set and name then--名称
+        self.set=e.Cstr(self, {justifyH='CENTER'})
+        self.set:SetPoint('BOTTOM', 2, 0)
+        set_set_PaperDollSidebarTab3_Text_Tips(self.set)
+        self.set.tooltip= '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '名称' or NAME)..'|r'
     end
-    if PaperDollSidebarTab3.set then
-        PaperDollSidebarTab3.set:SetText(name or '')
-        PaperDollSidebarTab3.set:SetShown(name and true or false)
-        PaperDollSidebarTab3.set.tooltip2= name
-        PaperDollSidebarTab3.set.setID= setID
-    end
-
-    if not PaperDollSidebarTab3.tex and icon then--套装图标图标
-        PaperDollSidebarTab3.tex=PaperDollSidebarTab3:CreateTexture(nil, 'OVERLAY')
-        PaperDollSidebarTab3.tex:SetPoint('CENTER',1,-2)
-        local w, h=PaperDollSidebarTab3:GetSize()
-        PaperDollSidebarTab3.tex:SetSize(w-4, h-4)
-    end
-    if PaperDollSidebarTab3.tex then
-        PaperDollSidebarTab3.tex:SetTexture(icon or 0)
-        PaperDollSidebarTab3.tex:SetShown(icon and true or false)
+    if self.set then
+        self.set:SetText(name or '')
+        self.set:SetShown(name and true or false)
+        self.set.tooltip2= name
+        self.set.setID= setID
     end
 
-    if not PaperDollSidebarTab3.spec and specIcon then--天赋图标
-        PaperDollSidebarTab3.spec=PaperDollSidebarTab3:CreateTexture(nil, 'OVERLAY')
-        PaperDollSidebarTab3.spec:SetPoint('BOTTOMLEFT', PaperDollSidebarTab3, 'BOTTOMRIGHT')
-        local h, w= PaperDollSidebarTab3:GetSize()
-        PaperDollSidebarTab3.spec:SetSize(h/3+2, w/3+2)
-        set_set_PaperDollSidebarTab3_Text_Tips(PaperDollSidebarTab3.spec)
-        PaperDollSidebarTab3.spec.tooltip= '|cnGREEN_FONT_COLOR:'..format(e.onlyChinese and '%s专精' or PROFESSIONS_SPECIALIZATIONS_PAGE_NAME, e.onlyChinese and '装备管理' or EQUIPMENT_MANAGER)..'|r'
+    if not self.tex and icon then--套装图标图标
+        self.tex=self:CreateTexture(nil, 'OVERLAY')
+        self.tex:SetPoint('CENTER',1,-2)
+        local w, h=self:GetSize()
+        self.tex:SetSize(w-4, h-4)
     end
-    if PaperDollSidebarTab3.spec then
-        PaperDollSidebarTab3.spec:SetTexture(specIcon or 0)
-        PaperDollSidebarTab3.spec:SetShown(specIcon and true or false)
-        PaperDollSidebarTab3.spec.tooltip2= (specIcon and "|T"..specIcon..':0|t' or '')..(specName or '' )
-        PaperDollSidebarTab3.spec.setID= setID
+    if self.tex then
+        self.tex:SetTexture(icon or 0)
+        self.tex:SetShown(icon and true or false)
     end
 
-    if not PaperDollSidebarTab3.nu and nu then--套装数量
-        PaperDollSidebarTab3.nu=e.Cstr(PaperDollSidebarTab3, {justifyH='RIGHT'})
-        PaperDollSidebarTab3.nu:SetPoint('LEFT', PaperDollSidebarTab3, 'RIGHT',0, 4)
-        PaperDollSidebarTab3.nu.tooltip= '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '装备' or EQUIPSET_EQUIP)
-        set_set_PaperDollSidebarTab3_Text_Tips(PaperDollSidebarTab3.nu)
+    if not self.spec and specIcon then--天赋图标
+        self.spec=self:CreateTexture(nil, 'OVERLAY')
+        self.spec:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT')
+        local h, w= self:GetSize()
+        self.spec:SetSize(h/3+2, w/3+2)
+        set_set_PaperDollSidebarTab3_Text_Tips(self.spec)
+        self.spec.tooltip= '|cnGREEN_FONT_COLOR:'..format(e.onlyChinese and '%s专精' or PROFESSIONS_SPECIALIZATIONS_PAGE_NAME, e.onlyChinese and '装备管理' or EQUIPMENT_MANAGER)..'|r'
     end
-    if PaperDollSidebarTab3.nu then
-        PaperDollSidebarTab3.nu:SetText(nu or '')
-        PaperDollSidebarTab3.nu:SetShown(nu and true or false)
-        PaperDollSidebarTab3.nu.tooltip2= (e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)..' '..(nu or '')
-        PaperDollSidebarTab3.nu.setID= setID
+    if self.spec then
+        self.spec:SetTexture(specIcon or 0)
+        self.spec:SetShown(specIcon and true or false)
+        self.spec.tooltip2= (specIcon and "|T"..specIcon..':0|t' or '')..(specName or '' )
+        self.spec.setID= setID
+    end
+
+    if not self.nu and nu then--套装数量
+        self.nu=e.Cstr(self, {justifyH='RIGHT'})
+        self.nu:SetPoint('LEFT', self, 'RIGHT',0, 4)
+        self.nu.tooltip= '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '装备' or EQUIPSET_EQUIP)
+        set_set_PaperDollSidebarTab3_Text_Tips(self.nu)
+    end
+    if self.nu then
+        self.nu:SetText(nu or '')
+        self.nu:SetShown(nu and true or false)
+        self.nu.tooltip2= (e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)..' '..(nu or '')
+        self.nu.setID= setID
     end
 end
 
@@ -570,13 +588,15 @@ end
 --装备管理
 --#######
 local function set_HideShowEquipmentFrame_Texture()--设置，总开关，装备管理框
-    panel.equipmentButton:SetNormalAtlas(Save.equipment and 'auctionhouse-icon-favorite' or e.Icon.icon)
-    panel.equipmentButton:SetAlpha(Save.equipment and 0.5 or 1)
+    if panel.equipmentButton then
+        panel.equipmentButton:SetNormalAtlas(Save.equipment and 'auctionhouse-icon-favorite' or e.Icon.icon)
+        panel.equipmentButton:SetAlpha(Save.equipment and 0.5 or 1)
+    end
 end
 local function EquipmentStr(self)--套装已装备数量
     local setID=self.setID
     local nu
-    if setID then
+    if setID and not Save.hide then
         if not self.nu then
             self.nu=e.Cstr(self)
             self.nu:SetJustifyH('RIGHT')
@@ -589,7 +609,9 @@ local function EquipmentStr(self)--套装已装备数量
         self.nu:SetText(nu)
     end
 
-    if self.nu then self.nu:SetShown(nu) end
+    if self.nu then
+        self.nu:SetShown(nu)
+    end
 end
 
 local function set_equipmentButton_Size()--设置大小
@@ -612,14 +634,14 @@ local function set_equipmentFrame_Scale()--缩放
     panel.equipmentButton.btn:SetScale(Save.equipmentFrameScale or 1)
 end
 local function set_inti_Equipment_Frame()--添加装备管理框
-    if not Save.equipment or not PAPERDOLL_SIDEBARS[3].IsActive() then
-        if panel.equipmentButton.btn then
+    if not Save.equipment or not PAPERDOLL_SIDEBARS[3].IsActive() or not panel.equipmentButton or Save.hide then
+        if panel.equipmentButton and panel.equipmentButton.btn then
             panel.equipmentButton.btn:SetShown(false)
         end
         return
     end
 
-    if not panel.equipmentButton.btn then
+    if not panel.equipmentButton.btn and not Save.hide then
         panel.equipmentButton.btn=e.Cbtn(UIParent, {icon='hide'})--添加移动按钮
         set_equipmentButton_Size()--设置大小
         if Save.Equipment then
@@ -699,11 +721,15 @@ local function set_inti_Equipment_Frame()--添加装备管理框
         panel.equipmentButton.btn.buttons={}--添加装备管理按钮
         set_equipmentFrame_Scale()--缩放
     end
-    panel.equipmentButton.btn:SetShown(true)
+    if panel.equipmentButton.btn then
+        panel.equipmentButton.btn:SetShown(not Save.hide and true or false)
+    end
 
-    local setIDs= C_EquipmentSet.GetEquipmentSetIDs() or {}
-    securecallfunction(SortEquipmentSetIDs, setIDs)--PaperDollFrame.lua
-
+    local setIDs={}
+    if not Save.hide then
+        setIDs= C_EquipmentSet.GetEquipmentSetIDs() or {}
+        securecallfunction(SortEquipmentSetIDs, setIDs)--PaperDollFrame.lua
+    end
     local numIndex=0
     for index, setID in pairs(setIDs) do
         local texture, _, isEquipped= select(2, C_EquipmentSet.GetEquipmentSetInfo(setID))
@@ -784,87 +810,97 @@ local function GetDurationTotale()
         end)
         panel.durabilityText:SetScript('OnLeave', function() e.tips:Hide() end)
     end
-    local cu, max=0,0
-    for slot=1, 17 do
-        local cu2, max2= GetInventoryItemDurability(slot)
-        if cu2 and max2 and max2>0 then
-            cu = cu+ cu2
-            max= max + max2
-        end
-    end
     local du
-    if max>0 then
-        local to=cu/max*100
-        du=('%i%%'):format(to)
-        if to<30 then
-            du= '|cnRED_FONT_COLOR:'..du..'|r'
+    if not Save.hide then
+        local cu, max=0,0
+        for slot=1, 17 do
+            local cu2, max2= GetInventoryItemDurability(slot)
+            if cu2 and max2 and max2>0 then
+                cu = cu+ cu2
+                max= max + max2
+            end
         end
+        if max>0 then
+            local to=cu/max*100
+            du=format('%i%%', to)
+            if to<30 then
+                du= '|cnRED_FONT_COLOR:'..du..'|r'
+            end
+        end
+        panel.durabilityText.value=du or '100%'
     end
-    panel.durabilityText.value=du or '100%'
-    panel.durabilityText:SetText(du or '')
+    if panel.durabilityText then
+        panel.durabilityText:SetText(du or '')
+    end
 end
 
 --#######
 --装备弹出
 --EquipmentFlyout.lua
 local function setFlyout(button, itemLink, slot)
-    if not button.level then
-        button.level= e.Cstr(button)
-        button.level:SetPoint('BOTTOM')
-    end
-    local dateInfo= e.GetTooltipData({hyperLink=itemLink, itemID=itemLink and GetItemInfoInstant(itemLink) , text={upgradeStr, pvpItemStr, itemLevelStr}, onlyText=true})--物品提示，信息
+    local text, level, dateInfo
+    if not Save.hide then
+        if not button.level then
+            button.level= e.Cstr(button)
+            button.level:SetPoint('BOTTOM')
+        end
+        dateInfo= e.GetTooltipData({hyperLink=itemLink, itemID=itemLink and GetItemInfoInstant(itemLink) , text={upgradeStr, pvpItemStr, itemLevelStr}, onlyText=true})--物品提示，信息
 
-    local level
-    if dateInfo and dateInfo.text[itemLevelStr] then
-        level= tonumber(dateInfo.text[itemLevelStr])
-    end
-    level= level or itemLink and GetDetailedItemLevelInfo(itemLink)
-    local text= level
-    if text then
-        local itemQuality = C_Item.GetItemQualityByID(itemLink)
-        if itemQuality then
-            local hex = select(4, GetItemQualityColor(itemQuality))
-            if hex then
-                text= '|c'..hex..text..'|r'
+        if dateInfo and dateInfo.text[itemLevelStr] then
+            level= tonumber(dateInfo.text[itemLevelStr])
+        end
+        level= level or itemLink and GetDetailedItemLevelInfo(itemLink)
+        text= level
+        if text then
+            local itemQuality = C_Item.GetItemQualityByID(itemLink)
+            if itemQuality then
+                local hex = select(4, GetItemQualityColor(itemQuality))
+                if hex then
+                    text= '|c'..hex..text..'|r'
+                end
             end
         end
     end
-    button.level:SetText(text or '')
-
-    local upgrade, pvpItem= dateInfo.text[upgradeStr], dateInfo.text[pvpItemStr]
-    upgrade= upgrade and upgrade:match('(%d+/%d+)')
-    if upgrade and not button.upgrade then
-        button.upgrade= e.Cstr(button, {color={r=0,g=1,b=0}})
-        button.upgrade:SetPoint('LEFT')
-    end
-    if button.upgrade then
-        button.upgrade:SetText(upgrade or '')
+    if button.level then
+        button.level:SetText(text or '')
     end
 
+    local upgrade, pvpItem
     local updown--UpgradeFrame等级，比较
-    if level then
-        if not slot or slot==0 then
-            local itemEquipLoc= itemLink and select(4, GetItemInfoInstant(itemLink))
-            slot= itemEquipLoc and e.itemSlotTable[itemEquipLoc]
+    if dateInfo then
+        upgrade, pvpItem=dateInfo.text[upgradeStr], dateInfo.text[pvpItemStr]
+        upgrade= upgrade and upgrade:match('(%d+/%d+)')
+        if upgrade and not button.upgrade then
+            button.upgrade= e.Cstr(button, {color={r=0,g=1,b=0}})
+            button.upgrade:SetPoint('LEFT')
         end
-        if slot then
-            local itemLink2 = GetInventoryItemLink('player', slot)
-            if itemLink2 then
-                updown = GetDetailedItemLevelInfo(itemLink2)
-                if updown then
-                    updown=level-updown
-                    if updown>0 then
-                        updown= '|cnGREEN_FONT_COLOR:+'..updown..'|r'
-                    elseif updown<0 then
-                        updown= '|cnRED_FONT_COLOR:'..updown..'|r'
-                    elseif updown==0 then
-                        updown= nil
+        if button.upgrade then
+            button.upgrade:SetText(upgrade or '')
+        end
+        if level then
+            if not slot or slot==0 then
+                local itemEquipLoc= itemLink and select(4, GetItemInfoInstant(itemLink))
+                slot= itemEquipLoc and e.itemSlotTable[itemEquipLoc]
+            end
+            if slot then
+                local itemLink2 = GetInventoryItemLink('player', slot)
+                if itemLink2 then
+                    updown = GetDetailedItemLevelInfo(itemLink2)
+                    if updown then
+                        updown=level-updown
+                        if updown>0 then
+                            updown= '|cnGREEN_FONT_COLOR:+'..updown..'|r'
+                        elseif updown<0 then
+                            updown= '|cnRED_FONT_COLOR:'..updown..'|r'
+                        elseif updown==0 then
+                            updown= nil
+                        end
+                    else
+                        updown= e.Icon.up2
                     end
                 else
                     updown= e.Icon.up2
                 end
-            else
-                updown= e.Icon.up2
             end
         end
     end
@@ -876,9 +912,9 @@ local function setFlyout(button, itemLink, slot)
         button.updown:SetText(updown or '')
     end
 
-    Set(button, itemLink)--套装
+    set_item_Set(button, itemLink)--套装
 
-    if pvpItem and not button.pvpItem then--提示PvP装备
+    if pvpItem and not button.pvpItem and not Save.hide then--提示PvP装备
         local h=button:GetHeight()/3
         button.pvpItem=button:CreateTexture(nil,'OVERLAY',nil,7)
         button.pvpItem:SetSize(h,h)
@@ -893,14 +929,36 @@ end
 --#########
 --目标, 装备
 --#########
+local function Init_Target_InspectUI()
+    local self= InspectPaperDollFrame
+    panel.Init_Show_Hide_Button(InspectFrame.TitleContainer, _G['MoveZoomInButtonPerInspectFrame'])
+
+    if not self.initButton and not Save.hide then
+        if self.ViewButton then
+            self.ViewButton:ClearAllPoints()
+            self.ViewButton:SetPoint('LEFT', InspectLevelText, 'RIGHT',4,0)
+            self.ViewButton:SetSize(25,25)
+            self.ViewButton:SetText(e.onlyChinese and '试' or e.WA_Utf8Sub(VIEW,1))
+        end
+        if InspectPaperDollItemsFrame.InspectTalents then
+            InspectPaperDollItemsFrame.InspectTalents:SetSize(25,25)
+            InspectPaperDollItemsFrame.InspectTalents:SetText(e.onlyChinese and '赋' or e.WA_Utf8Sub(TALENT,1))
+        end
+        self.initButton=true
+        if UnitExists(InspectFrame.unit) and CheckInteractDistance(InspectFrame.unit, 1) and CanInspect(InspectFrame.unit) then
+            NotifyInspect(InspectFrame.unit)
+        end
+    end
+end
+
 local function set_InspectPaperDollItemSlotButton_Update(self)
     local slot= self:GetID()
-	local link = GetInventoryItemLink(InspectFrame.unit, slot);
+	local link= not Save.hide and GetInventoryItemLink(InspectFrame.unit, slot) or nil
 	e.LoadDate({id=link, type='item'})--加载 item quest spell
-    Gem(self, slot, link)
+    set_Gem(self, slot, link)
     Enchant(self, slot, link)
     e.Set_Item_Stats(self, link, {point=self.icon})
-    if not self.OnEnter then
+    if not self.OnEnter and not Save.hide then
         self:SetScript('OnEnter', function(self2)
             if self2.link then
                 e.tips:ClearLines()
@@ -927,7 +985,7 @@ local function set_InspectPaperDollItemSlotButton_Update(self)
             self.itemLinkText:SetPoint('BOTTOMRIGHT', InspectPaperDollFrame, 'BOTTOMLEFT', 6,15)
         elseif slot==17 then
             self.itemLinkText:SetPoint('BOTTOMLEFT', InspectPaperDollFrame, 'BOTTOMRIGHT', -5,15)
-        elseif Slot(slot) then
+        elseif is_Left_Slot(slot) then
             self.itemLinkText:SetPoint('RIGHT', self, 'LEFT', -2,0)
         else
             self.itemLinkText:SetPoint('LEFT', self, 'RIGHT', 5,0)
@@ -939,6 +997,9 @@ local function set_InspectPaperDollItemSlotButton_Update(self)
 end
 
 local function set_InspectPaperDollFrame_SetLevel()--目标,天赋 装等
+    if Save.hide then
+        return
+    end
     local unit= InspectFrame.unit
     local guid= unit and UnitGUID(unit)
     local info= guid and e.UnitItemLevel[guid]
@@ -964,22 +1025,21 @@ local function set_InspectPaperDollFrame_SetLevel()--目标,天赋 装等
             text= info.col..text..'|r'
         end
         InspectLevelText:SetText(text)
-        --InspectFrameTitleText:SetTextColor(info.r or 1, info.g or 1, info.b or 1)
     end
 end
 
 
---#####
---初始化
---#####
-local function Init()
-    --#############
-    --显示服务器名称
-    --#############
-    panel.serverText= e.Cstr(PaperDollItemsFrame,{color= GameLimitedMode_IsActive() and {r=0,g=1,b=0} or true})--显示服务器名称
-    panel.serverText:SetPoint('RIGHT', CharacterLevelText, 'LEFT',-30,0)
-    panel.serverText:EnableMouse(true)
-    panel.serverText:SetScript("OnEnter",function(self)
+
+--########################
+--显示服务器名称，装备管理框
+--########################
+local function Init_Server_equipmentButton_Lable()
+   if not panel.serverText then
+        panel.serverText= e.Cstr(PaperDollItemsFrame,{color= GameLimitedMode_IsActive() and {r=0,g=1,b=0} or true})--显示服务器名称
+        panel.serverText:SetPoint('RIGHT', CharacterLevelText, 'LEFT',-30,0)
+        panel.serverText:EnableMouse(true)
+        panel.serverText:SetScript("OnLeave",function() e.tips:Hide() end)
+        panel.serverText:SetScript("OnEnter",function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
             local server= e.Get_Region(e.Player.realm, nil, nil)--服务器，EU， US {col=, text=, realm=}
@@ -1012,56 +1072,126 @@ local function Init()
             end
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
-    end)
-    panel.serverText:SetScript("OnLeave",function() e.tips:Hide() end)
-    local ser=GetAutoCompleteRealms() or {}
-    local server= e.Get_Region(e.Player.realm, nil, nil)
-    panel.serverText:SetText((#ser>1 and '|cnGREEN_FONT_COLOR:'..#ser..' ' or '')..e.Player.col..e.Player.realm..'|r'..(server and ' '..server.col or ''))
+        end)
+    end
+    local text
+    if not Save.hide then
+        local ser=GetAutoCompleteRealms() or {}
+        local server= e.Get_Region(e.Player.realm, nil, nil)
+        text= (#ser>1 and '|cnGREEN_FONT_COLOR:'..#ser..' ' or '')..e.Player.col..e.Player.realm..'|r'..(server and ' '..server.col or '')
+    end
+    if panel.serverText then
+        panel.serverText:SetText(text or '')
+    end
 
-    --#########
-    --装备管理框
-    --#########
-    panel.equipmentButton = e.Cbtn(PaperDollItemsFrame, {size={18,18}})--显示/隐藏装备管理框选项
-    panel.equipmentButton:SetPoint('TOPRIGHT',-2,-40)
-    panel.equipmentButton:SetScript("OnClick", function(self)
-        Save.equipment= not Save.equipment and true or nil
-        set_inti_Equipment_Frame()--装备管理框
-        set_HideShowEquipmentFrame_Texture()--设置，总开关，装备管理框
+    if not panel.equipmentButton then
+        panel.equipmentButton = e.Cbtn(PaperDollItemsFrame, {size={18,18}})--显示/隐藏装备管理框选项
+        panel.equipmentButton:SetPoint('TOPRIGHT',-2,-40)
+        panel.equipmentButton:SetScript("OnClick", function(self)
+            Save.equipment= not Save.equipment and true or nil
+            set_inti_Equipment_Frame()--装备管理框
+            set_HideShowEquipmentFrame_Texture()--设置，总开关，装备管理框
+        end)
+        panel.equipmentButton:SetScript("OnEnter", function (self)
+            e.tips:SetOwner(self, "ANCHOR_TOPLEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine((e.onlyChinese and '装备管理' or EQUIPMENT_MANAGER)..e.GetShowHide(Save.equipment), e.Icon.left)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(id, addName)
+            e.tips:Show()
+            if self.btn and self.btn:IsShown() then
+                self.btn:SetButtonState('PUSHED')
+            end
+        end)
+        panel.equipmentButton:SetScript("OnLeave",function(self)
+            e.tips:Hide()
+            if self.btn then
+                self.btn:SetButtonState("NORMAL")
+            end
+        end)
+    end
+    panel.equipmentButton:SetShown(not Save.hide and true or false)
+
+end
+
+--###############
+--显示，隐藏，按钮
+--###############
+panel.Init_Show_Hide_Button= function(self, frame)
+    if not self or self.ShowHideButton then
+        return
+    end
+    local btn= e.Cbtn(self, {size={20,20}, atlas= not Save.hide and e.Icon.icon or e.Icon.disabled})
+    if frame then
+        btn:SetPoint('RIGHT', frame, 'LEFT')
+    else
+        btn:SetPoint('LEFT')
+    end
+    btn:SetAlpha(0.5)
+    btn:SetScript('OnClick', function(self2)
+        Save.hide= not Save.hide and true or nil
+        if InspectFrame and InspectFrame.TitleContainer and InspectFrame.TitleContainer.ShowHideButton then
+            InspectFrame.TitleContainer.ShowHideButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
+        end
+        CharacterFrame.TitleContainer.ShowHideButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
+
+        --print(id, addName, e.GetShowHide(not Save.hide), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要刷新' or (NEED..REFRESH)))
+
+        Title()--头衔数量
+        GetDurationTotale()--装备,总耐久度
+        LvTo()--总装等
+        set_PaperDollSidebarTab3_Text()--标签, 内容,提示
+        Init_Server_equipmentButton_Lable()--显示服务器名称，装备管理框
+        set_inti_Equipment_Frame()--添加装备管理框
+        securecall('PaperDollFrame_SetLevel')
+        securecall('PaperDollFrame_UpdateStats')
+
+        if InspectFrame and InspectFrame:IsVisible() then
+            securecall('InspectPaperDollFrame_UpdateButtons')--InspectPaperDollFrame.lua
+            securecall('InspectPaperDollFrame_SetLevel')--目标,天赋 装等
+            Init_Target_InspectUI()
+            if UnitExists(InspectFrame.unit) and CheckInteractDistance(InspectFrame.unit, 1) and CanInspect(InspectFrame.unit) then
+                NotifyInspect(InspectFrame.unit)
+            end
+        end
     end)
-    panel.equipmentButton:SetScript("OnEnter", function (self)
-        e.tips:SetOwner(self, "ANCHOR_TOPLEFT")
+    btn:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.5) end)
+    btn:SetScript('OnEnter', function(self2)
+        e.tips:SetOwner(self2, "ANCHOR_TOPLEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine((e.onlyChinese and '装备管理' or EQUIPMENT_MANAGER)..e.GetShowHide(Save.equipment), e.Icon.left)
+        e.tips:AddDoubleLine(not e.onlyChinese and SHOW..'/'..HIDE or '显示/隐藏', e.GetShowHide(not Save.hide))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
-        if self.btn and self.btn:IsShown() then
-			self.btn:SetButtonState('PUSHED')
-		end
+        self2:SetAlpha(1)
     end)
-    panel.equipmentButton:SetScript("OnLeave",function(self)
-        e.tips:Hide()
-        if self.btn then
-			self.btn:SetButtonState("NORMAL")
-		end
-    end)
+    self.ShowHideButton= btn
+end
+
+--#####
+--初始化
+--#####
+local function Init()
+    panel.Init_Show_Hide_Button(CharacterFrame.TitleContainer, _G['MoveZoomInButtonPerCharacterFrame'])--初始，显示/隐藏，按钮
+    Init_Server_equipmentButton_Lable()--显示服务器名称，装备管理框
+
     set_inti_Equipment_Frame()--装备管理框
     set_HideShowEquipmentFrame_Texture()--设置，总开关，装备管理框
 
     GetDurationTotale()--装备,总耐久度
 
     hooksecurefunc('PaperDollFrame_UpdateSidebarTabs', function()--头衔数量
-            Title()--总装等
-            set_PaperDollSidebarTab3_Text()
+        Title()--总装等
+        set_PaperDollSidebarTab3_Text()
     end)
 
     hooksecurefunc('PaperDollEquipmentManagerPane_Update', function(slef, equipmentSetsDirty)--装备管理
-            set_PaperDollSidebarTab3_Text()
-            LvTo()--总装等
+        set_PaperDollSidebarTab3_Text()
+        LvTo()--总装等
     end)
     hooksecurefunc('GearSetButton_SetSpecInfo', function()--装备管理,修该专精
-            set_PaperDollSidebarTab3_Text()
-            LvTo()--总装等
+        set_PaperDollSidebarTab3_Text()
+        LvTo()--总装等
     end)
     hooksecurefunc('GearSetButton_UpdateSpecInfo', EquipmentStr)--套装已装备数量
     hooksecurefunc('PaperDollEquipmentManagerPane_Update',set_inti_Equipment_Frame)----添加装备管理框  
@@ -1077,11 +1207,11 @@ local function Init()
                 local hasItem = textureName ~= nil
                 local link=hasItem and GetInventoryItemLink('player', slot) or nil--装等                
                 --Lv(self, slot, link)
-                Du(self, slot, link)
-                Gem(self, slot, link)
+                set_Du(self, slot, link)
+                set_Gem(self, slot, link)
                 Enchant(self, slot, link)
-                --Set(self, slot, link)
-                e.Set_Item_Stats(self, link, {point=self.icon})
+                --set_item_Set(self, slot, link)
+                e.Set_Item_Stats(self, not Save.hide and link or nil, {point=self.icon})
                 set_PaperDollSidebarTab3_Text()
                 LvTo()--总装等
             elseif InventSlot_To_ContainerSlot[slot] then
@@ -1139,9 +1269,11 @@ local function Init()
     --############
     --更改,等级文本
     --############
-    CharacterLevelText:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
-    CharacterLevelText:SetJustifyH('LEFT')
+    
     hooksecurefunc('PaperDollFrame_SetLevel', function()--PaperDollFrame.lua
+        if Save.hide then
+            return
+        end
         local race= e.GetUnitRaceInfo({unit='player', guid=nil , race=nil , sex=nil , reAtlas=true})
         local class= e.Class('player', nil, true)
         local level = UnitLevel("player");
@@ -1152,6 +1284,11 @@ local function Init()
         end
         local faction= e.Player.faction=='Alliance' and '|A:charcreatetest-logo-alliance:26:26|a' or e.Player.faction=='Horde' and '|A:charcreatetest-logo-horde:26:26|a' or ''
         CharacterLevelText:SetText('  '..faction..(race and '|A:'..race..':26:26|a' or '')..(class and '|A:'..class..':26:26|a  ' or '')..level)
+        if not Save.hide and not CharacterLevelText.set then
+            CharacterLevelText:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
+            CharacterLevelText:SetJustifyH('LEFT')
+            CharacterLevelText.set=true
+        end
     end)
 end
 
@@ -1268,18 +1405,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         elseif arg1=='Blizzard_ItemInteractionUI' then--套装转换, 界面
             add_Button_OpenOption(ItemInteractionFrameCloseButton)--添加一个按钮, 打开选项
 
-        elseif arg1=='Blizzard_InspectUI' then
-            if InspectPaperDollFrame.ViewButton then
-                InspectPaperDollFrame.ViewButton:ClearAllPoints()
-                InspectPaperDollFrame.ViewButton:SetPoint('LEFT', InspectLevelText, 'RIGHT',4,0)
-                InspectPaperDollFrame.ViewButton:SetSize(25,25)
-                InspectPaperDollFrame.ViewButton:SetText(e.onlyChinese and '试' or e.WA_Utf8Sub(VIEW,1))
-            end
-            if InspectPaperDollItemsFrame.InspectTalents then
-                InspectPaperDollItemsFrame.InspectTalents:SetSize(25,25)
-                InspectPaperDollItemsFrame.InspectTalents:SetText(e.onlyChinese and '赋' or e.WA_Utf8Sub(TALENT,1))
-            end
-
+        elseif arg1=='Blizzard_InspectUI' then--目标, 装备
+            Init_Target_InspectUI()
             hooksecurefunc('InspectPaperDollItemSlotButton_Update', set_InspectPaperDollItemSlotButton_Update)--目标, 装备
             hooksecurefunc('InspectPaperDollFrame_SetLevel', set_InspectPaperDollFrame_SetLevel)--目标,天赋 装等
         end

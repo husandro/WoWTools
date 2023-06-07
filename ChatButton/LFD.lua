@@ -1739,7 +1739,7 @@ local function Init()
                     self.TimerLabel:SetPoint('RIGHT')
                 end
                 local info= self.encounterInfo--C_LootHistory.GetInfoForEncounter(encounterID)
-                text= info.duration- (GetTime() - info.startTime)
+                text= (info.encounterInfo.duration- GetTime()-info.startTime)
                 time= text and SecondsToClock(text) or ''
             end
             if self.TimerLabel then
