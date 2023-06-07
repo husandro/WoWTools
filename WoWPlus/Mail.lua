@@ -1228,6 +1228,7 @@ local function Init_InBox()
                 return GetMoneyString(num)
             end
         end
+        return ''
     end
     --查找，信件里的第一个物品，超链接
     local function find_itemLink(itemCount, openMailID, itemLink)
@@ -1487,7 +1488,7 @@ local function Init_InBox()
                         end
                         if text then
                             if bid and deposit and consignment then
-                                text= text..' '..get_Money(bid+deposit-consignment)
+                                text= text..' '..get_Money(bid + deposit - consignment)
                             else
                                 text= text..' '..get_Money(money)
                             end
