@@ -18,14 +18,24 @@ function e.ReloadPanel(tab)
     rest.addName=tab.addName
     rest.func=tab.clearfunc
     rest.clearTips=tab.clearTips
+    rest.clearWoWData= tab.clearWoWData
     rest:SetScript('OnClick', function(self)
         StaticPopupDialogs[id..'restAllSetup']={
             text =id..'  '..self.addName..'|n|n|cnRED_FONT_COLOR:'..(self.clearTips or (e.onlyChinese and '当前保存' or (ITEM_UPGRADE_CURRENT..SAVE)))..'|r '..(e.onlyChinese and '保存' or SAVE)..'|n|n'..(e.onlyChinese and '重新加载UI' or RELOADUI)..' /reload',
-            button1 = '|cnRED_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET),
-            button2 = e.onlyChinese and '取消' or CANCEL,
+            button1= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET),
+            button2= e.onlyChinese and '取消' or CANCEL,
             whileDead=true,timeout=30,hideOnEscape = 1,
             OnAccept=self.func,
         }
+
+        if self.clearWoWData then
+            StaticPopupDialogs[id..'restAllSetup'].button3= '|cffff00ff'..(e.onlyChinese and '清除WoW数据' or 'Clear WoW data')..'|r'
+            StaticPopupDialogs[id..'restAllSetup'].OnAlt= function()
+                WoWDate=nil
+                e.Reload()
+                print(id, addName, (e.onlyChinese and '缩放' or UI_SCALE)..': 1', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
+            end
+        end
         StaticPopup_Show(id..'restAllSetup')
     end)
     rest:SetScript('OnLeave', function() e.tips:Hide() end)
@@ -40,7 +50,6 @@ function e.ReloadPanel(tab)
     local reload= e.Cbtn(tab.panel, {type=false, size={25,25}})
     reload:SetNormalTexture('Interface\\Vehicles\\UI-Vehicles-Button-Exit-Up')
     reload:SetPushedTexture('Interface\\Vehicles\\UI-Vehicles-Button-Exit-Down')
-    --reload:SetHighlightTexture('Interface\\Buttons\\ButtonHilight-Square')
     reload:SetPoint('TOPLEFT',-12, 8)
     reload:SetScript('OnClick', e.Reload)
     reload.addName=tab.addName
@@ -144,13 +153,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             e.onlyChinese= Save.onlyChinese
 
-            e.ReloadPanel({panel=panel, addName= addName, restTips=true, checked=not Save.disabled, clearTips=e.onlyChinese and '清除全部' or CLEAR_ALL,--重新加载UI, 重置, 按钮
+            e.ReloadPanel({--重新加载UI, 重置, 按钮
+                panel=panel, addName= addName, restTips=true, checked=not Save.disabled,
+                clearTips= not e.onlyChinese and '1) '..CLEAR_ALL..'\n2) Clear WoW data' or '1) 清除全部\n2) 清除WoW数据',
+                clearWoWData=true,
                 disabledfunc=nil,
                 clearfunc= function()
                     e.ClearAllSave=true
                     e.Reload()
-                end}
-            )
+                end
+            })
 
             if e.onlyChinese or LOCALE_zhCN or LOCALE_zhTW then
                 e.Player.LayerText= '位面'
