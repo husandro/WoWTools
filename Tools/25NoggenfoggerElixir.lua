@@ -15,6 +15,9 @@ local button--button.itemID=8529
 local panel= CreateFrame("Frame")
 
 local function setAura()--光环取消
+    if UnitAffectingCombat('player') then
+        return
+    end
     for i = 1, 40 do
         local spellID = select(10, UnitBuff('player', i))--, 'CANCELABLE'))
         if not spellID then
@@ -88,6 +91,8 @@ local function InitMenu(self, level)--主菜单
             text=name,
             icon=icon,
             checked= type,
+            tooltipOnButton=true,
+            tooltipTitle=  e.onlyChinese and '脱离战斗' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_OUT_OF_COMBAT,
             func=function()
                 Save.aura[spellID] = not type and true or false
             end
@@ -95,6 +100,7 @@ local function InitMenu(self, level)--主菜单
         e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
     e.LibDD:UIDropDownMenu_AddSeparator(level)
+
     local info={--快捷键,设置对话框
         text= e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL,--..(Save.KEY and ' |cnGREEN_FONT_COLOR:'..Save.KEY..'|r' or ''),
         checked=Save.KEY and true or nil,
@@ -146,6 +152,8 @@ local function InitMenu(self, level)--主菜单
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
+
+
 --####
 --初始
 --####
@@ -156,9 +164,7 @@ local function Init()
     button:SetAttribute('item',GetItemInfo(button.itemID) or button.itemID)
     button.texture:SetTexture(C_Item.GetItemIconByID(button.itemID..''))
     setCount()--设置数量
-    setAura()--光环取消
-
-    
+    setAura()--光环取消   
 
     button:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
