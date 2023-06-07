@@ -2929,7 +2929,8 @@
         "MailFrame_Show",
         "PlayerInteractionFrameManagerMixin",
         "TRANSMOG_SET_PVE",
-        "TRANSMOG_SET_PVP"
+        "TRANSMOG_SET_PVP",
+        "ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT_STRING"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

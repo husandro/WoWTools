@@ -7,7 +7,8 @@ local chargesStr= ITEM_SPELL_CHARGES:gsub('%%d', '%(%%d%+%)')--(%d+)次
 local keyStr= format(CHALLENGE_MODE_KEYSTONE_NAME,'(.+) ')--钥石
 local equipStr= format(EQUIPMENT_SETS, '(.+)')
 local pvpItemStr= PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在竞技场和战场中将物品等级提高至%d。"
-local upgradeStr= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','.-(%%d%+/%%d%+)')-- "升级：%s/%s"
+local upgradeStr= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(.-%%d%+/%%d%+)')-- "升级：%s/%s"
+--local upgradeStr2= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT_STRING:gsub('%%s %%s/%%s','(.+)' ) --"升级：%s %s/%s"
 local classStr= format(ITEM_CLASSES_ALLOWED, '(.+)') --"职业：%s";
 local itemLevelStr= ITEM_LEVEL:gsub('%%d', '%(%%d%+%)')--"物品等级：%d"
 local FMTab={}--附魔
@@ -237,13 +238,17 @@ local function set_Item_Info(self, tab)
                     rightText= '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'
                 end
                 if dateInfo.text[upgradeStr] then--"升级：%s/%s"
+                    
                     local min, max= dateInfo.text[upgradeStr]:match('(%d+)/(%d+)')
+                    local upText= dateInfo.text[upgradeStr]:match('(.-)%d+/%d+')
+                    upText= upText and strlower(e.WA_Utf8Sub(upText,1,3, true)) or ''
+                    
                     if min and max then
                         if min==max then
-                            leftText= "|A:VignetteKill:0:0|a"
+                            leftText= "|A:VignetteKill:0:0|a"..upText
                         else
                             min, max= tonumber(min), tonumber(max)
-                            leftText= '|cnGREEN_FONT_COLOR:'..max-min..'|r'
+                            leftText= '|cnGREEN_FONT_COLOR:'..max-min..'|r'..upText
                         end
                     end
                 end

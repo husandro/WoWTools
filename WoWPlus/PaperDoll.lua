@@ -10,7 +10,7 @@ local panel = CreateFrame("Frame", nil, PaperDollFrame)
 
 local pvpItemStr= PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在竞技场和战场中将物品等级提高至%d。"
 local enchantStr= ENCHANTED_TOOLTIP_LINE:gsub('%%s','(.+)')--附魔
-local upgradeStr= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','.-(%%d%+/%%d%+)')-- "升级：%s/%s"
+local upgradeStr= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(.-%%d%+/%%d%+)')-- "升级：%s/%s"
 local itemLevelStr= ITEM_LEVEL:gsub('%%d', '%(%%d%+%)')--"物品等级：%d"
 local function Slot(slot)--左边插曹
     return slot==1 or slot==2 or slot==3 or slot==15 or slot==5 or slot==4 or slot==19 or slot==9 or slot==17 or slot==18
@@ -257,7 +257,7 @@ local function Engineering(self, slot, use)--增加 [潘达利亚工程学: 地�
 end
 
 local function Enchant(self, slot, link)--附魔, 使用, 属性
-    local enchant, use, pvpItem, upgradeItem
+    local enchant, use, pvpItem, upgradeItem, upgradeItemText
     if link then
         local dateInfo= e.GetTooltipData({hyperLink=link, text={enchantStr, pvpItemStr, upgradeStr}, onlyText=true})--物品提示，信息
         enchant, use, pvpItem, upgradeItem= dateInfo.text[enchantStr], dateInfo.red, dateInfo.text[pvpItemStr],  dateInfo.text[upgradeStr]
@@ -329,25 +329,53 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
             end)
             self.pvpItem:SetScript('OnLeave', function() e.tips:Hide() end)
         end
+        
 
-        if upgradeItem and not self.upgradeItem then--"升级：%s/%s"
-            if Slot(slot) then
-                self.upgradeItem= e.Cstr(self, {color={r=0,g=1,b=0}})
-                self.upgradeItem:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT',1,0)
-            else
-                self.upgradeItem= e.Cstr(self, {color={r=0,g=1,b=0}, justifyH='RIGHT'})
-                self.upgradeItem:SetPoint('BOTTOMRIGHT', self, 'BOTTOMLEFT',2,0)
-            end
-            self.upgradeItem:EnableMouse(true)
-            self.upgradeItem:SetScript('OnEnter', function(self2)
-                if self2.tips then
-                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                    e.tips:ClearLines()
-                    e.tips:AddLine((e.onlyChinese and "升级：" or ITEM_UPGRADE_NEXT_UPGRADE)..self2.tips)
-                    e.tips:Show()
+        if upgradeItem then
+            if not self.upgradeItem then--"升级：%s/%s"
+                if Slot(slot) then
+                    self.upgradeItem= e.Cstr(self, {color={r=0,g=1,b=0}})
+                    self.upgradeItem:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT',1,0)
+                else
+                    self.upgradeItem= e.Cstr(self, {color={r=0,g=1,b=0}, justifyH='RIGHT'})
+                    self.upgradeItem:SetPoint('BOTTOMRIGHT', self, 'BOTTOMLEFT',2,0)
                 end
-            end)
-            self.upgradeItem:SetScript('OnLeave', function() e.tips:Hide() end)
+                self.upgradeItem:EnableMouse(true)
+                self.upgradeItem:SetScript('OnEnter', function(self2)
+                    if self2.tips then
+                        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                        e.tips:ClearLines()
+                        e.tips:AddLine((e.onlyChinese and "升级：" or ITEM_UPGRADE_NEXT_UPGRADE)..self2.tips)
+                        e.tips:Show()
+                    end
+                end)
+                self.upgradeItem:SetScript('OnLeave', function() e.tips:Hide() end)
+            end
+            
+            local upText= upgradeItem:match('(.-)%d+/%d+')
+            upgradeItemText= upText and strlower(e.WA_Utf8Sub(upText,1,3, true))
+            if upgradeItemText then
+                if not self.upgradeItemText then--"升级：%s %s/%s"
+                    local h= self:GetHeight()/3
+                    if Slot(slot) then
+                        self.upgradeItemText= e.Cstr(self, {color={r=0,g=1,b=0}})
+                        self.upgradeItemText:SetPoint('LEFT', self, 'RIGHT',h+8,0)
+                    else
+                        self.upgradeItemText= e.Cstr(self, {color={r=0,g=1,b=0}, justifyH='RIGHT'})
+                        self.upgradeItemText:SetPoint('RIGHT', self, 'LEFT',-h-8,0)
+                    end
+                    self.upgradeItemText:EnableMouse(true)
+                    self.upgradeItemText:SetScript('OnEnter', function(self2)
+                        if self2.tips then
+                            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                            e.tips:ClearLines()
+                            e.tips:AddLine((e.onlyChinese and "升级：" or ITEM_UPGRADE_NEXT_UPGRADE)..self2.tips)
+                            e.tips:Show()
+                        end
+                    end)
+                    self.upgradeItem:SetScript('OnLeave', function() e.tips:Hide() end)
+                end
+            end
         end
     end
 
@@ -377,6 +405,9 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
             end
         end
         self.upgradeItem:SetText(upgradeItem or '')
+    end
+    if  self.upgradeItemText then
+        self.upgradeItemText:SetText(upgradeItemText or '')
     end
 end
 
