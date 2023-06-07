@@ -571,7 +571,7 @@ end
 --#######
 local function set_HideShowEquipmentFrame_Texture()--设置，总开关，装备管理框
     panel.equipmentButton:SetNormalAtlas(Save.equipment and 'auctionhouse-icon-favorite' or e.Icon.icon)
-    panel.equipmentButton:SetAlpha(Save.equipment and 0.2 or 1)
+    panel.equipmentButton:SetAlpha(Save.equipment and 0.5 or 1)
 end
 local function EquipmentStr(self)--套装已装备数量
     local setID=self.setID
@@ -685,10 +685,16 @@ local function set_inti_Equipment_Frame()--添加装备管理框
             e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
             e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE), (Save.equipmentFrameScale or 1)..e.Icon.mid)
             e.tips:Show()
+            if panel.equipmentButton:IsVisible() then
+                panel.equipmentButton:SetButtonState('PUSHED')
+                panel.equipmentButton:SetAlpha(1)
+            end
         end)
         panel.equipmentButton.btn:SetScript("OnLeave", function(self)
             ResetCursor()
             e.tips:Hide()
+            panel.equipmentButton:SetButtonState('NORMAL')
+            panel.equipmentButton:SetAlpha(0.5)
         end)
         panel.equipmentButton.btn.buttons={}--添加装备管理按钮
         set_equipmentFrame_Scale()--缩放
@@ -711,7 +717,7 @@ local function set_inti_Equipment_Frame()--添加装备管理框
                     C_EquipmentSet.UseEquipmentSet(self.setID)
                     C_Timer.After(0.5, function() LvTo() end)--修改总装等
                 else
-                        print(addName..': '..RED_FONT_COLOR_CODE..ERR_NOT_IN_COMBAT..'|r')
+                    print(addName..': '..RED_FONT_COLOR_CODE..ERR_NOT_IN_COMBAT..'|r')
                 end
             end)
             btn:SetScript("OnEnter", function(self)
@@ -723,16 +729,24 @@ local function set_inti_Equipment_Frame()--添加装备管理框
                         local _, specName2, _, icon3 = GetSpecializationInfo(specIndex)
                         if icon3 and specName2 then
                             e.tips:AddLine(format(e.onlyChinese and '%s专精' or PROFESSIONS_SPECIALIZATIONS_PAGE_NAME, '|T'..icon3..':0|t'..specName2))
+                            e.tips:AddLine(' ')
+                            e.tips:AddDoubleLine(id,addName)
                             e.tips:Show()
                         end
                     end
                     --local name, iconFileID, _, isEquipped2, numItems, numEquipped, numInInventory, numLost, numIgnored = C_EquipmentSet.GetEquipmentSetInfo(self.setID)
+                    if panel.equipmentButton:IsVisible() then
+                        panel.equipmentButton:SetButtonState('PUSHED')
+                        panel.equipmentButton:SetAlpha(1)
+                    end
                 end
                 self:GetParent():SetButtonState('PUSHED')
             end)
             btn:SetScript("OnLeave",function(self)
                 self:GetParent():SetButtonState('NORMAL')
                 e.tips:Hide()
+                panel.equipmentButton:SetButtonState('NORMAL')
+                panel.equipmentButton:SetAlpha(0.5)
             end)
         end
         btn.setID=setID
