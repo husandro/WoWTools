@@ -28,9 +28,10 @@ end
 --拾取专精
 --#######
 local function set_LootSpecialization()--拾取专精
-    if  PlayerFrame and PlayerFrame.lootSpecTexture then
+    local self= PlayerFrame
+    if self and self.lootSpecFrame then
         local find=false
-        if PlayerFrame.unit~='vehicle' then
+        if self.unit~='vehicle' then
             local currentSpec = GetSpecialization()
             local specID= currentSpec and GetSpecializationInfo(currentSpec)
             if specID then
@@ -38,15 +39,14 @@ local function set_LootSpecialization()--拾取专精
                 if lootSpecID and lootSpecID~=specID then
                     local name, _, texture= select(2, GetSpecializationInfoByID(lootSpecID))
                     if texture and name then
-                        SetPortraitToTexture(PlayerFrame.lootSpecTexture, texture)
+                        SetPortraitToTexture(self.lootSpecFrame.texture, texture)
                         find=true
-                        PlayerFrame.lootSpecTexture.tips= (e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..": "..name
+                        self.lootSpecFrame.tips= (e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..": "..name
                     end
                 end
             end
         end
-        PlayerFrame.lootSpecTexture:SetShown(find)
-        PlayerFrame.lootPortrait:SetShown(find)
+        self.lootSpecFrame:SetShown(find)
     end
 end
 
@@ -482,29 +482,43 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
 
             if self.unit=='player' and self~= PetFrame and self.PlayerFrameContainer then
                 local frameLevel=self.PlayerFrameContainer:GetFrameLevel()+1
-                self.lootSpecTexture= self:CreateTexture(nil,'BORDER', nil, 6)--拾取专精
-                self.lootSpecTexture:SetSize(14,14)
-                self.lootSpecTexture:SetPoint('TOPRIGHT', self.classTexture, 'TOPLEFT', -0.5,4)
-                self.lootSpecTexture:EnableMouse(true)
-                self.lootSpecTexture:SetScript('OnEnter', function(self2)
+                frameLevel= frameLevel<0 and 0 or frameLevel
+
+                self.lootSpecFrame= CreateFrame("Frame", nil, self)
+                self.lootSpecFrame:SetPoint('TOPRIGHT', self.classTexture, 'TOPLEFT', -0.5,4)
+                self.lootSpecFrame:SetSize(14,14)
+                self.lootSpecFrame:EnableMouse(true)
+                self.lootSpecFrame:SetFrameLevel(frameLevel)
+                self.lootSpecFrame.texture=self.lootSpecFrame:CreateTexture(nil, 'BORDER')
+                self.lootSpecFrame.texture:SetAllPoints(self.lootSpecFrame)
+
+                local portrait= self.lootSpecFrame:CreateTexture(nil, 'ARTWORK', nil,7)--外框
+                portrait:SetAtlas('DK-Base-Rune-CDFill')
+                portrait:SetPoint('CENTER', self.lootSpecFrame)
+                portrait:SetSize(20,20)
+                portrait:SetVertexColor(r,g,b,1)
+
+                local lootTipsTexture= self.lootSpecFrame:CreateTexture(nil, "OVERLAY")
+                lootTipsTexture:SetSize(10,10)
+                lootTipsTexture:SetPoint('TOP',0,8)
+                lootTipsTexture:SetAtlas('Banker')
+                self.lootSpecFrame:SetScript('OnEnter', function(self2)
                     if self2.tips then
                         e.tips:SetOwner(self2, "ANCHOR_LEFT")
                         e.tips:ClearLines()
                         e.tips:AddLine(self2.tips)
+                        e.tips:AddLine(' ')
+                        e.tips:AddDoubleLine(id, addName)
                         e.tips:Show()
                     end
                 end)
-                self.lootSpecTexture:SetScript('OnLeave', function() e.tips:Hide() end)
-                self.lootPortrait= self.PlayerFrameContainer:CreateTexture(nil, 'OVERLAY', nil,7)--外框
-                self.lootPortrait:SetAtlas('DK-Base-Rune-CDFill')
-                self.lootPortrait:SetPoint('CENTER', self.lootSpecTexture)
-                self.lootPortrait:SetSize(20,20)
-                self.lootPortrait:SetVertexColor(r,g,b,1)
                 set_LootSpecialization()--拾取专精
 
-                self.instanceFrame2= CreateFrame("Frame", nil, self)--副本, 地下城，指示
+
+                
+                self.instanceFrame2= CreateFrame("Frame", nil, self)--Riad 副本, 地下城，指示
                 self.instanceFrame2:SetFrameLevel(frameLevel)
-                self.instanceFrame2:SetPoint('RIGHT', self.lootSpecTexture, 'LEFT',-2, -1)
+                self.instanceFrame2:SetPoint('RIGHT', self.lootSpecFrame, 'LEFT',-2, 1)
                 self.instanceFrame2:SetSize(16,16)
                 self.instanceFrame2:EnableMouse(true)
                 self.instanceFrame2:SetScript('OnEnter', function(self2)
@@ -512,24 +526,22 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                         e.tips:SetOwner(self2, "ANCHOR_LEFT")
                         e.tips:ClearLines()
                         e.tips:AddLine(self2.tips)
+                        e.tips:AddLine(' ')
+                        e.tips:AddDoubleLine(id, addName)
                         e.tips:Show()
                     end
                 end)
                 self.instanceFrame2:SetScript('OnLeave', function() e.tips:Hide() end)
                 self.instanceFrame2.texture= self.instanceFrame2:CreateTexture(nil,'BORDER', nil, 1)
                 self.instanceFrame2.texture:SetAllPoints(self.instanceFrame2)
-                self.instanceFrame2.texture:SetAtlas('DungeonSkull')
-                local portrait= self.instanceFrame2:CreateTexture(nil, 'BORDER',nil,2)--外框
-                portrait:SetAtlas('DK-Base-Rune-CDFill')
-                portrait:SetPoint('CENTER')
-                portrait:SetSize(20,20)
-                portrait:SetVertexColor(r,g,b,1)
-                self.instanceFrame2.text= e.Cstr(self.instanceFrame2, {size=8})
-                self.instanceFrame2.text:SetPoint('TOP')
+                self.instanceFrame2.texture:SetAtlas('BossBanner-SkullCircle')
 
-                self.instanceFrame= CreateFrame("Frame", nil, self)--副本, 地下城，指示
+                self.instanceFrame2.text= e.Cstr(self.instanceFrame2, {size=8})
+                self.instanceFrame2.text:SetPoint('TOP',0,5)
+
+                self.instanceFrame= CreateFrame("Frame", nil, self)--5人 副本, 地下城，指示
                 self.instanceFrame:SetFrameLevel(frameLevel)
-                self.instanceFrame:SetPoint('RIGHT', self.instanceFrame2, 'LEFT',1, -6)
+                self.instanceFrame:SetPoint('RIGHT', self.instanceFrame2, 'LEFT',0, -6)
                 self.instanceFrame:SetSize(16,16)
                 self.instanceFrame:EnableMouse(true)
                 self.instanceFrame:SetScript('OnEnter', function(self2)
@@ -537,6 +549,8 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                         e.tips:SetOwner(self2, "ANCHOR_LEFT")
                         e.tips:ClearLines()
                         e.tips:AddLine(self2.tips)
+                        e.tips:AddLine(' ')
+                        e.tips:AddDoubleLine(id, addName)
                         e.tips:Show()
                     end
                 end)
@@ -578,9 +592,6 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
             else
                 self.classTexture:SetTexture(0)
             end
-            --if CanInspect(unit) and CheckInteractDistance(unit, 1) then
-              --  NotifyInspect(unit)--取得装等
-            --end
         end
         self.classPortrait:SetVertexColor(r,g,b,1)
 
