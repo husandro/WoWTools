@@ -137,7 +137,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
-        elseif arg1=='Blizzard_ItemSocketingUI' then--10.07 原石宝石，提示
+        --[[elseif arg1=='Blizzard_ItemSocketingUI' then--10.07 原石宝石，提示
 
             ItemSocketingFrame.setTipsFrame= CreateFrame("Frame", nil, ItemSocketingFrame)
             ItemSocketingFrame.setTipsFrame:SetFrameStrata('HIGH')
@@ -176,7 +176,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     end
                 end
             end
-            ItemSocketingFrame.setTipsFrame:SetShown(select(2,GetSocketItemInfo())== 4638590)--10.07 原石宝石，提示
+            ItemSocketingFrame.setTipsFrame:SetShown(select(2,GetSocketItemInfo())== 4638590)--10.07 原石宝石，提示]]
         end
 
     elseif event=='PLAYER_LOGOUT' then
