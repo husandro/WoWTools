@@ -329,7 +329,7 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
             end)
             self.pvpItem:SetScript('OnLeave', function() e.tips:Hide() end)
         end
-        
+
 
         if upgradeItem then
             if not self.upgradeItem then--"升级：%s/%s"
@@ -351,11 +351,11 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
                 end)
                 self.upgradeItem:SetScript('OnLeave', function() e.tips:Hide() end)
             end
-            
-            local upText= upgradeItem:match('(.-)%d+/%d+')
+
+            local upText= upgradeItem:match('(.-)%d+/%d+')--"升级：%s %s/%s"
             upgradeItemText= upText and strlower(e.WA_Utf8Sub(upText,1,3, true))
             if upgradeItemText then
-                if not self.upgradeItemText then--"升级：%s %s/%s"
+                if not self.upgradeItemText then
                     local h= self:GetHeight()/3
                     if Slot(slot) then
                         self.upgradeItemText= e.Cstr(self, {color={r=0,g=1,b=0}})
@@ -375,6 +375,12 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
                     end)
                     self.upgradeItem:SetScript('OnLeave', function() e.tips:Hide() end)
                 end
+                self.upgradeItemText.tips= upgradeItemText
+                local quality = GetInventoryItemQuality('player', slot)--颜色
+                local hex = quality and select(3, GetItemQualityColor(quality))
+                if hex then
+                    upgradeItemText= '|c'..hex..upgradeItemText..'|r'
+                end
             end
         end
     end
@@ -391,7 +397,7 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
         self.pvpItem.tips= pvpItem
         self.pvpItem:SetShown(pvpItem and true or false)
     end
-    if self.upgradeItem then--文字
+    if self.upgradeItem then--"升级：%s/%s"
         self.upgradeItem.tips=upgradeItem
         if upgradeItem then
             local min, max= upgradeItem:match('(%d+)/(%d+)')
@@ -406,7 +412,8 @@ local function Enchant(self, slot, link)--附魔, 使用, 属性
         end
         self.upgradeItem:SetText(upgradeItem or '')
     end
-    if  self.upgradeItemText then
+    if  self.upgradeItemText then--"升级：%s %s/%s"
+        
         self.upgradeItemText:SetText(upgradeItemText or '')
     end
 end
@@ -1176,7 +1183,7 @@ local function add_Button_OpenOption(self)
             for _, itemID in pairs(tab) do
                 e.LoadDate({id=itemID, type='item'})--加载 item quest spell
                 local num= GetItemCount(itemID , true, nil, true)
-                if num>0 then 
+                if num>0 then
                     local icon= C_Item.GetItemIconByID(itemID)
                     if icon then
                         text= text and text..'|n' or ''
@@ -1202,7 +1209,7 @@ local function add_Button_OpenOption(self)
         set_item_Num_Text(btn)
     end
 
-   
+
 end
 --###########
 --加载保存数据
