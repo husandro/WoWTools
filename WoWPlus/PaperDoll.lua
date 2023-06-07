@@ -587,12 +587,6 @@ end
 --#######
 --装备管理
 --#######
-local function set_HideShowEquipmentFrame_Texture()--设置，总开关，装备管理框
-    if panel.equipmentButton then
-        panel.equipmentButton:SetNormalAtlas(Save.equipment and 'auctionhouse-icon-favorite' or e.Icon.icon)
-        panel.equipmentButton:SetAlpha(Save.equipment and 0.5 or 1)
-    end
-end
 local function EquipmentStr(self)--套装已装备数量
     local setID=self.setID
     local nu
@@ -666,7 +660,7 @@ local function set_inti_Equipment_Frame()--添加装备管理框
                 Save.Equipment[2]=nil
         end)
         panel.equipmentButton.btn:SetScript("OnMouseUp", function() ResetCursor() end)
-        panel.equipmentButton.btn:SetScript("OnMouseDown", function(self,d)
+        panel.equipmentButton.btn:SetScript("OnClick", function(self,d)
             local key=IsModifierKeyDown()
             local alt=IsAltKeyDown()
             if d=='RightButton' and not key then--移动图标
@@ -1083,31 +1077,32 @@ local function Init_Server_equipmentButton_Lable()
     if panel.serverText then
         panel.serverText:SetText(text or '')
     end
-
     if not panel.equipmentButton then
-        panel.equipmentButton = e.Cbtn(PaperDollItemsFrame, {size={18,18}})--显示/隐藏装备管理框选项
+        panel.equipmentButton = e.Cbtn(PaperDollItemsFrame, {size={18,18}, atlas= Save.equipment and 'auctionhouse-icon-favorite' or e.Icon.disabled})--显示/隐藏装备管理框选项
         panel.equipmentButton:SetPoint('TOPRIGHT',-2,-40)
-        panel.equipmentButton:SetScript("OnClick", function(self)
+        panel.equipmentButton:SetAlpha(0.5)
+        panel.equipmentButton:SetScript("OnClick", function(self2)
             Save.equipment= not Save.equipment and true or nil
-            set_inti_Equipment_Frame()--装备管理框
-            set_HideShowEquipmentFrame_Texture()--设置，总开关，装备管理框
+            self2:SetNormalAtlas(Save.equipment and 'auctionhouse-icon-favorite' or e.Icon.disabled)
         end)
-        panel.equipmentButton:SetScript("OnEnter", function (self)
-            e.tips:SetOwner(self, "ANCHOR_TOPLEFT")
+        panel.equipmentButton:SetScript("OnEnter", function (self2)
+            e.tips:SetOwner(self2, "ANCHOR_TOPLEFT")
             e.tips:ClearLines()
             e.tips:AddDoubleLine((e.onlyChinese and '装备管理' or EQUIPMENT_MANAGER)..e.GetShowHide(Save.equipment), e.Icon.left)
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
-            if self.btn and self.btn:IsShown() then
-                self.btn:SetButtonState('PUSHED')
+            self2:SetAlpha(1)
+            if self2.btn and self2.btn:IsShown() then
+                self2.btn:SetButtonState('PUSHED')
             end
         end)
-        panel.equipmentButton:SetScript("OnLeave",function(self)
+        panel.equipmentButton:SetScript("OnLeave",function(self2)
             e.tips:Hide()
-            if self.btn then
-                self.btn:SetButtonState("NORMAL")
+            if self2.btn then
+                self2.btn:SetButtonState("NORMAL")
             end
+            self2:SetAlpha(0.5)
         end)
     end
     panel.equipmentButton:SetShown(not Save.hide and true or false)
@@ -1176,7 +1171,7 @@ local function Init()
     Init_Server_equipmentButton_Lable()--显示服务器名称，装备管理框
 
     set_inti_Equipment_Frame()--装备管理框
-    set_HideShowEquipmentFrame_Texture()--设置，总开关，装备管理框
+    --set_HideShowEquipmentFrame_Texture()--设置，总开关，装备管理框
 
     GetDurationTotale()--装备,总耐久度
 
@@ -1194,7 +1189,7 @@ local function Init()
         LvTo()--总装等
     end)
     hooksecurefunc('GearSetButton_UpdateSpecInfo', EquipmentStr)--套装已装备数量
-    hooksecurefunc('PaperDollEquipmentManagerPane_Update',set_inti_Equipment_Frame)----添加装备管理框  
+    hooksecurefunc('PaperDollEquipmentManagerPane_Update',set_inti_Equipment_Frame)--添加装备管理框  
 
     --#######
     --装备属性
