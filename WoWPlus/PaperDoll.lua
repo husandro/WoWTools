@@ -79,7 +79,7 @@ local function set_Du(self, slot, link) --耐久度
     end
 
     if not self.slotText and not Save.hide then
-        self.slotText=e.Cstr(self.du, {size=8})
+        self.slotText=e.Cstr(self, {size=8})
         self.slotText:SetAlpha(0.5)
         self.slotText:EnableMouse(true)
         self.slotText:SetScript('OnEnter', function(self2)
