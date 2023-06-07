@@ -808,7 +808,6 @@ end
 --装备弹出
 --EquipmentFlyout.lua
 local function setFlyout(button, itemLink, slot)
-
     if not button.level then
         button.level= e.Cstr(button)
         button.level:SetPoint('BOTTOM')
