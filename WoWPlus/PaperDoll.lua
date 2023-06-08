@@ -93,7 +93,7 @@ local function set_Engineering(self, slot, link, use)--增加 [潘达利亚工�
         end
         return
     end
-print(link, use)
+
     if not self.engineering then
         local h=self:GetHeight()/3
         self.engineering=e.Cbtn(self, {icon='hide',size={h,h}})
