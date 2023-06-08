@@ -162,7 +162,7 @@ local function getItems()--取得背包物品信息
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local info = C_Container.GetContainerItemInfo(bag, slot)
             local duration, enable = select(2, C_Container.GetContainerItemCooldown(bag, slot))
-            local classID= info and info.itemID and select(6, GetItemInfoInstant(info.itemID))
+            local classID= (info and info.itemID) and select(6, GetItemInfoInstant(info.itemID))
 
             if info
                 and info.itemID

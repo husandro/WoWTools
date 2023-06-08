@@ -135,8 +135,75 @@ local function set_Engineering(self, slot, link, use)--增加 [潘达利亚工�
     self.engineering:SetShown(true)
 end
 
-local function set_no_Enchant(self, slot, enchant)
-    
+local subClassToSlot={
+    [1]= 0,--头	
+    [2]= 1,--脖子	
+    [3]= 2,--肩膀	
+    [15]= 3,--披风	
+    [5]= 4,--胸部	
+    [9]= 5,--手腕	
+    [10]= 6,--手
+    [6]= 7,--腰部	
+    [7]= 8,--腿	
+    [8]= 9,--脚	
+    [11]= 10,--手指	
+    [12]= 10,--手指	
+    [16]= 11,--武器	单手武器
+    --[16]= 12,--	双手武器	
+    [17]= 13,--盾牌/副手	
+}
+local function set_no_Enchant(self, slot, find)
+    if not subClassToSlot[slot] then
+        return
+    end
+    local tab
+    if not find and not Save.hide then
+        for bagIndex= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--Constants.InventoryConstants.NumBagSlots
+            for slotIndex=1, C_Container.GetContainerNumSlots(bagIndex) do
+                local info = C_Container.GetContainerItemInfo(bagIndex, slotIndex)
+                if info and info.itemID then
+                    local classID, subClassID= select(6, GetItemInfoInstant(info.itemID))
+                    if classID==8 and (slot==16 and subClassID==12 or subClassID==subClassToSlot[slot]) then
+                        tab={bag= bagIndex, slot= slotIndex}
+                        break
+                    end
+                end
+            end
+            if tab then
+                break
+            end
+        end
+        if tab and not self.noEnchant then
+            local h=self:GetHeight()/3
+            self.noEnchant= e.Cbtn(self, {size={h, h}, type=true, icon='hide'})
+            if is_Left_Slot(slot) then
+                self.noEnchant:SetPoint('LEFT', self, 'RIGHT', 8, 0)
+            else
+                self.noEnchant:SetPoint('RIGHT', self, 'LEFT', -8, 0)
+            end
+            local texture= self.noEnchant:CreateTexture(nil, 'OVERLAY')
+            texture:SetAllPoints(self.noEnchant)
+            texture:SetAtlas('bags-icon-addslots')
+            --texture:SetDesaturated(true)
+            self.noEnchant:SetScript('OnEnter' ,function(self2)
+                if self2.tab then
+                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                    e.tips:ClearLines()
+                    e.tips:SetBagItem(tab.bag, tab.slot)
+                    e.tips:Show()
+                end
+            end)
+            self.noEnchant:SetScript('OnLeave',function() e.tips:Hide() end)
+            self.noEnchant:SetAttribute("type", "item")
+        end
+    end
+    if self.noEnchant then
+        self.noEnchant.tab=tab
+        self.noEnchant:SetShown(tab and true or false)
+        if tab then
+            self.noEnchant:SetAttribute("item", tab.bag..' '..tab.slot)
+        end
+    end
 end
 
 local function set_Item_Tips(self, slot, link)--附魔, 使用, 属性
@@ -171,7 +238,7 @@ local function set_Item_Tips(self, slot, link)--附魔, 使用, 属性
         self.enchant.tips= enchant
         self.enchant:SetShown(enchant and true or false)
     end
-    set_no_Enchant(self, slot, enchant)
+    set_no_Enchant(self, slot, enchant and true or false)
 
     use= select(2, GetItemSpell(link))--物品是否可使用
     if use and not self.use then
