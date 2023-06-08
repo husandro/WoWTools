@@ -1485,6 +1485,7 @@ local function Init_InBox()
                             text= (e.onlyChinese and '付款' or COD)
                         elseif money or invoiceType=='seller' then
                             text= (e.onlyChinese and '可取' or WITHDRAW)
+                            text= invoiceType=='seller' and '|A:Levelup-Icon-Bag:0:0|a'..text or text
                         end
                         if text then
                             if bid and deposit and consignment then
