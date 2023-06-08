@@ -986,7 +986,7 @@ local function Init_Fast_Button()
         for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+ NUM_REAGENTBAG_FRAMES do
             for slot=1, C_Container.GetContainerNumSlots(bag) do
                 local info= check_Enabled_Item(classID, subClassID, findString, bag, slot)
-                
+
                 if info then
                     C_Container.PickupContainerItem(bag, slot)
                     ClickSendMailItemButton(slotTab[1])
@@ -1396,7 +1396,7 @@ local function Init_InBox()
             local btn=_G["MailItem"..i.."Button"]
             if btn and btn:IsShown() then
                 local _, _, sender, subject, money2, CODAmount2, _, itemCount2, wasRead, wasReturned, textCreated, canReply, isGM = GetInboxHeaderInfo(btn.index)
-                
+
                 local invoiceType, itemName, playerName, bid, buyout, deposit, consignment = GetInboxInvoiceInfo(btn.index)
                 local CODAmount= (CODAmount2 and CODAmount2>0) and CODAmount2 or nil
                 local money= (money2 and money2>0) and money2 or nil
@@ -1406,7 +1406,7 @@ local function Init_InBox()
                 if sender then
                     local frame=_G["MailItem"..i.."Sender"]
                     if frame then
-                      
+
 
                         if not frame:IsMouseEnabled()  then--回复
                             frame:EnableMouse(true)
@@ -1550,8 +1550,12 @@ local function Init_InBox()
                 if btn.DeleteButton then--删除，或退信，按钮，设置参数
                     btn.DeleteButton:SetNormalTexture(InboxItemCanDelete(btn.index) and 'xmarksthespot' or 'common-icon-undo')
                     btn.DeleteButton.openMailID= btn.index
-                    btn.DeleteButton:SetShown(not Save.hide and not invoiceType)
-                    btn.DeleteButton.numItemLabel:SetText(itemCount or '')
+                    local show= true
+                    if Save.hide or invoiceType or (sender and strlower(sender) == strlower(BUTTON_LAG_AUCTIONHOUSE)) then
+                        show=false
+                    end
+                    btn.DeleteButton:SetShown(show)
+                    btn.DeleteButton.numItemLabel:SetText(itemCount and itemCount>1 or '')
 
                     btn.outItemOrMoney.openMailID= btn.index
                     btn.outItemOrMoney:SetShown((money or itemCount) and not CODAmount and not Save.hide)
