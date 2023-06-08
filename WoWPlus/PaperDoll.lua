@@ -87,13 +87,13 @@ local function recipeLearned(recipeSpellID)--是否已学配方
 end
 
 local function set_Engineering(self, slot, link, use)--增加 [潘达利亚工程学: 地精滑翔器][诺森德工程学: 氮气推进器]
-    if not ((slot==15 and recipeLearned(126392)) or (slot==6 and recipeLearned(55016))) or use and Save.hide or not link then
+    if not ((slot==15 and recipeLearned(126392)) or (slot==6 and recipeLearned(55016))) or use or Save.hide or not link then
         if self.engineering  then
             self.engineering:SetShown(false)
         end
         return
     end
-
+print(link, use)
     if not self.engineering then
         local h=self:GetHeight()/3
         self.engineering=e.Cbtn(self, {icon='hide',size={h,h}})
@@ -263,7 +263,7 @@ local function set_Item_Tips(self, slot, link)--附魔, 使用, 属性
     end
     set_no_Enchant(self, slot, enchant and true or false)--附魔，按钮
 
-    use= select(2, GetItemSpell(link))--物品是否可使用
+    use=  link and select(2, GetItemSpell(link))--物品是否可使用
     if use and not self.use then
         local h=self:GetHeight()/3
         self.use=self:CreateTexture()
