@@ -2941,7 +2941,8 @@
         "InspectFrameTab_OnClick",
         "InspectPaperDollFrame_SetLevel",
         "PaperDollFrame_ClearIgnoredSlots",
-        "HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_OUT_OF_COMBAT"
+        "HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_OUT_OF_COMBAT",
+        "PaperDoll_IsEquippedSlot"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

@@ -26,88 +26,6 @@ for i=1, NUM_TOTAL_EQUIPPED_BAG_SLOTS  do
     end
 end
 
-local function set_Du(self, slot, link) --耐久度    
-    local du
-    if link and not Save.hide then
-        local min, max=GetInventoryItemDurability(slot)
-        if min and max and max>0 then
-            du=min/max*100
-        end
-    end
-    if not self.du and du then
-        self.du= CreateFrame('StatusBar', nil, self)
-        local wq= slot==16 or slot==17 or slot==18--武器
-        if wq then
-            self.du:SetPoint('TOP', self, 'BOTTOM')
-        elseif is_Left_Slot(slot) then
-            self.du:SetPoint('RIGHT', self, 'LEFT', -2.5,0)
-        else
-            self.du:SetPoint('LEFT', self, 'RIGHT', 2.5,0)
-        end
-        if wq then
-            self.du:SetOrientation('HORIZONTAL')
-            self.du:SetSize(self:GetHeight(),4)--h37
-        else
-            self.du:SetOrientation("VERTICAL")
-            self.du:SetSize(4, self:GetHeight())--h37
-        end
-        self.du:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
-        self.du:EnableMouse(true)
-        self.du:SetMinMaxValues(0, 100)
-        self.du:SetScript('OnEnter', function(self2)
-            if self2.du then
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine((e.onlyChinese and '耐久度' or DURABILITY),format('%.1f%%', self2.du))
-                e.tips:Show()
-            end
-        end)
-        self.du:SetScript('OnLeave', function() e.tips:Hide() end)
-    end
-    if self.du then
-        if du then
-            if du and du >70 then
-                self.du:SetStatusBarColor(0,1,0)
-            elseif du and du >30 then
-                self.du:SetStatusBarColor(1,1,0)
-            else
-                self.du:SetStatusBarColor(1,0,0)
-            end
-        end
-        self.du:SetValue(du or 0)
-        self.du.du=du
-    end
-
-    if not self.slotText and not Save.hide then
-        self.slotText=e.Cstr(self, {size=8})
-        self.slotText:SetAlpha(0.5)
-        self.slotText:EnableMouse(true)
-        self.slotText:SetScript('OnEnter', function(self2)
-            e.tips:SetOwner(self2, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine((e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS), self2.slot)
-            e.tips:Show()
-        end)
-        self.slotText:SetScript('OnLeave', function() e.tips:Hide() end)
-        if self.du then
-            self.slotText:SetPoint('CENTER', self.du)
-        else
-            local wq= slot==16 or slot==17 or slot==18--武器
-            if wq then
-                self.slotText:SetPoint('TOP', self.du or self, 'BOTTOM')
-            elseif is_Left_Slot(slot) then
-                self.slotText:SetPoint('RIGHT', self.du or self, 'LEFT')
-            else
-                self.slotText:SetPoint('LEFT', self.du or self, 'RIGHT')
-            end
-        end
-    end
-    if self.slotText then
-        self.slotText.slot= slot
-        self.slotText:SetText(not Save.hide and slot or '')
-    end
-end
-
 local function LvTo()--总装等
     if not PaperDollSidebarTab1 then
         return
@@ -163,62 +81,13 @@ local function LvTo()--总装等
     end
 end
 
-local function set_Gem(self, slot, link)--宝石
-    if not slot or slot>17 or slot<1 or slot==4 then
-        return
-    end
-    if not Save.hide then
-        local leftSlot= is_Left_Slot(slot)--左边插曹
-        local x= leftSlot and 8 or -8
-        for n=1, MAX_NUM_SOCKETS do
-            local gemLink= link and select(2, GetItemGem(link, n))
-            if gemLink then
-                e.LoadDate({id=gemLink, type='item'})
-                if not self['gem'..n] then
-                    self['gem'..n]=self:CreateTexture()
-                    self['gem'..n]:SetSize(12.3, 12.3)--local h=self:GetHeight()/3 37 12.3
-                    self['gem'..n]:EnableMouse(true)
-                    self['gem'..n]:SetScript('OnEnter' ,function(self2)
-                        if self2.gemLink then
-                            e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                            e.tips:ClearLines()
-                            e.tips:SetHyperlink(self2.gemLink)
-                            e.tips:Show()
-                        end
-                    end)
-                    self['gem'..n]:SetScript('OnLeave',function() e.tips:Hide() end)
-                else
-                    self['gem'..n]:ClearAllPoints()
-                end
-                if leftSlot then--左边插曹
-                    self['gem'..n]:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT', x, 0)
-                else
-                    self['gem'..n]:SetPoint('BOTTOMRIGHT', self, 'BOTTOMLEFT', x, 0)
-                end
-            end
-            if self['gem'..n] then
-                self['gem'..n].gemLink= gemLink
-                self['gem'..n]:SetTexture(gemLink and C_Item.GetItemIconByID(gemLink) or 0)
-                self['gem'..n]:SetShown(not gemLink and false or true)
-            end
-
-            x= leftSlot and x+ 12.3 or x- 12.3--左边插曹
-        end
-    else
-        for n=1, MAX_NUM_SOCKETS do
-            if self['gem'..n] then
-                self['gem'..n]:SetShown(false)
-            end
-        end
-    end
-end
-
 local function recipeLearned(recipeSpellID)--是否已学配方
     local info= C_TradeSkillUI.GetRecipeInfo(recipeSpellID)
     return info and info.learned
 end
-local function Engineering(self, slot, use)--增加 [潘达利亚工程学: 地精滑翔器][诺森德工程学: 氮气推进器]
-    if not ((slot==15 and recipeLearned(126392)) or (slot==6 and recipeLearned(55016))) or use and Save.hide then
+
+local function set_Engineering(self, slot, link, use)--增加 [潘达利亚工程学: 地精滑翔器][诺森德工程学: 氮气推进器]
+    if not ((slot==15 and recipeLearned(126392)) or (slot==6 and recipeLearned(55016))) or use and Save.hide or not link then
         if self.engineering  then
             self.engineering:SetShown(false)
         end
@@ -266,164 +135,287 @@ local function Engineering(self, slot, use)--增加 [潘达利亚工程学: 地�
     self.engineering:SetShown(true)
 end
 
-local function Enchant(self, slot, link)--附魔, 使用, 属性
-    local enchant, use, pvpItem, upgradeItem, upgradeItemText
+local function set_no_Enchant(self, slot, enchant)
+    
+end
+
+local function set_Item_Tips(self, slot, link)--附魔, 使用, 属性
+    local enchant, use, pvpItem, upgradeItem
     if link and not Save.hide then
         local dateInfo= e.GetTooltipData({hyperLink=link, text={enchantStr, pvpItemStr, upgradeStr}, onlyText=true})--物品提示，信息
         enchant, use, pvpItem, upgradeItem= dateInfo.text[enchantStr], dateInfo.red, dateInfo.text[pvpItemStr],  dateInfo.text[upgradeStr]
-        if enchant and not self.enchant then--附魔
-            local h=self:GetHeight()/3
-            self.enchant=self:CreateTexture()
-            self.enchant:SetSize(h,h)
-            if is_Left_Slot(slot) then
-                self.enchant:SetPoint('LEFT', self, 'RIGHT', 8, 0)
-            else
-                self.enchant:SetPoint('RIGHT', self, 'LEFT', -8, 0)
-            end
-            self.enchant:SetTexture(463531)
-            self.enchant:EnableMouse(true)
-            self.enchant:SetScript('OnEnter' ,function(self2)
-                if self2.tips then
-                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                    e.tips:ClearLines()
-                    e.tips:AddLine(self2.tips)
-                    e.tips:Show()
-                end
-            end)
-            self.enchant:SetScript('OnLeave',function() e.tips:Hide() end)
-        end
-
-        use= select(2, GetItemSpell(link))--物品是否可使用
-        if use and not self.use then
-            local h=self:GetHeight()/3
-            self.use=self:CreateTexture()
-            self.use:SetSize(h,h)
-            if is_Left_Slot(slot) then
-                self.use:SetPoint('TOPLEFT', self, 'TOPRIGHT', 8, 0)
-            else
-                self.use:SetPoint('TOPRIGHT', self, 'TOPLEFT', -8, 0)
-            end
-            self.use:SetAtlas('soulbinds_tree_conduit_icon_utility')
-            self.use:EnableMouse(true)
-            self.use:SetScript('OnEnter' ,function(self2)
-                if self2.spellID then
-                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                    e.tips:ClearLines()
-                    e.tips:SetSpellByID(self2.spellID)
-                    e.tips:Show()
-                end
-            end)
-            self.use:SetScript('OnLeave',function() e.tips:Hide() end)
-        end
-
-        Engineering(self, slot, use)--地精滑翔,氮气推进器
-
-        if pvpItem and not self.pvpItem then--提示PvP装备
-            local h=self:GetHeight()/3
-            self.pvpItem=self:CreateTexture(nil,'OVERLAY',nil,7)
-            self.pvpItem:SetSize(h,h)
-            if is_Left_Slot(slot) then
-                self.pvpItem:SetPoint('LEFT', self, 'RIGHT', -2.5,0)
-            else
-                self.pvpItem:SetPoint('RIGHT', self, 'LEFT', 2.5,0)
-            end
-            self.pvpItem:SetAtlas('pvptalents-warmode-swords')
-            self.pvpItem:EnableMouse(true)
-            self.pvpItem:SetScript('OnEnter', function(self2)
-                if self2.tips then
-                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                    e.tips:ClearLines()
-                    e.tips:AddLine((e.onlyChinese and "装备：在竞技场和战场中将物品等级提高至%d。" or PVP_ITEM_LEVEL_TOOLTIP):format(self2.tips))
-                    e.tips:Show()
-                end
-            end)
-            self.pvpItem:SetScript('OnLeave', function() e.tips:Hide() end)
-        end
-
-
-        if upgradeItem then
-            if not self.upgradeItem then--"升级：%s/%s"
-                if is_Left_Slot(slot) then
-                    self.upgradeItem= e.Cstr(self, {color={r=0,g=1,b=0}})
-                    self.upgradeItem:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT',1,0)
-                else
-                    self.upgradeItem= e.Cstr(self, {color={r=0,g=1,b=0}, justifyH='RIGHT'})
-                    self.upgradeItem:SetPoint('BOTTOMRIGHT', self, 'BOTTOMLEFT',2,0)
-                end
-                self.upgradeItem:EnableMouse(true)
-                self.upgradeItem:SetScript('OnEnter', function(self2)
-                    if self2.tips then
-                        e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                        e.tips:ClearLines()
-                        e.tips:AddLine((e.onlyChinese and "升级：" or ITEM_UPGRADE_NEXT_UPGRADE)..self2.tips)
-                        e.tips:Show()
-                    end
-                end)
-                self.upgradeItem:SetScript('OnLeave', function() e.tips:Hide() end)
-            end
-
-            local upText= upgradeItem:match('(.-)%d+/%d+')--"升级：%s %s/%s"
-            upgradeItemText= upText and strlower(e.WA_Utf8Sub(upText,1,3, true))
-            if upgradeItemText then
-                if not self.upgradeItemText then
-                    local h= self:GetHeight()/3
-                    if is_Left_Slot(slot) then
-                        self.upgradeItemText= e.Cstr(self, {color={r=0,g=1,b=0}})
-                        self.upgradeItemText:SetPoint('LEFT', self, 'RIGHT',h+8,0)
-                    else
-                        self.upgradeItemText= e.Cstr(self, {color={r=0,g=1,b=0}, justifyH='RIGHT'})
-                        self.upgradeItemText:SetPoint('RIGHT', self, 'LEFT',-h-8,0)
-                    end
-                    self.upgradeItemText:EnableMouse(true)
-                    self.upgradeItemText:SetScript('OnEnter', function(self2)
-                        if self2.tips then
-                            e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                            e.tips:ClearLines()
-                            e.tips:AddLine((e.onlyChinese and "升级：" or ITEM_UPGRADE_NEXT_UPGRADE)..self2.tips)
-                            e.tips:Show()
-                        end
-                    end)
-                    self.upgradeItemText:SetScript('OnLeave', function() e.tips:Hide() end)
-                end
-                self.upgradeItemText.tips= upgradeItem
-                local quality = GetInventoryItemQuality('player', slot)--颜色
-                local hex = quality and select(4, GetItemQualityColor(quality))
-                if hex then
-                    upgradeItemText= '|c'..hex..upgradeItemText..'|r'
-                end
-            end
-        end
     end
 
+    if enchant and not self.enchant then--附魔
+        local h=self:GetHeight()/3
+        self.enchant=self:CreateTexture()
+        self.enchant:SetSize(h,h)
+        if is_Left_Slot(slot) then
+            self.enchant:SetPoint('LEFT', self, 'RIGHT', 8, 0)
+        else
+            self.enchant:SetPoint('RIGHT', self, 'LEFT', -8, 0)
+        end
+        self.enchant:SetTexture(463531)
+        self.enchant:EnableMouse(true)
+        self.enchant:SetScript('OnEnter' ,function(self2)
+            if self2.tips then
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddLine(self2.tips)
+                e.tips:Show()
+            end
+        end)
+        self.enchant:SetScript('OnLeave',function() e.tips:Hide() end)
+    end
     if self.enchant then
         self.enchant.tips= enchant
         self.enchant:SetShown(enchant and true or false)
+    end
+    set_no_Enchant(self, slot, enchant)
+
+    use= select(2, GetItemSpell(link))--物品是否可使用
+    if use and not self.use then
+        local h=self:GetHeight()/3
+        self.use=self:CreateTexture()
+        self.use:SetSize(h,h)
+        if is_Left_Slot(slot) then
+            self.use:SetPoint('TOPLEFT', self, 'TOPRIGHT', 8, 0)
+        else
+            self.use:SetPoint('TOPRIGHT', self, 'TOPLEFT', -8, 0)
+        end
+        self.use:SetAtlas('soulbinds_tree_conduit_icon_utility')
+        self.use:EnableMouse(true)
+        self.use:SetScript('OnEnter' ,function(self2)
+            if self2.spellID then
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:SetSpellByID(self2.spellID)
+                e.tips:Show()
+            end
+        end)
+        self.use:SetScript('OnLeave',function() e.tips:Hide() end)
     end
     if self.use then
         self.use.spellID= use
         self.use:SetShown(use and true or false)
     end
+    set_Engineering(self, slot, link, use)--地精滑翔,氮气推进器
+
+    if pvpItem and not self.pvpItem then--提示PvP装备
+        local h=self:GetHeight()/3
+        self.pvpItem=self:CreateTexture(nil,'OVERLAY',nil,7)
+        self.pvpItem:SetSize(h,h)
+        if is_Left_Slot(slot) then
+            self.pvpItem:SetPoint('LEFT', self, 'RIGHT', -2.5,0)
+        else
+            self.pvpItem:SetPoint('RIGHT', self, 'LEFT', 2.5,0)
+        end
+        self.pvpItem:SetAtlas('pvptalents-warmode-swords')
+        self.pvpItem:EnableMouse(true)
+        self.pvpItem:SetScript('OnEnter', function(self2)
+            if self2.tips then
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddLine((e.onlyChinese and "装备：在竞技场和战场中将物品等级提高至%d。" or PVP_ITEM_LEVEL_TOOLTIP):format(self2.tips))
+                e.tips:Show()
+            end
+        end)
+        self.pvpItem:SetScript('OnLeave', function() e.tips:Hide() end)
+    end
     if self.pvpItem then
         self.pvpItem.tips= pvpItem
         self.pvpItem:SetShown(pvpItem and true or false)
     end
-    if self.upgradeItem then--"升级：%s/%s"
+
+    if upgradeItem and not self.upgradeItem then--"升级：%s/%s"
+        if is_Left_Slot(slot) then
+            self.upgradeItem= e.Cstr(self, {color={r=0,g=1,b=0}})
+            self.upgradeItem:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT',1,0)
+        else
+            self.upgradeItem= e.Cstr(self, {color={r=0,g=1,b=0}, justifyH='RIGHT'})
+            self.upgradeItem:SetPoint('BOTTOMRIGHT', self, 'BOTTOMLEFT',2,0)
+        end
+        self.upgradeItem:EnableMouse(true)
+        self.upgradeItem:SetScript('OnEnter', function(self2)
+            if self2.tips then
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddLine((e.onlyChinese and "升级：" or ITEM_UPGRADE_NEXT_UPGRADE)..self2.tips)
+                e.tips:Show()
+            end
+        end)
+        self.upgradeItem:SetScript('OnLeave', function() e.tips:Hide() end)
+    end
+    if self.upgradeItem then
         self.upgradeItem.tips=upgradeItem
+        local upText
         if upgradeItem then
             local min, max= upgradeItem:match('(%d+)/(%d+)')
             if min and max then
                 if min==max then
-                    upgradeItem= "|A:VignetteKill:0:0|a"
+                    upText= "|A:VignetteKill:0:0|a"
                 else
                     min, max= tonumber(min), tonumber(max)
-                    upgradeItem= max-min
+                    upText= max-min
                 end
             end
         end
-        self.upgradeItem:SetText(upgradeItem or '')
+        self.upgradeItem:SetText(upText or '')
+    end
+
+    local upgradeItemText
+    local upText= upgradeItem and upgradeItem:match('(.-)%d+/%d+')--"升级：%s %s/%s"
+    if upText then
+        upgradeItemText= strlower(e.WA_Utf8Sub(upText,1,3, true))
+        if not self.upgradeItemText then
+            local h= self:GetHeight()/3
+            if is_Left_Slot(slot) then
+                self.upgradeItemText= e.Cstr(self, {color={r=0,g=1,b=0}})
+                self.upgradeItemText:SetPoint('LEFT', self, 'RIGHT',h+8,0)
+            else
+                self.upgradeItemText= e.Cstr(self, {color={r=0,g=1,b=0}, justifyH='RIGHT'})
+                self.upgradeItemText:SetPoint('RIGHT', self, 'LEFT',-h-8,0)
+            end
+            self.upgradeItemText:EnableMouse(true)
+            self.upgradeItemText:SetScript('OnEnter', function(self2)
+                if self2.tips then
+                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                    e.tips:ClearLines()
+                    e.tips:AddLine((e.onlyChinese and "升级：" or ITEM_UPGRADE_NEXT_UPGRADE)..self2.tips)
+                    e.tips:Show()
+                end
+            end)
+            self.upgradeItemText:SetScript('OnLeave', function() e.tips:Hide() end)
+        end
+        self.upgradeItemText.tips= upgradeItem
+        local quality = GetInventoryItemQuality('player', slot)--颜色
+        local hex = quality and select(4, GetItemQualityColor(quality))
+        if hex then
+            upgradeItemText= '|c'..hex..upgradeItemText..'|r'
+        end
     end
     if  self.upgradeItemText then--"升级：%s %s/%s"
         self.upgradeItemText:SetText(upgradeItemText or '')
+    end
+
+    if not Save.hide then--宝石
+        local leftSlot= is_Left_Slot(slot)--左边插曹
+        local x= leftSlot and 8 or -8
+        for n=1, MAX_NUM_SOCKETS do
+            local gemLink= link and select(2, GetItemGem(link, n))
+            if gemLink then
+                e.LoadDate({id=gemLink, type='item'})
+                if not self['gem'..n] then
+                    self['gem'..n]=self:CreateTexture()
+                    self['gem'..n]:SetSize(12.3, 12.3)--local h=self:GetHeight()/3 37 12.3
+                    self['gem'..n]:EnableMouse(true)
+                    self['gem'..n]:SetScript('OnEnter' ,function(self2)
+                        if self2.gemLink then
+                            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                            e.tips:ClearLines()
+                            e.tips:SetHyperlink(self2.gemLink)
+                            e.tips:Show()
+                        end
+                    end)
+                    self['gem'..n]:SetScript('OnLeave',function() e.tips:Hide() end)
+                else
+                    self['gem'..n]:ClearAllPoints()
+                end
+                if leftSlot then--左边插曹
+                    self['gem'..n]:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT', x, 0)
+                else
+                    self['gem'..n]:SetPoint('BOTTOMRIGHT', self, 'BOTTOMLEFT', x, 0)
+                end
+            end
+            if self['gem'..n] then
+                self['gem'..n].gemLink= gemLink
+                self['gem'..n]:SetTexture(gemLink and C_Item.GetItemIconByID(gemLink) or 0)
+                self['gem'..n]:SetShown(not gemLink and false or true)
+            end
+
+            x= leftSlot and x+ 12.3 or x- 12.3--左边插曹
+        end
+    else
+        for n=1, MAX_NUM_SOCKETS do
+            if self['gem'..n] then
+                self['gem'..n]:SetShown(false)
+            end
+        end
+    end
+
+    local du
+    if link and not Save.hide then
+        local min, max=GetInventoryItemDurability(slot)
+        if min and max and max>0 then
+            du=min/max*100
+        end
+    end
+    if not self.du and du then
+        self.du= CreateFrame('StatusBar', nil, self)
+        local wq= slot==16 or slot==17 or slot==18--武器
+        if wq then
+            self.du:SetPoint('TOP', self, 'BOTTOM')
+        elseif is_Left_Slot(slot) then
+            self.du:SetPoint('RIGHT', self, 'LEFT', -2.5,0)
+        else
+            self.du:SetPoint('LEFT', self, 'RIGHT', 2.5,0)
+        end
+        if wq then
+            self.du:SetOrientation('HORIZONTAL')
+            self.du:SetSize(self:GetHeight(),4)--h37
+        else
+            self.du:SetOrientation("VERTICAL")
+            self.du:SetSize(4, self:GetHeight())--h37
+        end
+        self.du:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
+        self.du:EnableMouse(true)
+        self.du:SetMinMaxValues(0, 100)
+        self.du:SetScript('OnEnter', function(self2)
+            if self2.du then
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine((e.onlyChinese and '耐久度' or DURABILITY),format('%.1f%%', self2.du))
+                e.tips:Show()
+            end
+        end)
+        self.du:SetScript('OnLeave', function() e.tips:Hide() end)
+    end
+    if self.du then
+        if du then
+            if du and du >70 then
+                self.du:SetStatusBarColor(0,1,0)
+            elseif du and du >30 then
+                self.du:SetStatusBarColor(1,1,0)
+            else
+                self.du:SetStatusBarColor(1,0,0)
+            end
+        end
+        self.du:SetValue(du or 0)
+        self.du.du=du
+    end
+end
+
+local function set_Slot_Num_Label(self, slot, isEquipped)--栏位
+    if not self.slotText and not Save.hide and not isEquipped then
+        self.slotText=e.Cstr(self, {color=true})
+        self.slotText:SetAlpha(0.5)
+        self.slotText:EnableMouse(true)
+        self.slotText:SetScript('OnEnter', function(self2)
+            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine((e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS), self2.slot)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(id, addName)
+            e.tips:Show()
+            self2:SetAlpha(1)
+        end)
+        self.slotText:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.5) end)
+        self.slotText:SetPoint('CENTER')
+        self.slotText.slot= slot
+        self.slotText:SetText(slot)
+    end
+    if self.slotText then
+        self.slotText:SetShown(not Save.hide and not isEquipped)
     end
 end
 
@@ -949,8 +941,9 @@ local function set_InspectPaperDollItemSlotButton_Update(self)
     local slot= self:GetID()
 	local link= not Save.hide and GetInventoryItemLink(InspectFrame.unit, slot) or nil
 	e.LoadDate({id=link, type='item'})--加载 item quest spell
-    set_Gem(self, slot, link)
-    Enchant(self, slot, link)
+    --set_Gem(self, slot, link)
+    set_Item_Tips(self, slot, link)
+    set_Slot_Num_Label(self, slot, link and true or false)--栏位
     e.Set_Item_Stats(self, link, {point=self.icon})
     if not self.OnEnter and not Save.hide then
         self:SetScript('OnEnter', function(self2)
@@ -1196,35 +1189,37 @@ local function Init()
     --#######
     hooksecurefunc('PaperDollItemSlotButton_Update',  function(self)--PaperDollFrame.lua
         local slot= self:GetID()
-        if slot then
-            if slot<20 and slot~=4 and slot~=19 and slot~=0 then
-                local textureName = GetInventoryItemTexture("player", slot)
-                local hasItem = textureName ~= nil
-                local link=hasItem and GetInventoryItemLink('player', slot) or nil--装等                
-                --Lv(self, slot, link)
-                set_Du(self, slot, link)
-                set_Gem(self, slot, link)
-                Enchant(self, slot, link)
-                --set_item_Set(self, slot, link)
+        if not slot  then
+            return
+        end
+        if PaperDoll_IsEquippedSlot(slot) then
+            local textureName = GetInventoryItemTexture("player", slot)
+            local hasItem = textureName ~= nil
+            local link=hasItem and GetInventoryItemLink('player', slot) or nil--装等                
+            if slot~=4 and slot~=19 then
+                set_Item_Tips(self, slot, link)
                 e.Set_Item_Stats(self, not Save.hide and link or nil, {point=self.icon})
                 set_PaperDollSidebarTab3_Text()
                 LvTo()--总装等
-            elseif InventSlot_To_ContainerSlot[slot] then
-                local numFreeSlots
-                if self:HasBagEquipped() then--背包数
-                    numFreeSlots = C_Container.GetContainerNumFreeSlots(InventSlot_To_ContainerSlot[slot])
-                    if numFreeSlots==0 then
-                        numFreeSlots= '|cnRED_FONT_COLOR:'..numFreeSlots..'|r'
-                    end
-                    if not self.numFreeSlots then
-                        self.numFreeSlots=e.Cstr(self, {color=true, justifyH='CENTER'})
-                        self.numFreeSlots:SetPoint('BOTTOM',0 ,6)
-                    end
+            end
+            set_Slot_Num_Label(self, slot, link and true or nil)--栏位
+        elseif InventSlot_To_ContainerSlot[slot] then
+            local numFreeSlots
+            local isbagEquipped= self:HasBagEquipped()
+            if isbagEquipped then--背包数
+                numFreeSlots= C_Container.GetContainerNumFreeSlots(InventSlot_To_ContainerSlot[slot])
+                if numFreeSlots==0 then
+                    numFreeSlots= '|cnRED_FONT_COLOR:'..numFreeSlots..'|r'
                 end
-                if self.numFreeSlots then
-                    self.numFreeSlots:SetText(numFreeSlots or '')
+                if not self.numFreeSlots then
+                    self.numFreeSlots=e.Cstr(self, {color=true, justifyH='CENTER'})
+                    self.numFreeSlots:SetPoint('BOTTOM',0 ,6)
                 end
             end
+            if self.numFreeSlots then
+                self.numFreeSlots:SetText(numFreeSlots or '')
+            end
+            set_Slot_Num_Label(self, InventSlot_To_ContainerSlot[slot], isbagEquipped)--栏位
         end
     end)
 
