@@ -195,7 +195,7 @@ local function set_no_Enchant(self, slot, find)--附魔，按钮
                     e.tips:Show()
                 end
             end)
-            
+
             self.noEnchant:SetScript('OnLeave',function() e.tips:Hide() end)
             self.noEnchant:SetScript('OnShow', function(self2)
                 self2:RegisterEvent('BAG_UPDATE_DELAYED')
@@ -206,7 +206,6 @@ local function set_no_Enchant(self, slot, find)--附魔，按钮
             self.noEnchant:RegisterEvent('BAG_UPDATE_DELAYED')
             self.noEnchant:SetScript('OnEvent', function(self2)
                 if not UnitAffectingCombat('player') then
-                    print(id,addName)
                     local tab2=get_no_Enchant_Bag(self2.slot)--取得，物品，bag, slot
                     if tab2 then
                         self2:SetAttribute("item", tab2.bag..' '..tab2.slot)
@@ -1350,7 +1349,7 @@ local function Init()
     --############
     --更改,等级文本
     --############
-    
+
     hooksecurefunc('PaperDollFrame_SetLevel', function()--PaperDollFrame.lua
         if Save.hide then
             return
