@@ -641,7 +641,9 @@ local function Init_Move()
 
     --if Save.SavePoint then--在指定位置,显示
     hooksecurefunc('UpdateUIPanelPositions',function(currentFrame)
-        set_Frame_Point(currentFrame)
+        if not UnitAffectingCombat('player') then
+            set_Frame_Point(currentFrame)
+        end
     end)
     --end
 

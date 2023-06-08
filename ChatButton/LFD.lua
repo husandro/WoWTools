@@ -504,7 +504,7 @@ local function setQueueStatus()--小眼睛, 信息
         if list then
             text= (text and text..'|n' or '')
             ..(LFGListUtil_IsEntryEmpowered() and e.Icon.player or e.Icon.star2)
-            ..(e.onlyChinese and '招募' or RAF_RECRUITMENT)
+            ..(e.onlyChinese and '招募' or RAF_RECRUITMENT)..(info.autoAccept and ' ('..(e.onlyChinese and '自动加入' or AUTO_JOIN)..')' or '')
             ..'|n'..list
         end
     end

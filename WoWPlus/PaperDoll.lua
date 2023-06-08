@@ -152,49 +152,73 @@ local subClassToSlot={
     --[16]= 12,--	双手武器	
     [17]= 13,--盾牌/副手	
 }
-local function set_no_Enchant(self, slot, find)
-    if not subClassToSlot[slot] then
+local function get_no_Enchant_Bag(slot)--取得，物品，bag, slot    
+    for bagIndex= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--Constants.InventoryConstants.NumBagSlots
+        for slotIndex=1, C_Container.GetContainerNumSlots(bagIndex) do
+            local info = C_Container.GetContainerItemInfo(bagIndex, slotIndex)
+            if info and info.itemID then
+                local classID, subClassID= select(6, GetItemInfoInstant(info.itemID))
+                if classID==8 and (slot==16 and subClassID==12 or subClassID==subClassToSlot[slot]) then
+                    return {bag= bagIndex, slot= slotIndex}
+                end
+            end
+        end
+    end
+end
+local function set_no_Enchant(self, slot, find)--附魔，按钮
+    if not subClassToSlot[slot] or UnitAffectingCombat('player') then
         return
     end
     local tab
     if not find and not Save.hide then
-        for bagIndex= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--Constants.InventoryConstants.NumBagSlots
-            for slotIndex=1, C_Container.GetContainerNumSlots(bagIndex) do
-                local info = C_Container.GetContainerItemInfo(bagIndex, slotIndex)
-                if info and info.itemID then
-                    local classID, subClassID= select(6, GetItemInfoInstant(info.itemID))
-                    if classID==8 and (slot==16 and subClassID==12 or subClassID==subClassToSlot[slot]) then
-                        tab={bag= bagIndex, slot= slotIndex}
-                        break
-                    end
-                end
-            end
-            if tab then
-                break
-            end
-        end
+        tab=get_no_Enchant_Bag(slot)--取得，物品，bag, slot
         if tab and not self.noEnchant then
             local h=self:GetHeight()/3
             self.noEnchant= e.Cbtn(self, {size={h, h}, type=true, icon='hide'})
+            self.noEnchant:SetAttribute("type", "item")
+            self.noEnchant.slot= slot
             if is_Left_Slot(slot) then
                 self.noEnchant:SetPoint('LEFT', self, 'RIGHT', 8, 0)
             else
                 self.noEnchant:SetPoint('RIGHT', self, 'LEFT', -8, 0)
             end
-            local texture= self.noEnchant:CreateTexture(nil, 'OVERLAY')
-            texture:SetAllPoints(self.noEnchant)
-            texture:SetAtlas('bags-icon-addslots')
-            --texture:SetDesaturated(true)
+
             self.noEnchant:SetScript('OnEnter' ,function(self2)
                 if self2.tab then
                     e.tips:SetOwner(self2, "ANCHOR_LEFT")
                     e.tips:ClearLines()
-                    e.tips:SetBagItem(tab.bag, tab.slot)
+                    e.tips:SetBagItem(self2.tab.bag, self2.tab.slot)
+                    if UnitAffectingCombat('player') then
+                        e.tips:AddLine(' ')
+                        e.tips:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+                    end
                     e.tips:Show()
                 end
             end)
+            
             self.noEnchant:SetScript('OnLeave',function() e.tips:Hide() end)
-            self.noEnchant:SetAttribute("type", "item")
+            self.noEnchant:SetScript('OnShow', function(self2)
+                self2:RegisterEvent('BAG_UPDATE_DELAYED')
+            end)
+            self.noEnchant:SetScript('OnHide', function(self2)
+                self2:UnregisterEvent('BAG_UPDATE_DELAYED')
+            end)
+            self.noEnchant:RegisterEvent('BAG_UPDATE_DELAYED')
+            self.noEnchant:SetScript('OnEvent', function(self2)
+                if not UnitAffectingCombat('player') then
+                    print(id,addName)
+                    local tab2=get_no_Enchant_Bag(self2.slot)--取得，物品，bag, slot
+                    if tab2 then
+                        self2:SetAttribute("item", tab2.bag..' '..tab2.slot)
+                    end
+                    self2.tab= tab2
+                end
+            end)
+
+            local texture= self.noEnchant:CreateTexture(nil, 'OVERLAY')
+            texture:SetAllPoints(self.noEnchant)
+            texture:SetAtlas('bags-icon-addslots')
+
         end
     end
     if self.noEnchant then
@@ -238,7 +262,7 @@ local function set_Item_Tips(self, slot, link)--附魔, 使用, 属性
         self.enchant.tips= enchant
         self.enchant:SetShown(enchant and true or false)
     end
-    set_no_Enchant(self, slot, enchant and true or false)
+    set_no_Enchant(self, slot, enchant and true or false)--附魔，按钮
 
     use= select(2, GetItemSpell(link))--物品是否可使用
     if use and not self.use then
