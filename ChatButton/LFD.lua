@@ -924,7 +924,6 @@ local function set_LFGPlus()--预创建队伍增强
         end
         if realm and not self.realmText then
             self.realmText= e.Cstr(self)
-            --self.realmText:SetPoint('BOTTOMLEFT', self, 0, -2)
             self.realmText:SetPoint('BOTTOMRIGHT', self.DataDisplay.Enumerate,0,-3)
             self.realmText:EnableMouse(true)
             self.realmText:SetScript('OnEnter', function(self2)
@@ -970,37 +969,8 @@ local function set_LFGPlus()--预创建队伍增强
         end)
 
 
-        --[[local orderIndexes = {}--https://wago.io/klC4qqHaF
-        if categoryID == 2 and not isAppFinished then--_G["ShowRIORaitingWA1NotShowClasses"] ~= true
-            for i=1, info.numMembers do
-                local role, class = C_LFGList.GetSearchResultMemberInfo(self.resultID, i)
-                local orderIndex = getIndex(LFG_LIST_GROUP_DATA_ROLE_ORDER, role)
-                table.insert(orderIndexes, {orderIndex, class})
-            end
-            table.sort(orderIndexes, function(a,b) return a[1] < b[1] end)
-        end
-        local xOffset = -88
-        for i = 1, 5 do
-            local texture = "tex"..i
-            if orderIndexes[i] then
-                local class = orderIndexes[i][2]
-                local classColor = RAID_CLASS_COLORS[class]
-                local r, g, b= classColor:GetRGBA()
-                if (not self.DataDisplay.Enumerate[texture]) then
-                    self.DataDisplay.Enumerate[texture] = self.DataDisplay.Enumerate:CreateTexture(nil, "OVERLAY")
-                    self.DataDisplay.Enumerate[texture]:SetSize(10, 3)
-                    self.DataDisplay.Enumerate[texture]:SetPoint("RIGHT", self.DataDisplay.Enumerate, "RIGHT", xOffset, -10)
-                end
-                self.DataDisplay.Enumerate[texture]:SetColorTexture(r, g, b, 0.75)
-                self.DataDisplay.Enumerate[texture]:SetShown(true)
-
-            elseif self.DataDisplay.Enumerate[texture] then
-                self.DataDisplay.Enumerate[texture]:SetShown(false)
-            end
-            xOffset = xOffset + 18
-        end]]
         local orderIndexes = {}
-        if categoryID == 2 and not isAppFinished then--_G["ShowRIORaitingWA1NotShowClasses"] ~= true
+        if categoryID == 2 and not isAppFinished then--_G["ShowRIORaitingWA1NotShowClasses"] ~= true--https://wago.io/klC4qqHaF
             for i=1, info.numMembers do
                 local role, class = C_LFGList.GetSearchResultMemberInfo(self.resultID, i)
                 local orderIndex = getIndex(LFG_LIST_GROUP_DATA_ROLE_ORDER, role)
@@ -1748,7 +1718,14 @@ local function Init()
         end
     end)
 
-    if Save.LFGPlus then--预创建队伍增强
+    --[[local btn= e.Cbtn(LFGListFrame, {size=20, 20})
+    if _G['MoveZoomInButtonPerPVEFrame'] then
+        btn:SetPoint('RIGHT', _G['MoveZoomInButtonPerPVEFrame'], 'LEFT')
+    else
+        btn:SetPoint('LEFT', PVEFrame.TitleContainer)
+    end
+    ]]
+    if Save.LFGPlus then--预创建队伍增强    
         set_LFGPlus()
     end
 
