@@ -518,6 +518,9 @@ local function set_check_Show_Spell_Port()--传送门, 启用/禁用
     end
 end
 local function set_Spell_Port(self)
+    if UnitAffectingCombat('player') then
+        return
+    end
     if Save.hide or not Save.showSpellPort then
         if self.spell then
             self.spell:SetShown(false)
@@ -1053,7 +1056,6 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                             end
                         end
                         e.tips:Show()
-                        print(id,addName)
                     end)
                     frame.currentKey:SetScript('OnLeave', function() e.tips:Hide() end)
                 end

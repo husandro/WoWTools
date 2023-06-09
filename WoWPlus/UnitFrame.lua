@@ -125,17 +125,17 @@ local function set_Keystones_Date()--挑战，数据
     local text
     local score= C_ChallengeMode.GetOverallDungeonScore()
     if score and score>0 then
-        text= score
+        text= e.GetKeystoneScorsoColor(score)
         local info = C_MythicPlus.GetRunHistory(false, true)--本周记录
         if info then
             local num= 0
-            local level, completed
+            local level--, completed
             for _, runs  in pairs(info) do
                 if runs and runs.level then
                     num= num+ 1
                     if not level or level< runs.level then
                         level= runs.level
-                        completed= runs.completed
+                        --completed= runs.completed
                     end
                 end
             end
