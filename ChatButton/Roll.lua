@@ -171,6 +171,18 @@ local function InitMenu(self, level, type)--主菜单
         e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
 
+    info={
+        text= (#Tab>0 and '|A:bags-greenarrow:0:0|a' or '')..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
+        notCheckable= true,
+        colorCode= #Tab==0 and '|cff606060',
+        menuList= 'SAVE',
+        hasArrow= true,
+        func=function()
+            setRest()--重置
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
         text= e.onlyChinese and '自动清除' or AUTO_JOIN:gsub(JOIN,SLASH_STOPWATCH_PARAM_STOP2),
@@ -186,17 +198,7 @@ local function InitMenu(self, level, type)--主菜单
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    info={
-        text= e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
-        notCheckable= true,
-        colorCode= #Tab==0 and '|cff606060',
-        menuList= 'SAVE',
-        hasArrow= true,
-        func=function()
-            setRest()--重置
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
+   
 end
 
 
