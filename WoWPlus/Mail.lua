@@ -1122,6 +1122,7 @@ local function Init_Fast_Button()
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine((e.onlyChinese and '添加' or ADD)..e.Icon.left, self2.name)
+                e.tips:AddDoubleLine(self2.classID and 'ClassID '..self2.classID or '', self2.subClassID and 'SubClassID '..self2.subClassID or '')
                 e.tips:AddLine(' ')
 
                 e.tips:AddDoubleLine(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL, self2.num)
