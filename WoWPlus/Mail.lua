@@ -15,7 +15,7 @@ local Save={
 
     fast={},--快速，加载，物品，指定玩家
     fastShow=true,--显示/隐藏，快速，加载，按钮
-    CtrlFast=true,--Ctrl+RightButton,快速，加载，物品
+    CtrlFast= e.Player.husandro,--Ctrl+RightButton,快速，加载，物品
     --scaleSendPlayerFrame=1.2,--清除历史数据，缩放
 
     scaleFastButton=1.25,
@@ -313,6 +313,9 @@ local function Init_Menu(_, level, menuList)
         info={
             text= 'Ctrl + '..e.Icon.right..' '..(e.onlyChinese and '多物品' or MAIL_MULTIPLE_ITEMS),
             checked= not Save.disableCtrlFast,
+            tooltipOnButton=true,
+            tooltipTitle= e.onlyChinese and '备注：如果出现错误' or ('note: '..ERRORS..' ('..SHOW..')'),
+            tooltipText= e.onlyChinese and '请禁用此功能' or DISABLE,
             func= function()
                 Save.disableCtrlFast= not Save.disableCtrlFast and true or nil
             end
