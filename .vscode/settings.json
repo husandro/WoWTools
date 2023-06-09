@@ -2942,7 +2942,8 @@
         "InspectPaperDollFrame_SetLevel",
         "PaperDollFrame_ClearIgnoredSlots",
         "HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_OUT_OF_COMBAT",
-        "PaperDoll_IsEquippedSlot"
+        "PaperDoll_IsEquippedSlot",
+        "DUNGEON_SCORE_OVERTIME_TIME"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

@@ -969,7 +969,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                             frame.HighestLevel:SetScript('OnEnter', function(self2)
                                 e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
                                 e.tips:ClearLines()
-                                e.tips:AddLine((e.onlyChinese and '最佳%s' or DUNGEON_SCORE_BEST_AFFIX):format( (e.onlyChinese and '等级' or LEVEL)..': '..self2:GetText()))
+                                e.tips:AddLine(format(e.onlyChinese and '最佳%s' or DUNGEON_SCORE_BEST_AFFIX, (e.onlyChinese and '等级' or LEVEL)..': '..self2:GetText()))
                                 e.tips:Show()
                             end)
                             frame.HighestLevel:SetScript('OnLeave', function() e.tips:Hide() end)
@@ -998,15 +998,25 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                                 label:SetScript('OnEnter', function(self2)
                                     e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
                                     e.tips:ClearLines()
-                                    e.tips:AddLine((e.onlyChinese and '最佳%s' or DUNGEON_SCORE_BEST_AFFIX):format(self2.name))
+                                    e.tips:AddLine(format(e.onlyChinese and '最佳%s' or DUNGEON_SCORE_BEST_AFFIX, self2.name))
+                                    if self2.overTime then
+                                        e.tips:AddLine('|cnRED_FONT_COLOR:'..format(e.onlyChinese and '%s (超时)' or DUNGEON_SCORE_OVERTIME_TIME, SecondsToClock(self2.durationSec)))
+                                    else
+                                        e.tips:AddLine(SecondsToClock(self2.durationSec))
+                                    end
                                     e.tips:Show()
                                 end)
                                 label:SetScript('OnLeave', function() e.tips:Hide() end)
                                 frame['affixInfo'..k]= label
                             end
+
                             local level= info.overTime and '|cnRED_FONT_COLOR:'..info.level..'|r' or info.level
                             local icon='|T'..(info.name == nameA and filedataidA or filedataidB)..':0|t'
                             label:SetText(icon..level)
+
+                            label.overTime= info.overTime
+                            label.durationSec= info.durationSec
+                            
                             label.name= icon..info.name..': '..level
                             k=k+1
                         end
