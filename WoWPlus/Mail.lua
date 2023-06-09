@@ -46,6 +46,7 @@ local function get_Name_Info(name)--取得名称，信息
     if name then
         local reName
         name = e.GetUnitName(name)
+        WoWDate= WoWDate or {}
         for guid, tab in pairs(WoWDate) do
             if name== e.GetUnitName(nil, nil, guid) then
                 reName= e.Icon.star2..e.GetPlayerInfo({guid=guid, faction=tab.faction, reName=true, realm=true})
