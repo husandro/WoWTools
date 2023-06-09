@@ -1395,11 +1395,11 @@ local function add_Button_OpenOption(self)
         e.tips:Show()
     end)
     btn:SetScript('OnLeave', function() e.tips:Hide() end)
-    self:HookScript('OnShow', function()
+    --[[self:HookScript('OnShow', function()--出现BUG,不知哪里问题
         if not PaperDollFrame:IsVisible() then
             ToggleCharacter("PaperDollFrame")
         end
-    end)
+    end)]]
 
     if self==ItemUpgradeFrameCloseButton then--装备升级, 界面
         local function set_item_Num_Text(self2)
