@@ -149,6 +149,7 @@ local function getReadyCheckStatus(unit, index, uiMapID)
                 stat== 'waiting' and '|A:QuestTurnin:0:0|a'
                 or stat== 'notready' and e.Icon.X2
                 or stat
+                or ''
             )
             ..(index<10 and ' ' or '')..index..')'--编号号
             ..(e.PlayerOnlineInfo(unit) or '')
