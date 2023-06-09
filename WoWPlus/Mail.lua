@@ -1555,7 +1555,9 @@ local function Init_InBox()
                         show=false
                     end
                     btn.DeleteButton:SetShown(show)
-                    btn.DeleteButton.numItemLabel:SetText(itemCount and itemCount>1 or '')
+                    if btn.DeleteButton.numItemLabel then
+                        btn.DeleteButton.numItemLabel:SetText(itemCount and itemCount>1 or '')
+                    end
 
                     btn.outItemOrMoney.openMailID= btn.index
                     btn.outItemOrMoney:SetShown((money or itemCount) and not CODAmount and not Save.hide)
