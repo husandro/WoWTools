@@ -1054,25 +1054,6 @@ local function set_LFGPlus()--预创建队伍增强
         tooltip:AddDoubleLine(id, addName)
         tooltip:Show()
     end)
-
-    --[[if e.Player.husandro then--会出现错误, 双击， 预创建队伍，目录
-        hooksecurefunc('LFGListCategorySelection_UpdateCategoryButtons', function(self2)
-            for i=1, #self2.CategoryButtons do
-                local frame=self2.CategoryButtons[i]
-                if frame and frame:IsShown() then
-                    if not frame.OnDoubleClick then
-                        frame:SetScript('OnDoubleClick', function(self3, d)
-                            local frame2 = self3:GetParent();
-                            if frame2.selectedCategory then
-                                securecallfunction(LFGListCategorySelection_StartFindGroup, frame2)
-
-                            end
-                        end)
-                    end
-                end
-            end
-        end)
-    end]]
 end
 
 local function set_button_LFGPlus_Texture()--预创建队伍增强
@@ -1104,6 +1085,25 @@ local function set_button_LFGPlus_Texture()--预创建队伍增强
         end)
     end
 end
+
+--[[if e.Player.husandro then--会出现错误, 双击， 预创建队伍，目录
+    hooksecurefunc('LFGListCategorySelection_UpdateCategoryButtons', function(self2)
+        for i=1, #self2.CategoryButtons do
+            local frame=self2.CategoryButtons[i]
+            if frame and frame:IsShown() then
+                if not frame.OnDoubleClick then
+                    frame:SetScript('OnDoubleClick', function(self3, d)
+                        local frame2 = self3:GetParent();
+                        if frame2.selectedCategory then
+                            securecallfunction(LFGListCategorySelection_StartFindGroup, frame2)
+
+                        end
+                    end)
+                end
+            end
+        end
+    end)
+end]]
 
 --#######
 --初始菜单
