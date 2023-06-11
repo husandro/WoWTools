@@ -275,7 +275,7 @@ end
 local combatCollectionsJournal--藏品
 local function set_Move_CollectionJournal()--藏品
     set_Move_Frame(CollectionsJournal)--藏品
-    set_Move_Frame(RematchJournal, {frame=CollectionsJournal})--藏品
+    --set_Move_Frame(RematchJournal, {frame=CollectionsJournal})--藏品
     set_Move_Frame(WardrobeFrame)--幻化
 end
 
@@ -739,7 +739,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave[addName] or Save
             Save.scale= Save.scale or {}
 
-            --添加控制面板
+            --添加控制面板CollectionsJournal
             panel.name= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..('框架' or addName)
             panel.parent= id
             InterfaceOptions_AddCategory(panel)
