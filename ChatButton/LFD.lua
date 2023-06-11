@@ -842,7 +842,13 @@ end
 --############
 --预创建队伍增强
 --############
+local setLFGPlusOK
 local function set_LFGPlus()--预创建队伍增强
+    if setLFGPlusOK then
+        return
+    end
+    setLFGPlusOK=true
+
     local function getIndex(values, val)
         local index={}
         for k,v in pairs(values) do
@@ -861,7 +867,7 @@ local function set_LFGPlus()--预创建队伍增强
         local isAppFinished = LFGListUtil_IsStatusInactive(appStatus) or LFGListUtil_IsStatusInactive(pendingStatus) or info.isDelisted
 
         local text, color, autoAccept = '', nil, nil
-        if not isAppFinished then
+        if not isAppFinished and Save.LFGPlus then
             text, color=e.GetKeystoneScorsoColor(info.leaderOverallDungeonScore, true)--地下城, 分数
             if info.leaderPvpRatingInfo and info.leaderPvpRatingInfo.rating and info.leaderPvpRatingInfo.rating>0 then--PVP, 分数
                 local text2, color2=e.GetKeystoneScorsoColor(info.leaderPvpRatingInfo.rating)
@@ -896,7 +902,7 @@ local function set_LFGPlus()--预创建队伍增强
                 self.Name:SetTextColor(color.r, color.g, color.b)
             end
         end
-        if autoAccept and not self.autoAcceptTexture then--自动, 邀请
+        if autoAccept and not self.autoAcceptTexture and Save.LFGPlus then--自动, 邀请
             self.autoAcceptTexture=self:CreateTexture(nil,'OVERLAY')
             self.autoAcceptTexture:SetPoint('LEFT')
             self.autoAcceptTexture:SetAtlas(e.Icon.select)
@@ -916,61 +922,66 @@ local function set_LFGPlus()--预创建队伍增强
         end
 
         local realm, realmText
-        if info.leaderName and not isAppFinished then
-            local server= info.leaderName:match('%-(.+)') or e.Player.realm
-            server=e.Get_Region(server)--服务器，EU， US {col, text}
-            realm= server and server.col
-            realmText=server and server.realm
-        end
-        if realm and not self.realmText then
-            self.realmText= e.Cstr(self)
-            self.realmText:SetPoint('BOTTOMRIGHT', self.DataDisplay.Enumerate,0,-3)
-            self.realmText:EnableMouse(true)
-            self.realmText:SetScript('OnEnter', function(self2)
-                if self2.realm then
-                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                    e.tips:ClearLines()
-                    e.tips:AddDoubleLine(e.onlyChinese and '服务器' or 'Realm', '|cnGREEN_FONT_COLOR:'..self2.realm)
-                    e.tips:AddDoubleLine(id, addName)
-                    e.tips:Show()
-                end
-           end)
-           self.realmText:SetScript("OnLeave", function() e.tips:Hide() end)
+        if Save.LFGPlus then
+            if info.leaderName and not isAppFinished then
+                local server= info.leaderName:match('%-(.+)') or e.Player.realm
+                server=e.Get_Region(server)--服务器，EU， US {col, text}
+                realm= server and server.col
+                realmText=server and server.realm
+            end
+            if realm and not self.realmText then
+                self.realmText= e.Cstr(self)
+                self.realmText:SetPoint('BOTTOMRIGHT', self.DataDisplay.Enumerate,0,-3)
+                self.realmText:EnableMouse(true)
+                self.realmText:SetScript('OnEnter', function(self2)
+                    if self2.realm then
+                        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                        e.tips:ClearLines()
+                        e.tips:AddDoubleLine(e.onlyChinese and '服务器' or 'Realm', '|cnGREEN_FONT_COLOR:'..self2.realm)
+                        e.tips:AddDoubleLine(id, addName)
+                        e.tips:Show()
+                    end
+            end)
+            self.realmText:SetScript("OnLeave", function() e.tips:Hide() end)
+            end
         end
         if self.realmText then
             self.realmText.realm= realmText
             self.realmText:SetText(realm or '')
         end
-
-        self:SetScript('OnDoubleClick', function(self2)--LFGListApplicationDialogSignUpButton_OnClick(button) LFG队长分数, 双击加入 LFGListSearchPanel_UpdateResults
-            if LFGListFrame.SearchPanel.SignUpButton:IsEnabled() then
-                LFGListFrame.SearchPanel.SignUpButton:Click()
-            end
-            local frame=LFGListApplicationDialog
-            if not frame.TankButton.CheckButton:GetChecked() and not frame.HealerButton.CheckButton:GetChecked() and not frame.DamagerButton.CheckButton:GetChecked() then
-                local specID=GetSpecialization()--当前专精
-                if specID then
-                    local role = select(5, GetSpecializationInfo(specID))
-                    if role=='DAMAGER' and frame.DamagerButton:IsShown() then
-                        frame.DamagerButton.CheckButton:SetChecked(true)
-
-                    elseif role=='TANK' and frame.TankButton:IsShown() then
-                        frame.TankButton.CheckButton:SetChecked(true)
-
-                    elseif role=='HEALER' and frame.HealerButton:IsShown() then
-                        frame.HealerButton.CheckButton:SetChecked(true)
-                    end
-                    LFGListApplicationDialog_UpdateValidState(frame)
+        if not self.OnDoubleClick then
+            self:SetScript('OnDoubleClick', function(self2)--LFGListApplicationDialogSignUpButton_OnClick(button) LFG队长分数, 双击加入 LFGListSearchPanel_UpdateResults
+                if not Save.LFGPlus then
+                    return
                 end
-            end
-            if frame:IsShown() and frame.SignUpButton:IsEnabled() then
-                frame.SignUpButton:Click()
-            end
-        end)
+                if LFGListFrame.SearchPanel.SignUpButton:IsEnabled() then
+                    LFGListFrame.SearchPanel.SignUpButton:Click()
+                end
+                local frame=LFGListApplicationDialog
+                if not frame.TankButton.CheckButton:GetChecked() and not frame.HealerButton.CheckButton:GetChecked() and not frame.DamagerButton.CheckButton:GetChecked() then
+                    local specID=GetSpecialization()--当前专精
+                    if specID then
+                        local role = select(5, GetSpecializationInfo(specID))
+                        if role=='DAMAGER' and frame.DamagerButton:IsShown() then
+                            frame.DamagerButton.CheckButton:SetChecked(true)
 
+                        elseif role=='TANK' and frame.TankButton:IsShown() then
+                            frame.TankButton.CheckButton:SetChecked(true)
+
+                        elseif role=='HEALER' and frame.HealerButton:IsShown() then
+                            frame.HealerButton.CheckButton:SetChecked(true)
+                        end
+                        LFGListApplicationDialog_UpdateValidState(frame)
+                    end
+                end
+                if frame:IsShown() and frame.SignUpButton:IsEnabled() then
+                    frame.SignUpButton:Click()
+                end
+            end)
+        end
 
         local orderIndexes = {}
-        if categoryID == 2 and not isAppFinished then--_G["ShowRIORaitingWA1NotShowClasses"] ~= true--https://wago.io/klC4qqHaF
+        if categoryID == 2 and not isAppFinished and Save.LFGPlus then--_G["ShowRIORaitingWA1NotShowClasses"] ~= true--https://wago.io/klC4qqHaF
             for i=1, info.numMembers do
                 local role, class = C_LFGList.GetSearchResultMemberInfo(self.resultID, i)
                 local orderIndex = getIndex(LFG_LIST_GROUP_DATA_ROLE_ORDER, role)
@@ -999,6 +1010,9 @@ local function set_LFGPlus()--预创建队伍增强
     end)
 
     hooksecurefunc('LFGListUtil_SetSearchEntryTooltip', function(tooltip, resultID, autoAcceptOption)
+        if not Save.LFGPlus then
+            return
+        end
         local info = C_LFGList.GetSearchResultInfo(resultID)
         local _, appStatus, pendingStatus = C_LFGList.GetApplicationInfo(resultID)
         local isAppFinished = LFGListUtil_IsStatusInactive(appStatus) or LFGListUtil_IsStatusInactive(pendingStatus) or info.isDelisted
@@ -1070,22 +1084,24 @@ local function set_button_LFGPlus_Texture()--预创建队伍增强
             button.LFGPlus:SetPoint('LEFT', PVEFrame.TitleContainer)
         end
         button.LFGPlus:SetFrameLevel(PVEFrame.TitleContainer:GetFrameLevel()+1)
-        button.LFGPlus:SetScript('OnClick', function()
+        button.LFGPlus:SetAlpha(0.5)
+        button.LFGPlus:SetScript('OnClick', function(self2)
             Save.LFGPlus= not Save.LFGPlus and true or nil
+            self2:SetNormalAtlas(Save.LFGPlus and e.Icon.icon or e.Icon.disabled)
+            if Save.LFGPlus then
+                set_LFGPlus()--预创建队伍增强
+            end
+            print(id,addName, e.GetEnabeleDisable(Save.LFGPlus), e.onlyChinese and '需求刷新' or (NEED..REFRESH))
         end)
-        button.LFGPlus:SetScirpt('OnLeave', function() e.tips:Hide() end)
+        button.LFGPlus:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.5) end)
         button.LFGPlus:SetScript('OnEnter', function(self2)
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddLine(' ')
-            有。 
+            e.tips:AddDoubleLine(not e.onlyChinese and LFGLIST_NAME..' Plus'  or '预创建队伍增强', e.GetEnabeleDisable(Save.LFGPlus))
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
+            self2:SetAlpha(1)
         end)
-    end
-
-    if Save.LFGPlus then--预创建队伍增强
-        set_LFGPlus()--预创建队伍增强
     end
 end
 
@@ -1146,15 +1162,17 @@ local function InitList(self, level, type)--LFDFrame.lua
 
         e.LibDD:UIDropDownMenu_AddSeparator(level)
         info={
-            text= e.onlyChinese and '预创建队伍增强' or SCORE_POWER_UPS:gsub(ITEMS,LFGLIST_NAME),
+            text= not e.onlyChinese and LFGLIST_NAME..' Plus'  or '预创建队伍增强' ,
             icon='UI-HUD-MicroMenu-Groupfinder-Mouseover',
             func=function()
                 Save.LFGPlus = not Save.LFGPlus and true or nil
-                print(id, addName, e.GetEnabeleDisable(Save.LFGPlus), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                if Save.LFGPlus then
+                    set_LFGPlus()--预创建队伍增强
+                end
+                print(id, addName, e.GetEnabeleDisable(Save.LFGPlus), e.onlyChinese and '需求刷新' or (NEED..REFRESH))
             end,
             checked=Save.LFGPlus,
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and '预创建队伍' or LFGLIST_NAME,
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
@@ -1575,7 +1593,9 @@ local function Init()
     hooksecurefunc(QueueStatusFrame, 'Update', setQueueStatus)--小眼睛, 更新信息, QueueStatusFrame.lua
 
     set_button_LFGPlus_Texture()--预创建队伍增强
-    set_LFGPlus()--预创建队伍增强
+    if Save.LFGPlus then
+        set_LFGPlus()--预创建队伍增强
+    end
 
     local isLeader, isTank, isHealer, isDPS = GetLFGRoles()--检测是否选定角色pve
     if  not isTank and not isHealer and not isDPS then
