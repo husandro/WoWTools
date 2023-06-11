@@ -731,7 +731,7 @@ local function get_Items_Colleced()
         Frame[addName..'All']=str
     end
     if str and totaleAll>0 then
-        str:SetText(totaleClass..CLASS..'  '..('%i%%'):format(totaleCollected/totaleAll*100)..'  '..e.MK(totaleCollected, 3)..'/'..e.MK(totaleAll,3)..e.Icon.wow2)
+        str:SetText(totaleClass..(e.onlyChinese and '职业' or CLASS)..format('  %i%%  ', totaleCollected/totaleAll*100)..e.MK(totaleCollected, 3)..'/'..e.MK(totaleAll,3)..e.Icon.wow2)
     end
 end
 
@@ -759,8 +759,16 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
 
     C_Timer.After(2, get_Items_Colleced)--物品, 幻化, 界面
 
-    hooksecurefunc(Frame, 'UpdateItems', function(self)--WardrobeItemsCollectionMixin:UpdateItems() Blizzard_Wardrobe.lua
-        --local indexOffset = (self.PagingFrame:GetCurrentPage() - 1) * self.PAGE_SIZE;
+    local function get_Link_Item_Type_Source(sourceID, type)
+        if sourceID then
+            if type=='item' then
+                return WardrobeCollectionFrame:GetAppearanceItemHyperlink(sourceID)
+            else--if type=='illusion' then
+                return select(2, C_TransmogCollection.GetIllusionStrings(sourceID))
+            end
+        end
+    end
+    hooksecurefunc(Frame, 'UpdateItems', function(self)--WardrobeItemsCollectionMixin:UpdateItems() Blizzard_Wardrobe.lua local indexOffset = (self.PagingFrame:GetCurrentPage() - 1) * self.PAGE_SIZE;
         for i = 1, self.PAGE_SIZE do
             local model = self.Models[i];
             if model and model:IsShown() then
@@ -769,18 +777,18 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                 if not Save.hideItems then
                     local findLinks={}
                     if self.transmogLocation:IsIllusion() then--WardrobeItemsModelMixin:OnMouseDown(button)
-                        local link = select(2, C_TransmogCollection.GetIllusionStrings(model.visualInfo.sourceID))
+                        local link =  get_Link_Item_Type_Source(model.visualInfo.sourceID, 'illusion')--select(2, C_TransmogCollection.GetIllusionStrings(model.visualInfo.sourceID))
                         if link then
-                            e.LoadDate({id=link, type='item'})----加载 item quest spell
-                            table.insert(itemLinks, link)
+                            e.LoadDate({id=link, type='item'})--加载 item quest spell
+                            table.insert(itemLinks, {link= link, sourceID= model.visualInfo.sourceID, type='illusion'})
                         end
                     else
                         local sources = CollectionWardrobeUtil.GetSortedAppearanceSources(model.visualInfo.visualID, self:GetActiveCategory(), self.transmogLocation) or {}
                         for index= 1, #sources do
-                            local link = WardrobeCollectionFrame:GetAppearanceItemHyperlink(sources[index]);
+                            local link = get_Link_Item_Type_Source(sources[index],'item')--WardrobeCollectionFrame:GetAppearanceItemHyperlink(sources[index])
                             if link and not findLinks[link] then
-                                e.LoadDate({id=link, type='item'})----加载 item quest spell
-                                table.insert(itemLinks, link)
+                                e.LoadDate({id=link, type='item'})--加载 item quest spell
+                                table.insert(itemLinks, {link=link, sourceID=sources[index], type='item'})
                                 findLinks[link]=true
                             end
                         end
@@ -788,7 +796,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                     findLinks=nil
 
                     local y, x, h =0,0, 11
-                    for index, link in pairs(itemLinks) do
+                    for index, tab in pairs(itemLinks) do
                         local btn= model.itemButton[index]
                         if not btn then
                             btn=e.Cbtn(model, {icon='hide', size=index==1 and {14.4, 14.4} or {h,h}})
@@ -798,10 +806,13 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                                 btn:SetPoint('BOTTOMLEFT', x, y)
                             end
 
-                            btn:SetAlpha(0.5)
+                            if index>1 then
+                                btn:SetAlpha(0.5)
+                            end
 
                             btn:SetScript("OnEnter",function(self2)
-                                if self2.link then
+                                local link2= get_Link_Item_Type_Source(self2.sourceID, self2.type) or self2.link
+                                if link2 then
                                     self2:SetAlpha(1)
                                     e.tips:ClearLines()
                                     e.tips:SetOwner(self2:GetParent():GetParent(), "ANCHOR_RIGHT",8,-300)
@@ -820,7 +831,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                                             e.tips:AddLine(' ')
                                         end
                                     else
-                                        e.tips:SetHyperlink(self2.link)
+                                        e.tips:SetHyperlink(link2)
                                     end
                                     e.tips:AddLine(' ')
                                     e.tips:AddDoubleLine(e.onlyChinese and '发送' or SEND_LABEL, e.Icon.left)
@@ -829,9 +840,10 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                                 end
                             end)
                             btn:SetScript("OnClick", function(self2)
-                                if ( self2.link ) then
+                                local link2= get_Link_Item_Type_Source(self2.sourceID, self2.type) or self2.link
+                                if link2 then
                                     local chat=SELECTED_DOCK_FRAME
-                                    ChatFrame_OpenChat((chat.editBox:GetText() or '')..self2.link, chat)
+                                    ChatFrame_OpenChat((chat.editBox:GetText() or '')..link2, chat)
                                 end
                             end)
                             btn:SetScript("OnLeave",function(self2)
@@ -846,14 +858,14 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                         else
                             y=y+ h
                         end
-                        local illusionID= link:match('Htransmogillusion:(%d+)')
+                        local illusionID= tab.link:match('Htransmogillusion:(%d+)') or tab.type=='illusion'
                         if index==1 then
                             local icon
-                            if illusionID then
+                            if illusionID and illusionID~=true then
                                 local info = C_TransmogCollection.GetIllusionInfo(illusionID)
                                 icon= info and info.icon
                             end
-                            icon= icon or C_Item.GetItemIconByID(link)
+                            icon= icon or C_Item.GetItemIconByID(tab.link)
                             if icon then
                                 btn:SetNormalTexture(icon)
                             else
@@ -864,7 +876,9 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                         else
                             btn:SetNormalAtlas('adventure-missionend-line')
                         end
-                        btn.link=link
+                        btn.link=tab.link
+                        btn.sourceID= tab.sourceID
+                        btn.type= tab.type
                         btn.illusionID= illusionID
                         btn.index=index
                         btn:SetShown(true)

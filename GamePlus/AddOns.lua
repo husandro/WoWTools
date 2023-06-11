@@ -247,7 +247,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
                     ['BugSack']=true,
                     ['!BugGrabber']=true,
                     ['tdBattlePetScript']=true,
-                    ['zAutoLoadPetTeam_Rematch']=true,
+                    --['zAutoLoadPetTeam_Rematch']=true,
                     ['Rematch']=true,
                     [id]=true,
                 }
