@@ -1006,10 +1006,18 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
             --panel:UnregisterEvent('ADDON_LOADED')
 
         elseif arg1=='Blizzard_DebugTools' then--FSTACK Blizzard_DebugTools.lua
-            local btn= e.Cbtn(TableAttributeDisplay, {icon='hide', size={40,40}})
+            local btn= e.Cbtn(TableAttributeDisplay, {icon='hide', size={35,35}})
             btn:SetPoint("BOTTOMRIGHT", TableAttributeDisplay.TitleButton, 'TOPRIGHT',0,2)
             btn:SetNormalAtlas(e.Icon.icon)
             btn:SetScript('OnClick', FrameStackTooltip_ToggleDefaults)
+            btn:SetScript('OnLeave', function() e.tips:Hide() end)
+            btn:SetScript('OnEnter', function(self2)
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine('|cff00ff00FST|rACK', e.GetEnabeleDisable(true)..'/'..e.GetEnabeleDisable(false))
+                e.tips:AddDoubleLine(id, addName)
+                e.tips:Show()
+            end)
 
             local edit= CreateFrame("EditBox", nil, TableAttributeDisplay, 'InputBoxTemplate')
             edit:SetPoint('BOTTOMRIGHT', btn, 'BOTTOMLEFT')
@@ -1027,6 +1035,12 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
                             end
                         end
                     end
+            end)
+            edit:SetScript("OnKeyUp", function(s, key)
+                if IsControlKeyDown() and key == "C" then
+                    --s:ClearFocus() s:GetParent():Hide()
+                    print(id,addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r', s:GetText())
+                end
             end)
         end
 

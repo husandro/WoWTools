@@ -496,7 +496,11 @@ end
 
 local function set_Button_setFrame_PetJournal()--宠物手册，增加按钮
     local frame= e.Cbtn(RematchJournal or PetJournal, {icon=true,size={25, 25}})
-    frame:SetPoint('TOPLEFT', RematchJournal or PetJournal,'TOPRIGHT',3,-29)
+    if _G['MoveZoomInButtonPerCollectionsJournal'] then
+        frame:SetPoint('RIGHT', _G['MoveZoomInButtonPerCollectionsJournal'], 'LEFT')
+    else
+        frame:SetPoint('TOPLEFT', RematchJournal or PetJournal,'TOPRIGHT',3,-29)
+    end
     frame:SetScript('OnMouseDown', function()
         if panel.setFrame then
             set_Pet_Type(not panel:IsShown() and true or false)

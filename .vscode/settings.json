@@ -2943,7 +2943,12 @@
         "PaperDollFrame_ClearIgnoredSlots",
         "HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_OUT_OF_COMBAT",
         "PaperDoll_IsEquippedSlot",
-        "DUNGEON_SCORE_OVERTIME_TIME"
+        "DUNGEON_SCORE_OVERTIME_TIME",
+        "NORMAL_FONT_COLOR_CODE",
+        "PetJournalPetCard",
+        "PetJournalPetCardShadows",
+        "FCF_StartAlertFlash",
+        "PET_BATTLE_START"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
