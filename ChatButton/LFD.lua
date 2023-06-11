@@ -207,10 +207,10 @@ local function set_tipsFrame_Tips(text, LFGListTab)
 
     if not button.leaveInstance and Save.leaveInstance then--自动离开,指示图标
         button.leaveInstance=button:CreateTexture(nil, 'ARTWORK')
-        button.leaveInstance:SetPoint('BOTTOMRIGHT',-7,3)
-        button.leaveInstance:SetSize(10,10)
+        button.leaveInstance:SetPoint('BOTTOMLEFT',4, 0)
+        button.leaveInstance:SetSize(12,12)
         button.leaveInstance:SetAtlas(e.Icon.toLeft)
-        button.leaveInstance:SetDesaturated(true)
+        --button.leaveInstance:SetDesaturated(true)
     end
     if button.leaveInstance then
         button.leaveInstance:SetShown(Save.leaveInstance)
@@ -1061,6 +1061,33 @@ local function set_LFGPlus()--预创建队伍增强
     end]]
 end
 
+local function set_button_LFGPlus_Texture()--预创建队伍增强
+    if not button.LFGPlus then
+        button.LFGPlus= e.Cbtn(LFGListFrame, {size={20, 20}, atlas= Save.LFGPlus and e.Icon.icon or e.Icon.disabled})
+        if _G['MoveZoomInButtonPerPVEFrame'] then
+            button.LFGPlus:SetPoint('RIGHT', _G['MoveZoomInButtonPerPVEFrame'], 'LEFT')
+        else
+            button.LFGPlus:SetPoint('LEFT', PVEFrame.TitleContainer)
+        end
+        button.LFGPlus:SetFrameLevel(PVEFrame.TitleContainer:GetFrameLevel()+1)
+        button.LFGPlus:SetScript('OnClick', function()
+            Save.LFGPlus= not Save.LFGPlus and true or nil
+        end)
+        button.LFGPlus:SetScirpt('OnLeave', function() e.tips:Hide() end)
+        button.LFGPlus:SetScript('OnEnter', function(self2)
+            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddLine(' ')
+            有。 
+            e.tips:AddDoubleLine(id, addName)
+            e.tips:Show()
+        end)
+    end
+
+    if Save.LFGPlus then--预创建队伍增强
+        set_LFGPlus()--预创建队伍增强
+    end
+end
 
 --#######
 --初始菜单
@@ -1547,6 +1574,9 @@ local function Init()
     Init_tipsButton()--建立，小眼睛, 更新信息
     hooksecurefunc(QueueStatusFrame, 'Update', setQueueStatus)--小眼睛, 更新信息, QueueStatusFrame.lua
 
+    set_button_LFGPlus_Texture()--预创建队伍增强
+    set_LFGPlus()--预创建队伍增强
+
     local isLeader, isTank, isHealer, isDPS = GetLFGRoles()--检测是否选定角色pve
     if  not isTank and not isHealer and not isDPS then
         isTank, isHealer, isDPS=true, true, true
@@ -1717,17 +1747,6 @@ local function Init()
             end
         end
     end)
-
-    --[[local btn= e.Cbtn(LFGListFrame, {size=20, 20})
-    if _G['MoveZoomInButtonPerPVEFrame'] then
-        btn:SetPoint('RIGHT', _G['MoveZoomInButtonPerPVEFrame'], 'LEFT')
-    else
-        btn:SetPoint('LEFT', PVEFrame.TitleContainer)
-    end
-    ]]
-    if Save.LFGPlus then--预创建队伍增强    
-        set_LFGPlus()
-    end
 
     hooksecurefunc('GroupLootContainer_AddFrame', function(_, frame)--自动 ROLL
         set_ROLL_Check(frame)

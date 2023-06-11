@@ -270,10 +270,15 @@ local function setTexture()--图标, 自动标记
     else
         button.texture:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..Save.tank)
     end
-    if Save.autoSet then
-        button.border:SetAtlas('bag-border')
-    else
-        button.border:SetAtlas('bag-reagent-border')
+    if Save.autoSet and not button.autoSetTips then
+        button.autoSetTips= button:CreateTexture(nil,'OVERLAY')
+        button.autoSetTips:SetPoint('BOTTOMLEFT',4, 4)
+        button.autoSetTips:SetSize(12,12)
+        button.autoSetTips:SetAtlas('Warfronts-BaseMapIcons-Alliance-Workshop-Minimap')
+        button.autoSetTips:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+    end
+    if button.autoSetTips then
+        button.autoSetTips:SetShown(Save.autoSet)
     end
 end
 local function setAllTextrue()--主图标,是否有权限
@@ -730,7 +735,7 @@ local function InitMenu(self, level, type)--主菜单
     else
         info={
             text= e.onlyChinese and '自动标记' or (AUTO_JOIN:gsub(JOIN,'')..EVENTTRACE_MARKER)..e.Icon.TANK..e.Icon.HEALER,
-            icon= 'Warfronts-BaseMapIcons-Horde-Workshop-Minimap',
+            icon= 'Warfronts-BaseMapIcons-Alliance-Workshop-Minimap',
             checked= Save.autoSet,
             disabled= Save.tank==0 and Save.healer==0,
             func=function()

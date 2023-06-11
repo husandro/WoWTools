@@ -107,8 +107,18 @@ end
 local function setAutoClearRegisterEvent()--注册自动清除事件
     if Save.autoClear then
         panel:RegisterEvent('PLAYER_REGEN_DISABLED')
+        if not button.autoClearTips then
+            button.autoClearTips= button:CreateTexture(nil,'OVERLAY')
+            button.autoClearTips:SetPoint('BOTTOMLEFT',4, 4)
+            button.autoClearTips:SetSize(12,12)
+            button.autoClearTips:SetAtlas('bags-button-autosort-up')
+            button.autoClearTips:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+        end
     else
         panel:UnregisterEvent('PLAYER_REGEN_DISABLED')
+    end
+    if button.autoClearTips then
+        button.autoClearTips:SetShown(Save.autoClear)
     end
 end
 

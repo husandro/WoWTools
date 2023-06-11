@@ -365,6 +365,18 @@ local function set_Shift_Click_focurs()
     end
 end
 
+local function set_SummonTips()--召唤，提示
+    if Save.Summon and not button.summonTips then
+        button.summonTips= button:CreateTexture(nil,'OVERLAY')
+        button.summonTips:SetPoint('BOTTOMLEFT',2, 2)
+        button.summonTips:SetSize(15,16)
+        button.summonTips:SetAtlas('Raid-Icon-SummonPending')
+    end
+    if button.summonTips then
+        button.summonTips:SetShown(Save.Summon)
+    end
+end
+
 --#######
 --初始菜单
 --#######
@@ -495,6 +507,7 @@ local function InitList(self, level, type)
             tooltipText= e.onlyChinese and '战斗中|n离开|nalt' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..'|n'..AFK..'|nalt',
             func= function()
                 Save.Summon= not Save.Summon and true or nil
+                set_SummonTips()--召唤，提示
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -788,7 +801,7 @@ local function Init()
     button.texture:SetAtlas('communities-icon-addgroupplus')
     --setTexture()--设置图标颜色, 是否有权限
 
-    
+    set_SummonTips()--召唤，提示
 
     button:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then

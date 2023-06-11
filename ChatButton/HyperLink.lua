@@ -571,7 +571,8 @@ local function setUseDisabled()
         DEFAULT_CHAT_FRAME.AddMessage=setAddMessageFunc
         DEFAULT_CHAT_FRAME.editBox:SetAltArrowKeyMode(false)--alt +方向= 移动
     end
-    button.texture:SetShown(not Save.disabed)--SetDesaturated(Save.disabed)
+
+    button.texture:SetAtlas(not Save.disabed and e.Icon.icon or e.Icon.disabled)
 end
 local function setFunc()--使用，禁用
     Save.disabed= not Save.disabed and true or nil
@@ -711,9 +712,18 @@ local function set_START_TIMER_Event()--事件, 声音
     if Save.setPlayerSound then
         panel:RegisterEvent('START_TIMER')
         panel:RegisterEvent('STOP_TIMER_OF_TYPE')
+        if not button.setPlayerSoundTips then
+            button.setPlayerSoundTips= button:CreateTexture(nil,'OVERLAY')
+            button.setPlayerSoundTips:SetPoint('BOTTOMLEFT',4, 4)
+            button.setPlayerSoundTips:SetSize(12,12)
+            button.setPlayerSoundTips:SetAtlas('chatframe-button-icon-voicechat')
+        end
     else
         panel:UnregisterEvent('START_TIMER')
         panel:UnregisterEvent('STOP_TIMER_OF_TYPE')
+    end
+    if button.setPlayerSoundTips then
+        button.setPlayerSoundTips:SetShown(Save.setPlayerSound)
     end
 end
 
@@ -945,7 +955,8 @@ local function Init()
     if not Save.disabed then--使用，禁用
         setUseDisabled()
     else
-        button.texture:SetDesaturated(true)
+        --button.texture:SetDesaturated(true)
+        button.texture:SetAtlas(not Save.disabed and e.Icon.icon or e.Icon.disabled)
     end
 
     setPanel()--设置控制面板
@@ -954,9 +965,9 @@ local function Init()
 
     showTimestamps= C_CVar.GetCVar("showTimestamps")~='none' and true or nil
 
-    if Save.setPlayerSound then
+    --if Save.setPlayerSound then
         set_START_TIMER_Event()--事件, 声音
-    end
+    --end
 
     LFGListInviteDialog:SetScript("OnShow", function(self)--队伍查找器, 接受邀请
         if Save.setPlayerSound then
@@ -998,6 +1009,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
                 e.setPlayerSound= Save.setPlayerSound--播放, 声音
 
                 button=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
+
 
                 Init()
                 panel:RegisterEvent('CVAR_UPDATE')

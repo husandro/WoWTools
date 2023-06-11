@@ -769,7 +769,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
         end
     end
     hooksecurefunc(Frame, 'UpdateItems', function(self)--WardrobeItemsCollectionMixin:UpdateItems() Blizzard_Wardrobe.lua local indexOffset = (self.PagingFrame:GetCurrentPage() - 1) * self.PAGE_SIZE;
-        for i = 1, self.PAGE_SIZE do
+        for i= 1, self.PAGE_SIZE do
             local model = self.Models[i];
             if model and model:IsShown() then
                 model.itemButton=model.itemButton or {}
@@ -816,7 +816,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                                     self2:SetAlpha(1)
                                     e.tips:ClearLines()
                                     e.tips:SetOwner(self2:GetParent():GetParent(), "ANCHOR_RIGHT",8,-300)
-                                    if self2.illusionID then
+                                    if self2.illusionID then       
                                         local name, _, sourceText = C_TransmogCollection.GetIllusionStrings(self2.illusionID)
                                         e.tips:AddLine(name)
                                         e.tips:AddLine(' ')
@@ -835,9 +835,9 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                                     end
                                     e.tips:AddLine(' ')
                                     e.tips:AddDoubleLine(e.onlyChinese and '发送' or SEND_LABEL, e.Icon.left)
-                                    e.tips:AddDoubleLine(id, addName)
                                     e.tips:Show()
-                                end
+                                   e.tips:AddDoubleLine(id, addName)
+                                 end
                             end)
                             btn:SetScript("OnClick", function(self2)
                                 local link2= get_Link_Item_Type_Source(self2.sourceID, self2.type) or self2.link
