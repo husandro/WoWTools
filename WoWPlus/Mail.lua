@@ -1561,7 +1561,7 @@ local function Init_InBox()
                     end
                     btn.DeleteButton:SetShown(show)
                     if btn.DeleteButton.numItemLabel then
-                        btn.DeleteButton.numItemLabel:SetText(itemCount and itemCount>1 or '')
+                        btn.DeleteButton.numItemLabel:SetText((itemCount and itemCount>1) and itemCount or '')
                     end
 
                     btn.outItemOrMoney.openMailID= btn.index
