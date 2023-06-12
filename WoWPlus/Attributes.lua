@@ -261,7 +261,7 @@ local function set_STATUS_Tooltip(self)
     e.tips:SetOwner(self, "ANCHOR_RIGHT")
     e.tips:ClearLines()
     local stat, effectiveStat, posBuff, negBuff = UnitStat('player', PrimaryStat);
-    local effectiveStatDisplay = BreakUpLargeNumbers(effectiveStat);
+    local effectiveStatDisplay = BreakUpLargeNumbers(effectiveStat or 0);
     local tooltipText = effectiveStatDisplay
 
     if ( ( posBuff == 0 ) and ( negBuff == 0 ) ) then
@@ -271,10 +271,10 @@ local function set_STATUS_Tooltip(self)
 			tooltipText = tooltipText.." ("..BreakUpLargeNumbers(stat - posBuff - negBuff)..FONT_COLOR_CODE_CLOSE;
 		end
 		if ( posBuff > 0 ) then
-			tooltipText = tooltipText..FONT_COLOR_CODE_CLOSE..GREEN_FONT_COLOR_CODE.."+"..BreakUpLargeNumbers(posBuff)..FONT_COLOR_CODE_CLOSE;
+			tooltipText = tooltipText..FONT_COLOR_CODE_CLOSE..GREEN_FONT_COLOR_CODE.."+"..BreakUpLargeNumbers(posBuff or 0)..FONT_COLOR_CODE_CLOSE;
 		end
 		if ( negBuff < 0 ) then
-			tooltipText = tooltipText..RED_FONT_COLOR_CODE.." "..BreakUpLargeNumbers(negBuff)..FONT_COLOR_CODE_CLOSE;
+			tooltipText = tooltipText..RED_FONT_COLOR_CODE.." "..BreakUpLargeNumbers(negBuff or 0)..FONT_COLOR_CODE_CLOSE;
 		end
 		if ( posBuff > 0 or negBuff < 0 ) then
 			tooltipText = tooltipText..HIGHLIGHT_FONT_COLOR_CODE..")"..FONT_COLOR_CODE_CLOSE;
@@ -286,7 +286,7 @@ local function set_STATUS_Tooltip(self)
     local role = GetSpecializationRole(GetSpecialization())
     if PrimaryStat==LE_UNIT_STAT_STRENGTH then-- Strength
         local text= ''
-        local attackPower = GetAttackPowerForStat(PrimaryStat, effectiveStat);
+        local attackPower = GetAttackPowerForStat(PrimaryStat, effectiveStat or 0);
         if (HasAPEffectsSpellPower()) then
             text= (e.onlyChinese and '提高你的攻击和技能强度' or STAT_TOOLTIP_BONUS_AP_SP)..' '..BreakUpLargeNumbers(attackPower)
         end
