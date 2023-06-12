@@ -275,7 +275,7 @@ local function setTexture()--图标, 自动标记
         button.autoSetTips:SetPoint('BOTTOMLEFT',4, 4)
         button.autoSetTips:SetSize(12,12)
         button.autoSetTips:SetAtlas('Warfronts-BaseMapIcons-Alliance-Workshop-Minimap')
-        button.autoSetTips:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+        --button.autoSetTips:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
     end
     if button.autoSetTips then
         button.autoSetTips:SetShown(Save.autoSet)

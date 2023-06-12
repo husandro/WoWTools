@@ -112,7 +112,7 @@ local function setAutoClearRegisterEvent()--注册自动清除事件
             button.autoClearTips:SetPoint('BOTTOMLEFT',4, 4)
             button.autoClearTips:SetSize(12,12)
             button.autoClearTips:SetAtlas('bags-button-autosort-up')
-            button.autoClearTips:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+            --button.autoClearTips:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
         end
     else
         panel:UnregisterEvent('PLAYER_REGEN_DISABLED')
