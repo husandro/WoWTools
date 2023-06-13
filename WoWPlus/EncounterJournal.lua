@@ -999,7 +999,9 @@ local function Init()--冒险指南界面
 
     EncounterJournal.encounter.instance.mapButton:SetScript('OnEnter', function(self3)--综述,小地图提示
         local name, description, bgImage, buttonImage1, loreImage, buttonImage2, dungeonAreaMapID, link, _, mapID= EJ_GetInstanceInfo()
-        if not name then return end
+        if not name then
+            return
+        end
         e.tips:SetOwner(self3, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(link or name, (dungeonAreaMapID and 'UiMapID|cnGREEN_FONT_COLOR:'..dungeonAreaMapID..'|r' or '')..(mapID and ' mapID|cnGREEN_FONT_COLOR:'..mapID..'|r' or ''))
@@ -1213,6 +1215,25 @@ local function Init()--冒险指南界面
             end
         end
     end)
+
+    --记录上次选择版本
+    hooksecurefunc('EncounterJournal_TierDropDown_Select', function(_, tier)
+        Save.EncounterJournalTier=tier
+    end)
+
+    --记录上次选择TAB
+    hooksecurefunc('EJ_ContentTab_Select', function(id2)
+        Save.EncounterJournalSelectTabID=id2
+    end)
+    if not Save.hideEncounterJournal then
+        local numTier=EJ_GetNumTiers()
+        if numTier and Save.EncounterJournalTier and Save.EncounterJournalTier<=numTier then
+            EJ_SelectTier(Save.EncounterJournalTier)
+        end
+        if Save.EncounterJournalSelectTabID then
+            EJ_ContentTab_Select(Save.EncounterJournalSelectTabID)
+        end
+    end
 end
 
 --###########
