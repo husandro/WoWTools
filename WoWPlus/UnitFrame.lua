@@ -426,9 +426,6 @@ local function set_PartyFrame()--PartyFrame.lua
                         end
                     end
                 end
-
-                
-                
             end
         end
     end)
