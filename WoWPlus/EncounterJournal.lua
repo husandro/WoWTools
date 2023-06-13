@@ -1216,6 +1216,19 @@ local function Init()--冒险指南界面
         end
     end)
 
+    if not Save.hideEncounterJournal then
+        local numTier=EJ_GetNumTiers()--记录上次选择版本
+        if numTier and Save.EncounterJournalTier and Save.EncounterJournalTier<=numTier then
+            EJ_SelectTier(Save.EncounterJournalTier)
+        end
+        C_Timer.After(2, function()
+            if Save.EncounterJournalSelectTabID then--记录上次选择TAB
+                EJ_ContentTab_Select(Save.EncounterJournalSelectTabID)
+            end
+        end)
+    end
+    
+
     --记录上次选择版本
     hooksecurefunc('EncounterJournal_TierDropDown_Select', function(_, tier)
         Save.EncounterJournalTier=tier
@@ -1225,15 +1238,6 @@ local function Init()--冒险指南界面
     hooksecurefunc('EJ_ContentTab_Select', function(id2)
         Save.EncounterJournalSelectTabID=id2
     end)
-    if not Save.hideEncounterJournal then
-        local numTier=EJ_GetNumTiers()
-        if numTier and Save.EncounterJournalTier and Save.EncounterJournalTier<=numTier then
-            EJ_SelectTier(Save.EncounterJournalTier)
-        end
-        if Save.EncounterJournalSelectTabID then
-            EJ_ContentTab_Select(Save.EncounterJournalSelectTabID)
-        end
-    end
 end
 
 --###########
@@ -1260,8 +1264,19 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 if not Save.hideEncounterJournal then
                     set_Loot_Spec_Event()--BOSS战时, 指定拾取, 专精, 事件
                 end
+                --[[C_Timer.After(2, function()
+                    if not IsAddOnLoaded("Blizzard_EncounterJournal") then LoadAddOn('Blizzard_EncounterJournal') end
+                    if not EncounterJournal or not EncounterJournal:IsVisible() then
+                        ToggleEncounterJournal()
+                    end
+                    if EncounterJournal and EncounterJournal:IsVisible() then
+                       
+                        ToggleEncounterJournal()
+                    end
+                end)]]
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
+
 
         elseif arg1=='Blizzard_EncounterJournal' then---冒险指南
             Init()--冒险指南界面

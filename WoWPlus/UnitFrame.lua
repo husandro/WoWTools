@@ -375,6 +375,17 @@ local function set_PartyFrame()--PartyFrame.lua
                             end
                         end
                     end)
+
+                    --[[frame.tipsCombat= frame:CreateTexture(nil,'OVERLAY', nil, 7)--目标的目标
+                    frame.tipsCombat:SetSize(1)
+                    frame.elapsed= 0
+                    frame:HookScript('OnUpdate', function(self2, elapsed)
+                        self2.elapsed= self2.elapsed +elapsed
+                        if self2.elapsed>0.3 then
+                            --print(id,addName)
+                            self2.elapsed=0
+                        end
+                    end)]]
                 end
 
                 if frame.RaidTargetIcon then
@@ -415,9 +426,9 @@ local function set_PartyFrame()--PartyFrame.lua
                         end
                     end
                 end
-                memberFrame:HookScript('OnUpdate', function(self2, elapsed)
-                    print(elapsed)
-                end)
+
+                
+                
             end
         end
     end)

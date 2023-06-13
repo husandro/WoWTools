@@ -540,6 +540,11 @@ local function Init()
     Labels={}
 
     button=e.Cbtn(nil, {icon='hide',size={12,12}})
+    button.texture= button:CreateTexture()
+    button.texture:SetAllPoints(button)
+    button.texture:SetAtlas(e.Icon.icon)
+    button.texture:SetAlpha(0.1)
+
     set_Point()--设置位置
     button:SetFrameStrata('HIGH')
     button:SetMovable(true)
@@ -595,6 +600,7 @@ local function Init()
         if self2.moveFPSFrame then
             self2.moveFPSFrame:SetButtonState('NORMAL')
         end
+        self2.texture:SetAlpha(0.1)
     end)
     button:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
@@ -608,6 +614,7 @@ local function Init()
         if self2.moveFPSFrame then
             self2.moveFPSFrame:SetButtonState('PUSHED')
         end
+        self2.texture:SetAlpha(1)
     end)
 
 
