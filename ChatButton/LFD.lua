@@ -1750,7 +1750,7 @@ local function Init()
         end
     end)
 
-    hooksecurefunc(GroupLootHistoryFrame, 'UpdateTimer', function(self)
+    --[[hooksecurefunc(GroupLootHistoryFrame, 'UpdateTimer', function(self)
         if self.Timer and self.Timer:IsShown() then
             local text
             if self.encounterInfo and self.encounterInfo.startTime and self.encounterInfo.duration then
@@ -1766,7 +1766,7 @@ local function Init()
                 self.TimerLabel:SetText(text or '')
             end
         end
-    end)
+    end)]]
 
     hooksecurefunc('GroupLootContainer_AddFrame', function(_, frame)--自动 ROLL
         set_ROLL_Check(frame)

@@ -415,6 +415,9 @@ local function set_PartyFrame()--PartyFrame.lua
                         end
                     end
                 end
+                memberFrame:HookScript('OnUpdate', function(self2, elapsed)
+                    print(elapsed)
+                end)
             end
         end
     end)
