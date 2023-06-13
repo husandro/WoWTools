@@ -167,7 +167,7 @@ local function set_EncounterJournal_World_Tips(self2)--所有角色已击杀世�
     e.tips:ClearLines();
     e.tips:AddDoubleLine(ADVENTURE_JOURNAL, CHANNEL_CATEGORY_WORLD..'BOSS/'..GARRISON_MISSION_RARE..e.Icon.left..e.GetShowHide(Save.showWorldBoss))
     e.tips:AddLine(' ')
-    for guid, info in pairs(WoWDate) do
+    for guid, info in pairs(WoWDate or {}) do
         local find
         local text, num= nil, 0
         for bossName, _ in pairs(info.Worldboss.boss) do--世界BOSS
@@ -277,7 +277,7 @@ local function setWorldbossText()--显示世界BOSS击杀数据Text
 
     local msg
     if not Save.hideWorldBossText then
-        for guid, info in pairs(WoWDate) do
+        for guid, info in pairs(WoWDate or {}) do
             local text, numAll, find= nil, 0, nil
             for bossName, _ in pairs(info.Worldboss.boss) do--世界BOSS
                 numAll=numAll+1
@@ -362,7 +362,7 @@ local function setInstanceBossText()--显示副本击杀数据
 
     local msg
     if not Save.hideInstanceBossText then
-        for guid, info in pairs(WoWDate) do
+        for guid, info in pairs(WoWDate or {}) do
             local text
             for bossName, tab in pairs(info.Instance.ins) do--ins={[名字]={[难度]=已击杀数}}
                 text= text and text..'|n   '..bossName or '   '..bossName
@@ -388,7 +388,7 @@ local function set_EncounterJournal_Keystones_Tips(self)--险指南界面, 挑�
     e.tips:SetOwner(self, "ANCHOR_LEFT");
     e.tips:ClearLines();
     e.tips:AddDoubleLine(e.onlyChinese and '史诗钥石地下城' or CHALLENGES, e.Icon.left)
-    for guid, info in pairs(WoWDate) do
+    for guid, info in pairs(WoWDate or {}) do
         if guid and info then
             local find
             for itemLink, _ in pairs(info.Keystone.itemLink) do
@@ -407,7 +407,7 @@ local function set_EncounterJournal_Money_Tips(self)--险指南界面, 钱
     e.tips:SetOwner(self, "ANCHOR_LEFT");
     e.tips:ClearLines();
     local numPlayer, allMoney  = 0, 0
-    for guid, info in pairs(WoWDate) do
+    for guid, info in pairs(WoWDate or {}) do
         if info.Money then
             e.tips:AddDoubleLine(e.GetPlayerInfo({ guid=guid, faction=info.faction, reName=true, reRealm=true}), GetCoinTextureString(info.Money))
             numPlayer=numPlayer+1
@@ -492,7 +492,7 @@ local function Init()--冒险指南界面
         e.tips:ClearLines();
         e.tips:AddDoubleLine((e.onlyChinese and '副本' or INSTANCE)..e.Icon.left..e.GetShowHide(Save.showInstanceBoss), e.onlyChinese and '已击杀' or DUNGEON_ENCOUNTER_DEFEATED)
         e.tips:AddLine(' ')
-        for guid, info in pairs(WoWDate) do
+        for guid, info in pairs(WoWDate or {}) do
             if guid and info then
                 local find
                 for bossName, tab in pairs(info.Instance.ins) do----ins={[名字]={[难度]=已击杀数}}
@@ -575,7 +575,7 @@ local function Init()--冒险指南界面
                 set_EncounterJournal_World_Tips(button)--角色世界BOSS提示
                 find=true
             else
-                for guid, info in pairs(WoWDate) do--世界BOSS
+                for guid, info in pairs(WoWDate or {}) do--世界BOSS
                     if guid==e.Player.guid then
                         local num=0
                         for bossName, _ in pairs(info.Worldboss.boss) do
