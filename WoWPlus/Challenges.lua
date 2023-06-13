@@ -109,17 +109,18 @@ end
 --挑战,钥石,插入,界面
 --##################
 local function UI_Party_Info(frame)--队友位置
-    if IsInRaid() or not IsInGroup(LE_PARTY_CATEGORY_HOME) then
+    --[[if IsInRaid() or not IsInGroup(LE_PARTY_CATEGORY_HOME) then
         frame.party:SetText('')
         return
     end
-
+]]
     local UnitTab={}
     local name, uiMapID=e.GetUnitMapName('player')
     local text
-    for i=1, GetNumGroupMembers() do
+    local all= GetNumGroupMembers()
+    for i=1, all do
         local unit='party'..i
-        if i==GetNumGroupMembers() then
+        if i==all then
             unit='player'
         end
         local guid=UnitGUID(unit)
@@ -187,6 +188,7 @@ local function UI_Party_Info(frame)--队友位置
 
         end
     end
+
     frame.party:SetText(text or '')
     e.GetNotifyInspect(UnitTab)--取得装等
 end
@@ -256,7 +258,7 @@ local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     end)
 
     frame.party=e.Cstr(frame)--队伍信息
-    frame.party:SetPoint('BOTTOMLEFT', frame, 'TOPLEFT')
+    frame.party:SetPoint('BOTTOMLEFT', _G['MoveZoomInButtonPerChallengesKeystoneFrame'] or frame, 'TOPLEFT')
 
     frame:HookScript('OnShow', function()
             getBagKey(frame, 'BOTTOMRIGHT', -15, 170)--KEY链接
