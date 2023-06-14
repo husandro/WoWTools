@@ -8,8 +8,24 @@ local Save= {
     showSpellPort= e.Player.husandro,--传送门
 }
 local panel=CreateFrame("Frame")
+-- AngryKeystones Schedule Dragonflight Season 1,史诗钥石地下城, 界面
+--[[local affixSchedule = {
+	[1]  = { [1]=6,   [2]=14,  [3]=10, }, -- Fortified | Raging | Quaking
+	[2]  = { [1]=11,  [2]=12,  [3]=9,  }, -- Tyrannical | Bursting | Grievous
+	[3]  = { [1]=8,   [2]=3,   [3]=10, }, -- Fortified | Sanguine | Volcanic
+	[4]  = { [1]=6,   [2]=124, [3]=9,  }, -- Tyrannical | Raging | Storming
+	[5]  = { [1]=123, [2]=12,  [3]=10, }, -- Fortified | Spiteful | Grievous
+	[6]  = { [1]=8,   [2]=13,  [3]=9,  }, -- Tyrannical | Sanguine | Explosive
+	[7]  = { [1]=7,   [2]=124, [3]=10, }, -- Fortified | Bolstering | Storming
+	[8]  = { [1]=123, [2]=14,  [3]=9,  }, -- Tyrannical | Spiteful | Quaking
+	[9]  = { [1]=11,  [2]=13,  [3]=10, }, -- Fortified | Bursting | Explosive
+	[10] = { [1]=7,   [2]=3,   [3]=9,  }, -- Tyrannical | Bolstering | Volcanica
+}]]
 
-local affixSchedule = {-- AngryKeystones Schedule.lua 史诗钥石地下城, 界面
+-- 1:Overflowing, 2:Skittish, 3:Volcanic, 4:Necrotic, 5:Teeming, 6:Raging, 7:Bolstering, 8:Sanguine, 9:Tyrannical, 10:Fortified, 11:Bursting, 12:Grievous, 13:Explosive, 14:Quaking, 16:Infested, 117: Reaping, 119:Beguiling 120:Awakened, 121:Prideful, 122:Inspiring, 123:Spiteful, 124:Storming
+-- Dragonflight Season 2
+-- 134:Entangling, 135：Afflicted, 136:Incorporeal
+local affixSchedule = {
 	-- Dragonflight Season 2
 	[1]  = { [1]=6,   [2]=124, [3]=9, }, -- Tyrannical | Raging      | Storming
 	[2]  = { [1]=134, [2]=7,   [3]=10,}, -- Fortified  | Entangling  | Bolstering
@@ -22,6 +38,7 @@ local affixSchedule = {-- AngryKeystones Schedule.lua 史诗钥石地下城, 界
 	[9]  = { [1]=0,   [2]=0,   [3]=9, }, -- Tyrannical |  | 
 	[10] = { [1]=0,   [2]=0,   [3]=10,}, -- Fortified  |  | 
 }
+
 
 local function get_Spell_MapChallengeID(mapChallengeID)
     local tabs={
