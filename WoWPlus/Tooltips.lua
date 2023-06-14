@@ -132,6 +132,15 @@ StaticPopupDialogs["WowheadQuickLinkUrl"] = {
 
         self.button1:SetText(e.onlyChinese and '关闭' or CLOSE)
     end,
+    OnHide= function(self)
+        self.editBox:SetScript("OnEscapePressed", nil)
+        self.editBox:SetScript("OnEnterPressed", nil)
+        self.editBox:SetScript("OnKeyUp", nil)
+        self.editBox:SetScript('OnEditFocusLost', nil)
+        self.editBox:SetScript('OnEditFocusGained', nil)
+        self.editBox:SetScript('OnTextChanged', nil)
+        self.editBox:SetScript('OnCursorChanged', nil)
+    end,
     hasEditBox = true,
     editBoxWidth = 320,
     timeout = 0,

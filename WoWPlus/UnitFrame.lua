@@ -955,6 +955,10 @@ local function set_RaidFrame()--设置,团队
     end)
     CompactRaidFrameContainer.moveFrame:SetScript("OnLeave", function(self, d)
         ResetCursor()
+        self:SetAlpha(0.3)
+    end)
+    CompactRaidFrameContainer.moveFrame:SetScript('OnEnter', function(self)
+        self:SetAlpha(1)
     end)
     CompactRaidFrameContainer.moveFrame:SetScript('OnMouseWheel', function(self, d)--缩放
         if IsAltKeyDown() then
@@ -963,9 +967,9 @@ local function set_RaidFrame()--设置,团队
             else
                 local sacle= Save.raidFrameScale or 1
                 if d==1 then
-                    sacle=sacle+0.1
+                    sacle=sacle+0.05
                 elseif d==-1 then
-                    sacle=sacle-0.1
+                    sacle=sacle-0.05
                 end
                 if sacle>2 then
                     sacle=2

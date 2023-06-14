@@ -116,15 +116,15 @@ local function InitMenu(self, level)--主菜单
                 button1=SETTINGS,
                 button2=CANCEL,
                 button3=REMOVE,
-                OnShow = function(self, data)
-                    self.editBox:SetText(Save.KEY or ';')
+                OnShow = function(self2, data)
+                    self2.editBox:SetText(Save.KEY or ';')
                     if Save.KEY then
-                        self.button1:SetText(SLASH_CHAT_MODERATE2:gsub('/', ''))--修该
+                        self2.button1:SetText(SLASH_CHAT_MODERATE2:gsub('/', ''))--修该
                     end
-                    self.button3:SetEnabled(Save.KEY)
+                    self2.button3:SetEnabled(Save.KEY)
                 end,
-                OnAccept = function(self, data)
-                    local text= self.editBox:GetText()
+                OnAccept = function(self2, data)
+                    local text= self2.editBox:GetText()
                     text=text:gsub(' ','')
                     text=text:gsub('%[','')
                     text=text:gsub(']','')
@@ -136,10 +136,10 @@ local function InitMenu(self, level)--主菜单
                     Save.KEY=nil
                     set_KEY()--设置捷键
                 end,
-                EditBoxOnTextChanged=function(self, data)
-                    local text= self:GetText()
+                EditBoxOnTextChanged=function(self2, data)
+                    local text= self2:GetText()
                     text=text:gsub(' ','')
-                    self:GetParent().button1:SetEnabled(text~='')
+                    self2:GetParent().button1:SetEnabled(text~='')
                 end,
                 EditBoxOnEscapePressed = function(s)
                     s:SetAutoFocus(false)
