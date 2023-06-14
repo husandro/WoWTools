@@ -497,6 +497,7 @@ local function InitMenu(self, level, type)--主菜单
             set_Money()--设置, 钱
             set_EquipmentLevel()--装等
             set_perksActivitiesLastPoints_CVar()--贸易站, 点数
+            set_Durabiliy()--设置装等,耐久度,事件
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info,level)
