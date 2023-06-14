@@ -391,18 +391,16 @@ local function set_PartyFrame()--PartyFrame.lua
                     end)
 
                     frame.positionFrame= CreateFrame("Frame", nil, frame)--队友位置
-                    print(frame.Name)
                     frame.positionFrame:SetPoint('BOTTOMLEFT', frame.Name, 'TOPLEFT', 20,0)
                     frame.positionFrame:SetSize(1,1)
                     frame.positionFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
-                    frame.positionFrame:SetScript('OnEvent', function(self2, arg1)
+                    frame.positionFrame:SetScript('OnEvent', function(self2)
                         self2:SetShown(not IsInInstance())
                     end)
                     frame.positionFrame.Text= e.Cstr(frame.positionFrame)
                     frame.positionFrame.Text:SetPoint('BOTTOMLEFT', memberFrame.Name, 'TOPLEFT')
                     frame.positionFrame.elapsed= 0
                     frame.positionFrame.unit= frame.unit
-                    
                    frame.positionFrame:SetScript('OnUpdate', function(self2, elapsed)
                         self2.elapsed= self2.elapsed +elapsed
                         if self2.elapsed>0.3 then
@@ -461,7 +459,6 @@ local function set_PartyFrame()--PartyFrame.lua
 
                             if frame.positionFrame.Text then--队友位置
                                 frame.positionFrame.Text:SetTextColor(r, g, b)
-                                frame.positionFrame.unit= frame.unit
                             end
                         end
                     end
