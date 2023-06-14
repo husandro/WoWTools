@@ -45,7 +45,7 @@ local function get_Mony_Tips()
     local all=(e.onlyChinese and '角色' or CHARACTER)..'|cnGREEN_FONT_COLOR:'..numPlayer..'|r  '
             ..(e.onlyChinese and '总计: ' or FROM_TOTAL)
             ..'|cnGREEN_FONT_COLOR:'..(allMoney >=10000 and e.MK(allMoney/10000, 3) or GetCoinTextureString(allMoney))..'|r'
-            
+
             --table.insert(tab, {text= all,
     return all, tab
 end
@@ -253,7 +253,9 @@ local function set_Durabiliy_EquipLevel_Event()--设置装等,耐久度,事件
     end
 end
 
+--##################
 --设置, fps, ms, 数值
+--##################
 local function set_Fps_Ms(self, elapsed)
     self.elapsed = self.elapsed + elapsed
     if self.elapsed > 0.4 then
@@ -492,6 +494,9 @@ local function InitMenu(self, level, type)--主菜单
             for str, label in pairs(Labels) do
                 create_Set_lable(label, str)
             end
+            set_Money()--设置, 钱
+            set_EquipmentLevel()--装等
+            set_perksActivitiesLastPoints_CVar()--贸易站, 点数
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info,level)
