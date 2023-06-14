@@ -111,7 +111,7 @@ StaticPopupDialogs["WowheadQuickLinkUrl"] = {
             s:SetTextColor(0,1,0)
             s:HighlightText()
         end)
-        self.editBox:SetScript('OnTextChanged', function(s)
+        --[[self.editBox:SetScript('OnTextChanged', function(s)
             s:SetText(web)
             s:SetTextColor(0,1,0)
             s:HighlightText()
@@ -120,7 +120,7 @@ StaticPopupDialogs["WowheadQuickLinkUrl"] = {
             s:SetText(web)
             s:SetTextColor(0,1,0)
             s:HighlightText()
-        end)
+        end)]]
 
         self.editBox:SetMaxLetters(0)
         self.editBox:SetWidth(self:GetWidth())
@@ -138,8 +138,9 @@ StaticPopupDialogs["WowheadQuickLinkUrl"] = {
         self.editBox:SetScript("OnKeyUp", nil)
         self.editBox:SetScript('OnEditFocusLost', nil)
         self.editBox:SetScript('OnEditFocusGained', nil)
-        self.editBox:SetScript('OnTextChanged', nil)
-        self.editBox:SetScript('OnCursorChanged', nil)
+        --self.editBox:SetScript('OnTextChanged', nil)
+        --self.editBox:SetScript('OnCursorChanged', nil)
+        self.editBox:SetTextColor(1,1,1)
     end,
     hasEditBox = true,
     editBoxWidth = 320,
