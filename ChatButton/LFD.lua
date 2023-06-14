@@ -1291,7 +1291,7 @@ local function InitList(self, level, type)--LFDFrame.lua
 end
 
 local ExitIns
-local function exitInstance()
+local function exit_Instance()
     local ins
     ins= IsInInstance()
     local name, _, _, difficultyName, _, _, _, instanceID = GetInstanceInfo()
@@ -1324,7 +1324,7 @@ StaticPopupDialogs[addName..'ExitIns']={
     button2 = CANCEL,
     OnAccept=function()
         ExitIns=true
-        exitInstance()
+        exit_Instance()
     end,
     OnCancel=function(_, _, d)
         if d=='clicked' then
@@ -2011,7 +2011,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
                 end
                 ExitIns=true
                 C_Timer.After(leaveSce, function()
-                    exitInstance()
+                    exit_Instance()
                 end)
                 StaticPopup_Show(addName..'ExitIns')
                 e.Ccool(StaticPopup1, nil, leaveSce, nil, true)--冷却条
@@ -2027,6 +2027,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
         C_Timer.After(sec, function()
             setIslandButton(self)--离开海岛按钮
         end)
+        ExitIns=nil
 
     elseif event=='ISLAND_COMPLETED' then--离开海岛
         wowSave[ISLANDS_HEADER]=wowSave[ISLANDS_HEADER] and wowSave[ISLANDS_HEADER]+1 or 1

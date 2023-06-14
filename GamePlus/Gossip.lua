@@ -28,7 +28,8 @@ local function setPoint()--设置位置
         --local frame
         --if _G['!KalielsTrackerFrame'] then
             --frame= _G['!KalielsTrackerFrame']
-            panel:SetPoint('BOTTOMRIGHT', _G['!KalielsTrackerFrame'] or ObjectiveTrackerBlocksFrame, 'TOPRIGHT', -10, 0)
+            --panel:SetPoint('BOTTOMRIGHT', _G['!KalielsTrackerFrame'] or ObjectiveTrackerBlocksFrame, 'TOPRIGHT', -10, 0)
+            panel:SetPoint('BOTTOMLEFT', _G['!KalielsTrackerFrame'] or ObjectiveTrackerBlocksFrame, 'TOPLEFT',30,0)
         --else
             --frame= ObjectiveTrackerBlocksFrame
             --panel:SetPoint('TOPRIGHT', ObjectiveTrackerBlocksFrame, 'TOPRIGHT', -45, -2)
