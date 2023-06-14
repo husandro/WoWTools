@@ -367,12 +367,8 @@ local function set_PartyFrame()--PartyFrame.lua
                     end)
 
                     hooksecurefunc(memberFrame, 'UpdateAssignedRoles', function(self2)--隐藏, DPS 图标
-                        if self2.unit then
-                            local role = UnitGroupRolesAssigned(self2.unit)
-                            local icon = self2.PartyMemberOverlay.RoleIcon
-                            if icon and role== 'DAMAGER' then
-                                icon:SetShown(false)
-                            end
+                        if UnitGroupRolesAssigned(self2.unit)=='DAMAGER' then
+                            self2.PartyMemberOverlay.RoleIcon:SetShown(false)
                         end
                     end)
 
@@ -384,26 +380,27 @@ local function set_PartyFrame()--PartyFrame.lua
                     frame.elapsed= 0
                     frame:HookScript('OnUpdate', function(self2, elapsed)
                         self2.elapsed= self2.elapsed +elapsed
-                        if self2.elapsed>0.3 then
+                        if self2.elapsed>0.5 then
                             self2.tipsCombat:SetShown(UnitAffectingCombat(self2.unit))
                             self2.elapsed=0
                         end
                     end)
 
                     frame.positionFrame= CreateFrame("Frame", nil, frame)--队友位置
-                    frame.positionFrame:SetPoint('BOTTOMLEFT', frame.Name, 'TOPLEFT', 20,0)
+                    frame.positionFrame:SetPoint('LEFT', frame.LeaderIcon, 'RIGHT')
+                    --frame.positionFrame:SetPoint('BOTTOMLEFT', frame.Name, 'TOPLEFT')
                     frame.positionFrame:SetSize(1,1)
                     frame.positionFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
                     frame.positionFrame:SetScript('OnEvent', function(self2)
                         self2:SetShown(not IsInInstance())
                     end)
                     frame.positionFrame.Text= e.Cstr(frame.positionFrame)
-                    frame.positionFrame.Text:SetPoint('BOTTOMLEFT', memberFrame.Name, 'TOPLEFT')
+                    frame.positionFrame.Text:SetPoint('LEFT', frame.positionFrame, 'RIGHT',-2,0)
                     frame.positionFrame.elapsed= 0
                     frame.positionFrame.unit= frame.unit
-                   frame.positionFrame:SetScript('OnUpdate', function(self2, elapsed)
+                    frame.positionFrame:SetScript('OnUpdate', function(self2, elapsed)
                         self2.elapsed= self2.elapsed +elapsed
-                        if self2.elapsed>0.3 then
+                        if self2.elapsed>1 then
                             local mapID= C_Map.GetBestMapForUnit(self2.unit)--地图ID
                             local mapInfo= mapID and C_Map.GetMapInfo(mapID)
                             local text
@@ -411,7 +408,7 @@ local function set_PartyFrame()--PartyFrame.lua
                                 text= mapInfo.name
                                 local mapID2= C_Map.GetBestMapForUnit('player')
                                 if mapID2== mapID then
-                                    text= e.Icon.select..text
+                                    text= e.Icon.select2..text
                                 end
                             end
                             self2.Text:SetText(text or '')
@@ -927,7 +924,6 @@ local function set_RaidFrame()--设置,团队
             frame.statusText:SetText(text)
         end
     end)
-
     hooksecurefunc('CompactRaidGroup_InitializeForGroup', function(frame, groupIndex)--处理, 队伍号
         frame.title:SetText('|A:'..e.Icon.number..groupIndex..':18:18|a')
     end)
