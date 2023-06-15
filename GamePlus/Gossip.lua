@@ -448,7 +448,7 @@ local function Init_Gossip()
         elseif (npc and Save.NPC[npc]) or not Save.gossip then
             return
 
-        elseif Save.quest and  (quest or name:find('|c' or  name:find(QUESTS_LABEL) or name:find(LOOT_JOURNAL_LEGENDARIES_SOURCE_QUEST))) then--任务
+        elseif Save.quest and  (quest or name:find('0000FF') or  name:find(QUESTS_LABEL) or name:find(LOOT_JOURNAL_LEGENDARIES_SOURCE_QUEST)) then--任务
             if quest then
                 name=GOSSIP_QUEST_OPTION_PREPEND:format(info.name)
             end
