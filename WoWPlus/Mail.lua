@@ -15,7 +15,7 @@ local Save={
 
     fast={},--快速，加载，物品，指定玩家
     fastShow=true,--显示/隐藏，快速，加载，按钮
-    CtrlFast= e.Player.husandro,--Ctrl+RightButton,快速，加载，物品
+    --CtrlFast= e.Player.husandro,--Ctrl+RightButton,快速，加载，物品
     --scaleSendPlayerFrame=1.2,--清除历史数据，缩放
 
     scaleFastButton=1.25,
@@ -310,7 +310,7 @@ local function Init_Menu(_, level, menuList)
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    elseif menuList=='SETTINGS' then
+    --[[elseif menuList=='SETTINGS' then
         info={
             text= 'Ctrl + '..e.Icon.right..' '..(e.onlyChinese and '多物品' or MAIL_MULTIPLE_ITEMS),
             checked= not Save.disableCtrlFast,
@@ -321,7 +321,7 @@ local function Init_Menu(_, level, menuList)
                 Save.disableCtrlFast= not Save.disableCtrlFast and true or nil
             end
         }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)]]
     end
 
     if menuList then
@@ -388,14 +388,14 @@ local function Init_Menu(_, level, menuList)
         e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
 
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
+    --[[e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
         text= e.onlyChinese and '设置' or SETTINGS,
         hasArrow=true,
         menuList='SETTINGS',
         notCheckable=true,
     }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
+    e.LibDD:UIDropDownMenu_AddButton(info, level)]]
 
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
@@ -1890,7 +1890,7 @@ local function Init()--SendMailNameEditBox
         end
     end)
 
-    hooksecurefunc('HandleModifiedItemClick', function(itemLink, itemLocation)
+    --[[hooksecurefunc('HandleModifiedItemClick', function(itemLink, itemLocation)
         if not Save.disableCtrlFast and not Save.hide and button and itemLink and itemLocation~=nil and itemLocation.bagID and itemLocation.slotIndex and SendMailFrame:IsShown() and GetMouseButtonClicked()=='RightButton' and IsModifierKeyDown() then
             local findString
             if itemLink:find('Hbattlepet') then
@@ -1902,7 +1902,7 @@ local function Init()--SendMailNameEditBox
             end
             button.FastButton.set_PickupContainerItem(classID, subClassID, findString, {bag= itemLocation.bagID, slot= itemLocation.slotIndex, itemLink= itemLink})
         end
-    end)
+    end)]]
 end
 
 

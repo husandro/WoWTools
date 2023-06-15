@@ -127,8 +127,8 @@ local function Get_Quest_Progress(unit)--GameTooltip.lua --local questID= line a
         if wow or faction then
             return (wow or '')..(faction or '')
         end
-    else
-        return e.Class(unit)--职业图标
+    --[[else
+        return e.Class(unit)--职业图标]]
     end
 end
 
