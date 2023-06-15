@@ -479,6 +479,7 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
 
     elseif event=='BOSS_KILL' then
         RequestRaidInfo()
+
     elseif event=='CURRENCY_DISPLAY_UPDATE' then--货币
         updateCurrency(arg1)
 

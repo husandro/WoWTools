@@ -128,7 +128,7 @@ local function Get_Quest_Progress(unit)--GameTooltip.lua --local questID= line a
             return (wow or '')..(faction or '')
         end
     else
-        return e.Class(unit, nil, true)--职业图标
+        return e.Class(unit)--职业图标
     end
 end
 
