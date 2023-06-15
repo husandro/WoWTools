@@ -1137,7 +1137,7 @@ local function set_itemLevelTips_GetTextAndTooltip(showTooltip)--设置, 文本,
         end
     end
     if text then
-        text= (e.onlyChinese and '难度 每周 完成' or (PROFESSIONS_CRAFTING_STAT_TT_DIFFICULTY_HEADER..' '..CALENDAR_REPEAT_WEEKLY..' '..COMPLETE))..'|n'..text
+        text= (e.onlyChinese and '难度 每周 掉落' or (PROFESSIONS_CRAFTING_STAT_TT_DIFFICULTY_HEADER..' '..CALENDAR_REPEAT_WEEKLY..' '..BATTLE_PET_SOURCE_1))..'|n'..text
     end
 
     ChallengesFrame.itemLevelTips.Text:SetText(Save.showItemLevelTipsText and text or '')
