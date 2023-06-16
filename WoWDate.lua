@@ -412,7 +412,6 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
             end
 
             if e.Player.levelMax then
-                --if not IsAddOnLoaded('Blizzard_ChallengesUI') then LoadAddOn('Blizzard_ChallengesUI') end
                 get_Info_Challenge()--挑战
             end
 
