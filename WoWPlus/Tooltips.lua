@@ -330,7 +330,7 @@ local function setItem(self, ItemLink)
         return
     end
     local itemName, _, itemQuality, itemLevel, _, _, _, _, _, _, _, _, _, bindType, expacID, setID = GetItemInfo(ItemLink)
-    local itemID, itemType, itemSubType, itemEquipLoc, itemTexture, classID, subclassID = GetItemInfoInstant(ItemLink)
+    local itemID, itemType, itemSubType, itemEquipLoc, itemTexture2, classID, subclassID = GetItemInfoInstant(ItemLink)
     itemID = itemID or ItemLink:match(':(%d+):')
     local r, g, b, col= 1,1,1,e.Player.col
     if itemQuality then
@@ -341,7 +341,10 @@ local function setItem(self, ItemLink)
     if expacID then--版本数据
         self:AddDoubleLine(e.GetExpansionText(expacID))
     end
+
+    local itemTexture= itemTexture2 or itemID and C_Item.GetItemIconByID(itemID)
     self:AddDoubleLine(itemID and (e.onlyChinese and '物品' or ITEMS)..' '.. itemID or ' ' , itemTexture and '|T'..itemTexture..':0|t'..itemTexture, 1,1,1, 1,1,1)--ID, texture
+
     if classID and subclassID then
         self:AddDoubleLine((itemType and itemType..' classID'  or 'classID') ..' '..classID, (itemSubType and itemSubType..' subID' or 'subclassID')..' '..subclassID)
     end
@@ -432,7 +435,7 @@ local function setItem(self, ItemLink)
 
     if C_Item.IsItemKeystoneByID(itemID) then--挑战
         --local numPlayer=1 --帐号数据 --{score=总分数,itemLink={超连接}, weekLevel=本周最高, weekNum=本周次数, all=总次数},
-        for guid, info in pairs(WoWDate) do
+        for guid, info in pairs(WoWDate or {}) do
             if guid and info then
                 local find
                 for linkItem, _ in pairs(info.Keystone.itemLink) do
@@ -456,7 +459,7 @@ local function setItem(self, ItemLink)
         end
     else
         local bagAll,bankAll,numPlayer=0,0,0--帐号数据
-        for guid, info in pairs(WoWDate) do
+        for guid, info in pairs(WoWDate or {}) do
             if guid and info and guid~=e.Player.guid then
                 local tab=info.Item[itemID]
                 if tab and tab.bag and tab.bank then
@@ -529,7 +532,7 @@ local function setCurrency(self, currencyID)--货币
     end
 
     local all,numPlayer=0,0
-    for guid, info in pairs(WoWDate) do--帐号数据
+    for guid, info in pairs(WoWDate or {}) do--帐号数据
         if guid~=e.Player.guid then
             local quantity=info.Currency[currencyID]
             if quantity and quantity>0 then
@@ -804,7 +807,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             if info and info.currentSeasonScore and info.currentSeasonScore>0 then
                 text= text..' '..(e.GetUnitRaceInfo({unit=unit, guid=guid, race=raceFile, sex=sex, reAtlas=false}) or '')
                         ..' '..e.Class(nil, classFilename)
-                        ..' '..(UnitIsPVP(unit) and  '|cnGREEN_FONT_COLOR:PvP|r' or 'PvE')
+                        ..' '..(UnitIsPVP(unit) and  '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and 'PvP' or PVP)..'|r' or (e.onlyChinese and 'PvE' or TRANSMOG_SET_PVE))
                         ..'  '..e.GetKeystoneScorsoColor(info.currentSeasonScore,true)
 
                 if info.runs and info.runs then
