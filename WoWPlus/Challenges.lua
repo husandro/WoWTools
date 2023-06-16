@@ -850,7 +850,7 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
                     end
                     --securecall(EncounterJournal_TierDropDown_Select, nil,  tier)--EJ_SelectTier(EJ_GetNumTiers())
                     ]]
-                    
+
                 end)
                 frame:HookScript('OnEnter', function(self2)--提示
                     if self2.mapID then
@@ -1039,7 +1039,7 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
 
                             label.overTime= info.overTime
                             label.durationSec= info.durationSec
-                            
+
                             label.name= icon..info.name..': '..level
                             k=k+1
                         end
@@ -1289,10 +1289,11 @@ local function Init()
     set_Kill_Info()--副本PVP团本
     hooksecurefunc(ChallengesFrame, 'Update', set_Update)
     Affix()
-    set_All_Text()--所有记录   
+    
     set_Currency_Info()--货币数量
     set_itemLevelTips()--等级 => 每周/完成, 提示
 
+    C_Timer.After(2, set_All_Text)--所有记录
 
     if ChallengesFrame.WeeklyInfo and ChallengesFrame.WeeklyInfo.Child then
         if ChallengesFrame.WeeklyInfo.Child.Description and ChallengesFrame.WeeklyInfo.Child.Description:IsVisible() then
@@ -1336,7 +1337,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             panel:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
             panel:RegisterEvent('UPDATE_INSTANCE_INFO')
             panel:RegisterEvent('WEEKLY_REWARDS_UPDATE')
-            
 
         elseif arg1=='Blizzard_WeeklyRewards' then--周奖励界面，添加一个按钮，打开挑战界面
             local btn =e.Cbtn(WeeklyRewardsFrame, {icon='hide', size={15,15}})--所有角色,挑战
