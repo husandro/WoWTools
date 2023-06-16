@@ -343,7 +343,7 @@ local function get_Info_Challenge()--挑战
     for _, mapID in pairs(C_ChallengeMode.GetMapTable() or {}) do
         C_ChallengeMode.RequestLeaders(mapID)
     end
-    C_MythicPlus.GetRunHistory(false, true)--本周记录
+    --C_MythicPlus.GetRunHistory(false, true)--本周记录
 end
 
 panel:RegisterEvent("ADDON_LOADED")
