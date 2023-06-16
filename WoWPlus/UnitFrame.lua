@@ -641,7 +641,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
         if self==PlayerFrame then
             set_Instance_Difficulty()--副本, 地下城，指示
             set_LootSpecialization()--拾取专精
-            C_Timer.After(2, set_Keystones_Date)--挑战，数据
+            C_Timer.After(4, set_Keystones_Date)--挑战，数据
         end
 
         if self.itemLevel then
@@ -1280,7 +1280,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         C_Timer.After(1, set_ToggleWarMode)--设置, 战争模式
 
     elseif event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' then
-        C_Timer.After(2, set_Keystones_Date)--挑战，数据
+        C_Timer.After(4, set_Keystones_Date)--挑战，数据
 
     elseif event=='CHAT_MSG_SYSTEM' then--"地下城难度已设置为%s。团队副本难度设置为%s。已将经典团队副本难度设置为%s。
         if arg1 and (arg1:find(dungeonDifficultyStr) or arg1:find(raidDifficultyStr) or arg1:find(legacyRaidDifficultyStr)) then
