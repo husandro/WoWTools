@@ -1015,7 +1015,7 @@ local function Init_Set_AlphaAndColor()
     set_Alpha_Frame_Texture(MinimapCluster.Tracking.Button)
     set_Alpha_Frame_Texture(GameTimeFrame)
 
-    C_Timer.After(3, function()
+    C_Timer.After(2, function()
         if SpellFlyout and SpellFlyout.Background then--Spell Flyout
             hide_Texture(SpellFlyout.Background.HorizontalMiddle)
             hide_Texture(SpellFlyout.Background.End)

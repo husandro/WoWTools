@@ -114,11 +114,12 @@ end
 --#########
 --挑战，数据
 --#########
-local function set_Keystones_Date()--挑战，数据
-    if not PlayerFrame or not PlayerFrame.keystoneText then
+local function set_Keystones_Date()--
+    local self= PlayerFrame
+    if not self or not self.keystoneText then
         return
     elseif IsInInstance() or IsInRaid() then
-        PlayerFrame.keystoneText:SetText('')
+        self.keystoneText:SetText('')
         return
     end
 
@@ -127,6 +128,7 @@ local function set_Keystones_Date()--挑战，数据
     if score and score>0 then
         text= e.GetKeystoneScorsoColor(score)
         local info = C_MythicPlus.GetRunHistory(false, true)--本周记录
+        
         if info then
             local num= 0
             local level--, completed
@@ -144,7 +146,7 @@ local function set_Keystones_Date()--挑战，数据
             end
         end
     end
-    PlayerFrame.keystoneText:SetText(text or '')
+    self.keystoneText:SetText(text or '')
 end
 
 --####
@@ -641,7 +643,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
         if self==PlayerFrame then
             set_Instance_Difficulty()--副本, 地下城，指示
             set_LootSpecialization()--拾取专精
-            C_Timer.After(4, set_Keystones_Date)--挑战，数据
+            C_Timer.After(2, set_Keystones_Date)--挑战，数据
         end
 
         if self.itemLevel then
@@ -1249,10 +1251,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 panel:UnregisterAllEvents()
             else
                 Init()
-                panel:UnregisterEvent('ADDON_LOADED')
+                --panel:UnregisterEvent('ADDON_LOADED')
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
+
+        elseif arg1=='Blizzard_ChallengesUI' then--挑战,钥石,插入界面
+            C_Timer.After(2, set_Keystones_Date)--挑战，数据
         end
+    
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
@@ -1269,7 +1275,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             self:UnregisterEvent('CHAT_MSG_SYSTEM')
         end
 
-        C_Timer.After(4, function()
+        C_Timer.After(2, function()
             set_Instance_Difficulty()--副本, 地下城，指示
             set_Keystones_Date()--挑战，数据
             set_ToggleWarMode()--设置, 战争模式
@@ -1280,7 +1286,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         C_Timer.After(1, set_ToggleWarMode)--设置, 战争模式
 
     elseif event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' then
-        C_Timer.After(4, set_Keystones_Date)--挑战，数据
+        C_Timer.After(2, set_Keystones_Date)--挑战，数据
 
     elseif event=='CHAT_MSG_SYSTEM' then--"地下城难度已设置为%s。团队副本难度设置为%s。已将经典团队副本难度设置为%s。
         if arg1 and (arg1:find(dungeonDifficultyStr) or arg1:find(raidDifficultyStr) or arg1:find(legacyRaidDifficultyStr)) then

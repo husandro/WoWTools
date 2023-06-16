@@ -335,6 +335,16 @@ local function set_Money()--钱
     WoWDate[e.Player.guid].Money= money==0 and nil or money
 end
 
+
+local function get_Info_Challenge()--挑战
+    C_MythicPlus.RequestCurrentAffixes()
+    C_MythicPlus.RequestMapInfo()
+    C_MythicPlus.RequestRewards()
+    for _, mapID in pairs(C_ChallengeMode.GetMapTable() or {}) do
+        C_ChallengeMode.RequestLeaders(mapID)
+    end
+end
+
 panel:RegisterEvent("ADDON_LOADED")
 --panel:RegisterEvent('PLAYER_LOGOUT')
 panel:RegisterEvent('PLAYER_ENTERING_WORLD')
@@ -401,10 +411,10 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
             end
 
             if e.Player.levelMax then
-                C_MythicPlus.RequestMapInfo()
-                C_MythicPlus.RequestRewards()
-                C_MythicPlus.RequestCurrentAffixes()
+                --if not IsAddOnLoaded('Blizzard_ChallengesUI') then LoadAddOn('Blizzard_ChallengesUI') end
+                get_Info_Challenge()--挑战
             end
+
             RequestRaidInfo()
             C_MajorFactions.RequestCatchUpState()
             C_FriendList.ShowFriends()
@@ -456,14 +466,12 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
             get_Player_Info(arg1)
 
     elseif event=='CHALLENGE_MODE_MAPS_UPDATE' or event=='WEEKLY_REWARDS_UPDATE' then--地下城挑战
-        updateChallengeMode()
         C_MythicPlus.RequestRewards()
+        C_Timer.After(2, updateChallengeMode)
 
     elseif event=='CHALLENGE_MODE_COMPLETED' then
-        C_Timer.After(2, function()
-            C_MythicPlus.RequestMapInfo()
-            C_MythicPlus.RequestRewards()
-        end)
+        get_Info_Challenge()--挑战
+
     elseif event=='ZONE_CHANGED_NEW_AREA' then--位面, 清除
         e.Player.Layer=nil
 

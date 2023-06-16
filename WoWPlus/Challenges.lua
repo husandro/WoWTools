@@ -589,7 +589,8 @@ local function set_Spell_Port(self)
     end
 end
 
-local function Kill(self)--副本PVP团本
+local function set_Kill_Info()--副本PVP团本
+    local self= ChallengesFrame
     if Save.hide then
         if self.re then
             self.re:SetText('')
@@ -670,7 +671,8 @@ local function HistorySort(a,b)
         return a.mapChallengeModeID< b.mapChallengeModeID
     end
 end
-local function All(self)--所有记录   
+local function set_All_Text()--所有记录
+    local self= ChallengesFrame
     if Save.hide then-- or Save.hideAll then 
         self.WoWKeystones:SetText('')
         return
@@ -740,7 +742,7 @@ local function All(self)--所有记录
     end
 
     local text= m..'|n'--所有角色KEY
-    for guid, infoWoW in pairs(WoWDate) do
+    for guid, infoWoW in pairs(WoWDate or {}) do
         local find
         for link, _ in pairs(infoWoW.Keystone.itemLink) do
             text=text..'|n    '..link
@@ -754,7 +756,8 @@ local function All(self)--所有记录
     self.WoWKeystones:SetText(text)
 end
 
-local function Cur(self)--货币数量
+local function set_Currency_Info()--货币数量
+    local self= ChallengesFrame
     local IDs={1602, 1191}
     for k, v in pairs(IDs) do
         local info=C_CurrencyInfo.GetCurrencyInfo(v)
@@ -820,8 +823,8 @@ local function Cur(self)--货币数量
 end
 
 
-local function set_Update()--Blizzard_ChallengesUI.lua
-    local self=ChallengesFrame
+local function set_Update(self)--Blizzard_ChallengesUI.lua
+    --local self=ChallengesFrame
     if not self.maps or #self.maps==0 then
         return
     end
@@ -1143,7 +1146,8 @@ local function set_itemLevelTips_GetTextAndTooltip(showTooltip)--设置, 文本,
     ChallengesFrame.itemLevelTips.Text:SetText(Save.showItemLevelTipsText and text or '')
     return text
 end
-local function set_itemLevelTips(self)--等级 => 每周/完成, 提示
+local function set_itemLevelTips()--等级 => 每周/完成, 提示
+    local self= ChallengesFrame
     if Save.hide then
         if self.itemLevelTips then
             self.itemLevelTips.Text:SetText('')
@@ -1172,7 +1176,7 @@ local function set_itemLevelTips(self)--等级 => 每周/完成, 提示
             e.tips:Show()
         end)
         self.itemLevelTips:SetScript('OnLeave', function() e.tips:Hide() end)
-        self.itemLevelTips:SetScript('OnShow', set_itemLevelTips_GetTextAndTooltip)
+        self.itemLevelTips:SetScript('OnShow', function() set_itemLevelTips_GetTextAndTooltip(false) end)
     else
         self.itemLevelTips:SetShown(true)
     end
@@ -1187,12 +1191,12 @@ local function Init()
     ChallengesFrame.sel:SetPoint('TOPLEFT',60,-20)
     ChallengesFrame.sel:SetScript("OnClick", function (self2)
         Save.hide = not Save.hide and true or nil
-        Kill(ChallengesFrame)--副本PVP团本
+        set_Kill_Info()--副本PVP团本
         securecallfunction(ChallengesFrame.Update,ChallengesFrame)
         Affix()
-        All(ChallengesFrame)--所有记录   
-        Cur(ChallengesFrame)--货币数量
-        set_itemLevelTips(ChallengesFrame)--等级 => 每周/完成, 提示
+        set_All_Text()--所有记录   
+        set_Currency_Info()--货币数量
+        set_itemLevelTips()--等级 => 每周/完成, 提示
         set_check_Show_Spell_Port()--传送门, 启用/禁用
         self2:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
     end)
@@ -1282,12 +1286,12 @@ local function Init()
     end
 
     set_check_Show_Spell_Port()--传送门, 启用/禁用, 要放在Update前面
-    Kill(ChallengesFrame)--副本PVP团本
+    set_Kill_Info()--副本PVP团本
     hooksecurefunc(ChallengesFrame, 'Update', set_Update)
     Affix()
-    All(ChallengesFrame)--所有记录   
-    Cur(ChallengesFrame)--货币数量
-    set_itemLevelTips(ChallengesFrame)--等级 => 每周/完成, 提示
+    set_All_Text()--所有记录   
+    set_Currency_Info()--货币数量
+    set_itemLevelTips()--等级 => 每周/完成, 提示
 
 
     if ChallengesFrame.WeeklyInfo and ChallengesFrame.WeeklyInfo.Child then
@@ -1332,6 +1336,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             panel:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
             panel:RegisterEvent('UPDATE_INSTANCE_INFO')
             panel:RegisterEvent('WEEKLY_REWARDS_UPDATE')
+            
 
         elseif arg1=='Blizzard_WeeklyRewards' then--周奖励界面，添加一个按钮，打开挑战界面
             local btn =e.Cbtn(WeeklyRewardsFrame, {icon='hide', size={15,15}})--所有角色,挑战
@@ -1360,16 +1365,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='CHALLENGE_MODE_COMPLETED' or event=='WEEKLY_REWARDS_UPDATE' then
         C_Timer.After(2, function()
-            Kill(ChallengesFrame)--副本PVP团本
-            All(ChallengesFrame)--所有记录   
-            Cur(ChallengesFrame)--货币数量
+            set_Kill_Info()--副本PVP团本
+            set_All_Text()--所有记录   
+            set_Currency_Info()--货币数量
         end)
     elseif event=='CURRENCY_DISPLAY_UPDATE' then
-        Cur(ChallengesFrame)--货币数量
+        set_Currency_Info()--货币数量
 
     elseif event=='UPDATE_INSTANCE_INFO' then
         C_Timer.After(2, function()
-            Kill(ChallengesFrame)--副本PVP团本
+            set_Kill_Info()--副本PVP团本
         end)
     end
 end)
