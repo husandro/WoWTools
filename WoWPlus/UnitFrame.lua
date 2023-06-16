@@ -114,11 +114,11 @@ end
 --#########
 --挑战，数据
 --#########
-local function set_Keystones_Date()--
+local function set_Keystones_Date()
     local self= PlayerFrame
     if not self or not self.keystoneText then
         return
-    elseif IsInInstance() or IsInRaid() then
+    elseif IsInInstance() then
         self.keystoneText:SetText('')
         return
     end
@@ -128,7 +128,6 @@ local function set_Keystones_Date()--
     if score and score>0 then
         text= e.GetKeystoneScorsoColor(score)
         local info = C_MythicPlus.GetRunHistory(false, true)--本周记录
-        
         if info then
             local num= 0
             local level--, completed
@@ -1258,7 +1257,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         elseif arg1=='Blizzard_ChallengesUI' then--挑战,钥石,插入界面
             C_Timer.After(2, set_Keystones_Date)--挑战，数据
         end
-    
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then

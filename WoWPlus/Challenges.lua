@@ -1289,11 +1289,11 @@ local function Init()
     set_Kill_Info()--副本PVP团本
     hooksecurefunc(ChallengesFrame, 'Update', set_Update)
     Affix()
-    
     set_Currency_Info()--货币数量
-    set_itemLevelTips()--等级 => 每周/完成, 提示
-
-    C_Timer.After(2, set_All_Text)--所有记录
+    C_Timer.After(2, function()
+        set_All_Text()--所有记录
+        set_itemLevelTips()--等级 => 每周/完成, 提示
+    end)
 
     if ChallengesFrame.WeeklyInfo and ChallengesFrame.WeeklyInfo.Child then
         if ChallengesFrame.WeeklyInfo.Child.Description and ChallengesFrame.WeeklyInfo.Child.Description:IsVisible() then
