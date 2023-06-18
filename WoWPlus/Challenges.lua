@@ -833,14 +833,14 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
         local frame = self.DungeonIcons[i]
         if frame and frame.mapID then
             if not frame.tips then
-                frame:SetScript("OnMouseDown",function(self2)
+                --[[frame:SetScript("OnMouseDown",function(self2)
                     if not IsAddOnLoaded("Blizzard_EncounterJournal.lua") then
                         LoadAddOn("Blizzard_EncounterJournal.lua")
                     end
                     if not EncounterJournal or not EncounterJournal:IsVisible() then
                         ToggleEncounterJournal()
                     end
-                    --[[EJ_ContentTab_Select(EncounterJournalDungeonTab:GetID())
+                    EJ_ContentTab_Select(EncounterJournalDungeonTab:GetID())
                     local tier= EJ_GetNumTiers()
                     for i2= tier, 1, -1 do
                         if EJ_GetTierInfo(i2)== CHALLENGES  then
@@ -849,9 +849,9 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
                         end
                     end
                     --securecall(EncounterJournal_TierDropDown_Select, nil,  tier)--EJ_SelectTier(EJ_GetNumTiers())
-                    ]]
+                    
 
-                end)
+                end)]]
                 frame:HookScript('OnEnter', function(self2)--提示
                     if self2.mapID then
                         local intimeInfo, overtimeInfo = C_MythicPlus.GetSeasonBestForMap(self2.mapID)
@@ -934,8 +934,8 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
                             e.tips:AddDoubleLine('|T'..texture..':0|t'..texture, '|T'..backgroundTexture..':0|t'..backgroundTexture)
                         end
                         --if EncounterJournal_Maps[self2.mapID] then
-                            e.tips:AddLine(' ')
-                            e.tips:AddDoubleLine(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, e.Icon.left)
+                            --e.tips:AddLine(' ')
+                            --e.tips:AddDoubleLine(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, e.Icon.left)
                         --end
                         e.tips:Show()
                     end
