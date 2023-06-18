@@ -1035,7 +1035,7 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
                 end
 
                 if currentChallengeMapID== frame.mapID and not frame.currentKey then--提示, 包里KEY地图
-                    frame.currentKey= frame.showFrame:CreateTexture(nil, 'OVERLAY')
+                    frame.currentKey= self.showFrame:CreateTexture(nil, 'OVERLAY')
                     frame.currentKey:SetPoint('BOTTOM')
                     frame.currentKey:SetTexture(4352494)
                     --frame.currentKey:SetAtlas('auctionhouse-icon-favorite')
