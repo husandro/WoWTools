@@ -1126,15 +1126,13 @@ local function set_itemLevelTips_GetTextAndTooltip()--设置, 文本, 提示, �
         end
     end
 
-    for i=2, 25 do
+    for i=5, 20 do
         local col= curLevel==i and '|cff00ff00' or select(2, math.modf(i/2))==0 and '|cffff8200' or '|cffffffff'
         local weeklyRewardLevel, endOfRunRewardLevel = C_MythicPlus.GetRewardLevelForDifficultyLevel(i)
         if weeklyRewardLevel and weeklyRewardLevel>0 then
             local str=col..(i<10 and i..' ' or i)..'  '..weeklyRewardLevel..'  '..(endOfRunRewardLevel or 0)..'|r'
-            if i>=5 and i<=20 then
-                text= text and text..'|n' or ''
-                text= text.. str..(curKey==i and e.Icon.star2 or '')
-            end
+            text= text and text..'|n' or ''
+            text= text.. str..(curKey==i and e.Icon.star2 or '')
         end
     end
     if text then
@@ -1142,43 +1140,41 @@ local function set_itemLevelTips_GetTextAndTooltip()--设置, 文本, 提示, �
     end
 
     ChallengesFrame.itemLevelTips.Text:SetText(Save.showItemLevelTipsText and text or '')
-    return text
 end
 local function set_itemLevelTips()--等级 => 每周/完成, 提示
     local self= ChallengesFrame
-    if Save.hide then
-        if self.itemLevelTips then
-            self.itemLevelTips.Text:SetText('')
-            self.itemLevelTips:SetShown(false)
+    if Save.hide or not Save.showItemLevelTipsText then
+        if self.TipsButton then
+            self.TipsButton.Text:SetText('')
+            self.TipsButton:SetShown(not Save.hide)
         end
         return
     end
-    if not self.itemLevelTips then
-        --self.itemLevelTips= e.Cbtn(self.WeeklyInfo.Child,{size={16,16}, atlas='auctionhouse-icon-favorite'})
-        --self.itemLevelTips:SetPoint('TOPRIGHT', -2,-14)
-        self.itemLevelTips= e.Cbtn(self, {size={16,16}, atlas='auctionhouse-icon-favorite'})
-        self.itemLevelTips:SetPoint('LEFT', self.sel, 'RIGHT', 22,0)
-        self.itemLevelTips:SetAlpha(0.5)
-        self.itemLevelTips.Text=e.Cstr(self)
-        self.itemLevelTips.Text:SetPoint('TOPLEFT', self.WoWKeystones, 'BOTTOMLEFT',0,-12)
-        self.itemLevelTips:SetScript('OnClick', function()
+    if not self.TipsButton then
+        --self.TipsButton= e.Cbtn(self.WeeklyInfo.Child,{size={16,16}, atlas='auctionhouse-icon-favorite'})
+        --self.TipsButton:SetPoint('TOPRIGHT', -2,-14)
+        self.TipsButton= e.Cbtn(self, {size={16,16}, atlas='FXAM-QuestBang'})
+        self.TipsButton:SetPoint('LEFT', self.sel, 'RIGHT', 22,0)
+        self.TipsButton:SetAlpha(0.5)
+        self.TipsButton.Text=e.Cstr(self)
+        self.TipsButton.Text:SetPoint('TOPLEFT', self.WoWKeystones, 'BOTTOMLEFT',0,-12)
+        self.TipsButton:SetScript('OnClick', function(self2)
             Save.showItemLevelTipsText= not Save.showItemLevelTipsText and true or nil
             set_itemLevelTips_GetTextAndTooltip()
             set_All_Text()--所有记录
+            
         end)
-        self.itemLevelTips:SetScript('OnEnter', function(self2)
+        self.TipsButton:SetScript('OnEnter', function(self2)
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            if not set_itemLevelTips_GetTextAndTooltip() then
-                e.tips:AddDoubleLine(e.onlyChinese and '获取数据' or RETRIEVING_DATA, e.onlyChinese and '无' or NONE)
-            end
+            e.tips:AddLine(e.onlyChinese and '信息' or INFO)
             e.tips:Show()
+            self2:SetAlpha(1)
         end)
-        self.itemLevelTips:SetScript('OnLeave', function() e.tips:Hide() end)
-        self.itemLevelTips:SetScript('OnShow', function() set_itemLevelTips_GetTextAndTooltip() end)
-    else
-        self.itemLevelTips:SetShown()
+        self.TipsButton:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.5) end)
+        --self.TipsButton:SetScript('OnShow', function() set_itemLevelTips_GetTextAndTooltip() end)
     end
+    self.TipsButton:SetShown(true)
     set_itemLevelTips_GetTextAndTooltip()
 end
 
