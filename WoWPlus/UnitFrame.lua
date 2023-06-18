@@ -389,7 +389,6 @@ local function set_PartyFrame()--PartyFrame.lua
 
                     frame.positionFrame= CreateFrame("Frame", nil, frame)--队友位置
                     frame.positionFrame:SetPoint('LEFT', frame.LeaderIcon, 'RIGHT')
-                    --frame.positionFrame:SetPoint('BOTTOMLEFT', frame.Name, 'TOPLEFT')
                     frame.positionFrame:SetSize(1,1)
                     frame.positionFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
                     frame.positionFrame:SetScript('OnEvent', function(self2)
