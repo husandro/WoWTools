@@ -4,7 +4,8 @@ if not e.Player.levelMax then
 end
 local addName= CHALLENGES
 local Save= {
-    showItemLevelTipsText=true,--等级 =>每周/完成, 提示
+    --hide=true,--隐藏所有，提示
+    hideAllTips=true,--提示信息
     showSpellPort= e.Player.husandro,--传送门
 }
 local panel=CreateFrame("Frame")
@@ -491,52 +492,6 @@ local function GetNum(mapID, all)--取得完成次数,如 1/10
     end
 end
 
---######
---传送门
---######
-local function set_check_Show_Spell_Port()--传送门, 启用/禁用
-    local find--是否有找到,如果没有赛季数据更新,就禁用
-    for _, mapID in pairs(C_ChallengeMode.GetMapTable() or {}) do
-        find= get_Spell_MapChallengeID(mapID)
-        if find then
-            break
-        end
-    end
-    if not find then
-        Save.showSpellPort=nil
-    end
-    local btn=ChallengesFrame.sel.showSpellPort
-    if not Save.hide and not btn and find then
-        btn= e.Cbtn(ChallengesFrame, {size={22,22}, atlas='WarlockPortal-Yellow-32x32'})
-        btn:SetPoint('LEFT', ChallengesFrame.sel, 'RIGHT')
-        btn:SetAlpha(0.5)
-        btn:SetScript('OnClick', function()
-            Save.showSpellPort= not Save.showSpellPort and true or nil
-            securecallfunction(ChallengesFrame.Update,ChallengesFrame)
-            if not Save.showSpellPort then
-                print(id, addName, e.GetEnabeleDisable(Save.showSpellPort), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end
-        end)
-        btn:SetScript('OnLeave', function() e.tips:Hide() end)
-        btn:SetScript('OnEnter', function(self)
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            if e.onlyChinese then
-                e.tips:AddDoubleLine('挑战20层','限时传送门')
-                e.tips:AddDoubleLine('如果出现错误', '请禁用此功能')
-                e.tips:AddDoubleLine('显示/隐藏'..e.Icon.left, e.GetEnabeleDisable(Save.showSpellPort))
-            else
-                e.tips:AddLine(format(UNITNAME_SUMMON_TITLE14, CHALLENGE_MODE..' (20) '))
-                e.tips:AddDoubleLine(ERRORS..'('..SHOW..')', DISABLE)
-                e.tips:AddDoubleLine(SHOW..'/'..HIDE..e.Icon.left, e.GetEnabeleDisable(Save.showSpellPort))
-            end
-            e.tips:Show()
-        end)
-        ChallengesFrame.sel.showSpellPort= btn
-    end
-    if btn then
-        btn:SetShown(not Save.hide)
-    end
-end
 local function set_Spell_Port(self)
     if UnitAffectingCombat('player') then
         return
@@ -673,8 +628,8 @@ local function HistorySort(a,b)
 end
 local function set_All_Text()--所有记录
     local self= ChallengesFrame
-    if Save.hide or not Save.showItemLevelTipsText then-- or Save.hideAll then 
-        self.WoWKeystones:SetText('')
+    if Save.hide or Save.hideAllTips then-- or Save.hideAll then 
+        self.TipsText:SetText('')
         return
     end
     local m=""
@@ -753,7 +708,29 @@ local function set_All_Text()--所有记录
         end
     end
 
-    self.WoWKeystones:SetText(text)
+    local text2--等级 => 每周/完成, 提示
+    local curLevel=0
+    local curKey= C_MythicPlus.GetOwnedKeystoneLevel() or 0
+    local runInfo = C_MythicPlus.GetRunHistory(false, true) or {}--本周记录
+    for _, runs  in pairs(runInfo) do
+        if runs and runs.level then
+            curLevel= runs.level>curLevel and runs.level or curLevel
+        end
+    end
+    for i=5, 20 do
+        local col= curLevel==i and '|cff00ff00' or select(2, math.modf(i/2))==0 and '|cffff8200' or '|cffffffff'
+        local weeklyRewardLevel2, endOfRunRewardLevel2 = C_MythicPlus.GetRewardLevelForDifficultyLevel(i)
+        if weeklyRewardLevel2 and weeklyRewardLevel>0 then
+            local str=col..(i<10 and i..' ' or i)..'  '..weeklyRewardLevel2..'  '..(endOfRunRewardLevel2 or 0)..'|r'
+            text2= text2 and text2..'|n' or ''
+            text2= text2..str..(curKey==i and e.Icon.star2 or '')
+        end
+    end
+    if text2 then
+        text= text..'|n|n'..(e.onlyChinese and '难度 每周 掉落' or (PROFESSIONS_CRAFTING_STAT_TT_DIFFICULTY_HEADER..' '..CALENDAR_REPEAT_WEEKLY..' '..BATTLE_PET_SOURCE_1))..'|n'..text2
+    end
+
+    self.TipsText:SetText(text)
 end
 
 local function set_Currency_Info()--货币数量
@@ -762,7 +739,7 @@ local function set_Currency_Info()--货币数量
     for k, v in pairs(IDs) do
         local info=C_CurrencyInfo.GetCurrencyInfo(v)
         local t=''
-        if info and info.discovered and info.quantity and info.maxQuantity and not Save.hide then
+        if info and info.discovered and info.quantity and info.maxQuantity and not Save.hideAllTips then
             if info.maxQuantity>0  then
                 if info.useTotalEarnedForMaxQty then--本周还可获取                        
                     local q
@@ -789,7 +766,7 @@ local function set_Currency_Info()--货币数量
             --t=t..info.name
 
             if not self['cur'..k] then
-                self['cur'..k]=CreateFrame("Button", nil, self)
+                self['cur'..k]=CreateFrame("Button", nil, self.showFrame)
                 self['cur'..k]:SetHighlightAtlas('Forge-ColorSwatchSelection')
                 self['cur'..k]:SetPushedTexture('Interface\\Buttons\\UI-Quickslot-Depress')
                 self['cur'..k]:SetNormalTexture(info.iconFileID)
@@ -817,14 +794,13 @@ local function set_Currency_Info()--货币数量
         end
         if self['cur'..k] then
             self['cur'..k].text:SetText(t)
-            self['cur'..k]:SetShown(not Save.hide)
+            self['cur'..k]:SetShown(not Save.hideAllTips)
         end
     end
 end
 
 
 local function set_Update(self)--Blizzard_ChallengesUI.lua
-    --local self=ChallengesFrame
     if not self.maps or #self.maps==0 then
         return
     end
@@ -849,11 +825,9 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
                         end
                     end
                     --securecall(EncounterJournal_TierDropDown_Select, nil,  tier)--EJ_SelectTier(EJ_GetNumTiers())
-                    
-
                 end)]]
                 frame:HookScript('OnEnter', function(self2)--提示
-                    if self2.mapID then
+                    if self2.mapID and Save.showSpellPort and not Save.hide then
                         local intimeInfo, overtimeInfo = C_MythicPlus.GetSeasonBestForMap(self2.mapID)
                         if intimeInfo then
                             e.tips:AddLine(' ')
@@ -943,65 +917,55 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
                 frame.tips=true
             end
 
-            if Save.hide then
-                if frame.nameStr then frame.nameStr:SetText('') end
-                if frame.sc then frame.sc:SetText('') end
-                if frame['affixInfo1'] then frame['affixInfo1']:SetText('') end
-                if frame['affixInfo2'] then frame['affixInfo2']:SetText('') end
-                if frame.nu then frame.nu:SetText('') end
-                if frame.currentKey then frame.currentKey:SetShown(false) end
-            else
-
-                local name = C_ChallengeMode.GetMapUIInfo(frame.mapID)--名称                        
-                if name then
-                    if not frame.nameStr then
-                        frame.nameStr=e.Cstr(frame, {size=10})
-                        frame.nameStr:SetPoint('BOTTOM',frame, 'TOP', 0,0)
-                    end
-                    name=name:match('%((.+)%)') or name
-                    name=name:match('%（(.+)%）') or name
-                    name=name:match('%- (.+)') or name
-                    name=name:match('%:(.+)') or name
-                    name=name:match('%: (.+)') or name
-                    name=name:match('：(.+)') or name
-                    name=name:match('·(.+)') or name
-                    name=e.WA_Utf8Sub(name, 5, 10)
-                    frame.nameStr:SetText(name)
+            local name = C_ChallengeMode.GetMapUIInfo(frame.mapID)--名称                        
+            if name then
+                if not frame.nameStr then
+                    frame.nameStr=e.Cstr(self.showFrame, {size=10})
+                    frame.nameStr:SetPoint('BOTTOM',frame, 'TOP', 0,0)
                 end
+                name=name:match('%((.+)%)') or name
+                name=name:match('%（(.+)%）') or name
+                name=name:match('%- (.+)') or name
+                name=name:match('%:(.+)') or name
+                name=name:match('%: (.+)') or name
+                name=name:match('：(.+)') or name
+                name=name:match('·(.+)') or name
+                name=e.WA_Utf8Sub(name, 5, 10)
+                frame.nameStr:SetText(name)
+            end
 
-                local intimeInfo, overtimeInfo = C_MythicPlus.GetSeasonBestForMap(frame.mapID)--分数 最佳
-                local affixScores, overAllScore = C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(frame.mapID)
-                if(overAllScore and intimeInfo or overtimeInfo) then
-                    local label=frame.sc
-                    if not label then--分数
-                        label=e.Cstr(frame, {size=10})
-                        label:SetPoint('LEFT', 0, -3)
-                        label:EnableMouse(true)
-                        label:SetScript('OnEnter', function(self2)
+            local intimeInfo, overtimeInfo = C_MythicPlus.GetSeasonBestForMap(frame.mapID)--分数 最佳
+            local affixScores, overAllScore = C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(frame.mapID)
+            if(overAllScore and intimeInfo or overtimeInfo) then
+                local label=frame.sc
+                if not label then--分数
+                    label=e.Cstr(self.showFrame, {size=10})
+                    label:SetPoint('LEFT', 0, -3)
+                    label:EnableMouse(true)
+                    label:SetScript('OnEnter', function(self2)
+                        e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
+                        e.tips:ClearLines()
+                        e.tips:AddLine((e.onlyChinese and '史诗钥石评分：%s' or CHALLENGE_COMPLETE_DUNGEON_SCORE ):format(self2.score))
+                        e.tips:Show()
+                    end)
+                    label:SetScript('OnLeave', function() e.tips:Hide() end)
+                    frame.sc= label
+                    if frame.HighestLevel then--移动层数位置
+                        frame.HighestLevel:ClearAllPoints()
+                        frame.HighestLevel:SetPoint('LEFT', 0, 12)
+                        frame.HighestLevel:EnableMouse(true)
+                        frame.HighestLevel:SetScript('OnEnter', function(self2)
                             e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
                             e.tips:ClearLines()
-                            e.tips:AddLine((e.onlyChinese and '史诗钥石评分：%s' or CHALLENGE_COMPLETE_DUNGEON_SCORE ):format(self2.score))
+                            e.tips:AddLine(format(e.onlyChinese and '最佳%s' or DUNGEON_SCORE_BEST_AFFIX, (e.onlyChinese and '等级' or LEVEL)..': '..self2:GetText()))
                             e.tips:Show()
                         end)
-                        label:SetScript('OnLeave', function() e.tips:Hide() end)
-                        frame.sc= label
-                        if frame.HighestLevel then--移动层数位置
-                            frame.HighestLevel:ClearAllPoints()
-                            frame.HighestLevel:SetPoint('LEFT', 0, 12)
-                            frame.HighestLevel:EnableMouse(true)
-                            frame.HighestLevel:SetScript('OnEnter', function(self2)
-                                e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
-                                e.tips:ClearLines()
-                                e.tips:AddLine(format(e.onlyChinese and '最佳%s' or DUNGEON_SCORE_BEST_AFFIX, (e.onlyChinese and '等级' or LEVEL)..': '..self2:GetText()))
-                                e.tips:Show()
-                            end)
-                            frame.HighestLevel:SetScript('OnLeave', function() e.tips:Hide() end)
-                        end
+                        frame.HighestLevel:SetScript('OnLeave', function() e.tips:Hide() end)
                     end
-                    local score= '|A:AdventureMapIcon-MissionCombat:16:16|a'..e.GetKeystoneScorsoColor(overAllScore,nil,true)
-                    label:SetText(score)
-                    label.score= score
                 end
+                local score= '|A:AdventureMapIcon-MissionCombat:16:16|a'..e.GetKeystoneScorsoColor(overAllScore,nil,true)
+                label:SetText(score)
+                label.score= score
 
                 if(affixScores and #affixScores > 0) then --最佳 
                     local nameA, _, filedataidA = C_ChallengeMode.GetAffixInfo(10)
@@ -1009,9 +973,9 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
                     local k=1
                     for _, info in ipairs(affixScores) do
                         if info.level and info.level>0 and (info.name == nameA or info.name==nameB) then
-                            local label=frame['affixInfo'..k]
+                            label=frame['affixInfo'..k]
                             if not label then
-                                label= e.Cstr(frame, {justifyH= info.name==nameB and 'RIGHT'})
+                                label= e.Cstr(self.showFrame, {justifyH= info.name==nameB and 'RIGHT'})
                                 if info.name== nameA then
                                     label:SetPoint('BOTTOMLEFT')
                                 else
@@ -1050,9 +1014,9 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
                 local all= GetNum(frame.mapID, true)--副本 完成/总次数 (全部)
                 local week= GetNum(frame.mapID)--本周
                 if all or week then
-                    local label= frame.nu
+                    label= frame.nu
                     if not label then
-                        label=e.Cstr(frame)
+                        label=e.Cstr(self.showFrame)
                         label:SetPoint('TOPLEFT')
                         label:EnableMouse(true)
                         label:SetScript('OnEnter', function(self2)
@@ -1071,7 +1035,7 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
                 end
 
                 if currentChallengeMapID== frame.mapID and not frame.currentKey then--提示, 包里KEY地图
-                    frame.currentKey= frame:CreateTexture(nil, 'OVERLAY')
+                    frame.currentKey= frame.showFrame:CreateTexture(nil, 'OVERLAY')
                     frame.currentKey:SetPoint('BOTTOM')
                     frame.currentKey:SetTexture(4352494)
                     --frame.currentKey:SetAtlas('auctionhouse-icon-favorite')
@@ -1111,184 +1075,167 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
     end
 end
 
-
---#####################
---等级 => 每周/完成, 提示
---#####################
-local function set_itemLevelTips_GetTextAndTooltip()--设置, 文本, 提示, 内容
-    local text
-    local curLevel=0
-    local curKey= C_MythicPlus.GetOwnedKeystoneLevel() or 0
-    local info = C_MythicPlus.GetRunHistory(false, true) or {}--本周记录
-    for _, runs  in pairs(info) do
-        if runs and runs.level then
-            curLevel= runs.level>curLevel and runs.level or curLevel
-        end
-    end
-
-    for i=5, 20 do
-        local col= curLevel==i and '|cff00ff00' or select(2, math.modf(i/2))==0 and '|cffff8200' or '|cffffffff'
-        local weeklyRewardLevel, endOfRunRewardLevel = C_MythicPlus.GetRewardLevelForDifficultyLevel(i)
-        if weeklyRewardLevel and weeklyRewardLevel>0 then
-            local str=col..(i<10 and i..' ' or i)..'  '..weeklyRewardLevel..'  '..(endOfRunRewardLevel or 0)..'|r'
-            text= text and text..'|n' or ''
-            text= text.. str..(curKey==i and e.Icon.star2 or '')
-        end
-    end
-    if text then
-        text= (e.onlyChinese and '难度 每周 掉落' or (PROFESSIONS_CRAFTING_STAT_TT_DIFFICULTY_HEADER..' '..CALENDAR_REPEAT_WEEKLY..' '..BATTLE_PET_SOURCE_1))..'|n'..text
-    end
-
-    ChallengesFrame.itemLevelTips.Text:SetText(Save.showItemLevelTipsText and text or '')
-end
-local function set_itemLevelTips()--等级 => 每周/完成, 提示
-    local self= ChallengesFrame
-    if Save.hide or not Save.showItemLevelTipsText then
-        if self.TipsButton then
-            self.TipsButton.Text:SetText('')
-            self.TipsButton:SetShown(not Save.hide)
-        end
-        return
-    end
-    if not self.TipsButton then
-        --self.TipsButton= e.Cbtn(self.WeeklyInfo.Child,{size={16,16}, atlas='auctionhouse-icon-favorite'})
-        --self.TipsButton:SetPoint('TOPRIGHT', -2,-14)
-        self.TipsButton= e.Cbtn(self, {size={16,16}, atlas='FXAM-QuestBang'})
-        self.TipsButton:SetPoint('LEFT', self.sel, 'RIGHT', 22,0)
-        self.TipsButton:SetAlpha(0.5)
-        self.TipsButton.Text=e.Cstr(self)
-        self.TipsButton.Text:SetPoint('TOPLEFT', self.WoWKeystones, 'BOTTOMLEFT',0,-12)
-        self.TipsButton:SetScript('OnClick', function(self2)
-            Save.showItemLevelTipsText= not Save.showItemLevelTipsText and true or nil
-            set_itemLevelTips_GetTextAndTooltip()
-            set_All_Text()--所有记录
-            
-        end)
-        self.TipsButton:SetScript('OnEnter', function(self2)
-            e.tips:SetOwner(self2, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddLine(e.onlyChinese and '信息' or INFO)
-            e.tips:Show()
-            self2:SetAlpha(1)
-        end)
-        self.TipsButton:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.5) end)
-        --self.TipsButton:SetScript('OnShow', function() set_itemLevelTips_GetTextAndTooltip() end)
-    end
-    self.TipsButton:SetShown(true)
-    set_itemLevelTips_GetTextAndTooltip()
-end
-
 --####
 --初始
 --####
 local function Init()
-    ChallengesFrame.sel= e.Cbtn(ChallengesFrame, {size={22,22}, icon= not Save.hide})
-    ChallengesFrame.sel:SetPoint('TOPLEFT',60,-20)
-    ChallengesFrame.sel:SetScript("OnClick", function (self2)
+    local self= ChallengesFrame
+
+    local check= e.Cbtn(self, {size={22,22}, icon= not Save.hide})
+    check:SetFrameLevel(PVEFrame.TitleContainer:GetFrameLevel() +1)
+    if _G['MoveZoomInButtonPerPVEFrame'] then
+       check:SetPoint('RIGHT', _G['MoveZoomInButtonPerPVEFrame'], 'LEFT')
+    else
+        check:SetPoint('TOPLEFT',60,-20)
+    end
+    check:SetScript("OnClick", function(self2)
         Save.hide = not Save.hide and true or nil
-        set_Kill_Info()--副本PVP团本
-        securecallfunction(ChallengesFrame.Update,ChallengesFrame)
-        Affix()
-        set_All_Text()--所有记录   
-        set_Currency_Info()--货币数量
-        set_itemLevelTips()--等级 => 每周/完成, 提示
-        set_check_Show_Spell_Port()--传送门, 启用/禁用
+        ChallengesFrame.showFrame:SetShown(not Save.hide)
         self2:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
     end)
-    ChallengesFrame.sel:SetScript("OnEnter",function(self2)
-            local mapIDs = {}
-            for _, v in pairs( (C_ChallengeMode.GetMapTable() or {})) do
-                mapIDs[v]=true
-            end
-
-            local infos= C_MythicPlus.GetRunHistory(true, true)
-            if not infos then
-                return
-            end
-            local IDs={}
-            local t=0
-            for _, v in pairs(infos) do
-                local mapChallengeModeID=v.mapChallengeModeID
-                IDs[mapChallengeModeID]= IDs[mapChallengeModeID] or {c=0, t=0}
-                if v.completed then
-                    t=t+1
-                    IDs[mapChallengeModeID].c= IDs[mapChallengeModeID].c+1
-                end
-                IDs[mapChallengeModeID].t= IDs[mapChallengeModeID].t+1
-                if v.level and ( not IDs[mapChallengeModeID].lv or  v.level > IDs[mapChallengeModeID].lv) then--最高等级
-                    IDs[mapChallengeModeID].lv=v.level
-                    IDs[mapChallengeModeID].completed=v.completed
-                    if v.completed then
-                        if not IDs[mapChallengeModeID].lv2 or  v.level > IDs[mapChallengeModeID].lv2 then
-                            IDs[mapChallengeModeID].lv2=v.level
-                        end
-                    end
-                end
-                IDs[mapChallengeModeID].mapIDs=mapIDs[mapChallengeModeID]--本赛季
-            end
-
-            e.tips:SetOwner(self2, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.onlyChinese and '历史' or HISTORY, t..'/'..#infos, 0,1,0 ,0,1,0)
-
-            for k, v in pairs(IDs) do
-                local name, _, _, texture= C_ChallengeMode.GetMapUIInfo(k)
-                if name then
-                    local col, r, g, b
-                    local bestOverAllScore = select(2, C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(k))
-                    if  bestOverAllScore then
-                        col=C_ChallengeMode.GetSpecificDungeonOverallScoreRarityColor(bestOverAllScore)
-                    end
-                    if col then r,g,b= col.r, col.g, col.b end
-                    local m=not mapIDs[k] and e.Icon.X or ''
-                    m=m..(texture and '|T'..texture..':0|t' or '').. name
-                    if v.lv then
-                        m=m..'('
-                        if v.completed then
-                            m=m..'|cff00ff00'..v.lv..'|r'
-                        else
-                            m=m..RED_FONT_COLOR_CODE..v.lv..'|r'
-                            m=v.lv2 and m..'/|cff00ff00'..v.lv2..'|r' or m
-                        end
-                        m=m..') '
-                    end
-                    m=m.. (bestOverAllScore or '')
-                    e.tips:AddDoubleLine(m, v.c..'/'..v.t, r,g,b , r,g,b)
-                end
-            end
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, e.Icon.left)
-            e.tips:AddDoubleLine(id, addName)
-            e.tips:Show()
-    end)
-    ChallengesFrame.sel:SetScript("OnLeave",function()
-            e.tips:Hide()
-    end)
-
-
-
-    if ChallengesFrame.WeeklyInfo and ChallengesFrame.WeeklyInfo.Child then--隐藏, 赛季最佳
-        if ChallengesFrame.WeeklyInfo.Child.SeasonBest then
-            ChallengesFrame.WeeklyInfo.Child.SeasonBest:SetText('')
+    check:SetScript("OnEnter",function(self2)
+        local mapIDs = {}
+        for _, v in pairs( (C_ChallengeMode.GetMapTable() or {})) do
+            mapIDs[v]=true
         end
-   end
 
-   ChallengesFrame.WoWKeystones= e.Cstr(ChallengesFrame)--最右边, 数据
-    if IsAddOnLoaded('RaiderIO') and RaiderIO_ProfileTooltip then
-        ChallengesFrame.WoWKeystones:SetPoint('BOTTOMLEFT', ChallengesFrame, 'BOTTOMRIGHT', 2, 0)
+        local infos= C_MythicPlus.GetRunHistory(true, true)
+        if not infos then
+            return
+        end
+        local IDs={}
+        local t=0
+        for _, v in pairs(infos) do
+            local mapChallengeModeID=v.mapChallengeModeID
+            IDs[mapChallengeModeID]= IDs[mapChallengeModeID] or {c=0, t=0}
+            if v.completed then
+                t=t+1
+                IDs[mapChallengeModeID].c= IDs[mapChallengeModeID].c+1
+            end
+            IDs[mapChallengeModeID].t= IDs[mapChallengeModeID].t+1
+            if v.level and ( not IDs[mapChallengeModeID].lv or  v.level > IDs[mapChallengeModeID].lv) then--最高等级
+                IDs[mapChallengeModeID].lv=v.level
+                IDs[mapChallengeModeID].completed=v.completed
+                if v.completed then
+                    if not IDs[mapChallengeModeID].lv2 or  v.level > IDs[mapChallengeModeID].lv2 then
+                        IDs[mapChallengeModeID].lv2=v.level
+                    end
+                end
+            end
+            IDs[mapChallengeModeID].mapIDs=mapIDs[mapChallengeModeID]--本赛季
+        end
+
+        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.onlyChinese and '历史' or HISTORY, t..'/'..#infos, 0,1,0 ,0,1,0)
+
+        for k, v in pairs(IDs) do
+            local name, _, _, texture= C_ChallengeMode.GetMapUIInfo(k)
+            if name then
+                local col, r, g, b
+                local bestOverAllScore = select(2, C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(k))
+                if  bestOverAllScore then
+                    col=C_ChallengeMode.GetSpecificDungeonOverallScoreRarityColor(bestOverAllScore)
+                end
+                if col then r,g,b= col.r, col.g, col.b end
+                local m=not mapIDs[k] and e.Icon.X or ''
+                m=m..(texture and '|T'..texture..':0|t' or '').. name
+                if v.lv then
+                    m=m..'('
+                    if v.completed then
+                        m=m..'|cff00ff00'..v.lv..'|r'
+                    else
+                        m=m..RED_FONT_COLOR_CODE..v.lv..'|r'
+                        m=v.lv2 and m..'/|cff00ff00'..v.lv2..'|r' or m
+                    end
+                    m=m..') '
+                end
+                m=m.. (bestOverAllScore or '')
+                e.tips:AddDoubleLine(m, v.c..'/'..v.t, r,g,b , r,g,b)
+            end
+        end
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, e.Icon.left)
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:Show()
+    end)
+    check:SetScript("OnLeave",function()
+        e.tips:Hide()
+    end)
+
+    self.showFrame= CreateFrame("Frame",nil, self)
+    self.showFrame:SetFrameLevel(PVEFrame.TitleContainer:GetFrameLevel() +1)
+    self.showFrame:SetPoint('TOPLEFT')
+    self.showFrame:SetSize(1, 1)
+    self.showFrame:SetShown(not Save.hide)
+
+    local tipsButton= e.Cbtn(self.showFrame, {size={16,16}, atlas='FXAM-QuestBang'})
+    if _G['MoveZoomInButtonPerPVEFrame'] then
+        tipsButton:SetPoint('LEFT', _G['MoveZoomInButtonPerPVEFrame'], 'RIGHT')
     else
-        ChallengesFrame.WoWKeystones:SetPoint('TOPLEFT', ChallengesFrame, 'TOPRIGHT', 2, -10)
+        tipsButton:SetPoint('LEFT', check, 'RIGHT', 22,0)
+    end
+    tipsButton:SetAlpha(0.5)
+    tipsButton:SetScript('OnClick', function(self2)
+        Save.hideAllTips= not Save.hideAllTips and true or nil
+        set_All_Text()--所有记录
+    end)
+    tipsButton:SetScript('OnEnter', function(self2)
+        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddLine(e.onlyChinese and '信息' or INFO)
+        e.tips:Show()
+        self2:SetAlpha(1)
+    end)
+    tipsButton:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.5) end)
+
+    self.TipsText= e.Cstr(self.showFrame)--最右边, 数据
+    if IsAddOnLoaded('RaiderIO') and RaiderIO_ProfileTooltip then
+        self.TipsText:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT', 2, 0)
+    else
+        self.TipsText:SetPoint('TOPLEFT', self, 'TOPRIGHT', 2, -10)
     end
 
-    set_check_Show_Spell_Port()--传送门, 启用/禁用, 要放在Update前面
+    --传送门, 启用/禁用, 要放在Update前面
+    local spellButton= e.Cbtn(self.showFrame, {size={22,22}, atlas='WarlockPortal-Yellow-32x32'})
+    spellButton:SetPoint('LEFT', tipsButton, 'RIGHT')
+    spellButton:SetAlpha(0.5)
+    spellButton:SetScript('OnClick', function()
+        Save.showSpellPort= not Save.showSpellPort and true or nil
+        securecallfunction(ChallengesFrame.Update,ChallengesFrame)
+        if not Save.showSpellPort then
+            print(id, addName, e.GetEnabeleDisable(Save.showSpellPort), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end
+    end)
+    spellButton:SetScript('OnLeave', function() e.tips:Hide() end)
+    spellButton:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        if e.onlyChinese then
+            e.tips:AddDoubleLine('挑战20层','限时传送门')
+            e.tips:AddDoubleLine('如果出现错误', '请禁用此功能')
+            e.tips:AddDoubleLine('显示/隐藏'..e.Icon.left, e.GetEnabeleDisable(Save.showSpellPort))
+        else
+            e.tips:AddLine(format(UNITNAME_SUMMON_TITLE14, CHALLENGE_MODE..' (20) '))
+            e.tips:AddDoubleLine(ERRORS..'('..SHOW..')', DISABLE)
+            e.tips:AddDoubleLine(SHOW..'/'..HIDE..e.Icon.left, e.GetEnabeleDisable(Save.showSpellPort))
+        end
+        e.tips:Show()
+    end)     
+
     set_Kill_Info()--副本PVP团本
     hooksecurefunc(ChallengesFrame, 'Update', set_Update)
     Affix()
     set_Currency_Info()--货币数量
     C_Timer.After(2, function()
         set_All_Text()--所有记录
-        set_itemLevelTips()--等级 => 每周/完成, 提示
     end)
+
+
+    if self.WeeklyInfo and self.WeeklyInfo.Child then--隐藏, 赛季最佳
+        if self.WeeklyInfo.Child.SeasonBest then
+            self.WeeklyInfo.Child.SeasonBest:SetText('')
+        end
+   end
 
     if ChallengesFrame.WeeklyInfo and ChallengesFrame.WeeklyInfo.Child then
         if ChallengesFrame.WeeklyInfo.Child.Description and ChallengesFrame.WeeklyInfo.Child.Description:IsVisible() then
