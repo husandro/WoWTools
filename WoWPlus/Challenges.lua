@@ -673,7 +673,7 @@ local function HistorySort(a,b)
 end
 local function set_All_Text()--所有记录
     local self= ChallengesFrame
-    if Save.hide then-- or Save.hideAll then 
+    if Save.hide or not Save.showItemLevelTipsText then-- or Save.hideAll then 
         self.WoWKeystones:SetText('')
         return
     end
@@ -1073,7 +1073,8 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
                 if currentChallengeMapID== frame.mapID and not frame.currentKey then--提示, 包里KEY地图
                     frame.currentKey= frame:CreateTexture(nil, 'OVERLAY')
                     frame.currentKey:SetPoint('BOTTOM')
-                    frame.currentKey:SetAtlas('auctionhouse-icon-favorite')
+                    frame.currentKey:SetTexture(4352494)
+                    --frame.currentKey:SetAtlas('auctionhouse-icon-favorite')
                     frame.currentKey:SetSize(14,14)
                     frame.currentKey:EnableMouse(true)
                     frame.currentKey:SetScript('OnEnter', function(self2)
@@ -1114,7 +1115,7 @@ end
 --#####################
 --等级 => 每周/完成, 提示
 --#####################
-local function set_itemLevelTips_GetTextAndTooltip(showTooltip)--设置, 文本, 提示, 内容
+local function set_itemLevelTips_GetTextAndTooltip()--设置, 文本, 提示, 内容
     local text
     local curLevel=0
     local curKey= C_MythicPlus.GetOwnedKeystoneLevel() or 0
@@ -1130,9 +1131,6 @@ local function set_itemLevelTips_GetTextAndTooltip(showTooltip)--设置, 文本,
         local weeklyRewardLevel, endOfRunRewardLevel = C_MythicPlus.GetRewardLevelForDifficultyLevel(i)
         if weeklyRewardLevel and weeklyRewardLevel>0 then
             local str=col..(i<10 and i..' ' or i)..'  '..weeklyRewardLevel..'  '..(endOfRunRewardLevel or 0)..'|r'
-            if showTooltip then
-                e.tips:AddLine(str)
-            end
             if i>=5 and i<=20 then
                 text= text and text..'|n' or ''
                 text= text.. str..(curKey==i and e.Icon.star2 or '')
@@ -1165,22 +1163,23 @@ local function set_itemLevelTips()--等级 => 每周/完成, 提示
         self.itemLevelTips.Text:SetPoint('TOPLEFT', self.WoWKeystones, 'BOTTOMLEFT',0,-12)
         self.itemLevelTips:SetScript('OnClick', function()
             Save.showItemLevelTipsText= not Save.showItemLevelTipsText and true or nil
-            set_itemLevelTips_GetTextAndTooltip(false)
+            set_itemLevelTips_GetTextAndTooltip()
+            set_All_Text()--所有记录
         end)
         self.itemLevelTips:SetScript('OnEnter', function(self2)
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            if not set_itemLevelTips_GetTextAndTooltip(true) then
+            if not set_itemLevelTips_GetTextAndTooltip() then
                 e.tips:AddDoubleLine(e.onlyChinese and '获取数据' or RETRIEVING_DATA, e.onlyChinese and '无' or NONE)
             end
             e.tips:Show()
         end)
         self.itemLevelTips:SetScript('OnLeave', function() e.tips:Hide() end)
-        self.itemLevelTips:SetScript('OnShow', function() set_itemLevelTips_GetTextAndTooltip(false) end)
+        self.itemLevelTips:SetScript('OnShow', function() set_itemLevelTips_GetTextAndTooltip() end)
     else
-        self.itemLevelTips:SetShown(true)
+        self.itemLevelTips:SetShown()
     end
-    set_itemLevelTips_GetTextAndTooltip(false)
+    set_itemLevelTips_GetTextAndTooltip()
 end
 
 --####
