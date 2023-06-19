@@ -1134,8 +1134,10 @@ local function Init()
     end)
     ItemRefTooltip:HookScript("OnHide", function (self)--隐藏
         setInitItem(self, true)
-        ItemRefTooltip.wowhead.web=nil--取得网页，数据链接
-        ItemRefTooltip.wowhead:SetShown(false)
+        if ItemRefTooltip.wowhead then
+            ItemRefTooltip.wowhead.web=nil--取得网页，数据链接
+            ItemRefTooltip.wowhead:SetShown(false)
+        end
     end)
 
     hooksecurefunc('GameTooltip_AddQuestRewardsToTooltip', setQuest)--世界任务ID GameTooltip_AddQuest
