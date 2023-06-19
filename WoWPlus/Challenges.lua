@@ -902,7 +902,7 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
             --名称, 缩写
             --#########
             local nameText
-            local name = C_ChallengeMode.GetMapUIInfo(frame.mapID)--名称
+            local name = not Save.hide and C_ChallengeMode.GetMapUIInfo(frame.mapID)--名称
             if name then
                 if not frame.nameLable then
                     frame.nameLable=e.Cstr(frame, {size=10})
@@ -936,7 +936,7 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
             --#########
             local intimeInfo, overtimeInfo = C_MythicPlus.GetSeasonBestForMap(frame.mapID)
             local affixScores, overAllScore = C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(frame.mapID)
-            if(overAllScore and intimeInfo or overtimeInfo) then
+            if not Save.hide and (overAllScore and intimeInfo or overtimeInfo) then
                 if not frame.scoreLable then--分数
                     frame.scoreLable=e.Cstr(frame, {size=10})
                     frame.scoreLable:SetPoint('LEFT', frame, 0, -3)
@@ -967,7 +967,8 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
                         frame.HighestLevel:SetScript('OnLeave', function() e.tips:Hide() end)
                     end
                 end
-                frame.scoreLable:SetText('|A:AdventureMapIcon-MissionCombat:16:16|a'..(e.GetKeystoneScorsoColor(overAllScore,nil,true) or ''))
+                
+                frame.scoreLable:SetText((overAllScore and not Save.hide) and '|A:AdventureMapIcon-MissionCombat:16:16|a'..e.GetKeystoneScorsoColor(overAllScore,nil,true) or '')
                 frame.scoreLable.score= overAllScore
 
                 if(affixScores and #affixScores > 0) then --最佳 
@@ -1020,27 +1021,29 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
                 --副本 完成/总次数 (全部)
                 --#####################
                 local numText
-                local all= GetNum(frame.mapID, true)
-                local week= GetNum(frame.mapID)--本周
-                if all or week then
-                    if not frame.completedLable then
-                        frame.completedLable=e.Cstr(frame)
-                        frame.completedLable:SetPoint('TOPLEFT', frame)
-                        frame.completedLable:EnableMouse(true)
-                        frame.completedLable:SetScript('OnEnter', function(self2)
-                            if self2.all or self2.week then
-                                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                                e.tips:ClearLines()
-                                e.tips:AddDoubleLine(e.onlyChinese and '历史' or HISTORY , self2.all or (e.onlyChinese and '无' or NONE))
-                                e.tips:AddDoubleLine(e.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK, self2.week or (e.onlyChinese and '无' or NONE))
-                                e.tips:Show()
-                            end
-                        end)
-                        frame.completedLable:SetScript('OnLeave', function() e.tips:Hide() end)
+                if not Save.hide then
+                    local all= GetNum(frame.mapID, true)
+                    local week= GetNum(frame.mapID)--本周
+                    if all or week then
+                        if not frame.completedLable then
+                            frame.completedLable=e.Cstr(frame)
+                            frame.completedLable:SetPoint('TOPLEFT', frame)
+                            frame.completedLable:EnableMouse(true)
+                            frame.completedLable:SetScript('OnEnter', function(self2)
+                                if self2.all or self2.week then
+                                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                                    e.tips:ClearLines()
+                                    e.tips:AddDoubleLine(e.onlyChinese and '历史' or HISTORY , self2.all or (e.onlyChinese and '无' or NONE))
+                                    e.tips:AddDoubleLine(e.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK, self2.week or (e.onlyChinese and '无' or NONE))
+                                    e.tips:Show()
+                                end
+                            end)
+                            frame.completedLable:SetScript('OnLeave', function() e.tips:Hide() end)
+                        end
+                        numText= (all or '')..( week and ' |cffffffff(|r'..week..'|cffffffff)|r' or '')
+                        frame.completedLable.all=all or week
+                        frame.completedLable.week= week
                     end
-                    numText= (all or '')..( week and ' |cffffffff(|r'..week..'|cffffffff)|r' or '')
-                    frame.completedLable.all=all or week
-                    frame.completedLable.week= week
                 end
                 if frame.completedLable then
                     frame.completedLable:SetText(numText or '')
@@ -1153,8 +1156,7 @@ local function Init()
     self.tipsFrame:SetShown(not Save.hideTips)
 
     local check= e.Cbtn(self, {size={18,18}, icon= not Save.hide})
-    check:SetFrameStrata('HIGH')
-    check:SetFrameLevel(7)
+    check:SetFrameLevel( PVEFrame.TitleContainer:GetFrameLevel()+1)
     if _G['MoveZoomInButtonPerPVEFrame'] then
        check:SetPoint('RIGHT', _G['MoveZoomInButtonPerPVEFrame'], 'LEFT', -18,0)
     else
@@ -1164,7 +1166,7 @@ local function Init()
         Save.hide = not Save.hide and true or nil
         --ChallengesFrame.showFrame:SetShown(not Save.hide)
         self2:SetNormalAtlas(not Save.hide and e.Icon.icon or e.Icon.disabled)
-        securecallfunction(ChallengesFrame.Update,ChallengesFrame)
+        securecallfunction(ChallengesFrame.Update, ChallengesFrame)
     end)
     check:SetScript("OnEnter",function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
@@ -1261,7 +1263,7 @@ local function Init()
 
 
     --传送门
-    local spellButton= e.Cbtn(self, {size={18,18}, atlas= not Save.hidePort and 'WarlockPortal-Yellow-32x32' or e.Icon.disabled})
+    local spellButton= e.Cbtn(check, {size={18,18}, atlas= not Save.hidePort and 'WarlockPortal-Yellow-32x32' or e.Icon.disabled})
     spellButton:SetPoint('LEFT', _G['MoveZoomInButtonPerPVEFrame'] or tipsButton, 'RIGHT')
     spellButton:SetAlpha(0.5)
     spellButton:SetScript('OnClick', function(self2)
