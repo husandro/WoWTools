@@ -897,11 +897,15 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
 
                 frame.setTips=true
             end
+
+            --#########
+            --名称, 缩写
+            --#########
             local nameText
-            local name = C_ChallengeMode.GetMapUIInfo(frame.mapID)--名称                        
+            local name = C_ChallengeMode.GetMapUIInfo(frame.mapID)--名称
             if name then
                 if not frame.nameLable then
-                    frame.nameLable=e.Cstr(self.showFrame, {size=10})--名称
+                    frame.nameLable=e.Cstr(frame, {size=10})
                     frame.nameLable:SetPoint('BOTTOM', frame, 'TOP', 0,0)
                     frame.nameLable:EnableMouse(true)
                     frame.nameLable:SetScript('OnLeave', function() e.tips:Hide() end)
@@ -927,12 +931,14 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
                 frame.nameLable:SetText(nameText or '')
             end
 
-
-            local intimeInfo, overtimeInfo = C_MythicPlus.GetSeasonBestForMap(frame.mapID)--分数 最佳
+            --#########
+            --分数，最佳
+            --#########
+            local intimeInfo, overtimeInfo = C_MythicPlus.GetSeasonBestForMap(frame.mapID)
             local affixScores, overAllScore = C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(frame.mapID)
             if(overAllScore and intimeInfo or overtimeInfo) then
                 if not frame.scoreLable then--分数
-                    frame.scoreLable=e.Cstr(self.showFrame, {size=10})
+                    frame.scoreLable=e.Cstr(frame, {size=10})
                     frame.scoreLable:SetPoint('LEFT', frame, 0, -3)
                     frame.scoreLable:EnableMouse(true)
                     frame.scoreLable:SetScript('OnEnter', function(self2)
@@ -944,7 +950,11 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
                         end
                     end)
                     frame.scoreLable:SetScript('OnLeave', function() e.tips:Hide() end)
-                    if frame.HighestLevel then--移动层数位置
+
+                    --###########
+                    --移动层数位置
+                    --###########
+                    if frame.HighestLevel then
                         frame.HighestLevel:ClearAllPoints()
                         frame.HighestLevel:SetPoint('LEFT', 0, 12)
                         frame.HighestLevel:EnableMouse(true)
@@ -969,7 +979,7 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
                         local label=frame['affixInfo'..k]
                         if info.level and info.level>0 and (info.name == nameA or info.name==nameB) and not Save.hide then
                             if not label then
-                                label= e.Cstr(self.showFrame, {justifyH= info.name==nameB and 'RIGHT'})
+                                label= e.Cstr(frame, {justifyH= info.name==nameB and 'RIGHT'})
                                 if info.name== nameA then
                                     label:SetPoint('BOTTOMLEFT',frame)
                                 else
@@ -1006,12 +1016,15 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
                     end
                 end
 
+                --#####################
+                --副本 完成/总次数 (全部)
+                --#####################
                 local numText
-                local all= GetNum(frame.mapID, true)--副本 完成/总次数 (全部)
+                local all= GetNum(frame.mapID, true)
                 local week= GetNum(frame.mapID)--本周
                 if all or week then
                     if not frame.completedLable then
-                        frame.completedLable=e.Cstr(self.showFrame)
+                        frame.completedLable=e.Cstr(frame)
                         frame.completedLable:SetPoint('TOPLEFT', frame)
                         frame.completedLable:EnableMouse(true)
                         frame.completedLable:SetScript('OnEnter', function(self2)
@@ -1034,6 +1047,9 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
                 end
             end
 
+            --################
+            --提示, 包里KEY地图
+            --################
             local findKey= currentChallengeMapID== frame.mapID and not Save.hide or false
             if findKey and not frame.currentKey then--提示, 包里KEY地图
                 frame.currentKey= frame:CreateTexture(nil, 'OVERLAY')
@@ -1061,7 +1077,9 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
                 frame.currentKey:SetShown(findKey)
             end
 
+            --#####
             --传送门
+            --#####
             local spellID
             if not Save.hidePort and not isInBat then
                 spellID= get_Spell_MapChallengeID(frame.mapID)
@@ -1069,7 +1087,7 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
                     e.LoadDate({id= spellID, type='spell'})--加载 item quest spell
                     if not frame.spellPort then
                         local h=frame:GetWidth()/3 +8
-                        frame.spellPort= e.Cbtn(self.showFrame, {type=true, size={h, h}, atlas='WarlockPortal-Yellow-32x32'})
+                        frame.spellPort= e.Cbtn(frame, {type=true, size={h, h}, atlas='WarlockPortal-Yellow-32x32'})
                         frame.spellPort:SetNormalAtlas('WarlockPortal-Yellow-32x32')
                         frame.spellPort:SetAttribute("type*", "spell")
                         frame.spellPort:SetAttribute("spell*", spellID)
@@ -1127,19 +1145,12 @@ end
 local function Init()
     local self= ChallengesFrame
 
-    self.showFrame= CreateFrame("Frame",nil, self)
-    self.showFrame:SetFrameStrata('HIGH')
-    self.showFrame:SetFrameLevel(7)
-    self.showFrame:SetPoint('TOPLEFT')
-    self.showFrame:SetSize(1, 1)
-    self.showFrame:SetShown(not Save.hide)
-
     self.tipsFrame= CreateFrame("Frame",nil, self)
     self.tipsFrame:SetFrameStrata('HIGH')
     self.tipsFrame:SetFrameLevel(7)
     self.tipsFrame:SetPoint('TOPLEFT')
     self.tipsFrame:SetSize(1, 1)
-    self.tipsFrame:SetShown(not Save.hide)
+    self.tipsFrame:SetShown(not Save.hideTips)
 
     local check= e.Cbtn(self, {size={18,18}, icon= not Save.hide})
     check:SetFrameStrata('HIGH')
@@ -1151,7 +1162,7 @@ local function Init()
     end
     check:SetScript("OnClick", function(self2)
         Save.hide = not Save.hide and true or nil
-        ChallengesFrame.showFrame:SetShown(not Save.hide)
+        --ChallengesFrame.showFrame:SetShown(not Save.hide)
         self2:SetNormalAtlas(not Save.hide and e.Icon.icon or e.Icon.disabled)
         securecallfunction(ChallengesFrame.Update,ChallengesFrame)
     end)
@@ -1166,7 +1177,6 @@ local function Init()
         e.tips:Hide()
     end)
 
- 
 
     local tipsButton= e.Cbtn(check, {size={18,18}, atlas=not Save.hideTips and 'FXAM-QuestBang' or e.Icon.disabled})
     if _G['MoveZoomInButtonPerPVEFrame'] then
@@ -1251,12 +1261,12 @@ local function Init()
 
 
     --传送门
-    local spellButton= e.Cbtn(self.showFrame, {size={18,18}, atlas= not Save.hidePort and 'WarlockPortal-Yellow-32x32' or e.Icon.disabled})
+    local spellButton= e.Cbtn(self, {size={18,18}, atlas= not Save.hidePort and 'WarlockPortal-Yellow-32x32' or e.Icon.disabled})
     spellButton:SetPoint('LEFT', _G['MoveZoomInButtonPerPVEFrame'] or tipsButton, 'RIGHT')
     spellButton:SetAlpha(0.5)
     spellButton:SetScript('OnClick', function(self2)
         Save.hidePort= not Save.hidePort and true or nil
-        securecallfunction(ChallengesFrame.Update,ChallengesFrame)
+        securecallfunction(ChallengesFrame.Update, ChallengesFrame)
         self2:SetNormalAtlas(not Save.hidePort and 'WarlockPortal-Yellow-32x32' or e.Icon.disabled)
     end)
     spellButton:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.5) end)
