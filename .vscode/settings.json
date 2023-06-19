@@ -2948,7 +2948,9 @@
         "PetJournalPetCard",
         "PetJournalPetCardShadows",
         "FCF_StartAlertFlash",
-        "PET_BATTLE_START"
+        "PET_BATTLE_START",
+        "GetDungeonScoreLink",
+        "DisplayDungeonScoreLink"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

@@ -7,6 +7,9 @@ local Save= {
     --hide=true,--隐藏，副本，挑战，信息
     --hideTips=true,--提示信息
     hidePort= not e.Player.husandro,--传送门
+    
+    --hideKeyUI=true,--挑战,钥石,插入界面
+    --slotKeystoneSay=true,--插入, KEY时, 说
 }
 local panel=CreateFrame("Frame")
 -- AngryKeystones Schedule Dragonflight Season 1,史诗钥石地下城, 界面
@@ -60,7 +63,7 @@ local function get_Spell_MapChallengeID(mapChallengeID)
 end
 
 
-local function getBagKey(self, point, x, y) --KEY链接
+local function getBagKey(self, point, x, y, parent) --KEY链接
     local find=point:find('LEFT')
     local i=1
     for bagID= Enum.BagIndex.Backpack, Constants.InventoryConstants.NumBagSlots do
@@ -74,14 +77,14 @@ local function getBagKey(self, point, x, y) --KEY链接
             end
             if itemID and itemLink and C_Item.IsItemKeystoneByID(itemID) then
                 if not self['key'..i] then
-                    self['key'..i] = CreateFrame("Button", nil, self)
+                    self['key'..i] = CreateFrame("Button", nil, parent or self)
                     self['key'..i]:SetHighlightAtlas('Forge-ColorSwatchSelection')
                     self['key'..i]:SetPushedTexture('Interface\\Buttons\\UI-Quickslot-Depress')
                     self['key'..i]:SetSize(16, 16)
                     self['key'..i]:SetNormalTexture(icon)
                     self['key'..i].item=itemLink
                     if i==1 then
-                        self['key'..i]:SetPoint(point,x, y)
+                        self['key'..i]:SetPoint(point, self, x, y)
                     else
                         if find then
                             self['key'..i]:SetPoint(point, self['key'..(i-1)], 'TOPLEFT', 0, 0)
@@ -109,7 +112,7 @@ local function getBagKey(self, point, x, y) --KEY链接
                     self['key'..i]:SetScript("OnLeave",function()
                             e.tips:Hide()
                     end)
-                    self['key'..i].bag=e.Cstr(self)
+                    self['key'..i].bag=e.Cstr(self['key'..i])
                     if point:find('LEFT') then
                         self['key'..i].bag:SetPoint('LEFT', self['key'..i], 'RIGHT', 0, 0)
                     else
@@ -130,7 +133,9 @@ end
 --挑战,钥石,插入,界面
 --##################
 local function UI_Party_Info(self)--队友位置
-
+    if Save.hideKeyUI then
+        return
+    end
     local UnitTab={}
     local name, uiMapID=e.GetUnitMapName('player')
     local text
@@ -206,17 +211,23 @@ local function UI_Party_Info(self)--队友位置
         end
     end
     if not self.partyLable then
-        self.party=e.Cstr(self)--队伍信息
+        self.party=e.Cstr(self.keyFrame)--队伍信息
         self.party:SetPoint('BOTTOMLEFT', _G['MoveZoomInButtonPerChallengesKeystoneFrame'] or self, 'TOPLEFT')
     end
     self.party:SetText(text or '')
     e.GetNotifyInspect(UnitTab)--取得装等
 end
 
-local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
+local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     local self=ChallengesKeystoneFrame
 
-    self.ready = CreateFrame("Button",nil, self, 'UIPanelButtonTemplate')--就绪
+    self.keyFrame= CreateFrame('Frame', nil, self)
+    self.keyFrame:SetPoint('TOPLEFT')
+    self.keyFrame:SetSize(1,1)
+    self.keyFrame:SetFrameStrata('HIGH')
+    self.keyFrame:SetFrameLevel(7)
+
+    self.ready = CreateFrame("Button",nil, self.keyFrame, 'UIPanelButtonTemplate')--就绪
     self.ready:SetText((e.onlyChinese and '就绪' or READY)..e.Icon.select2)
     self.ready:SetPoint('LEFT', self.StartButton, 'RIGHT',2, 0)
     self.ready:SetSize(100,24)
@@ -224,7 +235,7 @@ local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
         DoReadyCheck()
     end)
 
-    self.mark = CreateFrame("Button",nil, self, 'UIPanelButtonTemplate')--标记
+    self.mark = CreateFrame("Button",nil, self.keyFrame, 'UIPanelButtonTemplate')--标记
     self.mark:SetText(e.Icon['TANK']..(e.onlyChinese and '标记' or EVENTTRACE_MARKER)..e.Icon['HEALER'])
     self.mark:SetPoint('RIGHT', self.StartButton, 'LEFT',-2, 0)
     self.mark:SetSize(100,24)
@@ -247,24 +258,23 @@ local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
         end
     end)
 
-    self.clear = CreateFrame("Button",nil, self, 'UIPanelButtonTemplate')--清除KEY
-    self.clear:SetPoint('RIGHT', -15, -50)
+    self.clear = CreateFrame("Button",nil, self.keyFrame, 'UIPanelButtonTemplate')--清除KEY
+    self.clear:SetPoint('RIGHT', self, -15, -50)
     self.clear:SetSize(70,24)
     self.clear:SetText(e.onlyChinese and '清除' or  SLASH_STOPWATCH_PARAM_STOP2)
-    self.clear:SetScript("OnMouseDown",function(self2)
-        local frame=self2:GetPrent()
-            C_ChallengeMode.RemoveKeystone()
-            frame:Reset()
-            ItemButtonUtil.CloseFilteredBags(frame)
-            ClearCursor()
+    self.clear:SetScript("OnMouseDown",function()
+        C_ChallengeMode.RemoveKeystone()
+        ChallengesKeystoneFrame:Reset()
+        ItemButtonUtil.CloseFilteredBags(ChallengesKeystoneFrame)
+        ClearCursor()
     end)
 
-    self.ins = CreateFrame("Button",nil, self, 'UIPanelButtonTemplate')--插入
+    self.ins = CreateFrame("Button",nil, self.keyFrame, 'UIPanelButtonTemplate')--插入
     self.ins:SetPoint('BOTTOMRIGHT', self.clear, 'TOPRIGHT', 0, 2)
     self.ins:SetSize(70,24)
     self.ins:SetText(e.onlyChinese and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
     self.ins:SetScript("OnMouseDown",function()
-            ItemButtonUtil.OpenAndFilterBags(self)
+            ItemButtonUtil.OpenAndFilterBags(ChallengesKeystoneFrame)
             if ItemButtonUtil.GetItemContext() == nil then return end
             local itemLocation = ItemLocation:CreateEmpty()
             for bagID=0, NUM_BAG_FRAMES do--ContainerFrame.lua
@@ -280,8 +290,54 @@ local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     end)
 
     self:HookScript('OnShow', function(self2)
-        getBagKey(self2, 'BOTTOMRIGHT', -15, 170)--KEY链接
+        if Save.hideKeyUI then
+            return
+        end
+        getBagKey(self2, 'BOTTOMRIGHT', -15, 170, self2.keyFrame)--KEY链接
         UI_Party_Info(self2)
+        self2.inseSayTips=true--插入, KEY时, 说
+
+        --地下城挑战，分数，超链接
+        local dungeonScore = C_ChallengeMode.GetOverallDungeonScore()--DungeonScoreInfoMixin:OnClick() Blizzard_ChallengesUI.lua
+        if dungeonScore and dungeonScore>0 then
+            local link = GetDungeonScoreLink(dungeonScore, UnitName("player"))
+            if not self2.dungeonScoreLink then
+                self2.dungeonScoreLink= e.Cstr(self2.keyFrame, {mouse=true, size=16})
+                self2.dungeonScoreLink:SetPoint('BOTTOMRIGHT', ChallengesKeystoneFrame, -15, 145)
+                self2.dungeonScoreLink:SetScript('OnMouseDown', function(self3, d)
+                    if not self3.link then
+                        return
+                    end
+                    if d=='LeftButton' then
+                       e.Chat(self3.link)
+                    elseif d=='RightButton' then
+                        if not ChatEdit_InsertLink(self3.link) then
+                            ChatFrame_OpenChat(self3.link)
+                        end
+                    end
+                    self3:SetAlpha(0.3)
+                end)
+                self2.dungeonScoreLink:SetScript('OnEnter', function(self3)
+                    self3:SetAlpha(0.7)
+                    e.tips:SetOwner(self3, "ANCHOR_LEFT")
+                    e.tips:ClearLines()
+                    e.tips:AddLine(self3.link)
+                    e.tips:AddLine(' ')
+                    e.tips:AddDoubleLine(e.onlyChinese and '发送信息' or SEND_MESSAGE, e.Icon.left)
+                    e.tips:AddDoubleLine(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, e.Icon.right)
+                    e.tips:Show()
+                end)
+                self2.dungeonScoreLink:SetScript('OnLeave', function(self3)
+                    self3:SetAlpha(1)
+                    e.tips:Hide()
+                end)
+                self2.dungeonScoreLink:SetScript('OnMouseUp', function(self3)
+                    self3:SetAlpha(0.7)
+                end)
+            end
+            self2.dungeonScoreLink.link= link
+            self2.dungeonScoreLink:SetText(e.GetKeystoneScorsoColor(dungeonScore))
+        end
     end)
 
     if self.DungeonName then
@@ -295,31 +351,32 @@ local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
         self.TimeLimit:SetJustifyH('RIGHT')
     end
 
-    local sel2=CreateFrame("CheckButton", nil, self, "InterfaceOptionsCheckButtonTemplate")--插入, KEY时, 说
-    if not self.DungeonName and not e.onlyChinese then
-        e.Cstr(nil,nil,self.DungeonName, sel2.text)
-    end
-    sel2.text:SetText(e.onlyChinese and '说' or SAY)
-    sel2:SetPoint('TOPLEFT',22,-12)
-    sel2:SetChecked(Save.slotKeystoneSay)
-    sel2:SetScript('OnMouseDown', function()
+    --##############
+    --插入, KEY时, 说
+    --##############
+    local check= CreateFrame("CheckButton", nil, self.keyFrame, "InterfaceOptionsCheckButtonTemplate")--插入, KEY时, 说
+    check:SetPoint('RIGHT', self.ins, 'LEFT')
+    check:SetChecked(Save.slotKeystoneSay)
+    check:SetAlpha(0.5)
+    check:SetScript('OnMouseDown', function()
         Save.slotKeystoneSay= not Save.slotKeystoneSay and true or nil
     end)
-    sel2:SetScript('OnEnter', function(self2)
+    check:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddLine(e.onlyChinese and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
+        e.tips:AddDoubleLine(e.onlyChinese and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN, e.onlyChinese and '说' or SAY)
         e.tips:Show()
+        self2:SetAlpha(1)
     end)
-    sel2:SetScript('OnLeave', function() e.tips:Hide() end)
-    hooksecurefunc(self,'OnKeystoneSlotted',function()--插入, KEY时, 说
-        if not Save.slotKeystoneSay then
+    check:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.5) end)
+    hooksecurefunc(self, 'OnKeystoneSlotted',function(self2)--插入, KEY时, 说
+        if not Save.slotKeystoneSay or not C_ChallengeMode.HasSlottedKeystone() or not self2.inseSayTips then
             return
         end
         local mapID, affixes, powerLevel = C_ChallengeMode.GetSlottedKeystoneInfo()
         local name,_, timeLimit= C_ChallengeMode.GetMapUIInfo(mapID)
         local m=name..'('.. powerLevel..'): '
-        for _,v in pairs(affixes) do
+        for _,v in pairs(affixes or {}) do
             local name2=C_ChallengeMode.GetAffixInfo(v)
             if name2 then
                 m=m..name2..', '
@@ -327,6 +384,7 @@ local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
         end
         m=m..SecondsToClock(timeLimit)
         e.Chat(m)
+        self2.inseSayTips=nil
     end)
 
     local timeElapsed = 0
@@ -336,17 +394,20 @@ local function set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
             UI_Party_Info(self2)
             timeElapsed=0
         end
+        local inse= C_ChallengeMode.HasSlottedKeystone()
+        self2.ins:SetEnabled(not inse)
+        self2.clear:SetEnabled(inse)
     end)
 
 
-    self.countdown = CreateFrame("Button",nil, self, 'UIPanelButtonTemplate')--倒计时7秒
+    self.countdown = CreateFrame("Button",nil, self.keyFrame, 'UIPanelButtonTemplate')--倒计时7秒
     self.countdown:SetText((e.onlyChinese and '倒计时' or PLAYER_COUNTDOWN_BUTTON)..' 7')
     self.countdown:SetPoint('TOP', self, 'BOTTOM',100, 5)
     self.countdown:SetSize(150,24)
     self.countdown:SetScript("OnMouseDown",function()
         C_PartyInfo.DoCountdown(7)
     end)
-    self.countdown2 = CreateFrame("Button",nil, self, 'UIPanelButtonTemplate')--倒计时7秒
+    self.countdown2 = CreateFrame("Button",nil, self.keyFrame, 'UIPanelButtonTemplate')--倒计时7秒
     self.countdown2:SetText((e.onlyChinese and '取消' or CANCEL)..' 0')
     self.countdown2:SetPoint('TOP', self, 'BOTTOM',-100, 5)
     self.countdown2:SetSize(100,24)
@@ -1239,6 +1300,44 @@ local function Init()
             end
         end
     end
+
+
+    --#################
+    --挑战,钥石,插入界面
+    --#################
+    local btn= e.Cbtn(ChallengesKeystoneFrame, {size={18,18}, icon= not Save.hideKeyUI})
+    btn:SetFrameStrata('HIGH')
+    btn:SetFrameLevel(7)
+    btn:SetAlpha(0.5)
+    if _G['MoveZoomInButtonPerChallengesKeystoneFrame'] then
+        btn:SetPoint('LEFT', _G['MoveZoomInButtonPerChallengesKeystoneFrame'], 'RIGHT')
+    else
+        btn:SetPoint('RIGHT', ChallengesKeystoneFrame.CloseButton, 'LEFT')
+    end
+    btn:SetScript("OnClick", function(self2)
+        Save.hideKeyUI = not Save.hideKeyUI and true or nil
+        if ChallengesKeystoneFrame.keyFrame then
+            ChallengesKeystoneFrame.keyFrame:SetShown(not Save.hideKeyUI)
+        elseif not Save.hideKeyUI then
+            init_Blizzard_ChallengesUI()
+        end
+        self2:SetNormalAtlas(not Save.hideKeyUI and e.Icon.icon or e.Icon.disabled)
+    end)
+    btn:SetScript("OnEnter",function(self2)
+        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, e.Icon.left)
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:Show()
+        self2:SetAlpha(1)
+    end)
+    btn:SetScript("OnLeave",function(self2)
+        e.tips:Hide()
+        self2:SetAlpha(0.5)
+    end)
+    if not Save.hideKeyUI then
+        init_Blizzard_ChallengesUI()
+    end
 end
 
 
@@ -1265,7 +1364,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             panel:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_ChallengesUI' then--挑战,钥石,插入界面
-            set_Key_Blizzard_ChallengesUI()--挑战,钥石,插入界面
             Init()--史诗钥石地下城, 界面
             panel:RegisterEvent('CHALLENGE_MODE_COMPLETED')
             panel:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
