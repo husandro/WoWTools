@@ -565,70 +565,96 @@ end
 
 local function set_Kill_Info()--副本PVP团本
     local R = {}
-    local GetRewardText=function(type,level)
-        if type == Enum.WeeklyRewardChestThresholdType.Raid then
-            return  DifficultyUtil.GetDifficultyName(level)
-        elseif type == Enum.WeeklyRewardChestThresholdType.MythicPlus then
-            return string.format(WEEKLY_REWARDS_MYTHIC, level)
-        elseif type == Enum.WeeklyRewardChestThresholdType.RankedPvP then
-            return PVPUtil.GetTierName(level)
-        elseif type== Enum.WeeklyRewardChestThresholdType.AlsoReceive then
-            return 'AlsoReceive'
-        elseif type== Enum.WeeklyRewardChestThresholdType.Concession then
-            return 'Concession'
-        end
-    end
-    local activityInfo =  C_WeeklyRewards.GetActivities()
+    local activityInfo =  C_WeeklyRewards.GetActivities() or {}
 
-    for  _ ,v in pairs(activityInfo) do
-        if not R[v.type] then R[v.type] = {} end
-        local  text = GetRewardText(v.type,v.level) or NONE
-        R[v.type][v.index] = {
-            level = v.level,
-            difficulty = text,
-            progress = v.progress,
-            threshold = v.threshold,
-            unlocked = v.progress>=v.threshold,
-        }
-    end
+    for  _ , info in pairs(activityInfo) do
+        if info.type and info.type>0 and info.type<4 and info.level then
+            local head
+            local difficultyText= '...'
+            --local itemLevel
+            if info.type == Enum.WeeklyRewardChestThresholdType.MythicPlus then--1
+                head= e.onlyChinese and '史诗地下城' or MYTHIC_DUNGEONS
+                difficultyText= string.format(e.onlyChinese and '史诗 %d' or WEEKLY_REWARDS_MYTHIC, info.level)
+                --itemLevel=  C_MythicPlus.GetRewardLevelForDifficultyLevel(info.level)
 
-    local GetRewardTypeHead=function(type)
-        if type == Enum.WeeklyRewardChestThresholdType.Raid then
-            return  RAIDS
-        elseif type == Enum.WeeklyRewardChestThresholdType.MythicPlus then
-            return MYTHIC_DUNGEONS
-        elseif type == Enum.WeeklyRewardChestThresholdType.RankedPvP then
-            return PVP
-        end
-    end
+            elseif info.type == Enum.WeeklyRewardChestThresholdType.RankedPvP then--2
+                head= e.onlyChinese and 'PvP' or PVP
+                difficultyText= PVPUtil.GetTierName(info.level)
 
-    local T=''
-    for i,v in pairs(R) do
-
-        T=T..'|n'..'|T450908:0|t'
-        local he=GetRewardTypeHead(i)
-        if he then T=T..he end
-
-        for x,r in pairs(v) do
-            if T~='' then T=T..'|n' end
-            T=T..'   '
-            if r.unlocked then
-                T=T.. '|cff00ff00'..x..')'..r.difficulty.. ' '..COMPLETE..'|r'
-            else
-                T=T..x..')'..r.difficulty.. ' '..r.progress.."/"..r.threshold
+            elseif info.type == Enum.WeeklyRewardChestThresholdType.Raid then--3
+                head= e.onlyChinese and '团队副本' or RAIDS
+                difficultyText=  DifficultyUtil.GetDifficultyName(info.level)
             end
+
+            R[head]= R[head] or {}
+            R[head][info.index] = {
+                level = info.level,
+                difficulty = difficultyText or '... ',
+                progress = info.progress,
+                threshold = info.threshold,
+                unlocked = info.progress>=info.threshold,
+                id= info.id,
+            }
+            info= info.rewards
         end
     end
-    if T~='' then
-        if not ChallengesFrame.killLabel then
-            ChallengesFrame.killLabel=e.Cstr(ChallengesFrame.tipsFrame)
-            ChallengesFrame.killLabel:SetPoint('TOPLEFT', ChallengesFrame, 'TOPLEFT', 10, -45)
-            ChallengesFrame.killLabel:SetJustifyH('LEFT')
+
+    local last
+    for head, tab in pairs(R) do
+        local label= ChallengesFrame['rewardChestHead'..head]
+        if not label then
+            label= e.Cstr(ChallengesFrame.tipsFrame)
+            if last then
+                label:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0,-4)
+            else
+                label:SetPoint('TOPLEFT', ChallengesFrame, 'TOPLEFT', 10, -53)
+            end
+            ChallengesFrame['rewardChest'..head]= label
+        end
+        label:SetText(e.Icon.toRight2..head)
+        last= label
+
+        for index, info in pairs(tab) do
+            label= ChallengesFrame['rewardChest'..head..index]
+            if not label then
+                label= e.Cstr(ChallengesFrame.tipsFrame, {mouse= true})
+                label:SetPoint('TOPLEFT', last, 'BOTTOMLEFT')
+                label:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+                label:SetScript('OnEnter', function(self2)
+                    local link= self2.id and C_WeeklyRewards.GetExampleRewardItemHyperlinks(self2.id)
+                    if link then
+                        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                        e.tips:ClearLines()
+                        e.tips:SetHyperlink(link)
+                        e.tips:AddLine(' ')
+                        e.tips:Show()
+                    end
+                    self2:SetAlpha(0.5)
+                end)
+                ChallengesFrame['rewardChest'..index]= label
+            end
+            label.id= info.id
+            last= label
+
+            local text
+            local itemLink= (info.id and info.unlocked) and C_WeeklyRewards.GetExampleRewardItemHyperlinks(info.id)
+            if itemLink then
+                e.LoadDate({id=itemLink, type='item'})
+                local texture= C_Item.GetItemIconByID(itemLink)
+                local itemLevel= GetDetailedItemLevelInfo(itemLink)
+                text= '    '..index..') '..(texture and '|T'..texture..':0|t' or itemLink)
+                text= text..((itemLevel and itemLevel>0) and itemLevel or '')..e.Icon.select2
+            else
+                if info.unlocked then
+                    text='   '..index..') '..info.difficulty..e.Icon.select2--.. ' '..(e.onlyChinese and '完成' or COMPLETE)
+                else
+                    text='   '..'|cff828282'..index..') '..info.difficulty.. ' '..info.progress.."/"..info.threshold..'|r'
+                end
+            end
+            label:SetText(text or '')
         end
     end
-    if ChallengesFrame.killLabel then
-        ChallengesFrame.killLabel:SetText(T)
-    end
+
 end
 
 local function set_All_Text()--所有记录
@@ -1176,7 +1202,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
             local spellID
             if not Save.hidePort and not isInBat then
                 spellID= get_Spell_MapChallengeID(frame.mapID)
-                spellID= 781
+                --spellID= 781
                 if spellID then
                     e.LoadDate({id= spellID, type='spell'})--加载 item quest spell
                     if not frame.spellPort then
@@ -1219,7 +1245,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                     frame.spellPort:SetAttribute("spell*", spellID)
                     frame.spellPort:SetAlpha(1)
                 else
-                    frame.spellPort:SetAlpha(0.5)
+                    frame.spellPort:SetAlpha(0.3)
                 end
                 frame.spellPort:SetShown(not Save.hidePort)
                 frame.spellPort:SetScale(Save.portScale or 1)
