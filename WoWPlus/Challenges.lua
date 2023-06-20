@@ -1372,7 +1372,6 @@ local function Init()
     self:HookScript('OnShow', function()
         Affix()
         set_Kill_Info()--副本PVP团本
-        --set_Currency_Info()--货币数量
         C_Timer.After(2, set_All_Text)--所有记录
 
         set_Update()
@@ -1461,10 +1460,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_ChallengesUI' then--挑战,钥石,插入界面
             Init()--史诗钥石地下城, 界面
-            --[[panel:RegisterEvent('CHALLENGE_MODE_COMPLETED')
-            panel:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
-            panel:RegisterEvent('UPDATE_INSTANCE_INFO')
-            panel:RegisterEvent('WEEKLY_REWARDS_UPDATE')]]
 
         elseif arg1=='Blizzard_WeeklyRewards' then--周奖励界面，添加一个按钮，打开挑战界面
             local btn =e.Cbtn(WeeklyRewardsFrame, {texture=4352494, size={22,22}})--所有角色,挑战
@@ -1493,19 +1488,5 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='CHALLENGE_MODE_START' then
         set_CHALLENGE_MODE_START()--赏金, 说 Bounty
-
-    --[[elseif event=='CHALLENGE_MODE_COMPLETED' or event=='WEEKLY_REWARDS_UPDATE' then
-        C_Timer.After(2, function()
-            set_Kill_Info()--副本PVP团本
-            set_All_Text()--所有记录   
-            set_Currency_Info()--货币数量
-        end)
-    elseif event=='CURRENCY_DISPLAY_UPDATE' then
-        set_Currency_Info()--货币数量
-
-    elseif event=='UPDATE_INSTANCE_INFO' then
-        C_Timer.After(2, function()
-            set_Kill_Info()--副本PVP团本
-        end)]]
     end
 end)
