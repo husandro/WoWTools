@@ -983,9 +983,10 @@ e.Say=function(type, name, wow, text)
 end
 
 e.GetKeystoneScorsoColor= function(score, texture, overall)--地下城史诗, 分数, 颜色 C_ChallengeMode.GetOverallDungeonScore()
-    if not score or score==0 then
+    if not score or score==0 or score=='0' then
         return ''
     else
+        score= type(score)~='number' and tonumber(score) or score
         local color= not overall and C_ChallengeMode.GetDungeonScoreRarityColor(score) or C_ChallengeMode.GetSpecificDungeonOverallScoreRarityColor(score)
         if color  then
             score= color:WrapTextInColorCode(score)
