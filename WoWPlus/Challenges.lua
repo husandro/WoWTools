@@ -4,7 +4,8 @@ if not e.Player.levelMax then
 end
 local addName= CHALLENGES
 local Save= {
-    --hide=true,--隐藏，副本，挑战，信息
+    --hideIns=true,--隐藏，副本，挑战，信息
+    --insScale=0.8,--副本，缩放
 
     --hideTips=true,--提示信息
     --tipsScale=0.8,--提示信息，缩放
@@ -319,7 +320,7 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
                             ChatFrame_OpenChat(self3.link)
                         end
                     end
-                    self3:SetAlpha(0.3)
+                    self3:SetAlpha(0.5)
                 end)
                 self2.dungeonScoreLink:SetScript('OnEnter', function(self3)
                     self3:SetAlpha(0.7)
@@ -470,7 +471,7 @@ end
 --##################
 local function makeAffix(parent, id2)
     local frame = CreateFrame("Frame", nil, parent)
-    frame:SetSize(20, 20)
+    frame:SetSize(24, 24)
 
     local border = frame:CreateTexture(nil, "OVERLAY")
     border:SetAllPoints()
@@ -478,22 +479,24 @@ local function makeAffix(parent, id2)
     frame.Border = border
 
     local portrait = frame:CreateTexture(nil, "ARTWORK")
-    portrait:SetSize(18, 18)
+    portrait:SetSize(22, 22)
     portrait:SetPoint("CENTER", border)
     frame.Portrait = portrait
 
     frame.SetUp = ScenarioChallengeModeAffixMixin.SetUp
     frame:SetScript("OnEnter", ScenarioChallengeModeAffixMixin.OnEnter)
-    frame:SetScript("OnLeave", e.tips_Hide)
+    frame:SetScript("OnLeave", function() e.tips:Hide() end)
     frame:SetUp(id2)--Blizzard_ScenarioObjectiveTracker.lua
     return frame
 end
-local currentWeek--词缀日程表AngryKeystones Schedule.lua
+--词缀日程表AngryKeystones Schedule.lua
 local function Affix()
     if IsAddOnLoaded("AngryKeystones") then
+        affixSchedule=nil
         return
     end
 
+    local currentWeek
     local currentAffixes = C_MythicPlus.GetCurrentAffixes()
     if currentAffixes then
         for index, affixes in ipairs(affixSchedule) do
@@ -508,7 +511,7 @@ local function Affix()
             end
         end
     end
-    --currentWeek=1
+    currentWeek=1
     if currentWeek then
         local one= currentWeek ==12 and  1 or currentWeek
         local due=one+1 due=due==12 and 1 or due
@@ -520,7 +523,7 @@ local function Affix()
                 if not ChallengesFrame['AffixOne'..k..i] then
                     ChallengesFrame['AffixOne'..k..i]= makeAffix(ChallengesFrame.tipsFrame, v[i])
                     if not last then
-                        ChallengesFrame['AffixOne'..k..i]:SetPoint('RIGHT', ChallengesFrame, -10, -((k-1)*(22)))
+                        ChallengesFrame['AffixOne'..k..i]:SetPoint('RIGHT', ChallengesFrame, -10, -((k-1)*(24)))
                     else
                         ChallengesFrame['AffixOne'..k..i]:SetPoint('RIGHT', last, 'LEFT', 0, 0)
                     end
@@ -530,7 +533,8 @@ local function Affix()
                         last=ChallengesFrame['AffixOne'..k..i]
                     end
                 end
-                ChallengesFrame['AffixOne'..k..i]:SetShown(not Save.hide)
+                ChallengesFrame['AffixOne'..k..i]:SetShown(not Save.hideIns)
+                ChallengesFrame['AffixOne'..k..i]:SetScale(Save.tipsScale or 1)
             end
         end
     end
@@ -634,7 +638,7 @@ local function set_All_Text()--所有记录
     if not ChallengesFrame.runHistoryLable then
         ChallengesFrame.runHistoryLable= e.Cstr(ChallengesFrame.tipsFrame, {mouse=true, size=14})--最右边, 数据
         if _G['RaiderIO_ProfileTooltip'] then
-            ChallengesFrame.runHistoryLable:SetPoint('BOTTOMLEFT', _G['RaiderIO_ProfileTooltip'], 'BOTTOMRIGHT', 2, 0)
+            ChallengesFrame.runHistoryLable:SetPoint('TOPLEFT', _G['RaiderIO_ProfileTooltip'], 'BOTTOMLEFT', 2, 2)
         else
             ChallengesFrame.runHistoryLable:SetPoint('TOPLEFT', ChallengesFrame, 'TOPRIGHT', 2, -26)
         end
@@ -697,7 +701,7 @@ local function set_All_Text()--所有记录
                 end
             end
             e.tips:Show()
-            self2:SetAlpha(0.3)
+            self2:SetAlpha(0.5)
         end)
     end
     ChallengesFrame.runHistoryLable:SetText((e.onlyChinese and '历史' or HISTORY)..' |cff00ff00'..#C_MythicPlus.GetRunHistory(true).. '|r/'..#C_MythicPlus.GetRunHistory(true, true))
@@ -802,73 +806,72 @@ local function set_All_Text()--所有记录
         m= m..'|n|n'..(e.onlyChinese and '难度 每周 掉落' or (PROFESSIONS_CRAFTING_STAT_TT_DIFFICULTY_HEADER..' '..CALENDAR_REPEAT_WEEKLY..' '..BATTLE_PET_SOURCE_1))..'|n'..text2
     end
 
+
     if not ChallengesFrame.tipsAllLabel then
         ChallengesFrame.tipsAllLabel= e.Cstr(ChallengesFrame.tipsFrame, {mouse=true})--最右边, 数据
         ChallengesFrame.tipsAllLabel:SetPoint('TOPLEFT', ChallengesFrame.runHistoryLable, 'BOTTOMLEFT')
     end
     ChallengesFrame.tipsAllLabel:SetText(m)
-end
 
-local function set_Currency_Info()--货币数量
-    local self= ChallengesFrame
-    local IDs={1602, 1191}
-    for k, v in pairs(IDs) do
+    --#######
+    --货币数量
+    --#######
+    local last
+    for _, v in pairs({1602, 1191}) do
         local info=C_CurrencyInfo.GetCurrencyInfo(v)
-        local t=''
+        local text=''
+        local lable= ChallengesFrame['Currency'..v]
         if info and info.discovered and info.quantity and info.maxQuantity then
             if info.maxQuantity>0  then
                 if info.useTotalEarnedForMaxQty then--本周还可获取                        
                     local q
                     q= info.maxQuantity - info.totalEarned
                     if q>0 then q='|cff00ff00'..q..'|r' end
-                    t=t..'('..q..'+) '
+                    text=text..'('..q..'+) '
                 end
                 if info.quantity==info.maxQuantity then
-                    t=t..'|cff00ff00'..info.quantity.. '/'..info.maxQuantity..'|r '
+                    text=text..'|cff00ff00'..info.quantity.. '/'..info.maxQuantity..'|r '
                 else
-                    t=t..info.quantity.. '/'..info.maxQuantity..' '
+                    text=text..info.quantity.. '/'..info.maxQuantity..' '
                 end
             else
                 if info.maxQuantity==0 then
-                    t=t..info.quantity..'/'.. (e.onlyChinese and '无限制' or UNLIMITED)..' '
+                    text=text..info.quantity..'/'.. (e.onlyChinese and '无限制' or UNLIMITED)..' '
                 else
                     if info.quantity==info.maxQuantity then
-                        t=t..'|cff00ff00'..info.quantity.. '/'..info.maxQuantity..'|r '
+                        text=text..'|cff00ff00'..info.quantity.. '/'..info.maxQuantity..'|r '
                     else
-                        t=t..info.quantity..'/'..info.maxQuantity..' '
+                        text=text..info.quantity..'/'..info.maxQuantity..' '
                     end
                 end
             end
+            text= (info.iconFileID and '|T'..info.iconFileID..':0|t' or '')..text
 
-            if not self['cur'..k] then
-                self['cur'..k]=CreateFrame("Button", nil, self.tipsFrame)
-                self['cur'..k]:SetHighlightAtlas('Forge-ColorSwatchSelection')
-                self['cur'..k]:SetPushedTexture('Interface\\Buttons\\UI-Quickslot-Depress')
-                self['cur'..k]:SetNormalTexture(info.iconFileID)
-                if k==1 then
-                    self['cur'..k]:SetPoint('BOTTOMRIGHT', self, -10, 90)
+            if not lable then
+                lable=e.Cstr(ChallengesFrame.tipsFrame, {mouse=true})
+                if last then
+                    lable:SetPoint('TOPLEFT', last, 'BOTTOMLEFT')
                 else
-                    self['cur'..k]:SetPoint('BOTTOMRIGHT', self['cur'..(k-1)], 'TOPRIGHT', 0,0)
+                    lable:SetPoint('TOPLEFT', ChallengesFrame.tipsAllLabel, 'BOTTOMLEFT',0, -12)
                 end
-                self['cur'..k]:SetSize(16, 16)
-
-                self['cur'..k]:SetScript("OnEnter",function(self2)
-                        e.tips:SetOwner(self2, "ANCHOR_RIGHT")
-                        e.tips:ClearLines()
-                        e.tips:SetCurrencyByID(v)
-                        e.tips:Show()
+                lable:SetScript("OnEnter",function(self2)
+                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                    e.tips:ClearLines()
+                    e.tips:SetCurrencyByID(self2.currencyID)
+                    e.tips:Show()
+                    self2:SetAlpha(0.5)
                 end)
-                self['cur'..k]:SetScript("OnLeave",function()
-                        e.tips:Hide()
+                lable:SetScript("OnLeave",function(self2)
+                    e.tips:Hide()
+                    self2:SetAlpha(1)
                 end)
-
-                self['cur'..k].text=e.Cstr(self['cur'..k], {size=10})
-                self['cur'..k].text:SetPoint('RIGHT', self['cur'..k], 'LEFT', 0, 0)
-                self['cur'..k].text:SetJustifyH('RIGHT')
+                ChallengesFrame['Currency'..v]=lable
+                last= lable
             end
+            ChallengesFrame['Currency'..v].currencyID= v
         end
-        if self['cur'..k] then
-            self['cur'..k].text:SetText(t)
+        if lable then
+            lable:SetText(text)
         end
     end
 end
@@ -879,6 +882,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
     if not self.maps or #self.maps==0 then
         return
     end
+
     local currentChallengeMapID= C_MythicPlus.GetOwnedKeystoneChallengeMapID()--当前, KEY地图,ID
     local isInBat= UnitAffectingCombat('player')
 
@@ -887,7 +891,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
         if frame and frame.mapID then
             if not frame.setTips then
                 frame:HookScript('OnEnter', function(self2)--提示
-                    if not self2.mapID or Save.hide then
+                    if not self2.mapID or Save.hideIns then
                         return
                     end
                     local intimeInfo, overtimeInfo = C_MythicPlus.GetSeasonBestForMap(self2.mapID)
@@ -976,18 +980,18 @@ local function set_Update()--Blizzard_ChallengesUI.lua
             --#########
             --名称, 缩写
             --#########
-            local nameText = not Save.hide and C_ChallengeMode.GetMapUIInfo(frame.mapID)--名称
+            local nameText = not Save.hideIns and C_ChallengeMode.GetMapUIInfo(frame.mapID)--名称
             if nameText then
                 if not frame.nameLable then
-                    frame.nameLable=e.Cstr(frame, {size=10})
+                    frame.nameLable=e.Cstr(frame, {size=10, mouse= true})
                     frame.nameLable:SetPoint('BOTTOM', frame, 'TOP')
-                    frame.nameLable:EnableMouse(true)
-                    frame.nameLable:SetScript('OnLeave', function() e.tips:Hide() end)
+                    frame.nameLable:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
                     frame.nameLable:SetScript('OnEnter', function(self2)
                         e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
                         e.tips:ClearLines()
                         e.tips:AddLine(self2.name)
                         e.tips:Show()
+                        self2:SetAlpha(0.5)
                     end)
                 end
                 frame.nameLable.name= nameText
@@ -1000,10 +1004,12 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                 nameText=nameText:match('：(.+)') or nameText
                 nameText=nameText:match('·(.+)') or nameText
                 nameText=e.WA_Utf8Sub(nameText, 5, 10)
+                frame.nameLable:SetScale(Save.insScale or 1)
             end
             if frame.nameLable then
                 frame.nameLable:SetText(nameText or '')
             end
+
 
             --#########
             --分数，最佳
@@ -1012,18 +1018,18 @@ local function set_Update()--Blizzard_ChallengesUI.lua
             local affixScores, overAllScore = C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(frame.mapID)
             if (overAllScore and intimeInfo or overtimeInfo) then
                 if not frame.scoreLable then--分数
-                    frame.scoreLable=e.Cstr(frame, {size=10})
-                    frame.scoreLable:SetPoint('LEFT', frame, 0, -3)
-                    frame.scoreLable:EnableMouse(true)
+                    frame.scoreLable=e.Cstr(frame, {size=10, mouse=true})
+                    frame.scoreLable:SetPoint('BOTTOMLEFT', frame, 0, 24)
+                    frame.scoreLable:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
                     frame.scoreLable:SetScript('OnEnter', function(self2)
                         if self2.score then
                             e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
                             e.tips:ClearLines()
                             e.tips:AddLine(format(e.onlyChinese and '史诗钥石评分：%s' or CHALLENGE_COMPLETE_DUNGEON_SCORE, self2.score))
                             e.tips:Show()
+                            self2:SetAlpha(0.5)
                         end
                     end)
-                    frame.scoreLable:SetScript('OnLeave', function() e.tips:Hide() end)
 
                     --###########
                     --移动层数位置
@@ -1032,17 +1038,19 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                         frame.HighestLevel:ClearAllPoints()
                         frame.HighestLevel:SetPoint('LEFT', 0, 12)
                         frame.HighestLevel:EnableMouse(true)
+                        frame.HighestLevel:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
                         frame.HighestLevel:SetScript('OnEnter', function(self2)
                             e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
                             e.tips:ClearLines()
                             e.tips:AddLine(format(e.onlyChinese and '最佳%s' or DUNGEON_SCORE_BEST_AFFIX, (e.onlyChinese and '等级' or LEVEL)..': '..self2:GetText()))
                             e.tips:Show()
+                            self2:SetAlpha(0.5)
                         end)
-                        frame.HighestLevel:SetScript('OnLeave', function() e.tips:Hide() end)
                     end
                 end
-                frame.scoreLable:SetText((overAllScore and not Save.hide) and '|A:AdventureMapIcon-MissionCombat:16:16|a'..e.GetKeystoneScorsoColor(overAllScore,nil,true) or '')
+                frame.scoreLable:SetText((overAllScore and not Save.hideIns) and '|A:AdventureMapIcon-MissionCombat:16:16|a'..e.GetKeystoneScorsoColor(overAllScore,nil,true) or '')
                 frame.scoreLable.score= overAllScore
+                frame.scoreLable:SetScale(Save.insScale or 1)
 
                 if(affixScores and #affixScores > 0) then --最佳 
                     local nameA, _, filedataidA = C_ChallengeMode.GetAffixInfo(10)
@@ -1050,7 +1058,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                         for _, info in ipairs(affixScores) do
                         local text
                         local label=frame['affixInfo'..info.name]
-                        if info.level and info.level>0 and (info.name == nameA or info.name==nameB) and not Save.hide then
+                        if info.level and info.level>0 and (info.name == nameA or info.name==nameB) and not Save.hideIns then
                             if not label then
                                 label= e.Cstr(frame, {justifyH='RIGHT', mouse=true})
                                 if info.name== nameA then
@@ -1058,6 +1066,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                                 else
                                     label:SetPoint('BOTTOMLEFT', frame, 0, 12)
                                 end
+                                label:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
                                 label:SetScript('OnEnter', function(self2)
                                     e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
                                     e.tips:ClearLines()
@@ -1068,8 +1077,8 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                                         e.tips:AddLine(SecondsToClock(self2.durationSec))
                                     end
                                     e.tips:Show()
+                                    self2:SetAlpha(0.5)
                                 end)
-                                label:SetScript('OnLeave', function() e.tips:Hide() end)
                                 frame['affixInfo'..info.name]= label
                             end
 
@@ -1083,6 +1092,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
 
                         end
                         if label then
+                            label:SetScale(Save.insScale or 1)
                             label:SetText(text or '')
                         end
                     end
@@ -1092,14 +1102,14 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                 --副本 完成/总次数 (全部)
                 --#####################
                 local numText
-                if not Save.hide then
+                if not Save.hideIns then
                     local all, completed, totale= GetNum(frame.mapID, true)
                     local week= GetNum(frame.mapID)--本周
                     if all or week then
                         if not frame.completedLable then
-                            frame.completedLable=e.Cstr(frame)
+                            frame.completedLable=e.Cstr(frame, {mouse=true})
                             frame.completedLable:SetPoint('TOPLEFT', frame)
-                            frame.completedLable:EnableMouse(true)
+                            frame.completedLable:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
                             frame.completedLable:SetScript('OnEnter', function(self2)
                                 if self2.all or self2.week then
                                     e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
@@ -1111,9 +1121,9 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                                         e.tips:AddDoubleLine(self2.totale..' - |cnGREEN_FONT_COLOR:'..self2.completed..'|r =', '|cnRED_FONT_COLOR:'..format(e.onlyChinese and '%s (超时)' or DUNGEON_SCORE_OVERTIME_TIME, self2.totale-self2.completed))
                                     end
                                     e.tips:Show()
+                                    self2:SetAlpha(0.5)
                                 end
                             end)
-                            frame.completedLable:SetScript('OnLeave', function() e.tips:Hide() end)
                         end
                         numText= (all or '')..( week and ' |cffffffff(|r'..week..'|cffffffff)|r' or '')
                         frame.completedLable.all=all or week
@@ -1123,6 +1133,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                     end
                 end
                 if frame.completedLable then
+                    frame.completedLable:SetScale(Save.insScale or 1)
                     frame.completedLable:SetText(numText or '')
                 end
             end
@@ -1130,14 +1141,14 @@ local function set_Update()--Blizzard_ChallengesUI.lua
             --################
             --提示, 包里KEY地图
             --################
-            local findKey= currentChallengeMapID== frame.mapID and not Save.hide or false
+            local findKey= currentChallengeMapID== frame.mapID and not Save.hideIns or false
             if findKey and not frame.currentKey then--提示, 包里KEY地图
                 frame.currentKey= frame:CreateTexture(nil, 'OVERLAY')
                 frame.currentKey:SetPoint('BOTTOM', frame)
                 frame.currentKey:SetTexture(4352494)
                 frame.currentKey:SetSize(14,14)
                 frame.currentKey:EnableMouse(true)
-                frame.currentKey:SetScript('OnLeave', function() e.tips:Hide() end)
+                frame.currentKey:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
                 frame.currentKey:SetScript('OnEnter', function(self2)
                     e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
                     e.tips:ClearLines()
@@ -1151,9 +1162,11 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                         end
                     end
                     e.tips:Show()
+                    self2:SetAlpha(0.5)
                 end)
             end
             if frame.currentKey then
+                frame.currentKey:SetScale(Save.insScale or 1)
                 frame.currentKey:SetShown(findKey)
             end
 
@@ -1163,6 +1176,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
             local spellID
             if not Save.hidePort and not isInBat then
                 spellID= get_Spell_MapChallengeID(frame.mapID)
+                spellID= 781
                 if spellID then
                     e.LoadDate({id= spellID, type='spell'})--加载 item quest spell
                     if not frame.spellPort then
@@ -1187,6 +1201,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                         frame.spellPort:SetScript('OnHide', function(self2)
                             self2:UnregisterEvent('SPELL_UPDATE_COOLDOWN')
                         end)
+                        frame.spellPort:RegisterEvent('SPELL_UPDATE_COOLDOWN')
                         frame.spellPort:SetScript('OnShow', function(self2)
                             self2:RegisterEvent('SPELL_UPDATE_COOLDOWN')
                             e.SetItemSpellCool(self2, nil, self2.spellID)
@@ -1204,7 +1219,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                     frame.spellPort:SetAttribute("spell*", spellID)
                     frame.spellPort:SetAlpha(1)
                 else
-                    frame.spellPort:SetAlpha(0.3)
+                    frame.spellPort:SetAlpha(0.5)
                 end
                 frame.spellPort:SetShown(not Save.hidePort)
                 frame.spellPort:SetScale(Save.portScale or 1)
@@ -1231,12 +1246,12 @@ local function Init()
     self.tipsFrame= CreateFrame("Frame",nil, self)
     self.tipsFrame:SetFrameStrata('HIGH')
     self.tipsFrame:SetFrameLevel(7)
-    self.tipsFrame:SetPoint('TOPLEFT')
+    self.tipsFrame:SetPoint('CENTER')
     self.tipsFrame:SetSize(1, 1)
     self.tipsFrame:SetShown(not Save.hideTips)
     self.tipsFrame:SetScale(Save.tipsScale or 1)
 
-    local check= e.Cbtn(self, {size={18,18}, icon= not Save.hide})
+    local check= e.Cbtn(self, {size={18,18}, icon= not Save.hideIns})
     check:SetFrameLevel( PVEFrame.TitleContainer:GetFrameLevel()+1)
     if _G['MoveZoomInButtonPerPVEFrame'] then
         check:SetPoint('RIGHT', _G['MoveZoomInButtonPerPVEFrame'], 'LEFT', -18,0)
@@ -1244,18 +1259,33 @@ local function Init()
         check:SetPoint('LEFT', PVEFrame.TitleContainer)
     end
     check:SetScript("OnClick", function(self2)
-        Save.hide = not Save.hide and true or nil
-        self2:SetNormalAtlas(not Save.hide and e.Icon.icon or e.Icon.disabled)
+        Save.hideIns = not Save.hideIns and true or nil
+        self2:SetNormalAtlas(not Save.hideIns and e.Icon.icon or e.Icon.disabled)
+        set_Update()
+    end)
+    check:SetScript('OnMouseWheel', function(self2, d)--缩放
+        local scale= Save.insScale or 1
+        if d==1 then
+            scale= scale-0.05
+        else
+            scale= scale+0.05
+        end
+        scale= scale>2.5 and 2.5 or scale
+        scale= scale<0.4 and 0.4 or scale
+        print(id, addName, e.onlyChinese and '副本' or INSTANCE, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
+        Save.insScale= scale==1 and nil or scale
         set_Update()
     end)
     check:SetScript("OnEnter",function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, (e.onlyChinese and '副本' or INSTANCE)..e.Icon.left..(e.onlyChinese and '信息' or INFO))
+        e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE,'|cnGREEN_FONT_COLOR:'..(Save.insScale or 1)..'|r'.. e.Icon.mid)
+        e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
     end)
-    check:SetScript("OnLeave",function(self2)
+    check:SetScript("OnLeave",function(_)
         e.tips:Hide()
     end)
 
@@ -1272,7 +1302,7 @@ local function Init()
         ChallengesFrame.tipsFrame:SetShown(not Save.hideTips)
         self2:SetNormalAtlas(not Save.hideTips and 'FXAM-QuestBang' or e.Icon.disabled)
     end)
-    tipsButton:SetScript('OnMouseWheel', function(self2, d)--缩放
+    tipsButton:SetScript('OnMouseWheel', function(_, d)--缩放
         local scale= Save.tipsScale or 1
         if d==1 then
             scale= scale-0.05
@@ -1281,7 +1311,7 @@ local function Init()
         end
         scale= scale>2.5 and 2.5 or scale
         scale= scale<0.4 and 0.4 or scale
-        print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
+        print(id, addName, e.onlyChinese and '信息' or INFO,  e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
         Save.tipsScale= scale==1 and nil or scale
         ChallengesFrame.tipsFrame:SetScale(scale)
     end)
@@ -1290,6 +1320,7 @@ local function Init()
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, e.Icon.left..(e.onlyChinese and '信息' or INFO))
         e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE,'|cnGREEN_FONT_COLOR:'..(Save.tipsScale or 1)..'|r'.. e.Icon.mid)
+        e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
         self2:SetAlpha(1)
@@ -1306,7 +1337,7 @@ local function Init()
         set_Update()
         self2:SetNormalAtlas(not Save.hidePort and 'WarlockPortal-Yellow-32x32' or e.Icon.disabled)
     end)
-    spellButton:SetScript('OnMouseWheel', function(self2, d)--缩放
+    spellButton:SetScript('OnMouseWheel', function(_, d)--缩放
         local scale= Save.portScale or 1
         if d==1 then
             scale= scale-0.05
@@ -1315,7 +1346,7 @@ local function Init()
         end
         scale= scale>2.5 and 2.5 or scale
         scale= scale<0.4 and 0.4 or scale
-        print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
+        print(id, addName, format(not e.onlyChinese and UNITNAME_SUMMON_TITLE14 or "%s的传送门", e.onlyChinese and '缩放' or UI_SCALE), '|cnGREEN_FONT_COLOR:'..scale)
         Save.portScale= scale==1 and nil or scale
         set_Update()
     end)
@@ -1325,6 +1356,7 @@ local function Init()
         if e.onlyChinese then
             e.tips:AddDoubleLine('挑战20层','限时传送门')
             e.tips:AddDoubleLine('提示：', '如果出现错误，请禁用此功能')
+            e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(Save.portScale or 1)..'|r'.. e.Icon.mid)
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine('显示/隐藏', e.Icon.left)
         else
@@ -1340,7 +1372,7 @@ local function Init()
     self:HookScript('OnShow', function()
         Affix()
         set_Kill_Info()--副本PVP团本
-        set_Currency_Info()--货币数量
+        --set_Currency_Info()--货币数量
         C_Timer.After(2, set_All_Text)--所有记录
 
         set_Update()
