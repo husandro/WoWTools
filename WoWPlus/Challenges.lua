@@ -7,7 +7,7 @@ local Save= {
     --hide=true,--隐藏，副本，挑战，信息
     --hideTips=true,--提示信息
     hidePort= not e.Player.husandro,--传送门
-    
+
     --hideKeyUI=true,--挑战,钥石,插入界面
     --slotKeystoneSay=true,--插入, KEY时, 说
 }
@@ -549,7 +549,7 @@ local function GetNum(mapID, all)--取得完成次数,如 1/10
         end
     end
     if to>0 then
-        return '|cff00ff00'..nu..'|r/'..to
+        return '|cff00ff00'..nu..'|r/'..to, nu, to
     end
 end
 
@@ -799,11 +799,11 @@ local function set_Currency_Info()--货币数量
 end
 
 
-local function set_Update(self)--Blizzard_ChallengesUI.lua
+local function set_Update()--Blizzard_ChallengesUI.lua
+    local self= ChallengesFrame
     if not e.Player.levelMax or not self.maps or #self.maps==0 then
         return
     end
-
     local currentChallengeMapID= C_MythicPlus.GetOwnedKeystoneChallengeMapID()--当前, KEY地图,ID
     local isInBat= UnitAffectingCombat('player')
 
@@ -901,22 +901,23 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
             --#########
             --名称, 缩写
             --#########
-            local nameText
-            local name = not Save.hide and C_ChallengeMode.GetMapUIInfo(frame.mapID)--名称
-            if name then
+            local nameText = not Save.hide and C_ChallengeMode.GetMapUIInfo(frame.mapID)--名称
+            if nameText then
                 if not frame.nameLable then
                     frame.nameLable=e.Cstr(frame, {size=10})
-                    frame.nameLable:SetPoint('BOTTOM', frame, 'TOP', 0,0)
+                    frame.nameLable:SetPoint('BOTTOM', frame, 'TOP')
                     frame.nameLable:EnableMouse(true)
                     frame.nameLable:SetScript('OnLeave', function() e.tips:Hide() end)
                     frame.nameLable:SetScript('OnEnter', function(self2)
-                        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                        e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
                         e.tips:ClearLines()
                         e.tips:AddLine(self2.name)
                         e.tips:Show()
                     end)
                 end
-                nameText=name:match('%((.+)%)') or name
+                frame.nameLable.name= nameText
+
+                nameText=nameText:match('%((.+)%)') or nameText
                 nameText=nameText:match('%（(.+)%）') or nameText
                 nameText=nameText:match('%- (.+)') or nameText
                 nameText=nameText:match('%:(.+)') or nameText
@@ -924,10 +925,8 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
                 nameText=nameText:match('：(.+)') or nameText
                 nameText=nameText:match('·(.+)') or nameText
                 nameText=e.WA_Utf8Sub(nameText, 5, 10)
-                nameText= nameText
             end
             if frame.nameLable then
-                frame.nameLable.name= name
                 frame.nameLable:SetText(nameText or '')
             end
 
@@ -936,14 +935,14 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
             --#########
             local intimeInfo, overtimeInfo = C_MythicPlus.GetSeasonBestForMap(frame.mapID)
             local affixScores, overAllScore = C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(frame.mapID)
-            if not Save.hide and (overAllScore and intimeInfo or overtimeInfo) then
+            if (overAllScore and intimeInfo or overtimeInfo) then
                 if not frame.scoreLable then--分数
                     frame.scoreLable=e.Cstr(frame, {size=10})
                     frame.scoreLable:SetPoint('LEFT', frame, 0, -3)
                     frame.scoreLable:EnableMouse(true)
                     frame.scoreLable:SetScript('OnEnter', function(self2)
                         if self2.score then
-                            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                            e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
                             e.tips:ClearLines()
                             e.tips:AddLine(format(e.onlyChinese and '史诗钥石评分：%s' or CHALLENGE_COMPLETE_DUNGEON_SCORE, self2.score))
                             e.tips:Show()
@@ -959,7 +958,7 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
                         frame.HighestLevel:SetPoint('LEFT', 0, 12)
                         frame.HighestLevel:EnableMouse(true)
                         frame.HighestLevel:SetScript('OnEnter', function(self2)
-                            e.tips:SetOwner(self2:GetParent(), "ANCHOR_LEFT")
+                            e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
                             e.tips:ClearLines()
                             e.tips:AddLine(format(e.onlyChinese and '最佳%s' or DUNGEON_SCORE_BEST_AFFIX, (e.onlyChinese and '等级' or LEVEL)..': '..self2:GetText()))
                             e.tips:Show()
@@ -967,28 +966,25 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
                         frame.HighestLevel:SetScript('OnLeave', function() e.tips:Hide() end)
                     end
                 end
-                
                 frame.scoreLable:SetText((overAllScore and not Save.hide) and '|A:AdventureMapIcon-MissionCombat:16:16|a'..e.GetKeystoneScorsoColor(overAllScore,nil,true) or '')
                 frame.scoreLable.score= overAllScore
 
                 if(affixScores and #affixScores > 0) then --最佳 
                     local nameA, _, filedataidA = C_ChallengeMode.GetAffixInfo(10)
                     local nameB, _, filedataidB = C_ChallengeMode.GetAffixInfo(9)
-                    local k=1
-                    for _, info in ipairs(affixScores) do
+                        for _, info in ipairs(affixScores) do
                         local text
-                        local label=frame['affixInfo'..k]
+                        local label=frame['affixInfo'..info.name]
                         if info.level and info.level>0 and (info.name == nameA or info.name==nameB) and not Save.hide then
                             if not label then
-                                label= e.Cstr(frame, {justifyH= info.name==nameB and 'RIGHT'})
+                                label= e.Cstr(frame, {justifyH='RIGHT', mouse=true})
                                 if info.name== nameA then
                                     label:SetPoint('BOTTOMLEFT',frame)
                                 else
-                                    label:SetPoint('BOTTOMLEFT', frame, 0, 14)
+                                    label:SetPoint('BOTTOMLEFT', frame, 0, 12)
                                 end
-                                label:EnableMouse(true)
                                 label:SetScript('OnEnter', function(self2)
-                                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                                    e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
                                     e.tips:ClearLines()
                                     e.tips:AddLine(format(e.onlyChinese and '最佳%s' or DUNGEON_SCORE_BEST_AFFIX, self2.name))
                                     if self2.overTime then
@@ -999,7 +995,7 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
                                     e.tips:Show()
                                 end)
                                 label:SetScript('OnLeave', function() e.tips:Hide() end)
-                                frame['affixInfo'..k]= label
+                                frame['affixInfo'..info.name]= label
                             end
 
                             local level= info.overTime and '|cnRED_FONT_COLOR:'..info.level..'|r' or info.level
@@ -1009,7 +1005,7 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
                             label.overTime= info.overTime
                             label.durationSec= info.durationSec
                             label.name= icon..info.name..': '..level
-                            k=k+1
+
                         end
                         if label then
                             label:SetText(text or '')
@@ -1022,7 +1018,7 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
                 --#####################
                 local numText
                 if not Save.hide then
-                    local all= GetNum(frame.mapID, true)
+                    local all, completed, totale= GetNum(frame.mapID, true)
                     local week= GetNum(frame.mapID)--本周
                     if all or week then
                         if not frame.completedLable then
@@ -1031,10 +1027,14 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
                             frame.completedLable:EnableMouse(true)
                             frame.completedLable:SetScript('OnEnter', function(self2)
                                 if self2.all or self2.week then
-                                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                                    e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
                                     e.tips:ClearLines()
                                     e.tips:AddDoubleLine(e.onlyChinese and '历史' or HISTORY , self2.all or (e.onlyChinese and '无' or NONE))
                                     e.tips:AddDoubleLine(e.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK, self2.week or (e.onlyChinese and '无' or NONE))
+                                    if self2.completed and self2.totale and self2.completed < self2.totale then
+                                        e.tips:AddLine(' ')
+                                        e.tips:AddDoubleLine(self2.totale..' - |cnGREEN_FONT_COLOR:'..self2.completed..'|r =', '|cnRED_FONT_COLOR:'..format(e.onlyChinese and '%s (超时)' or DUNGEON_SCORE_OVERTIME_TIME, self2.totale-self2.completed))
+                                    end
                                     e.tips:Show()
                                 end
                             end)
@@ -1043,6 +1043,8 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
                         numText= (all or '')..( week and ' |cffffffff(|r'..week..'|cffffffff)|r' or '')
                         frame.completedLable.all=all or week
                         frame.completedLable.week= week
+                        frame.completedLable.completed= completed
+                        frame.completedLable.totale= totale
                     end
                 end
                 if frame.completedLable then
@@ -1096,7 +1098,7 @@ local function set_Update(self)--Blizzard_ChallengesUI.lua
                         frame.spellPort:SetAttribute("spell*", spellID)
                         frame.spellPort:SetPoint('BOTTOMRIGHT', frame, 4,-4)
                         frame.spellPort:SetScript("OnEnter",function(self2)
-                            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                            e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
                             e.tips:ClearLines()
                             e.tips:SetSpellByID(self2.spellID)
                             if not IsSpellKnown(self2.spellID) then--没学会
@@ -1158,7 +1160,7 @@ local function Init()
     local check= e.Cbtn(self, {size={18,18}, icon= not Save.hide})
     check:SetFrameLevel( PVEFrame.TitleContainer:GetFrameLevel()+1)
     if _G['MoveZoomInButtonPerPVEFrame'] then
-       check:SetPoint('RIGHT', _G['MoveZoomInButtonPerPVEFrame'], 'LEFT', -18,0)
+        check:SetPoint('RIGHT', _G['MoveZoomInButtonPerPVEFrame'], 'LEFT', -18,0)
     else
         check:SetPoint('LEFT', PVEFrame.TitleContainer)
     end
@@ -1167,7 +1169,7 @@ local function Init()
         --ChallengesFrame.showFrame:SetShown(not Save.hide)
         self2:SetNormalAtlas(not Save.hide and e.Icon.icon or e.Icon.disabled)
         --securecallfunction(ChallengesFrame.Update, ChallengesFrame)
-        set_Update(ChallengesFrame)
+        set_Update()
     end)
     check:SetScript("OnEnter",function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
@@ -1269,7 +1271,7 @@ local function Init()
     spellButton:SetAlpha(0.5)
     spellButton:SetScript('OnClick', function(self2)
         Save.hidePort= not Save.hidePort and true or nil
-        securecallfunction(ChallengesFrame.Update, ChallengesFrame)
+        set_Update()
         self2:SetNormalAtlas(not Save.hidePort and 'WarlockPortal-Yellow-32x32' or e.Icon.disabled)
     end)
     spellButton:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.5) end)
@@ -1278,22 +1280,26 @@ local function Init()
         if e.onlyChinese then
             e.tips:AddDoubleLine('挑战20层','限时传送门')
             e.tips:AddDoubleLine('提示：', '如果出现错误，请禁用此功能')
-            e.tips:AddDoubleLine('显示/隐藏'..e.Icon.left, e.GetEnabeleDisable(Save.showSpellPort))
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine('显示/隐藏'..e.Icon.left, e.GetEnabeleDisable(Save.hidePort))
         else
             e.tips:AddLine(format(UNITNAME_SUMMON_TITLE14, CHALLENGE_MODE..' (20) '))
             e.tips:AddDoubleLine('note:',ERRORS..'('..SHOW..')'..DISABLE)
-            e.tips:AddDoubleLine(SHOW..'/'..HIDE..e.Icon.left, e.GetEnabeleDisable(Save.showSpellPort))
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(SHOW..'/'..HIDE..e.Icon.left, e.GetEnabeleDisable(Save.hidePort))
         end
         e.tips:Show()
         self2:SetAlpha(1)
     end)
 
-    set_Kill_Info()--副本PVP团本
-    hooksecurefunc(ChallengesFrame, 'Update', set_Update)
-    Affix()
-    set_Currency_Info()--货币数量
-    C_Timer.After(2, function()
-        set_All_Text()--所有记录
+    self:HookScript('OnShow', function(self2)
+        Affix()
+        set_Kill_Info()--副本PVP团本
+        set_Currency_Info()--货币数量
+        C_Timer.After(2,set_All_Text)--所有记录
+
+        set_Update()
+        --hooksecurefunc(ChallengesFrame, 'Update', set_Update)
     end)
 
 
@@ -1378,26 +1384,29 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_ChallengesUI' then--挑战,钥石,插入界面
             Init()--史诗钥石地下城, 界面
-            panel:RegisterEvent('CHALLENGE_MODE_COMPLETED')
+            --[[panel:RegisterEvent('CHALLENGE_MODE_COMPLETED')
             panel:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
             panel:RegisterEvent('UPDATE_INSTANCE_INFO')
-            panel:RegisterEvent('WEEKLY_REWARDS_UPDATE')
+            panel:RegisterEvent('WEEKLY_REWARDS_UPDATE')]]
 
         elseif arg1=='Blizzard_WeeklyRewards' then--周奖励界面，添加一个按钮，打开挑战界面
-            local btn =e.Cbtn(WeeklyRewardsFrame, {icon='hide', size={15,15}})--所有角色,挑战
-            btn:SetPoint('BOTTOMLEFT', WeeklyRewardsFrame, 'TOPLEFT', 30,0)
-            btn:SetNormalTexture(4352494)
+            local btn =e.Cbtn(WeeklyRewardsFrame, {texture=4352494, size={22,22}})--所有角色,挑战
+            if _G['MoveZoomInButtonPerWeeklyRewardsFrame'] then
+                btn:SetPoint('LEFT', _G['MoveZoomInButtonPerWeeklyRewardsFrame'], 'RIGHT')
+            else
+                btn:SetPoint('BOTTOMLEFT', WeeklyRewardsFrame, 'TOPLEFT')
+            end
             btn:SetScript('OnEnter', function(self2)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT");
                 e.tips:ClearLines();
                 e.tips:AddDoubleLine(e.onlyChinese and '史诗钥石地下城' or CHALLENGES, e.Icon.left)
                 e.tips:Show()
+                self2:SetButtonState('NORMAL')
             end)
             btn:SetScript("OnLeave",function() e.tips:Hide() end)
             btn:SetScript('OnMouseDown', function()
-                PVEFrame_ToggleFrame('ChallengesFrame',3)
+                PVEFrame_ToggleFrame('ChallengesFrame', 3)
             end)
-            btn:SetAlpha(0.5)
         end
 
     elseif event == "PLAYER_LOGOUT" then
@@ -1408,7 +1417,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='CHALLENGE_MODE_START' then
         set_CHALLENGE_MODE_START()--赏金, 说 Bounty
 
-    elseif event=='CHALLENGE_MODE_COMPLETED' or event=='WEEKLY_REWARDS_UPDATE' then
+    --[[elseif event=='CHALLENGE_MODE_COMPLETED' or event=='WEEKLY_REWARDS_UPDATE' then
         C_Timer.After(2, function()
             set_Kill_Info()--副本PVP团本
             set_All_Text()--所有记录   
@@ -1420,6 +1429,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='UPDATE_INSTANCE_INFO' then
         C_Timer.After(2, function()
             set_Kill_Info()--副本PVP团本
-        end)
+        end)]]
     end
 end)
