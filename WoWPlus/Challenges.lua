@@ -5,8 +5,12 @@ end
 local addName= CHALLENGES
 local Save= {
     --hide=true,--隐藏，副本，挑战，信息
+
     --hideTips=true,--提示信息
+    --tipsScale=0.8,--提示信息，缩放
+
     hidePort= not e.Player.husandro,--传送门
+    --portScale=0.8,--传送门, 缩放
 
     --hideKeyUI=true,--挑战,钥石,插入界面
     --slotKeystoneSay=true,--插入, KEY时, 说
@@ -628,7 +632,7 @@ local function set_All_Text()--所有记录
     --历史
     --####
     if not ChallengesFrame.runHistoryLable then
-        ChallengesFrame.runHistoryLable= e.Cstr(ChallengesFrame.tipsFrame, {mouse=true})--最右边, 数据
+        ChallengesFrame.runHistoryLable= e.Cstr(ChallengesFrame.tipsFrame, {mouse=true, size=14})--最右边, 数据
         if _G['RaiderIO_ProfileTooltip'] then
             ChallengesFrame.runHistoryLable:SetPoint('BOTTOMLEFT', _G['RaiderIO_ProfileTooltip'], 'BOTTOMRIGHT', 2, 0)
         else
@@ -715,7 +719,7 @@ local function set_All_Text()--所有记录
     for _, tab in pairs(historyInfo) do
         local mapID= tab.mapChallengeModeID
         if tab and tab.level and mapID and mapID>0 and tab.thisWeek then
-            tabs[mapID]= tabs[mapID] or 
+            tabs[mapID]= tabs[mapID] or
                 {
                     LV={},--{level, completed}
                     runScore= 0,--分数
@@ -726,7 +730,7 @@ local function set_All_Text()--所有记录
                 }
 
             tabs[mapID].runScore= (tab.runScore and tab.runScore> tabs[mapID].runScore) and tab.runScore or tabs[mapID].runScore
-            
+
             table.insert(tabs[mapID].LV, tab.completed and '|cff00ff00'..tab.level..'|r' or '|cff828282'..tab.level..'|r')
 
             if tab.completed then
@@ -744,7 +748,7 @@ local function set_All_Text()--所有记录
             weekText= weekText and weekText..'|n' or ''
             local bestOverAllScore = select(2, C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(tab.mapID)) or 0
             local score, col= e.GetKeystoneScorsoColor(bestOverAllScore, nil, true)
-            
+
             weekText= weekText..(texture and '|T'..texture..':0|t' or '')
                     ..(tab.c>0 and '|cff00ff00' or '|cff828282')..tab.c..'|r/'..tab.t
                     ..' '..score..' '..(col and col:WrapTextInColorCode(name) or name)
@@ -1178,7 +1182,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                         end)
                         frame.spellPort:SetScript("OnLeave",function(self2)
                             e.tips:Hide()
-                            self2:SetAlpha((self2.spellID and IsSpellKnown(self2.spellID)) and 1 or 0.1)
+                            self2:SetAlpha((self2.spellID and IsSpellKnown(self2.spellID)) and 1 or 0.3)
                         end)
                         frame.spellPort:SetScript('OnHide', function(self2)
                             self2:UnregisterEvent('SPELL_UPDATE_COOLDOWN')
@@ -1200,9 +1204,10 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                     frame.spellPort:SetAttribute("spell*", spellID)
                     frame.spellPort:SetAlpha(1)
                 else
-                    frame.spellPort:SetAlpha(0.1)
+                    frame.spellPort:SetAlpha(0.3)
                 end
                 frame.spellPort:SetShown(not Save.hidePort)
+                frame.spellPort:SetScale(Save.portScale or 1)
             end
         end
     end
@@ -1229,6 +1234,7 @@ local function Init()
     self.tipsFrame:SetPoint('TOPLEFT')
     self.tipsFrame:SetSize(1, 1)
     self.tipsFrame:SetShown(not Save.hideTips)
+    self.tipsFrame:SetScale(Save.tipsScale or 1)
 
     local check= e.Cbtn(self, {size={18,18}, icon= not Save.hide})
     check:SetFrameLevel( PVEFrame.TitleContainer:GetFrameLevel()+1)
@@ -1266,10 +1272,24 @@ local function Init()
         ChallengesFrame.tipsFrame:SetShown(not Save.hideTips)
         self2:SetNormalAtlas(not Save.hideTips and 'FXAM-QuestBang' or e.Icon.disabled)
     end)
+    tipsButton:SetScript('OnMouseWheel', function(self2, d)--缩放
+        local scale= Save.tipsScale or 1
+        if d==1 then
+            scale= scale-0.05
+        else
+            scale= scale+0.05
+        end
+        scale= scale>2.5 and 2.5 or scale
+        scale= scale<0.4 and 0.4 or scale
+        print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
+        Save.tipsScale= scale==1 and nil or scale
+        ChallengesFrame.tipsFrame:SetScale(scale)
+    end)
     tipsButton:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, e.Icon.left..(e.onlyChinese and '信息' or INFO))
+        e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE,'|cnGREEN_FONT_COLOR:'..(Save.tipsScale or 1)..'|r'.. e.Icon.mid)
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
         self2:SetAlpha(1)
@@ -1285,6 +1305,19 @@ local function Init()
         Save.hidePort= not Save.hidePort and true or nil
         set_Update()
         self2:SetNormalAtlas(not Save.hidePort and 'WarlockPortal-Yellow-32x32' or e.Icon.disabled)
+    end)
+    spellButton:SetScript('OnMouseWheel', function(self2, d)--缩放
+        local scale= Save.portScale or 1
+        if d==1 then
+            scale= scale-0.05
+        else
+            scale= scale+0.05
+        end
+        scale= scale>2.5 and 2.5 or scale
+        scale= scale<0.4 and 0.4 or scale
+        print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
+        Save.portScale= scale==1 and nil or scale
+        set_Update()
     end)
     spellButton:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.5) end)
     spellButton:SetScript('OnEnter', function(self2)
