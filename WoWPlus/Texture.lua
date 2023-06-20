@@ -1588,8 +1588,13 @@ local function set_Alpha_Event(arg1)
         set_Alpha(ItemSocketingScrollFrameTop)
         set_Alpha(ItemSocketingScrollFrameBottom)
 
-    elseif arg1=='Blizzard_ChallengesUI' then--挑战, 钥匙插件, 界面
+    elseif arg1=='Blizzard_ChallengesUI' then--挑战, 钥匙插入， 界面
         set_Alpha(ChallengesFrameInset.Bg)
+
+        hooksecurefunc(ChallengesKeystoneFrame, 'Reset', function(self2)--钥匙插入， 界面
+            set_Alpha_Frame_Texture(self2, {index=1})
+            hide_Texture(self2.InstructionBackground)
+        end)
 
     elseif arg1=='Blizzard_WeeklyRewards' then--周奖励提示
         set_Alpha(WeeklyRewardsFrame.BackgroundTile)

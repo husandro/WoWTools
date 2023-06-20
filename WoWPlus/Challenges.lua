@@ -43,6 +43,18 @@ local affixSchedule = {
 	[10] = { [1]=0,   [2]=0,   [3]=10,}, -- Fortified  |  | 
 }
 
+affixSchedule = {
+	[1]  = { [1]=6,   [2]=14,  [3]=10, }, -- Fortified | Raging | Quaking
+	[2]  = { [1]=11,  [2]=12,  [3]=9,  }, -- Tyrannical | Bursting | Grievous
+	[3]  = { [1]=8,   [2]=3,   [3]=10, }, -- Fortified | Sanguine | Volcanic
+	[4]  = { [1]=6,   [2]=124, [3]=9,  }, -- Tyrannical | Raging | Storming
+	[5]  = { [1]=123, [2]=12,  [3]=10, }, -- Fortified | Spiteful | Grievous
+	[6]  = { [1]=8,   [2]=13,  [3]=9,  }, -- Tyrannical | Sanguine | Explosive
+	[7]  = { [1]=7,   [2]=124, [3]=10, }, -- Fortified | Bolstering | Storming
+	[8]  = { [1]=123, [2]=14,  [3]=9,  }, -- Tyrannical | Spiteful | Quaking
+	[9]  = { [1]=11,  [2]=13,  [3]=10, }, -- Fortified | Bursting | Explosive
+	[10] = { [1]=7,   [2]=3,   [3]=9,  }, -- Tyrannical | Bolstering | Volcanica
+}
 
 local function get_Spell_MapChallengeID(mapChallengeID)
     local tabs={
@@ -211,10 +223,11 @@ local function UI_Party_Info(self)--队友位置
         end
     end
     if not self.partyLable then
-        self.party=e.Cstr(self.keyFrame)--队伍信息
-        self.party:SetPoint('BOTTOMLEFT', _G['MoveZoomInButtonPerChallengesKeystoneFrame'] or self, 'TOPLEFT')
+        self.partyLable=e.Cstr(self.keyFrame)--队伍信息
+        --self.party:SetPoint('BOTTOMLEFT', _G['MoveZoomInButtonPerChallengesKeystoneFrame'] or self, 'TOPLEFT')
+        self.partyLable:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT')
     end
-    self.party:SetText(text or '')
+    self.partyLable:SetText(text or '')
     e.GetNotifyInspect(UnitTab)--取得装等
 end
 
@@ -504,6 +517,7 @@ local function Affix()
             end
         end
     end
+    currentWeek=1
     if currentWeek then
         local one= currentWeek ==12 and  1 or currentWeek
         local due=one+1 due=due==12 and 1 or due
@@ -1118,13 +1132,6 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                             e.SetItemSpellCool(self2, nil, self2.spellID)
                         end)
                     end
-                    --frame.spellPort:SetNormalAtlas('WarlockPortalHorde')
-                    --[[local icon= IsSpellKnown(spellID) and GetSpellTexture(spellID)
-                    if icon then
-                        frame.spellPort:SetNormalTexture(GetSpellTexture(spellID))
-                    else
-                        frame.spellPort:SetNormalAtlas('WarlockPortalAlliance')
-                    end]]
                 end
             end
             if frame.spellPort and not isInBat then
@@ -1196,64 +1203,60 @@ local function Init()
         self2:SetNormalAtlas(not Save.hideTips and 'FXAM-QuestBang' or e.Icon.disabled)
     end)
     tipsButton:SetScript('OnEnter', function(self2)
-        local mapIDs = {}
+        local curMaps = {}
         for _, v in pairs( (C_ChallengeMode.GetMapTable() or {})) do
-            mapIDs[v]=true
+            curMaps[v]=true
         end
 
-        local infos= C_MythicPlus.GetRunHistory(true, true)
-        if not infos then
-            return
+        local tabs={}
+        local completed, all= 0,0
+        for _, info in pairs(C_MythicPlus.GetRunHistory(true, true) or {}) do
+            local mapID=info.mapChallengeModeID
+            tabs[mapID]= tabs[mapID] or
+                        {
+                            level=0,--最高等级
+                            c=0,
+                            t=0,
+                            mapID= mapID,
+                            isCurrent= curMaps[mapID],--本赛季
+                        }
+            tabs[mapID].t= tabs[mapID].t+1
+            if info.completed then
+                tabs[mapID].c= tabs[mapID].c+1
+                tabs[mapID].level= (info.level and info.level>tabs[mapID].level) and info.level or tabs[mapID].level
+                completed= completed+ 1
+            end
+            all= all+1
         end
-        local IDs={}
-        local t=0
-        for _, v in pairs(infos) do
-            local mapChallengeModeID=v.mapChallengeModeID
-            IDs[mapChallengeModeID]= IDs[mapChallengeModeID] or {c=0, t=0}
-            if v.completed then
-                t=t+1
-                IDs[mapChallengeModeID].c= IDs[mapChallengeModeID].c+1
+
+        local newTab={}
+        for _, tab in pairs(tabs) do
+            if tab.isCurrent then
+                table.insert(newTab, tab)
+            else
+                table.insert(newTab, 1, tab)
             end
-            IDs[mapChallengeModeID].t= IDs[mapChallengeModeID].t+1
-            if v.level and ( not IDs[mapChallengeModeID].lv or  v.level > IDs[mapChallengeModeID].lv) then--最高等级
-                IDs[mapChallengeModeID].lv=v.level
-                IDs[mapChallengeModeID].completed=v.completed
-                if v.completed then
-                    if not IDs[mapChallengeModeID].lv2 or  v.level > IDs[mapChallengeModeID].lv2 then
-                        IDs[mapChallengeModeID].lv2=v.level
-                    end
-                end
-            end
-            IDs[mapChallengeModeID].mapIDs=mapIDs[mapChallengeModeID]--本赛季
         end
 
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '历史' or HISTORY, t..'/'..#infos, 0,1,0 ,0,1,0)
+        e.tips:AddDoubleLine(e.onlyChinese and '历史' or HISTORY, completed..'/'..all)
 
-        for k, v in pairs(IDs) do
-            local name, _, _, texture= C_ChallengeMode.GetMapUIInfo(k)
+        for _, tab in pairs(newTab) do
+            local name, _, _, texture= C_ChallengeMode.GetMapUIInfo(tab.mapID)
             if name then
-                local col, r, g, b
-                local bestOverAllScore = select(2, C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(k))
-                if  bestOverAllScore then
-                    col=C_ChallengeMode.GetSpecificDungeonOverallScoreRarityColor(bestOverAllScore)
+                local text= (texture and '|T'..texture..':0|t' or '').. name..' ('..tab.level..') '
+                local text2= tab.c..'/'..tab.t
+                if tab.isCurrent then
+                    local bestOverAllScore = select(2, C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(tab.mapID)) or 0
+                    local score, col= e.GetKeystoneScorsoColor(bestOverAllScore, nil, true)
+                    text= col:WrapTextInColorCode(text)..score
+                    text2= col:WrapTextInColorCode(text2)
+                else
+                    text='|cff828282'..text
+                    text2='|cff828282'..text2
                 end
-                if col then r,g,b= col.r, col.g, col.b end
-                local m=not mapIDs[k] and e.Icon.X or ''
-                m=m..(texture and '|T'..texture..':0|t' or '').. name
-                if v.lv then
-                    m=m..'('
-                    if v.completed then
-                        m=m..'|cff00ff00'..v.lv..'|r'
-                    else
-                        m=m..RED_FONT_COLOR_CODE..v.lv..'|r'
-                        m=v.lv2 and m..'/|cff00ff00'..v.lv2..'|r' or m
-                    end
-                    m=m..') '
-                end
-                m=m.. (bestOverAllScore or '')
-                e.tips:AddDoubleLine(m, v.c..'/'..v.t, r,g,b , r,g,b)
+                e.tips:AddDoubleLine(text, text2)
             end
         end
         e.tips:AddLine(' ')
@@ -1281,12 +1284,12 @@ local function Init()
             e.tips:AddDoubleLine('挑战20层','限时传送门')
             e.tips:AddDoubleLine('提示：', '如果出现错误，请禁用此功能')
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine('显示/隐藏'..e.Icon.left, e.GetEnabeleDisable(Save.hidePort))
+            e.tips:AddDoubleLine('显示/隐藏', e.Icon.left)
         else
             e.tips:AddLine(format(UNITNAME_SUMMON_TITLE14, CHALLENGE_MODE..' (20) '))
-            e.tips:AddDoubleLine('note:',ERRORS..'('..SHOW..')'..DISABLE)
+            e.tips:AddDoubleLine('note:','If you get error, please disable this')
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(SHOW..'/'..HIDE..e.Icon.left, e.GetEnabeleDisable(Save.hidePort))
+            e.tips:AddDoubleLine(SHOW..'/'..HIDE, e.Icon.left)
         end
         e.tips:Show()
         self2:SetAlpha(1)
