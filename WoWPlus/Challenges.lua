@@ -43,19 +43,6 @@ local affixSchedule = {
 	[10] = { [1]=0,   [2]=0,   [3]=10,}, -- Fortified  |  | 
 }
 
-affixSchedule = {
-	[1]  = { [1]=6,   [2]=14,  [3]=10, }, -- Fortified | Raging | Quaking
-	[2]  = { [1]=11,  [2]=12,  [3]=9,  }, -- Tyrannical | Bursting | Grievous
-	[3]  = { [1]=8,   [2]=3,   [3]=10, }, -- Fortified | Sanguine | Volcanic
-	[4]  = { [1]=6,   [2]=124, [3]=9,  }, -- Tyrannical | Raging | Storming
-	[5]  = { [1]=123, [2]=12,  [3]=10, }, -- Fortified | Spiteful | Grievous
-	[6]  = { [1]=8,   [2]=13,  [3]=9,  }, -- Tyrannical | Sanguine | Explosive
-	[7]  = { [1]=7,   [2]=124, [3]=10, }, -- Fortified | Bolstering | Storming
-	[8]  = { [1]=123, [2]=14,  [3]=9,  }, -- Tyrannical | Spiteful | Quaking
-	[9]  = { [1]=11,  [2]=13,  [3]=10, }, -- Fortified | Bursting | Explosive
-	[10] = { [1]=7,   [2]=3,   [3]=9,  }, -- Tyrannical | Bolstering | Volcanica
-}
-
 local function get_Spell_MapChallengeID(mapChallengeID)
     local tabs={
         {spell=396129, ins=1196, map=405},--传送：蕨皮山谷
@@ -517,7 +504,7 @@ local function Affix()
             end
         end
     end
-    currentWeek=1
+    --currentWeek=1
     if currentWeek then
         local one= currentWeek ==12 and  1 or currentWeek
         local due=one+1 due=due==12 and 1 or due
@@ -637,28 +624,88 @@ local function set_Kill_Info()--副本PVP团本
 end
 
 local function set_All_Text()--所有记录
-    local m=""
-
-    local currentWeekBestLevel, weeklyRewardLevel, nextDifficultyWeeklyRewardLevel, nextBestLevel = C_MythicPlus.GetWeeklyChestRewardLevel()
-    if currentWeekBestLevel and weeklyRewardLevel and weeklyRewardLevel>0 and currentWeekBestLevel>0 then
-        m=m..format(e.onlyChinese and '%d级的当前奖励是%d。%d级的奖励是%d。' or MYTHIC_PLUS_CURR_WEEK_REWARD, currentWeekBestLevel,weeklyRewardLevel, nextDifficultyWeeklyRewardLevel, nextBestLevel)
-    end
-
-    local mapChallengeModeID, level = C_MythicPlus.GetLastWeeklyBestInformation()
-    if mapChallengeModeID and level and level>0 and mapChallengeModeID>0 then
-        local name, _, _, texture, _ = C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
-        if name then
-            m= (m~='' and m..'|n|n' or m)..(e.onlyChinese and '上周' or HONOR_LASTWEEK)..': '.. (texture and '|T'..texture..':0|t' or '')..name..' '..level
+    --###
+    --历史
+    --####
+    if not ChallengesFrame.runHistoryLable then
+        ChallengesFrame.runHistoryLable= e.Cstr(ChallengesFrame.tipsFrame, {mouse=true})--最右边, 数据
+        if _G['RaiderIO_ProfileTooltip'] then
+            ChallengesFrame.runHistoryLable:SetPoint('BOTTOMLEFT', _G['RaiderIO_ProfileTooltip'], 'BOTTOMRIGHT', 2, 0)
+        else
+            ChallengesFrame.runHistoryLable:SetPoint('TOPLEFT', ChallengesFrame, 'TOPRIGHT', 2, -10)
         end
+        ChallengesFrame.runHistoryLable:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+        ChallengesFrame.runHistoryLable:SetScript('OnEnter', function(self2)
+            local curMaps = {}
+            for _, v in pairs( (C_ChallengeMode.GetMapTable() or {})) do
+                curMaps[v]=true
+            end
+
+            local tabs={}
+            local completed, all= 0,0
+            for _, info in pairs(C_MythicPlus.GetRunHistory(true, true) or {}) do
+                local mapID=info.mapChallengeModeID
+                tabs[mapID]= tabs[mapID] or
+                            {
+                                level=0,--最高等级
+                                c=0,
+                                t=0,
+                                mapID= mapID,
+                                isCurrent= curMaps[mapID],--本赛季
+                            }
+                tabs[mapID].t= tabs[mapID].t+1
+                if info.completed then
+                    tabs[mapID].c= tabs[mapID].c+1
+                    tabs[mapID].level= (info.level and info.level>tabs[mapID].level) and info.level or tabs[mapID].level
+                    completed= completed+ 1
+                end
+                all= all+1
+            end
+
+            local newTab={}
+            for _, tab in pairs(tabs) do
+                if tab.isCurrent then
+                    table.insert(newTab, tab)
+                else
+                    table.insert(newTab, 1, tab)
+                end
+            end
+
+            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(e.onlyChinese and '历史' or HISTORY, completed..'/'..all)
+
+            for _, tab in pairs(newTab) do
+                local name, _, _, texture= C_ChallengeMode.GetMapUIInfo(tab.mapID)
+                if name then
+                    local text= (texture and '|T'..texture..':0|t' or '').. name..' ('..tab.level..') '
+                    local text2= tab.c..'/'..tab.t
+                    if tab.isCurrent then
+                        local bestOverAllScore = select(2, C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(tab.mapID)) or 0
+                        local score, col= e.GetKeystoneScorsoColor(bestOverAllScore, nil, true)
+                        text= col:WrapTextInColorCode(text)..score
+                        text2= col:WrapTextInColorCode(text2)
+                    else
+                        text='|cff828282'..text
+                        text2='|cff828282'..text2
+                    end
+                    e.tips:AddDoubleLine(text, text2)
+                end
+            end
+            e.tips:Show()
+            self2:SetAlpha(0.3)
+        end)
     end
 
     local info= C_MythicPlus.GetRunHistory(true, true)--全部
     if info then
         local nu=#C_MythicPlus.GetRunHistory(true) or {}
         local nu2=#info
-        m= (m~='' and m..'|n|n' or m)..(e.onlyChinese and '历史' or HISTORY)..': |cff00ff00'..nu.. '/'.. nu2.. ' |r(|cffffffff'..nu2-nu..'|r)'
+        ChallengesFrame.runHistoryLable:SetText((e.onlyChinese and '历史' or HISTORY)..' |cff00ff00'..nu.. '|r/'.. nu2)
     end
 
+    
+    local m=''
     info = C_MythicPlus.GetRunHistory(false, true)--本周记录
     if info then
         table.sort(info, function(a, b)
@@ -685,7 +732,7 @@ local function set_All_Text()--所有记录
                         n=n+1
                         IDs[name].co=IDs[name].co+1
                     else
-                        table.insert(IDs[name].lv, '|cffffffff'..v.level..'|r')
+                        table.insert(IDs[name].lv, '|cff828282'..v.level..'|r')
                     end
                     IDs[name].to=IDs[name].to+1
                     n2=n2+1
@@ -727,7 +774,7 @@ local function set_All_Text()--所有记录
     for i=5, 20 do
         local col= curLevel==i and '|cff00ff00' or select(2, math.modf(i/2))==0 and '|cffff8200' or '|cffffffff'
         local weeklyRewardLevel2, endOfRunRewardLevel2 = C_MythicPlus.GetRewardLevelForDifficultyLevel(i)
-        if weeklyRewardLevel2 and weeklyRewardLevel>0 then
+        if weeklyRewardLevel2 and weeklyRewardLevel2>0 then
             local str=col..(i<10 and i..' ' or i)..'  '..weeklyRewardLevel2..'  '..(endOfRunRewardLevel2 or 0)..'|r'
             text2= text2 and text2..'|n' or ''
             text2= text2..str..(curKey==i and e.Icon.star2 or '')
@@ -737,15 +784,11 @@ local function set_All_Text()--所有记录
         text= text..'|n|n'..(e.onlyChinese and '难度 每周 掉落' or (PROFESSIONS_CRAFTING_STAT_TT_DIFFICULTY_HEADER..' '..CALENDAR_REPEAT_WEEKLY..' '..BATTLE_PET_SOURCE_1))..'|n'..text2
     end
 
-    if not ChallengesFrame.tipsText then
-        ChallengesFrame.tipsText= e.Cstr(ChallengesFrame.tipsFrame)--最右边, 数据
-        if _G['RaiderIO_ProfileTooltip'] then
-            ChallengesFrame.tipsText:SetPoint('BOTTOMLEFT', _G['RaiderIO_ProfileTooltip'], 'BOTTOMRIGHT', 2, 0)
-        else
-            ChallengesFrame.tipsText:SetPoint('TOPLEFT', ChallengesFrame, 'TOPRIGHT', 2, -10)
-        end
+    if not ChallengesFrame.tipsAllLabel then
+        ChallengesFrame.tipsAllLabel= e.Cstr(ChallengesFrame.tipsFrame, {mouse=true})--最右边, 数据
+        ChallengesFrame.tipsAllLabel:SetPoint('TOPLEFT', ChallengesFrame.runHistoryLable, 'BOTTOMLEFT')
     end
-    ChallengesFrame.tipsText:SetText(text)
+    ChallengesFrame.tipsAllLabel:SetText(m)
 end
 
 local function set_Currency_Info()--货币数量
@@ -815,7 +858,7 @@ end
 
 local function set_Update()--Blizzard_ChallengesUI.lua
     local self= ChallengesFrame
-    if not e.Player.levelMax or not self.maps or #self.maps==0 then
+    if not self.maps or #self.maps==0 then
         return
     end
     local currentChallengeMapID= C_MythicPlus.GetOwnedKeystoneChallengeMapID()--当前, KEY地图,ID
@@ -1173,9 +1216,7 @@ local function Init()
     end
     check:SetScript("OnClick", function(self2)
         Save.hide = not Save.hide and true or nil
-        --ChallengesFrame.showFrame:SetShown(not Save.hide)
         self2:SetNormalAtlas(not Save.hide and e.Icon.icon or e.Icon.disabled)
-        --securecallfunction(ChallengesFrame.Update, ChallengesFrame)
         set_Update()
     end)
     check:SetScript("OnEnter",function(self2)
@@ -1203,63 +1244,8 @@ local function Init()
         self2:SetNormalAtlas(not Save.hideTips and 'FXAM-QuestBang' or e.Icon.disabled)
     end)
     tipsButton:SetScript('OnEnter', function(self2)
-        local curMaps = {}
-        for _, v in pairs( (C_ChallengeMode.GetMapTable() or {})) do
-            curMaps[v]=true
-        end
-
-        local tabs={}
-        local completed, all= 0,0
-        for _, info in pairs(C_MythicPlus.GetRunHistory(true, true) or {}) do
-            local mapID=info.mapChallengeModeID
-            tabs[mapID]= tabs[mapID] or
-                        {
-                            level=0,--最高等级
-                            c=0,
-                            t=0,
-                            mapID= mapID,
-                            isCurrent= curMaps[mapID],--本赛季
-                        }
-            tabs[mapID].t= tabs[mapID].t+1
-            if info.completed then
-                tabs[mapID].c= tabs[mapID].c+1
-                tabs[mapID].level= (info.level and info.level>tabs[mapID].level) and info.level or tabs[mapID].level
-                completed= completed+ 1
-            end
-            all= all+1
-        end
-
-        local newTab={}
-        for _, tab in pairs(tabs) do
-            if tab.isCurrent then
-                table.insert(newTab, tab)
-            else
-                table.insert(newTab, 1, tab)
-            end
-        end
-
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '历史' or HISTORY, completed..'/'..all)
-
-        for _, tab in pairs(newTab) do
-            local name, _, _, texture= C_ChallengeMode.GetMapUIInfo(tab.mapID)
-            if name then
-                local text= (texture and '|T'..texture..':0|t' or '').. name..' ('..tab.level..') '
-                local text2= tab.c..'/'..tab.t
-                if tab.isCurrent then
-                    local bestOverAllScore = select(2, C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(tab.mapID)) or 0
-                    local score, col= e.GetKeystoneScorsoColor(bestOverAllScore, nil, true)
-                    text= col:WrapTextInColorCode(text)..score
-                    text2= col:WrapTextInColorCode(text2)
-                else
-                    text='|cff828282'..text
-                    text2='|cff828282'..text2
-                end
-                e.tips:AddDoubleLine(text, text2)
-            end
-        end
-        e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, e.Icon.left..(e.onlyChinese and '信息' or INFO))
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
@@ -1295,11 +1281,11 @@ local function Init()
         self2:SetAlpha(1)
     end)
 
-    self:HookScript('OnShow', function(self2)
+    self:HookScript('OnShow', function()
         Affix()
         set_Kill_Info()--副本PVP团本
         set_Currency_Info()--货币数量
-        C_Timer.After(2,set_All_Text)--所有记录
+        C_Timer.After(2, set_All_Text)--所有记录
 
         set_Update()
         --hooksecurefunc(ChallengesFrame, 'Update', set_Update)
