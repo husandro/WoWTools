@@ -632,7 +632,7 @@ local function set_All_Text()--所有记录
         if _G['RaiderIO_ProfileTooltip'] then
             ChallengesFrame.runHistoryLable:SetPoint('BOTTOMLEFT', _G['RaiderIO_ProfileTooltip'], 'BOTTOMRIGHT', 2, 0)
         else
-            ChallengesFrame.runHistoryLable:SetPoint('TOPLEFT', ChallengesFrame, 'TOPRIGHT', 2, -10)
+            ChallengesFrame.runHistoryLable:SetPoint('TOPLEFT', ChallengesFrame, 'TOPRIGHT', 2, -26)
         end
         ChallengesFrame.runHistoryLable:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
         ChallengesFrame.runHistoryLable:SetScript('OnEnter', function(self2)
@@ -683,8 +683,8 @@ local function set_All_Text()--所有记录
                     if tab.isCurrent then
                         local bestOverAllScore = select(2, C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(tab.mapID)) or 0
                         local score, col= e.GetKeystoneScorsoColor(bestOverAllScore, nil, true)
-                        text= col:WrapTextInColorCode(text)..score
-                        text2= col:WrapTextInColorCode(text2)
+                        text= (col and col:WrapTextInColorCode(text) or text)..score
+                        text2= col and col:WrapTextInColorCode(text2) or text2
                     else
                         text='|cff828282'..text
                         text2='|cff828282'..text2
@@ -696,73 +696,87 @@ local function set_All_Text()--所有记录
             self2:SetAlpha(0.3)
         end)
     end
+    ChallengesFrame.runHistoryLable:SetText((e.onlyChinese and '历史' or HISTORY)..' |cff00ff00'..#C_MythicPlus.GetRunHistory(true).. '|r/'..#C_MythicPlus.GetRunHistory(true, true))
 
-    local info= C_MythicPlus.GetRunHistory(true, true)--全部
-    if info then
-        local nu=#C_MythicPlus.GetRunHistory(true) or {}
-        local nu2=#info
-        ChallengesFrame.runHistoryLable:SetText((e.onlyChinese and '历史' or HISTORY)..' |cff00ff00'..nu.. '|r/'.. nu2)
-    end
 
-    
-    local m=''
-    info = C_MythicPlus.GetRunHistory(false, true)--本周记录
-    if info then
-        table.sort(info, function(a, b)
-            if a.mapChallengeModeID == b.mapChallengeModeID then
-                return a.level > b.level
-            else
-                return a.mapChallengeModeID< b.mapChallengeModeID
+    --#######
+    --本周记录
+    --#######
+    local historyInfo = C_MythicPlus.GetRunHistory(false, true) or {}
+    table.sort(historyInfo, function(a, b)
+        if a.mapChallengeModeID== b.mapChallengeModeID then
+            return a.level> b.level
+        else
+            return a.runScore> b.runScore
+        end
+    end)
+    local completed, all= 0,0
+    local tabs={}
+    for _, tab in pairs(historyInfo) do
+        local mapID= tab.mapChallengeModeID
+        if tab and tab.level and mapID and mapID>0 and tab.thisWeek then
+            tabs[mapID]= tabs[mapID] or 
+                {
+                    LV={},--{level, completed}
+                    runScore= 0,--分数
+                    c=0,
+                    t=0,
+                    completed=false,
+                    mapID= mapID,
+                }
+
+            tabs[mapID].runScore= (tab.runScore and tab.runScore> tabs[mapID].runScore) and tab.runScore or tabs[mapID].runScore
+            
+            table.insert(tabs[mapID].LV, tab.completed and '|cff00ff00'..tab.level..'|r' or '|cff828282'..tab.level..'|r')
+
+            if tab.completed then
+                completed= completed+1
+                tabs[mapID].c= tabs[mapID].c +1
             end
-        end)
-        local n,n2=0,0
-        local IDs={}
-        for _, v in pairs(info) do
-            if v and v.level and v.mapChallengeModeID then
-                local name, _, _, texture = C_ChallengeMode.GetMapUIInfo(v.mapChallengeModeID)
-                if name then
-                    IDs[name]=IDs[name] or {
-                        texture=texture and '|T'..texture..':0|t' or '',
-                        lv={},
-                        co=0,
-                        to=0,
-                    }
-                    if v.completed then
-                        table.insert(IDs[name].lv, '|cff00ff00'..v.level..'|r')
-                        n=n+1
-                        IDs[name].co=IDs[name].co+1
-                    else
-                        table.insert(IDs[name].lv, '|cff828282'..v.level..'|r')
-                    end
-                    IDs[name].to=IDs[name].to+1
-                    n2=n2+1
-                end
+            tabs[mapID].t=tabs[mapID].t+1
+            all= all+1
+        end
+    end
+    local weekText
+    for _, tab in pairs(tabs) do
+        local name, _, _, texture = C_ChallengeMode.GetMapUIInfo(tab.mapID)
+        if name then
+            weekText= weekText and weekText..'|n' or ''
+            local bestOverAllScore = select(2, C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(tab.mapID)) or 0
+            local score, col= e.GetKeystoneScorsoColor(bestOverAllScore, nil, true)
+            
+            weekText= weekText..(texture and '|T'..texture..':0|t' or '')
+                    ..(tab.c>0 and '|cff00ff00' or '|cff828282')..tab.c..'|r/'..tab.t
+                    ..' '..score..' '..(col and col:WrapTextInColorCode(name) or name)
+            for _,v2 in pairs(tab.LV) do
+                weekText= weekText..' '..v2
             end
         end
-        local m2=''
-        for k, v in pairs(IDs) do
-            if m2~='' then m2=m2..'|n' end
-            m2=m2..v.texture..' |cff00ff00'..v.co..'/'..v.to..'|r '..k
-            for _,v2 in pairs(v.lv) do
-                m2=m2..' '..v2
-            end
-        end
-        if m2~='' then m=(m~='' and m..'|n' or '')..(e.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK)..': |cff00ff00'..n..'/'..n2..'|r  (|cffffffff'..(n2-n)..'|r)|n'..m2 end
     end
+    local m= (e.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK)
+            ..' |cff00ff00'..completed..'|r/'..all
+            ..(weekText and '|n'..weekText or '')
 
-    local text= m..'|n'--所有角色KEY
+    --##########
+    --所有角色KEY
+    --##########
     for guid, infoWoW in pairs(WoWDate or {}) do
-        local find
+        local linkText
         for link, _ in pairs(infoWoW.Keystone.itemLink) do
-            text=text..'|n    '..link
-            find=true
+            local texture
+            texture= C_Item.GetItemIconByID(link)
+            texture= (not texture or texture==134400) and 4352494 or texture
+            linkText= (linkText and linkText..'|n' or '')..'      '..(texture and '|T'..texture..':)|t' or '')..link
         end
-        if find then
-            text= text..'|n'.. e.GetPlayerInfo({guid=guid, faction=infoWoW.faction, reName=true, reRealm=true})
+        if linkText then
+            m= m..'|n|n'..linkText..'|n'.. e.GetPlayerInfo({guid=guid, faction=infoWoW.faction, reName=true, reRealm=true})
         end
     end
 
-    local text2--等级 => 每周/完成, 提示
+    --#############
+    --难度 每周 掉落
+    --#############
+    local text2
     local curLevel=0
     local curKey= C_MythicPlus.GetOwnedKeystoneLevel() or 0
     local runInfo = C_MythicPlus.GetRunHistory(false, true) or {}--本周记录
@@ -771,17 +785,17 @@ local function set_All_Text()--所有记录
             curLevel= runs.level>curLevel and runs.level or curLevel
         end
     end
-    for i=5, 20 do
+    for i=10, 20 do
         local col= curLevel==i and '|cff00ff00' or select(2, math.modf(i/2))==0 and '|cffff8200' or '|cffffffff'
         local weeklyRewardLevel2, endOfRunRewardLevel2 = C_MythicPlus.GetRewardLevelForDifficultyLevel(i)
         if weeklyRewardLevel2 and weeklyRewardLevel2>0 then
             local str=col..(i<10 and i..' ' or i)..'  '..weeklyRewardLevel2..'  '..(endOfRunRewardLevel2 or 0)..'|r'
             text2= text2 and text2..'|n' or ''
-            text2= text2..str..(curKey==i and e.Icon.star2 or '')
+            text2= text2..str..(curKey==i and '|T4352494:0|t' or '')..(curLevel==i and e.Icon.select2 or '')
         end
     end
     if text2 then
-        text= text..'|n|n'..(e.onlyChinese and '难度 每周 掉落' or (PROFESSIONS_CRAFTING_STAT_TT_DIFFICULTY_HEADER..' '..CALENDAR_REPEAT_WEEKLY..' '..BATTLE_PET_SOURCE_1))..'|n'..text2
+        m= m..'|n|n'..(e.onlyChinese and '难度 每周 掉落' or (PROFESSIONS_CRAFTING_STAT_TT_DIFFICULTY_HEADER..' '..CALENDAR_REPEAT_WEEKLY..' '..BATTLE_PET_SOURCE_1))..'|n'..text2
     end
 
     if not ChallengesFrame.tipsAllLabel then
