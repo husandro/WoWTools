@@ -247,7 +247,7 @@ local function set_STATUS_Text(frame)
     if not PrimaryStat then
         return
     end
-    local value= UnitStat('player', PrimaryStat)
+    local value= select(2, UnitStat('player', PrimaryStat))
     if not frame then
         return value
     end
