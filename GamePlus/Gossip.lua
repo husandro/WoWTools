@@ -445,7 +445,7 @@ local function Init_Gossip()
             C_GossipInfo.SelectOption(index)
             find=true
 
-        elseif (npc and Save.NPC[npc]) or not Save.gossip then
+        elseif (npc and Save.NPC[npc]) or not Save.gossip then--禁用NPC
             return
 
         elseif Save.quest and  (quest or name:find('0000FF') or  name:find(QUESTS_LABEL) or name:find(LOOT_JOURNAL_LEGENDARIES_SOURCE_QUEST)) then--任务
@@ -455,7 +455,7 @@ local function Init_Gossip()
             C_GossipInfo.SelectOption(index)
             find=true
 
-        elseif #gossip==1 and Save.unique then--仅一个
+        elseif #gossip==1 and Save.unique  then--仅一个
            -- if not getMaxQuest() then
                 local tab= C_GossipInfo.GetActiveQuests() or {}
                 for _, questInfo in pairs(tab) do
@@ -474,6 +474,11 @@ local function Init_Gossip()
 
             C_GossipInfo.SelectOption(index)
             find=true
+
+        elseif index==107571 and C_ChallengeMode.IsChallengeModeActive() and e.WA_GetUnitBuff('player', 57723, 'HARMFUL') then
+            C_GossipInfo.SelectOption(index)
+            find=true
+
         end
 
         if find then

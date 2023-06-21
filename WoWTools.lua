@@ -718,7 +718,7 @@ e.WA_GetUnitAura = function(unit, spell, filter)--AuraEnvironment.lua
 end
 ]]
 
-e.WA_GetUnitBuff = function(unit, spell, filter)
+e.WA_GetUnitBuff = function(unit, spell, filter)--HELPFUL HARMFUL
     for i = 1, 40 do
         local spellID = select(10, UnitBuff(unit, i, filter))
         if not spellID then
