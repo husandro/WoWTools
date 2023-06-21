@@ -475,7 +475,8 @@ local function Init_Gossip()
             C_GossipInfo.SelectOption(index)
             find=true
 
-        elseif index==107571 and C_ChallengeMode.IsChallengeModeActive() and e.WA_GetUnitBuff('player', 57723, 'HARMFUL') then
+        elseif index==107571 and C_ChallengeMode.IsChallengeModeActive() and (e.WA_GetUnitBuff('player', 264689, 'HARMFUL') or e.WA_GetUnitBuff('player', 80354, 'HARMFUL')) then
+            
             C_GossipInfo.SelectOption(index)--挑战，模式，去 SX buff
             find=true
 
