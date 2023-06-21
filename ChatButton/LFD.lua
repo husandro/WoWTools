@@ -1676,8 +1676,8 @@ local function Init()
                 if not btn.chatTexure then
                     btn.chatTexure= e.Cbtn(btn, {size={14,14}, atlas='transmog-icon-chat'})
                     btn.chatTexure:SetPoint('BOTTOMRIGHT', btn.NameFrame, 6, 4)
-                    local region= GetCurrentRegion()--1US(includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
-                    btn.chatTexure.text= (region==1 or region==3) and ' need, please!{rt1}' or (' '..NEED..', '..VOICEMACRO_16_Dw_0..'{rt1}')
+                    --1US(includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
+                    btn.chatTexure.text= (e.Player.region==1 or e.Player.region==3) and ' need, please!{rt1}' or (' '..NEED..', '..VOICEMACRO_16_Dw_0..'{rt1}')
                     btn.chatTexure:SetScript('OnLeave', function() e.tips:Hide() end)
                     btn.chatTexure:SetScript('OnEnter', function(self2)
                         e.tips:SetOwner(self2, "ANCHOR_RIGHT")

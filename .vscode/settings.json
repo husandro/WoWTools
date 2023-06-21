@@ -2950,7 +2950,8 @@
         "FCF_StartAlertFlash",
         "PET_BATTLE_START",
         "GetDungeonScoreLink",
-        "DisplayDungeonScoreLink"
+        "DisplayDungeonScoreLink",
+        "FIND_A_GROUP"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

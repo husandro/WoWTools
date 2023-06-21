@@ -58,8 +58,7 @@ local function set_RequestToJoinFrame(self)
     if self.MessageFrame and self.MessageFrame.MessageScroll and self.MessageFrame.MessageScroll.EditBox then
         local avgItemLevel, _, avgItemLevelPvp = GetAverageItemLevel()
         if avgItemLevel then
-            local region= GetCurrentRegion()
-            local cd= region==1 or region==3--1US(includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
+            local cd= e.Player.region==1 or e.Player.region==3--1US(includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
             text= format(cd and 'Item Level %d' or CHARACTER_LINK_ITEM_LEVEL_TOOLTIP, avgItemLevel)
             if avgItemLevelPvp and avgItemLevelPvp- avgItemLevel>=10 then
                 text= text..'|n'..format(cd and 'PvP Item Level %d' or ITEM_UPGRADE_PVP_ITEM_LEVEL_STAT_FORMAT, avgItemLevelPvp)--PvP物品等级 %d

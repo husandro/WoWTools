@@ -1136,7 +1136,7 @@ local function Init_Server_equipmentButton_Lable()
 
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine('realmID', GetRealmID())
-            e.tips:AddDoubleLine('regionID: '..GetCurrentRegion(),  GetCurrentRegionName())
+            e.tips:AddDoubleLine('regionID: '..e.Player.region,  GetCurrentRegionName())
 
             e.tips:AddLine(' ')
             if GameLimitedMode_IsActive() then

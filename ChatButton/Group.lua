@@ -1,9 +1,13 @@
 local id, e = ...
 local addName= 'ChatButtonGroup'
 local Save={
-    mouseUP= not LOCALE_zhCN and SUMMON ..' '..COMBATLOG_FILTER_STRING_ME or '求拉, 谢谢',
+    --mouseUP=  not LOCALE_zhCN and SUMMON ..' '..COMBATLOG_FILTER_STRING_ME or '求拉, 谢谢',
+    mouseUP=  (e.Player.region==1 or e.Player.region==3) and 'sum me, pls' 
+                or e.Player.region==5  and '求拉, 谢谢' 
+                or format('%s %s',SUMMON, COMBATLOG_FILTER_STRING_ME),
     mouseDown= not LOCALE_zhCN and 'inv, thx' or '1' ,
 }
+--1US (includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
 local button
 
 local roleAtlas={

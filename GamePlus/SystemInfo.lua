@@ -734,14 +734,13 @@ local function Init()
         if localizedVersion and localizedVersion~='' then
             e.tips:AddLine((e.onlyChinese and '本地' or REFORGE_CURRENT)..localizedVersion, 1,0,0)
         end
-        local curRegion= GetCurrentRegion()
         e.tips:AddLine('realmID '..GetRealmID()..' '..GetNormalizedRealmName(), 1,0.82,0)
-        e.tips:AddLine('regionID '..curRegion..' '..GetCurrentRegionName(), 1,0.82,0)
+        e.tips:AddLine('regionID '..e.Player.region..' '..GetCurrentRegionName(), 1,0.82,0)
 
         local info=C_BattleNet.GetGameAccountInfoByGUID(e.Player.guid)
         if info and info.wowProjectID then
             local region=''
-            if info.regionID and info.regionID~=curRegion then
+            if info.regionID and info.regionID~=e.Player.region then
                 region=' regionID'..(e.onlyChinese and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..info.regionID..'|r'
             end
             e.tips:AddLine('isInCurrentRegion '..e.GetYesNo(info.isInCurrentRegion)..region, 1,1,1)

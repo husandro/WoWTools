@@ -34,7 +34,7 @@ local function set_Text_SendMailNameEditBox(_, name)--设置，发送名称，�
         SendMailNameEditBox:ClearFocus()
         C_Timer.After(0.5, function()
             if SendMailSubjectEditBox:GetText()=='' then
-                SendMailSubjectEditBox:SetText(GetCurrentRegion()==5 and '你好' or EMOTE56_CMD1:gsub('/',''))
+                SendMailSubjectEditBox:SetText(e.Player.region==5 and '你好' or EMOTE56_CMD1:gsub('/',''))
                 SendMailSubjectEditBox:SetCursorPosition(0)
                 SendMailSubjectEditBox:ClearFocus()
             end
@@ -1916,8 +1916,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save.lastMaxSendPlayerList= Save.lastMaxSendPlayerList or 20
 
             if e.Player.husandro and #Save.lastSendPlayerList==0 then
-                local region= GetCurrentRegion()--1US(includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
-                if region==3 then
+                --1US(includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
+                if e.Player.region==3 then
                     Save.lastSendPlayerList= {
                         'Zans-Nemesis',
                         'Qisi-Nemesis',
