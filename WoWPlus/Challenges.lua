@@ -511,7 +511,7 @@ local function Affix()
             end
         end
     end
-    
+
     if currentWeek then
         local one= currentWeek ==12 and  1 or currentWeek
         local due=one+1 due=due==12 and 1 or due
@@ -653,7 +653,7 @@ local function set_Kill_Info()--副本PVP团本
                 if info.unlocked then
                     text='   '..index..') '..info.difficulty..e.Icon.select2--.. ' '..(e.onlyChinese and '完成' or COMPLETE)
                 else
-                    text='   '..'|cff828282'..index..') '
+                    text='    |cff828282'..index..') '
                         ..info.difficulty
                         .. ' '..(info.progress>0 and '|cnGREEN_FONT_COLOR:'..info.progress..'|r' or info.progress)
                         .."/"..info.threshold..'|r'
@@ -861,7 +861,7 @@ local function set_All_Text()--所有记录
         local lable= ChallengesFrame['Currency'..v]
         if info and info.discovered and info.quantity and info.maxQuantity then
             if info.maxQuantity>0  then
-      
+
                 if info.quantity==info.maxQuantity then
                     text=text..'|cnGREEN_FONT_COLOR:'..info.quantity.. '/'..info.maxQuantity..'|r '
                 else
