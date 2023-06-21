@@ -1479,6 +1479,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             end)
 
+            hooksecurefunc(WeeklyRewardsFrame, 'UpdateSelection', function(self2)
+                local activities = C_WeeklyRewards.GetActivities();
+                for _, activityInfo in ipairs(activities) do
+                    local frame = self2:GetActivityFrame(activityInfo.type, activityInfo.index);
+                    local itemFrame= frame and frame.ItemFrame
+                    if itemFrame then
+                        e.Set_Item_Stats(itemFrame, itemFrame.displayedItemDBID and C_WeeklyRewards.GetItemHyperlink(itemFrame.displayedItemDBID), {point=itemFrame.Icon})
+                    end
+                end
+            end)
+
         elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级, 界面
             add_Button_OpenOption(ItemUpgradeFrameCloseButton)--添加一个按钮, 打开选项
 

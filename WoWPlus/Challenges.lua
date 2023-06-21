@@ -40,12 +40,12 @@ local affixSchedule = {
 	[2]  = { [1]=134, [2]=7,   [3]=10,}, -- Fortified  | Entangling  | Bolstering
 	[3]  = { [1]=136, [2]=123, [3]=9, }, -- Tyrannical | Incorporeal | Spiteful
 	[4]  = { [1]=135, [2]=6,   [3]=10,}, -- Fortified  | Afflicted   | Raging
-	[5]  = { [1]=0,   [2]=0,   [3]=9, }, -- Tyrannical |  | 
-	[6]  = { [1]=0,   [2]=0,   [3]=10,}, -- Fortified  |  | 
+	[5]  = { [1]=3,   [2]=8,   [3]=9, }, -- Tyrannical | Volcanic    | Sanguine
+	[6]  = { [1]=135,   [2]=7,   [3]=10,}, -- Fortified  |  | 
 	[7]  = { [1]=0,   [2]=0,   [3]=9, }, -- Tyrannical |  | 
 	[8]  = { [1]=0,   [2]=0,   [3]=10,}, -- Fortified  |  | 
 	[9]  = { [1]=0,   [2]=0,   [3]=9, }, -- Tyrannical |  | 
-	[10] = { [1]=0,   [2]=0,   [3]=10,}, -- Fortified  |  | 
+	[10] = { [1]=0,   [2]=0,   [3]=10,}, -- Fortified  |  |
 }
 
 local function get_Spell_MapChallengeID(mapChallengeID)
@@ -511,7 +511,7 @@ local function Affix()
             end
         end
     end
-    currentWeek=1
+    
     if currentWeek then
         local one= currentWeek ==12 and  1 or currentWeek
         local due=one+1 due=due==12 and 1 or due
@@ -594,6 +594,7 @@ local function set_Kill_Info()--副本PVP团本
                 threshold = info.threshold,
                 unlocked = info.progress>=info.threshold,
                 id= info.id,
+                type= info.type,
             }
             info= info.rewards
         end
@@ -615,30 +616,34 @@ local function set_Kill_Info()--副本PVP团本
         last= label
 
         for index, info in pairs(tab) do
-            label= ChallengesFrame['rewardChest'..head..index]
+            label= ChallengesFrame['rewardChestSub'..head..index]
             if not label then
                 label= e.Cstr(ChallengesFrame.tipsFrame, {mouse= true})
                 label:SetPoint('TOPLEFT', last, 'BOTTOMLEFT')
                 label:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
                 label:SetScript('OnEnter', function(self2)
+                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                    e.tips:ClearLines()
                     local link= self2.id and C_WeeklyRewards.GetExampleRewardItemHyperlinks(self2.id)
-                    if link then
-                        e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                        e.tips:ClearLines()
+                    if link and link~='' then
                         e.tips:SetHyperlink(link)
-                        e.tips:AddLine(' ')
-                        e.tips:Show()
+                    else
+                        e.tips:AddDoubleLine(format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION,e.onlyChinese and '物品等级' or STAT_AVERAGE_ITEM_LEVEL ),e.onlyChinese and '无' or NONE)
+                        e.tips:AddLine('activities')
+                        e.tips:AddDoubleLine('type '..self2.type, 'id '..self2.id)
                     end
+                    e.tips:Show()
                     self2:SetAlpha(0.5)
                 end)
-                ChallengesFrame['rewardChest'..index]= label
+                ChallengesFrame['rewardChestSub'..head..index]= label
             end
             label.id= info.id
+            label.type= info.type
             last= label
 
             local text
-            local itemLink= (info.id and info.unlocked) and C_WeeklyRewards.GetExampleRewardItemHyperlinks(info.id)
-            if itemLink then
+            local itemLink= info.id and C_WeeklyRewards.GetExampleRewardItemHyperlinks(info.id)
+            if itemLink and itemLink~='' then
                 e.LoadDate({id=itemLink, type='item'})
                 local texture= C_Item.GetItemIconByID(itemLink)
                 local itemLevel= GetDetailedItemLevelInfo(itemLink)
@@ -648,7 +653,10 @@ local function set_Kill_Info()--副本PVP团本
                 if info.unlocked then
                     text='   '..index..') '..info.difficulty..e.Icon.select2--.. ' '..(e.onlyChinese and '完成' or COMPLETE)
                 else
-                    text='   '..'|cff828282'..index..') '..info.difficulty.. ' '..info.progress.."/"..info.threshold..'|r'
+                    text='   '..'|cff828282'..index..') '
+                        ..info.difficulty
+                        .. ' '..(info.progress>0 and '|cnGREEN_FONT_COLOR:'..info.progress..'|r' or info.progress)
+                        .."/"..info.threshold..'|r'
                 end
             end
             label:SetText(text or '')
@@ -730,7 +738,11 @@ local function set_All_Text()--所有记录
             self2:SetAlpha(0.5)
         end)
     end
-    ChallengesFrame.runHistoryLable:SetText((e.onlyChinese and '历史' or HISTORY)..' |cff00ff00'..#C_MythicPlus.GetRunHistory(true).. '|r/'..#C_MythicPlus.GetRunHistory(true, true))
+    ChallengesFrame.runHistoryLable:SetText(
+        (e.onlyChinese and '历史' or HISTORY)
+        ..' |cff00ff00'..#C_MythicPlus.GetRunHistory(true)
+        ..'|r/'..#C_MythicPlus.GetRunHistory(true, true)
+    )
 
 
     --#######
@@ -800,7 +812,7 @@ local function set_All_Text()--所有记录
             local texture
             texture= C_Item.GetItemIconByID(link)
             texture= (not texture or texture==134400) and 4352494 or texture
-            linkText= (linkText and linkText..'|n' or '')..'      '..(texture and '|T'..texture..':)|t' or '')..link
+            linkText= (linkText and linkText..'|n' or '')..'   '..(texture and '|T'..texture..':)|t' or '')..link
         end
         if linkText then
             m= m..'|n|n'..linkText..'|n'.. e.GetPlayerInfo({guid=guid, faction=infoWoW.faction, reName=true, reRealm=true})
@@ -849,23 +861,28 @@ local function set_All_Text()--所有记录
         local lable= ChallengesFrame['Currency'..v]
         if info and info.discovered and info.quantity and info.maxQuantity then
             if info.maxQuantity>0  then
+      
+                if info.quantity==info.maxQuantity then
+                    text=text..'|cnGREEN_FONT_COLOR:'..info.quantity.. '/'..info.maxQuantity..'|r '
+                else
+                    text=text..info.quantity.. '/'..info.maxQuantity..' '
+                end
                 if info.useTotalEarnedForMaxQty then--本周还可获取                        
                     local q
                     q= info.maxQuantity - info.totalEarned
-                    if q>0 then q='|cff00ff00'..q..'|r' end
-                    text=text..'('..q..'+) '
-                end
-                if info.quantity==info.maxQuantity then
-                    text=text..'|cff00ff00'..info.quantity.. '/'..info.maxQuantity..'|r '
-                else
-                    text=text..info.quantity.. '/'..info.maxQuantity..' '
+                    if q>0 then
+                        q='|cnGREEN_FONT_COLOR:+'..q..'|r'
+                    else
+                        q='|cff828282+0|r'
+                    end
+                    text=text..' ('..q..') '
                 end
             else
                 if info.maxQuantity==0 then
                     text=text..info.quantity..'/'.. (e.onlyChinese and '无限制' or UNLIMITED)..' '
                 else
                     if info.quantity==info.maxQuantity then
-                        text=text..'|cff00ff00'..info.quantity.. '/'..info.maxQuantity..'|r '
+                        text=text..'|cnGREEN_FONT_COLOR:'..info.quantity.. '/'..info.maxQuantity..'|r '
                     else
                         text=text..info.quantity..'/'..info.maxQuantity..' '
                     end
