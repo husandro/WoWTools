@@ -319,67 +319,68 @@ local function Clear(index)--取消标记标
     end
 end
 
-local frame, frame2
+local targetFrame, markersFrame
 local function setMarkersFrame_Postion()--设置标记框架, 位置
-    if frame then
+    if targetFrame then
         if Save.markersFramePoint then
-            frame:SetPoint(Save.markersFramePoint[1], UIParent, Save.markersFramePoint[3], Save.markersFramePoint[4], Save.markersFramePoint[5])
-        --elseif MultiBarBottomLeftButton12 and MultiBarBottomLeftButton12:IsShown() then
-        --    frame:SetPoint('BOTTOMLEFT', MultiBarBottomLeftButton12, 'TOPRIGHT')
+            targetFrame:SetPoint(Save.markersFramePoint[1], UIParent, Save.markersFramePoint[3], Save.markersFramePoint[4], Save.markersFramePoint[5])
+        --[[elseif _G['MultiBarBottomLeftButton12'] and _G['MultiBarBottomLeftButton12']:IsVisible() then
+            targetFrame:SetPoint('BOTTOMRIGHT', _G['MultiBarBottomLeftButton12'], 'TOPRIGHT')]]
         else
-            frame:SetPoint('BOTTOM', UIParent, 'BOTTOM', 330, 175)
+            targetFrame:SetPoint('BOTTOM', UIParent, 'BOTTOM', 135, 85)
         end
     end
 end
-local function setMarkersFrame()--设置标记, 框架
-    --local combat=UnitAffectingCombat('player')
+local function Init_Markers_Frame()--设置标记, 框架
+    local isInCombat= UnitAffectingCombat('player')
 
-    if not Save.markersFrame or not getAllSet() then-- or combat then
-        --[[if combat then
-            panel:RegisterEvent('PLAYER_REGEN_ENABLED')
-            button.combat=true
-        else]]
-            if frame then
-                frame:SetShown(false)
-            end
-        --end
+    if isInCombat then
+        panel:RegisterEvent('PLAYER_REGEN_ENABLED')
+    end
+
+    if not Save.markersFrame or not getAllSet() then-- or isInCombat then
+        if targetFrame and not isInCombat then
+            targetFrame:SetShown(false)
+        end
         return
     end
 
-    if not frame then
+    local size= 16
+
+    if not targetFrame then
         local last
-        frame=CreateFrame("Frame",nil, UIParent)
-        frame:SetFrameStrata('HIGH')
+        targetFrame= CreateFrame("Frame")
+        targetFrame:SetFrameStrata('HIGH')
         setMarkersFrame_Postion()--设置标记框架, 位置
-        frame:SetSize(1, 25)
-        frame:SetMovable(true)
-        frame:SetClampedToScreen(true)
-        if Save.markersScale and Save.markersScale~=1 then--缩放
-            frame:SetScale(Save.markersScale)
+        targetFrame:SetSize(1, size)
+        targetFrame:SetMovable(true)
+        targetFrame:SetClampedToScreen(true)
+        if Save.markersScale and Save.markersScale~=1 and not isInCombat then--缩放
+            targetFrame:SetScale(Save.markersScale)
         end
 
         for index = 0, NUM_RAID_ICONS do
-            local btn=e.Cbtn(frame, {icon='hide', size={25,25}})
+            local btn= e.Cbtn(targetFrame, {icon='hide', size={size,size}})
             if Save.H then
-                btn:SetPoint('BOTTOMLEFT', last or frame, 'TOPLEFT')
+                btn:SetPoint('BOTTOMLEFT', last or targetFrame, 'TOPLEFT')
             else
-                btn:SetPoint('BOTTOMRIGHT', last or frame, 'BOTTOMLEFT')
+                btn:SetPoint('BOTTOMRIGHT', last or targetFrame, 'BOTTOMLEFT')
             end
             if index==0 then
-                btn:SetNormalAtlas(e.Icon.disabled)
+                btn:SetNormalTexture('Interface\\Cursor\\UI-Cursor-Move')
                 btn:RegisterForDrag("RightButton")
-                btn:SetScript("OnDragStart", function(self,d )
+                btn:SetScript("OnDragStart", function(_, d)
                     if d=='RightButton' and not IsModifierKeyDown() then
-                        frame:StartMoving()
+                        targetFrame:StartMoving()
                     end
                 end)
-                btn:SetScript("OnDragStop", function(self)
+                btn:SetScript("OnDragStop", function()
                     ResetCursor()
-                    frame:StopMovingOrSizing()
-                    Save.markersFramePoint={frame:GetPoint(1)}
+                    targetFrame:StopMovingOrSizing()
+                    Save.markersFramePoint={targetFrame:GetPoint(1)}
                     Save.markersFramePoint[2]=nil
                 end)
-                btn:SetScript('OnMouseDown', function(self, d)
+                btn:SetScript('OnMouseDown', function(_, d)
                     local key=IsModifierKeyDown()
                     if d=='LeftButton' and not key then
                         Clear()--取消标记标
@@ -390,22 +391,28 @@ local function setMarkersFrame()--设置标记, 框架
                         print(id,addName,HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION..(Save.H and e.Icon.up2 or e.Icon.toLeft2), REQUIRES_RELOAD)
                     end
                 end)
-                btn:SetScript('OnMouseUp', function()
-                    ResetCursor()
+                btn:SetScript('OnMouseUp', function() ResetCursor() end)
+                btn:SetScript('OnLeave', function(self)
+                    e.tips:Hide()
+                    self:SetNormalTexture('Interface\\Cursor\\UI-Cursor-Move')
                 end)
                 btn:SetScript('OnEnter', function(self)
-                    e.tips:SetOwner(self, "ANCHOR_RIGHT")
+                    e.tips:SetOwner(self, "ANCHOR_TOP")
                     e.tips:ClearLines()
                     e.tips:AddDoubleLine(id, addName)
                     e.tips:AddDoubleLine(e.Icon.O2..(e.onlyChinese and '清除全部' or CLEAR_ALL), e.Icon.left)
                     e.tips:AddLine(' ')
                     e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE,e.Icon.right)
-                    e.tips:AddDoubleLine(e.onlyChinese and '缩放' or  UI_SCALE, (Save.markersScale or 1)..' Alt+'..e.Icon.mid)
+                    e.tips:AddDoubleLine((UnitAffectingCombat('player') and '|cff828282' or '')..(e.onlyChinese and '缩放' or  UI_SCALE), (Save.markersScale or 1)..' Alt+'..e.Icon.mid)
                     e.tips:AddDoubleLine((e.onlyChinese and '图标方向' or  HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION)..(Save.H and e.Icon.toLeft2 or e.Icon.up2), 'Ctrl+'..e.Icon.right)
                     e.tips:Show()
+                    self:SetNormalAtlas(e.Icon.disabled)
                 end)
-                btn:EnableMouseWheel(true)
-                btn:SetScript('OnMouseWheel', function(self, d)--缩放
+                btn:SetScript('OnMouseWheel', function(_, d)--缩放
+                    if UnitAffectingCombat('player') then
+                        print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+                        return
+                    end
                     if IsAltKeyDown() then
                         local sacle=Save.markersScale or 1
                         if d==1 then
@@ -419,20 +426,21 @@ local function setMarkersFrame()--设置标记, 框架
                             sacle=0.6
                         end
                         print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, sacle)
-                        frame:SetScale(sacle)
+                        targetFrame:SetScale(sacle)
                         Save.markersScale=sacle
                     end
                 end)
-                button.markersFrame=btn--给 SetButtonState('PUSHED') 用
+                button.markersFrame= btn--给 SetButtonState('PUSHED') 用
             else
                 btn:SetNormalTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
-                btn:SetScript('OnMouseDown', function(self, d)
+                btn:SetScript('OnClick', function(_, d)
                     if d=='LeftButton' then
                         setTaget('target', index)--设置,目标, 标记
                     elseif d=='RightButton' then
                         Clear(index)--取消标记标    
                     end
                 end)
+                btn:SetScript('OnLeave', function() e.tips:Hide() end)
                 btn:SetScript('OnEnter', function(self)
                     e.tips:SetOwner(self, "ANCHOR_RIGHT")
                     e.tips:ClearLines()
@@ -441,41 +449,41 @@ local function setMarkersFrame()--设置标记, 框架
                     e.tips:Show()
                 end)
             end
-            btn:SetScript('OnLeave', function()
-                e.tips:Hide()
-            end)
+
             last=btn
         end
     end
-    frame:SetShown(true)
+    if not isInCombat then
+        targetFrame:SetShown(true)
+    end
 
-    if not frame.check then--就绪
-        frame.check=e.Cbtn(frame, {icon='hide', size={25,25}})
-        frame.check:SetNormalAtlas(e.Icon.select)
+    if not targetFrame.check then--就绪
+        targetFrame.check=e.Cbtn(targetFrame, {icon='hide', size={size,size}})
+        targetFrame.check:SetNormalAtlas(e.Icon.select)
         if Save.H then
-            frame.check:SetPoint('TOPLEFT')
+            targetFrame.check:SetPoint('TOPLEFT')
         else
-            frame.check:SetPoint('BOTTOMLEFT', frame, 'BOTTOMLEFT')
+            targetFrame.check:SetPoint('BOTTOMLEFT', targetFrame, 'BOTTOMLEFT')
         end
-        frame.check:SetScript('OnMouseDown', function()
+        targetFrame.check:SetScript('OnMouseDown', function()
             DoReadyCheck()
         end)
-        frame.check:SetScript('OnEnter', function(self)
+        targetFrame.check:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_RIGHT")
             e.tips:ClearLines()
             e.tips:AddLine(EMOTE127_CMD3)
             e.tips:Show()
         end)
-        frame.check:SetScript('OnLeave', function() e.tips:Hide() end)
+        targetFrame.check:SetScript('OnLeave', function() e.tips:Hide() end)
 
-        frame.countdown=e.Cbtn(frame.check, {icon='hide', size={25,25}})--倒计时10秒
-        frame.countdown:SetNormalAtlas('countdown-swords')
+        targetFrame.countdown=e.Cbtn(targetFrame.check, {icon='hide', size={size,size}})--倒计时10秒
+        targetFrame.countdown:SetNormalAtlas('countdown-swords')
         if Save.H then
-            frame.countdown:SetPoint('TOPRIGHT',frame.check, 'TOPLEFT')
+            targetFrame.countdown:SetPoint('TOPRIGHT',targetFrame.check, 'TOPLEFT')
         else
-            frame.countdown:SetPoint('BOTTOMLEFT', frame.check, 'TOPLEFT')
+            targetFrame.countdown:SetPoint('BOTTOMLEFT', targetFrame.check, 'TOPLEFT')
         end
-        frame.countdown:SetScript('OnMouseDown', function(self, d)
+        targetFrame.countdown:SetScript('OnMouseDown', function(self, d)
             local key=IsModifierKeyDown()
             if d=='LeftButton' and not key then
                 if not self.star then
@@ -497,7 +505,7 @@ local function setMarkersFrame()--设置标记, 框架
                     hasEditBox=1,
                     button1= e.onlyChinese and '设置' or SETTINGS,
                     button2= e.onlyChinese and '取消' or CANCEL,
-                    OnShow = function(self2, data)
+                    OnShow = function(self2)
                         self2.editBox:SetNumeric(true)
                         self2.editBox:SetNumber(Save.countdown or 7)
                     end,
@@ -505,7 +513,7 @@ local function setMarkersFrame()--设置标记, 框架
                         local num= self2.editBox:GetNumber()
                         Save.countdown=num
                     end,
-                    EditBoxOnTextChanged=function(self2, data)
+                    EditBoxOnTextChanged=function(self2)
                         local num= self2:GetNumber()
                         self2:GetParent().button1:SetEnabled(num>0 and num<=3600)
                         self2:GetParent().button1:SetText(SecondsToClock(num))
@@ -519,7 +527,7 @@ local function setMarkersFrame()--设置标记, 框架
                 StaticPopup_Show(id..addName..'COUNTDOWN')
             end
         end)
-        frame.countdown:SetScript('OnEvent', function(self, event, timerType, timeRemaining, totalTime)
+        targetFrame.countdown:SetScript('OnEvent', function(self, event, timerType, timeRemaining, totalTime)
             if timerType==3 and event=='START_TIMER' then
                 if totalTime==0 then
                    self.star=nil
@@ -531,57 +539,56 @@ local function setMarkersFrame()--设置标记, 框架
                 end
             end
         end)
-        frame.countdown:RegisterEvent('START_TIMER')
-        frame.countdown:SetScript('OnShow', function(self)
+        targetFrame.countdown:RegisterEvent('START_TIMER')
+        targetFrame.countdown:SetScript('OnShow', function(self)
             self:RegisterEvent('START_TIMER')
         end)
-        frame.countdown:SetScript('OnHide', function(self)
+        targetFrame.countdown:SetScript('OnHide', function(self)
             self:UnregisterEvent('START_TIMER')
         end)
-        frame.countdown:SetScript('OnEnter', function(self)
+        targetFrame.countdown:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_RIGHT")
             e.tips:ClearLines()
             e.tips:AddLine(e.Icon.left..(e.onlyChinese and '/倒计时' or SLASH_COUNTDOWN2)..' '..(Save.countdown or 7))
             e.tips:AddLine(e.Icon.right..BINDING_NAME_STOPATTACK)
             e.tips:AddLine(' ')
-            e.tips:AddLine(e.onlyChinese and '你太快了' or ERR_GENERIC_THROTTLE, 1,0,0)
+            e.tips:AddLine(e.onlyChinese and '备注：不要太快了' or ('note:' ..ERR_GENERIC_THROTTLE), 1,0,0)
             e.tips:AddLine('Ctrl+'..e.Icon.right..(e.onlyChinese and '设置' or SETTINGS))
             e.tips:Show()
         end)
-        frame.countdown:SetScript('OnLeave', function() e.tips:Hide() end)
+        targetFrame.countdown:SetScript('OnLeave', function() e.tips:Hide() end)
     end
-    frame.check:SetShown(GetNumGroupMembers()>1 and (IsInRaid() and getIsLeader()) or UnitIsGroupLeader('player'))
+    targetFrame.check:SetShown(GetNumGroupMembers()>1 and (IsInRaid() and getIsLeader()) or UnitIsGroupLeader('player'))
 
 
     local isInGroup=IsInGroup()--世界标记
-    --[[if combat then
-       if not isInGroup or not frame2 or not frame2:IsShown() then
+    if isInCombat then
+       if not isInGroup or not markersFrame or not markersFrame:IsShown() then
             panel:RegisterEvent('PLAYER_REGEN_ENABLED')
-            button.combat=true
             return
        end
-    else]]if not isInGroup then
-        if frame2 then
-            frame2:SetShown(false)
+    elseif not isInGroup then
+        if markersFrame then
+            markersFrame:SetShown(false)
         end
         return
     end
-    if not frame2 then
-        frame2=CreateFrame("Frame", nil, frame)
+    if not markersFrame then
+        markersFrame= CreateFrame("Frame", nil, targetFrame)
         if Save.H then
-            frame2:SetPoint('TOPRIGHT', frame, 'TOPLEFT')
+            markersFrame:SetPoint('TOPRIGHT', targetFrame, 'TOPLEFT')
         else
-            frame2:SetPoint('TOPLEFT', frame, 'TOPRIGHT',-1,0)
+            markersFrame:SetPoint('TOPLEFT', targetFrame, 'TOPRIGHT',-1,0)
         end
-        frame2:SetSize(1, 1)
+        markersFrame:SetSize(1, 1)
         local last
         local tab={5,6,3,2,7,1,4,8}
         for index=0,  NUM_WORLD_RAID_MARKERS do
-            local btn=e.Cbtn(frame2, {type=true, icon='hide', size={25,25}})
+            local btn= e.Cbtn(markersFrame, {type=true, icon='hide', size={size,size}})
             if Save.H then
-                btn:SetPoint('BOTTOMRIGHT', last or frame2, 'TOPRIGHT')
+                btn:SetPoint('BOTTOMRIGHT', last or markersFrame, 'TOPRIGHT')
             else
-                btn:SetPoint('BOTTOMRIGHT', last or frame2, 'BOTTOMLEFT')
+                btn:SetPoint('BOTTOMRIGHT', last or markersFrame, 'BOTTOMLEFT')
             end
             --btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
 
@@ -620,7 +627,7 @@ local function setMarkersFrame()--设置标记, 框架
             end
         end
     end
-    frame2:SetShown(true)
+    markersFrame:SetShown(true)
 end
 
 --#####
@@ -688,7 +695,7 @@ local function InitMenu(self, level, type)--主菜单
                 notCheckable=true,
                 colorCode= not Save.markersFramePoint and '|cff606060',
                 func= function()
-                    frame:ClearAllPoints()
+                    targetFrame:ClearAllPoints()
                     Save.markersFramePoint=nil
                     setMarkersFrame_Postion()--设置标记框架, 位置
                 end
@@ -791,7 +798,7 @@ local function InitMenu(self, level, type)--主菜单
                     return
                 end
                 Save.markersFrame= not Save.markersFrame and true or nil
-                setMarkersFrame()--设置标记, 框架
+                Init_Markers_Frame()--设置标记, 框架
             end,
             disabled=not getAllSet(),--是不有权限
         }
@@ -828,7 +835,7 @@ local function Init()
 
     setTexture()--设置,按钮图片
     setAllTextrue()--主图标,是否有权限
-    setMarkersFrame()--设置标记, 框架
+    Init_Markers_Frame()--设置标记, 框架
     setReadyTexureTips()--自动就绪, 主图标, 提示
     setGroupReadyTipsEvent()--注册事件, 就绪,队员提示信息
 
@@ -916,14 +923,13 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     elseif event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' then
         setTankHealer(true)--设置队伍标记
         setAllTextrue()--主图标,是否有权限
-        setMarkersFrame()--设置标记, 框架
+        Init_Markers_Frame()--设置标记, 框架
 
-    --[[elseif event=='PLAYER_REGEN_ENABLED' then
-        if self.combat then
-            setMarkersFrame()--设置标记, 框架
-            self.combat=nil
+    elseif event=='PLAYER_REGEN_ENABLED' then
+        C_Timer.After(2, function()
+            Init_Markers_Frame()--设置标记, 框架
             self:UnregisterEvent('PLAYER_REGEN_ENABLED')
-        end]]
+        end)
 
     elseif event=='READY_CHECK' then--自动就绪事件
         e.PlaySound(SOUNDKIT.READY_CHECK)--播放, 声音
