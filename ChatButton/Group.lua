@@ -285,7 +285,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
         if guid and maxHP and role then
             info.name= (e.PlayerOnlineInfo(unit) or '')..e.GetPlayerInfo({unit=unit, guid=guid, reName=true, reRealm=true})..(e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLeve or '')
             info.maxHP= maxHP
-
+            info.col= '|c'..select(4, GetClassColor(UnitClassBase(unit)))
             if uiMapID then--不在同地图
                 local text, mapID=e.GetUnitMapName(unit)
                 if text and mapID and mapID~=uiMapID then
@@ -319,7 +319,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
 
     local find
     for _, info in pairs(tabT) do
-        e.tips:AddDoubleLine(info.name, e.MK(info.maxHP, 3)..INLINE_TANK_ICON)
+        e.tips:AddDoubleLine(info.name, info.col..e.MK(info.maxHP, 3)..INLINE_TANK_ICON)
         find=true
     end
     if find then
@@ -327,7 +327,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
         find=nil
     end
     for _, info in pairs(tabN) do
-        e.tips:AddDoubleLine(info.name, e.MK(info.maxHP, 3)..INLINE_HEALER_ICON)
+        e.tips:AddDoubleLine(info.name, info.col..e.MK(info.maxHP, 3)..INLINE_HEALER_ICON)
         find=true
     end
     if find then
@@ -335,7 +335,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
         find=nil
     end
     for _, info in pairs(tabDPS) do
-        e.tips:AddDoubleLine(info.name, e.MK(info.maxHP, 3)..INLINE_DAMAGER_ICON)
+        e.tips:AddDoubleLine(info.name, info.col..e.MK(info.maxHP, 3)..INLINE_DAMAGER_ICON)
     end
 
     e.tips:Show()
