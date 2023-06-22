@@ -332,17 +332,17 @@ local function setMarkersFrame_Postion()--设置标记框架, 位置
     end
 end
 local function setMarkersFrame()--设置标记, 框架
-    local combat=UnitAffectingCombat('player')
+    --local combat=UnitAffectingCombat('player')
 
-    if not Save.markersFrame or not getAllSet() or combat then
-        if combat then
+    if not Save.markersFrame or not getAllSet() then-- or combat then
+        --[[if combat then
             panel:RegisterEvent('PLAYER_REGEN_ENABLED')
             button.combat=true
-        else
+        else]]
             if frame then
                 frame:SetShown(false)
             end
-        end
+        --end
         return
     end
 
@@ -554,13 +554,13 @@ local function setMarkersFrame()--设置标记, 框架
 
 
     local isInGroup=IsInGroup()--世界标记
-    if combat then
+    --[[if combat then
        if not isInGroup or not frame2 or not frame2:IsShown() then
             panel:RegisterEvent('PLAYER_REGEN_ENABLED')
             button.combat=true
             return
        end
-    elseif not isInGroup then
+    else]]if not isInGroup then
         if frame2 then
             frame2:SetShown(false)
         end
@@ -918,12 +918,12 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         setAllTextrue()--主图标,是否有权限
         setMarkersFrame()--设置标记, 框架
 
-    elseif event=='PLAYER_REGEN_ENABLED' then
+    --[[elseif event=='PLAYER_REGEN_ENABLED' then
         if self.combat then
             setMarkersFrame()--设置标记, 框架
             self.combat=nil
             self:UnregisterEvent('PLAYER_REGEN_ENABLED')
-        end
+        end]]
 
     elseif event=='READY_CHECK' then--自动就绪事件
         e.PlaySound(SOUNDKIT.READY_CHECK)--播放, 声音
