@@ -60,6 +60,7 @@ local function get_Spell_MapChallengeID(mapChallengeID)
         {spell=88775, ins=68, map=438},--传送到旋云之巅
     }
     for _, tab in pairs(tabs) do
+        e.LoadDate({id=tab.spell, type='spell'})
         if tab.map==mapChallengeID then
             return tab.spell
         end
@@ -1219,9 +1220,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
             local spellID
             if not Save.hidePort and not isInBat then
                 spellID= get_Spell_MapChallengeID(frame.mapID)
-                --spellID= 781
                 if spellID then
-                    e.LoadDate({id= spellID, type='spell'})--加载 item quest spell
                     if not frame.spellPort then
                         local h=frame:GetWidth()/3 +8
                         frame.spellPort= e.Cbtn(frame, {type=true, size={h, h}, atlas='WarlockPortal-Yellow-32x32'})
