@@ -151,7 +151,7 @@ local function set_ProfessionsFrame_Button()--专业界面, 按钮
     setButton.frame:SetShown(not Save.notProfessionsFrameButtuon)
 
     local last
-    local tab={GetProfessions()}
+    local tab={GetProfessions()}--prof1, prof2, archaeology, fishing, cooking
     if tab[3]==10 and #tab>3 then
         local archaeology=tab[3]--10
         table.remove(tab, 3)
@@ -160,7 +160,7 @@ local function set_ProfessionsFrame_Button()--专业界面, 按钮
     for k , index in pairs(tab) do
         local name, icon, _, _, _, _, skillLine = GetProfessionInfo(index)
         if icon and skillLine then
-            local button=e.Cbtn(setButton.frame, {icon='hide',size={32, 32}})
+            local button= e.Cbtn(setButton.frame, {icon='hide',size={32, 32}})
             button:SetNormalTexture(icon)
             if not last then
                 button:SetPoint('BOTTOMLEFT', ProfessionsFrame, 'BOTTOMRIGHT',0, 35)
@@ -189,6 +189,12 @@ local function set_ProfessionsFrame_Button()--专业界面, 按钮
                 e.tips:Hide()
                 self:SetButtonState('NORMAL')
             end)
+
+            --[[if k==5 then--cooking
+                local btn= e.Cbtn(setButton.frame, {type= true, texture=135805 ,size={32, 32}})
+                button:SetPoint('LEFT', btn, 'RIGHT')
+
+            end]]
             last= button
         end
     end
