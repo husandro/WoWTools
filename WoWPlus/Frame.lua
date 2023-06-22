@@ -77,6 +77,10 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name)--放大
     end
 
     self.ZoomInOutFrame:SetScript('OnClick', function(self2, d)
+        if UnitAffectingCombat('player') then
+            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+            return
+        end
         local n= Save.scale[self2.ScaleName] or 1
         if d=='LeftButton' then
             n= n+ 0.05
@@ -90,6 +94,10 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name)--放大
     end)
 
     self.ZoomInOutFrame:SetScript('OnMouseWheel', function(self2,d)
+        if UnitAffectingCombat('player') then
+            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+            return
+        end
         local n= Save.scale[self2.ScaleName] or 1
         if d==-1 then
             n= n+ 0.05
@@ -112,8 +120,12 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name)--放大
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddLine('|cff00ff00'..(Save.scale[self2.ScaleName] or 1))
-        e.tips:AddDoubleLine(e.onlyChinese and '放大' or ZOOM_IN, '3'..e.Icon.left)
-        e.tips:AddDoubleLine(e.onlyChinese and '缩小' or ZOOM_OUT, '0.5'..e.Icon.right)
+        if UnitAffectingCombat('player') then
+            e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+        else
+            e.tips:AddDoubleLine(e.onlyChinese and '放大' or ZOOM_IN, '3'..e.Icon.left)
+            e.tips:AddDoubleLine(e.onlyChinese and '缩小' or ZOOM_OUT, '0.5'..e.Icon.right)
+        end
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()

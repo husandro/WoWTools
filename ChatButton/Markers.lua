@@ -14,17 +14,28 @@ local Save={
 local button
 local panel= CreateFrame("Frame")
 
-local color={
-    [1]={r=1, g=1, b=0},--星星, 黄色
-    [2]={r=1, g=0.45, b=0.04},--圆形, 金色
-    [3]={r=1, g=0, b=1},--菱形,紫色
-    [4]={r=0, g=1, b=0},--三角,绿色
-
-    [5]={r=0.6, g=0.6, b=0.6},--月亮,灰色
-    [6]={r=0.1, g=0.2, b=1},--方块, 蓝色
-    [7]={r=1, g=0, b=0},--十字, 红色
-    [8]={r=1, g=1, b=1},--骷髅,白色
+local Color={
+    [1]={r=1, g=1, b=0, col='|cffffff00'},--星星, 黄色
+    [2]={r=1, g=0.45, b=0.04, col='|cffff7f3f'},--圆形, 橙色
+    [3]={r=1, g=0, b=1, col='|cffa335ee'},--菱形, 紫色
+    [4]={r=0, g=1, b=0, col='|cff1eff00'},--三角, 绿色
+    [5]={r=0.6, g=0.6, b=0.6, col='|cffffffff'},--月亮, 白色
+    [6]={r=0.1, g=0.2, b=1, col='|cff0070dd'},--方块, 蓝色
+    [7]={r=1, g=0, b=0, col='|cffff2020'},--十字, 红色
+    [8]={r=1, g=1, b=1, col='|cffffffff'},--骷髅,白色
 }
+--[[
+WORLD_MARKER = "世界标记%d";
+WORLD_MARKER1 = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:14:14|t |cff0070dd 蓝色|r世界标记"
+WORLD_MARKER2 = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:14:14|t |cff1eff00 绿色|r世界标记";
+WORLD_MARKER3 = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:14:14|t |cffa335ee 紫色|r世界标记";
+WORLD_MARKER4 = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:14:14|t |cffff2020 红色|r世界标记";
+WORLD_MARKER5 = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:14:14|t |cffffff00 黄色|r世界标记";
+WORLD_MARKER6 = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:14:14|t |cffff7f3f 橙色|r世界标记";
+WORLD_MARKER7 = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:14:14|t |cffaaaadd 银色|r世界标记";
+WORLD_MARKER8 = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:14:14|t |cffffffff 白色|r世界标记";
+]]
+
 local function getTexture(index)--取得图片
     if not index or index<1 or index>NUM_WORLD_RAID_MARKERS then
         return ''
@@ -97,13 +108,19 @@ local function setTankHealer(autoSet)--设置队伍标记
     local num=GetNumGroupMembers()
     if Save.tank==0 or num<2 then
         if num<2 and not autoSet then
-            print(id, addName, SETTINGS, TANK..getTexture(Save.tank), HEALER..getTexture(Save.healer), '|cnRED_FONT_COLOR:'..SPELL_TARGET_TYPE4_DESC..'<2|r')
+            print(id, addName,e.onlyChinese and '设置' or SETTINGS, 
+            INLINE_TANK_ICON..(e.onlyChinese and '坦克' or TANK)..getTexture(Save.tank),
+            INLINE_HEALER_ICON..(e.onlyChinese and '治疗' or HEALER)..getTexture(Save.healer),
+                '|cnRED_FONT_COLOR:'..(e.onlyChinese and '队员' or SPELL_TARGET_TYPE4_DESC)..'<2|r')
         end
         return
     end
     if IsInRaid() then
         if not getIsLeader() and not autoSet then--没有权限
-            print(id, addName, SETTINGS, TANK..getTexture(Save.tank), HEALER..getTexture(Save.healer), '|cnRED_FONT_COLOR:'..ERR_ARENA_TEAM_PERMISSIONS..'|r')
+            print(id, addName,e.onlyChinese and '设置' or SETTINGS, 
+            INLINE_TANK_ICON..(e.onlyChinese and '坦克' or TANK)..getTexture(Save.tank),
+            INLINE_HEALER_ICON..(e.onlyChinese and '治疗' or HEALER)..getTexture(Save.healer),
+            '|cnRED_FONT_COLOR:'..(e.onlyChinese and '没有权限' or ERR_ARENA_TEAM_PERMISSIONS)..'|r')
         else
             setRaidTarget()--设置团队标记
         end
@@ -324,13 +341,12 @@ local function setMarkersFrame_Postion()--设置标记框架, 位置
     if targetFrame then
         if Save.markersFramePoint then
             targetFrame:SetPoint(Save.markersFramePoint[1], UIParent, Save.markersFramePoint[3], Save.markersFramePoint[4], Save.markersFramePoint[5])
-        --[[elseif _G['MultiBarBottomLeftButton12'] and _G['MultiBarBottomLeftButton12']:IsVisible() then
-            targetFrame:SetPoint('BOTTOMRIGHT', _G['MultiBarBottomLeftButton12'], 'TOPRIGHT')]]
         else
             targetFrame:SetPoint('BOTTOM', UIParent, 'BOTTOM', 135, 85)
         end
     end
 end
+
 local function Init_Markers_Frame()--设置标记, 框架
     local isInCombat= UnitAffectingCombat('player')
 
@@ -355,7 +371,7 @@ local function Init_Markers_Frame()--设置标记, 框架
         targetFrame:SetSize(1, size)
         targetFrame:SetMovable(true)
         targetFrame:SetClampedToScreen(true)
-        if Save.markersScale and Save.markersScale~=1 and not isInCombat then--缩放
+        if Save.markersScale and Save.markersScale~=1 then--缩放
             targetFrame:SetScale(Save.markersScale)
         end
 
@@ -397,7 +413,7 @@ local function Init_Markers_Frame()--设置标记, 框架
                     self:SetNormalTexture('Interface\\Cursor\\UI-Cursor-Move')
                 end)
                 btn:SetScript('OnEnter', function(self)
-                    e.tips:SetOwner(self, "ANCHOR_TOP")
+                    e.tips:SetOwner(self, "ANCHOR_RIGHT")
                     e.tips:ClearLines()
                     e.tips:AddDoubleLine(id, addName)
                     e.tips:AddDoubleLine(e.Icon.O2..(e.onlyChinese and '清除全部' or CLEAR_ALL), e.Icon.left)
@@ -444,10 +460,12 @@ local function Init_Markers_Frame()--设置标记, 框架
                 btn:SetScript('OnEnter', function(self)
                     e.tips:SetOwner(self, "ANCHOR_RIGHT")
                     e.tips:ClearLines()
-                    e.tips:AddLine(getTexture(index)..(e.onlyChinese and '设置' or SETTINGS)..e.Icon.left, color[index].r, color[index].g, color[index].b)
-                    e.tips:AddLine(getTexture(index)..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..e.Icon.right, color[index].r, color[index].g, color[index].b)
+                    e.tips:AddDoubleLine(e.Icon.left..Color[self.index].col..getTexture(index)..(e.onlyChinese and '设置' or SETTINGS), 
+                                    Color[self.index].col..getTexture(index)..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..e.Icon.right
+                                )
                     e.tips:Show()
                 end)
+                btn.index= index
             end
 
             last=btn
@@ -590,7 +608,6 @@ local function Init_Markers_Frame()--设置标记, 框架
             else
                 btn:SetPoint('BOTTOMRIGHT', last or markersFrame, 'BOTTOMLEFT')
             end
-            --btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
 
             btn:SetAttribute('type1', 'worldmarker')
             btn:SetAttribute('marker1', index==0 and 0 or tab[index])
@@ -613,42 +630,39 @@ local function Init_Markers_Frame()--设置标记, 框架
                 if index==0 then
                     e.tips:AddLine(e.Icon.O2..(e.onlyChinese and '清除全部' or CLEAR_ALL)..e.Icon.left)
                 else
-                    e.tips:AddLine(getTexture(index)..(e.onlyChinese and '设置' or SETTINGS)..e.Icon.left, color[index].r, color[index].g, color[index].b)
-                    e.tips:AddLine(getTexture(index)..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..e.Icon.right, color[index].r, color[index].g, color[index].b)
+                    e.tips:AddDoubleLine(Color[self.index].col..e.Icon.left..getTexture(index)..(e.onlyChinese and '设置' or SETTINGS),
+                                        Color[self.index].col..getTexture(index)..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..e.Icon.right
+                                        )
                 end
                 e.tips:Show()
             end)
+            btn.index= index
             last=btn
             if index~=0 then--背景
                 btn.texture=btn:CreateTexture(nil,'BACKGROUND')
                 btn.texture:SetAllPoints(btn)
-                btn.texture:SetColorTexture(color[index].r, color[index].g, color[index].b)
+                btn.texture:SetColorTexture(Color[index].r, Color[index].g, Color[index].b)
                 btn.texture:SetAlpha(0.3)
             end
         end
     end
-    markersFrame:SetShown(true)
+    if not isInCombat then
+        markersFrame:SetShown(true)
+    end
 end
 
 --#####
 --主菜单
 --#####
-local function InitMenu(self, level, type)--主菜单
-    local colorCode={
-        [1]='|cffffff00',
-        [2]='|cffE29114',
-        [3]='|cffff00ff',
-        [4]='|cff00ff00',
-        [6]='|cff03BBFA',
-        [7]='|cffff0000',
-    }
+local function InitMenu(_, level, type)--主菜单
     local info
     if type then
         if type=='ready' then
             info={
                 text=e.Icon.select2..(e.onlyChinese and '就绪' or READY),--就绪
                 colorCode='|cff00ff00',
-                checked=Save.autoReady==1,
+                checked= Save.autoReady==1,
+                keepShownOnClick= true,
                 func=function()
                     Save.autoReady=1
                     setReadyTexureTips()--自动就绪, 主图标, 提示
@@ -660,6 +674,7 @@ local function InitMenu(self, level, type)--主菜单
                 text=e.Icon.X2..(e.onlyChinese and '未就绪' or NOT_READY_FEMALE),--未就绪
                 colorCode='|cffff0000',
                 checked=Save.autoReady==2,
+                keepShownOnClick= true,
                 func=function()
                     Save.autoReady=2
                     setReadyTexureTips()--自动就绪, 主图标, 提示
@@ -670,6 +685,7 @@ local function InitMenu(self, level, type)--主菜单
             info={--无
                 text= e.onlyChinese and '无' or NONE,
                 checked=not Save.autoReady,
+                keepShownOnClick= true,
                 func=function()
                     Save.autoReady=nil
                     setReadyTexureTips()--自动就绪, 主图标, 提示
@@ -682,6 +698,7 @@ local function InitMenu(self, level, type)--主菜单
             info={
                 text= e.onlyChinese and '队员就绪信息' or (PLAYERS_IN_GROUP..READY..INFO),
                 checked=Save.groupReadyTips,
+                keepShownOnClick= true,
                 func=function()
                     Save.groupReadyTips= not Save.groupReadyTips and true or false
                     setGroupReadyTipsEvent()--注册事件, 就绪,队员提示信息
@@ -712,7 +729,8 @@ local function InitMenu(self, level, type)--主菜单
                     text= index==num and (e.onlyChinese and '无' or NONE) or _G['RAID_TARGET_'..index],
                     icon= index==num and nil or 'Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index,
                     checked= Save[type]==index,
-                    colorCode=colorCode[index],
+                    colorCode=Color[index] and Color[index].col,
+                    keepShownOnClick= true,
                     func=function()
                         Save[type]=index
                         e.LibDD:CloseDropDownMenus()
@@ -745,6 +763,7 @@ local function InitMenu(self, level, type)--主菜单
             icon= 'Warfronts-BaseMapIcons-Alliance-Workshop-Minimap',
             checked= Save.autoSet,
             disabled= Save.tank==0 and Save.healer==0,
+            keepShownOnClick= true,
             func=function()
                 if Save.autoSet then
                     Save.autoSet=nil
@@ -767,13 +786,14 @@ local function InitMenu(self, level, type)--主菜单
             info={
                 text=tab2.text,
                 checked=Save[tab2.type]~=0,
+                keepShownOnClick= true,
                 menuList=tab2.type,
                 hasArrow=true,
             }
             if Save[tab2.type]~=0 then
                 info.text=info.text..'|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..Save[tab2.type]..':0|t'
             end
-            info.colorCode=colorCode[Save[tab2.type]]
+            info.colorCode=Color[Save[tab2.type]] and Color[Save[tab2.type]].col
             if tab2.type2 and Save.tank==0 then
                 info.disabled=true
             end
@@ -789,9 +809,10 @@ local function InitMenu(self, level, type)--主菜单
             checked=Save.markersFrame,
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '世界标记' or SLASH_WORLD_MARKER3:gsub('/',''),
-            tooltipText= e.onlyChinese and '需求：队伍和权限' or NEED..": "..COVENANT_RENOWN_TOAST_REWARD_COMBINER:format(HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS,CALENDAR_INVITELIST_SETMODERATOR),
+            tooltipText= e.onlyChinese and '需求：队伍和权限' or NEED..": "..format(COVENANT_RENOWN_TOAST_REWARD_COMBINER, HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS,CALENDAR_INVITELIST_SETMODERATOR),
             menuList= 'MakerFrameResetPost',
             hasArrow=true,
+            keepShownOnClick= true,
             func=function()
                 if UnitAffectingCombat('player') then
                     print(id, addName, '|cnRED_FONT_COLOR:'..COMBAT..'|r')
@@ -821,6 +842,7 @@ local function InitMenu(self, level, type)--主菜单
             colorCode= Save.autoReady==1 and '|cff00ff00' or Save.autoReady==2 and '|cffff0000',
             menuList='ready',
             hasArrow=true,
+            keepShownOnClick= true,
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
