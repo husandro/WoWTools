@@ -439,8 +439,6 @@ local function Init_Gossip()
             return
         end
 
-        
-
         local find
         local quest= FlagsUtil.IsSet(info.flags, Enum.GossipOptionRecFlags.QuestLabelPrepend)
         if Save.gossipOption[index] then--自定义
@@ -477,16 +475,15 @@ local function Init_Gossip()
             C_GossipInfo.SelectOption(index)
             find=true
 
-        elseif index==107571
-            and C_ChallengeMode.IsChallengeModeActive() 
+        elseif index==107571--挑战，模式，去 SX buff
+            and C_ChallengeMode.IsChallengeModeActive()
             and (e.WA_GetUnitDebuff('player', 57723, 'HARMFUL')
                 or e.WA_GetUnitDebuff('player', 264689, 'HARMFUL')
                 or e.WA_GetUnitDebuff('player', 80354, 'HARMFUL')
                 )
-        then
-            C_GossipInfo.SelectOption(index)--挑战，模式，去 SX buff
-            find=true
-
+            then
+                C_GossipInfo.SelectOption(index)
+                find=true
         end
 
         if find then
@@ -1038,7 +1035,7 @@ local function Init_Quest()
         for _, spellID in pairs(spellRewards) do
             e.LoadDate({id=spellID, type='spell'})
             local spellLink= GetSpellLink(spellID)
-            itemLink= itemLink.. (spellLink or (' spellID'..spellID)) 
+            itemLink= itemLink.. (spellLink or (' spellID'..spellID))
         end
 
         local skillName, skillIcon, skillPoints = GetRewardSkillPoints()--专业
