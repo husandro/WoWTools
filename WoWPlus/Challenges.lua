@@ -750,13 +750,14 @@ local function set_All_Text()--所有记录
     --本周记录
     --#######
     local historyInfo = C_MythicPlus.GetRunHistory(false, true) or {}
+    --[[
     table.sort(historyInfo, function(a, b)
         if a.mapChallengeModeID== b.mapChallengeModeID then
             return a.level> b.level
         else
             return a.runScore> b.runScore
-        end
-    end)
+        --end
+    end)]]
     local completed, all= 0,0
     local tabs={}
     for _, tab in pairs(historyInfo) do
@@ -784,8 +785,15 @@ local function set_All_Text()--所有记录
             all= all+1
         end
     end
-    local weekText
+
+    local newTab={}
     for _, tab in pairs(tabs) do
+        table.insert(newTab, tab)
+    end
+    table.sort(newTab, function(a, b)  return a.runScore> b.runScore end)
+
+    local weekText
+    for _, tab in pairs(newTab) do
         local name, _, _, texture = C_ChallengeMode.GetMapUIInfo(tab.mapID)
         if name then
             weekText= weekText and weekText..'|n' or ''

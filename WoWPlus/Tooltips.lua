@@ -1499,6 +1499,10 @@ local function Init()
             e.tips:Show()
         end
     end)
+
+    --[[hooksecurefunc(SpellButtonMixin, 'OnEnter', function()
+        print(id,addName)
+    end)]]
 end
 
 

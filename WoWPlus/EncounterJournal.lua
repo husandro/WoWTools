@@ -1168,7 +1168,8 @@ local function Init()--冒险指南界面
         end
     end)
 
-    --#####
+    --可能会，出错误，不知，不是这问题，不要删除
+    --[[#####
     --贸易站
     --#####
     hooksecurefunc(EncounterJournalMonthlyActivitiesFrame.ScrollBox, 'SetScrollTargetOffset', function(self2)
@@ -1214,7 +1215,7 @@ local function Init()--冒险指南界面
                 btn.showPerksActivityID= true
             end
         end
-    end)
+    end)]]
 
     if not Save.hideEncounterJournal then
         local numTier=EJ_GetNumTiers()--记录上次选择版本
