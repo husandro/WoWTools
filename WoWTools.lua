@@ -729,20 +729,17 @@ e.WA_GetUnitBuff = function(unit, spell, filter)--HELPFUL HARMFUL
         end
     end
 end
---[[
-
 e.WA_GetUnitDebuff = function(unit, spell, filter)
     for i = 1, 40 do
-        local name, _, _, _, _, _, _, _, _, spellId = UnitDebuff(unit, i, filter)
-        if not name then
+        local spellID = select(10, UnitDebuff(unit, i, filter))
+        if not spellID then
             return
-        elseif spell == spellId or spell == name then
+        elseif spell == spellID then
           return UnitDebuff(unit, i, filter)
         end
-      end
+    end
 end
 
-]]
 
 function e.WA_Utf8Sub(input, size, letterSize, lower)
     local output = ""
