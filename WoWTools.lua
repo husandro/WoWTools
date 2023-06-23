@@ -954,7 +954,14 @@ e.Chat=function(text, name, setPrint)
             SendChatMessage(text,'PARTY');
 
         elseif not IsResting() and not UnitAffectingCombat('player') then
+            local sayCVar=C_CVar.GetCVarBool("chatBubbles")--聊天跑跑
+            if not sayCVar then
+                C_CVar.SetCVar("chatBubbles", '1')
+            end
             SendChatMessage(text, 'SAY');
+            if not sayCVar then
+                C_CVar.SetCVar("chatBubbles", '0')
+            end
 
         elseif setPrint then
             print(text)
