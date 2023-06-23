@@ -601,35 +601,35 @@ end
 function e.Cbtn(self, tab)--type, icon, name, size
     tab=tab or {}
     self= self or UIParent
-    local button
+    local btn
     if tab.type==false then
-        button=CreateFrame('Button', tab.name, self, 'UIPanelButtonTemplate')--MagicButtonTemplate
+        btn= CreateFrame('Button', tab.name, self, 'UIPanelButtonTemplate')--MagicButtonTemplate
     elseif tab.type==true then
-        button=CreateFrame("Button", tab.name, self, "SecureActionButtonTemplate");
-        button:SetHighlightAtlas(e.Icon.highlight)
-        button:SetPushedAtlas(e.Icon.pushed)
+        btn= CreateFrame("Button", tab.name, self, "SecureActionButtonTemplate");
     else
-        button=CreateFrame('Button', tab.name, self)
-        button:SetHighlightAtlas(e.Icon.highlight)
-        button:SetPushedAtlas(e.Icon.pushed)
+        btn= CreateFrame('Button', tab.name, self)
+    end
+    btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
+    btn:EnableMouseWheel(true)
+    if tab.size then
+        btn:SetSize(tab.size[1], tab.size[2])
+    end
+    if tab.type~=false then
+        btn:SetHighlightAtlas(e.Icon.highlight)
+        btn:SetPushedAtlas(e.Icon.pushed)
         if tab.icon~='hide' then
             if tab.texture then
-                button:SetNormalTexture(tab.texture)
+                btn:SetNormalTexture(tab.texture)
             elseif tab.atlas then
-                button:SetNormalAtlas(tab.atlas)
+                btn:SetNormalAtlas(tab.atlas)
             elseif tab.icon==true then
-                button:SetNormalAtlas(e.Icon.icon)
+                btn:SetNormalAtlas(e.Icon.icon)
             else
-                button:SetNormalAtlas(e.Icon.disabled)
+                btn:SetNormalAtlas(e.Icon.disabled)
             end
         end
     end
-    button:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
-    button:EnableMouseWheel(true)
-    if tab.size then
-        button:SetSize(tab.size[1], tab.size[2])
-    end
-    return button
+    return btn
 end
 
 e.Ccool=function(self, start, duration, modRate, HideCountdownNumbers, Reverse, SwipeTexture, hideDrawBling)--冷却条

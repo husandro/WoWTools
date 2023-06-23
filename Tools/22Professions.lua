@@ -190,11 +190,50 @@ local function set_ProfessionsFrame_Button()--专业界面, 按钮
                 self:SetButtonState('NORMAL')
             end)
 
-            --[[if k==5 then--cooking
-                local btn= e.Cbtn(setButton.frame, {type= true, texture=135805 ,size={32, 32}})
-                button:SetPoint('LEFT', btn, 'RIGHT')
+            if k==5 then--烹饪用火
+                local name2= GetSpellInfo(818)
+                if name2 then
+                    local btn= e.Cbtn(button, {type= true, texture=135805 ,size={32, 32}})
+                    btn:SetPoint('LEFT', button, 'RIGHT',2,0)
 
-            end]]
+                    btn:SetScript('OnShow',function(self)
+                        e.SetItemSpellCool(self, nil, 818)
+                        self:RegisterEvent('SPELL_UPDATE_COOLDOWN')
+                    end)
+                    btn:SetScript('OnHide', function(self)
+                        self:UnregisterAllEvents()
+                    end)
+                    btn:SetScript('OnEvent', function(self)
+                        e.SetItemSpellCool(self, nil, 818)
+                    end)
+                    btn:SetScript('OnLeave', function() e.tips:Hide() end)
+                    btn:SetScript('OnEnter', function(self)
+                        e.tips:SetOwner(self, "ANCHOR_RIGHT")
+                        e.tips:ClearLines()
+                        e.tips:SetSpellByID(818)
+                        e.tips:AddLine(' ')
+                        e.tips:AddLine(self.macrotext)
+                        e.tips:Show()
+                    end)
+
+                    local text=''
+                    --if PlayerHasToy(134020) then--玩具,大厨的帽子
+                        local toyname=C_Item.GetItemNameByID('134020')
+                        if toyname then
+                            text= '/use '..toyname..'|n'
+                            btn.rightTexture= btn:CreateTexture(nil, 'OVERLAY')
+                            btn.rightTexture:SetPoint('TOPRIGHT')
+                            btn.rightTexture:SetSize(16,16)
+                            btn.rightTexture:SetTexture(236571)
+                        end
+                    --end
+                    text=text..'/cast [@player]'..name2
+
+                    btn:SetAttribute('type', 'macro')
+                    btn:SetAttribute("macrotext", text)
+                    btn.macrotext= text
+                end
+            end
             last= button
         end
     end
