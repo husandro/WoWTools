@@ -1158,8 +1158,16 @@ local function Init()
             if unit then
                 speed= GetUnitSpeed(unit)--PlayerFrame.unit
                 if speed and not self.speedText then
-                    self.speedText= e.Cstr(self, {size=12})
-                    self.speedText:SetPoint('TOP', self, 'TOP')
+                    self.speedText= e.Cstr(self, {mouse=true})
+                    self.speedText:SetPoint('BOTTOM', self, 'TOP',0, -6)
+                    self.speedText:SetScript('OnLeave', function() e.tips:Hide() end)
+                    self.speedText:SetScript('OnEnter', function(self2)
+                        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                        e.tips:ClearLines()
+                        e.tips:AddDoubleLine(e.onlyChinese and '当前' or REFORGE_CURRENT, e.onlyChinese and '移动速度' or STAT_MOVEMENT_SPEED)
+                        e.tips:AddDoubleLine(id, addName)
+                        e.tips:Show()
+                    end)
                 end
             end
             if self.speedText then
