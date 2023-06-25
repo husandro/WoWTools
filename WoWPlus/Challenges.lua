@@ -1419,11 +1419,15 @@ local function Init()
         self2:SetAlpha(1)
     end)
 
+    Affix()
+    set_Kill_Info()--副本PVP团本
+    C_Timer.After(2, set_All_Text)--所有记录
+    set_Update()
+
     self:HookScript('OnShow', function()
         Affix()
         set_Kill_Info()--副本PVP团本
         C_Timer.After(2, set_All_Text)--所有记录
-
         set_Update()
         --hooksecurefunc(ChallengesFrame, 'Update', set_Update)
     end)
