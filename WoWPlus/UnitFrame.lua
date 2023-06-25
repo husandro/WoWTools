@@ -12,8 +12,8 @@ local function set_SetTextColor(self, r, g, b)--设置, 字体
     end
 end
 
-local function set_SetRaidTarget(texture, unit)--设置, 标记 TargetFrame.lua
-    if texture and unit then
+local function set_RaidTarget(texture, unit)--设置, 标记 TargetFrame.lua
+    if texture then
         local index = UnitExists(unit) and GetRaidTargetIndex(unit)
         if index and index>0 and index< 9 then
             SetRaidTargetIconTexture(texture, index)
@@ -292,194 +292,202 @@ end
 --####
 --小队
 --####
-local function set_Party_Target_Changed(self, u)
-    print(u)
+local function set_Party_Target_Changed(self)
+    local u= self.unit
     local unit= u..'target'
     local exsts= UnitExists(unit) and true or false
     if exsts then
         local index = GetRaidTargetIndex(unit)
         if index and index>0 and index< 9 then
-            self.PoTButton.Portrait:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
+            self.Portrait:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
         else
-            SetPortraitTexture(self.PoTButton.Portrait, unit, true)
+            SetPortraitTexture(self.Portrait, unit, true)
         end
     end
-    self.PoTButton.Portrait:SetShown(exsts)
-    self.PoTButton:SetAttribute('unit', exsts and unit or u)
-    self.PoTButton.unit= exsts and unit or u
+    self.Portrait:SetShown(exsts)
+    self:SetAttribute('unit', self.unit)
 end
-local function set_Party_Casting(frame, unit, start)
-    if not (frame or unit) then
-        return
-    end
-    if start then
-        local texture, startTime, endTime = select(3, UnitChannelInfo(unit))
+local function set_Party_Casting(self)
+    local texture, startTime, endTime
+    if UnitExists(self.unit) then
+        texture, startTime, endTime= select(3, UnitChannelInfo(self.unit))
         if not (texture and  startTime and endTime) then
-            texture, startTime, endTime= select(3, UnitCastingInfo(unit))
+            texture, startTime, endTime= select(3, UnitCastingInfo(self.unit))
         end
         if texture and startTime and endTime then
             local duration=(endTime - startTime) / 1000
-            e.Ccool(frame, nil, duration, nil, true, nil, nil,nil)
+            e.Ccool(self, nil, duration, nil, true, nil, nil,nil)
         end
-        frame.texture:SetTexture(texture or 0)
-    else
-        frame.texture:SetTexture(0)
-        if frame.cooldown then
-            frame.cooldown:Clear()
-        end
+    end
+    self.texture:SetTexture(texture or 0)
+    if not startTime and not endTime and self.cooldown then
+        self.cooldown:Clear()
     end
 end
 local function set_PartyFrame()--PartyFrame.lua
     hooksecurefunc(PartyFrame, 'UpdatePartyFrames', function(self)
         for memberFrame in self.PartyMemberFramePool:EnumerateActive() do
             local unit= memberFrame.unit or memberFrame:GetUnit()
-            local frame= memberFrame.PartyMemberOverlay
-            if frame and unit then
-                local exists= memberFrame:IsShown()
-                frame.unit= unit
-                if not frame.RaidTargetIcon then
-                    frame.RaidTargetIcon= self:CreateTexture(nil,'OVERLAY', nil, 7)--队伍, 标记
-                    frame.RaidTargetIcon:SetPoint('RIGHT', frame.RoleIcon, 'LEFT')
-                    frame.RaidTargetIcon:SetSize(14,14)
-                    frame.RaidTargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
-                    frame:HookScript('OnEvent', function (self2, event)
-                        if event=='RAID_TARGET_UPDATE' then
-                            set_SetRaidTarget(self2.RaidTargetIcon, self2.unit)
-                        end
-                    end)
 
-
-                    frame.PoTButton= e.Cbtn(memberFrame, {type= true, size={20,20}, icon='hide'})--目标的目标, 点击，设置目标，右击菜单
-                    frame.PoTButton:SetAttribute("type1", 'target')
-                    frame.PoTButton:SetAttribute("type2", "togglemenu")
-                    frame.PoTButton:SetPoint('TOPLEFT', memberFrame, 'TOPRIGHT',-3 ,-4)
-                    frame.PoTButton:SetScript('OnLeave', function() e.tips:Hide() end)
-                    frame.PoTButton:SetScript('OnEnter', function(self2)
-                        if UnitExists(self2.unit) then
-                            e.tips:SetOwner(self2, "ANCHOR_RIGHT")
-                            e.tips:ClearLines()
-                            e.tips:SetUnit(self2.unit)
-                            e.tips:Show()
-                        end
-                    end)
-                    frame.PoTButton:RegisterUnitEvent('UNIT_TARGET', unit)
-                    frame.PoTButton:SetScript('OnEvent', function(self2)
-                        set_Party_Target_Changed(self2, self2.unit)
-                    end)
-
-                    frame.PoTButton.Portrait= frame.PoTButton:CreateTexture(nil,'OVERLAY', nil, 7)--目标的目标
-                    frame.PoTButton.Portrait:SetAllPoints(frame.PoTButton)
-                    set_Party_Target_Changed(frame, unit)
-
-                    frame.frame= CreateFrame("Frame", nil, self)--队友，施法
-                    frame.frame:SetPoint('TOP', frame.PoTButton, 'BOTTOM')
-                    frame.frame:SetSize(20,20)
-                    frame.frame.texture= self:CreateTexture(nil,'BACKGROUND')
-                    frame.frame.texture:SetAllPoints(frame.frame)
-                    frame.frame:HookScript('OnEvent', function (self2, event, arg1)
-                        if  event == "UNIT_SPELLCAST_START" or  event == "UNIT_SPELLCAST_CHANNEL_START" or event=='UNIT_SPELLCAST_EMPOWER_START'  then
-                            set_Party_Casting(self2, unit, true)
-                        else
-                            set_Party_Casting(self2, unit)
-                        end
-                    end)
-
-                    
-                    hooksecurefunc(memberFrame, 'UpdateAssignedRoles', function(self2)--隐藏, DPS 图标
-                        if UnitGroupRolesAssigned(self2.unit)=='DAMAGER' then
-                            self2.PartyMemberOverlay.RoleIcon:SetShown(false)
-                        end
-                    end)
-
-                    frame.tipsCombat= memberFrame:CreateTexture(nil, 'OVERLAY', nil, 7)--战斗指示
-                    frame.tipsCombat:SetSize(16,16)
-                    frame.tipsCombat:SetPoint('BOTTOMRIGHT', memberFrame.Portrait) --你好我是傻逼别人都叫我massimo
-                    
-                    frame.tipsCombat:SetAtlas('UI-HUD-UnitFrame-Player-CombatIcon-2x')
-                    frame.tipsCombat:SetVertexColor(1, 0, 0)
-                    frame.elapsed= 0
-                    frame:HookScript('OnUpdate', function(self2, elapsed)
-                        self2.elapsed= self2.elapsed +elapsed
-                        if self2.elapsed>0.5 then
-                            self2.tipsCombat:SetShown(UnitAffectingCombat(self2.unit))
-                            self2.elapsed=0
-                        end
-                    end)
-
-                    frame.positionFrame= CreateFrame("Frame", nil, frame)--队友位置
-                    frame.positionFrame:SetPoint('LEFT', frame.LeaderIcon, 'RIGHT')
-                    frame.positionFrame:SetSize(1,1)
-                    frame.positionFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
-                    frame.positionFrame:SetScript('OnEvent', function(self2)
-                        self2:SetShown(not IsInInstance())
-                    end)
-                    frame.positionFrame.Text= e.Cstr(frame.positionFrame)
-                    frame.positionFrame.Text:SetPoint('LEFT', frame.positionFrame, 'RIGHT',-2,0)
-                    frame.positionFrame.elapsed= 0
-                    frame.positionFrame.unit= frame.unit
-                    frame.positionFrame:SetScript('OnUpdate', function(self2, elapsed)
-                        self2.elapsed= self2.elapsed +elapsed
-                        if self2.elapsed>1 then
-                            local mapID= C_Map.GetBestMapForUnit(self2.unit)--地图ID
-                            local mapInfo= mapID and C_Map.GetMapInfo(mapID)
-                            local text
-                            if mapInfo and mapInfo.name then
-                                text= mapInfo.name
-                                local mapID2= C_Map.GetBestMapForUnit('player')
-                                if mapID2== mapID then
-                                    text= e.Icon.select2..text
-                                end
-                            end
-                            self2.Text:SetText(text or '')
-                            self2.elapsed=0
-                        end
-                    end)
-                    frame.positionFrame:SetShown(not IsInInstance())
-                end
-
-                if frame.RaidTargetIcon then
-                    if exists then
-                        frame:RegisterEvent('RAID_TARGET_UPDATE')--更新,标记
-                        --frame:RegisterUnitEvent('UNIT_TARGET', unit)
-
-                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_START", unit)--开始
-                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", unit)
-                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_START", unit)
-                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_STOP", unit)--结束
-                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", unit)
-                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", unit)
-                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTIBLE", unit)
-                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", unit)
-                        frame.frame:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_STOP", unit)
-
-                        set_SetRaidTarget(frame.RaidTargetIcon, unit)--设置,标记
-                        set_Party_Target_Changed(frame, unit)
-                        set_Party_Casting(frame.frame, unit, true)
-
-                    else
-                        frame:UnregisterEvent('RAID_TARGET_UPDATE')
-                        frame.RaidTargetIcon:SetShown(false)
-                        frame.PoTButton.Portrait:SetShown(false)
-                        frame.frame:UnregisterAllEvents()
-                        frame.frame.texture:SetTexture(0)
-                    end
-
-                end
-
-                if exists and memberFrame.Texture then--外框
-                    local classFilename= unit and UnitClassBase(unit)
-                    if classFilename then
-                        local r,g,b=GetClassColor(classFilename)
-                        if r and g and b then
-                            memberFrame.Texture:SetVertexColor(r, g, b)
-
-                            if frame.positionFrame.Text then--队友位置
-                                frame.positionFrame.Text:SetTextColor(r, g, b)
-                            end
-                        end
-                    end
-                end
+            local r, g, b
+            local classFilename= UnitClassBase(unit)
+            if classFilename then
+                r,g,b=GetClassColor(classFilename)
             end
+            r= r or 1
+            g= g or 1
+            b= b or 1
+
+            --####
+            --外框
+            --####
+            if memberFrame.Texture then
+                memberFrame.Texture:SetVertexColor(r, g, b)
+            end
+
+            --#########
+            --目标的目标
+            --#########
+            if not memberFrame.PoTButton then
+                memberFrame.PoTButton= e.Cbtn(memberFrame, {type= true, size={20,20}, icon='hide'})--点击，设置目标，右击菜单
+                memberFrame.PoTButton:SetAttribute("type1", 'target')
+                memberFrame.PoTButton:SetAttribute("type2", "togglemenu")
+                memberFrame.PoTButton:SetPoint('TOPLEFT', memberFrame, 'TOPRIGHT',-3 ,-4)
+                memberFrame.PoTButton:SetScript('OnLeave', function() e.tips:Hide() end)
+                memberFrame.PoTButton:SetScript('OnEnter', function(self2)
+                    if UnitExists(self2.unit) then
+                        e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+                        e.tips:ClearLines()
+                        e.tips:SetUnit(self2.unit)
+                        e.tips:Show()
+                    end
+                end)
+                memberFrame.PoTButton:RegisterUnitEvent('UNIT_TARGET', unit)
+                memberFrame.PoTButton:SetScript('OnEvent', function(self2)
+                    set_Party_Target_Changed(self2)
+                end)
+                memberFrame.PoTButton.Portrait= memberFrame.PoTButton:CreateTexture()--目标的目标, 图标
+                memberFrame.PoTButton.Portrait:SetAllPoints(memberFrame.PoTButton)
+            end
+            memberFrame.PoTButton.unit= UnitExists(unit..'target') and unit..'target' or unit
+            set_Party_Target_Changed(memberFrame.PoTButton)
+
+            --#########################
+            --队伍, 标记, 隐藏, DPS 图标
+            --#########################
+            if not memberFrame.RaidTargetFrame then
+                memberFrame.RaidTargetFrame= CreateFrame("Frame", nil, memberFrame)
+                memberFrame.RaidTargetFrame:SetSize(14,14)
+                memberFrame.RaidTargetFrame:SetPoint('RIGHT', memberFrame.PartyMemberOverlay.RoleIcon, 'LEFT')
+                memberFrame.RaidTargetFrame:HookScript('OnEvent', function (self2, event)
+                    if event=='RAID_TARGET_UPDATE' then
+                        set_RaidTarget(self2.RaidTargetIcon, self2.unit)
+                    end
+                end)
+                memberFrame.RaidTargetFrame.RaidTargetIcon= memberFrame.RaidTargetFrame:CreateTexture()
+                memberFrame.RaidTargetFrame.RaidTargetIcon:SetAllPoints(memberFrame.RaidTargetIcon)
+                memberFrame.RaidTargetFrame.RaidTargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
+
+                hooksecurefunc(memberFrame, 'UpdateAssignedRoles', function(self2)--隐藏, DPS 图标
+                    if UnitGroupRolesAssigned(self2.unit)=='DAMAGER' then
+                        self2.PartyMemberOverlay.RoleIcon:SetShown(false)
+                    end
+                end)
+                memberFrame.RaidTargetFrame.unit= unit
+            end
+            set_RaidTarget(memberFrame.RaidTargetIcon, unit)--设置,标记
+
+            --#########
+            --队友，施法
+            --#########
+            if not memberFrame.castFrame then
+                memberFrame.castFrame= CreateFrame("Frame", nil, memberFrame)--队友，施法
+                memberFrame.castFrame:SetPoint('TOP', memberFrame.PoTButton, 'BOTTOM')
+                memberFrame.castFrame:SetSize(20,20)
+                memberFrame.castFrame.unit= unit
+                memberFrame.castFrame.texture= self:CreateTexture(nil,'BACKGROUND')
+                memberFrame.castFrame.texture:SetAllPoints(memberFrame)
+                local events= {
+                    'UNIT_SPELLCAST_CHANNEL_START',
+                    'UNIT_SPELLCAST_START',
+                    'UNIT_SPELLCAST_EMPOWER_START',
+                    "UNIT_SPELLCAST_START",--开始
+                    "UNIT_SPELLCAST_CHANNEL_START",
+                    "UNIT_SPELLCAST_EMPOWER_START",
+                    "UNIT_SPELLCAST_STOP",--结束
+                    "UNIT_SPELLCAST_FAILED",
+                    "UNIT_SPELLCAST_INTERRUPTED",
+                    "UNIT_SPELLCAST_INTERRUPTIBLE",
+                    "UNIT_SPELLCAST_CHANNEL_STOP",
+                    "UNIT_SPELLCAST_EMPOWER_STOP",
+                }
+                FrameUtil.RegisterFrameForUnitEvents(memberFrame.castFrame, events, unit)
+                memberFrame.castFrame:HookScript('OnEvent', function (self2, event)
+                    set_Party_Casting(self2, unit, event == "UNIT_SPELLCAST_START"
+                                                or event == "UNIT_SPELLCAST_CHANNEL_START"
+                                                or event=='UNIT_SPELLCAST_EMPOWER_START'
+                                            )
+                end)
+            end
+            set_Party_Casting(memberFrame.castFrame, unit, UnitCastingInfo(unit) or UnitChannelInfo(unit))
+
+            --#######
+            --战斗指示
+            --#######
+            if not memberFrame.combatFrame then
+                memberFrame.combatFrame= CreateFrame('Frame', nil, memberFrame)
+                memberFrame.combatFrame:SetPoint('BOTTOMRIGHT', memberFrame.Portrait)
+                memberFrame.combatFrame:SetSize(16,16)
+                memberFrame.combatFrame.texture= memberFrame.combatFrame:CreateTexture()
+                memberFrame.combatFrame.texture:SetAllPoints(memberFrame.combatFrame)
+                memberFrame.combatFrame.texture:SetAtlas('UI-HUD-UnitFrame-Player-CombatIcon-2x')
+                memberFrame.combatFrame.texture:SetVertexColor(1, 0, 0)
+                memberFrame.combatFrame.unit= unit
+                memberFrame.combatFrame.elapsed=0
+                memberFrame.combatFrame:HookScript('OnUpdate', function(self2, elapsed)
+                    self2.elapsed= self2.elapsed +elapsed
+                    if self2.elapsed>0.5 then
+                        self2.texture:SetShown(UnitAffectingCombat(self2.unit))
+                        self2.elapsed=0
+                    end
+                end)
+            end
+
+            --#######
+            --队友位置
+            --#######
+            if not memberFrame.positionFrame then
+                memberFrame.positionFrame= CreateFrame("Frame", nil, memberFrame)
+                memberFrame.positionFrame:SetPoint('LEFT', memberFrame.LeaderIcon, 'RIGHT')
+                memberFrame.positionFrame:SetSize(1,1)
+                memberFrame.positionFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
+                memberFrame.positionFrame:SetScript('OnEvent', function(self2)
+                    self2:SetShown(not IsInInstance())
+                end)
+                memberFrame.positionFrame.Text= e.Cstr(memberFrame.positionFrame)
+                memberFrame.positionFrame.Text:SetPoint('LEFT')
+                memberFrame.positionFrame.elapsed= 0
+                memberFrame.positionFrame:SetScript('OnUpdate', function(self2, elapsed)
+                    self2.elapsed= self2.elapsed +elapsed
+                    if self2.elapsed>1 then
+                        local mapID= C_Map.GetBestMapForUnit(self2.unit)--地图ID
+                        local mapInfo= mapID and C_Map.GetMapInfo(mapID)
+                        local text
+                        if mapInfo and mapInfo.name then
+                            text= mapInfo.name
+                            local mapID2= C_Map.GetBestMapForUnit('player')
+                            if mapID2== mapID then
+                                text= e.Icon.select2..text
+                            end
+                        end
+                        self2.Text:SetText(text or '')
+                        self2.elapsed=0
+                    end
+                end)
+                memberFrame.positionFrame.unit= unit
+            end
+            memberFrame.positionFrame.Text:SetTextColor(r, g, b)
+            memberFrame.positionFrame:SetShown(not IsInInstance())
         end
     end)
 end
@@ -844,7 +852,7 @@ local function set_RaidFrame()--设置,团队
             frame.RaidTargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
             frame.RaidTargetIcon:SetPoint('TOPRIGHT')
             frame.RaidTargetIcon:SetSize(13,13)
-            set_SetRaidTarget(frame.RaidTargetIcon, unit)
+            set_RaidTarget(frame.RaidTargetIcon, unit)
         end
         frame.unitItemLevel=nil--取得装等
     end)
@@ -862,7 +870,7 @@ local function set_RaidFrame()--设置,团队
     hooksecurefunc('CompactUnitFrame_OnEvent', function(self, event)
         if self.RaidTargetIcon and self.unit then
             if event=='RAID_TARGET_UPDATE'then
-                set_SetRaidTarget(self.RaidTargetIcon, self.unit)
+                set_RaidTarget(self.RaidTargetIcon, self.unit)
             end
         end
     end)

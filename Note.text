@@ -26,6 +26,7 @@ UIPanelWindows[]
 
 GetClassColoredTextForUnit(unit, text)
 FrameUtil.RegisterFrameForEvents(self, table)
+FrameUtil.RegisterFrameForUnitEvents(frame, events, ...)
 FrameUtil.UnregisterFrameForEvents(self, table)
 SetPortraitTexture(textureObject, unitToken [, disableMasking])
 SetPortraitToTexture(textureObject, texturePath)
