@@ -293,9 +293,7 @@ end
 --小队
 --####
 local function set_Party_Target_Changed(self)
-    local u= self.unit
-    local unit= u..'target'
-    local exsts= UnitExists(unit) and true or false
+    local unit, exsts= self.getUnit(self)
     if exsts then
         local index = GetRaidTargetIndex(unit)
         if index and index>0 and index< 9 then
@@ -305,7 +303,7 @@ local function set_Party_Target_Changed(self)
         end
     end
     self.Portrait:SetShown(exsts)
-    self:SetAttribute('unit', exsts and unit or u)
+    self:SetAttribute('unit', unit)
 end
 local function set_Party_Casting(self)
     local texture, startTime, endTime
@@ -352,13 +350,18 @@ local function set_PartyFrame()--PartyFrame.lua
                 memberFrame.PoTButton= e.Cbtn(memberFrame, {type= true, size={20,20}, icon='hide'})--点击，设置目标，右击菜单
                 memberFrame.PoTButton:SetAttribute("type1", 'target')
                 memberFrame.PoTButton:SetAttribute("type2", "togglemenu")
-                memberFrame.PoTButton:SetPoint('TOPLEFT', memberFrame, 'TOPRIGHT',-3 ,-4)
+                memberFrame.PoTButton:SetPoint('TOPLEFT', memberFrame, 'TOPRIGHT', -3 ,-4)
                 memberFrame.PoTButton:SetScript('OnLeave', function() e.tips:Hide() end)
+                memberFrame.PoTButton.getUnit= function(self2)
+                    local u= self2.unit
+                    local tar= u..'target'
+                    local exsts= UnitExists(tar) and true or false
+                    return exsts and tar or u, exsts
+                end
                 memberFrame.PoTButton:SetScript('OnEnter', function(self2)
                     e.tips:SetOwner(self2, "ANCHOR_RIGHT")
                     e.tips:ClearLines()
-                    local u =self.unit..'target'
-                    e.tips:SetUnit(UnitExists(u) and u or self2.unit)
+                    e.tips:SetUnit(self2.getUnit(self2))
                     e.tips:Show()
                 end)
                 memberFrame.PoTButton:RegisterUnitEvent('UNIT_TARGET', unit)

@@ -341,6 +341,8 @@ local function setMarkersFrame_Postion()--设置标记框架, 位置
     if targetFrame then
         if Save.markersFramePoint then
             targetFrame:SetPoint(Save.markersFramePoint[1], UIParent, Save.markersFramePoint[3], Save.markersFramePoint[4], Save.markersFramePoint[5])
+        elseif e.Player.husandro then
+            targetFrame:SetPoint('BOTTOMRIGHT', _G['MultiBarBottomLeftButton11'], 'TOPRIGHT', 0, 4)
         else
             targetFrame:SetPoint('BOTTOM', UIParent, 'BOTTOM', 135, 85)
         end
