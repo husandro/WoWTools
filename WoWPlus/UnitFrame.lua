@@ -305,7 +305,7 @@ local function set_Party_Target_Changed(self)
         end
     end
     self.Portrait:SetShown(exsts)
-    self:SetAttribute('unit', self.unit)
+    self:SetAttribute('unit', exsts and unit or u)
 end
 local function set_Party_Casting(self)
     local texture, startTime, endTime
@@ -355,12 +355,11 @@ local function set_PartyFrame()--PartyFrame.lua
                 memberFrame.PoTButton:SetPoint('TOPLEFT', memberFrame, 'TOPRIGHT',-3 ,-4)
                 memberFrame.PoTButton:SetScript('OnLeave', function() e.tips:Hide() end)
                 memberFrame.PoTButton:SetScript('OnEnter', function(self2)
-                    if UnitExists(self2.unit) then
-                        e.tips:SetOwner(self2, "ANCHOR_RIGHT")
-                        e.tips:ClearLines()
-                        e.tips:SetUnit(self2.unit)
-                        e.tips:Show()
-                    end
+                    e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+                    e.tips:ClearLines()
+                    local u =self.unit..'target'
+                    e.tips:SetUnit(UnitExists(u) and u or self2.unit)
+                    e.tips:Show()
                 end)
                 memberFrame.PoTButton:RegisterUnitEvent('UNIT_TARGET', unit)
                 memberFrame.PoTButton:SetScript('OnEvent', function(self2)
@@ -369,7 +368,7 @@ local function set_PartyFrame()--PartyFrame.lua
                 memberFrame.PoTButton.Portrait= memberFrame.PoTButton:CreateTexture()--目标的目标, 图标
                 memberFrame.PoTButton.Portrait:SetAllPoints(memberFrame.PoTButton)
             end
-            memberFrame.PoTButton.unit= UnitExists(unit..'target') and unit..'target' or unit
+            memberFrame.PoTButton.unit= unit
             set_Party_Target_Changed(memberFrame.PoTButton)
 
             --#########################
@@ -405,8 +404,8 @@ local function set_PartyFrame()--PartyFrame.lua
                 memberFrame.castFrame:SetPoint('TOP', memberFrame.PoTButton, 'BOTTOM')
                 memberFrame.castFrame:SetSize(20,20)
                 memberFrame.castFrame.unit= unit
-                memberFrame.castFrame.texture= self:CreateTexture(nil,'BACKGROUND')
-                memberFrame.castFrame.texture:SetAllPoints(memberFrame)
+                memberFrame.castFrame.texture=  memberFrame.castFrame:CreateTexture(nil,'BACKGROUND')
+                memberFrame.castFrame.texture:SetAllPoints(memberFrame.castFrame)
                 local events= {
                     'UNIT_SPELLCAST_CHANNEL_START',
                     'UNIT_SPELLCAST_START',
