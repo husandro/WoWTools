@@ -332,7 +332,7 @@ local function set_PartyFrame()--PartyFrame.lua
             local r, g, b
             local classFilename= UnitClassBase(unit)
             if classFilename then
-                r,g,b=GetClassColor(classFilename)
+                r,g,b= GetClassColor(classFilename)
             end
             r= r or 1
             g= g or 1
@@ -385,7 +385,7 @@ local function set_PartyFrame()--PartyFrame.lua
                     end
                 end)
                 memberFrame.RaidTargetFrame.RaidTargetIcon= memberFrame.RaidTargetFrame:CreateTexture()
-                memberFrame.RaidTargetFrame.RaidTargetIcon:SetAllPoints(memberFrame.RaidTargetIcon)
+                memberFrame.RaidTargetFrame.RaidTargetIcon:SetAllPoints(memberFrame.RaidTargetFrame)
                 memberFrame.RaidTargetFrame.RaidTargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
 
                 hooksecurefunc(memberFrame, 'UpdateAssignedRoles', function(self2)--隐藏, DPS 图标
@@ -395,7 +395,7 @@ local function set_PartyFrame()--PartyFrame.lua
                 end)
                 memberFrame.RaidTargetFrame.unit= unit
             end
-            set_RaidTarget(memberFrame.RaidTargetIcon, unit)--设置,标记
+            set_RaidTarget(memberFrame.RaidTargetFrame.RaidTargetIcon, unit)--设置,标记
 
             --#########
             --队友，施法
