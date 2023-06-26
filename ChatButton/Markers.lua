@@ -479,8 +479,12 @@ local function Init_Markers_Frame()--设置标记, 框架
                                         ..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
                                         ..e.Icon.right
                                     )
+                    if UnitExists('target') and not CanBeRaidTarget('target') then
+                        e.tips:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '不能标记' or DISABLE))
+                    end
                     e.tips:Show()
                     self2:SetButtonState('NORMAL')
+                    self2:SetAlpha(1)
                 end)
                 btn.set_Active= function(self2)
                     local index2
@@ -677,15 +681,18 @@ local function Init_Markers_Frame()--设置标记, 框架
                 if self2.index==0 then
                     e.tips:AddLine(e.Icon.O2..(e.onlyChinese and '清除全部' or CLEAR_ALL)..e.Icon.left)
                 else
-                    e.tips:AddDoubleLine(Color[self2.index].col..e.Icon.left..getTexture(index)..(e.onlyChinese and '设置' or SETTINGS),
-                                        Color[self2.index].col..getTexture(index)..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..e.Icon.right
+                    local inx= self2.index2
+                    e.tips:AddDoubleLine(Color[inx].col..e.Icon.left..getTexture(inx)..(e.onlyChinese and '设置' or SETTINGS),
+                                        Color[inx].col..getTexture(inx)..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..e.Icon.right
                                         )
                 end
                 e.tips:Show()
             end)
             btn.index= index==0 and 0 or tab[index]
+            btn.index2= index
             last=btn
             if index~=0 then--背景
+                btn:SetPushedAtlas('Forge-ColorSwatchHighlight')
                 btn.texture=btn:CreateTexture(nil,'BACKGROUND')
                 btn.texture:SetAllPoints(btn)
                 btn.texture:SetColorTexture(Color[index].r, Color[index].g, Color[index].b)
@@ -696,7 +703,7 @@ local function Init_Markers_Frame()--设置标记, 框架
                 btn.elapsed= 0
                 btn:SetScript('OnUpdate', function(self2, elapsed)
                     self2.elapsed= self2.elapsed +elapsed
-                    if self2.elapsed>1 then
+                    if self2.elapsed>2 then
                         self2.setActive(self2)
                         self2.elapsed=0
                     end
