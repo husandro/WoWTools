@@ -434,9 +434,9 @@ local function Init_Markers_Frame()--设置标记, 框架
                     if IsAltKeyDown() then
                         local sacle=Save.markersScale or 1
                         if d==1 then
-                            sacle=sacle+0.1
+                            sacle=sacle+0.05
                         elseif d==-1 then
-                            sacle=sacle-0.1
+                            sacle=sacle-0.05
                         end
                         if sacle>3 then
                             sacle=3

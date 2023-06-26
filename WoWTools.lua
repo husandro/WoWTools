@@ -307,18 +307,19 @@ e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, f
 
     return ''
 end
-
+local battleTag= select(2, BNGetInfo())
+local baseClass= UnitClassBase('player')
 e.Player={
     realm= GetRealmName(),
     Realms= {},--多服务器
     name_realm= UnitName('player')..'-'..GetRealmName(),
     name= UnitName('player'),
     sex= UnitSex("player"),
-    class= UnitClassBase('player'),
-    r= GetClassColor(UnitClassBase('player')),
-    g= select(2,GetClassColor(UnitClassBase('player'))),
-    b= select(3, GetClassColor(UnitClassBase('player'))),
-    col= '|c'..select(4, GetClassColor(UnitClassBase('player'))),
+    class= baseClass,
+    r= GetClassColor(baseClass),
+    g= select(2,GetClassColor(baseClass)),
+    b= select(3, GetClassColor(baseClass)),
+    col= '|c'..select(4, GetClassColor(baseClass)),
     cn= GetCurrentRegion()==5,
     region= GetCurrentRegion(),--1US (includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
     Lo= GetLocale(),
@@ -326,12 +327,11 @@ e.Player={
     guid= UnitGUID('player'),
     levelMax= UnitLevel('player')==MAX_PLAYER_LEVEL,--玩家是否最高等级
     level= UnitLevel('player'),--UnitEffectiveLevel('player')
-    husandro= select(2, BNGetInfo())== '古月剑龙#5972' or select(2, BNGetInfo())=='SandroChina#2690' or UnitName('player')=='Fuocco' or UnitName('player')=='活就好' or select(2, BNGetInfo())=='Sandro126#2297',
+    husandro= battleTag== '古月剑龙#5972' or battleTag=='SandroChina#2690' or battleTag=='Sandro126#2297' or battleTag=='Sandro163EU#2603',
     faction= UnitFactionGroup('player'),--玩家, 派系  "Alliance", "Horde", "Neutral"
     LayerText= 'Layer',--位面文本
     Layer= nil, --位面数字
     useColor= nil,--使用颜色
-    
 }
  --MAX_PLAYER_LEVEL = GetMaxLevelForPlayerExpansion()
  --zh= LOCALE_zhCN or LOCALE_zhTW,--GetLocale()== ("zhCN" or 'zhTW'),
