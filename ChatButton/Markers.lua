@@ -560,7 +560,7 @@ local function Init_Markers_Frame()--设置标记, 框架
                 if self.star then
                     C_PartyInfo.DoCountdown(0)
                 end
-                e.Chat(BINDING_NAME_STOPATTACK)
+                e.Chat(e.Player.cn and '取消！ 取消！ 取消！' or 'STOP! STOP!STOP!')
 
             elseif d=='RightButton' and IsControlKeyDown() then--设置时间
                 StaticPopupDialogs[id..addName..'COUNTDOWN']={--区域,设置对话框
@@ -622,7 +622,7 @@ local function Init_Markers_Frame()--设置标记, 框架
             e.tips:SetOwner(self, "ANCHOR_RIGHT")
             e.tips:ClearLines()
             e.tips:AddLine(e.Icon.left..(e.onlyChinese and '/倒计时' or SLASH_COUNTDOWN2)..' '..(Save.countdown or 7))
-            e.tips:AddLine(e.Icon.right..BINDING_NAME_STOPATTACK)
+            e.tips:AddLine(e.Icon.right..(e.Player.cn and '取消！ 取消！ 取消！' or 'STOP! STOP!STOP!'))
             e.tips:AddLine(' ')
             e.tips:AddLine(e.onlyChinese and '备注：不要太快了' or ('note:' ..ERR_GENERIC_THROTTLE), 1,0,0)
             e.tips:AddLine('Ctrl+'..e.Icon.right..(e.onlyChinese and '设置' or SETTINGS))
