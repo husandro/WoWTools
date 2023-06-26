@@ -356,7 +356,7 @@ local function Init_Markers_Frame()--设置标记, 框架
         panel:RegisterEvent('PLAYER_REGEN_ENABLED')
     end
 
-    if not Save.markersFrame or not getAllSet() then-- or isInCombat then
+    if not Save.markersFrame or not getAllSet() or C_PvP.IsArena() or C_PvP.IsBattleground() then-- or isInCombat then
         if targetFrame and not isInCombat then
             targetFrame:SetShown(false)
         end
@@ -450,23 +450,67 @@ local function Init_Markers_Frame()--设置标记, 框架
                     end
                 end)
             else
-                btn:SetScript('OnClick', function(_, d)
+                btn.index= index
+                btn.texture= btn:CreateTexture(nil, 'BACKGROUND')
+                btn.texture:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
+                btn.texture:SetSize(size/2.5, size/2.5)
+                btn.texture:SetPoint('CENTER')
+                btn:SetScript('OnClick', function(self2, d)
                     if d=='LeftButton' then
-                        set_Taget('target', index)--设置,目标, 标记
+                        set_Taget('target', self2.index)--设置,目标, 标记
                     elseif d=='RightButton' then
-                        set_Clear(index)--取消标记标    
+                        set_Clear(self2.index)--取消标记标    
                     end
                 end)
-                btn:SetScript('OnLeave', function() e.tips:Hide() end)
-                btn:SetScript('OnEnter', function(self)
-                    e.tips:SetOwner(self, "ANCHOR_RIGHT")
-                    e.tips:ClearLines()
-                    e.tips:AddDoubleLine(e.Icon.left..Color[self.index].col..getTexture(index)..(e.onlyChinese and '设置' or SETTINGS),
-                                    Color[self.index].col..getTexture(index)..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..e.Icon.right
-                                )
-                    e.tips:Show()
+                btn:SetScript('OnLeave', function(self2)
+                    e.tips:Hide()
+                    self2.set_Active(self2)
                 end)
-                btn.index= index
+                btn:SetScript('OnEnter', function(self2)
+                    e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+                    e.tips:ClearLines()
+                    e.tips:AddDoubleLine(e.Icon.left
+                                        ..Color[self2.index].col
+                                        ..getTexture(self2.index)
+                                        ..(e.onlyChinese and '设置' or SETTINGS),
+
+                                        Color[self2.index].col
+                                        ..getTexture(self2.index)
+                                        ..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
+                                        ..e.Icon.right
+                                    )
+                    e.tips:Show()
+                    self2:SetButtonState('NORMAL')
+                end)
+                btn.set_Active= function(self2)
+                    local index2
+                    local exists= UnitExists('target')
+                    local can= true
+                    if exists then
+                        if not CanBeRaidTarget('target') then
+                            can= false
+                        end
+                        index2= GetRaidTargetIndex('target')
+                    end
+                    self2:SetButtonState(index2==self2.index and 'PUSHED' or 'NORMAL')
+                    self2.texture:SetShown(index2==self2.index)
+                    self2:SetAlpha(can and 1 or 0.1)
+                end
+                btn.set_Events= function(self2)
+                    self2:RegisterEvent('PLAYER_TARGET_CHANGED')
+                    self2:RegisterEvent('RAID_TARGET_UPDATE')
+                    self2:set_Active(self2)
+                end
+                btn:SetScript('OnShow', function(self2)
+                    btn:set_Events(self2)
+                end)
+                btn:SetScript('OnHide', function(self2)
+                    self2:UnregisterAllEvents()
+                end)
+                btn:SetScript('OnEvent', function(self2,event)
+                    self2:set_Active(self2)
+                end)
+                btn:set_Events(btn)
             end
 
             last=btn
@@ -824,7 +868,7 @@ local function InitMenu(_, level, type)--主菜单
             checked=Save.markersFrame,
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '世界标记' or SLASH_WORLD_MARKER3:gsub('/',''),
-            tooltipText= e.onlyChinese and '需求：队伍和权限' or NEED..": "..format(COVENANT_RENOWN_TOAST_REWARD_COMBINER, HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS,CALENDAR_INVITELIST_SETMODERATOR),
+            tooltipText= (e.onlyChinese and '需求：队伍和权限' or (NEED..": "..format(COVENANT_RENOWN_TOAST_REWARD_COMBINER, HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS,CALENDAR_INVITELIST_SETMODERATOR))),
             menuList= 'MakerFrameResetPost',
             hasArrow=true,
             keepShownOnClick= true,
@@ -836,7 +880,7 @@ local function InitMenu(_, level, type)--主菜单
                 Save.markersFrame= not Save.markersFrame and true or nil
                 Init_Markers_Frame()--设置标记, 框架
             end,
-            disabled=not getAllSet(),--是不有权限
+            disabled=not getAllSet() or C_PvP.IsArena() or C_PvP.IsBattleground(),--是不有权限
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
@@ -942,6 +986,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 panel:RegisterEvent('GROUP_ROSTER_UPDATE')
                 panel:RegisterEvent('GROUP_LEFT')
                 panel:RegisterEvent('READY_CHECK')
+                panel:RegisterEvent('PLAYER_ENTERING_WORLD')
             end
             panel:UnregisterEvent('ADDON_LOADED')
         end
@@ -951,16 +996,16 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             WoWToolsSave[addName]=Save
         end
 
-    elseif event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' then
+    elseif event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' or event=='PLAYER_ENTERING_WORLD' then
         setTankHealer(true)--设置队伍标记
         setAllTextrue()--主图标,是否有权限
         Init_Markers_Frame()--设置标记, 框架
 
     elseif event=='PLAYER_REGEN_ENABLED' then
-        C_Timer.After(2, function()
+        --C_Timer.After(2, function()
             Init_Markers_Frame()--设置标记, 框架
             self:UnregisterEvent('PLAYER_REGEN_ENABLED')
-        end)
+        --end)
 
     elseif event=='READY_CHECK' then--自动就绪事件
         e.PlaySound(SOUNDKIT.READY_CHECK)--播放, 声音

@@ -476,6 +476,7 @@ local function set_PartyFrame()--PartyFrame.lua
                 frame.texture:SetAllPoints(frame)
                 frame.texture:SetAtlas('UI-HUD-UnitFrame-Player-CombatIcon-2x')
                 frame.texture:SetVertexColor(1, 0, 0)
+                frame.texture:SetShown(false)
                 frame.unit= unit
                 frame.elapsed=0
                 frame:SetScript('OnUpdate', function(self2, elapsed)
