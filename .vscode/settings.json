@@ -2951,7 +2951,10 @@
         "PET_BATTLE_START",
         "GetDungeonScoreLink",
         "DisplayDungeonScoreLink",
-        "FIND_A_GROUP"
+        "FIND_A_GROUP",
+        "StaticPopup_StandardConfirmationTextHandler",
+        "LAST_ACTIVE_CHAT_EDIT_BOX",
+        "ChatEdit_FocusActiveWindow"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

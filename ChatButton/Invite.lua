@@ -606,6 +606,10 @@ local function InitList(self, level, type)
                         self2.editBox:SetText(Save.ChannelText or e.Player.cn and '1' or 'inv')
                         --self.button3:SetEnabled(Save.Mounts[FLOOR][data.spellID] and true or false)
                     end,
+                    OnHide= function(self2)
+                        self2.editBox:SetText("")
+                        securecall(ChatEdit_FocusActiveWindow)
+                    end,
                     OnAccept = function(self2, data)
                         Save.ChannelText = string.upper(self.editBox:GetText())
                         print(id, addName, e.onlyChinese and '频道' or CHANNEL,'|cnGREEN_FONT_COLOR:'..Save.ChannelText..'|r')

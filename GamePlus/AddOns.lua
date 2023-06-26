@@ -177,6 +177,10 @@ local function Init()
             OnShow=function(self)
                 self.editBox:SetText(RESISTANCE_FAIR)
             end,
+            OnHide= function(self2)
+                self2.editBox:SetText("")
+                securecall(ChatEdit_FocusActiveWindow)
+            end,
             EditBoxOnTextChanged=function(self, data)
                 local text= self:GetText()
                 text=text:gsub(' ', '')

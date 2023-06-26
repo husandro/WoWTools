@@ -708,21 +708,28 @@ end
 --对话框
 --#####
 StaticPopupDialogs[id..addName..'WELCOME']={--区域,设置对话框
-    text=id..' '..addName..'|n|n'..	EMOTE103_CMD1:gsub('/','').. JOIN..' |cnGREEN_FONT_COLOR:%s|r',
+    text=id..' '..addName..'|n|n'..	EMOTE103_CMD1:gsub('/','')..' '.. JOIN..' |cnGREEN_FONT_COLOR:%s|r',
     whileDead=1,
     hideOnEscape=1,
     exclusive=1,
 	timeout = 60,
     hasEditBox=1,
     button1= SLASH_CHAT_MODERATE2:gsub('/', ''),
-    button2=CANCEL,
-    button3=DISABLE,
+    button2= CANCEL,
+    button3= DISABLE,
     OnShow = function(self, data)
         local text=data.guild and Save.guildWelcomeText or data.group and Save.groupWelcomeText
         text=text or EMOTE103_CMD1:gsub('/','')
         self.editBox:SetText(text)
         self.button3:SetEnabled(data.guild and Save.guildWelcome  or  data.group and Save.groupWelcome)
+        self.button1:SetText(e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/', ''))
+        self.button2:SetText(e.onlyChinese and '取消' or CANCEL)
+        self.button3:SetText(e.onlyChinese and '禁用' or DISABLE)
 	end,
+    OnHide= function(self2)
+        self2.editBox:SetText("")
+        securecall(ChatEdit_FocusActiveWindow)
+    end,
     OnAccept = function(self, data)
 		local text= self.editBox:GetText()
         if data.guild then

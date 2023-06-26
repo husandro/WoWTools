@@ -48,7 +48,7 @@ local function getIsLeader()--队长， 或助理
     return UnitIsGroupAssistant('player') or UnitIsGroupLeader('player')
 end
 
-local function setTaget(unit, index)--设置,目标,标记
+local function set_Taget(unit, index)--设置,目标,标记
     if CanBeRaidTarget(unit) and GetRaidTargetIndex(unit)~=index then
         SetRaidTarget(unit, index)
     end
@@ -73,10 +73,10 @@ local function setRaidTarget()--设置团队标记
     local num= #tab
     if num> 0 then
         table.sort(tab, function(a,b) return a.hp<b.hp end)
-        setTaget(tab[1].unit, Save.tank)--设置,目标,标记
+        set_Taget(tab[1].unit, Save.tank)--设置,目标,标记
 
         if num>=2 and Save.tank2~=0 then
-            setTaget(tab[2].unit, Save.tank2)--设置,目标,标记
+            set_Taget(tab[2].unit, Save.tank2)--设置,目标,标记
         end
     end
 end
@@ -89,12 +89,12 @@ local function setPartyTarget()--设置队伍标记
         local role = UnitGroupRolesAssigned(unit)
         if role=='TANK' then
             if not tank then
-                setTaget(unit, Save.tank)--设置,目标,标记
+                set_Taget(unit, Save.tank)--设置,目标,标记
                 tank=true
             end
         elseif role=='HEALER' then
             if not healer then
-                setTaget(unit, Save.healer)--设置,目标,标记
+                set_Taget(unit, Save.healer)--设置,目标,标记
                 healer=true
             end
         end
@@ -108,7 +108,7 @@ local function setTankHealer(autoSet)--设置队伍标记
     local num=GetNumGroupMembers()
     if Save.tank==0 or num<2 then
         if num<2 and not autoSet then
-            print(id, addName,e.onlyChinese and '设置' or SETTINGS, 
+            print(id, addName,e.onlyChinese and '设置' or SETTINGS,
             INLINE_TANK_ICON..(e.onlyChinese and '坦克' or TANK)..getTexture(Save.tank),
             INLINE_HEALER_ICON..(e.onlyChinese and '治疗' or HEALER)..getTexture(Save.healer),
                 '|cnRED_FONT_COLOR:'..(e.onlyChinese and '队员' or SPELL_TARGET_TYPE4_DESC)..'<2|r')
@@ -117,7 +117,7 @@ local function setTankHealer(autoSet)--设置队伍标记
     end
     if IsInRaid() then
         if not getIsLeader() and not autoSet then--没有权限
-            print(id, addName,e.onlyChinese and '设置' or SETTINGS, 
+            print(id, addName,e.onlyChinese and '设置' or SETTINGS,
             INLINE_TANK_ICON..(e.onlyChinese and '坦克' or TANK)..getTexture(Save.tank),
             INLINE_HEALER_ICON..(e.onlyChinese and '治疗' or HEALER)..getTexture(Save.healer),
             '|cnRED_FONT_COLOR:'..(e.onlyChinese and '没有权限' or ERR_ARENA_TEAM_PERMISSIONS)..'|r')
@@ -306,25 +306,25 @@ end
 --#############
 --设置标记, 框架
 --#############
-local function C(unit, index)
-    local t=GetRaidTargetIndex(unit)
+local function set_Clear_Unit(unit, index)
+    local t= UnitExists(unit) and GetRaidTargetIndex(unit)
     if t and t>0 and (index==t or not index) then
-        setTaget(unit, 0)--设置,目标,标记
+        set_Taget(unit, 0)--设置,目标,标记
     end
 end
-local function Clear(index)--取消标记标    
-    local u;--取消怪物标记
+local function set_Clear(index)--取消标记标    
+    local u--取消怪物标记
     local tab= C_NamePlate.GetNamePlates() or {}
     for _, v in pairs(tab) do
         u = v.namePlateUnitToken or v.UnitFrame and v.UnitFrame.unit
-        C(u, index);
+        set_Clear_Unit(u, index)
     end
     if IsInGroup() then
         u=  IsInRaid() and 'raid' or 'party'--取消队友标记
         for i=1, GetNumGroupMembers() do
-            C(u..i, index)
-            C(u..i..'target', index)
-            C(u..'pet'..i, index)
+            set_Clear_Unit(u..i, index)
+            set_Clear_Unit(u..i..'target', index)
+            set_Clear_Unit(u..'pet'..i, index)
         end
     end
     u={
@@ -332,7 +332,7 @@ local function Clear(index)--取消标记标
         'boss1', 'boss2', 'boss3', 'boss4', 'boss5'
     }
     for _, v in pairs(u) do
-        C(v, index)
+        set_Clear_Unit(v, index)
     end
 end
 
@@ -378,14 +378,15 @@ local function Init_Markers_Frame()--设置标记, 框架
         end
 
         for index = 0, NUM_RAID_ICONS do
-            local btn= e.Cbtn(targetFrame, {icon='hide', size={size,size}})
+            local btn= e.Cbtn(targetFrame, {size={size,size},
+                                             texture= index~=0 and 'Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index or 'Interface\\Cursor\\UI-Cursor-Move',
+                                            })
             if Save.H then
                 btn:SetPoint('BOTTOMLEFT', last or targetFrame, 'TOPLEFT')
             else
                 btn:SetPoint('BOTTOMRIGHT', last or targetFrame, 'BOTTOMLEFT')
             end
             if index==0 then
-                btn:SetNormalTexture('Interface\\Cursor\\UI-Cursor-Move')
                 btn:RegisterForDrag("RightButton")
                 btn:SetScript("OnDragStart", function(_, d)
                     if d=='RightButton' and not IsModifierKeyDown() then
@@ -401,7 +402,7 @@ local function Init_Markers_Frame()--设置标记, 框架
                 btn:SetScript('OnMouseDown', function(_, d)
                     local key=IsModifierKeyDown()
                     if d=='LeftButton' and not key then
-                        Clear()--取消标记标
+                        set_Clear()--取消标记标
                     elseif d=='RightButton' and not key then
                         SetCursor('UI_MOVE_CURSOR')
                     elseif d=='RightButton' and IsControlKeyDown() then
@@ -449,19 +450,18 @@ local function Init_Markers_Frame()--设置标记, 框架
                     end
                 end)
             else
-                btn:SetNormalTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
                 btn:SetScript('OnClick', function(_, d)
                     if d=='LeftButton' then
-                        setTaget('target', index)--设置,目标, 标记
+                        set_Taget('target', index)--设置,目标, 标记
                     elseif d=='RightButton' then
-                        Clear(index)--取消标记标    
+                        set_Clear(index)--取消标记标    
                     end
                 end)
                 btn:SetScript('OnLeave', function() e.tips:Hide() end)
                 btn:SetScript('OnEnter', function(self)
                     e.tips:SetOwner(self, "ANCHOR_RIGHT")
                     e.tips:ClearLines()
-                    e.tips:AddDoubleLine(e.Icon.left..Color[self.index].col..getTexture(index)..(e.onlyChinese and '设置' or SETTINGS), 
+                    e.tips:AddDoubleLine(e.Icon.left..Color[self.index].col..getTexture(index)..(e.onlyChinese and '设置' or SETTINGS),
                                     Color[self.index].col..getTexture(index)..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..e.Icon.right
                                 )
                     e.tips:Show()
@@ -520,27 +520,32 @@ local function Init_Markers_Frame()--设置标记, 框架
                     whileDead=1,
                     hideOnEscape=1,
                     exclusive=1,
-                    timeout = 60,
+                    timeout = 0,
                     hasEditBox=1,
                     button1= e.onlyChinese and '设置' or SETTINGS,
                     button2= e.onlyChinese and '取消' or CANCEL,
                     OnShow = function(self2)
                         self2.editBox:SetNumeric(true)
                         self2.editBox:SetNumber(Save.countdown or 7)
+                        self2.editBox:SetFocus()
                     end,
-                    OnAccept = function(self2, data)
+                    OnHide= function(self2)
+                        self2.editBox:SetText("")
+                        securecall(ChatEdit_FocusActiveWindow)
+                    end,
+                    OnAccept = function(self2)
                         local num= self2.editBox:GetNumber()
                         Save.countdown=num
                     end,
                     EditBoxOnTextChanged=function(self2)
                         local num= self2:GetNumber()
-                        self2:GetParent().button1:SetEnabled(num>0 and num<=3600)
-                        self2:GetParent().button1:SetText(SecondsToClock(num))
+                        local parent= self2:GetParent()
+                        parent.button1:SetEnabled(num>0 and num<=3600)
+                        parent.button1:SetText(SecondsToClock(num))
                     end,
-                    EditBoxOnEscapePressed = function(s)
-                        s:SetAutoFocus(false)
-                        s:ClearFocus()
-                        s:GetParent():Hide()
+                    EditBoxOnEscapePressed = function(self2)
+                        securecall(ChatEdit_FocusActiveWindow)
+                        self2:GetParent():Hide()
                     end,
                 }
                 StaticPopup_Show(id..addName..'COUNTDOWN')

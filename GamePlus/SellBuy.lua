@@ -756,6 +756,10 @@ local function Init_Button(frame)
                             s.editBox:SetText(buySave[itemID])
                         end
                     end,
+                    OnHide= function(self3)
+                        self3.editBox:SetText("")
+                        securecall(ChatEdit_FocusActiveWindow)
+                    end,
                     EditBoxOnEscapePressed = function(s)
                         s:SetAutoFocus(false)
                         s:ClearFocus()

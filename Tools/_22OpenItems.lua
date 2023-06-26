@@ -570,6 +570,10 @@ local function Init()
                     self2.editBox:SetAutoFocus(false)
                     self2.editBox:ClearFocus()
                 end,
+                OnHide= function(self2)
+                    self2.editBox:SetText("")
+                    securecall(ChatEdit_FocusActiveWindow)
+                end,
                 OnAccept = function(self2, data)
                     local num= self2.editBox:GetNumber()
                     num = num<1 and 1 or num

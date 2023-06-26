@@ -123,6 +123,10 @@ local function InitMenu(self, level)--主菜单
                     end
                     self2.button3:SetEnabled(Save.KEY)
                 end,
+                OnHide= function(self2)
+                    self2.editBox:SetText("")
+                    securecall(ChatEdit_FocusActiveWindow)
+                end,
                 OnAccept = function(self2, data)
                     local text= self2.editBox:GetText()
                     text=text:gsub(' ','')

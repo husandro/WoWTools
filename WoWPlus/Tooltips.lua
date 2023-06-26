@@ -95,59 +95,47 @@ StaticPopupDialogs["WowheadQuickLinkUrl"] = {
     text= id..' '..addName..'|n|cffff00ff%s|r |cnGREEN_FONT_COLOR:Ctrl+C |r'..BROWSER_COPY_LINK,
     button1 = e.onlyChinese and '关闭' or CLOSE,
     OnShow = function(self, web)
-        self.editBox:SetScript("OnEscapePressed", function(s) s:ClearFocus() s:GetParent():Hide() end)
-        self.editBox:SetScript("OnEnterPressed", function(s) s:ClearFocus() s:GetParent():Hide() end)
         self.editBox:SetScript("OnKeyUp", function(s, key)
             if IsControlKeyDown() and key == "C" then
-                s:ClearFocus() s:GetParent():Hide()
-                print(id,addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r', s:GetText())
+                print(id,addName,
+                        '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r',
+                        s:GetText()
+                    )
+                s:GetParent():Hide()
             end
-        end)
-        self.editBox:SetScript('OnEditFocusLost', function(s)
-            s:SetTextColor(0.82, 0.82, 0.82)
-        end)
-        self.editBox:SetScript('OnEditFocusGained', function(s)
-            s:SetText(web)
-            s:SetTextColor(0,1,0)
-            s:HighlightText()
-        end)
-        --[[self.editBox:SetScript('OnTextChanged', function(s)
-            s:SetText(web)
-            s:SetTextColor(0,1,0)
-            s:HighlightText()
         end)
         self.editBox:SetScript('OnCursorChanged', function(s)
             s:SetText(web)
-            s:SetTextColor(0,1,0)
             s:HighlightText()
-        end)]]
-
+        end)
         self.editBox:SetMaxLetters(0)
         self.editBox:SetWidth(self:GetWidth())
-        self.editBox:SetText(web)
-        self.editBox:HighlightText()
-        self.editBox:SetAutoFocus(false)
-        self.editBox:SetFocus(true)
-        self.editBox:SetTextColor(0,1,0)
-
         self.button1:SetText(e.onlyChinese and '关闭' or CLOSE)
     end,
     OnHide= function(self)
-        self.editBox:SetScript("OnEscapePressed", nil)
-        self.editBox:SetScript("OnEnterPressed", nil)
         self.editBox:SetScript("OnKeyUp", nil)
-        self.editBox:SetScript('OnEditFocusLost', nil)
-        self.editBox:SetScript('OnEditFocusGained', nil)
-        --self.editBox:SetScript('OnTextChanged', nil)
-        --self.editBox:SetScript('OnCursorChanged', nil)
-        self.editBox:SetTextColor(1,1,1)
+        self.editBox:SetScript("OnCursorChanged", nil)
+        self.editBox:SetText("")
+        securecall(ChatEdit_FocusActiveWindow)
     end,
+    EditBoxOnTextChanged= function (self, web)
+        self:SetText(web)
+        self:HighlightText()
+    end,
+    EditBoxOnEnterPressed = function(self)
+        local parent= self:GetParent()
+        parent.button1:Click()
+        parent:Hide()
+	end,
+    EditBoxOnEscapePressed = function(self)
+        self:GetParent():Hide()
+    end,
+
     hasEditBox = true,
     editBoxWidth = 320,
     timeout = 0,
     whileDead = true,
     hideOnEscape = true,
-    --preferredIndex = 3,
 }
 --https://www.wowhead.com/cn/pet-ability=509/汹涌
 local wowheadText= 'https://www.wowhead.com/%s=%d'

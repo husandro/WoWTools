@@ -148,3 +148,39 @@ panel:SetButtonState('NORMAL')
 
 背包
 PaperDoll_IsEquippedSlot
+
+StaticPopupDialogs["CONFIRM_PLAYER_CHOICE_WITH_CONFIRMATION_STRING"] = {
+	text = "%s",
+	button1 = ACCEPT,
+	button2 = DECLINE,
+	hideOnEscape = 1,
+	timeout = 0,
+	exclusive = 1,
+	whileDead = 1,
+	hasEditBox = 1,
+	maxLetters = 32,
+
+	OnAccept = function(self)
+		self.data.owner:OnConfirm();
+	end,
+	OnShow = function(self)
+		self.button1:Disable();
+		self.button2:Enable();
+		self.editBox:SetFocus();
+	end,
+	OnHide = function(self)
+		self.editBox:SetText("");
+	end,
+	EditBoxOnEnterPressed = function(self)
+		local parent = self:GetParent();
+        parent:Hide();
+	end,
+	EditBoxOnTextChanged = function (self)
+		local parent = self:GetParent();
+		StaticPopup_StandardConfirmationTextHandler(self, parent.data.confirmationString);
+	end,
+	EditBoxOnEscapePressed = function(self)
+		self:GetParent():Hide();
+		ClearCursor();
+	end
+};

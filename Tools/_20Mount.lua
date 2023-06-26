@@ -469,6 +469,10 @@ local function Init_Dialogs()
             end
             self2.button3:SetEnabled(Save.KEY)
         end,
+        OnHide= function(self2)
+            self2.editBox:SetText("")
+            securecall(ChatEdit_FocusActiveWindow)
+        end,
         OnAccept = function(self2, data)
             local text= self2.editBox:GetText()
             text=text:gsub(' ','')
@@ -542,6 +546,10 @@ local function Init_Dialogs()
             checkMount()--检测坐骑
             setClickAtt()--设置 Click属性
             if MountJournal_UpdateMountList then securecallfunction(MountJournal_UpdateMountList) end
+        end,
+        OnHide= function(self2)
+            self2.editBox:SetText("")
+            securecall(ChatEdit_FocusActiveWindow)
         end,
         OnAlt = function(self4, data)
             Save.Mounts[FLOOR][data.spellID]=nil
