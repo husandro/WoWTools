@@ -448,7 +448,6 @@ local function Init_Markers_Frame()--设置标记, 框架
                         Save.markersScale=sacle
                     end
                 end)
-                button.markersFrame= btn--给 SetButtonState('PUSHED') 用
             else
                 btn:SetNormalTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
                 btn:SetScript('OnClick', function(_, d)
@@ -604,7 +603,11 @@ local function Init_Markers_Frame()--设置标记, 框架
         local last
         local tab={5,6,3,2,7,1,4,8}
         for index=0,  NUM_WORLD_RAID_MARKERS do
-            local btn= e.Cbtn(markersFrame, {type=true, icon='hide', size={size,size}})
+            local btn= e.Cbtn(markersFrame, {type=true,
+                                            size={size,size},
+                                            atlas= index==0 and e.Icon.disabled,
+                                            texture= index~=0 and 'Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index,
+                                        })
             if Save.H then
                 btn:SetPoint('BOTTOMRIGHT', last or markersFrame, 'TOPRIGHT')
             else
@@ -618,33 +621,38 @@ local function Init_Markers_Frame()--设置标记, 框架
             btn:SetAttribute("type2", "worldmarker")
             btn:SetAttribute("marker2", index==0 and 0 or tab[index])
             btn:SetAttribute("action2", "clear")
-            if index==0 then
-                btn:SetNormalAtlas(e.Icon.disabled)
-            else
-                btn:SetNormalTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
-            end
-            btn:SetScript('OnLeave', function()
-                e.tips:Hide()
-            end)
-            btn:SetScript('OnEnter', function(self)
-                e.tips:SetOwner(self, "ANCHOR_RIGHT")
+            btn:SetScript('OnLeave', function() e.tips:Hide() end)
+            btn:SetScript('OnEnter', function(self2)
+                e.tips:SetOwner(self2, "ANCHOR_RIGHT")
                 e.tips:ClearLines()
-                if index==0 then
+                if self2.index==0 then
                     e.tips:AddLine(e.Icon.O2..(e.onlyChinese and '清除全部' or CLEAR_ALL)..e.Icon.left)
                 else
-                    e.tips:AddDoubleLine(Color[self.index].col..e.Icon.left..getTexture(index)..(e.onlyChinese and '设置' or SETTINGS),
-                                        Color[self.index].col..getTexture(index)..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..e.Icon.right
+                    e.tips:AddDoubleLine(Color[self2.index].col..e.Icon.left..getTexture(index)..(e.onlyChinese and '设置' or SETTINGS),
+                                        Color[self2.index].col..getTexture(index)..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..e.Icon.right
                                         )
                 end
                 e.tips:Show()
             end)
-            btn.index= index
+            btn.index= index==0 and 0 or tab[index]
             last=btn
             if index~=0 then--背景
                 btn.texture=btn:CreateTexture(nil,'BACKGROUND')
                 btn.texture:SetAllPoints(btn)
                 btn.texture:SetColorTexture(Color[index].r, Color[index].g, Color[index].b)
                 btn.texture:SetAlpha(0.3)
+                btn.setActive= function(self2)
+                    self2:SetButtonState(IsRaidMarkerActive(self2.index) and 'PUSHED' or 'NORMAL')
+                end
+                btn.elapsed= 0
+                btn:SetScript('OnUpdate', function(self2, elapsed)
+                    self2.elapsed= self2.elapsed +elapsed
+                    if self2.elapsed>1 then
+                        self2.setActive(self2)
+                        self2.elapsed=0
+                    end
+                end)
+                btn.setActive(btn)
             end
         end
     end
@@ -879,16 +887,10 @@ local function Init()
         if self.groupReadyTips and self.groupReadyTips:IsShown() then
             self.groupReadyTips:SetButtonState('PUSHED')
         end
-        if self.markersFrame and self.markersFrame:IsShown() then
-            self.markersFrame:SetButtonState('PUSHED')
-        end
     end)
     button:SetScript('OnLeave', function(self)
         if self.groupReadyTips then
             self.groupReadyTips:SetButtonState('NORMAL')
-        end
-        if self.markersFrame then
-            self.markersFrame:SetButtonState('NORMAL')
         end
     end)
 
