@@ -679,6 +679,9 @@ local function set_All_Text()--所有记录
         end
         ChallengesFrame.runHistoryLable:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
         ChallengesFrame.runHistoryLable:SetScript('OnEnter', function(self2)
+            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+
             local curMaps = {}
             for _, v in pairs( (C_ChallengeMode.GetMapTable() or {})) do
                 curMaps[v]=true
@@ -686,7 +689,7 @@ local function set_All_Text()--所有记录
 
             local tabs={}
             local completed, all= 0,0
-            for _, info in pairs(C_MythicPlus.GetRunHistory(true, true) or {}) do
+            for index, info in pairs(C_MythicPlus.GetRunHistory(true, true) or {}) do
                 local mapID=info.mapChallengeModeID
                 tabs[mapID]= tabs[mapID] or
                             {
@@ -713,9 +716,6 @@ local function set_All_Text()--所有记录
                     table.insert(newTab, 1, tab)
                 end
             end
-
-            e.tips:SetOwner(self2, "ANCHOR_LEFT")
-            e.tips:ClearLines()
             e.tips:AddDoubleLine(e.onlyChinese and '历史' or HISTORY, completed..'/'..all)
 
             for _, tab in pairs(newTab) do
