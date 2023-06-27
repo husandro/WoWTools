@@ -69,7 +69,7 @@ local function Init()
 
             button.spell= tab.spell
             button.spell2= tab.spell2
-            local name,_,icon = GetSpellInfo(tab.spell)
+            local name, _, icon = GetSpellInfo(tab.spell)
 
             button:SetAttribute('type', 'spell')--设置属性
             button:SetAttribute('spell', name or tab.spell)
