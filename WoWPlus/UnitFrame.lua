@@ -533,6 +533,35 @@ local function set_PartyFrame()--PartyFrame.lua
                 frame.Text:SetTextColor(r, g, b)
             end
             frame:set_Shown(frame)
+
+            
+            frame= memberFrame.deadFrame
+            if not frame then
+                frame= CreateFrame('Frame', nil, memberFrame)
+                frame:SetPoint("CENTER", memberFrame.Portrait)
+                frame:SetSize(37,37)
+                frame:SetFrameStrata('HIGH')
+                frame.texture= frame:CreateTexture()
+                frame.texture:SetAllPoints(frame)
+                frame.set_Active= function(self2)
+                    local find= false
+                    if UnitIsDead(self2.unit) then
+                        self2.texture:SetAtlas('xmarksthespot')
+                        find= true
+                    elseif UnitIsGhost(self2.unit) then
+                        self2.texture:SetAtlas('poi-soulspiritghost')
+                        find= true
+                    end
+                    self2:SetShown(find)
+                end
+                frame:RegisterUnitEvent('UNIT_FLAGS', unit)
+                frame:SetScript('OnEvent', function(self2)
+                    self2:set_Active(self2)
+                end)
+                frame.unit= unit
+                memberFrame.deadFrame= frame
+            end
+            frame:set_Active(frame)
         end
     end)
 
