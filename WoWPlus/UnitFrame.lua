@@ -534,7 +534,6 @@ local function set_PartyFrame()--PartyFrame.lua
             end
             frame:set_Shown(frame)
 
-            
             frame= memberFrame.deadFrame
             if not frame then
                 frame= CreateFrame('Frame', nil, memberFrame)
@@ -546,7 +545,7 @@ local function set_PartyFrame()--PartyFrame.lua
                 frame.set_Active= function(self2)
                     local find= false
                     if UnitIsDead(self2.unit) then
-                        self2.texture:SetAtlas('xmarksthespot')
+                        self2.texture:SetAtlas('deathrecap-icon-tombstone')
                         find= true
                     elseif UnitIsGhost(self2.unit) then
                         self2.texture:SetAtlas('poi-soulspiritghost')
