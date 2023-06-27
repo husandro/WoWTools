@@ -553,12 +553,15 @@ local function set_PartyFrame()--PartyFrame.lua
                     end
                     self2:SetShown(find)
                 end
-                frame:RegisterUnitEvent('UNIT_FLAGS', unit)
                 frame:SetScript('OnEvent', function(self2)
                     self2:set_Active(self2)
                 end)
                 frame.unit= unit
                 memberFrame.deadFrame= frame
+            end
+            frame:UnregisterAllEvents()
+            if exists then
+                frame:RegisterUnitEvent('UNIT_FLAGS', unit)
             end
             frame:set_Active(frame)
         end
