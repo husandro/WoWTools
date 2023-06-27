@@ -45,7 +45,7 @@ else
     return
 end
 
-local addName=UNITNAME_SUMMON_TITLE14:format(UnitClass('player'))
+local addName= UNITNAME_SUMMON_TITLE14:format(UnitClass('player'))
 local Save={}
 local panel=CreateFrame("Frame")
 
