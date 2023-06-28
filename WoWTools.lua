@@ -937,12 +937,10 @@ end
 
 e.Chat=function(text, name, setPrint)
     if text then
-        local dead= UnitIsDeadOrGhost('player')
-        local ins= IsInInstance()
         if name then
             SendChatMessage(text, 'WHISPER',nil, name);
 
-        elseif ins and not dead then
+        elseif IsInInstance() and not UnitIsDeadOrGhost('player') then
             if C_CVar.GetCVarBool("chatBubbles") then
                 SendChatMessage(text, 'SAY')
             else
