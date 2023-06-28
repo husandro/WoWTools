@@ -319,7 +319,6 @@ local function set_Shift_Click_focurs()
         Boss4TargetFrame,
         Boss5TargetFrame,
         FocusFrameToT,
-        
     }
     print(PartyFrame.MemberFrame1.potFrame,PartyFrame.MemberFrame1)
     local keyTab={
