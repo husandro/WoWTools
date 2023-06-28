@@ -560,7 +560,7 @@ local function Init_Markers_Frame()--设置标记, 框架
                 if self.star then
                     C_PartyInfo.DoCountdown(0)
                 end
-                e.Chat(e.Player.cn and '取消！ 取消！ 取消！' or 'STOP! STOP! STOP!')
+                e.Chat(e.Player.cn and '{rt7}取消！ 取消！ 取消！{rt7}' or '{rt7}STOP! STOP! STOP!{rt7}')
 
             elseif d=='RightButton' and IsControlKeyDown() then--设置时间
                 StaticPopupDialogs[id..addName..'COUNTDOWN']={--区域,设置对话框

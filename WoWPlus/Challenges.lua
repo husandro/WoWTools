@@ -1104,13 +1104,13 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                 frame.scoreLable.score= overAllScore
                 frame.scoreLable:SetScale(Save.insScale or 1)
 
-                if(affixScores and #affixScores > 0) then --最佳 
+                if affixScores and #affixScores > 0 then --最佳 
                     local nameA, _, filedataidA = C_ChallengeMode.GetAffixInfo(10)
                     local nameB, _, filedataidB = C_ChallengeMode.GetAffixInfo(9)
-                        for _, info in ipairs(affixScores) do
+                    for _, info in ipairs(affixScores) do
                         local text
                         local label=frame['affixInfo'..info.name]
-                        if info.level and info.level>0 and (info.name == nameA or info.name==nameB) and not Save.hideIns then
+                        if info.level and info.level>0 and info.durationSec and (info.name == nameA or info.name==nameB) and not Save.hideIns then
                             if not label then
                                 label= e.Cstr(frame, {justifyH='RIGHT', mouse=true})
                                 if info.name== nameA then
@@ -1122,26 +1122,21 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                                 label:SetScript('OnEnter', function(self2)
                                     e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
                                     e.tips:ClearLines()
-                                    e.tips:AddLine(format(e.onlyChinese and '最佳%s' or DUNGEON_SCORE_BEST_AFFIX, self2.name))
-                                    if self2.overTime then
-                                        e.tips:AddLine('|cnRED_FONT_COLOR:'..format(e.onlyChinese and '%s (超时)' or DUNGEON_SCORE_OVERTIME_TIME, SecondsToClock(self2.durationSec)))
-                                    else
-                                        e.tips:AddLine(SecondsToClock(self2.durationSec))
-                                    end
+                                    e.tips:AddDoubleLine(format(e.onlyChinese and '最佳%s' or DUNGEON_SCORE_BEST_AFFIX, self2.name),
+                                                            self2.overTime and '|cff828282'..format(e.onlyChinese and '%s (超时)' or DUNGEON_SCORE_OVERTIME_TIME, SecondsToClock(self2.durationSec)) or SecondsToClock(self2.durationSec)
+                                                        )
                                     e.tips:Show()
                                     self2:SetAlpha(0.5)
                                 end)
                                 frame['affixInfo'..info.name]= label
                             end
-
-                            local level= info.overTime and '|cnRED_FONT_COLOR:'..info.level..'|r' or info.level
+                            local level= info.overTime and '|cff828282:'..info.level..'|r' or info.level
                             local icon='|T'..(info.name == nameA and filedataidA or filedataidB)..':0|t'
                             text= icon..level
 
                             label.overTime= info.overTime
                             label.durationSec= info.durationSec
                             label.name= icon..info.name..': '..level
-
                         end
                         if label then
                             label:SetScale(Save.insScale or 1)
