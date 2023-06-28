@@ -948,6 +948,7 @@ e.Chat=function(text, name, setPrint)
             else
                 SendChatMessage(text, 'YELL')
             end
+
         elseif IsInRaid() then
             SendChatMessage(text, 'RAID')
 
