@@ -48,18 +48,21 @@ local affixSchedule = {
 	[10] = { [1]=0,   [2]=0,   [3]=10,}, -- Fortified  |  |
 }
 
+local spellTabs={
+    {spell=396129, ins=1196, map=405},--传送：蕨皮山谷
+    {spell=396130, ins=1204, map=406},--传送：注能大厅
+    {spell=396128, ins=1199, map=404},--传送：奈萨鲁斯
+    {spell=396127, ins=1197, map=403},--传送：奥达曼：提尔的遗产
+    {spell=272262, ins=1001, map=245},--传送到自由镇
+    {spell=272269, ins=1022, map=251},--传送：地渊孢林
+    {spell=205379, ins=767, map=206},--传送：奈萨里奥的巢穴
+    {spell=88775, ins=68, map=438},--传送到旋云之巅
+}
+for _, tab in pairs(spellTabs) do
+    e.LoadDate({id=tab.spell, type='spell'})
+end
 local function get_Spell_MapChallengeID(mapChallengeID)
-    local tabs={
-        {spell=396129, ins=1196, map=405},--传送：蕨皮山谷
-        {spell=396130, ins=1204, map=406},--传送：注能大厅
-        {spell=396128, ins=1199, map=404},--传送：奈萨鲁斯
-        {spell=396127, ins=1197, map=403},--传送：奥达曼：提尔的遗产
-        {spell=272262, ins=1001, map=245},--传送到自由镇
-        {spell=272269, ins=1022, map=251},--传送：地渊孢林
-        {spell=205379, ins=767, map=206},--传送：奈萨里奥的巢穴
-        {spell=88775, ins=68, map=438},--传送到旋云之巅
-    }
-    for _, tab in pairs(tabs) do
+    for _, tab in pairs(spellTabs) do
         e.LoadDate({id=tab.spell, type='spell'})
         if tab.map==mapChallengeID then
             return tab.spell
