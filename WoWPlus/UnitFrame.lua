@@ -578,7 +578,7 @@ local function set_PartyFrame()--PartyFrame.lua
         end
     end
 
-    set_UpdatePartyFrames(PartyFrame)
+    set_UpdatePartyFrames(PartyFrame)--先使用一次，用以Shift+点击，设置焦点功能, Invite.lua
     hooksecurefunc(PartyFrame, 'UpdatePartyFrames', set_UpdatePartyFrames)
 
     --##############
