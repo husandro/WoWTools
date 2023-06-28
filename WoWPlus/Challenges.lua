@@ -1263,8 +1263,9 @@ local function set_Update()--Blizzard_ChallengesUI.lua
             if frame.spellPort and not isInBat then
                 frame.spellPort.spellID= spellID
                 if spellID and IsSpellKnown(spellID) then
-                    frame.spellPort:SetAttribute("type*", "spell")
-                    frame.spellPort:SetAttribute("spell*", spellID)
+                    local name= GetSpellInfo(spellID)
+                    frame.spellPort:SetAttribute("type", "spell")
+                    frame.spellPort:SetAttribute("spell", name or spellID)
                     frame.spellPort:SetAlpha(1)
                 else
                     frame.spellPort:SetAlpha(0.3)
