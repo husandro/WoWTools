@@ -307,6 +307,10 @@ local function set_Shift_Click_focurs()
         PartyFrame.MemberFrame2,
         PartyFrame.MemberFrame3,
         PartyFrame.MemberFrame4,
+        PartyFrame.MemberFrame1.potFrame,
+        PartyFrame.MemberFrame2.potFrame,
+        PartyFrame.MemberFrame3.potFrame,
+        PartyFrame.MemberFrame4.potFrame,
         TargetFrame,
         TargetFrameToT,
         Boss1TargetFrame,
@@ -315,7 +319,9 @@ local function set_Shift_Click_focurs()
         Boss4TargetFrame,
         Boss5TargetFrame,
         FocusFrameToT,
+        
     }
+    print(PartyFrame.MemberFrame1.potFrame,PartyFrame.MemberFrame1)
     local keyTab={
         'shift-type1',
         'ctrl-type1',
@@ -329,7 +335,7 @@ local function set_Shift_Click_focurs()
                 frame:SetAttribute(key..'-type1', 'focus')--设置, 属性
             else
                 for _, text in pairs(keyTab) do--取得, 所有属性
-                    if frame:GetAttribute(text) then
+                    if frame:GetAttribute(text) and frame:CanChangeAttribute() then
                         frame:SetAttribute(key..'-type1', nil)
                     end
                 end
@@ -337,18 +343,19 @@ local function set_Shift_Click_focurs()
         end
     end
 
-    if Save.setFucus then
-        FocusFrame:SetAttribute(key..'-type1','macro')
-        FocusFrame:SetAttribute(key..'-macrotext1','/clearfocus')
-    else
-        if FocusFrame:GetAttribute(key..'-type1') then
-            FocusFrame:SetAttribute(key..'-type1', nil)
-        end
-        if FocusFrame:GetAttribute(key..'-macrotext1') then
-            FocusFrame:SetAttribute(key..'-macrotext1', nil)
+    if FocusFrame and FocusFrame:CanChangeAttribute() then
+        if Save.setFucus then
+            FocusFrame:SetAttribute(key..'-type1','macro')
+            FocusFrame:SetAttribute(key..'-macrotext1','/clearfocus')
+        else
+            if FocusFrame:GetAttribute(key..'-type1') then
+                FocusFrame:SetAttribute(key..'-type1', nil)
+            end
+            if FocusFrame:GetAttribute(key..'-macrotext1') then
+                FocusFrame:SetAttribute(key..'-macrotext1', nil)
+            end
         end
     end
-
     if Save.setFucus then
         clearFocusFrame= clearFocusFrame or e.Cbtn(nil, {type=true, name= id..addName..'clearFocusFrame'})
         clearFocusFrame:SetAttribute('type1','macro')
@@ -363,6 +370,7 @@ local function set_Shift_Click_focurs()
         end
         e.SetButtonKey(clearFocusFrame, false, nil, nil)--清除, 快捷键
     end
+    tab=nil
 end
 
 local function set_SummonTips()--召唤，提示

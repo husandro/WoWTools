@@ -2954,7 +2954,8 @@
         "FIND_A_GROUP",
         "StaticPopup_StandardConfirmationTextHandler",
         "LAST_ACTIVE_CHAT_EDIT_BOX",
-        "ChatEdit_FocusActiveWindow"
+        "ChatEdit_FocusActiveWindow",
+        "BINDING_HEADER_TARGETING"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

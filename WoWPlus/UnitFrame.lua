@@ -293,7 +293,7 @@ end
 --小队
 --####
 local function set_PartyFrame()--PartyFrame.lua
-    hooksecurefunc(PartyFrame, 'UpdatePartyFrames', function(self)
+    local function set_UpdatePartyFrames(self)
         for memberFrame in self.PartyMemberFramePool:EnumerateActive() do
             local unit= memberFrame.unit or memberFrame:GetUnit()
             local exists= memberFrame:IsShown()
@@ -319,13 +319,15 @@ local function set_PartyFrame()--PartyFrame.lua
             --#########
             local frame= memberFrame.potFrame
             if not frame then
-                frame= CreateFrame('Frame', nil, memberFrame)
-                frame.Portrait= frame:CreateTexture()--目标的目标, 图标
-                frame.Portrait:SetAllPoints(frame)
-                frame:SetSize(20,20)
-                frame:SetPoint('TOPLEFT', memberFrame, 'TOPRIGHT', -3 ,-4)
+                frame= e.Cbtn(memberFrame, {type=true, size={35,35}, icon='hide'})
+                --frame:SetPoint('TOPLEFT', memberFrame, 'TOPRIGHT', -3 ,-4)
+                frame:SetPoint('LEFT', memberFrame, 'RIGHT', -3, 4)
+                frame:SetAttribute('type', 'target')
+                frame:SetAttribute('unit', unit..'target')
+
                 frame.set_Party_Target_Changed= function(self2)
-                    local unit2= self2.getUnit(self2)
+                    local unit2= self2:get_Unit(self2)
+                    local text
                     if unit2 then
                         local index = GetRaidTargetIndex(unit2)
                         if index and index>0 and index< 9 then
@@ -333,33 +335,42 @@ local function set_PartyFrame()--PartyFrame.lua
                         else
                             SetPortraitTexture(self2.Portrait, unit2, true)
                         end
+                        text= UnitIsPlayer(unit2) and e.Class(unit2)
                     end
-                    self2:SetShown(unit2 and true or false)
+                    self2.Portrait:SetShown(unit2 and true or false)
+                    self2.Text:SetText(text or '')
                 end
-                frame.getUnit= function(self2)
-                    local tar= self2.unit..'target'
-                    return UnitExists(tar) and tar or nil
+                frame.get_Unit= function(self2)
+                    return UnitExists(self2.unit) and self2.unit or nil
                 end
                 frame:SetScript('OnLeave', function() e.tips:Hide() end)
                 frame:SetScript('OnEnter', function(self2)
-                    local unit2= self2.getUnit(self2)
+                    e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+                    e.tips:ClearLines()
+                    local unit2= self2:get_Unit(self2)
                     if unit2 then
-                        e.tips:SetOwner(self2, "ANCHOR_RIGHT")
-                        e.tips:ClearLines()
                         e.tips:SetUnit(self2.unit)
+                    else
+                        e.tips:AddDoubleLine(' ',e.Icon.left..(e.onlyChinese and '选中目标' or BINDING_HEADER_TARGETING))
                         e.tips:AddLine(' ')
                         e.tips:AddDoubleLine(id, addName)
-                        e.tips:Show()
                     end
+                    e.tips:Show()
                 end)
                 frame:SetScript('OnEvent', function(self2)
                     self2.set_Party_Target_Changed(self2)
                 end)
-                frame.unit= unit
+                frame.unit= unit..'target'
+
+                frame.Portrait= frame:CreateTexture(nil, 'BACKGROUND')--目标的目标, 图标
+                frame.Portrait:SetAllPoints(frame)
+                frame.Text= e.Cstr(frame, {size=14})
+                frame.Text:SetPoint('BOTTOMRIGHT',3,-2)
                 memberFrame.potFrame= frame
             end
             frame:UnregisterAllEvents()
             if exists then
+                frame:RegisterEvent('RAID_TARGET_UPDATE')
                 frame:RegisterUnitEvent('UNIT_TARGET', unit)
             end
             frame.set_Party_Target_Changed(frame)
@@ -369,8 +380,8 @@ local function set_PartyFrame()--PartyFrame.lua
             --#########
             frame= memberFrame.castFrame
             if not frame then
-                frame= CreateFrame("Frame", nil, memberFrame)--队友，施法
-                frame:SetPoint('TOP', memberFrame.potFrame, 'BOTTOM')
+                frame= CreateFrame("Frame", nil, memberFrame)
+                frame:SetPoint('BOTTOMLEFT', memberFrame.potFrame, 'BOTTOMRIGHT')
                 frame:SetSize(20,20)
                 frame.texture=  frame:CreateTexture(nil,'BACKGROUND')
                 frame.texture:SetAllPoints(frame)
@@ -461,7 +472,7 @@ local function set_PartyFrame()--PartyFrame.lua
             frame= memberFrame.combatFrame
             if not frame then
                 frame= CreateFrame('Frame', nil, memberFrame)
-                frame:SetPoint('LEFT', memberFrame.potFrame, 'RIGHT')
+                frame:SetPoint('TOPLEFT', memberFrame.potFrame, 'TOPRIGHT',2,2)
                 frame:SetSize(16,16)
                 frame:SetScript('OnLeave', function() e.tips:Hide() end)
                 frame:SetScript('OnEnter', function(self2)
@@ -565,7 +576,10 @@ local function set_PartyFrame()--PartyFrame.lua
             end
             frame:set_Active(frame)
         end
-    end)
+    end
+
+    set_UpdatePartyFrames(PartyFrame)
+    hooksecurefunc(PartyFrame, 'UpdatePartyFrames', set_UpdatePartyFrames)
 
     --##############
     --隐藏, DPS 图标
