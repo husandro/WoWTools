@@ -336,9 +336,13 @@ local function set_PartyFrame()--PartyFrame.lua
                             SetPortraitTexture(self2.Portrait, unit2, true)
                         end
                         text= UnitIsPlayer(unit2) and e.Class(unit2)
+                        local r2, g2, b2= GetClassColor(UnitClassBase(self2.unit))
+                        self2.healthBar:SetStatusBarColor(r2 or 1, g2 or 1, b2 or 1, 1)
                     end
-                    self2.Portrait:SetShown(unit2 and true or false)
-                    self2.Text:SetText(text or '')
+                    self2.Portrait:SetShown(unit2 and true or false)--队友，目标，图像
+                    self2.Text:SetText(text or '')--队友，目标，职业
+                    self2.healthBar:SetShown(unit2 and true or false)--队友， 目标， 生命条
+                    self2.healthBar.elapsed=1
                 end
                 frame.get_Unit= function(self2)
                     return UnitExists(self2.unit) and self2.unit or nil
@@ -362,10 +366,45 @@ local function set_PartyFrame()--PartyFrame.lua
                 end)
                 frame.unit= unit..'target'
 
-                frame.Portrait= frame:CreateTexture(nil, 'BACKGROUND')--目标的目标, 图标
+                frame.Portrait= frame:CreateTexture(nil, 'BACKGROUND')--队友，目标，图像
                 frame.Portrait:SetAllPoints(frame)
-                frame.Text= e.Cstr(frame, {size=14})
+
+                frame.Text= e.Cstr(frame, {size=14})--队友，目标，职业
                 frame.Text:SetPoint('BOTTOMRIGHT',3,-2)
+
+                frame.healthBar= CreateFrame('StatusBar', nil, frame)--队友， 目标， 生命条
+                frame.healthBar:SetSize(55, 8)
+                frame.healthBar:SetPoint('TOPLEFT', frame, 'BOTTOMLEFT')
+                frame.healthBar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
+                frame.healthBar:SetMinMaxValues(0,100)
+                frame.healthBar:SetFrameLevel(frame:GetFrameLevel()+7)
+                frame.healthBar.elapsed=0
+                frame.healthBar.unit= unit..'target'
+                frame.healthBar:SetScript('OnUpdate', function(self2, elapsed)
+                    self2.elapsed= self2.elapsed +elapsed
+                    if self2.elapsed>0.75 then
+                        local cur= UnitHealth(self2.unit)
+                        local max= UnitHealthMax(self2.unit)
+                        if max and max>0 then
+                            local value= cur/max*100
+                           self2:SetValue(value)
+                           self2.Text:SetFormattedText('%i', value)
+                        else
+                            self2:SetShown(false)
+                        end
+                        self2.elapsed=0
+                    end
+                end)
+
+                local texture= frame.healthBar:CreateTexture(nil, 'BACKGROUND')--队友，目标，生命条，外框
+                texture:SetAtlas('MainPet-HealthBarFrame')
+                texture:SetAllPoints(frame.healthBar)
+                texture:SetVertexColor(1,0,0)
+
+                frame.healthBar.Text= e.Cstr(frame.healthBar)
+                frame.healthBar.Text:SetPoint('LEFT')
+                frame.healthBar.Text:SetTextColor(1,1,1)
+
                 memberFrame.potFrame= frame
             end
             frame:UnregisterAllEvents()
@@ -751,20 +790,25 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
         end
 
         local guid= UnitGUID(unit)--职业, 天赋, 图标
-        if unit~='vehicle' and guid and e.UnitItemLevel[guid] and e.UnitItemLevel[guid].specID then
-            local texture= select(4, GetSpecializationInfoByID(e.UnitItemLevel[guid].specID))
-            if texture then
-                SetPortraitToTexture(self.classTexture, texture)
-            end
-        else
-            local class= e.Class(unit, nil, true)--职业, 图标
-            if class then
-                self.classTexture:SetAtlas(class)
+        if UnitIsPlayer(unit) then
+            if unit~='vehicle' and guid and e.UnitItemLevel[guid] and e.UnitItemLevel[guid].specID then
+                local texture= select(4, GetSpecializationInfoByID(e.UnitItemLevel[guid].specID))
+                if texture then
+                    SetPortraitToTexture(self.classTexture, texture)
+                end
             else
-                self.classTexture:SetTexture(0)
+                local class= e.Class(unit, nil, true)--职业, 图标
+                if class then
+                    self.classTexture:SetAtlas(class)
+                else
+                    self.classTexture:SetTexture(0)
+                end
             end
+            self.classPortrait:SetVertexColor(r, g, b, 1)
+            self.classPortrait:SetShown(true)
+        else
+            self.classPortrait:SetShown(false)
         end
-        self.classPortrait:SetVertexColor(r,g,b,1)
 
         if self==PlayerFrame then
             set_Instance_Difficulty()--副本, 地下城，指示

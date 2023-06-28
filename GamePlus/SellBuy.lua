@@ -923,7 +923,7 @@ local function Init()
             self.editBox:SetText(DELETE_ITEM_CONFIRM_STRING);
         end
     end)
-    hooksecurefunc(StaticPopupDialogs["DELETE_GOOD_QUEST_ITEM"],"OnShow",function(self)
+    hooksecurefunc(StaticPopupDialogs["DELETE_GOOD_QUEST_ITEM"], "OnShow",function(self)
         if not Save.notDELETE and self.editBox then
             self.editBox:SetText(DELETE_ITEM_CONFIRM_STRING);
         end

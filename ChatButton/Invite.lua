@@ -176,7 +176,7 @@ local function set_PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNati
 
     local function setPrint(sec, text)
         e.PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
-        print(id, addName, text,
+        print(id, 'ChatButton', addName, text,
             '|cnGREEN_FONT_COLOR:'..sec.. ' |r'..(e.onlyChinese and '秒' or SECONDS),
             (isTank and e.Icon.TANK or '')..(isHealer and e.Icon.HEALER or '')..(isDamage and e.Icon.DAMAGER or ''),
             questSessionActive and (e.onlyChinese and '场景战役' or SCENARIOS) or '',--场景战役
@@ -193,11 +193,11 @@ local function set_PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNati
             return
         end
         local sec=isInLFG() and 10 or 3--是否有FB, 排除中
-        setPrint(sec, '|cnGREEN_FONT_COLOR:'..ACCEPT..'|r'..FRIENDS)
+        setPrint(sec, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '接受' or ACCEPT)..'|r'..(e.onlyChinese and '好友' or FRIENDS))
         if StaticPopup1.InvTimer then StaticPopup1.InvTimer:Cancel() end
         StaticPopup1.InvTimer = C_Timer.NewTimer(sec, function()
-                AcceptGroup()
-                StaticPopup_Hide("PARTY_INVITE")
+            AcceptGroup()
+            StaticPopup_Hide("PARTY_INVITE")
         end)
 
     elseif Save.InvNoFriend[inviterGUID] then--拒绝
@@ -830,12 +830,13 @@ local function Init()
     set_Chanell_Event()--设置,内容,频道, 邀请,事件
 
 
+
     StaticPopupDialogs["PARTY_INVITE"].button3= '|cff00ff00'..(e.onlyChinese and '总是' or ALWAYS)..'|r'..(e.onlyChinese and '拒绝' or DECLINE)..'|r'--添加总是拒绝按钮
     StaticPopupDialogs["PARTY_INVITE"].OnAlt=function()
         if notInviterGUID then
             if Save.InvNoFriend[notInviterGUID] then
                 Save.InvNoFriend[notInviterGUID] =nil
-                print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', e.PlayerLink(nil, notInviterGUID) or '', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '拒绝' or DECLINE)..'|r'..(e.onlyChinese and '邀请' or INVITE))
+                print(id, 'ChatButton', addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', e.PlayerLink(nil, notInviterGUID) or '', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '拒绝' or DECLINE)..'|r'..(e.onlyChinese and '邀请' or INVITE))
                 AcceptGroup()
                 StaticPopup_Hide("PARTY_INVITE")
             else
@@ -843,10 +844,14 @@ local function Init()
                 Save.InvNoFriendNum=Save.InvNoFriendNum+1
                 DeclineGroup()
                 StaticPopup_Hide("PARTY_INVITE")
-                print(id,addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r', e.PlayerLink(nil, notInviterGUID) or '', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '拒绝' or DECLINE)..'|r'..(e.onlyChinese and '邀请' or INVITE))
+                print(id, 'ChatButton', addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r', e.PlayerLink(nil, notInviterGUID) or '', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '拒绝' or DECLINE)..'|r'..(e.onlyChinese and '邀请' or INVITE))
             end
         end
+        notInviterGUID=nil
     end
+     --hooksecurefunc(StaticPopupDialogs["PARTY_INVITE"], "OnShow",function(self, ...)
+        
+     --end)
 
 
     --#########

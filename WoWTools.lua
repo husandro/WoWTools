@@ -937,11 +937,17 @@ end
 
 e.Chat=function(text, name, setPrint)
     if text then
+        local dead= UnitIsDeadOrGhost('player')
+        local ins= IsInInstance()
         if name then
             SendChatMessage(text, 'WHISPER',nil, name);
 
-        elseif not UnitIsDeadOrGhost('player') and IsInInstance() then
-            SendChatMessage(text, 'SAY')
+        elseif ins and not dead then
+            if C_CVar.GetCVarBool("chatBubbles") then
+                SendChatMessage(text, 'YELL')
+            else
+                SendChatMessage(text, 'SAY')
+            end
             --[[local sayCVar=C_CVar.GetCVarBool("chatBubbles")--聊天跑跑
             if not sayCVar then
                 C_CVar.SetCVar("chatBubbles", '1')
@@ -957,7 +963,7 @@ e.Chat=function(text, name, setPrint)
         elseif IsInGroup() then
             SendChatMessage(text,'PARTY')
 
-        elseif not IsResting() and not UnitAffectingCombat('player') then
+        elseif not IsResting() then
             SendChatMessage(text, 'SAY')
 
         elseif setPrint then
