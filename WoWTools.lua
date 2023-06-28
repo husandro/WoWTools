@@ -944,19 +944,10 @@ e.Chat=function(text, name, setPrint)
 
         elseif ins and not dead then
             if C_CVar.GetCVarBool("chatBubbles") then
-                SendChatMessage(text, 'YELL')
-            else
                 SendChatMessage(text, 'SAY')
+            else
+                SendChatMessage(text, 'YELL')
             end
-            --[[local sayCVar=C_CVar.GetCVarBool("chatBubbles")--聊天跑跑
-            if not sayCVar then
-                C_CVar.SetCVar("chatBubbles", '1')
-            end
-            SendChatMessage(text, 'SAY')
-            if not sayCVar then
-                C_CVar.SetCVar("chatBubbles", '0')
-            end]]
-
         elseif IsInRaid() then
             SendChatMessage(text, 'RAID')
 
