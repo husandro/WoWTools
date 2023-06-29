@@ -402,7 +402,7 @@ local function set_PartyFrame()--PartyFrame.lua
                 texture:SetVertexColor(1,0,0)
 
                 frame.healthBar.Text= e.Cstr(frame.healthBar)
-                frame.healthBar.Text:SetPoint('LEFT')
+                frame.healthBar.Text:SetPoint('BOTTOMLEFT', frame.healthBar, 'TOPLEFT')
                 frame.healthBar.Text:SetTextColor(1,1,1)
 
                 memberFrame.potFrame= frame
@@ -584,6 +584,9 @@ local function set_PartyFrame()--PartyFrame.lua
             end
             frame:set_Shown(frame)
 
+            --#########
+            --队友，死亡
+            --#########
             frame= memberFrame.deadFrame
             if not frame then
                 frame= CreateFrame('Frame', nil, memberFrame)
@@ -594,12 +597,14 @@ local function set_PartyFrame()--PartyFrame.lua
                 frame.texture:SetAllPoints(frame)
                 frame.set_Active= function(self2)
                     local find= false
-                    if UnitIsDead(self2.unit) then
-                        self2.texture:SetAtlas('xmarksthespot')
-                        find= true
-                    elseif UnitIsGhost(self2.unit) then
-                        self2.texture:SetAtlas('poi-soulspiritghost')
-                        find= true
+                    if UnitIsConnected(self2.unit) then
+                        if UnitIsDead(self2.unit) then
+                            self2.texture:SetAtlas('xmarksthespot')
+                            find= true
+                        elseif UnitIsGhost(self2.unit) then
+                            self2.texture:SetAtlas('poi-soulspiritghost')
+                            find= true
+                        end
                     end
                     self2:SetShown(find)
                 end
