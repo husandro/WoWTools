@@ -549,7 +549,7 @@ local function Init()--冒险指南界面
         EncounterJournal.keystones:SetScript('OnEnter',set_EncounterJournal_Keystones_Tips)
         EncounterJournal.keystones:SetScript("OnLeave",function() e.tips:Hide() end)
         EncounterJournal.keystones:SetScript('OnMouseDown', function()
-            PVEFrame_ToggleFrame('ChallengesFrame',3)
+            PVEFrame_ToggleFrame('ChallengesFrame', 3)
         end)
     end
     EncounterJournal.money =e.Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--钱
@@ -755,7 +755,7 @@ local function Init()--冒险指南界面
     end)
 
     --Boss, 战利品, 信息
-    hooksecurefunc(EncounterJournalItemMixin,'Init',function(self, elementData)--Blizzard_EncounterJournal.lua
+    hooksecurefunc(EncounterJournalItemMixin,'Init', function(self, elementData)--Blizzard_EncounterJournal.lua
         local text, collectText='', nil
         if not Save.hideEncounterJournal and self.link and self.itemID and self.slot then
             local specTable = GetItemSpecInfo(self.link) or {}--专精图标
@@ -1173,7 +1173,7 @@ local function Init()--冒险指南界面
     end)
 
     --可能会，出错误，不知，不是这问题，不要删除
-    --[[#####
+    --#####
     --贸易站
     --#####
     hooksecurefunc(EncounterJournalMonthlyActivitiesFrame.ScrollBox, 'SetScrollTargetOffset', function(self2)
@@ -1219,7 +1219,7 @@ local function Init()--冒险指南界面
                 btn.showPerksActivityID= true
             end
         end
-    end)]]
+    end)
 
     if not Save.hideEncounterJournal then
         local numTier=EJ_GetNumTiers()--记录上次选择版本
