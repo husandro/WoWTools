@@ -329,11 +329,17 @@ local function set_PartyFrame()--PartyFrame.lua
                     local unit2= self2:get_Unit(self2)
                     local text
                     if unit2 then
-                        local index = GetRaidTargetIndex(unit2)
-                        if index and index>0 and index< 9 then
-                            self2.Portrait:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
+                        if UnitIsDeadOrGhost(unit2) then--死亡
+                            self2.Portrait:SetAtlas('xmarksthespot')
+                        elseif UnitIsUnit(unit2, 'player') then--我
+                            self2.Portrait:SetAtlas('auctionhouse-icon-favorite')
                         else
-                            SetPortraitTexture(self2.Portrait, unit2, true)
+                            local index = GetRaidTargetIndex(unit2)
+                            if index and index>0 and index< 9 then--标记
+                                self2.Portrait:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
+                            else
+                                SetPortraitTexture(self2.Portrait, unit2, true)--图像
+                            end
                         end
                         text= UnitIsPlayer(unit2) and e.Class(unit2)
                         local r2, g2, b2= GetClassColor(UnitClassBase(self2.unit))
