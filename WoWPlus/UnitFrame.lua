@@ -402,7 +402,7 @@ local function set_PartyFrame()--PartyFrame.lua
                 texture:SetVertexColor(1,0,0)
 
                 frame.healthBar.Text= e.Cstr(frame.healthBar)
-                frame.healthBar.Text:SetPoint('BOTTOMLEFT', frame.healthBar, 'TOPLEFT')
+                frame.healthBar.Text:SetPoint('RIGHT')
                 frame.healthBar.Text:SetTextColor(1,1,1)
 
                 memberFrame.potFrame= frame

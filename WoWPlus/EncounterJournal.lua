@@ -813,10 +813,14 @@ local function Init()--冒险指南界面
         if self.collectedText then
             self.collectedText:SetText(text)
             self.collectedText.collectText= collectText
-            --self.collectedText:SetShown(text and true or false)
         end
 
-        e.Set_Item_Stats(self, self.link, {point= self.icon, itemID= self.itemID})--显示, 物品, 属性
+        local find= not Save.hideEncounterJournal
+        local classID= find and select(6, GetItemInfoInstant(self.link or self.itemID))
+        if classID~=2 and classID~=4 then
+            find= false
+        end
+        e.Set_Item_Stats(self, find and self.link, {point= self.icon, itemID= find and self.itemID})--显示, 物品, 属性
     end)
 
     --#######################

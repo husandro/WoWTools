@@ -48,7 +48,7 @@ local affixSchedule = {
 	[10] = { [1]=0,   [2]=0,   [3]=10,}, -- Fortified  |  |
 }
 
-local spellTabs={
+local SpellTabs={
     {spell=396129, ins=1196, map=405},--传送：蕨皮山谷
     {spell=396130, ins=1204, map=406},--传送：注能大厅
     {spell=396128, ins=1199, map=404},--传送：奈萨鲁斯
@@ -58,11 +58,11 @@ local spellTabs={
     {spell=205379, ins=767, map=206},--传送：奈萨里奥的巢穴
     {spell=88775, ins=68, map=438},--传送到旋云之巅
 }
-for _, tab in pairs(spellTabs) do
+for _, tab in pairs(SpellTabs) do
     e.LoadDate({id=tab.spell, type='spell'})
 end
 local function get_Spell_MapChallengeID(mapChallengeID)
-    for _, tab in pairs(spellTabs) do
+    for _, tab in pairs(SpellTabs) do
         e.LoadDate({id=tab.spell, type='spell'})
         if tab.map==mapChallengeID then
             return tab.spell
@@ -1406,6 +1406,12 @@ local function Init()
             e.tips:AddDoubleLine('挑战20层','限时传送门')
             e.tips:AddDoubleLine('提示：', '如果出现错误，请禁用此功能')
             e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(Save.portScale or 1)..'|r'.. e.Icon.mid)
+            e.tips:AddLine(' ')
+            for _, tab in pairs(SpellTabs) do
+               local spellLink= GetSpellLink(tab.spell)
+               local icon= GetSpellTexture(tab.spell)
+               e.tips:AddDoubleLine((icon and '|T'..icon..':0|t' or ''))
+            end
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine('显示/隐藏', e.Icon.left)
         else

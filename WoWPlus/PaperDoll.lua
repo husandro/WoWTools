@@ -152,7 +152,8 @@ local subClassToSlot={
     --[16]= 12,--	双手武器	
     [17]= 13,--盾牌/副手	
 }
-local function get_no_Enchant_Bag(slot)--取得，物品，bag, slot    
+local function get_no_Enchant_Bag(slot)--取得，物品，bag, slot
+    
     for bagIndex= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--Constants.InventoryConstants.NumBagSlots
         for slotIndex=1, C_Container.GetContainerNumSlots(bagIndex) do
             local info = C_Container.GetContainerItemInfo(bagIndex, slotIndex)
