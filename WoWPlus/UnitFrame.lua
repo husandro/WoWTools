@@ -326,39 +326,35 @@ local function set_PartyFrame()--PartyFrame.lua
                 frame:SetAttribute('unit', unit..'target')
 
                 frame.set_Party_Target_Changed= function(self2)
-                    local unit2= self2:get_Unit(self2)
                     local text
-                    if unit2 then
-                        if UnitIsDeadOrGhost(unit2) then--死亡
+                    local exists2= UnitExists(self2.unit)
+                    if exists2 then
+                        if UnitIsDeadOrGhost(self2.unit) then--死亡
                             self2.Portrait:SetAtlas('xmarksthespot')
-                        elseif UnitIsUnit(unit2, 'player') then--我
+                        elseif UnitIsUnit(self2.unit, 'player') then--我
                             self2.Portrait:SetAtlas('auctionhouse-icon-favorite')
                         else
-                            local index = GetRaidTargetIndex(unit2)
+                            local index = GetRaidTargetIndex(self2.unit)
                             if index and index>0 and index< 9 then--标记
                                 self2.Portrait:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
                             else
-                                SetPortraitTexture(self2.Portrait, unit2, true)--图像
+                                SetPortraitTexture(self2.Portrait, self2.unit, true)--图像
                             end
                         end
-                        text= UnitIsPlayer(unit2) and e.Class(unit2)
+                        text= UnitIsPlayer(self2.unit) and e.Class(self2.unit)
                         local r2, g2, b2= GetClassColor(UnitClassBase(self2.unit))
                         self2.healthBar:SetStatusBarColor(r2 or 1, g2 or 1, b2 or 1, 1)
                     end
-                    self2.Portrait:SetShown(unit2 and true or false)--队友，目标，图像
+                    self2.Portrait:SetShown(exists2)--队友，目标，图像
                     self2.Text:SetText(text or '')--队友，目标，职业
-                    self2.healthBar:SetShown(unit2 and true or false)--队友， 目标， 生命条
+                    self2.healthBar:SetShown(exists2)--队友， 目标， 生命条
                     self2.healthBar.elapsed=1
-                end
-                frame.get_Unit= function(self2)
-                    return UnitExists(self2.unit) and self2.unit or nil
                 end
                 frame:SetScript('OnLeave', function() e.tips:Hide() end)
                 frame:SetScript('OnEnter', function(self2)
                     e.tips:SetOwner(self2, "ANCHOR_RIGHT")
                     e.tips:ClearLines()
-                    local unit2= self2:get_Unit(self2)
-                    if unit2 then
+                    if  UnitExists(self2.unit) then
                         e.tips:SetUnit(self2.unit)
                     else
                         e.tips:AddDoubleLine(' ',e.Icon.left..(e.onlyChinese and '选中目标' or BINDING_HEADER_TARGETING))
@@ -607,21 +603,40 @@ local function set_PartyFrame()--PartyFrame.lua
                         if UnitIsDead(self2.unit) then
                             self2.texture:SetAtlas('xmarksthespot')
                             find= true
+                            if not self2.deadBool then--死亡，次数
+                                self2.deadBool=true
+                                self2.dead= self2.dead +1
+                            end
                         elseif UnitIsGhost(self2.unit) then
                             self2.texture:SetAtlas('poi-soulspiritghost')
                             find= true
+                        else
+                            self2.deadBool= nil
                         end
                     end
                     self2:SetShown(find)
+                    self2.deadText:SetText(self2.dead>0 and self2.dead or '')
                 end
-                frame:SetScript('OnEvent', function(self2)
+                frame:SetScript('OnEvent', function(self2, event)
+                    if event=='PLAYER_ENTERING_WORLD' or event=='CHALLENGE_MODE_START' then
+                        self2.dead= 0
+                    end
                     self2:set_Active(self2)
                 end)
+
+                frame.dead=0--死亡，次数
+                frame.deadText= e.Cstr(frame, {mouse=true, color={r=1,g=0,b=0,a=1}})
+                frame.deadText:SetPoint('BOTTOMRIGHT', memberFrame.Portrait)
+                frame.deadText:SetScript('OnLeave', function() e.tips:Hide() end)
+                
+
                 frame.unit= unit
                 memberFrame.deadFrame= frame
             end
             frame:UnregisterAllEvents()
             if exists then
+                frame:RegisterEvent('PLAYER_ENTERING_WORLD')
+                frame:RegisterEvent('CHALLENGE_MODE_START')
                 frame:RegisterUnitEvent('UNIT_FLAGS', unit)
             end
             frame:set_Active(frame)
