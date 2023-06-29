@@ -1408,9 +1408,11 @@ local function Init()
             e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(Save.portScale or 1)..'|r'.. e.Icon.mid)
             e.tips:AddLine(' ')
             for _, tab in pairs(SpellTabs) do
-               local spellLink= GetSpellLink(tab.spell)
+               local spellLink= GetSpellLink(tab.spell) or GetSpellInfo(tab.spell)
                local icon= GetSpellTexture(tab.spell)
-               e.tips:AddDoubleLine((icon and '|T'..icon..':0|t' or ''))
+               e.tips:AddDoubleLine((icon and '|T'..icon..':0|t' or '')..spellLink,
+                                    IsSpellKnown(tab.spell) and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已获得' or ACHIEVEMENTFRAME_FILTER_COMPLETED) or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '未获得' or FOLLOWERLIST_LABEL_UNCOLLECTED)..' '..tab.spell)
+                                )
             end
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine('显示/隐藏', e.Icon.left)

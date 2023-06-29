@@ -2955,7 +2955,9 @@
         "StaticPopup_StandardConfirmationTextHandler",
         "LAST_ACTIVE_CHAT_EDIT_BOX",
         "ChatEdit_FocusActiveWindow",
-        "BINDING_HEADER_TARGETING"
+        "BINDING_HEADER_TARGETING",
+        "ACHIEVEMENTFRAME_FILTER_COMPLETED",
+        "FOLLOWERLIST_LABEL_UNCOLLECTED"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
