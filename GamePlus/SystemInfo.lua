@@ -95,7 +95,7 @@ local function create_Set_lable(self, text)--建立,或设置,Labels
                 end
                 e.tips:AddLine(str..(e.onlyChinese and '旅行者日志进度' or MONTHLY_ACTIVITIES_PROGRESSED))
             end
-            down= function() ToggleEncounterJournal() end
+            --down= function() ToggleEncounterJournal() end
 
         elseif text=='durabiliy' then
             label.tooltip= e.onlyChinese and '耐久度' or DURABILITY

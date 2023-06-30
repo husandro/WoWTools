@@ -624,11 +624,18 @@ local function set_PartyFrame()--PartyFrame.lua
                     self2:set_Active(self2)
                 end)
 
-                frame.dead=0--死亡，次数
-                frame.deadText= e.Cstr(frame, {mouse=true, color={r=1,g=0,b=0,a=1}})
-                frame.deadText:SetPoint('BOTTOMRIGHT', memberFrame.Portrait)
+                --死亡，次数
+                frame.dead=0
+                frame.deadText= e.Cstr(memberFrame, {mouse=true})
+                frame.deadText:SetPoint('BOTTOMLEFT', frame)
                 frame.deadText:SetScript('OnLeave', function() e.tips:Hide() end)
-                
+                frame.deadText:SetScript('OnEnter', function(self2)
+                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                    e.tips:ClearLines()
+                    e.tips:AddDoubleLine(e.onlyChinese and '死亡' or DEAD, e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
+                    e.tips:AddDoubleLine(id, addName)
+                    e.tips:Show()
+                end)
 
                 frame.unit= unit
                 memberFrame.deadFrame= frame
@@ -638,6 +645,7 @@ local function set_PartyFrame()--PartyFrame.lua
                 frame:RegisterEvent('PLAYER_ENTERING_WORLD')
                 frame:RegisterEvent('CHALLENGE_MODE_START')
                 frame:RegisterUnitEvent('UNIT_FLAGS', unit)
+                frame.deadText:SetTextColor(r, g, b)
             end
             frame:set_Active(frame)
         end

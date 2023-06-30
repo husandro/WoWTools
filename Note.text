@@ -97,7 +97,7 @@ ToggleToyCollection(autoPageToCollectedToyID)
 
 ToggleCharacter("PaperDollFrame")--角色
 
-ToggleEncounterJournal()
+ToggleEncounterJournal()--可能会出错
 EJ_ContentTab_Select(EncounterJournalDungeonTab:GetID())
 
 ToggleTalentFrame(self.suggestedTab)--天赋
