@@ -467,11 +467,13 @@ local function Init_Gossip()
 
         elseif IsInInstance() then
             if index==107571--挑战，模式，去 SX buff
-                and C_ChallengeMode.IsChallengeModeActive()
-                and (e.WA_GetUnitDebuff('player', 57723, 'HARMFUL')
-                    or e.WA_GetUnitDebuff('player', 264689, 'HARMFUL')
-                    or e.WA_GetUnitDebuff('player', 80354, 'HARMFUL')
-                    )
+                --and C_ChallengeMode.IsChallengeModeActive()
+                and e.WA_GetUnitDebuff('player', nil, 'HARMFUL', {
+                           [57723]= true,
+                           [57724]= true,
+                           [264689]= true,
+                           [80354]= true,
+                        })
             then
                 C_GossipInfo.SelectOption(index)
                 find=true

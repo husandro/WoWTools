@@ -729,13 +729,14 @@ e.WA_GetUnitBuff = function(unit, spell, filter)--HELPFUL HARMFUL
         end
     end
 end
-e.WA_GetUnitDebuff = function(unit, spell, filter)
+e.WA_GetUnitDebuff = function(unit, spell, filter, spellTab)
+    spellTab= spellTab or {}
     for i = 1, 40 do
         local spellID = select(10, UnitDebuff(unit, i, filter))
         if not spellID then
             return
-        elseif spell == spellID then
-          return UnitDebuff(unit, i, filter)
+        elseif spellTab[spellID] or spell== spellID then
+            return UnitDebuff(unit, i, filter)
         end
     end
 end

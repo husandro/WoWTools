@@ -618,7 +618,7 @@ local function set_PartyFrame()--PartyFrame.lua
                     self2.deadText:SetText(self2.dead>0 and self2.dead or '')
                 end
                 frame:SetScript('OnEvent', function(self2, event)
-                    if event=='PLAYER_ENTERING_WORLD' or event=='CHALLENGE_MODE_START' then
+                    if event~='UNIT_FLAGS' then
                         self2.dead= 0
                     end
                     self2:set_Active(self2)
@@ -646,6 +646,8 @@ local function set_PartyFrame()--PartyFrame.lua
                 frame:RegisterEvent('CHALLENGE_MODE_START')
                 frame:RegisterUnitEvent('UNIT_FLAGS', unit)
                 frame.deadText:SetTextColor(r, g, b)
+            else
+                frame.dead= 0
             end
             frame:set_Active(frame)
         end
