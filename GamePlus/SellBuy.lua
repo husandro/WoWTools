@@ -27,41 +27,21 @@ local RepairSave={date=date('%x'), player=0, guild=0, num=0}
 --#########
 --设置耐久度
 --#########
-local function getDurabiliy()--耐久度值
-    local c = 0;
-    local m = 0;
-    for i = 1, 18 do
-        local cur,max = GetInventoryItemDurability(i);
-        if cur and max and max>0 then
-            c = c + cur;
-            m =m + max;
-        end
-    end
-    local du
-    if m>0 then
-        du = floor((c/m) * 100)
-        if du<30 then
-            du='|cnRED_FONT_COLOR:'..du..'%|r';
-        elseif du<=60 then
-            du='|cnYELLOW_FONT_COLOR:'..du..'%|r';
-        elseif du<=90 then
-            du='|cnGREEN_FONT_COLOR:'..du..'%|r';
-        else
-            du=du..'%'
-        end
-    end
-    return du
-end
 local function setDurabiliy()--设置耐久度
-    local button=MerchantRepairAllButton
-    if not Save.notAutoRepairAll and button then
-        if not button.text then
-            button.text=e.Cstr(button)
-            button.text:SetPoint('TOPLEFT')
+    local btn=MerchantRepairAllButton
+    if not btn then
+        return
+    end
+    local text
+    if not Save.notAutoRepairAll and btn then
+        if not btn.durabiliyText then
+            btn.durabiliyText=e.Cstr(btn)
+            btn.durabiliyText:SetPoint('TOPLEFT')
         end
-        button.text:SetText(getDurabiliy() or '')
-    elseif button and button.text then
-        button.text:SetText('')
+        text= e.GetDurabiliy()
+    end
+    if btn.durabiliyText then
+        btn.durabiliyText:SetText(text or '')
     end
 end
 

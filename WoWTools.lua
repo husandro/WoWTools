@@ -983,6 +983,39 @@ e.Say=function(type, name, wow, text)
     end
 end
 
+
+e.GetDurabiliy= function(reTexture)--耐久度
+    local cur, max= 0, 0
+    for i= 1, 18 do
+        local cur2, max2 = GetInventoryItemDurability(i)
+        if cur2 and max2 and max2>0 then
+            cur= cur +cur2
+            max= max +max2
+        end
+    end
+    local text, value= nil, 100
+    if max>0 then
+        if cur==max then
+            text= '100%'
+        else
+            value = cur/max * 100
+            if value<30 then
+                text= format('|cnRED_FONT_COLOR:%i%%|r', value-0.5)
+            elseif value<=60 then
+                text= format('|cnYELLOW_FONT_COLOR:%i%%|r', value-0.5)
+            elseif value<=90 then
+                text= format('|cnGREEN_FONT_COLOR:%i%%|r', value-0.5)
+            else
+                text= format('%i%%', value-0.5)
+            end
+        end
+        if reTexture then
+            text= '|T132281:0|t'..text
+        end
+    end
+    return text, value
+end
+
 e.GetKeystoneScorsoColor= function(score, texture, overall)--地下城史诗, 分数, 颜色 C_ChallengeMode.GetOverallDungeonScore()
     if not score or score==0 or score=='0' then
         return ''

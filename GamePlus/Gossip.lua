@@ -25,18 +25,7 @@ local function setPoint()--设置位置
     if Save.point then
         panel:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
     else
-        --local frame
-        --if _G['!KalielsTrackerFrame'] then
-            --frame= _G['!KalielsTrackerFrame']
-            --panel:SetPoint('BOTTOMRIGHT', _G['!KalielsTrackerFrame'] or ObjectiveTrackerBlocksFrame, 'TOPRIGHT', -10, 0)
-            panel:SetPoint('BOTTOMLEFT', _G['!KalielsTrackerFrame'] or ObjectiveTrackerBlocksFrame, 'TOPLEFT',30,0)
-        --else
-            --frame= ObjectiveTrackerBlocksFrame
-            --panel:SetPoint('TOPRIGHT', ObjectiveTrackerBlocksFrame, 'TOPRIGHT', -45, -2)
-        --end
-        --panel:SetFrameStrata('HIGH')
-        --local frameLevel = frame:GetFrameLevel() or 5
-        --frame:SetFrameLevel(frameLevel+ 2)
+        panel:SetPoint('BOTTOMLEFT', _G['!KalielsTrackerFrame'] or ObjectiveTrackerBlocksFrame, 'TOPLEFT',30,0)
     end
 end
 
@@ -427,7 +416,8 @@ local function Init_Gossip()
         end
 
         local index= info.gossipOptionID or self:GetID()
-        local gossip= C_GossipInfo.GetOptions()
+        local gossip= C_GossipInfo.GetOptions() or {}
+        local allGossip= #gossip
         local name=info.name
         local npc=e.GetNpcID('npc')
         self.sel.id=index
@@ -455,7 +445,7 @@ local function Init_Gossip()
             C_GossipInfo.SelectOption(index)
             find=true
 
-        elseif #gossip==1 and Save.unique  then--仅一个
+        elseif allGossip==1 and Save.unique  then--仅一个
            -- if not getMaxQuest() then
                 local tab= C_GossipInfo.GetActiveQuests() or {}
                 for _, questInfo in pairs(tab) do
@@ -475,15 +465,35 @@ local function Init_Gossip()
             C_GossipInfo.SelectOption(index)
             find=true
 
-        elseif index==107571--挑战，模式，去 SX buff
-            and C_ChallengeMode.IsChallengeModeActive()
-            and (e.WA_GetUnitDebuff('player', 57723, 'HARMFUL')
-                or e.WA_GetUnitDebuff('player', 264689, 'HARMFUL')
-                or e.WA_GetUnitDebuff('player', 80354, 'HARMFUL')
-                )
+        elseif IsInInstance() then
+            if index==107571--挑战，模式，去 SX buff
+                and C_ChallengeMode.IsChallengeModeActive()
+                and (e.WA_GetUnitDebuff('player', 57723, 'HARMFUL')
+                    or e.WA_GetUnitDebuff('player', 264689, 'HARMFUL')
+                    or e.WA_GetUnitDebuff('player', 80354, 'HARMFUL')
+                    )
             then
                 C_GossipInfo.SelectOption(index)
                 find=true
+
+            elseif index==107572 then--挑战，模式, 修理
+                local value= select(2, e.GetDurabiliy())
+                if value<85 then
+                    C_GossipInfo.SelectOption(index)
+                    find=true
+                end
+
+            elseif index==56363 then--奥达曼， 传送门3
+                C_GossipInfo.SelectOption(index)
+                find=true
+            elseif index==56364 and allGossip==2 then--奥达曼， 传送门2
+                C_GossipInfo.SelectOption(index)
+                find=true
+            elseif index==56365 and allGossip==1 then--奥达曼， 传送门1
+                C_GossipInfo.SelectOption(index)
+                find=true
+            end
+
         end
 
         if find then

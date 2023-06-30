@@ -180,29 +180,9 @@ end
 --设置装等,耐久度,事件
 --##################
 local function set_Durabiliy()
-    local c = 0;
-    local m = 0;
-    for i = 1, 18 do
-        local cur,max = GetInventoryItemDurability(i);
-        if cur and max and max>0 then
-            c = c + cur;
-            m =m + max;
-        end
-    end
-    local du, value=nil, 100
-    if m>0 then
-        value = floor((c/m) * 100)
-        du= format('%i%%', value)
-        if value<30 then
-            du='|cnRED_FONT_COLOR:'..du..'|r';
-        elseif value<=60 then
-            du='|cnYELLOW_FONT_COLOR:'..du..'|r';
-        elseif value<=90 then
-            du='|cnGREEN_FONT_COLOR:'..du..'|r';
-        end
-    end
+    local du, value= e.GetDurabiliy(not Save.parent)
     if not Save.parent and du then
-        du= du..'|T132281:0|t '
+        du= du..' '
     end
     Labels.durabiliy:SetText(du or '')
     e.Set_HelpTips({frame=button, topoint=Labels.durabiliy, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=true, show=value<=40})--设置，提示
