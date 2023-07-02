@@ -429,14 +429,14 @@ local function Init()
 
         local btn= self.enchantSlot.btn
         if isEnchant and not Save.notProfessionsFrameButtuon and not btn then
-            btn= e.Cbtn(self.enchantSlot, {size={12,12}, icon= not Save.disabledEnchant})
+            btn= e.Cbtn(self.enchantSlot, {size={16,16}, icon= not Save.disabledEnchant})
             btn:SetPoint('TOPLEFT', self.enchantSlot, 'BOTTOMLEFT')
-            btn:SetAlpha(0.5)
+            btn:SetAlpha(0.3)
             btn:SetScript('OnClick', function(self2)
                 Save.disabledEnchant= not Save.disabledEnchant and true or nil
                 self2:SetNormalAtlas(Save.disabledEnchant and e.Icon.disabled or e.Icon.icon)
             end)
-            btn:SetScript('OnLeave', function() e.tips:Hide() end)
+            btn:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.3) end)
             btn:SetScript('OnEnter', function(self2)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
@@ -445,6 +445,7 @@ local function Init()
                 e.tips:AddDoubleLine(e.onlyChinese and '自动加入' or AUTO_JOIN, e.GetEnabeleDisable(not Save.disabledEnchant))
                 e.tips:AddDoubleLine(id, addName)
                 e.tips:Show()
+                self2:SetAlpha(1)
             end)
             self.enchantSlot.btn=btn
         end
