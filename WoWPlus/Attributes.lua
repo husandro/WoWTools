@@ -1923,8 +1923,8 @@ local function Init()
 
         button.frame:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED')
 
-        --button.frame:RegisterEvent('PLAYER_AVG_ITEM_LEVEL_UPDATE')
-        --button.frame:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
+        button.frame:RegisterEvent('PLAYER_AVG_ITEM_LEVEL_UPDATE')
+        button.frame:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
         button.frame:RegisterEvent('PLAYER_TALENT_UPDATE')
         button.frame:RegisterEvent('CHALLENGE_MODE_START')
         button.frame:RegisterEvent('SOCKET_INFO_SUCCESS')
