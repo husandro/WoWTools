@@ -427,8 +427,20 @@ local function Init()
         local recipeID = recipeInfo and recipeInfo.recipeID
         local isEnchant = recipeID and (self.recipeSchematic.recipeType == Enum.TradeskillRecipeType.Enchant) and not C_TradeSkillUI.IsRuneforging()
 
+        if not isEnchant
+            or not self.enchantSlot
+            or not self.enchantSlot:IsShown()
+            or Save.notProfessionsFrameButtuon--禁用，按钮
+            or ItemUtil.GetCraftingReagentCount(38682)==0--没有， 附魔纸
+        then
+            if self.enchantSlot and self.enchantSlot.btn then
+                self.enchantSlot.btn:SetShown(false)
+            end
+            return
+        end
+
         local btn= self.enchantSlot.btn
-        if isEnchant and not Save.notProfessionsFrameButtuon and not btn then
+        if not btn then
             btn= e.Cbtn(self.enchantSlot, {size={16,16}, icon= not Save.disabledEnchant})
             btn:SetPoint('TOPLEFT', self.enchantSlot, 'BOTTOMLEFT')
             btn:SetAlpha(0.3)
@@ -449,16 +461,10 @@ local function Init()
             end)
             self.enchantSlot.btn=btn
         end
-        if btn then
-            btn:SetShown(isEnchant and not Save.notProfessionsFrameButtuon)
-        end
-        if not isEnchant
-            or Save.notProfessionsFrameButtuon--禁用，按钮
-            or Save.disabledEnchant
-            or not self.enchantSlot
-            or not self.enchantSlot:IsShown()
-            or ItemUtil.GetCraftingReagentCount(38682)==0--没有， 附魔纸
-        then
+        btn:SetShown(true)
+
+
+        if Save.disabledEnchant then
             return
         end
 
