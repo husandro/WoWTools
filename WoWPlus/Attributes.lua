@@ -128,14 +128,14 @@ end
 --###########
 local function set_Text_Value(frame, value, value2)
     value= value or 0
-    value= value>=0 and value or 0
+    value= value>0 and value or 0
     if not frame.value or ((frame.value==0 or value==0) and not frame.zeroShow)  then
         frame.value= value
     end
 
     if not Save.notText then
         local text
-        if value==0 and not frame.zeroShow then
+        if value<1 and not frame.zeroShow then
             text= ''
         else
             if frame.useNumber then
@@ -157,7 +157,7 @@ local function set_Text_Value(frame, value, value2)
     end
 
     if frame.bar and frame.bar:IsShown() then
-        if frame.value== value or (value==0 and not frame.zeroShow) then
+        if frame.value== value or (value<1 and not frame.zeroShow) then
             frame.bar:SetStatusBarColor(frame.r, frame.g, frame.b, frame.a)
             frame.bar:SetValue(value)
             frame.barTexture:SetShown(false)
@@ -187,7 +187,7 @@ local function set_Text_Value(frame, value, value2)
     end
 
     if frame.textValue and frame.textValue:IsShown() then
-        if frame.value== value or (value==0 and not frame.zeroShow) then
+        if frame.value== value or (value<1 and not frame.zeroShow) then
             frame.textValue:SetText('')
         else
             local text, icon
@@ -1090,7 +1090,7 @@ local function frame_Init(rest)--初始， 或设置
 
             set_Frame(frame, rest)
 
-            find= (frame.value and ((frame.value==0 and frame.zeroShow) or frame.value>0)) or info.name=='SPEED'
+            find= (frame.value and ((frame.value<1 and frame.zeroShow) or frame.value>=1)) or info.name=='SPEED'
 
             if find then
                 frame:ClearAllPoints()
@@ -1212,7 +1212,7 @@ local function set_Panle_Setting()--设置 panel
             e.tips:AddDoubleLine(self.text2, format('%.2f%%', value or 0))
             if not info.zeroShow then
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(e.GetShowHide(Save.tab[self.name].hide), '|cnGREEN_FONT_COLOR:0 = '..(e.onlyChinese and '隐藏' or HIDE))
+                e.tips:AddDoubleLine(e.GetShowHide(not Save.tab[self.name].hide), (e.onlyChinese and '值' or 'value: ')..' < 1 ='..(e.onlyChinese and '隐藏' or HIDE))
             end
             e.tips:Show()
         end)
@@ -1937,7 +1937,7 @@ local function Init()
 
         button.frame:RegisterUnitEvent('UNIT_AURA', 'player')
 
-        button.frame:SetScript("OnEvent", function(self, event)
+        button.frame:SetScript("OnEvent", function(_, event)
             if event=='PLAYER_SPECIALIZATION_CHANGED' then
                 set_Tabs()--设置, 内容
                 frame_Init(true)--初始， 或设置
@@ -1961,7 +1961,7 @@ end
 
 
 panel:RegisterEvent("ADDON_LOADED")
-panel:SetScript("OnEvent", function(self, event, arg1)
+panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
