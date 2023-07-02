@@ -935,11 +935,11 @@ local function frame_Init(rest)--初始， 或设置
 
                 frame.label= e.Cstr(frame, {color={r=info.r, g=info.g,b=info.b, a=info.a}})--nil, nil, nil, {info.r,info.g,info.b,info.a}, nil)
                 frame.label:EnableMouse(true)
-                frame.label:SetScript('OnLeave', function() e.tips:Hide() end)
+                frame.label:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
 
                 frame.text= e.Cstr(frame, {color={r=1,g=1,b=1}, justifyH= Save.toLeft and 'RIGHT'})--nil, nil, nil, {1,1,1}, nil, Save.toLeft and 'RIGHT' or 'LEFT')
                 frame.text:EnableMouse(true)
-                frame.text:SetScript('OnLeave', function() e.tips:Hide() end)
+                frame.text:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
 
                 if info.name=='STATUS' then--主属性1
                     frame:RegisterUnitEvent('UNIT_STATS', 'player')
@@ -1040,6 +1040,8 @@ local function frame_Init(rest)--初始， 或设置
                         end
                     end)
                 end
+                frame.label:HookScript('OnEnter', function(self2) self2:SetAlpha(0.3) end)
+                frame.text:HookScript('OnEnter', function(self2) self2:SetAlpha(0.3) end)
                 button[info.name]= frame
             end
 
@@ -1206,10 +1208,11 @@ local function set_Panle_Setting()--设置 panel
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(e.GetShowHide(Save.tab[self.name].hide), '|cnGREEN_FONT_COLOR:0 = '..(e.onlyChinese and '隐藏' or HIDE))
             e.tips:Show()
+            self:SetAlpha(0.3)
         end)
-        check:SetScript('OnLeave', function(self) e.tips:Hide() end)
+        check:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
 
-        local text= e.Cstr(panel, {color={r=r,g=g,b=b,a=a}})--nil, nil, nil, {r,g,b,a})--Text
+        local text= e.Cstr(check, {color={r=r,g=g,b=b,a=a}})--nil, nil, nil, {r,g,b,a})--Text
         text:SetPoint('LEFT', check, 'RIGHT')
         text:SetText(info.text)
         if index>1 then
@@ -1256,8 +1259,9 @@ local function set_Panle_Setting()--设置 panel
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(format('r%.2f', r2)..format('  g%.2f', g2)..format('  b%.2f', b2), format('a%.2f', a2))
                 e.tips:Show()
+                self:GetParent():SetAlpha(0.3)
             end)
-            text:SetScript('OnLeave', function() e.tips:Hide() end)
+            text:SetScript('OnLeave', function(self) e.tips:Hide() self:GetParent():SetAlpha(1) end)
         end
 
         if info.name=='STATUS' then--主属性, 使用bar
@@ -1269,8 +1273,8 @@ local function set_Panle_Setting()--设置 panel
                 Save.tab['STATUS'].bar= not Save.tab['STATUS'].bar and true or false
                 frame_Init(true)--初始， 或设置
             end)
-            current:SetScript('OnEnter', set_SPEED_Tooltip)
-            current:SetScript('OnLeave', function() e.tips:Hide() end)
+            current:SetScript('OnEnter', function(self2) set_SPEED_Tooltip(self2) self2:SetAlpha(0.3) end)
+            current:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
 
             local sliderBit= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--位数，bit
             sliderBit:SetPoint("LEFT", current.text, 'RIGHT', 6,0)
@@ -1298,8 +1302,8 @@ local function set_Panle_Setting()--设置 panel
                 Save.tab['SPEED'].current= not Save.tab['SPEED'].current and true or false
                 frame_Init(true)--初始， 或设置
             end)
-            current:SetScript('OnEnter', set_SPEED_Tooltip)
-            current:SetScript('OnLeave', function() e.tips:Hide() end)
+            current:SetScript('OnEnter', function(self2) set_SPEED_Tooltip(self2) self2:SetAlpha(0.3) end)
+            current:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
 
         elseif info.name=='VERSATILITY' then--全能5
             local check2=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--仅防卫
@@ -1315,8 +1319,8 @@ local function set_Panle_Setting()--设置 panel
                 end
                 frame_Init(true)--初始，设置
             end)
-            check2:SetScript('OnEnter', set_VERSATILITY_Tooltip)
-            check2:SetScript('OnLeave', function() e.tips:Hide() end)
+            check2:SetScript('OnEnter', function(self2) set_VERSATILITY_Tooltip(self2) self2:SetAlpha(0.3) end)
+            check2:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
 
             check2.A=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--双属性 22/18%
             check2.A:SetChecked(Save.tab['VERSATILITY'].damageAndDefense)
@@ -1326,8 +1330,8 @@ local function set_Panle_Setting()--设置 panel
                 Save.tab['VERSATILITY'].damageAndDefense= not Save.tab['VERSATILITY'].damageAndDefense and true or nil
                 frame_Init(true)--初始，设置
             end)
-            check2.A:SetScript('OnEnter', set_VERSATILITY_Tooltip)
-            check2.A:SetScript('OnLeave', function() e.tips:Hide() end)
+            check2.A:SetScript('OnEnter', function(self2) set_VERSATILITY_Tooltip(self2) self2:SetAlpha(0.3) end)
+            check2.A:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
 
             if Save.tab['VERSATILITY'].onlyDefense then
                 check2.A.text:SetTextColor(0.62, 0.62, 0.62)
@@ -1417,12 +1421,13 @@ local function set_Panle_Setting()--设置 panel
     local textColor= e.Cstr(panel, {size=20})--20)--数值text, 颜色
     textColor:SetPoint('LEFT', notTextCheck.text,'RIGHT', 5, 0)
     textColor:EnableMouse(true)
-    textColor:SetScript('OnLeave', function(self) e.tips:Hide() end)
+    textColor:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
     textColor:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, self.hex..(e.onlyChinese and '颜色' or COLOR))
+        e.tips:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, e.Icon.left..self.hex..(e.onlyChinese and '颜色' or COLOR))
         e.tips:Show()
+        self:SetAlpha(0.3)
     end)
     textColor:SetText('23%')
     e.RGB_to_HEX(Save.textColor.r, Save.textColor.g, Save.textColor.b, Save.textColor.a, textColor)
@@ -1502,12 +1507,13 @@ local function set_Panle_Setting()--设置 panel
     panel.barGreenColor= e.Cstr(panel, {size=20})--20)
     panel.barGreenColor:SetPoint('LEFT', barValueText.text,'RIGHT', 2, 0)
     panel.barGreenColor:EnableMouse(true)
-    panel.barGreenColor:SetScript('OnLeave', function(self) e.tips:Hide() end)
+    panel.barGreenColor:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
     panel.barGreenColor:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, self.hex..(e.onlyChinese and '颜色' or COLOR))
+        e.tips:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, e.Icon.left..self.hex..(e.onlyChinese and '颜色' or COLOR))
         e.tips:Show()
+        self:SetAlpha(0.3)
     end)
     panel.barGreenColor:SetText('+12')
     e.HEX_to_RGB(Save.greenColor, panel.barGreenColor)--设置, panel.barGreenColor. r g b hex
@@ -1532,12 +1538,13 @@ local function set_Panle_Setting()--设置 panel
     panel.barRedColor= e.Cstr(panel, {size=20})--20)
     panel.barRedColor:SetPoint('LEFT', panel.barGreenColor,'RIGHT', 2, 0)
     panel.barRedColor:EnableMouse(true)
-    panel.barRedColor:SetScript('OnLeave', function(self) e.tips:Hide() end)
+    panel.barRedColor:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
     panel.barRedColor:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, self.hex..(e.onlyChinese and '颜色' or COLOR))
+        e.tips:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, e.Icon.left..self.hex..(e.onlyChinese and '颜色' or COLOR))
         e.tips:Show()
+        self:SetAlpha(0.3)
     end)
     panel.barRedColor:SetText('-12')
     e.HEX_to_RGB(Save.redColor, panel.barRedColor)--设置, panel.barRedColor. r g b hex
@@ -1885,9 +1892,11 @@ local function Init()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
+        self.texture:SetAlpha(1)
+        self.classPortrait:SetAlpha(1)
     end)
     button:SetScript("OnMouseUp", function() ResetCursor() end)
-    button:SetScript("OnLeave",function() ResetCursor() e.tips:Hide() end)
+    button:SetScript("OnLeave",function() ResetCursor() e.tips:Hide() set_Show_Hide() end)
 
     C_Timer.After(4, function()
         button.frame= CreateFrame("Frame",nil,button)
