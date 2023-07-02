@@ -3,6 +3,7 @@ local addName= PROFESSIONS_TRACKER_HEADER_PROFESSION
 local Save={
     setButton=true,
     --disabledClassTrainer=true,--隐藏，全学，按钮
+    --disabledEnchant=true,--禁用，自动放入，附魔纸
 }
 local panel=CreateFrame("Frame")
 
@@ -424,18 +425,44 @@ local function Init()
     --Blizzard_ProfessionsRecipeSchematicForm.lua
     hooksecurefunc(ProfessionsFrame.CraftingPage.SchematicForm, 'Init', function(self, recipeInfo, isRecraftOverride)
         local recipeID = recipeInfo and recipeInfo.recipeID
-        local isEnchant = recipeID and (self.recipeSchematic.recipeType == Enum.TradeskillRecipeType.Enchant) and not C_TradeSkillUI.IsRuneforging();
+        local isEnchant = recipeID and (self.recipeSchematic.recipeType == Enum.TradeskillRecipeType.Enchant) and not C_TradeSkillUI.IsRuneforging()
+
+        local btn= self.enchantSlot.btn
+        if isEnchant and not Save.notProfessionsFrameButtuon and not btn then
+            btn= e.Cbtn(self.enchantSlot, {size={12,12}, icon= not Save.disabledEnchant})
+            btn:SetPoint('TOPLEFT', self.enchantSlot, 'BOTTOMLEFT')
+            btn:SetAlpha(0.5)
+            btn:SetScript('OnClick', function(self2)
+                Save.disabledEnchant= not Save.disabledEnchant and true or nil
+                self2:SetNormalAtlas(Save.disabledEnchant and e.Icon.disabled or e.Icon.icon)
+            end)
+            btn:SetScript('OnLeave', function() e.tips:Hide() end)
+            btn:SetScript('OnEnter', function(self2)
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:SetItemByID(38682)
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(e.onlyChinese and '自动加入' or AUTO_JOIN, e.GetEnabeleDisable(not Save.disabledEnchant))
+                e.tips:AddDoubleLine(id, addName)
+                e.tips:Show()
+            end)
+            self.enchantSlot.btn=btn
+        end
+        if btn then
+            btn:SetShown(isEnchant and not Save.notProfessionsFrameButtuon)
+        end
         if not isEnchant
             or Save.notProfessionsFrameButtuon--禁用，按钮
+            or Save.disabledEnchant
             or not self.enchantSlot
             or not self.enchantSlot:IsShown()
             or ItemUtil.GetCraftingReagentCount(38682)==0--没有， 附魔纸
         then
             return
         end
+
         local candidateGUIDs = C_TradeSkillUI.GetEnchantItems(recipeID);
         for index, item in ipairs(ItemUtil.TransformItemGUIDsToItems(candidateGUIDs)) do
-            --if candidateGUIDs[index] and item and ItemUtil.GetCraftingReagentCount(item:GetItemID()) > 0 then--第一个
             if candidateGUIDs[index] and item and item:GetItemID()== 38682 then--附魔纸
                 local itemLocal= Item:CreateFromItemGUID(candidateGUIDs[index])
                 if itemLocal then
