@@ -1208,9 +1208,8 @@ local function set_Panle_Setting()--设置 panel
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(e.GetShowHide(Save.tab[self.name].hide), '|cnGREEN_FONT_COLOR:0 = '..(e.onlyChinese and '隐藏' or HIDE))
             e.tips:Show()
-            self:SetAlpha(0.3)
         end)
-        check:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
+        check:SetScript('OnLeave', function() e.tips:Hide() end)
 
         local text= e.Cstr(check, {color={r=r,g=g,b=b,a=a}})--nil, nil, nil, {r,g,b,a})--Text
         text:SetPoint('LEFT', check, 'RIGHT')
@@ -1259,9 +1258,9 @@ local function set_Panle_Setting()--设置 panel
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(format('r%.2f', r2)..format('  g%.2f', g2)..format('  b%.2f', b2), format('a%.2f', a2))
                 e.tips:Show()
-                self:GetParent():SetAlpha(0.3)
+                self:SetAlpha(0.3)
             end)
-            text:SetScript('OnLeave', function(self) e.tips:Hide() self:GetParent():SetAlpha(1) end)
+            text:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
         end
 
         if info.name=='STATUS' then--主属性, 使用bar
@@ -1302,8 +1301,8 @@ local function set_Panle_Setting()--设置 panel
                 Save.tab['SPEED'].current= not Save.tab['SPEED'].current and true or false
                 frame_Init(true)--初始， 或设置
             end)
-            current:SetScript('OnEnter', function(self2) set_SPEED_Tooltip(self2) self2:SetAlpha(0.3) end)
-            current:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+            current:SetScript('OnEnter', set_SPEED_Tooltip)
+            current:SetScript('OnLeave', function() e.tips:Hide() end)
 
         elseif info.name=='VERSATILITY' then--全能5
             local check2=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--仅防卫
@@ -1319,8 +1318,8 @@ local function set_Panle_Setting()--设置 panel
                 end
                 frame_Init(true)--初始，设置
             end)
-            check2:SetScript('OnEnter', function(self2) set_VERSATILITY_Tooltip(self2) self2:SetAlpha(0.3) end)
-            check2:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+            check2:SetScript('OnEnter', set_VERSATILITY_Tooltip)
+            check2:SetScript('OnLeave', function() e.tips:Hide() end)
 
             check2.A=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--双属性 22/18%
             check2.A:SetChecked(Save.tab['VERSATILITY'].damageAndDefense)
@@ -1330,8 +1329,8 @@ local function set_Panle_Setting()--设置 panel
                 Save.tab['VERSATILITY'].damageAndDefense= not Save.tab['VERSATILITY'].damageAndDefense and true or nil
                 frame_Init(true)--初始，设置
             end)
-            check2.A:SetScript('OnEnter', function(self2) set_VERSATILITY_Tooltip(self2) self2:SetAlpha(0.3) end)
-            check2.A:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+            check2.A:SetScript('OnEnter', set_VERSATILITY_Tooltip)
+            check2.A:SetScript('OnLeave', function() e.tips:Hide() end)
 
             if Save.tab['VERSATILITY'].onlyDefense then
                 check2.A.text:SetTextColor(0.62, 0.62, 0.62)
@@ -1367,6 +1366,15 @@ local function set_Panle_Setting()--设置 panel
                 func()
             end
         )
+    end)
+    text:SetScript('OnLeave', function(self2) self2:SetAlpha(1) e.tips:Hide() end)
+    text:SetScript('OnEnter', function(self2)
+        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, (e.onlyChinese and '阴影' or SHADOW_QUALITY:gsub(QUALITY , ''))..e.Icon.left..(e.onlyChinese and '颜色' or COLOR))
+        e.tips:AddDoubleLine('r'..(self2.r or 1)..' g'..(self2.g or 1)..' b'..(self2.b or 1), 'a'..(self2.a or 1))
+        e.tips:Show()
+        self2:SetAlpha(0.3)
     end)
 
     local sliderX= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--bar, 宽度
