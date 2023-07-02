@@ -157,7 +157,7 @@ local function set_Money()
         if Save.parent then
             Labels.money:SetText(e.MK(money/1e4, Save.moneyBit or 0))
         else
-            Labels.money:SetText(e.MK(money/1e4, Save.moneyBit or 0)..'|TInterface/moneyframe/ui-goldicon:0|t ')
+            Labels.money:SetText('|TInterface/moneyframe/ui-goldicon:0|t'..e.MK(money/1e4, Save.moneyBit or 0)..' ')
         end
     else
         Labels.money:SetText(GetMoneyString(money,true))
@@ -197,7 +197,7 @@ local function set_EquipmentLevel()--装等
             red= true
         end
         if not Save.parent then
-            text= text..(e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a ' or '|A:charactercreate-gendericon-female-selected:0:0|a ')
+            text= (e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a')..text..' '
         end
     end
     Labels.equipmentLevel:SetText(text or '')
