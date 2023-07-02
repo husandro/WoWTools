@@ -381,6 +381,10 @@ end
 --初始
 --####
 local function Init()
+    if not Professions then
+        return
+    end
+
     set_ProfessionsFrame_Button()--专业界面, 按钮
 
     --###
@@ -393,7 +397,7 @@ local function Init()
             local itemID= GetItemInfoInstant(itemIDOrLink)
             if itemID then
                 local all= 0--帐号数据
-                for guid, info in pairs(WoWDate) do
+                for guid, info in pairs(WoWDate or {}) do
                     if guid and info and guid~=e.Player.guid then
                         local tab=info.Item[itemID]
                         if tab and tab.bag and tab.bank then
@@ -501,6 +505,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1== 'Blizzard_TrainerUI' then
             set_Blizzard_TrainerU()--添一个,全学,专业, 按钮
+
+        elseif arg1== 'Blizzard_Professions' then --10.1.5
+            Init()--初始
         end
 
     elseif event == "PLAYER_LOGOUT" then

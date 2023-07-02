@@ -794,6 +794,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='UNIT_DISPLAYPOWER' or event=='PLAYER_TALENT_UPDATE' then
         C_Timer.After(0.5, set_classPowerBar)
     end
+
 end)
 --[[--缩放
     br:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
