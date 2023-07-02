@@ -469,26 +469,24 @@ e.MK=function(number,bit)
     bit = bit or 1
     if number>=1e6 then
         if bit==0 then
-            return ('%im'):format(number/1e6)
-            --return math.modf(number/1e6)..'m'
+            return format('%im', (number/1e6)-0.5)
         else
-            return ('%.'..bit..'fm'):format(number/1e6)
+            return format('%.'..bit..'fm', number/1e6)
         end
     elseif number>= 1e4 and (LOCALE_zhCN or e.onlyChinese) then
         if bit==0 then
-            return ('%iw'):format(number/1e4)
+            return format('%iw', (number/1e4)-0.5)
         else
-            return ('%.'..bit..'fw'):format(number/1e4)
+            return format('%.'..bit..'fw', number/1e4)
         end
     elseif number>=1e3 then
         if bit==0 then
-            return ('%ik'):format(number/1e3)
-            --return math.modf(number/1e3)..'k'
+            return format('%ik', (number/1e3)-0.5)
         else
-            return ('%.'..bit..'fk'):format(number/1e3)
+            return format('%.'..bit..'fk', number/1e3)
         end
     else
-        return ('%i'):format(number)
+        return format('%i', number-0.5)
     end
 end
 
