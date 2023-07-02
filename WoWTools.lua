@@ -636,12 +636,14 @@ e.Ccool=function(self, start, duration, modRate, HideCountdownNumbers, Reverse, 
     end
     if not self.cooldown then
         self.cooldown= CreateFrame("Cooldown", nil, self, 'CooldownFrameTemplate')
+        self.cooldown:Raise()
         self.cooldown:SetUseCircularEdge(true)--设置边缘纹理是否应该遵循圆形图案而不是方形编辑框
         self.cooldown:SetDrawBling(not hideDrawBling)--闪光
         self.cooldown:SetDrawEdge(true)--冷却动画的移动边缘绘制亮线
         self.cooldown:SetHideCountdownNumbers(HideCountdownNumbers)--隐藏数字
         self.cooldown:SetReverse(Reverse)--控制冷却动画的方向
-        self.cooldown:SetFrameStrata("TOOLTIP")
+        --self.cooldown:SetFrameStrata("TOOLTIP")
+        --self.cooldown:SetFrameLevel(self:GetFrameLevel()+7)
         self.cooldown:SetEdgeTexture("Interface\\Cooldown\\edge");
         if SwipeTexture then
             self.cooldown:SetSwipeTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')--圆框架
