@@ -61,10 +61,10 @@ local function set_Tabs()
     Tabs={
         {name='STATUS', r=e.Player.r, g=e.Player.g, b=e.Player.b, a=1, useNumber=true, textValue=true},
 
-        {name= 'CRITCHANCE', text= e.onlyChinese and '爆击' or STAT_CRITICAL_STRIKE, bar=true, dps=true, textValue=true},
-        {name= 'HASTE', text= e.onlyChinese and '急速' or STAT_HASTE, bar=true, dps=true, textValue=true},
-        {name= 'MASTERY', text= e.onlyChinese and '精通' or STAT_MASTERY, bar=true, dps=true, textValue=true},
-        {name= 'VERSATILITY', text= e.onlyChinese and '全能' or STAT_VERSATILITY, bar=true, dps=true, textValue=true},--5
+        {name= 'CRITCHANCE', text= e.onlyChinese and '爆击' or STAT_CRITICAL_STRIKE, bar=true, dps=true, textValue=true, zeroShow=true},
+        {name= 'HASTE', text= e.onlyChinese and '急速' or STAT_HASTE, bar=true, dps=true, textValue=true, zeroShow=true},
+        {name= 'MASTERY', text= e.onlyChinese and '精通' or STAT_MASTERY, bar=true, dps=true, textValue=true, zeroShow=true},
+        {name= 'VERSATILITY', text= e.onlyChinese and '全能' or STAT_VERSATILITY, bar=true, dps=true, textValue=true, zeroShow=true},--5
 
         {name= 'LIFESTEAL', text= e.onlyChinese and '吸血' or STAT_LIFESTEAL, bar=true, textValue=true},--6
         {name= 'AVOIDANCE', text= e.onlyChinese and '闪避' or STAT_AVOIDANCE, bar=true, textValue=true},--7
@@ -106,6 +106,7 @@ local function set_Tabs()
         Tabs[index].textValue= Save.setMaxMinValue and Tabs[index].textValue or false
 
         Tabs[index].hide= Save.tab[info.name].hide
+        Tabs[index].zeroShow= info.zeroShow--等于0， 时也要显示
         if not Tabs[index].hide then
             if info.name=='STAGGER' and (e.Player.class~='MONK' or Role~='TANK') then--武僧, 醉拳
                 Tabs[index].hide= true
@@ -127,14 +128,14 @@ end
 --###########
 local function set_Text_Value(frame, value, value2)
     value= value or 0
-    value= value>=1 and value or 0
-    if not frame.value or frame.value==0 or value==0 then
+    value= value>=0 and value or 0
+    if not frame.value or ((frame.value==0 or value==0) and not frame.zeroShow)  then
         frame.value= value
     end
 
     if not Save.notText then
         local text
-        if value==0 then
+        if value==0 and not frame.zeroShow then
             text= ''
         else
             if frame.useNumber then
@@ -156,7 +157,7 @@ local function set_Text_Value(frame, value, value2)
     end
 
     if frame.bar and frame.bar:IsShown() then
-        if frame.value== value or value==0 then
+        if frame.value== value or (value==0 and not frame.zeroShow) then
             frame.bar:SetStatusBarColor(frame.r, frame.g, frame.b, frame.a)
             frame.bar:SetValue(value)
             frame.barTexture:SetShown(false)
@@ -186,7 +187,7 @@ local function set_Text_Value(frame, value, value2)
     end
 
     if frame.textValue and frame.textValue:IsShown() then
-        if frame.value== value or value==0 then
+        if frame.value== value or (value==0 and not frame.zeroShow) then
             frame.textValue:SetText('')
         else
             local text, icon
@@ -1082,13 +1083,15 @@ local function frame_Init(rest)--初始， 或设置
                 frame.useNumber= info.useNumber
                 frame.name= info.name
                 frame.nameText= info.text
+                frame.zeroShow= info.zeroShow
 
                 frame.value=nil
             end
 
             set_Frame(frame, rest)
 
-            find= (frame.value and frame.value>0) or info.name=='SPEED'
+            find= (frame.value and ((frame.value==0 and frame.zeroShow) or frame.value>0)) or info.name=='SPEED'
+
             if find then
                 frame:ClearAllPoints()
                 frame:SetPoint('TOP', last,'BOTTOM')
@@ -1196,6 +1199,8 @@ local function set_Panle_Setting()--设置 panel
         end
         check.name= info.name
         check.text2= info.text
+        check.zeroShow= info.zeroShow
+
         check:SetScript('OnMouseUp',function(self)
             Save.tab[self.name].hide= not Save.tab[self.name].hide and true or nil
             frame_Init(true)--初始，设置
@@ -1205,8 +1210,10 @@ local function set_Panle_Setting()--设置 panel
             e.tips:ClearLines()
             local value= button[self.name] and button[self.name].value
             e.tips:AddDoubleLine(self.text2, format('%.2f%%', value or 0))
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.GetShowHide(Save.tab[self.name].hide), '|cnGREEN_FONT_COLOR:0 = '..(e.onlyChinese and '隐藏' or HIDE))
+            if not info.zeroShow then
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(e.GetShowHide(Save.tab[self.name].hide), '|cnGREEN_FONT_COLOR:0 = '..(e.onlyChinese and '隐藏' or HIDE))
+            end
             e.tips:Show()
         end)
         check:SetScript('OnLeave', function() e.tips:Hide() end)
@@ -1916,8 +1923,8 @@ local function Init()
 
         button.frame:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED')
 
-        button.frame:RegisterEvent('PLAYER_AVG_ITEM_LEVEL_UPDATE')
-        button.frame:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
+        --button.frame:RegisterEvent('PLAYER_AVG_ITEM_LEVEL_UPDATE')
+        --button.frame:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
         button.frame:RegisterEvent('PLAYER_TALENT_UPDATE')
         button.frame:RegisterEvent('CHALLENGE_MODE_START')
         button.frame:RegisterEvent('SOCKET_INFO_SUCCESS')
