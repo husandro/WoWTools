@@ -328,14 +328,32 @@ local function set_HideTexture_Event(arg1)
 end
 
 
+--##################
+--专业, 初始化, 透明
+--专业 10.1.5出现问题
+local function Init_ProfessionsFrame()
+    if not ProfessionsFrame or Save.disabledAlpha then
+        return
+    end
+    set_Alpha(ProfessionsFrame.NineSlice.TopLeftCorner)
+    set_Alpha(ProfessionsFrame.NineSlice.TopEdge)
+    set_Alpha(ProfessionsFrame.NineSlice.TopRightCorner)
+    set_Alpha(ProfessionsFrameBg)
+    set_Alpha(ProfessionsFrame.CraftingPage.SchematicForm.Background)
+    set_Alpha(ProfessionsFrame.CraftingPage.RankBar.Background)
 
+    set_Alpha(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundTop)
+    set_Alpha(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundMiddle)
+    set_Alpha(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundBottom)
 
+    hide_Texture(ProfessionsFrame.SpecPage.TreeView.Background)
+    hide_Texture(ProfessionsFrame.SpecPage.DetailedView.Background)
+    set_Alpha(ProfessionsFrame.SpecPage.DetailedView.Path.DialBG)
+    set_Alpha(ProfessionsFrame.SpecPage.DetailedView.UnspentPoints.CurrencyBackground)
 
-
-
-
-
-
+    set_Alpha(InspectRecipeFrameBg)
+    set_Alpha(InspectRecipeFrame.SchematicForm.MinimalBackground)
+end
 
 --###########
 --初始化, 透明
@@ -344,6 +362,8 @@ local function Init_Set_AlphaAndColor()
     if Save.disabledAlpha then
         return
     end
+
+    Init_ProfessionsFrame()--专业, 初始化, 透明
 
     --####
     --职业
@@ -609,26 +629,6 @@ local function Init_Set_AlphaAndColor()
 
     set_Alpha(LFDParentFrameInset.Bg)
     set_Alpha(LFDParentFrameRoleBackground)
-
-    --专业
-    set_Alpha(ProfessionsFrame.NineSlice.TopLeftCorner)
-    set_Alpha(ProfessionsFrame.NineSlice.TopEdge)
-    set_Alpha(ProfessionsFrame.NineSlice.TopRightCorner)
-    set_Alpha(ProfessionsFrameBg)
-    set_Alpha(ProfessionsFrame.CraftingPage.SchematicForm.Background)
-    set_Alpha(ProfessionsFrame.CraftingPage.RankBar.Background)
-
-    set_Alpha(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundTop)
-    set_Alpha(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundMiddle)
-    set_Alpha(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundBottom)
-
-    hide_Texture(ProfessionsFrame.SpecPage.TreeView.Background)
-    hide_Texture(ProfessionsFrame.SpecPage.DetailedView.Background)
-    set_Alpha(ProfessionsFrame.SpecPage.DetailedView.Path.DialBG)
-    set_Alpha(ProfessionsFrame.SpecPage.DetailedView.UnspentPoints.CurrencyBackground)
-
-    set_Alpha(InspectRecipeFrameBg)
-    set_Alpha(InspectRecipeFrame.SchematicForm.MinimalBackground)
 
 
     set_Alpha(GossipFrame.NineSlice.TopEdge)
@@ -1875,6 +1875,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 options_Init()--初始，选项
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
+
+        elseif arg1=='Blizzard_Professions' then
+            Init_ProfessionsFrame()--专业, 初始化, 透明10.1.5
 
         else
             set_HideTexture_Event(arg1)
