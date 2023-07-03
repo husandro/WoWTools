@@ -292,10 +292,12 @@ local function set_perksActivitiesLastPoints_Event()
         Labels.perksPoints= create_Set_lable(button, 'perksPoints')--建立,或设置,Labels
         panel:RegisterEvent('CVAR_UPDATE')
         panel:RegisterEvent('PERKS_ACTIVITY_COMPLETED')
+        panel:RegisterEvent('PLAYER_ENTERING_WORLD')
         set_perksActivitiesLastPoints_CVar()
     else
         panel:UnregisterEvent('CVAR_UPDATE')
         panel:UnregisterEvent('PERKS_ACTIVITY_COMPLETED')
+        panel:UnregisterEvent('PLAYER_ENTERING_WORLD')
         if Labels.perksPoints then
             Labels.perksPoints:SetText('')
         end
@@ -806,7 +808,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1=='perksActivitiesLastPoints' then
             set_perksActivitiesLastPoints_CVar()--贸易站, 点数
         end
-    elseif event=='PERKS_ACTIVITY_COMPLETED' then
+    elseif event=='PERKS_ACTIVITY_COMPLETED' or event=='PLAYER_ENTERING_WORLD' then
         C_Timer.After(2, set_perksActivitiesLastPoints_CVar)--贸易站, 点数
     end
 end)
