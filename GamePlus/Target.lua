@@ -228,6 +228,9 @@ end
 --事件
 --####
 local function set_Register_Event()
+    --isPvPArena= C_PvP.IsBattleground() or C_PvP.IsArena()
+    isIns= IsInInstance() and GetNumGroupMembers()>2 or C_PvP.IsBattleground() or C_PvP.IsArena()
+
     targetFrame:UnregisterAllEvents()
     targetFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
 
@@ -250,9 +253,6 @@ local function set_Register_Event()
         targetFrame:RegisterEvent('NAME_PLATE_UNIT_ADDED')
         targetFrame:RegisterEvent('NAME_PLATE_UNIT_REMOVED')
     end
-
-    isPvPArena= C_PvP.IsBattleground() or C_PvP.IsArena()
-    isIns= IsInInstance() and GetNumGroupMembers()>2
 
     if not isIns and Save.quest  then
         targetFrame:RegisterEvent('UNIT_QUEST_LOG_CHANGED')
