@@ -243,9 +243,9 @@ local function set_Text_Button()--设置显示内容, 父框架button.textButton
                 end
                 local sacle=Save.textScale or 1
                 if d==1 then
-                    sacle=sacle+0.1
+                    sacle=sacle+0.05
                 elseif d==-1 then
-                    sacle=sacle-0.1
+                    sacle=sacle-0.05
                 end
                 if sacle>3 then
                     sacle=3

@@ -63,9 +63,9 @@ local function Init()
             else
                 local sacle=Save.scale or 1
                 if d==1 then
-                    sacle=sacle+0.1
+                    sacle=sacle+0.05
                 elseif d==-1 then
-                    sacle=sacle-0.1
+                    sacle=sacle-0.05
                 end
                 if sacle>3 then
                     sacle=3
