@@ -857,26 +857,26 @@ local function Init()
     --#########
     --接受, 召唤
     --#########
-    hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"],"OnShow",function(self)--StaticPopup.lua
+    hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"], "OnShow",function(self)--StaticPopup.lua
         e.PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
-        if Save.Summon and not UnitAffectingCombat("player") and PlayerCanTeleport() and not UnitIsAFK('player') and not IsModifierKeyDown() then
-            print(id, addName, e.onlyChinese and '召唤' or SUMMON, C_SummonInfo.GetSummonConfirmSummoner(), C_SummonInfo.GetSummonConfirmAreaName())
-            e.Ccool(self, nil, 3, nil, true, true, nil)--冷却条
-            if button.SummonTimer then button.SummonTimer:Cancel() end
-            button.SummonTimer= C_Timer.NewTimer(3, function()
-                if not UnitAffectingCombat("player") and PlayerCanTeleport() and not UnitIsAFK('player') and not IsModifierKeyDown() then
-                    C_SummonInfo.ConfirmSummon()
-                    StaticPopup_Hide("CONFIRM_SUMMON")
-                end
-            end)
-        else
+        if not Save.Summon or IsModifierKeyDown() or not self.button1:IsEnabled() then
             e.Ccool(self, nil, C_SummonInfo.GetSummonConfirmTimeLeft(), nil, true, true, nil)--冷却条
+            return
         end
+        --if not UnitAffectingCombat("player") and PlayerCanTeleport() then
+        print(id, addName, e.onlyChinese and '召唤' or SUMMON, C_SummonInfo.GetSummonConfirmSummoner(), C_SummonInfo.GetSummonConfirmAreaName())
+        e.Ccool(self, nil, 3, nil, true, true, nil)--冷却条
+        if self.SummonTimer then self.SummonTimer:Cancel() end
+        self.SummonTimer= C_Timer.NewTimer(3, function()
+            if not UnitAffectingCombat("player") and PlayerCanTeleport() and not IsModifierKeyDown() then
+                C_SummonInfo.ConfirmSummon()
+                StaticPopup_Hide("CONFIRM_SUMMON")
+            end
+        end)
     end)
-    hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"],"OnCancel",function(self)
-        if button.SummonTimer then button.SummonTimer:Cancel() end
+    hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"], "OnCancel",function(self)
+        if self.SummonTimer then self.SummonTimer:Cancel() end
     end)
-
 
     if UnitAffectingCombat('player') and (Save.setFrameFun or Save.setFucus) then
         panel:RegisterEvent('PLAYER_REGEN_ENABLED')
