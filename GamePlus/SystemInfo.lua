@@ -291,9 +291,11 @@ local function set_perksActivitiesLastPoints_Event()
     if Save.perksPoints and not ( IsTrialAccount() or IsVeteranTrialAccount()) then
         Labels.perksPoints= create_Set_lable(button, 'perksPoints')--建立,或设置,Labels
         panel:RegisterEvent('CVAR_UPDATE')
+        panel:RegisterEvent('PERKS_ACTIVITY_COMPLETED')
         set_perksActivitiesLastPoints_CVar()
     else
         panel:UnregisterEvent('CVAR_UPDATE')
+        panel:UnregisterEvent('PERKS_ACTIVITY_COMPLETED')
         if Labels.perksPoints then
             Labels.perksPoints:SetText('')
         end
@@ -804,6 +806,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1=='perksActivitiesLastPoints' then
             set_perksActivitiesLastPoints_CVar()--贸易站, 点数
         end
+    elseif event=='PERKS_ACTIVITY_COMPLETED' then
+        C_Timer.After(2, set_perksActivitiesLastPoints_CVar)--贸易站, 点数
     end
 end)
 
