@@ -765,9 +765,9 @@ local function set_inti_Equipment_Frame()--添加装备管理框
         panel.equipmentButton.btn:SetScript('OnMouseWheel',function(self, d)--放大
                 local n=Save.equipmentFrameScale or 1
                 if d==1 then
-                    n=n+0.1
+                    n=n+0.05
                 elseif d==-1 then
-                    n=n-0.1
+                    n=n-0.05
                 end
                 n= n<0.8 and 0.8 or n>3 and 3 or n
                 Save.equipmentFrameScale=n
@@ -1169,6 +1169,7 @@ local function Init_Server_equipmentButton_Lable()
         panel.equipmentButton:SetScript("OnClick", function(self2)
             Save.equipment= not Save.equipment and true or nil
             self2:SetNormalAtlas(Save.equipment and 'auctionhouse-icon-favorite' or e.Icon.disabled)
+            set_inti_Equipment_Frame()--添加装备管理框
         end)
         panel.equipmentButton:SetScript("OnEnter", function (self2)
             e.tips:SetOwner(self2, "ANCHOR_TOPLEFT")
