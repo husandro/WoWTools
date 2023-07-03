@@ -473,6 +473,7 @@ local function Init_Gossip()
                            [57724]= true,
                            [264689]= true,
                            [80354]= true,
+                           [390435]= true,
                         })
             then
                 C_GossipInfo.SelectOption(index)

@@ -737,19 +737,20 @@ local function set_inti_Equipment_Frame()--添加装备管理框
             end
         end)
         panel.equipmentButton.btn:SetScript("OnDragStop", function(self)
-                ResetCursor()
                 self:StopMovingOrSizing()
                 Save.Equipment={self:GetPoint(1)}
                 Save.Equipment[2]=nil
+        end)
+        panel.equipmentButton.btn:SetScript('OnMouseDown', function(_, d)
+            if d=='RightButton' and not IsModifierKeyDown() then--移动图标
+                SetCursor('UI_MOVE_CURSOR')
+            end
         end)
         panel.equipmentButton.btn:SetScript("OnMouseUp", function() ResetCursor() end)
         panel.equipmentButton.btn:SetScript("OnClick", function(self,d)
             local key=IsModifierKeyDown()
             local alt=IsAltKeyDown()
-            if d=='RightButton' and not key then--移动图标
-                SetCursor('UI_MOVE_CURSOR')
-
-            elseif d=='LeftButton' and alt then--图标横,或 竖
+            if d=='LeftButton' and alt then--图标横,或 竖
                 Save.EquipmentH= not Save.EquipmentH and true or nil
                 for index, btn in pairs(self.buttons) do
                     btn:ClearAllPoints()
@@ -1172,7 +1173,7 @@ local function Init_Server_equipmentButton_Lable()
         panel.equipmentButton:SetScript("OnEnter", function (self2)
             e.tips:SetOwner(self2, "ANCHOR_TOPLEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine((e.onlyChinese and '装备管理' or EQUIPMENT_MANAGER)..e.GetShowHide(Save.equipment), e.Icon.left)
+            e.tips:AddDoubleLine(e.onlyChinese and '装备管理' or EQUIPMENT_MANAGER, e.Icon.left..e.GetShowHide(Save.equipment))
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
