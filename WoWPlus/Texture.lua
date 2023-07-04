@@ -973,28 +973,29 @@ local function Init_Set_AlphaAndColor()
         end)
     end]]
 
-
-    local buttons = {
-        CharacterMicroButton,--菜单
-        SpellbookMicroButton,
-        TalentMicroButton,
-        AchievementMicroButton,
-        QuestLogMicroButton,
-        GuildMicroButton,
-        LFDMicroButton,
-        EJMicroButton,
-        CollectionsMicroButton,
-        MainMenuMicroButton,
-        HelpMicroButton,
-        StoreMicroButton,
-        MainMenuBarBackpackButton,--背包
-    }
-    for _, frame in pairs(buttons) do
-        if frame then
-            set_Alpha(frame:GetNormalTexture(), true)
+    if select(4,GetBuildInfo())<100105 then--100105,禁用
+        local buttons = {
+            CharacterMicroButton,--菜单
+            SpellbookMicroButton,
+            TalentMicroButton,
+            AchievementMicroButton,
+            QuestLogMicroButton,
+            GuildMicroButton,
+            LFDMicroButton,
+            EJMicroButton,
+            CollectionsMicroButton,
+            MainMenuMicroButton,
+            HelpMicroButton,
+            StoreMicroButton,
+            MainMenuBarBackpackButton,--背包
+        }
+        for _, frame in pairs(buttons) do
+            if frame then
+                set_Alpha(frame:GetNormalTexture(), true)
+            end
         end
+        buttons=nil
     end
-    buttons=nil
 
     if MainStatusTrackingBarContainer then--货币，XP，追踪，最下面BAR
         hide_Texture(MainStatusTrackingBarContainer.BarFrameTexture)

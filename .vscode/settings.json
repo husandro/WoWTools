@@ -2963,7 +2963,9 @@
         "PanelTemplates_DeselectTab",
         "PanelTemplates_TabResize",
         "GameFontHighlightSmall",
-        "PanelTemplates_SelectTab"
+        "PanelTemplates_SelectTab",
+        "PROFESSIONS_CRAFTING_FORM_OUTPUT_RECRAFT",
+        "ProfessionsUtil"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

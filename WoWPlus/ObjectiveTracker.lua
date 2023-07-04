@@ -256,21 +256,27 @@ local function Init()
     hooksecurefunc(PROFESSION_RECIPE_TRACKER_MODULE, 'Update', function(self)
         local function AddObjectives(isRecraft)
 			for _, recipeID in ipairs(C_TradeSkillUI.GetRecipesTracked(isRecraft)) do
-				local recipeSchematic = C_TradeSkillUI.GetRecipeSchematic(recipeID, isRecraft);
-				local blockID = NegateIf(recipeID, isRecraft);
+				local recipeSchematic = C_TradeSkillUI.GetRecipeSchematic(recipeID, isRecraft) or {};
+				local blockID = NegateIf(recipeID, isRecraft)
 				local block = self:GetBlock(blockID);
-				local blockName = isRecraft and format(e.onlyChinese and '再造：%s' or PROFESSIONS_CRAFTING_FORM_RECRAFTING_HEADER, recipeSchematic.name)
-                                            --or recipeSchematic.name;
-                                
-                if recipeSchematic.icon and recipeSchematic.icon>0 then
-                    block.HeaderText:SetText('|T'..recipeSchematic.icon..':0|t'..blockName)
+                local blockName = isRecraft and format(e.onlyChinese and '再造：%s' or PROFESSIONS_CRAFTING_FORM_RECRAFTING_HEADER, recipeSchematic.name) or recipeSchematic.name;
+
+                if block then
+                    if recipeSchematic.icon and recipeSchematic.icon>0 then
+                        block.HeaderText:SetText('|T'..recipeSchematic.icon..':0|t'..blockName)
+                    else
+                        local itemLink= C_TradeSkillUI.GetRecipeItemLink(recipeID)
+                        local icon= itemLink and C_Item.GetItemIconByID(itemLink)
+                        if icon and icon>0 then
+                            block.HeaderText:SetText('|T'..icon..':0|t'..blockName)
+                        end
+                    end
                 end
-				--self:SetBlockHeader(block, blockName);
-                
+
 				local eligibleSlots = {};
 				for slotIndex, reagentSlotSchematic in ipairs(recipeSchematic.reagentSlotSchematics) do
-					if Professions.IsReagentSlotRequired(reagentSlotSchematic) then
-						if Professions.IsReagentSlotModifyingRequired(reagentSlotSchematic) then
+					if (ProfessionsUtil or Professions).IsReagentSlotRequired(reagentSlotSchematic) then
+						if (ProfessionsUtil or Professions).IsReagentSlotModifyingRequired(reagentSlotSchematic) then
 							table.insert(eligibleSlots, 1, {slotIndex = slotIndex, reagentSlotSchematic = reagentSlotSchematic});
 						else
 							table.insert(eligibleSlots, {slotIndex = slotIndex, reagentSlotSchematic = reagentSlotSchematic});
@@ -281,13 +287,13 @@ local function Init()
 				for _, tbl in ipairs(eligibleSlots) do
 					local slotIndex = tbl.slotIndex;
 					local reagentSlotSchematic = tbl.reagentSlotSchematic;
-					if Professions.IsReagentSlotRequired(reagentSlotSchematic) then
+					if (ProfessionsUtil or Professions).IsReagentSlotRequired(reagentSlotSchematic) then
 						local reagent = reagentSlotSchematic.reagents[1];
 						local quantityRequired = reagentSlotSchematic.quantityRequired;
-						local quantity = Professions.AccumulateReagentsInPossession(reagentSlotSchematic.reagents);
+						local quantity = (ProfessionsUtil or Professions).AccumulateReagentsInPossession(reagentSlotSchematic.reagents);
 						local name, icon
 
-						if Professions.IsReagentSlotBasicRequired(reagentSlotSchematic) then
+						if (ProfessionsUtil or Professions).IsReagentSlotBasicRequired(reagentSlotSchematic) then
 							if reagent.itemID then
 								local item = Item:CreateFromItemID(reagent.itemID);
 								name = item:GetItemName();
@@ -300,36 +306,32 @@ local function Init()
                                     icon= currencyInfo.iconFileID
 								end
 							end
-						elseif Professions.IsReagentSlotModifyingRequired(reagentSlotSchematic) then
+						elseif (ProfessionsUtil or Professions).IsReagentSlotModifyingRequired(reagentSlotSchematic) then
 							if reagentSlotSchematic.slotInfo then
 								name = reagentSlotSchematic.slotInfo.slotText;
                                 icon= reagentSlotSchematic.icon
 							end
 						end
-						
+
 
 						if name and icon then
                             local text = format('%s %s', '|T'..icon..':0|t'..format('%s/%d', quantity, quantityRequired), name)
 							local metQuantity = quantity >= quantityRequired;
-
                             local line= block.lines[slotIndex]
                             if line then
                                 line.Text:SetText(text)
-                                line:SetAlpha(metQuantity and 0.5 or 1)
+                                line:SetAlpha(metQuantity and 0.3 or 1)
+                                if line.Dash then
+                                    if metQuantity then
+                                        line.Dash:SetVertexColor(0,1,0)
+                                    else
+                                        line.Dash:SetVertexColor(1,0,0)
+                                    end
+                                end
                             end
 						end
 					end
 				end
-
-				--block:SetHeight(block.height);
-
-				--[[if ( ObjectiveTracker_AddBlock(block) ) then
-					block:Show();
-					self:FreeUnusedLines(block);
-				else
-					block.used = false;
-					break;
-				end]]
 			end
 		end
 
@@ -337,29 +339,6 @@ local function Init()
 		AddObjectives(false);
     end)
 
-    --[[hooksecurefunc(PROFESSION_RECIPE_TRACKER_MODULE, 'SetStringText', function(self, fontString, text, useFullHeight, colorStyle, useHighlight)
-        local te=text:gsub('%d+/%d+ ','')
-        if te then
-            local icon = C_Item.GetItemIconByID(te)
-            if icon and icon~=134400 then
-                local str='|T'..icon..':0|t'..te
-
-                local count, totale=text:match('(%d+)/(%d+)')
-                count, totale=count and tonumber(count), totale and tonumber(totale)
-                local ok
-                if count and totale and count>=totale then
-                    str=str..e.Icon.select2
-                    ok=true
-                end
-
-                str=text:gsub(te, str)
-                if ok then
-                    str='|cnGREEN_FONT_COLOR:'..str..'|r'
-                end
-                fontString:SetText(str)
-            end
-        end
-    end)]]
 
     hooksecurefunc('QuestObjectiveSetupBlockButton_AddRightButton', function(block, button)--物品按钮左边,放大 --Blizzard_ObjectiveTrackerShared.lua
         if not button or not block or not button:IsShown() or block.groupFinderButton == button then
@@ -439,9 +418,10 @@ local function Init()
                         end
                     end
                     local num=0
-                    for _, questID in pairs(questIDS) do
+                    for index, questID in pairs(questIDS) do
                         local wasRemoved= C_QuestLog.RemoveWorldQuestWatch(questID)
                         if wasRemoved then
+                            print(index..')', GetQuestLink(questID) or questID)
                             num=num+1
                         end
                     end
@@ -459,9 +439,10 @@ local function Init()
                             table.insert(questIDS, questID)
                         end
                     end
-                    for _, questID in pairs(questIDS) do
+                    for index, questID in pairs(questIDS) do
                        local wasRemoved= C_QuestLog.RemoveQuestWatch(questID)
                        if wasRemoved then
+                            print(index..')', GetQuestLink(questID) or questID)
                             num=num+1
                         end
                     end
@@ -473,28 +454,39 @@ local function Init()
                 module.Header.clearAll.tooltip= e.onlyChinese and '成就' or TRACKER_HEADER_ACHIEVEMENTS
                 module.Header.clearAll:SetScript('OnDoubleClick', function(self2)
                     local num=0
-                    for _, achievementID in pairs({GetTrackedAchievements()}) do
-                        RemoveTrackedAchievement(achievementID)
+                    if GetTrackedAchievements then--10.1.5无效
+                        for _, achievementID in pairs({GetTrackedAchievements()}) do
+                            RemoveTrackedAchievement(achievementID)
+                            num= num +1
+                        end
+                    else
+                        for index, achievementID in pairs(C_ContentTracking.GetTrackedIDs(Enum.ContentTrackingType.Achievement)) do
+                            C_ContentTracking.StopTracking(Enum.ContentTrackingType.Achievement, achievementID)
+                            print(index..')', GetAchievementLink(achievementID) or achievementID)
+                            num= num +1
+                        end
                     end
                     print(id, addName, e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, self2.tooltip, '|cffff00ff'..num)
                 end)
 
             elseif module== PROFESSION_RECIPE_TRACKER_MODULE then--8 追踪配方 PROFESSIONS_TRACK_RECIPE
                 create_ClearAll_Button(module.Header)
-                module.Header.clearAll.tooltip= e.onlyChinese and '追踪配方' or PROFESSIONS_TRACK_RECIPE 
+                module.Header.clearAll.tooltip= e.onlyChinese and '追踪配方' or PROFESSIONS_TRACK_RECIPE
                 module.Header.clearAll:SetScript('OnDoubleClick', function(self2)
-                    local tab= C_TradeSkillUI.GetRecipesTracked(false) or {}
                     local num= 0
-                    for _, recipeID in pairs(tab) do
-                        C_TradeSkillUI.SetRecipeTracked(recipeID, false, false)
-                        num=num+1
+                    local function clear_Recipe(isRecrafting)
+                        local tab= C_TradeSkillUI.GetRecipesTracked(isRecrafting) or {}
+                        for index, recipeID in pairs(tab) do
+                            C_TradeSkillUI.SetRecipeTracked(recipeID, false, isRecrafting)
+                            local itemLink= C_TradeSkillUI.GetRecipeItemLink(recipeID)
+                            if itemLink then
+                                print(index..')', itemLink, isRecrafting and (e.onlyChinese and '再造' or PROFESSIONS_CRAFTING_FORM_OUTPUT_RECRAFT) or '')
+                            end
+                            num=num+1
+                        end
                     end
-
-                    local tab2= C_TradeSkillUI.GetRecipesTracked(true) or {}
-                    for _, recipeID in pairs(tab2) do
-                        C_TradeSkillUI.SetRecipeTracked(recipeID, false, true)
-                        num=num+1
-                    end
+                    clear_Recipe(true)
+                    clear_Recipe(false)
                     print(id, addName, e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, self2.tooltip, '|cffff00ff'..num)
                 end)
 
