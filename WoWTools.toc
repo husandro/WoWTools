@@ -1,7 +1,7 @@
 ## Interface: 100100
 ## Title: |cffff00ffWoW|r|cff00ff00Tools|r
 ## Author: husandro
-## Version: 1.0.0
+##Version: 1.0.0
 ## Notes: WoW |cffff0000Plus|r
 ## SavedVariables: WoWToolsSave, WoWDate
 ##BunniesDB
@@ -12,6 +12,8 @@
 ## IconAtlas: orderhalltalents-done-glow
 ## X-Website https://www.curseforge.com/wow/addons/wowtools
 ## OptionalDeps: LibStub-1.0, CallbackHandler-1.0, LibRangeCheck-2.0, LibDBIcon-1.0, LibDataBroker-1.1, AceAddon-3.0, LibUIDropDownMenu-4.0
+## AddonCompartmentFunc: WowTools_OnAddonCompartmentClick
+## AddonCompartmentFuncOnEnter: WowTools_OnAddonCompartmentFuncOnEnter
 
 Libs\LibStub\LibStub.lua
 Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua

@@ -2957,7 +2957,13 @@
         "ChatEdit_FocusActiveWindow",
         "BINDING_HEADER_TARGETING",
         "ACHIEVEMENTFRAME_FILTER_COMPLETED",
-        "FOLLOWERLIST_LABEL_UNCOLLECTED"
+        "FOLLOWERLIST_LABEL_UNCOLLECTED",
+        "RaidNotice_AddMessage",
+        "RaidWarningFrame",
+        "PanelTemplates_DeselectTab",
+        "PanelTemplates_TabResize",
+        "GameFontHighlightSmall",
+        "PanelTemplates_SelectTab"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

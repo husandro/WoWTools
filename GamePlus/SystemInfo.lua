@@ -95,7 +95,7 @@ local function create_Set_lable(self, text)--建立,或设置,Labels
                 end
                 e.tips:AddLine(str..(e.onlyChinese and '旅行者日志进度' or MONTHLY_ACTIVITIES_PROGRESSED))
             end
-            --down= function() ToggleEncounterJournal() end
+            down= function() ToggleEncounterJournal() end
 
         elseif text=='durabiliy' then
             label.tooltip= e.onlyChinese and '耐久度' or DURABILITY
@@ -276,16 +276,17 @@ end
 --贸易站, 点数
 --Blizzard_EncounterJournal/Blizzard_MonthlyActivities.lua
 local function set_perksActivitiesLastPoints_CVar()--贸易站, 点数
-    local lastPoints = tonumber(GetCVar("perksActivitiesLastPoints"));
-    if lastPoints and lastPoints>0 then
+    local value= GetCVar("perksActivitiesLastPoints")
+    local lastPoints= value and tonumber(value)
+    local text
+    if lastPoints and lastPoints>=0 then
         if Save.parent then
-            Labels.perksPoints:SetFormattedText('%i%%', lastPoints/1000*100)
+            text= format('%i%%', lastPoints/1000*100)
         else
-            Labels.perksPoints:SetText(format('%i%%', lastPoints/1000*100)..'|A:activities-complete-diamond:0:0|a')
+            text= '|A:activities-complete-diamond:0:0|a'..format('%i%%', lastPoints/1000*100)..' '
         end
-    else
-        Labels.perksPoints:SetText('')
     end
+    Labels.perksPoints:SetText(text or '')
 end
 local function set_perksActivitiesLastPoints_Event()
     if Save.perksPoints and not ( IsTrialAccount() or IsVeteranTrialAccount()) then
@@ -338,7 +339,8 @@ local function set_Label_Point(clear)--设置 Label Poinst
             end
             if Save.parent then
                 if text=='fps' then
-                    label:SetPoint('BOTTOM', MainMenuMicroButton, 'TOP',0,-4)
+                    --label:SetPoint('BOTTOM', MainMenuMicroButton, 'TOP',0,-4)
+                    label:SetPoint('TOP', MainMenuMicroButton)
                     label:SetParent(MainMenuMicroButton)
                 elseif text=='ms' then
                     label:SetPoint('BOTTOM', MainMenuMicroButton, 'BOTTOM')
@@ -349,7 +351,8 @@ local function set_Label_Point(clear)--设置 Label Poinst
                     label:SetParent(MainMenuBarBackpackButton)
 
                 elseif text=='perksPoints' then
-                    label:SetPoint('TOP', EJMicroButton, 0,6)
+                    --label:SetPoint('TOP', EJMicroButton, 0,6)
+                    label:SetPoint('TOP', EJMicroButton)
                     label:SetParent(EJMicroButton)
 
                 elseif text=='durabiliy' then
@@ -357,7 +360,8 @@ local function set_Label_Point(clear)--设置 Label Poinst
                     label:SetParent(CharacterMicroButton)
 
                 elseif text=='equipmentLevel' then
-                    label:SetPoint('TOP', CharacterMicroButton,0,6)
+                    --label:SetPoint('TOP', CharacterMicroButton,0,6)
+                    label:SetPoint('TOP', CharacterMicroButton)
                     label:SetParent(CharacterMicroButton)
                 end
 
