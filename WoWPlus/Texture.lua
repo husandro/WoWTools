@@ -7,6 +7,7 @@ local Save={
     chatBubbleAlpha= 0.5,--聊天泡泡
     chatBubbleSacal= 0.85,
     classPowerNum= e.Player.husandro,--职业，显示数字
+    --disabledMainMenu= true, --主菜单，颜色，透明度
 }
 local panel=CreateFrame("Frame")
 
@@ -364,155 +365,6 @@ local function Init_Set_AlphaAndColor()
     end
 
     Init_ProfessionsFrame()--专业, 初始化, 透明
-
-    --####
-    --职业
-    --####
-    local function set_Num_Texture(self, num, color)
-        if not self.numTexture and (self.layoutIndex or num) and Save.classPowerNum then
-            self.numTexture= self:CreateTexture(nil, 'OVERLAY')
-            self.numTexture:SetSize(12,12)
-            self.numTexture:SetPoint('CENTER', self, 'CENTER')
-            self.numTexture:SetAtlas(e.Icon.number..(num or self.layoutIndex))
-            if color~=false then
-                if not color then
-                    set_Alpha(self.numTexture, true)
-                else
-                    self.numTexture:SetVertexColor(color.r, color.g, color.b)
-                end
-            end
-        end
-    end
-    if e.Player.class=='PALADIN' then--QS PaladinPowerBarFrame
-        if PaladinPowerBarFrame and PaladinPowerBarFrame.Background and PaladinPowerBarFrame.ActiveTexture then
-            hide_Texture(PaladinPowerBarFrame.Background, true)
-            hide_Texture(PaladinPowerBarFrame.ActiveTexture, true)
-            PaladinPowerBarFrame:HookScript('OnEnter', function(self2)
-                self2.Background:SetShown(true)
-                self2.ActiveTexture:SetShown(true)
-            end)
-            PaladinPowerBarFrame:HookScript('OnLeave', function(self2)
-                hide_Texture(self2.Background, true)
-                hide_Texture(self2.ActiveTexture, true)
-            end)
-            if ClassNameplateBarPaladinFrame then
-                hide_Texture(ClassNameplateBarPaladinFrame.Background)
-                hide_Texture(ClassNameplateBarPaladinFrame.ActiveTexture)
-            end
-            local maxHolyPower = UnitPowerMax('player', Enum.PowerType.HolyPower)--UpdatePower
-            for i=1,maxHolyPower do
-                local holyRune = PaladinPowerBarFrame["rune"..i]
-                set_Num_Texture(holyRune, i, false)
-            end
-        end
-
-    elseif e.Player.class=='MAGE' then--法师
-        if MageArcaneChargesFrame and MageArcaneChargesFrame.classResourceButtonTable then
-            for _, mage in pairs(MageArcaneChargesFrame.classResourceButtonTable) do
-                hide_Texture(mage.ArcaneBG)
-            end
-            if ClassNameplateBarMageFrame and ClassNameplateBarMageFrame.classResourceButtonTable then
-                for _, mage in pairs(ClassNameplateBarMageFrame.classResourceButtonTable) do
-                    hide_Texture(mage.ArcaneBG)
-                end
-            end
-        end
-
-    elseif e.Player.class=='DRUID' then--DruidComboPointBarFrame
-        local function set_DruidComboPointBarFrame(self)
-            if self then
-                for btn, _ in pairs(self) do
-                    hide_Texture(btn.BG_Active)
-                    hide_Texture(btn.BG_Inactive)
-                    set_Num_Texture(btn)
-                end
-            end
-        end
-        set_DruidComboPointBarFrame(DruidComboPointBarFrame and DruidComboPointBarFrame.classResourceButtonPool and DruidComboPointBarFrame.classResourceButtonPool.activeObjects)
-        if DruidComboPointBarFrame then
-            DruidComboPointBarFrame:HookScript('OnEvent', function(self)
-                set_DruidComboPointBarFrame(self.classResourceButtonPool.activeObjects)
-            end)
-        end
-        if ClassNameplateBarFeralDruidFrame and ClassNameplateBarFeralDruidFrame.classResourceButtonTable then
-            for _, btn in pairs(ClassNameplateBarFeralDruidFrame.classResourceButtonTable) do
-                hide_Texture(btn.BG_Active)
-                hide_Texture(btn.BG_Inactive)
-                set_Num_Texture(btn)
-            end
-        end
-
-    elseif e.Player.class=='ROGUE' then--DZ RogueComboPointBarFrame
-        if RogueComboPointBarFrame and RogueComboPointBarFrame.UpdateMaxPower then
-            hooksecurefunc(RogueComboPointBarFrame, 'UpdateMaxPower',function(self)
-                C_Timer.After(0.5, function()
-                    for _, btn in pairs(self.classResourceButtonTable or {}) do
-                        hide_Texture(btn.BGActive)
-                        hide_Texture(btn.BGInactive)
-                        set_Alpha(btn.BGShadow, nil, nil, 0.3)
-                        set_Num_Texture(btn)
-                    end
-                    if ClassNameplateBarRogueFrame and ClassNameplateBarRogueFrame.classResourceButtonTable then
-                        for _, btn in pairs(ClassNameplateBarRogueFrame.classResourceButtonTable) do
-                            hide_Texture(btn.BGActive)
-                            hide_Texture(btn.BGInactive)
-                            set_Alpha(btn.BGShadow, nil, nil, 0.3)
-                            set_Num_Texture(btn)
-                        end
-                    end
-                end)
-            end)
-        end
-
-    elseif e.Player.class=='MONK' then--MonkHarmonyBarFrame
-        local function set_MonkHarmonyBarFrame(btn)
-            if btn then
-                hide_Texture(btn.Chi_BG_Active)
-                hide_Texture(btn.BGInactive)
-                set_Alpha(btn.Chi_BG, nil, nil, 0.2)
-                set_Num_Texture(btn)
-            end
-        end
-        hooksecurefunc(MonkHarmonyBarFrame, 'UpdateMaxPower', function(self)
-            C_Timer.After(0.5, function()
-                for i = 1, #self.classResourceButtonTable do
-                    set_MonkHarmonyBarFrame(self.classResourceButtonTable[i])
-                end
-                local tab= ClassNameplateBarWindwalkerMonkFrame and ClassNameplateBarWindwalkerMonkFrame.classResourceButtonTable or {}
-                for i = 1, #tab do
-                    set_MonkHarmonyBarFrame(tab[i])
-                end
-            end)
-        end)
-        hooksecurefunc(MonkHarmonyBarFrame, 'UpdatePower', function(self)
-            for _, btn in pairs(self.classResourceButtonTable or {}) do
-                if btn.Chi_BG then
-                    btn.Chi_BG:SetAlpha(0.2)
-                end
-            end
-            if ClassNameplateBarWindwalkerMonkFrame then
-                for _, btn in pairs(ClassNameplateBarWindwalkerMonkFrame.classResourceButtonTable or {}) do
-                    if btn.Chi_BG then
-                        btn.Chi_BG:SetAlpha(0.2)
-                    end
-                end
-            end
-        end)
-    elseif e.Player.class=='DEATHKNIGHT' then
-        if RuneFrame.Runes then
-            for _, btn in pairs(RuneFrame.Runes) do
-                hide_Texture(btn.BG_Active)
-                hide_Texture(btn.BG_Inactive)
-            end
-        end
-        if DeathKnightResourceOverlayFrame.Runes then
-            for _, btn in pairs(DeathKnightResourceOverlayFrame.Runes) do
-                hide_Texture(btn.BG_Active)
-                hide_Texture(btn.BG_Inactive)
-            end
-        end
-    end
-
 
     --角色，界面
     set_Alpha(CharacterFrameBg)
@@ -972,30 +824,6 @@ local function Init_Set_AlphaAndColor()
             set_Alpha(stageBlock.FinalBG)
         end)
     end]]
-
-    if select(4,GetBuildInfo())<100105 then--100105,禁用
-        local buttons = {
-            CharacterMicroButton,--菜单
-            SpellbookMicroButton,
-            TalentMicroButton,
-            AchievementMicroButton,
-            QuestLogMicroButton,
-            GuildMicroButton,
-            LFDMicroButton,
-            EJMicroButton,
-            CollectionsMicroButton,
-            MainMenuMicroButton,
-            HelpMicroButton,
-            StoreMicroButton,
-            MainMenuBarBackpackButton,--背包
-        }
-        for _, frame in pairs(buttons) do
-            if frame then
-                set_Alpha(frame:GetNormalTexture(), true)
-            end
-        end
-        buttons=nil
-    end
 
     if MainStatusTrackingBarContainer then--货币，XP，追踪，最下面BAR
         hide_Texture(MainStatusTrackingBarContainer.BarFrameTexture)
@@ -1711,7 +1539,11 @@ local function set_Alpha_Event(arg1)
     end
 end
 
-local function Init_chatBubbles()--聊天泡泡
+
+--#######
+--聊天泡泡
+--#######
+local function Init_chatBubbles()
     local chatBubblesEvents={
         'CHAT_MSG_SAY',
         'CHAT_MSG_YELL',
@@ -1730,20 +1562,226 @@ local function Init_chatBubbles()--聊天泡泡
     end
 end
 
+--####
+--职业
+--####
+local function Init_Class_Power()--职业
+    if not Save.classPowerNum then
+        return
+    end
+    local function set_Num_Texture(self, num, color)
+        if not self.numTexture and (self.layoutIndex or num) then
+            self.numTexture= self:CreateTexture(nil, 'OVERLAY')
+            self.numTexture:SetSize(12,12)
+            self.numTexture:SetPoint('CENTER', self, 'CENTER')
+            self.numTexture:SetAtlas(e.Icon.number..(num or self.layoutIndex))
+            if color~=false then
+                if not color then
+                    set_Alpha(self.numTexture, true)
+                else
+                    self.numTexture:SetVertexColor(color.r, color.g, color.b)
+                end
+            end
+        end
+    end
+    if e.Player.class=='PALADIN' then--QS PaladinPowerBarFrame
+        if PaladinPowerBarFrame and PaladinPowerBarFrame.Background and PaladinPowerBarFrame.ActiveTexture then
+            hide_Texture(PaladinPowerBarFrame.Background, true)
+            hide_Texture(PaladinPowerBarFrame.ActiveTexture, true)
+            PaladinPowerBarFrame:HookScript('OnEnter', function(self2)
+                self2.Background:SetShown(true)
+                self2.ActiveTexture:SetShown(true)
+            end)
+            PaladinPowerBarFrame:HookScript('OnLeave', function(self2)
+                hide_Texture(self2.Background, true)
+                hide_Texture(self2.ActiveTexture, true)
+            end)
+            if ClassNameplateBarPaladinFrame then
+                hide_Texture(ClassNameplateBarPaladinFrame.Background)
+                hide_Texture(ClassNameplateBarPaladinFrame.ActiveTexture)
+            end
+            local maxHolyPower = UnitPowerMax('player', Enum.PowerType.HolyPower)--UpdatePower
+            for i=1,maxHolyPower do
+                local holyRune = PaladinPowerBarFrame["rune"..i]
+                set_Num_Texture(holyRune, i, false)
+            end
+        end
+
+    elseif e.Player.class=='MAGE' then--法师
+        if MageArcaneChargesFrame and MageArcaneChargesFrame.classResourceButtonTable then
+            for _, mage in pairs(MageArcaneChargesFrame.classResourceButtonTable) do
+                hide_Texture(mage.ArcaneBG)
+            end
+            if ClassNameplateBarMageFrame and ClassNameplateBarMageFrame.classResourceButtonTable then
+                for _, mage in pairs(ClassNameplateBarMageFrame.classResourceButtonTable) do
+                    hide_Texture(mage.ArcaneBG)
+                end
+            end
+        end
+
+    elseif e.Player.class=='DRUID' then--DruidComboPointBarFrame
+        local function set_DruidComboPointBarFrame(self)
+            if self then
+                for btn, _ in pairs(self) do
+                    hide_Texture(btn.BG_Active)
+                    hide_Texture(btn.BG_Inactive)
+                    set_Num_Texture(btn)
+                end
+            end
+        end
+        set_DruidComboPointBarFrame(DruidComboPointBarFrame and DruidComboPointBarFrame.classResourceButtonPool and DruidComboPointBarFrame.classResourceButtonPool.activeObjects)
+        if DruidComboPointBarFrame then
+            DruidComboPointBarFrame:HookScript('OnEvent', function(self)
+                set_DruidComboPointBarFrame(self.classResourceButtonPool.activeObjects)
+            end)
+        end
+        if ClassNameplateBarFeralDruidFrame and ClassNameplateBarFeralDruidFrame.classResourceButtonTable then
+            for _, btn in pairs(ClassNameplateBarFeralDruidFrame.classResourceButtonTable) do
+                hide_Texture(btn.BG_Active)
+                hide_Texture(btn.BG_Inactive)
+                set_Num_Texture(btn)
+            end
+        end
+
+    elseif e.Player.class=='ROGUE' then--DZ RogueComboPointBarFrame
+        if RogueComboPointBarFrame and RogueComboPointBarFrame.UpdateMaxPower then
+            hooksecurefunc(RogueComboPointBarFrame, 'UpdateMaxPower',function(self)
+                C_Timer.After(0.5, function()
+                    for _, btn in pairs(self.classResourceButtonTable or {}) do
+                        hide_Texture(btn.BGActive)
+                        hide_Texture(btn.BGInactive)
+                        set_Alpha(btn.BGShadow, nil, nil, 0.3)
+                        set_Num_Texture(btn)
+                    end
+                    if ClassNameplateBarRogueFrame and ClassNameplateBarRogueFrame.classResourceButtonTable then
+                        for _, btn in pairs(ClassNameplateBarRogueFrame.classResourceButtonTable) do
+                            hide_Texture(btn.BGActive)
+                            hide_Texture(btn.BGInactive)
+                            set_Alpha(btn.BGShadow, nil, nil, 0.3)
+                            set_Num_Texture(btn)
+                        end
+                    end
+                end)
+            end)
+        end
+
+    elseif e.Player.class=='MONK' then--MonkHarmonyBarFrame
+        local function set_MonkHarmonyBarFrame(btn)
+            if btn then
+                hide_Texture(btn.Chi_BG_Active)
+                hide_Texture(btn.BGInactive)
+                set_Alpha(btn.Chi_BG, nil, nil, 0.2)
+                set_Num_Texture(btn)
+            end
+        end
+        hooksecurefunc(MonkHarmonyBarFrame, 'UpdateMaxPower', function(self)
+            C_Timer.After(0.5, function()
+                for i = 1, #self.classResourceButtonTable do
+                    set_MonkHarmonyBarFrame(self.classResourceButtonTable[i])
+                end
+                local tab= ClassNameplateBarWindwalkerMonkFrame and ClassNameplateBarWindwalkerMonkFrame.classResourceButtonTable or {}
+                for i = 1, #tab do
+                    set_MonkHarmonyBarFrame(tab[i])
+                end
+            end)
+        end)
+        hooksecurefunc(MonkHarmonyBarFrame, 'UpdatePower', function(self)
+            for _, btn in pairs(self.classResourceButtonTable or {}) do
+                if btn.Chi_BG then
+                    btn.Chi_BG:SetAlpha(0.2)
+                end
+            end
+            if ClassNameplateBarWindwalkerMonkFrame then
+                for _, btn in pairs(ClassNameplateBarWindwalkerMonkFrame.classResourceButtonTable or {}) do
+                    if btn.Chi_BG then
+                        btn.Chi_BG:SetAlpha(0.2)
+                    end
+                end
+            end
+        end)
+    elseif e.Player.class=='DEATHKNIGHT' then
+        if RuneFrame.Runes then
+            for _, btn in pairs(RuneFrame.Runes) do
+                hide_Texture(btn.BG_Active)
+                hide_Texture(btn.BG_Inactive)
+            end
+        end
+        if DeathKnightResourceOverlayFrame.Runes then
+            for _, btn in pairs(DeathKnightResourceOverlayFrame.Runes) do
+                hide_Texture(btn.BG_Active)
+                hide_Texture(btn.BG_Inactive)
+            end
+        end
+    end
+end
+
+--##################
+--主菜单，颜色，透明度
+--##################
+local function set_MainMenu_Color(init)--主菜单
+    if init and Save.disabledMainMenu then
+        return
+    end
+    local buttons = {
+        'CharacterMicroButton',--菜单
+        'SpellbookMicroButton',
+        'TalentMicroButton',
+        'AchievementMicroButton',
+        'QuestLogMicroButton',
+        'GuildMicroButton',
+        'LFDMicroButton',
+        'EJMicroButton',
+        'CollectionsMicroButton',
+        'MainMenuMicroButton',
+        'HelpMicroButton',
+        'StoreMicroButton',
+        'MainMenuBarBackpackButton',--背包
+    }
+    for _, frame in pairs(buttons) do
+        local self= _G[frame]
+        if self then
+            if not Save.disabledMainMenu then
+                if init then
+                    self:HookScript('OnEnter', function(self2)
+                        local texture= self.Portrait or self:GetNormalTexture()
+                        if texture then
+                            texture:SetAlpha(1)
+                            texture:SetVertexColor(1,1,1,1)
+                        end
+                    end)
+                    self:HookScript('OnLeave', function(self2)
+                        if not Save.disabledMainMenu then
+                            set_Alpha(self2.Portrait or self:GetNormalTexture())
+                        end
+                    end)
+                end
+                set_Alpha(self.Portrait or self:GetNormalTexture())
+            else
+                local texture= self.Portrait or self:GetNormalTexture()
+                if texture then
+                    texture:SetAlpha(1)
+                    texture:SetVertexColor(1,1,1,1)
+                end
+            end
+        end
+    end
+end
+
+
 --###########
 --添加控制面板
 --###########
 local function options_Init()--初始，选项
     panel.check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    panel.check.text:SetText('1)'..(e.onlyChinese and '隐藏材质' or HIDE..addName))
+    panel.check.text:SetText('1) '..(e.onlyChinese and '隐藏材质' or HIDE..addName))
     panel.check:SetChecked(not Save.disabledTexture)
     panel.check:SetPoint('TOPLEFT', 0, -48)
     panel.check:SetScript('OnMouseDown', function()
         Save.disabledTexture= not Save.disabledTexture and true or nil
     end)
 
-    local alphaCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    alphaCheck.text:SetText('2)'..(e.onlyChinese and '透明度' or CHANGE_OPACITY))
+    local alphaCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    alphaCheck.text:SetText('2) '..(e.onlyChinese and '透明度' or CHANGE_OPACITY))
     alphaCheck:SetPoint('TOPLEFT', panel.check, 'BOTTOMLEFT', 0, -16)
     alphaCheck:SetChecked(not Save.disabledAlpha)
     alphaCheck:SetScript('OnMouseDown', function()
@@ -1766,19 +1804,18 @@ local function options_Init()--初始，选项
         Save.alpha= value==0 and 0 or value
     end)
 
-    --职业，显示数字
-    local classNumCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    classNumCheck.text:SetText((e.onlyChinese and '职业能量数字' or (CLASS..'('..AUCTION_HOUSE_QUANTITY_LABEL..')'..ENERGY))..format(e.Icon.number2,1)..format(e.Icon.number2,2)..format(e.Icon.number2,3))
-    classNumCheck:SetPoint('LEFT', alphaValue, 'RIGHT', 6, 0)
-    classNumCheck:SetChecked(Save.classPowerNum)
-    classNumCheck:SetScript('OnMouseDown', function()
-        Save.classPowerNum= not Save.classPowerNum and true or nil
+    local mainMenuCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    mainMenuCheck:SetPoint('LEFT', alphaValue, 'RIGHT',6,0)
+    mainMenuCheck:SetChecked(not Save.disabledMainMenu)
+    mainMenuCheck.Text:SetText(e.onlyChinese and '主菜单' or MAINMENU_BUTTON)
+    mainMenuCheck:SetScript('OnClick', function()
+        Save.disabledMainMenu= not Save.disabledMainMenu and true or nil
+        set_MainMenu_Color()--主菜单，颜色，透明度
     end)
-
 
     --聊天泡泡 ChatBubble
     local chatBubbleCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    chatBubbleCheck.text:SetText('3)'..(e.onlyChinese and '聊天泡泡: 副本无效' or (CHAT_BUBBLES_TEXT..': '..INSTANCE..' ('..NO..')')))
+    chatBubbleCheck.text:SetText('3) '..(e.onlyChinese and '聊天泡泡: 副本无效' or (CHAT_BUBBLES_TEXT..': '..INSTANCE..' ('..NO..')')))
     chatBubbleCheck:SetPoint('TOPLEFT', alphaCheck, 'BOTTOMLEFT', 0, -16)
     chatBubbleCheck:SetChecked(not Save.disabledChatBubble)
     chatBubbleCheck:SetScript('OnMouseDown', function()
@@ -1818,7 +1855,7 @@ local function options_Init()--初始，选项
 
     local chatBubbleSacale=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     chatBubbleSacale.text:SetText(e.onlyChinese and '缩放' or UI_SCALE)
-    chatBubbleSacale:SetPoint('TOPLEFT', chatBubbleAlpha, 'BottomLEFT', 0, -12)
+    chatBubbleSacale:SetPoint('TOPLEFT', chatBubbleAlpha, 'BOTTOMLEFT', 0, -12)
     chatBubbleSacale:SetChecked(not Save.disabledChatBubbleSacal)
     chatBubbleSacale:SetScript('OnMouseDown', function()
         Save.disabledChatBubbleSacal= not Save.disabledChatBubbleSacal and true or false
@@ -1838,6 +1875,16 @@ local function options_Init()--初始，选项
         self:SetValue(value)
         self.Text:SetText(value)
         Save.chatBubbleSacal=value
+    end)
+
+    --职业，显示数字
+    local classNumCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    classNumCheck.text:SetText('4) '..(e.onlyChinese and '职业能量数字' or (CLASS..'('..AUCTION_HOUSE_QUANTITY_LABEL..')'..ENERGY))..format(e.Icon.number2,1)..format(e.Icon.number2,2)..format(e.Icon.number2,3))
+    classNumCheck:SetPoint('TOPRIGHT', chatBubbleSacale, 'BOTTOMLEFT', 0, -16)
+    classNumCheck:SetChecked(Save.classPowerNum)
+    classNumCheck:SetScript('OnMouseDown', function()
+        Save.classPowerNum= not Save.classPowerNum and true or nil
+        print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 end
 --###########
@@ -1870,10 +1917,15 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             else
                 Init_HideTexture()
                 Init_Set_AlphaAndColor()
+                Init_Class_Power()--职业
+                C_Timer.After(2, function()
+                    set_MainMenu_Color(true)--主菜单, 颜色
+                end)
                 if not Save.disabledChatBubble then
                     Init_chatBubbles()
                 end
                 options_Init()--初始，选项
+
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
