@@ -41,7 +41,7 @@ local function set_LootSpecialization()--拾取专精
                     if texture and name then
                         SetPortraitToTexture(self.lootSpecFrame.texture, texture)
                         find=true
-                        self.lootSpecFrame.tips= (e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..": "..('|T'..texture..':0|t')..name
+                        self.lootSpecFrame.tips= (e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION).." "..('|T'..texture..':0|t')..name
                     end
                 end
             end
