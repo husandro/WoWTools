@@ -41,7 +41,7 @@ local function set_LootSpecialization()--拾取专精
                     if texture and name then
                         SetPortraitToTexture(self.lootSpecFrame.texture, texture)
                         find=true
-                        self.lootSpecFrame.tips= (e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..": "..name
+                        self.lootSpecFrame.tips= (e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..": "..('|T'..texture..':0|t')..name
                     end
                 end
             end
@@ -57,7 +57,7 @@ local function set_Instance_Difficulty()
     if not PlayerFrame or not PlayerFrame.instanceFrame then
         return
     end
-    local ins, find, find2=  IsInInstance(), false, false
+    local ins, find2, find3=  IsInInstance(), false, false
     if not ins and PlayerFrame.unit~= 'vehicle' then
         PlayerFrame.instanceFrame.tips=nil
         PlayerFrame.instanceFrame2.tips=nil
@@ -77,25 +77,26 @@ local function set_Instance_Difficulty()
             text3= text3..'|n'..(e.onlyChinese and '经典团队副本难度' or LEGACY_RAID_DIFFICULTY)..': '..(size3==10 and (e.onlyChinese and '10人' or RAID_DIFFICULTY1) or size3==25 and (e.onlyChinese and '25人' or RAID_DIFFICULTY2) or '')
         end
 
-        if name2 then
-            PlayerFrame.instanceFrame.texture:SetVertexColor(color2.r or 1, color2.g or 1, color2.b or 1)
-            local text2= (e.onlyChinese and '地下城难度' or DUNGEON_DIFFICULTY)..': '..color2.hex..name2..'|r'
-
-            if name3==name2 or not displayMythic3 then
-                text2= text2..'|n|n'..text3
-            end
-            PlayerFrame.instanceFrame.tips=text2
-            find= true
-        end
         if name3 and (name3~=name2 or not displayMythic3) then
             PlayerFrame.instanceFrame2.texture:SetVertexColor(color3.r or 1, color3.g or 1, color3.b or 1)
             PlayerFrame.instanceFrame2.tips= text3
             PlayerFrame.instanceFrame2.text:SetText((size3 and not displayMythic3) and size3 or '')
-            find2=true
+            find3=true
+        end
+
+        if name2 then
+            PlayerFrame.instanceFrame.texture:SetVertexColor(color2.r or 1, color2.g or 1, color2.b or 1)
+            local text2= (e.onlyChinese and '地下城难度' or DUNGEON_DIFFICULTY)..': '..color2.hex..name2..'|r'
+
+            if not find3 then
+                text2= text2..'|n|n'..text3
+            end
+            PlayerFrame.instanceFrame.tips=text2
+            find2= true
         end
     end
-    PlayerFrame.instanceFrame:SetShown(not ins and find)
-    PlayerFrame.instanceFrame2:SetShown(not ins and find2)
+    PlayerFrame.instanceFrame:SetShown(not ins and find2)
+    PlayerFrame.instanceFrame2:SetShown(not ins and find3)
 end
 
 --#########
@@ -758,7 +759,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                     if self2.tips then
                         e.tips:SetOwner(self2, "ANCHOR_LEFT")
                         e.tips:ClearLines()
-                        e.tips:AddLine(self2.tips)
+                        e.tips:AddDoubleLine(self2.tips, '|A:poi-torghast:0:0|a')
                         e.tips:AddLine(' ')
                         local tab={
                             DifficultyUtil.ID.DungeonNormal,
@@ -790,7 +791,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                     if self2.tips then
                         e.tips:SetOwner(self2, "ANCHOR_LEFT")
                         e.tips:ClearLines()
-                        e.tips:AddLine(self2.tips)
+                        e.tips:AddDoubleLine(self2.tips, '|A:DungeonSkull:0:0|a')
                         e.tips:AddLine(' ')
                         local tab={
                             DifficultyUtil.ID.DungeonNormal,
