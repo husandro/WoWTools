@@ -2966,7 +2966,12 @@
         "PanelTemplates_SelectTab",
         "PROFESSIONS_CRAFTING_FORM_OUTPUT_RECRAFT",
         "LoadMicroButtonTextures",
-        "MAINMENU_BUTTON"
+        "MAINMENU_BUTTON",
+        "PLAYER_DIFFICULTY2",
+        "PLAYER_DIFFICULTY1",
+        "PLAYER_DIFFICULTY6",
+        "PLAYER_DIFFICULTY3",
+        "PLAYER_DIFFICULTY_MYTHIC_PLUS"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

@@ -41,7 +41,7 @@ local Save={
     bit=0,--数值，位数
 }
     --hideInPetBattle=true,--宠物战斗中, 隐藏
-    --buttonAlpha=0.3,--专精，图标，透明度
+    --buttonAlpha=0.1,--专精，图标，透明度
     --hide=false,--显示，隐藏
     --gsubText
     --strlower
@@ -1111,8 +1111,8 @@ end
 --##########
 local function set_Show_Hide()
     button.frame:SetShown(not Save.hide)
-    button.texture:SetAlpha(Save.hide and 1 or Save.buttonAlpha or 0.3)
-    button.classPortrait:SetAlpha(Save.hide and 1 or Save.buttonAlpha or 0.3)
+    button.texture:SetAlpha(Save.hide and 1 or Save.buttonAlpha or 0.1)
+    button.classPortrait:SetAlpha(Save.hide and 1 or Save.buttonAlpha or 0.1)
 end
 
 --################

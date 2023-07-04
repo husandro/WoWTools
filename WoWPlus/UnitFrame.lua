@@ -54,61 +54,48 @@ end
 --副本, 地下城，指示
 --################
 local function set_Instance_Difficulty()
-    if PlayerFrame and PlayerFrame.instanceFrame then
-        local ins, find, find2=  IsInInstance(), false, false
-        if not ins and PlayerFrame.unit~= 'vehicle' then
-            PlayerFrame.instanceFrame.tips=nil
-            PlayerFrame.instanceFrame2.tips=nil
-
-            local name3, _, displayHeroic3, displayMythic3, name2, isHeroic2, displayMythic2
-            local difficultyID2 = GetDungeonDifficultyID()
-            local difficultyID3= GetRaidDifficultyID()
-            if difficultyID2 then
-                name2, _, isHeroic2, _, _, displayMythic2 = GetDifficultyInfo(difficultyID2)
-            end
-            if difficultyID3 then
-                name3, _, _, _, displayHeroic3, displayMythic3 = GetDifficultyInfo(difficultyID3)
-            end
-
-            local text3= (e.onlyChinese and '团队副本难度' or RAID_DIFFICULTY)..': '..(name3 or '')
-            local otherDifficulty = GetLegacyRaidDifficultyID()
-            local size3= otherDifficulty and DifficultyUtil.GetMaxPlayers(otherDifficulty)--UnitPopup.lua
-            if size3 and not displayMythic3 then
-                text3= text3..'|n'..(e.onlyChinese and '经典团队副本难度' or LEGACY_RAID_DIFFICULTY)..': '..(size3==10 and (e.onlyChinese and '10人' or RAID_DIFFICULTY1) or size3==25 and (e.onlyChinese and '25人' or RAID_DIFFICULTY2) or '')
-            end
-
-            if name2 then
-                if isHeroic2 and displayMythic2 then
-                    PlayerFrame.instanceFrame.texture:SetVertexColor(1, 0, 1, 1)
-                elseif isHeroic2 then
-                    PlayerFrame.instanceFrame.texture:SetVertexColor(0, 1, 0, 1)
-                else
-                    PlayerFrame.instanceFrame.texture:SetVertexColor(1, 1, 1, 1)
-                end
-                local text2= (e.onlyChinese and '地下城难度' or DUNGEON_DIFFICULTY)..': '..name2
-
-                if name3==name2 or displayMythic3 then
-                    text2= text2..'|n|n'..text3
-                end
-                PlayerFrame.instanceFrame.tips=text2
-                find= true
-            end
-            if name3 and (name3~=name2 or not displayMythic3) then
-                if displayMythic3 then
-                    PlayerFrame.instanceFrame2.texture:SetVertexColor(1, 0, 1, 1)
-                elseif displayHeroic3 then
-                    PlayerFrame.instanceFrame2.texture:SetVertexColor(0, 1, 0, 1)
-                else
-                    PlayerFrame.instanceFrame2.texture:SetVertexColor(1, 1, 1, 1)
-                end
-                PlayerFrame.instanceFrame2.tips= text3
-                PlayerFrame.instanceFrame2.text:SetText((size3 and not displayMythic3) and size3 or '')
-                find2=true
-            end
-        end
-        PlayerFrame.instanceFrame:SetShown(not ins and find)
-        PlayerFrame.instanceFrame2:SetShown(not ins and find2)
+    if not PlayerFrame or not PlayerFrame.instanceFrame then
+        return
     end
+    local ins, find, find2=  IsInInstance(), false, false
+    if not ins and PlayerFrame.unit~= 'vehicle' then
+        PlayerFrame.instanceFrame.tips=nil
+        PlayerFrame.instanceFrame2.tips=nil
+
+        local difficultyID2 = GetDungeonDifficultyID()
+        local difficultyID3= GetRaidDifficultyID()
+        local name2= GetDifficultyInfo(difficultyID2)
+        local name3, _, _, _, _, displayMythic3 = GetDifficultyInfo(difficultyID3)
+
+        local color2= select(2, e.GetDifficultyColor(nil, difficultyID2))
+        local color3= select(2, e.GetDifficultyColor(nil, difficultyID3))
+
+        local text3= (e.onlyChinese and '团队副本难度' or RAID_DIFFICULTY)..': '..color3.hex..(name3 or '')..'|r'
+        local otherDifficulty = GetLegacyRaidDifficultyID()
+        local size3= otherDifficulty and DifficultyUtil.GetMaxPlayers(otherDifficulty)--UnitPopup.lua
+        if size3 and not displayMythic3 then
+            text3= text3..'|n'..(e.onlyChinese and '经典团队副本难度' or LEGACY_RAID_DIFFICULTY)..': '..(size3==10 and (e.onlyChinese and '10人' or RAID_DIFFICULTY1) or size3==25 and (e.onlyChinese and '25人' or RAID_DIFFICULTY2) or '')
+        end
+
+        if name2 then
+            PlayerFrame.instanceFrame.texture:SetVertexColor(color2.r or 1, color2.g or 1, color2.b or 1)
+            local text2= (e.onlyChinese and '地下城难度' or DUNGEON_DIFFICULTY)..': '..color2.hex..name2..'|r'
+
+            if name3==name2 or not displayMythic3 then
+                text2= text2..'|n|n'..text3
+            end
+            PlayerFrame.instanceFrame.tips=text2
+            find= true
+        end
+        if name3 and (name3~=name2 or not displayMythic3) then
+            PlayerFrame.instanceFrame2.texture:SetVertexColor(color3.r or 1, color3.g or 1, color3.b or 1)
+            PlayerFrame.instanceFrame2.tips= text3
+            PlayerFrame.instanceFrame2.text:SetText((size3 and not displayMythic3) and size3 or '')
+            find2=true
+        end
+    end
+    PlayerFrame.instanceFrame:SetShown(not ins and find)
+    PlayerFrame.instanceFrame2:SetShown(not ins and find2)
 end
 
 --#########
@@ -773,6 +760,15 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                         e.tips:ClearLines()
                         e.tips:AddLine(self2.tips)
                         e.tips:AddLine(' ')
+                        local tab={
+                            DifficultyUtil.ID.DungeonNormal,
+                            DifficultyUtil.ID.DungeonHeroic,
+                            DifficultyUtil.ID.DungeonMythic
+                        }
+                        for _, ID in pairs(tab) do
+                            local text= e.GetDifficultyColor(nil, ID)
+                            e.tips:AddLine(text)
+                        end
                         e.tips:AddDoubleLine(id, addName)
                         e.tips:Show()
                     end
@@ -780,7 +776,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                 self.instanceFrame2:SetScript('OnLeave', function() e.tips:Hide() end)
                 self.instanceFrame2.texture= self.instanceFrame2:CreateTexture(nil,'BORDER', nil, 1)
                 self.instanceFrame2.texture:SetAllPoints(self.instanceFrame2)
-                self.instanceFrame2.texture:SetAtlas('BossBanner-SkullCircle')
+                self.instanceFrame2.texture:SetAtlas('poi-torghast')
 
                 self.instanceFrame2.text= e.Cstr(self.instanceFrame2, {size=8})
                 self.instanceFrame2.text:SetPoint('TOP',0,5)
@@ -796,6 +792,15 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                         e.tips:ClearLines()
                         e.tips:AddLine(self2.tips)
                         e.tips:AddLine(' ')
+                        local tab={
+                            DifficultyUtil.ID.DungeonNormal,
+                            DifficultyUtil.ID.DungeonHeroic,
+                            DifficultyUtil.ID.DungeonMythic
+                        }
+                        for _, ID in pairs(tab) do
+                            local text= e.GetDifficultyColor(nil, ID)
+                            e.tips:AddLine(text)
+                        end
                         e.tips:AddDoubleLine(id, addName)
                         e.tips:Show()
                     end

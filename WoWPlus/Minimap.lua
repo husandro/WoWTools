@@ -449,43 +449,47 @@ local function Init()
                 MinimapCluster.InstanceDifficulty.Instance.Text:SetShadowOffset(1,-1)
             end
         end
-        MinimapCluster:HookScript('OnEvent', function(self, event)--Minimap.lua
-            if self.InstanceDifficulty.Instance and self.InstanceDifficulty.Instance:IsShown() then
-                local frame= self.InstanceDifficulty.Instance.Background
-                local _, _, difficultyID, _, _, _, _, _, _, LfgDungeonID = GetInstanceInfo()
-                if difficultyID==24 or difficultyID==33 then--时光
-                    frame:SetVertexColor(0, 0.7, 1 ,1)
+        MinimapCluster:HookScript('OnEvent', function(self)--Minimap.lua
+            if not self.InstanceDifficulty.Instance or not self.InstanceDifficulty.Instance:IsShown() then
+                return
+            end
+            local frame= self.InstanceDifficulty.Instance.Background
+            local _, _, difficultyID, _, _, _, _, _, _, LfgDungeonID = GetInstanceInfo()
+            if difficultyID==24 or difficultyID==33 then--时光
+                frame:SetVertexColor(0, 0.7, 1 ,1)
 
-                elseif LfgDungeonID then
-                    frame:SetVertexColor(0, 0, 1, 1)
+            elseif LfgDungeonID then
+                frame:SetVertexColor(0, 0, 1, 1)
 
-                elseif difficultyID then
-                    local _, groupType, isHeroic, isChallengeMode, displayHeroic, displayMythic = GetDifficultyInfo(difficultyID)
-                    if groupType=='raid' then
-                        if displayMythic then
-                            frame:SetVertexColor(1, 0, 1, 1)
-                        elseif displayHeroic then
-                            frame:SetVertexColor(0, 1, 0, 1)
-                        else
-                            frame:SetVertexColor(1, 1, 1, 1)
-                        end
+            elseif difficultyID then
+                local _, groupType, isHeroic, isChallengeMode, displayHeroic, displayMythic = GetDifficultyInfo(difficultyID)
+                if groupType=='raid' then
+                    if displayMythic then
+                        frame:SetVertexColor(1, 0, 1, 1)
+                    elseif displayHeroic then
+                        frame:SetVertexColor(0, 1, 0, 1)
                     else
-                        if isChallengeMode then--挑战
-                            if self.InstanceDifficulty.ChallengeMode and self.InstanceDifficulty.ChallengeMode.Background then
-                                self.InstanceDifficulty.ChallengeMode.Background:SetVertexColor(1,0.82,0,1)
-                            end
-                        elseif isHeroic and displayMythic then--史诗
-                            frame:SetVertexColor(1, 0, 1, 1)
-                        elseif isHeroic then--英雄
-                            frame:SetVertexColor(0,1,0,1)
-                        else--普通
-                            frame:SetVertexColor(1, 1, 1, 1)
-                        end
+                        frame:SetVertexColor(1, 1, 1, 1)
                     end
                 else
-                    frame:SetVertexColor(1, 1, 1, 1)
+                    if isChallengeMode then--挑战
+                        if self.InstanceDifficulty.ChallengeMode and self.InstanceDifficulty.ChallengeMode.Background then
+                            self.InstanceDifficulty.ChallengeMode.Background:SetVertexColor(1,0.82,0,1)
+                        end
+                    elseif isHeroic and displayMythic then--史诗
+                        frame:SetVertexColor(1, 0, 1, 1)
+                    elseif isHeroic then--英雄
+                        frame:SetVertexColor(0,1,0,1)
+                    else--普通
+                        frame:SetVertexColor(1, 1, 1, 1)
+                    end
                 end
+            else
+                frame:SetVertexColor(1, 1, 1, 1)
             end
+        end)
+        MinimapCluster:HookScript('OnEnter', function(self)
+            
         end)
     end
 

@@ -1,3 +1,7 @@
+if not IsInGuild() then
+    return
+end
+
 local id, e = ...
 local Save={}
 local addName='ChatButtonGuild'
