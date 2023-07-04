@@ -904,7 +904,7 @@ local function Init()--冒险指南界面
             local specID, name, _ , icon= GetSpecializationInfo(specIndex)
             if icon and specID and name then
                 info= {
-                    text=name..(curSpec==specIndex and e.Icon.star2 or ''),
+                    text=name..(curSpec==specIndex and '|T4352494:0|t' or ''),
                     colorCode= e.Player.col,
                     icon=icon,
                     checked= Save.loot[e.Player.class][self.dungeonEncounterID]== specID,
@@ -1221,18 +1221,15 @@ local function Init()--冒险指南界面
         end
     end)
 
-    if not Save.hideEncounterJournal then
-        local numTier=EJ_GetNumTiers()--记录上次选择版本
-        if numTier and Save.EncounterJournalTier and Save.EncounterJournalTier<=numTier then
-            EJ_SelectTier(Save.EncounterJournalTier)
-        end
-        C_Timer.After(2, function()
-            if Save.EncounterJournalSelectTabID then--记录上次选择TAB
-                EJ_ContentTab_Select(Save.EncounterJournalSelectTabID)
-            end
-        end)
+    if not Save.hideEncounterJournal then--记录上次选择TAB
+        local max=EJ_GetNumTiers()
+        local numTier= Save.EncounterJournalTier or max--记录上次选择版本
+        numTier= numTier>max and max or numTier
+        EJ_SelectTier(numTier)
+        --[[C_Timer.After(2, function()
+            securecall('EJ_ContentTab_Select', numTier)
+        end)]]
     end
-    
 
     --记录上次选择版本
     hooksecurefunc('EncounterJournal_TierDropDown_Select', function(_, tier)
