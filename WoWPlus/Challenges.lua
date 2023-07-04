@@ -1038,8 +1038,8 @@ local function set_Update()--Blizzard_ChallengesUI.lua
             local nameText = not Save.hideIns and C_ChallengeMode.GetMapUIInfo(frame.mapID)--名称
             if nameText then
                 if not frame.nameLable then
-                    frame.nameLable=e.Cstr(frame, {size=10, mouse= true})
-                    frame.nameLable:SetPoint('BOTTOM', frame, 'TOP')
+                    frame.nameLable=e.Cstr(frame, {size=10, mouse= true, justifyH='CENTER'})
+                    frame.nameLable:SetPoint('BOTTOM', frame, 'TOP', 0, 3)
                     frame.nameLable:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
                     frame.nameLable:SetScript('OnEnter', function(self2)
                         e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")

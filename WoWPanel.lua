@@ -235,8 +235,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 local hex=self2.hex:gsub('|c','')
                 e.tips:AddDoubleLine(format('r%.2f g%.2f b%.2f a%.2f', self2.r, self2.g, self2.b, self2.a), hex)
                 e.tips:Show()
+                self2:SetAlpha(0.3)
             end)
-            useCustomColor.text:SetScript('OnLeave', function() e.tips:Hide() end)
+            useCustomColor.text:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
 
             useCustomColor.text.r, useCustomColor.text.g, useCustomColor.text.b, useCustomColor.text.a, useCustomColor.text.hex= Save.useCustomColorTab.r, Save.useCustomColorTab.g, Save.useCustomColorTab.b, Save.useCustomColorTab.a, Save.useCustomColorTab.hex
             useCustomColor.text:SetScript('OnMouseDown', function(self2)

@@ -712,7 +712,7 @@ local function Init()--冒险指南界面
                             ..'|n'..'|T4352494:0|t'..leavel
                             ..'|n'..'|A:AdventureMapIcon-MissionCombat:0:0|a'..runScore
                             ..(affix and '|n'..affix or '')
-                            ..(currentChallengeMapID== mapChallengeModeID and '|A:auctionhouse-icon-favorite:0:0|a' or '')--当前, KEY地图,ID
+                            ..(currentChallengeMapID== mapChallengeModeID and '|T4352494:0|t' or '')--当前, KEY地图,ID
                             local color= C_ChallengeMode.GetSpecificDungeonOverallScoreRarityColor(runScore)
                             if color then
                                 challengeText= color:WrapTextInColorCode(challengeText)
@@ -904,7 +904,7 @@ local function Init()--冒险指南界面
             local specID, name, _ , icon= GetSpecializationInfo(specIndex)
             if icon and specID and name then
                 info= {
-                    text=name..(curSpec==specIndex and '|T4352494:0|t' or ''),
+                    text=name..(curSpec==specIndex and e.Icon.star2 or ''),
                     colorCode= e.Player.col,
                     icon=icon,
                     checked= Save.loot[e.Player.class][self.dungeonEncounterID]== specID,
