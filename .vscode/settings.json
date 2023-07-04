@@ -2965,7 +2965,8 @@
         "GameFontHighlightSmall",
         "PanelTemplates_SelectTab",
         "PROFESSIONS_CRAFTING_FORM_OUTPUT_RECRAFT",
-        "ProfessionsUtil"
+        "ProfessionsUtil",
+        "C_ContentTracking"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

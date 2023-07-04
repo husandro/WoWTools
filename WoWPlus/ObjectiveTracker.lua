@@ -284,7 +284,7 @@ local function Init()
 					end
 				end
 
-				for _, tbl in ipairs(eligibleSlots) do
+				for _, tbl in ipairs(eligibleSlots) do--10.1.5, Professions 该成 ProfessionsUtil
 					local slotIndex = tbl.slotIndex;
 					local reagentSlotSchematic = tbl.reagentSlotSchematic;
 					if (ProfessionsUtil or Professions).IsReagentSlotRequired(reagentSlotSchematic) then
@@ -387,6 +387,9 @@ local function Init()
     --清除, 追踪
     --##########
     local function create_ClearAll_Button(self)
+        if self.clearAll then
+            return
+        end
         self.clearAll= e.Cbtn(self, {atlas='bags-button-autosort-up', size={22,22}})
         self.clearAll:SetPoint('RIGHT', self.MinimizeButton, 'LEFT',-2,0)
         self.clearAll:SetAlpha(0.3)
@@ -425,7 +428,7 @@ local function Init()
                             num=num+1
                         end
                     end
-                    print(id, addName, e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, self2.tooltip, '|cffff00ff'..num)
+                    print(id, addName, '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2), self2.tooltip, '|cffff00ff'..num)
                 end)
 
             elseif module== QUEST_TRACKER_MODULE or module== CAMPAIGN_QUEST_TRACKER_MODULE then--6 追踪任务 TRACK_QUEST
@@ -466,7 +469,7 @@ local function Init()
                             num= num +1
                         end
                     end
-                    print(id, addName, e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, self2.tooltip, '|cffff00ff'..num)
+                    print(id, addName, '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2), self2.tooltip, '|cffff00ff'..num)
                 end)
 
             elseif module== PROFESSION_RECIPE_TRACKER_MODULE then--8 追踪配方 PROFESSIONS_TRACK_RECIPE
@@ -487,7 +490,7 @@ local function Init()
                     end
                     clear_Recipe(true)
                     clear_Recipe(false)
-                    print(id, addName, e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, self2.tooltip, '|cffff00ff'..num)
+                    print(id, addName, '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2), self2.tooltip, '|cffff00ff'..num)
                 end)
 
             elseif module== MONTHLY_ACTIVITIES_TRACKER_MODULE then--9
@@ -502,7 +505,7 @@ local function Init()
                             num= num+1
                         end
                     end
-                    print(id, addName, e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, self2.tooltip, '|cffff00ff'..num)
+                    print(id, addName, '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2), self2.tooltip, '|cffff00ff'..num)
                 end)
             end
         end
