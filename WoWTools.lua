@@ -515,7 +515,7 @@ end
 --副本，难道，颜色
 e.GetDifficultyColor = function(string, difficultyID)--DifficultyUtil.lua
     if not difficultyID then
-        return
+        return nil, {r=1, g=1, b=1}
     end
     local name={
         ['经典']= {name= e.onlyChinese and '经典' or LEGACY_RAID_DIFFICULTY, hex='|cff9d9d9d', r=0.62, g=0.62, b=0.62},
@@ -550,7 +550,7 @@ e.GetDifficultyColor = function(string, difficultyID)--DifficultyUtil.lua
         string= string or color[difficultyID].name or GetDifficultyInfo(difficultyID)
         string= color[difficultyID].hex..string..'|r'
     end
-    return string, color[difficultyID]
+    return string, color[difficultyID] or {r=1, b=1,g=1}
 end
 
 function e.Cstr(self, tab)--self, {size, copyFont, changeFont, color={r=,g=,b=,a=}, layer=, justifyH=, mouse=false, wheel=false}

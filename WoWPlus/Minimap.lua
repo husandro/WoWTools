@@ -485,19 +485,13 @@ local function Init_InstanceDifficulty()--副本，难图，指示
         if not self.InstanceDifficulty or not IsInInstance() then
             return
         end
-        local _, _, difficultyID, _, _, _, _, _, _, LfgDungeonID = GetInstanceInfo()
+        local difficultyID = select(3, GetInstanceInfo())
         local tips, color
-        if difficultyID==24 or difficultyID==33 then--时光
-            tips, color= e.GetDifficultyColor(nil, difficultyID)
-        elseif LfgDungeonID then
-            tips, color= e.GetDifficultyColor(nil, DifficultyUtil.ID.DungeonTimewalker)
-        elseif select(4, GetDifficultyInfo(difficultyID)) then
+        if select(4, GetDifficultyInfo(difficultyID)) then--挑战
             tips, color= e.GetDifficultyColor(nil, DifficultyUtil.ID.DungeonChallenge)
             self.InstanceDifficulty.ChallengeMode.Background:SetVertexColor(color.r, color.g, color.b)
         else
             tips, color= e.GetDifficultyColor(nil, difficultyID)
-        end
-        if color and self.InstanceDifficulty.Instance.Background then
             self.InstanceDifficulty.Instance.Background:SetVertexColor(color.r, color.g, color.b, 1)
         end
         self.InstanceDifficulty.tips= tips
@@ -509,13 +503,8 @@ local function Init_InstanceDifficulty()--副本，难图，指示
             end
             e.tips:SetOwner(MinimapCluster, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            local difficultyID= select(3, GetInstanceInfo())
-            local name= difficultyID and GetDifficultyInfo(difficultyID)
-            local name2, maxPlayers= select(4,GetInstanceInfo())
-            name= (name2 and name2~=name) and name2 or name or name2
-            if maxPlayers and name and not name:find(maxPlayers) then
-                name= name..' ('..maxPlayers..')'
-            end
+            local name, maxPlayers= select(4,GetInstanceInfo())
+            name= name..(maxPlayers and ' ('..maxPlayers..')' or '')
             e.tips:AddDoubleLine(self.tips, name)
             e.tips:AddLine(' ')
             local tab={

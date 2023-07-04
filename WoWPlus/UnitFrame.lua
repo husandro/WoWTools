@@ -67,8 +67,8 @@ local function set_Instance_Difficulty()
         local name2= GetDifficultyInfo(difficultyID2)
         local name3, _, _, _, _, displayMythic3 = GetDifficultyInfo(difficultyID3)
 
-        local color2= select(2, e.GetDifficultyColor(nil, difficultyID2))
-        local color3= select(2, e.GetDifficultyColor(nil, difficultyID3))
+        local color2= select(2, e.GetDifficultyColor(nil, difficultyID2)) or {}
+        local color3= select(2, e.GetDifficultyColor(nil, difficultyID3)) or {}
 
         local text3= (e.onlyChinese and '团队副本难度' or RAID_DIFFICULTY)..': '..color3.hex..(name3 or '')..'|r'
         local otherDifficulty = GetLegacyRaidDifficultyID()
@@ -84,7 +84,7 @@ local function set_Instance_Difficulty()
             find3=true
         end
 
-        if name2 then
+        if name2  then
             PlayerFrame.instanceFrame.texture:SetVertexColor(color2.r or 1, color2.g or 1, color2.b or 1)
             local text2= (e.onlyChinese and '地下城难度' or DUNGEON_DIFFICULTY)..': '..color2.hex..name2..'|r'
 
