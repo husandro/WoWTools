@@ -450,13 +450,10 @@ local function Init()
             end
         end
         MinimapCluster:HookScript('OnEvent', function(self)--Minimap.lua
-            if not self.InstanceDifficulty then
+            if not self.InstanceDifficulty or not IsInInstance() then
                 return
             end
             local _, _, difficultyID, _, _, _, _, _, _, LfgDungeonID = GetInstanceInfo()
-            if not difficultyID and not LfgDungeonID then
-                return
-            end
             local tips, color
             if difficultyID==24 or difficultyID==33 then--时光
                 tips, color= e.GetDifficultyColor(nil, difficultyID)
@@ -475,10 +472,18 @@ local function Init()
         end)
         if MinimapCluster.InstanceDifficulty then
             MinimapCluster.InstanceDifficulty:HookScript('OnEnter', function(self)
+                if not IsInInstance() then
+                    return
+                end
                 e.tips:SetOwner(MinimapCluster, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 local difficultyID= select(3, GetInstanceInfo())
                 local name= difficultyID and GetDifficultyInfo(difficultyID)
+                local name2, maxPlayers= select(4,GetInstanceInfo())
+                name= (name2 and name2~=name) and name2 or name or name2
+                if maxPlayers and name and not name:find(maxPlayers) then
+                    name= name..' ('..maxPlayers..')'
+                end
                 e.tips:AddDoubleLine(self.tips, name)
                 e.tips:AddLine(' ')
                 local tab={

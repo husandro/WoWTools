@@ -514,6 +514,9 @@ end
 
 --副本，难道，颜色
 e.GetDifficultyColor = function(string, difficultyID)--DifficultyUtil.lua
+    if not difficultyID then
+        return
+    end
     local name={
         ['经典']= {name= e.onlyChinese and '经典' or LEGACY_RAID_DIFFICULTY, hex='|cff9d9d9d', r=0.62, g=0.62, b=0.62},
         ['随机']= {name= e.onlyChinese and '随机' or PLAYER_DIFFICULTY3, hex='|cff1eff00', r=0.12, g=1.00, b=0.00},
@@ -543,7 +546,7 @@ e.GetDifficultyColor = function(string, difficultyID)--DifficultyUtil.lua
         [DifficultyUtil.ID.DungeonTimewalker] = name['漫游'],
         [DifficultyUtil.ID.RaidTimewalker] = name['漫游'],
     }
-    if difficultyID and color[difficultyID] then
+    if color[difficultyID] then
         string= string or color[difficultyID].name or GetDifficultyInfo(difficultyID)
         string= color[difficultyID].hex..string..'|r'
     end
