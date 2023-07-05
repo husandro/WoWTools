@@ -301,7 +301,6 @@ local function set_perksActivitiesLastPoints_CVar()--贸易站, 点数  MonthlyA
 		end
 	end
 	earnedThresholdAmount = math.min(earnedThresholdAmount, thresholdMax);
-
     if earnedThresholdAmount== thresholdMax then
         text= e.Icon.select2
     else
@@ -786,7 +785,7 @@ local function Init()
 end
 
 panel:RegisterEvent("ADDON_LOADED")
-panel:SetScript("OnEvent", function(self, event, arg1)
+panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
