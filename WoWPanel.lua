@@ -104,7 +104,7 @@ InterfaceOptions_AddCategory(instancePane)
 --##############
 --创建, 添加控制面板
 --##############
-local lastWoW, lastGame, lastInstance
+local lastWoW, lastGame--, lastInstance
 e.CPanel= function(name, value, GamePlus)--, Instance)
     --local check=CreateFrame("CheckButton", nil, Instance and instancePane or panel, "InterfaceOptionsCheckButtonTemplate")
     local check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
