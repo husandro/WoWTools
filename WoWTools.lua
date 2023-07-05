@@ -469,36 +469,24 @@ e.MK=function(number,bit)
     bit = bit or 1
     local num= 0
     if bit==0 then
-        num= 0.5
+        num= 0.4
     elseif bit==1 then
-        num= 0.05
+        num= 0.04
     elseif bit==2 then
-        num= 0.005
+        num= 0.004
     elseif bit==3 then
-        num= 0.0005
+        num= 0.0004
     elseif bit==4 then
-        num= 0.00005
+        num= 0.00004
     end
     if number>=1e6 then
-        if bit==0 then
-            return format('%im', (number/1e6)-num)
-        else
-            return format('%.'..bit..'fm', (number/1e6)-num)
-        end
+        return format('%.'..bit..'fm', (number/1e6)-num)
     elseif number>= 1e4 and (LOCALE_zhCN or e.onlyChinese) then
-        if bit==0 then
-            return format('%iw', (number/1e4)-num)
-        else
-            return format('%.'..bit..'fw', (number/1e4)-num)
-        end
+        return format('%.'..bit..'fw', (number/1e4)-num)
     elseif number>=1e3 then
-        if bit==0 then
-            return format('%ik', (number/1e3)-num)
-        else
-            return format('%.'..bit..'fk', (number/1e3)-num)
-        end
+        return format('%.'..bit..'fk', (number/1e3)-num)
     else
-        return format('%i', number-0.5)
+        return format('%i', number)
     end
 end
 
