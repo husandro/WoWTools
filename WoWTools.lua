@@ -514,43 +514,44 @@ end
 
 --副本，难道，颜色
 e.GetDifficultyColor = function(string, difficultyID)--DifficultyUtil.lua
-    if not difficultyID then
-        return nil, {r=1, g=1, b=1}
-    end
-    local name={
-        ['经典']= {name= e.onlyChinese and '经典' or LEGACY_RAID_DIFFICULTY, hex='|cff9d9d9d', r=0.62, g=0.62, b=0.62},
-        ['随机']= {name= e.onlyChinese and '随机' or PLAYER_DIFFICULTY3, hex='|cff1eff00', r=0.12, g=1.00, b=0.00},
+    local colorRe
+    if difficultyID then
+        local name={
+            ['经典']= {name= e.onlyChinese and '经典' or LEGACY_RAID_DIFFICULTY, hex='|cff9d9d9d', r=0.62, g=0.62, b=0.62},
+            ['随机']= {name= e.onlyChinese and '随机' or PLAYER_DIFFICULTY3, hex='|cff1eff00', r=0.12, g=1.00, b=0.00},
 
-        ['普通']= {name= e.onlyChinese and '普通' or PLAYER_DIFFICULTY1, hex='|cffffffff', r=1, g=1, b=1},
-        ['英雄']= {name= e.onlyChinese and '英雄' or PLAYER_DIFFICULTY2, hex='|cff0070dd', r=0, g=0.44, b=0.87},
+            ['普通']= {name= e.onlyChinese and '普通' or PLAYER_DIFFICULTY1, hex='|cffffffff', r=1, g=1, b=1},
+            ['英雄']= {name= e.onlyChinese and '英雄' or PLAYER_DIFFICULTY2, hex='|cff0070dd', r=0, g=0.44, b=0.87},
 
-        ['史诗']= {name= e.onlyChinese and '史诗' or PLAYER_DIFFICULTY6, hex='|cffff00ff', r=1, g=0, b=1},
-        ['挑战']= {name= e.onlyChinese and '挑战' or PLAYER_DIFFICULTY5,  hex='|cffff8200', r=1, g=0.51, b=0},
-        ['漫游']= {name= e.onlyChinese and '漫游' or PLAYER_DIFFICULTY_TIMEWALKER, hex='|cff00ffff', r=0, g=1, b=1},
-    }
-    local color= {
-        [DifficultyUtil.ID.Raid40] = name['经典'],
-        [DifficultyUtil.ID.PrimaryRaidLFR] = name['随机'],
-        [DifficultyUtil.ID.RaidLFR] = name['随机'],
-        [DifficultyUtil.ID.DungeonNormal] = name['普通'],
-        [DifficultyUtil.ID.Raid10Normal] = name['普通'],
-        [DifficultyUtil.ID.Raid25Normal] = name['普通'],
-        [DifficultyUtil.ID.PrimaryRaidNormal] = name['普通'],
-        [DifficultyUtil.ID.DungeonHeroic] = name['英雄'],
-        [DifficultyUtil.ID.Raid10Heroic] = name['英雄'],
-        [DifficultyUtil.ID.Raid25Heroic] = name['英雄'],
-        [DifficultyUtil.ID.PrimaryRaidHeroic] = name['英雄'],
-        [DifficultyUtil.ID.DungeonMythic] = name['史诗'],
-        [DifficultyUtil.ID.PrimaryRaidMythic] = name['史诗'],
-        [DifficultyUtil.ID.DungeonChallenge] =  name['挑战'],
-        [DifficultyUtil.ID.DungeonTimewalker] = name['漫游'],
-        [DifficultyUtil.ID.RaidTimewalker] = name['漫游'],
-    }
-    if color[difficultyID] then
-        string= string or color[difficultyID].name or GetDifficultyInfo(difficultyID)
-        string= color[difficultyID].hex..string..'|r'
+            ['史诗']= {name= e.onlyChinese and '史诗' or PLAYER_DIFFICULTY6, hex='|cffff00ff', r=1, g=0, b=1},
+            ['挑战']= {name= e.onlyChinese and '挑战' or PLAYER_DIFFICULTY5,  hex='|cffff8200', r=1, g=0.51, b=0},
+            ['漫游']= {name= e.onlyChinese and '漫游' or PLAYER_DIFFICULTY_TIMEWALKER, hex='|cff00ffff', r=0, g=1, b=1},
+        }
+        local color= {
+            [DifficultyUtil.ID.Raid40] = name['经典'],
+            [DifficultyUtil.ID.PrimaryRaidLFR] = name['随机'],
+            [DifficultyUtil.ID.RaidLFR] = name['随机'],
+            [DifficultyUtil.ID.DungeonNormal] = name['普通'],
+            [DifficultyUtil.ID.Raid10Normal] = name['普通'],
+            [DifficultyUtil.ID.Raid25Normal] = name['普通'],
+            [DifficultyUtil.ID.PrimaryRaidNormal] = name['普通'],
+            [DifficultyUtil.ID.DungeonHeroic] = name['英雄'],
+            [DifficultyUtil.ID.Raid10Heroic] = name['英雄'],
+            [DifficultyUtil.ID.Raid25Heroic] = name['英雄'],
+            [DifficultyUtil.ID.PrimaryRaidHeroic] = name['英雄'],
+            [DifficultyUtil.ID.DungeonMythic] = name['史诗'],
+            [DifficultyUtil.ID.PrimaryRaidMythic] = name['史诗'],
+            [DifficultyUtil.ID.DungeonChallenge] =  name['挑战'],
+            [DifficultyUtil.ID.DungeonTimewalker] = name['漫游'],
+            [DifficultyUtil.ID.RaidTimewalker] = name['漫游'],
+        }
+        if color[difficultyID] then
+            string= string or color[difficultyID].name or GetDifficultyInfo(difficultyID)
+            string= color[difficultyID].hex..string..'|r'
+            colorRe=color[difficultyID]
+        end
     end
-    return string, color[difficultyID] or {r=1, b=1,g=1}
+    return string, colorRe or {r=e.Player.r, g=e.Player.g, b=e.Player.b, hex=e.Player.col}
 end
 
 function e.Cstr(self, tab)--self, {size, copyFont, changeFont, color={r=,g=,b=,a=}, layer=, justifyH=, mouse=false, wheel=false}

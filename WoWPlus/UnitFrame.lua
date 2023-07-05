@@ -54,23 +54,19 @@ end
 --副本, 地下城，指示
 --################
 local function set_Instance_Difficulty()
-    if not PlayerFrame or not PlayerFrame.instanceFrame then
+    if not PlayerFrame or not PlayerFrame.instanceFrame2 then
         return
     end
     local ins, find2, find3=  IsInInstance(), false, false
     if not ins and PlayerFrame.unit~= 'vehicle' then
-        PlayerFrame.instanceFrame.tips=nil
-        PlayerFrame.instanceFrame2.tips=nil
-
         local difficultyID2 = GetDungeonDifficultyID()
         local difficultyID3= GetRaidDifficultyID()
-        local name2= GetDifficultyInfo(difficultyID2)
-        local name3, _, _, _, _, displayMythic3 = GetDifficultyInfo(difficultyID3)
+        local displayMythic3 = select(6, GetDifficultyInfo(difficultyID3))
 
-        local color2= select(2, e.GetDifficultyColor(nil, difficultyID2)) or {}
-        local color3= select(2, e.GetDifficultyColor(nil, difficultyID3)) or {}
+        local name2, color2= e.GetDifficultyColor(nil, difficultyID2)
+        local name3, color3= e.GetDifficultyColor(nil, difficultyID3)
 
-        local text3= (e.onlyChinese and '团队副本难度' or RAID_DIFFICULTY)..': '..color3.hex..(name3 or '')..'|r'
+        local text3= (e.onlyChinese and '团队副本难度' or RAID_DIFFICULTY)..': '..name3..'|r'
         local otherDifficulty = GetLegacyRaidDifficultyID()
         local size3= otherDifficulty and DifficultyUtil.GetMaxPlayers(otherDifficulty)--UnitPopup.lua
         if size3 and not displayMythic3 then
@@ -78,25 +74,27 @@ local function set_Instance_Difficulty()
         end
 
         if name3 and (name3~=name2 or not displayMythic3) then
-            PlayerFrame.instanceFrame2.texture:SetVertexColor(color3.r or 1, color3.g or 1, color3.b or 1)
-            PlayerFrame.instanceFrame2.tips= text3
-            PlayerFrame.instanceFrame2.text:SetText((size3 and not displayMythic3) and size3 or '')
+            PlayerFrame.instanceFrame3.texture:SetVertexColor(color3.r, color3.g, color3.b)
+            PlayerFrame.instanceFrame3.tips= text3
+            PlayerFrame.instanceFrame3.name= name3
+            PlayerFrame.instanceFrame3.text:SetText((size3 and not displayMythic3) and size3 or '')
             find3=true
         end
 
         if name2  then
-            PlayerFrame.instanceFrame.texture:SetVertexColor(color2.r or 1, color2.g or 1, color2.b or 1)
+            PlayerFrame.instanceFrame2.texture:SetVertexColor(color2.r, color2.g, color2.b)
             local text2= (e.onlyChinese and '地下城难度' or DUNGEON_DIFFICULTY)..': '..color2.hex..name2..'|r'
 
             if not find3 then
                 text2= text2..'|n|n'..text3
             end
-            PlayerFrame.instanceFrame.tips=text2
+            PlayerFrame.instanceFrame2.tips=text2
+            PlayerFrame.instanceFrame2.name= name2
             find2= true
         end
     end
-    PlayerFrame.instanceFrame:SetShown(not ins and find2)
-    PlayerFrame.instanceFrame2:SetShown(not ins and find3)
+    PlayerFrame.instanceFrame2:SetShown(not ins and find2)
+    PlayerFrame.instanceFrame3:SetShown(not ins and find3)
 end
 
 --#########
@@ -750,12 +748,12 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                 end)
                 set_LootSpecialization()--拾取专精
 
-                self.instanceFrame2= CreateFrame("Frame", nil, self)--Riad 副本, 地下城，指示
-                self.instanceFrame2:SetFrameLevel(frameLevel)
-                self.instanceFrame2:SetPoint('RIGHT', self.lootSpecFrame, 'LEFT',-2, 1)
-                self.instanceFrame2:SetSize(16,16)
-                self.instanceFrame2:EnableMouse(true)
-                self.instanceFrame2:SetScript('OnEnter', function(self2)
+                self.instanceFrame3= CreateFrame("Frame", nil, self)--Riad 副本, 地下城，指示
+                self.instanceFrame3:SetFrameLevel(frameLevel)
+                self.instanceFrame3:SetPoint('RIGHT', self.lootSpecFrame, 'LEFT',-2, 1)
+                self.instanceFrame3:SetSize(16,16)
+                self.instanceFrame3:EnableMouse(true)
+                self.instanceFrame3:SetScript('OnEnter', function(self2)
                     if self2.tips then
                         e.tips:SetOwner(self2, "ANCHOR_LEFT")
                         e.tips:ClearLines()
@@ -768,26 +766,26 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                         }
                         for _, ID in pairs(tab) do
                             local text= e.GetDifficultyColor(nil, ID)
-                            e.tips:AddLine(text)
+                            e.tips:AddLine((text==self2.name and e.Icon.toRight2 or '')..text..(text==self2.name and e.Icon.toLeft2 or ''))
                         end
                         e.tips:AddDoubleLine(id, addName)
                         e.tips:Show()
                     end
                 end)
-                self.instanceFrame2:SetScript('OnLeave', function() e.tips:Hide() end)
-                self.instanceFrame2.texture= self.instanceFrame2:CreateTexture(nil,'BORDER', nil, 1)
-                self.instanceFrame2.texture:SetAllPoints(self.instanceFrame2)
-                self.instanceFrame2.texture:SetAtlas('poi-torghast')
+                self.instanceFrame3:SetScript('OnLeave', function() e.tips:Hide() end)
+                self.instanceFrame3.texture= self.instanceFrame3:CreateTexture(nil,'BORDER', nil, 1)
+                self.instanceFrame3.texture:SetAllPoints(self.instanceFrame3)
+                self.instanceFrame3.texture:SetAtlas('poi-torghast')
 
-                self.instanceFrame2.text= e.Cstr(self.instanceFrame2, {size=8})
-                self.instanceFrame2.text:SetPoint('TOP',0,5)
+                self.instanceFrame3.text= e.Cstr(self.instanceFrame3, {size=8})
+                self.instanceFrame3.text:SetPoint('TOP',0,5)
 
-                self.instanceFrame= CreateFrame("Frame", nil, self)--5人 副本, 地下城，指示
-                self.instanceFrame:SetFrameLevel(frameLevel)
-                self.instanceFrame:SetPoint('RIGHT', self.instanceFrame2, 'LEFT',0, -6)
-                self.instanceFrame:SetSize(16,16)
-                self.instanceFrame:EnableMouse(true)
-                self.instanceFrame:SetScript('OnEnter', function(self2)
+                self.instanceFrame2= CreateFrame("Frame", nil, self)--5人 副本, 地下城，指示
+                self.instanceFrame2:SetFrameLevel(frameLevel)
+                self.instanceFrame2:SetPoint('RIGHT', self.instanceFrame3, 'LEFT',0, -6)
+                self.instanceFrame2:SetSize(16,16)
+                self.instanceFrame2:EnableMouse(true)
+                self.instanceFrame2:SetScript('OnEnter', function(self2)
                     if self2.tips then
                         e.tips:SetOwner(self2, "ANCHOR_LEFT")
                         e.tips:ClearLines()
@@ -800,18 +798,18 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                         }
                         for _, ID in pairs(tab) do
                             local text= e.GetDifficultyColor(nil, ID)
-                            e.tips:AddLine(text)
+                            e.tips:AddLine((text==self2.name and e.Icon.toRight2 or '')..text..(text==self2.name and e.Icon.toLeft2 or ''))
                         end
                         e.tips:AddDoubleLine(id, addName)
                         e.tips:Show()
                     end
                 end)
-                self.instanceFrame:SetScript('OnLeave', function() e.tips:Hide() end)
-                self.instanceFrame.texture= self.instanceFrame:CreateTexture(nil,'BORDER', nil, 1)
-                self.instanceFrame.texture:SetAllPoints(self.instanceFrame)
-                self.instanceFrame.texture:SetAtlas('DungeonSkull')
+                self.instanceFrame2:SetScript('OnLeave', function() e.tips:Hide() end)
+                self.instanceFrame2.texture= self.instanceFrame2:CreateTexture(nil,'BORDER', nil, 1)
+                self.instanceFrame2.texture:SetAllPoints(self.instanceFrame2)
+                self.instanceFrame2.texture:SetAtlas('DungeonSkull')
 
-                portrait= self.instanceFrame:CreateTexture(nil, 'BORDER',nil,2)--外框
+                portrait= self.instanceFrame2:CreateTexture(nil, 'BORDER',nil,2)--外框
                 portrait:SetAtlas('DK-Base-Rune-CDFill')
                 portrait:SetPoint('CENTER')
                 portrait:SetSize(20,20)
