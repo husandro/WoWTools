@@ -2972,7 +2972,8 @@
         "PLAYER_DIFFICULTY6",
         "PLAYER_DIFFICULTY3",
         "PLAYER_DIFFICULTY_MYTHIC_PLUS",
-        "GetDifficultyColor"
+        "GetDifficultyColor",
+        "RaidFrameAllAssistCheckButton_UpdateAvailable"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

@@ -93,7 +93,7 @@ local function create_Set_lable(self, text)--建立,或设置,Labels
                 if info and info.quantity and info.iconFileID then
                     str= '|T'..info.iconFileID..':0|t'..info.quantity..'|n'
                 end
-                e.tips:AddLine(str..(e.onlyChinese and '旅行者日志进度' or MONTHLY_ACTIVITIES_PROGRESSED))
+                e.tips:AddDoubleLine(str..(e.onlyChinese and '旅行者日志进度' or MONTHLY_ACTIVITIES_PROGRESSED), Labels.perksPoints.value)
             end
             down= function() ToggleEncounterJournal() end
 
@@ -275,18 +275,45 @@ end
 --###########
 --贸易站, 点数
 --Blizzard_EncounterJournal/Blizzard_MonthlyActivities.lua
-local function set_perksActivitiesLastPoints_CVar()--贸易站, 点数
-    local value= GetCVar("perksActivitiesLastPoints")
-    local lastPoints= value and tonumber(value)
+local function set_perksActivitiesLastPoints_CVar()--贸易站, 点数  MonthlyActivitiesFrameMixin:UpdateActivities(retainScrollPosition, activitiesInfo)
+    --local value= GetCVar("perksActivitiesLastPoints")
     local text
-    if lastPoints and lastPoints>=0 then
-        if Save.parent then
-            text= format('%i%%', lastPoints/1000*100)
-        else
-            text= '|A:activities-complete-diamond:0:0|a'..format('%i%%', lastPoints/1000*100)..' '
-        end
+    
+    local activitiesInfo = C_PerksActivities.GetPerksActivitiesInfo()
+    if not activitiesInfo then
+        return
     end
+
+    local thresholdMax = 0;
+	for _, thresholdInfo in pairs(activitiesInfo.thresholds) do
+		if thresholdInfo.requiredContributionAmount > thresholdMax then
+			thresholdMax = thresholdInfo.requiredContributionAmount;
+		end
+	end
+    if thresholdMax == 0 then
+		thresholdMax = 1000
+	end
+
+    local earnedThresholdAmount = 0;
+	for _, activity in pairs(activitiesInfo.activities) do
+		if activity.completed then
+			earnedThresholdAmount = earnedThresholdAmount + activity.thresholdContributionAmount;
+		end
+	end
+	earnedThresholdAmount = math.min(earnedThresholdAmount, thresholdMax);
+
+    if earnedThresholdAmount== thresholdMax then
+        text= e.Icon.select2
+    else
+        text= thresholdMax- earnedThresholdAmount
+    end
+
+    if not Save.parent then
+        text= '|A:activities-complete-diamond:0:0|a'..text..' '
+    end
+
     Labels.perksPoints:SetText(text or '')
+    Labels.perksPoints.value= earnedThresholdAmount..'/'..thresholdMax
 end
 local function set_perksActivitiesLastPoints_Event()
     if Save.perksPoints and not ( IsTrialAccount() or IsVeteranTrialAccount()) then

@@ -1146,7 +1146,7 @@ local function set_RaidFrame()--设置,团队
     CompactRaidFrameContainer:SetClampedToScreen(true)
     CompactRaidFrameContainer:SetMovable(true)
 
-    CompactRaidFrameContainer.moveFrame= e.Cbtn(CompactRaidFrameContainer, {icon=true, size={20,20}})
+    CompactRaidFrameContainer.moveFrame= e.Cbtn(CompactRaidFrameContainer, {icon= true, size={20,20}})--IsEveryoneAssistant() hooksecurefunc('RaidFrameAllqbCheckButton_UpdateAvailable', function()
     CompactRaidFrameContainer.moveFrame:SetAlpha(0.3)
     CompactRaidFrameContainer.moveFrame:SetPoint('TOPRIGHT', CompactRaidFrameContainer, 'TOPLEFT',-2, -13)
     CompactRaidFrameContainer.moveFrame:SetClampedToScreen(true)
@@ -1198,7 +1198,6 @@ local function set_RaidFrame()--设置,团队
     if Save.raidFrameScale and Save.raidFrameScale~=1 then
         CompactRaidFrameContainer:SetScale(Save.raidFrameScale)
     end
-
 
     --团体, 管理, 缩放
     CompactRaidFrameManager.sacleFrame= e.Cbtn(CompactRaidFrameManager, {icon=true, size={15,15}})
