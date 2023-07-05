@@ -511,7 +511,7 @@ local function Init_InstanceDifficulty()--副本，难图，指示
         end
         e.tips:SetOwner(MinimapCluster, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        local name, maxPlayers= select(4,GetInstanceInfo())
+        local difficultyID, name, maxPlayers= select(3,GetInstanceInfo())
         name= name..(maxPlayers and ' ('..maxPlayers..')' or '')
         e.tips:AddDoubleLine(self2.tips, name)
         e.tips:AddLine(' ')
@@ -523,12 +523,13 @@ local function Init_InstanceDifficulty()--副本，难图，指示
             DifficultyUtil.ID.DungeonMythic,
             DifficultyUtil.ID.DungeonChallenge,
             DifficultyUtil.ID.RaidTimewalker,
+            25,
         }
         for _, ID in pairs(tab) do
             local text= e.GetDifficultyColor(nil, ID)
             e.tips:AddLine((self2.tips==text and e.Icon.toRight2 or '')..text..(self2.tips==text and e.Icon.toLeft2 or ''))
         end
-
+        e.tips:AddDoubleLine('difficultyID', difficultyID)
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
     end)

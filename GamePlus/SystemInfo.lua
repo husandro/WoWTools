@@ -305,7 +305,7 @@ local function set_perksActivitiesLastPoints_CVar()--贸易站, 点数  MonthlyA
     if earnedThresholdAmount== thresholdMax then
         text= e.Icon.select2
     else
-        text= thresholdMax- earnedThresholdAmount
+        text= e.MK(thresholdMax- earnedThresholdAmount, 1)
     end
 
     if not Save.parent then

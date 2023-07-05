@@ -467,23 +467,35 @@ end
 
 e.MK=function(number,bit)
     bit = bit or 1
+    local num= 0
+    if bit==0 then
+        num= 0.5
+    elseif bit==1 then
+        num= 0.05
+    elseif bit==2 then
+        num= 0.005
+    elseif bit==3 then
+        num= 0.0005
+    elseif bit==4 then
+        num= 0.00005
+    end
     if number>=1e6 then
         if bit==0 then
-            return format('%im', (number/1e6)-0.5)
+            return format('%im', (number/1e6)-num)
         else
-            return format('%.'..bit..'fm', number/1e6)
+            return format('%.'..bit..'fm', (number/1e6)-num)
         end
     elseif number>= 1e4 and (LOCALE_zhCN or e.onlyChinese) then
         if bit==0 then
-            return format('%iw', (number/1e4)-0.5)
+            return format('%iw', (number/1e4)-num)
         else
-            return format('%.'..bit..'fw', number/1e4)
+            return format('%.'..bit..'fw', (number/1e4)-num)
         end
     elseif number>=1e3 then
         if bit==0 then
-            return format('%ik', (number/1e3)-0.5)
+            return format('%ik', (number/1e3)-num)
         else
-            return format('%.'..bit..'fk', number/1e3)
+            return format('%.'..bit..'fk', (number/1e3)-num)
         end
     else
         return format('%i', number-0.5)
@@ -515,40 +527,69 @@ end
 --副本，难道，颜色
 e.GetDifficultyColor = function(string, difficultyID)--DifficultyUtil.lua
     local colorRe
-    if difficultyID then
-        local name={
+    if difficultyID and difficultyID>0 then
+        local color={
             ['经典']= {name= e.onlyChinese and '经典' or LEGACY_RAID_DIFFICULTY, hex='|cff9d9d9d', r=0.62, g=0.62, b=0.62},
-            ['随机']= {name= e.onlyChinese and '随机' or PLAYER_DIFFICULTY3, hex='|cff1eff00', r=0.12, g=1.00, b=0.00},
-
+            ['场景']= {name= e.onlyChinese and '场景' or PLAYER_DIFFICULTY3, hex='|cffc6ffc9', r=0.78, g=1, b=0.79},
+            ['随机']= {name= e.onlyChinese and '随机' or PLAYER_DIFFICULTY3, hex='|cff1eff00', r=0.12, g=1, b=0},
             ['普通']= {name= e.onlyChinese and '普通' or PLAYER_DIFFICULTY1, hex='|cffffffff', r=1, g=1, b=1},
             ['英雄']= {name= e.onlyChinese and '英雄' or PLAYER_DIFFICULTY2, hex='|cff0070dd', r=0, g=0.44, b=0.87},
-
             ['史诗']= {name= e.onlyChinese and '史诗' or PLAYER_DIFFICULTY6, hex='|cffff00ff', r=1, g=0, b=1},
             ['挑战']= {name= e.onlyChinese and '挑战' or PLAYER_DIFFICULTY5,  hex='|cffff8200', r=1, g=0.51, b=0},
             ['漫游']= {name= e.onlyChinese and '漫游' or PLAYER_DIFFICULTY_TIMEWALKER, hex='|cff00ffff', r=0, g=1, b=1},
+            ['pvp']= {name= 'PvP', hex='|cffff0000', r=1, g=0, b=0},
         }
-        local color= {
-            [DifficultyUtil.ID.Raid40] = name['经典'],
-            [DifficultyUtil.ID.PrimaryRaidLFR] = name['随机'],
-            [DifficultyUtil.ID.RaidLFR] = name['随机'],
-            [DifficultyUtil.ID.DungeonNormal] = name['普通'],
-            [DifficultyUtil.ID.Raid10Normal] = name['普通'],
-            [DifficultyUtil.ID.Raid25Normal] = name['普通'],
-            [DifficultyUtil.ID.PrimaryRaidNormal] = name['普通'],
-            [DifficultyUtil.ID.DungeonHeroic] = name['英雄'],
-            [DifficultyUtil.ID.Raid10Heroic] = name['英雄'],
-            [DifficultyUtil.ID.Raid25Heroic] = name['英雄'],
-            [DifficultyUtil.ID.PrimaryRaidHeroic] = name['英雄'],
-            [DifficultyUtil.ID.DungeonMythic] = name['史诗'],
-            [DifficultyUtil.ID.PrimaryRaidMythic] = name['史诗'],
-            [DifficultyUtil.ID.DungeonChallenge] =  name['挑战'],
-            [DifficultyUtil.ID.DungeonTimewalker] = name['漫游'],
-            [DifficultyUtil.ID.RaidTimewalker] = name['漫游'],
+        local type= {
+            [1]= '普通',--DifficultyUtil.ID.DungeonNormal
+            [2]='英雄',--DifficultyUtil.ID.DungeonHeroic
+            [3]='普通',--DifficultyUtil.ID.Raid10Normal
+            [4]='普通',--DifficultyUtil.ID.Raid25Normal
+            [5]='英雄',--DifficultyUtil.ID.Raid10Heroic
+            [6]='英雄',--DifficultyUtil.ID.Raid25Heroic
+            [7]='随机',--DifficultyUtil.ID.RaidLFR
+            [8]='挑战',--DifficultyUtil.ID.DungeonChallenge Mythic Keystone
+            [9]='经典',--DifficultyUtil.ID.Raid40 40 Player
+
+            [11]= '英雄',--场景 Heroic Scenario
+            [12]= '普通',--场景 Normal Scenario
+
+            [14]='普通',--DifficultyUtil.ID.PrimaryRaidNormal 突袭
+            [15]='英雄',--DifficultyUtil.ID.PrimaryRaidHeroic 突袭
+            [16]='史诗',--DifficultyUtil.ID.PrimaryRaidMythic 突袭
+            [17]='随机',--DifficultyUtil.ID.PrimaryRaidLFR 突袭
+
+            [19]='普通',--场景 Event party
+            [20]='普通',--场景 Event Scenario scenario
+            [23]='史诗',--DifficultyUtil.ID.DungeonMythic
+            [24]='漫游',--DifficultyUtil.ID.DungeonTimewalker
+            [25]='pvp',--World PvP Scenario	scenario
+            [29]='pvp',--PvEvP Scenario	pvp	
+            [30]='普通',--Event	scenario	
+            [32]='pvp',--World PvP Scenario	scenario	
+            [33]='漫游',--DifficultyUtil.ID.RaidTimewalker	Timewalking	raid	
+            [34]='pvp',--PvP pvp	
+            [38]='普通',--Normal	scenario	
+            [39]='英雄',--Heroic	scenario	displayHeroic
+            [40]='史诗',--Mythic	scenario	displayMythic
+            [45]='pvp',--PvP	scenario	displayHeroic
+            [147]='普通',--Normal	scenario	Warfronts
+            [149]='英雄',--Heroic	scenario	displayHeroic Warfronts
+            [150]='普通',--Normal	party	
+            [151]='漫游',--Looking For Raid	raid	Timewalking
+            [152]='普通',--Visions of N'Zoth	scenario	
+            [153]='英雄',--Teeming Island	scenario	displayHeroic
+            [167]='普通',--Torghast	scenario	
+            [168]='普通',--Path of Ascension: Courage	scenario	
+            [169]='普通',--Path of Ascension: Loyalty	scenario	
+            [170]='普通',--Path of Ascension: Wisdom	scenario	
+            [171]='普通',--Path of Ascension: Humility	scenario
         }
-        if color[difficultyID] then
-            string= string or color[difficultyID].name or GetDifficultyInfo(difficultyID)
-            string= color[difficultyID].hex..string..'|r'
-            colorRe=color[difficultyID]
+        local name=type[difficultyID]
+        if name then
+            local tab=color[name]
+            string= string or tab.name or GetDifficultyInfo(difficultyID)
+            string= tab.hex..string..'|r'
+            colorRe= tab
         end
     end
     return string, colorRe or {r=e.Player.r, g=e.Player.g, b=e.Player.b, hex=e.Player.col}
@@ -1722,21 +1763,21 @@ elseif e.Player.region==1 then
     }
 end
 local regionColor = {--https://wago.io/6-GG3RMcC
-    ["deDE"] = {col="|cFF00FF00DE|r", text='DE', realm="Germany"},
-    ["frFR"] = {col="|cFF00FFFFFR|r", text='FR', realm="France"},
-    ["enGB"] = {col="|cFFFF00FFGB|r", text='GB', realm="Great Britain"},
-    ["itIT"] = {col="|cFFFFFF00IT|r", text='IT', realm="Italy"},
-    ["esES"] = {col="|cFFFFBF00ES|r", text='ES', realm="Spain"},
-    ["ruRU"] = {col="|cFFCCCCFFRU|r" ,text='RU', realm="Russia"},
-    ["ptBR"] = {col="|cFF8fce00PT|r", text='PT', realm="Portuguese"},
+    ["deDE"]= {col="|cFF00FF00DE|r", text='DE', realm="Germany"},
+    ["frFR"]= {col="|cFF00FFFFFR|r", text='FR', realm="France"},
+    ["enGB"]= {col="|cFFFF00FFGB|r", text='GB', realm="Great Britain"},
+    ["itIT"]= {col="|cFFFFFF00IT|r", text='IT', realm="Italy"},
+    ["esES"]= {col="|cFFFFBF00ES|r", text='ES', realm="Spain"},
+    ["ruRU"]= {col="|cFFCCCCFFRU|r" ,text='RU', realm="Russia"},
+    ["ptBR"]= {col="|cFF8fce00PT|r", text='PT', realm="Portuguese"},
 
-    ["oce"] = {col="|cFF00FF00OCE|r", text='CE', realm="Oceanic"},
-    ["usp"] = {col="|cFF00FFFFUSP|r", text='USP', realm="US Pacific"},
-    ["usm"] = {col="|cFFFF00FFUSM|r", text='USM', realm="US Mountain"},
-    ["usc"] = {col="|cFFFFFF00USC|r", text='USC', realm="US Central"},
-    ["use"] = {col="|cFFFFBF00USE|r", text='USE', realm="US East"},
-    ["mex"] = {col="|cFFCCCCFFMEX|r", text='MEX', realm="Mexico"},
-    ["bzl"] = {col="|cFF8fce00BZL|r", text='BZL', realm="Brazil"},
+    ["oce"]= {col="|cFF00FF00OCE|r", text='CE', realm="Oceanic"},
+    ["usp"]= {col="|cFF00FFFFUSP|r", text='USP', realm="US Pacific"},
+    ["usm"]= {col="|cFFFF00FFUSM|r", text='USM', realm="US Mountain"},
+    ["usc"]= {col="|cFFFFFF00USC|r", text='USC', realm="US Central"},
+    ["use"]= {col="|cFFFFBF00USE|r", text='USE', realm="US East"},
+    ["mex"]= {col="|cFFCCCCFFMEX|r", text='MEX', realm="Mexico"},
+    ["bzl"]= {col="|cFF8fce00BZL|r", text='BZL', realm="Brazil"},
 }
 e.Get_Region= function(realm, guid, unit, disabled)--e.Get_Region(server, guid, unit)--服务器，EU， US {col=, text=, realm=}
     if disabled then
