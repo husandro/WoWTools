@@ -585,7 +585,7 @@ local function set_PartyFrame()--PartyFrame.lua
                 frame.texture:SetAllPoints(frame)
                 frame.set_Active= function(self2)
                     local find= false
-                    if UnitIsConnected(self2.unit) then
+                    if UnitIsConnected(self2.unit) and not UnitIsFeignDeath(self2.unit) then
                         if UnitIsDead(self2.unit) then
                             self2.texture:SetAtlas('xmarksthespot')
                             find= true
@@ -604,7 +604,7 @@ local function set_PartyFrame()--PartyFrame.lua
                     self2.deadText:SetText(self2.dead>0 and self2.dead or '')
                 end
                 frame:SetScript('OnEvent', function(self2, event)
-                    if event~='UNIT_FLAGS' then
+                    if event=='PLAYER_ENTERING_WORLD' or event=='CHALLENGE_MODE_START' then
                         self2.dead= 0
                     end
                     self2:set_Active(self2)
@@ -630,6 +630,7 @@ local function set_PartyFrame()--PartyFrame.lua
             if exists then
                 frame:RegisterEvent('PLAYER_ENTERING_WORLD')
                 frame:RegisterEvent('CHALLENGE_MODE_START')
+                --frame:RegisterEvent('CHALLENGE_MODE_DEATH_COUNT_UPDATED')
                 frame:RegisterUnitEvent('UNIT_FLAGS', unit)
                 frame.deadText:SetTextColor(r, g, b)
             else

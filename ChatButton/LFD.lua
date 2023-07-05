@@ -658,7 +658,7 @@ local function partyList(self, level, type)--5人，随机 LFDFrame.lua
         if (isAvailableForPlayer or not hid2eIfNotJoinable) then
             if isAvailableForAll then
                 local check= GetLFGQueueStats(LE_LFG_CATEGORY_LFD, dungeonID)--是否有排本
-                local doneToday= GetLFGDungeonRewards(dungeonID) and ' '..e.Icon.O2 or nil--local doneToday, moneyAmount, moneyVar, experienceGained, experienceVar, numRewards, spellID = GetLFGDungeonRewards(dungeonID)
+                local doneToday= GetLFGDungeonRewards(dungeonID) and ' '..e.Icon.select2 or nil--local doneToday, moneyAmount, moneyVar, experienceGained, experienceVar, numRewards, spellID = GetLFGDungeonRewards(dungeonID)
                 local tooltip
                 if check then
                     tooltip= (tooltip or '')..e.Icon.left..'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '离开队列' or LEAVE_QUEUE)..'|r'

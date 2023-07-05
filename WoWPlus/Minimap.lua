@@ -467,67 +467,74 @@ WowTools_OnAddonCompartmentFuncOnEnter= enter_Func
 --副本，难图，指示
 --##############
 local function Init_InstanceDifficulty()--副本，难图，指示
-    if not MinimapCluster or Save.disabledInstanceDifficulty then
+    local self= MinimapCluster.InstanceDifficulty
+    if Save.disabledInstanceDifficulty then
         return
     end
-    if MinimapCluster.InstanceDifficulty and MinimapCluster.InstanceDifficulty.Instance.Border then
-        MinimapCluster.InstanceDifficulty.Instance.Border:SetVertexColor(e.Player.r, e.Player.g, e.Player.b, 1)--外框， 颜色
-        if MinimapCluster.InstanceDifficulty.ChallengeMode then
-            MinimapCluster.InstanceDifficulty.ChallengeMode.Border:SetVertexColor(e.Player.r, e.Player.g, e.Player.b, 1)
+
+    self.Instance.Border:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+    self.Guild.Border:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+    self.ChallengeMode.Border:SetVertexColor(e.Player.r, e.Player.g, e.Player.b, 1)
+    e.Cstr(nil,{size=14, copyFont=self.Instance.Text, changeFont= self.Instance.Text})--字体，大小
+    self.Instance.Text:SetShadowOffset(1,-1)
+    e.Cstr(nil,{size=14, copyFont=self.Guild.Instance.Text, changeFont= self.Instance.Text})--字体，大小
+    self.Guild.Instance.Text:SetShadowOffset(1,-1)
+
+    --MinimapCluster:HookScript('OnEvent', function(self2)--Minimap.luab
+    hooksecurefunc(self, 'Update', function(self2)--InstanceDifficulty.lua
+        local isChallengeMode= self.ChallengeMode:IsShown()
+        local tips, color
+        local frame
+        if self.Guild:IsShown() then
+            frame = self.Guild
+        elseif isChallengeMode then
+            frame = self.ChallengeMode
+        elseif self.Instance:IsShown() then
+            frame = self.Instance
         end
 
-        if MinimapCluster.InstanceDifficulty.Instance.Text then
-            e.Cstr(nil,{size=14, copyFont=MinimapCluster.InstanceDifficulty.Instance.Text, changeFont=MinimapCluster.InstanceDifficulty.Instance.Text})--字体，大小
-            MinimapCluster.InstanceDifficulty.Instance.Text:SetShadowOffset(1,-1)
+        if isChallengeMode then--挑战
+            tips, color= e.GetDifficultyColor(nil, DifficultyUtil.ID.DungeonChallenge)
+        elseif IsInInstance() then
+            local difficultyID = select(3, GetInstanceInfo())
+            tips, color= e.GetDifficultyColor(nil, difficultyID)
         end
-    end
-    MinimapCluster:HookScript('OnEvent', function(self)--Minimap.lua
-        if not self.InstanceDifficulty or not IsInInstance() then
+        if frame and color then
+            frame.Background:SetVertexColor(color.r, color.g, color.b)
+        end
+
+        self2.tips= tips
+    end)
+    self:HookScript('OnEnter', function(self2)
+        if not IsInInstance() then
             return
         end
-        local difficultyID = select(3, GetInstanceInfo())
-        local tips, color
-        if select(4, GetDifficultyInfo(difficultyID)) then--挑战
-            tips, color= e.GetDifficultyColor(nil, DifficultyUtil.ID.DungeonChallenge)
-            self.InstanceDifficulty.ChallengeMode.Background:SetVertexColor(color.r, color.g, color.b)
-        else
-            tips, color= e.GetDifficultyColor(nil, difficultyID)
-            self.InstanceDifficulty.Instance.Background:SetVertexColor(color.r, color.g, color.b, 1)
+        e.tips:SetOwner(MinimapCluster, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        local name, maxPlayers= select(4,GetInstanceInfo())
+        name= name..(maxPlayers and ' ('..maxPlayers..')' or '')
+        e.tips:AddDoubleLine(self2.tips, name)
+        e.tips:AddLine(' ')
+        local tab={
+            DifficultyUtil.ID.Raid40,
+            DifficultyUtil.ID.RaidLFR,
+            DifficultyUtil.ID.DungeonNormal,
+            DifficultyUtil.ID.DungeonHeroic,
+            DifficultyUtil.ID.DungeonMythic,
+            DifficultyUtil.ID.DungeonChallenge,
+            DifficultyUtil.ID.RaidTimewalker,
+        }
+        for _, ID in pairs(tab) do
+            local text= e.GetDifficultyColor(nil, ID)
+            e.tips:AddLine((self2.tips==text and e.Icon.toRight2 or '')..text..(self2.tips==text and e.Icon.toLeft2 or ''))
         end
-        self.InstanceDifficulty.tips= tips
-    end)
-    if MinimapCluster.InstanceDifficulty then
-        MinimapCluster.InstanceDifficulty:HookScript('OnEnter', function(self)
-            if not IsInInstance() then
-                return
-            end
-            e.tips:SetOwner(MinimapCluster, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            local name, maxPlayers= select(4,GetInstanceInfo())
-            name= name..(maxPlayers and ' ('..maxPlayers..')' or '')
-            e.tips:AddDoubleLine(self.tips, name)
-            e.tips:AddLine(' ')
-            local tab={
-                DifficultyUtil.ID.Raid40,
-                DifficultyUtil.ID.RaidLFR,
-                DifficultyUtil.ID.DungeonNormal,
-                DifficultyUtil.ID.DungeonHeroic,
-                DifficultyUtil.ID.DungeonMythic,
-                DifficultyUtil.ID.DungeonChallenge,
-                DifficultyUtil.ID.RaidTimewalker,
-            }
-            for _, ID in pairs(tab) do
-                local text= e.GetDifficultyColor(nil, ID)
-                e.tips:AddLine((self.tips==text and e.Icon.toRight2 or '')..text..(self.tips==text and e.Icon.toLeft2 or ''))
-            end
 
-            e.tips:AddDoubleLine(id, addName)
-            e.tips:Show()
-        end)
-        MinimapCluster.InstanceDifficulty:HookScript('OnLeave', function()
-            e.tips:Hide()
-        end)
-    end
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:Show()
+    end)
+    self:HookScript('OnLeave', function()
+        e.tips:Hide()
+    end)
 end
 
 --####
