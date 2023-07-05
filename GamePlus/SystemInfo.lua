@@ -339,8 +339,8 @@ local function set_Label_Point(clear)--设置 Label Poinst
             end
             if Save.parent then
                 if text=='fps' then
-                    --label:SetPoint('BOTTOM', MainMenuMicroButton, 'TOP',0,-4)
-                    label:SetPoint('TOP', MainMenuMicroButton)--, 0, -3)
+                    label:SetPoint('BOTTOM', MainMenuMicroButton, 'TOP',0,-4)
+                    --label:SetPoint('TOP', MainMenuMicroButton, 0, -3)
                     label:SetParent(MainMenuMicroButton)
                 elseif text=='ms' then
                     label:SetPoint('BOTTOM', MainMenuMicroButton, 'BOTTOM')
@@ -351,8 +351,8 @@ local function set_Label_Point(clear)--设置 Label Poinst
                     label:SetParent(MainMenuBarBackpackButton)
 
                 elseif text=='perksPoints' then
-                    --label:SetPoint('TOP', EJMicroButton, 0,6)
-                    label:SetPoint('TOP', EJMicroButton)--, 0, -3)
+                    label:SetPoint('TOP', EJMicroButton, 0,6)
+                    --label:SetPoint('TOP', EJMicroButton, 0, -3)
                     label:SetParent(EJMicroButton)
 
                 elseif text=='durabiliy' then
@@ -360,8 +360,8 @@ local function set_Label_Point(clear)--设置 Label Poinst
                     label:SetParent(CharacterMicroButton)
 
                 elseif text=='equipmentLevel' then
-                    --label:SetPoint('TOP', CharacterMicroButton,0,6)
-                    label:SetPoint('TOP', CharacterMicroButton)--, 0, -3)
+                    label:SetPoint('TOP', CharacterMicroButton,0,6)
+                    --label:SetPoint('TOP', CharacterMicroButton, 0, -3)
                     label:SetParent(CharacterMicroButton)
                 end
 
