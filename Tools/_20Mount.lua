@@ -90,7 +90,7 @@ local function setPanelPostion()--设置按钮位置
     if Save.Point and Save.Point[1] and Save.Point[3] and Save.Point[4] and Save.Point[5] then
         button:SetPoint(Save.Point[1], UIParent, Save.Point[3], Save.Point[4], Save.Point[5])
     else
-        button:SetPoint('BOTTOMRIGHT', UIParent, 'BOTTOMRIGHT', -350, 0)
+        button:SetPoint('BOTTOMRIGHT', UIParent, 'BOTTOMRIGHT', -350, 6)
     end
 end
 
