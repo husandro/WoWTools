@@ -558,6 +558,10 @@ local function set_PartyFrame()--PartyFrame.lua
                                 text= e.Icon.select2..text
                             end
                         end
+                        local distanceSquared, checkedDistance = UnitDistanceSquared(self2.unit)
+                        if distanceSquared and checkedDistance then
+                            text= (text and text..' ' or '')..e.MK(distanceSquared, 0)
+                        end
                         self2.Text:SetText(text or '')
                         self2.elapsed=0
                     end

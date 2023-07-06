@@ -465,7 +465,7 @@ end
 
 
 
-e.MK=function(number,bit)
+function e.MK(number, bit)
     bit = bit or 1
     local num= 0
     if bit==0 then
