@@ -41,7 +41,7 @@ local Save={
     bit=0,--数值，位数
 }
     --hideInPetBattle=true,--宠物战斗中, 隐藏
-    --buttonAlpha=0.1,--专精，图标，透明度
+    --buttonAlpha=0,--专精，图标，透明度
     --hide=false,--显示，隐藏
     --gsubText
     --strlower
@@ -405,6 +405,7 @@ local function set_CRITCHANCE_Tooltip(self)
 		critChance = meleeCrit;
 		rating = CR_CRIT_MELEE;
 	end
+    e.tips:AddLine(' ')
     e.tips:AddDoubleLine(frame.nameText, format('%.2f%%', critChance + 0.5))
 
 	local extraCritChance = GetCombatRatingBonus(rating);
@@ -457,6 +458,7 @@ local function set_HASTE_Tooltip(self)
 	end
 	e.tips:AddDoubleLine(frame.nameText, format(hasteFormatString, format("%0.2f%%", haste + 0.5)))
 	e.tips:AddLine(_G["STAT_HASTE_"..e.Player.class.."_TOOLTIP"] or (e.onlyChinese and '提高攻击速度和施法速度。' or STAT_HASTE_TOOLTIP), nil, nil,nil,true)
+    e.tips:AddLine(' ')
 	e.tips:AddDoubleLine(format(e.onlyChinese and '急速：%s [+%.2f%%]' or STAT_HASTE_BASE_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(rating)), GetCombatRatingBonus(rating)))
     e.tips:Show()
 end
@@ -510,7 +512,9 @@ local function set_VERSATILITY_Tooltip(self)
     local versatility = GetCombatRating(CR_VERSATILITY_DAMAGE_DONE);
 	local versatilityDamageBonus = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE);
 	local versatilityDamageTakenReduction = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_TAKEN) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_TAKEN);
+    e.tips:AddLine(' ')
     e.tips:AddDoubleLine(frame.nameText, format('%.2f%%',  versatilityDamageBonus))
+    e.tips:AddLine(' ')
 	e.tips:AddLine(format(e.onlyChinese and "造成的伤害值和治疗量提高%.2f%%，|n受到的伤害降低%.2f%%。|n全能：%s [%.2f%%/%.2f%%]" or CR_VERSATILITY_TOOLTIP, versatilityDamageBonus, versatilityDamageTakenReduction, BreakUpLargeNumbers(versatility), versatilityDamageBonus, versatilityDamageTakenReduction), nil,nil,nil,true)
     e.tips:Show()
 end
@@ -1111,8 +1115,8 @@ end
 --##########
 local function set_Show_Hide()
     button.frame:SetShown(not Save.hide)
-    button.texture:SetAlpha(Save.hide and 1 or Save.buttonAlpha or 0.1)
-    button.classPortrait:SetAlpha(Save.hide and 1 or Save.buttonAlpha or 0.1)
+    button.texture:SetAlpha(Save.hide and 1 or Save.buttonAlpha or 0)
+    button.classPortrait:SetAlpha(Save.hide and 1 or Save.buttonAlpha or 0)
 end
 
 --################
