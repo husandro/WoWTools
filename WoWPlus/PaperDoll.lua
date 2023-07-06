@@ -466,6 +466,7 @@ local function set_Item_Tips(self, slot, link)--附魔, 使用, 属性
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine((e.onlyChinese and '耐久度' or DURABILITY),format('%.1f%%', self2.du))
+                local cost= GetRepairAllCost()
                 e.tips:Show()
             end
         end)

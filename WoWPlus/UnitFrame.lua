@@ -306,7 +306,6 @@ local function set_PartyFrame()--PartyFrame.lua
             local frame= memberFrame.potFrame
             if not frame then
                 frame= e.Cbtn(memberFrame, {type=true, size={35,35}, icon='hide'})
-                --frame:SetPoint('TOPLEFT', memberFrame, 'TOPRIGHT', -3 ,-4)
                 frame:SetPoint('LEFT', memberFrame, 'RIGHT', -3, 4)
                 frame:SetAttribute('type', 'target')
                 frame:SetAttribute('unit', unit..'target')
@@ -399,6 +398,7 @@ local function set_PartyFrame()--PartyFrame.lua
             if exists then
                 frame:RegisterEvent('RAID_TARGET_UPDATE')
                 frame:RegisterUnitEvent('UNIT_TARGET', unit)
+                frame:RegisterUnitEvent('UNIT_FLAGS', unit..'target')
             end
             frame.set_Party_Target_Changed(frame)
 
