@@ -385,6 +385,7 @@ local function Init_Menu(self, level, type)
         DifficultyUtil.ID.DungeonMythic,
         DifficultyUtil.ID.DungeonChallenge,
         DifficultyUtil.ID.RaidTimewalker,
+        25,
     }
     local tips=''
     for _, ID in pairs(tab) do
