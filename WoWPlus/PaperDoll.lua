@@ -434,9 +434,9 @@ local function set_Item_Tips(self, slot, link)--附魔, 使用, 属性
         end
     end
 
-    local du
+    local du, min, max
     if link and not Save.hide then
-        local min, max=GetInventoryItemDurability(slot)
+        min, max=GetInventoryItemDurability(slot)
         if min and max and max>0 then
             du=min/max*100
         end
@@ -465,12 +465,15 @@ local function set_Item_Tips(self, slot, link)--附魔, 使用, 属性
             if self2.du then
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine((e.onlyChinese and '耐久度' or DURABILITY),format('%.1f%%', self2.du))
-                local cost= GetRepairAllCost()
+                e.tips:AddDoubleLine(format(e.onlyChinese and '耐久度 %d / %d' or DURABILITY_TEMPLATE, min,  max), format('%i%%', self2.du))
                 e.tips:Show()
             end
         end)
         self.du:SetScript('OnLeave', function() e.tips:Hide() end)
+        self.du.texture= self.du:CreateTexture(nil, "BACKGROUND")
+        self.du.texture:SetAllPoints(self.du)
+        self.du.texture:SetColorTexture(1,0,0)
+        self.du.texture:SetAlpha(0.3)
     end
     if self.du then
         if du then
@@ -484,6 +487,9 @@ local function set_Item_Tips(self, slot, link)--附魔, 使用, 属性
         end
         self.du:SetValue(du or 0)
         self.du.du=du
+        self.du.min= min
+        self.du.max= max
+        self.du.texture:SetShown(du and true or false)
     end
 end
 

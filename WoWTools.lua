@@ -322,7 +322,7 @@ e.Player={
     col= '|c'..select(4, GetClassColor(baseClass)),
     cn= GetCurrentRegion()==5,
     region= GetCurrentRegion(),--1US (includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
-    Lo= GetLocale(),
+    --Lo= GetLocale(),
     week= GetWeek(),--周数
     guid= UnitGUID('player'),
     levelMax= UnitLevel('player')==MAX_PLAYER_LEVEL,--玩家是否最高等级

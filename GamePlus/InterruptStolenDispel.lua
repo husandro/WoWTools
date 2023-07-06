@@ -5,7 +5,8 @@ local Save={}
 local panel=CreateFrame("Frame")
 
 local de=' > '--分隔符
-if e.Player.Lo== "zhCN" or e.Player.Lo == "zhTW" or e.Player.Lo=='koKR' then
+--if e.Player.Lo== "zhCN" or e.Player.Lo == "zhTW" or e.Player.Lo=='koKR' then
+if e.Player.region==4 or e.Player.region==5 then
     de='→'
 end
 
@@ -23,11 +24,21 @@ local UMark={--'|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..t..':0|t'
 
 local function set_COMBAT_LOG_EVENT_UNFILTERED()--https://wowpedia.fandom.com/wiki/COMBAT_LOG_EVENT
     --timestamp, subevent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, [spellID, spellName, spellSchool], casterGUID, casterName, casterFlags, casterRaidFlags, absorbSpellId, absorbSpellName, absorbSpellSchool, amount, critical
-
     local _, eventType, _, sourceGUID, _, _, sourceRaidFlags, destGUID, _, _, destRaidFlags ,spellID, _,_, extraSpellID= CombatLogGetCurrentEventInfo()
-    local unitToken = destGUID and UnitTokenFromGUID(destGUID)
-    if (eventType=="SPELL_INTERRUPT" or eventType=="SPELL_DISPEL" or eventType=="SPELL_STOLEN") and sourceGUID==e.Player.guid and (unitToken and not UnitIsUnit(unitToken, 'pet') or not unitToken) and spellID and extraSpellID then
-        local text=(UMark[sourceRaidFlags] or '')..GetSpellLink(spellID)..de..GetSpellLink(extraSpellID)..(UMark[destRaidFlags] or '')
+    local target = destGUID and UnitTokenFromGUID(destGUID)
+    if not target
+        or not spellID
+        or not extraSpellID
+        or sourceGUID~=e.Player.guid
+        or not (eventType=="SPELL_INTERRUPT" or eventType=="SPELL_DISPEL" or eventType=="SPELL_STOLEN")
+        or UnitIsUnit(target, 'pet')
+    then
+        return
+    end
+    local text=(UMark[sourceRaidFlags] or '')..GetSpellLink(spellID)..de..GetSpellLink(extraSpellID)..(UMark[destRaidFlags] or '')
+    if UnitIsUnit(target, 'player') then
+        print(id, addName, text)
+    else
         e.Chat(text, nil, true)
     end
 end
@@ -44,7 +55,7 @@ panel:RegisterEvent('ADDON_LOADED')
 panel:RegisterEvent('GROUP_ROSTER_UPDATE')
 panel:RegisterEvent('GROUP_LEFT')
 
-panel:SetScript("OnEvent", function(self, event, arg1)
+panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
