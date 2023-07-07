@@ -25,9 +25,11 @@ RANGE_INDICATOR = "●"
 UIPanelWindows[]
 
 GetClassColoredTextForUnit(unit, text)
+
 FrameUtil.RegisterFrameForEvents(self, table)
 FrameUtil.RegisterFrameForUnitEvents(frame, events, ...)
 FrameUtil.UnregisterFrameForEvents(self, table)
+
 SetPortraitTexture(textureObject, unitToken [, disableMasking])
 SetPortraitToTexture(textureObject, texturePath)
 Region:SetVertexColor(colorR, colorG, colorB [, a])

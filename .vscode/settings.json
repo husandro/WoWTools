@@ -2974,7 +2974,9 @@
         "PLAYER_DIFFICULTY_MYTHIC_PLUS",
         "GetDifficultyColor",
         "RaidFrameAllAssistCheckButton_UpdateAvailable",
-        "DURABILITY_TEMPLATE"
+        "DURABILITY_TEMPLATE",
+        "ProfessionsRecipeListRecipeMixin",
+        "ProfessionsRecipeListCategoryMixin"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

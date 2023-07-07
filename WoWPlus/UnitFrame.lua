@@ -551,16 +551,16 @@ local function set_PartyFrame()--PartyFrame.lua
                         local mapID= C_Map.GetBestMapForUnit(self2.unit)--地图ID
                         local mapInfo= mapID and C_Map.GetMapInfo(mapID)
                         local text
+                        local distanceSquared, checkedDistance = UnitDistanceSquared(self2.unit)
+                        if distanceSquared and checkedDistance then
+                            text= e.MK(distanceSquared, 0)
+                        end
                         if mapInfo and mapInfo.name then
-                            text= mapInfo.name
+                            text= (text and text..' ' or '')..mapInfo.name
                             local mapID2= C_Map.GetBestMapForUnit('player')
                             if mapID2== mapID then
                                 text= e.Icon.select2..text
                             end
-                        end
-                        local distanceSquared, checkedDistance = UnitDistanceSquared(self2.unit)
-                        if distanceSquared and checkedDistance then
-                            text= (text and text..' ' or '')..e.MK(distanceSquared, 0)
                         end
                         self2.Text:SetText(text or '')
                         self2.elapsed=0
