@@ -11,10 +11,12 @@ e.WoWGUID={}--e.WoWGUID[名称-服务器]=guid
 local function setwowguidTab(info)
     if info and info.characterName then
         local name= e.GetUnitName(info.characterName)
-        if info.isOnline and info.wowProjectID==1 then
-            e.WoWGUID[name]={guid=info.playerGuid, faction=info.factionName}
-        else
-            e.WoWGUID[name]=nil
+        if name then
+            if info.isOnline and info.wowProjectID==1 then
+                e.WoWGUID[name]={guid=info.playerGuid, faction=info.factionName}
+            else
+                e.WoWGUID[name]=nil
+            end
         end
     end
 end
