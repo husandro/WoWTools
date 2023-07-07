@@ -10,16 +10,17 @@ local Save={
 local button
 
 local Get_Currency= function(tab)--e.Get_Currency({id=nil, index=nil, link=nil, soloValue=nil, showIcon=true, showName=true, showID=true, bit=3, showMax=nil})--货币
-    local info = tab.index and C_CurrencyInfo.GetCurrencyListInfo(tab.index) or tab.id and C_CurrencyInfo.GetCurrencyInfo(tab.id) or C_CurrencyInfo.GetCurrencyInfoFromLink(tab.link)
-    if not info or (info.quantity==0 and not info.isHeader) then--or (not info.discovered and info.quality==0 and not info.isHeader) then
+    local info
+	if tab.index then
+		info= C_CurrencyInfo.GetCurrencyListInfo(tab.index)
+	elseif tab.id then
+		info= C_CurrencyInfo.GetCurrencyInfo(tab.id)
+	elseif tab.link then
+		C_CurrencyInfo.GetCurrencyInfoFromLink(tab.link)
+	end
+    if not info or (info.quantity==0 and not info.isHeader) then
         return
     end
-	if tab.index then
-		local info2=C_CurrencyInfo.GetCurrencyListInfo(tab.index+1)
-		if not info2 or info2.isHeader then
-			return
-		end
-	end
     if tab.soloValue then--仅，返回值
         return info
     end
@@ -55,7 +56,7 @@ local Get_Currency= function(tab)--e.Get_Currency({id=nil, index=nil, link=nil, 
         or (info.useTotalEarnedForMaxQty and info.totalEarned==info.maxQuantity)--赛季
     )
     if max then--最大数量
-        t=t..'|cnRED_FONT_COLOR:'..e.MK(info.quantity, tab.bit)..'|r'..e.Icon.O2
+        t=t..'|cnRED_FONT_COLOR:'..e.MK(info.quantity, tab.bit)..'|r'..e.Icon.toLeft2
     else
         t=t..e.MK(info.quantity, tab.bit)..(tab.showMax and info.maxQuantity and info.maxQuantity>0 and ' /'..e.MK(info.maxQuantity, tab.bit) or '')
     end
